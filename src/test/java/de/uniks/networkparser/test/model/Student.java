@@ -11,6 +11,7 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
 import de.uniks.networkparser.interfaces.SendableEntity;
+import de.uniks.networkparser.list.SimpleSet;
 import de.uniks.networkparser.test.model.util.UniversityCreator;
 
 // should become a JSON Parser
@@ -345,4 +346,70 @@ public class Student extends Person implements SendableEntity{
 		return this;
 	}
 
+/********************************************************************
+    * <pre>
+    *              many                       many
+    * Student ----------------------------------- Student
+    *              friends                   friends
+    * </pre>
+    */
+   
+   public static final String PROPERTY_FRIENDS = "friends";
+
+   private SimpleSet<Student> friends = null;
+   
+   public SimpleSet<Student> getFriends()
+   {
+      if (this.friends == null)
+      {
+         return new SimpleSet<Student>();
+      }
+   
+      return this.friends;
+   }
+   /**
+    * 
+    * @see <a href='../../../../../../../../../src/test/java/org/sdmlib/test/examples/studyrightWithAssignments/StudyRightWithAssignmentsStoryboards.java'>StudyRightWithAssignmentsStoryboards.java</a>
+ */
+   public Student withFriends(Student... value)
+   {
+      if(value==null){
+         return this;
+      }
+      for (Student item : value)
+      {
+         if (item != null)
+         {
+            if (this.friends == null)
+            {
+               this.friends = new SimpleSet<Student>();
+            }
+            
+            boolean changed = this.friends.add (item);
+
+            if (changed)
+            {
+               item.withFriends(this);
+               firePropertyChange(PROPERTY_FRIENDS, null, item);
+            }
+         }
+      }
+      return this;
+   } 
+
+   public Student withoutFriends(Student... value)
+   {
+      for (Student item : value)
+      {
+         if ((this.friends != null) && (item != null))
+         {
+            if (this.friends.remove(item))
+            {
+               item.withoutFriends(this);
+               firePropertyChange(PROPERTY_FRIENDS, item, null);
+            }
+         }
+      }
+      return this;
+   }
 }

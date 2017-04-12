@@ -38,6 +38,11 @@ public class GraphList extends GraphModel implements BaseItem {
 	public String toString() {
 		return toString(new YUMLConverter());
 	}
+	public String toString(boolean removePackage) {
+		YUMLConverter converter = new YUMLConverter();
+		converter.defaultShowPackage = removePackage;
+		return toString(converter);
+	}
 
 	public String toString(Converter converter) {
 		if (converter == null) {
@@ -46,11 +51,11 @@ public class GraphList extends GraphModel implements BaseItem {
 		return converter.encode(this);
 	}
 
-	public String getTyp() {
+	public String getType() {
 		return typ;
 	}
 
-	public GraphList withTyp(String typ) {
+	public GraphList withType(String typ) {
 		this.typ = typ;
 		return this;
 	}
@@ -149,16 +154,16 @@ public class GraphList extends GraphModel implements BaseItem {
 	}
 
 	@Override
-	public GraphList with(Object... values) {
+	public boolean add(Object... values) {
 		if (values == null) {
-			return this;
+			return false;
 		}
 		for (Object item : values) {
 			if (item instanceof GraphMember) {
 				super.withChildren((GraphMember) item);
 			}
 		}
-		return this;
+		return true;
 	}
 
 	public Object getValue(Object key) {

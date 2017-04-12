@@ -24,21 +24,22 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 import java.util.ArrayList;
+
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.interfaces.Condition;
+import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
-import de.uniks.networkparser.interfaces.UpdateListener;
 /**
  * Or Clazz for Or Conditions.
  *
  * @author Stefan Lindel
  */
 
-public class Or implements UpdateListener, SendableEntityCreator {
+public class Or implements ObjectCondition, SendableEntityCreator {
 	/** Constant of CHILD. */
 	public static final String CHILD = "childs";
 	/** Variable of Conditions. */
-	private ArrayList<UpdateListener> list = new ArrayList<UpdateListener>();
+	private ArrayList<ObjectCondition> list = new ArrayList<ObjectCondition>();
 
 	/**
 	 * Static Method for instance a new Instance of Or Object.
@@ -46,7 +47,7 @@ public class Or implements UpdateListener, SendableEntityCreator {
 	 * @param conditions	All Conditions.
 	 * @return 			The new Instance
 	 */
-	public static Or create(UpdateListener... conditions) {
+	public static Or create(ObjectCondition... conditions) {
 		return new Or().with(conditions);
 	}
 	
@@ -56,25 +57,25 @@ public class Or implements UpdateListener, SendableEntityCreator {
 	 * @param conditions	All Conditions.
 	 * @return Or Instance
 	 */
-	public Or with(UpdateListener... conditions) {
+	public Or with(ObjectCondition... conditions) {
 		if(conditions == null) {
 			return this;
 		}
-		for (UpdateListener condition : conditions) {
+		for (ObjectCondition condition : conditions) {
 			this.list.add(condition);
 		}
 		return this;
 	}
 
 	/** @return List of Condition. */
-	private ArrayList<UpdateListener> getList() {
+	private ArrayList<ObjectCondition> getList() {
 		return list;
 	}
 
 	@Override
 	public boolean update(Object evt) {
 		boolean result = true;
-		for (UpdateListener condition : list) {
+		for (ObjectCondition condition : list) {
 			if (condition.update(evt) == false) {
 				result = false;
 			}
@@ -85,7 +86,7 @@ public class Or implements UpdateListener, SendableEntityCreator {
 	@Override
 	public String toString() {
 		CharacterBuffer sb = new CharacterBuffer();
-		for (UpdateListener condition : list) {
+		for (ObjectCondition condition : list) {
 			sb.with("[", condition.toString(), " ");
 		}
 		sb.trim();
@@ -116,7 +117,7 @@ public class Or implements UpdateListener, SendableEntityCreator {
 			String type) {
 		if (CHILD.equalsIgnoreCase(attribute)) {
 			if(value instanceof Condition) {
-				((Or) entity).with((UpdateListener) value);
+				((Or) entity).with((ObjectCondition) value);
 			}
 			return true;
 		}

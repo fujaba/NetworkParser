@@ -60,10 +60,4 @@ public class AnnotationSet extends SimpleSet<Annotation> {
 	public AnnotationSet hasName(String otherValue) {
 		return filter(Annotation.NAME.equals(otherValue));
 	}
-
-	@Override
-	public AnnotationSet with(Object... values) {
-		super.with(values);
-		return this;
-	}
 }

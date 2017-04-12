@@ -1,5 +1,7 @@
 package de.uniks.networkparser.test.javafx;
 
+import de.uniks.networkparser.ext.javafx.controller.ModelListenerFactory;
+import de.uniks.networkparser.ext.javafx.dialog.DialogBox;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -9,8 +11,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
-import de.uniks.networkparser.ext.javafx.controller.ModelListenerFactory;
-import de.uniks.networkparser.ext.javafx.dialog.DialogBox;
 
 public class TextItemGUI extends Application{
 	private String name="bla";

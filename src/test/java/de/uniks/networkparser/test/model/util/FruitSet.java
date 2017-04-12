@@ -25,16 +25,7 @@ import de.uniks.networkparser.test.model.Fruit;
 
 public class FruitSet extends SimpleSet<Fruit>
 {
-	protected Class<?> getTypClass() {
+	protected Class<?> getTypeClass() {
 		return Fruit.class;
-	}
-	public FruitSet with(Object... values) {
-		super.with(values);
-		return this;
-	}
-
-	public FruitSet without(Fruit value) {
-		this.remove(value);
-		return this;
 	}
 }

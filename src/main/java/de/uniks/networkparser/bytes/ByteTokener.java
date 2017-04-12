@@ -31,6 +31,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.MapEntity;
@@ -100,10 +101,10 @@ public class ByteTokener extends Tokener {
 	public static final byte DATATYPE_CLAZZPACKAGE = 0x43;
 
 	/** The Constant DATATYPE_BYTEARRAY. */
-	public static final byte DATATYPE_CLAZZTYP = 0x44;
+	public static final byte DATATYPE_CLAZZTYPE = 0x44;
 
 	/** The Constant DATATYPE_BYTEARRAY. */
-	public static final byte DATATYPE_CLAZZTYPLONG = 0x45;
+	public static final byte DATATYPE_CLAZZTYPELONG = 0x45;
 
 	/** The Constant DATATYPE_BYTEARRAY. */
 	public static final byte DATATYPE_ASSOC = 0x46;
@@ -147,16 +148,16 @@ public class ByteTokener extends Tokener {
 		return CHARSET;
 	}
 
-	private boolean addClazzTyp(ByteList msg, String clazzName, MapEntity map) {
+	private boolean addClazzType(ByteList msg, String clazzName, MapEntity map) {
 		try {
 			int id = map.getIndexOfClazz(clazzName);
 			if (id > 0) {
 				if (id <= Byte.MAX_VALUE) {
-					msg.add(new ByteEntity().withValue(DATATYPE_CLAZZTYP,
+					msg.add(new ByteEntity().withValue(DATATYPE_CLAZZTYPE,
 							(byte) id));
 				} else {
 					msg.add(new ByteEntity().withValue(
-							DATATYPE_CLAZZTYPLONG, (byte) id));
+							DATATYPE_CLAZZTYPELONG, (byte) id));
 				}
 				return true;
 			}
@@ -207,7 +208,7 @@ public class ByteTokener extends Tokener {
 			}
 		} else {
 			Object reference = creator.getSendableInstance(true);
-			addClazzTyp(msg, reference.getClass().getName(), map);
+			addClazzType(msg, reference.getClass().getName(), map);
 		}
 
 		map.with(entity);
@@ -246,7 +247,7 @@ public class ByteTokener extends Tokener {
 			if (value instanceof Collection<?>) {
 				Collection<?> list = (Collection<?>) value;
 				ByteList byteList = new ByteList()
-						.withTyp(ByteTokener.DATATYPE_LIST);
+						.withType(ByteTokener.DATATYPE_LIST);
 				for (Object childValue : list) {
 					ByteItem child = encodeValue(childValue, filter);
 					if (child != null) {
@@ -257,14 +258,14 @@ public class ByteTokener extends Tokener {
 			}
 			if (value instanceof Map<?, ?>) {
 				ByteList byteList = new ByteList()
-						.withTyp(ByteTokener.DATATYPE_MAP);
+						.withType(ByteTokener.DATATYPE_MAP);
 				Map<?, ?> map = (Map<?, ?>) value;
 				ByteItem child;
 
 				for (Iterator<?> i = map.entrySet().iterator(); i.hasNext();) {
 					java.util.Map.Entry<?, ?> entity = (java.util.Map.Entry<?, ?>) i.next();
 					ByteList item = new ByteList()
-							.withTyp(ByteTokener.DATATYPE_CHECK);
+							.withType(ByteTokener.DATATYPE_CHECK);
 
 					child = encodeValue(entity.getKey(), filter);
 					if (child != null) {
@@ -314,11 +315,11 @@ public class ByteTokener extends Tokener {
 						for (Iterator<?> i = list.iterator(); i.hasNext();) {
 							Object item = i.next();
 							eventCreater.setValue(entity, property, item,
-									IdMap.NEW);
+									SendableEntityCreator.NEW);
 						}
 					} else {
 						eventCreater.setValue(entity, property, value,
-								IdMap.NEW);
+								SendableEntityCreator.NEW);
 					}
 				}
 			}
@@ -330,19 +331,19 @@ public class ByteTokener extends Tokener {
 		if(entity == null){
 			return null;
 		}
-		byte typ = entity.getTyp();
+		byte type = entity.getType();
 		ByteBuffer buffer = new ByteBuffer();
 		Object value = entity.getValue(ByteEntity.VALUE);
 		if(value!=null) {
 			buffer.with((byte[])value);
 		}
-		return decodeValue(typ, buffer, buffer.length(), map);
+		return decodeValue(type, buffer, buffer.length(), map);
 	}
 
 	/**
 	 * Gets the decode object.
 	 *
-	 * @param current The CurrentChar (Typ of value)
+	 * @param current The CurrentChar (Type of value)
 	 * @param buffer the Buffer for decoding
 	 * @param map decoding Runtime values
 	 * @return the decode object
@@ -360,44 +361,44 @@ public class ByteTokener extends Tokener {
 
 	/**
 	 * Gets the decode object.
-	 * @param typ The CurrentChar (Typ of value)
+	 * @param type The CurrentChar (Type of value)
 	 * @param buffer the byteBuffer
 	 * @param end EndIndex
 	 * @param map decoding Runtimevalue
 	 * @return the decode object
 	 */
-	public Object decodeValue(byte typ, Buffer buffer, int end, MapEntity map) {
+	public Object decodeValue(byte type, Buffer buffer, int end, MapEntity map) {
 		if (buffer == null || buffer.remaining() < 1) {
 			return null;
 		}
-		if (typ == ByteTokener.DATATYPE_NULL) {
+		if (type == ByteTokener.DATATYPE_NULL) {
 			return null;
 		}
-		if (typ == ByteTokener.DATATYPE_BYTE) {
+		if (type == ByteTokener.DATATYPE_BYTE) {
 			return Byte.valueOf(buffer.getByte());
 		}
-		if (typ == ByteTokener.DATATYPE_CHAR) {
+		if (type == ByteTokener.DATATYPE_CHAR) {
 			return Character.valueOf(buffer.getChar());
 		}
-		if (typ == ByteTokener.DATATYPE_SHORT) {
+		if (type == ByteTokener.DATATYPE_SHORT) {
 			return Short.valueOf(buffer.getShort());
 		}
-		if (typ == ByteTokener.DATATYPE_INTEGER) {
+		if (type == ByteTokener.DATATYPE_INTEGER) {
 			return Integer.valueOf(buffer.getInt());
 		}
-		if (typ == ByteTokener.DATATYPE_LONG) {
+		if (type == ByteTokener.DATATYPE_LONG) {
 			return Long.valueOf(buffer.getLong());
 		}
-		if (typ == ByteTokener.DATATYPE_FLOAT) {
+		if (type == ByteTokener.DATATYPE_FLOAT) {
 			return Float.valueOf(buffer.getFloat());
 		}
-		if (typ == ByteTokener.DATATYPE_DOUBLE) {
+		if (type == ByteTokener.DATATYPE_DOUBLE) {
 			return Double.valueOf(buffer.getDouble());
 		}
-		if (typ == ByteTokener.DATATYPE_DATE) {
+		if (type == ByteTokener.DATATYPE_DATE) {
 			return new Date(buffer.getLong());
 		}
-		if (typ == ByteTokener.DATATYPE_CLAZZNAME) {
+		if (type == ByteTokener.DATATYPE_CLAZZNAME) {
 			int len = buffer.getByte() - ByteTokener.SPLITTER;
 			SendableEntityCreator eventCreater;
 			try {
@@ -407,7 +408,7 @@ public class ByteTokener extends Tokener {
 			}
 			return null;
 		}
-		if (typ == ByteTokener.DATATYPE_CLAZZNAMELONG) {
+		if (type == ByteTokener.DATATYPE_CLAZZNAMELONG) {
 			int len = buffer.getInt();
 			SendableEntityCreator eventCreater;
 			try {
@@ -417,21 +418,21 @@ public class ByteTokener extends Tokener {
 			}
 			return null;
 		}
-		if (typ == ByteTokener.DATATYPE_CLAZZTYP) {
+		if (type == ByteTokener.DATATYPE_CLAZZTYPE) {
 			int pos = buffer.getByte() - ByteTokener.SPLITTER;
 			SendableEntityCreator eventCreater = getCreator(map.getClazz(pos), true);
 			return decodeClazz(buffer, eventCreater, map);
 		}
-		if (typ == ByteTokener.DATATYPE_CLAZZTYPLONG) {
+		if (type == ByteTokener.DATATYPE_CLAZZTYPELONG) {
 			int pos = buffer.getInt();
 			SendableEntityCreator eventCreater = getCreator(map.getClazz(pos), true);
 			return decodeClazz(buffer, eventCreater, map);
 		}
-		if (typ == ByteTokener.DATATYPE_CLAZZID) {
-			typ = buffer.getByte();
+		if (type == ByteTokener.DATATYPE_CLAZZID) {
+			type = buffer.getByte();
 			String id;
 			try {
-				id = new String(new byte[]{typ}, "UTF-8");
+				id = new String(new byte[]{type}, "UTF-8");
 			} catch (UnsupportedEncodingException e) {
 				id = "";
 			}
@@ -448,16 +449,16 @@ public class ByteTokener extends Tokener {
 
 			return decodeClazz(buffer, eventCreater, map);
 		}
-		if (typ == ByteTokener.DATATYPE_ASSOC) {
+		if (type == ByteTokener.DATATYPE_ASSOC) {
 			int pos = buffer.getByte();
 			return map.getVisitedObjects(pos);
 		}
-		if (typ == ByteTokener.DATATYPE_ASSOCLONG) {
+		if (type == ByteTokener.DATATYPE_ASSOCLONG) {
 			int pos = buffer.getInt();
 			return map.getVisitedObjects(pos);
 		}
-		if (EntityUtil.isGroup(typ)) {
-			byte subgroup = EntityUtil.getSubGroup(typ);
+		if (EntityUtil.isGroup(type)) {
+			byte subgroup = EntityUtil.getSubGroup(type);
 			int len = 0;
 			if (subgroup == ByteTokener.LEN_LITTLE) {
 				len = buffer.getByte() - ByteTokener.SPLITTER;
@@ -470,7 +471,7 @@ public class ByteTokener extends Tokener {
 			} else if (subgroup == ByteTokener.LEN_LAST) {
 				len = end - 1;
 			}
-			byte group = EntityUtil.getGroup(typ);
+			byte group = EntityUtil.getGroup(type);
 			if (group == ByteTokener.DATATYPE_STRING) {
 				try {
 					return new String(buffer.array(len, false), getCharset());

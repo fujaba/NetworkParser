@@ -29,6 +29,7 @@ import java.io.OutputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
+
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.bytes.ByteEntity;
 import de.uniks.networkparser.interfaces.BaseItem;
@@ -133,7 +134,7 @@ public class ZipContainer {
 						if(element instanceof Entity) {
 							((Entity)element).withValue(output);
 						} else {
-							element.with(output.toString());
+							element.add(output.toString());
 						}
 						return element;
 					}

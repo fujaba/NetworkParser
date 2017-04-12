@@ -1,8 +1,6 @@
 package de.uniks.networkparser;
 
-import de.uniks.networkparser.IdMap;
-import de.uniks.networkparser.SimpleEvent;
-import de.uniks.networkparser.interfaces.UpdateListener;
+import de.uniks.networkparser.interfaces.ObjectCondition;
 
 /*
 NetworkParser
@@ -30,7 +28,7 @@ permissions and limitations under the Licence.
  * Condition for Listener for changes in Element (Datamodel) in IdMap
  * @author Stefan Lindel
  */
-public class UpdateCondition implements UpdateListener {
+public class UpdateCondition implements ObjectCondition {
 	@Override
 	public boolean update(Object evt) {
 		if(evt instanceof SimpleEvent) {

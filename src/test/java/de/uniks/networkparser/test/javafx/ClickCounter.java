@@ -1,5 +1,7 @@
 package de.uniks.networkparser.test.javafx;
 
+import de.uniks.networkparser.ext.javafx.controller.ModelListenerFactory;
+import de.uniks.networkparser.test.model.GUIEntity;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -12,10 +14,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
-import de.uniks.networkparser.ext.javafx.controller.ModelListenerFactory;
-import de.uniks.networkparser.ext.javafx.controller.ModelListenerStringProperty;
-import de.uniks.networkparser.test.model.GUIEntity;
-import de.uniks.networkparser.test.model.util.GUIEntityCreator;
 
 public class ClickCounter extends Application
 {
@@ -35,12 +33,14 @@ public class ClickCounter extends Application
 
 	  Label label = new Label("Button has been clicked: ");
 	  Label dataLabel = new Label();
+	  dataLabel.setId(GUIEntity.PROPERTY_NUMBER);
 
 	  box.getChildren().addAll(label, dataLabel);
 
 	  dataLabel.setTextAlignment(TextAlignment.RIGHT);
 
-	  dataLabel.textProperty().bind(new ModelListenerStringProperty(new GUIEntityCreator(), data, GUIEntity.PROPERTY_NUMBER));
+//	  ModelListenerFactory.create(dataLabel, data, GUIEntity.PROPERTY_NUMBER);
+	  ModelListenerFactory.create(dataLabel, data);
 
 	  field = new TextField();
 //FIRST

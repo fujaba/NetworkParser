@@ -27,14 +27,17 @@ The Framework have many other features like:
 
 ## Current Status ##
 - Master
-<!--  - Jenkins: [![Build Status](https://se.cs.uni-kassel.de/jenkins/job/NetworkParser/badge/icon)](https://se.cs.uni-kassel.de/jenkins/Networkparser/)-->
   - travis-ci: [![Build Status](https://travis-ci.org/fujaba/NetworkParser.svg?branch=master)](https://travis-ci.org/fujaba/NetworkParser)
 <!--  - Maven: [![Maven Status](http://se.cs.uni-kassel.de/maven/icon?project=NetworkParser)](http://se.cs.uni-kassel.de/maven/de/uniks/NetworkParser/latest/NetworkParser.jar)-->
   - Coverage: [![Coverage Status](https://coveralls.io/repos/fujaba/NetworkParser/badge.svg?branch=master&service=github)](https://coveralls.io/github/fujaba/NetworkParser?branch=master)
-  - Coverity Scan [![Coverity Status](https://scan.coverity.com/projects/8708/badge.svg)](https://scan.coverity.com/projects/fujaba-networkparser)
   - CII Best Practices [![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/561/badge)](https://bestpractices.coreinfrastructure.org/projects/561)
   - Codacy [![Codacy Badge](https://api.codacy.com/project/badge/Grade/03b590f35f334375b890f4261bf80bea)](https://www.codacy.com/app/stefan_7/NetworkParser?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=fujaba/NetworkParser&amp;utm_campaign=Badge_Grade)
   - Code Climate [![Code Climate](https://codeclimate.com/github/fujaba/NetworkParser/badges/gpa.svg)](https://codeclimate.com/github/fujaba/NetworkParser)
+  - Coverity Scan: [![Coverity Status](https://scan.coverity.com/projects/8708/badge.svg)](https://scan.coverity.com/projects/fujaba-networkparser)
+  - Glitter-Chat: [![Join the chat at https://gitter.im/NetworkParser/Lobby](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/NetworkParser/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+  - Java-Documentation: [![Javadocs](http://javadoc.io/badge/de.uniks/NetworkParser.svg)](http://javadoc.io/doc/de.uniks/NetworkParser)
+  - Maven Central: [![Maven Central](https://maven-badges.herokuapp.com/maven-central/de.uniks/NetworkParser/badge.svg)](https://maven-badges.herokuapp.com/maven-central/de.uniks/NetworkParser)
+
 - Develop
   - travis-ci: [![Build Status](https://travis-ci.org/fujaba/NetworkParser.svg?branch=develop)](https://travis-ci.org/fujaba/NetworkParser)
 <!--  - Maven: [![Maven](http://se.cs.uni-kassel.de/maven/icon?project=NetworkParser&type=snaphots)](http://se.cs.uni-kassel.de/maven/de/uniks/NetworkParser/latest-SNAPSHOT/NetworkParser-SNAPSHOT.jar)-->
@@ -53,29 +56,12 @@ Maven artifacts are available at:
 - https://oss.sonatype.org/content/repositories/snapshots/com/github/fujaba/NetworkParser/ - snaphots repository
 
 #Usage
-Here are a simple Usage of JsonIdMap for serialization and deserialization and get UpdateMessages
-```java
-	House house=new House();
-	house.setFloor(4);
-	house.setName("University");
-	IdMap map=new IdMap().withCreator(new HouseCreator());
-	map.withUpdateListenerSend(new UpdateListener() {
-		@Override
-		public boolean update(String typ, BaseItem source, Object target, String property, Object oldValue,
-				Object newValue) {
-			System.out.println(source);
-			return false;
-		}
-	});
-	
-	JsonObject json = map.toJsonObject(house);
-	String string=json.toString();
-	
-	IdMap decodeMap=new IdMap().withCreator(new HouseCreator());
-	House newHouse = (House) decodeMap.decode(string);
+Here are a simple Usage of IdMap for serialization and deserialization
+{{md  '..src/test/java/de/uniks/networkparser/test/SimpleUsage.java[tag=serialization]'}} 
 
-	house.setFloor(42);
-```
+
+- [serialization](example.adoc "simple Serialization")
+
 ## Maven Snapshot
 ### pom.xml
 ```xml

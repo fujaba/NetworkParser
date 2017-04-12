@@ -59,6 +59,13 @@ public class XMLTest extends IOClasses{
 		XMLEntity xmlEntity = new XMLEntity().withValue("<chatmsg folder=\"C:\\temp\\\\\" />");
 		Assert.assertEquals("C:\\temp\\", xmlEntity.getValue("folder"));
 	}
+	@Test
+	public void testParseError(){
+		String content = "<li>Canadian <i>(pictured)</i> of 82.</li>";
+		XMLEntity entity=new XMLEntity();
+		entity.withValue(content);
+		Assert.assertEquals("Canadian <i>(pictured)</i> of 82.", entity.getValue());
+	}
 
 	@Test
 	public void testSimple(){
@@ -185,7 +192,7 @@ public class XMLTest extends IOClasses{
 		String xml = "<uni name=\"Kassel\"><child /><child /></uni>";
 		IdMap map = new IdMap();
 		XMLEntity entity = (XMLEntity) map.decode(xml);
-		Assert.assertEquals(2, entity.getChildrenCount());
+		Assert.assertEquals(2, entity.sizeChildren());
 	}
 
 	@Test
@@ -193,7 +200,7 @@ public class XMLTest extends IOClasses{
 		String xml = "<row r=\"3\" spans=\"1:3\"><c r=\"A3\" s=\"1\"/><c r=\"B3\" t=\"s\"><v>6</v></c><c r=\"C3\" t=\"s\"><v>7</v></c></row>";
 		IdMap map = new IdMap();
 		XMLEntity entity = (XMLEntity) map.decode(xml);
-		Assert.assertEquals(3, entity.getChildrenCount());
+		Assert.assertEquals(3, entity.sizeChildren());
 	}
 
 	@Test
@@ -316,8 +323,8 @@ public class XMLTest extends IOClasses{
 		xmlB.withChild(new XMLEntity().setType("3"));
 
 		Assert.assertFalse(EntityUtil.compareEntity(xmlA, xmlB));
-		Assert.assertEquals("<p no=\"23\"><2/></p>", xmlA.toString());
-		Assert.assertEquals("<p no=\"24\"><3/></p>", xmlB.toString());
+		Assert.assertEquals("<p no=\"23\"><1/><2/></p>", xmlA.toString());
+		Assert.assertEquals("<p no=\"24\"><1/><3/></p>", xmlB.toString());
 	}
 
 	@Test

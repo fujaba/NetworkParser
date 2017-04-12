@@ -2,7 +2,6 @@ package de.uniks.networkparser.gui;
 
 import de.uniks.networkparser.MapEntity;
 import de.uniks.networkparser.Pos;
-import de.uniks.networkparser.SimpleGrammar;
 import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.EntityList;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorTag;
@@ -81,6 +80,13 @@ public class TileMap implements SendableEntityCreatorTag {
 			spritePos = background[backgroundPos];
 		}
 		return this.getSpritePos(spritePos);
+	}
+	
+	public int getBackground(int sprite) {
+		if(sprite<0 || sprite>=background.length) {
+			return 0;
+		}
+		return background[sprite];
 	}
 	
 	/** Return the Position of Sprite
@@ -258,8 +264,8 @@ public class TileMap implements SendableEntityCreatorTag {
 		if(TILESET_LAYER.equalsIgnoreCase(attribute) ) {
 			// Complex Child Layer
 			XMLEntity layer = (XMLEntity) value;
-			if(layer.getChildrenCount()==1) {
-				XMLEntity data = (XMLEntity) layer.getChildren().first();
+			if(layer.sizeChildren()==1) {
+				XMLEntity data = (XMLEntity) layer.getChild(0);
 				if("csv".equals(data.get(ENCODING))) {
 					String text = data.getValue();
 					int i=0;
@@ -293,7 +299,8 @@ public class TileMap implements SendableEntityCreatorTag {
 				objects = new SimpleList<TileObject>();
 				this.objects.put(tag, objects);
 			}
-			for(EntityList item : objectGroup.getChildren()) {
+			for(int i=0;i<objectGroup.size();i++) {
+				EntityList item = objectGroup.getChild(i);
 				objects.add(TileObject.create((Entity)item));
 			}
 			return true;
@@ -304,7 +311,8 @@ public class TileMap implements SendableEntityCreatorTag {
 	public static TileMap create(String value) {
 		TileMap entity = new TileMap();
 		String tag = entity.getTag();
-		MapEntity map = new MapEntity(new SimpleGrammar(), tag, entity, entity);
+//		MapEntity map = new MapEntity(new SimpleGrammar(), tag, entity, entity);
+		MapEntity map = new MapEntity(tag, entity, entity);
 		XMLTokener tokener = new XMLTokener();
 		tokener.withBuffer(value);
 		tokener.skipHeader();

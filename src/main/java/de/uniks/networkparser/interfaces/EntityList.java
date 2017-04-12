@@ -24,11 +24,16 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 import java.util.Comparator;
-import de.uniks.networkparser.buffer.Buffer;
-import de.uniks.networkparser.list.SimpleList;
 
-public interface EntityList extends BaseItem{
-	public SimpleList<EntityList> getChildren();
+import de.uniks.networkparser.buffer.Buffer;
+
+public interface EntityList extends BaseItem {
+	/**
+	 * Return a Element from list
+	 * @param index index of Element
+	 * @return a Element
+	 */
+	public BaseItem getChild(int index);
 
 	/**
 	 * Make a prettyprinted Text of this Entity.
@@ -47,7 +52,7 @@ public interface EntityList extends BaseItem{
 
 	public Comparator<Object> comparator();
 
-	public int size();
-
 	public BaseItem withValue(Buffer values);
+	
+	public int sizeChildren();
 }

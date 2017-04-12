@@ -1,5 +1,6 @@
 package de.uniks.networkparser.logic;
 
+import de.uniks.networkparser.interfaces.ObjectCondition;
 /*
 NetworkParser
 The MIT License
@@ -24,18 +25,17 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
-import de.uniks.networkparser.interfaces.UpdateListener;
 /**
  * Not Clazz for neg. Condition.
  *
  * @author Stefan Lindel
  */
 
-public class Not implements UpdateListener, SendableEntityCreator {
+public class Not implements ObjectCondition, SendableEntityCreator {
 	/** Constant for ITEM. */
 	public static final String ITEM = "item";
 	/** Varibale for Condition. */
-	private UpdateListener item;
+	private ObjectCondition item;
 
 	@Override
 	public boolean update(Object evt) {
@@ -48,7 +48,7 @@ public class Not implements UpdateListener, SendableEntityCreator {
 	/**
 	 * @return Not Condition
 	 */
-	public UpdateListener getItem() {
+	public ObjectCondition getItem() {
 		return item;
 	}
 
@@ -56,14 +56,14 @@ public class Not implements UpdateListener, SendableEntityCreator {
 	 * @param value		for new Condition
 	 * @return 			Not Instance
 	 */
-	public Not with(UpdateListener value) {
+	public Not with(ObjectCondition value) {
 		this.item = value;
 		return this;
 	}
 
 	@Override
 	public String[] getProperties() {
-		return new String[] {ITEM };
+		return new String[] { ITEM };
 	}
 
 	@Override
@@ -83,8 +83,8 @@ public class Not implements UpdateListener, SendableEntityCreator {
 	public boolean setValue(Object entity, String attribute, Object value,
 			String type) {
 		if (ITEM.equalsIgnoreCase(attribute)) {
-			if(value instanceof UpdateListener) {
-				((Not) entity).with((UpdateListener) value);
+			if(value instanceof ObjectCondition) {
+				((Not) entity).with((ObjectCondition) value);
 			}
 		}
 		return false;
@@ -96,7 +96,7 @@ public class Not implements UpdateListener, SendableEntityCreator {
 	 * @param condition	Condition to negate
 	 * @return 			The new Instance
 	 */
-	public static Not create(UpdateListener condition) {
+	public static Not create(ObjectCondition condition) {
 		return new Not().with(condition);
 	}
 }

@@ -1,6 +1,4 @@
 package de.uniks.networkparser.graph;
-import java.util.Iterator;
-
 /*
 NetworkParser
 Copyright (c) 2011 - 2015, Stefan Lindel
@@ -26,7 +24,6 @@ import de.uniks.networkparser.graph.util.AssociationSet;
 import de.uniks.networkparser.interfaces.Condition;
 
 public abstract class GraphEntity extends GraphMember {
-	protected Object associations;
 	private boolean external;
 	private String id;
 
@@ -61,7 +58,7 @@ public abstract class GraphEntity extends GraphMember {
 		return id;
 	}
 
-	String getTyp(String typ, boolean shortName) {
+	protected String getTyp(String typ, boolean shortName) {
 		if (typ.equals(GraphTokener.OBJECT)) {
 			return getId();
 		} else if (typ.equals(GraphTokener.CLASS)) {
@@ -70,7 +67,9 @@ public abstract class GraphEntity extends GraphMember {
 		return "";
 	}
 
-	/** get All Associations
+	/** get All Edges
+	 * @param type Association types Edge for all Association for only Assocs
+	 * @param otherType Other Association type
 	 * @param filters Can Filter the List of Associations
 	 * @return all Associations of a Clazz
 	 *
@@ -79,23 +78,27 @@ public abstract class GraphEntity extends GraphMember {
 	 * one                          many
 	 *</pre>
 	 */
-	public AssociationSet getAssociations(Condition<?>... filters) {
-		AssociationSet collection = new AssociationSet();
-		if (associations == null ) {
-			return collection;
+	AssociationSet getEdges(AssociationTypes type, Condition<?>... filters) {
+		if (this.children == null ) {
+			return AssociationSet.EMPTY_SET;
 		}
-		if(associations instanceof Association) {
-			if(check((Association)associations, filters)) {
-				collection.add((Association)associations);
+		AssociationSet collection = new AssociationSet();
+		if(this.children instanceof Association) {
+			if(check((Association)this.children, filters)) {
+				collection.add((Association)this.children);
 			}
-		}else if(associations instanceof GraphSimpleSet) {
-			GraphSimpleSet list = (GraphSimpleSet) this.associations;
+		}else if(this.children instanceof GraphSimpleSet) {
+			GraphSimpleSet list = (GraphSimpleSet) this.children;
 			for (GraphMember item : list) {
 				if(item instanceof Association) {
 					Association assoc = (Association) item;
-					if(AssociationTypes.isEdge(assoc.getType().getValue())) {
-						if(check(assoc, filters) ) {
-							collection.add((Association)item);
+					if(check(assoc, filters) ) {
+						if(type==AssociationTypes.EDGE) {
+							collection.add(assoc);
+						}else if(type==AssociationTypes.ASSOCIATION) {
+							if(AssociationTypes.isEdge(assoc.getType())) {
+								collection.add(assoc);
+							}
 						}
 					}
 				}
@@ -104,39 +107,7 @@ public abstract class GraphEntity extends GraphMember {
 		return collection;
 	}
 
-	/** get All Edges
-	 * @param filters Can Filter the List of Associations
-	 * @return all Associations of a Clazz
-	 *
-	 *<pre>
-	 * Clazz  --------------------- Associations
-	 * one                          many
-	 *</pre>
-	 */
-	AssociationSet getEdges(Condition<?>... filters) {
-		AssociationSet collection = new AssociationSet();
-		if (associations == null ) {
-			return collection;
-		}
-		if(associations instanceof Association) {
-			if(check((Association)associations, filters)) {
-				collection.add((Association)associations);
-			}
-		}else if(associations instanceof GraphSimpleSet) {
-			GraphSimpleSet list = (GraphSimpleSet) this.associations;
-			for (GraphMember item : list) {
-				if(item instanceof Association) {
-					Association assoc = (Association) item;
-					if(check(assoc, filters) ) {
-						collection.add((Association)item);
-					}
-				}
-			}
-		}
-		return collection;
-	}
-
-	GraphMember getByObject(String clazz, boolean fullName) {
+	protected GraphMember getByObject(String clazz, boolean fullName) {
 		if(clazz == null || children == null){
 			return null;
 		}
@@ -181,87 +152,131 @@ public abstract class GraphEntity extends GraphMember {
 
 	protected GraphEntity with(Association... values) {
 		if (values != null) {
-			for (Association value : values) {
-				addAssoc(value);
+			boolean add;
+			AssociationSet allAssoc = this.getEdges(AssociationTypes.ASSOCIATION);
+ 			for (Association assoc : values) {
+				// Do Nothing
+				if (assoc == null || assoc.getOther() == null) {
+					continue;
+				}
+				add = true;
+					
+				// If Nessesarry to search
+				// Assoc_Own - Otherclazz_Property
+
+				Association assocOther = assoc.getOther();
+				boolean mergeFlag = (assoc.getType()==AssociationTypes.ASSOCIATION && assocOther.getType() == AssociationTypes.EDGE) ||
+						(assoc.getType()==AssociationTypes.EDGE && assocOther.getType() == AssociationTypes.ASSOCIATION);
+				for(Association item : allAssoc) {
+					if(item == assoc || item.getOther() == assoc) {
+						// I Know the Assoc
+						add = false;
+						break;
+					}
+					// Implements new Search for Association Only Search for duplicate
+					Association itemOther = item.getOther();
+					String name = itemOther.name();
+					
+					if(name != null && name.equals(assocOther.name()) && itemOther.getClazz() == assocOther.getClazz()) {
+						add = false;
+						break;
+					}
+					// Check for Merge Association
+					if(mergeFlag) {
+						if(itemOther.getClazz() == assocOther.getClazz() && item.getClazz() == assoc.getClazz()) {
+							add = false;
+							if(assocOther.name() != null && assoc.name() == null) {
+								if(itemOther.getType()==AssociationTypes.EDGE && item.getType()==AssociationTypes.ASSOCIATION) {
+									itemOther.with(AssociationTypes.ASSOCIATION);
+									itemOther.with(assocOther.getName());
+									itemOther.with(assocOther.getCardinality());
+									GraphMember attribute = itemOther.getClazz().getChildByName(assocOther.getName(), Attribute.class);
+									if(attribute != null) {
+										itemOther.getClazz().without(attribute);
+									}
+								}
+								
+							}else if(item.getType()==AssociationTypes.EDGE && itemOther.getType()==AssociationTypes.ASSOCIATION) {
+								// Cool its Bidirectional but remove Attributes
+								item.with(AssociationTypes.ASSOCIATION);
+								item.with(assoc.getName());
+								item.with(assoc.getCardinality());
+								
+								GraphMember attribute = item.getClazz().getChildByName(assoc.getName(), Attribute.class);
+								if(attribute != null) {
+									item.getClazz().without(attribute);
+								}
+							}
+							break;
+						}
+					}
+				}
+				if(add) {
+					// ADD TO PARENT MAY BE LIST
+					if(this.parentNode!= null) {
+						if(this.parentNode instanceof GraphModel) {
+							((GraphModel)this.parentNode).with(assoc);
+						}
+					}
+					if(this.children == null) {
+						this.children = assoc;
+					} else {
+						GraphSimpleSet list;
+						if( this.children instanceof GraphSimpleSet) {
+							list = (GraphSimpleSet) this.children;
+							list.add(assoc);
+						}else {
+							list = new GraphSimpleSet();
+							list.with((GraphMember) this.children);
+							this.children = list;
+							list.add(assoc);
+						}
+					}
+				}
 			}
 		}
 		return this;
 	}
 
 	public GraphEntity without(Association... values) {
-		if (values == null || this.associations == null) {
-			return this;
-		}
-		if(this.associations instanceof GraphMember) {
-			for (GraphMember value : values) {
-				if(this.associations == value) {
-					this.associations = null;
-				}
-			}
-			return this;
-		}
-		GraphSimpleSet collection = (GraphSimpleSet) this.associations;
-		for (GraphMember value : values) {
-			if(value != null) {
-				collection.remove(value);
-			}
-		}
+		super.without(values);
 		return this;
 	}
-
-	boolean addAssoc(Association assoc) {
-		// Do Nothing
-		if (assoc == null || (this.associations == assoc)) {
-			return false;
+	
+	public GraphMember getChildByName(String name, Class<?> subClass) {
+		if(this.children == null) {
+			return null;
 		}
-		boolean add=true;
-
-		if(assoc.getOther() != null && this.associations != null) {
-			for (Iterator<Association> i = this.getAssociations().iterator(); i.hasNext();) {
-				Association item = i.next();
-				if(has(item, assoc.getOther()) && has(item.getOther(), assoc)) {
-					if(item.isSame(assoc.getOther()) && item.getOther().isSame(assoc)) {
-						if(GraphUtil.isUndirectional(item)) {
-							item.getOther().with(AssociationTypes.ASSOCIATION);
-							item.with(AssociationTypes.ASSOCIATION);
-						}
-						add=false;
-						break;
-					}else if (item.containsAll(assoc.getOther(), false) && item.getOther().name() == null
-							&& assoc.name() != null) {
-						item.getOther().with(assoc.getCardinality());
-						item.getOther().with(assoc.getName());
-						item.getOther().with(AssociationTypes.ASSOCIATION);
-						item.with(AssociationTypes.ASSOCIATION);
-						add=false;
-						break;
-					}
-				}
-			}
-		}
-		if(add) {
-			if(this.associations == null) {
-				this.associations = assoc;
+		GraphSimpleSet children = this.getChildren();
+		String itemName;
+		for(GraphMember item : children) {
+			if(item instanceof Association) {
+				Association assoc = (Association) item;
+				itemName = assoc.getOther().name();
 			} else {
-				GraphSimpleSet list;
-				if( this.associations  instanceof GraphSimpleSet) {
-					list = (GraphSimpleSet) this.associations;
-					add = list.add(assoc);
-				}else {
-					list = new GraphSimpleSet().withAllowDuplicate(true);
-					list.with((GraphMember) this.associations);
-					this.associations = list;
-					add = list.add(assoc);
+				itemName = item.getName();
+			}
+			if(itemName != null && itemName.equals(name)) {
+				if(subClass != null && subClass == item.getClass()) {
+					return item;
 				}
 			}
 		}
-		return add;
+		return null;
 	}
 
-	private boolean has(Association o1, Association o2) {
-		return (o1.getClazz() == o2.getClazz());
+	/** get all Associations
+    * @param filters Can Filter the List of Attributes
+    * @return all Attributes of a Clazz
+    *
+    *<pre>
+    * Clazz  --------------------- Association
+    * one                          many
+    *</pre>
+    */
+	public AssociationSet getAssociations(Condition<?>... filters) {
+		return getEdges(AssociationTypes.EDGE, filters);
 	}
-
 	public Annotation getAnnotation() {
 		return super.getAnnotation();
 	}

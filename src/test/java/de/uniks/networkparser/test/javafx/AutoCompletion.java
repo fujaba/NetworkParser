@@ -1,7 +1,5 @@
 package de.uniks.networkparser.test.javafx;
 
-import de.uniks.networkparser.ext.javafx.controls.AutoCompletionList;
-import de.uniks.networkparser.ext.javafx.controls.TextEditorControl;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -21,11 +19,11 @@ public class AutoCompletion extends Application {
 		Label label = new Label("Name");
 		label.setFont(Font.font("Arial", 50));
 
-		TextEditorControl control = new TextEditorControl();
-		control.withAutoCompleting(new AutoCompletionList().with("Hey", "Hello", "Hello World", "Apple", "Cool", "Costa", "Cola", "Coca Cola"));
+//		TextEditorControl control = new TextEditorControl();
+//		control.withAutoCompleting(new AutoCompletionList().with("Hey", "Hello", "Hello World", "Apple", "Cool", "Costa", "Cola", "Coca Cola"));
 
 		gridPane.add(label, 0, 0);
-		gridPane.add(control.getControl(), 1, 0);
+//FIXME		gridPane.add(control.getControl(), 1, 0);
 
 		//gridPane.setGridLinesVisible(true);
 		Scene scene = new Scene(gridPane);

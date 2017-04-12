@@ -20,8 +20,9 @@ ext.sharedManifest = manifest {
 			'Hash': gitVersion.hash,
 			'Java-Version': "${System.properties['java.version']}",
 			'Bundle-Description': 'NetworkParser',
-			'Licence': 'MIT and Apache License',
+			'Licence': 'MIT and Apache License 2.0',
 			'Homepage': 'https://github.com/fujaba/Networkparser',
+			'scm': 'git@github.com/fujaba/Networkparser.git',
 			'Coverage': gitVersion.coverage,
 			'Bundle-ClassPath': '.'
 }
@@ -43,7 +44,6 @@ task compileJava17(type: JavaCompile) {
 
 jar {
 	group "Jar"
-	exclude '**/ext/**'
 	exclude '**/test/**'
 	from sourceSets.main.output
 	manifest = project.manifest {from sharedManifest}

@@ -41,13 +41,13 @@ import de.uniks.networkparser.interfaces.Converter;
 public class ByteEntity implements ByteItem {
 	/** The Constant BIT OF A BYTE. */
 	public final static int BITOFBYTE = 8;
-	public final static int TYPBYTE = 1;
+	public final static int TYPEBYTE = 1;
 
-	public final static String TYP="TYP";
+	public final static String TYPE="TYPE";
 	public final static String VALUE="VALUE";
 
-	/** The Byte Typ. */
-	protected byte typ;
+	/** The Byte Type. */
+	protected byte type;
 
 	/** The values. */
 	protected byte[] values;
@@ -60,7 +60,7 @@ public class ByteEntity implements ByteItem {
 		}
 		byte[] result = new byte[values.length*9+9];
 		for (int z=0; z<Byte.SIZE; z++) {
-			result[7-z] = (byte) (typ >> z & 0x1);
+			result[7-z] = (byte) (type >> z & 0x1);
 		}
 		result[8] = ' ';
 		for(int i=0;i<values.length;i++) {
@@ -91,7 +91,7 @@ public class ByteEntity implements ByteItem {
 	 * @return 			Itself
 	 */
 	public ByteEntity withValue(byte type, byte[] value) {
-		this.typ = type;
+		this.type = type;
 		if(value != null){
 			this.values = EntityUtil.clone(value);
 		}
@@ -106,13 +106,13 @@ public class ByteEntity implements ByteItem {
 	 * @return 			Itself
 	 */
 	public ByteEntity withValue(byte type, byte value) {
-		this.typ = type;
+		this.type = type;
 		this.values = new byte[] {value };
 		return this;
 	}
 
-	public ByteEntity withValue(byte typ, int value) {
-		this.typ = typ;
+	public ByteEntity withValue(byte type, int value) {
+		this.type = type;
 		ByteBuffer msgValue = new ByteBuffer().withBufferLength(4);
 		msgValue.put(value);
 		this.values = msgValue.flip(true).array();
@@ -188,30 +188,30 @@ public class ByteEntity implements ByteItem {
 			boolean isLast, boolean isPrimitive) {
 		byte[] value = this.values;
 
-		byte typ = getTyp();
+		byte type = getType();
 		if (value == null) {
-			typ = EntityUtil.getTyp(typ, 0, isLast);
-			EntityUtil.writeByteHeader(buffer, typ, 0);
+			type = EntityUtil.getType(type, 0, isLast);
+			EntityUtil.writeByteHeader(buffer, type, 0);
 			return;
 		}
 		if (isDynamic) {
-			if (typ == ByteTokener.DATATYPE_SHORT) {
+			if (type == ByteTokener.DATATYPE_SHORT) {
 				short bufferValue = new ByteBuffer().with(value).flip(true).getShort();
 				if (bufferValue >= Byte.MIN_VALUE
 						&& bufferValue <= Byte.MAX_VALUE) {
-					typ = ByteTokener.DATATYPE_BYTE;
+					type = ByteTokener.DATATYPE_BYTE;
 					value = new byte[] {(byte) bufferValue };
 				}
-			} else if (typ == ByteTokener.DATATYPE_INTEGER
-					|| typ == ByteTokener.DATATYPE_LONG) {
+			} else if (type == ByteTokener.DATATYPE_INTEGER
+					|| type == ByteTokener.DATATYPE_LONG) {
 				int bufferValue = new ByteBuffer().with(value).flip(true).getInt();
 				if (bufferValue >= Byte.MIN_VALUE
 						&& bufferValue <= Byte.MAX_VALUE) {
-					typ = ByteTokener.DATATYPE_BYTE;
+					type = ByteTokener.DATATYPE_BYTE;
 					value = new byte[] {(byte) bufferValue };
 				} else if (bufferValue >= Short.MIN_VALUE
 						&& bufferValue <= Short.MAX_VALUE) {
-					typ = ByteTokener.DATATYPE_BYTE;
+					type = ByteTokener.DATATYPE_BYTE;
 					ByteBuffer bbShort = ByteBuffer.allocate(Short.SIZE
 							/ BITOFBYTE);
 					bbShort.put((short) bufferValue);
@@ -220,10 +220,10 @@ public class ByteEntity implements ByteItem {
 				}
 			}
 		}
-		if (!isPrimitive || typ == ByteTokener.DATATYPE_CLAZZTYP
-				|| typ == ByteTokener.DATATYPE_CLAZZTYPLONG) {
-			typ = EntityUtil.getTyp(typ, value.length, isLast);
-			EntityUtil.writeByteHeader(buffer, typ, value.length);
+		if (!isPrimitive || type == ByteTokener.DATATYPE_CLAZZTYPE
+				|| type == ByteTokener.DATATYPE_CLAZZTYPELONG) {
+			type = EntityUtil.getType(type, value.length, isLast);
+			EntityUtil.writeByteHeader(buffer, type, value.length);
 		}
 		// SAVE Length
 		buffer.put(value);
@@ -239,41 +239,41 @@ public class ByteEntity implements ByteItem {
 	}
 
 	public boolean setValues(Object value) {
-		byte typ = 0;
+		byte type = 0;
 		ByteBuffer msgValue = new ByteBuffer();
 		if (value == null) {
-			typ = ByteTokener.DATATYPE_NULL;
+			type = ByteTokener.DATATYPE_NULL;
 		}
 		if (value instanceof Short) {
-			typ = ByteTokener.DATATYPE_SHORT;
+			type = ByteTokener.DATATYPE_SHORT;
 			msgValue.withBufferLength(Short.SIZE / BITOFBYTE);
 			msgValue.put((Short) value);
 		} else if (value instanceof Integer) {
-			typ = ByteTokener.DATATYPE_INTEGER;
+			type = ByteTokener.DATATYPE_INTEGER;
 			msgValue.withBufferLength(Integer.SIZE / BITOFBYTE);
 			msgValue.put((Integer) value);
 		} else if (value instanceof Long) {
-			typ = ByteTokener.DATATYPE_LONG;
+			type = ByteTokener.DATATYPE_LONG;
 			msgValue.withBufferLength(Long.SIZE / BITOFBYTE);
 			msgValue.put((Long) value);
 		} else if (value instanceof Float) {
-			typ = ByteTokener.DATATYPE_FLOAT;
+			type = ByteTokener.DATATYPE_FLOAT;
 			msgValue.withBufferLength(Float.SIZE / BITOFBYTE);
 			msgValue.put((Float) value);
 		} else if (value instanceof Double) {
-			typ = ByteTokener.DATATYPE_DOUBLE;
+			type = ByteTokener.DATATYPE_DOUBLE;
 			msgValue.withBufferLength(Double.SIZE / BITOFBYTE);
 			msgValue.put((Double) value);
 		} else if (value instanceof Byte) {
-			typ = ByteTokener.DATATYPE_BYTE;
+			type = ByteTokener.DATATYPE_BYTE;
 			msgValue.withBufferLength(Byte.SIZE / BITOFBYTE);
 			msgValue.put((Byte) value);
 		} else if (value instanceof Character) {
-			typ = ByteTokener.DATATYPE_CHAR;
+			type = ByteTokener.DATATYPE_CHAR;
 			msgValue.withBufferLength(Character.SIZE / BITOFBYTE);
 			msgValue.put((Character) value);
 		} else if (value instanceof String) {
-			typ = ByteTokener.DATATYPE_STRING;
+			type = ByteTokener.DATATYPE_STRING;
 			String newValue = (String) value;
 			msgValue.withBufferLength(newValue.length());
 			try {
@@ -281,20 +281,20 @@ public class ByteEntity implements ByteItem {
 			} catch (UnsupportedEncodingException e) {
 			}
 		} else if (value instanceof Date) {
-			typ = ByteTokener.DATATYPE_DATE;
+			type = ByteTokener.DATATYPE_DATE;
 			msgValue.withBufferLength(Integer.SIZE / BITOFBYTE);
 			Date newValue = (Date) value;
 			msgValue.put((int) newValue.getTime());
 		} else if (value instanceof Byte[] || value instanceof byte[]) {
-			typ = ByteTokener.DATATYPE_BYTEARRAY;
+			type = ByteTokener.DATATYPE_BYTEARRAY;
 			if (value != null) {
 				byte[] newValue = (byte[]) value;
 				msgValue.withBufferLength(newValue.length);
 				msgValue.put(newValue);
 			}
 		}
-		if (typ != 0) {
-			this.typ = typ;
+		if (type != 0) {
+			this.type = type;
 			// Check for group
 			msgValue.flip(true);
 			this.values = msgValue.array();
@@ -304,13 +304,13 @@ public class ByteEntity implements ByteItem {
 	}
 
 	/**
-	 * Gets the typ.
+	 * Gets the type.
 	 *
-	 * @return the typ
+	 * @return the type
 	 */
 	@Override
-	public byte getTyp() {
-		return this.typ;
+	public byte getType() {
+		return this.type;
 	}
 
 	/**
@@ -322,28 +322,28 @@ public class ByteEntity implements ByteItem {
 	public int calcLength(boolean isDynamic, boolean isLast) {
 		// Length calculate Sonderfaelle ermitteln
 		if (this.values == null) {
-			return TYPBYTE;
+			return TYPEBYTE;
 		}
 		if (isDynamic) {
-			if (typ == ByteTokener.DATATYPE_SHORT) {
+			if (type == ByteTokener.DATATYPE_SHORT) {
 				Short bufferValue = new ByteBuffer().with(values).flip(true).getShort();
 				if (bufferValue >= Byte.MIN_VALUE
 						&& bufferValue <= Byte.MAX_VALUE) {
-					return TYPBYTE + Byte.SIZE / BITOFBYTE;
+					return TYPEBYTE + Byte.SIZE / BITOFBYTE;
 				}
-			} else if (typ == ByteTokener.DATATYPE_INTEGER
-					|| typ == ByteTokener.DATATYPE_LONG) {
+			} else if (type == ByteTokener.DATATYPE_INTEGER
+					|| type == ByteTokener.DATATYPE_LONG) {
 				Integer bufferValue = new ByteBuffer().with(values).flip(true).getInt();
 				if (bufferValue >= Byte.MIN_VALUE
 						&& bufferValue <= Byte.MAX_VALUE) {
-					return TYPBYTE + Byte.SIZE / BITOFBYTE;
+					return TYPEBYTE + Byte.SIZE / BITOFBYTE;
 				} else if (bufferValue >= Short.MIN_VALUE
 						&& bufferValue <= Short.MAX_VALUE) {
-					return TYPBYTE + Short.SIZE / BITOFBYTE;
+					return TYPEBYTE + Short.SIZE / BITOFBYTE;
 				}
 			}
 		}
-		return TYPBYTE + EntityUtil.getTypLen(typ, values.length, isLast)
+		return TYPEBYTE + EntityUtil.getTypeLen(type, values.length, isLast)
 				+ this.values.length;
 	}
 
@@ -357,7 +357,7 @@ public class ByteEntity implements ByteItem {
 
 	@Override
 	public boolean isEmpty() {
-		return getTyp() == ByteTokener.DATATYPE_NULL;
+		return getType() == ByteTokener.DATATYPE_NULL;
 	}
 
 	@Override
@@ -375,9 +375,9 @@ public class ByteEntity implements ByteItem {
 	}
 
 	@Override
-	public ByteEntity with(Object... values) {
+	public boolean add(Object... values) {
 		if(values==null){
-			return this;
+			return false;
 		}
 		if(values.length>1) {
 			byte[] value = new byte[values.length-1];
@@ -386,7 +386,7 @@ public class ByteEntity implements ByteItem {
 			}
 			withValue((Byte)values[0], value);
 		}
-		return this;
+		return true;
 	}
 
 	public ByteEntity withValue(byte[] values) {
@@ -398,15 +398,15 @@ public class ByteEntity implements ByteItem {
 			for(int i=1;i<values.length;i++) {
 				value[i-1] = (Byte) values[i];
 			}
-			this.typ = (Byte)values[0];
+			this.type = (Byte)values[0];
 			this.values = value;
 		}
 		return this;
 	}
 
 	public Object getValue(Object key) {
-		if(TYP.equals(key)) {
-			return typ;
+		if(TYPE.equals(key)) {
+			return type;
 		}
 		if(VALUE.equals(key)) {
 			return values;

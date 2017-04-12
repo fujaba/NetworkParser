@@ -25,7 +25,7 @@ public class ByteMessageCreator implements SendableEntityCreatorTag {
 		return new ByteMessage();
 	}
 
-	/* Get the EventTyp of BasicMessage (0x42) UTF-8 */
+	/* Get the EventType of BasicMessage (0x42) UTF-8 */
 	@Override
 	public String getTag() {
 		return new String(new byte[]{0x42});
@@ -40,7 +40,7 @@ public class ByteMessageCreator implements SendableEntityCreatorTag {
 	/* Setter for ByteMessage */
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value,
-			String typ) {
+			String type) {
 		return ((ByteMessage) entity).set(attribute, value);
 	}
 }

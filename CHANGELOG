@@ -1,0 +1,27 @@
+2016-11-07
+- Add Selector for HTML CSS-Classes
+- Add HJson
+
+Version 4.4.x
+
+- Serialization of Data to Json, XML, Byte and EMF.
+- Reader for TMX, Soap, Pom Files
+
+- Encoding in Adler32, AES, CRC, FCS16, RSA, SHA1, Sum, XOr8 and QR-Code
+- Calculator
+- Date with holidays
+- Metamodel for Classmodel and Objectmodel
+- Converting Model in YUML, DOT, JavaScript, GXL and EMF
+- UML-Layouting with Javascript or Webservice like YUML
+- Simple Excel Reader and Writer
+- Rudimentary Tool for converting to SQL
+
+- JavaFX Container Classes:
+  - for DataBinding
+  - Table with Searchfield
+  - Form
+  - PopupDialog
+  - Basic Shell-Class with Writing Errorfiles
+- Logicstructure
+- SimpleList as universal solution for datamodels
+

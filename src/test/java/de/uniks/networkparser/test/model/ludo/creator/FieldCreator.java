@@ -1,6 +1,5 @@
 package de.uniks.networkparser.test.model.ludo.creator;
 
-import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.test.model.ludo.Field;
 
@@ -40,7 +39,7 @@ public class FieldCreator implements SendableEntityCreator {
 	@Override
 	public boolean setValue(Object target, String attrName, Object value,
 			String type) {
-		if (IdMap.REMOVE.equals(type)) {
+		if (SendableEntityCreator.REMOVE.equals(type)) {
 			attrName = attrName + type;
 		}
 		return ((Field) target).set(attrName, value);

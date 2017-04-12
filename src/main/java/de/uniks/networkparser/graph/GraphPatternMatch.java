@@ -25,8 +25,9 @@ THE SOFTWARE.
 */
 import java.util.Iterator;
 import java.util.Set;
+
+import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
-import de.uniks.networkparser.interfaces.UpdateListener;
 import de.uniks.networkparser.list.SimpleSet;
 /**
  * GraphCreate Clazz for Condition.
@@ -34,7 +35,7 @@ import de.uniks.networkparser.list.SimpleSet;
  * @author Stefan Lindel
  */
 
-public class GraphPatternMatch implements UpdateListener, SendableEntityCreator {
+public class GraphPatternMatch implements ObjectCondition, SendableEntityCreator {
 	/** Constant for ITEM. */
 	public static final String ITEM = "item";
 	public static final String MATCHES = "matches";
@@ -42,7 +43,7 @@ public class GraphPatternMatch implements UpdateListener, SendableEntityCreator 
 	/** Varibale for Condition. */
 	private Object item;
 	private String property;
-	private Set<UpdateListener> matches;
+	private Set<ObjectCondition> matches;
 
 	@Override
 	public boolean update(Object evt) {
@@ -68,14 +69,14 @@ public class GraphPatternMatch implements UpdateListener, SendableEntityCreator 
 	 * @param value		for new Condition
 	 * @return 			Not Instance
 	 */
-	public GraphPatternMatch with(UpdateListener... value) {
+	public GraphPatternMatch with(ObjectCondition... value) {
 		if(value == null) {
 			return this;
 		}
-		for(UpdateListener listener : value) {
+		for(ObjectCondition listener : value) {
 			if(listener != null) {
 				if(this.matches == null) {
-					this.matches = new SimpleSet<UpdateListener>();
+					this.matches = new SimpleSet<ObjectCondition>();
 				}
 				this.matches.add(listener);
 			}
@@ -83,7 +84,7 @@ public class GraphPatternMatch implements UpdateListener, SendableEntityCreator 
 		return this;
 	}
 
-	public Set<UpdateListener> getMatches() {
+	public Set<ObjectCondition> getMatches() {
 		return matches;
 	}
 
@@ -132,10 +133,10 @@ public class GraphPatternMatch implements UpdateListener, SendableEntityCreator 
 			return true;
 		}
 		if (MATCHES.equalsIgnoreCase(attribute)) {
-			if(value instanceof UpdateListener) {
-				((GraphPatternMatch) entity).with((UpdateListener)value);
+			if(value instanceof ObjectCondition) {
+				((GraphPatternMatch) entity).with((ObjectCondition)value);
 			} else {
-				((GraphPatternMatch) entity).with((UpdateListener[])value);
+				((GraphPatternMatch) entity).with((ObjectCondition[])value);
 			}
 			return true;
 		}
@@ -155,8 +156,8 @@ public class GraphPatternMatch implements UpdateListener, SendableEntityCreator 
 			return 0;
 		}
 		int size=0;
-		for(Iterator<UpdateListener> i = this.matches.iterator();i.hasNext();) {
-			UpdateListener child = i.next();
+		for(Iterator<ObjectCondition> i = this.matches.iterator();i.hasNext();) {
+			ObjectCondition child = i.next();
 			if(child instanceof GraphPatternMatch) {
 				size += ((GraphPatternMatch) child).size();
 			} else {

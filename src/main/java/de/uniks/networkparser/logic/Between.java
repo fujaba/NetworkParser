@@ -24,10 +24,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 import java.beans.PropertyChangeEvent;
-import de.uniks.networkparser.interfaces.SendableEntityCreator;
-import de.uniks.networkparser.interfaces.UpdateListener;
 
-public class Between implements UpdateListener, SendableEntityCreator {
+import de.uniks.networkparser.interfaces.ObjectCondition;
+import de.uniks.networkparser.interfaces.SendableEntityCreator;
+
+public class Between implements ObjectCondition, SendableEntityCreator {
 	public static final String FROM = "from";
 	public static final String TO = "to";
 

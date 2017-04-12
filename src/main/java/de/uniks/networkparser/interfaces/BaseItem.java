@@ -30,6 +30,9 @@ THE SOFTWARE.
 
 public interface BaseItem {
 	public static final String CRLF = "\r\n";
+	
+	/** The Constant CLASS. */
+	public static final String CLASS = "class";
 
 	/**
 	 * Convert Element to String
@@ -51,7 +54,12 @@ public interface BaseItem {
 	 * @param values Items to Add to List
 	 * @return this Component
 	 */
-	BaseItem with(Object... values);
-
+	boolean add(Object... values);
+	
 	public BaseItem getNewList(boolean keyValue);
+
+	/** Get the Size of Elements
+	 * @return the size
+	 */
+	public int size();
 }

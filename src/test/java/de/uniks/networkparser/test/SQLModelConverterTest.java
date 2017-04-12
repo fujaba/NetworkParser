@@ -237,6 +237,7 @@ public class SQLModelConverterTest {
 		SQLTokener tokener = new SQLTokener(SQLStatement.connect("jdbc", "sqlite", "build/sampleB.db"));
 
 		IdMap map = UniversityCreator.createIdMap("1");
+		map.withTimeStamp(1);
 
 		University universityModel = new University();
 		universityModel.withName("Uni").withUniId(1).withStudents(new Student().withStudentId(1).withFirstName("Max").withLastName("Mustermann").withCredits(5)
@@ -245,11 +246,11 @@ public class SQLModelConverterTest {
 		SQLStatementList list = (SQLStatementList) map.encode(universityModel, tokener);
 
 		Assert.assertEquals("jdbc:sqlite:build/sampleB.db", list.get(0).toString());
-		Assert.assertEquals("CREATE TABLE IF NOT EXISTS Student ('_ID' STRING, 'name' STRING, 'studNo' STRING, 'in' STRING, 'university' UNIVERSITY, 'firstName' STRING, 'lastName' STRING, 'credits' INTEGER)", list.get(1).toString());
+		Assert.assertEquals("CREATE TABLE IF NOT EXISTS Student ('_ID' STRING, 'name' STRING, 'studNo' STRING, 'in' STRING, 'university' UNIVERSITY, 'firstName' STRING, 'lastName' STRING, 'credits' INTEGER, 'friends' STRING)", list.get(1).toString());
 		Assert.assertEquals("CREATE TABLE IF NOT EXISTS University ('_ID' STRING, 'name' STRING, 'students' INTEGER[], 'rooms' OBJECT[])", list.get(2).toString());
-		Assert.assertEquals("INSERT INTO Student (_ID, university, firstName, lastName, credits) values('1.S3', '1.U1', 'Michael', 'Mustermann', '7')", list.get(3).toString());
-		Assert.assertEquals("INSERT INTO Student (_ID, university, firstName, lastName, credits) values('1.S2', '1.U1', 'Max', 'Mustermann', '5')", list.get(4).toString());
-		Assert.assertEquals("INSERT INTO University (_ID, name, students, rooms) values('1.U1', 'Uni', '{1.S2, 1.S3}', '{}')", list.get(5).toString());
+		Assert.assertEquals("INSERT INTO Student (_ID, university, firstName, lastName, credits) values('S2', 'U1', 'Max', 'Mustermann', '5')", list.get(3).toString());
+		Assert.assertEquals("INSERT INTO Student (_ID, university, firstName, lastName, credits) values('S3', 'U1', 'Michael', 'Mustermann', '7')", list.get(4).toString());
+		Assert.assertEquals("INSERT INTO University (_ID, name, students, rooms) values('U1', 'Uni', '{S2, S3}', '{}')", list.get(5).toString());
 	}
 
 	@Test
@@ -263,6 +264,7 @@ public class SQLModelConverterTest {
 		SQLTokener tokener = new SQLTokener(SQLStatement.connect("jdbc", "sqlite", "build/sampleC.db"));
 
 		IdMap map = UniversityCreator.createIdMap("1");
+		map.withTimeStamp(1);
 
 		University universityModel = new University();
 		universityModel.withName("Uni").withUniId(1).withStudents(new Student().withStudentId(1).withFirstName("Max").withLastName("Mustermann").withCredits(5)
@@ -271,21 +273,21 @@ public class SQLModelConverterTest {
 		SQLStatementList list = (SQLStatementList) map.encode(universityModel, tokener);
 
 		Assert.assertEquals("jdbc:sqlite:build/sampleC.db", list.get(0).toString());
-		Assert.assertEquals("CREATE TABLE IF NOT EXISTS Student ('_ID' STRING, 'name' STRING, 'studNo' STRING, 'in' STRING, 'university' UNIVERSITY, 'firstName' STRING, 'lastName' STRING, 'credits' INTEGER)", list.get(1).toString());
+		Assert.assertEquals("CREATE TABLE IF NOT EXISTS Student ('_ID' STRING, 'name' STRING, 'studNo' STRING, 'in' STRING, 'university' UNIVERSITY, 'firstName' STRING, 'lastName' STRING, 'credits' INTEGER, 'friends' STRING)", list.get(1).toString());
 		Assert.assertEquals("CREATE TABLE IF NOT EXISTS University ('_ID' STRING, 'name' STRING, 'students' INTEGER[], 'rooms' OBJECT[])", list.get(2).toString());
 
-		Assert.assertEquals("INSERT INTO Student (_ID, university, firstName, lastName, credits) values('1.S3', '1.U1', 'Michael', 'Mustermann', '7')", list.get(3).toString());
-		Assert.assertEquals("INSERT INTO Student (_ID, university, firstName, lastName, credits) values('1.S2', '1.U1', 'Max', 'Mustermann', '5')", list.get(4).toString());
-		Assert.assertEquals("INSERT INTO University (_ID, name, students, rooms) values('1.U1', 'Uni', '{1.S2, 1.S3}', '{}')", list.get(5).toString());
+		Assert.assertEquals("INSERT INTO Student (_ID, university, firstName, lastName, credits) values('S2', 'U1', 'Max', 'Mustermann', '5')", list.get(3).toString());
+		Assert.assertEquals("INSERT INTO Student (_ID, university, firstName, lastName, credits) values('S3', 'U1', 'Michael', 'Mustermann', '7')", list.get(4).toString());
+		Assert.assertEquals("INSERT INTO University (_ID, name, students, rooms) values('U1', 'Uni', '{S2, S3}', '{}')", list.get(5).toString());
 
 		tokener.executeStatements(list);
 		tokener.withFlag(SQLTokener.FLAG_NONE);
 		list = (SQLStatementList) map.encode(universityModel, tokener);
 
 		Assert.assertEquals("jdbc:sqlite:build/sampleC.db", list.get(0).toString());
-		Assert.assertEquals("UPDATE Student SET university='1.U1', firstName='Michael', lastName='Mustermann', credits='7' WHERE _ID='1.S3'", list.get(1).toString());
-		Assert.assertEquals("UPDATE Student SET university='1.U1', firstName='Max', lastName='Mustermann', credits='5' WHERE _ID='1.S2'", list.get(2).toString());
-		Assert.assertEquals("UPDATE University SET name='Uni', students='{1.S2, 1.S3}', rooms='{}' WHERE _ID='1.U1'", list.get(3).toString());
+		Assert.assertEquals("UPDATE Student SET university='U1', firstName='Max', lastName='Mustermann', credits='5' WHERE _ID='S2'", list.get(1).toString());
+		Assert.assertEquals("UPDATE Student SET university='U1', firstName='Michael', lastName='Mustermann', credits='7' WHERE _ID='S3'", list.get(2).toString());
+		Assert.assertEquals("UPDATE University SET name='Uni', students='{S2, S3}', rooms='{}' WHERE _ID='U1'", list.get(3).toString());
 
 //		for (SQLStatement statement : list) {
 //			System.out.println(statement.toString());

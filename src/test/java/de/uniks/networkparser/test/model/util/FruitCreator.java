@@ -21,7 +21,6 @@
 
 package de.uniks.networkparser.test.model.util;
 
-import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.test.model.Fruit;
 
@@ -75,7 +74,7 @@ public class FruitCreator implements SendableEntityCreator
    @Override
    public boolean setValue(Object target, String attrName, Object value, String type)
    {
-	  if (IdMap.REMOVE.equals(type) && value != null)
+	  if (SendableEntityCreator.REMOVE.equals(type) && value != null)
 	  {
 		 attrName = attrName + type;
 	  }

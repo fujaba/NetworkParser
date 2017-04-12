@@ -1,5 +1,4 @@
 package de.uniks.networkparser.xml;
-
 /*
 NetworkParser
 The MIT License
@@ -28,6 +27,7 @@ import de.uniks.networkparser.converter.GraphConverter;
 import de.uniks.networkparser.graph.GraphList;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Converter;
+import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.EntityList;
 import de.uniks.networkparser.list.SimpleSet;
 
@@ -35,6 +35,9 @@ public class HTMLEntity implements BaseItem {
 	public static final String PROPERTY_HEADER="head";
 	public static final String PROPERTY_BODY="body";
 	public static final String IMAGEFORMAT=" .bmp .jpg .jpeg .png .gif .svg ";
+	public static final String ENCODING_UTF8="utf-8";
+	public static final String SCRIPT="script";
+	public static final String KEY_SRC="src";
 
 	private XMLEntity body = new XMLEntity().setType("body");
 	private XMLEntity header = new XMLEntity().setType("head");
@@ -47,7 +50,14 @@ public class HTMLEntity implements BaseItem {
 	public String toString(int indentFactor) {
 		return parseItem(new EntityStringConverter(indentFactor));
 	}
-
+	
+	public XMLEntity getHeaders() {
+		return header;
+	}
+	public XMLEntity getBody() {
+		return body;
+	}
+	
 	public HTMLEntity withEncoding(String encoding) {
 		XMLEntity metaTag = new XMLEntity().setType("meta");
 		metaTag.withKeyValue("http-equiv", "Content-Type");
@@ -62,6 +72,17 @@ public class HTMLEntity implements BaseItem {
 		return this;
 	}
 
+	public HTMLEntity withHeaderScript(String value) {
+		XMLEntity headerChild = new XMLEntity().setType(SCRIPT).withKeyValue("language", "Javascript").withValue(value);
+		this.header.with(headerChild);
+		return this;
+	}
+	public HTMLEntity withHeaderStyle(String value) {
+		XMLEntity headerChild = new XMLEntity().setType("style").withValue(value);
+		this.header.with(headerChild);
+		return this;
+	}
+
 	protected String parseItem(EntityStringConverter converter) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("<html>");
@@ -72,13 +93,34 @@ public class HTMLEntity implements BaseItem {
 		sb.append("</html>");
 		return sb.toString();
 	}
+	
+	public HTMLEntity with(Object... values) {
+		add(values);
+		return this;
+	}
 
 	@Override
-	public HTMLEntity with(Object... values) {
+	public boolean add(Object... values) {
 		if(values == null) {
-			return this;
+			return false;
 		}
-		if(values.length % 2 == 0) {
+		if(values.length == 1 && values[0] instanceof String) {
+			XMLTokener tokener = new XMLTokener();
+			String content = (String) values[0];
+			tokener.withBuffer( content );
+			XMLEntity item=new XMLEntity();
+			tokener.parseToEntity((Entity)item);
+			Entity header = item.getElementBy(XMLEntity.PROPERTY_TAG, "header");
+			if(header != null && header instanceof XMLEntity) {
+				this.header = (XMLEntity) header;
+			}
+			Entity body = item.getElementBy(XMLEntity.PROPERTY_TAG, "body");
+			if(body == null && header == null) {
+				this.body = item;
+			}else if(body != null && body instanceof XMLEntity) {
+				this.body = (XMLEntity) body;
+			}
+		}else if(values.length % 2 == 0) {
 			this.body.with(values);
 		} else {
 			for(Object item : values) {
@@ -87,7 +129,7 @@ public class HTMLEntity implements BaseItem {
 				}
 			}
 		}
-		return this;
+		return true;
 	}
 
 	public Object getValue(Object key) {
@@ -113,21 +155,24 @@ public class HTMLEntity implements BaseItem {
 			return null;
 		}
 		int pos = ref.lastIndexOf(".");
-		if(pos<0) {
-			return null;
+		if(pos>0) {
+			String ext = ref.substring(pos).toLowerCase();
+			if(ext.equals(".css") ) {
+				child = new XMLEntity().setType("link");
+				child.withKeyValue("rel", "stylesheet");
+				child.withKeyValue("type", "text/css");
+				child.withKeyValue("href", ref);
+			} else if(ext.equals(".js") ) {
+				child = new XMLEntity().setType(SCRIPT).withCloseTag();
+				child.withKeyValue(KEY_SRC, ref);
+			} else if(IMAGEFORMAT.indexOf(" "+ext+" ")>=0) {
+				child = new XMLEntity().setType("img").withCloseTag();
+				child.withKeyValue(KEY_SRC, ref);
+			}
 		}
-		String ext = ref.substring(pos).toLowerCase();
-		if(ext.equals(".css") ) {
-			child = new XMLEntity().setType("link");
-			child.withKeyValue("rel", "stylesheet");
-			child.withKeyValue("type", "text/css");
-			child.withKeyValue("href", ref);
-		} else if(ext.equals(".js") ) {
-			child = new XMLEntity().setType("script").withCloseTag();
-			child.withKeyValue("src", ref);
-		} else if(IMAGEFORMAT.indexOf(" "+ext+" ")>=0) {
-			child = new XMLEntity().setType("img").withCloseTag();
-			child.withKeyValue("src", ref);
+		if(child == null) {
+			// May be blanko Body text
+			child = new XMLEntity().withValueItem(ref);
 		}
 		return child;
 	}
@@ -139,10 +184,31 @@ public class HTMLEntity implements BaseItem {
 		}
 		return this;
 	}
+	
+	public XMLEntity createBodyTag(String tag, XMLEntity parentNode) {
+		String[] tags = tag.split("\\.");
+		XMLEntity parent = null, child = null, firstChild = null;
+		for(int i=tags.length-1;i>=0;i--) {
+			child = parent;
+			parent = new XMLEntity().setType(tags[i]);
+			if(child != null) {
+				parent.withChild(child);
+			} else {
+				firstChild = parent;
+			}
+		}
+		parentNode.withChild(parent);
+		return firstChild;
+	}
+	public XMLEntity createBodyTag(String tag) {
+		return createBodyTag(tag, this.body);
+		
+	}
+
 
 	public HTMLEntity withScript(String code) {
 		XMLEntity child = new XMLEntity().setType("script").withCloseTag();
-		child.withValue(code);
+		child.with(code);
 		this.body.with(child);
 		return this;
 	}
@@ -158,7 +224,8 @@ public class HTMLEntity implements BaseItem {
 
 	public HTMLEntity addStyle(String name, String style) {
 		XMLEntity styleElement = null;
-		for(EntityList child : header.getChildren()) {
+		for(int i=0;i<header.size();i++) {
+			EntityList child = header.getChild(i);
 			if(child instanceof XMLEntity == false) {
 				continue;
 			}
@@ -184,7 +251,7 @@ public class HTMLEntity implements BaseItem {
 		sb.append(";"+CRLF);
 		sb.append("new Graph(json).layout();");
 		script.withValue(sb.toString());
-		with(script);
+		add(script);
 		if(path != null) {
 			// Add graph-framework
 			withHeader(path + "diagramstyle.css");
@@ -218,5 +285,39 @@ public class HTMLEntity implements BaseItem {
 			return parseItem((EntityStringConverter)converter);
 		}
 		return converter.encode(this);
+	}
+	
+	@Override
+	public int size() {
+		return body.size();
+	}
+
+	public XMLEntity getElementsBy(String key, String value) {
+		XMLEntity item = new XMLEntity();
+		EntityList headerList = this.header.getElementsBy(key, value);
+		EntityList bodyList = this.body.getElementsBy(key, value);
+		int z=0;
+		for(z=0;z<headerList.sizeChildren();z++) {
+			BaseItem child = headerList.getChild(z);
+			if(child instanceof EntityList) {
+				item.withChild((EntityList) child);
+			}
+		}
+		for(z=0;z<bodyList.sizeChildren();z++) {
+			BaseItem child = bodyList.getChild(z);
+			if(child instanceof EntityList) {
+				item.withChild((EntityList) child);
+			}
+		}
+		return item;
+	}
+
+	public BaseItem getElementBy(String key, String value) {
+		Entity item = this.header.getElementBy(key, value);
+		if(item != null) {
+			return item;
+		}
+		item = this.body.getElementBy(key, value);
+		return item;
 	}
 }

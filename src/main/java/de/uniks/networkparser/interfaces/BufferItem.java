@@ -109,10 +109,10 @@ public interface BufferItem {
 	 * Return the characters up to the next close quote character. Backslash
 	 * processing is done. The formal JSON format does not allow strings in
 	 * single quotes, but an implementation is allowed to accept them.
-	 *
+	 * @param quotes for End
 	 * @return the StringContainer with the new Value
 	 */
-	public CharacterBuffer nextString();
+	public CharacterBuffer nextString(char... quotes);
 
 	/**
 	 * Return the characters up to the next close quote character. Backslash
@@ -141,10 +141,11 @@ public interface BufferItem {
 
 	/**
 	 * Get the next Token
+	 * @param current switch for add the current Character
 	 * @param stopWords may be at Simple Space
 	 * @return The next Token
 	 */
-	public CharacterBuffer nextToken(String stopWords);
+	public CharacterBuffer nextToken(boolean current, char... stopWords);
 
 	/**
 	 * Skip.

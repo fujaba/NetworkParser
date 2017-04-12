@@ -6,13 +6,13 @@ import java.util.Map.Entry;
 import org.junit.Assert;
 import org.junit.Test;
 
-import de.uniks.networkparser.Depth;
+import de.uniks.networkparser.Deep;
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.ext.generic.GenericCreator;
+import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
-import de.uniks.networkparser.interfaces.UpdateListener;
 import de.uniks.networkparser.json.AtomarCondition;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
@@ -28,7 +28,7 @@ import de.uniks.networkparser.test.model.util.SortedMsgCreator;
 import de.uniks.networkparser.test.model.util.StudentCreator;
 import de.uniks.networkparser.test.model.util.UniversityCreator;
 
-public class ModelTest implements UpdateListener {
+public class ModelTest implements ObjectCondition {
 	private SimpleList<SimpleEvent> events = new SimpleList<SimpleEvent>(); 
 
 	@Test(expected = UnsupportedOperationException.class)
@@ -110,7 +110,7 @@ public class ModelTest implements UpdateListener {
 		IdMap map=new IdMap();
 		map.with(new SortedMsgCreator());
 
-		SortedMsg root2 = (SortedMsg) map.cloneObject(root, new Filter().withPropertyRegard(Depth.create(1)));
+		SortedMsg root2 = (SortedMsg) map.cloneObject(root, new Filter().withPropertyRegard(Deep.create(1)));
 		Assert.assertNotSame(root, root2);
 		Assert.assertEquals(root2.getMsg(), "root");
 		Assert.assertNotNull(root2.getChild());
@@ -129,16 +129,16 @@ public class ModelTest implements UpdateListener {
 		events.clear();
 		map.toJsonObject(uni);
 		uni.withStudents(new Student().withFirstName("Stefan"));
-		Assert.assertEquals(4, events.size());
+		Assert.assertEquals(5, events.size());
 	}
 
 	@Test
 	public void testGeneric() {
 		Apple apple = new Apple();
 		GenericCreator creator = new GenericCreator(apple);
-		creator.setValue(apple, Apple.PROPERTY_X, 23.0, IdMap.NEW);
-		creator.setValue(apple, Apple.PROPERTY_Y, 42, IdMap.NEW);
-		creator.setValue(apple, "password", "Albert", IdMap.NEW);
+		creator.setValue(apple, Apple.PROPERTY_X, 23.0, SendableEntityCreator.NEW);
+		creator.setValue(apple, Apple.PROPERTY_Y, 42, SendableEntityCreator.NEW);
+		creator.setValue(apple, "password", "Albert", SendableEntityCreator.NEW);
 
 		Assert.assertEquals(23.0, creator.getValue(apple, Apple.PROPERTY_X));
 		Assert.assertEquals(42.0, creator.getValue(apple, Apple.PROPERTY_Y));
@@ -150,4 +150,19 @@ public class ModelTest implements UpdateListener {
 		events.add((SimpleEvent) value);
 		return true;
 	}
+	
+	@Test
+	public void testJsonArray() {
+		University uni = new University();
+		Student karli = uni.createStudents().withFirstName("Karli");
+		Student alice = uni.createStudents().withFirstName("Alice");
+		
+		karli.withFriends(alice);
+		IdMap map=new IdMap();
+		map.with(new UniversityCreator());
+		map.with(new StudentCreator());
+		
+//		System.out.println(map.toJsonArray(uni));
+	}
+
 }

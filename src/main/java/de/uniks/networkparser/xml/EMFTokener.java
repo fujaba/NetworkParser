@@ -26,7 +26,7 @@ THE SOFTWARE.
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
+
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.MapEntity;
 import de.uniks.networkparser.buffer.CharacterBuffer;
@@ -267,7 +267,8 @@ public class EMFTokener extends Tokener{
 
 	private Object decodingClassModel(XMLEntity values, GraphModel model) {
 		SimpleKeyValueList<String, Clazz> items = new SimpleKeyValueList<String, Clazz>();
-		for(EntityList item : values.getChildren()) {
+		for(int c=0;c<values.sizeChildren();c++) {
+			EntityList item = values.getChild(c);
 			if(item instanceof XMLEntity == false) {
 				continue;
 			}
@@ -277,8 +278,7 @@ public class EMFTokener extends Tokener{
 			Clazz clazz = items.get(className);
 			if(clazz == null) {
 				// Create New One
-				clazz = new Clazz();
-				clazz.with(className);
+				clazz = new Clazz(className);
 				items.add(className, clazz);
 				model.with(clazz);
 			}
@@ -358,7 +358,8 @@ public class EMFTokener extends Tokener{
 		}
 		xmlEntity.put(XMI_ID, rootId);
 
-		for (EntityList kid : xmlEntity.getChildren()) {
+		for(int i=0;i<xmlEntity.size();i++) {
+			EntityList kid = xmlEntity.getChild(i);
 			if(kid instanceof XMLEntity == false) {
 				continue;
 			}
@@ -394,8 +395,8 @@ public class EMFTokener extends Tokener{
 		}
 
 		// recursive on kids
-		for (Iterator<EntityList> iterator = xmlEntity.getChildren().iterator(); iterator.hasNext();) {
-			EntityList kidEntity = iterator.next();
+		for(int i=0;i<xmlEntity.size();i++) {
+			EntityList kidEntity = xmlEntity.getChild(i);
 			String kidId = "";
 			if(kidEntity instanceof Entity) {
 				kidId = (String) ((Entity) kidEntity).getValue(XMI_ID);
@@ -462,9 +463,8 @@ public class EMFTokener extends Tokener{
 
 		getMap().put(id, rootObject);
 
-		Iterator<EntityList> iterator = xmlEntity.getChildren().iterator();
-		while (iterator.hasNext()) {
-			EntityList child = iterator.next();
+		for(int i=0;i<xmlEntity.size();i++) {
+			EntityList child = xmlEntity.getChild(i);
 			if(child instanceof XMLEntity == false) {
 				continue;
 			}
@@ -559,7 +559,8 @@ public class EMFTokener extends Tokener{
 
 		// add classes
 		SimpleKeyValueList<Entity, EntityList> parentList=new SimpleKeyValueList<Entity, EntityList>();
-		for (EntityList eClassifier : ecore.getChildren()) {
+		for(int i=0;i<ecore.sizeChildren();i++) {
+			EntityList eClassifier = ecore.getChild(i);
 			if(eClassifier instanceof XMLEntity == false) {
 				continue;
 			}
@@ -569,9 +570,10 @@ public class EMFTokener extends Tokener{
 			}
 
 			if (xml.getString(EMFTokener.XSI_TYPE).equalsIgnoreCase(TYPE_ECLASS)) {
-				Clazz clazz = new Clazz().with(xml.getString(EMFTokener.NAME));
+				Clazz clazz = new Clazz(xml.getString(EMFTokener.NAME));
 				model.with(clazz);
-				for(EntityList child : xml.getChildren()) {
+				for(int c=0;c<xml.sizeChildren();c++) {
+					EntityList child = xml.getChild(c);
 					if(child instanceof Entity == false) {
 						continue;
 					}
@@ -594,16 +596,17 @@ public class EMFTokener extends Tokener{
 					superClazzes.add(xml);
 				}
 			} else if (xml.getString(EMFTokener.XSI_TYPE).equals(TYPE_EEnum)) {
-				Clazz graphEnum = new Clazz().with(ClazzType.ENUMERATION);
-				graphEnum.with(xml.getString(EMFTokener.NAME));
-				for(EntityList child : xml.getChildren()) {
+				Clazz graphEnum = new Clazz(xml.getString(EMFTokener.NAME));
+				graphEnum.with(ClazzType.ENUMERATION);
+				for(int c=0;c<xml.sizeChildren();c++) {
+					EntityList child = ecore.getChild(i);
 					if(child instanceof Entity == false) {
 						continue;
 					}
 					Entity childItem = (Entity) child;
 					Literal literal = new Literal(childItem.getString(EMFTokener.NAME));
-					for(int i=0;i<childItem.size();i++) {
-						String key = childItem.getKeyByIndex(i);
+					for(int z=0;z<childItem.size();z++) {
+						String key = childItem.getKeyByIndex(z);
 						if(key.equals(EMFTokener.NAME)) {
 							continue;
 						}
@@ -655,6 +658,10 @@ public class EMFTokener extends Tokener{
 			// Create as Unidirection
 			tgtAssoc.with(srcAssoc);
 			srcAssoc.with(AssociationTypes.EDGE);
+			
+			tgtAssoc.getClazz().with(tgtAssoc);
+			srcAssoc.getClazz().with(srcAssoc);
+			
 			model.with(tgtAssoc);
 		}
 		return model;

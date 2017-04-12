@@ -28,6 +28,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
+
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.MapEntity;
 import de.uniks.networkparser.buffer.Tokener;
@@ -44,11 +45,11 @@ public class GraphTokener extends Tokener {
 	public static final String CLASS = "classdiagram";
 
 	public static final byte FLAG_CLASS = 0x01;
+//	public static final byte FLAG_OBJECT = 0x01;
 	public static final byte FLAG_CARDINALITY = 0x02;
 	public static final byte FLAG_SHOWLINE = 0x04;
 	public static final byte FLAG_ORDERD = 0x08;
 	public static final byte FLAG_UNORDERD = 0x00;
-//	public static final byte FLAG_OBJECT = 0x01;
 
 	/** The Constant for OBJECT Diagramms. */
 	public static final String OBJECT = "objectdiagram";
@@ -64,7 +65,7 @@ public class GraphTokener extends Tokener {
 	public GraphList encode(Object object, MapEntity map) {
 		GraphList newElement = new GraphList();
 
-		newElement.withTyp(getType(map));
+		newElement.withType(getType(map));
 		Clazz main = parse(object, map, newElement, 0);
 		GraphDiff diff = newElement.getDiff();
 		if(diff != null) {
@@ -98,9 +99,8 @@ public class GraphTokener extends Tokener {
 		String className = object.getClass().getName();
 		className = className.substring(className.lastIndexOf('.') + 1);
 
-		Clazz newElement = new Clazz();
+		Clazz newElement = new Clazz(className);
 		newElement.withId(mainKey);
-		newElement.with(className);
 		list.with(newElement);
 		if (prototyp != null) {
 			for (String property : prototyp.getProperties()) {
@@ -137,10 +137,15 @@ public class GraphTokener extends Tokener {
 		if (valueCreater != null) {
 			Clazz subId = parse(item, map, list, deep + 1);
 			Association edge = new Association(element);
-			element.with(edge);
 			Association target = new Association(subId).with(cardinality).with(property);
+			// Full Assoc
+			edge.with(target);
+			// Add to Clazzes
+			element.with(edge);
 			subId.with(target);
-			list.with(edge.with(target));
+			
+			// Add to List
+			list.with(edge);
 		} else {
 			Attribute attribute = element.createAttribute(property, DataType.create(item.getClass()));
 			attribute.withValue("" + item);
@@ -313,12 +318,12 @@ public class GraphTokener extends Tokener {
 //				Assoc to n
 //				Assoc to 1
 //				Primitive ( try to find keyattributes use order: String, Date, Int, Object)
-			for(String property : properties) {
-				//TODO IMplementation of Unordered Model
-				Object masterValue = masterCreator.getValue(master, property);
-				Object slaveValue = slaveCreator.getValue(slave, property);
+//			for(String property : properties) {
+//				//TODO IMplementation of Unordered Model
+//				Object masterValue = masterCreator.getValue(master, property);
+//				Object slaveValue = slaveCreator.getValue(slave, property);
 //				diffModel(value, slaveValue, map)
-			}
+//			}
 		}
 		return result;
 	}

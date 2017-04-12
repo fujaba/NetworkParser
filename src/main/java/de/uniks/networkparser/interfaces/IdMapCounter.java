@@ -34,25 +34,12 @@ public interface IdMapCounter {
 	 * @param sessionId		the new prefix id
 	 * @return Itself
 	 */
-	public IdMapCounter withPrefixId(String sessionId);
+	public IdMapCounter withSession(String sessionId);
 
 	/**
 	 * @return the current sessionid
 	 */
-	public String getPrefixId();
-
-	/**
-	 * Sets the splitter for The session id
-	 *
-	 * @param splitter	the new splitter character for the session id
-	 * @return Itself
-	 */
-	public IdMapCounter withSplitter(char splitter);
-
-	/**
-	 * @return the current splitterString
-	 */
-	public char getSplitter();
+	public String getSession();
 
 	/**
 	 * Gets the id.
@@ -63,14 +50,9 @@ public interface IdMapCounter {
 	public String getId(Object obj);
 
 	/**
-	 * Read id.
-	 *
-	 * @param id	the last id from Message
+	 * Set time stamp
+	 * @param newValue timeStamp for usage as Counter
+	 * @return itself
 	 */
-	public void readId(String id);
-
-	/**
-	 * @return the Prio Object for checking errors
-	 */
-	public Object getPrio();
+	public IdMapCounter withTimeStamp(int newValue);
 }

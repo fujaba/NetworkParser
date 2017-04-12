@@ -1,8 +1,8 @@
 package de.uniks.networkparser.test.javafx;
 
+import de.uniks.networkparser.ext.javafx.FXStageController;
+import de.uniks.networkparser.ext.javafx.SimpleShell;
 import de.uniks.networkparser.ext.javafx.dialog.DialogBox;
-import de.uniks.networkparser.ext.javafx.window.FXStageController;
-import de.uniks.networkparser.ext.javafx.window.SimpleShell;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Parent;

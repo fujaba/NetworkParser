@@ -48,7 +48,7 @@ public class HTMLGrammar extends SimpleGrammar{
 		HTMLEntity rootItem=new HTMLEntity();
 		rootItem.withEncoding("utf-8");
 		Entity child = map.encode(entity, tokener);
-		rootItem.with(child);
+		rootItem.add(child);
 		return rootItem;
 	}
 
@@ -85,11 +85,18 @@ public class HTMLGrammar extends SimpleGrammar{
 			}
 			String prop = value.toString();
 			Entity item = (Entity) entity.getNewList(false);
-			item.setType(prop);
-			entity.with(item);
+			String session = map.getMap().getSession();
+			if(session != null) {
+				entity.put(IdMap.SESSION, session);
+			}
+
+			if(id != null) {
+				entity.put(IdMap.ID, id);
+				entity.put(IdMap.TIMESTAMP, id.substring(1));
+			}
+			entity.add(item);
 			entity = item;
 			super.writeBasicValue(item, entity, prop, id, map);
-			entity.with(IdMap.CLASS, className);
 		}else {
 			super.writeBasicValue(entity, parent, className, id, map);
 		}
@@ -99,7 +106,7 @@ public class HTMLGrammar extends SimpleGrammar{
 	@Override
 	public boolean writeValue(BaseItem parent, String property, Object value, MapEntity map, Tokener tokener) {
 		if (parent instanceof EntityList && tokener.isChild(value)){
-			((EntityList)parent).with(value);
+			((EntityList)parent).add(value);
 		} else if (parent instanceof Entity){
 			CharacterBuffer prop = new CharacterBuffer().with(property);
 			transformValue(prop, map.getDeep(), false);

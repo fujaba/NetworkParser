@@ -24,6 +24,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 import java.util.Iterator;
+
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.SimpleGrammar;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
@@ -44,9 +45,9 @@ public class GenericJsonGrammar extends SimpleGrammar {
 		}
 		for(Iterator<SendableEntityCreator> i =map.iterator();i.hasNext();){
 			SendableEntityCreator item = i.next();
-			Object prototyp = item.getSendableInstance(true);
-			if(prototyp instanceof Class<?>) {
-				if(((Class<?>)prototyp).isAssignableFrom(search)){
+			Object prototype = item.getSendableInstance(true);
+			if(prototype instanceof Class<?>) {
+				if(((Class<?>)prototype).isAssignableFrom(search)){
 					return item;
 				}
 			}

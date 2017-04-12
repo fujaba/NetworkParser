@@ -2,6 +2,7 @@ package de.uniks.networkparser.test.model;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+
 import de.uniks.networkparser.interfaces.SendableEntity;
 
 public class P implements SendableEntity {

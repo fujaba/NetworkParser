@@ -90,7 +90,7 @@ public class GenericCreator implements SendableEntityCreator {
 	}
 
 	@Override
-	public Object getSendableInstance(boolean prototyp) {
+	public Object getSendableInstance(boolean prototype) {
 		if (item != null) {
 			try {
 				return item.getClass().newInstance();
@@ -264,7 +264,7 @@ public class GenericCreator implements SendableEntityCreator {
 			genericCreator.withClass(instance);
 		}
 
-		map.with(genericCreator);
+		map.add(genericCreator);
 
 		// VODOO
 		Method[] methods = instance.getMethods();
@@ -279,13 +279,16 @@ public class GenericCreator implements SendableEntityCreator {
 							ParameterizedType genericSuperclass = (ParameterizedType) types;
 							if (genericSuperclass.getActualTypeArguments().length > 0) {
 								Type type = genericSuperclass.getActualTypeArguments()[0];
-								child = Class.forName(type.getTypeName());
+								String typeClass = ""+ReflectionLoader.call("getTypeName", type);
+								if(typeClass.length() > 0) {
+									child = Class.forName(typeClass);
+								}
 							}
 						}
 					} catch (ReflectiveOperationException e) {
 						// Try to find SubClass for Set
 					}
-					if(child.isInterface() == false) {
+					if(child.isInterface() == false && child instanceof Class<?> == false) {
 						create(map, child);
 					}
 				}
@@ -295,17 +298,16 @@ public class GenericCreator implements SendableEntityCreator {
 		for (Field field : fields) {
 			Class<?> child = field.getType();
 			if (EntityUtil.isPrimitiveType(child.getName()) == false) {
-				try {
-					Type types = field.getGenericType();
-					if (types != null && types instanceof ParameterizedType) {
-						ParameterizedType genericSuperclass = (ParameterizedType) types;
-						if (genericSuperclass.getActualTypeArguments().length > 0) {
-							Type type = genericSuperclass.getActualTypeArguments()[0];
-							child = Class.forName(type.getTypeName());
+				Type types = field.getGenericType();
+				if (types != null && types instanceof ParameterizedType) {
+					ParameterizedType genericSuperclass = (ParameterizedType) types;
+					if (genericSuperclass.getActualTypeArguments().length > 0) {
+						Type type = genericSuperclass.getActualTypeArguments()[0];
+						Object childClass = ReflectionLoader.call("getTypeName", type);
+						if(childClass != null) {
+							child = ReflectionLoader.getClass(""+childClass);
 						}
 					}
-				} catch (ReflectiveOperationException e) {
-					// Try to find SubClass for Set
 				}
 				create(map, child);
 			}

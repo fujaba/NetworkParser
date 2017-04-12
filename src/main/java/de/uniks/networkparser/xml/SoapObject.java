@@ -95,9 +95,9 @@ public class SoapObject implements BaseItem, SendableEntityCreatorTag {
 	}
 
 	@Override
-	public BaseItem with(Object... values) {
+	public boolean add(Object... values) {
 		if(values==null) {
-			return this;
+			return false;
 		}
 		for(Object item : values) {
 			if(item instanceof String) {
@@ -106,7 +106,7 @@ public class SoapObject implements BaseItem, SendableEntityCreatorTag {
 				withBody((XMLEntity) item);
 			}
 		}
-		return null;
+		return true;
 	}
 
 	@Override
@@ -166,7 +166,7 @@ public class SoapObject implements BaseItem, SendableEntityCreatorTag {
 	public boolean setValue(Object entity, String attribute, Object value,
 			String type) {
 		if(XMLTokener.CHILDREN.equals(type)) {
-			((SoapObject) entity).with(value);
+			((SoapObject) entity).add(value);
 			return true;
 		}
 		if (attribute.toLowerCase().endsWith(
@@ -180,5 +180,13 @@ public class SoapObject implements BaseItem, SendableEntityCreatorTag {
 	@Override
 	public String getTag() {
 		return nameSpace + ":Envelope";
+	}
+
+	@Override
+	public int size() {
+		if(this.children == null) {
+			return 0;
+		}
+		return children.sizeChildren();
 	}
 }

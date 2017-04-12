@@ -24,10 +24,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 import java.beans.PropertyChangeEvent;
-import de.uniks.networkparser.interfaces.SendableEntityCreator;
-import de.uniks.networkparser.interfaces.UpdateListener;
 
-public class CompareTo implements UpdateListener, SendableEntityCreator {
+import de.uniks.networkparser.interfaces.ObjectCondition;
+import de.uniks.networkparser.interfaces.SendableEntityCreator;
+
+public class CompareTo implements ObjectCondition, SendableEntityCreator {
 	public static final String VALUE = "value";
 	public static final String COMPARE = "compare";
 	public static final int GREATER = 1;

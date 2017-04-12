@@ -26,6 +26,7 @@ THE SOFTWARE.
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
 import de.uniks.networkparser.buffer.CharacterBuffer;
 
 public class RegCalculator {

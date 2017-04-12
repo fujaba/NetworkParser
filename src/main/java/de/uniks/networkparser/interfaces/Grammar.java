@@ -26,7 +26,6 @@ THE SOFTWARE.
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.MapEntity;
-import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.buffer.Tokener;
 
 public interface Grammar {
@@ -55,7 +54,7 @@ public interface Grammar {
 	public SendableEntityCreator getCreator(String type, Object item,
 			IdMap map, boolean searchForSuperCreator, String className);
 
-	public String getId(Object obj, IdMapCounter counter);
+	public String getId(Object obj, IdMap map);
 
 	/**
 	 * Get a Value from the Item
@@ -75,15 +74,6 @@ public interface Grammar {
 	 * @return The new Instance
 	 */
 	public Object getNewEntity(SendableEntityCreator creator, String className, boolean prototype);
-
-	/**
-	 * Get The Prefix For Properties
-	 * @param creator The Creator
-	 * @param format The Format Token
-	 * @param isId is Id is Set
-	 * @return The Propertyprefix
-	 */
-	public CharacterBuffer getPrefixProperties(SendableEntityCreator creator, Tokener format, boolean isId);
 
 	public Entity writeBasicValue(Entity entity, BaseItem parent, String className, String id, MapEntity map);
 

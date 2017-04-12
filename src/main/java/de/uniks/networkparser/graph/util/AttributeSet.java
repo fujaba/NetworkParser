@@ -28,6 +28,10 @@ import de.uniks.networkparser.interfaces.Condition;
 import de.uniks.networkparser.list.SimpleSet;
 
 public class AttributeSet extends SimpleSet<Attribute>{
+	public AttributeSet() {
+		this.withType(Attribute.class);
+	}
+
 	public ClazzSet getClazzes() {
 		ClazzSet collection = new ClazzSet();
 		for(Attribute item : this) {

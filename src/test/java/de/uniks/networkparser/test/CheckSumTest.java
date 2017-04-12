@@ -70,7 +70,6 @@ public class CheckSumTest {
 		key = RSAKey.generateKey(1024);
 		StringBuilder textEncrypt = key.encrypt("Hallo");
 		Assert.assertNotNull(textEncrypt);
-//		System.out.println(textEncrypt.toString());
 		
 //FIXME		RSAKey descriptKey = RSAKey.getDecryptKey(1024, key.getPrivateKey());
 //		descriptKey.decrypt(textEncrypt.toString());
@@ -95,7 +94,6 @@ public class CheckSumTest {
 	public void testX509() throws NoSuchAlgorithmException{
 //	      Signature s1 = Signature.getInstance("SHA256withECDSA");
 //	      Provider provider = s1.getProvider();
-//	      System.out.println(provider);
 //	      s1.initVerify(publicKey);
 //	      s1.update(message.getBytes());
 //	      BASE64Decoder b64 = new BASE64Decoder();

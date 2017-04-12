@@ -125,7 +125,7 @@ public class MapEntityStack {
 				if(pos >= 0 ) {
 					Object entity = stack.getKeyByIndex(pos);
 					SendableEntityCreator creator = stack.getValueByIndex(pos);
-					creator.setValue(entity, ChildKey, value, IdMap.NEW);
+					creator.setValue(entity, ChildKey, value, SendableEntityCreator.NEW);
 				}
 			}
 		}

@@ -26,6 +26,7 @@ THE SOFTWARE.
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.ListIterator;
+
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Condition;
 /**
@@ -45,7 +46,7 @@ public abstract class AbstractList<V> extends AbstractArray<V> implements Iterab
 	 * overridden (assuming the specified collection is non-empty).
 	 * @param c	List of Elements for adding
 	 * @return success
-	 * @see #add(Object)
+	 * @see #add(Object...)
 	 */
 	public boolean addAll(Collection<? extends V> c) {
 		if(c==null){
@@ -56,22 +57,6 @@ public abstract class AbstractList<V> extends AbstractArray<V> implements Iterab
 			if (add(e))
 				modified = true;
 		return modified;
-	}
-
-	/**
-	 * Add a Value to internal List and Array if nesessary
-	 *
-	 * @param value		the new Value
-	 * @return			this boolean if success
-	 */
-	public boolean add(V value) {
-		int pos = hasKey(value);
-		if(pos<0) {
-			return false;
-		}
-		grow(size + 1);
-		addKey(pos, value, size + 1);
-		return true;
 	}
 
 	public ListIterator<V> listIterator() {
@@ -94,7 +79,7 @@ public abstract class AbstractList<V> extends AbstractArray<V> implements Iterab
 
 	public void copyEntity(BaseItem target, int pos) {
 		if(target != null)
-			target.with(get(pos));
+			target.add(get(pos));
 	}
 
 	public BaseItem subSet(V fromElement, V toElement) {

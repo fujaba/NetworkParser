@@ -25,8 +25,9 @@ THE SOFTWARE.
 */
 import java.util.ArrayList;
 import java.util.Iterator;
-import de.uniks.networkparser.IdMap;
+
 import de.uniks.networkparser.buffer.ByteBuffer;
+import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 
 public class ByteParser {
@@ -38,7 +39,7 @@ public class ByteParser {
 			Object element = getEntity(buffer, entity, values);
 			if (element != null) {
 				creator.setValue(newInstance, entity.getPropertyName(),
-						element, IdMap.NEW);
+						element, SendableEntityCreator.NEW);
 			}
 		}
 		return newInstance;
@@ -48,12 +49,12 @@ public class ByteParser {
 			SimpleKeyValueList<String, Object> values) {
 		if (entry.size() < 1) {
 			// Reference or Value
-			if (entry.isTyp(BitEntity.BIT_REFERENCE)) {
+			if (entry.isType(BitEntity.BIT_REFERENCE)) {
 				String propertyName = entry.getPropertyName();
 				if (values.containsKey(propertyName)) {
 					return values.getValue(propertyName);
 				}
-			} else if (entry.isTyp(BitEntity.BIT_BYTE, BitEntity.BIT_NUMBER,
+			} else if (entry.isType(BitEntity.BIT_BYTE, BitEntity.BIT_NUMBER,
 					BitEntity.BIT_STRING)) {
 				// Value
 				return entry.getPropertyName();
@@ -76,7 +77,7 @@ public class ByteParser {
 			int posOfBit = (8 - ((temp + 1) % 8)) % 8;
 
 			bit = new BitEntity().with(bitValue.size());
-			bit.with(bitValue.getProperty(), bitValue.getTyp());
+			bit.with(bitValue.getProperty(), bitValue.getType());
 			int length = Integer.parseInt(""
 					+ getEntity(buffer,bit, values));
 			int noOfByte = length / 8;
@@ -190,10 +191,10 @@ public class ByteParser {
 
 		result.flip(true);
 
-		// Set the Typ
+		// Set the Type
 		Object element = null;
 
-		if (entry.getTyp() == BitEntity.BIT_BYTE) {
+		if (entry.getType() == BitEntity.BIT_BYTE) {
 			byte[] array = result.array();
 			if (array.length == 1) {
 				element = Byte.valueOf(array[0]);
@@ -204,7 +205,7 @@ public class ByteParser {
 				}
 				element = item;
 			}
-		} else if (entry.getTyp() == BitEntity.BIT_NUMBER) {
+		} else if (entry.getType() == BitEntity.BIT_NUMBER) {
 			if (result.length() == Byte.SIZE / ByteEntity.BITOFBYTE) {
 				element = result.getByte();
 			} else if (result.length() == Short.SIZE / ByteEntity.BITOFBYTE) {
@@ -220,7 +221,7 @@ public class ByteParser {
 			} else {
 				element = result.getInt();
 			}
-		} else if (entry.getTyp() == BitEntity.BIT_STRING) {
+		} else if (entry.getType() == BitEntity.BIT_STRING) {
 			result.flip(false);
 			element = String.valueOf(result.array());
 

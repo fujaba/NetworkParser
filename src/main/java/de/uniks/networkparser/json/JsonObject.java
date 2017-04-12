@@ -24,7 +24,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 import de.uniks.networkparser.EntityUtil;
-import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.buffer.Buffer;
 import de.uniks.networkparser.buffer.Tokener;
 import de.uniks.networkparser.converter.EntityStringConverter;
@@ -310,13 +309,19 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements En
 	public JsonObject addToList(String key, Object value) {
 		Object object = this.get(key);
 		if (object == null) {
-			this.put(key,
-					value instanceof AbstractList ? getNewList(true).with(value)
-							: value);
+			if(value instanceof AbstractList) {
+				BaseItem newList =getNewList(true);
+				newList.add(value);
+				this.put(key, newList);
+			}else {
+				this.put(key, value);
+			}
 		} else if (object instanceof AbstractList) {
 			((AbstractList<?>) object).with(value);
 		} else {
-			this.put(key, getNewList(false).with(object, value));
+			BaseItem newList = getNewList(false);
+			newList.add(object, value);
+			this.put(key, newList);
 		}
 		return this;
 	}
@@ -344,24 +349,24 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements En
 	}
 
 	@Override
-	public BaseItem getChild(String label, boolean recursiv) {
-		if(label == null || this.size() < 1) {
+	public Entity getElementBy(String key, String value) {
+		if(value == null || this.size() < 1) {
 			return null;
 		}
-		Object item = this.get(label);
+		Object item = this.get(value);
 		JsonObject child;
 		if(item instanceof JsonObject) {
 			child = (JsonObject) item;
 		}else {
 			child = new JsonObject();
-			this.put(label, child);
+			this.put(value, child);
 		}
 		return child;
 	}
-
-	@Override
-	public JsonObject setType(String type) {
-		this.add(IdMap.CLASS, type);
-		return this;
-	}
+    @Override
+    public JsonObject setType(String type) {
+    	this.add(Entity.CLASS, type);
+        return this;
+}
+	
 }

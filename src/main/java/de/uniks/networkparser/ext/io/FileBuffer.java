@@ -27,9 +27,11 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
+
 import de.uniks.networkparser.buffer.Buffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 
@@ -40,17 +42,20 @@ public class FileBuffer extends Buffer {
 	private int length;
 	private char currentChar;
 
-	public FileBuffer withFile(String fileName) throws FileNotFoundException {
+	public FileBuffer withFile(String fileName) {
 		withFile(new File(fileName));
 		return this;
 	}
 
-	public FileBuffer withFile(File file) throws FileNotFoundException {
+	public FileBuffer withFile(File file) {
 		this.file = file;
 		this.length = (int) this.file.length();
-		FileInputStream fis = new FileInputStream(this.file);
-		InputStreamReader isr = new InputStreamReader(fis, Charset.forName("UTF-8"));
-		this.reader = new BufferedReader(isr, 1024*1024);
+		try {
+			FileInputStream fis = new FileInputStream(this.file);
+			InputStreamReader isr = new InputStreamReader(fis, Charset.forName("UTF-8"));
+			this.reader = new BufferedReader(isr, 1024*1024);
+		}catch (Exception e) {
+		}
 		this.position = 0;
 		return this;
 	}
@@ -58,6 +63,13 @@ public class FileBuffer extends Buffer {
 	@Override
 	public int length() {
 		return length;
+	}
+	
+	public boolean exist() {
+		if(this.file == null) {
+			return false;
+		}
+		return this.file.exists();
 	}
 
 	@Override
@@ -138,5 +150,49 @@ public class FileBuffer extends Buffer {
 
 	public byte getByte() {
 		return (byte)getChar();
+	}
+	
+	public void close() {
+		try {
+			this.reader.close();
+		} catch (IOException e) {
+		}
+	}
+	
+	public static final boolean writeFile(String fileName, CharSequence data, boolean appendData) {
+		FileBuffer buffer = new FileBuffer();
+		buffer.withFile(fileName);
+		if(buffer.exist() == false) {
+			if(buffer.createFile()) {
+				return false;
+			}
+		}
+		return buffer.write(data, appendData);
+	}
+	public static final boolean writeFile(String fileName, CharSequence data) {
+		return writeFile(fileName, data, false);
+	}
+
+	private boolean createFile() {
+		if(this.file == null) {
+			return false;
+		}
+		return file.getParentFile().mkdirs();
+	}
+	
+	public boolean write(CharSequence data, boolean append) {
+		if(this.file == null) {
+			return false;
+		}
+		try {
+			FileOutputStream os = new FileOutputStream(this.file, append);
+			os.write(data.toString().getBytes());
+			os.flush();
+			os.close();
+			return true;
+		} catch (FileNotFoundException e) {
+		} catch (IOException e) {
+		}
+		return false;
 	}
 }

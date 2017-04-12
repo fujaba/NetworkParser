@@ -49,9 +49,9 @@ public class UpdateJsonAccumulate {
 			JsonObject child;
 
 			// OldValue
-			if (!change.has(IdMap.REMOVE)) {
-				child = change.getJsonObject(IdMap.REMOVE);
-				change.put(IdMap.REMOVE, child);
+			if (!change.has(SendableEntityCreator.REMOVE)) {
+				child = change.getJsonObject(SendableEntityCreator.REMOVE);
+				change.put(SendableEntityCreator.REMOVE, child);
 			} else {
 				child = new JsonObject();
 			}
@@ -67,9 +67,9 @@ public class UpdateJsonAccumulate {
 			}
 
 			// NewValue
-			if (!change.has(IdMap.UPDATE)) {
-				child = change.getJsonObject(IdMap.UPDATE);
-				change.put(IdMap.UPDATE, child);
+			if (!change.has(SendableEntityCreator.UPDATE)) {
+				child = change.getJsonObject(SendableEntityCreator.UPDATE);
+				change.put(SendableEntityCreator.UPDATE, child);
 			} else {
 				child = new JsonObject();
 			}
@@ -117,9 +117,9 @@ public class UpdateJsonAccumulate {
 			JsonObject child;
 
 			// OldValue
-			if (change.has(IdMap.REMOVE)) {
-				child = change.getJsonObject(IdMap.REMOVE);
-				change.put(IdMap.REMOVE, child);
+			if (change.has(SendableEntityCreator.REMOVE)) {
+				child = change.getJsonObject(SendableEntityCreator.REMOVE);
+				change.put(SendableEntityCreator.REMOVE, child);
 			} else {
 				child = new JsonObject();
 			}
@@ -135,9 +135,9 @@ public class UpdateJsonAccumulate {
 			}
 
 			// NewValue
-			if (change.has(IdMap.UPDATE)) {
-				child = change.getJsonObject(IdMap.UPDATE);
-				change.put(IdMap.UPDATE, child);
+			if (change.has(SendableEntityCreator.UPDATE)) {
+				child = change.getJsonObject(SendableEntityCreator.UPDATE);
+				change.put(SendableEntityCreator.UPDATE, child);
 			} else {
 				child = new JsonObject();
 			}

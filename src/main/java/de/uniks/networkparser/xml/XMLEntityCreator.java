@@ -24,8 +24,6 @@ THE SOFTWARE.
 */
 import de.uniks.networkparser.interfaces.EntityList;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorTag;
-import de.uniks.networkparser.xml.XMLEntity;
-import de.uniks.networkparser.xml.XMLTokener;
 
 /** @author Stefan Creator for XML Entity. */
 
@@ -79,7 +77,7 @@ public class XMLEntityCreator implements SendableEntityCreatorTag {
 		if (XMLEntity.PROPERTY_VALUE.equalsIgnoreCase(attribute)) {
 			String newValue = ""+value;
 			if(newValue.length()>0) {
-				((XMLEntity) entity).withValue(newValue);
+				((XMLEntity) entity).withValueItem(newValue);
 			}
 			return true;
 		}

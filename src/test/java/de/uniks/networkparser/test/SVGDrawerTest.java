@@ -7,10 +7,7 @@ import java.io.IOException;
 
 import org.junit.Assert;
 import org.junit.Test;
-import de.uniks.networkparser.graph.Attribute;
-import de.uniks.networkparser.graph.Clazz;
-import de.uniks.networkparser.graph.GraphLabel;
-import de.uniks.networkparser.graph.DataType;
+
 import de.uniks.networkparser.bytes.qr.ByteMatrix;
 import de.uniks.networkparser.bytes.qr.DecoderResult;
 import de.uniks.networkparser.bytes.qr.ErrorCorrectionLevel;
@@ -18,10 +15,14 @@ import de.uniks.networkparser.bytes.qr.QRCode;
 import de.uniks.networkparser.bytes.qr.QRTokener;
 import de.uniks.networkparser.converter.GraphConverter;
 import de.uniks.networkparser.graph.Association;
+import de.uniks.networkparser.graph.Attribute;
+import de.uniks.networkparser.graph.Clazz;
+import de.uniks.networkparser.graph.DataType;
+import de.uniks.networkparser.graph.GraphLabel;
 import de.uniks.networkparser.graph.GraphList;
+import de.uniks.networkparser.graph.GraphPattern;
 import de.uniks.networkparser.graph.Method;
 import de.uniks.networkparser.graph.Parameter;
-import de.uniks.networkparser.graph.GraphPattern;
 import de.uniks.networkparser.json.JsonObject;
 
 public class SVGDrawerTest {
@@ -64,12 +65,12 @@ public class SVGDrawerTest {
 	public void testDrawClazz() throws IOException {
 		GraphList map = new GraphList();
 
-		Clazz space=map.with(new Clazz().with("Space"));
-		Clazz modelHistory=map.with(new Clazz().with("ModelHistory"));
-		Clazz networkNode=map.with(new Clazz().with("NetworkNode"));
-		Clazz idMap=map.with(new Clazz().with("IdMap"));
-		Clazz nodeProxy=map.with(new Clazz().with("NodeProxy"));
-		Clazz message=map.with(new Clazz().with("Message"));
+		Clazz space=map.with(new Clazz("Space"));
+		Clazz modelHistory=map.with(new Clazz("ModelHistory"));
+		Clazz networkNode=map.with(new Clazz("NetworkNode"));
+		Clazz idMap=map.with(new Clazz("IdMap"));
+		Clazz nodeProxy=map.with(new Clazz("NodeProxy"));
+		Clazz message=map.with(new Clazz("Message"));
 
 		// Methods
 		networkNode.with(new Method("sendMessage", new Parameter(DataType.create(message)), new Parameter(nodeProxy)));
@@ -87,7 +88,7 @@ public class SVGDrawerTest {
 		map.with( Association.create(networkNode, nodeProxy) );
 
 		GraphConverter converter=new GraphConverter();
-		writeJson("clazzModel.html", converter.convertToJson(map, false));
+		writeJson("clazzModel.html", converter.convertToJson(map, false, false));
 	}
 
 	@Test
@@ -108,24 +109,24 @@ public class SVGDrawerTest {
 		map.with(subGraph);
 
 		GraphConverter converter=new GraphConverter();
-		writeJson("pattern.html", converter.convertToJson(map, false));
+		writeJson("pattern.html", converter.convertToJson(map, false, false));
 	}
 
 	@Test
 	public void testPetaF() throws IOException {
 		GraphList map = new GraphList();
 
-		Clazz networkParser=map.with(new Clazz().with("NetworkParser"));
-		Clazz networkParserfx=map.with(new Clazz().with("NetworkParserFX"));
-		Clazz petaf=map.with(new Clazz().with("PetaF"));
-		Clazz policy=map.with(new Clazz().with("Policy"));
+		Clazz networkParser=map.with(new Clazz("NetworkParser"));
+		Clazz networkParserfx=map.with(new Clazz("NetworkParserFX"));
+		Clazz petaf=map.with(new Clazz("PetaF"));
+		Clazz policy=map.with(new Clazz("Policy"));
 
 		map.with( Association.create(networkParser, networkParserfx) );
 		map.with( Association.create(networkParser, petaf) );
 		map.with( Association.create(petaf, policy) );
 
 		GraphConverter converter=new GraphConverter();
-		writeJson("petaf.html", converter.convertToJson(map, false));
+		writeJson("petaf.html", converter.convertToJson(map, false, false));
 	}
 
 	private void writeJson(String fileName, JsonObject item) throws IOException {

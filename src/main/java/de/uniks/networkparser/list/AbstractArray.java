@@ -27,10 +27,10 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.Iterator;
 
-import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.converter.EntityStringConverter;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Converter;
+import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
 public abstract class AbstractArray<V> implements BaseItem {
 	/** Is Allow Duplicate Items in List */
@@ -309,25 +309,25 @@ public abstract class AbstractArray<V> implements BaseItem {
 		this.index = 0;
 		if (arrayFlag == 1) {
 			for (int i = elements.length - 1; i > 0; i--) {
-				fireProperty(IdMap.REMOVE, elements[i], null, elements[i - 1], null);
+				fireProperty(SendableEntityCreator.REMOVE, elements[i], null, elements[i - 1], null);
 			}
-			fireProperty(IdMap.REMOVE, elements[0], null, null, null);
+			fireProperty(SendableEntityCreator.REMOVE, elements[0], null, null, null);
 			this.elements = null;
 			return;
 		}
 		Object[] items = (Object[]) elements[SMALL_KEY];
 		if (arrayFlag > 3) {
 			for (int i = items.length - 1; i > 0; i--) {
-				fireProperty(IdMap.REMOVE, items[i], null, items[i - 1], ((Object[]) elements[SMALL_VALUE])[i]);
+				fireProperty(SendableEntityCreator.REMOVE, items[i], null, items[i - 1], ((Object[]) elements[SMALL_VALUE])[i]);
 			}
-			fireProperty(IdMap.REMOVE, items[0], null, null, ((Object[]) elements[SMALL_VALUE])[0]);
+			fireProperty(SendableEntityCreator.REMOVE, items[0], null, null, ((Object[]) elements[SMALL_VALUE])[0]);
 			this.elements = null;
 			return;
 		}
 		for (int i = items.length - 1; i > 0; i--) {
-			fireProperty(IdMap.REMOVE, items[i], null, items[i - 1], null);
+			fireProperty(SendableEntityCreator.REMOVE, items[i], null, items[i - 1], null);
 		}
-		fireProperty(IdMap.REMOVE, items[0], null, null, null);
+		fireProperty(SendableEntityCreator.REMOVE, items[0], null, null, null);
 		this.elements = null;
 	}
 
@@ -551,10 +551,12 @@ public abstract class AbstractArray<V> implements BaseItem {
 			boolean allowDuplicate = isAllowDuplicate();
 			for (int i = 0; i < this.size; i++) {
 				Object value = getKeyByIndex(i);
-				if (comparator().compare(value, element) >= 0) {
+				int r = comparator().compare(value, element);
+				if (r == 0) {
 					if (!allowDuplicate && value.equals(element)) {
 						return REMOVED;
 					}
+				}else if(r > 0) {
 					return i;
 				}
 			}
@@ -655,12 +657,12 @@ public abstract class AbstractArray<V> implements BaseItem {
 				addHashItem(pos, value, (Object[]) elements[BIG_VALUE]);
 			}
 		}
-		fireProperty(IdMap.NEW, null, key, beforeKey, value);
+		fireProperty(SendableEntityCreator.NEW, null, key, beforeKey, value);
 		return pos;
 	}
 
-	protected Class<?> getTypClass() {
-		return null;
+	public Class<?> getTypClass() {
+		return type;
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -729,7 +731,7 @@ public abstract class AbstractArray<V> implements BaseItem {
 		if (pos > 0) {
 			beforeElement = this.getByIndex(SMALL_KEY, pos - 1, size);
 		}
-		fireProperty(IdMap.NEW, null, element, beforeElement, null);
+		fireProperty(SendableEntityCreator.NEW, null, element, beforeElement, null);
 		return pos;
 	}
 
@@ -754,24 +756,41 @@ public abstract class AbstractArray<V> implements BaseItem {
 		if (isCaseSensitive()) {
 			sb.append("CaseSensitive ");
 		}
-		sb.append("(").append(this.size).append(")");
+		sb.append('(').append(this.size).append(')');
+		if(this.size == 1) {
+			sb.append(' ').append('[');
+			sb.append(this.get(0).toString());
+			sb.append(']');
+		}
 		return sb.toString();
 	}
 
+	
+	@SuppressWarnings("unchecked")
+	public <ST extends AbstractArray<V>> ST with(Object... values) {
+		add(values);
+		return (ST)this;
+	}
+
 	@Override
-	public AbstractArray<V> with(Object... values) {
+	public boolean add(Object... values) {
 		if (values == null) {
-			return this;
+			return false;
 		}
 		int newSize = size + values.length;
 		grow(newSize);
+		boolean changed=false;
 		for (Object value : values) {
+			if(value == null) {
+				continue;
+			}
 			int pos = hashKeyPos(value, newSize);
 			if (pos >= 0) {
 				this.addKey(pos, value, newSize);
+				changed = true;
 			}
 		}
-		return this;
+		return changed;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -785,7 +804,7 @@ public abstract class AbstractArray<V> implements BaseItem {
 		return (ST)this;
 	}
 
-	protected void setValue(int pos, Object value, int offset) {
+	protected Object  setValue(int pos, Object value, int offset) {
 		if (pos >= size) {
 			grow(pos + 1);
 		}
@@ -801,7 +820,8 @@ public abstract class AbstractArray<V> implements BaseItem {
 		if (pos > 0) {
 			beforeElement = items[pos - 1];
 		}
-		fireProperty(IdMap.UPDATE, oldValue, value, beforeElement, null);
+		fireProperty(SendableEntityCreator.UPDATE, oldValue, value, beforeElement, null);
+		return oldValue;
 	}
 
 	public AbstractArray<V> withList(Collection<?> list) {
@@ -1004,6 +1024,16 @@ public abstract class AbstractArray<V> implements BaseItem {
 		for (Object e : c)
 			if (!contains(e))
 				return false;
+		return true;
+	}
+	
+	public boolean containsAll(Object... keys) {
+		if (keys == null)
+			return true;
+		for (Object e : keys)
+			if (!contains(e)) {
+				return false;
+			}
 		return true;
 	}
 
@@ -1252,7 +1282,7 @@ public abstract class AbstractArray<V> implements BaseItem {
 							BaseItem result = this.getNewList(true);
 							AbstractList<?> items = (AbstractList<?>) child;
 							for (int z = 0; z < items.size(); z++) {
-								result.with(((AbstractList<?>) items.get(z)).getValue(keyString.substring(end + 1)));
+								result.add(((AbstractList<?>) items.get(z)).getValue(keyString.substring(end + 1)));
 							}
 							return result;
 						}
@@ -1402,7 +1432,7 @@ public abstract class AbstractArray<V> implements BaseItem {
 		}
 
 		while (fromIndex < toIndex) {
-			newInstance.with(get(fromIndex++));
+			newInstance.add(get(fromIndex++));
 		}
 		return newInstance;
 	}
@@ -1418,6 +1448,9 @@ public abstract class AbstractArray<V> implements BaseItem {
 	}
 
 	public void pack() {
+	    	if(elements == null){
+		    return;
+		}
 		boolean complex = isComplex(size);
 		if ((flag & MAP) == 0) {
 			if (complex) {
@@ -1501,7 +1534,21 @@ public abstract class AbstractArray<V> implements BaseItem {
 		return converter.encode(this);
 	}
 
-	public void setFlag(byte flag) {
-		this.flag = flag;
+	public boolean setFlag(byte value) {
+		if(value != this.flag) {
+			this.flag = value;
+			return true;
+		}
+		return false;
 	}
+	public void replaceAllValues(Object key, String search, String replace) {
+		for(int i=0;i<this.size();i++)
+		{
+			Object item = get(i);
+			if(item instanceof AbstractArray<?>) {
+				((AbstractArray<?>)item).replaceAllValues(key, search, replace);
+			}
+		}
+	}
+
 }

@@ -32,7 +32,7 @@ public abstract class GraphMember {
 	protected Object children;
 	protected Object parentNode;
 
-	Object getValue(String attribute) {
+	protected Object getValue(String attribute) {
 		if(PROPERTY_NAME.equals(attribute)) {
 			return this.name;
 		}
@@ -54,11 +54,11 @@ public abstract class GraphMember {
 		return result;
 	}
 
-	String getFullId() {
+	protected String getFullId() {
 		return name;
 	}
 	// PACKAGE VISIBILITY
-	GraphSimpleSet getChildren() {
+	protected GraphSimpleSet getChildren() {
 		if(this.children instanceof GraphSimpleSet) {
 			return (GraphSimpleSet)this.children;
 		}
@@ -71,8 +71,18 @@ public abstract class GraphMember {
 		}
 		return collection;
 	}
+	
+	public int size() {
+		if(this.children == null) {
+			return 0;
+		}
+		if(this.children instanceof GraphSimpleSet) {
+			return ((GraphSimpleSet)this.children).size();
+		}
+		return 1;
+	}
 
-	SimpleSet<GraphEntity> getNodes() {
+	protected SimpleSet<GraphEntity> getNodes() {
 		SimpleSet<GraphEntity> collection = new SimpleSet<GraphEntity>();
 		if(this.children == null) {
 			return collection;
@@ -101,17 +111,13 @@ public abstract class GraphMember {
 		return this;
 	}
 
-	boolean setName(String value) {
+	protected boolean setName(String value) {
 		if((value != null && value.equals(this.name) == false)
 				|| (value==null && this.name != null)) {
 			this.name = value;
 			return true;
 		}
 		return false;
-	}
-
-	boolean setParent(GraphMember value) {
-		return setParentNode(value);
 	}
 
 	protected boolean setParentNode(GraphMember value) {
@@ -129,6 +135,10 @@ public abstract class GraphMember {
 		}
 		return false;
 	}
+	
+	protected Object getParent() {
+		return parentNode;
+	}
 
 	protected GraphMember withChildren(GraphMember... values) {
 		// Do Nothing
@@ -138,7 +148,7 @@ public abstract class GraphMember {
 		if(this.children == null) {
 			if(values.length==1){
 				this.children = values[0];
-				((GraphMember)values[0]).setParent(this);
+				((GraphMember)values[0]).setParentNode(this);
 				return this;
 			}
 		}
@@ -153,7 +163,7 @@ public abstract class GraphMember {
 		for (GraphMember value : values) {
 			if(value != null ) {
 				if(list.add(value)) {
-					value.setParent(this);
+					value.setParentNode(this);
 				}
 			}
 		}
@@ -168,7 +178,7 @@ public abstract class GraphMember {
 			for (GraphMember value : values) {
 				if(this.children == value) {
 					this.children = null;
-					value.setParent(null);
+					value.setParentNode(null);
 				}
 			}
 			return this;
@@ -177,13 +187,13 @@ public abstract class GraphMember {
 		for (GraphMember value : values) {
 			if(value != null) {
 				collection.remove(value);
-				value.setParent(null);
+				value.setParentNode(null);
 			}
 		}
 		return this;
 	}
 
-	GraphDiff getDiff() {
+	protected GraphDiff getDiff() {
 		if(this.children == null) {
 			GraphDiff graphDiff = new GraphDiff();
 			this.withChildren(graphDiff);
@@ -208,7 +218,7 @@ public abstract class GraphMember {
 		if(this.children != null) {
 			if(this.children instanceof GraphMember) {
 				if(this.children instanceof Annotation) {
-					((Annotation)this.children).setParent(null);
+					((Annotation)this.children).setParentNode(null);
 					this.children = null;
 				}
 			}
@@ -218,7 +228,7 @@ public abstract class GraphMember {
 					if(collection.get(i) instanceof Annotation) {
 						GraphMember oldValue = collection.remove(i);
 						if(oldValue != null) {
-							oldValue.setParent(null);
+							oldValue.setParentNode(null);
 						}
 					}
 				}
@@ -261,20 +271,21 @@ public abstract class GraphMember {
 		}
 		return null;
 	}
-	GraphMember withModifier(Modifier... values) {
+	protected GraphMember withModifier(Modifier... values) {
 		if(values == null) {
 			return this;
 		}
 		Modifier rootModifier = getModifier();
-		if(rootModifier != null) {
-			for (Modifier item : values) {
-				if (item.has(Modifier.PUBLIC) || item.has(Modifier.PACKAGE) || item.has(Modifier.PROTECTED)
-						|| item.has(Modifier.PRIVATE)) {
-					rootModifier.with(item.getName());
-					continue;
-				}
-				rootModifier.withChildren(item);
+		if(rootModifier == null && this instanceof Modifier) {
+			rootModifier = (Modifier)this;
+		}
+		for (Modifier item : values) {
+			if (item.has(Modifier.PUBLIC) || item.has(Modifier.PACKAGE) || item.has(Modifier.PROTECTED)
+					|| item.has(Modifier.PRIVATE)) {
+				rootModifier.with(item.getName());
+				continue;
 			}
+			rootModifier.withChildren(new Modifier(item.getName()));
 		}
 		return this;
 	}

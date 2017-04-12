@@ -26,6 +26,7 @@ THE SOFTWARE.
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
+
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Converter;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
@@ -214,17 +215,17 @@ public class SimpleEntity<K, V> implements BaseItem, Entry<K, V>,
 	public Object getSendableInstance(boolean prototyp) {
 		return new SimpleEntity<K, V>();
 	}
-
+	
 	@Override
-	public BaseItem with(Object... values) {
+	public boolean add(Object... values) {
 		if(values == null) {
-			return this;
+			return false;
 		}
 		if(values.length==2) {
 			withKeyItem(values[0]);
 			withValueItem(values[1]);
 		}
-		return this;
+		return true;
 	}
 
 	@Override
@@ -234,7 +235,7 @@ public class SimpleEntity<K, V> implements BaseItem, Entry<K, V>,
 
 	public Object getValue(Object key) {
 		if(PROPERTY_KEY.equals(key)) {
-			return key;
+			return this.key;
 		}
 		if(PROPERTY_VALUE.equals(key)) {
 			return value;
@@ -248,5 +249,13 @@ public class SimpleEntity<K, V> implements BaseItem, Entry<K, V>,
 			return null;
 		}
 		return converter.encode(this);
+	}
+	
+	@Override
+	public int size() {
+		if(key != null) {
+			return 1;
+		}
+		return 0;
 	}
 }

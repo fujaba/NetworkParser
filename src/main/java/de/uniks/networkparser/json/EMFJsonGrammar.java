@@ -24,16 +24,14 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 import java.util.Iterator;
+
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.MapEntity;
 import de.uniks.networkparser.SimpleGrammar;
-import de.uniks.networkparser.buffer.CharacterBuffer;
-import de.uniks.networkparser.buffer.Tokener;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.Grammar;
-import de.uniks.networkparser.interfaces.IdMapCounter;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
 public class EMFJsonGrammar extends SimpleGrammar {
@@ -95,16 +93,13 @@ public class EMFJsonGrammar extends SimpleGrammar {
 	}
 
 	@Override
-	public String getId(Object obj, IdMapCounter counter) {
+	public String getId(Object obj, IdMap map) {
 		String name = obj.getClass().getName();
 		int pos = name.lastIndexOf(".");
-		counter.withPrefixId(null);
 		if (pos > 0) {
-			return name.substring(pos + 1) + counter.getSplitter()
-					+ counter.getId(obj);
-		} else {
-			return name + counter.getSplitter() + counter.getId(obj);
+			return name.substring(pos + 1) + IdMap.ENTITYSPLITTER + map.createId(obj);
 		}
+		return name + IdMap.ENTITYSPLITTER + map.createId(obj);
 	}
 
 	@Override
@@ -121,11 +116,6 @@ public class EMFJsonGrammar extends SimpleGrammar {
 			property = SRC;
 		}
 		return super.hasValue(json, property);
-	}
-
-	@Override
-	public CharacterBuffer getPrefixProperties(SendableEntityCreator creator, Tokener format, boolean isId) {
-		return new CharacterBuffer();
 	}
 
 	@Override

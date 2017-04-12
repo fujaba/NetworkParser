@@ -24,6 +24,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 import java.util.List;
+
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Condition;
 
@@ -60,8 +61,7 @@ public class SimpleList<V> extends AbstractList<V> implements List<V>, Cloneable
 	}
 
 	@Override
-	public SimpleList<V> with(Object... values) {
-		super.with(values);
-		return this;
+	public boolean add(V e) {
+		return super.add(e);
 	}
 }

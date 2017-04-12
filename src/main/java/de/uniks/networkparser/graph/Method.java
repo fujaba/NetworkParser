@@ -41,16 +41,25 @@ public class Method extends GraphMember {
 
 	@Override
 	public Method with(String name) {
+		if(name == null) {
+			return this;
+		}
+		int pos = name.indexOf("("); 
+		if(pos>0) {
+			name = name.substring(0, pos);
+		}
 		super.with(name);
 		return this;
 	}
-
 	public String getName(boolean shortName) {
+		return getName(shortName, false);
+	}
+	public String getName(boolean shortName, boolean removeParameterNames) {
 		StringBuilder sb = new StringBuilder();
 
 		sb.append(super.getName());
 		if(children != null) {
-			sb.append(getParameterString(shortName));
+			sb.append(getParameterString(shortName, removeParameterNames));
 		}
 		if(returnType!=null && returnType!= DataType.VOID){
 			sb.append(" "+returnType.getName(shortName));
@@ -118,11 +127,11 @@ public class Method extends GraphMember {
 	}
 
 	public Method withParent(Clazz value) {
-		super.setParent(value);
+		super.setParentNode(value);
 		return this;
 	}
 
-	CharacterBuffer getParameterString(boolean shortName){
+	CharacterBuffer getParameterString(boolean shortName, boolean removeParameterNames){
 		CharacterBuffer sb=new CharacterBuffer().with("(");
 		GraphSimpleSet collection = this.getChildren();
 		for(int i=0;i<collection.size();i++) {
@@ -133,7 +142,7 @@ public class Method extends GraphMember {
 			if(i>0) {
 				sb.with(", ");
 			}
-			if(param.getName() == null) {
+			if(param.getName() == null || removeParameterNames) {
 				sb.with(param.getType(shortName)+ " p"+i);
 			}else{
 				sb.with(param.getType(shortName)+" "+collection.get(i).getName());

@@ -3,6 +3,14 @@
 apply plugin: 'java'
 apply plugin: 'maven'
 
+// MAJOR VERSION - Manually set
+//----------------------
+ext{
+	majorNumber = 4
+}
+//----------------------
+
+
 ant.importBuild 'buildAnt.xml'
 ant.importBuild 'gource.xml'
 ant.importBuild 'Copyright.xml'
@@ -17,9 +25,12 @@ apply from: 'gradle/tasks.gradle'
 apply plugin: 'jacoco'
 apply plugin: 'eclipse'
 apply plugin: 'idea'
+
 apply plugin: "com.github.kt3k.coveralls"
 apply from: 'gradle/mavencentral.gradle'
-apply from: 'gradle/artifactory.gradle'
+//apply from: 'gradle/artifactory.gradle'
+
+group = "de.uniks"
 
 idea {
 	project {
@@ -44,7 +55,6 @@ test {
 
 buildscript {
 	repositories {
-		jcenter()
 		maven {
 			url "https://plugins.gradle.org/m2/"
 		}

@@ -24,6 +24,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 import java.beans.PropertyChangeEvent;
+
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.MapEntity;
 import de.uniks.networkparser.interfaces.BaseItem;
@@ -34,10 +35,13 @@ import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.list.SimpleList;
 
 public class Tokener implements BufferItem {
+	public static final String PROPS = "prop";
 	protected IdMap map;
 
 	/** BUFFER */
 	protected Buffer buffer;
+	
+//	protected boolean simpleFormat=true;
 
 	// Methods for Map
 	public SendableEntityCreator getCreatorClass(Object reference) {
@@ -46,6 +50,15 @@ public class Tokener implements BufferItem {
 		}
 		return map.getCreatorClass(reference);
 	}
+	
+//	public Tokener withSimpleFormat(boolean value) {
+//		this.simpleFormat = value;
+//		return this;
+//	}
+//	
+//	public boolean isSimpleFormat() {
+//		return simpleFormat;
+//	}
 
 	public SendableEntityCreator getCreator(String className, boolean fullName) {
 		if(map == null) {
@@ -157,9 +170,9 @@ public class Tokener implements BufferItem {
 		return this;
 	}
 	@Override
-	public CharacterBuffer nextString() {
+	public CharacterBuffer nextString(char... quotes) {
 		if(buffer != null) {
-			return buffer.nextString();
+			return buffer.nextString(quotes);
 		}
 		return null;
 	}
@@ -267,9 +280,9 @@ public class Tokener implements BufferItem {
 		return null;
 	}
 	@Override
-	public CharacterBuffer nextToken(String stopWords) {
+	public CharacterBuffer nextToken(boolean current, char... stopWords) {
 		if(buffer != null) {
-			return buffer.nextToken(stopWords);
+			return buffer.nextToken(current, stopWords);
 		}
 		return null;
 	}

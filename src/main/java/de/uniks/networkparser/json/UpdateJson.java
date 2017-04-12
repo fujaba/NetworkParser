@@ -24,19 +24,19 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map.Entry;
+
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.SimpleEvent;
-import de.uniks.networkparser.interfaces.SendableEntityCreator;
-import de.uniks.networkparser.interfaces.UpdateListener;
-import de.uniks.networkparser.list.SimpleIteratorSet;
-import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.UpdateCondition;
+import de.uniks.networkparser.interfaces.Entity;
+import de.uniks.networkparser.interfaces.MapListener;
+import de.uniks.networkparser.interfaces.SendableEntityCreator;
+import de.uniks.networkparser.list.SimpleIteratorSet;
 /**
  * The listener interface for receiving update events. The class that is
  * interested in processing a update event implements this interface, and the
@@ -46,15 +46,15 @@ import de.uniks.networkparser.UpdateCondition;
  *
  */
 
-public class UpdateJson implements PropertyChangeListener {
+public class UpdateJson implements MapListener {
 	/** The map. */
 	private IdMap map;
 
 	/** The suspend id list. */
 	private ArrayList<String> suspendIdList;
 
-	private Filter updateFilter = new Filter().withStrategy(IdMap.UPDATE).withConvertable(new UpdateCondition());
-
+	private Filter updateFilter = new Filter().withStrategy(SendableEntityCreator.UPDATE).withConvertable(new UpdateCondition());
+	
 	/**
 	 * Instantiates a new update listener.
 	 *
@@ -66,47 +66,35 @@ public class UpdateJson implements PropertyChangeListener {
 	}
 
 	/**
-	 * Garbage collection.
-	 *
-	 * @param root		the root
-	 * @return 			the json object
-	 */
-	public JsonObject garbageCollection(Object root) {
-		if(root == null) {
-			return null;
-		}
-		JsonObject initField = this.map.toJsonObject(root);
-		ArrayList<String> classCounts = new ArrayList<String>();
-		SimpleKeyValueList<String, Object> gc = new SimpleKeyValueList<String, Object>();
-		countMessage(initField, classCounts, gc);
-		// Remove all others
-		for (String id : classCounts) {
-			if(this.map.hasKey(id)) {
-				this.map.removeObj(this.map.getObject(id), false);
-			}
-		}
-		return initField;
-	}
-
-	/**
 	 * Suspend notification.
+	 * 
+	 * @return success for suspend Notification
 	 */
-	public void suspendNotification() {
+	public boolean suspendNotification() {
 		this.suspendIdList = new ArrayList<String>();
+		return true;
 	}
 
 	/**
 	 * Reset notification.
+	 * 
+	 * @return success for reset Notification
 	 */
-	public void resetNotification() {
+	public boolean resumeNotification() {
 		JsonArray array = this.map.getJsonByIds(this.suspendIdList);
 		if(array.size() > 0) {
 			JsonObject message = new JsonObject();
-			message.put(IdMap.UPDATE, array);
-			this.map.notify(new SimpleEvent(IdMap.NEW, message, map, null, null, null));
+			message.put(SendableEntityCreator.UPDATE, array);
+			this.map.notify(new SimpleEvent(SendableEntityCreator.NEW, message, map, null, null, null));
 		}
 
 		this.suspendIdList = null;
+		return true;
+	}
+
+	public boolean resetNotification() {
+		this.suspendIdList = null;
+		return true;
 	}
 
 	/*
@@ -119,8 +107,6 @@ public class UpdateJson implements PropertyChangeListener {
 	public void propertyChange(PropertyChangeEvent evt) {
 		Object oldValue = evt.getOldValue();
 		Object newValue = evt.getNewValue();
-
-		this.updateFilter.withPropertyRegard(map.getListener());
 
 		if ((oldValue == null && newValue == null)
 				|| (oldValue != null && oldValue.equals(newValue))) {
@@ -148,7 +134,7 @@ public class UpdateJson implements PropertyChangeListener {
 			// this property is not part of the replicated model, do not
 			// replicate
 			// if propertyname is not found and the name is REMOVE_YOU it remove it from the IdMap
-			if(IdMap.REMOVE_YOU.equals(propertyName)) {
+			if(SendableEntityCreator.REMOVE_YOU.equals(propertyName)) {
 				this.removeObj(evt.getOldValue(), true);
 			}
 			return;
@@ -171,7 +157,7 @@ public class UpdateJson implements PropertyChangeListener {
 			} else {
 				child.put(propertyName, oldValue);
 			}
-			jsonObject.put(IdMap.REMOVE, child);
+			jsonObject.put(SendableEntityCreator.REMOVE, child);
 		}
 
 		if (newValue != null) {
@@ -197,24 +183,14 @@ public class UpdateJson implements PropertyChangeListener {
 				// plain attribute
 				child.put(propertyName, newValue);
 			}
-			jsonObject.put(IdMap.UPDATE, child);
+			jsonObject.put(SendableEntityCreator.UPDATE, child);
 		}
-		if (this.map.getCounter().getPrio() != null) {
-			jsonObject.put(Filter.PRIO, this.map.getCounter().getPrio());
-		}
+//FIXME		if (this.map.getCounter().getPrio() != null) {
+//			jsonObject.put(Filter.PRIO, this.map.getCounter().getPrio());
+//		}
 		if (this.suspendIdList == null) {
-			this.map.notify(new SimpleEvent(IdMap.NEW, jsonObject, evt,  map));
+			this.map.notify(new SimpleEvent(SendableEntityCreator.NEW, jsonObject, evt,  map));
 		}
-	}
-
-	/**
-	 * Execute.
-	 *
-	 * @param updateMessage		the update message
-	 * @return 					the MasterObject, if successful
-	 */
-	public Object execute(JsonObject updateMessage) {
-		return execute(updateMessage, new Filter());
 	}
 
 	/**
@@ -224,19 +200,22 @@ public class UpdateJson implements PropertyChangeListener {
 	 * @param filter 			Filter for exclude UpdateMessages
 	 * @return 					the MasterObject, if successful
 	 */
-	public Object execute(JsonObject updateMessage, Filter filter) {
-		if(!updateMessage.has(IdMap.UPDATE) && !updateMessage.has(IdMap.REMOVE)) {
+	public Object execute(Entity updateMessage, Filter filter) {
+		if(!updateMessage.has(SendableEntityCreator.UPDATE) && !updateMessage.has(SendableEntityCreator.REMOVE)) {
+			return null;
+		}
+		if(this.map == null) {
 			return null;
 		}
 
 		String id = updateMessage.getString(IdMap.ID);
-		JsonObject remove = (JsonObject) updateMessage.get(IdMap.REMOVE);
-		JsonObject update = (JsonObject) updateMessage.get(IdMap.UPDATE);
-		Object prio = updateMessage.get(Filter.PRIO);
+		JsonObject remove = (JsonObject) updateMessage.getValue(SendableEntityCreator.REMOVE);
+		JsonObject update = (JsonObject) updateMessage.getValue(SendableEntityCreator.UPDATE);
+		Object prio = updateMessage.getValue(Filter.PRIO);
 		Object masterObj = this.map.getObject(id);
 		if (masterObj == null)
 		{
-		   String masterObjClassName = (String) updateMessage.get(IdMap.CLASS);
+		   String masterObjClassName = (String) updateMessage.getValue(IdMap.CLASS);
 
 		   if (masterObjClassName != null)
 		   {
@@ -262,11 +241,11 @@ public class UpdateJson implements PropertyChangeListener {
 				Object value = creator.getValue(masterObj, key);
 				if (value == null) {
 					// Old Value is Standard
-					return setValue(creator, masterObj, key, item.getValue(), IdMap.NEW);
+					return setValue(creator, masterObj, key, item.getValue(), SendableEntityCreator.NEW);
 				} else if (value.equals(creator.getValue(refObject, key))) {
 					// Old Value is Standard
 					return setValue(creator, masterObj, key,
-							update.get(key), IdMap.NEW);
+							update.get(key), SendableEntityCreator.NEW);
 				} else {
 					// ERROR
 					if (checkPrio(prio)) {
@@ -286,24 +265,24 @@ public class UpdateJson implements PropertyChangeListener {
 				if (value instanceof Collection<?>) {
 					JsonObject removeJsonObject = remove.getJsonObject(key);
 					setValue(creator, masterObj, key, removeJsonObject,
-							IdMap.REMOVE);
+							SendableEntityCreator.REMOVE);
 				} else {
 					if (checkValue(value, key, remove)) {
 						setValue(creator, masterObj, key,
 								creator.getValue(refObject, key),
-								IdMap.REMOVE);
+								SendableEntityCreator.REMOVE);
 					} else if (checkPrio(prio)) {
 						// RESET TO DEFAULTVALUE
 						setValue(creator, masterObj, key,
 								creator.getValue(refObject, key),
-								IdMap.REMOVE);
+								SendableEntityCreator.REMOVE);
 					}
 				}
 				Object removeJsonObject = remove.get(key);
 				if (removeJsonObject != null
 						&& removeJsonObject instanceof JsonObject) {
 					JsonObject json = (JsonObject) removeJsonObject;
-					this.map.notify(new SimpleEvent(IdMap.REMOVE, json, map, key, this.map.decode(json), null).withModelValue(masterObj));
+					this.map.notify(new SimpleEvent(SendableEntityCreator.REMOVE, json, map, key, this.map.decode(json), null).withModelValue(masterObj));
 				}
 			}
 			return masterObj;
@@ -317,15 +296,13 @@ public class UpdateJson implements PropertyChangeListener {
 
 				if (checkValue(oldValue, key, remove)) {
 					Object newValue = update.get(key);
-					setValue(creator, masterObj, key, newValue,
-							IdMap.UPDATE);
+					setValue(creator, masterObj, key, newValue, SendableEntityCreator.UPDATE);
 
-					this.map.notify(new SimpleEvent(IdMap.UPDATE, update, map, key, oldValue, newValue).withModelValue(masterObj));
+					this.map.notify(new SimpleEvent(SendableEntityCreator.UPDATE, update, map, key, oldValue, newValue).withModelValue(masterObj));
 				} else if (checkPrio(prio)) {
 					Object newValue = update.get(key);
-					setValue(creator, masterObj, key, newValue,
-							IdMap.UPDATE);
-					this.map.notify(new SimpleEvent(IdMap.UPDATE, update, map, key, oldValue, newValue).withModelValue(masterObj));
+					setValue(creator, masterObj, key, newValue, SendableEntityCreator.UPDATE);
+					this.map.notify(new SimpleEvent(SendableEntityCreator.UPDATE, update, map, key, oldValue, newValue).withModelValue(masterObj));
 				}
 			}
 			return masterObj;
@@ -350,7 +327,7 @@ public class UpdateJson implements PropertyChangeListener {
 				String oldId = (String) ((JsonObject) oldValue)
 						.get(IdMap.ID);
 				return oldId.equals(this.map.getId(value));
-			} else if (oldValue.equals(value)) {
+			} else if (oldValue != null && oldValue.equals(value) || (value == null && oldValue == null)) {
 				return true;
 			}
 		}
@@ -364,7 +341,8 @@ public class UpdateJson implements PropertyChangeListener {
 	 * @return 		true, if successful
 	 */
 	private boolean checkPrio(Object prio) {
-		Object myPrio = this.map.getCounter().getPrio();
+//		Object myPrio = this.map.getCounter().getPrio();
+		Object myPrio = null;
 		if (prio != null && myPrio != null) {
 			if (prio instanceof Integer && myPrio instanceof Integer) {
 				Integer ref = (Integer) myPrio;
@@ -409,61 +387,16 @@ public class UpdateJson implements PropertyChangeListener {
 		return null;
 	}
 
-	public UpdateJson withReguardFilter(UpdateListener filter) {
-		this.updateFilter.withPropertyRegard(filter);
+	public UpdateJson withFilter(Filter filter) {
+		this.updateFilter = filter;
 		return this;
 	}
 
-	/**
-	 * Count message.
-	 *
-	 * @param message	the message
-	 * @param classCounts	List of ClassCounts
-	 * @param gc			GarbageCollege list
-	 */
-	private void countMessage(JsonObject message, ArrayList<String> classCounts, SimpleKeyValueList<String, Object> gc) {
-		if (message.has(IdMap.ID)) {
-			String id = (String) message.get(IdMap.ID);
-			if (gc.containsKey(id)) {
-				gc.put(id, (Integer) gc.getValue(id) + 1);
-			} else {
-				gc.put(id, 1);
-			}
-			if (message.has(IdMap.CLASS)) {
-				if (classCounts.contains(id)) {
-					return;
-				}
-				classCounts.add(id);
-				// Its a new Object
-				JsonObject props = (JsonObject) message
-						.get(JsonTokener.PROPS);
-				for (int i = 0; i < props.size(); i++) {
-					if (props.getValueByIndex(i) instanceof JsonObject) {
-						countMessage((JsonObject) props.getValueByIndex(i), classCounts, gc);
-					} else if (props.getValueByIndex(i) instanceof JsonArray) {
-						countMessage((JsonArray) props.getValueByIndex(i), classCounts, gc);
-					}
-				}
-			}
-		}
+	@Override
+	public Filter getFilter() {
+		return this.updateFilter;
 	}
-
-	/**
-	 * Count message.
-	 *
-	 * @param message		the message
-	 * @param classCounts	List of ClassCounts
-	 * @param gc			GarbageCollege list
-	 */
-	private void countMessage(JsonArray message, ArrayList<String> classCounts, SimpleKeyValueList<String, Object> gc) {
-		for (Iterator<Object> i = message.iterator(); i.hasNext();) {
-			Object obj = i.next();
-			if (obj instanceof JsonObject) {
-				countMessage((JsonObject) obj, classCounts, gc);
-			}
-		}
-	}
-
+	
 	/**
 	 * Remove the given object from the IdMap
 	 * @param oldValue Object to remove

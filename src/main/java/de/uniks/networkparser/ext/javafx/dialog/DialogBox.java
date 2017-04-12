@@ -25,7 +25,9 @@ THE SOFTWARE.
 */
 import java.net.URL;
 import java.util.ArrayList;
+
 import com.sun.javafx.tk.Toolkit;
+
 import de.uniks.networkparser.ext.javafx.dialog.DialogButton.Grafik;
 import javafx.application.Platform;
 import javafx.beans.InvalidationListener;

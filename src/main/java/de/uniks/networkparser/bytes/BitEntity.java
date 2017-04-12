@@ -35,18 +35,18 @@ public class BitEntity extends SimpleList<BitValue> implements ByteItem {
 	public static final byte BIT_BYTE = 0x42; // B = Byte
 	public static final byte BIT_REFERENCE = 0x52; // R = Reference
 
-	// Can be a Typ
+	// Can be a Type
 	protected String property;
-	protected byte typ = BIT_BYTE;
+	protected byte type = BIT_BYTE;
 	protected int orientation = 1;
 	public static final String PROPERTY_PROPERTY = "property";
-	public static final String PROPERTY_TYP = "typ";
+	public static final String PROPERTY_TYPE = "type";
 	public static final String PROPERTY_ORIENTATION = "orientation";
 
-	public BitEntity with(String property, byte typ) {
-		if(typ != 0) {
+	public BitEntity with(String property, byte type) {
+		if(type != 0) {
 			this.property = property;
-			this.typ = typ;
+			this.type = type;
 		}
 		return this;
 	}
@@ -66,16 +66,16 @@ public class BitEntity extends SimpleList<BitValue> implements ByteItem {
 	}
 
 	@Override
-	public byte getTyp() {
-		return typ;
+	public byte getType() {
+		return type;
 	}
 
-	public boolean isTyp(byte... referenceTyp) {
-		if (referenceTyp == null) {
+	public boolean isType(byte... referenceType) {
+		if (referenceType == null) {
 			return false;
 		}
-		for (byte typ : referenceTyp) {
-			if (this.typ == typ) {
+		for (byte type : referenceType) {
+			if (this.type == type) {
 				return true;
 			}
 		}
@@ -86,8 +86,8 @@ public class BitEntity extends SimpleList<BitValue> implements ByteItem {
 		if (PROPERTY_PROPERTY.equalsIgnoreCase(attribute)) {
 			this.property = "" + value;
 			return true;
-		} else if (PROPERTY_TYP.equalsIgnoreCase(attribute)) {
-			this.typ = (Byte) value;
+		} else if (PROPERTY_TYPE.equalsIgnoreCase(attribute)) {
+			this.type = (Byte) value;
 			return true;
 		} else if (PROPERTY_ORIENTATION.equalsIgnoreCase(attribute)) {
 			this.orientation = Integer.parseInt("" + value);
@@ -109,8 +109,8 @@ public class BitEntity extends SimpleList<BitValue> implements ByteItem {
 		}
 		if (PROPERTY_PROPERTY.equalsIgnoreCase(attrName)) {
 			return this.property;
-		} else if (PROPERTY_TYP.equalsIgnoreCase(attrName)) {
-			return this.typ;
+		} else if (PROPERTY_TYPE.equalsIgnoreCase(attrName)) {
+			return this.type;
 		} else if (PROPERTY_ORIENTATION.equalsIgnoreCase(attrName)) {
 			return this.orientation;
 		}
@@ -148,30 +148,30 @@ public class BitEntity extends SimpleList<BitValue> implements ByteItem {
 	}
 
 	@Override
-	public BitEntity with(Object... values) {
+	public boolean add(Object... values) {
 		if(values==null){
-			return this;
+			return false;
 		}
 		for (Object value : values) {
 			if (value instanceof Byte) {
-				this.typ = BIT_BYTE;
+				this.type = BIT_BYTE;
 				this.property = "" + value;
 			} else if (value instanceof Integer) {
-				this.typ = BIT_NUMBER;
+				this.type = BIT_NUMBER;
 				this.property = "" + value;
 			} else if (value instanceof BitValue) {
 				this.add((BitValue) value);
 			} else {
-				this.typ = BIT_STRING;
+				this.type = BIT_STRING;
 				this.property = "" + value;
 			}
 		}
-		return this;
+		return true;
 	}
 	
-	public BitEntity withTyp(byte typ) {
-		if(typ != 0) {
-			this.typ = typ;
+	public BitEntity withType(byte value) {
+		if(value != 0) {
+			this.type = value;
 		}
 		return this;
 	}

@@ -14,6 +14,7 @@ import org.junit.Test;
 
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
+import de.uniks.networkparser.SimpleObject;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.converter.DotConverter;
 import de.uniks.networkparser.converter.GraphConverter;
@@ -79,19 +80,98 @@ import de.uniks.networkparser.xml.HTMLEntity;
 
 public class GraphTest {
 	@Test
+	public void testSimpleGeneralization() {
+		GraphList model=new GraphList();
+		Clazz creature = model.createClazz("Creature");
+		creature.createAttribute("age", DataType.INT);
+		creature.createMethod("live");
+		creature.enableInterface();
+		
+		Clazz food = model.createClazz("Food");
+		creature.withBidirectional(food, "eat", Cardinality.MANY, "meal", Cardinality.ONE);
+		
+		
+		Clazz person = model.createClazz("Person").withSuperClazz(creature);
+		person.createAttribute("name", DataType.STRING);
+		person.createMethod("go");
+		person.withBidirectional(food, "has", Cardinality.MANY, "owner", Cardinality.ONE);
+	
+		Assert.assertEquals(2, person.getMethods().size());
+		Assert.assertEquals(2, person.getAttributes().size());
+		Assert.assertEquals(3, person.getAssociations().size());
+	}
+	
+	
+	@Test
+	public void testSimpleObject() {
+		SimpleObject so = SimpleObject.create("number", "value", 42);
+		IdMap map = new IdMap();
+		map.withTimeStamp(1);
+		JsonObject jsonObject = map.toJsonObject(so);
+		Assert.assertEquals("{\"class\":\"number\",\"id\":\"S1\",\"prop\":{\"value\":42}}", jsonObject.toString());
+		jsonObject = map.toJsonObject(so, Filter.SIMPLEFORMAT);
+		Assert.assertEquals("{\"class\":\"number\",\"id\":\"S1\",\"value\":42}", jsonObject.toString());
+		
+		Assert.assertEquals(so.getValue(), 42);
+	}		
+	
+	@Test
+	public void testModifier() {
+		GraphList model = new GraphList();
+		Clazz person = model.createClazz("Person");
+		Assert.assertEquals("public", person.getModifier().toString());
+
+		person.with(Modifier.ABSTRACT);
+		person.with(Modifier.ABSTRACT);
+		
+		Assert.assertEquals("public abstract", person.getModifier().toString());
+		
+		person.with(Modifier.FINAL);
+		
+		Assert.assertEquals("public abstract final", person.getModifier().toString());
+
+		Clazz uni = model.createClazz("Uni");
+		
+		Assert.assertEquals("public", uni.getModifier().toString());
+		uni.with(Modifier.ABSTRACT);
+		
+		Assert.assertEquals("public abstract", uni.getModifier().toString());
+		
+		Clazz student = model.createClazz("Student");
+		student.with(Modifier.create(Modifier.ABSTRACT));
+		
+		Assert.assertEquals("public abstract", student.getModifier().toString());
+		
+		Assert.assertEquals("public abstract", uni.getModifier().toString());
+		Assert.assertEquals("public abstract final", person.getModifier().toString());
+	}
+	
+	
+	@Test
+	public void testDupplicateAssoc() {
+		Clazz person=new Clazz("Person");
+		Clazz uni=new Clazz("Uni");
+		person.withBidirectional(uni, "owner", Cardinality.ONE, "has", Cardinality.MANY);
+		person.withBidirectional(uni, "owner", Cardinality.ONE, "has", Cardinality.MANY);
+		
+		Assert.assertEquals(1, uni.getAssociations().size());
+		Assert.assertEquals(1, person.getAssociations().size());
+	}
+
+	@Test
 	public void testImplements() {
 		GraphList list = new GraphList();
 		
 		Clazz person=list.createClazz("Person").enableInterface();
-		Clazz student=new Clazz().with("Student");
+		Clazz student=new Clazz("Student");
+		student.with(new Attribute("name", DataType.STRING));
 		
 		student.withSuperClazz(person);
 		
 		list.fixClassModel();
 		
 		GraphConverter converter = new GraphConverter();
-		Assert.assertEquals(256, converter.convert(list, true).toString().length());
-		
+		showDebugInfos(converter.convertToJson(list, true, false), 505, null);
 	}
 	
 	@Test
@@ -103,20 +183,20 @@ public class GraphTest {
 	@Test
 	public void testGraph() {
 		GraphList list = new GraphList();
-		Clazz node = new Clazz().with("Item");
+		Clazz node = new Clazz("Item");
 		node.with(new GraphImage().with("karli.png"));
 		list.with(node);
 
 		GraphConverter converter = new GraphConverter();
 		Assert.assertEquals(
-				"{\"typ\":\"classdiagram\",\"nodes\":[{\"typ\":\"clazz\",\"id\":\"Item\",\"head\":{\"src\":\"karli.png\"}}]}",
-				converter.convert(list, false).toString());
+				"{\"type\":\"classdiagram\",\"nodes\":[{\"type\":\"clazz\",\"id\":\"Item\",\"head\":{\"src\":\"karli.png\"}}]}",
+				converter.convertToJson(list, false, false).toString());
 	}
 	
 	@Test
 	public void testSuperClassesAsInterface() {
-		Clazz student = new Clazz().with("Student");
-		Clazz person = new Clazz().with("Person");
+		Clazz student = new Clazz("Student");
+		Clazz person = new Clazz("Person");
 		student.withSuperClazz(person);
 		Assert.assertNotNull(student.getSuperClazzes(false).first());
 		Assert.assertEquals(student.getAssociations().first().getType(), AssociationTypes.GENERALISATION);
@@ -127,8 +207,8 @@ public class GraphTest {
 
 	@Test
 	public void testSuperClasses() {
-		Clazz student = new Clazz().with("Student");
-		Clazz person = new Clazz().with("Person");
+		Clazz student = new Clazz("Student");
+		Clazz person = new Clazz("Person");
 		student.withSuperClazz(person);
 
 		Assert.assertEquals(student.getSuperClazzes(false).first(), person);
@@ -172,9 +252,9 @@ public class GraphTest {
 
 	@Test
 	public void testComplex() {
-		Clazz student = new Clazz().with("Student");
-		Clazz person = new Clazz().with("Person");
-		Clazz uni = new Clazz().with("Uni");
+		Clazz student = new Clazz("Student");
+		Clazz person = new Clazz("Person");
+		Clazz uni = new Clazz("Uni");
 		student.withSuperClazz(person);
 
 		Assert.assertEquals(student.getSuperClazzes(false).first(), person);
@@ -185,7 +265,7 @@ public class GraphTest {
 
 	@Test
 	public void testModell() {
-		Clazz clazz = new Clazz().with("Student");
+		Clazz clazz = new Clazz("Student");
 		clazz.createAttribute("name", DataType.STRING);
 		clazz.createAttribute("age", DataType.INT);
 		PrintStream output = null; // System.out;
@@ -238,8 +318,16 @@ public class GraphTest {
 	private static final String RED = "red";
 
 	@Test
+	public void SimpleKK() {
+		//FIXME
+//		Graph
+	}
+	
+	
+	@Test
 	public void SimpleModel() {
 		IdMap jsonIdMap = new IdMap();
+		jsonIdMap.withTimeStamp(1);
 		jsonIdMap.with(new FieldCreator()).with(new LudoCreator()).with(new PawnCreator()).with(new PlayerCreator());
 
 		Ludo ludo = new Ludo();
@@ -253,25 +341,31 @@ public class GraphTest {
 		sabine.createPawns().withColor(RED).withPos(tomStartField);
 
 		JsonArray jsonArray = jsonIdMap.toJsonArray(ludo);
-		// showDebugInfos(jsonArray, 1428, System.out);
+		showDebugInfos(jsonArray, 2255, null);
+		jsonArray.replaceAllValues(IdMap.CLASS, "de.uniks.networkparser.test.model.ludo.", "");
+		showDebugInfos(jsonArray, 1553, null);
 
 		GraphConverter graphConverter = new GraphConverter();
 
 		// May be 8 Asssocs and write 11
-		JsonObject converter = graphConverter.convertToJson(GraphTokener.CLASS, jsonArray, true);
-
 		YUMLConverter converterYUML = new YUMLConverter();
-		GraphList root = graphConverter.convertGraphList(GraphTokener.CLASS, jsonArray);
-		Assert.assertEquals(
-				"[Ludo]-[Player|color:String;name:String],[Player]-[Field|color:String;kind:String],[Player]-[Pawn|color:String],[Field]-[Pawn|color:String]",
+		GraphList root  = graphConverter.convertGraphList(GraphTokener.CLASS, jsonArray);
+
+		JsonObject converter = graphConverter.convertToJson(GraphTokener.CLASS, jsonArray, true);
+		showDebugInfos(converter, 1537, null);
+
+		
+		root = graphConverter.convertGraphList(GraphTokener.CLASS, jsonArray);
+		Assert.assertEquals("[Field|color:String;kind:String]-[Player|color:String;name:String],[Field]-[Pawn|color:String],[Ludo]-[Player],[Pawn]-[Player]",
 				converterYUML.convert(root, true));
 
-		showDebugInfos(converter, 1552, null);
+		showDebugInfos(converter, 1537, null);
 	}
 
 	@Test
 	public void testLudoStoryboard() {
 		IdMap jsonIdMap = new IdMap();
+		jsonIdMap.withTimeStamp(1);
 		jsonIdMap.with(new DateCreator()).with(new DiceCreator()).with(new FieldCreator()).with(new LudoCreator())
 				.with(new PawnCreator()).with(new PlayerCreator());
 
@@ -290,12 +384,12 @@ public class GraphTest {
 		tom.createBase().withColor("blue").withKind("base").withPawns(p2);
 		sabine.createPawns().withColor(RED).withPos(tomStartField);
 		JsonArray jsonArray = jsonIdMap.toJsonArray(ludo);
-		showDebugInfos(jsonArray, 5089, null);
+		showDebugInfos(jsonArray, 4966, null);
 		GraphConverter graphConverter = new GraphConverter();
 
 		// May be 8 Asssocs and write 11
 		JsonObject converter = graphConverter.convertToJson(GraphTokener.CLASS, jsonArray, true);
-		showDebugInfos(converter, 2479, null);
+		showDebugInfos(converter, 2191, null);
 	}
 
 	private void showDebugInfos(Entity json, int len, PrintStream stream) {
@@ -305,6 +399,14 @@ public class GraphTest {
 			stream.println("###############################");
 		}
 		Assert.assertEquals(len, json.toString(2).length());
+	}
+	private void showDebugInfos(String value, int len, PrintStream stream) {
+		if (stream != null) {
+			stream.println("###############################");
+			stream.println(value);
+			stream.println("###############################");
+		}
+		Assert.assertEquals(len, value.length());
 	}
 
 	private void showDebugInfos(EntityList json, int len, PrintStream stream) {
@@ -324,32 +426,46 @@ public class GraphTest {
 		root.setChild(new SortedMsg().withMsg("Child"));
 
 		IdMap map = new IdMap();
+		map.withTimeStamp(1);
 		map.with(new SortedMsgCreator());
 
 		JsonArray jsonArray = map.toJsonArray(root, new Filter().withFull(true));
 		GraphConverter graphConverter = new GraphConverter();
 		JsonObject objectModel = graphConverter.convertToJson(GraphTokener.OBJECT, jsonArray, true);
-		showDebugInfos(objectModel, 641, null);
+		showDebugInfos(objectModel, 627, null);
 
 		JsonObject clazzModel = graphConverter.convertToJson(GraphTokener.CLASS, jsonArray, true);
-		showDebugInfos(clazzModel, 475, null);
-		Assert.assertEquals(new CharacterBuffer().withLine("{").withLine("  \"typ\":\"classdiagram\",")
+		showDebugInfos(clazzModel, 472, null);
+		Assert.assertEquals(new CharacterBuffer().withLine("{").withLine("  \"type\":\"classdiagram\",")
 				.withLine("  \"nodes\":[").withLine("    {")
-				.withLine("      \"typ\":\"clazz\",").withLine("      \"id\":\"SortedMsg\",")
-				.withLine("      \"attributes\":[").withLine("        \"number:Integer\",")
-				.withLine("        \"msg:String\"").withLine("      ]").withLine("    }").withLine("  ],")
-				.withLine("  \"edges\":[").withLine("    {").withLine("      \"typ\":\"ASSOCIATION\",")
+				.withLine("      \"type\":\"clazz\",").withLine("      \"id\":\"SortedMsg\",")
+				.withLine("      \"attributes\":[").withLine("        \"msg:String\",")
+				.withLine("        \"number:Integer\"").withLine("      ]").withLine("    }").withLine("  ],")
+				.withLine("  \"edges\":[").withLine("    {").withLine("      \"type\":\"assoc\",")
 				.withLine("      \"source\":{").withLine("        \"cardinality\":\"one\",")
 				.withLine("        \"property\":\"child\",").withLine("        \"id\":\"SortedMsg\"")
 				.withLine("      },").withLine("      \"target\":{").withLine("        \"cardinality\":\"one\",")
 				.withLine("        \"property\":\"parent\",").withLine("        \"id\":\"SortedMsg\"")
 				.withLine("      }").withLine("    }").withLine("  ]").with("}").toString(), clazzModel.toString(2));
 	}
+	
+	@Test
+	public void testClazzAttributes() {
+		Clazz player = new Clazz("Player");
+		player.with(new Attribute("name", DataType.STRING));
+		player.with(new Attribute("name", DataType.STRING));
+		player.with(new Method("checkend()", DataType.BOOLEAN));
+		Assert.assertEquals("checkend", player.getMethods().first().getName());
+		Assert.assertEquals(1, player.getAttributes().size());
+		
+	}
 
+	
+	
 	@Test
 	public void testClazzTest() {
-		Clazz ludo = new Clazz().with("Ludo");
-		Clazz player = new Clazz().with("Player");
+		Clazz ludo = new Clazz("Ludo");
+		Clazz player = new Clazz("Player");
 		ludo.withBidirectional(player, "players", Cardinality.MANY, "game", Cardinality.ONE);
 		Assert.assertNotNull(ludo);
 	}
@@ -368,7 +484,7 @@ public class GraphTest {
 		GraphConverter graphConverter = new GraphConverter();
 
 		JsonObject converter = graphConverter.convertToJson(GraphTokener.CLASS, jsonArray, true);
-		showDebugInfos(converter, 552, null);
+		showDebugInfos(converter, 550, null);
 	}
 	@Test
 	public void testGraphPatternTest() {
@@ -400,15 +516,15 @@ public class GraphTest {
 		chatMessage.setDate(date);
 
 		IdMap jsonMap = new IdMap();
-		jsonMap.with(new ChatMessageCreator());
+		jsonMap.add(new ChatMessageCreator());
 		IdMap yumlParser = new IdMap();
+		yumlParser.withTimeStamp(1);
 		yumlParser.withKeyValue(jsonMap.getKeyValue())
-			.with(jsonMap);
+			.add(jsonMap);
 
 		String parseObject = yumlParser.toObjectDiagram(chatMessage).toString();
 		assertEquals(
-				url
-						+ "[J1.C1 : ChatMessage|sender=Stefan Lindel;txt=Dies ist eine Testnachricht;count=0;activ=false]-[J1.D2 : Date|value=1350978000017]",
+				url	+ "[C1 : ChatMessage|activ=false;count=0;sender=Stefan Lindel;txt=Dies ist eine Testnachricht]-[D2 : Date|value=1350978000017]",
 				url + parseObject);
 
 		jsonMap = new IdMap();
@@ -420,7 +536,7 @@ public class GraphTest {
 		room.setName("1340");
 		uni.addToRooms(room);
 
-		assertEquals(url + "[J1.U3 : University]",
+		assertEquals(url + "[U3 : University]",
 				url + yumlParser.toObjectDiagram(uni).toString());
 
 		assertEquals(url + "[University]", url + yumlParser.toClassDiagram(uni).toString());
@@ -429,35 +545,35 @@ public class GraphTest {
 	@Test
 	public void testSimpleGraphList() {
 		GraphList list = new GraphList();
-		Clazz uni = list.with(new Clazz().with("UniKassel").with("University"));
+		Clazz uni = list.with(new Clazz("University"));
 		uni.createAttribute("name", DataType.STRING);
 		uni.createMethod("init()");
-		Clazz student = list.with(new Clazz().with("Stefan").with("Student"));
+		Clazz student = list.with(new Clazz("Student"));
 		student.withUniDirectional(uni, "owner", Cardinality.ONE);
 		YUMLConverter converter = new YUMLConverter();
-		Assert.assertEquals("[University|name:String]<-[Student]", converter.convert(list, true));
+		Assert.assertEquals("[Student]->[University|name:String]", converter.convert(list, true));
 	}
 
 	@Test
 	public void testSimpleBiGraphList() {
 		GraphList list = new GraphList();
-		Clazz uni = list.with(new Clazz().with("UniKassel").with("University"));
+		Clazz uni = list.with(new Clazz("University"));
 		uni.createAttribute("name", DataType.STRING);
 		uni.createMethod("init()");
-		Clazz student = list.with(new Clazz().with("Stefan").with("Student"));
+		Clazz student = list.with(new Clazz("Student"));
 		student.withBidirectional(uni, "owner", Cardinality.ONE, "students", Cardinality.MANY);
 		YUMLConverter converter = new YUMLConverter();
-		Assert.assertEquals("[University|name:String]-[Student]", converter.convert(list, true));
+		Assert.assertEquals("[Student]-[University|name:String]", converter.convert(list, true));
 	}
 
 	@Test
 	public void testSimpleYUMLGraph() {
 		GraphList list = new GraphList();
-		Clazz uni = list.with(new Clazz().with("UniKassel").with("University"));
+		Clazz uni = list.with(new Clazz("University"));
 		uni.createAttribute("name", DataType.STRING);
-		list.with(new Clazz().with("Stefan").with("Student"));
+		list.with(new Clazz("Student"));
 		YUMLConverter converter = new YUMLConverter();
-		Assert.assertEquals("[University|name:String],[Student]", converter.convert(list, true));
+		Assert.assertEquals("[Student],[University|name:String]", converter.convert(list, true));
 	}
 
 
@@ -473,22 +589,22 @@ public class GraphTest {
 		Assert.assertEquals(438, htmlEntity.toString(2).length());
 
 		DocEnvironment docEnvironment = new DocEnvironment();
-		GraphList model = new GraphList().withTyp(GraphTokener.CLASS);
+		GraphList model = new GraphList().withType(GraphTokener.CLASS);
 
-		Clazz abstractArray = model.with(new Clazz().with("AbstractArray"));
+		Clazz abstractArray = model.with(new Clazz("AbstractArray"));
 		abstractArray.createAttribute("elements", DataType.create("Object[]"));
 		abstractArray.createAttribute("size", DataType.INT);
 		abstractArray.createAttribute("index", DataType.INT);
 		abstractArray.createAttribute("flag", DataType.BYTE);
-		Clazz baseItem = model.with(new Clazz().with(ClazzType.INTERFACE).with("BaseItem"));
-		Clazz iterable = model.with(new Clazz().with("Iterable<V>"));
-		Clazz abstractList = model.with(new Clazz().with("AbstractList<V>"));
-		Clazz simpleList = model.with(new Clazz().with("SimpleList<V>"));
-		Clazz simpleSet = model.with(new Clazz().with("SimpleSet<V>"));
-		Clazz simpleKeyValueList = model.with(new Clazz().with("SimpleKeyValueList<K, V>"));
-		Clazz map = model.with(new Clazz().with("Map<K, V>"));
-		Clazz list = model.with(new Clazz().with("List<V>"));
-		Clazz set = model.with(new Clazz().with("Set<V>"));
+		Clazz baseItem = model.with(new Clazz("BaseItem").with(ClazzType.INTERFACE));
+		Clazz iterable = model.with(new Clazz("Iterable<V>"));
+		Clazz abstractList = model.with(new Clazz("AbstractList<V>"));
+		Clazz simpleList = model.with(new Clazz("SimpleList<V>"));
+		Clazz simpleSet = model.with(new Clazz("SimpleSet<V>"));
+		Clazz simpleKeyValueList = model.with(new Clazz("SimpleKeyValueList<K, V>"));
+		Clazz map = model.with(new Clazz("Map<K, V>"));
+		Clazz list = model.with(new Clazz("List<V>"));
+		Clazz set = model.with(new Clazz("Set<V>"));
 
 //		baseItem.withInterface(true);
 
@@ -504,7 +620,7 @@ public class GraphTest {
 		model.with(Association.create(simpleList, list).with(AssociationTypes.IMPLEMENTS));
 		model.with(Association.create(simpleSet, set).with(AssociationTypes.IMPLEMENTS));
 
-		docEnvironment.writeJson("simpleCollection.html", "../src/main/resources/de/uniks/networkparser/graph/", new GraphConverter().convertToJson(model, true));
+		docEnvironment.writeJson("simpleCollection.html", "../src/main/resources/de/uniks/networkparser/graph/", new GraphConverter().convertToJson(model, true, false));
 	}
 
 	@Test
@@ -515,13 +631,13 @@ public class GraphTest {
 		htmlEntity.withHeader("../src/main/resources/de/uniks/networkparser/graph/dagre.min.js");
 		htmlEntity.withHeader("../src/main/resources/de/uniks/networkparser/graph/drawer.js");
 
-		GraphList model = new GraphList().withTyp(GraphTokener.CLASS);
-		Clazz uni = model.with(new Clazz().with("University"));
+		GraphList model = new GraphList().withType(GraphTokener.CLASS);
+		Clazz uni = model.with(new Clazz("University"));
 		uni.createAttribute("name", DataType.STRING);
-		Clazz person = model.with(new Clazz().with("Person"));
+		Clazz person = model.with(new Clazz("Person"));
 
 		uni.withBidirectional(person, "has", Cardinality.MANY, "studis", Cardinality.ONE);
-		Assert.assertEquals(656, htmlEntity.withGraph(model).toString(2).length());
+		showDebugInfos(htmlEntity.withGraph(model).toString(2), 818, null);
 	}
 
 	@Test
@@ -586,10 +702,10 @@ public class GraphTest {
 	@Test
 	public void testDotConverter() throws IOException {
 		GraphList list = new GraphList();
-		Clazz uni = list.with(new Clazz().with("UniKassel").with("University"));
+		Clazz uni = list.with(new Clazz("University"));
 		uni.createAttribute("name", DataType.STRING);
 		uni.createMethod("init()");
-		Clazz student = list.with(new Clazz().with("Stefan").with("Student"));
+		Clazz student = list.with(new Clazz("Student"));
 		student.withUniDirectional(uni, "owner", Cardinality.ONE);
 
 		String convert = list.toString(new DotConverter(true));
@@ -614,7 +730,7 @@ public class GraphTest {
 	public void testCoverage() {
 		Assert.assertFalse(AssociationTypes.isEdge(null));
 		Assert.assertEquals(AssociationTypes.ASSOCIATION, AssociationTypes.valueOf("ASSOCIATION"));
-		Assert.assertEquals(7, AssociationTypes.values().length);
+		Assert.assertEquals(8, AssociationTypes.values().length);
 
 		Assert.assertEquals(GraphOptions.TYP.HTML, GraphOptions.TYP.valueOf("HTML"));
 		Assert.assertEquals(4, GraphOptions.TYP.values().length);
@@ -626,7 +742,7 @@ public class GraphTest {
 		Assert.assertEquals(2, GraphOptions.LINETYP.values().length);
 
 		Assert.assertEquals(Clazz.ClazzType.CLAZZ, Clazz.ClazzType.valueOf("CLAZZ"));
-		Assert.assertEquals(3, Clazz.ClazzType.values().length);
+		Assert.assertEquals(6, Clazz.ClazzType.values().length);
 
 		GraphList model = new GraphList();
 		model.setAuthorName("Stefan");
@@ -644,7 +760,7 @@ public class GraphTest {
 		GraphList model = new GraphList();
 		model.createClazz("Person");
 		Assert.assertNull(model.getValue("Blub"));
-		model.with(new GraphDiff());
+		model.add(new GraphDiff());
 		model.getClazzes(new BooleanCondition().withValue(true));
 		DataTypeSet dtSet = DataTypeSet.create(DataType.STRING);
 		Assert.assertNotNull(dtSet);
@@ -678,8 +794,8 @@ public class GraphTest {
 		person.withBidirectional(uni, "owner", Cardinality.ONE, "studs", Cardinality.MANY);
 
 		AttributeSet attributes = person.getAttributes();
-		Assert.assertEquals(name, attributes.get(0));
-		Assert.assertEquals(id, attributes.get(1));
+		Assert.assertEquals(name, attributes.get(1));
+		Assert.assertEquals(id, attributes.get(0));
 
 		MethodSet methods = person.getMethods();
 		Assert.assertEquals(initMethod, methods.get(0));
@@ -702,7 +818,7 @@ public class GraphTest {
 		AnnotationSet listOfAnnotation = new AnnotationSet().with(override);
 		Assert.assertEquals(1, listOfAnnotation.getClazzes().size());
 		Assert.assertEquals(1, listOfAnnotation.getMethods().size());
-		Assert.assertEquals(1, listOfAnnotation.getAttributes().size());
+		Assert.assertEquals(0, listOfAnnotation.getAttributes().size());
 
 		Modifier private1 = Modifier.PRIVATE;
 		initMethod.with(private1);
@@ -714,7 +830,7 @@ public class GraphTest {
 		listOfModifier.with(person.getModifier());
 		Assert.assertEquals(1, listOfModifier.getClazzes().size());
 		Assert.assertEquals(1, listOfModifier.getMethods().size());
-		Assert.assertEquals(1, listOfModifier.getAttributes().size());
+		Assert.assertEquals(0, listOfModifier.getAttributes().size());
 
 		// Navigate over Full Model
 		ClazzSet list = new ClazzSet().with(person, uni);
@@ -726,10 +842,10 @@ public class GraphTest {
 		Assert.assertEquals(1, listOfAnnotation.size());
 
 		AssociationSet listOfAssocuation = list.getAssociations();
-		Assert.assertEquals(1, listOfAssocuation.getClazzes().size());
+		Assert.assertEquals(2, listOfAssocuation.getClazzes().size());
 		Assert.assertEquals(1, listOfAssocuation.getOther().size());
-		Assert.assertEquals(1, listOfAssocuation.getOtherClazz().size());
-		Assert.assertEquals(1, listOfAssocuation.size());
+		Assert.assertEquals(2, listOfAssocuation.getOtherClazz().size());
+		Assert.assertEquals(2, listOfAssocuation.size());
 
 		AttributeSet listOfAttribute = list.getAttributes();
 		Assert.assertEquals(2, listOfAttribute.size());

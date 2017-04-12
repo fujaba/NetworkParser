@@ -29,7 +29,10 @@ THE SOFTWARE.
  */
 
 public interface SendableEntityCreator {
-	/** The Constant REMOVE. */
+   /** The Constant REMOVE_YOU. */
+   public static final String REMOVE_YOU = "REMOVE_YOU";
+
+   /** The Constant REMOVE. */
 	public static final String REMOVE = "rem";
 
 	/** The Constant UPDATE. */

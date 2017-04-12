@@ -1,5 +1,10 @@
 package de.uniks.networkparser.ext.javafx.controller;
 
+import de.uniks.networkparser.IdMap;
+import de.uniks.networkparser.ext.generic.GenericCreator;
+import de.uniks.networkparser.ext.generic.ReflectionLoader;
+import de.uniks.networkparser.ext.javafx.controller.ModelListenerProperty.PROPERTYTYPE;
+import de.uniks.networkparser.interfaces.SendableEntityCreator;
 /*
 NetworkParser
 The MIT License
@@ -23,166 +28,73 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.FloatProperty;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.LongProperty;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.Property;
-import javafx.beans.property.StringProperty;
-import javafx.scene.Node;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.ColorPicker;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.TextField;
-import javafx.scene.paint.Color;
-import de.uniks.networkparser.IdMap;
-import de.uniks.networkparser.ext.generic.GenericCreator;
-import de.uniks.networkparser.ext.javafx.controller.ModelListenerProperty.PROPERTYTYPE;
-import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
 public class ModelListenerFactory {
-	public static ModelListenerProperty<?> create(Node node, Object item, String field){
+	public static ModelListenerProperty create(Object node, Object item){
+		return create(node, item, null);
+	}
+	public static ModelListenerProperty create(Object node, Object item, String field){
 		GenericCreator creator = new GenericCreator(item);
+		return create(node, creator, item, field);
+	}
+	public static ModelListenerProperty create(Object node, IdMap map, Object item, String field) {
+		return create(node, map.getCreatorClass(item), item, field);
+	}
+	public static ModelListenerProperty create(Object node, SendableEntityCreator creator, Object item, String field){
+		if(node == null) {
+			return null;
+		}
 		if(field == null) {
-			field = node.getId();
+			field = ""+ReflectionLoader.call("getId", node);
 		}
-		if(node instanceof ColorPicker) {
-			return createProperty(PROPERTYTYPE.COLOR, ((ColorPicker)node).valueProperty(), creator, item, field);
+		Object property;
+		// Check for Controls
+		if(ReflectionLoader.PROPERTY.isAssignableFrom(node.getClass())) {
+			if(ReflectionLoader.STRINGPROPERTY.isAssignableFrom(node.getClass())) {
+				return createProperty(PROPERTYTYPE.STRING, node, creator, item, field);
+			}
+			if(ReflectionLoader.BOOLEANPROPERTY.isAssignableFrom(node.getClass())) {
+				return createProperty(PROPERTYTYPE.BOOLEAN, node, creator, item, field);
+			}
+			if(ReflectionLoader.INTEGERPROPERTY.isAssignableFrom(node.getClass())) {
+				return createProperty(PROPERTYTYPE.INTEGER, node, creator, item, field);
+			}
+			if(ReflectionLoader.DOUBLEPROPERTY.isAssignableFrom(node.getClass())) {
+				return createProperty(PROPERTYTYPE.DOUBLE, node, creator, item, field);
+			}
+			return createProperty(PROPERTYTYPE.OBJECT, node, creator, item, field);
 		}
-		if(node instanceof TextField) {
-			return createProperty(PROPERTYTYPE.STRING, ((TextField)node).textProperty(), creator, item, field);
+		if(ReflectionLoader.COLORPICKER.isAssignableFrom(node.getClass())) {
+			property = ReflectionLoader.call("valueProperty", node);
+			return createProperty(PROPERTYTYPE.COLOR, property, creator, item, field);
 		}
-		if(node instanceof ComboBox) {
-			return createProperty(PROPERTYTYPE.STRING, ((ComboBox<?>)node).valueProperty(), creator, item, field);
+		if(ReflectionLoader.TEXTFIELD.isAssignableFrom(node.getClass())) {
+			property = ReflectionLoader.call("textProperty", node);
+			return createProperty(PROPERTYTYPE.STRING, property, creator, item, field);
 		}
-		if(node instanceof Label) {
-			return createProperty(PROPERTYTYPE.STRING, ((Label)node).textProperty(), creator, item, field);
+		if(ReflectionLoader.COMBOBOX.isAssignableFrom(node.getClass())) {
+			property = ReflectionLoader.call("valueProperty", node);
+			return createProperty(PROPERTYTYPE.STRING, property, creator, item, field);
 		}
-		if(node instanceof CheckBox) {
-			return createProperty(PROPERTYTYPE.BOOLEAN, ((CheckBox)node).selectedProperty(), creator, item, field);
+		if(ReflectionLoader.LABEL.isAssignableFrom(node.getClass())) {
+			property = ReflectionLoader.call("textProperty", node);
+			return createProperty(PROPERTYTYPE.STRING, property, creator, item, field);
 		}
-		if(node instanceof RadioButton) {
-			return createProperty(PROPERTYTYPE.BOOLEAN, ((RadioButton)node).selectedProperty(), creator, item, field);
+		if(ReflectionLoader.CHECKBOX.isAssignableFrom(node.getClass())) {
+			property = ReflectionLoader.call("selectedProperty", node);
+			return createProperty(PROPERTYTYPE.BOOLEAN, property, creator, item, field);
+		}
+		if(ReflectionLoader.RADIOBUTTON.isAssignableFrom(node.getClass())) {
+			property = ReflectionLoader.call("selectedProperty", node);
+			return createProperty(PROPERTYTYPE.BOOLEAN, property, creator, item, field);
 		}
 		return null;
 	}
 	
-	public static Property<?> getProperty(Node node) {
-		if(node instanceof ColorPicker) {
-			return ((ColorPicker)node).valueProperty();
-		}
-		if(node instanceof TextField) {
-			return ((TextField)node).textProperty();
-		}
-		if(node instanceof ComboBox) {
-			return ((ComboBox<?>)node).valueProperty();
-		}
-		if(node instanceof Label) {
-			return ((Label)node).textProperty();
-		}
-		if(node instanceof CheckBox) {
-			return ((CheckBox)node).selectedProperty();
-		}
-		if(node instanceof RadioButton) {
-			return ((RadioButton)node).selectedProperty();
-		}
-		return null;
-	}
-
-	public static ModelListenerProperty<?> create(Label node, Object item, String field){
-		return createProperty(PROPERTYTYPE.STRING, node.textProperty(), new GenericCreator(item), item, field);
-	}
-
-	public static ModelListenerProperty<?> create(Property<?> property, IdMap map, Object item, String field){
-		return create(property, map.getCreatorClass(item), item, field);
-	}
-	public static ModelListenerProperty<?> create(Property<?> property, SendableEntityCreator creator, Object item, String field){
-		if(property instanceof StringProperty){
-			return createProperty(PROPERTYTYPE.STRING, property, creator, item, field);
-		}
-		if(property instanceof BooleanProperty){
-			return createProperty(PROPERTYTYPE.BOOLEAN, property, creator, item, field);
-		}
-		if(property instanceof IntegerProperty){
-			return createProperty(PROPERTYTYPE.INT, property, creator, item, field);
-		}
-		if(property instanceof LongProperty){
-			return createProperty(PROPERTYTYPE.LONG, property, creator, item, field);
-		}
-		if(property instanceof FloatProperty){
-			return createProperty(PROPERTYTYPE.FLOAT, property, creator, item, field);
-		}
-		if(property instanceof DoubleProperty){
-			return createProperty(PROPERTYTYPE.DOUBLE, property, creator, item, field);
-		}
-		return null;
-	}
-
-	@SuppressWarnings("unchecked")
-	private static ModelListenerProperty<?> createProperty(PROPERTYTYPE typ, Property<?> property, SendableEntityCreator creator, Object item, String field){
-		if(PROPERTYTYPE.STRING==typ) {
-			ModelListenerStringProperty listener = new ModelListenerStringProperty(creator, item, field);
-			if(property instanceof StringProperty) {
-				((StringProperty)property).bindBidirectional(listener);
-			}else if(property instanceof ObjectProperty) {
-				((ObjectProperty<String>)property).bindBidirectional(listener);
-			}
-			return listener;
-		}
-		if(PROPERTYTYPE.COLOR==typ) {
-			ModelListenerColorProperty listener = new ModelListenerColorProperty(creator, item, field);
-			((ObjectProperty<Color>)property).bindBidirectional(listener);
-			return listener;
-		}
-		if(PROPERTYTYPE.BOOLEAN==typ) {
-			ModelListenerBooleanProperty listener = new ModelListenerBooleanProperty(creator, item, field);
-			if(property instanceof BooleanProperty) {
-				((BooleanProperty)property).bindBidirectional(listener);
-			}else if(property instanceof ObjectProperty) {
-				((ObjectProperty<Boolean>)property).bindBidirectional(listener);
-			}
-			return listener;
-		}
-		if(PROPERTYTYPE.INT==typ) {
-			ModelListenerNumberProperty listener = new ModelListenerNumberProperty(creator, item, field);
-			if(property instanceof IntegerProperty) {
-				((IntegerProperty)property).bindBidirectional(listener);
-			}else if(property instanceof ObjectProperty) {
-				((ObjectProperty<Number>)property).bindBidirectional(listener);
-			}
-			return listener;
-		}
-		if(PROPERTYTYPE.LONG==typ) {
-			ModelListenerNumberProperty listener = new ModelListenerNumberProperty(creator, item, field);
-			if(property instanceof LongProperty) {
-				((LongProperty)property).bindBidirectional(listener);
-			}else if(property instanceof ObjectProperty) {
-				((ObjectProperty<Number>)property).bindBidirectional(listener);
-			}
-			return listener;
-		}
-		if(PROPERTYTYPE.FLOAT==typ) {
-			ModelListenerNumberProperty listener = new ModelListenerNumberProperty(creator, item, field);
-			if(property instanceof FloatProperty) {
-				((FloatProperty)property).bindBidirectional(listener);
-			}else if(property instanceof ObjectProperty) {
-				((ObjectProperty<Number>)property).bindBidirectional(listener);
-			}
-			return listener;
-		}
-		if(PROPERTYTYPE.DOUBLE==typ) {
-			ModelListenerNumberProperty listener = new ModelListenerNumberProperty(creator, item, field);
-			if(property instanceof DoubleProperty) {
-				((DoubleProperty)property).bindBidirectional(listener);
-			}else if(property instanceof ObjectProperty) {
-				((ObjectProperty<Number>)property).bindBidirectional(listener);
-			}
-			return listener;
-		}
-		return null;
+	private static ModelListenerProperty createProperty(PROPERTYTYPE typ,Object property, SendableEntityCreator creator, Object item, String field){
+		ModelListenerProperty listener = new ModelListenerProperty(creator, item, field, PROPERTYTYPE.STRING);
+		Object proxy = listener.getProxy();
+		ReflectionLoader.call("bindBidirectional", property, ReflectionLoader.PROPERTY, proxy);
+		return listener;
 	}
 }

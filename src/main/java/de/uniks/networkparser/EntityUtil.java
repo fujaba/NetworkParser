@@ -31,6 +31,7 @@ import de.uniks.networkparser.bytes.ByteTokener;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Converter;
 import de.uniks.networkparser.interfaces.Entity;
+import de.uniks.networkparser.interfaces.EntityList;
 import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.list.AbstractArray;
 import de.uniks.networkparser.list.AbstractList;
@@ -39,6 +40,7 @@ import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.xml.XMLEntity;
 
 public class EntityUtil {
+	public static final String CLASS="class";
 	private static final String HEXVAL = "0123456789abcdef";
 	public static final String NON_FILE_CHARSSIMPLE = "[\\\\/\\:\\;\\*\\?\"<>\\|!&', \u001F\u0084\u0093\u0094\u0096\u2013\u201E\u201C\u03B1 ]";
 
@@ -49,7 +51,7 @@ public class EntityUtil {
 	 * @param d		a double.
 	 * @return 		a String.
 	 */
-	public static String doubleToString(double d) {
+	public static final String doubleToString(double d) {
 		if (Double.isInfinite(d) || Double.isNaN(d)) {
 			return "null";
 		}
@@ -66,8 +68,17 @@ public class EntityUtil {
 		}
 		return string;
 	}
+	
+	public static final boolean isNumeric(String strNum) {
+	    try {
+	        Double.parseDouble(strNum);
+	    }catch (NumberFormatException e) {
+	        return false;
+	    }
+	    return true;
+	}
 
-	public static SimpleList<Pos> getExcelRange(String tag) {
+	public static final SimpleList<Pos> getExcelRange(String tag) {
 		SimpleList<Pos> range = new SimpleList<Pos>();
 		if(tag == null) {
 			return range;
@@ -98,7 +109,7 @@ public class EntityUtil {
 	 * @return 				A String.
 	 * @throws IllegalArgumentException		If n is a non-finite number.
 	 */
-	public static String valueToString(Number number)
+	public static final String valueToString(Number number)
 			throws IllegalArgumentException {
 		if (number == null) {
 			throw new IllegalArgumentException("Null pointer");
@@ -118,7 +129,7 @@ public class EntityUtil {
 		return string;
 	}
 	public static String CONTROLCHARACTER = "abtnvfr"; 
-	public static String unQuoteControlCharacter(CharSequence value) {
+	public static final String unQuoteControlCharacter(CharSequence value) {
 		if (value == null || value.length() == 0) {
 			return "";
 		}
@@ -162,7 +173,7 @@ public class EntityUtil {
 		return sb.toString();
 	}
 
-	public static String unQuote(CharSequence value) {
+	public static final String unQuote(CharSequence value) {
 		if (value == null || value.length() == 0) {
 			return "";
 		}
@@ -198,7 +209,7 @@ public class EntityUtil {
 		return sb.toString();
 	}
 
-	public static String basicUnQuote(String value) {
+	public static final String basicUnQuote(String value) {
 		if (value == null || value.length() == 0) {
 			return "";
 		}
@@ -227,7 +238,7 @@ public class EntityUtil {
 		return sb.toString();
 	}
 
-	private static char fromHex(char... values) {
+	private static final char fromHex(char... values) {
 		if(values == null) {
 			return 0;
 		}
@@ -236,7 +247,7 @@ public class EntityUtil {
 				+ (HEXVAL.indexOf(values[2]) << 8) + HEXVAL.indexOf(values[3]));
 	}
 	
-	private static char fromOctal(char... values) {
+	private static final char fromOctal(char... values) {
 		if(values == null) {
 			return 0;
 		}
@@ -258,7 +269,7 @@ public class EntityUtil {
 	 * @param string		A String
 	 * @return 				A String correctly formatted for insertion in a JSON text.
 	 */
-	public static String quote(String string) {
+	public static final String quote(String string) {
 		if (string == null || string.length() == 0) {
 			return "\"\"";
 		}
@@ -307,7 +318,7 @@ public class EntityUtil {
 	 *		 brace)</small> and ending with <code>}</code>&nbsp;<small>(right
 	 *		 brace)</small>.
 	 */
-	public static String valueToString(Object value, boolean simpleText, BaseItem reference, Converter converter) {
+	public static final String valueToString(Object value, boolean simpleText, BaseItem reference, Converter converter) {
 		if (value == null) {
 			return "null";
 		}
@@ -322,7 +333,8 @@ public class EntityUtil {
 			return ((BaseItem) value).toString(converter);
 		}
 		if (value instanceof Map) {
-			BaseItem item = reference.getNewList(true).with((Map<?, ?>) value);
+			BaseItem item = reference.getNewList(true);
+			item.add((Map<?, ?>) value);
 			return item.toString(converter);
 		}
 		if (value instanceof Collection) {
@@ -340,7 +352,7 @@ public class EntityUtil {
 			Object[] items = (Object[]) value;
 			BaseItem item = reference.getNewList(false);
 			for (Object entity : items) {
-				item.with(entity);
+				item.add(entity);
 			}
 			return item.toString(converter);
 		}
@@ -362,7 +374,7 @@ public class EntityUtil {
 	 * @param reference		The reference
 	 * @return The wrapped value
 	 */
-	public static Object wrap(Object object, BaseItem reference) {
+	public static final Object wrap(Object object, BaseItem reference) {
 		try {
 			if (object == null) {
 				return null;
@@ -405,7 +417,7 @@ public class EntityUtil {
 	 * @param repeat	Number of Repeat
 	 * @return a String
 	 */
-	public static String repeat(char ch, int repeat) {
+	public static final String repeat(char ch, int repeat) {
 		if(repeat<0) {
 			return "";
 		}
@@ -423,7 +435,7 @@ public class EntityUtil {
 	 * @param s2	second string
 	 * @return true if both parameters are null or equal
 	 */
-	public static boolean stringEquals(String s1, String s2) {
+	public static final boolean stringEquals(String s1, String s2) {
 		return s1 == null ? s2 == null : s1.equals(s2);
 	}
 	/**
@@ -433,7 +445,7 @@ public class EntityUtil {
 	 * @param length	the length of Value
 	 * @return a String of Value
 	 */
-	public static String strZero(int value, int length) {
+	public static final String strZero(int value, int length) {
 		return strZero(String.valueOf(value), length, -1);
 	}
 
@@ -444,7 +456,7 @@ public class EntityUtil {
 	 * @param length	the length of Value
 	 * @return a String of Value
 	 */
-	public static String strZero(long value, int length) {
+	public static final String strZero(long value, int length) {
 		return strZero(String.valueOf(value), length, -1);
 	}
 
@@ -456,7 +468,7 @@ public class EntityUtil {
 	 * @param max		the maxValue
 	 * @return a String of Value
 	 */
-	public static String strZero(long value, int length, int max) {
+	public static final String strZero(long value, int length, int max) {
 		return strZero(String.valueOf(value), length, max);
 	}
 
@@ -468,11 +480,11 @@ public class EntityUtil {
 	 * @param max		the maxValue
 	 * @return a String of Value with max value
 	 */
-	public static String strZero(int value, int length, int max) {
+	public static final String strZero(int value, int length, int max) {
 		return strZero(String.valueOf(value), length, max);
 	}
 
-	public static String strZero(String value, int length, int max) {
+	public static final String strZero(String value, int length, int max) {
 		if(max>0 && max<length) {
 			length = max;
 		}
@@ -489,7 +501,7 @@ public class EntityUtil {
 		return sb.toString();
 	}
 
-	public static String getValidChars(String source, int maxLen) {
+	public static final String getValidChars(String source, int maxLen) {
 		int i = source.length()-1;
 		StringBuilder sb=new StringBuilder();
 		if(i>0){
@@ -518,17 +530,39 @@ public class EntityUtil {
 		return sb.toString();
 	}
 
+	public static final String getDefaultValue(String datatype) {
+		if(EntityUtil.isNumericType(datatype)) {
+			if("Long".equals(datatype)) {
+				return "0L";
+			} else if("Float".equals(datatype)) {
+				return "0f";
+			} else if("Double".equals(datatype)) {
+				return "0d";
+			}
+			return "0";
+		}
+		if("void".equals(datatype)) {
+			return "void";
+		} else if("boolean".equalsIgnoreCase(datatype)) {
+			return "false";
+		} else if (datatype.endsWith("[]")) {
+           return datatype.substring(0, datatype.length() - 2);
+        } else if (datatype.endsWith("..."))
+        {
+           return datatype.substring(0, datatype.length() - 3);
+        }
+		return "null";
+	}
 	
-	
-	public static boolean compareEntity(Entity entityA, Entity entityB) {
+	public static final boolean compareEntity(Entity entityA, Entity entityB) {
 		return compareEntity(entityA, entityB, new TextDiff(), null);
 	}
 	
-	public static boolean compareEntity(Collection<?> jsonA, Collection<?> jsonB) {
+	public static final boolean compareEntity(Collection<?> jsonA, Collection<?> jsonB) {
 		return compareEntity(jsonA, jsonB, new TextDiff(), null);
 	}
 	
-	public static boolean compareEntity(Object entityA, Object entityB, TextDiff diffList, BaseItem sameObject) {
+	public static final boolean compareEntity(Object entityA, Object entityB, TextDiff diffList, BaseItem sameObject) {
 		if(sameObject == null) {
 			if (entityA instanceof Entity) {
 				sameObject = ((BaseItem) entityA).getNewList(true);
@@ -562,7 +596,7 @@ public class EntityUtil {
 					if(valueB == null) {
 						Object oldValue = elementA.getValue(key);
 						if(sameObject != null) {
-							sameObject.with(key, oldValue);
+							sameObject.add(key, oldValue);
 						}
 						elementA.without(key);
 						elementB.without(key);
@@ -573,7 +607,7 @@ public class EntityUtil {
 				Object oldValue = compareValue(key, valueA, valueB, diffList, sameObject);
 				if(oldValue != null) {
 					if(sameObject != null) {
-						sameObject.with(key, oldValue);
+						sameObject.add(key, oldValue);
 					}
 					elementA.without(key);
 					elementB.without(key);
@@ -590,14 +624,35 @@ public class EntityUtil {
 					compareValue(key, valueA, valueB, diffList, sameObject);
 				}
 			}
-			boolean isSame = elementA.size()<1 && elementB.size()<1;
-			if(entityA instanceof XMLEntity && entityB instanceof XMLEntity) {
-				XMLEntity xmlA = (XMLEntity) entityA;
-				XMLEntity xmlB = (XMLEntity) entityB;
-				compareEntity(xmlA.getChildren(), xmlB.getChildren());
-				isSame = isSame && xmlA.getTag().equals(xmlB.getTag());
+			if(elementA.size()>0 || elementB.size()>0) {
+				return false;
 			}
-			return isSame;
+			if(entityA instanceof EntityList && entityB instanceof EntityList) {
+				EntityList xmlA = (EntityList) entityA;
+				EntityList xmlB = (EntityList) entityB;
+				if(xmlA.sizeChildren()!=xmlB.sizeChildren()) {
+					return false;
+				}
+				if(xmlA.sizeChildren()<1) {
+					if(entityA instanceof XMLEntity && entityB instanceof XMLEntity) {
+						return ((XMLEntity)xmlA).getTag().equals(((XMLEntity)xmlB).getTag());
+					}
+					return true;
+				}
+				SimpleList<EntityList> childrenA = new SimpleList<EntityList>();
+				SimpleList<EntityList> childrenB = new SimpleList<EntityList>();
+				for(int i=0;i<xmlA.sizeChildren();i++) {
+					childrenA.add(xmlA.getChild(i));
+					childrenB.add(xmlB.getChild(i));
+				}
+				if(compareEntity(childrenA, childrenB) == false) {
+					return false;
+				}
+				if(entityA instanceof XMLEntity && entityB instanceof XMLEntity) {
+					return ((XMLEntity)xmlA).getTag().equals(((XMLEntity)xmlB).getTag());
+				}
+			}
+			return true;
 		}
 		if(entityA instanceof Collection<?> && entityB instanceof Collection<?>) { 
 			Collection<?> colectionA = (Collection<?>) entityA;
@@ -617,7 +672,7 @@ public class EntityUtil {
 				if(oldValue != null) {
 					colectionA.remove(valueA);
 					if(sameObject != null) {
-						sameObject.with(oldValue);
+						sameObject.add(oldValue);
 					}
 					colectionB.remove(valueB);
 				}
@@ -634,7 +689,7 @@ public class EntityUtil {
 		return false;
 	}
 
-	static Object compareValue(String key, Object valueA, Object valueB, TextDiff diffList, BaseItem sameElement) {
+	protected static final Object compareValue(String key, Object valueA, Object valueB, TextDiff diffList, BaseItem sameElement) {
 		BaseItem sameObject = null;
 		if(valueA instanceof Entity && valueB instanceof Entity) {
 			Entity entityA = (Entity)valueA;
@@ -667,14 +722,14 @@ public class EntityUtil {
 	
 	public static final String emfTypes = " EOBJECT EBIG_DECIMAL EBOOLEAN EBYTE EBYTE_ARRAY ECHAR EDATE EDOUBLE EFLOAT EINT EINTEGER ELONG EMAP ERESOURCE ESHORT ESTRING ";
 
-	public static boolean isEMFType(String tag) {
+	public static final boolean isEMFType(String tag) {
 		return emfTypes.indexOf(" " + tag.toUpperCase() + " ") >= 0;
 	}
 
 	private static final String primitiveTypes = " void String char Char boolean Boolean byte Byte Object java.util.Date ";
 	private static final String numericTypes = " long Long short Short int Integer byte Byte float Float double Double ";
 	private static final String javaLang="java.lang.";
-	public static boolean isPrimitiveType(String type) {
+	public static final boolean isPrimitiveType(String type) {
 		if (type == null) {
 			return false;
 		}
@@ -689,7 +744,7 @@ public class EntityUtil {
 		return numericTypes.indexOf(type) >= 0 || primitiveTypes.indexOf(type) >= 0;
 	}
 
-	public static boolean isNumericType(String type) {
+	public static final boolean isNumericType(String type) {
 		if (type == null)
 			return false;
 		if(type.startsWith(javaLang)) {
@@ -698,7 +753,7 @@ public class EntityUtil {
 		return numericTypes.indexOf(" " + type + " ") >= 0;
 	}
 
-	public static String convertPrimitiveToObjectType(String type) {
+	public static final String convertPrimitiveToObjectType(String type) {
 		int pos = transferMap.indexOf(type);
 		if(pos<0) {
 			return type;
@@ -709,7 +764,7 @@ public class EntityUtil {
 	public static final String javaKeyWords = " abstract assert boolean break byte case catch char class const continue default do double else enum extends final finally float for if goto implements import instanceof int interface long native new package private protected public return short static strictfp super switch synchronized this throw throws transient try void volatile while ";
 	private static final SimpleKeyValueList<String, String> transferMap = new SimpleKeyValueList<String, String>().withKeyValueString("long:Long,int:Integer,char:Character,boolean:Boolean,byte:Byte,float:Float,double:Double", String.class);
 
-	public static String toValidJavaId(String tag) {
+	public static final String toValidJavaId(String tag) {
 		if (javaKeyWords.indexOf(" " + tag + " ") >= 0) {
 			tag = "_" + tag;
 		}
@@ -717,7 +772,7 @@ public class EntityUtil {
 		return tag;
 	}
 
-	public static String getId(String name) {
+	public static final String getId(String name) {
 		if (name.lastIndexOf("/") >= 0) {
 			return name.substring(name.lastIndexOf("/") + 1);
 		}
@@ -727,7 +782,7 @@ public class EntityUtil {
 		return name;
 	}
 
-	public static String shortClassName(String name) {
+	public static final String shortClassName(String name) {
 		if(name==null) {
 			return "";
 		}
@@ -740,7 +795,7 @@ public class EntityUtil {
 		return name;
 	}
 
-	public static String upFirstChar(String name) {
+	public static final String upFirstChar(String name) {
 		if(name == null || name.length()<1) {
 			return name;
 		}
@@ -830,17 +885,17 @@ public class EntityUtil {
 		return buf.toString();
 	}
 	
-	public static void writeByteHeader(ByteBuffer buffer, byte typ, int valueLength) {
+	public static final void writeByteHeader(ByteBuffer buffer, byte type, int valueLength) {
 		if (valueLength > 0 ) {
-			// Save Typ
-			if (typ != 0) {
-				buffer.put(typ);
-				if (getSubGroup(typ) != ByteTokener.LEN_LAST) {
-					int lenSize = getTypLen(typ, valueLength, true);
+			// Save Type
+			if (type != 0) {
+				buffer.put(type);
+				if (getSubGroup(type) != ByteTokener.LEN_LAST) {
+					int lenSize = getTypeLen(type, valueLength, true);
 
 					if (lenSize == 1) {
-						if (typ == ByteTokener.DATATYPE_CLAZZNAME
-								|| getSubGroup(typ) == ByteTokener.LEN_LITTLE) {
+						if (type == ByteTokener.DATATYPE_CLAZZNAME
+								|| getSubGroup(type) == ByteTokener.LEN_LITTLE) {
 							buffer.put((byte) (valueLength + ByteTokener.SPLITTER));
 						} else {
 							buffer.put((byte) valueLength);
@@ -857,7 +912,7 @@ public class EntityUtil {
 		}
 	}
 
-	public static byte[] clone(byte[] entity) {
+	public static final byte[] clone(byte[] entity) {
 		byte[] result=new byte[entity.length];
 		for(int i=0;i<entity.length;i++) {
 			result[i] = entity[i];
@@ -865,35 +920,35 @@ public class EntityUtil {
 		return result;
 	}
 
-	public static byte getTyp(byte group, byte subGroup) {
+	public static final byte getType(byte group, byte subGroup) {
 		return (byte) (group + subGroup);
 	}
 
-	public static byte getTyp(byte typ, int len, boolean isLast) {
-		if (isGroup(typ)) {
+	public static final byte getType(byte type, int len, boolean isLast) {
+		if (isGroup(type)) {
 			if (isLast) {
-				return getTyp(typ, ByteTokener.LEN_LAST);
+				return getType(type, ByteTokener.LEN_LAST);
 			}
 			if (len > 32767) {
-				return getTyp(typ, ByteTokener.LEN_BIG);
+				return getType(type, ByteTokener.LEN_BIG);
 			}
 			if (len > 250) {
-				return getTyp(typ, ByteTokener.LEN_MID);
+				return getType(type, ByteTokener.LEN_MID);
 			}
 			if (len > ByteTokener.SPLITTER) {
-				return getTyp(typ, ByteTokener.LEN_SHORT);
+				return getType(type, ByteTokener.LEN_SHORT);
 			}
-			return getTyp(typ, ByteTokener.LEN_LITTLE);
+			return getType(type, ByteTokener.LEN_LITTLE);
 		}
-		return typ;
+		return type;
 	}
 
-	public static int getTypLen(byte typ, int len, boolean isLast) {
-		if (isGroup(typ)) {
-			int ref = typ % 16 - 10;
+	public static final int getTypeLen(byte type, int len, boolean isLast) {
+		if (isGroup(type)) {
+			int ref = type % 16 - 10;
 			if (ref == 0) {
-				typ = getTyp(typ, len, isLast);
-				ref = typ % 16 - 10;
+				type = getType(type, len, isLast);
+				ref = type % 16 - 10;
 			}
 			if (ref == ByteTokener.LEN_SHORT || ref == ByteTokener.LEN_LITTLE) {
 				return 1;
@@ -904,20 +959,34 @@ public class EntityUtil {
 			if (ref == ByteTokener.LEN_BIG) {
 				return 4;
 			}
-			// if (ref == ByteIdMap.LEN_LAST) {
 			return 0;
 		}
-		if (typ == ByteTokener.DATATYPE_CLAZZNAME) {
-			// || typ == ByteIdMap.DATATYPE_CLAZZTYP add bei ByteList
+		if (type == ByteTokener.DATATYPE_CLAZZNAME) {
 			return 1;
 		}
-		if (typ == ByteTokener.DATATYPE_CLAZZNAMELONG) {
+		if (type == ByteTokener.DATATYPE_CLAZZNAMELONG) {
 			return 4;
 		}
 		return 0;
 	}
+	
 
-	public static ByteBuffer getBuffer(int len) {
+	/**
+	 * Convert String to ByteArray
+	 * @param string The String
+	 * @return the ByteArray
+	 */
+	public static final byte[] getBytes(CharSequence string) {
+		int size = string.length();
+		byte[] bytes = new byte[size];
+		for (int i = 0; i < size;i++) {
+			bytes[i] = (byte) string.charAt(i);
+		}
+		return bytes;
+	}
+	
+
+	public static final ByteBuffer getBuffer(int len) {
 		if (len < 1) {
 			return null;
 		}
@@ -925,85 +994,85 @@ public class EntityUtil {
 		return message;
 	}
 
-	public static boolean isPrimitive(byte typ) {
-		return ((typ >= ByteTokener.DATATYPE_SHORT && typ <= ByteTokener.DATATYPE_BYTE) || typ <= ByteTokener.DATATYPE_CHAR);
+	public static final boolean isPrimitive(byte type) {
+		return ((type >= ByteTokener.DATATYPE_SHORT && type <= ByteTokener.DATATYPE_BYTE) || type <= ByteTokener.DATATYPE_CHAR);
 	}
 
 	/**
-	 * CHeck if the Typ is typ of Group
+	 * Check if the Type is type of Group
 	 *
-	 * @param typ			the the typ of data
+	 * @param type			the the type of data
 	 * @return 				success
 	 */
-	public static boolean isGroup(byte typ) {
-		return (typ & 0x08) == 0x08;
+	public static final boolean isGroup(byte type) {
+		return (type & 0x08) == 0x08;
 	}
 
-	public static String getStringTyp(byte typ) {
-		if (typ == ByteTokener.DATATYPE_NULL) {
+	public static final String getStringType(byte type) {
+		if (type == ByteTokener.DATATYPE_NULL) {
 			return "DATATYPE_NULL";
 		}
-		if (typ == ByteTokener.DATATYPE_FIXED) {
+		if (type == ByteTokener.DATATYPE_FIXED) {
 			return "DATATYPE_FIXED";
 		}
-		if (typ == ByteTokener.DATATYPE_SHORT) {
+		if (type == ByteTokener.DATATYPE_SHORT) {
 			return "DATATYPE_SHORT";
 		}
-		if (typ == ByteTokener.DATATYPE_INTEGER) {
+		if (type == ByteTokener.DATATYPE_INTEGER) {
 			return "DATATYPE_INTEGER";
 		}
-		if (typ == ByteTokener.DATATYPE_LONG) {
+		if (type == ByteTokener.DATATYPE_LONG) {
 			return "DATATYPE_LONG";
 		}
-		if (typ == ByteTokener.DATATYPE_FLOAT) {
+		if (type == ByteTokener.DATATYPE_FLOAT) {
 			return "DATATYPE_FLOAT";
 		}
-		if (typ == ByteTokener.DATATYPE_DOUBLE) {
+		if (type == ByteTokener.DATATYPE_DOUBLE) {
 			return "DATATYPE_DOUBLE";
 		}
-		if (typ == ByteTokener.DATATYPE_DATE) {
+		if (type == ByteTokener.DATATYPE_DATE) {
 			return "DATATYPE_DATE";
 		}
-		if (typ == ByteTokener.DATATYPE_CLAZZID) {
+		if (type == ByteTokener.DATATYPE_CLAZZID) {
 			return "DATATYPE_CLAZZID";
 		}
-		if (typ == ByteTokener.DATATYPE_CLAZZPACKAGE) {
+		if (type == ByteTokener.DATATYPE_CLAZZPACKAGE) {
 			return "DATATYPE_CLAZZPACKAGE";
 		}
-		if (typ == ByteTokener.DATATYPE_CLAZZNAME) {
+		if (type == ByteTokener.DATATYPE_CLAZZNAME) {
 			return "DATATYPE_CLAZZNAME";
 		}
-		if (typ == ByteTokener.DATATYPE_CLAZZNAMELONG) {
+		if (type == ByteTokener.DATATYPE_CLAZZNAMELONG) {
 			return "DATATYPE_CLAZZNAMELONG";
 		}
-		if (typ == ByteTokener.DATATYPE_CLAZZTYP) {
-			return "DATATYPE_CLAZZTYP";
+		if (type == ByteTokener.DATATYPE_CLAZZTYPE) {
+			return "DATATYPE_CLAZZTYPE";
 		}
-		if (typ == ByteTokener.DATATYPE_CLAZZTYPLONG) {
-			return "DATATYPE_CLAZZTYPLONG";
+		if (type == ByteTokener.DATATYPE_CLAZZTYPELONG) {
+			return "DATATYPE_CLAZZTYPELONG";
 		}
-		if (typ == ByteTokener.DATATYPE_BYTE) {
+		if (type == ByteTokener.DATATYPE_BYTE) {
 			return "DATATYPE_BYTE";
 		}
-		if (typ == ByteTokener.DATATYPE_UNSIGNEDBYTE) {
+		if (type == ByteTokener.DATATYPE_UNSIGNEDBYTE) {
 			return "DATATYPE_UNSIGNEDBYTE";
 		}
-		if (typ == ByteTokener.DATATYPE_CHAR) {
+		if (type == ByteTokener.DATATYPE_CHAR) {
 			return "DATATYPE_CHAR";
 		}
-		if (typ == ByteTokener.DATATYPE_ASSOC) {
+		if (type == ByteTokener.DATATYPE_ASSOC) {
 			return "DATATYPE_ASSOC";
 		}
-		if (typ == ByteTokener.DATATYPE_ASSOCLONG) {
+		if (type == ByteTokener.DATATYPE_ASSOCLONG) {
 			return "DATATYPE_ASSOCLONG";
 		}
-		if (typ == ByteTokener.DATATYPE_CLAZZSTREAM) {
+		if (type == ByteTokener.DATATYPE_CLAZZSTREAM) {
 			return "DATATYPE_CLAZZSTREAM";
 		}
 
-		if (isGroup(typ)) {
-			byte group = getGroup(typ);
-			byte subgroup = getSubGroup(typ);
+		if (isGroup(type)) {
+			byte group = getGroup(type);
+			byte subgroup = getSubGroup(type);
 			String result;
 			if (group == ByteTokener.DATATYPE_BYTEARRAY) {
 				result = "DATATYPE_BYTEARRAY";
@@ -1035,11 +1104,11 @@ public class EntityUtil {
 		return null;
 	}
 
-	public static byte getGroup(byte typ) {
-		return (byte) ((typ / 16) * 16 + 10);
+	public static final byte getGroup(byte type) {
+		return (byte) ((type / 16) * 16 + 10);
 	}
 
-	public static byte getSubGroup(byte typ) {
-		return (byte) ((typ % 16) - 10);
+	public static final byte getSubGroup(byte type) {
+		return (byte) ((type % 16) - 10);
 	}
 }

@@ -24,9 +24,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 /**
- * @author Stefan Lindel Condition Clazz.
+ * Simple Generic Condition
+ * 
+ * @author Stefan Lindel Condition.
  */
-@FunctionalInterface
 public interface Condition<T> {
 	/**
 	 * checks or notify this condition.

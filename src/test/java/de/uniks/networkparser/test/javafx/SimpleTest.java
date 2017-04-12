@@ -2,6 +2,7 @@ package de.uniks.networkparser.test.javafx;
 
 import org.junit.Assert;
 import org.junit.Test;
+
 import de.uniks.networkparser.test.model.GroupAccount;
 import de.uniks.networkparser.test.model.Item;
 import de.uniks.networkparser.test.model.Person;

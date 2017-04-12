@@ -82,7 +82,7 @@ public class Annotation extends GraphMember {
 		return this;
 	}
 
-	Annotation addValue(Annotation... values) {
+	protected Annotation addValue(Annotation... values) {
 		if(values==null) {
 			return this;
 		}

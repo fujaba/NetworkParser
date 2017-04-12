@@ -2,36 +2,66 @@ package de.uniks.networkparser.logic;
 import java.beans.PropertyChangeEvent;
 
 import de.uniks.networkparser.buffer.BufferedBuffer;
+import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
-import de.uniks.networkparser.interfaces.UpdateListener;
 /**
  * @author Stefan Lindel Clazz of EqualsCondition
  */
 
-public class Equals implements UpdateListener, SendableEntityCreator {
+public class Equals implements ObjectCondition, SendableEntityCreator {
 	/** Constant of StrValue. */
-	public static final String STRINGVALUE = "stringvalue";
+	public static final String VALUE = "value";
 	/** Constant of Position. */
 	public static final String POSITION = "position";
-	/** Constant of ByteValue. */
-	public static final String BYTEVALUE = "bytevalue";
 
-	/** Variable of StrValue. */
-	private String strValue;
+	/** Variable of Value. */
+	private Object value;
+	
+	/** Variable of ValueStrValue. */
+	private Object delta;
 	/**
 	 * Variable of Position. Position of the Byte or -1 for currentPosition
 	 */
 	private int position = -1;
-	/** Variable of ByteValue. */
-	private Byte bytevalue;
 
 	@Override
 	public boolean update(Object evt) {
 		if (evt == null) {
-			return (strValue == null);
+			return value == null;
 		}
+		if(value == null) {
+			return evt == null;
+		}
+		if((evt instanceof PropertyChangeEvent) == false) {
+			if(value instanceof Number && evt instanceof Number) {
+				// Check for Number
+				if(value instanceof Byte 
+						|| value instanceof Short
+						|| value instanceof Integer
+						|| value instanceof Long) {
+					Long expValue = (Long)value;
+					Long evtValue = (Long) evt;
+					if(delta != null) {
+						Long deltaValue = (Long) delta;
+						return ((expValue - deltaValue) <= evtValue && (expValue + deltaValue)>= evtValue);
+					}
+					return expValue == evtValue;
+				}
+				// FLOAT DOUBLE AND OTHER
+				Double expValue = (Double)value;
+				Double evtValue = (Double) evt;
+				if(delta != null) {
+					Double deltaValue = (Double) delta;
+					return ((expValue - deltaValue) <= evtValue && (expValue + deltaValue)>= evtValue);
+				}
+				return expValue == evtValue;
+			}
+			return value.equals(evt);
+		}
+		
 		PropertyChangeEvent event = (PropertyChangeEvent) evt;
-		if (event.getSource() instanceof BufferedBuffer) {
+		if (event.getSource() instanceof BufferedBuffer && value instanceof Byte) {
+			Byte btrValue = (Byte) value;
 			BufferedBuffer buffer = (BufferedBuffer) event.getSource();
 			int pos;
 			if (position < 0) {
@@ -39,12 +69,13 @@ public class Equals implements UpdateListener, SendableEntityCreator {
 			} else {
 				pos = position;
 			}
-			return buffer.byteAt(pos) == bytevalue;
+			return buffer.byteAt(pos) == btrValue;
 		}
+		
 		if(event.getPropertyName() == null) {
 			return false;
 		}
-		return event.getPropertyName().equals(strValue);
+		return event.getPropertyName().equals(value);
 	}
 
 	/**
@@ -64,46 +95,33 @@ public class Equals implements UpdateListener, SendableEntityCreator {
 	}
 
 	/**
-	 * @param value		The new ByteValue
-	 * @return 			Equals Instance
-	 */
-	public Equals withValue(Byte value) {
-		this.bytevalue = value;
-		return this;
-	}
-
-	/**
-	 * @return The ByteValue
-	 */
-	public Byte getBytevalue() {
-		return bytevalue;
-	}
-
-	/**
 	 * @param value		The new StringValue
 	 * @return 			Equals Instance
 	 */
-	public Equals withValue(String value) {
-		this.strValue = value;
+	public Equals withValue(Object value) {
+		this.value = value;
+		return this;
+	}
+	
+	public Equals withValue(Object value, Object delta) {
+		this.withValue(value);
+		this.withDelta(delta);
 		return this;
 	}
 
 	/** @return The StringVlaue */
-	public String getStringvalue() {
-		return strValue;
+	public Object getValue() {
+		return value;
 	}
 
 	@Override
 	public String toString() {
-		if (strValue != null) {
-			return "==" + strValue + " ";
-		}
-		return "==" + bytevalue + " ";
+		return "==" + value + " ";
 	}
 
 	@Override
 	public String[] getProperties() {
-		return new String[] {STRINGVALUE, POSITION, BYTEVALUE };
+		return new String[] {VALUE, POSITION};
 	}
 
 	@Override
@@ -113,14 +131,11 @@ public class Equals implements UpdateListener, SendableEntityCreator {
 
 	@Override
 	public Object getValue(Object entity, String attribute) {
-		if (STRINGVALUE.equalsIgnoreCase(attribute)) {
-			return ((Equals) entity).getStringvalue();
+		if (VALUE.equalsIgnoreCase(attribute)) {
+			return ((Equals) entity).getValue();
 		}
 		if (POSITION.equalsIgnoreCase(attribute)) {
 			return ((Equals) entity).getPosition();
-		}
-		if (BYTEVALUE.equalsIgnoreCase(attribute)) {
-			return ((Equals) entity).getBytevalue();
 		}
 		return null;
 	}
@@ -128,18 +143,27 @@ public class Equals implements UpdateListener, SendableEntityCreator {
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value,
 			String type) {
-		if (STRINGVALUE.equalsIgnoreCase(attribute)) {
-			((Equals) entity).withValue(String.valueOf(value));
+		if (VALUE.equalsIgnoreCase(attribute)) {
+			((Equals) entity).withValue(value);
 			return true;
 		}
 		if (POSITION.equalsIgnoreCase(attribute)) {
 			((Equals) entity).withPosition(Integer.parseInt("" + value));
 			return true;
 		}
-		if (BYTEVALUE.equalsIgnoreCase(attribute)) {
-			((Equals) entity).withValue((Byte) value);
-			return true;
-		}
 		return false;
+	}
+
+	public Object getDelta() {
+		return delta;
+	}
+
+	public Equals withDelta(Object delta) {
+		this.delta = delta;
+		return this;
+	}
+	
+	public static Equals createNullCondition() {
+		return new Equals().withValue(null);
 	}
 }

@@ -1,35 +1,12 @@
 package de.uniks.networkparser;
 
-/*
-NetworkParser
-The MIT License
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
-*/
-import java.util.TreeMap;
+import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.interfaces.LocalisationInterface;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
+import de.uniks.networkparser.list.SimpleKeyValueList;
 
-public class TextItems implements SendableEntityCreator, LocalisationInterface {
+public class TextItems extends SimpleKeyValueList<String, String> implements SendableEntityCreator, LocalisationInterface {
 	public static final String PROPERTY_VALUE = "value";
-	private TreeMap<String, String> values = new TreeMap<String, String>();
 	private LocalisationInterface customLanguage = null;
 
 	@Override
@@ -40,18 +17,33 @@ public class TextItems implements SendableEntityCreator, LocalisationInterface {
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value,
 			String type) {
-		return ((TextItems) entity).set(attribute, value);
+		if(entity instanceof TextItems == false) {
+			return false;
+		}
+		TextItems items = (TextItems) entity;
+		return items.add(attribute, value);
 	}
 
-	public Object get(String attribute) {
-		if (values.containsKey(attribute)) {
-			return values.get(attribute);
+	public String get(CharSequence attribute) {
+		if (containsKey(attribute)) {
+			return get(attribute);
 		}
-		return attribute;
+		CharacterBuffer buffer=new CharacterBuffer();
+		buffer.with(attribute);
+		for(int i=0;i<buffer.length();i++) {
+			if(buffer.charAt(i)=='.') {
+				buffer.withStartPosition(i+1);
+				String testField = buffer.toString();
+				if (containsKey(testField)) {
+					return get(testField);
+				}
+			}
+		}
+		return attribute.toString();
 	}
 
 	@Override
-	public String getText(String label, Object model, Object gui) {
+	public String getText(CharSequence label, Object model, Object gui) {
 		String text = null;
 		if (customLanguage != null) {
 			text = customLanguage.getText(label, model, gui);
@@ -69,22 +61,14 @@ public class TextItems implements SendableEntityCreator, LocalisationInterface {
 		if (text != null) {
 			return text;
 		}
-		return label;
+		return label.toString();
 	}
 
-	private String getLabelValue(String label) {
-		if (values.containsKey(label)) {
-			return values.get(label);
+	private String getLabelValue(CharSequence label) {
+		if (containsKey(label)) {
+			return get(label);
 		}
 		return null;
-	}
-
-	public void addTextLabel(String key, String value) {
-		values.put(key, value);
-	}
-
-	public boolean set(String attribute, Object value) {
-		return false;
 	}
 
 	@Override

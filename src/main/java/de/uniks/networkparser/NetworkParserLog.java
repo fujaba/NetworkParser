@@ -65,6 +65,10 @@ public class NetworkParserLog {
 	public static final String ERROR_TYP_CONCURRENTMODIFICATION = "CONCURRENTMODIFICATION";
 	public static final String ERROR_TYP_NOCREATOR = "NOCREATORFOUND";
 	public static final String ERROR_TYP_DUPPLICATE = "DUPPLICATE";
+	public static final String LOGLEVEL_INFO = "INFO";
+	public static final String LOGLEVEL_WARNING = "WARNING";
+	public static final String LOGLEVEL_ERROR = "ERROR";
+
 	private boolean isError = true;
 
 	/**
@@ -84,9 +88,11 @@ public class NetworkParserLog {
 	 * @param owner		The Element with call the Methods
 	 * @param method	The Caller-Method
 	 * @param message	log this message
+	 * @return boolean if method must Cancel
 	 */
-	public void info(Object owner, String method, String message) {
+	public boolean info(Object owner, String method, String message) {
 		System.out.println("INFO: " + message);
+		return false;
 	}
 
 	/**
@@ -95,9 +101,11 @@ public class NetworkParserLog {
 	 * @param owner		The Element with call the Methods
 	 * @param method	The Caller-Method
 	 * @param message	log this message
+	 * @return boolean if method must Cancel
 	 */
-	public void warn(Object owner, String method, String message) {
+	public boolean warn(Object owner, String method, String message) {
 		System.err.println("WARN: " + message);
+		return false;
 	}
 
 	/**
@@ -125,5 +133,15 @@ public class NetworkParserLog {
 	public NetworkParserLog withError(boolean value) {
 		this.isError = value;
 		return this;
+	}
+
+	public boolean log(String msg, String level, Object owner, String method) {
+		if(LOGLEVEL_ERROR.equalsIgnoreCase(level)) {
+			return this.error(owner, method, msg);
+		}
+		if(LOGLEVEL_WARNING.equalsIgnoreCase(level)) {
+			return this.warn(owner, method, msg);
+		}
+		return this.info(owner, method, msg);
 	}
 }

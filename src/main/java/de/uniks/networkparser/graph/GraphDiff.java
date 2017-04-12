@@ -60,7 +60,7 @@ public class GraphDiff extends GraphMember{
 	public int getCount() {
 		return count;
 	}
-	void addCounter() {
+	protected void addCounter() {
 		this.count++;
 	}
 }

@@ -23,6 +23,7 @@ package de.uniks.networkparser.test.model.util;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+
 import de.uniks.networkparser.list.NumberList;
 import de.uniks.networkparser.list.SimpleSet;
 import de.uniks.networkparser.test.model.GroupAccount;
@@ -31,19 +32,9 @@ import de.uniks.networkparser.test.model.Person;
 
 public class PersonSet extends SimpleSet<Person>
 {
-	protected Class<?> getTypClass() {
+	protected Class<?> getTypeClass() {
 		return Person.class;
 	}
-	public PersonSet with(Object... values) {
-		super.with(values);
-		return this;
-	}
-
-	public PersonSet without(Person value) {
-		this.remove(value);
-		return this;
-	}
-
 	public ArrayList<String> getName() {
 		ArrayList<String> result = new ArrayList<String>();
 		for (Person obj : this) {

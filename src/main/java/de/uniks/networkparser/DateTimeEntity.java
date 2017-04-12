@@ -24,6 +24,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 import java.util.HashMap;
+
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.buffer.Tokener;
 
@@ -206,6 +207,7 @@ public class DateTimeEntity {
 		this.fields
 				.put(DateField.WEEK_OF_MONTH, week - ((dayOfYear - day) / 7));
 		this.fields.put(DateField.MILLISECONDSREAL, time);
+		
 		return false;
 	}
 
@@ -491,6 +493,16 @@ public class DateTimeEntity {
 				sub = sub.replace("yyy", String.valueOf(get(DateField.YEAR)));
 				sub = sub.replace("yy", EntityUtil.strZero(get(DateField.YEAR), 2, 2));
 				sub = sub.replace("y", EntityUtil.strZero(get(DateField.YEAR), 1, 2));
+				if(this.timeZone>0) {
+					sub = sub.replace("Z", "+"+EntityUtil.strZero(this.timeZone, 2, 2)+"00");
+				} else if(this.timeZone<0) {
+					sub = sub.replace("Z", "-"+EntityUtil.strZero(this.timeZone, 2, 2)+"00");
+				} else {
+					sub = sub.replace("Z", "0000");
+				}
+				
+				sub = sub.replace("z", "CEST");
+				
 			}
 			sb.append(sub);
 			if(tokener.getCurrentChar()=='\"') {

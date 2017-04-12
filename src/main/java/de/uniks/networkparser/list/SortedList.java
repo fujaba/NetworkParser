@@ -24,10 +24,17 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 import java.util.Comparator;
+
 import de.uniks.networkparser.interfaces.BaseItem;
 
 public class SortedList<V> extends SimpleList<V> {
 	protected Comparator<V> cpr;
+	
+	public SortedList(boolean comparator) {
+		if(comparator) {
+			comparator();
+		}
+	}
 
 	@SuppressWarnings("unchecked")
 	@Override

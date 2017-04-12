@@ -28,6 +28,7 @@ import de.uniks.networkparser.buffer.Buffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.buffer.Tokener;
 import de.uniks.networkparser.converter.EntityStringConverter;
+import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.EntityList;
 import de.uniks.networkparser.list.MapEntry;
@@ -63,7 +64,7 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 	}
 
 	/**
-	 * Instantiates a new xML entity.
+	 * Instantiates a new XMLEntity.
 	 *
 	 * @param value	the tag
 	 * @return 		Itself
@@ -98,17 +99,17 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 
 	/**
 	 * Gets the children.
-	 *
+	 * @param index the Index of Child
 	 * @return the children
 	 */
-	public SimpleList<EntityList> getChildren() {
-		if (this.children == null) {
-			this.children = new SimpleList<EntityList>();
+	public EntityList getChild(int index) {
+		if (this.children == null || index < 0 || index > this.children.size()) {
+			return null;
 		}
-		return this.children;
+		return this.children.get(index);
 	}
-
-	public int getChildrenCount() {
+	
+	public int sizeChildren() {
 		if (this.children == null) {
 			return 0;
 		}
@@ -123,9 +124,9 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 	 * @return result if the child is added
 	 */
 	@Override
-	public XMLEntity with(Object... values) {
+	public boolean add(Object... values) {
 		if(values==null || values.length < 1){
-			return this;
+			return false;
 		}
 		if(values[0] instanceof String) {
 			if(values.length == 1) {
@@ -134,13 +135,13 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 		} else if (values.length % 2 == 1) {
 			for(Object item : values) {
 				if(item instanceof EntityList) {
-					getChildren().add((EntityList) item);
+					this.withChild((EntityList) item);
 				}
 			}
-			return this;
+			return true;
 		}
-		super.with(values);
-		return this;
+		super.add(values);
+		return true;
 	}
 
 	/**
@@ -150,7 +151,10 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 	 * @return XMLEntity	Instance
 	 */
 	public XMLEntity withChild(EntityList value) {
-		getChildren().add(value);
+		if(this.children == null) {
+			this.children = new SimpleList<EntityList>();
+		}
+		this.children.add(value);
 		return this;
 	}
 
@@ -161,64 +165,8 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 	 */
 	public XMLEntity createChild() {
 		XMLEntity xmlEntity = new XMLEntity();
-		getChildren().add(xmlEntity);
+		withChild(xmlEntity);
 		return xmlEntity;
-	}
-
-	/**
-	 * Gets the child.
-	 *
-	 * @param value the tag to looking for
-	 * @param recursiv deep search
-	 * @return the child
-	 */
-	public EntityList getChild(String value, boolean recursiv) {
-		if(value==null ) {
-			return null;
-		}
-		if(this.children != null) {
-			for (EntityList entity : this.children) {
-				if(entity instanceof XMLEntity == false) {
-					continue;
-				}
-				XMLEntity item = (XMLEntity) entity;
-				if (value.equals(item.getTag())) {
-					return entity;
-				}
-				if(recursiv) {
-					EntityList child = item.getChild(value, recursiv);
-					if(child != null) {
-						return child;
-					}
-				}
-			}
-		}
-		if(recursiv) {
-			return null;
-		}
-		XMLEntity item = new XMLEntity().setType(value);
-		with(item);
-		return item;
-	}
-
-	/**
-	 * Return all Children with Filter
-	 * @param key The key of Filter
-	 * @param value The Value of Filter
-	 * @return all Children where match the Filter
-	 */
-	public SimpleList<Entity> getChildren(String key, String value) {
-		SimpleList<Entity> children=new SimpleList<Entity>();
-		for (EntityList entity : getChildren()) {
-			if(entity instanceof Entity) {
-				continue;
-			}
-			Entity item = (Entity) entity;
-			if(value.equalsIgnoreCase(item.getString(key))) {
-				children.add(item);
-			}
-		}
-		return children;
 	}
 
 	/**
@@ -227,6 +175,9 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 	 * @return the tag
 	 */
 	public String getTag() {
+		if(this.tag == null || this.tag.length() <1) {
+			return null;
+		}
 		return this.tag;
 	}
 
@@ -236,6 +187,32 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 	 * @return the value
 	 */
 	public String getValue() {
+		if(this.valueItem == null && this.sizeChildren()>0 ) {
+			// Complex children
+			boolean show=false;
+			for(int i=0;i<this.children.size();i++) {
+				EntityList item = this.children.get(i);
+				if(item instanceof XMLEntity) {
+					if(((XMLEntity)item).getTag() == null) {
+						show = true;
+						break;
+					}
+				}
+			}
+			if(show) {
+				CharacterBuffer buffer=new CharacterBuffer();
+				String value = null;
+				for(int i=0;i<this.children.size();i++) {
+					EntityList item = this.children.get(i);
+					if(value != null && value.endsWith(">")) {
+						buffer.with(' ');
+					}
+					value = item.toString();
+					buffer.with(value);
+				}
+				return buffer.toString();
+			}
+		}
 		return this.valueItem;
 	}
 
@@ -252,7 +229,7 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 	@Override
 	protected String parseItem(EntityStringConverter converter) {
 		CharacterBuffer sb = new CharacterBuffer().with(converter.getPrefixFirst());
-		if(this.getTag() != null) {
+		if(this.getTag() != null ) {
 			sb.with(START, this.getTag());
 		}
 
@@ -356,13 +333,145 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 	/**
 	 * Sets the tag.
 	 *
-	 * @param value
-	 *			the new Tag
+	 * @param value	the new Tag
 	 * @return the instance XMLEntity
 	 */
-	@Override
 	public XMLEntity setType(String value) {
 		this.tag = value;
+		return this;
+	}
+	
+	/**
+	 * Return first Children with Filter
+	 * @param key The key of Filter
+	 * @param value The Value of Filter
+	 * @return first Children where match the Filter
+	 */
+	public Entity getElementBy(String key, String value) {
+		if(value == null) {
+			return null;
+		}
+		if(value.equalsIgnoreCase(getString(key))) {
+			return this;
+		}
+		if(PROPERTY_TAG.equals(key)) {
+			if(value.equalsIgnoreCase(this.getTag())) {
+				return this;
+			}
+		}
+		if(PROPERTY_VALUE.equals(key)) {
+			if(value.equalsIgnoreCase(this.getValue())) {
+				return this;
+			}
+		}
+		if(this.children == null) {
+			return null;
+		}
+		for(int i=0;i<this.children.size();i++) {
+			EntityList entity = this.children.get(i);
+			if(entity instanceof XMLEntity) {
+				Entity item = ((XMLEntity) entity).getElementBy(key, value);
+				if(item != null) {
+					return item;
+				}
+			}
+			if(entity instanceof Entity == false) {
+				continue;
+			}
+			Entity item = (Entity) entity;
+			if(value.equalsIgnoreCase(item.getString(key))) {
+				return item;
+			}
+		}
+		return null;
+	}
+	/**
+	 * Return first Children with Filter
+	 * @param key The key of Filter
+	 * @param value The Value of Filter
+	 * @return first Children where match the Filter
+	 */
+	public EntityList getElementsBy(String key, String value) {
+		if(value == null) {
+			return null;
+		}
+		EntityList children=getNewList(false);
+		if(value.equalsIgnoreCase(getString(key))) {
+			children.add(this);
+		} else if(PROPERTY_TAG.equals(key)) {
+			if(value.equalsIgnoreCase(this.getTag())) {
+				children.add(this);
+			}
+		} else if(PROPERTY_VALUE.equals(key)) {
+			if(value.equalsIgnoreCase(this.getValue())) {
+				children.add(this);
+			}
+		} else if(EntityUtil.CLASS.equals(key)) {
+			int z=0;
+			while(z<value.length() && value.charAt(z)==' ') {
+				z++;
+			}
+			String first;
+			int pos = value.indexOf(" ", z);
+			if(pos<0) {
+				first = value.substring(z);
+				pos = value.length();
+			}else {
+				first = value.substring(z, pos);
+			}
+			if(first.charAt(0) == '#'){
+				if(first.substring(1).equals(this.getValue("id"))) {
+					value =" " + value.substring(pos);
+				}
+			} else if(first.charAt(0) == '.') {
+				if(first.substring(1).equals(this.getValue(EntityUtil.CLASS))) {
+					value = " " + value.substring(pos);
+				}
+			} else {
+				if(first.equals(this.getTag())) {
+					value = " " + value.substring(pos);
+				}
+			}
+			if(value.length()==1) {
+				return this;
+			}
+		}
+		if(this.children == null) {
+			return children;
+		}
+		for(int i=0;i<this.children.size();i++) {
+			EntityList entity = this.children.get(i);
+			if(entity instanceof XMLEntity) {
+				EntityList items = ((XMLEntity) entity).getElementsBy(key, value);
+				if(entity == items || items.size()>0) {
+					children.add(items);
+					
+				} else if(items.sizeChildren()>0 ) {
+					for(int c = 0;c < items.sizeChildren(); c++) {
+						children.add(items.getChild(c));
+					}
+				}
+			}
+			if(entity instanceof Entity == false) {
+				continue;
+			}
+			Entity item = (Entity) entity;
+			if(value.equalsIgnoreCase(item.getString(key))) {
+				children.add(item);
+			}
+		}
+		if(children.sizeChildren()==1) {
+			// to level the result graph
+			BaseItem result = children.getChild(0);
+			if(result instanceof EntityList) {
+				return (EntityList) result;
+			}
+		}
+		return children;
+	}
+	
+	public XMLEntity withValueItem(String value) {
+		this.valueItem = value;
 		return this;
 	}
 }

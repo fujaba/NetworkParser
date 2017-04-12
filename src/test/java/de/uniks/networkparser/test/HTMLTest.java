@@ -2,11 +2,14 @@ package de.uniks.networkparser.test;
 
 import org.junit.Assert;
 import org.junit.Test;
+
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.GUILine;
 import de.uniks.networkparser.Style;
+import de.uniks.networkparser.interfaces.EntityList;
 import de.uniks.networkparser.interfaces.GUIPosition;
 import de.uniks.networkparser.xml.HTMLEntity;
+import de.uniks.networkparser.xml.XMLEntity;
 
 public class HTMLTest {
 
@@ -31,6 +34,31 @@ public class HTMLTest {
 		file.withText("Second Line");
 		Assert.assertNotNull(file.toString());
 //		System.out.println(file.toString());
+	}
+	
+	@Test
+	public void testSimpleJSoup(){
+		StringBuilder sb=new StringBuilder("<div id=\"mp-itn\">");
+		sb.append("<ul>");
+		sb.append("<li>");
+		sb.append("<b>");
+		sb.append("<a href=\"/wiki/2016_Kaikoura_earthquake\" title=\"2016 Kaikoura earthquake\">An earthquake</a>");
+		sb.append("</b>");
+		sb.append("</li>");
+		sb.append("<li>Canadian singer, songwriter, and poet <b><a href=\"/wiki/Leonard_Cohen\" title=\"Leonard Cohen\">Leonard Cohen</a></b> <i>(pictured)</i> dies at the age of 82.</li>");
+		sb.append("</ul>");
+		sb.append("</div>");
+		HTMLEntity entity = new HTMLEntity().with(sb.toString());
+		XMLEntity list = entity.getElementsBy(EntityUtil.CLASS, "#mp-itn b a");
+		Assert.assertEquals(2, list.sizeChildren());
+		for(int i=0;i<list.sizeChildren();i++) {
+			EntityList child = list.getChild(i);
+			if(i==0) {
+				Assert.assertEquals("<a href=\"/wiki/2016_Kaikoura_earthquake\" title=\"2016 Kaikoura earthquake\">An earthquake</a>", child.toString());
+			} else {
+				Assert.assertEquals("<a href=\"/wiki/Leonard_Cohen\" title=\"Leonard Cohen\">Leonard Cohen</a>", child.toString());
+			}
+		}
 	}
 
 }

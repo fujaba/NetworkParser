@@ -31,6 +31,7 @@ public class DataType {
 	public static final DataType VOID = new DataType("void");
 	public static final DataType INT = new DataType("int");
 	public static final DataType LONG = new DataType("long");
+	public static final DataType FLOAT = new DataType("float");
 	public static final DataType DOUBLE = new DataType("double");
 	public static final DataType STRING = new DataType("String");
 	public static final DataType BOOLEAN = new DataType("boolean");
@@ -53,12 +54,12 @@ public class DataType {
 		return getInternName(shortName, true);
 	}
 
-	String getInternName(boolean shortName, boolean primitivAllow) {
+	protected String getInternName(boolean shortName, boolean primitivAllow) {
 		if (this.value == null) {
 			return null;
 		}
 		String result = this.value.getName(shortName);
-		if(primitivAllow) {
+		if (primitivAllow) {
 			return result;
 		}
 		if (!shortName || result == null || result.lastIndexOf(".") < 0) {
@@ -80,7 +81,7 @@ public class DataType {
 	}
 
 	public static DataType create(Class<?> typ) {
-		return new DataType(typ.getName().replace("$", "."));
+		return new DataType(new Clazz(typ));
 	}
 
 	public static DataType create(String typ, boolean external) {
@@ -88,7 +89,7 @@ public class DataType {
 	}
 
 	public static DataType create(Class<?> typ, boolean external) {
-		Clazz clazz = new Clazz().with(typ.getName().replace("$", ".")).withExternal(external);
+		Clazz clazz = new Clazz(typ).withExternal(external);
 		return new DataType(clazz);
 	}
 
@@ -96,7 +97,7 @@ public class DataType {
 		if (!(obj instanceof DataType)) {
 			return false;
 		}
-		if(obj.hashCode() == this.hashCode()) {
+		if (obj.hashCode() == this.hashCode()) {
 			return true;
 		}
 		DataType other = (DataType) obj;
@@ -105,10 +106,12 @@ public class DataType {
 		}
 		return getName(false).equals(other.getName(false));
 	}
+
 	@Override
 	public int hashCode() {
 		return super.hashCode();
 	}
+
 	@Override
 	public String toString() {
 		String internName = this.getInternName(false, true);

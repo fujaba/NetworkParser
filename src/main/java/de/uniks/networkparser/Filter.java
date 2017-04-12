@@ -1,5 +1,6 @@
 package de.uniks.networkparser;
 
+import de.uniks.networkparser.interfaces.ObjectCondition;
 /*
 NetworkParser
 The MIT License
@@ -25,7 +26,6 @@ THE SOFTWARE.
 */
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
-import de.uniks.networkparser.interfaces.UpdateListener;
 
 public class Filter {
 	/** The Constant MERGE. */
@@ -37,15 +37,18 @@ public class Filter {
 	/** The Constant PRIO. */
 	public static final String PRIO = "prio";
 
-	protected UpdateListener idFilter;
-	protected UpdateListener convertable;
-	protected UpdateListener property;
+	public static final Filter SIMPLEFORMAT = new Filter().withSimpleFormat(true);
+
+	protected ObjectCondition idFilter;
+	protected ObjectCondition convertable;
+	protected ObjectCondition property;
 
 	// Temporary variables
 	protected boolean full;
-	private String strategy = IdMap.NEW;
+	private String strategy = SendableEntityCreator.NEW;
+	private boolean simpleFormat;
 
-	public Filter withIdFilter(UpdateListener idFilter) {
+	public Filter withIdFilter(ObjectCondition idFilter) {
 		this.idFilter = idFilter;
 		return this;
 	}
@@ -60,7 +63,7 @@ public class Filter {
 	 */
 	public boolean isId(Object entity, String className, IdMap map) {
 		if (idFilter != null) {
-			return idFilter.update(new SimpleEvent(IdMap.NEW, null, map, className, null, entity));
+			return idFilter.update(new SimpleEvent(SendableEntityCreator.NEW, null, map, className, null, entity));
 		}else {
 			SendableEntityCreator creator = map.getCreator(className, true);
 			if(creator!=null) {
@@ -69,12 +72,22 @@ public class Filter {
 		}
 		return true;
 	}
+	
+	public boolean isSimpleFormat(Object entity, SendableEntityCreator creator, String className, IdMap map){
+		if(this.isSimpleFormat()) {
+			return true;
+		}
+		if (creator instanceof SendableEntityCreatorNoIndex || isId(entity, className, map) == false) {
+			return true;
+		}
+		return false;
+	}
 
 	/**
 	 * Serialization the Full object inclusive null value
 	 * @return boolean for serialization the full object
 	 */
-	public boolean isFullSeriation() {
+	public boolean isFullSerialization() {
 		return full;
 	}
 	/**
@@ -87,12 +100,12 @@ public class Filter {
 		return this;
 	}
 
-	public Filter withPropertyRegard(UpdateListener property) {
+	public Filter withPropertyRegard(ObjectCondition property) {
 		this.property = property;
 		return this;
 	}
 
-	public Filter withConvertable(UpdateListener convertable) {
+	public Filter withConvertable(ObjectCondition convertable) {
 		this.convertable = convertable;
 		return this;
 	}
@@ -102,6 +115,10 @@ public class Filter {
 			return this.property.update(new SimpleEvent(this.strategy, map, property, null, value, deep, entity));
 		}
 		return true;
+	}
+	
+	public ObjectCondition getPropertyRegard() {
+		return property;
 	}
 
 	boolean isConvertable(Object entity, String property, Object value, IdMap map, int deep) {
@@ -117,7 +134,7 @@ public class Filter {
 	 * @param convertable Condition
 	 * @return a new Filter for regard the model
 	 */
-	public static Filter regard(UpdateListener convertable) {
+	public static Filter regard(ObjectCondition convertable) {
 		return new Filter().withPropertyRegard(convertable);
 	}
 	/**
@@ -126,7 +143,7 @@ public class Filter {
 	 * @param convertable Condition
 	 * @return a new Filter for Filter with Convertable Items
 	 */
-	public static Filter convertable(UpdateListener convertable) {
+	public static Filter convertable(ObjectCondition convertable) {
 		return new Filter().withConvertable(convertable);
 	}
 
@@ -144,6 +161,15 @@ public class Filter {
 
 	public Filter withStrategy(String strategy) {
 		this.strategy = strategy;
+		return this;
+	}
+
+	public boolean isSimpleFormat() {
+		return simpleFormat;
+	}
+
+	public Filter withSimpleFormat(boolean value) {
+		this.simpleFormat = value;
 		return this;
 	}
 }

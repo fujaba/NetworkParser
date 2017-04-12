@@ -34,9 +34,7 @@ import de.uniks.networkparser.list.SimpleList;
 public abstract class Buffer implements BufferItem {
 	public final static String STOPCHARSJSON = ",:]}/\\\"[{;=# ";
 	public final static String STOPCHARSXML = ",]}/\\\"[{;=# ";
-	public final static String STOPCHARSXMLEND = ",]}/\\\"[{;=#>\r\n ";
-//	private byte lookAHeadByte;
-//	private boolean isLookAhead;
+	public final static char[] STOPCHARSXMLEND = new char[]{'"', ',', ']', '}', '/', '\\', '"', '[', '{', ';', '=', '#', '>', '\r', '\n', ' '};
 
 	/** The index. */
 	protected int position;
@@ -135,8 +133,27 @@ public abstract class Buffer implements BufferItem {
 		result.with(getCurrentChar());
 		for(int i = 1; i < len; i++) {
 			result.with(getChar());
+			if(isEnd()) {
+				break;
+			}
 		}
 		return result;
+	}
+	
+	public CharacterBuffer readLine() {
+		CharacterBuffer line = new CharacterBuffer();
+		char character = getCurrentChar();
+		while( character != '\r' &&  character !='\n' && character != 0) {
+			line.with(character);
+			character = getChar();
+		}
+		if(character == '\r') {
+			character = getChar();
+		}
+		if(character == '\n') {
+			skip();
+		}
+		return line;
 	}
 
 	@Override
@@ -155,8 +172,11 @@ public abstract class Buffer implements BufferItem {
 	}
 
 	@Override
-	public CharacterBuffer nextString() {
-		return nextString(new CharacterBuffer(), false, false, '"');
+	public CharacterBuffer nextString(char... quotes) {
+		if(quotes == null) {
+			quotes =new char[]{'"'};
+		}
+		return nextString(new CharacterBuffer(), false, false, quotes);
 	}
 
 	@Override
@@ -371,18 +391,16 @@ public abstract class Buffer implements BufferItem {
 	}
 
 	@Override
-	public CharacterBuffer nextToken(String stopWords) {
-		nextClean(false);
+	public CharacterBuffer nextToken(boolean current, char... stopWords) {
+		nextClean(current);
 		CharacterBuffer characterBuffer = new CharacterBuffer();
 		char c = getCurrentChar();
-		char[] stops = new char[stopWords.length()];
-		for(int i=0;i<stopWords.length();i++) {
-			stops[i] = stopWords.charAt(i);
-			if(stops[i] == c) {
+		for(int i=0;i<stopWords.length;i++) {
+			if(stopWords[i] == c) {
 				return characterBuffer;
 			}
 		}
-		parseString(characterBuffer, true, false, stops);
+		parseString(characterBuffer, true, false, stopWords);
 		return characterBuffer;
 	}
 
@@ -443,10 +461,10 @@ public abstract class Buffer implements BufferItem {
 					break;
 				}
 			}
-			if(found == false) {
+			c = getChar();
+			if(found) {
 				break;
 			}
-			c = getChar();
 		} while(c!=0);
 		return c;
 	}

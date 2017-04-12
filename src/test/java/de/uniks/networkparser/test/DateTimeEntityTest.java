@@ -1,6 +1,7 @@
 package de.uniks.networkparser.test;
 
 import static org.junit.Assert.assertEquals;
+
 import java.io.PrintStream;
 import java.text.DateFormat;
 import java.util.Calendar;
@@ -56,9 +57,8 @@ public class DateTimeEntityTest {
 		date.withValue(1396439596409L);
 		String string = date.toString("yyyy-mm-dd'T'HZ:MM:SS'Z'");
 		Assert.assertEquals("2014-04-02T12:53:16Z", string);
-//		System.out.println(string);
-
 	}
+
 	public void printToStream(DateFormat df, GregorianCalendar reference, PrintStream stream) {
 		if(stream != null) {
 			stream.println(df.format(reference.getTime()));

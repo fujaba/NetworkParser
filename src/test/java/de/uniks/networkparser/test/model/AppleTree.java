@@ -24,6 +24,7 @@ package de.uniks.networkparser.test.model;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.LinkedHashSet;
+
 import de.uniks.networkparser.interfaces.SendableEntity;
 
 public class AppleTree extends Tree implements SendableEntity

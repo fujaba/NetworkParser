@@ -20,16 +20,16 @@ See the Licence for the specific language governing permissions and limitations 
 import de.uniks.networkparser.DateTimeEntity;
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.IdMap;
-import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.Pos;
+import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.EntityList;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.xml.XMLEntity;
-import de.uniks.networkparser.xml.XMLTokener;
 import de.uniks.networkparser.xml.XMLEntityCreator;
+import de.uniks.networkparser.xml.XMLTokener;
 
 public class ExcelParser {
 	public static final String ROW = "row";
@@ -56,7 +56,7 @@ public class ExcelParser {
 		SimpleKeyValueList<String, String> mergeCellPos = new SimpleKeyValueList<String, String>();
 
 		IdMap map = new IdMap();
-		map.with(new ExcelCell());
+		map.add(new ExcelCell());
 		XMLTokener tokener = new XMLTokener().withBuffer(sheetFile.toString()).withMap(map);
 		tokener.withDefaultFactory(new XMLEntityCreator());
 		XMLEntity sheet = (XMLEntity) map.decode(tokener);
@@ -66,13 +66,11 @@ public class ExcelParser {
 		}
 
 		if (sheet != null) {
-			EntityList mergeCells = sheet.getChild("mergeCells", true);
+			EntityList mergeCells = sheet.getElementsBy(XMLEntity.PROPERTY_TAG,  "mergeCells");
 			// <mergeCells count="1"><mergeCell ref="A2:A3"/></mergeCells>
 			if (mergeCells != null) {
-				for (EntityList mergeCell : mergeCells.getChildren()) {
-					if(mergeCell instanceof Entity == false) {
-						continue;
-					}
+				for(int i=0;i<mergeCells.sizeChildren();i++) {
+					BaseItem mergeCell = mergeCells.getChild(i);
 					SimpleList<Pos> excelRange = EntityUtil.getExcelRange(((Entity) mergeCell).getString(REF));
 					for (Pos item : excelRange) {
 						if (item == null || item.x < 0 || item.y < 0) {
@@ -82,10 +80,11 @@ public class ExcelParser {
 					}
 				}
 			}
-			EntityList sheetData = sheet.getChild("sheetData", true);
+			EntityList sheetData = sheet.getElementsBy(XMLEntity.PROPERTY_TAG,  "sheetData");
 			if (sheetData != null) {
 //				if (rows != null && rows instanceof XMLEntity) {
-					for (EntityList child : sheetData.getChildren()) {
+					for(int i=0;i<sheetData.sizeChildren();i++) {
+						BaseItem child = sheetData.getChild(i);
 						if (child == null || child instanceof XMLEntity == false ) {
 							continue;
 						}
@@ -95,7 +94,8 @@ public class ExcelParser {
 						}
 						ExcelRow dataRow = new ExcelRow();
 						// <c r="A1" t="s"><v>2</v></c>
-						for (EntityList item : row.getChildren()) {
+						for(int c=0;c<row.size();c++) {
+							EntityList item = row.getChild(c); 
 							if (item == null || item instanceof ExcelCell == false) {
 								continue;
 							}
@@ -106,13 +106,13 @@ public class ExcelParser {
 							ExcelCell excelCell = (ExcelCell) cell;
 							if (CELL_TYPE_REFERENCE.equalsIgnoreCase(excelCell.getType())) {
 								// <v>2</v>
-								String ref = ((XMLEntity)cell.getChildren().first()).getValue();
+								String ref = ((XMLEntity)cell.getChild(0)).getValue();
 								if (sharedStrings != null) {
-									XMLEntity refString = (XMLEntity) sharedStrings.getChildren().get(Integer.valueOf(ref));
-									String text = ((XMLEntity)refString.getChildren().first()).getValue();
+									XMLEntity refString = (XMLEntity) sharedStrings.getChild(Integer.valueOf(ref));
+									String text = ((XMLEntity)refString.getChild(0)).getValue();
 									excelCell.setContent(text);
 								}
-							} else if (excelCell.getChildren() == null) {
+							} else if (excelCell.sizeChildren()<1) {
 								String pos = mergeCellPos.get(excelCell.getReferenz().toString());
 								if (pos != null && cells.contains(pos)) {
 									ExcelCell firstCell = cells.get(pos);

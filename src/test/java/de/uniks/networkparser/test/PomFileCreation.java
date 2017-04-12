@@ -3,6 +3,8 @@ package de.uniks.networkparser.test;
 import org.junit.Assert;
 import org.junit.Test;
 
+import de.uniks.networkparser.buffer.CharacterBuffer;
+import de.uniks.networkparser.ext.Manifest;
 import de.uniks.networkparser.xml.PomFile;
 
 public class PomFileCreation {
@@ -29,5 +31,17 @@ public class PomFileCreation {
 		"  </dependencies>\r\n"+
 		"</project>";
 		Assert.assertEquals(ref, pom.toString(2));
+	}
+	
+	@Test
+	public void testManifest(){
+		CharacterBuffer sb=new CharacterBuffer();
+		sb.withLine("Manifest-Version: 1.0");
+		sb.withLine("Specification-Title: Networkparser");
+		sb.withLine("Author: Stefan Lindel)");
+
+		Manifest manifest = Manifest.create(sb);
+		Assert.assertEquals(3, manifest.size());
+		
 	}
 }

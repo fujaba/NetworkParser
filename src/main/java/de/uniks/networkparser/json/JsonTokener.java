@@ -25,6 +25,7 @@ THE SOFTWARE.
 */
 import java.util.Map;
 import java.util.Map.Entry;
+
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.MapEntity;
@@ -47,9 +48,8 @@ import de.uniks.networkparser.xml.XMLEntity;
 
 public class JsonTokener extends Tokener {
 	/** The Constant JSON_PROPS. */
-	public static final String PROPS = "prop";
-
 	public final static String STOPCHARS = ",]}/\\\"[{;=# ";
+	public static final char COMMENT='#';
 
 	public static final char STARTARRAY='[';
 	public static final char ENDARRAY=']';
@@ -70,7 +70,7 @@ public class JsonTokener extends Tokener {
 			for (;;) {
 				c = getCurrentChar();
 				if (c != ',') {
-					entityList.with(nextValue(entityList, false, false, (char)0));
+					entityList.add(nextValue(entityList, false, false, (char)0));
 				}
 				c = nextClean(true);
 				switch (c) {
@@ -154,6 +154,19 @@ public class JsonTokener extends Tokener {
 				skip();
 				isQuote = false;
 				continue;
+			case COMMENT:
+				skip();
+				skipTo(BaseItem.CRLF, false, false);
+				continue;
+			case '/':
+				c = nextClean(false);
+				if('/' == c) {
+					skipTo(BaseItem.CRLF, false, false);
+					continue;
+				} else if('*' == c) {
+					skipTo("*/", true, false);
+					continue;
+				}
 			case ENDENTITY:
 				skip();
 				return;
@@ -192,10 +205,12 @@ public class JsonTokener extends Tokener {
 				parent.put(IdMap.VALUE, xmlEntity.getValue());
 			}
 
-			for (int i = 0; i < xmlEntity.size(); i++) {
+			int i;
+			for (i = 0; i < xmlEntity.size(); i++) {
 				parseEntityProp(props, xmlEntity.getValueByIndex(i), xmlEntity.getKeyByIndex(i));
 			}
-			for (EntityList child : xmlEntity.getChildren()) {
+			for (i = 0; i < xmlEntity.size(); i++) {
+				EntityList child = xmlEntity.getChild(i);
 				if(child  instanceof XMLEntity == false) {
 					continue;
 				}
@@ -224,11 +239,13 @@ public class JsonTokener extends Tokener {
 				parent.put(IdMap.VALUE, xmlEntity.getValue());
 			}
 
-			for (int i = 0; i < xmlEntity.size(); i++) {
+			int i;
+			for (i = 0; i < xmlEntity.size(); i++) {
 				parseEntityProp(props, xmlEntity.getValueByIndex(i), xmlEntity.getKeyByIndex(i));
 			}
 
-			for (EntityList child : xmlEntity.getChildren()) {
+			for (i = 0; i < xmlEntity.size(); i++) {
+				EntityList child = xmlEntity.getChild(i);
 				if(child  instanceof XMLEntity == false) {
 					continue;
 				}
@@ -279,7 +296,7 @@ public class JsonTokener extends Tokener {
 		if (jsonObject == null) {
 			return map.getTarget();
 		}
-		SendableEntityCreator typeInfo = map.getCreator(Grammar.READ, this.map, jsonObject, null);
+		SendableEntityCreator typeInfo = map.getCreator(Grammar.READ, jsonObject, null);
 		if (typeInfo != null) {
 			Object result = map.getTarget();
 			if (map.hasValue(jsonObject, IdMap.ID) && result == null) {
@@ -290,9 +307,9 @@ public class JsonTokener extends Tokener {
 			}
 			if (result == null) {
 				result = map.getNewEntity(typeInfo, map.getValue(jsonObject, IdMap.CLASS), false);
-				this.map.notify(new SimpleEvent(IdMap.NEW, jsonObject, this.map, null, null, result));
+				this.map.notify(new SimpleEvent(SendableEntityCreator.NEW, jsonObject, this.map, null, null, result));
 			} else {
-				this.map.notify(new SimpleEvent(IdMap.UPDATE, jsonObject, this.map, null, null, result));
+				this.map.notify(new SimpleEvent(SendableEntityCreator.UPDATE, jsonObject, this.map, null, null, result));
 			}
 			if (typeInfo instanceof SendableEntityCreatorWrapper) {
 				String[] properties = typeInfo.getProperties();
@@ -343,11 +360,11 @@ public class JsonTokener extends Tokener {
 				return target;
 			}
 			idMap.put(jsonId, target);
-			idMap.getCounter().readId(jsonId);
+//			idMap.getCounter().readId(jsonId);
 		}
 		JsonObject jsonProp = (JsonObject) map.getProperties(jsonObject, this.map, isId, Grammar.READ);
 		if (jsonProp != null) {
-			SendableEntityCreator prototyp = map.getCreator(Grammar.WRITE, this.map, target, target.getClass().getName());
+			SendableEntityCreator prototyp = map.getCreator(Grammar.WRITE, target, target.getClass().getName());
 			String[] properties = prototyp.getProperties();
 			if (properties != null) {
 				for (String property : properties) {
@@ -376,9 +393,9 @@ public class JsonTokener extends Tokener {
 					Object kid = jsonArray.get(i);
 					if (kid instanceof JsonObject) {
 						// got a new kid, create it
-						creator.setValue(target, property, decoding((JsonObject) kid, map), IdMap.NEW);
+						creator.setValue(target, property, decoding((JsonObject) kid, map), SendableEntityCreator.NEW);
 					} else {
-						creator.setValue(target, property, kid, IdMap.NEW);
+						creator.setValue(target, property, kid, SendableEntityCreator.NEW);
 					}
 				}
 			} else {
@@ -399,14 +416,14 @@ public class JsonTokener extends Tokener {
 							String key = item.getKey();
 							Object entryValue = item.getValue();
 							if (entryValue instanceof JsonObject) {
-								creator.setValue(target, property, new ObjectMapEntry().with(key, decoding((JsonObject) entryValue, map)), IdMap.NEW);
+								creator.setValue(target, property, new ObjectMapEntry().with(key, decoding((JsonObject) entryValue, map)), SendableEntityCreator.NEW);
 							} else if (entryValue instanceof JsonArray) {
 								///FIXME CHANGE DECODE TO DECODING
 								throw new RuntimeException();
 //								creator.setValue(target, property,
-//										new ObjectMapEntry().with(key, decode((JsonArray) entryValue)), IdMap.NEW);
+//										new ObjectMapEntry().with(key, decode((JsonArray) entryValue)), SendableEntityCreator.NEW);
 							} else {
-								creator.setValue(target, property, new ObjectMapEntry().with(key, entryValue), IdMap.NEW);
+								creator.setValue(target, property, new ObjectMapEntry().with(key, entryValue), SendableEntityCreator.NEW);
 							}
 						}
 					} else {

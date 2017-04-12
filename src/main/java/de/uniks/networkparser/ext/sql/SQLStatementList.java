@@ -24,6 +24,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 import java.util.Comparator;
+
 import de.uniks.networkparser.list.SimpleList;
 
 public class SQLStatementList extends SimpleList<SQLStatement>{

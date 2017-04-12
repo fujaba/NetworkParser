@@ -24,13 +24,18 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+
 import de.uniks.networkparser.interfaces.BaseItem;
+import de.uniks.networkparser.interfaces.ObjectCondition;
 
 public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K, V>, Iterable<Entry<K, V>>{
+	private Comparator<Object> cpr;
+
 	public SimpleKeyValueList() {
 		super();
 		withFlag(MAP);
@@ -139,8 +144,9 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 		return this;
 	}
 
-	public void setValue(int pos, V value) {
-		super.setValue(pos, value, SMALL_VALUE);
+	@SuppressWarnings("unchecked")
+	public V setValue(int pos, V value) {
+		return (V) super.setValue(pos, value, SMALL_VALUE);
 	}
 
 	public void copyEntity(SimpleKeyValueList<K, V> target, int pos) {
@@ -336,23 +342,34 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 		return this;
 	}
 
-	public SimpleKeyValueList<K, V> with(Object... values) {
+	public boolean add(Object... values) {
 		if(values == null) {
-			return this;
+			return false;
 		}
 		if (values.length % 2 == 0) {
 			for (int i = 0; i < values.length; i += 2) {
 				withKeyValue(values[i], values[i + 1]);
 			}
-			return this;
+			return true;
 		}
-		super.with(values);
-		return this;
+		super.add(values);
+		return true;
 	}
 
 	@SuppressWarnings("unchecked")
 	public <ST extends SimpleKeyValueList<K, V>> ST with(K key, V value) {
 		add(key, value);
+		return (ST)this;
+	}
+
+	@SuppressWarnings("unchecked")
+	public <ST extends SimpleKeyValueList<K, V>> ST withMultIndex(K[] keys, V value) {
+		if(keys == null) {
+			return (ST)this;
+		}
+		for(K key : keys) {
+			add(key, value);
+		}
 		return (ST)this;
 	}
 
@@ -480,7 +497,7 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 	public V get(Object key) {
 		int pos = indexOf(key);
 		if(pos>=0) {
-			return (V) super.getByIndex(SMALL_VALUE, pos + this.index, size);
+			return (V) getByIndex(SMALL_VALUE, pos + this.index, size);
 		}
 		return null;
 	}
@@ -590,5 +607,54 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 	@Override
 	public Iterator<Entry<K, V>> iterator() {
 		return new SimpleIteratorSet<K, V>(this);
+	}
+	
+	@Override
+	public void replaceAllValues(Object key, String search, String replace) {
+		if(key == null) {
+			return;
+		}
+		for(int i=0;i<this.size();i++)
+		{
+			Object value = getValueByIndex(i);
+			if(value instanceof AbstractArray<?>) {
+				((AbstractArray<?>)value).replaceAllValues(key, search, replace);
+			} else {
+				Object itemKey = getKeyByIndex(i);
+				if(key.equals(itemKey)) {
+					if(search == null) {
+						this.setValue(i, replace, SMALL_VALUE);
+					} else if(value instanceof String) {
+						String stringValue = (String) value;
+						if(stringValue.indexOf(search)>=0) {
+							stringValue = stringValue.replaceAll(search, replace);
+							this.setValue(i, stringValue, SMALL_VALUE);
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if(obj instanceof ObjectCondition) {
+			ObjectCondition condition = (ObjectCondition) obj;
+			return condition.update(this);
+		}
+		return super.equals(obj);
+	}
+	
+	public SimpleKeyValueList<K, V> withComparator(Comparator<Object> comparator) {
+		this.cpr = comparator;
+		return this;
+	}
+	@Override
+	public boolean isComparator() {
+		return (this.cpr != null);
+	}
+	@Override
+	public Comparator<Object> comparator() {
+		return cpr;
 	}
 }

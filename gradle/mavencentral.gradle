@@ -1,32 +1,9 @@
 def isReleaseBuild() {
 	return gitVersion.isRelease();
 }
-def writeFile() {
-	if(project.hasProperty("signingSecretKeyRing")) {
-		File file = File.createTempFile("secret", "gpg")
-		FileOutputStream out = new FileOutputStream(file);
-		out.write(convertKey("$System.env.signingSecretKeyRing"));
-		ext.secretKeyRingFile=inputFile.getAbsolutePath()
-		out.close();
-	}
-}
-def convertKey(String value) {
-	String hexVal = "0123456789ABCDEF"
-	byte[] out = new byte[value.length() / 2]
-	int n = value.length()
-	for (int i = 0; i < n; i += 2) {
-		int hn = hexVal.indexOf((int)value.charAt(i))
-		int ln = hexVal.indexOf((int)value.charAt(i + 1))
-		out[i / 2] = (byte) ((hn << 4) | ln)
-	}
-	out
-}
-
 
 if(project.hasProperty("signing.keyId")) {
 	apply plugin: 'signing'
-
-	writeFile()
 
 	signing {
 		required { (isReleaseBuild() || gitVersion.isMaster() )&& gradle.taskGraph.hasTask("uploadArchives")}
@@ -48,7 +25,7 @@ if(project.hasProperty("signing.keyId")) {
 
 				pom{
 					project {
-						name 'Networkparser'
+						name 'NetworkParser'
 						packaging 'jar'
 						description 'Networkparser is a Framework for serialization to Json, XML and Byte.'
 						url 'https://github.com/fujaba/Networkparser'
@@ -73,6 +50,7 @@ if(project.hasProperty("signing.keyId")) {
 						   developer {
 							   id 'slin'
 							   name 'Stefan Lindel'
+							   email 'Stefan@uni-kassel.de'
 							}
 						}
 					}
