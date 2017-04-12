@@ -1,7 +1,5 @@
 package de.uniks.networkparser.test.javafx;
 
-import org.junit.Test;
-
 interface IRobot {
 
 	String Name();

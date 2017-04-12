@@ -25,5 +25,6 @@ THE SOFTWARE.
 */
 
 public interface LocalisationInterface {
-	public String getText(String label, Object model, Object gui);
+	public String getText(CharSequence label, Object model, Object gui);
+	public String get(CharSequence label);
 }

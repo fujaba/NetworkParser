@@ -3,9 +3,9 @@ package de.uniks.networkparser.logic;
 import java.util.Map;
 
 import de.uniks.networkparser.buffer.CharacterBuffer;
+import de.uniks.networkparser.interfaces.LocalisationInterface;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.ParserCondition;
-import de.uniks.networkparser.list.SimpleKeyValueList;
 
 public class VariableCondition implements ParserCondition{
 	private CharSequence value;
@@ -31,7 +31,7 @@ public class VariableCondition implements ParserCondition{
 		this.value = value;
 		return this;
 	}
-	public CharSequence getValue(SimpleKeyValueList<String, String> variables) {
+	public CharSequence getValue(LocalisationInterface variables) {
 		if(variables != null && this.value != null) {
 			return variables.get(this.value);
 		}

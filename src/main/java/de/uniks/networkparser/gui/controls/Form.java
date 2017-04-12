@@ -1,9 +1,7 @@
 package de.uniks.networkparser.gui.controls;
 
 import java.util.Collection;
-
 import de.uniks.networkparser.IdMap;
-import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.list.SimpleList;
 
 public class Form extends Control {
