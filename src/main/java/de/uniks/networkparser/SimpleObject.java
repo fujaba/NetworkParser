@@ -151,6 +151,14 @@ public class SimpleObject implements SendableEntityCreator, SendableEntity {
 		return result;
 	}
 
+	public static SimpleObject create(String id, String className, String key, Object value) {
+		SimpleObject result = new SimpleObject();
+		result.setId(id);
+		result.setClassName(className);
+		result.setValue(key, value);
+		return result;
+	}
+
 
 	public static SimpleObject create(JsonObject json) {
 		SimpleObject result = new SimpleObject();

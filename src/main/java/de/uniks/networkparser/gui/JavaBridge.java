@@ -7,6 +7,7 @@ import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.NetworkParserLog;
 import de.uniks.networkparser.SimpleEvent;
+import de.uniks.networkparser.SimpleObject;
 import de.uniks.networkparser.gui.controls.Control;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.json.JsonObject;
@@ -94,6 +95,19 @@ public abstract class JavaBridge implements ObjectCondition {
 		return this.map;
 	}
 
+	public String put(SimpleObject so) {
+		map.getMapListener().suspendNotification();
+		JsonObject jsonObject = map.toJsonObject(so);
+		map.getMapListener().resetNotification();
+		Object result = executeScript(BridgeCommand.load(jsonObject));
+		String id = null;
+		if (result instanceof JsonObject) {
+			JsonObject json = (JsonObject) result;
+			id = json.getString("id");
+			so.setId(id);
+		}
+		return id;
+	}
 
 	public String addControl(Control c) {
 		String key = null;

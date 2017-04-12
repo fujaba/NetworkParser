@@ -4,9 +4,6 @@ import de.uniks.networkparser.json.JsonArray;
 import netscape.javascript.JSObject;
 
 public class JsonArrayLazy extends JsonArray {
-	public static final String JS_OBJECT="[object Object]";
-	public static final String JS_SET="[object Set]";
-	
 	private JSObject ref = null;
 	private boolean loaded;
 
@@ -16,25 +13,36 @@ public class JsonArrayLazy extends JsonArray {
 		}
 	}
 
+
 	public boolean lazyLoad() {
-		if(this.ref == null) {
+		if (this.ref == null) {
 			return false;
 		}
-		if(this.loaded == false) {
+		if (this.loaded == false) {
 			this.loaded = true;
-		} else {
+		}
+		else {
 			return false;
 		}
-		int size  = (int) this.ref.eval("this.size;");
+		int size = (int) this.ref.eval("this.length;");
 		for (int i = 0; i < size; i++) {
-			Object value = this.ref.eval("this["+i+"]");
+			Object value = this.ref.eval("this[" + i + "]");
 			if (value instanceof JSObject) {
-				if(JS_SET.equals(value.toString())) {
-					this.add(new JsonArrayLazy(value));
-				} else {
-					this.add(new JsonObjectLazy(value));
+				JSObject jsValue = (JSObject) value;
+				boolean isArray = Boolean.parseBoolean("" + jsValue.eval("Array.isArray(this);"));
+
+				if (isArray) {
+					JsonArrayLazy child = new JsonArrayLazy(value);
+					this.add(child);
+					child.lazyLoad();
 				}
-			} else {
+				else {
+					JsonObjectLazy child = new JsonObjectLazy(value);
+					this.add(child);
+					child.lazyLoad();
+				}
+			}
+			else {
 				this.add(value);
 			}
 		}

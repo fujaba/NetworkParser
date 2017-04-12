@@ -369,6 +369,9 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 			addListener(item);
 		}
 		if (this.updateListener != null) {
+			if(grammar instanceof SimpleGrammar) {
+				return changed;
+			}
 			if(item instanceof SendableEntityCreator) {
 				((SendableEntityCreator)item).setValue(item, IdMap.ID, id, SendableEntityCreator.NEW);
 			}
@@ -1304,14 +1307,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 			} else {
  				id = "" + temp;
  				if(getKey(entity) == null) {
- 					if(map.getFilter().isSimpleFormat() == true) {
- 	 					boolean changed = this.keyValue.add(id, entity);
- 	 					if (changed) {
- 	 						addListener(entity);
- 	 					}
- 					} else {
- 						put(id, entity);
- 					}
+					put(id, entity);
  				}
 			}
 		}

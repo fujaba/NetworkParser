@@ -5,8 +5,9 @@ import de.uniks.networkparser.json.JsonObject;
 import netscape.javascript.JSObject;
 
 public class JsonObjectLazy extends JsonObject {
-	public static final String JS_OBJECT="[object Object]";
-	public static final String JS_SET="[object Set]";
+//	public static final String JS_OBJECT="[object Object]";
+//	public static final String JS_SET="[object Set]";
+	public static final String FILTERPROP="$";
 	
 	private JSObject ref = null;
 	private boolean loaded;
@@ -18,25 +19,39 @@ public class JsonObjectLazy extends JsonObject {
 	}
 
 	public boolean lazyLoad() {
-		if(this.ref == null) {
+		if (this.ref == null) {
 			return false;
 		}
-		if(this.loaded == false) {
+		if (this.loaded == false) {
 			this.loaded = true;
-		} else {
+		}
+		else {
 			return false;
 		}
 		JSObject eval = (JSObject) this.ref.eval("Object.keys(this).map(function (key) {return key;});");
 		String[] keys = eval.toString().split(",");
 		for (int i = 0; i < keys.length; i++) {
+			// Get from Javascript the full Object and Filter the $ for not necessary links or bidirectional links
+			if (keys[i].startsWith(FILTERPROP)) {
+				continue;
+			}
 			Object value = this.ref.getMember(keys[i]);
 			if (value instanceof JSObject) {
-				if(JS_SET.equals(value.toString())) {
-					this.add(keys[i], new JsonArrayLazy(value));
-				} else {
-					this.add(keys[i], new JsonObjectLazy(value));
+				JSObject jsValue = (JSObject) value;
+				boolean isArray = Boolean.parseBoolean("" + jsValue.eval("Array.isArray(this);"));
+
+				if (isArray) {
+					JsonArrayLazy child = new JsonArrayLazy(value);
+					this.add(keys[i], child);
+					child.lazyLoad();
 				}
-			} else {
+				else {
+					JsonObjectLazy child = new JsonObjectLazy(value);
+					this.add(keys[i], child);
+					child.lazyLoad();
+				}
+			}
+			else {
 				this.add(keys[i], value);
 			}
 		}
