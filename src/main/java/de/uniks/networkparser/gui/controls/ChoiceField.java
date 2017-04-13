@@ -10,6 +10,12 @@ public class ChoiceField extends Input<String> {
 
 	protected static final String CHECKED = "checked";
 
+	protected static final String VALUE = "value";
+
+	public static final String ON = "on";
+
+	public static final String OFF = "on";
+
 	private boolean checked = false;
 
 
@@ -23,12 +29,32 @@ public class ChoiceField extends Input<String> {
 			this.type = CHECKBOX;
 		}
 	}
+	
+	public boolean isChecked() {
+		return checked;
+	}
 
 
 	public boolean setChecked(boolean checked) {
 		boolean oldValue = this.checked;
 		this.checked = checked;
-		return firePropertyChange(CHECKED, oldValue, checked);
+		boolean changed = firePropertyChange(CHECKED, oldValue, checked);
+		if (changed) {
+			this.setValue((checked) ? "on" : "off");
+		}
+		return changed;
+	}
+
+
+	@Override
+	public boolean setValue(String value) {
+		String oldValue = this.value;
+		this.value = value;
+		boolean changed = firePropertyChange(VALUE, oldValue, value);
+		if (changed) {
+			this.setChecked(ON.equals(value));
+		}
+		return changed;
 	}
 
 
