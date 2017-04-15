@@ -29,7 +29,8 @@ public class StringCondition implements ParserCondition {
 
 	@Override
 	public ParserCondition create(CharacterBuffer buffer) {
-		return create(buffer);
+		this.value = buffer;
+		return this;
 	}
 
     @Override
@@ -43,5 +44,13 @@ public class StringCondition implements ParserCondition {
 	@Override
 	public String getKey() {
 		return null;
+	}
+	
+	@Override
+	public String toString() {
+		if(value == null) {
+			return "";
+		}
+		return value.toString();
 	}
 }

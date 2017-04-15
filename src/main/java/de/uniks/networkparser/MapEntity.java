@@ -114,7 +114,8 @@ public class MapEntity extends SimpleSet<Object>{
 		if (filter.isId(entity, className, map) == false) {
 			this.with(entity);
 		} else {
-			String id = map.getId(entity);
+			boolean newMessage = SendableEntityCreator.UPDATE.equals(this.getFilter().getStrategy()) == false;
+			String id = map.getId(entity, newMessage);
 			this.with(id);
 			return id;
 		}

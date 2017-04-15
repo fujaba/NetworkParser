@@ -41,6 +41,9 @@ public interface SendableEntityCreator {
 	/** The Constant NEW. */
 	public static final String NEW = "new";
 
+	/** The Constant NEW. */
+	public static final String SIMPLE = "simple";
+	
 	/**
 	 * Gets the properties.
 	 *
