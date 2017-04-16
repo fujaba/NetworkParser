@@ -2,7 +2,6 @@ package test;
 
 import org.junit.Test;
 
-import de.uniks.factory.ModelFactory;
 import de.uniks.factory.java.JavaModelFactory;
 import de.uniks.factory.typescript.TypeScriptModelFactory;
 import de.uniks.networkparser.graph.Attribute;
@@ -11,6 +10,7 @@ import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.DataType;
 import de.uniks.networkparser.graph.GraphList;
 import de.uniks.networkparser.graph.Parameter;
+import de.uniks.template.generator.ModelGenerator;
 
 public class TestAttributeFactory {
 
@@ -70,7 +70,7 @@ public class TestAttributeFactory {
 		person.createAttribute("age", DataType.INT);
 		person.createAttribute("wise", DataType.BOOLEAN);
 		JavaModelFactory modelFactory = new JavaModelFactory();
-		modelFactory.setCodeStyle(ModelFactory.CODESTYLE_DIVIDED);
+		modelFactory.setCodeStyle(ModelGenerator.CODESTYLE_DIVIDED);
 		System.out.println(modelFactory.create(classModel));
 	}
 	

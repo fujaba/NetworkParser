@@ -1,12 +1,11 @@
 package de.uniks.template;
 
-import de.uniks.factory.condition.FeatureCondition;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.graph.GraphMember;
 import de.uniks.networkparser.interfaces.Entity;
+import de.uniks.networkparser.interfaces.LocalisationInterface;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.ParserCondition;
-import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.logic.ChainCondition;
 import de.uniks.networkparser.logic.IfCondition;
@@ -14,70 +13,71 @@ import de.uniks.networkparser.logic.Not;
 import de.uniks.networkparser.logic.StringCondition;
 import de.uniks.networkparser.logic.TemplateCondition;
 import de.uniks.networkparser.logic.VariableCondition;
+import de.uniks.template.condition.ForeachCondition;
 
 public class Template {
 	private static final char SPLITSTART='{';
 	private static final char SPLITEND='}';
-	public static final int PACKAGE = 0;
+//	public static final int PACKAGE = 0;
 	
-	public static final int IMPORT = 1;
+//	public static final int IMPORT = 1;
+	public static final int DECLARATION = 1;
+	public static final int FIELD = 2;
 	
-	public static final int DECLARATION = 2;
+	public static final int TEMPLATE = Integer.MAX_VALUE;
 	
-	public static final int FIELD = 3;
-	
-	public static final int VALUE = 4;
+	public static final int VALUE = 3;
 	
 	private TemplateCondition token = new TemplateCondition();
 	
 	private int type = -1;
 	
-	private Template prevTemplate = null;
-	
-	private Template nextTemplate = null;
-	
 	public String name;
+	
+	private SimpleList<String> imports = new SimpleList<String>();
 
 	private SimpleList<String> variables = new SimpleList<String>();
 	
-	private SimpleKeyValueList<String, ParserCondition> customTemplate = new SimpleKeyValueList<String, ParserCondition>();
 	
 	public Template(String name) {
 		this.name = name;
-		FeatureCondition condition = new FeatureCondition();
-		customTemplate.add(condition.getKey(), condition);
 	}
-	
+
 	public Template() {
-		FeatureCondition condition = new FeatureCondition();
-		customTemplate.add(condition.getKey(), condition);
 	}
 	
-	public String generate(SimpleKeyValueList<String, String> parameters, GraphMember member) {
+	public TemplateResultFragment generate(LocalisationInterface parameters, TemplateInterface parent, GraphMember member) {
 		if(this.token.getCondition() instanceof StringCondition) {
-			this.token.withCondition(this.parsing((StringCondition)this.token.getCondition(), false));	
+			this.token.withCondition(this.parsing((StringCondition)this.token.getCondition(), parameters, false));	
 		}
 		ObjectCondition template = this.token.getTemplate();
 		if(template instanceof StringCondition) {
 			this.token.withTemplate(null);
-			ObjectCondition newTemplate = this.parsing((StringCondition)template, true);
+			ObjectCondition newTemplate = this.parsing((StringCondition)template, parameters, true);
 			this.token.withTemplate(newTemplate);
 		}
-		TemplateParser parser =new TemplateParser();
-		parser.withVariable(parameters);
-		parser.withTemplate(this);
-		parser.withMember(member);
+		TemplateResultFragment templateFragment = new TemplateResultFragment();
+		templateFragment.setParent(parent);
+		TemplateVariables templateParameter = new TemplateVariables(templateFragment, parameters);
+		templateFragment.withVariable(templateParameter);
+//		templateFragment.withTemplate(this);
+		templateFragment.withMember(member);
 		
-		if(this.token.update(parser) == false) {
-			return "";
+		if(this.token.update(templateFragment) == false) {
+			return null;
 		}
-		parser.withExpression(false);
+		templateFragment.withExpression(false);
 		ObjectCondition templateCondition = this.token.getTemplate();
-		templateCondition.update(parser);
-		return parser.getResult().toString();
+		//Execute Template
+		templateCondition.update(templateFragment);
+		
+		
+		templateFragment.withKey(this.getType());
+//		templateFragment.withValue(parser.getResult());
+		return templateFragment;
 	}
 	
-	public ObjectCondition parsing(StringCondition tokenTemplate, boolean variable) {
+	public ObjectCondition parsing(StringCondition tokenTemplate, LocalisationInterface customTemplate, boolean variable) {
 //		this.template = template;
 		// Parsing Variables
 		// Search for Variables and UIUf and combiVariables
@@ -99,13 +99,14 @@ public class Template {
 		if(variable) {
 			this.variables.clear();
 		}
-		return parseCharacterBuffer(template);
+		return parseCharacterBuffer(template, customTemplate);
 	}
 	
-	private ObjectCondition parseCharacterBuffer(CharacterBuffer template, String... stopWords) {
+	private ObjectCondition parseCharacterBuffer(CharacterBuffer template, LocalisationInterface customTemplate, String... stopWords) {
 		int start=template.position(), end;
 		ObjectCondition child = null;
 		ChainCondition parent = new ChainCondition();
+		
 		while(template.isEnd() == false) {
 			char character = template.nextClean(true);
 			if(character != SPLITSTART) {
@@ -161,22 +162,38 @@ public class Template {
 					template.skipChar(SPLITEND);
 					
 					// Add Children
-					token.withTrue(parseCharacterBuffer(template, "else", "endif"));
+					token.withTrue(parseCharacterBuffer(template, customTemplate, "else", "endif"));
 					
 					// ELSE OR ENDIF
 					tokenPart = template.nextToken(false, SPLITEND);
 					if("else".equalsIgnoreCase(tokenPart.toString())) {
 						template.skipChar(SPLITEND);
 						template.skipChar(SPLITEND);
-						token.withFalse(parseCharacterBuffer(template, "endif"));
+						token.withFalse(parseCharacterBuffer(template, customTemplate, "endif"));
 						template.skipTo(SPLITEND, false);
 					}
 					template.skipChar(SPLITEND);
+//					child = token;
+					parent.with(token);
+				} else if(tokenPart.equalsIgnoreCase("foreach") ) {
+					ForeachCondition token = new ForeachCondition();
+					template.skipChar(SPLITSTART);
+//					template.skipChar(SPLITEND);
+					tokenPart = template.nextToken(false, SPLITEND);
+					VariableCondition expression = createVariable(tokenPart, true);
+					token.withExpression(expression);
+					template.skipChar(SPLITEND);
+					template.skipChar(SPLITEND);
 					
-					child = token;
-					parent.with(child);
+					// Add Children
+					token.withLoopCondition(parseCharacterBuffer(template, customTemplate, "endfor"));
+					parent.with(token);
+					template.skipChar(SPLITEND);
 				} else {
-					ParserCondition condition = customTemplate.get(tokenPart.toString());
+					ParserCondition condition = null;
+					if(customTemplate instanceof TemplateResultModel) {
+						condition = ((TemplateResultModel)customTemplate).getTemplate(tokenPart.toString());
+					}
 					if(condition != null) {
 						ObjectCondition childCondition = condition.create(template);
 						parent.with(childCondition);
@@ -257,49 +274,8 @@ public class Template {
 		return this;
 	}
 	
-	public Template getPrevTemplate() {
-		return prevTemplate;
-	}
-
-	public void setPrevTemplate(Template prevTemplate) {
-		if (this.prevTemplate != prevTemplate) {
-			Template oldValue = this.prevTemplate;
-			if (this.prevTemplate != null) {
-				this.prevTemplate = null;
-				oldValue.setNextTemplate(null);
-			}
-			this.prevTemplate = prevTemplate;
-			if (prevTemplate != null) {
-				prevTemplate.withNextTemplate(this);
-			}
-		}
-	}
-
-	public Template withPrevTemplate(Template prevTemplate) {
-		setPrevTemplate(prevTemplate);
-		return this;
-	}
-	
-	public Template getNextTemplate() {
-		return nextTemplate;
-	}
-
-	public void setNextTemplate(Template nextTemplate) {
-		if (this.nextTemplate != nextTemplate) {
-			Template oldValue = this.nextTemplate;
-			if (this.nextTemplate != null) {
-				this.nextTemplate = null;
-				oldValue.setPrevTemplate(null);
-			}
-			this.nextTemplate = nextTemplate;
-			if (nextTemplate != null) {
-				nextTemplate.withPrevTemplate(this);
-			}
-		}
-	}
-	
-	public Template withNextTemplate(Template nextTemplate) {
-		setNextTemplate(nextTemplate);
+	public Template withImport(String item) {
+		this.imports.add(item);
 		return this;
 	}
 	

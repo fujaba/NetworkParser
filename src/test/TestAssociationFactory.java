@@ -2,7 +2,6 @@ package test;
 
 import org.junit.Test;
 
-import de.uniks.factory.ModelFactory;
 import de.uniks.factory.java.JavaModelFactory;
 import de.uniks.networkparser.graph.Association;
 import de.uniks.networkparser.graph.Attribute;
@@ -13,6 +12,7 @@ import de.uniks.networkparser.graph.GraphList;
 import de.uniks.networkparser.graph.Method;
 import de.uniks.networkparser.graph.Modifier;
 import de.uniks.networkparser.graph.Parameter;
+import de.uniks.template.generator.ModelGenerator;
 
 public class TestAssociationFactory {
 
