@@ -125,6 +125,16 @@ public class ChainCondition implements ObjectCondition{
 		return result;
 	}
 	
+	public ObjectCondition first() {
+		if(this.list instanceof ObjectCondition) {
+			return (ObjectCondition) this.list;
+		} else if(this.list instanceof SimpleList<?>) { 
+			Object first = ((SimpleList<?>) this.list).first();
+			return (ObjectCondition) first;
+		}
+		return null;
+	}
+	
 	public int size() {
 		if(this.list==null) {
 			return 0;

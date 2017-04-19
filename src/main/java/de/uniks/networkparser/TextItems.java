@@ -8,6 +8,7 @@ import de.uniks.networkparser.list.SimpleKeyValueList;
 public class TextItems extends SimpleKeyValueList<String, String> implements SendableEntityCreator, LocalisationInterface {
 	public static final String PROPERTY_VALUE = "value";
 	private LocalisationInterface customLanguage = null;
+	private boolean defaultLabel=true;
 
 	@Override
 	public Object getValue(Object entity, String attribute) {
@@ -24,27 +25,22 @@ public class TextItems extends SimpleKeyValueList<String, String> implements Sen
 		return items.add(attribute, value);
 	}
 
-	public String get(CharSequence attribute) {
-		if (containsKey(attribute)) {
-			return get(attribute);
-		}
-		CharacterBuffer buffer=new CharacterBuffer();
-		buffer.with(attribute);
-		for(int i=0;i<buffer.length();i++) {
-			if(buffer.charAt(i)=='.') {
-				buffer.withStartPosition(i+1);
-				String testField = buffer.toString();
-				if (containsKey(testField)) {
-					return get(testField);
-				}
-			}
-		}
-		return attribute.toString();
-	}
-
 	@Override
 	public String getText(CharSequence label, Object model, Object gui) {
 		String text = null;
+		if (containsKey(label) == false) {
+			CharacterBuffer buffer=new CharacterBuffer();
+			buffer.with(label);
+			for(int i=0;i<buffer.length();i++) {
+				if(buffer.charAt(i)=='.') {
+					buffer.withStartPosition(i+1);
+					String testField = buffer.toString();
+					if (containsKey(testField)) {
+						return getText(testField, model, gui);
+					}
+				}
+			}
+		}		
 		if (customLanguage != null) {
 			text = customLanguage.getText(label, model, gui);
 			if (text != null) {
@@ -60,6 +56,9 @@ public class TextItems extends SimpleKeyValueList<String, String> implements Sen
 		text = getLabelValue(label);
 		if (text != null) {
 			return text;
+		}
+		if(this.defaultLabel == false) {
+			return null;
 		}
 		return label.toString();
 	}
@@ -83,5 +82,25 @@ public class TextItems extends SimpleKeyValueList<String, String> implements Sen
 
 	public void setCustomLanguage(LocalisationInterface value) {
 		this.customLanguage = value;
+	}
+
+	@Override
+	public boolean putText(CharSequence label, CharSequence text) {
+		if(this.customLanguage != null) {
+			return this.customLanguage.putText(label, text);
+		}
+		if(text == null) {
+			return false;
+		}
+		return this.add(label, text.toString());
+	}
+
+	public boolean isDefaultLabel() {
+		return defaultLabel;
+	}
+
+	public TextItems withDefaultLabel(boolean value) {
+		this.defaultLabel = value;
+		return this;
 	}
 }

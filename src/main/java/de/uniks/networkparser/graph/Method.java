@@ -114,10 +114,6 @@ public class Method extends GraphMember {
 		return this.returnType;
 	}
 
-	public Clazz getClazz() {
-		return (Clazz) parentNode;
-	}
-
 	public Parameter create(DataType type) {
 		return new Parameter().with(type).withParent(this);
 	}

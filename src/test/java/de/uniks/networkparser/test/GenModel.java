@@ -133,7 +133,7 @@ public class GenModel {
 
 	public int getCounting(Class<?> element, boolean printItems) {
 		java.lang.reflect.Method[] methods = element.getMethods();
-		SortedSet<String> counts=new SortedSet<String>();
+		SortedSet<String> counts=new SortedSet<String>(true);
 		for(int i=0;i<methods.length;i++) {
 			if(methods[i].getDeclaringClass() == Object.class || methods[i].getDeclaringClass() == Enum.class) {
 				continue;

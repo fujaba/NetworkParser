@@ -77,10 +77,6 @@ public class Attribute extends Value {
 		return this;
 	}
 
-	public Clazz getClazz() {
-		return (Clazz) parentNode;
-	}
-
 	// Redirect
 	@Override
 	public Attribute with(String value) {
