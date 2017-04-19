@@ -3,18 +3,21 @@ package de.uniks.template;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.interfaces.LocalisationInterface;
-import de.uniks.networkparser.list.SimpleList;
-import de.uniks.networkparser.list.SortedList;
+import de.uniks.networkparser.interfaces.SendableEntityCreator;
+import de.uniks.networkparser.list.SimpleSet;
+import de.uniks.networkparser.list.SortedSet;
 
-public class TemplateResultFile extends SortedList<TemplateResultFragment> implements TemplateInterface, LocalisationInterface {
-	public static final String PROPERTY_NAME="name";
+public class TemplateResultFile extends SortedSet<TemplateResultFragment> implements SendableEntityCreator, LocalisationInterface {
 	public static final String PROPERTY_PARENT="parent";
+	public static final String PROPERTY_CHILD="child";
+	
+	public static final String PROPERTY_NAME="name";
 	public static final String PROPERTY_HEADERS="headers";
 	private String name;
 	private String postfix;
 	private String extension;
 	private String path;
-	private TemplateInterface parent;
+	private SendableEntityCreator parent;
 	
 	TemplateResultFile() {
 		super(true);
@@ -66,12 +69,19 @@ public class TemplateResultFile extends SortedList<TemplateResultFragment> imple
 		return this;
 	}
 
-	@Override
-	public boolean add(TemplateInterface child) {
+	public boolean addChild(SendableEntityCreator child) {
+		//FIXME FOR NON COMPARATOR
+		if(isComparator() == false && child instanceof TemplateResultFragment) {
+			TemplateResultFragment fragment = (TemplateResultFragment) child;
+			if(fragment.getKey() == Template.TEMPLATE) {
+				super.add(0, fragment);
+				return true;
+			}
+		}
 		if(super.add(child) == false) {
 			return false;
 		}
-		child.setParent(this);
+		child.setValue(child, PROPERTY_PARENT, this, SendableEntityCreator.NEW);
 		return true;
 	}
 
@@ -81,12 +91,12 @@ public class TemplateResultFile extends SortedList<TemplateResultFragment> imple
 	}
 
 	@Override
-	public String get(CharSequence label) {
-		return null;
+	public boolean putText(CharSequence label, CharSequence text) {
+		// TODO Auto-generated method stub
+		return false;
 	}
-
-	@Override
-	public boolean setParent(TemplateInterface value) {
+	
+	public boolean setParent(SendableEntityCreator value) {
 		if(value != this.parent) {
 			this.parent = value;
 			return true;
@@ -94,8 +104,7 @@ public class TemplateResultFile extends SortedList<TemplateResultFragment> imple
 		return false;
 	}
 
-	@Override
-	public TemplateInterface getParent() {
+	public SendableEntityCreator getParent() {
 		return this.parent;
 	}
 	
@@ -129,7 +138,7 @@ public class TemplateResultFile extends SortedList<TemplateResultFragment> imple
 			return element.getParent();
 		}
 		if(PROPERTY_HEADERS.equalsIgnoreCase(attrName)) {
-			SimpleList<String> headers=new SimpleList<String>();
+			SimpleSet<String> headers=new SimpleSet<String>();
 			for(TemplateResultFragment child : this) {
 				headers.addAll(child.getHeaders());
 			}
@@ -141,9 +150,23 @@ public class TemplateResultFile extends SortedList<TemplateResultFragment> imple
 
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value, String type) {
-		// TODO Auto-generated method stub
+		if(PROPERTY_PARENT.equalsIgnoreCase(attribute)) {
+			return this.setParent((SendableEntityCreator) value);
+		}
+		if(PROPERTY_CHILD.equalsIgnoreCase(attribute)) {
+			return this.addChild((SendableEntityCreator) value);
+		}
 		return false;
 	}
-
 	
+	@Override
+	public String toString() {
+		CharacterBuffer buffer= new CharacterBuffer();
+		for(TemplateResultFragment fragment : this) {
+			if(fragment.getKey() != Template.DECLARATION) {
+				buffer.with(fragment.getValue());
+			}
+		}
+		return buffer.toString();
+	}
 }

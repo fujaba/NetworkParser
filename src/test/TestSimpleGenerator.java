@@ -11,12 +11,12 @@ public class TestSimpleGenerator {
 
 	@Test
 	public void testGenerator() {
-		GraphList classModel = new GraphList();
+		GraphList classModel = new GraphList().with("de.uniks.test.model");
 		Clazz person = classModel.createClazz("Person");
 		Clazz room = classModel.createClazz("Room");
 		person.withBidirectional(room, "room", Cardinality.ONE, "persons", Cardinality.MANY);
 		ModelGenerator javaModelFactory = new ModelGenerator();
-		javaModelFactory.generate("src/de/uniks/test/model", classModel);
+		javaModelFactory.generate("src", classModel);
 //		System.out.println(javaModelFactory.create(classModel));
 	}
 }

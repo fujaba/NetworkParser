@@ -13,10 +13,10 @@ import de.uniks.networkparser.graph.util.AssociationSet;
 import de.uniks.networkparser.graph.util.AttributeSet;
 import de.uniks.networkparser.graph.util.MethodSet;
 import de.uniks.networkparser.interfaces.LocalisationInterface;
+import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.template.Template;
-import de.uniks.template.TemplateInterface;
 import de.uniks.template.TemplateResultFile;
 import de.uniks.template.TemplateResultFragment;
 
@@ -34,13 +34,14 @@ public abstract class BasicGenerator {
 		return template;
 	}
 	
-	public abstract TemplateInterface generate(GraphMember item);
-	public abstract TemplateInterface generate(GraphMember item, TextItems parameters);
+	public abstract SendableEntityCreator generate(GraphMember item);
+	public abstract SendableEntityCreator generate(GraphMember item, TextItems parameters);
 
 	public BasicGenerator withOwner(BasicGenerator parentFactory) {
 		this.parentFactory = parentFactory;
 		return this;
 	}
+
 	public FeatureProperty getFeature(Feature value, Clazz... values) {
 		if(this.parentFactory != null) {
 			return this.parentFactory.getFeature(value, values);
@@ -67,11 +68,11 @@ public abstract class BasicGenerator {
 		return false;
 	}
 	
-	public void executeTemplate(TemplateInterface templateResult, LocalisationInterface parameters, GraphMember member) {
+	public void executeTemplate(SendableEntityCreator templateResult, LocalisationInterface parameters, GraphMember member) {
 		for(Template template : templates) {
-			TemplateResultFragment result = template.generate(parameters, templateResult, member);
-			if(result != null) {
-				templateResult.add(result);
+			TemplateResultFragment fragment = template.generate(parameters, templateResult, member);
+			if(template.getType()==Template.DECLARATION) {
+				parameters.putText(template.getName(), fragment.getResult());
 			}
 		}
 	}
@@ -96,8 +97,8 @@ public abstract class BasicGenerator {
 	
 	protected TemplateResultFile executeClazz(Clazz clazz, LocalisationInterface parameters) {
 		TemplateResultFile templateResult = getNewResult(clazz);
-		if(parameters instanceof TemplateInterface) {
-			templateResult.setParent((TemplateInterface)parameters);
+		if(parameters instanceof SendableEntityCreator) {
+			templateResult.setParent((SendableEntityCreator)parameters);
 		}
 		templateResult.withExtension(this.extension);
 		

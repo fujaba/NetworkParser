@@ -1,24 +1,22 @@
 package de.uniks.template;
 
+import de.uniks.networkparser.graph.FeatureProperty;
 import de.uniks.networkparser.interfaces.LocalisationInterface;
 import de.uniks.networkparser.interfaces.ParserCondition;
+import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
+import de.uniks.networkparser.list.SimpleSet;
 
-public class TemplateResultModel extends SimpleList<TemplateResultFile> implements TemplateInterface, LocalisationInterface{
+public class TemplateResultModel extends SimpleList<TemplateResultFile> implements SendableEntityCreator, LocalisationInterface{
+	public static final String PROPERTY_FEATURE="features";
 	public static final String PROPERTY_TEMPLATE="templates";
 	public static final String PROPERTY_TEXT="text";
+	public static final String PROPERTY_CHILD="child";
+	private SimpleSet<FeatureProperty> features;
 	private SimpleKeyValueList<String, ParserCondition> customTemplate;
 	private LocalisationInterface language;
 
-	@Override
-	public boolean add(TemplateInterface result) {
-		if(result instanceof TemplateResultFile) {
-			return super.add(result);
-		}
-		return false;
-	}
-	
 	public TemplateResultModel withTemplate(SimpleKeyValueList<String, ParserCondition> templates) {
 		this.customTemplate = templates;
 		return this;
@@ -35,12 +33,18 @@ public class TemplateResultModel extends SimpleList<TemplateResultFile> implemen
 	
 	@Override
 	public String getText(CharSequence label, Object model, Object gui) {
+		if(this.language != null) {
+			return this.language.getText(label, model, gui);
+		}
 		return null;
 	}
 
 	@Override
-	public String get(CharSequence label) {
-		return null;
+	public boolean putText(CharSequence label, CharSequence text) {
+		if(this.language != null) {
+			return this.language.putText(label, text);
+		}
+		return false;
 	}
 
 	public ParserCondition getTemplate(String tag) {
@@ -48,16 +52,6 @@ public class TemplateResultModel extends SimpleList<TemplateResultFile> implemen
 			return null;
 		}
 		return customTemplate.get(tag);
-	}
-
-	@Override
-	public boolean setParent(TemplateInterface templateResultFile) {
-		return false;
-	}
-
-	@Override
-	public TemplateInterface getParent() {
-		return null;
 	}
 
 	public LocalisationInterface getLanguage() {
@@ -77,15 +71,32 @@ public class TemplateResultModel extends SimpleList<TemplateResultFile> implemen
 
 	@Override
 	public Object getValue(Object entity, String attribute) {
+		if(entity instanceof TemplateResultModel == false) {
+			return null;
+		}
+		TemplateResultModel model = (TemplateResultModel) entity;
+		if(PROPERTY_FEATURE.equalsIgnoreCase(attribute)) {
+			return model.getFeatures();
+		}
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value, String type) {
-		// TODO Auto-generated method stub
+		if(value instanceof TemplateResultFile) {
+			return super.add((TemplateResultFile)value);
+		}
 		return false;
 	}
 
+	public SimpleSet<FeatureProperty> getFeatures() {
+		return features;
+	}
+
+	public TemplateResultModel withFeatures(SimpleSet<FeatureProperty> features) {
+		this.features = features;
+		return this;
+	}
 
 }

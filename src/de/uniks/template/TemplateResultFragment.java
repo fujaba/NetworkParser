@@ -5,20 +5,28 @@ import de.uniks.networkparser.graph.GraphMember;
 import de.uniks.networkparser.interfaces.LocalisationInterface;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.ParserCondition;
+import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.list.SimpleList;
 
-public class TemplateResultFragment implements Comparable<TemplateResultFragment>, TemplateInterface, ObjectCondition {
+public class TemplateResultFragment implements Comparable<TemplateResultFragment>, SendableEntityCreator, ObjectCondition, LocalisationInterface {
+	public static final String PROPERTY_PARENT="parent";
+	public static final String PROPERTY_CHILD="child";
+	
 	public static final String PROPERTY_FILE="file";
 	public static final String PROPERTY_MEMBER="member";
 	public static final String PROPERTY_VARIABLE="variable";
 	public static final String PROPERTY_HEADERS="headers";
 	public static final String PROPERTY_EXPRESSION="expression";
+	public static final String PROPERTY_ITEM="item";
+	public static final String PROPERTY_TEMPLATE="template";
+	public static final String PROPERTY_TEMPLATEMODEL="templatemodel";
+
 	private LocalisationInterface variables;
 	private SimpleList<String> header = new SimpleList<String>();
 	private GraphMember member;
 	private boolean expression=true;
-	private TemplateInterface parent;
-//	private Template template;
+	private SendableEntityCreator parent;
+	private SimpleList<String> stack;
 	
 	private int key = -1;
 	
@@ -30,12 +38,12 @@ public class TemplateResultFragment implements Comparable<TemplateResultFragment
 			if(other.getValue().equals(value)) {
 				return 0;
 			}
-			return -1;
+			return 1;
 		}
 		if (other.getKey() > key) {
-			return -1;
+			return 1;
 		}
-		return 1;
+		return -1;
 	}
 
 	public int getKey() {
@@ -69,10 +77,6 @@ public class TemplateResultFragment implements Comparable<TemplateResultFragment
 		return "" + key;
 	}
 
-	@Override
-	public boolean add(TemplateInterface result) {
-		return false;
-	}
 	
 	public TemplateResultFragment withVariable(LocalisationInterface list) {
 		this.variables = list;
@@ -87,9 +91,10 @@ public class TemplateResultFragment implements Comparable<TemplateResultFragment
 		if(value instanceof ParserCondition) {
 			ParserCondition tc = (ParserCondition) value;
 			if(this.expression || tc.isExpression()) {
-				return tc.update(variables);
+				Object object = tc.getValue(this);
+				return  object != null && !object.equals("");
 			} else {
-				this.value.with(tc.getValue(variables));	
+				this.value.withObjects(tc.getValue(this));	
 			}
 		}
 		return true;
@@ -117,20 +122,17 @@ public class TemplateResultFragment implements Comparable<TemplateResultFragment
 		return this.header.add(value);	
 	}
 
-	@Override
-	public boolean setParent(TemplateInterface value) {
+	public boolean setParent(SendableEntityCreator value) {
 		if (this.parent != value) {
 //			TemplateInterface oldValue = this.parent;
-
 			if (this.parent != null) {
 				this.parent = null;
 				// oldValue.remove(this);
 			}
-
 			this.parent = value;
 
 			if (value != null) {
-				value.add(this);
+				value.setValue(value, PROPERTY_CHILD, this, SendableEntityCreator.NEW);
 			}
 			// firePropertyChange(PROPERTY_ROOM, oldValue, value);
 			return true;
@@ -138,8 +140,7 @@ public class TemplateResultFragment implements Comparable<TemplateResultFragment
 		return false;
 	}
 
-	@Override
-	public TemplateInterface getParent() {
+	public SendableEntityCreator getParent() {
 		return parent;
 	}
 	
@@ -163,7 +164,7 @@ public class TemplateResultFragment implements Comparable<TemplateResultFragment
 		}
 		if(PROPERTY_FILE.equalsIgnoreCase(attrName)) {
 			if(pos>0) {
-				TemplateInterface item = element.getParent();
+				SendableEntityCreator item = element.getParent();
 				return item.getValue(item, attribute.substring(pos+1));
 			}
 			return element.getParent();
@@ -172,6 +173,10 @@ public class TemplateResultFragment implements Comparable<TemplateResultFragment
 			return element.getMember();
 		}
 		if(PROPERTY_VARIABLE.equalsIgnoreCase(attrName)) {
+			if(pos>0) {
+				SendableEntityCreator item = (SendableEntityCreator) element.getVariable();
+				return item.getValue(item, attribute.substring(pos+1));
+			}
 			return element.getVariable();
 		}
 		if(PROPERTY_HEADERS.equalsIgnoreCase(attrName)) {
@@ -180,7 +185,43 @@ public class TemplateResultFragment implements Comparable<TemplateResultFragment
 		if(PROPERTY_EXPRESSION.equalsIgnoreCase(attrName)) {
 			return element.isExpression();
 		}
-		return null;
+		if(PROPERTY_ITEM.equalsIgnoreCase(attrName)) {
+			if(this.stack != null) {
+				return this.stack.last();
+			}
+			return null;
+		}
+		if(PROPERTY_TEMPLATE.equalsIgnoreCase(attrName)) {
+			if(pos>0) {
+				TemplateResultFragment item = element;
+				return item.getValue(item, attribute.substring(pos+1));
+			}
+			return element;
+		}
+		if(PROPERTY_TEMPLATEMODEL.equalsIgnoreCase(attrName)) {
+			if(pos>0) {
+				TemplateResultModel item = element.getTemplateModel();
+				return item.getValue(item, attribute.substring(pos+1));
+			}
+			return element.getTemplateModel();
+		}		
+		if(this.member != null) {
+			String value = this.member.getValue(attrName);
+			if(value != null) {
+				return value;
+			}
+		}
+//		parameters.put("imports", determineImports(clazz, templateResult));
+//		parameters.put("packageName", getPackageName(clazz.getName(false)));
+//		parameters.put("visibility", "public");
+//		parameters.put("modifiers", determineModifiers(clazz.getModifier()));
+//		parameters.put("clazzType", determineClazzType(clazz));
+//		parameters.put("name", clazz.getName(true));
+//		parameters.put("superclasses", determineSuperClasses(clazz, superPropertyChangeEnabled));
+//		parameters.put("propertyChange", propertyChange);
+
+		
+		return element.getText(attribute, null, null);
 	}
 
 	public LocalisationInterface getVariable() {
@@ -218,5 +259,56 @@ public class TemplateResultFragment implements Comparable<TemplateResultFragment
 		}
 		return false;
 	}
+	
+	@Override
+	public String getText(CharSequence label, Object model, Object gui) {
+		// Global Variables
+		if(this.variables != null) {
+			String value = variables.getText(label, model, gui);
+			if(value != null) {
+				return value;
+			}
+		}
+		// Global Variables
+		TemplateResultModel templateModel = getTemplateModel();
+		if(templateModel != null) {
+			String value = templateModel.getText(label, null, null);
+			if(value != null) {
+				return value;
+			}
+		}
+		return null;
+	}
+	
+	@Override
+	public boolean putText(CharSequence label, CharSequence text) {
+		if(label == null) {
+			return false;
+		}
+		if(PROPERTY_ITEM.equalsIgnoreCase(label.toString())) {
+			if(text == null) {
+				if(this.stack != null) {
+					this.stack.remove(this.stack.size() - 1);
+					return true;
+				}
+			} else {
+				if(this.stack == null) {
+					this.stack = new SimpleList<String>();
+				}
+				return this.stack.add(text);
+			}
+		}
+		return false;
+	}
 
+	public TemplateResultModel getTemplateModel() {
+		SendableEntityCreator item = parent;
+		while(item != null) {
+			item = (SendableEntityCreator) item.getValue(item, PROPERTY_PARENT);
+			if(item instanceof TemplateResultModel) {
+				return (TemplateResultModel)item;
+			}
+		}
+		return null;
+	}
 }

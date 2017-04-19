@@ -10,14 +10,14 @@ import de.uniks.networkparser.graph.FeatureProperty;
 import de.uniks.networkparser.graph.GraphMember;
 import de.uniks.networkparser.graph.GraphModel;
 import de.uniks.networkparser.interfaces.ParserCondition;
+import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SimpleSet;
+import de.uniks.networkparser.logic.FeatureCondition;
 import de.uniks.networkparser.logic.ImportCondition;
-import de.uniks.template.TemplateInterface;
 import de.uniks.template.TemplateResultFile;
 import de.uniks.template.TemplateResultModel;
-import de.uniks.template.condition.FeatureCondition;
 import de.uniks.template.generator.java.JavaClazz;
 
 public class ModelGenerator extends BasicGenerator{
@@ -45,29 +45,46 @@ public class ModelGenerator extends BasicGenerator{
 	}
 	
 	@Override
-	public TemplateInterface generate(GraphMember item) {
+	public SendableEntityCreator generate(GraphMember item) {
 		if(item instanceof GraphModel == false) {
 			return null;
 		}
 		return generate("src", (GraphModel)item);
 	}
 	@Override
-	public TemplateInterface generate(GraphMember item, TextItems parameters) {
+	public SendableEntityCreator generate(GraphMember item, TextItems parameters) {
 		if(item instanceof GraphModel == false) {
 			return null;
 		}
 		return generateJava("src", (GraphModel)item, parameters);
 		}	
-	public TemplateInterface generate(String rootDir, GraphModel model) {
+	public SendableEntityCreator generate(String rootDir, GraphModel model) {
 		return generateJava(rootDir, model, null);
 	}
 	
-	public TemplateInterface generateJava(String rootDir, GraphModel model, TextItems parameters) {
+	public SendableEntityCreator generateJava(String rootDir, GraphModel model, TextItems parameters) {
 		SimpleList<BasicGenerator> templates = new SimpleList<BasicGenerator>();
 		templates.add(new JavaClazz().withOwner(this));
+		if(rootDir == null) {
+			rootDir = "";
+		}else if(rootDir.endsWith("/") == false) {
+			rootDir = rootDir + "/";
+		}
+		String name = model.getName();
+		if(name == null) {
+			name="i.love.sdmlib";
+		}
+		rootDir += name.replaceAll("\\.", "/")+"/";
+		
+		
 		
 		TemplateResultModel result = new TemplateResultModel();
 		result.withTemplate(this.getTemplates());
+		result.withFeatures(this.features);
+		if(parameters == null) {
+			parameters = new TextItems();
+			parameters.withDefaultLabel(false);
+		}
 		result.withLanguage(parameters);
 		
 		for(Clazz clazz : model.getClazzes()) {
@@ -79,7 +96,7 @@ public class ModelGenerator extends BasicGenerator{
 			}
 		}
 		for(TemplateResultFile file : result) {
-			FileBuffer.writeFile(rootDir + file.getFileName(), result.toString());
+			FileBuffer.writeFile(rootDir + file.getFileName(), file.toString());
 		}
 		return result;
 	}
