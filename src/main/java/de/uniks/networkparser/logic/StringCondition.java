@@ -1,9 +1,9 @@
 package de.uniks.networkparser.logic;
 
 import de.uniks.networkparser.buffer.CharacterBuffer;
+import de.uniks.networkparser.interfaces.LocalisationInterface;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.ParserCondition;
-import de.uniks.networkparser.list.SimpleKeyValueList;
 
 public class StringCondition implements ParserCondition {
 	private CharSequence value;
@@ -19,7 +19,7 @@ public class StringCondition implements ParserCondition {
 		this.value = value;
 		return this;
 	}
-	public CharSequence getValue(SimpleKeyValueList<String, String> variables) {
+	public CharSequence getValue(LocalisationInterface variables) {
 		return value;
 	}
 	
@@ -29,7 +29,8 @@ public class StringCondition implements ParserCondition {
 
 	@Override
 	public ParserCondition create(CharacterBuffer buffer) {
-		return create(buffer);
+		this.value = buffer;
+		return this;
 	}
 
     @Override
@@ -43,5 +44,13 @@ public class StringCondition implements ParserCondition {
 	@Override
 	public String getKey() {
 		return null;
+	}
+	
+	@Override
+	public String toString() {
+		if(value == null) {
+			return "";
+		}
+		return value.toString();
 	}
 }

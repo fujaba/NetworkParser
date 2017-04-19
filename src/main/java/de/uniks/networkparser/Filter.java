@@ -172,4 +172,8 @@ public class Filter {
 		this.simpleFormat = value;
 		return this;
 	}
+	
+	public void suspendNotification() {
+		this.strategy = SendableEntityCreator.UPDATE;
+	}
 }

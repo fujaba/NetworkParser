@@ -294,4 +294,10 @@ public class University implements SendableEntity {
 		setUniId(value);
 		return this;
 	}
+
+	public Student createStudents() {
+		Student value = new Student();
+		withStudents(value);
+		return value;
+	}
 }

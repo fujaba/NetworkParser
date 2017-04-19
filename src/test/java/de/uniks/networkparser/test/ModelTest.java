@@ -150,4 +150,19 @@ public class ModelTest implements ObjectCondition {
 		events.add((SimpleEvent) value);
 		return true;
 	}
+	
+	@Test
+	public void testJsonArray() {
+		University uni = new University();
+		Student karli = uni.createStudents().withFirstName("Karli");
+		Student alice = uni.createStudents().withFirstName("Alice");
+		
+		karli.withFriends(alice);
+		IdMap map=new IdMap();
+		map.with(new UniversityCreator());
+		map.with(new StudentCreator());
+		
+//		System.out.println(map.toJsonArray(uni));
+	}
+
 }

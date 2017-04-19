@@ -1,11 +1,10 @@
 package de.uniks.networkparser.logic;
 
-import java.util.Map;
-
 import de.uniks.networkparser.buffer.CharacterBuffer;
+import de.uniks.networkparser.interfaces.LocalisationInterface;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.ParserCondition;
-import de.uniks.networkparser.list.SimpleKeyValueList;
+import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
 public class VariableCondition implements ParserCondition{
 	private CharSequence value;
@@ -16,9 +15,14 @@ public class VariableCondition implements ParserCondition{
 		if(value instanceof ObjectCondition) {
 			return ((ObjectCondition)value).update(this);
 		}
-		if(value instanceof Map<?,?>) {
-			Map<?, ?> collection = (Map<?, ?>) value;
-			Object object = collection.get(this.value.toString());
+		if(value instanceof SendableEntityCreator) {
+			SendableEntityCreator variables = (SendableEntityCreator) value;
+			Object object = variables.getValue(variables, this.value.toString());
+			return  object != null && !object.equals("");
+		}
+		if(value instanceof LocalisationInterface) {
+			LocalisationInterface variables = (LocalisationInterface) value;
+			String object = variables.get(this.value.toString());
 			return  object != null && !object.equals("");
 		}
 		if(this.value == null) {
@@ -31,7 +35,7 @@ public class VariableCondition implements ParserCondition{
 		this.value = value;
 		return this;
 	}
-	public CharSequence getValue(SimpleKeyValueList<String, String> variables) {
+	public CharSequence getValue(LocalisationInterface variables) {
 		if(variables != null && this.value != null) {
 			return variables.get(this.value);
 		}
@@ -59,6 +63,11 @@ public class VariableCondition implements ParserCondition{
 	@Override
 	public String getKey() {
 		return null;
+	}
+	
+	@Override
+	public String toString() {
+		return "{{"+this.value+"}}";
 	}
 
 }

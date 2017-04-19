@@ -327,6 +327,9 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 	 * @return the id
 	 */
 	public String getId(Object obj) {
+		return getId(obj, true);
+	}
+	public String getId(Object obj, boolean notificaton) {
 		// new object generate key and add to tables
 		// <ShortClassName><Timestamp>
 		if (obj == null) {
@@ -338,13 +341,13 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 		}
 		key = grammar.getId(obj, this);
 		if (key != null) {
-			put(key, obj);
+			put(key, obj, notificaton);
 			return key;
 		}
-		return createId(obj);
+		return createId(obj, notificaton);
 	}
 
-	public String createId(Object obj) {
+	public String createId(Object obj, boolean notification) {
 		String key;
 		if(timeStamp !=0) {
 			key = ""+obj.getClass().getSimpleName().charAt(0)+(this.timeStamp++);
@@ -352,7 +355,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 			long timeStamp = System.nanoTime();
 			key = ""+obj.getClass().getSimpleName().charAt(0)+timeStamp;
 		}
-		put(key, obj);
+		put(key, obj, notification);
 		return key;
 	}
 
@@ -364,14 +367,17 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 	 * @return the newObject
 	 */
 	public Object put(String id, Object item) {
+		return put(id, item, true);
+	}
+	protected Object put(String id, Object item, boolean notification) {
 		boolean changed = this.keyValue.add(id, item);
 		if (changed) {
 			addListener(item);
 		}
 		if (this.updateListener != null) {
-			if(grammar instanceof SimpleGrammar) {
-				return changed;
-			}
+//			if(grammar instanceof SimpleGrammar) {
+//				return changed;
+//			}
 			if(item instanceof SendableEntityCreator) {
 				((SendableEntityCreator)item).setValue(item, IdMap.ID, id, SendableEntityCreator.NEW);
 			}
@@ -593,7 +599,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 					String oldKey = getKey(oldValue);
 					if (oldKey != null) {
 						this.keyValue.remove(oldValue);
-						put(oldKey, newObject);
+						put(oldKey, newObject, true);
 					}
 				}
 			}
@@ -1301,13 +1307,14 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 		EntityList targetList = (EntityList) map.getTarget();
 		String id = null;
 		if (creator instanceof SendableEntityCreatorNoIndex == false) {
-			Object temp = creator.getValue(entity, "id");
+			Object temp = creator.getValue(entity, IdMap.ID);
 			if (temp == null) {
 				id = map.getId(entity, this, className);
 			} else {
  				id = "" + temp;
  				if(getKey(entity) == null) {
-					put(id, entity);
+ 					boolean newMessage = SendableEntityCreator.UPDATE.equals(map.getFilter().getStrategy()) == false;
+					put(id, entity, newMessage);
  				}
 			}
 		}
@@ -1322,6 +1329,15 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 					ObjectCondition filter = map.getFilter().getPropertyRegard();
 					if(filter != null && filter instanceof Deep) {
 						if(map.getDeep()<=((Deep)filter).getDepth()) {
+							return item;
+						}
+					}
+				}
+				for(int i=0;i<targetList.size();i++) {
+					BaseItem childItem = targetList.getChild(i);
+					if(childItem instanceof Entity) {
+						Entity childEntity = (Entity) childItem;
+						if(id.equals(childEntity.getString(ID))) {
 							return item;
 						}
 					}

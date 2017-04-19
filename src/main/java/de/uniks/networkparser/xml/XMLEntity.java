@@ -28,6 +28,7 @@ import de.uniks.networkparser.buffer.Buffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.buffer.Tokener;
 import de.uniks.networkparser.converter.EntityStringConverter;
+import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.EntityList;
 import de.uniks.networkparser.list.MapEntry;
@@ -461,7 +462,10 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 		}
 		if(children.sizeChildren()==1) {
 			// to level the result graph
-			return children.getChild(0);
+			BaseItem result = children.getChild(0);
+			if(result instanceof EntityList) {
+				return (EntityList) result;
+			}
 		}
 		return children;
 	}

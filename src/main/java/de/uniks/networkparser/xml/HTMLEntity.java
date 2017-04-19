@@ -298,10 +298,16 @@ public class HTMLEntity implements BaseItem {
 		EntityList bodyList = this.body.getElementsBy(key, value);
 		int z=0;
 		for(z=0;z<headerList.sizeChildren();z++) {
-			item.withChild(headerList.getChild(z));
+			BaseItem child = headerList.getChild(z);
+			if(child instanceof EntityList) {
+				item.withChild((EntityList) child);
+			}
 		}
 		for(z=0;z<bodyList.sizeChildren();z++) {
-			item.withChild(bodyList.getChild(z));
+			BaseItem child = bodyList.getChild(z);
+			if(child instanceof EntityList) {
+				item.withChild((EntityList) child);
+			}
 		}
 		return item;
 	}

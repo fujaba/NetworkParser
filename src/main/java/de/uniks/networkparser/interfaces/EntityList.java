@@ -33,7 +33,7 @@ public interface EntityList extends BaseItem {
 	 * @param index index of Element
 	 * @return a Element
 	 */
-	public EntityList getChild(int index);
+	public BaseItem getChild(int index);
 
 	/**
 	 * Make a prettyprinted Text of this Entity.

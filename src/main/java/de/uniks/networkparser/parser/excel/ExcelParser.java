@@ -70,7 +70,7 @@ public class ExcelParser {
 			// <mergeCells count="1"><mergeCell ref="A2:A3"/></mergeCells>
 			if (mergeCells != null) {
 				for(int i=0;i<mergeCells.sizeChildren();i++) {
-					EntityList mergeCell = mergeCells.getChild(i);
+					BaseItem mergeCell = mergeCells.getChild(i);
 					SimpleList<Pos> excelRange = EntityUtil.getExcelRange(((Entity) mergeCell).getString(REF));
 					for (Pos item : excelRange) {
 						if (item == null || item.x < 0 || item.y < 0) {
@@ -84,7 +84,7 @@ public class ExcelParser {
 			if (sheetData != null) {
 //				if (rows != null && rows instanceof XMLEntity) {
 					for(int i=0;i<sheetData.sizeChildren();i++) {
-						EntityList child = sheetData.getChild(i);
+						BaseItem child = sheetData.getChild(i);
 						if (child == null || child instanceof XMLEntity == false ) {
 							continue;
 						}

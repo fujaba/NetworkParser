@@ -1,6 +1,8 @@
 NetworkParser
 =============
 
+[![Join the chat at https://gitter.im/NetworkParser/Lobby](https://badges.gitter.im/NetworkParser/Lobby.svg)](https://gitter.im/NetworkParser/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 Framework for serialization from Java objects to Json, XML and Byte.
 
 
@@ -26,8 +28,11 @@ The Framework have many other features like:
 ## Current Status ##
 - Master
   - travis-ci: [![Build Status](https://travis-ci.org/fujaba/NetworkParser.svg?branch=master)](https://travis-ci.org/fujaba/NetworkParser)
-  - Maven: [![Maven Status](http://se.cs.uni-kassel.de/maven/icon?project=NetworkParser)](http://se.cs.uni-kassel.de/maven/de/uniks/NetworkParser/latest/NetworkParser.jar)
+<!--  - Maven: [![Maven Status](http://se.cs.uni-kassel.de/maven/icon?project=NetworkParser)](http://se.cs.uni-kassel.de/maven/de/uniks/NetworkParser/latest/NetworkParser.jar)-->
   - Coverage: [![Coverage Status](https://coveralls.io/repos/fujaba/NetworkParser/badge.svg?branch=master&service=github)](https://coveralls.io/github/fujaba/NetworkParser?branch=master)
+  - CII Best Practices [![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/561/badge)](https://bestpractices.coreinfrastructure.org/projects/561)
+  - Codacy [![Codacy Badge](https://api.codacy.com/project/badge/Grade/03b590f35f334375b890f4261bf80bea)](https://www.codacy.com/app/stefan_7/NetworkParser?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=fujaba/NetworkParser&amp;utm_campaign=Badge_Grade)
+  - Code Climate [![Code Climate](https://codeclimate.com/github/fujaba/NetworkParser/badges/gpa.svg)](https://codeclimate.com/github/fujaba/NetworkParser)
   - Coverity Scan: [![Coverity Status](https://scan.coverity.com/projects/8708/badge.svg)](https://scan.coverity.com/projects/fujaba-networkparser)
   - Glitter-Chat: [![Join the chat at https://gitter.im/NetworkParser/Lobby](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/NetworkParser/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
   - Java-Documentation: [![Javadocs](http://javadoc.io/badge/de.uniks/NetworkParser.svg)](http://javadoc.io/doc/de.uniks/NetworkParser)
@@ -35,7 +40,7 @@ The Framework have many other features like:
 
 - Develop
   - travis-ci: [![Build Status](https://travis-ci.org/fujaba/NetworkParser.svg?branch=develop)](https://travis-ci.org/fujaba/NetworkParser)
-  - Maven: [![Maven](http://se.cs.uni-kassel.de/maven/icon?project=NetworkParser&type=snaphots)](http://se.cs.uni-kassel.de/maven/de/uniks/NetworkParser/latest-SNAPSHOT/NetworkParser-SNAPSHOT.jar)
+<!--  - Maven: [![Maven](http://se.cs.uni-kassel.de/maven/icon?project=NetworkParser&type=snaphots)](http://se.cs.uni-kassel.de/maven/de/uniks/NetworkParser/latest-SNAPSHOT/NetworkParser-SNAPSHOT.jar)-->
   - Coverage: [![Coverage Status](https://coveralls.io/repos/fujaba/NetworkParser/badge.svg?branch=develop&service=github)](https://coveralls.io/github/fujaba/NetworkParser?branch=develop)
   
 [![Open Hub](https://www.openhub.net/p/NetworkParser/widgets/project_partner_badge?format=gif&ref=Partner+Badge "Open Hub")](https://www.openhub.net/p/NetworkParser/)

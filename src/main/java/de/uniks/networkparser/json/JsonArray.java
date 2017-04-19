@@ -312,13 +312,13 @@ public class JsonArray extends SortedList<Object> implements EntityList {
 	}
 	
 	@Override
-	public EntityList getChild(int index) {
+	public BaseItem getChild(int index) {
 		if(index < 0 || index > this.size()) {
 			return null;
 		}
 		Object item = this.get(index);
-		if(item instanceof EntityList) {
-			return (EntityList) item;
+		if(item instanceof BaseItem) {
+			return (BaseItem) item;
 		}
 		return null;
 	}

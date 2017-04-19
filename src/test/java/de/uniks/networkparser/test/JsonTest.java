@@ -62,7 +62,6 @@ import de.uniks.networkparser.test.model.util.StringMessageCreator;
 import de.uniks.networkparser.test.model.util.UniversityCreator;
 
 public class JsonTest extends IOClasses {
-	
 	@Test
 	public void testJsonEquals() {
 		JsonObject jsonObject = new JsonObject();

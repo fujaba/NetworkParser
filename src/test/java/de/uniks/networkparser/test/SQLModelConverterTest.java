@@ -246,7 +246,7 @@ public class SQLModelConverterTest {
 		SQLStatementList list = (SQLStatementList) map.encode(universityModel, tokener);
 
 		Assert.assertEquals("jdbc:sqlite:build/sampleB.db", list.get(0).toString());
-		Assert.assertEquals("CREATE TABLE IF NOT EXISTS Student ('_ID' STRING, 'name' STRING, 'studNo' STRING, 'in' STRING, 'university' UNIVERSITY, 'firstName' STRING, 'lastName' STRING, 'credits' INTEGER)", list.get(1).toString());
+		Assert.assertEquals("CREATE TABLE IF NOT EXISTS Student ('_ID' STRING, 'name' STRING, 'studNo' STRING, 'in' STRING, 'university' UNIVERSITY, 'firstName' STRING, 'lastName' STRING, 'credits' INTEGER, 'friends' STRING)", list.get(1).toString());
 		Assert.assertEquals("CREATE TABLE IF NOT EXISTS University ('_ID' STRING, 'name' STRING, 'students' INTEGER[], 'rooms' OBJECT[])", list.get(2).toString());
 		Assert.assertEquals("INSERT INTO Student (_ID, university, firstName, lastName, credits) values('S2', 'U1', 'Max', 'Mustermann', '5')", list.get(3).toString());
 		Assert.assertEquals("INSERT INTO Student (_ID, university, firstName, lastName, credits) values('S3', 'U1', 'Michael', 'Mustermann', '7')", list.get(4).toString());
@@ -273,7 +273,7 @@ public class SQLModelConverterTest {
 		SQLStatementList list = (SQLStatementList) map.encode(universityModel, tokener);
 
 		Assert.assertEquals("jdbc:sqlite:build/sampleC.db", list.get(0).toString());
-		Assert.assertEquals("CREATE TABLE IF NOT EXISTS Student ('_ID' STRING, 'name' STRING, 'studNo' STRING, 'in' STRING, 'university' UNIVERSITY, 'firstName' STRING, 'lastName' STRING, 'credits' INTEGER)", list.get(1).toString());
+		Assert.assertEquals("CREATE TABLE IF NOT EXISTS Student ('_ID' STRING, 'name' STRING, 'studNo' STRING, 'in' STRING, 'university' UNIVERSITY, 'firstName' STRING, 'lastName' STRING, 'credits' INTEGER, 'friends' STRING)", list.get(1).toString());
 		Assert.assertEquals("CREATE TABLE IF NOT EXISTS University ('_ID' STRING, 'name' STRING, 'students' INTEGER[], 'rooms' OBJECT[])", list.get(2).toString());
 
 		Assert.assertEquals("INSERT INTO Student (_ID, university, firstName, lastName, credits) values('S2', 'U1', 'Max', 'Mustermann', '5')", list.get(3).toString());
