@@ -19,21 +19,23 @@ import de.uniks.networkparser.logic.VariableCondition;
 public class Template {
 	private static final char SPLITSTART='{';
 	private static final char SPLITEND='}';
-//	public static final int PACKAGE = 0;
 	
-//	public static final int IMPORT = 1;
 	public static final int DECLARATION = 0;
 	
-	public static final int TEMPLATE = 1;
-	
-	public static final int FIELD = 2;
+	public static final int PACKAGE = 1;
 
-	public static final int VALUE = 3;
+	public static final int IMPORT = 2;
+	
+	public static final int TEMPLATE = 3;
+	
+	public static final int FIELD = 4;
+
+	public static final int VALUE = 5;
+	
+	public static final int METHOD = 6;
 
 	public static final int TEMPLATEEND = Integer.MAX_VALUE;
 
-//	public static final int TEMPLATE = Integer.MAX_VALUE;
-	
 	
 	private TemplateCondition token = new TemplateCondition();
 	

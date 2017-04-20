@@ -14,70 +14,65 @@ import de.uniks.template.generator.BasicGenerator;
 public class JavaClazz extends BasicGenerator{
 
 	public JavaClazz() {
-//		createTemplate("Declaration", Template.DECLARATION, "{{#import "+PropertyChangeListener.class.getName()+"}}"+"{{#import "+PropertyChangeSupport.class.getName()+"}}");
-
-		createTemplate("PROPERTYCHANGESUPPORT", Template.DECLARATION, "{{#if {{#feature PROPERTYCHANGESUPPORT}}}}"
-		+"{{#import "+PropertyChangeListener.class.getName()+"}}"+"{{#import "+PropertyChangeSupport.class.getName()+"}}"+ 
-		"   protected PropertyChangeSupport listeners = null;",
-		"   public boolean firePropertyChange(String propertyName, Object oldValue, Object newValue) {", 
-		"      if (listeners != null) {", 
-		"         listeners.firePropertyChange(propertyName, oldValue, newValue);", 
-		"         return true;", 
-		"      }", 
-		"      return false;", 
-		"   }","",
-		"   public boolean addPropertyChangeListener(PropertyChangeListener listener)",
-		"   {",
-		"      if (listeners == null) {", 
-		"         listeners = new PropertyChangeSupport(this);", 
-		"      }", 
-		"      listeners.addPropertyChangeListener(listener);", 
-		"      return true;", 
-		"   }","",
-		"   public boolean addPropertyChangeListener(String propertyName, PropertyChangeListener listener)",
-		"   {",
-		"      if (listeners == null) {",
-		"         listeners = new PropertyChangeSupport(this);",
-		"      }",
-		"      listeners.addPropertyChangeListener(propertyName, listener);",
-		"      return true;",
-		"   }","",
-		"   public boolean removePropertyChangeListener(PropertyChangeListener listener)",
-	 	"   {",
-	 	"      if (listeners == null) {",
-	 	"         listeners.removePropertyChangeListener(listener);",
-	 	"      }",
-	 	"      listeners.removePropertyChangeListener(listener);",
-	 	"      return true;",
-	 	"   }","",
-	 	"   public boolean removePropertyChangeListener(String propertyName,PropertyChangeListener listener)",
-	 	"   {",
-	 	"      if (listeners != null) {",
-	 	"         listeners.removePropertyChangeListener(propertyName, listener);",
-	 	"      }",
-	 	"      return true;",
-	 	"   }"+
-	 	"{{#endif}}");
-
-		
-		createTemplate("Declaration", Template.TEMPLATE, "{{#if packageName}}package {{packageName}};{{#endif}}",
-				"{{#foreach {{file.headers}}}}","import {{item}};{{#endfor}}",
+		createTemplate("Declaration", Template.TEMPLATE, 
+				
+				"{{#template id=PACKAGE}}{{#if packageName}}package {{packageName}};{{#endif}}{{#endtemplate}}","",
+				
+				"{{#template id=IMPORT}}{{#foreach {{file.headers}}}}","import {{item}};{{#endfor}}{{#endtemplate}}","",
+				
 				"{{visibility}} {{modifiers} }{{type}} {{name}}{{#if superclasses}} {{superclasses}}{{#endif}}","{",
-				"{{PROPERTYCHANGESUPPORT}}");
+
+				"{{#if {{#feature PROPERTYCHANGESUPPORT}}}}"
+						+"{{#import "+PropertyChangeListener.class.getName()+"}}"+"{{#import "+PropertyChangeSupport.class.getName()+"}}"+ 
+						"   protected PropertyChangeSupport listeners = null;",
+						"   public boolean firePropertyChange(String propertyName, Object oldValue, Object newValue) {", 
+						"      if (listeners != null) {", 
+						"         listeners.firePropertyChange(propertyName, oldValue, newValue);", 
+						"         return true;", 
+						"      }", 
+						"      return false;", 
+						"   }","",
+						"   public boolean addPropertyChangeListener(PropertyChangeListener listener)",
+						"   {",
+						"      if (listeners == null) {", 
+						"         listeners = new PropertyChangeSupport(this);", 
+						"      }", 
+						"      listeners.addPropertyChangeListener(listener);", 
+						"      return true;", 
+						"   }","",
+						"   public boolean addPropertyChangeListener(String propertyName, PropertyChangeListener listener)",
+						"   {",
+						"      if (listeners == null) {",
+						"         listeners = new PropertyChangeSupport(this);",
+						"      }",
+						"      listeners.addPropertyChangeListener(propertyName, listener);",
+						"      return true;",
+						"   }","",
+						"   public boolean removePropertyChangeListener(PropertyChangeListener listener)",
+					 	"   {",
+					 	"      if (listeners == null) {",
+					 	"         listeners.removePropertyChangeListener(listener);",
+					 	"      }",
+					 	"      listeners.removePropertyChangeListener(listener);",
+					 	"      return true;",
+					 	"   }","",
+					 	"   public boolean removePropertyChangeListener(String propertyName,PropertyChangeListener listener)",
+					 	"   {",
+					 	"      if (listeners != null) {",
+					 	"         listeners.removePropertyChangeListener(propertyName, listener);",
+					 	"      }",
+					 	"      return true;",
+					 	"   }"+
+					 	"{{#endif}}"
+				);
 //		,
 //			 	"{{attributes}}" + "{{fields}}" + "{{methods}}"+ 
 		
 		createTemplate("Declaration", Template.TEMPLATEEND, "}");
 	
-		
-//		createTemplate("imports", Template.TEMPLATE, "{{#foreach {{template.file.headers}}import {{item}};{{#endfor}}");
-	
 		this.extension = "java";
-	}
-
-	@Override
-	public SendableEntityCreator generate(GraphMember item) {
-		return generate(item, null);
+		
+		this.addGenerator(new JavaAttribute());
 	}
 
 	@Override
@@ -88,5 +83,10 @@ public class JavaClazz extends BasicGenerator{
 		TemplateResultFile result = this.executeClazz((Clazz)item, parameters);
 		this.executeTemplate(result, parameters, item);
 		return result;
+	}
+	
+	@Override
+	public Class<?> getTyp() {
+		return Clazz.class;
 	}
 }

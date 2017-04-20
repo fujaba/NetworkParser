@@ -32,6 +32,8 @@ public class TemplateResultFragment implements Comparable<TemplateResultFragment
 	
 	private CharacterBuffer value = new CharacterBuffer();
 	
+	private ObjectCondition template;
+	
 	@Override
 	public int compareTo(TemplateResultFragment other) {
 		if (other.getKey() == key) {
@@ -120,6 +122,9 @@ public class TemplateResultFragment implements Comparable<TemplateResultFragment
 
 	public boolean addHeader(String value) {
 		return this.header.add(value);	
+	}
+	public boolean removeHeader(String value) {
+		return this.header.remove(value);	
 	}
 
 	public boolean setParent(SendableEntityCreator value) {
@@ -310,5 +315,9 @@ public class TemplateResultFragment implements Comparable<TemplateResultFragment
 			}
 		}
 		return null;
+	}
+	
+	public ObjectCondition getTemplate() {
+		return template;
 	}
 }

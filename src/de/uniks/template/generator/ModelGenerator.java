@@ -57,14 +57,16 @@ public class ModelGenerator extends BasicGenerator{
 			return null;
 		}
 		return generateJava("src", (GraphModel)item, parameters);
-		}	
+	}
+	
+	
 	public SendableEntityCreator generate(String rootDir, GraphModel model) {
 		return generateJava(rootDir, model, null);
 	}
 	
 	public SendableEntityCreator generateJava(String rootDir, GraphModel model, TextItems parameters) {
 		SimpleList<BasicGenerator> templates = new SimpleList<BasicGenerator>();
-		templates.add(new JavaClazz().withOwner(this));
+		templates.add(new JavaClazz());
 		if(rootDir == null) {
 			rootDir = "";
 		}else if(rootDir.endsWith("/") == false) {
@@ -75,8 +77,6 @@ public class ModelGenerator extends BasicGenerator{
 			name="i.love.sdmlib";
 		}
 		rootDir += name.replaceAll("\\.", "/")+"/";
-		
-		
 		
 		TemplateResultModel result = new TemplateResultModel();
 		result.withTemplate(this.getTemplates());
@@ -112,5 +112,10 @@ public class ModelGenerator extends BasicGenerator{
 			}
 		}
 		return null;
+	}
+	
+	@Override
+	public Class<?> getTyp() {
+		return GraphModel.class;
 	}
 }

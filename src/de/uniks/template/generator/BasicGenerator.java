@@ -21,12 +21,27 @@ import de.uniks.template.TemplateResultFile;
 import de.uniks.template.TemplateResultFragment;
 
 public abstract class BasicGenerator {
-	protected BasicGenerator parentFactory;
 	protected String extension;
 
 	protected SimpleList<Template> templates=new SimpleList<Template>();
 	protected SimpleKeyValueList<Class<?>, SimpleList<BasicGenerator>> children=new SimpleKeyValueList<Class<?>, SimpleList<BasicGenerator>>();
-
+	
+	public abstract Class<?> getTyp();
+	
+	public boolean addGenerator(BasicGenerator generator) {
+		if(generator == null) {
+			return false;
+		}
+		Class<?> typ = generator.getTyp();
+		SimpleList<BasicGenerator> list = this.children.get(typ);
+		if(list == null) {
+			list = new SimpleList<BasicGenerator>();
+			this.children.put(typ, list);
+		}
+		list.add(generator);
+		return true;
+	}
+	
 	public Template createTemplate(String name, int type, String... templates) {
 		Template template = new Template(name).withType(type);
 		template.withTemplate(templates);
@@ -34,38 +49,14 @@ public abstract class BasicGenerator {
 		return template;
 	}
 	
-	public abstract SendableEntityCreator generate(GraphMember item);
-	public abstract SendableEntityCreator generate(GraphMember item, TextItems parameters);
-
-	public BasicGenerator withOwner(BasicGenerator parentFactory) {
-		this.parentFactory = parentFactory;
-		return this;
-	}
-
-	public FeatureProperty getFeature(Feature value, Clazz... values) {
-		if(this.parentFactory != null) {
-			return this.parentFactory.getFeature(value, values);
-		}
-		return null;
+	public SendableEntityCreator generate(GraphMember item) {
+		return generate(item, null);
 	}
 	
-	public boolean hasFeature(Feature feature, Clazz... values) {
-		FeatureProperty property = getFeature(feature);
-		return hasFeatureProperty(property, values);
-	}
-	public boolean hasFeatureProperty(FeatureProperty property, Clazz... values) {
-		if(property != null) {
-			if(values == null) {
-				return true;
-			}
-			for(int i=0;i<values.length;i++) {
-				if(property.match(values[i]) == false) {
-					return false;
-				}
-			}
-			return true;
-		}
-		return false;
+	public abstract SendableEntityCreator generate(GraphMember item, TextItems parameters);
+
+	protected FeatureProperty getFeature(Feature value, Clazz... values) {
+		return null;
 	}
 	
 	public void executeTemplate(SendableEntityCreator templateResult, LocalisationInterface parameters, GraphMember member) {
@@ -87,6 +78,8 @@ public abstract class BasicGenerator {
 		}
 		return templateResult;
 	}
+	
+	
 	
 	protected TemplateResultFile getNewResult(Clazz clazz) {
 		FeatureProperty codeStyle = getFeature(Feature.CODESTYLE, clazz);

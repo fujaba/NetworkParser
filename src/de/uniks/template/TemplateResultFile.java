@@ -1,5 +1,6 @@
 package de.uniks.template;
 
+import de.uniks.networkparser.TextItems;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.interfaces.LocalisationInterface;
@@ -163,9 +164,16 @@ public class TemplateResultFile extends SortedSet<TemplateResultFragment> implem
 	public String toString() {
 		CharacterBuffer buffer= new CharacterBuffer();
 		for(TemplateResultFragment fragment : this) {
-			if(fragment.getKey() != Template.DECLARATION) {
-				buffer.with(fragment.getValue());
+			if(fragment.getKey() == Template.DECLARATION) {
+				continue;
 			}
+			if(fragment.getKey() != Template.IMPORT) {
+				// EVALUATION IMPORT
+				TextItems 
+//				fragment.getTemplate().update(TEMPLATERESULT);
+				
+			}
+			buffer.with(fragment.getValue());
 		}
 		return buffer.toString();
 	}
