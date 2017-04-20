@@ -28,13 +28,41 @@ import de.uniks.networkparser.list.SimpleSet;
 
 public abstract class GraphMember {
 	public static final String PROPERTY_NAME="name";
+	public static final String PROPERTY_PARENT="parent";
+	public static final String PROPERTY_CHILD="child";
 	protected String name;
 	protected Object children;
 	protected Object parentNode;
 
-	public String getValue(String attribute) {
+	public Object getValue(String attribute) {
 		if(PROPERTY_NAME.equals(attribute)) {
 			return this.name;
+		}
+		int pos = attribute.indexOf('.');
+		String attrName;
+		if(pos>0) {
+			attrName = attribute.substring(0, pos);
+		}else {
+			attrName = attribute;
+		}
+		if(PROPERTY_PARENT.equals(attrName)) {
+			if (pos > 0) {
+				if (parentNode instanceof GraphMember) {
+					GraphMember item = (GraphMember) this.getParent();
+					return item.getValue(attribute.substring(pos + 1));
+				}
+				return null;
+			}
+			return this.parentNode;
+		}
+		if(PROPERTY_CHILD.equals(attrName)) {
+			if (pos > 0) {
+				if (pos > 0) {
+					GraphSimpleSet item = this.getChildren();
+					return item.getValue(attribute.substring(pos + 1));
+				}
+			}
+			return this.children;
 		}
 		return null;
 	}

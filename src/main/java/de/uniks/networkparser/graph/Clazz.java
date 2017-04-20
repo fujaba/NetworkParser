@@ -781,7 +781,7 @@ public class Clazz extends GraphEntity {
 	}
 	
 	@Override
-	public String getValue(String attribute) {
+	public Object getValue(String attribute) {
 		if(PROPERTY_PACKAGENAME.equalsIgnoreCase(attribute)) {
 			String fullName = this.getName(false);
 			if(fullName == null) {
