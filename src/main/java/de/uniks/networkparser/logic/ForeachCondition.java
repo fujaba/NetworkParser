@@ -6,7 +6,6 @@ import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.interfaces.LocalisationInterface;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.ParserCondition;
-import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
 /**
  * @author Stefan
@@ -46,7 +45,8 @@ public class ForeachCondition implements ParserCondition {
 	@Override
 	public boolean update(Object value) {
 		if (expression != null && loop != null) {
-			if(expression instanceof ParserCondition && value instanceof SendableEntityCreator){
+			if(expression instanceof ParserCondition && 
+					value instanceof LocalisationInterface){
 				ParserCondition parser = (ParserCondition) expression;
 				Object object = parser.getValue((LocalisationInterface)value);
 //				expression.
@@ -57,10 +57,10 @@ public class ForeachCondition implements ParserCondition {
 				if(object instanceof Collection<?>) {
 					Collection<?> collection = (Collection<?>) object;
 					for(Object item : collection) {
-						variablen.putText(ITEM, ""+item);
+						variablen.put(ITEM, ""+item);
 //						value
 						loop.update(value);
-						variablen.putText(ITEM, null);
+						variablen.put(ITEM, null);
 					}
 				}
 			}

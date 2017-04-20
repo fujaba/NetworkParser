@@ -85,14 +85,17 @@ public class TextItems extends SimpleKeyValueList<String, String> implements Sen
 	}
 
 	@Override
-	public boolean putText(CharSequence label, CharSequence text) {
+	public String put(String label, String text) {
 		if(this.customLanguage != null) {
-			return this.customLanguage.putText(label, text);
+			return this.customLanguage.put(label, text);
 		}
 		if(text == null) {
-			return false;
+			return null;
 		}
-		return this.add(label, text.toString());
+		if(this.add(label, text)) {
+			return text;
+		}
+		return null;
 	}
 
 	public boolean isDefaultLabel() {

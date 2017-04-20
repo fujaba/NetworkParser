@@ -26,5 +26,5 @@ THE SOFTWARE.
 
 public interface LocalisationInterface {
 	public String getText(CharSequence label, Object model, Object gui);
-	public boolean putText(CharSequence label, CharSequence text);
+	public String put(String label, String text);
 }
