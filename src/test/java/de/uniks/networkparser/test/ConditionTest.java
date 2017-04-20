@@ -199,16 +199,16 @@ public class ConditionTest implements ObjectCondition {
 	@Test
 	public void testEqualsCondition() {
 		Equals condition = new Equals();
-		condition.setValue(condition, Equals.VALUE, "Stefan", null);
+		condition.setValue(condition, Equals.PROPERTY_VALUE, "Stefan", null);
 		
-		Assert.assertEquals("Stefan", condition.getValue(condition, Equals.VALUE));
+		Assert.assertEquals("Stefan", condition.getValue(condition, Equals.PROPERTY_VALUE));
 		Assert.assertEquals("==Stefan ", condition.toString());
 		
 		condition = new Equals();
-		condition.setValue(condition, Equals.POSITION, 42, null);
-		condition.setValue(condition, Equals.VALUE, (byte)0x42, null);
-		Assert.assertEquals((byte)0x42, condition.getValue(condition, Equals.VALUE));
-		Assert.assertEquals(42, condition.getValue(condition, Equals.POSITION));
+		condition.setValue(condition, Equals.PROPERTY_POSITION, 42, null);
+		condition.setValue(condition, Equals.PROPERTY_VALUE, (byte)0x42, null);
+		Assert.assertEquals((byte)0x42, condition.getValue(condition, Equals.PROPERTY_VALUE));
+		Assert.assertEquals(42, condition.getValue(condition, Equals.PROPERTY_POSITION));
 		
 		CharacterBuffer source = new CharacterBuffer();
 		Assert.assertFalse(condition.update(new PropertyChangeEvent(source, "", null, null)));
@@ -221,7 +221,7 @@ public class ConditionTest implements ObjectCondition {
 		Assert.assertTrue(condition.update(new PropertyChangeEvent(source, "", null, null)));
 		
 		condition = new Equals();
-		condition.withValue(Equals.VALUE);
+		condition.withValue(Equals.PROPERTY_VALUE);
 		Assert.assertFalse(condition.update(new PropertyChangeEvent(this, "HALLO", null, null)));
 	}
 

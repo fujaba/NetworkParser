@@ -4,15 +4,22 @@ import java.beans.PropertyChangeEvent;
 import de.uniks.networkparser.buffer.BufferedBuffer;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
+import de.uniks.networkparser.list.SimpleKeyValueList;
 /**
  * @author Stefan Lindel Clazz of EqualsCondition
  */
 
 public class Equals implements ObjectCondition, SendableEntityCreator {
+	/** Constant of KEY. */
+	public static final String PROPERTY_KEY = "key";
+	
 	/** Constant of StrValue. */
-	public static final String VALUE = "value";
+	public static final String PROPERTY_VALUE = "value";
 	/** Constant of Position. */
-	public static final String POSITION = "position";
+	public static final String PROPERTY_POSITION = "position";
+
+	/** Variable of StrValue. */
+	private String key;
 
 	/** Variable of Value. */
 	private Object value;
@@ -31,6 +38,13 @@ public class Equals implements ObjectCondition, SendableEntityCreator {
 		}
 		if(value == null) {
 			return evt == null;
+		}
+		if(evt instanceof SimpleKeyValueList<?, ?>) {
+			SimpleKeyValueList<?, ?> keyValueList = (SimpleKeyValueList<?, ?>) evt;
+			Object value = keyValueList.get(this.key);
+			if(value != null) {
+				return value.equals(this.value);
+			}
 		}
 		if((evt instanceof PropertyChangeEvent) == false) {
 			if(value instanceof Number && evt instanceof Number) {
@@ -121,20 +135,32 @@ public class Equals implements ObjectCondition, SendableEntityCreator {
 
 	@Override
 	public String[] getProperties() {
-		return new String[] {VALUE, POSITION};
+		return new String[] {PROPERTY_KEY, PROPERTY_VALUE, PROPERTY_POSITION};
 	}
 
 	@Override
 	public Object getSendableInstance(boolean prototyp) {
 		return new Equals();
 	}
+	
+	public String getKey() {
+		return key;
+	}
+
+	public Equals withKey(String key) {
+		this.key = key;
+		return this;
+	}
 
 	@Override
 	public Object getValue(Object entity, String attribute) {
-		if (VALUE.equalsIgnoreCase(attribute)) {
+		if (PROPERTY_KEY.equalsIgnoreCase(attribute)) {
+			return ((Equals) entity).getKey();
+		}
+		if (PROPERTY_VALUE.equalsIgnoreCase(attribute)) {
 			return ((Equals) entity).getValue();
 		}
-		if (POSITION.equalsIgnoreCase(attribute)) {
+		if (PROPERTY_POSITION.equalsIgnoreCase(attribute)) {
 			return ((Equals) entity).getPosition();
 		}
 		return null;
@@ -143,12 +169,20 @@ public class Equals implements ObjectCondition, SendableEntityCreator {
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value,
 			String type) {
-		if (VALUE.equalsIgnoreCase(attribute)) {
-			((Equals) entity).withValue(value);
+		if(entity instanceof Equals == false) {
+			return false;
+		}
+		Equals element = (Equals) entity;
+		if (PROPERTY_KEY.equalsIgnoreCase(attribute)) {
+			element.withKey(String.valueOf(value));
 			return true;
 		}
-		if (POSITION.equalsIgnoreCase(attribute)) {
-			((Equals) entity).withPosition(Integer.parseInt("" + value));
+		if (PROPERTY_VALUE.equalsIgnoreCase(attribute)) {
+			element.withValue(value);
+			return true;
+		}
+		if (PROPERTY_POSITION.equalsIgnoreCase(attribute)) {
+			element.withPosition(Integer.parseInt("" + value));
 			return true;
 		}
 		return false;
@@ -161,6 +195,13 @@ public class Equals implements ObjectCondition, SendableEntityCreator {
 	public Equals withDelta(Object delta) {
 		this.delta = delta;
 		return this;
+	}
+	
+	public static Equals create(String key, Object value) {
+		Equals condition = new Equals();
+		condition.withKey(key);
+		condition.withValue(value);
+		return condition;
 	}
 	
 	public static Equals createNullCondition() {

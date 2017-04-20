@@ -27,7 +27,7 @@ import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.json.JsonTokener;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.logic.BooleanCondition;
-import de.uniks.networkparser.logic.EntityEquals;
+import de.uniks.networkparser.logic.Equals;
 import de.uniks.networkparser.test.model.Apple;
 import de.uniks.networkparser.test.model.Barbarian;
 import de.uniks.networkparser.test.model.Change;
@@ -67,8 +67,8 @@ public class JsonTest extends IOClasses {
 		JsonObject jsonObject = new JsonObject();
 		jsonObject.withKeyValue("msg", "init");
 		
-		Assert.assertFalse(jsonObject.equals(EntityEquals.create("msg", "game")));
-		Assert.assertTrue(jsonObject.equals(EntityEquals.create("msg", "init")));
+		Assert.assertFalse(jsonObject.equals(Equals.create("msg", "game")));
+		Assert.assertTrue(jsonObject.equals(Equals.create("msg", "init")));
 	}
 	
 	

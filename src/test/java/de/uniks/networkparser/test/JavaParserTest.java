@@ -7,6 +7,8 @@ import java.nio.file.Files;
 import org.junit.Assert;
 import org.junit.Test;
 
+import de.uniks.networkparser.json.JsonArray;
+import de.uniks.networkparser.json.JsonTokener;
 import de.uniks.networkparser.parser.JavaParser;
 import de.uniks.networkparser.parser.SymTabEntry;
 

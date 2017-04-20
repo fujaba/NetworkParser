@@ -439,11 +439,12 @@ public class Column implements SendableEntityCreatorNoIndex {
 	public boolean setValue(Object entity, String attribute, Object value,
 			String type) {
 		Column that = (Column) entity;
+		
 		if (attribute.equalsIgnoreCase(PROPERTY_ATTRNAME)) {
 			that.withAttrName((String) value);
 			return true;
 		}
-		if (attrName.equalsIgnoreCase(PROPERTY_ID)) {
+		if (attribute.equalsIgnoreCase(PROPERTY_ID)) {
 			that.withID((String)value);
 			return true;
 		}
