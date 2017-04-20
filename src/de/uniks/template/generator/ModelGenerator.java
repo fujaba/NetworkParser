@@ -64,9 +64,15 @@ public class ModelGenerator extends BasicGenerator{
 		return generateJava(rootDir, model, null);
 	}
 	
+	
 	public SendableEntityCreator generateJava(String rootDir, GraphModel model, TextItems parameters) {
 		SimpleList<BasicGenerator> templates = new SimpleList<BasicGenerator>();
+
 		templates.add(new JavaClazz());
+		return generating(rootDir, model, parameters, templates, true);
+	}
+	
+	public SendableEntityCreator generating(String rootDir, GraphModel model, TextItems parameters, SimpleList<BasicGenerator> templates, boolean writeFiles) {
 		if(rootDir == null) {
 			rootDir = "";
 		}else if(rootDir.endsWith("/") == false) {
@@ -87,16 +93,22 @@ public class ModelGenerator extends BasicGenerator{
 		}
 		result.withLanguage(parameters);
 		
+		for(BasicGenerator template : templates) {
+			template.withOwner(this);
+		}
+		
 		for(Clazz clazz : model.getClazzes()) {
 			for(BasicGenerator template : templates) {
-				TemplateResultFile resultFile = template.executeClazz(clazz, this, result);
+				TemplateResultFile resultFile = template.executeClazz(clazz, result);
 
 				template.executeTemplate(resultFile, result, clazz);
 				result.add(resultFile);
 			}
 		}
-		for(TemplateResultFile file : result) {
-			FileBuffer.writeFile(rootDir + file.getFileName(), file.toString());
+		if(writeFiles) {
+			for(TemplateResultFile file : result) {
+				FileBuffer.writeFile(rootDir + file.getFileName(), file.toString());
+			}
 		}
 		return result;
 	}

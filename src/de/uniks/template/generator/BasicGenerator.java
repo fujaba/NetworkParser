@@ -22,6 +22,7 @@ import de.uniks.template.TemplateResultFragment;
 
 public abstract class BasicGenerator {
 	protected String extension;
+	protected BasicGenerator owner;
 
 	protected SimpleList<Template> templates=new SimpleList<Template>();
 	protected SimpleKeyValueList<Class<?>, SimpleList<BasicGenerator>> children=new SimpleKeyValueList<Class<?>, SimpleList<BasicGenerator>>();
@@ -42,6 +43,11 @@ public abstract class BasicGenerator {
 		return true;
 	}
 	
+	public BasicGenerator withOwner(BasicGenerator owner) {
+		this.owner = owner;
+		return this;
+	}
+	
 	public Template createTemplate(String name, int type, String... templates) {
 		Template template = new Template(name).withType(type);
 		template.withTemplate(templates);
@@ -56,6 +62,9 @@ public abstract class BasicGenerator {
 	public abstract SendableEntityCreator generate(GraphMember item, TextItems parameters);
 
 	protected FeatureProperty getFeature(Feature value, Clazz... values) {
+		if(this.owner != null) {
+			return this.owner.getFeature(value, values); 
+		}
 		return null;
 	}
 	
@@ -88,7 +97,7 @@ public abstract class BasicGenerator {
 		return templateResult;
 	}
 	
-	protected TemplateResultFile executeClazz(Clazz clazz, BasicGenerator owner, LocalisationInterface parameters) {
+	protected TemplateResultFile executeClazz(Clazz clazz, LocalisationInterface parameters) {
 		TemplateResultFile templateResult = owner.getNewResult(clazz);
 		if(parameters instanceof SendableEntityCreator) {
 			templateResult.setParent((SendableEntityCreator)parameters);
