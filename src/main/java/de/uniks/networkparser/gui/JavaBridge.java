@@ -84,6 +84,10 @@ public abstract class JavaBridge implements ObjectCondition {
 			return true;
 		}
 		JsonObject jsonObject = (JsonObject) simpleEvent.getEntity();
+		
+		if(jsonObject == null){
+			return false;
+		}
 
 		executeScript(BridgeCommand.load(jsonObject));
 

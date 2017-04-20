@@ -9,9 +9,6 @@ public class BridgeCommand {
 		return COMMAND+command+");";
 	}
 	public static final String load(JsonObject command) {
-//		if(command.has("prop")) {
-//			return null;
-//		}
 		return COMMAND+command+");";
 	}
 	public static final String register(EventTypes event, String id) {
