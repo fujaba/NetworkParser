@@ -11,6 +11,7 @@ import de.uniks.networkparser.graph.DataType;
 import de.uniks.networkparser.graph.GraphList;
 import de.uniks.template.Template;
 import de.uniks.template.TemplateResultFile;
+import de.uniks.template.TemplateResultFragment;
 import de.uniks.template.generator.ModelGenerator;
 
 public class TestSimpleGenerator {
@@ -29,7 +30,7 @@ public class TestSimpleGenerator {
 	@Test
 	public void testGeneratorTemplate() {
 		Template template = new Template().withTemplate(
-				"{{#ifnot {{member.type}}==INTERFACE}}"+
+				"{{#ifnot {{member.parent.type}}==interface}}"+
 								"Hello World" +
 							"{{#endif}}");
 		
@@ -38,8 +39,8 @@ public class TestSimpleGenerator {
 		TemplateResultFile templateFile = new TemplateResultFile(person, true);
 		TextItems textItems = new TextItems();
 		
-		template.generate(templateFile, textItems, name);
+		TemplateResultFragment generate = template.generate(templateFile, textItems, name);
 		
-		Assert.assertEquals("Hello World", templateFile.toString());
+		Assert.assertEquals("Hello World\r\n", generate.getResult().toString());
 	}
 }

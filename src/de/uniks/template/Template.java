@@ -9,6 +9,7 @@ import de.uniks.networkparser.interfaces.ParserCondition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.logic.ChainCondition;
+import de.uniks.networkparser.logic.EqualsCondition;
 import de.uniks.networkparser.logic.ForeachCondition;
 import de.uniks.networkparser.logic.IfCondition;
 import de.uniks.networkparser.logic.Not;
@@ -174,6 +175,29 @@ public class Template {
 						token.withExpression(Not.create(expression));	
 					}else {
 						token.withExpression(expression);
+					}
+					
+					EqualsCondition equalsExpression = null;
+					
+					// case equals
+					if (template.nextClean(true) == '=') {
+						if (template.nextClean(true) == '=') {
+							template.skip();
+							template.skip();
+							ObjectCondition rightExpression = parseCharacterBuffer(template, customTemplate, true);
+							equalsExpression = new EqualsCondition();
+							equalsExpression
+							.withLeftExpression(expression)
+							.withLeftValue(expression.toString().subSequence(2, expression.toString().length() - 2))
+							.withRightExpression(rightExpression)
+							.withRightValue(rightExpression.toString().subSequence(2, rightExpression.toString().length() - 2))
+							.withExpression(true);
+							if(tokenPart.equalsIgnoreCase("ifnot")) {
+								token.withExpression(Not.create(equalsExpression));	
+							} else {
+								token.withExpression(equalsExpression);
+							}
+						}
 					}
 					
 					template.skipChar(SPLITEND);

@@ -175,6 +175,10 @@ public class TemplateResultFragment implements Comparable<TemplateResultFragment
 			return element.getParent();
 		}
 		if(PROPERTY_MEMBER.equalsIgnoreCase(attrName)) {
+			if (pos > 0) {
+				GraphMember item = element.getMember();
+				return item.getValue(attribute.substring(pos + 1));
+			}
 			return element.getMember();
 		}
 		if(PROPERTY_VARIABLE.equalsIgnoreCase(attrName)) {
@@ -209,9 +213,9 @@ public class TemplateResultFragment implements Comparable<TemplateResultFragment
 				return item.getValue(item, attribute.substring(pos+1));
 			}
 			return element.getTemplateModel();
-		}		
+		}
 		if(this.member != null) {
-			String value = this.member.getValue(attrName);
+			Object value = this.member.getValue(attrName);
 			if(value != null) {
 				return value;
 			}
