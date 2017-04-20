@@ -1,6 +1,5 @@
 package de.uniks.template;
 
-import de.uniks.networkparser.TextItems;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.interfaces.LocalisationInterface;
@@ -92,9 +91,9 @@ public class TemplateResultFile extends SortedSet<TemplateResultFragment> implem
 	}
 
 	@Override
-	public boolean putText(CharSequence label, CharSequence text) {
+	public String put(String label, String text) {
 		// TODO Auto-generated method stub
-		return false;
+		return null;
 	}
 	
 	public boolean setParent(SendableEntityCreator value) {
@@ -169,7 +168,7 @@ public class TemplateResultFile extends SortedSet<TemplateResultFragment> implem
 			}
 			if(fragment.getKey() != Template.IMPORT) {
 				// EVALUATION IMPORT
-				TextItems 
+//				TextItems 
 //				fragment.getTemplate().update(TEMPLATERESULT);
 				
 			}

@@ -40,11 +40,11 @@ public class TemplateResultModel extends SimpleList<TemplateResultFile> implemen
 	}
 
 	@Override
-	public boolean putText(CharSequence label, CharSequence text) {
+	public String put(String label, String text) {
 		if(this.language != null) {
-			return this.language.putText(label, text);
+			return this.language.put(label, text);
 		}
-		return false;
+		return null;
 	}
 
 	public ParserCondition getTemplate(String tag) {

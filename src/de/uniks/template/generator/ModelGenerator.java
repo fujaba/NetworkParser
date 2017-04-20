@@ -89,7 +89,7 @@ public class ModelGenerator extends BasicGenerator{
 		
 		for(Clazz clazz : model.getClazzes()) {
 			for(BasicGenerator template : templates) {
-				TemplateResultFile resultFile = template.executeClazz(clazz, result);
+				TemplateResultFile resultFile = template.executeClazz(clazz, this, result);
 
 				template.executeTemplate(resultFile, result, clazz);
 				result.add(resultFile);

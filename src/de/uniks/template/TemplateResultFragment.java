@@ -286,24 +286,26 @@ public class TemplateResultFragment implements Comparable<TemplateResultFragment
 	}
 	
 	@Override
-	public boolean putText(CharSequence label, CharSequence text) {
+	public String put(String label, String text) {
 		if(label == null) {
-			return false;
+			return null;
 		}
 		if(PROPERTY_ITEM.equalsIgnoreCase(label.toString())) {
 			if(text == null) {
 				if(this.stack != null) {
 					this.stack.remove(this.stack.size() - 1);
-					return true;
+					return text;
 				}
 			} else {
 				if(this.stack == null) {
 					this.stack = new SimpleList<String>();
 				}
-				return this.stack.add(text);
+				if(this.stack.add(text)) {
+					return text;
+				}
 			}
 		}
-		return false;
+		return null;
 	}
 
 	public TemplateResultModel getTemplateModel() {

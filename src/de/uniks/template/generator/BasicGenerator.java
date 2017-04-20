@@ -63,7 +63,7 @@ public abstract class BasicGenerator {
 		for(Template template : templates) {
 			TemplateResultFragment fragment = template.generate(parameters, templateResult, member);
 			if(template.getType()==Template.DECLARATION) {
-				parameters.putText(template.getName(), fragment.getResult());
+				parameters.put(template.getName(), fragment.getResult().toString());
 			}
 		}
 	}
@@ -88,8 +88,8 @@ public abstract class BasicGenerator {
 		return templateResult;
 	}
 	
-	protected TemplateResultFile executeClazz(Clazz clazz, LocalisationInterface parameters) {
-		TemplateResultFile templateResult = getNewResult(clazz);
+	protected TemplateResultFile executeClazz(Clazz clazz, BasicGenerator owner, LocalisationInterface parameters) {
+		TemplateResultFile templateResult = owner.getNewResult(clazz);
 		if(parameters instanceof SendableEntityCreator) {
 			templateResult.setParent((SendableEntityCreator)parameters);
 		}

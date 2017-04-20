@@ -20,45 +20,43 @@ public class JavaAttribute extends BasicGenerator{
 				.withType(Template.FIELD);
 //				.withCondition("");
 		
-		Template getMethodTemplate = new Template()
-				.withPrevTemplate(fieldTemplate)
-				.withTemplate("   {{methodVisibility}} {{getModifiers}}{{#if getModifiers}} {{#endif}}{{value}} {{getName}}{{Name}}(){{methodEnd}}",
-						 	  "{{#ifnot methodEnd}}",
-						 	  "   {",
-						 	  "      return this.{{name}};",
-						 	  "   }",
-						 	  "{{#endif}}")
-				.withType(Template.VALUE);
-		
-		Template setMethodTemplate = new Template()
-				.withPrevTemplate(getMethodTemplate)
-				.withTemplate("   {{methodVisibility}} {{setModifiers}}{{#if setModifiers}} {{#endif}}void set{{Name}}({{value}} value){{methodEnd}}",
-						 	  "{{#ifnot methodEnd}}",
-						 	  "   {",
-						 	  "      if (this.{{name}} != value)",
-						 	  "      {",
-						 	  "         {{value}} oldValue = this.{{name}};",
-						 	  "         this.{{name}} = value;",
-						 	  "         {{firePropertyChange}}",
-						 	  "      }",
-						 	  "   }",
-						 	  "{{#endif}}")
-				.withType(Template.VALUE);
-		
-		Template withMethodTemplate = new Template()
-				.withPrevTemplate(setMethodTemplate)
-				.withTemplate("   {{methodVisibility}} {{withModifiers}}{{#if withModifiers}} {{#endif}}{{withReturn}} with{{Name}}({{value}} value){{methodEnd}}",
-						      "{{#ifnot methodEnd}}",
-						      "   {",
-						      "      set{{Name}}(value);",
-						      "      return this;",
-						      "   }",
-						      "{{#endif}}")
-				.withType(Template.VALUE);
-		
-		rootTemplate = propertyTemplate;
-
-		return null;
+//		Template getMethodTemplate = new Template()
+//				.withPrevTemplate(fieldTemplate)
+//				.withTemplate("   {{methodVisibility}} {{getModifiers}}{{#if getModifiers}} {{#endif}}{{value}} {{getName}}{{Name}}(){{methodEnd}}",
+//						 	  "{{#ifnot methodEnd}}",
+//						 	  "   {",
+//						 	  "      return this.{{name}};",
+//						 	  "   }",
+//						 	  "{{#endif}}")
+//				.withType(Template.VALUE);
+//		
+//		Template setMethodTemplate = new Template()
+//				.withPrevTemplate(getMethodTemplate)
+//				.withTemplate("   {{methodVisibility}} {{setModifiers}}{{#if setModifiers}} {{#endif}}void set{{Name}}({{value}} value){{methodEnd}}",
+//						 	  "{{#ifnot methodEnd}}",
+//						 	  "   {",
+//						 	  "      if (this.{{name}} != value)",
+//						 	  "      {",
+//						 	  "         {{value}} oldValue = this.{{name}};",
+//						 	  "         this.{{name}} = value;",
+//						 	  "         {{firePropertyChange}}",
+//						 	  "      }",
+//						 	  "   }",
+//						 	  "{{#endif}}")
+//				.withType(Template.VALUE);
+//		
+//		Template withMethodTemplate = new Template()
+//				.withPrevTemplate(setMethodTemplate)
+//				.withTemplate("   {{methodVisibility}} {{withModifiers}}{{#if withModifiers}} {{#endif}}{{withReturn}} with{{Name}}({{value}} value){{methodEnd}}",
+//						      "{{#ifnot methodEnd}}",
+//						      "   {",
+//						      "      set{{Name}}(value);",
+//						      "      return this;",
+//						      "   }",
+//						      "{{#endif}}")
+//				.withType(Template.VALUE);
+//		
+//		rootTemplate = propertyTemplate;
 
 	}
 	
