@@ -36,7 +36,7 @@ import de.uniks.networkparser.graph.AssociationTypes;
 import de.uniks.networkparser.graph.Attribute;
 import de.uniks.networkparser.graph.Cardinality;
 import de.uniks.networkparser.graph.Clazz;
-import de.uniks.networkparser.graph.Clazz.ClazzType;
+import de.uniks.networkparser.graph.ClazzType;
 import de.uniks.networkparser.graph.DataType;
 import de.uniks.networkparser.graph.GraphList;
 import de.uniks.networkparser.graph.GraphModel;

@@ -1,6 +1,6 @@
 package de.uniks.networkparser.graph;
 
-import de.uniks.networkparser.graph.Clazz.ClazzType;
+import de.uniks.networkparser.graph.ClazzType;
 import de.uniks.networkparser.graph.util.AssociationSet;
 import de.uniks.networkparser.graph.util.ClazzSet;
 import de.uniks.networkparser.interfaces.Condition;

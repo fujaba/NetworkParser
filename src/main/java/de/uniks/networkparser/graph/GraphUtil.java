@@ -1,7 +1,7 @@
 package de.uniks.networkparser.graph;
 
 import de.uniks.networkparser.buffer.CharacterBuffer;
-import de.uniks.networkparser.graph.Clazz.ClazzType;
+import de.uniks.networkparser.graph.ClazzType;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SimpleSet;
 

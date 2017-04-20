@@ -25,7 +25,7 @@ import de.uniks.networkparser.graph.AssociationTypes;
 import de.uniks.networkparser.graph.Attribute;
 import de.uniks.networkparser.graph.Cardinality;
 import de.uniks.networkparser.graph.Clazz;
-import de.uniks.networkparser.graph.Clazz.ClazzType;
+import de.uniks.networkparser.graph.ClazzType;
 import de.uniks.networkparser.graph.DataType;
 import de.uniks.networkparser.graph.DataTypeMap;
 import de.uniks.networkparser.graph.DataTypeSet;
@@ -741,8 +741,8 @@ public class GraphTest {
 		Assert.assertEquals(GraphOptions.LINETYP.CENTER, GraphOptions.LINETYP.valueOf("CENTER"));
 		Assert.assertEquals(2, GraphOptions.LINETYP.values().length);
 
-		Assert.assertEquals(Clazz.ClazzType.CLAZZ, Clazz.ClazzType.valueOf("CLAZZ"));
-		Assert.assertEquals(6, Clazz.ClazzType.values().length);
+		Assert.assertEquals(ClazzType.CLAZZ, ClazzType.valueOf("CLAZZ"));
+		Assert.assertEquals(6, ClazzType.values().length);
 
 		GraphList model = new GraphList();
 		model.setAuthorName("Stefan");

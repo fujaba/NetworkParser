@@ -33,7 +33,7 @@ import java.util.Set;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 
-public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K, V>, Iterable<Entry<K, V>>{
+public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K, V>, Iterable<Entry<K, V>> {
 	private Comparator<Object> cpr;
 
 	public SimpleKeyValueList() {

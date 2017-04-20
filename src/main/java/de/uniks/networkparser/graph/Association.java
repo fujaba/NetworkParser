@@ -281,6 +281,7 @@ public class Association extends GraphMember {
 		return null;
 	}
 
+	@Override
 	public Clazz getClazz() {
 		GraphSimpleSet collection = getParents();
 		if(collection.size()>0) {

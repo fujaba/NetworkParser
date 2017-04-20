@@ -32,7 +32,7 @@ public abstract class GraphMember {
 	protected Object children;
 	protected Object parentNode;
 
-	protected Object getValue(String attribute) {
+	public String getValue(String attribute) {
 		if(PROPERTY_NAME.equals(attribute)) {
 			return this.name;
 		}
@@ -52,6 +52,20 @@ public abstract class GraphMember {
 			}
 		}
 		return result;
+	}
+	
+	public Clazz getClazz() {
+		if(this instanceof Clazz) {
+			return (Clazz) this;
+		}
+		if(parentNode instanceof Clazz) {
+			return (Clazz) parentNode; 
+		}
+		if(parentNode instanceof GraphMember) {
+			return ((GraphMember) parentNode).getClazz();
+		}
+		return null;
+		
 	}
 
 	protected String getFullId() {

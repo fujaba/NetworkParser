@@ -15,14 +15,9 @@ public class VariableCondition implements ParserCondition{
 		if(value instanceof ObjectCondition) {
 			return ((ObjectCondition)value).update(this);
 		}
-		if(value instanceof SendableEntityCreator) {
-			SendableEntityCreator variables = (SendableEntityCreator) value;
-			Object object = variables.getValue(variables, this.value.toString());
-			return  object != null && !object.equals("");
-		}
 		if(value instanceof LocalisationInterface) {
 			LocalisationInterface variables = (LocalisationInterface) value;
-			String object = variables.get(this.value.toString());
+			Object object = getValue(variables);
 			return  object != null && !object.equals("");
 		}
 		if(this.value == null) {
@@ -35,9 +30,21 @@ public class VariableCondition implements ParserCondition{
 		this.value = value;
 		return this;
 	}
-	public CharSequence getValue(LocalisationInterface variables) {
-		if(variables != null && this.value != null) {
-			return variables.get(this.value);
+	
+	public Object getValue(LocalisationInterface value) {
+		if(value instanceof SendableEntityCreator) {
+			SendableEntityCreator variables = (SendableEntityCreator) value;
+			Object object = variables.getValue(variables, this.value.toString());
+			return object;
+		}
+		if(value != null && this.value != null) {
+			return value.getText(this.value, null, null);
+		}
+		if(this.value == null) {
+			return null;
+		}
+		if(this.value.equals(value)) {
+			return value;
 		}
 		return null;
 	}
@@ -69,5 +76,4 @@ public class VariableCondition implements ParserCondition{
 	public String toString() {
 		return "{{"+this.value+"}}";
 	}
-
 }

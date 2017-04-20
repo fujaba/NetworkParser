@@ -30,6 +30,12 @@ import de.uniks.networkparser.interfaces.BaseItem;
 public class SortedSet<V> extends SimpleSet<V> {
 	protected Comparator<V> cpr;
 
+	public SortedSet(boolean comparator) {
+		if(comparator) {
+			comparator();
+		}
+	}
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	public Comparator<Object> comparator() {

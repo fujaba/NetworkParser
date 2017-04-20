@@ -163,7 +163,7 @@ public class FileBuffer extends Buffer {
 		FileBuffer buffer = new FileBuffer();
 		buffer.withFile(fileName);
 		if(buffer.exist() == false) {
-			if(buffer.createFile()) {
+			if(buffer.createFile() == false) {
 				return false;
 			}
 		}
@@ -177,7 +177,11 @@ public class FileBuffer extends Buffer {
 		if(this.file == null) {
 			return false;
 		}
-		return file.getParentFile().mkdirs();
+		File parentFile = file.getParentFile();
+		if(parentFile.exists()) {
+			return true;
+		}
+		return parentFile.mkdirs();
 	}
 	
 	public boolean write(CharSequence data, boolean append) {
