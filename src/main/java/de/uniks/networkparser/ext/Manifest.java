@@ -26,8 +26,8 @@ public class Manifest extends SimpleKeyValueList<String, String>{
 		try {
 			len = resources.available();
 			byte[] bytes = new byte[len];
-			resources.read(bytes, 0, len);
-			value = new String(bytes);
+			int read = resources.read(bytes, 0, len);
+			value = new String(bytes, 0, read);
 		} catch (IOException e) {
 		}
 		return create(value);

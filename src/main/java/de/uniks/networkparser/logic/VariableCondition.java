@@ -60,7 +60,8 @@ public class VariableCondition implements ParserCondition{
 	
 	@Override
 	public ParserCondition create(CharacterBuffer buffer) {
-		return create(buffer);
+		this.value = buffer.nextToken(true, ' ', '}');
+		return this;
 	}
 
     @Override

@@ -19,14 +19,19 @@ public class ErrorHandler implements Thread.UncaughtExceptionHandler{
 		boolean success;
 		try {
 			filepath=createDir(filepath);
+			if(filepath == null) {
+				return false;
+			}
 			if(!filepath.endsWith("/")){
 				filepath+="/";
 			}
 			String fullfilename=filepath+fileName;
 
 			File file=new File(fullfilename);
-			if(!file.exists()){
-				file.createNewFile();
+			if(file.exists() == false){
+				if(file.createNewFile() == false) {
+					return false;
+				}
 			}
 			FileOutputStream networkFile = new FileOutputStream(filepath+"/"+fileName);
 			
