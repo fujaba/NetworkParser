@@ -90,4 +90,8 @@ public class EqualsCondition implements ParserCondition {
 		return this;
 	}
 	
+	@Override
+	public EqualsCondition getSendableInstance(boolean prototyp) {
+		return new EqualsCondition();
+	}
 }

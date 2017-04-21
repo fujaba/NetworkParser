@@ -78,4 +78,9 @@ public class VariableCondition implements ParserCondition{
 	public String toString() {
 		return "{{"+this.value+"}}";
 	}
+
+	@Override
+	public VariableCondition getSendableInstance(boolean prototyp) {
+		return new VariableCondition();
+	}
 }

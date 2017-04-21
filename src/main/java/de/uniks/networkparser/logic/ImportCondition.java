@@ -58,4 +58,9 @@ public class ImportCondition implements ParserCondition {
 	public boolean isExpression() {
 		return true;
 	}
+	
+	@Override
+	public ImportCondition getSendableInstance(boolean prototyp) {
+		return new ImportCondition();
+	}
 }

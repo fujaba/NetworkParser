@@ -113,4 +113,8 @@ public class FeatureCondition implements ParserCondition {
 		return buffer.toString();
 	}
 
+	@Override
+	public FeatureCondition getSendableInstance(boolean prototyp) {
+		return new FeatureCondition();
+	}
 }

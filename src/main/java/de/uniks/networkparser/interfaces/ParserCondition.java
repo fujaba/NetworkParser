@@ -7,4 +7,5 @@ public interface ParserCondition extends ObjectCondition{
 	public ObjectCondition create(CharacterBuffer buffer, TemplateParser parser, LocalisationInterface customTemplate);
 	public boolean isExpression();
 	public String getKey();
+	public ParserCondition getSendableInstance(boolean prototyp);
 }

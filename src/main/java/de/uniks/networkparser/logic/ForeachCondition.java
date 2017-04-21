@@ -71,7 +71,18 @@ public class ForeachCondition implements ParserCondition {
 
 	@Override
 	public ForeachCondition create(CharacterBuffer buffer, TemplateParser parser, LocalisationInterface customTemplate) {
-		this.expression = StringCondition.create(buffer.nextToken(false, SPLITEND));
+//		this.expression = StringCondition.create(buffer.nextToken(false, SPLITEND));
+//		template.skip();
+		ObjectCondition expression = parser.parsing(buffer, customTemplate, true);
+		this.expression = expression;
+		
+		buffer.skipChar(SPLITEND);
+		buffer.skipChar(SPLITEND);
+		
+		// Add Children
+		expression = parser.parsing(buffer, customTemplate, false, "endfor");
+		withLoopCondition(expression);
+		buffer.skipChar(SPLITEND);
 		return this;
 	}
 
@@ -87,5 +98,10 @@ public class ForeachCondition implements ParserCondition {
 
 	public ObjectCondition getLoopCondition() {
 		return loop;
+	}
+	
+	@Override
+	public ForeachCondition getSendableInstance(boolean prototyp) {
+		return new ForeachCondition();
 	}
 }

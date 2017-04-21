@@ -54,4 +54,9 @@ public class StringCondition implements ParserCondition {
 		}
 		return value.toString();
 	}
+	
+	@Override
+	public StringCondition getSendableInstance(boolean prototyp) {
+		return new StringCondition();
+	}
 }
