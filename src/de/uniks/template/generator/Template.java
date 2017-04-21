@@ -1,4 +1,4 @@
-package de.uniks.template;
+package de.uniks.template.generator;
 
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.graph.GraphMember;
@@ -7,17 +7,20 @@ import de.uniks.networkparser.interfaces.LocalisationInterface;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.ParserCondition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
+import de.uniks.networkparser.interfaces.TemplateParser;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.logic.ChainCondition;
-import de.uniks.networkparser.logic.EqualsCondition;
+import de.uniks.networkparser.logic.Equals;
 import de.uniks.networkparser.logic.ForeachCondition;
 import de.uniks.networkparser.logic.IfCondition;
 import de.uniks.networkparser.logic.Not;
 import de.uniks.networkparser.logic.StringCondition;
 import de.uniks.networkparser.logic.TemplateCondition;
 import de.uniks.networkparser.logic.VariableCondition;
+import de.uniks.template.TemplateResultFragment;
+import de.uniks.template.TemplateResultModel;
 
-public class Template {
+public class Template implements TemplateParser {
 	private static final char SPLITSTART='{';
 	private static final char SPLITEND='}';
 	
@@ -114,7 +117,7 @@ public class Template {
 		return parseCharacterBuffer(template, customTemplate, false);
 	}
 	
-	private ObjectCondition parseCharacterBuffer(CharacterBuffer template, LocalisationInterface customTemplate, boolean isExpression, String... stopWords) {
+	public ObjectCondition parseCharacterBuffer(CharacterBuffer template, LocalisationInterface customTemplate, boolean isExpression, String... stopWords) {
 		int start=template.position(), end;
 		ObjectCondition child = null;
 		ChainCondition parent = new ChainCondition();
@@ -171,33 +174,29 @@ public class Template {
 					IfCondition token = new IfCondition();
 					template.skip();
 					ObjectCondition expression = parseCharacterBuffer(template, customTemplate, true);
-					if(tokenPart.equalsIgnoreCase("ifnot")) {
-						token.withExpression(Not.create(expression));	
-					}else {
-						token.withExpression(expression);
-					}
-					
-					EqualsCondition equalsExpression = null;
 					
 					// case equals
 					if (template.nextClean(true) == '=') {
 						if (template.nextClean(true) == '=') {
 							template.skip();
-							template.skip();
-							ObjectCondition rightExpression = parseCharacterBuffer(template, customTemplate, true);
-							equalsExpression = new EqualsCondition();
-							equalsExpression
-							.withLeftExpression(expression)
-							.withLeftValue(expression.toString().subSequence(2, expression.toString().length() - 2))
-							.withRightExpression(rightExpression)
-							.withRightValue(rightExpression.toString().subSequence(2, rightExpression.toString().length() - 2))
-							.withExpression(true);
-							if(tokenPart.equalsIgnoreCase("ifnot")) {
-								token.withExpression(Not.create(equalsExpression));	
-							} else {
-								token.withExpression(equalsExpression);
+//							template.skip();
+							Equals equalsExpression = new Equals();
+							if(expression instanceof ParserCondition) {
+								equalsExpression.withLeft((ParserCondition)expression);
 							}
+							
+							expression = parseCharacterBuffer(template, customTemplate, true);
+							if(expression instanceof ParserCondition) {
+								equalsExpression.withRight((ParserCondition)expression);
+							}
+							expression = equalsExpression;
+							
 						}
+					}
+					if(tokenPart.equalsIgnoreCase("ifnot")) {
+						token.withExpression(Not.create(expression));	
+					}else {
+						token.withExpression(expression);
 					}
 					
 					template.skipChar(SPLITEND);
@@ -237,7 +236,7 @@ public class Template {
 						condition = ((TemplateResultModel)customTemplate).getTemplate(tokenPart.toString());
 					}
 					if(condition != null) {
-						ObjectCondition childCondition = condition.create(template);
+						ObjectCondition childCondition = condition.create(template, this, customTemplate);
 						parent.with(childCondition);
 					}
 				}

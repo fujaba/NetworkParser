@@ -6,7 +6,7 @@ import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.logic.StringCondition;
-import de.uniks.template.Template;
+import de.uniks.template.generator.Template;
 
 
 public class TestTemplate {

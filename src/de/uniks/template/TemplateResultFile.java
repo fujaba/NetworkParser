@@ -6,6 +6,7 @@ import de.uniks.networkparser.interfaces.LocalisationInterface;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.list.SimpleSet;
 import de.uniks.networkparser.list.SortedSet;
+import de.uniks.template.generator.Template;
 
 public class TemplateResultFile extends SortedSet<TemplateResultFragment> implements SendableEntityCreator, LocalisationInterface {
 	public static final String PROPERTY_PARENT="parent";

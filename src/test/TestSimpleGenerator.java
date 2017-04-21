@@ -9,10 +9,16 @@ import de.uniks.networkparser.graph.Cardinality;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.DataType;
 import de.uniks.networkparser.graph.GraphList;
-import de.uniks.template.Template;
+import de.uniks.networkparser.interfaces.ParserCondition;
+import de.uniks.networkparser.list.SimpleKeyValueList;
+import de.uniks.networkparser.logic.FeatureCondition;
+import de.uniks.networkparser.logic.ImportCondition;
+import de.uniks.template.TemplateFragmentCondition;
 import de.uniks.template.TemplateResultFile;
 import de.uniks.template.TemplateResultFragment;
+import de.uniks.template.TemplateResultModel;
 import de.uniks.template.generator.ModelGenerator;
+import de.uniks.template.generator.Template;
 
 public class TestSimpleGenerator {
 
@@ -43,4 +49,23 @@ public class TestSimpleGenerator {
 		
 		Assert.assertEquals("Hello World\r\n", generate.getResult().toString());
 	}
+	
+	@Test
+	public void testGeneratorTemplateFragment() {
+		Template template = new Template().withTemplate(
+				"{{#template id=PACKAGE}}{{#if packageName}}package {{packageName}};{{#endif}}{{#endtemplate}}","",
+				"{{#template id=IMPORT}}{{#foreach {{file.headers}}}}","import {{item}};{{#endfor}}{{#endtemplate}}");
+
+		Clazz person = new Clazz("Person");
+		Attribute name = person.createAttribute("name", DataType.STRING);
+		TemplateResultFile templateFile = new TemplateResultFile(person, true);
+		TemplateResultModel model = new TemplateResultModel();
+		model.add(new TemplateFragmentCondition());
+		
+		
+		TemplateResultFragment generate = template.generate(templateFile, templateFile, name);
+		
+		Assert.assertEquals("Hello World\r\n", generate.getResult().toString());
+	}
+	
 }

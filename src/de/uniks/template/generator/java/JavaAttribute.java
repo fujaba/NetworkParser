@@ -4,8 +4,8 @@ import de.uniks.networkparser.TextItems;
 import de.uniks.networkparser.graph.Attribute;
 import de.uniks.networkparser.graph.GraphMember;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
-import de.uniks.template.Template;
 import de.uniks.template.generator.BasicGenerator;
+import de.uniks.template.generator.Template;
 
 public class JavaAttribute extends BasicGenerator{
 	

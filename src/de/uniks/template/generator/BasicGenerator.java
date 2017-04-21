@@ -16,7 +16,6 @@ import de.uniks.networkparser.interfaces.LocalisationInterface;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
-import de.uniks.template.Template;
 import de.uniks.template.TemplateResultFile;
 import de.uniks.template.TemplateResultFragment;
 

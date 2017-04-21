@@ -22,6 +22,21 @@ public class TemplateResultModel extends SimpleList<TemplateResultFile> implemen
 		return this;
 	}
 	
+	public TemplateResultModel withTemplate(ParserCondition... templates) {
+		if(templates == null) {
+			return this;
+		}
+		if(customTemplate == null) {
+			customTemplate = new SimpleKeyValueList<String, ParserCondition>();
+		}
+		for(ParserCondition template : templates) {
+			if(template != null) {
+				customTemplate.add(template.getKey(), template);
+			}
+		}
+		return this;
+	}
+	
 	public SimpleKeyValueList<String, ParserCondition> getCustomTemplate() {
 		return customTemplate;
 	}
