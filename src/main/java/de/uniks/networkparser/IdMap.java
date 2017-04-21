@@ -1337,7 +1337,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 					BaseItem childItem = targetList.getChild(i);
 					if(childItem instanceof Entity) {
 						Entity childEntity = (Entity) childItem;
-						if(id.equals(childEntity.getString(ID))) {
+						if(id != null && id.equals(childEntity.getString(ID))) {
 							return item;
 						}
 					}

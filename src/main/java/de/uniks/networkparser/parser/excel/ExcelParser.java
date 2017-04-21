@@ -106,11 +106,14 @@ public class ExcelParser {
 							ExcelCell excelCell = (ExcelCell) cell;
 							if (CELL_TYPE_REFERENCE.equalsIgnoreCase(excelCell.getType())) {
 								// <v>2</v>
-								String ref = ((XMLEntity)cell.getChild(0)).getValue();
-								if (sharedStrings != null) {
-									XMLEntity refString = (XMLEntity) sharedStrings.getChild(Integer.valueOf(ref));
-									String text = ((XMLEntity)refString.getChild(0)).getValue();
-									excelCell.setContent(text);
+								EntityList element = cell.getChild(0);
+								if(element != null) {
+									String ref = ((XMLEntity)element).getValue();
+									if (sharedStrings != null) {
+										XMLEntity refString = (XMLEntity) sharedStrings.getChild(Integer.valueOf(ref));
+										String text = ((XMLEntity)refString.getChild(0)).getValue();
+										excelCell.setContent(text);
+									}
 								}
 							} else if (excelCell.sizeChildren()<1) {
 								String pos = mergeCellPos.get(excelCell.getReferenz().toString());

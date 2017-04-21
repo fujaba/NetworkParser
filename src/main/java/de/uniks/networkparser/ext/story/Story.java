@@ -67,7 +67,9 @@ public class Story {
 	}
 
 	public void finish() {
-		this.steps.last().finish();
+		if(this.steps != null) {
+			this.steps.last().finish();
+		}
 	}
 
 	public boolean dumpHTML() {
@@ -95,25 +97,35 @@ public class Story {
 		return success;
 	}
 
-	protected void writeFile(HTMLEntity output) {
+	protected boolean writeFile(HTMLEntity output) {
 		File file = new File("doc/" + this.outputFile);
-		FileOutputStream fop;
+		FileOutputStream fop = null;
 		try {
 			fop = new FileOutputStream(file);
 
 			// if file doesnt exists, then create it
-			if (!file.exists()) {
-				file.createNewFile();
+			if (file.exists() == false) {
+				if(file.createNewFile() == false) {
+					return false;
+				}
 			}
 			// get the content in bytes
 			byte[] contentInBytes = output.toString().getBytes();
 
 			fop.write(contentInBytes);
 			fop.flush();
-			fop.close();
+			return true;
 		} catch (FileNotFoundException e) {
 		} catch (IOException e) {
+		} finally {
+			if(fop != null) {
+				try {
+					fop.close();
+				} catch (IOException e) {
+				}
+			}
 		}
+		return false;
 
 	}
 

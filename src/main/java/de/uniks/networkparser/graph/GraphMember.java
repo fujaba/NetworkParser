@@ -321,6 +321,9 @@ public abstract class GraphMember {
 		if(rootModifier == null && this instanceof Modifier) {
 			rootModifier = (Modifier)this;
 		}
+		if(rootModifier == null) {
+			return this;
+		}
 		for (Modifier item : values) {
 			if (item.has(Modifier.PUBLIC) || item.has(Modifier.PACKAGE) || item.has(Modifier.PROTECTED)
 					|| item.has(Modifier.PRIVATE)) {

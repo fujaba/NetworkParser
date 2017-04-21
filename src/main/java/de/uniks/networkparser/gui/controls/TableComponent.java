@@ -159,9 +159,9 @@ public class TableComponent extends Control {
 	@Override
 	public boolean setValue(String key, Object value) {
 		if (PROPERTY_COLUMNS.equals(key)) {
-			if(value instanceof Control) {
-				return this.addColumn((Column)value);
-			} else if(value instanceof Column[]) {
+//			if(value instanceof Control) {
+//				return this.addColumn((Control)value);
+			if(value instanceof Column[]) {
 				return this.addColumn((Column[])value);
 			} else if(value instanceof Collection<?>) {
 				Collection<?> list = (Collection<?>)value;

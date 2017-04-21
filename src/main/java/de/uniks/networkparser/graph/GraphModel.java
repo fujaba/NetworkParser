@@ -1,5 +1,7 @@
 package de.uniks.networkparser.graph;
 
+import java.util.Iterator;
+
 import de.uniks.networkparser.graph.ClazzType;
 import de.uniks.networkparser.graph.util.AssociationSet;
 import de.uniks.networkparser.graph.util.ClazzSet;
@@ -81,7 +83,9 @@ public abstract class GraphModel extends GraphEntity {
 		}
 		
 		GraphSimpleSet list = (GraphSimpleSet) this.children;
-		for(GraphMember member : list) {
+		Iterator<GraphMember> i = list.iterator();
+		while(i.hasNext()) {
+			GraphMember member = i.next();
 			if(member instanceof Clazz) {
 				Clazz clazz = (Clazz) member;
 				if(clazz.getType() == ClazzType.CREATOR 
