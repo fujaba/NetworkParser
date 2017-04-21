@@ -6,9 +6,9 @@ import de.uniks.networkparser.graph.Feature;
 import de.uniks.networkparser.graph.FeatureProperty;
 import de.uniks.networkparser.graph.GraphMember;
 import de.uniks.networkparser.interfaces.LocalisationInterface;
-import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.ParserCondition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
+import de.uniks.networkparser.interfaces.TemplateParser;
 import de.uniks.networkparser.list.SimpleSet;
 
 /**
@@ -79,7 +79,7 @@ public class FeatureCondition implements ParserCondition {
 	}
 	
 	@Override
-	public ObjectCondition create(CharacterBuffer buffer) {
+	public FeatureCondition create(CharacterBuffer buffer, TemplateParser parser, LocalisationInterface customTemplate) {
 		CharacterBuffer temp = buffer.nextToken(false, SPLITEND, ENTER);
 		this.feature = Feature.valueOf(temp.toString()).create();
 		temp = buffer.nextToken(false, SPLITEND);

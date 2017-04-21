@@ -5,6 +5,7 @@ import de.uniks.networkparser.interfaces.LocalisationInterface;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.ParserCondition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
+import de.uniks.networkparser.interfaces.TemplateParser;
 
 public class VariableCondition implements ParserCondition{
 	private CharSequence value;
@@ -59,7 +60,7 @@ public class VariableCondition implements ParserCondition{
 	}
 	
 	@Override
-	public ParserCondition create(CharacterBuffer buffer) {
+	public VariableCondition create(CharacterBuffer buffer, TemplateParser parser, LocalisationInterface customTemplate) {
 		this.value = buffer.nextToken(true, ' ', '}');
 		return this;
 	}

@@ -6,6 +6,7 @@ import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.interfaces.LocalisationInterface;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.ParserCondition;
+import de.uniks.networkparser.interfaces.TemplateParser;
 
 /**
  * @author Stefan
@@ -69,9 +70,8 @@ public class ForeachCondition implements ParserCondition {
 	}
 
 	@Override
-	public ForeachCondition create(CharacterBuffer buffer) {
-		StringCondition condition = new StringCondition();
-		this.expression = condition.create(buffer.nextToken(false, SPLITEND));
+	public ForeachCondition create(CharacterBuffer buffer, TemplateParser parser, LocalisationInterface customTemplate) {
+		this.expression = StringCondition.create(buffer.nextToken(false, SPLITEND));
 		return this;
 	}
 

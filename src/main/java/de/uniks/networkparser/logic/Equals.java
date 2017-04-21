@@ -3,6 +3,7 @@ import java.beans.PropertyChangeEvent;
 
 import de.uniks.networkparser.buffer.BufferedBuffer;
 import de.uniks.networkparser.interfaces.ObjectCondition;
+import de.uniks.networkparser.interfaces.ParserCondition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 /**
@@ -21,6 +22,13 @@ public class Equals implements ObjectCondition, SendableEntityCreator {
 	/** Variable of StrValue. */
 	private String key;
 
+	/** Variable of leftCondition. */
+	private ParserCondition left;
+
+	/** Variable of leftCondition. */
+	private ParserCondition right;
+
+	
 	/** Variable of Value. */
 	private Object value;
 	
@@ -206,5 +214,14 @@ public class Equals implements ObjectCondition, SendableEntityCreator {
 	
 	public static Equals createNullCondition() {
 		return new Equals().withValue(null);
+	}
+
+	public Equals withLeft(ParserCondition expression) {
+		this.left = expression;
+		return this;
+	}
+	public Equals withRight(ParserCondition expression) {
+		this.right = expression;
+		return this;
 	}
 }

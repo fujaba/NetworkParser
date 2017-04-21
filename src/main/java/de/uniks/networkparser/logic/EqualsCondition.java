@@ -5,6 +5,7 @@ import de.uniks.networkparser.interfaces.LocalisationInterface;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.ParserCondition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
+import de.uniks.networkparser.interfaces.TemplateParser;
 
 public class EqualsCondition implements ParserCondition {
 
@@ -50,7 +51,7 @@ public class EqualsCondition implements ParserCondition {
 	}
 
 	@Override
-	public ObjectCondition create(CharacterBuffer buffer) {
+	public Equals create(CharacterBuffer buffer, TemplateParser parser, LocalisationInterface customTemplate) {
 		return null;
 	}
 

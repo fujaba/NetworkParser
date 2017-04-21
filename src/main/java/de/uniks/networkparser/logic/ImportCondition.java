@@ -2,9 +2,9 @@ package de.uniks.networkparser.logic;
 
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.interfaces.LocalisationInterface;
-import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.ParserCondition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
+import de.uniks.networkparser.interfaces.TemplateParser;
 
 /**
  * @author Stefan
@@ -38,7 +38,7 @@ public class ImportCondition implements ParserCondition {
 	}
 
 	@Override
-	public ObjectCondition create(CharacterBuffer buffer) {
+	public ImportCondition create(CharacterBuffer buffer, TemplateParser parser, LocalisationInterface customTemplate) {
 		ImportCondition condition = new ImportCondition();
 		condition.setImportName(buffer.nextToken(false, SPLITEND).toString());
 		
