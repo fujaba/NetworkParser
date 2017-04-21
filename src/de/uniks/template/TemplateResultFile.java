@@ -167,10 +167,10 @@ public class TemplateResultFile extends SortedSet<TemplateResultFragment> implem
 			if(fragment.getKey() == Template.DECLARATION) {
 				continue;
 			}
-			if(fragment.getKey() != Template.IMPORT) {
+			if(fragment.getKey() == Template.IMPORT) {
 				// EVALUATION IMPORT
 //				TextItems 
-//				fragment.getTemplate().update(TEMPLATERESULT);
+				fragment.getTemplate().update(this);
 				
 			}
 			buffer.with(fragment.getValue());

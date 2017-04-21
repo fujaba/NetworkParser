@@ -11,8 +11,10 @@ import de.uniks.networkparser.list.SimpleList;
 public class TemplateResultFragment implements Comparable<TemplateResultFragment>, SendableEntityCreator, ObjectCondition, LocalisationInterface {
 	public static final String PROPERTY_PARENT="parent";
 	public static final String PROPERTY_CHILD="child";
+	public static final String PROPERTY_CLONE="clone";
 	
 	public static final String PROPERTY_FILE="file";
+	public static final String PROPERTY_KEY="key";
 	public static final String PROPERTY_MEMBER="member";
 	public static final String PROPERTY_VARIABLE="variable";
 	public static final String PROPERTY_HEADERS="headers";
@@ -40,12 +42,12 @@ public class TemplateResultFragment implements Comparable<TemplateResultFragment
 			if(other.getValue().equals(value)) {
 				return 0;
 			}
-			return 1;
+			return -1;
 		}
 		if (other.getKey() > key) {
-			return 1;
+			return -1;
 		}
-		return -1;
+		return 1;
 	}
 
 	public int getKey() {
@@ -167,6 +169,13 @@ public class TemplateResultFragment implements Comparable<TemplateResultFragment
 		}else {
 			attrName = attribute;
 		}
+		if(PROPERTY_CLONE.equalsIgnoreCase(attrName)) {
+			TemplateResultFragment cloneObj = element.getSendableInstance(false);
+			cloneObj.withMember(element.getMember());
+			cloneObj.withVariable(element.getVariable());
+			cloneObj.withKey(element.getKey());
+			return cloneObj;
+		}
 		if(PROPERTY_FILE.equalsIgnoreCase(attrName)) {
 			if(pos>0) {
 				SendableEntityCreator item = element.getParent();
@@ -194,12 +203,16 @@ public class TemplateResultFragment implements Comparable<TemplateResultFragment
 		if(PROPERTY_EXPRESSION.equalsIgnoreCase(attrName)) {
 			return element.isExpression();
 		}
+		if(PROPERTY_KEY.equalsIgnoreCase(attrName)) {
+			return element.getKey();
+		}
 		if(PROPERTY_ITEM.equalsIgnoreCase(attrName)) {
 			if(this.stack != null) {
 				return this.stack.last();
 			}
 			return null;
 		}
+		
 		if(PROPERTY_TEMPLATE.equalsIgnoreCase(attrName)) {
 			if(pos>0) {
 				TemplateResultFragment item = element;
@@ -246,8 +259,8 @@ public class TemplateResultFragment implements Comparable<TemplateResultFragment
 	}
 
 	@Override
-	public Object getSendableInstance(boolean prototyp) {
-		return new TemplateResultFragment();
+	public TemplateResultFragment getSendableInstance(boolean prototyp) {
+		return new TemplateResultFragment().withExpression(prototyp);
 	}
 
 
@@ -257,16 +270,39 @@ public class TemplateResultFragment implements Comparable<TemplateResultFragment
 			return false;
 		}
 		TemplateResultFragment element = (TemplateResultFragment) entity;
-//		public static final String PROPERTY_FILE="file";
-//		public static final String PROPERTY_MEMBER="member";
-//		public static final String PROPERTY_VARIABLE="variable";
 //		public static final String PROPERTY_HEADERS="headers";
 //		public static final String PROPERTY_EXPRESSION="expression";
+		if(PROPERTY_FILE.equalsIgnoreCase(attribute)) {
+			element.setParent((SendableEntityCreator) value);
+			return true;
+		}
+		if(PROPERTY_MEMBER.equalsIgnoreCase(attribute)) {
+			element.withMember((GraphMember) value);
+			return true;
+		}
+		if(PROPERTY_VARIABLE.equalsIgnoreCase(attribute)) {
+			element.withVariable((LocalisationInterface) value);
+			return true;
+		}
 		if(PROPERTY_HEADERS.equalsIgnoreCase(attribute)) {
 			element.addHeader(""+value);
 			return true;
 		}
+		if(PROPERTY_KEY.equalsIgnoreCase(attribute)) {
+			element.withKey((int) value);
+			return true;
+		}
+		if(PROPERTY_TEMPLATE.equalsIgnoreCase(attribute)) {
+			element.withTemplate((ObjectCondition) value);
+			return true;
+		}
+
 		return false;
+	}
+	
+	public TemplateResultFragment withTemplate(ObjectCondition template) {
+		this.template = template;
+		return this;
 	}
 	
 	@Override

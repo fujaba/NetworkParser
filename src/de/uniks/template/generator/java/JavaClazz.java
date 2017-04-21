@@ -16,9 +16,9 @@ public class JavaClazz extends BasicGenerator{
 	public JavaClazz() {
 		createTemplate("Declaration", Template.TEMPLATE, 
 				
-				"{{#template id=PACKAGE}}{{#if packageName}}package {{packageName}};{{#endif}}{{#endtemplate}}","",
+				"{{#template PACKAGE}}{{#if packageName}}package {{packageName}};{{#endif}}{{#endtemplate}}","",
 				
-				"{{#template id=IMPORT}}{{#foreach {{file.headers}}}}","import {{item}};{{#endfor}}{{#endtemplate}}","",
+				"{{#template IMPORT}}{{#foreach {{file.headers}}}}","import {{item}};{{#endfor}}{{#endtemplate}}","",
 				
 				"{{visibility}} {{modifiers} }{{type}} {{name}}{{#if superclasses}} {{superclasses}}{{#endif}}","{",
 
