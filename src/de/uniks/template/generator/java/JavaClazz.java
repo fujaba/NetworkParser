@@ -24,7 +24,8 @@ public class JavaClazz extends BasicGenerator{
 
 				"{{#if {{#feature PROPERTYCHANGESUPPORT}}}}"
 						+"{{#import "+PropertyChangeListener.class.getName()+"}}"+"{{#import "+PropertyChangeSupport.class.getName()+"}}"+ 
-						"   protected PropertyChangeSupport listeners = null;",
+						"   protected PropertyChangeSupport listeners = null;","",
+						
 						"   public boolean firePropertyChange(String propertyName, Object oldValue, Object newValue) {", 
 						"      if (listeners != null) {", 
 						"         listeners.firePropertyChange(propertyName, oldValue, newValue);", 
@@ -32,6 +33,7 @@ public class JavaClazz extends BasicGenerator{
 						"      }", 
 						"      return false;", 
 						"   }","",
+						
 						"   public boolean addPropertyChangeListener(PropertyChangeListener listener)",
 						"   {",
 						"      if (listeners == null) {", 
@@ -40,6 +42,7 @@ public class JavaClazz extends BasicGenerator{
 						"      listeners.addPropertyChangeListener(listener);", 
 						"      return true;", 
 						"   }","",
+						
 						"   public boolean addPropertyChangeListener(String propertyName, PropertyChangeListener listener)",
 						"   {",
 						"      if (listeners == null) {",
@@ -48,6 +51,7 @@ public class JavaClazz extends BasicGenerator{
 						"      listeners.addPropertyChangeListener(propertyName, listener);",
 						"      return true;",
 						"   }","",
+						
 						"   public boolean removePropertyChangeListener(PropertyChangeListener listener)",
 					 	"   {",
 					 	"      if (listeners == null) {",
@@ -56,13 +60,14 @@ public class JavaClazz extends BasicGenerator{
 					 	"      listeners.removePropertyChangeListener(listener);",
 					 	"      return true;",
 					 	"   }","",
+					 	
 					 	"   public boolean removePropertyChangeListener(String propertyName,PropertyChangeListener listener)",
 					 	"   {",
 					 	"      if (listeners != null) {",
 					 	"         listeners.removePropertyChangeListener(propertyName, listener);",
 					 	"      }",
 					 	"      return true;",
-					 	"   }"+
+					 	"   }",""+
 					 	"{{#endif}}"
 				);
 //		,
@@ -73,6 +78,8 @@ public class JavaClazz extends BasicGenerator{
 		this.extension = "java";
 		
 		this.addGenerator(new JavaAttribute());
+		this.addGenerator(new JavaAssociation());
+		this.addGenerator(new JavaMethod());
 	}
 
 	@Override
