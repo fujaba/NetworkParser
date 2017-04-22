@@ -18,6 +18,13 @@ public class JavaAssociation extends BasicGenerator {
 				"{{#endif}}");
 		
 		createTemplate("Declaration", Template.DECLARATION, "" +
+				"{{#foreach {{member.parent.classmodel.clazzes}}}}" +
+				   "{{#ifnot {{item.name}}=={{file.clazz.name}}" +
+				      "{{#if {{item.name}}=={{member.type}}}}" +
+				         "{{#import item.name}}" +
+				      "{{#endif}}" +
+				   "{{#endif}}" +
+				"{{#endfor}}" +
 				"   {{methodVisibility}} {{getModifiers}}{{#if modifiers}} {{#endif}}{{#if {{member.cardinality}}==ONE}}{{other}}{{#else}}{{other}}Set{{#endif}} get{{OtherName}}(){{#if {{file.clazz.type}}==INTERFACE}};","","{{#endif}}",
 				"{{#ifnot {{file.clazz.type}}==INTERFACE}}",
 				"   {",
