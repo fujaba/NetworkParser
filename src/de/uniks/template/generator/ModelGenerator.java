@@ -15,8 +15,12 @@ import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SimpleSet;
 import de.uniks.networkparser.logic.FeatureCondition;
+import de.uniks.networkparser.logic.ForeachCondition;
 import de.uniks.networkparser.logic.ImportCondition;
+import de.uniks.networkparser.logic.TemplateCondition;
+import de.uniks.networkparser.logic.TemplateFragmentCondition;
 import de.uniks.template.TemplateResultFile;
+import de.uniks.template.TemplateResultFragment;
 import de.uniks.template.TemplateResultModel;
 import de.uniks.template.generator.java.JavaClazz;
 
@@ -40,6 +44,10 @@ public class ModelGenerator extends BasicGenerator{
 			customTemplate.add(featureCondition.getKey(), featureCondition);
 			ImportCondition importCondition = new ImportCondition();
 			customTemplate.add(importCondition.getKey(), importCondition);
+			ForeachCondition foreach = new ForeachCondition();
+			customTemplate.add(foreach.getKey(), foreach);
+			TemplateFragmentCondition templateCondition = new TemplateFragmentCondition();
+			customTemplate.add(templateCondition.getKey(), templateCondition);
 		}
 		return customTemplate;
 	}

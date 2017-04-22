@@ -11,7 +11,6 @@ import de.uniks.networkparser.interfaces.TemplateParser;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.logic.ChainCondition;
 import de.uniks.networkparser.logic.Equals;
-import de.uniks.networkparser.logic.ForeachCondition;
 import de.uniks.networkparser.logic.IfCondition;
 import de.uniks.networkparser.logic.Not;
 import de.uniks.networkparser.logic.StringCondition;
@@ -23,23 +22,6 @@ import de.uniks.template.TemplateResultModel;
 public class Template implements TemplateParser {
 	private static final char SPLITSTART='{';
 	private static final char SPLITEND='}';
-	
-	public static final int DECLARATION = 0;
-	
-	public static final int PACKAGE = 1;
-
-	public static final int IMPORT = 2;
-	
-	public static final int TEMPLATE = 3;
-	
-	public static final int FIELD = 4;
-
-	public static final int VALUE = 5;
-	
-	public static final int METHOD = 6;
-
-	public static final int TEMPLATEEND = Integer.MAX_VALUE;
-
 	
 	private TemplateCondition token = new TemplateCondition();
 	
@@ -70,11 +52,8 @@ public class Template implements TemplateParser {
 			this.token.withTemplate(newTemplate);
 		}
 		TemplateResultFragment templateFragment = new TemplateResultFragment();
+		templateFragment.withKey(this.getType());
 		templateFragment.setParent(parent);
-//FIXME		TemplateVariable templateParameter = new TemplateVariable(templateFragment, parameters);
-//		templateFragment.withVariable(templateParameter);
-		
-//		templateFragment.withTemplate(this);
 		templateFragment.withVariable(parameters);
 		templateFragment.withMember(member);
 		
@@ -87,7 +66,6 @@ public class Template implements TemplateParser {
 		templateCondition.update(templateFragment);
 		
 		
-		templateFragment.withKey(this.getType());
 //		templateFragment.withValue(parser.getResult());
 		return templateFragment;
 	}
@@ -114,10 +92,10 @@ public class Template implements TemplateParser {
 		if(variable) {
 			this.variables.clear();
 		}
-		return parseCharacterBuffer(template, customTemplate, false);
+		return parsing(template, customTemplate, false);
 	}
 	
-	public ObjectCondition parseCharacterBuffer(CharacterBuffer template, LocalisationInterface customTemplate, boolean isExpression, String... stopWords) {
+	public ObjectCondition parsing(CharacterBuffer template, LocalisationInterface customTemplate, boolean isExpression, String... stopWords) {
 		int start=template.position(), end;
 		ObjectCondition child = null;
 		ChainCondition parent = new ChainCondition();
@@ -173,7 +151,7 @@ public class Template implements TemplateParser {
 				if(tokenPart.equalsIgnoreCase("ifnot") || tokenPart.equalsIgnoreCase("if")) {
 					IfCondition token = new IfCondition();
 					template.skip();
-					ObjectCondition expression = parseCharacterBuffer(template, customTemplate, true);
+					ObjectCondition expression = parsing(template, customTemplate, true);
 					
 					// case equals
 					if (template.nextClean(true) == '=') {
@@ -185,7 +163,7 @@ public class Template implements TemplateParser {
 								equalsExpression.withLeft((ParserCondition)expression);
 							}
 							
-							expression = parseCharacterBuffer(template, customTemplate, true);
+							expression = parsing(template, customTemplate, true);
 							if(expression instanceof ParserCondition) {
 								equalsExpression.withRight((ParserCondition)expression);
 							}
@@ -203,37 +181,26 @@ public class Template implements TemplateParser {
 					template.skipChar(SPLITEND);
 					
 					// Add Children
-					token.withTrue(parseCharacterBuffer(template, customTemplate, false, "else", "endif"));
+					token.withTrue(parsing(template, customTemplate, false, "else", "endif"));
 					
 					// ELSE OR ENDIF
 					tokenPart = template.nextToken(false, SPLITEND);
 					if("else".equalsIgnoreCase(tokenPart.toString())) {
 						template.skipChar(SPLITEND);
 						template.skipChar(SPLITEND);
-						token.withFalse(parseCharacterBuffer(template, customTemplate, false, "endif"));
+						token.withFalse(parsing(template, customTemplate, false, "endif"));
 						template.skipTo(SPLITEND, false);
 					}
 					template.skipChar(SPLITEND);
 //					child = token;
 					parent.with(token);
-				} else if(tokenPart.equalsIgnoreCase("foreach") ) {
-					ForeachCondition token = new ForeachCondition();
-					template.skip();
-					ObjectCondition expression = parseCharacterBuffer(template, customTemplate, true);
-					token.withExpression(expression);
-					
-					template.skipChar(SPLITEND);
-					template.skipChar(SPLITEND);
-					
-					// Add Children
-					expression = parseCharacterBuffer(template, customTemplate, false, "endfor");
-					token.withLoopCondition(expression);
-					parent.with(token);
-					template.skipChar(SPLITEND);
 				} else {
 					ParserCondition condition = null;
 					if(customTemplate instanceof TemplateResultModel) {
-						condition = ((TemplateResultModel)customTemplate).getTemplate(tokenPart.toString());
+						ParserCondition creator = ((TemplateResultModel)customTemplate).getTemplate(tokenPart.toString());
+						if(creator != null) {
+							condition = creator.getSendableInstance(false);
+						}
 					}
 					if(condition != null) {
 						ObjectCondition childCondition = condition.create(template, this, customTemplate);
