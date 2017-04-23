@@ -31,6 +31,7 @@ public class TestSimpleGenerator {
 		person.withBidirectional(room, "room", Cardinality.ONE, "persons", Cardinality.MANY);
 		ModelGenerator javaModelFactory = new ModelGenerator();
 		javaModelFactory.generate("src", classModel);
+		javaModelFactory.generateTypescript("src", classModel);
 //		System.out.println(javaModelFactory.create(classModel));
 	}
 	

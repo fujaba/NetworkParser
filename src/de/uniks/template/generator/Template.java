@@ -251,7 +251,11 @@ public class Template implements TemplateParser {
 			parent.with(child);
 		}
 		if(parent.size() < 1) {
-			return null;
+			if(end-start==0) {
+				return StringCondition.create(template.substring(start,end+1));
+			} else {
+				return null;
+			}
 		}
 		if(parent.size() == 1) {
 			return parent.first();

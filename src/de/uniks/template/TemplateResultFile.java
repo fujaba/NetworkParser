@@ -2,6 +2,7 @@ package de.uniks.template;
 
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.graph.Clazz;
+import de.uniks.networkparser.graph.GraphEntity;
 import de.uniks.networkparser.interfaces.LocalisationInterface;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.list.SimpleSet;
@@ -19,6 +20,7 @@ public class TemplateResultFile extends SortedSet<TemplateResultFragment> implem
 	private String extension;
 	private String path;
 	private SendableEntityCreator parent;
+	private GraphEntity member;
 	
 	TemplateResultFile() {
 		super(true);
@@ -27,6 +29,7 @@ public class TemplateResultFile extends SortedSet<TemplateResultFragment> implem
 	public TemplateResultFile(Clazz clazz, boolean comparator) {
 		super(comparator);
 		this.withName(clazz);
+		this.withMember(clazz);
 	}
 
 	public String getName() {
@@ -170,11 +173,20 @@ public class TemplateResultFile extends SortedSet<TemplateResultFragment> implem
 			if(fragment.getKey() == Template.IMPORT) {
 				// EVALUATION IMPORT
 //				TextItems 
-				fragment.getTemplate().update(this);
+				fragment.getTemplate().update(fragment);
 				
 			}
 			buffer.with(fragment.getValue());
 		}
 		return buffer.toString();
+	}
+
+	public GraphEntity getMember() {
+		return member;
+	}
+
+	public TemplateResultFile withMember(GraphEntity member) {
+		this.member = member;
+		return this;
 	}
 }

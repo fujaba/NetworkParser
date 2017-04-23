@@ -17,10 +17,8 @@ import de.uniks.networkparser.list.SimpleSet;
 import de.uniks.networkparser.logic.FeatureCondition;
 import de.uniks.networkparser.logic.ForeachCondition;
 import de.uniks.networkparser.logic.ImportCondition;
-import de.uniks.networkparser.logic.TemplateCondition;
 import de.uniks.networkparser.logic.TemplateFragmentCondition;
 import de.uniks.template.TemplateResultFile;
-import de.uniks.template.TemplateResultFragment;
 import de.uniks.template.TemplateResultModel;
 import de.uniks.template.generator.java.JavaClazz;
 
@@ -79,6 +77,18 @@ public class ModelGenerator extends BasicGenerator{
 		templates.add(new JavaClazz());
 		return generating(rootDir, model, parameters, templates, true);
 	}
+
+	public SendableEntityCreator generateTypescript(String rootDir, GraphModel model) {
+		return generateTypescript(rootDir, model, null);
+	}
+	
+	public SendableEntityCreator generateTypescript(String rootDir, GraphModel model, TextItems parameters) {
+		SimpleList<BasicGenerator> templates = new SimpleList<BasicGenerator>();
+
+//		templates.add(new JavaClazz());
+		return generating(rootDir, model, parameters, templates, true);
+	}
+
 	
 	public SendableEntityCreator generating(String rootDir, GraphModel model, TextItems parameters, SimpleList<BasicGenerator> templates, boolean writeFiles) {
 		if(rootDir == null) {

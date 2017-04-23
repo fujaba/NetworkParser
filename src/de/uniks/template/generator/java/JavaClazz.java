@@ -68,18 +68,16 @@ public class JavaClazz extends BasicGenerator{
 					 	"      }",
 					 	"      return true;",
 					 	"   }",""+
-					 	"{{#endif}}"
+					 	"{{#endif}}",
+					 	"{{#template TEMPLATEEND}}}{{#endtemplate}}"
 				);
 //		,
 //			 	"{{attributes}}" + "{{fields}}" + "{{methods}}"+ 
-		
-		createTemplate("Declaration", Template.TEMPLATEEND, "}");
-	
 		this.extension = "java";
 		
-		this.addGenerator(new JavaAttribute());
-		this.addGenerator(new JavaAssociation());
-		this.addGenerator(new JavaMethod());
+//		this.addGenerator(new JavaAttribute());
+//		this.addGenerator(new JavaAssociation());
+//		this.addGenerator(new JavaMethod());
 	}
 
 	@Override
