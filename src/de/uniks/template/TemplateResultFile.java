@@ -12,6 +12,7 @@ import de.uniks.template.generator.Template;
 public class TemplateResultFile extends SortedSet<TemplateResultFragment> implements SendableEntityCreator, LocalisationInterface {
 	public static final String PROPERTY_PARENT="parent";
 	public static final String PROPERTY_CHILD="child";
+	public static final String PROPERTY_MEMBER="member";
 	
 	public static final String PROPERTY_NAME="name";
 	public static final String PROPERTY_HEADERS="headers";
@@ -140,6 +141,14 @@ public class TemplateResultFile extends SortedSet<TemplateResultFragment> implem
 				return element.getParent().getValue(element, attribute.substring(pos+1));
 			}
 			return element.getParent();
+		}
+		if(PROPERTY_MEMBER.equalsIgnoreCase(attrName)) {
+			GraphEntity member = element.getMember();
+			if(pos > 0 && member instanceof SendableEntityCreator) {
+				SendableEntityCreator creator = (SendableEntityCreator)member;
+				return creator.getValue(element, attribute.substring(pos+1));
+			}
+			return member;
 		}
 		if(PROPERTY_HEADERS.equalsIgnoreCase(attrName)) {
 			SimpleSet<String> headers=new SimpleSet<String>();
