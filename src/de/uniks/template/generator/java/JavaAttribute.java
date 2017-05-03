@@ -7,11 +7,13 @@ import de.uniks.template.generator.Template;
 public class JavaAttribute extends BasicGenerator{
 
 	public JavaAttribute() {
-		createTemplate("Property", Template.FIELD, "   {{visibility} }{{modifiers} }{{type} }PROPERTY_{{NAME}} = \"{{name}}\";","");
-
+		createTemplate("Declaration", Template.DECLARATION,
+				"{{#template FIELD}}   public static final {{type} }PROPERTY_{{NAME}} = \"{{name}}\";\r\n{{#endtemplate}}"
+				//,"{{#template FIELD {{#ifnot {{file.clazz.type}}==INTERFACE}}}}   {{visibility}} {{modifiers} }{{type} }{{name}}{{#if default}} = {{default}}{{#endif}}{{#endtemplate}}"
+				 );
 		createTemplate("Field", Template.FIELD, "" +
 				"{{#ifnot {{file.clazz.type}}==INTERFACE}}",
-				"   {{fieldVisibility}} {{fieldModifiers}}{{#if fieldModifiers}} {{#endif}}{{value}} {{name}} = {{default}};","",
+				"   {{visibility}} {{modifiers} }{{type} }{{name}}{{#if default}} = {{default}}{{#endif}};","",
 				"{{#endif}}");
 
 		createTemplate("Declaration", Template.DECLARATION, "" +
