@@ -157,7 +157,7 @@ public class Template implements TemplateParser {
 					if (template.nextClean(true) == '=') {
 						if (template.nextClean(true) == '=') {
 							template.skip();
-//							template.skip();
+							template.skip();
 							Equals equalsExpression = new Equals();
 							if(expression instanceof ParserCondition) {
 								equalsExpression.withLeft((ParserCondition)expression);

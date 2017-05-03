@@ -8,15 +8,13 @@ public class JavaAttribute extends BasicGenerator{
 
 	public JavaAttribute() {
 		createTemplate("Declaration", Template.DECLARATION,
-				"{{#template FIELD}}   public static final {{type} }PROPERTY_{{NAME}} = \"{{name}}\";\r\n{{#endtemplate}}"
+				"{{#template FIELD}}   public static final String PROPERTY_{{NAME}} = \"{{name}}\";","",
 				//,"{{#template FIELD {{#ifnot {{file.clazz.type}}==INTERFACE}}}}   {{visibility}} {{modifiers} }{{type} }{{name}}{{#if default}} = {{default}}{{#endif}}{{#endtemplate}}"
-				 );
-		createTemplate("Field", Template.FIELD, "" +
-				"{{#ifnot {{file.clazz.type}}==INTERFACE}}",
-				"   {{visibility}} {{modifiers} }{{type} }{{name}}{{#if default}} = {{default}}{{#endif}};","",
-				"{{#endif}}");
 
-		createTemplate("Declaration", Template.DECLARATION, "" +
+				"{{#ifnot {{file.member.type}}==INTERFACE}}",
+				"   {{visibility}} {{modifiers} }{{type} }{{name}}{{#if value}} = {{value}}{{#endif}};","",
+				"{{#endif}}","",
+
 				"{{#foreach {{member.parent.classmodel.clazzes}}}}" +
 				   "{{#ifnot {{item.name}}=={{file.clazz.name}}" +
 				      "{{#if {{item.name}}=={{member.type}}}}" +
@@ -24,32 +22,32 @@ public class JavaAttribute extends BasicGenerator{
 				      "{{#endif}}" +
 				   "{{#endif}}" +
 				"{{#endfor}}" +
-				"   {{methodVisibility}} {{getModifiers}}{{#if getModifiers}} {{#endif}}{{value}} {{getName}}{{Name}}(){{#if {{file.clazz.type}}==INTERFACE}};","","{{#endif}}",
-				"{{#ifnot {{file.clazz.type}}==INTERFACE}}",
+				"   public {{modifiers} }{{type}} {{#if {{type}}==boolean}}is{{#else}}get{{#endif}}{{Name}}(){{#if {{file.member.type}}==INTERFACE}};","","{{#endif}}",
+				"{{#ifnot {{file.member.type}}==INTERFACE}}",
 				"   {",
 				"      return this.{{name}};",
 				"   }","",
 				"{{#endif}}",
-				"   {{methodVisibility}} {{setModifiers}}{{#if setModifiers}} {{#endif}}void set{{Name}}({{value}} value){{#if {{file.clazz.type}}==INTERFACE}};","","{{#endif}}",
-				"{{#ifnot {{file.clazz.type}}==INTERFACE}}",
+				"   public {{modifiers} }void set{{Name}}({{type}} value){{#if {{file.member.type}}==INTERFACE}};","","{{#endif}}",
+				"{{#ifnot {{file.member.type}}==INTERFACE}}",
 				"   {",
 				"      if (this.{{name}} != value)",
 				"      {",
-				"         {{value}} oldValue = this.{{name}};",
+				"         {{type}} oldValue = this.{{name}};",
 				"         this.{{name}} = value;",
 				"{{#if {{#feature PROPERTYCHANGESUPPORT}}}}",
-				"         firePropertyChange(PROPERTY_{{PROPERTY_NAME}}, oldValue, value);",
+				"         firePropertyChange(PROPERTY_{{NAME}}, oldValue, value);",
 				"{{#endif}}",
 				"      }",
 				"   }","",
 				"{{#endif}}",
-				"   {{methodVisibility}} {{withModifiers}}{{#if withModifiers}} {{#endif}}{{withReturn}} with{{Name}}({{value}} value){{#if {{file.clazz.type}}==INTERFACE}};","","{{#endif}}",
-				"{{#ifnot {{file.clazz.type}}==INTERFACE}}",
+				"   public {{modifiers} }{{file.member}} with{{Name}}({{type}} value){{#if {{file.member.type}}==INTERFACE}};","","{{#endif}}",
+				"{{#ifnot {{file.member.type}}==INTERFACE}}",
 				"   {",
 				"      set{{Name}}(value);",
 				"      return this;",
 				"   }","",
-				"{{#endif}}");
+				"{{#endif}}{{#endtemplate}}");
 		
 	}
 	
