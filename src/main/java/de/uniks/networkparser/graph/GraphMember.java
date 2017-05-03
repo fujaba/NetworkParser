@@ -35,7 +35,7 @@ public abstract class GraphMember {
 	protected Object parentNode;
 
 	public Object getValue(String attribute) {
-		if(PROPERTY_NAME.equals(attribute)) {
+		if(PROPERTY_NAME.equalsIgnoreCase(attribute)) {
 			return this.name;
 		}
 		int pos = attribute.indexOf('.');
@@ -45,7 +45,7 @@ public abstract class GraphMember {
 		}else {
 			attrName = attribute;
 		}
-		if(PROPERTY_PARENT.equals(attrName)) {
+		if(PROPERTY_PARENT.equalsIgnoreCase(attrName)) {
 			if (pos > 0) {
 				if (parentNode instanceof GraphMember) {
 					GraphMember item = (GraphMember) this.getParent();
@@ -55,7 +55,7 @@ public abstract class GraphMember {
 			}
 			return this.parentNode;
 		}
-		if(PROPERTY_CHILD.equals(attrName)) {
+		if(PROPERTY_CHILD.equalsIgnoreCase(attrName)) {
 			if (pos > 0) {
 				if (pos > 0) {
 					GraphSimpleSet item = this.getChildren();

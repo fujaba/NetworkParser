@@ -1,6 +1,8 @@
 package de.uniks.networkparser.logic;
 
+import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.buffer.CharacterBuffer;
+import de.uniks.networkparser.graph.DataType;
 import de.uniks.networkparser.interfaces.LocalisationInterface;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.ParserCondition;
@@ -31,11 +33,36 @@ public class VariableCondition implements ParserCondition{
 		this.value = value;
 		return this;
 	}
+	// key = Variable
+	// value = String
 	
+	//variable = string
+	//Variable = String
+	// VARIABLE = STRING
+	// vAriable = nix
 	public Object getValue(LocalisationInterface value) {
 		if(value instanceof SendableEntityCreator) {
 			SendableEntityCreator variables = (SendableEntityCreator) value;
-			Object object = variables.getValue(variables, this.value.toString());
+			String key = this.value.toString();
+			// SWITCH FOR #
+			int pos = key.indexOf('#');
+			Object object;
+			String v = null;
+			String format = null;
+			if(pos >= 0) {
+				v = key.substring(0, pos);
+				object = variables.getValue(variables, v);
+				format = key.substring(pos+1);
+			} else {
+				v = key;
+				object = variables.getValue(variables, key);
+			}
+			if(object instanceof DataType) {
+				object = ((DataType)object).getName(true);
+			}
+			if(object instanceof String) {
+				return replaceText(v, format, (String)object);
+			}
 			return object;
 		}
 		if(value != null && this.value != null) {
@@ -49,6 +76,32 @@ public class VariableCondition implements ParserCondition{
 		}
 		return null;
 	}
+	
+    public String replaceText(String name, String format, String value) {
+    	boolean upper=false;
+    	boolean firstUpper=false;
+    	boolean small=false;
+    	for(int i=0;i<name.length();i++) {
+    		if(name.charAt(i)>='A' && name.charAt(i)<='Z') {
+    			upper = true;
+    			firstUpper = i==0;
+    		} else if(name.charAt(i)>='a' && name.charAt(i)<='z') {
+    			small = true;
+    		}
+    	}
+//    	if ((small && upper==false) || "tolower".equalsIgnoreCase(format)) {
+    	if ("tolower".equalsIgnoreCase(format)) {
+    		return value.toLowerCase();
+    	}
+    	if((small == false && upper) || "toupper".equalsIgnoreCase(format)) {
+    		return value.toUpperCase();
+    	}
+    	if(firstUpper) {
+    		return EntityUtil.upFirstChar(value);
+    	}
+    	return value;
+    }
+
 
     public VariableCondition withExpression(boolean value) {
         this.expression = value;

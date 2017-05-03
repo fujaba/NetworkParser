@@ -7,7 +7,7 @@ import de.uniks.networkparser.interfaces.ParserCondition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.TemplateParser;
 
-// {{#template PACKAGE}}{{#endtemplate}}
+// {{#template PACKAGE {{CONDITION}}}}{{#endtemplate}}
 public class TemplateFragmentCondition implements ParserCondition{
 	public static final String PROPERTY_CLONE="clone";
 	public static final String PROPERTY_FILE="file";
@@ -15,9 +15,9 @@ public class TemplateFragmentCondition implements ParserCondition{
 	public static final String PROPERTY_TEMPLATE="template";
 
 	public static final String TAG="template"; 
-	private static final char SPLITEND='}';
-	private static final char ENTER='=';
+
 	private String id;
+	private VariableCondition condition;
 	private ObjectCondition child;
 
 	@Override
@@ -58,6 +58,11 @@ public class TemplateFragmentCondition implements ParserCondition{
 	@Override
 	public boolean update(Object value) {
 		if(value instanceof SendableEntityCreator) {
+			if(condition != null) {
+				if(condition.update(value) == false) {
+					return false;
+				}
+			}
 			SendableEntityCreator creator = (SendableEntityCreator) value;
 			// VODOO
 			SendableEntityCreator newInstance = (SendableEntityCreator) creator.getValue(creator, PROPERTY_CLONE);
@@ -80,11 +85,24 @@ public class TemplateFragmentCondition implements ParserCondition{
 
 	@Override
 	public TemplateFragmentCondition create(CharacterBuffer buffer, TemplateParser parser, LocalisationInterface customTemplate) {
-		CharacterBuffer id = buffer.nextToken(false, SPLITEND, ENTER);
+		CharacterBuffer id = buffer.nextToken(false, SPLITEND, SPACE);
 		this.id = id.toString();
+		buffer.nextClean(true);
+		if(buffer.getCurrentChar() == SPLITSTART) {
+			// Condition
+			buffer.skipChar(SPLITSTART);
+			CharacterBuffer condition = buffer.nextToken(false, SPLITEND);
+			this.condition = VariableCondition.create(condition.toString(), true);
+			buffer.skipChar(SPLITEND);
+			buffer.skipChar(SPLITEND);
+		}
+		
 		buffer.skipChar(SPLITEND);
 		buffer.skipChar(SPLITEND);
-		this.child = parser.parsing(buffer, customTemplate, true, "endtemplate");
+		this.child = parser.parsing(buffer, customTemplate, false, "endtemplate");
+		//Skip }
+		buffer.skip();
+		
 		buffer.skipTo(SPLITEND, true);
 		buffer.skipChar(SPLITEND);
 		return this;

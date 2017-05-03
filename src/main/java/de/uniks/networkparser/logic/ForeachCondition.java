@@ -16,7 +16,6 @@ import de.uniks.networkparser.interfaces.TemplateParser;
  */
 public class ForeachCondition implements ParserCondition {
 	private static final String ITEM="item";
-	private static final char SPLITEND='}';
 	public static final String TAG="foreach";
 	private ObjectCondition expression;
 	private ObjectCondition loop;
@@ -72,7 +71,7 @@ public class ForeachCondition implements ParserCondition {
 	@Override
 	public ForeachCondition create(CharacterBuffer buffer, TemplateParser parser, LocalisationInterface customTemplate) {
 //		this.expression = StringCondition.create(buffer.nextToken(false, SPLITEND));
-//		template.skip();
+		buffer.skipChar(SPACE);
 		ObjectCondition expression = parser.parsing(buffer, customTemplate, true);
 		this.expression = expression;
 		

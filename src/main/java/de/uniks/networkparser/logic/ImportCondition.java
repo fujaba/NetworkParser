@@ -63,4 +63,9 @@ public class ImportCondition implements ParserCondition {
 	public ImportCondition getSendableInstance(boolean prototyp) {
 		return new ImportCondition();
 	}
+	
+	@Override
+	public String toString() {
+		return "{{#import "+importName+"}}";
+	}
 }

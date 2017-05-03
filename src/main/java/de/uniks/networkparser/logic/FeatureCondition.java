@@ -20,8 +20,6 @@ import de.uniks.networkparser.list.SimpleSet;
 public class FeatureCondition implements ParserCondition {
 	private static final String PROPERTY_FEATURE="variable.features";
 	private static final String PROPERTY_MEMBER="member";
-	private static final char SPLITEND='}';
-	private static final char ENTER='=';
 	public static final String TAG="feature";
 	private FeatureProperty feature;
 	
