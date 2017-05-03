@@ -1,16 +1,13 @@
 package de.uniks.template.generator.java;
 
-import de.uniks.networkparser.TextItems;
 import de.uniks.networkparser.graph.Attribute;
-import de.uniks.networkparser.graph.GraphMember;
-import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.template.generator.BasicGenerator;
 import de.uniks.template.generator.Template;
 
 public class JavaAttribute extends BasicGenerator{
 
 	public JavaAttribute() {
-		createTemplate("Property", Template.FIELD, "   {{propertyVisibility}} {{propertyModifiers}} {{propertyType}} {{PROPERTY_NAME}} = \"{{name}}\";","");
+		createTemplate("Property", Template.FIELD, "   {{visibility} }{{modifiers} }{{type} }PROPERTY_{{NAME}} = \"{{name}}\";","");
 
 		createTemplate("Field", Template.FIELD, "" +
 				"{{#ifnot {{file.clazz.type}}==INTERFACE}}",
@@ -58,14 +55,4 @@ public class JavaAttribute extends BasicGenerator{
 	public Class<?> getTyp() {
 		return Attribute.class;
 	}
-
-	@Override
-	public SendableEntityCreator generate(GraphMember item, TextItems parameters) {
-		if(item instanceof Attribute == false) {
-			return null;
-		}
-		Attribute element = (Attribute) item;
-		return null;
-	}
-
 }

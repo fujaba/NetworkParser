@@ -1,6 +1,7 @@
 package de.uniks.template.generator.java;
 
 import de.uniks.networkparser.TextItems;
+import de.uniks.networkparser.graph.Attribute;
 import de.uniks.networkparser.graph.GraphMember;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.template.generator.BasicGenerator;
@@ -60,12 +61,6 @@ public class JavaSetAttribute extends BasicGenerator {
 	
 	@Override
 	public Class<?> getTyp() {
-		return null;
+		return Attribute.class;
 	}
-
-	@Override
-	public SendableEntityCreator generate(GraphMember item, TextItems parameters) {
-		return null;
-	}
-
 }

@@ -24,7 +24,7 @@ public class TemplateResultFragment implements Comparable<TemplateResultFragment
 	public static final String PROPERTY_TEMPLATEMODEL="templatemodel";
 
 	private LocalisationInterface variables;
-	private SimpleList<String> header = new SimpleList<String>();
+	private SimpleList<String> header = null;
 	private GraphMember member;
 	private boolean expression=true;
 	private SendableEntityCreator parent;
@@ -123,9 +123,15 @@ public class TemplateResultFragment implements Comparable<TemplateResultFragment
 	}
 
 	public boolean addHeader(String value) {
+		if(this.header == null) {
+			this.header = new SimpleList<String>();
+		}
 		return this.header.add(value);	
 	}
 	public boolean removeHeader(String value) {
+		if(this.header == null) {
+			return true;
+		}
 		return this.header.remove(value);	
 	}
 
@@ -359,7 +365,8 @@ public class TemplateResultFragment implements Comparable<TemplateResultFragment
 		return null;
 	}
 	
-	public ObjectCondition getTemplate() {
-		return template;
+	public void update() {
+		this.value.clear();
+		this.template.update(this);
 	}
 }

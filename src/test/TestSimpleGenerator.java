@@ -9,11 +9,7 @@ import de.uniks.networkparser.graph.Cardinality;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.DataType;
 import de.uniks.networkparser.graph.GraphList;
-import de.uniks.networkparser.interfaces.ParserCondition;
 import de.uniks.networkparser.interfaces.TemplateParser;
-import de.uniks.networkparser.list.SimpleKeyValueList;
-import de.uniks.networkparser.logic.FeatureCondition;
-import de.uniks.networkparser.logic.ImportCondition;
 import de.uniks.networkparser.logic.TemplateFragmentCondition;
 import de.uniks.template.TemplateResultFile;
 import de.uniks.template.TemplateResultFragment;
@@ -29,6 +25,7 @@ public class TestSimpleGenerator {
 		Clazz person = classModel.createClazz("Person");
 		Clazz room = classModel.createClazz("Room");
 		person.withBidirectional(room, "room", Cardinality.ONE, "persons", Cardinality.MANY);
+		person.withAttribute("name", DataType.STRING);
 		ModelGenerator javaModelFactory = new ModelGenerator();
 		javaModelFactory.generate("src", classModel);
 		javaModelFactory.generateTypescript("src", classModel);
@@ -53,12 +50,28 @@ public class TestSimpleGenerator {
 	}
 	
 	@Test
-	public void testGeneratorTemplateFragment() {
+	public void testGeneratorTemplateFragmentCondition() {
 		Template template = new Template().withType(TemplateParser.DECLARATION).withTemplate(
-				"{{#template PACKAGE}}Hello {{#endtemplate}}","",
-				"{{#template IMPORT}}World{{#endtemplate}}");
+				"{{#template PACKAGE {{PACKAGE}}}}Hello {{#endtemplate}}");
 
 		Clazz person = new Clazz("Person");
+		Attribute name = person.createAttribute("name", DataType.STRING);
+		TemplateResultFile templateFile = new TemplateResultFile(person, true);
+		TemplateResultModel model = new TemplateResultModel();
+		model.withTemplate(new TemplateFragmentCondition());
+		
+		
+		TemplateResultFragment generate = template.generate(model, templateFile, name);
+		
+		Assert.assertEquals("Hello ", templateFile.toString());
+	}
+	
+	@Test
+	public void testGeneratorTemplateFragment() {
+		Template template = new Template().withType(TemplateParser.DECLARATION).withTemplate(
+				"{{#template PACKAGE {{packagename}}}}Hello {{#endtemplate}}","",
+				"{{#template IMPORT}}World{{#endtemplate}}");
+		Clazz person = new Clazz("de.uniks.Person");
 		Attribute name = person.createAttribute("name", DataType.STRING);
 		TemplateResultFile templateFile = new TemplateResultFile(person, true);
 		TemplateResultModel model = new TemplateResultModel();

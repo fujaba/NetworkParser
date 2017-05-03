@@ -38,26 +38,25 @@ public class ModelGenerator extends BasicGenerator{
 	public SimpleKeyValueList<String, ParserCondition> getTemplates() {
 		if(customTemplate == null) {
 			customTemplate = new SimpleKeyValueList<String, ParserCondition>();
-			FeatureCondition featureCondition = new FeatureCondition();
-			customTemplate.add(featureCondition.getKey(), featureCondition);
-			ImportCondition importCondition = new ImportCondition();
-			customTemplate.add(importCondition.getKey(), importCondition);
-			ForeachCondition foreach = new ForeachCondition();
-			customTemplate.add(foreach.getKey(), foreach);
-			TemplateFragmentCondition templateCondition = new TemplateFragmentCondition();
-			customTemplate.add(templateCondition.getKey(), templateCondition);
+			addParserCondition(new FeatureCondition());
+			addParserCondition(new ImportCondition());
+			addParserCondition(new ForeachCondition());
+			addParserCondition(new TemplateFragmentCondition());
 		}
 		return customTemplate;
 	}
 	
-	@Override
+	protected void addParserCondition(ParserCondition condition) {
+		customTemplate.add(condition.getKey(), condition);
+	}
+	
 	public SendableEntityCreator generate(GraphMember item) {
 		if(item instanceof GraphModel == false) {
 			return null;
 		}
 		return generate("src", (GraphModel)item);
 	}
-	@Override
+
 	public SendableEntityCreator generate(GraphMember item, TextItems parameters) {
 		if(item instanceof GraphModel == false) {
 			return null;

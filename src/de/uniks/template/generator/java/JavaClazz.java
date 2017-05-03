@@ -16,7 +16,7 @@ public class JavaClazz extends BasicGenerator{
 	public JavaClazz() {
 		createTemplate("Declaration", Template.TEMPLATE, 
 				
-				"{{#template PACKAGE}}{{#if packageName}}package {{packageName}};{{#endif}}{{#endtemplate}}","",
+				"{{#template PACKAGE {{packagename}}}}package {{packagename#toLower}};{{#endtemplate}}","",
 				
 				"{{#template IMPORT}}{{#foreach {{file.headers}}}}","import {{item}};{{#endfor}}{{#endtemplate}}","",
 				
@@ -75,12 +75,11 @@ public class JavaClazz extends BasicGenerator{
 //			 	"{{attributes}}" + "{{fields}}" + "{{methods}}"+ 
 		this.extension = "java";
 		
-//		this.addGenerator(new JavaAttribute());
+		this.addGenerator(new JavaAttribute());
 //		this.addGenerator(new JavaAssociation());
 //		this.addGenerator(new JavaMethod());
 	}
 
-	@Override
 	public SendableEntityCreator generate(GraphMember item, TextItems parameters) {
 		if(item instanceof Clazz == false) {
 			return null;

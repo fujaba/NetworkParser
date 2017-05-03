@@ -173,7 +173,7 @@ public class TemplateResultFile extends SortedSet<TemplateResultFragment> implem
 			if(fragment.getKey() == Template.IMPORT) {
 				// EVALUATION IMPORT
 //				TextItems 
-				fragment.getTemplate().update(fragment);
+				fragment.update();
 				
 			}
 			buffer.with(fragment.getValue());

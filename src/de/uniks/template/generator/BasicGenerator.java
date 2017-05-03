@@ -54,11 +54,11 @@ public abstract class BasicGenerator {
 		return template;
 	}
 	
-	public SendableEntityCreator generate(GraphMember item) {
-		return generate(item, null);
-	}
+//	public SendableEntityCreator generate(GraphMember item) {
+//		return generate(item, null);
+//	}
 	
-	public abstract SendableEntityCreator generate(GraphMember item, TextItems parameters);
+//	public abstract SendableEntityCreator generate(GraphMember item, TextItems parameters);
 
 	protected FeatureProperty getFeature(Feature value, Clazz... values) {
 		if(this.owner != null) {
@@ -67,7 +67,10 @@ public abstract class BasicGenerator {
 		return null;
 	}
 	
-	public void executeTemplate(SendableEntityCreator templateResult, LocalisationInterface parameters, GraphMember member) {
+	protected void executeTemplate(SendableEntityCreator templateResult, LocalisationInterface parameters, GraphMember member) {
+		if(member == null || member.getClass() == getTyp() == false) {
+			return;
+		}
 		for(Template template : templates) {
 			TemplateResultFragment fragment = template.generate(parameters, templateResult, member);
 			if(template.getType()==Template.DECLARATION) {
@@ -86,8 +89,6 @@ public abstract class BasicGenerator {
 		}
 		return templateResult;
 	}
-	
-	
 	
 	protected TemplateResultFile getNewResult(Clazz clazz) {
 		FeatureProperty codeStyle = getFeature(Feature.CODESTYLE, clazz);
