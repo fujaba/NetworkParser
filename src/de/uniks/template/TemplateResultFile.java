@@ -144,9 +144,8 @@ public class TemplateResultFile extends SortedSet<TemplateResultFragment> implem
 		}
 		if(PROPERTY_MEMBER.equalsIgnoreCase(attrName)) {
 			GraphEntity member = element.getMember();
-			if(pos > 0 && member instanceof SendableEntityCreator) {
-				SendableEntityCreator creator = (SendableEntityCreator)member;
-				return creator.getValue(element, attribute.substring(pos+1));
+			if(pos > 0) {
+				return member.getValue(attribute.substring(pos+1));
 			}
 			return member;
 		}

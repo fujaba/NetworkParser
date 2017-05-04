@@ -77,7 +77,7 @@ public class JavaClazz extends BasicGenerator{
 		
 		this.addGenerator(new JavaAttribute());
 //		this.addGenerator(new JavaAssociation());
-//		this.addGenerator(new JavaMethod());
+		this.addGenerator(new JavaMethod());
 	}
 
 	public SendableEntityCreator generate(GraphMember item, TextItems parameters) {
