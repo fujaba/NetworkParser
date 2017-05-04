@@ -187,7 +187,10 @@ public class Template implements TemplateParser {
 		end = template.position();
 		if(end-start>0) {
 			if(isExpression) {
-				child = VariableCondition.create(template.substring(start,end), isExpression);
+				if (template.charAt(start) == SPLITSTART) {
+					child = VariableCondition.create(template.substring(start,end), isExpression);
+				}
+				child = VariableCondition.create(template.substring(start,end), false);
 			}else {
 				child = StringCondition.create(template.substring(start,end));
 			}

@@ -9,10 +9,10 @@ public class JavaAttribute extends BasicGenerator{
 	public JavaAttribute() {
 		createTemplate("Declaration", Template.DECLARATION,
 				"{{#template VALUE}}   public static final String PROPERTY_{{NAME}} = \"{{name}}\";","",
-				//,"{{#template FIELD {{#ifnot {{file.clazz.type}}==INTERFACE}}}}   {{visibility}} {{modifiers} }{{type} }{{name}}{{#if default}} = {{default}}{{#endif}}{{#endtemplate}}"
+				//,"{{#template FIELD {{#ifnot {{file.clazz.type}}==interface}}}}   {{visibility}} {{modifiers} }{{type} }{{name}}{{#if default}} = {{default}}{{#endif}}{{#endtemplate}}"
 
-				"{{#ifnot {{file.member.type}}==INTERFACE}}",
-				"   {{visibility}} {{modifiers} }{{type} }{{name}}{{#if value}} = {{value}}{{#endif}};","",
+				"{{#ifnot {{file.member.type}}==interface}}",
+				"   {{visibility}} {{modifiers} }{{type} }{{name}}{{#if {{value}}}} = {{value}}{{#endif}};","",
 				"{{#endif}}","",
 
 				"{{#foreach {{member.parent.classmodel.clazzes}}}}" +
@@ -22,14 +22,14 @@ public class JavaAttribute extends BasicGenerator{
 				      "{{#endif}}" +
 				   "{{#endif}}" +
 				"{{#endfor}}" +
-				"   public {{modifiers} }{{type}} {{#if {{type}}==boolean}}is{{#else}}get{{#endif}}{{Name}}(){{#if {{file.member.type}}==INTERFACE}};","","{{#endif}}",
-				"{{#ifnot {{file.member.type}}==INTERFACE}}",
+				"   public {{modifiers} }{{type}} {{#if {{type}}==boolean}}is{{#else}}get{{#endif}}{{Name}}(){{#if {{file.member.type}}==interface}};","","{{#endif}}",
+				"{{#ifnot {{file.member.type}}==interface}}",
 				"   {",
 				"      return this.{{name}};",
 				"   }","",
 				"{{#endif}}",
-				"   public {{modifiers} }void set{{Name}}({{type}} value){{#if {{file.member.type}}==INTERFACE}};","","{{#endif}}",
-				"{{#ifnot {{file.member.type}}==INTERFACE}}",
+				"   public {{modifiers} }void set{{Name}}({{type}} value){{#if {{file.member.type}}==interface}};","","{{#endif}}",
+				"{{#ifnot {{file.member.type}}==interface}}",
 				"   {",
 				"      if (this.{{name}} != value)",
 				"      {",
@@ -41,8 +41,8 @@ public class JavaAttribute extends BasicGenerator{
 				"      }",
 				"   }","",
 				"{{#endif}}",
-				"   public {{modifiers} }{{file.member}} with{{Name}}({{type}} value){{#if {{file.member.type}}==INTERFACE}};","","{{#endif}}",
-				"{{#ifnot {{file.member.type}}==INTERFACE}}",
+				"   public {{modifiers} }{{file.member}} with{{Name}}({{type}} value){{#if {{file.member.type}}==interface}};","","{{#endif}}",
+				"{{#ifnot {{file.member.type}}==interface}}",
 				"   {",
 				"      set{{Name}}(value);",
 				"      return this;",
