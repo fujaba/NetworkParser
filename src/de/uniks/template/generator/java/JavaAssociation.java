@@ -1,23 +1,19 @@
 package de.uniks.template.generator.java;
 
-import de.uniks.networkparser.TextItems;
 import de.uniks.networkparser.graph.Association;
-import de.uniks.networkparser.graph.GraphMember;
-import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.template.generator.BasicGenerator;
 import de.uniks.template.generator.Template;
 
 public class JavaAssociation extends BasicGenerator {
 
 	public JavaAssociation() {
-		createTemplate("Property", Template.FIELD, "   {{propertyVisibility}} {{propertyModifiers}} {{propertyType}} {{PROPERTY_NAME}} = \"{{otherName}}\";","");
+		createTemplate("Declaration", Template.DECLARATION, 
+				"{{#template VALUE}}   public static final String PROPERTY_{{other.NAME}} = \"{{other.name}}\";","",
 		
-		createTemplate("Field", Template.FIELD, "" + 
-				"{{#ifnot {{file.clazz.type}}==INTERFACE}}",
-				"   {{fieldVisibility}} {{fieldModifiers}}{{#if fieldModifiers}} {{#endif}}{{#if {{member.cardinality}}==ONE}}{{other}}{{#else}}{{other}}Set{{#endif}} {{otherName}} = {{default}};","",
-				"{{#endif}}");
+				"{{#ifnot {{file.member.type}}==interface}}",
+				"   {{visibility}} {{modifiers} }{{#if {{member.other.cardinality}}==1}}{{other.clazz.name}}{{#else}}{{other.clazz.name}}Set{{#endif}} {{other.name}} = null;","",
+				"{{#endif}}","",
 		
-		createTemplate("Declaration", Template.DECLARATION, "" +
 				"{{#foreach {{member.parent.classmodel.clazzes}}}}" +
 				   "{{#ifnot {{item.name}}=={{file.clazz.name}}" +
 				      "{{#if {{item.name}}=={{member.type}}}}" +
@@ -25,34 +21,34 @@ public class JavaAssociation extends BasicGenerator {
 				      "{{#endif}}" +
 				   "{{#endif}}" +
 				"{{#endfor}}" +
-				"   {{methodVisibility}} {{getModifiers}}{{#if modifiers}} {{#endif}}{{#if {{member.cardinality}}==ONE}}{{other}}{{#else}}{{other}}Set{{#endif}} get{{OtherName}}(){{#if {{file.clazz.type}}==INTERFACE}};","","{{#endif}}",
-				"{{#ifnot {{file.clazz.type}}==INTERFACE}}",
+				"   public {{modifiers} }{{#if {{member.other.cardinality}}==1}}{{other.clazz.name}}{{#else}}{{other.clazz.name}}Set{{#endif}} get{{other.Name}}(){{#if {{file.member.type}}==interface}};","","{{#endif}}",
+				"{{#ifnot {{file.member.type}}==interface}}",
 				"   {",
-				"      return this.{{otherName}};",
+				"      return this.{{other.name}};",
 				"   }","",
 				"{{#endif}}",
 				
-				"{{#if {{member.other.cardinality}}==ONE}}",
-				"   {{methodVisibility}} {{modifiers} }boolean set{{OtherName}}({{type}} value){{#if {{file.clazz.type}}==INTERFACE}};","","{{#endif}}",
-				"{{#ifnot {{file.clazz.type}}==INTERFACE}}",
+				"{{#if {{member.other.cardinality}}==1}}",
+				"   public {{modifiers} }boolean set{{other.Name}}({{other.clazz.name}} value){{#if {{file.member.type}}==interface}};","","{{#endif}}",
+				"{{#ifnot {{file.member.type}}==interface}}",
 				"   {",
 				"      boolean changed = false;",
-				"      if (this.{{otherName}} != value) {",
-				"         {{other}} oldValue = this.{{otherName}};",
-				"         if (this.{{otherName}} != null) {",
-				"            this.{{otherName}} = null;",
-				"{{#if {{member.cardinality}}==ONE}}",
+				"      if (this.{{other.name}} != value) {",
+				"         {{other.clazz.name}} oldValue = this.{{other.name}};",
+				"         if (this.{{other.name}} != null) {",
+				"            this.{{other.name}} = null;",
+				"{{#if {{member.cardinality}}==1}}",
 				"            oldValue.set{{Name}}(null);",
 				"{{#else}}",
 				"            oldValue.without{{Name}}(this);",
 				"{{#endif}}",
 				"         }",
-				"         this.{{otherName}} = value;",
+				"         this.{{other.name}} = value;",
 				"         if (value != null) {",
 				"            value.with{{Name}}(this);",
 				"         }",
 				"{{#if {{#feature PROPERTYCHANGESUPPORT}}}}",
-				"         firePropertyChange(PROPERTY_{{PROPERTY_NAME}}, oldValue, value);",
+				"         firePropertyChange(PROPERTY_{{other.NAME}}, oldValue, value);",
 				"{{#endif}}",
 				"         changed = true;",
 				"      }",
@@ -61,37 +57,33 @@ public class JavaAssociation extends BasicGenerator {
 				"{{#endif}}",
 				"{{#endif}}",
 				
-				"{{#if {{member.other.cardinality}}==ONE}}",
-				"   {{methodVisibility}} {{withOneModifiers}}{{#if withOneModifiers}} {{#endif}}{{source}} with{{OtherName}}({{other}} value){{#if {{file.clazz.type}}==INTERFACE}};","","{{#endif}}",
-				"{{#ifnot {{file.clazz.type}}==INTERFACE}}",
+				"{{#if {{member.other.cardinality}}==1}}",
+				"   public {{modifiers} }{{clazz.name}} with{{other.Name}}({{other.clazz.name}} value){{#if {{file.member.type}}==interface}};","","{{#endif}}",
+				"{{#ifnot {{file.member.type}}==interface}}",
 				"   {",
-				"      this.set{{OtherName}}(value);",
+				"      this.set{{other.Name}}(value);",
 				"      return this;",
 				"   }","",
 				"{{#endif}}",
 				"{{#endif}}",
 				
-				"{{#if {{member.other.cardinality}}==MANY}}",
-				"   {{methodVisibility}} {{withManyModifiers}}{{#if withManyModifiers}} {{#endif}}{{source}} with{{OtherName}}({{other}}... value){{#if {{file.clazz.type}}==INTERFACE}};","","{{#endif}}",
-				"{{#ifnot {{file.clazz.type}}==INTERFACE}}",
+				"{{#if {{member.other.cardinality}}==n}}",
+				"   public {{modifiers} }{{clazz.name}} with{{other.Name}}({{other.clazz.name}}... value){{#if {{file.member.type}}==interface}};","","{{#endif}}",
+				"{{#ifnot {{file.member.type}}==interface}}",
 				"   {",
 				"      if (value == null) {",
 				"         return this;",
 				"      }",
-				"      for ({{other}} item : value) {",
+				"      for ({{other.clazz.name}} item : value) {",
 				"         if (item != null) {",
-				"            if (this.{{otherName}} == null) {",
-				"{{#if {{member.other.cardinality}}==ONE}}",
-				"               this.{{otherName}} = new {{other}}();",
-				"{{#else}}",
-				"               this.{{otherName}} = new {{other}}Set();",
-				"{{#endif}}",
+				"            if (this.{{other.name}} == null) {",
+				"               this.{{other.name}} = new {{other.clazz.name}}Set();",
 				"            }",
-				"            boolean changed = this.{{otherName}}.add(item);",
+				"            boolean changed = this.{{other.name}}.add(item);",
 				"            if (changed)",
 				"            {",
 				"               item.with{{Name}}(this);",
-				"               firePropertyChange(PROPERTY_{{PROPERTY_NAME}}, null, item);",
+				"               firePropertyChange(PROPERTY_{{other.NAME}}, null, item);",
 				"            }",
 				"         }",
 				"      }",
@@ -100,15 +92,15 @@ public class JavaAssociation extends BasicGenerator {
 				"{{#endif}}",
 				"{{#endif}}",
 				
-				"{{#if {{member.other.cardinality}}==MANY}}",
-				"   {{methodVisibility}} {{withoutModifiers}}{{#if withoutModifiers}} {{#endif}}{{source}} without{{OtherName}}({{other}}... value){{#if {{file.clazz.type}}==INTERFACE}};","","{{#endif}}",
-				"{{#ifnot {{file.clazz.type}}==INTERFACE}}",
+				"{{#if {{member.other.cardinality}}==n}}",
+				"   public {{modifiers} }{{clazz.name}} without{{other.Name}}({{other.clazz.name}}... value){{#if {{file.member.type}}==interface}};","","{{#endif}}",
+				"{{#ifnot {{file.member.type}}==interface}}",
 				"   {",
-				"      for ({{other}} item : value) {",
-				"         if (this.{{otherName}} != null && item != null) {",
-				"            if (this.{{otherName}}.remove(item)) {",
-				"{{#if {{member.other.cardinality}}==ONE}}",
-				"               item.set{{Name}}(null);",
+				"      for ({{other.clazz.name}} item : value) {",
+				"         if (this.{{other.name}} != null && item != null) {",
+				"            if (this.{{other.name}}.remove(item)) {",
+				"{{#if {{member.cardinality}}==1}}",
+				"               item.with{{Name}}(null);",
 				"{{#else}}",
 				"               item.without{{Name}}(this);",
 				"{{#endif}}",
@@ -120,24 +112,15 @@ public class JavaAssociation extends BasicGenerator {
 				"{{#endif}}",
 				"{{#endif}}",
 
-				"   {{methodVisibility}} {{createModifiers}}{{#if createModifiers}} {{#endif}}{{other}} create{{OtherName}}(){{#if {{file.clazz.type}}==INTERFACE}};","","{{#endif}}",
-				"{{#ifnot {{file.clazz.type}}==INTERFACE}}",
+				"   public {{modifiers} }{{other.clazz.name}} create{{other.Name}}(){{#if {{file.member.type}}==interface}};","","{{#endif}}",
+				"{{#ifnot {{file.member.type}}==interface}}",
 				"   {",
-				"      {{other}} value = new {{other}}();",
-				"      with{{OtherName}}(value);",
+				"      {{other.clazz.name}} value = new {{other.clazz.name}}();",
+				"      with{{other.Name}}(value);",
 				"      return value;",
 				"   }","",
-				"{{#endif}}");
+				"{{#endif}}{{#endtemplate}}");
 
-	}
-	
-	@Override
-	public SendableEntityCreator generate(GraphMember item, TextItems parameters) {
-		if(item instanceof Association == false) {
-			return null;
-		}
-		Association element = (Association) item;
-		return null;
 	}
 	
 	@Override

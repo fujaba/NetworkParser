@@ -8,7 +8,7 @@ public class JavaMethod extends BasicGenerator {
 
 	public JavaMethod() {
 		createTemplate("Method", Template.METHOD,
-				"   {{visibility}} {{modifiers} }{{returnType}} {{name}}{{parameter}}{{#if {{file.member.type}}==INTERFACE}};","","{{#else}}",
+				"   {{visibility}} {{modifiers} }{{returnType}} {{name}}{{parameter}}{{#if {{file.member.type}}==interface}};","","{{#else}}",
 				"   {",
 				"      {{body}}",
 				"   }","",

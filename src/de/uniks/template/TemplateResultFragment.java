@@ -234,7 +234,8 @@ public class TemplateResultFragment implements Comparable<TemplateResultFragment
 			return element.getTemplateModel();
 		}
 		if(this.member != null) {
-			Object value = this.member.getValue(attrName);
+			Object value = this.member.getValue(attribute);
+//			Object value = this.member.getValue(attrName);
 			if(value != null) {
 				return value;
 			}
