@@ -2,15 +2,18 @@ package de.uniks.networkparser.logic;
 import java.beans.PropertyChangeEvent;
 
 import de.uniks.networkparser.buffer.BufferedBuffer;
+import de.uniks.networkparser.buffer.CharacterBuffer;
+import de.uniks.networkparser.interfaces.LocalisationInterface;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.ParserCondition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
+import de.uniks.networkparser.interfaces.TemplateParser;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 /**
  * @author Stefan Lindel Clazz of EqualsCondition
  */
 
-public class Equals implements ObjectCondition, SendableEntityCreator {
+public class Equals implements ParserCondition, SendableEntityCreator {
 	/** Constant of KEY. */
 	public static final String PROPERTY_KEY = "key";
 	
@@ -147,7 +150,7 @@ public class Equals implements ObjectCondition, SendableEntityCreator {
 	}
 
 	@Override
-	public Object getSendableInstance(boolean prototyp) {
+	public ParserCondition getSendableInstance(boolean prototyp) {
 		return new Equals();
 	}
 	
@@ -223,5 +226,37 @@ public class Equals implements ObjectCondition, SendableEntityCreator {
 	public Equals withRight(ParserCondition expression) {
 		this.right = expression;
 		return this;
+	}
+
+	@Override
+	public boolean isExpression() {
+		return false;
+	}
+
+	//KEY LEFTVALUE
+	//VALUE RIGHTVALUE
+	@Override
+	public Object getValue(LocalisationInterface value) {
+		if(value instanceof SendableEntityCreator) {
+			SendableEntityCreator variables = (SendableEntityCreator) value;
+			Object object = variables.getValue(variables, this.key);
+			return object;
+		}
+		if(value != null && this.key != null) {
+			return value.getText(this.key, null, null);
+		}
+		if(this.key == null) {
+			return null;
+		}
+		if(this.key.equals(value)) {
+			return value;
+		}
+		return null;
+	}
+
+	@Override
+	public ObjectCondition create(CharacterBuffer buffer, TemplateParser parser, LocalisationInterface customTemplate) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

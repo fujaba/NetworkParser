@@ -17,7 +17,7 @@ public class TemplateFragmentCondition implements ParserCondition{
 	public static final String TAG="template"; 
 
 	private String id;
-	private VariableCondition condition;
+	private ObjectCondition condition;
 	private ObjectCondition child;
 
 	@Override
@@ -92,7 +92,18 @@ public class TemplateFragmentCondition implements ParserCondition{
 			// Condition
 			buffer.skipChar(SPLITSTART);
 			CharacterBuffer condition = buffer.nextToken(false, SPLITEND);
-			this.condition = VariableCondition.create(condition.toString(), true);
+			//TODO CHANGE TO CUSTOMTEMPLATE
+			if(condition.startsWith("{{#ifnot")) {
+//				IfCondition ifcondition = new IfCondition();
+//				ifcondition.
+//				this.condition  = ifcondition;
+//				.create(condition.toString(), true);
+			}else if(condition.startsWith("{{#if")) {
+				this.condition = new IfCondition();
+				
+			} else {
+				this.condition = VariableCondition.create(condition.toString(), true);
+			}
 			buffer.skipChar(SPLITEND);
 			buffer.skipChar(SPLITEND);
 		}

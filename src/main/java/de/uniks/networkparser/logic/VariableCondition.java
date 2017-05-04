@@ -96,7 +96,7 @@ public class VariableCondition implements ParserCondition{
     	if((small == false && upper) || "toupper".equalsIgnoreCase(format)) {
     		return value.toUpperCase();
     	}
-    	if(firstUpper) {
+    	if(firstUpper || "firstUpper".equalsIgnoreCase(format)) {
     		return EntityUtil.upFirstChar(value);
     	}
     	return value;
