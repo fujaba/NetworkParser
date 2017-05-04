@@ -8,7 +8,7 @@ public class JavaAttribute extends BasicGenerator{
 
 	public JavaAttribute() {
 		createTemplate("Declaration", Template.DECLARATION,
-				"{{#template FIELD}}   public static final String PROPERTY_{{NAME}} = \"{{name}}\";","",
+				"{{#template VALUE}}   public static final String PROPERTY_{{NAME}} = \"{{name}}\";","",
 				//,"{{#template FIELD {{#ifnot {{file.clazz.type}}==INTERFACE}}}}   {{visibility}} {{modifiers} }{{type} }{{name}}{{#if default}} = {{default}}{{#endif}}{{#endtemplate}}"
 
 				"{{#ifnot {{file.member.type}}==INTERFACE}}",
