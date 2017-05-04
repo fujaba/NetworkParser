@@ -10,9 +10,7 @@ import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.TemplateParser;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.logic.ChainCondition;
-import de.uniks.networkparser.logic.Equals;
 import de.uniks.networkparser.logic.IfCondition;
-import de.uniks.networkparser.logic.Not;
 import de.uniks.networkparser.logic.StringCondition;
 import de.uniks.networkparser.logic.TemplateCondition;
 import de.uniks.networkparser.logic.VariableCondition;
@@ -144,68 +142,16 @@ public class Template implements TemplateParser {
 					}
 				}
 				
-				// Switch for If IfNot
-				// {{#if {{Variable}}}}
-				// {{#if Variable}}
-				// {{#if {{#feature}}}}
-				if(tokenPart.equalsIgnoreCase("ifnot") || tokenPart.equalsIgnoreCase("if")) {
-					IfCondition token = new IfCondition();
-					template.skip();
-					ObjectCondition expression = parsing(template, customTemplate, true);
-					
-					// case equals
-					if (template.nextClean(true) == '=') {
-						if (template.nextClean(true) == '=') {
-							template.skip();
-//							template.skip();
-							Equals equalsExpression = new Equals();
-							if(expression instanceof ParserCondition) {
-								equalsExpression.withLeft((ParserCondition)expression);
-							}
-							
-							expression = parsing(template, customTemplate, true);
-							if(expression instanceof ParserCondition) {
-								equalsExpression.withRight((ParserCondition)expression);
-							}
-							expression = equalsExpression;
-							
-						}
+				ParserCondition condition = null;
+				if(customTemplate instanceof TemplateResultModel) {
+					ParserCondition creator = ((TemplateResultModel)customTemplate).getTemplate(tokenPart.toString());
+					if(creator != null) {
+						condition = creator.getSendableInstance(false);
 					}
-					if(tokenPart.equalsIgnoreCase("ifnot")) {
-						token.withExpression(Not.create(expression));	
-					}else {
-						token.withExpression(expression);
-					}
-					
-					template.skipChar(SPLITEND);
-					template.skipChar(SPLITEND);
-					
-					// Add Children
-					token.withTrue(parsing(template, customTemplate, false, "else", "endif"));
-					
-					// ELSE OR ENDIF
-					tokenPart = template.nextToken(false, SPLITEND);
-					if("else".equalsIgnoreCase(tokenPart.toString())) {
-						template.skipChar(SPLITEND);
-						template.skipChar(SPLITEND);
-						token.withFalse(parsing(template, customTemplate, false, "endif"));
-						template.skipTo(SPLITEND, false);
-					}
-					template.skipChar(SPLITEND);
-//					child = token;
-					parent.with(token);
-				} else {
-					ParserCondition condition = null;
-					if(customTemplate instanceof TemplateResultModel) {
-						ParserCondition creator = ((TemplateResultModel)customTemplate).getTemplate(tokenPart.toString());
-						if(creator != null) {
-							condition = creator.getSendableInstance(false);
-						}
-					}
-					if(condition != null) {
-						ObjectCondition childCondition = condition.create(template, this, customTemplate);
-						parent.with(childCondition);
-					}
+				}
+				if(condition != null) {
+					ObjectCondition childCondition = condition.create(template, this, customTemplate);
+					parent.with(childCondition);
 				}
 				template.skip();
 				start=template.position();
