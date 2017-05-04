@@ -25,7 +25,7 @@ public class TestSimpleGenerator {
 		Clazz person = classModel.createClazz("Person");
 		Clazz room = classModel.createClazz("Room");
 		person.withBidirectional(room, "room", Cardinality.ONE, "persons", Cardinality.MANY);
-		person.withAttribute("name", DataType.STRING);
+		person.withAttribute("name", DataType.BOOLEAN);
 		ModelGenerator javaModelFactory = new ModelGenerator();
 		javaModelFactory.generate("src", classModel);
 		javaModelFactory.generateTypescript("src", classModel);

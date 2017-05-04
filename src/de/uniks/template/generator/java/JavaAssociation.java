@@ -33,7 +33,7 @@ public class JavaAssociation extends BasicGenerator {
 				"{{#endif}}",
 				
 				"{{#if {{member.other.cardinality}}==ONE}}",
-				"   {{methodVisibility}} {{setModifiers}}{{#if setModifiers}} {{#endif}}boolean set{{OtherName}}({{other}} value){{#if {{file.clazz.type}}==INTERFACE}};","","{{#endif}}",
+				"   {{methodVisibility}} {{modifiers} }boolean set{{OtherName}}({{type}} value){{#if {{file.clazz.type}}==INTERFACE}};","","{{#endif}}",
 				"{{#ifnot {{file.clazz.type}}==INTERFACE}}",
 				"   {",
 				"      boolean changed = false;",
