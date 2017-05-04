@@ -1,5 +1,6 @@
 package de.uniks.networkparser.graph;
 
+import de.uniks.networkparser.buffer.CharacterBuffer;
 /*
 NetworkParser
 The MIT License
@@ -30,11 +31,32 @@ public abstract class GraphMember {
 	public static final String PROPERTY_NAME="name";
 	public static final String PROPERTY_PARENT="parent";
 	public static final String PROPERTY_CHILD="child";
+	public static final String PROPERTY_VISIBILITY = "visibility";
+	public static final String PROPERTY_MODIFIERS = "modifiers";
+
 	protected String name;
 	protected Object children;
 	protected Object parentNode;
 
 	public Object getValue(String attribute) {
+		if(PROPERTY_VISIBILITY.equalsIgnoreCase(attribute)) {
+			return this.getModifier().getName();
+		}
+		if(PROPERTY_MODIFIERS.equalsIgnoreCase(attribute)) {
+			CharacterBuffer buffer = new CharacterBuffer();
+			Modifier modifier = this.getModifier();
+			if(modifier != null) {
+				modifier = modifier.getModifier();
+				while(modifier != null) {
+					buffer.with(modifier.getName());
+					modifier = modifier.getModifier();
+					if(modifier != null) {
+						buffer.with(' ');
+					}
+				}
+			}
+			return buffer.toString();
+		}
 		if(PROPERTY_NAME.equalsIgnoreCase(attribute)) {
 			return this.name;
 		}

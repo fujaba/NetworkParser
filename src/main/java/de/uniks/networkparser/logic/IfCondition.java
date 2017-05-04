@@ -186,7 +186,6 @@ public class IfCondition implements ParserCondition, SendableEntityCreator {
 				if(expression instanceof ParserCondition) {
 					equalsExpression.withLeft((ParserCondition)expression);
 				}
-				
 				expression = parser.parsing(buffer, customTemplate, true);
 				if(expression instanceof ParserCondition) {
 					equalsExpression.withRight((ParserCondition)expression);

@@ -47,6 +47,18 @@ public class Equals implements ParserCondition, SendableEntityCreator {
 		if (evt == null) {
 			return value == null;
 		}
+		if(evt instanceof LocalisationInterface && this.left != null && this.right != null) {
+			LocalisationInterface li = (LocalisationInterface) evt;
+			Object leftValue = this.left.getValue(li);
+			Object rightValue = this.right.getValue(li);
+			if(leftValue == null) {
+				return rightValue == null;
+			}
+			if(leftValue instanceof String && rightValue instanceof String) {
+				return ((String)leftValue).equalsIgnoreCase((String)rightValue);
+			}
+			return leftValue.equals(rightValue);
+		}
 		if(value == null) {
 			return evt == null;
 		}
@@ -141,6 +153,9 @@ public class Equals implements ParserCondition, SendableEntityCreator {
 
 	@Override
 	public String toString() {
+		if(left != null && right != null) {
+			return ""+left.toString() +"==" + right.toString();
+		}
 		return "==" + value + " ";
 	}
 

@@ -57,6 +57,9 @@ public class VariableCondition implements ParserCondition{
 				v = key;
 				object = variables.getValue(variables, key);
 			}
+			if(object == null && this.expression == false) {
+				return key;
+			}
 			if(object instanceof DataType) {
 				object = ((DataType)object).getName(true);
 			}

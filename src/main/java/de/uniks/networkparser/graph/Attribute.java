@@ -30,8 +30,6 @@ public class Attribute extends Value {
 	public static final StringFilter<Attribute> NAME = new StringFilter<Attribute>(GraphMember.PROPERTY_NAME);
 	public static final String PROPERTY_CLAZZ = "clazz";
 	public static final String PROPERTY_VALUE = "value";
-	public static final String PROPERTY_MODIFIERS = "modifiers";
-	public static final String PROPERTY_VISIBILITY = "visibility";
 	public static final String PROPERTY_TYPE = "type";
 
 	Attribute() {
@@ -122,24 +120,6 @@ public class Attribute extends Value {
 	
 	@Override
 	public Object getValue(String attribute) {
-		if(PROPERTY_VISIBILITY.equalsIgnoreCase(attribute)) {
-			return this.getModifier().getName();
-		}
-		if(PROPERTY_MODIFIERS.equalsIgnoreCase(attribute)) {
-			CharacterBuffer buffer = new CharacterBuffer();
-			Modifier modifier = this.getModifier();
-			if(modifier != null) {
-				modifier = modifier.getModifier();
-				while(modifier != null) {
-					buffer.with(modifier.getName());
-					modifier = modifier.getModifier();
-					if(modifier != null) {
-						buffer.with(' ');
-					}
-				}
-			}
-			return buffer.toString();
-		}
 		if(PROPERTY_TYPE.equalsIgnoreCase(attribute)) {
 			return this.getType();
 		}
