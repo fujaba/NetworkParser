@@ -40,6 +40,9 @@ public abstract class GraphMember {
 
 	public Object getValue(String attribute) {
 		if(PROPERTY_VISIBILITY.equalsIgnoreCase(attribute)) {
+			if (this.getModifier() == null) {
+				return "private";
+			}
 			return this.getModifier().getName();
 		}
 		if(PROPERTY_MODIFIERS.equalsIgnoreCase(attribute)) {

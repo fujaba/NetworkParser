@@ -84,10 +84,19 @@ public class VariableCondition implements ParserCondition{
     	boolean upper=false;
     	boolean firstUpper=false;
     	boolean small=false;
-    	for(int i=0;i<name.length();i++) {
+    	int startIndex = -1;
+    	int i;
+    	// other.NAME
+    	i = name.lastIndexOf('.');
+    	// i is last '.' therefore next proper index is i + 1
+    	i++;
+    	for(;i<name.length();i++) {
     		if(name.charAt(i)>='A' && name.charAt(i)<='Z') {
+    			if (startIndex == -1) {
+    				startIndex = i;
+    			}
     			upper = true;
-    			firstUpper = i==0;
+    			firstUpper = startIndex==i;
     		} else if(name.charAt(i)>='a' && name.charAt(i)<='z') {
     			small = true;
     		}

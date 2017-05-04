@@ -32,6 +32,9 @@ public class Association extends GraphMember {
 	public static final String PROPERTY_NODE = "node";
 	public static final String PROPERTY_CARDINALITY = "cardinality";
 	public static final String PROPERTY_PROPERTY = "property";
+	public static final String PROPERTY_OTHER = "other";
+	public static final String PROPERTY_CLAZZ = "clazz";
+	public static final String PROPERTY_TYPE = "type";
 	private Cardinality cardinality;
 	// The Complete Edge Info
 //	private GraphLabel info;
@@ -44,7 +47,38 @@ public class Association extends GraphMember {
 	public Association(GraphEntity node) {
 		this.parentNode = node;
 	}
-
+	@Override
+	public Object getValue(String attribute) {
+		int pos = attribute.indexOf('.');
+		String attrName;
+		if (pos > 0) {
+			attrName = attribute.substring(0, pos);
+		} else {
+			attrName = attribute;
+		}
+		if (PROPERTY_OTHER.equals(attrName)) {
+			if (pos > 0) {
+				Association other = this.getOther();
+				return other.getValue(attribute.substring(pos + 1));
+			}
+			return this.getOther();
+		}
+		if (PROPERTY_CARDINALITY.equals(attrName)) {
+			return this.getCardinality().getValue();
+		}
+		if (PROPERTY_CLAZZ.equals(attrName)) {
+			if (pos > 0) {
+				Clazz clazz = this.getClazz();
+				return clazz.getValue(attribute.substring(pos + 1));
+			}
+			return this.getClazz();
+		}
+		if (PROPERTY_TYPE.equalsIgnoreCase(attrName)) {
+			return this.getType();
+		}
+		return super.getValue(attribute);
+	}
+	
 	public Cardinality getCardinality() {
 		if(cardinality != null) {
 			return cardinality;
