@@ -10,7 +10,7 @@ public class JavaMethod extends BasicGenerator {
 		createTemplate("Method", Template.METHOD,
 				"   {{visibility}} {{modifiers} }{{returnType}} {{name}}{{parameter}}{{#if {{file.member.type}}==INTERFACE}};","","{{#else}}",
 				"   {",
-				"      {{body}}",
+				"      {{#methodbody}}",
 				"   }","",
 				"{{#endif}}");
 	}
@@ -19,5 +19,4 @@ public class JavaMethod extends BasicGenerator {
 	public Class<?> getTyp() {
 		return Method.class;
 	}
-	
 }

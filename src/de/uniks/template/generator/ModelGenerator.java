@@ -21,6 +21,7 @@ import de.uniks.networkparser.logic.ImportCondition;
 import de.uniks.networkparser.logic.TemplateFragmentCondition;
 import de.uniks.template.TemplateResultFile;
 import de.uniks.template.TemplateResultModel;
+import de.uniks.template.generator.condition.JavaMethodBodyCondition;
 import de.uniks.template.generator.java.JavaClazz;
 
 public class ModelGenerator extends BasicGenerator{
@@ -45,6 +46,7 @@ public class ModelGenerator extends BasicGenerator{
 			addParserCondition(new TemplateFragmentCondition());
 			addParserCondition(new IfCondition());
 			addParserCondition(new IfCondition().withKey(IfCondition.IFNOT));
+			addParserCondition(new JavaMethodBodyCondition());
 		}
 		return customTemplate;
 	}
