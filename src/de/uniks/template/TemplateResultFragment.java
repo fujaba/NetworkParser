@@ -28,7 +28,7 @@ public class TemplateResultFragment implements Comparable<TemplateResultFragment
 	private GraphMember member;
 	private boolean expression=true;
 	private SendableEntityCreator parent;
-	private SimpleList<String> stack;
+	private SimpleList<Object> stack;
 	
 	private int key = -1;
 	
@@ -214,6 +214,17 @@ public class TemplateResultFragment implements Comparable<TemplateResultFragment
 		}
 		if(PROPERTY_ITEM.equalsIgnoreCase(attrName)) {
 			if(this.stack != null) {
+				if (pos > 0) {
+					Object last = this.stack.last();
+					if (last instanceof GraphMember) {
+						GraphMember item = (GraphMember) last;
+						return item.getValue(attribute.substring(pos+1));
+					} else if (last instanceof SendableEntityCreator) {
+						SendableEntityCreator item = (SendableEntityCreator) last;
+						return item.getValue(item, attribute.substring(pos+1));
+					}
+					return null;
+				}
 				return this.stack.last();
 			}
 			return null;
@@ -333,22 +344,22 @@ public class TemplateResultFragment implements Comparable<TemplateResultFragment
 	}
 	
 	@Override
-	public String put(String label, String text) {
+	public String put(String label, Object object) {
 		if(label == null) {
 			return null;
 		}
 		if(PROPERTY_ITEM.equalsIgnoreCase(label.toString())) {
-			if(text == null) {
+			if(object == null) {
 				if(this.stack != null) {
 					this.stack.remove(this.stack.size() - 1);
-					return text;
+					return null;
 				}
 			} else {
 				if(this.stack == null) {
-					this.stack = new SimpleList<String>();
+					this.stack = new SimpleList<Object>();
 				}
-				if(this.stack.add(text)) {
-					return text;
+				if(this.stack.add(object)) {
+					return object.toString();
 				}
 			}
 		}

@@ -96,7 +96,7 @@ public class TemplateResultFile extends SortedSet<TemplateResultFragment> implem
 	}
 
 	@Override
-	public String put(String label, String text) {
+	public String put(String label, Object object) {
 		// TODO Auto-generated method stub
 		return null;
 	}

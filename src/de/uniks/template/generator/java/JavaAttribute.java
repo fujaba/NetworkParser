@@ -15,10 +15,12 @@ public class JavaAttribute extends BasicGenerator{
 				"   {{visibility}} {{modifiers} }{{type} }{{name}}{{#if {{value}}}} = {{value}}{{#endif}};","",
 				"{{#endif}}","",
 
-				"{{#foreach {{member.parent.classmodel.clazzes}}}}" +
-				   "{{#ifnot {{item.name}}=={{file.clazz.name}}" +
-				      "{{#if {{item.name}}=={{member.type}}}}" +
-				         "{{#import item.name}}" +
+				"{{#foreach {{member.parent.parent.child}}}}" +
+				   "{{#if {{item.type}}==class}}" +
+				      "{{#ifnot {{item.name}}=={{file.member.name}}}}" +
+				         "{{#if {{item.name}}=={{member.typeName}}}}" + 
+				            "{{#import {{item.fullName}}}}" +
+				         "{{#endif}}" +
 				      "{{#endif}}" +
 				   "{{#endif}}" +
 				"{{#endfor}}" +

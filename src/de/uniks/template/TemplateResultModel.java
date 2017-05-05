@@ -55,9 +55,9 @@ public class TemplateResultModel extends SimpleList<TemplateResultFile> implemen
 	}
 
 	@Override
-	public String put(String label, String text) {
+	public String put(String label, Object object) {
 		if(this.language != null) {
-			return this.language.put(label, text);
+			return this.language.put(label, object);
 		}
 		return null;
 	}
