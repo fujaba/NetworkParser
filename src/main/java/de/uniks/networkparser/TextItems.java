@@ -85,15 +85,15 @@ public class TextItems extends SimpleKeyValueList<String, String> implements Sen
 	}
 
 	@Override
-	public String put(String label, String text) {
+	public String put(String label, Object object) {
 		if(this.customLanguage != null) {
-			return this.customLanguage.put(label, text);
+			return this.customLanguage.put(label, object);
 		}
-		if(text == null) {
+		if(object == null) {
 			return null;
 		}
-		if(this.add(label, text)) {
-			return text;
+		if(this.add(label, object)) {
+			return object.toString();
 		}
 		return null;
 	}

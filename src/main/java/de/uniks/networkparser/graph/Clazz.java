@@ -11,6 +11,7 @@ import de.uniks.networkparser.list.SimpleSet;
 public class Clazz extends GraphEntity {
 	public static final StringFilter<Clazz> NAME = new StringFilter<Clazz>(GraphMember.PROPERTY_NAME);
 	public static final String PROPERTY_PACKAGENAME = "packageName";
+	public static final String PROPERTY_FULLNAME = "fullName";
 	public static final String PROPERTY_VISIBILITY = "visibility";
 	public static final String PROPERTY_MODIFIERS = "modifiers";
 	public static final String PROPERTY_TYPE = "type";
@@ -792,6 +793,9 @@ public class Clazz extends GraphEntity {
 				return "";
 			}
 			return fullName.substring(0, pos);
+		}
+		if (PROPERTY_FULLNAME.equalsIgnoreCase(attribute)) {
+			return this.getName(false);
 		}
 		if(PROPERTY_VISIBILITY.equalsIgnoreCase(attribute)) {
 			return this.getModifier().getName();
