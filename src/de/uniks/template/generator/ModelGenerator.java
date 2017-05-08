@@ -23,6 +23,7 @@ import de.uniks.template.TemplateResultFile;
 import de.uniks.template.TemplateResultModel;
 import de.uniks.template.generator.condition.JavaMethodBodyCondition;
 import de.uniks.template.generator.java.JavaClazz;
+import de.uniks.template.generator.java.JavaSet;
 
 public class ModelGenerator extends BasicGenerator{
 	private SimpleSet<FeatureProperty> features = Feature.getAll();
@@ -79,6 +80,11 @@ public class ModelGenerator extends BasicGenerator{
 		SimpleList<BasicGenerator> templates = new SimpleList<BasicGenerator>();
 
 		templates.add(new JavaClazz());
+		// TODO add proper condition for allowing sets
+		// Sets are allowed
+//		if (model.f) {
+//			templates.add(new JavaSet());
+//		}
 		return generating(rootDir, model, parameters, templates, true);
 	}
 

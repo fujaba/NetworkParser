@@ -14,13 +14,16 @@ public class JavaAssociation extends BasicGenerator {
 				"   {{visibility}} {{modifiers} }{{#if {{member.other.cardinality}}==1}}{{other.clazz.name}}{{#else}}{{other.clazz.name}}Set{{#endif}} {{other.name}} = null;","",
 				"{{#endif}}","",
 		
-				"{{#foreach {{member.parent.classmodel.clazzes}}}}" +
-				   "{{#ifnot {{item.name}}=={{file.clazz.name}}" +
-				      "{{#if {{item.name}}=={{member.type}}}}" +
-				         "{{#import item.name}}" +
+				"{{#foreach {{member.parent.parent.child}}}}" +
+				   "{{#if {{item.type}}==class}}" +
+				      "{{#ifnot {{item.name}}=={{file.member.name}}}}" +
+				         "{{#import {{item.fullName}}}}" +
 				      "{{#endif}}" +
 				   "{{#endif}}" +
 				"{{#endfor}}" +
+//				"{{#if {{member.other.cardinality}}==n}}" +
+//				   "{{#import {{member.other.clazz.packageName}}{{member.other.clazz.name}}Set}}" +
+//				"{{#endif}}" +
 				"   public {{modifiers} }{{#if {{member.other.cardinality}}==1}}{{other.clazz.name}}{{#else}}{{other.clazz.name}}Set{{#endif}} get{{other.Name}}(){{#if {{file.member.type}}==interface}};","","{{#endif}}",
 				"{{#ifnot {{file.member.type}}==interface}}",
 				"   {",
