@@ -40,10 +40,11 @@ public abstract class GraphMember {
 
 	public Object getValue(String attribute) {
 		if(PROPERTY_VISIBILITY.equalsIgnoreCase(attribute)) {
-			if (this.getModifier() == null) {
-				return "private";
+			Modifier modifier = this.getModifier();
+			if (modifier == null) {
+				return Modifier.PRIVATE;
 			}
-			return this.getModifier().getName();
+			return modifier;
 		}
 		if(PROPERTY_MODIFIERS.equalsIgnoreCase(attribute)) {
 			CharacterBuffer buffer = new CharacterBuffer();

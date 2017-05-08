@@ -46,6 +46,9 @@ public class Modifier extends GraphMember {
 	Modifier(String value) {
 		this.setName(value);
 	}
+	Modifier(Modifier value) {
+		this.setName(value.getName());
+	}
 
 	@Override
 	public Modifier with(String name) {

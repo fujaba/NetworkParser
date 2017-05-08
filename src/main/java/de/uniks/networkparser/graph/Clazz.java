@@ -105,7 +105,7 @@ public class Clazz extends GraphEntity {
 	public Modifier getModifier() {
 		Modifier modifier = super.getModifier();
 		if(modifier == null) {
-			modifier = new Modifier(Modifier.PUBLIC.getName());
+			modifier = new Modifier(Modifier.PUBLIC);
 			super.withChildren(modifier);
 		}
 		return modifier;
