@@ -83,7 +83,7 @@ public class ModelGenerator extends BasicGenerator{
 		// TODO add proper condition for allowing sets
 		// Sets are allowed
 //		if (model.f) {
-//			templates.add(new JavaSet());
+			templates.add(new JavaSet());
 //		}
 		return generating(rootDir, model, parameters, templates, true);
 	}
@@ -127,7 +127,7 @@ public class ModelGenerator extends BasicGenerator{
 		
 		for(Clazz clazz : model.getClazzes()) {
 			for(BasicGenerator template : templates) {
-				TemplateResultFile resultFile = template.executeClazz(clazz, result);
+				TemplateResultFile resultFile = template.executeClazz(clazz, template.fileType, result);
 
 				template.executeTemplate(resultFile, result, clazz);
 				result.add(resultFile);

@@ -21,11 +21,15 @@ import de.uniks.template.TemplateResultFragment;
 
 public abstract class BasicGenerator {
 	protected String extension;
+	protected String fileType;
 	protected BasicGenerator owner;
 
 	protected SimpleList<Template> templates=new SimpleList<Template>();
 	protected SimpleKeyValueList<Class<?>, SimpleList<BasicGenerator>> children=new SimpleKeyValueList<Class<?>, SimpleList<BasicGenerator>>();
 	
+	public static final String FILETYPE_CLAZZ = "clazz";
+	public static final String FILETYPE_SET = "set";
+
 	public abstract Class<?> getTyp();
 	
 	public boolean addGenerator(BasicGenerator generator) {
@@ -82,7 +86,7 @@ public abstract class BasicGenerator {
 // FileTemplate	
 	protected TemplateResultFile executeChildren(TextItems parameters, GraphMember member) {
 		Clazz clazz = GraphUtil.getParentClazz(member);
-		TemplateResultFile templateResult = getNewResult(clazz);
+		TemplateResultFile templateResult = getNewResult(clazz, null);
 		SimpleList<BasicGenerator> templateList = children.get(member.getClass());
 		for(BasicGenerator template : templateList) {
 			template.executeTemplate(templateResult, parameters, member);
@@ -90,15 +94,27 @@ public abstract class BasicGenerator {
 		return templateResult;
 	}
 	
-	protected TemplateResultFile getNewResult(Clazz clazz) {
+	protected TemplateResultFile getNewResult(Clazz clazz, String fileType) {
 		FeatureProperty codeStyle = getFeature(Feature.CODESTYLE, clazz);
-		boolean isStandard = Feature.CODESTYLE_STANDARD.equals(codeStyle.getStringValue()); 
-		TemplateResultFile templateResult = new TemplateResultFile(clazz, isStandard);
+		boolean isStandard = Feature.CODESTYLE_STANDARD.equals(codeStyle.getStringValue());
+		TemplateResultFile templateResult;
+		if (fileType != null && !fileType.equals("")) {
+			String name = "";
+			if (fileType.equals(FILETYPE_CLAZZ)) {
+				name = clazz.getName();
+			} else if (fileType.equals(FILETYPE_SET)) {
+				name = ".util." + clazz.getName(true) + "Set";
+				name = name.replace(".", "/");
+			}
+			templateResult = new TemplateResultFile(clazz, name, isStandard);
+		} else {
+			templateResult = new TemplateResultFile(clazz, isStandard);
+		}
 		return templateResult;
 	}
 	
-	protected TemplateResultFile executeClazz(Clazz clazz, LocalisationInterface parameters) {
-		TemplateResultFile templateResult = owner.getNewResult(clazz);
+	protected TemplateResultFile executeClazz(Clazz clazz, String fileType, LocalisationInterface parameters) {
+		TemplateResultFile templateResult = owner.getNewResult(clazz, fileType);
 		if(parameters instanceof SendableEntityCreator) {
 			templateResult.setParent((SendableEntityCreator)parameters);
 		}

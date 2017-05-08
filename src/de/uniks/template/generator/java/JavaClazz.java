@@ -14,6 +14,8 @@ import de.uniks.template.generator.Template;
 public class JavaClazz extends BasicGenerator{
 
 	public JavaClazz() {
+		fileType = BasicGenerator.FILETYPE_CLAZZ;
+		
 		createTemplate("Declaration", Template.TEMPLATE, 
 				
 				"{{#template PACKAGE {{packagename}}}}package {{packagename#toLower}};{{#endtemplate}}","",
@@ -84,7 +86,7 @@ public class JavaClazz extends BasicGenerator{
 		if(item instanceof Clazz == false) {
 			return null;
 		}
-		TemplateResultFile result = this.executeClazz((Clazz)item, parameters);
+		TemplateResultFile result = this.executeClazz((Clazz)item, fileType, parameters);
 		this.executeTemplate(result, parameters, item);
 		return result;
 	}

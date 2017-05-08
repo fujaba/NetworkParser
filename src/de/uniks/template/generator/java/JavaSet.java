@@ -2,32 +2,41 @@ package de.uniks.template.generator.java;
 
 import java.util.Collection;
 
+import de.uniks.networkparser.TextItems;
+import de.uniks.networkparser.graph.Clazz;
+import de.uniks.networkparser.graph.GraphMember;
+import de.uniks.networkparser.interfaces.Condition;
+import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.list.SimpleSet;
+import de.uniks.template.TemplateResultFile;
 import de.uniks.template.generator.BasicGenerator;
 import de.uniks.template.generator.Template;
 
 public class JavaSet extends BasicGenerator {
 
 	public JavaSet() {
-		createTemplate("Declaration", Template.DECLARATION, 
-				"{{#template PACKAGE}}{{#if packageName}}package {{packageName}};{{#endif}}{{#endtemplate}}","",
+		fileType = BasicGenerator.FILETYPE_SET;
+		
+		createTemplate("Declaration", Template.TEMPLATE, 
+				"{{#template PACKAGE}}{{#if {{packageName}}}}package {{packageName}}.util;{{#endif}}{{#endtemplate}}","",
 				
-				"{{#template IMPORT}}{{#foreach {{file.headers}}}}","import {{item}};{{#endfor}}{{#endtemplate}}",""
+				"{{#template IMPORT}}{{#foreach {{file.headers}}}}","import {{item}};{{#endfor}}{{#endtemplate}}","",
 				
-				+ "{{#import " + SimpleSet.class.getName() + "}}" +
-				"{{visibility}} class {{setName}} extends SimpleSet<{{name}}>","{","",
+				"{{#import " + SimpleSet.class.getName() + "}}" +
+				"{{#import {{fullName}}}}" +
+				"{{visibility}} class {{name}}Set extends SimpleSet<{{name}}>","{","",
 				
-				"   protected Class<?> getTypClass()",
+				"   public Class<?> getTypClass()",
 				"   {",
 				"      return {{name}}.class;",
 				"   }","",
 				
-				"   public {{setName}}()",
+				"   public {{name}}Set()",
 				"   {",
 				"      // empty",
 				"   }","",
 				
-				"   public {{setName}}({{name}}... objects)",
+				"   public {{name}}Set({{name}}... objects)",
 				"   {",
 				"      for ({{name}} obj : objects)",
 				"      {",
@@ -35,12 +44,12 @@ public class JavaSet extends BasicGenerator {
 				"      }",
 				"   }","",
 
-				"   public {{setName}}(Collection<{{name}}> objects)",
+				"   public {{name}}Set(Collection<{{name}}> objects)",
 				"   {",
 				"      this.addAll(objects);",
 				"   }","",
 				
-				"   public static final {{setName}} EMPTY_SET = new {{setName}}().withFlag({{setName}}.READONLY);","",
+				"   public static final {{name}}Set EMPTY_SET = new {{name}}Set().withFlag({{name}}Set.READONLY);","",
 
 				"   public String getEntryType()",
 				"   {",
@@ -48,20 +57,21 @@ public class JavaSet extends BasicGenerator {
 				"   }","",
 				
 				"   @Override",
-				"   public {{setName}} getNewList(boolean keyValue)",
+				"   public {{name}}Set getNewList(boolean keyValue)",
 				"   {",
-				"      return new {{setName}}();",
-				"   }","",
+				"      return new {{name}}Set();",
+				"   }","","",
 				
-				"   public {{setName}} filter(Condition<{{name}}> condition)",
+				"{{#import " + Condition.class.getName() + "}}" +
+				"   public {{name}}Set filter(Condition<{{name}}> condition)",
 				"   {",
-				"      {{setName}} filterList = new {{setName}}();",
+				"      {{name}}Set filterList = new {{name}}Set();",
 				"      filterItems(filterList, condition);",
 				"      return filterList;",
-				"   }",""
+				"   }","","",
 				
-				+ "{{#import " + Collection.class.getName() + "}}" + 
-				"   public {{setName}} with(Object value)",
+				"{{#import " + Collection.class.getName() + "}}" + 
+				"   public {{name}}Set with(Object value)",
 				"   {",
 				"      if (value == null)",
 				"      {",
@@ -76,9 +86,9 @@ public class JavaSet extends BasicGenerator {
 				"         this.add(({{name}}) value);",
 				"      }",
 				"      return this;",
-				"   }","");
-		
-		createTemplate("Declaration", Template.TEMPLATEEND, "}");
+				"   }","",
+				
+				"{{#template TEMPLATEEND}}}{{#endtemplate}}");
 		
 		this.extension = "java";
 		
@@ -87,9 +97,18 @@ public class JavaSet extends BasicGenerator {
 		this.addGenerator(new JavaSetMethod());
 	}
 	
+	public SendableEntityCreator generate(GraphMember item, TextItems parameters) {
+		if(item instanceof Clazz == false) {
+			return null;
+		}
+		TemplateResultFile result = this.executeClazz((Clazz)item, fileType, parameters);
+		this.executeTemplate(result, parameters, item);
+		return result;
+	}
+	
 	@Override
 	public Class<?> getTyp() {
-		return null;
+		return Clazz.class;
 	}
 	
 }
