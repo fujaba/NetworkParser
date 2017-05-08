@@ -77,7 +77,7 @@ public class FeatureCondition implements ParserCondition {
 	}
 	
 	@Override
-	public FeatureCondition create(CharacterBuffer buffer, TemplateParser parser, LocalisationInterface customTemplate) {
+	public void create(CharacterBuffer buffer, TemplateParser parser, LocalisationInterface customTemplate) {
 		CharacterBuffer temp = buffer.nextToken(false, SPLITEND, ENTER);
 		this.feature = Feature.valueOf(temp.toString()).create();
 		temp = buffer.nextToken(false, SPLITEND);
@@ -89,7 +89,6 @@ public class FeatureCondition implements ParserCondition {
 //				this.feature.withClazzValue(ReflectionLoader.getClass(string));
 			}
 		}
-		return this;
 	}
 
 	@Override

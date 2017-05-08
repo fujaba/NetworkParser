@@ -9,7 +9,7 @@ public interface ParserCondition extends ObjectCondition {
 	public static final char SPACE=' ';
 	
 	public Object getValue(LocalisationInterface variables);
-	public ObjectCondition create(CharacterBuffer buffer, TemplateParser parser, LocalisationInterface customTemplate);
+	public void create(CharacterBuffer buffer, TemplateParser parser, LocalisationInterface customTemplate);
 	public boolean isExpression();
 	public String getKey();
 	public ParserCondition getSendableInstance(boolean prototyp);

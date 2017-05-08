@@ -46,24 +46,21 @@ public class ImportCondition implements ParserCondition {
 	}
 
 	@Override
-	public ImportCondition create(CharacterBuffer buffer, TemplateParser parser, LocalisationInterface customTemplate) {
-		ImportCondition condition = new ImportCondition();
+	public void create(CharacterBuffer buffer, TemplateParser parser, LocalisationInterface customTemplate) {
 		buffer.skip();
 		char expressionStart = buffer.getCurrentChar();
 		if (expressionStart == SPLITSTART) {
 			ObjectCondition expression = parser.parsing(buffer, customTemplate, true);
-			condition.setExpression(expression);
+			this.setExpression(expression);
 			if (expression instanceof VariableCondition) {
-				condition.setImportName(expression.toString().substring(2, expression.toString().indexOf("}")));
+				this.setImportName(expression.toString().substring(2, expression.toString().indexOf("}")));
 			} else {
-				condition.setImportName(expression.toString());
+				this.setImportName(expression.toString());
 			}
 		} else {
-			condition.setImportName(expressionStart + buffer.nextToken(false, SPLITEND).toString());
+			this.setImportName(expressionStart + buffer.nextToken(false, SPLITEND).toString());
 		}
 		buffer.skipChar(SPLITEND);
-		
-		return condition;
 	}
 
 	private boolean setImportName(String value) {

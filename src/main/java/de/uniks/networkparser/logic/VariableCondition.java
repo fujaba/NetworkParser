@@ -125,9 +125,8 @@ public class VariableCondition implements ParserCondition{
 	}
 	
 	@Override
-	public VariableCondition create(CharacterBuffer buffer, TemplateParser parser, LocalisationInterface customTemplate) {
+	public void create(CharacterBuffer buffer, TemplateParser parser, LocalisationInterface customTemplate) {
 		this.value = buffer.nextToken(true, ' ', '}');
-		return this;
 	}
 
     @Override

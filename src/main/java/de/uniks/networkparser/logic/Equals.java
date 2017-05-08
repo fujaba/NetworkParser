@@ -4,7 +4,6 @@ import java.beans.PropertyChangeEvent;
 import de.uniks.networkparser.buffer.BufferedBuffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.interfaces.LocalisationInterface;
-import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.ParserCondition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.TemplateParser;
@@ -270,8 +269,6 @@ public class Equals implements ParserCondition, SendableEntityCreator {
 	}
 
 	@Override
-	public ObjectCondition create(CharacterBuffer buffer, TemplateParser parser, LocalisationInterface customTemplate) {
-		// TODO Auto-generated method stub
-		return null;
+	public void create(CharacterBuffer buffer, TemplateParser parser, LocalisationInterface customTemplate) {
 	}
 }

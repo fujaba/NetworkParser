@@ -29,9 +29,8 @@ public class StringCondition implements ParserCondition {
 	}
 
 	@Override
-	public StringCondition create(CharacterBuffer buffer, TemplateParser parser, LocalisationInterface customTemplate) {
+	public void create(CharacterBuffer buffer, TemplateParser parser, LocalisationInterface customTemplate) {
 		this.value = buffer;
-		return this;
 	}
 
     @Override

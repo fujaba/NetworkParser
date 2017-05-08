@@ -168,7 +168,7 @@ public class IfCondition implements ParserCondition, SendableEntityCreator {
 	}
 
 	@Override
-	public ObjectCondition create(CharacterBuffer buffer, TemplateParser parser, LocalisationInterface customTemplate) {
+	public void create(CharacterBuffer buffer, TemplateParser parser, LocalisationInterface customTemplate) {
 		// Switch for If IfNot
 		// {{#if {{Variable}}}}
 		// {{#if Variable}}
@@ -214,7 +214,6 @@ public class IfCondition implements ParserCondition, SendableEntityCreator {
 			buffer.skipTo(SPLITEND, false);
 		}
 		buffer.skipChar(SPLITEND);
-		return this;
 	}
 
 	@Override

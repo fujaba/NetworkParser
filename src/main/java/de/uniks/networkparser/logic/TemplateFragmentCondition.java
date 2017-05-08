@@ -84,7 +84,7 @@ public class TemplateFragmentCondition implements ParserCondition{
 	}
 
 	@Override
-	public TemplateFragmentCondition create(CharacterBuffer buffer, TemplateParser parser, LocalisationInterface customTemplate) {
+	public void create(CharacterBuffer buffer, TemplateParser parser, LocalisationInterface customTemplate) {
 		CharacterBuffer id = buffer.nextToken(false, SPLITEND, SPACE);
 		this.id = id.toString();
 		buffer.nextClean(true);
@@ -116,7 +116,6 @@ public class TemplateFragmentCondition implements ParserCondition{
 		
 		buffer.skipTo(SPLITEND, true);
 		buffer.skipChar(SPLITEND);
-		return this;
 	}
 	
 	public String getId() {

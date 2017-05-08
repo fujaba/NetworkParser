@@ -69,7 +69,7 @@ public class ForeachCondition implements ParserCondition {
 	}
 
 	@Override
-	public ForeachCondition create(CharacterBuffer buffer, TemplateParser parser, LocalisationInterface customTemplate) {
+	public void create(CharacterBuffer buffer, TemplateParser parser, LocalisationInterface customTemplate) {
 //		this.expression = StringCondition.create(buffer.nextToken(false, SPLITEND));
 		buffer.skipChar(SPACE);
 		ObjectCondition expression = parser.parsing(buffer, customTemplate, true);
@@ -82,7 +82,6 @@ public class ForeachCondition implements ParserCondition {
 		expression = parser.parsing(buffer, customTemplate, false, "endfor");
 		withLoopCondition(expression);
 		buffer.skipChar(SPLITEND);
-		return this;
 	}
 
 	@Override
