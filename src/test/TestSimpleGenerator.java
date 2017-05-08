@@ -84,4 +84,21 @@ public class TestSimpleGenerator {
 		Assert.assertEquals("Hello World", templateFile.toString());
 	}
 	
+	
+	@Test
+	public void testGeneratorTemplateFragmentIfCondition() {
+		GraphList classModel = new GraphList().with("de.uniks.test.model");
+		Clazz person = classModel.createClazz("Person");
+		Template template = new Template().withType(TemplateParser.DECLARATION)
+				.withTemplate("{{#template FIELD {{#ifnot {{file.clazz.type}}==interface}}}}Hello{{#endtemplate}}");
+		TemplateResultFile templateFile = new TemplateResultFile(person, true);
+		TemplateResultModel model = new TemplateResultModel();
+		model.withTemplate(new TemplateFragmentCondition());
+		
+		
+		TemplateResultFragment generate = template.generate(model, templateFile, person);
+		
+		Assert.assertEquals("Hello", templateFile.toString());
+	}
+	
 }
