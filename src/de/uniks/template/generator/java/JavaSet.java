@@ -53,7 +53,7 @@ public class JavaSet extends BasicGenerator {
 
 				"   public String getEntryType()",
 				"   {",
-				"      return \"{{packageClassName}}\";",
+				"      return \"{{file.member.fullName}}\";",
 				"   }","",
 				
 				"   @Override",
