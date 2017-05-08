@@ -19,11 +19,10 @@ public class JavaMethodBodyCondition extends CustomCondition<Method> {
 
 	// {{#BODY}}
 	@Override
-	public ObjectCondition create(CharacterBuffer buffer, TemplateParser parser, LocalisationInterface customTemplate) {
+	public void create(CharacterBuffer buffer, TemplateParser parser, LocalisationInterface customTemplate) {
 		// SKIP }}
 		buffer.skipTo(SPLITEND, true);
 		buffer.skip();
-		return this;
 	}
 	
 	@Override

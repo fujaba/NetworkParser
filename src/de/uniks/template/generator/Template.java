@@ -150,8 +150,8 @@ public class Template implements TemplateParser {
 					}
 				}
 				if(condition != null) {
-					ObjectCondition childCondition = condition.create(template, this, customTemplate);
-					parent.with(childCondition);
+					condition.create(template, this, customTemplate);
+					parent.with(condition);
 				}
 				template.skip();
 				start=template.position();
