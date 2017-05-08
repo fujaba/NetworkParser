@@ -2,6 +2,7 @@ package de.uniks.networkparser.logic;
 
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.interfaces.LocalisationInterface;
+import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.ParserCondition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.TemplateParser;
@@ -14,8 +15,11 @@ import de.uniks.networkparser.interfaces.TemplateParser;
  */
 public class ImportCondition implements ParserCondition {
 	private static final char SPLITEND='}';
+	private static final char SPLITSTART='{';
 	public static final String TAG="import";
 	private String importName;
+	
+	private ObjectCondition importExpression;
 	
 	@Override
 	public String getKey() {
@@ -32,7 +36,11 @@ public class ImportCondition implements ParserCondition {
 	public boolean update(Object value) {
 		if(value instanceof SendableEntityCreator) {
 			SendableEntityCreator creator = (SendableEntityCreator) value;
-			creator.setValue(value, "headers", importName, SendableEntityCreator.NEW);
+			if (importExpression != null && importExpression.update(value)) {
+				creator.setValue(value, "headers", ((SendableEntityCreator) value).getValue(creator, importName), SendableEntityCreator.NEW);
+			} else {
+				creator.setValue(value, "headers", importName, SendableEntityCreator.NEW);
+			}
 		}
 		return importName != null;
 	}
@@ -40,9 +48,21 @@ public class ImportCondition implements ParserCondition {
 	@Override
 	public ImportCondition create(CharacterBuffer buffer, TemplateParser parser, LocalisationInterface customTemplate) {
 		ImportCondition condition = new ImportCondition();
-		condition.setImportName(buffer.nextToken(false, SPLITEND).toString());
-		
+		buffer.skip();
+		char expressionStart = buffer.getCurrentChar();
+		if (expressionStart == SPLITSTART) {
+			ObjectCondition expression = parser.parsing(buffer, customTemplate, true);
+			condition.setExpression(expression);
+			if (expression instanceof VariableCondition) {
+				condition.setImportName(expression.toString().substring(2, expression.toString().indexOf("}")));
+			} else {
+				condition.setImportName(expression.toString());
+			}
+		} else {
+			condition.setImportName(expressionStart + buffer.nextToken(false, SPLITEND).toString());
+		}
 		buffer.skipChar(SPLITEND);
+		
 		return condition;
 	}
 
@@ -54,6 +74,14 @@ public class ImportCondition implements ParserCondition {
 		return false;
 	}
 
+	private boolean setExpression(ObjectCondition value) {
+		if (value != this.importExpression) {
+			this.importExpression = value;
+			return true;
+		}
+		return false;
+	}
+	
 	@Override
 	public boolean isExpression() {
 		return true;

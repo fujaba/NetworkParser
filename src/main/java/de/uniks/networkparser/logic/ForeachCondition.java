@@ -57,7 +57,7 @@ public class ForeachCondition implements ParserCondition {
 				if(object instanceof Collection<?>) {
 					Collection<?> collection = (Collection<?>) object;
 					for(Object item : collection) {
-						variablen.put(ITEM, ""+item);
+						variablen.put(ITEM, item);
 //						value
 						loop.update(value);
 						variablen.put(ITEM, null);
