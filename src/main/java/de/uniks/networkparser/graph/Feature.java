@@ -3,6 +3,7 @@ package de.uniks.networkparser.graph;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 
+import de.uniks.networkparser.graph.util.FeatureSet;
 import de.uniks.networkparser.list.SimpleSet;
 
 public enum Feature {
@@ -14,24 +15,16 @@ public enum Feature {
 		return new HashSet<FeatureProperty>();
 	}
 
-	public static SimpleSet<FeatureProperty> getAll() {
-		SimpleSet<FeatureProperty> result = new SimpleSet<FeatureProperty>();
-		result.add(PROPERTYCHANGESUPPORT.create());
-		result.add(PATTERNOBJECT.create());
-		result.add(SERIALIZATION.create());
+	public static FeatureSet getAll() {
+		FeatureSet result = new FeatureSet().with(PROPERTYCHANGESUPPORT, PATTERNOBJECT, SERIALIZATION, REMOVEYOUMETHOD);
 		result.add(SETCLASS.create().withClazzValue(SimpleSet.class));
-		result.add(REMOVEYOUMETHOD.create());
 		result.add(CODESTYLE.create().withStringValue(CODESTYLE_STANDARD));
 		return result;
 	}
 
-	public static SimpleSet<FeatureProperty> getStandAlone() {
-		SimpleSet<FeatureProperty> result = new SimpleSet<FeatureProperty>();
-		result.add(PROPERTYCHANGESUPPORT.create());
-		// result.add(SERIALIZATION.create());
+	public static FeatureSet getStandAlone() {
+		FeatureSet result = new FeatureSet().with(PROPERTYCHANGESUPPORT, STANDALONE, REMOVEYOUMETHOD);
 		result.add(SETCLASS.create().withClazzValue(LinkedHashSet.class));
-		result.add(REMOVEYOUMETHOD.create());
-		result.add(STANDALONE.create());
 		result.add(CODESTYLE.create().withStringValue(CODESTYLE_STANDARD));
 		return result;
 	}

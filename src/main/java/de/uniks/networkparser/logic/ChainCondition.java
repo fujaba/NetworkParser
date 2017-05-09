@@ -83,6 +83,21 @@ public class ChainCondition implements ObjectCondition{
 		add((Object[])values);
 		return this;
 	}
+	
+	@SuppressWarnings("unchecked")
+	public ChainCondition with(Collection<ObjectCondition> values) {
+		SimpleList<?> list;
+		
+		if(this.list instanceof SimpleList<?>) {
+			list = (SimpleList<Object>) this.list;
+		} else {
+			list = new SimpleList<ObjectCondition>();
+			list.with(this.list);
+			this.list = list;
+		}
+		list.withList(values);
+		return this;
+	}
 
 	public ChainCondition with(PropertyChangeListener... values) {
 		add((Object[])values);

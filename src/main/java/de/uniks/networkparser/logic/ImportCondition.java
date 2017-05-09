@@ -86,7 +86,12 @@ public class ImportCondition implements ParserCondition {
 			} else {
 				ChainCondition chainCondition = new ChainCondition();
 				chainCondition.with(result);
-				chainCondition.with(expression);
+				if(expression instanceof ChainCondition) {
+					ChainCondition cc = (ChainCondition) expression;
+					chainCondition.with(cc.getTemplates());
+				}else {
+					chainCondition.with(expression);
+				}
 				result = chainCondition;
 			}
 		}
