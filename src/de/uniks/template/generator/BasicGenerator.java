@@ -21,6 +21,8 @@ import de.uniks.template.TemplateResultFragment;
 
 public abstract class BasicGenerator {
 	protected String extension;
+	protected String path;
+	protected String postfix;
 	protected BasicGenerator owner;
 
 	protected SimpleList<Template> templates=new SimpleList<Template>();
@@ -103,6 +105,8 @@ public abstract class BasicGenerator {
 			templateResult.setParent((SendableEntityCreator)parameters);
 		}
 		templateResult.withExtension(this.extension);
+		templateResult.withPath(this.path);
+		templateResult.withPostfix(this.postfix);
 		
 		SimpleList<BasicGenerator> templateList;
 		AttributeSet attributes = clazz.getAttributes();

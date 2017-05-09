@@ -21,9 +21,9 @@ public class JavaAssociation extends BasicGenerator {
 				      "{{#endif}}" +
 				   "{{#endif}}" +
 				"{{#endfor}}" +
-//				"{{#if {{member.other.cardinality}}==n}}" +
-//				   "{{#import {{member.other.clazz.packageName}}{{member.other.clazz.name}}Set}}" +
-//				"{{#endif}}" +
+				"{{#if {{member.other.cardinality}}==n}}" +
+				   "{{#import {{member.other.clazz.packageName}}.util.{{member.other.clazz.name}}Set}}" +
+				"{{#endif}}" +
 				"   public {{modifiers} }{{#if {{member.other.cardinality}}==1}}{{other.clazz.name}}{{#else}}{{other.clazz.name}}Set{{#endif}} get{{other.Name}}(){{#if {{file.member.type}}==interface}};","","{{#endif}}",
 				"{{#ifnot {{file.member.type}}==interface}}",
 				"   {",

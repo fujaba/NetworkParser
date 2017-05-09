@@ -80,6 +80,7 @@ public class ModelGenerator extends BasicGenerator{
 		SimpleList<BasicGenerator> templates = new SimpleList<BasicGenerator>();
 
 		templates.add(new JavaClazz());
+		templates.add(new JavaSet());
 		// TODO add proper condition for allowing sets
 		// Sets are allowed
 //		if (model.f) {

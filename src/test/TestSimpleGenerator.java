@@ -101,4 +101,22 @@ public class TestSimpleGenerator {
 		Assert.assertEquals("Hello", templateFile.toString());
 	}
 	
+	@Test
+	public void testImport() {
+		GraphList classModel = new GraphList().with("de.uniks.test.model");
+		Clazz person = classModel.createClazz("Person");
+		Template template = new Template().withType(TemplateParser.DECLARATION)
+				.withTemplate("{{#import {{member.other.clazz.packageName}}{{member.other.clazz.name}}Set}}");
+		TemplateResultFile templateFile = new TemplateResultFile(person, true);
+		TemplateResultModel model = new TemplateResultModel();
+		ModelGenerator modelGenerator = new ModelGenerator();
+		model.withTemplate(modelGenerator.getTemplates());
+		
+		
+		TemplateResultFragment generate = template.generate(model, templateFile, person);
+		System.out.println(generate);
+		
+		Assert.assertEquals("Hello", templateFile.toString());
+	}
+	
 }

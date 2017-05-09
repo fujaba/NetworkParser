@@ -146,7 +146,7 @@ public class Template implements TemplateParser {
 				if(customTemplate instanceof TemplateResultModel) {
 					ParserCondition creator = ((TemplateResultModel)customTemplate).getTemplate(tokenPart.toString());
 					if(creator != null) {
-						condition = creator.getSendableInstance(false);
+						condition = creator.getSendableInstance(isExpression);
 					}
 				}
 				if(condition != null) {

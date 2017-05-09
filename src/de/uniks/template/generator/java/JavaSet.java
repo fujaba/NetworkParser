@@ -2,6 +2,7 @@ package de.uniks.template.generator.java;
 
 import java.util.Collection;
 
+import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.list.SimpleSet;
 import de.uniks.template.generator.BasicGenerator;
 import de.uniks.template.generator.Template;
@@ -12,10 +13,9 @@ public class JavaSet extends BasicGenerator {
 		createTemplate("Declaration", Template.DECLARATION, 
 				"{{#template PACKAGE}}{{#if packageName}}package {{packageName}};{{#endif}}{{#endtemplate}}","",
 				
-				"{{#template IMPORT}}{{#foreach {{file.headers}}}}","import {{item}};{{#endfor}}{{#endtemplate}}",""
+				"{{#template IMPORT}}{{#foreach {{file.headers}}}}","import {{item}};{{#endfor}}{{#endtemplate}}","",
 				
-				+ "{{#import " + SimpleSet.class.getName() + "}}" +
-				"{{visibility}} class {{setName}} extends SimpleSet<{{name}}>","{","",
+				"{{visibility}} class {{setName}} extends {{#feature SETCLASS="+SimpleSet.class.getName()+"}}<{{name}}>","{","",
 				
 				"   protected Class<?> getTypClass()",
 				"   {",
@@ -81,15 +81,16 @@ public class JavaSet extends BasicGenerator {
 		createTemplate("Declaration", Template.TEMPLATEEND, "}");
 		
 		this.extension = "java";
+		this.path = "util";
+		this.postfix = "Set";
 		
-		this.addGenerator(new JavaSetAttribute());
-		this.addGenerator(new JavaSetAssociation());
-		this.addGenerator(new JavaSetMethod());
+//		this.addGenerator(new JavaSetAttribute());
+//		this.addGenerator(new JavaSetAssociation());
+//		this.addGenerator(new JavaSetMethod());
 	}
 	
 	@Override
 	public Class<?> getTyp() {
-		return null;
+		return Clazz.class;
 	}
-	
 }
