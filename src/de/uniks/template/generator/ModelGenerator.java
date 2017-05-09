@@ -9,11 +9,11 @@ import de.uniks.networkparser.graph.Feature;
 import de.uniks.networkparser.graph.FeatureProperty;
 import de.uniks.networkparser.graph.GraphMember;
 import de.uniks.networkparser.graph.GraphModel;
+import de.uniks.networkparser.graph.util.FeatureSet;
 import de.uniks.networkparser.interfaces.ParserCondition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
-import de.uniks.networkparser.list.SimpleSet;
 import de.uniks.networkparser.logic.FeatureCondition;
 import de.uniks.networkparser.logic.ForeachCondition;
 import de.uniks.networkparser.logic.IfCondition;
@@ -21,23 +21,15 @@ import de.uniks.networkparser.logic.ImportCondition;
 import de.uniks.networkparser.logic.TemplateFragmentCondition;
 import de.uniks.template.TemplateResultFile;
 import de.uniks.template.TemplateResultModel;
+import de.uniks.template.generator.condition.JavaListCondition;
 import de.uniks.template.generator.condition.JavaMethodBodyCondition;
 import de.uniks.template.generator.java.JavaClazz;
 import de.uniks.template.generator.java.JavaSet;
 
 public class ModelGenerator extends BasicGenerator{
-	private SimpleSet<FeatureProperty> features = Feature.getAll();
-	
+	private FeatureSet features = Feature.getAll();
 	public SimpleKeyValueList<String, ParserCondition> customTemplate;
-//	private 
-//	public void generate(String rootDir, GraphModel model) {
-//		
-//		this.creatorFactory = new JavaCreatorFactory(this);
-//		this.setFactory =  new JavaSetFactory(this);
-//		this.creatorcreatorFactory =  new JavaCreatorCreatorFactory();
-//		BasicTemplate
-//	}
-	
+
 	public SimpleKeyValueList<String, ParserCondition> getTemplates() {
 		if(customTemplate == null) {
 			customTemplate = new SimpleKeyValueList<String, ParserCondition>();
@@ -48,6 +40,7 @@ public class ModelGenerator extends BasicGenerator{
 			addParserCondition(new IfCondition());
 			addParserCondition(new IfCondition().withKey(IfCondition.IFNOT));
 			addParserCondition(new JavaMethodBodyCondition());
+			addParserCondition(new JavaListCondition());
 		}
 		return customTemplate;
 	}
@@ -81,11 +74,6 @@ public class ModelGenerator extends BasicGenerator{
 
 		templates.add(new JavaClazz());
 		templates.add(new JavaSet());
-		// TODO add proper condition for allowing sets
-		// Sets are allowed
-//		if (model.f) {
-//			templates.add(new JavaSet());
-//		}
 		return generating(rootDir, model, parameters, templates, true);
 	}
 

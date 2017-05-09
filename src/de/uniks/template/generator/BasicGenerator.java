@@ -11,6 +11,7 @@ import de.uniks.networkparser.graph.GraphUtil;
 import de.uniks.networkparser.graph.Method;
 import de.uniks.networkparser.graph.util.AssociationSet;
 import de.uniks.networkparser.graph.util.AttributeSet;
+import de.uniks.networkparser.graph.util.FeatureSet;
 import de.uniks.networkparser.graph.util.MethodSet;
 import de.uniks.networkparser.interfaces.LocalisationInterface;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
@@ -18,8 +19,10 @@ import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.template.TemplateResultFile;
 import de.uniks.template.TemplateResultFragment;
+import de.uniks.template.TemplateResultModel;
 
 public abstract class BasicGenerator {
+	public static final String PROPERTY_FEATURE="features";
 	protected String extension;
 	protected String path;
 	protected String postfix;
@@ -56,12 +59,6 @@ public abstract class BasicGenerator {
 		return template;
 	}
 	
-//	public SendableEntityCreator generate(GraphMember item) {
-//		return generate(item, null);
-//	}
-	
-//	public abstract SendableEntityCreator generate(GraphMember item, TextItems parameters);
-
 	protected FeatureProperty getFeature(Feature value, Clazz... values) {
 		if(this.owner != null) {
 			return this.owner.getFeature(value, values); 
@@ -94,9 +91,22 @@ public abstract class BasicGenerator {
 	
 	protected TemplateResultFile getNewResult(Clazz clazz) {
 		FeatureProperty codeStyle = getFeature(Feature.CODESTYLE, clazz);
-		boolean isStandard = Feature.CODESTYLE_STANDARD.equals(codeStyle.getStringValue()); 
+		boolean isStandard = Feature.CODESTYLE_STANDARD.equals(codeStyle.getStringValue());
 		TemplateResultFile templateResult = new TemplateResultFile(clazz, isStandard);
 		return templateResult;
+	}
+	
+	protected FeatureSet getFeatures(LocalisationInterface value) {
+		if(value instanceof TemplateResultModel) {
+			TemplateResultModel model = (TemplateResultModel) value;
+			Object features = model.getValue(model, PROPERTY_FEATURE);
+			if(features != null) {
+				return (FeatureSet) features;
+			}
+			return null;
+		}
+		return null;
+		
 	}
 	
 	protected TemplateResultFile executeClazz(Clazz clazz, LocalisationInterface parameters) {

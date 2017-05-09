@@ -51,6 +51,10 @@ public class TemplateResultModel extends SimpleList<TemplateResultFile> implemen
 		if(this.language != null) {
 			return this.language.getText(label, model, gui);
 		}
+		Object value = this.getValue(label);
+		if(value != null) {
+			return value.toString();
+		}
 		return null;
 	}
 

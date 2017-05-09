@@ -7,6 +7,7 @@ import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.ParserCondition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.list.SimpleList;
+import de.uniks.networkparser.list.SimpleSet;
 
 public class TemplateResultFragment implements Comparable<TemplateResultFragment>, SendableEntityCreator, ObjectCondition, LocalisationInterface {
 	public static final String PROPERTY_PARENT="parent";
@@ -24,7 +25,7 @@ public class TemplateResultFragment implements Comparable<TemplateResultFragment
 	public static final String PROPERTY_TEMPLATEMODEL="templatemodel";
 
 	private LocalisationInterface variables;
-	private SimpleList<String> header = null;
+	private SimpleSet<String> header = null;
 	private GraphMember member;
 	private boolean expression=true;
 	private SendableEntityCreator parent;
@@ -124,7 +125,7 @@ public class TemplateResultFragment implements Comparable<TemplateResultFragment
 
 	public boolean addHeader(String value) {
 		if(this.header == null) {
-			this.header = new SimpleList<String>();
+			this.header = new SimpleSet<String>();
 		}
 		return this.header.add(value);	
 	}
@@ -268,7 +269,7 @@ public class TemplateResultFragment implements Comparable<TemplateResultFragment
 		return variables;
 	}
 	
-	public SimpleList<String> getHeaders() {
+	public SimpleSet<String> getHeaders() {
 		return header;
 	}
 	

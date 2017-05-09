@@ -33,6 +33,12 @@ public class TemplateResultFile extends SortedSet<TemplateResultFragment> implem
 		this.withMember(clazz);
 	}
 
+	public TemplateResultFile(Clazz clazz, String name, boolean comparator) {
+		super(comparator);
+		this.withName(name);
+		this.withMember(clazz);
+	}
+	
 	public String getName() {
 		return name;
 	}

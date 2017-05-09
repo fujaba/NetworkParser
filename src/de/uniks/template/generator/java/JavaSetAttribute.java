@@ -1,9 +1,6 @@
 package de.uniks.template.generator.java;
 
-import de.uniks.networkparser.TextItems;
 import de.uniks.networkparser.graph.Attribute;
-import de.uniks.networkparser.graph.GraphMember;
-import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.template.generator.BasicGenerator;
 import de.uniks.template.generator.Template;
 
@@ -11,22 +8,22 @@ public class JavaSetAttribute extends BasicGenerator {
 
 	public JavaSetAttribute() {
 		createTemplate("Declaration", Template.DECLARATION,
-				"   {{methodVisibility}} {{listType}} get{{Value}}()",
+				"{{#template VALUE}}   public {{#listType}} {{#if {{type}}==boolean}}is{{#else}}get{{#endif}}{{member.Name}}()",
 				"   {",
-				"      {{listType}} result = new {{listType}}();",
-				"      for ({{name}} obj : this)",
+				"      {{#listType}} result = new {{#listType}}();",
+				"      for ({{file.member.name}} obj : this)",
 				"      {",
-				"         result.add(obj.{{getMethodType}}{{Value}}());",
+				"         result.add(obj.{{#if {{type}}==boolean}}is{{#else}}get{{#endif}}{{member.Name}}());",
 				"      }",
 				"      return result;",
 				"   }","",
 
-				"   {{methodVisibility}} {{SetName}} filter{{Value}}({{type}} value)",
+				"   public {{file.member.name}}Set filter{{member.Name}}({{type}} value)",
 				"   {",
-				"      {{SetName}} result = new {{SetName}}();",
-				"      for({{name}} obj : this)",
+				"      {{file.member.name}}Set result = new {{file.member.name}}Set();",
+				"      for({{file.member.name}} obj : this)",
 				"      {",
-				"         if ({{#if {{member.type}}==BOOLEAN}} value == obj.is{{Name}}(){{#else}}{{#if {{member.type}}==OBJECT}}value.equals(obj.get{{Name}}()){{#else}}value == obj.get{{Name}}(){{#endif}}{{#endif}}{{filterCondition}})",
+				"         if ({{#if {{member.type}}==BOOLEAN}} value == obj.is{{Name}}(){{#else}}{{#if {{member.type}}==OBJECT}}value.equals(obj.get{{Name}}()){{#else}}value == obj.get{{Name}}(){{#endif}}{{#endif}})",
 				"         {",
 				"            result.add(obj);",
 				"         }",
@@ -35,7 +32,7 @@ public class JavaSetAttribute extends BasicGenerator {
 				"   }","",
 				
 				"{{#if {{member.type}}==VALUETYPE}}",
-				"   {{methodVisibility}} {{SetName}} filter{{Value}}({{type}} lower, {{type}} upper)",
+				"   public {{SetName}} filter{{Value}}({{type}} lower, {{type}} upper)",
 				"   {",
 				"      {{SetName}} result = new {{SetName}}();",
 				"      for ({{name}} obj : this)",
@@ -49,14 +46,14 @@ public class JavaSetAttribute extends BasicGenerator {
 				"   }","",
 				"{{#endif}}",
 
-				"   {{methodVisibility}} {{SetName}} with{{Value}}({{type}} value)",
+				"   public {{file.member.name}}Set with{{member.Name}}({{type}} value)",
 				"   {",
-				"      for ({{name}} obj : this)",
+				"      for ({{file.member.name}} obj : this)",
 				"      {",
-				"         obj.set{{Value}}(value);",
+				"         obj.set{{member.Name}}(value);",
 				"      }",
 				"      return this;",
-				"   }");
+				"   }","","","{{#endtemplate}}");
 	}
 	
 	@Override
