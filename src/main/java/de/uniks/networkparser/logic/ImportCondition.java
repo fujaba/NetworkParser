@@ -6,6 +6,7 @@ import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.ParserCondition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.TemplateParser;
+import de.uniks.networkparser.list.SimpleList;
 
 /**
  * @author Stefan
@@ -14,11 +15,7 @@ import de.uniks.networkparser.interfaces.TemplateParser;
  * Format {{#import value}} 
  */
 public class ImportCondition implements ParserCondition {
-	private static final char SPLITEND='}';
-	private static final char SPLITSTART='{';
 	public static final String TAG="import";
-	private String importName;
-	
 	private ObjectCondition importExpression;
 	
 	@Override
@@ -28,47 +25,73 @@ public class ImportCondition implements ParserCondition {
 
 	@Override
 	public CharSequence getValue(LocalisationInterface variables) {
+		if(variables instanceof SendableEntityCreator) {
+			SendableEntityCreator creator = (SendableEntityCreator) variables;
+			//&& importExpression.update(variables)
+			if (importExpression != null) {
+					if(importExpression instanceof ChainCondition) {
+						ChainCondition cc = (ChainCondition) importExpression;
+						SimpleList<ObjectCondition> templates = cc.getTemplates();
+						CharacterBuffer buffer=new CharacterBuffer();
+						for(ObjectCondition item : templates) {
+							if(item instanceof VariableCondition) {
+								VariableCondition vc = (VariableCondition) item;
+								Object result = vc.getValue(variables);
+								if(result != null) {
+									buffer.with(result.toString());
+								}
+							} else {
+								buffer.with(item.toString());
+							}
+						}
+						creator.setValue(variables, "headers", buffer.toString(), SendableEntityCreator.NEW);
+					} else if (importExpression instanceof VariableCondition){
+						VariableCondition vc = (VariableCondition) importExpression;
+						Object result = vc.getValue(variables);
+						if(result != null) {
+							creator.setValue(variables, "headers", result.toString(), SendableEntityCreator.NEW);
+						}
+					} else {
+						creator.setValue(variables, "headers", importExpression.toString(), SendableEntityCreator.NEW);
+					}
+				} else {
+					creator.setValue(variables, "headers", importExpression.toString(), SendableEntityCreator.NEW);
+				}
+			}
 		return null;
 	}
 
-	
 	@Override
 	public boolean update(Object value) {
-		if(value instanceof SendableEntityCreator) {
-			SendableEntityCreator creator = (SendableEntityCreator) value;
-			if (importExpression != null && importExpression.update(value)) {
-				creator.setValue(value, "headers", ((SendableEntityCreator) value).getValue(creator, importName), SendableEntityCreator.NEW);
-			} else {
-				creator.setValue(value, "headers", importName, SendableEntityCreator.NEW);
-			}
+		if(value instanceof LocalisationInterface) {
+			getValue((LocalisationInterface) value);
 		}
-		return importName != null;
+		return importExpression != null;
 	}
 
 	@Override
 	public void create(CharacterBuffer buffer, TemplateParser parser, LocalisationInterface customTemplate) {
 		buffer.skip();
-		char expressionStart = buffer.getCurrentChar();
-		if (expressionStart == SPLITSTART) {
-			ObjectCondition expression = parser.parsing(buffer, customTemplate, true);
-			this.setExpression(expression);
-			if (expression instanceof VariableCondition) {
-				this.setImportName(expression.toString().substring(2, expression.toString().indexOf("}")));
+		ObjectCondition result = null;
+		ObjectCondition expression;
+		while(buffer.getCurrentChar() != SPLITEND) {
+			expression = parser.parsing(buffer, customTemplate, true);
+//			if(expression instanceof VariableCondition) {
+//				((VariableCondition)expression).withExpression(true);
+//			}
+			if(result == null) {
+				result = expression;
+			}else if(result instanceof ChainCondition) {
+				((ChainCondition)result).with(expression);
 			} else {
-				this.setImportName(expression.toString());
+				ChainCondition chainCondition = new ChainCondition();
+				chainCondition.with(result);
+				chainCondition.with(expression);
+				result = chainCondition;
 			}
-		} else {
-			this.setImportName(expressionStart + buffer.nextToken(false, SPLITEND).toString());
 		}
+		this.setExpression(result);
 		buffer.skipChar(SPLITEND);
-	}
-
-	private boolean setImportName(String value) {
-		if(value != this.importName) {
-			this.importName = value;
-			return true;
-		}
-		return false;
 	}
 
 	private boolean setExpression(ObjectCondition value) {
@@ -91,6 +114,9 @@ public class ImportCondition implements ParserCondition {
 	
 	@Override
 	public String toString() {
-		return "{{#import "+importName+"}}";
+		if(this.importExpression != null) {
+			return "{{#import "+this.importExpression.toString() +"}}";
+		}
+		return "{{#import}}";
 	}
 }
