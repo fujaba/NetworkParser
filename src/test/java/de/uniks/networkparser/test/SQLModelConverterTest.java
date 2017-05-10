@@ -292,6 +292,42 @@ public class SQLModelConverterTest {
 //		for (SQLStatement statement : list) {
 //			System.out.println(statement.toString());
 //		}
+	}
+	
+	@Test
+	public void createTablesPrivotisierung() {
+		File file = new File("build/sampleB.db");
 
+		if (file.exists()) {
+			file.delete();
+		}
+
+		SQLTokener tokener = new SQLTokener(SQLStatement.connect("jdbc", "sqlite", "build/sampleD.db"), SQLTokener.TABLE_PRIVOTISIERUNG);
+
+		IdMap map = UniversityCreator.createIdMap("1");
+		map.withTimeStamp(1);
+
+		University universityModel = new University();
+		universityModel.withName("Uni").withUniId(1).withStudents(new Student().withStudentId(1).withFirstName("Max").withLastName("Mustermann").withCredits(5)
+				, new Student().withStudentId(2).withFirstName("Michael").withLastName("Mustermann").withCredits(7));
+
+		SQLStatementList list = (SQLStatementList) map.encode(universityModel, tokener);
+
+		Assert.assertEquals(14, list.size());
+		Assert.assertEquals("jdbc:sqlite:build/sampleD.db", list.get(0).toString());
+		Assert.assertEquals("CREATE TABLE IF NOT EXISTS Student ('_ID' STRING, 'PROP' STRING, 'VALUE' OBJECT)", list.get(1).toString());
+		Assert.assertEquals("CREATE TABLE IF NOT EXISTS University ('_ID' STRING, 'PROP' STRING, 'VALUE' OBJECT)", list.get(2).toString());
+		
+		Assert.assertEquals("INSERT INTO Student (_ID, PROP, VALUE) values('S2', 'university', 'U1')", list.get(3).toString());
+		Assert.assertEquals("INSERT INTO Student (_ID, PROP, VALUE) values('S2', 'firstName', 'Max')", list.get(4).toString());
+		Assert.assertEquals("INSERT INTO Student (_ID, PROP, VALUE) values('S2', 'lastName', 'Mustermann')", list.get(5).toString());
+		Assert.assertEquals("INSERT INTO Student (_ID, PROP, VALUE) values('S2', 'credits', '5')", list.get(6).toString());
+		Assert.assertEquals("INSERT INTO Student (_ID, PROP, VALUE) values('S3', 'university', 'U1')", list.get(7).toString());
+		Assert.assertEquals("INSERT INTO Student (_ID, PROP, VALUE) values('S3', 'firstName', 'Michael')", list.get(8).toString());
+		Assert.assertEquals("INSERT INTO Student (_ID, PROP, VALUE) values('S3', 'lastName', 'Mustermann')", list.get(9).toString());
+		Assert.assertEquals("INSERT INTO Student (_ID, PROP, VALUE) values('S3', 'credits', '7')", list.get(10).toString());
+		Assert.assertEquals("INSERT INTO University (_ID, PROP, VALUE) values('U1', 'name', 'Uni')", list.get(11).toString());
+		Assert.assertEquals("INSERT INTO University (_ID, PROP, VALUE) values('U1', 'students', 'S2')", list.get(12).toString());
+		Assert.assertEquals("INSERT INTO University (_ID, PROP, VALUE) values('U1', 'students', 'S3')", list.get(13).toString());
 	}
 }

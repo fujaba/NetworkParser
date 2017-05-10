@@ -34,6 +34,10 @@ import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SimpleSet;
 
 public class SQLStatement {
+	public static final String ID = "_ID";
+	public static final String VALUE = "VALUE";
+	public static final String PROP = "PROP";
+
 	protected SQLCommand command;
 	protected String table;
 	private boolean autoStatement;
@@ -49,10 +53,15 @@ public class SQLStatement {
 	public SQLStatement(SQLCommand command) {
 		this.command = command;
 	}
-
 	public SQLStatement(SQLCommand command, String table) {
 		this.command = command;
 		this.table = table;
+	}
+	
+	public SQLStatement(SQLCommand command, String table, String id) {
+		this.command = command;
+		this.table = table;
+		this.with(ID, id);
 	}
 
 	public SQLCommand getCommand() {
@@ -325,7 +334,7 @@ public class SQLStatement {
 		Entry<String, Object> item = null;
 		for(;i.hasNext();){
 			item = i.next();
-			if(SQLTokener.ID.equals(item.getKey())) {
+			if(ID.equals(item.getKey())) {
 				return (String) item.getValue();
 			}
 		}
@@ -333,7 +342,7 @@ public class SQLStatement {
 			i = new SimpleIteratorSet<String, Object>(conditions);
 			for(;i.hasNext();){
 				item = i.next();
-				if(SQLTokener.ID.equals(item.getKey())) {
+				if(ID.equals(item.getKey())) {
 					return (String) item.getValue();
 				}
 			}

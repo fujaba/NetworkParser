@@ -46,25 +46,39 @@ import de.uniks.networkparser.list.SimpleSet;
 
 public class SQLTokener extends Tokener {
 	private SQLStatement sqlConnection;
-	public static final String ID = "_ID";
+	public static String TABLE_FLAT="table";
+	public static String TABLE_PRIVOTISIERUNG="pivotisierung";
 	public static final byte FLAG_NONE = 0x00;
 	public static final byte FLAG_CREATE = 0x01;
 	public static final byte FLAG_DROP = 0x02;
+	private String TYPE_INTEGER="INTEGER";
+	private String TYPE_STRING="STRING";
+	private String TYPE_OBJECT="OBJECT";
 	private byte flag = FLAG_CREATE;
+	private String stragety = TABLE_FLAT;
 
 	public SQLTokener(SQLStatement connection) {
 		this.sqlConnection = connection;
 	}
+	public SQLTokener(SQLStatement connection, String stragety) {
+		this.sqlConnection = connection;
+		this.stragety = stragety;
+	}
+	
 	public SQLStatementList encode(GraphList model) {
 		SQLStatementList result = new SQLStatementList();
 		result.add(sqlConnection);
 		for (Clazz clazz : model.getClazzes()) {
 			result.add(new SQLStatement(SQLCommand.DROPTABLE, clazz.getName()));
 
-			SQLStatement createClass = new SQLStatement(SQLCommand.CREATETABLE, clazz.getName());
-			createClass.with(ID, "INTEGER");
-			parseAssociations(clazz, createClass);
-			parseAttributes(clazz, createClass);
+			SQLStatement createClass = new SQLStatement(SQLCommand.CREATETABLE, clazz.getName(), TYPE_STRING);
+			if(TABLE_FLAT.equalsIgnoreCase(stragety)) {
+				parseAssociations(clazz, createClass);
+				parseAttributes(clazz, createClass);
+			} else {
+				createClass.with(SQLStatement.PROP, TYPE_STRING);
+				createClass.with(SQLStatement.VALUE, TYPE_OBJECT);
+			}
 			result.add(createClass);
 		}
 		return result;
@@ -79,7 +93,7 @@ public class SQLTokener extends Tokener {
 		String type = "";
 		for (Association association : clazz.getAssociations()) {
 			if (association.getCardinality() == Cardinality.MANY) {
-				type = "INTEGER";
+				type = TYPE_INTEGER;
 			} else {
 				type = "INTEGER[]";
 			}
@@ -178,42 +192,50 @@ public class SQLTokener extends Tokener {
 				statements.add(new SQLStatement(SQLCommand.DROPTABLE, tableName));
 			}
 			if( map.isTokenerFlag(FLAG_CREATE)) {
-				SQLStatement dataStatement = new SQLStatement(SQLCommand.CREATETABLE, tableName);
-				dataStatement.with(ID, "STRING");
-				String[] properties = creator.getProperties();
-				for(int i = 0; i < properties.length; i++) {
-					String type = null;
-					if(properties[i].indexOf('.')>=0) {
-						continue;
-					}
-					Object value = creator.getValue(item, properties[i]);
-					if(value instanceof Collection<?>) {
-						Collection<?> collection = (Collection<?>) value;
-						if(collection.size()>0) {
-							Object child = collection.iterator().next();
-							String simpleName = child.getClass().getName();
-							SendableEntityCreator currentCreator = this.map.getCreator(simpleName, true);
-							if(currentCreator != null) {
-								type = "INTEGER[]";
+				SQLStatement dataStatement = new SQLStatement(SQLCommand.CREATETABLE, tableName, TYPE_STRING);
+				// SWITCH FOR PRIVOTISIERUNG
+				String[] properties = null;
+				if(TABLE_PRIVOTISIERUNG.equalsIgnoreCase(this.stragety)) {
+					dataStatement.with(SQLStatement.PROP, TYPE_STRING);
+					dataStatement.with(SQLStatement.VALUE, TYPE_OBJECT);
+				} else {
+					properties = creator.getProperties();
+				}
+				if(properties != null) {
+					for(int i = 0; i < properties.length; i++) {
+						String type = null;
+						if(properties[i].indexOf('.')>=0) {
+							continue;
+						}
+						Object value = creator.getValue(item, properties[i]);
+						if(value instanceof Collection<?>) {
+							Collection<?> collection = (Collection<?>) value;
+							if(collection.size()>0) {
+								Object child = collection.iterator().next();
+								String simpleName = child.getClass().getName();
+								SendableEntityCreator currentCreator = this.map.getCreator(simpleName, true);
+								if(currentCreator != null) {
+									type = "INTEGER[]";
+								}
 							}
-						}
-						if(type == null) {
-							type = "OBJECT[]";
-						}
-					} else {
-						if(value == null) {
-							type = "String";
+							if(type == null) {
+								type = "OBJECT[]";
+							}
 						} else {
-							String simpleName = value.getClass().getSimpleName();
-							SendableEntityCreator currentCreator = this.map.getCreator(simpleName, true);
-							if (currentCreator != null) {
-								type = "INTEGER";
+							if(value == null) {
+								type = TYPE_STRING;
 							} else {
-								type = simpleName;
+								String simpleName = value.getClass().getSimpleName();
+								SendableEntityCreator currentCreator = this.map.getCreator(simpleName, true);
+								if (currentCreator != null) {
+									type = TYPE_INTEGER;
+								} else {
+									type = simpleName;
+								}
 							}
 						}
+						dataStatement.with(properties[i], EntityUtil.convertPrimitiveToObjectType(type).toUpperCase());
 					}
-					dataStatement.with(properties[i], EntityUtil.convertPrimitiveToObjectType(type).toUpperCase());
 				}
 				statements.add(dataStatement);
 			}
@@ -235,8 +257,59 @@ public class SQLTokener extends Tokener {
 		String tableName = EntityUtil.shortClassName(className);
 		// Add TableCreate
 		addTableCreate(tableName, item, creator, statements, map);
+
+		if(TABLE_PRIVOTISIERUNG.equalsIgnoreCase(this.stragety)) {
+			parseModelPrivotisierung(map, tableName, id, creator, item, statements);
+		}else {
+			parseModelFlat(map, tableName, id, creator, item, statements);
+		}
+		return id;
+	}
+	private void parseModelPrivotisierung(MapEntity map, String tableName, String id, SendableEntityCreator creator, Object item, SQLStatementList statements) {
+		String[] properties = creator.getProperties();
+		Object prototype = creator.getSendableInstance(true);
+		SQLStatement insertStatement;
+
+		for (String property : properties) {
+			Object value = creator.getValue(item, property);
+			// Null Value
+			if(value == null) {
+				continue;
+			}
+			// DefaultValue
+			if(value.equals(creator.getValue(prototype, property))) {
+				continue;
+			}
+			
+			// SWITCH FOR TO N-ASSOC
+			
+			if (value instanceof Collection<?>) {
+				Collection<?> children = (Collection<?>) value;
+				for(Iterator<?> i = children.iterator();i.hasNext();) {
+					String neighbourId = parseModel(map, i.next(), statements);
+					
+					insertStatement = new SQLStatement(SQLCommand.INSERT, tableName, id);
+					insertStatement.with(SQLStatement.PROP, property);
+					insertStatement.with(SQLStatement.VALUE, neighbourId);
+					statements.add(insertStatement);
+				}
+			} else {
+				insertStatement = new SQLStatement(SQLCommand.INSERT, tableName, id);
+				insertStatement.with(SQLStatement.PROP, property);
+				SendableEntityCreator childCreator = this.map.getCreator(value.getClass().getName(), true);
+				if(childCreator != null) {
+					insertStatement.with(SQLStatement.VALUE, parseModel(map, value, statements));
+				}else {
+					insertStatement.with(SQLStatement.VALUE, value);
+				}
+				statements.add(insertStatement);
+			}
+		}
+	}
+	private void parseModelFlat(MapEntity map, String tableName, String id, SendableEntityCreator creator, Object item, SQLStatementList statements) {
 		SQLStatement insertStatement = new SQLStatement(SQLCommand.INSERT, tableName);
-		insertStatement.with(ID, id);
+		insertStatement.with(SQLStatement.ID, id);
+
 		for (String property : creator.getProperties()) {
 			Object value = creator.getValue(item, property);
 			if(value == null) {
@@ -259,7 +332,6 @@ public class SQLTokener extends Tokener {
 			}
 		}
 		statements.add(insertStatement);
-		return id;
 	}
 
 	final static class SelectSearcher {
@@ -324,8 +396,8 @@ public class SQLTokener extends Tokener {
 						// Already found insert must be Update
 						if(statement.isAutoStatement()) {
 							statement.withCommand(SQLCommand.UPDATE);
-							statement.withCondition(ID, primaryKey);
-							statement.without(ID);
+							statement.withCondition(SQLStatement.ID, primaryKey);
+							statement.without(SQLStatement.ID);
 						}
 					}
 				}
@@ -336,8 +408,8 @@ public class SQLTokener extends Tokener {
 					if (values.getIds().contains(primaryKey) == false) {
 						if(statement.isAutoStatement()) {
 							statement.withCommand(SQLCommand.INSERT);
-							statement.withoutCondition(ID);
-							statement.with(ID, primaryKey);
+							statement.withoutCondition(SQLStatement.ID);
+							statement.with(SQLStatement.ID, primaryKey);
 							values.addId(primaryKey);
 						}
 					}
@@ -354,8 +426,8 @@ public class SQLTokener extends Tokener {
 					if (statement.isAutoStatement() && values.getIds().contains(statement.getPrimaryId()) == false) {
 						if(primaryKey != null) {
 							statement.withCommand(SQLCommand.INSERT);
-							statement.withoutCondition(ID);
-							statement.with(ID, primaryKey);
+							statement.withoutCondition(SQLStatement.ID);
+							statement.with(SQLStatement.ID, primaryKey);
 							values.addId(primaryKey);
 						}
 					}
@@ -398,7 +470,7 @@ public class SQLTokener extends Tokener {
 				continue;
 			}
 			String tableName = entity.getKey();
-			SQLStatement selectStatement = new SQLStatement(SQLCommand.SELECT, tableName).withValues(ID).withCondition(ID, values.getIds());
+			SQLStatement selectStatement = new SQLStatement(SQLCommand.SELECT, tableName).withValues(SQLStatement.ID).withCondition(SQLStatement.ID, values.getIds());
 			selectList.add(selectStatement);
 		}
 		if(selectList.size() < 1) {
@@ -411,7 +483,7 @@ public class SQLTokener extends Tokener {
 		// Try to find all Matches to remove some MayBe's
 		for(SQLTable sqlTable : results) {
 			SelectSearcher selectSearcher = foundKeys.get(sqlTable.getTable());
-			SimpleList<Object> idValues = sqlTable.getColumnValue(ID);
+			SimpleList<Object> idValues = sqlTable.getColumnValue(SQLStatement.ID);
 			for(Object id : idValues) {
 				for(int i=selectSearcher.mayBeStatements.size()-1;i>=0;i--) {
 					SQLStatement statement = selectSearcher.mayBeStatements.get(i);
@@ -419,8 +491,8 @@ public class SQLTokener extends Tokener {
 					if (primaryId != null && primaryId.equals(id)) {
 						if (statement.getCommand().equals(SQLCommand.INSERT)) {
 							statement.withCommand(SQLCommand.UPDATE);
-							statement.withCondition(ID, primaryId);
-							statement.without(ID);
+							statement.withCondition(SQLStatement.ID, primaryId);
+							statement.without(SQLStatement.ID);
 							selectSearcher.mayBeStatements.remove(i);
 						} else {
 							// May be Update or Select
