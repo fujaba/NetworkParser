@@ -662,8 +662,9 @@ public class Clazz extends GraphEntity {
 			if(existsElements.contains(member)) {
 				continue;
 			}
+			Modifier modifier = member.getModifier();
 			if(isInterface) {
-				if(member.getModifier() == null || member.getModifier().has(Modifier.DEFAULT) == false) {
+				if(modifier == null || modifier.has(Modifier.DEFAULT) == false) {
 					if(check(member, filters) && newExistElements.contains(member) == false) {
 						newElements.add(member);
 					}
@@ -671,7 +672,7 @@ public class Clazz extends GraphEntity {
 					newExistElements.add(member);
 					newElements.remove(member);
 				}
-			} else if(isAbstract && member.getModifier().has(Modifier.ABSTRACT)) {
+			} else if(isAbstract && modifier != null && modifier.has(Modifier.ABSTRACT)) {
 				if(check(member, filters) && newExistElements.contains(member) == false) {
 					newElements.add(member);
 				} else if(newExistElements.contains(member) == false){
