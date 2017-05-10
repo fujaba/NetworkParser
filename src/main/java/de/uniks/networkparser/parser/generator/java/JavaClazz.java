@@ -3,12 +3,8 @@ package de.uniks.networkparser.parser.generator.java;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
-import de.uniks.networkparser.TextItems;
 import de.uniks.networkparser.graph.Clazz;
-import de.uniks.networkparser.graph.GraphMember;
-import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.parser.Template;
-import de.uniks.networkparser.parser.TemplateResultFile;
 import de.uniks.networkparser.parser.generator.BasicGenerator;
 
 public class JavaClazz extends BasicGenerator{
@@ -80,15 +76,6 @@ public class JavaClazz extends BasicGenerator{
 		this.addGenerator(new JavaMethod());
 	}
 
-	public SendableEntityCreator generate(GraphMember item, TextItems parameters) {
-		if(item instanceof Clazz == false) {
-			return null;
-		}
-		TemplateResultFile result = this.executeClazz((Clazz)item, parameters);
-		this.executeTemplate(result, parameters, item);
-		return result;
-	}
-	
 	@Override
 	public Class<?> getTyp() {
 		return Clazz.class;

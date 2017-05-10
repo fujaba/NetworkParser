@@ -100,7 +100,7 @@ public class JavaSet extends BasicGenerator {
 	
 	
 	@Override
-	public TemplateResultFile executeClazz(Clazz clazz, LocalisationInterface parameters) {
+	public TemplateResultFile executeClazz(Clazz clazz, LocalisationInterface parameters, boolean isStandard) {
 		FeatureSet features = getFeatures(parameters);
 //FIXME		if(features.match(Feature.SETCLASS, clazz) == false) {
 //			return null;
@@ -108,7 +108,7 @@ public class JavaSet extends BasicGenerator {
 //		if(parameters instanceof templ)
 //		parameters.getText("features", null, null);
 		
-		return super.executeClazz(clazz, parameters);
+		return super.executeClazz(clazz, parameters, isStandard);
 	}
 	
 //	public SendableEntityCreator generate(GraphMember item, TextItems parameters) {

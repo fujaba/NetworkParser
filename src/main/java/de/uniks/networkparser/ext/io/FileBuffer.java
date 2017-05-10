@@ -173,6 +173,16 @@ public class FileBuffer extends Buffer {
 		return writeFile(fileName, data, false);
 	}
 
+	public static final boolean deleteFile(String fileName) {
+		File file;
+		file = new File(fileName);
+
+		if (file.exists()) {
+			return file.delete();
+		}
+		return true;
+	}
+	
 	private boolean createFile() {
 		if(this.file == null) {
 			return false;

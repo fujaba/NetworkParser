@@ -1,13 +1,11 @@
 package de.uniks.networkparser.parser.generator;
 
-import de.uniks.networkparser.TextItems;
 import de.uniks.networkparser.graph.Association;
 import de.uniks.networkparser.graph.Attribute;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.Feature;
 import de.uniks.networkparser.graph.FeatureProperty;
 import de.uniks.networkparser.graph.GraphMember;
-import de.uniks.networkparser.graph.GraphUtil;
 import de.uniks.networkparser.graph.Method;
 import de.uniks.networkparser.graph.util.AssociationSet;
 import de.uniks.networkparser.graph.util.AttributeSet;
@@ -79,24 +77,8 @@ public abstract class BasicGenerator {
 		}
 	}
 	
-// FileTemplate	
-	protected TemplateResultFile executeChildren(TextItems parameters, GraphMember member) {
-		Clazz clazz = GraphUtil.getParentClazz(member);
-		TemplateResultFile templateResult = getNewResult(clazz);
-		SimpleList<BasicGenerator> templateList = children.get(member.getClass());
-		for(BasicGenerator template : templateList) {
-			template.executeTemplate(templateResult, parameters, member);
-		}
-		return templateResult;
-	}
-	
-	protected TemplateResultFile getNewResult(Clazz clazz) {
-		FeatureProperty codeStyle = getFeature(Feature.CODESTYLE, clazz);
-		boolean isStandard = Feature.CODESTYLE_STANDARD.equals(codeStyle.getStringValue());
-		TemplateResultFile templateResult = new TemplateResultFile(clazz, isStandard);
-		return templateResult;
-	}
-	
+
+
 	protected FeatureSet getFeatures(LocalisationInterface value) {
 		if(value instanceof TemplateResultModel) {
 			TemplateResultModel model = (TemplateResultModel) value;
@@ -110,14 +92,19 @@ public abstract class BasicGenerator {
 		
 	}
 	
-	public TemplateResultFile executeClazz(Clazz clazz, LocalisationInterface parameters) {
-		TemplateResultFile templateResult = owner.getNewResult(clazz);
-		if(parameters instanceof SendableEntityCreator) {
-			templateResult.setParent((SendableEntityCreator)parameters);
-		}
+	public TemplateResultFile createResultFile(Clazz clazz, boolean isStandard) {
+		TemplateResultFile templateResult = new TemplateResultFile(clazz, isStandard);
 		templateResult.withExtension(this.extension);
 		templateResult.withPath(this.path);
 		templateResult.withPostfix(this.postfix);
+		return templateResult;
+	}
+	
+	public TemplateResultFile executeClazz(Clazz clazz, LocalisationInterface parameters, boolean isStandard) {
+		TemplateResultFile templateResult = createResultFile(clazz, isStandard);
+		if(parameters instanceof SendableEntityCreator) {
+			templateResult.setParent((SendableEntityCreator)parameters);
+		}
 		
 		SimpleList<BasicGenerator> templateList;
 		AttributeSet attributes = clazz.getAttributes();
