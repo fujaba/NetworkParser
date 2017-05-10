@@ -23,14 +23,16 @@ public class SimpleGenerator {
 	@Test
 	public void testGenerator() {
 		GraphList classModel = new GraphList().with("de.uniks.test.model");
+		Clazz student = classModel.createClazz("Student");
 		Clazz person = classModel.createClazz("Person");
 		Clazz room = classModel.createClazz("Room");
-		person.withBidirectional(room, "room", Cardinality.ONE, "persons", Cardinality.MANY);
+		student.withSuperClazz(person);
+		student.withBidirectional(room, "room", Cardinality.ONE, "persons", Cardinality.MANY);
 		person.withAttribute("name", DataType.STRING);
 		person.withMethod("eat", DataType.BOOLEAN);
 		ModelGenerator javaModelFactory = new ModelGenerator();
-		javaModelFactory.generate("src", classModel);
-		javaModelFactory.generateTypescript("src", classModel);
+		javaModelFactory.generate("build", classModel);
+//		javaModelFactory.generateTypescript("build", classModel);
 //		System.out.println(javaModelFactory.create(classModel));
 	}
 	

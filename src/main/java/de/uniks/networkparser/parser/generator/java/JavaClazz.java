@@ -20,7 +20,7 @@ public class JavaClazz extends BasicGenerator{
 				
 				"{{#template IMPORT}}{{#foreach {{file.headers}}}}","import {{item}};{{#endfor}}{{#endtemplate}}","",
 				
-				"{{visibility}} {{modifiers} }{{type}} {{name}}{{#if {{superclasses}}}} {{superclasses}}{{#endif}}","{","",
+				"{{visibility}} {{modifiers} }{{type}} {{name}}{{#if {{superclazz}}}} extends {{superclazz}}{{#endif}}{{#if {{implements}}}} implements {{implements}}{{#endif}}","{","",
 
 				"{{#if {{#feature PROPERTYCHANGESUPPORT}}}}"
 						+"{{#import "+PropertyChangeListener.class.getName()+"}}"+"{{#import "+PropertyChangeSupport.class.getName()+"}}"+ 

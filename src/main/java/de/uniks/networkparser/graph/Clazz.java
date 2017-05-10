@@ -15,6 +15,8 @@ public class Clazz extends GraphEntity {
 	public static final String PROPERTY_VISIBILITY = "visibility";
 	public static final String PROPERTY_MODIFIERS = "modifiers";
 	public static final String PROPERTY_TYPE = "type";
+	public static final String PROPERTY_SUPERCLAZZ = "superclazz";
+	public static final String PROPERTY_IMPLEMENTS = "implements";
 	
 	private ClazzType type = ClazzType.CLAZZ;
 
@@ -818,10 +820,17 @@ public class Clazz extends GraphEntity {
 		if(PROPERTY_TYPE.equalsIgnoreCase(attribute)) {
 			return this.getType().getValue();
 		}
-//		parameters.put("name", clazz.getName(true));
-//		parameters.put("superclasses", determineSuperClasses(clazz, superPropertyChangeEnabled));
-//		parameters.put("propertyChange", propertyChange);
-
+		if(PROPERTY_TYPE.equalsIgnoreCase(attribute)) {
+			return this.getType().getValue();
+		}
+		if(PROPERTY_SUPERCLAZZ.equalsIgnoreCase(attribute)) {
+			ClazzSet superClazzes = getSuperClazzes(false);
+			return superClazzes.toString(", ");
+		}
+		if(PROPERTY_IMPLEMENTS.equalsIgnoreCase(attribute)) {
+			ClazzSet implementsClazz = getImplements();
+			return implementsClazz.toString(", ");
+		}
 		return super.getValue(attribute);
 	}
 }
