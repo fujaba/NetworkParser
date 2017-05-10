@@ -820,9 +820,6 @@ public class Clazz extends GraphEntity {
 		if(PROPERTY_TYPE.equalsIgnoreCase(attribute)) {
 			return this.getType().getValue();
 		}
-		if(PROPERTY_TYPE.equalsIgnoreCase(attribute)) {
-			return this.getType().getValue();
-		}
 		if(PROPERTY_SUPERCLAZZ.equalsIgnoreCase(attribute)) {
 			ClazzSet superClazzes = getSuperClazzes(false);
 			return superClazzes.toString(", ");
