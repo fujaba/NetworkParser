@@ -1,0 +1,11 @@
+**/build
+**/bin
+**/.idea
+**/gen
+**/.settings
+**/.gradle
+*.*~
+/bin/
+gradle.properties
+*.gpg
+*.jar
