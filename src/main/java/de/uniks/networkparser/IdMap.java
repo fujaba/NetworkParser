@@ -103,7 +103,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 	
 	public static final byte FLAG_SIMPLEFORMAT = 0x08;
 
-	private byte flag = FLAG_ID;
+	protected byte flag = FLAG_ID;
 	
 	public static final String SESSION = "session";
 
@@ -115,17 +115,17 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 	/** The prio Object mostly a Timestamp or int value. */
 	protected long timeStamp;
 
-	private Grammar grammar = new SimpleGrammar();
+	protected Grammar grammar = new SimpleGrammar();
 
 	protected SimpleKeyValueList<String, Object> keyValue = new SimpleKeyValueList<String, Object>().withFlag(SimpleKeyValueList.BIDI);
 
 	protected Filter filter = new Filter();
 
-	private JsonTokener jsonTokener = new JsonTokener().withMap(this);
+	protected JsonTokener jsonTokener = new JsonTokener().withMap(this);
 
-	private XMLTokener xmlTokener = new XMLTokener().withMap(this);
+	protected XMLTokener xmlTokener = new XMLTokener().withMap(this);
 
-	private ByteTokener byteTokener = new ByteTokener().withMap(this);
+	protected ByteTokener byteTokener = new ByteTokener().withMap(this);
 
 	protected NetworkParserLog logger = new NetworkParserLog();
 
@@ -1177,7 +1177,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 	 * @param tokener the The Tokener for encoding
 	 * @return the json array
 	 */
-	private EntityList encodeList(Object object, MapEntity map, Tokener tokener) {
+	protected EntityList encodeList(Object object, MapEntity map, Tokener tokener) {
 		EntityList target = (EntityList) map.getTarget();
 		SimpleList<String> ignoreIds = new SimpleList<String>();
 		if (object instanceof Collection<?>) {
@@ -1285,7 +1285,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 	 *           tokener for Encoding like JsonTokener, XMLTokener
 	 * @return the Jsonobject
 	 */
-	Entity encode(Object entity, MapEntity map, Tokener tokener) {
+	protected Entity encode(Object entity, MapEntity map, Tokener tokener) {
 		if (entity == null) {
 			return null;
 		}
@@ -1299,7 +1299,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 	}
 
 
-	private Entity encode(Object entity, String className, MapEntity map, Tokener tokener, BaseItem parentNode) {
+	protected Entity encode(Object entity, String className, MapEntity map, Tokener tokener, BaseItem parentNode) {
 		SendableEntityCreator creator = map.getCreator(Grammar.WRITE, entity, className);
 		if (creator == null) {
 			return null;
