@@ -822,10 +822,19 @@ public class Clazz extends GraphEntity {
 			return this.getType().getValue();
 		}
 		if(PROPERTY_SUPERCLAZZ.equalsIgnoreCase(attribute)) {
-			ClazzSet superClazzes = getSuperClazzes(false);
-			return superClazzes.toString(", ");
+			ClazzSet clazzes;
+			if(this.getType()==ClazzType.ENUMERATION || this.getType()==ClazzType.INTERFACE) {
+				clazzes = getImplements();
+			} else {
+				clazzes = getSuperClazzes(false);
+			}
+			return clazzes.toString(", ");
 		}
 		if(PROPERTY_IMPLEMENTS.equalsIgnoreCase(attribute)) {
+			if(this.getType()==ClazzType.ENUMERATION || this.getType()==ClazzType.INTERFACE) {
+				return null;
+			}
+
 			ClazzSet implementsClazz = getImplements();
 			return implementsClazz.toString(", ");
 		}

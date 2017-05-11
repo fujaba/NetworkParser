@@ -10,6 +10,7 @@ import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.TemplateParser;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.logic.ChainCondition;
+import de.uniks.networkparser.logic.Equals;
 import de.uniks.networkparser.logic.IfCondition;
 import de.uniks.networkparser.logic.StringCondition;
 import de.uniks.networkparser.logic.TemplateCondition;
@@ -18,6 +19,7 @@ import de.uniks.networkparser.logic.VariableCondition;
 public class Template implements TemplateParser {
 	private static final char SPLITSTART='{';
 	private static final char SPLITEND='}';
+	private static final char ENTER='=';
 	
 	private TemplateCondition token = new TemplateCondition();
 	
@@ -144,7 +146,10 @@ public class Template implements TemplateParser {
 				if(customTemplate instanceof TemplateResultModel) {
 					ParserCondition creator = ((TemplateResultModel)customTemplate).getTemplate(tokenPart.toString());
 					if(creator != null) {
-						condition = creator.getSendableInstance(isExpression);
+						Object item =creator.getSendableInstance(isExpression);
+						if(item instanceof ParserCondition) {
+							condition = (ParserCondition) item;
+						}
 					}
 				}
 				if(condition != null) {
@@ -158,16 +163,42 @@ public class Template implements TemplateParser {
 			template.nextString(tokenPart, false, false, SPLITEND);
 			String key = tokenPart.toString();
 			child = createVariable(key, isExpression);
-			parent.with(child);
 			character = template.getChar();
 			if(character == SPLITEND) {
-				template.skip();
+				template.getChar();
 				start=template.position();
 				
 				if(isExpression) {
+					// BREAK FOR ONLY VARIABLE
+					
+					char firstChar=template.getCurrentChar();
+					if(firstChar == ENTER || firstChar == '!') {
+						// CHECK NEXT TOKEN
+						char nextChar = template.getChar();
+						if(nextChar == ENTER) {
+							// MAY BE A EQUALS
+							template.skip();
+							Equals equalsExpression = new Equals();
+							if(child instanceof ParserCondition) {
+								equalsExpression.withLeft((ParserCondition)child);
+							}
+							child = parsing(template, customTemplate, true);
+							if(child instanceof ParserCondition) {
+								equalsExpression.withRight((ParserCondition)child);
+							}
+							child = equalsExpression;
+						} else {
+							// MAY BE ANOTHER CHAR
+							template.skip(-1);
+						}
+					}
+					parent.with(child);
 					break;
 				}
+				parent.with(child);
 				continue;
+			} else {
+				parent.with(child);
 			}
 			tokenPart.reset();
 			template.nextString(tokenPart, false, false, SPLITEND);

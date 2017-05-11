@@ -177,22 +177,6 @@ public class IfCondition implements ParserCondition, SendableEntityCreator {
 		buffer.skip();
 		ObjectCondition expression = parser.parsing(buffer, customTemplate, true);
 		
-		// case equals
-		if (buffer.nextClean(true) == '=') {
-			if (buffer.nextClean(true) == '=') {
-				buffer.skip();
-				buffer.skip();
-				Equals equalsExpression = new Equals();
-				if(expression instanceof ParserCondition) {
-					equalsExpression.withLeft((ParserCondition)expression);
-				}
-				expression = parser.parsing(buffer, customTemplate, true);
-				if(expression instanceof ParserCondition) {
-					equalsExpression.withRight((ParserCondition)expression);
-				}
-				expression = equalsExpression;
-			}
-		}
 		if(this.tag.equalsIgnoreCase("ifnot")) {
 			this.withExpression(Not.create(expression));	
 		}else {

@@ -19,7 +19,9 @@ import de.uniks.networkparser.logic.ForeachCondition;
 import de.uniks.networkparser.logic.IfCondition;
 import de.uniks.networkparser.logic.ImportCondition;
 import de.uniks.networkparser.logic.TemplateFragmentCondition;
+import de.uniks.networkparser.parser.Template;
 import de.uniks.networkparser.parser.TemplateResultFile;
+import de.uniks.networkparser.parser.TemplateResultFragment;
 import de.uniks.networkparser.parser.TemplateResultModel;
 import de.uniks.networkparser.parser.generator.BasicGenerator;
 import de.uniks.networkparser.parser.generator.condition.JavaListCondition;
@@ -193,5 +195,22 @@ public class ModelGenerator extends BasicGenerator {
 		String fileName = path + "CreatorCreator.java";
 
 		FileBuffer.deleteFile(fileName);
+	}
+
+	public TemplateResultFragment parseTemplate(String templateString, GraphMember member) {
+		Template template = new Template().withTemplate(templateString);
+		return parseTemplate(template, member);
+	}
+
+	public TemplateResultFragment parseTemplate(Template template, GraphMember member) {
+		TemplateResultModel model = new TemplateResultModel();
+		model.withTemplate(this.getTemplates());
+		model.withFeatures(this.features);
+		TextItems parameters = new TextItems();
+		parameters.withDefaultLabel(false);
+		model.withLanguage(parameters);
+
+		TemplateResultFragment generate = template.generate(model, parameters, member);
+		return generate;
 	}
 }

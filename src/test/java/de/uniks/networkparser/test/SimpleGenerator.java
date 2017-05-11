@@ -19,7 +19,40 @@ import de.uniks.networkparser.parser.TemplateResultFragment;
 import de.uniks.networkparser.parser.TemplateResultModel;
 
 public class SimpleGenerator {
+	@Test
+	public void testIfStatement() {
+		String template ="{{#if {{type}}==INTERFACE{{#ENDAND}}}}"
+				+ "Hallo"
+				+" {{#endif}}";
+		Clazz person = new Clazz("Person").enableInterface();
+		ModelGenerator generator = new ModelGenerator();
 
+		TemplateResultFragment fragment = generator.parseTemplate(template, person);
+		Assert.assertEquals("Hallo", fragment.getResult().toString());
+		
+		
+		template ="{{#if {{type}}!=INTERFACE{{#ENDAND}}}}"
+				+ "Hallo"
+				+" {{#endif}}";
+		person = new Clazz("Person");
+		fragment = generator.parseTemplate(template, person);
+		Assert.assertEquals("Hallo", fragment.getResult().toString());
+
+	}
+	
+	
+	@Test
+	public void testIfAndStatement() {
+		String template ="{{#if {{#AND}}{{#feature PROPERTYCHANGESUPPORT}}{{type}}!=INTERFACE{{#ENDAND}}}}"
+				+ "Hallo"
+				+" {{#endif}}";
+		Clazz person = new Clazz("Person");
+		ModelGenerator generator = new ModelGenerator();
+		TemplateResultFragment fragment = generator.parseTemplate(template, person);
+//		System.out.println(fragment);
+		Assert.assertEquals("Hallo", fragment.getResult().toString());
+	}
+	
 	@Test
 	public void testGenerator() {
 		GraphList classModel = new GraphList().with("de.uniks.test.model");

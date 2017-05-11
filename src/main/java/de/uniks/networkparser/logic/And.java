@@ -25,11 +25,16 @@ THE SOFTWARE.
 */
 import java.util.ArrayList;
 
+import de.uniks.networkparser.buffer.CharacterBuffer;
+import de.uniks.networkparser.interfaces.LocalisationInterface;
 import de.uniks.networkparser.interfaces.ObjectCondition;
+import de.uniks.networkparser.interfaces.ParserCondition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
+import de.uniks.networkparser.interfaces.TemplateParser;
 
-public class And implements ObjectCondition, SendableEntityCreator {
+public class And implements ParserCondition, SendableEntityCreator {
 	public static final String CHILD = "childs";
+	public static final String TAG="and";
 	private ArrayList<ObjectCondition> list = new ArrayList<ObjectCondition>();
 
 	/**
@@ -93,4 +98,31 @@ public class And implements ObjectCondition, SendableEntityCreator {
 		}
 		return false;
 	}
+
+	@Override
+	public String getKey() {
+		return TAG;
+	}
+	
+	@Override
+	public boolean isExpression() {
+		return true;
+	}
+
+	@Override
+	public Object getValue(LocalisationInterface variables) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void create(CharacterBuffer buffer, TemplateParser parser, LocalisationInterface customTemplate) {
+		buffer.skip();
+		ObjectCondition expression = parser.parsing(buffer, customTemplate, true);
+		
+
+		// TODO Auto-generated method stub
+		
+	}
+
 }

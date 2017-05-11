@@ -12,13 +12,13 @@ public class JavaClazz extends BasicGenerator{
 	public JavaClazz() {
 		createTemplate("Declaration", Template.TEMPLATE, 
 				
-				"{{#template PACKAGE {{packagename}}}}package {{packagename#toLower}};{{#endtemplate}}","",
+				"{{#template PACKAGE {{packagename}}}}package {{packagename}};{{#endtemplate}}","",
 				
 				"{{#template IMPORT}}{{#foreach {{file.headers}}}}","import {{item}};{{#endfor}}{{#endtemplate}}","",
 				
 				"{{visibility}} {{modifiers} }{{type}} {{name}}{{#if {{superclazz}}}} extends {{superclazz}}{{#endif}}{{#if {{implements}}}} implements {{implements}}{{#endif}}","{","",
 
-				"{{#if {{#feature PROPERTYCHANGESUPPORT}}}}"
+				"{{#if {{#AND}}{{#feature PROPERTYCHANGESUPPORT}}{{type}}!=INTERFACE{{#ENDAND}}}}"
 						+"{{#import "+PropertyChangeListener.class.getName()+"}}"+"{{#import "+PropertyChangeSupport.class.getName()+"}}"+ 
 						"   protected PropertyChangeSupport listeners = null;","",
 						
