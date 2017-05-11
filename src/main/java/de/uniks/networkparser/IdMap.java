@@ -240,7 +240,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 				Object reference = creator.getSendableInstance(true);
 				if (reference != null) {
 					if (reference instanceof Class<?>) {
-						this.flag = FLAG_SEARCHFORSUPERCLASS;
+						this.flag = (byte)(this.flag | FLAG_SEARCHFORSUPERCLASS);
 						with(((Class<?>) reference).getName(), creator);
 					}
 					else {
