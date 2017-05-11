@@ -1257,8 +1257,15 @@ public abstract class AbstractArray<V> implements BaseItem {
 		if (end == 0 && len == keyString.length()) {
 			id = -1;
 		}
-
-		Object child = getByIndex(SMALL_VALUE, indexOf(keyString.substring(0, len))+this.index, size);
+	
+		Object child;
+		if ((flag & MAP) == 0) {
+			child = getByIndex(SMALL_KEY, id+this.index, size);
+		} else {
+			child = getByIndex(SMALL_VALUE, indexOf(keyString.substring(0, len))+this.index, size);
+		}
+		
+		
 		if (child != null) {
 			if (end == 0) {
 				if (id >= 0 || id == -2) {
@@ -1276,7 +1283,7 @@ public abstract class AbstractArray<V> implements BaseItem {
 				}
 			} else {
 				if (id >= 0 || id == -2) {
-					if (child instanceof AbstractArray) {
+					if (child instanceof AbstractList) {
 						if (end == len + 2) {
 							// Get List
 							BaseItem result = this.getNewList(true);
@@ -1294,8 +1301,9 @@ public abstract class AbstractArray<V> implements BaseItem {
 							return ((SimpleKeyValueList<?, ?>) list.get(id)).getValue(keyString.substring(end + 1));
 						}
 					}
-				} else if(child instanceof SimpleKeyValueList<?, ?>){
-					return ((SimpleKeyValueList<?, ?>) child).getValue(keyString.substring(end + 1));
+				}
+				if(child instanceof AbstractArray<?>){
+					return ((AbstractArray<?>) child).getValue(keyString.substring(end + 1));
 				}
 			}
 		}

@@ -135,7 +135,7 @@ public class Method extends GraphMember {
 				continue;
 			}
 			Parameter param = (Parameter) collection.get(i);
-			if(i>0) {
+			if(sb.length() > 1) {
 				sb.with(", ");
 			}
 			if(param.getName() == null || removeParameterNames) {

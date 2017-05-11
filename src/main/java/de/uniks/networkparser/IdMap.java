@@ -1312,9 +1312,12 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 				id = map.getId(entity, this, className);
 			} else {
  				id = "" + temp;
- 				if(getKey(entity) == null) {
+ 				temp = getObject(id);
+ 				if(temp == null) {
  					boolean newMessage = SendableEntityCreator.UPDATE.equals(map.getFilter().getStrategy()) == false;
-					put(id, entity, newMessage);
+ 					put(id, entity, newMessage);
+ 				} else if(temp != entity) {
+ 					id = map.getId(entity, this, className);
  				}
 			}
 		}

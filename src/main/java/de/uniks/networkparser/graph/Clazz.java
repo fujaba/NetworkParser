@@ -11,9 +11,12 @@ import de.uniks.networkparser.list.SimpleSet;
 public class Clazz extends GraphEntity {
 	public static final StringFilter<Clazz> NAME = new StringFilter<Clazz>(GraphMember.PROPERTY_NAME);
 	public static final String PROPERTY_PACKAGENAME = "packageName";
+	public static final String PROPERTY_FULLNAME = "fullName";
 	public static final String PROPERTY_VISIBILITY = "visibility";
 	public static final String PROPERTY_MODIFIERS = "modifiers";
 	public static final String PROPERTY_TYPE = "type";
+	public static final String PROPERTY_SUPERCLAZZ = "superclazz";
+	public static final String PROPERTY_IMPLEMENTS = "implements";
 	
 	private ClazzType type = ClazzType.CLAZZ;
 
@@ -659,8 +662,9 @@ public class Clazz extends GraphEntity {
 			if(existsElements.contains(member)) {
 				continue;
 			}
+			Modifier modifier = member.getModifier();
 			if(isInterface) {
-				if(member.getModifier() == null || member.getModifier().has(Modifier.DEFAULT) == false) {
+				if(modifier == null || modifier.has(Modifier.DEFAULT) == false) {
 					if(check(member, filters) && newExistElements.contains(member) == false) {
 						newElements.add(member);
 					}
@@ -668,7 +672,7 @@ public class Clazz extends GraphEntity {
 					newExistElements.add(member);
 					newElements.remove(member);
 				}
-			} else if(isAbstract && member.getModifier().has(Modifier.ABSTRACT)) {
+			} else if(isAbstract && modifier != null && modifier.has(Modifier.ABSTRACT)) {
 				if(check(member, filters) && newExistElements.contains(member) == false) {
 					newElements.add(member);
 				} else if(newExistElements.contains(member) == false){
@@ -793,6 +797,9 @@ public class Clazz extends GraphEntity {
 			}
 			return fullName.substring(0, pos);
 		}
+		if (PROPERTY_FULLNAME.equalsIgnoreCase(attribute)) {
+			return this.getName(false);
+		}
 		if(PROPERTY_VISIBILITY.equalsIgnoreCase(attribute)) {
 			return this.getModifier().getName();
 		}
@@ -814,10 +821,23 @@ public class Clazz extends GraphEntity {
 		if(PROPERTY_TYPE.equalsIgnoreCase(attribute)) {
 			return this.getType().getValue();
 		}
-//		parameters.put("name", clazz.getName(true));
-//		parameters.put("superclasses", determineSuperClasses(clazz, superPropertyChangeEnabled));
-//		parameters.put("propertyChange", propertyChange);
+		if(PROPERTY_SUPERCLAZZ.equalsIgnoreCase(attribute)) {
+			ClazzSet clazzes;
+			if(this.getType()==ClazzType.ENUMERATION || this.getType()==ClazzType.INTERFACE) {
+				clazzes = getImplements();
+			} else {
+				clazzes = getSuperClazzes(false);
+			}
+			return clazzes.toString(", ");
+		}
+		if(PROPERTY_IMPLEMENTS.equalsIgnoreCase(attribute)) {
+			if(this.getType()==ClazzType.ENUMERATION || this.getType()==ClazzType.INTERFACE) {
+				return null;
+			}
 
+			ClazzSet implementsClazz = getImplements();
+			return implementsClazz.toString(", ");
+		}
 		return super.getValue(attribute);
 	}
 }
