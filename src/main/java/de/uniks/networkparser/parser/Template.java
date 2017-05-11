@@ -167,8 +167,6 @@ public class Template implements TemplateParser {
 			character = template.getChar();
 			if(character == SPLITEND) {
 				template.getChar();
-				start=template.position();
-				
 				if(isExpression) {
 					// BREAK FOR ONLY VARIABLE
 					
@@ -198,8 +196,10 @@ public class Template implements TemplateParser {
 						}
 					}
 					parent.with(child);
+					start=template.position();
 					break;
 				}
+				start=template.position();
 				parent.with(child);
 				continue;
 			} else {

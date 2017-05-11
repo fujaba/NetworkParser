@@ -23,21 +23,20 @@ public class SimpleGenerator {
 	public void testIfStatement() {
 		String template ="{{#if {{type}}==INTERFACE}}"
 				+ "Hallo"
-				+" {{#endif}}";
+				+"{{#endif}}";
 		Clazz person = new Clazz("Person").enableInterface();
 		ModelGenerator generator = new ModelGenerator();
 
 		TemplateResultFragment fragment = generator.parseTemplate(template, person);
-		Assert.assertEquals("Hallo", fragment.getResult().toString());
+		Assert.assertEquals("Hallo\r\n", fragment.getResult().toString());
 		
 		
 		template ="{{#if {{type}}!=INTERFACE}}"
 				+ "Hallo"
-				+" {{#endif}}";
+				+"{{#endif}}";
 		person = new Clazz("Person");
 		fragment = generator.parseTemplate(template, person);
-		Assert.assertEquals("Hallo", fragment.getResult().toString());
-
+		Assert.assertEquals("Hallo\r\n", fragment.getResult().toString());
 	}
 	
 	
