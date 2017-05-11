@@ -12,6 +12,7 @@ import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.logic.ChainCondition;
 import de.uniks.networkparser.logic.Equals;
 import de.uniks.networkparser.logic.IfCondition;
+import de.uniks.networkparser.logic.Not;
 import de.uniks.networkparser.logic.StringCondition;
 import de.uniks.networkparser.logic.TemplateCondition;
 import de.uniks.networkparser.logic.VariableCondition;
@@ -186,7 +187,11 @@ public class Template implements TemplateParser {
 							if(child instanceof ParserCondition) {
 								equalsExpression.withRight((ParserCondition)child);
 							}
-							child = equalsExpression;
+							if(firstChar == '!') {
+								child = new Not().with(equalsExpression);
+							} else {
+								child = equalsExpression;
+							}
 						} else {
 							// MAY BE ANOTHER CHAR
 							template.skip(-1);

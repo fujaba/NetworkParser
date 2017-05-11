@@ -21,7 +21,7 @@ import de.uniks.networkparser.parser.TemplateResultModel;
 public class SimpleGenerator {
 	@Test
 	public void testIfStatement() {
-		String template ="{{#if {{type}}==INTERFACE{{#ENDAND}}}}"
+		String template ="{{#if {{type}}==INTERFACE}}"
 				+ "Hallo"
 				+" {{#endif}}";
 		Clazz person = new Clazz("Person").enableInterface();
@@ -31,7 +31,7 @@ public class SimpleGenerator {
 		Assert.assertEquals("Hallo", fragment.getResult().toString());
 		
 		
-		template ="{{#if {{type}}!=INTERFACE{{#ENDAND}}}}"
+		template ="{{#if {{type}}!=INTERFACE}}"
 				+ "Hallo"
 				+" {{#endif}}";
 		person = new Clazz("Person");
