@@ -28,6 +28,7 @@ import java.util.Collection;
 import java.util.HashMap;
 
 import de.uniks.networkparser.EntityUtil;
+import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.MapEntity;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.buffer.Tokener;
@@ -326,6 +327,7 @@ public class EMFTokener extends Tokener{
 			return;
 		}
 		String tag = xmlEntity.getTag();
+		
 		if (rootId != null) {
 			rootId += tag;
 			Integer num = runningNumbers.get(rootId);
@@ -355,7 +357,9 @@ public class EMFTokener extends Tokener{
 
 				return;
 			}
-
+		}
+		if(xmlEntity.has(IdMap.ID)) {
+			rootId = xmlEntity.getString(IdMap.ID);
 		}
 		xmlEntity.put(XMI_ID, rootId);
 
@@ -550,13 +554,13 @@ public class EMFTokener extends Tokener{
 				}
 				Object kidObject = kidFactory.getSendableInstance(false);
 
+				addChildren(kidEntity, kidFactory, kidObject);
 				if (rootCollection != null) {
 					rootCollection.add(kidObject);
 				} else {
 					rootFactory.setValue(rootObject, tag, kidObject, "");
 				}
 
-				addChildren(kidEntity, kidFactory, kidObject);
 			}
 		}
 	}

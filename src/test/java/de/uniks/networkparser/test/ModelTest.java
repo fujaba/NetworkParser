@@ -174,13 +174,13 @@ public class ModelTest implements ObjectCondition {
 		alice.createItem().withValue(42);
 		
 		karli.withFriends(alice);
-		IdMap map=new IdMap();
+		IdMap map=new IdMap().withTimeStamp(1);
 		map.with(new UniversityCreator());
 		map.with(new StudentCreator());
 		map.withCreator(new ItemCreator());
 
 		JsonObject jsonObject = map.toJsonObject(uni, Filter.regard(new WhiteListCondition().with(uni.getClass()).with(alice.getClass())));
-		Assert.assertEquals(594, jsonObject.toString().length());
+		Assert.assertEquals(434, jsonObject.toString().length());
 	}
 
 }
