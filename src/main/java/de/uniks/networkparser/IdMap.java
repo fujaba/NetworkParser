@@ -1627,11 +1627,34 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 						this.withCreator((SendableEntityCreator) value);
 					}
 				}
+				if(item instanceof IdMap) {
+					IdMap oldIDMap = (IdMap) item;
+					this.withSession(oldIDMap.getSession());
+					this.withTimeStamp(oldIDMap.getTimeStamp());
+					SimpleKeyValueList<String, Object> objects = oldIDMap.getKeyValue();
+					for(int z=0;z<objects.size();z++) {
+						String id = objects.get(z);
+						Object value = objects.getValueByIndex(z);
+						this.put(id, value);
+					}
+					this.withGrammar(oldIDMap.getGrammar());
+					this.withFilter(oldIDMap.getFilter());
+
+					this.withListener(oldIDMap.getUpdateListener());
+				}
 			}
 		}
 		return true;
 	}
 
+	public Filter getFilter() {
+		return filter;
+	}
+	
+	public ObjectCondition getUpdateListener() {
+		return updateListener;
+	}
+	
 	public IdMap withTimeStamp(long newValue) {
 		this.timeStamp = newValue;
 		return this;
