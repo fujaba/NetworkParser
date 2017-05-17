@@ -1496,8 +1496,11 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 					}
 				}
 			}
-			//			map.minus();
-			writeValue = subValues;
+			if(subValues.sizeChildren()>0) { 
+				writeValue = subValues;
+			}else {
+				return;
+			}
 		}
 		else if (value instanceof Map<?, ?> && valueCreater == null) {
 			// Maps
@@ -1513,7 +1516,6 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 		}
 		else if (valueCreater != null && className != null) {
 			writeValue = encode(value, className, map, tokener, parent);
-
 		}
 		else {
 			writeValue = value;

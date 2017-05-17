@@ -51,6 +51,7 @@ public class XMLTest extends IOClasses{
 		map.with(new AppleTreeCreator());
 		map.with(new AppleCreator());
 
+		System.out.println(map.toSimpleXML(appleTree).toString());
 		Assert.assertEquals(133, map.toSimpleXML(appleTree).toString().length());
 	}
 
