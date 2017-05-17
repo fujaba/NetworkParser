@@ -12,6 +12,9 @@ public class testGen {
 
 	@Test
 	public void testModel() {
+		if(Generator.DISABLE) {
+			return;
+		}
 		ClassModel model = new ClassModel("org.sdmlib.simple.model");
 		Clazz person = model.createClazz("Person");
 		Clazz room = model.createClazz("Room");

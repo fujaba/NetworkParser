@@ -10,7 +10,9 @@ public class TestEnumeration {
 
 	@Test
 	public void testEnumerationWithoutEntries() {
-		
+		if(Generator.DISABLE) {
+			return;
+		}
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.enums_a");
 		Clazz testEnum = model.createClazz("TestEnum");
 		
@@ -22,7 +24,9 @@ public class TestEnumeration {
 	
 	@Test
 	public void testEnumerationWithEntry() {
-
+		if(Generator.DISABLE) {
+			return;
+		}
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.enums_b");
 		Clazz testEnum = model.createClazz("TestEnum");
 
@@ -36,7 +40,9 @@ public class TestEnumeration {
 	
 	@Test
 	public void testEnumerationWithMultipleEntries() {
-
+		if(Generator.DISABLE) {
+			return;
+		}
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.enums_c");
 		Clazz testEnum = model.createClazz("TestEnum");
 		
@@ -47,7 +53,9 @@ public class TestEnumeration {
 	}
 	@Test
 	public void testEnumerationWithMultipleEntriesKeyValue() {
-
+		if(Generator.DISABLE) {
+			return;
+		}
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.enums_d");
 		Clazz testEnum = model.createClazz("TestEnum");
 //		testEnum.withAttribute("value", DataType.INT);

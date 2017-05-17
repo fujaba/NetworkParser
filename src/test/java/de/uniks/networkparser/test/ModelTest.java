@@ -14,14 +14,17 @@ import de.uniks.networkparser.ext.generic.GenericCreator;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.json.AtomarCondition;
+import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
+import de.uniks.networkparser.logic.WhiteListCondition;
 import de.uniks.networkparser.test.model.Apple;
 import de.uniks.networkparser.test.model.GroupAccount;
 import de.uniks.networkparser.test.model.Person;
 import de.uniks.networkparser.test.model.SortedMsg;
 import de.uniks.networkparser.test.model.Student;
 import de.uniks.networkparser.test.model.University;
+import de.uniks.networkparser.test.model.util.ItemCreator;
 import de.uniks.networkparser.test.model.util.PersonCreator;
 import de.uniks.networkparser.test.model.util.PersonSet;
 import de.uniks.networkparser.test.model.util.SortedMsgCreator;
@@ -163,6 +166,23 @@ public class ModelTest implements ObjectCondition {
 		map.with(new StudentCreator());
 		
 //		System.out.println(map.toJsonArray(uni));
+	}
+	
+	@Test
+	public void testWhiteList() {
+		University uni = new University();
+		Student karli = uni.createStudents().withFirstName("Karli");
+		Student alice = uni.createStudents().withFirstName("Alice");
+		alice.createItem().withValue(42);
+		
+		karli.withFriends(alice);
+		IdMap map=new IdMap();
+		map.with(new UniversityCreator());
+		map.with(new StudentCreator());
+		map.withCreator(new ItemCreator());
+
+		JsonObject jsonObject = map.toJsonObject(uni, Filter.regard(new WhiteListCondition().with(uni.getClass()).with(alice.getClass())));
+		System.out.println(jsonObject.toString(2));
 	}
 
 }

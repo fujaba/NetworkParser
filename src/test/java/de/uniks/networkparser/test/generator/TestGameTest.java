@@ -9,6 +9,9 @@ import de.uniks.networkparser.graph.Clazz;
 public class TestGameTest {
 	@Test
 	public void testManyToMany() {
+		if(Generator.DISABLE) {
+			return;
+		}
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.game");
 		Clazz game = model.createClazz("Game");
 		Clazz player = model.createClazz("Player");
@@ -19,6 +22,9 @@ public class TestGameTest {
 	}
 	@Test
 	public void testSuperClazz() {
+		if(Generator.DISABLE) {
+			return;
+		}
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.game");
 		Clazz game = model.createClazz("Game");
 		Clazz entity = model.createClazz("GameEntity");

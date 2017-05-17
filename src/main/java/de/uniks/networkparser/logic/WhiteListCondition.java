@@ -1,5 +1,7 @@
 package de.uniks.networkparser.logic;
 
+import java.util.Collection;
+
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.interfaces.ObjectCondition;
@@ -8,8 +10,8 @@ import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 
 public class WhiteListCondition implements ObjectCondition, SendableEntityCreator {
-	private SimpleKeyValueList<Class<?>, SimpleList<String>> whiteList=new SimpleKeyValueList<Class<?>, SimpleList<String>>();
-	private boolean primitive;
+	private SimpleKeyValueList<String, SimpleList<String>> whiteList=new SimpleKeyValueList<String, SimpleList<String>>();
+	private boolean primitive = true;
 
 	@Override
 	public String[] getProperties() {
@@ -32,12 +34,20 @@ public class WhiteListCondition implements ObjectCondition, SendableEntityCreato
 			return false;
 		}
 		SimpleEvent event = (SimpleEvent) value;
-		Object newValue = event.getSource();
+		Object newValue = event.getNewValue();
+		if(newValue == null) {
+			return false;
+		}
+		String className = newValue.getClass().getSimpleName();
 		String propertyName = event.getPropertyName();
-		SimpleList<String> simpleList = whiteList.get(propertyName);
-		IdMap map = (IdMap) event.getEntity();
+		SimpleList<String> simpleList = whiteList.get(className);
+		IdMap map = (IdMap) event.getSource();
 		SendableEntityCreator creator = map.getCreatorClass(newValue);
+		if(newValue instanceof Collection<?>) {
+			return true;
+		}
 		if(creator != null) {
+			System.out.println(newValue.getClass().getSimpleName());
 			if(simpleList != null) {
 				return simpleList.size() == 0 || simpleList.indexOf(propertyName)>=0;
 			}
@@ -45,8 +55,13 @@ public class WhiteListCondition implements ObjectCondition, SendableEntityCreato
 		}
 		return this.primitive;
 	}
-	
 	public WhiteListCondition with(Class<?> className, String... attributes) {
+		if(className != null) {
+			with(className.getSimpleName(), attributes);
+		}
+		return this;
+	}
+	public WhiteListCondition with(String className, String... attributes) {
 		SimpleList<String> simpleList = whiteList.get(className);
 		if(simpleList == null) {
 			simpleList = new SimpleList<String>();

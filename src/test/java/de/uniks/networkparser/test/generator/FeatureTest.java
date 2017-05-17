@@ -11,6 +11,9 @@ import de.uniks.networkparser.graph.Feature;
 public class FeatureTest {
 	@Test
 	public void testAndroid() {
+		if(Generator.DISABLE) {
+			return;
+		}
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.androidmodel");
 		Clazz uni = model.createClazz("University");
 		Clazz student = model.createClazz("Student");

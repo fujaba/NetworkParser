@@ -15,6 +15,9 @@ public class TestModel {
 
 	@Test
 	public void testClassWithoutAttributes() {
+		if(Generator.DISABLE) {
+			return;
+		}
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.test");
 		model.withoutFeature(Feature.PATTERNOBJECT);
 		model.getFeature(Feature.SETCLASS).withClazzValue(HashSet.class);

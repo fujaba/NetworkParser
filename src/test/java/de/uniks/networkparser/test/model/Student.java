@@ -170,6 +170,10 @@ public class Student extends Person implements SendableEntity{
 			setCredits((int) value);
 			return true;
 		}
+		if (PROPERTY_ITEM.equalsIgnoreCase(attrName)) {
+			withItem((Item) value);
+			return true;
+		}
 		return false;
 	}
 
@@ -206,6 +210,9 @@ public class Student extends Person implements SendableEntity{
 		}
 		if (PROPERTY_CREDITS.equalsIgnoreCase(attribute)) {
 			return getCredits();
+		}
+		if (PROPERTY_ITEM.equalsIgnoreCase(attribute)) {
+			return getItem();
 		}
 		return null;
 	}

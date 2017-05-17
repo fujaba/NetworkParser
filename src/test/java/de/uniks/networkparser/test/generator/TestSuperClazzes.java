@@ -12,7 +12,9 @@ public class TestSuperClazzes {
 
 	@Test
 	public void testClazzAsSuperClazz() {
-		
+		if(Generator.DISABLE) {
+			return;
+		}
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.superclazzes_a");
 		Clazz person = model.createClazz("Person");
 		model.createClazz("Pupil").withSuperClazz(person);
@@ -22,7 +24,9 @@ public class TestSuperClazzes {
 	
 	@Test
 	public void testClazzAsKidClazz() {
-		
+		if(Generator.DISABLE) {
+			return;
+		}
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.superclazzes_b");
 		Clazz person = model.createClazz("Person");
 		Clazz pupil = model.createClazz("Pupil");
@@ -34,7 +38,9 @@ public class TestSuperClazzes {
 	
 	@Test
 	public void testClazzAsSuperClazzWithMultipleKids() {
-		
+		if(Generator.DISABLE) {
+			return;
+		}
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.superclazzes_c");
 		Clazz person = model.createClazz("Person");
 		Clazz pupil = model.createClazz("Pupil").withSuperClazz(person);
@@ -45,7 +51,9 @@ public class TestSuperClazzes {
 	
 	@Test
 	public void testChangeSuperClazz() {
-		
+		if(Generator.DISABLE) {
+			return;
+		}
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.superclazzes_d");
 		Clazz person = model.createClazz("Person");
 		Clazz teacher = model.createClazz("Teacher");
@@ -59,7 +67,9 @@ public class TestSuperClazzes {
 	
 	@Test
 	public void testAbstractAssociation() {
-		
+		if(Generator.DISABLE) {
+			return;
+		}
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.superclazzes_e");
 		Clazz person = model.createClazz("Person");
 		person.with(Modifier.create("abstract"));
@@ -75,7 +85,9 @@ public class TestSuperClazzes {
 	
 	@Test
 	public void testMultipleAbstractAssociation() {
-		
+		if(Generator.DISABLE) {
+			return;
+		}
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.superclazzes_f");
 		Clazz person = model.createClazz("Person");
 		person.with(Modifier.create("abstract"));
