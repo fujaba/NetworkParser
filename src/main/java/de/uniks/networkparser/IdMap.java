@@ -1277,12 +1277,9 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 	/**
 	 * Encode Model
 	 *
-	 * @param entity
-	 *           the entity to convert
-	 * @param map
-	 *           encoding runtimevalue
-	 * @param tokener
-	 *           tokener for Encoding like JsonTokener, XMLTokener
+	 * @param entity    the entity to convert
+	 * @param map       encoding runtimevalue
+	 * @param tokener   tokener for Encoding like JsonTokener, XMLTokener
 	 * @return the Jsonobject
 	 */
 	protected Entity encode(Object entity, MapEntity map, Tokener tokener) {
@@ -1481,24 +1478,22 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 					if (map.contains(key)) {
 						child = tokener.createLink((Entity) parent, property, childClassName, tokener.getKey(child));
 						childClassName = null;
-					}
-					else if (isArray) {
+					} else {
 						if (map.isPropertyRegard(value, tokener.getMap(), property, child) == false) {
 							continue;
 						}
-						if (map.isConvertable(value, tokener.getMap(), property, child)) {
-							encode(child, childClassName, map, tokener, parent);
-						}
-						child = tokener.createLink((Entity) parent, property, childClassName, tokener.getId(child));
-						childClassName = null;
-					}
-					else if (childCreater != null) {
 						if (map.isConvertable(value, tokener.getMap(), property, child) == false) {
 							child = tokener.createLink((Entity) parent, property, childClassName, tokener.getKey(child));
 							childClassName = null;
+						} else if (isArray) {
+							encode(child, childClassName, map, tokener, parent);
+						} else if(childCreater != null) {
+							parseValue(property, child, childClassName, childCreater, map, tokener, subValues);
 						}
 					}
-					parseValue(property, child, childClassName, childCreater, map, tokener, subValues);
+					if(writeValue == null) {
+						parseValue(property, child, childClassName, childCreater, map, tokener, subValues);
+					}
 				}
 			}
 			//			map.minus();

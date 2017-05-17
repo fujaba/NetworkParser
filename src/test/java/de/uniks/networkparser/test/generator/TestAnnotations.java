@@ -10,7 +10,9 @@ public class TestAnnotations {
 
 	@Test
 	public void testClassWithAnnotation() {
-		
+		if(Generator.DISABLE) {
+			return;
+		}
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.annotation_a");
 		Clazz person = model.createClazz("Person");
 		
@@ -23,7 +25,9 @@ public class TestAnnotations {
 	
 	@Test
 	public void testClassWithMultipleAnnotations() {
-		
+		if(Generator.DISABLE) {
+			return;
+		}
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.annotation_b");
 		Clazz person = model.createClazz("Person");
 		

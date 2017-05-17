@@ -9,7 +9,9 @@ public class TestRemoveCode {
 
 //	@Test
 	public void testRemoveAttribute() {
-		
+		if(Generator.DISABLE) {
+			return;
+		}
 		String rootDir = "src/test/java";
 		
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.removeCode_a");
@@ -26,7 +28,9 @@ public class TestRemoveCode {
 	
 //	@Test
 	public void testRemoveMethod() {
-		
+		if(Generator.DISABLE) {
+			return;
+		}
 		String rootDir = "src/test/java";
 		
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.removeCode_b");
@@ -43,7 +47,9 @@ public class TestRemoveCode {
 	
 //	@Test
 	public void testRemoveClass() {
-		
+		if(Generator.DISABLE) {
+			return;
+		}
 		String rootDir = "src/test/java";
 		
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.removeCode_c");
@@ -61,7 +67,9 @@ public class TestRemoveCode {
 	
 //	@Test
 	public void testRemoveAssociation() {
-		
+		if(Generator.DISABLE) {
+			return;
+		}
 		String rootDir = "src/test/java";
 		
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.removeCode_d");

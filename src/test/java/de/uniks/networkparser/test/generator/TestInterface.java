@@ -11,7 +11,9 @@ public class TestInterface {
 
 	@Test
 	public void testClassAsInterface() {
-		
+		if(Generator.DISABLE) {
+			return;
+		}
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.interface_a");
 		Clazz person = model.createClazz("Person");
 		
@@ -23,7 +25,9 @@ public class TestInterface {
 	
 	@Test
 	public void testClassAsInterfaceWithImplementedClass() {
-		
+		if(Generator.DISABLE) {
+			return;
+		}
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.interface_b");
 		Clazz person = model.createClazz("Person");
 		Clazz pupil = model.createClazz("Pupil");
@@ -42,7 +46,9 @@ public class TestInterface {
 	
 	@Test
 	public void testMultipleInterfacesWithMultipleChildren() {
-		
+		if(Generator.DISABLE) {
+			return;
+		}
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.interface_c");
 		Clazz person = model.createClazz("Person");
 		Clazz pupil = model.createClazz("Pupil");

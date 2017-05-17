@@ -14,7 +14,9 @@ public class TestMethods {
 
 	@Test
 	public void testClassWithMethod() {
-	
+		if(Generator.DISABLE) {
+			return;
+		}
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.methods_a");
 		Clazz person = model.createClazz("Person");
 		
@@ -26,7 +28,9 @@ public class TestMethods {
 
 	@Test
 	public void testClassWithVoidMethod() {
-	
+		if(Generator.DISABLE) {
+			return;
+		}
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.methods_b");
 		Clazz person = model.createClazz("Person");
 		
@@ -38,7 +42,9 @@ public class TestMethods {
 	
 	@Test
 	public void testClassWithVoidAndNamelessParameterMethod() {
-	
+		if(Generator.DISABLE) {
+			return;
+		}
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.methods_c");
 		Clazz person = model.createClazz("Person");
 		
@@ -50,7 +56,9 @@ public class TestMethods {
 	
 	@Test
 	public void testClassWithVoidAndParameterMethod() {
-	
+		if(Generator.DISABLE) {
+			return;
+		}
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.methods_d");
 		Clazz person = model.createClazz("Person");
 		
@@ -64,7 +72,9 @@ public class TestMethods {
 	
 	@Test
 	public void testClassWithVoidAndClassParameterMethod() {
-	
+		if(Generator.DISABLE) {
+			return;
+		}
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.methods_e");
 		Clazz person = model.createClazz("Person");
 		Clazz room = model.createClazz("Room");
@@ -76,7 +86,9 @@ public class TestMethods {
 
 	@Test
 	public void testClassWithVoidAndSimpleClassParameterMethod() {
-	
+		if(Generator.DISABLE) {
+			return;
+		}
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.methods_f");
 		Clazz person = model.createClazz("Person");
 		Clazz room = model.createClazz("Room");
@@ -91,7 +103,9 @@ public class TestMethods {
 	
 	@Test
 	public void testClassWithVoidAndSetParameterMethod() {
-	
+		if(Generator.DISABLE) {
+			return;
+		}
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.methods_g");
 		Clazz person = model.createClazz("Person");
 		
@@ -103,7 +117,9 @@ public class TestMethods {
 	
 	@Test
 	public void testClassWithVoidAndMapParameterMethod() {
-	
+		if(Generator.DISABLE) {
+			return;
+		}
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.methods_h");
 		Clazz person = model.createClazz("Person");
 		
@@ -115,7 +131,9 @@ public class TestMethods {
 	
 	@Test
 	public void testClassWithVoidAndMultipleParametersMethod() {
-	
+		if(Generator.DISABLE) {
+			return;
+		}
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.methods_i");
 		Clazz person = model.createClazz("Person");
 		
@@ -127,7 +145,9 @@ public class TestMethods {
 	
 	@Test
 	public void testClassWithNonVoidMethod() {
-	
+		if(Generator.DISABLE) {
+			return;
+		}
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.methods_j");
 		Clazz person = model.createClazz("Person");
 		
@@ -139,7 +159,9 @@ public class TestMethods {
 	
 	@Test
 	public void testClassWithNonVoidAndParameterMethod() {
-	
+		if(Generator.DISABLE) {
+			return;
+		}
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.methods_k");
 		Clazz person = model.createClazz("Person");
 		
@@ -151,7 +173,9 @@ public class TestMethods {
 	
 	@Test
 	public void testClassWithMultipleMethods() {
-	
+		if(Generator.DISABLE) {
+			return;
+		}
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.methods_l");
 		Clazz person = model.createClazz("Person");
 		
@@ -164,7 +188,9 @@ public class TestMethods {
 	
 	@Test
 	public void testClassWithMethodAndBody() {
-	
+		if(Generator.DISABLE) {
+			return;
+		}
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.methods_m");
 		Clazz person = model.createClazz("Person");
 		
@@ -177,7 +203,9 @@ public class TestMethods {
 	
 	@Test
 	public void testClassWithBooleanMethod() {
-		
+		if(Generator.DISABLE) {
+			return;
+		}
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.methods_n");
 		Clazz person = model.createClazz("Person");
 		
