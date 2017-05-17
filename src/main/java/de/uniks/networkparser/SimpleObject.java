@@ -17,14 +17,14 @@ public class SimpleObject implements SendableEntityCreator, SendableEntity {
 
 	protected String id;
 
+	//SimpleObject Creator Properties
 	private String[] properties;
-
+	private SimpleList<String> baseElements = new SimpleList<String>();
 	private boolean dirty = false;
 
 	protected PropertyChangeSupport propertyChangeSupport;
 
 	private SimpleKeyValueList<String, Object> values = new SimpleKeyValueList<String, Object>();
-	private SimpleList<String> baseElements = new SimpleList<String>();
 	
 	public String getClassName() {
 		return className;

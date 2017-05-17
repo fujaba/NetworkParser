@@ -47,6 +47,7 @@ import de.uniks.networkparser.interfaces.EntityList;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
+import de.uniks.networkparser.list.SimpleSet;
 
 public class EMFTokener extends Tokener{
 	public static final String ECORE = "ecore";
@@ -258,9 +259,9 @@ public class EMFTokener extends Tokener{
 
 		addXMIIds(xmlEntity, null);
 
-		addChildren(xmlEntity, rootFactory, rootObject, map);
+		addChildren(xmlEntity, rootFactory, rootObject);
 
-		addValues(rootFactory, xmlEntity, rootObject, map);
+		addValues(rootFactory, xmlEntity, rootObject);
 
 		return rootObject;
 	}
@@ -358,7 +359,7 @@ public class EMFTokener extends Tokener{
 		}
 		xmlEntity.put(XMI_ID, rootId);
 
-		for(int i=0;i<xmlEntity.size();i++) {
+		for(int i=0;i<xmlEntity.sizeChildren();i++) {
 			EntityList kid = xmlEntity.getChild(i);
 			if(kid instanceof XMLEntity == false) {
 				continue;
@@ -367,7 +368,7 @@ public class EMFTokener extends Tokener{
 		}
 	}
 
-	private void addValues(SendableEntityCreator rootFactory, XMLEntity xmlEntity, Object rootObject, MapEntity map) {
+	private void addValues(SendableEntityCreator rootFactory, XMLEntity xmlEntity, Object rootObject) {
 		if (rootFactory == null) {
 			return;
 		}
@@ -395,7 +396,7 @@ public class EMFTokener extends Tokener{
 		}
 
 		// recursive on kids
-		for(int i=0;i<xmlEntity.size();i++) {
+		for(int i=0;i<xmlEntity.sizeChildren();i++) {
 			EntityList kidEntity = xmlEntity.getChild(i);
 			String kidId = "";
 			if(kidEntity instanceof Entity) {
@@ -409,7 +410,7 @@ public class EMFTokener extends Tokener{
 
 			SendableEntityCreator kidFactory = getCreatorClass(kidObject);
 
-			addValues(kidFactory, (XMLEntity)kidEntity, kidObject, map);
+			addValues(kidFactory, (XMLEntity)kidEntity, kidObject);
 		}
 	}
 
@@ -453,7 +454,7 @@ public class EMFTokener extends Tokener{
 	}
 
 	@SuppressWarnings("unchecked")
-	private void addChildren(XMLEntity xmlEntity, SendableEntityCreator rootFactory, Object rootObject, MapEntity map) {
+	private void addChildren(XMLEntity xmlEntity, SendableEntityCreator rootFactory, Object rootObject) {
 		String id = (String) xmlEntity.getValue(XMI_ID);
 		int pos;
 
@@ -461,9 +462,10 @@ public class EMFTokener extends Tokener{
 			id = "_" + id.substring(1);
 		}
 
-		getMap().put(id, rootObject);
+		this.map.put(id, rootObject);
+//		String[] properties = rootFactory.getProperties();
 
-		for(int i=0;i<xmlEntity.size();i++) {
+		for(int i=0;i<xmlEntity.sizeChildren();i++) {
 			EntityList child = xmlEntity.getChild(i);
 			if(child instanceof XMLEntity == false) {
 				continue;
@@ -524,7 +526,20 @@ public class EMFTokener extends Tokener{
 				typeName = kidEntity.getString(XSI_TYPE);
 				typeName = typeName.replaceAll(":", ".");
 			}
-
+			if(typeName == null) {
+				Object value = rootFactory.getValue(rootObject, tag);
+				if(value != null) {
+					if(value instanceof SimpleSet<?>) {
+						SimpleSet<?> set = (SimpleSet<?>) value;
+						typeName = set.getTypClass().getName();
+					}else {
+						typeName = value.getClass().getName();
+					}
+				} else {
+					typeName = tag;
+				}
+			}
+			
 			if (typeName != null) {
 				SendableEntityCreator kidFactory = getCreator(typeName, false);
 				if (kidFactory == null && typeName.endsWith("s")) {
@@ -541,7 +556,7 @@ public class EMFTokener extends Tokener{
 					rootFactory.setValue(rootObject, tag, kidObject, "");
 				}
 
-				addChildren(kidEntity, kidFactory, kidObject, map);
+				addChildren(kidEntity, kidFactory, kidObject);
 			}
 		}
 	}
