@@ -17,6 +17,7 @@ import de.uniks.networkparser.parser.Template;
 import de.uniks.networkparser.parser.TemplateResultFile;
 import de.uniks.networkparser.parser.TemplateResultFragment;
 import de.uniks.networkparser.parser.TemplateResultModel;
+import de.uniks.networkparser.test.generator.Generator;
 
 public class SimpleGenerator {
 	@Test
@@ -42,13 +43,15 @@ public class SimpleGenerator {
 	
 	@Test
 	public void testIfAndStatement() {
+		if(Generator.DISABLE) {
+			return;
+		}
 		String template ="{{#if {{#AND}}{{#feature PROPERTYCHANGESUPPORT}}{{type}}!=INTERFACE{{#ENDAND}}}}"
 				+ "Hallo"
 				+" {{#endif}}";
 		Clazz person = new Clazz("Person");
 		ModelGenerator generator = new ModelGenerator();
 		TemplateResultFragment fragment = generator.parseTemplate(template, person);
-//		System.out.println(fragment);
 		Assert.assertEquals("Hallo", fragment.getResult().toString());
 	}
 	
@@ -65,11 +68,13 @@ public class SimpleGenerator {
 		ModelGenerator javaModelFactory = new ModelGenerator();
 		javaModelFactory.generate("build", classModel);
 //		javaModelFactory.generateTypescript("build", classModel);
-//		System.out.println(javaModelFactory.create(classModel));
 	}
 	
-//	@Test
+	@Test
 	public void testGeneratorTemplate() {
+		if(Generator.DISABLE) {
+			return;
+		}
 		Template template = new Template().withTemplate(
 				"{{#ifnot {{member.parent.type}}==interface}}"+
 								"Hello World" +
@@ -85,8 +90,11 @@ public class SimpleGenerator {
 		Assert.assertEquals("Hello World\r\n", generate.getResult().toString());
 	}
 	
-//	@Test
+	@Test
 	public void testGeneratorTemplateFragmentCondition() {
+		if(Generator.DISABLE) {
+			return;
+		}
 		Template template = new Template().withType(TemplateParser.DECLARATION).withTemplate(
 				"{{#template PACKAGE {{PACKAGE}}}}Hello {{#endtemplate}}");
 
@@ -97,13 +105,16 @@ public class SimpleGenerator {
 		model.withTemplate(new TemplateFragmentCondition());
 		
 		
-		TemplateResultFragment generate = template.generate(model, templateFile, name);
+		template.generate(model, templateFile, name);
 		
 		Assert.assertEquals("Hello ", templateFile.toString());
 	}
 	
-//	@Test
+	@Test
 	public void testGeneratorTemplateFragment() {
+		if(Generator.DISABLE) {
+			return;
+		}
 		Template template = new Template().withType(TemplateParser.DECLARATION).withTemplate(
 				"{{#template PACKAGE {{packagename}}}}Hello {{#endtemplate}}","",
 				"{{#template IMPORT}}World{{#endtemplate}}");
@@ -114,14 +125,17 @@ public class SimpleGenerator {
 		model.withTemplate(new TemplateFragmentCondition());
 		
 		
-		TemplateResultFragment generate = template.generate(model, templateFile, name);
+		template.generate(model, templateFile, name);
 		
 		Assert.assertEquals("Hello World", templateFile.toString());
 	}
 	
 	
-//	@Test
+	@Test
 	public void testGeneratorTemplateFragmentIfCondition() {
+		if(Generator.DISABLE) {
+			return;
+		}
 		GraphList classModel = new GraphList().with("de.uniks.test.model");
 		Clazz person = classModel.createClazz("Person");
 		Template template = new Template().withType(TemplateParser.DECLARATION)
@@ -131,13 +145,16 @@ public class SimpleGenerator {
 		model.withTemplate(new TemplateFragmentCondition());
 		
 		
-		TemplateResultFragment generate = template.generate(model, templateFile, person);
+		template.generate(model, templateFile, person);
 		
 		Assert.assertEquals("Hello", templateFile.toString());
 	}
 	
-//	@Test
+	@Test
 	public void testImport() {
+		if(Generator.DISABLE) {
+			return;
+		}
 		GraphList classModel = new GraphList().with("de.uniks.test.model");
 		Clazz person = classModel.createClazz("Person");
 		Template template = new Template().withType(TemplateParser.DECLARATION)

@@ -170,8 +170,9 @@ public abstract class GraphMember {
 		return collection;
 	}
 
-	/** Set the name of Element
-	 * @param name The Name of Element
+	/**
+	 * Set the name of Element
+	 * @param name  The Name of Element
 	 * @return The Instance
 	 */
 	public GraphMember with(String name) {

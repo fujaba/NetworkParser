@@ -47,7 +47,6 @@ public class WhiteListCondition implements ObjectCondition, SendableEntityCreato
 			return true;
 		}
 		if(creator != null) {
-			System.out.println(newValue.getClass().getSimpleName());
 			if(simpleList != null) {
 				return simpleList.size() == 0 || simpleList.indexOf(propertyName)>=0;
 			}

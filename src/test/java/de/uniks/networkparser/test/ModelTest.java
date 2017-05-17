@@ -164,9 +164,7 @@ public class ModelTest implements ObjectCondition {
 		IdMap map=new IdMap();
 		map.with(new UniversityCreator());
 		map.with(new StudentCreator());
-		
-//		System.out.println(map.toJsonArray(uni));
-	}
+	}		
 	
 	@Test
 	public void testWhiteList() {
@@ -182,7 +180,7 @@ public class ModelTest implements ObjectCondition {
 		map.withCreator(new ItemCreator());
 
 		JsonObject jsonObject = map.toJsonObject(uni, Filter.regard(new WhiteListCondition().with(uni.getClass()).with(alice.getClass())));
-		System.out.println(jsonObject.toString(2));
+		Assert.assertEquals(594, jsonObject.toString().length());
 	}
 
 }
