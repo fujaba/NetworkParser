@@ -70,7 +70,7 @@ public class TemplateResultModel extends SimpleList<TemplateResultFile> implemen
 		if(customTemplate == null) {
 			return null;
 		}
-		return customTemplate.get(tag);
+		return customTemplate.get(tag.toLowerCase());
 	}
 
 	public LocalisationInterface getLanguage() {

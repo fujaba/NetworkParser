@@ -14,6 +14,7 @@ import de.uniks.networkparser.interfaces.ParserCondition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
+import de.uniks.networkparser.logic.And;
 import de.uniks.networkparser.logic.FeatureCondition;
 import de.uniks.networkparser.logic.ForeachCondition;
 import de.uniks.networkparser.logic.IfCondition;
@@ -48,12 +49,16 @@ public class ModelGenerator extends BasicGenerator {
 			addParserCondition(new IfCondition().withKey(IfCondition.IFNOT));
 			addParserCondition(new JavaMethodBodyCondition());
 			addParserCondition(new JavaListCondition());
+			addParserCondition(new And());
 		}
 		return customTemplate;
 	}
 
 	protected void addParserCondition(ParserCondition condition) {
-		customTemplate.add(condition.getKey(), condition);
+		String key = condition.getKey();
+		if(key != null) {
+			customTemplate.add(key.toLowerCase(), condition);
+		}
 	}
 
 	public SendableEntityCreator generate(GraphMember item) {

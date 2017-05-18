@@ -45,16 +45,13 @@ public class SimpleGenerator {
 	
 	@Test
 	public void testIfAndStatement() {
-		if(Generator.DISABLE) {
-			return;
-		}
 		String template ="{{#if {{#AND}}{{#feature PROPERTYCHANGESUPPORT}}{{type}}!=INTERFACE{{#ENDAND}}}}"
 				+ "Hallo"
-				+" {{#endif}}";
+				+"{{#endif}}";
 		Clazz person = new Clazz("Person");
 		ModelGenerator generator = new ModelGenerator();
 		TemplateResultFragment fragment = generator.parseTemplate(template, person);
-		Assert.assertEquals("Hallo", fragment.getResult().toString());
+		Assert.assertEquals("Hallo\r\n", fragment.getResult().toString());
 	}
 	
 	@Test

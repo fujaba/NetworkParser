@@ -99,4 +99,12 @@ public class Not implements ObjectCondition, SendableEntityCreator {
 	public static Not create(ObjectCondition condition) {
 		return new Not().with(condition);
 	}
+	
+	@Override
+	public String toString() {
+		if(this.item != null) {
+			return "!"+this.item.toString();
+		}
+		return "!";
+	}
 }

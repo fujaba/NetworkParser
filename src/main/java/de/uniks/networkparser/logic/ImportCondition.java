@@ -6,7 +6,7 @@ import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.ParserCondition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.TemplateParser;
-import de.uniks.networkparser.list.SimpleList;
+import de.uniks.networkparser.list.ConditionSet;
 
 /**
  * @author Stefan
@@ -31,19 +31,8 @@ public class ImportCondition implements ParserCondition {
 			if (importExpression != null) {
 					if(importExpression instanceof ChainCondition) {
 						ChainCondition cc = (ChainCondition) importExpression;
-						SimpleList<ObjectCondition> templates = cc.getTemplates();
-						CharacterBuffer buffer=new CharacterBuffer();
-						for(ObjectCondition item : templates) {
-							if(item instanceof VariableCondition) {
-								VariableCondition vc = (VariableCondition) item;
-								Object result = vc.getValue(variables);
-								if(result != null) {
-									buffer.with(result.toString());
-								}
-							} else {
-								buffer.with(item.toString());
-							}
-						}
+						ConditionSet templates = cc.getList();
+						CharacterBuffer buffer = templates.getAllValue(variables);
 						creator.setValue(variables, "headers", buffer.toString(), SendableEntityCreator.NEW);
 					} else if (importExpression instanceof VariableCondition){
 						VariableCondition vc = (VariableCondition) importExpression;
@@ -88,7 +77,7 @@ public class ImportCondition implements ParserCondition {
 				chainCondition.with(result);
 				if(expression instanceof ChainCondition) {
 					ChainCondition cc = (ChainCondition) expression;
-					chainCondition.with(cc.getTemplates());
+					chainCondition.with(cc.getList());
 				}else {
 					chainCondition.with(expression);
 				}

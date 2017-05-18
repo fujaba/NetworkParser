@@ -1,5 +1,6 @@
 package de.uniks.networkparser.logic;
 import java.beans.PropertyChangeEvent;
+import java.util.Set;
 
 import de.uniks.networkparser.buffer.BufferedBuffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
@@ -9,7 +10,6 @@ import de.uniks.networkparser.interfaces.ParserCondition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.TemplateParser;
 import de.uniks.networkparser.list.SimpleKeyValueList;
-import de.uniks.networkparser.list.SimpleList;
 /**
  * @author Stefan Lindel Clazz of EqualsCondition
  */
@@ -49,7 +49,7 @@ public class Equals implements ParserCondition, SendableEntityCreator {
 			return ((ParserCondition)condition).getValue(li);
 		} else if (condition instanceof ChainCondition) {
 			ChainCondition chainCondition = (ChainCondition) condition;
-			SimpleList<ObjectCondition> templates = chainCondition.getTemplates();
+			Set<ObjectCondition> templates = chainCondition.getList();
 			CharacterBuffer buffer=new CharacterBuffer();
 			for(ObjectCondition item : templates) {
 				if(item instanceof VariableCondition) {

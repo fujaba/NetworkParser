@@ -27,9 +27,13 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.Set;
 
+import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.interfaces.ObjectCondition;
+import de.uniks.networkparser.list.ConditionSet;
 import de.uniks.networkparser.list.SimpleList;
+import de.uniks.networkparser.list.SimpleSet;
 
 public class ChainCondition implements ObjectCondition{
 	private boolean chain=true;
@@ -45,7 +49,7 @@ public class ChainCondition implements ObjectCondition{
 		if(evt instanceof PropertyChangeEvent) {
 			return updatePCE((PropertyChangeEvent) evt);
 		} 
-		SimpleList<ObjectCondition> list = getTemplates();
+		Set<ObjectCondition> list = getList();
 		boolean result=true;
 		for(ObjectCondition item : list) {
 			if(item.update(evt) == false) {
@@ -84,14 +88,13 @@ public class ChainCondition implements ObjectCondition{
 		return this;
 	}
 	
-	@SuppressWarnings("unchecked")
 	public ChainCondition with(Collection<ObjectCondition> values) {
-		SimpleList<?> list;
+		ConditionSet list;
 		
-		if(this.list instanceof SimpleList<?>) {
-			list = (SimpleList<Object>) this.list;
+		if(this.list instanceof ConditionSet) {
+			list = (ConditionSet) this.list;
 		} else {
-			list = new SimpleList<ObjectCondition>();
+			list = new ConditionSet();
 			list.with(this.list);
 			this.list = list;
 		}
@@ -104,7 +107,6 @@ public class ChainCondition implements ObjectCondition{
 		return this;
 	}
 	
-	@SuppressWarnings("unchecked")
 	public boolean add(Object... values) {
 		if(values == null) {
 			return false;
@@ -115,14 +117,14 @@ public class ChainCondition implements ObjectCondition{
 			}
 			return true;
 		}
-		SimpleList<?> list;
-		if(this.list instanceof SimpleList<?>) {
-			list = (SimpleList<Object>) this.list;
+		SimpleSet<?> list;
+		if(this.list instanceof SimpleSet<?>) {
+			list = (SimpleSet<?>) this.list;
 		} else {
 			if(values[0] instanceof PropertyChangeListener) {
-				list = new SimpleList<PropertyChangeListener>(); 
+				list = new SimpleSet<PropertyChangeListener>(); 
 			} else {
-				list = new SimpleList<ObjectCondition>();
+				list = new ConditionSet();
 			}
 			list.with(this.list);
 			this.list = list;
@@ -130,12 +132,11 @@ public class ChainCondition implements ObjectCondition{
 		return list.add(values);
 	}
 	
-	@SuppressWarnings("unchecked")
-	public SimpleList<ObjectCondition> getTemplates() {
-		SimpleList<ObjectCondition> result = new SimpleList<ObjectCondition>();
-		if(this.list instanceof SimpleList<?>) { 
-			return ((SimpleList<ObjectCondition>)this.list);
-		} 
+	public ConditionSet getList() {
+		if(this.list instanceof ConditionSet) { 
+			return (ConditionSet)this.list;
+		}
+		ConditionSet  result = new ConditionSet();
 		result.with(this.list);
 		return result;
 	}
@@ -143,8 +144,8 @@ public class ChainCondition implements ObjectCondition{
 	public ObjectCondition first() {
 		if(this.list instanceof ObjectCondition) {
 			return (ObjectCondition) this.list;
-		} else if(this.list instanceof SimpleList<?>) { 
-			Object first = ((SimpleList<?>) this.list).first();
+		} else if(this.list instanceof SimpleSet<?>) { 
+			Object first = ((SimpleSet<?>) this.list).first();
 			return (ObjectCondition) first;
 		}
 		return null;
@@ -157,5 +158,18 @@ public class ChainCondition implements ObjectCondition{
 			return ((Collection<?>)this.list).size();
 		}
 		return 1;
+	}
+	
+	@Override
+	public String toString() {
+		Set<ObjectCondition> templates = getList();
+		if(templates.size()>0) {
+			CharacterBuffer buffer=new CharacterBuffer();
+			for(ObjectCondition item : templates) {
+				buffer.with(item.toString());
+			}
+			return buffer.toString();
+		}
+		return super.toString();
 	}
 }
