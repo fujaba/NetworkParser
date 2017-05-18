@@ -178,12 +178,12 @@ public class Template implements TemplateParser {
 							// MAY BE A EQUALS
 							template.skip();
 							Equals equalsExpression = new Equals();
-							if(child instanceof ParserCondition) {
-								equalsExpression.withLeft((ParserCondition)child);
+							if(child instanceof ObjectCondition) {
+								equalsExpression.withLeft(child);
 							}
 							child = parsing(template, customTemplate, true);
-							if(child instanceof ParserCondition) {
-								equalsExpression.withRight((ParserCondition)child);
+							if(child instanceof ObjectCondition) {
+								equalsExpression.withRight(child);
 							}
 							if(firstChar == '!') {
 								child = new Not().with(equalsExpression);

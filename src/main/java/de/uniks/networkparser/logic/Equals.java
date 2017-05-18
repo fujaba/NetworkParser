@@ -4,10 +4,12 @@ import java.beans.PropertyChangeEvent;
 import de.uniks.networkparser.buffer.BufferedBuffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.interfaces.LocalisationInterface;
+import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.ParserCondition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.TemplateParser;
 import de.uniks.networkparser.list.SimpleKeyValueList;
+import de.uniks.networkparser.list.SimpleList;
 /**
  * @author Stefan Lindel Clazz of EqualsCondition
  */
@@ -25,10 +27,10 @@ public class Equals implements ParserCondition, SendableEntityCreator {
 	private String key;
 
 	/** Variable of leftCondition. */
-	private ParserCondition left;
+	private ObjectCondition left;
 
 	/** Variable of leftCondition. */
-	private ParserCondition right;
+	private ObjectCondition right;
 
 	
 	/** Variable of Value. */
@@ -48,8 +50,46 @@ public class Equals implements ParserCondition, SendableEntityCreator {
 		}
 		if(evt instanceof LocalisationInterface && this.left != null && this.right != null) {
 			LocalisationInterface li = (LocalisationInterface) evt;
-			Object leftValue = this.left.getValue(li);
-			Object rightValue = this.right.getValue(li);
+			Object leftValue = null;
+			if (this.left instanceof ParserCondition) {
+				leftValue = ((ParserCondition)this.left).getValue(li);
+			} else if (this.left instanceof ChainCondition) {
+				ChainCondition chainCondition = (ChainCondition) this.left;
+				SimpleList<ObjectCondition> templates = chainCondition.getTemplates();
+				CharacterBuffer buffer=new CharacterBuffer();
+				for(ObjectCondition item : templates) {
+					if(item instanceof VariableCondition) {
+						VariableCondition vc = (VariableCondition) item;
+						Object result = vc.getValue((LocalisationInterface) evt);
+						if(result != null) {
+							buffer.with(result.toString());
+						}
+					} else {
+						buffer.with(item.toString());
+					}
+				}
+				leftValue = buffer.toString();
+			}
+			Object rightValue = null;
+			if (this.right instanceof ParserCondition) {
+				rightValue = ((ParserCondition)this.right).getValue(li);
+			} else if (this.right instanceof ChainCondition) {
+				ChainCondition chainCondition = (ChainCondition) this.right;
+				SimpleList<ObjectCondition> templates = chainCondition.getTemplates();
+				CharacterBuffer buffer=new CharacterBuffer();
+				for(ObjectCondition item : templates) {
+					if(item instanceof VariableCondition) {
+						VariableCondition vc = (VariableCondition) item;
+						Object result = vc.getValue((LocalisationInterface) evt);
+						if(result != null) {
+							buffer.with(result.toString());
+						}
+					} else {
+						buffer.with(item.toString());
+					}
+				}
+				rightValue = buffer.toString();
+			}
 			if(leftValue == null) {
 				return rightValue == null;
 			}
@@ -233,11 +273,11 @@ public class Equals implements ParserCondition, SendableEntityCreator {
 		return new Equals().withValue(null);
 	}
 
-	public Equals withLeft(ParserCondition expression) {
+	public Equals withLeft(ObjectCondition expression) {
 		this.left = expression;
 		return this;
 	}
-	public Equals withRight(ParserCondition expression) {
+	public Equals withRight(ObjectCondition expression) {
 		this.right = expression;
 		return this;
 	}

@@ -1,6 +1,8 @@
 package de.uniks.networkparser.parser.generator.java;
 
 import de.uniks.networkparser.graph.Attribute;
+import de.uniks.networkparser.list.SimpleKeyValueList;
+import de.uniks.networkparser.list.SimpleSet;
 import de.uniks.networkparser.parser.Template;
 import de.uniks.networkparser.parser.generator.BasicGenerator;
 
@@ -15,6 +17,8 @@ public class JavaAttribute extends BasicGenerator{
 				"   {{visibility}} {{modifiers} }{{type} }{{name}}{{#if {{value}}}} = {{value}}{{#endif}};","",
 				"{{#endif}}","",
 
+				"{{#if {{member.typeName}}==SimpleSet<{{member.genericName}}>}}{{#import " + SimpleSet.class.getName() + "}} {{#endif}}" +
+				"{{#if {{member.typeName}}==SimpleKeyValueList<{{member.genericName}}>}}{{#import " + SimpleKeyValueList.class.getName() + "}} {{#endif}}" +
 				"{{#foreach {{member.parent.parent.child}}}}" +
 				   "{{#if {{item.type}}==class}}" +
 				      "{{#ifnot {{item.name}}=={{file.member.name}}}}" +
