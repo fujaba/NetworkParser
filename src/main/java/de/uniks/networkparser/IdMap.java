@@ -51,6 +51,7 @@ import de.uniks.networkparser.interfaces.MapListener;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.SendableEntity;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
+import de.uniks.networkparser.interfaces.SendableEntityCreatorIndexId;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorTag;
 import de.uniks.networkparser.json.JsonArray;
@@ -1304,7 +1305,10 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 		EntityList targetList = (EntityList) map.getTarget();
 		String id = null;
 		if (creator instanceof SendableEntityCreatorNoIndex == false) {
-			Object temp = creator.getValue(entity, IdMap.ID);
+			Object temp = null;
+			if(creator instanceof SendableEntityCreatorIndexId) {
+				temp = creator.getValue(entity, IdMap.ID);
+			}
 			if (temp == null) {
 				id = map.getId(entity, this, className);
 			} else {

@@ -1,9 +1,10 @@
 package de.uniks.networkparser.test.model.util;
 
+import de.uniks.networkparser.interfaces.SendableEntityCreatorIndexId;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorTag;
 import de.uniks.networkparser.test.model.StringMessage;
 
-public class StringMessageCreator implements SendableEntityCreatorTag {
+public class StringMessageCreator implements SendableEntityCreatorTag, SendableEntityCreatorIndexId {
 	private final String[] properties = new String[] {StringMessage.PROPERTY_ID, StringMessage.PROPERTY_VALUE };
 
 	@Override
