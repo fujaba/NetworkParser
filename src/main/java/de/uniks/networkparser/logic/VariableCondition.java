@@ -109,6 +109,22 @@ public class VariableCondition implements ParserCondition{
     	if(firstUpper || "firstUpper".equalsIgnoreCase(format)) {
     		return EntityUtil.upFirstChar(value);
     	}
+    	if(format != null && format.startsWith("sub(")) {
+    		String substring = format.substring(4, format.length() - 1);
+    		String[] item = substring.split(",");
+    		int start=0;
+    		int end=value.length() - 1;
+    		if(item.length>0) {
+    			start = Integer.valueOf(item[0].trim());
+    		}
+    		if(item.length>1) {
+    			int temp = Integer.valueOf(item[1].trim());;
+    			if(temp < end) {
+    				end = temp;
+    			}
+    		}
+    		return value.substring(start, end);
+    	}
     	return value;
     }
 

@@ -256,11 +256,8 @@ public class EMFTokener extends Tokener{
 			rootFactory = getCreatorClass(root);
 		}
 		
-//		addXMIIds(xmlEntity, null);
-		
 		parsing(xmlEntity, rootFactory, rootObject, null);
 
-		//		addValues(rootFactory, xmlEntity, rootObject);
 		for(int i =0;i< notKey.size();i++) {
 			XMLEntity itemXmlEntity = notKey.get(i);
 			SimpleKeyValueList<String, String> myRefs = notKey.getValueByIndex(i);

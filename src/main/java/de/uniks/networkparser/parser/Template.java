@@ -178,13 +178,10 @@ public class Template implements TemplateParser {
 							// MAY BE A EQUALS
 							template.skip();
 							Equals equalsExpression = new Equals();
-							if(child instanceof ObjectCondition) {
-								equalsExpression.withLeft(child);
-							}
+							equalsExpression.withLeft(child);
 							child = parsing(template, customTemplate, true);
-							if(child instanceof ObjectCondition) {
-								equalsExpression.withRight(child);
-							}
+							equalsExpression.withRight(child);
+
 							if(firstChar == '!') {
 								child = new Not().with(equalsExpression);
 							} else {
@@ -194,9 +191,15 @@ public class Template implements TemplateParser {
 							// MAY BE ANOTHER CHAR
 							template.skip(-1);
 						}
+						parent.with(child);
+						start=template.position();
+					}else {
+						parent.with(child);
+						start=template.position();
+						// Move to next }
+						template.skipTo(SPLITEND, false);
+						
 					}
-					parent.with(child);
-					start=template.position();
 					break;
 				}
 				start=template.position();

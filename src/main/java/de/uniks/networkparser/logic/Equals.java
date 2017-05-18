@@ -43,53 +43,40 @@ public class Equals implements ParserCondition, SendableEntityCreator {
 	 */
 	private int position = -1;
 
+	private Object getValue(ObjectCondition condition, Object evt) {
+		LocalisationInterface li = (LocalisationInterface) evt;
+		if (condition instanceof ParserCondition) {
+			return ((ParserCondition)condition).getValue(li);
+		} else if (condition instanceof ChainCondition) {
+			ChainCondition chainCondition = (ChainCondition) condition;
+			SimpleList<ObjectCondition> templates = chainCondition.getTemplates();
+			CharacterBuffer buffer=new CharacterBuffer();
+			for(ObjectCondition item : templates) {
+				if(item instanceof VariableCondition) {
+					VariableCondition vc = (VariableCondition) item;
+					Object result = vc.getValue(li);
+					if(result != null) {
+						buffer.with(result.toString());
+					}
+				} else {
+					buffer.with(item.toString());
+				}
+			}
+			return buffer.toString();
+		}
+		return null;
+	}
+	
 	@Override
 	public boolean update(Object evt) {
 		if (evt == null) {
 			return value == null;
 		}
 		if(evt instanceof LocalisationInterface && this.left != null && this.right != null) {
-			LocalisationInterface li = (LocalisationInterface) evt;
-			Object leftValue = null;
-			if (this.left instanceof ParserCondition) {
-				leftValue = ((ParserCondition)this.left).getValue(li);
-			} else if (this.left instanceof ChainCondition) {
-				ChainCondition chainCondition = (ChainCondition) this.left;
-				SimpleList<ObjectCondition> templates = chainCondition.getTemplates();
-				CharacterBuffer buffer=new CharacterBuffer();
-				for(ObjectCondition item : templates) {
-					if(item instanceof VariableCondition) {
-						VariableCondition vc = (VariableCondition) item;
-						Object result = vc.getValue((LocalisationInterface) evt);
-						if(result != null) {
-							buffer.with(result.toString());
-						}
-					} else {
-						buffer.with(item.toString());
-					}
-				}
-				leftValue = buffer.toString();
-			}
-			Object rightValue = null;
-			if (this.right instanceof ParserCondition) {
-				rightValue = ((ParserCondition)this.right).getValue(li);
-			} else if (this.right instanceof ChainCondition) {
-				ChainCondition chainCondition = (ChainCondition) this.right;
-				SimpleList<ObjectCondition> templates = chainCondition.getTemplates();
-				CharacterBuffer buffer=new CharacterBuffer();
-				for(ObjectCondition item : templates) {
-					if(item instanceof VariableCondition) {
-						VariableCondition vc = (VariableCondition) item;
-						Object result = vc.getValue((LocalisationInterface) evt);
-						if(result != null) {
-							buffer.with(result.toString());
-						}
-					} else {
-						buffer.with(item.toString());
-					}
-				}
-				rightValue = buffer.toString();
-			}
+			
+			Object leftValue = getValue(this.left, evt);
+			Object rightValue = getValue(this.right, evt);
+
 			if(leftValue == null) {
 				return rightValue == null;
 			}

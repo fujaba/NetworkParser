@@ -158,6 +158,13 @@ public class TemplateResultFragment implements Comparable<TemplateResultFragment
 		return parent;
 	}
 	
+	public TemplateResultFile getFile() {
+		if(parent instanceof TemplateResultFile) {
+			return (TemplateResultFile) parent;
+		}
+		return null;
+	}
+	
 	@Override
 	public String[] getProperties() {
 		return new String[] {PROPERTY_FILE, PROPERTY_MEMBER, PROPERTY_VARIABLE, PROPERTY_HEADERS};

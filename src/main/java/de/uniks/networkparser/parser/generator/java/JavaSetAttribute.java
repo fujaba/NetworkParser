@@ -32,7 +32,7 @@ public class JavaSetAttribute extends BasicGenerator {
 				"      return result;",
 				"   }","",
 				
-				"{{#if {{member.typeName}}==SimpleKeyValueList<{{member.genericName}}>}}{{#import " + SimpleKeyValueList.class.getName() + "}}{{#endif}}" +
+				"{{#if {{member.type}}==SimpleKeyValueList<{{member.genericName}}>}}{{#import " + SimpleKeyValueList.class.getName() + "}}{{#endif}}" +
 				"{{#if {{member.type}}==VALUETYPE}}",
 				"   public {{SetName}} filter{{Value}}({{type}} lower, {{type}} upper)",
 				"   {",

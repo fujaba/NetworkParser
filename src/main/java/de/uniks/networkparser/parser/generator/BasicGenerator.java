@@ -65,7 +65,7 @@ public abstract class BasicGenerator {
 		return null;
 	}
 	
-	public void executeTemplate(SendableEntityCreator templateResult, LocalisationInterface parameters, GraphMember member) {
+	public void executeTemplate(TemplateResultFile templateResult, LocalisationInterface parameters, GraphMember member) {
 		if(member == null || member.getClass() == getTyp() == false) {
 			return;
 		}

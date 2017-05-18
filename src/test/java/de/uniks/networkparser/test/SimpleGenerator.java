@@ -10,8 +10,10 @@ import de.uniks.networkparser.graph.Attribute;
 import de.uniks.networkparser.graph.Cardinality;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.DataType;
+import de.uniks.networkparser.graph.DataTypeSet;
 import de.uniks.networkparser.graph.GraphList;
 import de.uniks.networkparser.interfaces.TemplateParser;
+import de.uniks.networkparser.list.SimpleSet;
 import de.uniks.networkparser.logic.TemplateFragmentCondition;
 import de.uniks.networkparser.parser.Template;
 import de.uniks.networkparser.parser.TemplateResultFile;
@@ -169,6 +171,29 @@ public class SimpleGenerator {
 		System.out.println(generate);
 		
 		Assert.assertEquals("Hello", templateFile.toString());
+	}
+	@Test
+	public void testAttribute() {
+//		if(Generator.DISABLE) {
+//			return;
+//		}
+		GraphList classModel = new GraphList().with("de.uniks.test.model");
+		Clazz person = classModel.createClazz("Person");
+		Attribute name = person.createAttribute("name", DataType.STRING);
+		Template template = new Template().withType(TemplateParser.DECLARATION)
+				.withTemplate("{{#if {{member.type#sub(0,10)}}==SimpleSet<}}{{#import " + SimpleSet.class.getName() + "}}{{#endif}}");
+		
+
+		ModelGenerator generator = new ModelGenerator();
+		TemplateResultFragment fragment;
+		fragment = generator.parseTemplate(template, name);
+		Assert.assertEquals("", fragment.getResult().trim().toString());
+		Assert.assertNull(fragment.getHeaders());
+		
+		name.with(DataTypeSet.create(String.class));
+		fragment = generator.parseTemplate(template, name);
+		Assert.assertEquals("(de.uniks.networkparser.list.SimpleSet)", fragment.getHeaders().toString());
+		
 	}
 	
 }

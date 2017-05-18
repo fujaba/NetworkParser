@@ -31,7 +31,6 @@ public class Attribute extends Value {
 	public static final String PROPERTY_CLAZZ = "clazz";
 	public static final String PROPERTY_VALUE = "value";
 	public static final String PROPERTY_TYPE = "type";
-	public static final String PROPERTY_TYPENAME = "typeName";
 	public static final String PROPERTY_GENERICNAME = "genericName";
 
 	Attribute() {
@@ -124,18 +123,6 @@ public class Attribute extends Value {
 	public Object getValue(String attribute) {
 		if(PROPERTY_TYPE.equalsIgnoreCase(attribute)) {
 			return this.getType();
-		}
-		if (PROPERTY_TYPENAME.equalsIgnoreCase(attribute)) {
-			return this.getType(true);
-		}
-		if (PROPERTY_GENERICNAME.equalsIgnoreCase(attribute)) {
-			if (this.type instanceof DataTypeSet) {
-				return ((DataTypeSet) this.type).getGeneric().getName(true);
-			}
-			if (this.type instanceof DataTypeMap) {
-				return ((DataTypeMap) this.type).getGenericKey().getName(true) + ", " + ((DataTypeMap) this.type).getGenericValue().getName(true);
-			}
-			return null;
 		}
 		return super.getValue(attribute);
 	}
