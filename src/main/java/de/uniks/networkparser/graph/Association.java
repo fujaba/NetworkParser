@@ -35,7 +35,6 @@ public class Association extends GraphMember {
 	public static final String PROPERTY_OTHER = "other";
 	public static final String PROPERTY_CLAZZ = "clazz";
 	public static final String PROPERTY_TYPE = "type";
-	public static final String PROPERTY_TYPENAME = "typeName";
 	private Cardinality cardinality;
 	// The Complete Edge Info
 //	private GraphLabel info;
@@ -76,9 +75,6 @@ public class Association extends GraphMember {
 		}
 		if (PROPERTY_TYPE.equalsIgnoreCase(attrName)) {
 			return this.getType();
-		}
-		if (PROPERTY_TYPENAME.equalsIgnoreCase(attrName)) {
-			return this.getType().getValue();
 		}
 		return super.getValue(attribute);
 	}
