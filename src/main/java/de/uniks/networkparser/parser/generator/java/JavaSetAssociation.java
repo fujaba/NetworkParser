@@ -11,7 +11,10 @@ public class JavaSetAssociation extends BasicGenerator {
 
 	public JavaSetAssociation() {
 		createTemplate("Declaration", Template.DECLARATION,
-				"{{#template VALUE}}" +
+				"{{#template VALUE}}",
+				"{{#ifnot {{member.other.typeName}}==edge}}",
+				"{{#ifnot {{member.other.typeName}}==generalisation}}",
+				"{{#ifnot {{member.other.typeName}}==implements}}",
 				"{{#import {{file.member.fullName}}}}" +
 				"   public {{file.member.name}}Set get{{member.other.Name}}()",
 				"   {",
@@ -66,6 +69,9 @@ public class JavaSetAssociation extends BasicGenerator {
 				"      }",
 				"      return this;",
 				"   }","",
+				"{{#endif}}",
+				"{{#endif}}",
+				"{{#endif}}",
 				"{{#endif}}{{#endtemplate}}");
 	}
 	
