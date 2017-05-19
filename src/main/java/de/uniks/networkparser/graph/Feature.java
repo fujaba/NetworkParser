@@ -16,8 +16,7 @@ public enum Feature {
 	}
 
 	public static FeatureSet getAll() {
-		FeatureSet result = new FeatureSet().with(PROPERTYCHANGESUPPORT, PATTERNOBJECT, SERIALIZATION, REMOVEYOUMETHOD);
-		result.add(SETCLASS.create().withClazzValue(SimpleSet.class));
+		FeatureSet result = new FeatureSet().with(PROPERTYCHANGESUPPORT, PATTERNOBJECT, SERIALIZATION, REMOVEYOUMETHOD, SETCLASS);
 		result.add(CODESTYLE.create().withStringValue(CODESTYLE_STANDARD));
 		return result;
 	}
@@ -30,6 +29,9 @@ public enum Feature {
 	}
 
 	public final FeatureProperty create() {
+		if(this==Feature.SETCLASS) {
+			return new FeatureProperty(this).withClazzValue(SimpleSet.class);
+		}
 		return new FeatureProperty(this);
 	}
 }

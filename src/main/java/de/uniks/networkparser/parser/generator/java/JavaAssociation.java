@@ -9,7 +9,7 @@ public class JavaAssociation extends BasicGenerator {
 	public JavaAssociation() {
 		createTemplate("Declaration", Template.DECLARATION, 
 				"{{#template VALUE}}",
-				"{{#ifnot {{#AND}}{{other.type}}==edge {{other.type}}==generalisation {{other.type}}==implements{{#endand}}}}",
+				"{{#ifnot {{other.isEdge}}}}",
 				"   public static final String PROPERTY_{{other.NAME}} = \"{{other.name}}\";","",
 		
 				"{{#ifnot {{file.member.type}}==interface}}",
@@ -111,7 +111,7 @@ public class JavaAssociation extends BasicGenerator {
 				"         if (this.{{other.name}} != null && item != null) {",
 				"{{#if {{type}}==assoc}}",
 				"            if (this.{{other.name}}.remove(item)) {",
-				"{{#if {{member.cardinality}}==1}}",
+				"{{#if {{cardinality}}==1}}",
 				"               item.with{{Name}}(null);",
 				"{{#else}}",
 				"               item.without{{Name}}(this);",

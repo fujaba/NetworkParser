@@ -198,6 +198,7 @@ public class IfCondition implements ParserCondition, SendableEntityCreator {
 			buffer.skipTo(SPLITEND, false);
 		}
 		buffer.skipChar(SPLITEND);
+		buffer.skipChar(SPLITEND);
 	}
 
 	@Override

@@ -12,23 +12,21 @@ public class JavaSetAssociation extends BasicGenerator {
 	public JavaSetAssociation() {
 		createTemplate("Declaration", Template.DECLARATION,
 				"{{#template VALUE}}",
-				"{{#ifnot {{member.other.typeName}}==edge}}",
-				"{{#ifnot {{member.other.typeName}}==generalisation}}",
-				"{{#ifnot {{member.other.typeName}}==implements}}",
+				"{{#ifnot {{other.isEdge}}}}",
 				"{{#import {{file.member.fullName}}}}" +
-				"   public {{file.member.name}}Set get{{member.other.Name}}()",
+				"   public {{file.member.name}}Set get{{other.Name}}()",
 				"   {",
 				"      {{file.member.name}}Set result = new {{file.member.name}}Set();",
 				"      for ({{file.member.name}} obj : this)",
 				"      {",
-				"         result.with(obj.get{{member.other.Name}}());",
+				"         result.with(obj.get{{other.Name}}());",
 				"      }",
 				"      return result;",
 				"   }","","",
 				
 				"{{#import " + ObjectSet.class.getName() + "}}" +
-				"{{#if {{member.other.cardinality}}==n}}{{#import " + Collections.class.getName() + "}}{{#endif}}" +
-				"   public {{file.member.name}}Set filter{{member.other.Name}}(Object value)",
+				"{{#if {{other.cardinality}}==n}}{{#import " + Collections.class.getName() + "}}{{#endif}}" +
+				"   public {{file.member.name}}Set filter{{other.Name}}(Object value)",
 				"   {",
 				"      ObjectSet neighbors = new ObjectSet();",
 				"      if (value instanceof Collection)",
@@ -42,7 +40,7 @@ public class JavaSetAssociation extends BasicGenerator {
 				"      {{file.member.name}}Set answer = new {{file.member.name}}Set();",
 				"      for ({{file.member.name}} obj : this)",
 				"      {",
-				"         if ({{#if {{member.other.cardinality}}==1}}neighbors.contains(obj.get{{member.other.Name}}()) || (neighbors.isEmpty() && obj.get{{member.other.Name}}() == null){{#else}}! Collections.disjoint(neighbors, obj.get{{member.other.Name}}()){{#endif}})",
+				"         if ({{#if {{other.cardinality}}==1}}neighbors.contains(obj.get{{other.Name}}()) || (neighbors.isEmpty() && obj.get{{other.Name}}() == null){{#else}}! Collections.disjoint(neighbors, obj.get{{other.Name}}()){{#endif}})",
 				"         {",
 				"            answer.add(obj);",
 				"         }",
@@ -50,17 +48,17 @@ public class JavaSetAssociation extends BasicGenerator {
 				"      return answer;",
 				"   }","",
 				
-				"   public {{file.member.name}}Set with{{member.other.Name}}({{member.other.clazz.name}} value)",
+				"   public {{file.member.name}}Set with{{other.Name}}({{other.clazz.name}} value)",
 				"   {",
 				"      for ({{file.member.name}} obj : this)",
 				"      {",
-				"         obj.with{{member.other.Name}}(value);",
+				"         obj.with{{other.Name}}(value);",
 				"      }",
 				"      return this;",
 				"   }","",
 				
-				"{{#import {{member.other.clazz.fullName}}}}" +
-				"{{#if {{member.other.cardinality}}==MANY}}",
+				"{{#import {{other.clazz.fullName}}}}" +
+				"{{#if {{other.cardinality}}==MANY}}",
 				"   public {{file.member.name}}Set without{{member.other.Name}}({{member.other.clazz.name}} value)",
 				"   {",
 				"      for ({{file.member.name}} obj : this)",
@@ -69,8 +67,6 @@ public class JavaSetAssociation extends BasicGenerator {
 				"      }",
 				"      return this;",
 				"   }","",
-				"{{#endif}}",
-				"{{#endif}}",
 				"{{#endif}}",
 				"{{#endif}}{{#endtemplate}}");
 	}

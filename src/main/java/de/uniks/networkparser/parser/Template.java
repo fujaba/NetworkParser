@@ -160,8 +160,14 @@ public class Template implements TemplateParser {
 				if(condition != null) {
 					condition.create(buffer, this, customTemplate);
 					parent.with(condition);
+					
+					// If StopWords and Expression may be And or 
+					if(stopWords != null && isExpression) {
+						if(buffer.getCurrentChar() == ' ') {
+							buffer.skip();
+						}
+					}					
 				}
-				buffer.skip();
 				start=buffer.position();
 				continue;
 			}
@@ -208,8 +214,8 @@ public class Template implements TemplateParser {
 						if(buffer.getCurrentChar() == ' ') {
 							start++;
 							buffer.skip();
+							continue;
 						}
-						continue;
 					}
 				}
 				start=buffer.position();

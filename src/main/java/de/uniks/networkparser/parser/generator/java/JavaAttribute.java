@@ -17,12 +17,12 @@ public class JavaAttribute extends BasicGenerator{
 				"   {{visibility}} {{modifiers} }{{type} }{{name}}{{#if {{value}}}} = {{value}}{{#endif}};","",
 				"{{#endif}}","",
 
-				"{{#if {{member.type#sub(0,10)}}==SimpleSet<{{member.type}}>}}{{#import " + SimpleSet.class.getName() + "}} {{#endif}}" +
-				"{{#if {{member.type}}==SimpleKeyValueList<{{member.genericName}}>}}{{#import " + SimpleKeyValueList.class.getName() + "}} {{#endif}}" +
-				"{{#foreach {{member.parent.parent.child}}}}" +
+				"{{#if {{type#sub(0,10)}}==SimpleSet<}}{{#import " + SimpleSet.class.getName() + "}} {{#endif}}" +
+				"{{#if {{type#sub(0,19)}}==SimpleKeyValueList<}}{{#import " + SimpleKeyValueList.class.getName() + "}} {{#endif}}" +
+				"{{#foreach {{parent.parent.child}}}}" +
 				   "{{#if {{item.type}}==class}}" +
 				      "{{#ifnot {{item.name}}=={{file.member.name}}}}" +
-				         "{{#if {{item.name}}=={{member.typeName}}}}" + 
+				         "{{#if {{item.name}}=={{type}}}}" + 
 				            "{{#import {{item.fullName}}}}" +
 				         "{{#endif}}" +
 				      "{{#endif}}" +

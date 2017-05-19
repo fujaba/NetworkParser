@@ -9,22 +9,22 @@ public class JavaSetAttribute extends BasicGenerator {
 
 	public JavaSetAttribute() {
 		createTemplate("Declaration", Template.DECLARATION,
-				"{{#template VALUE}}   public {{#listType}} {{#if {{type}}==boolean}}is{{#else}}get{{#endif}}{{member.Name}}()",
+				"{{#template VALUE}}   public {{#listType}} {{#if {{type}}==boolean}}is{{#else}}get{{#endif}}{{Name}}()",
 				"   {",
 				"      {{#listType}} result = new {{#listType}}();",
 				"      for ({{file.member.name}} obj : this)",
 				"      {",
-				"         result.add(obj.{{#if {{type}}==boolean}}is{{#else}}get{{#endif}}{{member.Name}}());",
+				"         result.add(obj.{{#if {{type}}==boolean}}is{{#else}}get{{#endif}}{{Name}}());",
 				"      }",
 				"      return result;",
 				"   }","",
 
-				"   public {{file.member.name}}Set filter{{member.Name}}({{type}} value)",
+				"   public {{file.member.name}}Set filter{{Name}}({{type}} value)",
 				"   {",
 				"      {{file.member.name}}Set result = new {{file.member.name}}Set();",
 				"      for({{file.member.name}} obj : this)",
 				"      {",
-				"         if ({{#if {{member.type}}==BOOLEAN}} value == obj.is{{Name}}(){{#else}}{{#if {{member.type}}==OBJECT}}value.equals(obj.get{{Name}}()){{#else}}value == obj.get{{Name}}(){{#endif}}{{#endif}})",
+				"         if ({{#if {{type}}==BOOLEAN}} value == obj.is{{Name}}(){{#else}}{{#if {{type}}==OBJECT}}value.equals(obj.get{{Name}}()){{#else}}value == obj.get{{Name}}(){{#endif}}{{#endif}})",
 				"         {",
 				"            result.add(obj);",
 				"         }",
@@ -32,14 +32,14 @@ public class JavaSetAttribute extends BasicGenerator {
 				"      return result;",
 				"   }","",
 				
-				"{{#if {{member.type}}==SimpleKeyValueList<{{member.genericName}}>}}{{#import " + SimpleKeyValueList.class.getName() + "}}{{#endif}}" +
-				"{{#if {{member.type}}==VALUETYPE}}",
+				"{{#if {{type#sub(0,19}}==SimpleKeyValueList<}}{{#import " + SimpleKeyValueList.class.getName() + "}}{{#endif}}" +
+				"{{#if {{type}}==VALUETYPE}}",
 				"   public {{SetName}} filter{{Value}}({{type}} lower, {{type}} upper)",
 				"   {",
 				"      {{SetName}} result = new {{SetName}}();",
 				"      for ({{name}} obj : this)",
 				"      {",
-				"         if (lower{{#if {{member.type}}==PRIMITIVE}} <= obj.get{{Name}}(){{#else}}.compareTo(obj.get{{Name}})) <= 0{{#endif}} && upper{{#if {{member.type}}==PRIMITIVE}} >= obj.get{{Name}}(){{#else}}.compareTo(obj.get{{Name}})) >= 0{{#endif}})",
+				"         if (lower{{#if {{type}}==PRIMITIVE}} <= obj.get{{Name}}(){{#else}}.compareTo(obj.get{{Name}})) <= 0{{#endif}} && upper{{#if {{member.type}}==PRIMITIVE}} >= obj.get{{Name}}(){{#else}}.compareTo(obj.get{{Name}})) >= 0{{#endif}})",
 				"         {",
 				"            result.add(obj);",
 				"         }",
@@ -48,11 +48,11 @@ public class JavaSetAttribute extends BasicGenerator {
 				"   }","",
 				"{{#endif}}",
 
-				"   public {{file.member.name}}Set with{{member.Name}}({{type}} value)",
+				"   public {{file.member.name}}Set with{{Name}}({{type}} value)",
 				"   {",
 				"      for ({{file.member.name}} obj : this)",
 				"      {",
-				"         obj.set{{member.Name}}(value);",
+				"         obj.set{{Name}}(value);",
 				"      }",
 				"      return this;",
 				"   }","","","{{#endtemplate}}");

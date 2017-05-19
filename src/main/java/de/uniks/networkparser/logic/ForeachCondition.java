@@ -82,6 +82,7 @@ public class ForeachCondition implements ParserCondition {
 		expression = parser.parsing(buffer, customTemplate, false, "endfor");
 		withLoopCondition(expression);
 		buffer.skipChar(SPLITEND);
+		buffer.skipChar(SPLITEND);
 	}
 
 	@Override

@@ -41,9 +41,8 @@ public class FeatureCondition extends CustomCondition<GraphMember> {
 				this.feature.withStringValue(string);
 			}
 			buffer.skipChar(SPLITEND);
-		}else {
-			this.feature.withClazzValue(SimpleSet.class);
 		}
+		buffer.skip();
 	}
 
 
@@ -120,11 +119,13 @@ public class FeatureCondition extends CustomCondition<GraphMember> {
 	public String toString() {
 		CharacterBuffer buffer=new CharacterBuffer();
 		buffer.with("{{");
-		buffer.with(this.feature.getName().toString());
-		String stringValue = this.feature.getStringValue();
-		if(stringValue != null) {
-			buffer.with(' ');
-			buffer.with(stringValue);
+		if(this.feature != null) {
+			buffer.with(this.feature.getName().toString());
+			String stringValue = this.feature.getStringValue();
+			if(stringValue != null) {
+				buffer.with(' ');
+				buffer.with(stringValue);
+			}
 		}
 		buffer.with("}}");
 		return buffer.toString();

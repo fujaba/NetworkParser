@@ -18,7 +18,7 @@ public class JavaClazz extends BasicGenerator{
 				
 				"{{visibility}} {{modifiers} }{{type}} {{name}}{{#if {{superclazz}}}} extends {{superclazz}}{{#endif}}{{#if {{implements}}}} implements {{implements}}{{#endif}}","{","",
 
-				"{{#if {{#AND}}{{#feature PROPERTYCHANGESUPPORT}}{{type}}!=INTERFACE{{#ENDAND}}}}"
+				"{{#if {{#AND}}{{#feature PROPERTYCHANGESUPPORT}} {{type}}!=INTERFACE{{#ENDAND}}}}"
 						+"{{#import "+PropertyChangeListener.class.getName()+"}}"+"{{#import "+PropertyChangeSupport.class.getName()+"}}"+ 
 						"   protected PropertyChangeSupport listeners = null;","",
 						

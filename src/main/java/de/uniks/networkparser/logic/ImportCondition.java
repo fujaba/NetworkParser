@@ -86,6 +86,7 @@ public class ImportCondition implements ParserCondition {
 		}
 		this.setExpression(result);
 		buffer.skipChar(SPLITEND);
+		buffer.skipChar(SPLITEND);
 	}
 
 	private boolean setExpression(ObjectCondition value) {

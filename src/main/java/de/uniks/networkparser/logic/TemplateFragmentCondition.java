@@ -101,6 +101,7 @@ public class TemplateFragmentCondition implements ParserCondition{
 		
 		buffer.skipTo(SPLITEND, true);
 		buffer.skipChar(SPLITEND);
+		buffer.skipChar(SPLITEND);
 	}
 	
 	public String getId() {

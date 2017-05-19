@@ -723,7 +723,7 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence{
 		}
 		return new String(buffer, start, length);
 	}
-
+	
 	public boolean equals(CharSequence other) {
 		if(other==null || other.length() != length) {
 			return false;
@@ -833,5 +833,11 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence{
 			buffer.with(value);
 		}
 		return buffer;
+	}
+	public String toCurrentString() {
+		if(length<1) {
+			return "";
+		}
+		return new String(buffer, position, length-position);
 	}
 }

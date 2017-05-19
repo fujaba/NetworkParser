@@ -45,7 +45,7 @@ public class SimpleGenerator {
 	
 	@Test
 	public void testIfAndStatement() {
-		String template ="{{#if {{#AND}}{{#feature PROPERTYCHANGESUPPORT}}{{type}}!=INTERFACE{{#ENDAND}}}}"
+		String template ="{{#if {{#AND}}{{#feature PROPERTYCHANGESUPPORT}} {{type}}!=INTERFACE{{#ENDAND}}}}"
 				+ "Hallo"
 				+"{{#endif}}";
 		Clazz person = new Clazz("Person");

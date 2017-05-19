@@ -53,7 +53,8 @@ public abstract class CustomCondition<T> implements ParserCondition {
 	
 	protected void skipEnd(CharacterBuffer buffer) {
 		buffer.skipTo(SPLITEND, true);
-		buffer.skip();
+		buffer.skipChar(SPLITEND);
+		buffer.skipChar(SPLITEND);
 	}
 	
 	@Override
