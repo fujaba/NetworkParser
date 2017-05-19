@@ -179,7 +179,7 @@ public class IfCondition implements ParserCondition, SendableEntityCreator {
 		
 		if(this.tag.equalsIgnoreCase("ifnot")) {
 			this.withExpression(Not.create(expression));	
-		}else {
+		} else {
 			this.withExpression(expression);
 		}
 		

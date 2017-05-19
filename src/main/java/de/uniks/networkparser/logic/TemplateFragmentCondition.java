@@ -88,24 +88,9 @@ public class TemplateFragmentCondition implements ParserCondition{
 		CharacterBuffer id = buffer.nextToken(false, SPLITEND, SPACE);
 		this.id = id.toString();
 		buffer.nextClean(true);
-		if(buffer.getCurrentChar() == SPLITSTART) {
+		if(buffer.getCurrentChar() != SPLITEND) {
 			// Condition
-			buffer.skipChar(SPLITSTART);
-			CharacterBuffer condition = buffer.nextToken(false, SPLITEND);
-			//TODO CHANGE TO CUSTOMTEMPLATE
-			if(condition.startsWith("{{#ifnot")) {
-//				IfCondition ifcondition = new IfCondition();
-//				ifcondition.
-//				this.condition  = ifcondition;
-//				.create(condition.toString(), true);
-			}else if(condition.startsWith("{{#if")) {
-				this.condition = new IfCondition();
-				
-			} else {
-				this.condition = VariableCondition.create(condition.toString(), true);
-			}
-			buffer.skipChar(SPLITEND);
-			buffer.skipChar(SPLITEND);
+			this.condition = parser.parsing(buffer, customTemplate, true);
 		}
 		
 		buffer.skipChar(SPLITEND);

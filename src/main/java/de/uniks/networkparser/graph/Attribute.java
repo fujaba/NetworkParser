@@ -30,8 +30,6 @@ public class Attribute extends Value {
 	public static final StringFilter<Attribute> NAME = new StringFilter<Attribute>(GraphMember.PROPERTY_NAME);
 	public static final String PROPERTY_CLAZZ = "clazz";
 	public static final String PROPERTY_VALUE = "value";
-	public static final String PROPERTY_TYPE = "type";
-	public static final String PROPERTY_GENERICNAME = "genericName";
 
 	Attribute() {
 	}
@@ -119,14 +117,6 @@ public class Attribute extends Value {
 		return getType(shortName);
 	}
 	
-	@Override
-	public Object getValue(String attribute) {
-		if(PROPERTY_TYPE.equalsIgnoreCase(attribute)) {
-			return this.getType();
-		}
-		return super.getValue(attribute);
-	}
-
 	public Annotation getAnnotation() {
 		return super.getAnnotation();
 	}

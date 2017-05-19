@@ -254,21 +254,10 @@ public class TemplateResultFragment implements Comparable<TemplateResultFragment
 		}
 		if(this.member != null) {
 			Object value = this.member.getValue(attribute);
-//			Object value = this.member.getValue(attrName);
 			if(value != null) {
 				return value;
 			}
 		}
-//		parameters.put("imports", determineImports(clazz, templateResult));
-//		parameters.put("packageName", getPackageName(clazz.getName(false)));
-//		parameters.put("visibility", "public");
-//		parameters.put("modifiers", determineModifiers(clazz.getModifier()));
-//		parameters.put("clazzType", determineClazzType(clazz));
-//		parameters.put("name", clazz.getName(true));
-//		parameters.put("superclasses", determineSuperClasses(clazz, superPropertyChangeEnabled));
-//		parameters.put("propertyChange", propertyChange);
-
-		
 		return element.getText(attribute, null, null);
 	}
 

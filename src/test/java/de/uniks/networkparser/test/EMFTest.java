@@ -87,7 +87,9 @@ public class EMFTest extends IOClasses{
 						+"<states id=\"1\" outgoing=\"//@transitions.8\" incoming=\"//@transitions.0\"/>"
 						+"<states id=\"2\" outgoing=\"//@transitions.9\" incoming=\"//@transitions.1\"/>";
 		IdMap map=new IdMap();
-//		map.
+//		map.with(new GenericCreator())
+		Assert.assertNotNull(xmi);
+		Assert.assertNotNull(map);
 	}
 
 }
