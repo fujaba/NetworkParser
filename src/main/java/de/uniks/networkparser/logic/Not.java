@@ -1,6 +1,9 @@
 package de.uniks.networkparser.logic;
 
+import de.uniks.networkparser.buffer.CharacterBuffer;
+import de.uniks.networkparser.interfaces.LocalisationInterface;
 import de.uniks.networkparser.interfaces.ObjectCondition;
+import de.uniks.networkparser.interfaces.ParserCondition;
 /*
 NetworkParser
 The MIT License
@@ -25,13 +28,15 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
+import de.uniks.networkparser.interfaces.TemplateParser;
 /**
  * Not Clazz for neg. Condition.
  *
  * @author Stefan Lindel
  */
 
-public class Not implements ObjectCondition, SendableEntityCreator {
+public class Not implements ParserCondition, SendableEntityCreator {
+	public static final String TAG="not";
 	/** Constant for ITEM. */
 	public static final String ITEM = "item";
 	/** Varibale for Condition. */
@@ -106,5 +111,29 @@ public class Not implements ObjectCondition, SendableEntityCreator {
 			return "!"+this.item.toString();
 		}
 		return "!";
+	}
+
+	@Override
+	public String getKey() {
+		return TAG;
+	}
+	
+	@Override
+	public boolean isExpression() {
+		return true;
+	}
+
+	@Override
+	public Object getValue(LocalisationInterface variables) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void create(CharacterBuffer buffer, TemplateParser parser, LocalisationInterface customTemplate) {
+		buffer.skip();
+		buffer.skip();
+		ObjectCondition expression = parser.parsing(buffer, customTemplate, true, "endnot");
+		this.item = expression;
 	}
 }

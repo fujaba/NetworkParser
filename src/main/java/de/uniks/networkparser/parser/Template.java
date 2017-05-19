@@ -21,6 +21,7 @@ public class Template implements TemplateParser {
 	private static final char SPLITSTART='{';
 	private static final char SPLITEND='}';
 	private static final char ENTER='=';
+	private static final char SPACE = ' ';
 	
 	private TemplateCondition token = new TemplateCondition();
 	
@@ -100,8 +101,11 @@ public class Template implements TemplateParser {
 		ChainCondition parent = new ChainCondition();
 		
 		while(buffer.isEnd() == false) {
+			if(isExpression && (buffer.getCurrentChar() == SPACE)) {
+				break;
+			}
 			char character = buffer.nextClean(true);
-			if(isExpression && character == SPLITEND) {
+			if(isExpression && (character == SPLITEND)) {
 				break;
 			}
 			if(character != SPLITSTART) {
@@ -179,7 +183,7 @@ public class Template implements TemplateParser {
 							buffer.skip();
 							Equals equalsExpression = new Equals();
 							equalsExpression.withLeft(child);
-							child = parsing(buffer, customTemplate, true);
+							child = parsing(buffer, customTemplate, true, stopWords);
 							equalsExpression.withRight(child);
 
 							if(firstChar == '!') {
@@ -197,10 +201,16 @@ public class Template implements TemplateParser {
 						parent.with(child);
 						start=buffer.position();
 						// Move to next }
-//						buffer.skipTo(SPLITEND, false);
-						
 					}
-					break;
+					if(stopWords == null) {
+						break;
+					} else {
+						if(buffer.getCurrentChar() == ' ') {
+							start++;
+							buffer.skip();
+						}
+						continue;
+					}
 				}
 				start=buffer.position();
 				parent.with(child);
@@ -223,13 +233,26 @@ public class Template implements TemplateParser {
 		}
 		end = buffer.position();
 		if(end-start>0) {
+			// Is It a stopword
+			String token = buffer.substring(start,end);
+			if(token.startsWith("#")) {
+				token = token.substring(1);
+				if(stopWords != null) {
+					for(String stopword : stopWords) {
+						if(token.equalsIgnoreCase(stopword)) {
+							return parent;
+						}
+					}
+				}
+			}
+			
 			if(isExpression) {
 				if (buffer.charAt(start) == SPLITSTART) {
-					child = VariableCondition.create(buffer.substring(start,end), isExpression);
+					child = VariableCondition.create(token, isExpression);
 				}
-				child = VariableCondition.create(buffer.substring(start,end), false);
+				child = VariableCondition.create(token, false);
 			}else {
-				child = StringCondition.create(buffer.substring(start,end));
+				child = StringCondition.create(token);
 			}
 			if(parent.size() == 0) {
 				return child;

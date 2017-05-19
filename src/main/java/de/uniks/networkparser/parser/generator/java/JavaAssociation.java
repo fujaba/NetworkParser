@@ -9,43 +9,41 @@ public class JavaAssociation extends BasicGenerator {
 	public JavaAssociation() {
 		createTemplate("Declaration", Template.DECLARATION, 
 				"{{#template VALUE}}",
-				"{{#ifnot {{member.other.typeName}}==edge}}",
-				"{{#ifnot {{member.other.typeName}}==generalisation}}",
-				"{{#ifnot {{member.other.typeName}}==implements}}",
+				"{{#ifnot {{#AND}}{{other.type}}==edge {{other.type}}==generalisation {{other.type}}==implements{{#endand}}}}",
 				"   public static final String PROPERTY_{{other.NAME}} = \"{{other.name}}\";","",
 		
 				"{{#ifnot {{file.member.type}}==interface}}",
-				"   {{visibility}} {{modifiers} }{{#if {{member.other.cardinality}}==1}}{{other.clazz.name}}{{#else}}{{other.clazz.name}}Set{{#endif}} {{other.name}} = null;","",
+				"   {{visibility}} {{modifiers} }{{#if {{other.cardinality}}==1}}{{other.clazz.name}}{{#else}}{{other.clazz.name}}Set{{#endif}} {{other.name}} = null;","",
 				"{{#endif}}","",
 		
-				"{{#foreach {{member.parent.parent.child}}}}" +
+				"{{#foreach {{parent.parent.child}}}}" +
 				   "{{#if {{item.type}}==class}}" +
 				      "{{#ifnot {{item.name}}=={{file.member.name}}}}" +
 				         "{{#import {{item.fullName}}}}" +
 				      "{{#endif}}" +
 				   "{{#endif}}" +
 				"{{#endfor}}" +
-				"{{#if {{member.other.cardinality}}==n}}" +
-				   "{{#import {{member.other.clazz.packageName}}.util.{{member.other.clazz.name}}Set}}" +
+				"{{#if {{other.cardinality}}==n}}" +
+				   "{{#import {{other.clazz.packageName}}.util.{{other.clazz.name}}Set}}" +
 				"{{#endif}}" +
-				"   public {{modifiers} }{{#if {{member.other.cardinality}}==1}}{{other.clazz.name}}{{#else}}{{other.clazz.name}}Set{{#endif}} get{{other.Name}}(){{#if {{file.member.type}}==interface}};","","{{#endif}}",
+				"   public {{modifiers} }{{#if {{other.cardinality}}==1}}{{other.clazz.name}}{{#else}}{{other.clazz.name}}Set{{#endif}} get{{other.Name}}(){{#if {{file.member.type}}==interface}};","","{{#endif}}",
 				"{{#ifnot {{file.member.type}}==interface}}",
 				"   {",
 				"      return this.{{other.name}};",
 				"   }","",
 				"{{#endif}}",
 				
-				"{{#if {{member.other.cardinality}}==1}}",
+				"{{#if {{other.cardinality}}==1}}",
 				"   public {{modifiers} }boolean set{{other.Name}}({{other.clazz.name}} value){{#if {{file.member.type}}==interface}};","","{{#endif}}",
-				"{{#ifnot {{file.member.type}}==interface}}",
+				"{{#ifnot {{file.type}}==interface}}",
 				"   {",
 				"      boolean changed = false;",
 				"      if (this.{{other.name}} != value) {",
 				"         {{other.clazz.name}} oldValue = this.{{other.name}};",
-				"{{#if {{member.typeName}}==assoc}}",
+				"{{#if {{type}}==assoc}}",
 				"         if (this.{{other.name}} != null) {",
 				"            this.{{other.name}} = null;",
-				"{{#if {{member.cardinality}}==1}}",
+				"{{#if {{cardinality}}==1}}",
 				"            oldValue.set{{Name}}(null);",
 				"{{#else}}",
 				"            oldValue.without{{Name}}(this);",
@@ -53,7 +51,7 @@ public class JavaAssociation extends BasicGenerator {
 				"         }",
 				"{{#endif}}",
 				"         this.{{other.name}} = value;",
-				"{{#if {{member.typeName}}==assoc}}",
+				"{{#if {{type}}==assoc}}",
 				"         if (value != null) {",
 				"            value.with{{Name}}(this);",
 				"         }",
@@ -68,7 +66,7 @@ public class JavaAssociation extends BasicGenerator {
 				"{{#endif}}",
 				"{{#endif}}",
 				
-				"{{#if {{member.other.cardinality}}==1}}",
+				"{{#if {{other.cardinality}}==1}}",
 				"   public {{modifiers} }{{clazz.name}} with{{other.Name}}({{other.clazz.name}} value){{#if {{file.member.type}}==interface}};","","{{#endif}}",
 				"{{#ifnot {{file.member.type}}==interface}}",
 				"   {",
@@ -78,7 +76,7 @@ public class JavaAssociation extends BasicGenerator {
 				"{{#endif}}",
 				"{{#endif}}",
 				
-				"{{#if {{member.other.cardinality}}==n}}",
+				"{{#if {{other.cardinality}}==n}}",
 				"   public {{modifiers} }{{clazz.name}} with{{other.Name}}({{other.clazz.name}}... value){{#if {{file.member.type}}==interface}};","","{{#endif}}",
 				"{{#ifnot {{file.member.type}}==interface}}",
 				"   {",
@@ -93,7 +91,7 @@ public class JavaAssociation extends BasicGenerator {
 				"            boolean changed = this.{{other.name}}.add(item);",
 				"            if (changed)",
 				"            {",
-				"{{#if {{member.typeName}}==assoc}}",
+				"{{#if {{type}}==assoc}}",
 				"               item.with{{Name}}(this);",
 				"{{#endif}}",
 				"               firePropertyChange(PROPERTY_{{other.NAME}}, null, item);",
@@ -105,13 +103,13 @@ public class JavaAssociation extends BasicGenerator {
 				"{{#endif}}",
 				"{{#endif}}",
 				
-				"{{#if {{member.other.cardinality}}==n}}",
+				"{{#if {{other.cardinality}}==n}}",
 				"   public {{modifiers} }{{clazz.name}} without{{other.Name}}({{other.clazz.name}}... value){{#if {{file.member.type}}==interface}};","","{{#endif}}",
 				"{{#ifnot {{file.member.type}}==interface}}",
 				"   {",
 				"      for ({{other.clazz.name}} item : value) {",
 				"         if (this.{{other.name}} != null && item != null) {",
-				"{{#if {{member.typeName}}==assoc}}",
+				"{{#if {{type}}==assoc}}",
 				"            if (this.{{other.name}}.remove(item)) {",
 				"{{#if {{member.cardinality}}==1}}",
 				"               item.with{{Name}}(null);",
@@ -136,8 +134,6 @@ public class JavaAssociation extends BasicGenerator {
 				"      with{{other.Name}}(value);",
 				"      return value;",
 				"   }","",
-				"{{#endif}}",
-				"{{#endif}}",
 				"{{#endif}}",
 				"{{#endif}}{{#endtemplate}}");
 
