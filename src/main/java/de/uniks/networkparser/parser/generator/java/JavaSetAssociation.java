@@ -59,11 +59,11 @@ public class JavaSetAssociation extends BasicGenerator {
 				
 				"{{#import {{other.clazz.fullName}}}}" +
 				"{{#if {{other.cardinality}}==MANY}}",
-				"   public {{file.member.name}}Set without{{member.other.Name}}({{member.other.clazz.name}} value)",
+				"   public {{file.member.name}}Set without{{other.Name}}({{other.clazz.name}} value)",
 				"   {",
 				"      for ({{file.member.name}} obj : this)",
 				"      {",
-				"         obj.without{{member.other.Name}}(value);",
+				"         obj.without{{other.Name}}(value);",
 				"      }",
 				"      return this;",
 				"   }","",

@@ -65,7 +65,7 @@ public class SimpleGenerator {
 		person.withAttribute("name", DataType.STRING);
 		person.withMethod("eat", DataType.BOOLEAN);
 		ModelGenerator javaModelFactory = new ModelGenerator();
-		javaModelFactory.generate("build/gen", classModel);
+		javaModelFactory.generate("build/gen/java", classModel);
 //		javaModelFactory.generateTypescript("build", classModel);
 	}
 	

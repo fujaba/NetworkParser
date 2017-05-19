@@ -173,7 +173,7 @@ public class ModelGenerator extends BasicGenerator {
 
 	public void testGeneratedCode() {
 		if (this.defaultModel != null) {
-			String rootDir = "src/test/java";
+			String rootDir = "build/gen/java";
 			removeAllGeneratedCode(defaultModel, rootDir);
 			generateJava(rootDir, this.defaultModel, null);
 		}
