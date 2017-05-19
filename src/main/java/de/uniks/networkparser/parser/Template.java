@@ -94,47 +94,47 @@ public class Template implements TemplateParser {
 		return parsing(template, customTemplate, false);
 	}
 	
-	public ObjectCondition parsing(CharacterBuffer template, LocalisationInterface customTemplate, boolean isExpression, String... stopWords) {
-		int start=template.position(), end;
+	public ObjectCondition parsing(CharacterBuffer buffer, LocalisationInterface customTemplate, boolean isExpression, String... stopWords) {
+		int start=buffer.position(), end;
 		ObjectCondition child = null;
 		ChainCondition parent = new ChainCondition();
 		
-		while(template.isEnd() == false) {
-			char character = template.nextClean(true);
+		while(buffer.isEnd() == false) {
+			char character = buffer.nextClean(true);
 			if(isExpression && character == SPLITEND) {
 				break;
 			}
 			if(character != SPLITSTART) {
-				template.skip();
+				buffer.skip();
 				continue;
 			}
-			character = template.getChar();
+			character = buffer.getChar();
 			if(character != SPLITSTART) {
-				template.skip();
+				buffer.skip();
 				continue;
 			}
 			// Well done found {{
-			character = template.getChar();
+			character = buffer.getChar();
 			// IF {{{
 			while(character==SPLITSTART) {
-				character = template.getChar();
+				character = buffer.getChar();
 			}
-			end = template.position() - 2;
+			end = buffer.position() - 2;
 			if(end-start>0) {
-				child = StringCondition.create(template.substring(start,end));
+				child = StringCondition.create(buffer.substring(start,end));
 				parent.with(child);
 			}
 			// Switch for Logic Case
 			CharacterBuffer tokenPart = new CharacterBuffer();
 			if(character == '#') {
-				int startCommand=template.position();
-				tokenPart = template.nextToken(false, ' ', SPLITEND);
+				int startCommand=buffer.position();
+				tokenPart = buffer.nextToken(false, ' ', SPLITEND);
 
 				// Is It a stopword
 				if(stopWords != null) {
 					for(String stopword : stopWords) {
 						if(tokenPart.equalsIgnoreCase(stopword)) {
-							template.withPosition(startCommand);
+							buffer.withPosition(startCommand);
 							if(parent.size() == 1) {
 								return parent.first();
 							}
@@ -154,32 +154,32 @@ public class Template implements TemplateParser {
 					}
 				}
 				if(condition != null) {
-					condition.create(template, this, customTemplate);
+					condition.create(buffer, this, customTemplate);
 					parent.with(condition);
 				}
-				template.skip();
-				start=template.position();
+				buffer.skip();
+				start=buffer.position();
 				continue;
 			}
-			template.nextString(tokenPart, false, false, SPLITEND);
+			buffer.nextString(tokenPart, false, false, SPLITEND);
 			String key = tokenPart.toString();
 			child = createVariable(key, isExpression);
-			character = template.getChar();
+			character = buffer.getChar();
 			if(character == SPLITEND) {
-				template.getChar();
+				buffer.getChar();
 				if(isExpression) {
 					// BREAK FOR ONLY VARIABLE
 					
-					char firstChar=template.getCurrentChar();
+					char firstChar=buffer.getCurrentChar();
 					if(firstChar == ENTER || firstChar == '!') {
 						// CHECK NEXT TOKEN
-						char nextChar = template.getChar();
+						char nextChar = buffer.getChar();
 						if(nextChar == ENTER) {
 							// MAY BE A EQUALS
-							template.skip();
+							buffer.skip();
 							Equals equalsExpression = new Equals();
 							equalsExpression.withLeft(child);
-							child = parsing(template, customTemplate, true);
+							child = parsing(buffer, customTemplate, true);
 							equalsExpression.withRight(child);
 
 							if(firstChar == '!') {
@@ -189,27 +189,27 @@ public class Template implements TemplateParser {
 							}
 						} else {
 							// MAY BE ANOTHER CHAR
-							template.skip(-1);
+							buffer.skip(-1);
 						}
 						parent.with(child);
-						start=template.position();
+						start=buffer.position();
 					}else {
 						parent.with(child);
-						start=template.position();
+						start=buffer.position();
 						// Move to next }
-						template.skipTo(SPLITEND, false);
+//						buffer.skipTo(SPLITEND, false);
 						
 					}
 					break;
 				}
-				start=template.position();
+				start=buffer.position();
 				parent.with(child);
 				continue;
 			} else {
 				parent.with(child);
 			}
 			tokenPart.reset();
-			template.nextString(tokenPart, false, false, SPLITEND);
+			buffer.nextString(tokenPart, false, false, SPLITEND);
 
 			//{{#if Type}} {{#end}}
 			IfCondition token = new IfCondition();
@@ -218,18 +218,18 @@ public class Template implements TemplateParser {
 			
 			child = token;
 			parent.with(child);
-			template.skip();
-			start=template.position();
+			buffer.skip();
+			start=buffer.position();
 		}
-		end = template.position();
+		end = buffer.position();
 		if(end-start>0) {
 			if(isExpression) {
-				if (template.charAt(start) == SPLITSTART) {
-					child = VariableCondition.create(template.substring(start,end), isExpression);
+				if (buffer.charAt(start) == SPLITSTART) {
+					child = VariableCondition.create(buffer.substring(start,end), isExpression);
 				}
-				child = VariableCondition.create(template.substring(start,end), false);
+				child = VariableCondition.create(buffer.substring(start,end), false);
 			}else {
-				child = StringCondition.create(template.substring(start,end));
+				child = StringCondition.create(buffer.substring(start,end));
 			}
 			if(parent.size() == 0) {
 				return child;
@@ -238,7 +238,7 @@ public class Template implements TemplateParser {
 		}
 		if(parent.size() < 1) {
 			if(end-start==0) {
-				return StringCondition.create(template.substring(start,end+1));
+				return StringCondition.create(buffer.substring(start,end+1));
 			} else {
 				return null;
 			}

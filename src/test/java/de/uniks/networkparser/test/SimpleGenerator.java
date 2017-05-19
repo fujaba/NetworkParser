@@ -4,8 +4,8 @@ package de.uniks.networkparser.test;
 import org.junit.Assert;
 import org.junit.Test;
 
-import de.uniks.networkparser.TextItems;
 import de.uniks.networkparser.ext.ModelGenerator;
+import de.uniks.networkparser.graph.Association;
 import de.uniks.networkparser.graph.Attribute;
 import de.uniks.networkparser.graph.Cardinality;
 import de.uniks.networkparser.graph.Clazz;
@@ -137,25 +137,26 @@ public class SimpleGenerator {
 	@Test
 	public void testImport() {
 		GraphList classModel = new GraphList().with("de.uniks.test.model");
-		Clazz person = classModel.createClazz("Person");
+		Clazz student = classModel.createClazz("Student");
+		Clazz uni = classModel.createClazz("Uni");
+		Association assoc = Association.create(student, uni);
+		assoc.with("uni");
+		assoc.getOther().with("studs");
 		Template template = new Template().withType(TemplateParser.DECLARATION)
-				.withTemplate("{{#import {{other.clazz.packageName}}{{member.other.clazz.name}}Set}}");
-		TemplateResultFile templateFile = new TemplateResultFile(person, true);
+				.withTemplate("{{#import {{other.clazz.packageName}}.{{member.other.clazz.name}}Set}}");
+		TemplateResultFile templateFile = new TemplateResultFile(student, true);
 		TemplateResultModel model = new TemplateResultModel();
 		ModelGenerator modelGenerator = new ModelGenerator();
 		model.withTemplate(modelGenerator.getTemplates());
 		
 		
-		template.generate(model, templateFile, person);
+		TemplateResultFragment fragment = template.generate(model, templateFile, assoc);
 //		System.out.println(generate);
 		
-//		Assert.assertEquals("Hello", templateFile.toString());
+		Assert.assertEquals("de.uniks.test.model.UniSet", fragment.getHeaders().first());
 	}
 	@Test
 	public void testAttribute() {
-//		if(Generator.DISABLE) {
-//			return;
-//		}
 		GraphList classModel = new GraphList().with("de.uniks.test.model");
 		Clazz person = classModel.createClazz("Person");
 		Attribute name = person.createAttribute("name", DataType.STRING);
