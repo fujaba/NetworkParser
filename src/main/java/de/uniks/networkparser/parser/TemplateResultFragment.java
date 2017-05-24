@@ -1,5 +1,8 @@
 package de.uniks.networkparser.parser;
 
+import java.util.List;
+
+import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.graph.GraphMember;
 import de.uniks.networkparser.interfaces.LocalisationInterface;
@@ -300,7 +303,27 @@ public class TemplateResultFragment implements Comparable<TemplateResultFragment
 			return true;
 		}
 		if(PROPERTY_HEADERS.equalsIgnoreCase(attribute)) {
-			element.addHeader(""+value);
+			if(value instanceof String) {
+				element.addHeader((String)value);
+				return true;
+			}
+			if(value instanceof List<?>) {
+				List<?> list = (List<?>) value;
+				for(Object item : list) {
+					if(item instanceof String == false) {
+						continue;
+					}
+					String itemType = (String) item;
+					if(EntityUtil.isPrimitiveType(itemType)) {
+						continue;
+					}
+					while(itemType.endsWith(".")) {
+						itemType = itemType.substring(0, itemType.length() - 1); 
+			    	}
+					element.addHeader(itemType);
+				}
+				
+			}
 			return true;
 		}
 		if(PROPERTY_KEY.equalsIgnoreCase(attribute)) {

@@ -219,8 +219,18 @@ public abstract class GraphModel extends GraphEntity {
 			}
 		}
 	}
-	public GraphModel with(GraphModel... values) {
-		super.withChildren(values);
+	public GraphModel with(GraphModel model) {
+		if(model == null) {
+			return this;
+		}
+		GraphSimpleSet allChildren = model.getChildren();
+		for(GraphMember child :allChildren) {
+			withChildren(child);
+		}
+		// Add Properties
+		if(this.defaultAuthorName == null) {
+			this.defaultAuthorName = model.getAuthorName();
+		}
 		return this;
 	}
 }

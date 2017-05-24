@@ -7,6 +7,7 @@ import de.uniks.networkparser.interfaces.ParserCondition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.TemplateParser;
 import de.uniks.networkparser.list.ConditionSet;
+import de.uniks.networkparser.list.SimpleList;
 
 /**
  * @author Stefan
@@ -22,29 +23,44 @@ public class ImportCondition implements ParserCondition {
 	public String getKey() {
 		return TAG;
 	}
+	
+	public void parseImport(String className, SimpleList<String> imports) {
+	   int genericType = className.indexOf("<");
+		if (genericType > 0) {
+	    	  // Try to rekursiv add
+			parseImport(className.substring(genericType+1, className.lastIndexOf(">")), imports);
+		    imports.add(className.substring(0, genericType));
+		} else {
+			imports.with(className);
+		}
+	}
 
 	@Override
 	public CharSequence getValue(LocalisationInterface variables) {
 		if(variables instanceof SendableEntityCreator) {
 			SendableEntityCreator creator = (SendableEntityCreator) variables;
 			//&& importExpression.update(variables)
+			SimpleList<String> imports=new SimpleList<String>();
 			if (importExpression != null) {
 					if(importExpression instanceof ChainCondition) {
 						ChainCondition cc = (ChainCondition) importExpression;
 						ConditionSet templates = cc.getList();
 						CharacterBuffer buffer = templates.getAllValue(variables);
-						creator.setValue(variables, "headers", buffer.toString(), SendableEntityCreator.NEW);
+						parseImport(buffer.toString(), imports);
 					} else if (importExpression instanceof VariableCondition){
 						VariableCondition vc = (VariableCondition) importExpression;
-						Object result = vc.getValue(variables);
-						if(result != null) {
-							creator.setValue(variables, "headers", result.toString(), SendableEntityCreator.NEW);
+						Object buffer = vc.getValue(variables);
+						if(buffer != null) {
+							parseImport(buffer.toString(), imports);
 						}
 					} else {
-						creator.setValue(variables, "headers", importExpression.toString(), SendableEntityCreator.NEW);
+						parseImport(importExpression.toString(), imports);
 					}
 				} else {
-					creator.setValue(variables, "headers", importExpression.toString(), SendableEntityCreator.NEW);
+					parseImport(importExpression.toString(), imports);
+				}
+				if(imports.size() > 0) {
+					creator.setValue(variables, "headers", imports, SendableEntityCreator.NEW);
 				}
 			}
 		return null;

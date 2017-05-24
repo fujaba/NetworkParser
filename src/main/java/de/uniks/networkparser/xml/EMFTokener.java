@@ -223,7 +223,10 @@ public class EMFTokener extends Tokener{
 		XMLEntity xmlEntity = new XMLEntity();
 		xmlEntity.withValue(this.buffer);
 		if(EPACKAGE.equals(xmlEntity.getTag())) {
-			return decoding(xmlEntity);
+			if(root instanceof GraphList) {
+				return decoding(xmlEntity, (GraphList)root);
+			}
+			return decoding(xmlEntity, null);
 		}
 		// build root entity
 		String tag = xmlEntity.getTag();
@@ -540,14 +543,16 @@ public class EMFTokener extends Tokener{
 	}
 
 	public GraphList decoding(String content) {
-		return decoding(new XMLEntity().withValue(content));
+		return decoding(new XMLEntity().withValue(content), null);
 	}
 	public GraphList decoding(Tokener content) {
-		return decoding(new XMLEntity().withValue(this));
+		return decoding(new XMLEntity().withValue(this), null);
 	}
 
-	private GraphList decoding(XMLEntity ecore) {
-		GraphList model = new GraphList();
+	private GraphList decoding(XMLEntity ecore, GraphList model) {
+		if(model == null) {
+			model = new GraphList();
+		}
 		SimpleList<Entity> superClazzes = new SimpleList<Entity>();
 
 		// add classes
