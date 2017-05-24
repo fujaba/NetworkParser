@@ -65,6 +65,7 @@ import de.uniks.networkparser.list.ObjectMapEntry;
 import de.uniks.networkparser.list.SimpleIterator;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
+import de.uniks.networkparser.logic.MapFilter;
 import de.uniks.networkparser.xml.EMFTokener;
 import de.uniks.networkparser.xml.MapEntityStack;
 import de.uniks.networkparser.xml.XMLEntity;
@@ -1307,7 +1308,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 				id = "" + temp;
 				if(getKey(entity) == null) {
 					boolean newMessage = SendableEntityCreator.UPDATE.equals(map.getFilter().getStrategy()) == false;
-				put(id, entity, newMessage);
+					put(id, entity, newMessage);
 				}
 		}
 		return id;
@@ -1372,6 +1373,15 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 				targetList.add(item);
 			} else {
 				id = getId(creator, map, entity, className);
+				if(id == null) {
+					if(map.isPropertyRegard(item, this, null, entity) == false) {
+						ObjectCondition propertyRegard = map.getFilter().getPropertyRegard();
+						if(propertyRegard instanceof MapFilter) {
+							MapFilter mf = (MapFilter) propertyRegard;
+							return mf.getValue(entity);
+						}
+					}
+				}
 			}
 		}
 		String[] properties = map.getProperties(tokener, creator);
