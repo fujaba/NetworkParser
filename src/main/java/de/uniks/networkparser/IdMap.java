@@ -419,16 +419,15 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 				for (String prop : props) {
 					Object reference = creator.getValue(oldValue, prop);
 					if (reference instanceof Collection<?>) {
-						Collection<?> continee = (Collection<?>) reference;
-						Iterator<?> i = continee.iterator();
-						while (i.hasNext()) {
-							creator.setValue(oldValue, prop, i.next(),
-								SendableEntityCreator.REMOVE);
+						SimpleIterator<Object> i = new SimpleIterator<Object>(reference);
+						while(i.hasNext()) {
+							if(creator.setValue(oldValue, prop, i.next(), SendableEntityCreator.REMOVE) == false) {
+								return false;
+							}
 						}
 					}
 					else {
-						creator.setValue(oldValue, prop, reference,
-							SendableEntityCreator.REMOVE);
+						creator.setValue(oldValue, prop, reference, SendableEntityCreator.REMOVE);
 					}
 				}
 			}
