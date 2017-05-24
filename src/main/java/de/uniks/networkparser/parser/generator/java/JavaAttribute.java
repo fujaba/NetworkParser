@@ -1,8 +1,6 @@
 package de.uniks.networkparser.parser.generator.java;
 
 import de.uniks.networkparser.graph.Attribute;
-import de.uniks.networkparser.list.SimpleKeyValueList;
-import de.uniks.networkparser.list.SimpleSet;
 import de.uniks.networkparser.parser.Template;
 import de.uniks.networkparser.parser.generator.BasicGenerator;
 
@@ -16,9 +14,7 @@ public class JavaAttribute extends BasicGenerator{
 				"{{#ifnot {{file.member.type}}==interface}}",
 				"   {{visibility}} {{modifiers} }{{type} }{{name}}{{#if {{value}}}} = {{value}}{{#endif}};","",
 				"{{#endif}}","",
-
-				"{{#if {{type#sub(0,10)}}==SimpleSet<}}{{#import " + SimpleSet.class.getName() + "}} {{#endif}}" +
-				"{{#if {{type#sub(0,19)}}==SimpleKeyValueList<}}{{#import " + SimpleKeyValueList.class.getName() + "}} {{#endif}}" +
+				"{{#import {{type(false)}}}}" +
 				"{{#foreach {{parent.parent.child}}}}" +
 				   "{{#if {{item.type}}==class}}" +
 				      "{{#ifnot {{item.name}}=={{file.member.name}}}}" +
@@ -31,28 +27,30 @@ public class JavaAttribute extends BasicGenerator{
 				"   public {{modifiers} }{{type}} {{#if {{type}}==boolean}}is{{#else}}get{{#endif}}{{Name}}(){{#if {{file.member.type}}==interface}};","","{{#endif}}",
 				"{{#ifnot {{file.member.type}}==interface}}",
 				"   {",
-				"      return this.{{name}};",
+				"      return {{this}}.{{name}};",
 				"   }","",
 				"{{#endif}}",
-				"   public {{modifiers} }void set{{Name}}({{type}} value){{#if {{file.member.type}}==interface}};","","{{#endif}}",
-				"{{#ifnot {{file.member.type}}==interface}}",
-				"   {",
-				"      if (this.{{name}} != value)",
-				"      {",
-				"         {{type}} oldValue = this.{{name}};",
-				"         this.{{name}} = value;",
-				"{{#if {{#feature PROPERTYCHANGESUPPORT}}}}",
-				"         firePropertyChange(PROPERTY_{{NAME}}, oldValue, value);",
-				"{{#endif}}",
-				"      }",
-				"   }","",
-				"{{#endif}}",
-				"   public {{modifiers} }{{file.member}} with{{Name}}({{type}} value){{#if {{file.member.type}}==interface}};","","{{#endif}}",
-				"{{#ifnot {{file.member.type}}==interface}}",
-				"   {",
-				"      set{{Name}}(value);",
-				"      return this;",
-				"   }","",
+				"{{#if {{#NOT}}{{modifiers#contains(static)}}{{#ENDNOT}}}}"+
+					"   public {{modifiers} }void set{{Name}}({{type}} value){{#if {{file.member.type}}==interface}};","","{{#endif}}",
+					"{{#ifnot {{file.member.type}}==interface}}",
+					"   {",
+					"      if ({{this}}.{{name}} != value)",
+					"      {",
+					"         {{type}} oldValue = {{this}}.{{name}};",
+					"         {{this}}.{{name}} = value;",
+					"{{#if {{#feature PROPERTYCHANGESUPPORT}}}}",
+					"         firePropertyChange(PROPERTY_{{NAME}}, oldValue, value);",
+					"{{#endif}}",
+					"      }",
+					"   }","",
+					"{{#endif}}",
+					"   public {{modifiers} }{{file.member}} with{{Name}}({{type}} value){{#if {{file.member.type}}==interface}};","","{{#endif}}",
+					"{{#ifnot {{file.member.type}}==interface}}",
+					"   {",
+					"      set{{Name}}(value);",
+					"      return this;",
+					"   }"+
+				"{{#endif}}","",
 				"{{#endif}}{{#endtemplate}}");
 		
 	}

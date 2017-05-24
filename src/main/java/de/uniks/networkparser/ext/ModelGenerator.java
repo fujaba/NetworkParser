@@ -19,6 +19,7 @@ import de.uniks.networkparser.logic.FeatureCondition;
 import de.uniks.networkparser.logic.ForeachCondition;
 import de.uniks.networkparser.logic.IfCondition;
 import de.uniks.networkparser.logic.ImportCondition;
+import de.uniks.networkparser.logic.Not;
 import de.uniks.networkparser.logic.TemplateFragmentCondition;
 import de.uniks.networkparser.parser.Template;
 import de.uniks.networkparser.parser.TemplateResultFile;
@@ -50,6 +51,7 @@ public class ModelGenerator extends BasicGenerator {
 			addParserCondition(new JavaMethodBodyCondition());
 			addParserCondition(new JavaListCondition());
 			addParserCondition(new And());
+			addParserCondition(new Not());
 		}
 		return customTemplate;
 	}

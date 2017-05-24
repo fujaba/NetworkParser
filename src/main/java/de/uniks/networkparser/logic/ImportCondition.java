@@ -29,9 +29,11 @@ public class ImportCondition implements ParserCondition {
 		if (genericType > 0) {
 	    	  // Try to rekursiv add
 			parseImport(className.substring(genericType+1, className.lastIndexOf(">")), imports);
-		    imports.add(className.substring(0, genericType));
-		} else {
-			imports.with(className);
+			className = className.substring(0, genericType);
+		}
+		String[] strings = className.split(",");
+		for(String importName : strings) {
+			imports.with(importName);
 		}
 	}
 

@@ -3,6 +3,7 @@ package de.uniks.networkparser.parser.generator.java;
 import java.util.Collection;
 
 import de.uniks.networkparser.graph.Clazz;
+import de.uniks.networkparser.graph.Feature;
 import de.uniks.networkparser.graph.util.FeatureSet;
 import de.uniks.networkparser.interfaces.Condition;
 import de.uniks.networkparser.interfaces.LocalisationInterface;
@@ -102,32 +103,12 @@ public class JavaSet extends BasicGenerator {
 	@Override
 	public TemplateResultFile executeClazz(Clazz clazz, LocalisationInterface parameters, boolean isStandard) {
 		FeatureSet features = getFeatures(parameters);
-//FIXME		if(features.match(Feature.SETCLASS, clazz) == false) {
-//			return null;
-//		}
-//		if(parameters instanceof templ)
-//		parameters.getText("features", null, null);
-		
+		if(features.match(Feature.SETCLASS, null) == false) {
+			return null;
+		}
 		return super.executeClazz(clazz, parameters, isStandard);
 	}
 	
-//	public SendableEntityCreator generate(GraphMember item, TextItems parameters) {
-//		if(item instanceof Clazz == false) {
-//			return null;
-//		}
-////		if(features.)
-////		// TODO add proper condition for allowing sets
-////		// Sets are allowed
-////		model.get
-//////		if (model.f) {
-//////		}
-//
-////		if()
-//		TemplateResultFile result = this.executeClazz((Clazz)item, parameters);
-//		this.executeTemplate(result, parameters, item);
-//		return result;
-//	}
-//	
 	@Override
 	public Class<?> getTyp() {
 		return Clazz.class;

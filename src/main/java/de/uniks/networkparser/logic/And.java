@@ -36,6 +36,7 @@ public class And extends ListCondition {
 		buffer.skip();
 		ObjectCondition expression = parser.parsing(buffer, customTemplate, true, "endand");
 		this.with(expression);
+		buffer.skipTo(SPLITEND, false);
 		buffer.skip();
 		buffer.skip();
 	}

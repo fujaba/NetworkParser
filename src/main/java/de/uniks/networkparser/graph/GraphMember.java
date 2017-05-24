@@ -33,6 +33,7 @@ public abstract class GraphMember {
 	public static final String PROPERTY_CHILD="child";
 	public static final String PROPERTY_VISIBILITY = "visibility";
 	public static final String PROPERTY_MODIFIERS = "modifiers";
+	public static final String PROPERTY_THIS = "this";
 
 	protected String name;
 	protected Object children;
@@ -42,9 +43,9 @@ public abstract class GraphMember {
 		if(PROPERTY_VISIBILITY.equalsIgnoreCase(attribute)) {
 			Modifier modifier = this.getModifier();
 			if (modifier == null) {
-				return Modifier.PRIVATE;
+				return Modifier.PRIVATE.getName();
 			}
-			return modifier;
+			return modifier.getName();
 		}
 		if(PROPERTY_MODIFIERS.equalsIgnoreCase(attribute)) {
 			CharacterBuffer buffer = new CharacterBuffer();
@@ -89,6 +90,13 @@ public abstract class GraphMember {
 				}
 			}
 			return this.children;
+		}
+		if(PROPERTY_THIS.equalsIgnoreCase(attrName)) {
+			// Check if Static or not
+			if(this.getModifier().has(Modifier.STATIC)) {
+				return getValue(PROPERTY_PARENT);
+			}
+			return PROPERTY_THIS;
 		}
 		return null;
 	}

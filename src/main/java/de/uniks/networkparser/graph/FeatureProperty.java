@@ -67,6 +67,9 @@ public class FeatureProperty implements Comparable<FeatureProperty> {
 			return true;
 		}
 		for(Clazz clazz : clazzes) {
+			if(clazz == null) {
+				return true;
+			}
 			if(match(clazz.getName(false)) == false) {
 				return false;
 			}

@@ -46,22 +46,28 @@ public class VariableCondition implements ParserCondition{
 			String key = this.value.toString();
 			// SWITCH FOR #
 			int pos = key.indexOf('#');
-			Object object;
 			String v = null;
 			String format = null;
+			boolean shortName=true;
 			if(pos >= 0) {
 				v = key.substring(0, pos);
-				object = variables.getValue(variables, v);
 				format = key.substring(pos+1);
 			} else {
 				v = key;
-				object = variables.getValue(variables, key);
 			}
+			pos = v.indexOf("("); 
+			if(pos>0) {
+				String temp = v.substring(pos+1, v.length() - 1);
+				v = key.substring(0, pos);
+				shortName = Boolean.valueOf(temp);
+			}
+			Object object = variables.getValue(variables, v);
+
 			if(object == null && this.expression == false) {
 				return key;
 			}
 			if(object instanceof DataType) {
-				object = ((DataType)object).getName(true);
+				object = ((DataType)object).getName(shortName);
 			}
 			if(object instanceof String) {
 				return replaceText(v, format, (String)object);
@@ -109,7 +115,10 @@ public class VariableCondition implements ParserCondition{
     	if(firstUpper || "firstUpper".equalsIgnoreCase(format)) {
     		return EntityUtil.upFirstChar(value);
     	}
-    	if(format != null && format.startsWith("sub(")) {
+    	if(format == null) {
+    		return value;
+    	}
+    	if(format.startsWith("sub(")) {
     		String substring = format.substring(4, format.length() - 1);
     		String[] item = substring.split(",");
     		int start=0;
@@ -124,6 +133,14 @@ public class VariableCondition implements ParserCondition{
     			}
     		}
     		return value.substring(start, end);
+    	}
+    	if(format.startsWith("contains(")) {
+    		String substring = format.substring(9, format.length() - 1);
+    		boolean boolValue = value.indexOf(substring)>=0;
+    		if(boolValue) {
+    			return "true";
+    		}
+    		return "";
     	}
     	return value;
     }
