@@ -320,18 +320,17 @@ public class UpdateJson implements MapListener {
 	 */
 	private boolean checkValue(Object value, String key,
 			JsonObject oldJsonObject) {
+		Object oldValue = oldJsonObject.get(key);
 		if (value != null) {
-			Object oldValue = oldJsonObject.get(key);
 			if (oldValue instanceof JsonObject) {
 				// GLAUB ICH MAL
 				String oldId = (String) ((JsonObject) oldValue)
 						.get(IdMap.ID);
 				return oldId.equals(this.map.getId(value));
-			} else if (oldValue != null && oldValue.equals(value) || (value == null && oldValue == null)) {
-				return true;
-			}
+			} 
+			return value.equals(oldValue);
 		}
-		return false;
+		return oldValue == null;
 	}
 
 	/**

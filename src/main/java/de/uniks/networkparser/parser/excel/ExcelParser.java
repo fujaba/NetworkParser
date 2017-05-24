@@ -71,6 +71,9 @@ public class ExcelParser {
 			if (mergeCells != null) {
 				for(int i=0;i<mergeCells.sizeChildren();i++) {
 					BaseItem mergeCell = mergeCells.getChild(i);
+					if(mergeCell == null) {
+						continue;
+					}
 					SimpleList<Pos> excelRange = EntityUtil.getExcelRange(((Entity) mergeCell).getString(REF));
 					for (Pos item : excelRange) {
 						if (item == null || item.x < 0 || item.y < 0) {
