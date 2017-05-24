@@ -1294,6 +1294,24 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 	public boolean isError(Object owner, String method, String type, Object entity, String className) {
 		return logger.error(owner, method, type, entity, className);
 	}
+	
+	protected String getId(SendableEntityCreator creator, MapEntity map, Object entity, String className) {
+		String id = null;
+		Object temp = null;
+		if(creator instanceof SendableEntityCreatorIndexId) {
+			temp = creator.getValue(entity, IdMap.ID);
+		}
+		if (temp == null) {
+			id = map.getId(entity, this, className);
+		} else {
+				id = "" + temp;
+				if(getKey(entity) == null) {
+					boolean newMessage = SendableEntityCreator.UPDATE.equals(map.getFilter().getStrategy()) == false;
+				put(id, entity, newMessage);
+				}
+		}
+		return id;
+	}
 
 
 	protected Entity encode(Object entity, String className, MapEntity map, Tokener tokener, BaseItem parentNode) {
@@ -1304,19 +1322,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 		EntityList targetList = (EntityList) map.getTarget();
 		String id = null;
 		if (creator instanceof SendableEntityCreatorNoIndex == false) {
-			Object temp = null;
-			if(creator instanceof SendableEntityCreatorIndexId) {
-				temp = creator.getValue(entity, IdMap.ID);
-			}
-			if (temp == null) {
-				id = map.getId(entity, this, className);
-			} else {
- 				id = "" + temp;
- 				if(getKey(entity) == null) {
- 					boolean newMessage = SendableEntityCreator.UPDATE.equals(map.getFilter().getStrategy()) == false;
-					put(id, entity, newMessage);
- 				}
-			}
+			id = getId(creator, map, entity, className);
 		}
 		boolean isSimple = targetList != null && targetList.isComparator() == false;
 
@@ -1364,6 +1370,8 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 			}
 			if (isSimple) {
 				targetList.add(item);
+			} else {
+				id = getId(creator, map, entity, className);
 			}
 		}
 		String[] properties = map.getProperties(tokener, creator);

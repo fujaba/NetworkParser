@@ -19,16 +19,24 @@ import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.logic.WhiteListCondition;
 import de.uniks.networkparser.test.model.Apple;
+import de.uniks.networkparser.test.model.AppleTree;
 import de.uniks.networkparser.test.model.GroupAccount;
+import de.uniks.networkparser.test.model.JabberChatMessage;
 import de.uniks.networkparser.test.model.Person;
+import de.uniks.networkparser.test.model.Plant;
 import de.uniks.networkparser.test.model.SortedMsg;
 import de.uniks.networkparser.test.model.Student;
 import de.uniks.networkparser.test.model.University;
+import de.uniks.networkparser.test.model.util.AppleCreatorNoIndex;
+import de.uniks.networkparser.test.model.util.AppleTreeCreatorNoIndex;
 import de.uniks.networkparser.test.model.util.ItemCreator;
+import de.uniks.networkparser.test.model.util.JabberChatMessageCreator;
 import de.uniks.networkparser.test.model.util.PersonCreator;
 import de.uniks.networkparser.test.model.util.PersonSet;
 import de.uniks.networkparser.test.model.util.SortedMsgCreator;
 import de.uniks.networkparser.test.model.util.StudentCreator;
+import de.uniks.networkparser.test.model.util.PlantFullNoIndex;
+import de.uniks.networkparser.test.model.util.PlantCreatorNoIndex;
 import de.uniks.networkparser.test.model.util.UniversityCreator;
 
 public class ModelTest implements ObjectCondition {
@@ -181,6 +189,34 @@ public class ModelTest implements ObjectCondition {
 
 		JsonObject jsonObject = map.toJsonObject(uni, Filter.regard(new WhiteListCondition().with(uni.getClass()).with(alice.getClass())));
 		Assert.assertEquals(434, jsonObject.toString().length());
+	}
+	@Test
+	public void testJabberChatMessage() {
+		Plant flower = new Plant();
+		flower.setName("Flower");
+		flower.setId("42");
+		IdMap map;
+		
+		map = new IdMap().withCreator(new Plant());
+		JsonObject jsonObject = map.toJsonObject(flower);
+//		System.out.println(jsonObject);
+
+		map = new IdMap().withCreator(new PlantCreatorNoIndex());
+//		System.out.println(map.toJsonObject(flower));
+
+		map = new IdMap().withCreator(new PlantFullNoIndex());
+//		System.out.println(map.toJsonObject(flower));
+	}
+	
+	@Test
+	public void testAppleTree() {
+		IdMap map = new IdMap().withCreator(new AppleTreeCreatorNoIndex());
+		map.withCreator(new AppleCreatorNoIndex());
+		
+		AppleTree appleTree = new AppleTree();
+		appleTree.withHas(new Apple("red", 23, 42));
+		
+//		System.out.println(map.toJsonObject(appleTree));
 	}
 
 }

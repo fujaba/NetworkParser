@@ -31,6 +31,11 @@ import de.uniks.networkparser.interfaces.Converter;
 public abstract class ByteConverter implements Converter{
 	public abstract String toString(BufferedBuffer values);
 
+	public String toString(byte... values) {
+		ByteBuffer buffer = new ByteBuffer().with(values);
+		return this.toString(buffer);
+	}
+
 	@Override
 	public String encode(BaseItem entity) {
 		ByteBuffer buffer;
