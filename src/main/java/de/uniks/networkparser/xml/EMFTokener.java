@@ -661,11 +661,21 @@ public class EMFTokener extends Tokener{
 	}
 
 	private Association getOrCreate(SimpleKeyValueList<String, Association> items, GraphList model, String className, String roleName) {
+		if(className != null ) {
+			int pos = className.indexOf("/");
+			if(pos>0) {
+				className = className.substring(pos+1);
+			}
+		}
 		roleName = EntityUtil.toValidJavaId(roleName);
 		String assocName = className+":"+roleName;
 		Association edge = (Association) items.getValue(assocName);
 		if(edge == null) {
 			Clazz clazz = model.getNode(className);
+			if(clazz == null) {
+				// Create it
+				clazz = model.createClazz(className);
+			}
 			if(clazz != null) {
 				edge = new Association(clazz).with(Cardinality.ONE).with(roleName);
 				clazz.with(edge);
