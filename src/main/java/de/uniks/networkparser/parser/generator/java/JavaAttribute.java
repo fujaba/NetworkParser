@@ -29,7 +29,7 @@ public class JavaAttribute extends BasicGenerator{
 				"   {",
 				"      return {{this}}.{{name}};",
 				"   }","",
-				"{{#endif}}",
+				"{{#endif}}","",
 				"{{#if {{#NOT}}{{modifiers#contains(static)}}{{#ENDNOT}}}}"+
 					"   public {{modifiers} }void set{{Name}}({{type}} value){{#if {{file.member.type}}==interface}};","","{{#endif}}",
 					"{{#ifnot {{file.member.type}}==interface}}",
@@ -49,7 +49,7 @@ public class JavaAttribute extends BasicGenerator{
 					"   {",
 					"      set{{Name}}(value);",
 					"      return this;",
-					"   }"+
+					"   }","",
 				"{{#endif}}","",
 				"{{#endif}}{{#endtemplate}}");
 		
