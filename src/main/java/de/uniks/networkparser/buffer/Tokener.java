@@ -41,8 +41,6 @@ public class Tokener implements BufferItem {
 	/** BUFFER */
 	protected Buffer buffer;
 	
-//	protected boolean simpleFormat=true;
-
 	// Methods for Map
 	public SendableEntityCreator getCreatorClass(Object reference) {
 		if(map == null) {
@@ -51,15 +49,6 @@ public class Tokener implements BufferItem {
 		return map.getCreatorClass(reference);
 	}
 	
-//	public Tokener withSimpleFormat(boolean value) {
-//		this.simpleFormat = value;
-//		return this;
-//	}
-//	
-//	public boolean isSimpleFormat() {
-//		return simpleFormat;
-//	}
-
 	public SendableEntityCreator getCreator(String className, boolean fullName) {
 		if(map == null) {
 			return null;

@@ -128,13 +128,13 @@ public class SMTPSession {
 					return false;
 				}
 				ByteConverter64 converter = new ByteConverter64();
-				answer= sendCommand(converter.toStaticString(userName));
+				answer= sendCommand(converter.toStaticString(userName).toString());
 				if(checkServerResponse(answer, RESPONSE_SMTP_AUTH_NTLM_BLOB_Response) == false) {
 					close();
 					return false;
 				}
 				// send passwd
-				answer = sendCommand(converter.toStaticString(password));
+				answer = sendCommand(converter.toStaticString(password).toString());
 				if(checkServerResponse(answer, RESPONSE_LOGIN_SUCCESS) == false) {
 					close();
 					return false;

@@ -59,7 +59,7 @@ public class ByteTest{
 		String item = "tlstest#42";
 		byte[] itemByte = item.getBytes();
 		byte[] reference = BASE64EncoderStream.encode(itemByte);
-		byte[] actuals = new ByteConverter64().toStaticString(item).getBytes();
+		byte[] actuals = new ByteConverter64().toStaticString(item).toByteArray();
 		Assert.assertEquals(reference.length, actuals.length);
 		Assert.assertArrayEquals(reference, actuals);
 	}
@@ -399,4 +399,17 @@ public class ByteTest{
 		String string = item.toString();
 		Assert.assertEquals(128, string.length());
 	}
+	
+	@Test
+	public void testBASE64Converter() {
+		String item = "HalloWorld";
+		ByteConverter64 converter=new ByteConverter64();
+//		String string = converter.toString(item);
+//		CharacterBuffer buffer = new CharacterBuffer().with(item);
+		byte[] reference = BASE64EncoderStream.encode(item.getBytes());
+		String string2 = converter.toString(reference);
+		String string3 = converter.toString(converter.toStaticString(item));
+		Assert.assertEquals(string2, string3);
+	}
+
 }

@@ -39,9 +39,9 @@ public class ByteConverter64 extends ByteConverter {
      * @param values	the byte array
      * @return the encoded byte array
      */
-	public String toStaticString(CharSequence values) {
+	public CharacterBuffer toStaticString(CharSequence values) {
 		if (values.length() == 0) {
-			return values.toString();
+			return new CharacterBuffer();
 		}
 		if(values instanceof CharacterBuffer) {
 			return encode((CharacterBuffer)values, 0,values.length());
@@ -60,7 +60,7 @@ public class ByteConverter64 extends ByteConverter {
 	 * @param size size of String
 	 * @return encoded String
 	 */
-	private String encode(CharacterBuffer buffer, int off, int size) {
+	private CharacterBuffer encode(CharacterBuffer buffer, int off, int size) {
 		byte[] outbuf = new byte[getStaticSize(size)];
 
 		int inpos, outpos;
@@ -100,7 +100,7 @@ public class ByteConverter64 extends ByteConverter {
 			val >>= 6;
 			outbuf[outpos + 0] = (byte) pem_array[val & 0x3f];
 		}
-		return new String(outbuf);
+		return new CharacterBuffer().with(outbuf);
 	}
 	
 	

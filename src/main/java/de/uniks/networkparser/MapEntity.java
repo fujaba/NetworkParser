@@ -39,13 +39,13 @@ THE SOFTWARE.
  * MapEntity for IdMap
  */
 public class MapEntity extends SimpleSet<Object>{
-	private Filter filter;
-	private int deep;
-	private Object target;
-	private MapEntityStack stack;
+	protected Filter filter;
+	protected int deep;
+	protected Object target;
+	protected MapEntityStack stack;
 	/** The show line. */
-	private byte tokenerFlag;
-	private IdMap map;
+	protected byte tokenerFlag;
+	protected IdMap map;
 	public byte mapFlag;
 
 	public MapEntity(String tag, Object item, SendableEntityCreator creator) {
@@ -71,13 +71,6 @@ public class MapEntity extends SimpleSet<Object>{
 		return tokener.getMap().encode(entity, this, tokener);
 	}
 
-	public void add() {
-		this.deep = this.deep + 1;
-	}
-
-	public void minus() {
-		this.deep = this.deep - 1;
-	}
 	public int getDeep() {
 		return deep;
 	}
@@ -105,12 +98,12 @@ public class MapEntity extends SimpleSet<Object>{
 	public String getValue(Entity item, String property) {
 		return map.getGrammar().getValue(item, property);
 	}
-	public BaseItem getProperties(Entity entity, IdMap map, boolean isId, String type) {
+	public BaseItem getProperties(Entity entity, boolean isId, String type) {
 		return map.getGrammar().getProperties(entity, map, filter, isId, type);
 	}
 
 	// Method for Filter
-	public String getId(Object entity, IdMap map, String className) {
+	public String getId(Object entity, String className) {
 		if (filter.isId(entity, className, map) == false) {
 			this.with(entity);
 		} else {
@@ -125,16 +118,16 @@ public class MapEntity extends SimpleSet<Object>{
 	public boolean isFullSeriation() {
 		return filter.isFullSerialization();
 	}
+	
 	public String[] getProperties(Tokener tokener, SendableEntityCreator creator) {
 		return filter.getProperties(creator);
 	}
-	public boolean isPropertyRegard(Object entity, IdMap map, String property, Object value) {
-		return filter.isPropertyRegard(entity, property, value, map, deep);
+
+	public int convert(Object entity, String property, Object value) {
+		return filter.convert(entity, property, value, map, deep);
 	}
-	public boolean isConvertable(Object entity, IdMap map, String property, Object value) {
-		return filter.isConvertable(entity, property, value, map, deep);
-	}
-	public boolean isId(Object entity, IdMap map, String className) {
+
+	public boolean isId(Object entity, String className) {
 		return filter.isId(entity, className, map);
 	}
 	public String getStrategy() {
@@ -180,12 +173,14 @@ public class MapEntity extends SimpleSet<Object>{
 		if(this.stack != null) {
 			this.stack.withStack(className, entity, creator);
 		}
+		this.deep = this.deep + 1;
 	}
 
 	public void popStack() {
 		if(this.stack != null) {
 			this.stack.popStack();
 		}
+		this.deep = this.deep - 1;
 	}
 	/**
 	 * @param stack the stack to set
@@ -196,12 +191,12 @@ public class MapEntity extends SimpleSet<Object>{
 		return this;
 	}
 	
-	public CharacterBuffer getPrefixProperties(SendableEntityCreator creator, Tokener tokener, Object entity, String className) {
+	public CharacterBuffer getPrefixProperties(SendableEntityCreator creator, Object entity, String className) {
 		CharacterBuffer result = new CharacterBuffer();
 		if(this.isSimpleFormat()) {
 			return result;
 		}
-		boolean isComplex = filter.isSimpleFormat(entity, creator, className, tokener.getMap());
+		boolean isComplex = filter.isSimpleFormat(entity, creator, className, map);
 		if(isComplex) {
 			return result;
 		}

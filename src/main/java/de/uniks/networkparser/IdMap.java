@@ -476,81 +476,67 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 	}
 
 	private Object cloning(Object reference, MapEntity map) {
-		SendableEntityCreator creatorClass = getCreatorClass(reference);
+		SendableEntityCreator creator = getCreatorClass(reference);
 		if (map.contains(reference)) {
 			return null;
 		}
 		map.with(reference);
 		Object newObject = null;
-		if (creatorClass != null) {
-			newObject = creatorClass.getSendableInstance(false);
-			String[] properties = creatorClass.getProperties();
+		if (creator != null) {
+			newObject = creator.getSendableInstance(false);
+			String[] properties = creator.getProperties();
 
 			for (String property : properties) {
-				Object value = creatorClass.getValue(reference, property);
+				Object value = creator.getValue(reference, property);
 				if (value instanceof Collection<?>) {
-					if (map.isFullSeriation() || map.isPropertyRegard(reference, this, property, value)) {
+					if (map.isFullSeriation() || map.convert(reference, property, value)>=0) {
 						Collection<?> list = (Collection<?>) value;
-						map.add();
+						map.pushStack(reference.getClass().getName(), reference, creator);
 						for (Object item : list) {
 							Object refValue = map.getRefByEntity(item);
 							if (refValue != null) {
-								creatorClass.setValue(newObject, property,
-									refValue, SendableEntityCreator.NEW);
+								creator.setValue(newObject, property, refValue, SendableEntityCreator.NEW);
 							}
 							else {
 								SendableEntityCreator childCreatorClass = getCreatorClass(item);
 								if (childCreatorClass != null) {
-									if (!map.isConvertable(reference, this, property, item)) {
-										creatorClass.setValue(newObject,
-											property, item,
-											SendableEntityCreator.NEW);
+									if (map.convert(reference, property, value) < 1) {
+										creator.setValue(newObject, property, item, SendableEntityCreator.NEW);
 									}
 									else {
 										Object clonedChild = cloning(item, map);
 										if (clonedChild != null) {
-											creatorClass.setValue(newObject,
-												property, clonedChild,
-												SendableEntityCreator.NEW);
+											creator.setValue(newObject, property, clonedChild, SendableEntityCreator.NEW);
 										}
 									}
 								}
 								else {
-									creatorClass.setValue(newObject, property,
-										item, SendableEntityCreator.NEW);
+									creator.setValue(newObject, property, item, SendableEntityCreator.NEW);
 								}
 							}
 						}
-						map.minus();
+						map.popStack();
 					}
-				}
-				else if (map.isPropertyRegard(reference, this, property, value)) {
+				}else if (map.convert(reference, property, value) >= 0) {
 					Object refValue = map.getRefByEntity(value);
 					if (refValue != null) {
-						creatorClass.setValue(newObject, property, refValue,
-							SendableEntityCreator.NEW);
-					}
-					else {
+						creator.setValue(newObject, property, refValue, SendableEntityCreator.NEW);
+					} else {
 						SendableEntityCreator childCreatorClass = getCreatorClass(value);
 						if (childCreatorClass != null) {
-							map.add();
-							if (!map.isConvertable(reference, this, property, value)) {
-								creatorClass.setValue(newObject, property,
-									value, SendableEntityCreator.NEW);
-							}
-							else if (map.isPropertyRegard(reference, this, property, value)) {
+							map.pushStack(value.getClass().getName(), value, childCreatorClass);
+							int convert = map.convert(reference, property, value);
+							if (convert == 0) {
+								creator.setValue(newObject, property, value, SendableEntityCreator.NEW);
+							} else if (convert > 0) {
 								Object clonedChild = cloning(value, map);
 								if (clonedChild != null) {
-									creatorClass.setValue(newObject,
-										property, clonedChild,
-										SendableEntityCreator.NEW);
+									creator.setValue(newObject,	property, clonedChild, SendableEntityCreator.NEW);
 								}
 							}
-							map.minus();
-						}
-						else {
-							creatorClass.setValue(newObject, property, value,
-								SendableEntityCreator.NEW);
+							map.popStack();
+						} else {
+							creator.setValue(newObject, property, value, SendableEntityCreator.NEW);
 						}
 					}
 				}
@@ -1303,7 +1289,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 			temp = creator.getValue(entity, IdMap.ID);
 		}
 		if (temp == null) {
-			id = map.getId(entity, this, className);
+			id = map.getId(entity, className);
 		} else {
 				id = "" + temp;
 				if(getKey(entity) == null) {
@@ -1365,6 +1351,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 					className = type; 
 				}
 			}
+//FIXME			item = map.writeBasicValue(creator, tokener.newInstance(), parentNode, className, id, entity);
 			item = map.writeBasicValue(creator, tokener.newInstance(), parentNode, className, id);
 			if (item == null) {
 				return null;
@@ -1372,9 +1359,10 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 			if (isSimple) {
 				targetList.add(item);
 			} else {
+//				sad
 				id = getId(creator, map, entity, className);
 				if(id == null) {
-					if(map.isPropertyRegard(item, this, null, entity) == false) {
+					if(map.convert(item, null, entity) < 0) {
 						ObjectCondition propertyRegard = map.getFilter().getPropertyRegard();
 						if(propertyRegard instanceof MapFilter) {
 							MapFilter mf = (MapFilter) propertyRegard;
@@ -1394,14 +1382,14 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 				referenceObject = map.getNewEntity(creator, className, true);
 				this.referenceList.add(creator, referenceObject);
 			}
-			map.add();
-			CharacterBuffer prop = map.getPrefixProperties(creator, tokener, entity, className);
+			CharacterBuffer prop = map.getPrefixProperties(creator, entity, className);
 			int pos = prop.length();
 
 			for (String property : properties) {
 				Object value = creator.getValue(entity, property);
 				if (value != null) {
-					if (map.isPropertyRegard(entity, tokener.getMap(), property, value) == false) {
+					int convert = map.convert(entity, property, value);
+					if (convert < 0) {
 						continue;
 					}
 					boolean encoding = map.isFullSeriation();
@@ -1429,7 +1417,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 						SendableEntityCreator valueCreater = map.getCreator(Grammar.WRITE, value, className);
 
 						Object key = value;
-						if (map.isId(value, tokener.getMap(), className)) {
+						if (map.isId(value, className)) {
 							key = tokener.getKey(value);
 						}
 						boolean contains = false;
@@ -1437,7 +1425,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 							contains = map.contains(key);
 						}
 						if (valueCreater != null && targetList != null) {
-							if (map.isConvertable(entity, tokener.getMap(), property, value) && contains == false) {
+							if (convert > 0 && contains == false) {
 								encode(value, className, map, tokener, item);
 							}
 							Entity child = tokener.createLink(item, fullProp, className, tokener.getId(value));
@@ -1446,7 +1434,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 								parseValue(fullProp, child, null, childCreater, map, tokener, parent);
 							}
 						}
-						else if (valueCreater != null && (contains || map.isConvertable(entity, tokener.getMap(), property, value) == false)) {
+						else if (valueCreater != null && (contains || convert < 1)) {
 							Entity child = null;
 							if (map.isAddOwnerLink(value)) {
 								child = tokener.createLink(item, fullProp, className, tokener.getId(value));
@@ -1455,8 +1443,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 								SendableEntityCreator childCreater = map.getCreator(Grammar.WRITE, child, child.getClass().getName());
 								parseValue(fullProp, child, null, childCreater, map, tokener, parent);
 							}
-						}
-						else {
+						} else {
 							parseValue(fullProp, value, className, valueCreater, map, tokener, parent);
 						}
 					}
@@ -1470,7 +1457,6 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 					parent.put(prop.toString(), value);
 				}
 			}
-			map.minus();
 			map.popStack();
 		}
 		if (targetList != null && targetList.isComparator()) {
@@ -1487,23 +1473,24 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 			EntityList subValues;
 			boolean isArray = map.getTarget() != null;
 			subValues = tokener.newInstanceList();
-			//			map.add();
 			for (Object child : ((Collection<?>) value)) {
 				if (child != null) {
 					String childClassName = child.getClass().getName();
 					SendableEntityCreator childCreater = map.getCreator(Grammar.WRITE, child, childClassName);
 					Object key = child;
-					if (map.isId(child, tokener.getMap(), className)) {
+					if (map.isId(child, className)) {
 						key = tokener.getKey(child);
 					}
 					if (map.contains(key)) {
 						child = tokener.createLink((Entity) parent, property, childClassName, tokener.getKey(child));
 						childClassName = null;
 					} else {
-						if (map.isPropertyRegard(value, tokener.getMap(), property, child) == false) {
+						int convert = map.convert(value, property, child);
+								
+						if (convert < 0) {
 							continue;
 						}
-						if (map.isConvertable(value, tokener.getMap(), property, child) == false) {
+						if (convert < 1) {
 							child = tokener.createLink((Entity) parent, property, childClassName, tokener.getKey(child));
 							childClassName = null;
 						} else if (isArray) {

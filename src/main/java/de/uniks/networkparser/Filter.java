@@ -110,22 +110,22 @@ public class Filter {
 		return this;
 	}
 
-	boolean isPropertyRegard(Object entity, String property, Object value, IdMap map, int deep) {
-		if (this.property != null) {
-			return this.property.update(new SimpleEvent(this.strategy, map, property, null, value, deep, entity));
+	protected int convert(Object entity, String property, Object value, IdMap map, int deep) {
+		if (this.convertable == null && this.property == null) {
+			return 1;
 		}
-		return true;
+		SimpleEvent event = new SimpleEvent(this.strategy, map, property, null, value, deep, entity);
+		if(this.property != null && this.property.update(event) == false) {
+			return -1;
+		}
+		if(this.convertable != null && this.convertable.update(event) == false) {
+			return 0;
+		}
+		return 1;
 	}
 	
 	public ObjectCondition getPropertyRegard() {
 		return property;
-	}
-
-	boolean isConvertable(Object entity, String property, Object value, IdMap map, int deep) {
-		if (this.convertable != null) {
-			return this.convertable.update(new SimpleEvent(this.strategy, map, property, null, value, deep, entity));
-		}
-		return true;
 	}
 
 	/**

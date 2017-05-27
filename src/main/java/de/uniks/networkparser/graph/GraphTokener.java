@@ -128,9 +128,9 @@ public class GraphTokener extends Tokener {
 		if (item == null) {
 			return;
 		}
-		map.add();
-		if(map.isPropertyRegard(entity, getMap(), property, item) == false || map.isConvertable(entity, getMap(), property, item) == false) {
-			map.minus();
+		map.pushStack(entity.getClass().getName(), entity, null);
+		if(map.convert(entity, property, item) < 1) {
+			map.popStack();
 			return;
 		}
 		SendableEntityCreator valueCreater = getCreatorClass(item);
@@ -150,7 +150,7 @@ public class GraphTokener extends Tokener {
 			Attribute attribute = element.createAttribute(property, DataType.create(item.getClass()));
 			attribute.withValue("" + item);
 		}
-		map.minus();
+		map.popStack();
 		return;
 	}
 

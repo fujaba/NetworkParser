@@ -352,7 +352,7 @@ public class JsonTokener extends Tokener {
 	 */
 	private Object decoding(Object target, JsonObject jsonObject, MapEntity map) {
 		// JSONArray jsonArray;
-		boolean isId = map.isId(target, this.map, target.getClass().getName());
+		boolean isId = map.isId(target, target.getClass().getName());
 		if (isId) {
 			String jsonId = map.getValue(jsonObject, IdMap.ID);
 			IdMap idMap = this.map;
@@ -362,7 +362,7 @@ public class JsonTokener extends Tokener {
 			idMap.put(jsonId, target);
 //			idMap.getCounter().readId(jsonId);
 		}
-		JsonObject jsonProp = (JsonObject) map.getProperties(jsonObject, this.map, isId, Grammar.READ);
+		JsonObject jsonProp = (JsonObject) map.getProperties(jsonObject, isId, Grammar.READ);
 		if (jsonProp != null) {
 			SendableEntityCreator prototyp = map.getCreator(Grammar.WRITE, target, target.getClass().getName());
 			String[] properties = prototyp.getProperties();
