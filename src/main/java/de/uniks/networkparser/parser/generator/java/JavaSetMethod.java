@@ -7,8 +7,15 @@ import de.uniks.networkparser.parser.generator.BasicGenerator;
 public class JavaSetMethod extends BasicGenerator {
 
 	public JavaSetMethod() {
-		createTemplate("Method", Template.METHOD, 
-				"   {{visibility}} {{modifiers} }{{file.member.name}}Set {{name}}{{parameter}}",
+		createTemplate("Method", Template.METHOD,
+				"{{#foreach {{parameter}}}}" +
+				   "{{#if {{item.typeValue.type}}==class}}" +
+				      "{{#ifnot {{item.typeValue.name}}=={{file.member.name}}}}" +
+				         "{{#import {{item.type(false)}}}}" +
+				      "{{#endif}}" +
+				   "{{#endif}}" +
+				"{{#endfor}}" +
+				"   {{visibility}} {{modifiers} }{{file.member.name}}Set {{name}}{{parameterName}}",
 				"   {",
 				"      return {{file.member.name}}Set.EMPTY_SET;",
 				"   }","");

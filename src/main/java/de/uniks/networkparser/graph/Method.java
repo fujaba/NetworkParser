@@ -32,6 +32,7 @@ public class Method extends GraphMember {
 	public static final StringFilter<Method> NAME = new StringFilter<Method>(GraphMember.PROPERTY_NAME);
 	public static final String PROPERTY_RETURNTYPE = "returnType";
 	public static final String PROPERTY_PARAMETER = "parameter";
+	public static final String PROPERTY_PARAMETERNAME = "parameterName";
 	public static final String PROPERTY_NODE = "node";
 	public static final String PROPERTY_ANNOTATIONS = "annotations";
 	private DataType returnType = DataType.VOID;
@@ -266,6 +267,9 @@ public class Method extends GraphMember {
 		}
 		if(PROPERTY_PARAMETER.equalsIgnoreCase(attribute)) {
 			return this.getParameter();
+		}
+		if (PROPERTY_PARAMETERNAME.equalsIgnoreCase(attribute)) {
+			return this.getParameterString(true, false);
 		}
 		if(PROPERTY_ANNOTATIONS.equalsIgnoreCase(attribute)) {
 			return this.getAnnotation();

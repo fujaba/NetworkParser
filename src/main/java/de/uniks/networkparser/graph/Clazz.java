@@ -406,7 +406,7 @@ public class Clazz extends GraphEntity {
 	 *		 </pre>
 	 */
 	public ClazzSet getImplements() {
-		ClazzSet kidClazzes = getEdgeClazzes(AssociationTypes.EDGE, AssociationTypes.IMPLEMENTS);
+		ClazzSet kidClazzes = getEdgeClazzes(AssociationTypes.IMPLEMENTS, AssociationTypes.EDGE);
 		return kidClazzes;
 	}
 	
