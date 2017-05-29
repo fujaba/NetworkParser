@@ -72,6 +72,9 @@ public class VariableCondition implements ParserCondition{
 			if(object instanceof String) {
 				return replaceText(v, format, (String)object);
 			}
+			if (object instanceof Boolean) {
+				return "" + object;
+			}
 			return object;
 		}
 		if(value != null && this.value != null) {

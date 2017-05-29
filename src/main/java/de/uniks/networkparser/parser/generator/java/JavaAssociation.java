@@ -9,7 +9,7 @@ public class JavaAssociation extends BasicGenerator {
 	public JavaAssociation() {
 		createTemplate("Declaration", Template.DECLARATION, 
 				"{{#template VALUE}}",
-				"{{#ifnot {{other.isEdge}}}}",
+				"{{#if {{other.isEdge}}==false}}",
 				"   public static final String PROPERTY_{{other.NAME}} = \"{{other.name}}\";","",
 		
 				"{{#ifnot {{file.member.type}}==interface}}",
@@ -35,7 +35,7 @@ public class JavaAssociation extends BasicGenerator {
 				
 				"{{#if {{other.cardinality}}==1}}",
 				"   public {{modifiers} }boolean set{{other.Name}}({{other.clazz.name}} value){{#if {{file.member.type}}==interface}};","","{{#endif}}",
-				"{{#ifnot {{file.type}}==interface}}",
+				"{{#ifnot {{file.member.type}}==interface}}",
 				"   {",
 				"      boolean changed = false;",
 				"      if (this.{{other.name}} != value) {",
@@ -127,6 +127,8 @@ public class JavaAssociation extends BasicGenerator {
 				"{{#endif}}",
 				"{{#endif}}",
 
+				"{{#ifnot {{other.clazz.type}}==interface}}",
+				"{{#if {{other.clazz.isAbstract}}==false}}",
 				"   public {{modifiers} }{{other.clazz.name}} create{{other.Name}}(){{#if {{file.member.type}}==interface}};","","{{#endif}}",
 				"{{#ifnot {{file.member.type}}==interface}}",
 				"   {",
@@ -134,6 +136,8 @@ public class JavaAssociation extends BasicGenerator {
 				"      with{{other.Name}}(value);",
 				"      return value;",
 				"   }","",
+				"{{#endif}}",
+				"{{#endif}}",
 				"{{#endif}}",
 				"{{#endif}}{{#endtemplate}}");
 
