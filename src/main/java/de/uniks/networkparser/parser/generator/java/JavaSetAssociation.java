@@ -12,7 +12,7 @@ public class JavaSetAssociation extends BasicGenerator {
 	public JavaSetAssociation() {
 		createTemplate("Declaration", Template.DECLARATION,
 				"{{#template VALUE}}",
-				"{{#ifnot {{other.isEdge}}}}",
+				"{{#if {{other.isEdge}}==false}}",
 				"{{#import {{file.member.fullName}}}}" +
 				"   public {{file.member.name}}Set get{{other.Name}}()",
 				"   {",
