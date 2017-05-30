@@ -42,12 +42,8 @@ public class JavaCreator extends BasicGenerator {
 				"{{#if {{item.className}}==" + Attribute.class.getName() + "}}",
 				"      if ({{name}}.PROPERTY_{{item.NAME}}.equalsIgnoreCase(attrName))",
 				"      {",
-				"         ",
+				"         return (({{name}}) entity).{{#if {{item.type}}==boolean}}is{{#else}}get{{#endif}}{{item.Name}}();",
 				"      }","",
-//				if (Person.PROPERTY_NAME.equalsIgnoreCase(attribute))
-//			      {
-//			         return ((Person) target).getName();
-//			      }
 				"{{#endif}}",
 				"{{#if {{item.className}}==" + Association.class.getName() + "}}",
 				"      ",
