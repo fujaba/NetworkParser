@@ -29,6 +29,7 @@ import de.uniks.networkparser.parser.generator.BasicGenerator;
 import de.uniks.networkparser.parser.generator.condition.JavaListCondition;
 import de.uniks.networkparser.parser.generator.condition.JavaMethodBodyCondition;
 import de.uniks.networkparser.parser.generator.java.JavaClazz;
+import de.uniks.networkparser.parser.generator.java.JavaCreator;
 import de.uniks.networkparser.parser.generator.java.JavaSet;
 
 public class ModelGenerator extends BasicGenerator {
@@ -37,7 +38,7 @@ public class ModelGenerator extends BasicGenerator {
 	public SimpleKeyValueList<String, ParserCondition> customTemplate;
 
 	private SimpleList<BasicGenerator> javaGeneratorTemplates = new SimpleList<BasicGenerator>().with(new JavaClazz(),
-			new JavaSet());
+			new JavaSet(), new JavaCreator());
 
 	public SimpleKeyValueList<String, ParserCondition> getTemplates() {
 		if (customTemplate == null) {

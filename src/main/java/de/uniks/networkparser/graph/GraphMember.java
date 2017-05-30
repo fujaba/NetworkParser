@@ -29,6 +29,7 @@ import de.uniks.networkparser.list.SimpleSet;
 
 public abstract class GraphMember {
 	public static final String PROPERTY_NAME="name";
+	public static final String PROPERTY_CLASSNAME = "className";
 	public static final String PROPERTY_PARENT="parent";
 	public static final String PROPERTY_CHILD="child";
 	public static final String PROPERTY_VISIBILITY = "visibility";
@@ -64,6 +65,9 @@ public abstract class GraphMember {
 		}
 		if(PROPERTY_NAME.equalsIgnoreCase(attribute)) {
 			return this.name;
+		}
+		if (PROPERTY_CLASSNAME.equalsIgnoreCase(attribute)) {
+			return this.getClass().getName();
 		}
 		int pos = attribute.indexOf('.');
 		String attrName;
