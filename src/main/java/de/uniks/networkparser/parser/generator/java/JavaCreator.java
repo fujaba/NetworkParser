@@ -1,8 +1,5 @@
 package de.uniks.networkparser.parser.generator.java;
 
-import org.sdmlib.simple.model.association_e.Room;
-import org.sdmlib.simple.model.attribute_b.Person;
-
 import de.uniks.networkparser.graph.Association;
 import de.uniks.networkparser.graph.Attribute;
 import de.uniks.networkparser.graph.Clazz;
