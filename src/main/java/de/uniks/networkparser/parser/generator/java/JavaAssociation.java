@@ -128,7 +128,7 @@ public class JavaAssociation extends BasicGenerator {
 				"{{#endif}}",
 
 				"{{#ifnot {{other.clazz.type}}==interface}}",
-				"{{#if {{other.clazz.isAbstract}}==false}}",
+				"{{#ifnot {{other.clazz.modifiers#contains(abstract)}}}}",
 				"   public {{modifiers} }{{other.clazz.name}} create{{other.Name}}(){{#if {{file.member.type}}==interface}};","","{{#endif}}",
 				"{{#ifnot {{file.member.type}}==interface}}",
 				"   {",

@@ -1,5 +1,6 @@
 package de.uniks.networkparser.parser.generator.java;
 
+import org.sdmlib.simple.model.association_e.Room;
 import org.sdmlib.simple.model.attribute_b.Person;
 
 import de.uniks.networkparser.graph.Association;
@@ -23,13 +24,40 @@ public class JavaCreator extends BasicGenerator {
 				"{{visibility}} class {{name}}Creator implements SendableEntityCreator",
 				"{","",
 				
+				"   private final String[] properties = new String[]",
+				"   {",
+				"{{#foreach child}}",
+				"{{#if {{item.className}}==" + Attribute.class.getName() + "}}",
+				"      {{name}}.PROPERTY_{{item.NAME}},",
+				"{{#endif}}",
+				"{{#if {{item.className}}==" + Association.class.getName() + "}}",
+				"{{#if {{item.other.isEdge}}==false}}",
+				"{{#import {{item.other.clazz.fullName}}}}",
+				"      {{name}}.PROPERTY_{{item.other.NAME}},",
+				"{{#endif}}",
+				"{{#endif}}",
+				"{{#endfor}}",
+				"   };","",
+				
 				"   @Override",
-				"   public String[] getProperties() {",
-				"      return null;",
+				"   public String[] getProperties()",
+				"   {",
+				"      return properties;",
 				"   }","",
 
 				"   @Override",
-				"   public Object getValue(Object entity, String attribute) {",
+				"   public Object getSendableInstance(boolean prototyp)",
+				"   {",
+				"{{#if {{#AND}}{{type}}==class {{#NOT}}{{modifiers#contains(abstract)}}{{#ENDNOT}}{{#ENDAND}}}}",
+				"      return new {{name}}();",
+				"{{#else}}",
+				"      return null;",
+				"{{#endif}}",
+				"   }","",
+				
+				"   @Override",
+				"   public Object getValue(Object entity, String attribute)",
+				"   {",
 				"      int pos = attribute.indexOf('.');",
 			    "      String attrName = attribute;","",
 			      
@@ -46,22 +74,48 @@ public class JavaCreator extends BasicGenerator {
 				"      }","",
 				"{{#endif}}",
 				"{{#if {{item.className}}==" + Association.class.getName() + "}}",
-				"      ",
+				"{{#if {{item.other.isEdge}}==false}}",
+				"      if ({{name}}.PROPERTY_{{item.other.NAME}}.equalsIgnoreCase(attrName))",
+				"      {",
+				"         return (({{name}}) entity).get{{item.other.Name}}();",
+				"      }","",
+				"{{#endif}}",
 				"{{#endif}}",
 				"{{#endfor}}",
 				"      return null;",
 				"   }","",
 				
 				"   @Override",
-				"   public boolean setValue(Object entity, String attribute, Object value, String type) {",
+				"   public boolean setValue(Object entity, String attribute, Object value, String type)",
+				"   {",
+				"      if (SendableEntityCreator.REMOVE.equals(type) && value != null)",
+			    "      {",
+			    "         attribute = attribute + type;",
+			    "      }","",
+			    
+			    "{{#foreach child}}",
+			    "{{#if {{item.className}}==" + Attribute.class.getName() + "}}",
+			    "{{#ifnot {{item.modifiers#contains(static)}}}}",
+			    "      if ({{name}}.PROPERTY_{{item.NAME}}.equalsIgnoreCase(attribute))",
+				"      {",
+				"         (({{name}}) entity).set{{item.Name}}(({{item.typeValue.name}}) value);",
+				"         return true;",
+			    "      }","",
+			    "{{#endif}}",
+			    "{{#endif}}",
+			    "{{#if {{item.className}}==" + Association.class.getName() + "}}",
+			    "{{#if {{item.other.isEdge}}==false}}",
+			    "      if ({{name}}.PROPERTY_{{item.other.NAME}}.equalsIgnoreCase(attribute))",
+				"      {",
+				"         (({{name}}) entity).{{#if {{item.other.cardinality}}==1}}set{{#else}}with{{#endif}}{{item.other.Name}}(({{item.other.clazz.name}}) value);",
+				"         return true;",
+			    "      }","",
+			    "{{#endif}}",
+			    "{{#endif}}",
+			    "{{#endfor}}",
 				"      return false;",
 				"   }","",
 
-				"   @Override",
-				"   public Object getSendableInstance(boolean prototyp) {",
-				"      return null;",
-				"   }","",
-				
 				"{{#template TEMPLATEEND}}}{{#endtemplate}}");
 		
 		this.extension = "java";

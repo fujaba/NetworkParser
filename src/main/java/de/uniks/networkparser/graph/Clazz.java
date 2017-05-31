@@ -14,7 +14,6 @@ public class Clazz extends GraphEntity {
 	public static final String PROPERTY_FULLNAME = "fullName";
 	public static final String PROPERTY_VISIBILITY = "visibility";
 	public static final String PROPERTY_MODIFIERS = "modifiers";
-	public static final String PROPERTY_ISABSTRACT = "isAbstract";
 	public static final String PROPERTY_TYPE = "type";
 	public static final String PROPERTY_SUPERCLAZZ = "superclazz";
 	public static final String PROPERTY_IMPLEMENTS = "implements";
@@ -818,9 +817,6 @@ public class Clazz extends GraphEntity {
 				}
 			}
 			return buffer.toString();
-		}
-		if (PROPERTY_ISABSTRACT.equalsIgnoreCase(attribute)) {
-			return this.getModifier().has(Modifier.ABSTRACT);
 		}
 		if(PROPERTY_TYPE.equalsIgnoreCase(attribute)) {
 			return this.getType().getValue();
