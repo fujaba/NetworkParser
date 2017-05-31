@@ -67,7 +67,7 @@ public class Tokener implements BufferItem {
 		if(map == null) {
 			return null;
 		}
-		return map.getId(reference);
+		return map.getId(reference, true);
 	}
 
 	public Object getObject(String key) {

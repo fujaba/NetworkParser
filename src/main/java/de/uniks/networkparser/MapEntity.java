@@ -59,6 +59,12 @@ public class MapEntity extends SimpleSet<Object>{
 		this.map = map;
 		this.mapFlag = flag;
 	}
+	
+	public MapEntity(IdMap map) {
+		this.map = map;
+		this.filter = map.getFilter();
+		this.mapFlag = map.getFlag();
+	}
 
 	public Filter getFilter() {
 		return filter;

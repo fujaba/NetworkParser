@@ -56,9 +56,9 @@ public enum AssociationTypes {
 		if(value == null) {
 			return false;
 		}
-		return (value.equals(GENERALISATION) ||
+		return (value.equals(ASSOCIATION) ||
 				value.equals(EDGE) ||
-				value.equals(IMPLEMENTS) ||
+				value.equals(UNDIRECTIONAL) ||
 				value.equals(AGGREGATION) ||
 				value.equals(COMPOSITION)
 				);

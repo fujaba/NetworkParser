@@ -76,7 +76,7 @@ public class GXLTokener extends Tokener {
 		if(creator == null) {
 			return false;
 		}
-		String id = this.map.getId(item);
+		String id = this.map.getId(item, true);
 		XMLEntity node = this.newInstance();
 		node.setType(NODE);
 		node.withKeyValue(IdMap.ID, id);

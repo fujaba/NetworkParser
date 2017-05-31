@@ -76,7 +76,7 @@ public class JsonMessageTest implements ObjectCondition {
 		map.withTimeStamp(1);
 		map.with(new AppleTreeCreator());
 		map.with(new AppleCreator());
-		map.put("root", tree);
+		map.put("root", tree, true);
 		messages.with("{\"class\":\"de.uniks.networkparser.test.model.Apple\",\"id\":\"A1\"}");
 		messages.with("{\"class\":\"de.uniks.networkparser.test.model.AppleTree\",\"id\":\"root\",\"upd\":{\"has\":{\"class\":\"de.uniks.networkparser.test.model.Apple\",\"id\":\"A1\"}}}");
 		map.with(this);

@@ -247,7 +247,7 @@ public class SQLTokener extends Tokener {
 		if(map.contains(item)) {
 			return this.map.getKey(item);
 		}
-		String id = this.map.getId(item);
+		String id = this.map.getId(item, true);
 		map.with(item);
 		String className = item.getClass().getName();
 		SendableEntityCreator creator = map.getCreator(SendableEntityCreator.NEW, item, className);

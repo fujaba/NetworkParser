@@ -47,17 +47,21 @@ public class FileBuffer extends Buffer {
 		return this;
 	}
 
-	public FileBuffer withFile(File file) {
+	public FileBuffer withFile(File file, int cache) {
 		this.file = file;
 		this.length = (int) this.file.length();
 		try {
 			FileInputStream fis = new FileInputStream(this.file);
 			InputStreamReader isr = new InputStreamReader(fis, Charset.forName("UTF-8"));
-			this.reader = new BufferedReader(isr, 1024*1024);
+			this.reader = new BufferedReader(isr, cache);
 		}catch (Exception e) {
 		}
 		this.position = 0;
-		return this;
+		return this;	
+	}
+	
+	public FileBuffer withFile(File file) {
+		return withFile(file, 1024*1024);
 	}
 
 	@Override

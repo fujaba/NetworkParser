@@ -25,7 +25,6 @@ THE SOFTWARE.
 */
 
 public class GraphImage extends GraphMember {
-	public static final String PROPERTY_VALUE = "value";
 	private GraphNode parentNode;
 
 	@Override

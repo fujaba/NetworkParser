@@ -182,7 +182,7 @@ public class ConditionTest implements ObjectCondition {
 		UpdateCondition condition = new UpdateCondition();
 		IdMap map=new IdMap();
 		University uni = new University();
-		map.put("root", uni);
+		map.put("root", uni, true);
 		Assert.assertTrue(condition.update(new SimpleEvent("new", null, map,"VALUE", null, null)));
 		
 		Assert.assertFalse(condition.update(new SimpleEvent("new", null, map,"VALUE", null, uni)));

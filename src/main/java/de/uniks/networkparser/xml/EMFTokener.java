@@ -447,7 +447,7 @@ public class EMFTokener extends Tokener{
 			rootId = "_" + rootId.substring(1);
 		}
 
-		this.map.put(rootId, entityObject);
+		this.map.put(rootId, entityObject, true);
 		if(xmlEntity.has(XMI_ID) == false) {
 			xmlEntity.put(XMI_ID, rootId);
 		}

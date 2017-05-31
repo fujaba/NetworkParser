@@ -142,14 +142,14 @@ public class UpdateJson implements MapListener {
 
 		JsonObject jsonObject = new JsonObject()
 				.withValue(IdMap.CLASS, source.getClass().getName())
-				.withValue(IdMap.ID, this.map.getId(source));
+				.withValue(IdMap.ID, this.map.getId(source, true));
 
 		if (oldValue != null) {
 			creatorClass = this.map.getCreatorClass(oldValue);
 
 			JsonObject child = new JsonObject();
 			if (creatorClass != null) {
-				String oldId = this.map.getId(oldValue);
+				String oldId = this.map.getId(oldValue, true);
 				if (oldId != null) {
 					child.put(propertyName,
 							new JsonObject().withValue(IdMap.ID, oldId));
@@ -176,7 +176,7 @@ public class UpdateJson implements MapListener {
 							this.updateFilter);
 					child.put(propertyName, item);
 					if (this.suspendIdList != null) {
-						this.suspendIdList.add(this.map.getId(newValue));
+						this.suspendIdList.add(this.map.getId(newValue, true));
 					}
 				}
 			} else {
@@ -224,7 +224,7 @@ public class UpdateJson implements MapListener {
 			  masterObj = creator.getSendableInstance(false);
 			  if (masterObj != null)
 			  {
-				 this.map.put(id, masterObj);
+				 this.map.put(id, masterObj, false);
 			  }
 		   }
 		}
@@ -326,7 +326,7 @@ public class UpdateJson implements MapListener {
 				// GLAUB ICH MAL
 				String oldId = (String) ((JsonObject) oldValue)
 						.get(IdMap.ID);
-				return oldId.equals(this.map.getId(value));
+				return oldId.equals(this.map.getId(value, true));
 			} 
 			return value.equals(oldValue);
 		}

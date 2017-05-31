@@ -28,8 +28,6 @@ THE SOFTWARE.
 
 public class Attribute extends Value {
 	public static final StringFilter<Attribute> NAME = new StringFilter<Attribute>(GraphMember.PROPERTY_NAME);
-	public static final String PROPERTY_CLAZZ = "clazz";
-	public static final String PROPERTY_VALUE = "value";
 
 	Attribute() {
 	}

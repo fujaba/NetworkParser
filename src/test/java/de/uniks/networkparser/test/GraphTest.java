@@ -228,7 +228,6 @@ public class GraphTest {
 		SimpleList<Object> list = new SimpleList<Object>();
 		list.with(uni, student);
 		JsonArray jsonArray = map.toJsonArray(list, new Filter().withFull(true).withPropertyRegard(BooleanCondition.create(true)));
-		System.out.println(jsonArray.toString(2));
 		Assert.assertEquals(3, jsonArray.size());
 	}
 
