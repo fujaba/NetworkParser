@@ -44,6 +44,7 @@ The Framework have many other features like:
   - Coverage: [![Coverage Status](https://coveralls.io/repos/fujaba/NetworkParser/badge.svg?branch=develop&service=github)](https://coveralls.io/github/fujaba/NetworkParser?branch=develop)
   
 [![Open Hub](https://www.openhub.net/p/NetworkParser/widgets/project_partner_badge?format=gif&ref=Partner+Badge "Open Hub")](https://www.openhub.net/p/NetworkParser/)
+
 [![JProfiler](https://www.ej-technologies.com/images/product_banners/jprofiler_small.png)](http://www.ej-technologies.com/products/jprofiler/overview.html) optimized
 
 # Getting Started
