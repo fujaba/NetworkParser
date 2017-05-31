@@ -9,7 +9,7 @@ public class JavaAssociation extends BasicGenerator {
 	public JavaAssociation() {
 		createTemplate("Declaration", Template.DECLARATION, 
 				"{{#template VALUE}}",
-				"{{#if {{other.isEdge}}==false}}",
+				"{{#if {{other.isImplements}}==false}}",
 				"   public static final String PROPERTY_{{other.NAME}} = \"{{other.name}}\";","",
 		
 				"{{#ifnot {{file.member.type}}==interface}}",

@@ -36,6 +36,7 @@ public class Association extends GraphMember {
 	public static final String PROPERTY_CLAZZ = "clazz";
 	public static final String PROPERTY_TYPE = "type";
 	public static final String PROPERTY_ISEDGE="isEdge";
+	public static final String PROPERTY_ISIMPLEMENTS = "isImplements";
 	private Cardinality cardinality;
 	// The Complete Edge Info
 //	private GraphLabel info;
@@ -79,6 +80,9 @@ public class Association extends GraphMember {
 		}
 		if (PROPERTY_ISEDGE.equalsIgnoreCase(attrName)) {
 			return AssociationTypes.isEdge(getType());
+		}
+		if (PROPERTY_ISIMPLEMENTS.equalsIgnoreCase(attrName)) {
+			return AssociationTypes.isImplements(getType());
 		}
 		
 		return super.getValue(attribute);

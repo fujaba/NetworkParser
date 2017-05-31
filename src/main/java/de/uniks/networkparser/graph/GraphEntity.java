@@ -96,7 +96,7 @@ public abstract class GraphEntity extends GraphMember {
 						if(type==AssociationTypes.EDGE) {
 							collection.add(assoc);
 						}else if(type==AssociationTypes.ASSOCIATION) {
-							if(!AssociationTypes.isEdge(assoc.getType())) {
+							if(AssociationTypes.isEdge(assoc.getType())) {
 								collection.add(assoc);
 							}
 						}

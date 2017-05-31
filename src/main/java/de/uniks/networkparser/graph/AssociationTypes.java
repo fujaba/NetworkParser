@@ -63,6 +63,14 @@ public enum AssociationTypes {
 				value.equals(COMPOSITION)
 				);
 	}
+	public static Object isImplements(AssociationTypes value) {
+		if(value == null) {
+			return false;
+		}
+		return (value.equals(GENERALISATION) ||
+				value.equals(IMPLEMENTS)
+				);
+		}
 	private String value;
 	
 	@Override
