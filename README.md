@@ -48,6 +48,7 @@ The Framework have many other features like:
 [![Open Source Love](https://badges.frapsoft.com/os/v2/open-source.svg?v=103)](https://github.com/ellerbrock/open-source-badges/)
 
 Project Managment
+
 [![Join the chat at https://gitter.im/NetworkParser/Lobby](https://badges.gitter.im/NetworkParser/Lobby.svg)](https://gitter.im/NetworkParser/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 [![Stories in Ready](https://badge.waffle.io/fujaba/NetworkParser.svg?label=ready)](https://waffle.io/fujaba/NetworkParser)
