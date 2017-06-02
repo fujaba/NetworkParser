@@ -53,7 +53,7 @@ Project Managment
 
 [![Stories in Ready](https://badge.waffle.io/fujaba/NetworkParser.svg?label=ready)](https://waffle.io/fujaba/NetworkParser)
 
-[![Download latest Release](https://img.shields.io/github/downloads/fujaba/networkparser/latest/total.svg)](releases)
+[![Download latest Release](https://img.shields.io/github/downloads/fujaba/NetworkParser/total.svg)](../../releases)
 
 
 # Getting Started
