@@ -47,6 +47,8 @@ The Framework have many other features like:
 
 [![JProfiler](https://www.ej-technologies.com/images/product_banners/jprofiler_small.png)](http://www.ej-technologies.com/products/jprofiler/overview.html) optimized
 
+[![Open Source Love](https://badges.frapsoft.com/os/v2/open-source.svg?v=103)](https://github.com/ellerbrock/open-source-badges/)
+
 # Getting Started
 
 ## Installation
@@ -106,4 +108,4 @@ Here are a simple Usage of IdMap for serialization and deserialization
 [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=FSHD59SQ8PR2Y)
 
 # License
-NetworkParser is released under an [The MIT License](src/main/resources/Licence.txt).
+NetworkParser is released under an [The MIT License](src/main/resources/Licence.txt). [![MIT Licence](https://badges.frapsoft.com/os/mit/mit.svg?v=103)](https://opensource.org/licenses/mit-license.php)
