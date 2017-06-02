@@ -26,7 +26,7 @@ ext{
 	gitVersion = new GITVersion(major: ext.majorNumber,minor: ext.GitTag, revision: ext.Revisionnumber, hash: ext.LastCommit, buildTime: buildTime(), branch: ext.Branchname, latest: project.hasProperty('latest'))
 }
 version = gitVersion
-task printVersion {
+task version {
 	group "Git"
 	description "Show Final Version of Repository"
 	doLast {
@@ -109,7 +109,16 @@ def getGitTag() {
 	def test = [0]
 	executeCommand("git", "tag").eachLine {
 		try {
-			test << (it.trim() as int)
+			def id = it.trim()
+			def start = id.indexOf(".")
+			if(start>0) {
+				id = id.substring(0, start)
+				start = id.indexOf(".")
+				if(start>0) {
+					id = id.substring(0, start)
+				}
+			}
+			test << (id as int)
 		} catch (Exception ex) {
 			// no problem as long as there's another tag with a number
 		}

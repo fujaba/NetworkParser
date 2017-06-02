@@ -78,7 +78,9 @@ test {
 		showCauses true
 	}
 }
-
+task wrapper(type: Wrapper) {
+    gradleVersion = '3.5'
+}
 jacoco.toolVersion = "0.7.+"
 
 jacocoTestReport {

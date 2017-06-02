@@ -68,7 +68,8 @@ public enum AssociationTypes {
 			return false;
 		}
 		return (value.equals(GENERALISATION) ||
-				value.equals(IMPLEMENTS)
+				value.equals(IMPLEMENTS) ||
+				value.equals(EDGE)
 				);
 		}
 	private String value;
