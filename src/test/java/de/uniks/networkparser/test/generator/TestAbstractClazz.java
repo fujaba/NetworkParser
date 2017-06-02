@@ -10,9 +10,6 @@ import de.uniks.networkparser.graph.Modifier;
 public class TestAbstractClazz {
 	@Test
 	public void testAbstractClazz() {
-		if(Generator.DISABLE) {
-			return;
-		}
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.abstract_A");
 		Clazz person = model.createClazz("Person");
 		
@@ -31,9 +28,6 @@ public class TestAbstractClazz {
 	
 	@Test
 	public void testAbstractClazzB() {
-		if(Generator.DISABLE) {
-			return;
-		}
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.abstract_B");
 		Clazz person = model.createClazz("Person");
 		Clazz flower = model.createClazz("Flower");
@@ -53,9 +47,6 @@ public class TestAbstractClazz {
 	
 	@Test
 	public void testAbstractClazzC() {
-		if(Generator.DISABLE) {
-			return;
-		}
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.abstract_C");
 				
 		// classes

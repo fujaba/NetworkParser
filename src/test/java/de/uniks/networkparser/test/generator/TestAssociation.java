@@ -13,9 +13,6 @@ public class TestAssociation {
 
 	@Test
 	public void testUniDirectionalAssociation() {
-		if(Generator.DISABLE) {
-			return;
-		}
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.association_a");
 		Clazz person = model.createClazz("Person");
 		Clazz room = model.createClazz("Room"); 
@@ -28,9 +25,6 @@ public class TestAssociation {
 	
 	@Test
 	public void testUniDirectionalAssociations() {
-		if(Generator.DISABLE) {
-			return;
-		}
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.association_b");
 		Clazz person = model.createClazz("Person");
 		Clazz room = model.createClazz("Room");
@@ -43,9 +37,6 @@ public class TestAssociation {
 	
 	@Test
 	public void testMultipleUniDirectionalAssociation() {
-		if(Generator.DISABLE) {
-			return;
-		}
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.association_c");
 		Clazz person = model.createClazz("Person");
 		Clazz room = model.createClazz("Room"); 
@@ -60,9 +51,6 @@ public class TestAssociation {
 	
 	@Test
 	public void testOneToOneAssociation() {
-		if(Generator.DISABLE) {
-			return;
-		}
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.association_d");
 		Clazz person = model.createClazz("Person");
 		Clazz room = model.createClazz("Room");
@@ -75,9 +63,6 @@ public class TestAssociation {
 	
 	@Test
 	public void testOneToManyAssociation() {
-		if(Generator.DISABLE) {
-			return;
-		}
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.association_e");
 		Clazz person = model.createClazz("Person");
 		Clazz room = model.createClazz("Room");
@@ -90,9 +75,6 @@ public class TestAssociation {
 	
 	@Test
 	public void testManyToOneAssociation() {
-		if(Generator.DISABLE) {
-			return;
-		}
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.association_f");
 		Clazz person = model.createClazz("Person");
 		Clazz room = model.createClazz("Room");
@@ -104,9 +86,6 @@ public class TestAssociation {
 	}
 	@Test
 	public void testMultipleOneToOneAssociation() {
-		if(Generator.DISABLE) {
-			return;
-		}
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.association_g");
 		Clazz person = model.createClazz("Person");
 		Clazz room = model.createClazz("Room");
@@ -122,9 +101,6 @@ public class TestAssociation {
 
 	@Test
 	public void testMultipleOneToManyAssociation() {
-		if(Generator.DISABLE) {
-			return;
-		}
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.association_h");
 		Clazz person = model.createClazz("Person");
 		Clazz room = model.createClazz("Room");
@@ -140,9 +116,6 @@ public class TestAssociation {
 
 	@Test
 	public void testMultipleManyToOneAssociation() {
-		if(Generator.DISABLE) {
-			return;
-		}
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.association_i");
 		Clazz person = model.createClazz("Person");
 		Clazz room = model.createClazz("Room");
@@ -158,9 +131,6 @@ public class TestAssociation {
 
 	@Test
 	public void testMixedAssociations() {
-		if(Generator.DISABLE) {
-			return;
-		}
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.association_j");
 		Clazz person = model.createClazz("Person");
 		Clazz room = model.createClazz("Room");
@@ -173,9 +143,6 @@ public class TestAssociation {
 	
 	@Test
 	public void testManyToMany() {
-		if(Generator.DISABLE) {
-			return;
-		}
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.association_k");
 //		Clazz lecture = model.createClazz("Lecture");
 //		Clazz student = model.createClazz("Student");
@@ -190,9 +157,6 @@ public class TestAssociation {
 	}
 	@Test
 	public void testOneToManyInterace() {
-		if(Generator.DISABLE) {
-			return;
-		}
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.association_l");
 		Clazz lecture = model.createClazz("Lecture");
 		Clazz student = model.createClazz("Student");

@@ -15,7 +15,6 @@ public class JavaCreator extends BasicGenerator {
 				"{{#template PACKAGE}}{{#if {{packageName}}}}package {{packageName}}.util;{{#endif}}{{#endtemplate}}","",
 				
 				"{{#template IMPORT}}{{#foreach {{file.headers}}}}","import {{item}};{{#endfor}}{{#endtemplate}}","",
-				
 				"{{#import " + SendableEntityCreator.class.getName() + "}}" +
 				"{{#import {{fullName}}}}",
 				"{{visibility}} class {{name}}Creator implements SendableEntityCreator",
@@ -91,15 +90,16 @@ public class JavaCreator extends BasicGenerator {
 			    "      }","",
 			    
 			    "{{#foreach child}}",
-			    "{{#if {{item.className}}==" + Attribute.class.getName() + "}}",
-			    "{{#ifnot {{item.modifiers#contains(static)}}}}",
-			    "      if ({{name}}.PROPERTY_{{item.NAME}}.equalsIgnoreCase(attribute))",
-				"      {",
-				"         (({{name}}) entity).set{{item.Name}}(({{item.type.name}}) value);",
-				"         return true;",
-			    "      }","",
-			    "{{#endif}}",
-			    "{{#endif}}",
+				    "{{#if {{item.className}}==" + Attribute.class.getName() + "}}",
+					    "{{#ifnot {{item.modifiers#contains(static)}}}}",
+					    "      if ({{name}}.PROPERTY_{{item.NAME}}.equalsIgnoreCase(attribute))",
+						"      {" +
+						"{{#import {{item.type(false)}}}}",
+						"         (({{name}}) entity).set{{item.Name}}(({{item.type.name}}) value);",
+						"         return true;",
+					    "      }","",
+					    "{{#endif}}",
+				    "{{#endif}}",
 			    "{{#if {{item.className}}==" + Association.class.getName() + "}}",
 			    "{{#if {{item.other.isImplements}}==false}}",
 			    "      if ({{name}}.PROPERTY_{{item.other.NAME}}.equalsIgnoreCase(attribute))",
