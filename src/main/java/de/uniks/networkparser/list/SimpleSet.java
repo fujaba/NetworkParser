@@ -170,10 +170,10 @@ public class SimpleSet<V> extends AbstractList<V> implements Set<V>, Cloneable, 
 	}
 	
 	@Override
-	protected boolean fireProperty(String type, Object oldElement, Object newElement, Object beforeElement, Object value) {
+	protected boolean fireProperty(String type, Object oldElement, Object newElement, Object beforeElement, int index, Object value) {
 		if(this.listener != null) {
-			this.listener.update(new SimpleEvent(type, this, PROPERTY, oldElement, newElement, beforeElement, value));
+			this.listener.update(new SimpleEvent(type, this, PROPERTY, oldElement, newElement, beforeElement, value, index));
 		}
-		return super.fireProperty(type, oldElement, newElement, beforeElement, value);
+		return super.fireProperty(type, oldElement, newElement, beforeElement, index, value);
 	}
 }
