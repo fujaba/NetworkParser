@@ -258,6 +258,9 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence{
 	 */
 	@Override
 	public char getChar() {
+		if(this.buffer == null) {
+			return 0;
+		}
 		if (this.position+this.start >= this.buffer.length) {
 			return 0;
 		}

@@ -102,13 +102,13 @@ public class Equals implements ParserCondition, SendableEntityCreator {
 						|| value instanceof Short
 						|| value instanceof Integer
 						|| value instanceof Long) {
-					Long expValue = (Long)value;
-					Long evtValue = (Long) evt;
-					if(delta != null) {
-						Long deltaValue = (Long) delta;
-						return ((expValue - deltaValue) <= evtValue && (expValue + deltaValue)>= evtValue);
+					if(delta == null) {
+						return value == evt;	
 					}
-					return expValue == evtValue;
+					Long expValue = Long.valueOf(""+value);
+					Long evtValue = Long.valueOf(""+evt);
+					Long deltaValue = Long.valueOf(""+delta);
+					return ((expValue - deltaValue) <= evtValue && (expValue + deltaValue)>= evtValue);
 				}
 				// FLOAT DOUBLE AND OTHER
 				Double expValue = (Double)value;

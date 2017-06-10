@@ -27,6 +27,7 @@ import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.MapEntity;
 import de.uniks.networkparser.buffer.Tokener;
 import de.uniks.networkparser.interfaces.BaseItem;
+import de.uniks.networkparser.interfaces.Grammar;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
 public class GXLTokener extends Tokener {
@@ -62,7 +63,8 @@ public class GXLTokener extends Tokener {
 		instance.with(graph);
 		if(entity != null) {
 			String className = entity.getClass().getName();
-			SendableEntityCreator creator = map.getCreator(SendableEntityCreator.NEW, entity, className);
+			Grammar grammar = map.getGrammar();
+			SendableEntityCreator creator = grammar.getCreator(SendableEntityCreator.NEW, entity, map.getMap(), map.isSearchForSuperClass(), className);
 			encodeChildren(entity, graph, creator, map);
 		}
 		return instance;

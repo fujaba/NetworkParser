@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import de.uniks.networkparser.EntityUtil;
+import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.MapEntity;
 import de.uniks.networkparser.NetworkParserLog;
@@ -296,17 +297,18 @@ public class JsonTokener extends Tokener {
 		if (jsonObject == null) {
 			return map.getTarget();
 		}
-		SendableEntityCreator typeInfo = map.getCreator(Grammar.READ, jsonObject, null);
+		Grammar grammar = map.getGrammar();
+		SendableEntityCreator typeInfo = grammar.getCreator(Grammar.READ, jsonObject, map.getMap(), map.isSearchForSuperClass(), null);
 		if (typeInfo != null) {
 			Object result = map.getTarget();
-			if (map.hasValue(jsonObject, IdMap.ID) && result == null) {
-				String jsonId = map.getValue(jsonObject, IdMap.ID);
+			if (grammar.hasValue(jsonObject, IdMap.ID) && result == null) {
+				String jsonId = grammar.getValue(jsonObject, IdMap.ID);
 				if (jsonId != null) {
 					result = this.map.getObject(jsonId);
 				}
 			}
 			if (result == null) {
-				result = map.getNewEntity(typeInfo, map.getValue(jsonObject, IdMap.CLASS), false);
+				result = grammar.getNewEntity(typeInfo, grammar.getValue(jsonObject, IdMap.CLASS), false);
 				this.map.notify(new SimpleEvent(SendableEntityCreator.NEW, jsonObject, this.map, null, null, result));
 			} else {
 				this.map.notify(new SimpleEvent(SendableEntityCreator.UPDATE, jsonObject, this.map, null, null, result));
@@ -352,9 +354,11 @@ public class JsonTokener extends Tokener {
 	 */
 	private Object decoding(Object target, JsonObject jsonObject, MapEntity map) {
 		// JSONArray jsonArray;
-		boolean isId = map.isId(target, target.getClass().getName());
+		Grammar grammar = map.getGrammar();
+		Filter filter = map.getFilter();
+		boolean isId = filter.isId(target, target.getClass().getName(), map.getMap());
 		if (isId) {
-			String jsonId = map.getValue(jsonObject, IdMap.ID);
+			String jsonId = grammar.getValue(jsonObject, IdMap.ID);
 			IdMap idMap = this.map;
 			if (jsonId == null) {
 				return target;
@@ -362,9 +366,9 @@ public class JsonTokener extends Tokener {
 			idMap.put(jsonId, target, true);
 //			idMap.getCounter().readId(jsonId);
 		}
-		JsonObject jsonProp = (JsonObject) map.getProperties(jsonObject, isId, Grammar.READ);
+		JsonObject jsonProp = (JsonObject) grammar.getProperties(jsonObject, map.getMap(), filter, isId, Grammar.READ);
 		if (jsonProp != null) {
-			SendableEntityCreator prototyp = map.getCreator(Grammar.WRITE, target, target.getClass().getName());
+			SendableEntityCreator prototyp = grammar.getCreator(Grammar.WRITE, target, map.getMap(), map.isSearchForSuperClass(), target.getClass().getName());
 			String[] properties = prototyp.getProperties();
 			if (properties != null) {
 				for (String property : properties) {
@@ -386,52 +390,55 @@ public class JsonTokener extends Tokener {
 	 */
 	private void parseValue(Object target, String property, Object value, SendableEntityCreator creator,
 			MapEntity map) {
-		if (value != null) {
-			if (value instanceof JsonArray) {
-				JsonArray jsonArray = (JsonArray) value;
-				for (int i = 0; i < jsonArray.size(); i++) {
-					Object kid = jsonArray.get(i);
-					if (kid instanceof JsonObject) {
-						// got a new kid, create it
-						creator.setValue(target, property, decoding((JsonObject) kid, map), SendableEntityCreator.NEW);
-					} else {
-						creator.setValue(target, property, kid, SendableEntityCreator.NEW);
-					}
+		if (value == null) {
+			return;
+		}
+		Filter filter = map.getFilter();
+		Grammar grammar = map.getGrammar();
+		if (value instanceof JsonArray) {
+			JsonArray jsonArray = (JsonArray) value;
+			for (int i = 0; i < jsonArray.size(); i++) {
+				Object kid = jsonArray.get(i);
+				if (kid instanceof JsonObject) {
+					// got a new kid, create it
+					creator.setValue(target, property, decoding((JsonObject) kid, map), SendableEntityCreator.NEW);
+				} else {
+					creator.setValue(target, property, kid, SendableEntityCreator.NEW);
 				}
-			} else {
-				if (value instanceof JsonObject) {
-					// // got a new kid, create it
-					JsonObject child = (JsonObject) value;
-					// CHECK LIST AND MAPS
-					String className = target.getClass().getName();
-					Object ref_Obj = map.getNewEntity(creator, className, true);
-					if (ref_Obj instanceof Class<?>) {
-						ref_Obj = map.getNewEntity(creator, className, false);
-					}
-					Object refValue = creator.getValue(ref_Obj, property);
-					if (refValue instanceof Map<?, ?>) {
-						JsonObject json = (JsonObject) value;
-						for(SimpleIteratorSet<String, Object> i = new SimpleIteratorSet<String, Object>(json);i.hasNext();) {
-							Entry<String, Object> item = i.next();
-							String key = item.getKey();
-							Object entryValue = item.getValue();
-							if (entryValue instanceof JsonObject) {
-								creator.setValue(target, property, new ObjectMapEntry().with(key, decoding((JsonObject) entryValue, map)), SendableEntityCreator.NEW);
-							} else if (entryValue instanceof JsonArray) {
-								///FIXME CHANGE DECODE TO DECODING
-								throw new RuntimeException();
+			}
+		} else {
+			if (value instanceof JsonObject) {
+				// // got a new kid, create it
+				JsonObject child = (JsonObject) value;
+				// CHECK LIST AND MAPS
+				String className = target.getClass().getName();
+				Object ref_Obj = grammar.getNewEntity(creator, className, true);
+				if (ref_Obj instanceof Class<?>) {
+					ref_Obj = grammar.getNewEntity(creator, className, false);
+				}
+				Object refValue = creator.getValue(ref_Obj, property);
+				if (refValue instanceof Map<?, ?>) {
+					JsonObject json = (JsonObject) value;
+					for(SimpleIteratorSet<String, Object> i = new SimpleIteratorSet<String, Object>(json);i.hasNext();) {
+						Entry<String, Object> item = i.next();
+						String key = item.getKey();
+						Object entryValue = item.getValue();
+						if (entryValue instanceof JsonObject) {
+							creator.setValue(target, property, new ObjectMapEntry().with(key, decoding((JsonObject) entryValue, map)), SendableEntityCreator.NEW);
+						} else if (entryValue instanceof JsonArray) {
+							///FIXME CHANGE DECODE TO DECODING
+							throw new RuntimeException();
 //								creator.setValue(target, property,
 //										new ObjectMapEntry().with(key, decode((JsonArray) entryValue)), SendableEntityCreator.NEW);
-							} else {
-								creator.setValue(target, property, new ObjectMapEntry().with(key, entryValue), SendableEntityCreator.NEW);
-							}
+						} else {
+							creator.setValue(target, property, new ObjectMapEntry().with(key, entryValue), SendableEntityCreator.NEW);
 						}
-					} else {
-						creator.setValue(target, property, decoding(child, map), map.getStrategy());
 					}
 				} else {
-					creator.setValue(target, property, value, map.getStrategy());
+					creator.setValue(target, property, decoding(child, map), filter.getStrategy());
 				}
+			} else {
+				creator.setValue(target, property, value, filter.getStrategy());
 			}
 		}
 	}

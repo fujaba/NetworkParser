@@ -6,6 +6,7 @@ import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.buffer.Tokener;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Entity;
+import de.uniks.networkparser.interfaces.Grammar;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorTag;
 import de.uniks.networkparser.list.SimpleSet;
@@ -45,8 +46,9 @@ public class MapEntity extends SimpleSet<Object>{
 	protected MapEntityStack stack;
 	/** The show line. */
 	protected byte tokenerFlag;
-	protected IdMap map;
+    private IdMap map;
 	public byte mapFlag;
+	private Grammar grammar;
 
 	public MapEntity(String tag, Object item, SendableEntityCreator creator) {
 		this.withStack(new MapEntityStack().withStack(tag, item, creator));
@@ -56,23 +58,25 @@ public class MapEntity extends SimpleSet<Object>{
 		if(filter != null) {
 			this.filter = filter;
 		}
-		this.map = map;
 		this.mapFlag = flag;
+		this.map = map;
+		this.grammar = map.getGrammar();
+	}
+	
+	public Grammar getGrammar() {
+		return grammar;
 	}
 	
 	public MapEntity(IdMap map) {
-		this.map = map;
 		this.filter = map.getFilter();
 		this.mapFlag = map.getFlag();
+		this.grammar = map.getGrammar();
+		this.map = map;
 	}
 
 	public Filter getFilter() {
 		return filter;
 	}
-	public void setFilter(Filter filter) {
-		this.filter = filter;
-	}
-
 	public Entity encode(Object entity, Tokener tokener) {
 		return tokener.getMap().encode(entity, this, tokener);
 	}
@@ -81,64 +85,17 @@ public class MapEntity extends SimpleSet<Object>{
 		return deep;
 	}
 
-	public boolean isTypSave() {
-		return (mapFlag & IdMap.FLAG_TYPESAVE) != 0;
-	}
 	public boolean isSearchForSuperClass() {
 		return (mapFlag & IdMap.FLAG_SEARCHFORSUPERCLASS) != 0;
 	}
 	public boolean isSimpleFormat() {
-		return (mapFlag & IdMap.FLAG_SIMPLEFORMAT) != 0;
-	}
-
-	// Methods for Grammar
-	public SendableEntityCreator getCreator(String type, Object item, String className) {
-		return map.getGrammar().getCreator(type, item, map, isSearchForSuperClass(), className);
-	}
-	public Object getNewEntity(SendableEntityCreator creator, String className, boolean prototype) {
-		return map.getGrammar().getNewEntity(creator, className, prototype);
-	}
-	public boolean hasValue(Entity item, String property) {
-		return map.getGrammar().hasValue(item, property);
-	}
-	public String getValue(Entity item, String property) {
-		return map.getGrammar().getValue(item, property);
-	}
-	public BaseItem getProperties(Entity entity, boolean isId, String type) {
-		return map.getGrammar().getProperties(entity, map, filter, isId, type);
-	}
-
-	// Method for Filter
-	public String getId(Object entity, String className) {
-		if (filter.isId(entity, className, map) == false) {
-			this.with(entity);
-		} else {
-			boolean newMessage = SendableEntityCreator.UPDATE.equals(this.getFilter().getStrategy()) == false;
-			String id = map.getId(entity, newMessage);
-			this.with(id);
-			return id;
+		boolean result = (mapFlag & IdMap.FLAG_SIMPLEFORMAT) != 0;
+		if(result) {
+			return result;
 		}
-		return null;
+		return filter.isSimpleFormat();
 	}
 
-	public boolean isFullSeriation() {
-		return filter.isFullSerialization();
-	}
-	
-	public String[] getProperties(Tokener tokener, SendableEntityCreator creator) {
-		return filter.getProperties(creator);
-	}
-
-	public int convert(Object entity, String property, Object value) {
-		return filter.convert(entity, property, value, map, deep);
-	}
-
-	public boolean isId(Object entity, String className) {
-		return filter.isId(entity, className, map);
-	}
-	public String getStrategy() {
-		return filter.getStrategy();
-	}
 	/**
 	 * @return the target
 	 */
@@ -209,6 +166,20 @@ public class MapEntity extends SimpleSet<Object>{
 		result.with(IdMap.ENTITYSPLITTER).with(Tokener.PROPS).with(IdMap.ENTITYSPLITTER);
 		return result;
 	}
+	
+	// Method for Filter
+	public String getId(Object entity, String className) {
+		if (filter.isId(entity, className, map) == false) {
+			this.with(entity);
+		} else {
+			boolean newMessage = SendableEntityCreator.UPDATE.equals(this.getFilter().getStrategy()) == false;
+			String id = map.getId(entity, newMessage);
+			this.with(id);
+			return id;
+		}
+		return null;
+	}
+
 
 	public Entity writeBasicValue(SendableEntityCreator creator, Entity entity, BaseItem parent, String className, String id) {
 		if((mapFlag & IdMap.FLAG_ID) == 0) {
@@ -217,7 +188,7 @@ public class MapEntity extends SimpleSet<Object>{
 			}
 			id = null;
 		}
-		return map.getGrammar().writeBasicValue(entity, parent, className, id, this);
+		return grammar.writeBasicValue(entity, parent, className, id, this);
 	}
 
 	/**
@@ -324,10 +295,6 @@ public class MapEntity extends SimpleSet<Object>{
 	 */
 	public boolean isFlag(byte flag) {
 		return (this.mapFlag & flag) != 0;
-	}
-
-	public boolean writeValue(BaseItem parent, String property, Object value, Tokener tokener) {
-		return map.getGrammar().writeValue(parent, property, value, this, tokener);
 	}
 
 	public MapEntity withTokenerFlag(byte flag) {

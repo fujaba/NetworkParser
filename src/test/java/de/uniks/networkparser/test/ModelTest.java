@@ -20,8 +20,8 @@ import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.logic.WhiteListCondition;
 import de.uniks.networkparser.test.model.Apple;
 import de.uniks.networkparser.test.model.AppleTree;
+import de.uniks.networkparser.test.model.Barbarian;
 import de.uniks.networkparser.test.model.GroupAccount;
-import de.uniks.networkparser.test.model.JabberChatMessage;
 import de.uniks.networkparser.test.model.Person;
 import de.uniks.networkparser.test.model.Plant;
 import de.uniks.networkparser.test.model.SortedMsg;
@@ -29,14 +29,14 @@ import de.uniks.networkparser.test.model.Student;
 import de.uniks.networkparser.test.model.University;
 import de.uniks.networkparser.test.model.util.AppleCreatorNoIndex;
 import de.uniks.networkparser.test.model.util.AppleTreeCreatorNoIndex;
+import de.uniks.networkparser.test.model.util.BarbarianCreator;
 import de.uniks.networkparser.test.model.util.ItemCreator;
-import de.uniks.networkparser.test.model.util.JabberChatMessageCreator;
 import de.uniks.networkparser.test.model.util.PersonCreator;
 import de.uniks.networkparser.test.model.util.PersonSet;
+import de.uniks.networkparser.test.model.util.PlantCreatorNoIndex;
+import de.uniks.networkparser.test.model.util.PlantFullNoIndex;
 import de.uniks.networkparser.test.model.util.SortedMsgCreator;
 import de.uniks.networkparser.test.model.util.StudentCreator;
-import de.uniks.networkparser.test.model.util.PlantFullNoIndex;
-import de.uniks.networkparser.test.model.util.PlantCreatorNoIndex;
 import de.uniks.networkparser.test.model.util.UniversityCreator;
 
 public class ModelTest implements ObjectCondition {
@@ -217,6 +217,16 @@ public class ModelTest implements ObjectCondition {
 		appleTree.withHas(new Apple("red", 23, 42));
 		
 //		System.out.println(map.toJsonObject(appleTree));
+	}
+	
+	@Test
+	public void testBarbar() {
+		IdMap map = new IdMap().withCreator(new BarbarianCreator());
+		Barbarian barbarian = new Barbarian();
+		JsonObject jsonObjectB = map.toJsonObject(barbarian, new Filter().withNullCheck(true));
+		JsonObject jsonObject = map.toJsonObject(barbarian);
+
+		Assert.assertNotEquals(jsonObject, jsonObjectB);
 	}
 
 }

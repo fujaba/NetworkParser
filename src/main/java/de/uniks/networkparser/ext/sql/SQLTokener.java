@@ -38,6 +38,7 @@ import de.uniks.networkparser.graph.Attribute;
 import de.uniks.networkparser.graph.Cardinality;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.GraphList;
+import de.uniks.networkparser.interfaces.Grammar;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.list.SimpleIteratorSet;
 import de.uniks.networkparser.list.SimpleKeyValueList;
@@ -250,7 +251,8 @@ public class SQLTokener extends Tokener {
 		String id = this.map.getId(item, true);
 		map.with(item);
 		String className = item.getClass().getName();
-		SendableEntityCreator creator = map.getCreator(SendableEntityCreator.NEW, item, className);
+		Grammar grammar = map.getGrammar();
+		SendableEntityCreator creator = grammar.getCreator(SendableEntityCreator.NEW, item, map.getMap(), map.isSearchForSuperClass(), className);
 		if(creator == null) {
 			return item.toString();
 		}

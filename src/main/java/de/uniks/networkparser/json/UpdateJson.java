@@ -211,7 +211,7 @@ public class UpdateJson implements MapListener {
 		String id = updateMessage.getString(IdMap.ID);
 		JsonObject remove = (JsonObject) updateMessage.getValue(SendableEntityCreator.REMOVE);
 		JsonObject update = (JsonObject) updateMessage.getValue(SendableEntityCreator.UPDATE);
-		Object prio = updateMessage.getValue(Filter.PRIO);
+//		Object prio = updateMessage.getValue(Filter.PRIO);
 		Object masterObj = this.map.getObject(id);
 		if (masterObj == null)
 		{
@@ -246,12 +246,6 @@ public class UpdateJson implements MapListener {
 					// Old Value is Standard
 					return setValue(creator, masterObj, key,
 							update.get(key), SendableEntityCreator.NEW);
-				} else {
-					// ERROR
-					if (checkPrio(prio)) {
-						return setValue(creator, masterObj, key,
-								update.get(key), Filter.COLLISION);
-					}
 				}
 			}
 			return true;
@@ -268,11 +262,6 @@ public class UpdateJson implements MapListener {
 							SendableEntityCreator.REMOVE);
 				} else {
 					if (checkValue(value, key, remove)) {
-						setValue(creator, masterObj, key,
-								creator.getValue(refObject, key),
-								SendableEntityCreator.REMOVE);
-					} else if (checkPrio(prio)) {
-						// RESET TO DEFAULTVALUE
 						setValue(creator, masterObj, key,
 								creator.getValue(refObject, key),
 								SendableEntityCreator.REMOVE);
@@ -298,10 +287,6 @@ public class UpdateJson implements MapListener {
 					Object newValue = update.get(key);
 					setValue(creator, masterObj, key, newValue, SendableEntityCreator.UPDATE);
 
-					this.map.notify(new SimpleEvent(SendableEntityCreator.UPDATE, update, map, key, oldValue, newValue).withModelValue(masterObj));
-				} else if (checkPrio(prio)) {
-					Object newValue = update.get(key);
-					setValue(creator, masterObj, key, newValue, SendableEntityCreator.UPDATE);
 					this.map.notify(new SimpleEvent(SendableEntityCreator.UPDATE, update, map, key, oldValue, newValue).withModelValue(masterObj));
 				}
 			}
@@ -331,29 +316,6 @@ public class UpdateJson implements MapListener {
 			return value.equals(oldValue);
 		}
 		return oldValue == null;
-	}
-
-	/**
-	 * Check prio.
-	 *
-	 * @param prio	the prio
-	 * @return 		true, if successful
-	 */
-	private boolean checkPrio(Object prio) {
-//		Object myPrio = this.map.getCounter().getPrio();
-		Object myPrio = null;
-		if (prio != null && myPrio != null) {
-			if (prio instanceof Integer && myPrio instanceof Integer) {
-				Integer ref = (Integer) myPrio;
-				return ref.compareTo((Integer) prio) > 0;
-			} else if (prio instanceof String && myPrio instanceof String) {
-				String ref = (String) myPrio;
-				return ref.compareTo((String) prio) > 0;
-			}
-		} else if (myPrio == null) {
-			return true;
-		}
-		return false;
 	}
 
 	/**

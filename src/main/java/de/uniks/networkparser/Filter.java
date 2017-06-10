@@ -34,17 +34,26 @@ public class Filter {
 	/** The Constant COLLISION. */
 	public static final String COLLISION = "collision";
 
-	/** The Constant PRIO. */
-	public static final String PRIO = "prio";
-
 	public static final Filter SIMPLEFORMAT = new Filter().withSimpleFormat(true);
 
 	protected ObjectCondition idFilter;
 	protected ObjectCondition convertable;
 	protected ObjectCondition property;
 
+	private static final int FORMAT_REFERENCE=0;
+	private static final int FORMAT_NULL=1;
+	private static final int FORMAT_FULL=2;
+	private static final int FORMAT_TYPESAVE=3;
+	/**
+	 * Format
+	 * 0= REFERENCE
+	 * 1 = NULL-Check
+	 * 2 = FULL
+	 * 3 = TYPESAVE
+	 */
+	private int format; // FORMAT: 
+
 	// Temporary variables
-	protected boolean full;
 	private String strategy = SendableEntityCreator.NEW;
 	private boolean simpleFormat;
 
@@ -88,15 +97,50 @@ public class Filter {
 	 * @return boolean for serialization the full object
 	 */
 	public boolean isFullSerialization() {
-		return full;
+		return format>=FORMAT_FULL;
 	}
+	
+	public boolean isTypSave() {
+		return format>=FORMAT_TYPESAVE;
+	}
+	
+	public boolean isReferenceCheck() {
+		return format>=FORMAT_REFERENCE;
+	}
+	
+	public boolean isNullCheck() {
+		return format>=FORMAT_NULL;
+	}
+	
 	/**
 	 * Serialization the Full object inclusive null value
 	 * @param value for serialization the full object
 	 * @return self instance
 	 */
 	public Filter withFull(boolean value) {
-		this.full = value;
+		if(value) {
+			if(format<FORMAT_FULL) {
+				format = FORMAT_FULL;
+			}
+		} else if(format>=FORMAT_FULL) {
+			format = FORMAT_NULL;
+		}
+		return this;
+	}
+	
+	/**
+	 * Serialization the Full object inclusive null value
+	 * @param value for serialization the full object
+	 * @return self instance
+	 */
+	public Filter withNullCheck(boolean value) {
+		if(value) {
+			if(format<FORMAT_NULL) {
+				format = FORMAT_NULL;
+			}
+		} else if(format>=FORMAT_NULL) {
+			format = FORMAT_REFERENCE;
+		}
 		return this;
 	}
 
@@ -110,7 +154,7 @@ public class Filter {
 		return this;
 	}
 
-	protected int convert(Object entity, String property, Object value, IdMap map, int deep) {
+	public int convert(Object entity, String property, Object value, IdMap map, int deep) {
 		if (this.convertable == null && this.property == null) {
 			return 1;
 		}

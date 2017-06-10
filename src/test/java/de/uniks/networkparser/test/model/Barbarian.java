@@ -3,7 +3,7 @@ package de.uniks.networkparser.test.model;
 public class Barbarian {
 	public static final String PROPERTY_POSITION="position";
 	public static final String PROPERTY_GAME="game";
-	private int position;
+	private int position=42;
 	private Game game;
 
 	public int getPosition() {
