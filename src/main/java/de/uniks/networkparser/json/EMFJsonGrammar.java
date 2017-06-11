@@ -27,7 +27,6 @@ import java.util.Iterator;
 
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
-import de.uniks.networkparser.MapEntity;
 import de.uniks.networkparser.SimpleGrammar;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Entity;
@@ -119,7 +118,7 @@ public class EMFJsonGrammar extends SimpleGrammar {
 	}
 
 	@Override
-	public Entity writeBasicValue(Entity entity, BaseItem parent, String className, String id, MapEntity map) {
+	public Entity writeBasicValue(Entity entity, String className, String id, IdMap map) {
 		if(id != null) {
 			entity.put(SRC, id);
 		}

@@ -34,6 +34,7 @@ import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.UpdateCondition;
 import de.uniks.networkparser.interfaces.Entity;
+import de.uniks.networkparser.interfaces.Grammar;
 import de.uniks.networkparser.interfaces.MapListener;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.list.SimpleIteratorSet;
@@ -140,9 +141,11 @@ public class UpdateJson implements MapListener {
 			return;
 		}
 
-		JsonObject jsonObject = new JsonObject()
-				.withValue(IdMap.CLASS, source.getClass().getName())
-				.withValue(IdMap.ID, this.map.getId(source, true));
+		JsonObject jsonObject = new JsonObject();
+
+		String id = this.map.getId(source, true);
+		Grammar grammar = this.map.getGrammar();
+		grammar.writeBasicValue(jsonObject, source.getClass().getName(), id, map);
 
 		if (oldValue != null) {
 			creatorClass = this.map.getCreatorClass(oldValue);
@@ -185,10 +188,8 @@ public class UpdateJson implements MapListener {
 			}
 			jsonObject.put(SendableEntityCreator.UPDATE, child);
 		}
-//FIXME		if (this.map.getCounter().getPrio() != null) {
-//			jsonObject.put(Filter.PRIO, this.map.getCounter().getPrio());
-//		}
 		if (this.suspendIdList == null) {
+			// Add Message Value
 			this.map.notify(new SimpleEvent(SendableEntityCreator.NEW, jsonObject, evt,  map));
 		}
 	}

@@ -9,7 +9,7 @@ import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.json.JsonTokener;
 import de.uniks.networkparser.list.SimpleList;
 
-public class SimpleGrammar implements Grammar{
+public class SimpleGrammar implements Grammar {
 	private SimpleList<String> basicProperties =new SimpleList<String>().with(IdMap.ID, IdMap.CLASS, IdMap.SESSION, IdMap.TIMESTAMP);
 	
 	@Override
@@ -37,9 +37,9 @@ public class SimpleGrammar implements Grammar{
 	}
 
 	@Override
-	public Entity writeBasicValue(Entity entity, BaseItem parent, String className, String id, MapEntity map) {
+	public Entity writeBasicValue(Entity entity, String className, String id, IdMap map) {
 		if(basicProperties.contains(IdMap.SESSION)) {
-			String session = map.getMap().getSession();
+			String session = map.getSession();
 			if(session != null) {
 				entity.put(IdMap.SESSION, session);
 			}
@@ -53,7 +53,7 @@ public class SimpleGrammar implements Grammar{
 				entity.put(IdMap.ID, id);
 			}
 			if(basicProperties.contains(IdMap.TIMESTAMP)) {
-				if(map.getMap().getTimeStamp() == 0) {
+				if(map.getTimeStamp() == 0) {
 					String ts = id.substring(1);
 					if(EntityUtil.isNumeric(ts)) {
 							entity.put(IdMap.TIMESTAMP, ts);

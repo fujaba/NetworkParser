@@ -188,7 +188,7 @@ public class MapEntity extends SimpleSet<Object>{
 			}
 			id = null;
 		}
-		return grammar.writeBasicValue(entity, parent, className, id, this);
+		return grammar.writeBasicValue(entity, className, id, this.getMap());
 	}
 
 	/**
