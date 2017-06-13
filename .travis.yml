@@ -34,4 +34,4 @@ branches:
   - master
   - develop
 
-after_success: ./gradlew printVersion build uploadArchives jacocoTestReport coveralls
+after_success: ./gradlew version build uploadArchives jacocoTestReport coveralls
