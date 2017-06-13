@@ -167,7 +167,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 		if (reference == null) {
 			return null;
 		}
-		SendableEntityCreator creator = getCreator(reference.getClass().getName(), true);
+		SendableEntityCreator creator = getCreator(reference.getClass().getName(), true, null);
 		if (creator == null && reference instanceof SendableEntityCreator) {
 			return (SendableEntityCreator) reference;
 		}
@@ -198,32 +198,26 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 		else {
 			endTag = ENTITYSPLITTER + clazz;
 		}
+		String firstLetter = null;
+		if(clazz.charAt(0)>= 'A' && clazz.charAt(0)<='Z') {
+			firstLetter = ""+clazz.charAt(0);
+		}
 		for (int i = 0; i < this.creators.size(); i++) {
 			String key = this.creators.getKeyByIndex(i);
 			if (key.endsWith(endTag)) {
 				return this.creators.getValueByIndex(i);
 			}
-		}
-		if(clazz.charAt(0)>= 'A' && clazz.charAt(0)<='Z') {
-			String firstLetter = ""+clazz.charAt(0);
 			String clazzName;
-			if(creators == null) {
-				creators  = new SimpleList<SendableEntityCreator>(); 
+			int pos = key.indexOf("."); 
+			if(pos > 0) {
+				clazzName = key.substring(pos + 1);
+			} else {
+				clazzName = key;
 			}
-			for (int i = 0; i < this.creators.size(); i++) {
-				String key = this.creators.getKeyByIndex(i);
-				int pos = key.indexOf("."); 
-				if(pos > 0) {
-					clazzName = key.substring(pos + 1);
-				} else {
-					clazzName = key;
-				}
+			if(firstLetter != null && creators != null) {
 				if (clazzName.startsWith(firstLetter)) {
 					creators.add(this.creators.getValueByIndex(i));
 				}
-			}
-			if(creators.size()==1) {
-				return creators.first();
 			}
 		}
 		return null;

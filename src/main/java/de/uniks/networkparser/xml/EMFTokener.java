@@ -267,7 +267,7 @@ public class EMFTokener extends Tokener{
 			String id = itemXmlEntity.getString(XMI_ID);
 			Object item = getObject(id);
 			
-			SendableEntityCreator creator = getCreator(item.getClass().getName(), false);
+			SendableEntityCreator creator = getCreator(item.getClass().getName(), false, null);
 			for(int r = 0; r <myRefs.size();r++) {
 				String prop = myRefs.get(r);
 				String value = myRefs.getValueByIndex(r);
