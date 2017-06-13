@@ -112,7 +112,7 @@ def getGitTag() {
 			def id = it.trim()
 			def start = id.indexOf(".")
 			if(start>0) {
-				id = id.substring(0, start)
+				id = id.substring(start + 1)
 				start = id.indexOf(".")
 				if(start>0) {
 					id = id.substring(0, start)

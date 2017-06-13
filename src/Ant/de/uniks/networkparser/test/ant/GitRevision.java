@@ -117,22 +117,40 @@ public class GitRevision {
 		int gittag=-1;
 		String tagHash = "";
 		Map<String, Ref> tags = repository.getTags();
+		int versionNumber = 0;
 		for(Iterator<Entry<String, Ref>> i = tags.entrySet().iterator();i.hasNext();) {
 			Entry<String, Ref> entry = i.next();
 			try {
 				String id = entry.getKey().trim();
 				int start = id.indexOf(".");
+				int vNumber = 0;
 				if(start>0) {
-					id = id.substring(0, start);
+					id = id.substring(start+1);
 					start = id.indexOf(".");
 					if(start>0) {
+						try {
+							vNumber = Integer.valueOf(id.substring(start+1));
+						}catch (Exception e) {
+						}
 						id = id.substring(0, start);
 					}
 				}
 				Integer value = Integer.valueOf(id);
-				if(value>0 && value > gittag) {
-					gittag = value;
-					tagHash = entry.getValue().getName();
+				if(value>0 ) {
+					if(value > gittag) {
+						tagHash = entry.getValue().getName();
+						versionNumber = vNumber;
+						gittag = value;
+					} else if(value == gittag) {
+						if(versionNumber == 0) {
+							tagHash = entry.getValue().getName();
+							versionNumber = vNumber;
+						} else if(vNumber > versionNumber){ 
+							versionNumber = vNumber;
+							tagHash = entry.getValue().getName();
+						}
+						gittag = value;
+					}
 				}
 			}catch(Exception e) {
 				// no problem as long as there's another tag with a number
