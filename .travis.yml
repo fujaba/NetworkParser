@@ -16,7 +16,7 @@ addons:
     branch_pattern: master
   srcclr: true
   sonarqube:
-    organization: "StefanLindel"
+    organization: "Open Source"
     
 before_script:
   - sudo service postgresql stop || true
