@@ -6,6 +6,7 @@ import static org.junit.Assert.fail;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
 import java.util.List;
 
 import org.junit.Assert;
@@ -14,6 +15,7 @@ import org.junit.Test;
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.buffer.ByteBuffer;
+import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.buffer.DERBuffer;
 import de.uniks.networkparser.bytes.AES;
 import de.uniks.networkparser.bytes.ByteEntity;
@@ -403,13 +405,33 @@ public class ByteTest{
 	@Test
 	public void testBASE64Converter() {
 		String item = "HalloWorld";
+		PrintStream stream = null;
 		ByteConverter64 converter=new ByteConverter64();
-//		String string = converter.toString(item);
-//		CharacterBuffer buffer = new CharacterBuffer().with(item);
 		byte[] reference = BASE64EncoderStream.encode(item.getBytes());
-		String string2 = converter.toString(reference);
-		String string3 = converter.toString(converter.toStaticString(item));
-		Assert.assertEquals(string2, string3);
+//		String string2 = converter.toString(reference);
+		String referenceString = new String(reference);
+		String string3 = converter.toStaticString(new CharacterBuffer().with(item)).toString();
+		Assert.assertEquals(referenceString, string3);
+		
+		CharacterBuffer string4 = ByteConverter64.toBase64String(item);
+		Assert.assertEquals(referenceString, string4.toString());
+		
+		byte[] encodedBytes = Base64.getEncoder().encode(item.getBytes());
+		String outPut = "encodedBytes " + new String(encodedBytes);
+		this.outputStream(outPut.getBytes(), stream);
+		
+		Assert.assertEquals(new String(encodedBytes), string4.toString());
+		
+		byte[] decodedBytes = Base64.getDecoder().decode(encodedBytes);
+		outPut = "decodedBytes " + new String(decodedBytes);
+		this.outputStream(outPut.getBytes(), stream);
+		
+		CharacterBuffer string5 = ByteConverter64.fromBase64String(string4);
+
+		Assert.assertEquals(new String(decodedBytes), string5.toString());
+
+		
+		
 	}
 
 }

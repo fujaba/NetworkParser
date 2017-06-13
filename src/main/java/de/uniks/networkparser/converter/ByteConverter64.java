@@ -50,6 +50,38 @@ public class ByteConverter64 extends ByteConverter {
 		buffer.withObjects(values);
 		return encode(buffer, 0,buffer.length());
 	}
+	
+	/**
+	 * Convert a simpleString to Base64
+	 * @param values Input String
+	 * @return a Base64 String
+	 */
+	public static CharacterBuffer toBase64String(CharSequence values) {
+		ByteConverter64 converter = new ByteConverter64();
+		return converter.toStaticString(values);
+	}
+	
+	/**
+	 * Convert a simpleString from Base64
+	 * @param values Input String(CharSequence) or byte[]
+	 * @return a decoded String
+	 */
+	public static CharacterBuffer fromBase64String(Object values) {
+		ByteConverter64 converter = new ByteConverter64();
+		byte[] ref;
+		if(values instanceof String) {
+			ref =converter.decode((String)values);
+		}else {
+			CharacterBuffer buffer = new CharacterBuffer();
+			if(values instanceof byte[]) {
+				buffer.with((byte[])values);
+			} else if(values instanceof CharSequence) {
+				buffer.with((CharSequence)values);
+			}
+			ref =converter.decode(buffer.toString());
+		}
+		return new CharacterBuffer().with(ref);
+	}
 
 	/**
 	 * Internal use only version of encode. Allow specifying which part of the
