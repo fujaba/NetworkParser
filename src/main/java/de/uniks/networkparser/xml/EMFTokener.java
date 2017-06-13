@@ -243,7 +243,7 @@ public class EMFTokener extends Tokener{
 		SendableEntityCreator rootFactory;
 		if(root == null) {
 			String className = splitTag[1];
-			rootFactory = getCreator(className, false);
+			rootFactory = getCreator(className, false, null);
 			if (rootFactory != null) {
 				rootObject = rootFactory.getSendableInstance(false);
 			} else {
@@ -526,9 +526,9 @@ public class EMFTokener extends Tokener{
 			}
 
 			if (typeName != null) {
-				SendableEntityCreator kidFactory = getCreator(typeName, false);
+				SendableEntityCreator kidFactory = getCreator(typeName, false, null);
 				if (kidFactory == null && typeName.endsWith("s")) {
-					kidFactory = getCreator(typeName.substring(0, typeName.length() - 1), false);
+					kidFactory = getCreator(typeName.substring(0, typeName.length() - 1), false, null);
 				}
 				if(kidFactory == null) {
 					continue;

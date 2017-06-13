@@ -425,7 +425,7 @@ public class XMLTokener extends Tokener {
 		IdMap idMap = getMap();
 		SendableEntityCreator item = null;
 		if(idMap != null) {
-			item = idMap.getCreator(tag.toString(), false);
+			item = idMap.getCreator(tag.toString(), false, null);
 		}
 		if (item != null && item instanceof SendableEntityCreatorTag) {
 			addToStack((SendableEntityCreatorTag) item, tokener, tag, valueItem, map);
@@ -476,7 +476,7 @@ public class XMLTokener extends Tokener {
 					}
 				}
 				tag = tokener.nextToken(false, TOKEN);
-				item = idMap.getCreator(tag.toString(), false);
+				item = idMap.getCreator(tag.toString(), false, null);
 				if(item instanceof SendableEntityCreatorTag) {
 					creator = (SendableEntityCreatorTag) item;
 				}else{

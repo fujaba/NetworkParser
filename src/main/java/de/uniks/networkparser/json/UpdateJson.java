@@ -220,7 +220,7 @@ public class UpdateJson implements MapListener {
 		   if (masterObjClassName != null)
 		   {
 			  // cool, lets make it
-			  SendableEntityCreator creator = this.map.getCreator(masterObjClassName, true);
+			  SendableEntityCreator creator = this.map.getCreator(masterObjClassName, true, null);
 			  masterObj = creator.getSendableInstance(false);
 			  if (masterObj != null)
 			  {

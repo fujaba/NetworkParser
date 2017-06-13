@@ -167,7 +167,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 		if (reference == null) {
 			return null;
 		}
-		SendableEntityCreator creator = getCreator(reference.getClass().getName(), true);
+		SendableEntityCreator creator = getCreator(reference.getClass().getName(), true, null);
 		if (creator == null && reference instanceof SendableEntityCreator) {
 			return (SendableEntityCreator) reference;
 		}
@@ -180,12 +180,16 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 	 *
 	 * @param clazz Clazzname for search
 	 * @param fullName if the clazzName is the Fullname for search
+	 * @param creators candidates creator list for result 
 	 * @return return a Creator class for a clazz name
 	 */
-	public SendableEntityCreator getCreator(String clazz, boolean fullName) {
+	public SendableEntityCreator getCreator(String clazz, boolean fullName, SimpleList<SendableEntityCreator> creators) {
 		Object creator = this.creators.getValue(clazz);
 		if (creator != null || fullName) {
 			return (SendableEntityCreator) creator;
+		}
+		if(clazz == null || clazz.length()<1 ) {
+			return null;
 		}
 		String endTag;
 		if (clazz.lastIndexOf(ENTITYSPLITTER) >= 0) {
@@ -196,16 +200,35 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 		}
 		for (int i = 0; i < this.creators.size(); i++) {
 			String key = this.creators.getKeyByIndex(i);
-			SendableEntityCreator value = this.creators.getValueByIndex(i);
 			if (key.endsWith(endTag)) {
-				return value;
+				return this.creators.getValueByIndex(i);
 			}
 		}
-		// Search for Child Node
+		if(clazz.charAt(0)>= 'A' && clazz.charAt(0)<='Z') {
+			String firstLetter = ""+clazz.charAt(0);
+			String clazzName;
+			if(creators == null) {
+				creators  = new SimpleList<SendableEntityCreator>(); 
+			}
+			for (int i = 0; i < this.creators.size(); i++) {
+				String key = this.creators.getKeyByIndex(i);
+				int pos = key.indexOf("."); 
+				if(pos > 0) {
+					clazzName = key.substring(pos + 1);
+				} else {
+					clazzName = key;
+				}
+				if (clazzName.startsWith(firstLetter)) {
+					creators.add(this.creators.getValueByIndex(i));
+				}
+			}
+			if(creators.size()==1) {
+				return creators.first();
+			}
+		}
 		return null;
 	}
-
-
+	
 	/**
 	 * Adds the creator.
 	 *

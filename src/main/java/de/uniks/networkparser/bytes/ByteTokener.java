@@ -402,7 +402,7 @@ public class ByteTokener extends Tokener {
 			int len = buffer.getByte() - ByteTokener.SPLITTER;
 			SendableEntityCreator eventCreater;
 			try {
-				eventCreater = getCreator(new String(buffer.array(len, false), getCharset()), true);
+				eventCreater = getCreator(new String(buffer.array(len, false), getCharset()), true, null);
 				return decodeClazz(buffer, eventCreater, map);
 			} catch (Exception e) {
 			}
@@ -412,7 +412,7 @@ public class ByteTokener extends Tokener {
 			int len = buffer.getInt();
 			SendableEntityCreator eventCreater;
 			try {
-				eventCreater = getCreator(new String(buffer.array(len, false), getCharset()), true);
+				eventCreater = getCreator(new String(buffer.array(len, false), getCharset()), true, null);
 				return decodeClazz(buffer, eventCreater, map);
 			} catch (Exception e) {
 			}
@@ -420,12 +420,12 @@ public class ByteTokener extends Tokener {
 		}
 		if (type == ByteTokener.DATATYPE_CLAZZTYPE) {
 			int pos = buffer.getByte() - ByteTokener.SPLITTER;
-			SendableEntityCreator eventCreater = getCreator(map.getClazz(pos), true);
+			SendableEntityCreator eventCreater = getCreator(map.getClazz(pos), true, null);
 			return decodeClazz(buffer, eventCreater, map);
 		}
 		if (type == ByteTokener.DATATYPE_CLAZZTYPELONG) {
 			int pos = buffer.getInt();
-			SendableEntityCreator eventCreater = getCreator(map.getClazz(pos), true);
+			SendableEntityCreator eventCreater = getCreator(map.getClazz(pos), true, null);
 			return decodeClazz(buffer, eventCreater, map);
 		}
 		if (type == ByteTokener.DATATYPE_CLAZZID) {
@@ -436,7 +436,7 @@ public class ByteTokener extends Tokener {
 			} catch (UnsupportedEncodingException e) {
 				id = "";
 			}
-			SendableEntityCreator eventCreater = getCreator(id, true);
+			SendableEntityCreator eventCreater = getCreator(id, true, null);
 			if(eventCreater == null) {
 				SimpleKeyValueList<String, SendableEntityCreator> creators = getMap().getCreators();
 				for(int i=0;i<creators.size();i++) {

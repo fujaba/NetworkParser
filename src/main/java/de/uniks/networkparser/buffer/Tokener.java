@@ -60,11 +60,11 @@ public class Tokener implements BufferItem {
 //		return simpleFormat;
 //	}
 
-	public SendableEntityCreator getCreator(String className, boolean fullName) {
+	public SendableEntityCreator getCreator(String className, boolean fullName, SimpleList<SendableEntityCreator> creators) {
 		if(map == null) {
 			return null;
 		}
-		return map.getCreator(className, fullName);
+		return map.getCreator(className, fullName, null);
 	}
 
 	public String getKey(Object reference) {

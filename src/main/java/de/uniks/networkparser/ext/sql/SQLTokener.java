@@ -192,7 +192,7 @@ public class SQLTokener extends Tokener {
 						if(collection.size()>0) {
 							Object child = collection.iterator().next();
 							String simpleName = child.getClass().getName();
-							SendableEntityCreator currentCreator = this.map.getCreator(simpleName, true);
+							SendableEntityCreator currentCreator = this.map.getCreator(simpleName, true, null);
 							if(currentCreator != null) {
 								type = "INTEGER[]";
 							}
@@ -205,7 +205,7 @@ public class SQLTokener extends Tokener {
 							type = "String";
 						} else {
 							String simpleName = value.getClass().getSimpleName();
-							SendableEntityCreator currentCreator = this.map.getCreator(simpleName, true);
+							SendableEntityCreator currentCreator = this.map.getCreator(simpleName, true, null);
 							if (currentCreator != null) {
 								type = "INTEGER";
 							} else {
@@ -250,7 +250,7 @@ public class SQLTokener extends Tokener {
 				}
 				insertStatement.with(property, values);
 			} else {
-				SendableEntityCreator childCreator = this.map.getCreator(value.getClass().getName(), true);
+				SendableEntityCreator childCreator = this.map.getCreator(value.getClass().getName(), true, null);
 				if(childCreator != null) {
 					insertStatement.with(property, parseModel(map, value, statements));
 				}else {

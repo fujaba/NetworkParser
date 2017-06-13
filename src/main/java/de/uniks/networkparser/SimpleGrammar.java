@@ -56,7 +56,7 @@ public class SimpleGrammar implements Grammar{
 	@Override
 	public SendableEntityCreator getCreator(String type, Object item, IdMap map, boolean searchForSuperCreator, String className) {
 		if(Grammar.WRITE.equals(type)) {
-			SendableEntityCreator creator = map.getCreator(className, true);
+			SendableEntityCreator creator = map.getCreator(className, true, null);
 
 			if(creator != null) {
 				return creator;
@@ -73,7 +73,7 @@ public class SimpleGrammar implements Grammar{
 			}
 			className = (String) name;
 		}
-		SendableEntityCreator creator = map.getCreator((String) className, true);
+		SendableEntityCreator creator = map.getCreator((String) className, true, null);
 		if(creator != null) {
 			return creator;
 		}
