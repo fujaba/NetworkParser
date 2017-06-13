@@ -208,7 +208,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 				return this.creators.getValueByIndex(i);
 			}
 			String clazzName;
-			int pos = key.indexOf("."); 
+			int pos = key.lastIndexOf("."); 
 			if(pos > 0) {
 				clazzName = key.substring(pos + 1);
 			} else {
