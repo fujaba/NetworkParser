@@ -4,27 +4,27 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
 import de.uniks.networkparser.interfaces.SendableEntity;
-import de.uniks.networkparser.interfaces.SendableEntityCreator;
+import de.uniks.networkparser.interfaces.SendableEntityCreatorIndexId;
 import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.json.JsonTokener;
 import de.uniks.networkparser.list.SimpleEntity;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 
-public class SimpleObject implements SendableEntityCreator, SendableEntity {
+public class SimpleObject implements SendableEntityCreatorIndexId, SendableEntity {
 	
 	protected String className;
 
 	protected String id;
 
+	//SimpleObject Creator Properties
 	private String[] properties;
-
+	private SimpleList<String> baseElements = new SimpleList<String>();
 	private boolean dirty = false;
 
 	protected PropertyChangeSupport propertyChangeSupport;
 
 	private SimpleKeyValueList<String, Object> values = new SimpleKeyValueList<String, Object>();
-	private SimpleList<String> baseElements = new SimpleList<String>();
 	
 	public String getClassName() {
 		return className;

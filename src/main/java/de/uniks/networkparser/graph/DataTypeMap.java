@@ -74,6 +74,15 @@ public class DataTypeMap extends DataType {
 		}
 		return this.value.getName(shortName) + "<" + genericKey.getInternName(shortName, false) + "," + genericValue.getInternName(shortName, false) + ">";
 	}
+	
+	@Override
+	protected String getInternName(boolean shortName, boolean primitivAllow) {
+		if (this.value == null) {
+			return null;
+		}
+		return this.value.getName(shortName) + "<" + genericKey.getInternName(shortName, primitivAllow) + "," + genericValue.getInternName(shortName, primitivAllow) + ">";
+	}
+	
 	@Override
 	public boolean equals(Object obj) {
 		if(super.equals(obj) == false) {

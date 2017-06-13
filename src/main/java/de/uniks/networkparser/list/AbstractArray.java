@@ -309,25 +309,25 @@ public abstract class AbstractArray<V> implements BaseItem {
 		this.index = 0;
 		if (arrayFlag == 1) {
 			for (int i = elements.length - 1; i > 0; i--) {
-				fireProperty(SendableEntityCreator.REMOVE, elements[i], null, elements[i - 1], null);
+				fireProperty(SendableEntityCreator.REMOVE, elements[i], null, elements[i - 1], i, null);
 			}
-			fireProperty(SendableEntityCreator.REMOVE, elements[0], null, null, null);
+			fireProperty(SendableEntityCreator.REMOVE, elements[0], null, null, 0, null);
 			this.elements = null;
 			return;
 		}
 		Object[] items = (Object[]) elements[SMALL_KEY];
 		if (arrayFlag > 3) {
 			for (int i = items.length - 1; i > 0; i--) {
-				fireProperty(SendableEntityCreator.REMOVE, items[i], null, items[i - 1], ((Object[]) elements[SMALL_VALUE])[i]);
+				fireProperty(SendableEntityCreator.REMOVE, items[i], null, items[i - 1], i, ((Object[]) elements[SMALL_VALUE])[i]);
 			}
-			fireProperty(SendableEntityCreator.REMOVE, items[0], null, null, ((Object[]) elements[SMALL_VALUE])[0]);
+			fireProperty(SendableEntityCreator.REMOVE, items[0], null, null, 0, ((Object[]) elements[SMALL_VALUE])[0]);
 			this.elements = null;
 			return;
 		}
 		for (int i = items.length - 1; i > 0; i--) {
-			fireProperty(SendableEntityCreator.REMOVE, items[i], null, items[i - 1], null);
+			fireProperty(SendableEntityCreator.REMOVE, items[i], null, items[i - 1], i, null);
 		}
-		fireProperty(SendableEntityCreator.REMOVE, items[0], null, null, null);
+		fireProperty(SendableEntityCreator.REMOVE, items[0], null, null, 0, null);
 		this.elements = null;
 	}
 
@@ -657,7 +657,7 @@ public abstract class AbstractArray<V> implements BaseItem {
 				addHashItem(pos, value, (Object[]) elements[BIG_VALUE]);
 			}
 		}
-		fireProperty(SendableEntityCreator.NEW, null, key, beforeKey, value);
+		fireProperty(SendableEntityCreator.NEW, null, key, beforeKey, pos, value);
 		return pos;
 	}
 
@@ -731,7 +731,7 @@ public abstract class AbstractArray<V> implements BaseItem {
 		if (pos > 0) {
 			beforeElement = this.getByIndex(SMALL_KEY, pos - 1, size);
 		}
-		fireProperty(SendableEntityCreator.NEW, null, element, beforeElement, null);
+		fireProperty(SendableEntityCreator.NEW, null, element, beforeElement, pos, null);
 		return pos;
 	}
 
@@ -820,7 +820,7 @@ public abstract class AbstractArray<V> implements BaseItem {
 		if (pos > 0) {
 			beforeElement = items[pos - 1];
 		}
-		fireProperty(SendableEntityCreator.UPDATE, oldValue, value, beforeElement, null);
+		fireProperty(SendableEntityCreator.UPDATE, oldValue, value, beforeElement, pos, null);
 		return oldValue;
 	}
 
@@ -1479,8 +1479,7 @@ public abstract class AbstractArray<V> implements BaseItem {
 		this.index = 0;
 	}
 
-	protected boolean fireProperty(String type, Object oldElement, Object newElement, Object beforeElement,
-			Object value) {
+	protected boolean fireProperty(String type, Object oldElement, Object newElement, Object beforeElement, int index, Object value) {
 		return true;
 	}
 

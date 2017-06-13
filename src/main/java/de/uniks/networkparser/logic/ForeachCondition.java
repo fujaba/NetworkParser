@@ -6,6 +6,7 @@ import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.interfaces.LocalisationInterface;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.ParserCondition;
+import de.uniks.networkparser.interfaces.TemplateParser;
 
 /**
  * @author Stefan
@@ -15,7 +16,6 @@ import de.uniks.networkparser.interfaces.ParserCondition;
  */
 public class ForeachCondition implements ParserCondition {
 	private static final String ITEM="item";
-	private static final char SPLITEND='}';
 	public static final String TAG="foreach";
 	private ObjectCondition expression;
 	private ObjectCondition loop;
@@ -57,7 +57,7 @@ public class ForeachCondition implements ParserCondition {
 				if(object instanceof Collection<?>) {
 					Collection<?> collection = (Collection<?>) object;
 					for(Object item : collection) {
-						variablen.put(ITEM, ""+item);
+						variablen.put(ITEM, item);
 //						value
 						loop.update(value);
 						variablen.put(ITEM, null);
@@ -69,10 +69,20 @@ public class ForeachCondition implements ParserCondition {
 	}
 
 	@Override
-	public ForeachCondition create(CharacterBuffer buffer) {
-		StringCondition condition = new StringCondition();
-		this.expression = condition.create(buffer.nextToken(false, SPLITEND));
-		return this;
+	public void create(CharacterBuffer buffer, TemplateParser parser, LocalisationInterface customTemplate) {
+//		this.expression = StringCondition.create(buffer.nextToken(false, SPLITEND));
+		buffer.skipChar(SPACE);
+		ObjectCondition expression = parser.parsing(buffer, customTemplate, true);
+		this.expression = expression;
+		
+		buffer.skipChar(SPLITEND);
+		buffer.skipChar(SPLITEND);
+		
+		// Add Children
+		expression = parser.parsing(buffer, customTemplate, false, "endfor");
+		withLoopCondition(expression);
+		buffer.skipChar(SPLITEND);
+		buffer.skipChar(SPLITEND);
 	}
 
 	@Override
@@ -87,5 +97,10 @@ public class ForeachCondition implements ParserCondition {
 
 	public ObjectCondition getLoopCondition() {
 		return loop;
+	}
+	
+	@Override
+	public ForeachCondition getSendableInstance(boolean prototyp) {
+		return new ForeachCondition();
 	}
 }

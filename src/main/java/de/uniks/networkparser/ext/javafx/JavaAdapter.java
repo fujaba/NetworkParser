@@ -97,7 +97,7 @@ public class JavaAdapter implements JavaViewAdapter {
 		Object encode = map.decode(json);
 		if (encode == null) {
 			SimpleObject newItem = SimpleObject.create(json);
-			map.put(newItem.getId(), newItem);
+			map.put(newItem.getId(), newItem, false);
 		}
 		owner.setApplyingChangeMSG(false);
 		return true;

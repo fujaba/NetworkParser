@@ -29,6 +29,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
+import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.MapEntity;
 import de.uniks.networkparser.buffer.Tokener;
@@ -128,9 +129,10 @@ public class GraphTokener extends Tokener {
 		if (item == null) {
 			return;
 		}
-		map.add();
-		if(map.isPropertyRegard(entity, getMap(), property, item) == false || map.isConvertable(entity, getMap(), property, item) == false) {
-			map.minus();
+		map.pushStack(entity.getClass().getName(), entity, null);
+		Filter filter = map.getFilter();
+		if(filter.convert(entity, property, item, map.getMap(), map.getDeep()) < 1) {
+			map.popStack();
 			return;
 		}
 		SendableEntityCreator valueCreater = getCreatorClass(item);
@@ -150,7 +152,7 @@ public class GraphTokener extends Tokener {
 			Attribute attribute = element.createAttribute(property, DataType.create(item.getClass()));
 			attribute.withValue("" + item);
 		}
-		map.minus();
+		map.popStack();
 		return;
 	}
 

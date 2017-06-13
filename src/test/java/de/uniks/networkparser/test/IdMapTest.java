@@ -10,11 +10,15 @@ import de.uniks.networkparser.ext.generic.GenericCreator;
 import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorWrapper;
+import de.uniks.networkparser.json.JsonArray;
+import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.list.SimpleList;
+import de.uniks.networkparser.test.model.Student;
 import de.uniks.networkparser.test.model.University;
 import de.uniks.networkparser.test.model.ludo.Ludo;
 import de.uniks.networkparser.test.model.ludo.creator.LudoCreator;
 import de.uniks.networkparser.test.model.ludo.creator.PlayerCreator;
+import de.uniks.networkparser.test.model.util.StudentCreator;
 
 public class IdMapTest {
 	@Test
@@ -68,6 +72,25 @@ public class IdMapTest {
 		};
 		Date date = new Date();
 		wrapper.setValue(date, "VALUE", 200, SendableEntityCreator.NEW); 
-
 	}
+	
+	@Test
+	public void testReuseIdMap() {
+		Student alice = new Student().withName("alice");
+		
+		IdMap idMap = new IdMap().withCreator(new StudentCreator());
+		JsonArray jsonArray = idMap.toJsonArray(alice);
+		JsonObject jsonObject = (JsonObject) jsonArray.get(0);
+		String id = (String) jsonObject.get(IdMap.ID);
+		
+		IdMap newIdMap = new IdMap().with(idMap);
+		
+		jsonArray = newIdMap.toJsonArray(alice);
+		jsonObject = (JsonObject) jsonArray.get(0);
+		
+		String newId = (String) jsonObject.get(IdMap.ID);
+
+		Assert.assertEquals(id, newId);
+	}
+	
 }

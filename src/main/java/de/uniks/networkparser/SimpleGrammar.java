@@ -7,8 +7,11 @@ import de.uniks.networkparser.interfaces.Grammar;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.json.JsonTokener;
+import de.uniks.networkparser.list.SimpleList;
 
-public class SimpleGrammar implements Grammar{
+public class SimpleGrammar implements Grammar {
+	private SimpleList<String> basicProperties =new SimpleList<String>().with(IdMap.ID, IdMap.CLASS, IdMap.SESSION, IdMap.TIMESTAMP);
+	
 	@Override
 	public BaseItem getProperties(Entity item, IdMap map, Filter filter, boolean isId, String type) {
 		if (isId) {
@@ -34,19 +37,27 @@ public class SimpleGrammar implements Grammar{
 	}
 
 	@Override
-	public Entity writeBasicValue(Entity entity, BaseItem parent, String className, String id, MapEntity map) {
-		String session = map.getMap().getSession();
-		if(session != null) {
-			entity.put(IdMap.SESSION, session);
+	public Entity writeBasicValue(Entity entity, String className, String id, IdMap map) {
+		if(basicProperties.contains(IdMap.SESSION)) {
+			String session = map.getSession();
+			if(session != null) {
+				entity.put(IdMap.SESSION, session);
+			}
 		}
-		entity.setType(className);
+		if(basicProperties.contains(IdMap.CLASS)) {
+			entity.setType(className);
+		}
 
 		if(id != null) {
-			entity.put(IdMap.ID, id);
-			if(map.getMap().getTimeStamp() == 0) {
-				String ts = id.substring(1);
-				if(EntityUtil.isNumeric(ts)) {
-					entity.put(IdMap.TIMESTAMP, ts);
+			if(basicProperties.contains(IdMap.ID)) {
+				entity.put(IdMap.ID, id);
+			}
+			if(basicProperties.contains(IdMap.TIMESTAMP)) {
+				if(map.getTimeStamp() == 0) {
+					String ts = id.substring(1);
+					if(EntityUtil.isNumeric(ts)) {
+							entity.put(IdMap.TIMESTAMP, ts);
+					}
 				}
 			}
 		}
@@ -107,6 +118,26 @@ public class SimpleGrammar implements Grammar{
 	@Override
 	public BaseItem encode(Object entity, MapEntity map, Tokener tokener) {
 		return tokener.encode(entity, map);
+	}
+	
+	public SimpleGrammar withBasicFeature(String... values) {
+		if(values == null) {
+			return this;
+		}
+		for(String item : values) {
+			this.basicProperties.add(item);
+		}
+		return this;
+	}
+
+	public SimpleGrammar withoutBasicFeature(String... values) {
+		if(values == null) {
+			return this;
+		}
+		for(String item : values) {
+			this.basicProperties.without(item);
+		}
+		return this;
 	}
 
 	@Override

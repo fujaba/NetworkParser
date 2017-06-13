@@ -383,7 +383,7 @@ public class JsonTest extends IOClasses {
 		map.withTimeStamp(1);
 		JsonArray jsonArray = map.toJsonArray(kassel, new Filter().withConvertable(Deep.create(1)));
 		String jsonString = jsonArray.toString(2);
-		assertEquals(2529, jsonString.length());
+		assertEquals(2664, jsonString.length());
 
 		jsonArray = map.toJsonArray(kassel, new Filter().withConvertable(new Deep().withDepth(0)));
 
@@ -394,7 +394,7 @@ public class JsonTest extends IOClasses {
 
 		jsonString = jsonArray.toString(2);
 
-		assertEquals(2529, jsonString.length());
+		assertEquals(2664, jsonString.length());
 
 		IdMap readMap = UniversityCreator.createIdMap("s2");
 

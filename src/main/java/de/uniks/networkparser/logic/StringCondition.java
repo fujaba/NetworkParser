@@ -4,6 +4,7 @@ import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.interfaces.LocalisationInterface;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.ParserCondition;
+import de.uniks.networkparser.interfaces.TemplateParser;
 
 public class StringCondition implements ParserCondition {
 	private CharSequence value;
@@ -28,9 +29,8 @@ public class StringCondition implements ParserCondition {
 	}
 
 	@Override
-	public ParserCondition create(CharacterBuffer buffer) {
+	public void create(CharacterBuffer buffer, TemplateParser parser, LocalisationInterface customTemplate) {
 		this.value = buffer;
-		return this;
 	}
 
     @Override
@@ -52,5 +52,10 @@ public class StringCondition implements ParserCondition {
 			return "";
 		}
 		return value.toString();
+	}
+	
+	@Override
+	public StringCondition getSendableInstance(boolean prototyp) {
+		return new StringCondition();
 	}
 }

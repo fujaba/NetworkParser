@@ -78,5 +78,18 @@ public class EMFTest extends IOClasses{
 
 		Assert.assertEquals(sb.toString(), root.toString());
 	}
+	
+	@Test
+	public void testImportXMI() {
+		String xmi="<?xml version=\"1.0\" encoding=\"ASCII\"?>"
+						+"<transitiongraph:TransitionGraph xmi:version=\"2.0\" xmlns:xmi=\"http://www.omg.org/XMI\" xmlns:transitiongraph=\"http://transitiongraph/1.0\">"
+						+"<states outgoing=\"//@transitions.0 //@transitions.1 //@transitions.2 //@transitions.3 //@transitions.4 //@transitions.5 //@transitions.6 //@transitions.7\" incoming=\"//@transitions.24 //@transitions.29\" isInitial=\"true\"/>"
+						+"<states id=\"1\" outgoing=\"//@transitions.8\" incoming=\"//@transitions.0\"/>"
+						+"<states id=\"2\" outgoing=\"//@transitions.9\" incoming=\"//@transitions.1\"/>";
+		IdMap map=new IdMap();
+//		map.with(new GenericCreator())
+		Assert.assertNotNull(xmi);
+		Assert.assertNotNull(map);
+	}
 
 }

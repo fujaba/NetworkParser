@@ -518,9 +518,8 @@ public class GraphTest {
 		IdMap jsonMap = new IdMap();
 		jsonMap.add(new ChatMessageCreator());
 		IdMap yumlParser = new IdMap();
+		yumlParser.add(jsonMap);
 		yumlParser.withTimeStamp(1);
-		yumlParser.withKeyValue(jsonMap.getKeyValue())
-			.add(jsonMap);
 
 		String parseObject = yumlParser.toObjectDiagram(chatMessage).toString();
 		assertEquals(

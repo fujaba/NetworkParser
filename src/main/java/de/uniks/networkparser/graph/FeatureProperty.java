@@ -62,8 +62,19 @@ public class FeatureProperty implements Comparable<FeatureProperty> {
 		return this;
 	}
 
-	public boolean match(Clazz clazz) {
-		return match(clazz.getName(false));
+	public boolean match(Clazz... clazzes) {
+		if(clazzes == null) {
+			return true;
+		}
+		for(Clazz clazz : clazzes) {
+			if(clazz == null) {
+				return true;
+			}
+			if(match(clazz.getName(false)) == false) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	public boolean match(String clazzName) {

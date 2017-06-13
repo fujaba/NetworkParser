@@ -1,6 +1,9 @@
 package de.uniks.networkparser.logic;
 
+import de.uniks.networkparser.buffer.CharacterBuffer;
+import de.uniks.networkparser.interfaces.LocalisationInterface;
 import de.uniks.networkparser.interfaces.ObjectCondition;
+import de.uniks.networkparser.interfaces.ParserCondition;
 /*
 NetworkParser
 The MIT License
@@ -25,11 +28,14 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
+import de.uniks.networkparser.interfaces.TemplateParser;
 /**
  * @author Stefan Lindel IfCondition Clazz
  */
 
-public class IfCondition implements ObjectCondition, SendableEntityCreator {
+public class IfCondition implements ParserCondition, SendableEntityCreator {
+	public static final String TAG = "if";
+	public static final String IFNOT = "ifnot";
 	/** Constant for Expression. */
 	public static final String EXPRESSION = "expression";
 	/** Constant for TrueCase. */
@@ -37,6 +43,8 @@ public class IfCondition implements ObjectCondition, SendableEntityCreator {
 	/** Constant for False Case. */
 	public static final String FALSECONDITION = "falsecondition";
 
+	private String tag=TAG;
+	
 	/** Variable for Expression. */
 	private ObjectCondition expression;
 	/** Variable for True Case. */
@@ -107,8 +115,8 @@ public class IfCondition implements ObjectCondition, SendableEntityCreator {
 	}
 
 	@Override
-	public Object getSendableInstance(boolean prototyp) {
-		return new IfCondition();
+	public ParserCondition getSendableInstance(boolean prototyp) {
+		return new IfCondition().withKey(this.tag);
 	}
 
 	@Override
@@ -140,6 +148,61 @@ public class IfCondition implements ObjectCondition, SendableEntityCreator {
 			((IfCondition) entity).withFalse((ObjectCondition) value);
 			return true;
 		}
+		return false;
+	}
+
+	@Override
+	public Object getValue(LocalisationInterface variables) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getKey() {
+		return tag;
+	}
+	
+	public IfCondition withKey(String key) {
+		this.tag = key;
+		return this;
+	}
+
+	@Override
+	public void create(CharacterBuffer buffer, TemplateParser parser, LocalisationInterface customTemplate) {
+		// Switch for If IfNot
+		// {{#if {{Variable}}}}
+		// {{#if Variable}}
+		// {{#if {{#feature}}}}
+//		if(tokenPart.equalsIgnoreCase("ifnot") || tokenPart.equalsIgnoreCase("if")) {
+		buffer.skip();
+		ObjectCondition expression = parser.parsing(buffer, customTemplate, true);
+		
+		if(this.tag.equalsIgnoreCase("ifnot")) {
+			this.withExpression(Not.create(expression));	
+		} else {
+			this.withExpression(expression);
+		}
+		
+		buffer.skipChar(SPLITEND);
+		buffer.skipChar(SPLITEND);
+		
+		// Add Children
+		this.withTrue(parser.parsing(buffer, customTemplate, false, "else", "endif"));
+		
+		// ELSE OR ENDIF
+		CharacterBuffer tokenPart = buffer.nextToken(false, SPLITEND);
+		if("else".equalsIgnoreCase(tokenPart.toString())) {
+			buffer.skipChar(SPLITEND);
+			buffer.skipChar(SPLITEND);
+			this.withFalse(parser.parsing(buffer, customTemplate, false, "endif"));
+			buffer.skipTo(SPLITEND, false);
+		}
+		buffer.skipChar(SPLITEND);
+		buffer.skipChar(SPLITEND);
+	}
+
+	@Override
+	public boolean isExpression() {
 		return false;
 	}
 }

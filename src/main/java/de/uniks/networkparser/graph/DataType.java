@@ -26,8 +26,6 @@ THE SOFTWARE.
 import de.uniks.networkparser.EntityUtil;
 
 public class DataType {
-	public static final String PROPERTY_VALUE = "value";
-
 	public static final DataType VOID = new DataType("void");
 	public static final DataType INT = new DataType("int");
 	public static final DataType LONG = new DataType("long");

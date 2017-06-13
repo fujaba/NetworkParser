@@ -34,6 +34,7 @@ import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.UpdateCondition;
 import de.uniks.networkparser.interfaces.Entity;
+import de.uniks.networkparser.interfaces.Grammar;
 import de.uniks.networkparser.interfaces.MapListener;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.list.SimpleIteratorSet;
@@ -140,16 +141,18 @@ public class UpdateJson implements MapListener {
 			return;
 		}
 
-		JsonObject jsonObject = new JsonObject()
-				.withValue(IdMap.CLASS, source.getClass().getName())
-				.withValue(IdMap.ID, this.map.getId(source));
+		JsonObject jsonObject = new JsonObject();
+
+		String id = this.map.getId(source, true);
+		Grammar grammar = this.map.getGrammar();
+		grammar.writeBasicValue(jsonObject, source.getClass().getName(), id, map);
 
 		if (oldValue != null) {
 			creatorClass = this.map.getCreatorClass(oldValue);
 
 			JsonObject child = new JsonObject();
 			if (creatorClass != null) {
-				String oldId = this.map.getId(oldValue);
+				String oldId = this.map.getId(oldValue, true);
 				if (oldId != null) {
 					child.put(propertyName,
 							new JsonObject().withValue(IdMap.ID, oldId));
@@ -176,7 +179,7 @@ public class UpdateJson implements MapListener {
 							this.updateFilter);
 					child.put(propertyName, item);
 					if (this.suspendIdList != null) {
-						this.suspendIdList.add(this.map.getId(newValue));
+						this.suspendIdList.add(this.map.getId(newValue, true));
 					}
 				}
 			} else {
@@ -185,10 +188,8 @@ public class UpdateJson implements MapListener {
 			}
 			jsonObject.put(SendableEntityCreator.UPDATE, child);
 		}
-//FIXME		if (this.map.getCounter().getPrio() != null) {
-//			jsonObject.put(Filter.PRIO, this.map.getCounter().getPrio());
-//		}
 		if (this.suspendIdList == null) {
+			// Add Message Value
 			this.map.notify(new SimpleEvent(SendableEntityCreator.NEW, jsonObject, evt,  map));
 		}
 	}
@@ -211,7 +212,7 @@ public class UpdateJson implements MapListener {
 		String id = updateMessage.getString(IdMap.ID);
 		JsonObject remove = (JsonObject) updateMessage.getValue(SendableEntityCreator.REMOVE);
 		JsonObject update = (JsonObject) updateMessage.getValue(SendableEntityCreator.UPDATE);
-		Object prio = updateMessage.getValue(Filter.PRIO);
+//		Object prio = updateMessage.getValue(Filter.PRIO);
 		Object masterObj = this.map.getObject(id);
 		if (masterObj == null)
 		{
@@ -224,7 +225,7 @@ public class UpdateJson implements MapListener {
 			  masterObj = creator.getSendableInstance(false);
 			  if (masterObj != null)
 			  {
-				 this.map.put(id, masterObj);
+				 this.map.put(id, masterObj, false);
 			  }
 		   }
 		}
@@ -246,12 +247,6 @@ public class UpdateJson implements MapListener {
 					// Old Value is Standard
 					return setValue(creator, masterObj, key,
 							update.get(key), SendableEntityCreator.NEW);
-				} else {
-					// ERROR
-					if (checkPrio(prio)) {
-						return setValue(creator, masterObj, key,
-								update.get(key), Filter.COLLISION);
-					}
 				}
 			}
 			return true;
@@ -268,11 +263,6 @@ public class UpdateJson implements MapListener {
 							SendableEntityCreator.REMOVE);
 				} else {
 					if (checkValue(value, key, remove)) {
-						setValue(creator, masterObj, key,
-								creator.getValue(refObject, key),
-								SendableEntityCreator.REMOVE);
-					} else if (checkPrio(prio)) {
-						// RESET TO DEFAULTVALUE
 						setValue(creator, masterObj, key,
 								creator.getValue(refObject, key),
 								SendableEntityCreator.REMOVE);
@@ -299,10 +289,6 @@ public class UpdateJson implements MapListener {
 					setValue(creator, masterObj, key, newValue, SendableEntityCreator.UPDATE);
 
 					this.map.notify(new SimpleEvent(SendableEntityCreator.UPDATE, update, map, key, oldValue, newValue).withModelValue(masterObj));
-				} else if (checkPrio(prio)) {
-					Object newValue = update.get(key);
-					setValue(creator, masterObj, key, newValue, SendableEntityCreator.UPDATE);
-					this.map.notify(new SimpleEvent(SendableEntityCreator.UPDATE, update, map, key, oldValue, newValue).withModelValue(masterObj));
 				}
 			}
 			return masterObj;
@@ -320,41 +306,17 @@ public class UpdateJson implements MapListener {
 	 */
 	private boolean checkValue(Object value, String key,
 			JsonObject oldJsonObject) {
+		Object oldValue = oldJsonObject.get(key);
 		if (value != null) {
-			Object oldValue = oldJsonObject.get(key);
 			if (oldValue instanceof JsonObject) {
 				// GLAUB ICH MAL
 				String oldId = (String) ((JsonObject) oldValue)
 						.get(IdMap.ID);
-				return oldId.equals(this.map.getId(value));
-			} else if (oldValue != null && oldValue.equals(value) || (value == null && oldValue == null)) {
-				return true;
-			}
+				return oldId.equals(this.map.getId(value, true));
+			} 
+			return value.equals(oldValue);
 		}
-		return false;
-	}
-
-	/**
-	 * Check prio.
-	 *
-	 * @param prio	the prio
-	 * @return 		true, if successful
-	 */
-	private boolean checkPrio(Object prio) {
-//		Object myPrio = this.map.getCounter().getPrio();
-		Object myPrio = null;
-		if (prio != null && myPrio != null) {
-			if (prio instanceof Integer && myPrio instanceof Integer) {
-				Integer ref = (Integer) myPrio;
-				return ref.compareTo((Integer) prio) > 0;
-			} else if (prio instanceof String && myPrio instanceof String) {
-				String ref = (String) myPrio;
-				return ref.compareTo((String) prio) > 0;
-			}
-		} else if (myPrio == null) {
-			return true;
-		}
-		return false;
+		return oldValue == null;
 	}
 
 	/**

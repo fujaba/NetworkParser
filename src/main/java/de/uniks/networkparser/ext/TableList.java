@@ -96,8 +96,8 @@ public class TableList extends SortedList<Object> implements SendableEntity, Sen
 
 	@Override
 	protected boolean fireProperty(String type, Object oldValue, Object newValue,
-			Object beforeValue, Object value) {
-		boolean result = super.fireProperty(type, oldValue, newValue, beforeValue, value);
+			Object beforeValue, int index, Object value) {
+		boolean result = super.fireProperty(type, oldValue, newValue, beforeValue, index, value);
 
 		getPropertyChangeSupport().firePropertyChange(PROPERTY_ITEMS, oldValue,
 				newValue);

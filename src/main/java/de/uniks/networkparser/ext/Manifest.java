@@ -29,6 +29,13 @@ public class Manifest extends SimpleKeyValueList<String, String>{
 			int read = resources.read(bytes, 0, len);
 			value = new String(bytes, 0, read);
 		} catch (IOException e) {
+		} finally {
+			if(resources != null) {
+				try {
+					resources.close();
+				} catch (IOException e) {
+				}
+			}
 		}
 		return create(value);
 	}

@@ -108,7 +108,7 @@ public class Clazz extends GraphEntity {
 	public Modifier getModifier() {
 		Modifier modifier = super.getModifier();
 		if(modifier == null) {
-			modifier = new Modifier(Modifier.PUBLIC.getName());
+			modifier = new Modifier(Modifier.PUBLIC);
 			super.withChildren(modifier);
 		}
 		return modifier;
@@ -406,7 +406,7 @@ public class Clazz extends GraphEntity {
 	 *		 </pre>
 	 */
 	public ClazzSet getImplements() {
-		ClazzSet kidClazzes = getEdgeClazzes(AssociationTypes.EDGE, AssociationTypes.IMPLEMENTS);
+		ClazzSet kidClazzes = getEdgeClazzes(AssociationTypes.IMPLEMENTS, AssociationTypes.EDGE);
 		return kidClazzes;
 	}
 	
@@ -785,7 +785,7 @@ public class Clazz extends GraphEntity {
 	}
 	
 	@Override
-	public String getValue(String attribute) {
+	public Object getValue(String attribute) {
 		if(PROPERTY_PACKAGENAME.equalsIgnoreCase(attribute)) {
 			String fullName = this.getName(false);
 			if(fullName == null) {

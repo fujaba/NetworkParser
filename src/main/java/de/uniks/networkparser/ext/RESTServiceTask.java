@@ -172,7 +172,7 @@ public class RESTServiceTask implements Runnable {
 							element = null;
 							while(i.hasNext()) {
 								item = i.next();
-								if(id.equals(map.getId(item))) {
+								if(id.equals(map.getId(item, true))) {
 									element = item;
 									break;
 								}

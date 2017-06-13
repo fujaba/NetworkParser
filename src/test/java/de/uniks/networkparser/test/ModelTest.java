@@ -14,16 +14,27 @@ import de.uniks.networkparser.ext.generic.GenericCreator;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.json.AtomarCondition;
+import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
+import de.uniks.networkparser.logic.WhiteListCondition;
 import de.uniks.networkparser.test.model.Apple;
+import de.uniks.networkparser.test.model.AppleTree;
+import de.uniks.networkparser.test.model.Barbarian;
 import de.uniks.networkparser.test.model.GroupAccount;
 import de.uniks.networkparser.test.model.Person;
+import de.uniks.networkparser.test.model.Plant;
 import de.uniks.networkparser.test.model.SortedMsg;
 import de.uniks.networkparser.test.model.Student;
 import de.uniks.networkparser.test.model.University;
+import de.uniks.networkparser.test.model.util.AppleCreatorNoIndex;
+import de.uniks.networkparser.test.model.util.AppleTreeCreatorNoIndex;
+import de.uniks.networkparser.test.model.util.BarbarianCreator;
+import de.uniks.networkparser.test.model.util.ItemCreator;
 import de.uniks.networkparser.test.model.util.PersonCreator;
 import de.uniks.networkparser.test.model.util.PersonSet;
+import de.uniks.networkparser.test.model.util.PlantCreatorNoIndex;
+import de.uniks.networkparser.test.model.util.PlantFullNoIndex;
 import de.uniks.networkparser.test.model.util.SortedMsgCreator;
 import de.uniks.networkparser.test.model.util.StudentCreator;
 import de.uniks.networkparser.test.model.util.UniversityCreator;
@@ -161,8 +172,61 @@ public class ModelTest implements ObjectCondition {
 		IdMap map=new IdMap();
 		map.with(new UniversityCreator());
 		map.with(new StudentCreator());
+	}		
+	
+	@Test
+	public void testWhiteList() {
+		University uni = new University();
+		Student karli = uni.createStudents().withFirstName("Karli");
+		Student alice = uni.createStudents().withFirstName("Alice");
+		alice.createItem().withValue(42);
 		
-//		System.out.println(map.toJsonArray(uni));
+		karli.withFriends(alice);
+		IdMap map=new IdMap().withTimeStamp(1);
+		map.with(new UniversityCreator());
+		map.with(new StudentCreator());
+		map.withCreator(new ItemCreator());
+
+		JsonObject jsonObject = map.toJsonObject(uni, Filter.regard(new WhiteListCondition().with(uni.getClass()).with(alice.getClass())));
+		Assert.assertEquals(434, jsonObject.toString().length());
+	}
+	@Test
+	public void testJabberChatMessage() {
+		Plant flower = new Plant();
+		flower.setName("Flower");
+		flower.setId("42");
+		IdMap map;
+		
+		map = new IdMap().withCreator(new Plant());
+		JsonObject jsonObject = map.toJsonObject(flower);
+//		System.out.println(jsonObject);
+
+		map = new IdMap().withCreator(new PlantCreatorNoIndex());
+//		System.out.println(map.toJsonObject(flower));
+
+		map = new IdMap().withCreator(new PlantFullNoIndex());
+//		System.out.println(map.toJsonObject(flower));
+	}
+	
+	@Test
+	public void testAppleTree() {
+		IdMap map = new IdMap().withCreator(new AppleTreeCreatorNoIndex());
+		map.withCreator(new AppleCreatorNoIndex());
+		
+		AppleTree appleTree = new AppleTree();
+		appleTree.withHas(new Apple("red", 23, 42));
+		
+//		System.out.println(map.toJsonObject(appleTree));
+	}
+	
+	@Test
+	public void testBarbar() {
+		IdMap map = new IdMap().withCreator(new BarbarianCreator());
+		Barbarian barbarian = new Barbarian();
+		JsonObject jsonObjectB = map.toJsonObject(barbarian, new Filter().withNullCheck(true));
+		JsonObject jsonObject = map.toJsonObject(barbarian);
+
+		Assert.assertNotEquals(jsonObject, jsonObjectB);
 	}
 
 }

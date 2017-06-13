@@ -2,7 +2,6 @@ package de.uniks.networkparser.graph;
 
 import java.util.Iterator;
 
-import de.uniks.networkparser.graph.ClazzType;
 import de.uniks.networkparser.graph.util.AssociationSet;
 import de.uniks.networkparser.graph.util.ClazzSet;
 import de.uniks.networkparser.interfaces.Condition;
@@ -219,5 +218,19 @@ public abstract class GraphModel extends GraphEntity {
 				}
 			}
 		}
+	}
+	public GraphModel with(GraphModel model) {
+		if(model == null) {
+			return this;
+		}
+		GraphSimpleSet allChildren = model.getChildren();
+		for(GraphMember child :allChildren) {
+			withChildren(child);
+		}
+		// Add Properties
+		if(this.defaultAuthorName == null) {
+			this.defaultAuthorName = model.getAuthorName();
+		}
+		return this;
 	}
 }

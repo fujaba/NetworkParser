@@ -40,8 +40,7 @@ public interface Grammar {
 	 *
 	 * @return the props of theJsonObject
 	 */
-	public BaseItem getProperties(Entity item,
-			IdMap map, Filter filter, boolean isId, String type);
+	public BaseItem getProperties(Entity item, IdMap map, Filter filter, boolean isId, String type);
 
 	/**
  	 * @param type		can be Write or Read
@@ -51,8 +50,7 @@ public interface Grammar {
 	 * @param className 	   The ClassName of Item
 	 * @return the Creator for this Item
 	 */
-	public SendableEntityCreator getCreator(String type, Object item,
-			IdMap map, boolean searchForSuperCreator, String className);
+	public SendableEntityCreator getCreator(String type, Object item, IdMap map, boolean searchForSuperCreator, String className);
 
 	public String getId(Object obj, IdMap map);
 
@@ -75,8 +73,8 @@ public interface Grammar {
 	 */
 	public Object getNewEntity(SendableEntityCreator creator, String className, boolean prototype);
 
-	public Entity writeBasicValue(Entity entity, BaseItem parent, String className, String id, MapEntity map);
-
+	public Entity writeBasicValue(Entity entity, String className, String id, IdMap map);
+	
 	public BaseItem encode(Object entity, MapEntity map, Tokener tokener);
 
 	public boolean writeValue(BaseItem parent, String property, Object value, MapEntity map, Tokener tokener);

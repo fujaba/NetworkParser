@@ -51,7 +51,9 @@ public class XMLTest extends IOClasses{
 		map.with(new AppleTreeCreator());
 		map.with(new AppleCreator());
 
-		Assert.assertEquals(133, map.toSimpleXML(appleTree).toString().length());
+		XMLEntity simpleXML = map.toSimpleXML(appleTree);
+		Assert.assertEquals(133, simpleXML.toString().length());
+		Assert.assertEquals("<de.uniks.networkparser.test.model.AppleTree><de.uniks.networkparser.test.model.Apple/></de.uniks.networkparser.test.model.AppleTree>", simpleXML.toString());
 	}
 
 	@Test

@@ -59,6 +59,21 @@ public abstract class Value extends GraphMember {
 	public DataType getType() {
 		return type;
 	}
+	
+	@Override
+	public Object getValue(String attribute) {
+		int pos = attribute.indexOf('.');
+		String attrName;
+		if(pos>0) {
+			attrName = attribute.substring(0, pos);
+		}else {
+			attrName = attribute;
+		}
+		if(PROPERTY_TYPE.equalsIgnoreCase(attrName)) {
+			return this.getType();
+		}
+		return super.getValue(attribute);
+	}
 
 	public Value withValue(String value) {
 		this.value = value;

@@ -43,9 +43,6 @@ public class StoryStepSourceCode implements StoryStep {
 					// StartLine
 					this.contentFile = ste.getFileName();
 					this.methodName = ste.getMethodName();
-					if (this.methodName.startsWith("test")) {
-						this.methodName = this.methodName.substring(4);
-					}
 					this.startLine = ste.getLineNumber() + 1;
 				} else {
 					this.endLine = ste.getLineNumber() - 1;
@@ -66,8 +63,8 @@ public class StoryStepSourceCode implements StoryStep {
 			throw new Exception("get File");
 		} catch (Exception e) {
 			getLineFromThrowable(e);
-			this.readFile();
 		}
+		this.readFile();
 	}
 
 	private CharacterBuffer analyseLine(CharacterBuffer line) {
@@ -98,6 +95,36 @@ public class StoryStepSourceCode implements StoryStep {
 		CharacterBuffer indexText = new CharacterBuffer();
 
 		CharacterBuffer line = new CharacterBuffer();
+		
+		if(endLine == 0) {
+			String search=this.methodName+"(";
+			int start = this.startLine;
+			while (line != null && linePos <= start) {
+				line = fileBuffer.readLine();
+				if(line.indexOf(search)>0) {
+					this.startLine = linePos;
+					break;
+				}
+				linePos++;
+			}
+			this.endLine = start;
+			line = analyseLine(line);
+			while (line != null) {
+				indexText.with(line);
+				line = analyseLine(fileBuffer.readLine());
+				linePos++;
+				if(linePos>=this.endLine && line.trim().equals("}")) {
+					indexText.with(BaseItem.CRLF).with(line);
+					break;
+				}
+				indexText.with(BaseItem.CRLF);
+			}
+
+			this.body = indexText;
+			fileBuffer.close();
+			return;
+		}
+		
 		while (line != null && linePos <= this.startLine) {
 			line = fileBuffer.readLine();
 			linePos++;
@@ -132,16 +159,26 @@ public class StoryStepSourceCode implements StoryStep {
 	public boolean dump(Story story, HTMLEntity element) {
 		XMLEntity pre = element.createBodyTag("pre");
 		XMLEntity code = element.createBodyTag("code", pre);
+		if(this.endLine<1 && this.startLine>0) {
+			// Body is Empty add the full method
+			readFile();
+		}
 		code.withValue(this.body);
 		code.withKeyValue("class", this.format);
 		code.withKeyValue("data-lang", this.format);
 
 		XMLEntity undertitle = element.createBodyTag("div", pre);
 		String value;
-		if (this.fullPath != null) {
-			value = "Code: <a href=\"../" + this.fullPath + "\">" + this.methodName + "</a>";
+		String name;
+		if (this.methodName.startsWith("test")) {
+			name = this.methodName.substring(4);
 		} else {
-			value = "Code: " + this.methodName;
+			name = this.methodName;
+		}
+		if (this.fullPath != null) {
+			value = "Code: <a href=\"../" + this.fullPath + "\">" + name + "</a>";
+		} else {
+			value = "Code: " + name;
 		}
 		undertitle.with(value);
 		undertitle.with("class", "title");

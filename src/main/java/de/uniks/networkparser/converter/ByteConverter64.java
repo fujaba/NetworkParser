@@ -7,6 +7,7 @@ public class ByteConverter64 extends ByteConverter {
 //	private static final int BYTEPERATOM = 3;
 	private static final char[] pem_array = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '/','=' };
 	private static final byte PADDING = 127;
+	
 	// ENCODE
 	@Override
 	public String toString(BufferedBuffer values) {
@@ -38,9 +39,9 @@ public class ByteConverter64 extends ByteConverter {
      * @param values	the byte array
      * @return the encoded byte array
      */
-	public String toStaticString(CharSequence values) {
+	public CharacterBuffer toStaticString(CharSequence values) {
 		if (values.length() == 0) {
-			return values.toString();
+			return new CharacterBuffer();
 		}
 		if(values instanceof CharacterBuffer) {
 			return encode((CharacterBuffer)values, 0,values.length());
@@ -48,6 +49,38 @@ public class ByteConverter64 extends ByteConverter {
 		CharacterBuffer buffer = new CharacterBuffer();
 		buffer.withObjects(values);
 		return encode(buffer, 0,buffer.length());
+	}
+	
+	/**
+	 * Convert a simpleString to Base64
+	 * @param values Input String
+	 * @return a Base64 String
+	 */
+	public static CharacterBuffer toBase64String(CharSequence values) {
+		ByteConverter64 converter = new ByteConverter64();
+		return converter.toStaticString(values);
+	}
+	
+	/**
+	 * Convert a simpleString from Base64
+	 * @param values Input String(CharSequence) or byte[]
+	 * @return a decoded String
+	 */
+	public static CharacterBuffer fromBase64String(Object values) {
+		ByteConverter64 converter = new ByteConverter64();
+		byte[] ref;
+		if(values instanceof String) {
+			ref =converter.decode((String)values);
+		}else {
+			CharacterBuffer buffer = new CharacterBuffer();
+			if(values instanceof byte[]) {
+				buffer.with((byte[])values);
+			} else if(values instanceof CharSequence) {
+				buffer.with((CharSequence)values);
+			}
+			ref =converter.decode(buffer.toString());
+		}
+		return new CharacterBuffer().with(ref);
 	}
 
 	/**
@@ -59,7 +92,7 @@ public class ByteConverter64 extends ByteConverter {
 	 * @param size size of String
 	 * @return encoded String
 	 */
-	private String encode(CharacterBuffer buffer, int off, int size) {
+	private CharacterBuffer encode(CharacterBuffer buffer, int off, int size) {
 		byte[] outbuf = new byte[getStaticSize(size)];
 
 		int inpos, outpos;
@@ -99,7 +132,7 @@ public class ByteConverter64 extends ByteConverter {
 			val >>= 6;
 			outbuf[outpos + 0] = (byte) pem_array[val & 0x3f];
 		}
-		return new String(outbuf);
+		return new CharacterBuffer().with(outbuf);
 	}
 	
 	

@@ -1,5 +1,6 @@
 package de.uniks.networkparser.graph;
 
+import de.uniks.networkparser.buffer.CharacterBuffer;
 /*
 NetworkParser
 The MIT License
@@ -28,13 +29,78 @@ import de.uniks.networkparser.list.SimpleSet;
 
 public abstract class GraphMember {
 	public static final String PROPERTY_NAME="name";
+	public static final String PROPERTY_CLASSNAME = "className";
+	public static final String PROPERTY_PARENT="parent";
+	public static final String PROPERTY_CHILD="child";
+	public static final String PROPERTY_VISIBILITY = "visibility";
+	public static final String PROPERTY_MODIFIERS = "modifiers";
+	public static final String PROPERTY_THIS = "this";
+
 	protected String name;
 	protected Object children;
 	protected Object parentNode;
 
-	public String getValue(String attribute) {
-		if(PROPERTY_NAME.equals(attribute)) {
+	public Object getValue(String attribute) {
+		if(PROPERTY_VISIBILITY.equalsIgnoreCase(attribute)) {
+			Modifier modifier = this.getModifier();
+			if (modifier == null) {
+				return Modifier.PRIVATE.getName();
+			}
+			return modifier.getName();
+		}
+		if(PROPERTY_MODIFIERS.equalsIgnoreCase(attribute)) {
+			CharacterBuffer buffer = new CharacterBuffer();
+			Modifier modifier = this.getModifier();
+			if(modifier != null) {
+				modifier = modifier.getModifier();
+				while(modifier != null) {
+					buffer.with(modifier.getName());
+					modifier = modifier.getModifier();
+					if(modifier != null) {
+						buffer.with(' ');
+					}
+				}
+			}
+			return buffer.toString();
+		}
+		if(PROPERTY_NAME.equalsIgnoreCase(attribute)) {
 			return this.name;
+		}
+		if (PROPERTY_CLASSNAME.equalsIgnoreCase(attribute)) {
+			return this.getClass().getName();
+		}
+		int pos = attribute.indexOf('.');
+		String attrName;
+		if(pos>0) {
+			attrName = attribute.substring(0, pos);
+		}else {
+			attrName = attribute;
+		}
+		if(PROPERTY_PARENT.equalsIgnoreCase(attrName)) {
+			if (pos > 0) {
+				if (parentNode instanceof GraphMember) {
+					GraphMember item = (GraphMember) this.getParent();
+					return item.getValue(attribute.substring(pos + 1));
+				}
+				return null;
+			}
+			return this.parentNode;
+		}
+		if(PROPERTY_CHILD.equalsIgnoreCase(attrName)) {
+			if (pos > 0) {
+				if (pos > 0) {
+					GraphSimpleSet item = this.getChildren();
+					return item.getValue(attribute.substring(pos + 1));
+				}
+			}
+			return this.children;
+		}
+		if(PROPERTY_THIS.equalsIgnoreCase(attrName)) {
+			// Check if Static or not
+			if(this.getModifier().has(Modifier.STATIC)) {
+				return getValue(PROPERTY_PARENT);
+			}
+			return PROPERTY_THIS;
 		}
 		return null;
 	}
@@ -116,8 +182,9 @@ public abstract class GraphMember {
 		return collection;
 	}
 
-	/** Set the name of Element
-	 * @param name The Name of Element
+	/**
+	 * Set the name of Element
+	 * @param name  The Name of Element
 	 * @return The Instance
 	 */
 	public GraphMember with(String name) {

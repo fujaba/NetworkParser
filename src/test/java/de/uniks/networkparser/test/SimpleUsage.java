@@ -69,7 +69,6 @@ public class SimpleUsage {
 			public boolean update(Object value) {
 				SimpleEvent event = (SimpleEvent) value;
 				Assert.assertNotNull(event);
-//				System.out.println(event.getEntity().toString());
 				return true;
 			}
 		});

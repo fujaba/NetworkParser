@@ -1,5 +1,6 @@
 package de.uniks.networkparser.graph.util;
 
+import de.uniks.networkparser.buffer.CharacterBuffer;
 /*
 NetworkParser
 The MIT License
@@ -77,5 +78,19 @@ public class ClazzSet extends SimpleSet<Clazz> {
 
 	public ClazzSet hasName(String otherValue) {
 		return filter(Clazz.NAME.equals(otherValue));
+	}
+	
+	public String toString(String splitter) {
+		if(size() == 0) {
+			return null;
+		}
+		CharacterBuffer buffer = new CharacterBuffer();
+		for(Clazz clazz : this) {
+			if(buffer.length()>0) {
+				buffer.with(splitter);
+			}
+			buffer.with(clazz.getName());
+		}
+		return buffer.toString();
 	}
 }

@@ -33,7 +33,6 @@ public class HTMLTest {
 		file.withNewLine();
 		file.withText("Second Line");
 		Assert.assertNotNull(file.toString());
-//		System.out.println(file.toString());
 	}
 	
 	@Test

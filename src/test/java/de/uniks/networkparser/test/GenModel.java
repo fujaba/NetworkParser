@@ -126,7 +126,7 @@ public class GenModel {
 		}
 		// ERRORS
 		for(String item : wrongMethods) {
-			System.out.println(item);
+			System.out.println("ERRORS:"+item);
 		}
 		return count;
 	}

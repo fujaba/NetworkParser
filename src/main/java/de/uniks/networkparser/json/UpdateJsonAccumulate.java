@@ -43,8 +43,7 @@ public class UpdateJsonAccumulate {
 
 		if (oldValue != creator.getValue(defaultItem, property)) {
 			if (change == null) {
-				change = new JsonObject().withValue(IdMap.ID,
-						map.getId(source));
+				change = new JsonObject().withValue(IdMap.ID, map.getId(source, true));
 			}
 			JsonObject child;
 
@@ -57,7 +56,7 @@ public class UpdateJsonAccumulate {
 			}
 			SendableEntityCreator creatorClass = map.getCreatorClass(oldValue);
 			if (creatorClass != null) {
-				String oldId = map.getId(oldValue);
+				String oldId = map.getId(oldValue, true);
 				if (oldId != null) {
 					child.put(property,
 							new JsonObject().withValue(IdMap.ID, oldId));
@@ -76,7 +75,7 @@ public class UpdateJsonAccumulate {
 
 			creatorClass = map.getCreatorClass(newValue);
 			if (creatorClass != null) {
-				String newId = map.getId(newValue);
+				String newId = map.getId(newValue, true);
 				if (newId != null) {
 					child.put(property,
 							new JsonObject().withValue(IdMap.ID, newId));
@@ -111,8 +110,7 @@ public class UpdateJsonAccumulate {
 
 		if (oldValue != creator.getValue(defaultItem, property)) {
 			if (change == null) {
-				change = new JsonObject().withValue(IdMap.ID,
-						map.getId(item));
+				change = new JsonObject().withValue(IdMap.ID, map.getId(item, true));
 			}
 			JsonObject child;
 
@@ -125,7 +123,7 @@ public class UpdateJsonAccumulate {
 			}
 			SendableEntityCreator creatorClass = map.getCreatorClass(oldValue);
 			if (creatorClass != null) {
-				String oldId = map.getId(oldValue);
+				String oldId = map.getId(oldValue, true);
 				if (oldId != null) {
 					child.put(property,
 							new JsonObject().withValue(IdMap.ID, oldId));
@@ -144,7 +142,7 @@ public class UpdateJsonAccumulate {
 
 			creatorClass = map.getCreatorClass(newValue);
 			if (creatorClass != null) {
-				String newId = map.getId(newValue);
+				String newId = map.getId(newValue, true);
 				if (newId != null) {
 					child.put(property,
 							new JsonObject().withValue(IdMap.ID, newId));

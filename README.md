@@ -1,8 +1,6 @@
 NetworkParser
 =============
 
-[![Join the chat at https://gitter.im/NetworkParser/Lobby](https://badges.gitter.im/NetworkParser/Lobby.svg)](https://gitter.im/NetworkParser/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-
 Framework for serialization from Java objects to Json, XML and Byte.
 
 
@@ -44,6 +42,19 @@ The Framework have many other features like:
   - Coverage: [![Coverage Status](https://coveralls.io/repos/fujaba/NetworkParser/badge.svg?branch=develop&service=github)](https://coveralls.io/github/fujaba/NetworkParser?branch=develop)
   
 [![Open Hub](https://www.openhub.net/p/NetworkParser/widgets/project_partner_badge?format=gif&ref=Partner+Badge "Open Hub")](https://www.openhub.net/p/NetworkParser/)
+
+[![JProfiler](https://www.ej-technologies.com/images/product_banners/jprofiler_small.png)](http://www.ej-technologies.com/products/jprofiler/overview.html) optimized
+
+[![Open Source Love](https://badges.frapsoft.com/os/v2/open-source.svg?v=103)](https://github.com/ellerbrock/open-source-badges/)
+
+Project Managment
+
+[![Join the chat at https://gitter.im/NetworkParser/Lobby](https://badges.gitter.im/NetworkParser/Lobby.svg)](https://gitter.im/NetworkParser/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
+[![Stories in Ready](https://badge.waffle.io/fujaba/NetworkParser.svg?label=ready)](https://waffle.io/fujaba/NetworkParser)
+
+[![Download latest Release](https://img.shields.io/github/downloads/fujaba/NetworkParser/total.svg)](../../releases)
+
 
 # Getting Started
 
@@ -104,4 +115,4 @@ Here are a simple Usage of IdMap for serialization and deserialization
 [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=FSHD59SQ8PR2Y)
 
 # License
-NetworkParser is released under an [The MIT License](src/main/resources/Licence.txt).
+NetworkParser is released under an [The MIT License](src/main/resources/Licence.txt). [![MIT Licence](https://badges.frapsoft.com/os/mit/mit.svg?v=103)](https://opensource.org/licenses/mit-license.php)

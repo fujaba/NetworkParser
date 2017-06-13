@@ -1,15 +1,20 @@
 package de.uniks.networkparser.logic;
 import java.beans.PropertyChangeEvent;
+import java.util.Set;
 
 import de.uniks.networkparser.buffer.BufferedBuffer;
+import de.uniks.networkparser.buffer.CharacterBuffer;
+import de.uniks.networkparser.interfaces.LocalisationInterface;
 import de.uniks.networkparser.interfaces.ObjectCondition;
+import de.uniks.networkparser.interfaces.ParserCondition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
+import de.uniks.networkparser.interfaces.TemplateParser;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 /**
  * @author Stefan Lindel Clazz of EqualsCondition
  */
 
-public class Equals implements ObjectCondition, SendableEntityCreator {
+public class Equals implements ParserCondition, SendableEntityCreator {
 	/** Constant of KEY. */
 	public static final String PROPERTY_KEY = "key";
 	
@@ -21,6 +26,13 @@ public class Equals implements ObjectCondition, SendableEntityCreator {
 	/** Variable of StrValue. */
 	private String key;
 
+	/** Variable of leftCondition. */
+	private ObjectCondition left;
+
+	/** Variable of leftCondition. */
+	private ObjectCondition right;
+
+	
 	/** Variable of Value. */
 	private Object value;
 	
@@ -31,10 +43,47 @@ public class Equals implements ObjectCondition, SendableEntityCreator {
 	 */
 	private int position = -1;
 
+	private Object getValue(ObjectCondition condition, Object evt) {
+		LocalisationInterface li = (LocalisationInterface) evt;
+		if (condition instanceof ParserCondition) {
+			return ((ParserCondition)condition).getValue(li);
+		} else if (condition instanceof ChainCondition) {
+			ChainCondition chainCondition = (ChainCondition) condition;
+			Set<ObjectCondition> templates = chainCondition.getList();
+			CharacterBuffer buffer=new CharacterBuffer();
+			for(ObjectCondition item : templates) {
+				if(item instanceof VariableCondition) {
+					VariableCondition vc = (VariableCondition) item;
+					Object result = vc.getValue(li);
+					if(result != null) {
+						buffer.with(result.toString());
+					}
+				} else {
+					buffer.with(item.toString());
+				}
+			}
+			return buffer.toString();
+		}
+		return null;
+	}
+	
 	@Override
 	public boolean update(Object evt) {
 		if (evt == null) {
 			return value == null;
+		}
+		if(evt instanceof LocalisationInterface && this.left != null && this.right != null) {
+			
+			Object leftValue = getValue(this.left, evt);
+			Object rightValue = getValue(this.right, evt);
+
+			if(leftValue == null) {
+				return rightValue == null;
+			}
+			if(leftValue instanceof String && rightValue instanceof String) {
+				return ((String)leftValue).equalsIgnoreCase((String)rightValue);
+			}
+			return leftValue.equals(rightValue);
 		}
 		if(value == null) {
 			return evt == null;
@@ -53,13 +102,13 @@ public class Equals implements ObjectCondition, SendableEntityCreator {
 						|| value instanceof Short
 						|| value instanceof Integer
 						|| value instanceof Long) {
-					Long expValue = (Long)value;
-					Long evtValue = (Long) evt;
-					if(delta != null) {
-						Long deltaValue = (Long) delta;
-						return ((expValue - deltaValue) <= evtValue && (expValue + deltaValue)>= evtValue);
+					if(delta == null) {
+						return value == evt;	
 					}
-					return expValue == evtValue;
+					Long expValue = Long.valueOf(""+value);
+					Long evtValue = Long.valueOf(""+evt);
+					Long deltaValue = Long.valueOf(""+delta);
+					return ((expValue - deltaValue) <= evtValue && (expValue + deltaValue)>= evtValue);
 				}
 				// FLOAT DOUBLE AND OTHER
 				Double expValue = (Double)value;
@@ -130,6 +179,9 @@ public class Equals implements ObjectCondition, SendableEntityCreator {
 
 	@Override
 	public String toString() {
+		if(left != null && right != null) {
+			return ""+left.toString() +"==" + right.toString();
+		}
 		return "==" + value + " ";
 	}
 
@@ -139,7 +191,7 @@ public class Equals implements ObjectCondition, SendableEntityCreator {
 	}
 
 	@Override
-	public Object getSendableInstance(boolean prototyp) {
+	public ParserCondition getSendableInstance(boolean prototyp) {
 		return new Equals();
 	}
 	
@@ -206,5 +258,44 @@ public class Equals implements ObjectCondition, SendableEntityCreator {
 	
 	public static Equals createNullCondition() {
 		return new Equals().withValue(null);
+	}
+
+	public Equals withLeft(ObjectCondition expression) {
+		this.left = expression;
+		return this;
+	}
+	public Equals withRight(ObjectCondition expression) {
+		this.right = expression;
+		return this;
+	}
+
+	@Override
+	public boolean isExpression() {
+		return false;
+	}
+
+	//KEY LEFTVALUE
+	//VALUE RIGHTVALUE
+	@Override
+	public Object getValue(LocalisationInterface value) {
+		if(value instanceof SendableEntityCreator) {
+			SendableEntityCreator variables = (SendableEntityCreator) value;
+			Object object = variables.getValue(variables, this.key);
+			return object;
+		}
+		if(value != null && this.key != null) {
+			return value.getText(this.key, null, null);
+		}
+		if(this.key == null) {
+			return null;
+		}
+		if(this.key.equals(value)) {
+			return value;
+		}
+		return null;
+	}
+
+	@Override
+	public void create(CharacterBuffer buffer, TemplateParser parser, LocalisationInterface customTemplate) {
 	}
 }

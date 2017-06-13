@@ -197,8 +197,8 @@ public class EntityComparator<V> implements Comparator<V> {
 
 		// KEY IN IDMAP
 		if (IDMAP.equalsIgnoreCase(column) && map != null) {
-			String v1 = map.getId(o1);
-			String v2 = map.getId(o2);
+			String v1 = map.getId(o1, false);
+			String v2 = map.getId(o2, false);
 			return v1.compareTo(v2);
 		}
 		// HASHCODE

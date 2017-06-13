@@ -89,11 +89,16 @@ public final class SimpleEvent extends PropertyChangeEvent {
 	 * @param beforeElement	beforeElement
 	 * @param value	Value of KeyValue List
 	 */
-	public SimpleEvent(String type, BaseItem source, String property, Object oldValue, Object newValue, Object beforeElement, Object value) {
+	public SimpleEvent(String type, BaseItem source, String property, Object oldValue, Object newValue, Object beforeElement, Object value, int index) {
 		super(source, property, oldValue, newValue);
 		this.type = type;
 		this.value = value;
 		this.beforeElement = beforeElement;
+		this.depth = index;
+	}
+	
+	public int getIndex() {
+		return depth;
 	}
 
 	public int getDepth() {

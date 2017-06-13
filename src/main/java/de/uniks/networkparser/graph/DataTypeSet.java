@@ -50,6 +50,14 @@ public class DataTypeSet extends DataType{
 		return this.value.getName(shortName) + "<" + generic.getInternName(shortName, false) + ">";
 	}
 
+	@Override
+	protected String getInternName(boolean shortName, boolean primitivAllow) {
+		if (this.value == null) {
+			return null;
+		}
+		return this.value.getName(shortName) + "<" + generic.getInternName(shortName, primitivAllow) + ">";
+	}
+	
 	public static DataTypeSet create(Clazz value) {
 		DataTypeSet result = new DataTypeSet().withGeneric(DataType.create(value));
 		return result;
@@ -61,6 +69,11 @@ public class DataTypeSet extends DataType{
 
 	public static DataTypeSet create(DataType value) {
 		DataTypeSet result = new DataTypeSet().withGeneric(value);
+		return result;
+	}
+	
+	public static DataTypeSet create(Class<?> value) {
+		DataTypeSet result = new DataTypeSet().withGeneric(DataType.create(value));
 		return result;
 	}
 	@Override

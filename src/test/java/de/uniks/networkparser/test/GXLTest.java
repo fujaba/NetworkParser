@@ -34,7 +34,5 @@ public class GXLTest {
 		  map.with(new UniversityCreator());
 		  map.with(new StudentCreator());
 		  xmlContainer.with(map.encode(uni, tokener));
-		  
-//		  System.out.println(xmlContainer.toString(2));
 	}
 }

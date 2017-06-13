@@ -43,7 +43,7 @@ public class StringFilter<T> implements Condition<T>{
 		if(otherValue ==null) {
 			return itemValue == null;
 		}
-		if(itemValue !=null && itemValue instanceof String) {
+		if(itemValue instanceof String) {
 			if(this.type==TYPE.EQUALS) {
 				return itemValue.equals(otherValue);
 			} else if(this.type==TYPE.EQUALSIGNORECASE) {

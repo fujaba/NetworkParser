@@ -68,7 +68,10 @@ public class Story {
 
 	public void finish() {
 		if(this.steps != null) {
-			this.steps.last().finish();
+			StoryStep last = this.steps.last();
+			if(last != null) {
+				last.finish();
+			}
 		}
 	}
 

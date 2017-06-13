@@ -120,7 +120,16 @@ public class GitRevision {
 		for(Iterator<Entry<String, Ref>> i = tags.entrySet().iterator();i.hasNext();) {
 			Entry<String, Ref> entry = i.next();
 			try {
-				Integer value = Integer.valueOf(entry.getKey());
+				String id = entry.getKey().trim();
+				int start = id.indexOf(".");
+				if(start>0) {
+					id = id.substring(0, start);
+					start = id.indexOf(".");
+					if(start>0) {
+						id = id.substring(0, start);
+					}
+				}
+				Integer value = Integer.valueOf(id);
 				if(value>0 && value > gittag) {
 					gittag = value;
 					tagHash = entry.getValue().getName();

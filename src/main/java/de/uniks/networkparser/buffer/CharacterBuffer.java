@@ -258,6 +258,9 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence{
 	 */
 	@Override
 	public char getChar() {
+		if(this.buffer == null) {
+			return 0;
+		}
 		if (this.position+this.start >= this.buffer.length) {
 			return 0;
 		}
@@ -723,7 +726,7 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence{
 		}
 		return new String(buffer, start, length);
 	}
-
+	
 	public boolean equals(CharSequence other) {
 		if(other==null || other.length() != length) {
 			return false;
@@ -833,5 +836,11 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence{
 			buffer.with(value);
 		}
 		return buffer;
+	}
+	public String toCurrentString() {
+		if(length<1) {
+			return "";
+		}
+		return new String(buffer, position, length-position);
 	}
 }

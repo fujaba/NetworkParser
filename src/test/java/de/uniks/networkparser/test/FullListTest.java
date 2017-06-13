@@ -68,7 +68,6 @@ public class FullListTest {
 	public void AppleSet() {
 		AppleSet set = new AppleSet();
 		set.with("Hallo");
-//		System.out.println(set.size());
 	}
 	
 	@Test

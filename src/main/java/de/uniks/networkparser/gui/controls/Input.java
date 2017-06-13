@@ -7,6 +7,7 @@ public class Input<T> extends Control {
 	public static final String VALUE = "value";
 
 	/* variables */
+//	protected SimpleGUI $view;
 	protected T value;
 	protected String type;
 
@@ -17,12 +18,13 @@ public class Input<T> extends Control {
 		this.addBaseElements(VALUE);
 		this.addBaseElements(TYPE);
 	}
-
+	
 	@Override
 	public Object getValue(String key) {
 		if (VALUE.equals(key)) {
 			return this.value;
-		} else if (TYPE.equals(key)) {
+		} 
+		if (TYPE.equals(key)) {
 			return this.type;
 		} 
 		return super.getValue(key);
@@ -34,7 +36,8 @@ public class Input<T> extends Control {
 		key = key.trim();
 		if (VALUE.equalsIgnoreCase(key)) {
 			return this.setValue((T)value);
-		} else if (TYPE.equals(key)) {
+		}
+		if (TYPE.equals(key)) {
 			return this.setType(""+value);
 		} 
 		return super.setValue(key, value);
