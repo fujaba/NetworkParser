@@ -16,8 +16,7 @@ addons:
     branch_pattern: master
   srcclr: true
   sonarqube:
-    organization: "Open Source"
-    
+    organization: "Fujaba"
 before_script:
   - sudo service postgresql stop || true
   - sudo service mysql stop || true
