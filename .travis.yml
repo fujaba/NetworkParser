@@ -14,7 +14,7 @@ addons:
     build_command_prepend: "gradle clean"
     build_command:   "gradle -xTest -xJavadoc"
     branch_pattern: master
-
+    srcclr: true
 before_script:
   - sudo service postgresql stop || true
   - sudo service mysql stop || true
@@ -33,5 +33,11 @@ branches:
   only:
   - master
   - develop
-
+  
+env:
+  - TEST_SUITE=units
+  - TEST_SUITE=integration
+  
+script: "bundle exec rake test:$TEST_SUITE"
+  
 after_success: ./gradlew version build uploadArchives jacocoTestReport coveralls
