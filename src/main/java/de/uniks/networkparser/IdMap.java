@@ -1518,7 +1518,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 					parseValue(property, child, childClassName, childCreater, map, tokener, subValues);
 				}
 			}
-			if(subValues.sizeChildren()>0) { 
+			if(subValues != null && subValues.sizeChildren()>0) { 
 				writeValue = subValues;
 			}else {
 				return;

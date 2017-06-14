@@ -88,16 +88,15 @@ public abstract class GraphMember {
 		}
 		if(PROPERTY_CHILD.equalsIgnoreCase(attrName)) {
 			if (pos > 0) {
-				if (pos > 0) {
-					GraphSimpleSet item = this.getChildren();
-					return item.getValue(attribute.substring(pos + 1));
-				}
+				GraphSimpleSet item = this.getChildren();
+				return item.getValue(attribute.substring(pos + 1));
 			}
 			return this.children;
 		}
 		if(PROPERTY_THIS.equalsIgnoreCase(attrName)) {
 			// Check if Static or not
-			if(this.getModifier().has(Modifier.STATIC)) {
+			Modifier modifier = this.getModifier();
+			if(modifier != null && modifier.has(Modifier.STATIC)) {
 				return getValue(PROPERTY_PARENT);
 			}
 			return PROPERTY_THIS;

@@ -51,6 +51,10 @@ public abstract class JavaBridge implements ObjectCondition {
 		this.webView.load(entity);
 	}
 
+	public JavaBridge withLogger(NetworkParserLog logger) {
+		this.logger = logger;
+		return this;
+	}
 
 	public HTMLEntity init(String type, String script) {
 		//		script = "classEditor = new ClassEditor(\"board\");";

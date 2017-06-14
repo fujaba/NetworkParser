@@ -251,7 +251,9 @@ public class TemplateResultFragment implements Comparable<TemplateResultFragment
 		if(PROPERTY_TEMPLATEMODEL.equalsIgnoreCase(attrName)) {
 			if(pos>0) {
 				TemplateResultModel item = element.getTemplateModel();
-				return item.getValue(item, attribute.substring(pos+1));
+				if(item  != null) {
+					return item.getValue(item, attribute.substring(pos+1));
+				}
 			}
 			return element.getTemplateModel();
 		}

@@ -117,7 +117,7 @@ public class Equals implements ParserCondition, SendableEntityCreator {
 					Double deltaValue = (Double) delta;
 					return ((expValue - deltaValue) <= evtValue && (expValue + deltaValue)>= evtValue);
 				}
-				return expValue == evtValue;
+				return expValue.equals(evtValue);
 			}
 			return value.equals(evt);
 		}
@@ -289,7 +289,7 @@ public class Equals implements ParserCondition, SendableEntityCreator {
 		if(this.key == null) {
 			return null;
 		}
-		if(this.key.equals(value)) {
+		if(this.value.equals(value)) {
 			return value;
 		}
 		return null;

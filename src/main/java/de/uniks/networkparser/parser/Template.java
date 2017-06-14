@@ -254,10 +254,10 @@ public class Template implements TemplateParser {
 			
 			if(isExpression) {
 				if (buffer.charAt(start) == SPLITSTART) {
-					child = VariableCondition.create(token, isExpression);
+					VariableCondition.create(token, isExpression);
 				}
 				child = VariableCondition.create(token, false);
-			}else {
+			} else {
 				child = StringCondition.create(token);
 			}
 			if(parent.size() == 0) {

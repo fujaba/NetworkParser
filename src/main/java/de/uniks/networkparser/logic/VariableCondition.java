@@ -83,9 +83,6 @@ public class VariableCondition implements ParserCondition{
 		if(this.value == null) {
 			return null;
 		}
-		if(this.value.equals(value)) {
-			return value;
-		}
 		return null;
 	}
 	

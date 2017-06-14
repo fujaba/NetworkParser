@@ -98,13 +98,13 @@ public class JavaSet extends BasicGenerator {
 		this.addGenerator(new JavaSetMethod());
 	}
 	
-	
-	
 	@Override
 	public TemplateResultFile executeClazz(Clazz clazz, LocalisationInterface parameters, boolean isStandard) {
 		FeatureSet features = getFeatures(parameters);
-		if(features.match(Feature.SETCLASS, null) == false) {
-			return null;
+		if(features != null) {
+			if(features.match(Feature.SETCLASS, null) == false) {
+				return null;
+			}
 		}
 		return super.executeClazz(clazz, parameters, isStandard);
 	}

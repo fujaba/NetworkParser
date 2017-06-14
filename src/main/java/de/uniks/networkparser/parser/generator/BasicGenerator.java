@@ -70,8 +70,11 @@ public abstract class BasicGenerator {
 			return;
 		}
 		for(Template template : templates) {
+			if(template == null) {
+				continue;
+			}
 			TemplateResultFragment fragment = template.generate(parameters, templateResult, member);
-			if(template.getType()==Template.DECLARATION) {
+			if(template.getType()==Template.DECLARATION && fragment != null) {
 				parameters.put(template.getName(), fragment.getResult().toString());
 			}
 		}

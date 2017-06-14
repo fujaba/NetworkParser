@@ -30,7 +30,7 @@ public class RESTServiceTask implements Runnable {
 	private Filter filter = Filter.regard(Deep.create(1));
 	
 	private Condition<Exception> errorListener;
-	private Condition<Socket> allowListener;
+	private Condition<SocketRequest> allowListener;
 	public static final String JSON="/json";
 	public static final String XML="/xml";
 
@@ -46,7 +46,7 @@ public class RESTServiceTask implements Runnable {
 		this.errorListener = listener;
 		return this;
 	}
-	public RESTServiceTask withAllowListener(Condition<Socket> listener) {
+	public RESTServiceTask withAllowListener(Condition<SocketRequest> listener) {
 		this.allowListener = listener;
 		return this;
 	}
@@ -93,7 +93,7 @@ public class RESTServiceTask implements Runnable {
 						socketRequest.socket = clientSocket;
 						socketRequest.type = type;
 						socketRequest.requst = request;
-						if(allowListener.equals(socketRequest) == false) {
+						if(allowListener.update(socketRequest) == false) {
 							out.write("HTTP 403");
 							out.close();
 							clientSocket.close();

@@ -43,28 +43,24 @@ public class ImportCondition implements ParserCondition {
 			SendableEntityCreator creator = (SendableEntityCreator) variables;
 			//&& importExpression.update(variables)
 			SimpleList<String> imports=new SimpleList<String>();
-			if (importExpression != null) {
-					if(importExpression instanceof ChainCondition) {
-						ChainCondition cc = (ChainCondition) importExpression;
-						ConditionSet templates = cc.getList();
-						CharacterBuffer buffer = templates.getAllValue(variables);
-						parseImport(buffer.toString(), imports);
-					} else if (importExpression instanceof VariableCondition){
-						VariableCondition vc = (VariableCondition) importExpression;
-						Object buffer = vc.getValue(variables);
-						if(buffer != null) {
-							parseImport(buffer.toString(), imports);
-						}
-					} else {
-						parseImport(importExpression.toString(), imports);
-					}
-				} else {
-					parseImport(importExpression.toString(), imports);
+			if(importExpression instanceof ChainCondition) {
+				ChainCondition cc = (ChainCondition) importExpression;
+				ConditionSet templates = cc.getList();
+				CharacterBuffer buffer = templates.getAllValue(variables);
+				parseImport(buffer.toString(), imports);
+			} else if (importExpression instanceof VariableCondition) {
+				VariableCondition vc = (VariableCondition) importExpression;
+				Object buffer = vc.getValue(variables);
+				if(buffer != null) {
+					parseImport(buffer.toString(), imports);
 				}
-				if(imports.size() > 0) {
-					creator.setValue(variables, "headers", imports, SendableEntityCreator.NEW);
-				}
+			} else if (importExpression != null) {
+				parseImport(importExpression.toString(), imports);
 			}
+			if(imports.size() > 0) {
+				creator.setValue(variables, "headers", imports, SendableEntityCreator.NEW);
+			}
+		}
 		return null;
 	}
 
