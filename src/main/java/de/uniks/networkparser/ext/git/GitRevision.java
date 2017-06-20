@@ -1,18 +1,12 @@
 package de.uniks.networkparser.ext.git;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.nio.charset.Charset;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-
-import com.sun.webkit.graphics.Ref;
-import com.sun.xml.internal.bind.v2.model.runtime.RuntimeArrayInfo;
 
 import de.uniks.networkparser.ext.generic.ReflectionLoader;
 import de.uniks.networkparser.json.JsonArray;

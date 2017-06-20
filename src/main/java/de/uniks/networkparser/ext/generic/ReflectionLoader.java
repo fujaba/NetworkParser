@@ -29,6 +29,10 @@ public class ReflectionLoader {
 	public static final Class<?> SYSTEMTRAY;
 	public static final Class<?> WEBVIEW;
 	public static final Class<?> JSOBJECT;
+	public static final Class<?> PSEUDOCLASS;
+	public static final Class<?> TOOLBAR;
+	public static final Class<?> BUTTON;
+	public static final Class<?> EVENTHANDLER; 
 	
 	public static final Class<?> GIT;
 	public static final Class<?> FILEREPOSITORYBUILDER;
@@ -37,7 +41,6 @@ public class ReflectionLoader {
 	public static final Class<?> FILEMODE;
 	public static final Class<?> REPOSITORY;
 	public static final Class<?> ANYOBJECTID;
-	
 
 //	public static final Class<?> DIFFENTRY;
 //	public static final Class<?> OBJECTID;
@@ -73,6 +76,10 @@ public class ReflectionLoader {
 			SYSTEMTRAY = getClass("java.awt.SystemTray");
 			WEBVIEW = getClass("javafx.scene.web.WebView");
 			JSOBJECT = getClass("netscape.javascript.JSObject");
+			PSEUDOCLASS = getClass("javafx.css.PseudoClass");
+			TOOLBAR = getClass("javafx.scene.control.ToolBar");
+			BUTTON = getClass("javafx.scene.control.Button");
+			EVENTHANDLER = getClass("javafx.event.EventHandler");
 		} else {
 			NODE = null;
 			OBSERVABLEVALUE = null;
@@ -96,6 +103,10 @@ public class ReflectionLoader {
 			SYSTEMTRAY = null;
 			WEBVIEW = null;
 			JSOBJECT = null;
+			PSEUDOCLASS = null;
+			TOOLBAR = null;
+			BUTTON = null;
+			EVENTHANDLER = null;
 		}
 		GIT = getClass("javafx.beans.value.ChangeListener");
 		if(GIT != null) {
