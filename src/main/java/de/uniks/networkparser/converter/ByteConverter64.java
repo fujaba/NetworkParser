@@ -1,6 +1,7 @@
 package de.uniks.networkparser.converter;
 
 import de.uniks.networkparser.buffer.BufferedBuffer;
+import de.uniks.networkparser.buffer.ByteBuffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 
 public class ByteConverter64 extends ByteConverter {
@@ -52,6 +53,23 @@ public class ByteConverter64 extends ByteConverter {
 	}
 	
 	/**
+     * Base64 encode a byte array.  No line breaks are inserted.
+     * This method is suitable for short strings, such as those
+     * in the IMAP AUTHENTICATE protocol, but not to encode the
+     * entire content of a MIME part.
+     *
+     * @param values	the byte array
+     * @return the encoded byte array
+     */
+	public CharacterBuffer toStaticString(byte[] values) {
+		if (values.length == 0) {
+			return new CharacterBuffer();
+		}
+		ByteBuffer buffer = new ByteBuffer().with(values);
+		return encode(buffer, 0,buffer.length());
+	}
+	
+	/**
 	 * Convert a simpleString to Base64
 	 * @param values Input String
 	 * @return a Base64 String
@@ -92,7 +110,7 @@ public class ByteConverter64 extends ByteConverter {
 	 * @param size size of String
 	 * @return encoded String
 	 */
-	private CharacterBuffer encode(CharacterBuffer buffer, int off, int size) {
+	private CharacterBuffer encode(BufferedBuffer buffer, int off, int size) {
 		byte[] outbuf = new byte[getStaticSize(size)];
 
 		int inpos, outpos;
