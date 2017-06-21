@@ -49,7 +49,7 @@ public class GUITest {
 
 		IdMap map=new IdMap().with(new Column());
 
-		Assert.assertEquals("{\"class\":\"de.uniks.networkparser.gui.Column\",\"attrName\":\"Name\"}", map.toJsonObject(column).toString());
+		Assert.assertEquals("{\"class\":\"de.uniks.networkparser.gui.Column\",\"attribute\":\"Name\"}", map.toJsonObject(column).toString());
 	}
 
 	@Test
