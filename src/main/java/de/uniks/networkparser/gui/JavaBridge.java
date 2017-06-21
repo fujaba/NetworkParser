@@ -58,12 +58,20 @@ public abstract class JavaBridge implements ObjectCondition {
 		}
 		this.map = map;
 		map.add(this);
+		if((CONTENT_TYPE_INCLUDE.equalsIgnoreCase(type) || CONTENT_TYPE_EXCLUDE.equalsIgnoreCase(type)) == false) {
+			type = CONTENT_TYPE_INCLUDE;
+		}
 
+		
 		this.webView = webView;
-		this.webView.withOwner(this);
-
-		entity = init(CONTENT_TYPE_INCLUDE, "var bridge = new DiagramJS.Bridge();");
-		this.webView.load(entity);
+		if(webView != null) { 
+			this.webView.withOwner(this);
+			
+		}
+		entity = init(type, "var bridge = new DiagramJS.Bridge();");
+		if(webView != null) {
+			this.webView.load(entity);
+		}
 	}
 	
 	public HTMLEntity getEntity() {
@@ -83,17 +91,23 @@ public abstract class JavaBridge implements ObjectCondition {
 		if (CONTENT_TYPE_EXCLUDE.equals(type)) {
 			entity.withHeader("./res/diagram.js");
 			entity.withHeader("./res/material.css");
+			entity.withHeader("./res/style.css");
 		}
 		else {
 			entity.withHeaderScript(readFile("./res/diagram.js"));
 			entity.withHeaderStyle(readFile("./res/material.css"));
+			entity.withHeaderStyle(readFile("./res/style.css"));
+			
 		}
 		return entity;
 	}
 
 
 	protected String readFile(String file) {
-		return this.webView.readFile(file);
+		if(this.webView != null) {
+			return this.webView.readFile(file);
+		}
+		return null;
 	}
 
 
