@@ -42,7 +42,7 @@ public class GUITest {
 
 	@Test
 	public void testColumnSerialization(){
-		Column column= new Column().withAttrName("Name").withResizable(true);
+		Column column= new Column().withAttribute("Name").withResizable(true);
 		column.withVisible(true);
 		column.withMovable(true);
 		Assert.assertEquals(column.getBrowserId(), GUIPosition.CENTER);

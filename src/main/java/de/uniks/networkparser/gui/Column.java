@@ -42,7 +42,7 @@ public class Column implements SendableEntityCreatorNoIndex {
 
 	public static final String PROPERTY_ACTIVESTYLE = "activeStyle";
 
-	public static final String PROPERTY_ATTRNAME = "attrName";
+	public static final String PROPERTY_ATTRIBUTE = "attribute";
 
 	public static final String PROPERTY_NUMBERFORMAT = "numberformat";
 
@@ -68,7 +68,7 @@ public class Column implements SendableEntityCreatorNoIndex {
 
 	private static final String[] properties = new String[] {
 			Column.PROPERTY_ID,
-			Column.PROPERTY_ATTRNAME, Column.PROPERTY_NUMBERFORMAT,
+			Column.PROPERTY_ATTRIBUTE, Column.PROPERTY_NUMBERFORMAT,
 			Column.PROPERTY_EDITCOLUMN, Column.PROPERTY_LABEL,
 			Column.PROPERTY_DEFAULTTEXT, Column.PROPERTY_RESIZE,
 			Column.PROPERTY_VISIBLE, Column.PROPERTY_MOVABLE,
@@ -162,7 +162,7 @@ public class Column implements SendableEntityCreatorNoIndex {
 	 * @param attrName Attribute Name for display
 	 * @return Itself
 	 */
-	public Column withAttrName(String attrName) {
+	public Column withAttribute(String attrName) {
 		this.attrName = attrName;
 		return this;
 	}
@@ -173,7 +173,7 @@ public class Column implements SendableEntityCreatorNoIndex {
 	 * @param edit is the Column is editable
 	 * @return Itself
 	 */
-	public Column withAttrName(String attrName, boolean edit) {
+	public Column withAttribute(String attrName, boolean edit) {
 		this.attrName = attrName;
 		if (label == null) {
 			label = attrName;
@@ -403,7 +403,7 @@ public class Column implements SendableEntityCreatorNoIndex {
 			attrName = attribute;
 		}
 		Column that = (Column) entity;
-		if (attrName.equalsIgnoreCase(PROPERTY_ATTRNAME))
+		if (attrName.equalsIgnoreCase(PROPERTY_ATTRIBUTE))
 			return that.getAttrName();
 		if (attrName.equalsIgnoreCase(PROPERTY_ID))
 			return that.getId();
@@ -440,8 +440,8 @@ public class Column implements SendableEntityCreatorNoIndex {
 			String type) {
 		Column that = (Column) entity;
 		
-		if (attribute.equalsIgnoreCase(PROPERTY_ATTRNAME)) {
-			that.withAttrName((String) value);
+		if (attribute.equalsIgnoreCase(PROPERTY_ATTRIBUTE)) {
+			that.withAttribute((String) value);
 			return true;
 		}
 		if (attribute.equalsIgnoreCase(PROPERTY_ID)) {

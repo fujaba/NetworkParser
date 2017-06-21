@@ -45,10 +45,10 @@ public class GroupAccountGUI extends Application {
 		nina = groupAccount.createPersons().withName("Nina");
 		groupAccount.setName("");
 
-		tableView.withColumn(new Column().withAttrName(Person.PROPERTY_NAME).withStyle(new Style().withWidth(100)));
+		tableView.withColumn(new Column().withAttribute(Person.PROPERTY_NAME).withStyle(new Style().withWidth(100)));
 
-		tableView.withColumn(new Column().withAttrName(Person.PROPERTY_BALANCE).withStyle(new Style().withWidth(100)));
-		tableView.withColumn(new Column().withLabel("Money").withAttrName(Person.PROPERTY_WALLET+"."+Wallet.PROPERTY_SUM).withStyle(new Style().withWidth(100)));
+		tableView.withColumn(new Column().withAttribute(Person.PROPERTY_BALANCE).withStyle(new Style().withWidth(100)));
+		tableView.withColumn(new Column().withLabel("Money").withAttribute(Person.PROPERTY_WALLET+"."+Wallet.PROPERTY_SUM).withStyle(new Style().withWidth(100)));
 
 		tableView.withSearchProperties(Person.PROPERTY_NAME);
 		tableView.withList(groupAccount,  GroupAccount.PROPERTY_PERSONS);

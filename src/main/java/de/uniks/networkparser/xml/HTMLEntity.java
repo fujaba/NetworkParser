@@ -205,11 +205,15 @@ public class HTMLEntity implements BaseItem {
 		
 	}
 
-
-	public HTMLEntity withScript(String code) {
+	public XMLEntity createScript(String code) {
 		XMLEntity child = new XMLEntity().setType("script").withCloseTag();
 		child.with(code);
 		this.body.with(child);
+		return child;
+	}
+
+	public HTMLEntity withScript(String code) {
+		createScript(code);
 		return this;
 	}
 

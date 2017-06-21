@@ -30,7 +30,7 @@ public class SimpleTable extends SimpleShell{
 		groupAccount.withPersons(albert, tom, stefan);
 
 		table.withSearchProperties(Person.PROPERTY_NAME);
-		table.withColumn(new Column().withAttrName(Person.PROPERTY_NAME).withLabel("Name"));
+		table.withColumn(new Column().withAttribute(Person.PROPERTY_NAME).withLabel("Name"));
 
 //		TableCellFactory tableCellFactory = new TableCellFactory().withUpdateListener(new UpdateItemCell() {
 //			@Override

@@ -9,10 +9,12 @@ import de.uniks.networkparser.NetworkParserLog;
 import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.SimpleObject;
 import de.uniks.networkparser.gui.controls.Control;
+import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.xml.HTMLEntity;
+import de.uniks.networkparser.xml.XMLEntity;
 
 public abstract class JavaBridge implements ObjectCondition {
 	public static String CONTENT_TYPE_INCLUDE = "INCLUDE";
@@ -31,13 +33,26 @@ public abstract class JavaBridge implements ObjectCondition {
 
 	private NetworkParserLog logger;
 
+	private HTMLEntity entity;
+	
+	private XMLEntity debug;
+
 
 	public JavaBridge() {
-		this(null, null);
+		this(null, null, CONTENT_TYPE_INCLUDE);
 	}
 
+	public JavaBridge withDebug(boolean value) {
+		if(value) {
+			this.debug = entity.createScript("");
+		}else {
+			this.debug = null;
+		}
+		return this;
+	}
+	
 
-	public JavaBridge(IdMap map, JavaViewAdapter webView) {
+	public JavaBridge(IdMap map, JavaViewAdapter webView, String type) {
 		if (map == null) {
 			map = new IdMap();
 		}
@@ -47,8 +62,12 @@ public abstract class JavaBridge implements ObjectCondition {
 		this.webView = webView;
 		this.webView.withOwner(this);
 
-		HTMLEntity entity = init(CONTENT_TYPE_INCLUDE, "var bridge = new DiagramJS.Bridge();");
+		entity = init(CONTENT_TYPE_INCLUDE, "var bridge = new DiagramJS.Bridge();");
 		this.webView.load(entity);
+	}
+	
+	public HTMLEntity getEntity() {
+		return entity;
 	}
 
 	public JavaBridge withLogger(NetworkParserLog logger) {
@@ -152,6 +171,15 @@ public abstract class JavaBridge implements ObjectCondition {
 	public Object executeScript(String script) {
 		if(script == null) {
 			return null;
+		}
+		if(debug != null) {
+			String value = debug.getValue();
+			if(value.length()>0) {
+				value = value+BaseItem.CRLF+script;
+			}else {
+				value = script;
+			}
+			debug.withValueItem(value);
 		}
 		return this.webView.executeScript(script);
 	}
