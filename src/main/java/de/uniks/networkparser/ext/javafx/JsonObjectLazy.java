@@ -2,20 +2,17 @@ package de.uniks.networkparser.ext.javafx;
 
 import de.uniks.networkparser.ext.generic.ReflectionLoader;
 import de.uniks.networkparser.json.JsonObject;
-import netscape.javascript.JSObject;
 
 public class JsonObjectLazy extends JsonObject {
 //	public static final String JS_OBJECT="[object Object]";
 //	public static final String JS_SET="[object Set]";
 	public static final String FILTERPROP="$";
 	
-	private JSObject ref = null;
+	private Object ref = null;
 	private boolean loaded;
 	
 	public JsonObjectLazy(Object element) {
-		if(element instanceof JSObject) {
-			this.ref = (JSObject) element;
-		}
+		this.ref = element;
 	}
 
 	public boolean lazyLoad() {
@@ -28,18 +25,18 @@ public class JsonObjectLazy extends JsonObject {
 		else {
 			return false;
 		}
-		JSObject eval = (JSObject) this.ref.eval("Object.keys(this).map(function (key) {return key;});");
+		Object eval = ReflectionLoader.call("eval", ref, "Object.keys(this).map(function (key) {return key;});");
 		String[] keys = eval.toString().split(",");
 		for (int i = 0; i < keys.length; i++) {
 			// Get from Javascript the full Object and Filter the $ for not necessary links or bidirectional links
 			if (keys[i].startsWith(FILTERPROP)) {
 				continue;
 			}
-			Object value = this.ref.getMember(keys[i]);
-			if (value instanceof JSObject) {
-				JSObject jsValue = (JSObject) value;
-				boolean isArray = Boolean.parseBoolean("" + jsValue.eval("Array.isArray(this);"));
-
+			Object value = getMember(this.ref, keys[i]);
+			if (ReflectionLoader.JSOBJECT.isAssignableFrom(value.getClass())) {
+//				JSObject jsValue = (JSObject) value;
+				boolean isArray = (boolean) ReflectionLoader.call("eval", value, "Array.isArray(this);");
+//				boolean isArray = Boolean.parseBoolean("" + jsValue.eval());
 				if (isArray) {
 					JsonArrayLazy child = new JsonArrayLazy(value);
 					this.add(keys[i], child);
@@ -71,7 +68,7 @@ public class JsonObjectLazy extends JsonObject {
 		return result;
 	}
 	
-	public JSObject getReference() {
+	public Object getReference() {
 		return this.ref;
 	}
 	
@@ -89,7 +86,7 @@ public class JsonObjectLazy extends JsonObject {
 			return null;
 		}
 		// if not, try to get the Member from the JSObject directly
-		Object member = this.ref.getMember("" + key);
+		Object member = getMember(this.ref, "" + key);
 		if(member != null){
 			if(ReflectionLoader.JSOBJECT.isAssignableFrom(member.getClass())){
 				return new JsonObjectLazy(member);
@@ -100,4 +97,8 @@ public class JsonObjectLazy extends JsonObject {
 		}
 		return null;
 	}
+	private static Object getMember(Object obj, String value) {
+		return ReflectionLoader.call("getMember", obj, String.class, value);
+	}
+	
 }

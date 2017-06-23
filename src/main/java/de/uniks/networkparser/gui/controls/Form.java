@@ -1,6 +1,7 @@
 package de.uniks.networkparser.gui.controls;
 
 import java.util.Collection;
+
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.list.SimpleList;
 

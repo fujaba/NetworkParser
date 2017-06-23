@@ -17,10 +17,18 @@ import de.uniks.networkparser.list.SimpleSet;
 public abstract class ListCondition implements ParserCondition, SendableEntityCreator {
 	public static final String CHILD = "childs";
 	protected Object list;
+	protected Object staticEvent;
 	protected boolean chain = true;
 
+	public ListCondition withStaticEvent(Object event) {
+		this.staticEvent = event;
+		return this;
+	}
 	@Override
 	public boolean update(Object evt) {
+		if(this.staticEvent != null) {
+			evt = this.staticEvent;
+		}
 		if(evt instanceof PropertyChangeEvent) {
 			return updatePCE((PropertyChangeEvent) evt);
 		} 

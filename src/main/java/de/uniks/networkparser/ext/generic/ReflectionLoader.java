@@ -1,11 +1,14 @@
 package de.uniks.networkparser.ext.generic;
 
+import java.io.PrintStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 
 public class ReflectionLoader {
+	public static PrintStream logger = null;
+
 	public static final Class<?> CHANGELISTENER;
 	public static final Class<?> NODE;
 	public static final Class<?> OBSERVABLEVALUE;
@@ -21,6 +24,7 @@ public class ReflectionLoader {
 
 	public static final Class<?> COLOR;
 	public static final Class<?> COLORPICKER;
+	public static final Class<?> PAINT;
 	public static final Class<?> TEXTFIELD;
 	public static final Class<?> COMBOBOX;
 	public static final Class<?> LABEL;
@@ -33,7 +37,23 @@ public class ReflectionLoader {
 	public static final Class<?> TOOLBAR;
 	public static final Class<?> BUTTON;
 	public static final Class<?> EVENTHANDLER; 
-	
+	public static final Class<?> STACKPANE;
+	public static final Class<?> REGION;
+	public static final Class<?> HBOX;
+	public static final Class<?> VBOX;
+	public static final Class<?> PRIORITY;
+	public static final Class<?> PARENT;
+	public static final Class<?> PANE;
+	public static final Class<?> SCENE;
+	public static final Class<?> PLATFORM;
+	public static final Class<?> STAGE;
+	public static final Class<?> SCREEN;
+	public static final Class<?> MODALITY;
+	public static final Class<?> STAGESTYLE;
+	public static final Class<?> POS;
+	public static final Class<?> IMAGEVIEW;
+	public static final Class<?> BORDERPANE;
+
 	public static final Class<?> GIT;
 	public static final Class<?> FILEREPOSITORYBUILDER;
 	public static final Class<?> REVWALK;
@@ -67,6 +87,7 @@ public class ReflectionLoader {
 			DOUBLEPROPERTY = getClass("javafx.beans.property.DoubleProperty");
 
 			COLOR = getClass("javafx.scene.paint.Color");
+			PAINT = getClass("javafx.scene.paint.Paint");
 			COLORPICKER = getClass("javafx.scene.control.ColorPicker");
 			TEXTFIELD = getClass("javafx.scene.control.TextField");
 			COMBOBOX = getClass("javafx.scene.control.ComboBox");
@@ -80,6 +101,22 @@ public class ReflectionLoader {
 			TOOLBAR = getClass("javafx.scene.control.ToolBar");
 			BUTTON = getClass("javafx.scene.control.Button");
 			EVENTHANDLER = getClass("javafx.event.EventHandler");
+			STACKPANE  = getClass("javafx.scene.layout.StackPane");
+			REGION = getClass("javafx.scene.layout.Region");
+			HBOX = getClass("javafx.scene.layout.HBox");
+			VBOX = getClass("javafx.scene.layout.VBox");
+			POS = getClass("javafx.geometry.Pos");
+			PRIORITY = getClass("javafx.scene.layout.Priority");
+			PARENT = getClass("javafx.scene.Parent");
+			PANE = getClass("javafx.scene.layout.Pane");
+			PLATFORM = getClass("javafx.application.Platform");
+			STAGE = getClass("javafx.stage.Stage");
+			STAGESTYLE = getClass("javafx.stage.StageStyle");
+			MODALITY =getClass("javafx.stage.Modality");
+			SCENE = getClass("javafx.scene.Scene");
+			SCREEN = getClass("javafx.stage.Screen");
+			IMAGEVIEW = getClass("javafx.scene.image.ImageView");
+			BORDERPANE = getClass("javafx.scene.layout.BorderPane");
 		} else {
 			NODE = null;
 			OBSERVABLEVALUE = null;
@@ -95,6 +132,7 @@ public class ReflectionLoader {
 
 			COLOR = null;
 			COLORPICKER = null;
+			PAINT = null;
 			TEXTFIELD = null;
 			COMBOBOX = null;
 			LABEL = null;
@@ -107,8 +145,24 @@ public class ReflectionLoader {
 			TOOLBAR = null;
 			BUTTON = null;
 			EVENTHANDLER = null;
+			STACKPANE = null;
+			REGION = null;
+			HBOX = null;
+			VBOX = null;
+			PRIORITY = null;
+			PARENT = null;
+			PANE = null;
+			PLATFORM = null;
+			STAGE = null;
+			STAGESTYLE = null;
+			MODALITY = null;
+			SCENE = null;
+			SCREEN = null;
+			POS = null;
+			IMAGEVIEW = null;
+			BORDERPANE = null;
 		}
-		GIT = getClass("javafx.beans.value.ChangeListener");
+		GIT = getClass("org.eclipse.jgit.api.Git");
 		if(GIT != null) {
 			REVWALK = getClass("org.eclipse.jgit.revwalk.RevWalk");
 			FILEMODE = getClass("org.eclipse.jgit.lib.FileMode");
@@ -143,18 +197,23 @@ public class ReflectionLoader {
 				return instance.newInstance();
 			}
 			int len=0;
+			int count = arguments.length;
 			Class<?>[] methodArguments = null;
 			Object[] methodArgumentsValues = null;
 			if(arguments.length %2 == 1 || checkValue(arguments)) {
-				methodArguments=new Class[arguments.length];
-				methodArgumentsValues=new Object[arguments.length];
-				for(int i=0;i<arguments.length;i++) {
-					if(arguments[i] != null) {
-						methodArguments[i] = (Class<?>) arguments[i].getClass();
-					}else {
-						methodArguments[i] = Object.class;
+				if(arguments.length == 1 && arguments[0] == null) {
+					count =0;
+				}else {
+					methodArguments=new Class[arguments.length];
+					methodArgumentsValues=new Object[arguments.length];
+					for(int i=0;i<arguments.length;i++) {
+						if(arguments[i] != null) {
+							methodArguments[i] = (Class<?>) arguments[i].getClass();
+						}else {
+							methodArguments[i] = Object.class;
+						}
+						methodArgumentsValues[i] = arguments[i];
 					}
-					methodArgumentsValues[i] = arguments[i];
 				}
 			} else {
 				len = arguments.length / 2;
@@ -163,7 +222,7 @@ public class ReflectionLoader {
 				methodArguments=new Class[len];
 				methodArgumentsValues=new Object[len];
 				int pos=0;
-				for(int i=0;i<arguments.length;i+=2) {
+				for(int i=0;i<count;i+=2) {
 					methodArguments[pos] = (Class<?>) arguments[i];
 					methodArgumentsValues[pos] = arguments[i+1];
 					pos++;
@@ -172,6 +231,9 @@ public class ReflectionLoader {
 			Constructor<?> constructor = instance.getDeclaredConstructor(methodArguments);
 			return constructor.newInstance(methodArgumentsValues);
 		} catch (Exception e) {
+			if(logger != null) {
+				e.printStackTrace(logger);
+			}
 		}
 		return null;
 	}
@@ -194,7 +256,7 @@ public class ReflectionLoader {
 		}
 		Object callObj = item;
 		for(String method : methodNames) {
-			callObj = call(method, callObj);
+			callObj = calling(method, callObj, true);
 		}
 		return callObj;
 	}
@@ -210,11 +272,17 @@ public class ReflectionLoader {
 			field = className.getField(fieldName);
 			return field.get(null);
 		} catch (Exception e) {
+			if(logger != null) {
+				e.printStackTrace(logger);
+			}
 		}
 		return null;
 	}
 
 	public static Object call(String methodName, Object item, Object... arguments) {
+		return calling(methodName, item, true, arguments);
+	}
+	public static Object calling(String methodName, Object item, boolean notify, Object... arguments) {
 		if(methodName == null || item == null) {
 			return null;
 		}
@@ -284,7 +352,9 @@ public class ReflectionLoader {
 				return method.invoke(item, methodArgumentsValues);
 			}				
 		} catch (Exception e) {
-			//			e.printStackTrace();
+			if(logger != null && notify) {
+				e.printStackTrace(logger);
+			}
 		}
 		return null;
 	}

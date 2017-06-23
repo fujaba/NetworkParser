@@ -1,6 +1,7 @@
 package de.uniks.networkparser.logic;
 
 import java.beans.PropertyChangeListener;
+
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.interfaces.LocalisationInterface;
 import de.uniks.networkparser.interfaces.ObjectCondition;

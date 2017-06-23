@@ -25,79 +25,68 @@ THE SOFTWARE.
 */
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
-import com.sun.javafx.tk.Toolkit;
+import de.uniks.networkparser.ext.generic.ReflectionLoader;
+import de.uniks.networkparser.ext.javafx.JavaFXUtil;
+import de.uniks.networkparser.gui.controls.Button;
+import de.uniks.networkparser.gui.controls.Control;
+import de.uniks.networkparser.gui.controls.Label;
+import de.uniks.networkparser.interfaces.ObjectCondition;
+import de.uniks.networkparser.list.SimpleSet;
 
-import de.uniks.networkparser.ext.javafx.dialog.DialogButton.Grafik;
-import javafx.application.Platform;
-import javafx.beans.InvalidationListener;
-import javafx.beans.Observable;
-import javafx.beans.property.ReadOnlyBooleanProperty;
-import javafx.css.PseudoClass;
-import javafx.event.EventHandler;
-import javafx.geometry.Pos;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.control.ToolBar;
-import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.Region;
-import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
-import javafx.stage.Window;
-
-public class DialogBox {
-	protected static final PseudoClass ACTIVE_PSEUDO_CLASS = PseudoClass.getPseudoClass("active");
+public class DialogBox implements ObjectCondition{
 	protected static final int HEADER_HEIGHT = 28;
 	protected static final URL DIALOGS_CSS_URL = DialogBox.class.getResource("dialogs.css");
-	protected ToolBar dialogTitleBar;
-
-	BorderPane root;
-	Stage stage;
-	boolean modal = true;
-	Scene scene;
 	boolean alwaysOnTop;
-	DialogButton action;
-	private Parent owner;
-	private TitleText titleElement = new TitleText();
-	private ArrayList<DialogElement> titleElements = new ArrayList<DialogElement>();
-	private ArrayList<DialogElement> actionElements = new ArrayList<DialogElement>();
+	boolean modal = true;
+
+	private SimpleSet<Control> titleElements = new SimpleSet<Control>();
+	private SimpleSet<Control> actionElements = new SimpleSet<Control>();
 
 	private double mouseDragDeltaY;
 	private double mouseDragDeltaX;
 
+	protected static final Object ACTIVE_PSEUDO_CLASS = ReflectionLoader.call("getPseudoClass", ReflectionLoader.PSEUDOCLASS, "active");
+	protected Object dialogTitleBar;
+
+	private Object root;
+	private Object stage;
+	private Object originalParent;
+
+	Button action;
+	private Object owner;
+	private Label titleElement = new Label().withType(Label.TITLE);
+
+	
 	//Inline Show
 	private boolean isInline;
-	private Parent originalParent;
-	private Pane dialogStack;
-	private Region opaqueLayer;
+
 	private boolean iconified;
-	private Node center;
+	private Object center;
+	
+	
 
 	public DialogBox() {
 		titleElements.add(titleElement);
-		titleElements.add(new TitleSpacer());
-		titleElements.add(new DialogButton().withGrafik(Grafik.close));
-//		closeButton = new DialogButton().withGrafik(Grafik.close).withStage(stage);
+		titleElements.add(new Label().withType(Label.SPACER));
+		titleElements.add(new Button().withActionType(Button.CLOSE, this));
 //		minButton = new DialogButton().withGrafik(Grafik.minimize).withStage(stage);
 //		maxButton = new DialogButton().withGrafik(Grafik.maximize).withStage(stage);
 	}
 
 	public DialogBox withTitle(String value) {
 		if(value != null) {
-			titleElement.setText(value);
+			titleElement.setValue(value);
 		}
 		return this;
 	}
-	public DialogButton show(Window owner){
-		if(titleElement.getText().length() < 1 ) {
-			if(owner instanceof Stage) {
-				titleElement.setText( ((Stage) owner).getTitle() );
+	public Button show(Object owner){
+		if(titleElement.length() < 1 ) {
+			Object title = ReflectionLoader.call("getTitle", owner);
+			if(title != null) {
+				titleElement.setValue((String) title);
 			}
 		}
 		if(isInline) {
@@ -107,73 +96,69 @@ public class DialogBox {
 
 	}
 
-	private DialogButton showIntern(Window parent) {
-		if (parent instanceof Stage) {
-			this.stage = (Stage) parent;
-			this.scene = stage.getScene();
-		}else{
-			return null;
-		}
+	@SuppressWarnings("unchecked")
+	private Button showIntern(Object parent) {
+		Object scene;
+		this.stage = parent;
+		scene = ReflectionLoader.call("getScene", stage);
 		configScene();
 
 		// modify scene root to install opaque layer and the dialog
-		originalParent = scene.getRoot();
+		originalParent = ReflectionLoader.call("getRoot", scene);
 
 		createContent();
 
-		buildDialogStack(originalParent);
+		DialogPane myPane = new DialogPane(this, originalParent);
 
-		root.pseudoClassStateChanged(ACTIVE_PSEUDO_CLASS, true);
-
-		root.setVisible(true);
+		
+		
+		ReflectionLoader.call("pseudoClassStateChanged", root, ReflectionLoader.PSEUDOCLASS, ACTIVE_PSEUDO_CLASS, boolean.class, true);
 
 		// add to originalParent
-		Parent originalParent = scene.getRoot();
-		scene.setRoot(dialogStack);
+		ReflectionLoader.call("setRoot", scene, ReflectionLoader.PARENT, myPane.getPane());
+		
+		ReflectionLoader.call("setVisible", root, boolean.class, true);
 		if (originalParent != null) {
-			dialogStack.getChildren().add(0, originalParent);
-			dialogStack.getProperties().putAll(originalParent.getProperties());
+			JavaFXUtil.addChildren(myPane.getPane(), 0, originalParent);
+			Map<Object,Object> properties = (Map<Object, Object>) ReflectionLoader.call("getProperties", originalParent);
+			
+			Map<Object, Object> dialogProperties = (Map<Object, Object>) ReflectionLoader.call("getProperties", myPane.getPane());
+			dialogProperties.putAll(properties);
 		}
-
-		root.requestFocus();
-		if(!modal) {
-			Toolkit.getToolkit().enterNestedEventLoop(root);
-			return action;
-		}
+		ReflectionLoader.call("requestFocus", root);
+		
+		ReflectionLoader.call("runLater", ReflectionLoader.PLATFORM, myPane);
 		return null;
 	}
 
-	public void hide(DialogButton value) {
+	public void hide(Button value) {
 		if(this.action == null) {
 			this.setAction(value);
 		}
 	}
 
-	public void setAction(DialogButton value) {
+	public void setAction(Button value) {
 		this.action = value;
 		if(isInline) {
 			// hide the dialog
-			root.setVisible(false);
+			ReflectionLoader.call("setVisible", root, boolean.class, false);
 			// reset the scene root
-			Parent oldParent = scene.getRoot();
-			if(oldParent instanceof Pane) {
-				((Pane) oldParent).getChildren().remove(originalParent);
-				originalParent.getStyleClass().remove("root");
-				scene.setRoot(originalParent);
-			}
-			if(!modal) {
-				Toolkit.getToolkit().exitNestedEventLoop(root, null);
-			}
+			Object scene = ReflectionLoader.call("getScene", stage);
+			Object oldParent = ReflectionLoader.call("getRoot", scene);
+			
+			JavaFXUtil.removeChildren(oldParent, originalParent);
+			JavaFXUtil.removeStyle(originalParent, "root");
+			ReflectionLoader.call("setRoot", scene, ReflectionLoader.PARENT, originalParent);
 			return;
 		}
 		if (stage != null) {
-			stage.hide();
+			ReflectionLoader.call("hide", stage);
 		}
 	}
 
 	public void minimize() {
 		if (stage != null) {
-			stage.setIconified(this.iconified);
+			ReflectionLoader.call("setIconified", stage, this.iconified);
 		}
 	}
 
@@ -183,123 +168,37 @@ public class DialogBox {
 //			root.setPrefWidth(originalParent.getWidth());
 		}
 		if (stage != null) {
-			stage.setFullScreen(true);
+			ReflectionLoader.call("setFullScreen", stage, true);
 		}
 	}
 
-	private void buildDialogStack(final Node parent) {
-		dialogStack = new Pane() {
-			private boolean isFirstRun = true;
-			{
-				if(!modal){
-					opaqueLayer = new Region();
-					opaqueLayer.getStyleClass().add("lightweight-dialog-background");
-					getChildren().add(0, opaqueLayer);
-				}
-				getChildren().add(root);
-			}
-
-			@Override protected void layoutChildren() {
-				final double w = getOverlayWidth();
-				final double h = getOverlayHeight();
-
-				final double x = getOverlayX();
-				final double y = getOverlayY();
-
-				if (parent != null) {
-					parent.resizeRelocate(x, y, w, h);
-				}
-
-				if (opaqueLayer != null) {
-					opaqueLayer.resizeRelocate(x, y, w, h);
-				}
-
-				final double dialogWidth = root.prefWidth(-1);
-				final double dialogHeight = root.prefHeight(-1);
-				root.resize((int)(dialogWidth), (int)(dialogHeight));
-
-				// hacky, but we only want to position the dialog the first time
-				// it is laid out - after that the only way it should move is if
-				// the user moves it.
-				if (isFirstRun) {
-					isFirstRun = false;
-
-					double dialogX = root.getLayoutX();
-					dialogX = dialogX == 0.0 ? w / 2.0 - dialogWidth / 2.0 : dialogX;
-
-					double dialogY = root.getLayoutY();
-					dialogY = dialogY == 0.0 ? h / 2.0 - dialogHeight / 2.0 : dialogY;
-
-					root.relocate((int)(dialogX), (int)(dialogY));
-				}
-			}
-
-			// These are the actual implementations in Region (the parent of Pane),
-			// but just for clarify I reproduce them here
-			@Override protected double computeMinHeight(double width) {
-				return parent.minHeight(width);
-			}
-
-			@Override protected double computeMinWidth(double height) {
-				return parent.minWidth(height);
-			}
-
-			@Override protected double computePrefHeight(double width) {
-				return parent.prefHeight(width);
-			}
-
-			@Override protected double computePrefWidth(double height) {
-				return parent.prefWidth(height);
-			}
-
-			@Override protected double computeMaxHeight(double width) {
-				return parent.maxHeight(width);
-			}
-
-			@Override protected double computeMaxWidth(double height) {
-				return parent.maxWidth(height);
-			}
-		};
-
-		dialogStack.setManaged(true);
-	}
-
-	private double getOverlayWidth() {
+	protected double getOverlayWidth() {
 		if (owner != null) {
-			return owner.getLayoutBounds().getWidth();
-		} else if (scene != null) {
-			return scene.getWidth();
+			return (double) ReflectionLoader.callChain(owner, "getLayoutBounds", "getWidth");
+		} else if (stage != null) {
+			return (double) ReflectionLoader.callChain(stage, "getScene", "getWidth");
 		}
 
 		return 0;
 	}
 
-	private double getOverlayHeight() {
+	protected double getOverlayHeight() {
 		if (owner != null) {
-			return owner.getLayoutBounds().getHeight();
-		} else if (scene != null) {
-			return scene.getHeight();
+			return (double) ReflectionLoader.callChain(owner, "getLayoutBounds", "getHeight");
+		} else if (stage != null) {
+			return (double) ReflectionLoader.callChain(stage, "getScene", "getHeight");
 		}
 
 		return 0;
 	}
 
-	private double getOverlayX() {
-		return 0;
-	}
+	private Button showExtern(Object owner) {
 
-	private double getOverlayY() {
-		return 0;
-	}
-
-	private DialogButton showExtern(Window owner) {
-
-		if(Toolkit.getToolkit().isFxUserThread()) {
-			new ShowTask(this, owner).run();
-			return action;
-		}
-
-		Platform.runLater(new ShowTask(this, owner));
+//FIXME REMOVE		if(Toolkit.getToolkit().isFxUserThread()) {
+//			new DialogStage(this, owner).run();
+//			return action;
+//		}
+		ReflectionLoader.call("runLater", ReflectionLoader.PLATFORM, Runnable.class, new DialogStage(this, owner));
 		return null;
 	}
 
@@ -318,100 +217,112 @@ public class DialogBox {
 		return this;
 	}
 
+	@SuppressWarnings("unchecked")
 	void configScene() {
-		Scene element = scene;
+		Object scene = ReflectionLoader.call("getScene", stage);
 		String dialogsCssUrl = DIALOGS_CSS_URL.toExternalForm();
+		if (scene == null && owner != null) {
+			scene = ReflectionLoader.call("getScene", owner);
+		}
 		if (scene != null) {
 			// install CSS
-			if (!scene.getStylesheets().contains(dialogsCssUrl)) {
-				scene.getStylesheets().addAll(dialogsCssUrl);
-			}
-		} else if (owner != null) {
-			element = owner.getScene();
-			if (element != null) {
-				// install CSS
-				if (!element.getStylesheets().contains(dialogsCssUrl)) {
-					element.getStylesheets().addAll(dialogsCssUrl);
+			Object styleSheet = ReflectionLoader.call("getStylesheets", scene);
+			if(styleSheet instanceof List<?>) {
+				List<String> list = (List<String>) styleSheet;
+				if (list.contains(dialogsCssUrl) == false) {
+					list.add(dialogsCssUrl);
 				}
 			}
 		}
-//		element.addEventHandler(KeyEvent.KEY_PRESSED, new KeyListenerMap() );
 	}
 
-	public void createContent(){
-		root = new BorderPane();
-		root.getStyleClass().addAll("dialog", "decorated-root");
+	public void createContent() {
+		root = ReflectionLoader.newInstance(ReflectionLoader.BORDERPANE);
+		JavaFXUtil.setStyle(root, false, "dialog", "decorated-root");
 
-		stage.focusedProperty().addListener(new InvalidationListener () {
-
+		ObjectCondition condition = new ObjectCondition() {
 			@Override
-			public void invalidated(Observable valueModel) {
-				 boolean active = ((ReadOnlyBooleanProperty)valueModel).get();
-				 root.pseudoClassStateChanged(ACTIVE_PSEUDO_CLASS, active);
+			public boolean update(Object value) {
+				boolean active = (boolean) value;
+				 ReflectionLoader.call("pseudoClassStateChanged", root, ReflectionLoader.PSEUDOCLASS, ACTIVE_PSEUDO_CLASS, boolean.class, active);
+				return true;
 			}
-		});
+		};
+		
+		Object property = ReflectionLoader.call("focusedProperty", stage);
+		JavaFXUtil.addListener(property, "addListener", ReflectionLoader.CHANGELISTENER, condition);
 
 		// --- titlebar (only used for cross-platform look)
-		dialogTitleBar = new ToolBar();
-		dialogTitleBar.getStyleClass().add("window-header");
-		dialogTitleBar.setPrefHeight(HEADER_HEIGHT);
-		dialogTitleBar.setMinHeight(HEADER_HEIGHT);
-		dialogTitleBar.setMaxHeight(HEADER_HEIGHT);
-		for(DialogElement element : titleElements) {
-			dialogTitleBar.getItems().add((Node) element.withOwner(this));
+		dialogTitleBar = ReflectionLoader.newInstance(ReflectionLoader.TOOLBAR);
+		JavaFXUtil.setStyle(dialogTitleBar, false, "window-header");
+		ReflectionLoader.call("setPrefHeight", dialogTitleBar, double.class, HEADER_HEIGHT);
+		ReflectionLoader.call("setMinHeight", dialogTitleBar, double.class, HEADER_HEIGHT);
+		ReflectionLoader.call("setMaxHeight", dialogTitleBar, double.class, HEADER_HEIGHT);
+		for(Control element : titleElements) {
+			Object guiElement = JavaFXUtil.convert(element, true);
+			JavaFXUtil.addChildren(dialogTitleBar, -1, guiElement);
 		}
-		dialogTitleBar.setOnMousePressed(new EventHandler<MouseEvent>() {
+		
+		condition = new ObjectCondition() {
 			@Override
-			public void handle(MouseEvent event) {
-//				if(isInline) {
-					mouseDragDeltaX = event.getSceneX();
-					mouseDragDeltaY = event.getSceneY();
-//				}else{
-//					mouseDragDeltaX = event.getSceneX();
-//					mouseDragDeltaY = event.getSceneY();
-//				}
-			}
-		});
-		dialogTitleBar.setOnMouseDragged(new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent event) {
-				if(isInline) {
-					root.setLayoutX(root.getLayoutX() + (event.getSceneX() - mouseDragDeltaX));
-					root.setLayoutY(root.getLayoutY() + (event.getSceneY() - mouseDragDeltaY));
-					mouseDragDeltaX = event.getSceneX();
-					mouseDragDeltaY = event.getSceneY();
+			public boolean update(Object event) {
+				mouseDragDeltaX = (double) ReflectionLoader.call("getSceneX", event);
+				mouseDragDeltaY = (double) ReflectionLoader.call("getSceneY", event);
 
+				return true;
+			}
+		};
+		JavaFXUtil.addListener(dialogTitleBar, "setOnMousePressed", ReflectionLoader.EVENTHANDLER, condition);
+
+		
+		condition = new ObjectCondition() {
+			@Override
+			public boolean update(Object event) {
+				double eventX = (double) ReflectionLoader.call("getScreenX", event) - mouseDragDeltaX;
+				double eventY = (double) ReflectionLoader.call("getScreenY", event) - mouseDragDeltaY;
+				
+				if(isInline) {
+					double x = (double) ReflectionLoader.call("getLayoutX", root);
+					double y = (double) ReflectionLoader.call("getLayoutY", root);
+					ReflectionLoader.call("setLayoutX", root, double.class, x + eventX);
+					ReflectionLoader.call("setLayoutY", root, double.class, y + eventY);
 				}else{
-					stage.setX(event.getScreenX() - mouseDragDeltaX);
-					stage.setY(event.getScreenY() - mouseDragDeltaY);
+					ReflectionLoader.call("setX", stage, double.class, eventX);
+					ReflectionLoader.call("setY", stage, double.class, eventY);
 				}
+
+				return true;
 			}
-		});
-		root.setTop(dialogTitleBar);
-		root.setCenter(center);
+		};
+		JavaFXUtil.addListener(dialogTitleBar, "setOnMouseDragged", ReflectionLoader.EVENTHANDLER, condition);
+
+		ReflectionLoader.call("setTop", root, ReflectionLoader.NODE, dialogTitleBar);
+		ReflectionLoader.call("setCenter", root, ReflectionLoader.NODE, center);
 		if(this.actionElements.size() > 0) {
-			HBox actionToolbar = new HBox();
-			actionToolbar.getStyleClass().add("window-action");
-			for(DialogElement item : this.actionElements) {
-				item.withOwner(this);
-				actionToolbar.getChildren().add((Node) item);
+			Object actionToolbar = ReflectionLoader.newInstance(ReflectionLoader.HBOX);
+			JavaFXUtil.setStyle(actionToolbar, false, "window-action");
+			for(Control item : this.actionElements) {
+				Object guiElement = JavaFXUtil.convert(item, false);
+//				item.withOwner(this);
+				JavaFXUtil.addChildren(actionToolbar, -1, guiElement);
 			}
-			actionToolbar.setAlignment(Pos.TOP_RIGHT);
-			root.setBottom(actionToolbar);
+			Object pos = ReflectionLoader.getField("TOP_RIGHT", ReflectionLoader.POS);
+			ReflectionLoader.call("setAlignment", actionToolbar, ReflectionLoader.POS, pos);
+			ReflectionLoader.call("setBottom", root, ReflectionLoader.NODE, actionToolbar);
 		}
 	}
 
-	public DialogBox withCenter(Node node) {
+	public DialogBox withCenter(Object node) {
 		this.center = node;
 		return this;
 	}
 
-	public DialogBox withTitleButton(int index, DialogElement... value) {
+	public DialogBox withTitleButton(int index, Control... value) {
 		if(value==null){
 			return this;
 		}
-		ArrayList<DialogElement> items=new ArrayList<DialogElement>();
-		for(DialogElement item : value) {
+		ArrayList<Control> items=new ArrayList<Control>();
+		for(Control item : value) {
 			items.add(item);
 		}
 		this.titleElements.addAll(index, items);
@@ -419,22 +330,22 @@ public class DialogBox {
 
 	}
 
-	public DialogBox withTitleButton(DialogElement... value) {
+	public DialogBox withTitleButton(Control... value) {
 		if(value==null){
 			return this;
 		}
-		for(DialogElement item : value) {
+		for(Control item : value) {
 			this.titleElements.add(item);
 		}
 		return this;
 	}
 
-	public DialogBox withActionButton(int index, DialogElement... value) {
+	public DialogBox withActionButton(int index, Control... value) {
 		if(value==null){
 			return this;
 		}
-		ArrayList<DialogElement> items=new ArrayList<DialogElement>();
-		for(DialogElement item : value) {
+		ArrayList<Control> items=new ArrayList<Control>();
+		for(Control item : value) {
 			items.add(item);
 		}
 		this.actionElements.addAll(index, items);
@@ -442,11 +353,11 @@ public class DialogBox {
 
 	}
 
-	public DialogBox withActionButton(DialogElement... value) {
+	public DialogBox withActionButton(Control... value) {
 		if(value==null){
 			return this;
 		}
-		for(DialogElement item : value) {
+		for(Control item : value) {
 			this.actionElements.add(item);
 		}
 		return this;
@@ -463,54 +374,52 @@ public class DialogBox {
 	}
 
 	public DialogBox withCenterText(String image, String value) {
-		HBox box = new HBox();
+		Object box =ReflectionLoader.newInstance(ReflectionLoader.HBOX);
 
-		ImageView imageView = new ImageView(DialogBox.class.getResource(image).toString());
-		Label text= new Label(value);
-		text.getStyleClass().add("labelText");
+		Object imageView = ReflectionLoader.newInstance(ReflectionLoader.IMAGEVIEW, String.class, DialogBox.class.getResource(image).toString());
+		
+		Object text = ReflectionLoader.newInstance(ReflectionLoader.LABEL, String.class, value);
+		JavaFXUtil.setStyle(text, false, "labelText");
 
-		VBox vBox=new VBox();
-		vBox.setAlignment(Pos.CENTER);
-		vBox.getChildren().add(text);
+		Object vBox = ReflectionLoader.newInstance(ReflectionLoader.VBOX);
+		Object pos = ReflectionLoader.getField("CENTER", ReflectionLoader.POS);
+		ReflectionLoader.call("setAlignment", vBox, ReflectionLoader.POS, pos);
+		JavaFXUtil.addChildren(vBox, -1, text);
 
-		box.getChildren().add(imageView);
-		box.getChildren().add(vBox);
-		box.getStyleClass().add("centerbox");
+		JavaFXUtil.addChildren(box, -1, imageView, vBox);
+		JavaFXUtil.setStyle(box, false, "centerbox");
 		this.center = box;
 		return this;
 	}
 
-	public static DialogButton showInfo(Window parent, String title, String text) {
-		return new DialogBox()
-			.withTitle(title)
-			.withCenterInfo(text)
-			.withActionButton(new DialogButton().withName("OK").withAction(Grafik.close))
+	public static Button showInfo(Object parent, String title, String text, boolean inLine) {
+		DialogBox dialogBox = new DialogBox().withTitle(title).withCenterInfo(text).withInline(inLine);
+		return dialogBox
+			.withActionButton(new Button().withActionType(Button.CLOSE, dialogBox).withValue("OK"))
 			.show(parent);
 	}
 
-	public static DialogButton showInfo(String title, String text) {
-		return new DialogBox()
-			.withTitle(title)
-			.withCenterInfo(text)
-			.withActionButton(new DialogButton().withName("OK").withAction(Grafik.close))
+	public static Button showInfo(String title, String text) {
+		DialogBox dialogBox = new DialogBox().withTitle(title).withCenterInfo(text);
+		return dialogBox
+			.withActionButton(new Button().withValue("OK").withActionType(Button.CLOSE, dialogBox))
 			.show(null);
 	}
 
-	public static DialogButton showQuestion(Window parent, String title, String text) {
-		return new DialogBox()
-			.withTitle(title)
-			.withCenterQuestion(text)
-			.withActionButton(new DialogButton().withName("Yes").withAction(Grafik.close), new DialogButton().withName("No").withAction(Grafik.close))
+	public static Button showQuestion(Object parent, String title, String text) {
+		DialogBox dialogBox = new DialogBox().withTitle(title).withCenterInfo(text);
+		return dialogBox
+			.withActionButton(new Button().withValue("Yes").withActionType(Button.CLOSE, dialogBox), new Button().withValue("No").withActionType(Button.CLOSE, dialogBox))
 			.show(parent);
 	}
-	public static boolean createQuestionCheck(Window parent, String title, String text, String... check) {
-		DialogButton action = showQuestion(parent, title, text);
+	public static boolean createQuestionCheck(Object parent, String title, String text, String... check) {
+		Button action = showQuestion(parent, title, text);
 		if(action==null) {
 			return false;
 		}
 		for(String item : check){
 			if(item != null) {
-				if(item.equalsIgnoreCase(action.getText())){
+				if(item.equalsIgnoreCase(action.getValue())){
 					return true;
 				}
 			}
@@ -518,7 +427,48 @@ public class DialogBox {
 		return false;
 	}
 
-	public DialogButton getAction() {
+	public Button getAction() {
 		return action;
+	}
+
+	@Override
+	public boolean update(Object value) {
+		if(value instanceof Button == false) {
+			return false;
+		}
+		Button btn = (Button) value;
+		if(Button.CLOSE.equalsIgnoreCase(btn.getActionType())) {
+			this.hide(btn);
+		}
+		if(Button.MINIMIZE.equalsIgnoreCase(btn.getActionType())) {
+			this.minimize();
+		}
+		if(Button.MAXIMIZE.equalsIgnoreCase(btn.getActionType())) {
+			this.maximize();
+		}
+		return true;
+	}
+	
+	public double prefWidth(double value) {
+		return (double) ReflectionLoader.call("prefWidth", root, double.class, -1);
+	}
+	public double prefHeight(double value) {
+		return (double) ReflectionLoader.call("prefHeight", root, double.class, -1);
+	}
+
+	public void setStage(Object newStage) {
+		this.stage = newStage;
+	}
+
+	public Object getRoot() {
+		return root;
+	}
+
+	public boolean isModel() {
+		return this.modal;
+	}
+
+	public Object getScene() {
+		return ReflectionLoader.call("getScene", stage);
 	}
 }

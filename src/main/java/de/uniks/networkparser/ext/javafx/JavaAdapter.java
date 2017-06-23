@@ -114,7 +114,7 @@ public class JavaAdapter implements JavaViewAdapter {
 			return true;
 		}
 		if(ReflectionLoader.JSOBJECT.isAssignableFrom(value.getClass())) {
-			EventFX event = EventFX.create((JSObject) value);
+			JavaFXEvent event = JavaFXEvent.create((JSObject) value);
 			owner.fireEvent(event);
 			return true;
 		}
@@ -181,10 +181,11 @@ public class JavaAdapter implements JavaViewAdapter {
 	
 	protected void addAdapter(ObjectCondition eventListener) {
 		JsonObjectLazy executeScript = (JsonObjectLazy) _execute("bridge.addAdapter(new DiagramJS.DelegateAdapter());");
-		JSObject reference = executeScript.getReference();
+		Object reference = executeScript.getReference();
 //		String callBackName = getCallBackName(eventListener)+".update";
 //		reference.setMember("callBackfunction", callBackName);
-		reference.call("setAdapter", eventListener);
+		ReflectionLoader.call("setAdapter", reference, Object.class, eventListener);
+//		reference.call("setAdapter", eventListener);
 	}
 
 	@Override
