@@ -65,11 +65,13 @@ public class NetworkParserLog {
 	public static final String ERROR_TYP_CONCURRENTMODIFICATION = "CONCURRENTMODIFICATION";
 	public static final String ERROR_TYP_NOCREATOR = "NOCREATORFOUND";
 	public static final String ERROR_TYP_DUPPLICATE = "DUPPLICATE";
-	public static final String LOGLEVEL_INFO = "INFO";
-	public static final String LOGLEVEL_WARNING = "WARNING";
-	public static final String LOGLEVEL_ERROR = "ERROR";
+	public static final byte LOGLEVEL_INFO = 1;
+	public static final byte LOGLEVEL_WARNING = 2;
+	public static final byte LOGLEVEL_ERROR = 4;
+	public static final byte LOGLEVEL_ALL = 7;
 
 	private boolean isError = true;
+	private byte flag = 5; // ERROR + INFO
 
 	/**
 	 * Log a message with debug log level.
@@ -91,8 +93,21 @@ public class NetworkParserLog {
 	 * @return boolean if method must Cancel
 	 */
 	public boolean info(Object owner, String method, String message) {
-		System.out.println("INFO: " + message);
+		if((flag & LOGLEVEL_INFO) != 0) {
+			System.out.println("INFO: " + message);
+		}
 		return false;
+	}
+	
+	public NetworkParserLog withFlag(byte flag) {
+		this.flag = (byte) (this.flag | flag); 
+		return this;
+	}
+	
+	public NetworkParserLog withoutFlag(byte flag) {
+		this.flag = (byte) (this.flag | flag);
+		this.flag -= flag;
+		return this;
 	}
 
 	/**
@@ -104,7 +119,9 @@ public class NetworkParserLog {
 	 * @return boolean if method must Cancel
 	 */
 	public boolean warn(Object owner, String method, String message) {
-		System.err.println("WARN: " + message);
+		if((flag & LOGLEVEL_WARNING) != 0) {
+			System.err.println("WARN: " + message);
+		}
 		return false;
 	}
 
@@ -119,13 +136,29 @@ public class NetworkParserLog {
 	 */
 	public boolean error(Object owner, String method, String type,
 			Object... params) {
-		return this.isError;
+		if(params == null || (flag & LOGLEVEL_ERROR) == 0) {
+			return isError;
+		}
+		if(params.length == 1) {
+			System.err.println("ERROR: " + params[0]);
+			return this.isError;
+		}
+		StringBuilder sb=new StringBuilder();
+		for(Object item : params) {
+			if(item != null) {
+				sb.append(item.toString()+" ");
+			}
+		}
+		if(sb.length()>0) {
+			System.err.println("ERROR: " + sb.toString());
+		}
+		return isError;
 	}
 
 	public boolean isError() {
 		return isError;
 	}
-
+	
 	/**
 	 * @param value		is Break for Error
 	 * @return 			Itself
@@ -135,11 +168,11 @@ public class NetworkParserLog {
 		return this;
 	}
 
-	public boolean log(String msg, String level, Object owner, String method) {
-		if(LOGLEVEL_ERROR.equalsIgnoreCase(level)) {
+	public boolean log(Object owner, String method, String msg, int level) {
+		if(level == LOGLEVEL_ERROR) {
 			return this.error(owner, method, msg);
 		}
-		if(LOGLEVEL_WARNING.equalsIgnoreCase(level)) {
+		if(level == LOGLEVEL_WARNING) {
 			return this.warn(owner, method, msg);
 		}
 		return this.info(owner, method, msg);

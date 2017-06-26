@@ -252,9 +252,9 @@ public abstract class JavaBridge implements ObjectCondition {
 	}
 
 
-	public void logScript(String msg, String level, Object owner, String method) {
+	public void logScript(String msg, int level, Object owner, String method) {
 		if (logger != null) {
-			this.logger.log(msg, level, owner, method);
+			this.logger.log(owner, method, msg, level);
 		}
 	}
 
