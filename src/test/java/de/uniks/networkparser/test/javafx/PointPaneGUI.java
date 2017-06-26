@@ -1,19 +1,22 @@
 package de.uniks.networkparser.test.javafx;
 
-import de.uniks.networkparser.ext.javafx.FXStageController;
-import de.uniks.networkparser.ext.javafx.SimpleShell;
-//import de.uniks.networkparser.ext.javafx.controller.PointPaneController;
-import de.uniks.networkparser.test.model.ludo.Dice;
+import de.uniks.networkparser.ext.javafx.SimpleController;
+import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.scene.Parent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
+import javafx.stage.Stage;
 
-public class PointPaneGUI extends SimpleShell {
-	private Dice dice = new Dice();
+public class PointPaneGUI extends Application {
+//	private Dice dice = new Dice();
 //FIXME	private PointPaneController pointPaneController;
+	public static void main(String[] args) {
+		launch(args);
+	}
+
 	@Override
-	protected Parent createContents(FXStageController value, Parameters args) {
+	public void start(Stage primaryStage) throws Exception {
+		SimpleController controller = SimpleController.create(primaryStage);
 		AnchorPane layout = new AnchorPane();
 		Pane pane = new Pane();
 		pane.setPrefSize(32, 32);
@@ -33,12 +36,7 @@ public class PointPaneGUI extends SimpleShell {
 //				pointPaneController.throwDice();
 			}
 		});
-		
-		return layout;
-	}
-	
-	public static void main(String[] args) {
-		launch(args);
+		controller.show(layout);
 	}
 
 }

@@ -70,4 +70,8 @@ public class JavaFXEvent extends Event {
 		}
 		return event;
 	}
+
+	public ObjectCondition getListener() {
+		return this.listerner;
+	}
 }

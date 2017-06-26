@@ -1,16 +1,14 @@
 package de.uniks.networkparser.ext.javafx;
 
+import de.uniks.networkparser.ext.generic.ReflectionLoader;
 import de.uniks.networkparser.json.JsonArray;
-import netscape.javascript.JSObject;
 
 public class JsonArrayLazy extends JsonArray {
-	private JSObject ref = null;
+	private Object ref = null;
 	private boolean loaded;
 
 	public JsonArrayLazy(Object element) {
-		if(element instanceof JSObject) {
-			this.ref = (JSObject) element;
-		}
+		this.ref = element;
 	}
 
 
@@ -24,12 +22,11 @@ public class JsonArrayLazy extends JsonArray {
 		else {
 			return false;
 		}
-		int size = (int) this.ref.eval("this.length;");
+		int size = (int) ReflectionLoader.call("eval", ref, "this.length;");
 		for (int i = 0; i < size; i++) {
-			Object value = this.ref.eval("this[" + i + "]");
-			if (value instanceof JSObject) {
-				JSObject jsValue = (JSObject) value;
-				boolean isArray = Boolean.parseBoolean("" + jsValue.eval("Array.isArray(this);"));
+			Object value = ReflectionLoader.call("eval", ref, "this[" + i + "]");
+			if(ReflectionLoader.JSOBJECT.isAssignableFrom(value.getClass())) {
+				boolean isArray = (boolean) ReflectionLoader.call("eval", value, "Array.isArray(this);");
 
 				if (isArray) {
 					JsonArrayLazy child = new JsonArrayLazy(value);

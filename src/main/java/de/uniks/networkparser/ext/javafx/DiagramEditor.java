@@ -40,34 +40,38 @@ import de.uniks.networkparser.gui.Editor;
 import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
+import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Worker;
 import javafx.concurrent.Worker.State;
 import javafx.event.EventHandler;
-import javafx.scene.Parent;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebErrorEvent;
 import javafx.scene.web.WebView;
+import javafx.stage.Stage;
 import netscape.javascript.JSObject;
 
-public class DiagramEditor extends SimpleShell implements Editor {
+public class DiagramEditor extends Application implements Editor {
 	private final static String CRLF = "\r\n";
 	private WebView browser;
 	private WebEngine webEngine;
 	private Editor logic;
+	private SimpleController controller;
 
 	@Override
-	protected Parent createContents(FXStageController controller, Parameters args) {
+	public void start(Stage primaryStage) throws Exception {
+		controller = SimpleController.create(primaryStage);
 		controller.withTitle("ClassdiagrammEditor");
 		controller.withSize(900, 600);
 
-		this.enableError("errors");
-		String value = args.getNamed().get("logic");
+		controller.withErrorPath("errors");
+		SimpleKeyValueList<String, String> map = controller.getParameterMap();
+		String value = map.get("logic");
 		if(value != null) {
 			try {
 				Class<?> clazz = Class.forName(value);
@@ -88,7 +92,7 @@ public class DiagramEditor extends SimpleShell implements Editor {
 		browser = new WebView();
 		webEngine = browser.getEngine();
 
-		SimpleKeyValueList<String, String> map = getParameterMap();
+		
 		StringBuilder content = new StringBuilder("<html><head>" + CRLF);
 
 		String body = "</head><body>" + CRLF
@@ -206,7 +210,8 @@ public class DiagramEditor extends SimpleShell implements Editor {
 				}
 			}
 		});
-		return browser;
+//		return browser;
+		controller.show(browser);
 	}
 
 	protected void writeFile(String file, String content) {
@@ -323,6 +328,44 @@ public class DiagramEditor extends SimpleShell implements Editor {
 		return false;
 	}
 
+	public void save(JsonObject model) {
+		DateFormat formatter = new SimpleDateFormat("yyyyMMdd_HHmmss");
+		String name = model.getString("package");
+		if (name == null || name.length() < 1) {
+			name = "model";
+		}
+		name = name + "_" + formatter.format(new Date().getTime()) + ".json";
+		writeFile(name, model.toString());
+	}
+
+	protected void saveException(Throwable e) {
+		if(this.controller != null) {
+			this.controller.saveException(e);
+		}
+	}
+
+	@Override
+	public void open(Object logic, String... args) {
+		SimpleList<String> values = new SimpleList<String>();
+		if(logic != null) {
+			values.add("--logic="+logic.getClass().getName());
+		}
+		if(args != null) {
+			for(String item : args) {
+				values.with(item);
+			}
+		}
+		launch(values.toArray(new String[values.size()]));
+	}
+
+	@Override
+	public String getIcon() {
+		if (this.logic != null) {
+			return this.logic.getIcon();
+		}
+		return null;
+	}
+	
 	public final static class JavaApp {
 		private DiagramEditor owner;
 
@@ -356,37 +399,5 @@ public class DiagramEditor extends SimpleShell implements Editor {
 			}
 			return "";
 		}
-	}
-
-	public void save(JsonObject model) {
-		DateFormat formatter = new SimpleDateFormat("yyyyMMdd_HHmmss");
-		String name = model.getString("package");
-		if (name == null || name.length() < 1) {
-			name = "model";
-		}
-		name = name + "_" + formatter.format(new Date().getTime()) + ".json";
-		writeFile(name, model.toString());
-	}
-
-	@Override
-	public void open(Object logic, String... args) {
-		SimpleList<String> values = new SimpleList<String>();
-		if(logic != null) {
-			values.add("--logic="+logic.getClass().getName());
-		}
-		if(args != null) {
-			for(String item : args) {
-				values.with(item);
-			}
-		}
-		launch(values.toArray(new String[values.size()]));
-	}
-
-	@Override
-	public String getIcon() {
-		if (this.logic != null) {
-			return this.logic.getIcon();
-		}
-		return null;
 	}
 }

@@ -1,21 +1,22 @@
 package de.uniks.networkparser.test.javafx;
 
-import de.uniks.networkparser.ext.javafx.FXStageController;
-import de.uniks.networkparser.ext.javafx.SimpleShell;
+import de.uniks.networkparser.ext.javafx.SimpleController;
 import de.uniks.networkparser.ext.javafx.dialog.DialogBox;
+import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.layout.GridPane;
+import javafx.stage.Stage;
 
-public class SimpleMessageBox extends SimpleShell{
+public class SimpleMessageBox extends Application{
 	public static void main(String[] args) {
 		launch(args);
 	}
 
 	@Override
-	protected Parent createContents(FXStageController value, Parameters args) {
+	public void start(Stage primaryStage) throws Exception {
+		SimpleController controller = SimpleController.create(primaryStage);
 		GridPane gridPane = new GridPane();
 		Button button=new Button();
 		button.setText("Click Me");
@@ -27,6 +28,6 @@ public class SimpleMessageBox extends SimpleShell{
 			}
 		});
 		gridPane.getChildren().add(button);
-		return gridPane;
+		controller.show(gridPane);
 	}
 }

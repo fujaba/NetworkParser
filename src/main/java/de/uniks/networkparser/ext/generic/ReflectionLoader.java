@@ -52,7 +52,9 @@ public class ReflectionLoader {
 	public static final Class<?> STAGESTYLE;
 	public static final Class<?> POS;
 	public static final Class<?> IMAGEVIEW;
+	public static final Class<?> IMAGE;
 	public static final Class<?> BORDERPANE;
+	public static final Class<?> PARAMETER;
 
 	public static final Class<?> GIT;
 	public static final Class<?> FILEREPOSITORYBUILDER;
@@ -73,6 +75,7 @@ public class ReflectionLoader {
 	
 	static {
 		CHANGELISTENER = getClass("javafx.beans.value.ChangeListener");
+
 		if(CHANGELISTENER != null) {
 			NODE = getClass("javafx.scene.Node");
 			OBSERVABLEVALUE = getClass("javafx.beans.value.ObservableValue");
@@ -116,7 +119,9 @@ public class ReflectionLoader {
 			SCENE = getClass("javafx.scene.Scene");
 			SCREEN = getClass("javafx.stage.Screen");
 			IMAGEVIEW = getClass("javafx.scene.image.ImageView");
+			IMAGE = getClass("javafx.scene.image.Image");
 			BORDERPANE = getClass("javafx.scene.layout.BorderPane");
+			PARAMETER = getClass("com.sun.javafx.application.ParametersImpl");
 		} else {
 			NODE = null;
 			OBSERVABLEVALUE = null;
@@ -160,7 +165,9 @@ public class ReflectionLoader {
 			SCREEN = null;
 			POS = null;
 			IMAGEVIEW = null;
+			IMAGE = null;
 			BORDERPANE = null;
+			PARAMETER = null;
 		}
 		GIT = getClass("org.eclipse.jgit.api.Git");
 		if(GIT != null) {

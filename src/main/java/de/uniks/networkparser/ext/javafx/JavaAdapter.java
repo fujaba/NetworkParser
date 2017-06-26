@@ -17,8 +17,6 @@ import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.xml.HTMLEntity;
 import de.uniks.networkparser.xml.XMLEntity;
-import javafx.scene.web.WebEngine;
-import netscape.javascript.JSObject;
 
 public class JavaAdapter implements JavaViewAdapter {
 	private SimpleKeyValueList<Object, String> callBack = new SimpleKeyValueList<Object, String>();
@@ -79,13 +77,13 @@ public class JavaAdapter implements JavaViewAdapter {
 		ReflectionLoader.call("loadContent", this.engine, String.class, entity.toString());
 		
 //FIXME		
-		((WebEngine)engine).setOnAlert(t -> {
-			System.out.println(t.getData());
-		});
-
-		((WebEngine)engine).setOnError(e -> {
-			System.err.println(e);
-		});
+//		((WebEngine)engine).setOnAlert(t -> {
+//			System.out.println(t.getData());
+//		});
+//
+//		((WebEngine)engine).setOnError(e -> {
+//			System.err.println(e);
+//		});
 		
 		return true;
 	}
@@ -114,7 +112,7 @@ public class JavaAdapter implements JavaViewAdapter {
 			return true;
 		}
 		if(ReflectionLoader.JSOBJECT.isAssignableFrom(value.getClass())) {
-			JavaFXEvent event = JavaFXEvent.create((JSObject) value);
+			JavaFXEvent event = JavaFXEvent.create(value);
 			owner.fireEvent(event);
 			return true;
 		}
