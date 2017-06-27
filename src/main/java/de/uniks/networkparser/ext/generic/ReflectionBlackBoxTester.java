@@ -41,8 +41,8 @@ public class ReflectionBlackBoxTester {
 		withIgnoreClazzes("de.uniks.networkparser.ext.javafx.DiagramEditor:save");
 		withIgnoreClazzes("de.uniks.networkparser.ext.javafx.DiagramEditor:start");
 		withIgnoreClazzes("de.uniks.networkparser.ext.javafx.DiagramEditor:open");
-		withIgnoreClazzes("de.uniks.networkparser.ext.story.Story:dumpHTML");
-		withIgnoreClazzes("de.uniks.networkparser.ext.story.Story:writeFile");
+		withIgnoreClazzes("de.uniks.networkparser.ext.story.Story");
+		withIgnoreClazzes("de.uniks.networkparser.ext.error.ErrorHandler");
 	}
 	
 	public ReflectionBlackBoxTester withIgnoreClazzes(String... values) {
@@ -160,7 +160,7 @@ public class ReflectionBlackBoxTester {
 			if(tests.contains(RANDOMVALUE)) {
 				try {
 					call = getParameters(parameterTypes, RANDOMVALUE);
-					output(clazz.getName()+"-call: "+m.getName(), logger, NetworkParserLog.LOGLEVEL_ERROR);
+//					output(clazz.getName()+"-call: "+m.getName(), logger, NetworkParserLog.LOGLEVEL_ERROR);
 					m.invoke(obj, call);
 					successCount++;
 				} catch(Exception e) {
@@ -180,6 +180,7 @@ public class ReflectionBlackBoxTester {
 				}
 				if(value != null) {
 					f.set(obj, getNullValue(value.getClass()));
+					f.set(obj, value);
 				}
 			} catch(Exception e) {
 			}
