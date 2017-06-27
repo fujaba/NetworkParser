@@ -123,7 +123,7 @@ public class ReflectionBlackBoxTester {
 				continue;
 			}
 			
-			output(clazz.getName()+":"+m.getName(), logger, NetworkParserLog.LOGLEVEL_ERROR);
+//			output(clazz.getName()+":"+m.getName(), logger, NetworkParserLog.LOGLEVEL_ERROR);
 
 			Object[] call = null;
 			m.setAccessible(true);
