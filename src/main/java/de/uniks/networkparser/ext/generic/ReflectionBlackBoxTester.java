@@ -43,6 +43,7 @@ public class ReflectionBlackBoxTester {
 		withIgnoreClazzes("de.uniks.networkparser.ext.javafx.DiagramEditor:open");
 		withIgnoreClazzes("de.uniks.networkparser.ext.story.Story");
 		withIgnoreClazzes("de.uniks.networkparser.ext.error.ErrorHandler");
+		withIgnoreClazzes("de.uniks.networkparser.ext.javafx.SimpleController:init");
 		
 //		withIgnoreClazzes("de.uniks.networkparser.ext.javafx:*");
 	}
