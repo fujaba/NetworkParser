@@ -415,6 +415,9 @@ public class XMLTokener extends Tokener {
 					}
 				}
 			}
+			if(tokener.isEnd()) {
+				break;
+			}
 		} while (tag == null);
 		if(tag.length()<1) {
 			return null;

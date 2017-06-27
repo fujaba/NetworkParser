@@ -66,7 +66,7 @@ buildscript {
 }
 
 artifacts { 
-	archives buildCoreJar16, buildCoreJar17, buildCoreJar18, buildFullJar, buildSourceJar, buildMinCoreJar, buildJavadoc
+	archives buildCoreJar16, buildCoreJar17, buildCoreJar18, buildSourceJar, buildMinCoreJar, buildJavadoc
 }
 
 test {
@@ -122,5 +122,5 @@ sourceSets.main.output.classesDir 'build/classes/main'
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
-defaultTasks 'test', 'jacocoTestReport', 'buildFullJar'
+defaultTasks 'test', 'jacocoTestReport', 'buildJavadoc'
 

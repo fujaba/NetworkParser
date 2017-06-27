@@ -166,7 +166,7 @@ public class SimpleController {
 		return map;
 	}
 
-	public void show(Object root) {
+	public void show(Object root) throws Exception {
 		Object scene;
 		if(ReflectionLoader.SCENE.isAssignableFrom(root.getClass())) {
 			scene = root;
@@ -177,7 +177,7 @@ public class SimpleController {
 		showing();
 	}
 	
-	protected void showing() {
+	protected void showing() throws Exception {
 		if(this.stage != null) {
 			init();
 			ReflectionLoader.call("setTitle", this.stage, getTitle());

@@ -263,11 +263,17 @@ public abstract class Buffer implements BufferItem {
 			while (c >= ' ' && STOPCHARSXML.indexOf(c) < 0) {
 				sb.with(c);
 				c = getChar();
+				if(c == 0) {
+					break;
+				}
 			}
 		}else {
 			while (c >= ' ' && STOPCHARSJSON.indexOf(c) < 0) {
 				sb.with(c);
 				c = getChar();
+				if(c == 0) {
+					break;
+				}
 			}
 		}
 		return sb.trim();
@@ -335,7 +341,9 @@ public abstract class Buffer implements BufferItem {
 				return true;
 			}
 			lastChar = currentChar;
-			skip();
+			if(skip() == false) {
+				break;
+			}
 		}
 		return false;
 	}

@@ -59,8 +59,8 @@ public class DialogStage implements Runnable {
 			// scene.getY() seems to represent the y-offset from the top of the titlebar to
 			// the
 			// start point of the scene, so it is the titlebar height
-			double sceneX = (double) ReflectionLoader.call("getX", owner);
-			double sceneY = (double) ReflectionLoader.call("getY", owner);
+			double sceneX = (Double) ReflectionLoader.call("getX", owner);
+			double sceneY = (Double) ReflectionLoader.call("getY", owner);
 
 			// because Stage does not seem to centre itself over its owner, we
 			// do it here.
@@ -69,14 +69,14 @@ public class DialogStage implements Runnable {
 			double dialogWidth = parent.prefWidth(-1);
 			double dialogHeight = parent.prefHeight(-1);
 
-			double ownerX = (double) ReflectionLoader.call("getX", owner);
-			double ownerY = (double) ReflectionLoader.call("getY", owner);
+			double ownerX = (Double) ReflectionLoader.call("getX", owner);
+			double ownerY = (Double) ReflectionLoader.call("getY", owner);
 			
 			if (ownerX < 0 || ownerY < 0) {
 				// Fix for #165
 				Object screen = ReflectionLoader.call("getPrimary", ReflectionLoader.SCREEN);
-				double maxW = (double) ReflectionLoader.callChain(screen, "getVisualBounds", "getWidth");
-				double maxH = (double) ReflectionLoader.callChain(screen, "getVisualBounds", "getHeight");
+				double maxW = (Double) ReflectionLoader.callChain(screen, "getVisualBounds", "getWidth");
+				double maxH = (Double) ReflectionLoader.callChain(screen, "getVisualBounds", "getHeight");
 
 				x = maxW / 2.0 - dialogWidth / 2.0;
 				y = maxH / 2.0 - dialogHeight / 2.0 + sceneY;

@@ -46,7 +46,7 @@ public class JavaFXEvent extends Event {
 			if(value instanceof Double) {
 				event.timeStamp = ((Double)value).intValue();
 			} else if(value instanceof Integer) {
-				event.timeStamp = (int)value;
+				event.timeStamp = (Integer)value;
 			}
 		}
 		value = getMember(obj, ID);

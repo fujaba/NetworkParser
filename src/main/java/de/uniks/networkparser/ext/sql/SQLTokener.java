@@ -171,6 +171,9 @@ public class SQLTokener extends Tokener {
 
 	public Connection connect(SQLStatement connect) {
 		try {
+			if(connect == null) {
+				return null;
+			}
 			return DriverManager.getConnection(connect.toString());
 		} catch (SQLException e) {
 		}

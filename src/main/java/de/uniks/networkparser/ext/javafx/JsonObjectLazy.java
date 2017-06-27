@@ -35,7 +35,7 @@ public class JsonObjectLazy extends JsonObject {
 			Object value = getMember(this.ref, keys[i]);
 			if (ReflectionLoader.JSOBJECT.isAssignableFrom(value.getClass())) {
 //				JSObject jsValue = (JSObject) value;
-				boolean isArray = (boolean) ReflectionLoader.call("eval", value, "Array.isArray(this);");
+				boolean isArray = (Boolean) ReflectionLoader.call("eval", value, "Array.isArray(this);");
 //				boolean isArray = Boolean.parseBoolean("" + jsValue.eval());
 				if (isArray) {
 					JsonArrayLazy child = new JsonArrayLazy(value);

@@ -174,9 +174,9 @@ public class DialogBox implements ObjectCondition{
 
 	protected double getOverlayWidth() {
 		if (owner != null) {
-			return (double) ReflectionLoader.callChain(owner, "getLayoutBounds", "getWidth");
+			return (Double) ReflectionLoader.callChain(owner, "getLayoutBounds", "getWidth");
 		} else if (stage != null) {
-			return (double) ReflectionLoader.callChain(stage, "getScene", "getWidth");
+			return (Double) ReflectionLoader.callChain(stage, "getScene", "getWidth");
 		}
 
 		return 0;
@@ -184,9 +184,9 @@ public class DialogBox implements ObjectCondition{
 
 	protected double getOverlayHeight() {
 		if (owner != null) {
-			return (double) ReflectionLoader.callChain(owner, "getLayoutBounds", "getHeight");
+			return (Double) ReflectionLoader.callChain(owner, "getLayoutBounds", "getHeight");
 		} else if (stage != null) {
-			return (double) ReflectionLoader.callChain(stage, "getScene", "getHeight");
+			return (Double) ReflectionLoader.callChain(stage, "getScene", "getHeight");
 		}
 
 		return 0;
@@ -243,7 +243,7 @@ public class DialogBox implements ObjectCondition{
 		ObjectCondition condition = new ObjectCondition() {
 			@Override
 			public boolean update(Object value) {
-				boolean active = (boolean) value;
+				boolean active = (Boolean) value;
 				 ReflectionLoader.call("pseudoClassStateChanged", root, ReflectionLoader.PSEUDOCLASS, ACTIVE_PSEUDO_CLASS, boolean.class, active);
 				return true;
 			}
@@ -266,8 +266,8 @@ public class DialogBox implements ObjectCondition{
 		condition = new ObjectCondition() {
 			@Override
 			public boolean update(Object event) {
-				mouseDragDeltaX = (double) ReflectionLoader.call("getSceneX", event);
-				mouseDragDeltaY = (double) ReflectionLoader.call("getSceneY", event);
+				mouseDragDeltaX = (Double) ReflectionLoader.call("getSceneX", event);
+				mouseDragDeltaY = (Double) ReflectionLoader.call("getSceneY", event);
 
 				return true;
 			}
@@ -278,12 +278,12 @@ public class DialogBox implements ObjectCondition{
 		condition = new ObjectCondition() {
 			@Override
 			public boolean update(Object event) {
-				double eventX = (double) ReflectionLoader.call("getScreenX", event) - mouseDragDeltaX;
-				double eventY = (double) ReflectionLoader.call("getScreenY", event) - mouseDragDeltaY;
+				double eventX = (Double) ReflectionLoader.call("getScreenX", event) - mouseDragDeltaX;
+				double eventY = (Double) ReflectionLoader.call("getScreenY", event) - mouseDragDeltaY;
 				
 				if(isInline) {
-					double x = (double) ReflectionLoader.call("getLayoutX", root);
-					double y = (double) ReflectionLoader.call("getLayoutY", root);
+					double x = (Double) ReflectionLoader.call("getLayoutX", root);
+					double y = (Double) ReflectionLoader.call("getLayoutY", root);
 					ReflectionLoader.call("setLayoutX", root, double.class, x + eventX);
 					ReflectionLoader.call("setLayoutY", root, double.class, y + eventY);
 				}else{
@@ -450,10 +450,10 @@ public class DialogBox implements ObjectCondition{
 	}
 	
 	public double prefWidth(double value) {
-		return (double) ReflectionLoader.call("prefWidth", root, double.class, -1);
+		return (Double) ReflectionLoader.call("prefWidth", root, double.class, -1);
 	}
 	public double prefHeight(double value) {
-		return (double) ReflectionLoader.call("prefHeight", root, double.class, -1);
+		return (Double) ReflectionLoader.call("prefHeight", root, double.class, -1);
 	}
 
 	public void setStage(Object newStage) {

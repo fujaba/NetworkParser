@@ -130,28 +130,28 @@ public class NetworkParserLog {
 	 *
 	 * @param owner		The Element with call the Methods
 	 * @param method	The Caller-Method
-	 * @param type		Typ of Log Value
+	 * @param msg		Typ of Log Value
 	 * @param params	The Original Parameters
 	 * @return boolean if method must Cancel
 	 */
-	public boolean error(Object owner, String method, String type,
+	public boolean error(Object owner, String method, String msg,
 			Object... params) {
-		if(params == null || (flag & LOGLEVEL_ERROR) == 0) {
+		if((flag & LOGLEVEL_ERROR) == 0) {
 			return isError;
 		}
-		if(params.length == 1) {
-			System.err.println("ERROR: " + params[0]);
-			return this.isError;
-		}
-		StringBuilder sb=new StringBuilder();
-		for(Object item : params) {
-			if(item != null) {
-				sb.append(item.toString()+" ");
-			}
-		}
-		if(sb.length()>0) {
-			System.err.println("ERROR: " + sb.toString());
-		}
+//		if(params.length == 1) {
+//			System.err.println("ERROR: " + params[0]);
+//			return this.isError;
+//		}
+//		StringBuilder sb=new StringBuilder();
+//		for(Object item : params) {
+//			if(item != null) {
+//				sb.append(item.toString()+" ");
+//			}
+//		}
+//		if(sb.length()>0) {
+			System.err.println("ERROR: " + msg);
+//		}
 		return isError;
 	}
 

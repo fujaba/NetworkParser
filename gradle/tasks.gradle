@@ -28,14 +28,14 @@ ext.sharedManifest = manifest {
 }
 
 task compileJava16(type: JavaCompile) {
-	source = fileTree(dir: 'src', exclude: ['**/ext/**', '**/test/**'])
+	source = fileTree(dir: 'src', exclude: ['**/test/**'])
 	destinationDir = file('build/classes/main16')
 	sourceCompatibility = '1.6'
 	targetCompatibility = '1.6'
 	classpath = files('build/classes/main16')
 }
 task compileJava17(type: JavaCompile) {
-	source = fileTree(dir: 'src', exclude: ['**/ext/**', '**/test/**'])
+	source = fileTree(dir: 'src', exclude: ['**/test/**'])
 	destinationDir = file('build/classes/main17')
 	sourceCompatibility = '1.7'
 	targetCompatibility = '1.7'
@@ -61,7 +61,7 @@ task buildCoreJar17(type: Jar, dependsOn: buildCoreJar16) {
 task buildCoreJar18(type: Jar, dependsOn: buildCoreJar17) {
 	description 'Build Jar with NetworkParser-Core without dependency of JavaFX and Reflection'
 	group "Jar";from sourceSets.main.output; classifier = 'core18';
-	excludes = ['**/ext/**', '**/test/**']
+	excludes = ['**/test/**']
 	manifest = project.manifest {from sharedManifest}
 }
 task buildMinCoreJar(type: Jar) {
@@ -70,32 +70,19 @@ task buildMinCoreJar(type: Jar) {
 	excludes = ['**/ext/**', '**/calculator/**', '**/parser/**', '**/logic/**', '**/**.css', '**/**.js', '**/gui/**','**/test/**']
 	manifest = project.manifest {from sharedManifest}
 }
-task buildInterfaces(type: Jar) {
-	description 'Build a small jar with only the Interfaces'
-	group "Jar"; from sourceSets.main.output; classifier = 'interface'
-	include '**/networkparser/interfaces/**'
-	manifest = project.manifest {from sharedManifest}
-}
 task buildSourceJar(type: Jar, dependsOn: buildCoreJar18) {
 	description 'Build Jar with class-Files and Source-Files'
 	group "Jar"; from {(sourceSets.main.output + sourceSets.main.allJava)}; classifier = 'sources'
 	exclude '**/test/**'
 	manifest = project.manifest {from sharedManifest}
 }
-task buildJavadoc(type: Jar) {
+task buildJavadoc(type: Jar, dependsOn: buildSourceJar) {
     description 'Build JavaDoc Jar'
     group "Jar"; from javadoc.outputs.files; classifier = 'javadoc'
-    exclude '**/ext/**'
     exclude '**/test/**'
     manifest = project.manifest {from sharedManifest}
 }
 
-task buildFullJar(type: Jar, dependsOn: [buildSourceJar,buildJavadoc]) {
-	description 'Build Jar with class-Files, Source-Files and JavaDoc'
-	group "Jar"; from {(sourceSets.main.output + sourceSets.main.allJava + javadoc.outputs.files )}; classifier = 'full'
-	exclude '**/test/**'
-	manifest = project.manifest {from sharedManifest}
-}
 task cleanupws(type: Delete) {
 	description 'Delete Configuration Files from Workspace'
 	group "BUILD"

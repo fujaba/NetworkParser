@@ -73,10 +73,10 @@ public class DialogPane implements Runnable {
 		// the user moves it.
 		if(this.initCount == -1) {
 			this.initCount = -2;
-			double dialogX = (double) ReflectionLoader.call("getLayoutX", root);
+			double dialogX = (Double) ReflectionLoader.call("getLayoutX", root);
 			dialogX = dialogX == 0.0 ? w / 2.0 - dialogWidth / 2.0 : dialogX;
 	
-			double dialogY = (double) ReflectionLoader.call("getLayoutY", root);
+			double dialogY = (Double) ReflectionLoader.call("getLayoutY", root);
 			dialogY = dialogY == 0.0 ? h / 2.0 - dialogHeight / 2.0 : dialogY;
 	
 			ReflectionLoader.call("relocate", root, double.class, (int) (dialogX), double.class, (int) (dialogY));
@@ -86,27 +86,27 @@ public class DialogPane implements Runnable {
 	// These are the actual implementations in Region (the parent of Pane),
 	// but just for clarify I reproduce them here
 	protected double computeMinHeight(double width) {
-		return (double) ReflectionLoader.call("minHeight", parent, width);
+		return (Double) ReflectionLoader.call("minHeight", parent, width);
 	}
 
 	protected double computeMinWidth(double height) {
-		return (double) ReflectionLoader.call("minWidth", parent, height);
+		return (Double) ReflectionLoader.call("minWidth", parent, height);
 	}
 
 	protected double computePrefHeight(double width) {
-		return (double) ReflectionLoader.call("prefHeight", parent, width);
+		return (Double) ReflectionLoader.call("prefHeight", parent, width);
 	}
 
 	protected double computePrefWidth(double height) {
-		return (double) ReflectionLoader.call("prefWidth", parent, height);
+		return (Double) ReflectionLoader.call("prefWidth", parent, height);
 	}
 
 	protected double computeMaxHeight(double width) {
-		return (double) ReflectionLoader.call("maxHeight", parent, width);
+		return (Double) ReflectionLoader.call("maxHeight", parent, width);
 	}
 
 	protected double computeMaxWidth(double height) {
-		return (double) ReflectionLoader.call("maxWidth", parent, height);
+		return (Double) ReflectionLoader.call("maxWidth", parent, height);
 	}
 
 	@Override
