@@ -43,6 +43,8 @@ public class ReflectionBlackBoxTester {
 		withIgnoreClazzes("de.uniks.networkparser.ext.javafx.DiagramEditor:open");
 		withIgnoreClazzes("de.uniks.networkparser.ext.story.Story");
 		withIgnoreClazzes("de.uniks.networkparser.ext.error.ErrorHandler");
+		
+//		withIgnoreClazzes("de.uniks.networkparser.ext.javafx:*");
 	}
 	
 	public ReflectionBlackBoxTester withIgnoreClazzes(String... values) {
@@ -77,8 +79,6 @@ public class ReflectionBlackBoxTester {
 		this.packageName = packageName;
 		this.logger = logger;
 		
-		output("Start: ("+this.getClass().getName()+".java:1) \n", logger, NetworkParserLog.LOGLEVEL_INFO);
-
 		for(Class<?> clazz : classesForPackage) {
 			StringBuilder item=new StringBuilder();
 			item.append( clazz.getName()+": ");
@@ -121,6 +121,8 @@ public class ReflectionBlackBoxTester {
 //			if("main".equals(m.getName()) || "access".equals(m.getName())) {
 				continue;
 			}
+			
+			output(clazz.getName()+":"+m.getName(), logger, NetworkParserLog.LOGLEVEL_ERROR);
 
 			Object[] call = null;
 			m.setAccessible(true);
