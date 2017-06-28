@@ -1,23 +1,56 @@
 package de.uniks.networkparser.gui.controls;
 
-public class AutoCompletionList {
-//	private boolean caseSensitive=false;
-//	private boolean sort=false;
+import de.uniks.networkparser.IdMap;
 
-	//PRIMITIVE WERTE
-//	private ArrayList<String> list=new ArrayList<String>();
+public class AutoCompletionList {
+	private boolean caseSensitive=false;
+	private boolean sort=false;
 
 	// ANHAND EINER IDMAP
-//	private IdMap map;
-//	private String property;
+	private IdMap map;
+	private String property;
 
-	// COLLECTION mit PROPERTY
+	// COLLECTION with PROPERTY example: PersonSet or SimpleValue like Strings
 //	private Set<?> items;
-//	private String property;
 
 	//NUR JAVASCRIPT
 //	private TreeSet<String> result;
 //	private String oldSearch;
+	
+	public AutoCompletionList withMap(IdMap map, String property) {
+		this.map = map;
+		this.property = property;
+		return this;
+	}
+	
+	public IdMap getMap() {
+		return map;
+	}
+	
+	public String getProperty() {
+		return property;
+	}
+	
+	public AutoCompletionList withCaseSensitive(boolean value) {
+		this.caseSensitive =  value;
+		return this;
+	}
+
+	public boolean isCaseSensitive() {
+		return caseSensitive;
+	}
+	
+
+	public AutoCompletionList withSorted(boolean value) {
+		this.sort =  value;
+		return this;
+	}
+
+	public boolean isSorted() {
+		return sort;
+	}
+	
+	
 //
 //	public Set<String> items(String text) {
 //		if(oldSearch!=null && oldSearch.startsWith(text) && text.length()>0) {

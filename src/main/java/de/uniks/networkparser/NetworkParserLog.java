@@ -85,6 +85,7 @@ public class NetworkParserLog {
 	 * @param owner		The Element with call the Methods
 	 * @param method	The Caller-Method
 	 * @param message	log this message
+	 * @return if method must Cancel
 	 */
 	public boolean debug(Object owner, String method, String message) {
 		if(condition!= null) {

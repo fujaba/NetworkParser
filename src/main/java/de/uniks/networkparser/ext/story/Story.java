@@ -101,6 +101,9 @@ public class Story {
 	}
 
 	protected boolean writeFile(HTMLEntity output) {
+		if(this.outputFile == null || this.outputFile.length()<1) {
+			return false;
+		}
 		File file = new File("doc/" + this.outputFile);
 		FileOutputStream fop = null;
 		try {

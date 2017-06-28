@@ -50,7 +50,8 @@ public class ReflectionTest {
 	@Test
 	public void testSMTPSession() throws Exception {
 		ReflectionBlackBoxTester tester = new ReflectionBlackBoxTester();
-		NetworkParserLog logger=new NetworkParserLog().withListener(new ObjectCondition() {
+		NetworkParserLog logger=new NetworkParserLog()
+				.withListener(new ObjectCondition() {
 			
 			@Override
 			public boolean update(Object value) {
@@ -59,7 +60,8 @@ public class ReflectionTest {
 				// TODO Auto-generated method stub
 				return false;
 			}
-		}).withFlag(NetworkParserLog.LOGLEVEL_ALL);
+		});
+//				.withFlag(NetworkParserLog.LOGLEVEL_ALL);
 		tester.test("de.uniks.networkparser.ext.email.SMTPSession", logger);
 	}
 }
