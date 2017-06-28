@@ -113,13 +113,11 @@ public class ErrorHandler implements Thread.UncaughtExceptionHandler{
 	
 	public Exception saveScreenShoot(String fullScreenFileName, Object currentStage) {
 		// Save Screenshot
-		BufferedImage bi;
 		if(currentStage == null) {
 			currentStage = stage;
 		}
 		try {
-			
-			
+			BufferedImage bi;
 			if (fullScreenFileName != null) {
 				bi = new Robot().createScreenCapture(new Rectangle(Toolkit
 						.getDefaultToolkit().getScreenSize()));

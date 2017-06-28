@@ -1,5 +1,7 @@
 package de.uniks.networkparser;
 
+import de.uniks.networkparser.interfaces.ObjectCondition;
+
 /*
 NetworkParser
 The MIT License
@@ -69,9 +71,13 @@ public class NetworkParserLog {
 	public static final byte LOGLEVEL_WARNING = 2;
 	public static final byte LOGLEVEL_ERROR = 4;
 	public static final byte LOGLEVEL_ALL = 7;
+	public static final String INFO = "INFO";
+	public static final String WARNING = "WARNING";
+	public static final String DEBUG = "DEBUG";
+	public static final String ERROR = "ERROR";
 
-	private boolean isError = true;
 	private byte flag = 5; // ERROR + INFO
+	private ObjectCondition condition;
 
 	/**
 	 * Log a message with debug log level.
@@ -80,8 +86,11 @@ public class NetworkParserLog {
 	 * @param method	The Caller-Method
 	 * @param message	log this message
 	 */
-	public void debug(Object owner, String method, String message) {
-		System.out.println("DEBUG: " + message);
+	public boolean debug(Object owner, String method, String message) {
+		if(condition!= null) {
+			return condition.update(new SimpleEvent(owner, method, null, message).withType(DEBUG));
+		}
+		return false;
 	}
 
 	/**
@@ -94,7 +103,9 @@ public class NetworkParserLog {
 	 */
 	public boolean info(Object owner, String method, String message) {
 		if((flag & LOGLEVEL_INFO) != 0) {
-			System.out.println("INFO: " + message);
+			if(condition!= null) {
+				return condition.update(new SimpleEvent(owner, method, null, message).withType(INFO));
+			}
 		}
 		return false;
 	}
@@ -120,7 +131,9 @@ public class NetworkParserLog {
 	 */
 	public boolean warn(Object owner, String method, String message) {
 		if((flag & LOGLEVEL_WARNING) != 0) {
-			System.err.println("WARN: " + message);
+			if(condition!= null) {
+				return condition.update(new SimpleEvent(owner, method, null, message).withType(WARNING));
+			}
 		}
 		return false;
 	}
@@ -130,44 +143,20 @@ public class NetworkParserLog {
 	 *
 	 * @param owner		The Element with call the Methods
 	 * @param method	The Caller-Method
-	 * @param msg		Typ of Log Value
+	 * @param message		Typ of Log Value
 	 * @param params	The Original Parameters
 	 * @return boolean if method must Cancel
 	 */
-	public boolean error(Object owner, String method, String msg,
+	public boolean error(Object owner, String method, String message,
 			Object... params) {
-		if((flag & LOGLEVEL_ERROR) == 0) {
-			return isError;
+		if((flag & LOGLEVEL_ERROR) != 0) {
+			if(condition!= null) {
+				return condition.update(new SimpleEvent(owner, method, null, message).withModelValue(params).withType(ERROR));
+			}
 		}
-//		if(params.length == 1) {
-//			System.err.println("ERROR: " + params[0]);
-//			return this.isError;
-//		}
-//		StringBuilder sb=new StringBuilder();
-//		for(Object item : params) {
-//			if(item != null) {
-//				sb.append(item.toString()+" ");
-//			}
-//		}
-//		if(sb.length()>0) {
-			System.err.println("ERROR: " + msg);
-//		}
-		return isError;
-	}
-
-	public boolean isError() {
-		return isError;
+		return false;
 	}
 	
-	/**
-	 * @param value		is Break for Error
-	 * @return 			Itself
-	 */
-	public NetworkParserLog withError(boolean value) {
-		this.isError = value;
-		return this;
-	}
-
 	public boolean log(Object owner, String method, String msg, int level) {
 		if(level == LOGLEVEL_ERROR) {
 			return this.error(owner, method, msg);
@@ -176,5 +165,10 @@ public class NetworkParserLog {
 			return this.warn(owner, method, msg);
 		}
 		return this.info(owner, method, msg);
+	}
+	
+	public NetworkParserLog withListener(ObjectCondition condition) {
+		this.condition = condition;
+		return this;
 	}
 }

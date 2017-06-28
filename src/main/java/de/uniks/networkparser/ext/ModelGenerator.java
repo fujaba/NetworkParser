@@ -145,7 +145,7 @@ public class ModelGenerator extends BasicGenerator {
 		if (this.features != null) {
 			for (Iterator<FeatureProperty> i = this.features.iterator(); i.hasNext();) {
 				FeatureProperty item = i.next();
-				if (item.equals(value)) {
+				if (item.getName().equals(value)) {
 					if(clazzes == null) {
 						return item;
 					}

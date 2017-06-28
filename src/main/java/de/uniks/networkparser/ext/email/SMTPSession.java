@@ -174,7 +174,7 @@ public class SMTPSession {
 				socket.setEnabledProtocols(eprots.toArray(new String[eprots.size()]));
 				socket.startHandshake();
 			}			
-		} catch (IOException e) {
+		} catch (Exception e) {
 		}
 	}
 
@@ -228,12 +228,14 @@ public class SMTPSession {
      * @return convert String to Byte
      */
 	private byte[] toBytes(String s) {
-		if (allowutf8)
+		if(s == null) {
+			return null;
+		}
+		if (allowutf8) {
 			return s.getBytes(StandardCharsets.UTF_8);
-		else
-			// don't use StandardCharsets.US_ASCII because it rejects non-ASCII
-			return s.getBytes();
-//			return ASCIIUtility.getBytes(s);
+		}
+		// don't use StandardCharsets.US_ASCII because it rejects non-ASCII
+		return s.getBytes();
 	}
 
 	/**

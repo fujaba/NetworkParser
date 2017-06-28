@@ -34,19 +34,17 @@ public class ReflectionBlackBoxTester {
 	
 	public ReflectionBlackBoxTester() {
 		ignoreMethods =new SimpleKeyValueList<String, SimpleSet<String>>();
-		withIgnoreClazzes("de.uniks.networkparser.NetworkParserLog");
 		withIgnoreClazzes("de.uniks.networkparser.ext.javafx.DiagramEditor:access");
 		withIgnoreClazzes("de.uniks.networkparser.ext.javafx.DiagramEditor:generate");
 		withIgnoreClazzes("de.uniks.networkparser.ext.javafx.DiagramEditor:main");
 		withIgnoreClazzes("de.uniks.networkparser.ext.javafx.DiagramEditor:save");
 		withIgnoreClazzes("de.uniks.networkparser.ext.javafx.DiagramEditor:start");
 		withIgnoreClazzes("de.uniks.networkparser.ext.javafx.DiagramEditor:open");
-		withIgnoreClazzes("de.uniks.networkparser.ext.story.Story");
+		withIgnoreClazzes("de.uniks.networkparser.ext.story.Story:dumpHTML");
+		withIgnoreClazzes("de.uniks.networkparser.ext.story.Story:writeFile");
 		withIgnoreClazzes("de.uniks.networkparser.ext.error.ErrorHandler");
 		withIgnoreClazzes("de.uniks.networkparser.ext.javafx.SimpleController:init");
-		
-//		withIgnoreClazzes("de.uniks.networkparser.ext.javafx:*");
-	}
+	}		
 	
 	public ReflectionBlackBoxTester withIgnoreClazzes(String... values) {
 		if(values == null) {
@@ -81,11 +79,8 @@ public class ReflectionBlackBoxTester {
 		this.logger = logger;
 		
 		for(Class<?> clazz : classesForPackage) {
-			StringBuilder item=new StringBuilder();
-			item.append( clazz.getName()+": ");
 			SimpleSet<String> methods = this.ignoreMethods.get(clazz.getName());
 			if(methods != null && methods.size()<1) {
-				item.append("ignore");
 				continue;
 			}
 			Constructor<?>[] constructors = clazz.getDeclaredConstructors();
@@ -123,7 +118,7 @@ public class ReflectionBlackBoxTester {
 				continue;
 			}
 			
-//			output(clazz.getName()+":"+m.getName(), logger, NetworkParserLog.LOGLEVEL_ERROR);
+			output(clazz.getName()+":"+m.getName(), logger, NetworkParserLog.LOGLEVEL_ERROR);
 
 			Object[] call = null;
 			m.setAccessible(true);

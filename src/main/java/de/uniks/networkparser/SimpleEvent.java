@@ -126,6 +126,11 @@ public final class SimpleEvent extends PropertyChangeEvent {
 		return type;
 	}
 	
+	public SimpleEvent withType(String value) {
+		this.type = value;
+		return this;
+	}
+	
 	public boolean isNewEvent() {
 		return SendableEntityCreator.NEW.equals(this.type);
 	}
