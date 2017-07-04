@@ -106,6 +106,11 @@ public class GraphList extends GraphModel implements BaseItem {
 		super.withChildren(value);
 		return this;
 	}
+	
+	public GraphList withNode(GraphNode... value) {
+		super.withChildren(value);
+		return this;
+	}
 
 	public GraphOptions getOptions() {
 		return options;

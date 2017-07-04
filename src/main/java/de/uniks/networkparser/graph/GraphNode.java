@@ -24,7 +24,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-public class GraphNode extends GraphMember{
+public class GraphNode extends GraphMember {
 	@Override
 	public GraphNode with(String name) {
 		super.with(name);

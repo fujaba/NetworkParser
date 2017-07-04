@@ -41,6 +41,7 @@ import de.uniks.networkparser.graph.GraphLabel;
 import de.uniks.networkparser.graph.GraphList;
 import de.uniks.networkparser.graph.GraphMember;
 import de.uniks.networkparser.graph.GraphModel;
+import de.uniks.networkparser.graph.GraphNode;
 import de.uniks.networkparser.graph.GraphOptions;
 import de.uniks.networkparser.graph.GraphPattern;
 import de.uniks.networkparser.graph.GraphSimpleSet;
@@ -354,29 +355,34 @@ public class GraphConverter implements Converter{
 		} else {
 			item.put(TYPE, NODE);
 		}
-		if(entity instanceof GraphEntity == false) {
-			return null;
+		
+		if(entity instanceof GraphEntity) {
+			parseGraphEntity((GraphEntity)entity, item, type, shortName, removeParameterNames);
+			return item;
 		}
-
-		GraphEntity element = (GraphEntity) entity;
-
-		GraphImage nodeHeader = getNodeHeader(element);
+		if(entity instanceof GraphNode) {
+			item.put(ID, entity.getName());
+			return item;
+		}
+		return null;
+	}
+	private void parseGraphEntity(GraphEntity entity, JsonObject item, String type, boolean shortName, boolean removeParameterNames) {
+		GraphImage nodeHeader = getNodeHeader(entity);
 		if (nodeHeader != null) {
 			item.put(HEAD, new JsonObject().withKeyValue(SRC, nodeHeader));
 		}
-		JsonArray items = parseAttributes(type, element, shortName);
+		JsonArray items = parseAttributes(type, entity, shortName);
 		if(items.size()>0){
 			item.put(ATTRIBUTES, items);
 		}
-		items = parseMethods(element, shortName, removeParameterNames);
+		items = parseMethods(entity, shortName, removeParameterNames);
 		if(items.size()>0){
 			item.put(METHODS, items);
 		}
-		GraphDiff diff = GraphUtil.getDifference(element);
+		GraphDiff diff = GraphUtil.getDifference(entity);
 		if(diff != null && diff.getCount()>0) {
 			item.put(COUNTER, diff.getCount());
 		}
-		return item;
 	}
 
 	public GraphImage getNodeHeader(GraphEntity entity) {

@@ -3,9 +3,9 @@ package de.uniks.networkparser.ext;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.Feature;
 import de.uniks.networkparser.graph.FeatureProperty;
-import de.uniks.networkparser.graph.GraphList;
+import de.uniks.networkparser.graph.GraphModel;
 
-public class ClassModel extends GraphList {
+public class ClassModel extends GraphModel {
 	public static final String DEFAULTPACKAGE = "i.love.sdmlib";
 	private ModelGenerator generator = new ModelGenerator().withDefaultModel(this);
 

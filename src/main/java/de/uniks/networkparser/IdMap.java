@@ -643,14 +643,11 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 	public boolean notify(PropertyChangeEvent event) {
 		if (this.mapListener != null) {
 			this.mapListener.propertyChange(event);
-			if (this.mapListener != null && this.mapListener instanceof ObjectCondition) {
-				return ((ObjectCondition) this.mapListener).update(event);
-			}
 		}
 		if (this.updateListener != null) {
-			this.updateListener.update(event);
+			return this.updateListener.update(event);
 		}
-		return true;
+		return this.mapListener != null;
 	}
 
 
