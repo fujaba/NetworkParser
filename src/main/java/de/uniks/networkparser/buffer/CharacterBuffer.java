@@ -481,14 +481,58 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence{
 	public CharacterBuffer withStart(char item) {
 		if(start>0) {
 			this.buffer[--start] = item;
-		} else {
-			char[] oldValue = this.buffer;
-			this.buffer = new char[buffer.length + 1];
-			this.buffer[0] = item;
-			this.position = 0;
-			System.arraycopy(oldValue, start, this.buffer, 1, length);
-			this.length++;
+			return this;
 		}
+		char[] oldValue = this.buffer;
+		this.buffer = new char[buffer.length + 1];
+		this.buffer[0] = item;
+		this.position = 0;
+		System.arraycopy(oldValue, start, this.buffer, 1, length);
+		this.length++;
+		return this;
+	}
+	/**
+	 * Append a new Character to CharacterBuffer
+	 * @param item a new StartItem
+	 * @return CharacterBuffer Instance
+	 */
+	public CharacterBuffer withStart(CharSequence item, boolean newLine) {
+		if(item == null) {
+			return this;
+		}
+		int len = item.length();
+		if(newLine) {
+			len += 2;
+		}
+		if(start>len) {
+			if(newLine) {
+				this.buffer[--start] = '\n';
+				this.buffer[--start] = '\r';
+			}
+			for(int i=item.length()-1;i>=0;i--) {
+				this.buffer[--start] = item.charAt(i);
+			}
+			return this;
+		}
+		char[] oldValue = this.buffer;
+		if(buffer != null) {
+			this.buffer = new char[buffer.length + len];
+		} else {
+			this.buffer = new char[len];
+		}
+		for(int i=0;i<item.length();i++) {
+			this.buffer[i] = item.charAt(i);
+		}
+		if(newLine) {
+			this.buffer[item.length()] = '\r';
+			this.buffer[item.length()+1] = '\n';
+		}
+		this.position = 0;
+		if(oldValue != null) {
+			System.arraycopy(oldValue, start, this.buffer, len, length);
+			start = 0;
+		}
+		length += len;
 		return this;
 	}
 

@@ -55,6 +55,7 @@ public class ReflectionLoader {
 	public static final Class<?> IMAGE;
 	public static final Class<?> BORDERPANE;
 	public static final Class<?> PARAMETER;
+	public static final Class<?> TRANSFERMODE;
 
 	public static final Class<?> GIT;
 	public static final Class<?> FILEREPOSITORYBUILDER;
@@ -122,6 +123,7 @@ public class ReflectionLoader {
 			IMAGE = getClass("javafx.scene.image.Image");
 			BORDERPANE = getClass("javafx.scene.layout.BorderPane");
 			PARAMETER = getClass("com.sun.javafx.application.ParametersImpl");
+			TRANSFERMODE = getClass("javafx.scene.input.TransferMode");
 		} else {
 			NODE = null;
 			OBSERVABLEVALUE = null;
@@ -168,6 +170,7 @@ public class ReflectionLoader {
 			IMAGE = null;
 			BORDERPANE = null;
 			PARAMETER = null;
+			TRANSFERMODE = null;
 		}
 		GIT = getClass("org.eclipse.jgit.api.Git");
 		if(GIT != null) {

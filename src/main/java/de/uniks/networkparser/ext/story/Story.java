@@ -76,7 +76,7 @@ public class Story {
 	}
 
 	public boolean dumpHTML() {
-		if (this.outputFile == null) {
+		if (this.outputFile == null || this.outputFile.length() < 1) {
 			return false;
 		}
 		boolean success=true;

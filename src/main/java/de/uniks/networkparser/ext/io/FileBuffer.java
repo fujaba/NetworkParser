@@ -29,9 +29,11 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 
+import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.buffer.Buffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 
@@ -176,7 +178,32 @@ public class FileBuffer extends Buffer {
 	public static final boolean writeFile(String fileName, CharSequence data) {
 		return writeFile(fileName, data, false);
 	}
-
+	
+	public static final CharacterBuffer readResource(String file) {
+		InputStream is = IdMap.class.getResourceAsStream(file);
+		CharacterBuffer sb = new CharacterBuffer();
+		if (is != null) {
+			final int BUFF_SIZE = 5 * 1024; // 5KB
+			final byte[] buffer = new byte[BUFF_SIZE];
+			try {
+				while (true) {
+					int count;
+					count = is.read(buffer);
+					if (count == -1)
+						break;
+					sb.with(new String(buffer, 0, count, "UTF-8"));
+				}
+			} catch (IOException e) {
+			} finally {
+				try {
+					is.close();
+				} catch (IOException e) {
+				}
+			}
+		}
+		return sb;
+	}
+	
 	public static final boolean deleteFile(String fileName) {
 		File file;
 		file = new File(fileName);
@@ -192,7 +219,7 @@ public class FileBuffer extends Buffer {
 			return false;
 		}
 		File parentFile = file.getParentFile();
-		if(parentFile.exists()) {
+		if(parentFile == null || parentFile.exists()) {
 			return true;
 		}
 		return parentFile.mkdirs();

@@ -166,23 +166,26 @@ public class SimpleController {
 		return map;
 	}
 
-	public void show(Object root) throws Exception {
+	public void show(Object root) {
 		Object scene;
+		if(ReflectionLoader.SCENE == null) {
+			return;
+		}
 		if(ReflectionLoader.SCENE.isAssignableFrom(root.getClass())) {
 			scene = root;
 		} else {
 			scene =  ReflectionLoader.newInstance(ReflectionLoader.SCENE, ReflectionLoader.PARENT, root);
 		}
-		ReflectionLoader.call("setScene", stage, ReflectionLoader.PARENT, scene);
+		ReflectionLoader.call("setScene", stage, ReflectionLoader.SCENE, scene);
 		showing();
 	}
 	
-	protected void showing() throws Exception {
+	protected void showing() {
 		if(this.stage != null) {
 			init();
 			ReflectionLoader.call("setTitle", this.stage, getTitle());
 			try {
-				ReflectionLoader.call("show", this.stage, getTitle());
+				ReflectionLoader.call("show", this.stage);
 			} catch (Exception e) {
 				errorHandler.saveException(e, this.stage);
 				if (Os.isEclipse()) {

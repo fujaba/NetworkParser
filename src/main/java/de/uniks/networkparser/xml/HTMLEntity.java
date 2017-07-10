@@ -1,4 +1,6 @@
 package de.uniks.networkparser.xml;
+import java.net.URL;
+
 /*
 NetworkParser
 The MIT License
@@ -57,7 +59,7 @@ public class HTMLEntity implements BaseItem {
 	public XMLEntity getBody() {
 		return body;
 	}
-	
+
 	public HTMLEntity withEncoding(String encoding) {
 		XMLEntity metaTag = new XMLEntity().setType("meta");
 		metaTag.withKeyValue("http-equiv", "Content-Type");
@@ -222,10 +224,6 @@ public class HTMLEntity implements BaseItem {
 		return new SimpleSet<XMLEntity>();
 	}
 
-	public HTMLEntity withGraph(GraphList value) {
-		return withGraph(value, null);
-	}
-
 	public HTMLEntity addStyle(String name, String style) {
 		XMLEntity styleElement = null;
 		for(int i=0;i<header.size();i++) {
@@ -247,6 +245,10 @@ public class HTMLEntity implements BaseItem {
 		return this;
 	}
 
+	public HTMLEntity withGraph(GraphList value) {
+		URL resource = GraphList.class.getResource("");
+		return withGraph(value, resource.toString());
+	}
 	public HTMLEntity withGraph(GraphList value, String path) {
 		XMLEntity script = new XMLEntity().setType("script").withKeyValue("type", "text/javascript");
 		StringBuilder sb=new StringBuilder();
@@ -262,6 +264,7 @@ public class HTMLEntity implements BaseItem {
 			withHeader(path + "graph.js");
 			withHeader(path + "dagre.min.js");
 			withHeader(path + "drawer.js");
+			withEncoding(ENCODING_UTF8);
 		}
 		return this;
 	}
