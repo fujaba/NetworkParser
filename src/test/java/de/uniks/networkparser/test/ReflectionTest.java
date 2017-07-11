@@ -44,7 +44,7 @@ public class ReflectionTest {
 	public void testDiagramEditor() throws Exception {
 		ReflectionBlackBoxTester tester = new ReflectionBlackBoxTester();
 		NetworkParserLog logger=new NetworkParserLog();
-		tester.test("de.uniks.networkparser.ext.javafx.DiagramEditor", logger);
+		tester.test("de.uniks.networkparser.ext.javafx.DiagramController", logger);
 	}
 	
 	@Test
