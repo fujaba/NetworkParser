@@ -494,6 +494,7 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence{
 	/**
 	 * Append a new Character to CharacterBuffer
 	 * @param item a new StartItem
+	 * @param newLine add newLine to Buffer at the end
 	 * @return CharacterBuffer Instance
 	 */
 	public CharacterBuffer withStart(CharSequence item, boolean newLine) {

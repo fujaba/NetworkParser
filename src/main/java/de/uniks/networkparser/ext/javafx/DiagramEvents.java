@@ -59,7 +59,7 @@ public class DiagramEvents implements ObjectCondition {
 	@SuppressWarnings("unchecked")
 	private List<File> getFiles(Object event) {
 		Object db = ReflectionLoader.call("getDragboard", event);
-		if((boolean) ReflectionLoader.call("hasFiles", db)) {
+		if((Boolean) ReflectionLoader.call("hasFiles", db)) {
 			List<File> files = (List<File>) ReflectionLoader.call("getFiles", db);
 			return files;
 		}

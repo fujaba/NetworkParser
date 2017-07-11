@@ -134,7 +134,7 @@ public class DiagramController extends SimpleController {
 
 	public boolean generate(JsonObject model) {
 		if(this.logic != null) {
-			return (boolean) ReflectionLoader.call("generate", this.logic, JsonObject.class, model);
+			return (Boolean) ReflectionLoader.call("generate", this.logic, JsonObject.class, model);
 		}
 		return false;
 	}

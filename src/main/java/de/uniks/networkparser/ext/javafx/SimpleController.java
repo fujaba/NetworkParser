@@ -184,12 +184,13 @@ public class SimpleController {
 		if(this.stage != null) {
 			init();
 			ReflectionLoader.call("setTitle", this.stage, getTitle());
-			try {
+			if (Os.isEclipse()) {
 				ReflectionLoader.call("show", this.stage);
-			} catch (Exception e) {
-				errorHandler.saveException(e, this.stage);
-				if (Os.isEclipse()) {
-					throw e;
+			} else {
+				try {
+					ReflectionLoader.call("show", this.stage);
+				} catch (Exception e) {
+					errorHandler.saveException(e, this.stage);
 				}
 			}
 		}
