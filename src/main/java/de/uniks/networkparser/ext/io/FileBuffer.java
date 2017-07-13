@@ -36,6 +36,7 @@ import java.nio.charset.Charset;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.buffer.Buffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
+import de.uniks.networkparser.interfaces.BaseItem;
 
 public class FileBuffer extends Buffer {
 	private BufferedReader reader;
@@ -166,6 +167,9 @@ public class FileBuffer extends Buffer {
 	}
 	
 	public static final boolean writeFile(String fileName, CharSequence data, boolean appendData) {
+		if(fileName == null || fileName.length()<1) {
+			return false;
+		}
 		FileBuffer buffer = new FileBuffer();
 		buffer.withFile(fileName);
 		if(buffer.exist() == false) {
@@ -214,7 +218,7 @@ public class FileBuffer extends Buffer {
 		return true;
 	}
 	
-	private boolean createFile() {
+	public boolean createFile() {
 		if(this.file == null) {
 			return false;
 		}
@@ -239,5 +243,14 @@ public class FileBuffer extends Buffer {
 		} catch (IOException e) {
 		}
 		return false;
+	}
+
+	public boolean println(CharSequence string) {
+		this.write(string, true);
+		return newline();
+	}
+	
+	public boolean newline() {
+		return this.write(BaseItem.CRLF, true);
 	}
 }

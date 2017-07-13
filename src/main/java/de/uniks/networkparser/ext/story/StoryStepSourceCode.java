@@ -27,6 +27,7 @@ public class StoryStepSourceCode implements StoryStep {
 
 	private void startStory(String path) {
 		this.packageName = path;
+		StackTraceElement[] cause = Thread.currentThread().getStackTrace();
 		try {
 			throw new Exception("get File");
 		} catch (Exception e) {

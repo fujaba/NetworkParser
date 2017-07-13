@@ -105,6 +105,14 @@ public class Story {
 			return false;
 		}
 		File file = new File("doc/" + this.outputFile);
+		if(this.outputFile.equals("test.html")==false && this.outputFile.equals("testSerialization.html")==false) {
+			try {
+				throw new RuntimeException("TEST");
+			}catch (Exception e) {
+				e.printStackTrace();
+			}
+//			StackTraceElement[] cause = Thread.currentThread().getStackTrace();
+		}
 		FileOutputStream fop = null;
 		try {
 			fop = new FileOutputStream(file);

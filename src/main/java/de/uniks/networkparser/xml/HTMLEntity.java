@@ -31,6 +31,7 @@ import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Converter;
 import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.EntityList;
+import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SimpleSet;
 
 public class HTMLEntity implements BaseItem {
@@ -39,6 +40,8 @@ public class HTMLEntity implements BaseItem {
 	public static final String IMAGEFORMAT=" .bmp .jpg .jpeg .png .gif .svg ";
 	public static final String ENCODING_UTF8="utf-8";
 	public static final String SCRIPT="script";
+	public static final String LINK="link";
+	public static final String KEY_HREF="href";
 	public static final String KEY_SRC="src";
 
 	private XMLEntity body = new XMLEntity().setType("body");
@@ -160,10 +163,10 @@ public class HTMLEntity implements BaseItem {
 		if(pos>0) {
 			String ext = ref.substring(pos).toLowerCase();
 			if(ext.equals(".css") ) {
-				child = new XMLEntity().setType("link");
+				child = new XMLEntity().setType(LINK);
 				child.withKeyValue("rel", "stylesheet");
 				child.withKeyValue("type", "text/css");
-				child.withKeyValue("href", ref);
+				child.withKeyValue(KEY_HREF, ref);
 			} else if(ext.equals(".js") ) {
 				child = new XMLEntity().setType(SCRIPT).withCloseTag();
 				child.withKeyValue(KEY_SRC, ref);
@@ -260,10 +263,27 @@ public class HTMLEntity implements BaseItem {
 		add(script);
 		if(path != null) {
 			// Add graph-framework
-			withHeader(path + "diagramstyle.css");
-			withHeader(path + "graph.js");
-			withHeader(path + "dagre.min.js");
-			withHeader(path + "drawer.js");
+			// Test for Add Styles
+			SimpleList<String> list=new SimpleList<String>().with("diagramstyle.css", "graph.js", "dagre.min.js", "drawer.js");
+			for(int i = 0;i<this.header.sizeChildren();i++) {
+				XMLEntity item = (XMLEntity) this.header.getChild(i);
+				String url = null;
+				if(LINK.equals(item.getTag())) {
+					url = item.getString(KEY_HREF);
+				} else if(SCRIPT.equals(item.getTag())) {
+					url = item.getString(KEY_SRC);
+				}
+				if(url != null) {
+					int pos = url.lastIndexOf('/');
+					if(pos>=0) {
+						url = url.substring(pos+1);
+					}
+					list.remove(url);
+				}
+			}
+			for(String item : list) {
+				withHeader(path + item);
+			}
 			withEncoding(ENCODING_UTF8);
 		}
 		return this;

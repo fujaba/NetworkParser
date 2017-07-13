@@ -139,14 +139,17 @@ public class DiagramController extends SimpleController {
 		return false;
 	}
 
-	public void save(JsonObject model) {
-		DateFormat formatter = new SimpleDateFormat("yyyyMMdd_HHmmss");
+	public boolean save(JsonObject model) {
 		String name = model.getString("package");
 		if (name == null || name.length() < 1) {
 			name = "model";
+			if(model.size()<1) {
+				return false;
+			}
 		}
+		DateFormat formatter = new SimpleDateFormat("yyyyMMdd_HHmmss");
 		name = name + "_" + formatter.format(new Date().getTime()) + ".json";
-		FileBuffer.writeFile(name, model.toString());
+		return FileBuffer.writeFile(name, model.toString());
 	}
 
 }
