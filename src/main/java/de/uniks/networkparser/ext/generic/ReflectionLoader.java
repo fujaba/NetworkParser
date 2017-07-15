@@ -64,6 +64,19 @@ public class ReflectionLoader {
 	public static final Class<?> FILEMODE;
 	public static final Class<?> REPOSITORY;
 	public static final Class<?> ANYOBJECTID;
+	
+	public static final Class<?> RECTANGLE;
+	public static final Class<?> ROBOT;
+	public static final Class<?> TOOLKIT;
+	public static final Class<?> DIMENSION;
+	public static final Class<?> RENDEREDIMAGE;
+	public static final Class<?> IMAGEIO;
+	public static final Class<?> ACTIONLISTENER;
+	public static final Class<?> MENUITEM;
+	public static final Class<?> POPUPMENU;
+	public static final Class<?> TRAYICON;
+	public static final Class<?> AWTIMAGE;
+	public static final Class<?> PROCESSBUILDERREDIRECT;
 
 //	public static final Class<?> DIFFENTRY;
 //	public static final Class<?> OBJECTID;
@@ -75,6 +88,7 @@ public class ReflectionLoader {
 //	public static final Class<?> JUNIT = getClass("org.junit.Assert");
 	
 	static {
+		//JAVAFX
 		CHANGELISTENER = getClass("javafx.beans.value.ChangeListener");
 
 		if(CHANGELISTENER != null) {
@@ -98,7 +112,6 @@ public class ReflectionLoader {
 			LABEL = getClass("javafx.scene.control.Label");
 			CHECKBOX = getClass("javafx.scene.control.CheckBox");
 			RADIOBUTTON = getClass("javafx.scene.control.RadioButton");
-			SYSTEMTRAY = getClass("java.awt.SystemTray");
 			WEBVIEW = getClass("javafx.scene.web.WebView");
 			JSOBJECT = getClass("netscape.javascript.JSObject");
 			PSEUDOCLASS = getClass("javafx.css.PseudoClass");
@@ -145,7 +158,6 @@ public class ReflectionLoader {
 			LABEL = null;
 			CHECKBOX = null;
 			RADIOBUTTON = null;
-			SYSTEMTRAY = null;
 			WEBVIEW = null;
 			JSOBJECT = null;
 			PSEUDOCLASS = null;
@@ -172,6 +184,42 @@ public class ReflectionLoader {
 			PARAMETER = null;
 			TRANSFERMODE = null;
 		}
+	}
+	
+	static {
+		//AWT
+		TOOLKIT = getClass("java.awt.Toolkit");
+		if(TOOLKIT != null) {
+			SYSTEMTRAY = getClass("java.awt.SystemTray");
+			RECTANGLE = getClass("java.awt.Rectangle");
+			ROBOT = getClass("java.awt.Robot");
+			DIMENSION = getClass("java.awt.Dimension");
+			RENDEREDIMAGE = getClass("java.awt.image.RenderedImage");
+			IMAGEIO = getClass("javax.imageio.ImageIO");
+			ACTIONLISTENER = getClass("java.awt.event.ActionListener");
+			MENUITEM = getClass("java.awt.MenuItem");
+			POPUPMENU = getClass("java.awt.PopupMenu");
+			TRAYICON = getClass("java.awt.TrayIcon");
+			AWTIMAGE = getClass("java.awt.Image");
+			PROCESSBUILDERREDIRECT = getClass("java.lang.ProcessBuilder.Redirect");
+		} else {
+			SYSTEMTRAY = null;
+			RECTANGLE = null;
+			ROBOT = null;
+			DIMENSION = null;
+			RENDEREDIMAGE = null;
+			IMAGEIO = null;
+			ACTIONLISTENER = null;
+			MENUITEM = null;
+			POPUPMENU = null;
+			TRAYICON = null;
+			AWTIMAGE = null;
+			PROCESSBUILDERREDIRECT = null;
+		}
+	}
+	
+	static {
+		//GIT
 		GIT = getClass("org.eclipse.jgit.api.Git");
 		if(GIT != null) {
 			REVWALK = getClass("org.eclipse.jgit.revwalk.RevWalk");
@@ -198,7 +246,6 @@ public class ReflectionLoader {
 //			REF = null;
 //			REVCOMMIT = null;
 		}
-
 	}
 	
 	public static Object newInstance(Class<?> instance, Object... arguments) {

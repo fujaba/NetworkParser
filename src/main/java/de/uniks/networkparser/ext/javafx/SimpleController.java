@@ -1,14 +1,7 @@
 package de.uniks.networkparser.ext.javafx;
 
-import java.awt.Image;
-import java.awt.MenuItem;
-import java.awt.PopupMenu;
-import java.awt.SystemTray;
-import java.awt.Toolkit;
-import java.awt.TrayIcon;
 import java.io.File;
 import java.io.IOException;
-import java.lang.ProcessBuilder.Redirect;
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.lang.reflect.Field;
 import java.net.URL;
@@ -33,9 +26,9 @@ public class SimpleController {
 	private String debugPort;
 	private String title;
 	private ErrorHandler errorHandler = new ErrorHandler();
-	protected PopupMenu popupMenu;
-	protected TrayIcon trayIcon;
-	private JavaFXEvent eventHandler = new JavaFXEvent();
+	protected Object popupMenu;
+	protected Object trayIcon;
+	private GUIEvent eventHandler = new GUIEvent();
 	
 	public SimpleController(Object primitiveStage) {
 		this.stage = primitiveStage;
@@ -122,17 +115,16 @@ public class SimpleController {
 			if (outputRedirect != null) {
 				if (outputRedirect.equalsIgnoreCase("inherit")) {
 					processBuilder.redirectErrorStream(true);
-					processBuilder.redirectOutput(Redirect.INHERIT);
+					ReflectionLoader.call("redirectOutput", processBuilder, ReflectionLoader.PROCESSBUILDERREDIRECT, ReflectionLoader.getField("INHERIT", ReflectionLoader.PROCESSBUILDERREDIRECT));
 				} else {
 					int pos = outputRedirect.lastIndexOf(".");
 					if (pos > 0) {
-						processBuilder.redirectError(
-								new File(outputRedirect.substring(0, pos) + "_error" + outputRedirect.substring(pos)));
-						processBuilder.redirectOutput(
-								new File(outputRedirect.substring(0, pos) + "_stdout" + outputRedirect.substring(pos)));
+						ReflectionLoader.call("redirectError", processBuilder, File.class, new File(outputRedirect.substring(0, pos) + "_error" + outputRedirect.substring(pos)));
+						ReflectionLoader.call("redirectOutput", processBuilder, File.class, new File(outputRedirect.substring(0, pos) + "_stdout" + outputRedirect.substring(pos)));
+								
 					} else {
-						processBuilder.redirectError(new File(outputRedirect + "_error.txt"));
-						processBuilder.redirectOutput(new File(outputRedirect + "_stdout.txt"));
+						ReflectionLoader.call("redirectError", processBuilder, File.class, new File(outputRedirect + "_error.txt"));
+						ReflectionLoader.call("redirectOutput", processBuilder, File.class, new File(outputRedirect + "_stdout.txt"));
 					}
 				}
 			}
@@ -288,25 +280,31 @@ public class SimpleController {
 				+ System.getProperty("sun.arch.data.model") + "-Bit)";
 	}
 	
-	public MenuItem addTrayMenuItem(String text, ObjectCondition listener) {
-		MenuItem item = new MenuItem(text);
-		item.addActionListener(new AWTListener().withListener(listener));
-		getPopUp().add(item);
+	public Object addTrayMenuItem(String text, ObjectCondition listener) {
+		Object item  = ReflectionLoader.newInstance(ReflectionLoader.MENUITEM, String.class, text);
+
+		GUIEvent event = new GUIEvent().withListener(listener);
+		
+		
+		Object actionListener = ReflectionLoader.createProxy(event, ReflectionLoader.ACTIONLISTENER);
+		
+		ReflectionLoader.call("addActionListener", item, actionListener);
+		ReflectionLoader.call("add", getPopUp(), ReflectionLoader.MENUITEM, item);
 		return item;
 	}
 
 	public void addTraySeperator() {
-		getPopUp().addSeparator();
+		ReflectionLoader.call("addSeparator", getPopUp());
 	}
 	
-	private PopupMenu getPopUp() {
+	private Object getPopUp() {
 		if(popupMenu == null) {
-			popupMenu = new PopupMenu();
+			popupMenu = ReflectionLoader.newInstance(ReflectionLoader.POPUPMENU);
 		}
 		return popupMenu;
 	}
 	
-	public TrayIcon showTrayIcon(String... labels) {
+	public Object showTrayIcon(String... labels) {
 		if(Os.checkSystemTray() == false) {
 			return null;
 		}
@@ -318,14 +316,19 @@ public class SimpleController {
 				}else {
 					iconURL = new URL("file:" + this.icon);
 				}
-				Image img = Toolkit.getDefaultToolkit().getImage(iconURL);
-				Image newImage = img.getScaledInstance(16, 16, Image.SCALE_SMOOTH);
-				this.trayIcon = new TrayIcon(newImage);
-				if(popupMenu.getItemCount()<1) {
+				Object toolKit = ReflectionLoader.call("getDefaultToolkit", ReflectionLoader.TOOLKIT);
+				Object image = ReflectionLoader.call("getImage", toolKit, URL.class, iconURL);
+				Object newImage = ReflectionLoader.call("getScaledInstance", image, int.class, 16, int.class, 16, int.class, 4);
+						
+//				Image img.getScaledInstance(16, 16, Image.SCALE_SMOOTH);
+				this.trayIcon = ReflectionLoader.newInstance(ReflectionLoader.TRAYICON, ReflectionLoader.AWTIMAGE, newImage);
+				Integer count = (Integer) ReflectionLoader.call("getItemCount", getPopUp());
+				if(count < 1) {
 					addTrayMenuItem(CLOSE, this.eventHandler.getListener());
 				}
-				trayIcon.setPopupMenu(popupMenu);
-				SystemTray.getSystemTray().add(trayIcon);
+				ReflectionLoader.call("setPopupMenu", trayIcon, ReflectionLoader.POPUPMENU, popupMenu);
+				Object systemTray = ReflectionLoader.call("getSystemTray", ReflectionLoader.SYSTEMTRAY);
+				ReflectionLoader.call("add", systemTray, ReflectionLoader.TRAYICON,this.trayIcon);
 			}catch (Exception e) {
 			}
 			

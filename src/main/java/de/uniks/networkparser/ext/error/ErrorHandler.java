@@ -1,9 +1,5 @@
 package de.uniks.networkparser.ext.error;
 
-import java.awt.Rectangle;
-import java.awt.Robot;
-import java.awt.Toolkit;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -12,8 +8,6 @@ import java.io.PrintStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.GregorianCalendar;
-
-import javax.imageio.ImageIO;
 
 import de.uniks.networkparser.ext.generic.ReflectionLoader;
 
@@ -117,11 +111,10 @@ public class ErrorHandler implements Thread.UncaughtExceptionHandler{
 			currentStage = stage;
 		}
 		try {
-			BufferedImage bi;
+			
 			if (fullScreenFileName != null) {
-				bi = new Robot().createScreenCapture(new Rectangle(Toolkit
-						.getDefaultToolkit().getScreenSize()));
-				ImageIO.write(bi, "jpg", new File(fullScreenFileName));
+				Object rect = ReflectionLoader.newInstance(ReflectionLoader.RECTANGLE, ReflectionLoader.DIMENSION, ReflectionLoader.callChain(ReflectionLoader.TOOLKIT, "getDefaultToolkit", "getScreenSize"));
+				writeScreen(fullScreenFileName, rect);
 			}
 			if (currentStage != null) {
 				Double x = (Double) ReflectionLoader.call("getX", currentStage);
@@ -130,14 +123,22 @@ public class ErrorHandler implements Thread.UncaughtExceptionHandler{
 				Double height = (Double) ReflectionLoader.call("getHeight", currentStage);
 				
 				String windowName = currentStage.getClass().getSimpleName();
-				bi = new Robot().createScreenCapture(new java.awt.Rectangle(
-						x.intValue(), y.intValue(), width.intValue(), height.intValue()));
-				ImageIO.write(bi, "jpg", new File(windowName));
+				
+				Object rect = ReflectionLoader.newInstance(ReflectionLoader.RECTANGLE, int.class, x.intValue(), int.class, y.intValue(), int.class, width.intValue(), int.class, height.intValue());
+				writeScreen(windowName, rect);
 			}
 		} catch (Exception e1) {
 			return e1;
 		}
 		return null;
+	}
+	
+	private boolean writeScreen(String fileName, Object rectangle) {
+		Object robot = ReflectionLoader.newInstance(ReflectionLoader.ROBOT);
+		Object bi = ReflectionLoader.call("createScreenCapture", robot, ReflectionLoader.RECTANGLE, rectangle);
+		
+		Boolean result = (Boolean) ReflectionLoader.call("write", ReflectionLoader.IMAGEIO, ReflectionLoader.RENDEREDIMAGE, bi, String.class, "jpg", File.class, new File(fileName));
+		return result;
 	}
 	public void saveException(Throwable e) {
 		saveException(e, this.stage);

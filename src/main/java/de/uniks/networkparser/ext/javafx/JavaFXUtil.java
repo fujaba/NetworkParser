@@ -32,7 +32,7 @@ public class JavaFXUtil {
 		condition.withStaticEvent(button);
 		
 		
-		JavaFXEvent javaFXEvent = new JavaFXEvent();
+		GUIEvent javaFXEvent = new GUIEvent();
 		javaFXEvent.withListener(condition);
 		Object proxy = ReflectionLoader.createProxy(javaFXEvent, ReflectionLoader.EVENTHANDLER);
 		
@@ -130,7 +130,7 @@ public class JavaFXUtil {
 	}
 	
 	public static void addListener(Object element, String method, Class<?> proxyClass, ObjectCondition condition) {
-		JavaFXEvent event = new JavaFXEvent();
+		GUIEvent event = new GUIEvent();
 		event.withListener(condition);
 		Object proxy = ReflectionLoader.createProxy(event, proxyClass);
 		ReflectionLoader.call(method, element, proxyClass, proxy);

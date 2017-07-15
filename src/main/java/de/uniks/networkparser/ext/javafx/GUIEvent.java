@@ -5,12 +5,12 @@ import de.uniks.networkparser.gui.Event;
 import de.uniks.networkparser.gui.EventTypes;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 
-public class JavaFXEvent extends Event {
+public class GUIEvent extends Event {
 	// The jsObject for BackupPurposes
 	private ObjectCondition listerner;
 	public Object jsObject;
 	
-	public JavaFXEvent withListener(ObjectCondition value) {
+	public GUIEvent withListener(ObjectCondition value) {
 		this.listerner = value;
 		return this;
 	}
@@ -26,6 +26,12 @@ public class JavaFXEvent extends Event {
 		}
 	}
 	
+	public void actionPerformed(Object e) {
+		if(this.listerner != null) {
+			this.listerner.update(e);
+		}
+	}
+	
 	public void changed(Object observable, Object oldValue, Object newValue) {
 		if(this.listerner != null) {
 			this.listerner.update(newValue);
@@ -36,9 +42,9 @@ public class JavaFXEvent extends Event {
 		return ReflectionLoader.call("getMember", obj, String.class, value);
 	}
 	
-	public static JavaFXEvent create(Object obj) {
+	public static GUIEvent create(Object obj) {
 //			boolean isEvent = (boolean) obj.eval("this instanceof Event");
-		JavaFXEvent event = new JavaFXEvent();
+		GUIEvent event = new GUIEvent();
 		Object value;
 		
 		value = getMember(obj, TIME_STAMP);

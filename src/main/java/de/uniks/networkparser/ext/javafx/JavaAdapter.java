@@ -112,7 +112,7 @@ public class JavaAdapter implements JavaViewAdapter {
 			return true;
 		}
 		if(ReflectionLoader.JSOBJECT.isAssignableFrom(value.getClass())) {
-			JavaFXEvent event = JavaFXEvent.create(value);
+			GUIEvent event = GUIEvent.create(value);
 			owner.fireEvent(event);
 			return true;
 		}

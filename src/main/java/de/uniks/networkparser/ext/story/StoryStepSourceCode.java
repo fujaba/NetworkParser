@@ -27,16 +27,11 @@ public class StoryStepSourceCode implements StoryStep {
 
 	private void startStory(String path) {
 		this.packageName = path;
-		StackTraceElement[] cause = Thread.currentThread().getStackTrace();
-		try {
-			throw new Exception("get File");
-		} catch (Exception e) {
-			getLineFromThrowable(e);
-		}
+		getLineFromThrowable();
 	}
 
-	private String getLineFromThrowable(Throwable e) {
-		StackTraceElement[] stackTrace = e.getStackTrace();
+	private String getLineFromThrowable() {
+		StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
 		for (StackTraceElement ste : stackTrace) {
 			String name = ste.getClassName();
 			if (name.startsWith(this.packageName)) {
@@ -60,11 +55,7 @@ public class StoryStepSourceCode implements StoryStep {
 
 	@Override
 	public void finish() {
-		try {
-			throw new Exception("get File");
-		} catch (Exception e) {
-			getLineFromThrowable(e);
-		}
+		getLineFromThrowable();
 		this.readFile();
 	}
 

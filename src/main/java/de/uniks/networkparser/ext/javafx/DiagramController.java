@@ -104,7 +104,7 @@ public class DiagramController extends SimpleController {
 			content.append(body);
 			ReflectionLoader.call("loadContent", webEngine, content.toString());
 		}
-		JavaFXEvent eventListener = new JavaFXEvent().withListener(new DiagramEvents(webEngine, this));
+		GUIEvent eventListener = new GUIEvent().withListener(new DiagramEvents(webEngine, this));
 		Object proxy = ReflectionLoader.createProxy(eventListener, ReflectionLoader.EVENTHANDLER);
 
 		ReflectionLoader.call("setOnError", webEngine, ReflectionLoader.EVENTHANDLER, proxy);
