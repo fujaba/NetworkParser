@@ -174,6 +174,9 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 		return creator;
 	}
 
+	public SendableEntityCreator getCreator(String clazz, boolean fullName) {
+		return getCreator(clazz, fullName, null);
+	}
 
 	/**
 	 * Gets the creator classes.

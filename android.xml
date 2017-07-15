@@ -31,7 +31,6 @@
 		<mkdir dir="build/NetworkParserAndroid/src" />
 		<copy todir="build/NetworkParserAndroid/src">
 			<fileset dir="src/main/java/">
-				<!--<exclude name="**/javafx/**"/>-->
 			</fileset>
 		</copy>
 		<ant antfile="build.xml" target="debug" inheritrefs="true" dir="build/NetworkParserAndroid/" />
