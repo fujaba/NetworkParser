@@ -196,13 +196,13 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements En
 		if(length>1) {
 			sb.append(converter.getPrefix());
 		}
-		sb.append(EntityUtil.quote(get(0).toString()));
+		sb.append(EntityUtil.quote(get(0)));
 		sb.append(":");
 		sb.append(EntityUtil.valueToString(getValueByIndex(0), false, this, converter));
 		for (int i = 1; i < length; i++) {
 			sb.append(",");
 			sb.append(converter.getPrefix());
-			sb.append(EntityUtil.quote(get(i).toString()));
+			sb.append(EntityUtil.quote(get(i)));
 			sb.append(":");
 			sb.append(EntityUtil.valueToString(getValueByIndex(i), false, this, converter));
 		}

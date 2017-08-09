@@ -50,6 +50,7 @@ import de.uniks.networkparser.interfaces.Condition;
 import de.uniks.networkparser.interfaces.DateCreator;
 import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.EntityList;
+import de.uniks.networkparser.json.JDLTokener;
 import de.uniks.networkparser.json.JsonArray;
 import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.list.SimpleList;
@@ -76,7 +77,9 @@ import de.uniks.networkparser.test.model.util.RoomCreator;
 import de.uniks.networkparser.test.model.util.SortedMsgCreator;
 import de.uniks.networkparser.test.model.util.StudentCreator;
 import de.uniks.networkparser.test.model.util.UniversityCreator;
+import de.uniks.networkparser.xml.EMFTokener;
 import de.uniks.networkparser.xml.HTMLEntity;
+import de.uniks.networkparser.xml.XMLEntity;
 
 public class GraphTest {
 	@Test
@@ -855,4 +858,25 @@ public class GraphTest {
 
 //		ParameterSet	2044	69%	22	50%	2	7	4	15	0	5	0	1
 	}
+	
+	@Test
+	public void testJDLGraph() {
+		GraphList graphList = new GraphList();
+		Clazz uni = graphList.createClazz("University");
+		Clazz person = graphList.createClazz("Person");
+		person.createAttribute("name", DataType.STRING);
+		
+		uni.withBidirectional(person, "has", Cardinality.MANY, "owner", Cardinality.ONE);
+		
+		IdMap map=new IdMap();
+		JDLTokener tokener = new JDLTokener();
+		BaseItem encode = map.encode(graphList, tokener);
+//		System.out.println(encode.toString());
+		
+		EMFTokener emfTokener = new EMFTokener();
+		
+		XMLEntity xmi = emfTokener.toXMI(graphList, null);
+		System.out.println(xmi.toString(2));
+	}
+
 }

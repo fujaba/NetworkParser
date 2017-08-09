@@ -90,6 +90,8 @@ public class EMFTest extends IOClasses{
 //		map.with(new GenericCreator())
 		Assert.assertNotNull(xmi);
 		Assert.assertNotNull(map);
+		Object decode = map.decode(xmi);
+		System.out.println(decode);
 	}
 
 }

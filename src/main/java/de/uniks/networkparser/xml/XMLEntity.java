@@ -160,12 +160,13 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 
 	/**
 	 * Method to create a new Child and add it to Children
-	 *
+	 *@param tag TagName
 	 * @return XMLEntity	new Instance
 	 */
-	public XMLEntity createChild() {
+	public XMLEntity createChild(String tag) {
 		XMLEntity xmlEntity = new XMLEntity();
 		withChild(xmlEntity);
+		xmlEntity.setType(tag);
 		return xmlEntity;
 	}
 
