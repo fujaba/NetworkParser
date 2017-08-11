@@ -68,6 +68,7 @@ public class ReflectionLoader {
 	public static final Class<?> RECTANGLE;
 	public static final Class<?> ROBOT;
 	public static final Class<?> TOOLKIT;
+	public static final Class<?> TOOLKITFX;
 	public static final Class<?> DIMENSION;
 	public static final Class<?> RENDEREDIMAGE;
 	public static final Class<?> IMAGEIO;
@@ -137,6 +138,7 @@ public class ReflectionLoader {
 			BORDERPANE = getClass("javafx.scene.layout.BorderPane");
 			PARAMETER = getClass("com.sun.javafx.application.ParametersImpl");
 			TRANSFERMODE = getClass("javafx.scene.input.TransferMode");
+			TOOLKITFX = getClass("com.sun.javafx.tk.Toolkit");
 		} else {
 			NODE = null;
 			OBSERVABLEVALUE = null;
@@ -183,6 +185,7 @@ public class ReflectionLoader {
 			BORDERPANE = null;
 			PARAMETER = null;
 			TRANSFERMODE = null;
+			TOOLKITFX = null;
 		}
 	}
 	

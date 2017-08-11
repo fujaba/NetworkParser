@@ -56,7 +56,7 @@ public class ReflectionTest {
 			@Override
 			public boolean update(Object value) {
 				SimpleEvent event = (SimpleEvent) value;
-				System.out.println(event.getNewValue());
+//				System.out.println(event.getNewValue());
 				// TODO Auto-generated method stub
 				return false;
 			}

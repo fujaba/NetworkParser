@@ -876,7 +876,7 @@ public class GraphTest {
 		EMFTokener emfTokener = new EMFTokener();
 		
 		XMLEntity xmi = emfTokener.toXMI(graphList, null);
-		System.out.println(xmi.toString(2));
+//		System.out.println(xmi.toString(2));
 	}
 
 }

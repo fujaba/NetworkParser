@@ -989,7 +989,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 				return result;
 			}
 		}
-		return jsonTokener.decoding(jsonObject, map);
+		return jsonTokener.decoding(jsonObject, map, false);
 	}
 
 

@@ -37,11 +37,13 @@ public class JDLTokener extends Tokener{
 		return result;
 	}
 
-	/*
- * 	entity <entity name> {
- *		  <field name> <type> [<validation>*]
- *		}
-*/
+	/**
+	 * 	entity <entity name> {
+	 *		  	<field name> <type> [<validation>*]
+	 *	}
+	 * @param item a Clazz for Transform
+	 * @return a new TextEntity
+	 */
 	public TextEntity encodeEntity(Clazz item) {
 		TextEntity result = new TextEntity();
 		result.withTag("entity "+item.getName());
@@ -67,11 +69,13 @@ public class JDLTokener extends Tokener{
 		return result;
 	}
 	
-	/*
+	/**
 	 * relationship (OneToMany | ManyToOne | OneToOne | ManyToMany) {
-	 * <from entity>[{<relationship name>[(<display field>)]}] to <to entity>[{<relationship name>[(<display field>)]}]
-	 *	  }
-	*/
+	 *	 <from entity>[{<relationship name>[(<display field>)]}] to <to entity>[{<relationship name>[(<display field>)]}]
+	 *  }
+	 * @param assoc a Association
+	 * @return a new TextEntity
+	 */
 	public TextEntity encodeRelationship(Association assoc) {
 		TextEntity relationship = new TextEntity();
 		relationship.withTag("relationship "+getCardinality(assoc));

@@ -28,6 +28,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.sun.javafx.tk.Toolkit;
+
 import de.uniks.networkparser.ext.generic.ReflectionLoader;
 import de.uniks.networkparser.ext.javafx.JavaFXUtil;
 import de.uniks.networkparser.gui.controls.Button;
@@ -193,11 +195,12 @@ public class DialogBox implements ObjectCondition{
 	}
 
 	private Button showExtern(Object owner) {
-
-//FIXME REMOVE		if(Toolkit.getToolkit().isFxUserThread()) {
-//			new DialogStage(this, owner).run();
-//			return action;
-//		}
+		Object toolKit = ReflectionLoader.call("getToolkit", ReflectionLoader.TOOLKITFX);
+		Object isFX = ReflectionLoader.call("isFxUserThread", toolKit);
+		if(isFX!=null && (Boolean)isFX) {
+			new DialogStage(this, owner).run();
+			return action;
+		}
 		ReflectionLoader.call("runLater", ReflectionLoader.PLATFORM, Runnable.class, new DialogStage(this, owner));
 		return null;
 	}

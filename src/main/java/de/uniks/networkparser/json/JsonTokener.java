@@ -291,16 +291,20 @@ public class JsonTokener extends Tokener {
 	 *
 	 * @param jsonObject the json object
 	 * @param map  decoding runtime values
+	 * @param kid Is it a Kid Decoding so Target from Map is not the Target
 	 * @return the object
 	 */
-	public Object decoding(JsonObject jsonObject, MapEntity map) {
+	public Object decoding(JsonObject jsonObject, MapEntity map, boolean kid) {
 		if (jsonObject == null) {
 			return map.getTarget();
 		}
 		Grammar grammar = map.getGrammar();
 		SendableEntityCreator typeInfo = grammar.getCreator(Grammar.READ, jsonObject, map.getMap(), map.isSearchForSuperClass(), null);
 		if (typeInfo != null) {
-			Object result = map.getTarget();
+			Object result = null;
+			if(kid == false) {
+				result = map.getTarget();
+			}
 			if (grammar.hasValue(jsonObject, IdMap.ID) && result == null) {
 				String jsonId = grammar.getValue(jsonObject, IdMap.ID);
 				if (jsonId != null) {
@@ -401,7 +405,7 @@ public class JsonTokener extends Tokener {
 				Object kid = jsonArray.get(i);
 				if (kid instanceof JsonObject) {
 					// got a new kid, create it
-					creator.setValue(target, property, decoding((JsonObject) kid, map), SendableEntityCreator.NEW);
+					creator.setValue(target, property, decoding((JsonObject) kid, map, true), SendableEntityCreator.NEW);
 				} else {
 					creator.setValue(target, property, kid, SendableEntityCreator.NEW);
 				}
@@ -424,7 +428,7 @@ public class JsonTokener extends Tokener {
 						String key = item.getKey();
 						Object entryValue = item.getValue();
 						if (entryValue instanceof JsonObject) {
-							creator.setValue(target, property, new ObjectMapEntry().with(key, decoding((JsonObject) entryValue, map)), SendableEntityCreator.NEW);
+							creator.setValue(target, property, new ObjectMapEntry().with(key, decoding((JsonObject) entryValue, map, true)), SendableEntityCreator.NEW);
 						} else if (entryValue instanceof JsonArray) {
 							///FIXME CHANGE DECODE TO DECODING
 							throw new RuntimeException();
@@ -435,7 +439,7 @@ public class JsonTokener extends Tokener {
 						}
 					}
 				} else {
-					creator.setValue(target, property, decoding(child, map), filter.getStrategy());
+					creator.setValue(target, property, decoding(child, map, true), filter.getStrategy());
 				}
 			} else {
 				creator.setValue(target, property, value, filter.getStrategy());
