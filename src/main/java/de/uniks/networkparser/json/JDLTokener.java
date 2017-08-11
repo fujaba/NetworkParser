@@ -38,9 +38,11 @@ public class JDLTokener extends Tokener{
 	}
 
 	/**
-	 * 	entity <entity name> {
+	 * {@code
+	 * 		entity <entity name> {
 	 *		  	<field name> <type> [<validation>*]
-	 *	}
+	 *		}
+	 * }
 	 * @param item a Clazz for Transform
 	 * @return a new TextEntity
 	 */
@@ -62,7 +64,13 @@ public class JDLTokener extends Tokener{
 		return result;
 	}
 	
-	//  <field name> <type> [<validation>*]
+	/** Enocding Attribute
+	 * {@code
+	 * 		<field name> <type> [<validation>*]
+	 * }
+	 * @param item The Attribute to Convert
+	 * @return a new TextEntity
+	 */
 	public TextEntity encodeAttribute(Attribute item) {
 		TextEntity result = new TextEntity();
 		result.withTag(item.getName()+" "+item.getType(true));
@@ -70,9 +78,12 @@ public class JDLTokener extends Tokener{
 	}
 	
 	/**
-	 * relationship (OneToMany | ManyToOne | OneToOne | ManyToMany) {
-	 *	 <from entity>[{<relationship name>[(<display field>)]}] to <to entity>[{<relationship name>[(<display field>)]}]
-	 *  }
+	 * Encoding RelationShip
+	 * {@code
+	 * 		relationship (OneToMany | ManyToOne | OneToOne | ManyToMany) {
+	 *	 		<from entity>[{<relationship name>[(<display field>)]}] to <to entity>[{<relationship name>[(<display field>)]}]
+	 *  	}
+	 * }
 	 * @param assoc a Association
 	 * @return a new TextEntity
 	 */
