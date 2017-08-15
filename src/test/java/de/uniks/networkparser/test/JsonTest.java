@@ -21,7 +21,6 @@ import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.TextDiff;
 import de.uniks.networkparser.ext.PropertyChangeEventWrapper;
 import de.uniks.networkparser.interfaces.ObjectCondition;
-import de.uniks.networkparser.json.EMFJsonGrammar;
 import de.uniks.networkparser.json.JsonArray;
 import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.json.JsonTokener;
@@ -60,6 +59,7 @@ import de.uniks.networkparser.test.model.util.PersonCreator;
 import de.uniks.networkparser.test.model.util.SortedMsgCreator;
 import de.uniks.networkparser.test.model.util.StringMessageCreator;
 import de.uniks.networkparser.test.model.util.UniversityCreator;
+import de.uniks.networkparser.xml.EMFJsonGrammar;
 
 public class JsonTest extends IOClasses {
 	@Test

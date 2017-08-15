@@ -63,6 +63,7 @@ public class EMFTokener extends Tokener{
 	public static final String EPACKAGE = "ecore:EPackage";
 	public static final String EAttribute = "eAttributes";
 	public static final String ECLASS = "eClassifiers";
+	public static final String EANNOTATIONS = "eAnnotations";
 	public static final String EREFERENCE = "eReferences";
 	public static final String ETYPE = "eType";
 	public static final String EDATATYPE ="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//";
@@ -74,9 +75,11 @@ public class EMFTokener extends Tokener{
 	public static final String EOpposite = "eOpposite";
 	public static final String ATTRIBUTE_URL = "http://www.eclipse.org/emf/2002/Ecore#//";
 	public static final String UPPERBOUND = "upperBound";
+	public static final String XMI_TYPE = "xmi:type";
 	public static final String XSI_TYPE = "xsi:type";
 	public static final String XMI_ID = "xmi:id";
 	public static final String NAME = "name";
+	public static final String VALUE ="value";
 
 	/**
 	 * Skip the Current Entity to &gt;.
@@ -567,11 +570,11 @@ public class EMFTokener extends Tokener{
 				continue;
 			}
 			XMLEntity xml = (XMLEntity) eClassifier;
-			if (xml.has(EMFTokener.XSI_TYPE)== false) {
+			if (xml.has(XSI_TYPE)== false) {
 				continue;
 			}
 
-			if (xml.getString(EMFTokener.XSI_TYPE).equalsIgnoreCase(TYPE_ECLASS)) {
+			if (xml.getString(XSI_TYPE).equalsIgnoreCase(TYPE_ECLASS)) {
 				Clazz clazz = new Clazz(xml.getString(EMFTokener.NAME));
 				model.with(clazz);
 				for(int c=0;c<xml.sizeChildren();c++) {
@@ -580,7 +583,7 @@ public class EMFTokener extends Tokener{
 						continue;
 					}
 					Entity childItem = (Entity) child;
-					String typ = childItem.getString(EMFTokener.XSI_TYPE);
+					String typ = childItem.getString(XSI_TYPE);
 					if(typ.equals(TYPE_EAttribute)) {
 						String etyp = EntityUtil.getId(childItem.getString(ETYPE));
 						if (EntityUtil.isEMFType(etyp)) {
@@ -597,7 +600,7 @@ public class EMFTokener extends Tokener{
 				if(xml.has(TYPE_ESUPERTYPE)) {
 					superClazzes.add(xml);
 				}
-			} else if (xml.getString(EMFTokener.XSI_TYPE).equals(TYPE_EEnum)) {
+			} else if (xml.getString(XSI_TYPE).equals(TYPE_EEnum)) {
 				Clazz graphEnum = new Clazz(xml.getString(EMFTokener.NAME));
 				graphEnum.with(ClazzType.ENUMERATION);
 				for(int c=0;c<xml.sizeChildren();c++) {
@@ -696,7 +699,12 @@ public class EMFTokener extends Tokener{
 		return edge;
 	}
 	
-	public XMLEntity toXMI(GraphList list, MapEntity map) {
+	/**
+	 * Export to XMI File
+	 * @param list the GraphList
+	 * @return XMLEntity
+	 */
+	public XMLEntity toXMI(GraphList list) {
 		XMLContainer container = new XMLContainer();
 		container.withStandardPrefix();
 		
@@ -705,8 +713,10 @@ public class EMFTokener extends Tokener{
 		root.withKeyValue("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
 		root.withKeyValue("xmlns:uml", "http://www.eclipse.org/uml2/5.0.0/UML");
 		root.withKeyValue("xmi:version", "2.0");
-		root.withKeyValue("xmi:id", list.getName());
-		root.withKeyValue("name", "model");
+		root.withKeyValue(XMI_ID, list.getName());
+		root.withKeyValue(NAME, "model");
+		
+		this.encodeAnnotations(root.createChild(null));
 		
 		// Add all Clazzes
 		ClazzSet clazzes = list.getClazzes();
@@ -721,16 +731,24 @@ public class EMFTokener extends Tokener{
 		
 		return container;
 	}
+	/**
+	 * To UML FileFormat
+	 * @param list The GraphModel
+	 * @return The XMLEntity
+	 */
+	public XMLEntity toUML(GraphList list) {
+		return toXMI(list);
+	}
 	
 	public void encodePackagedElementClass(XMLEntity root, Clazz clazz) {
 		root.setType("packagedElement");
-		root.withKeyValue("xmi:id", clazz.getId());
-		root.withKeyValue("name", clazz.getName());
+		root.withKeyValue(XMI_ID, clazz.getId());
+		root.withKeyValue(NAME, clazz.getName());
 		root.withKeyValue("isAbstract", clazz.getModifier().has(Modifier.ABSTRACT));
 		if(clazz.getType()==ClazzType.INTERFACE) {
-			root.withKeyValue("xmi:type", "uml:Interface");
+			root.withKeyValue(XMI_TYPE, "uml:Interface");
 		} else {
-			root.withKeyValue("xmi:type", clazz.getName());
+			root.withKeyValue(XMI_TYPE, clazz.getName());
 			ClazzSet interfaces = clazz.getInterfaces(false);
 			if(interfaces.size()>0) {
 				CharacterBuffer value = new CharacterBuffer();
@@ -740,8 +758,8 @@ public class EMFTokener extends Tokener{
 					}
 					value.with(interfaceClazz.getId());
 					XMLEntity interfaceChild = root.createChild("interfaceRealization");
-					interfaceChild.withKeyValue("xmi:type", "uml:InterfaceRealization");
-					interfaceChild.withKeyValue("xmi:id", interfaceClazz.getId());
+					interfaceChild.withKeyValue(XMI_TYPE, "uml:InterfaceRealization");
+					interfaceChild.withKeyValue(XMI_ID, interfaceClazz.getId());
 					interfaceChild.withKeyValue("supplier", clazz.getId());
 					interfaceChild.withKeyValue("client", interfaceClazz.getId());
 					interfaceChild.withKeyValue("contract", interfaceClazz.getId());
@@ -751,8 +769,8 @@ public class EMFTokener extends Tokener{
 			ClazzSet superClazzes = clazz.getSuperClazzes(false);
 			for(Clazz superClazzesClazz : superClazzes) {
 				XMLEntity superClassChild = root.createChild("generalization");
-				superClassChild.withKeyValue("xmi:type", "uml:Generalization");
-				superClassChild.withKeyValue("xmi:id", superClazzesClazz.getId());
+				superClassChild.withKeyValue(XMI_TYPE, "uml:Generalization");
+				superClassChild.withKeyValue(XMI_ID, superClazzesClazz.getId());
 				superClassChild.withKeyValue("general", clazz.getId());
 			}
 		}
@@ -777,33 +795,32 @@ public class EMFTokener extends Tokener{
 		} else {
 			root.setType("ownedParameter");
 		}
-		root.withKeyValue("xmi:type", value.getType());
-		root.withKeyValue("xmi:id", value.getName());
-		root.withKeyValue("name", value.getName());
+		root.withKeyValue(XMI_TYPE, value.getType());
+		root.withKeyValue(XMI_ID, value.getName());
+		root.withKeyValue(NAME, value.getName());
 		root.withKeyValue("visibility", value.getModifier());
 		if(EntityUtil.isPrimitiveType(value.getType(false))) {
 			XMLEntity child = root.createChild("type");
-			child.withKeyValue("xmi:type", "uml:PrimitiveType");
+			child.withKeyValue(XMI_TYPE, "uml:PrimitiveType");
 			child.withKeyValue("href", "http://www.omg.org/spec/UML/20110701/PrimitiveTypes.xmi"+value.getType(false));
 		} else {
 			root.withKeyValue("type", value.getType(false));
 		}
 		XMLEntity child = root.createChild("lowerValue");
-		child.withKeyValue("xmi:type", "uml:LiteralInteger");
-		child.withKeyValue("xmi:id", "_lv"+value.getName());
-		child.withKeyValue("value", "1");
+		child.withKeyValue(XMI_TYPE, "uml:LiteralInteger");
+		child.withKeyValue(XMI_ID, "_lv"+value.getName());
+		child.withKeyValue(VALUE, "1");
 		
 		child = root.createChild("upperValue");
-		child.withKeyValue("xmi:type", "uml:LiteralUnlimitedNatural");
-		child.withKeyValue("xmi:id", "_uv"+value.getName());
-		child.withKeyValue("value", "1");
+		child.withKeyValue(XMI_TYPE, "uml:LiteralUnlimitedNatural");
+		child.withKeyValue(XMI_ID, "_uv"+value.getName());
+		child.withKeyValue(VALUE, "1");
 	}
 	
 	public void encodeOwnedOperation(XMLEntity root, Method method) {
 		root.setType("ownedOperation");
-//		root.withKeyValue("xmi:type", method.getType());
-		root.withKeyValue("xmi:id", method.getName());
-		root.withKeyValue("name", method.getName());
+		root.withKeyValue(XMI_ID, method.getName());
+		root.withKeyValue(NAME, method.getName());
 		root.withKeyValue("visibility", method.getModifier());
 		
 		// parameters
@@ -815,32 +832,32 @@ public class EMFTokener extends Tokener{
 		DataType returnType = method.getReturnType();
 		if(method.getReturnType().equals(DataType.VOID) == false) {
 			XMLEntity returnChild = root.createChild("ownedParameter");
-			returnChild.withKeyValue("xmi:id", method.getReturnType().toString());
+			returnChild.withKeyValue(XMI_ID, method.getReturnType().toString());
 			returnChild.withKeyValue("direction", "return");
 			if(EntityUtil.isPrimitiveType(returnType.toString())) {
 				XMLEntity child = root.createChild("type");
-				child.withKeyValue("xmi:type", "uml:PrimitiveType");
+				child.withKeyValue(XMI_TYPE, "uml:PrimitiveType");
 				child.withKeyValue("href", "http://www.omg.org/spec/UML/20110701/PrimitiveTypes.xmi"+returnType.toString());
 			} else {
 				returnChild.withKeyValue("type", returnType.toString());
 			}
 			XMLEntity child = root.createChild("lowerValue");
-			child.withKeyValue("xmi:type", "uml:LiteralInteger");
-			child.withKeyValue("xmi:id", "_lv"+returnType.toString());
-			child.withKeyValue("value", "1");
+			child.withKeyValue(XMI_TYPE, "uml:LiteralInteger");
+			child.withKeyValue(XMI_ID, "_lv"+returnType.toString());
+			child.withKeyValue(VALUE, "1");
 			
 			child = root.createChild("upperValue");
-			child.withKeyValue("xmi:type", "uml:LiteralUnlimitedNatural");
-			child.withKeyValue("xmi:id", "_uv"+returnType.toString());
-			child.withKeyValue("value", "1");
+			child.withKeyValue(XMI_TYPE, "uml:LiteralUnlimitedNatural");
+			child.withKeyValue(XMI_ID, "_uv"+returnType.toString());
+			child.withKeyValue(VALUE, "1");
 		}
 	}
 	
 	public void encodeAssoc(XMLEntity root, Association assoc) {
 		root.setType("packagedElement");
-		root.withKeyValue("xmi:type", assoc.getType());
-		root.withKeyValue("xmi:id", assoc.getName());
-		root.withKeyValue("name", assoc.getName());
+		root.withKeyValue(XMI_TYPE, assoc.getType());
+		root.withKeyValue(XMI_ID, assoc.getName());
+		root.withKeyValue(NAME, assoc.getName());
 		root.withKeyValue("memberEnd", "_end-"+assoc.getName()+" _end-"+assoc.getOther().getName());
 		
         // source
@@ -852,24 +869,40 @@ public class EMFTokener extends Tokener{
 	
 	public void encodeSubAssoc(XMLEntity root, Association assoc) {
 		XMLEntity child = root.createChild("ownedEnd");
-		root.withKeyValue("xmi:type", "uml:Property");
-		root.withKeyValue("xmi:id", assoc.getName());
-		root.withKeyValue("name", assoc.getName());
+		root.withKeyValue(XMI_TYPE, "uml:Property");
+		root.withKeyValue(XMI_ID, assoc.getName());
+		root.withKeyValue(NAME, assoc.getName());
 		root.withKeyValue("type", assoc.getClazz().getId());
 		root.withKeyValue("association", assoc.getName());
 		
 		XMLEntity childChild = child.createChild("lowerValue");
-		childChild.withKeyValue("xmi:type", "uml:LiteralInteger");
-		childChild.withKeyValue("xmi:id", assoc.getClazz().getId());
-		childChild.withKeyValue("value", "1");
+		childChild.withKeyValue(XMI_TYPE, "uml:LiteralInteger");
+		childChild.withKeyValue(XMI_ID, assoc.getClazz().getId());
+		childChild.withKeyValue(VALUE, "1");
 		
 		childChild = child.createChild("upperValue");
-		childChild.withKeyValue("xmi:type", "uml:LiteralUnlimitedNatural");
-		childChild.withKeyValue("xmi:id", assoc.getClazz().getId());
+		childChild.withKeyValue(XMI_TYPE, "uml:LiteralUnlimitedNatural");
+		childChild.withKeyValue(XMI_ID, assoc.getClazz().getId());
 		if(assoc.getCardinality()==Cardinality.ONE) {
-			childChild.withKeyValue("value", "1");
+			childChild.withKeyValue(VALUE, "1");
 		} else {
-			childChild.withKeyValue("value", "*");
+			childChild.withKeyValue(VALUE, "*");
 		}
+	}
+	
+	private void encodeAnnotations(XMLEntity child) {
+		String modelid="_modelid";
+		child.setType("eAnnotations");
+		child.withKeyValue(XMI_ID, modelid);
+		child.withKeyValue("source", "Objing");
+		XMLEntity content = child.createChild("contents");
+		content.withKeyValue(XMI_TYPE, "uml:Property");
+		content.withKeyValue(XMI_ID, modelid);
+		content.withKeyValue(NAME, "exporterVersion");
+		XMLEntity value = content.createChild("defaultValue");
+		value.withCloseTag();
+		value.withKeyValue(XMI_TYPE, "uml:LiteralString");
+		value.withKeyValue(XMI_ID, modelid);
+		value.withKeyValue(VALUE, "3.0.0");
 	}
 }

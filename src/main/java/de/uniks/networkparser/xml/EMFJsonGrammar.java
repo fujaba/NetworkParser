@@ -1,4 +1,4 @@
-package de.uniks.networkparser.json;
+package de.uniks.networkparser.xml;
 
 /*
 NetworkParser
@@ -32,6 +32,7 @@ import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.Grammar;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
+import de.uniks.networkparser.json.JsonObject;
 
 public class EMFJsonGrammar extends SimpleGrammar {
 	public static final String SRC="@src";

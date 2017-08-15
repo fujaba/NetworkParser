@@ -50,7 +50,6 @@ import de.uniks.networkparser.interfaces.Condition;
 import de.uniks.networkparser.interfaces.DateCreator;
 import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.EntityList;
-import de.uniks.networkparser.json.JDLTokener;
 import de.uniks.networkparser.json.JsonArray;
 import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.list.SimpleList;
@@ -79,6 +78,7 @@ import de.uniks.networkparser.test.model.util.StudentCreator;
 import de.uniks.networkparser.test.model.util.UniversityCreator;
 import de.uniks.networkparser.xml.EMFTokener;
 import de.uniks.networkparser.xml.HTMLEntity;
+import de.uniks.networkparser.xml.JDLTokener;
 import de.uniks.networkparser.xml.XMLEntity;
 
 public class GraphTest {
@@ -875,7 +875,7 @@ public class GraphTest {
 		
 		EMFTokener emfTokener = new EMFTokener();
 		
-		XMLEntity xmi = emfTokener.toXMI(graphList, null);
+		XMLEntity xmi = emfTokener.toXMI(graphList);
 //		System.out.println(xmi.toString(2));
 	}
 

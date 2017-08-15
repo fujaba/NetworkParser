@@ -1,4 +1,4 @@
-package de.uniks.networkparser.json;
+package de.uniks.networkparser.xml;
 
 import de.uniks.networkparser.MapEntity;
 import de.uniks.networkparser.TextEntity;
@@ -12,6 +12,7 @@ import de.uniks.networkparser.graph.util.AssociationSet;
 import de.uniks.networkparser.graph.util.AttributeSet;
 import de.uniks.networkparser.graph.util.ClazzSet;
 import de.uniks.networkparser.interfaces.BaseItem;
+import de.uniks.networkparser.json.JsonObject;
 
 public class JDLTokener extends Tokener{
 

@@ -57,7 +57,9 @@ public class Story {
 	}
 
 	public Story withFileName(String name) {
-		
+		if(name == null || name.length() <1) {
+			return this;
+		}
 		if(name.toLowerCase().endsWith(".html")) {
 			this.outputFile = name;
 		}else {

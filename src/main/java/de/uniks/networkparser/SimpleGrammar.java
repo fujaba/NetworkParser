@@ -54,7 +54,10 @@ public class SimpleGrammar implements Grammar {
 			}
 			if(basicProperties.contains(IdMap.TIMESTAMP)) {
 				if(map.getTimeStamp() == 0) {
-					String ts = id.substring(1);
+					String ts = null;
+					if(id.length()>0) {
+						ts = id.substring(1);
+					}
 					if(EntityUtil.isNumeric(ts)) {
 							entity.put(IdMap.TIMESTAMP, ts);
 					}
