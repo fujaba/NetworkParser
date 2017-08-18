@@ -36,6 +36,7 @@ import de.uniks.networkparser.UpdateCondition;
 import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.Grammar;
 import de.uniks.networkparser.interfaces.MapListener;
+import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.list.SimpleIteratorSet;
 /**
@@ -116,7 +117,13 @@ public class UpdateJson implements MapListener {
 		}
 
 		// put changes into msg and send to receiver
-		Object source = evt.getSource();
+		Object source;
+		if(evt instanceof SimpleEvent) {
+			source = ((SimpleEvent)evt).getModelValue();
+		} else {
+			source = evt.getSource();
+		}
+//		evt.get
 		String propertyName = evt.getPropertyName();
 		SendableEntityCreator creatorClass = this.map.getCreatorClass(source);
 
@@ -146,7 +153,6 @@ public class UpdateJson implements MapListener {
 		String id = this.map.getId(source, true);
 		Grammar grammar = this.map.getGrammar();
 		grammar.writeBasicValue(jsonObject, source.getClass().getName(), id, map);
-
 		if (oldValue != null) {
 			creatorClass = this.map.getCreatorClass(oldValue);
 
@@ -190,7 +196,15 @@ public class UpdateJson implements MapListener {
 		}
 		if (this.suspendIdList == null) {
 			// Add Message Value
-			this.map.notify(new SimpleEvent(SendableEntityCreator.NEW, jsonObject, evt,  map));
+			ObjectCondition listener = this.map.getUpdateListener();
+			if(listener == null) {
+				return;
+			}
+			if (oldValue != null && newValue != null) {
+				listener.update(new SimpleEvent(SendableEntityCreator.UPDATE, jsonObject, evt,  map));
+			} else {
+				listener.update(new SimpleEvent(SendableEntityCreator.NEW, jsonObject, evt,  map));	
+			}
 		}
 	}
 

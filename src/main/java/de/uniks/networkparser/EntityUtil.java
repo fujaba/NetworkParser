@@ -70,6 +70,9 @@ public class EntityUtil {
 	}
 	
 	public static final boolean isNumeric(String strNum) {
+		if(strNum == null) {
+			return false;
+		}
 	    try {
 	        Double.parseDouble(strNum);
 	    }catch (NumberFormatException e) {

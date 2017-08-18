@@ -95,11 +95,12 @@ public class JsonPeer2PeerTest implements ObjectCondition {
 			assertEquals(5, secondMap.size());
 			z++;
 		} else if(z==8){
-			Assert.assertEquals("===== rem =====", "{\"class\":\"de.uniks.networkparser.test.model.SortedMsg\",\"id\":\"S5\",\"rem\":{\"number\":4},\"upd\":{\"number\":42}}", jsonObject.toString());
+			Assert.assertEquals("===== rem =====", "{\"class\":\"de.uniks.networkparser.test.model.SortedMsg\",\"id\":\"S4\",\"rem\":{\"child\":{\"id\":\"S5\"}}}", jsonObject.toString());
 			z++;
 			assertEquals(5, secondMap.size());
 		} else if(z==9){
 			Assert.assertEquals("===== rem =====", "{\"class\":\"de.uniks.networkparser.test.model.SortedMsg\",\"id\":\"S4\",\"rem\":{\"child\":{\"id\":\"S5\"}}}", jsonObject.toString());
+//			Assert.assertEquals("===== rem =====", "{\"class\":\"de.uniks.networkparser.test.model.SortedMsg\",\"id\":\"S4\",\"rem\":{\"number\":4},\"upd\":{\"number\":42}}", jsonObject.toString());			
 			z++;
 			assertEquals(5, secondMap.size());
 		}

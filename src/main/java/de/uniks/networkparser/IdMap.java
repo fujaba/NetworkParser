@@ -673,7 +673,6 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 		return this;
 	}
 
-
 	/**
 	 * Garbage collection.
 	 *
