@@ -1,11 +1,11 @@
 gradle.projectsEvaluated {
-    compileJava.dependsOn(compileJava16)
+	compileJava.dependsOn(compileJava16)
 	compileJava.dependsOn(compileJava17)
 	test.dependsOn(FinishTest)
 }
 
 ext.sharedManifest = manifest {
-   attributes 'Specification-Version': gitVersion.major+"."+gitVersion.minor+"."+gitVersion.revision,
+	attributes 'Specification-Version': gitVersion.major+"."+gitVersion.minor+"."+gitVersion.revision,
 			'Implementation-Title': 'Networkparser',
 			'Specification-Title': 'Networkparser',
 			'Built-Time': gitVersion.buildTime,
@@ -77,10 +77,10 @@ task buildSourceJar(type: Jar, dependsOn: buildCoreJar18) {
 	manifest = project.manifest {from sharedManifest}
 }
 task buildJavadoc(type: Jar, dependsOn: buildSourceJar) {
-    description 'Build JavaDoc Jar'
-    group "Jar"; from javadoc.outputs.files; classifier = 'javadoc'
-    exclude '**/test/**'
-    manifest = project.manifest {from sharedManifest}
+	description 'Build JavaDoc Jar'
+	group "Jar"; from javadoc.outputs.files; classifier = 'javadoc'
+	exclude '**/test/**'
+	manifest = project.manifest {from sharedManifest}
 }
 
 task cleanupws(type: Delete) {

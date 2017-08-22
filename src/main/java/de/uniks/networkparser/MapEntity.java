@@ -3,7 +3,6 @@ package de.uniks.networkparser;
 import java.util.Iterator;
 
 import de.uniks.networkparser.buffer.CharacterBuffer;
-import de.uniks.networkparser.buffer.Tokener;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.Grammar;
@@ -68,9 +67,11 @@ public class MapEntity extends SimpleSet<Object>{
 	}
 	
 	public MapEntity(IdMap map) {
-		this.filter = map.getFilter();
-		this.mapFlag = map.getFlag();
-		this.grammar = map.getGrammar();
+		if(map != null) {
+			this.filter = map.getFilter();
+			this.mapFlag = map.getFlag();
+			this.grammar = map.getGrammar();
+		}
 		this.map = map;
 	}
 
@@ -179,7 +180,6 @@ public class MapEntity extends SimpleSet<Object>{
 		}
 		return null;
 	}
-
 
 	public Entity writeBasicValue(SendableEntityCreator creator, Entity entity, BaseItem parent, String className, String id) {
 		if((mapFlag & IdMap.FLAG_ID) == 0) {

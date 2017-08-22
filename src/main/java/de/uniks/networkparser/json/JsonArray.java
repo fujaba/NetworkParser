@@ -27,8 +27,8 @@ import java.util.Iterator;
 
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.IdMap;
+import de.uniks.networkparser.Tokener;
 import de.uniks.networkparser.buffer.Buffer;
-import de.uniks.networkparser.buffer.Tokener;
 import de.uniks.networkparser.converter.EntityStringConverter;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.EntityList;

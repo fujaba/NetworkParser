@@ -5,27 +5,29 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.GregorianCalendar;
-
+import de.uniks.networkparser.DateTimeEntity;
+import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.ext.generic.ReflectionLoader;
+import de.uniks.networkparser.interfaces.ObjectCondition;
+import de.uniks.networkparser.list.SimpleList;
 
 public class ErrorHandler implements Thread.UncaughtExceptionHandler{
+	public static final String TYPE = "ERROR";
 	private String path;
 	private Object stage;
+	private SimpleList<ObjectCondition> list = new SimpleList<ObjectCondition>();
 
-	public boolean writeErrorFile(String fileName, String filepath, Throwable e){
+	public boolean writeErrorFile(String prefix, String fileName, String filepath, Throwable e){
 		boolean success;
 		try {
 			filepath=createDir(filepath);
 			if(filepath == null) {
 				return false;
 			}
-			if(!filepath.endsWith("/")){
+			if(filepath.length()>0 && filepath.endsWith("/") == false){
 				filepath+="/";
 			}
-			String fullfilename=filepath+fileName;
+			String fullfilename=filepath+prefix+fileName;
 
 			File file=new File(fullfilename);
 			if(file.exists() == false){
@@ -33,10 +35,11 @@ public class ErrorHandler implements Thread.UncaughtExceptionHandler{
 					return false;
 				}
 			}
-			FileOutputStream networkFile = new FileOutputStream(filepath+"/"+fileName);
+			FileOutputStream networkFile = new FileOutputStream(file);
 			
 			PrintStream ps = new PrintStream( networkFile );
 			ps.println("Error: "+e.getMessage());
+			ps.println("Date: "+new DateTimeEntity().toString("ddmmyyyy HH:MM:SS"));
 			ps.println("Thread: "+Thread.currentThread().getName());
 			ps.println("------------ SYSTEM-INFO ------------");
 			printProperty(ps, "java.class.version");
@@ -79,6 +82,9 @@ public class ErrorHandler implements Thread.UncaughtExceptionHandler{
 	}
 	
 	public static String createDir(String path){
+		if(path == null) {
+			return "";
+		}
 		File dirPath = new File(path);
 		dirPath = new File(dirPath.getPath());
 		if(!dirPath.exists()){
@@ -96,25 +102,21 @@ public class ErrorHandler implements Thread.UncaughtExceptionHandler{
 		return this;
 	}
 
-	@Override
-	public void uncaughtException(Thread t, Throwable e) {
-		GregorianCalendar temp=new GregorianCalendar();
-		DateFormat formatter = new SimpleDateFormat("yyyyMMdd_HHmmss");
-		String prefixName=formatter.format(temp.getTime())+"_";
-		writeErrorFile(prefixName+"error.txt", this.path, e);
-		saveScreenShoot(prefixName+"Full.jpg", null);
-	}
-	
-	public Exception saveScreenShoot(String fullScreenFileName, Object currentStage) {
+	public Exception saveScreenShoot(String prefix, String fileName, Object currentStage) {
 		// Save Screenshot
 		if(currentStage == null) {
 			currentStage = stage;
 		}
 		try {
-			
-			if (fullScreenFileName != null) {
+			File target;
+			if (fileName != null) {
+				if(prefix != null) {
+					target = new File(prefix+fileName);
+				} else {
+					target = new File(fileName);
+				}
 				Object rect = ReflectionLoader.newInstance(ReflectionLoader.RECTANGLE, ReflectionLoader.DIMENSION, ReflectionLoader.callChain(ReflectionLoader.TOOLKIT, "getDefaultToolkit", "getScreenSize"));
-				writeScreen(fullScreenFileName, rect);
+				writeScreen(target, rect);
 			}
 			if (currentStage != null) {
 				Double x = (Double) ReflectionLoader.call("getX", currentStage);
@@ -123,9 +125,13 @@ public class ErrorHandler implements Thread.UncaughtExceptionHandler{
 				Double height = (Double) ReflectionLoader.call("getHeight", currentStage);
 				
 				String windowName = currentStage.getClass().getSimpleName();
-				
+				if(prefix != null) {
+					target = new File(prefix+windowName);
+				} else {
+					target = new File(windowName);
+				}				
 				Object rect = ReflectionLoader.newInstance(ReflectionLoader.RECTANGLE, int.class, x.intValue(), int.class, y.intValue(), int.class, width.intValue(), int.class, height.intValue());
-				writeScreen(windowName, rect);
+				writeScreen(target, rect);
 			}
 		} catch (Exception e1) {
 			return e1;
@@ -133,23 +139,33 @@ public class ErrorHandler implements Thread.UncaughtExceptionHandler{
 		return null;
 	}
 	
-	private boolean writeScreen(String fileName, Object rectangle) {
+	private boolean writeScreen(File file, Object rectangle) {
 		Object robot = ReflectionLoader.newInstance(ReflectionLoader.ROBOT);
 		Object bi = ReflectionLoader.call("createScreenCapture", robot, ReflectionLoader.RECTANGLE, rectangle);
 		
-		Boolean result = (Boolean) ReflectionLoader.call("write", ReflectionLoader.IMAGEIO, ReflectionLoader.RENDEREDIMAGE, bi, String.class, "jpg", File.class, new File(fileName));
+		Boolean result = (Boolean) ReflectionLoader.call("write", ReflectionLoader.IMAGEIO, ReflectionLoader.RENDEREDIMAGE, bi, String.class, "jpg", File.class, file);
 		return result;
 	}
 	public void saveException(Throwable e) {
 		saveException(e, this.stage);
 	}
+	
+	@Override
+	public void uncaughtException(Thread t, Throwable e) {
+		saveException(e, stage);
+	}
+	
 	public void saveException(Throwable e, Object stage) {
 		// Generate Error.txt
-		GregorianCalendar temp = new GregorianCalendar();
-		DateFormat formatter = new SimpleDateFormat("yyyyMMdd_HHmmss");
-		String prefixName = formatter.format(temp.getTime()) + "_";
-		writeErrorFile(prefixName+"error.txt", this.path, e);
-		saveScreenShoot(prefixName+"Full.jpg", stage);
+		String prefixName = new DateTimeEntity().toString("yyyymmdd_HHMMSS_");
+		writeErrorFile(prefixName, "error.txt", this.path, e);
+		saveScreenShoot(prefixName, "Full.jpg", stage);
+		SimpleEvent event = new SimpleEvent(this, prefixName, null, e);
+		event.withType(TYPE);
+		
+		for(ObjectCondition child : list) {
+			child.update(event);
+		}
 	}
 
 	public Object getStage() {
@@ -159,5 +175,9 @@ public class ErrorHandler implements Thread.UncaughtExceptionHandler{
 	public ErrorHandler withStage(Object value) {
 		this.stage = value;
 		return this;
+	}
+
+	public void addListener(ObjectCondition world) {
+		list.add(world);
 	}
 }

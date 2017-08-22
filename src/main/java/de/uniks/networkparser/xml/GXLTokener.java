@@ -25,7 +25,7 @@ permissions and limitations under the Licence.
 */
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.MapEntity;
-import de.uniks.networkparser.buffer.Tokener;
+import de.uniks.networkparser.Tokener;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Grammar;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;

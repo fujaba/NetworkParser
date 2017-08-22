@@ -33,7 +33,6 @@ import java.util.Map.Entry;
 import de.uniks.networkparser.buffer.Buffer;
 import de.uniks.networkparser.buffer.ByteBuffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
-import de.uniks.networkparser.buffer.Tokener;
 import de.uniks.networkparser.bytes.ByteEntity;
 import de.uniks.networkparser.bytes.ByteTokener;
 import de.uniks.networkparser.converter.ByteConverter;

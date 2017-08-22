@@ -32,7 +32,7 @@ import java.util.Map.Entry;
 
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.MapEntity;
-import de.uniks.networkparser.buffer.Tokener;
+import de.uniks.networkparser.Tokener;
 import de.uniks.networkparser.graph.Association;
 import de.uniks.networkparser.graph.Attribute;
 import de.uniks.networkparser.graph.Cardinality;

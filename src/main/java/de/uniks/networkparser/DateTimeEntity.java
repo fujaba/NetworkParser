@@ -26,7 +26,6 @@ THE SOFTWARE.
 import java.util.HashMap;
 
 import de.uniks.networkparser.buffer.CharacterBuffer;
-import de.uniks.networkparser.buffer.Tokener;
 
 public class DateTimeEntity {
 	public static final String W3CDTF_FORMAT = "yyyy-MM-dd'T'HH:mm:ssZ";

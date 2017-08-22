@@ -32,7 +32,7 @@ import java.util.Map.Entry;
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.MapEntity;
-import de.uniks.networkparser.buffer.Tokener;
+import de.uniks.networkparser.Tokener;
 import de.uniks.networkparser.converter.GraphConverter;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.json.JsonArray;

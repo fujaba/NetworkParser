@@ -79,7 +79,7 @@ test {
 	}
 }
 task wrapper(type: Wrapper) {
-    gradleVersion = '3.5'
+    gradleVersion = '4.1'
 }
 jacoco.toolVersion = "0.7.+"
 
@@ -117,7 +117,6 @@ if (project.hasProperty('branch')) {
 
 test.finalizedBy jacocoTestReport
 
-sourceSets.main.output.classesDir 'build/classes/main'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8

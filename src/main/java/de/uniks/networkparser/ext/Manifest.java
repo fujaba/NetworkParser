@@ -3,8 +3,8 @@ package de.uniks.networkparser.ext;
 import java.io.IOException;
 import java.io.InputStream;
 
+import de.uniks.networkparser.Tokener;
 import de.uniks.networkparser.buffer.CharacterBuffer;
-import de.uniks.networkparser.buffer.Tokener;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 
 public class Manifest extends SimpleKeyValueList<String, String>{

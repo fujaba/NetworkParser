@@ -29,10 +29,10 @@ import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.MapEntity;
 import de.uniks.networkparser.NetworkParserLog;
+import de.uniks.networkparser.Tokener;
 import de.uniks.networkparser.buffer.Buffer;
 import de.uniks.networkparser.buffer.BufferedBuffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
-import de.uniks.networkparser.buffer.Tokener;
 import de.uniks.networkparser.converter.EntityStringConverter;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Entity;
@@ -54,7 +54,6 @@ public class XMLTokener extends Tokener {
 	private static final char[] TOKEN = new char[]{' ', ITEMSTART, ENDTAG, ITEMEND};
 
 	public static final String CHILDREN= "<CHILDREN>";
-
 
 	private SendableEntityCreator defaultFactory;
 
@@ -523,11 +522,6 @@ public class XMLTokener extends Tokener {
 	@Override
 	public Object transformValue(Object value, BaseItem reference) {
 		return EntityUtil.valueToString(value, true, reference, SIMPLECONVERTER);
-	}
-
-	@Override
-	public BaseItem encode(Object entity, MapEntity map) {
-		return null;
 	}
 
 	/**

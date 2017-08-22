@@ -1,4 +1,4 @@
-package de.uniks.networkparser.buffer;
+package de.uniks.networkparser;
 
 /*
 NetworkParser
@@ -25,8 +25,8 @@ THE SOFTWARE.
 */
 import java.beans.PropertyChangeEvent;
 
-import de.uniks.networkparser.IdMap;
-import de.uniks.networkparser.MapEntity;
+import de.uniks.networkparser.buffer.Buffer;
+import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.BufferItem;
 import de.uniks.networkparser.interfaces.Entity;
@@ -104,7 +104,18 @@ public class Tokener implements BufferItem {
 
 	public void parseToEntity(EntityList entity) {}
 
-	public BaseItem encode(Object entity, MapEntity map) {return null;}
+	public BaseItem encode(Object entity, MapEntity map) {
+		IdMap idMap = this.map;
+		if(idMap == null) {
+			if(map != null ) {
+				idMap = map.getMap();
+				if(idMap == null) {
+					return null;
+				}
+			}
+		}
+		return idMap.encode(entity, map, this);
+	}
 
 	/**
 	 * Reset the Tokener

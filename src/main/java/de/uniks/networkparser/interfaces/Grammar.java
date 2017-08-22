@@ -26,7 +26,7 @@ THE SOFTWARE.
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.MapEntity;
-import de.uniks.networkparser.buffer.Tokener;
+import de.uniks.networkparser.Tokener;
 
 public interface Grammar {
 	public static final String READ = "read";
