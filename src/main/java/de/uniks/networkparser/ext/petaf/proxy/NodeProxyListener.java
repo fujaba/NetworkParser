@@ -1,6 +1,6 @@
 package de.uniks.networkparser.ext.petaf.proxy;
 
-import de.uniks.networkparser.ext.petaf.network.Message;
+import de.uniks.networkparser.ext.petaf.Message;
 
 @FunctionalInterface
 public interface NodeProxyListener {

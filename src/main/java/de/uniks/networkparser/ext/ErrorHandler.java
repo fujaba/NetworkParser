@@ -1,4 +1,4 @@
-package de.uniks.networkparser.ext.error;
+package de.uniks.networkparser.ext;
 
 import java.io.File;
 import java.io.FileNotFoundException;

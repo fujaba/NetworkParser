@@ -1,4 +1,4 @@
-package de.uniks.networkparser.ext.petaf.network;
+package de.uniks.networkparser.ext.petaf;
 
 public enum NodeProxyType {
     IN(0x1),

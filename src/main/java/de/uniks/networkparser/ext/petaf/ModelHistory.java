@@ -1,4 +1,4 @@
-package de.uniks.networkparser.ext.petaf.network;
+package de.uniks.networkparser.ext.petaf;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -19,7 +19,7 @@ public class ModelHistory
 	public static final String PROPERTY_LASTMODELCHANGE = "lastmodelchange";
 
 	private SimpleSet<ModelChange> history = new SimpleSet<ModelChange>();
-	private BasicSpace space;
+	private Space space;
 	
 	//TODO Functionality
 	public void refactoringHistory(){
@@ -201,11 +201,11 @@ public class ModelHistory
 		return (JsonObject) historyKid;
 	}
 
-	public BasicSpace getSpace() {
+	public Space getSpace() {
 		return space;
 	}
 
-	public ModelHistory withSpace(BasicSpace space) {
+	public ModelHistory withSpace(Space space) {
 		this.space = space;
 		return this;
 	}

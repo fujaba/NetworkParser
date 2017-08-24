@@ -1,7 +1,7 @@
 package de.uniks.networkparser.ext.petaf.filter;
 
 import de.uniks.networkparser.SimpleEvent;
-import de.uniks.networkparser.ext.petaf.network.NodeProxy;
+import de.uniks.networkparser.ext.petaf.NodeProxy;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 

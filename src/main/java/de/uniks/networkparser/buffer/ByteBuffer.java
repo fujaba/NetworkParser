@@ -23,7 +23,13 @@ permissions and limitations under the Licence.
 
 import java.nio.charset.Charset;
 
-public class ByteBuffer extends BufferedBuffer {
+import de.uniks.networkparser.converter.ByteConverter;
+import de.uniks.networkparser.converter.ByteConverterHTTP;
+import de.uniks.networkparser.converter.ByteConverterString;
+import de.uniks.networkparser.interfaces.BaseItem;
+import de.uniks.networkparser.interfaces.Converter;
+
+public class ByteBuffer extends BufferedBuffer implements BaseItem {
 	/** The buffer. */
 	protected byte[] buffer;
 
@@ -84,6 +90,17 @@ public class ByteBuffer extends BufferedBuffer {
 		return result;
 	}
 
+	public byte[] toBytes() {
+		if(buffer == null || position>=buffer.length-1) {
+			return new byte[0];
+		}
+		byte[] result=new byte[length];
+		for(int i=0;i<length;i++) {
+			result[i] = this.buffer[i+position];
+		}
+		return result;
+	}
+	
 	public byte[] getValue(int start, int len) {
 		this.withPosition(start);
 
@@ -296,6 +313,58 @@ public class ByteBuffer extends BufferedBuffer {
 
 	@Override
 	public String toString() {
+		return toString(new ByteConverterString());
+	}
+
+	@Override
+	public BaseItem getNewList(boolean keyValue) {
+		return new ByteBuffer();
+	}
+
+	@Override
+	public int size() {
+		return length();
+	}
+
+	public String toString(Converter converter) {
+		if (converter == null) {
+			converter = new ByteConverterHTTP();
+		}
+		if(converter instanceof ByteConverter) {
+			return ((ByteConverter)converter).toString(this.toBytes());
+		}
 		return String.valueOf(buffer);
+	}
+
+	public ByteBuffer with(byte[] array, int len) {
+		this.position = 0;
+		if(len<0) {
+			len = array.length;
+		}
+		if(this.buffer == null) {
+			this.buffer = array;
+			this.length = len;
+		} else {
+			// Resize
+			byte[] oldBuffer = this.buffer;
+			this.buffer = new byte[this.length * 2];
+			System.arraycopy(oldBuffer, 0, this.buffer, 0, this.length);
+			System.arraycopy(array, 0, this.buffer, this.length, len);
+			this.length += len;
+		}
+		return this;
+	}
+	
+	@Override
+	public boolean add(Object... values) {
+		if(values == null) {
+			return true;
+		}
+		for(Object item : values) {
+			if(item instanceof byte[]) {
+				with((byte[])item, -1);				
+			}
+		}
+		return true;
 	}
 }

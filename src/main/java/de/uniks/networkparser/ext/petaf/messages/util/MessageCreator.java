@@ -1,6 +1,6 @@
 package de.uniks.networkparser.ext.petaf.messages.util;
 
-import de.uniks.networkparser.ext.petaf.network.Message;
+import de.uniks.networkparser.ext.petaf.Message;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
 

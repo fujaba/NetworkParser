@@ -1,15 +1,22 @@
 package de.uniks.networkparser.ext.petaf.proxy;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.nio.charset.Charset;
 
-import de.uniks.networkparser.ext.petaf.network.Message;
-import de.uniks.networkparser.ext.petaf.network.NodeProxy;
-import de.uniks.networkparser.ext.petaf.network.NodeProxyTCPServer;
-import de.uniks.networkparser.ext.petaf.network.NodeProxyType;
+import de.uniks.networkparser.buffer.ByteBuffer;
+import de.uniks.networkparser.buffer.CharacterBuffer;
+import de.uniks.networkparser.ext.petaf.Message;
+import de.uniks.networkparser.ext.petaf.NodeProxy;
+import de.uniks.networkparser.ext.petaf.NodeProxyType;
+import de.uniks.networkparser.ext.petaf.Server_TCP;
+import de.uniks.networkparser.ext.petaf.SimpleExecutor;
+import de.uniks.networkparser.ext.petaf.TaskExecutor;
+import de.uniks.networkparser.interfaces.ObjectCondition;
 
 public class NodeProxyTCP extends NodeProxy {
 	public static final String PROPERTY_URL = "url";
@@ -17,8 +24,13 @@ public class NodeProxyTCP extends NodeProxy {
 	private int port;
 	private String url;
 	public static final String LOCALHOST = "127.0.0.1";
-
-	protected NodeProxyTCPServer serverSocket;
+	protected Server_TCP serverSocket;
+	private boolean allowAnswer = false;
+	
+	/**
+	 * Fallback Executor for Simple Using Serverclasses
+	 */
+	protected TaskExecutor executor;
 
 	public NodeProxyTCP() {
 		this.property.addAll(PROPERTY_URL, PROPERTY_PORT);
@@ -51,12 +63,41 @@ public class NodeProxyTCP extends NodeProxy {
 	public Integer getPort() {
 		return port;
 	}
+	
+	public NodeProxyTCP withAllowAnswer(boolean value) {
+		this.allowAnswer = value;
+		return this;
+	}
+	
+	public boolean isAllowAnswer() {
+		return allowAnswer;
+	}
+	
+	public NodeProxyTCP withListener(ObjectCondition condition) {
+		if(this.executor == null) {
+			this.executor = new SimpleExecutor().withListener(condition);
+			this.allowAnswer = true;
+		} else {
+			this.executor.withListener(condition);
+		}
+		return this;
+	}
 
 	public NodeProxyTCP withPort(int value) {
 		int oldValue = value;
 		this.port = value;
 		firePropertyChange(PROPERTY_PORT, oldValue, value);
 		return this;
+	}
+	
+	public TaskExecutor getExecutor() {
+		if(this.executor != null) {
+			return executor;
+		}
+		if(this.space != null) {
+			return this.space.getExecutor();
+		}
+		return null;
 	}
 
 	@Override
@@ -75,7 +116,7 @@ public class NodeProxyTCP extends NodeProxy {
 
 	@Override
 	public boolean setValue(Object element, String attrName, Object value, String type) {
-		if(element instanceof NodeProxyTCP ) {
+		if(element instanceof NodeProxyTCP) {
 			NodeProxyTCP nodeProxy = (NodeProxyTCP) element;
 			if (PROPERTY_URL.equals(attrName)) {
 				nodeProxy.withUrl((String) value);
@@ -88,14 +129,35 @@ public class NodeProxyTCP extends NodeProxy {
 		}
 		return super.setValue(element, attrName, value, type);
 	}
-
-	public void updateFromMessage() {
-
+	
+	public Message readFromInputStream(Socket socket) throws IOException {
+		ByteBuffer buffer=new ByteBuffer();
+		
+		Message msg=new Message();
+		msg.withData(buffer);
+		byte[] messageArray = new byte[BUFFER];
+		InputStream is = socket.getInputStream();
+		while (true) {
+			int bytesRead = is.read(messageArray, 0, BUFFER);
+			if (bytesRead <= 0)
+				break; // <======= no more data
+			buffer.with(new String(messageArray, 0, bytesRead, Charset.forName("UTF-8")));
+			if(bytesRead != BUFFER && allowAnswer) 
+				break;
+		}
+		msg.withSession(socket);
+		if(allowAnswer) {
+			getExecutor().handleMsg(msg);
+		}else {
+			socket.close();
+			getExecutor().handleMsg(msg);	
+		}
+		return msg;
 	}
 
 	@Override
-	protected boolean postSending(Message msg) {
-		if (super.postSending(msg) || this.space == null) {
+	protected boolean sending(Message msg) {
+		if (super.sending(msg)) {
 			return true;
 		}
 		boolean success = false;
@@ -107,8 +169,12 @@ public class NodeProxyTCP extends NodeProxy {
 					requestSocket.setSoTimeout(msg.getTimeOut());
 				}
 				OutputStream os = requestSocket.getOutputStream();
-
-				byte[] buffer = this.space.convertMessage(msg).getBytes();
+				byte[] buffer;
+				if(this.space != null) {
+					buffer = this.space.convertMessage(msg).getBytes();
+				} else {
+					buffer = msg.toString().getBytes();
+				}
 				int start = 0;
 				int size = BUFFER;
 				while (true) {
@@ -123,9 +189,13 @@ public class NodeProxyTCP extends NodeProxy {
 					start = end;
 				}
 				os.flush();
-
-				requestSocket.close();
+				if(allowAnswer) {
+					readFromInputStream(requestSocket);
+					//FIXME
+//					InputStream is = requestSocket.getInputStream();
+				}
 				setSendTime(buffer.length);
+				requestSocket.close();
 				success = true;
 			}
 		} catch (IOException ioException) {
@@ -136,6 +206,10 @@ public class NodeProxyTCP extends NodeProxy {
 		return success;
 	}
 
+	public boolean start() {
+		return initProxy();
+	}
+	
 	@Override
 	public boolean close() {
 		if (this.serverSocket != null) {
@@ -146,10 +220,10 @@ public class NodeProxyTCP extends NodeProxy {
 
 	@Override
 	protected boolean initProxy() {
-		if (url == null && getType() == null || getType() == NodeProxyType.IN) {
+		if (url == null && getType() == null || NodeProxyType.isInput(getType())) {
 			// Incoming Proxy
 			withType(NodeProxyType.IN);
-			serverSocket = new NodeProxyTCPServer(this);
+			serverSocket = new Server_TCP(this);
 			if (url == null) {
 				try {
 					String url = InetAddress.getLocalHost().getHostAddress();

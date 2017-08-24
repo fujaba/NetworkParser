@@ -45,6 +45,10 @@ public class TableList extends SortedList<Object> implements SendableEntity, Sen
 		super(false);
 	}
 	
+	public TableList(boolean comparator) {
+		super(comparator);
+	}
+	
 	@Override
 	public String[] getProperties() {
 		return properties;

@@ -1,24 +1,24 @@
 package de.uniks.networkparser.ext.petaf.messages;
 
 import de.uniks.networkparser.IdMap;
-import de.uniks.networkparser.ext.petaf.network.Message;
-import de.uniks.networkparser.ext.petaf.network.MessageTyp;
-import de.uniks.networkparser.ext.petaf.network.NodeProxy;
-import de.uniks.networkparser.ext.petaf.network.NodeProxyFilter;
-import de.uniks.networkparser.ext.petaf.network.BasicSpace;
+import de.uniks.networkparser.ext.petaf.Message;
+import de.uniks.networkparser.ext.petaf.MessageTyp;
+import de.uniks.networkparser.ext.petaf.NodeProxy;
+import de.uniks.networkparser.ext.petaf.NodeProxyFilter;
+import de.uniks.networkparser.ext.petaf.Space;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.json.JsonArray;
 import de.uniks.networkparser.list.SortedSet;
 
 public class InfoMessage extends Message {
-	private BasicSpace space;
+	private Space space;
 
-	InfoMessage withSpace(BasicSpace space) {
+	InfoMessage withSpace(Space space) {
 		this.space = space;
 		return this;
 	}
 	
-	public static InfoMessage create(BasicSpace space) {
+	public static InfoMessage create(Space space) {
 		return new InfoMessage().withSpace(space);
 	}
 

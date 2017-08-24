@@ -1,4 +1,4 @@
- package de.uniks.networkparser.ext.petaf.network;
+ package de.uniks.networkparser.ext.petaf;
 
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.json.JsonObject;

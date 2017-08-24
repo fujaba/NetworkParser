@@ -1,6 +1,6 @@
 package de.uniks.networkparser.ext.petaf.messages;
 
-import de.uniks.networkparser.ext.petaf.network.Message;
+import de.uniks.networkparser.ext.petaf.Message;
 
 /**
  * Sending Connection Link with all Input Proxies and Filter 

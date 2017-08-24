@@ -1,4 +1,4 @@
-package de.uniks.networkparser.ext.email;
+package de.uniks.networkparser.ext.io;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;

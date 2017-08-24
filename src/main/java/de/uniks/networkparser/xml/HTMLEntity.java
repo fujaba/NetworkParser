@@ -1,6 +1,9 @@
 package de.uniks.networkparser.xml;
 import java.net.URL;
 
+import javax.swing.text.html.HTML;
+
+import de.uniks.networkparser.Tokener;
 /*
 NetworkParser
 The MIT License
@@ -346,5 +349,39 @@ public class HTMLEntity implements BaseItem {
 		}
 		item = this.body.getElementBy(key, value);
 		return item;
+	}
+	
+	/**
+	 * Instantiates a new XMLEntity.
+	 *
+	 * @param value	the tag
+	 * @return 		Itself
+	 */
+	public HTMLEntity withValue(String value) {
+		XMLTokener tokener = new XMLTokener();
+		tokener.withBuffer(value);
+		withValue(tokener);
+		return this;
+	}
+	
+	/**
+	 * Construct a XMLEntity from a Tokener.
+	 *
+	 * @param tokener	A Tokener object containing the source string. or a duplicated key.
+	 * @return 			Itself
+	 */
+	public HTMLEntity withValue(Tokener tokener) {
+		if(tokener!=null) {
+			char c = tokener.nextClean(true);
+			if(c != XMLTokener.ITEMSTART) {
+				Object item = tokener.getString(tokener.length() - tokener.position());
+				if(item  != null) {
+//					this.valueItem = item .toString();
+				}
+				return this;
+			}
+			tokener.parseToEntity((Entity)this);
+		}
+		return this;
 	}
 }

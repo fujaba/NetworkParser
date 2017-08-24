@@ -1,6 +1,5 @@
-package de.uniks.networkparser.ext.petaf.network;
+package de.uniks.networkparser.ext.petaf;
 
-import de.uniks.networkparser.ext.petaf.SendableItem;
 import de.uniks.networkparser.ext.petaf.filter.ScopeFilter;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.list.SimpleList;
@@ -31,7 +30,7 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 	protected boolean online;	// Boolean if last send is success 
 	protected String history;	// Hashcode of last Message
 	protected ScopeFilter filter;	// Filter of World
-	protected BasicSpace space;
+	protected Space space;
 //	protected BasicSpace test;
 
 	public String[] getUpdateProperties(){
@@ -48,23 +47,17 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 	}
 	
 	public boolean sendMessage(Message msg){
-		return this.space.sendMessage(this, msg, false);
+		if(this.space != null) {
+			return this.space.sendMessage(this, msg, false);
+		}
+		return this.sending(msg);
 	}
 	public boolean sendMessageToPeers(Message msg){
 		return this.space.sendMessageToPeers(msg, this);
 	}
 
-	boolean sending(Message msg){
-		return postSending(msg);
-	}
-	
-	protected boolean postSending(Message msg){
+	protected boolean sending(Message msg){
 		this.lastSendTryTime = System.currentTimeMillis();
-		return false;
-	}
-
-	protected boolean initInput() {
-//		throw new Exception("Proxy has not Input configured!");
 		return false;
 	}
 
@@ -73,11 +66,8 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 	}
 	public NodeProxy withType(NodeProxyType value) {
 		// if output is not configured, we don't allow OUT or INOUT as value...
-		if(value.isInput()){
-//FIXME			if(initInput() == false){
-//				return this;
-//			}
-		}
+//		if(value.isInput()){
+//		}
 		this.type = value;
 		return this;
 	}
@@ -106,7 +96,7 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 			lastSendCount = seconds.size() - 1;
 		}
 		int time = seconds.get(lastSendCount);
-		if(time == BasicSpace.DISABLE) {
+		if(time == Space.DISABLE) {
 			return false;
 		}
 		boolean result = (isOnline() == false) && (System.currentTimeMillis() - lastSendTryTime) > time;
@@ -260,11 +250,11 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 
 	public abstract boolean close();
 	
-	public NodeProxy initSpace(BasicSpace value) {
+	public NodeProxy initSpace(Space value) {
 		if (value == this.space) {
 			return this;
 		}
-		BasicSpace oldValue = this.space;
+		Space oldValue = this.space;
 		if (null != this.space) {
 			this.space = null;
 			oldValue.removeProxy(this);
@@ -278,7 +268,7 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 		return this;
 	}
 	
-	public BasicSpace getSpace() {
+	public Space getSpace() {
 		return space;
 	}
 	

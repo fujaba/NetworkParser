@@ -46,7 +46,7 @@ public class HTMLGrammar extends SimpleGrammar{
 	@Override
 	public BaseItem encode(Object entity, MapEntity map, Tokener tokener) {
 		HTMLEntity rootItem=new HTMLEntity();
-		rootItem.withEncoding("utf-8");
+		rootItem.withEncoding(HTMLEntity.ENCODING_UTF8);
 		Entity child = map.encode(entity, tokener);
 		rootItem.add(child);
 		return rootItem;

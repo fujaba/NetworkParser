@@ -1,4 +1,4 @@
-package de.uniks.networkparser.ext.email;
+package de.uniks.networkparser.ext.io;
 
 import de.uniks.networkparser.DateTimeEntity;
 import de.uniks.networkparser.StringEntity;

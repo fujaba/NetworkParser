@@ -1,4 +1,4 @@
-package de.uniks.networkparser.ext.petaf.network;
+package de.uniks.networkparser.ext.petaf;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -10,12 +10,12 @@ import java.net.UnknownHostException;
 import de.uniks.networkparser.ext.petaf.proxy.NodeProxyBroadCast;
 import de.uniks.networkparser.interfaces.Entity;
 
-public class NodeProxyUDPServer extends Thread{
+public class Server_UPD extends Thread{
 	protected boolean run=true;
 	protected DatagramSocket socket;
 	private NodeProxyBroadCast proxy;
 
-	public NodeProxyUDPServer(NodeProxyBroadCast proxy, boolean asyn) 
+	public Server_UPD(NodeProxyBroadCast proxy, boolean asyn) 
 	{
 		this.proxy = proxy;
 		if(init() && asyn){

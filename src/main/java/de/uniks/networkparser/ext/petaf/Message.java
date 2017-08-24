@@ -1,9 +1,13 @@
-package de.uniks.networkparser.ext.petaf.network;
+package de.uniks.networkparser.ext.petaf;
+
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.Socket;
 
 import de.uniks.networkparser.IdMap;
+import de.uniks.networkparser.StringEntity;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.bytes.SHA1;
-import de.uniks.networkparser.ext.petaf.proxy.NodeProxyModel;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.list.SimpleList;
@@ -23,9 +27,10 @@ public class Message {
 	protected BaseItem msg;
 	protected NodeProxy receiver;
 	private int timeOut;
+	private Socket session;
 	private boolean sendAnyHow=false;
 	
-	public String getMessageId(BasicSpace space, NodeProxy proxy){
+	public String getMessageId(Space space, NodeProxy proxy){
 		if(this.historyId == null ){
 			this.historyId = SHA1.value(getBlob()).toString();
 		}
@@ -64,7 +69,7 @@ public class Message {
 			return true;
 		}
 		if(PROPERTY_MSG.equalsIgnoreCase(attribute)){
-			withMessageData((JsonObject) value);
+			withData((JsonObject) value);
 			return true;
 		}
 		if(PROPERTY_RECEIVER.equalsIgnoreCase(attribute)){
@@ -102,7 +107,7 @@ public class Message {
 		return this;
 	}
 
-	public Message withMessageData(BaseItem value){
+	public Message withData(BaseItem value){
 		this.msg = value;
 		return this;
 	}
@@ -144,15 +149,39 @@ public class Message {
 		return this;
 	}
 
-	protected IdMap getInternMap(BasicSpace space) {
+	protected IdMap getInternMap(Space space) {
 		return space.getInternMap();
 	}
 
-	Message withModel(NodeProxyModel modell) {
-		initialize(modell);
-		return this;
+	public static Message createSimpleString(String text) {
+		StringEntity stringEntity = new StringEntity();
+		stringEntity.add(text);
+		Message message = new Message().withSendAnyHow(true).withData(stringEntity);
+		return message;
 	}
-		
-	protected void initialize(NodeProxyModel modell) {
+	
+	@Override
+	public String toString() {
+		return getMessage().toString();
+	}
+
+	public Socket getSession() {
+		return session;
+	}
+	
+	public boolean write(String answer) {
+		try {
+			OutputStream outputStream = session.getOutputStream();
+			outputStream.write(answer.getBytes());
+			outputStream.flush();
+		} catch (IOException e) {
+			return false;
+		}
+		return true;
+	}
+	
+	public Message withSession(Socket session) {
+		this.session = session;
+		return this;
 	}
 }

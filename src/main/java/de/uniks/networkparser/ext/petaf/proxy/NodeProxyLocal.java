@@ -1,8 +1,8 @@
 package de.uniks.networkparser.ext.petaf.proxy;
 
-import de.uniks.networkparser.ext.petaf.network.Message;
-import de.uniks.networkparser.ext.petaf.network.NodeProxy;
-import de.uniks.networkparser.ext.petaf.network.NodeProxyType;
+import de.uniks.networkparser.ext.petaf.Message;
+import de.uniks.networkparser.ext.petaf.NodeProxy;
+import de.uniks.networkparser.ext.petaf.NodeProxyType;
 
 /**
  * Local is a Proxy for testing 
@@ -13,8 +13,8 @@ public class NodeProxyLocal extends NodeProxy {
 	private String id;
 	private NodeProxyListener listener;
 
-	protected boolean postSending(Message msg) {
-		boolean result = super.postSending(msg);
+	protected boolean sending(Message msg) {
+		boolean result = super.sending(msg);
 		if(listener != null) {
 			String blob = this.space.convertMessage(msg);
 			listener.send(msg, blob);

@@ -1,7 +1,4 @@
-package de.uniks.networkparser.ext.petaf.network;
-
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
+package de.uniks.networkparser.ext.petaf;
 
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
@@ -9,7 +6,6 @@ import de.uniks.networkparser.MapEntity;
 import de.uniks.networkparser.Tokener;
 import de.uniks.networkparser.converter.ByteConverter;
 import de.uniks.networkparser.converter.ByteConverterString;
-import de.uniks.networkparser.ext.petaf.SendableItem;
 import de.uniks.networkparser.ext.petaf.filter.ProxyFilter;
 import de.uniks.networkparser.ext.petaf.messages.InfoMessage;
 import de.uniks.networkparser.ext.petaf.messages.util.ChangeMessageCreator;
@@ -22,7 +18,6 @@ import de.uniks.networkparser.ext.petaf.proxy.NodeProxyTCP;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.EntityList;
-import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.json.JsonTokener;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SimpleSet;
@@ -33,7 +28,7 @@ import de.uniks.networkparser.list.SortedSet;
  * @author Stefan
  *
  */
-public class BasicSpace extends SendableItem implements ObjectCondition {
+public class Space extends SendableItem {
 	public static final String PROPERTY_MODELROOT="root";
 //	public static final String PROPERTY_NODES="nodes";
 	public static final String PROPERTY_HISTORY="history";
@@ -46,6 +41,7 @@ public class BasicSpace extends SendableItem implements ObjectCondition {
 	private ModelHistory history = null;
 	private String path = "";
 	private ProxyFilter filter = new ProxyFilter();
+	private TaskExecutor executor;
 	private int peerCount=2;
 	static final int DISABLE=0;
 	static final int MINUTE=60;
@@ -57,24 +53,28 @@ public class BasicSpace extends SendableItem implements ObjectCondition {
 			.with(MINUTE,MINUTE,MINUTE,MINUTE,MINUTE)
 			.with(TENMINUTE,TENMINUTE,TENMINUTE,TENMINUTE,TENMINUTE)
 			.with(THIRTYMINUTE, DISABLE);
-	private IdMap map = null;
+	private IdMap map = new IdMap()
+			.with(
+					new MessageCreator(), 
+					new ChangeMessageCreator(), 
+					new PingMessageCreator(), 
+					new NodeProxyTCP(), 
+					new NodeProxyLocal(), 
+					new ConnectMessageCreator(), 
+					new NodeProxyModel(null));
 //MOVE TO SUBCLASS	private TaskExecutor executor=new TaskExecutor();
 	private Tokener tokener;
 
 	IdMap getInternMap() {
-		if(map==null){
-			map = new IdMap();
-			map.with(new MessageCreator(), new ChangeMessageCreator(), new PingMessageCreator(), new NodeProxyTCP(), new NodeProxyLocal(), new ConnectMessageCreator(), new NodeProxyModel(null));
-		}
 		return map;
 	}
 	
-	public BasicSpace withModelRoot(NodeProxyModel modelRoot) {
+	public Space withModelRoot(NodeProxyModel modelRoot) {
 		with(modelRoot);
 		return this;
 	}
 
-	public BasicSpace with(NodeProxy... values) {
+	public Space with(NodeProxy... values) {
 		if(values == null) {
 			return this;
 		}
@@ -98,7 +98,7 @@ public class BasicSpace extends SendableItem implements ObjectCondition {
 		return history;
 	}
 
-	public BasicSpace withHistory(ModelHistory value) {
+	public Space withHistory(ModelHistory value) {
 		if (value == this.history) {
 			return this;
 		}
@@ -151,7 +151,7 @@ public class BasicSpace extends SendableItem implements ObjectCondition {
 	}
 
 
-	public BasicSpace withConverter(ByteConverter converter) {
+	public Space withConverter(ByteConverter converter) {
 		this.converter = converter;
 		return this;
 	}
@@ -200,7 +200,7 @@ public class BasicSpace extends SendableItem implements ObjectCondition {
 	 */
 	private void addInfo(Message msg, NodeProxy myProxy, boolean sendAnyhow){
 		ModelHistory history = getHistory();
-		msg.withModel(getModel());
+//FIXME REMOVE?? SL		msg.withModel(getModel());
 		if(sendAnyhow) {
 			msg.withSendAnyHow(sendAnyhow);
 		}
@@ -208,7 +208,7 @@ public class BasicSpace extends SendableItem implements ObjectCondition {
 		msg.withPrevChange(history.getPrevChangeId(messageId));
 	}
 	
-	public BasicSpace withPath(String path) {
+	public Space withPath(String path) {
 		this.path = path;
 		return this;
 	}
@@ -235,7 +235,7 @@ public class BasicSpace extends SendableItem implements ObjectCondition {
 		return proxy.sending(msg);
 	}
 	
-	public BasicSpace withPeerCount(int peerCount) {
+	public Space withPeerCount(int peerCount) {
 		this.peerCount = peerCount;
 		return this;
 	}
@@ -373,28 +373,30 @@ public class BasicSpace extends SendableItem implements ObjectCondition {
 	public SimpleList<Integer> getReconnectTime() {
 		return this.tryReconnectTimeSecond;
 	}
-	public static BasicSpace newInstance(NodeProxy... proxyListener) {
-		BasicSpace space = new BasicSpace().with(proxyListener);
+	public static Space newInstance(NodeProxy... proxyListener) {
+		Space space = new Space().with(proxyListener);
 		return space;
 	}
 	
-	public static BasicSpace newInstance(Object world, IdMap map, NodeProxy... proxyListener) {
-		BasicSpace space = new BasicSpace();
+	public static Space newInstance(Object world, IdMap map, NodeProxy... proxyListener) {
+		Space space = new Space();
 		space.with(new NodeProxyModel(world));
 		space.with(proxyListener);
 		return space;
 	}
-	public static BasicSpace newInstance(IdMap map, NodeProxy... proxyListener) {
-		BasicSpace space = new BasicSpace();
+	public static Space newInstance(IdMap map, NodeProxy... proxyListener) {
+		Space space = new Space();
 		space.with(new NodeProxyModel(null));
 		space.with(proxyListener);
 		return space;
 	}
 	
 	public Object execute(Runnable task) {
-		return null;
+		if(this.executor == null) {
+			this.executor = new SimpleExecutor();
+		}
+		return this.executor.execute(task);
 	}
-	
 //	public Future<?> execute(Runnable task) {
 //		Future<?> result = executor.submit(task);
 //		return result;
@@ -446,9 +448,7 @@ public class BasicSpace extends SendableItem implements ObjectCondition {
 		return null;
 	}
 
-	@Override
-	public boolean update(Object value) {
-		// TODO Auto-generated method stub
-		return false;
+	public TaskExecutor getExecutor() {
+		return this.executor;
 	}
 }

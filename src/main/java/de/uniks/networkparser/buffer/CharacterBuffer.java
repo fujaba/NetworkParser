@@ -29,7 +29,7 @@ import de.uniks.networkparser.interfaces.BaseItem;
  *
  */
 
-public class CharacterBuffer extends BufferedBuffer implements CharSequence{
+public class CharacterBuffer extends BufferedBuffer implements CharSequence {
 	/** The value is used for character storage. */
 	char[] buffer;
 
@@ -887,5 +887,20 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence{
 			return "";
 		}
 		return new String(buffer, position, length-position);
+	}
+
+	public boolean add(Object... values) {
+		if(values== null) {
+			return true;
+		}
+		boolean addValues=true;
+		for(Object item : values) {
+			if(item instanceof CharSequence) {
+				this.with((CharSequence)item);
+			} else {
+				addValues = false;
+			}
+		}
+		return addValues;
 	}
 }

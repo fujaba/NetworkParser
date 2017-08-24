@@ -761,75 +761,6 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 		return this.keyValue.contains(element);
 	}
 
-
-	/**
-	 * Read Json Automatic create JsonArray or JsonObject
-	 * 
-	 * @param value value to decode
-	 * @return the object
-	 */
-	public Object decode(Buffer value) {
-		char firstChar = value.nextClean(true);
-		if (firstChar == JsonTokener.STARTARRAY) {
-			return decode(jsonTokener.newInstanceList().withValue(value));
-		}
-		if (firstChar == JsonTokener.STARTENTITY) {
-			return decode(jsonTokener.newInstance().withValue(value));
-		}
-		MapEntity map = new MapEntity(filter, flag, this);
-		if (firstChar == XMLTokener.ITEMSTART) {
-			XMLTokener tokener = new XMLTokener().withMap(this);
-			tokener.withBuffer(value);
-			tokener.skipHeader();
-			return decodingXMLEntity(tokener, map);
-		}
-		// MUST BE BYTE
-		return byteTokener.decodeValue((byte) firstChar, value, map);
-	}
-
-
-	public Object decode(Tokener tokener) {
-		char firstChar = tokener.nextClean(true);
-		if (firstChar == '[') {
-			return decode(new JsonArray().withValue(tokener));
-		}
-		if (firstChar == XMLTokener.ITEMSTART) {
-			MapEntity map = new MapEntity(filter, flag, this);
-			if (tokener instanceof XMLTokener) {
-				XMLTokener xmlTokener = (XMLTokener) tokener;
-				xmlTokener.skipHeader();
-				return decodingXMLEntity(xmlTokener, map);
-			}
-			else if (tokener instanceof EMFTokener) {
-				EMFTokener xmlTokener = (EMFTokener) tokener;
-				xmlTokener.withMap(this);
-				return ((EMFTokener) xmlTokener).decode(map, null);
-			}
-			return null;
-		}
-		Entity item = tokener.newInstance();
-		if (item == null) {
-			return null;
-		}
-		tokener.parseToEntity(item);
-		return decode(item);
-	}
-
-
-	/**
-	 * Read Json Automatic create JsonArray or JsonObject
-	 * 
-	 * @param value for Decoding
-	 * @return the object
-	 */
-	public Object decode(String value) {
-		if (value == null) {
-			return null;
-		}
-		return decode(new CharacterBuffer().with(value.intern()));
-	}
-
-
 	/**
 	 * Special Case for EMF
 	 * 
@@ -859,7 +790,6 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 		return tokener.decode(map, root);
 	}
 
-
 	/**
 	 * Decode.
 	 *
@@ -880,19 +810,72 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 		return byteTokener.decodeValue((byte) buffer.getCurrentChar(), buffer, map);
 	}
 
-
 	/**
 	 * Read Json Automatic create JsonArray or JsonObject
 	 * 
 	 * @param value Value for decoding as SubClasss from BaseItem
 	 * @return the object
 	 */
-	public Object decode(BaseItem value) {
-		MapEntity map = new MapEntity(filter, flag, this);
-		return decoding(value, map);
+	public Object decode(Object value) {
+		if (value == null) {
+			return null;
+		}
+		if(value instanceof String) {
+			value = new CharacterBuffer().with(((String)value).intern());
+		}
+		if(value instanceof Buffer) {
+			Buffer buffer = (Buffer) value;
+			char firstChar = buffer.nextClean(true);
+			if (firstChar == JsonTokener.STARTARRAY) {
+				return decode(jsonTokener.newInstanceList().withValue(buffer));
+			}
+			if (firstChar == JsonTokener.STARTENTITY) {
+				return decode(jsonTokener.newInstance().withValue(buffer));
+			}
+			MapEntity map = new MapEntity(filter, flag, this);
+			if (firstChar == XMLTokener.ITEMSTART) {
+				XMLTokener tokener = new XMLTokener().withMap(this);
+				tokener.withBuffer(buffer);
+				tokener.skipHeader();
+				return decodingXMLEntity(tokener, map);
+			}
+			// MUST BE BYTE
+			return byteTokener.decodeValue((byte) firstChar, buffer, map);
+		}
+		if(value instanceof Tokener) {
+			Tokener tokener = (Tokener) value;
+			char firstChar = tokener.nextClean(true);
+			if (firstChar == '[') {
+				return decode(new JsonArray().withValue(tokener));
+			}
+			if (firstChar == XMLTokener.ITEMSTART) {
+				MapEntity map = new MapEntity(filter, flag, this);
+				if (tokener instanceof XMLTokener) {
+					XMLTokener xmlTokener = (XMLTokener) tokener;
+					xmlTokener.skipHeader();
+					return decodingXMLEntity(xmlTokener, map);
+				}
+				else if (tokener instanceof EMFTokener) {
+					EMFTokener xmlTokener = (EMFTokener) tokener;
+					xmlTokener.withMap(this);
+					return ((EMFTokener) xmlTokener).decode(map, null);
+				}
+				return null;
+			}
+			Entity item = tokener.newInstance();
+			if (item == null) {
+				return null;
+			}
+			tokener.parseToEntity(item);
+			return decode(item);
+		}
+		if(value instanceof BaseItem) {
+			MapEntity map = new MapEntity(filter, flag, this);
+			return decoding((BaseItem)value, map);
+		}
+		return null;
 	}
-
-
+	
 	/**
 	 * Read json.
 	 *
@@ -909,7 +892,6 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 		map.withTarget(target);
 		return decoding(value, map);
 	}
-
 
 	/**
 	 * Decoding Element to model

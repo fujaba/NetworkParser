@@ -2,16 +2,16 @@ package de.uniks.networkparser.ext.petaf.proxy;
 
 import java.net.DatagramPacket;
 
-import de.uniks.networkparser.ext.petaf.network.BasicSpace;
-import de.uniks.networkparser.ext.petaf.network.NodeProxy;
-import de.uniks.networkparser.ext.petaf.network.NodeProxyType;
-import de.uniks.networkparser.ext.petaf.network.NodeProxyUDPServer;
+import de.uniks.networkparser.ext.petaf.NodeProxy;
+import de.uniks.networkparser.ext.petaf.NodeProxyType;
+import de.uniks.networkparser.ext.petaf.Server_UPD;
+import de.uniks.networkparser.ext.petaf.Space;
 
 public class NodeProxyBroadCast extends NodeProxy {
 	public static final String PROPERTY_PORT = "port";
 	private int port = 9876;
 	private int bufferSize = 1024;
-	private NodeProxyUDPServer server;
+	private Server_UPD server;
 	
 	public NodeProxyBroadCast(NodeProxyType type) {
 		super();
@@ -24,9 +24,9 @@ public class NodeProxyBroadCast extends NodeProxy {
 	
 	public DatagramPacket executeBroadCast(boolean async) {
 		if(async) {
-			this.server = new NodeProxyUDPServer(this, true);
+			this.server = new Server_UPD(this, true);
 		} else {
-			this.server = new NodeProxyUDPServer(this, false);
+			this.server = new Server_UPD(this, false);
 			return this.server.runClient();
 		}
 		return null;
@@ -40,7 +40,7 @@ public class NodeProxyBroadCast extends NodeProxy {
 		this.port = value;
 		return this;
 	}
-	public NodeProxyBroadCast withSpace(BasicSpace value) {
+	public NodeProxyBroadCast withSpace(Space value) {
 		this.space = value;
 		return this;
 	}
@@ -79,7 +79,7 @@ public class NodeProxyBroadCast extends NodeProxy {
 	protected boolean initProxy() {
 		// May be Server or Client
 		if(NodeProxyType.isInput(this.type)) {
-			this.server = new NodeProxyUDPServer(this, true);
+			this.server = new Server_UPD(this, true);
 		}
 		return true;
 	}

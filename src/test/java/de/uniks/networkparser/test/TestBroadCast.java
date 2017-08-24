@@ -7,15 +7,15 @@ import java.util.TimerTask;
 
 import org.junit.Test;
 
-import de.uniks.networkparser.ext.petaf.network.BasicSpace;
-import de.uniks.networkparser.ext.petaf.network.NodeProxyType;
+import de.uniks.networkparser.ext.petaf.NodeProxyType;
+import de.uniks.networkparser.ext.petaf.Space;
 import de.uniks.networkparser.ext.petaf.proxy.NodeProxyBroadCast;
 import de.uniks.networkparser.ext.petaf.proxy.NodeProxyTCP;
 
 public class TestBroadCast {
 	@Test
 	public void testBroadCast() throws IOException {
-		BasicSpace space = BasicSpace.newInstance(NodeProxyTCP.createServer(5000), NodeProxyBroadCast.createServer(9876));
+		Space space = Space.newInstance(NodeProxyTCP.createServer(5000), NodeProxyBroadCast.createServer(9876));
 		Timer timer = new Timer();
 
 	    // Start in 10 Sekunden

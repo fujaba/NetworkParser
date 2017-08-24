@@ -10,13 +10,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import de.uniks.networkparser.ext.ErrorHandler;
 import de.uniks.networkparser.ext.Os;
-import de.uniks.networkparser.ext.error.ErrorHandler;
 import de.uniks.networkparser.ext.generic.ReflectionLoader;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.list.SimpleKeyValueList;
+import de.uniks.networkparser.list.SimpleList;
+import javafx.scene.input.KeyEvent;
 
-public class SimpleController {
+public class SimpleController implements ObjectCondition{
 	public static final String SEPARATOR="------";
 	public static final String CLOSE="close";
 	private Object application;
@@ -28,6 +30,7 @@ public class SimpleController {
 	private ErrorHandler errorHandler = new ErrorHandler();
 	protected Object popupMenu;
 	protected Object trayIcon;
+	private SimpleList<GUIEvent> keyListener = new SimpleList<GUIEvent>();
 	private GUIEvent eventHandler = new GUIEvent();
 	
 	public SimpleController(Object primitiveStage) {
@@ -169,7 +172,17 @@ public class SimpleController {
 			scene =  ReflectionLoader.newInstance(ReflectionLoader.SCENE, ReflectionLoader.PARENT, root);
 		}
 		ReflectionLoader.call("setScene", stage, ReflectionLoader.SCENE, scene);
+		
+		
+		GUIEvent event = new GUIEvent();
+		event.withListener(this);
+		Object proxy = ReflectionLoader.createProxy(event, ReflectionLoader.EVENTHANDLER);
+		ReflectionLoader.call("setOnKeyPressed", scene, ReflectionLoader.EVENTHANDLER, proxy);
 		showing();
+	}
+	
+	public Object getCurrentScene() {
+		return ReflectionLoader.call("getScene", stage);
 	}
 	
 	protected void showing() {
@@ -351,5 +364,25 @@ public class SimpleController {
 	
 	public void saveException(Throwable e) {
 		this.errorHandler.saveException(e);
+	}
+
+	public SimpleController withKeyListener(GUIEvent listener) {
+		this.keyListener.add(listener);
+		return this;
+	}
+
+	@Override
+	public boolean update(Object value) {
+		for(GUIEvent listener : keyListener) {
+			GUIEvent evt = GUIEvent.create(value);
+			if(listener.getCode() == evt.getCode()) {
+				System.out.println(value);
+				ObjectCondition subListener = listener.getListener();
+				if(subListener != null) {
+					subListener.update(value);
+				}
+			}
+		}
+		return false;
 	}
 }

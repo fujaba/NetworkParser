@@ -1,19 +1,19 @@
 package de.uniks.networkparser.ext.petaf.messages;
 
 import de.uniks.networkparser.Filter;
-import de.uniks.networkparser.ext.petaf.network.Message;
-import de.uniks.networkparser.ext.petaf.network.BasicSpace;
+import de.uniks.networkparser.ext.petaf.Message;
+import de.uniks.networkparser.ext.petaf.Space;
 import de.uniks.networkparser.ext.petaf.proxy.NodeProxyModel;
 import de.uniks.networkparser.interfaces.BaseItem;
 
 public class ChangeMessage extends Message {
 	private Object entity;
 	private Filter filter;
-	private BasicSpace space;
+	private Space space;
 
 	@Override
-	public ChangeMessage withMessageData(BaseItem value) {
-		super.withMessageData(value);
+	public ChangeMessage withData(BaseItem value) {
+		super.withData(value);
 		return this;
 	}
 	

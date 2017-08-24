@@ -1,4 +1,4 @@
-package de.uniks.networkparser.ext.petaf.network;
+package de.uniks.networkparser.ext.petaf;
 
 import java.util.Set;
 import java.util.concurrent.Future;
@@ -35,7 +35,7 @@ abstract class ReceivingProxy implements Runnable {
         }
     }
 
-    protected Object recreateMessage(BasicSpace space, JsonObject jsonObject) {
+    protected Object recreateMessage(Space space, JsonObject jsonObject) {
         IdMap idMap = space.getInternMap();
         String className = jsonObject.getString("class");
         SendableEntityCreator creator = idMap.getCreator(className, true);

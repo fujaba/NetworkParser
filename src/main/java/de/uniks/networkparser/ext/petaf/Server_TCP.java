@@ -1,4 +1,4 @@
-package de.uniks.networkparser.ext.petaf.network;
+package de.uniks.networkparser.ext.petaf;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -7,12 +7,12 @@ import java.net.UnknownHostException;
 
 import de.uniks.networkparser.ext.petaf.proxy.NodeProxyTCP;
 
-public class NodeProxyTCPServer extends Thread{
+public class Server_TCP extends Thread {
 	protected boolean run=true;
 	protected ServerSocket serverSocket;
 	private NodeProxyTCP proxy;
 
-	public NodeProxyTCPServer(NodeProxyTCP proxy) 
+	public Server_TCP(NodeProxyTCP proxy) 
 	{
 		this.proxy = proxy;
 		if(init()){
@@ -34,14 +34,18 @@ public class NodeProxyTCPServer extends Thread{
 	@Override
 	public void run() 
 	{
-		Thread.currentThread().setName(proxy.getUrl()+":"+proxy.getPort()+" com server");
+		if(proxy.getUrl() != null) {
+			Thread.currentThread().setName(proxy.getUrl()+":"+proxy.getPort()+" com server");
+		}else {
+			Thread.currentThread().setName("localhost:"+proxy.getPort()+" com server");
+		}
 		while (!isInterrupted()&&this.run) 
 		{
 			Socket requestSocket = null;
 			try 
 			{
 				requestSocket = serverSocket.accept();
-				readFromCommunication(requestSocket);
+				MessageRequest.execute(this.proxy, requestSocket);
 			} 
 			catch (IOException e) 
 			{
@@ -54,16 +58,6 @@ public class NodeProxyTCPServer extends Thread{
 				}
 			}
 		}
-	}
-
-	private void readFromCommunication(final Socket requestSocket) 
-	{
-		MessageRequest request = new MessageRequest(this.proxy, requestSocket);
-		this.proxy.getSpace().execute(request);
-		//FIXME
-		// execute request synchronously. Albert 
-//		
-//		request.run();
 	}
 
 	private boolean init() 

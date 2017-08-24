@@ -1,7 +1,7 @@
 package de.uniks.networkparser.ext.petaf.proxy;
 
-import de.uniks.networkparser.ext.petaf.network.NodeProxy;
-import de.uniks.networkparser.ext.petaf.network.NodeProxyType;
+import de.uniks.networkparser.ext.petaf.NodeProxy;
+import de.uniks.networkparser.ext.petaf.NodeProxyType;
 
 public class NodeProxyModel extends NodeProxy{
 	private Object root;
@@ -40,10 +40,5 @@ public class NodeProxyModel extends NodeProxy{
 	@Override
 	public Object getSendableInstance(boolean reference) {
 		return new NodeProxyModel(null);
-	}
-
-	@Override
-	protected boolean initInput() {
-		return true;
 	}
 }

@@ -1,7 +1,7 @@
 package de.uniks.networkparser.ext.petaf.proxy;
 
-import de.uniks.networkparser.ext.petaf.network.NodeProxy;
-import de.uniks.networkparser.ext.petaf.network.NodeProxyType;
+import de.uniks.networkparser.ext.petaf.NodeProxy;
+import de.uniks.networkparser.ext.petaf.NodeProxyType;
 
 //TODO add functionality
 public class NodeProxySQL extends NodeProxy{

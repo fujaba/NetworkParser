@@ -6,10 +6,11 @@ import de.uniks.networkparser.gui.EventTypes;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 
 public class GUIEvent extends Event {
+	public static final int ESCAPE = 27;
 	// The jsObject for BackupPurposes
 	private ObjectCondition listerner;
 	public Object jsObject;
-	
+
 	public GUIEvent withListener(ObjectCondition value) {
 		this.listerner = value;
 		return this;
@@ -42,11 +43,22 @@ public class GUIEvent extends Event {
 		return ReflectionLoader.call("getMember", obj, String.class, value);
 	}
 	
+	
 	public static GUIEvent create(Object obj) {
 //			boolean isEvent = (boolean) obj.eval("this instanceof Event");
 		GUIEvent event = new GUIEvent();
+		if(obj == null) {
+			return event;
+		}
+		if("javafx.scene.input.KeyEvent".equals(obj.getClass().getName())) {
+			// KeyEvent
+			event.put(ALTKEY, ReflectionLoader.call("isAltDown", obj));
+			event.put(CTRKEY, ReflectionLoader.call("isControlDown", obj));
+			event.put(SHIFTKEY, ReflectionLoader.call("isShiftDown", obj));
+			event.withCode((Integer)ReflectionLoader.callChain(obj, "getCode", "impl_getCode"));
+			return event;
+		}
 		Object value;
-		
 		value = getMember(obj, TIME_STAMP);
 		if(value != null) {
 			if(value instanceof Double) {
@@ -79,5 +91,18 @@ public class GUIEvent extends Event {
 
 	public ObjectCondition getListener() {
 		return this.listerner;
+	}
+	
+	public GUIEvent withCode(int value) {
+		this.put(CODE, value);
+		return this;
+	}
+
+	public int getCode() {
+		Object object = this.get(CODE);
+		if(object == null) {
+			return 0;
+		}
+		return (int)object;
 	}
 }
