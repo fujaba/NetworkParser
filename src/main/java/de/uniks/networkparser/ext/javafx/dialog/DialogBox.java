@@ -28,8 +28,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.sun.javafx.tk.Toolkit;
-
 import de.uniks.networkparser.ext.generic.ReflectionLoader;
 import de.uniks.networkparser.ext.javafx.JavaFXUtil;
 import de.uniks.networkparser.gui.controls.Button;

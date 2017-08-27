@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+
 import de.uniks.networkparser.DateTimeEntity;
 import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.ext.generic.ReflectionLoader;
@@ -160,11 +161,17 @@ public class ErrorHandler implements Thread.UncaughtExceptionHandler{
 		String prefixName = new DateTimeEntity().toString("yyyymmdd_HHMMSS_");
 		writeErrorFile(prefixName, "error.txt", this.path, e);
 		saveScreenShoot(prefixName, "Full.jpg", stage);
-		SimpleEvent event = new SimpleEvent(this, prefixName, null, e);
-		event.withType(TYPE);
-		
-		for(ObjectCondition child : list) {
-			child.update(event);
+		if(list.size()>0) {
+			SimpleEvent event = new SimpleEvent(this, prefixName, null, e);
+			event.withType(TYPE);
+			
+			for(ObjectCondition child : list) {
+				child.update(event);
+			}
+		}
+		if(Os.isEclipse()) {
+			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 	}
 

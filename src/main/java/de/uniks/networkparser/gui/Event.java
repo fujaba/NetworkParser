@@ -10,6 +10,7 @@ public class Event extends JsonObject implements SendableEntityCreator {
 	public static final String TYPE = "type";
 	public static final String EVENT_TYPE = "eventType";
 	public static final String ID = "id";
+	public static final String EVENT = "event";
 	
 	// Optional Values
 	public static final String ALTKEY = "altKey";
@@ -36,11 +37,11 @@ public class Event extends JsonObject implements SendableEntityCreator {
 
 	protected Object currentTarget;
 	protected int timeStamp;
-	protected String type;
 	protected EventTypes eventType;
+	protected Object event;
 	protected String id;
 
-	static protected String[] properties = {TYPE, CURRENT_TARGET, TIME_STAMP, EVENT_TYPE, ID};
+	static protected String[] properties = {CURRENT_TARGET, TIME_STAMP, EVENT_TYPE, ID};
 
 	public Object getCurrentTarget() {
 		return currentTarget;
@@ -50,11 +51,6 @@ public class Event extends JsonObject implements SendableEntityCreator {
 		return timeStamp;
 	}
 	
-	public String getType() {
-		return type;
-	}
-	
-
 	@Override
 	public String[] getProperties() {
 		return properties;
@@ -66,9 +62,6 @@ public class Event extends JsonObject implements SendableEntityCreator {
 			return null;
 		}
 		Event e = (Event) entity;
-		if(TYPE.equals(attribute)) {
-			return e.getType();
-		}
 		if(TIME_STAMP.equals(attribute)) {
 			return e.getTimeStamp();
 		}
@@ -78,6 +71,11 @@ public class Event extends JsonObject implements SendableEntityCreator {
 		return e.get(attribute);
 	}
 
+	
+	public boolean setValue(String attribute, Object value) {
+		return setValue(this, attribute, value, SendableEntityCreator.NEW);
+	}
+	
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value,
 			String type) {
@@ -85,16 +83,24 @@ public class Event extends JsonObject implements SendableEntityCreator {
 			return false;
 		}
 		Event e = (Event) entity;
-		if(TYPE.equals(attribute)) {
-			e.type = ""+value;
-			return true;
-		}
 		if(TIME_STAMP.equals(attribute)) {
 			e.timeStamp = Integer.valueOf(""+value);
 			return true;
 		}
+		if(EVENT_TYPE.equals(attribute)) {
+			e.eventType = (EventTypes) value;
+			return true;
+		}
 		if(CURRENT_TARGET.equals(attribute)) {
 			e.currentTarget = value;
+			return true;
+		}
+		if(EVENT.equals(attribute)) {
+			e.event = value;
+			return true;
+		}
+		if(ID.equals(attribute)) {
+			this.id = ""+value;
 			return true;
 		}
 		return e.add(attribute, value);
@@ -111,5 +117,9 @@ public class Event extends JsonObject implements SendableEntityCreator {
 
 	public EventTypes getEventType() {
 		return eventType;
+	}
+
+	public Object getEvent() {
+		return event;
 	}
 }

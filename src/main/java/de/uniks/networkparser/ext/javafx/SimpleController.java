@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.lang.reflect.Field;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -16,7 +17,6 @@ import de.uniks.networkparser.ext.generic.ReflectionLoader;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
-import javafx.scene.input.KeyEvent;
 
 public class SimpleController implements ObjectCondition{
 	public static final String SEPARATOR="------";
@@ -30,13 +30,15 @@ public class SimpleController implements ObjectCondition{
 	private ErrorHandler errorHandler = new ErrorHandler();
 	protected Object popupMenu;
 	protected Object trayIcon;
-	private SimpleList<GUIEvent> keyListener = new SimpleList<GUIEvent>();
-	private GUIEvent eventHandler = new GUIEvent();
+	private SimpleList<Object> listener = new SimpleList<Object>();
 	
 	public SimpleController(Object primitiveStage) {
 		this.stage = primitiveStage;
 		
-		Object proxy = ReflectionLoader.createProxy(eventHandler, ReflectionLoader.EVENTHANDLER);
+		GUIEvent proxyHandler=new GUIEvent();
+		proxyHandler.withListener(this);
+		
+		Object proxy = ReflectionLoader.createProxy(proxyHandler, ReflectionLoader.EVENTHANDLER);
 		
 		ReflectionLoader.call("setOnCloseRequest", stage, ReflectionLoader.EVENTHANDLER, proxy);
 		ReflectionLoader.call("setOnShowing", stage, ReflectionLoader.EVENTHANDLER, proxy);
@@ -173,7 +175,9 @@ public class SimpleController implements ObjectCondition{
 		}
 		ReflectionLoader.call("setScene", stage, ReflectionLoader.SCENE, scene);
 		
-		
+		if(root instanceof ObjectCondition) {
+			this.withListener((ObjectCondition)root);
+		}
 		GUIEvent event = new GUIEvent();
 		event.withListener(this);
 		Object proxy = ReflectionLoader.createProxy(event, ReflectionLoader.EVENTHANDLER);
@@ -253,7 +257,10 @@ public class SimpleController implements ObjectCondition{
 			}
 		}
 		this.icon = value;
-		if (this.stage != null && value != null) {
+		if( value == null) {
+			return this;
+		}
+		if (this.stage != null) {
 			Object image;
 			if (value.startsWith("file") || value.startsWith("jar")) {
 				image = ReflectionLoader.newInstance(ReflectionLoader.IMAGE, value);
@@ -263,6 +270,28 @@ public class SimpleController implements ObjectCondition{
 			@SuppressWarnings("unchecked")
 			List<Object> icons = (List<Object>) ReflectionLoader.call("getIcons", stage);
 			icons.add(image);
+		}
+		if(this.trayIcon != null) {
+			URL iconURL = null;
+			try {
+				if (this.icon.startsWith("file") || this.icon.startsWith("jar")) {
+					iconURL = new URL(this.icon);
+				}else {
+					iconURL = new URL("file:" + this.icon);
+				}
+				Object toolKit = ReflectionLoader.call("getDefaultToolkit", ReflectionLoader.TOOLKIT);
+				Object image = ReflectionLoader.call("getImage", toolKit, URL.class, iconURL);
+				Object newImage = ReflectionLoader.call("getScaledInstance", image, int.class, 16, int.class, 16, int.class, 4);
+				ReflectionLoader.call("setImage", trayIcon, ReflectionLoader.AWTIMAGE, newImage);
+			} catch (MalformedURLException e) {
+			}
+		}
+		return this;
+	}
+	
+	public SimpleController withToolTip(String text) {
+		if(this.trayIcon != null) {
+			ReflectionLoader.call("setToolTip", trayIcon, String.class, text);
 		}
 		return this;
 	}
@@ -296,16 +325,17 @@ public class SimpleController implements ObjectCondition{
 	public Object addTrayMenuItem(String text, ObjectCondition listener) {
 		Object item  = ReflectionLoader.newInstance(ReflectionLoader.MENUITEM, String.class, text);
 
-		GUIEvent event = new GUIEvent().withListener(listener);
+		GUIEvent event = new GUIEvent().withListener(this);
+		this.withListener(listener);
 		
 		
 		Object actionListener = ReflectionLoader.createProxy(event, ReflectionLoader.ACTIONLISTENER);
 		
-		ReflectionLoader.call("addActionListener", item, actionListener);
+		ReflectionLoader.call("addActionListener", item, ReflectionLoader.ACTIONLISTENER, actionListener);
 		ReflectionLoader.call("add", getPopUp(), ReflectionLoader.MENUITEM, item);
 		return item;
 	}
-
+	
 	public void addTraySeperator() {
 		ReflectionLoader.call("addSeparator", getPopUp());
 	}
@@ -333,11 +363,19 @@ public class SimpleController implements ObjectCondition{
 				Object image = ReflectionLoader.call("getImage", toolKit, URL.class, iconURL);
 				Object newImage = ReflectionLoader.call("getScaledInstance", image, int.class, 16, int.class, 16, int.class, 4);
 						
-//				Image img.getScaledInstance(16, 16, Image.SCALE_SMOOTH);
+				this.close();
 				this.trayIcon = ReflectionLoader.newInstance(ReflectionLoader.TRAYICON, ReflectionLoader.AWTIMAGE, newImage);
 				Integer count = (Integer) ReflectionLoader.call("getItemCount", getPopUp());
 				if(count < 1) {
-					addTrayMenuItem(CLOSE, this.eventHandler.getListener());
+					addTrayMenuItem(CLOSE, this);
+				}
+				
+				if(labels != null) {
+					for(String label : labels) {
+						if(label != null) {
+							this.addTrayMenuItem(label, null);
+						}
+					}
 				}
 				ReflectionLoader.call("setPopupMenu", trayIcon, ReflectionLoader.POPUPMENU, popupMenu);
 				Object systemTray = ReflectionLoader.call("getSystemTray", ReflectionLoader.SYSTEMTRAY);
@@ -349,7 +387,19 @@ public class SimpleController implements ObjectCondition{
 		return this.trayIcon;
 	}
 	
-	protected String getVersion() {
+	public void close() {
+		if(this.stage != null) {
+			ReflectionLoader.call("close", this.stage);
+			this.stage = null;
+		}
+		if(this.trayIcon != null) {
+			Object systemTray = ReflectionLoader.call("getSystemTray", ReflectionLoader.SYSTEMTRAY);
+			ReflectionLoader.call("remove", systemTray, ReflectionLoader.TRAYICON, this.trayIcon);
+			this.trayIcon = null;
+		}
+	}
+	
+	public String getVersion() {
 		String result = SimpleController.class.getPackage().getImplementationVersion();
 		if (result == null) {
 			result = "0.42.DEBUG";
@@ -358,7 +408,7 @@ public class SimpleController implements ObjectCondition{
 	}
 	
 	public SimpleController withListener(ObjectCondition value) {
-		this.eventHandler.withListener(value);
+		this.listener.add(value);
 		return this;
 	}
 	
@@ -366,23 +416,31 @@ public class SimpleController implements ObjectCondition{
 		this.errorHandler.saveException(e);
 	}
 
-	public SimpleController withKeyListener(GUIEvent listener) {
-		this.keyListener.add(listener);
+	public SimpleController withListener(GUIEvent listener) {
+		this.listener.add(listener);
 		return this;
 	}
-
+	
 	@Override
 	public boolean update(Object value) {
-		for(GUIEvent listener : keyListener) {
-			GUIEvent evt = GUIEvent.create(value);
-			if(listener.getCode() == evt.getCode()) {
-				System.out.println(value);
-				ObjectCondition subListener = listener.getListener();
-				if(subListener != null) {
-					subListener.update(value);
+		if(value == null) {
+			return false;
+		}
+		GUIEvent evt = GUIEvent.create(value);
+		if(evt.isSubEventName("java.awt.event.ActionEvent")) {
+			if(CLOSE.equals(evt.getId())) {
+				this.close();
+			}
+		}
+		for(Object listener : listener) {
+			ObjectCondition match = evt.match(listener);
+			if(match != null) {
+				if(match != null) {
+					match.update(evt);
 				}
 			}
 		}
-		return false;
+		return true;
 	}
+	
 }

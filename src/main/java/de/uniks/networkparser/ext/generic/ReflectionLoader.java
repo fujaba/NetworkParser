@@ -6,6 +6,10 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 
+import javax.management.RuntimeErrorException;
+
+import de.uniks.networkparser.ext.Os;
+
 public class ReflectionLoader {
 	public static PrintStream logger = null;
 
@@ -414,6 +418,7 @@ public class ReflectionLoader {
 		} catch (Exception e) {
 			if(logger != null && notify) {
 				e.printStackTrace(logger);
+			} else {
 			}
 		}
 		return null;

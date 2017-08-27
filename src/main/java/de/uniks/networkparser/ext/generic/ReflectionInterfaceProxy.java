@@ -26,6 +26,8 @@ public class ReflectionInterfaceProxy implements InvocationHandler{
 		for(int i=0;i<newTypes.length;i++) {
 			if(types[i].getName().indexOf("javafx.")>=0) {
 				newTypes[i] = Object.class;
+			} else if(types[i].getName().indexOf("java.awt.event.")>=0) {
+				newTypes[i] = Object.class;
 			} else {
 				newTypes[i] = types[i];
 			}

@@ -43,6 +43,31 @@ public class GUIEvent extends Event {
 		return ReflectionLoader.call("getMember", obj, String.class, value);
 	}
 	
+	public boolean isSubEventName(String name) {
+		if(name == null || this.event == null) {
+			return false;
+		}
+		String subName = this.event.getClass().getName();
+		return subName.equals(name);
+	}
+	
+	public ObjectCondition match(Object other) {
+		if(other == null) {
+			return null;
+		}
+		if(other instanceof ObjectCondition) {
+			return (ObjectCondition) other;
+		}
+		if(other instanceof GUIEvent) {
+			GUIEvent otherEvt = (GUIEvent) other;
+			if(this.eventType==EventTypes.KEYPRESS && otherEvt.getEventType() == EventTypes.KEYPRESS) {
+				if(this.getCode() == otherEvt.getCode()) {
+					return otherEvt.getListener();
+				}
+			}
+		}
+		return null;
+	}
 	
 	public static GUIEvent create(Object obj) {
 //			boolean isEvent = (boolean) obj.eval("this instanceof Event");
@@ -50,12 +75,33 @@ public class GUIEvent extends Event {
 		if(obj == null) {
 			return event;
 		}
-		if("javafx.scene.input.KeyEvent".equals(obj.getClass().getName())) {
+		String name = obj.getClass().getName();
+		if("javafx.scene.input.KeyEvent".equals(name)) {
 			// KeyEvent
+			event.setValue(EVENT_TYPE, EventTypes.KEYPRESS);
 			event.put(ALTKEY, ReflectionLoader.call("isAltDown", obj));
 			event.put(CTRKEY, ReflectionLoader.call("isControlDown", obj));
 			event.put(SHIFTKEY, ReflectionLoader.call("isShiftDown", obj));
 			event.withCode((Integer)ReflectionLoader.callChain(obj, "getCode", "impl_getCode"));
+
+			event.setValue(CURRENT_TARGET, ReflectionLoader.call("getTarget", obj));
+			event.setValue(EVENT, obj);
+			return event;
+		}
+		if("javafx.stage.WindowEvent".equals(name)) {
+			event.setValue(EVENT_TYPE, EventTypes.WINDOWEVENT);
+			event.setValue(CURRENT_TARGET, ReflectionLoader.call("getTarget", obj));
+			event.setValue(EVENT, obj);
+			return event;
+		}
+		if("java.awt.event.ActionEvent".equals(name)) {
+			// KeyEvent
+			event.setValue(EVENT_TYPE, EventTypes.CLICK);
+			Long longValue = (Long) ReflectionLoader.call("getWhen", obj);
+			event.setValue(TIME_STAMP, longValue.intValue());
+			event.setValue(CURRENT_TARGET, ReflectionLoader.call("getSource", obj));
+			event.setValue(ID, ""+ReflectionLoader.callChain(obj, "getSource","getLabel"));
+			event.setValue(EVENT, obj);
 			return event;
 		}
 		Object value;
@@ -80,7 +126,7 @@ public class GUIEvent extends Event {
 		event.jsObject = obj;
 		value = getMember(obj, TYPE);
 		if(value != null) {
-			event.type = ""+value;
+			event.put(TYPE, ""+value);
 		}
 		value = getMember(obj, CURRENT_TARGET);
 		if(value != null) {
