@@ -21,4 +21,8 @@ public class SimpleExecutor implements TaskExecutor{
 		this.listener = condition;
 		return this;
 	}
+
+	@Override
+	public void shutdown() {
+	}
 }

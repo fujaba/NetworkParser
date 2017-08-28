@@ -100,7 +100,7 @@ public class Tokener implements BufferItem {
 		return map.isError(owner, method, type, entity, null);
 	}
 
-	public void parseToEntity(Entity entity) {}
+	public boolean parseToEntity(Entity entity) {return true;}
 
 	public void parseToEntity(EntityList entity) {}
 

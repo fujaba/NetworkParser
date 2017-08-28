@@ -129,7 +129,7 @@ public class JsonTokener extends Tokener {
 	}
 
 	@Override
-	public void parseToEntity(Entity entity) {
+	public boolean parseToEntity(Entity entity) {
 		char c;
 		String key;
 		if (nextClean(true) != STARTENTITY) {
@@ -149,7 +149,7 @@ public class JsonTokener extends Tokener {
 					throw new RuntimeException(
 							"A JsonObject text must end with '}'");
 				}
-				return;
+				return false;
 			case '\\':
 				// unquote
 				skip();
@@ -170,13 +170,13 @@ public class JsonTokener extends Tokener {
 				}
 			case ENDENTITY:
 				skip();
-				return;
+				return true;
 			case ',':
 				skip();
 				Object keyValue = nextValue(entity, isQuote, false, stop);
 				if(keyValue == null) {
 					// No Key Found Must eb an empty statement
-					return;
+					return true;
 				}
 				key = keyValue.toString();
 				break;
@@ -188,7 +188,7 @@ public class JsonTokener extends Tokener {
 				if (isError(this, "parseToEntity", NetworkParserLog.ERROR_TYP_PARSING, entity)) {
 					throw new RuntimeException("Expected a ':' after a key ["+ getString(30).toString() + "]");
 				}
-				return;
+				return false;
 			}
 			getChar();
 			entity.put(key, nextValue(entity, isQuote, false, stop));

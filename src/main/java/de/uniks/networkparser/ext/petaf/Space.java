@@ -121,7 +121,9 @@ public class Space extends SendableItem {
 				proxy.close();
 			}
 		}
-//		executor.shutdown();
+		if(executor!= null) {
+			executor.shutdown();
+		}
 	}
 	
 	public Entity getReplicationInfo() {

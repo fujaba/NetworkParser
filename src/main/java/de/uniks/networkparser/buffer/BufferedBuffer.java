@@ -208,6 +208,9 @@ public abstract class BufferedBuffer extends Buffer {
 	 * @return substring from buffer
 	 */
 	public String substring(int... positions) {
+		if(positions == null || positions.length<1) {
+			positions = new int[] {-1};
+		}
 		int start = positions[0], end = -1;
 		if (positions.length < 2) {
 			// END IS END OF BUFFER (Exclude)

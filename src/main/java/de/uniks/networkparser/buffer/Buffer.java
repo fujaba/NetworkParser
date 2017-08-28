@@ -68,6 +68,10 @@ public abstract class Buffer implements BufferItem {
 		int asInt = getInt();
 		return Float.intBitsToFloat(asInt);
 	}
+	
+	public String substring(int... values) {
+		return "";
+	}
 
 	public double getDouble() {
 		long asLong = getLong();

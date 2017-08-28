@@ -62,6 +62,6 @@ public class ReflectionTest {
 			}
 		});
 //				.withFlag(NetworkParserLog.LOGLEVEL_ALL);
-		tester.test("de.uniks.networkparser.ext.email.SMTPSession", logger);
+		tester.test("de.uniks.networkparser.ext.io.SMTPSession", logger);
 	}
 }

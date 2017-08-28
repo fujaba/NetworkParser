@@ -93,7 +93,11 @@ public class FileBuffer extends Buffer {
 			return value;
 		}
 		try {
-			value = (char) this.reader.read();
+			int charInt = this.reader.read();
+			if(charInt<0) {
+				charInt =0;
+			}
+			value = (char)charInt; 
 			this.currentChar = value;
 			position++;
 		} catch (IOException e) {

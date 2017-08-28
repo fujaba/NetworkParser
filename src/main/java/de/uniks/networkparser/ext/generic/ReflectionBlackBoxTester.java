@@ -13,8 +13,14 @@ import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Enumeration;
 
-
 import de.uniks.networkparser.NetworkParserLog;
+import de.uniks.networkparser.ext.ErrorHandler;
+import de.uniks.networkparser.ext.javafx.SimpleController;
+import de.uniks.networkparser.ext.petaf.Server_TCP;
+import de.uniks.networkparser.ext.petaf.Server_UPD;
+import de.uniks.networkparser.ext.petaf.proxy.NodeProxyBroadCast;
+import de.uniks.networkparser.ext.petaf.proxy.NodeProxyTCP;
+import de.uniks.networkparser.ext.story.Story;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleSet;
 
@@ -34,16 +40,28 @@ public class ReflectionBlackBoxTester {
 	
 	public ReflectionBlackBoxTester() {
 		ignoreMethods =new SimpleKeyValueList<String, SimpleSet<String>>();
-		withIgnoreClazzes("de.uniks.networkparser.ext.javafx.DiagramEditor:access");
-		withIgnoreClazzes("de.uniks.networkparser.ext.javafx.DiagramEditor:generate");
-		withIgnoreClazzes("de.uniks.networkparser.ext.javafx.DiagramEditor:main");
-		withIgnoreClazzes("de.uniks.networkparser.ext.javafx.DiagramEditor:save");
-		withIgnoreClazzes("de.uniks.networkparser.ext.javafx.DiagramEditor:start");
-		withIgnoreClazzes("de.uniks.networkparser.ext.javafx.DiagramEditor:open");
-		withIgnoreClazzes("de.uniks.networkparser.ext.story.Story:dumpHTML");
-		withIgnoreClazzes("de.uniks.networkparser.ext.story.Story:writeFile");
-		withIgnoreClazzes("de.uniks.networkparser.ext.error.ErrorHandler");
-		withIgnoreClazzes("de.uniks.networkparser.ext.javafx.SimpleController:init");
+		String className;
+//		String className = DiagramEditor
+//				.cDiagraStory.class.getName()
+//		withIgnoreClazzes("de.uniks.networkparser.ext.javafx.DiagramEditor:access");
+//		withIgnoreClazzes("de.uniks.networkparser.ext.javafx.DiagramEditor:generate");
+//		withIgnoreClazzes("de.uniks.networkparser.ext.javafx.DiagramEditor:main");
+//		withIgnoreClazzes("de.uniks.networkparser.ext.javafx.DiagramEditor:save");
+//		withIgnoreClazzes("de.uniks.networkparser.ext.javafx.DiagramEditor:start");
+//		withIgnoreClazzes("de.uniks.networkparser.ext.javafx.DiagramEditor:open");
+		
+		
+		className = Story.class.getName();
+		withIgnoreClazzes(className+":dumpHTML");
+		withIgnoreClazzes(className+":writeFile");
+		withIgnoreClazzes(ErrorHandler.class.getName());
+		className = SimpleController.class.getName();
+		withIgnoreClazzes(className+":init");
+		withIgnoreClazzes(className+":saveException");
+		withIgnoreClazzes(Server_TCP.class.getName());
+		withIgnoreClazzes(Server_UPD.class.getName());
+		withIgnoreClazzes(NodeProxyBroadCast.class.getName());
+		withIgnoreClazzes(NodeProxyTCP.class.getName());
 	}		
 	
 	public ReflectionBlackBoxTester withIgnoreClazzes(String... values) {

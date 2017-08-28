@@ -44,6 +44,8 @@ public class SocketTest {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		server.close();
+		client.close();
 		System.out.println("END");
 	}
 }

@@ -104,6 +104,9 @@ public class SMTPSession {
 	 */
 	public boolean connect(String userName, String password) {
 		if(serverSocket == null) {
+			if(host == null) {
+				return false;
+			}
 			try {
 				serverSocket = new Socket(host, port);
 				serverSocket.setSoTimeout(SOCKET_READ_TIMEOUT);

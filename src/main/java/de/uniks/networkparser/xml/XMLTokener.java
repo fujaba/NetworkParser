@@ -105,7 +105,7 @@ public class XMLTokener extends Tokener {
 		return super.nextValue(creator, allowQuote, allowDuppleMarks, c);
 	}
 
-	public void parseToEntity(Entity entity) {
+	public boolean parseToEntity(Entity entity) {
 		skipHeader();
 		char c = getCurrentChar();
 		if (c != ITEMSTART) {
@@ -115,7 +115,7 @@ public class XMLTokener extends Tokener {
 			if (isError(this, "parseToEntity", NetworkParserLog.ERROR_TYP_PARSING, entity)) {
 				throw new RuntimeException("Parse only XMLEntity");
 			}
-			return;
+			return false;
 		}
 		XMLEntity xmlEntity = (XMLEntity) entity;
 		if (c != ITEMSTART) {
@@ -123,7 +123,7 @@ public class XMLTokener extends Tokener {
 			if (isError(this, "parseToEntity", NetworkParserLog.ERROR_TYP_PARSING, entity)) {
 				throw new RuntimeException("A XML text must begin with '<'");
 			}
-			return;
+			return false;
 		}
 		xmlEntity.setType(this.buffer.nextToken(false, Buffer.STOPCHARSXMLEND).toString());
 		XMLEntity child;
@@ -134,7 +134,7 @@ public class XMLTokener extends Tokener {
 			} else if (c == ITEMEND) {
 				c = nextClean(false);
 				if (c == 0) {
-					return;
+					return true;
 				}
 				if (c != ITEMSTART) {
 					CharacterBuffer item = new CharacterBuffer();
@@ -166,9 +166,10 @@ public class XMLTokener extends Tokener {
 					buffer.withLookAHead(c);
 					if (getCurrentChar() == '<') {
 						child = (XMLEntity) xmlEntity.getNewList(true);
-						parseToEntity((Entity)child);
-						xmlEntity.with(child);
-						skip();
+						if(parseToEntity((Entity)child)) {
+							xmlEntity.with(child);
+							skip();
+						}
 					} else {
 						xmlEntity.withValue(nextString(new CharacterBuffer(), false, false, '<').toString());
 					}
@@ -179,7 +180,11 @@ public class XMLTokener extends Tokener {
 			} else {
 				if(xmlEntity.sizeChildren()<1) {
 					// Normal key Value
-					String key = nextValue(xmlEntity, false, true, c).toString();
+					Object value = nextValue(xmlEntity, false, true, c);
+					if(value == null) {
+						return false;
+					}
+					String key = value.toString();
 					if (key.length() > 0) {
 						xmlEntity.put(key,
 								nextValue(xmlEntity, isAllowQuote, true, nextClean(false)));
@@ -195,6 +200,7 @@ public class XMLTokener extends Tokener {
 				}
 			}
 		}
+		return true;
 	}
 
 	/**	Skip the Current Entity to &gt;. */
@@ -216,8 +222,8 @@ public class XMLTokener extends Tokener {
 				skipEntity();
 				skip = true;
 			} else if(tag.equals("<!")) {
-				skipTo("-->", true, true);
-				skip();
+				skipTo(">", true, true);
+				nextClean(false);
 				skip = true;
 			} else {
 				skip = false;

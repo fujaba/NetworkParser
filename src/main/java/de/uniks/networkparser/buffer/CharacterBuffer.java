@@ -102,7 +102,7 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence {
 		}
 		return new CharacterBuffer().with(this.buffer, start, end, false);
 	}
-
+	
 	/**
 	 * Set the currentVlaue to Buffer
 	 *

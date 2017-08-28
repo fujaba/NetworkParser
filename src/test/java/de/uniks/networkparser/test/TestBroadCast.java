@@ -21,12 +21,13 @@ public class TestBroadCast {
 	    // Start in 10 Sekunden
 	    timer.schedule( new BroadCastClient(), 400 );
 	    try {
-			Thread.sleep(100000);
+			Thread.sleep(1000);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	    System.out.println("END");
+	    space.close();
 		
 	}
 	

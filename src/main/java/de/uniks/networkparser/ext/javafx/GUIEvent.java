@@ -149,6 +149,6 @@ public class GUIEvent extends Event {
 		if(object == null) {
 			return 0;
 		}
-		return (int)object;
+		return (Integer)object;
 	}
 }
