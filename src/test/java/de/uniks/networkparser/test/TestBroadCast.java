@@ -13,7 +13,7 @@ import de.uniks.networkparser.ext.petaf.proxy.NodeProxyBroadCast;
 import de.uniks.networkparser.ext.petaf.proxy.NodeProxyTCP;
 
 public class TestBroadCast {
-	@Test
+	@Test(timeout=5000)
 	public void testBroadCast() throws IOException {
 		Space space = Space.newInstance(NodeProxyTCP.createServer(5000), NodeProxyBroadCast.createServer(9876));
 		Timer timer = new Timer();

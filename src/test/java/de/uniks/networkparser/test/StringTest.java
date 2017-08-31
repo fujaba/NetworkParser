@@ -39,15 +39,15 @@ public class StringTest {
 	@Test
 	public void testUmlaute() {
 		String uml = "\u00fcbung";
-		System.out.println(uml);
+//		System.out.println(uml);
 		byte[] umlBytes = uml.getBytes();
 		
-		String newString = new String(umlBytes, 0, umlBytes.length);
-		for(int i=0;i<umlBytes.length;i++) {
-			System.out.println(umlBytes[i]+" ");
-		}
-		System.out.println(newString);
-		
+//		String newString = new String(umlBytes, 0, umlBytes.length);
+//		for(int i=0;i<umlBytes.length;i++) {
+//			System.out.println(umlBytes[i]+" ");
+//		}
+//		System.out.println(newString);
+		Assert.assertNotNull(umlBytes);
 	}
 	
 	
