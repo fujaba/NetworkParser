@@ -19,13 +19,11 @@ import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.TextDiff;
-import de.uniks.networkparser.ext.ErrorHandler;
 import de.uniks.networkparser.ext.PropertyChangeEventWrapper;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.json.JsonArray;
 import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.json.JsonTokener;
-import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.logic.BooleanCondition;
 import de.uniks.networkparser.logic.Equals;
@@ -871,18 +869,18 @@ public class JsonTest extends IOClasses {
 		Assert.assertEquals("child", decode.getPropertyName());
 	}
 	
-	@Test
-	public void testErrorHandler() {
-		JsonObject item = new JsonObject();
-		item.put("port", new SimpleKeyValueList<String, String>());
-		ErrorHandler errorHandler = new ErrorHandler();
-		try {
-			item.getInt("port");
-		}catch (Exception e) {
-			errorHandler.saveException(e);
-			
-			// TODO: handle exception
-		}
-		
-	}
+//	@Test
+//	public void testErrorHandler() {
+//		JsonObject item = new JsonObject();
+//		item.put("port", new SimpleKeyValueList<String, String>());
+//		ErrorHandler errorHandler = new ErrorHandler();
+//		try {
+//			item.getInt("port");
+//		}catch (Exception e) {
+//			errorHandler.saveException(e);
+//			
+//			// TODO: handle exception
+//		}
+//		
+//	}
 }
