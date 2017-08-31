@@ -21,6 +21,7 @@ import de.uniks.networkparser.ext.petaf.Server_UPD;
 import de.uniks.networkparser.ext.petaf.proxy.NodeProxyBroadCast;
 import de.uniks.networkparser.ext.petaf.proxy.NodeProxyTCP;
 import de.uniks.networkparser.ext.story.Story;
+import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleSet;
 
@@ -438,7 +439,7 @@ public class ReflectionBlackBoxTester {
 
 		Enumeration<URL> resources = cld.getResources(pckgname.replace('.', '/'));
 		for (URL url = null; resources.hasMoreElements() && ((url = resources.nextElement()) != null);) {
-				checkDirectory(new File(URLDecoder.decode(url.getPath(), "UTF-8")), pckgname, classes);
+				checkDirectory(new File(URLDecoder.decode(url.getPath(), BaseItem.ENCODING)), pckgname, classes);
 		}
 		if(classes.size() == 0) {
 			Class<?> forName = Class.forName(pckgname);

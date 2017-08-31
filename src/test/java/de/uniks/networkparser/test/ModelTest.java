@@ -199,6 +199,7 @@ public class ModelTest implements ObjectCondition {
 		
 		map = new IdMap().withCreator(new Plant());
 		JsonObject jsonObject = map.toJsonObject(flower);
+		Assert.assertNotNull(jsonObject);
 //		System.out.println(jsonObject);
 
 		map = new IdMap().withCreator(new PlantCreatorNoIndex());

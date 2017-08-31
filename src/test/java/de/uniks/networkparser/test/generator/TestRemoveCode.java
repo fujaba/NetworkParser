@@ -54,8 +54,8 @@ public class TestRemoveCode {
 		
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.removeCode_c");
 		
-		Clazz person = model.createClazz("Person");
-		Clazz pupil = model.createClazz("Pupil");
+		model.createClazz("Person");
+		model.createClazz("Pupil");
 		
 		model.generate(rootDir);
 		

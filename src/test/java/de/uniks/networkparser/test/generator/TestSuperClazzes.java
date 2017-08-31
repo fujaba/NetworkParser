@@ -43,8 +43,8 @@ public class TestSuperClazzes {
 		}
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.superclazzes_c");
 		Clazz person = model.createClazz("Person");
-		Clazz pupil = model.createClazz("Pupil").withSuperClazz(person);
-		Clazz teacher = model.createClazz("Teacher").withSuperClazz(person);
+		model.createClazz("Pupil").withSuperClazz(person);
+		model.createClazz("Teacher").withSuperClazz(person);
 		model.getGenerator().testGeneratedCode();
 //		model.generate("src/test/java");
 	}
@@ -74,7 +74,7 @@ public class TestSuperClazzes {
 		Clazz person = model.createClazz("Person");
 		person.with(Modifier.create("abstract"));
 		Clazz teacher = model.createClazz("Teacher");
-		Clazz pupil = model.createClazz("Pupil").withSuperClazz(person);
+		model.createClazz("Pupil").withSuperClazz(person);
 		
 		person.withAttribute("name", DataType.STRING);
 		
@@ -93,7 +93,7 @@ public class TestSuperClazzes {
 		person.with(Modifier.create("abstract"));
 		Clazz teacher = model.createClazz("Teacher");
 		teacher.with(Modifier.create("abstract"));
-		Clazz pupil = model.createClazz("Pupil").withSuperClazz(person);
+		model.createClazz("Pupil").withSuperClazz(person);
 		
 		person.withAttribute("name", DataType.STRING);
 		

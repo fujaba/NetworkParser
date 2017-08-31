@@ -4,7 +4,7 @@ import de.uniks.networkparser.ext.petaf.SendableItem;
 import de.uniks.networkparser.interfaces.Condition;
 import de.uniks.networkparser.list.SimpleList;
 
-public class TreeFilter extends SendableItem implements ScopeFilter {
+public class TreeFilter extends SendableItem {
 	public static final String PROPERTY_CHILDREN = "children";
 	public static final String PROPERTY_PARENT = "parent";
 	private SimpleList<TreeFilter> children;
@@ -68,10 +68,4 @@ public class TreeFilter extends SendableItem implements ScopeFilter {
 		this.filter = filter;
 		return this;
 	}
-
-	@Override
-	public boolean check(Object item, String property) {
-		return false;
-	}
-
 }

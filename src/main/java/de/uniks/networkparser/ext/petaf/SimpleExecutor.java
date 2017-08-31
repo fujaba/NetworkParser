@@ -6,7 +6,7 @@ public class SimpleExecutor implements TaskExecutor{
 	private ObjectCondition listener;
 
 	@Override
-	public Object execute(Runnable task) {
+	public Object executeTask(Runnable task) {
 		task.run();
 		return null;
 	}

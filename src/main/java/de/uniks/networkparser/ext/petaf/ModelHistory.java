@@ -136,7 +136,7 @@ public class ModelHistory
 							return false; // this should not happen
 						}
 
-						SendableEntityCreator createrClass = space.getInternMap().getCreatorClass(target);
+						SendableEntityCreator createrClass = space.getMap().getCreatorClass(target);
 						
 						if (createrClass.getValue(target, fieldName) instanceof Collection<?>)
 						{

@@ -12,7 +12,7 @@ import de.uniks.networkparser.ext.generic.ReflectionLoader;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.list.SimpleList;
 
-public class ErrorHandler implements Thread.UncaughtExceptionHandler{
+public class ErrorHandler implements Thread.UncaughtExceptionHandler {
 	public static final String TYPE = "ERROR";
 	private String path;
 	private Object stage;
@@ -67,7 +67,10 @@ public class ErrorHandler implements Thread.UncaughtExceptionHandler{
 			ps.println("***  ***");
 			
 			ps.println();
-			e.printStackTrace(ps);
+			// SubErrors
+			printSubTrace(ps, "", 1, e);
+			
+			
 			ps.close();
 			success=true;
 		} catch (FileNotFoundException exception) {
@@ -80,6 +83,26 @@ public class ErrorHandler implements Thread.UncaughtExceptionHandler{
 	
 	public static void printProperty(PrintStream ps, String property){
 		ps.println(property+": "+System.getProperty(property));
+	}
+	
+	public static void printSubTrace(PrintStream ps, String prefix, int index, Throwable e) {
+		if(prefix == null) {
+			return;
+		}
+		if(prefix.length()>0) {
+			prefix+=":"+index;
+			ps.println(prefix);
+		}else {
+			prefix= "Sub";
+		}
+		e.printStackTrace(ps);
+		
+		Throwable[] suppressed = e.getSuppressed();
+		if(suppressed != null) {
+			for(int number =0;number < suppressed.length;number++) {
+				printSubTrace(ps, prefix, number, suppressed[number]);
+			}
+		}
 	}
 	
 	public static String createDir(String path){

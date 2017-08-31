@@ -29,6 +29,9 @@ THE SOFTWARE.
  */
 
 public interface BaseItem {
+	/** Standard Encoding */
+	public static final String ENCODING="utf-8";
+	
 	public static final String CRLF = "\r\n";
 	
 	/** The Constant CLASS. */

@@ -42,7 +42,7 @@ public abstract class ByteConverter implements Converter{
 		if (entity instanceof ByteItem) {
 			buffer = ((ByteItem) entity).getBytes(true);
 		}else {
-			byte[] array = ((BaseItem) entity).toString().getBytes(Charset.forName("UTF-8"));
+			byte[] array = ((BaseItem) entity).toString().getBytes(Charset.forName(BaseItem.ENCODING));
 			buffer = new ByteBuffer().with(array);
 		}
 		if(buffer != null) {

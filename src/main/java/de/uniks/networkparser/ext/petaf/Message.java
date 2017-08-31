@@ -150,7 +150,7 @@ public class Message {
 	}
 
 	protected IdMap getInternMap(Space space) {
-		return space.getInternMap();
+		return space.getMap();
 	}
 
 	public static Message createSimpleString(String text) {

@@ -38,7 +38,6 @@ public class HTMLEntity implements BaseItem {
 	public static final String PROPERTY_HEADER="head";
 	public static final String PROPERTY_BODY="body";
 	public static final String IMAGEFORMAT=" .bmp .jpg .jpeg .png .gif .svg ";
-	public static final String ENCODING_UTF8="utf-8";
 	public static final String SCRIPT="script";
 	public static final String LINK="link";
 	public static final String KEY_HREF="href";
@@ -284,7 +283,7 @@ public class HTMLEntity implements BaseItem {
 			for(String item : list) {
 				withHeader(path + item);
 			}
-			withEncoding(ENCODING_UTF8);
+			withEncoding(ENCODING);
 		}
 		return this;
 	}

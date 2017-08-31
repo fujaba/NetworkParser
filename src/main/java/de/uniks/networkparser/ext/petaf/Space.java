@@ -65,7 +65,7 @@ public class Space extends SendableItem {
 //MOVE TO SUBCLASS	private TaskExecutor executor=new TaskExecutor();
 	private Tokener tokener;
 
-	IdMap getInternMap() {
+	public IdMap getMap() {
 		return map;
 	}
 	
@@ -131,7 +131,7 @@ public class Space extends SendableItem {
 		Entity result = tokener.newInstance();
 		result.put(PROPERTY_NAME, this.name);
 		EntityList proxies = tokener.newInstanceList();
-		MapEntity entity = new MapEntity(getInternMap());
+		MapEntity entity = new MapEntity(getMap());
 		for(NodeProxy proxy : this.proxies) {
 			if(NodeProxyType.isOutput(proxy.getType())) {
 				proxies.add(tokener.encode(proxy, entity));
@@ -160,7 +160,7 @@ public class Space extends SendableItem {
 
 	
 	public String convertMessage(Message msg){
-		BaseItem encode = getInternMap().encode(msg, tokener);
+		BaseItem encode = getMap().encode(msg, tokener);
 		ByteConverter byteConverter = getConverter();
 		return byteConverter.encode(encode);
 	}
@@ -269,7 +269,7 @@ public class Space extends SendableItem {
 		NodeProxy proxy;
 		int step;
 		int number;
-		IdMap map = getInternMap();
+		IdMap map = getMap();
 		boolean out=false;
 		if(receiver != null) {
 			for(int i=0;i<this.proxies.size();i++) {
@@ -357,7 +357,7 @@ public class Space extends SendableItem {
 		history.addHistory(msg);
 
 		// send to next peers
-		IdMap map = getInternMap();
+		IdMap map = getMap();
 		for(NodeProxy peer : sendProxies) {
 			boolean done = peer.sending(msg);
 			if(done) {
@@ -397,7 +397,7 @@ public class Space extends SendableItem {
 		if(this.executor == null) {
 			this.executor = new SimpleExecutor();
 		}
-		return this.executor.execute(task);
+		return this.executor.executeTask(task);
 	}
 //	public Future<?> execute(Runnable task) {
 //		Future<?> result = executor.submit(task);

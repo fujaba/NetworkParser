@@ -40,7 +40,7 @@ public class Event extends JsonObject implements SendableEntityCreator {
 	protected EventTypes eventType;
 	protected Object event;
 	protected String id;
-
+	protected boolean active = true;
 	static protected String[] properties = {CURRENT_TARGET, TIME_STAMP, EVENT_TYPE, ID};
 
 	public Object getCurrentTarget() {
@@ -121,5 +121,9 @@ public class Event extends JsonObject implements SendableEntityCreator {
 
 	public Object getEvent() {
 		return event;
+	}
+	
+	public boolean isActive() {
+		return active;
 	}
 }

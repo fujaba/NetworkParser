@@ -287,7 +287,7 @@ public class ByteBuffer extends BufferedBuffer implements BaseItem {
 		return new ByteBuffer().with(array);
 	}
 	public ByteBuffer with(String string) {
-		this.buffer = string.getBytes(Charset.forName("UTF-8"));
+		this.buffer = string.getBytes(Charset.forName(ENCODING));
 		this.position = 0;
 		this.length = buffer.length;
 		return this;

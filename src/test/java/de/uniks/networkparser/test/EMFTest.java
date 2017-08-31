@@ -91,6 +91,7 @@ public class EMFTest extends IOClasses{
 		Assert.assertNotNull(xmi);
 		Assert.assertNotNull(map);
 		Object decode = map.decode(xmi);
+		Assert.assertNotNull(decode);
 //		System.out.println(decode);
 	}
 

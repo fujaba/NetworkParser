@@ -45,7 +45,7 @@ public class Server_TCP extends Thread {
 			try 
 			{
 				requestSocket = serverSocket.accept();
-				MessageRequest.execute(this.proxy, requestSocket);
+				MessageRequest.executeTask(this.proxy, requestSocket);
 			} 
 			catch (IOException e) 
 			{

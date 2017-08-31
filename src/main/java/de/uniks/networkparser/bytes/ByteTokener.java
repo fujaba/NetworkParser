@@ -38,6 +38,7 @@ import de.uniks.networkparser.MapEntity;
 import de.uniks.networkparser.Tokener;
 import de.uniks.networkparser.buffer.Buffer;
 import de.uniks.networkparser.buffer.ByteBuffer;
+import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.ByteItem;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorTag;
@@ -142,10 +143,8 @@ public class ByteTokener extends Tokener {
 	/** The Constant DATATYPE_LAST. */
 	public static final byte LEN_LAST = 0x05;
 
-	public static final String CHARSET="UTF-8";
-
 	public String getCharset() {
-		return CHARSET;
+		return BaseItem.ENCODING;
 	}
 
 	private boolean addClazzType(ByteList msg, String clazzName, MapEntity map) {
@@ -203,7 +202,7 @@ public class ByteTokener extends Tokener {
 		if (creator instanceof SendableEntityCreatorTag) {
 			String tag = ((SendableEntityCreatorTag) creator).getTag();
 			if(tag != null) {
-				byte cId = tag.getBytes(Charset.forName("UTF-8"))[0];
+				byte cId = tag.getBytes(Charset.forName(BaseItem.ENCODING))[0];
 				msg.add(new ByteEntity().withValue(ByteTokener.DATATYPE_CLAZZID, cId));
 			}
 		} else {
@@ -432,7 +431,7 @@ public class ByteTokener extends Tokener {
 			type = buffer.getByte();
 			String id;
 			try {
-				id = new String(new byte[]{type}, "UTF-8");
+				id = new String(new byte[]{type}, BaseItem.ENCODING);
 			} catch (UnsupportedEncodingException e) {
 				id = "";
 			}

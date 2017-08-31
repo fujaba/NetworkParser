@@ -277,7 +277,7 @@ public class ByteEntity implements ByteItem {
 			String newValue = (String) value;
 			msgValue.withBufferLength(newValue.length());
 			try {
-				msgValue.put(newValue.getBytes("UTF-8"));
+				msgValue.put(newValue.getBytes(ENCODING));
 			} catch (UnsupportedEncodingException e) {
 			}
 		} else if (value instanceof Date) {

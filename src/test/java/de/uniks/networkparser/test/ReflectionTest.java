@@ -3,6 +3,7 @@ package de.uniks.networkparser.test;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import de.uniks.networkparser.NetworkParserLog;
@@ -56,6 +57,7 @@ public class ReflectionTest {
 			@Override
 			public boolean update(Object value) {
 				SimpleEvent event = (SimpleEvent) value;
+				Assert.assertNotNull(event);
 //				System.out.println(event.getNewValue());
 				// TODO Auto-generated method stub
 				return false;

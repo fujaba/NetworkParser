@@ -37,6 +37,7 @@ import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 
 import de.uniks.networkparser.buffer.CharacterBuffer;
+import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.parser.excel.ExcelParser;
 import de.uniks.networkparser.parser.excel.ExcelSheet;
@@ -84,7 +85,7 @@ public class ExcelBuffer {
 		final char[] buffer = new char[1024];
 		CharacterBuffer out = new CharacterBuffer();
 		try {
-			Reader in = new InputStreamReader(is, "UTF-8");
+			Reader in = new InputStreamReader(is, BaseItem.ENCODING);
 			for (;;) {
 				int rsz = in.read(buffer, 0, buffer.length);
 				if (rsz < 0)
@@ -107,7 +108,7 @@ public class ExcelBuffer {
 				Entry<String, String> entry = iterator.next();
 				ZipEntry zipEntry = new ZipEntry(entry.getKey());
 				zos.putNextEntry(zipEntry);
-				byte[] values = entry.getValue().getBytes("UTF-8");
+				byte[] values = entry.getValue().getBytes(BaseItem.ENCODING);
 				zos.write(values, 0, values.length);
 				zos.closeEntry();
 			}
@@ -129,7 +130,7 @@ public class ExcelBuffer {
 	public void addToZipFile(String fileName, String content, ZipOutputStream zos) throws FileNotFoundException, IOException {
 		ZipEntry zipEntry = new ZipEntry(fileName);
 		zos.putNextEntry(zipEntry);
-		byte[] bytes = content.getBytes("UTF-8");
+		byte[] bytes = content.getBytes(BaseItem.ENCODING);
 		zos.write(bytes, 0, bytes.length);
 		zos.closeEntry();
 	}

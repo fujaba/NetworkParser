@@ -98,7 +98,7 @@ public class ZipContainer {
 			}
 			ZipEntry zipEntry = new ZipEntry(getFileName(data));
 			try {
-				byte[] bytes = data.toString().getBytes("UTF-8");
+				byte[] bytes = data.toString().getBytes(BaseItem.ENCODING);
 				zos.putNextEntry(zipEntry);
 				zos.write(bytes, 0, bytes.length);
 				zos.closeEntry();

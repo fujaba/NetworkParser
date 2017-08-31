@@ -84,7 +84,7 @@ public class Story {
 		boolean success=true;
 		HTMLEntity output = new HTMLEntity();
 		output.withHeader("../src/main/resources/de/uniks/networkparser/graph/diagramstyle.css");
-		output.withEncoding(HTMLEntity.ENCODING_UTF8);
+		output.withEncoding(HTMLEntity.ENCODING);
 
 		output.withHeader("highlight.pack.js");
 		output.withHeader("highlightjs-line-numbers.min.js");

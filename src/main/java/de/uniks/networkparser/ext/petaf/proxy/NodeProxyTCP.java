@@ -9,7 +9,6 @@ import java.net.UnknownHostException;
 import java.nio.charset.Charset;
 
 import de.uniks.networkparser.buffer.ByteBuffer;
-import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.ext.petaf.Message;
 import de.uniks.networkparser.ext.petaf.NodeProxy;
 import de.uniks.networkparser.ext.petaf.NodeProxyType;

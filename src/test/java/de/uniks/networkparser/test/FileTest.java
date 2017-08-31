@@ -30,7 +30,6 @@ public class FileTest {
 		buffer.withFile(new File("src/test/resources/de/uniks/networkparser/test/sample.xml"));
 		XMLEntity root = new XMLEntity().withValue(buffer);
 		Assert.assertEquals(18, root.sizeChildren());
-
 	}
 
 }

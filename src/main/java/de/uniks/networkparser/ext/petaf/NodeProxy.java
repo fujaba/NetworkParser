@@ -1,6 +1,6 @@
 package de.uniks.networkparser.ext.petaf;
 
-import de.uniks.networkparser.ext.petaf.filter.ScopeFilter;
+import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.list.SimpleList;
 
@@ -29,7 +29,7 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 	protected String version;	// Runtimeversion of App
 	protected boolean online;	// Boolean if last send is success 
 	protected String history;	// Hashcode of last Message
-	protected ScopeFilter filter;	// Filter of World
+	protected ObjectCondition filter;	// Filter of World
 	protected Space space;
 //	protected BasicSpace test;
 
@@ -153,7 +153,7 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 		return this;
 	}
 	
-	public NodeProxy withFilter(ScopeFilter value) {
+	public NodeProxy withFilter(ObjectCondition value) {
 		if(value != null && !value.equals(this.filter)) {
 			this.filter = value;
 		}
@@ -161,7 +161,7 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 	}
 
 	
-	public ScopeFilter getFilter() {
+	public ObjectCondition getFilter() {
 		return filter;
 	}
 	
@@ -198,7 +198,7 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 			return true;
 		}
 		if(PROPERTY_FILTER.equals(attrName)){
-			nodeProxy.withFilter((ScopeFilter) value);
+			nodeProxy.withFilter((ObjectCondition) value);
 			return true;
 		}
 		if(PROPERTY_ONLINE.equals(attrName)){

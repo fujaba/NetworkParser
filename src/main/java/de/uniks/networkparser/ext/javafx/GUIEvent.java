@@ -9,7 +9,7 @@ public class GUIEvent extends Event {
 	public static final int ESCAPE = 27;
 	// The jsObject for BackupPurposes
 	private ObjectCondition listerner;
-	public Object jsObject;
+
 
 	public GUIEvent withListener(ObjectCondition value) {
 		this.listerner = value;
@@ -91,6 +91,9 @@ public class GUIEvent extends Event {
 		if("javafx.stage.WindowEvent".equals(name)) {
 			event.setValue(EVENT_TYPE, EventTypes.WINDOWEVENT);
 			event.setValue(CURRENT_TARGET, ReflectionLoader.call("getTarget", obj));
+			
+			String type = ""+ReflectionLoader.call("getEventType", obj);
+			event.active = "WINDOW_CLOSE_REQUEST".equals(type) == false;
 			event.setValue(EVENT, obj);
 			return event;
 		}
@@ -123,7 +126,7 @@ public class GUIEvent extends Event {
 			event.eventType = EventTypes.valueOf(eventName.toUpperCase());
 		}
 		
-		event.jsObject = obj;
+		event.event = obj;
 		value = getMember(obj, TYPE);
 		if(value != null) {
 			event.put(TYPE, ""+value);

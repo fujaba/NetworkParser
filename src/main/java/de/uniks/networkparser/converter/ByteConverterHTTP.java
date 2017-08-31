@@ -29,6 +29,7 @@ import de.uniks.networkparser.buffer.BufferedBuffer;
 import de.uniks.networkparser.buffer.ByteBuffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.bytes.ByteTokener;
+import de.uniks.networkparser.interfaces.BaseItem;
 
 public class ByteConverterHTTP extends ByteConverter {
 	@Override
@@ -58,7 +59,7 @@ public class ByteConverterHTTP extends ByteConverter {
 	 */
 	@Override
 	public byte[] decode(String values) {
-		return decode(values.getBytes(Charset.forName("UTF-8")));
+		return decode(values.getBytes(Charset.forName(BaseItem.ENCODING)));
 	}
 	public byte[] decode(byte[] values) {
 		if(values == null) {

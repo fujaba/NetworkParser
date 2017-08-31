@@ -1,8 +1,10 @@
 package de.uniks.networkparser.ext.petaf.proxy;
 
+import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.ext.petaf.Message;
 import de.uniks.networkparser.ext.petaf.NodeProxy;
 import de.uniks.networkparser.ext.petaf.NodeProxyType;
+import de.uniks.networkparser.interfaces.ObjectCondition;
 
 /**
  * Local is a Proxy for testing 
@@ -11,13 +13,14 @@ import de.uniks.networkparser.ext.petaf.NodeProxyType;
 public class NodeProxyLocal extends NodeProxy {
 	public static final String PROPERTY_ID = "id";
 	private String id;
-	private NodeProxyListener listener;
+	private ObjectCondition listener;
 
 	protected boolean sending(Message msg) {
 		boolean result = super.sending(msg);
 		if(listener != null) {
 			String blob = this.space.convertMessage(msg);
-			listener.send(msg, blob);
+			SimpleEvent evt = new SimpleEvent(msg, PROPERTY_SEND, null, blob);
+			return listener.update(evt);
 		}
 		return result;
 	}
@@ -26,7 +29,7 @@ public class NodeProxyLocal extends NodeProxy {
 		return id;
 	}
 
-	public NodeProxyLocal withListener(NodeProxyListener value) {
+	public NodeProxyLocal withListener(ObjectCondition value) {
 		this.listener = value;
 		return this;
 	}
@@ -82,7 +85,7 @@ public class NodeProxyLocal extends NodeProxy {
 		return false;
 	}
 	
-	public static NodeProxyLocal create(NodeProxyListener listener) {
+	public static NodeProxyLocal create(ObjectCondition listener) {
 		NodeProxyLocal proxy = new NodeProxyLocal();
 		proxy.withListener(listener);
 		return proxy;

@@ -37,8 +37,12 @@ import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.buffer.Buffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.interfaces.BaseItem;
+import de.uniks.networkparser.json.JsonArray;
+import de.uniks.networkparser.json.JsonObject;
+import de.uniks.networkparser.xml.XMLEntity;
 
 public class FileBuffer extends Buffer {
+	public static final int BUFFER=4096;
 	private BufferedReader reader;
 	private File file;
 	private CharacterBuffer lookAHead = new CharacterBuffer();
@@ -55,7 +59,7 @@ public class FileBuffer extends Buffer {
 		this.length = (int) this.file.length();
 		try {
 			FileInputStream fis = new FileInputStream(this.file);
-			InputStreamReader isr = new InputStreamReader(fis, Charset.forName("UTF-8"));
+			InputStreamReader isr = new InputStreamReader(fis, Charset.forName(BaseItem.ENCODING));
 			this.reader = new BufferedReader(isr, cache);
 		}catch (Exception e) {
 		}
@@ -191,16 +195,13 @@ public class FileBuffer extends Buffer {
 		InputStream is = IdMap.class.getResourceAsStream(file);
 		CharacterBuffer sb = new CharacterBuffer();
 		if (is != null) {
-			final int BUFF_SIZE = 5 * 1024; // 5KB
-			final byte[] buffer = new byte[BUFF_SIZE];
+			final byte[] buffer = new byte[BUFFER];
 			try {
-				while (true) {
-					int count;
-					count = is.read(buffer);
-					if (count == -1)
-						break;
-					sb.with(new String(buffer, 0, count, "UTF-8"));
-				}
+				int read;
+				do {
+					read = is.read(buffer);
+					sb.with(new String(buffer, 0, read, BaseItem.ENCODING));
+				} while (read>=0);
 			} catch (IOException e) {
 			} finally {
 				try {
@@ -210,6 +211,77 @@ public class FileBuffer extends Buffer {
 			}
 		}
 		return sb;
+	}
+	
+	public static final CharacterBuffer readFile(String file) {
+		File content=new File(file);
+		CharacterBuffer sb = new CharacterBuffer();
+        if(content.exists()){
+   			final byte[] buffer = new byte[BUFFER];
+   			int read;
+   			FileInputStream is = null;
+   			try {
+   				is = new FileInputStream(content);
+				do {
+					read = is.read(buffer, 0, buffer.length);
+					if (read>0) {
+						sb.with(buffer, 0, read);
+					}
+				} while (read>=0);
+//    				int count;
+//    				while (count>=0) {
+//    					count = ios.read(buffer);
+//    					sb.with(new String(buffer, 0, count, BaseItem.ENCODING));
+//    				}
+   			} catch (IOException e) {
+   			} finally {
+   				try {
+   					is.close();
+   				} catch (IOException e) {
+   				}
+    		}
+        }
+        return sb;
+    }
+	
+	public static BaseItem readBaseFile(String configFile){
+		return readBaseFile(configFile, null);
+	}
+	
+	public static BaseItem readBaseFile(String configFile, BaseItem container){
+		// load it
+		CharacterBuffer buffer = FileBuffer.readFile(configFile);
+		if (buffer != null&&buffer.length()>0)
+		{
+			if(buffer.charAt(0)=='{'){
+				JsonObject result;
+				if(container instanceof JsonObject ) {
+					result = (JsonObject) container;
+				}else {
+					result = new JsonObject();
+				}
+				return result.withValue(buffer);
+			}
+			if(buffer.charAt(0)=='['){
+				JsonArray result;
+				if(container instanceof JsonArray ) {
+					result = (JsonArray) container;
+				}else {
+					result = new JsonArray();
+				}
+				return result.withValue(buffer);
+			}
+			if(buffer.charAt(0)=='<'){
+				XMLEntity result;
+				if(container instanceof XMLEntity ) {
+					result = (XMLEntity) container;
+				}else {
+					result = new XMLEntity();
+				}
+				return result.withValue(buffer);
+			}
+		}
+		return container;
 	}
 	
 	public static final boolean deleteFile(String fileName) {
@@ -230,7 +302,14 @@ public class FileBuffer extends Buffer {
 		if(parentFile == null || parentFile.exists()) {
 			return true;
 		}
-		return parentFile.mkdirs();
+		if(parentFile.mkdirs()) {
+			return false;
+		}
+		try {
+			return file.createNewFile();
+		} catch (IOException e) {
+		}
+		return false;
 	}
 	
 	public boolean write(CharSequence data, boolean append) {

@@ -36,7 +36,7 @@ abstract class ReceivingProxy implements Runnable {
     }
 
     protected Object recreateMessage(Space space, JsonObject jsonObject) {
-        IdMap idMap = space.getInternMap();
+        IdMap idMap = space.getMap();
         String className = jsonObject.getString("class");
         SendableEntityCreator creator = idMap.getCreator(className, true);
         Object object = creator.getSendableInstance(false);

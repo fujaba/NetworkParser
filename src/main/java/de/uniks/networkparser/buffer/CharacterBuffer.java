@@ -373,6 +373,39 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence {
 		this.length = newLen;
 		return this;
 	}
+	
+	/** Init the new CharList
+	 * @param values the reference CharArray
+	 * @param start the Startposition for the new CharacterBuffer
+	 * @param length the Endposition for the new CharacterBuffer
+	 * @return the new CharacterBuffer
+	 */
+	public CharacterBuffer with(byte[] values, int start, int length) {
+		int newLen = length+this.length;
+		if ( buffer == null || newLen+this.start>buffer.length) {
+			char[] oldValue = this.buffer;
+			this.buffer = new char[(newLen*2+2)];
+			if(oldValue != null) {
+				System.arraycopy(oldValue, start, this.buffer, 0, this.length);
+			}
+			this.start = 0;
+			this.position = 0;
+		}
+		int minusTag = 0;
+		for(int i=start;i<length;i++) {
+			if(values[i]>=0) {
+				this.buffer[this.length + i - minusTag] = (char)values[i];
+			} else {
+				byte b1 = values[i];
+				byte b2 = values[i+1];
+				this.buffer[this.length + i - minusTag] = (char) (((b1 << 6) ^ b2)^(((byte) 0xC0 << 6) ^  ((byte) 0x80 << 0)));
+				i++;
+				minusTag++;
+			}
+		}
+		this.length = newLen - minusTag;
+		return this;
+	}
 
 	public CharacterBuffer write(byte[] values, int length) {
 		int newLen = length+this.length;

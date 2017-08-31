@@ -871,11 +871,12 @@ public class GraphTest {
 		IdMap map=new IdMap();
 		JDLTokener tokener = new JDLTokener();
 		BaseItem encode = map.encode(graphList, tokener);
-//		System.out.println(encode.toString());
+		Assert.assertNotNull(encode);
 		
 		EMFTokener emfTokener = new EMFTokener();
 		
 		XMLEntity xmi = emfTokener.toXMI(graphList);
+		Assert.assertNotNull(xmi);
 //		System.out.println(xmi.toString(2));
 	}
 

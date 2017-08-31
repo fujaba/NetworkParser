@@ -14,6 +14,7 @@ import java.util.Map;
 import de.uniks.networkparser.ext.ErrorHandler;
 import de.uniks.networkparser.ext.Os;
 import de.uniks.networkparser.ext.generic.ReflectionLoader;
+import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
@@ -23,8 +24,9 @@ public class SimpleController implements ObjectCondition{
 	public static final String CLOSE="close";
 	private Object application;
 	private Object stage;
+	private boolean firstShow=true;
 	protected String icon;
-	private String encodingCode="UTF-8";
+	private String encodingCode=BaseItem.ENCODING;
 	private String debugPort;
 	private String title;
 	private ErrorHandler errorHandler = new ErrorHandler();
@@ -33,8 +35,19 @@ public class SimpleController implements ObjectCondition{
 	private SimpleList<Object> listener = new SimpleList<Object>();
 	
 	public SimpleController(Object primitiveStage) {
-		this.stage = primitiveStage;
-		
+		this(primitiveStage, true);
+	}
+	
+	public SimpleController(Object primitiveStage, boolean init) {
+		withStage(primitiveStage);
+		application = getApplication();
+		if(init) {
+			this.init();
+		}
+	}
+	
+	public SimpleController withStage(Object stage) {
+		this.stage = stage;
 		GUIEvent proxyHandler=new GUIEvent();
 		proxyHandler.withListener(this);
 		
@@ -42,7 +55,7 @@ public class SimpleController implements ObjectCondition{
 		
 		ReflectionLoader.call("setOnCloseRequest", stage, ReflectionLoader.EVENTHANDLER, proxy);
 		ReflectionLoader.call("setOnShowing", stage, ReflectionLoader.EVENTHANDLER, proxy);
-		application = getApplication();
+		return this;
 	}
 	
 	private Object getApplication() {
@@ -163,7 +176,15 @@ public class SimpleController implements ObjectCondition{
 		return map;
 	}
 
-	public void show(Object root) {
+	public void show(Object root, boolean newStage) {
+		Object oldStage = null;
+		if(newStage) {
+			oldStage = this.stage;
+			withStage(ReflectionLoader.newInstance(ReflectionLoader.STAGE));
+			refreshIcon();
+		}
+		this.firstShow = false;
+
 		Object scene;
 		if(ReflectionLoader.SCENE == null) {
 			return;
@@ -183,6 +204,13 @@ public class SimpleController implements ObjectCondition{
 		Object proxy = ReflectionLoader.createProxy(event, ReflectionLoader.EVENTHANDLER);
 		ReflectionLoader.call("setOnKeyPressed", scene, ReflectionLoader.EVENTHANDLER, proxy);
 		showing();
+		if(oldStage != null) {
+			ReflectionLoader.call("close", oldStage);
+		}
+	}
+	
+	public void show(Object root) {
+		show(root, firstShow == false);
 	}
 	
 	public Object getCurrentScene() {
@@ -204,7 +232,7 @@ public class SimpleController implements ObjectCondition{
 			}
 		}
 	}
-
+	
 	public String getEncodingCode() {
 		return encodingCode;
 	}
@@ -261,15 +289,7 @@ public class SimpleController implements ObjectCondition{
 			return this;
 		}
 		if (this.stage != null) {
-			Object image;
-			if (value.startsWith("file") || value.startsWith("jar")) {
-				image = ReflectionLoader.newInstance(ReflectionLoader.IMAGE, value);
-			} else {
-				image = ReflectionLoader.newInstance(ReflectionLoader.IMAGE, "file:" + value);
-			}
-			@SuppressWarnings("unchecked")
-			List<Object> icons = (List<Object>) ReflectionLoader.call("getIcons", stage);
-			icons.add(image);
+			refreshIcon();
 		}
 		if(this.trayIcon != null) {
 			URL iconURL = null;
@@ -287,6 +307,18 @@ public class SimpleController implements ObjectCondition{
 			}
 		}
 		return this;
+	}
+	
+	private void refreshIcon() {
+		Object image;
+		if (this.icon.startsWith("file") || this.icon.startsWith("jar")) {
+			image = ReflectionLoader.newInstance(ReflectionLoader.IMAGE, this.icon);
+		} else {
+			image = ReflectionLoader.newInstance(ReflectionLoader.IMAGE, "file:" + this.icon);
+		}
+		@SuppressWarnings("unchecked")
+		List<Object> icons = (List<Object>) ReflectionLoader.call("getIcons", stage);
+		icons.add(image);
 	}
 	
 	public SimpleController withToolTip(String text) {
@@ -366,10 +398,6 @@ public class SimpleController implements ObjectCondition{
 				this.close();
 				this.trayIcon = ReflectionLoader.newInstance(ReflectionLoader.TRAYICON, ReflectionLoader.AWTIMAGE, newImage);
 				Integer count = (Integer) ReflectionLoader.call("getItemCount", getPopUp());
-				if(count < 1) {
-					addTrayMenuItem(CLOSE, this);
-				}
-				
 				if(labels != null) {
 					for(String label : labels) {
 						if(label != null) {
@@ -377,6 +405,10 @@ public class SimpleController implements ObjectCondition{
 						}
 					}
 				}
+				if(count < 1) {
+					addTrayMenuItem(CLOSE, this);
+				}
+				
 				ReflectionLoader.call("setPopupMenu", trayIcon, ReflectionLoader.POPUPMENU, popupMenu);
 				Object systemTray = ReflectionLoader.call("getSystemTray", ReflectionLoader.SYSTEMTRAY);
 				ReflectionLoader.call("add", systemTray, ReflectionLoader.TRAYICON,this.trayIcon);

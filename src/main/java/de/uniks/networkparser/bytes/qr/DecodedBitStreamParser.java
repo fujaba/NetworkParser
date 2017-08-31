@@ -22,6 +22,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import de.uniks.networkparser.interfaces.BaseItem;
+
 /**
  * <p>
  * QR Codes can encode text as bits in one of several modes, and can use
@@ -215,7 +217,7 @@ final class DecodedBitStreamParser {
 		for (int i = 0; i < count; i++) {
 			readBytes[i] = (byte) bits.readBits(8);
 		}
-		result.append(new String(readBytes, Charset.forName("UTF-8")));
+		result.append(new String(readBytes, Charset.forName(BaseItem.ENCODING)));
 		byteSegments.add(readBytes);
 	}
 

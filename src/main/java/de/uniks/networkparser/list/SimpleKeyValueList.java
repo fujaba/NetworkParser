@@ -30,6 +30,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 
@@ -226,7 +227,9 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 			return object instanceof Number ? ((Number) object).intValue()
 					: Integer.parseInt((String) object);
 		} catch (Exception e) {
-			throw new RuntimeException("SimpleKeyValueList is not a number.");
+			RuntimeException exception = new RuntimeException("SimpleKeyValueList is not a number.");
+			exception.addSuppressed(new RuntimeException(this.toString()));
+			throw exception;
 		}
 	}
 
@@ -248,7 +251,7 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 			throw new RuntimeException("SimpleKeyValueList is not a number.");
 		}
 	}
-
+		
 	/**
 	 * Get the string associated with an index.
 	 *
