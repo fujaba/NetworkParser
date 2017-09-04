@@ -1,12 +1,68 @@
-<html><head><link rel="stylesheet" type="text/css" href="../src/main/resources/de/uniks/networkparser/graph/diagramstyle.css"/><meta http-equiv="Content-Type" content="text/html;charset=utf-8"/><script src="highlight.pack.js"></script><script src="highlightjs-line-numbers.min.js"></script><link rel="stylesheet" type="text/css" href="github.css"/><link rel="stylesheet" type="text/css" href="default.css"/><title>testStory</title></head><body><script>hljs.initHighlightingOnLoad();
-hljs.initLineNumbersOnLoad();</script><h1>testStory</h1><div class="notify notify-green"><p class="symbol icon-tick"></p><div class="notify-text">42 == 42</div></div><pre><code>public void testStory() {
-Story story = new Story();
-StoryUtil.withBreakOnAssert(story, false);
+<html><head><link rel="stylesheet" type="text/css" href="../src/main/resources/de/uniks/networkparser/graph/diagramstyle.css"/><meta http-equiv="Content-Type" content="text/html;charset=utf-8"/><script src="highlight.pack.js"></script><script src="highlightjs-line-numbers.min.js"></script><link rel="stylesheet" type="text/css" href="github.css"/><link rel="stylesheet" type="text/css" href="default.css"/><title>testStory</title><script src="file:/C:/Arbeit/workspace/NetworkParser/bin/de/uniks/networkparser/graph/graph.js"></script><script src="file:/C:/Arbeit/workspace/NetworkParser/bin/de/uniks/networkparser/graph/dagre.min.js"></script><script src="file:/C:/Arbeit/workspace/NetworkParser/bin/de/uniks/networkparser/graph/drawer.js"></script><meta http-equiv="Content-Type" content="text/html;charset=utf-8"/></head><body><script>hljs.initHighlightingOnLoad();
+hljs.initLineNumbersOnLoad();</script><h1>testStory</h1><div class="notify notify-green"><p class="symbol icon-tick"></p><div class="notify-text">42 == 42</div></div><pre><code class="java" data-lang="java">	public void testStory() {
+		Story story = new Story();
+		StoryUtil.withBreakOnAssert(story, false);
 //		story.assertEquals("23 not 42", 42, 23, 0.01);
-story.assertEquals("42 == 42", 42, 42);
+		story.assertEquals("42 == 42", 42, 42);
 
-story.addSourceCode(StoryTest.class);
+		story.addSourceCode(StoryTest.class);
+		story.addText("&lt;div style=\"border:1px solid red\">Hallo&lt;/div>");
+		story.addImage("https://seblog.cs.uni-kassel.de/wp-content/themes/segroup/plugins/uni-logo-widget/img/uniks_logo.png");
 //		story.add(new StoryStepSourceCode().withCode(StoryTest.class).withCode("src/test/java"));
-story.withFileName("test.html");
-story.dumpHTML();
-}</code><div class="title">Code: <a href="../src/test/java/de/uniks/networkparser/test/StoryTest.java">Story</a></div></pre><table/></body></html>
+		story.withName("test.html");
+
+		story.addSourceCode(StoryTest.class, 0, 0);
+
+		story.addSourceCode("src/main/java", IdMap.class, "cloneObject(Object reference, Filter filter)");
+
+
+
+		ClassModel model = new ClassModel();
+		model.createClazz("Person");
+
+		story.addDiagramm(model);
+
+
+		story.dumpHTML();
+	}</code><div class="title">Code: <a href="../src/test/java/de/uniks/networkparser/test/StoryTest.java">Story</a></div></pre><table/><p class="step"><div style="border:1px solid red">Hallo</div></p><img src="https://seblog.cs.uni-kassel.de/wp-content/themes/segroup/plugins/uni-logo-widget/img/uniks_logo.png"/><pre><code class="java" data-lang="java">package de.uniks.networkparser.test;
+
+import org.junit.Test;
+
+import de.uniks.networkparser.IdMap;
+import de.uniks.networkparser.ext.ClassModel;
+import de.uniks.networkparser.ext.story.Story;
+import de.uniks.networkparser.ext.story.StoryUtil;
+
+public class StoryTest {
+	@Test
+	public void testStory() {
+		Story story = new Story();
+		StoryUtil.withBreakOnAssert(story, false);
+//		story.assertEquals("23 not 42", 42, 23, 0.01);
+		story.assertEquals("42 == 42", 42, 42);
+
+		story.addSourceCode(StoryTest.class);
+		story.addText("&lt;div style=\"border:1px solid red\">Hallo&lt;/div>");
+		story.addImage("https://seblog.cs.uni-kassel.de/wp-content/themes/segroup/plugins/uni-logo-widget/img/uniks_logo.png");
+//		story.add(new StoryStepSourceCode().withCode(StoryTest.class).withCode("src/test/java"));
+		story.withName("test.html");
+
+		story.addSourceCode(StoryTest.class, 0, 0);
+
+		story.addSourceCode("src/main/java", IdMap.class, "cloneObject(Object reference, Filter filter)");
+
+
+
+		ClassModel model = new ClassModel();
+		model.createClazz("Person");
+
+		story.addDiagramm(model);
+
+
+		story.dumpHTML();
+	}
+}</code><div class="title">Code: <a href="../src/test/java/de/uniks/networkparser/test/StoryTest.java">Story</a></div></pre><table/><pre><code class="java" data-lang="java">	public Object cloneObject(Object reference, Filter filter) {
+		MapEntity map = new MapEntity(filter, flag, this);
+		return cloning(reference, map);
+	}</code><div class="title">Code: <a href="../src/main/java/de/uniks/networkparser/IdMap.java">cloneObject</a></div></pre><table/><script type="text/javascript">var json={"type":"classdiagram","id":"i.love.sdmlib","nodes":[{"type":"clazz","id":"i.love.sdmlib.Person"}]};
+new Graph(json).layout();</script></body></html>

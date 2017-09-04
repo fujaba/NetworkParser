@@ -14,7 +14,6 @@ import java.util.Map;
 import de.uniks.networkparser.ext.ErrorHandler;
 import de.uniks.networkparser.ext.Os;
 import de.uniks.networkparser.ext.generic.ReflectionLoader;
-import de.uniks.networkparser.ext.io.StringOutputStream;
 import de.uniks.networkparser.ext.io.StringPrintStream;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.ObjectCondition;
@@ -33,7 +32,6 @@ public class SimpleController implements ObjectCondition{
 	private ErrorHandler errorHandler = new ErrorHandler();
 	protected Object popupMenu;
 	protected Object trayIcon;
-	private String outputFile = null;
 	private SimpleList<Object> listener = new SimpleList<Object>();
 	
 	public SimpleController(Object primitiveStage) {

@@ -674,6 +674,12 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence {
 		return this;
 	}
 
+	public CharacterBuffer rtrim() {
+		while (length>0 && (buffer[length +start - 1] <= SPACE)) {
+			length--;
+		}
+		return this;
+	}
 	public CharacterBuffer trim() {
 		while (length>0 && (buffer[length +start - 1] <= SPACE)) {
 			length--;
@@ -683,6 +689,33 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence {
 			length--;
 		}
 		return this;
+	}
+	
+	public boolean equalsText(char... other) {
+		if(other == null) {
+			return true;
+		}
+		int pos=start;
+		int l=0;
+		while(pos<length) {
+			if(buffer[pos]==SPACE || buffer[pos]=='\t') {
+				if(l==0) {
+					pos++;
+					continue;
+				}else if(other[l]==buffer[pos]) {
+					pos++;
+					l++;
+					continue;
+				}
+				break;
+			}else if(other[l]==buffer[pos]) {
+				pos++;
+				l++;
+				continue;
+			}
+			return false;
+		}
+		return l==other.length;
 	}
 
 	public boolean isEmptyCharacter() {

@@ -2,6 +2,8 @@ package de.uniks.networkparser.test;
 
 import org.junit.Test;
 
+import de.uniks.networkparser.IdMap;
+import de.uniks.networkparser.ext.ClassModel;
 import de.uniks.networkparser.ext.story.Story;
 import de.uniks.networkparser.ext.story.StoryUtil;
 
@@ -14,8 +16,23 @@ public class StoryTest {
 		story.assertEquals("42 == 42", 42, 42);
 
 		story.addSourceCode(StoryTest.class);
+		story.addText("<div style=\"border:1px solid red\">Hallo</div>");
+		story.addImage("https://seblog.cs.uni-kassel.de/wp-content/themes/segroup/plugins/uni-logo-widget/img/uniks_logo.png");
 //		story.add(new StoryStepSourceCode().withCode(StoryTest.class).withCode("src/test/java"));
-		story.withFileName("test.html");
+		story.withName("test.html");
+		
+		story.addSourceCode(StoryTest.class, 0, 0);
+		
+		story.addSourceCode("src/main/java", IdMap.class, "cloneObject(Object reference, Filter filter)");
+		
+		
+		
+		ClassModel model = new ClassModel();
+		model.createClazz("Person");
+		
+		story.addDiagramm(model);
+		
+		
 		story.dumpHTML();
 	}
 }

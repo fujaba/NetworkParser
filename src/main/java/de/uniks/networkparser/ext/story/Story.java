@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import de.uniks.networkparser.ext.ClassModel;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.logic.BooleanCondition;
@@ -27,7 +28,6 @@ public class Story {
 	//ADDCLASSDIAGRAMM
 	//ADDOBJECTDIAGRAMM
 	//ADDPATTERN
-	//ADDIMAGE
 	//ADDSVG
 
 	public Story() {
@@ -39,12 +39,45 @@ public class Story {
 		this.steps.add(step);
 	}
 	
-	public StoryStepSourceCode addSourceCode(Class<?> className) {
+	/**
+	 * Add JavaCode to Story board
+	 * 
+	 * @param className ClassName of SourceCOde
+	 * @param position Position of Code StartPosition, Endposition
+	 * 			if positon == null Full Method
+	 * 			StartPosition == -1 // Start at Method
+	 * 			EndPosition == -1 End of Method
+	 * 	 		EndPosition == 0 End of File
+	 * @return the SourceCodeStep
+	 */
+	public StoryStepSourceCode addSourceCode(Class<?> className, int... position) {
 		StoryStepSourceCode step = new StoryStepSourceCode();
+		if(position != null) {
+			if(position.length>0) {
+				int start = position[0];
+				step.withStart(start);
+			}
+			if(position.length>1) {
+				int start = position[1];
+				step.withEnd(start);
+			}
+		}
 		step.withCode(className);
+		addSourceCodeStep(step);
+		return step;
+	}
+	public StoryStepSourceCode addSourceCode(String rootDir, Class<?> className, String methodSignature) {
+		StoryStepSourceCode step = new StoryStepSourceCode();
+		step.withMethodSignature(methodSignature);
+		step.withCode(rootDir, className);
+		addSourceCodeStep(step);
+		return step;
+	}
+
+	private void addSourceCodeStep(StoryStepSourceCode step) {
 		this.add(step);
 		if(this.outputFile == null) {
-			this.withFileName(step.getMethodName());
+			this.withName(step.getMethodName());
 		}
 		StoryStep firstStep = this.steps.first();
 		if(firstStep instanceof StoryStepTitle) {
@@ -53,10 +86,15 @@ public class Story {
 				titleStep.setTitle(step.getMethodName());
 			}
 		}
+	}
+	public StoryStepDiagram addDiagramm(ClassModel model) {
+		StoryStepDiagram step = new StoryStepDiagram();
+		step.withModel(model);
+		this.add(step);
 		return step;
 	}
-
-	public Story withFileName(String name) {
+	
+	public Story withName(String name) {
 		if(name == null || name.length() <1) {
 			return this;
 		}
@@ -66,6 +104,10 @@ public class Story {
 			this.outputFile = name + ".html";
 		}
 		return this;
+	}
+	
+	public void addImage(String imageFile) {
+		add(new SoryStepImage().withFile(imageFile));
 	}
 
 	public void finish() {
@@ -101,7 +143,7 @@ public class Story {
 		this.writeFile(output);
 		return success;
 	}
-
+	
 	protected boolean writeFile(HTMLEntity output) {
 		if(this.outputFile == null || this.outputFile.length()<1) {
 			return false;
@@ -169,7 +211,7 @@ public class Story {
 	
 	public Story addText(String text) {
 		StoryStepText step = new StoryStepText();
-		step.setText(text);
+		step.withText(text);
 		this.add(step);
 		return this;
 	}

@@ -431,7 +431,7 @@ public class GraphConverter implements Converter{
 
 	@Override
 	public String encode(BaseItem entity) {
-		if(entity instanceof GraphList) {
+		if(entity instanceof GraphModel) {
 			return this.convertToJson((GraphModel)entity, false, false).toString();
 		}
 		return null;

@@ -25,11 +25,10 @@ THE SOFTWARE.
 */
 import de.uniks.networkparser.converter.YUMLConverter;
 import de.uniks.networkparser.interfaces.BaseItem;
-import de.uniks.networkparser.interfaces.Converter;
 import de.uniks.networkparser.list.SimpleMapEntry;
 import de.uniks.networkparser.list.SimpleSet;
 
-public class GraphList extends GraphModel implements BaseItem {
+public class GraphList extends GraphModel {
 	private String typ = GraphTokener.CLASS;
 	private String style;
 	private GraphOptions options;
@@ -42,13 +41,6 @@ public class GraphList extends GraphModel implements BaseItem {
 		YUMLConverter converter = new YUMLConverter();
 		converter.defaultShowPackage = removePackage;
 		return toString(converter);
-	}
-
-	public String toString(Converter converter) {
-		if (converter == null) {
-			return null;
-		}
-		return converter.encode(this);
 	}
 
 	public String getType() {

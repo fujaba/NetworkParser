@@ -16,36 +16,46 @@ public class StoryStepSourceCode implements StoryStep {
 	public static final String TEMPLATEEND = "\"></i>";
 	private String format = null;
 	private String contentFile;
-	private int startLine;
-	private int endLine;
+	private int startLine = -1;
+	private int currentLine = -1;
+	private int endLine = -1;
 	private CharacterBuffer body;
 	private String packageName;
 	private String methodName;
+	private String methodSignature;
 	private SimpleKeyValueList<String, String> variables = new SimpleKeyValueList<String, String>()
 			.withComparator(EntityComparator.createComparator());
-	private String fullPath;
+	private String fileName;
 
-	private void startStory(String path) {
+	private void startStory(String path, String fileName) {
 		this.packageName = path;
+		this.fileName = fileName;
 		getLineFromThrowable();
 	}
 
 	private String getLineFromThrowable() {
 		StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
+		String fullName;
+		if(this.fileName != null) {
+			fullName = this.packageName+"."+this.fileName;
+		}else {
+			fullName = this.packageName;
+		}
 		for (StackTraceElement ste : stackTrace) {
 			String name = ste.getClassName();
-			if (name.startsWith(this.packageName)) {
+			if (name.startsWith(fullName)) {
 				if (this.methodName == null) {
 					// StartLine
-					this.contentFile = ste.getFileName();
+					this.contentFile = "src/test/java/" + this.packageName.replace('.', '/') + "/" + ste.getFileName();
 					this.methodName = ste.getMethodName();
-					this.startLine = ste.getLineNumber() + 1;
+					this.currentLine = ste.getLineNumber() + 1;
 				} else {
 					this.endLine = ste.getLineNumber() - 1;
 				}
 				return name + ".java:" + ste.getLineNumber();
 			}
 		}
+		//Argh not found
 		return "";
 	}
 
@@ -60,7 +70,7 @@ public class StoryStepSourceCode implements StoryStep {
 	}
 
 	private CharacterBuffer analyseLine(CharacterBuffer line) {
-		line = line.trim();
+		line = line.rtrim();
 		int pos = line.indexOf("//");
 		if (pos >= 0) {
 			line.withPosition(pos + 1);
@@ -78,19 +88,51 @@ public class StoryStepSourceCode implements StoryStep {
 		}
 		return line;
 	}
+	
+	
+	boolean checkEnd(int linePos, CharacterBuffer line, FileBuffer fileBuffer) {
+		if(endLine<0 && FORMAT_JAVA.equals(format)) {
+			// End of Method
+			return linePos>=this.endLine && line.equalsText('}');
+		} else if(endLine>0) {
+			return (linePos > this.endLine);
+		}
+		return fileBuffer.isEnd();
+	}
 
 	public void readFile() {
-		fullPath = "src/test/java/" + this.packageName.replace('.', '/') + "/" + this.contentFile;
-		int linePos = 1;
 		FileBuffer fileBuffer = new FileBuffer();
-		fileBuffer.withFile(fullPath);
+		fileBuffer.withFile(contentFile);
 		CharacterBuffer indexText = new CharacterBuffer();
 
 		CharacterBuffer line = new CharacterBuffer();
-		
-		if(endLine == 0) {
-			String search=this.methodName+"(";
-			int start = this.startLine;
+		if(this.methodSignature != null) {
+			startLine = -1;
+			endLine = -1;
+		}
+		if(startLine == -1) {
+			this.format = FORMAT_JAVA;
+		} else {
+			// First Line
+			line = analyseLine(line);
+			if (this.format == null) {
+				char firstChar = line.getCurrentChar();
+				if (firstChar == '<') {
+					this.format = FORMAT_XML;
+				} else if (firstChar == '{' || firstChar == '[') {
+					this.format = FORMAT_JSON;
+				} else {
+					this.format = FORMAT_JAVA;
+				}
+			}
+		}
+		int linePos = 1;
+		if(FORMAT_JAVA.equals(this.format) && startLine == -1) {
+			String search=this.methodName+"(";	
+			if(this.methodSignature != null) {
+				search = this.methodSignature; 
+			}
+			int start = this.currentLine;
 			while (line != null && linePos <= start) {
 				line = fileBuffer.readLine();
 				if(line.indexOf(search)>0) {
@@ -99,63 +141,49 @@ public class StoryStepSourceCode implements StoryStep {
 				}
 				linePos++;
 			}
-			this.endLine = start;
-			line = analyseLine(line);
-			while (line != null) {
-				indexText.with(line);
-				line = analyseLine(fileBuffer.readLine());
-				linePos++;
-				if(linePos>=this.endLine && line.trim().equals("}")) {
-					indexText.with(BaseItem.CRLF).with(line);
-					break;
-				}
-				indexText.with(BaseItem.CRLF);
-			}
-
-			this.body = indexText;
-			fileBuffer.close();
-			return;
 		}
-		
-		while (line != null && linePos <= this.startLine) {
+		if(startLine == 0) {
+			line = fileBuffer.readLine();
+		}
+		while (line != null && linePos < this.startLine) {
 			line = fileBuffer.readLine();
 			linePos++;
 		}
-		// First Line
-		line = analyseLine(line);
-
-		if (this.format == null) {
-			char firstChar = line.getCurrentChar();
-			if (firstChar == '<') {
-				this.format = FORMAT_XML;
-			} else if (firstChar == '{' || firstChar == '[') {
-				this.format = FORMAT_JSON;
-			} else {
-				this.format = FORMAT_JAVA;
-			}
-		}
-
-		while (line != null && linePos < this.endLine) {
-			indexText.with(line);
+		
+		while (line != null) {
+			indexText.with(formatString(line));
 			line = analyseLine(fileBuffer.readLine());
 			linePos++;
-			if (linePos < this.endLine) {
-				indexText.with(BaseItem.CRLF);
+			if(checkEnd(linePos, line, fileBuffer)) {
+				indexText.with(BaseItem.CRLF).with(line);
+				break;
 			}
+			indexText.with(BaseItem.CRLF);
 		}
 		fileBuffer.close();
 		this.body = indexText;
+	}
+	
+	String formatString(CharacterBuffer buffer) {
+		if(FORMAT_JAVA.equals(format)) {
+			String string = buffer.toString();
+			return string.replaceAll("<", "&lt;");
+		}
+		return buffer.toString();
 	}
 
 	@Override
 	public boolean dump(Story story, HTMLEntity element) {
 		XMLEntity pre = element.createBodyTag("pre");
 		XMLEntity code = element.createBodyTag("code", pre);
-		if(this.endLine<1 && this.startLine>0) {
+		if(this.endLine<1 && this.currentLine>0) {
 			// Body is Empty add the full method
 			readFile();
 		}
-		code.withValue(this.body);
+		if(this.body == null) {
+			return false;
+		}
+		code.withValueItem(this.body.toString());
 		code.withKeyValue("class", this.format);
 		code.withKeyValue("data-lang", this.format);
 
@@ -167,8 +195,8 @@ public class StoryStepSourceCode implements StoryStep {
 		} else {
 			name = this.methodName;
 		}
-		if (this.fullPath != null) {
-			value = "Code: <a href=\"../" + this.fullPath + "\">" + name + "</a>";
+		if (this.contentFile != null) {
+			value = "Code: <a href=\"../" + this.contentFile + "\">" + name + "</a>";
 		} else {
 			value = "Code: " + name;
 		}
@@ -207,17 +235,28 @@ public class StoryStepSourceCode implements StoryStep {
 	}
 
 	public StoryStepSourceCode withCode(String path) {
-		this.startStory(path);
+		this.startStory(path, null);
 		return this;
 	}
 
 	public StoryStepSourceCode withCode(Class<?> packageName) {
-		String fileName = packageName.getName();
-		int pos = fileName.lastIndexOf('.');
+		String packagePath = packageName.getName();
+		String fileName = null;
+		int pos = packagePath.lastIndexOf('.');
 		if (pos > 0) {
-			fileName = fileName.substring(0, pos);
+			fileName = packagePath.substring(pos+1);
+			packagePath = packagePath.substring(0, pos);
+			
 		}
-		this.startStory(fileName);
+		this.startStory(packagePath,fileName);
+		return this;
+	}
+	
+	public StoryStepSourceCode withCode(String path, Class<?> packageName) {
+		String fileName = packageName.getTypeName();
+		
+		this.contentFile = path+"/"+ fileName.replace('.', '/')+".java";
+		this.currentLine = Integer.MAX_VALUE;
 		return this;
 	}
 
@@ -230,4 +269,34 @@ public class StoryStepSourceCode implements StoryStep {
 		return false;
 
 	}
+
+	public StoryStepSourceCode withStart(int position) {
+		if(position<-1) {
+			this.startLine =-1;
+		}else {
+			this.startLine = position;
+		}
+		return this;
+	}
+	public StoryStepSourceCode withEnd(int position) {
+		if(position<-1) {
+			this.endLine =-1;
+		}else {
+			this.endLine = position;
+		}
+		return this;
+	}
+
+	public String getMethodSignature() {
+		return methodSignature;
+	}
+
+	public StoryStepSourceCode withMethodSignature(String value) {
+		this.methodSignature = value;
+		int pos = this.methodSignature.indexOf("(");
+		if(pos>0) {
+			this.methodName = this.methodSignature.substring(0, pos);	
+		}
+		return this;
+	}		
 }

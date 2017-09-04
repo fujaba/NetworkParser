@@ -4,7 +4,9 @@ import java.util.Iterator;
 
 import de.uniks.networkparser.graph.util.AssociationSet;
 import de.uniks.networkparser.graph.util.ClazzSet;
+import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Condition;
+import de.uniks.networkparser.interfaces.Converter;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SimpleSet;
 /*
@@ -29,7 +31,7 @@ See the Licence for the specific language governing
 permissions and limitations under the Licence.
 */
 
-public abstract class GraphModel extends GraphEntity {
+public abstract class GraphModel extends GraphEntity implements BaseItem {
 	private String defaultAuthorName;
 
 	/**
@@ -233,4 +235,12 @@ public abstract class GraphModel extends GraphEntity {
 		}
 		return this;
 	}
+	
+	public String toString(Converter converter) {
+		if (converter == null) {
+			return null;
+		}
+		return converter.encode(this);
+	}
+
 }

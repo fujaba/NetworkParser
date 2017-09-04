@@ -6,8 +6,9 @@ import de.uniks.networkparser.xml.XMLEntity;
 public class StoryStepText implements StoryStep {
 	private String value;
 	
-	public void setText(String text) {
+	public StoryStepText withText(String text) {
 		this.value = text;
+		return this;
 	}
 
 	@Override

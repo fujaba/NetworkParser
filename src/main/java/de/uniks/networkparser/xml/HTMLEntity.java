@@ -27,6 +27,7 @@ THE SOFTWARE.
 import de.uniks.networkparser.converter.EntityStringConverter;
 import de.uniks.networkparser.converter.GraphConverter;
 import de.uniks.networkparser.graph.GraphList;
+import de.uniks.networkparser.graph.GraphModel;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Converter;
 import de.uniks.networkparser.interfaces.Entity;
@@ -247,11 +248,11 @@ public class HTMLEntity implements BaseItem {
 		return this;
 	}
 
-	public HTMLEntity withGraph(GraphList value) {
+	public HTMLEntity withGraph(GraphModel value) {
 		URL resource = GraphList.class.getResource("");
 		return withGraph(value, resource.toString());
 	}
-	public HTMLEntity withGraph(GraphList value, String path) {
+	public HTMLEntity withGraph(GraphModel value, String path) {
 		XMLEntity script = new XMLEntity().setType("script").withKeyValue("type", "text/javascript");
 		StringBuilder sb=new StringBuilder();
 		sb.append("var json=");

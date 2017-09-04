@@ -4,6 +4,7 @@ import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.Feature;
 import de.uniks.networkparser.graph.FeatureProperty;
 import de.uniks.networkparser.graph.GraphModel;
+import de.uniks.networkparser.interfaces.BaseItem;
 
 public class ClassModel extends GraphModel {
 	public static final String DEFAULTPACKAGE = "i.love.sdmlib";
@@ -36,5 +37,15 @@ public class ClassModel extends GraphModel {
 
 	public FeatureProperty getFeature(Feature feature, Clazz... clazzes) {
 		return this.generator.getFeature(feature, clazzes);
+	}
+
+	@Override
+	public boolean add(Object... values) {
+		return false;
+	}
+
+	@Override
+	public BaseItem getNewList(boolean keyValue) {
+		return new ClassModel();
 	}
 }

@@ -16,6 +16,7 @@ public class ErrorHandler implements Thread.UncaughtExceptionHandler {
 	public static final String TYPE = "ERROR";
 	private String path;
 	private Object stage;
+	private DateTimeEntity startDate=new DateTimeEntity();
 	private SimpleList<ObjectCondition> list = new SimpleList<ObjectCondition>();
 
 	public boolean writeErrorFile(String prefix, String fileName, String filepath, Throwable e){
@@ -40,6 +41,7 @@ public class ErrorHandler implements Thread.UncaughtExceptionHandler {
 			
 			PrintStream ps = new PrintStream( networkFile );
 			ps.println("Error: "+e.getMessage());
+			ps.println("Startdate: "+startDate.toString("ddmmyyyy HH:MM:SS"));
 			ps.println("Date: "+new DateTimeEntity().toString("ddmmyyyy HH:MM:SS"));
 			ps.println("Thread: "+Thread.currentThread().getName());
 			ps.println("------------ SYSTEM-INFO ------------");
@@ -64,8 +66,6 @@ public class ErrorHandler implements Thread.UncaughtExceptionHandler {
 			ps.println("Gesamter Speicher JVM:  " + r.totalMemory());
 //			ps.println("Gesamter Speicher Java:  " + ((com.sun.management.OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean()).getTotalSwapSpaceSize() );
 
-			ps.println("***  ***");
-			
 			ps.println();
 			// SubErrors
 			printSubTrace(ps, "", 1, e);

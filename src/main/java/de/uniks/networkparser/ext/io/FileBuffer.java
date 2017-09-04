@@ -124,7 +124,9 @@ public class FileBuffer extends Buffer {
 			if(read<max) {
 				this.length = (max -read);
 			}
-			this.position = this.length();
+			this.lookAHead.clear();
+			this.lookAHead.with(values, 0, len+read);
+//			this.position = this.length();
 		} catch (IOException e) {
 		}
 		return new String(values);
