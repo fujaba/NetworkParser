@@ -6,6 +6,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 
+import de.uniks.networkparser.interfaces.ObjectCondition;
+
 public class ReflectionLoader {
 	public static PrintStream logger = null;
 
@@ -316,7 +318,7 @@ public class ReflectionLoader {
 		}
 		Object callObj = item;
 		for(String method : methodNames) {
-			callObj = calling(method, callObj, true);
+			callObj = calling(method, callObj, true, null);
 		}
 		return callObj;
 	}
@@ -340,9 +342,9 @@ public class ReflectionLoader {
 	}
 
 	public static Object call(String methodName, Object item, Object... arguments) {
-		return calling(methodName, item, true, arguments);
+		return calling(methodName, item, true, null, arguments);
 	}
-	public static Object calling(String methodName, Object item, boolean notify, Object... arguments) {
+	public static Object calling(String methodName, Object item, boolean notify, Object notifyObject, Object... arguments) {
 		if(methodName == null || item == null) {
 			return null;
 		}
@@ -414,7 +416,8 @@ public class ReflectionLoader {
 		} catch (Exception e) {
 			if(logger != null && notify) {
 				e.printStackTrace(logger);
-			} else {
+			} else if(notifyObject instanceof ObjectCondition){
+				((ObjectCondition) notifyObject).update(e);
 			}
 		}
 		return null;

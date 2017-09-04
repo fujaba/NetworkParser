@@ -174,6 +174,35 @@ public class ErrorHandler implements Thread.UncaughtExceptionHandler {
 		saveException(e, this.stage);
 	}
 	
+	public boolean writeOutput(String output, boolean error) {
+		String fullFileName="";
+		if(this.path != null) {
+			fullFileName = this.path;
+			if(fullFileName.length()>0 && fullFileName.endsWith("/") == false){
+				fullFileName+="/";
+			}
+		}
+		File file;
+		if(error) {
+			file=new File(fullFileName+"error.txt");
+		}else {
+			file=new File(fullFileName+"output.txt");
+		}
+		try {
+			if(file.exists() == false){
+				if(file.createNewFile() == false) {
+					return false;
+				}
+			}
+			FileOutputStream stream = new FileOutputStream(file, true);
+			stream.write(output.getBytes());
+			stream.close();
+		} catch (IOException e) {
+			
+		}
+		return true;
+	}
+	
 	@Override
 	public void uncaughtException(Thread t, Throwable e) {
 		saveException(e, stage);

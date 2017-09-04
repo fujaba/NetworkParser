@@ -116,6 +116,10 @@ public class MapEntity extends SimpleSet<Object>{
 		this.deep = value;
 		return this;
 	}
+	public int addDeep() {
+		deep++;
+		return deep;
+	}
 
 	public Object getRefByEntity(Object value) {
 		for (int i = 0; i < size(); i += 2) {

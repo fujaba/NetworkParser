@@ -14,6 +14,8 @@ import java.util.Map;
 import de.uniks.networkparser.ext.ErrorHandler;
 import de.uniks.networkparser.ext.Os;
 import de.uniks.networkparser.ext.generic.ReflectionLoader;
+import de.uniks.networkparser.ext.io.StringOutputStream;
+import de.uniks.networkparser.ext.io.StringPrintStream;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.list.SimpleKeyValueList;
@@ -27,11 +29,11 @@ public class SimpleController implements ObjectCondition{
 	private boolean firstShow=true;
 	protected String icon;
 	private String encodingCode=BaseItem.ENCODING;
-	private String debugPort;
 	private String title;
 	private ErrorHandler errorHandler = new ErrorHandler();
 	protected Object popupMenu;
 	protected Object trayIcon;
+	private String outputFile = null;
 	private SimpleList<Object> listener = new SimpleList<Object>();
 	
 	public SimpleController(Object primitiveStage) {
@@ -44,6 +46,24 @@ public class SimpleController implements ObjectCondition{
 		if(init) {
 			this.init();
 		}
+	}
+	
+	public void showContent(Object element) {
+		Object content = this.createContent(element);
+		if(content != null) {
+//			System.setErr(err);
+			System.setOut(new StringPrintStream());
+			this.show(content);
+		}
+	}
+	
+	public Object createContent(Object element) {
+		try {
+			return ReflectionLoader.calling("createContent", element, true, this);
+		}catch (Exception e) {
+			errorHandler.saveException(e);
+		}
+		return null;
 	}
 	
 	public SimpleController withStage(Object stage) {
@@ -81,7 +101,8 @@ public class SimpleController implements ObjectCondition{
 		return controller;
 	}
 	protected void init() {
-		String outputRedirect = null;
+		String outputFile = null;
+		String debugPort = null;
 		if (encodingCode != null && !encodingCode.equalsIgnoreCase(System.getProperty("file.encoding"))) {
 			System.setProperty("file.encoding", encodingCode);
 			Class<Charset> c = Charset.class;
@@ -101,14 +122,14 @@ public class SimpleController implements ObjectCondition{
 			if (key.equalsIgnoreCase("debug")) {
 				if (value != null) {
 					debugPort = value;
-				} else {
+				}else {
 					debugPort = "4223";
 				}
 			} else if (key.equalsIgnoreCase("output")) {
-				if (value == null) {
-					outputRedirect = "INHERIT";
-				} else {
-					outputRedirect = value;
+				if (value != null) {
+					outputFile = value;
+				}else {
+					outputFile = "output.txt";
 				}
 			} else if (key.equalsIgnoreCase("-?")) {
 				System.out.println(getCommandHelp());
@@ -130,26 +151,27 @@ public class SimpleController implements ObjectCondition{
 			items.add(fileName);
 	
 			ProcessBuilder processBuilder = new ProcessBuilder(items);
-			if (outputRedirect != null) {
-				if (outputRedirect.equalsIgnoreCase("inherit")) {
+			
+			// ReflectionLoader.PROCESSBUILDERREDIRECT
+				if (outputFile.equalsIgnoreCase("inherit")) {
 					processBuilder.redirectErrorStream(true);
 					ReflectionLoader.call("redirectOutput", processBuilder, ReflectionLoader.PROCESSBUILDERREDIRECT, ReflectionLoader.getField("INHERIT", ReflectionLoader.PROCESSBUILDERREDIRECT));
 				} else {
-					int pos = outputRedirect.lastIndexOf(".");
+					int pos = outputFile.lastIndexOf(".");
 					if (pos > 0) {
-						ReflectionLoader.call("redirectError", processBuilder, File.class, new File(outputRedirect.substring(0, pos) + "_error" + outputRedirect.substring(pos)));
-						ReflectionLoader.call("redirectOutput", processBuilder, File.class, new File(outputRedirect.substring(0, pos) + "_stdout" + outputRedirect.substring(pos)));
+						ReflectionLoader.call("redirectError", processBuilder, File.class, new File(outputFile.substring(0, pos) + "_error" + outputFile.substring(pos)));
+						ReflectionLoader.call("redirectOutput", processBuilder, File.class, new File(outputFile.substring(0, pos) + "_stdout" + outputFile.substring(pos)));
 								
 					} else {
-						ReflectionLoader.call("redirectError", processBuilder, File.class, new File(outputRedirect + "_error.txt"));
-						ReflectionLoader.call("redirectOutput", processBuilder, File.class, new File(outputRedirect + "_stdout.txt"));
+						ReflectionLoader.call("redirectError", processBuilder, File.class, new File(outputFile + "_error.txt"));
+						ReflectionLoader.call("redirectOutput", processBuilder, File.class, new File(outputFile + "_stdout.txt"));
 					}
 				}
-			}
 			try {
 				processBuilder.start();
 				Runtime.getRuntime().exit(1);
 			} catch (IOException e) {
+				errorHandler.saveException(e);
 			}
 		}
 	}
@@ -266,6 +288,8 @@ public class SimpleController implements ObjectCondition{
 				}
 			});
 		}
+		System.setOut(new StringPrintStream(this.errorHandler, false));
+		System.setErr(new StringPrintStream(this.errorHandler, true));
 		return this;
 	}
 
@@ -457,6 +481,11 @@ public class SimpleController implements ObjectCondition{
 	public boolean update(Object value) {
 		if(value == null) {
 			return false;
+		}
+		if(value instanceof Throwable) {
+			// CallBack
+			saveException((Throwable) value);
+			return true;
 		}
 		GUIEvent evt = GUIEvent.create(value);
 		if(evt.isSubEventName("java.awt.event.ActionEvent")) {

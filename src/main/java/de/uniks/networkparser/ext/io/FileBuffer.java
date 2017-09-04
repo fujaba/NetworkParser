@@ -225,7 +225,8 @@ public class FileBuffer extends Buffer {
 				do {
 					read = is.read(buffer, 0, buffer.length);
 					if (read>0) {
-						sb.with(buffer, 0, read);
+						sb.with(new String(buffer, 0, read, BaseItem.ENCODING));
+//FIXME						sb.with(buffer, 0, read);
 					}
 				} while (read>=0);
 //    				int count;

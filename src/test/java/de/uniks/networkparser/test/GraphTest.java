@@ -321,13 +321,6 @@ public class GraphTest {
 	private static final String RED = "red";
 
 	@Test
-	public void SimpleKK() {
-		//FIXME
-//		Graph
-	}
-	
-	
-	@Test
 	public void SimpleModel() {
 		IdMap jsonIdMap = new IdMap();
 		jsonIdMap.withTimeStamp(1);

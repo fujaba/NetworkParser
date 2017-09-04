@@ -182,22 +182,6 @@ public class JsonArray extends SortedList<Object> implements EntityList {
 	}
 
 	/**
-	 * Make a prettyprinted JSON text of this JSONArray. Warning: This method
-	 * assumes that the data structure is acyclical.
-	 *
-	 * @param indentFactor
-	 *			The number of spaces to add to each level of indentation.
-	 * @return a printable, displayable, transmittable representation of the
-	 *		 object, beginning with <code>[</code>&nbsp;<small>(left
-	 *		 bracket)</small> and ending with <code>]</code>
-	 *		 &nbsp;<small>(right bracket)</small>.
-	 */
-	@Override
-	public String toString(int indentFactor) {
-		return parseItem(new EntityStringConverter(indentFactor));
-	}
-
-	/**
 	 * Make a prettyprinted JSON text of this JSONArray.
 	 * @param converter	Factor for spacing between Level
 	 * @return return Item As String
@@ -310,16 +294,5 @@ public class JsonArray extends SortedList<Object> implements EntityList {
 	public JsonArray subList(int fromIndex, int toIndex) {
 		return (JsonArray) super.subList(fromIndex, toIndex);
 	}
-	
-	@Override
-	public BaseItem getChild(int index) {
-		if(index < 0 || index > this.size()) {
-			return null;
-		}
-		Object item = this.get(index);
-		if(item instanceof BaseItem) {
-			return (BaseItem) item;
-		}
-		return null;
-	}
 }
+

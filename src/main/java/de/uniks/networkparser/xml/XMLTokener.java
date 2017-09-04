@@ -282,7 +282,7 @@ public class XMLTokener extends Tokener {
 				}
 				tokener.nextString(token, true, false, IdMap.SPACE, IdMap.EQUALS, ITEMEND, ENDTAG);
 				myChar = tokener.getCurrentChar();
-				if (myChar == '=') {
+				if (myChar == ENTER) {
 					String key = token.toString();
 					token.reset();
 					tokener.skip(2);

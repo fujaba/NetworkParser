@@ -153,7 +153,7 @@ public class HTMLUtil {
 	
 	@SuppressWarnings("unchecked")
 	public static void addChildren(Object element, int pos, Object... childrenValues) {
-		Object children = ReflectionLoader.calling("getChildren", element, false);
+		Object children = ReflectionLoader.calling("getChildren", element, false, null);
 		if(children == null) {
 			children = ReflectionLoader.call("getItems", element);
 		}
@@ -169,7 +169,7 @@ public class HTMLUtil {
 		}
 	}
 	public static void removeChildren(Object element, Object... childrenValues) {
-		Object children = ReflectionLoader.calling("getChildren", element, false);
+		Object children = ReflectionLoader.calling("getChildren", element, false, null);
 		if(children == null) {
 			children = ReflectionLoader.call("getItems", element);
 		}

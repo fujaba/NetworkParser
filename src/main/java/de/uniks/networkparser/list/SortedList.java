@@ -25,6 +25,7 @@ THE SOFTWARE.
 */
 import java.util.Comparator;
 
+import de.uniks.networkparser.converter.EntityStringConverter;
 import de.uniks.networkparser.interfaces.BaseItem;
 
 public class SortedList<V> extends SimpleList<V> {
@@ -159,6 +160,33 @@ public class SortedList<V> extends SimpleList<V> {
 			if (compare > 0) {
 				return item;
 			}
+		}
+		return null;
+	}
+
+	/**
+	 * Make a prettyprinted text of this List.
+	 *
+	 * @param indentFactor The number of spaces to add to each level of indentation.
+	 * @return a printable, displayable, transmittable representation of the object
+	 */
+	public String toString(int indentFactor) {
+		return parseItem(new EntityStringConverter(indentFactor));
+	}
+	
+	/**
+	 * get a Child for index 
+	 * 
+	 * @param index for Child
+	 * @return BaseItem-Child or Null
+	 */
+	public BaseItem getChild(int index) {
+		if(index < 0 || index > this.size()) {
+			return null;
+		}
+		Object item = this.get(index);
+		if(item instanceof BaseItem) {
+			return (BaseItem) item;
 		}
 		return null;
 	}
