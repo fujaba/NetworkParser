@@ -232,6 +232,38 @@ public class Clazz extends GraphEntity {
 		this.with(assocSource);
 		return this;
 	}
+	
+	/**
+    * ********************************************************************
+    * <pre>
+    *    %srcCardinality%     %tgtCardinality%
+    * Clazz -------------------------------------- %tgtClass%
+    *    %srcRoleName%        %tgtRoleName%
+    * </pre>
+    *
+    * create a Bidirectional Association
+    *
+    * @param tgtClass             The target Clazz
+    * @param tgtRoleName          The Targetrolename
+    * @param tgtCardinality      The Targetcardinality
+    * @param srcRoleName         The sourcerolename
+    * @param srcCardinality      The sourcecardinality
+    * @param srcAssocType           The association type, e.g. Aggregation
+    * @return The Clazz Instance
+    */
+   public Clazz withBidirectional(Clazz tgtClass, String tgtRoleName, Cardinality tgtCardinality, String srcRoleName, Cardinality srcCardinality, AssociationTypes srcAssocType) 
+   {
+      // Target
+      Association assocTarget = new Association(tgtClass).with(tgtCardinality).with(tgtRoleName);
+
+      // Source
+      Association assocSource = new Association(this).with(srcCardinality).with(srcRoleName).with(srcAssocType);
+      assocSource.with(assocTarget);
+
+      tgtClass.with(assocTarget);
+      this.with(assocSource);
+      return this;
+   }
 
 	/**
 	 * ********************************************************************
