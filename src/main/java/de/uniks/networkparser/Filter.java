@@ -162,7 +162,8 @@ public class Filter {
 	 * @param value The childValue
 	 * @param map IdMap
 	 * @param deep Deep
-	 * @return 1 for Convert
+	 * @return Number for Convert
+	 * 			1 for Convert
 	 * 			0 for Reference
 	 * 			-1 for not Convert
 	 * 

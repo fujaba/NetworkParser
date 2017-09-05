@@ -56,8 +56,11 @@ public class SimpleController implements ObjectCondition{
 	}
 	
 	public Object createContent(Object element) {
+		if(element == null) {
+			return null;
+		}
 		try {
-			return ReflectionLoader.calling("createContent", element, true, this);
+			return ReflectionLoader.calling("createContent", element, false, this);
 		}catch (Exception e) {
 			errorHandler.saveException(e);
 		}
