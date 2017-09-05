@@ -7,8 +7,12 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import de.uniks.networkparser.Filter;
+import de.uniks.networkparser.IdMap;
+import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.ext.ClassModel;
 import de.uniks.networkparser.interfaces.BaseItem;
+import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.logic.BooleanCondition;
 import de.uniks.networkparser.logic.Equals;
@@ -17,15 +21,15 @@ import de.uniks.networkparser.xml.HTMLEntity;
 
 public class Story {
 	private String outputFile;
-	private SimpleList<StoryStep> steps = new SimpleList<StoryStep>();
+	private SimpleList<ObjectCondition> steps = new SimpleList<ObjectCondition>();
 	private int counter=-1;
 	private boolean breakOnAssert=true;
+	private IdMap map;
 
 	// COUNTER
 	// ADDTABLE
 	//ADDBARCHART
 	//ADDLINECHART
-	//ADDCLASSDIAGRAMM
 	//ADDOBJECTDIAGRAMM
 	//ADDPATTERN
 	//ADDSVG
@@ -35,7 +39,7 @@ public class Story {
 	}
 
 
-	public void add(StoryStep step) {
+	public void add(ObjectCondition step) {
 		this.steps.add(step);
 	}
 	
@@ -79,7 +83,7 @@ public class Story {
 		if(this.outputFile == null) {
 			this.withName(step.getMethodName());
 		}
-		StoryStep firstStep = this.steps.first();
+		ObjectCondition firstStep = this.steps.first();
 		if(firstStep instanceof StoryStepTitle) {
 			StoryStepTitle titleStep = (StoryStepTitle) firstStep;
 			if(titleStep.getTitle() == null) {
@@ -90,6 +94,13 @@ public class Story {
 	public StoryStepDiagram addDiagramm(ClassModel model) {
 		StoryStepDiagram step = new StoryStepDiagram();
 		step.withModel(model);
+		this.add(step);
+		return step;
+	}
+	
+	public StoryStepDiagram addDiagramm(StoryObjectFilter filter) {
+		StoryStepDiagram step = new StoryStepDiagram();
+		step.withFilter(filter);
 		this.add(step);
 		return step;
 	}
@@ -107,16 +118,7 @@ public class Story {
 	}
 	
 	public void addImage(String imageFile) {
-		add(new SoryStepImage().withFile(imageFile));
-	}
-
-	public void finish() {
-		if(this.steps != null) {
-			StoryStep last = this.steps.last();
-			if(last != null) {
-				last.finish();
-			}
-		}
+		add(new StoryStepImage().withFile(imageFile));
 	}
 
 	public boolean dumpHTML() {
@@ -134,8 +136,9 @@ public class Story {
 		output.withHeader("default.css");
 		output.withScript("hljs.initHighlightingOnLoad();" + BaseItem.CRLF + "hljs.initLineNumbersOnLoad();");
 
-		for (StoryStep step : steps) {
-			if(step.dump(this, output) == false) {
+		SimpleEvent evt = new SimpleEvent(this, null, null, output);
+		for (ObjectCondition step : steps) {
+			if(step.update(evt) == false) {
 				success = false;
 				break;
 			}
@@ -183,8 +186,8 @@ public class Story {
 	public boolean addDescription(String key, String value) {
 		StoryStepSourceCode source = null;
 		for(int i=this.steps.size() - 1;i>=0;i--) {
-			StoryStep step = this.steps.get(i);
-			if(this.steps.get(i) instanceof StoryStepSourceCode) {
+			ObjectCondition step = this.steps.get(i);
+			if(step instanceof StoryStepSourceCode) {
 				source =(StoryStepSourceCode) step;
 				break;
 			}
@@ -219,6 +222,27 @@ public class Story {
 	protected Story withBreakOnAssert(boolean value) {
 		this.breakOnAssert = value;
 		return this;
+	}
+	
+	public Story withMap(IdMap map) {
+		this.map = map;
+		return this;
+	}
+	
+	public IdMap getMap() {
+		if(map == null) {
+			map = new IdMap();
+		}
+		return map;
+	}
+	
+	public void finish() {
+		for (ObjectCondition step : steps) {
+			if(step instanceof StoryStepSourceCode) {
+				StoryStepSourceCode sourceCode = (StoryStepSourceCode) step;
+				sourceCode.finish();
+			}
+		}
 	}
 
 	private void addCondition(StoryStepCondition step) {
@@ -287,4 +311,5 @@ public class Story {
 		step.withCondition(message, actual, new Not().with(Equals.createNullCondition()));
 		this.addCondition(step);
 	}
+
 }

@@ -355,7 +355,6 @@ public class ByteBuffer extends BufferedBuffer implements BaseItem {
 		return this;
 	}
 	
-	@Override
 	public boolean add(Object... values) {
 		if(values == null) {
 			return true;

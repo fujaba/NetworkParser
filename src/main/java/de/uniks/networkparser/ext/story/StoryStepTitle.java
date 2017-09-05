@@ -1,21 +1,24 @@
 package de.uniks.networkparser.ext.story;
 
+import de.uniks.networkparser.SimpleEvent;
+import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.xml.HTMLEntity;
 import de.uniks.networkparser.xml.XMLEntity;
 
-public class StoryStepTitle implements StoryStep{
+public class StoryStepTitle implements ObjectCondition {
 	private String title;
-	
-	@Override
-	public void finish() {
-	}
 	
 	public void setTitle(String title) {
 		this.title = title;
 	}
 
 	@Override
-	public boolean dump(Story story, HTMLEntity element) {
+	public boolean update(Object value) {
+		if(value instanceof SimpleEvent == false) {
+			return false;
+		}
+		SimpleEvent evt = (SimpleEvent) value;
+		HTMLEntity element = (HTMLEntity) evt.getNewValue();
 		if(this.title != null) {
 			element.withTitle(this.title);
 			XMLEntity headerLine = element.createBodyTag("h1");

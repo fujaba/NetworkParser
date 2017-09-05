@@ -32,6 +32,7 @@ import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Converter;
 import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.EntityList;
+import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SimpleSet;
 
@@ -250,13 +251,19 @@ public class HTMLEntity implements BaseItem {
 
 	public HTMLEntity withGraph(GraphModel value) {
 		URL resource = GraphList.class.getResource("");
-		return withGraph(value, resource.toString());
+		String graph = value.toString(new GraphConverter());
+		return withGraph(graph, resource.toString());
 	}
-	public HTMLEntity withGraph(GraphModel value, String path) {
+	public HTMLEntity withGraph(JsonObject value) {
+		URL resource = GraphList.class.getResource("");
+		return withGraph(value.toString(2), resource.toString());
+	}
+	
+	public HTMLEntity withGraph(String graph, String path) {
 		XMLEntity script = new XMLEntity().setType("script").withKeyValue("type", "text/javascript");
 		StringBuilder sb=new StringBuilder();
 		sb.append("var json=");
-		sb.append( value.toString(new GraphConverter()) );
+		sb.append( graph );
 		sb.append(";"+CRLF);
 		sb.append("new Graph(json).layout();");
 		script.withValue(sb.toString());

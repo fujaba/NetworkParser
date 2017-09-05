@@ -1,17 +1,20 @@
 package de.uniks.networkparser.ext.story;
 
+import de.uniks.networkparser.SimpleEvent;
+import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.xml.HTMLEntity;
 import de.uniks.networkparser.xml.XMLEntity;
 
-public class SoryStepImage implements StoryStep{
+public class StoryStepImage implements ObjectCondition {
 	private String file;
 
 	@Override
-	public void finish() {
-	}
-
-	@Override
-	public boolean dump(Story story, HTMLEntity element) {
+	public boolean update(Object value) {
+		if(value instanceof SimpleEvent == false) {
+			return false;
+		}
+		SimpleEvent evt = (SimpleEvent) value;
+		HTMLEntity element = (HTMLEntity) evt.getNewValue();
 		if(this.file != null) {
 			XMLEntity image = element.createBodyTag("img");
 			image.put("src", file);
@@ -28,7 +31,7 @@ public class SoryStepImage implements StoryStep{
 		return true;
 	}
 
-	public StoryStep withFile(String value) {
+	public StoryStepImage withFile(String value) {
 		this.file = value;
 		return this;
 	}

@@ -1,14 +1,16 @@
 package de.uniks.networkparser.ext.story;
 
+import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.ext.io.FileBuffer;
 import de.uniks.networkparser.interfaces.BaseItem;
+import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.list.EntityComparator;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.xml.HTMLEntity;
 import de.uniks.networkparser.xml.XMLEntity;
 
-public class StoryStepSourceCode implements StoryStep {
+public class StoryStepSourceCode implements ObjectCondition {
 	public static final String FORMAT_JAVA = "java";
 	public static final String FORMAT_XML = "xml";
 	public static final String FORMAT_JSON = "json";
@@ -63,7 +65,6 @@ public class StoryStepSourceCode implements StoryStep {
 		return methodName;
 	}
 
-	@Override
 	public void finish() {
 		getLineFromThrowable();
 		this.readFile();
@@ -173,7 +174,12 @@ public class StoryStepSourceCode implements StoryStep {
 	}
 
 	@Override
-	public boolean dump(Story story, HTMLEntity element) {
+	public boolean update(Object value) {
+		if(value instanceof SimpleEvent == false) {
+			return false;
+		}
+		SimpleEvent evt = (SimpleEvent) value;
+		HTMLEntity element = (HTMLEntity) evt.getNewValue();
 		XMLEntity pre = element.createBodyTag("pre");
 		XMLEntity code = element.createBodyTag("code", pre);
 		if(this.endLine<1 && this.currentLine>0) {
@@ -188,7 +194,7 @@ public class StoryStepSourceCode implements StoryStep {
 		code.withKeyValue("data-lang", this.format);
 
 		XMLEntity undertitle = element.createBodyTag("div", pre);
-		String value;
+		String strValue;
 		String name;
 		if (this.methodName.startsWith("test")) {
 			name = this.methodName.substring(4);
@@ -196,11 +202,11 @@ public class StoryStepSourceCode implements StoryStep {
 			name = this.methodName;
 		}
 		if (this.contentFile != null) {
-			value = "Code: <a href=\"../" + this.contentFile + "\">" + name + "</a>";
+			strValue = "Code: <a href=\"../" + this.contentFile + "\">" + name + "</a>";
 		} else {
-			value = "Code: " + name;
+			strValue = "Code: " + name;
 		}
-		undertitle.with(value);
+		undertitle.with(strValue);
 		undertitle.with("class", "title");
 
 		XMLEntity table = element.createBodyTag("table");
@@ -208,8 +214,8 @@ public class StoryStepSourceCode implements StoryStep {
 		String key;
 		for (int i = 0; i < this.variables.size(); i++) {
 			key = this.variables.getKeyByIndex(i);
-			value = this.variables.getValueByIndex(i);
-			if (value == null) {
+			strValue = this.variables.getValueByIndex(i);
+			if (strValue == null) {
 				System.err.println("Key: " + key + " has no value");
 				continue;
 			}
@@ -217,7 +223,7 @@ public class StoryStepSourceCode implements StoryStep {
 			code = element.createBodyTag("td", row);
 			code.withValueItem(TEMPLATESTART + key + TEMPLATEEND);
 
-			char charAt = value.charAt(0);
+			char charAt = strValue.charAt(0);
 			if (charAt == '{' || charAt == '[') {
 				code = element.createBodyTag("td.pre.code", row);
 				code.withKeyValue("class", FORMAT_JSON);
@@ -229,7 +235,7 @@ public class StoryStepSourceCode implements StoryStep {
 			} else {
 				code = element.createBodyTag("td", row);
 			}
-			code.withValue(value);
+			code.withValue(strValue);
 		}
 		return true;
 	}

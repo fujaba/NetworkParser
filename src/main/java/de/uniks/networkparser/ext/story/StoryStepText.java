@@ -1,9 +1,11 @@
 package de.uniks.networkparser.ext.story;
 
+import de.uniks.networkparser.SimpleEvent;
+import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.xml.HTMLEntity;
 import de.uniks.networkparser.xml.XMLEntity;
 
-public class StoryStepText implements StoryStep {
+public class StoryStepText implements ObjectCondition {
 	private String value;
 	
 	public StoryStepText withText(String text) {
@@ -12,7 +14,13 @@ public class StoryStepText implements StoryStep {
 	}
 
 	@Override
-	public boolean dump(Story story, HTMLEntity element) {
+	public boolean update(Object value) {
+		if(value instanceof SimpleEvent == false) {
+			return false;
+		}
+		SimpleEvent evt = (SimpleEvent) value;
+		HTMLEntity element = (HTMLEntity) evt.getNewValue();
+		Story story = (Story) evt.getSource();
 		if(this.value != null) {
 			int counter = story.getCounter();
 			XMLEntity textItem = element.createBodyTag("p");
@@ -30,9 +38,5 @@ public class StoryStepText implements StoryStep {
 
 	public String getText() {
 		return this.value;
-	}
-
-	@Override
-	public void finish() {
 	}
 }

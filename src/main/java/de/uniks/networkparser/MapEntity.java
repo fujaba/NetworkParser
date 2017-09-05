@@ -277,12 +277,13 @@ public class MapEntity extends SimpleSet<Object>{
 			String label = property.substring(1, pos);
 			property.trimStart(label.length()+1);
 			if (child instanceof Entity) {
-				BaseItem newItem = ((Entity)child).getElementBy(XMLEntity.PROPERTY_TAG, label);
+				Entity entity = (Entity) child;
+				BaseItem newItem = entity.getElementBy(XMLEntity.PROPERTY_TAG, label);
 				if(newItem == null) {
 					newItem = child.getNewList(true);
 					if(newItem instanceof XMLEntity) {
 						((XMLEntity) newItem).setType(label);
-						child.add(newItem);
+						entity.add(newItem);
 					} else {
 						((Entity) child).put(label, newItem);
 					}

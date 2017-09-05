@@ -154,6 +154,19 @@ public class Filter {
 		return this;
 	}
 
+	/**
+	 * Convert the Entity
+	 * 
+	 * @param entity The Entity
+	 * @param property The Property to Convert
+	 * @param value The childValue
+	 * @param map IdMap
+	 * @param deep Deep
+	 * @return 1 for Convert
+	 * 			0 for Reference
+	 * 			-1 for not Convert
+	 * 
+	 */
 	public int convert(Object entity, String property, Object value, IdMap map, int deep) {
 		if (this.convertable == null && this.property == null) {
 			return 1;

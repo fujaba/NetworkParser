@@ -146,11 +146,16 @@ public class SimpleController implements ObjectCondition{
 			items.add("-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=" + debugPort);
 			items.add("-jar");
 			String fileName = new Os().getFilename().toLowerCase();
+			if("bin".equals(fileName)) {
+				// Eclipse Start Can't run
+				return;
+			}
 			items.add(fileName);
 	
 			ProcessBuilder processBuilder = new ProcessBuilder(items);
 			
 			// ReflectionLoader.PROCESSBUILDERREDIRECT
+			if(outputFile != null) {
 				if (outputFile.equalsIgnoreCase("inherit")) {
 					processBuilder.redirectErrorStream(true);
 					ReflectionLoader.call("redirectOutput", processBuilder, ReflectionLoader.PROCESSBUILDERREDIRECT, ReflectionLoader.getField("INHERIT", ReflectionLoader.PROCESSBUILDERREDIRECT));
@@ -165,6 +170,7 @@ public class SimpleController implements ObjectCondition{
 						ReflectionLoader.call("redirectOutput", processBuilder, File.class, new File(outputFile + "_stdout.txt"));
 					}
 				}
+			}
 			try {
 				processBuilder.start();
 				Runtime.getRuntime().exit(1);
