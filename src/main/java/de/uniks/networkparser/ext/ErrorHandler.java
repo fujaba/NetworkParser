@@ -41,14 +41,16 @@ public class ErrorHandler implements Thread.UncaughtExceptionHandler {
 			
 			PrintStream ps = new PrintStream( networkFile );
 			ps.println("Error: "+e.getMessage());
-			ps.println("Startdate: "+startDate.toString("ddmmyyyy HH:MM:SS"));
-			ps.println("Date: "+new DateTimeEntity().toString("ddmmyyyy HH:MM:SS"));
+			ps.println("Start: "+getJVMStartUp().toString("dd.mm.yyyy HH:MM:SS"));
+			ps.println("Startdate: "+startDate.toString("dd.mm.yyyy HH:MM:SS"));
+			ps.println("Date: "+new DateTimeEntity().toString("dd.mm.yyyy HH:MM:SS"));
 			ps.println("Thread: "+Thread.currentThread().getName());
 			ps.println("------------ SYSTEM-INFO ------------");
 			printProperty(ps, "java.class.version");
 			printProperty(ps, "java.runtime.version");
 			printProperty(ps, "java.specification.version");
 			printProperty(ps, "java.version");
+			printProperty(ps, "java.home");
 			printProperty(ps, "os.arch");
 			printProperty(ps, "os.name");
 			printProperty(ps, "os.version");
@@ -70,8 +72,10 @@ public class ErrorHandler implements Thread.UncaughtExceptionHandler {
 			// SubErrors
 			printSubTrace(ps, "", 1, e);
 			
-			
 			ps.close();
+			if("Java heap space".equals(e.getMessage())) {
+				saveHeapSpace(prefix);
+			}
 			success=true;
 		} catch (FileNotFoundException exception) {
 			success=false;
@@ -79,6 +83,64 @@ public class ErrorHandler implements Thread.UncaughtExceptionHandler {
 			success=false;
 		}
 		return success;
+	}
+	
+	public boolean saveHeapSpace(String prefix) {
+		String filepath=createDir(this.path);
+		if(filepath == null) {
+			return false;
+		}
+		if(filepath.length()>0 && filepath.endsWith("/") == false){
+			filepath+="/";
+		}
+		String fullfilename=filepath+prefix+"heap.dump";
+		SimpleList<String> commandList=new SimpleList<String>();
+		commandList.with("jmap", "-dump:live,format=b,file="+fullfilename,""+getPID());
+		String[] list = commandList.toArray(new String[commandList.size()]);
+		ProcessBuilder processBuilder = new ProcessBuilder( list );
+		Process process;
+		try {
+			process = processBuilder.start();
+			process.waitFor();
+		} catch (Exception e) {
+			return false;
+		}
+		return true;
+	}
+	
+	public DateTimeEntity getJVMStartUp() {
+		DateTimeEntity item = new DateTimeEntity();
+		if(ReflectionLoader.MANAGEMENTFACTORY == null) {
+			return item;
+		}
+		Object runTime = ReflectionLoader.call("getRuntimeMXBean", ReflectionLoader.MANAGEMENTFACTORY);
+		if(runTime != null) {
+			Object returnValue = ReflectionLoader.getField("vmStartupTime", runTime);
+			if(returnValue instanceof Long) {
+				item.withTime((Long)returnValue);
+			}
+		}
+		return item;
+		
+	}
+	
+	public int getPID() {
+		int pid = -1;
+		if(ReflectionLoader.MANAGEMENTFACTORY == null) {
+			return pid;
+		}
+		Object runTime = ReflectionLoader.call("getRuntimeMXBean", ReflectionLoader.MANAGEMENTFACTORY);
+		if(runTime == null) {
+			return pid;
+		}
+		Object jvm = ReflectionLoader.getField("jvm", runTime);
+		if(jvm != null) {
+			Object returnValue = ReflectionLoader.call("getProcessId", jvm);
+			if(returnValue instanceof Integer) {
+				pid = (Integer) returnValue;
+			}
+		}
+		return pid;
 	}
 	
 	public static void printProperty(PrintStream ps, String property){
@@ -208,9 +270,13 @@ public class ErrorHandler implements Thread.UncaughtExceptionHandler {
 		saveException(e, stage);
 	}
 	
+	
+	public String getPrefix() {
+		return new DateTimeEntity().toString("yyyymmdd_HHMMSS_");
+	}
 	public void saveException(Throwable e, Object stage) {
 		// Generate Error.txt
-		String prefixName = new DateTimeEntity().toString("yyyymmdd_HHMMSS_");
+		String prefixName = getPrefix();
 		writeErrorFile(prefixName, "error.txt", this.path, e);
 		saveScreenShoot(prefixName, "Full.jpg", stage);
 		if(list.size()>0) {

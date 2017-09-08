@@ -80,6 +80,7 @@ public class ReflectionLoader {
 	public static final Class<?> TRAYICON;
 	public static final Class<?> AWTIMAGE;
 	public static final Class<?> PROCESSBUILDERREDIRECT;
+	public static final Class<?> MANAGEMENTFACTORY;
 
 //	public static final Class<?> DIFFENTRY;
 //	public static final Class<?> OBJECTID;
@@ -89,6 +90,10 @@ public class ReflectionLoader {
 	
 	
 //	public static final Class<?> JUNIT = getClass("org.junit.Assert");
+
+	static {
+		MANAGEMENTFACTORY = getClass("java.lang.management.ManagementFactory"); 
+	}
 	
 	static {
 		//JAVAFX
@@ -324,18 +329,27 @@ public class ReflectionLoader {
 	}
 	public static Object getField(String fieldName, Object item) {
 		Class<?> className = null;
+		Object itemObj = null;
 		if(item instanceof Class<?>) {
 			className = (Class<?>) item;
 		} else {
+			itemObj = item;
 			className = item.getClass();
 		}
 		Field field;
 		try {
 			field = className.getField(fieldName);
-			return field.get(null);
+			field.setAccessible(true);
+			return field.get(itemObj);
 		} catch (Exception e) {
-			if(logger != null) {
-				e.printStackTrace(logger);
+			try {
+				field = className.getDeclaredField(fieldName);
+				field.setAccessible(true);
+				return field.get(itemObj);
+			} catch (Exception e2) {
+				if(logger != null) {
+					e.printStackTrace(logger);
+				}
 			}
 		}
 		return null;
@@ -390,9 +404,13 @@ public class ReflectionLoader {
 			}
 			Method method = null;
 			try {
-				method = itemClass.getMethod(methodName, methodArguments);
+				try {
+					method = itemClass.getMethod(methodName, methodArguments);
+				}catch (Exception e) {
+					method = itemClass.getDeclaredMethod(methodName, methodArguments);
+				}
 			}catch (Exception e) {
-				if(staticCall == false) {
+				if(staticCall == false && item instanceof Class<?>) {
 					itemClass = ((Class<?>) item);
 					method = itemClass.getMethod(methodName, methodArguments);
 				}

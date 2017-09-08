@@ -42,16 +42,6 @@ public class ReflectionBlackBoxTester {
 	public ReflectionBlackBoxTester() {
 		ignoreMethods =new SimpleKeyValueList<String, SimpleSet<String>>();
 		String className;
-//		String className = DiagramEditor
-//				.cDiagraStory.class.getName()
-//		withIgnoreClazzes("de.uniks.networkparser.ext.javafx.DiagramEditor:access");
-//		withIgnoreClazzes("de.uniks.networkparser.ext.javafx.DiagramEditor:generate");
-//		withIgnoreClazzes("de.uniks.networkparser.ext.javafx.DiagramEditor:main");
-//		withIgnoreClazzes("de.uniks.networkparser.ext.javafx.DiagramEditor:save");
-//		withIgnoreClazzes("de.uniks.networkparser.ext.javafx.DiagramEditor:start");
-//		withIgnoreClazzes("de.uniks.networkparser.ext.javafx.DiagramEditor:open");
-		
-		
 		className = Story.class.getName();
 		withIgnoreClazzes(className+":dumpHTML");
 		withIgnoreClazzes(className+":writeFile");
@@ -59,6 +49,7 @@ public class ReflectionBlackBoxTester {
 		className = SimpleController.class.getName();
 		withIgnoreClazzes(className+":init");
 		withIgnoreClazzes(className+":saveException");
+		withIgnoreClazzes(className+":createContent");
 		withIgnoreClazzes(Server_TCP.class.getName());
 		withIgnoreClazzes(Server_UPD.class.getName());
 		withIgnoreClazzes(NodeProxyBroadCast.class.getName());
