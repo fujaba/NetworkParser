@@ -376,7 +376,10 @@ public class DialogBox implements ObjectCondition{
 
 	public DialogBox withCenterText(String image, String value) {
 		Object box =ReflectionLoader.newInstance(ReflectionLoader.HBOX);
-
+		URL resource = DialogBox.class.getResource(image);
+		if(resource == null) {
+			return this;
+		}
 		Object imageView = ReflectionLoader.newInstance(ReflectionLoader.IMAGEVIEW, String.class, DialogBox.class.getResource(image).toString());
 		
 		Object text = ReflectionLoader.newInstance(ReflectionLoader.LABEL, String.class, value);

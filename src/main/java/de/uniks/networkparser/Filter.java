@@ -37,7 +37,7 @@ public class Filter {
 	public static final Filter SIMPLEFORMAT = new Filter().withSimpleFormat(true);
 
 	protected ObjectCondition idFilter;
-	protected ObjectCondition convertable;
+	protected ObjectCondition convertable; // Or Notification for Decode
 	protected ObjectCondition property;
 
 	private static final int FORMAT_REFERENCE=0;
@@ -180,6 +180,10 @@ public class Filter {
 			return 0;
 		}
 		return 1;
+	}
+	
+	public boolean isConvertable(SimpleEvent event) {
+		return this.convertable == null || this.convertable.update(event) ;
 	}
 	
 	public ObjectCondition getPropertyRegard() {

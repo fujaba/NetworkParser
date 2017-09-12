@@ -50,6 +50,8 @@ public abstract class Buffer implements BufferItem {
 		byte[] bytes = array(Integer.SIZE /Byte.SIZE, false);
 		return (int) ((bytes[0] << 24) + (bytes[1] << 16) + (bytes[2] << 8) + bytes[3]);
 	}
+	
+	public abstract char getChar();
 
 	public long getLong() {
 		byte[] bytes = array(Long.SIZE /Byte.SIZE, false);

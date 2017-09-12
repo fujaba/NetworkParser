@@ -312,12 +312,14 @@ public class JsonTokener extends Tokener {
 					result = this.map.getObject(jsonId);
 				}
 			}
+			SimpleEvent event =null;
 			if (result == null) {
 				result = grammar.getNewEntity(typeInfo, grammar.getValue(jsonObject, IdMap.CLASS), false);
-				this.map.notify(new SimpleEvent(SendableEntityCreator.NEW, jsonObject, this.map, null, null, result));
+				event = new SimpleEvent(SendableEntityCreator.NEW, jsonObject, this.map, null, null, result);
 			} else {
-				this.map.notify(new SimpleEvent(SendableEntityCreator.UPDATE, jsonObject, this.map, null, null, result));
+				event = new SimpleEvent(SendableEntityCreator.UPDATE, jsonObject, this.map, null, null, result);
 			}
+			this.map.notify(event);
 			if (typeInfo instanceof SendableEntityCreatorWrapper) {
 				String[] properties = typeInfo.getProperties();
 				if (properties != null) {
@@ -340,6 +342,7 @@ public class JsonTokener extends Tokener {
 			} else {
 				decoding(result, jsonObject, map);
 			}
+			map.getFilter().isConvertable(event);
 			return result;
 		} else if (jsonObject.get(IdMap.VALUE) != null) {
 			return jsonObject.get(IdMap.VALUE);
