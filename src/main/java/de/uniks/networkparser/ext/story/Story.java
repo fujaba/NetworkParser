@@ -90,14 +90,14 @@ public class Story {
 			}
 		}
 	}
-	public StoryStepDiagram addDiagramm(ClassModel model) {
+	public StoryStepDiagram addDiagram(ClassModel model) {
 		StoryStepDiagram step = new StoryStepDiagram();
 		step.withModel(model);
 		this.add(step);
 		return step;
 	}
 	
-	public StoryStepDiagram addDiagramm(StoryObjectFilter filter) {
+	public StoryStepDiagram addDiagram(StoryObjectFilter filter) {
 		StoryStepDiagram step = new StoryStepDiagram();
 		step.withFilter(filter);
 		this.add(step);

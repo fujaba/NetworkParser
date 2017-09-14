@@ -186,7 +186,26 @@ public class Template implements TemplateParser {
 						if(nextChar == ENTER) {
 							// MAY BE A EQUALS
 							buffer.skip();
+							// Check Next Value May be Bigger or lesser or Equals
 							Equals equalsExpression = new Equals();
+							char currentChar = buffer.getCurrentChar();
+							if(currentChar == '>') {
+								equalsExpression.withPosition(-1);
+								buffer.skip();
+							}else if(currentChar == '<') {
+								equalsExpression.withPosition(1);
+								buffer.skip();
+							}else if(currentChar == '!') {
+								equalsExpression.withPosition(0);
+								buffer.skip();
+								if(firstChar == currentChar) {
+									firstChar = 0;
+								}else {
+									firstChar = currentChar;
+								}
+							}else {
+								equalsExpression.withPosition(0);
+							}
 							equalsExpression.withLeft(child);
 							child = parsing(buffer, customTemplate, true, allowSpace, stopWords);
 							equalsExpression.withRight(child);

@@ -31,9 +31,11 @@ import de.uniks.networkparser.interfaces.SendableEntityCreator;
 public class Between implements ObjectCondition, SendableEntityCreator {
 	public static final String FROM = "from";
 	public static final String TO = "to";
+	public static final String BORDER="border";
 
 	private Double fromValue;
 	private Double toValue;
+	private boolean border = true;
 
 	public Between withRange(double from, double to) {
 		this.fromValue = from;
@@ -66,11 +68,47 @@ public class Between implements ObjectCondition, SendableEntityCreator {
 		}
 		PropertyChangeEvent event = (PropertyChangeEvent) evt;
 		Object newValue = event.getNewValue();
-		
-		if (newValue instanceof Double) {
-			return (((Double) newValue) >= fromValue && ((Double) newValue) <= toValue);
-		}else if (newValue instanceof Integer) {
-			return (((Integer) newValue) >= fromValue && ((Integer) newValue) <= toValue);
+		boolean result = true;
+		if(border) {
+			if (newValue instanceof Double) {
+				Double newNumber = ((Double) newValue);
+				if(fromValue != null) {
+					result = newNumber >= fromValue; 
+				}
+				if(toValue != null) {
+					result = result && newNumber <= toValue;
+				}
+				return result;
+			}else if (newValue instanceof Integer) {
+				Integer newNumber = ((Integer) newValue);
+				if(fromValue != null) {
+					result = newNumber >= fromValue; 
+				}
+				if(toValue != null) {
+					result = result && newNumber <= toValue;
+				}
+				return result;
+			}
+		}else {
+			if (newValue instanceof Double) {
+				Double newNumber = ((Double) newValue);
+				if(fromValue != null) {
+					result = newNumber > fromValue; 
+				}
+				if(toValue != null) {
+					result = result && newNumber < toValue;
+				}
+				return result;
+			}else if (newValue instanceof Integer) {
+				Integer newNumber = ((Integer) newValue);
+				if(fromValue != null) {
+					result = newNumber > fromValue; 
+				}
+				if(toValue != null) {
+					result = result && newNumber < toValue;
+				}
+				return result;
+			}
 		}
 		return false;
 	}

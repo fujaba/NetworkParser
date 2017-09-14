@@ -2,6 +2,7 @@ package de.uniks.networkparser.logic;
 import java.beans.PropertyChangeEvent;
 import java.util.Set;
 
+import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.buffer.BufferedBuffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.interfaces.LocalisationInterface;
@@ -32,7 +33,6 @@ public class Equals implements ParserCondition, SendableEntityCreator {
 	/** Variable of leftCondition. */
 	private ObjectCondition right;
 
-	
 	/** Variable of Value. */
 	private Object value;
 	
@@ -79,6 +79,20 @@ public class Equals implements ParserCondition, SendableEntityCreator {
 
 			if(leftValue == null) {
 				return rightValue == null;
+			}
+			
+			
+			if(this.position !=0) {
+				if(leftValue instanceof Number || EntityUtil.isNumeric(""+leftValue)) {
+					if(rightValue instanceof Number || EntityUtil.isNumeric(""+rightValue)) {
+						Double leftNumber = Double.valueOf(""+leftValue);
+						Double rightNumber = Double.valueOf(""+rightValue);
+						if(position>0) {
+							return rightNumber>leftNumber;
+						}
+						return rightNumber<leftNumber;
+					}
+				}
 			}
 			if(leftValue instanceof String && rightValue instanceof String) {
 				return ((String)leftValue).equalsIgnoreCase((String)rightValue);
@@ -271,7 +285,7 @@ public class Equals implements ParserCondition, SendableEntityCreator {
 		this.right = expression;
 		return this;
 	}
-
+	
 	@Override
 	public boolean isExpression() {
 		return false;

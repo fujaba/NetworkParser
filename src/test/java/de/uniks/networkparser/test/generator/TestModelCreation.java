@@ -64,7 +64,7 @@ public class TestModelCreation {
 		
 		model.generate("src/test/java");
 		
-		story.addDiagramm(model);
+		story.addDiagram(model);
 		
 		story.dumpHTML();
 		

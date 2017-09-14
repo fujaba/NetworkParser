@@ -30,7 +30,7 @@ public class StoryTest {
 		ClassModel model = new ClassModel();
 		model.createClazz("Person");
 		
-		story.addDiagramm(model);
+		story.addDiagram(model);
 		
 		
 		story.dumpHTML();

@@ -17,6 +17,7 @@ public class Clazz extends GraphEntity {
 	public static final String PROPERTY_TYPE = "type";
 	public static final String PROPERTY_SUPERCLAZZ = "superclazz";
 	public static final String PROPERTY_IMPLEMENTS = "implements";
+	public static final String PROPERTY_ATTRIBUTE = "attribute";
 	
 	private ClazzType type = ClazzType.CLAZZ;
 
@@ -866,6 +867,20 @@ public class Clazz extends GraphEntity {
 
 			ClazzSet implementsClazz = getImplements();
 			return implementsClazz.toString(", ");
+		}
+		int pos = attribute.indexOf('.');
+		String attrName;
+		if(pos>0) {
+			attrName = attribute.substring(0, pos);
+		}else {
+			attrName = attribute;
+		}
+		if(PROPERTY_ATTRIBUTE.equalsIgnoreCase(attrName)) {
+			AttributeSet attributes = this.getAttributes();
+			if(pos>0) {
+				return attributes.getValue(attribute.substring(pos + 1));
+			}
+			return attributes;
 		}
 		return super.getValue(attribute);
 	}

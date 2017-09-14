@@ -36,10 +36,12 @@ public class JavaAttribute extends BasicGenerator{
 					"   {",
 					"      if ({{this}}.{{name}} != value)",
 					"      {",
+					"{{#if {{#AND}}{{#feature PROPERTYCHANGESUPPORT}} {{#DEBUG}}{{file.member.type}}==!enum{{#ENDAND}}}}"+
 					"         {{type}} oldValue = {{this}}.{{name}};",
 					"         {{this}}.{{name}} = value;",
-					"{{#if {{#feature PROPERTYCHANGESUPPORT}}}}",
 					"         firePropertyChange(PROPERTY_{{NAME}}, oldValue, value);",
+					"{{#else}}",
+					"         {{this}}.{{name}} = value;",
 					"{{#endif}}",
 					"      }",
 					"   }","",

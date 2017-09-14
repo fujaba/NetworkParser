@@ -4,6 +4,7 @@ import org.junit.Test;
 
 import de.uniks.networkparser.ext.ClassModel;
 import de.uniks.networkparser.graph.Clazz;
+import de.uniks.networkparser.graph.DataType;
 import de.uniks.networkparser.graph.Literal;
 
 public class TestEnumeration {
@@ -58,10 +59,10 @@ public class TestEnumeration {
 		}
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.enums_d");
 		Clazz testEnum = model.createClazz("TestEnum");
-//		testEnum.withAttribute("value", DataType.INT);
+		testEnum.withAttribute("value", DataType.INT);
 		testEnum.enableEnumeration(new Literal("TEACHER").withValue(42));
 		model.generate("src/test/java");
-//		model.getGenerator().testGeneratedCode();
+		model.getGenerator().testGeneratedCode();
 	}
 	
 }
