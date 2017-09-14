@@ -16,6 +16,7 @@ import de.uniks.networkparser.interfaces.TemplateParser;
  */
 public class ForeachCondition implements ParserCondition {
 	private static final String ITEM="item";
+	private static final String ITEMPOS="itemPos";
 	public static final String TAG="foreach";
 	private ObjectCondition expression;
 	private ObjectCondition loop;
@@ -55,10 +56,13 @@ public class ForeachCondition implements ParserCondition {
 //				Object object = creator.getValue(variablen);
 				if(object instanceof Collection<?>) {
 					Collection<?> collection = (Collection<?>) object;
+					int pos=0;
 					for(Object item : collection) {
+						variablen.put(ITEMPOS, pos++);
 						variablen.put(ITEM, item);
 						loop.update(value);
 						variablen.put(ITEM, null);
+						variablen.put(ITEMPOS, null);
 					}
 				}
 			}

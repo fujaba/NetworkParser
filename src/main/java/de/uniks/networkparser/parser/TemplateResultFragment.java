@@ -24,6 +24,7 @@ public class TemplateResultFragment implements Comparable<TemplateResultFragment
 	public static final String PROPERTY_HEADERS="headers";
 	public static final String PROPERTY_EXPRESSION="expression";
 	public static final String PROPERTY_ITEM="item";
+	public static final String PROPERTY_ITEMPOS="itempos";
 	public static final String PROPERTY_TEMPLATE="template";
 	public static final String PROPERTY_TEMPLATEMODEL="templatemodel";
 
@@ -33,6 +34,7 @@ public class TemplateResultFragment implements Comparable<TemplateResultFragment
 	private boolean expression=true;
 	private SendableEntityCreator parent;
 	private SimpleList<Object> stack;
+	private SimpleList<Integer> pos;
 	
 	private int key = -1;
 	
@@ -240,6 +242,15 @@ public class TemplateResultFragment implements Comparable<TemplateResultFragment
 			}
 			return null;
 		}
+		if(PROPERTY_ITEMPOS.equalsIgnoreCase(attrName)) {
+			if(this.pos != null) {
+				Object last = this.pos.last();
+				if(last instanceof Integer) {
+					return (Integer)last;
+				}
+			}
+			return null;
+		}
 		
 		if(PROPERTY_TEMPLATE.equalsIgnoreCase(attrName)) {
 			if(pos>0) {
@@ -381,6 +392,21 @@ public class TemplateResultFragment implements Comparable<TemplateResultFragment
 					this.stack = new SimpleList<Object>();
 				}
 				if(this.stack.add(object)) {
+					return object.toString();
+				}
+			}
+		}
+		if(PROPERTY_ITEMPOS.equalsIgnoreCase(label.toString())) {
+			if(object == null) {
+				if(this.pos != null) {
+					this.pos.remove(this.pos.size() - 1);
+					return null;
+				}
+			} else {
+				if(this.pos == null) {
+					this.pos = new SimpleList<Integer>();
+				}
+				if(this.pos.add(object)) {
 					return object.toString();
 				}
 			}

@@ -1266,45 +1266,49 @@ public abstract class AbstractArray<V> implements BaseItem {
 		}
 		
 		
-		if (child != null) {
-			if (end == 0) {
-				if (id >= 0 || id == -2) {
-					if (child instanceof AbstractList<?>) {
-						AbstractList<?> list = (AbstractList<?>) child;
-						if (id == -2) {
-							id = list.size() - 1;
-						}
-						if (list.size() >= id) {
-							return list.get(id);
-						}
+		if (child == null) {
+			if("size".equalsIgnoreCase(keyString)) {
+				return this.size();
+			}
+			return null;
+		}
+		if (end == 0) {
+			if (id >= 0 || id == -2) {
+				if (child instanceof AbstractList<?>) {
+					AbstractList<?> list = (AbstractList<?>) child;
+					if (id == -2) {
+						id = list.size() - 1;
 					}
-				} else {
-					return child;
+					if (list.size() >= id) {
+						return list.get(id);
+					}
 				}
 			} else {
-				if (id >= 0 || id == -2) {
-					if (child instanceof AbstractList) {
-						if (end == len + 2) {
-							// Get List
-							BaseItem result = this.getNewList(true);
-							AbstractList<?> items = (AbstractList<?>) child;
-							for (int z = 0; z < items.size(); z++) {
-								result.add(((AbstractList<?>) items.get(z)).getValue(keyString.substring(end + 1)));
-							}
-							return result;
+				return child;
+			}
+		} else {
+			if (id >= 0 || id == -2) {
+				if (child instanceof AbstractList) {
+					if (end == len + 2) {
+						// Get List
+						BaseItem result = this.getNewList(true);
+						AbstractList<?> items = (AbstractList<?>) child;
+						for (int z = 0; z < items.size(); z++) {
+							result.add(((AbstractList<?>) items.get(z)).getValue(keyString.substring(end + 1)));
 						}
-						AbstractList<?> list = (AbstractList<?>) child;
-						if (id == -2) {
-							id = list.size() - 1;
-						}
-						if (list.size() >= id) {
-							return ((SimpleKeyValueList<?, ?>) list.get(id)).getValue(keyString.substring(end + 1));
-						}
+						return result;
+					}
+					AbstractList<?> list = (AbstractList<?>) child;
+					if (id == -2) {
+						id = list.size() - 1;
+					}
+					if (list.size() >= id) {
+						return ((SimpleKeyValueList<?, ?>) list.get(id)).getValue(keyString.substring(end + 1));
 					}
 				}
-				if(child instanceof AbstractArray<?>){
-					return ((AbstractArray<?>) child).getValue(keyString.substring(end + 1));
-				}
+			}
+			if(child instanceof AbstractArray<?>){
+				return ((AbstractArray<?>) child).getValue(keyString.substring(end + 1));
 			}
 		}
 		return null;

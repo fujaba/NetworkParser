@@ -32,6 +32,7 @@ public abstract class GraphMember {
 	public static final String PROPERTY_CLASSNAME = "className";
 	public static final String PROPERTY_PARENT="parent";
 	public static final String PROPERTY_CHILD="child";
+	public static final String PROPERTY_LITERAL="literal";
 	public static final String PROPERTY_VISIBILITY = "visibility";
 	public static final String PROPERTY_MODIFIERS = "modifiers";
 	public static final String PROPERTY_THIS = "this";
@@ -92,6 +93,19 @@ public abstract class GraphMember {
 				return item.getValue(attribute.substring(pos + 1));
 			}
 			return this.children;
+		}
+		if(PROPERTY_LITERAL.equalsIgnoreCase(attrName)) {
+			GraphSimpleSet items = this.getChildren();
+			GraphSimpleSet literals = new GraphSimpleSet();
+			for(GraphMember child : items) {
+				if(child instanceof Literal) {
+					literals.add(child);
+				}
+			}
+			if (pos > 0) {
+				return literals.getValue(attribute.substring(pos + 1));
+			}
+			return literals;
 		}
 		if(PROPERTY_THIS.equalsIgnoreCase(attrName)) {
 			// Check if Static or not

@@ -83,6 +83,9 @@ public class Equals implements ParserCondition, SendableEntityCreator {
 			if(leftValue instanceof String && rightValue instanceof String) {
 				return ((String)leftValue).equalsIgnoreCase((String)rightValue);
 			}
+			if(leftValue instanceof Number && rightValue instanceof String) {
+				leftValue = ""+leftValue;
+			}
 			return leftValue.equals(rightValue);
 		}
 		if(value == null) {

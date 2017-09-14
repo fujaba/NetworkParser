@@ -27,6 +27,7 @@ THE SOFTWARE.
 public abstract class Value extends GraphMember {
 	public static final String PROPERTY_INITIALIZATION = "initialization";
 	public static final String PROPERTY_TYPE = "type";
+	public static final String PROPERTY_TYPECLAZZ = "typeClazz";
 
 	protected DataType type = null;
 	protected String value = null;
@@ -71,6 +72,15 @@ public abstract class Value extends GraphMember {
 		}
 		if(PROPERTY_TYPE.equalsIgnoreCase(attrName)) {
 			return this.getType();
+		}
+		if(PROPERTY_TYPECLAZZ.equalsIgnoreCase(attrName)) {
+			DataType dataType = this.getType();
+			if(dataType != null) {
+				if (pos > 0) {
+					return dataType.getClazz().getValue(attribute.substring(pos + 1));
+				}
+				return dataType.getClazz();
+			}
 		}
 		return super.getValue(attribute);
 	}

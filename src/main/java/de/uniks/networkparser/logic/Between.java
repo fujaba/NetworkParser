@@ -32,8 +32,8 @@ public class Between implements ObjectCondition, SendableEntityCreator {
 	public static final String FROM = "from";
 	public static final String TO = "to";
 
-	private double fromValue;
-	private double toValue;
+	private Double fromValue;
+	private Double toValue;
 
 	public Between withRange(double from, double to) {
 		this.fromValue = from;

@@ -1,4 +1,4 @@
-package de.uniks.networkparser.parser.generator.condition;
+package de.uniks.networkparser.parser.generator.logic;
 
 import de.uniks.networkparser.graph.Attribute;
 import de.uniks.networkparser.interfaces.ParserCondition;

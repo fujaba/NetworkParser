@@ -205,4 +205,9 @@ public class IfCondition implements ParserCondition, SendableEntityCreator {
 	public boolean isExpression() {
 		return false;
 	}
+	
+	@Override
+	public String toString() {
+		return "{{IF "+expression+"}}"+trueCondition+"{{#else}}"+falseCondition+"{{#ENDIF}}";
+	}
 }

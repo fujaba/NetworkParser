@@ -9,10 +9,8 @@ public class JavaMethod extends BasicGenerator {
 	public JavaMethod() {
 		createTemplate("Method", Template.METHOD,
 				"{{#foreach {{parameter}}}}" +
-				   "{{#if {{item.typeValue.type}}==class}}" +
-				      "{{#ifnot {{item.typeValue.name}}=={{file.member.name}}}}" +
+				   "{{#if {{#AND}}{{item.typeClazz.type}}==class {{#NOT}}{{item.packagename}}=={{file.member.packagename}}{{#ENDNOT}}{{#ENDAND}}}}" +
 				         "{{#import {{item.type(false)}}}}" +
-				      "{{#endif}}" +
 				   "{{#endif}}" +
 				"{{#endfor}}" +
 				"   {{visibility}} {{modifiers} }{{returnType}} {{name}}{{parameterName}}{{#if {{file.member.type}}==interface}};","","{{#else}}",

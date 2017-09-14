@@ -28,12 +28,12 @@ import de.uniks.networkparser.parser.TemplateResultFile;
 import de.uniks.networkparser.parser.TemplateResultFragment;
 import de.uniks.networkparser.parser.TemplateResultModel;
 import de.uniks.networkparser.parser.generator.BasicGenerator;
-import de.uniks.networkparser.parser.generator.condition.DebugCondition;
-import de.uniks.networkparser.parser.generator.condition.JavaListCondition;
-import de.uniks.networkparser.parser.generator.condition.JavaMethodBodyCondition;
 import de.uniks.networkparser.parser.generator.java.JavaClazz;
 import de.uniks.networkparser.parser.generator.java.JavaCreator;
 import de.uniks.networkparser.parser.generator.java.JavaSet;
+import de.uniks.networkparser.parser.generator.logic.DebugCondition;
+import de.uniks.networkparser.parser.generator.logic.JavaListCondition;
+import de.uniks.networkparser.parser.generator.logic.JavaMethodBodyCondition;
 
 public class ModelGenerator extends BasicGenerator {
 	private FeatureSet features = Feature.getAll();

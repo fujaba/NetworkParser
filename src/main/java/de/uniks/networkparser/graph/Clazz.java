@@ -832,9 +832,6 @@ public class Clazz extends GraphEntity {
 		if (PROPERTY_FULLNAME.equalsIgnoreCase(attribute)) {
 			return this.getName(false);
 		}
-		if(PROPERTY_VISIBILITY.equalsIgnoreCase(attribute)) {
-			return this.getModifier().getName();
-		}
 		if(PROPERTY_MODIFIERS.equalsIgnoreCase(attribute)) {
 			CharacterBuffer buffer = new CharacterBuffer();
 			Modifier modifier = this.getModifier();
