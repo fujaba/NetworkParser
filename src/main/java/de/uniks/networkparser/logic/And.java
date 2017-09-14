@@ -35,7 +35,7 @@ public class And extends ListCondition {
 	public void create(CharacterBuffer buffer, TemplateParser parser, LocalisationInterface customTemplate) {
 		buffer.skip();
 		buffer.skip();
-		ObjectCondition expression = parser.parsing(buffer, customTemplate, true, "endand");
+		ObjectCondition expression = parser.parsing(buffer, customTemplate, true, true, "endand");
 		this.with(expression);
 		buffer.skipTo(SPLITEND, false);
 		buffer.skip();

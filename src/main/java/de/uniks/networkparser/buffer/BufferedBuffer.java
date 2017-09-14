@@ -195,6 +195,12 @@ public abstract class BufferedBuffer extends Buffer {
 		CharacterBuffer sb = subSequence(start, position()).trim();
 		return sb;
 	}
+	
+	public String nextString(int count) {
+		int start = position();
+		CharacterBuffer sb = subSequence(start, start+count).trim();
+		return sb.toString();
+	}
 
 	/**
 	 * @param positions		first is start Position, second is Endposition

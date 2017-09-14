@@ -9,10 +9,9 @@ public class JavaSetMethod extends BasicGenerator {
 	public JavaSetMethod() {
 		createTemplate("Method", Template.METHOD,
 				"{{#foreach {{parameter}}}}" +
-				   "{{#if {{item.typeValue.type}}==class}}" +
-				      "{{#ifnot {{item.typeValue.name}}=={{file.member.name}}}}" +
+						"{{#DEBUG}}",
+				   "{{#if {{#AND}}{{item.typeValue.type}}==class}} {{#NOT}}{{file.member.name}}{{#ENDNOT}}{{ENDAND}}}}" +
 				         "{{#import {{item.type(false)}}}}" +
-				      "{{#endif}}" +
 				   "{{#endif}}" +
 				"{{#endfor}}" +
 				"   {{visibility}} {{modifiers} }{{file.member.name}}Set {{name}}{{parameterName}}",

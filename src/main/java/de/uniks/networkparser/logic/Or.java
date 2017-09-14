@@ -1,6 +1,7 @@
 package de.uniks.networkparser.logic;
 
 import java.beans.PropertyChangeListener;
+import java.util.Set;
 
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.interfaces.LocalisationInterface;
@@ -14,7 +15,7 @@ import de.uniks.networkparser.interfaces.TemplateParser;
 
 public class Or extends ListCondition {
 	public static final String TAG="or";
-
+	
 	/**
 	 * Static Method for instance a new Instance of Or Object.
 	 *
@@ -29,10 +30,25 @@ public class Or extends ListCondition {
 	public void create(CharacterBuffer buffer, TemplateParser parser, LocalisationInterface customTemplate) {
 		buffer.skip();
 		buffer.skip();
-		ObjectCondition expression = parser.parsing(buffer, customTemplate, true, "endor");
+		ObjectCondition expression = parser.parsing(buffer, customTemplate, true, false, "endor");
 		this.with(expression);		
+
+		// SKIP TO END
+		buffer.skipTo(SPLITEND, false);
+		buffer.skip();
+		buffer.skip();
 	}
 	
+	@Override
+	public boolean updateSet(Object evt) {
+		Set<ObjectCondition> list = getList();
+		for(ObjectCondition item : list) {
+			if(item.update(evt)) {
+				return true;
+			}
+		}
+		return false;
+	}	
 	@Override
 	public Or with(ObjectCondition... values) {
 		super.with(values);

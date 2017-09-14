@@ -9,6 +9,7 @@ import de.uniks.networkparser.graph.Feature;
 import de.uniks.networkparser.graph.FeatureProperty;
 import de.uniks.networkparser.graph.GraphMember;
 import de.uniks.networkparser.graph.GraphModel;
+import de.uniks.networkparser.graph.util.ClazzSet;
 import de.uniks.networkparser.graph.util.FeatureSet;
 import de.uniks.networkparser.interfaces.ParserCondition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
@@ -20,12 +21,14 @@ import de.uniks.networkparser.logic.ForeachCondition;
 import de.uniks.networkparser.logic.IfCondition;
 import de.uniks.networkparser.logic.ImportCondition;
 import de.uniks.networkparser.logic.Not;
+import de.uniks.networkparser.logic.Or;
 import de.uniks.networkparser.logic.TemplateFragmentCondition;
 import de.uniks.networkparser.parser.Template;
 import de.uniks.networkparser.parser.TemplateResultFile;
 import de.uniks.networkparser.parser.TemplateResultFragment;
 import de.uniks.networkparser.parser.TemplateResultModel;
 import de.uniks.networkparser.parser.generator.BasicGenerator;
+import de.uniks.networkparser.parser.generator.condition.DebugCondition;
 import de.uniks.networkparser.parser.generator.condition.JavaListCondition;
 import de.uniks.networkparser.parser.generator.condition.JavaMethodBodyCondition;
 import de.uniks.networkparser.parser.generator.java.JavaClazz;
@@ -52,6 +55,8 @@ public class ModelGenerator extends BasicGenerator {
 			addParserCondition(new JavaMethodBodyCondition());
 			addParserCondition(new JavaListCondition());
 			addParserCondition(new And());
+			addParserCondition(new Or());
+			addParserCondition(new DebugCondition());
 			addParserCondition(new Not());
 		}
 		return customTemplate;
@@ -123,7 +128,8 @@ public class ModelGenerator extends BasicGenerator {
 			template.withOwner(this);
 		}
 		FeatureProperty codeStyle = getFeature(Feature.CODESTYLE);
-		for (Clazz clazz : model.getClazzes()) {
+		 ClazzSet clazzes = model.getClazzes();
+		for (Clazz clazz : clazzes) {
 			for (BasicGenerator template : templates) {
 				boolean isStandard = codeStyle.match(clazz);
 				TemplateResultFile resultFile = template.executeClazz(clazz, result, isStandard);

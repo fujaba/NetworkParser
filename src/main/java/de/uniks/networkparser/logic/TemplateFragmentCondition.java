@@ -90,12 +90,12 @@ public class TemplateFragmentCondition implements ParserCondition{
 		buffer.nextClean(true);
 		if(buffer.getCurrentChar() != SPLITEND) {
 			// Condition
-			this.condition = parser.parsing(buffer, customTemplate, true);
+			this.condition = parser.parsing(buffer, customTemplate, true, true);
 		}
 		
 		buffer.skipChar(SPLITEND);
 		buffer.skipChar(SPLITEND);
-		this.child = parser.parsing(buffer, customTemplate, false, "endtemplate");
+		this.child = parser.parsing(buffer, customTemplate, false, true, "endtemplate");
 		//Skip }
 		buffer.skip();
 		

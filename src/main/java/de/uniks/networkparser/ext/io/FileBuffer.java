@@ -305,7 +305,7 @@ public class FileBuffer extends Buffer {
 		if(parentFile == null || parentFile.exists()) {
 			return true;
 		}
-		if(parentFile.mkdirs()) {
+		if(parentFile.mkdirs() == false) {
 			return false;
 		}
 		try {

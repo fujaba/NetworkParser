@@ -60,6 +60,9 @@ public class JavaCreator extends BasicGenerator {
 			    "      if (pos > 0)",
 			    "      {",
 			    "         attrName = attribute.substring(0, pos);",
+			    "      }",
+			    "      if(attrName.length()<1) {",
+			    "         return null;",
 			    "      }","",
 		
 				"{{#foreach child}}",

@@ -32,10 +32,17 @@ public abstract class ListCondition implements ParserCondition, SendableEntityCr
 		if(evt instanceof PropertyChangeEvent) {
 			return updatePCE((PropertyChangeEvent) evt);
 		} 
+		return updateSet(evt);
+	}
+	
+	public boolean updateSet(Object evt) {
 		Set<ObjectCondition> list = getList();
 		boolean result=true;
 		for(ObjectCondition item : list) {
 			if(item.update(evt) == false) {
+				if(chain == false) {
+					return false;
+				}
 				result = false;
 			}
 		}
@@ -103,7 +110,10 @@ public abstract class ListCondition implements ParserCondition, SendableEntityCr
 		}
 		if(list instanceof ConditionSet) {
 			for(Object condition : values) {
-				if(condition instanceof ObjectCondition) {
+				if(condition instanceof ChainCondition) {
+					ChainCondition cc = (ChainCondition) condition;
+					list.withList(cc.getList());
+				} else if(condition instanceof ObjectCondition) {
 					if(list.add((ObjectCondition)condition) == false) {
 						return false;
 					}
@@ -121,6 +131,10 @@ public abstract class ListCondition implements ParserCondition, SendableEntityCr
 		ConditionSet  result = new ConditionSet();
 		result.with(this.list);
 		return result;
+	}
+	
+	public void clear() {
+		this.list = null;
 	}
 	
 	public ObjectCondition first() {

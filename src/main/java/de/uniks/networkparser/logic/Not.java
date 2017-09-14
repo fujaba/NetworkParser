@@ -134,7 +134,7 @@ public class Not implements ParserCondition, SendableEntityCreator {
 		buffer.skip();
 		buffer.skip();
 		
-		ObjectCondition expression = parser.parsing(buffer, customTemplate, true, "endnot");
+		ObjectCondition expression = parser.parsing(buffer, customTemplate, true, true, "endnot");
 		this.item = expression;
 		buffer.skipTo(SPLITEND, false);
 		buffer.skip();

@@ -49,7 +49,6 @@ public class ForeachCondition implements ParserCondition {
 					value instanceof LocalisationInterface){
 				ParserCondition parser = (ParserCondition) expression;
 				Object object = parser.getValue((LocalisationInterface)value);
-//				expression.
 //				creator.getValue(value, expression);
 //				
 				LocalisationInterface variablen = (LocalisationInterface) value;
@@ -58,7 +57,6 @@ public class ForeachCondition implements ParserCondition {
 					Collection<?> collection = (Collection<?>) object;
 					for(Object item : collection) {
 						variablen.put(ITEM, item);
-//						value
 						loop.update(value);
 						variablen.put(ITEM, null);
 					}
@@ -72,14 +70,14 @@ public class ForeachCondition implements ParserCondition {
 	public void create(CharacterBuffer buffer, TemplateParser parser, LocalisationInterface customTemplate) {
 //		this.expression = StringCondition.create(buffer.nextToken(false, SPLITEND));
 		buffer.skipChar(SPACE);
-		ObjectCondition expression = parser.parsing(buffer, customTemplate, true);
+		ObjectCondition expression = parser.parsing(buffer, customTemplate, true, true);
 		this.expression = expression;
 		
 		buffer.skipChar(SPLITEND);
 		buffer.skipChar(SPLITEND);
 		
 		// Add Children
-		expression = parser.parsing(buffer, customTemplate, false, "endfor");
+		expression = parser.parsing(buffer, customTemplate, false, true, "endfor");
 		withLoopCondition(expression);
 		buffer.skipChar(SPLITEND);
 		buffer.skipChar(SPLITEND);
@@ -102,5 +100,10 @@ public class ForeachCondition implements ParserCondition {
 	@Override
 	public ForeachCondition getSendableInstance(boolean prototyp) {
 		return new ForeachCondition();
+	}
+	
+	@Override
+	public String toString() {
+		return "{{#FOREACH "+expression+"}}"+loop+"{{#ENDFOREACH}}";
 	}
 }

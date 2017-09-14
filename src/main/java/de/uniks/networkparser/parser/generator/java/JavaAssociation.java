@@ -18,7 +18,7 @@ public class JavaAssociation extends BasicGenerator {
 		
 				"{{#foreach {{parent.parent.child}}}}" +
 				   "{{#if {{item.type}}==class}}" +
-				      "{{#ifnot {{item.name}}=={{file.member.name}}}}" +
+				      "{{#ifnot {{#OR}}{{item.name}}=={{file.member.name}} {{item.packagename}}=={{file.member.packagename}}{{#ENDOR}}}}" +
 				         "{{#import {{item.fullName}}}}" +
 				      "{{#endif}}" +
 				   "{{#endif}}" +

@@ -78,7 +78,7 @@ public class ImportCondition implements ParserCondition {
 		ObjectCondition result = null;
 		ObjectCondition expression;
 		while(buffer.getCurrentChar() != SPLITEND) {
-			expression = parser.parsing(buffer, customTemplate, true, "}");
+			expression = parser.parsing(buffer, customTemplate, true, true, "}");
 //			if(expression instanceof VariableCondition) {
 //				((VariableCondition)expression).withExpression(true);
 //			}

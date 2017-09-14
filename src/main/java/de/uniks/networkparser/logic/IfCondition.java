@@ -175,7 +175,7 @@ public class IfCondition implements ParserCondition, SendableEntityCreator {
 		// {{#if {{#feature}}}}
 //		if(tokenPart.equalsIgnoreCase("ifnot") || tokenPart.equalsIgnoreCase("if")) {
 		buffer.skip();
-		ObjectCondition expression = parser.parsing(buffer, customTemplate, true);
+		ObjectCondition expression = parser.parsing(buffer, customTemplate, true, true);
 		
 		if(this.tag.equalsIgnoreCase("ifnot")) {
 			this.withExpression(Not.create(expression));	
@@ -187,14 +187,14 @@ public class IfCondition implements ParserCondition, SendableEntityCreator {
 		buffer.skipChar(SPLITEND);
 		
 		// Add Children
-		this.withTrue(parser.parsing(buffer, customTemplate, false, "else", "endif"));
+		this.withTrue(parser.parsing(buffer, customTemplate, false, true, "else", "endif"));
 		
 		// ELSE OR ENDIF
 		CharacterBuffer tokenPart = buffer.nextToken(false, SPLITEND);
 		if("else".equalsIgnoreCase(tokenPart.toString())) {
 			buffer.skipChar(SPLITEND);
 			buffer.skipChar(SPLITEND);
-			this.withFalse(parser.parsing(buffer, customTemplate, false, "endif"));
+			this.withFalse(parser.parsing(buffer, customTemplate, false, true, "endif"));
 			buffer.skipTo(SPLITEND, false);
 		}
 		buffer.skipChar(SPLITEND);

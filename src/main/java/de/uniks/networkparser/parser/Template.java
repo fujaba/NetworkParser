@@ -32,8 +32,7 @@ public class Template implements TemplateParser {
 	private SimpleList<String> imports = new SimpleList<String>();
 
 	private SimpleList<String> variables = new SimpleList<String>();
-	
-	
+
 	public Template(String name) {
 		this.name = name;
 	}
@@ -92,10 +91,10 @@ public class Template implements TemplateParser {
 		if(variable) {
 			this.variables.clear();
 		}
-		return parsing(template, customTemplate, false);
+		return parsing(template, customTemplate, false, true);
 	}
 	
-	public ObjectCondition parsing(CharacterBuffer buffer, LocalisationInterface customTemplate, boolean isExpression, String... stopWords) {
+	public ObjectCondition parsing(CharacterBuffer buffer, LocalisationInterface customTemplate, boolean isExpression, boolean allowSpace, String... stopWords) {
 		int start=buffer.position(), end;
 		ObjectCondition child = null;
 		ChainCondition parent = new ChainCondition();
@@ -189,7 +188,7 @@ public class Template implements TemplateParser {
 							buffer.skip();
 							Equals equalsExpression = new Equals();
 							equalsExpression.withLeft(child);
-							child = parsing(buffer, customTemplate, true, stopWords);
+							child = parsing(buffer, customTemplate, true, allowSpace, stopWords);
 							equalsExpression.withRight(child);
 
 							if(firstChar == '!') {
@@ -214,7 +213,11 @@ public class Template implements TemplateParser {
 						if(buffer.getCurrentChar() == ' ') {
 							start++;
 							buffer.skip();
-							continue;
+							if(allowSpace) {
+								continue;
+							}else {
+								break;
+							}
 						}
 					}
 				}
@@ -255,8 +258,13 @@ public class Template implements TemplateParser {
 			if(isExpression) {
 				if (buffer.charAt(start) == SPLITSTART) {
 					VariableCondition.create(token, isExpression);
+				}else {
+					child = VariableCondition.create(token, false);
+//					if(buffer.getCurrentChar()==SPLITEND) {
+//						buffer.skip();
+//						buffer.skip();
+//					}
 				}
-				child = VariableCondition.create(token, false);
 			} else {
 				child = StringCondition.create(token);
 			}
