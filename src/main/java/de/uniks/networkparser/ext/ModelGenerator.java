@@ -139,9 +139,8 @@ public class ModelGenerator extends BasicGenerator {
 			}
 		}
 		if (writeFiles) {
-			for (TemplateResultFile file : result) {
-				FileBuffer.writeFile(rootDir + file.getFileName(), file.toString());
-			}
+			ModelWriter writer = new ModelWriter();
+			writer.writeModel(rootDir, result);
 		}
 		return result;
 	}

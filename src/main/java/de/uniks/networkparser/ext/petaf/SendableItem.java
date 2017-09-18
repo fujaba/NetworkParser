@@ -36,15 +36,14 @@ public abstract class SendableItem implements SendableEntity {
 		return true;
 	}
 
-	private PropertyChangeSupport getPropertyChangeSupport() {
+	protected PropertyChangeSupport getPropertyChangeSupport() {
 		if (listeners == null) {
 			listeners = new PropertyChangeSupport(this);
 		}
 		return listeners;
 	}
 
-	public void firePropertyChange(String propertyName, Object oldValue,
-			Object newValue) {
+	public void firePropertyChange(String propertyName, Object oldValue, Object newValue) {
 		boolean change = false;
 		if (oldValue == null) {
 			change = (newValue != null);
@@ -73,6 +72,9 @@ public abstract class SendableItem implements SendableEntity {
 		}
 		if(listeners != null) {
 			listeners.firePropertyChange(propertyName, oldValue, newValue);
+		}
+		if(updateListener != null) {
+			updateListener.update(new SimpleEvent(this, propertyName, oldValue, newValue));
 		}
 		return true;
 	}

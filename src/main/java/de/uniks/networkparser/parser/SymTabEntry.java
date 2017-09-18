@@ -1,5 +1,7 @@
 package de.uniks.networkparser.parser;
 
+import java.util.ArrayList;
+
 /*
 NetworkParser
 The MIT License
@@ -47,6 +49,21 @@ public class SymTabEntry {
 
 	private SymTabEntry next;
 	private SymTabEntry prev;
+	
+	// SDMLIb Parser
+	private String kind;
+	private String memberName;
+	private int startPos;
+	private int endPos;
+	private int annotationsStartPos;
+	private int preCommentStartPos;
+	private int preCommentEndPos;
+	private int bodyStartPos;
+	private String modifiers;
+	private String throwsTags;
+	private String annotations;
+
+	private ArrayList<ArrayList<String>> initCallSequence;
 
 	public String getValue() {
 		return this.value;
@@ -140,5 +157,111 @@ public class SymTabEntry {
 		if(this.next != null) {
 			this.next.toString(sb);
 		}
+	}
+
+	public String getKind() {
+		return kind;
+	}
+
+	public SymTabEntry withKind(String kind) {
+		this.kind = kind;
+		return this;
+	}
+
+	public String getMemberName() {
+		return memberName;
+	}
+
+	public SymTabEntry withMemberName(String memberName) {
+		this.memberName = memberName;
+		return this;
+	}
+
+	public SymTabEntry withStartPos(int pos) {
+		this.startPos = pos;
+		return this;
+	}
+	
+	public int getStartPos() {
+		return startPos;
+	}
+	
+	public SymTabEntry withEndPos(int pos) {
+		this.endPos = pos;
+		return this;
+	}
+	
+	public int getEndPos() {
+		return endPos;
+	}
+
+	public SymTabEntry withAnnotationsStartPos(int pos) {
+		this.annotationsStartPos = pos;
+		return this;
+	}
+	
+	public int getAnnotationsStartPos() {
+		return annotationsStartPos;
+	}
+
+	public SymTabEntry withPreCommentStartPos(int pos) {
+		this.preCommentStartPos = pos;
+		return this;
+	}
+	
+	public int getPreCommentStartPos() {
+		return preCommentStartPos;
+	}
+	public SymTabEntry withPreCommentEndPos(int pos) {
+		this.preCommentEndPos = pos;
+		return this;
+	}
+	
+	public int getPreCommentEndPos() {
+		return preCommentEndPos;
+	}
+
+	public SymTabEntry withBodyStartPos(int pos) {
+		this.bodyStartPos = pos;
+		return this;
+	}
+	
+	public int getBodyStartPos() {
+		return bodyStartPos;
+	}
+
+	public SymTabEntry withModifiers(String modifiers) {
+		this.modifiers= modifiers;
+		return this;
+	}
+	
+	public String getModifiers() {
+		return modifiers;
+	}
+
+	public SymTabEntry withThrowsTags(String throwsTags) {
+		this.throwsTags = throwsTags;
+		return this;
+	}
+	public String getThrowsTags() {
+		return throwsTags;
+	}
+
+	public SymTabEntry withAnnotations(String annotations) {
+		this.annotations = annotations;
+		return this;
+	}
+	
+	public String getAnnotations() {
+		return annotations;
+	}
+
+	public SymTabEntry withInitSequence(ArrayList<ArrayList<String>> initCallSequence) {
+		this.initCallSequence = initCallSequence;
+		return this;
+	}
+	
+	public ArrayList<ArrayList<String>> getInitCallSequence() {
+		return initCallSequence;
 	}
 }

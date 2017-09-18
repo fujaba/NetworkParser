@@ -7,13 +7,12 @@ import de.uniks.networkparser.interfaces.ParserCondition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.TemplateParser;
 
-// {{#template PACKAGE {{CONDITION}}}}{{#endtemplate}}
+// {{#template PACKAGE {{CONDITION}}}}{{#endtemplate}} 
 public class TemplateFragmentCondition implements ParserCondition{
 	public static final String PROPERTY_CLONE="clone";
 	public static final String PROPERTY_FILE="file";
 	public static final String PROPERTY_KEY="key";
 	public static final String PROPERTY_TEMPLATE="template";
-
 	public static final String TAG="template"; 
 
 	private String id;

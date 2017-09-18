@@ -881,6 +881,30 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence {
 		}
 		return -1;
 	}
+	
+	public int indexOf(CharSequence str, int fromIndex) {
+		final int max = length();
+		if (fromIndex < 0) {
+			fromIndex = 0;
+		} else if (fromIndex >= length) {
+			// Note: fromIndex might be near -1>>>1.
+			return -1;
+		}
+		if(str == null) {
+			return -1;
+		}
+		int len = str.length();
+		int pos = 0;
+		for (int i = fromIndex; i < max; i++) {
+			if (buffer[i+start] == str.charAt(pos)) {
+				pos++;
+				if(pos==len) {
+					return i - pos;
+				}
+			}
+		}
+		return -1;
+	}
 
 	public int lastIndexOf(char ch) {
 		for (int i = length - 1; i >= start; i--) {
@@ -953,6 +977,27 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence {
 			return "";
 		}
 		return new String(buffer, position, length-position);
+	}
+
+	public CharacterBuffer insert(int offset, String values) {
+	    if ((offset < 0) || (offset > length())) {
+	        return this;
+	    }
+	    if (values == null)
+	    	values = "null";
+	    int len = values.length();
+	    if(this.length + len > buffer.length) {
+			int newCapacity = (this.length + len) * 2 + 2;
+			char[] copy = new char[newCapacity];
+			System.arraycopy(buffer, this.start, copy, 0, length);
+			buffer = copy;
+			this.start = 0;
+		}
+	    // Move String 
+	    System.arraycopy(buffer, offset, buffer, offset + len, this.length - offset);
+	    values.getChars(0, len, buffer, offset);
+	    this.length += len;
+	    return this;
 	}
 
 	public boolean add(Object... values) {

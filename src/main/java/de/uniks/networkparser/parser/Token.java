@@ -32,6 +32,12 @@ public class Token
 	public int endPos;
 
 	public StringBuilder text = new StringBuilder();
+	
+	public int preCommentStartPos;
+	public int preCommentEndPos;
+	
+	//SDMLib Value
+	public double value;
 
 	public String name ()
 	{

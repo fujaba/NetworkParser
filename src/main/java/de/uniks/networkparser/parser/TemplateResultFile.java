@@ -203,3 +203,4 @@ public class TemplateResultFile extends SortedSet<TemplateResultFragment> implem
 		return this;
 	}
 }
+  

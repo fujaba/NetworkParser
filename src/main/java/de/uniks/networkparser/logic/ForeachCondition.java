@@ -20,6 +20,8 @@ public class ForeachCondition implements ParserCondition {
 	public static final String TAG="foreach";
 	private ObjectCondition expression;
 	private ObjectCondition loop;
+	private ObjectCondition preLoopCondition;
+	private ObjectCondition postLoopCondition;
 	@Override
 	public String
 	
@@ -58,11 +60,18 @@ public class ForeachCondition implements ParserCondition {
 					Collection<?> collection = (Collection<?>) object;
 					int pos=0;
 					for(Object item : collection) {
-						variablen.put(ITEMPOS, pos++);
+						variablen.put(ITEMPOS, pos);
 						variablen.put(ITEM, item);
+						if(this.preLoopCondition != null && pos>0) {
+							this.preLoopCondition.update(value);
+						}
 						loop.update(value);
+						if(this.postLoopCondition != null && pos>0) {
+							this.postLoopCondition.update(value);
+						}
 						variablen.put(ITEM, null);
 						variablen.put(ITEMPOS, null);
+						pos++;
 					}
 				}
 			}
@@ -74,16 +83,20 @@ public class ForeachCondition implements ParserCondition {
 	public void create(CharacterBuffer buffer, TemplateParser parser, LocalisationInterface customTemplate) {
 //		this.expression = StringCondition.create(buffer.nextToken(false, SPLITEND));
 		buffer.skipChar(SPACE);
-		ObjectCondition expression = parser.parsing(buffer, customTemplate, true, true);
-		this.expression = expression;
+		this.expression  = parser.parsing(buffer, customTemplate, true, true);
 		
 		buffer.skipChar(SPLITEND);
+		if(buffer.getCurrentChar() != SPLITEND) {
+			this.preLoopCondition = parser.parsing(buffer, customTemplate, true, true);
+		}
 		buffer.skipChar(SPLITEND);
 		
 		// Add Children
-		expression = parser.parsing(buffer, customTemplate, false, true, "endfor");
-		withLoopCondition(expression);
+		this.loop = parser.parsing(buffer, customTemplate, false, true, "endfor");
 		buffer.skipChar(SPLITEND);
+		if(buffer.getCurrentChar() != SPLITEND) {
+			this.postLoopCondition = parser.parsing(buffer, customTemplate, true, true);
+		}
 		buffer.skipChar(SPLITEND);
 	}
 
