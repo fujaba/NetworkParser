@@ -1,5 +1,8 @@
 package de.uniks.networkparser.ext;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.Iterator;
 
 import de.uniks.networkparser.TextItems;
@@ -128,8 +131,28 @@ public class ModelGenerator extends BasicGenerator {
 			template.withOwner(this);
 		}
 		FeatureProperty codeStyle = getFeature(Feature.CODESTYLE);
-		 ClazzSet clazzes = model.getClazzes();
+		ClazzSet clazzes = model.getClazzes();
+		
+		File javaFile = null;
+		String fileBody = null;
+		
 		for (Clazz clazz : clazzes) {
+			
+			// check for each clazz, if a matching file already exists
+			javaFile = new File(rootDir + clazz.getName(true) + ".java");	 
+			
+			if (javaFile.exists()) {
+				// check existing file for possible changes
+				fileBody = "";
+				try {
+					fileBody = new String(Files.readAllBytes(javaFile.toPath()));
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				
+				// TODO add parsing code here
+			}
+			
 			for (BasicGenerator template : templates) {
 				boolean isStandard = codeStyle.match(clazz);
 				TemplateResultFile resultFile = template.executeClazz(clazz, result, isStandard);
@@ -143,6 +166,7 @@ public class ModelGenerator extends BasicGenerator {
 			writer.writeModel(rootDir, result);
 		}
 		return result;
+
 	}
 
 	@Override
@@ -226,4 +250,5 @@ public class ModelGenerator extends BasicGenerator {
 		TemplateResultFragment generate = template.generate(model, parameters, member);
 		return generate;
 	}
+	
 }
