@@ -386,4 +386,19 @@ public abstract class GraphMember {
 		}
 		return this;
 	}
+	
+	public boolean remove(GraphMember member) {
+		if(member == null) {
+			return true;
+		}
+		if(this.children instanceof GraphSimpleSet) {
+			GraphSimpleSet list = (GraphSimpleSet) this.children;
+			return list.remove(member);
+		}
+		if(this.children == member) {
+			this.children = null;
+			return true;
+		}
+		return false;
+	}
 }
