@@ -857,15 +857,8 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence {
 		return indexOf(ch, 0);
 	}
 	
-	public int indexOf(String ch) {
-		int pos = 0;
-		for(int i=0;i<ch.length();i++) {
-			pos = indexOf(ch.charAt(i), pos);
-			if(pos<0) {
-				break;
-			}
-		}
-		return pos;
+	public int indexOf(CharSequence value) {
+		return indexOf(value, 0);
 	}
 
 	public int indexOf(int ch, int fromIndex) {
@@ -903,6 +896,8 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence {
 				if(pos==len) {
 					return i - pos;
 				}
+			} else {
+				pos = 0;
 			}
 		}
 		return -1;

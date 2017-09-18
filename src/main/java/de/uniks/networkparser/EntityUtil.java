@@ -51,7 +51,7 @@ public class EntityUtil {
 	 * @param d		a double.
 	 * @return 		a String.
 	 */
-	public static final String doubleToString(double d) {
+	public  final String doubleToString(double d) {
 		if (Double.isInfinite(d) || Double.isNaN(d)) {
 			return "null";
 		}
@@ -732,6 +732,15 @@ public class EntityUtil {
 	private static final String primitiveTypes = " void String char Char boolean Boolean byte Byte Object java.util.Date ";
 	private static final String numericTypes = " long Long short Short int Integer byte Byte float Float double Double ";
 	private static final String javaLang="java.lang.";
+	private static final String modifier=" public protected private static abstract final native synchronized transient volatile strictfp ";
+	
+	public static final boolean isModifier(String type) {
+		if (type == null) {
+			return false;
+		}
+		return modifier.indexOf(type) >= 0;
+	}
+	
 	public static final boolean isPrimitiveType(String type) {
 		if (type == null) {
 			return false;
