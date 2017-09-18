@@ -320,8 +320,8 @@ public class SDMLibParser {
 			// FIXME please
 			if (annotation != "") {
 				symTab.put(ANNOTATION + ":" + annotation.substring(1),
-						new SymTabEntry().withKind(ANNOTATION).withMemberName(annotation.substring(1))
-								.withEndPos(endPosAnnotation).withStartPos(startPosAnnotations));
+						new SymTabEntry().withValue(ANNOTATION).withMemberName(annotation.substring(1))
+								.withPosition(startPosAnnotations, endPosAnnotation));
 			}
 
 			// nextRealToken();
@@ -340,10 +340,8 @@ public class SDMLibParser {
 		endOfClassName = currentRealToken.endPos;
 
 		symTab.put(classTyp + ":" + className,
-				new SymTabEntry().withStartPos(startPosClazz).withKind(classTyp).withMemberName(className)
-						.withEndPos(endOfClassName))
-				.withAnnotationsStartPos(startPosAnnotations).withPreCommentStartPos(preCommentStartPos)
-				.withPreCommentEndPos(preCommentEndPos);
+				new SymTabEntry().withPosition(startPosClazz, endOfClassName).withValue(classTyp).withMemberName(className))
+				.withAnnotationsStart(startPosAnnotations).withPreComment(preCommentStartPos, preCommentEndPos);
 
 		// skip name
 		nextRealToken();
@@ -356,8 +354,8 @@ public class SDMLibParser {
 
 			skip("extends");
 
-			symTab.put(EXTENDS + ":" + currentRealWord(), new SymTabEntry().withBodyStartPos(currentRealToken.startPos)
-					.withKind(EXTENDS).withMemberName(currentRealWord()).withEndPos(currentRealToken.endPos));
+			symTab.put(EXTENDS + ":" + currentRealWord(), new SymTabEntry().withPosition(currentRealToken.startPos, currentRealToken.endPos)
+					.withValue(EXTENDS).withMemberName(currentRealWord()));
 
 			// skip superclass name
 			parseTypeRef();
@@ -375,8 +373,8 @@ public class SDMLibParser {
 
 			while (!currentRealKindEquals(EOF) && !currentRealKindEquals('{')) {
 				symTab.put(IMPLEMENTS + ":" + currentRealWord(),
-						new SymTabEntry().withBodyStartPos(currentRealToken.startPos).withKind(IMPLEMENTS)
-								.withMemberName(currentRealWord()).withEndPos(currentRealToken.endPos));
+						new SymTabEntry().withPosition(currentRealToken.startPos, currentRealToken.endPos).withValue(IMPLEMENTS)
+								.withMemberName(currentRealWord()));
 
 				// skip interface name
 				nextRealToken();
@@ -512,11 +510,9 @@ public class SDMLibParser {
 
 			String constructorSignature = SDMLibParser.CONSTRUCTOR + ":" + className + params;
 			symTab.put(constructorSignature,
-					new SymTabEntry().withMemberName(constructorSignature).withKind(CONSTRUCTOR)
-							.withType(constructorSignature + ":" + CONSTRUCTOR).withStartPos(startPos)
-							.withEndPos(previousRealToken.startPos).withBodyStartPos(methodBodyStartPos)
-							.withModifiers(modifiers).withPreCommentStartPos(preCommentStartPos)
-							.withPreCommentEndPos(preCommentEndPos).withAnnotationsStartPos(annotationsStartPos));
+					new SymTabEntry().withMemberName(constructorSignature).withValue(CONSTRUCTOR)
+							.withType(constructorSignature + ":" + CONSTRUCTOR).withPosition(startPos, previousRealToken.startPos).withBodyStartPos(methodBodyStartPos)
+							.withModifiers(modifiers).withPreComment(preCommentStartPos, preCommentEndPos).withAnnotationsStart(annotationsStartPos));
 
 			checkSearchStringFound(constructorSignature, startPos);
 
@@ -539,10 +535,10 @@ public class SDMLibParser {
 				skip(";");
 
 				symTab.put(ATTRIBUTE + ":" + memberName,
-						new SymTabEntry().withMemberName(memberName).withKind(ATTRIBUTE).withType(type)
-								.withStartPos(startPos).withEndPos(previousRealToken.startPos).withModifiers(modifiers)
-								.withPreCommentStartPos(preCommentStartPos).withPreCommentEndPos(preCommentEndPos)
-								.withAnnotationsStartPos(annotationsStartPos)
+						new SymTabEntry().withMemberName(memberName).withValue(ATTRIBUTE).withType(type)
+								.withPosition(startPos, previousRealToken.startPos).withModifiers(modifiers)
+								.withPreComment(preCommentStartPos, preCommentEndPos)
+								.withAnnotationsStart(annotationsStartPos)
 
 				);
 
@@ -553,10 +549,10 @@ public class SDMLibParser {
 				skip(";");
 
 				symTab.put(ATTRIBUTE + ":" + memberName,
-						new SymTabEntry().withMemberName(memberName).withKind(ATTRIBUTE).withType(type)
-								.withStartPos(startPos).withEndPos(previousRealToken.startPos).withModifiers(modifiers)
-								.withPreCommentStartPos(preCommentStartPos).withPreCommentEndPos(preCommentEndPos)
-								.withAnnotationsStartPos(annotationsStartPos));
+						new SymTabEntry().withMemberName(memberName).withValue(ATTRIBUTE).withType(type)
+								.withPosition(startPos, previousRealToken.startPos).withModifiers(modifiers)
+								.withPreComment(preCommentStartPos, preCommentEndPos)
+								.withAnnotationsStart(annotationsStartPos));
 
 				checkSearchStringFound(ATTRIBUTE + ":" + memberName, startPos);
 			} else if (currentRealKindEquals('(')) {
@@ -587,12 +583,11 @@ public class SDMLibParser {
 
 				String methodSignature = SDMLibParser.METHOD + ":" + memberName + params;
 				symTab.put(methodSignature,
-						new SymTabEntry().withMemberName(methodSignature).withKind(METHOD).withThrowsTags(throwsTags)
-								.withType(methodSignature + ":" + type).withStartPos(startPos)
-								.withEndPos(previousRealToken.startPos).withBodyStartPos(methodBodyStartPos)
+						new SymTabEntry().withMemberName(methodSignature).withValue(METHOD).withThrowsTags(throwsTags)
+								.withType(methodSignature + ":" + type).withPosition(startPos, previousRealToken.startPos).withBodyStartPos(methodBodyStartPos)
 								.withAnnotations(annotations).withModifiers(modifiers)
-								.withPreCommentStartPos(preCommentStartPos).withPreCommentEndPos(preCommentEndPos)
-								.withAnnotationsStartPos(annotationsStartPos));
+								.withPreComment(preCommentStartPos, preCommentEndPos)
+								.withAnnotationsStart(annotationsStartPos));
 
 				checkSearchStringFound(methodSignature, startPos);
 				// System.out.println(className + " : " + methodSignature);
@@ -600,18 +595,14 @@ public class SDMLibParser {
 				if (",".equalsIgnoreCase(memberName) || ";".equalsIgnoreCase(memberName)
 						|| !";".equals(type) && currentRealKindEquals(EOF)) {
 					String enumSignature = SDMLibParser.ENUMVALUE + ":" + type;
-					symTab.put(enumSignature, new SymTabEntry().withMemberName(type).withKind(ENUMVALUE)
-							.withType(enumSignature + ":" + className).withStartPos(startPos)
-							.withEndPos(previousRealToken.startPos).withBodyStartPos(methodBodyStartPos)
-							.withModifiers(modifiers).withPreCommentStartPos(preCommentStartPos)
-							.withPreCommentEndPos(preCommentEndPos).withAnnotationsStartPos(annotationsStartPos));
+					symTab.put(enumSignature, new SymTabEntry().withMemberName(type).withValue(ENUMVALUE)
+							.withType(enumSignature + ":" + className).withPosition(startPos, previousRealToken.startPos).withBodyStartPos(methodBodyStartPos)
+							.withModifiers(modifiers).withPreComment(preCommentStartPos, preCommentEndPos).withAnnotationsStart(annotationsStartPos));
 				} else {
 					String enumSignature = SDMLibParser.ENUMVALUE + ":" + type;
-					symTab.put(enumSignature, new SymTabEntry().withMemberName(type).withKind(ENUMVALUE)
-							.withType(enumSignature + ":" + className).withStartPos(startPos)
-							.withEndPos(previousRealToken.startPos).withBodyStartPos(methodBodyStartPos)
-							.withModifiers(modifiers).withPreCommentStartPos(preCommentStartPos)
-							.withPreCommentEndPos(preCommentEndPos).withAnnotationsStartPos(annotationsStartPos));
+					symTab.put(enumSignature, new SymTabEntry().withMemberName(type).withValue(ENUMVALUE)
+							.withType(enumSignature + ":" + className).withPosition(startPos, previousRealToken.startPos).withBodyStartPos(methodBodyStartPos)
+							.withModifiers(modifiers).withPreComment(preCommentStartPos, preCommentEndPos).withAnnotationsStart(annotationsStartPos));
 
 					skipTo(';');
 					skip(";");
@@ -857,8 +848,7 @@ public class SDMLibParser {
 
 		skip(";");
 
-		symTab.put(IMPORT + ":" + importName, new SymTabEntry().withMemberName(importName).withModifiers(modifier)
-				.withStartPos(startPos).withEndPos(previousRealToken.endPos));
+		symTab.put(IMPORT + ":" + importName, new SymTabEntry().withMemberName(importName).withModifiers(modifier).withPosition(startPos, previousRealToken.endPos));
 
 	}
 
@@ -869,8 +859,7 @@ public class SDMLibParser {
 		skip(";");
 		checkSearchStringFound(PACKAGE, startPos);
 
-		symTab.put(PACKAGE + ":" + packageName, new SymTabEntry().withMemberName(packageName).withStartPos(startPos)
-				.withEndPos(previousRealToken.endPos));
+		symTab.put(PACKAGE + ":" + packageName, new SymTabEntry().withMemberName(packageName).withPosition(startPos, previousRealToken.endPos));
 	}
 
 	private void checkSearchStringFound(String foundElem, int startPos) {
@@ -1475,7 +1464,7 @@ public class SDMLibParser {
 
 			if (!initCallSequence.isEmpty()) {
 				SymTabEntry initSequence = new SymTabEntry().withValue(varName).withType(type)
-						.withInitSequence(initCallSequence).withStartPos(startPos).withEndPos(previousRealToken.endPos);
+						.withInitSequence(initCallSequence).withPosition(startPos, previousRealToken.endPos);
 				localVarTable.put(varName, initSequence);
 			}
 
@@ -1513,7 +1502,7 @@ public class SDMLibParser {
 			}
 
 			SymTabEntry initSequence = new SymTabEntry().withValue(initElements.get(0).get(0)).withType(varName)
-					.withInitSequence(initElements).withStartPos(startPos).withEndPos(previousRealToken.endPos);
+					.withInitSequence(initElements).withPosition(startPos, previousRealToken.endPos);
 
 			String nameString = varName + "_" + initSequence.hashCode();
 			localVarTable.put(nameString, initSequence);

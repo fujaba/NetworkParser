@@ -23,6 +23,7 @@ import de.uniks.networkparser.logic.ImportCondition;
 import de.uniks.networkparser.logic.Not;
 import de.uniks.networkparser.logic.Or;
 import de.uniks.networkparser.logic.TemplateFragmentCondition;
+import de.uniks.networkparser.parser.ParserEntity;
 import de.uniks.networkparser.parser.Template;
 import de.uniks.networkparser.parser.TemplateResultFile;
 import de.uniks.networkparser.parser.TemplateResultFragment;
@@ -225,5 +226,10 @@ public class ModelGenerator extends BasicGenerator {
 
 		TemplateResultFragment generate = template.generate(model, parameters, member);
 		return generate;
+	}
+	
+	public Clazz parseSourceCode(String content) {
+		Clazz clazz = ParserEntity.create(content);
+		return clazz;
 	}
 }

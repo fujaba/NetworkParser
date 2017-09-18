@@ -234,7 +234,7 @@ public abstract class GraphMember {
 		return parentNode;
 	}
 
-	protected GraphMember withChildren(GraphMember... values) {
+	GraphMember withChildren(GraphMember... values) {
 		// Do Nothing
 		if (values == null || (values.length == 1 && (this.children == values[0]))) {
 			return this;

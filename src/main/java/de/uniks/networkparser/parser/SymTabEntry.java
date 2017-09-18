@@ -34,6 +34,7 @@ public class SymTabEntry {
 	public static final String TYPE_EXTENDS = "extends";
 	public static final String TYPE_IMPLEMENTS = "implements";
 
+	public static final String TYPE_ANNOTATION = "annotation";
 	public static final String TYPE_ATTRIBUTE = "attribute";
 	public static final String TYPE_ENUMVALUE = "enumvalue";
 	public static final String TYPE_METHOD = "method";
@@ -51,19 +52,21 @@ public class SymTabEntry {
 	private SymTabEntry prev;
 	
 	// SDMLIb Parser
-	private String kind;
 	private String memberName;
 	private int startPos;
 	private int endPos;
 	private int annotationsStartPos;
 	private int preCommentStartPos;
 	private int preCommentEndPos;
-	private int bodyStartPos;
 	private String modifiers;
 	private String throwsTags;
 	private String annotations;
 
 	private ArrayList<ArrayList<String>> initCallSequence;
+
+	private int annotationsEndPos;
+
+	private int bodyStartPos;
 
 	public String getValue() {
 		return this.value;
@@ -159,15 +162,6 @@ public class SymTabEntry {
 		}
 	}
 
-	public String getKind() {
-		return kind;
-	}
-
-	public SymTabEntry withKind(String kind) {
-		this.kind = kind;
-		return this;
-	}
-
 	public String getMemberName() {
 		return memberName;
 	}
@@ -177,8 +171,9 @@ public class SymTabEntry {
 		return this;
 	}
 
-	public SymTabEntry withStartPos(int pos) {
-		this.startPos = pos;
+	public SymTabEntry withPosition(int start, int end) {
+		this.startPos = start;
+		this.endPos = end;
 		return this;
 	}
 	
@@ -186,48 +181,41 @@ public class SymTabEntry {
 		return startPos;
 	}
 	
-	public SymTabEntry withEndPos(int pos) {
-		this.endPos = pos;
-		return this;
-	}
-	
 	public int getEndPos() {
 		return endPos;
 	}
 
-	public SymTabEntry withAnnotationsStartPos(int pos) {
-		this.annotationsStartPos = pos;
+	public SymTabEntry withAnnotations(int start, int end) {
+		this.annotationsStartPos = start;
+		this.annotationsEndPos = end;
 		return this;
+	}
+	
+	public SymTabEntry withAnnotationsStart(int start) {
+		this.annotationsStartPos = start;
+		return this;
+	}
+	
+	public int getAnnotationsEndPos() {
+		return annotationsEndPos;
 	}
 	
 	public int getAnnotationsStartPos() {
 		return annotationsStartPos;
 	}
 
-	public SymTabEntry withPreCommentStartPos(int pos) {
-		this.preCommentStartPos = pos;
+	public SymTabEntry withPreComment(int start, int end) {
+		this.preCommentStartPos = start;
+		this.preCommentEndPos = end;
 		return this;
 	}
 	
 	public int getPreCommentStartPos() {
 		return preCommentStartPos;
 	}
-	public SymTabEntry withPreCommentEndPos(int pos) {
-		this.preCommentEndPos = pos;
-		return this;
-	}
-	
+
 	public int getPreCommentEndPos() {
 		return preCommentEndPos;
-	}
-
-	public SymTabEntry withBodyStartPos(int pos) {
-		this.bodyStartPos = pos;
-		return this;
-	}
-	
-	public int getBodyStartPos() {
-		return bodyStartPos;
 	}
 
 	public SymTabEntry withModifiers(String modifiers) {
@@ -263,5 +251,14 @@ public class SymTabEntry {
 	
 	public ArrayList<ArrayList<String>> getInitCallSequence() {
 		return initCallSequence;
+	}
+
+	public SymTabEntry withBodyStartPos(int value) {
+		this.bodyStartPos = value;
+		return this;
+	}
+	
+	public int getBodyStartPos() {
+		return bodyStartPos;
 	}
 }

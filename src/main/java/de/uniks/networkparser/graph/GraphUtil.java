@@ -102,7 +102,7 @@ public class GraphUtil {
 	public static final CharacterBuffer getMethodParameters(Method method, boolean shortName) {
 		return method.getParameterString(shortName, false);
 	}
-
+	
 	public static final SimpleSet<Association> getOtherAssociations(Clazz clazz) {
 		SimpleSet<Association> collection = new SimpleSet<Association>();
 		for(Association assoc : clazz.getAssociations()) {
