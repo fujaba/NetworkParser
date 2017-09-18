@@ -651,11 +651,13 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence {
 		if(position == start ) {
 			start++;
 			return this.buffer[position];
-		} else if(position == length ) {
+		} else if(position == length-1 ) {
 		} else {
-			char[] copy = new char[this.buffer.length];
-			System.arraycopy(this.buffer, start, copy, 0, position - 1);
-			System.arraycopy(this.buffer, position + 1, copy, position, length -position);
+			char[] copy = new char[this.buffer.length - 1];
+			System.arraycopy(this.buffer, start, copy, 0, position);
+			if(length - position - 1 > 0) {
+				System.arraycopy(this.buffer, position + 1, copy, position, length -position -1);
+			}
 			start = 0;
 		}
 		length--;
