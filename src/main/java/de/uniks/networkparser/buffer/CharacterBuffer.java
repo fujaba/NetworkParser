@@ -885,17 +885,17 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence {
 			// Note: fromIndex might be near -1>>>1.
 			return -1;
 		}
-		if(str == null) {
+		if(str == null || str.length() == 0) {
 			return -1;
 		}
-		int len = str.length();
+		final int len = str.length() - 1;
 		int pos = 0;
 		for (int i = fromIndex; i < max; i++) {
 			if (buffer[i+start] == str.charAt(pos)) {
-				pos++;
 				if(pos==len) {
 					return i - pos;
 				}
+				pos++;
 			} else {
 				pos = 0;
 			}
