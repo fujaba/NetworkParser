@@ -24,30 +24,27 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-public class Token 
-{
+public class Token {
 	public char kind;
 
 	public int startPos;
 	public int endPos;
 
 	public StringBuilder text = new StringBuilder();
-	
+
 	public int preCommentStartPos;
 	public int preCommentEndPos;
-	
-	//SDMLib Value
+
+	// SDMLib Value
 	public double value;
 
-	public String name ()
-	{
+	public String name() {
 		return this.text.toString();
 	}
 
 	@Override
-   public String toString()
-	{
-      return kind + " " + name();
-	   
+	public String toString() {
+		return kind + " " + name();
+
 	}
 }
