@@ -152,7 +152,11 @@ public class ModelGenerator extends BasicGenerator {
 					// check existing file for possible changes
 					if(content != null) {
 						ParserEntity parser = new ParserEntity();
-						parser.parse(content);
+						try {
+							parser.parse(content);
+						}catch (Exception e) {
+							System.err.println("Cant parse File:"+file.getFileName());
+						}
 						parser.addMemberToModel();
 					}
 				}

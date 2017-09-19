@@ -67,7 +67,6 @@ public class JavaClazz extends BasicGenerator{
 					 	"{{#endif}}"+
 					 			
 					 	"{{#if {{type}}==enum}}",
-					 	"{{#DEBUG}}"+
 					 		"{{#FOREACH {{literal}}},}"+
 				 				"{{item.name}}"+
 					 			    "{{#IF {{item.value.size}}==>0}}("+

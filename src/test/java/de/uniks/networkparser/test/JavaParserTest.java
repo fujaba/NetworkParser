@@ -1,10 +1,11 @@
 package de.uniks.networkparser.test;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import org.junit.Assert;
+
 import org.junit.Test;
+
+import de.uniks.networkparser.buffer.CharacterBuffer;
+import de.uniks.networkparser.ext.io.FileBuffer;
 
 //import com.github.javaparser.JavaParser;
 //import com.github.javaparser.ast.CompilationUnit;
@@ -17,8 +18,7 @@ public class JavaParserTest {
 
 	@Test
 	public void testJavaParser() throws IOException{
-		byte[] fullContext = Files.readAllBytes(new File("src/main/java/de/uniks/networkparser/parser/JavaParser.java").toPath());
-		String context = new String(fullContext);
+		CharacterBuffer fullContext = FileBuffer.readFile("src/main/java/de/uniks/networkparser/parser/JavaParser.java");
 //		CompilationUnit compilationUnit = JavaParser.parse("class A { }");
 //		CompilationUnit compilationUnit = JavaParser.parse(context);
 //		Optional<ClassOrInterfaceDeclaration> classA = compilationUnit.getClassByName("A");
