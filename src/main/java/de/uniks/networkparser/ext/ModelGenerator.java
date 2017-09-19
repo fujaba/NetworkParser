@@ -3,6 +3,7 @@ package de.uniks.networkparser.ext;
 import java.util.Iterator;
 
 import de.uniks.networkparser.TextItems;
+import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.ext.io.FileBuffer;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.Feature;
@@ -40,6 +41,7 @@ public class ModelGenerator extends BasicGenerator {
 	private FeatureSet features = Feature.getAll();
 	private GraphModel defaultModel;
 	public SimpleKeyValueList<String, ParserCondition> customTemplate;
+	private boolean useSDMLibParser = true;
 
 	private SimpleList<BasicGenerator> javaGeneratorTemplates = new SimpleList<BasicGenerator>().with(new JavaClazz(),
 			new JavaSet(), new JavaCreator());
@@ -116,34 +118,57 @@ public class ModelGenerator extends BasicGenerator {
 		}
 		rootDir += name.replaceAll("\\.", "/") + "/";
 
-		TemplateResultModel result = new TemplateResultModel();
-		result.withTemplate(this.getTemplates());
-		result.withFeatures(this.features);
+		TemplateResultModel resultModel = new TemplateResultModel();
+		resultModel.withTemplate(this.getTemplates());
+		resultModel.withFeatures(this.features);
 		if (parameters == null) {
 			parameters = new TextItems();
 			parameters.withDefaultLabel(false);
 		}
-		result.withLanguage(parameters);
+		resultModel.withLanguage(parameters);
 
 		for (BasicGenerator template : templates) {
 			template.withOwner(this);
 		}
 		FeatureProperty codeStyle = getFeature(Feature.CODESTYLE);
-		 ClazzSet clazzes = model.getClazzes();
+		ClazzSet clazzes = model.getClazzes();
+		
 		for (Clazz clazz : clazzes) {
 			for (BasicGenerator template : templates) {
 				boolean isStandard = codeStyle.match(clazz);
-				TemplateResultFile resultFile = template.executeClazz(clazz, result, isStandard);
+				TemplateResultFile resultFile = template.executeClazz(clazz, resultModel, isStandard);
 
-				template.executeTemplate(resultFile, result, clazz);
-				result.add(resultFile);
+				template.executeTemplate(resultFile, resultModel, clazz);
+				resultModel.add(resultFile);
 			}
 		}
 		if (writeFiles) {
-			ModelWriter writer = new ModelWriter();
-			writer.writeModel(rootDir, result);
+			// IF FILE EXIST AND Switch is Enable only add missing value
+			// Add missed value to Metamodel
+			if(useSDMLibParser) {
+				for (TemplateResultFile file : resultModel) {
+					// check for each clazz, if a matching file already exists
+					CharacterBuffer content = FileBuffer.readFile(rootDir + file.getFileName());
+					// check existing file for possible changes
+					if(content != null) {
+						Clazz ClazzFile = parseSourceCode(content);
+						// TODO add parsing code here
+					}
+				}
+				return resultModel;
+			}
+			for (TemplateResultFile file : resultModel) {
+				FileBuffer.writeFile(rootDir + file.getFileName(), file.toString());
+			}
 		}
-		return result;
+		return resultModel;
+
+	}
+	public boolean isSDMLibParser() {
+		return useSDMLibParser;
+	}
+	public void withEnableSDMLibParser(boolean value) {
+		this.useSDMLibParser = value;
 	}
 
 	@Override
@@ -228,7 +253,7 @@ public class ModelGenerator extends BasicGenerator {
 		return generate;
 	}
 	
-	public Clazz parseSourceCode(String content) {
+	public Clazz parseSourceCode(CharSequence content) {
 		Clazz clazz = ParserEntity.create(content);
 		return clazz;
 	}

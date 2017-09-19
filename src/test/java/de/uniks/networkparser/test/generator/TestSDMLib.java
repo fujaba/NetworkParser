@@ -4,16 +4,18 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import de.uniks.networkparser.ext.ClassModel;
+import de.uniks.networkparser.graph.Attribute;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.DataType;
 import de.uniks.networkparser.graph.Method;
 
 public class TestSDMLib {
 	@Test
-	public void testClassWithAnnotation() {
+	public void testSDMLibModification() {
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.sdmLib");
 		Clazz person = model.createClazz("Person");
-		Clazz nameAttribute = person.withAttribute("name", DataType.STRING);
+		Attribute nameAttribute = new Attribute("name", DataType.STRING);
+		person.with(nameAttribute);
 		Method eatMethod = person.createMethod("eat");
 		
 		model.getGenerator().testGeneratedCode();
@@ -23,8 +25,8 @@ public class TestSDMLib {
 		person.createMethod("go");
 		person.remove(nameAttribute);
 		person.remove(eatMethod);
-		model.generate("src/test/java");
-		
+		//model.generate("src/test/java");
+		model.getGenerator().generateJava("build/gen/java", model, null);
 		
 		// Create a Person with name and age Attribute
 		// and eat and go Method

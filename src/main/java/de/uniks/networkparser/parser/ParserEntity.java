@@ -1,5 +1,11 @@
 package de.uniks.networkparser.parser;
 
+import java.io.File;
+import java.util.LinkedHashMap;
+
+import org.sdmlib.codegen.Parser;
+import org.sdmlib.codegen.SymTabEntry;
+
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.ext.generator.SDMLibParser;
 import de.uniks.networkparser.graph.Clazz;
@@ -51,7 +57,7 @@ public class ParserEntity {
 	public int indexOfResult;
 	private boolean verbose = false;
 	
-	public static Clazz create(String content) {
+	public static Clazz create(CharSequence content) {
 		ParserEntity parser = new ParserEntity();
 		return parser.parse(content);
 	}
@@ -718,20 +724,19 @@ public class ParserEntity {
 			} else if (ENUM.equals(file.getName())) {
 				if (",".equalsIgnoreCase(memberName) || ";".equalsIgnoreCase(memberName)
 						|| !";".equals(type) && currentKindEquals(EOF)) {
-					String enumSignature = SDMLibParser.ENUMVALUE + ":" + type;
-					symTab.put(enumSignature, new SymTabEntry().withMemberName(type).withKind(ENUMVALUE)
-							.withType(enumSignature + ":" + className).withStartPos(startPos)
-							.withEndPos(previousRealToken.startPos).withBodyStartPos(methodBodyStartPos)
-							.withModifiers(modifiers).withPreCommentStartPos(preCommentStartPos)
-							.withPreCommentEndPos(preCommentEndPos).withAnnotationsStartPos(annotationsStartPos));
+//					String enumSignature = SDMLibParser.ENUMVALUE + ":" + type;
+					SymTabEntry nextEntity = startNextSymTab(SDMLibParser.ENUMVALUE, type);
+					nextEntity.withPosition(startPos, previousToken.startPos);
+					nextEntity.withModifiers(modifiers).withBodyStartPos(code.getBodyStart());
+					nextEntity.withPreComment(preCommentStartPos, preCommentEndPos);
+					nextEntity.withAnnotationsStart(annotationsStartPos);
 				} else {
-					String enumSignature = SDMLibParser.ENUMVALUE + ":" + type;
-					symTab.put(enumSignature, new SymTabEntry().withMemberName(type).withKind(ENUMVALUE)
-							.withType(enumSignature + ":" + className).withStartPos(startPos)
-							.withEndPos(previousRealToken.startPos).withBodyStartPos(methodBodyStartPos)
-							.withModifiers(modifiers).withPreCommentStartPos(preCommentStartPos)
-							.withPreCommentEndPos(preCommentEndPos).withAnnotationsStartPos(annotationsStartPos));
-
+//					String enumSignature = SDMLibParser.ENUMVALUE + ":" + type;
+					SymTabEntry nextEntity = startNextSymTab(SDMLibParser.ENUMVALUE, type);
+					nextEntity.withPosition(startPos, previousToken.startPos);
+					nextEntity.withModifiers(modifiers).withBodyStartPos(code.getBodyStart());
+					nextEntity.withPreComment(preCommentStartPos, preCommentEndPos);
+					nextEntity.withAnnotationsStart(annotationsStartPos);
 					skipTo(';');
 					skip(";");
 				}
@@ -881,4 +886,46 @@ public class ParserEntity {
 		}
 		return classType;
 	}
+	
+	public void addMemberToModel(Clazz clazz, Parser parser, String memberName, String rootDir)
+	   {
+	      //add annotations
+	      if(memberName.startsWith("annotation")) {
+	         addMemberAsAnnotation(clazz, memberName, parser);
+	      }
+	      
+	      // add new methods
+	      if (memberName.startsWith(Parser.METHOD))
+	      {
+	         addMemberAsMethod(clazz, memberName, parser);
+	      }
+	      // add new attributes
+	      else if (memberName.startsWith(Parser.ATTRIBUTE))
+	      {
+	         String[] split = memberName.split(":");
+	         String attrName = split[1];
+	         SymTabEntry symTabEntry = parser.getSymTab().get(memberName);
+	         if (symTabEntry != null)
+	            addMemberAsAttribut(clazz, attrName, symTabEntry, rootDir);
+	      }
+
+	      // add super classes
+	      if (memberName.startsWith(Parser.EXTENDS))
+	      {
+	         if (GraphUtil.isInterface(clazz))
+	         {
+	            addMemberAsInterface(clazz, memberName, parser);
+	         }
+	         else
+	         {
+	            addMemberAsSuperClass(clazz, memberName, parser);
+	         }
+	      }
+	      else if (memberName.startsWith(Parser.IMPLEMENTS))
+	      {
+	         addMemberAsInterface(clazz, memberName, parser);
+	      }
+
+	   }
+
 }
