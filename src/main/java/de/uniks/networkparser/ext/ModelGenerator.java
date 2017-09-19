@@ -151,8 +151,9 @@ public class ModelGenerator extends BasicGenerator {
 					CharacterBuffer content = FileBuffer.readFile(rootDir + file.getFileName());
 					// check existing file for possible changes
 					if(content != null) {
-						Clazz ClazzFile = parseSourceCode(content);
-						// TODO add parsing code here
+						ParserEntity parser = new ParserEntity();
+						parser.parse(content);
+						parser.addMemberToModel();
 					}
 				}
 				return resultModel;

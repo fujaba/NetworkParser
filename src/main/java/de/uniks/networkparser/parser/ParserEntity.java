@@ -4,9 +4,13 @@ import java.util.Set;
 
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.graph.Annotation;
+import de.uniks.networkparser.graph.Attribute;
+import de.uniks.networkparser.graph.Cardinality;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.ClazzType;
 import de.uniks.networkparser.graph.DataType;
+import de.uniks.networkparser.graph.GraphModel;
+import de.uniks.networkparser.graph.GraphUtil;
 import de.uniks.networkparser.graph.Method;
 import de.uniks.networkparser.graph.Modifier;
 import de.uniks.networkparser.graph.Parameter;
@@ -14,6 +18,7 @@ import de.uniks.networkparser.graph.SourceCode;
 import de.uniks.networkparser.graph.Throws;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
+import de.uniks.networkparser.list.SimpleSet;
 
 public class ParserEntity {
 	public static final char EOF = Character.MIN_VALUE;
@@ -889,39 +894,276 @@ public class ParserEntity {
 		SimpleKeyValueList<String, SimpleList<SymTabEntry>> symbolTab = code.getSymbolTab();
 		Set<String> keySet = symbolTab.keySet();
 		for (String key : keySet) {
-			//TODO FIXME
+			// TODO FIXME
 			SimpleList<SymTabEntry> entities = symbolTab.get(key);
 			if (key.startsWith(SymTabEntry.TYPE_METHOD)) {
 				for (SymTabEntry entry : entities) {
 					addMemberAsMethod(entry, symbolTab);
 				}
-			}	// // add new attributes
-			// else if (memberName.startsWith(Parser.ATTRIBUTE))
-			// {
-			// String[] split = memberName.split(":");
-			// String attrName = split[1];
-			// SymTabEntry symTabEntry = parser.getSymTab().get(memberName);
-			// if (symTabEntry != null)
-			// addMemberAsAttribut(clazz, attrName, symTabEntry, rootDir);
-			// }
 
+			} else if (key.startsWith(SymTabEntry.TYPE_ATTRIBUTE)) {
+				// add new attributes
+				for (SymTabEntry entry : entities) {
+					addMemberAsMethod(entry, symbolTab);
+					addMemberAsAttribut(entry, symbolTab);
+				}
+			} else if (key.startsWith(SymTabEntry.TYPE_EXTENDS)) {
+				// add super classes
+				if (GraphUtil.isInterface(this.file)) {
+					addMemberAsInterface(key, symbolTab);
+				} else {
+					// addMemberAsSuperClass(clazz, memberName, parser);
+				}
+			} else if (key.startsWith(SymTabEntry.TYPE_IMPLEMENTS)) {
+				addMemberAsInterface(key, symbolTab);
+			}
 		}
+	}
+
+	private static final String SDMLIBFILES = "org.sdmlib.serialization.EntityFactory "
+			+ "org.sdmlib.models.pattern.PatternObject " + "org.sdmlib.models.pattern.util.PatternObjectCreator "
+			+ "org.sdmlib.models.modelsets.SDMSet " + "org.sdmlib.serialization.PropertyChangeInterface";
+
+	private void addMemberAsInterface(String memberName,
+			SimpleKeyValueList<String, SimpleList<SymTabEntry>> symbolTab) {
+		Clazz memberClass = findMemberClass(this.file, memberName, symbolTab);
+
+		// ignore helperclasses
+		boolean found = SDMLIBFILES.indexOf(memberClass.getName(false)) > 0;
+		if (found) {
+			GraphUtil.removeYou(memberClass);
+			return;
+		}
+		// FIXME
+		if (memberClass != null) {
+			// memberClass.withInterface(true);
+			this.file.withSuperClazz(memberClass);
+		}
+	}
+
+	private Clazz findClassInModel(String name) {
+		GraphModel model = this.file.getClassModel();
+		if (model == null) {
+			return null;
+		}
+		SimpleSet<Clazz> classes = model.getClazzes();
+
+		for (Clazz eClazz : classes) {
+			if (eClazz.getName(false).equals(name)) {
+				return eClazz;
+			}
+		}
+		return null;
+	}
+
+	private Clazz findMemberClass(Clazz clazz, String memberName,
+			SimpleKeyValueList<String, SimpleList<SymTabEntry>> symbolTab) {
+		String[] split = memberName.split(":");
+		String signature = split[1];
+
+		for (String key : symbolTab.keySet()) {
+			String importName = symbolTab.get(key).first().getMemberName();
+			if (key.startsWith(SymTabEntry.TYPE_IMPORT + ":") && importName.endsWith(signature)) {
+				Clazz modelClass = findClassInModel(importName);
+
+				if (modelClass != null) {
+					return modelClass;
+				} else {
+					GraphModel model = this.file.getClassModel();
+					if (model == null) {
+						return null;
+					}
+					Clazz externClass = model.createClazz(importName).withExternal(true);
+					return externClass;
+				}
+			} else if (key.startsWith(SymTabEntry.TYPE_IMPORT + ":") && importName.endsWith("*")) {
+				// might work
+				importName = importName.substring(0, importName.length() - 1) + signature;
+
+				Clazz modelClass = findClassInModel(importName);
+
+				if (modelClass != null) {
+					return modelClass;
+				}
+			}
+		}
+
+		String name = clazz.getName(false);
+		int lastIndex = name.lastIndexOf('.');
+		name = name.substring(0, lastIndex + 1) + signature;
+
+		return findClassInModel(name);
+	}
+
+	private void addMemberAsAttribut(SymTabEntry symTabEntry,
+			SimpleKeyValueList<String, SimpleList<SymTabEntry>> symbolTab) {
+		// filter public static final constances
+		String modifiers = symTabEntry.getModifiers();
+		if ((modifiers.indexOf("public") >= 0 || modifiers.indexOf("private") >= 0) && modifiers.indexOf("static") >= 0
+				&& modifiers.indexOf("final") >= 0) {
+			// ignore
+			return;
+		}
+		String type = symTabEntry.getType();
+		// include arrays
+		type = type.replace("[]", "");
+
+		String attrName = symTabEntry.getValue();
+		if (EntityUtil.isPrimitiveType(type)) {
+			if (!classContainsAttribut(attrName, symTabEntry.getType())) {
+				new Attribute(attrName, DataType.create(symTabEntry.getType())).with(this.file);
+			}
+		} else {
+			// handle complex attributes
+			handleComplexAttr(attrName, symTabEntry, symbolTab);
+		}
+	}
+
+	private boolean classContainsAttribut(String attrName, String type) {
+		for (Attribute attr : this.file.getAttributes()) {
+			if (attrName.equals(attr.getName()) && type.equals(attr.getType()))
+				return true;
+		}
+		return false;
+	}
+
+	private void handleComplexAttr(String attrName, SymTabEntry symTabEntry,
+			SimpleKeyValueList<String, SimpleList<SymTabEntry>> symbolTab) {
+		GraphModel model = this.file.getClassModel();
+		if (model == null) {
+			return;
+		}
+		String memberName = symTabEntry.getMemberName();
+		String partnerTypeName = symTabEntry.getType();
+
+		String partnerClassName = findPartnerClassName(partnerTypeName);
+		Clazz partnerClass = null;
+		for (Clazz clazz : model.getClazzes()) {
+			if (partnerTypeName.equals(clazz.getName())) {
+				partnerClass = clazz;
+				break;
+			}
+		}
+		if (partnerClass == null)
+			return;
+
+		Cardinality card = findRoleCard(partnerTypeName, model);
+
+		String setterPrefix = "set";
+		if (Cardinality.MANY.equals(card)) {
+			setterPrefix = "addTo";
+		}
+
+		String name = EntityUtil.upFirstChar(memberName);
+
+		SymTabEntry addToSymTabEntry = symbolTab
+				.get(SymTabEntry.TYPE_METHOD + ":" + setterPrefix + name + "(" + partnerClassName + ")").first();
+
+		if (addToSymTabEntry == null && "addTo".equals(setterPrefix)) {
+			addToSymTabEntry = symbolTab
+					.get(SymTabEntry.TYPE_METHOD + ":" + "with" + name + "(" + partnerClassName + "...)").first();
+		}
+
+		// type is unknown
+		if (addToSymTabEntry == null) {
+			new Attribute(memberName, DataType.create(partnerTypeName)).with(this.file);
+			return;
+		}
+
+		SimpleList<SymTabEntry> methodBodyQualifiedNames = symbolTab.get(SymTabEntry.TYPE_METHOD);
+		// for (String key : parser.getMethodBodyQualifiedNames()) {
+		// methodBodyQualifiedNames.add(key);
+		// }
+
+		boolean done = false;
+		for (SymTabEntry qualifiedEntry : methodBodyQualifiedNames) {
+			String qualifiedName = qualifiedEntry.getValue();
+			if (qualifiedName.startsWith("value.set")) {
+
+				// handleAssoc(memberName, card, partnerClassName, partnerClass,
+				// qualifiedName.substring("value.set".length()));
+				done = true;
+			} else if (qualifiedName.startsWith("value.with") || qualifiedName.startsWith("item.with")) {
+				// handleAssoc(memberName, card, partnerClassName, partnerClass,
+				// qualifiedName.substring("value.with".length()));
+				done = true;
+			} else if (qualifiedName.startsWith("value.addTo")) {
+				// FIXME handleAssoc(memberName, card, partnerClassName, partnerClass,
+				// qualifiedName.substring("value.addTo".length()));
+				done = true;
+			}
+		}
+		if (!done) {
+			// did not find reverse role, add as attribute
+			new Attribute(memberName, DataType.create(partnerTypeName)).with(this.file);
+		}
+
+		// // remove getter with setter or addTo removeFrom removeAllFrom without
+		// for (String memberName : memberNames)
+		// {
+		// // remove getter with setter or addTo removeFrom removeAllFrom without
+		// findAndRemoveMethods(
+		// clazz,
+		// memberName,
+		// "get set with without addTo create removeFrom removeAllFrom iteratorOf hasIn
+		// sizeOf removePropertyChange addPropertyChange");
+		// findAndRemoveAttributs(clazz, "listeners");
+		// }
+	}
+
+	public String findPartnerClassName(String partnerTypeName) {
+		String partnerClassName;
+		int openAngleBracket = partnerTypeName.indexOf("<");
+		int closeAngleBracket = partnerTypeName.indexOf(">");
+
+		if (openAngleBracket > -1 && closeAngleBracket > openAngleBracket) {
+			partnerClassName = partnerTypeName.substring(openAngleBracket + 1, closeAngleBracket);
+		} else if (partnerTypeName.endsWith("Set")) {
+			// TODO: should check for superclass ModelSet
+			partnerClassName = partnerTypeName.substring(0, partnerTypeName.length() - 3);
+		} else {
+			partnerClassName = partnerTypeName;
+		}
+		return partnerClassName;
+	}
+
+	private Cardinality findRoleCard(String partnerTypeName, GraphModel model) {
+		Cardinality partnerCard = Cardinality.ONE;
+		int _openAngleBracket = partnerTypeName.indexOf("<");
+		int _closeAngleBracket = partnerTypeName.indexOf(">");
+		if (_openAngleBracket > 1 && _closeAngleBracket > _openAngleBracket) {
+			// partner to many
+			partnerCard = Cardinality.MANY;
+		} else if (partnerTypeName.endsWith("Set") && partnerTypeName.length() > 3) {
+			// it might be a ModelSet. Look if it starts with a clazz name
+			String prefix = partnerTypeName.substring(0, partnerTypeName.length() - 3);
+			for (Clazz clazz : model.getClazzes()) {
+				if (prefix.equals(EntityUtil.shortClassName(clazz.getName()))) {
+					partnerCard = Cardinality.MANY;
+					break;
+				}
+			}
+		}
+		return partnerCard;
 	}
 
 	private static final String SKIPMETGODS = "get(String) set(String,Object) getPropertyChangeSupport() removeYou() addPropertyChangeListener(PropertyChangeListener) removePropertyChangeListener(PropertyChangeListener) addPropertyChangeListener(String,PropertyChangeListener) removePropertyChangeListener(String,PropertyChangeListener) toString()";
 
-	private void addMemberAsMethod(SymTabEntry symTabEntry, SimpleKeyValueList<String, SimpleList<SymTabEntry>> symTab) {
+	private void addMemberAsMethod(SymTabEntry symTabEntry,
+			SimpleKeyValueList<String, SimpleList<SymTabEntry>> symTab) {
 		String fullSignature = symTabEntry.getType();
 		String[] split = fullSignature.split(":");
 		String signature = split[1];
 
 		// filter internal generated methods
 
-		if (SKIPMETGODS.indexOf(signature) < 0 && isGetterSetter(signature, symTab) == false && isNewMethod(signature)) {
+		if (SKIPMETGODS.indexOf(signature) < 0 && isGetterSetter(signature, symTab) == false
+				&& isNewMethod(signature)) {
 			int part = signature.indexOf("(");
 			String[] params = signature.substring(part + 1, signature.length() - 1).split(",");
 
-			Method method = new Method(signature.substring(0, part)).withParent(this.file).with(DataType.create(split[2]));
+			Method method = new Method(signature.substring(0, part)).withParent(this.file)
+					.with(DataType.create(split[2]));
 			for (String param : params) {
 				if (param != null && param.length() > 0) {
 					method.with(new Parameter(DataType.create(param)));
@@ -967,26 +1209,4 @@ public class ParserEntity {
 		}
 		return true;
 	}
-
-	// REFACTORING
-	// public void addMemberToModel(String key) {
-	//
-	// // add super classes
-	// if (memberName.startsWith(Parser.EXTENDS))
-	// {
-	// if (GraphUtil.isInterface(clazz))
-	// {
-	// addMemberAsInterface(clazz, memberName, parser);
-	// }
-	// else
-	// {
-	// addMemberAsSuperClass(clazz, memberName, parser);
-	// }
-	// }
-	// else if (memberName.startsWith(Parser.IMPLEMENTS))
-	// {
-	// addMemberAsInterface(clazz, memberName, parser);
-	// }
-	//
-	// }
 }
