@@ -42,6 +42,8 @@ public class SymTabEntry {
 	public static final String TYPE_COMMENT = "comment";
 	public static final String TYPE_JAVADOC = "javadoc";
 
+	public static final String TYPE_CONSTRUCTOR = "constructor";
+
 	public static final String PROPERTY_TYPE = "type";
 	public static final String PROPERTY_VALUE = "value";
 

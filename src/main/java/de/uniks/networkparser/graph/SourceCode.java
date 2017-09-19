@@ -39,6 +39,10 @@ public class SourceCode extends GraphMember {
 		return list;
 	}
 	
+	public SimpleKeyValueList<String, SimpleList<SymTabEntry>> getSymbolTab() {
+		return keys;
+	}
+	
 	/**
 	 * Set the Parent of Element
 	 * @param file  The Name of Element

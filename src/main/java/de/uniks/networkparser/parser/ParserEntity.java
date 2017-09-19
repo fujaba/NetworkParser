@@ -1,18 +1,18 @@
 package de.uniks.networkparser.parser;
 
-import java.io.File;
-import java.util.LinkedHashMap;
-
-import org.sdmlib.codegen.Parser;
-import org.sdmlib.codegen.SymTabEntry;
+import java.util.Set;
 
 import de.uniks.networkparser.EntityUtil;
-import de.uniks.networkparser.ext.generator.SDMLibParser;
+import de.uniks.networkparser.graph.Annotation;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.ClazzType;
-import de.uniks.networkparser.graph.GraphUtil;
+import de.uniks.networkparser.graph.DataType;
+import de.uniks.networkparser.graph.Method;
 import de.uniks.networkparser.graph.Modifier;
+import de.uniks.networkparser.graph.Parameter;
 import de.uniks.networkparser.graph.SourceCode;
+import de.uniks.networkparser.graph.Throws;
+import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 
 public class ParserEntity {
@@ -56,7 +56,7 @@ public class ParserEntity {
 	private String searchString;
 	public int indexOfResult;
 	private boolean verbose = false;
-	
+
 	public static Clazz create(CharSequence content) {
 		ParserEntity parser = new ParserEntity();
 		return parser.parse(content);
@@ -397,10 +397,11 @@ public class ParserEntity {
 			String annotation = parseAnnotations();
 
 			int endPosAnnotation = currentToken.startPos - 1;
-			// FIXME please
 			if (annotation != "") {
 				nextEntity = startNextSymTab(SymTabEntry.TYPE_ANNOTATION, annotation.substring(1));
 				nextEntity.withPosition(startPosAnnotations, endPosAnnotation);
+				// TODO Add to Clazz
+				this.file.with(Annotation.create(annotation));
 			}
 		}
 
@@ -634,13 +635,12 @@ public class ParserEntity {
 			code.withStartBody(currentToken.startPos);
 			parseBlock();
 
-			
-			String constructorSignature = SDMLibParser.CONSTRUCTOR + ":" + file.getName() + params;
-			SymTabEntry nextEntity = startNextSymTab(SDMLibParser.CONSTRUCTOR, file.getName() + params);
+			String constructorSignature = SymTabEntry.TYPE_CONSTRUCTOR + ":" + file.getName() + params;
+			SymTabEntry nextEntity = startNextSymTab(SymTabEntry.TYPE_CONSTRUCTOR, file.getName() + params);
 			nextEntity.withPosition(startPos, previousToken.startPos);
 			nextEntity.withPreComment(preCommentStartPos, preCommentEndPos);
 			nextEntity.withAnnotationsStart(annotationsStartPos);
-							
+
 			nextEntity.withBodyStartPos(code.getBodyStart());
 			nextEntity.withModifiers(modifiers);
 
@@ -659,30 +659,29 @@ public class ParserEntity {
 
 				parseExpression();
 
-				
 				code.withEndOfAttributeInitialization(previousToken.startPos);
 
 				skip(";");
-				
-				SymTabEntry nextEntity = startNextSymTab(SDMLibParser.ATTRIBUTE, memberName);
+
+				SymTabEntry nextEntity = startNextSymTab(SymTabEntry.TYPE_ATTRIBUTE, memberName);
 				nextEntity.withPosition(startPos, previousToken.startPos);
 				nextEntity.withModifiers(modifiers);
 				nextEntity.withPreComment(preCommentStartPos, preCommentEndPos);
 				nextEntity.withAnnotationsStart(annotationsStartPos);
 
-				checkSearchStringFound(SDMLibParser.ATTRIBUTE + ":" + memberName, startPos);
+				checkSearchStringFound(SymTabEntry.TYPE_ATTRIBUTE + ":" + memberName, startPos);
 			} else if (currentKindEquals(';') && !",".equals(memberName)) {
 				// field declaration
 				checkSearchStringFound(NAME_TOKEN + ":" + searchString, startPos);
 				skip(";");
-				
-				SymTabEntry nextEntity = startNextSymTab(SDMLibParser.ATTRIBUTE, memberName);
+
+				SymTabEntry nextEntity = startNextSymTab(SymTabEntry.TYPE_ATTRIBUTE, memberName);
 				nextEntity.withPosition(startPos, previousToken.startPos);
 				nextEntity.withModifiers(modifiers);
 				nextEntity.withPreComment(preCommentStartPos, preCommentEndPos);
 				nextEntity.withAnnotationsStart(annotationsStartPos);
 
-				checkSearchStringFound(SDMLibParser.ATTRIBUTE + ":" + memberName, startPos);
+				checkSearchStringFound(SymTabEntry.TYPE_ATTRIBUTE + ":" + memberName, startPos);
 			} else if (currentKindEquals('(')) {
 
 				String params = parseFormalParamList();
@@ -709,9 +708,9 @@ public class ParserEntity {
 				else if (currentKindEquals(';'))
 					skip(';');
 
-				String methodSignature = SDMLibParser.METHOD + ":" + memberName + params;
-				
-				SymTabEntry nextEntity = startNextSymTab(SDMLibParser.METHOD, memberName);
+				String methodSignature = SymTabEntry.TYPE_METHOD + ":" + memberName + params;
+
+				SymTabEntry nextEntity = startNextSymTab(SymTabEntry.TYPE_METHOD, memberName);
 				nextEntity.withThrowsTags(throwsTags);
 				nextEntity.withPosition(startPos, previousToken.startPos);
 				nextEntity.withModifiers(modifiers).withBodyStartPos(code.getBodyStart());
@@ -724,15 +723,15 @@ public class ParserEntity {
 			} else if (ENUM.equals(file.getName())) {
 				if (",".equalsIgnoreCase(memberName) || ";".equalsIgnoreCase(memberName)
 						|| !";".equals(type) && currentKindEquals(EOF)) {
-//					String enumSignature = SDMLibParser.ENUMVALUE + ":" + type;
-					SymTabEntry nextEntity = startNextSymTab(SDMLibParser.ENUMVALUE, type);
+					// String enumSignature = SDMLibParser.ENUMVALUE + ":" + type;
+					SymTabEntry nextEntity = startNextSymTab(SymTabEntry.TYPE_ENUMVALUE, type);
 					nextEntity.withPosition(startPos, previousToken.startPos);
 					nextEntity.withModifiers(modifiers).withBodyStartPos(code.getBodyStart());
 					nextEntity.withPreComment(preCommentStartPos, preCommentEndPos);
 					nextEntity.withAnnotationsStart(annotationsStartPos);
 				} else {
-//					String enumSignature = SDMLibParser.ENUMVALUE + ":" + type;
-					SymTabEntry nextEntity = startNextSymTab(SDMLibParser.ENUMVALUE, type);
+					// String enumSignature = SDMLibParser.ENUMVALUE + ":" + type;
+					SymTabEntry nextEntity = startNextSymTab(SymTabEntry.TYPE_ENUMVALUE, type);
 					nextEntity.withPosition(startPos, previousToken.startPos);
 					nextEntity.withModifiers(modifiers).withBodyStartPos(code.getBodyStart());
 					nextEntity.withPreComment(preCommentStartPos, preCommentEndPos);
@@ -743,7 +742,7 @@ public class ParserEntity {
 			}
 		}
 	}
-	
+
 	private void parseBlock() {
 		// { stat ... }
 		skip("{");
@@ -846,15 +845,14 @@ public class ParserEntity {
 		return code.subString(startPos, endPos + 1);
 	}
 
-	
-	//TODO DEBUG METHODS
+	// TODO DEBUG METHODS
 	private void checkSearchStringFound(String foundElem, int startPos) {
 		if (EntityUtil.stringEquals(searchString, foundElem)) {
 			indexOfResult = startPos;
 			throw new RuntimeException("FOUND");
 		}
 	}
-	
+
 	private void verbose(String string) {
 		if (verbose) {
 			System.out.println(string);
@@ -886,46 +884,109 @@ public class ParserEntity {
 		}
 		return classType;
 	}
-	
-	public void addMemberToModel(Clazz clazz, Parser parser, String memberName, String rootDir)
-	   {
-	      //add annotations
-	      if(memberName.startsWith("annotation")) {
-	         addMemberAsAnnotation(clazz, memberName, parser);
-	      }
-	      
-	      // add new methods
-	      if (memberName.startsWith(Parser.METHOD))
-	      {
-	         addMemberAsMethod(clazz, memberName, parser);
-	      }
-	      // add new attributes
-	      else if (memberName.startsWith(Parser.ATTRIBUTE))
-	      {
-	         String[] split = memberName.split(":");
-	         String attrName = split[1];
-	         SymTabEntry symTabEntry = parser.getSymTab().get(memberName);
-	         if (symTabEntry != null)
-	            addMemberAsAttribut(clazz, attrName, symTabEntry, rootDir);
-	      }
 
-	      // add super classes
-	      if (memberName.startsWith(Parser.EXTENDS))
-	      {
-	         if (GraphUtil.isInterface(clazz))
-	         {
-	            addMemberAsInterface(clazz, memberName, parser);
-	         }
-	         else
-	         {
-	            addMemberAsSuperClass(clazz, memberName, parser);
-	         }
-	      }
-	      else if (memberName.startsWith(Parser.IMPLEMENTS))
-	      {
-	         addMemberAsInterface(clazz, memberName, parser);
-	      }
+	public void addMemberToModel() {
+		SimpleKeyValueList<String, SimpleList<SymTabEntry>> symbolTab = code.getSymbolTab();
+		Set<String> keySet = symbolTab.keySet();
+		for (String key : keySet) {
+			//TODO FIXME
+			SimpleList<SymTabEntry> entities = symbolTab.get(key);
+			if (key.startsWith(SymTabEntry.TYPE_METHOD)) {
+				for (SymTabEntry entry : entities) {
+					addMemberAsMethod(entry, symbolTab);
+				}
+			}	// // add new attributes
+			// else if (memberName.startsWith(Parser.ATTRIBUTE))
+			// {
+			// String[] split = memberName.split(":");
+			// String attrName = split[1];
+			// SymTabEntry symTabEntry = parser.getSymTab().get(memberName);
+			// if (symTabEntry != null)
+			// addMemberAsAttribut(clazz, attrName, symTabEntry, rootDir);
+			// }
 
-	   }
+		}
+	}
 
+	private static final String SKIPMETGODS = "get(String) set(String,Object) getPropertyChangeSupport() removeYou() addPropertyChangeListener(PropertyChangeListener) removePropertyChangeListener(PropertyChangeListener) addPropertyChangeListener(String,PropertyChangeListener) removePropertyChangeListener(String,PropertyChangeListener) toString()";
+
+	private void addMemberAsMethod(SymTabEntry symTabEntry, SimpleKeyValueList<String, SimpleList<SymTabEntry>> symTab) {
+		String fullSignature = symTabEntry.getType();
+		String[] split = fullSignature.split(":");
+		String signature = split[1];
+
+		// filter internal generated methods
+
+		if (SKIPMETGODS.indexOf(signature) < 0 && isGetterSetter(signature, symTab) == false && isNewMethod(signature)) {
+			int part = signature.indexOf("(");
+			String[] params = signature.substring(part + 1, signature.length() - 1).split(",");
+
+			Method method = new Method(signature.substring(0, part)).withParent(this.file).with(DataType.create(split[2]));
+			for (String param : params) {
+				if (param != null && param.length() > 0) {
+					method.with(new Parameter(DataType.create(param)));
+				}
+			}
+			if (!symTabEntry.getAnnotations().isEmpty()) {
+				method.with(new Annotation(symTabEntry.getAnnotations()));
+			}
+			method.with(new Throws(symTabEntry.getThrowsTags()));
+			method.withBody(this.code.subString(symTabEntry.getBodyStartPos(), symTabEntry.getEndPos() + 1).toString());
+		}
+	}
+
+	private boolean isGetterSetter(String signature, SimpleKeyValueList<String, SimpleList<SymTabEntry>> symTab) {
+		// method starts with: with set get ...
+		if (signature.startsWith("with") || signature.startsWith("set") || signature.startsWith("get")
+				|| signature.startsWith("add") || signature.startsWith("remove") || signature.startsWith("create")) {
+
+			SimpleList<SymTabEntry> attributes = new SimpleList<SymTabEntry>();
+			for (String key : symTab.keySet()) {
+				if (key.startsWith("attribute")) {
+					SimpleList<SymTabEntry> simpleList = symTab.get(key);
+					attributes.addAll(simpleList);
+				}
+			}
+
+			// is class attribute
+			for (SymTabEntry entry : attributes) {
+				String attrName = entry.getMemberName();
+				String signName = signature.substring(0, signature.indexOf("("));
+				if (signName.toLowerCase().endsWith(attrName.toLowerCase())) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	private boolean isNewMethod(String memberName) {
+		for (Method method : this.file.getMethods()) {
+			if (method.getName(false).equals(memberName))
+				return false;
+		}
+		return true;
+	}
+
+	// REFACTORING
+	// public void addMemberToModel(String key) {
+	//
+	// // add super classes
+	// if (memberName.startsWith(Parser.EXTENDS))
+	// {
+	// if (GraphUtil.isInterface(clazz))
+	// {
+	// addMemberAsInterface(clazz, memberName, parser);
+	// }
+	// else
+	// {
+	// addMemberAsSuperClass(clazz, memberName, parser);
+	// }
+	// }
+	// else if (memberName.startsWith(Parser.IMPLEMENTS))
+	// {
+	// addMemberAsInterface(clazz, memberName, parser);
+	// }
+	//
+	// }
 }
