@@ -284,11 +284,11 @@ public class XMLTokener extends Tokener {
 				myChar = tokener.getCurrentChar();
 				if (myChar == ENTER) {
 					String key = token.toString();
-					token.reset();
+					token.clear();
 					tokener.skip(2);
 					tokener.nextString(token, true, false, IdMap.DOUBLEQUOTIONMARK);
 					String value = token.toString();
-					token.reset();
+					token.clear();
 					tokener.skip();
 					creator.setValue(entity, key, value, SendableEntityCreator.NEW);
 					stack.setValue(key, value);
@@ -344,7 +344,7 @@ public class XMLTokener extends Tokener {
 							valueItem.with(currentChar);
 						}
 					}
-					test.reset();
+					test.clear();
 				}
 				if(entity!=null) {
 					creator.setValue(entity, XMLEntity.PROPERTY_VALUE, valueItem.toString(), SendableEntityCreator.NEW);
@@ -428,7 +428,7 @@ public class XMLTokener extends Tokener {
 			return null;
 		}
 		if (tag.isEmpty() && isEmpty) {
-			valueItem.reset();
+			valueItem.clear();
 		}
 		IdMap idMap = getMap();
 		SendableEntityCreator item = null;

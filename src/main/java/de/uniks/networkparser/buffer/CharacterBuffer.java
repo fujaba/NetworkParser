@@ -826,12 +826,14 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence {
 		return this;
 	}
 
-	public void reset() {
-		this.length = 0;
+	public void trimSize() {
+		char[] array = new char[length];
+		System.arraycopy(buffer, this.start, array, 0, length);
+		this.buffer = array;
 		this.position = 0;
 		this.start = 0;
 	}
-
+	
 	@Override
 	public String toString() {
 		if(length<1) {

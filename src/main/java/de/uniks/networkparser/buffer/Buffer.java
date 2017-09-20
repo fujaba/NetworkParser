@@ -433,7 +433,7 @@ public abstract class Buffer implements BufferItem {
 		SimpleList<String> list = new SimpleList<String>();
 		CharacterBuffer sc = new CharacterBuffer();
 		do {
-			sc.reset();
+			sc.clear();
 			nextString(sc, true, true, '"');
 			if (sc.length() > 0) {
 				if (sc.indexOf('\"')>=0) {

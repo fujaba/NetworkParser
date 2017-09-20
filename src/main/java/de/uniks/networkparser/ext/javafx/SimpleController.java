@@ -117,6 +117,11 @@ public class SimpleController implements ObjectCondition{
 			}
 		}
 		SimpleKeyValueList<String, String> params = getParameterMap();
+		// Example 
+//		-Xms<size>        set initial Java heap size
+//		-Xmx<size>        set maximum Java heap size
+//		-Xss<size>        set java thread stack size
+		ArrayList<String> customParams = new ArrayList<String>();
 		for (int i = 0; i < params.size(); i++) {
 			String key = params.get(i);
 			String value = params.getValueByIndex(i);
@@ -135,6 +140,12 @@ public class SimpleController implements ObjectCondition{
 			} else if (key.equalsIgnoreCase("-?")) {
 				System.out.println(getCommandHelp());
 				Runtime.getRuntime().exit(1);
+			} else if (key.startsWith("-")) {
+				if (value != null) {
+					customParams.add(key+"="+value);	
+				} else {
+					customParams.add(key);
+				}
 			}
 		}
 		if (debugPort != null) {
@@ -146,7 +157,11 @@ public class SimpleController implements ObjectCondition{
 			}
 	
 			items.add("-Xdebug");
+			items.add("--XX:+HeapDumpOnOutOfMemoryError");
 			items.add("-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=" + debugPort);
+			// Now Add Custom Params
+			items.addAll(customParams);
+			
 			items.add("-jar");
 			String fileName = new Os().getFilename().toLowerCase();
 			if("bin".equals(fileName)) {

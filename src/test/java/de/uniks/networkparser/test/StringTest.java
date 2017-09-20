@@ -155,7 +155,7 @@ public class StringTest {
 		PrintStream stream = null;
 
 		output("zu parsen: " +value, stream);
-		tokener.reset();
+		tokener.clear();
 		tokener.with(value);
 		do{
 			sub = new CharacterBuffer();

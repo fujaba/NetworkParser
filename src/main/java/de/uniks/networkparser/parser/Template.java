@@ -246,7 +246,7 @@ public class Template implements TemplateParser {
 			} else {
 				parent.with(child);
 			}
-			tokenPart.reset();
+			tokenPart.clear();
 			buffer.nextString(tokenPart, false, false, SPLITEND);
 
 			//{{#if Type}} {{#end}}
