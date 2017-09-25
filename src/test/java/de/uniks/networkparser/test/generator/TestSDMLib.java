@@ -13,9 +13,9 @@ import de.uniks.networkparser.graph.util.MethodSet;
 public class TestSDMLib {
 	@Test
 	public void testSDMLibModification() {
-//		if(Generator.DISABLE) {
-//			return;
-//		}
+		if(Generator.DISABLE) {
+			return;
+		}
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.sdmLib");
 		Clazz person = model.createClazz("Person");
 		Attribute nameAttribute = new Attribute("name", DataType.STRING);
