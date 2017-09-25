@@ -14,7 +14,7 @@ public class TypescriptAttribute extends BasicGenerator {
 	// TODO fix or statements to allow {{}}== {{}}== pattern
 	public TypescriptAttribute() {
 		createTemplate("Declaration", Template.DECLARATION, 
-				"{{#template VALUE}}   static PROPERTY_{{NAME}} : String = \"{{name}}\";","","",
+				"{{#template VALUE}}   static PROPERTY_{{NAME}}: String = \"{{name}}\";","","",
 				"{{#foreach {{parent.parent.child}}}}" +
 				   //"{{#if {{#OR}}{{item.type}}==class {{item.type}}==interface{{#ENDOR}}}}" +
 				   "{{#if {{item.type}}==class}}" +
@@ -25,6 +25,6 @@ public class TypescriptAttribute extends BasicGenerator {
 				      "{{#endif}}" +
 				   "{{#endif}}" +
 				"{{#endfor}}" +
-				"   {{modifiers} }{{name}} : {{type}}{{#ifnot {{file.member.type}}==interface}}{{#if {{value}}}} = {{value}}{{#endif}}{{#endif}};","","","{{#endtemplate}}");
+				"   {{modifiers} }{{name}}: {{type}}{{#ifnot {{file.member.type}}==interface}}{{#if {{value}}}} = {{value}}{{#endif}}{{#endif}};","","","{{#endtemplate}}");
 	}
 }
