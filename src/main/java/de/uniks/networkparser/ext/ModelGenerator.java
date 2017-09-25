@@ -36,6 +36,7 @@ import de.uniks.networkparser.parser.generator.java.JavaSet;
 import de.uniks.networkparser.parser.generator.logic.DebugCondition;
 import de.uniks.networkparser.parser.generator.logic.JavaListCondition;
 import de.uniks.networkparser.parser.generator.logic.JavaMethodBodyCondition;
+import de.uniks.networkparser.parser.generator.typescript.TypescriptClazz;
 
 public class ModelGenerator extends BasicGenerator {
 	private FeatureSet features = Feature.getAll();
@@ -44,7 +45,7 @@ public class ModelGenerator extends BasicGenerator {
 	private boolean useSDMLibParser = true;
 
 	private SimpleList<BasicGenerator> javaGeneratorTemplates = new SimpleList<BasicGenerator>().with(new JavaClazz(), new JavaSet(), new JavaCreator());
-	private SimpleList<BasicGenerator> typeScriptTemplates = new SimpleList<BasicGenerator>().with(new JavaClazz());
+	private SimpleList<BasicGenerator> typeScriptTemplates = new SimpleList<BasicGenerator>().with(new TypescriptClazz());
 
 	public SimpleKeyValueList<String, ParserCondition> getTemplates() {
 		if (customTemplate == null) {
@@ -162,7 +163,7 @@ public class ModelGenerator extends BasicGenerator {
 						parser.addMemberToModel();
 					}
 				}
-				return resultModel;
+				//return resultModel;
 			}
 			for (TemplateResultFile file : resultModel) {
 				FileBuffer.writeFile(rootDir + file.getFileName(), file.toString());
