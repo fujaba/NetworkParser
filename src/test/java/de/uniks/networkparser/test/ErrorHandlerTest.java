@@ -9,6 +9,7 @@ public class ErrorHandlerTest {
 		errorHandler.withPath("error");
 		
 		System.out.println(errorHandler.getJVMStartUp().toString("dd.mm.yyyy HH:MM:SS"));
-		errorHandler.saveHeapSpace(errorHandler.getPrefix());
+		errorHandler.saveErrorFile(null, "error.txt", "build", new RuntimeException("Test"));
+//		saveHeapSpace(errorHandler.getPrefix());
 	}
 }

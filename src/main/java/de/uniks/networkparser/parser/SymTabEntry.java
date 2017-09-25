@@ -54,7 +54,6 @@ public class SymTabEntry {
 	private SymTabEntry prev;
 	
 	// SDMLIb Parser
-	private String memberName;
 	private int startPos;
 	private int endPos;
 	private int annotationsStartPos;
@@ -67,8 +66,11 @@ public class SymTabEntry {
 	private ArrayList<ArrayList<String>> initCallSequence;
 
 	private int annotationsEndPos;
-
 	private int bodyStartPos;
+
+	private String dataType;
+
+	private String params;
 
 	public String getValue() {
 		return this.value;
@@ -164,15 +166,6 @@ public class SymTabEntry {
 		}
 	}
 
-	public String getMemberName() {
-		return memberName;
-	}
-
-	public SymTabEntry withMemberName(String memberName) {
-		this.memberName = memberName;
-		return this;
-	}
-
 	public SymTabEntry withPosition(int start, int end) {
 		this.startPos = start;
 		this.endPos = end;
@@ -262,5 +255,23 @@ public class SymTabEntry {
 	
 	public int getBodyStartPos() {
 		return bodyStartPos;
+	}
+
+	public SymTabEntry withDataType(String value) {
+		this.dataType = value;
+		return this;
+	}
+	
+	public String getDataType() {
+		return dataType;
+	}
+
+	public SymTabEntry withParams(String params) {
+		this.params = params;
+		return this;
+	}
+	
+	public String getParams() {
+		return params;
 	}
 }

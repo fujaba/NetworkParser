@@ -11,4 +11,28 @@ public enum ClazzType {
 	public String getValue() {
 		return value;
 	}
+	
+	public static ClazzType create(String value) {
+		if(value == null) {
+			return CLAZZ;
+		}
+		String trim = value.trim().toLowerCase();
+		if(trim.equals(ENUMERATION.getValue())) {
+			return ENUMERATION;
+		}
+		if(trim.equals(INTERFACE.getValue())) {
+			return INTERFACE;
+		}
+		if(trim.equals(CREATOR.getValue())) {
+			return CREATOR;
+		}
+		if(trim.equals(SET.getValue())) {
+			return SET;
+		}
+		if(trim.equals(PATTERNOBJECT.getValue())) {
+			return PATTERNOBJECT;
+		}
+		return CLAZZ;
+		
+	}
 }

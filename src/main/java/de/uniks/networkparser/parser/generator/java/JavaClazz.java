@@ -7,7 +7,7 @@ import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.parser.Template;
 import de.uniks.networkparser.parser.generator.BasicGenerator;
 
-public class JavaClazz extends BasicGenerator{
+public class JavaClazz extends BasicGenerator {
 
 	public JavaClazz() {
 		createTemplate("Declaration", Template.TEMPLATE, 
@@ -88,14 +88,14 @@ public class JavaClazz extends BasicGenerator{
 					 	"{{#template TEMPLATEEND}}}{{#endtemplate}}"
 				);
 //		,
-//			 	"{{attributes}}" + "{{fields}}" + "{{methods}}"+ 
+//			 	"{{attributes}}" + "{{fields}}" + "{{methods}}"+
+		this.metaModel = true;
 		this.extension = "java";
-		
 		this.addGenerator(new JavaAttribute());
 		this.addGenerator(new JavaAssociation());
 		this.addGenerator(new JavaMethod());
 	}
-
+	
 	@Override
 	public Class<?> getTyp() {
 		return Clazz.class;

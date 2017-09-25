@@ -21,6 +21,7 @@ public class TemplateResultFile extends SortedSet<TemplateResultFragment> implem
 	private String path;
 	private SendableEntityCreator parent;
 	private GraphEntity member;
+	private boolean metaModell;
 	
 	TemplateResultFile() {
 		super(true);
@@ -201,6 +202,15 @@ public class TemplateResultFile extends SortedSet<TemplateResultFragment> implem
 	public TemplateResultFile withMember(GraphEntity member) {
 		this.member = member;
 		return this;
+	}
+
+	public TemplateResultFile withMetaModel(boolean value) {
+		this.metaModell = value;
+		return this;
+	}
+	
+	public boolean isMetaModell() {
+		return metaModell;
 	}
 }
   

@@ -5,10 +5,15 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.net.UnknownHostException;
 
 import de.uniks.networkparser.DateTimeEntity;
 import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.ext.generic.ReflectionLoader;
+import de.uniks.networkparser.ext.javafx.SimpleController;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.list.SimpleList;
 
@@ -19,23 +24,39 @@ public class ErrorHandler implements Thread.UncaughtExceptionHandler {
 	private DateTimeEntity startDate=new DateTimeEntity();
 	private SimpleList<ObjectCondition> list = new SimpleList<ObjectCondition>();
 
-	public boolean writeErrorFile(String prefix, String fileName, String filepath, Throwable e){
+	public String getIP() {
+		InetAddress addr;
+		try {
+			addr = InetAddress.getLocalHost();
+			return addr.getHostAddress();
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public String getMac() {
+		try {
+			InetAddress ip = InetAddress.getLocalHost();
+			NetworkInterface network = NetworkInterface.getByInetAddress(ip);
+			byte[] mac = network.getHardwareAddress();
+			StringBuilder sb = new StringBuilder();
+			for (int i = 0; i < mac.length; i++) {
+				sb.append(String.format("%02X%s", mac[i], (i < mac.length - 1) ? "-" : ""));
+			}
+			return sb.toString();
+		} catch (SocketException e) {
+		} catch (UnknownHostException e) {
+		}
+		return null;
+	}
+	
+	public boolean saveErrorFile(String prefix, String fileName, String filePath, Throwable e){
 		boolean success;
 		try {
-			filepath=createDir(filepath);
-			if(filepath == null) {
+			File file = getFileName(filePath, prefix, fileName);
+			if(file == null) {
 				return false;
-			}
-			if(filepath.length()>0 && filepath.endsWith("/") == false){
-				filepath+="/";
-			}
-			String fullfilename=filepath+prefix+fileName;
-
-			File file=new File(fullfilename);
-			if(file.exists() == false){
-				if(file.createNewFile() == false) {
-					return false;
-				}
 			}
 			FileOutputStream networkFile = new FileOutputStream(file);
 			
@@ -45,6 +66,11 @@ public class ErrorHandler implements Thread.UncaughtExceptionHandler {
 			ps.println("Startdate: "+startDate.toString("dd.mm.yyyy HH:MM:SS"));
 			ps.println("Date: "+new DateTimeEntity().toString("dd.mm.yyyy HH:MM:SS"));
 			ps.println("Thread: "+Thread.currentThread().getName());
+			ps.println("PID: "+getPID());
+			ps.println("Version: "+SimpleController.getVersion());
+			ps.println("IP: "+getIP());
+			ps.println("MAC: "+getMac());
+			
 			ps.println("------------ SYSTEM-INFO ------------");
 			printProperty(ps, "java.class.version");
 			printProperty(ps, "java.runtime.version");
@@ -93,7 +119,7 @@ public class ErrorHandler implements Thread.UncaughtExceptionHandler {
 		if(filepath.length()>0 && filepath.endsWith("/") == false){
 			filepath+="/";
 		}
-		String fullfilename=filepath+prefix+"heap.dump";
+		String fullfilename=filepath+prefix+"heap.bin";
 		SimpleList<String> commandList=new SimpleList<String>();
 		commandList.with("jmap", "-dump:live,format=b,file="+fullfilename,""+getPID());
 		String[] list = commandList.toArray(new String[commandList.size()]);
@@ -187,23 +213,46 @@ public class ErrorHandler implements Thread.UncaughtExceptionHandler {
 		this.path = value;
 		return this;
 	}
+	
+	public File getFileName(String filepath, String prefix, String fileName ) throws IOException {
+		if(filepath == null ) {
+			return null;
+		}
+		if(fileName == null) {
+			return null;
+		}
+		filepath=createDir(filepath);
+		if(filepath.length()>0 && filepath.endsWith("/") == false){
+			filepath+="/";
+		}
+		String fullfilename=null;
+		if(prefix != null) {
+			fullfilename = filepath+prefix+fileName;
+		} else {
+			fullfilename = filepath+fileName;
+		}
 
-	public Exception saveScreenShoot(String prefix, String fileName, Object currentStage) {
+		File file=new File(fullfilename);
+		if(file.exists() == false){
+			if(file.createNewFile() == false) {
+				return null;
+			}
+		}
+		return file;
+	}
+
+	public Exception saveScreenShoot(String prefix, String fileName, String filePath, Object currentStage) {
 		// Save Screenshot
 		if(currentStage == null) {
 			currentStage = stage;
 		}
 		try {
-			File target;
-			if (fileName != null) {
-				if(prefix != null) {
-					target = new File(prefix+fileName);
-				} else {
-					target = new File(fileName);
-				}
-				Object rect = ReflectionLoader.newInstance(ReflectionLoader.RECTANGLE, ReflectionLoader.DIMENSION, ReflectionLoader.callChain(ReflectionLoader.TOOLKIT, "getDefaultToolkit", "getScreenSize"));
-				writeScreen(target, rect);
+			File target = getFileName(filePath, prefix, fileName);
+			if(target == null) {
+				return null;
 			}
+			Object rect = ReflectionLoader.newInstance(ReflectionLoader.RECTANGLE, ReflectionLoader.DIMENSION, ReflectionLoader.callChain(ReflectionLoader.TOOLKIT, "getDefaultToolkit", "getScreenSize"));
+			writeScreen(target, rect);
 			if (currentStage != null) {
 				Double x = (Double) ReflectionLoader.call("getX", currentStage);
 				Double y= (Double) ReflectionLoader.call("getY", currentStage);
@@ -211,12 +260,8 @@ public class ErrorHandler implements Thread.UncaughtExceptionHandler {
 				Double height = (Double) ReflectionLoader.call("getHeight", currentStage);
 				
 				String windowName = currentStage.getClass().getSimpleName();
-				if(prefix != null) {
-					target = new File(prefix+windowName);
-				} else {
-					target = new File(windowName);
-				}				
-				Object rect = ReflectionLoader.newInstance(ReflectionLoader.RECTANGLE, int.class, x.intValue(), int.class, y.intValue(), int.class, width.intValue(), int.class, height.intValue());
+				target = getFileName(filePath, prefix+windowName, fileName);
+				rect = ReflectionLoader.newInstance(ReflectionLoader.RECTANGLE, int.class, x.intValue(), int.class, y.intValue(), int.class, width.intValue(), int.class, height.intValue());
 				writeScreen(target, rect);
 			}
 		} catch (Exception e1) {
@@ -245,6 +290,7 @@ public class ErrorHandler implements Thread.UncaughtExceptionHandler {
 			}
 		}
 		File file;
+		createDir(this.path);
 		if(error) {
 			file=new File(fullFileName+"error.txt");
 		}else {
@@ -277,8 +323,8 @@ public class ErrorHandler implements Thread.UncaughtExceptionHandler {
 	public void saveException(Throwable e, Object stage) {
 		// Generate Error.txt
 		String prefixName = getPrefix();
-		writeErrorFile(prefixName, "error.txt", this.path, e);
-		saveScreenShoot(prefixName, "Full.jpg", stage);
+		saveErrorFile(prefixName, "error.txt", this.path, e);
+		saveScreenShoot(prefixName, "Full.jpg", this.path, stage);
 		if(list.size()>0) {
 			SimpleEvent event = new SimpleEvent(this, prefixName, null, e);
 			event.withType(TYPE);

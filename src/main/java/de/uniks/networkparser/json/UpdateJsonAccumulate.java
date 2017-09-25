@@ -120,6 +120,7 @@ public class UpdateJsonAccumulate {
 				change.put(SendableEntityCreator.REMOVE, child);
 			} else {
 				child = new JsonObject();
+				change.put(SendableEntityCreator.REMOVE, child);
 			}
 			SendableEntityCreator creatorClass = map.getCreatorClass(oldValue);
 			if (creatorClass != null) {
@@ -138,6 +139,7 @@ public class UpdateJsonAccumulate {
 				change.put(SendableEntityCreator.UPDATE, child);
 			} else {
 				child = new JsonObject();
+				change.put(SendableEntityCreator.UPDATE, child);
 			}
 
 			creatorClass = map.getCreatorClass(newValue);

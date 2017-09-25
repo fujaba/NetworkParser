@@ -59,8 +59,10 @@ public class Method extends GraphMember {
 		sb.append(super.getName());
 		if(children != null) {
 			sb.append(getParameterString(shortName, removeParameterNames));
+		}else {
+			sb.append("()");
 		}
-		if(returnType!=null && returnType!= DataType.VOID){
+		if(returnType!=null && returnType.equals(DataType.VOID) == false){
 			sb.append(" "+returnType.getName(shortName));
 		}
 		return sb.toString();

@@ -95,13 +95,33 @@ public abstract class AbstractList<V> extends AbstractArray<V> implements Iterab
 	/**
 	 * Get the next bigger Value of a Set
 	 * @param element Element for check
-	 * @param sameElement boolen for switch return sameElement
+	 * @param sameElement boolean for switch return sameElement
 	 * @return the element or higher Element
 	 */
 	public V ceiling(V element, boolean sameElement) {
 		int pos = indexOf(element);
+		if(pos<0) {
+			return null;
+		}
 		if(pos < size) {
 			return get(pos + 1);
+		}
+		if(sameElement) {
+			return element;
+		}
+		return null;
+	}
+	
+	/**
+	 * Get the before lower Value of a Set
+	 * @param element Element for check
+	 * @param sameElement boolean for switch return sameElement
+	 * @return the element or higher Element
+	 */
+	public V lower(V element, boolean sameElement) {
+		int pos = indexOf(element);
+		if(pos > 0) {
+			return get(pos - 1);
 		}
 		if(sameElement) {
 			return element;

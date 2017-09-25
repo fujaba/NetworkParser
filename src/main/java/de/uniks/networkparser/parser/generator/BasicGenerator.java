@@ -29,6 +29,16 @@ public abstract class BasicGenerator {
 
 	protected SimpleList<Template> templates=new SimpleList<Template>();
 	protected SimpleKeyValueList<Class<?>, SimpleList<BasicGenerator>> children=new SimpleKeyValueList<Class<?>, SimpleList<BasicGenerator>>();
+	protected boolean metaModel;
+	
+	public BasicGenerator withMetaModell(boolean value) {
+		this.metaModel = value;
+		return this;
+	}
+	
+	public boolean isMetaModel() {
+		return metaModel;
+	}
 	
 	public abstract Class<?> getTyp();
 	

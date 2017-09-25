@@ -50,6 +50,15 @@ public class SourceCode extends GraphMember {
 	 */
 	public GraphMember with(Clazz parent) {
 		this.parentNode = parent;
+		//REMOVE OLD SOURCE CODE
+		GraphSimpleSet children = parent.getChildren();
+		for(GraphMember item : children) {
+			if(item instanceof SourceCode) {
+				if(item != this) {
+					parent.remove(item);
+				}
+			}
+		}
 		parent.withChildren(this);
 		return this;
 	}

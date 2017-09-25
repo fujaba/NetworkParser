@@ -138,6 +138,7 @@ public class ModelGenerator extends BasicGenerator {
 				boolean isStandard = codeStyle.match(clazz);
 				TemplateResultFile resultFile = template.executeClazz(clazz, resultModel, isStandard);
 
+				resultFile.withMetaModel(template.isMetaModel());
 				template.executeTemplate(resultFile, resultModel, clazz);
 				resultModel.add(resultFile);
 			}
@@ -150,11 +151,12 @@ public class ModelGenerator extends BasicGenerator {
 					// check for each clazz, if a matching file already exists
 					CharacterBuffer content = FileBuffer.readFile(rootDir + file.getFileName());
 					// check existing file for possible changes
-					if(content != null) {
+					if(content != null && file.isMetaModell()) {
 						ParserEntity parser = new ParserEntity();
 						try {
-							parser.parse(content);
+							parser.parse(content, (Clazz) file.getMember());
 						}catch (Exception e) {
+							e.printStackTrace();
 							System.err.println("Cant parse File:"+file.getFileName());
 						}
 						parser.addMemberToModel();

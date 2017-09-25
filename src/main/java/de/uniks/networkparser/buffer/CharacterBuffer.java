@@ -94,8 +94,14 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence {
 	public CharacterBuffer subSequence(int start, int end) {
 		start += this.start;
 		end += this.start;
+		if(buffer == null) {
+			return new CharacterBuffer();
+		}
 		if(start<0) {
 			start = position();
+		}
+		if(end<0) {
+			end =0;
 		}
 		if (end > buffer.length) {
 			end = buffer.length;

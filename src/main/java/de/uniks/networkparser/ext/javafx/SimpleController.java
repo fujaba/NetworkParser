@@ -157,7 +157,7 @@ public class SimpleController implements ObjectCondition{
 			}
 	
 			items.add("-Xdebug");
-			items.add("--XX:+HeapDumpOnOutOfMemoryError");
+//			items.add("--XX:+HeapDumpOnOutOfMemoryError");
 			items.add("-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=" + debugPort);
 			// Now Add Custom Params
 			items.addAll(customParams);
@@ -477,7 +477,7 @@ public class SimpleController implements ObjectCondition{
 		}
 	}
 	
-	public String getVersion() {
+	public static String getVersion() {
 		String result = SimpleController.class.getPackage().getImplementationVersion();
 		if (result == null) {
 			result = "0.42.DEBUG";

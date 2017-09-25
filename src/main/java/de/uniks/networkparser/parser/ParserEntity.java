@@ -16,6 +16,8 @@ import de.uniks.networkparser.graph.Modifier;
 import de.uniks.networkparser.graph.Parameter;
 import de.uniks.networkparser.graph.SourceCode;
 import de.uniks.networkparser.graph.Throws;
+import de.uniks.networkparser.graph.util.MethodSet;
+import de.uniks.networkparser.graph.util.ParameterSet;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SimpleSet;
@@ -43,8 +45,6 @@ public class ParserEntity {
 
 	public static final String ENUMVALUE = "enumvalue";
 
-	public static final String METHOD = "method";
-
 	public static char NEW_LINE = '\n';
 
 	private Clazz file;
@@ -68,7 +68,13 @@ public class ParserEntity {
 	}
 
 	public Clazz parse(CharSequence sequence) {
-		this.file = new Clazz("");
+		return parse(sequence, new Clazz(""));
+	}
+	public Clazz parse(CharSequence sequence, Clazz file) {
+		if(sequence == null || sequence.length()<1) {
+			return file;
+		}
+		this.file = file;
 		this.code = new SourceCode().withContent(sequence);
 		this.code.with(this.file);
 
@@ -116,8 +122,12 @@ public class ParserEntity {
 		return s1 == null ? s2 == null : s1.equals(s2);
 	}
 
-	public boolean skip(char character) {
+	public boolean skip(char character, boolean skipCRLF) {
 		if (currentKindEquals(character)) {
+			if(skipCRLF) {
+				nextRealToken();
+				return true;
+			}
 			nextToken();
 			return true;
 		} else {
@@ -126,8 +136,12 @@ public class ParserEntity {
 		return false;
 	}
 
-	public boolean skip(String string) {
+	public boolean skip(String string, boolean skipCRLF) {
 		if (currentTokenEquals(string)) {
+			if(skipCRLF) {
+				nextRealToken();
+				return true;
+			}
 			nextToken();
 			return true;
 		} else {
@@ -142,6 +156,13 @@ public class ParserEntity {
 		throw new RuntimeException("parse error");
 	}
 
+	public void nextRealToken() {
+		nextToken();
+		while (currentToken.kind == NEW_LINE) {
+			nextToken();
+		}
+	}
+	
 	public void nextToken() {
 		Token tmp = previousToken;
 		previousToken = currentToken;
@@ -152,7 +173,7 @@ public class ParserEntity {
 		lookAheadToken.text.delete(0, lookAheadToken.text.length());
 
 		char state = 'i';
-
+		
 		while (true) {
 			switch (state) {
 			case 'i':
@@ -340,9 +361,9 @@ public class ParserEntity {
 		parseQualifiedName(nextEntity);
 
 		if (currentKindEquals('*')) {
-			skip('*');
+			skip('*', false);
 		}
-		skip(';');
+		skip(';', true);
 	}
 
 	private String parseModifiers() {
@@ -359,6 +380,7 @@ public class ParserEntity {
 	private void parsePackageDecl() {
 		// skip package
 		SymTabEntry nextEntity = startNextSymTab(SymTabEntry.TYPE_PACKAGE);
+	    nextToken();
 		parseQualifiedName(nextEntity);
 		addCurrentCharacter(';', nextEntity);
 		addNewLine(nextEntity);
@@ -418,7 +440,7 @@ public class ParserEntity {
 		String classTyp = parseClassType();
 		String className = currentWord();
 		file.with(className);
-		file.with(ClazzType.valueOf(classTyp));
+		file.with(ClazzType.create(classTyp));
 		code.withEndOfClassName(currentToken.endPos);
 
 		nextEntity = startNextSymTab(classTyp, className);
@@ -426,7 +448,7 @@ public class ParserEntity {
 		nextEntity.withAnnotationsStart(startPosAnnotations).withPreComment(preCommentStartPos, preCommentEndPos);
 
 		// skip name
-		nextToken();
+		nextRealToken();
 
 		parseGenericTypeSpec();
 
@@ -434,7 +456,7 @@ public class ParserEntity {
 		if (EXTENDS.equalsIgnoreCase(currentWord())) {
 			int startPos = currentToken.startPos;
 
-			skip(EXTENDS);
+			skip(EXTENDS, true);
 
 			nextEntity = startNextSymTab(EXTENDS, currentWord());
 
@@ -449,10 +471,10 @@ public class ParserEntity {
 		}
 
 		// implements
-		if ("implements".equals(currentWord())) {
+		if (IMPLEMENTS.equals(currentWord())) {
 			int startPos = currentToken.startPos;
 
-			skip("implements");
+			skip(IMPLEMENTS, true);
 
 			while (!currentKindEquals(EOF) && !currentKindEquals('{')) {
 				nextEntity = startNextSymTab(IMPLEMENTS, currentWord());
@@ -501,18 +523,18 @@ public class ParserEntity {
 
 		if (currentKindEquals('[')) {
 			typeString.append("[]");
-			skip("[");
+			skip("[", true);
 			while (!"]".equals(currentWord()) && !currentKindEquals(EOF)) {
 				nextToken();
 			}
-			skip("]");
+			skip("]", true);
 		}
 
 		if (currentKindEquals('.')) {
 			typeString.append("...");
-			skip(".");
-			skip(".");
-			skip(".");
+			skip(".", false);
+			skip(".", false);
+			skip(".", true);
 		}
 
 		if ("extends".equals(lookAheadToken.text.toString())) {
@@ -534,7 +556,7 @@ public class ParserEntity {
 
 	private void parseGenericTypeDefPart(StringBuilder typeString) {
 		// <T, T, ...>
-		skip("<");
+		skip("<", false);
 		typeString.append('<');
 
 		while (!currentKindEquals('>') && !currentKindEquals(EOF)) {
@@ -548,12 +570,12 @@ public class ParserEntity {
 
 		// should be a < now
 		typeString.append(">");
-		skip(">");
+		skip(">", true);
 	}
 
 	private void parseClassBody() {
 		// { classBodyDecl* }
-		skip("{");
+		skip('{', true);
 		checkSearchStringFound(CLASS_BODY, currentToken.startPos);
 		while (!currentKindEquals(EOF) && !currentKindEquals('}')) {
 			parseMemberDecl();
@@ -564,7 +586,7 @@ public class ParserEntity {
 		}
 
 		if (!currentKindEquals(EOF)) {
-			skip("}");
+			skip("}", true);
 		} else {
 			checkSearchStringFound(CLASS_END, currentToken.startPos);
 		}
@@ -589,11 +611,11 @@ public class ParserEntity {
 
 		if (currentTokenEquals("<")) {
 			// generic type decl
-			skip("<");
+			skip("<", true);
 			while (!currentTokenEquals(">")) {
 				nextToken();
 			}
-			skip(">");
+			skip(">", true);
 		}
 
 		if (currentTokenEquals(CLASS) || currentTokenEquals(INTERFACE)) {
@@ -616,7 +638,7 @@ public class ParserEntity {
 			// modifiers = parseModifiers();
 		} else if (currentTokenEquals(ENUM)) {
 			// skip enum name { entry, ... }
-			skip(ENUM);
+			skip(ENUM, true);
 			nextToken(); // name
 			skipBody();
 			return;
@@ -629,7 +651,7 @@ public class ParserEntity {
 
 		if (currentTokenEquals(file.getName()) && lookAheadToken.kind == '(') {
 			// constructor
-			skip(file.getName());
+			skip(file.getName(), true);
 
 			String params = parseFormalParamList();
 
@@ -660,17 +682,18 @@ public class ParserEntity {
 			// Switch between Enum Value and Attributes
 			if (currentKindEquals('=')) {
 				// field declaration with initialisation
-				skip("=");
+				skip("=", true);
 
 				parseExpression();
 
 				code.withEndOfAttributeInitialization(previousToken.startPos);
 
-				skip(";");
+				skip(";", true);
 
 				SymTabEntry nextEntity = startNextSymTab(SymTabEntry.TYPE_ATTRIBUTE, memberName);
 				nextEntity.withPosition(startPos, previousToken.startPos);
 				nextEntity.withModifiers(modifiers);
+				nextEntity.withDataType(type);
 				nextEntity.withPreComment(preCommentStartPos, preCommentEndPos);
 				nextEntity.withAnnotationsStart(annotationsStartPos);
 
@@ -678,13 +701,14 @@ public class ParserEntity {
 			} else if (currentKindEquals(';') && !",".equals(memberName)) {
 				// field declaration
 				checkSearchStringFound(NAME_TOKEN + ":" + searchString, startPos);
-				skip(";");
+				skip(";", true);
 
 				SymTabEntry nextEntity = startNextSymTab(SymTabEntry.TYPE_ATTRIBUTE, memberName);
 				nextEntity.withPosition(startPos, previousToken.startPos);
 				nextEntity.withModifiers(modifiers);
 				nextEntity.withPreComment(preCommentStartPos, preCommentEndPos);
 				nextEntity.withAnnotationsStart(annotationsStartPos);
+				nextEntity.withDataType(type);
 
 				checkSearchStringFound(SymTabEntry.TYPE_ATTRIBUTE + ":" + memberName, startPos);
 			} else if (currentKindEquals('(')) {
@@ -711,12 +735,14 @@ public class ParserEntity {
 				}
 
 				else if (currentKindEquals(';'))
-					skip(';');
+					skip(';', true);
 
 				String methodSignature = SymTabEntry.TYPE_METHOD + ":" + memberName + params;
 
 				SymTabEntry nextEntity = startNextSymTab(SymTabEntry.TYPE_METHOD, memberName);
 				nextEntity.withThrowsTags(throwsTags);
+				nextEntity.withDataType(type);
+				nextEntity.withParams(params);
 				nextEntity.withPosition(startPos, previousToken.startPos);
 				nextEntity.withModifiers(modifiers).withBodyStartPos(code.getBodyStart());
 				nextEntity.withAnnotations(annotations);
@@ -742,7 +768,7 @@ public class ParserEntity {
 					nextEntity.withPreComment(preCommentStartPos, preCommentEndPos);
 					nextEntity.withAnnotationsStart(annotationsStartPos);
 					skipTo(';');
-					skip(";");
+					skip(";", true);
 				}
 			}
 		}
@@ -750,7 +776,7 @@ public class ParserEntity {
 
 	private void parseBlock() {
 		// { stat ... }
-		skip("{");
+		skip("{", true);
 
 		while (!currentKindEquals(EOF) && !currentKindEquals('}')) {
 			if (currentKindEquals('{')) {
@@ -760,14 +786,14 @@ public class ParserEntity {
 			}
 		}
 
-		skip("}");
+		skip("}", true);
 	}
 
 	private String parseFormalParamList() {
 		StringBuilder paramList = new StringBuilder().append('(');
 
 		// '(' (type name[,] )* ') [throws type , (type,)*]
-		skip("(");
+		skip("(", true);
 
 		while (!currentKindEquals(EOF) && !currentKindEquals(')')) {
 			int typeStartPos = currentToken.startPos;
@@ -786,11 +812,11 @@ public class ParserEntity {
 			nextToken();
 
 			if (currentKindEquals(',')) {
-				skip(",");
+				skip(",", true);
 				paramList.append(',');
 			}
 		}
-		skip(")");
+		skip(")", true);
 
 		paramList.append(')');
 
@@ -819,10 +845,9 @@ public class ParserEntity {
 	private CharSequence parseQualifiedName(SymTabEntry nextEntity) {
 		// return dotted name
 		nextToken();
-		nextToken();
 
 		while (currentKindEquals('.') && !lookAheadKindEquals('.') && !currentKindEquals(EOF)) {
-			skip(".");
+			skip(".", false);
 
 			// read next name
 			nextToken();
@@ -839,7 +864,7 @@ public class ParserEntity {
 		nextToken();
 
 		while (currentKindEquals('.') && !(lookAheadToken.kind == '.') && !currentKindEquals(EOF)) {
-			skip(".");
+			skip(".", false);
 
 			// read next name
 			endPos = currentToken.endPos;
@@ -885,12 +910,15 @@ public class ParserEntity {
 			classType = ENUM;
 		}
 		if (classType.isEmpty() == false) {
-			skip(classType);
+			skip(classType, true);
 		}
 		return classType;
 	}
 
 	public void addMemberToModel() {
+		if(code == null) {
+			return;
+		}
 		SimpleKeyValueList<String, SimpleList<SymTabEntry>> symbolTab = code.getSymbolTab();
 		Set<String> keySet = symbolTab.keySet();
 		for (String key : keySet) {
@@ -910,12 +938,16 @@ public class ParserEntity {
 			} else if (key.startsWith(SymTabEntry.TYPE_EXTENDS)) {
 				// add super classes
 				if (GraphUtil.isInterface(this.file)) {
-					addMemberAsInterface(key, symbolTab);
+					for (SymTabEntry entry : entities) {
+						addMemberAsInterface(entry, symbolTab);
+					}
 				} else {
 					// addMemberAsSuperClass(clazz, memberName, parser);
 				}
 			} else if (key.startsWith(SymTabEntry.TYPE_IMPLEMENTS)) {
-				addMemberAsInterface(key, symbolTab);
+				for (SymTabEntry entry : entities) {
+					addMemberAsInterface(entry, symbolTab);
+				}
 			}
 		}
 	}
@@ -924,10 +956,13 @@ public class ParserEntity {
 			+ "org.sdmlib.models.pattern.PatternObject " + "org.sdmlib.models.pattern.util.PatternObjectCreator "
 			+ "org.sdmlib.models.modelsets.SDMSet " + "org.sdmlib.serialization.PropertyChangeInterface";
 
-	private void addMemberAsInterface(String memberName,
+	private void addMemberAsInterface(SymTabEntry memberName,
 			SimpleKeyValueList<String, SimpleList<SymTabEntry>> symbolTab) {
 		Clazz memberClass = findMemberClass(this.file, memberName, symbolTab);
 
+		if(memberClass == null) {
+			return;
+		}
 		// ignore helperclasses
 		boolean found = SDMLIBFILES.indexOf(memberClass.getName(false)) > 0;
 		if (found) {
@@ -956,13 +991,14 @@ public class ParserEntity {
 		return null;
 	}
 
-	private Clazz findMemberClass(Clazz clazz, String memberName,
+	private Clazz findMemberClass(Clazz clazz, SymTabEntry memberName,
 			SimpleKeyValueList<String, SimpleList<SymTabEntry>> symbolTab) {
-		String[] split = memberName.split(":");
-		String signature = split[1];
+//		String[] split = memberName.split(":");
+//		String signature = split[1];
+		String signature = memberName.getValue();
 
 		for (String key : symbolTab.keySet()) {
-			String importName = symbolTab.get(key).first().getMemberName();
+			String importName = symbolTab.get(key).first().getValue();
 			if (key.startsWith(SymTabEntry.TYPE_IMPORT + ":") && importName.endsWith(signature)) {
 				Clazz modelClass = findClassInModel(importName);
 
@@ -1004,14 +1040,14 @@ public class ParserEntity {
 			// ignore
 			return;
 		}
-		String type = symTabEntry.getType();
+		String type = symTabEntry.getDataType();
 		// include arrays
 		type = type.replace("[]", "");
 
 		String attrName = symTabEntry.getValue();
 		if (EntityUtil.isPrimitiveType(type)) {
 			if (!classContainsAttribut(attrName, symTabEntry.getType())) {
-				new Attribute(attrName, DataType.create(symTabEntry.getType())).with(this.file);
+				this.file.with(new Attribute(attrName, DataType.create(symTabEntry.getDataType())));
 			}
 		} else {
 			// handle complex attributes
@@ -1033,7 +1069,7 @@ public class ParserEntity {
 		if (model == null) {
 			return;
 		}
-		String memberName = symTabEntry.getMemberName();
+		String memberName = symTabEntry.getValue();
 		String partnerTypeName = symTabEntry.getType();
 
 		String partnerClassName = findPartnerClassName(partnerTypeName);
@@ -1066,7 +1102,7 @@ public class ParserEntity {
 
 		// type is unknown
 		if (addToSymTabEntry == null) {
-			new Attribute(memberName, DataType.create(partnerTypeName)).with(this.file);
+			this.file.with(new Attribute(memberName, DataType.create(partnerTypeName)));
 			return;
 		}
 
@@ -1095,7 +1131,7 @@ public class ParserEntity {
 		}
 		if (!done) {
 			// did not find reverse role, add as attribute
-			new Attribute(memberName, DataType.create(partnerTypeName)).with(this.file);
+			this.file.with(new Attribute(memberName, DataType.create(partnerTypeName)));
 		}
 
 		// // remove getter with setter or addTo removeFrom removeAllFrom without
@@ -1147,28 +1183,35 @@ public class ParserEntity {
 		return partnerCard;
 	}
 
-	private static final String SKIPMETGODS = "get(String) set(String,Object) getPropertyChangeSupport() removeYou() addPropertyChangeListener(PropertyChangeListener) removePropertyChangeListener(PropertyChangeListener) addPropertyChangeListener(String,PropertyChangeListener) removePropertyChangeListener(String,PropertyChangeListener) toString()";
+	private static final String SKIPMETGODS = "get(String) firePropertyChange(String,Object,Object) set(String,Object) getPropertyChangeSupport() removeYou() addPropertyChangeListener(PropertyChangeListener) removePropertyChangeListener(PropertyChangeListener) addPropertyChangeListener(String,PropertyChangeListener) removePropertyChangeListener(String,PropertyChangeListener) toString()";
 
 	private void addMemberAsMethod(SymTabEntry symTabEntry,
 			SimpleKeyValueList<String, SimpleList<SymTabEntry>> symTab) {
 		String fullSignature = symTabEntry.getType();
-		String[] split = fullSignature.split(":");
-		String signature = split[1];
+		String signature = symTabEntry.getValue();
 
 		// filter internal generated methods
-
-		if (SKIPMETGODS.indexOf(signature) < 0 && isGetterSetter(signature, symTab) == false
+		if(SymTabEntry.TYPE_METHOD.equals(fullSignature) == false) {
+			return;
+		}
+		String sign = signature + symTabEntry.getParams();
+		if (SKIPMETGODS.indexOf(sign) < 0 && isGetterSetter(signature, symTab) == false
 				&& isNewMethod(signature)) {
-			int part = signature.indexOf("(");
-			String[] params = signature.substring(part + 1, signature.length() - 1).split(",");
+			String paramsStr = symTabEntry.getParams();
+			String[] params = paramsStr.substring(1, paramsStr.length() - 1).split(",");
 
-			Method method = new Method(signature.substring(0, part)).withParent(this.file)
-					.with(DataType.create(split[2]));
+			Method method = new Method(signature)
+					.with(DataType.create(symTabEntry.getDataType()));
 			for (String param : params) {
 				if (param != null && param.length() > 0) {
 					method.with(new Parameter(DataType.create(param)));
 				}
 			}
+			
+			method = getMethod(method);
+			
+			method.withParent(this.file);
+			
 			if (!symTabEntry.getAnnotations().isEmpty()) {
 				method.with(new Annotation(symTabEntry.getAnnotations()));
 			}
@@ -1176,11 +1219,39 @@ public class ParserEntity {
 			method.withBody(this.code.subString(symTabEntry.getBodyStartPos(), symTabEntry.getEndPos() + 1).toString());
 		}
 	}
+	
+	private Method getMethod(Method search) {
+		MethodSet methods = this.file.getMethods();
+		for(Method method : methods) {
+			if(method.toString().equals(search.toString())) {
+				return method;
+			} else  if(search.getName().equals(method.getName())) {
+				if(search.getReturnType().equals(method.getReturnType())) {
+					// Check all Parameter
+					ParameterSet searchParam = search.getParameter();
+					ParameterSet param = method.getParameter();
+					if(searchParam.size() == param.size()) {
+						boolean found=true;
+						for(int i=0;i<param.size();i++) {
+							if(param.get(i).getType().equals(searchParam.get(i).getType()) == false) {
+								found=false;
+								break;
+							}
+						}
+						if(found) {
+							return method;
+						}
+					}
+				}
+			}
+		}
+		return search;
+	}
 
-	private boolean isGetterSetter(String signature, SimpleKeyValueList<String, SimpleList<SymTabEntry>> symTab) {
+	private boolean isGetterSetter(String methodName, SimpleKeyValueList<String, SimpleList<SymTabEntry>> symTab) {
 		// method starts with: with set get ...
-		if (signature.startsWith("with") || signature.startsWith("set") || signature.startsWith("get")
-				|| signature.startsWith("add") || signature.startsWith("remove") || signature.startsWith("create")) {
+		if (methodName.startsWith("with") || methodName.startsWith("set") || methodName.startsWith("get")
+				|| methodName.startsWith("add") || methodName.startsWith("remove") || methodName.startsWith("create")) {
 
 			SimpleList<SymTabEntry> attributes = new SimpleList<SymTabEntry>();
 			for (String key : symTab.keySet()) {
@@ -1192,9 +1263,9 @@ public class ParserEntity {
 
 			// is class attribute
 			for (SymTabEntry entry : attributes) {
-				String attrName = entry.getMemberName();
-				String signName = signature.substring(0, signature.indexOf("("));
-				if (signName.toLowerCase().endsWith(attrName.toLowerCase())) {
+				String attrName = entry.getValue();
+//				String signName = entry.getValue();
+				if (methodName.toLowerCase().endsWith(attrName.toLowerCase())) {
 					return true;
 				}
 			}
