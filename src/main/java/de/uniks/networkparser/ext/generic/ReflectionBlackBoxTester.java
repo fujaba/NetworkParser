@@ -50,6 +50,7 @@ public class ReflectionBlackBoxTester {
 		withIgnoreClazzes(className+":init");
 		withIgnoreClazzes(className+":saveException");
 		withIgnoreClazzes(className+":createContent");
+		withIgnoreClazzes(className+":showContent");
 		withIgnoreClazzes(Server_TCP.class.getName());
 		withIgnoreClazzes(Server_UPD.class.getName());
 		withIgnoreClazzes(NodeProxyBroadCast.class.getName());

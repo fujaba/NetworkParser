@@ -427,7 +427,6 @@ public class ParserEntity {
 			if (annotation != "") {
 				nextEntity = startNextSymTab(SymTabEntry.TYPE_ANNOTATION, annotation.substring(1));
 				nextEntity.withPosition(startPosAnnotations, endPosAnnotation);
-				// TODO Add to Clazz
 				this.file.with(Annotation.create(annotation));
 			}
 		}
@@ -714,8 +713,6 @@ public class ParserEntity {
 			} else if (currentKindEquals('(')) {
 
 				String params = parseFormalParamList();
-
-				// FIXME : skip annotations
 				if (type.startsWith("@")) {
 					return;
 				}
@@ -875,7 +872,7 @@ public class ParserEntity {
 		return code.subString(startPos, endPos + 1);
 	}
 
-	// TODO DEBUG METHODS
+	// DEBUG METHODS
 	private void checkSearchStringFound(String foundElem, int startPos) {
 		if (EntityUtil.stringEquals(searchString, foundElem)) {
 			indexOfResult = startPos;
@@ -922,7 +919,6 @@ public class ParserEntity {
 		SimpleKeyValueList<String, SimpleList<SymTabEntry>> symbolTab = code.getSymbolTab();
 		Set<String> keySet = symbolTab.keySet();
 		for (String key : keySet) {
-			// TODO FIXME
 			SimpleList<SymTabEntry> entities = symbolTab.get(key);
 			if (key.startsWith(SymTabEntry.TYPE_METHOD)) {
 				for (SymTabEntry entry : entities) {
@@ -969,7 +965,6 @@ public class ParserEntity {
 			GraphUtil.removeYou(memberClass);
 			return;
 		}
-		// FIXME
 		if (memberClass != null) {
 			// memberClass.withInterface(true);
 			this.file.withSuperClazz(memberClass);
@@ -1133,18 +1128,6 @@ public class ParserEntity {
 			// did not find reverse role, add as attribute
 			this.file.with(new Attribute(memberName, DataType.create(partnerTypeName)));
 		}
-
-		// // remove getter with setter or addTo removeFrom removeAllFrom without
-		// for (String memberName : memberNames)
-		// {
-		// // remove getter with setter or addTo removeFrom removeAllFrom without
-		// findAndRemoveMethods(
-		// clazz,
-		// memberName,
-		// "get set with without addTo create removeFrom removeAllFrom iteratorOf hasIn
-		// sizeOf removePropertyChange addPropertyChange");
-		// findAndRemoveAttributs(clazz, "listeners");
-		// }
 	}
 
 	public String findPartnerClassName(String partnerTypeName) {

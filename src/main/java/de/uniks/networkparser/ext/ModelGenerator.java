@@ -43,8 +43,8 @@ public class ModelGenerator extends BasicGenerator {
 	public SimpleKeyValueList<String, ParserCondition> customTemplate;
 	private boolean useSDMLibParser = true;
 
-	private SimpleList<BasicGenerator> javaGeneratorTemplates = new SimpleList<BasicGenerator>().with(new JavaClazz(),
-			new JavaSet(), new JavaCreator());
+	private SimpleList<BasicGenerator> javaGeneratorTemplates = new SimpleList<BasicGenerator>().with(new JavaClazz(), new JavaSet(), new JavaCreator());
+	private SimpleList<BasicGenerator> typeScriptTemplates = new SimpleList<BasicGenerator>().with(new JavaClazz());
 
 	public SimpleKeyValueList<String, ParserCondition> getTemplates() {
 		if (customTemplate == null) {
@@ -99,10 +99,7 @@ public class ModelGenerator extends BasicGenerator {
 	}
 
 	public SendableEntityCreator generateTypescript(String rootDir, GraphModel model, TextItems parameters) {
-		SimpleList<BasicGenerator> templates = new SimpleList<BasicGenerator>();
-
-		// templates.add(new JavaClazz());
-		return generating(rootDir, model, parameters, templates, true);
+		return generating(rootDir, model, parameters, typeScriptTemplates, true);
 	}
 
 	public SendableEntityCreator generating(String rootDir, GraphModel model, TextItems parameters,
@@ -148,10 +145,13 @@ public class ModelGenerator extends BasicGenerator {
 			// Add missed value to Metamodel
 			if(useSDMLibParser) {
 				for (TemplateResultFile file : resultModel) {
+					if(file.isMetaModell() == false) {
+						continue;
+					}
 					// check for each clazz, if a matching file already exists
 					CharacterBuffer content = FileBuffer.readFile(rootDir + file.getFileName());
 					// check existing file for possible changes
-					if(content != null && file.isMetaModell()) {
+					if(content != null) {
 						ParserEntity parser = new ParserEntity();
 						try {
 							parser.parse(content, (Clazz) file.getMember());

@@ -24,11 +24,23 @@ public class TestSDMLib {
 		
 		model.getGenerator().testGeneratedCode();
 
+		Assert.assertEquals(1, person.getAttributes().size());
+		Assert.assertEquals(1, person.getMethods().size());
+		
 		
 		person.createAttribute("age", DataType.INT);
 		person.createMethod("go");
+		
+		Assert.assertEquals(2, person.getAttributes().size());
+		Assert.assertEquals(2, person.getMethods().size());
+		
 		person.remove(nameAttribute);
 		person.remove(eatMethod);
+		
+		Assert.assertEquals(1, person.getAttributes().size());
+		Assert.assertEquals(1, person.getMethods().size());
+		
+		
 		//model.generate("src/test/java");
 		model.getGenerator().generateJava("build/gen/java", model, null);
 		

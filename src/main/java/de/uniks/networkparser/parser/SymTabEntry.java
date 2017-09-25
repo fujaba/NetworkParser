@@ -67,10 +67,8 @@ public class SymTabEntry {
 
 	private int annotationsEndPos;
 	private int bodyStartPos;
-
-	private String dataType;
-
-	private String params;
+	private String dataType; 	// DataType of Attribute or ReturnType of Method
+	private String params; // Parameter of Methods
 
 	public String getValue() {
 		return this.value;
