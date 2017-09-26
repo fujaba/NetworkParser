@@ -1,12 +1,20 @@
 package de.uniks.networkparser.parser;
 
 import de.uniks.networkparser.buffer.CharacterBuffer;
+import de.uniks.networkparser.ext.ClassModel;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.GraphEntity;
+import de.uniks.networkparser.graph.GraphMember;
+import de.uniks.networkparser.graph.GraphSimpleSet;
+import de.uniks.networkparser.graph.GraphUtil;
+import de.uniks.networkparser.graph.Modifier;
+import de.uniks.networkparser.graph.ModifyEntry;
+import de.uniks.networkparser.graph.SourceCode;
 import de.uniks.networkparser.interfaces.LocalisationInterface;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.list.SimpleSet;
 import de.uniks.networkparser.list.SortedSet;
+import de.uniks.networkparser.parser.generator.BasicGenerator;
 
 public class TemplateResultFile extends SortedSet<TemplateResultFragment> implements SendableEntityCreator, LocalisationInterface {
 	public static final String PROPERTY_PARENT="parent";
@@ -177,9 +185,78 @@ public class TemplateResultFile extends SortedSet<TemplateResultFragment> implem
 		return false;
 	}
 	
+	public SourceCode getCode() {
+		if(this.member instanceof Clazz) {
+			Clazz clazz = (Clazz) this.member;
+			GraphMember code = clazz.getChildByName(SourceCode.NAME, SourceCode.class);
+			if(code != null && code instanceof SourceCode) {
+				return (SourceCode) code;
+			}
+		}
+		return null;
+	}
+	
 	@Override
 	public String toString() {
-		CharacterBuffer buffer= new CharacterBuffer();
+		SourceCode code = getCode();
+		if(this.size() < 1 ) {
+			if(code != null) {
+				return code.toString();
+			}
+		}
+		// ADD CODE
+		// Check for Existing
+		if(code != null) {
+			StringBuilder sb=new StringBuilder();
+			sb.append(code.getContent().toString());
+//			buffer = code.getContent();
+			TemplateResultFragment importDecl = null;
+			// REMVOE OLD SOURCE
+			GraphSimpleSet children = GraphUtil.getChildren(this.member);
+			
+			for(GraphMember member : children) {
+				if(member instanceof ModifyEntry == false) {
+					continue;
+				}
+				ModifyEntry modifierChild = (ModifyEntry) member;
+				if(ModifyEntry.TYPE_DELETE.equalsIgnoreCase(modifierChild.getType())) {
+					GraphMember entry = modifierChild.getEntry();
+					SymTabEntry symbolEntry = code.getSymbolEntry(entry.getClass().getSimpleName(), entry.getName());
+					if(symbolEntry != null) {
+						sb.replace(symbolEntry.getStartPos(), symbolEntry.getEndPos(), "");
+					}
+				}
+			}
+			for(TemplateResultFragment fragment : this) {
+				if(fragment.getKey() == Template.DECLARATION) {
+					continue;
+				}
+				if(fragment.getKey() == Template.IMPORT) {
+					// EVALUATION IMPORT
+//					TextItems 
+					fragment.update();
+					importDecl = fragment;
+					continue;
+				}
+				if(fragment.getName() != null) {
+					if(SymTabEntry.TYPE_METHOD.equalsIgnoreCase(fragment.getName())) {
+						SymTabEntry symbolEntry = code.getSymbolEntry(fragment.getName(), fragment.getMember().getName());
+						if(symbolEntry == null) {
+							int pos = code.getEndOfBody();
+							sb.replace(pos, pos, fragment.getValue().toString());
+						}
+					}
+				}
+			}
+			
+			if(importDecl != null) {
+				int start = code.getStartOfImports();
+				int end = code.getEndOfImports();
+//FIXME STEFAN				buffer.replace(start, end, importDecl.getValue().toString());
+			}
+			return sb.toString();
+		}
+		CharacterBuffer buffer = new CharacterBuffer();
 		for(TemplateResultFragment fragment : this) {
 			if(fragment.getKey() == Template.DECLARATION) {
 				continue;
@@ -188,7 +265,6 @@ public class TemplateResultFile extends SortedSet<TemplateResultFragment> implem
 				// EVALUATION IMPORT
 //				TextItems 
 				fragment.update();
-				
 			}
 			buffer.with(fragment.getValue());
 		}
@@ -211,6 +287,13 @@ public class TemplateResultFile extends SortedSet<TemplateResultFragment> implem
 	
 	public boolean isMetaModell() {
 		return metaModell;
+	}
+	
+	public static TemplateResultFile createJava(Clazz clazz) {
+		TemplateResultFile templateResult = new TemplateResultFile(clazz, true);
+		templateResult.withExtension(BasicGenerator.TYPE_JAVA);
+		templateResult.withPath((String) clazz.getClassModel().getValue(ClassModel.PROPERTY_PATH));
+		return templateResult;
 	}
 }
   

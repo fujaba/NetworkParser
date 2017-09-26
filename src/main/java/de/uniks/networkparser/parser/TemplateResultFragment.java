@@ -41,6 +41,7 @@ public class TemplateResultFragment implements Comparable<TemplateResultFragment
 	private CharacterBuffer value = new CharacterBuffer();
 	
 	private ObjectCondition template;
+	private String name;
 	
 	@Override
 	public int compareTo(TemplateResultFragment other) {
@@ -428,5 +429,14 @@ public class TemplateResultFragment implements Comparable<TemplateResultFragment
 	public void update() {
 		this.value.clear();
 		this.template.update(this);
+	}
+
+	public TemplateResultFragment withName(String name) {
+		this.name = name;
+		return this;
+	}
+	
+	public String getName() {
+		return name;
 	}
 }

@@ -46,7 +46,6 @@ public class JavaSet extends BasicGenerator {
 				"   {",
 				"      this.addAll(objects);",
 				"   }","",
-				"{{#DEBUG}}"+
 				"{{#if {{templatemodel.features.setclass.classstring}}=="+SimpleSet.class.getName()+"}}"+
 				"		public static final {{name}}Set EMPTY_SET = new {{name}}Set().withFlag({{name}}Set.READONLY);"+
 				"{{#else}}"+

@@ -22,6 +22,9 @@ import de.uniks.networkparser.parser.TemplateResultModel;
 
 public abstract class BasicGenerator {
 	public static final String PROPERTY_FEATURE="features";
+	public static final String TYPE_JAVA="java";
+	public static final String TYPE_TYPESCRIPT="typescript";
+	public static final String TYPE_CPP="cpp";
 	protected String extension;
 	protected String path;
 	protected String postfix;

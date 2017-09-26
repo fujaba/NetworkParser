@@ -52,6 +52,7 @@ public class Template implements TemplateParser {
 		}
 		TemplateResultFragment templateFragment = new TemplateResultFragment();
 		templateFragment.withKey(this.getType());
+		templateFragment.withName(this.getName());
 		templateFragment.setParent(parent);
 		templateFragment.withVariable(parameters);
 		templateFragment.withMember(member);

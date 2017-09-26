@@ -1,25 +1,34 @@
 package de.uniks.networkparser.graph;
 
+import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.parser.SymTabEntry;
 
 public class SourceCode extends GraphMember {
-	private CharSequence content;
+	public static final String NAME="SourceCode";
+	private CharacterBuffer content;
 	private SimpleKeyValueList<String, SimpleList<SymTabEntry>> keys=new SimpleKeyValueList<String, SimpleList<SymTabEntry>>();
 	private boolean fileBodyHasChanged = false;
 	private int size;
+	private int startOfImports;
 	private int endOfClassName;
 	private int endOfExtendsClause;
 	private int endOfImports;
 	private int endOfImplementsClause;
 	private int bodyStart;
 	private int endOfAttributeInitialization;
-
-	public CharSequence getContent() {
+	private int endOfBody;
+	
+	public SourceCode() {
+		super();
+		this.name = NAME;
+	}
+	
+	public CharacterBuffer getContent() {
 		return content;
 	}
-	public SourceCode withContent(CharSequence content) {
+	public SourceCode withContent(CharacterBuffer content) {
 		this.content = content;
 		this.size = content.length();
 		return this;
@@ -39,6 +48,21 @@ public class SourceCode extends GraphMember {
 		return list;
 	}
 	
+	public SymTabEntry getSymbolEntry(String type, String name) {
+		if(name == null || type == null) {
+			return null;
+		}
+		SimpleList<SymTabEntry> list = keys.get(type.toLowerCase());
+		if(list != null) {
+			for(SymTabEntry entry : list) {
+				if(name.equals(entry.getValue())) {
+					return entry;
+				}
+			}
+		}
+		return null;
+	}
+	
 	public SimpleKeyValueList<String, SimpleList<SymTabEntry>> getSymbolTab() {
 		return keys;
 	}
@@ -51,7 +75,8 @@ public class SourceCode extends GraphMember {
 	public GraphMember with(Clazz parent) {
 		this.parentNode = parent;
 		//REMOVE OLD SOURCE CODE
-		GraphSimpleSet children = parent.getChildren();
+		GraphSimpleSet children = new GraphSimpleSet();
+		children.withList(parent.getChildren());
 		for(GraphMember item : children) {
 			if(item instanceof SourceCode) {
 				if(item != this) {
@@ -117,5 +142,33 @@ public class SourceCode extends GraphMember {
 	
 	public int getEndOfAttributeInitialization() {
 		return endOfAttributeInitialization;
+	}
+	
+	public void replaceAll(int bodyStartPos, String value) {
+		this.content.replace(bodyStartPos, bodyStartPos, value);
+		this.fileBodyHasChanged = true;
+	}
+	
+	@Override
+	public String toString() {
+		return content.toString();
+	}
+
+	public SourceCode withEndBody(int value) {
+		this.endOfBody = value;
+		return this;
+	}
+	
+	public int getEndOfBody() {
+		return endOfBody;
+	}
+
+	public SourceCode withStartImports(int value) {
+		this.startOfImports = value;
+		return this;
+	}
+	
+	public int getStartOfImports() {
+		return startOfImports;
 	}
 }

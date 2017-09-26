@@ -3,6 +3,7 @@ package de.uniks.networkparser.parser;
 import java.util.Set;
 
 import de.uniks.networkparser.EntityUtil;
+import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.graph.Annotation;
 import de.uniks.networkparser.graph.Attribute;
 import de.uniks.networkparser.graph.Cardinality;
@@ -62,15 +63,15 @@ public class ParserEntity {
 	public int indexOfResult;
 	private boolean verbose = false;
 
-	public static Clazz create(CharSequence content) {
+	public static Clazz create(CharacterBuffer content) {
 		ParserEntity parser = new ParserEntity();
 		return parser.parse(content);
 	}
 
-	public Clazz parse(CharSequence sequence) {
+	public Clazz parse(CharacterBuffer sequence) {
 		return parse(sequence, new Clazz(""));
 	}
-	public Clazz parse(CharSequence sequence, Clazz file) {
+	public Clazz parse(CharacterBuffer sequence, Clazz file) {
 		if(sequence == null || sequence.length()<1) {
 			return file;
 		}
@@ -87,9 +88,11 @@ public class ParserEntity {
 		if (currentTokenEquals(SymTabEntry.TYPE_PACKAGE)) {
 			parsePackageDecl();
 		}
+		code.withStartImports(currentToken.startPos);
 		while (currentTokenEquals(SymTabEntry.TYPE_IMPORT)) {
 			parseImport();
 		}
+		code.withEndOfImports(currentToken.startPos);
 		parseClassDecl();
 		return this.file;
 	}
@@ -294,7 +297,7 @@ public class ParserEntity {
 	}
 
 	public SymTabEntry startNextSymTab(String type) {
-		SymTabEntry nextEntity = new SymTabEntry();
+		SymTabEntry nextEntity = new SymTabEntry(null).withParent(code);
 		nextEntity.setType(type);
 		if (symTabEntry == null) {
 			this.symTabEntry = nextEntity;
@@ -581,6 +584,7 @@ public class ParserEntity {
 		}
 
 		if (currentKindEquals('}')) {
+			code.withEndBody(currentToken.startPos);
 			checkSearchStringFound(CLASS_END, currentToken.startPos);
 		}
 
@@ -1262,5 +1266,16 @@ public class ParserEntity {
 				return false;
 		}
 		return true;
+	}
+	
+	public SourceCode getCode() {
+		return code;
+	}
+
+	public SymTabEntry getSymbolEntry(String type, String name) {
+		if(this.code != null) {
+			return this.code.getSymbolEntry(type, name);
+		}
+		return null;
 	}
 }

@@ -36,12 +36,16 @@ public abstract class GraphMember {
 	public static final String PROPERTY_VISIBILITY = "visibility";
 	public static final String PROPERTY_MODIFIERS = "modifiers";
 	public static final String PROPERTY_THIS = "this";
+	public static final String PROPERTY_PATH = "path";
 
 	protected String name;
 	protected Object children;
 	protected Object parentNode;
 
 	public Object getValue(String attribute) {
+		if(PROPERTY_PATH.equalsIgnoreCase(attribute)) {
+			return getName().replaceAll("\\.", "/");
+		}
 		if(PROPERTY_VISIBILITY.equalsIgnoreCase(attribute)) {
 			Modifier modifier = this.getModifier();
 			if (modifier == null) {
@@ -263,7 +267,7 @@ public abstract class GraphMember {
 		}
 		return this;
 	}
-
+	
 	protected GraphMember without(GraphMember... values) {
 		if (values == null || this.children == null) {
 			return this;

@@ -285,4 +285,9 @@ public abstract class GraphEntity extends GraphMember {
 		withAnnotaion(value);
 		return this;
 	}
+	
+	public GraphEntity with(ModifyEntry modifier) {
+		super.withChildren(modifier);
+		return this;
+	}
 }

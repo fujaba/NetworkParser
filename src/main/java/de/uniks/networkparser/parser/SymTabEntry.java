@@ -2,6 +2,8 @@ package de.uniks.networkparser.parser;
 
 import java.util.ArrayList;
 
+import de.uniks.networkparser.graph.SourceCode;
+
 /*
 NetworkParser
 The MIT License
@@ -69,7 +71,18 @@ public class SymTabEntry {
 	private int bodyStartPos;
 	private String dataType; 	// DataType of Attribute or ReturnType of Method
 	private String params; // Parameter of Methods
+	private SourceCode parent;
 
+	public SymTabEntry withParent(SourceCode parent) {
+		this.parent = parent;
+		return this;
+	}
+	
+	public SymTabEntry(SourceCode parent) {
+		this.parent = parent;
+	}
+	
+	
 	public String getValue() {
 		return this.value;
 	}
@@ -271,5 +284,9 @@ public class SymTabEntry {
 	
 	public String getParams() {
 		return params;
+	}
+
+	public void writeBody(String value) {
+		this.parent.replaceAll(this.bodyStartPos+1, value);
 	}
 }

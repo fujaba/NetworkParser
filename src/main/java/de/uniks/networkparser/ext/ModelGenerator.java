@@ -44,9 +44,6 @@ public class ModelGenerator extends BasicGenerator {
 	private GraphModel defaultModel;
 	public SimpleKeyValueList<String, ParserCondition> customTemplate;
 	private boolean useSDMLibParser = true;
-	public static final String TYPE_JAVA="java";
-	public static final String TYPE_TYPESCRIPT="typescript";
-	public static final String TYPE_CPP="cpp";
 
 	private SimpleList<BasicGenerator> javaGeneratorTemplates = new SimpleList<BasicGenerator>().with(new JavaClazz(), new JavaSet(), new JavaCreator());
 	private SimpleList<BasicGenerator> typeScriptTemplates = new SimpleList<BasicGenerator>().with(new TypescriptClazz());
@@ -163,7 +160,6 @@ public class ModelGenerator extends BasicGenerator {
 				template.executeTemplate(resultFile, resultModel, clazz);
 				resultModel.add(resultFile);
 			}
-			return resultModel;
 		}
 		if (writeFiles) {
 			// IF FILE EXIST AND Switch is Enable only add missing value
@@ -173,28 +169,47 @@ public class ModelGenerator extends BasicGenerator {
 					if(file.isMetaModell() == false) {
 						continue;
 					}
-					// check for each clazz, if a matching file already exists
-					CharacterBuffer content = FileBuffer.readFile(rootDir + file.getFileName());
-					// check existing file for possible changes
-					if(content != null) {
-						ParserEntity parser = new ParserEntity();
-						try {
-							parser.parse(content, (Clazz) file.getMember());
-						}catch (Exception e) {
-							e.printStackTrace();
-							System.err.println("Cant parse File:"+file.getFileName());
-						}
+					ParserEntity parser = parse(rootDir, file);
+					if(parser != null) {
 						parser.addMemberToModel();
 					}
 				}
 			}
 			for (TemplateResultFile file : resultModel) {
-				FileBuffer.writeFile(rootDir + file.getFileName(), file.toString());
+				write(rootDir, file);
 			}
 		}
 		return resultModel;
-
 	}
+	
+	public boolean write(String rootPath, TemplateResultFile entity) {
+		if(rootPath.endsWith("/") == false) {
+			rootPath += "/";
+		}
+		return FileBuffer.writeFile(rootPath + entity.getFileName(), entity.toString());
+	}
+	
+	public ParserEntity parse(String rootPath, TemplateResultFile entity) {
+		// check for each clazz, if a matching file already exists
+		String fileName = entity.getFileName();
+		if(rootPath.endsWith("/") == false) {
+			rootPath += "/";
+		}
+		CharacterBuffer content = FileBuffer.readFile(rootPath + fileName);
+		// check existing file for possible changes
+		if(content != null) {
+			ParserEntity parser = new ParserEntity();
+			try {
+				parser.parse(content, (Clazz) entity.getMember());
+				return parser;
+			}catch (Exception e) {
+				e.printStackTrace();
+				System.err.println("Cant parse File:"+fileName);
+			}
+		}
+		return null;
+	}
+	
 	public boolean isSDMLibParser() {
 		return useSDMLibParser;
 	}
@@ -295,7 +310,7 @@ public class ModelGenerator extends BasicGenerator {
 		return generate;
 	}
 	
-	public Clazz parseSourceCode(CharSequence content) {
+	public Clazz parseSourceCode(CharacterBuffer content) {
 		Clazz clazz = ParserEntity.create(content);
 		return clazz;
 	}
