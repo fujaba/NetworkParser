@@ -46,15 +46,21 @@ public class JavaSet extends BasicGenerator {
 				"   {",
 				"      this.addAll(objects);",
 				"   }","",
-				
-				"   public static final {{name}}Set EMPTY_SET = new {{name}}Set().withFlag({{name}}Set.READONLY);","",
+				"{{#DEBUG}}"+
+				"{{#if {{templatemodel.features.setclass.classstring}}=="+SimpleSet.class.getName()+"}}"+
+				"		public static final {{name}}Set EMPTY_SET = new {{name}}Set().withFlag({{name}}Set.READONLY);"+
+				"{{#else}}"+
+				"		public static final {{name}}Set EMPTY_SET = new {{name}}Set();"+
+				"{{#endif}}"
+				,"",
 
 				"   public String getEntryType()",
 				"   {",
 				"      return \"{{file.member.fullName}}\";",
 				"   }","",
-				
-				"   @Override",
+				"{{#if {{templatemodel.features.setclass.classstring}}=="+SimpleSet.class.getName()+"}}"+
+				"   @Override"+
+				"{{#endif}}"+
 				"   public {{name}}Set getNewList(boolean keyValue)",
 				"   {",
 				"      return new {{name}}Set();",
@@ -63,8 +69,10 @@ public class JavaSet extends BasicGenerator {
 				"{{#import " + Condition.class.getName() + "}}" +
 				"   public {{name}}Set filter(Condition<{{name}}> condition)",
 				"   {",
-				"      {{name}}Set filterList = new {{name}}Set();",
-				"      filterItems(filterList, condition);",
+				"      {{name}}Set filterList = new {{name}}Set();"+
+				"{{#if {{templatemodel.features.setclass.classstring}}=="+SimpleSet.class.getName()+"}}"+
+						"      filterItems(filterList, condition);",
+				"{{#endif}}",
 				"      return filterList;",
 				"   }","","",
 				

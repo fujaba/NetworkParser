@@ -3,9 +3,7 @@
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.json.JsonObject;
 
-//TODO REMOVE COMMENTS
-public class ModelChange implements Comparable<ModelChange>
-{
+public class ModelChange implements Comparable<ModelChange>{
 	// History-Id
 	public static final String PROPERTY_KEY = "key";
 

@@ -21,7 +21,7 @@ public class TestMethods {
 		Clazz person = model.createClazz("Person");
 		
 		person.with(new Method("think"));
-		model.getGenerator().testGeneratedCode();
+		model.getGenerator().testGeneratedCode("java");
 //		model.generate("src/test/java");
 		
 	}
@@ -35,7 +35,7 @@ public class TestMethods {
 		Clazz person = model.createClazz("Person");
 		
 		person.with(new Method("think", DataType.VOID));
-		model.getGenerator().testGeneratedCode();
+		model.getGenerator().testGeneratedCode("java");
 //		model.generate("src/test/java");
 		
 	}
@@ -49,7 +49,7 @@ public class TestMethods {
 		Clazz person = model.createClazz("Person");
 		
 		person.with(new Method("think", DataType.VOID, new Parameter(DataType.STRING)));
-		model.getGenerator().testGeneratedCode();
+		model.getGenerator().testGeneratedCode("java");
 //		model.generate("src/test/java");
 		
 	}
@@ -63,7 +63,7 @@ public class TestMethods {
 		Clazz person = model.createClazz("Person");
 		
 		person.with(new Method("think", DataType.VOID, new Parameter(DataType.STRING).with("value")));
-		model.getGenerator().testGeneratedCode();
+		model.getGenerator().testGeneratedCode("java");
 //		model.generate("src/test/java");
 		
 	}
@@ -80,7 +80,7 @@ public class TestMethods {
 		Clazz room = model.createClazz("Room");
 		
 		person.with(new Method("think", DataType.VOID, new Parameter(DataType.create(room)).with("room")));
-		model.getGenerator().testGeneratedCode();
+		model.getGenerator().testGeneratedCode("java");
 //		model.generate("src/test/java");
 	}
 
@@ -96,7 +96,7 @@ public class TestMethods {
 		person.with(new Method("think", DataType.VOID, new Parameter(DataType.create(room)).with("room")));
 		person.with(new Method("read", DataType.VOID, new Parameter(room).with("room")));
 	
-		model.getGenerator().testGeneratedCode();
+		model.getGenerator().testGeneratedCode("java");
 //		model.generate("src/test/java");
 	}
 
@@ -110,7 +110,7 @@ public class TestMethods {
 		Clazz person = model.createClazz("Person");
 		
 		person.with(new Method("think", DataType.VOID, new Parameter(DataTypeSet.create(DataType.STRING)).with("values")));
-		model.getGenerator().testGeneratedCode();
+		model.getGenerator().testGeneratedCode("java");
 //		model.generate("src/test/java");
 		
 	}
@@ -124,7 +124,7 @@ public class TestMethods {
 		Clazz person = model.createClazz("Person");
 		
 		person.with(new Method("think", DataType.VOID, new Parameter(DataTypeMap.create(DataType.STRING, DataType.STRING)).with("values")));
-		model.getGenerator().testGeneratedCode();
+		model.getGenerator().testGeneratedCode("java");
 //		model.generate("src/test/java");
 		
 	}
@@ -138,7 +138,7 @@ public class TestMethods {
 		Clazz person = model.createClazz("Person");
 		
 		person.with(new Method("think", DataType.VOID, new Parameter(DataType.STRING).with("value"), new Parameter(DataType.INT)));
-		model.getGenerator().testGeneratedCode();
+		model.getGenerator().testGeneratedCode("java");
 //		model.generate("src/test/java");
 		
 	}
@@ -152,7 +152,7 @@ public class TestMethods {
 		Clazz person = model.createClazz("Person");
 		
 		person.with(new Method("think", DataType.STRING));
-		model.getGenerator().testGeneratedCode();
+		model.getGenerator().testGeneratedCode("java");
 //		model.generate("src/test/java");
 		
 	}
@@ -166,7 +166,7 @@ public class TestMethods {
 		Clazz person = model.createClazz("Person");
 		
 		person.with(new Method("think", DataType.STRING, new Parameter(DataType.STRING)));
-		model.getGenerator().testGeneratedCode();
+		model.getGenerator().testGeneratedCode("java");
 //		model.generate("src/test/java");
 		
 	}
@@ -181,7 +181,7 @@ public class TestMethods {
 		
 		person.with(new Method("think", DataType.STRING, new Parameter(DataType.STRING))
 				, new Method("dontThink", DataType.VOID));
-		model.getGenerator().testGeneratedCode();
+		model.getGenerator().testGeneratedCode("java");
 //		model.generate("src/test/java");
 		
 	}
@@ -196,7 +196,7 @@ public class TestMethods {
 		
 		person.with(new Method("think", DataType.VOID)
 				.withBody("		String thought = \"\";\n"));
-		model.getGenerator().testGeneratedCode();
+		model.getGenerator().testGeneratedCode("java");
 //		model.generate("src/test/java");
 		
 	}
@@ -210,7 +210,7 @@ public class TestMethods {
 		Clazz person = model.createClazz("Person");
 		
 		person.with(new Method("checkSomething", DataType.BOOLEAN));
-		model.getGenerator().testGeneratedCode();
+		model.getGenerator().testGeneratedCode("java");
 		
 	}
 }

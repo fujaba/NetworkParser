@@ -13,9 +13,9 @@ public class ParserEndErrorTest {
 		Clazz person = model.createClazz("Person");
 		person.enableInterface();
 		
-		model.getGenerator().testGeneratedCode();
+		model.getGenerator().testGeneratedCode("java");
 		
-		model.getGenerator().testGeneratedCode();
+		model.getGenerator().testGeneratedCode("java");
 	}
 	
 }

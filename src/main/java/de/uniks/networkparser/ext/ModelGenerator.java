@@ -30,6 +30,7 @@ import de.uniks.networkparser.parser.TemplateResultFile;
 import de.uniks.networkparser.parser.TemplateResultFragment;
 import de.uniks.networkparser.parser.TemplateResultModel;
 import de.uniks.networkparser.parser.generator.BasicGenerator;
+import de.uniks.networkparser.parser.generator.cpp.CppClazz;
 import de.uniks.networkparser.parser.generator.java.JavaClazz;
 import de.uniks.networkparser.parser.generator.java.JavaCreator;
 import de.uniks.networkparser.parser.generator.java.JavaSet;
@@ -43,9 +44,13 @@ public class ModelGenerator extends BasicGenerator {
 	private GraphModel defaultModel;
 	public SimpleKeyValueList<String, ParserCondition> customTemplate;
 	private boolean useSDMLibParser = true;
+	public static final String TYPE_JAVA="java";
+	public static final String TYPE_TYPESCRIPT="typescript";
+	public static final String TYPE_CPP="cpp";
 
 	private SimpleList<BasicGenerator> javaGeneratorTemplates = new SimpleList<BasicGenerator>().with(new JavaClazz(), new JavaSet(), new JavaCreator());
 	private SimpleList<BasicGenerator> typeScriptTemplates = new SimpleList<BasicGenerator>().with(new TypescriptClazz());
+	private SimpleList<BasicGenerator> cppScriptTemplates = new SimpleList<BasicGenerator>().with(new CppClazz());
 
 	public SimpleKeyValueList<String, ParserCondition> getTemplates() {
 		if (customTemplate == null) {
@@ -90,7 +95,7 @@ public class ModelGenerator extends BasicGenerator {
 	public SendableEntityCreator generate(String rootDir, GraphModel model) {
 		return generateJava(rootDir, model, null);
 	}
-
+	
 	public SendableEntityCreator generateJava(String rootDir, GraphModel model, TextItems parameters) {
 		return generating(rootDir, model, parameters, javaGeneratorTemplates, true);
 	}
@@ -103,6 +108,26 @@ public class ModelGenerator extends BasicGenerator {
 		return generating(rootDir, model, parameters, typeScriptTemplates, true);
 	}
 
+	public TemplateResultModel getResultModel() {
+		TemplateResultModel resultModel = new TemplateResultModel();
+		resultModel.withTemplate(this.getTemplates());
+		resultModel.withFeatures(this.features);
+		return resultModel;
+	}
+	
+	SendableEntityCreator generating(String rootDir, String type, GraphModel model) {
+		if(TYPE_JAVA.equalsIgnoreCase(type)) {
+			return generating(rootDir, model, null, javaGeneratorTemplates, true);
+		}
+		if(TYPE_TYPESCRIPT.equalsIgnoreCase(type)) {
+			return generating(rootDir, model, null, typeScriptTemplates, true);
+		}
+		if(TYPE_CPP.equalsIgnoreCase(type)) {
+			return generating(rootDir, model, null, cppScriptTemplates, true);
+		}
+		return null;
+	}
+	
 	public SendableEntityCreator generating(String rootDir, GraphModel model, TextItems parameters,
 			SimpleList<BasicGenerator> templates, boolean writeFiles) {
 		if (rootDir == null) {
@@ -116,9 +141,7 @@ public class ModelGenerator extends BasicGenerator {
 		}
 		rootDir += name.replaceAll("\\.", "/") + "/";
 
-		TemplateResultModel resultModel = new TemplateResultModel();
-		resultModel.withTemplate(this.getTemplates());
-		resultModel.withFeatures(this.features);
+		TemplateResultModel resultModel = getResultModel();
 		if (parameters == null) {
 			parameters = new TextItems();
 			parameters.withDefaultLabel(false);
@@ -140,6 +163,7 @@ public class ModelGenerator extends BasicGenerator {
 				template.executeTemplate(resultFile, resultModel, clazz);
 				resultModel.add(resultFile);
 			}
+			return resultModel;
 		}
 		if (writeFiles) {
 			// IF FILE EXIST AND Switch is Enable only add missing value
@@ -213,11 +237,21 @@ public class ModelGenerator extends BasicGenerator {
 		return this;
 	}
 
-	public void testGeneratedCode() {
+	public void testGeneratedCode(String type) {
 		if (this.defaultModel != null) {
-			String rootDir = "build/gen/java";
+			if(type == null) {
+				type = TYPE_JAVA;
+			}
+			String rootDir = null;
+			if(TYPE_JAVA.equalsIgnoreCase(type)) {
+				rootDir = "build/gen/java";
+			} else if(TYPE_TYPESCRIPT.equalsIgnoreCase(type)) {
+				rootDir = "build/gen/js";
+			} else if(TYPE_CPP.equalsIgnoreCase(type)) {
+				rootDir = "build/gen/cpp";
+			}
 			removeAllGeneratedCode(defaultModel, rootDir);
-			generateJava(rootDir, this.defaultModel, null);
+			generating(rootDir, type, this.defaultModel);
 		}
 	}
 
@@ -233,6 +267,7 @@ public class ModelGenerator extends BasicGenerator {
 			boolean isStandard = codeStyle.match(clazz);
 			for(BasicGenerator generator : javaGeneratorTemplates) {
 				TemplateResultFile templateResult = generator.createResultFile(clazz, isStandard);
+				templateResult.withPath(model.getName().replaceAll("\\.", "/"));
 				FileBuffer.deleteFile(rootDir+templateResult.getFileName());
 			}
 		}

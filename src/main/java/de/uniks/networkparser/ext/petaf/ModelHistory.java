@@ -2,12 +2,15 @@ package de.uniks.networkparser.ext.petaf;
 
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.TreeMap;
 
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.json.JsonObject;
+import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleSet;
 import de.uniks.networkparser.list.SortedSet;
 
@@ -20,6 +23,10 @@ public class ModelHistory
 
 	private SimpleSet<ModelChange> history = new SimpleSet<ModelChange>();
 	private Space space;
+	
+	private SimpleKeyValueList<SendableEntityCreator, Object> prototypeCache = new SimpleKeyValueList<SendableEntityCreator, Object>();
+	private SimpleKeyValueList<String, JsonObject> postponedChanges = new SimpleKeyValueList<String, JsonObject>();
+
 	
 	//TODO Functionality
 	public void refactoringHistory(){

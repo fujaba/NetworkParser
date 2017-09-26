@@ -4,6 +4,9 @@ import de.uniks.networkparser.list.SimpleList;
 
 public class FeatureProperty implements Comparable<FeatureProperty> {
 	public static final Clazz ALL = new Clazz("*");
+	public static final String NAME="name";
+	public static final String CLASSVALUE="classValue";
+	public static final String CLASSSTRING="classString";
 
 	private SimpleList<Clazz> includeClazz = new SimpleList<Clazz>();
 	private SimpleList<Clazz> excludeClazz = new SimpleList<Clazz>();
@@ -182,6 +185,22 @@ public class FeatureProperty implements Comparable<FeatureProperty> {
 	public FeatureProperty withStringValue(String value) {
 		this.value = value;
 		return this;
+	}
+
+	public Object getValue(String value) {
+		if(NAME.equalsIgnoreCase(value)) {
+			return name;
+		}
+		if(CLASSVALUE.equalsIgnoreCase(value)) {
+			return classValue;
+		}
+		if(CLASSSTRING.equalsIgnoreCase(value)) {
+			if(classValue!= null) {
+				return classValue.getName();
+			}
+			return "";
+		}
+		return null;
 	}
 
 }

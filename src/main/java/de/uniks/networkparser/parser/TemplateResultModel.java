@@ -94,10 +94,30 @@ public class TemplateResultModel extends SimpleList<TemplateResultFile> implemen
 			return null;
 		}
 		TemplateResultModel model = (TemplateResultModel) entity;
-		if(PROPERTY_FEATURE.equalsIgnoreCase(attribute)) {
+		int pos = attribute.indexOf('.');
+		String attrName;
+		if(pos>0) {
+			attrName = attribute.substring(0, pos);
+		}else {
+			attrName = attribute;
+		}
+		if(PROPERTY_FEATURE.equalsIgnoreCase(attrName)) {
+			if(pos>0) {
+				attribute = attribute.substring(pos+1);
+				pos = attribute.indexOf('.');
+				if(pos>0) {
+					attrName = attribute.substring(0, pos);
+				}else {
+					attrName = attribute;
+				}
+				FeatureProperty feature = model.getFeature(attrName);
+				if(feature != null && pos > 0) {
+					return feature.getValue(attribute.substring(pos+1));
+				}
+				return feature;
+			}
 			return model.getFeatures();
 		}
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -111,6 +131,17 @@ public class TemplateResultModel extends SimpleList<TemplateResultFile> implemen
 
 	public SimpleSet<FeatureProperty> getFeatures() {
 		return features;
+	}
+	public FeatureProperty getFeature(String name) {
+		if(features == null || name == null) {
+			return null;
+		}
+		for(FeatureProperty prop : features) {
+			if(name.equalsIgnoreCase(prop.getName().toString())) {
+				return prop;
+			}
+		}
+		return null;
 	}
 
 	public TemplateResultModel withFeatures(SimpleSet<FeatureProperty> features) {

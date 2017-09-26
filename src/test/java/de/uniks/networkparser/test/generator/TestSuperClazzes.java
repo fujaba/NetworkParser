@@ -18,7 +18,7 @@ public class TestSuperClazzes {
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.superclazzes_a");
 		Clazz person = model.createClazz("Person");
 		model.createClazz("Pupil").withSuperClazz(person);
-		model.getGenerator().testGeneratedCode();
+		model.getGenerator().testGeneratedCode("java");
 //		model.generate("src/test/java");
 	}
 	
@@ -32,7 +32,7 @@ public class TestSuperClazzes {
 		Clazz pupil = model.createClazz("Pupil");
 		
 		person.withKidClazzes(pupil);
-		model.getGenerator().testGeneratedCode();
+		model.getGenerator().testGeneratedCode("java");
 //		model.generate("src/test/java");
 	}
 	
@@ -45,7 +45,7 @@ public class TestSuperClazzes {
 		Clazz person = model.createClazz("Person");
 		model.createClazz("Pupil").withSuperClazz(person);
 		model.createClazz("Teacher").withSuperClazz(person);
-		model.getGenerator().testGeneratedCode();
+		model.getGenerator().testGeneratedCode("java");
 //		model.generate("src/test/java");
 	}
 	
@@ -61,7 +61,7 @@ public class TestSuperClazzes {
 		
 		pupil.withSuperClazz(person);
 		
-		model.getGenerator().testGeneratedCode();
+		model.getGenerator().testGeneratedCode("java");
 //		model.generate("src/test/java");
 	}
 	
@@ -80,7 +80,7 @@ public class TestSuperClazzes {
 		
 		teacher.withBidirectional(person, "person", Cardinality.ONE, "teacher", Cardinality.ONE);
 		
-		model.getGenerator().testGeneratedCode();
+		model.getGenerator().testGeneratedCode("java");
 	}
 	
 	@Test
@@ -99,7 +99,7 @@ public class TestSuperClazzes {
 		
 		teacher.withBidirectional(person, "person", Cardinality.ONE, "teacher", Cardinality.ONE);
 		
-		model.getGenerator().testGeneratedCode();
+		model.getGenerator().testGeneratedCode("java");
 	}
 	
 //FIXME Wrong call of RemoveYou

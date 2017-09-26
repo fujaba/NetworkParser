@@ -28,6 +28,6 @@ public class TestModel {
 		Clazz uni = model.createClazz("University");
 		uni.withBidirectional(person, "stud", Cardinality.MANY, "owner", Cardinality.ONE);
 		
-		model.getGenerator().testGeneratedCode();
+		model.getGenerator().testGeneratedCode("java");
 	}
 }

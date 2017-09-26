@@ -22,7 +22,7 @@ public class TestSDMLib {
 		person.with(nameAttribute);
 		Method eatMethod = person.createMethod("eat");
 		
-		model.getGenerator().testGeneratedCode();
+		model.getGenerator().testGeneratedCode("java");
 
 		Assert.assertEquals(1, person.getAttributes().size());
 		Assert.assertEquals(1, person.getMethods().size());

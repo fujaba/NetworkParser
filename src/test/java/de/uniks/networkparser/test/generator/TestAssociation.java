@@ -18,7 +18,7 @@ public class TestAssociation {
 		Clazz room = model.createClazz("Room"); 
 		
 		person.withUniDirectional(room, "room", Cardinality.ONE);
-		model.getGenerator().testGeneratedCode();
+		model.getGenerator().testGeneratedCode("java");
 //		model.generate("src/test/java");
 		
 	}
@@ -31,7 +31,7 @@ public class TestAssociation {
 		
 		person.withUniDirectional(room, "room", Cardinality.ONE);
 		room.withUniDirectional(person, "persons", Cardinality.MANY);
-		model.getGenerator().testGeneratedCode();
+		model.getGenerator().testGeneratedCode("java");
 //		model.generate("src/test/java");
 	}
 	
@@ -45,7 +45,7 @@ public class TestAssociation {
 		person.withUniDirectional(person, "prevPerson", Cardinality.ONE);
 		person.withUniDirectional(person, "nextPerson", Cardinality.ONE);
 		
-		model.getGenerator().testGeneratedCode();
+		model.getGenerator().testGeneratedCode("java");
 //		model.generate("src/test/java");
 	}
 	
@@ -56,7 +56,7 @@ public class TestAssociation {
 		Clazz room = model.createClazz("Room");
 		
 		person.withBidirectional(room, "room", Cardinality.ONE, "person", Cardinality.ONE);
-		model.getGenerator().testGeneratedCode();
+		model.getGenerator().testGeneratedCode("java");
 //		model.generate("src/test/java");
 		
 	}
@@ -68,7 +68,7 @@ public class TestAssociation {
 		Clazz room = model.createClazz("Room");
 		
 		room.withBidirectional(person, "persons", Cardinality.MANY, "room", Cardinality.ONE);
-		model.getGenerator().testGeneratedCode();
+		model.getGenerator().testGeneratedCode("java");
 //		model.generate("src/test/java");
 		
 	}
@@ -80,7 +80,7 @@ public class TestAssociation {
 		Clazz room = model.createClazz("Room");
 		
 		person.withBidirectional(room, "room", Cardinality.ONE, "persons", Cardinality.MANY);
-		model.getGenerator().testGeneratedCode();
+		model.getGenerator().testGeneratedCode("java");
 //		model.generate("src/test/java");
 		
 	}
@@ -94,7 +94,7 @@ public class TestAssociation {
 		person.withBidirectional(room, "room", Cardinality.ONE, "person", Cardinality.ONE);
 		person.withBidirectional(teacher, "teacher", Cardinality.ONE, "person", Cardinality.ONE);
 		room.withBidirectional(teacher, "teacher", Cardinality.ONE, "room", Cardinality.ONE);
-		model.getGenerator().testGeneratedCode();
+		model.getGenerator().testGeneratedCode("java");
 //		model.generate("src/test/java");
 
 	}
@@ -109,7 +109,7 @@ public class TestAssociation {
 		person.withBidirectional(room, "rooms", Cardinality.MANY, "person", Cardinality.ONE);
 		person.withBidirectional(teacher, "teachers", Cardinality.MANY, "person", Cardinality.ONE);
 		room.withBidirectional(teacher, "teachers", Cardinality.MANY, "room", Cardinality.ONE);
-		model.getGenerator().testGeneratedCode();
+		model.getGenerator().testGeneratedCode("java");
 //		model.generate("src/test/java");
 
 	}
@@ -124,7 +124,7 @@ public class TestAssociation {
 		person.withBidirectional(room, "room", Cardinality.ONE, "persons", Cardinality.MANY);
 		person.withBidirectional(teacher, "teacher", Cardinality.ONE, "persons", Cardinality.MANY);
 		room.withBidirectional(teacher, "teacher", Cardinality.ONE, "rooms", Cardinality.MANY);
-		model.getGenerator().testGeneratedCode();
+		model.getGenerator().testGeneratedCode("java");
 //		model.generate("src/test/java");
 
 	}
@@ -137,7 +137,7 @@ public class TestAssociation {
 		
 		person.withUniDirectional(room, "rooms", Cardinality.MANY);
 		person.withBidirectional(room, "room", Cardinality.ONE, "persons", Cardinality.MANY);
-		model.getGenerator().testGeneratedCode();
+		model.getGenerator().testGeneratedCode("java");
 //		model.generate("src/test/java");
 	}
 	
@@ -152,7 +152,7 @@ public class TestAssociation {
 	    Clazz task = model.createClazz("Task").withAttribute("name", STRING);
 	    task.withBidirectional(task, "subTasks", MANY, "parentTasks", MANY);
 
-		model.getGenerator().testGeneratedCode();
+		model.getGenerator().testGeneratedCode("java");
 //		model.generate("src/test/java");
 	}
 	@Test
@@ -168,7 +168,7 @@ public class TestAssociation {
 		student.withBidirectional(uni, "studs", Cardinality.ONE, "students", Cardinality.MANY);
 		
 
-		model.getGenerator().testGeneratedCode();
+		model.getGenerator().testGeneratedCode("java");
 //		model.generate("src/test/java");
 	}
 }

@@ -19,7 +19,7 @@ public class TestInterface {
 		
 		person.enableInterface();
 		
-		model.getGenerator().testGeneratedCode();
+		model.getGenerator().testGeneratedCode("java");
 		
 	}
 	
@@ -40,7 +40,7 @@ public class TestInterface {
 		
 		pupil.withSuperClazz(person);
 		
-		model.getGenerator().testGeneratedCode();
+		model.getGenerator().testGeneratedCode("java");
 		
 	}
 	
@@ -63,7 +63,7 @@ public class TestInterface {
 		secretary.withSuperClazz(person);
 		secretary.withSuperClazz(pupil);
 		
-		model.getGenerator().testGeneratedCode();
+		model.getGenerator().testGeneratedCode("java");
 
 	}
 	

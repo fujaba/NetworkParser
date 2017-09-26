@@ -19,7 +19,7 @@ public class TestEnumeration {
 		
 		testEnum.enableEnumeration();
 		
-		model.getGenerator().testGeneratedCode();
+		model.getGenerator().testGeneratedCode("java");
 		
 	}
 	
@@ -33,7 +33,7 @@ public class TestEnumeration {
 
 		testEnum.enableEnumeration("PERSON");
 
-		model.getGenerator().testGeneratedCode();
+		model.getGenerator().testGeneratedCode("java");
 	
 	}
 
@@ -50,7 +50,7 @@ public class TestEnumeration {
 		testEnum.enableEnumeration("PERSON","ROOM");
 		testEnum.with(new Literal("TEACHER"));
 		
-		model.getGenerator().testGeneratedCode();
+		model.getGenerator().testGeneratedCode("java");
 	}
 	@Test
 	public void testEnumerationWithMultipleEntriesKeyValue() {
@@ -62,7 +62,7 @@ public class TestEnumeration {
 		testEnum.withAttribute("value", DataType.INT);
 		testEnum.enableEnumeration(new Literal("TEACHER").withValue(42));
 		model.generate("src/test/java");
-		model.getGenerator().testGeneratedCode();
+		model.getGenerator().testGeneratedCode("java");
 	}
 	
 }

@@ -3,6 +3,7 @@ package de.uniks.networkparser.test.generator;
 import org.junit.Test;
 
 import de.uniks.networkparser.ext.ClassModel;
+import de.uniks.networkparser.ext.ModelGenerator;
 import de.uniks.networkparser.graph.Cardinality;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.DataType;
@@ -33,7 +34,7 @@ public class TypeScriptModelTest {
 		
 		Clazz teacher = model.createClazz("Teacher");
 		
-		model.getGenerator().generateTypescript("build/gen/java", model, null);
+		model.getGenerator().testGeneratedCode(ModelGenerator.TYPE_TYPESCRIPT);
 	}
 	
 }
