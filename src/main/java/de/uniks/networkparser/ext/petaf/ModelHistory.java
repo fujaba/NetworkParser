@@ -2,8 +2,6 @@ package de.uniks.networkparser.ext.petaf;
 
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.TreeMap;
 
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.interfaces.BaseItem;
@@ -14,14 +12,13 @@ import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleSet;
 import de.uniks.networkparser.list.SortedSet;
 
-//TODO REMOVE COMMENTS
-//TODO ADD FUNCTIONALITY
 public class ModelHistory
 {
 	public static final String PROPERTY_HISTORY = "history";
 	public static final String PROPERTY_LASTMODELCHANGE = "lastmodelchange";
 
 	private SimpleSet<ModelChange> history = new SimpleSet<ModelChange>();
+
 	private Space space;
 	
 	private SimpleKeyValueList<SendableEntityCreator, Object> prototypeCache = new SimpleKeyValueList<SendableEntityCreator, Object>();
@@ -39,7 +36,23 @@ public class ModelHistory
 				break;
 			}
 		}
-		
+	}
+	
+	private boolean isToManyField(SendableEntityCreator createrClass, String fieldName) {
+		Object prototype = prototypeCache.get(createrClass);
+
+		if (prototype == null) {
+			prototype = createrClass.getSendableInstance(true);
+			prototypeCache.put(createrClass, prototype);
+		}
+
+		Object fieldValue = createrClass.getValue(prototype, fieldName);
+
+		if (fieldValue != null && fieldValue instanceof Collection) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 	
 	public String getPrevChangeId(String change){
@@ -94,7 +107,7 @@ public class ModelHistory
 			Entity historyJsonObject = getElement(historyChange);
 			Entity valueJsonObject = getElement(value);
 			
-			if(!historyJsonObject.has(IdMap.ID)){
+			if(historyJsonObject.has(IdMap.ID) == false){
 				System.out.println("ERROR");
 			}
 			String historyJsonId = historyJsonObject.getString(IdMap.ID);

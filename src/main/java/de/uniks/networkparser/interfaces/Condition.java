@@ -28,6 +28,7 @@ THE SOFTWARE.
  * 
  * @author Stefan Lindel Condition.
  */
+@FunctionalInterface
 public interface Condition<T> {
 	/**
 	 * checks or notify this condition.

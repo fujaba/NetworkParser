@@ -187,7 +187,6 @@ public class ModelGenerator extends BasicGenerator {
 						parser.addMemberToModel();
 					}
 				}
-				//return resultModel;
 			}
 			for (TemplateResultFile file : resultModel) {
 				FileBuffer.writeFile(rootDir + file.getFileName(), file.toString());
