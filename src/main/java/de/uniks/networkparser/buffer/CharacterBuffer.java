@@ -166,7 +166,7 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence {
 			while(start<(end+diff)) {
 				this.buffer[start++] = replace.charAt(pos++);
 			} 
-			System.arraycopy(buffer, start, buffer, start+diff, buffer.length - start);
+			System.arraycopy(buffer, end, buffer, start, length - end);
 		} else {
 			while(start<end) {
 				this.buffer[start++] = replace.charAt(pos++);

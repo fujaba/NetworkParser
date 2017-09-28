@@ -200,7 +200,7 @@ public class ModelGenerator extends BasicGenerator {
 		if(content != null) {
 			ParserEntity parser = new ParserEntity();
 			try {
-				parser.parse(content, (Clazz) entity.getMember());
+				parser.parse(content, (Clazz) entity.getMember(), fileName);
 				return parser;
 			}catch (Exception e) {
 				e.printStackTrace();

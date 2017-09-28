@@ -71,29 +71,6 @@ public class ModelHistory extends Identifier
 		return (JsonObject) historyKid;
 	}
 	
-	private boolean isToManyField(SendableEntityCreator createrClass, String fieldName)
-	{
-	   Object prototype = prototypeCache.get(createrClass);
-	   
-	   if (prototype == null)
-	   {
-	      prototype = createrClass.getSendableInstance(true);
-	      prototypeCache.put(createrClass, prototype);
-	   }
-	   
-      Object fieldValue = createrClass.getValue(prototype, fieldName);
-      
-      //FIXME Muss umgebaut werden
-      if (fieldValue != null && fieldValue instanceof Collection)
-      {
-         return true;
-      }
-      else
-      {
-         return false;
-      }
-	}
-	
 	public boolean addHistory(ModelChange value) 
 	{
 		boolean success = true;
@@ -210,9 +187,6 @@ public class ModelHistory extends Identifier
 		return success;
 	}
 	
-	public void addFirstHistory(ModelChange change){
-		history.add(change);
-	}
 	public void setMaxHistoryId(Integer value){
 		if(myProxy!=null) {
 			myProxy.setMaxHistoryId(value);

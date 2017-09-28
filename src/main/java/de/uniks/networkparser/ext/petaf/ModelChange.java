@@ -1,6 +1,10 @@
  package de.uniks.networkparser.ext.petaf;
 
+import java.util.TreeSet;
+
+import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.interfaces.BaseItem;
+import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.json.JsonObject;
 
 public class ModelChange implements Comparable<ModelChange>{
@@ -23,6 +27,12 @@ public class ModelChange implements Comparable<ModelChange>{
 		return "" + key + " " + (receiver==null?"":receiver.toString());
 	}
 	
+	public String getFullKey()
+	{
+		String format = String.format("%%0%dd", 20);
+	    return String.format(format, key)+"!"+receiver;
+	}
+	
 	@Override
 	public int compareTo(ModelChange o)
 	{
@@ -42,6 +52,15 @@ public class ModelChange implements Comparable<ModelChange>{
 	
 	public String getKey() {
 		return key;
+	}
+	
+	public int getKeyNumber() {
+		int result=-1;
+		try {
+			result = Integer.valueOf(key);
+		}catch (Exception e) {
+		}
+		return result;
 	}
 	public ModelChange withKey(String key) {
 		this.key = key;

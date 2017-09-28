@@ -206,7 +206,7 @@ public class TemplateResultFile extends SortedSet<TemplateResultFragment> implem
 		}
 		// ADD CODE
 		// Check for Existing
-		if(code != null) {
+		if(code != null && isMetaModell()) {
 			StringBuilder sb=new StringBuilder();
 			sb.append(code.getContent().toString());
 //			buffer = code.getContent();
@@ -246,6 +246,13 @@ public class TemplateResultFile extends SortedSet<TemplateResultFragment> implem
 							sb.replace(pos, pos, fragment.getValue().toString());
 						}
 					}
+				} else if(fragment.getKey() == Template.VALUE){
+					SymTabEntry symbolEntry = code.getSymbolEntry("ATTRIBUTE", fragment.getMember().getName());
+					if(symbolEntry == null) {
+						int pos = code.getEndOfBody();
+						sb.replace(pos, pos, fragment.getValue().toString());
+					}
+//					sb.append(fragment.getValue().toString());
 				}
 			}
 			

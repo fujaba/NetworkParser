@@ -10,6 +10,7 @@ public class SourceCode extends GraphMember {
 	private CharacterBuffer content;
 	private SimpleKeyValueList<String, SimpleList<SymTabEntry>> keys=new SimpleKeyValueList<String, SimpleList<SymTabEntry>>();
 	private boolean fileBodyHasChanged = false;
+	private String fileName;
 	private int size;
 	private int startOfImports;
 	private int endOfClassName;
@@ -23,6 +24,16 @@ public class SourceCode extends GraphMember {
 	public SourceCode() {
 		super();
 		this.name = NAME;
+	}
+	
+	
+	public SourceCode withFileName(String name) {
+		this.fileName = name;
+		return this;
+	}
+	
+	public String getFileName() {
+		return fileName;
 	}
 	
 	public CharacterBuffer getContent() {

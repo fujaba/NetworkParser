@@ -25,10 +25,15 @@ THE SOFTWARE.
 */
 import java.util.List;
 
+import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Condition;
+import de.uniks.networkparser.interfaces.ObjectCondition;
 
 public class SimpleList<V> extends AbstractList<V> implements List<V>, Cloneable {
+	public static final String PROPERTY="items";
+	private ObjectCondition listener;
+
 	public SimpleList() {
 		withFlag(SimpleList.ALLOWDUPLICATE);
 	}
@@ -63,5 +68,18 @@ public class SimpleList<V> extends AbstractList<V> implements List<V>, Cloneable
 	@Override
 	public boolean add(V e) {
 		return super.add(e);
+	}
+	
+	public SimpleList<V> withListener(ObjectCondition listener) {
+		this.listener = listener;
+		return this;
+	}
+
+	@Override
+	protected boolean fireProperty(String type, Object oldElement, Object newElement, Object beforeElement, int index, Object value) {
+		if(this.listener != null) {
+			this.listener.update(new SimpleEvent(type, this, PROPERTY, oldElement, newElement, beforeElement, value, index));
+		}
+		return super.fireProperty(type, oldElement, newElement, beforeElement, index, value);
 	}
 }

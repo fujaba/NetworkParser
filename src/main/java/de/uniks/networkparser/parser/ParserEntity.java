@@ -69,14 +69,15 @@ public class ParserEntity {
 	}
 
 	public Clazz parse(CharacterBuffer sequence) {
-		return parse(sequence, new Clazz(""));
+		return parse(sequence, new Clazz(""), "");
 	}
-	public Clazz parse(CharacterBuffer sequence, Clazz file) {
+	public Clazz parse(CharacterBuffer sequence, Clazz file, String fileName) {
 		if(sequence == null || sequence.length()<1) {
 			return file;
 		}
 		this.file = file;
 		this.code = new SourceCode().withContent(sequence);
+		this.code.withFileName(fileName);
 		this.code.with(this.file);
 
 		nextChar();

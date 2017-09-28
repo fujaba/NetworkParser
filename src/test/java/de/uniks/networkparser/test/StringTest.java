@@ -244,14 +244,14 @@ public class StringTest {
 
 	
 	@Test
-	public void testStringReplaceMore() {
+	public void testStringReplaceLess() {
 		String value = "Apple, Pear, Cherry";
 		CharacterBuffer sb = new CharacterBuffer();
 		sb.with(value);
 //		GRAPE
 		
 //		sb.replace(7, 11, "Grape");
-		sb.replace(7, 11, "");
+		sb.replace(5, 11, "");
 		
 		System.out.println(sb.toString());
 	}

@@ -14,6 +14,7 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 	public static final String PROPERTY_ONLINE = "online";
 	public static final String PROPERTY_VERSION = "version";
 	public static final String PROPERTY_TYP = "typ";
+	public static final String PROPERTY_NAME = "name";
 
 	protected PropertyList propertyUpdate = PropertyList.create(PROPERTY_HISTORY, PROPERTY_FILTER, PROPERTY_SEND);
 	protected PropertyList propertyInfo = PropertyList.create(PROPERTY_SEND, PROPERTY_RECEIVE, PROPERTY_HISTORY, PROPERTY_FILTER, PROPERTY_VERSION);
@@ -31,6 +32,7 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 	protected String history;	// Hashcode of last Message
 	protected ObjectCondition filter;	// Filter of World
 	protected Space space;
+	private String name;
 //	protected BasicSpace test;
 
 	public String[] getUpdateProperties(){
@@ -267,11 +269,20 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 		firePropertyChange(PROPERTY_NODES, oldValue, value);
 		return this;
 	}
-	
+
+	public String getName() {
+		return name;
+	}
+
+	public NodeProxy withName(String name) {
+		this.name = name;
+		return this;
+	}	
 	public Space getSpace() {
 		return space;
 	}
 	
 	protected abstract boolean initProxy();
+
 }
 
