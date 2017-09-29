@@ -1,33 +1,12 @@
-package de.uniks.networkparser.json;
+package de.uniks.networkparser;
 
-/*
-NetworkParser
-The MIT License
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
-*/
-import de.uniks.networkparser.IdMap;
+import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
+import de.uniks.networkparser.json.JsonObject;
 
-public class UpdateJsonAccumulate {
-	private JsonObject change;
+public class UpdateAccumulate {
+	private Entity factory = new JsonObject();
+	private Entity change;
 	private IdMap map;
 
 	public boolean changeItem(Object source, Object target, String property) {
@@ -43,23 +22,25 @@ public class UpdateJsonAccumulate {
 
 		if (oldValue != creator.getValue(defaultItem, property)) {
 			if (change == null) {
-				change = new JsonObject().withValue(IdMap.ID, map.getId(source, true));
+				change = (Entity) factory.getNewList(true);
+				change.put(IdMap.ID, map.getId(source, true));
 			}
-			JsonObject child;
+			Entity child;
 
 			// OldValue
 			if (!change.has(SendableEntityCreator.REMOVE)) {
-				child = change.getJsonObject(SendableEntityCreator.REMOVE);
+				child = (Entity) change.getValue(SendableEntityCreator.REMOVE);
 				change.put(SendableEntityCreator.REMOVE, child);
 			} else {
-				child = new JsonObject();
+				child = (Entity) factory.getNewList(true);
 			}
 			SendableEntityCreator creatorClass = map.getCreatorClass(oldValue);
 			if (creatorClass != null) {
 				String oldId = map.getId(oldValue, true);
 				if (oldId != null) {
-					child.put(property,
-							new JsonObject().withValue(IdMap.ID, oldId));
+					Entity item = (Entity) factory.getNewList(true);
+					item.put(IdMap.ID, oldId);
+					child.put(property, item);
 				}
 			} else {
 				child.put(property, oldValue);
@@ -67,18 +48,19 @@ public class UpdateJsonAccumulate {
 
 			// NewValue
 			if (!change.has(SendableEntityCreator.UPDATE)) {
-				child = change.getJsonObject(SendableEntityCreator.UPDATE);
+				child = (Entity) change.getValue(SendableEntityCreator.UPDATE);
 				change.put(SendableEntityCreator.UPDATE, child);
 			} else {
-				child = new JsonObject();
+				child = (Entity) factory.getNewList(true);
 			}
 
 			creatorClass = map.getCreatorClass(newValue);
 			if (creatorClass != null) {
 				String newId = map.getId(newValue, true);
 				if (newId != null) {
-					child.put(property,
-							new JsonObject().withValue(IdMap.ID, newId));
+					Entity item = (Entity) factory.getNewList(true);
+					item.put(IdMap.ID, newId);
+					child.put(property, item);
 				}
 			} else {
 				child.put(property, newValue);
@@ -87,12 +69,12 @@ public class UpdateJsonAccumulate {
 		return true;
 	}
 
-	public UpdateJsonAccumulate withMap(IdMap map) {
+	public UpdateAccumulate withMap(IdMap map) {
 		this.map = map;
 		return this;
 	}
 
-	public UpdateJsonAccumulate withAttribute(Object item, Object newValue,
+	public UpdateAccumulate withAttribute(Object item, Object newValue,
 			String property) {
 		changeAttribute(item, newValue, property);
 		return this;
@@ -110,24 +92,26 @@ public class UpdateJsonAccumulate {
 
 		if (oldValue != creator.getValue(defaultItem, property)) {
 			if (change == null) {
-				change = new JsonObject().withValue(IdMap.ID, map.getId(item, true));
+				change = (Entity) factory.getNewList(true);
+				change.put(IdMap.ID, map.getId(item, true));
 			}
-			JsonObject child;
+			Entity child;
 
 			// OldValue
 			if (change.has(SendableEntityCreator.REMOVE)) {
-				child = change.getJsonObject(SendableEntityCreator.REMOVE);
+				child = (Entity) change.getValue(SendableEntityCreator.REMOVE);
 				change.put(SendableEntityCreator.REMOVE, child);
 			} else {
-				child = new JsonObject();
+				child = (Entity) factory.getNewList(true);
 				change.put(SendableEntityCreator.REMOVE, child);
 			}
 			SendableEntityCreator creatorClass = map.getCreatorClass(oldValue);
 			if (creatorClass != null) {
 				String oldId = map.getId(oldValue, true);
 				if (oldId != null) {
-					child.put(property,
-							new JsonObject().withValue(IdMap.ID, oldId));
+					Entity childItem = (Entity) factory.getNewList(true);
+					childItem.put(IdMap.ID, oldId);
+					child.put(property, childItem);
 				}
 			} else {
 				child.put(property, oldValue);
@@ -135,10 +119,10 @@ public class UpdateJsonAccumulate {
 
 			// NewValue
 			if (change.has(SendableEntityCreator.UPDATE)) {
-				child = change.getJsonObject(SendableEntityCreator.UPDATE);
+				child = (Entity) change.getValue(SendableEntityCreator.UPDATE);
 				change.put(SendableEntityCreator.UPDATE, child);
 			} else {
-				child = new JsonObject();
+				child = (Entity) factory.getNewList(true);
 				change.put(SendableEntityCreator.UPDATE, child);
 			}
 
@@ -146,8 +130,9 @@ public class UpdateJsonAccumulate {
 			if (creatorClass != null) {
 				String newId = map.getId(newValue, true);
 				if (newId != null) {
-					child.put(property,
-							new JsonObject().withValue(IdMap.ID, newId));
+					Entity childItem = (Entity) factory.getNewList(true);
+					childItem.put(IdMap.ID, newId);
+					child.put(property, childItem);
 				}
 			} else {
 				child.put(property, newValue);
@@ -156,11 +141,11 @@ public class UpdateJsonAccumulate {
 		return true;
 	}
 
-	public JsonObject getChange() {
+	public Entity getChange() {
 		return change;
 	}
 
-	public UpdateJsonAccumulate withChange(JsonObject change) {
+	public UpdateAccumulate withChange(Entity change) {
 		this.change = change;
 		return this;
 	}

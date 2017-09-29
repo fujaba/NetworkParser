@@ -12,6 +12,7 @@ import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.SimpleObject;
+import de.uniks.networkparser.UpdateListener;
 import de.uniks.networkparser.bytes.ByteMessage;
 import de.uniks.networkparser.bytes.ByteMessageCreator;
 import de.uniks.networkparser.ext.generic.JsonParser;
@@ -19,7 +20,6 @@ import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.json.JsonObject;
-import de.uniks.networkparser.json.UpdateJson;
 import de.uniks.networkparser.logic.InstanceOf;
 import de.uniks.networkparser.logic.Or;
 import de.uniks.networkparser.test.model.Apple;
@@ -46,7 +46,7 @@ public class JsonModellTest implements ObjectCondition {
 	@Test
 	public void testJsonUpdate(){
 		JsonObject json = JsonObject.create("{id:number, upd:{value:42}, rem:{}}");
-		UpdateJson updateListener = new UpdateJson(null);
+		UpdateListener updateListener = new UpdateListener(null);
 		updateListener.execute(json, null);
 		
 		IdMap map = new IdMap();
@@ -54,7 +54,7 @@ public class JsonModellTest implements ObjectCondition {
 		so.setValue("value", 42);
 //		so.p
 		map.put("number", so, true);
-		updateListener = new UpdateJson(map);
+		updateListener = new UpdateListener(map);
 		updateListener.execute(json, null);
 	}
 	

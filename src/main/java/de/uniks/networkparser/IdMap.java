@@ -56,7 +56,6 @@ import de.uniks.networkparser.interfaces.SendableEntityCreatorTag;
 import de.uniks.networkparser.json.JsonArray;
 import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.json.JsonTokener;
-import de.uniks.networkparser.json.UpdateJson;
 import de.uniks.networkparser.json.util.JsonArrayCreator;
 import de.uniks.networkparser.json.util.JsonObjectCreator;
 import de.uniks.networkparser.list.EntityComparator;
@@ -132,7 +131,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 	protected ObjectCondition updateListener;
 
 	/** The updatelistener for Notification changes. */
-	protected MapListener mapListener = new UpdateJson(this);
+	protected MapListener mapListener = new UpdateListener(this, new JsonObject());
 	
 	protected SimpleKeyValueList<SendableEntityCreator, Object> referenceList = new SimpleKeyValueList<SendableEntityCreator, Object>();
 
@@ -962,8 +961,8 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 
 
 	private Object decodingJsonObject(JsonObject jsonObject, MapEntity map) {
-		if (this.mapListener instanceof UpdateJson) {
-			UpdateJson listener = (UpdateJson) this.mapListener;
+		if (this.mapListener instanceof UpdateListener) {
+			UpdateListener listener = (UpdateListener) this.mapListener;
 			Object result = listener.execute(jsonObject, filter);
 			if (result != null) {
 				return result;

@@ -19,6 +19,7 @@ import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.TextDiff;
+import de.uniks.networkparser.UpdateAccumulate;
 import de.uniks.networkparser.ext.PropertyChangeEventWrapper;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.json.JsonArray;
@@ -868,6 +869,28 @@ public class JsonTest extends IOClasses {
 		Assert.assertEquals(person.getClass(), decode.getSource().getClass());
 		Assert.assertEquals("child", decode.getPropertyName());
 	}
+
+	@Test
+	public void testJSONAccumilate() {
+		Person person = new Person();
+		IdMap map = new IdMap();
+		map.withCreator(new PersonCreator());
+		map.toJsonObject(person);
+		UpdateAccumulate updateAccumulate = new UpdateAccumulate();
+		
+		map.getMapListener().suspendNotification()
+		
+		map.withListener(new ObjectCondition() {
+			@Override
+			public boolean update(Object value) {
+				System.out.println(value);
+				return false;
+			}
+		});
+		
+		person.setName("Albert");
+	}
+
 	
 //	@Test
 //	public void testErrorHandler() {

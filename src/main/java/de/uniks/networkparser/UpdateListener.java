@@ -1,4 +1,4 @@
-package de.uniks.networkparser.json;
+package de.uniks.networkparser;
 
 /*
 NetworkParser
@@ -29,16 +29,13 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
-import de.uniks.networkparser.Filter;
-import de.uniks.networkparser.IdMap;
-import de.uniks.networkparser.SimpleEvent;
-import de.uniks.networkparser.UpdateCondition;
 import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.Grammar;
 import de.uniks.networkparser.interfaces.MapListener;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.list.SimpleIteratorSet;
+import de.uniks.networkparser.list.SimpleList;
 /**
  * The listener interface for receiving update events. The class that is
  * interested in processing a update event implements this interface, and the
@@ -47,24 +44,23 @@ import de.uniks.networkparser.list.SimpleIteratorSet;
  * occurs, that object's appropriate method is invoked.
  *
  */
-
-public class UpdateJson implements MapListener {
+public class UpdateListener implements MapListener {
 	/** The map. */
 	private IdMap map;
-
+	private Entity factory;
 	/** The suspend id list. */
-	private ArrayList<String> suspendIdList;
+	private SimpleList<UpdateAccumulate> suspendIdList;
 
 	private Filter updateFilter = new Filter().withStrategy(SendableEntityCreator.UPDATE).withConvertable(new UpdateCondition());
 	
 	/**
 	 * Instantiates a new update listener.
 	 *
-	 * @param map
-	 *			the map
+	 * @param map	the map
 	 */
-	public UpdateJson(IdMap map) {
+	public UpdateListener(IdMap map, Entity factory) {
 		this.map = map;
+		this.factory = factory;
 	}
 
 	/**
@@ -73,7 +69,7 @@ public class UpdateJson implements MapListener {
 	 * @return success for suspend Notification
 	 */
 	public boolean suspendNotification() {
-		this.suspendIdList = new ArrayList<String>();
+		this.suspendIdList = new SimpleList<UpdateAccumulate>();
 		return true;
 	}
 
@@ -148,7 +144,7 @@ public class UpdateJson implements MapListener {
 			return;
 		}
 
-		JsonObject jsonObject = new JsonObject();
+		Entity jsonObject = (Entity) factory.getNewList(true);
 
 		String id = this.map.getId(source, true);
 		Grammar grammar = this.map.getGrammar();
@@ -156,12 +152,13 @@ public class UpdateJson implements MapListener {
 		if (oldValue != null) {
 			creatorClass = this.map.getCreatorClass(oldValue);
 
-			JsonObject child = new JsonObject();
+			Entity child = (Entity) factory.getNewList(true);
 			if (creatorClass != null) {
 				String oldId = this.map.getId(oldValue, true);
 				if (oldId != null) {
-					child.put(propertyName,
-							new JsonObject().withValue(IdMap.ID, oldId));
+					Entity childItem = (Entity) factory.getNewList(true);
+					childItem.put(IdMap.ID, oldId);
+					child.put(propertyName, childItem);
 				}
 			} else {
 				child.put(propertyName, oldValue);
@@ -172,17 +169,16 @@ public class UpdateJson implements MapListener {
 		if (newValue != null) {
 			creatorClass = this.map.getCreatorClass(newValue);
 
-			JsonObject child = new JsonObject();
+			Entity child = (Entity) factory.getNewList(true);
 			if (creatorClass != null) {
 				String key = this.map.getKey(newValue);
 				if (key != null) {
-					JsonObject item = new JsonObject()
-							.withValue(IdMap.CLASS, newValue.getClass().getName())
-							.withValue(IdMap.ID, key);
+					Entity item = (Entity) factory.getNewList(true);
+					item.put(IdMap.CLASS, newValue.getClass().getName());
+					item.put(IdMap.ID, key);
 					child.put(propertyName, item);
 				} else {
-					JsonObject item = this.map.toJsonObject(newValue,
-							this.updateFilter);
+					Entity item = this.map.toJsonObject(newValue, this.updateFilter);
 					child.put(propertyName, item);
 					if (this.suspendIdList != null) {
 						this.suspendIdList.add(this.map.getId(newValue, true));
@@ -224,8 +220,8 @@ public class UpdateJson implements MapListener {
 		}
 
 		String id = updateMessage.getString(IdMap.ID);
-		JsonObject remove = (JsonObject) updateMessage.getValue(SendableEntityCreator.REMOVE);
-		JsonObject update = (JsonObject) updateMessage.getValue(SendableEntityCreator.UPDATE);
+		Entity remove = (Entity) updateMessage.getValue(SendableEntityCreator.REMOVE);
+		Entity update = (Entity) updateMessage.getValue(SendableEntityCreator.UPDATE);
 //		Object prio = updateMessage.getValue(Filter.PRIO);
 		Object masterObj = this.map.getObject(id);
 		if (masterObj == null)
@@ -260,19 +256,18 @@ public class UpdateJson implements MapListener {
 				} else if (value.equals(creator.getValue(refObject, key))) {
 					// Old Value is Standard
 					return setValue(creator, masterObj, key,
-							update.get(key), SendableEntityCreator.NEW);
+							update.getValue(key), SendableEntityCreator.NEW);
 				}
 			}
 			return true;
 		} else if (update == null && remove != null) {
 			// delete Message
 			Object refObject = creator.getSendableInstance(true);
-			Iterator<String> keys = remove.keyIterator();
-			while (keys.hasNext()) {
-				String key = keys.next();
+			for(int i=0;i<remove.size();i++) {
+				String key = remove.getKeyByIndex(i);
 				Object value = creator.getValue(masterObj, key);
 				if (value instanceof Collection<?>) {
-					JsonObject removeJsonObject = remove.getJsonObject(key);
+					Entity removeJsonObject = (Entity) remove.getValue(key);
 					setValue(creator, masterObj, key, removeJsonObject,
 							SendableEntityCreator.REMOVE);
 				} else {
@@ -282,24 +277,24 @@ public class UpdateJson implements MapListener {
 								SendableEntityCreator.REMOVE);
 					}
 				}
-				Object removeJsonObject = remove.get(key);
+				Object removeJsonObject = remove.getValue(key);
 				if (removeJsonObject != null
-						&& removeJsonObject instanceof JsonObject) {
-					JsonObject json = (JsonObject) removeJsonObject;
+						&& removeJsonObject instanceof Entity) {
+					Entity json = (Entity) removeJsonObject;
 					this.map.notify(new SimpleEvent(SendableEntityCreator.REMOVE, json, map, key, this.map.decode(json), null).withModelValue(masterObj));
 				}
+				
 			}
 			return masterObj;
 		} else if (update != null) {
 			// update Message
-			Iterator<String> keys = update.keyIterator();
-			while (keys.hasNext()) {
-				String key = keys.next();
+			for(int i=0;i<update.size();i++) {
+				String key = remove.getKeyByIndex(i);
 				// CHECK WITH REMOVE key
 				Object oldValue = creator.getValue(masterObj, key);
 
 				if (checkValue(oldValue, key, remove)) {
-					Object newValue = update.get(key);
+					Object newValue = update.getValue(key);
 					setValue(creator, masterObj, key, newValue, SendableEntityCreator.UPDATE);
 
 					this.map.notify(new SimpleEvent(SendableEntityCreator.UPDATE, update, map, key, oldValue, newValue).withModelValue(masterObj));
@@ -319,13 +314,12 @@ public class UpdateJson implements MapListener {
 	 * @return 					true, if successful
 	 */
 	private boolean checkValue(Object value, String key,
-			JsonObject oldJsonObject) {
-		Object oldValue = oldJsonObject.get(key);
+			Entity oldJsonObject) {
+		Object oldValue = oldJsonObject.getValue(key);
 		if (value != null) {
-			if (oldValue instanceof JsonObject) {
+			if (oldValue instanceof Entity) {
 				// GLAUB ICH MAL
-				String oldId = (String) ((JsonObject) oldValue)
-						.get(IdMap.ID);
+				String oldId = (String) ((Entity) oldValue).getValue(IdMap.ID);
 				return oldId.equals(this.map.getId(value, true));
 			} 
 			return value.equals(oldValue);
@@ -345,8 +339,8 @@ public class UpdateJson implements MapListener {
 	 */
 	private Object setValue(SendableEntityCreator creator, Object element,
 			String key, Object newValue, String typ) {
-		if (newValue instanceof JsonObject) {
-			JsonObject json = (JsonObject) newValue;
+		if (newValue instanceof Entity) {
+			Entity json = (Entity) newValue;
 			Object value = this.map.decode(json);
 			if (value != null) {
 				creator.setValue(element, key, value, typ);
@@ -363,7 +357,7 @@ public class UpdateJson implements MapListener {
 		return null;
 	}
 
-	public UpdateJson withFilter(Filter filter) {
+	public UpdateListener withFilter(Filter filter) {
 		this.updateFilter = filter;
 		return this;
 	}
