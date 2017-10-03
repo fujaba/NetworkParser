@@ -875,20 +875,25 @@ public class JsonTest extends IOClasses {
 		Person person = new Person();
 		IdMap map = new IdMap();
 		map.withCreator(new PersonCreator());
+		map.withTimeStamp(1);
 		map.toJsonObject(person);
 		UpdateAccumulate updateAccumulate = new UpdateAccumulate();
 		
-		map.getMapListener().suspendNotification()
-		
+		map.getMapListener().suspendNotification(updateAccumulate);
 		map.withListener(new ObjectCondition() {
 			@Override
 			public boolean update(Object value) {
-				System.out.println(value);
+				Assert.fail();
 				return false;
 			}
 		});
 		
 		person.setName("Albert");
+		person.setBalance(42);
+		map.getMapListener().resetNotification();
+		
+		System.out.println(updateAccumulate.getChange());
+		Assert.assertEquals("{\"class\":\"de.uniks.networkparser.test.model.Person\",\"id\":\"P1\",\"upd\":{\"name\":\"Albert\",\"balance\":42},\"rem\":{\"balance\":0}}", updateAccumulate.getChange().toString());
 	}
 
 	

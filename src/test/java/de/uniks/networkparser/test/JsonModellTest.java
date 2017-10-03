@@ -20,6 +20,7 @@ import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.json.JsonObject;
+import de.uniks.networkparser.json.JsonTokener;
 import de.uniks.networkparser.logic.InstanceOf;
 import de.uniks.networkparser.logic.Or;
 import de.uniks.networkparser.test.model.Apple;
@@ -46,7 +47,8 @@ public class JsonModellTest implements ObjectCondition {
 	@Test
 	public void testJsonUpdate(){
 		JsonObject json = JsonObject.create("{id:number, upd:{value:42}, rem:{}}");
-		UpdateListener updateListener = new UpdateListener(null);
+		JsonTokener tokener = new JsonTokener();
+		UpdateListener updateListener = new UpdateListener(null, tokener);
 		updateListener.execute(json, null);
 		
 		IdMap map = new IdMap();
@@ -54,7 +56,7 @@ public class JsonModellTest implements ObjectCondition {
 		so.setValue("value", 42);
 //		so.p
 		map.put("number", so, true);
-		updateListener = new UpdateListener(map);
+		updateListener = new UpdateListener(map, tokener);
 		updateListener.execute(json, null);
 	}
 	

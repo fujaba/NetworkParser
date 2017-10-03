@@ -24,9 +24,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 import java.beans.PropertyChangeEvent;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.Map.Entry;
 
 import de.uniks.networkparser.interfaces.Entity;
@@ -42,12 +40,12 @@ import de.uniks.networkparser.list.SimpleList;
  * object created with that class is registered with a component using the
  * component's <code>addUpdateListener</code> method. When the update event
  * occurs, that object's appropriate method is invoked.
- *
+ * @author Stefan Lindel
  */
 public class UpdateListener implements MapListener {
 	/** The map. */
 	private IdMap map;
-	private Entity factory;
+	private Tokener factory;
 	/** The suspend id list. */
 	private SimpleList<UpdateAccumulate> suspendIdList;
 
@@ -58,41 +56,33 @@ public class UpdateListener implements MapListener {
 	 *
 	 * @param map	the map
 	 */
-	public UpdateListener(IdMap map, Entity factory) {
+	public UpdateListener(IdMap map, Tokener factory) {
 		this.map = map;
 		this.factory = factory;
 	}
 
 	/**
 	 * Suspend notification.
+	 * @param accumulates Notification Listener
 	 * 
 	 * @return success for suspend Notification
 	 */
-	public boolean suspendNotification() {
+	public boolean suspendNotification(UpdateAccumulate... accumulates) {
 		this.suspendIdList = new SimpleList<UpdateAccumulate>();
-		return true;
-	}
-
-	/**
-	 * Reset notification.
-	 * 
-	 * @return success for reset Notification
-	 */
-	public boolean resumeNotification() {
-		JsonArray array = this.map.getJsonByIds(this.suspendIdList);
-		if(array.size() > 0) {
-			JsonObject message = new JsonObject();
-			message.put(SendableEntityCreator.UPDATE, array);
-			this.map.notify(new SimpleEvent(SendableEntityCreator.NEW, message, map, null, null, null));
+		if(accumulates == null) {
+			this.suspendIdList.add(new UpdateAccumulate().withTokener(this.factory));
+		}else {
+			for(UpdateAccumulate item : accumulates) {
+				this.suspendIdList.add(item);
+			}
 		}
-
-		this.suspendIdList = null;
 		return true;
 	}
 
-	public boolean resetNotification() {
+	public SimpleList<UpdateAccumulate> resetNotification() {
+		SimpleList<UpdateAccumulate> list = this.suspendIdList;
 		this.suspendIdList = null;
-		return true;
+		return list;
 	}
 
 	/*
@@ -111,7 +101,6 @@ public class UpdateListener implements MapListener {
 			// Nothing to do
 			return;
 		}
-
 		// put changes into msg and send to receiver
 		Object source;
 		if(evt instanceof SimpleEvent) {
@@ -119,17 +108,50 @@ public class UpdateListener implements MapListener {
 		} else {
 			source = evt.getSource();
 		}
-//		evt.get
-		String propertyName = evt.getPropertyName();
+		String property = evt.getPropertyName();
 		SendableEntityCreator creatorClass = this.map.getCreatorClass(source);
-
 		if (creatorClass == null) {
 			// this class is not supported, do nor replicate
 			return;
 		}
+		
+		if (this.suspendIdList != null) {
+			for(UpdateAccumulate listener : this.suspendIdList) {
+				listener.changeAttribute(this, source,creatorClass, property, oldValue, newValue);
+			}
+			return;
+		}
+		
+		
+		Entity jsonObject = change(property, source, creatorClass, oldValue, newValue);
+		
+		// Add Message Value
+		ObjectCondition listener = this.map.getUpdateListener();
+		if(listener == null) {
+			return;
+		}
+		if (oldValue != null && newValue != null) {
+			listener.update(new SimpleEvent(SendableEntityCreator.UPDATE, jsonObject, evt,  map));
+		} else {
+			listener.update(new SimpleEvent(SendableEntityCreator.NEW, jsonObject, evt,  map));	
+		}
+	}
+	
+	public Entity change(String property, Object source, SendableEntityCreator creatorClass, Object oldValue, Object newValue) {
+		Entity jsonObject = factory.newInstance();
+		String id = this.map.getId(source, true);
+		Grammar grammar = this.map.getGrammar();
+		grammar.writeBasicValue(jsonObject, source.getClass().getName(), id, map);
+		change(property, creatorClass, jsonObject, oldValue, newValue);
+		return jsonObject;
+	}
+	
+	
+	
+	public boolean change(String property, SendableEntityCreator creator, Entity change, Object oldValue, Object newValue) {
 		boolean done = false;
-		for (String attrName : creatorClass.getProperties()) {
-			if (attrName.equals(propertyName)) {
+		for (String attrName : creator.getProperties()) {
+			if (attrName.equals(property)) {
 				done = true;
 				break;
 			}
@@ -138,71 +160,66 @@ public class UpdateListener implements MapListener {
 			// this property is not part of the replicated model, do not
 			// replicate
 			// if propertyname is not found and the name is REMOVE_YOU it remove it from the IdMap
-			if(SendableEntityCreator.REMOVE_YOU.equals(propertyName)) {
-				this.removeObj(evt.getOldValue(), true);
+			if(SendableEntityCreator.REMOVE_YOU.equals(property)) {
+				this.removeObj(oldValue, true);
 			}
-			return;
+			return false;
 		}
-
-		Entity jsonObject = (Entity) factory.getNewList(true);
-
-		String id = this.map.getId(source, true);
-		Grammar grammar = this.map.getGrammar();
-		grammar.writeBasicValue(jsonObject, source.getClass().getName(), id, map);
+	
+		SendableEntityCreator creatorClass;
+		Object child = null;
+		Entity entity;
 		if (oldValue != null) {
 			creatorClass = this.map.getCreatorClass(oldValue);
-
-			Entity child = (Entity) factory.getNewList(true);
+			child = change.getValue(SendableEntityCreator.REMOVE);
+			if(child instanceof Entity) {
+				entity = (Entity) child;
+			} else {
+				entity = factory.newInstance();
+				change.put(SendableEntityCreator.REMOVE, entity);
+			}
+					
 			if (creatorClass != null) {
 				String oldId = this.map.getId(oldValue, true);
 				if (oldId != null) {
-					Entity childItem = (Entity) factory.getNewList(true);
+					Entity childItem = factory.newInstance();
 					childItem.put(IdMap.ID, oldId);
-					child.put(propertyName, childItem);
+					entity.put(property, childItem);
 				}
 			} else {
-				child.put(propertyName, oldValue);
+				entity.put(property, oldValue);
 			}
-			jsonObject.put(SendableEntityCreator.REMOVE, child);
 		}
-
+	
 		if (newValue != null) {
 			creatorClass = this.map.getCreatorClass(newValue);
-
-			Entity child = (Entity) factory.getNewList(true);
+			child = change.getValue(SendableEntityCreator.UPDATE);
+			if(child instanceof Entity) {
+				entity = (Entity) child;
+			} else {
+				entity = factory.newInstance();
+				change.put(SendableEntityCreator.UPDATE, entity);
+			}
+	
 			if (creatorClass != null) {
 				String key = this.map.getKey(newValue);
 				if (key != null) {
-					Entity item = (Entity) factory.getNewList(true);
+					Entity item = factory.newInstance();
 					item.put(IdMap.CLASS, newValue.getClass().getName());
 					item.put(IdMap.ID, key);
-					child.put(propertyName, item);
+					entity.put(property, item);
 				} else {
-					Entity item = this.map.toJsonObject(newValue, this.updateFilter);
-					child.put(propertyName, item);
-					if (this.suspendIdList != null) {
-						this.suspendIdList.add(this.map.getId(newValue, true));
-					}
+					Entity item = (Entity) this.map.encode(newValue, this.factory, this.updateFilter);
+					entity.put(property, item);
 				}
 			} else {
 				// plain attribute
-				child.put(propertyName, newValue);
-			}
-			jsonObject.put(SendableEntityCreator.UPDATE, child);
-		}
-		if (this.suspendIdList == null) {
-			// Add Message Value
-			ObjectCondition listener = this.map.getUpdateListener();
-			if(listener == null) {
-				return;
-			}
-			if (oldValue != null && newValue != null) {
-				listener.update(new SimpleEvent(SendableEntityCreator.UPDATE, jsonObject, evt,  map));
-			} else {
-				listener.update(new SimpleEvent(SendableEntityCreator.NEW, jsonObject, evt,  map));	
+				entity.put(property, newValue);
 			}
 		}
+		return true;
 	}
+
 
 	/**
 	 * Execute.
@@ -289,7 +306,7 @@ public class UpdateListener implements MapListener {
 		} else if (update != null) {
 			// update Message
 			for(int i=0;i<update.size();i++) {
-				String key = remove.getKeyByIndex(i);
+				String key = update.getKeyByIndex(i);
 				// CHECK WITH REMOVE key
 				Object oldValue = creator.getValue(masterObj, key);
 

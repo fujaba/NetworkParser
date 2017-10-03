@@ -131,7 +131,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 	protected ObjectCondition updateListener;
 
 	/** The updatelistener for Notification changes. */
-	protected MapListener mapListener = new UpdateListener(this, new JsonObject());
+	protected MapListener mapListener = new UpdateListener(this, jsonTokener);
 	
 	protected SimpleKeyValueList<SendableEntityCreator, Object> referenceList = new SimpleKeyValueList<SendableEntityCreator, Object>();
 

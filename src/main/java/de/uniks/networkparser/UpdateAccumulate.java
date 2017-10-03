@@ -2,13 +2,36 @@ package de.uniks.networkparser;
 
 import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
-import de.uniks.networkparser.json.JsonObject;
+import de.uniks.networkparser.json.JsonTokener;
 
 public class UpdateAccumulate {
-	private Entity factory = new JsonObject();
+	private Tokener tokener;
 	private Entity change;
 	private IdMap map;
-
+	
+	// Target
+	private Object target;
+	private Object defaultItem;
+	private SendableEntityCreator creator;
+	
+	
+	public Tokener getTokener() {
+		if(this.tokener == null) {
+			this.tokener = new JsonTokener();
+		}
+		return tokener;
+	}
+	
+	/**
+	 * Set the Factory
+	 * @param tokener the new Factory Tokener
+	 * @return This Instance
+	 */
+	public UpdateAccumulate withTokener(Tokener tokener) {
+		this.tokener = tokener;
+		return this;
+	}
+	
 	public boolean changeItem(Object source, Object target, String property) {
 		SendableEntityCreator creator = map.getCreatorClass(source);
 		Object defaultItem = creator.getSendableInstance(true);
@@ -22,7 +45,7 @@ public class UpdateAccumulate {
 
 		if (oldValue != creator.getValue(defaultItem, property)) {
 			if (change == null) {
-				change = (Entity) factory.getNewList(true);
+				change = getTokener().newInstance();
 				change.put(IdMap.ID, map.getId(source, true));
 			}
 			Entity child;
@@ -32,13 +55,13 @@ public class UpdateAccumulate {
 				child = (Entity) change.getValue(SendableEntityCreator.REMOVE);
 				change.put(SendableEntityCreator.REMOVE, child);
 			} else {
-				child = (Entity) factory.getNewList(true);
+				child = getTokener().newInstance();
 			}
 			SendableEntityCreator creatorClass = map.getCreatorClass(oldValue);
 			if (creatorClass != null) {
 				String oldId = map.getId(oldValue, true);
 				if (oldId != null) {
-					Entity item = (Entity) factory.getNewList(true);
+					Entity item = getTokener().newInstance();
 					item.put(IdMap.ID, oldId);
 					child.put(property, item);
 				}
@@ -51,14 +74,14 @@ public class UpdateAccumulate {
 				child = (Entity) change.getValue(SendableEntityCreator.UPDATE);
 				change.put(SendableEntityCreator.UPDATE, child);
 			} else {
-				child = (Entity) factory.getNewList(true);
+				child = getTokener().newInstance();
 			}
 
 			creatorClass = map.getCreatorClass(newValue);
 			if (creatorClass != null) {
 				String newId = map.getId(newValue, true);
 				if (newId != null) {
-					Entity item = (Entity) factory.getNewList(true);
+					Entity item = getTokener().newInstance();
 					item.put(IdMap.ID, newId);
 					child.put(property, item);
 				}
@@ -74,16 +97,42 @@ public class UpdateAccumulate {
 		return this;
 	}
 
-	public UpdateAccumulate withAttribute(Object item, Object newValue,
-			String property) {
-		changeAttribute(item, newValue, property);
+	public UpdateAccumulate withAttribute(Object newValue, String property) {
+		changeAttribute(newValue, property);
+		return this;
+	}
+	
+	public UpdateAccumulate withTarget(Object value) {
+		this.target = value;
+		if(value != null && map != null) {
+			this.creator = map.getCreatorClass(target);
+			if(this.creator!= null) {
+				this.defaultItem = creator.getSendableInstance(true);
+			}
+		}
 		return this;
 	}
 
-	public boolean changeAttribute(Object item, Object newValue, String property) {
-		SendableEntityCreator creator = map.getCreatorClass(item);
-		Object defaultItem = creator.getSendableInstance(true);
-		Object oldValue = creator.getValue(item, property);
+	public boolean changeAttribute(UpdateListener listener, Object source, SendableEntityCreator creator, String property, Object oldValue, Object newValue) {
+		if(this.target == null) {
+			if(this.change == null) {
+				this.change = listener.change(property, source, creator, oldValue, newValue);
+			} else {
+				listener.change(property, creator, change, oldValue, newValue);
+			}
+		}
+		return false;
+	}
+	
+	
+	public boolean changeAttribute(Object newValue, String property) {
+		return changeAttribute(target, newValue, property, creator, defaultItem);
+	}
+	private boolean changeAttribute(Object target, Object newValue, String property, SendableEntityCreator creator, Object defaultItem) {
+		if(creator == null) {
+			return false;
+		}
+		Object oldValue = creator.getValue(target, property);
 
 		if ((oldValue == null && newValue == null)
 				|| (oldValue != null && oldValue.equals(newValue))) {
@@ -92,8 +141,8 @@ public class UpdateAccumulate {
 
 		if (oldValue != creator.getValue(defaultItem, property)) {
 			if (change == null) {
-				change = (Entity) factory.getNewList(true);
-				change.put(IdMap.ID, map.getId(item, true));
+				change = getTokener().newInstance();
+				change.put(IdMap.ID, map.getId(target, true));
 			}
 			Entity child;
 
@@ -102,14 +151,14 @@ public class UpdateAccumulate {
 				child = (Entity) change.getValue(SendableEntityCreator.REMOVE);
 				change.put(SendableEntityCreator.REMOVE, child);
 			} else {
-				child = (Entity) factory.getNewList(true);
+				child = getTokener().newInstance();
 				change.put(SendableEntityCreator.REMOVE, child);
 			}
 			SendableEntityCreator creatorClass = map.getCreatorClass(oldValue);
 			if (creatorClass != null) {
 				String oldId = map.getId(oldValue, true);
 				if (oldId != null) {
-					Entity childItem = (Entity) factory.getNewList(true);
+					Entity childItem = getTokener().newInstance();
 					childItem.put(IdMap.ID, oldId);
 					child.put(property, childItem);
 				}
@@ -122,7 +171,7 @@ public class UpdateAccumulate {
 				child = (Entity) change.getValue(SendableEntityCreator.UPDATE);
 				change.put(SendableEntityCreator.UPDATE, child);
 			} else {
-				child = (Entity) factory.getNewList(true);
+				child = getTokener().newInstance();
 				change.put(SendableEntityCreator.UPDATE, child);
 			}
 
@@ -130,7 +179,7 @@ public class UpdateAccumulate {
 			if (creatorClass != null) {
 				String newId = map.getId(newValue, true);
 				if (newId != null) {
-					Entity childItem = (Entity) factory.getNewList(true);
+					Entity childItem = getTokener().newInstance();
 					childItem.put(IdMap.ID, newId);
 					child.put(property, childItem);
 				}
