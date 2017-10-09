@@ -65,12 +65,12 @@ public class GraphUtil {
 		entry.with(assoc);
 	}
 	
-	public static final void setGraphImage(Clazz clazz, GraphImage image) {
-		clazz.with(image);
+	public static final void setGraphImage(Clazz clazz, GraphImage... images) {
+		clazz.with(images);
 	}
 	
-	public static final void setLiteral(Clazz clazz, Literal literal) {
-		clazz.with(literal);
+	public static final void setLiteral(Clazz clazz, Literal... literals) {
+		clazz.with(literals);
 	}
 	
 	public static final void setModifierEntry(Clazz clazz, ModifyEntry modifier) {
@@ -80,6 +80,11 @@ public class GraphUtil {
 	public static final void setClazzType(Clazz clazz, ClazzType clazzType) {
 		clazz.with(clazzType);
 	}
+	
+	public static final void setImport(Clazz clazz, Import... importClazzes) {
+		clazz.with(importClazzes);
+	}
+
 	
 	public static boolean setId(GraphEntity graphEntity, String id) {
 		return graphEntity.setId(id);
