@@ -61,12 +61,12 @@ Project Managment
 ## Installation
 $ git clone https://github.com/fujaba/NetworkParser.git
 
-#Maven artifacts
+# Maven artifacts
 Maven artifacts are available at:
 - http://search.maven.org/#search%7Cga%7C1%7Ca%3A%22NetworkParser%22 - release repository
 - https://oss.sonatype.org/content/repositories/snapshots/com/github/fujaba/NetworkParser/ - snaphots repository
 
-#Usage
+# Usage
 Here are a simple Usage of IdMap for serialization and deserialization
 {{md  '..src/test/java/de/uniks/networkparser/test/SimpleUsage.java[tag=serialization]'}} 
 
@@ -92,7 +92,7 @@ Here are a simple Usage of IdMap for serialization and deserialization
 	</repository>
 </repositories>
 ```
-#Building Jar
+# Building Jar
 | Gradle Command | Description |
 |:--:|:--:|
 | task | Show task to run |
