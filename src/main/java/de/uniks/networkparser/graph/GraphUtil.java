@@ -73,10 +73,6 @@ public class GraphUtil {
 		clazz.with(literal);
 	}
 	
-	public static final void setAttribute(Clazz clazz, Attribute attribute) {
-		clazz.with(attribute);
-	}
-
 	public static final void setModifierEntry(Clazz clazz, ModifyEntry modifier) {
 		clazz.with(modifier);
 	}

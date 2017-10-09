@@ -180,14 +180,13 @@ public class GraphConverter implements Converter{
 						continue;
 					}
 					if (value != null) {
-						attribute = new Attribute(name, DataType.create(value.getClass()));
+						attribute = graphNode.createAttribute(name, DataType.create(value.getClass()));
 						if(isClassDiagram == false) {
 							attribute.withValue(value.toString());
 						}
 					} else {
-						attribute = new Attribute(name, null);
+						attribute = graphNode.createAttribute(name, null);
 					}
-					GraphUtil.setAttribute(graphNode, attribute);
 				}
 			}
 		}
