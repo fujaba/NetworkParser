@@ -79,7 +79,7 @@ public class GraphList extends GraphModel {
 			if (value.getName() == null) {
 				value.with(value.getName(false));
 			}
-			super.with(value);
+			super.withChildren(value);
 		}
 		return value;
 	}

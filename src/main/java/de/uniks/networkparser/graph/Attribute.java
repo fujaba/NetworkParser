@@ -64,16 +64,6 @@ public class Attribute extends Value {
 		return this;
 	}
 
-	public Attribute without(Modifier... modifier) {
-		getModifier().without(modifier);
-		return this;
-	}
-
-	public Attribute without(Annotation... annotation) {
-		super.without(annotation);
-		return this;
-	}
-
 	// Redirect
 	@Override
 	public Attribute with(String value) {

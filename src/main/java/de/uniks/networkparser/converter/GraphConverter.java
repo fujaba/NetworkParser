@@ -112,13 +112,13 @@ public class GraphConverter implements Converter{
 		if (graphNode == null) {
 			graphNode = new Clazz(node.getString(IdMap.CLASS));
 			if(id != null) {
-				graphNode.withId(id);
+				GraphUtil.setId(graphNode, id);
 			}
 			root.with(graphNode);
 		}
 
 		if (node.containsKey(HEAD)) {
-			graphNode.with(new GraphImage().with(node.getString(HEAD)));
+			GraphUtil.setGraphImage(graphNode, new GraphImage().with(node.getString(HEAD)));
 		}
 
 		if (node.containsKey(JsonTokener.PROPS)) {
@@ -133,9 +133,9 @@ public class GraphConverter implements Converter{
 					
 					assoc = new Association(newNode).with(Cardinality.ONE).with(props.getKeyByIndex(i)).with(AssociationTypes.ASSOCIATION);
 					assoc.with(assocOther);
-
-					newNode.with(assoc);
-					graphNode.with(assocOther);
+					
+					GraphUtil.setAssociation(newNode, assoc);
+					GraphUtil.setAssociation(graphNode, assocOther);
 				} else if (value instanceof JsonArray) {
 					// Must be a Link to n
 					JsonArray array = (JsonArray) value;
@@ -148,8 +148,9 @@ public class GraphConverter implements Converter{
 							assoc = new Association(newNode).with(Cardinality.MANY).with(props.getKeyByIndex(i)).with(AssociationTypes.ASSOCIATION);
 							assoc.with(assocOther);
 							
-							newNode.with(assoc);
-							graphNode.with(assocOther);
+							GraphUtil.setAssociation(newNode, assoc);
+							GraphUtil.setAssociation(graphNode, assocOther);
+
 							if(isClassDiagram) {
 								break;
 							}
@@ -186,7 +187,7 @@ public class GraphConverter implements Converter{
 					} else {
 						attribute = new Attribute(name, null);
 					}
-					graphNode.with(attribute);
+					GraphUtil.setAttribute(graphNode, attribute);
 				}
 			}
 		}

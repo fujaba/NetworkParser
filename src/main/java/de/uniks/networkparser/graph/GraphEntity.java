@@ -49,15 +49,18 @@ public abstract class GraphEntity extends GraphMember {
 		return name.substring(name.lastIndexOf(".") + 1);
 	}
 
-	public GraphEntity withId(String id) {
-		this.id = id;
-		return this;
+	protected boolean setId(String id) {
+		if(id != this.id) {
+			this.id = id;
+			return true;
+		}
+		return false;
 	}
 
 	public String getId() {
 		return id;
 	}
-
+	
 	protected String getTyp(String typ, boolean shortName) {
 		if (typ.equals(GraphTokener.OBJECT)) {
 			return getId();
@@ -238,11 +241,6 @@ public abstract class GraphEntity extends GraphMember {
 		return this;
 	}
 
-	public GraphEntity without(Association... values) {
-		super.without(values);
-		return this;
-	}
-	
 	public GraphMember getChildByName(String name, Class<?> subClass) {
 		if(this.children == null) {
 			return null;
@@ -286,7 +284,7 @@ public abstract class GraphEntity extends GraphMember {
 		return this;
 	}
 	
-	public GraphEntity with(ModifyEntry modifier) {
+	protected GraphEntity with(ModifyEntry modifier) {
 		super.withChildren(modifier);
 		return this;
 	}

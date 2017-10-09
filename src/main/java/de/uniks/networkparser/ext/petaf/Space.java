@@ -12,12 +12,14 @@ import de.uniks.networkparser.ext.petaf.messages.util.ChangeMessageCreator;
 import de.uniks.networkparser.ext.petaf.messages.util.ConnectMessageCreator;
 import de.uniks.networkparser.ext.petaf.messages.util.MessageCreator;
 import de.uniks.networkparser.ext.petaf.messages.util.PingMessageCreator;
+import de.uniks.networkparser.ext.petaf.proxy.NodeBackup;
 import de.uniks.networkparser.ext.petaf.proxy.NodeProxyLocal;
 import de.uniks.networkparser.ext.petaf.proxy.NodeProxyModel;
 import de.uniks.networkparser.ext.petaf.proxy.NodeProxyTCP;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.EntityList;
+import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.json.JsonTokener;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SimpleSet;
@@ -28,9 +30,8 @@ import de.uniks.networkparser.list.SortedSet;
  * @author Stefan
  *
  */
-public class Space extends SendableItem {
+public class Space extends SendableItem implements ObjectCondition {
 	public static final String PROPERTY_MODELROOT="root";
-//	public static final String PROPERTY_NODES="nodes";
 	public static final String PROPERTY_HISTORY="history";
 	public static final String PROPERTY_PROXY="proxies";
 	public static final String PROPERTY_PATH="path";
@@ -42,20 +43,23 @@ public class Space extends SendableItem {
 	private String path = "";
 	private ProxyFilter filter = new ProxyFilter();
 	private TaskExecutor executor;
+	private NodeProxy firstPeer;
+	protected ObjectCondition listener;
 	private int peerCount=2;
 	static final int DISABLE=0;
 	static final int MINUTE=60;
 	static final int TENMINUTE=6000;
 	static final int THIRTYMINUTE=30000;
 	private String name;
+	private NodeBackup backupTask = new NodeBackup().withSpace(this);
+
 	/** Time for Try to Reconnect Clients every x Seconds (Default:5x1m, 5x10m, 30m). Set Value to 0 for disable	 */
 	private SimpleList<Integer> tryReconnectTimeSecond=new SimpleList<Integer>()
 			.with(MINUTE,MINUTE,MINUTE,MINUTE,MINUTE)
 			.with(TENMINUTE,TENMINUTE,TENMINUTE,TENMINUTE,TENMINUTE)
 			.with(THIRTYMINUTE, DISABLE);
-	private IdMap map = new IdMap()
-			.with(
-					new MessageCreator(), 
+	protected IdMap map = new IdMap()
+			.with(	new MessageCreator(), 
 					new ChangeMessageCreator(), 
 					new PingMessageCreator(), 
 					new NodeProxyTCP(), 
@@ -96,6 +100,33 @@ public class Space extends SendableItem {
 			history = new ModelHistory().withSpace(this);
 		}
 		return history;
+	}
+	
+	public NodeProxy connectToPeer(String url, int port) {
+		NodeProxy proxy = getOrCreateProxy(url, port);
+		this.firstPeer = proxy;
+		proxy.connectToPeer();
+		return proxy;
+	}
+	
+	public NodeProxy getFirstPeer() {
+		return firstPeer;
+	}
+	
+	public NodeProxy getOrCreateProxy(String url, int port) {
+		if (url.equals("127.0.0.1")) {
+			return null;
+		}
+		String value = url + ":" + port;
+		NodeProxy proxy = getProxy(value);
+
+		if (proxy != null) {
+			return proxy;
+		}
+		NodeProxyTCP newProxy = new NodeProxyTCP();
+		newProxy.withURLPort(url, port);
+		this.with(newProxy);
+		return newProxy;
 	}
 
 	public Space withHistory(ModelHistory value) {
@@ -169,26 +200,6 @@ public class Space extends SendableItem {
 		return this.proxies.remove(proxy);
 	}
 
-//FIXME	@Override
-//	public boolean set(String attribute, Object value) {
-//		if(PROPERTY_PROXY.equalsIgnoreCase(attribute)){
-//			with((NodeProxy) value);
-//			return true;
-//		}
-//		if((PROPERTY_PROXY+JsonIdMap.REMOVE).equalsIgnoreCase(attribute)){
-//			return removeProxy((NodeProxy) value);
-//		}
-//		return super.set(attribute, value);
-//	}
-//	
-//	@Override
-//	public Object get(String attribute) {
-//		if(PROPERTY_PROXY.equalsIgnoreCase(attribute)){
-//			return getNodeProxies();
-//		}
-//		return super.get(attribute);
-//	}
-	
 	Filter getFilter(){
 		Filter result=new Filter().withPropertyRegard(filter);
 		return result;
@@ -397,12 +408,8 @@ public class Space extends SendableItem {
 		if(this.executor == null) {
 			this.executor = new SimpleExecutor();
 		}
-		return this.executor.executeTask(task);
+		return this.executor.executeTask(task, 0);
 	}
-//	public Future<?> execute(Runnable task) {
-//		Future<?> result = executor.submit(task);
-//		return result;
-//	}
 	
 	private NodeProxyModel nodeProxyModel;
 
@@ -452,5 +459,29 @@ public class Space extends SendableItem {
 
 	public TaskExecutor getExecutor() {
 		return this.executor;
+	}
+	
+	public boolean updateBackup() {
+		if(this.backupTask.isEnable()) {
+			return false;
+		}
+		this.backupTask.enable();;
+		this.scheduleTask(this.backupTask, 10000);
+		return true;
+	}
+	
+	public Object scheduleTask(Runnable task, int delay){
+		if(task == null) {
+			return null;
+		}
+		return getExecutor().executeTask(task, delay);
+	}
+
+	@Override
+	public boolean update(Object value) {
+		if(listener != null) {
+			return listener.update(value);
+		}
+		return true;
 	}
 }

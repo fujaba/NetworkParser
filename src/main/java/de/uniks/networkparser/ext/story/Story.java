@@ -162,7 +162,7 @@ public class Story {
 				}
 			}
 			// get the content in bytes
-			byte[] contentInBytes = output.toString().getBytes();
+			byte[] contentInBytes = output.toString(2).getBytes();
 
 			fop.write(contentInBytes);
 			fop.flush();

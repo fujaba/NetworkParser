@@ -29,7 +29,7 @@ public class TestModelCreation {
 		Clazz pupil = model.createClazz("Pupil");
 		Clazz teacher = model.createClazz("Teacher");
 		Clazz room = model.createClazz("Room");
-		Clazz studentEnum = model.createClazz("StudentEnum").enableEnumeration(new Literal("STUDENT").withValue(42));
+		model.createClazz("StudentEnum").enableEnumeration(new Literal("STUDENT").withValue(42));
 		Clazz roomInterface = model.createClazz("roomInterface").enableInterface();
 		
 		// Attributes
@@ -40,14 +40,14 @@ public class TestModelCreation {
 		roomInterface.withAttribute("number", DataType.INT);
 		
 		// Methods
-		Method teach = new Method("teach", DataType.STRING)
+		Method teach = teacher.createMethod("teach");
+		teach.with(DataType.STRING)
 			.withBody("		String teachResult = \"greatResult\";\n"
 					+ "		return teachResult;\n");
 		
 		person.withMethod("think", DataType.VOID);
 		person.withMethod("dontThink", DataType.VOID, new Parameter(DataType.BOOLEAN));
 		pupil.withMethod("read", DataType.STRING);
-		teacher.with(teach);
 		
 		// Super Classes
 		pupil.withSuperClazz(person);

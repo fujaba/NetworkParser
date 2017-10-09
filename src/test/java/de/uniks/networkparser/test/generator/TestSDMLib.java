@@ -8,6 +8,7 @@ import de.uniks.networkparser.ext.ModelGenerator;
 import de.uniks.networkparser.graph.Attribute;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.DataType;
+import de.uniks.networkparser.graph.GraphUtil;
 import de.uniks.networkparser.graph.Method;
 import de.uniks.networkparser.graph.ModifyEntry;
 import de.uniks.networkparser.graph.util.MethodSet;
@@ -25,8 +26,7 @@ public class TestSDMLib {
 		ModelGenerator generator = model.getGenerator();
 		
 		Clazz person = model.createClazz("Person");
-		Attribute nameAttribute = new Attribute("name", DataType.STRING);
-		person.with(nameAttribute);
+		Attribute nameAttribute = person.createAttribute("name", DataType.STRING);
 		Method eatMethod = person.createMethod("eat");
 		
 		// Generate and override SourceCode
@@ -70,7 +70,7 @@ public class TestSDMLib {
 		
 
 		//Add Remove Modifier
-		person.with(ModifyEntry.createDelete(eatMethod));
+		GraphUtil.setModifierEntry(person, ModifyEntry.createDelete(eatMethod));
 		
 		
 		// Remove Element from SourceCode

@@ -7,7 +7,6 @@ import de.uniks.networkparser.graph.GraphEntity;
 import de.uniks.networkparser.graph.GraphMember;
 import de.uniks.networkparser.graph.GraphSimpleSet;
 import de.uniks.networkparser.graph.GraphUtil;
-import de.uniks.networkparser.graph.Modifier;
 import de.uniks.networkparser.graph.ModifyEntry;
 import de.uniks.networkparser.graph.SourceCode;
 import de.uniks.networkparser.interfaces.LocalisationInterface;

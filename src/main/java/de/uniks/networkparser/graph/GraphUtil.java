@@ -60,6 +60,35 @@ public class GraphUtil {
 		}
 		return collection;
 	}
+	
+	public static final void setAssociation(GraphEntity entry, Association assoc) {
+		entry.with(assoc);
+	}
+	
+	public static final void setGraphImage(Clazz clazz, GraphImage image) {
+		clazz.with(image);
+	}
+	
+	public static final void setLiteral(Clazz clazz, Literal literal) {
+		clazz.with(literal);
+	}
+	
+	public static final void setAttribute(Clazz clazz, Attribute attribute) {
+		clazz.with(attribute);
+	}
+
+	public static final void setModifierEntry(Clazz clazz, ModifyEntry modifier) {
+		clazz.with(modifier);
+	}
+	
+	public static final void setClazzType(Clazz clazz, ClazzType clazzType) {
+		clazz.with(clazzType);
+	}
+	
+	public static boolean setId(GraphEntity graphEntity, String id) {
+		return graphEntity.setId(id);
+	}
+
 
 	public static final boolean isWithNoObjects(Clazz clazz) {
 		if(clazz == null) {

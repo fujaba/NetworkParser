@@ -15,13 +15,12 @@ import de.uniks.networkparser.bytes.qr.QRCode;
 import de.uniks.networkparser.bytes.qr.QRTokener;
 import de.uniks.networkparser.converter.GraphConverter;
 import de.uniks.networkparser.graph.Association;
-import de.uniks.networkparser.graph.Attribute;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.DataType;
 import de.uniks.networkparser.graph.GraphLabel;
 import de.uniks.networkparser.graph.GraphList;
 import de.uniks.networkparser.graph.GraphPattern;
-import de.uniks.networkparser.graph.Method;
+import de.uniks.networkparser.graph.GraphUtil;
 import de.uniks.networkparser.graph.Parameter;
 import de.uniks.networkparser.json.JsonObject;
 
@@ -73,19 +72,19 @@ public class SVGDrawerTest {
 		Clazz message=map.with(new Clazz("Message"));
 
 		// Methods
-		networkNode.with(new Method("sendMessage", new Parameter(DataType.create(message)), new Parameter(nodeProxy)));
+		networkNode.withMethod("sendMessage", DataType.VOID, new Parameter(DataType.create(message)), new Parameter(nodeProxy));
 
 		// Attribute
-		networkNode.with(new Attribute("online", DataType.BOOLEAN));
+		networkNode.withAttribute("online", DataType.BOOLEAN);
 
 //		GraphClazz nodeProxyTCP=map.with(new GraphClazz().withClassName("NodeProxyTCP"));
 //		GraphClazz nodeProxyTCP=map.with(new GraphClazz().withClassName("NodeProxy"));
 
 		// Edges
-		map.with( Association.create(space, modelHistory) );
-		map.with( Association.create(space, networkNode) );
-		map.with( Association.create(space, idMap) );
-		map.with( Association.create(networkNode, nodeProxy) );
+		GraphUtil.setAssociation(map, Association.create(space, modelHistory) );
+		GraphUtil.setAssociation(map, Association.create(space, networkNode) );
+		GraphUtil.setAssociation(map, Association.create(space, idMap) );
+		GraphUtil.setAssociation(map, Association.create(networkNode, nodeProxy) );
 
 		GraphConverter converter=new GraphConverter();
 		writeJson("clazzModel.html", converter.convertToJson(map, false, false));
@@ -99,13 +98,13 @@ public class SVGDrawerTest {
 		GraphPattern modelHistory = map.with(new GraphPattern().with("Item").withBounds("create"));
 		map.with(new GraphPattern().with("ModelHistory").withBounds("nac"));
 
-		map.with( Association.create(space, modelHistory).with(GraphLabel.CREATE) );
+		GraphUtil.setAssociation(map, Association.create(space, modelHistory).with(GraphLabel.CREATE) );
 
 		GraphList subGraph = new GraphList();
 		GraphPattern person = subGraph.with(new GraphPattern().with("Person"));
 		subGraph.withStyle("nac");
 
-		map.with(Association.create(space, person));
+		GraphUtil.setAssociation(map, Association.create(space, person));
 		map.with(subGraph);
 
 		GraphConverter converter=new GraphConverter();
@@ -121,9 +120,9 @@ public class SVGDrawerTest {
 		Clazz petaf=map.with(new Clazz("PetaF"));
 		Clazz policy=map.with(new Clazz("Policy"));
 
-		map.with( Association.create(networkParser, networkParserfx) );
-		map.with( Association.create(networkParser, petaf) );
-		map.with( Association.create(petaf, policy) );
+		GraphUtil.setAssociation(map, Association.create(networkParser, networkParserfx) );
+		GraphUtil.setAssociation(map, Association.create(networkParser, petaf) );
+		GraphUtil.setAssociation(map, Association.create(petaf, policy) );
 
 		GraphConverter converter=new GraphConverter();
 		writeJson("petaf.html", converter.convertToJson(map, false, false));

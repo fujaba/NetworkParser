@@ -1,11 +1,12 @@
 package de.uniks.networkparser.ext.petaf;
 
+import de.uniks.networkparser.ext.petaf.messages.ConnectMessage;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.list.SimpleList;
 
 public abstract class NodeProxy extends SendableItem implements Comparable<NodeProxy>, SendableEntityCreator {
-	public static int BUFFER=100*1024;
+	public static int BUFFER = 100 * 1024;
 	public static final String PROPERTY_SEND = "sendtime";
 	public static final String PROPERTY_RECEIVE = "receivetime";
 	public static final String PROPERTY_HISTORY = "history";
@@ -17,48 +18,54 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 	public static final String PROPERTY_NAME = "name";
 
 	protected PropertyList propertyUpdate = PropertyList.create(PROPERTY_HISTORY, PROPERTY_FILTER, PROPERTY_SEND);
-	protected PropertyList propertyInfo = PropertyList.create(PROPERTY_SEND, PROPERTY_RECEIVE, PROPERTY_HISTORY, PROPERTY_FILTER, PROPERTY_VERSION);
-	protected PropertyList property = PropertyList.create(PROPERTY_SEND, PROPERTY_RECEIVE, PROPERTY_ONLINE, PROPERTY_NODES, PROPERTY_HISTORY, PROPERTY_FILTER, PROPERTY_VERSION);
+	protected PropertyList propertyInfo = PropertyList.create(PROPERTY_SEND, PROPERTY_RECEIVE, PROPERTY_HISTORY,
+			PROPERTY_FILTER, PROPERTY_VERSION);
+	protected PropertyList property = PropertyList.create(PROPERTY_SEND, PROPERTY_RECEIVE, PROPERTY_ONLINE,
+			PROPERTY_NODES, PROPERTY_HISTORY, PROPERTY_FILTER, PROPERTY_VERSION);
 
 	protected NodeProxyType type;
 	protected long sendtime;
 	protected long receivetime;
 	protected long lastSendTryTime;
 	protected long receiveBytes;
-	protected long sendBytes;		// Full bytes
-	protected int lastSendCount;	// Count of success sending
-	protected String version;	// Runtimeversion of App
-	protected boolean online;	// Boolean if last send is success 
-	protected String history;	// Hashcode of last Message
-	protected ObjectCondition filter;	// Filter of World
+	protected long sendBytes; // Full bytes
+	protected int lastSendCount; // Count of success sending
+	protected String version; // Runtimeversion of App
+	protected boolean online; // Boolean if last send is success
+	protected String history; // Hashcode of last Message
+	protected ObjectCondition filter; // Filter of World
 	protected Space space;
 	private String name;
-//	protected BasicSpace test;
 
-	public String[] getUpdateProperties(){
+	public String[] getUpdateProperties() {
 		return propertyUpdate.getList();
 	}
-	
-	public String[] getInfoProperties(){
+
+	public String[] getInfoProperties() {
 		return propertyInfo.getList();
 	}
-	
+
 	@Override
 	public String[] getProperties() {
 		return property.getList();
 	}
-	
-	public boolean sendMessage(Message msg){
-		if(this.space != null) {
+
+	public void connectToPeer() {
+		sendMessage(new ConnectMessage());
+	}
+
+	public boolean sendMessage(Message msg) {
+		if (this.space != null) {
 			return this.space.sendMessage(this, msg, false);
 		}
 		return this.sending(msg);
 	}
-	public boolean sendMessageToPeers(Message msg){
+
+	public boolean sendMessageToPeers(Message msg) {
 		return this.space.sendMessageToPeers(msg, this);
 	}
 
-	protected boolean sending(Message msg){
+	protected boolean sending(Message msg) {
 		this.lastSendTryTime = System.currentTimeMillis();
 		return false;
 	}
@@ -66,192 +73,185 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 	public NodeProxyType getType() {
 		return type;
 	}
+
 	public NodeProxy withType(NodeProxyType value) {
 		// if output is not configured, we don't allow OUT or INOUT as value...
-//		if(value.isInput()){
-//		}
+		// if(value.isInput()){
+		// }
 		this.type = value;
 		return this;
 	}
 
-	public void setSendTime(int bytes){
-		this.sendtime=System.currentTimeMillis();
+	public void setSendTime(int bytes) {
+		this.sendtime = System.currentTimeMillis();
 		this.lastSendCount = 0;
 	}
-	
-	public NodeProxy withSendTime(Long value){
+
+	public NodeProxy withSendTime(Long value) {
 		Long oldValue = sendtime;
 		this.sendtime = value;
 		firePropertyChange(PROPERTY_SEND, oldValue, value);
 		return this;
 	}
-	
-	public long getSendTime(){
+
+	public long getSendTime() {
 		return this.sendtime;
 	}
-	
+
 	public boolean isReconnecting(SimpleList<Integer> seconds) {
-		if(isOnline() || seconds.size() < 1) {
+		if (isOnline() || seconds.size() < 1) {
 			return false;
 		}
-		if(lastSendCount>=seconds.size()) {
+		if (lastSendCount >= seconds.size()) {
 			lastSendCount = seconds.size() - 1;
 		}
 		int time = seconds.get(lastSendCount);
-		if(time == Space.DISABLE) {
+		if (time == Space.DISABLE) {
 			return false;
 		}
 		boolean result = (isOnline() == false) && (System.currentTimeMillis() - lastSendTryTime) > time;
-		if(result) {
+		if (result) {
 			this.lastSendCount++;
 		}
-		return result;  
+		return result;
 	}
-	public void setReceiveTime(){
+
+	public void setReceiveTime() {
 		this.receivetime = System.currentTimeMillis();
 	}
 
-	public NodeProxy withReceiveTime(Long value){
+	public NodeProxy withReceiveTime(Long value) {
 		Long oldValue = receivetime;
 		this.receivetime = value;
 		firePropertyChange(PROPERTY_RECEIVE, oldValue, value);
 		return this;
 	}
-	
-	public Long getReceiveTime()
-	{
+
+	public Long getReceiveTime() {
 		return receivetime;
 	}
 
-	public NodeProxy withOnline(boolean value)
-	{
-		boolean oldValue=this.online;
-		this.online=value;
+	public NodeProxy withOnline(boolean value) {
+		boolean oldValue = this.online;
+		this.online = value;
 		firePropertyChange(PROPERTY_ONLINE, oldValue, value);
 		return this;
 	}
-	
-	public boolean isOnline(){
+
+	public boolean isOnline() {
 		return online;
 	}
 
 	public abstract String getKey();
+
 	public abstract boolean isSendable();
-	
+
 	public int compareTo(NodeProxy o) {
 		return getKey().compareTo(o.getKey());
 	}
 
-	public String getHistory()
-	{
+	public String getHistory() {
 		return history;
 	}
-	
-	public NodeProxy withHistory(String value)
-	{
-		String oldValue=this.history;
-		this.history=value;
+
+	public NodeProxy withHistory(String value) {
+		String oldValue = this.history;
+		this.history = value;
 		firePropertyChange(PROPERTY_HISTORY, oldValue, value);
 		return this;
 	}
-	
+
 	public NodeProxy withFilter(ObjectCondition value) {
-		if(value != null && !value.equals(this.filter)) {
+		if (value != null && !value.equals(this.filter)) {
 			this.filter = value;
 		}
 		return this;
 	}
 
-	
 	public ObjectCondition getFilter() {
 		return filter;
 	}
-	
+
 	public String getVersion() {
 		return version;
 	}
 
 	public NodeProxy withVersion(String value) {
-		String oldValue=this.version;
+		String oldValue = this.version;
 		this.version = value;
 		firePropertyChange(PROPERTY_VERSION, oldValue, value);
 		return this;
 	}
-	
+
 	@Override
-	public boolean setValue(Object element, String attrName, Object value, String type)
-	{
-		if(element instanceof NodeProxy == false) {
+	public boolean setValue(Object element, String attrName, Object value, String type) {
+		if (element instanceof NodeProxy == false) {
 			return false;
 		}
 		NodeProxy nodeProxy = (NodeProxy) element;
-		if (PROPERTY_SEND.equals(attrName))
-		{
+		if (PROPERTY_SEND.equals(attrName)) {
 			nodeProxy.withSendTime(Long.valueOf("" + value));
 			return true;
 		}
-		if (PROPERTY_RECEIVE.equals(attrName))
-		{
+		if (PROPERTY_RECEIVE.equals(attrName)) {
 			nodeProxy.withReceiveTime(Long.valueOf("" + value));
 			return true;
 		}
-		if(PROPERTY_HISTORY.equals(attrName)){
-			nodeProxy.withHistory(""+value);
+		if (PROPERTY_HISTORY.equals(attrName)) {
+			nodeProxy.withHistory("" + value);
 			return true;
 		}
-		if(PROPERTY_FILTER.equals(attrName)){
+		if (PROPERTY_FILTER.equals(attrName)) {
 			nodeProxy.withFilter((ObjectCondition) value);
 			return true;
 		}
-		if(PROPERTY_ONLINE.equals(attrName)){
-			nodeProxy.withOnline(Boolean.valueOf(""+value));
+		if (PROPERTY_ONLINE.equals(attrName)) {
+			nodeProxy.withOnline(Boolean.valueOf("" + value));
 			return true;
 		}
-		if(PROPERTY_VERSION.equals(attrName)){
-			nodeProxy.withVersion(""+value);
+		if (PROPERTY_VERSION.equals(attrName)) {
+			nodeProxy.withVersion("" + value);
 			return true;
 		}
-		if(PROPERTY_TYP.equals(attrName)){
-			nodeProxy.withType(NodeProxyType.valueOf(""+value));
+		if (PROPERTY_TYP.equals(attrName)) {
+			nodeProxy.withType(NodeProxyType.valueOf("" + value));
 			return true;
 		}
 		return false;
 	}
 
 	@Override
-	public Object getValue(Object element, String attrName)
-	{
-		if(element instanceof NodeProxy == false) {
+	public Object getValue(Object element, String attrName) {
+		if (element instanceof NodeProxy == false) {
 			return null;
 		}
 		NodeProxy nodeProxy = (NodeProxy) element;
 		if (PROPERTY_SEND.equals(attrName)) {
 			return nodeProxy.getSendTime();
 		}
-		if (PROPERTY_RECEIVE.equals(attrName))
-		{
+		if (PROPERTY_RECEIVE.equals(attrName)) {
 			return nodeProxy.getReceiveTime();
 		}
-		if(PROPERTY_HISTORY.equals(attrName)){
+		if (PROPERTY_HISTORY.equals(attrName)) {
 			return nodeProxy.getHistory();
 		}
-		if(PROPERTY_FILTER.equals(attrName)){
+		if (PROPERTY_FILTER.equals(attrName)) {
 			return nodeProxy.getFilter();
 		}
-		if(PROPERTY_ONLINE.equals(attrName)){
+		if (PROPERTY_ONLINE.equals(attrName)) {
 			return nodeProxy.isOnline();
 		}
-		if(PROPERTY_VERSION.equals(attrName)){
+		if (PROPERTY_VERSION.equals(attrName)) {
 			return nodeProxy.getVersion();
 		}
-		if(PROPERTY_TYP.equals(attrName)){
+		if (PROPERTY_TYP.equals(attrName)) {
 			return nodeProxy.getType();
 		}
 		return null;
 	}
 
 	public abstract boolean close();
-	
+
 	public NodeProxy initSpace(Space value) {
 		if (value == this.space) {
 			return this;
@@ -277,12 +277,12 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 	public NodeProxy withName(String name) {
 		this.name = name;
 		return this;
-	}	
+	}
+
 	public Space getSpace() {
 		return space;
 	}
-	
+
 	protected abstract boolean initProxy();
 
 }
-

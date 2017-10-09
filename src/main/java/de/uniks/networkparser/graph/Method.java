@@ -225,16 +225,6 @@ public class Method extends GraphMember {
 		return this;
 	}
 
-	public Method without(Parameter... values) {
-		super.without(values);
-		return this;
-	}
-
-	public Method without(Annotation... values) {
-		super.without(values);
-		return this;
-	}
-
 	public Annotation getAnnotation() {
 		return super.getAnnotation();
 	}

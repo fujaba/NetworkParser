@@ -3,7 +3,6 @@ package de.uniks.networkparser.test.generator;
 import org.junit.Test;
 
 import de.uniks.networkparser.ext.ClassModel;
-import de.uniks.networkparser.graph.Attribute;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.DataType;
 import de.uniks.networkparser.graph.DataTypeMap;
@@ -23,6 +22,8 @@ public class TestAttributes {
 	public void testClassWithAttribute() {
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.attribute_b");
 		Clazz person = model.createClazz("Person");
+		
+		
 		person.createAttribute("name", DataType.STRING);
 		model.getGenerator().testGeneratedCode("java");
 	}
@@ -32,7 +33,7 @@ public class TestAttributes {
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.attribute_c");
 		Clazz person = model.createClazz("Person");
 		person.createAttribute("name", DataType.STRING);
-		person.with(new Attribute("age", DataType.INT));
+		person.withAttribute("age", DataType.INT);
 		model.getGenerator().testGeneratedCode("java");
 	}
 	
@@ -40,7 +41,7 @@ public class TestAttributes {
 	public void testClassWithSetAttribute() {
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.attribute_d");
 		Clazz person = model.createClazz("Person");
-		person.with(new Attribute("names", DataTypeSet.create(DataType.STRING)));
+		person.withAttribute("names", DataTypeSet.create(DataType.STRING));
 		model.getGenerator().testGeneratedCode("java");
 	}
 	
@@ -48,7 +49,7 @@ public class TestAttributes {
 	public void testClassWithSingleSetAttributes() {
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.attribute_e");
 		Clazz person = model.createClazz("Person");
-		person.with(new Attribute("ages", DataTypeSet.create(DataType.INT)));
+		person.withAttribute("ages", DataTypeSet.create(DataType.INT));
 		model.getGenerator().testGeneratedCode("java");
 	}
 	
@@ -57,7 +58,7 @@ public class TestAttributes {
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.attribute_f");
 		Clazz person = model.createClazz("Person");
 		person.createAttribute("names", DataTypeSet.create(DataType.STRING));
-		person.with(new Attribute("ages", DataTypeSet.create(DataType.INT)));
+		person.withAttribute("ages", DataTypeSet.create(DataType.INT));
 		model.getGenerator().testGeneratedCode("java");
 	}
 	
@@ -110,7 +111,7 @@ public class TestAttributes {
 	public void testClassWithPrivateModifiedAttribute() {
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.attribute_l");
 		Clazz person = model.createClazz("Person");
-		person.with(new Attribute("personalName", DataType.STRING).with(Modifier.PRIVATE));
+		person.withAttribute("personalName", DataType.STRING).with(Modifier.PRIVATE);
 		model.getGenerator().testGeneratedCode("java");
 	}
 	
@@ -120,7 +121,7 @@ public class TestAttributes {
 	public void testClassWithPublicModifiedAttribute() {
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.attribute_m");
 		Clazz person = model.createClazz("Person");
-		person.with(new Attribute("personalName", DataType.STRING).with(Modifier.PUBLIC));
+		person.withAttribute("personalName", DataType.STRING).with(Modifier.PUBLIC);
 		model.getGenerator().testGeneratedCode("java");
 	}
 	
@@ -128,7 +129,7 @@ public class TestAttributes {
 	public void testClassWithStaticModifiedAttribute() {
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.attribute_n");
 		Clazz person = model.createClazz("Person");
-		person.with(new Attribute("personalName", DataType.STRING).with(Modifier.STATIC));
+		person.withAttribute("personalName", DataType.STRING).with(Modifier.STATIC);
 		model.getGenerator().testGeneratedCode("java");
 	}
 
@@ -136,7 +137,7 @@ public class TestAttributes {
 	public void testClassWithProtectedModifiedAttribute() {
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.attribute_o");
 		Clazz person = model.createClazz("Person");
-		person.with(new Attribute("personalName", DataType.STRING).with(Modifier.PROTECTED));
+		person.withAttribute("personalName", DataType.STRING).with(Modifier.PROTECTED);
 		model.getGenerator().testGeneratedCode("java");
 	}
 }

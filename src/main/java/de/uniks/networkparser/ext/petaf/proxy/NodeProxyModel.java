@@ -3,7 +3,7 @@ package de.uniks.networkparser.ext.petaf.proxy;
 import de.uniks.networkparser.ext.petaf.NodeProxy;
 import de.uniks.networkparser.ext.petaf.NodeProxyType;
 
-public class NodeProxyModel extends NodeProxy{
+public class NodeProxyModel extends NodeProxy {
 	private Object root;
 	
 	public NodeProxyModel(Object root) {

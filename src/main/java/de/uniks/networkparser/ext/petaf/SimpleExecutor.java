@@ -6,7 +6,13 @@ public class SimpleExecutor implements TaskExecutor{
 	private ObjectCondition listener;
 
 	@Override
-	public Object executeTask(Runnable task) {
+	public Object executeTask(Runnable task, int delay, int interval) {
+		task.run();
+		return null;
+	}
+	
+	@Override
+	public Object executeTask(Runnable task, int delay) {
 		task.run();
 		return null;
 	}

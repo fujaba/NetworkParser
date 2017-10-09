@@ -35,6 +35,7 @@ import de.uniks.networkparser.graph.GraphList;
 import de.uniks.networkparser.graph.GraphOptions;
 import de.uniks.networkparser.graph.GraphPatternMatch;
 import de.uniks.networkparser.graph.GraphTokener;
+import de.uniks.networkparser.graph.GraphUtil;
 import de.uniks.networkparser.graph.Method;
 import de.uniks.networkparser.graph.Modifier;
 import de.uniks.networkparser.graph.Parameter;
@@ -167,7 +168,7 @@ public class GraphTest {
 		
 		Clazz person=list.createClazz("Person").enableInterface();
 		Clazz student=new Clazz("Student");
-		student.with(new Attribute("name", DataType.STRING));
+		student.withAttribute("name", DataType.STRING);
 		
 		student.withSuperClazz(person);
 		
@@ -187,7 +188,7 @@ public class GraphTest {
 	public void testGraph() {
 		GraphList list = new GraphList();
 		Clazz node = new Clazz("Item");
-		node.with(new GraphImage().with("karli.png"));
+		GraphUtil.setGraphImage(node, new GraphImage().with("karli.png"));
 		list.with(node);
 
 		GraphConverter converter = new GraphConverter();
@@ -448,15 +449,12 @@ public class GraphTest {
 	@Test
 	public void testClazzAttributes() {
 		Clazz player = new Clazz("Player");
-		player.with(new Attribute("name", DataType.STRING));
-		player.with(new Attribute("name", DataType.STRING));
-		player.with(new Method("checkend()", DataType.BOOLEAN));
+		player.withAttribute("name", DataType.STRING);
+		player.withAttribute("name", DataType.STRING);
+		player.withMethod("checkend()", DataType.BOOLEAN);
 		Assert.assertEquals("checkend", player.getMethods().first().getName());
 		Assert.assertEquals(1, player.getAttributes().size());
-		
 	}
-
-	
 	
 	@Test
 	public void testClazzTest() {
@@ -591,7 +589,7 @@ public class GraphTest {
 		abstractArray.createAttribute("size", DataType.INT);
 		abstractArray.createAttribute("index", DataType.INT);
 		abstractArray.createAttribute("flag", DataType.BYTE);
-		Clazz baseItem = model.with(new Clazz("BaseItem").with(ClazzType.INTERFACE));
+		Clazz baseItem = model.with(new Clazz("BaseItem").enableInterface());
 		Clazz iterable = model.with(new Clazz("Iterable<V>"));
 		Clazz abstractList = model.with(new Clazz("AbstractList<V>"));
 		Clazz simpleList = model.with(new Clazz("SimpleList<V>"));
@@ -603,17 +601,17 @@ public class GraphTest {
 
 //		baseItem.withInterface(true);
 
-		model.with(Association.create(abstractArray, baseItem).with(AssociationTypes.IMPLEMENTS));
-		model.with(Association.create(abstractArray, iterable).with(AssociationTypes.IMPLEMENTS));
-		model.with(Association.create(abstractList, abstractArray).with(AssociationTypes.GENERALISATION));
+		GraphUtil.setAssociation(model, Association.create(abstractArray, baseItem).with(AssociationTypes.IMPLEMENTS));
+		GraphUtil.setAssociation(model, Association.create(abstractArray, iterable).with(AssociationTypes.IMPLEMENTS));
+		GraphUtil.setAssociation(model, Association.create(abstractList, abstractArray).with(AssociationTypes.GENERALISATION));
 
-		model.with(Association.create(simpleKeyValueList, abstractArray).with(AssociationTypes.GENERALISATION));
-		model.with(Association.create(simpleList, abstractList).with(AssociationTypes.GENERALISATION));
-		model.with(Association.create(simpleSet, abstractList).with(AssociationTypes.GENERALISATION));
+		GraphUtil.setAssociation(model, Association.create(simpleKeyValueList, abstractArray).with(AssociationTypes.GENERALISATION));
+		GraphUtil.setAssociation(model, Association.create(simpleList, abstractList).with(AssociationTypes.GENERALISATION));
+		GraphUtil.setAssociation(model, Association.create(simpleSet, abstractList).with(AssociationTypes.GENERALISATION));
 
-		model.with(Association.create(simpleKeyValueList, map).with(AssociationTypes.IMPLEMENTS));
-		model.with(Association.create(simpleList, list).with(AssociationTypes.IMPLEMENTS));
-		model.with(Association.create(simpleSet, set).with(AssociationTypes.IMPLEMENTS));
+		GraphUtil.setAssociation(model, Association.create(simpleKeyValueList, map).with(AssociationTypes.IMPLEMENTS));
+		GraphUtil.setAssociation(model, Association.create(simpleList, list).with(AssociationTypes.IMPLEMENTS));
+		GraphUtil.setAssociation(model, Association.create(simpleSet, set).with(AssociationTypes.IMPLEMENTS));
 
 		docEnvironment.writeJson("simpleCollection.html", "../src/main/resources/de/uniks/networkparser/graph/", new GraphConverter().convertToJson(model, true, false));
 	}

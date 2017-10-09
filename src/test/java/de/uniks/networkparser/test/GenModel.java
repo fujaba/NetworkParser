@@ -1,9 +1,9 @@
 package de.uniks.networkparser.test;
 
-import java.io.PrintStream;
-
 import org.junit.Test;
 
+import de.uniks.networkparser.ext.ClassModel;
+import de.uniks.networkparser.ext.io.FileBuffer;
 import de.uniks.networkparser.graph.Annotation;
 import de.uniks.networkparser.graph.Association;
 import de.uniks.networkparser.graph.Attribute;
@@ -12,38 +12,61 @@ import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.DataType;
 import de.uniks.networkparser.graph.DataTypeMap;
 import de.uniks.networkparser.graph.DataTypeSet;
-import de.uniks.networkparser.graph.Import;
 import de.uniks.networkparser.graph.Method;
 import de.uniks.networkparser.graph.Modifier;
 import de.uniks.networkparser.graph.Parameter;
 import de.uniks.networkparser.graph.Throws;
-import de.uniks.networkparser.graph.Value;
+import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
-import de.uniks.networkparser.list.SortedSet;
+import de.uniks.networkparser.xml.HTMLEntity;
 
 public class GenModel {
-	public static PrintStream stream=null;	//System.out;
-	public static boolean methods=false;
 	@Test
 	public void showCountsModel() {
 		int count =0;
-		count += showCounting(Annotation.class);
-		count += showCounting(Association.class);
-		count += showCounting(Attribute.class);
-		count += showCounting(Cardinality.class);
-		count += showCounting(Clazz.class);
-		count += showCounting(Import.class);
-		count += showCounting(DataType.class);
-		count += showCounting(DataTypeSet.class);
-		count += showCounting(DataTypeMap.class);
-		count += showCounting(Method.class);
-		count += showCounting(Modifier.class);
-		count += showCounting(Parameter.class);
-		count += showCounting(Throws.class);
-		count += showCounting(Value.class);
-		if(stream != null) {
-			stream.println("Sum: "+count);
-		}
+		HTMLEntity sdmLib=new HTMLEntity();
+
+		ClassModel model = new ClassModel();
+		count += showCounting(Annotation.class, sdmLib, model);
+		count += showCounting(Association.class, sdmLib, model);
+		sdmLib.withGraph(model);
+
+		model = new ClassModel();
+		count += showCounting(Cardinality.class, sdmLib, model);
+		sdmLib.withGraph(model).withPageBreak();
+		
+		model = new ClassModel();
+		count += showCounting(Clazz.class, sdmLib, model);
+		sdmLib.withGraph(model).withPageBreak();
+
+		
+		model = new ClassModel();
+		count += showCounting(Attribute.class, sdmLib, model);
+		count += showCounting(Method.class, sdmLib, model);
+		sdmLib.withGraph(model).withPageBreak();
+		
+		model = new ClassModel();
+		count += showCounting(DataType.class, sdmLib, model);
+		sdmLib.withGraph(model);
+		
+		model = new ClassModel();
+		count += showCounting(DataTypeSet.class, sdmLib, model);
+		count += showCounting(DataTypeMap.class, sdmLib, model);
+		sdmLib.withGraph(model).withPageBreak();
+		
+		model = new ClassModel();
+		count += showCounting(Modifier.class, sdmLib, model);
+		count += showCounting(Parameter.class, sdmLib, model);
+		count += showCounting(Throws.class, sdmLib, model);
+		sdmLib.withGraph(model);
+		
+//		model = new ClassModel();
+//		count += showCounting(Value.class, sdmLib, model);
+//		sdmLib.withPageBreak().withGraph(model);
+		
+		sdmLib.withText("API-Count: "+count);
+//		sdmLib.withGraph(model);
+		FileBuffer.writeFile("build/sdmlib.html", sdmLib.toString());
 	}
 
 	@Test
@@ -70,7 +93,13 @@ public class GenModel {
 		String name = classType.getName();
 		int pos = name.lastIndexOf(".");
 		if(pos>0) {
-			return name.substring(pos+1);
+			name = name.substring(pos+1);
+		}
+		if(classType.isArray()) {
+			if(name.endsWith(";")) {
+				return name.substring(0,name.length() - 1)+"...";
+			}
+			return name+"[]";
 		}
 		return name;
 	}
@@ -92,21 +121,20 @@ public class GenModel {
 		}
 		return sb.toString();
 	}
+	
 
-	public int getCount(Object element, boolean printItems) {
-		return getCounting(element.getClass(), printItems);
-	}
-	public int showCounting(Class<?> element) {
-		int count=getCounting(element, methods);
-		if(stream != null) {
-			stream.println(element.getSimpleName()+": "+count);
-		}
+	public int showCounting(Class<?> element, HTMLEntity htmlEntity, ClassModel model) {
+		Clazz graphClazz = model.createClazz(element.getSimpleName());
+		int count = getCounting(element, graphClazz);
+		
+		htmlEntity.withText(element.getSimpleName()+": "+count);
+		htmlEntity.withNewLine();
 
 		if(java.lang.reflect.Modifier.isAbstract(element.getModifiers()) ) {
 			return 0;
 		}
 		SimpleList<String> wrongMethods = new SimpleList<String>();
-		java.lang.reflect.Method[] methods = element.getMethods();
+ 		java.lang.reflect.Method[] methods = element.getMethods();
 		for(int i=0;i<methods.length;i++) {
 			if(methods[i].getDeclaringClass() == Object.class || methods[i].getDeclaringClass() == Enum.class) {
 				continue;
@@ -116,6 +144,7 @@ public class GenModel {
 				continue;
 			}
 
+			
 			if(element.getName().equals(methods[i].getDeclaringClass().getName())== false) {
 				String declaredClass = shortName(methods[i].getDeclaringClass());
 				String returnClass = shortName(methods[i].getReturnType());
@@ -130,38 +159,85 @@ public class GenModel {
 		}
 		return count;
 	}
+	
+	public static boolean isOverriden(java.lang.reflect.Method parent, java.lang.reflect.Method toCheck) {
+	    if (parent.getDeclaringClass().isAssignableFrom(toCheck.getDeclaringClass())
+	            && parent.getName().equals(toCheck.getName())) {
+	         Class<?>[] params1 = parent.getParameterTypes();
+	         Class<?>[] params2 = toCheck.getParameterTypes();
+	         if (params1.length == params2.length) {
+	             for (int i = 0; i < params1.length; i++) {
+	                 if (!params1[i].equals(params2[i])) {
+	                     return false;
+	                 }
+	             }
+	             return true;
+	         }
+	    }
+	    return false;
+	}
 
-	public int getCounting(Class<?> element, boolean printItems) {
+	public int getCounting(Class<?> element, Clazz graphClazz) {
 		java.lang.reflect.Method[] methods = element.getMethods();
-		SortedSet<String> counts=new SortedSet<String>(true);
+//		SortedSet<String> counts=new SortedSet<String>(true);
+		int no=0;
+		SimpleKeyValueList<String, SimpleList<java.lang.reflect.Method>> overridenMethods=new SimpleKeyValueList<String, SimpleList<java.lang.reflect.Method>>();
 		for(int i=0;i<methods.length;i++) {
 			if(methods[i].getDeclaringClass() == Object.class || methods[i].getDeclaringClass() == Enum.class) {
 				continue;
 			}
-			String signature = getSignature(methods[i]);
-			if (java.lang.reflect.Modifier.isStatic(methods[i].getModifiers())) {
-				counts.with(signature);
-			} else if (java.lang.reflect.Modifier.isPublic(methods[i].getModifiers())) {
-				if(signature.endsWith(" toString()")==false) {
-					counts.with(signature);
-				}
+//			String signature = getSignature(methods[i]);
+			if (java.lang.reflect.Modifier.isStatic(methods[i].getModifiers())
+					|| (java.lang.reflect.Modifier.isPublic(methods[i].getModifiers())
+							&& "toString".equalsIgnoreCase(methods[i].getName()) == false)) {
+						// ADD IT
+						SimpleList<java.lang.reflect.Method> items = overridenMethods.get(methods[i].getName());
+						if(items == null) {
+							items = new SimpleList<java.lang.reflect.Method>();
+							overridenMethods.put(methods[i].getName(), items);							
+						}
+				
+						boolean add = true;
+						for(java.lang.reflect.Method m1 : items) {
+							if(isOverriden(m1, methods[i])) {
+								add = false;
+								break;
+							}
+						}
+						if(add == false) {
+							continue;
+						}
+				//				sb.append(shortName(method.getDeclaringClass())+" "++"(");
+						Method graphMethod = graphClazz.createMethod(methods[i].getName());
+						java.lang.reflect.Parameter[] parameters = methods[i].getParameters();
+						for(int p = 0;p<parameters.length;p++) {
+							graphMethod.with(new Parameter(DataType.create(shortName(parameters[p].getType()))));
+						}
+						if(methods[i].getReturnType()!= null) {
+							graphMethod.with(DataType.create(shortName(methods[i].getReturnType())));
+						}
+						items.add(methods[i]);
+						no++;
 			}
+//				
+//				graphClazz.createMethod(item);
+////				counts.add(signature);
+//			} else if ({
+//				if(signature.endsWith("toString()")==false) {
+////					counts.add(signature);
+//				}
+//			}
 		}
 		java.lang.reflect.Field[] fields = element.getClass().getFields();
 		for(int i=0;i<fields.length;i++) {
 			if (java.lang.reflect.Modifier.isStatic(fields[i].getModifiers())) {
-				counts.with(fields[i].getName()+":"+fields[i].getType());
+				graphClazz.createAttribute(fields[i].getName(), DataType.create(fields[i].getType()));
+				no++;
 			} else if (java.lang.reflect.Modifier.isPublic(fields[i].getModifiers())) {
-				counts.with(fields[i].getName()+":"+fields[i].getType());
+				graphClazz.createAttribute(fields[i].getName(), DataType.create(fields[i].getType()));
+				no++;
 			}
 		}
-		if(printItems) {
-			for(String item : counts) {
-				if(stream != null) {
-					stream.println(item);
-				}
-			}
-		}
-		return counts.size();
+		return no;
 	}
 }

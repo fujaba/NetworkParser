@@ -5,6 +5,7 @@ import org.junit.Test;
 import de.uniks.networkparser.ext.ClassModel;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.DataType;
+import de.uniks.networkparser.graph.GraphUtil;
 import de.uniks.networkparser.graph.Literal;
 
 public class TestEnumeration {
@@ -48,7 +49,7 @@ public class TestEnumeration {
 		Clazz testEnum = model.createClazz("TestEnum");
 		
 		testEnum.enableEnumeration("PERSON","ROOM");
-		testEnum.with(new Literal("TEACHER"));
+		GraphUtil.setLiteral(testEnum, new Literal("TEACHER"));
 		
 		model.getGenerator().testGeneratedCode("java");
 	}

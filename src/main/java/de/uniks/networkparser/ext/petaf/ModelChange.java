@@ -1,10 +1,6 @@
  package de.uniks.networkparser.ext.petaf;
 
-import java.util.TreeSet;
-
-import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.interfaces.BaseItem;
-import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.json.JsonObject;
 
 public class ModelChange implements Comparable<ModelChange>{

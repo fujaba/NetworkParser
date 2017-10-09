@@ -11,6 +11,8 @@ import de.uniks.networkparser.xml.HTMLEntity;
 import de.uniks.networkparser.xml.XMLEntity;
 
 public class StoryStepSourceCode implements ObjectCondition {
+	public static final int FULL=-1;
+	public static final int CURRENTPOSITION =0;
 	public static final String FORMAT_JAVA = "java";
 	public static final String FORMAT_XML = "xml";
 	public static final String FORMAT_JSON = "json";
@@ -36,6 +38,9 @@ public class StoryStepSourceCode implements ObjectCondition {
 	}
 
 	private String getLineFromThrowable() {
+		if(this.packageName == null) {
+			return null;
+		}
 		StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
 		String fullName;
 		if(this.fileName != null) {
@@ -288,7 +293,13 @@ public class StoryStepSourceCode implements ObjectCondition {
 		if(position<-1) {
 			this.endLine =-1;
 		}else {
-			this.endLine = position;
+			if(position == 0 && startLine == 0 && this.currentLine > 0) {
+				this.startLine = this.currentLine + 1;
+				getLineFromThrowable();
+				readFile();
+			} else {
+				this.endLine = position;
+			}
 		}
 		return this;
 	}

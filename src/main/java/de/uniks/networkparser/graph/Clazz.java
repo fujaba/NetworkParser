@@ -44,13 +44,7 @@ public class Clazz extends GraphEntity {
 		return this;
 	}
 	
-	@Override
-	public Clazz withId(String id) {
-		super.withId(id);
-		return this;
-	}
-
-	public Clazz with(ClazzType clazzType) {
+	protected Clazz with(ClazzType clazzType) {
 		this.type = clazzType;
 		return this;
 	}
@@ -60,32 +54,24 @@ public class Clazz extends GraphEntity {
 		return this;
 	}
 
-	public Clazz enableEnumeration() {
-		this.with(ClazzType.ENUMERATION);
-		return this;
-	}
-
-	public Clazz enableEnumeration(String... literals) {
+	public Clazz enableEnumeration(Object... literals) {
 		this.with(ClazzType.ENUMERATION);
 		if(literals == null) {
 			return this;
 		}
-		for(String item : literals) {
-			this.with(new Literal(item));
+		for(Object item : literals) {
+			if(item == null) {
+				continue;
+			}
+			if(item instanceof Literal) {
+				this.with((Literal)item);
+			}else {
+				this.with(new Literal(item.toString()));
+			}
 		}
 		return this;
 	}
 
-	public Clazz enableEnumeration(Literal... literals) {
-		this.with(ClazzType.ENUMERATION);
-		if(literals == null) {
-			return this;
-		}
-		for(Literal item : literals) {
-			this.with(item);
-		}
-		return this;
-	}
 
 	public ClazzType getType() {
 		return type;
@@ -115,22 +101,17 @@ public class Clazz extends GraphEntity {
 		return modifier;
 	}
 
-	public Clazz with(Association... values) {
-		super.with(values);
-		return this;
-	}
-
 	public Clazz with(Modifier... values) {
 		super.withModifier(values);
 		return this;
 	}
 
-	public Clazz with(Attribute... values) {
+	protected Clazz with(Attribute... values) {
 		super.withChildren(values);
 		return this;
 	}
 
-	public Clazz with(Method... values) {
+	protected Clazz with(Method... values) {
 		super.withChildren(values);
 		return this;
 	}
@@ -140,11 +121,11 @@ public class Clazz extends GraphEntity {
 		return this;
 	}
 
-	public Clazz with(GraphImage... values) {
+	protected Clazz with(GraphImage... values) {
 		super.withChildren(values);
 		return this;
 	}
-	public Clazz with(Literal... values) {
+	protected Clazz with(Literal... values) {
 		super.withChildren(values);
 		return this;
 	}
@@ -167,41 +148,6 @@ public class Clazz extends GraphEntity {
 			}
 		}
 		return collection;
-	}
-
-	public Clazz without(Association... values) {
-		super.without(values);
-		return this;
-	}
-
-	public Clazz without(Modifier... values) {
-		super.without(values);
-		return this;
-	}
-
-	public Clazz without(Attribute... values) {
-		super.without(values);
-		return this;
-	}
-
-	public Clazz without(Method... values) {
-		super.without(values);
-		return this;
-	}
-
-	public Clazz without(Annotation value) {
-		super.without(value);
-		return this;
-	}
-
-	public Clazz without(GraphImage... values) {
-		super.without(values);
-		return this;
-	}
-
-	public Clazz without(Literal... values) {
-		super.without(values);
-		return this;
 	}
 
 	/**
@@ -754,7 +700,7 @@ public class Clazz extends GraphEntity {
 		return this;
 	}
 
-	public Clazz with(Import... value) {
+	protected Clazz with(Import... value) {
 		super.withChildren(value);
 		return this;
 	}
@@ -779,6 +725,12 @@ public class Clazz extends GraphEntity {
 		return collection;
 	}
 
+	public Method createMethod(String name, DataType returnValue, Parameter... parameters) {
+		Method method = createMethod(name, parameters);
+		method.with(returnValue);
+		return method;
+	}
+	
 	public Method createMethod(String name, Parameter... parameters) {
 		Method method = new Method().with(name);
 		method.with(parameters);
@@ -802,16 +754,6 @@ public class Clazz extends GraphEntity {
 		return this;
 	}
 	
-	public Clazz with(Clazz tgtClass, String tgtRoleName, Cardinality tgtCardinality, String srcRoleName, Cardinality srcCardinality) {
-		this.withBidirectional(tgtClass, tgtRoleName, tgtCardinality, srcRoleName, srcCardinality);
-		return this;
-	}
-
-	public Clazz with(String name, DataType type) {
-		this.withAttribute(name, type);
-		return this;
-	}
-
 	@Override
 	public String toString() {
 		return getName();

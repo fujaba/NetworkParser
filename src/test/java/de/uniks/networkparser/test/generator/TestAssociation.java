@@ -15,8 +15,7 @@ public class TestAssociation {
 	public void testUniDirectionalAssociation() {
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.association_a");
 		Clazz person = model.createClazz("Person");
-		Clazz room = model.createClazz("Room"); 
-		
+		Clazz room = model.createClazz("Room");
 		person.withUniDirectional(room, "room", Cardinality.ONE);
 		model.getGenerator().testGeneratedCode("java");
 //		model.generate("src/test/java");

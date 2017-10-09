@@ -66,7 +66,7 @@ public abstract class GraphModel extends GraphEntity implements BaseItem {
 		return collection;
 	} 
 
-	public boolean clearAddOnClazzes() {
+	protected boolean clearAddOnClazzes() {
 		if(this.children == null) {
 			return true;
 		}
@@ -106,21 +106,6 @@ public abstract class GraphModel extends GraphEntity implements BaseItem {
 		return clazz;
 	}
 
-	public GraphModel with(Clazz... values) {
-		super.withChildren(values);
-		return this;
-	}
-
-	public GraphModel without(Clazz... values) {
-		super.without(values);
-		return this;
-	}
-
-	public GraphModel with(Association... values) {
-		super.with(values);
-		return this;
-	}
-
 	@Override
 	public GraphModel with(String name) {
 		super.with(name);
@@ -143,16 +128,6 @@ public abstract class GraphModel extends GraphEntity implements BaseItem {
 			return true;
 		}
 		return false;
-	}
-
-	/**
-	 * Set the Default Author
-	 * @param value The Authorname
-	 * @return GraphModel Instance
-	 */
-	public GraphModel withAuthorName(String value) {
-		setAuthorName(value);
-		return this;
 	}
 
 	public GraphModel generate() {
@@ -221,7 +196,7 @@ public abstract class GraphModel extends GraphEntity implements BaseItem {
 			}
 		}
 	}
-	public GraphModel with(GraphModel model) {
+	protected GraphModel with(GraphModel model) {
 		if(model == null) {
 			return this;
 		}

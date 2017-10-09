@@ -40,6 +40,7 @@ import de.uniks.networkparser.graph.ClazzType;
 import de.uniks.networkparser.graph.DataType;
 import de.uniks.networkparser.graph.GraphList;
 import de.uniks.networkparser.graph.GraphModel;
+import de.uniks.networkparser.graph.GraphUtil;
 import de.uniks.networkparser.graph.Literal;
 import de.uniks.networkparser.graph.Method;
 import de.uniks.networkparser.graph.Modifier;
@@ -303,9 +304,8 @@ public class EMFTokener extends Tokener{
 			Clazz clazz = items.get(className);
 			if(clazz == null) {
 				// Create New One
-				clazz = new Clazz(className);
+				clazz = model.createClazz(className);
 				items.add(className, clazz);
-				model.with(clazz);
 			}
 			for(int i = 0;i < child.size();i++) {
 				String key = child.get(i);
@@ -592,7 +592,7 @@ public class EMFTokener extends Tokener{
 						if (EntityUtil.isPrimitiveType(etyp.toLowerCase())) {
 							etyp = etyp.toLowerCase();
 						}
-						clazz.with(new Attribute(EntityUtil.toValidJavaId(childItem.getString(EMFTokener.NAME)), DataType.create(etyp)));
+						clazz.withAttribute(EntityUtil.toValidJavaId(childItem.getString(EMFTokener.NAME)), DataType.create(etyp));
 					}else if(typ.equals(TYPE_EReferences)) {
 						parentList.add(childItem, eClassifier);
 					}
@@ -602,7 +602,7 @@ public class EMFTokener extends Tokener{
 				}
 			} else if (xml.getString(XSI_TYPE).equals(TYPE_EEnum)) {
 				Clazz graphEnum = new Clazz(xml.getString(EMFTokener.NAME));
-				graphEnum.with(ClazzType.ENUMERATION);
+				GraphUtil.setClazzType(graphEnum, ClazzType.ENUMERATION);
 				for(int c=0;c<xml.sizeChildren();c++) {
 					EntityList child = ecore.getChild(i);
 					if(child instanceof Entity == false) {
@@ -616,7 +616,7 @@ public class EMFTokener extends Tokener{
 							continue;
 						}
 						literal.withValue(childItem.getValue(key));
-						graphEnum.with(literal);
+						GraphUtil.setLiteral(graphEnum, literal);
 					}
 				}
 			}
@@ -664,10 +664,10 @@ public class EMFTokener extends Tokener{
 			tgtAssoc.with(srcAssoc);
 			srcAssoc.with(AssociationTypes.EDGE);
 			
-			tgtAssoc.getClazz().with(tgtAssoc);
-			srcAssoc.getClazz().with(srcAssoc);
+			GraphUtil.setAssociation(tgtAssoc.getClazz(), tgtAssoc);
+			GraphUtil.setAssociation(srcAssoc.getClazz(), srcAssoc);
 			
-			model.with(tgtAssoc);
+			GraphUtil.setAssociation(model, tgtAssoc); 
 		}
 		return model;
 	}
@@ -690,7 +690,7 @@ public class EMFTokener extends Tokener{
 			}
 			if(clazz != null) {
 				edge = new Association(clazz).with(Cardinality.ONE).with(roleName);
-				clazz.with(edge);
+				GraphUtil.setAssociation(clazz, edge);
 				if(roleName != null) {
 					items.add(assocName, edge);
 				}

@@ -101,7 +101,7 @@ public class GraphTokener extends Tokener {
 		className = className.substring(className.lastIndexOf('.') + 1);
 
 		Clazz newElement = new Clazz(className);
-		newElement.withId(mainKey);
+		GraphUtil.setId(newElement, mainKey);
 		list.with(newElement);
 		if (prototyp != null) {
 			for (String property : prototyp.getProperties()) {

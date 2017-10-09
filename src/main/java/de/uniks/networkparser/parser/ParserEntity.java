@@ -443,7 +443,7 @@ public class ParserEntity {
 		String classTyp = parseClassType();
 		String className = currentWord();
 		file.with(className);
-		file.with(ClazzType.create(classTyp));
+		GraphUtil.setClazzType(file, ClazzType.create(classTyp));
 		code.withEndOfClassName(currentToken.endPos);
 
 		nextEntity = startNextSymTab(classTyp, className);
@@ -1047,7 +1047,7 @@ public class ParserEntity {
 		String attrName = symTabEntry.getValue();
 		if (EntityUtil.isPrimitiveType(type)) {
 			if (!classContainsAttribut(attrName, symTabEntry.getType())) {
-				this.file.with(new Attribute(attrName, DataType.create(symTabEntry.getDataType())));
+				this.file.withAttribute(attrName, DataType.create(symTabEntry.getDataType()));
 			}
 		} else {
 			// handle complex attributes
@@ -1102,7 +1102,7 @@ public class ParserEntity {
 
 		// type is unknown
 		if (addToSymTabEntry == null) {
-			this.file.with(new Attribute(memberName, DataType.create(partnerTypeName)));
+			this.file.withAttribute(memberName, DataType.create(partnerTypeName));
 			return;
 		}
 
@@ -1131,7 +1131,7 @@ public class ParserEntity {
 		}
 		if (!done) {
 			// did not find reverse role, add as attribute
-			this.file.with(new Attribute(memberName, DataType.create(partnerTypeName)));
+			this.file.withAttribute(memberName, DataType.create(partnerTypeName));
 		}
 	}
 

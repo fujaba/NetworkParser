@@ -71,6 +71,13 @@ public class HTMLEntity implements BaseItem {
 		this.header.with(metaTag);
 		return this;
 	}
+	
+	public HTMLEntity withPageBreak() {
+		XMLEntity pageBreak = new XMLEntity().setType("div").withCloseTag();
+		pageBreak.put("style", "page-break-before:always");
+		this.body.withChild(pageBreak);
+		return this;
+	}
 
 	public HTMLEntity withTitle(String value) {
 		XMLEntity titleTag = new XMLEntity().setType("title").withValue(value);

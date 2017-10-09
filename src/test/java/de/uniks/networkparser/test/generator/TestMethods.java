@@ -7,7 +7,6 @@ import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.DataType;
 import de.uniks.networkparser.graph.DataTypeMap;
 import de.uniks.networkparser.graph.DataTypeSet;
-import de.uniks.networkparser.graph.Method;
 import de.uniks.networkparser.graph.Parameter;
 
 public class TestMethods {
@@ -20,7 +19,7 @@ public class TestMethods {
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.methods_a");
 		Clazz person = model.createClazz("Person");
 		
-		person.with(new Method("think"));
+		person.createMethod("think");
 		model.getGenerator().testGeneratedCode("java");
 //		model.generate("src/test/java");
 		
@@ -34,7 +33,7 @@ public class TestMethods {
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.methods_b");
 		Clazz person = model.createClazz("Person");
 		
-		person.with(new Method("think", DataType.VOID));
+		person.createMethod("think", DataType.VOID);
 		model.getGenerator().testGeneratedCode("java");
 //		model.generate("src/test/java");
 		
@@ -48,7 +47,7 @@ public class TestMethods {
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.methods_c");
 		Clazz person = model.createClazz("Person");
 		
-		person.with(new Method("think", DataType.VOID, new Parameter(DataType.STRING)));
+		person.createMethod("think", DataType.VOID, new Parameter(DataType.STRING));
 		model.getGenerator().testGeneratedCode("java");
 //		model.generate("src/test/java");
 		
@@ -62,7 +61,7 @@ public class TestMethods {
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.methods_d");
 		Clazz person = model.createClazz("Person");
 		
-		person.with(new Method("think", DataType.VOID, new Parameter(DataType.STRING).with("value")));
+		person.createMethod("think", DataType.VOID, new Parameter(DataType.STRING).with("value"));
 		model.getGenerator().testGeneratedCode("java");
 //		model.generate("src/test/java");
 		
@@ -79,7 +78,7 @@ public class TestMethods {
 		Clazz person = model.createClazz("Person");
 		Clazz room = model.createClazz("Room");
 		
-		person.with(new Method("think", DataType.VOID, new Parameter(DataType.create(room)).with("room")));
+		person.createMethod("think", DataType.VOID, new Parameter(DataType.create(room)).with("room"));
 		model.getGenerator().testGeneratedCode("java");
 //		model.generate("src/test/java");
 	}
@@ -93,8 +92,8 @@ public class TestMethods {
 		Clazz person = model.createClazz("Person");
 		Clazz room = model.createClazz("Room");
 		
-		person.with(new Method("think", DataType.VOID, new Parameter(DataType.create(room)).with("room")));
-		person.with(new Method("read", DataType.VOID, new Parameter(room).with("room")));
+		person.createMethod("think", DataType.VOID, new Parameter(DataType.create(room)).with("room"));
+		person.createMethod("read", DataType.VOID, new Parameter(room).with("room"));
 	
 		model.getGenerator().testGeneratedCode("java");
 //		model.generate("src/test/java");
@@ -109,7 +108,7 @@ public class TestMethods {
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.methods_g");
 		Clazz person = model.createClazz("Person");
 		
-		person.with(new Method("think", DataType.VOID, new Parameter(DataTypeSet.create(DataType.STRING)).with("values")));
+		person.createMethod("think", DataType.VOID, new Parameter(DataTypeSet.create(DataType.STRING)).with("values"));
 		model.getGenerator().testGeneratedCode("java");
 //		model.generate("src/test/java");
 		
@@ -123,7 +122,7 @@ public class TestMethods {
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.methods_h");
 		Clazz person = model.createClazz("Person");
 		
-		person.with(new Method("think", DataType.VOID, new Parameter(DataTypeMap.create(DataType.STRING, DataType.STRING)).with("values")));
+		person.createMethod("think", DataType.VOID, new Parameter(DataTypeMap.create(DataType.STRING, DataType.STRING)).with("values"));
 		model.getGenerator().testGeneratedCode("java");
 //		model.generate("src/test/java");
 		
@@ -137,7 +136,7 @@ public class TestMethods {
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.methods_i");
 		Clazz person = model.createClazz("Person");
 		
-		person.with(new Method("think", DataType.VOID, new Parameter(DataType.STRING).with("value"), new Parameter(DataType.INT)));
+		person.createMethod("think", DataType.VOID, new Parameter(DataType.STRING).with("value"), new Parameter(DataType.INT));
 		model.getGenerator().testGeneratedCode("java");
 //		model.generate("src/test/java");
 		
@@ -151,7 +150,7 @@ public class TestMethods {
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.methods_j");
 		Clazz person = model.createClazz("Person");
 		
-		person.with(new Method("think", DataType.STRING));
+		person.createMethod("think", DataType.STRING);
 		model.getGenerator().testGeneratedCode("java");
 //		model.generate("src/test/java");
 		
@@ -165,7 +164,7 @@ public class TestMethods {
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.methods_k");
 		Clazz person = model.createClazz("Person");
 		
-		person.with(new Method("think", DataType.STRING, new Parameter(DataType.STRING)));
+		person.createMethod("think", DataType.STRING, new Parameter(DataType.STRING));
 		model.getGenerator().testGeneratedCode("java");
 //		model.generate("src/test/java");
 		
@@ -179,8 +178,8 @@ public class TestMethods {
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.methods_l");
 		Clazz person = model.createClazz("Person");
 		
-		person.with(new Method("think", DataType.STRING, new Parameter(DataType.STRING))
-				, new Method("dontThink", DataType.VOID));
+		person.createMethod("think", DataType.STRING, new Parameter(DataType.STRING));
+		person.createMethod("dontThink", DataType.VOID);
 		model.getGenerator().testGeneratedCode("java");
 //		model.generate("src/test/java");
 		
@@ -194,8 +193,8 @@ public class TestMethods {
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.methods_m");
 		Clazz person = model.createClazz("Person");
 		
-		person.with(new Method("think", DataType.VOID)
-				.withBody("		String thought = \"\";\n"));
+		person.createMethod("think", DataType.VOID)
+				.withBody("		String thought = \"\";\n");
 		model.getGenerator().testGeneratedCode("java");
 //		model.generate("src/test/java");
 		
@@ -209,7 +208,7 @@ public class TestMethods {
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.methods_n");
 		Clazz person = model.createClazz("Person");
 		
-		person.with(new Method("checkSomething", DataType.BOOLEAN));
+		person.createMethod("checkSomething", DataType.BOOLEAN);
 		model.getGenerator().testGeneratedCode("java");
 		
 	}

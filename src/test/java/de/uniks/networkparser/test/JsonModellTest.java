@@ -12,6 +12,7 @@ import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.SimpleObject;
+import de.uniks.networkparser.UpdateAccumulate;
 import de.uniks.networkparser.UpdateListener;
 import de.uniks.networkparser.bytes.ByteMessage;
 import de.uniks.networkparser.bytes.ByteMessageCreator;
@@ -271,5 +272,34 @@ public class JsonModellTest implements ObjectCondition {
 
 		ByteMessage newMessage = (ByteMessage) map.decode(jsonObject);
 		Assert.assertEquals(message.getValue(), newMessage.getValue());
+	}
+	
+	@Test
+	public void testJSONAccumilateAssociation() {
+		//TODO MERGE SOME UPDATE NOTIFICATION
+		GroupAccount account = new GroupAccount ();
+		Person person = new Person();
+		IdMap map = new IdMap();
+		map.withCreator(new PersonCreator());
+		map.withCreator(new GroupAccountCreator());
+		map.withTimeStamp(1);
+		map.toJsonObject(account);
+//		map.toJsonObject(person);
+		UpdateAccumulate updateAccumulate = new UpdateAccumulate();
+		map.withListener(new ObjectCondition() {
+			
+			@Override
+			public boolean update(Object value) {
+				System.out.println(value);
+				return false;
+			}
+		});
+		account.withPersons(person);
+		person.withBalance(42);
+		person.withName("Albert");
+		
+		account.createItem();
+		
+	
 	}
 }

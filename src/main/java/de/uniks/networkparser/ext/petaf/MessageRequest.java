@@ -24,6 +24,6 @@ public class MessageRequest implements Runnable {
 		
 		public static void executeTask(NodeProxyTCP proxy, Socket requestSocket) {
 			MessageRequest task = new MessageRequest(proxy, requestSocket);
-			proxy.getExecutor().executeTask(task);
+			proxy.getExecutor().executeTask(task, 0);
 		}
 	}

@@ -268,7 +268,7 @@ public abstract class GraphMember {
 		return this;
 	}
 	
-	protected GraphMember without(GraphMember... values) {
+	public GraphMember without(GraphMember... values) {
 		if (values == null || this.children == null) {
 			return this;
 		}

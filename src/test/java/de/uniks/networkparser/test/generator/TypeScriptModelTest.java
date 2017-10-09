@@ -32,7 +32,7 @@ public class TypeScriptModelTest {
 		
 		uni.withBidirectional(person, "stud", Cardinality.MANY, "owner", Cardinality.ONE);
 		
-		Clazz teacher = model.createClazz("Teacher");
+		model.createClazz("Teacher");
 		
 		model.getGenerator().testGeneratedCode(ModelGenerator.TYPE_TYPESCRIPT);
 	}
