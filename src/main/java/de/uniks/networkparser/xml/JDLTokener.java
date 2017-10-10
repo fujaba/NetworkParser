@@ -74,7 +74,7 @@ public class JDLTokener extends Tokener{
 	 */
 	public TextEntity encodeAttribute(Attribute item) {
 		TextEntity result = new TextEntity();
-		result.withTag(item.getName()+" "+item.getType(true));
+		result.withTag(item.getName()+" "+item.getType().getName(true));
 		return result;
 	}
 	

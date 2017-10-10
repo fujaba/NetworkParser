@@ -91,11 +91,6 @@ public class Method extends GraphMember {
 		return this;
 	}
 
-	public Method withParameter(String paramName, Clazz dataType) {
-		new Parameter().with(paramName).with(DataType.create(dataType)).withParent(this);
-		return this;
-	}
-
 	@Override
 	public Modifier getModifier() {
 		Modifier modifier = super.getModifier();
@@ -119,10 +114,6 @@ public class Method extends GraphMember {
 		return new Parameter().with(type).withParent(this);
 	}
 
-	public Parameter create(Clazz type) {
-		return new Parameter().with(DataType.create(type)).withParent(this);
-	}
-
 	public Method withParent(Clazz value) {
 		super.setParentNode(value);
 		return this;
@@ -140,9 +131,9 @@ public class Method extends GraphMember {
 				sb.with(", ");
 			}
 			if(param.getName() == null || removeParameterNames) {
-				sb.with(param.getType(shortName)+ " p"+i);
+				sb.with(param.getType().getName(shortName)+ " p"+i);
 			}else{
-				sb.with(param.getType(shortName)+" "+collection.get(i).getName());
+				sb.with(param.getType().getName(shortName)+" "+collection.get(i).getName());
 			}
 		}
 		sb.with(")");

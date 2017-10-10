@@ -217,5 +217,14 @@ public abstract class GraphModel extends GraphEntity implements BaseItem {
 		}
 		return converter.encode(this);
 	}
-
+	
+	public int size() {
+		if(this.children == null) {
+			return 0;
+		}
+		if(this.children instanceof GraphSimpleSet) {
+			return ((GraphSimpleSet)this.children).size();
+		}
+		return 1;
+	}
 }

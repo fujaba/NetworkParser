@@ -45,7 +45,6 @@ public class SourceCode extends GraphMember {
 		return this;
 	}
 	
-	@Override
 	public int size() {
 		return size;
 	}

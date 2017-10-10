@@ -799,12 +799,12 @@ public class EMFTokener extends Tokener{
 		root.withKeyValue(XMI_ID, value.getName());
 		root.withKeyValue(NAME, value.getName());
 		root.withKeyValue("visibility", value.getModifier());
-		if(EntityUtil.isPrimitiveType(value.getType(false))) {
+		if(EntityUtil.isPrimitiveType(value.getType().getName(false))) {
 			XMLEntity child = root.createChild("type");
 			child.withKeyValue(XMI_TYPE, "uml:PrimitiveType");
-			child.withKeyValue("href", "http://www.omg.org/spec/UML/20110701/PrimitiveTypes.xmi"+value.getType(false));
+			child.withKeyValue("href", "http://www.omg.org/spec/UML/20110701/PrimitiveTypes.xmi"+value.getType().getName(false));
 		} else {
-			root.withKeyValue("type", value.getType(false));
+			root.withKeyValue("type", value.getType().getName(false));
 		}
 		XMLEntity child = root.createChild("lowerValue");
 		child.withKeyValue(XMI_TYPE, "uml:LiteralInteger");

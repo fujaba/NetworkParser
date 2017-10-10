@@ -258,11 +258,17 @@ public class HTMLEntity implements BaseItem {
 
 	public HTMLEntity withGraph(GraphModel value) {
 		URL resource = GraphList.class.getResource("");
+		if(resource == null) {
+			return this;
+		}
 		String graph = value.toString(new GraphConverter());
 		return withGraph(graph, resource.toString());
 	}
 	public HTMLEntity withGraph(JsonObject value) {
 		URL resource = GraphList.class.getResource("");
+		if(resource == null) {
+			return this;
+		}
 		return withGraph(value.toString(2), resource.toString());
 	}
 	

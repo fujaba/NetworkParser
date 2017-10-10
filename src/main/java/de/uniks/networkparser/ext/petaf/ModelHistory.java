@@ -69,6 +69,9 @@ public class ModelHistory {
 		// {
 		// key=lower.getFullKey();
 		// }
+		if(last == null) {
+			return null;
+		}
 		return last.getKey();
 	}
 

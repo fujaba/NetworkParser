@@ -277,7 +277,7 @@ public class DotConverter implements Converter {
 				if(isObjectdiagram) {
 					childBuilder.append(BaseItem.CRLF+"<tr><td align='left'>"+attribute.getName() +" = "+attribute.getValue()+"</td></tr>");
 				} else {
-					childBuilder.append(BaseItem.CRLF+"<tr><td align='left'>"+attribute.getName() +" : "+attribute.getType(removePackage)+"</td></tr>");
+					childBuilder.append(BaseItem.CRLF+"<tr><td align='left'>"+attribute.getName() +" : "+attribute.getType().getName(removePackage)+"</td></tr>");
 				}
 			}
 			if(childBuilder.length() > 0) {

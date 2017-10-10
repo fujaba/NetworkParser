@@ -19,12 +19,12 @@ import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 
 public class SMTPSession {
-	public final String RESPONSE_SERVERREADY = "220";
-	public final String RESPONSE_MAILACTIONOKEY="250";
-	public final String RESPONSE_STARTMAILINPUT="354";
-	public final String RESPONSE_SMTP_AUTH_NTLM_BLOB_Response="334";
-	public final String RESPONSE_LOGIN_SUCCESS="235";
-	public final String RESPONSE_SERVICE_CLOSING_TRANSMISSION="221"; 
+	public final static String RESPONSE_SERVERREADY = "220";
+	public final static String RESPONSE_MAILACTIONOKEY="250";
+	public final static String RESPONSE_STARTMAILINPUT="354";
+	public final static String RESPONSE_SMTP_AUTH_NTLM_BLOB_Response="334";
+	public final static String RESPONSE_LOGIN_SUCCESS="235";
+	public final static String RESPONSE_SERVICE_CLOSING_TRANSMISSION="221"; 
 	public static final int SSLPORT=587;
 	/** 15 sec. socket read timeout */
 	public static final int SOCKET_READ_TIMEOUT = 15 * 1000;

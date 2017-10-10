@@ -24,7 +24,7 @@ public class JavaListCondition extends CustomCondition<Attribute>{
 
 	@Override
 	public Object getValue(SendableEntityCreator creator, Attribute member) {
-		String attributeType = member.getType(true);
+		String attributeType = member.getType().getName(true);
 		if (attributeType.equals("boolean")) {
 			return addImport(creator, BooleanList.class);
 		} else if (" long Long short Short int Integer byte Byte float Float double Double ".indexOf(" " + attributeType + " ") >= 0) {

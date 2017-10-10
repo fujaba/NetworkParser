@@ -380,7 +380,7 @@ public class DialogBox implements ObjectCondition{
 		if(resource == null) {
 			return this;
 		}
-		Object imageView = ReflectionLoader.newInstance(ReflectionLoader.IMAGEVIEW, String.class, DialogBox.class.getResource(image).toString());
+		Object imageView = ReflectionLoader.newInstance(ReflectionLoader.IMAGEVIEW, String.class, resource.toString());
 		
 		Object text = ReflectionLoader.newInstance(ReflectionLoader.LABEL, String.class, value);
 		HTMLUtil.setStyle(text, false, "labelText");

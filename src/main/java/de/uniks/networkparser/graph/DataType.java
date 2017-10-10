@@ -81,14 +81,12 @@ public class DataType {
 	public static DataType create(Class<?> typ) {
 		return new DataType(new Clazz(typ));
 	}
-
-	public static DataType create(String typ, boolean external) {
-		return new DataType(new Clazz().with(typ).withExternal(external));
-	}
-
-	public static DataType create(Class<?> typ, boolean external) {
-		Clazz clazz = new Clazz(typ).withExternal(external);
-		return new DataType(clazz);
+	
+	public DataType withExternal(boolean external) {
+		if(this.value != null) {
+			this.value.withExternal(external);
+		}
+		return this;
 	}
 
 	public boolean equals(Object obj) {

@@ -304,7 +304,6 @@ public class RSAKey {
 		
 		bitString.addGroup(RSABYTE, new Object[]{N, key});
 		DERBuffer derBuffer = new DERBuffer();
-		derBuffer = new DERBuffer();
 		derBuffer.addGroup(RSABYTE, new Object[]{ 
 				RSABYTE, new Object[]{DERBuffer.OBJECTID, new Byte[]{42, -122, 72, -122, -9, 13, 1, 1, 1}, DERBuffer.NULL}, 
 				DERBuffer.BITSTRING, bitString.getBytes()});

@@ -122,7 +122,6 @@ public class UpdateListener implements MapListener {
 			return;
 		}
 		
-		
 		Entity jsonObject = change(property, source, creatorClass, oldValue, newValue);
 		
 		// Add Message Value
@@ -145,8 +144,6 @@ public class UpdateListener implements MapListener {
 		change(property, creatorClass, jsonObject, oldValue, newValue);
 		return jsonObject;
 	}
-	
-	
 	
 	public boolean change(String property, SendableEntityCreator creator, Entity change, Object oldValue, Object newValue) {
 		boolean done = false;

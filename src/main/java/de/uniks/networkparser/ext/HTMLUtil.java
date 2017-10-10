@@ -29,6 +29,9 @@ public class HTMLUtil {
 
 	public static HTMLEntity postHTTP(String url, Map<String, String> params) {
 		HttpURLConnection conn = getConnection(url, POST);
+		if(conn == null) {
+			return null;
+		}
 		CharacterBuffer sb=new CharacterBuffer();
 		if(params != null) {
 			for(Iterator<Entry<String, String>> i = params.entrySet().iterator();i.hasNext();) {
@@ -90,6 +93,9 @@ public class HTMLUtil {
 	
 	public static HTMLEntity getHTTP(String url) {
 		HttpURLConnection conn = getConnection(url, GET);
+		if(conn == null) {
+			return null;
+		}
 		return readAnswer(conn);
 	}
 	

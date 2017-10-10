@@ -105,7 +105,9 @@ public class Space extends SendableItem implements ObjectCondition {
 	public NodeProxy connectToPeer(String url, int port) {
 		NodeProxy proxy = getOrCreateProxy(url, port);
 		this.firstPeer = proxy;
-		proxy.connectToPeer();
+		if(proxy != null) {
+			proxy.connectToPeer();
+		}
 		return proxy;
 	}
 	

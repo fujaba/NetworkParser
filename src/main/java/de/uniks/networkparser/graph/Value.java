@@ -40,23 +40,6 @@ public abstract class Value extends GraphMember {
 		return this;
 	}
 
-	public Value with(Clazz value) {
-		this.type = new DataType(value);
-		return this;
-	}
-
-	public Value with(Class<?> value) {
-		this.type = DataType.create(value);
-		return this;
-	}
-
-	public String getType(boolean shortName) {
-		if(type==null) {
-			return "?";
-		}
-		return type.getName(shortName);
-	}
-
 	public DataType getType() {
 		return type;
 	}

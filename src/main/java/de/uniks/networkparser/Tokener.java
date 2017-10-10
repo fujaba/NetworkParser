@@ -108,12 +108,13 @@ public class Tokener implements BufferItem {
 
 	public BaseItem encode(Object entity, MapEntity map) {
 		IdMap idMap = this.map;
-		if(idMap == null) {
-			if(map != null ) {
-				idMap = map.getMap();
-				if(idMap == null) {
-					return null;
-				}
+		if(this.map == null) {
+			if(map == null ) {
+				return null;
+			}
+			idMap = map.getMap();
+			if(idMap == null) {
+				return null;
 			}
 		}
 		return idMap.encode(entity, map, this);

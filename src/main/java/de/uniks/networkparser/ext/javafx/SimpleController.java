@@ -101,7 +101,7 @@ public class SimpleController implements ObjectCondition{
 		SimpleController controller = new SimpleController(primaryStage);
 		return controller;
 	}
-	protected void init() {
+	protected void A() {
 		String outputFile = null;
 		String debugPort = null;
 		if (encodingCode != null && !encodingCode.equalsIgnoreCase(System.getProperty("file.encoding"))) {

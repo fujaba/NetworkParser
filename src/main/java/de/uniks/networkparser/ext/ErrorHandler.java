@@ -222,6 +222,9 @@ public class ErrorHandler implements Thread.UncaughtExceptionHandler {
 			return null;
 		}
 		filepath=createDir(filepath);
+		if(filepath == null) {
+			return null;
+		}
 		if(filepath.length()>0 && filepath.endsWith("/") == false){
 			filepath+="/";
 		}

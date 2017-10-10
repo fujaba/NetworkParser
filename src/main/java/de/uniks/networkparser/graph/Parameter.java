@@ -35,15 +35,7 @@ public class Parameter extends Value {
 	}
 
 	public Parameter(Clazz value) {
-		with(value);
-	}
-	public Parameter(Clazz value, String name) {
-		with(value);
-		with(name);
-	}
-
-	public Parameter(Class<?> value) {
-		with(value);
+		with(DataType.create(value));
 	}
 
 	@Override
@@ -65,18 +57,6 @@ public class Parameter extends Value {
 
 	@Override
 	public Parameter with(DataType value) {
-		super.with(value);
-		return this;
-	}
-
-	@Override
-	public Parameter with(Clazz value) {
-		super.with(value);
-		return this;
-	}
-
-	@Override
-	public Parameter with(Class<?> value) {
 		super.with(value);
 		return this;
 	}

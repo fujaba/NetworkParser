@@ -155,6 +155,9 @@ public class ModelGenerator extends BasicGenerator {
 			for (BasicGenerator template : templates) {
 				boolean isStandard = codeStyle.match(clazz);
 				TemplateResultFile resultFile = template.executeClazz(clazz, resultModel, isStandard);
+				if(resultFile == null) {
+					continue;
+				}
 
 				resultFile.withMetaModel(template.isMetaModel());
 				template.executeTemplate(resultFile, resultModel, clazz);
@@ -264,8 +267,10 @@ public class ModelGenerator extends BasicGenerator {
 			} else if(TYPE_CPP.equalsIgnoreCase(type)) {
 				rootDir = "build/gen/cpp";
 			}
-			removeAllGeneratedCode(defaultModel, rootDir);
-			generating(rootDir, type, this.defaultModel);
+			if(rootDir != null) {
+				removeAllGeneratedCode(defaultModel, rootDir);
+				generating(rootDir, type, this.defaultModel);
+			}
 		}
 	}
 

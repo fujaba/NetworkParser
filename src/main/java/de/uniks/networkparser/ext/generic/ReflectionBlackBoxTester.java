@@ -393,6 +393,9 @@ public class ReflectionBlackBoxTester {
 
 		if (directory.exists() && directory.isDirectory()) {
 			String[] files = directory.list();
+			if(files == null) {
+				return;
+			}
 			for (String file : files) {
 				if (file.endsWith(".class")) {
 					try {
@@ -428,7 +431,9 @@ public class ReflectionBlackBoxTester {
 		ArrayList<Class<?>> classes = new ArrayList<Class<?>>();
 		ClassLoader cld = Thread.currentThread()
 				.getContextClassLoader();
-
+		if(cld == null) {
+			return classes;
+		}
 		Enumeration<URL> resources = cld.getResources(pckgname.replace('.', '/'));
 		for (URL url = null; resources.hasMoreElements() && ((url = resources.nextElement()) != null);) {
 				checkDirectory(new File(URLDecoder.decode(url.getPath(), BaseItem.ENCODING)), pckgname, classes);

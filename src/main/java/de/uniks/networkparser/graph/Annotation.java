@@ -200,27 +200,6 @@ public class Annotation extends GraphMember {
 		return nextAnnotaton;
 	}
 
-	public String getValue(String key, String defaultText) {
-		if(key == null || value == null) {
-			return defaultText;
-		}
-		if( keyValue && value.size() == 1) {
-			if(key.equalsIgnoreCase(getName())) {
-				return value.first().getName();
-			}else{
-				return defaultText;
-			}
-		}
-		for(Annotation item : value) {
-			String result = item.getValue(key, defaultText);
-			if((result != null && result.equals(defaultText) == false)
-					|| (result==null && defaultText != null)) {
-				return result;
-			}
-		}
-		return defaultText;
-	}
-
 	public Annotation getAnnotation(String key) {
 		if(key==null) {
 			return null;

@@ -147,6 +147,12 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 	public abstract boolean isSendable();
 
 	public int compareTo(NodeProxy o) {
+		if(getKey() == null) {
+			if(o.getKey() == null) {
+				return 0;
+			}
+			return 1;
+		}
 		return getKey().compareTo(o.getKey());
 	}
 

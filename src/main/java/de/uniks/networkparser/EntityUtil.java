@@ -43,6 +43,7 @@ public class EntityUtil {
 	public static final String CLASS="class";
 	private static final String HEXVAL = "0123456789abcdef";
 	public static final String NON_FILE_CHARSSIMPLE = "[\\\\/\\:\\;\\*\\?\"<>\\|!&', \u001F\u0084\u0093\u0094\u0096\u2013\u201E\u201C\u03B1 ]";
+	public static final String emfTypes = " EOBJECT EBIG_DECIMAL EBOOLEAN EBYTE EBYTE_ARRAY ECHAR EDATE EDOUBLE EFLOAT EINT EINTEGER ELONG EMAP ERESOURCE ESHORT ESTRING ";
 
 	/**
 	 * Produce a string from a double. The string "null" will be returned if the
@@ -723,8 +724,6 @@ public class EntityUtil {
 		return null;
 	}
 	
-	public static final String emfTypes = " EOBJECT EBIG_DECIMAL EBOOLEAN EBYTE EBYTE_ARRAY ECHAR EDATE EDOUBLE EFLOAT EINT EINTEGER ELONG EMAP ERESOURCE ESHORT ESTRING ";
-
 	public static final boolean isEMFType(String tag) {
 		return emfTypes.indexOf(" " + tag.toUpperCase() + " ") >= 0;
 	}

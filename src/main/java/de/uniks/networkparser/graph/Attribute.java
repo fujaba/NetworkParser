@@ -38,12 +38,6 @@ public class Attribute extends Value {
 	}
 
 	@Override
-	public Attribute with(Class<?> value) {
-		super.with(value);
-		return this;
-	}
-
-	@Override
 	public Attribute withValue(String value) {
 		super.withValue(value);
 		return this;
@@ -77,19 +71,7 @@ public class Attribute extends Value {
 		return this;
 	}
 
-	@Override
-	public Attribute with(Clazz value) {
-		super.with(value);
-		return this;
-	}
-
 	public Attribute with(String name, DataType typ) {
-		this.with(typ);
-		this.with(name);
-		return this;
-	}
-
-	public Attribute with(String name, Clazz typ) {
 		this.with(typ);
 		this.with(name);
 		return this;
@@ -102,7 +84,7 @@ public class Attribute extends Value {
 			}
 			return this.value;
 		}
-		return getType(shortName);
+		return getType().getName(shortName);
 	}
 	
 	public Annotation getAnnotation() {
@@ -119,7 +101,7 @@ public class Attribute extends Value {
 		CharacterBuffer sb = new CharacterBuffer();
 		sb.with(getName());
 		sb.with(':');
-		sb.with(getType(true));
+		sb.with(getType().getName(true));
 		if(getValue()!= null) {
 			sb.with('=');
 			sb.with(getValue());
