@@ -26,26 +26,15 @@ public class GenModel {
 		int count =0;
 		HTMLEntity sdmLib=new HTMLEntity();
 
-		ClassModel model = new ClassModel();
-		count += showCounting(Annotation.class, sdmLib, model);
-		count += showCounting(Association.class, sdmLib, model);
-		sdmLib.withGraph(model);
-
+		ClassModel model;
 		model = new ClassModel();
-		count += showCounting(Cardinality.class, sdmLib, model);
-		sdmLib.withGraph(model).withPageBreak();
-		
-		model = new ClassModel();
+		count += showCounting(ClassModel.class, sdmLib, model);
 		count += showCounting(Clazz.class, sdmLib, model);
 		sdmLib.withGraph(model).withPageBreak();
 
-		
 		model = new ClassModel();
 		count += showCounting(Attribute.class, sdmLib, model);
 		count += showCounting(Method.class, sdmLib, model);
-		sdmLib.withGraph(model).withPageBreak();
-		
-		model = new ClassModel();
 		count += showCounting(DataType.class, sdmLib, model);
 		sdmLib.withGraph(model);
 		
@@ -53,6 +42,14 @@ public class GenModel {
 		count += showCounting(DataTypeSet.class, sdmLib, model);
 		count += showCounting(DataTypeMap.class, sdmLib, model);
 		sdmLib.withGraph(model).withPageBreak();
+		
+		model = new ClassModel();
+		count += showCounting(Annotation.class, sdmLib, model);
+		count += showCounting(Association.class, sdmLib, model);
+		count += showCounting(Cardinality.class, sdmLib, model);
+		sdmLib.withGraph(model);
+
+
 		
 		model = new ClassModel();
 		count += showCounting(Modifier.class, sdmLib, model);

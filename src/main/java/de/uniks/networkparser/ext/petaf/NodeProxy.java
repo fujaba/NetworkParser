@@ -5,7 +5,7 @@ import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.list.SimpleList;
 
-public abstract class NodeProxy extends SendableItem implements Comparable<NodeProxy>, SendableEntityCreator {
+public abstract class NodeProxy extends SendableItem implements Comparable<NodeProxy>, SendableEntityCreator, Node{
 	public static int BUFFER = 100 * 1024;
 	public static final String PROPERTY_SEND = "sendtime";
 	public static final String PROPERTY_RECEIVE = "receivetime";
@@ -36,6 +36,7 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 	protected ObjectCondition filter; // Filter of World
 	protected Space space;
 	private String name;
+	private boolean isOwn;
 
 	public String[] getUpdateProperties() {
 		return propertyUpdate.getList();
@@ -83,15 +84,10 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 	}
 
 	public void setSendTime(int bytes) {
-		this.sendtime = System.currentTimeMillis();
-		this.lastSendCount = 0;
-	}
-
-	public NodeProxy withSendTime(Long value) {
 		Long oldValue = sendtime;
-		this.sendtime = value;
-		firePropertyChange(PROPERTY_SEND, oldValue, value);
-		return this;
+		this.sendtime = System.currentTimeMillis();
+		firePropertyChange(PROPERTY_SEND, oldValue, sendtime);
+		this.lastSendCount = 0;
 	}
 
 	public long getSendTime() {
@@ -117,14 +113,9 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 	}
 
 	public void setReceiveTime() {
-		this.receivetime = System.currentTimeMillis();
-	}
-
-	public NodeProxy withReceiveTime(Long value) {
 		Long oldValue = receivetime;
-		this.receivetime = value;
-		firePropertyChange(PROPERTY_RECEIVE, oldValue, value);
-		return this;
+		this.receivetime = System.currentTimeMillis();
+		firePropertyChange(PROPERTY_RECEIVE, oldValue, receivetime);
 	}
 
 	public Long getReceiveTime() {
@@ -196,11 +187,15 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 		}
 		NodeProxy nodeProxy = (NodeProxy) element;
 		if (PROPERTY_SEND.equals(attrName)) {
-			nodeProxy.withSendTime(Long.valueOf("" + value));
+			long oldValue = nodeProxy.sendtime;
+			nodeProxy.sendtime = Long.valueOf("" + value);
+			firePropertyChange(PROPERTY_SEND, oldValue, nodeProxy.sendtime);
 			return true;
 		}
 		if (PROPERTY_RECEIVE.equals(attrName)) {
-			nodeProxy.withReceiveTime(Long.valueOf("" + value));
+			long oldValue = nodeProxy.receivetime;
+			nodeProxy.receivetime = Long.valueOf("" + value);
+			firePropertyChange(PROPERTY_RECEIVE, oldValue, nodeProxy.receivetime);
 			return true;
 		}
 		if (PROPERTY_HISTORY.equals(attrName)) {
@@ -290,5 +285,14 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 	}
 
 	protected abstract boolean initProxy();
+
+	public boolean isOwn() {
+		return isOwn;
+	}
+
+	public NodeProxy withOwn(boolean isOwn) {
+		this.isOwn = isOwn;
+		return this;
+	}
 
 }

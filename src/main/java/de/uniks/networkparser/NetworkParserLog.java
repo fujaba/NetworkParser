@@ -1,5 +1,6 @@
 package de.uniks.networkparser;
 
+import de.uniks.networkparser.ext.LogItem;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 
 /*
@@ -75,6 +76,7 @@ public class NetworkParserLog {
 	public static final String WARNING = "WARNING";
 	public static final String DEBUG = "DEBUG";
 	public static final String ERROR = "ERROR";
+	public static final String LOG = "LOG";
 
 	private byte flag = 5; // ERROR + INFO
 	private ObjectCondition condition;
@@ -94,6 +96,13 @@ public class NetworkParserLog {
 		return false;
 	}
 
+	public boolean print(Object owner, LogItem item) {
+		if(condition!= null) {
+			return condition.update(new SimpleEvent(owner, null, null, item).withType(LOG));
+		}
+		return false;
+	}
+	
 	/**
 	 * Log a message with info log level.
 	 *

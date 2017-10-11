@@ -3,9 +3,12 @@ package de.uniks.networkparser.ext.petaf;
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.MapEntity;
+import de.uniks.networkparser.NetworkParserLog;
+import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.Tokener;
 import de.uniks.networkparser.converter.ByteConverter;
 import de.uniks.networkparser.converter.ByteConverterString;
+import de.uniks.networkparser.ext.LogItem;
 import de.uniks.networkparser.ext.petaf.filter.ProxyFilter;
 import de.uniks.networkparser.ext.petaf.messages.InfoMessage;
 import de.uniks.networkparser.ext.petaf.messages.util.ChangeMessageCreator;
@@ -20,6 +23,7 @@ import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.EntityList;
 import de.uniks.networkparser.interfaces.ObjectCondition;
+import de.uniks.networkparser.interfaces.SimpleEventCondition;
 import de.uniks.networkparser.json.JsonTokener;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SimpleSet;
@@ -44,7 +48,8 @@ public class Space extends SendableItem implements ObjectCondition {
 	private ProxyFilter filter = new ProxyFilter();
 	private TaskExecutor executor;
 	private NodeProxy firstPeer;
-	protected ObjectCondition listener;
+	private NodeProxyList myNode;
+	protected SimpleList<SimpleEventCondition> clients = new SimpleList<SimpleEventCondition>();
 	private int peerCount=2;
 	static final int DISABLE=0;
 	static final int MINUTE=60;
@@ -52,6 +57,7 @@ public class Space extends SendableItem implements ObjectCondition {
 	static final int THIRTYMINUTE=30000;
 	private String name;
 	private NodeBackup backupTask = new NodeBackup().withSpace(this);
+	private NetworkParserLog log=new NetworkParserLog();
 
 	/** Time for Try to Reconnect Clients every x Seconds (Default:5x1m, 5x10m, 30m). Set Value to 0 for disable	 */
 	private SimpleList<Integer> tryReconnectTimeSecond=new SimpleList<Integer>()
@@ -68,7 +74,7 @@ public class Space extends SendableItem implements ObjectCondition {
 					new NodeProxyModel(null));
 //MOVE TO SUBCLASS	private TaskExecutor executor=new TaskExecutor();
 	private Tokener tokener;
-
+	
 	public IdMap getMap() {
 		return map;
 	}
@@ -87,6 +93,7 @@ public class Space extends SendableItem implements ObjectCondition {
 				boolean changed = this.proxies.add(proxy);
 
 				if (changed) {
+					this.myNode = null;
 					proxy.initSpace(this);
 					firePropertyChange(PROPERTY_PROXY, null, proxy);
 				}
@@ -199,9 +206,13 @@ public class Space extends SendableItem implements ObjectCondition {
 	}
 	
 	public boolean removeProxy(NodeProxy proxy){
-		return this.proxies.remove(proxy);
+		boolean changed = this.proxies.remove(proxy);
+		if(changed) {
+			this.myNode = null;
+		}
+		return changed;
 	}
-
+	
 	Filter getFilter(){
 		Filter result=new Filter().withPropertyRegard(filter);
 		return result;
@@ -269,6 +280,10 @@ public class Space extends SendableItem implements ObjectCondition {
 			}
 		}
 		return null;
+	}
+
+	public void addMessage(Object owner, LogItem logItem) {
+		this.log.print(owner, logItem);
 	}
 	
 	protected void calculateSendProxy(Message msg, NodeProxy receiver, SimpleSet<NodeProxy> sendProxies) {
@@ -413,22 +428,18 @@ public class Space extends SendableItem implements ObjectCondition {
 		return this.executor.executeTask(task, 0);
 	}
 	
-	private NodeProxyModel nodeProxyModel;
-
 	/**
 	 * Returns all the Proxies in the Space (The ProxyModel)
-	 * Not realy nice //TODO add Owner IdMap to Message
-	 * @return the IdMap
+	 * @return the first NodeProxyModel
 	 */
-	NodeProxyModel getModel() {
-		if(this.nodeProxyModel == null) {
-			for(NodeProxy proxy : this.proxies) {
-				if(proxy instanceof NodeProxyModel) {
-					nodeProxyModel = (NodeProxyModel)proxy;
-				}
+	protected NodeProxyModel getModel() {
+		NodeProxyModel result = null;
+		for(NodeProxy proxy : this.proxies) {
+			if(proxy instanceof NodeProxyModel) {
+				result = (NodeProxyModel)proxy;
 			}
 		}
-		return this.nodeProxyModel;
+		return result;
 	}
 	
 	public Tokener getTokener() {
@@ -481,9 +492,33 @@ public class Space extends SendableItem implements ObjectCondition {
 
 	@Override
 	public boolean update(Object value) {
-		if(listener != null) {
-			return listener.update(value);
+		if(value instanceof SimpleEvent == false) {
+			return true;
+		}
+		SimpleEvent event = (SimpleEvent) value;
+		for (ObjectCondition client : clients) {
+			client.update(event);
 		}
 		return true;
+	}
+	
+	public void dispose()
+	{
+		if(this.executor != null) {
+			this.executor.shutdown();
+		}
+	}
+	
+	public NodeProxyList getMyNode() {
+		if(this.myNode == null) {
+			this.myNode = new NodeProxyList();
+			for(NodeProxy item : proxies) {
+				if(item.isOwn()) {
+					this.myNode.with(item);
+				}
+			}
+		}
+		return this.myNode;
+		
 	}
 }
