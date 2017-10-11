@@ -70,18 +70,22 @@ public class DataType {
 		return value;
 	}
 
-	public static DataType create(Clazz typ) {
-		return new DataType(typ);
+	public static DataType create(Object typ) {
+		if(typ instanceof DataType) {
+			return (DataType)typ;
+		}
+		if(typ instanceof Clazz) {
+			return new DataType((Clazz)typ);
+		}
+		if(typ instanceof String) {
+			return new DataType((String)typ);
+		}
+		if(typ instanceof Class<?>) {
+			return new DataType(new Clazz((Class<?>)typ));
+		}
+		return null;
 	}
 
-	public static DataType create(String typ) {
-		return new DataType(typ);
-	}
-
-	public static DataType create(Class<?> typ) {
-		return new DataType(new Clazz(typ));
-	}
-	
 	public DataType withExternal(boolean external) {
 		if(this.value != null) {
 			this.value.withExternal(external);

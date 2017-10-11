@@ -25,7 +25,7 @@ THE SOFTWARE.
 */
 import de.uniks.networkparser.list.SimpleSet;
 
-public class DataTypeSet extends DataType{
+public class DataTypeSet extends DataType {
 	private DataType generic;
 
 	DataTypeSet() {
@@ -58,11 +58,10 @@ public class DataTypeSet extends DataType{
 		return this.value.getName(shortName) + "<" + generic.getInternName(shortName, primitivAllow) + ">";
 	}
 	
-	public static DataTypeSet create(DataType value) {
-		DataTypeSet result = new DataTypeSet().withGeneric(value);
-		return result;
+	public static DataTypeSet create(Object typ) {
+		return new DataTypeSet().withGeneric(DataType.create(typ));
 	}
-	
+
 	@Override
 	public boolean equals(Object obj) {
 		if(super.equals(obj) == false) {

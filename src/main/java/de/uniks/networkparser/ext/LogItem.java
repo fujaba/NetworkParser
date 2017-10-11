@@ -23,16 +23,17 @@ package de.uniks.networkparser.ext;
 
 import de.uniks.networkparser.NetworkParserLog;
 import de.uniks.networkparser.ext.petaf.SendableItem;
+import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
-public class LogItem extends SendableItem {
+public class LogItem extends SendableItem implements SendableEntityCreator {
 	public final static String INCOMING = "Empfange";
 	public final static String OUTGOING = "Sende";
 	public static final String PROPERTY_TYPE = "type";
 	public static final String PROPERTY_TIMESTAMP = "timestamp";
-	public static final String PROPERTY_DATE = "date";
 	public static final String PROPERTY_THREADNAME = "threadName";
 	public static final String PROPERTY_MESSAGE = "message";
-	public static final String PROPERTY_CATEGORIE = "categorie";
+	private final String[] properties = new String[] { LogItem.PROPERTY_TIMESTAMP, LogItem.PROPERTY_THREADNAME,
+			LogItem.PROPERTY_TYPE, LogItem.PROPERTY_MESSAGE, };
 
 	private static final long STARTTIME = System.currentTimeMillis();
 
@@ -62,7 +63,7 @@ public class LogItem extends SendableItem {
 	public long getTimestamp() {
 		return this.timestamp;
 	}
-	
+
 	public long getCurrentTime() {
 		return currentTime;
 	}
@@ -127,5 +128,72 @@ public class LogItem extends SendableItem {
 	public LogItem withMessage(String value) {
 		setMessage(value);
 		return this;
+	}
+
+	@Override
+	public String[] getProperties() {
+		return properties;
+	}
+
+	@Override
+	public Object getValue(Object entity, String attribute) {
+		if (attribute == null || entity instanceof LogItem == false) {
+			return null;
+		}
+		int pos = attribute.indexOf('.');
+		String attrName = attribute;
+		LogItem item = (LogItem) entity;
+		if (pos > 0) {
+			attribute = attrName.substring(0, pos);
+		}
+		if (PROPERTY_TIMESTAMP.equalsIgnoreCase(attribute)) {
+			return item.getTimestamp();
+		}
+
+		if (PROPERTY_THREADNAME.equalsIgnoreCase(attribute)) {
+			return item.getThreadName();
+		}
+
+		if (PROPERTY_TYPE.equalsIgnoreCase(attribute)) {
+			return item.getType();
+		}
+		if (PROPERTY_MESSAGE.equalsIgnoreCase(attribute)) {
+			return item.getMessage();
+		}
+		return null;
+	}
+
+	@Override
+	public boolean setValue(Object entity, String attribute, Object value, String type) {
+		if (attribute == null || entity instanceof LogItem == false) {
+			return false;
+		}
+		LogItem item = (LogItem) entity;
+		if (PROPERTY_TIMESTAMP.equalsIgnoreCase(attribute)) {
+			item.timestamp = Long.parseLong(value.toString());
+			return true;
+		}
+
+		if (PROPERTY_THREADNAME.equalsIgnoreCase(attribute)) {
+			item.withThreadName((String) value);
+			return true;
+		}
+
+		if (PROPERTY_TYPE.equalsIgnoreCase(attribute)) {
+			item.setType((String) value);
+			return true;
+		}
+
+		if (PROPERTY_MESSAGE.equalsIgnoreCase(attribute)) {
+			item.setMessage((String) value);
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public Object getSendableInstance(boolean prototyp) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

@@ -35,8 +35,10 @@ public class DataTypeMap extends DataType {
 		this.value.withExternal(true);
 	}
 
-	public static DataTypeMap create(DataType key, DataType value) {
-		DataTypeMap result = new DataTypeMap().withGenericKey(key).withGenericValue(value);
+	public static DataTypeMap create(Object key, Object value) {
+		DataType keyData = DataType.create(key);
+		DataType valueData = DataType.create(value);
+		DataTypeMap result = new DataTypeMap().withGenericKey(keyData).withGenericValue(valueData);
 		return result;
 	}
 
