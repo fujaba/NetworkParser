@@ -16,11 +16,33 @@ import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.test.model.Student;
 import de.uniks.networkparser.test.model.University;
 import de.uniks.networkparser.test.model.ludo.Ludo;
+import de.uniks.networkparser.test.model.ludo.Player;
 import de.uniks.networkparser.test.model.ludo.creator.LudoCreator;
 import de.uniks.networkparser.test.model.ludo.creator.PlayerCreator;
 import de.uniks.networkparser.test.model.util.StudentCreator;
 
-public class IdMapTest {
+public class IdMapTest 
+{
+   @Test
+   public void testIdMapRemove()
+   {
+      PlayerCreator playerCreator = new PlayerCreator();
+      
+      Player tom = new Player();
+      
+      IdMap map = new IdMap().with(playerCreator);
+      
+      JsonObject jsonObject = map.toJsonObject(tom);
+      
+      jsonObject.remove("class");
+      
+      jsonObject.withValue("id", "42");
+      
+      String fortyTwo = jsonObject.getString("id");
+      
+      Assert.assertEquals("The answer ", "42", fortyTwo);
+      
+   }
 	@Test
 	public void testMap() {
 		PlayerCreator playerCreator = new PlayerCreator();
