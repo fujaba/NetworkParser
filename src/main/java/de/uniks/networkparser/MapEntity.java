@@ -124,7 +124,7 @@ public class MapEntity extends SimpleSet<Object>{
 		return deep;
 	}
 
-	public Object getRefByEntity(Object value) {
+	public Object getCloneByEntity(Object value) {
 		for (int i = 0; i < size(); i += 2) {
 			if (get(i) == value) {
 				return get(i + 1);
@@ -132,6 +132,16 @@ public class MapEntity extends SimpleSet<Object>{
 		}
 		return null;
 	}
+
+   public Object getEntityByClone(Object value) {
+      for (int i = 1; i < size(); i += 2) {
+         if (get(i) == value) {
+            return get(i - 1);
+         }
+      }
+      return null;
+   }
+
 
 	/**
 	 * @return the stack

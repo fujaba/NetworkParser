@@ -485,24 +485,24 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 		} else if (filter instanceof Filter) {
 			map = new MapEntity((Filter)filter, flag, this);
 		} else if(filter instanceof MapEntity) {
-			MapEntity customMap = (MapEntity) filter;
-			if(customMap.getFilter() == null) {
+		   map = (MapEntity) filter;
+			if(map.getFilter() == null) {
 				// Not initialized
 				Filter customFilter = new Filter().withFull(true);
-				customMap.withFilter(customFilter);
+				map.withFilter(customFilter);
 			}
-			if(customMap.getMap() == null) {
-				customMap.withMap(this);
+			if(map.getMap() == null) {
+			   map.withMap(this);
 			}
 		}
 		if(map == null) {
 			return null;
 		}
 		
-		return cloning(reference, map);
+		return getCloneByEntity(reference, map);
 	}
 
-	private Object cloning(Object reference, MapEntity map) {
+	private Object getCloneByEntity(Object reference, MapEntity map) {
 		if (map.contains(reference)) {
 			return null;
 		}
@@ -525,7 +525,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 						Collection<?> list = (Collection<?>) value;
 						map.pushStack(reference.getClass().getName(), reference, creator);
 						for (Object item : list) {
-							Object refValue = map.getRefByEntity(item);
+							Object refValue = map.getCloneByEntity(item);
 							if (refValue != null) {
 								creator.setValue(newObject, property, refValue, SendableEntityCreator.NEW);
 							}
@@ -536,7 +536,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 										creator.setValue(newObject, property, item, SendableEntityCreator.NEW);
 									}
 									else {
-										Object clonedChild = cloning(item, map);
+										Object clonedChild = getCloneByEntity(item, map);
 										if (clonedChild != null) {
 											creator.setValue(newObject, property, clonedChild, SendableEntityCreator.NEW);
 										}
@@ -550,7 +550,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 						map.popStack();
 					}
 				}else if (isFullClone || convert >= 0) {
-					Object refValue = map.getRefByEntity(value);
+					Object refValue = map.getCloneByEntity(value);
 					if (refValue != null) {
 						creator.setValue(newObject, property, refValue, SendableEntityCreator.NEW);
 					} else {
@@ -561,7 +561,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 							if (convert == 0) {
 								creator.setValue(newObject, property, value, SendableEntityCreator.NEW);
 							} else if (convert > 0) {
-								Object clonedChild = cloning(value, map);
+								Object clonedChild = getCloneByEntity(value, map);
 								if (clonedChild != null) {
 									creator.setValue(newObject,	property, clonedChild, SendableEntityCreator.NEW);
 								}
