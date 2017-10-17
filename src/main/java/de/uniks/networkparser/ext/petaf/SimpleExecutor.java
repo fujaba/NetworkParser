@@ -14,7 +14,9 @@ public class SimpleExecutor implements TaskExecutor{
 	public Object executeTask(Runnable task, int delay, int interval) {
 		try {
 			this.lastRun.withValue(System.currentTimeMillis());
-			task.run();
+			if(task != null) {
+				task.run();
+			}
 		} catch (Exception e) {
 			 handler.saveException(e);
 		}
@@ -25,7 +27,9 @@ public class SimpleExecutor implements TaskExecutor{
 	public Object executeTask(Runnable task, int delay) {
 		try {
 			this.lastRun.withValue(System.currentTimeMillis());
-			task.run();
+			if(task != null) {
+				task.run();
+			}
 		} catch (Exception e) {
 			 handler.saveException(e);
 		}

@@ -207,6 +207,8 @@ public class SimpleArrayListTest {
 	public void testMap()
 			throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException {
 		SimpleKeyValueList<Integer, Integer> map = new SimpleKeyValueList<Integer, Integer>();
+		Field declaredField = map.getClass().getSuperclass().getDeclaredField("elements");
+		declaredField.setAccessible(true);
 		map.put(99, 99);
 		map.put(100, 100);
 		map.put(1, 1);
@@ -218,8 +220,6 @@ public class SimpleArrayListTest {
 		map.remove(100);
 		map.put(5, 5);
 
-		Field declaredField = map.getClass().getSuperclass().getDeclaredField("elements");
-		declaredField.setAccessible(true);
 		Object[] items = (Object[]) declaredField.get(map);
 		Object[] keys = (Object[]) items[0];
 
