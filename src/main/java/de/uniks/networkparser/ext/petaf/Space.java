@@ -6,6 +6,7 @@ import de.uniks.networkparser.MapEntity;
 import de.uniks.networkparser.NetworkParserLog;
 import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.Tokener;
+import de.uniks.networkparser.UpdateAccumulate;
 import de.uniks.networkparser.converter.ByteConverter;
 import de.uniks.networkparser.converter.ByteConverterString;
 import de.uniks.networkparser.ext.LogItem;
@@ -22,8 +23,11 @@ import de.uniks.networkparser.ext.petaf.proxy.NodeProxyTCP;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.EntityList;
+import de.uniks.networkparser.interfaces.MapListener;
 import de.uniks.networkparser.interfaces.ObjectCondition;
+import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.SimpleEventCondition;
+import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.json.JsonTokener;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SimpleSet;
@@ -43,12 +47,12 @@ public class Space extends SendableItem implements ObjectCondition {
 	
 	private SortedSet<NodeProxy> proxies=new SortedSet<NodeProxy>(true);
 	private ByteConverter converter;
-	private ModelHistory history = null;
+	protected ModelHistory history = null;
 	private String path = "";
 	private ProxyFilter filter = new ProxyFilter();
 	private TaskExecutor executor;
 	private NodeProxy firstPeer;
-	private NodeProxyList myNode;
+	private NodeProxy myNode;
 	protected SimpleList<SimpleEventCondition> clients = new SimpleList<SimpleEventCondition>();
 	private int peerCount=2;
 	static final int DISABLE=0;
@@ -56,8 +60,8 @@ public class Space extends SendableItem implements ObjectCondition {
 	static final int TENMINUTE=6000;
 	static final int THIRTYMINUTE=30000;
 	private String name;
-	private NodeBackup backupTask = new NodeBackup().withSpace(this);
-	private NetworkParserLog log=new NetworkParserLog();
+	protected NodeBackup backupTask = new NodeBackup().withSpace(this);
+	protected NetworkParserLog log=new NetworkParserLog();
 
 	/** Time for Try to Reconnect Clients every x Seconds (Default:5x1m, 5x10m, 30m). Set Value to 0 for disable	 */
 	private SimpleList<Integer> tryReconnectTimeSecond=new SimpleList<Integer>()
@@ -489,6 +493,13 @@ public class Space extends SendableItem implements ObjectCondition {
 		}
 		return getExecutor().executeTask(task, delay);
 	}
+	
+	public Object scheduleTask(Runnable task, int delay, int interval){
+		if(task == null) {
+			return null;
+		}
+		return getExecutor().executeTask(task, delay, interval);
+	}
 
 	@Override
 	public boolean update(Object value) {
@@ -509,16 +520,79 @@ public class Space extends SendableItem implements ObjectCondition {
 		}
 	}
 	
-	public NodeProxyList getMyNode() {
+	public NodeProxy getMyNode() {
 		if(this.myNode == null) {
-			this.myNode = new NodeProxyList();
+			NodeProxy last=null;
 			for(NodeProxy item : proxies) {
-				if(item.isOwn()) {
-					this.myNode.with(item);
+				if(NodeProxyType.isInput(item.getType())) {
+					if(last == null) {
+						last = item;
+						item.with(null);
+					} else {
+						last = item.with(last);
+						last.with(null);
+					}
 				}
 			}
 		}
 		return this.myNode;
-		
 	}
+	
+	// Gennererll Update
+	public NodeProxy updateProxy(JsonObject msg) {
+		String string = msg.getString("KEY");
+		NodeProxy proxy = getProxy(string);
+		if(proxy == null) {
+			return null;
+		}
+		String[] updateProperties = proxy.getUpdateProperties();
+		for(String property : updateProperties) {
+			Object object = msg.get(property);
+			if(object != null) {
+				proxy.setValue(proxy, property, object, SendableEntityCreator.UPDATE);
+			}
+		}
+		return proxy;
+	}
+	
+
+	public void clearProxies() {
+		this.proxies.clear();
+	}
+	
+	public boolean suspendNotification(UpdateAccumulate... accumulates) {
+		MapListener mapListener = getMap().getMapListener();
+		return mapListener.suspendNotification(accumulates);
+	}
+	
+	public SimpleList<UpdateAccumulate> resetNotification() {
+		MapListener mapListener = getMap().getMapListener();
+		return mapListener.resetNotification();
+	}
+	
+	
+	/**
+	 * @param property for example TimeValue
+	 * 			PROPERTY_SEND
+	 * 			PROPERTY_RECEIVE
+	 * 			PROPERTY_HISTORY
+	 * @return LastProxy
+	 */
+	public NodeProxy getLastProxy(String property) {
+		NodeProxy lastItem = null;
+		long max=Long.MIN_VALUE;
+		for(NodeProxy item : proxies) {
+			Object value = item.getValue(item, property);
+			if(value instanceof Number) {
+				long no=(long) value;
+				if(no>max) {
+					max = no;
+					lastItem = item;
+				}
+			}
+			
+		}
+		return lastItem;
+	}
+
 }

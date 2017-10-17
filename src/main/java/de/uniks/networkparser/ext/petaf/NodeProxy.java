@@ -1,11 +1,12 @@
 package de.uniks.networkparser.ext.petaf;
 
 import de.uniks.networkparser.ext.petaf.messages.ConnectMessage;
+import de.uniks.networkparser.ext.petaf.messages.InfoMessage;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.list.SimpleList;
 
-public abstract class NodeProxy extends SendableItem implements Comparable<NodeProxy>, SendableEntityCreator, Node{
+public abstract class NodeProxy extends SendableItem implements Comparable<NodeProxy>, SendableEntityCreator {
 	public static int BUFFER = 100 * 1024;
 	public static final String PROPERTY_SEND = "sendtime";
 	public static final String PROPERTY_RECEIVE = "receivetime";
@@ -34,9 +35,10 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 	protected boolean online; // Boolean if last send is success
 	protected String history; // Hashcode of last Message
 	protected ObjectCondition filter; // Filter of World
+	protected long no;
 	protected Space space;
 	private String name;
-	private boolean isOwn;
+	private NodeProxy nextPeer;
 
 	public String[] getUpdateProperties() {
 		return propertyUpdate.getList();
@@ -53,6 +55,10 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 
 	public void connectToPeer() {
 		sendMessage(new ConnectMessage());
+	}
+	
+	public void connectInfo() {
+		sendMessage(new InfoMessage());
 	}
 
 	public boolean sendMessage(Message msg) {
@@ -81,6 +87,14 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 		// }
 		this.type = value;
 		return this;
+	}
+	
+	public long getNewMsgNo() {
+		this.no++;
+		if(no<0) {
+			no =0;
+		}
+		return no; 
 	}
 
 	public void setSendTime(int bytes) {
@@ -286,13 +300,12 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 
 	protected abstract boolean initProxy();
 
-	public boolean isOwn() {
-		return isOwn;
+	public NodeProxy next() {
+		return this.nextPeer;
 	}
-
-	public NodeProxy withOwn(boolean isOwn) {
-		this.isOwn = isOwn;
+	
+	public NodeProxy with(NodeProxy nextPeer) {
+		this.nextPeer = nextPeer;
 		return this;
 	}
-
 }

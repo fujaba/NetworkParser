@@ -264,6 +264,18 @@ public class ModelHistory {
         return true;
 	}
 
+	
+	public long getNewMsgNo()
+	{
+		if(this.space != null) {
+			NodeProxy myNode = this.space.getMyNode();
+			if(myNode != null) {
+				return myNode.getNewMsgNo();
+			}
+		}
+		return 0;
+	}
+	
 	//TODO OLD METHOD WITH NUMERIC-CHANGES 
 	public long getAllDataMsgNo() {
 		return allDataMsgNo;
