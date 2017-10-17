@@ -477,11 +477,28 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 	 * @param filter the filter
 	 * @return the object
 	 */
-	public Object cloneObject(Object reference, Filter filter) {
+	public Object cloneObject(Object reference, Object filter) {
+		MapEntity map = null;
 		if(filter == null) {
-			filter = new Filter().withFull(true);
+			Filter customFilter = new Filter().withFull(true);
+			map = new MapEntity(customFilter, flag, this);
+		} else if (filter instanceof Filter) {
+			map = new MapEntity((Filter)filter, flag, this);
+		} else if(filter instanceof MapEntity) {
+			MapEntity customMap = (MapEntity) filter;
+			if(customMap.getFilter() == null) {
+				// Not initialized
+				Filter customFilter = new Filter().withFull(true);
+				customMap.withFilter(customFilter);
+			}
+			if(customMap.getMap() == null) {
+				customMap.withMap(this);
+			}
 		}
-		MapEntity map = new MapEntity(filter, flag, this);
+		if(map == null) {
+			return null;
+		}
+		
 		return cloning(reference, map);
 	}
 
@@ -540,6 +557,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 						SendableEntityCreator childCreatorClass = getCreatorClass(value);
 						if (childCreatorClass != null) {
 							map.pushStack(value.getClass().getName(), value, childCreatorClass);
+							convert = filter.convert(reference, property, value, this, map.getDeep());
 							if (convert == 0) {
 								creator.setValue(newObject, property, value, SendableEntityCreator.NEW);
 							} else if (convert > 0) {

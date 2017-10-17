@@ -52,6 +52,9 @@ public class MapEntity extends SimpleSet<Object>{
 	public MapEntity(String tag, Object item, SendableEntityCreator creator) {
 		this.withStack(new MapEntityStack().withStack(tag, item, creator));
 	}
+	
+	public MapEntity() {
+	}
 
 	public MapEntity(Filter filter, byte flag, IdMap map) {
 		if(filter != null) {
@@ -170,6 +173,18 @@ public class MapEntity extends SimpleSet<Object>{
 		}
 		result.with(IdMap.ENTITYSPLITTER).with(Tokener.PROPS).with(IdMap.ENTITYSPLITTER);
 		return result;
+	}
+	
+	public MapEntity withFilter(Filter filter) {
+		this.filter = filter;
+		return this;
+	}
+	
+	public MapEntity withMap(IdMap map) {
+		this.mapFlag = map.getFlag();
+		this.map = map;
+		this.grammar = map.getGrammar();
+		return this;
 	}
 	
 	// Method for Filter

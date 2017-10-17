@@ -590,7 +590,7 @@ public class Space extends SendableItem implements ObjectCondition {
 		for(NodeProxy item : proxies) {
 			Object value = item.getValue(item, property);
 			if(value instanceof Number) {
-				long no=(long) value;
+				Long no = (Long) value;
 				if(no>max) {
 					max = no;
 					lastItem = item;
@@ -600,5 +600,4 @@ public class Space extends SendableItem implements ObjectCondition {
 		}
 		return lastItem;
 	}
-
 }

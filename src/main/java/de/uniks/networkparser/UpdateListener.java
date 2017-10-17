@@ -55,6 +55,7 @@ public class UpdateListener implements MapListener {
 	 * Instantiates a new update listener.
 	 *
 	 * @param map	the map
+	 * @param factory Factory to create new Items
 	 */
 	public UpdateListener(IdMap map, Tokener factory) {
 		this.map = map;
