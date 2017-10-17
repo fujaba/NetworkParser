@@ -275,6 +275,14 @@ public class Method extends GraphMember {
 		if(lines.length<1) {
 			return false;
 		}
-		return lines[lines.length - 1].trim().startsWith("return");
+		
+		for (String l : lines)
+		{
+		   if (l.trim().startsWith("return"))
+		   {
+		      return true;
+		   }
+		}
+		return false;
 	}
 }
