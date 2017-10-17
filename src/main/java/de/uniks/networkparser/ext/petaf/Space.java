@@ -136,10 +136,16 @@ public class Space extends SendableItem implements ObjectCondition {
 		if (proxy != null) {
 			return proxy;
 		}
-		NodeProxyTCP newProxy = new NodeProxyTCP();
-		newProxy.withURLPort(url, port);
+		NodeProxy newProxy = getNewProxy();
+		newProxy.setValue(newProxy, NodeProxyTCP.PROPERTY_URL, url, SendableEntityCreator.NEW);
+		newProxy.setValue(newProxy, NodeProxyTCP.PROPERTY_PORT, port, SendableEntityCreator.NEW);
 		this.with(newProxy);
 		return newProxy;
+	}
+	
+	public NodeProxy getNewProxy(){
+		return new NodeProxyTCP();
+		
 	}
 
 	public Space withHistory(ModelHistory value) {

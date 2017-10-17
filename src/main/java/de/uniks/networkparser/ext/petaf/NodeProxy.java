@@ -37,8 +37,8 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 	protected ObjectCondition filter; // Filter of World
 	protected long no;
 	protected Space space;
-	private String name;
-	private NodeProxy nextPeer;
+	protected String name;
+	protected NodeProxy nextPeer;
 
 	public String[] getUpdateProperties() {
 		return propertyUpdate.getList();

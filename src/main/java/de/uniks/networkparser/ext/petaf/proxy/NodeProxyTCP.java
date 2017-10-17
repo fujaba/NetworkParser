@@ -20,11 +20,11 @@ import de.uniks.networkparser.interfaces.ObjectCondition;
 public class NodeProxyTCP extends NodeProxy {
 	public static final String PROPERTY_URL = "url";
 	public static final String PROPERTY_PORT = "port";
-	private int port;
-	private String url;
+	protected int port;
+	protected String url;
 	public static final String LOCALHOST = "127.0.0.1";
 	protected Server_TCP serverSocket;
-	private boolean allowAnswer = false;
+	protected boolean allowAnswer = false;
 	
 	/**
 	 * Fallback Executor for Simple Using Serverclasses
