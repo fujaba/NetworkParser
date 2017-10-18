@@ -29,7 +29,9 @@ before_script:
   - sudo service rsync stop || true
   - sudo service x11-common stop || true
   - unzip -P $SIGNITURE_PASSWORD signiture.zip
-before_install: chmod +x gradlew
+before_install:
+  - chmod +x gradlew
+  - chmod +x sonarcube.sh
 # safelist
 branches:
   only:
