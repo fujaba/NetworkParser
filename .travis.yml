@@ -14,7 +14,7 @@ addons:
     build_command_prepend: "gradle clean"
     build_command:   "gradle -xTest -xJavadoc"
     branch_pattern: master
-  srcclr: true
+  #srcclr: true
   sonarqube:
     organization: "Fujaba"
 before_script:
