@@ -535,7 +535,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 								}
 							}
 						}
-						map.withDeep(deep);
+						map.withDeep(deep - 1);
 					}
 				}else if (isFullClone || convert >= 0) {
 					Object refValue = map.getCloneByEntity(value);
@@ -554,7 +554,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 									creator.setValue(newObject,	property, clonedChild, SendableEntityCreator.NEW);
 								}
 							}
-							map.withDeep(deep);
+							map.withDeep(deep - 1);
 						} else {
 							creator.setValue(newObject, property, value, SendableEntityCreator.NEW);
 						}
