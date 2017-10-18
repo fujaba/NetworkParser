@@ -38,5 +38,7 @@ branches:
 after_success: 
   - ./gradlew version build uploadArchives
   - ./gradlew jacocoTestReport coveralls
+
   # other script steps might be done before running the actual SonarQube analysis
+after_script:
   - sonar-scanner
