@@ -1,38 +1,14 @@
 package de.uniks.networkparser;
 
-/*
-NetworkParser
-The MIT License
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
-*/
-import java.util.HashMap;
-
 import de.uniks.networkparser.buffer.CharacterBuffer;
+import de.uniks.networkparser.list.SimpleKeyValueList;
 
 public class DateTimeEntity {
 	public static final String W3CDTF_FORMAT = "yyyy-MM-dd'T'HH:mm:ssZ";
 	private boolean dirty;
 	private Long time;
 	private Byte timeZone = 1;
-	private HashMap<DateField, Long> fields = new HashMap<DateField, Long>();
+	private SimpleKeyValueList<DateField, Long> fields = new SimpleKeyValueList<DateField, Long>();
 	private TextItems items;
 
 	/** Month of the Year Default is German */
@@ -446,7 +422,7 @@ public class DateTimeEntity {
 	public String toString(String dateFormat) {
 		initDate();
 		calculate();
-		StringBuilder sb = new StringBuilder();
+		CharacterBuffer sb = new CharacterBuffer();
 		String sub;
 		Tokener tokener = new Tokener();
 		dateFormat = dateFormat.replaceAll("'", "\"");
@@ -503,7 +479,7 @@ public class DateTimeEntity {
 				sub = sub.replace("z", "CEST");
 				
 			}
-			sb.append(sub);
+			sb.with(sub);
 			if(tokener.getCurrentChar()=='\"') {
 				tokener.getChar();
 			}
