@@ -35,7 +35,7 @@ hljs.initLineNumbersOnLoad();</script>
 
 		story.addSourceCode(StoryTest.class, 0, 0);
 
-		story.addSourceCode("src/main/java", IdMap.class, "cloneObject(Object reference, Filter filter)");
+		story.addSourceCode("src/main/java", IdMap.class, "cloneObject(Object reference, Object filter)");
 
 
 
@@ -78,7 +78,7 @@ public class StoryTest {
 
 		story.addSourceCode(StoryTest.class, 0, 0);
 
-		story.addSourceCode("src/main/java", IdMap.class, "cloneObject(Object reference, Filter filter)");
+		story.addSourceCode("src/main/java", IdMap.class, "cloneObject(Object reference, Object filter)");
 
 
 
@@ -95,10 +95,11 @@ public class StoryTest {
     </pre>
     <table/>
     <pre>
-      <code class="java" data-lang="java">	public Object cloneObject(Object reference, Filter filter) {
-		MapEntity map = new MapEntity(filter, flag, this);
-		return cloning(reference, map);
-	}</code>
+      <code class="java" data-lang="java">	public Object cloneObject(Object reference, Object filter) {
+		MapEntity map = null;
+		if(filter == null) {
+			map = new MapEntity(this);
+		} else if (filter instanceof Filter) {</code>
       <div class="title">Code: <a href="../src/main/java/de/uniks/networkparser/IdMap.java">cloneObject</a></div>
     </pre>
     <table/>

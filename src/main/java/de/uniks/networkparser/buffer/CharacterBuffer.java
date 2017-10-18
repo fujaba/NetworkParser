@@ -365,6 +365,13 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence {
 	 * @return the new CharacterBuffer
 	 */
 	public CharacterBuffer with(char[] values, int start, int length) {
+        if(values== null || start+length>values.length) {
+            return this;
+        }
+        if(this.length<0) {
+            this.length = this.buffer.length;
+        }
+
 		int newLen = length+this.length;
 		if ( buffer == null || newLen+this.start>buffer.length) {
 			char[] oldValue = this.buffer;
@@ -414,7 +421,17 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence {
 	}
 
 	public CharacterBuffer write(byte[] values, int length) {
+		if(values== null) {
+			return this;
+		}
+		if(this.length<0) {
+			this.length = this.buffer.length;
+		}
+		if(length>values.length) {
+			length = values.length;
+		}
 		int newLen = length+this.length;
+		
 		if ( buffer == null || newLen+this.start>buffer.length) {
 			char[] oldValue = this.buffer;
 			this.buffer = new char[(newLen*2+2)];
@@ -438,6 +455,13 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence {
 	 * @return the new CharacterBuffer
 	 */
 	public CharacterBuffer with(CharSequence values, int start, int end) {
+        if(values== null) {
+            return this;
+        }
+        if(this.length<0) {
+            this.length = this.buffer.length;
+        }
+
 		if(this.buffer == null) {
 			this.buffer = new char[end];
 			start = 0;
@@ -519,6 +543,9 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence {
 	 */
 	public CharacterBuffer withStart(char item) {
 		if(start>0) {
+			if(start>this.buffer.length) {
+				start = this.buffer.length - 1;
+			}
 			this.buffer[--start] = item;
 			return this;
 		}
@@ -706,6 +733,9 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence {
 		int pos=start;
 		int l=0;
 		while(pos<length) {
+			if(l==other.length) {
+				break;
+			}
 			if(buffer[pos]==SPACE || buffer[pos]=='\t') {
 				if(l==0) {
 					pos++;

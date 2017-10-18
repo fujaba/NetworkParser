@@ -220,6 +220,9 @@ public class TemplateResultFile extends SortedSet<TemplateResultFragment> implem
 				ModifyEntry modifierChild = (ModifyEntry) member;
 				if(ModifyEntry.TYPE_DELETE.equalsIgnoreCase(modifierChild.getType())) {
 					GraphMember entry = modifierChild.getEntry();
+					if(entry == null) {
+						continue;
+					}
 					SymTabEntry symbolEntry = code.getSymbolEntry(entry.getClass().getSimpleName(), entry.getName());
 					if(symbolEntry != null) {
 						sb.replace(symbolEntry.getStartPos(), symbolEntry.getEndPos(), "");

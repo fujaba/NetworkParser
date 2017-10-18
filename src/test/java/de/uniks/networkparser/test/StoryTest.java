@@ -23,7 +23,7 @@ public class StoryTest {
 		
 		story.addSourceCode(StoryTest.class, 0, 0);
 		
-		story.addSourceCode("src/main/java", IdMap.class, "cloneObject(Object reference, Filter filter)");
+		story.addSourceCode("src/main/java", IdMap.class, "cloneObject(Object reference, Object filter)");
 		
 		
 		

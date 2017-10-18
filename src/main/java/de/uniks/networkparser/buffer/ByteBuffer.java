@@ -52,8 +52,10 @@ public class ByteBuffer extends BufferedBuffer implements BaseItem {
 	@Override
 	public CharacterBuffer subSequence(int start, int length) {
 		byte[] sub = new byte[length];
-		for (int i = 0; i < length; i++) {
-			sub[i] = buffer[start + length];
+		if(start<buffer.length && length<=buffer.length) {
+			for (int i = 0; i < length; i++) {
+				sub[i] = buffer[start + length];
+			}
 		}
 		return new CharacterBuffer().with(sub);
 	}
@@ -185,20 +187,20 @@ public class ByteBuffer extends BufferedBuffer implements BaseItem {
 	}
 
 	public void put(byte value) {
-		if(this.buffer != null) {
+		if(this.buffer != null && position+1<=buffer.length) {
 			this.buffer[position++] = value;
 		}
 	}
 
 	public void put(short value) {
-		if(this.buffer != null) {
+		if(this.buffer != null && position+2<=buffer.length) {
 			this.buffer[position++] = (byte) (value >>> 8);
 			this.buffer[position++] = (byte) value;
 		}
 	}
 
 	public void put(int value) {
-		if(this.buffer != null) {
+		if(this.buffer != null && position+4<=buffer.length) {
 			this.buffer[position++] = (byte) (value >>> 24);
 			this.buffer[position++] = (byte) (value >>> 16);
 			this.buffer[position++] = (byte) (value >>> 8);
@@ -207,7 +209,7 @@ public class ByteBuffer extends BufferedBuffer implements BaseItem {
 	}
 
 	public void put(long value) {
-		if(this.buffer != null) {
+		if(this.buffer != null && position+8<=buffer.length) {
 			this.buffer[position++] = (byte) (value >>> 56);
 			this.buffer[position++] = (byte) (value >>> 48);
 			this.buffer[position++] = (byte) (value >>> 40);
@@ -220,7 +222,7 @@ public class ByteBuffer extends BufferedBuffer implements BaseItem {
 	}
 
 	public void put(char value) {
-		if(this.buffer!=null) {
+		if(this.buffer!=null && position+2<=buffer.length) {
 			this.buffer[position++] = (byte) (value >>> 8);
 			this.buffer[position++] = (byte) value;
 		}
@@ -228,7 +230,7 @@ public class ByteBuffer extends BufferedBuffer implements BaseItem {
 
 	public void put(float value) {
 		int bits = Float.floatToIntBits(value);
-		if(this.buffer != null) {
+		if(this.buffer != null && position+4<=buffer.length) {
 			this.buffer[position++] = (byte) (bits & 0xff);
 			this.buffer[position++] = (byte) ((bits >> 8) & 0xff);
 			this.buffer[position++] = (byte) ((bits >> 16) & 0xff);
@@ -238,7 +240,7 @@ public class ByteBuffer extends BufferedBuffer implements BaseItem {
 
 	public void put(double value) {
 		long bits = Double.doubleToLongBits(value);
-		if(this.buffer != null) {
+		if(this.buffer != null && position+8<=buffer.length) {
 			this.buffer[position++] = (byte) ((bits >> 56) & 0xff);
 			this.buffer[position++] = (byte) ((bits >> 48) & 0xff);
 			this.buffer[position++] = (byte) ((bits >> 40) & 0xff);
@@ -259,6 +261,9 @@ public class ByteBuffer extends BufferedBuffer implements BaseItem {
 	}
 
 	public void put(byte[] value, int offset, int length) {
+		if(value == null || offset<0 || offset>value.length) {
+			return;
+		}
 		for (int i = 0; i < length; i++) {
 			put(value[offset + i]);
 		}
@@ -338,7 +343,7 @@ public class ByteBuffer extends BufferedBuffer implements BaseItem {
 
 	public ByteBuffer with(byte[] array, int len) {
 		this.position = 0;
-		if(len<0) {
+		if(len<0 || len > array.length) {
 			len = array.length;
 		}
 		if(this.buffer == null) {
@@ -347,7 +352,7 @@ public class ByteBuffer extends BufferedBuffer implements BaseItem {
 		} else {
 			// Resize
 			byte[] oldBuffer = this.buffer;
-			this.buffer = new byte[this.length * 2];
+			this.buffer = new byte[this.length * 2+len];
 			System.arraycopy(oldBuffer, 0, this.buffer, 0, this.length);
 			System.arraycopy(array, 0, this.buffer, this.length, len);
 			this.length += len;

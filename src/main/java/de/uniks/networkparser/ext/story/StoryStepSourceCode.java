@@ -146,7 +146,7 @@ public class StoryStepSourceCode implements ObjectCondition {
 					break;
 				}
 				linePos++;
-				if(fileBuffer.isEnd() == false) {
+				if(fileBuffer.isEnd()) {
 					break;
 				}
 			}

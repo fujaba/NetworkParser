@@ -40,6 +40,10 @@ public class NodeBackup implements Runnable{
 		return runnable;
 	}
 	
+	public long getSendtime() {
+		return sendtime;
+	}
+	
 	public NodeBackup withTask(SimpleEventCondition task) {
 		this.task = task;
 		return this;

@@ -240,10 +240,7 @@ public class ModelListenerProperty implements ModelListenerInterface {
 			return Double.valueOf(""+value);
 		}
 		if(value instanceof Number){
-			if(value instanceof Number){
-				return value;
-			}
-			return Double.valueOf(""+value);	
+			return value;
 		}
 		return value;
 	}
