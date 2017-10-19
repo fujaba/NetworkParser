@@ -1,5 +1,6 @@
 package de.uniks.networkparser.ext.petaf;
 
+import de.uniks.networkparser.DateTimeEntity;
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.MapEntity;
@@ -26,7 +27,6 @@ import de.uniks.networkparser.interfaces.EntityList;
 import de.uniks.networkparser.interfaces.MapListener;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
-import de.uniks.networkparser.interfaces.SimpleEventCondition;
 import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.json.JsonTokener;
 import de.uniks.networkparser.list.SimpleList;
@@ -53,7 +53,7 @@ public class Space extends SendableItem implements ObjectCondition {
 	private TaskExecutor executor;
 	private NodeProxy firstPeer;
 	private NodeProxy myNode;
-	protected SimpleList<SimpleEventCondition> clients = new SimpleList<SimpleEventCondition>();
+	protected SimpleList<ObjectCondition> clients = new SimpleList<ObjectCondition>();
 	private int peerCount=2;
 	static final int DISABLE=0;
 	static final int MINUTE=60;
@@ -78,6 +78,7 @@ public class Space extends SendableItem implements ObjectCondition {
 					new NodeProxyModel(null));
 //MOVE TO SUBCLASS	private TaskExecutor executor=new TaskExecutor();
 	private Tokener tokener;
+	private DateTimeEntity lastTimerRun;
 	
 	public IdMap getMap() {
 		return map;
@@ -142,6 +143,33 @@ public class Space extends SendableItem implements ObjectCondition {
 		this.with(newProxy);
 		return newProxy;
 	}
+	public NodeProxy getOrCreateNodeProxy(Entity msg, boolean readId) {
+		Entity props = null;
+		if(msg.has(JsonTokener.PROPS)){
+			props = msg;
+		}
+			
+		// New Structure
+		NodeProxy proxy = getProxy(NodeProxy.PROPERTY_KEY);
+		if(proxy != null) {
+			return proxy;
+		}
+		// Proxy not exist must be create
+		proxy = getNewProxy();
+		
+		String[] properties = proxy.getProperties();
+		for(String property : properties) {
+			Object value = props.getValue(property);
+			if(value != null) {
+				proxy.setValue(proxy, property, value, SendableEntityCreator.NEW);
+			}
+		}
+		this.with(proxy);
+		return proxy;
+	}
+
+	
+	
 	
 	public NodeProxy getNewProxy(){
 		return new NodeProxyTCP();
@@ -251,6 +279,18 @@ public class Space extends SendableItem implements ObjectCondition {
 	
 	public String getPath() {
 		return this.path;
+	}
+	
+	public boolean sendMessage(SendingTimerTask task, NodeProxy... proxy) {
+		if(proxy != null) {
+			NodeProxy sender = null;
+			if(proxy != null && proxy.length>0) {
+				sender = proxy[0];
+			}
+			task.withSender(sender);
+			scheduleTask(task);
+		}
+		return true;
 	}
 	
 	public boolean sendMessage(NodeProxy proxy, Message msg) {
@@ -493,6 +533,12 @@ public class Space extends SendableItem implements ObjectCondition {
 		return true;
 	}
 	
+	public Object scheduleTask(Runnable task){
+		if(task == null) {
+			return null;
+		}
+		return getExecutor().executeTask(task, 0);
+	}
 	public Object scheduleTask(Runnable task, int delay){
 		if(task == null) {
 			return null;
@@ -510,13 +556,33 @@ public class Space extends SendableItem implements ObjectCondition {
 	@Override
 	public boolean update(Object value) {
 		if(value instanceof SimpleEvent == false) {
-			return true;
+			return false;
 		}
 		SimpleEvent event = (SimpleEvent) value;
 		for (ObjectCondition client : clients) {
 			client.update(event);
 		}
 		return true;
+	}
+	
+	public Space withClient(ObjectCondition... clients) {
+		if(clients == null) {
+			return this;
+		}
+		for(ObjectCondition item : clients) {
+			this.clients.add(item);
+		}
+		return this;
+	}
+	
+	public Space withoutClients(ObjectCondition... clients) {
+		if(clients == null) {
+			return this;
+		}
+		for(ObjectCondition item : clients) {
+			this.clients.remove(item);
+		}
+		return this;
 	}
 	
 	public void dispose()
@@ -599,5 +665,22 @@ public class Space extends SendableItem implements ObjectCondition {
 			
 		}
 		return lastItem;
+	}
+	
+	public boolean sendEventToClients(SimpleEvent event) {
+		boolean result=true;
+		for (ObjectCondition client : clients) {
+			result = result & client.update(event);
+		}
+		return result;
+	}
+
+	public Space withLastTimerRun(DateTimeEntity value) {
+		this.lastTimerRun = value;
+		return this;
+	}
+	
+	public DateTimeEntity getLastTimerRun() {
+		return lastTimerRun;
 	}
 }

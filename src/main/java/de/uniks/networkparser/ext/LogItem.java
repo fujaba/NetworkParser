@@ -21,6 +21,7 @@
 
 package de.uniks.networkparser.ext;
 
+import de.uniks.networkparser.DateTimeEntity;
 import de.uniks.networkparser.NetworkParserLog;
 import de.uniks.networkparser.ext.petaf.SendableItem;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
@@ -30,9 +31,10 @@ public class LogItem extends SendableItem implements SendableEntityCreator {
 	public final static String OUTGOING = "Sende";
 	public static final String PROPERTY_TYPE = "type";
 	public static final String PROPERTY_TIMESTAMP = "timestamp";
+	public static final String PROPERTY_CURRENTTIME = "currenttime";
 	public static final String PROPERTY_THREADNAME = "threadName";
 	public static final String PROPERTY_MESSAGE = "message";
-	private final String[] properties = new String[] { LogItem.PROPERTY_TIMESTAMP, LogItem.PROPERTY_THREADNAME,
+	private final String[] properties = new String[] { LogItem.PROPERTY_CURRENTTIME, LogItem.PROPERTY_TIMESTAMP, LogItem.PROPERTY_THREADNAME,
 			LogItem.PROPERTY_TYPE, LogItem.PROPERTY_MESSAGE, };
 
 	private static final long STARTTIME = System.currentTimeMillis();
@@ -160,7 +162,14 @@ public class LogItem extends SendableItem implements SendableEntityCreator {
 		if (PROPERTY_MESSAGE.equalsIgnoreCase(attribute)) {
 			return item.getMessage();
 		}
+		if(PROPERTY_CURRENTTIME.equalsIgnoreCase(attribute)) {
+			return item.getCurrentDate();
+		}
 		return null;
+	}
+	
+	public DateTimeEntity getCurrentDate() {
+		return new DateTimeEntity().withNewDate(getCurrentTime());
 	}
 
 	@Override

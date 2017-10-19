@@ -21,22 +21,31 @@ public class SimpleTimerTask extends TimerTask {
 	}
 	
 	
+	public DateTimeEntity getLastRun() {
+		return lastRun;
+	}
+	
 	@Override
 	public void run() {
          try{
+			if (lastRun != null) {
+				lastRun.withValue(System.currentTimeMillis());
+			}
+			if(space != null) {
+				space.withLastTimerRun(lastRun);
+			}
          	runTask();
          }catch(Exception e){
        		 handler.saveException(e);
          }
 	}
 
-	public void runTask() throws Exception {
-		if (lastRun != null) {
-			lastRun.withValue(System.currentTimeMillis());
-		}
+	public boolean runTask() throws Exception {
 		if(this.task != null) {
 			task.run();
+			return true;
 		}
+		return false;
 	}
 	public SimpleTimerTask withTask(Runnable task) {
 		this.task = task;

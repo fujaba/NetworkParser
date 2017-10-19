@@ -2,6 +2,7 @@ package de.uniks.networkparser.ext.petaf;
 
 import de.uniks.networkparser.ext.petaf.messages.ConnectMessage;
 import de.uniks.networkparser.ext.petaf.messages.InfoMessage;
+import de.uniks.networkparser.ext.petaf.messages.PingMessage;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.list.SimpleList;
@@ -17,11 +18,12 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 	public static final String PROPERTY_VERSION = "version";
 	public static final String PROPERTY_TYP = "typ";
 	public static final String PROPERTY_NAME = "name";
+	public static final String PROPERTY_KEY = "key";
 
-	protected PropertyList propertyUpdate = PropertyList.create(PROPERTY_HISTORY, PROPERTY_FILTER, PROPERTY_SEND);
-	protected PropertyList propertyInfo = PropertyList.create(PROPERTY_SEND, PROPERTY_RECEIVE, PROPERTY_HISTORY,
+	protected PropertyList propertyUpdate = PropertyList.create(PROPERTY_KEY, PROPERTY_HISTORY, PROPERTY_FILTER, PROPERTY_SEND);
+	protected PropertyList propertyInfo = PropertyList.create(PROPERTY_KEY, PROPERTY_SEND, PROPERTY_RECEIVE, PROPERTY_HISTORY,
 			PROPERTY_FILTER, PROPERTY_VERSION);
-	protected PropertyList property = PropertyList.create(PROPERTY_SEND, PROPERTY_RECEIVE, PROPERTY_ONLINE,
+	protected PropertyList property = PropertyList.create(PROPERTY_KEY, PROPERTY_SEND, PROPERTY_RECEIVE, PROPERTY_ONLINE,
 			PROPERTY_NODES, PROPERTY_HISTORY, PROPERTY_FILTER, PROPERTY_VERSION);
 
 	protected NodeProxyType type;
@@ -66,6 +68,14 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 			return this.space.sendMessage(this, msg, false);
 		}
 		return this.sending(msg);
+	}
+	public boolean sendPing() {
+		//msg
+		PingMessage message=new PingMessage();
+		if (this.space != null) {
+			return this.space.sendMessage(this, message, false);
+		}
+		return this.sending(message);
 	}
 
 	public boolean sendMessageToPeers(Message msg) {
@@ -146,8 +156,6 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 	public boolean isOnline() {
 		return online;
 	}
-
-	public abstract String getKey();
 
 	public abstract boolean isSendable();
 
@@ -262,6 +270,9 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 		if (PROPERTY_TYP.equals(attrName)) {
 			return nodeProxy.getType();
 		}
+		if(PROPERTY_KEY.equals(attrName)) {
+			return nodeProxy.getKey();
+		}
 		return null;
 	}
 
@@ -308,4 +319,6 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 		this.nextPeer = nextPeer;
 		return this;
 	}
+	
+	public abstract String getKey();
 }

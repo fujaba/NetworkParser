@@ -4,11 +4,16 @@ import de.uniks.networkparser.converter.EntityStringConverter;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Converter;
 
-public class StringEntity implements BaseItem{
+public class StringEntity implements BaseItem {
 	private String value;
 	@Override
 	public String toString() {
 		return toString(new EntityStringConverter());
+	}
+	
+	public StringEntity with(String value) {
+		this.value = value;
+		return this;
 	}
 	
 	@Override
