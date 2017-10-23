@@ -69,7 +69,7 @@ public class Message {
 			return true;
 		}
 		if(PROPERTY_MSG.equalsIgnoreCase(attribute)){
-			withData((JsonObject) value);
+			withMessage((JsonObject) value);
 			return true;
 		}
 		if(PROPERTY_RECEIVER.equalsIgnoreCase(attribute)){
@@ -80,6 +80,10 @@ public class Message {
 			withAddToReceived((String) value);
 			return true;
 		}
+		return false;
+	}
+	
+	public boolean handle(Space space) {
 		return false;
 	}
 	
@@ -107,7 +111,7 @@ public class Message {
 		return this;
 	}
 
-	public Message withData(BaseItem value){
+	public Message withMessage(BaseItem value){
 		this.msg = value;
 		return this;
 	}
@@ -156,7 +160,7 @@ public class Message {
 	public static Message createSimpleString(String text) {
 		StringEntity stringEntity = new StringEntity();
 		stringEntity.add(text);
-		Message message = new Message().withSendAnyHow(true).withData(stringEntity);
+		Message message = new Message().withSendAnyHow(true).withMessage(stringEntity);
 		return message;
 	}
 	

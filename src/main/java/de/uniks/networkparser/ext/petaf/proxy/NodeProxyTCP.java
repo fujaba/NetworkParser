@@ -8,6 +8,7 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.nio.charset.Charset;
 
+import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.buffer.ByteBuffer;
 import de.uniks.networkparser.ext.petaf.Message;
 import de.uniks.networkparser.ext.petaf.NodeProxy;
@@ -120,8 +121,6 @@ public class NodeProxyTCP extends NodeProxy {
 	public Message readFromInputStream(Socket socket) throws IOException {
 		ByteBuffer buffer=new ByteBuffer();
 		
-		Message msg=new Message();
-		msg.withData(buffer);
 		byte[] messageArray = new byte[BUFFER];
 		InputStream is = socket.getInputStream();
 		while (true) {
@@ -132,7 +131,21 @@ public class NodeProxyTCP extends NodeProxy {
 			if(bytesRead != BUFFER && allowAnswer) 
 				break;
 		}
+		
+		Message msg=null;
+		if(this.space != null) {
+			IdMap map = this.space.getMap();
+			Object element = map.decode(buffer.toString());
+			if(element instanceof Message) {
+				msg = (Message) element;
+			}
+		}
+		if(msg == null){
+			msg=new Message();
+		}
+		msg.withMessage(buffer);
 		msg.withSession(socket);
+		msg.withReceiver(this);
 		if(this.listener != null) {
 			this.listener.update(msg);
 		}

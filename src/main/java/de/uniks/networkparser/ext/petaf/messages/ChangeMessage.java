@@ -12,8 +12,8 @@ public class ChangeMessage extends Message {
 	private Space space;
 
 	@Override
-	public ChangeMessage withData(BaseItem value) {
-		super.withData(value);
+	public ChangeMessage withMessage(BaseItem value) {
+		super.withMessage(value);
 		return this;
 	}
 	
