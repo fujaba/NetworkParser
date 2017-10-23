@@ -145,7 +145,9 @@ public class NodeProxyTCP extends NodeProxy {
 		}
 		msg.withMessage(buffer);
 		msg.withSession(socket);
-		msg.withReceiver(this);
+		// Get Receiver
+		String receiver = socket.getInetAddress().getHostAddress()+":"+socket.getPort();
+//		msg.withReceiver(this);
 		if(this.listener != null) {
 			this.listener.update(msg);
 		}

@@ -84,6 +84,7 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 
 	protected boolean sending(Message msg) {
 		this.lastSendTryTime = System.currentTimeMillis();
+		msg.withReceiver(this);
 		return false;
 	}
 
