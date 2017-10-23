@@ -15,10 +15,14 @@ public class MessageRequest implements Runnable {
 			this.proxy = proxy;
 		}
 		
-		public void run() {
+ 		public void run() {
 			try {
 				proxy.readFromInputStream(requestSocket);
 			} catch (IOException e) {
+				Space space = proxy.getSpace();
+				if(space!=null) {
+					space.handleException(e);
+				}
 			}
 		}
 		

@@ -29,7 +29,7 @@ public class NodeProxyTCP extends NodeProxy {
 	/**
 	 * Fallback Executor for Simple Using Serverclasses
 	 */
-	protected TaskExecutor executor;
+	private ObjectCondition listener;
 
 	public NodeProxyTCP() {
 		this.property.addAll(PROPERTY_URL, PROPERTY_PORT);
@@ -72,16 +72,6 @@ public class NodeProxyTCP extends NodeProxy {
 		return allowAnswer;
 	}
 	
-	public NodeProxyTCP withListener(ObjectCondition condition) {
-		if(this.executor == null) {
-			this.executor = new SimpleExecutor().withListener(condition);
-			this.allowAnswer = true;
-		} else {
-			this.executor.withListener(condition);
-		}
-		return this;
-	}
-
 	public NodeProxyTCP withPort(int value) {
 		int oldValue = value;
 		this.port = value;
@@ -90,13 +80,11 @@ public class NodeProxyTCP extends NodeProxy {
 	}
 	
 	public TaskExecutor getExecutor() {
-		if(this.executor != null) {
-			return executor;
-		}
 		if(this.space != null) {
 			return this.space.getExecutor();
 		}
-		return null;
+		//Fallback
+		return new SimpleExecutor();
 	}
 
 	@Override
@@ -145,6 +133,9 @@ public class NodeProxyTCP extends NodeProxy {
 				break;
 		}
 		msg.withSession(socket);
+		if(this.listener != null) {
+			this.listener.update(msg);
+		}
 		if(allowAnswer) {
 			getExecutor().handleMsg(msg);
 		}else {
@@ -190,8 +181,6 @@ public class NodeProxyTCP extends NodeProxy {
 				os.flush();
 				if(allowAnswer) {
 					readFromInputStream(requestSocket);
-					//FIXME
-//					InputStream is = requestSocket.getInputStream();
 				}
 				setSendTime(buffer.length);
 				requestSocket.close();
@@ -219,9 +208,15 @@ public class NodeProxyTCP extends NodeProxy {
 
 	@Override
 	protected boolean initProxy() {
-		if (url == null && getType() == null || NodeProxyType.isInput(getType())) {
+		boolean isInput = NodeProxyType.isInput(getType());
+		if (url == null && getType() == null || isInput) {
+			if(serverSocket != null) {
+				return true;
+			}
 			// Incoming Proxy
-			withType(NodeProxyType.IN);
+			if(isInput == false) {
+				withType(NodeProxyType.IN);
+			}
 			serverSocket = new Server_TCP(this);
 			if (url == null) {
 				try {
@@ -256,14 +251,20 @@ public class NodeProxyTCP extends NodeProxy {
 	}
 
 	public static NodeProxyTCP createServer(int port) {
-		NodeProxyTCP proxy = new NodeProxyTCP().withPort(port);
+		NodeProxyTCP proxy = new NodeProxyTCP();
+		proxy.withPort(port);
 		proxy.withType(NodeProxyType.INOUT);
 		return proxy;
 	}
 
 	@Override
-	public Object getSendableInstance(boolean reference) {
+	public NodeProxyTCP getSendableInstance(boolean reference) {
 		return new NodeProxyTCP();
 	}
 
+	public NodeProxyTCP withListener(ObjectCondition condition) {
+		this.listener = condition;
+		this.allowAnswer = true;
+		return this;
+	}
 }

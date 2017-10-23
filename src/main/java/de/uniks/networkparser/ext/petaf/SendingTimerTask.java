@@ -22,10 +22,14 @@ public class SendingTimerTask extends SimpleTimerTask{
 		if(super.runTask()) {
 			return true;
 		}
+		Message message = getMessage();
+		if(message == null) {
+			return false;
+		}
 		if(sender != null) {
-			getSpace().sendMessage(sender, getMessage());
+			getSpace().sendMessage(sender, message);
 		} else {
-			getSpace().sendMessageToPeers(getMessage());
+			getSpace().sendMessageToPeers(message);
 		}
 		return false;
 	}

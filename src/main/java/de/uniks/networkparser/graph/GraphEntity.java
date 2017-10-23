@@ -280,7 +280,7 @@ public abstract class GraphEntity extends GraphMember {
 	}
 
 	public GraphEntity with(Annotation value) {
-		withAnnotaion(value);
+		withAnnotation(value);
 		return this;
 	}
 	

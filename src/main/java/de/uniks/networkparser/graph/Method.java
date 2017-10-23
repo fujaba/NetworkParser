@@ -285,4 +285,10 @@ public class Method extends GraphMember {
 		}
 		return false;
 	}
+
+	@Override
+	public Method without(GraphMember... values) {
+		super.without(values);
+		return this;
+	}
 }

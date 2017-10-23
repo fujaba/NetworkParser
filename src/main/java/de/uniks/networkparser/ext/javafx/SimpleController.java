@@ -33,6 +33,7 @@ public class SimpleController implements ObjectCondition{
 	protected Object popupMenu;
 	protected Object trayIcon;
 	private SimpleList<Object> listener = new SimpleList<Object>();
+	private boolean isEclipse = Os.isEclipse();
 	
 	public SimpleController(Object primitiveStage) {
 		this(primitiveStage, true);
@@ -173,19 +174,21 @@ public class SimpleController implements ObjectCondition{
 			ProcessBuilder processBuilder = new ProcessBuilder(items);
 			
 			// ReflectionLoader.PROCESSBUILDERREDIRECT
-			if(outputFile != null) {
-				if (outputFile.equalsIgnoreCase("inherit")) {
-					processBuilder.redirectErrorStream(true);
-					ReflectionLoader.call("redirectOutput", processBuilder, ReflectionLoader.PROCESSBUILDERREDIRECT, ReflectionLoader.getField("INHERIT", ReflectionLoader.PROCESSBUILDERREDIRECT));
-				} else {
-					int pos = outputFile.lastIndexOf(".");
-					if (pos > 0) {
-						ReflectionLoader.call("redirectError", processBuilder, File.class, new File(outputFile.substring(0, pos) + "_error" + outputFile.substring(pos)));
-						ReflectionLoader.call("redirectOutput", processBuilder, File.class, new File(outputFile.substring(0, pos) + "_stdout" + outputFile.substring(pos)));
-								
+			if(isEclipse == false) {
+				if(outputFile != null) {
+					if (outputFile.equalsIgnoreCase("inherit")) {
+						processBuilder.redirectErrorStream(true);
+						ReflectionLoader.call("redirectOutput", processBuilder, ReflectionLoader.PROCESSBUILDERREDIRECT, ReflectionLoader.getField("INHERIT", ReflectionLoader.PROCESSBUILDERREDIRECT));
 					} else {
-						ReflectionLoader.call("redirectError", processBuilder, File.class, new File(outputFile + "_error.txt"));
-						ReflectionLoader.call("redirectOutput", processBuilder, File.class, new File(outputFile + "_stdout.txt"));
+						int pos = outputFile.lastIndexOf(".");
+						if (pos > 0) {
+							ReflectionLoader.call("redirectError", processBuilder, File.class, new File(outputFile.substring(0, pos) + "_error" + outputFile.substring(pos)));
+							ReflectionLoader.call("redirectOutput", processBuilder, File.class, new File(outputFile.substring(0, pos) + "_stdout" + outputFile.substring(pos)));
+									
+						} else {
+							ReflectionLoader.call("redirectError", processBuilder, File.class, new File(outputFile + "_error.txt"));
+							ReflectionLoader.call("redirectOutput", processBuilder, File.class, new File(outputFile + "_stdout.txt"));
+						}
 					}
 				}
 			}
@@ -296,23 +299,32 @@ public class SimpleController implements ObjectCondition{
 
 		return sb.toString();
 	}
+	
+	public SimpleController withEclipse(boolean enableThrows) {
+		this.isEclipse = enableThrows;
+		return this;
+	}
+	
 	public SimpleController withErrorPath(String value) {
 		this.errorHandler.withPath(value);
-		if(Thread.getDefaultUncaughtExceptionHandler()==null){
-			Thread.setDefaultUncaughtExceptionHandler(new UncaughtExceptionHandler() {
-				public void uncaughtException(Thread t, Throwable e) {
-					SimpleController.this.errorHandler.saveException(e);
-				}
-			});
-			Thread.currentThread().setUncaughtExceptionHandler(new UncaughtExceptionHandler() {
-				public void uncaughtException(Thread t, Throwable e) {
-					SimpleController.this.errorHandler.saveException(e);
-				}
-			});
+		if(isEclipse == false) {
+			if(Thread.getDefaultUncaughtExceptionHandler()==null){
+				Thread.setDefaultUncaughtExceptionHandler(new UncaughtExceptionHandler() {
+					public void uncaughtException(Thread t, Throwable e) {
+						SimpleController.this.errorHandler.saveException(e);
+					}
+				});
+				Thread.currentThread().setUncaughtExceptionHandler(new UncaughtExceptionHandler() {
+					public void uncaughtException(Thread t, Throwable e) {
+						SimpleController.this.errorHandler.saveException(e);
+					}
+				});
+			}
+			System.setOut(new StringPrintStream(this.errorHandler, false));
+			System.setErr(new StringPrintStream(this.errorHandler, true));
 		}
-		System.setOut(new StringPrintStream(this.errorHandler, false));
-		System.setErr(new StringPrintStream(this.errorHandler, true));
 		return this;
+		
 	}
 
 	public void withTitle(String value) {

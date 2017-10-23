@@ -299,7 +299,7 @@ public class JsonModellTest implements ObjectCondition {
 		person.withName("Albert");
 		
 		account.createItem();
-		
+		Assert.assertNotNull(updateAccumulate);
 	
 	}
 }

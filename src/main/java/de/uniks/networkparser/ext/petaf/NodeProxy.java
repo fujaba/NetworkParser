@@ -56,7 +56,7 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 	}
 
 	public void connectToPeer() {
-		sendMessage(new ConnectMessage());
+		sendMessage(ConnectMessage.create());
 	}
 	
 	public void connectInfo() {

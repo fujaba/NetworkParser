@@ -134,6 +134,10 @@ public final class SimpleEvent extends PropertyChangeEvent {
 	public boolean isNewEvent() {
 		return SendableEntityCreator.NEW.equals(this.type);
 	}
+	
+	public boolean isIdEvent() {
+		return "id".equals(this.type);
+	}
 
 	public boolean isUpdateEvent() {
 		return SendableEntityCreator.UPDATE.equals(this.type);

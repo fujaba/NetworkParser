@@ -12,6 +12,7 @@ import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.DataType;
 import de.uniks.networkparser.graph.DataTypeMap;
 import de.uniks.networkparser.graph.DataTypeSet;
+import de.uniks.networkparser.graph.GraphUtil;
 import de.uniks.networkparser.graph.Method;
 import de.uniks.networkparser.graph.Modifier;
 import de.uniks.networkparser.graph.Parameter;
@@ -25,25 +26,26 @@ public class GenModel {
 	public void showCountsModel() {
 		int count =0;
 		HTMLEntity sdmLib=new HTMLEntity();
+		String packageName = GraphUtil.getPackage(Clazz.class);
 
 		ClassModel model;
-		model = new ClassModel();
+		model = new ClassModel(packageName);
 		count += showCounting(ClassModel.class, sdmLib, model);
 		count += showCounting(Clazz.class, sdmLib, model);
 		sdmLib.withGraph(model).withPageBreak();
 
-		model = new ClassModel();
+		model = new ClassModel(packageName);
 		count += showCounting(Attribute.class, sdmLib, model);
 		count += showCounting(Method.class, sdmLib, model);
 		count += showCounting(DataType.class, sdmLib, model);
 		sdmLib.withGraph(model);
 		
-		model = new ClassModel();
+		model = new ClassModel(packageName);
 		count += showCounting(DataTypeSet.class, sdmLib, model);
 		count += showCounting(DataTypeMap.class, sdmLib, model);
 		sdmLib.withGraph(model).withPageBreak();
 		
-		model = new ClassModel();
+		model = new ClassModel(packageName);
 		count += showCounting(Annotation.class, sdmLib, model);
 		count += showCounting(Association.class, sdmLib, model);
 		count += showCounting(Cardinality.class, sdmLib, model);
@@ -51,7 +53,7 @@ public class GenModel {
 
 
 		
-		model = new ClassModel();
+		model = new ClassModel(packageName);
 		count += showCounting(Modifier.class, sdmLib, model);
 		count += showCounting(Parameter.class, sdmLib, model);
 		count += showCounting(Throws.class, sdmLib, model);

@@ -92,7 +92,7 @@ public class Attribute extends Value {
 	}
 
 	public Attribute with(Annotation value) {
-		super.withAnnotaion(value);
+		super.withAnnotation(value);
 		return this;
 	}
 	
@@ -128,5 +128,11 @@ public class Attribute extends Value {
 			}
 		}
 		return super.equals(obj);
+	}
+	
+	@Override
+	public Attribute without(GraphMember... values) {
+		super.without(values);
+		return this;
 	}
 }

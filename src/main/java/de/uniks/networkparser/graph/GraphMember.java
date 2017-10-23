@@ -301,7 +301,7 @@ public abstract class GraphMember {
 		return this.name;
 	}
 
-	protected GraphMember withAnnotaion(Annotation value) {
+	protected GraphMember withAnnotation(Annotation value) {
 		// Remove Old GraphAnnotation
 		if(this.children != null) {
 			if(this.children instanceof GraphMember) {

@@ -10,6 +10,7 @@ import de.uniks.networkparser.Tokener;
 import de.uniks.networkparser.UpdateAccumulate;
 import de.uniks.networkparser.converter.ByteConverter;
 import de.uniks.networkparser.converter.ByteConverterString;
+import de.uniks.networkparser.ext.ErrorHandler;
 import de.uniks.networkparser.ext.LogItem;
 import de.uniks.networkparser.ext.petaf.filter.ProxyFilter;
 import de.uniks.networkparser.ext.petaf.messages.InfoMessage;
@@ -38,12 +39,18 @@ import de.uniks.networkparser.list.SortedSet;
  * @author Stefan
  *
  */
-public class Space extends SendableItem implements ObjectCondition {
+public class Space extends SendableItem implements ObjectCondition, SendableEntityCreator {
+	private final String[] properties = new String[] {Space.PROPERTY_NAME, Space.PROPERTY_PATH, Space.PROPERTY_HISTORY, Space.PROPERTY_PROXY};
 	public static final String PROPERTY_MODELROOT="root";
 	public static final String PROPERTY_HISTORY="history";
 	public static final String PROPERTY_PROXY="proxies";
 	public static final String PROPERTY_PATH="path";
 	public static final String PROPERTY_NAME="name";
+	
+	static final int DISABLE=0;
+	static final int MINUTE=60;
+	static final int TENMINUTE=6000;
+	static final int THIRTYMINUTE=30000;
 	
 	private SortedSet<NodeProxy> proxies=new SortedSet<NodeProxy>(true);
 	private ByteConverter converter;
@@ -55,28 +62,17 @@ public class Space extends SendableItem implements ObjectCondition {
 	private NodeProxy myNode;
 	protected SimpleList<ObjectCondition> clients = new SimpleList<ObjectCondition>();
 	private int peerCount=2;
-	static final int DISABLE=0;
-	static final int MINUTE=60;
-	static final int TENMINUTE=6000;
-	static final int THIRTYMINUTE=30000;
-	private String name;
+	protected String name;
 	protected NodeBackup backupTask = new NodeBackup().withSpace(this);
 	protected NetworkParserLog log=new NetworkParserLog();
+	protected final ErrorHandler handler=new ErrorHandler();
 
 	/** Time for Try to Reconnect Clients every x Seconds (Default:5x1m, 5x10m, 30m). Set Value to 0 for disable	 */
 	private SimpleList<Integer> tryReconnectTimeSecond=new SimpleList<Integer>()
 			.with(MINUTE,MINUTE,MINUTE,MINUTE,MINUTE)
 			.with(TENMINUTE,TENMINUTE,TENMINUTE,TENMINUTE,TENMINUTE)
 			.with(THIRTYMINUTE, DISABLE);
-	protected IdMap map = new IdMap()
-			.with(	new MessageCreator(), 
-					new ChangeMessageCreator(), 
-					new PingMessageCreator(), 
-					new NodeProxyTCP(), 
-					new NodeProxyLocal(), 
-					new ConnectMessageCreator(), 
-					new NodeProxyModel(null));
-//MOVE TO SUBCLASS	private TaskExecutor executor=new TaskExecutor();
+	protected IdMap map = createIdMap();
 	private Tokener tokener;
 	private DateTimeEntity lastTimerRun;
 	
@@ -84,6 +80,27 @@ public class Space extends SendableItem implements ObjectCondition {
 		return map;
 	}
 	
+	public String getName() {
+		return name;
+	}
+	
+	protected TaskExecutor createExecutorTimer() {
+		return new SimpleExecutor();
+	}
+
+	protected IdMap createIdMap() {
+		IdMap map = new IdMap()
+		.with(	this, 
+				new MessageCreator(), 
+				new ChangeMessageCreator(), 
+				new PingMessageCreator(), 
+				new NodeProxyTCP(), 
+				new NodeProxyLocal(), 
+				new ConnectMessageCreator(), 
+				new NodeProxyModel(null));
+		return map;
+	}
+
 	public Space withModelRoot(NodeProxyModel modelRoot) {
 		with(modelRoot);
 		return this;
@@ -349,13 +366,14 @@ public class Space extends SendableItem implements ObjectCondition {
 		int number;
 		IdMap map = getMap();
 		boolean out=false;
+		NodeProxy myNode = getMyNode();
 		if(receiver != null) {
 			for(int i=0;i<this.proxies.size();i++) {
 				proxy = this.proxies.get(i);
 				if(NodeProxyType.OUT == proxy.getType() || NodeProxyType.INOUT == proxy.getType()) {
 					out = true;
 				}
-				if(receiver == proxy) {
+				if(receiver == proxy || isMyNode(proxy, myNode)) {
 					receiverProxy.add(i);
 					if(proxy.isSendable()) {
 						msg.addToReceived(map.encode(proxy, tokener, new NodeProxyFilter()));
@@ -402,14 +420,30 @@ public class Space extends SendableItem implements ObjectCondition {
 					// If the proxy not already received the message, we want to send it to the proxy
 					if(received.indexOf(proxy)<0) {
 						step++;
-						if(sendProxies.add(proxy)==false) {
-							step = this.peerCount;
+						if(isMyNode(proxy, myNode) == false) {
+							if(sendProxies.add(proxy)==false) {
+								step = this.peerCount;
+							}
 						}
 					}
 				}
 			}
 		}
 		// Add Back
+	}
+	
+	//
+	private boolean isMyNode(NodeProxy proxy, NodeProxy myNode) {
+		if(proxy == myNode) {
+			return true;
+		}
+		while(myNode!= null) {
+			myNode = myNode.next();
+			if(myNode == proxy) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**
@@ -427,6 +461,9 @@ public class Space extends SendableItem implements ObjectCondition {
 		// inform the next n peers
 		SimpleSet<NodeProxy> sendProxies = new SimpleSet<NodeProxy>();
 		calculateSendProxy(msg, receiver, sendProxies);
+		if(sendProxies.size()<1) {
+			return true;
+		}
 		
 		// add message to local history
 		ModelHistory history = getHistory();
@@ -521,6 +558,9 @@ public class Space extends SendableItem implements ObjectCondition {
 	}
 
 	public TaskExecutor getExecutor() {
+		if(this.executor == null) {
+			this.executor = createExecutorTimer();
+		}
 		return this.executor;
 	}
 	
@@ -599,7 +639,7 @@ public class Space extends SendableItem implements ObjectCondition {
 				if(NodeProxyType.isInput(item.getType())) {
 					if(last == null) {
 						last = item;
-						item.with(null);
+						this.myNode = item.with(null);
 					} else {
 						last = item.with(last);
 						last.with(null);
@@ -682,5 +722,68 @@ public class Space extends SendableItem implements ObjectCondition {
 	
 	public DateTimeEntity getLastTimerRun() {
 		return lastTimerRun;
+	}
+	
+	// Methods for Creator
+	@Override
+	public String[] getProperties() {
+		return properties;
+	}
+
+	@Override
+	public Object getValue(Object entity, String attribute) {
+		if(entity instanceof Space == false) {
+			return null;
+		}
+		Space space = (Space) entity;
+		if(attribute.equalsIgnoreCase(Space.PROPERTY_PROXY)) {
+			return space.getNodeProxies();
+		}
+		if(attribute.equalsIgnoreCase(Space.PROPERTY_NAME)) {
+			return space.getName();
+		}
+		if(attribute.equalsIgnoreCase(Space.PROPERTY_PATH)) {
+			return space.getPath();
+		}
+		
+		if(attribute.equalsIgnoreCase(Space.PROPERTY_HISTORY)) {
+			return space.getHistory();
+		}
+		return null;
+	}
+
+	@Override
+	public boolean setValue(Object entity, String attribute, Object value, String type) {
+		if(entity instanceof Space == false) {
+			return false;
+		}
+		Space space = (Space) entity;
+		if(attribute.equalsIgnoreCase(Space.PROPERTY_PROXY)) {
+			space.with((NodeProxy)value);
+			return true;
+		}
+//		if(attribute.equalsIgnoreCase(Space.PROPERTY_NAME)) {
+//			return space.getName();
+//		}
+//		if(attribute.equalsIgnoreCase(Space.PROPERTY_PATH)) {
+//			return space.getPath();
+//		}
+//		if(attribute.equalsIgnoreCase(Space.PROPERTY_HISTORY)) {
+//			return space.getHistory();
+//		}
+		return false;
+	}
+
+	public void handleException(Throwable e) {
+		this.handler.saveException(e);
+	}
+	
+	public boolean handleMsg(Message message) {
+		return false;
+	}
+	
+	@Override
+	public Object getSendableInstance(boolean prototyp) {
+		return Space.class;
 	}
 }

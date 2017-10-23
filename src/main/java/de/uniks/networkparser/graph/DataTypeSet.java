@@ -83,4 +83,11 @@ public class DataTypeSet extends DataType {
 	public int hashCode() {
 		return super.hashCode();
 	}
+	
+	@Override
+	public DataTypeSet withExternal(boolean external) {
+		super.withExternal(external);
+		return this;
+	}
+
 }

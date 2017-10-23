@@ -3,7 +3,6 @@ package de.uniks.networkparser.ext.petaf;
 import java.util.Timer;
 
 import de.uniks.networkparser.DateTimeEntity;
-import de.uniks.networkparser.interfaces.ObjectCondition;
 
 public class TimerExecutor extends Timer implements TaskExecutor {
 	private boolean isCancel;
@@ -80,14 +79,10 @@ public class TimerExecutor extends Timer implements TaskExecutor {
 	}
 
 	@Override
-	public TaskExecutor withListener(ObjectCondition condition) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	@Override
 	public boolean handleMsg(Message message) {
-		// TODO Auto-generated method stub
+		if(space != null) {
+			return space.handleMsg(message);
+		}
 		return false;
 	}
-
 }

@@ -12,12 +12,25 @@ public class Server_TCP extends Thread {
 	protected ServerSocket serverSocket;
 	private NodeProxyTCP proxy;
 
+	/**
+	 * Fallback for simple Creating a Server without proxy
+	 * 
+	 * @param port
+	 */
+	public Server_TCP(int port) {
+		this(NodeProxyTCP.createServer(port));
+	}
+	
 	public Server_TCP(NodeProxyTCP proxy) 
 	{
 		this.proxy = proxy;
 		if(init()){
 			start();
 		}
+	}
+	
+	public boolean isRun() {
+		return run;
 	}
 	
 	public void closeServer(){
@@ -50,12 +63,12 @@ public class Server_TCP extends Thread {
 			catch (IOException e) 
 			{
 			}finally{
-				try {
-					if(requestSocket!=null && !requestSocket.isClosed()){
-						requestSocket.close();
-					}
-				} catch (IOException e) {
-				}
+//				try {
+//					if(requestSocket!=null && !requestSocket.isClosed()){
+//						requestSocket.close();
+//					}
+//				} catch (IOException e) {
+//				}
 			}
 		}
 	}

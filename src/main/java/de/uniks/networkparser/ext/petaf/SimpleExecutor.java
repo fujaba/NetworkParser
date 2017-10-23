@@ -1,12 +1,8 @@
 package de.uniks.networkparser.ext.petaf;
 
 import de.uniks.networkparser.DateTimeEntity;
-import de.uniks.networkparser.ext.ErrorHandler;
-import de.uniks.networkparser.interfaces.ObjectCondition;
 
 public class SimpleExecutor implements TaskExecutor{
-	protected final ErrorHandler handler = new ErrorHandler();
-	private ObjectCondition listener;
 	private DateTimeEntity lastRun=new DateTimeEntity();
 	private Space space;
 
@@ -18,7 +14,9 @@ public class SimpleExecutor implements TaskExecutor{
 				task.run();
 			}
 		} catch (Exception e) {
-			 handler.saveException(e);
+			if(space != null) {
+				space.handleException(e);
+			}
 		}
 		return null;
 	}
@@ -31,20 +29,19 @@ public class SimpleExecutor implements TaskExecutor{
 				task.run();
 			}
 		} catch (Exception e) {
-			 handler.saveException(e);
+			if(space != null) {
+				space.handleException(e);
+			}
 		}
 		return null;
 	}
 
 	@Override
 	public boolean handleMsg(Message message) {
-		return this.listener.update(message);
-	}
-
-	@Override
-	public SimpleExecutor withListener(ObjectCondition condition) {
-		this.listener = condition;
-		return this;
+		if(space != null) {
+			return space.handleMsg(message);
+		}
+		return false;
 	}
 
 	@Override

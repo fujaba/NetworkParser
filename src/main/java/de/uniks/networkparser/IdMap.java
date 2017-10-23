@@ -405,7 +405,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 			((SendableEntityCreator)item).setValue(item, IdMap.ID, id, SendableEntityCreator.NEW);
 		}
 		JsonObject json = this.toJsonObject(item, Filter.regard(Deep.create(1)));
-		SimpleEvent simpleEvent = new SimpleEvent(SendableEntityCreator.NEW, json, this, SendableEntityCreator.NEW, null, item);
+		SimpleEvent simpleEvent = new SimpleEvent(IdMap.ID, json, this, SendableEntityCreator.NEW, null, item);
 		this.updateListener.update(simpleEvent);
 
 		return true;

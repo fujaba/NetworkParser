@@ -216,4 +216,10 @@ public class Annotation extends GraphMember {
 	public GraphMember getParent() {
 		return (GraphMember) parentNode;
 	}
+	
+	@Override
+	public Annotation without(GraphMember... values) {
+		super.without(values);
+		return this;
+	}
 }

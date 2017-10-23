@@ -131,8 +131,15 @@ public class Modifier extends GraphMember {
 		}
 		return super.equals(obj);
 	}
+
 	@Override
 	public int hashCode() {
 		return super.hashCode();
+	}
+	
+	@Override
+	public Modifier without(GraphMember... values) {
+		super.without(values);
+		return this;
 	}
 }

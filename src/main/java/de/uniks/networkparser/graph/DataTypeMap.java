@@ -106,4 +106,10 @@ public class DataTypeMap extends DataType {
 	public int hashCode() {
 		return super.hashCode();
 	}
+	
+	@Override
+	public DataTypeMap withExternal(boolean external) {
+		super.withExternal(external);
+		return this;
+	}
 }

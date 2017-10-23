@@ -30,6 +30,15 @@ permissions and limitations under the Licence.
  * @author Stefan Lindel
  */
 public class GraphUtil {
+	public static final String getPackage(Class<?> classObj) {
+		String name = classObj.getName();
+		int pos = name.lastIndexOf(".");
+		if(pos>0) {
+			return name.substring(0, pos);
+		}
+		return name;
+	}
+	
 	public static final Clazz getByObject(GraphEntity item, String clazz, boolean fullName) {
 		if(clazz == null) {
 			return null;

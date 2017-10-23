@@ -825,4 +825,10 @@ public class Clazz extends GraphEntity {
 		}
 		return super.getValue(attribute);
 	}
+	
+	@Override
+	public Clazz without(GraphMember... values) {
+		super.without(values);
+		return this;
+	}
 }
