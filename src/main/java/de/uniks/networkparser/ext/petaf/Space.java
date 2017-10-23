@@ -630,6 +630,9 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 		if(this.executor != null) {
 			this.executor.shutdown();
 		}
+		for(NodeProxy proxy : proxies) {
+			proxy.close();
+		}
 	}
 	
 	public NodeProxy getMyNode() {

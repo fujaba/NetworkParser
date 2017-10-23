@@ -13,6 +13,6 @@ public class PetaFTest {
 		Assert.assertTrue(server.start());
 		server.start();
 		server.close();
-		Thread.sleep(5000);
+//		Thread.sleep(5000);
 	}
 }

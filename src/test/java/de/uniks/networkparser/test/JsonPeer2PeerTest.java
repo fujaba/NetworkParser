@@ -56,7 +56,7 @@ public class JsonPeer2PeerTest implements ObjectCondition {
 			return false;
 		}
 		SimpleEvent simpleEvent = (SimpleEvent) evt;
-		if(simpleEvent.isNewEvent() == false) {
+		if(simpleEvent.isNewEvent() == false && simpleEvent.isIdEvent() == false) {
 			return true;
 		}
 
