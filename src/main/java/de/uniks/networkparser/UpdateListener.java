@@ -239,23 +239,19 @@ public class UpdateListener implements MapListener {
 		Entity update = (Entity) updateMessage.getValue(SendableEntityCreator.UPDATE);
 //		Object prio = updateMessage.getValue(Filter.PRIO);
 		Object masterObj = this.map.getObject(id);
-		if (masterObj == null)
-		{
+		if (masterObj == null) {
 		   String masterObjClassName = (String) updateMessage.getValue(IdMap.CLASS);
 
-		   if (masterObjClassName != null)
-		   {
+		   if (masterObjClassName != null) {
 			  // cool, lets make it
 			  SendableEntityCreator creator = this.map.getCreator(masterObjClassName, true, null);
 			  masterObj = creator.getSendableInstance(false);
-			  if (masterObj != null)
-			  {
-				 this.map.put(id, masterObj, false);
-			  }
 		   }
-		}
-		if (masterObj == null) {
-			return null;
+		   if (masterObj == null)
+		   {
+			   return null;
+		   }
+		   this.map.put(id, masterObj, false);
 		}
 		SendableEntityCreator creator = this.map.getCreatorClass(masterObj);
 		if (remove == null && update != null) {
@@ -267,6 +263,9 @@ public class UpdateListener implements MapListener {
 				Object value = creator.getValue(masterObj, key);
 				if (value == null) {
 					// Old Value is Standard
+					return setValue(creator, masterObj, key, item.getValue(), SendableEntityCreator.NEW);
+				} else if (value instanceof Collection<?>) {
+					// It is a to many Link
 					return setValue(creator, masterObj, key, item.getValue(), SendableEntityCreator.NEW);
 				} else if (value.equals(creator.getValue(refObject, key))) {
 					// Old Value is Standard
