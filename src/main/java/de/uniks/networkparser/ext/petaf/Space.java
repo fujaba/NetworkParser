@@ -281,12 +281,13 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 	 */
 	private void addInfo(Message msg, NodeProxy myProxy, boolean sendAnyhow){
 		ModelHistory history = getHistory();
-//FIXME REMOVE?? SL		msg.withModel(getModel());
 		if(sendAnyhow) {
 			msg.withSendAnyHow(sendAnyhow);
 		}
 		String messageId = msg.getMessageId(this, myProxy);
 		msg.withPrevChange(history.getPrevChangeId(messageId));
+		// Add Receiver if possible
+		msg.withReceiver(getMyNode());
 	}
 	
 	public Space withPath(String path) {
