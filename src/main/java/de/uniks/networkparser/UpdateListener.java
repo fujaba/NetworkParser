@@ -268,7 +268,13 @@ public class UpdateListener implements MapListener {
 				if (value == null) {
 					// Old Value is Standard
 					return setValue(creator, masterObj, key, item.getValue(), SendableEntityCreator.NEW);
-				} else if (value.equals(creator.getValue(refObject, key))) {
+				} 
+				else if (value instanceof Collection)
+				{
+				   // just add the element
+				   return setValue(creator, masterObj, key, item.getValue(), SendableEntityCreator.NEW);
+				}
+				else if (value.equals(creator.getValue(refObject, key))) {
 					// Old Value is Standard
 					return setValue(creator, masterObj, key,
 							update.getValue(key), SendableEntityCreator.NEW);
