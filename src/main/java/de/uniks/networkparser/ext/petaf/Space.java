@@ -27,7 +27,6 @@ import de.uniks.networkparser.interfaces.EntityList;
 import de.uniks.networkparser.interfaces.MapListener;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
-import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.json.JsonTokener;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SimpleSet;
@@ -380,7 +379,6 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 		NodeProxy proxy;
 		int step;
 		int number;
-		IdMap map = getMap();
 		boolean out=false;
 		NodeProxy myNode = getMyNode();
 		if(receiver != null) {
@@ -488,7 +486,6 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 		history.addHistory(msg);
 
 		// send to next peers
-		IdMap map = getMap();
 		for(NodeProxy peer : sendProxies) {
 			boolean done = peer.sending(msg);
 			if(done) {
