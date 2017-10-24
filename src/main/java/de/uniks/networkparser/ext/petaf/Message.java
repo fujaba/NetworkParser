@@ -80,50 +80,8 @@ public class Message implements SendableEntityCreator, SendableEntityCreatorNoIn
 		return list;
 	}
 
-	public boolean set(String attribute, Object value) {
-		if(PROPERTY_HISTORYID.equalsIgnoreCase(attribute)){
-			withHistoryId((String)value);
-		}
-		if(PROPERTY_PREVIOUSCHANGE.equalsIgnoreCase(attribute)){
-			withPrevChange((String) value);
-			return true;
-		}
-		if(PROPERTY_MSG.equalsIgnoreCase(attribute)){
-			withMessage((JsonObject) value);
-			return true;
-		}
-		if(PROPERTY_RECEIVER.equalsIgnoreCase(attribute)){
-			withReceiver((NodeProxy) value);
-			return true;
-		}		
-		if(PROPERTY_RECEIVED.equalsIgnoreCase(attribute)){
-			withAddToReceived((String) value);
-			return true;
-		}
-		return false;
-	}
-	
 	public boolean handle(Space space) {
 		return false;
-	}
-	
-	public Object get(String attribute) {
-		if(PROPERTY_HISTORYID.equalsIgnoreCase(attribute)){
-			return historyId;
-		}
-		if(PROPERTY_PREVIOUSCHANGE.equalsIgnoreCase(attribute)){
-			return getPrevChange();
-		}
-		if(PROPERTY_MSG.equalsIgnoreCase(attribute)){
-			return getMessage();
-		}
-		if(PROPERTY_RECEIVER.equalsIgnoreCase(attribute)){
-			return getReceiver();
-		}
-		if(PROPERTY_RECEIVED.equalsIgnoreCase(attribute)){
-			return getReceived();
-		}
-		return null;
 	}
 	
 	public Message withReceiver(NodeProxy value) {
@@ -221,12 +179,60 @@ public class Message implements SendableEntityCreator, SendableEntityCreatorNoIn
 
 	@Override
 	public Object getValue(Object entity, String attribute) {
-		return ((Message)entity).get(attribute);
+		if(attribute == null || entity instanceof Message == false) {
+			return null;
+		}
+		Message msg = (Message) entity;
+		if(PROPERTY_HISTORYID.equalsIgnoreCase(attribute)){
+			return msg.historyId;
+		}
+		if(PROPERTY_PREVIOUSCHANGE.equalsIgnoreCase(attribute)){
+			return msg.getPrevChange();
+		}
+		if(PROPERTY_MSG.equalsIgnoreCase(attribute)){
+			return msg.getMessage();
+		}
+		if(PROPERTY_RECEIVER.equalsIgnoreCase(attribute)){
+			return msg.getReceiver();
+		}
+		if(PROPERTY_RECEIVED.equalsIgnoreCase(attribute)){
+			return msg.getReceived();
+		}
+		if(PROPERTY_TYPE.equalsIgnoreCase(attribute)) {
+			return msg.getType();
+		}
+		return null;
 	}
 
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value,
 			String type) {
-		return ((Message)entity).set(attribute, value);
+		if(attribute == null || entity instanceof Message == false) {
+			return false;
+		}
+		Message msg = (Message) entity;
+		if(PROPERTY_HISTORYID.equalsIgnoreCase(attribute)){
+			msg.withHistoryId((String)value);
+		}
+		if(PROPERTY_PREVIOUSCHANGE.equalsIgnoreCase(attribute)){
+			msg.withPrevChange((String) value);
+			return true;
+		}
+		if(PROPERTY_MSG.equalsIgnoreCase(attribute)){
+			msg.withMessage((JsonObject) value);
+			return true;
+		}
+		if(PROPERTY_RECEIVER.equalsIgnoreCase(attribute)){
+			msg.withReceiver((NodeProxy) value);
+			return true;
+		}		
+		if(PROPERTY_RECEIVED.equalsIgnoreCase(attribute)){
+			msg.withAddToReceived((String) value);
+			return true;
+		}
+		if(PROPERTY_TYPE.equalsIgnoreCase(attribute)) {
+			msg.withType((String)value);
+		}
+		return false;
 	}
 }
