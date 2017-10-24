@@ -21,13 +21,15 @@ public class Message implements SendableEntityCreator, SendableEntityCreatorNoIn
 	public static final String PROPERTY_RECEIVER="receiver";
 	public static final String PROPERTY_RECEIVED="received";
 	public static final String PROPERTY_PARENT="parent";
+	public static final String PROPERTY_TYPE="type";
 	public static final int TIMEOUTDEFAULT=0;
 	private final static String[] props=new String[]{
-			Message.PROPERTY_HISTORYID,
-			Message.PROPERTY_MSG,
-			Message.PROPERTY_PREVIOUSCHANGE,
-			Message.PROPERTY_RECEIVER,
-			Message.PROPERTY_RECEIVED
+			PROPERTY_TYPE,
+			PROPERTY_HISTORYID,
+			PROPERTY_MSG,
+			PROPERTY_PREVIOUSCHANGE,
+			PROPERTY_RECEIVER,
+			PROPERTY_RECEIVED
 	};
 	protected String historyId;
 	protected SimpleList<String> received=new SimpleList<String>();
@@ -37,12 +39,22 @@ public class Message implements SendableEntityCreator, SendableEntityCreatorNoIn
 	private int timeOut;
 	private Socket session;
 	private boolean sendAnyHow=false;
+	private String type;
 	
 	public String getMessageId(Space space, NodeProxy proxy){
 		if(this.historyId == null ){
 			this.historyId = SHA1.value(getBlob()).toString();
 		}
 		return historyId;
+	}
+	
+	public Message withType(String value) {
+		this.type = value;
+		return this;
+	}
+	
+	public String getType() {
+		return type;
 	}
 	
 	public Message withHistoryId(String id){

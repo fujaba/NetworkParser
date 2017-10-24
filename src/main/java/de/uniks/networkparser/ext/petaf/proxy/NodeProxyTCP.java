@@ -141,7 +141,6 @@ public class NodeProxyTCP extends NodeProxy {
 				NodeProxy receiver = msg.getReceiver();
 				// Let my Know about the new Receiver
 				if(receiver!= null) {
-					receiver.withOnline(true);
 					this.space.with(receiver);
 				}
 			}
