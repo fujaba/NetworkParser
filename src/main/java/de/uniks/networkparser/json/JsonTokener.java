@@ -320,6 +320,7 @@ public class JsonTokener extends Tokener {
 				event = new SimpleEvent(SendableEntityCreator.UPDATE, jsonObject, this.map, null, null, result);
 			}
 			this.map.notify(event);
+			result = event.getModelValue();
 			if (typeInfo instanceof SendableEntityCreatorWrapper) {
 				String[] properties = typeInfo.getProperties();
 				if (properties != null) {

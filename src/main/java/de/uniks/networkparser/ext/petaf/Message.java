@@ -144,7 +144,11 @@ public class Message implements SendableEntityCreator, SendableEntityCreatorNoIn
 	
 	@Override
 	public String toString() {
-		return getMessage().toString();
+		BaseItem message = getMessage();
+		if(message != null) {
+			return message.toString();
+		}
+		return super.toString();
 	}
 
 	public Socket getSession() {

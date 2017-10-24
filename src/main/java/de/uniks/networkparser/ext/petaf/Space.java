@@ -114,6 +114,9 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 				boolean changed = this.proxies.add(proxy);
 
 				if (changed) {
+					if(proxy.getKey() != null) {
+						this.map.put(proxy.getKey(), proxy, false);
+					}
 					this.myNode = null;
 					proxy.initSpace(this);
 					firePropertyChange(PROPERTY_PROXY, null, proxy);
@@ -166,7 +169,7 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 		}
 			
 		// New Structure
-		NodeProxy proxy = getProxy(NodeProxy.PROPERTY_KEY);
+		NodeProxy proxy = getProxy(NodeProxy.PROPERTY_ID);
 		if(proxy != null) {
 			return proxy;
 		}

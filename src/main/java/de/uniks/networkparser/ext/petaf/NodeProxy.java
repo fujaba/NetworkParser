@@ -18,12 +18,12 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 	public static final String PROPERTY_VERSION = "version";
 	public static final String PROPERTY_TYP = "typ";
 	public static final String PROPERTY_NAME = "name";
-	public static final String PROPERTY_KEY = "key";
+	public static final String PROPERTY_ID = "id";
 
-	protected PropertyList propertyUpdate = PropertyList.create(PROPERTY_KEY, PROPERTY_HISTORY, PROPERTY_FILTER, PROPERTY_SEND);
-	protected PropertyList propertyInfo = PropertyList.create(PROPERTY_KEY, PROPERTY_SEND, PROPERTY_RECEIVE, PROPERTY_HISTORY,
+	protected PropertyList propertyUpdate = PropertyList.create(PROPERTY_ID, PROPERTY_HISTORY, PROPERTY_FILTER, PROPERTY_SEND);
+	protected PropertyList propertyInfo = PropertyList.create(PROPERTY_ID, PROPERTY_SEND, PROPERTY_RECEIVE, PROPERTY_HISTORY,
 			PROPERTY_FILTER, PROPERTY_VERSION);
-	protected PropertyList property = PropertyList.create(PROPERTY_KEY, PROPERTY_SEND, PROPERTY_RECEIVE, PROPERTY_ONLINE,
+	protected PropertyList property = PropertyList.create(PROPERTY_ID, PROPERTY_SEND, PROPERTY_RECEIVE, PROPERTY_ONLINE,
 			PROPERTY_NODES, PROPERTY_HISTORY, PROPERTY_FILTER, PROPERTY_VERSION);
 
 	protected NodeProxyType type;
@@ -69,13 +69,10 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 		}
 		return this.sending(msg);
 	}
+
 	public boolean sendPing() {
-		//msg
 		PingMessage message=new PingMessage();
-		if (this.space != null) {
-			return this.space.sendMessage(this, message, false);
-		}
-		return this.sending(message);
+		return sendMessage(message);
 	}
 
 	public boolean sendMessageToPeers(Message msg) {
@@ -276,7 +273,7 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 		if (PROPERTY_TYP.equals(attrName)) {
 			return nodeProxy.getType();
 		}
-		if(PROPERTY_KEY.equals(attrName)) {
+		if(PROPERTY_ID.equals(attrName)) {
 			return nodeProxy.getKey();
 		}
 		return null;

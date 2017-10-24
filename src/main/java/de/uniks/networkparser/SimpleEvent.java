@@ -64,6 +64,7 @@ public final class SimpleEvent extends PropertyChangeEvent {
 		super(source, property, oldValue, newValue);
 		this.entity = entity;
 		this.type = type;
+		this.value = newValue;
 	}
 	/**
 	 * Constructor for example UpdateJson
@@ -117,9 +118,6 @@ public final class SimpleEvent extends PropertyChangeEvent {
 	public SimpleEvent withModelValue(Object value) {
 		this.value = value;
 		return this;
-	}
-	public void setModelValue(Object value) {
-		this.value = value;
 	}
 
 	public String getType() {
