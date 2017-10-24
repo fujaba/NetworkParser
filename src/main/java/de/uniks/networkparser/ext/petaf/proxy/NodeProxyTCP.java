@@ -139,8 +139,9 @@ public class NodeProxyTCP extends NodeProxy {
 			if(element instanceof Message) {
 				msg = (Message) element;
 				NodeProxy receiver = msg.getReceiver();
+				receiver.updateReceive(buffer.size());
 				// Let my Know about the new Receiver
-				if(receiver!= null) {
+				if(receiver != null) {
 					this.space.with(receiver);
 				}
 			}
@@ -178,7 +179,7 @@ public class NodeProxyTCP extends NodeProxy {
 				OutputStream os = requestSocket.getOutputStream();
 				byte[] buffer;
 				if(this.space != null) {
-					buffer = this.space.convertMessage(msg).getBytes();
+ 					buffer = this.space.convertMessage(msg).getBytes();
 				} else {
 					buffer = msg.toString().getBytes();
 				}
