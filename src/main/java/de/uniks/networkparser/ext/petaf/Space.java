@@ -257,8 +257,13 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 
 	public String convertMessage(Message msg){
 		BaseItem encode = getMap().encode(msg, tokener);
+		addMessageElement(msg, encode);
 		ByteConverter byteConverter = getConverter();
 		return byteConverter.encode(encode);
+	}
+	
+	protected void addMessageElement(Message msg, BaseItem encode) {
+		
 	}
 
 	public boolean removeProxy(NodeProxy proxy){
