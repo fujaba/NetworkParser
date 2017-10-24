@@ -16,6 +16,7 @@ import de.uniks.networkparser.ext.petaf.NodeProxyType;
 import de.uniks.networkparser.ext.petaf.Server_TCP;
 import de.uniks.networkparser.ext.petaf.SimpleExecutor;
 import de.uniks.networkparser.ext.petaf.TaskExecutor;
+import de.uniks.networkparser.ext.petaf.messages.ConnectMessage;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 
 public class NodeProxyTCP extends NodeProxy {
@@ -139,7 +140,12 @@ public class NodeProxyTCP extends NodeProxy {
 			if(element instanceof Message) {
 				msg = (Message) element;
 				NodeProxy receiver = msg.getReceiver();
-				receiver.updateReceive(buffer.size());
+				if(element instanceof ConnectMessage) {
+					receiver.updateReceive(buffer.size(), false);
+				} else {
+					receiver.updateReceive(buffer.size(), true);
+				}
+				
 				// Let my Know about the new Receiver
 				if(receiver != null) {
 					this.space.with(receiver);

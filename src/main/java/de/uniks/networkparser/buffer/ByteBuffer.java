@@ -334,6 +334,10 @@ public class ByteBuffer extends BufferedBuffer implements BaseItem {
 	public int size() {
 		return length();
 	}
+	
+	public String string() {
+		return new String(buffer);
+	}
 
 	public String toString(Converter converter) {
 		if (converter == null) {

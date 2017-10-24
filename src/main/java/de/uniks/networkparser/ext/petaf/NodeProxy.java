@@ -89,10 +89,12 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 		return type;
 	}
 
-	public void updateReceive(int len) {
+	public void updateReceive(int len, boolean setOnline) {
 		this.receivetime = System.currentTimeMillis();
 		this.receiveBytes += len;
-		this.withOnline(true);
+		if(setOnline) {
+			this.withOnline(true);
+		}
 	}
 
 	public NodeProxy withType(NodeProxyType value) {
