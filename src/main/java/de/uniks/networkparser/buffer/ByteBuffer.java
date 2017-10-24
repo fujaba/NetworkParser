@@ -50,11 +50,12 @@ public class ByteBuffer extends BufferedBuffer implements BaseItem {
 	}
 
 	@Override
-	public CharacterBuffer subSequence(int start, int length) {
-		byte[] sub = new byte[length];
-		if(start<buffer.length && length<=buffer.length) {
-			for (int i = 0; i < length; i++) {
-				sub[i] = buffer[start + length];
+	public CharacterBuffer subSequence(int start, int end) {
+		int len = end - start;
+		byte[] sub = new byte[len];
+		if(start<buffer.length && len<=buffer.length) {
+			for (int i = 0; i < len; i++) {
+				sub[i] = buffer[start + i];
 			}
 		}
 		return new CharacterBuffer().with(sub);
@@ -68,8 +69,11 @@ public class ByteBuffer extends BufferedBuffer implements BaseItem {
 
 	@Override
 	public char getChar() {
-		char result = (char) getByte();
-		result = (char) (result << 8 + (char) getByte());
+		int no = getByte();
+		if(no>=0) {
+			return (char)no;
+		}
+		char result = (char) (no << 8 + (char) getByte());
 		return result;
 	}
 
@@ -96,8 +100,8 @@ public class ByteBuffer extends BufferedBuffer implements BaseItem {
 		if(buffer == null || position>=buffer.length-1) {
 			return new byte[0];
 		}
-		byte[] result=new byte[length];
-		for(int i=0;i<length;i++) {
+		byte[] result=new byte[length - position];
+		for(int i=0;i<length - position;i++) {
 			result[i] = this.buffer[i+position];
 		}
 		return result;

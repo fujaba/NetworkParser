@@ -15,6 +15,11 @@ public class ConnectMessage extends Message {
 	}
 	
 	@Override
+	public Object getSendableInstance(boolean prototyp) {
+		return new ConnectMessage();
+	}
+	
+	@Override
 	public boolean handle(Space space) {
 		// TODO Auto-generated method stub
 		return super.handle(space);

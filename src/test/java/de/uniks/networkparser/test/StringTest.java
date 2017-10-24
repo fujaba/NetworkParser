@@ -34,7 +34,14 @@ public class StringTest {
 		String tokenerString = item.toString();
 		Assert.assertEquals(ref.length(), tokenerString.length());
 		Assert.assertEquals(ref, tokenerString);
-	}		
+	}
+	
+	@Test
+	public void testTwoBytes() {
+		System.out.println("Z".getBytes().length);
+		System.out.println("z".getBytes().length);
+		System.out.println("ä".getBytes().length);
+	}
 	
 	@Test
 	public void testUmlaute() {

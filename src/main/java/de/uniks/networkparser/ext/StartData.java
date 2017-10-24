@@ -1,327 +1,222 @@
 package de.uniks.networkparser.ext;
 
-import java.math.BigDecimal;
+import java.util.Set;
 
+import de.uniks.networkparser.Filter;
+import de.uniks.networkparser.IdMap;
+import de.uniks.networkparser.buffer.CharacterBuffer;
+import de.uniks.networkparser.ext.io.FileBuffer;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
-import de.uniks.networkparser.list.SimpleKeyValueList;
-
+import de.uniks.networkparser.json.JsonObject;
+import de.uniks.networkparser.list.SimpleList;
 
 public class StartData implements SendableEntityCreatorNoIndex
 {
-	private SimpleKeyValueList<String, Object> values = new SimpleKeyValueList<String, Object>();
-
-	@Override
-	public String[] getProperties() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Object getValue(Object entity, String attribute) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public boolean setValue(Object entity, String attribute, Object value, String type) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public Object getSendableInstance(boolean prototyp) {
-		// TODO Auto-generated method stub
-		return null;
+	public static final String PROPERTY_EDITABLE="editable";
+	private final static StartData  instance = new StartData();
+	private static String[] attribute = null;
+	private static SimpleList<StartElement> properties=new SimpleList<StartElement>();
+	private static boolean editable=true;
+	private static String fileName = "config.json";
+	private static String NULLVALUE = "null";
+	
+	public StartData() {
+		
 	}
 	
-//	@Override
-//	public boolean set(String attrName, Object value)
-//	{
-//		if (PROPERTY_NODEPORT.equals(attrName))
-//		{
-//			setNodePort(Integer.valueOf(""+value));
-//			return true;
-//		}
-//		if (PROPERTY_ROLE.equals(attrName))
-//		{
-//			setRole((String) value);
-//			return true;
-//		}
-//		if (PROPERTY_FIRST_PEER_ADDRESS.equals(attrName))
-//		{
-//			setFirstPeerAddress((String) value);
-//			return true;
-//		}
-//		if (PROPERTY_LOCAL_CONF_DIR_PATH.equals(attrName))
-//		{
-//			setLocalConfDirPath((String) value);
-//			return true;
-//		}
-//		if (PROPERTY_CONFNAME.equals(attrName))
-//		{
-//			setConfName((String) value);
-//			return true;
-//		}
-//		if (PROPERTY_ROOMNAME.equals(attrName))
-//		{
-//			setRoomName((String) value);
-//			return true;
-//		}
-//		if (PROPERTY_NODEFILESERVERPORT.equals(attrName))
-//		{
-//			if(value instanceof BigDecimal){
-//				setNodeFileServerPort(((BigDecimal)value).intValue());
-//			}else{
-//				setNodeFileServerPort((Integer)value);
-//			}
-//			return true;
-//		}
-//		if (PROPERTY_DEBUG.equals(attrName))
-//		{
-//			setEnableDebug((String)value);
-//			return true;
-//		}
-//		if (PROPERTY_OVERRIDE.equals(attrName))
-//		{
-//			setOverride(Boolean.valueOf(""+value));
-//			return true;
-//		}
-//		if (PROPERTY_NICKNAME.equals(attrName))
-//		{
-//			setNickname((String)value);
-//			return true;
-//		}
-//		if (PROPERTY_UPDATETIMERTASK.equals(attrName)){
-//			setUpdateTimerTask(Integer.valueOf(""+value));
-//			return true;
-//		}
-//		return super.set(attrName, value);
-//	}
-//
-//	@Override
-//	public Object get(String attrName)
-//	{
-//		if (PROPERTY_NODEPORT.equalsIgnoreCase(attrName))
-//		{
-//			return getNodePort();
-//		}
-//		else if (PROPERTY_ROLE.equalsIgnoreCase(attrName))
-//		{
-//			return getRole();
-//		}
-//		else if (PROPERTY_FIRST_PEER_ADDRESS.equalsIgnoreCase(attrName))
-//		{
-//			return getFirstPeerAddress();
-//		}
-//		else if (PROPERTY_LOCAL_CONF_DIR_PATH.equalsIgnoreCase(attrName))
-//		{
-//			return getLocalConfDirPath();
-//		}
-//		else if (PROPERTY_CONFNAME.equalsIgnoreCase(attrName))
-//		{
-//			return getConfName();
-//		}
-//		else if (PROPERTY_ROOMNAME.equalsIgnoreCase(attrName))
-//		{
-//			return getRoomName();
-//		}
-//		else if (PROPERTY_NODEFILESERVERPORT.equalsIgnoreCase(attrName))
-//		{
-//			return getNodeFileServerPort();
-//		}
-//		else if (PROPERTY_DEBUG.equalsIgnoreCase(attrName))
-//		{
-//			return getEnableDebug();
-//		}
-//		else if (PROPERTY_OVERRIDE.equalsIgnoreCase(attrName))
-//		{
-//			return isOverride();
-//		}
-//		else if (PROPERTY_NICKNAME.equalsIgnoreCase(attrName))
-//		{
-//			return getNickname();
-//		}
-//		else if (PROPERTY_UPDATETIMERTASK.equalsIgnoreCase(attrName))
-//		{
-//			return getUpdateTimerTask();
-//		}
-//		return super.get(attrName);
-//	}
-//	
-//	
-//	public void setNodePort(int value) 
-//	{
-//		int oldValue=this.nodeIpPort;
-//		this.nodeIpPort = value;
-//		firePropertyChange(PROPERTY_NODEPORT, oldValue, value);
-//	}
-//
-//	public int getNodePort() 
-//	{
-//		return this.nodeIpPort;
-//	}
-//
-//
-//	public void setRole(String value) 
-//	{
-//		String oldValue=this.role;
-//		this.role = value;
-//		firePropertyChange(PROPERTY_ROLE, oldValue, value);
-//	}
-//
-//	public String getRole() 
-//	{
-//		return this.role;
-//	}
-//
-//	
-//	public void setFirstPeerAddress(String value) 
-//	{
-//		String oldValue=this.firstPeerAddress;
-//		this.firstPeerAddress = value;
-//		firePropertyChange(PROPERTY_FIRST_PEER_ADDRESS, oldValue, value);
-//	}
-//
-//	public String getFirstPeerAddress() 
-//	{
-//		return this.firstPeerAddress;
-//	}
-//
-//	public void setConfName(String value) 
-//	{
-//		String oldValue=this.confName;
-//		this.confName = value;
-//		firePropertyChange(PROPERTY_CONFNAME, oldValue, value);
-//	}
-//
-//	public String getConfName() 
-//	{
-//		return this.confName;
-//	}
-//
-//	
-//	public void setRoomName(String value) 
-//	{
-//		String oldValue=this.roomName;
-//		this.roomName = value;
-//		firePropertyChange(PROPERTY_ROOMNAME, oldValue, value);
-//	}
-//
-//	public String getRoomName() 
-//	{
-//		return this.roomName;
-//	}
-//
-//	public void setNodeFileServerPort(int value) 
-//	{
-//		int oldValue=this.nodeFileServerPort;
-//		this.nodeFileServerPort = value;
-//		firePropertyChange(PROPERTY_NODEFILESERVERPORT, oldValue, value);
-//	}
-//
-//	public int getNodeFileServerPort() 
-//	{
-//		return this.nodeFileServerPort;
-//	}
-//	public int getFileServerPort() 
-//	{
-//		if(nodeFileServerPort==-1){
-//			return nodeIpPort+FILESERVERADD;
-//		}
-//		return this.nodeFileServerPort;
-//	}
-//
-//	public void setLocalConfDirPath(String value) 
-//	{
-//		String oldValue=this.localConfDirPath;
-//		value = ""+value;
-//		if(!value.endsWith("/")&&!value.endsWith("\\")){
-//			value+="/";
-//		}
-//		this.localConfDirPath = value;
-//		firePropertyChange(PROPERTY_LOCAL_CONF_DIR_PATH, oldValue, value);
-//	}
-//
-//	public String getLocalConfDirPath() 
-//	{
-//		return this.localConfDirPath;
-//	}
-//
-//	
-//	public void setWorld(String value) 
-//	{
-//		String oldValue=this.world;
-//		this.world = value;
-//		firePropertyChange(PROPERTY_ROLE, oldValue, value);
-//	}
-//
-//	public String getWorld() 
-//	{
-//		return this.role;
-//	}
-//	public void setNodeIp(String ip){
-//		super.withName(ip);
-//	}
-//	public String getNodeIp() {
-//		return getName();
-//	}
-//	public static String getHelpText() {
-//		StringBuffer text=new StringBuffer();
-////		text.append("Help for the commandline - ConfNet "+version+"\n\n");
-//		text.append(PROPERTY_NODEPORT +"= Port for the communication\n");
-//		text.append(PROPERTY_ROLE +"= Role for this Node<");
-//		String[] roles=getRoleList();
-//		for(int z=0;z<roles.length;z++){
-//			if(z>0){
-//				text.append(", "+roles[z]);
-//			}else{
-//				text.append(roles[z]);
-//			}
-//		}
-//		text.append(">\n");
-//		text.append(PROPERTY_FIRST_PEER_ADDRESS +"= Adress for the first communication");
-//		text.append(PROPERTY_LOCAL_CONF_DIR_PATH +"= Local Base Directory\n");
-//		text.append(PROPERTY_CONFNAME +"= Name of the conference\n");
-//		text.append(PROPERTY_ROOMNAME +"= Name of the room (if this a room node)\n");
-//		text.append(PROPERTY_NODEFILESERVERPORT +"= true or false for get the file contents\n");
-//		return text.toString();
-//	}
-//	public String getEnableDebug() {
-//		return enableDebug;
-//	}
-//	public void setEnableDebug(String enableDebug) {
-//		this.enableDebug = enableDebug;
-//	}
-//	public boolean isAutoStart() {
-//		return isAutoStart;
-//	}
-//	public void setAutoStart(boolean isAutoStart) {
-//		this.isAutoStart = isAutoStart;
-//	}
-//	public static String[] getRoleList()
-//	{
-//		return new String[] {ROLE_REGISTRATION_DESK, ROLE_ROOM_NODE, ROLE_ADMIN_DESK, ROLE_REGISTRATION_VIEW}; 
-//	}
-//	public boolean isOverride() {
-//		return override;
-//	}
-//	public void setOverride(boolean override) {
-//		this.override = override;
-//	}
-//	public String getNickname() {
-//		return nickname;
-//	}
-//	public void setNickname(String value) {
-//		String oldValue=this.nickname;
-//		this.nickname = value;
-//		firePropertyChange(PROPERTY_NICKNAME, oldValue, value);
-//	}
-//	public int getUpdateTimerTask() {
-//		return updateTimerTask;
-//	}
-//	public void setUpdateTimerTask(Integer value) {
-//		Integer oldValue=this.updateTimerTask;
-//		this.updateTimerTask = value;
-//		firePropertyChange(PROPERTY_UPDATETIMERTASK, oldValue, value);
-//	}
+	
+	public static boolean setFileName(String value) {
+		if(value != null && value != fileName) {
+			StartData.fileName = value;
+			return true;
+		}
+		return false;
+	}
+	
+	public static StartData instance() {
+		return instance;
+	}
+	
+	public static boolean addParameter(String key, String label, String description, Object values) {
+		StartElement startElement = new StartElement();
+		startElement.withDescription(description);
+		startElement.withLabel(label);
+		startElement.withKey(key);
+		startElement.withDefaultValues(values);
+		boolean success =  StartData.properties.add(startElement);
+		if(success) {
+			StartData.attribute=null;
+		}
+		return success;
+	}
+	
+	public static boolean addParameter(String key, Object value) {
+		StartElement startElement = new StartElement();
+		startElement.withKey(key);
+		startElement.withValue(value);
+		boolean success =  StartData.properties.add(startElement);
+		if(success) {
+			StartData.attribute=null;
+		}
+		return success;
+	}
+	
+	public static boolean has(String key) {
+		if(key == null) {
+			return false;
+		}
+		for(StartElement item : properties) {
+			if(key.equalsIgnoreCase(item.getKey())) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public static boolean isEditable() {
+		return editable;
+	}
+	
+	public static String getString(String key) {
+		if(key == null) {
+			return null;
+		}
+		for(StartElement item : properties) {
+			if(key.equalsIgnoreCase(item.getKey())) {
+				Object result = item.getValue();
+				if(result  instanceof String) {
+					return (String) result;
+				}
+				return ""+result;
+			}
+		}
+		return null;
+	}
+
+	public static Integer getInteger(String key) {
+		if(key == null) {
+			return null;
+		}
+		for(StartElement item : properties) {
+			if(key.equalsIgnoreCase(item.getKey())) {
+				Object result = item.getValue();
+				if(result  instanceof Integer) {
+					return (Integer) result;
+				}
+				return Integer.valueOf(""+result);
+			}
+		}
+		return null;
+	}
+
+	public static boolean setValue(String key, Object value) {
+		for(StartElement item : properties) {
+			if(key.equalsIgnoreCase(item.getKey())) {
+				if(NULLVALUE.equals(value)) {
+					item.withValue(null);
+				}else {
+					item.withValue(value);
+				}
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	@Override
+	public String[] getProperties() {
+		if(StartData.attribute == null) {
+			StartData.attribute = new String[StartData.properties.size()+1];
+			attribute[0] = PROPERTY_EDITABLE;
+			int i=1;
+			for(StartElement item : properties) {
+				StartData.attribute[i++] = item.getKey();
+			}
+		}
+		return attribute;
+	}
+
+	@Override
+	public Object getSendableInstance(boolean reference) {
+		return new StartData();
+	}
+	
+	public static SimpleList<StartElement> getElements() {
+		return properties;
+	}
+
+	@Override
+	public Object getValue(Object entity, String attrName) {
+		if(attrName == null || entity instanceof StartData == false) {
+			return null;
+		}
+		if(PROPERTY_EDITABLE.equalsIgnoreCase(attrName)) {
+			return isEditable();
+		}
+		SimpleList<StartElement> properties = StartData.getElements();
+		for(StartElement item : properties) {
+			if(attrName.equalsIgnoreCase(item.getKey())) {
+				Object value = item.getValue();
+				if(NULLVALUE.equals(value)) {
+					return "";
+				}
+				return value;
+			}
+		}
+		return null;
+	}
+
+	@Override
+	public boolean setValue(Object entity, String attrName, Object value, String type) {
+		if(attrName == null || entity instanceof StartData == false) {
+			return false;
+		}
+		if(PROPERTY_EDITABLE.equalsIgnoreCase(attrName)) {
+			StartData.editable = (Boolean)value;
+			return true;
+		}
+		for(StartElement item : properties) {
+			if(attrName.equalsIgnoreCase(item.getKey())) {
+				if(NULLVALUE.equals(value)) {
+					item.withValue(null);
+				}else {
+					item.withValue(value);
+				}
+				return true;
+			}
+		}
+		// Not Found Create it
+		System.out.println(attrName+" not in Config-File");
+		return StartData.addParameter(attrName, value);
+	}
+	
+	public static boolean save() {
+		IdMap map = new IdMap();
+		map.with(StartData.instance());
+		JsonObject config = map.toJsonObject(StartData.instance(), Filter.createFull());
+		return FileBuffer.writeFile(StartData.fileName, config.toString(2));
+	}
+	
+	public static boolean load() {
+		IdMap map = new IdMap();
+		map.with(StartData.instance());
+		CharacterBuffer readFile = FileBuffer.readFile(StartData.fileName);
+		JsonObject json = new JsonObject().withValue(readFile);
+		// Merge Properties from File and Properties from StartData
+		Set<String> keySet = json.keySet();
+		for(String key : keySet) {
+			if(IdMap.CLASS.equals(key)) {
+				continue;
+			}
+			if(has(key) == false) {
+				addParameter(key, null);
+			}
+		}
+		return map.decode(json, StartData.instance(), null) != null;
+	}
+
+
+	public static boolean isAutoStart() {
+		return StartData.isEditable() == false;
+	}
 }

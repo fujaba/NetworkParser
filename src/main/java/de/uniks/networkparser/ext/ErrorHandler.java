@@ -281,7 +281,10 @@ public class ErrorHandler implements Thread.UncaughtExceptionHandler {
 		return result;
 	}
 	public void saveException(Throwable e) {
-		saveException(e, this.stage);
+		saveException(e, this.stage, true);
+	}
+	public void saveException(Throwable e, boolean throwException) {
+		saveException(e, this.stage, throwException);
 	}
 	
 	public boolean writeOutput(String output, boolean error) {
@@ -316,14 +319,14 @@ public class ErrorHandler implements Thread.UncaughtExceptionHandler {
 	
 	@Override
 	public void uncaughtException(Thread t, Throwable e) {
-		saveException(e, stage);
+		saveException(e, stage, true);
 	}
 	
 	
 	public String getPrefix() {
 		return new DateTimeEntity().toString("yyyymmdd_HHMMSS_");
 	}
-	public void saveException(Throwable e, Object stage) {
+	public void saveException(Throwable e, Object stage, boolean throwException) {
 		// Generate Error.txt
 		String prefixName = getPrefix();
 		saveErrorFile(prefixName, "error.txt", this.path, e);
@@ -338,7 +341,9 @@ public class ErrorHandler implements Thread.UncaughtExceptionHandler {
 		}
 		if(Os.isEclipse()) {
 			e.printStackTrace();
-			throw new RuntimeException(e);
+			if(throwException) {
+				throw new RuntimeException(e);
+			}
 		}
 	}
 

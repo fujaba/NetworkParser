@@ -9,10 +9,12 @@ import de.uniks.networkparser.StringEntity;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.bytes.SHA1;
 import de.uniks.networkparser.interfaces.BaseItem;
+import de.uniks.networkparser.interfaces.SendableEntityCreator;
+import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
 import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.list.SimpleList;
 
-public class Message {
+public class Message implements SendableEntityCreator, SendableEntityCreatorNoIndex{
 	public static final String PROPERTY_HISTORYID="id";
 	public static final String PROPERTY_PREVIOUSCHANGE="prevChange";
 	public static final String PROPERTY_MSG="msg";
@@ -20,7 +22,13 @@ public class Message {
 	public static final String PROPERTY_RECEIVED="received";
 	public static final String PROPERTY_PARENT="parent";
 	public static final int TIMEOUTDEFAULT=0;
-	
+	private final static String[] props=new String[]{
+			Message.PROPERTY_HISTORYID,
+			Message.PROPERTY_MSG,
+			Message.PROPERTY_PREVIOUSCHANGE,
+			Message.PROPERTY_RECEIVER,
+			Message.PROPERTY_RECEIVED
+	};
 	protected String historyId;
 	protected SimpleList<String> received=new SimpleList<String>();
 	protected String prevChange;
@@ -187,5 +195,26 @@ public class Message {
 	public Message withSession(Socket session) {
 		this.session = session;
 		return this;
+	}
+	
+	@Override
+	public String[] getProperties() {
+		return props;
+	}
+
+	@Override
+	public Object getSendableInstance(boolean prototyp) {
+		return new Message();
+	}
+
+	@Override
+	public Object getValue(Object entity, String attribute) {
+		return ((Message)entity).get(attribute);
+	}
+
+	@Override
+	public boolean setValue(Object entity, String attribute, Object value,
+			String type) {
+		return ((Message)entity).set(attribute, value);
 	}
 }

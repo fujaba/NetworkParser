@@ -14,7 +14,7 @@ import de.uniks.networkparser.list.SimpleList;
 public class TextEntity implements EntityList {
 	private SimpleList<BaseItem> children;
 	private String tag;
-	private String tagEnd;
+	private CharSequence tagEnd;
 
 	@Override
 	public String toString(Converter converter) {
@@ -93,9 +93,18 @@ public class TextEntity implements EntityList {
 		this.tag = value;
 		return this;
 	}
+	public TextEntity withTag(char value) {
+		this.tag = ""+value;
+		return this;
+	}
 	
-	public TextEntity withTagEnd(String value) {
+	public TextEntity withTagEnd(CharSequence value) {
 		this.tagEnd = value;
+		return this;
+	}
+
+	public TextEntity withTagEnd(char value) {
+		this.tagEnd = ""+value;
 		return this;
 	}
 

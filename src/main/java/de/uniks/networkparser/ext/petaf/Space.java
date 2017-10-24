@@ -13,11 +13,10 @@ import de.uniks.networkparser.converter.ByteConverterString;
 import de.uniks.networkparser.ext.ErrorHandler;
 import de.uniks.networkparser.ext.LogItem;
 import de.uniks.networkparser.ext.petaf.filter.ProxyFilter;
+import de.uniks.networkparser.ext.petaf.messages.ChangeMessage;
+import de.uniks.networkparser.ext.petaf.messages.ConnectMessage;
 import de.uniks.networkparser.ext.petaf.messages.InfoMessage;
-import de.uniks.networkparser.ext.petaf.messages.util.ChangeMessageCreator;
-import de.uniks.networkparser.ext.petaf.messages.util.ConnectMessageCreator;
-import de.uniks.networkparser.ext.petaf.messages.util.MessageCreator;
-import de.uniks.networkparser.ext.petaf.messages.util.PingMessageCreator;
+import de.uniks.networkparser.ext.petaf.messages.PingMessage;
 import de.uniks.networkparser.ext.petaf.proxy.NodeBackup;
 import de.uniks.networkparser.ext.petaf.proxy.NodeProxyLocal;
 import de.uniks.networkparser.ext.petaf.proxy.NodeProxyModel;
@@ -91,12 +90,12 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 	protected IdMap createIdMap() {
 		IdMap map = new IdMap()
 		.with(	this, 
-				new MessageCreator(), 
-				new ChangeMessageCreator(), 
-				new PingMessageCreator(), 
+				new Message(), 
+				new ChangeMessage(), 
+				new PingMessage(), 
 				new NodeProxyTCP(), 
 				new NodeProxyLocal(), 
-				new ConnectMessageCreator(), 
+				new ConnectMessage(), 
 				new NodeProxyModel(null));
 		return map;
 	}
@@ -779,7 +778,7 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 	}
 
 	public void handleException(Throwable e) {
-		this.handler.saveException(e);
+		this.handler.saveException(e, false);
 	}
 	
 	public boolean handleMsg(Message message) {

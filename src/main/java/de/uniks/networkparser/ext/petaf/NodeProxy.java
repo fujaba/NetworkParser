@@ -4,10 +4,10 @@ import de.uniks.networkparser.ext.petaf.messages.ConnectMessage;
 import de.uniks.networkparser.ext.petaf.messages.InfoMessage;
 import de.uniks.networkparser.ext.petaf.messages.PingMessage;
 import de.uniks.networkparser.interfaces.ObjectCondition;
-import de.uniks.networkparser.interfaces.SendableEntityCreator;
+import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
 import de.uniks.networkparser.list.SimpleList;
 
-public abstract class NodeProxy extends SendableItem implements Comparable<NodeProxy>, SendableEntityCreator {
+public abstract class NodeProxy extends SendableItem implements Comparable<NodeProxy>, SendableEntityCreatorNoIndex {
 	public static int BUFFER = 100 * 1024;
 	public static final String PROPERTY_SEND = "sendtime";
 	public static final String PROPERTY_RECEIVE = "receivetime";

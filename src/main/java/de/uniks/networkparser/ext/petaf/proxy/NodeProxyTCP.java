@@ -135,19 +135,22 @@ public class NodeProxyTCP extends NodeProxy {
 		Message msg=null;
 		if(this.space != null) {
 			IdMap map = this.space.getMap();
-			Object element = map.decode(buffer.toString());
+			Object element = map.decode(buffer);
 			if(element instanceof Message) {
 				msg = (Message) element;
+				NodeProxy receiver = msg.getReceiver();
+				// Let my Know about the new Receiver
+				if(receiver!= null) {
+					receiver.withOnline(true);
+					this.space.with(receiver);
+				}
 			}
 		}
 		if(msg == null){
 			msg=new Message();
 		}
-		msg.withMessage(buffer);
+		msg.withMessage(buffer.flip(false));
 		msg.withSession(socket);
-		// Get Receiver
-		String receiver = socket.getInetAddress().getHostAddress()+":"+socket.getPort();
-//		msg.withReceiver(this);
 		if(this.listener != null) {
 			this.listener.update(msg);
 		}

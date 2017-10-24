@@ -1,6 +1,5 @@
 package de.uniks.networkparser.ext.petaf;
 
-import java.io.IOException;
 import java.net.Socket;
 
 import de.uniks.networkparser.ext.petaf.proxy.NodeProxyTCP;
@@ -18,7 +17,7 @@ public class MessageRequest implements Runnable {
  		public void run() {
 			try {
 				proxy.readFromInputStream(requestSocket);
-			} catch (IOException e) {
+			} catch (Exception e) {
 				Space space = proxy.getSpace();
 				if(space!=null) {
 					space.handleException(e);
