@@ -58,7 +58,7 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 	public void connectToPeer() {
 		sendMessage(ConnectMessage.create());
 	}
-	
+
 	public void connectInfo() {
 		sendMessage(new InfoMessage());
 	}
@@ -83,6 +83,7 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 	}
 
 	protected boolean sending(Message msg) {
+		msg.withAddToReceived(this);
 		this.lastSendTryTime = System.currentTimeMillis();
 		return false;
 	}
@@ -90,7 +91,7 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 	public NodeProxyType getType() {
 		return type;
 	}
-	
+
 	public void updateReceive(int len) {
 		this.receivetime = System.currentTimeMillis();
 		this.receiveBytes += len;
@@ -104,13 +105,13 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 		this.type = value;
 		return this;
 	}
-	
+
 	public long getNewMsgNo() {
 		this.no++;
 		if(no<0) {
 			no =0;
 		}
-		return no; 
+		return no;
 	}
 
 	public void setSendTime(int bytes) {
@@ -320,11 +321,11 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 	public NodeProxy next() {
 		return this.nextPeer;
 	}
-	
+
 	public NodeProxy with(NodeProxy nextPeer) {
 		this.nextPeer = nextPeer;
 		return this;
 	}
-	
+
 	public abstract String getKey();
 }

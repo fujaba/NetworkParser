@@ -32,7 +32,7 @@ public class Message implements SendableEntityCreator, SendableEntityCreatorNoIn
 			PROPERTY_RECEIVED
 	};
 	protected String historyId;
-	protected SimpleList<String> received=new SimpleList<String>();
+	protected SimpleList<NodeProxy> received=new SimpleList<NodeProxy>();
 	protected String prevChange;
 	protected BaseItem msg;
 	protected NodeProxy receiver;
@@ -40,40 +40,40 @@ public class Message implements SendableEntityCreator, SendableEntityCreatorNoIn
 	private Socket session;
 	private boolean sendAnyHow=false;
 	private String type;
-	
+
 	public String getMessageId(Space space, NodeProxy proxy){
 		if(this.historyId == null ){
 			this.historyId = SHA1.value(getBlob()).toString();
 		}
 		return historyId;
 	}
-	
+
 	public Message withType(String value) {
 		this.type = value;
 		return this;
 	}
-	
+
 	public String getType() {
 		return type;
 	}
-	
+
 	public Message withHistoryId(String id){
 		this.historyId = id;
 		return this;
 	}
-	
-	public SimpleList<String> getReceived() {
+
+	public SimpleList<NodeProxy> getReceived() {
 		return received;
 	}
 
-	public Message withAddToReceived(String value) {
+	public Message withAddToReceived(NodeProxy value) {
 		this.received.add(value);
 		return this;
 	}
 	public void addToReceived(BaseItem value) {
 		this.received.add(value.toString());
 	}
-	
+
 	public CharacterBuffer getBlob() {
 		CharacterBuffer list=new CharacterBuffer();
 		list.withObjects(getPrevChange(), getMessage(), getReceiver());
@@ -83,7 +83,7 @@ public class Message implements SendableEntityCreator, SendableEntityCreatorNoIn
 	public boolean handle(Space space) {
 		return false;
 	}
-	
+
 	public Message withReceiver(NodeProxy value) {
 		this.receiver = value;
 		return this;
@@ -93,7 +93,7 @@ public class Message implements SendableEntityCreator, SendableEntityCreatorNoIn
 		this.msg = value;
 		return this;
 	}
-	
+
 	public String getPrevChange() {
 		return prevChange;
 	}
@@ -141,7 +141,7 @@ public class Message implements SendableEntityCreator, SendableEntityCreatorNoIn
 		Message message = new Message().withSendAnyHow(true).withMessage(stringEntity);
 		return message;
 	}
-	
+
 	@Override
 	public String toString() {
 		return getMessage().toString();
@@ -150,7 +150,7 @@ public class Message implements SendableEntityCreator, SendableEntityCreatorNoIn
 	public Socket getSession() {
 		return session;
 	}
-	
+
 	public boolean write(String answer) {
 		try {
 			OutputStream outputStream = session.getOutputStream();
@@ -161,12 +161,12 @@ public class Message implements SendableEntityCreator, SendableEntityCreatorNoIn
 		}
 		return true;
 	}
-	
+
 	public Message withSession(Socket session) {
 		this.session = session;
 		return this;
 	}
-	
+
 	@Override
 	public String[] getProperties() {
 		return props;
@@ -225,13 +225,14 @@ public class Message implements SendableEntityCreator, SendableEntityCreatorNoIn
 		if(PROPERTY_RECEIVER.equalsIgnoreCase(attribute)){
 			msg.withReceiver((NodeProxy) value);
 			return true;
-		}		
+		}
 		if(PROPERTY_RECEIVED.equalsIgnoreCase(attribute)){
-			msg.withAddToReceived((String) value);
+			msg.withAddToReceived((NodeProxy) value);
 			return true;
 		}
 		if(PROPERTY_TYPE.equalsIgnoreCase(attribute)) {
 			msg.withType((String)value);
+			return true;
 		}
 		return false;
 	}

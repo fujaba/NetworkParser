@@ -310,10 +310,23 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 		return true;
 	}
 
+	/**
+	 * 
+	 * @param proxy the sending proxy
+	 * @param msg
+	 * @return
+	 */
 	public boolean sendMessage(NodeProxy proxy, Message msg) {
 		 return sendMessage(proxy, msg, false);
 	}
 
+	/**
+	 * 
+	 * @param proxy the proxy
+	 * @param msg
+	 * @param sendAnyhow
+	 * @return
+	 */
 	public boolean sendMessage(NodeProxy proxy, Message msg, boolean sendAnyhow) {
 		// find my Proxy with Key
 		NodeProxy myProxy = null;
@@ -354,11 +367,11 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 	}
 
 	protected void calculateSendProxy(Message msg, NodeProxy receiver, SimpleSet<NodeProxy> sendProxies) {
-		SimpleList<String> receivedString = msg.getReceived();
-		SimpleList<NodeProxy> received = new SimpleList<NodeProxy>();
-		for(String item : receivedString) {
-			received.add(getProxy(item));
-		}
+//		SimpleList<NodeProxy> receivedString = msg.getReceived();
+		SimpleList<NodeProxy> received = msg.getReceived();
+//		for(String item : receivedString) {
+//			received.add(getProxy(item));
+//		}
 
 		SimpleList<Integer> receiverProxy=new SimpleList<Integer>();
 		NodeProxy proxy;
