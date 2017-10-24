@@ -90,6 +90,12 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 	public NodeProxyType getType() {
 		return type;
 	}
+	
+	public void updateReceive(int len) {
+		this.receivetime = System.currentTimeMillis();
+		this.receiveBytes += len;
+		this.withOnline(true);
+	}
 
 	public NodeProxy withType(NodeProxyType value) {
 		// if output is not configured, we don't allow OUT or INOUT as value...
