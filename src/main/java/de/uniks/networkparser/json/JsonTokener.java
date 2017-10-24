@@ -104,7 +104,7 @@ public class JsonTokener extends Tokener {
 		switch (stopChar) {
 		case '"':
 			skip();
-			return EntityUtil.unQuote(nextString(new CharacterBuffer(), allowQuote, true, stopChar));
+			return EntityUtil.unQuote(nextString(new CharacterBuffer(), true, true, stopChar));
 		case '\\':
 			// Must be unquote
 			skip();
@@ -175,7 +175,7 @@ public class JsonTokener extends Tokener {
 				skip();
 				Object keyValue = nextValue(entity, isQuote, false, stop);
 				if(keyValue == null) {
-					// No Key Found Must eb an empty statement
+					// No Key Found Must be an empty statement
 					return true;
 				}
 				key = keyValue.toString();
