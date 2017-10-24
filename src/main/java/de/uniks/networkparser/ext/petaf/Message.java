@@ -70,9 +70,6 @@ public class Message implements SendableEntityCreator, SendableEntityCreatorNoIn
 		this.received.add(value);
 		return this;
 	}
-	public void addToReceived(BaseItem value) {
-		this.received.add(value.toString());
-	}
 
 	public CharacterBuffer getBlob() {
 		CharacterBuffer list=new CharacterBuffer();

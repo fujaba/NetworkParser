@@ -314,7 +314,7 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 	}
 
 	/**
-	 * 
+	 *
 	 * @param proxy the sending proxy
 	 * @param msg
 	 * @return
@@ -324,7 +324,7 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 	}
 
 	/**
-	 * 
+	 *
 	 * @param proxy the proxy
 	 * @param msg
 	 * @param sendAnyhow
@@ -392,7 +392,7 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 				if(receiver == proxy || isMyNode(proxy, myNode)) {
 					receiverProxy.add(i);
 					if(proxy.isSendable()) {
-						msg.addToReceived(map.encode(proxy, tokener, new NodeProxyFilter()));
+						msg.withAddToReceived(proxy);
 					}
 				} else if(!proxy.isReconnecting(this.tryReconnectTimeSecond)) {
 					sendProxies.add(proxy);
@@ -409,7 +409,7 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 					}
 					receiverProxy.add(i);
 					if(proxy.isSendable()) {
-						msg.addToReceived(map.encode(proxy, tokener, new NodeProxyFilter()));
+						msg.withAddToReceived(proxy);
 					}
 				} else if(!proxy.isReconnecting(this.tryReconnectTimeSecond)) {
 					sendProxies.add(proxy);
@@ -492,7 +492,7 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 		for(NodeProxy peer : sendProxies) {
 			boolean done = peer.sending(msg);
 			if(done) {
-				msg.addToReceived(map.encode(peer, tokener, new NodeProxyFilter()));
+				msg.withAddToReceived(peer);
 				success = true;
 			}
 		}
