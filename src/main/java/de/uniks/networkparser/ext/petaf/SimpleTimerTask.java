@@ -36,7 +36,7 @@ public class SimpleTimerTask extends TimerTask {
 			}
          	runTask();
          }catch(Exception e){
-       		 handler.saveException(e);
+       		 handler.saveException(e, false);
          }
 	}
 

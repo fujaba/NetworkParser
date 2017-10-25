@@ -62,4 +62,9 @@ public class ChangeMessage extends Message {
 			this.entity = modell.getModell();
 		}
 	}
+	
+	@Override
+	public Object getSendableInstance(boolean prototyp) {
+		return new ChangeMessage();
+	}
 }

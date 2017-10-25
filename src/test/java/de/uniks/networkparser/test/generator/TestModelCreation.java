@@ -1,5 +1,6 @@
 package de.uniks.networkparser.test.generator;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import de.uniks.networkparser.ext.ClassModel;
@@ -20,16 +21,20 @@ public class TestModelCreation {
    @Test
 	public void testCreateEntireModel() {
 		
+	   if(Generator.DISABLE) {
+		   return;
+	   }
+	   
 	   	Story story = new Story();
 	   
-		ClassModel model = new ClassModel("org.sdmlib.simple.model.modelling_a");
+		ClassModel model = new ClassModel("de.uniks.networkparser.test.model.modelling_a");
 
 		// Classes
 		Clazz person = model.createClazz("Person");
 		Clazz pupil = model.createClazz("Pupil");
 		Clazz teacher = model.createClazz("Teacher");
 		Clazz room = model.createClazz("Room");
-		model.createClazz("StudentEnum").enableEnumeration(new Literal("STUDENT").withValue(42));
+		Clazz enumStudent = model.createClazz("StudentEnum").enableEnumeration(new Literal("STUDENT").withValue(42));
 		Clazz roomInterface = model.createClazz("roomInterface").enableInterface();
 		
 		// Attributes
@@ -62,6 +67,7 @@ public class TestModelCreation {
 		room.withBidirectional(teacher, "currentTeacher", Cardinality.ONE, "currentRoom", Cardinality.ONE);
 		pupil.withBidirectional(teacher, "teacher", Cardinality.ONE, "pupils", Cardinality.MANY);
 		
+		Assert.assertEquals(1, enumStudent.getAttributes().size());
 		model.generate("src/test/java");
 		
 		story.addDiagram(model);

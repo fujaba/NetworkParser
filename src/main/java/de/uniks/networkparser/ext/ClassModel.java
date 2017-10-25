@@ -47,11 +47,14 @@ public class ClassModel extends GraphModel {
 	public boolean dumpHTML(String diagramName) {
 		HTMLEntity html = new HTMLEntity();
 		html.withGraph(this);
-		if(diagramName == null) {
+		if(diagramName == null || diagramName.length() < 1) {
 			diagramName = this.getName();
 		}
 		if(diagramName == null) {
 			diagramName = "Model";
+		}
+		if(diagramName.length() < 1) {
+			return false;
 		}
 		return FileBuffer.writeFile("doc/"+diagramName+".html", html.toString());
 	}

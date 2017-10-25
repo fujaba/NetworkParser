@@ -4,10 +4,10 @@ import de.uniks.networkparser.ext.petaf.messages.ConnectMessage;
 import de.uniks.networkparser.ext.petaf.messages.InfoMessage;
 import de.uniks.networkparser.ext.petaf.messages.PingMessage;
 import de.uniks.networkparser.interfaces.ObjectCondition;
-import de.uniks.networkparser.interfaces.SendableEntityCreator;
+import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
 import de.uniks.networkparser.list.SimpleList;
 
-public abstract class NodeProxy extends SendableItem implements Comparable<NodeProxy>, SendableEntityCreator {
+public abstract class NodeProxy extends SendableItem implements Comparable<NodeProxy>, SendableEntityCreatorNoIndex {
 	public static int BUFFER = 100 * 1024;
 	public static final String PROPERTY_SEND = "sendtime";
 	public static final String PROPERTY_RECEIVE = "receivetime";
@@ -18,12 +18,12 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 	public static final String PROPERTY_VERSION = "version";
 	public static final String PROPERTY_TYP = "typ";
 	public static final String PROPERTY_NAME = "name";
-	public static final String PROPERTY_KEY = "key";
+	public static final String PROPERTY_ID = "id";
 
-	protected PropertyList propertyUpdate = PropertyList.create(PROPERTY_KEY, PROPERTY_HISTORY, PROPERTY_FILTER, PROPERTY_SEND);
-	protected PropertyList propertyInfo = PropertyList.create(PROPERTY_KEY, PROPERTY_SEND, PROPERTY_RECEIVE, PROPERTY_HISTORY,
+	protected PropertyList propertyUpdate = PropertyList.create(PROPERTY_ID, PROPERTY_HISTORY, PROPERTY_FILTER, PROPERTY_SEND);
+	protected PropertyList propertyInfo = PropertyList.create(PROPERTY_ID, PROPERTY_SEND, PROPERTY_RECEIVE, PROPERTY_HISTORY,
 			PROPERTY_FILTER, PROPERTY_VERSION);
-	protected PropertyList property = PropertyList.create(PROPERTY_KEY, PROPERTY_SEND, PROPERTY_RECEIVE, PROPERTY_ONLINE,
+	protected PropertyList property = PropertyList.create(PROPERTY_ID, PROPERTY_SEND, PROPERTY_RECEIVE, PROPERTY_ONLINE,
 			PROPERTY_NODES, PROPERTY_HISTORY, PROPERTY_FILTER, PROPERTY_VERSION);
 
 	protected NodeProxyType type;
@@ -58,7 +58,7 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 	public void connectToPeer() {
 		sendMessage(ConnectMessage.create());
 	}
-	
+
 	public void connectInfo() {
 		sendMessage(new InfoMessage());
 	}
@@ -69,13 +69,10 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 		}
 		return this.sending(msg);
 	}
+
 	public boolean sendPing() {
-		//msg
 		PingMessage message=new PingMessage();
-		if (this.space != null) {
-			return this.space.sendMessage(this, message, false);
-		}
-		return this.sending(message);
+		return sendMessage(message);
 	}
 
 	public boolean sendMessageToPeers(Message msg) {
@@ -83,12 +80,21 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 	}
 
 	protected boolean sending(Message msg) {
+		msg.withAddToReceived(this);
 		this.lastSendTryTime = System.currentTimeMillis();
 		return false;
 	}
 
 	public NodeProxyType getType() {
 		return type;
+	}
+
+	public void updateReceive(int len, boolean setOnline) {
+		this.receivetime = System.currentTimeMillis();
+		this.receiveBytes += len;
+		if(setOnline) {
+			this.withOnline(true);
+		}
 	}
 
 	public NodeProxy withType(NodeProxyType value) {
@@ -98,19 +104,19 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 		this.type = value;
 		return this;
 	}
-	
+
 	public long getNewMsgNo() {
 		this.no++;
 		if(no<0) {
 			no =0;
 		}
-		return no; 
+		return no;
 	}
 
 	public void setSendTime(int bytes) {
-		Long oldValue = sendtime;
+//		Long oldValue = sendtime;
 		this.sendtime = System.currentTimeMillis();
-		firePropertyChange(PROPERTY_SEND, oldValue, sendtime);
+//		firePropertyChange(PROPERTY_SEND, oldValue, sendtime);
 		this.lastSendCount = 0;
 	}
 
@@ -137,9 +143,9 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 	}
 
 	public void setReceiveTime() {
-		Long oldValue = receivetime;
+//		Long oldValue = receivetime;
 		this.receivetime = System.currentTimeMillis();
-		firePropertyChange(PROPERTY_RECEIVE, oldValue, receivetime);
+//		firePropertyChange(PROPERTY_RECEIVE, oldValue, receivetime);
 	}
 
 	public Long getReceiveTime() {
@@ -270,7 +276,7 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 		if (PROPERTY_TYP.equals(attrName)) {
 			return nodeProxy.getType();
 		}
-		if(PROPERTY_KEY.equals(attrName)) {
+		if(PROPERTY_ID.equals(attrName)) {
 			return nodeProxy.getKey();
 		}
 		return null;
@@ -314,11 +320,11 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 	public NodeProxy next() {
 		return this.nextPeer;
 	}
-	
+
 	public NodeProxy with(NodeProxy nextPeer) {
 		this.nextPeer = nextPeer;
 		return this;
 	}
-	
+
 	public abstract String getKey();
 }

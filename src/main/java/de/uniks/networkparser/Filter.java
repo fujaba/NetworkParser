@@ -208,6 +208,15 @@ public class Filter {
 	public static Filter convertable(ObjectCondition convertable) {
 		return new Filter().withConvertable(convertable);
 	}
+	
+	
+	/**
+	 * Full Serialization
+	 * @return a Filter for Full Serialization
+	 */
+	public static Filter createFull() {
+		return new Filter().withFull(true);
+	}
 
 	public String[] getProperties(SendableEntityCreator creator) {
 		return creator.getProperties();

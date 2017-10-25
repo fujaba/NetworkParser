@@ -118,9 +118,6 @@ public final class SimpleEvent extends PropertyChangeEvent {
 		this.value = value;
 		return this;
 	}
-	public void setModelValue(Object value) {
-		this.value = value;
-	}
 
 	public String getType() {
 		return type;

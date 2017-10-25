@@ -79,7 +79,8 @@ import de.uniks.networkparser.list.SortedList;
  */
 
 public class JsonArray extends SortedList<Object> implements EntityList {
-	
+	public static final char START='[';
+	public static final char END=']';
 	/**
 	 * Default Constructor
 	 */
@@ -198,7 +199,7 @@ public class JsonArray extends SortedList<Object> implements EntityList {
 		}
 		// First Element
 		converter.add();
-		StringBuilder sb = new StringBuilder("[").append(converter.getPrefix());
+		StringBuilder sb = new StringBuilder().append(START).append(converter.getPrefix());
 		Object element = iterator.next();
 		sb.append(EntityUtil.valueToString(element, false, this, converter));
 		while (iterator.hasNext()) {
@@ -209,7 +210,7 @@ public class JsonArray extends SortedList<Object> implements EntityList {
 		}
 		converter.minus();
 		sb.append(converter.getPrefix());
-		sb.append(']');
+		sb.append(END);
 		return sb.toString();
 	}
 

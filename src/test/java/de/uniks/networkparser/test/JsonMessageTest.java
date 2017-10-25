@@ -28,7 +28,7 @@ public class JsonMessageTest implements ObjectCondition {
 			return false;
 		}
 		SimpleEvent simpleEvent = (SimpleEvent) event;
-		if(simpleEvent.isNewEvent()){
+		if(simpleEvent.isNewEvent() || simpleEvent.isIdEvent()){
 			Assert.assertEquals("Message "+pos+":", messages.get(pos++), simpleEvent.getEntity().toString());
 		}
 		return true;

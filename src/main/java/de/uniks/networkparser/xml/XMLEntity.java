@@ -48,9 +48,9 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 	/** The children. */
 	private SimpleList<EntityList> children;
 
-	public static final String START = "<";
+	public static final char START = '<';
 
-	public static final String END = ">";
+	public static final char END = '>';
 
 	/** The tag. */
 	private String tag;
@@ -231,7 +231,8 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 	protected String parseItem(EntityStringConverter converter) {
 		CharacterBuffer sb = new CharacterBuffer().with(converter.getPrefixFirst());
 		if(this.getTag() != null ) {
-			sb.with(START, this.getTag());
+			sb.with(START);
+			sb.with(this.getTag());
 		}
 
 		int size = size();
@@ -265,7 +266,8 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 			converter.minus();
 			sb.with(converter.getPrefix());
 			if(this.getTag() != null) {
-				sb.with("</", getTag(), END);
+				sb.with("</", getTag());
+				sb.with(END);
 			}
 		} else if (this.valueItem != null) {
 			if(this.getTag() != null) {
@@ -273,7 +275,8 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 			}
 			sb.with(this.valueItem);
 			if(this.getTag() != null) {
-				sb.with("</", getTag(), END);
+				sb.with("</", getTag());
+				sb.with(END);
 			}
 		} else {
 			if(this.getTag() != null) {

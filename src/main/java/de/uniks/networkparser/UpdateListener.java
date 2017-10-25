@@ -148,7 +148,11 @@ public class UpdateListener implements MapListener {
 	
 	public boolean change(String property, SendableEntityCreator creator, Entity change, Object oldValue, Object newValue) {
 		boolean done = false;
-		for (String attrName : creator.getProperties()) {
+		String[] properties = creator.getProperties();
+		if(properties == null) {
+			return false;
+		}
+		for (String attrName : properties) {
 			if (attrName.equals(property)) {
 				done = true;
 				break;
@@ -239,23 +243,19 @@ public class UpdateListener implements MapListener {
 		Entity update = (Entity) updateMessage.getValue(SendableEntityCreator.UPDATE);
 //		Object prio = updateMessage.getValue(Filter.PRIO);
 		Object masterObj = this.map.getObject(id);
-		if (masterObj == null)
-		{
+		if (masterObj == null) {
 		   String masterObjClassName = (String) updateMessage.getValue(IdMap.CLASS);
 
-		   if (masterObjClassName != null)
-		   {
+		   if (masterObjClassName != null) {
 			  // cool, lets make it
 			  SendableEntityCreator creator = this.map.getCreator(masterObjClassName, true, null);
 			  masterObj = creator.getSendableInstance(false);
-			  if (masterObj != null)
-			  {
-				 this.map.put(id, masterObj, false);
-			  }
 		   }
-		}
-		if (masterObj == null) {
-			return null;
+		   if (masterObj == null)
+		   {
+			   return null;
+		   }
+		   this.map.put(id, masterObj, false);
 		}
 		SendableEntityCreator creator = this.map.getCreatorClass(masterObj);
 		if (remove == null && update != null) {
@@ -268,13 +268,11 @@ public class UpdateListener implements MapListener {
 				if (value == null) {
 					// Old Value is Standard
 					return setValue(creator, masterObj, key, item.getValue(), SendableEntityCreator.NEW);
-				} 
-				else if (value instanceof Collection)
-				{
-				   // just add the element
-				   return setValue(creator, masterObj, key, item.getValue(), SendableEntityCreator.NEW);
-				}
-				else if (value.equals(creator.getValue(refObject, key))) {
+				} else if (value instanceof Collection<?>) {
+					// just add the element
+					// It is a to many Link
+					return setValue(creator, masterObj, key, item.getValue(), SendableEntityCreator.NEW);
+				} else if (value.equals(creator.getValue(refObject, key))) {
 					// Old Value is Standard
 					return setValue(creator, masterObj, key,
 							update.getValue(key), SendableEntityCreator.NEW);

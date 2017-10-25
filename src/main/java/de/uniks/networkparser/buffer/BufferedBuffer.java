@@ -74,10 +74,10 @@ public abstract class BufferedBuffer extends Buffer {
 	/**
 	 * Substring of Buffer
 	 * @param start		startindex for parsing
-	 * @param length	the length of Substring
+	 * @param endPosition	the endPosition of Substring
 	 * @return 			the Substring
 	 */
-	public abstract CharacterBuffer subSequence(int start, int length);
+	public abstract CharacterBuffer subSequence(int start, int endPosition);
 
 	@Override
 	public BufferedBuffer withLookAHead(CharSequence lookahead) {

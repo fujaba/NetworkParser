@@ -233,7 +233,7 @@ public class SimpleController implements ObjectCondition{
 		this.firstShow = false;
 
 		Object scene;
-		if(ReflectionLoader.SCENE == null) {
+		if(ReflectionLoader.SCENE == null || root == null) {
 			return;
 		}
 		if(ReflectionLoader.SCENE.isAssignableFrom(root.getClass())) {
@@ -274,7 +274,7 @@ public class SimpleController implements ObjectCondition{
 				try {
 					ReflectionLoader.call("show", this.stage);
 				} catch (Exception e) {
-					errorHandler.saveException(e, this.stage);
+					errorHandler.saveException(e, this.stage, true);
 				}
 			}
 		}

@@ -16,6 +16,7 @@ import de.uniks.networkparser.ext.petaf.NodeProxyType;
 import de.uniks.networkparser.ext.petaf.Server_TCP;
 import de.uniks.networkparser.ext.petaf.SimpleExecutor;
 import de.uniks.networkparser.ext.petaf.TaskExecutor;
+import de.uniks.networkparser.ext.petaf.messages.ConnectMessage;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 
 public class NodeProxyTCP extends NodeProxy {
@@ -26,7 +27,7 @@ public class NodeProxyTCP extends NodeProxy {
 	public static final String LOCALHOST = "127.0.0.1";
 	protected Server_TCP serverSocket;
 	protected boolean allowAnswer = false;
-	
+
 	/**
 	 * Fallback Executor for Simple Using Serverclasses
 	 */
@@ -63,23 +64,23 @@ public class NodeProxyTCP extends NodeProxy {
 	public Integer getPort() {
 		return port;
 	}
-	
+
 	public NodeProxyTCP withAllowAnswer(boolean value) {
 		this.allowAnswer = value;
 		return this;
 	}
-	
+
 	public boolean isAllowAnswer() {
 		return allowAnswer;
 	}
-	
+
 	public NodeProxyTCP withPort(int value) {
 		int oldValue = value;
 		this.port = value;
 		firePropertyChange(PROPERTY_PORT, oldValue, value);
 		return this;
 	}
-	
+
 	public TaskExecutor getExecutor() {
 		if(this.space != null) {
 			return this.space.getExecutor();
@@ -117,10 +118,10 @@ public class NodeProxyTCP extends NodeProxy {
 		}
 		return super.setValue(element, attrName, value, type);
 	}
-	
+
 	public Message readFromInputStream(Socket socket) throws IOException {
 		ByteBuffer buffer=new ByteBuffer();
-		
+
 		byte[] messageArray = new byte[BUFFER];
 		InputStream is = socket.getInputStream();
 		while (true) {
@@ -128,24 +129,35 @@ public class NodeProxyTCP extends NodeProxy {
 			if (bytesRead <= 0)
 				break; // <======= no more data
 			buffer.with(new String(messageArray, 0, bytesRead, Charset.forName("UTF-8")));
-			if(bytesRead != BUFFER && allowAnswer) 
+			if(bytesRead != BUFFER && allowAnswer)
 				break;
 		}
-		
+
 		Message msg=null;
 		if(this.space != null) {
 			IdMap map = this.space.getMap();
-			Object element = map.decode(buffer.toString());
+			Object element = map.decode(buffer);
 			if(element instanceof Message) {
 				msg = (Message) element;
+				NodeProxy receiver = msg.getReceiver();
+				if(element instanceof ConnectMessage) {
+					receiver.updateReceive(buffer.size(), false);
+				} else {
+					receiver.updateReceive(buffer.size(), true);
+				}
+				
+				// Let my Know about the new Receiver
+				if(receiver != null) {
+					this.space.with(receiver);
+				}
 			}
 		}
 		if(msg == null){
 			msg=new Message();
 		}
-		msg.withMessage(buffer);
+		msg.withMessage(buffer.flip(false));
 		msg.withSession(socket);
-		msg.withReceiver(this);
+		msg.withAddToReceived(this);
 		if(this.listener != null) {
 			this.listener.update(msg);
 		}
@@ -153,7 +165,7 @@ public class NodeProxyTCP extends NodeProxy {
 			getExecutor().handleMsg(msg);
 		}else {
 			socket.close();
-			getExecutor().handleMsg(msg);	
+			getExecutor().handleMsg(msg);
 		}
 		return msg;
 	}
@@ -174,7 +186,7 @@ public class NodeProxyTCP extends NodeProxy {
 				OutputStream os = requestSocket.getOutputStream();
 				byte[] buffer;
 				if(this.space != null) {
-					buffer = this.space.convertMessage(msg).getBytes();
+ 					buffer = this.space.convertMessage(msg).getBytes();
 				} else {
 					buffer = msg.toString().getBytes();
 				}
@@ -210,7 +222,7 @@ public class NodeProxyTCP extends NodeProxy {
 	public boolean start() {
 		return initProxy();
 	}
-	
+
 	@Override
 	public boolean close() {
 		if (this.serverSocket != null) {

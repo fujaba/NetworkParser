@@ -104,7 +104,7 @@ public class JsonTokener extends Tokener {
 		switch (stopChar) {
 		case '"':
 			skip();
-			return EntityUtil.unQuote(nextString(new CharacterBuffer(), allowQuote, true, stopChar));
+			return EntityUtil.unQuote(nextString(new CharacterBuffer(), true, true, stopChar));
 		case '\\':
 			// Must be unquote
 			skip();
@@ -175,7 +175,7 @@ public class JsonTokener extends Tokener {
 				skip();
 				Object keyValue = nextValue(entity, isQuote, false, stop);
 				if(keyValue == null) {
-					// No Key Found Must eb an empty statement
+					// No Key Found Must be an empty statement
 					return true;
 				}
 				key = keyValue.toString();
@@ -344,8 +344,8 @@ public class JsonTokener extends Tokener {
 			}
 			map.getFilter().isConvertable(event);
 			return result;
-		} else if (jsonObject.get(IdMap.VALUE) != null) {
-			return jsonObject.get(IdMap.VALUE);
+//		} else if (jsonObject.get(IdMap.VALUE) != null) {
+//			return jsonObject.get(IdMap.VALUE);
 		} else if (jsonObject.get(IdMap.ID) != null) {
 			return this.map.getObject((String) jsonObject.get(IdMap.ID));
 		}
@@ -433,17 +433,17 @@ public class JsonTokener extends Tokener {
 						Object entryValue = item.getValue();
 						if (entryValue instanceof JsonObject) {
 							creator.setValue(target, property, new ObjectMapEntry().with(key, decoding((JsonObject) entryValue, map, true)), SendableEntityCreator.NEW);
-						} else if (entryValue instanceof JsonArray) {
-							///FIXME CHANGE DECODE TO DECODING
-							throw new RuntimeException();
-//								creator.setValue(target, property,
-//										new ObjectMapEntry().with(key, decode((JsonArray) entryValue)), SendableEntityCreator.NEW);
 						} else {
 							creator.setValue(target, property, new ObjectMapEntry().with(key, entryValue), SendableEntityCreator.NEW);
 						}
 					}
 				} else {
-					creator.setValue(target, property, decoding(child, map, true), filter.getStrategy());
+					Object decoding = decoding(child, map, true);
+					if(decoding != null) {
+						creator.setValue(target, property, decoding, filter.getStrategy());
+					} else {
+						creator.setValue(target, property, child, filter.getStrategy());
+					}
 				}
 			} else {
 				creator.setValue(target, property, value, filter.getStrategy());

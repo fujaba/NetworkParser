@@ -904,6 +904,42 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 	}
 
 	/**
+	 * Read json.
+	 *
+	 * @param value the value for decoding
+	 * @param target the target
+	 * @param filter the filter for decoding
+	 * @return the object
+	 */
+	public Object decode(Buffer value, Object target, Filter filter) {
+		char firstChar = value.nextClean(true);
+		BaseItem valueItem=null;
+		if(JsonObject.START == firstChar) {
+			JsonObject item= (JsonObject) this.jsonTokener.newInstance();
+			item.withValue(value);
+			valueItem = item;
+		} else if(JsonArray.START == firstChar) {
+			JsonArray item = (JsonArray) this.jsonTokener.newInstanceList();
+			item.withValue(value);
+			valueItem = item;
+		} else if(XMLEntity.START == firstChar) {
+			XMLEntity item = (XMLEntity) this.xmlTokener.newInstance();
+			item.withValue(value);
+			valueItem = item;
+		}
+		if(valueItem == null) {
+			return null;
+		}
+		if (filter == null) {
+			filter = this.filter;
+		}
+		MapEntity map = new MapEntity(filter, flag, this);
+		map.withTarget(target);
+		return decoding(valueItem, map);
+	}
+	
+	
+	/**
 	 * Decoding Element to model
 	 * 
 	 * @param value The Baseitem for decoding
@@ -1246,6 +1282,9 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 	 */
 	public BaseItem encode(Object model, Tokener tokener, Filter filter) {
 		MapEntity map = new MapEntity(filter, flag, this);
+		if(filter == null) {
+			map.withFilter(this.filter);
+		}
 		if (tokener == null) {
 			tokener = jsonTokener;
 		}
@@ -1414,9 +1453,14 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 								throw new RuntimeException("Property duplicate:" + property + "(" + className + ")");
 							}
 						}
-						if (value instanceof Entity && parent instanceof XMLEntity) {
-							parent.add(value);
-							continue;
+						if (value instanceof Entity) {
+							if(parent instanceof EntityList) {
+								parent.add(value);
+								continue;
+							}else if(parent instanceof Entity) {
+								parent.put(property, value);
+								continue;
+							}
 						}
 						className = value.getClass().getName();
 						String fullProp = prop.toString();
