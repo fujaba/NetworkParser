@@ -15,7 +15,7 @@ addons:
     build_command:   "gradle -xTest -xJavadoc"
     branch_pattern: master
   #srcclr: true
-  sonarqube:
+  sonarcloud:
     organization: "Fujaba"
 before_script:
   - sudo service postgresql stop || true
@@ -40,5 +40,5 @@ branches:
 after_success: 
   - ./gradlew version build uploadArchives
   - ./gradlew jacocoTestReport coveralls
-  # other script steps might be done before running the actual SonarQube analysis
+  # other script steps might be done before running the actual sonarcloud analysis
   - ./sonarcube.sh

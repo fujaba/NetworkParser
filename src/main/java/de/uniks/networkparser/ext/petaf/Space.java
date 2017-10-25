@@ -213,7 +213,7 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 
 	public void close() {
 		for(NodeProxy proxy : proxies) {
-			if(NodeProxyType.IN.equals(proxy.getType())) {
+			if(NodeProxyType.isInput(proxy.getType())) {
 				proxy.close();
 			}
 		}

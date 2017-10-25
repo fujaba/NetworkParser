@@ -227,6 +227,7 @@ public class NodeProxyTCP extends NodeProxy {
 	public boolean close() {
 		if (this.serverSocket != null) {
 			this.serverSocket.closeServer();
+			this.serverSocket = null;
 		}
 		return true;
 	}

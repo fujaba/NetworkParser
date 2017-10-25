@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE project>
-<project default="ikvm" name="Create DLL for NetworkParser">
+<project default="ikvm" name="Create_DLL_for_NetworkParser">
 	<property name="ikvmVersion" value="8.0.5305" />
 	<import file="buildAnt.xml" as="Ant"/>
 	<target name="ikvm" depends="Ant.buildAnt" description="Crosscompile Networkparser with IKVM.NET to .Net Dll">
