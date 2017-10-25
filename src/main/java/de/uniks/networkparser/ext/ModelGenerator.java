@@ -94,7 +94,7 @@ public class ModelGenerator extends BasicGenerator {
 	}
 	
 	public SendableEntityCreator generateJava(String rootDir, GraphModel model, TextItems parameters) {
-		return generating(rootDir, model, parameters, javaGeneratorTemplates, true);
+		return generating(rootDir, model, parameters, javaGeneratorTemplates, true, true);
 	}
 
 	public SendableEntityCreator generateTypescript(String rootDir, GraphModel model) {
@@ -102,7 +102,7 @@ public class ModelGenerator extends BasicGenerator {
 	}
 
 	public SendableEntityCreator generateTypescript(String rootDir, GraphModel model, TextItems parameters) {
-		return generating(rootDir, model, parameters, typeScriptTemplates, true);
+		return generating(rootDir, model, parameters, typeScriptTemplates, true, true);
 	}
 
 	public TemplateResultModel getResultModel() {
@@ -114,19 +114,19 @@ public class ModelGenerator extends BasicGenerator {
 	
 	SendableEntityCreator generating(String rootDir, String type, GraphModel model) {
 		if(TYPE_JAVA.equalsIgnoreCase(type)) {
-			return generating(rootDir, model, null, javaGeneratorTemplates, true);
+			return generating(rootDir, model, null, javaGeneratorTemplates, true, true);
 		}
 		if(TYPE_TYPESCRIPT.equalsIgnoreCase(type)) {
-			return generating(rootDir, model, null, typeScriptTemplates, true);
+			return generating(rootDir, model, null, typeScriptTemplates, true, false);
 		}
 		if(TYPE_CPP.equalsIgnoreCase(type)) {
-			return generating(rootDir, model, null, cppScriptTemplates, true);
+			return generating(rootDir, model, null, cppScriptTemplates, true, true);
 		}
 		return null;
 	}
 	
 	public SendableEntityCreator generating(String rootDir, GraphModel model, TextItems parameters,
-			SimpleList<BasicGenerator> templates, boolean writeFiles) {
+			SimpleList<BasicGenerator> templates, boolean writeFiles, boolean enableParser) {
 		if (rootDir == null) {
 			rootDir = "";
 		} else if (rootDir.endsWith("/") == false) {
@@ -168,7 +168,7 @@ public class ModelGenerator extends BasicGenerator {
 		if (writeFiles) {
 			// IF FILE EXIST AND Switch is Enable only add missing value
 			// Add missed value to Metamodel
-			if(useSDMLibParser) {
+			if(useSDMLibParser && enableParser) {
 				for (TemplateResultFile file : resultModel) {
 					if(file.isMetaModell() == false) {
 						continue;

@@ -134,6 +134,7 @@ public class ReflectionBlackBoxTester {
 			Object[] call = null;
 			m.setAccessible(true);
 			// mit Null as Parameter
+			System.out.println("TEST:"+clazz.getName()+":"+m.getName());
 			Class<?>[] parameterTypes = m.getParameterTypes();
 			if(tests.contains(NULLVALUE)) {
 				try {
