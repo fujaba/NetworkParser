@@ -18,6 +18,8 @@ import de.uniks.networkparser.ext.ErrorHandler;
 import de.uniks.networkparser.ext.javafx.SimpleController;
 import de.uniks.networkparser.ext.petaf.Server_TCP;
 import de.uniks.networkparser.ext.petaf.Server_UPD;
+import de.uniks.networkparser.ext.petaf.Space;
+import de.uniks.networkparser.ext.petaf.TimerExecutor;
 import de.uniks.networkparser.ext.petaf.proxy.NodeProxyBroadCast;
 import de.uniks.networkparser.ext.petaf.proxy.NodeProxyTCP;
 import de.uniks.networkparser.ext.story.Story;
@@ -53,6 +55,8 @@ public class ReflectionBlackBoxTester {
 		withIgnoreClazzes(className+":showContent");
 		withIgnoreClazzes(Server_TCP.class.getName());
 		withIgnoreClazzes(Server_UPD.class.getName());
+		withIgnoreClazzes(Space.class.getName());
+		withIgnoreClazzes(TimerExecutor.class.getName());
 		withIgnoreClazzes(NodeProxyBroadCast.class.getName());
 		withIgnoreClazzes(NodeProxyTCP.class.getName());
 	}		
@@ -134,7 +138,7 @@ public class ReflectionBlackBoxTester {
 			Object[] call = null;
 			m.setAccessible(true);
 			// mit Null as Parameter
-			System.out.println("TEST:"+clazz.getName()+":"+m.getName());
+//			System.out.println(System.currentTimeMillis()+" TEST:"+clazz.getName()+":"+m.getName());
 			Class<?>[] parameterTypes = m.getParameterTypes();
 			if(tests.contains(NULLVALUE)) {
 				try {

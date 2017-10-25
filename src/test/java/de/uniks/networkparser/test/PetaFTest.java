@@ -12,7 +12,7 @@ import de.uniks.networkparser.json.JsonObject;
 
 public class PetaFTest {
 
-	@Test
+//	@Test
 	public void testServer() throws InterruptedException {
 		NodeProxyTCP server = NodeProxyTCP.createServer(5000);
 		Assert.assertTrue(server.start());

@@ -341,9 +341,9 @@ public class ErrorHandler implements Thread.UncaughtExceptionHandler {
 		}
 		if(Os.isEclipse()) {
 			e.printStackTrace();
-			if(throwException) {
+//			if(throwException) {
 				throw new RuntimeException(e);
-			}
+//			}
 		}
 	}
 
