@@ -56,7 +56,7 @@ public class StartData implements SendableEntityCreatorNoIndex
 	public static boolean addParameter(String key, Object value) {
 		if(PROPERTY_EDITABLE.equals(key)) {
 			if(value instanceof Boolean) {
-				StartData.editable = (boolean) value;
+				StartData.editable = (Boolean) value;
 				return true; 
 			}
 			return false;
@@ -122,7 +122,7 @@ public class StartData implements SendableEntityCreatorNoIndex
 	public static boolean setValue(String key, Object value) {
 		if(PROPERTY_EDITABLE.equals(key)) {
 			if(value instanceof Boolean) {
-				StartData.editable = (boolean) value;
+				StartData.editable = (Boolean) value;
 				return true; 
 			}
 			return false;
