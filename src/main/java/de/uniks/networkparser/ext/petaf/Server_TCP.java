@@ -15,7 +15,7 @@ public class Server_TCP extends Thread {
 	/**
 	 * Fallback for simple Creating a Server without proxy
 	 * 
-	 * @param port
+	 * @param port Port of TCP-Server
 	 */
 	public Server_TCP(int port) {
 		this(NodeProxyTCP.createServer(port));

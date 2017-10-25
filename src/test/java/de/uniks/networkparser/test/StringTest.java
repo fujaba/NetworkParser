@@ -37,13 +37,6 @@ public class StringTest {
 	}
 	
 	@Test
-	public void testTwoBytes() {
-		System.out.println("Z".getBytes().length);
-		System.out.println("z".getBytes().length);
-		System.out.println("ä".getBytes().length);
-	}
-	
-	@Test
 	public void testUmlaute() {
 		String uml = "\u00fcbung";
 //		System.out.println(uml);

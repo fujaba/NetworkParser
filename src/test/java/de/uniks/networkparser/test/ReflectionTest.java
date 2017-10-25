@@ -19,6 +19,7 @@ public class ReflectionTest {
 //				.withFlag(NetworkParserLog.LOGLEVEL_ALL);
 //		.withLogLevel(NetworkParserLog.LOGLEVEL_INFO);
 		tester.test("de.uniks.networkparser", logger);
+		Assert.assertNotNull(tester);
 	}
 	
 	@Test
