@@ -1453,9 +1453,14 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 								throw new RuntimeException("Property duplicate:" + property + "(" + className + ")");
 							}
 						}
-						if (value instanceof Entity && parent instanceof XMLEntity) {
-							parent.add(value);
-							continue;
+						if (value instanceof Entity) {
+							if(parent instanceof EntityList) {
+								parent.add(value);
+								continue;
+							}else if(parent instanceof Entity) {
+								parent.put(property, value);
+								continue;
+							}
 						}
 						className = value.getClass().getName();
 						String fullProp = prop.toString();

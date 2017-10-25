@@ -38,6 +38,9 @@ public class StartData implements SendableEntityCreatorNoIndex
 	}
 	
 	public static boolean addParameter(String key, String label, String description, Object values) {
+		if(PROPERTY_EDITABLE.equals(key)) {
+			return false;
+		}
 		StartElement startElement = new StartElement();
 		startElement.withDescription(description);
 		startElement.withLabel(label);
@@ -51,6 +54,13 @@ public class StartData implements SendableEntityCreatorNoIndex
 	}
 	
 	public static boolean addParameter(String key, Object value) {
+		if(PROPERTY_EDITABLE.equals(key)) {
+			if(value instanceof Boolean) {
+				StartData.editable = (boolean) value;
+				return true; 
+			}
+			return false;
+		}
 		StartElement startElement = new StartElement();
 		startElement.withKey(key);
 		startElement.withValue(value);
@@ -110,6 +120,13 @@ public class StartData implements SendableEntityCreatorNoIndex
 	}
 
 	public static boolean setValue(String key, Object value) {
+		if(PROPERTY_EDITABLE.equals(key)) {
+			if(value instanceof Boolean) {
+				StartData.editable = (boolean) value;
+				return true; 
+			}
+			return false;
+		}
 		for(StartElement item : properties) {
 			if(key.equalsIgnoreCase(item.getKey())) {
 				if(NULLVALUE.equals(value)) {
@@ -191,10 +208,19 @@ public class StartData implements SendableEntityCreatorNoIndex
 	}
 	
 	public static boolean save() {
+		StartData startData = StartData.instance();
+		if(startData.size() <1) {
+			// its only the editableFlag not a value
+			return false;
+		}
 		IdMap map = new IdMap();
-		map.with(StartData.instance());
-		JsonObject config = map.toJsonObject(StartData.instance(), Filter.createFull());
+		map.with(startData);
+		JsonObject config = map.toJsonObject(startData, Filter.createFull());
 		return FileBuffer.writeFile(StartData.fileName, config.toString(2));
+	}
+	
+	public int size() {
+		return StartData.properties.size();
 	}
 	
 	public static boolean load() {

@@ -318,21 +318,21 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 	}
 
 	/**
-	 *
+	 * Method for Sending
 	 * @param proxy the sending proxy
-	 * @param msg
-	 * @return
+	 * @param msg Message to Send
+	 * @return success sending
 	 */
 	public boolean sendMessage(NodeProxy proxy, Message msg) {
 		 return sendMessage(proxy, msg, false);
 	}
 
 	/**
-	 *
+	 * Method for Sending
 	 * @param proxy the proxy
-	 * @param msg
-	 * @param sendAnyhow
-	 * @return
+	 * @param msg	Message to Send
+	 * @param sendAnyhow Sending Message for every NodeProxy
+	 * @return success sending
 	 */
 	public boolean sendMessage(NodeProxy proxy, Message msg, boolean sendAnyhow) {
 		// find my Proxy with Key

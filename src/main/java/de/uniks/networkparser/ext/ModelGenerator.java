@@ -132,6 +132,7 @@ public class ModelGenerator extends BasicGenerator {
 		} else if (rootDir.endsWith("/") == false) {
 			rootDir = rootDir + "/";
 		}
+		model.fixClassModel();
 		String name = model.getName();
 		if (name == null) {
 			name = "i.love.sdmlib";

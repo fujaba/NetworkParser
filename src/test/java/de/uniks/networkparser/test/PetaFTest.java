@@ -8,6 +8,7 @@ import de.uniks.networkparser.ext.petaf.NodeProxy;
 import de.uniks.networkparser.ext.petaf.Space;
 import de.uniks.networkparser.ext.petaf.messages.ConnectMessage;
 import de.uniks.networkparser.ext.petaf.proxy.NodeProxyTCP;
+import de.uniks.networkparser.json.JsonObject;
 
 public class PetaFTest {
 
@@ -37,6 +38,19 @@ public class PetaFTest {
 		ConnectMessage newMessage = (ConnectMessage) space.getMap().decode(buffer);
 		System.out.println(newMessage);
 		Assert.assertEquals(newMessage.getReceiver(), proxy);
+		
+	}
+	
+	@Test
+	public void Serialization() {
+		Space space = new Space();
+		
+		ConnectMessage connect = ConnectMessage.create();
+		JsonObject json = new JsonObject();
+		json.with("Key", "42");
+		connect.withMessage(json);
+		
+		System.out.println(space.convertMessage(connect));
 		
 	}
 }

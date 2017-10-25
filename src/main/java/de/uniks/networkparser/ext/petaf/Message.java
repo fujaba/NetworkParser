@@ -32,7 +32,7 @@ public class Message implements SendableEntityCreator, SendableEntityCreatorNoIn
 			PROPERTY_RECEIVED
 	};
 	protected String historyId;
-	protected SimpleList<NodeProxy> received=new SimpleList<NodeProxy>();
+	protected Object received;
 	protected String prevChange;
 	protected BaseItem msg;
 	protected NodeProxy receiver;
@@ -62,12 +62,31 @@ public class Message implements SendableEntityCreator, SendableEntityCreatorNoIn
 		return this;
 	}
 
+	@SuppressWarnings("unchecked")
 	public SimpleList<NodeProxy> getReceived() {
-		return received;
+		if(received instanceof SimpleList<?>) {
+			return (SimpleList<NodeProxy>) received;
+		}
+		SimpleList<NodeProxy> result=new SimpleList<NodeProxy>();
+		if(received != null) {
+			result.add(received);
+		}
+		return result;
 	}
 
 	public Message withAddToReceived(NodeProxy value) {
-		this.received.add(value);
+		if(this.received == null) {
+			this.received = value;
+		}
+		SimpleList<?> list;
+		if(this.received instanceof NodeProxy) {
+			list = new SimpleList<NodeProxy>();
+			list.with(this.received);
+			this.received = list;
+		} else {
+			list = (SimpleList<?>) this.received;
+		}
+		list.add(value);
 		return this;
 	}
 
@@ -104,10 +123,6 @@ public class Message implements SendableEntityCreator, SendableEntityCreatorNoIn
 	}
 	public BaseItem getMessage(){
 		return msg;
-	}
-
-	boolean containsVisited(String key) {
-		return received.contains(key);
 	}
 
 	public int getTimeOut() {

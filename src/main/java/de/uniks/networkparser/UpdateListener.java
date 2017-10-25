@@ -148,7 +148,11 @@ public class UpdateListener implements MapListener {
 	
 	public boolean change(String property, SendableEntityCreator creator, Entity change, Object oldValue, Object newValue) {
 		boolean done = false;
-		for (String attrName : creator.getProperties()) {
+		String[] properties = creator.getProperties();
+		if(properties == null) {
+			return false;
+		}
+		for (String attrName : properties) {
 			if (attrName.equals(property)) {
 				done = true;
 				break;

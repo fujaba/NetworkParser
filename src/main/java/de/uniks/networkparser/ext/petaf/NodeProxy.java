@@ -114,9 +114,9 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 	}
 
 	public void setSendTime(int bytes) {
-		Long oldValue = sendtime;
+//		Long oldValue = sendtime;
 		this.sendtime = System.currentTimeMillis();
-		firePropertyChange(PROPERTY_SEND, oldValue, sendtime);
+//		firePropertyChange(PROPERTY_SEND, oldValue, sendtime);
 		this.lastSendCount = 0;
 	}
 
@@ -143,9 +143,9 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 	}
 
 	public void setReceiveTime() {
-		Long oldValue = receivetime;
+//		Long oldValue = receivetime;
 		this.receivetime = System.currentTimeMillis();
-		firePropertyChange(PROPERTY_RECEIVE, oldValue, receivetime);
+//		firePropertyChange(PROPERTY_RECEIVE, oldValue, receivetime);
 	}
 
 	public Long getReceiveTime() {

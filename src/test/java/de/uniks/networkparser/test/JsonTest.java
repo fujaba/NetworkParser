@@ -197,9 +197,7 @@ public class JsonTest extends IOClasses {
 		IdMap mapReserve = new IdMap();
 		mapReserve.with(new ChangeCreator());
 		Change item = (Change) mapReserve.decode(jsonObject.toString());
-		Assert.assertEquals(
-				"{\"class\":\"de.uniks.networkparser.test.model.Change\",\"id\":\"C1\",\"prop\":{\"value\":{\"class\":\"de.uniks.networkparser.json.JsonObject\",\"VALUE\":\"{\\\"id\\\":\\\"name\\\",\\\"value\\\":\\\"42\\\"}\"}}}",
-				jsonObject.toString());
+		Assert.assertEquals("{\"class\":\"de.uniks.networkparser.test.model.Change\",\"id\":\"C1\",\"prop\":{\"value\":{\"id\":\"name\",\"value\":\"42\"}}}", jsonObject.toString());
 		assertEquals(item.getValue().getString("value"), "42");
 	}
 

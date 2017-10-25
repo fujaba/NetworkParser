@@ -211,6 +211,7 @@ public class Filter {
 	
 	
 	/**
+	 * Full Serialization
 	 * @return a Filter for Full Serialization
 	 */
 	public static Filter createFull() {
