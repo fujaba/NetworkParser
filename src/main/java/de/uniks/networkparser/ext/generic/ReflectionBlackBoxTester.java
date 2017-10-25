@@ -19,7 +19,6 @@ import de.uniks.networkparser.ext.javafx.SimpleController;
 import de.uniks.networkparser.ext.petaf.Server_TCP;
 import de.uniks.networkparser.ext.petaf.Server_UPD;
 import de.uniks.networkparser.ext.petaf.Space;
-import de.uniks.networkparser.ext.petaf.TimerExecutor;
 import de.uniks.networkparser.ext.petaf.proxy.NodeProxyBroadCast;
 import de.uniks.networkparser.ext.petaf.proxy.NodeProxyTCP;
 import de.uniks.networkparser.ext.story.Story;
@@ -53,10 +52,11 @@ public class ReflectionBlackBoxTester {
 		withIgnoreClazzes(className+":saveException");
 		withIgnoreClazzes(className+":createContent");
 		withIgnoreClazzes(className+":showContent");
+		withIgnoreClazzes(className+":withErrorPath");
 		withIgnoreClazzes(Server_TCP.class.getName());
 		withIgnoreClazzes(Server_UPD.class.getName());
 		withIgnoreClazzes(Space.class.getName());
-		withIgnoreClazzes(TimerExecutor.class.getName());
+//		withIgnoreClazzes(TimerExecutor.class.getName());
 		withIgnoreClazzes(NodeProxyBroadCast.class.getName());
 		withIgnoreClazzes(NodeProxyTCP.class.getName());
 	}		
@@ -96,6 +96,7 @@ public class ReflectionBlackBoxTester {
 		for(Class<?> clazz : classesForPackage) {
 			SimpleSet<String> methods = this.ignoreMethods.get(clazz.getName());
 			if(methods != null && methods.size()<1) {
+				System.out.println("Ignore:"+clazz.getName());
 				continue;
 			}
 			Constructor<?>[] constructors = clazz.getDeclaredConstructors();
