@@ -25,8 +25,8 @@ THE SOFTWARE.
 */
 import java.util.Iterator;
 
-import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
+import de.uniks.networkparser.MapEntity;
 import de.uniks.networkparser.SimpleGrammar;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Entity;
@@ -40,13 +40,14 @@ public class EMFJsonGrammar extends SimpleGrammar {
 	public static final String NV ="@nv";
 
 	@Override
-	public BaseItem getProperties(Entity item, IdMap map, Filter filter, boolean isId, String type) {
+	public BaseItem getProperties(Entity item, MapEntity map, boolean isId) {
 		JsonObject props= new JsonObject();
 		if(item.has(PROP)){
 			String key = item.getString(PROP);
 			String value = item.getString(NV);
-			SendableEntityCreator result = getCreator(Grammar.READ, null, map, false, value);
-			if(result!=null){
+            SendableEntityCreator creator = getCreator(Grammar.READ, null, map.getMap(), false, value);
+
+			if(creator!=null){
 				props.put(key, new JsonObject().withValue(SRC, value));
 			} else {
 				props.put(key, value);

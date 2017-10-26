@@ -620,8 +620,32 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 		for (ObjectCondition client : clients) {
 			client.update(event);
 		}
+		if(event.isIdEvent()) {
+			return true;
+		}
+		if(event.getPropertyName() == null) {
+			// Only Notification from Map
+			return true;
+		}
+		
+		if(event.getNewValue() instanceof Message) {
+			return true;
+		}
+		if(event.getModelValue() instanceof NodeProxy ) {
+			return true;
+		}
+		
+		if(event.getNewValue() instanceof NodeProxy || event.getSource() instanceof NodeProxy) {
+			return true;
+		}
+		return updateModel(event);
+	}
+	
+	
+	public boolean updateModel(SimpleEvent event) {
 		return true;
 	}
+	
 
 	public Space withClient(ObjectCondition... clients) {
 		if(clients == null) {

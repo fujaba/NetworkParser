@@ -13,6 +13,7 @@ import java.util.Map;
 
 import de.uniks.networkparser.ext.ErrorHandler;
 import de.uniks.networkparser.ext.Os;
+import de.uniks.networkparser.ext.StartData;
 import de.uniks.networkparser.ext.generic.ReflectionLoader;
 import de.uniks.networkparser.ext.io.StringPrintStream;
 import de.uniks.networkparser.interfaces.BaseItem;
@@ -125,8 +126,15 @@ public class SimpleController implements ObjectCondition{
 		ArrayList<String> customParams = new ArrayList<String>();
 		for (int i = 0; i < params.size(); i++) {
 			String key = params.get(i);
+			if(key == null) {
+				continue;
+			}
 			String value = params.getValueByIndex(i);
-			if (key.equalsIgnoreCase("debug")) {
+			if (key.equalsIgnoreCase("config")) {
+				if (value != null) {
+					StartData.setFileName(value);
+				}
+			} else if (key.equalsIgnoreCase("debug")) {
 				if (value != null) {
 					debugPort = value;
 				}else {

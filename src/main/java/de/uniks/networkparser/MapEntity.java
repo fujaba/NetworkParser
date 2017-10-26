@@ -81,6 +81,11 @@ public class MapEntity extends AbstractList<Object>{
 	public int getDeep() {
 		return deep;
 	}
+	
+	public boolean isId(Object target) {
+		String className = target.getClass().getName();
+		return filter.isId(target, className, map);
+	}
 
 	public boolean isSearchForSuperClass() {
 		return (mapFlag & IdMap.FLAG_SEARCHFORSUPERCLASS) != 0;

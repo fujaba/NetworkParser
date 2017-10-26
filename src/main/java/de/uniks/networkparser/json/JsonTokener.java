@@ -363,25 +363,24 @@ public class JsonTokener extends Tokener {
 	private Object decoding(Object target, JsonObject jsonObject, MapEntity map) {
 		// JSONArray jsonArray;
 		Grammar grammar = map.getGrammar();
-		Filter filter = map.getFilter();
-		boolean isId = filter.isId(target, target.getClass().getName(), map.getMap());
+		boolean isId = map.isId(target);
 		if (isId) {
 			String jsonId = grammar.getValue(jsonObject, IdMap.ID);
-			IdMap idMap = this.map;
 			if (jsonId == null) {
 				return target;
 			}
-			idMap.put(jsonId, target, true);
-//			idMap.getCounter().readId(jsonId);
+			this.map.put(jsonId, target, true);
 		}
-		JsonObject jsonProp = (JsonObject) grammar.getProperties(jsonObject, map.getMap(), filter, isId, Grammar.READ);
+		JsonObject jsonProp = (JsonObject) grammar.getProperties(jsonObject, map, isId);
 		if (jsonProp != null) {
-			SendableEntityCreator prototyp = grammar.getCreator(Grammar.WRITE, target, map.getMap(), map.isSearchForSuperClass(), target.getClass().getName());
-			String[] properties = prototyp.getProperties();
+			SendableEntityCreator creator = grammar.getCreator(Grammar.WRITE, target, map.getMap(), map.isSearchForSuperClass(), target.getClass().getName());
+			String[] properties = creator.getProperties();
 			if (properties != null) {
 				for (String property : properties) {
-					Object obj = jsonProp.get(property);
-					parseValue(target, property, obj, prototyp, map);
+					if(jsonProp.has(property)) {
+						Object obj = jsonProp.get(property);
+						parseValue(target, property, obj, creator, map);
+					}
 				}
 			}
 		}

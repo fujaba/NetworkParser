@@ -12,22 +12,21 @@ public class SimpleGrammar implements Grammar {
 	private SimpleList<String> basicProperties =new SimpleList<String>().with(IdMap.ID, IdMap.CLASS, IdMap.SESSION, IdMap.TIMESTAMP);
 	
 	@Override
-	public BaseItem getProperties(Entity item, IdMap map, Filter filter, boolean isId, String type) {
+	public BaseItem getProperties(Entity item, MapEntity map, boolean isId) {
 		if (isId) {
 			if (item.has(JsonTokener.PROPS)) {
 				return ((JsonObject)item).getJsonObject(JsonTokener.PROPS);
 			}
-		} else {
-			JsonObject props = new JsonObject();
-			for (int i = 0; i < item.size(); i++) {
-				if (!IdMap.CLASS.equalsIgnoreCase(item.getKeyByIndex(i))) {
-					props.put(item.getKeyByIndex(i), item.getValueByIndex(i));
-				}
-
-			}
-			return props;
+			return item;
 		}
-		return null;
+		JsonObject props = new JsonObject();
+		for (int i = 0; i < item.size(); i++) {
+			if (!IdMap.CLASS.equalsIgnoreCase(item.getKeyByIndex(i))) {
+				props.put(item.getKeyByIndex(i), item.getValueByIndex(i));
+			}
+
+		}
+		return props;
 	}
 
 	@Override
