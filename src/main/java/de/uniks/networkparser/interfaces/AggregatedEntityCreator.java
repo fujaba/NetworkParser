@@ -4,5 +4,18 @@ import de.uniks.networkparser.list.ObjectSet;
 
 public interface AggregatedEntityCreator extends SendableEntityCreator
 {
-   public void aggregate(ObjectSet graph, Object obj);
+   /**
+    * Gets the properties that belong to an aggregation where this class models the contained elements.
+    *
+    * @return the properties
+    */
+   public String[] getUpProperties();
+   
+   /**
+    * Gets the properties that belong to an aggregation where this class models the contained elements.
+    *
+    * @return the properties
+    */
+   public String[] getDownProperties();
+   
 }
