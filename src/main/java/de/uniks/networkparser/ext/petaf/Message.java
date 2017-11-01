@@ -1,6 +1,5 @@
 package de.uniks.networkparser.ext.petaf;
 
-import java.io.IOException;
 import java.io.OutputStream;
 import java.net.Socket;
 
@@ -36,10 +35,10 @@ public class Message implements SendableEntityCreator, SendableEntityCreatorNoIn
 	protected String prevChange;
 	protected BaseItem msg;
 	protected NodeProxy receiver;
-	private int timeOut;
-	private Socket session;
-	private boolean sendAnyHow=false;
-	private String type;
+	protected int timeOut;
+	protected boolean sendAnyHow=false;
+	protected String type;
+	protected Object session;
 
 	public String getMessageId(Space space, NodeProxy proxy){
 		if(this.historyId == null ){
@@ -54,7 +53,11 @@ public class Message implements SendableEntityCreator, SendableEntityCreatorNoIn
 	}
 
 	public String getType() {
-		return type;
+		// Inkluisive FallBack
+		if(type != null) {
+			return type;
+		}
+		return this.getClass().getName();
 	}
 
 	public Message withHistoryId(String id){
@@ -163,22 +166,32 @@ public class Message implements SendableEntityCreator, SendableEntityCreatorNoIn
 		return super.toString();
 	}
 
-	public Socket getSession() {
-		return session;
-	}
-
 	public boolean write(String answer) {
+		OutputStream stream = getOutputStream();
+		if(stream == null) {
+			return false;
+		}
 		try {
-			OutputStream outputStream = session.getOutputStream();
-			outputStream.write(answer.getBytes());
-			outputStream.flush();
-		} catch (IOException e) {
+			stream.write(answer.getBytes());
+			stream.flush();
+		}catch (Exception e) {
 			return false;
 		}
 		return true;
 	}
+	
+	public OutputStream getOutputStream() {
+		if(this.session instanceof Socket) {
+			try {
+				return ((Socket)session).getOutputStream();
+			}
+			catch (Exception e) {
+			}
+		}
+		return null;
+	}
 
-	public Message withSession(Socket session) {
+	public Message withSession(Object session) {
 		this.session = session;
 		return this;
 	}

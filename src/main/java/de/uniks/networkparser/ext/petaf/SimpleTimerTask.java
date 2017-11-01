@@ -8,7 +8,7 @@ public class SimpleTimerTask extends TimerTask {
 	protected final ErrorHandler handler = new ErrorHandler();
 	protected Runnable task;
 	protected Space space;
-	private DateTimeEntity lastRun;
+	protected DateTimeEntity lastRun;
 
 	public SimpleTimerTask(Space space){
 		handler.addListener(space);
@@ -28,16 +28,20 @@ public class SimpleTimerTask extends TimerTask {
 	@Override
 	public void run() {
          try{
-			if (lastRun != null) {
-				lastRun.withValue(System.currentTimeMillis());
-			}
-			if(space != null) {
-				space.withLastTimerRun(lastRun);
-			}
+        	updateLastRun();
          	runTask();
          }catch(Exception e){
        		 handler.saveException(e, false);
          }
+	}
+	
+	public void updateLastRun() {
+		if (lastRun != null) {
+			lastRun.withValue(System.currentTimeMillis());
+		}
+		if(space != null) {
+			space.withLastTimerRun(lastRun);
+		}
 	}
 
 	public boolean runTask() throws Exception {

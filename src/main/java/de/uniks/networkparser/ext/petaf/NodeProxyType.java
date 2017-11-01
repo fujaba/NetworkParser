@@ -28,4 +28,15 @@ public enum NodeProxyType {
     public boolean isOutput() {
         return (value & 2) != 0;
     }
+    
+    public boolean same(Object other) {
+        if(this==other) {
+        	return true;
+        }
+        if(other instanceof String) {
+        	String item = ""+this;
+        	return item.equalsIgnoreCase((String)other);
+        }
+        return false;
+    }
 }

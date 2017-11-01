@@ -82,6 +82,9 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 	protected boolean sending(Message msg) {
 		msg.withAddToReceived(this);
 		this.lastSendTryTime = System.currentTimeMillis();
+		if(this.space!= null) {
+			this.space.updateNetwork(NodeProxyType.OUT, this);
+		}
 		return false;
 	}
 
@@ -326,5 +329,13 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 		return this;
 	}
 
+	public TaskExecutor getExecutor() {
+		if(this.space != null) {
+			return this.space.getExecutor();
+		}
+		//Fallback
+		return new SimpleExecutor();
+	}
+	
 	public abstract String getKey();
 }

@@ -42,6 +42,7 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 	public static final String PROPERTY_MODELROOT="root";
 	public static final String PROPERTY_HISTORY="history";
 	public static final String PROPERTY_PROXY="proxies";
+	public static final String INMESSAGE="";
 	public static final String PROPERTY_PATH="path";
 	public static final String PROPERTY_NAME="name";
 
@@ -256,7 +257,7 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 
 
 	public String convertMessage(Message msg){
-		BaseItem encode = getMap().encode(msg, tokener);
+		BaseItem encode = getMap().encode(msg, tokener, MessageFilter);
 		addMessageElement(msg, encode);
 		ByteConverter byteConverter = getConverter();
 		return byteConverter.encode(encode);
@@ -818,5 +819,10 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 	@Override
 	public Object getSendableInstance(boolean prototyp) {
 		return Space.class;
+	}
+
+	public boolean updateNetwork(NodeProxyType type, NodeProxy nodeProxy) {
+		SimpleEvent event = new SimpleEvent(this, ""+type, null, nodeProxy);
+		return sendEventToClients(event);
 	}
 }

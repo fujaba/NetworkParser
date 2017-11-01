@@ -14,8 +14,6 @@ import de.uniks.networkparser.ext.petaf.Message;
 import de.uniks.networkparser.ext.petaf.NodeProxy;
 import de.uniks.networkparser.ext.petaf.NodeProxyType;
 import de.uniks.networkparser.ext.petaf.Server_TCP;
-import de.uniks.networkparser.ext.petaf.SimpleExecutor;
-import de.uniks.networkparser.ext.petaf.TaskExecutor;
 import de.uniks.networkparser.ext.petaf.messages.ConnectMessage;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 
@@ -81,14 +79,6 @@ public class NodeProxyTCP extends NodeProxy {
 		return this;
 	}
 
-	public TaskExecutor getExecutor() {
-		if(this.space != null) {
-			return this.space.getExecutor();
-		}
-		//Fallback
-		return new SimpleExecutor();
-	}
-
 	@Override
 	public Object getValue(Object element, String attrName) {
 		if(element instanceof NodeProxyTCP ) {
@@ -124,19 +114,19 @@ public class NodeProxyTCP extends NodeProxy {
 
 		byte[] messageArray = new byte[BUFFER];
 		InputStream is = socket.getInputStream();
-		while (true) {
-			int bytesRead = is.read(messageArray, 0, BUFFER);
-			if (bytesRead <= 0)
-				break; // <======= no more data
+		int bytesRead;
+		while (-1 != (bytesRead = is.read(messageArray, 0, BUFFER))) {
 			buffer.with(new String(messageArray, 0, bytesRead, Charset.forName("UTF-8")));
-			if(bytesRead != BUFFER && allowAnswer)
+			if(bytesRead != BUFFER && allowAnswer) {
 				break;
+			}
 		}
 
 		Message msg=null;
 		if(this.space != null) {
 			IdMap map = this.space.getMap();
 			Object element = map.decode(buffer);
+			this.space.updateNetwork(NodeProxyType.IN, this);
 			if(element instanceof Message) {
 				msg = (Message) element;
 				NodeProxy receiver = msg.getReceiver();
