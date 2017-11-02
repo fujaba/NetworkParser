@@ -34,16 +34,17 @@ public class Filter {
 	/** The Constant COLLISION. */
 	public static final String COLLISION = "collision";
 
-	public static final Filter SIMPLEFORMAT = new Filter().withSimpleFormat(true);
 
 	protected ObjectCondition idFilter;
 	protected ObjectCondition convertable; // Or Notification for Decode
 	protected ObjectCondition property;
 
-	private static final int FORMAT_REFERENCE=0;
-	private static final int FORMAT_NULL=1;
-	private static final int FORMAT_FULL=2;
-	private static final int FORMAT_TYPESAVE=3;
+	// Entweder eines der unteren Formate
+	protected static final byte FORMAT_NULL=1;
+	protected static final byte FORMAT_FULL=2;
+	protected static final byte FORMAT_TYPESAVE=3;
+	
+	protected static final byte FORMAT_SHORTCLASS=4;
 	/**
 	 * Format
 	 * 0= REFERENCE
@@ -51,7 +52,7 @@ public class Filter {
 	 * 2 = FULL
 	 * 3 = TYPESAVE
 	 */
-	private int format; // FORMAT: 
+	private byte format; // FORMAT: 
 
 	// Temporary variables
 	private String strategy = SendableEntityCreator.NEW;
@@ -97,19 +98,19 @@ public class Filter {
 	 * @return boolean for serialization the full object
 	 */
 	public boolean isFullSerialization() {
-		return format>=FORMAT_FULL;
+		return (format % FORMAT_SHORTCLASS)>=FORMAT_FULL;
 	}
 	
 	public boolean isTypSave() {
-		return format>=FORMAT_TYPESAVE;
-	}
-	
-	public boolean isReferenceCheck() {
-		return format>=FORMAT_REFERENCE;
+		return (format % FORMAT_SHORTCLASS)>=FORMAT_TYPESAVE;
 	}
 	
 	public boolean isNullCheck() {
-		return format>=FORMAT_NULL;
+		return (format % FORMAT_SHORTCLASS)>=FORMAT_NULL;
+	}
+	
+	public boolean isShortClass() {
+		return format >= FORMAT_SHORTCLASS;
 	}
 	
 	/**
@@ -117,30 +118,8 @@ public class Filter {
 	 * @param value for serialization the full object
 	 * @return self instance
 	 */
-	public Filter withFull(boolean value) {
-		if(value) {
-			if(format<FORMAT_FULL) {
-				format = FORMAT_FULL;
-			}
-		} else if(format>=FORMAT_FULL) {
-			format = FORMAT_NULL;
-		}
-		return this;
-	}
-	
-	/**
-	 * Serialization the Full object inclusive null value
-	 * @param value for serialization the full object
-	 * @return self instance
-	 */
-	public Filter withNullCheck(boolean value) {
-		if(value) {
-			if(format<FORMAT_NULL) {
-				format = FORMAT_NULL;
-			}
-		} else if(format>=FORMAT_NULL) {
-			format = FORMAT_REFERENCE;
-		}
+	public Filter withFormat(byte format) {
+		this.format = format;
 		return this;
 	}
 
@@ -209,15 +188,6 @@ public class Filter {
 		return new Filter().withConvertable(convertable);
 	}
 	
-	
-	/**
-	 * Full Serialization
-	 * @return a Filter for Full Serialization
-	 */
-	public static Filter createFull() {
-		return new Filter().withFull(true);
-	}
-
 	public String[] getProperties(SendableEntityCreator creator) {
 		return creator.getProperties();
 	}
@@ -246,5 +216,41 @@ public class Filter {
 	
 	public void suspendNotification() {
 		this.strategy = SendableEntityCreator.UPDATE;
+	}
+	
+	
+	/**
+	 * Full Serialization
+	 * @return a Filter for Full Serialization
+	 */
+	public static Filter createFull() {
+		return new Filter().withFormat(FORMAT_FULL);
+	}
+
+	/**
+	 * Simple Serialization
+	 * @return a Filter for Simple Serialization
+	 */
+	public static Filter createSimple() {
+		return new Filter().withSimpleFormat(true);
+	}
+	
+	/**
+	 * Null Check Serialization
+	 * @return a Filter for Null-Check Serialization
+	 */
+	public static Filter createNull() {
+		return new Filter().withFormat(FORMAT_NULL);
+	}
+	
+	/**
+	 * TypeSave Serialization
+	 * @return a Filter for TypeSave Serialization
+	 */
+	public static Filter createTypSave() {
+		return new Filter().withFormat(FORMAT_TYPESAVE);
+	}
+
+	public void convertProperty(Object entity, String fullProp) {
 	}
 }

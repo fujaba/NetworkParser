@@ -145,6 +145,14 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 	public NodeProxy getFirstPeer() {
 		return firstPeer;
 	}
+	
+	public NodeProxy createServer(int port) {
+		NodeProxy newProxy = getNewProxy();
+		newProxy.withType(NodeProxyType.INOUT);
+		newProxy.setValue(newProxy, NodeProxyTCP.PROPERTY_PORT, port, SendableEntityCreator.NEW);
+		this.with(newProxy);
+		return newProxy;
+	}
 
 	public NodeProxy getOrCreateProxy(String url, int port) {
 		if (url.equals("127.0.0.1")) {
@@ -257,7 +265,7 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 
 
 	public String convertMessage(Message msg){
-		BaseItem encode = getMap().encode(msg, tokener, MessageFilter);
+		BaseItem encode = getMap().encode(msg, tokener, new PetaFilter().withTyp(PetaFilter.ID));
 		addMessageElement(msg, encode);
 		ByteConverter byteConverter = getConverter();
 		return byteConverter.encode(encode);
@@ -346,7 +354,10 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 		}
 		addInfo(msg, myProxy, sendAnyhow);
 		with(proxy);
-		return proxy.sending(msg);
+		if(proxy != null) {
+			return proxy.sending(msg);
+		}
+		return false;
 	}
 
 	public Space withPeerCount(int peerCount) {
@@ -538,7 +549,7 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 	 * Returns all the Proxies in the Space (The ProxyModel)
 	 * @return the first NodeProxyModel
 	 */
-	protected NodeProxyModel getModel() {
+	public NodeProxyModel getModel() {
 		NodeProxyModel result = null;
 		for(NodeProxy proxy : this.proxies) {
 			if(proxy instanceof NodeProxyModel) {
@@ -813,6 +824,11 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 	}
 
 	public boolean handleMsg(Message message) {
+		// Allgemeine Verarbeiten
+		if(message instanceof ReceivingTimerTask) {
+			this.scheduleTask((ReceivingTimerTask)message);
+			return true;
+		}
 		return false;
 	}
 

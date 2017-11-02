@@ -18,7 +18,7 @@ public class GUITest {
 		Button button = new Button();
 		IdMap map =new IdMap();
 		map.withTimeStamp(1);
-		JsonObject json = map.toJsonObject(button, Filter.SIMPLEFORMAT);
+		JsonObject json = map.toJsonObject(button, Filter.createSimple());
 		Assert.assertEquals("{\"class\":\"input\",\"id\":\"B1\",\"type\":\"button\"}", json.toString());
 	}
 	@Test

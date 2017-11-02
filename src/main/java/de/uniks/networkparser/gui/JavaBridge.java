@@ -160,7 +160,7 @@ public abstract class JavaBridge implements ObjectCondition {
 		}
 		// Add Control
 		map.getMapListener().suspendNotification();
-		JsonObject jsonObject = map.toJsonObject(c, Filter.SIMPLEFORMAT);
+		JsonObject jsonObject = map.toJsonObject(c, Filter.createSimple());
 		map.getMapListener().resetNotification();
 		Object result = executeScript(BridgeCommand.load(jsonObject));
 		String id = null;

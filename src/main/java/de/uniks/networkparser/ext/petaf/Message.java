@@ -22,14 +22,14 @@ public class Message implements SendableEntityCreator, SendableEntityCreatorNoIn
 	public static final String PROPERTY_PARENT="parent";
 	public static final String PROPERTY_TYPE="type";
 	public static final int TIMEOUTDEFAULT=0;
-	private final static String[] props=new String[]{
+	protected final static PropertyList props=PropertyList.create(
 			PROPERTY_TYPE,
 			PROPERTY_HISTORYID,
 			PROPERTY_MSG,
 			PROPERTY_PREVIOUSCHANGE,
 			PROPERTY_RECEIVER,
 			PROPERTY_RECEIVED
-	};
+	);
 	protected String historyId;
 	protected Object received;
 	protected String prevChange;
@@ -140,7 +140,7 @@ public class Message implements SendableEntityCreator, SendableEntityCreatorNoIn
 	public boolean isSendAnyHow() {
 		return sendAnyHow;
 	}
-
+	
 	public Message withSendAnyHow(boolean sendAnyHow) {
 		this.sendAnyHow = sendAnyHow;
 		return this;
@@ -195,10 +195,10 @@ public class Message implements SendableEntityCreator, SendableEntityCreatorNoIn
 		this.session = session;
 		return this;
 	}
-
+	
 	@Override
 	public String[] getProperties() {
-		return props;
+		return props.getList();
 	}
 
 	@Override

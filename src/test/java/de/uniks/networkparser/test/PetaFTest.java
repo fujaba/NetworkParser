@@ -12,6 +12,16 @@ import de.uniks.networkparser.json.JsonObject;
 
 public class PetaFTest {
 
+	@Test
+	public void testMessage() {
+		ConnectMessage connectMsg = ConnectMessage.create();
+		Space space=new Space();
+		space.createServer(5000);
+		space.sendMessage(null, connectMsg);
+		System.out.println(space.convertMessage(connectMsg));
+	}
+	
+	
 //	@Test
 	public void testServer() throws InterruptedException {
 		NodeProxyTCP server = NodeProxyTCP.createServer(5000);

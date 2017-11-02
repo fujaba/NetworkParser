@@ -23,7 +23,6 @@ public abstract class ReceivingTimerTask extends Message implements Runnable {
          }
 	}
 	
-	
 	public Space getSpace() {
 		return space;
 	}

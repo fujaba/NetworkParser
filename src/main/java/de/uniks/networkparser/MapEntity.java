@@ -207,6 +207,10 @@ public class MapEntity extends AbstractList<Object>{
 				className = ((SendableEntityCreatorTag)creator).getTag();
 			}
 			id = null;
+		}else if(filter.isShortClass()){
+			if(className != null && className.startsWith("de.uniks.networkparser.ext.petaf")) {
+				className = "#"+className.substring(35);
+			}
 		}
 		return grammar.writeBasicValue(entity, className, id, this.getMap());
 	}

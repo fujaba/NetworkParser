@@ -113,7 +113,7 @@ public class GraphTest {
 		map.withTimeStamp(1);
 		JsonObject jsonObject = map.toJsonObject(so);
 		Assert.assertEquals("{\"class\":\"number\",\"id\":\"S1\",\"prop\":{\"value\":42}}", jsonObject.toString());
-		jsonObject = map.toJsonObject(so, Filter.SIMPLEFORMAT);
+		jsonObject = map.toJsonObject(so, Filter.createSimple());
 		Assert.assertEquals("{\"class\":\"number\",\"id\":\"S1\",\"value\":42}", jsonObject.toString());
 		
 		Assert.assertEquals(so.getValue(), 42);
@@ -231,7 +231,7 @@ public class GraphTest {
 		map.withCreator(new UniversityCreator(), new StudentCreator(), new RoomCreator());
 		SimpleList<Object> list = new SimpleList<Object>();
 		list.with(uni, student);
-		JsonArray jsonArray = map.toJsonArray(list, new Filter().withFull(true).withPropertyRegard(BooleanCondition.create(true)));
+		JsonArray jsonArray = map.toJsonArray(list, Filter.createFull().withPropertyRegard(BooleanCondition.create(true)));
 		Assert.assertEquals(3, jsonArray.size());
 	}
 
@@ -247,10 +247,10 @@ public class GraphTest {
 		map.withCreator(new UniversityCreator(), new StudentCreator(), new RoomCreator());
 		SimpleList<Object> list = new SimpleList<Object>();
 		list.with(uni, student, room);
-		JsonArray jsonArray = map.toJsonArray(list, new Filter().withFull(true).withPropertyRegard(BooleanCondition.create(true)));
+		JsonArray jsonArray = map.toJsonArray(list, Filter.createFull().withPropertyRegard(BooleanCondition.create(true)));
 		Assert.assertEquals(3, jsonArray.size());
 
-		jsonArray = map.toJsonArray(list, new Filter().withFull(true).withPropertyRegard(BooleanCondition.create(true)));
+		jsonArray = map.toJsonArray(list, Filter.createFull().withPropertyRegard(BooleanCondition.create(true)));
 		Assert.assertEquals(3, jsonArray.size());
 	}
 
@@ -426,7 +426,7 @@ public class GraphTest {
 		map.withTimeStamp(1);
 		map.with(new SortedMsgCreator());
 
-		JsonArray jsonArray = map.toJsonArray(root, new Filter().withFull(true));
+		JsonArray jsonArray = map.toJsonArray(root, Filter.createFull());
 		GraphConverter graphConverter = new GraphConverter();
 		JsonObject objectModel = graphConverter.convertToJson(GraphTokener.OBJECT, jsonArray, true);
 		showDebugInfos(objectModel, 627, null);

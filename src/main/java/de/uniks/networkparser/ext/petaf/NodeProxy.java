@@ -20,9 +20,9 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 	public static final String PROPERTY_NAME = "name";
 	public static final String PROPERTY_ID = "id";
 
+	protected PropertyList propertyId = PropertyList.create(PROPERTY_ID);
 	protected PropertyList propertyUpdate = PropertyList.create(PROPERTY_ID, PROPERTY_HISTORY, PROPERTY_FILTER, PROPERTY_SEND);
-	protected PropertyList propertyInfo = PropertyList.create(PROPERTY_ID, PROPERTY_SEND, PROPERTY_RECEIVE, PROPERTY_HISTORY,
-			PROPERTY_FILTER, PROPERTY_VERSION);
+	protected PropertyList propertyInfo = PropertyList.create(PROPERTY_ID, PROPERTY_SEND, PROPERTY_RECEIVE, PROPERTY_HISTORY, PROPERTY_FILTER, PROPERTY_VERSION);
 	protected PropertyList property = PropertyList.create(PROPERTY_ID, PROPERTY_SEND, PROPERTY_RECEIVE, PROPERTY_ONLINE,
 			PROPERTY_NODES, PROPERTY_HISTORY, PROPERTY_FILTER, PROPERTY_VERSION);
 
@@ -40,7 +40,7 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 	protected long no;
 	protected Space space;
 	protected String name;
-	protected NodeProxy nextPeer;
+	protected NodeProxy nextPeer;	// NextPeer for MyNodes
 
 	public String[] getUpdateProperties() {
 		return propertyUpdate.getList();
@@ -54,6 +54,11 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 	public String[] getProperties() {
 		return property.getList();
 	}
+	
+	public String[] getIDProperties() {
+		return propertyId.getList();
+	}
+
 
 	public void connectToPeer() {
 		sendMessage(ConnectMessage.create());

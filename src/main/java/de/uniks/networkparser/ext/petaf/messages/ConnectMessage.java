@@ -1,5 +1,6 @@
 package de.uniks.networkparser.ext.petaf.messages;
 
+import de.uniks.networkparser.ext.petaf.NodeProxy;
 import de.uniks.networkparser.ext.petaf.ReceivingTimerTask;
 
 /**
@@ -17,6 +18,20 @@ public class ConnectMessage extends ReceivingTimerTask {
 	@Override
 	public Object getSendableInstance(boolean prototyp) {
 		return new ConnectMessage();
+	}
+	
+	@Override
+	public boolean runTask() throws Exception {
+		if(super.runTask() ) {
+			return true;
+		}
+		
+		AcceptMessage acceptTaskSend = AcceptMessage.create();
+		NodeProxy sender = this.getReceiver();
+		if(sender != null) {
+			sender.sendMessage(acceptTaskSend);
+		}
+		return true;
 	}
 
 	@Override

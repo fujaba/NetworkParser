@@ -3,9 +3,8 @@ package de.uniks.networkparser.ext.petaf.messages;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.Tokener;
 import de.uniks.networkparser.ext.petaf.Message;
-import de.uniks.networkparser.ext.petaf.MessageTyp;
 import de.uniks.networkparser.ext.petaf.NodeProxy;
-import de.uniks.networkparser.ext.petaf.NodeProxyFilter;
+import de.uniks.networkparser.ext.petaf.PetaFilter;
 import de.uniks.networkparser.ext.petaf.Space;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.EntityList;
@@ -31,12 +30,17 @@ public class InfoMessage extends Message {
 			IdMap map = getInternMap(space);
 			Tokener tokener = space.getTokener();
 			EntityList list = tokener.newInstanceList();
-			NodeProxyFilter filter = new NodeProxyFilter().withTyp(MessageTyp.INFO);
+			PetaFilter filter = new PetaFilter().withTyp(PetaFilter.INFO);
 			for(NodeProxy proxy : proxies) {
 				list.add(map.encode(proxy, tokener, filter));
 			}
 			msg = list;
 		}
 		return super.getMessage();
+	}
+	
+	@Override
+	public Object getSendableInstance(boolean prototyp) {
+		return new InfoMessage();
 	}
 }
