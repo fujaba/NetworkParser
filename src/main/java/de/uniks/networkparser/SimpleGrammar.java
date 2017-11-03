@@ -117,8 +117,8 @@ public class SimpleGrammar implements Grammar {
 	}
 
 	@Override
-	public BaseItem encode(Object entity, MapEntity map, Tokener tokener) {
-		return tokener.encode(entity, map);
+	public BaseItem encode(Object entity, MapEntity map) {
+		return map.getTokener().encode(entity, map);
 	}
 	
 	public SimpleGrammar withBasicFeature(String... values) {

@@ -117,7 +117,7 @@ public class Tokener implements BufferItem {
 				return null;
 			}
 		}
-		return idMap.encode(entity, map, this);
+		return idMap.encode(entity, map);
 	}
 
 	/**

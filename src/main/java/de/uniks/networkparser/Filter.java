@@ -115,7 +115,7 @@ public class Filter {
 	
 	/**
 	 * Serialization the Full object inclusive null value
-	 * @param value for serialization the full object
+	 * @param format for serialization the full object
 	 * @return self instance
 	 */
 	public Filter withFormat(byte format) {

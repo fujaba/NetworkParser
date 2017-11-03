@@ -43,11 +43,12 @@ public class HTMLGrammar extends SimpleGrammar{
 
 	private SimpleKeyValueList<String, String> transformValue = new SimpleKeyValueList<String, String>();
 	private SimpleIteratorSet<String, String> iterator = new SimpleIteratorSet<String, String>(transformValue);
+	
 	@Override
-	public BaseItem encode(Object entity, MapEntity map, Tokener tokener) {
+	public BaseItem encode(Object entity, MapEntity map) {
 		HTMLEntity rootItem=new HTMLEntity();
 		rootItem.withEncoding(HTMLEntity.ENCODING);
-		Entity child = map.encode(entity, tokener);
+		Entity child = map.encode(entity);
 		rootItem.add(child);
 		return rootItem;
 	}

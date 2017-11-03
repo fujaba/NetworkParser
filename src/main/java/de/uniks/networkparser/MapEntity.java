@@ -48,14 +48,16 @@ public class MapEntity extends AbstractList<Object>{
     private IdMap map;
 	public byte mapFlag;
 	private Grammar grammar;
+	private Tokener tokener;
 
-	public MapEntity(Filter filter, byte flag, IdMap map) {
+	public MapEntity(Filter filter, byte flag, IdMap map, Tokener tokener) {
 		if(filter != null) {
 			this.filter = filter;
 		}
 		this.mapFlag = flag;
 		this.map = map;
 		this.grammar = map.getGrammar();
+		this.tokener = tokener;
 	}
 	
 	public MapEntity(IdMap map) {
@@ -74,8 +76,8 @@ public class MapEntity extends AbstractList<Object>{
 	public Filter getFilter() {
 		return filter;
 	}
-	public Entity encode(Object entity, Tokener tokener) {
-		return tokener.getMap().encode(entity, this, tokener);
+	public Entity encode(Object entity) {
+		return tokener.getMap().encode(entity, this);
 	}
 
 	public int getDeep() {
@@ -346,5 +348,12 @@ public class MapEntity extends AbstractList<Object>{
 	@Override
 	public BaseItem getNewList(boolean keyValue) {
 		return new MapEntity(null);
+	}
+
+	public Tokener getTokener() {
+		if(tokener == null) {
+			tokener = map.jsonTokener;
+		}
+		return this.tokener;
 	}
 }
