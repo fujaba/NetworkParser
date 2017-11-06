@@ -113,12 +113,13 @@ public class AcceptMessage extends ReceivingTimerTask {
 				NodeProxyModel modelProxy = candidates.first();
 				map.put(this.id, modelProxy.getModell(), false);
 				// get model from message deactive Notification
-				space.suspendNotification();
+//				space.sCuspendNotification();
 				return true;
 			}
 			if(PROPERTY_MODEL.equalsIgnoreCase(attribute)) {
 				// Active Notification Model success decoding
-				space.resetNotification();
+//				space.resetNotification();
+				space.withInit(true);
 				return true;
 			}
 		}

@@ -28,6 +28,7 @@ import de.uniks.networkparser.interfaces.EntityList;
 import de.uniks.networkparser.interfaces.MapListener;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
+import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.json.JsonTokener;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SimpleSet;
@@ -66,6 +67,8 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 	protected NodeBackup backupTask = new NodeBackup().withSpace(this);
 	protected NetworkParserLog log=new NetworkParserLog();
 	protected final ErrorHandler handler=new ErrorHandler();
+	private boolean isInit=true;
+	protected final ChangeMessage changeMessageCreator=new ChangeMessage();
 
 	/** Time for Try to Reconnect Clients every x Seconds (Default:5x1m, 5x10m, 30m). Set Value to 0 for disable	 */
 	private SimpleList<Integer> tryReconnectTimeSecond=new SimpleList<Integer>()
@@ -92,7 +95,7 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 		IdMap map = new IdMap()
 		.with(	this,
 				new Message(),
-				new ChangeMessage(),
+				changeMessageCreator,
 				new PingMessage(),
 				new NodeProxyTCP(),
 				new NodeProxyLocal(),
@@ -368,6 +371,9 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 		addInfo(msg, myProxy, sendAnyhow);
 		with(proxy);
 		if(proxy != null) {
+			if(msg instanceof ConnectMessage) {
+				this.isInit = false;
+			}
 			return proxy.sending(msg);
 		}
 		return false;
@@ -675,9 +681,42 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 	
 	
 	public boolean updateModel(SimpleEvent event) {
-		return true;
+		if(this.isInit == false) {
+			return false;
+		}
+		if(SendableEntityCreator.UPDATE.equals(event.getType())|| SendableEntityCreator.NEW.equals(event.getType())) {
+			Object newValue = event.getNewValue();
+			Object oldValue = event.getOldValue();
+			// Nachrichten senden
+			if(newValue instanceof NodeProxy) {
+				return true;
+			}
+			if(newValue instanceof LogItem || oldValue instanceof LogItem){
+				return true;
+			}
+			// Now Send Changing
+			ChangeMessage change = changeMessageCreator.getSendableInstance(false);
+			change.withValue(event);
+			sendMessageToPeers(change);
+			
+//			JsonObject jsonObject = (JsonObject)source;
+// 			JsonObjectTaskSend task = new JsonObjectTaskSend(this, jsonObject, newMsgNo, "");
+// 			sendMessage(task);
+//	 		if(newValue instanceof Talk){
+//					this.getTalkList().addTalk((Talk) newValue);
+//			}
+//			if (model instanceof Talk || newValue instanceof Talk) {
+//				updateBackup();
+//			}
+			return true;
+		}
+		return isInit;
 	}
 	
+	public Space withInit(boolean value) {
+		this.isInit = value;
+		return this;
+	}
 
 	public Space withClient(ObjectCondition... clients) {
 		if(clients == null) {

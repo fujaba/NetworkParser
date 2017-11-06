@@ -1,46 +1,51 @@
 package de.uniks.networkparser.ext.petaf.messages;
 
 import de.uniks.networkparser.Filter;
-import de.uniks.networkparser.ext.petaf.Message;
+import de.uniks.networkparser.SimpleEvent;
+import de.uniks.networkparser.ext.petaf.ReceivingTimerTask;
 import de.uniks.networkparser.ext.petaf.Space;
 import de.uniks.networkparser.ext.petaf.proxy.NodeProxyModel;
 import de.uniks.networkparser.interfaces.BaseItem;
 
-public class ChangeMessage extends Message {
+public class ChangeMessage extends ReceivingTimerTask {
+	public static final String PROPERTY_TYPE = "change";
+	public static final String PROPERTY_ID = "changeid";
+	public static final String PROPERTY_PROPERTY = "property";
+	public static final String PROPERTY_OLD = "old";
+	public static final String PROPERTY_NEW = "new";
+	
 	private Object entity;
 	private Filter filter;
-	private Space space;
-
-	@Override
-	public ChangeMessage withMessage(BaseItem value) {
-		super.withMessage(value);
-		return this;
-	}
+	private String property;
+	private Object oldValue;
+	private Object newValue;
 	
-	ChangeMessage withEntity(Object value) {
+	
+	public ChangeMessage() {
+		AcceptMessage.props.add(PROPERTY_ID, PROPERTY_PROPERTY, PROPERTY_OLD, PROPERTY_NEW);
+	}
+
+	public ChangeMessage withEntity(Object value) {
 		this.entity = value;
 		return this;
 	}
-	ChangeMessage withFilter(Filter filter) {
+	public ChangeMessage withFilter(Filter filter) {
 		this.filter = filter;
 		return this;
 	}
-
-	public static ChangeMessage create(){
-		return  new ChangeMessage();
+	
+	public ChangeMessage withValue(String property, Object oldValue, Object newValue) {
+		this.property = property;
+		this.oldValue = oldValue;
+		this.newValue = newValue;
+		return this;
 	}
 	
-	public static ChangeMessage withChange(Object entity){
-		ChangeMessage changeMessage = new ChangeMessage();
-		changeMessage.withEntity(entity);
-		return changeMessage;
-	}
-
-	public static ChangeMessage withChange(Object entity, Filter filter){
-		ChangeMessage changeMessage = new ChangeMessage();
-		changeMessage.withEntity(entity);
-		changeMessage.withFilter(filter);
-		return changeMessage;
+	public ChangeMessage withValue(SimpleEvent event) {
+		this.property = event.getPropertyName();
+		this.oldValue = event.getOldValue();
+		this.newValue = event.getNewValue();
+		return this;
 	}
 	
 	@Override
@@ -49,6 +54,30 @@ public class ChangeMessage extends Message {
 			msg = space.encode(entity, filter);
 		}
 		return super.getMessage();
+	}
+	
+	@Override
+	public Object getValue(Object entity, String attribute) {
+		if(attribute == null || entity instanceof ChangeMessage == false ) {
+			return false;
+		}
+		ChangeMessage message = (ChangeMessage) entity;
+		if(PROPERTY_OLD.equalsIgnoreCase(attribute)) {
+			return oldValue;
+		}
+		if(PROPERTY_NEW.equalsIgnoreCase(attribute)) {
+			return newValue;
+		}
+		if(PROPERTY_PROPERTY.equalsIgnoreCase(attribute)) {
+			return property;
+		}
+		if(entity != null && PROPERTY_ID.equalsIgnoreCase(attribute)) {
+			Space space = message.getSpace();
+			if(space != null) {
+				return space.getId(entity);
+			}
+		}
+		return super.getValue(entity, attribute);
 	}
 	
 	protected void initialize(NodeProxyModel modell) {
@@ -64,7 +93,12 @@ public class ChangeMessage extends Message {
 	}
 	
 	@Override
-	public Object getSendableInstance(boolean prototyp) {
-		return new ChangeMessage();
+	public ChangeMessage getSendableInstance(boolean prototyp) {
+		return new ChangeMessage().withFilter(filter);
+	}
+	
+	@Override
+	public String getType() {
+		return PROPERTY_TYPE;
 	}
 }
