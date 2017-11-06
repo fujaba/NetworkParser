@@ -1487,6 +1487,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 							Entity child = tokener.createLink(item, fullProp, className, tokener.getId(value));
 							if (child != null) {
 								SendableEntityCreator childCreater = grammar.getCreator(Grammar.WRITE, child, this, map.isSearchForSuperClass(), child.getClass().getName());
+								filter.convertProperty(entity, fullProp);
 								parseValue(fullProp, child, null, childCreater, map, parent);
 							}
 						} else if (valueCreater != null && (contains || convert < 1)) {
@@ -1496,6 +1497,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 							}
 							if (child != null) {
 								SendableEntityCreator childCreater = grammar.getCreator(Grammar.WRITE, child, this, map.isSearchForSuperClass(), child.getClass().getName());
+								filter.convertProperty(entity, fullProp);
 								parseValue(fullProp, child, null, childCreater, map, parent);
 							}
 						} else {

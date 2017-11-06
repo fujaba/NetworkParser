@@ -13,6 +13,7 @@ import de.uniks.networkparser.converter.ByteConverterString;
 import de.uniks.networkparser.ext.ErrorHandler;
 import de.uniks.networkparser.ext.LogItem;
 import de.uniks.networkparser.ext.petaf.filter.ProxyFilter;
+import de.uniks.networkparser.ext.petaf.messages.AcceptMessage;
 import de.uniks.networkparser.ext.petaf.messages.ChangeMessage;
 import de.uniks.networkparser.ext.petaf.messages.ConnectMessage;
 import de.uniks.networkparser.ext.petaf.messages.InfoMessage;
@@ -95,7 +96,8 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 				new PingMessage(),
 				new NodeProxyTCP(),
 				new NodeProxyLocal(),
-				new ConnectMessage(),
+				new ConnectMessage().withSpace(this),
+				new AcceptMessage().withSpace(this),
 				new NodeProxyModel(null));
 		return map;
 	}
@@ -154,6 +156,13 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 		return newProxy;
 	}
 
+	public NodeProxy createModel(Object root) {
+		NodeProxy newProxy = new NodeProxyModel(root);
+		this.with(newProxy);
+		return newProxy;
+	}
+
+	
 	public NodeProxy getOrCreateProxy(String url, int port) {
 		if (url.equals("127.0.0.1")) {
 			return null;
@@ -170,6 +179,7 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 		this.with(newProxy);
 		return newProxy;
 	}
+
 	public NodeProxy getOrCreateNodeProxy(Entity msg, boolean readId) {
 		Entity props = null;
 		if(msg.has(JsonTokener.PROPS)){
@@ -303,6 +313,9 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 		msg.withPrevChange(history.getPrevChangeId(messageId));
 		// Add Receiver if possible
 		msg.withReceiver(getMyNode());
+		if(msg instanceof ReceivingTimerTask) {
+			((ReceivingTimerTask)msg).withSpace(this);
+		}
 	}
 
 	public Space withPath(String path) {
@@ -579,6 +592,13 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 		}
 		return null;
 	}
+	
+	public String getKey(Object entity) {
+		if(this.map != null) {
+			return this.map.getKey(entity);
+		}
+		return null;
+	}
 
 	public Object getObject(String key) {
 		if(this.map != null) {
@@ -826,6 +846,7 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 	public boolean handleMsg(Message message) {
 		// Allgemeine Verarbeiten
 		if(message instanceof ReceivingTimerTask) {
+			((ReceivingTimerTask)message).withSpace(this);
 			this.scheduleTask((ReceivingTimerTask)message);
 			return true;
 		}

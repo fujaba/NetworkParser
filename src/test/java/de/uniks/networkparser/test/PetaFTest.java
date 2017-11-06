@@ -48,7 +48,6 @@ public class PetaFTest {
 		ConnectMessage newMessage = (ConnectMessage) space.getMap().decode(buffer);
 		System.out.println(newMessage);
 		Assert.assertEquals(newMessage.getReceiver(), proxy);
-		
 	}
 	
 	@Test

@@ -16,6 +16,20 @@ import de.uniks.networkparser.list.SortedList;
 import de.uniks.networkparser.test.model.SortedMsg;
 
 public class SimpleArrayListTest {
+	
+	@Test
+	public void testSetElement() {
+		SimpleSet<String> set=new SimpleSet<String>();
+		
+		SimpleList<String> list=new SimpleList<String>();
+		set.add("Hallo", "Welt", "Stefan");
+		set.add("Stefan");
+		
+		list.add("Stefan", "Stefan");
+		Assert.assertEquals(3, set.size());
+		Assert.assertEquals(2, list.size());
+	}
+	
 	@Test
 	public void testSortElement() {
 		SortedList<SortedMsg> list = new SortedList<SortedMsg>(true);

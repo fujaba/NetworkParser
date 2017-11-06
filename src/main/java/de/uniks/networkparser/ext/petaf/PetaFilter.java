@@ -1,6 +1,7 @@
 package de.uniks.networkparser.ext.petaf;
 
 import de.uniks.networkparser.Filter;
+import de.uniks.networkparser.ext.petaf.messages.ConnectMessage;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
 public class PetaFilter extends Filter {
@@ -10,9 +11,23 @@ public class PetaFilter extends Filter {
 	public static final String INFO="info"; // Info send more Infos
 	
 	private String typ=UPDATE;
+	private String oldTyp;
 	
 	public PetaFilter() {
 		withFormat(FORMAT_NULL);
+	}
+	
+	@Override
+	public void convertProperty(Object entity, String fullProp) {
+		super.convertProperty(entity, fullProp);
+		
+		if(entity instanceof ConnectMessage && "receiver".equals(fullProp)) {
+			this.oldTyp = this.typ;
+			this.typ = INFO;
+		}else if(this.oldTyp != null) {
+			this.typ = this.oldTyp;
+			this.oldTyp = null;
+		}
 	}
 	
 	@Override

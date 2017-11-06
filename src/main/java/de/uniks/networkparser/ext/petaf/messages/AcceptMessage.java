@@ -1,9 +1,12 @@
 package de.uniks.networkparser.ext.petaf.messages;
 
+import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.ext.petaf.NodeProxy;
 import de.uniks.networkparser.ext.petaf.ReceivingTimerTask;
 import de.uniks.networkparser.ext.petaf.Space;
 import de.uniks.networkparser.ext.petaf.proxy.NodeProxyModel;
+import de.uniks.networkparser.list.SimpleList;
+import de.uniks.networkparser.list.SortedSet;
 
 /**
  * Sending Connection Link with all Input Proxies and Filter 
@@ -13,9 +16,13 @@ public class AcceptMessage extends ReceivingTimerTask {
 	public static final String PROPERTY_TYPE="accept";
 	public static final String PROPERTY_PROXIES="proxies";
 	public static final String PROPERTY_MODEL="model";
+	public static final String PROPERTY_MODELID="model_id";
+	public static final String PROPERTY_MODELCLASS="model_class";
 	
+	
+	private String id;
 	public AcceptMessage() {
-		AcceptMessage.props.add(PROPERTY_PROXIES, PROPERTY_MODEL);
+		AcceptMessage.props.add(PROPERTY_PROXIES, PROPERTY_MODELID, PROPERTY_MODELCLASS, PROPERTY_MODEL);
 	}
 	
 	@Override
@@ -26,8 +33,33 @@ public class AcceptMessage extends ReceivingTimerTask {
 		AcceptMessage message = (AcceptMessage) entity;
 		Space space = message.getSpace();
 		if(space != null) {
+			if(PROPERTY_MODELID.equalsIgnoreCase(attribute)) {
+				NodeProxyModel modelProxy = space.getModel();
+				if(modelProxy!= null) {
+					IdMap map = space.getMap();
+					return map.getId(modelProxy.getModell(), false);
+				}
+				return null;
+			}
+			if(PROPERTY_MODELCLASS.equalsIgnoreCase(attribute)) {
+				NodeProxyModel modelProxy = space.getModel();
+				if(modelProxy!= null) {
+					Object model = modelProxy.getModell();
+					if(model != null) {
+						return model.getClass().getName();
+					}
+				}
+				return null;
+			}			
 			if(PROPERTY_PROXIES.equalsIgnoreCase(attribute)) {
-				return space.getNodeProxies();
+				SortedSet<NodeProxy> nodeProxies = space.getNodeProxies();
+				SimpleList<NodeProxy> candidates = new SimpleList<NodeProxy>(); 
+				for(NodeProxy proxy : nodeProxies) {
+					if(proxy.isSendable()) {
+						candidates.add(proxy);
+					}
+				}
+				return candidates;
 			}
 			if(PROPERTY_MODEL.equalsIgnoreCase(attribute)) {
 				NodeProxyModel modelProxy = space.getModel();
@@ -36,6 +68,63 @@ public class AcceptMessage extends ReceivingTimerTask {
 		}
 		return super.getValue(entity, attribute);
 	}
+	
+	// Add helper Variable to creating Objects
+	@Override
+	public boolean setValue(Object entity, String attribute, Object value, String type) {
+		if(attribute == null || entity instanceof AcceptMessage == false ) {
+			return false;
+		}
+		AcceptMessage message = (AcceptMessage) entity;
+		Space space = message.getSpace();
+		if(space != null) {
+			if(PROPERTY_MODELID.equalsIgnoreCase(attribute)) {
+				this.id = ""+value;
+				return true;
+			}
+			if(PROPERTY_MODELCLASS.equalsIgnoreCase(attribute)) {
+				IdMap map = space.getMap();
+				if(map == null) {
+					return false;
+				}
+				if(map.getObject(this.id) != null) {
+					// Object exist in Map everything is ok 
+					return true;
+				}
+				// Check ClassName and NodeProxyModel for Candidates
+				String className = ""+value;
+				SortedSet<NodeProxy> nodeProxies = space.getNodeProxies();
+				SimpleList<NodeProxyModel> candidates = new SimpleList<NodeProxyModel>(); 
+				for(NodeProxy proxy : nodeProxies) {
+					if(proxy instanceof NodeProxyModel) {
+						NodeProxyModel modelProxy = (NodeProxyModel) proxy;
+						if(modelProxy.getId() == null) {
+							Object modell = modelProxy.getModell();
+							if(modell != null && modell.getClass().getName().equals(className)) {
+								candidates.add(modelProxy);
+							}
+						}
+					}
+				}
+				// So I hope only one Candidate
+				if(candidates.size()!=1) {
+					return false;
+				}
+				NodeProxyModel modelProxy = candidates.first();
+				map.put(this.id, modelProxy.getModell(), false);
+				// get model from message deactive Notification
+				space.suspendNotification();
+				return true;
+			}
+			if(PROPERTY_MODEL.equalsIgnoreCase(attribute)) {
+				// Active Notification Model success decoding
+				space.resetNotification();
+				return true;
+			}
+		}
+		return super.setValue(entity, attribute, value, type);
+	}
+	
 	
 	@Override
 	public boolean runTask() throws Exception {
@@ -50,75 +139,8 @@ public class AcceptMessage extends ReceivingTimerTask {
 		if (proxy == null) {
 			return false;
 		}
-		// get list of proxies from message
-		space.suspendNotification();
-		
-//			JsonObject data = getData();
-//			JsonArray jsonArray = data.getJsonArray(AcceptTaskSend.TYP_PROXIES);
-//			JsonObject proxyData;
-//			JsonObject properties;
-//			String myProxyName=world.getName();
-//			world.clearProxies();
-//
-//			for (int i = 0; i < jsonArray.size(); i++) {
-//				proxyData = jsonArray.getJSONObject(i);
-//				properties = (JsonObject) proxyData.get(JsonTokener.PROPS);
-//
-//				if (properties != null) {
-//					if(!properties.has(NodeProxy.PROPERTY_ONLINE)){
-//						continue;
-//					}
-//					boolean isOnline = properties.getBoolean(NodeProxy.PROPERTY_ONLINE);
-//					if (isOnline) {
-//						NodeProxy newProxy = (NodeProxy) getWorld().getMap()
-//								.decode(proxyData);
-// 						if (world.getNodeProxies().contains(newProxy)) {
-//							// remove old entry and use the new one to ensure
-//							// that jsonid matches
-// 							world.getNodeProxies().remove(newProxy);
-//						}
-// 						world.with(newProxy);
-//					}else if(myProxyName.equals(properties.getString((NodeProxy.PROPERTY_NAME)))){
-//						NodeProxy newProxy = (NodeProxy) getWorld().getMap()
-//								.decode(proxyData);
-//					}
-//				}
-//			}
-//			ListOfTalk origTalkList = getWorld().getTalkList();
-//			Set<Talk> talks = origTalkList.getTalks();
-//			for (Talk t : talks)
-//			{
-//			   origTalkList.removeTalk(t);
-//			}
-//
-//			JsonObject dataModel = data.getJsonObject("msg");
-//			dataModel = dataModel.getJsonObject(AcceptTaskSend.TYP_MODEL);
-//
-//			Integer longId = this.msg.getInt(NodeProxy.PROPERTY_HISTORY);
-//			ModelHistory history = getWorld().getHistory();
-//
-//			ModelChange change=history.createChange(longId, proxy.getName(), dataModel);
-//			getWorld().getHistory().addFirstHistory(change);
-//			getWorld().resetNotification();
-//			
-//			IdMap map = getWorld().getMap();
-//			Conference conference = getWorld().getConference();
-//			map.decode(dataModel, conference, null);
-
-			
-//ONLY CONFNET		getWorld().setModellInit(true);
-		// Send myNodes to all Node
 		return true;
 	}
-	
-	@Override
-	public boolean setValue(Object entity, String attribute, Object value, String type) {
-		if(attribute == null || entity instanceof AcceptMessage == false ) {
-			return false;
-		}
-		return super.setValue(entity, attribute, value, type);
-	}
-	
 	
 	public static AcceptMessage create() {
 		AcceptMessage msg = new AcceptMessage();
@@ -129,7 +151,11 @@ public class AcceptMessage extends ReceivingTimerTask {
 
 	@Override
 	public Object getSendableInstance(boolean prototyp) {
-		return new AcceptMessage();
+		AcceptMessage acceptMessage = new AcceptMessage();
+		if(prototyp == false && this.space != null) {
+			acceptMessage.withSpace(this.space);
+		}
+		return acceptMessage;
 	}
 
 	@Override

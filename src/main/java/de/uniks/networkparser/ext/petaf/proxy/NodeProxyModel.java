@@ -5,6 +5,7 @@ import de.uniks.networkparser.ext.petaf.NodeProxyType;
 
 public class NodeProxyModel extends NodeProxy {
 	private Object root;
+	private String id;
 	
 	public NodeProxyModel(Object root) {
 		this.root = root;
@@ -16,7 +17,15 @@ public class NodeProxyModel extends NodeProxy {
 		if(space == null) {
 			return null;
 		}
-		return this.space.getId(root);
+		return getId();
+	}
+	
+	public String getId() {
+		if(this.id != null) {
+			return this.id;
+		}
+		this.id = this.space.getKey(root);
+		return id;
 	}
 
 	@Override
