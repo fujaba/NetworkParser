@@ -13,6 +13,7 @@ import de.uniks.networkparser.converter.ByteConverterString;
 import de.uniks.networkparser.ext.ErrorHandler;
 import de.uniks.networkparser.ext.LogItem;
 import de.uniks.networkparser.ext.petaf.filter.ProxyFilter;
+import de.uniks.networkparser.ext.petaf.messages.AcceptMessage;
 import de.uniks.networkparser.ext.petaf.messages.ChangeMessage;
 import de.uniks.networkparser.ext.petaf.messages.ConnectMessage;
 import de.uniks.networkparser.ext.petaf.messages.InfoMessage;
@@ -42,6 +43,7 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 	public static final String PROPERTY_MODELROOT="root";
 	public static final String PROPERTY_HISTORY="history";
 	public static final String PROPERTY_PROXY="proxies";
+	public static final String INMESSAGE="";
 	public static final String PROPERTY_PATH="path";
 	public static final String PROPERTY_NAME="name";
 
@@ -94,7 +96,8 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 				new PingMessage(),
 				new NodeProxyTCP(),
 				new NodeProxyLocal(),
-				new ConnectMessage(),
+				new ConnectMessage().withSpace(this),
+				new AcceptMessage().withSpace(this),
 				new NodeProxyModel(null));
 		return map;
 	}
@@ -144,7 +147,22 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 	public NodeProxy getFirstPeer() {
 		return firstPeer;
 	}
+	
+	public NodeProxy createServer(int port) {
+		NodeProxy newProxy = getNewProxy();
+		newProxy.withType(NodeProxyType.INOUT);
+		newProxy.setValue(newProxy, NodeProxyTCP.PROPERTY_PORT, port, SendableEntityCreator.NEW);
+		this.with(newProxy);
+		return newProxy;
+	}
 
+	public NodeProxy createModel(Object root) {
+		NodeProxy newProxy = new NodeProxyModel(root);
+		this.with(newProxy);
+		return newProxy;
+	}
+
+	
 	public NodeProxy getOrCreateProxy(String url, int port) {
 		if (url.equals("127.0.0.1")) {
 			return null;
@@ -161,6 +179,7 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 		this.with(newProxy);
 		return newProxy;
 	}
+
 	public NodeProxy getOrCreateNodeProxy(Entity msg, boolean readId) {
 		Entity props = null;
 		if(msg.has(JsonTokener.PROPS)){
@@ -256,7 +275,7 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 
 
 	public String convertMessage(Message msg){
-		BaseItem encode = getMap().encode(msg, tokener);
+		BaseItem encode = getMap().encode(msg, tokener, new PetaFilter().withTyp(PetaFilter.ID));
 		addMessageElement(msg, encode);
 		ByteConverter byteConverter = getConverter();
 		return byteConverter.encode(encode);
@@ -294,6 +313,9 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 		msg.withPrevChange(history.getPrevChangeId(messageId));
 		// Add Receiver if possible
 		msg.withReceiver(getMyNode());
+		if(msg instanceof ReceivingTimerTask) {
+			((ReceivingTimerTask)msg).withSpace(this);
+		}
 	}
 
 	public Space withPath(String path) {
@@ -345,7 +367,10 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 		}
 		addInfo(msg, myProxy, sendAnyhow);
 		with(proxy);
-		return proxy.sending(msg);
+		if(proxy != null) {
+			return proxy.sending(msg);
+		}
+		return false;
 	}
 
 	public Space withPeerCount(int peerCount) {
@@ -537,7 +562,7 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 	 * Returns all the Proxies in the Space (The ProxyModel)
 	 * @return the first NodeProxyModel
 	 */
-	protected NodeProxyModel getModel() {
+	public NodeProxyModel getModel() {
 		NodeProxyModel result = null;
 		for(NodeProxy proxy : this.proxies) {
 			if(proxy instanceof NodeProxyModel) {
@@ -564,6 +589,13 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 	public String getId(Object entity) {
 		if(this.map != null) {
 			return this.map.getId(entity, true);
+		}
+		return null;
+	}
+	
+	public String getKey(Object entity) {
+		if(this.map != null) {
+			return this.map.getKey(entity);
 		}
 		return null;
 	}
@@ -812,11 +844,22 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 	}
 
 	public boolean handleMsg(Message message) {
+		// Allgemeine Verarbeiten
+		if(message instanceof ReceivingTimerTask) {
+			((ReceivingTimerTask)message).withSpace(this);
+			this.scheduleTask((ReceivingTimerTask)message);
+			return true;
+		}
 		return false;
 	}
 
 	@Override
 	public Object getSendableInstance(boolean prototyp) {
 		return Space.class;
+	}
+
+	public boolean updateNetwork(NodeProxyType type, NodeProxy nodeProxy) {
+		SimpleEvent event = new SimpleEvent(this, ""+type, null, nodeProxy);
+		return sendEventToClients(event);
 	}
 }

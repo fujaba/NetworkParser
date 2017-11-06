@@ -224,7 +224,7 @@ public class ModelTest implements ObjectCondition {
 	public void testBarbar() {
 		IdMap map = new IdMap().withCreator(new BarbarianCreator());
 		Barbarian barbarian = new Barbarian();
-		JsonObject jsonObjectB = map.toJsonObject(barbarian, new Filter().withNullCheck(true));
+		JsonObject jsonObjectB = map.toJsonObject(barbarian, Filter.createNull());
 		JsonObject jsonObject = map.toJsonObject(barbarian);
 
 		Assert.assertNotEquals(jsonObject, jsonObjectB);

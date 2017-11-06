@@ -1,6 +1,5 @@
 package de.uniks.networkparser.ext.petaf;
 
-import java.io.IOException;
 import java.io.OutputStream;
 import java.net.Socket;
 
@@ -23,23 +22,23 @@ public class Message implements SendableEntityCreator, SendableEntityCreatorNoIn
 	public static final String PROPERTY_PARENT="parent";
 	public static final String PROPERTY_TYPE="type";
 	public static final int TIMEOUTDEFAULT=0;
-	private final static String[] props=new String[]{
+	protected final static PropertyList props=PropertyList.create(
 			PROPERTY_TYPE,
 			PROPERTY_HISTORYID,
 			PROPERTY_MSG,
 			PROPERTY_PREVIOUSCHANGE,
 			PROPERTY_RECEIVER,
 			PROPERTY_RECEIVED
-	};
+	);
 	protected String historyId;
 	protected Object received;
 	protected String prevChange;
 	protected BaseItem msg;
 	protected NodeProxy receiver;
-	private int timeOut;
-	private Socket session;
-	private boolean sendAnyHow=false;
-	private String type;
+	protected int timeOut;
+	protected boolean sendAnyHow=false;
+	protected String type;
+	protected Object session;
 
 	public String getMessageId(Space space, NodeProxy proxy){
 		if(this.historyId == null ){
@@ -54,7 +53,11 @@ public class Message implements SendableEntityCreator, SendableEntityCreatorNoIn
 	}
 
 	public String getType() {
-		return type;
+		// Inkluisive FallBack
+		if(type != null) {
+			return type;
+		}
+		return this.getClass().getName();
 	}
 
 	public Message withHistoryId(String id){
@@ -137,7 +140,7 @@ public class Message implements SendableEntityCreator, SendableEntityCreatorNoIn
 	public boolean isSendAnyHow() {
 		return sendAnyHow;
 	}
-
+	
 	public Message withSendAnyHow(boolean sendAnyHow) {
 		this.sendAnyHow = sendAnyHow;
 		return this;
@@ -163,29 +166,39 @@ public class Message implements SendableEntityCreator, SendableEntityCreatorNoIn
 		return super.toString();
 	}
 
-	public Socket getSession() {
-		return session;
-	}
-
 	public boolean write(String answer) {
+		OutputStream stream = getOutputStream();
+		if(stream == null) {
+			return false;
+		}
 		try {
-			OutputStream outputStream = session.getOutputStream();
-			outputStream.write(answer.getBytes());
-			outputStream.flush();
-		} catch (IOException e) {
+			stream.write(answer.getBytes());
+			stream.flush();
+		}catch (Exception e) {
 			return false;
 		}
 		return true;
 	}
+	
+	public OutputStream getOutputStream() {
+		if(this.session instanceof Socket) {
+			try {
+				return ((Socket)session).getOutputStream();
+			}
+			catch (Exception e) {
+			}
+		}
+		return null;
+	}
 
-	public Message withSession(Socket session) {
+	public Message withSession(Object session) {
 		this.session = session;
 		return this;
 	}
-
+	
 	@Override
 	public String[] getProperties() {
-		return props;
+		return props.getList();
 	}
 
 	@Override

@@ -1,6 +1,6 @@
 package de.uniks.networkparser.ext.petaf;
 
-public class SendingTimerTask extends SimpleTimerTask{
+public class SendingTimerTask extends SimpleTimerTask {
 	private NodeProxy sender;
 	public SendingTimerTask(Space space) {
 		super(space);

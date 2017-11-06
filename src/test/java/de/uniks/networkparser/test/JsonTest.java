@@ -441,12 +441,12 @@ public class JsonTest extends IOClasses {
 		assertEquals("WERT Vergleichen", reference, actual.toString(2));
 
 		reference = "{\r\n  \"class\":\"de.uniks.networkparser.test.model.ChatMessage\",\r\n  \"id\":\"C1\",\r\n  \"prop\":{\r\n    \"sender\":\"Stefan Lindel\",\r\n    \"time\":null,\r\n    \"txt\":\"Dies ist eine Testnachricht\",\r\n    \"count\":0,\r\n    \"activ\":false\r\n  }\r\n}";
-		actual = jsonMap.toJsonObject(chatMessage, new Filter().withFull(true));
+		actual = jsonMap.toJsonObject(chatMessage, Filter.createFull());
 		assertEquals("WERT Vergleichen", reference, actual.toString(2));
 
 		// Array
 		reference = "[\r\n  {\r\n    \"class\":\"de.uniks.networkparser.test.model.ChatMessage\",\r\n    \"id\":\"C1\",\r\n    \"prop\":{\r\n      \"sender\":\"Stefan Lindel\",\r\n      \"time\":null,\r\n      \"txt\":\"Dies ist eine Testnachricht\",\r\n      \"count\":0,\r\n      \"activ\":false\r\n    }\r\n  }\r\n]";
-		JsonArray actualArray = jsonMap.toJsonArray(chatMessage, new Filter().withFull(true));
+		JsonArray actualArray = jsonMap.toJsonArray(chatMessage, Filter.createFull());
 		assertEquals("WERT Vergleichen", reference, actualArray.toString(2));
 	}
 
@@ -570,7 +570,7 @@ public class JsonTest extends IOClasses {
 		HashSet<Object> items = new HashSet<Object>();
 		items.add(parent);
 		items.add(child);
-		assertEquals(2, map.toJsonArray(items, new Filter().withFull(true)).size());
+		assertEquals(2, map.toJsonArray(items, Filter.createFull()).size());
 	}
 
 	@Test
@@ -583,12 +583,12 @@ public class JsonTest extends IOClasses {
 		// ARRAY
 		Assert.assertEquals(
 				"[{\"class\":\"de.uniks.networkparser.test.model.Apple\",\"id\":\"A1\",\"prop\":{\"pass\":null,\"x\":0,\"y\":0,\"owner\":null}}]",
-				map.toJsonArray(apple, new Filter().withFull(true)).toString());
+				map.toJsonArray(apple, Filter.createFull()).toString());
 
 		// OBJECT
 		Assert.assertEquals(
 				"{\"class\":\"de.uniks.networkparser.test.model.Apple\",\"id\":\"A1\",\"prop\":{\"pass\":null,\"x\":0,\"y\":0,\"owner\":null}}",
-				map.toJsonObject(apple, new Filter().withFull(true)).toString());
+				map.toJsonObject(apple, Filter.createFull()).toString());
 
 	}
 
@@ -598,7 +598,7 @@ public class JsonTest extends IOClasses {
 
 		encodeMap.with(new PersonCreator());
 		Person person = new Person().withName("Albert").withBalance(42);
-		String shortString = encodeMap.toJsonObject(person, Filter.SIMPLEFORMAT).toString();
+		String shortString = encodeMap.toJsonObject(person, Filter.createSimple()).toString();
 		Assert.assertEquals(49, shortString.length());
 
 		IdMap decodeMap = new IdMap().with(new EMFJsonGrammar());

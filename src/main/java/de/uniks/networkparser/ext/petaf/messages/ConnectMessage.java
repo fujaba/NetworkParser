@@ -1,13 +1,14 @@
 package de.uniks.networkparser.ext.petaf.messages;
 
-import de.uniks.networkparser.ext.petaf.Message;
-import de.uniks.networkparser.ext.petaf.Space;
+import de.uniks.networkparser.ext.petaf.NodeProxy;
+import de.uniks.networkparser.ext.petaf.ReceivingTimerTask;
 
 /**
  * Sending Connection Link with all Input Proxies and Filter 
  * @author Stefan Lindel
  */
-public class ConnectMessage extends Message {
+public class ConnectMessage extends ReceivingTimerTask {
+	public static final String PROPERTY_TYPE="connect";
 	public static ConnectMessage create() {
 		ConnectMessage msg = new ConnectMessage();
 		msg.withSendAnyHow(true);
@@ -20,8 +21,21 @@ public class ConnectMessage extends Message {
 	}
 	
 	@Override
-	public boolean handle(Space space) {
-		// TODO Auto-generated method stub
-		return super.handle(space);
+	public boolean runTask() throws Exception {
+		if(super.runTask() ) {
+			return true;
+		}
+		
+		AcceptMessage acceptTaskSend = AcceptMessage.create();
+		NodeProxy sender = this.getReceiver();
+		if(sender != null) {
+			sender.sendMessage(acceptTaskSend);
+		}
+		return true;
+	}
+
+	@Override
+	public String getType() {
+		return PROPERTY_TYPE;
 	}
 }

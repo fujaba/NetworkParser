@@ -49,7 +49,7 @@ public interface Grammar {
 
 	public Entity writeBasicValue(Entity entity, String className, String id, IdMap map);
 	
-	public BaseItem encode(Object entity, MapEntity map, Tokener tokener);
+	public BaseItem encode(Object entity, MapEntity map);
 
 	public boolean writeValue(BaseItem parent, String property, Object value, MapEntity map, Tokener tokener);
 }

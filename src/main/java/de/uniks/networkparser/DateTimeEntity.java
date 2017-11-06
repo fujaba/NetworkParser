@@ -491,6 +491,9 @@ public class DateTimeEntity {
 
 	@Override
 	public String toString() {
+		if(this.isDirty()) {
+			this.calculate();
+		}
 		return this.fields.get(DateField.DAY_OF_MONTH) + "."
 				+ this.fields.get(DateField.MONTH) + "."
 				+ this.fields.get(DateField.YEAR);

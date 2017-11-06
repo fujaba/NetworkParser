@@ -1,6 +1,6 @@
 package de.uniks.networkparser.ext.petaf;
 
-import de.uniks.networkparser.list.SimpleList;
+import de.uniks.networkparser.list.AbstractList;
 
 /**
  * Property List
@@ -8,10 +8,9 @@ import de.uniks.networkparser.list.SimpleList;
  * @author Stefan
  *
  */
-public class PropertyList extends SimpleList<String>{
+public class PropertyList extends AbstractList<String>{
 	private String[] cache;
 	
-	@Override
 	public boolean add(String value) {
 		boolean result = super.add(value);
 		this.cache = null;
@@ -30,6 +29,11 @@ public class PropertyList extends SimpleList<String>{
 		}
 		this.cache = null;
 		return true;
+	}
+	
+	@Override
+	public PropertyList getNewList(boolean keyValue) {
+		return new PropertyList();
 	}
 	
 	public String[] getList() {
