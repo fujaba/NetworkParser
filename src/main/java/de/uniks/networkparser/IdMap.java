@@ -1199,7 +1199,6 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 	 *
 	 * @param object the object
 	 * @param map the runtime information
-	 * @param tokener the The Tokener for encoding
 	 * @return the json array
 	 */
 	protected EntityList encodeList(Object object, MapEntity map) {
