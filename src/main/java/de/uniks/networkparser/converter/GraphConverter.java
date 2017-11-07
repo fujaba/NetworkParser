@@ -85,7 +85,9 @@ public class GraphConverter implements Converter{
 		GraphList root = new GraphList().withType(type);
 
 		// Parse all Object to Object-Diagram
-		for (Object item : list) {
+		for(int i=0;i<list.size();i++) {
+			Object item = list.get(i);
+//		for (Object item : list) {
 			if (item instanceof JsonObject) {
 				parseJsonObject(root, (JsonObject) item);
 			}

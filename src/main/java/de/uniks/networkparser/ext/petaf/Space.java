@@ -19,6 +19,7 @@ import de.uniks.networkparser.ext.petaf.messages.ConnectMessage;
 import de.uniks.networkparser.ext.petaf.messages.InfoMessage;
 import de.uniks.networkparser.ext.petaf.messages.PingMessage;
 import de.uniks.networkparser.ext.petaf.proxy.NodeBackup;
+import de.uniks.networkparser.ext.petaf.proxy.NodeProxyFileSystem;
 import de.uniks.networkparser.ext.petaf.proxy.NodeProxyLocal;
 import de.uniks.networkparser.ext.petaf.proxy.NodeProxyModel;
 import de.uniks.networkparser.ext.petaf.proxy.NodeProxyTCP;
@@ -28,7 +29,6 @@ import de.uniks.networkparser.interfaces.EntityList;
 import de.uniks.networkparser.interfaces.MapListener;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
-import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.json.JsonTokener;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SimpleSet;
@@ -56,7 +56,7 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 	private SortedSet<NodeProxy> proxies=new SortedSet<NodeProxy>(true);
 	private ByteConverter converter;
 	protected ModelHistory history = null;
-	private String path = "";
+	protected String path = "";
 	private ProxyFilter filter = new ProxyFilter();
 	private TaskExecutor executor;
 	private NodeProxy firstPeer;
@@ -67,7 +67,7 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 	protected NodeBackup backupTask = new NodeBackup().withSpace(this);
 	protected NetworkParserLog log=new NetworkParserLog();
 	protected final ErrorHandler handler=new ErrorHandler();
-	private boolean isInit=true;
+	protected boolean isInit=true;
 	protected final ChangeMessage changeMessageCreator=new ChangeMessage();
 
 	/** Time for Try to Reconnect Clients every x Seconds (Default:5x1m, 5x10m, 30m). Set Value to 0 for disable	 */
@@ -160,12 +160,28 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 	}
 
 	public NodeProxy createModel(Object root) {
+		return createModel(root, null);
+	}
+	
+	public NodeProxy createModel(Object root, String fileName) {
 		NodeProxy newProxy = new NodeProxyModel(root);
 		this.with(newProxy);
+		if(fileName != null) {
+			String filePath = null; 
+			if(this.path != null) {
+				filePath = this.path + "/"+fileName;
+			} else {
+				filePath = fileName;
+			}
+			NodeProxyFileSystem fileSystem=new NodeProxyFileSystem(filePath);
+			this.isInit=false;
+			this.with(fileSystem);
+			fileSystem.load(root);
+			this.isInit=true;
+		}
 		return newProxy;
+		
 	}
-
-	
 	public NodeProxy getOrCreateProxy(String url, int port) {
 		if (url.equals("127.0.0.1")) {
 			return null;
@@ -698,16 +714,6 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 			ChangeMessage change = changeMessageCreator.getSendableInstance(false);
 			change.withValue(event);
 			sendMessageToPeers(change);
-			
-//			JsonObject jsonObject = (JsonObject)source;
-// 			JsonObjectTaskSend task = new JsonObjectTaskSend(this, jsonObject, newMsgNo, "");
-// 			sendMessage(task);
-//	 		if(newValue instanceof Talk){
-//					this.getTalkList().addTalk((Talk) newValue);
-//			}
-//			if (model instanceof Talk || newValue instanceof Talk) {
-//				updateBackup();
-//			}
 			return true;
 		}
 		return isInit;

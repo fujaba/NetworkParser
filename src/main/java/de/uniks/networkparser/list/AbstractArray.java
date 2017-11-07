@@ -494,10 +494,11 @@ public abstract class AbstractArray<V> implements BaseItem {
 		if (this.index == 0) {
 			System.arraycopy(elements[index], 0, dest, 0, size);
 		} else {
-			int len = ((Object[]) elements[index]).length;
-			if (size > len - this.index) {
-				System.arraycopy(elements[index], this.index, dest, 0, len - this.index);
-				System.arraycopy(elements[index], 0, dest, len - this.index, len - size);
+			int length = ((Object[]) elements[index]).length - this.index;
+			if (size > length) {
+				System.arraycopy(elements[index], this.index, dest, 0, length);
+				System.arraycopy(elements[index], 0, dest, length, size - length);
+				this.index = 0;
 			} else {
 				System.arraycopy(elements[index], this.index, dest, 0, size);
 			}

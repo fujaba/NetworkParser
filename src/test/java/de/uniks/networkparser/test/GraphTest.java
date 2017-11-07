@@ -34,6 +34,7 @@ import de.uniks.networkparser.graph.GraphImage;
 import de.uniks.networkparser.graph.GraphList;
 import de.uniks.networkparser.graph.GraphOptions;
 import de.uniks.networkparser.graph.GraphPatternMatch;
+import de.uniks.networkparser.graph.GraphSimpleSet;
 import de.uniks.networkparser.graph.GraphTokener;
 import de.uniks.networkparser.graph.GraphUtil;
 import de.uniks.networkparser.graph.Method;
@@ -83,6 +84,28 @@ import de.uniks.networkparser.xml.JDLTokener;
 import de.uniks.networkparser.xml.XMLEntity;
 
 public class GraphTest {
+	
+	@Test
+	public void SetTest() {
+		GraphSimpleSet list = new GraphSimpleSet();
+		Clazz last = null;
+		int size = 459;
+		for(int i=1;i<=size;i++) {
+			last = new Clazz("CLASSNAME_"+i);
+			list.add(last);
+		}
+		Assert.assertEquals(list.size(), size);
+		last = new Clazz("CLASSNAME_0");
+		list.add(last);
+		list.add(last);
+		list.add(new Clazz("CLASSNAME_NEW"));
+		
+		
+		Assert.assertEquals(list.size(), size + 2);
+		
+		
+	}
+	
 	@Test
 	public void testSimpleGeneralization() {
 		GraphList model=new GraphList();

@@ -4,11 +4,13 @@ import java.io.BufferedWriter;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 
+import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.ext.io.FileBuffer;
 import de.uniks.networkparser.ext.petaf.FileWatcher;
 import de.uniks.networkparser.ext.petaf.Message;
 import de.uniks.networkparser.ext.petaf.NodeProxy;
 import de.uniks.networkparser.ext.petaf.NodeProxyType;
+import de.uniks.networkparser.interfaces.BaseItem;
 
 public class NodeProxyFileSystem extends NodeProxy {
     private String fileName;
@@ -18,8 +20,8 @@ public class NodeProxyFileSystem extends NodeProxy {
         withOnline(true);
     }
 
-    public NodeProxyFileSystem(String filename) {
-        this.fileName = filename;
+    public NodeProxyFileSystem(String fileName) {
+        this.fileName = fileName;
         withOnline(true);
     }
 
@@ -43,6 +45,17 @@ public class NodeProxyFileSystem extends NodeProxy {
             System.out.println(e.getMessage());
         }
         return result;
+    }
+    
+    public BaseItem load(Object root) {
+    	BaseItem readBaseFile = FileBuffer.readBaseFile(this.fileName);
+    	if(this.space != null && readBaseFile != null) {
+    		IdMap map = space.getMap();
+    		if(map != null) {
+    			map.decode(readBaseFile, root, null);
+    		}
+    	}
+    	return readBaseFile;
     }
 
     @Override

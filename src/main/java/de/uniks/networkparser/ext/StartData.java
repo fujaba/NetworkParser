@@ -227,6 +227,9 @@ public class StartData implements SendableEntityCreatorNoIndex
 		IdMap map = new IdMap();
 		map.with(StartData.instance());
 		CharacterBuffer readFile = FileBuffer.readFile(StartData.fileName);
+		if(readFile.length()<1) {
+			return true;
+		}
 		JsonObject json = new JsonObject().withValue(readFile);
 		// Merge Properties from File and Properties from StartData
 		Set<String> keySet = json.keySet();
