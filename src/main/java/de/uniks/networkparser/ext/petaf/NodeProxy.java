@@ -2,7 +2,6 @@ package de.uniks.networkparser.ext.petaf;
 
 import de.uniks.networkparser.ext.petaf.messages.ConnectMessage;
 import de.uniks.networkparser.ext.petaf.messages.InfoMessage;
-import de.uniks.networkparser.ext.petaf.messages.PingMessage;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
 import de.uniks.networkparser.list.SimpleList;
@@ -76,7 +75,7 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 	}
 
 	public boolean sendPing() {
-		PingMessage message=new PingMessage();
+		InfoMessage message=new InfoMessage();
 		return sendMessage(message);
 	}
 

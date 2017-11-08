@@ -15,6 +15,7 @@ import de.uniks.networkparser.interfaces.BaseItem;
 public class NodeProxyFileSystem extends NodeProxy {
     private String fileName;
     private FileWatcher nodeProxyFileWatcher;
+    private boolean fullModell;
 
     NodeProxyFileSystem() {
         withOnline(true);
@@ -23,6 +24,15 @@ public class NodeProxyFileSystem extends NodeProxy {
     public NodeProxyFileSystem(String fileName) {
         this.fileName = fileName;
         withOnline(true);
+    }
+    
+    public boolean isFullModell() {
+		return fullModell;
+	}
+    
+    public NodeProxyFileSystem withFullModell(boolean value) {
+    	this.fullModell = value;
+    	return this;
     }
 
     @Override
@@ -36,10 +46,21 @@ public class NodeProxyFileSystem extends NodeProxy {
             FileOutputStream networkFile = new FileOutputStream(String.valueOf(file));
 
             BufferedWriter out = new BufferedWriter(new OutputStreamWriter(networkFile));
-            String data = this.space.convertMessage(msg);
-            out.write(data);
+            int len=0;
+            if(this.fullModell) {
+            	NodeProxyModel model = getSpace().getModel();
+            	Object modell = model.getModell();
+            	BaseItem value = this.space.encode(modell, null);
+            	String data = value.toString();
+            	len = data.length();
+            	out.write(data);
+            } else {
+	            String data = this.space.convertMessage(msg);
+	            len = data.length();
+	            out.append(data);
+            }
             out.close();
-            setSendTime(data.length());
+            setSendTime(len);
             return true;
         } catch (Exception e) {
             System.out.println(e.getMessage());

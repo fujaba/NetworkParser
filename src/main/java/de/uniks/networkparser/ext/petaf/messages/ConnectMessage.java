@@ -9,6 +9,7 @@ import de.uniks.networkparser.ext.petaf.ReceivingTimerTask;
  */
 public class ConnectMessage extends ReceivingTimerTask {
 	public static final String PROPERTY_TYPE="connect";
+
 	public static ConnectMessage create() {
 		ConnectMessage msg = new ConnectMessage();
 		msg.withSendAnyHow(true);
@@ -29,7 +30,9 @@ public class ConnectMessage extends ReceivingTimerTask {
 		AcceptMessage acceptTaskSend = AcceptMessage.create();
 		NodeProxy sender = this.getReceiver();
 		if(sender != null) {
-			sender.sendMessage(acceptTaskSend);
+			if(sender.sendMessage(acceptTaskSend)) {
+				this.receiver.withOnline(true);
+			}
 		}
 		return true;
 	}
@@ -37,5 +40,10 @@ public class ConnectMessage extends ReceivingTimerTask {
 	@Override
 	public String getType() {
 		return PROPERTY_TYPE;
+	}
+	
+	@Override
+	public boolean isSendingToPeers() {
+		return false;
 	}
 }

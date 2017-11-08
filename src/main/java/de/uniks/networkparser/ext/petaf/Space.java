@@ -17,7 +17,6 @@ import de.uniks.networkparser.ext.petaf.messages.AcceptMessage;
 import de.uniks.networkparser.ext.petaf.messages.ChangeMessage;
 import de.uniks.networkparser.ext.petaf.messages.ConnectMessage;
 import de.uniks.networkparser.ext.petaf.messages.InfoMessage;
-import de.uniks.networkparser.ext.petaf.messages.PingMessage;
 import de.uniks.networkparser.ext.petaf.proxy.NodeBackup;
 import de.uniks.networkparser.ext.petaf.proxy.NodeProxyFileSystem;
 import de.uniks.networkparser.ext.petaf.proxy.NodeProxyLocal;
@@ -96,7 +95,7 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 		.with(	this,
 				new Message(),
 				changeMessageCreator,
-				new PingMessage(),
+				new InfoMessage(),
 				new NodeProxyTCP(),
 				new NodeProxyLocal(),
 				new ConnectMessage().withSpace(this),
@@ -105,6 +104,16 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 		return map;
 	}
 
+	public Space withCreator(IdMap value) {
+		this.map.with(value);
+		return this;
+	}
+	
+	public Space withCreator(SendableEntityCreator... values) {
+		this.map.withCreator(values);
+		return this;
+	}
+	
 	public Space withModelRoot(NodeProxyModel modelRoot) {
 		with(modelRoot);
 		return this;
@@ -872,15 +881,6 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 			space.with((NodeProxy)value);
 			return true;
 		}
-//		if(attribute.equalsIgnoreCase(Space.PROPERTY_NAME)) {
-//			return space.getName();
-//		}
-//		if(attribute.equalsIgnoreCase(Space.PROPERTY_PATH)) {
-//			return space.getPath();
-//		}
-//		if(attribute.equalsIgnoreCase(Space.PROPERTY_HISTORY)) {
-//			return space.getHistory();
-//		}
 		return false;
 	}
 
@@ -894,6 +894,9 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 			((ReceivingTimerTask)message).withSpace(this);
 			this.scheduleTask((ReceivingTimerTask)message);
 			return true;
+		}
+		if(message.isSendingToPeers()) {
+			this.sendMessageToPeers(message);
 		}
 		return false;
 	}

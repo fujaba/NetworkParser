@@ -13,6 +13,7 @@ public class UpdateAccumulate {
 	private Object target;
 	private Object defaultItem;
 	private SendableEntityCreator creator;
+	private String property;
 	
 	
 	public Tokener getTokener() {
@@ -102,6 +103,13 @@ public class UpdateAccumulate {
 		return this;
 	}
 	
+	public UpdateAccumulate withTarget(Object value, SendableEntityCreator creator, String property) {
+		this.target = value;
+		this.creator = creator;
+		this.property = property;
+		return this;
+	}
+	
 	public UpdateAccumulate withTarget(Object value) {
 		this.target = value;
 		if(value != null && map != null) {
@@ -112,14 +120,25 @@ public class UpdateAccumulate {
 		}
 		return this;
 	}
+	
+	private void addChange(UpdateListener listener, Object source, SendableEntityCreator creator, String property, Object oldValue, Object newValue) {
+		if(this.change == null) {
+			this.change = listener.change(property, source, creator, oldValue, newValue);
+		} else {
+			listener.change(property, creator, change, oldValue, newValue);
+		}
+	}
 
 	public boolean changeAttribute(UpdateListener listener, Object source, SendableEntityCreator creator, String property, Object oldValue, Object newValue) {
 		if(this.target == null) {
-			if(this.change == null) {
-				this.change = listener.change(property, source, creator, oldValue, newValue);
-			} else {
-				listener.change(property, creator, change, oldValue, newValue);
-			}
+			addChange(listener, source, creator, property, oldValue, newValue);
+			return true;
+		} else if(this.property == null ) {
+			addChange(listener, source, creator, property, oldValue, newValue);
+			return true;
+		} else if(this.property.equals(property)) {
+			addChange(listener, source, creator, property, oldValue, newValue);
+			return true;
 		}
 		return false;
 	}

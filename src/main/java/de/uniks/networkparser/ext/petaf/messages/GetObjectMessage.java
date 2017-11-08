@@ -9,4 +9,9 @@ public class GetObjectMessage extends Message {
 	public Object getSendableInstance(boolean prototyp) {
 		return new GetObjectMessage();
 	}
+	
+	@Override
+	public boolean isSendingToPeers() {
+		return false;
+	}
 }

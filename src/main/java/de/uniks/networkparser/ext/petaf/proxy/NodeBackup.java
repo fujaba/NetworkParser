@@ -1,8 +1,10 @@
 package de.uniks.networkparser.ext.petaf.proxy;
 
 import de.uniks.networkparser.SimpleEvent;
+import de.uniks.networkparser.ext.petaf.NodeProxy;
 import de.uniks.networkparser.ext.petaf.Space;
 import de.uniks.networkparser.interfaces.SimpleEventCondition;
+import de.uniks.networkparser.list.SortedSet;
 
 public class NodeBackup implements Runnable{
 	public static final String KEY="Backup";
@@ -32,6 +34,18 @@ public class NodeBackup implements Runnable{
 			this.sendtime = System.currentTimeMillis();
 			
 			task.update(this.event);
+			if(this.space != null) {
+				SortedSet<NodeProxy> proxies = this.space.getNodeProxies();
+				// Add Saving the Datemodell
+				for(NodeProxy proxy : proxies ) {
+					if(proxy instanceof NodeProxyFileSystem) {
+						NodeProxyFileSystem fileSystem = (NodeProxyFileSystem) proxy;
+						if(fileSystem.isFullModell()) {
+							fileSystem.sending(null);
+						}
+					}
+				}
+			}
 			runnable = false;
 		}
 	}

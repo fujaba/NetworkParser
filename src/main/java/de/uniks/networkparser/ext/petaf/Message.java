@@ -107,6 +107,10 @@ public class Message implements SendableEntityCreator, SendableEntityCreatorNoIn
 		this.receiver = value;
 		return this;
 	}
+	
+	public boolean isSendingToPeers() {
+		return true;
+	}
 
 	public Message withMessage(BaseItem value){
 		this.msg = value;
@@ -248,7 +252,9 @@ public class Message implements SendableEntityCreator, SendableEntityCreatorNoIn
 			return true;
 		}
 		if(PROPERTY_MSG.equalsIgnoreCase(attribute)){
-			msg.withMessage((JsonObject) value);
+			if(value instanceof JsonObject) {
+				msg.withMessage((JsonObject) value);
+			}
 			return true;
 		}
 		if(PROPERTY_RECEIVER.equalsIgnoreCase(attribute)){

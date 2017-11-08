@@ -161,4 +161,9 @@ public class AcceptMessage extends ReceivingTimerTask {
 	public String getType() {
 		return PROPERTY_TYPE;
 	}
+	
+	@Override
+	public boolean isSendingToPeers() {
+		return false;
+	}
 }

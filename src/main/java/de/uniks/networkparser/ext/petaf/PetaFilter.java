@@ -2,6 +2,7 @@ package de.uniks.networkparser.ext.petaf;
 
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.ext.petaf.messages.ConnectMessage;
+import de.uniks.networkparser.ext.petaf.messages.InfoMessage;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
 public class PetaFilter extends Filter {
@@ -21,7 +22,11 @@ public class PetaFilter extends Filter {
 	public void convertProperty(Object entity, String fullProp) {
 		super.convertProperty(entity, fullProp);
 		
-		if(entity instanceof ConnectMessage && "receiver".equals(fullProp)) {
+		
+		if(InfoMessage.PROPERTY_PROXIES.equals(fullProp) && entity instanceof InfoMessage) {
+			this.oldTyp = this.typ;
+			this.typ = INFO;
+		} else if(ConnectMessage.PROPERTY_RECEIVER.equals(fullProp) && entity instanceof ConnectMessage) {
 			this.oldTyp = this.typ;
 			this.typ = INFO;
 		}else if(this.oldTyp != null) {

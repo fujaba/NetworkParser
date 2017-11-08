@@ -117,10 +117,15 @@ public class UpdateListener implements MapListener {
 		}
 		
 		if (this.suspendIdList != null) {
+			boolean notifiy = true;
 			for(UpdateAccumulate listener : this.suspendIdList) {
-				listener.changeAttribute(this, source,creatorClass, property, oldValue, newValue);
+				if( listener.changeAttribute(this, source,creatorClass, property, oldValue, newValue) ) {
+					notifiy = false;
+				}
 			}
-			return;
+			if(notifiy == false) {
+				return;
+			}
 		}
 		
 		Entity jsonObject = change(property, source, creatorClass, oldValue, newValue);

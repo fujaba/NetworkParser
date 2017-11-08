@@ -24,6 +24,11 @@ public class ModelHistory {
 	private SimpleKeyValueList<SendableEntityCreator, Object> prototypeCache = new SimpleKeyValueList<SendableEntityCreator, Object>();
 	private SimpleKeyValueList<String, JsonObject> postponedChanges = new SimpleKeyValueList<String, JsonObject>();
 	private long allDataMsgNo;
+	
+	
+	public ModelChange getLastModelChange() {
+		return history.last();
+	}
 
 	// TODO Functionality
 	public void refactoringHistory() {
