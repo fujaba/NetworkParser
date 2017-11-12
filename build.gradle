@@ -10,7 +10,6 @@ ext{
 }
 //----------------------
 
-
 ant.importBuild 'buildAnt.xml'
 ant.importBuild 'gource.xml'
 ant.importBuild 'Copyright.xml'
@@ -29,6 +28,7 @@ apply plugin: 'idea'
 apply plugin: "com.github.kt3k.coveralls"
 apply from: 'gradle/mavencentral.gradle'
 //apply from: 'gradle/artifactory.gradle'
+apply plugin: "com.moowork.node"
 
 group = "de.uniks"
 
@@ -43,7 +43,6 @@ repositories {
 	jcenter()
 	mavenCentral()
 }
-
 test {
 	// enable TestNG support (default is JUnit)
 	useJUnit {
@@ -61,8 +60,12 @@ buildscript {
 	}
 	dependencies {
 		classpath(group: 'org.jfrog.buildinfo', name: 'build-info-extractor-gradle', version: '[2,)')
-		classpath "org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.6.3"
+		classpath "org.kt3k.gradle.plugin:coveralls-gradle-plugin:[2,)"
+		classpath 'com.moowork.gradle:gradle-node-plugin:0.9'
 	}
+}
+dependencies {
+	compile group: 'org.webjars', name: 'jquery', version: '2.1.4'
 }
 
 artifacts { 
@@ -122,4 +125,21 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 defaultTasks 'test', 'jacocoTestReport', 'buildJavadoc'
+node {
+	version = '0.12.2'
+	npmVersion = '2.7.5'
+	download = false
+}
 
+task npmCacheConfig(type: NpmTask) {
+    description = "Configure the NPM cache"
+    def npmCacheDir = "${gradle.getGradleUserHomeDir()}/caches/npm"
+    outputs.files file(npmCacheDir)
+    args = [ 'config', 'set', 'cache', npmCacheDir ]
+}
+task npmPackages(type: NpmTask, dependsOn: npmCacheConfig) {
+    description = "Install Node.js packages"
+    args = [ 'install' ]
+    inputs.files file('package.json')
+    outputs.files file('node_modules')
+}

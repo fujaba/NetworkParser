@@ -11,6 +11,7 @@ import de.uniks.networkparser.ext.petaf.proxy.NodeProxyBroadCast;
 import de.uniks.networkparser.interfaces.Entity;
 
 public class Server_UPD extends Thread{
+	private static final String BROADCAST = "BROADCAST";
 	protected boolean run=true;
 	protected DatagramSocket socket;
 	private NodeProxyBroadCast proxy;
@@ -39,7 +40,9 @@ public class Server_UPD extends Thread{
 			runServer();
 		} else {
 			DatagramPacket data = runClient();
-			proxy.getSpace().firePropertyChange("BROADCAST", null, data);
+			if(proxy != null) {
+				proxy.getSpace().firePropertyChange(BROADCAST, null, data);
+			}
 		}
 	}
 	
@@ -102,8 +105,8 @@ public class Server_UPD extends Thread{
 	{
 		boolean success=true;
 		try {
-			// Swicth for Client / Server
-			if(NodeProxyType.isInput(proxy.getType())) {
+			// Switch for Client / Server
+			if(proxy != null && NodeProxyType.isInput(proxy.getType())) {
 				socket = new DatagramSocket(proxy.getPort());
 			}else {
 				socket = new DatagramSocket();

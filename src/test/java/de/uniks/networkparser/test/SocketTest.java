@@ -3,11 +3,22 @@ package de.uniks.networkparser.test;
 import org.junit.Test;
 
 import de.uniks.networkparser.ext.petaf.Message;
+import de.uniks.networkparser.ext.petaf.Server_Time;
 import de.uniks.networkparser.ext.petaf.proxy.NodeProxyTCP;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 
 public class SocketTest {
 
+	@Test
+	public void testTimeServer() {
+		Server_Time server_Time = new Server_Time(true);
+		try {
+			Thread.sleep(60000);
+		} catch (Exception e) {
+		}
+		server_Time.closeServer();
+	}
+	
 	@Test
 	public void testSocket() {
 		

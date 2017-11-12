@@ -1,0 +1,19 @@
+{
+  "engines": {
+    "node": "1.0"
+  },
+  "name": "Networkparser",
+  "private": false,
+  "version": "0.1.0",
+  "description": "Framework for serialization to Json, XML, Byte and Excel, therefore an oviparous wool milk sow J",
+  "license": "MIT",
+  "url": "https://github.com/fujaba/NetworkParser/",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/fujaba/NetworkParser.git"
+  },
+  "main": "",
+  "dependencies": {
+    "dagre": "^0.7.4"
+  }
+}

@@ -47,7 +47,7 @@ jar {
 	exclude '**/test/**'
 	from sourceSets.main.output
 	manifest = project.manifest {from sharedManifest}
-	}
+}
 
 task buildCoreJar16(type: Jar, dependsOn: jar) {
 	group "Jar"; from fileTree(dir: 'build/classes/main16'); classifier = 'core16'
