@@ -53,7 +53,7 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 	public String[] getProperties() {
 		return property.getList();
 	}
-	
+
 	public String[] getIDProperties() {
 		return propertyId.getList();
 	}
@@ -178,6 +178,12 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 				return 0;
 			}
 			return 1;
+		}
+		if(o == null || o.getKey() == null) {
+			if(getKey() == null) {
+				return 0;
+			}
+			return -1;
 		}
 		return getKey().compareTo(o.getKey());
 	}
@@ -340,6 +346,6 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 		//Fallback
 		return new SimpleExecutor();
 	}
-	
+
 	public abstract String getKey();
 }
