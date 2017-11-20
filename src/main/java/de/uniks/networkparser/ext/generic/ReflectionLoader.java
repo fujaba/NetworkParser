@@ -5,8 +5,10 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+import java.util.List;
 
 import de.uniks.networkparser.interfaces.ObjectCondition;
+import de.uniks.networkparser.list.SimpleList;
 
 public class ReflectionLoader {
 	public static PrintStream logger = null;
@@ -81,15 +83,21 @@ public class ReflectionLoader {
 	public static final Class<?> AWTIMAGE;
 	public static final Class<?> PROCESSBUILDERREDIRECT;
 	public static final Class<?> MANAGEMENTFACTORY;
-
+	
 //	public static final Class<?> DIFFENTRY;
 //	public static final Class<?> OBJECTID;
 //	public static final Class<?> OBJECTREADER;
 //	public static final Class<?> REF;
 //	public static final Class<?> REVCOMMIT;
 	
-	
 //	public static final Class<?> JUNIT = getClass("org.junit.Assert");
+
+	//EMF
+	public static final Class<?> EATTRIBUTE;
+	public static final Class<?> ECLASS;
+	public static final Class<?> ECLASSIFIER;
+	public static final Class<?> EPACKAGE;
+	public static final Class<?> EREFERENCE;
 
 	static {
 		MANAGEMENTFACTORY = getClass("java.lang.management.ManagementFactory"); 
@@ -257,7 +265,23 @@ public class ReflectionLoader {
 //			REVCOMMIT = null;
 		}
 	}
-	
+
+	static {
+		//EMF
+		EPACKAGE = getClass("org.eclipse.emf.ecore.EPackage");
+		if(EPACKAGE != null) {
+			ECLASS = getClass("org.eclipse.emf.ecore.EClass");
+			EATTRIBUTE = getClass("org.eclipse.emf.ecore.EAttribute");
+			ECLASSIFIER = getClass("org.eclipse.emf.ecore.EClassifier");
+			EREFERENCE = getClass("org.eclipse.emf.ecore.EReference");
+		} else {
+			ECLASS = null;
+			EATTRIBUTE = null;
+			ECLASSIFIER = null;
+			EREFERENCE = null;
+		}
+	}
+
 	public static Object newInstance(Class<?> instance, Object... arguments) {
 		try {
 			if(arguments == null) {
@@ -358,6 +382,17 @@ public class ReflectionLoader {
 	public static Object call(String methodName, Object item, Object... arguments) {
 		return calling(methodName, item, true, null, arguments);
 	}
+	
+	@SuppressWarnings("unchecked")
+	public static List<Object> callList(String methodName, Object item, Object... arguments) {
+		Object returnValue = calling(methodName, item, true, null, arguments);
+		if(returnValue == null || returnValue instanceof List<?> == false) {
+			return new SimpleList<Object>();
+		}
+		return (List<Object>)returnValue;
+	}
+
+	
 	public static Object calling(String methodName, Object item, boolean notify, Object notifyObject, Object... arguments) {
 		if(methodName == null || item == null) {
 			return null;

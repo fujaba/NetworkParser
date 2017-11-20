@@ -299,6 +299,24 @@ public abstract class AbstractArray<V> implements BaseItem {
 		return;
 	}
 
+	public void reset(int newSize, int newIndex) {
+		int i=0;
+		int arrayFlag = getArrayFlag(size);
+		Object[] keys = elements;
+		if (arrayFlag > 1) {
+			keys = (Object[]) elements[SMALL_KEY];
+		}
+		while(i<this.index) {
+			keys[i++] = null;
+		}
+		i = this.index + this.size+1;
+		this.size = newSize;
+		this.index = newIndex;
+		while(i<keys.length) {
+			keys[i++] = null;
+		}
+	}
+	
 	public void clear() {
 		int arrayFlag = getArrayFlag(size);
 		if (arrayFlag < 1) {
