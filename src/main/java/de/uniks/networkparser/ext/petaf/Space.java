@@ -100,6 +100,7 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 				new ConnectMessage().withSpace(this),
 				new AcceptMessage().withSpace(this),
 				new NodeProxyModel(null));
+		map.withListener(this);
 		return map;
 	}
 
@@ -107,16 +108,22 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 		this.map.with(value);
 		return this;
 	}
-	
+
 	public Space withCreator(SendableEntityCreator... values) {
 		this.map.withCreator(values);
 		return this;
 	}
-	
+
 	public Space withModelRoot(NodeProxyModel modelRoot) {
 		with(modelRoot);
 		return this;
 	}
+
+	public Space withName(String name) {
+		this.name = name;
+		return this;
+	}
+
 
 	public Space with(NodeProxy... values) {
 		if(values == null) {
@@ -158,7 +165,7 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 	public NodeProxy getFirstPeer() {
 		return firstPeer;
 	}
-	
+
 	public NodeProxy createServer(int port) {
 		NodeProxy newProxy = getNewProxy();
 		newProxy.withType(NodeProxyType.INOUT);
@@ -170,12 +177,12 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 	public NodeProxy createModel(Object root) {
 		return createModel(root, null);
 	}
-	
+
 	public NodeProxy createModel(Object root, String fileName) {
 		NodeProxy newProxy = new NodeProxyModel(root);
 		this.with(newProxy);
 		if(fileName != null) {
-			String filePath = null; 
+			String filePath = null;
 			if(this.path != null) {
 				filePath = this.path + "/"+fileName;
 			} else {
@@ -188,7 +195,7 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 			this.isInit=true;
 		}
 		return newProxy;
-		
+
 	}
 	public NodeProxy getOrCreateProxy(String url, int port) {
 		if (url.equals("127.0.0.1")) {
@@ -231,8 +238,6 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 		this.with(proxy);
 		return proxy;
 	}
-
-
 
 
 	public NodeProxy getNewProxy(){
@@ -307,9 +312,9 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 		ByteConverter byteConverter = getConverter();
 		return byteConverter.encode(encode);
 	}
-	
+
 	protected void addMessageElement(Message msg, BaseItem encode) {
-		
+
 	}
 
 	public boolean removeProxy(NodeProxy proxy){
@@ -398,7 +403,9 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 			if(msg instanceof ConnectMessage) {
 				this.isInit = false;
 			}
-			return proxy.sending(msg);
+			if(proxy.filter(msg)) {
+				return proxy.sending(msg);
+			}
 		}
 		return false;
 	}
@@ -547,10 +554,12 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 
 		// send to next peers
 		for(NodeProxy peer : sendProxies) {
-			boolean done = peer.sending(msg);
-			if(done) {
-				msg.withAddToReceived(peer);
-				success = true;
+			if(peer.filter(msg)) {
+				boolean done = peer.sending(msg);
+				if(done) {
+					msg.withAddToReceived(peer);
+					success = true;
+				}
 			}
 		}
 		// At Lest send nodeproxy infos back
@@ -622,7 +631,7 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 		}
 		return null;
 	}
-	
+
 	public String getKey(Object entity) {
 		if(this.map != null) {
 			return this.map.getKey(entity);
@@ -689,21 +698,21 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 			// Only Notification from Map
 			return true;
 		}
-		
+
 		if(event.getNewValue() instanceof Message) {
 			return true;
 		}
 		if(event.getModelValue() instanceof NodeProxy ) {
 			return true;
 		}
-		
+
 		if(event.getNewValue() instanceof NodeProxy || event.getSource() instanceof NodeProxy) {
 			return true;
 		}
 		return updateModel(event);
 	}
-	
-	
+
+
 	public boolean updateModel(SimpleEvent event) {
 		if(this.isInit == false) {
 			return false;
@@ -726,7 +735,7 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 		}
 		return isInit;
 	}
-	
+
 	public Space withInit(boolean value) {
 		this.isInit = value;
 		return this;

@@ -210,6 +210,13 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 		return filter;
 	}
 
+	public boolean filter(Object value) {
+		if(filter != null) {
+			return filter.update(value);
+		}
+		return true;
+	}
+
 	public String getVersion() {
 		return version;
 	}

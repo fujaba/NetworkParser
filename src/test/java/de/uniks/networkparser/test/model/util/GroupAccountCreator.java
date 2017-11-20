@@ -31,8 +31,10 @@ public class GroupAccountCreator implements SendableEntityCreator
 {
    private final String[] properties = new String[]
    {
+	  GroupAccount.PROPERTY_NAME,
 	  GroupAccount.PROPERTY_PERSONS,
-	  GroupAccount.PROPERTY_ITEM,
+	  GroupAccount.PROPERTY_ITEM
+
    };
 
    @Override
@@ -58,6 +60,11 @@ public class GroupAccountCreator implements SendableEntityCreator
 		 attribute = attrName.substring(0, pos);
 	  }
 
+	  if (GroupAccount.PROPERTY_NAME.equalsIgnoreCase(attribute))
+	  {
+		 return ((GroupAccount) target).getName();
+	  }
+
 	  if (GroupAccount.PROPERTY_PERSONS.equalsIgnoreCase(attribute))
 	  {
 		 return ((GroupAccount) target).getPersons();
@@ -77,6 +84,12 @@ public class GroupAccountCreator implements SendableEntityCreator
 	  if (SendableEntityCreator.REMOVE.equals(type) && value != null)
 	  {
 		 attrName = attrName + type;
+	  }
+
+	  if (GroupAccount.PROPERTY_NAME.equalsIgnoreCase(attrName))
+	  {
+		 ((GroupAccount) target).setName((String) value);
+		 return true;
 	  }
 
 	  if (GroupAccount.PROPERTY_PERSONS.equalsIgnoreCase(attrName))

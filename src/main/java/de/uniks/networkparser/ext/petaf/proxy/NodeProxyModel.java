@@ -1,12 +1,17 @@
 package de.uniks.networkparser.ext.petaf.proxy;
 
+import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.ext.petaf.NodeProxy;
 import de.uniks.networkparser.ext.petaf.NodeProxyType;
+import de.uniks.networkparser.ext.petaf.Space;
+import de.uniks.networkparser.ext.petaf.messages.ChangeMessage;
+import de.uniks.networkparser.interfaces.BaseItem;
+import de.uniks.networkparser.json.JsonTokener;
 
 public class NodeProxyModel extends NodeProxy {
 	private Object root;
 	private String id;
-	
+
 	public NodeProxyModel(Object root) {
 		this.root = root;
 		withType(NodeProxyType.IN);
@@ -19,7 +24,7 @@ public class NodeProxyModel extends NodeProxy {
 		}
 		return getId();
 	}
-	
+
 	public String getId() {
 		if(this.id != null) {
 			return this.id;
@@ -49,5 +54,20 @@ public class NodeProxyModel extends NodeProxy {
 	@Override
 	public Object getSendableInstance(boolean reference) {
 		return new NodeProxyModel(null);
+	}
+
+	@Override
+	public NodeProxy initSpace(Space space) {
+		super.initSpace(space);
+
+		// serialize model
+		IdMap map = space.getMap();
+		map.put("root", getModell(), true);
+
+//		Object modell = getModell();
+//		BaseItem value = this.space.encode(modell, null);
+//		String data = value.toString();
+
+		return this;
 	}
 }
