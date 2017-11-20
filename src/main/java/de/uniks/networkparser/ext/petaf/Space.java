@@ -17,7 +17,6 @@ import de.uniks.networkparser.ext.petaf.messages.AcceptMessage;
 import de.uniks.networkparser.ext.petaf.messages.ChangeMessage;
 import de.uniks.networkparser.ext.petaf.messages.ConnectMessage;
 import de.uniks.networkparser.ext.petaf.messages.InfoMessage;
-import de.uniks.networkparser.ext.petaf.proxy.NodeBackup;
 import de.uniks.networkparser.ext.petaf.proxy.NodeProxyFileSystem;
 import de.uniks.networkparser.ext.petaf.proxy.NodeProxyLocal;
 import de.uniks.networkparser.ext.petaf.proxy.NodeProxyModel;

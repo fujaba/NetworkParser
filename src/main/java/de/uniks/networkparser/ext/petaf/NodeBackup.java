@@ -1,9 +1,9 @@
-package de.uniks.networkparser.ext.petaf.proxy;
+package de.uniks.networkparser.ext.petaf;
 
 import de.uniks.networkparser.SimpleEvent;
-import de.uniks.networkparser.ext.petaf.NodeProxy;
-import de.uniks.networkparser.ext.petaf.Space;
+import de.uniks.networkparser.ext.petaf.proxy.NodeProxyFileSystem;
 import de.uniks.networkparser.interfaces.SimpleEventCondition;
+import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SortedSet;
 
 public class NodeBackup implements Runnable{
@@ -13,9 +13,23 @@ public class NodeBackup implements Runnable{
 	protected long sendtime;
 	private Space space;
 	private SimpleEvent event;
+	private SimpleList<NodeProxy> queries;
 
 	public void enable() {
 		this.runnable = true;
+	}
+	
+	public NodeBackup with(NodeProxy... nodeProxies) {
+		if(nodeProxies == null) {
+			return this;
+		}
+		if(this.queries == null) {
+			this.queries = new SimpleList<NodeProxy>();
+		}
+		for(NodeProxy proxy : nodeProxies) {
+			this.queries.add(proxy);	
+		}
+		return this;
 	}
 
 	public boolean close() {
@@ -39,12 +53,15 @@ public class NodeBackup implements Runnable{
 				// Add Saving the Datemodell
 				for(NodeProxy proxy : proxies ) {
 					if(proxy instanceof NodeProxyFileSystem) {
-						NodeProxyFileSystem fileSystem = (NodeProxyFileSystem) proxy;
-						if(fileSystem.isFullModell()) {
-							fileSystem.sending(null);
-						}
+						proxy.sending(null);
 					}
 				}
+			}
+			if(this.queries != null) {
+				for(NodeProxy proxy : this.queries) {
+					proxy.sending(null);
+				}
+				
 			}
 			runnable = false;
 		}

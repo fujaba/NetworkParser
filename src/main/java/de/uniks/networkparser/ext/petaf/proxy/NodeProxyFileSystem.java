@@ -54,7 +54,7 @@ public class NodeProxyFileSystem extends NodeProxy {
             	String data = value.toString();
             	len = data.length();
             	out.write(data);
-            } else {
+            } else if(msg != null){
 	            String data = this.space.convertMessage(msg);
 	            len = data.length();
 	            out.append(data);
