@@ -50,7 +50,7 @@ public abstract class Buffer implements BufferItem {
 		byte[] bytes = array(Integer.SIZE /Byte.SIZE, false);
 		return (int) ((bytes[0] << 24) + (bytes[1] << 16) + (bytes[2] << 8) + bytes[3]);
 	}
-	
+
 	public abstract char getChar();
 
 	public long getLong() {
@@ -70,7 +70,7 @@ public abstract class Buffer implements BufferItem {
 		int asInt = getInt();
 		return Float.intBitsToFloat(asInt);
 	}
-	
+
 	public String substring(int... values) {
 		return "";
 	}
@@ -117,7 +117,11 @@ public abstract class Buffer implements BufferItem {
 
 	@Override
 	public int remaining() {
-		return length() - position() - 1;
+		int remaining =  length() - position();
+		if(remaining>0) {
+			return remaining - 1;
+		}
+		return 0;
 	}
 
 	@Override
@@ -145,7 +149,7 @@ public abstract class Buffer implements BufferItem {
 		}
 		return result;
 	}
-	
+
 	public CharacterBuffer readLine() {
 		CharacterBuffer line = new CharacterBuffer();
 		char character = getCurrentChar();
