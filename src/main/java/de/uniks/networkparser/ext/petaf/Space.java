@@ -186,6 +186,36 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 			this.with(fileSystem);
 			fileSystem.load(root);
 			this.isInit=true;
+			
+			// Refactoring All Model
+			SimpleList<NodeProxy> candidates= new SimpleList<NodeProxy>();
+			NodeProxyFileSystem[] fileSystemNodes = null;
+			for(int i=0;i<proxies.size();i++) {
+				NodeProxy proxy = proxies.get(i);
+				if(proxy instanceof NodeProxyFileSystem) {
+					// Add All NodeProxyFileSystem
+					candidates.add(proxy);
+				}else if(proxy instanceof NodeProxyModel) {
+					NodeProxyModel modelProxy = (NodeProxyModel) proxy;
+					if(modelProxy.getKey() == null) {
+						// Ups Sender not Finish
+						if(fileSystemNodes == null) {
+							for(int z=i+1;z<proxies.size(); z++) {
+								NodeProxy fileSystemNode = proxies.get(z);
+								if(fileSystemNode instanceof NodeProxyFileSystem) {
+									candidates.add(fileSystemNode);
+								}
+							}
+							fileSystemNodes = candidates.toArray(new NodeProxyFileSystem[candidates.size()]);
+						}
+		            	Object modell = modelProxy.getModell();
+		            	BaseItem value = this.encode(modell, null);
+		            	ChangeMessage msg = new ChangeMessage();
+		            	msg.withMessage(value);
+		            	this.sendMessage(msg, false, fileSystemNodes);
+					}
+				}
+			}
 		}
 		return newProxy;
 		
@@ -283,7 +313,18 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 		return result;
 	}
 
-	public SortedSet<NodeProxy> getNodeProxies(){
+	public SortedSet<NodeProxy> getNodeProxies(ObjectCondition... filters) {
+		if(filters == null) {
+			return proxies;
+		}
+		SortedSet<NodeProxy> result = new SortedSet<NodeProxy>(true);
+		for(NodeProxy proxy : proxies) {
+			for(ObjectCondition filter : filters) {
+				if(filter != null && filter.update(proxy)) {
+					result.add(proxy);
+				}
+			}
+		}
 		return proxies;
 	}
 
@@ -368,22 +409,15 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 
 	/**
 	 * Method for Sending
-	 * @param proxy the sending proxy
-	 * @param msg Message to Send
-	 * @return success sending
-	 */
-	public boolean sendMessage(NodeProxy proxy, Message msg) {
-		 return sendMessage(proxy, msg, false);
-	}
-
-	/**
-	 * Method for Sending
-	 * @param proxy the proxy
+	 * @param proxies List of Proxies
 	 * @param msg	Message to Send
 	 * @param sendAnyhow Sending Message for every NodeProxy
 	 * @return success sending
 	 */
-	public boolean sendMessage(NodeProxy proxy, Message msg, boolean sendAnyhow) {
+	public boolean sendMessage(Message msg, boolean sendAnyhow, NodeProxy... proxies) {
+		if(proxies == null) {
+			return false;
+		}
 		// find my Proxy with Key
 		NodeProxy myProxy = null;
 		for(NodeProxy item : this.proxies) {
@@ -393,14 +427,20 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 			}
 		}
 		addInfo(msg, myProxy, sendAnyhow);
-		with(proxy);
-		if(proxy != null) {
+		
+		boolean sended=true;
+		for(NodeProxy proxy : proxies) {
+			if(proxy == null) {
+				continue;
+			}
+			// Add to ProxyList if not Exist
+			with(proxy);
 			if(msg instanceof ConnectMessage) {
 				this.isInit = false;
 			}
-			return proxy.sending(msg);
+			sended = sended && proxy.sending(msg);
 		}
-		return false;
+		return sended;
 	}
 
 	public Space withPeerCount(int peerCount) {

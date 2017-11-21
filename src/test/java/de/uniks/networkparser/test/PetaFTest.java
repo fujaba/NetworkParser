@@ -33,7 +33,7 @@ public class PetaFTest {
 		ConnectMessage connectMsg = ConnectMessage.create();
 		Space space=new Space();
 		space.createServer(5000);
-		space.sendMessage(null, connectMsg);
+		space.sendMessage(connectMsg, false);
 		System.out.println(space.convertMessage(connectMsg));
 	}
 	
@@ -46,6 +46,19 @@ public class PetaFTest {
 		server.close();
 //		Thread.sleep(5000);
 	}
+	
+	@Test
+	public void testModelChange() {
+		University university = new University();
+		Student createStudents = university.createStudents();
+		Space space=new Space();
+		IdMap map = UniversityCreator.createIdMap("42");
+		space.withCreator(map);
+		space.createModel(university, "build/change.json");
+		
+		createStudents.setName("Albert");
+	}
+	
 	
 	@Test
 	public void test() {
