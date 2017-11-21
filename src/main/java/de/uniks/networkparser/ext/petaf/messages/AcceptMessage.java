@@ -37,14 +37,14 @@ public class AcceptMessage extends ReceivingTimerTask {
 				NodeProxyModel modelProxy = space.getModel();
 				if(modelProxy!= null) {
 					IdMap map = space.getMap();
-					return map.getId(modelProxy.getModell(), false);
+					return map.getId(modelProxy.getModel(), false);
 				}
 				return null;
 			}
 			if(PROPERTY_MODELCLASS.equalsIgnoreCase(attribute)) {
 				NodeProxyModel modelProxy = space.getModel();
 				if(modelProxy!= null) {
-					Object model = modelProxy.getModell();
+					Object model = modelProxy.getModel();
 					if(model != null) {
 						return model.getClass().getName();
 					}
@@ -63,7 +63,7 @@ public class AcceptMessage extends ReceivingTimerTask {
 			}
 			if(PROPERTY_MODEL.equalsIgnoreCase(attribute)) {
 				NodeProxyModel modelProxy = space.getModel();
-				return modelProxy.getModell();
+				return modelProxy.getModel();
 			}
 		}
 		return super.getValue(entity, attribute);
@@ -99,7 +99,7 @@ public class AcceptMessage extends ReceivingTimerTask {
 					if(proxy instanceof NodeProxyModel) {
 						NodeProxyModel modelProxy = (NodeProxyModel) proxy;
 						if(modelProxy.getId() == null) {
-							Object modell = modelProxy.getModell();
+							Object modell = modelProxy.getModel();
 							if(modell != null && modell.getClass().getName().equals(className)) {
 								candidates.add(modelProxy);
 							}
@@ -111,7 +111,7 @@ public class AcceptMessage extends ReceivingTimerTask {
 					return false;
 				}
 				NodeProxyModel modelProxy = candidates.first();
-				map.put(this.id, modelProxy.getModell(), false);
+				map.put(this.id, modelProxy.getModel(), false);
 				// get model from message deactive Notification
 				return true;
 			}

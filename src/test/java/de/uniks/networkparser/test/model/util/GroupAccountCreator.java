@@ -120,8 +120,12 @@ public class GroupAccountCreator implements SendableEntityCreator
    }
    public static IdMap createIdMap(String sessionID)
    {
-	  return CreatorCreator.createIdMap(sessionID);
-   }
+		IdMap jsonIdMap = new IdMap().withSession(sessionID);
+		jsonIdMap.with(new de.uniks.networkparser.test.model.util.GroupAccountCreator());
+		jsonIdMap.with(new de.uniks.networkparser.test.model.util.PersonCreator());
+		jsonIdMap.with(new de.uniks.networkparser.test.model.util.ItemCreator());
+		return jsonIdMap;
+	}
 
    //==========================================================================
 

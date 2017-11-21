@@ -119,7 +119,7 @@ public class ItemCreator implements SendableEntityCreator
    }
    public static IdMap createIdMap(String sessionID)
    {
-	  return CreatorCreator.createIdMap(sessionID);
+	  return GroupAccountCreator.createIdMap(sessionID);
    }
 
    //==========================================================================

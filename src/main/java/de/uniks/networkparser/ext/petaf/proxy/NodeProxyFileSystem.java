@@ -1,9 +1,5 @@
 package de.uniks.networkparser.ext.petaf.proxy;
 
-import java.io.BufferedWriter;
-import java.io.FileOutputStream;
-import java.io.OutputStreamWriter;
-
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.ext.io.FileBuffer;
 import de.uniks.networkparser.ext.petaf.FileWatcher;
@@ -12,8 +8,8 @@ import de.uniks.networkparser.ext.petaf.NodeProxy;
 import de.uniks.networkparser.ext.petaf.NodeProxyType;
 import de.uniks.networkparser.ext.petaf.messages.ChangeMessage;
 import de.uniks.networkparser.interfaces.BaseItem;
+import de.uniks.networkparser.interfaces.EntityList;
 import de.uniks.networkparser.interfaces.ObjectCondition;
-import de.uniks.networkparser.list.SimpleList;
 
 public class NodeProxyFileSystem extends NodeProxy {
 	private String fileName;
@@ -48,8 +44,10 @@ public class NodeProxyFileSystem extends NodeProxy {
 	}
 
 	public NodeProxyFileSystem(String fileName) {
-		this.fileName = fileName;
-		withOnline(true);
+		if(fileName != null) {
+			this.fileName = fileName;
+			withOnline(true);
+		}
 	}
 
 	public boolean isFullModell() {
@@ -59,6 +57,10 @@ public class NodeProxyFileSystem extends NodeProxy {
 	public NodeProxyFileSystem withFullModell(boolean value) {
 		this.fullModell = value;
 		return this;
+	}
+
+	public String getFileName() {
+		return fileName;
 	}
 
 	@Override
@@ -75,7 +77,7 @@ public class NodeProxyFileSystem extends NodeProxy {
 			int len = 0;
 			if (this.fullModell) {
 				NodeProxyModel model = getSpace().getModel();
-				Object modell = model.getModell();
+				Object modell = model.getModel();
 				BaseItem value = this.space.encode(modell, null);
 				String data = value.toString();
 				len = data.length();
@@ -85,10 +87,10 @@ public class NodeProxyFileSystem extends NodeProxy {
 				len = data.length();
 				file.write(data, true);
 			}
-			file.close();
 			setSendTime(len);
 			return true;
 		} catch (Exception e) {
+			e.printStackTrace();
 			System.out.println(e.getMessage());
 		}
 		return result;
@@ -99,7 +101,29 @@ public class NodeProxyFileSystem extends NodeProxy {
 		if (this.space != null && readBaseFile != null) {
 			IdMap map = space.getMap();
 			if (map != null) {
-				map.decode(readBaseFile, root, null);
+				if(this.isFullModell()) {
+					Object model = map.decode(readBaseFile, root, null);
+					// Check if NodeProxyModel exists
+					this.space.createModel(model);
+				} else {
+					// Maybe ChangeMessages
+					if(readBaseFile instanceof EntityList){
+						try {
+							EntityList list = (EntityList) readBaseFile;
+							for(int i=0;i<list.sizeChildren();i++) {
+								BaseItem singleMessage = list.getChild(i);
+								Object message = map.decode(singleMessage);
+								if(message instanceof ChangeMessage) {
+									ChangeMessage changeMsg = (ChangeMessage) message;
+									changeMsg.withSpace(this.space);
+									changeMsg.runTask();
+								}
+							}
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+					}
+				}
 			}
 		}
 		return readBaseFile;

@@ -1,10 +1,13 @@
 package de.uniks.networkparser.test;
 
+import static org.junit.Assert.*;
+
 import org.junit.Assert;
 import org.junit.Test;
 
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.buffer.ByteBuffer;
+import de.uniks.networkparser.ext.io.FileBuffer;
 import de.uniks.networkparser.ext.petaf.NodeProxy;
 import de.uniks.networkparser.ext.petaf.Space;
 import de.uniks.networkparser.ext.petaf.messages.ConnectMessage;
@@ -60,11 +63,11 @@ public class PetaFTest {
 		IdMap map = UniversityCreator.createIdMap("42");
 		space.withCreator(map);
 		space.createModel(university, "build/change.json");
-		
+
 		createStudents.setName("Albert");
 	}
-	
-	
+
+
 	@Test
 	public void test() {
 		Space space = new Space();
@@ -100,25 +103,42 @@ public class PetaFTest {
 	@Test
 	public void testBackup() {
 		Space space = new Space().withName("Albert");
-		space.withPath("./");
+		space.withPath(".");
 
 		space.withCreator(new GroupAccountCreator(), new ItemCreator());
 
 		NodeProxyFileSystem fsProxy = new NodeProxyFileSystem("build/Albert.json");
 		fsProxy.enableGitFilter();
 		fsProxy.withFullModell(true);
+		space.with(fsProxy);
 
 		GroupAccount groupAccount = new GroupAccount();
 		space.createModel(groupAccount, "build/changes.json");
 //		fsProxy.load(groupAccount);
 
-
-
-		space.with(fsProxy);
 		groupAccount.setName("Albert");
 		fsProxy.withFullModell(false);
 //
 		Item item1 = groupAccount.createItem().withDescription("Beer").withValue(2.49);
 
+
+
+		Space space2 = new Space();
+
+		space2.withCreator(GroupAccountCreator.createIdMap("42"));
+
+		NodeProxyFileSystem fsProxy2 = new NodeProxyFileSystem("build/changes.json");
+
+		space2.with(fsProxy2);
+
+		GroupAccount ga2 = new GroupAccount();
+		fsProxy2.load(ga2);
+
+
+
+		FileBuffer.deleteFile(fsProxy.getFileName());
+		FileBuffer.deleteFile(fsProxy2.getFileName());
+//		FileBuffer.deleteFile("build/changes.json");
+		assertEquals(groupAccount.getName(), ga2.getName());
 	}
 }

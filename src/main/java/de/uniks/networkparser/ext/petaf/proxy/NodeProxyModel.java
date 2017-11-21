@@ -4,13 +4,11 @@ import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.ext.petaf.NodeProxy;
 import de.uniks.networkparser.ext.petaf.NodeProxyType;
 import de.uniks.networkparser.ext.petaf.Space;
-import de.uniks.networkparser.ext.petaf.messages.ChangeMessage;
-import de.uniks.networkparser.interfaces.BaseItem;
-import de.uniks.networkparser.json.JsonTokener;
 
 public class NodeProxyModel extends NodeProxy {
 	private Object root;
 	private String id;
+	private NodeProxyModel nextModel;
 
 	public NodeProxyModel(Object root) {
 		this.root = root;
@@ -38,7 +36,7 @@ public class NodeProxyModel extends NodeProxy {
 		return false;
 	}
 
-	public Object getModell() {
+	public Object getModel() {
 		return root;
 	}
 
@@ -62,12 +60,25 @@ public class NodeProxyModel extends NodeProxy {
 
 		// serialize model
 		IdMap map = space.getMap();
-		map.put("root", getModell(), true);
+		map.put("root", getModel(), true);
 
 //		Object modell = getModell();
 //		BaseItem value = this.space.encode(modell, null);
 //		String data = value.toString();
 
 		return this;
+	}
+
+	public NodeProxyModel setNextModel(NodeProxyModel model) {
+		this.nextModel = model;
+		if(model == null) {
+			return this;
+		}
+		model.setNextModel(null);
+		return model;
+	}
+
+	public NodeProxyModel nextModel() {
+		return this.nextModel;
 	}
 }

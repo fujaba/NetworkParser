@@ -76,6 +76,7 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 	protected IdMap map = createIdMap();
 	private Tokener tokener;
 	private DateTimeEntity lastTimerRun;
+	private NodeProxyModel myModel;
 
 	public IdMap getMap() {
 		return map;
@@ -97,6 +98,7 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 				new InfoMessage(),
 				new NodeProxyTCP(),
 				new NodeProxyLocal(),
+				new NodeProxyFileSystem(null),
 				new ConnectMessage().withSpace(this),
 				new AcceptMessage().withSpace(this),
 				new NodeProxyModel(null));
@@ -179,6 +181,18 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 	}
 
 	public NodeProxy createModel(Object root, String fileName) {
+		// Check if NodeProxyModel exists for root
+		NodeProxyModel model = getModel();
+		if(root == null) {
+			return model;
+		}
+		if(model != null) {
+			while(model.nextModel() != null) {
+				if(root.equals(model.getModel())) {
+					return model;
+				}
+			}
+		}
 		NodeProxy newProxy = new NodeProxyModel(root);
 		this.with(newProxy);
 		if(fileName != null) {
@@ -215,7 +229,7 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 							}
 							fileSystemNodes = candidates.toArray(new NodeProxyFileSystem[candidates.size()]);
 						}
-		            	Object modell = modelProxy.getModell();
+		            	Object modell = modelProxy.getModel();
 		            	BaseItem value = this.encode(modell, null);
 		            	ChangeMessage msg = new ChangeMessage();
 		            	msg.withMessage(value);
@@ -477,7 +491,7 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 
 	protected void calculateSendProxy(Message msg, NodeProxy receiver, SimpleSet<NodeProxy> sendProxies) {
 //		SimpleList<NodeProxy> receivedString = msg.getReceived();
-		SimpleList<NodeProxy> received = msg.getReceived();
+		SimpleSet<NodeProxy> received = msg.getReceived();
 //		for(String item : receivedString) {
 //			received.add(getProxy(item));
 //		}
@@ -541,11 +555,11 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 					// If the proxy not already received the message, we want to send it to the proxy
 					if(received.indexOf(proxy)<0) {
 						step++;
-						if(isMyNode(proxy, myNode) == false) {
+//						if(isMyNode(proxy, myNode) == false) {
 							if(sendProxies.add(proxy)==false) {
 								step = this.peerCount;
 							}
-						}
+//						}
 					}
 				}
 			}
@@ -642,13 +656,20 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 	 * @return the first NodeProxyModel
 	 */
 	public NodeProxyModel getModel() {
-		NodeProxyModel result = null;
-		for(NodeProxy proxy : this.proxies) {
-			if(proxy instanceof NodeProxyModel) {
-				result = (NodeProxyModel)proxy;
+		if(this.myModel == null) {
+			NodeProxyModel last=null;
+			for(NodeProxy item : proxies) {
+				if(item instanceof NodeProxyModel) {
+					NodeProxyModel proxy = (NodeProxyModel) item;
+					if(last == null) {
+						this.myModel = last = proxy.setNextModel(null);
+					} else {
+						last = last.setNextModel(proxy);
+					}
+				}
 			}
 		}
-		return result;
+		return this.myModel;
 	}
 
 	public Tokener getTokener() {
@@ -817,11 +838,10 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 			for(NodeProxy item : proxies) {
 				if(NodeProxyType.isInput(item.getType())) {
 					if(last == null) {
-						last = item;
-						this.myNode = item.with(null);
+						this.myNode = last = item;
+						item.setNextMyNode(null);
 					} else {
-						last = item.with(last);
-						last.with(null);
+						last = last.setNextMyNode(item);
 					}
 				}
 			}

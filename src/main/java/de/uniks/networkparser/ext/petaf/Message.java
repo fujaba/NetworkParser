@@ -12,6 +12,7 @@ import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
 import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.list.SimpleList;
+import de.uniks.networkparser.list.SimpleSet;
 
 public class Message implements SendableEntityCreator, SendableEntityCreatorNoIndex{
 	public static final String PROPERTY_HISTORYID="id";
@@ -66,11 +67,11 @@ public class Message implements SendableEntityCreator, SendableEntityCreatorNoIn
 	}
 
 	@SuppressWarnings("unchecked")
-	public SimpleList<NodeProxy> getReceived() {
-		if(received instanceof SimpleList<?>) {
-			return (SimpleList<NodeProxy>) received;
+	public SimpleSet<NodeProxy> getReceived() {
+		if(received instanceof SimpleSet<?>) {
+			return (SimpleSet<NodeProxy>) received;
 		}
-		SimpleList<NodeProxy> result=new SimpleList<NodeProxy>();
+		SimpleSet<NodeProxy> result=new SimpleSet<NodeProxy>();
 		if(received != null) {
 			result.add(received);
 		}
@@ -81,13 +82,13 @@ public class Message implements SendableEntityCreator, SendableEntityCreatorNoIn
 		if(this.received == null) {
 			this.received = value;
 		}
-		SimpleList<?> list;
+		SimpleSet<?> list;
 		if(this.received instanceof NodeProxy) {
-			list = new SimpleList<NodeProxy>();
+			list = new SimpleSet<NodeProxy>();
 			list.with(this.received);
 			this.received = list;
 		} else {
-			list = (SimpleList<?>) this.received;
+			list = (SimpleSet<?>) this.received;
 		}
 		list.add(value);
 		return this;
@@ -107,7 +108,7 @@ public class Message implements SendableEntityCreator, SendableEntityCreatorNoIn
 		this.receiver = value;
 		return this;
 	}
-	
+
 	public boolean isSendingToPeers() {
 		return true;
 	}
@@ -144,7 +145,7 @@ public class Message implements SendableEntityCreator, SendableEntityCreatorNoIn
 	public boolean isSendAnyHow() {
 		return sendAnyHow;
 	}
-	
+
 	public Message withSendAnyHow(boolean sendAnyHow) {
 		this.sendAnyHow = sendAnyHow;
 		return this;
@@ -183,7 +184,7 @@ public class Message implements SendableEntityCreator, SendableEntityCreatorNoIn
 		}
 		return true;
 	}
-	
+
 	public OutputStream getOutputStream() {
 		if(this.session instanceof Socket) {
 			try {
@@ -199,7 +200,7 @@ public class Message implements SendableEntityCreator, SendableEntityCreatorNoIn
 		this.session = session;
 		return this;
 	}
-	
+
 	@Override
 	public String[] getProperties() {
 		return props.getList();

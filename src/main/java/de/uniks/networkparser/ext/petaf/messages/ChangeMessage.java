@@ -16,17 +16,18 @@ public class ChangeMessage extends ReceivingTimerTask {
 	public static final String PROPERTY_PROPERTY = "property";
 	public static final String PROPERTY_OLD = "old";
 	public static final String PROPERTY_NEW = "new";
-	
+	public static final String PROPERTY_CHANGECLASS = "changeclass";
+
 	private Object entity;
 	private Filter filter;
 	private String property;
 	private String id;
 	private Object oldValue;
 	private Object newValue;
-	
-	
+
+
 	public ChangeMessage() {
-		ChangeMessage.props.add(PROPERTY_ID, PROPERTY_PROPERTY, PROPERTY_OLD, PROPERTY_NEW);
+		ChangeMessage.props.add(PROPERTY_ID, PROPERTY_PROPERTY, PROPERTY_OLD, PROPERTY_NEW, PROPERTY_CHANGECLASS);
 	}
 
 	public ChangeMessage withEntity(Object value) {
@@ -37,14 +38,14 @@ public class ChangeMessage extends ReceivingTimerTask {
 		this.filter = filter;
 		return this;
 	}
-	
+
 	public ChangeMessage withValue(String property, Object oldValue, Object newValue) {
 		this.property = property;
 		this.oldValue = oldValue;
 		this.newValue = newValue;
 		return this;
 	}
-	
+
 	public ChangeMessage withValue(SimpleEvent event) {
 		this.property = event.getPropertyName();
 		this.oldValue = event.getOldValue();
@@ -52,7 +53,7 @@ public class ChangeMessage extends ReceivingTimerTask {
 		this.entity = event.getModelValue();
 		return this;
 	}
-	
+
 	@Override
 	public BaseItem getMessage() {
 		if(msg == null && space != null) {
@@ -62,7 +63,7 @@ public class ChangeMessage extends ReceivingTimerTask {
 		}
 		return super.getMessage();
 	}
-	
+
 	@Override
 	public boolean runTask() throws Exception {
 		if(this.id == null || this.space == null) {
@@ -86,7 +87,7 @@ public class ChangeMessage extends ReceivingTimerTask {
 		}
 		return super.runTask();
 	}
-	
+
 	@Override
 	public Object getValue(Object entity, String attribute) {
 		if(attribute == null || entity instanceof ChangeMessage == false ) {
@@ -102,6 +103,12 @@ public class ChangeMessage extends ReceivingTimerTask {
 		if(PROPERTY_PROPERTY.equalsIgnoreCase(attribute)) {
 			return message.property;
 		}
+		if(PROPERTY_CHANGECLASS.equalsIgnoreCase(attribute)) {
+			if(this.entity == null) {
+				return null;
+			}
+			return this.entity.getClass();
+		}
 		if(entity != null && PROPERTY_ID.equalsIgnoreCase(attribute)) {
 			Space space = message.getSpace();
 			if(space != null) {
@@ -110,7 +117,7 @@ public class ChangeMessage extends ReceivingTimerTask {
 		}
 		return super.getValue(entity, attribute);
 	}
-	
+
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value, String type) {
 		if(attribute == null || entity instanceof ChangeMessage == false ) {
@@ -135,7 +142,7 @@ public class ChangeMessage extends ReceivingTimerTask {
 		}
 		return super.setValue(entity, attribute, value, type);
 	}
-	
+
 	protected void initialize(NodeProxyModel modell) {
 		if(modell == null) {
 			return;
@@ -144,15 +151,15 @@ public class ChangeMessage extends ReceivingTimerTask {
 			this.space = modell.getSpace();
 		}
 		if (this.entity == null) {
-			this.entity = modell.getModell();
+			this.entity = modell.getModel();
 		}
 	}
-	
+
 	@Override
 	public ChangeMessage getSendableInstance(boolean prototyp) {
 		return new ChangeMessage().withFilter(filter);
 	}
-	
+
 	@Override
 	public String getType() {
 		return PROPERTY_TYPE;

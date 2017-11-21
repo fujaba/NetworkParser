@@ -39,7 +39,7 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 	protected long no;
 	protected Space space;
 	protected String name;
-	protected NodeProxy nextPeer;	// NextPeer for MyNodes
+	protected NodeProxy nextNode;	// NextPeer for MyNodes
 
 	public String[] getUpdateProperties() {
 		return propertyUpdate.getList();
@@ -338,12 +338,16 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 	protected abstract boolean initProxy();
 
 	public NodeProxy next() {
-		return this.nextPeer;
+		return this.nextNode;
 	}
 
-	public NodeProxy with(NodeProxy nextPeer) {
-		this.nextPeer = nextPeer;
-		return this;
+	public NodeProxy setNextMyNode(NodeProxy nextNode) {
+		this.nextNode = nextNode;
+		if(nextNode == null) {
+			return this;
+		}
+		nextNode.setNextMyNode(null);
+		return nextNode;
 	}
 
 	public TaskExecutor getExecutor() {
