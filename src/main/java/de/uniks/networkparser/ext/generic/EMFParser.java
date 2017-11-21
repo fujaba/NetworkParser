@@ -168,11 +168,16 @@ public class EMFParser {
 		return new EMFParser(ReflectionLoader.call("getEType", eref));
 	}
 
-	public static final int getUpperBound(Object eref) {
+	public static final Integer getUpperBound(Object eref) {
 		if(eref instanceof EMFParser) {
 			return getUpperBound(((EMFParser)eref).getValue());
 		}
-		return (int)ReflectionLoader.call("getUpperBound", eref);
+		Object call = ReflectionLoader.call("getUpperBound", eref);
+		if(call instanceof Integer) {
+			return (Integer)call;
+		}
+		return -1;
+		
 	}
 
 	public static final String getName(Object eref) {

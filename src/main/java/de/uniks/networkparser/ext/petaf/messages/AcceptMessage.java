@@ -18,8 +18,7 @@ public class AcceptMessage extends ReceivingTimerTask {
 	public static final String PROPERTY_MODEL="model";
 	public static final String PROPERTY_MODELID="model_id";
 	public static final String PROPERTY_MODELCLASS="model_class";
-	
-	
+
 	private String id;
 	public AcceptMessage() {
 		AcceptMessage.props.add(PROPERTY_PROXIES, PROPERTY_MODELID, PROPERTY_MODELCLASS, PROPERTY_MODEL);

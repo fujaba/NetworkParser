@@ -115,6 +115,9 @@ public class NodeProxyFileSystem extends NodeProxy {
 								Object message = map.decode(singleMessage);
 								if(message instanceof ChangeMessage) {
 									ChangeMessage changeMsg = (ChangeMessage) message;
+									if(map.getObject(changeMsg.getId()) == null) {
+										map.put(changeMsg.getId(), root, false);
+									}
 									changeMsg.withSpace(this.space);
 									changeMsg.runTask();
 								}

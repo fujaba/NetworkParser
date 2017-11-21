@@ -67,6 +67,7 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 	protected final ErrorHandler handler=new ErrorHandler();
 	protected boolean isInit=true;
 	protected final ChangeMessage changeMessageCreator=new ChangeMessage();
+	protected PetaFilter messageFilter = new PetaFilter().withTyp(PetaFilter.ID);
 
 	/** Time for Try to Reconnect Clients every x Seconds (Default:5x1m, 5x10m, 30m). Set Value to 0 for disable	 */
 	private SimpleList<Integer> tryReconnectTimeSecond=new SimpleList<Integer>()
@@ -362,7 +363,7 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 
 
 	public String convertMessage(Message msg){
-		BaseItem encode = getMap().encode(msg, tokener, new PetaFilter().withTyp(PetaFilter.ID));
+		BaseItem encode = getMap().encode(msg, tokener, messageFilter);
 		addMessageElement(msg, encode);
 		ByteConverter byteConverter = getConverter();
 		return byteConverter.encode(encode);
