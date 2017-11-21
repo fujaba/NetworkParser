@@ -69,7 +69,7 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 
 	public boolean sendMessage(Message msg) {
 		if (this.space != null) {
-			return this.space.sendMessage(this, msg, false);
+			return this.space.sendMessage(msg, false, this);
 		}
 		return this.sending(msg);
 	}

@@ -27,7 +27,7 @@ public class SendingTimerTask extends SimpleTimerTask {
 			return false;
 		}
 		if(sender != null) {
-			getSpace().sendMessage(sender, message);
+			getSpace().sendMessage(message, false, sender);
 		} else {
 			getSpace().sendMessageToPeers(message);
 		}
