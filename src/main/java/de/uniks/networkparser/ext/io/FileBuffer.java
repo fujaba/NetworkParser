@@ -50,7 +50,9 @@ public class FileBuffer extends Buffer {
 	private char currentChar;
 
 	public FileBuffer withFile(String fileName) {
-		withFile(new File(fileName));
+		if(fileName != null) {
+			withFile(new File(fileName));
+		}
 		return this;
 	}
 

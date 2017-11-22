@@ -70,6 +70,9 @@ public class NodeProxyFileSystem extends NodeProxy {
 //			// dont't update
 //			return result;
 //		}
+		if(this.space == null) {
+			return false;
+		}
 		try {
 			FileBuffer file = new FileBuffer();
 			file.withFile(fileName);

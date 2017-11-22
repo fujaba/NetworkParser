@@ -43,6 +43,8 @@ public class PetaFTest {
 		space.createServer(5000);
 		space.sendMessage(connectMsg, false);
 		System.out.println(space.convertMessage(connectMsg));
+		
+		space.close();
 	}
 
 
