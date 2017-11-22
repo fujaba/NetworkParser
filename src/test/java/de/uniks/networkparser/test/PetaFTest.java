@@ -57,13 +57,16 @@ public class PetaFTest {
 
 	@Test
 	public void testModelChange() {
+		// DataModel
 		University university = new University();
 		Student createStudents = university.createStudents();
-		Space space=new Space();
-		IdMap map = UniversityCreator.createIdMap("42");
-		space.withCreator(map);
+		
+		// Serialization
+		Space space=new Space().withCreator(UniversityCreator.createIdMap("42"));
 		space.createModel(university, "build/change.json");
 
+		
+		// Change Model
 		createStudents.setName("Albert");
 	}
 
