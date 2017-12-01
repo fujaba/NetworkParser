@@ -839,10 +839,10 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 			if (firstChar == JsonTokener.STARTARRAY) {
 				return decode(jsonTokener.newInstanceList().withValue(buffer));
 			}
-			if (firstChar == JsonTokener.STARTENTITY) {
+			if (firstChar == JsonTokener.STARTITEM) {
 				return decode(jsonTokener.newInstance().withValue(buffer));
 			}
-			if (firstChar == XMLTokener.ITEMSTART) {
+			if (firstChar == XMLTokener.STARTITEM) {
 				XMLTokener tokener = new XMLTokener().withMap(this);
 				MapEntity map = new MapEntity(filter, flag, this, tokener);
 				tokener.withBuffer(buffer);
@@ -859,7 +859,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 			if (firstChar == '[') {
 				return decode(new JsonArray().withValue(tokener));
 			}
-			if (firstChar == XMLTokener.ITEMSTART) {
+			if (firstChar == XMLTokener.STARTITEM) {
 				MapEntity map = new MapEntity(filter, flag, this, tokener);
 				if (tokener instanceof XMLTokener) {
 					XMLTokener xmlTokener = (XMLTokener) tokener;
@@ -972,7 +972,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 	 */
 
 	private Object decodingXMLEntity(XMLTokener tokener, MapEntity map) {
-		if (tokener.skipTo(XMLTokener.ITEMSTART, false)) {
+		if (tokener.skipTo(XMLTokener.STARTITEM, false)) {
 			map.withStack(new MapEntityStack());
 			//FIRST TAG
 			tokener.parseEntity(tokener, map);

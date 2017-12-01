@@ -1,0 +1,31 @@
+{
+  "class":"de.uniks.networkparser.test.model.University",
+  "id":"U747007872551829",
+  "timestamp":"747007872551829",
+  "prop":{"students":[
+      {
+        "class":"de.uniks.networkparser.test.model.Student",
+        "id":"S747007877535218",
+        "timestamp":"747007877535218",
+        "prop":{
+          "university":{
+            "class":"de.uniks.networkparser.test.model.University",
+            "id":"U747007872551829"
+          },
+          "firstName":"Albert"
+        }
+      },
+      {
+        "class":"de.uniks.networkparser.test.model.Student",
+        "id":"S747007881128883",
+        "timestamp":"747007881128883",
+        "prop":{
+          "university":{
+            "class":"de.uniks.networkparser.test.model.University",
+            "id":"U747007872551829"
+          },
+          "firstName":"Stefan"
+        }
+      }
+    ]}
+}

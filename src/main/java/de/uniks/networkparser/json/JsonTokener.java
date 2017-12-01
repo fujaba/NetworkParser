@@ -54,8 +54,8 @@ public class JsonTokener extends Tokener {
 
 	public static final char STARTARRAY='[';
 	public static final char ENDARRAY=']';
-	public static final char STARTENTITY='{';
-	public static final char ENDENTITY='}';
+	public static final char STARTITEM='{';
+	public static final char ENDITEM='}';
 
 	@Override
 	public void parseToEntity(EntityList entityList) {
@@ -102,15 +102,15 @@ public class JsonTokener extends Tokener {
 		stopChar = nextClean(true);
 
 		switch (stopChar) {
-		case '"':
+		case QUOTES:
 			skip();
 			return EntityUtil.unQuote(nextString(new CharacterBuffer(), true, true, stopChar));
 		case '\\':
 			// Must be unquote
 			skip();
 			skip();
-			return nextString(new CharacterBuffer(), allowQuote, true, '"');
-		case STARTENTITY:
+			return nextString(new CharacterBuffer(), allowQuote, true, QUOTES);
+		case STARTITEM:
 			BaseItem element = creator.getNewList(true);
 			if (element instanceof Entity ) {
 				this.parseToEntity((Entity) element);
@@ -131,7 +131,7 @@ public class JsonTokener extends Tokener {
 	@Override
 	public boolean parseToEntity(Entity entity) {
 		String key;
-		if (nextClean(true) != STARTENTITY) {
+		if (nextClean(true) != STARTITEM) {
 			if (isError(this, "parseToEntity", NetworkParserLog.ERROR_TYP_PARSING, entity)) {
 				throw new RuntimeException(
 						"A JsonObject text must begin with '{' \n" + buffer);
@@ -168,7 +168,7 @@ public class JsonTokener extends Tokener {
 					skipTo("*/", true, false);
 					continue;
 				}
-			case ENDENTITY:
+			case ENDITEM:
 				skip();
 				return true;
 			case ',':

@@ -27,7 +27,8 @@ import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.list.SimpleList;
 
 public interface BufferItem {
-	public final char SPACE=' ';
+	public static final char SPACE=' ';
+	public static final char QUOTES ='"';
 	/** @return the length of the buffer */
 	public abstract int length();
 
@@ -113,6 +114,13 @@ public interface BufferItem {
 	 * @return the StringContainer with the new Value
 	 */
 	public CharacterBuffer nextString(char... quotes);
+	
+	/**
+	 * Return the characters up to the next close quote character. Remove QUOTES
+	 * @return the StringContainer with the new Value
+	 */
+	public CharacterBuffer nextString();
+	
 
 	/**
 	 * Return the characters up to the next close quote character. Backslash

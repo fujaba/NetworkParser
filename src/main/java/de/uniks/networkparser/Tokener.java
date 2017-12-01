@@ -105,7 +105,7 @@ public class Tokener implements BufferItem {
 	public boolean parseToEntity(Entity entity) {return true;}
 
 	public void parseToEntity(EntityList entity) {}
-
+	
 	public BaseItem encode(Object entity, MapEntity map) {
 		IdMap idMap = this.map;
 		if(this.map == null) {
@@ -179,6 +179,16 @@ public class Tokener implements BufferItem {
 		}
 		return null;
 	}
+	
+	
+	@Override
+	public CharacterBuffer nextString() {
+		if(buffer != null) {
+			return buffer.nextString();
+		}
+		return null;
+	}
+	
 	@Override
 	public boolean skipTo(char search, boolean notEscape) {
 		if(buffer != null) {

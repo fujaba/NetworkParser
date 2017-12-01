@@ -27,8 +27,7 @@ import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.BufferItem;
 import de.uniks.networkparser.list.SimpleList;
 /**
- * INterface for Buffer For Tokener to parse some Values
- *
+ * Interface for Buffer For Tokener to parse some Values
  */
 
 public abstract class Buffer implements BufferItem {
@@ -187,6 +186,13 @@ public abstract class Buffer implements BufferItem {
 			quotes =new char[]{'"'};
 		}
 		return nextString(new CharacterBuffer(), false, false, quotes);
+	}
+	
+	public CharacterBuffer nextString() {
+		this.skipChar(QUOTES);
+		CharacterBuffer result = nextString(QUOTES);
+		this.skipChar(QUOTES);
+		return result;
 	}
 
 	@Override
