@@ -1684,10 +1684,19 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 						Object value = objects.getValueByIndex(z);
 						this.put(id, value, true);
 					}
-					this.withGrammar(oldIDMap.getGrammar());
-					this.withFilter(oldIDMap.getFilter());
+					Grammar grammar = oldIDMap.getGrammar();
+					if(grammar != null) {
+						this.withGrammar(grammar);
+					}
+					Filter filter = oldIDMap.getFilter();
+					if(filter != null) {
+						this.withFilter(filter);
+					}
 
-					this.withListener(oldIDMap.getUpdateListener());
+					ObjectCondition listener = oldIDMap.getUpdateListener();
+					if(listener != null) {
+						this.withListener(listener);
+					}
 				}
 			}
 		}

@@ -24,7 +24,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 import de.uniks.networkparser.graph.Attribute;
-import de.uniks.networkparser.interfaces.Condition;
 import de.uniks.networkparser.list.SimpleSet;
 
 public class AttributeSet extends SimpleSet<Attribute>{
@@ -39,6 +38,7 @@ public class AttributeSet extends SimpleSet<Attribute>{
 		}
 		return collection;
 	}
+
 	public AnnotationSet getAnnotations() {
 		AnnotationSet collection = new AnnotationSet();
 		for(Attribute item : this) {
@@ -63,14 +63,12 @@ public class AttributeSet extends SimpleSet<Attribute>{
 		return collection;
 	}
 
-	@Override
-	public AttributeSet filter(Condition<Attribute> newValue) {
-		AttributeSet collection = new AttributeSet();
-		filterItems( collection, newValue);
-		return collection;
-	}
-
 	public AttributeSet hasName(String otherValue) {
 		return filter(Attribute.NAME.equals(otherValue));
+	}
+	
+	@Override
+	public AttributeSet getNewList(boolean keyValue) {
+		return new AttributeSet();
 	}
 }

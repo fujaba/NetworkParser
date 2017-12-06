@@ -25,7 +25,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 import de.uniks.networkparser.graph.Clazz;
-import de.uniks.networkparser.interfaces.Condition;
 import de.uniks.networkparser.list.SimpleSet;
 
 public class ClazzSet extends SimpleSet<Clazz> {
@@ -66,13 +65,6 @@ public class ClazzSet extends SimpleSet<Clazz> {
 		for (Clazz item : this) {
 			collection.add(item.getModifier());
 		}
-		return collection;
-	}
-
-	@Override
-	public ClazzSet filter(Condition<Clazz> newValue) {
-		ClazzSet collection = new ClazzSet();
-		filterItems(collection, newValue);
 		return collection;
 	}
 

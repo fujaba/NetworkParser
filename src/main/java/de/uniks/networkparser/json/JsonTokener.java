@@ -340,7 +340,7 @@ public class JsonTokener extends Tokener {
 					}
 				}
 			} else {
-				decoding(result, jsonObject, map);
+				result = decoding(result, jsonObject, map);
 			}
 			map.getFilter().isConvertable(event);
 			return result;
@@ -374,6 +374,9 @@ public class JsonTokener extends Tokener {
 		JsonObject jsonProp = (JsonObject) grammar.getProperties(jsonObject, map, isId);
 		if (jsonProp != null) {
 			SendableEntityCreator creator = grammar.getCreator(Grammar.WRITE, target, map.getMap(), map.isSearchForSuperClass(), target.getClass().getName());
+			if(creator == null) {
+				return null;
+			}
 			String[] properties = creator.getProperties();
 			if (properties != null) {
 				for (String property : properties) {

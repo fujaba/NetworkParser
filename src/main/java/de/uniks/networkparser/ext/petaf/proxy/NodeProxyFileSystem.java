@@ -119,7 +119,17 @@ public class NodeProxyFileSystem extends NodeProxy {
 								if(message instanceof ChangeMessage) {
 									ChangeMessage changeMsg = (ChangeMessage) message;
 									if(map.getObject(changeMsg.getId()) == null) {
-										map.put(changeMsg.getId(), root, false);
+										// Try to Use old Root
+										Object entity = changeMsg.getEntity();
+										if(entity != null) {
+											if(entity instanceof String || entity.getClass().equals(root.getClass())) {
+												map.put(changeMsg.getId(), root, false);
+											} else {
+												map.put(changeMsg.getId(), changeMsg.getEntity(), false);
+											}
+										} else {
+											map.put(changeMsg.getId(), changeMsg.getEntity(), false);
+										}
 									}
 									changeMsg.withSpace(this.space);
 									changeMsg.runTask();

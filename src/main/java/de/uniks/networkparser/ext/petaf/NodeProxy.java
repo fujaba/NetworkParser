@@ -119,7 +119,7 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 		}
 		return no;
 	}
-
+	
 	public void setSendTime(int bytes) {
 //		Long oldValue = sendtime;
 		this.sendtime = System.currentTimeMillis();

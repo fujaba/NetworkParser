@@ -61,14 +61,7 @@ public class GenericJsonGrammar extends SimpleGrammar {
 		if(entity instanceof Class<?> == false || className == null){
 			return entity;
 		}
-		try {
-			Class<?> forName = Class.forName(className);
-			return forName.newInstance();
-		} catch (ClassNotFoundException e) {
-		} catch (InstantiationException e) {
-		} catch (IllegalAccessException e) {
-		}
-		return null;
+		return ReflectionLoader.newInstance(className);
 	}
 
 	@Override

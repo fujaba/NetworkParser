@@ -8,6 +8,7 @@ import org.junit.Test;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.buffer.ByteBuffer;
 import de.uniks.networkparser.ext.io.FileBuffer;
+import de.uniks.networkparser.ext.petaf.ModelHistory;
 import de.uniks.networkparser.ext.petaf.NodeProxy;
 import de.uniks.networkparser.ext.petaf.Space;
 import de.uniks.networkparser.ext.petaf.messages.ConnectMessage;
@@ -61,15 +62,24 @@ public class PetaFTest {
 	public void testModelChange() {
 		// DataModel
 		University university = new University();
-		Student createStudents = university.createStudents();
+		Student stefan = university.createStudents();
 		
 		// Serialization
 		Space space=new Space().withCreator(UniversityCreator.createIdMap("42"));
 		space.createModel(university, "build/change.json");
+//		space.createServer(500);
+//		
+//		space.connectToPeer("141.51.123.55", 500);
 
-		
+		space.startModelDistribution();
 		// Change Model
-		createStudents.setName("Albert");
+		stefan.setName("Stefan");
+		Student alex = university.createStudents();
+		alex.setName("Alex");
+		
+		
+		ModelHistory history = space.getHistory();
+		Assert.assertNotNull(history);
 	}
 
 
@@ -125,7 +135,7 @@ public class PetaFTest {
 		fsProxy.withFullModell(false);
 //
 		Item item1 = groupAccount.createItem().withDescription("Beer").withValue(2.49);
-
+		Assert.assertNotNull(item1);
 
 
 		Space space2 = new Space();

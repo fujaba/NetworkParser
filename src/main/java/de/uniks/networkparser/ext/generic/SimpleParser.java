@@ -200,7 +200,7 @@ public class SimpleParser {
 			
 			// So now decoding Attributes
 			char currentChar = tokener.getCurrentChar();
-			while(currentChar != endTag) {
+			while(currentChar != endTag && tokener.isEnd() == false) {
 				key = tokener.nextString().toString();
 				if(key.length() < 1) {
 					break;
@@ -211,7 +211,7 @@ public class SimpleParser {
 					// Start Tag
 					char propStartTag = currentChar = tokener.getChar();
 					char propEndTag = getEndTag(currentChar);
-					while(currentChar != propEndTag) {
+					while(currentChar != propEndTag && tokener.isEnd() == false) {
 						key = tokener.nextString().toString();
 						if(key.length() < 1 ) {
 							break;
@@ -223,19 +223,19 @@ public class SimpleParser {
 							// new Subtype
 							Object subElement = decodingModel(buffer, map, tokener, propEndTag);
 							creator.setValue(result, key, subElement, SendableEntityCreator.NEW);
-							continue;
 						} else if(tokener.getCurrentChar() ==  JsonTokener.STARTARRAY) {
 							// LIST of elements
 							do {
 								Object subElement = decodingModel(buffer, map, tokener, propEndTag);
 								creator.setValue(result, key, subElement, SendableEntityCreator.NEW);
 								currentChar = tokener.getCurrentChar();
-							} while(currentChar != JsonTokener.ENDARRAY);
+							} while(currentChar != JsonTokener.ENDARRAY && tokener.isEnd() == false);
+						} else {
+							String value = tokener.nextString().toString();
+							
+							creator.setValue(result, key, value, SendableEntityCreator.NEW);
+							currentChar = tokener.getCurrentChar();
 						}
-						String value = tokener.nextString().toString();
-						
-						creator.setValue(result, key, value, SendableEntityCreator.NEW);
-						currentChar = tokener.getCurrentChar();
 					}
 				} else {
 					// Skip

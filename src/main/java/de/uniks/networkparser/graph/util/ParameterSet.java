@@ -24,7 +24,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 import de.uniks.networkparser.graph.Parameter;
-import de.uniks.networkparser.interfaces.Condition;
 import de.uniks.networkparser.list.SimpleSet;
 
 public class ParameterSet extends SimpleSet<Parameter>{
@@ -42,13 +41,6 @@ public class ParameterSet extends SimpleSet<Parameter>{
 			collection.add(item.getType());
 		}
 		return collection;
-	}
-
-	@Override
-	public ParameterSet filter(Condition<Parameter> newValue) {
-		ParameterSet newList = new ParameterSet();
-		filterItems(newList, newValue);
-		return newList;
 	}
 
 	public ParameterSet hasName(String otherValue) {

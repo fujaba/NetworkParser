@@ -368,6 +368,23 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 		ByteConverter byteConverter = getConverter();
 		return byteConverter.encode(encode);
 	}
+	
+	public boolean startModelDistribution() {
+		IdMap map = getMap();
+		boolean result=true;
+		for(NodeProxy proxy : this.proxies) {
+			if(proxy instanceof NodeProxyModel) {
+				NodeProxyModel modelProxy = (NodeProxyModel) proxy;
+				Object model = modelProxy.getModel();
+				if(map.getKey(model) == null) {
+					if(getMap().encode(model, tokener) == null) {
+						result = false;
+					}
+				}
+			}
+		}
+		return result;
+	}
 
 	protected void addMessageElement(Message msg, BaseItem encode) {
 
@@ -566,6 +583,7 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 			}
 		}
 		// Add Back
+		receiverProxy.add(this.firstPeer);
 	}
 
 	//

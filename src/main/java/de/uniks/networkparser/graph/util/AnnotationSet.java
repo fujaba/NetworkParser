@@ -24,7 +24,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 import de.uniks.networkparser.graph.Annotation;
-import de.uniks.networkparser.interfaces.Condition;
 import de.uniks.networkparser.list.SimpleSet;
 
 public class AnnotationSet extends SimpleSet<Annotation> {
@@ -48,12 +47,6 @@ public class AnnotationSet extends SimpleSet<Annotation> {
 		for(Annotation item : this) {
 			collection.with(item.getParent());
 		}
-		return collection;
-	}
-	@Override
-	public AnnotationSet filter(Condition<Annotation> newValue) {
-		AnnotationSet collection = new AnnotationSet();
-		filterItems( collection, newValue);
 		return collection;
 	}
 

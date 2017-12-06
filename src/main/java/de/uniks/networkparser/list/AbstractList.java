@@ -36,7 +36,7 @@ import de.uniks.networkparser.interfaces.Condition;
  * @param <V> generic Parameter for Simple-Collection
  */
 
-public abstract class AbstractList<V> extends AbstractArray<V> implements Iterable<V> {
+public abstract class AbstractList<V> extends AbstractArray<V> implements Iterable<V>, Cloneable {
 	/**
 	 * <p>This implementation iterates over the specified collection, and adds
 	 * each object returned by the iterator to this collection, in turn.
@@ -178,6 +178,13 @@ public abstract class AbstractList<V> extends AbstractArray<V> implements Iterab
 			}
 		}
 		return (ST) filterCollection;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public <ST extends AbstractList<V>> ST filter(Condition<V> newValue) {
+		ST filterList = (ST) getNewList(false);
+		filterItems(filterList, newValue);
+		return filterList;
 	}
 
 	public Iterator<V> iterator() {

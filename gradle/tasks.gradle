@@ -1,6 +1,7 @@
 gradle.projectsEvaluated {
 	compileJava.dependsOn(compileJava16)
 	compileJava.dependsOn(compileJava17)
+	compileJava.dependsOn(compileJava18)
 	test.dependsOn(FinishTest)
 }
 
@@ -41,6 +42,13 @@ task compileJava17(type: JavaCompile) {
 	targetCompatibility = '1.7'
 	classpath = files('build/classes/main17')
 }
+task compileJava18(type: JavaCompile) {
+	source = fileTree(dir: 'src', exclude: ['**/test/**'])
+	destinationDir = file('build/classes/main18')
+	sourceCompatibility = '1.8'
+	targetCompatibility = '1.8'
+	classpath = files('build/classes/main18')
+}
 
 jar {
 	group "Jar"
@@ -64,13 +72,19 @@ task buildCoreJar18(type: Jar, dependsOn: buildCoreJar17) {
 	excludes = ['**/test/**']
 	manifest = project.manifest {from sharedManifest}
 }
+task buildCoreJar19(type: Jar, dependsOn: buildCoreJar18) {
+	description 'Build Jar with NetworkParser-Core without dependency of JavaFX and Reflection'
+	group "Jar";from sourceSets.main.output; classifier = 'core19';
+	excludes = ['**/test/**']
+	manifest = project.manifest {from sharedManifest}
+}
 task buildMinCoreJar(type: Jar) {
 	description 'Build Minimum-Jar with NetworkParser-Core without dependency of JavaFX and Reflection'
 	group "Jar";from sourceSets.main.output; classifier = 'min';
 	excludes = ['**/ext/**', '**/calculator/**', '**/parser/**', '**/logic/**', '**/**.css', '**/**.js', '**/gui/**','**/test/**']
 	manifest = project.manifest {from sharedManifest}
 }
-task buildSourceJar(type: Jar, dependsOn: buildCoreJar18) {
+task buildSourceJar(type: Jar, dependsOn: buildCoreJar19) {
 	description 'Build Jar with class-Files and Source-Files'
 	group "Jar"; from {(sourceSets.main.output + sourceSets.main.allJava)}; classifier = 'sources'
 	exclude '**/test/**'

@@ -350,7 +350,7 @@ public class ReflectionBlackBoxTester {
 				if(ReflectionLoader.STAGE == clazz) {
 					return null;
 				}
-				return clazz.newInstance();
+				return clazz.getConstructor().newInstance();
 			}catch (Exception e) {
 					Constructor<?>[] declaredConstructors = clazz.getDeclaredConstructors();
 					for(Constructor<?> c : declaredConstructors) {

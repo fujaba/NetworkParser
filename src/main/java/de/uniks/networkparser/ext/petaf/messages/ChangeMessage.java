@@ -171,6 +171,10 @@ public class ChangeMessage extends ReceivingTimerTask {
 			this.entity = modell.getModel();
 		}
 	}
+	
+	public Object getEntity() {
+		return entity;
+	}
 
 	@Override
 	public ChangeMessage getSendableInstance(boolean prototyp) {
