@@ -10,20 +10,25 @@ import java.lang.reflect.Method;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.ext.ClassModel;
+import de.uniks.networkparser.ext.io.FileBuffer;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.list.SimpleList;
+import de.uniks.networkparser.list.SortedSet;
 import de.uniks.networkparser.logic.BooleanCondition;
 import de.uniks.networkparser.logic.Equals;
 import de.uniks.networkparser.logic.Not;
 import de.uniks.networkparser.xml.HTMLEntity;
+import de.uniks.networkparser.xml.XMLEntity;
 
-public class Story {
+public class Story implements Comparable<Story> {
 	private String outputFile;
+	private String label;
 	private SimpleList<ObjectCondition> steps = new SimpleList<ObjectCondition>();
 	private int counter=-1;
 	private boolean breakOnAssert=true;
 	private IdMap map;
+	private SortedSet<Story> stories = new SortedSet<Story>(true); 
 
 	// COUNTER
 	// ADDTABLE
@@ -42,6 +47,26 @@ public class Story {
 		this.steps.add(step);
 	}
 	
+	
+	 public String getLabel() {
+		 if(this.label == null && this.outputFile != null) {
+			 int pos = this.outputFile.lastIndexOf('/');
+			 int temp = this.outputFile.lastIndexOf('\\');
+			 if(temp>pos) {
+				 pos =temp;
+			 }
+			 if(pos >= 0) {
+				 this.label = this.outputFile.substring(pos + 1);
+			 }
+		 }
+		 return this.label;
+	 }
+	 
+	 public Story withLabel(String value) {
+		 this.label = value;
+		 return this;
+	 }
+	 
 	/**
 	 * Add JavaCode to Story board
 	 * 
@@ -121,7 +146,10 @@ public class Story {
 	}
 
 	public boolean dumpHTML() {
-		if (this.outputFile == null || this.outputFile.length() < 1) {
+		return writeToFile(this.outputFile);
+	}
+	protected boolean writeToFile(String fileName) {
+		if (fileName == null || fileName.length() < 1) {
 			return false;
 		}
 		boolean success=true;
@@ -142,25 +170,24 @@ public class Story {
 				break;
 			}
 		}
-		this.writeFile(output);
+		this.writeFile(output, this.outputFile);
 		return success;
 	}
 	
-	protected boolean writeFile(HTMLEntity output) {
-		if(this.outputFile == null || this.outputFile.length()<1) {
+	protected boolean writeFile(HTMLEntity output, String fileName) {
+		if(fileName == null || fileName.length()<1) {
 			return false;
 		}
-		File file = new File("doc/" + this.outputFile);
+		File file = new File("doc/" + fileName);
 		FileOutputStream fop = null;
 		try {
+			// if file doesnt exists, then create it
+			if(FileBuffer.createFile(file) == false) {
+					return false;
+			}
 			fop = new FileOutputStream(file);
 
-			// if file doesnt exists, then create it
-			if (file.exists() == false) {
-				if(file.createNewFile() == false) {
-					return false;
-				}
-			}
+
 			// get the content in bytes
 			byte[] contentInBytes = output.toString(2).getBytes();
 
@@ -178,9 +205,7 @@ public class Story {
 			}
 		}
 		return false;
-
 	}
-
 
 	public boolean addDescription(String key, String value) {
 		StoryStepSourceCode source = null;
@@ -310,5 +335,79 @@ public class Story {
 		step.withCondition(message, actual, new Not().with(Equals.createNullCondition()));
 		this.addCondition(step);
 	}
+	public boolean dumpIndexHTML() {
+		return dumpIndexHTML("");
+	}
+	public boolean dumpIndexHTML(String subDir) {
+		if(this.stories.size() <1 ) {
+			return this.dumpHTML();
+		}
+		HTMLEntity output = new HTMLEntity();
+		// INDEX HTML
+		output.withEncoding(HTMLEntity.ENCODING);
+		XMLEntity frameset = XMLEntity.TAG("frameset").withKeyValue("cols", "250,*");
+		frameset.createChild("frame").withKeyValue("src", "refs.html").withKeyValue("name", "Index");
+		XMLEntity mainFrame = frameset.createChild("frame").withKeyValue("name", "Main");
+		frameset.createChild("noframes").withValue("<body><p><a href='refs.html'>Index</a> <a href='refs.html'>Main</a></p></body>");
+		output.with(frameset);
+		
+		
+		HTMLEntity refHtml = new HTMLEntity();
+		refHtml.withHeader("../src/main/resources/de/uniks/networkparser/graph/diagramstyle.css");
+		refHtml.withEncoding(HTMLEntity.ENCODING);
+		int pos = this.outputFile.lastIndexOf('/');
+		String fileName = ""; 
+		if(pos>0) {
+			fileName = subDir+"/"+this.outputFile.substring(0, pos) + "/";
+		} 
+		
+		if(this.steps.size()>0) {
+			// has main
+			this.writeToFile(fileName+"main.html");
+			mainFrame.withKeyValue("src", fileName);
+		}
+		for(Story subStory : stories) {
+			XMLEntity link = refHtml.createBodyTag("A");
+			link.add("href", subStory.getOutputFile());
+			link.withValueItem(subStory.getLabel());
+			if(subStory.size() > 0) {
+				subStory.dumpIndexHTML(fileName);
+			}
+		}
+		return FileBuffer.writeFile("index.html", output.toString());
+	}
+	
+	private int size() {
+		return this.stories.size();
+	}
+	
+	private Object getOutputFile() {
+		return outputFile;
+	}
 
+
+//	o1.compareTo( o2 ) < 0 o1 < o2
+//	o1.compareTo( o2 ) == 0 o1 == o2
+//	o1.compareTo( o2 ) > 0 o1 > o2
+	@Override
+	public int compareTo(Story story) {
+		String label = this.getLabel();
+		String otherLabel = null;
+		if(story != null ) {
+			otherLabel = story.getLabel();
+		}
+		if(label == null) {
+			if(otherLabel != null) {
+				return -1;
+			}
+			return 0;
+		}
+		return label.compareTo(otherLabel);
+	}
+
+
+	public Story with(Story value) {
+		this.stories.add(value);
+		return this;
+	}
 }
