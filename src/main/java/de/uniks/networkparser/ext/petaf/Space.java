@@ -417,7 +417,7 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 		String messageId = msg.getMessageId(this, myProxy);
 		msg.withPrevChange(history.getPrevChangeId(messageId));
 		// Add Receiver if possible
-		msg.withReceiver(getMyNode());
+		msg.withAddToReceived(getMyNode());
 		if(msg instanceof ReceivingTimerTask) {
 			((ReceivingTimerTask)msg).withSpace(this);
 		}

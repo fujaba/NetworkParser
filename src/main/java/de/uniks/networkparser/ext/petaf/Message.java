@@ -25,8 +25,9 @@ public class Message implements SendableEntityCreator, SendableEntityCreatorNoIn
 			PROPERTY_TYPE,
 			PROPERTY_HISTORYID,
 			PROPERTY_MSG,
-			PROPERTY_PREVIOUSCHANGE,
-			PROPERTY_RECEIVED
+			PROPERTY_RECEIVED,
+			PROPERTY_PREVIOUSCHANGE
+			
 	);
 	protected String historyId;
 	protected Object received;
@@ -74,7 +75,8 @@ public class Message implements SendableEntityCreator, SendableEntityCreatorNoIn
 		return result;
 	}
 
-	public Message withAddToReceived(NodeProxy value) {
+	@SuppressWarnings("unchecked")
+	public <ST extends Message> ST withAddToReceived(NodeProxy value) {
 		if(this.received == null) {
 			this.received = value;
 		}
@@ -87,7 +89,7 @@ public class Message implements SendableEntityCreator, SendableEntityCreatorNoIn
 			list = (SimpleSet<?>) this.received;
 		}
 		list.add(value);
-		return this;
+		return (ST) this;
 	}
 
 	public CharacterBuffer getBlob() {

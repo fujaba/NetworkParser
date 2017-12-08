@@ -31,7 +31,7 @@ public class ConnectMessage extends ReceivingTimerTask {
 		NodeProxy sender = this.getReceiver();
 		if(sender != null) {
 			if(sender.sendMessage(acceptTaskSend)) {
-				this.receiver.withOnline(true);
+				this.getReceiver().withOnline(true);
 			}
 		}
 		return true;

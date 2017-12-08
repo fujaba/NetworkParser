@@ -89,8 +89,7 @@ public class PetaFTest {
 		NodeProxy proxy = space.getOrCreateProxy("141.51.116.1", 5000);
 		space.getOrCreateProxy("141.51.116.1", 5010);
 
-		ConnectMessage message=new ConnectMessage();
-		message.withReceiver(proxy);
+		ConnectMessage message=new ConnectMessage().withAddToReceived(proxy);
 
 		String convertMessage = space.convertMessage(message);
 

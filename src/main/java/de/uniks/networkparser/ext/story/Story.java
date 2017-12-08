@@ -1,9 +1,5 @@
 package de.uniks.networkparser.ext.story;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
@@ -152,7 +148,6 @@ public class Story implements Comparable<Story> {
 		if (fileName == null || fileName.length() < 1) {
 			return false;
 		}
-		boolean success=true;
 		HTMLEntity output = new HTMLEntity();
 		output.withHeader("../src/main/resources/de/uniks/networkparser/graph/diagramstyle.css");
 		output.withEncoding(HTMLEntity.ENCODING);
@@ -166,47 +161,12 @@ public class Story implements Comparable<Story> {
 		SimpleEvent evt = new SimpleEvent(this, null, null, output);
 		for (ObjectCondition step : steps) {
 			if(step.update(evt) == false) {
-				success = false;
-				break;
+				return false;
 			}
 		}
-		this.writeFile(output, this.outputFile);
-		return success;
+		return FileBuffer.writeFile("doc/" + fileName, output.toString(2));
 	}
 	
-	protected boolean writeFile(HTMLEntity output, String fileName) {
-		if(fileName == null || fileName.length()<1) {
-			return false;
-		}
-		File file = new File("doc/" + fileName);
-		FileOutputStream fop = null;
-		try {
-			// if file doesnt exists, then create it
-			if(FileBuffer.createFile(file) == false) {
-					return false;
-			}
-			fop = new FileOutputStream(file);
-
-
-			// get the content in bytes
-			byte[] contentInBytes = output.toString(2).getBytes();
-
-			fop.write(contentInBytes);
-			fop.flush();
-			return true;
-		} catch (FileNotFoundException e) {
-		} catch (IOException e) {
-		} finally {
-			if(fop != null) {
-				try {
-					fop.close();
-				} catch (IOException e) {
-				}
-			}
-		}
-		return false;
-	}
-
 	public boolean addDescription(String key, String value) {
 		StoryStepSourceCode source = null;
 		for(int i=this.steps.size() - 1;i>=0;i--) {
@@ -358,7 +318,7 @@ public class Story implements Comparable<Story> {
 		int pos = this.outputFile.lastIndexOf('/');
 		String fileName = ""; 
 		if(pos>0) {
-			fileName = subDir+"/"+this.outputFile.substring(0, pos) + "/";
+			fileName = subDir+this.outputFile.substring(0, pos) + "/";
 		} 
 		
 		if(this.steps.size()>0) {
@@ -374,7 +334,7 @@ public class Story implements Comparable<Story> {
 				subStory.dumpIndexHTML(fileName);
 			}
 		}
-		return FileBuffer.writeFile("index.html", output.toString());
+		return FileBuffer.writeFile(fileName+"index.html", output.toString());
 	}
 	
 	private int size() {
