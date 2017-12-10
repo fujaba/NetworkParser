@@ -1,14 +1,16 @@
 package de.uniks.networkparser.test;
 
 import java.io.File;
-import java.io.IOException;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Properties;
 
+import org.junit.After;
 import org.junit.Assert;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import de.uniks.networkparser.IdMap;
@@ -27,23 +29,49 @@ import de.uniks.networkparser.test.model.University;
 import de.uniks.networkparser.test.model.util.UniversityCreator;
 
 public class SQLModelConverterTest {
-	@BeforeClass
-	public static void loadSQLDriver() throws ClassNotFoundException, SQLException, InstantiationException, IllegalAccessException, IOException {
+	private Connection connection;
+	private static final Method method = initDriver();
+	
+	public static Method initDriver() {
 		File f = new File("lib/sql/sqlite-jdbc-3.8.11.2.jar");
-		URL url = new URL("file:///"+f.getAbsolutePath());
-//		DriverManager.setLogStream(System.out);
-		URLClassLoader sysloader = (URLClassLoader) ClassLoader.getSystemClassLoader();
-		Class<?> sysclass = URLClassLoader.class;
-
 		try {
-			Method method = sysclass.getDeclaredMethod("addURL", new Class[] {URL.class});
+			URL url = new URL("file:///" + f.getAbsolutePath());
+			ClassLoader systemClassLoader = ClassLoader.getPlatformClassLoader();
+			ClassLoader sysloader = URLClassLoader.newInstance(new URL[] { url }, systemClassLoader);
+			
+			Thread.currentThread().setContextClassLoader(sysloader);
+			
+			Method method = DriverManager.class.getDeclaredMethod("getConnection", String.class, Properties.class,
+					Class.class);
 			method.setAccessible(true);
-			method.invoke(sysloader, new Object[] {url});
-		} catch (Throwable t) {
-			throw new IOException("Error, could not add URL to system classloader");
+			return method;
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-		Class<?> c = ClassLoader.getSystemClassLoader().loadClass("org.sqlite.JDBC");
-		c.newInstance();
+		return null;
+	}
+
+	public Connection loadSQLDriver(String file) {
+		try {
+			Object manager = method.invoke(DriverManager.class, "jdbc:sqlite:build/"+file, new Properties(), null);
+			this.connection = (Connection) manager;
+			return connection;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	@After
+	public void closeSQLDriver() {
+		if(this.connection != null) {
+			try {
+				this.connection.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			this.connection = null;
+		}
 	}
 
 	@Test
@@ -71,8 +99,10 @@ public class SQLModelConverterTest {
 		if (file.exists()) {
 			file.delete();
 		}
-
+		
+		
 		SQLTokener tokener = new SQLTokener(SQLStatement.connect("jdbc", "sqlite", "build/sampleA.db"));
+		tokener.withConnection(loadSQLDriver("sampleA.db"));
 		SQLStatementList statements = tokener.encode(model);
 
 		SQLStatement insertStatement = new SQLStatement(SQLCommand.INSERT, "student");
@@ -235,6 +265,7 @@ public class SQLModelConverterTest {
 		}
 
 		SQLTokener tokener = new SQLTokener(SQLStatement.connect("jdbc", "sqlite", "build/sampleB.db"));
+		tokener.withConnection(loadSQLDriver("sampleB.db"));
 
 		IdMap map = UniversityCreator.createIdMap("1");
 		map.withTimeStamp(1);
@@ -262,7 +293,8 @@ public class SQLModelConverterTest {
 		}
 
 		SQLTokener tokener = new SQLTokener(SQLStatement.connect("jdbc", "sqlite", "build/sampleC.db"));
-
+		tokener.withConnection(loadSQLDriver("sampleC.db"));
+		
 		IdMap map = UniversityCreator.createIdMap("1");
 		map.withTimeStamp(1);
 

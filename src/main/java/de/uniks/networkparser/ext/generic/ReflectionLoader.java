@@ -281,11 +281,20 @@ public class ReflectionLoader {
 			EREFERENCE = null;
 		}
 	}
-
+	public static Object newInstance(String className, Object... arguments) {
+		try {
+			Class<?> clazz = Class.forName(className);
+			return newInstance(clazz, arguments);
+		} catch (ClassNotFoundException e) {
+		}
+		return null;
+	}
+	
 	public static Object newInstance(Class<?> instance, Object... arguments) {
 		try {
 			if(arguments == null) {
-				return instance.newInstance();
+				Constructor<?> constructor = instance.getConstructor();
+				return constructor.newInstance();
 			}
 			int len=0;
 			int count = arguments.length;

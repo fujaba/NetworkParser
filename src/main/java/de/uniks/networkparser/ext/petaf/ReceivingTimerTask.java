@@ -6,14 +6,14 @@ public abstract class ReceivingTimerTask extends Message implements Runnable {
 	protected final ErrorHandler handler = new ErrorHandler();
 	protected Runnable task;
 	protected Space space;
-	
-	
+
+
 	public ReceivingTimerTask withSpace(Space space){
 		handler.addListener(space);
 		this.space = space;
 		return this;
 	}
-	
+
 	@Override
 	public void run() {
          try{
@@ -22,7 +22,7 @@ public abstract class ReceivingTimerTask extends Message implements Runnable {
        		 handler.saveException(e, false);
          }
 	}
-	
+
 	public Space getSpace() {
 		return space;
 	}

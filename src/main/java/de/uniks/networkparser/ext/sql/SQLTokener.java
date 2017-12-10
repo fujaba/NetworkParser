@@ -47,6 +47,7 @@ import de.uniks.networkparser.list.SimpleSet;
 
 public class SQLTokener extends Tokener {
 	private SQLStatement sqlConnection;
+	private Connection connection;
 	public static String TABLE_FLAT="table";
 	public static String TABLE_PRIVOTISIERUNG="pivotisierung";
 	public static final byte FLAG_NONE = 0x00;
@@ -153,7 +154,9 @@ public class SQLTokener extends Tokener {
 			}
 		}
 		if(connection != null) {
-			result = result & disconnect(connection);
+			if(this.connection == null || this.connection != connection) {
+				result = result & disconnect(connection);
+			}
 		}
 		return result;
 	}
@@ -170,16 +173,26 @@ public class SQLTokener extends Tokener {
 	}
 
 	public Connection connect(SQLStatement connect) {
+		if(connect == null) {
+			return null;
+		}
+		if(this.connection != null) {
+			return connection;
+		}
+		String string = connect.toString();
 		try {
-			if(connect == null) {
-				return null;
-			}
-			return DriverManager.getConnection(connect.toString());
+			return DriverManager.getConnection(string);
 		} catch (SQLException e) {
+			
 		}
 		return null;
 	}
 
+	public SQLTokener withConnection(Connection connection) {
+		this.connection = connection;
+		return this;
+	}
+	
 	@Override
 	public SQLStatementList encode(Object entity, MapEntity map) {
 		SQLStatementList statements = new SQLStatementList();

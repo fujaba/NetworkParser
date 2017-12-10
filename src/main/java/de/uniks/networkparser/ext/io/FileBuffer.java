@@ -50,7 +50,9 @@ public class FileBuffer extends Buffer {
 	private char currentChar;
 
 	public FileBuffer withFile(String fileName) {
-		withFile(new File(fileName));
+		if(fileName != null) {
+			withFile(new File(fileName));
+		}
 		return this;
 	}
 
@@ -64,9 +66,9 @@ public class FileBuffer extends Buffer {
 		}catch (Exception e) {
 		}
 		this.position = 0;
-		return this;	
+		return this;
 	}
-	
+
 	public FileBuffer withFile(File file) {
 		return withFile(file, 1024*1024);
 	}
@@ -75,7 +77,7 @@ public class FileBuffer extends Buffer {
 	public int length() {
 		return length;
 	}
-	
+
 	public boolean exist() {
 		if(this.file == null) {
 			return false;
@@ -101,7 +103,7 @@ public class FileBuffer extends Buffer {
 			if(charInt<0) {
 				charInt =0;
 			}
-			value = (char)charInt; 
+			value = (char)charInt;
 			this.currentChar = value;
 			position++;
 		} catch (IOException e) {
@@ -168,14 +170,16 @@ public class FileBuffer extends Buffer {
 	public byte getByte() {
 		return (byte)getChar();
 	}
-	
+
 	public void close() {
 		try {
-			this.reader.close();
+			if(this.reader != null) {
+				this.reader.close();
+			}
 		} catch (IOException e) {
 		}
 	}
-	
+
 	public static final boolean writeFile(String fileName, CharSequence data, boolean appendData) {
 		if(fileName == null || fileName.length()<1) {
 			return false;
@@ -192,7 +196,7 @@ public class FileBuffer extends Buffer {
 	public static final boolean writeFile(String fileName, CharSequence data) {
 		return writeFile(fileName, data, false);
 	}
-	
+
 	public static final CharacterBuffer readResource(String file) {
 		InputStream is = IdMap.class.getResourceAsStream(file);
 		CharacterBuffer sb = new CharacterBuffer();
@@ -214,7 +218,7 @@ public class FileBuffer extends Buffer {
 		}
 		return sb;
 	}
-	
+
 	public static final CharacterBuffer readFile(String file) {
 		File content=new File(file);
 		CharacterBuffer sb = new CharacterBuffer();
@@ -246,11 +250,11 @@ public class FileBuffer extends Buffer {
         }
         return sb;
     }
-	
+
 	public static BaseItem readBaseFile(String configFile){
 		return readBaseFile(configFile, null);
 	}
-	
+
 	public static BaseItem readBaseFile(String configFile, BaseItem container){
 		// load it
 		CharacterBuffer buffer = FileBuffer.readFile(configFile);
@@ -263,7 +267,19 @@ public class FileBuffer extends Buffer {
 				}else {
 					result = new JsonObject();
 				}
-				return result.withValue(buffer);
+				result.withValue(buffer);
+				if(buffer.isEnd()) {
+					return result;
+				}
+				//buffer not at end
+				JsonArray array = new JsonArray();
+				array.add(result);
+				while(buffer.isEnd() == false) {
+					result = new JsonObject();
+					result.withValue(buffer);
+					array.add(result);
+				}
+				return array;
 			}
 			if(buffer.charAt(0)=='['){
 				JsonArray result;
@@ -286,7 +302,7 @@ public class FileBuffer extends Buffer {
 		}
 		return container;
 	}
-	
+
 	public static final boolean deleteFile(String fileName) {
 		File file;
 		file = new File(fileName);
@@ -296,7 +312,7 @@ public class FileBuffer extends Buffer {
 		}
 		return true;
 	}
-	
+
 	public boolean createFile() {
 		if(this.file == null) {
 			return false;
@@ -314,7 +330,7 @@ public class FileBuffer extends Buffer {
 		}
 		return false;
 	}
-	
+
 	public boolean write(CharSequence data, boolean append) {
 		if(this.file == null) {
 			return false;
@@ -335,7 +351,7 @@ public class FileBuffer extends Buffer {
 		this.write(string, true);
 		return newline();
 	}
-	
+
 	public boolean newline() {
 		return this.write(BaseItem.CRLF, true);
 	}

@@ -659,4 +659,14 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 	public Comparator<Object> comparator() {
 		return cpr;
 	}
+	
+	public Object[][] toTable() {
+		Object[][] table=new Object[size()][2];
+		for(int i=0;i<size();i++) {
+			table[i][0] = this.getKeyByIndex(i);
+			table[i][1] = this.getValueByIndex(i);
+		}
+		return table;
+		
+	}
 }

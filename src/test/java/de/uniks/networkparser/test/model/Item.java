@@ -24,23 +24,59 @@ package de.uniks.networkparser.test.model;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
+import de.uniks.networkparser.interfaces.SendableEntity;
 import de.uniks.networkparser.test.model.ludo.StrUtil;
 import de.uniks.networkparser.test.model.util.ItemSet;
 
-public class Item {
+public class Item implements SendableEntity {
+
 	//==========================================================================
-	protected PropertyChangeSupport listeners = new PropertyChangeSupport(this);
-	public PropertyChangeSupport getPropertyChangeSupport() {
-		return listeners;
+	protected PropertyChangeSupport listeners = null;
+
+	public boolean firePropertyChange(String propertyName, Object oldValue, Object newValue) {
+		if (listeners != null) {
+			listeners.firePropertyChange(propertyName, oldValue, newValue);
+			return true;
+		}
+		return false;
 	}
-	public void addPropertyChangeListener(PropertyChangeListener listener) {
-		getPropertyChangeSupport().addPropertyChangeListener(listener);
+
+	public boolean addPropertyChangeListener(PropertyChangeListener listener) {
+		if (listeners == null) {
+			listeners = new PropertyChangeSupport(this);
+		}
+		listeners.addPropertyChangeListener(listener);
+		return true;
 	}
+
+	public boolean addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
+		if (listeners == null) {
+			listeners = new PropertyChangeSupport(this);
+		}
+		listeners.addPropertyChangeListener(propertyName, listener);
+		return true;
+	}
+
+	public boolean removePropertyChangeListener(PropertyChangeListener listener) {
+		if (listeners != null) {
+			listeners.removePropertyChangeListener(listener);
+		}
+		return true;
+	}
+
+	public boolean removePropertyChangeListener(String property,
+			PropertyChangeListener listener) {
+		if (listeners != null) {
+			listeners.removePropertyChangeListener(property, listener);
+		}
+		return true;
+	}
+
 	//==========================================================================
 	public void removeYou() {
 		setParent(null);
 		setBuyer(null);
-		getPropertyChangeSupport().firePropertyChange("REMOVE_YOU", this, null);
+		firePropertyChange("REMOVE_YOU", this, null);
 	}
 	//==========================================================================
 	public static final String PROPERTY_DESCRIPTION = "description";
@@ -54,7 +90,7 @@ public class Item {
 		if ( ! StrUtil.stringEquals(this.description, value)) {
 			String oldValue = this.description;
 			this.description = value;
-			getPropertyChangeSupport().firePropertyChange(PROPERTY_DESCRIPTION, oldValue, value);
+			firePropertyChange(PROPERTY_DESCRIPTION, oldValue, value);
 		}
 	}
 
@@ -83,7 +119,7 @@ public class Item {
 		if (this.value != value) {
 			double oldValue = this.value;
 			this.value = value;
-			getPropertyChangeSupport().firePropertyChange(PROPERTY_VALUE, oldValue, value);
+			firePropertyChange(PROPERTY_VALUE, oldValue, value);
 		}
 	}
 
@@ -120,7 +156,7 @@ public class Item {
 			if (value != null) {
 				value.withItem(this);
 			}
-			getPropertyChangeSupport().firePropertyChange(PROPERTY_PARENT, oldValue, value);
+			firePropertyChange(PROPERTY_PARENT, oldValue, value);
 			changed = true;
 		}
 		return changed;
@@ -162,7 +198,7 @@ public class Item {
 			if (value != null) {
 				value.withItem(this);
 			}
-			getPropertyChangeSupport().firePropertyChange(PROPERTY_BUYER, oldValue, value);
+			firePropertyChange(PROPERTY_BUYER, oldValue, value);
 			changed = true;
 		}
 		return changed;

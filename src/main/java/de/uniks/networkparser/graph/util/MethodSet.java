@@ -24,7 +24,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 import de.uniks.networkparser.graph.Method;
-import de.uniks.networkparser.interfaces.Condition;
 import de.uniks.networkparser.list.SimpleSet;
 
 public class MethodSet extends SimpleSet<Method>{
@@ -66,13 +65,6 @@ public class MethodSet extends SimpleSet<Method>{
 		for(Method item : this) {
 			collection.add(item.getReturnType());
 		}
-		return collection;
-	}
-
-	@Override
-	public MethodSet filter(Condition<Method> newValue) {
-		MethodSet collection = new MethodSet();
-		filterItems( collection, newValue);
 		return collection;
 	}
 

@@ -10,7 +10,10 @@ import de.uniks.networkparser.Deep;
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.SimpleEvent;
+import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.ext.generic.GenericCreator;
+import de.uniks.networkparser.ext.generic.SimpleParser;
+import de.uniks.networkparser.ext.io.FileBuffer;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.json.AtomarCondition;
@@ -228,6 +231,32 @@ public class ModelTest implements ObjectCondition {
 		JsonObject jsonObject = map.toJsonObject(barbarian);
 
 		Assert.assertNotEquals(jsonObject, jsonObjectB);
+	}
+	
+	@Test
+	public void testSpeedImporter() {
+		IdMap map=new IdMap();
+		map.with(new UniversityCreator());
+		map.with(new StudentCreator());
+
+		
+		//		University uni = new University();
+//		uni.addToStudents(new Student().withFirstName("Albert"));
+//		map.toJsonObject(uni);
+//		uni.withStudents(new Student().withFirstName("Stefan"));
+		
+//		JsonObject json = map.toJsonObject(uni);
+//		FileBuffer.writeFile("src/test/resources/de/uniks/networkparser/test/model.json", json.toString(2));
+		
+		CharacterBuffer buffer = FileBuffer.readFile("src/test/resources/de/uniks/networkparser/test/model.json");
+
+		
+		// Really Nessessary???
+//		JsonObject json = new JsonObject().withValue(buffer);
+		
+		University uni2 = SimpleParser.decodeModel(buffer, map);
+		Assert.assertNotNull(uni2);
+		
 	}
 
 }

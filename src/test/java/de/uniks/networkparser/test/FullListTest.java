@@ -208,8 +208,8 @@ public class FullListTest {
 		// create a set of some 42 names
 		SimpleSet<Integer> simpleList = new SimpleSet<Integer>();
 
-		Integer int_01 = new Integer(1);
-		Integer int_02 = new Integer(2);
+		Integer int_01 = Integer.valueOf(1);
+		Integer int_02 = Integer.valueOf(2);
 
 		assertEquals("List should be empty", 0, simpleList.size());
 		assertTrue("List should not yet contain added element", ! simpleList.contains(int_01));
@@ -278,12 +278,12 @@ public class FullListTest {
 		// some small list for testing sublist
 		for (int i = 0; i < 42; i++)
 		{
-			simpleList.add(new Integer(i));
+			simpleList.add(Integer.valueOf(i));
 		}
 
 		SimpleSet<Integer> subList = simpleList.subList(10, 20);
 
-		assertEquals("sublist[0] should be 10", new Integer(10), subList.get(0));
+		assertEquals("sublist[0] should be 10", Integer.valueOf(10), subList.get(0));
 
 		subList = simpleList.subList(42, 20);
 
@@ -315,15 +315,15 @@ public class FullListTest {
 			iter.previous();
 		} catch (Exception e) {}
 
-		iter.set(new Integer(42));
+		iter.set(Integer.valueOf(42));
 
 		iter.next();
 
 		subList.remove(subList.size()-1);
 
-		iter.set(new Integer(43));
+		iter.set(Integer.valueOf(43));
 
-		iter.add(new Integer(44));
+		iter.add(Integer.valueOf(44));
 
 		try {
 			iter.remove();
@@ -338,7 +338,7 @@ public class FullListTest {
 		subList.first();
 		subList.last();
 
-		iter.add(new Integer(44));
+		iter.add(Integer.valueOf(44));
 
 		// coverage for AbstractList
 		simpleList.addAll(subList);
@@ -359,7 +359,7 @@ public class FullListTest {
 
 		for (int i = 1; i <= 550; i++)
 		{
-			simpleList.add(new Integer(i));
+			simpleList.add(Integer.valueOf(i));
 		}
 
 		simpleList.toArray(new Integer[99]);
@@ -402,10 +402,10 @@ public class FullListTest {
 
 		for (int i = 1; i <= 42; i++)
 		{
-			simpleList.add(new Integer(i));
+			simpleList.add(Integer.valueOf(i));
 		}
 
-		clone = (SimpleSet<Integer>) simpleList.subSet(new Integer(23), new Integer(25));
+		clone = (SimpleSet<Integer>) simpleList.subSet(Integer.valueOf(23), Integer.valueOf(25));
 
 		assertEquals("wrong number of elements", 2, clone.size());
 		assertEquals("clone[0] is wrong", 23, 0 + clone.first());
@@ -470,7 +470,7 @@ public class FullListTest {
 		queue.remove(0);
 		Assert.assertEquals(queue.size(), 498);
 		Integer integer = queue.get(0);
-		Assert.assertEquals(integer, new Integer(2));
+		Assert.assertEquals(integer, Integer.valueOf(2));
 	}
 
 	@Test
@@ -538,7 +538,7 @@ public class FullListTest {
 		list.remove(0);
 		list.removeByObject(3);
 		Assert.assertEquals(3, list.size());
-		Assert.assertEquals(new Integer(5), list.get(2));
+		Assert.assertEquals(Integer.valueOf(5), list.get(2));
 	}
 
 	@Test
@@ -735,13 +735,13 @@ public class FullListTest {
 		smallList.add(1);
 		smallList.add(1, 2);
 		smallList.add(1, 2);
-		smallList.with(new Integer(3));
+		smallList.with(Integer.valueOf(3));
 		return smallList;
 	}
 	private void testList(SimpleSet<Integer> smallList) {
-		Integer theThree = new Integer(3);
-		Integer theOne = new Integer(1);
-		Assert.assertEquals(new Integer(1), smallList.first());
+		Integer theThree = Integer.valueOf(3);
+		Integer theOne = Integer.valueOf(1);
+		Assert.assertEquals(Integer.valueOf(1), smallList.first());
 		Assert.assertEquals(theThree, smallList.last());
 		Assert.assertEquals(3, smallList.size());
 		Assert.assertEquals(2, smallList.indexOf(theThree));

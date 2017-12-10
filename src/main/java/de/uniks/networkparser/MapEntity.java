@@ -346,7 +346,7 @@ public class MapEntity extends AbstractList<Object>{
 	}
 
 	@Override
-	public BaseItem getNewList(boolean keyValue) {
+	public MapEntity getNewList(boolean keyValue) {
 		return new MapEntity(null);
 	}
 

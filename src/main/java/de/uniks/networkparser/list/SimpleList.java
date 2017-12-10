@@ -27,10 +27,9 @@ import java.util.List;
 
 import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.interfaces.BaseItem;
-import de.uniks.networkparser.interfaces.Condition;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 
-public class SimpleList<V> extends AbstractList<V> implements List<V>, Cloneable {
+public class SimpleList<V> extends AbstractList<V> implements List<V> {
 	public static final String PROPERTY="items";
 	private ObjectCondition listener;
 
@@ -41,12 +40,6 @@ public class SimpleList<V> extends AbstractList<V> implements List<V>, Cloneable
 	@Override
 	public BaseItem getNewList(boolean keyValue) {
 		return new SimpleList<V>();
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public SimpleList<V> clone() {
-		return ((SimpleList<V>)getNewList(false)).init(this);
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -59,12 +52,6 @@ public class SimpleList<V> extends AbstractList<V> implements List<V>, Cloneable
 		return super.removeByObject(o)>=0;
 	}
 
-	public SimpleList<V> filter(Condition<V> newValue) {
-		SimpleList<V> filterList = new SimpleList<V>();
-		filterItems(filterList, newValue);
-		return filterList;
-	}
-
 	@Override
 	public boolean add(V e) {
 		return super.add(e);
@@ -73,6 +60,11 @@ public class SimpleList<V> extends AbstractList<V> implements List<V>, Cloneable
 	public SimpleList<V> withListener(ObjectCondition listener) {
 		this.listener = listener;
 		return this;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public AbstractList<V> clone() {
+		return ((AbstractList<V>) getNewList(false)).init(this); 
 	}
 
 	@Override

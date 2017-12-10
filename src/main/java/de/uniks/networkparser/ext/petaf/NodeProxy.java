@@ -39,7 +39,7 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 	protected long no;
 	protected Space space;
 	protected String name;
-	protected NodeProxy nextPeer;	// NextPeer for MyNodes
+	protected NodeProxy nextNode;	// NextPeer for MyNodes
 
 	public String[] getUpdateProperties() {
 		return propertyUpdate.getList();
@@ -69,7 +69,7 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 
 	public boolean sendMessage(Message msg) {
 		if (this.space != null) {
-			return this.space.sendMessage(this, msg, false);
+			return this.space.sendMessage(msg, false, this);
 		}
 		return this.sending(msg);
 	}
@@ -119,7 +119,7 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 		}
 		return no;
 	}
-
+	
 	public void setSendTime(int bytes) {
 //		Long oldValue = sendtime;
 		this.sendtime = System.currentTimeMillis();
@@ -208,6 +208,13 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 
 	public ObjectCondition getFilter() {
 		return filter;
+	}
+
+	public boolean filter(Object value) {
+		if(filter != null) {
+			return filter.update(value);
+		}
+		return true;
 	}
 
 	public String getVersion() {
@@ -331,12 +338,16 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 	protected abstract boolean initProxy();
 
 	public NodeProxy next() {
-		return this.nextPeer;
+		return this.nextNode;
 	}
 
-	public NodeProxy with(NodeProxy nextPeer) {
-		this.nextPeer = nextPeer;
-		return this;
+	public NodeProxy setNextMyNode(NodeProxy nextNode) {
+		this.nextNode = nextNode;
+		if(nextNode == null) {
+			return this;
+		}
+		nextNode.setNextMyNode(null);
+		return nextNode;
 	}
 
 	public TaskExecutor getExecutor() {

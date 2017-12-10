@@ -24,7 +24,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 import de.uniks.networkparser.graph.Modifier;
-import de.uniks.networkparser.interfaces.Condition;
 import de.uniks.networkparser.list.SimpleSet;
 
 public class ModifierSet extends SimpleSet<Modifier> {
@@ -48,13 +47,6 @@ public class ModifierSet extends SimpleSet<Modifier> {
 		for(Modifier item : this) {
 			collection.with(item.getParent());
 		}
-		return collection;
-	}
-
-	@Override
-	public ModifierSet filter(Condition<Modifier> newValue) {
-		ModifierSet collection = new ModifierSet();
-		filterItems( collection, newValue);
 		return collection;
 	}
 

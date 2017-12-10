@@ -16,7 +16,7 @@ import de.uniks.networkparser.UpdateAccumulate;
 import de.uniks.networkparser.UpdateListener;
 import de.uniks.networkparser.bytes.ByteMessage;
 import de.uniks.networkparser.bytes.ByteMessageCreator;
-import de.uniks.networkparser.ext.generic.JsonParser;
+import de.uniks.networkparser.ext.generic.SimpleParser;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
@@ -67,7 +67,7 @@ public class JsonModellTest implements ObjectCondition {
 		IdMap map=new IdMap();
 		map.withCreator(new UniversityCreator(), new StudentCreator());
 		JsonObject json = map.toJsonObject(uni);
-		University uniKassel = JsonParser.fromJson(json, University.class);
+		University uniKassel = SimpleParser.fromJson(json, University.class);
 		Assert.assertEquals("Uni Kassel", uniKassel.getName());
 	}
 
@@ -76,9 +76,9 @@ public class JsonModellTest implements ObjectCondition {
 		University uni = new University().withName("Uni Kassel");
 		uni.withStudents(new Student().withFirstName("Stefan"));
 
-		JsonObject json = JsonParser.toJson(uni);
+		JsonObject json = SimpleParser.toJson(uni);
 		
-		University uniKassel = JsonParser.fromJson(json, University.class);
+		University uniKassel = SimpleParser.fromJson(json, University.class);
 		Assert.assertEquals("Uni Kassel", uniKassel.getName());
 	}
 	@Test
@@ -86,15 +86,15 @@ public class JsonModellTest implements ObjectCondition {
 		University uni = new University().withName("Uni Kassel");
 		uni.withStudents(new Student().withFirstName("Stefan"));
 
-		JsonObject json = JsonParser.toJson(uni);
+		JsonObject json = SimpleParser.toJson(uni);
 		
-		University uniKassel = JsonParser.fromJson(json);
+		University uniKassel = SimpleParser.fromJson(json);
 		Assert.assertEquals("Uni Kassel", uniKassel.getName());
 	}
 	@Test
 	public void testGenericJsonCrazy(){
 		JsonObject json = JsonObject.create("{name:\"Uni Kassel\"}");
-		University uniKassel = JsonParser.fromJson(json, University.class);
+		University uniKassel = SimpleParser.fromJson(json, University.class);
 		Assert.assertEquals("Uni Kassel", uniKassel.getName());
 	}
 

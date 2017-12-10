@@ -56,11 +56,7 @@ public class DiagramController extends SimpleController {
 		if(value==null) {
 			this.logic = this;
 		}else {
-			try {
-				Class<?> clazz = Class.forName(value);
-				this.logic = clazz.newInstance();
-			} catch (Exception e) {
-			}
+			this.logic = ReflectionLoader.newInstance(value);
 		}
 		browser = ReflectionLoader.newInstance(ReflectionLoader.WEBVIEW);
 		webEngine = ReflectionLoader.call("getEngine", browser);

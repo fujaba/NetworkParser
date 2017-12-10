@@ -92,18 +92,9 @@ public class GenericCreator implements SendableEntityCreator {
 	@Override
 	public Object getSendableInstance(boolean prototype) {
 		if (item != null) {
-			try {
-				return item.getClass().newInstance();
-			} catch (InstantiationException e) {
-			} catch (IllegalAccessException e) {
-			}
+			return ReflectionLoader.newInstance(this.clazz);
 		} else if( this.clazz != null) {
-			try {
-				return clazz.newInstance();
-			} catch (InstantiationException e) {
-			} catch (IllegalAccessException e) {
-			}
-
+			return ReflectionLoader.newInstance(this.clazz);
 		}
 		return null;
 	}
@@ -133,7 +124,7 @@ public class GenericCreator implements SendableEntityCreator {
 		// No Method Found
 		try {
 			Field field = this.clazz.getDeclaredField(attribute);
-			if(!field.isAccessible()) {
+			if(field.canAccess(entity) == false) {
 				field.setAccessible(true);
 				Object invoke = field.get(entity);
 				field.setAccessible(false);
@@ -206,7 +197,7 @@ public class GenericCreator implements SendableEntityCreator {
 		// No Method Found
 		try {
 			Field field = this.clazz.getDeclaredField(attribute);
-			if(!field.isAccessible()) {
+			if(field.canAccess(entity) == false) {
 				field.setAccessible(true);
 				field.set(entity, value);
 				field.setAccessible(false);
@@ -258,7 +249,7 @@ public class GenericCreator implements SendableEntityCreator {
 		// Add all Properties
 		try {
 			if(instance.isInterface() == false) {
-				genericCreator.withItem(instance.newInstance());
+				genericCreator.withItem(ReflectionLoader.newInstance(instance));
 			}
 		} catch (Exception e1) {
 			genericCreator.withClass(instance);

@@ -246,7 +246,7 @@ public class JsonTest extends IOClasses {
 	public void testStringJson() {
 		String jsonText = "{\"id\":\"10.1.1.126;c10\",\"class\":\"de.uni.kassel.peermessage.model.Change\",\"prop\":{\"value\":\"42\"}}";
 		Change change = new Change();
-		change.setKey(new Long(42));
+		change.setKey(Long.valueOf(42));
 		change.setValue(new JsonObject().withValue(jsonText));
 		change.setList(new JsonArray().withValue(new JsonObject().withValue(jsonText)));
 		IdMap map = new IdMap();
@@ -255,7 +255,7 @@ public class JsonTest extends IOClasses {
 		JsonObject json = map.toJsonObject(change);
 		Change change2 = (Change) map.decode(json);
 		assertNotNull(change2);
-		assertEquals(new Long(42), change2.getKey());
+		assertEquals(Long.valueOf(42), change2.getKey());
 		assertEquals(jsonText, change2.getValue().toString());
 		assertEquals(change.getList().size(), change2.getList().size());
 	}
@@ -282,7 +282,7 @@ public class JsonTest extends IOClasses {
 	public void testJsonParsing() {
 		// Modell
 		Change change = new Change();
-		change.setKey(new Long(42));
+		change.setKey(Long.valueOf(42));
 
 		// Map
 		IdMap map = new IdMap();

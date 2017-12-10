@@ -28,10 +28,9 @@ import java.util.Set;
 
 import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.buffer.CharacterBuffer;
-import de.uniks.networkparser.interfaces.Condition;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 
-public class SimpleSet<V> extends AbstractList<V> implements Set<V>, Cloneable, Iterable<V> {
+public class SimpleSet<V> extends AbstractList<V> implements Set<V> {
 	public static final String PROPERTY="items";
 	private ObjectCondition listener;
 
@@ -47,7 +46,7 @@ public class SimpleSet<V> extends AbstractList<V> implements Set<V>, Cloneable, 
 
 	@Override
 	public SimpleSet<V> clone() {
-		return ((SimpleSet<V>)getNewList(false)).init(this);
+		return getNewList(false).init(this);
 	}
 	@SuppressWarnings("unchecked")
 	public SimpleSet<V> subList(int fromIndex, int toIndex) {
@@ -57,17 +56,6 @@ public class SimpleSet<V> extends AbstractList<V> implements Set<V>, Cloneable, 
 	@Override
 	public boolean addAll(int index, Collection<? extends V> values) {
 		return super.addAll(index, values);
-	}
-
-	@Override
-	public boolean addAll(Collection<? extends V> c) {
-		return super.addAll(c);
-	}
-
-	public SimpleSet<V> filter(Condition<V> newValue) {
-		SimpleSet<V> newList = getNewList(false);
-		filterItems(newList, newValue);
-		return newList;
 	}
 
 	// Add Methods from SDMLib

@@ -17,6 +17,7 @@ import de.uniks.networkparser.NetworkParserLog;
 import de.uniks.networkparser.ext.ErrorHandler;
 import de.uniks.networkparser.ext.javafx.SimpleController;
 import de.uniks.networkparser.ext.petaf.Server_TCP;
+import de.uniks.networkparser.ext.petaf.Server_Time;
 import de.uniks.networkparser.ext.petaf.Server_UPD;
 import de.uniks.networkparser.ext.petaf.Space;
 import de.uniks.networkparser.ext.petaf.proxy.NodeProxyBroadCast;
@@ -42,24 +43,31 @@ public class ReflectionBlackBoxTester {
 	
 	public ReflectionBlackBoxTester() {
 		ignoreMethods =new SimpleKeyValueList<String, SimpleSet<String>>();
-		String className;
-		className = Story.class.getName();
-		withIgnoreClazzes(className+":dumpHTML");
-		withIgnoreClazzes(className+":writeFile");
-		withIgnoreClazzes(ErrorHandler.class.getName());
-		className = SimpleController.class.getName();
-		withIgnoreClazzes(className+":init");
-		withIgnoreClazzes(className+":saveException");
-		withIgnoreClazzes(className+":createContent");
-		withIgnoreClazzes(className+":showContent");
-		withIgnoreClazzes(className+":withErrorPath");
-		withIgnoreClazzes(Server_TCP.class.getName());
-		withIgnoreClazzes(Server_UPD.class.getName());
-		withIgnoreClazzes(Space.class.getName());
+
+		withIgnoreClazzes(Story.class, "dumpHTML", "writeFile");
+		withIgnoreClazzes(ErrorHandler.class);
+		withIgnoreClazzes(SimpleController.class, "init", "saveException", "createContent", "showContent", "withErrorPath");
+		withIgnoreClazzes(Server_TCP.class);
+		withIgnoreClazzes(Server_UPD.class);
+		withIgnoreClazzes(Server_Time.class);
+		withIgnoreClazzes(Space.class);
+		withIgnoreClazzes(NodeProxyBroadCast.class);
+		withIgnoreClazzes(NodeProxyTCP.class, "initProxy");
+		
 //		withIgnoreClazzes(TimerExecutor.class.getName());
-		withIgnoreClazzes(NodeProxyBroadCast.class.getName());
-		withIgnoreClazzes(NodeProxyTCP.class.getName());
 	}		
+	
+	public ReflectionBlackBoxTester withIgnoreClazzes(Class<?> metaClass, String... methods) {
+		String className = metaClass.getName();
+		if(methods == null || methods.length < 1) {
+			return withIgnoreClazzes(className);
+		}
+		for(String method : methods) {
+			withIgnoreClazzes(className+":"+method);
+		}
+		return this;
+	}
+
 	
 	public ReflectionBlackBoxTester withIgnoreClazzes(String... values) {
 		if(values == null) {
@@ -342,7 +350,7 @@ public class ReflectionBlackBoxTester {
 				if(ReflectionLoader.STAGE == clazz) {
 					return null;
 				}
-				return clazz.newInstance();
+				return clazz.getConstructor().newInstance();
 			}catch (Exception e) {
 					Constructor<?>[] declaredConstructors = clazz.getDeclaredConstructors();
 					for(Constructor<?> c : declaredConstructors) {
