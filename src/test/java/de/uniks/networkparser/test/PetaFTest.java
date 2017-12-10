@@ -25,7 +25,10 @@ public class PetaFTest {
 		Space space=new Space();
 		IdMap map = UniversityCreator.createIdMap("42");
 		space.withCreator(map);
-		space.createModel(university);
+		space.createModel(university, "ModelFile.json");
+		
+		createStudents.setName("Stefan");
+      university.createStudents().setName("Alex");
 	}
 
 	@Test
