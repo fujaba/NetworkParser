@@ -26,7 +26,7 @@ public class PetaFilter extends Filter {
 		if(InfoMessage.PROPERTY_PROXIES.equals(fullProp) && entity instanceof InfoMessage) {
 			this.oldTyp = this.typ;
 			this.typ = INFO;
-		} else if(ConnectMessage.PROPERTY_RECEIVER.equals(fullProp) && entity instanceof ConnectMessage) {
+		} else if(ConnectMessage.PROPERTY_RECEIVED.equals(fullProp) && entity instanceof ConnectMessage) {
 			this.oldTyp = this.typ;
 			this.typ = INFO;
 		}else if(this.oldTyp != null) {

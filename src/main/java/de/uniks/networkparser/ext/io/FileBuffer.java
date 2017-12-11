@@ -314,7 +314,11 @@ public class FileBuffer extends Buffer {
 	}
 
 	public boolean createFile() {
-		if(this.file == null) {
+		return FileBuffer.createFile(this.file);
+	}
+	
+	public static boolean createFile(File file) {
+		if(file == null) {
 			return false;
 		}
 		File parentFile = file.getParentFile();

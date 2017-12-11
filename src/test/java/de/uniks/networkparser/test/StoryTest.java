@@ -35,4 +35,24 @@ public class StoryTest {
 		
 		story.dumpHTML();
 	}
+	
+	
+	@Test
+	public void testStoryBook() {
+		Story story = new Story();
+		story.withName("story/kk.html");
+		story.addText("MainText");
+		Story halloWelt = new Story().withName("HalloWelt");
+		story.with(halloWelt);
+		Story ludo = new Story().withName("Ludo");
+		story.with(ludo);
+		
+		Story startGame = new Story().withName("StartGame");
+		ludo.with(startGame);
+		Story winGame = new Story().withName("WinGame");
+		ludo.with(winGame);
+		
+		story.dumpIndexHTML();
+	}
+	
 }

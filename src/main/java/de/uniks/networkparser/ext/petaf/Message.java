@@ -17,7 +17,6 @@ public class Message implements SendableEntityCreator, SendableEntityCreatorNoIn
 	public static final String PROPERTY_HISTORYID="id";
 	public static final String PROPERTY_PREVIOUSCHANGE="prevChange";
 	public static final String PROPERTY_MSG="msg";
-	public static final String PROPERTY_RECEIVER="receiver";
 	public static final String PROPERTY_RECEIVED="received";
 	public static final String PROPERTY_PARENT="parent";
 	public static final String PROPERTY_TYPE="type";
@@ -26,15 +25,14 @@ public class Message implements SendableEntityCreator, SendableEntityCreatorNoIn
 			PROPERTY_TYPE,
 			PROPERTY_HISTORYID,
 			PROPERTY_MSG,
-			PROPERTY_PREVIOUSCHANGE,
-			PROPERTY_RECEIVER,
-			PROPERTY_RECEIVED
+			PROPERTY_RECEIVED,
+			PROPERTY_PREVIOUSCHANGE
+			
 	);
 	protected String historyId;
 	protected Object received;
 	protected String prevChange;
 	protected BaseItem msg;
-	protected NodeProxy receiver;
 	protected int timeOut;
 	protected boolean sendAnyHow=false;
 	protected String type;
@@ -77,7 +75,8 @@ public class Message implements SendableEntityCreator, SendableEntityCreatorNoIn
 		return result;
 	}
 
-	public Message withAddToReceived(NodeProxy value) {
+	@SuppressWarnings("unchecked")
+	public <ST extends Message> ST withAddToReceived(NodeProxy value) {
 		if(this.received == null) {
 			this.received = value;
 		}
@@ -90,7 +89,7 @@ public class Message implements SendableEntityCreator, SendableEntityCreatorNoIn
 			list = (SimpleSet<?>) this.received;
 		}
 		list.add(value);
-		return this;
+		return (ST) this;
 	}
 
 	public CharacterBuffer getBlob() {
@@ -101,11 +100,6 @@ public class Message implements SendableEntityCreator, SendableEntityCreatorNoIn
 
 	public boolean handle(Space space) {
 		return false;
-	}
-
-	public Message withReceiver(NodeProxy value) {
-		this.receiver = value;
-		return this;
 	}
 
 	public boolean isSendingToPeers() {
@@ -126,8 +120,9 @@ public class Message implements SendableEntityCreator, SendableEntityCreatorNoIn
 	}
 
 	public NodeProxy getReceiver() {
-		return receiver;
+		return getReceived().first();
 	}
+
 	public BaseItem getMessage(){
 		return msg;
 	}
@@ -225,9 +220,6 @@ public class Message implements SendableEntityCreator, SendableEntityCreatorNoIn
 		if(PROPERTY_MSG.equalsIgnoreCase(attribute)){
 			return msg.getMessage();
 		}
-		if(PROPERTY_RECEIVER.equalsIgnoreCase(attribute)){
-			return msg.getReceiver();
-		}
 		if(PROPERTY_RECEIVED.equalsIgnoreCase(attribute)){
 			return msg.getReceived();
 		}
@@ -255,10 +247,6 @@ public class Message implements SendableEntityCreator, SendableEntityCreatorNoIn
 			if(value instanceof JsonObject) {
 				msg.withMessage((JsonObject) value);
 			}
-			return true;
-		}
-		if(PROPERTY_RECEIVER.equalsIgnoreCase(attribute)){
-			msg.withReceiver((NodeProxy) value);
 			return true;
 		}
 		if(PROPERTY_RECEIVED.equalsIgnoreCase(attribute)){
