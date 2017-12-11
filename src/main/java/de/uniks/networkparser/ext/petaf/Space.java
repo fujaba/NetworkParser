@@ -198,7 +198,7 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 		this.with(newProxy);
 		if(fileName != null) {
 			String filePath = null;
-			if(this.path != null) {
+			if(this.path != null && this.path.length()>0) {
 				filePath = this.path + "/"+fileName;
 			} else {
 				filePath = fileName;
@@ -567,17 +567,17 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 				number++;
 				if(number>=this.proxies.size()) {
 					number -= this.proxies.size();
+					step++;
 				}
 				proxy = this.proxies.get(number);
 				if(NodeProxyType.OUT == proxy.getType() || NodeProxyType.INOUT == proxy.getType()) {
 					// If the proxy not already received the message, we want to send it to the proxy
-					if(received.indexOf(proxy)<0) {
+					if(received.indexOf(proxy)<0 || proxy instanceof NodeProxyFileSystem) {
 						step++;
-//						if(isMyNode(proxy, myNode) == false) {
-							if(sendProxies.add(proxy)==false) {
-								step = this.peerCount;
-							}
-//						}
+						if(sendProxies.add(proxy) == false) {
+							// Break while
+							step = this.peerCount;
+						}
 					}
 				}
 			}
