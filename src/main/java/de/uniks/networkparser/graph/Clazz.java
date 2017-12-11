@@ -238,32 +238,6 @@ public class Clazz extends GraphEntity {
 		return this;
 	}
 
-   /**
-    * ********************************************************************
-    * <pre>
-    *                       %tgtCardinality%
-    * Clazz ----------------------------------- %tgtClass%
-    *                         %tgtRoleName%
-    * </pre>
-    *
-    * create a Undirectional Association
-    *
-    * @param tgtClass         The target Clazz
-    * @param tgtRoleName      The Targetrolename
-    * @param tgtCardinality   The Targetcardinality
-    * @return The Association Instance
-    */
-   public Association createUniDirectional(Clazz tgtClass, String tgtRoleName, Cardinality tgtCardinality) {
-      // Target
-      Association assocTarget = new Association(tgtClass).with(tgtCardinality).with(AssociationTypes.UNDIRECTIONAL).with(tgtRoleName);
-
-      // Source
-      Association assocSource = new Association(this).with(AssociationTypes.EDGE).with(assocTarget);
-
-      tgtClass.with(assocTarget);
-      this.with(assocSource);
-      return assocSource;
-   }
 	/**
 	 * Get All Interfaces
 	 * @param transitive Get all Interfaces or direct Interfaces
