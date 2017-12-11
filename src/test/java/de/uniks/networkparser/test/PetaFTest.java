@@ -34,7 +34,7 @@ public class PetaFTest {
 		Space space=new Space();
 		IdMap map = UniversityCreator.createIdMap("42");
 		space.withCreator(map);
-		space.createModel(university, "ModelFile.json");
+		space.createModel(university, "ModelFile.json", true);
 		
 		createStudents.setName("Stefan");
       university.createStudents().setName("Alex");
@@ -69,12 +69,12 @@ public class PetaFTest {
 		
 		// Serialization
 		Space space=new Space().withCreator(UniversityCreator.createIdMap("42"));
-		space.createModel(university, "build/change.json");
+		space.createModel(university, "build/change.json", false);
 //		space.createServer(500);
 //		
 //		space.connectToPeer("141.51.123.55", 500);
 
-		space.startModelDistribution();
+		space.startModelDistribution(false);
 		// Change Model
 		stefan.setName("Stefan");
 		Student alex = university.createStudents();
@@ -130,7 +130,7 @@ public class PetaFTest {
 		space.with(fsProxy);
 
 		GroupAccount groupAccount = new GroupAccount();
-		space.createModel(groupAccount, "build/changes.json");
+		space.createModel(groupAccount, "build/changes.json", true);
 //		fsProxy.load(groupAccount);
 
 		groupAccount.setName("Albert");

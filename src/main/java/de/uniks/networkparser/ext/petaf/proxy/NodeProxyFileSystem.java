@@ -86,7 +86,7 @@ public class NodeProxyFileSystem extends NodeProxy {
 				len = data.length();
 				file.write(data, false);
 			} else if (msg != null) {
-				String data = this.space.convertMessage(msg);
+				String data = this.space.convertMessage(msg)+BaseItem.CRLF;
 				len = data.length();
 				file.write(data, true);
 			}

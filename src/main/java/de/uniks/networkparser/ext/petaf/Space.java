@@ -178,10 +178,10 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 	}
 
 	public NodeProxy createModel(Object root) {
-		return createModel(root, null);
+		return createModel(root, null, true);
 	}
 
-	public NodeProxy createModel(Object root, String fileName) {
+	public NodeProxy createModel(Object root, String fileName, boolean fullModel) {
 		// Check if NodeProxyModel exists for root
 		NodeProxyModel model = getModel();
 		if(root == null) {
@@ -205,6 +205,11 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 			}
 			NodeProxyFileSystem fileSystem=new NodeProxyFileSystem(filePath);
 			this.isInit=false;
+			if(fullModel) {
+				fileSystem.withFullModell(true);
+		    } else {
+				startModelDistribution(true);
+			}
 			this.with(fileSystem);
 			fileSystem.load(root);
 			this.isInit=true;
@@ -369,14 +374,14 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 		return byteConverter.encode(encode);
 	}
 	
-	public boolean startModelDistribution() {
+	public boolean startModelDistribution(boolean alwaysEncode) {
 		IdMap map = getMap();
 		boolean result=true;
 		for(NodeProxy proxy : this.proxies) {
 			if(proxy instanceof NodeProxyModel) {
 				NodeProxyModel modelProxy = (NodeProxyModel) proxy;
 				Object model = modelProxy.getModel();
-				if(map.getKey(model) == null) {
+				if(alwaysEncode || map.getKey(model) == null) {
 					if(getMap().encode(model, tokener) == null) {
 						result = false;
 					}
