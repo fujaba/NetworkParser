@@ -32,6 +32,7 @@ THE SOFTWARE.
  * ASSOCIATION    - ASSOCIATION Bidirectional Association
  * ASSOCIATION    - EDGE Undirectional but search for back Assoc
  * UNDIRECTIONAL  - Edge Undirectional Association
+ * AGGREGATION    - UNIDIRECTIONAL Unidirectional Aggregation
  * AGGREGATION    - Edge Aggregation
  * COMPOSITION    - Edge Composition
  * GENERALISATION - Edge Generalisation
