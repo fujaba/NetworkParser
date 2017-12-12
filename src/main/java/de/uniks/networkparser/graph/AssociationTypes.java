@@ -28,16 +28,16 @@ THE SOFTWARE.
 
 /**
  * Associations types
- * Edge - Edge normal Edge
- * ASSOCIATION    - ASSOCIATION Bidirectional Association
- * ASSOCIATION    - EDGE Undirectional but search for back Assoc
- * UNDIRECTIONAL  - Edge Undirectional Association
- * AGGREGATION    - UNIDIRECTIONAL Unidirectional Aggregation
- * AGGREGATION    - Edge Aggregation
- * COMPOSITION    - Edge Composition
- * GENERALISATION - Edge Generalisation
- * IMPLEMENTS     - Edge Implements
- * DEPENDENCY     - Edge Dependency
+ * Edge           - Edge           : normal Edge
+ * Association    - Association    : Bidirectional Association
+ * Association    - Edge           : Undirectional but search for back Assoc
+ * Undirectional  - Edge           : Undirectional Association
+ * Aggregation    - Undirectional  : Undirectional Aggregation
+ * Aggregation    - Edge           : Aggregation
+ * Composition    - Edge           : Composition
+ * Generalisation - Edge           : Generalisation
+ * Implements     - Edge           : Implements
+ * Dependency     - Edge           : Dependency
  * 
  * @author Stefan
  *

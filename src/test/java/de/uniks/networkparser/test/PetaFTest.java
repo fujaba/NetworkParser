@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 import org.junit.Assert;
 import org.junit.Test;
 
+import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.buffer.ByteBuffer;
 import de.uniks.networkparser.ext.io.FileBuffer;
@@ -34,7 +35,7 @@ public class PetaFTest {
 		Space space=new Space();
 		IdMap map = UniversityCreator.createIdMap("42");
 		space.withCreator(map);
-		space.createModel(university, "ModelFile.json", true);
+		space.createModel(university, "ModelFile.json").startModelDistribution();
 		
 		createStudents.setName("Stefan");
       university.createStudents().setName("Alex");
@@ -69,7 +70,7 @@ public class PetaFTest {
 		
 		// Serialization
 		Space space=new Space().withCreator(UniversityCreator.createIdMap("42"));
-		space.createModel(university, "build/change.json", false);
+		space.createModel(university, "build/change.json");
 //		space.createServer(500);
 //		
 //		space.connectToPeer("141.51.123.55", 500);
@@ -130,7 +131,7 @@ public class PetaFTest {
 		space.with(fsProxy);
 
 		GroupAccount groupAccount = new GroupAccount();
-		space.createModel(groupAccount, "build/changes.json", true);
+		space.createModel(groupAccount, "build/changes.json");
 //		fsProxy.load(groupAccount);
 
 		groupAccount.setName("Albert");
@@ -155,7 +156,15 @@ public class PetaFTest {
 
 		FileBuffer.deleteFile(fsProxy.getFileName());
 		FileBuffer.deleteFile(fsProxy2.getFileName());
-//		FileBuffer.deleteFile("build/changes.json");
 		assertEquals(groupAccount.getName(), ga2.getName());
+	}
+	
+	
+	@Test
+	public void testFilter() {
+		ConnectMessage connectMessage = new ConnectMessage();
+		Space space=new Space();
+		space.getMessageFilter().withFormat((byte)4); // Filter.FORMAT_SHORTCLASS
+		System.out.println(space.convertMessage(connectMessage));
 	}
 }

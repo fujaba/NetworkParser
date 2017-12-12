@@ -72,7 +72,6 @@ public class JsonTest extends IOClasses {
 		Assert.assertTrue(jsonObject.equals(Equals.create("msg", "init")));
 	}
 	
-	
 	@Test
 	public void testJSONDuplicate() {
 		JsonObject json = new JsonObject().withValue("{\"type\":\"new\", \"type\":\"old\"}");

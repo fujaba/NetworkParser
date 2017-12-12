@@ -15,7 +15,7 @@ public class PetaFilter extends Filter {
 	private String oldTyp;
 	
 	public PetaFilter() {
-		withFormat(FORMAT_NULL);
+		withFormat(FORMAT_SHORTCLASS);
 	}
 	
 	@Override

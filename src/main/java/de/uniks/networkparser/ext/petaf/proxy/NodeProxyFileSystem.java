@@ -50,6 +50,11 @@ public class NodeProxyFileSystem extends NodeProxy {
 		}
 	}
 
+	public boolean startModelDistribution() {
+		this.withFullModell(false);
+		return this.space.startModelDistribution(true);
+	}
+
 	public boolean isFullModell() {
 		return fullModell;
 	}

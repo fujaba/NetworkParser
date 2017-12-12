@@ -53,6 +53,13 @@ public abstract class BufferedBuffer extends Buffer {
 	public boolean isEnd() {
 		return position()-start+1 >= length();
 	}
+	
+	public boolean isEndCharacter() {
+		if(position()-start+1 >= length()) {
+			return true;
+		}
+		return nextClean(true) == 0;
+	}
 
 	public BufferedBuffer withLength(int value) {
 		this.length = value;

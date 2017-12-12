@@ -23,6 +23,8 @@ import de.uniks.networkparser.list.SimpleList;
 
 public class SimpleController implements ObjectCondition{
 	public static final String SEPARATOR="------";
+	public static final String USER="USER";
+	public static final String USERNAME="USERNAME";
 	public static final String CLOSE="close";
 	private Object application;
 	private Object stage;
@@ -230,6 +232,24 @@ public class SimpleController implements ObjectCondition{
 		}
 		return map;
 	}
+	
+	
+	public String getUserName(String... defaultName) {
+		SimpleKeyValueList<String, String> parameterMap = getParameterMap();
+		for(int i=0;i<parameterMap.size();i++) {
+			String key = parameterMap.getKeyByIndex(i);
+			if(USER.equalsIgnoreCase(key)) {
+				return parameterMap.get(i);
+			} else if(USERNAME.equalsIgnoreCase(key)) {
+				return parameterMap.get(i);
+			}
+		}
+		if(defaultName != null && defaultName.length>0 && defaultName[0] instanceof String) {
+			return defaultName[0];
+		}
+		return "";
+	}
+	
 
 	public void show(Object root, boolean newStage) {
 		Object oldStage = null;

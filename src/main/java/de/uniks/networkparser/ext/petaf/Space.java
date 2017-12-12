@@ -90,6 +90,10 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 	protected TaskExecutor createExecutorTimer() {
 		return new SimpleExecutor();
 	}
+	
+	public PetaFilter getMessageFilter() {
+		return messageFilter;
+	}
 
 	protected IdMap createIdMap() {
 		IdMap map = new IdMap()
@@ -177,11 +181,7 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 		return newProxy;
 	}
 
-	public NodeProxy createModel(Object root) {
-		return createModel(root, null, true);
-	}
-
-	public NodeProxy createModel(Object root, String fileName, boolean fullModel) {
+	public NodeProxyModel createModel(Object root) {
 		// Check if NodeProxyModel exists for root
 		NodeProxyModel model = getModel();
 		if(root == null) {
@@ -194,8 +194,14 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 				}
 			}
 		}
-		NodeProxy newProxy = new NodeProxyModel(root);
-		this.with(newProxy);
+		model = new NodeProxyModel(root);
+		this.with(model);
+		return model;
+	}
+
+	public NodeProxyFileSystem createModel(Object root, String fileName) {
+		createModel(root);
+		NodeProxyFileSystem fileSystem = null;
 		if(fileName != null) {
 			String filePath = null;
 			if(this.path != null && this.path.length()>0) {
@@ -203,13 +209,9 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 			} else {
 				filePath = fileName;
 			}
-			NodeProxyFileSystem fileSystem=new NodeProxyFileSystem(filePath);
+			fileSystem=new NodeProxyFileSystem(filePath);
+			fileSystem.withFullModell(true);
 			this.isInit=false;
-			if(fullModel) {
-				fileSystem.withFullModell(true);
-		    } else {
-				startModelDistribution(true);
-			}
 			this.with(fileSystem);
 			fileSystem.load(root);
 			this.isInit=true;
@@ -244,8 +246,7 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 				}
 			}
 		}
-		return newProxy;
-
+		return fileSystem;
 	}
 	public NodeProxy getOrCreateProxy(String url, int port) {
 		if (url.equals("127.0.0.1")) {

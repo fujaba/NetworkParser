@@ -211,7 +211,7 @@ public class MapEntity extends AbstractList<Object>{
 			id = null;
 		}else if(filter.isShortClass()){
 			if(className != null && className.startsWith("de.uniks.networkparser.ext.petaf")) {
-				className = "#"+className.substring(35);
+				className = className.substring(className.lastIndexOf('.') + 1);
 			}
 		}
 		return grammar.writeBasicValue(entity, className, id, this.getMap());

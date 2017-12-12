@@ -10,6 +10,8 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import de.uniks.networkparser.ext.io.FileBuffer;
+import de.uniks.networkparser.interfaces.BaseItem;
+import de.uniks.networkparser.interfaces.EntityList;
 import de.uniks.networkparser.xml.XMLEntity;
 
 public class FileTest {
@@ -31,5 +33,12 @@ public class FileTest {
 		XMLEntity root = new XMLEntity().withValue(buffer);
 		Assert.assertEquals(18, root.sizeChildren());
 	}
-
+	
+	@Test
+	public void fileReaderChanges() throws IOException{
+		BaseItem buffer = FileBuffer.readBaseFile("src/test/resources/de/uniks/networkparser/test/change.json");
+		Assert.assertTrue(buffer instanceof EntityList);
+		EntityList list = (EntityList)buffer;
+		Assert.assertEquals(3, list.size());
+	}
 }

@@ -274,7 +274,7 @@ public class FileBuffer extends Buffer {
 				//buffer not at end
 				JsonArray array = new JsonArray();
 				array.add(result);
-				while(buffer.isEnd() == false) {
+				while(buffer.isEndCharacter() == false) {
 					result = new JsonObject();
 					result.withValue(buffer);
 					array.add(result);
