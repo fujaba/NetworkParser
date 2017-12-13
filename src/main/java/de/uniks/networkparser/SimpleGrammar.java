@@ -85,11 +85,11 @@ public class SimpleGrammar implements Grammar {
 			}
 			className = (String) name;
 		}
-		SendableEntityCreator creator = map.getCreator((String) className, true, null);
+		SendableEntityCreator creator = map.getCreator(className, false, null);
 		if(creator != null) {
 			return creator;
 		}
-		Class<?> clazzName = getClassForName((String) className);
+		Class<?> clazzName = getClassForName(className);
 		return getSuperCreator(map, searchForSuperCreator, clazzName);
 	}
 

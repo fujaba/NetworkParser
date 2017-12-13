@@ -243,7 +243,7 @@ public class JsonTest extends IOClasses {
 
 	@Test
 	public void testStringJson() {
-		String jsonText = "{\"id\":\"10.1.1.126;c10\",\"class\":\"de.uni.kassel.peermessage.model.Change\",\"prop\":{\"value\":\"42\"}}";
+		String jsonText = "{\"id\":\"10.1.1.126;c10\",\"class\":\"de.uni.kassel.peermessage.model.ChangeMsg\",\"prop\":{\"value\":\"42\"}}";
 		Change change = new Change();
 		change.setKey(Long.valueOf(42));
 		change.setValue(new JsonObject().withValue(jsonText));

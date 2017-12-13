@@ -36,7 +36,7 @@ public class SQLModelConverterTest {
 		File f = new File("lib/sql/sqlite-jdbc-3.8.11.2.jar");
 		try {
 			URL url = new URL("file:///" + f.getAbsolutePath());
-			ClassLoader systemClassLoader = ClassLoader.getPlatformClassLoader();
+			ClassLoader systemClassLoader = ClassLoader.getSystemClassLoader();
 			ClassLoader sysloader = URLClassLoader.newInstance(new URL[] { url }, systemClassLoader);
 			
 			Thread.currentThread().setContextClassLoader(sysloader);

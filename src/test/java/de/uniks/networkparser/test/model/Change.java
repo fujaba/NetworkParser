@@ -8,7 +8,7 @@ public class Change {
 	public static final String PROPERTY_VALUE="value";
 	public static final String PROPERTY_LIST="list";
 	private Long key;
-	private JsonObject value;
+	private Object value;
 	private JsonArray list;
 
 	public Object get(String attrName) {
@@ -34,7 +34,7 @@ public class Change {
 			setKey((Long) value);
 			return true;
 		} else if (attribute.equalsIgnoreCase(PROPERTY_VALUE)) {
-			setValue((JsonObject) value);
+			setValue(value);
 			return true;
 		} else if(attribute.equalsIgnoreCase(PROPERTY_LIST)) {
 			setList((JsonArray) value);
@@ -43,10 +43,10 @@ public class Change {
 		return false;
 	}
 	public JsonObject getValue() {
-		return value;
+		return (JsonObject) value;
 	}
 
-	public void setValue(JsonObject value) {
+	public void setValue(Object value) {
 		this.value = value;
 	}
 

@@ -124,7 +124,7 @@ public class GenericCreator implements SendableEntityCreator {
 		// No Method Found
 		try {
 			Field field = this.clazz.getDeclaredField(attribute);
-			if(field.canAccess(entity) == false) {
+			if(isAccess(field, entity) == false) {
 				field.setAccessible(true);
 				Object invoke = field.get(entity);
 				field.setAccessible(false);
@@ -197,7 +197,7 @@ public class GenericCreator implements SendableEntityCreator {
 		// No Method Found
 		try {
 			Field field = this.clazz.getDeclaredField(attribute);
-			if(field.canAccess(entity) == false) {
+			if(isAccess(field, entity) == false) {
 				field.setAccessible(true);
 				field.set(entity, value);
 				field.setAccessible(false);
@@ -209,6 +209,19 @@ public class GenericCreator implements SendableEntityCreator {
 			System.out.println(e);
 		}
 		return false;
+	}
+	
+	private boolean isAccess(Field field, Object entity) {
+		try {
+			Method method = field.getClass().getMethod("canAccess", Object.class);
+			if(method != null) {
+//				field.canAccess(entity) == false) {
+				return (boolean) method.invoke(field, entity);
+			}
+		} catch (Exception e) {
+		}		
+		return field.isAccessible();
+		
 	}
 	protected Class<?> getClassForName(String className) {
 		try {
