@@ -216,7 +216,7 @@ public class GenericCreator implements SendableEntityCreator {
 			Method method = field.getClass().getMethod("canAccess", Object.class);
 			if(method != null) {
 //				field.canAccess(entity) == false) {
-				return (boolean) method.invoke(field, entity);
+				return (Boolean) method.invoke(field, entity);
 			}
 		} catch (Exception e) {
 		}		
