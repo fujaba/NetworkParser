@@ -211,6 +211,7 @@ public class GenericCreator implements SendableEntityCreator {
 		return false;
 	}
 	
+	@SuppressWarnings("deprecation")
 	private boolean isAccess(Field field, Object entity) {
 		try {
 			Method method = field.getClass().getMethod("canAccess", Object.class);
