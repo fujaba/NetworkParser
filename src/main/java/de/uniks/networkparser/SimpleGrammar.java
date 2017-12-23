@@ -66,8 +66,16 @@ public class SimpleGrammar implements Grammar {
 	}
 
 	@Override
-	public SendableEntityCreator getCreator(String type, Object item, IdMap map, boolean searchForSuperCreator, String className) {
+	public SendableEntityCreator getCreator(String type, Object item, MapEntity entity, String className) { 
+//			IdMap map, boolean searchForSuperCreator, String className) {
+		if(item == null) {
+			return null;
+		}
 		if(Grammar.WRITE.equals(type)) {
+			if(className == null) {
+				className = item.getClass().getName();
+			}
+			IdMap map =entity.getMap();
 			SendableEntityCreator creator = map.getCreator(className, true, null);
 
 			if(creator != null) {
@@ -76,7 +84,7 @@ public class SimpleGrammar implements Grammar {
 			if (item instanceof SendableEntityCreator) {
 				return (SendableEntityCreator) item;
 			}
-			return getSuperCreator(map, searchForSuperCreator, item); 
+			return getSuperCreator(map, entity.isSearchForSuperClass(), item); 
 		}
 		if(className == null && item instanceof Entity) {
 			Object name = ((Entity)item).getValue(IdMap.CLASS);
@@ -85,12 +93,13 @@ public class SimpleGrammar implements Grammar {
 			}
 			className = (String) name;
 		}
+		IdMap map =entity.getMap();
 		SendableEntityCreator creator = map.getCreator(className, false, null);
 		if(creator != null) {
 			return creator;
 		}
 		Class<?> clazzName = getClassForName(className);
-		return getSuperCreator(map, searchForSuperCreator, clazzName);
+		return getSuperCreator(map, entity.isSearchForSuperClass(), clazzName);
 	}
 
 	public SendableEntityCreator getSuperCreator(IdMap map, boolean searchForSuperCreator, Object modelItem) {

@@ -153,7 +153,7 @@ public class PetaFTest {
 
 		FileBuffer.deleteFile(fsProxy.getFileName());
 		FileBuffer.deleteFile(fsProxy2.getFileName());
-//FIXME		assertEquals(groupAccount.getName(), ga2.getName());
+		Assert.assertEquals(groupAccount.getName(), ga2.getName());
 	}
 	
 	

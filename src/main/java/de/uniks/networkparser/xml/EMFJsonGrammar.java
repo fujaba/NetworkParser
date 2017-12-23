@@ -45,7 +45,7 @@ public class EMFJsonGrammar extends SimpleGrammar {
 		if(item.has(PROP)){
 			String key = item.getString(PROP);
 			String value = item.getString(NV);
-            SendableEntityCreator creator = getCreator(Grammar.READ, null, map.getMap(), false, value);
+            SendableEntityCreator creator = getCreator(Grammar.READ, null, map, value);
 
 			if(creator!=null){
 				props.put(key, new JsonObject().withValue(SRC, value));
@@ -58,14 +58,13 @@ public class EMFJsonGrammar extends SimpleGrammar {
 	}
 
 	@Override
-	public SendableEntityCreator getCreator(String type, Object item, IdMap map, boolean searchForSuperCreator,
-			String className) {
+	public SendableEntityCreator getCreator(String type, Object item, MapEntity entity, String className) {
 		if(Grammar.READ.equals(type) && item instanceof Entity) {
-			SendableEntityCreator result = getCreator(type, null, map, false, ((Entity)item).getString(SRC));
+			SendableEntityCreator result = getCreator(type, null, entity, ((Entity)item).getString(SRC));
 			if(result!=null){
 				return result;
 			}
-			return super.getCreator(type, item, map, searchForSuperCreator, className);
+			return super.getCreator(type, item, entity, className);
 		}
 		if(className == null) {
 			return null;
@@ -81,6 +80,7 @@ public class EMFJsonGrammar extends SimpleGrammar {
 			}
 		}
 		if(clazz != null) {
+			IdMap map = entity.getMap();
 			for (Iterator<SendableEntityCreator> i = map.iterator();i.hasNext();){
 				SendableEntityCreator creator = i.next();
 				Object sendableInstance = creator.getSendableInstance(true);
@@ -90,7 +90,7 @@ public class EMFJsonGrammar extends SimpleGrammar {
 				}
 			}
 		}
-		return super.getCreator(type, item, map, searchForSuperCreator, className);
+		return super.getCreator(type, item, entity, className);
 	}
 
 	@Override

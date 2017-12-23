@@ -1343,7 +1343,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 
 	protected Entity encode(Object entity, String className, MapEntity map, BaseItem parentNode) {
 		Grammar grammar = map.getGrammar();
-		SendableEntityCreator creator = grammar.getCreator(Grammar.WRITE, entity, this, map.isSearchForSuperClass(), className);
+		SendableEntityCreator creator = grammar.getCreator(Grammar.WRITE, entity, map, className);
 		if (creator == null) {
 			return null;
 		}
@@ -1469,7 +1469,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 						}
 						className = value.getClass().getName();
 						String fullProp = prop.toString();
-						SendableEntityCreator valueCreater = grammar.getCreator(Grammar.WRITE, value, this, map.isSearchForSuperClass(), className);
+						SendableEntityCreator valueCreater = grammar.getCreator(Grammar.WRITE, value, map, className);
 
 						Object key = value;
 						if (filter.isId(value, className, this)) {
@@ -1485,7 +1485,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 							}
 							Entity child = tokener.createLink(item, fullProp, className, tokener.getId(value));
 							if (child != null) {
-								SendableEntityCreator childCreater = grammar.getCreator(Grammar.WRITE, child, this, map.isSearchForSuperClass(), child.getClass().getName());
+								SendableEntityCreator childCreater = grammar.getCreator(Grammar.WRITE, child, map, null);
 								filter.convertProperty(entity, fullProp);
 								parseValue(fullProp, child, null, childCreater, map, parent);
 							}
@@ -1495,7 +1495,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 								child = tokener.createLink(item, fullProp, className, tokener.getId(value));
 							}
 							if (child != null) {
-								SendableEntityCreator childCreater = grammar.getCreator(Grammar.WRITE, child, this, map.isSearchForSuperClass(), child.getClass().getName());
+								SendableEntityCreator childCreater = grammar.getCreator(Grammar.WRITE, child, map, null);
 								filter.convertProperty(entity, fullProp);
 								parseValue(fullProp, child, null, childCreater, map, parent);
 							}
@@ -1536,7 +1536,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 			for (Object child : ((Collection<?>) value)) {
 				if (child != null) {
 					String childClassName = child.getClass().getName();
-					SendableEntityCreator childCreater = grammar.getCreator(Grammar.WRITE, child, this, map.isSearchForSuperClass(), childClassName);
+					SendableEntityCreator childCreater = grammar.getCreator(Grammar.WRITE, child, map, childClassName);
 					Object key = child;
 					if (filter.isId(child, className, this)) {
 						key = tokener.getKey(child);
@@ -1574,7 +1574,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 			String packageName = ObjectMapEntry.class.getName();
 			for (Iterator<?> i = list.entrySet().iterator(); i.hasNext();) {
 				Entry<?, ?> mapEntry = (Entry<?, ?>) i.next();
-				SendableEntityCreator childCreater = grammar.getCreator(Grammar.WRITE, mapEntry, this, map.isSearchForSuperClass(), packageName);
+				SendableEntityCreator childCreater = grammar.getCreator(Grammar.WRITE, mapEntry, map, packageName);
 				parseValue(property, mapEntry, packageName, childCreater, map, subValues);
 			}
 			writeValue = subValues;

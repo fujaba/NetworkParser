@@ -268,7 +268,7 @@ public class SQLTokener extends Tokener {
 		map.with(item);
 		String className = item.getClass().getName();
 		Grammar grammar = map.getGrammar();
-		SendableEntityCreator creator = grammar.getCreator(SendableEntityCreator.NEW, item, map.getMap(), map.isSearchForSuperClass(), className);
+		SendableEntityCreator creator = grammar.getCreator(SendableEntityCreator.NEW, item, map, className);
 		if(creator == null) {
 			return item.toString();
 		}

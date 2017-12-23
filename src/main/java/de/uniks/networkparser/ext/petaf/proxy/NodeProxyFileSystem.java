@@ -110,41 +110,51 @@ public class NodeProxyFileSystem extends NodeProxy {
 			IdMap map = space.getMap();
 			if (map != null) {
 				if(this.isFullModell()) {
+					this.space.withInit(false);
 					Object model = map.decode(readBaseFile, root, null);
+					this.space.withInit(true);
 					// Check if NodeProxyModel exists
 					this.space.createModel(model);
-				} else {
-					// Maybe ChangeMessages
-					if(readBaseFile instanceof EntityList){
-						try {
-							EntityList list = (EntityList) readBaseFile;
-							for(int i=0;i<list.sizeChildren();i++) {
-								BaseItem singleMessage = list.getChild(i);
-								Object message = map.decode(singleMessage);
-								if(message instanceof ChangeMessage) {
-									ChangeMessage changeMsg = (ChangeMessage) message;
-									if(map.getObject(changeMsg.getId()) == null) {
-										// Try to Use old Root
-										Object entity = changeMsg.getEntity();
-										if(entity != null) {
-											if(entity instanceof String || entity.getClass().equals(root.getClass())) {
-												map.put(changeMsg.getId(), root, false);
-											} else {
-												map.put(changeMsg.getId(), changeMsg.getEntity(), false);
-											}
+					return readBaseFile;
+				}
+				// Maybe ChangeMessages
+				if(readBaseFile instanceof EntityList){
+					try {
+						EntityList list = (EntityList) readBaseFile;
+						for(int i=0;i<list.sizeChildren();i++) {
+							BaseItem singleMessage = list.getChild(i);
+							Object message = map.decode(singleMessage);
+							if(message instanceof ChangeMessage) {
+								ChangeMessage changeMsg = (ChangeMessage) message;
+								if(map.getObject(changeMsg.getId()) == null) {
+									// Try to Use old Root
+									Object entity = changeMsg.getEntity();
+									if(entity != null) {
+										if(entity instanceof String || entity.getClass().equals(root.getClass())) {
+											map.put(changeMsg.getId(), root, false);
 										} else {
 											map.put(changeMsg.getId(), changeMsg.getEntity(), false);
 										}
+									} else {
+										map.put(changeMsg.getId(), changeMsg.getEntity(), false);
 									}
-									changeMsg.withSpace(this.space);
-									changeMsg.runTask();
 								}
+								changeMsg.withSpace(this.space);
+								changeMsg.runTask();
 							}
-						} catch (Exception e) {
-							e.printStackTrace();
 						}
+					} catch (Exception e) {
+						e.printStackTrace();
 					}
+					return readBaseFile;
 				}
+				// So May be a SingleChange or FullDatamodel and wrong Config
+				this.space.withInit(false);
+				Object model = map.decode(readBaseFile, root, null);
+				this.space.withInit(true);
+				// Check if NodeProxyModel exists
+				this.space.createModel(model);
+				return readBaseFile;
 			}
 		}
 		return readBaseFile;

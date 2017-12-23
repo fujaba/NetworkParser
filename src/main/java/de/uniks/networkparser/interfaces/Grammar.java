@@ -19,12 +19,11 @@ public interface Grammar {
 	/**
  	 * @param type		can be Write or Read
  	 * @param item 		The Object for read or write
-	 * @param map 	   	The IdMap
-	 * @param searchForSuperCreator Is Searching for Creator in superclasses
+	 * @param map 	   	The MapEntity
 	 * @param className 	   The ClassName of Item
 	 * @return the Creator for this Item
 	 */
-	public SendableEntityCreator getCreator(String type, Object item, IdMap map, boolean searchForSuperCreator, String className);
+	public SendableEntityCreator getCreator(String type, Object item, MapEntity  map, String className);
 
 	public String getId(Object obj, IdMap map);
 
