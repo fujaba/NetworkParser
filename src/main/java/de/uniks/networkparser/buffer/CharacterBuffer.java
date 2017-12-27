@@ -697,19 +697,40 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence {
 		return oldChar;
 	}
 
-	public CharacterBuffer addStart(int pos) {
-		this.start += pos;
-		this.length -= pos;
-		return this;
-	}
-
 	public CharacterBuffer trimStart(int pos) {
 		this.start += pos;
 		this.length -= pos;
 		return this;
 	}
+	
+	public CharacterBuffer trimEnd(int pos) {
+		this.length -= pos;
+		return this;
+	}
 
-	public CharacterBuffer rtrim() {
+	public CharacterBuffer rtrim(char... items) {
+		if(items != null) {
+			int z;
+			while (length>0) {
+				if(buffer[length +start - 1] <= SPACE) {
+					length--;
+				}else {
+					boolean found=false;
+					for(z=0;z<items.length;z++) {
+						if(buffer[length +start - 1] == items[z]) {
+							found = true;
+							break;
+						}
+					}
+					if(found) {
+						length--;
+					} else {
+						break;
+					}
+				}
+			}
+			return this;
+		}
 		while (length>0 && (buffer[length +start - 1] <= SPACE)) {
 			length--;
 		}
@@ -1048,5 +1069,25 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence {
 			}
 		}
 		return addValues;
+	}
+	
+	@Override
+	public void printError(String msg) {
+	      int startPos = position;
+	      
+	      if (startPos >=  10) { 
+	         startPos -= 10;
+	      }
+	      else
+	      {
+	         startPos = 0;
+	      }
+	      int endPos = position + 20;
+	      
+	      if (endPos >=  length())
+	      { 
+	         endPos = length();
+	      }
+	      System.err.println(substring(startPos, position) + "<--" + msg + "-->" + substring(position, endPos));
 	}
 }

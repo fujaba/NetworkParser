@@ -93,7 +93,7 @@ public class FileBuffer extends Buffer {
 			if(lookAHead.length() == 1) {
 				lookAHead.clear();
 			}else {
-				lookAHead.addStart(1);
+				lookAHead.trimStart(1);
 			}
 			this.position++;
 			return value;
@@ -138,7 +138,7 @@ public class FileBuffer extends Buffer {
 	public FileBuffer withLookAHead(CharSequence lookahead) {
 		this.lookAHead.set(lookahead);
 		this.currentChar = lookahead.charAt(0);
-		this.lookAHead.addStart(1);
+		this.lookAHead.trimStart(1);
 		this.position -= this.lookAHead.length();
 		return this;
 	}

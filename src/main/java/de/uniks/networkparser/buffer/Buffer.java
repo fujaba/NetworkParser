@@ -26,6 +26,7 @@ THE SOFTWARE.
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.BufferItem;
 import de.uniks.networkparser.list.SimpleList;
+
 /**
  * Interface for Buffer For Tokener to parse some Values
  */
@@ -33,27 +34,29 @@ import de.uniks.networkparser.list.SimpleList;
 public abstract class Buffer implements BufferItem {
 	public final static String STOPCHARSJSON = ",:]}/\\\"[{;=# ";
 	public final static String STOPCHARSXML = ",]}/\\\"[{;=# ";
-	public final static char[] STOPCHARSXMLEND = new char[]{'"', ',', ']', '}', '/', '\\', '"', '[', '{', ';', '=', '#', '>', '\r', '\n', ' '};
+	public final static char[] STOPCHARSXMLEND = new char[] { '"', ',', ']', '}', '/', '\\', '"', '[', '{', ';', '=',
+			'#', '>', '\r', '\n', ' ' };
+	public final static char ENDLINE='\n';
 
 	/** The index. */
 	protected int position;
 
 	public short getShort() {
-		byte[] bytes = array(Short.SIZE /Byte.SIZE, false);
+		byte[] bytes = array(Short.SIZE / Byte.SIZE, false);
 		short result = bytes[0];
 		result = (short) (result << 8 + bytes[1]);
 		return result;
 	}
 
 	public int getInt() {
-		byte[] bytes = array(Integer.SIZE /Byte.SIZE, false);
+		byte[] bytes = array(Integer.SIZE / Byte.SIZE, false);
 		return (int) ((bytes[0] << 24) + (bytes[1] << 16) + (bytes[2] << 8) + bytes[3]);
 	}
 
 	public abstract char getChar();
 
 	public long getLong() {
-		byte[] bytes = array(Long.SIZE /Byte.SIZE, false);
+		byte[] bytes = array(Long.SIZE / Byte.SIZE, false);
 		long result = bytes[0];
 		result = result << 8 + bytes[1];
 		result = result << 8 + bytes[2];
@@ -80,33 +83,33 @@ public abstract class Buffer implements BufferItem {
 	}
 
 	public byte[] array(int len, boolean current) {
-		if(len==-1) {
+		if (len == -1) {
 			len = remaining();
-		}else if(len == -2) {
+		} else if (len == -2) {
 			len = length();
 		}
-		if(len<0) {
+		if (len < 0) {
 			return null;
 		}
 		byte[] result = new byte[len];
-		int start=0;
-		if(current) {
-			if(len>0 && position <0) {
+		int start = 0;
+		if (current) {
+			if (len > 0 && position < 0) {
 				position = 0;
 			}
 			result[0] = (byte) getCurrentChar();
 			start = 1;
 		}
-		for(int i=start; i < len;i++) {
+		for (int i = start; i < len; i++) {
 			result[i] = getByte();
 		}
-//		}
+		// }
 		return result;
 	}
 
 	@Override
 	public byte getByte() {
-		return (byte)getChar();
+		return (byte) getChar();
 	}
 
 	@Override
@@ -116,8 +119,8 @@ public abstract class Buffer implements BufferItem {
 
 	@Override
 	public int remaining() {
-		int remaining =  length() - position();
-		if(remaining>0) {
+		int remaining = length() - position();
+		if (remaining > 0) {
 			return remaining - 1;
 		}
 		return 0;
@@ -135,14 +138,14 @@ public abstract class Buffer implements BufferItem {
 
 	public CharacterBuffer getString(int len) {
 		CharacterBuffer result = new CharacterBuffer();
-		if(len<1) {
+		if (len < 1) {
 			return result;
 		}
 		result.withBufferLength(len);
 		result.with(getCurrentChar());
-		for(int i = 1; i < len; i++) {
+		for (int i = 1; i < len; i++) {
 			result.with(getChar());
-			if(isEnd()) {
+			if (isEnd()) {
 				break;
 			}
 		}
@@ -152,14 +155,14 @@ public abstract class Buffer implements BufferItem {
 	public CharacterBuffer readLine() {
 		CharacterBuffer line = new CharacterBuffer();
 		char character = getCurrentChar();
-		while( character != '\r' &&  character !='\n' && character != 0) {
+		while (character != '\r' && character != '\n' && character != 0) {
 			line.with(character);
 			character = getChar();
 		}
-		if(character == '\r') {
+		if (character == '\r') {
 			character = getChar();
 		}
-		if(character == '\n') {
+		if (character == '\n') {
 			skip();
 		}
 		return line;
@@ -167,7 +170,7 @@ public abstract class Buffer implements BufferItem {
 
 	@Override
 	public char nextClean(boolean currentValid) {
-		if(position< 0) {
+		if (position < 0) {
 			position = 0;
 		}
 		char c = getCurrentChar();
@@ -182,16 +185,21 @@ public abstract class Buffer implements BufferItem {
 
 	@Override
 	public CharacterBuffer nextString(char... quotes) {
-		if(quotes == null) {
-			quotes =new char[]{'"'};
+		if (quotes == null) {
+			quotes = new char[] { '"' };
 		}
 		return nextString(new CharacterBuffer(), false, false, quotes);
 	}
-	
+
 	public CharacterBuffer nextString() {
-		this.skipChar(QUOTES);
-		CharacterBuffer result = nextString(QUOTES);
-		this.skipChar(QUOTES);
+		boolean isQuote = getCurrentChar()==QUOTES;
+		if(isQuote) {
+			this.skipChar(QUOTES);
+			CharacterBuffer result = nextString(QUOTES);
+			this.skipChar(QUOTES);
+			return result;
+		}
+		CharacterBuffer result = nextString(SPACE, ENDLINE);
 		return result;
 	}
 
@@ -201,8 +209,8 @@ public abstract class Buffer implements BufferItem {
 			return sc;
 		}
 		char c = getCurrentChar();
-		int i=0;
-		for(i=0;i<quotes.length;i++) {
+		int i = 0;
+		for (i = 0; i < quotes.length; i++) {
 			if (c == quotes[i]) {
 				break;
 			}
@@ -219,17 +227,17 @@ public abstract class Buffer implements BufferItem {
 
 	protected CharacterBuffer parseString(CharacterBuffer sc, boolean allowQuote, boolean nextStep, char... quotes) {
 		sc.with(getCurrentChar());
-		if(quotes== null) {
+		if (quotes == null) {
 			return sc;
 		}
 		char c, b = 0;
 		int i;
 		boolean isQuote = false;
 
-		int quoteLen=quotes.length;
+		int quoteLen = quotes.length;
 		do {
 			c = getChar();
-			i=quoteLen;
+			i = quoteLen;
 			switch (c) {
 			case 0:
 				return sc;
@@ -250,7 +258,7 @@ public abstract class Buffer implements BufferItem {
 					}
 					isQuote = true;
 				}
-				for(i=0;i<quoteLen;i++) {
+				for (i = 0; i < quoteLen; i++) {
 					if (c == quotes[i]) {
 						break;
 					}
@@ -261,7 +269,7 @@ public abstract class Buffer implements BufferItem {
 				b = c;
 			}
 			if (i < quoteLen) {
-				c=0;
+				c = 0;
 			}
 		} while (c != 0);
 		if (nextStep) {
@@ -275,19 +283,19 @@ public abstract class Buffer implements BufferItem {
 
 	protected CharacterBuffer nextValue(char c, boolean allowDuppleMark) {
 		CharacterBuffer sb = new CharacterBuffer();
-		if(allowDuppleMark) {
+		if (allowDuppleMark) {
 			while (c >= ' ' && STOPCHARSXML.indexOf(c) < 0) {
 				sb.with(c);
 				c = getChar();
-				if(c == 0) {
+				if (c == 0) {
 					break;
 				}
 			}
-		}else {
+		} else {
 			while (c >= ' ' && STOPCHARSJSON.indexOf(c) < 0) {
 				sb.with(c);
 				c = getChar();
-				if(c == 0) {
+				if (c == 0) {
 					break;
 				}
 			}
@@ -314,17 +322,16 @@ public abstract class Buffer implements BufferItem {
 			return null;
 		}
 		/*
-		 * If it might be a number, try converting it. If a number cannot be
-		 * produced, then the value will just be a string. Note that the plus
-		 * and implied string conventions are non-standard. A JSON parser may
-		 * accept non-JSON forms as long as it accepts all correct JSON forms.
+		 * If it might be a number, try converting it. If a number cannot be produced,
+		 * then the value will just be a string. Note that the plus and implied string
+		 * conventions are non-standard. A JSON parser may accept non-JSON forms as long
+		 * as it accepts all correct JSON forms.
 		 */
 		Double d;
 		char b = value.charAt(0);
 		if ((b >= '0' && b <= '9') || b == '.' || b == '-' || b == '+') {
 			try {
-				if (value.indexOf('.') > -1 || value.indexOf('e') > -1
-						|| value.indexOf('E') > -1) {
+				if (value.indexOf('.') > -1 || value.indexOf('e') > -1 || value.indexOf('E') > -1) {
 					d = Double.valueOf(value.toString());
 					if (!d.isInfinite() && !d.isNaN()) {
 						return d;
@@ -352,12 +359,11 @@ public abstract class Buffer implements BufferItem {
 		}
 		while (this.position() < len) {
 			char currentChar = getCurrentChar();
-			if (currentChar == search
-					&& (!notEscape || lastChar != '\\')) {
+			if (currentChar == search && (!notEscape || lastChar != '\\')) {
 				return true;
 			}
 			lastChar = currentChar;
-			if(skip() == false) {
+			if (skip() == false) {
 				break;
 			}
 		}
@@ -387,8 +393,7 @@ public abstract class Buffer implements BufferItem {
 				}
 			} else {
 				for (char zeichen : character) {
-					if (currentChar == zeichen
-							&& (!notEscape || lastChar != '\\')) {
+					if (currentChar == zeichen && (!notEscape || lastChar != '\\')) {
 						return true;
 					}
 				}
@@ -409,6 +414,7 @@ public abstract class Buffer implements BufferItem {
 		}
 		return true;
 	}
+
 	@Override
 	public boolean skip() {
 		return getChar() != 0;
@@ -419,8 +425,8 @@ public abstract class Buffer implements BufferItem {
 		nextClean(current);
 		CharacterBuffer characterBuffer = new CharacterBuffer();
 		char c = getCurrentChar();
-		for(int i=0;i<stopWords.length;i++) {
-			if(stopWords[i] == c) {
+		for (int i = 0; i < stopWords.length; i++) {
+			if (stopWords[i] == c) {
 				return characterBuffer;
 			}
 		}
@@ -438,6 +444,7 @@ public abstract class Buffer implements BufferItem {
 		}
 		return false;
 	}
+
 	@Override
 	public SimpleList<String> getStringList() {
 		SimpleList<String> list = new SimpleList<String>();
@@ -446,7 +453,7 @@ public abstract class Buffer implements BufferItem {
 			sc.clear();
 			nextString(sc, true, true, '"');
 			if (sc.length() > 0) {
-				if (sc.indexOf('\"')>=0) {
+				if (sc.indexOf('\"') >= 0) {
 					list.add("\"" + sc + "\"");
 				} else {
 					list.add(sc.toString());
@@ -473,23 +480,27 @@ public abstract class Buffer implements BufferItem {
 	@Override
 	public char skipChar(char... quotes) {
 		char c = getCurrentChar();
-		if(quotes == null) {
+		if (quotes == null) {
 			return c;
 		}
 		boolean found;
 		do {
-			found=false;
-			for(int i=0;i<quotes.length;i++) {
-				if(quotes[i] == c) {
+			found = false;
+			for (int i = 0; i < quotes.length; i++) {
+				if (quotes[i] == c) {
 					found = true;
 					break;
 				}
 			}
 			c = getChar();
-			if(found) {
+			if (found) {
 				break;
 			}
-		} while(c!=0);
+		} while (c != 0);
 		return c;
+	}
+
+	public void printError(String msg) {
+		System.err.println(msg);
 	}
 }

@@ -15,6 +15,7 @@ public class UniversityCreator implements SendableEntityCreator, SendableEntityC
 		jsonIdMap.with(new UniversityCreator());
 		jsonIdMap.with(new RoomCreator());
 		jsonIdMap.with(new StudentCreator());
+		jsonIdMap.with(new ProfCreator());
 
 		return jsonIdMap;
 	}

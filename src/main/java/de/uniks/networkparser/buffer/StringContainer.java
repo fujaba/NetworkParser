@@ -168,7 +168,7 @@ public class StringContainer implements CharSequence {
 	 */
 	public CharSequence split(int start) {
 		if(value instanceof CharacterBuffer) {
-			((CharacterBuffer)value).addStart(start);
+			((CharacterBuffer)value).trimStart(start);
 		}else {
 			value = new CharacterBuffer().with(value, start, value.length());
 		}
