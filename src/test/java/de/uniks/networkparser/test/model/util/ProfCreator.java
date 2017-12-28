@@ -3,7 +3,6 @@ package de.uniks.networkparser.test.model.util;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.test.model.Prof;
-import de.uniks.networkparser.test.model.Student;
 
 public class ProfCreator implements SendableEntityCreator {
 

@@ -4,11 +4,9 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import de.uniks.networkparser.IdMap;
-import de.uniks.networkparser.test.model.University;
 import de.uniks.networkparser.test.model.util.UniversityCreator;
 import de.uniks.networkparser.yaml.YAMLTokener;
 import de.uniks.networkparser.yaml.YamlEntity;
-import de.uniks.networkparser.yaml.YamlIdMap;
 
 public class YAMLTest {
 
