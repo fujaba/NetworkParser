@@ -11,6 +11,7 @@ import de.uniks.networkparser.list.SimpleList;
 public class YAMLTokener extends Tokener {
 	public final static char DASH = '-';
 	public final static String STOPCHARS = "=# ";
+	public static final char RETURN='\n';
 	private SimpleKeyValueList<Object, SimpleKeyValueList<String, SimpleList<String>>> refs;
 	@Override
 	public void parseToEntity(EntityList entity) {
@@ -104,90 +105,110 @@ public class YAMLTokener extends Tokener {
 				continue;
 			}
 			buffer.skipChar(DASH);
-			buffer.nextClean(true);
 			CharacterBuffer key = buffer.nextString();
 			if (key.endsWith(":", true)) {
 				// usual
-				parseUsualObjectAttrs(key);
+				Object returnValue = parseUsualObjectAttrs(key);
+				if(root == null) {
+					root = returnValue; 
+				}
 				continue;
-			} else {
-				parseObjectTableAttrs(key);
-				continue;
+			}
+			parseObjectTableAttrs(key);
+		}
+		
+		// CHECK IF REF NOT EMPTY
+		if(refs.size()>0) {
+			for(int o=0;o<refs.size();o++) {
+				Object entity = refs.getKeyByIndex(o);
+				SendableEntityCreator creator = map.getCreatorClass(entity);
+				SimpleKeyValueList<String, SimpleList<String>> entityRefs = refs.getValueByIndex(o);
+				for(int r=0;r<entityRefs.size();r++) {
+					String attribute = entityRefs.getKeyByIndex(r);
+					SimpleList<String> valueRefs = entityRefs.getValueByIndex(r);
+					for(String ref : valueRefs) {
+						Object value = map.getObject(ref);
+						if(value != null) {
+							creator.setValue(entity, attribute, value, SendableEntityCreator.NEW);
+						}
+					}
+				}
 			}
 		}
 		return root;
 	}
 
 
-	   private void parseObjectTableAttrs(CharacterBuffer key)
+	   private void parseObjectTableAttrs(CharacterBuffer currentToken)
 	   {
-//	      // skip column names
-//	      String className = currentToken;
-//	      
-//	      SendableEntityCreator creator = getCreator(className);
-//	      nextToken();
-//	      
-//	      ArrayList<String> colNameList = new ArrayList<String>();
-//
-//	      while ( ! "".equals(currentToken) && lookAheadToken.endsWith(":"))
-//	      {
-//	         String colName = stripColon(currentToken);
-//	         colNameList.add(colName);
-//	         nextToken();
-//	      }
-//	      
-//	      while ( ! "".equals(currentToken) && ! "-".equals(currentToken))
-//	      {
-//	         String objectId = stripColon(currentToken);
-//	         nextToken();
-//
-//	         Object obj = objIdMap.get(objectId);
-//	         
-//	         // column values
-//	         int colNum = 0;
-//	         while ( ! "".equals(currentToken) && ! currentToken.endsWith(":") && ! "-".equals(currentToken))
-//	         {
-//	            String attrName = colNameList.get(colNum);
-//	            
-//	            if (currentToken.startsWith("["))
-//	            {
-//	               String value = currentToken.substring(1);
-//	               if (value.trim().equals(""))
-//	               {
-//	                  value = nextToken();
-//	               }
-//	               setValue(creator, obj, attrName, value);
-//	               
-//	               while (! "".equals(currentToken) && ! currentToken.endsWith("]") )
-//	               {
-//	                  nextToken();
-//	                  value = currentToken;
-//	                  if (currentToken.endsWith("]"))
-//	                  {
-//	                     value = currentToken.substring(0, currentToken.length()-1);
-//	                  }
-//	                  if ( ! value.trim().equals(""))
-//	                  {
-//	                     setValue(creator, obj, attrName, value);
-//	                  }
-//	               }
-//	            }
-//	            else
-//	            {
-//	               setValue(creator, obj, attrName, currentToken);
-//	            }
-//	            colNum++;
-//	            nextToken();
-//	         }
-//	      }
-	   }
+		// skip column names
+		String className = currentToken.toString();
 
-	private void parseUsualObjectAttrs(CharacterBuffer key) {
-		String objectId = key.trimEnd(1).toString();
-		buffer.nextClean(true);
+		SendableEntityCreator creator = map.getCreator(className, false);
+		currentToken = buffer.nextString();
+
+		SimpleList<String> colNameList = new SimpleList<String>();
+
+		while (currentToken.length() > 0 && currentToken.endsWith(":", true)) {
+			colNameList.add(currentToken.rtrim(COLON).toString());
+			buffer.skipChar(SPACE);
+			if(buffer.getCurrentChar()==RETURN) {
+				currentToken = buffer.nextString();
+				break;
+			}
+			currentToken = buffer.nextString();
+		}
+
+		while (currentToken.length() > 0 && currentToken.equals("-") == false) {
+			String objectId = currentToken.rtrim(COLON).toString();
+			currentToken = buffer.nextString();
+
+			Object obj = map.getObject(objectId);
+			if(obj == null) {
+				obj = creator.getSendableInstance(false);
+				map.put(objectId, obj, false);
+			}
+
+			// column values
+			int colNum = 0;
+			while (currentToken.length() > 0 && !currentToken.endsWith(":", true) && currentToken.equals("-") == false) {
+				String attrName = colNameList.get(colNum);
+
+				if (currentToken.startsWith("[")) {
+					String value = currentToken.substring(1);
+					if (value.trim().equals("")) {
+						value = buffer.nextString().toString();
+					}
+					setValue(creator, obj, attrName, value);
+
+					while (currentToken.length() > 0 && !currentToken.endsWith("]", true)) {
+						currentToken = buffer.nextString();
+						value = currentToken.toString();
+						if (currentToken.endsWith("]", true)) {
+							value = currentToken.substring(0, currentToken.length() - 1);
+						}
+						if (!value.trim().equals("")) {
+							setValue(creator, obj, attrName, value);
+						}
+					}
+				} else {
+					setValue(creator, obj, attrName, currentToken.toString());
+				}
+				colNum++;
+				currentToken = buffer.nextString();
+			}
+			if (currentToken.equals("-")) {
+				buffer.withLookAHead(DASH);
+				System.out.println(currentToken);
+				// currentToken = buffer.nextString();
+			}
+		}
+	}
+
+	private Object parseUsualObjectAttrs(CharacterBuffer currentToken) {
+		String objectId = currentToken.trimEnd(1).toString();
 		String className = buffer.nextString().rtrim().toString();
-		buffer.nextClean(true);
-		CharacterBuffer currentToken = buffer.nextString();
+		currentToken = buffer.nextString();
 
 		SendableEntityCreator creator = map.getCreator(className, false);
 
@@ -200,19 +221,18 @@ public class YAMLTokener extends Tokener {
 		// read attributes
 		while (!currentToken.equals("") && !currentToken.equals("-")) {
 			String attrName = currentToken.rtrim(':').toString();
-			buffer.nextClean(true);
 			currentToken = buffer.nextString();
 			// many values
 			while (!currentToken.equals("") && !currentToken.endsWith(":", true) && !currentToken.equals("-")) {
 				String attrValue = currentToken.toString();
 				setValue(creator, obj, attrName, attrValue);
-				buffer.nextClean(true);
 				currentToken = buffer.nextString();
 			}
 			if(currentToken.equals("-")) {
 				buffer.withLookAHead('-');
 			}
 		}
+		return obj;
 	}
 	
 	private boolean setValue(SendableEntityCreator creator, Object obj, String attrName, String attrValue)  {

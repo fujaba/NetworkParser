@@ -192,6 +192,7 @@ public abstract class Buffer implements BufferItem {
 	}
 
 	public CharacterBuffer nextString() {
+		nextClean(true);
 		boolean isQuote = getCurrentChar()==QUOTES;
 		if(isQuote) {
 			this.skipChar(QUOTES);
@@ -199,6 +200,7 @@ public abstract class Buffer implements BufferItem {
 			this.skipChar(QUOTES);
 			return result;
 		}
+		nextClean(true);
 		CharacterBuffer result = nextString(SPACE, ENDLINE);
 		return result;
 	}

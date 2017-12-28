@@ -12,7 +12,6 @@ import java.beans.PropertyChangeSupport;
 
 import de.uniks.networkparser.interfaces.SendableEntity;
 import de.uniks.networkparser.list.SimpleSet;
-import de.uniks.networkparser.test.model.util.UniversityCreator;
 
 // should become a JSON Parser
 // should become a JSON Parser
@@ -139,82 +138,6 @@ public class Student extends Person implements SendableEntity{
 			listeners.removePropertyChangeListener(property, listener);
 		}
 		return true;
-	}
-
-	public boolean set(String attrName, Object value) {
-		if (PROPERTY_NAME.equalsIgnoreCase(attrName)) {
-			setName((String) value);
-			return true;
-		}
-		if (PROPERTY_STUD_NO.equalsIgnoreCase(attrName)) {
-			setStudNo((String) value);
-			return true;
-		}
-		if (PROPERTY_UNIVERSITY.equalsIgnoreCase(attrName)) {
-			setUniversity((University) value);
-			return true;
-		}
-		if (PROPERTY_IN.equalsIgnoreCase(attrName)) {
-			setIn((Room) value);
-			return true;
-		}
-		if (PROPERTY_FIRSTNAME.equalsIgnoreCase(attrName)) {
-			setFirstName((String) value);
-			return true;
-		}
-		if (PROPERTY_LASTNAME.equalsIgnoreCase(attrName)) {
-			setLastName((String) value);
-			return true;
-		}
-		if (PROPERTY_CREDITS.equalsIgnoreCase(attrName)) {
-			setCredits((int) value);
-			return true;
-		}
-		if (PROPERTY_ITEM.equalsIgnoreCase(attrName)) {
-			withItem((Item) value);
-			return true;
-		}
-		return false;
-	}
-
-	public Object get(String attrName) {
-		int pos = attrName.indexOf(".");
-		String attribute = attrName;
-
-		if (pos > 0) {
-			attribute = attrName.substring(0, pos);
-		}
-		if (PROPERTY_NAME.equalsIgnoreCase(attribute)) {
-			return getName();
-		}
-		if (PROPERTY_STUD_NO.equalsIgnoreCase(attribute)) {
-			return getStudNo();
-		}
-		if (PROPERTY_UNIVERSITY.equalsIgnoreCase(attribute)) {
-			if (pos > 0) {
-				return new UniversityCreator().getValue(getUniversity(), attrName.substring(pos + 1));
-			}
-			return getUniversity();
-		}
-		if (PROPERTY_IN.equalsIgnoreCase(attribute)) {
-			if (pos > 0) {
-				return getIn().get(attrName.substring(pos + 1));
-			}
-			return getIn();
-		}
-		if (PROPERTY_FIRSTNAME.equalsIgnoreCase(attribute)) {
-			return getFirstName();
-		}
-		if (PROPERTY_LASTNAME.equalsIgnoreCase(attribute)) {
-			return getLastName();
-		}
-		if (PROPERTY_CREDITS.equalsIgnoreCase(attribute)) {
-			return getCredits();
-		}
-		if (PROPERTY_ITEM.equalsIgnoreCase(attribute)) {
-			return getItem();
-		}
-		return null;
 	}
 
 	public Student withName(String newValue) {

@@ -38,6 +38,7 @@ public class Tokener implements BufferItem {
 	public static final String PROPS = "prop";
 	public static final char ENTER='=';
 	public static final char COLON=':';
+
 	protected IdMap map;
 
 	/** BUFFER */

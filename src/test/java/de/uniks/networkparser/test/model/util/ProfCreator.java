@@ -29,16 +29,16 @@ public class ProfCreator implements SendableEntityCreator {
 
 	@Override
 	public Object getSendableInstance(boolean reference) {
-		return new Student();
+		return new Prof();
 	}
 
 	@Override
 	public Object getValue(Object entity, String attribute) {
-		return ((Student) entity).get(attribute);
+		return ((Prof) entity).get(attribute);
 	}
 
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value, String typ) {
-		return ((Student) entity).set(attribute, value);
+		return ((Prof) entity).set(attribute, value);
 	}
 }
