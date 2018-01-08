@@ -29,6 +29,9 @@ public class ModelHistory {
 	public ModelChange getLastModelChange() {
 		return history.last();
 	}
+	
+	// {"session":"42","class":"ChangeMessage","id":"da39a3ee5e6b4b0d3255bfef95601890afd80709","received":[...],"prevChange":"da39a3ee5e6b4b0d3255bfef95601890afd80709",
+	//      "changeid":"S810276874033685","property":"name","new":"Alex","changeclass":"de.uniks.networkparser.test.model.Student"}
 
 	public boolean refactoringHistory() {
 //		int lowestId = 0;
