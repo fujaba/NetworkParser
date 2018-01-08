@@ -86,7 +86,7 @@ task buildMinCoreJar(type: Jar) {
 }
 task buildSourceJar18(type: Jar, dependsOn: buildCoreJar19) {
 	description 'Build Jar with class-Files and Source-Files for 1.8'
-	group "Jar"; from {(build/classes/main18 + sourceSets.main.allJava)}; classifier = 'sources18'
+	group "Jar"; from {('build/classes/main18' + sourceSets.main.allJava)}; classifier = 'sources18'
 	exclude '**/test/**'
 	manifest = project.manifest {from sharedManifest}
 }
