@@ -70,7 +70,7 @@ buildscript {
 //}
 
 artifacts { 
-	archives buildCoreJar16, buildCoreJar17, buildCoreJar18, buildCoreJar19, buildSourceJar, buildMinCoreJar, buildJavadoc
+	archives buildCoreJar16, buildCoreJar17, buildCoreJar18, buildCoreJar19, buildSourceJar, buildSourceJar18, buildMinCoreJar, buildJavadoc
 }
 
 test {

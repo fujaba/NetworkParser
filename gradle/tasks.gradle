@@ -68,7 +68,7 @@ task buildCoreJar17(type: Jar, dependsOn: buildCoreJar16) {
 }
 task buildCoreJar18(type: Jar, dependsOn: buildCoreJar17) {
 	description 'Build Jar with NetworkParser-Core without dependency of JavaFX and Reflection'
-	group "Jar";from sourceSets.main.output; classifier = 'core18';
+	group "Jar"; from fileTree(dir: 'build/classes/main18'); classifier = 'core18';
 	excludes = ['**/test/**']
 	manifest = project.manifest {from sharedManifest}
 }
@@ -84,7 +84,13 @@ task buildMinCoreJar(type: Jar) {
 	excludes = ['**/ext/**', '**/calculator/**', '**/parser/**', '**/logic/**', '**/**.css', '**/**.js', '**/gui/**','**/test/**']
 	manifest = project.manifest {from sharedManifest}
 }
-task buildSourceJar(type: Jar, dependsOn: buildCoreJar19) {
+task buildSourceJar18(type: Jar, dependsOn: buildCoreJar19) {
+	description 'Build Jar with class-Files and Source-Files for 1.8'
+	group "Jar"; from {(build/classes/main18 + sourceSets.main.allJava)}; classifier = 'sources18'
+	exclude '**/test/**'
+	manifest = project.manifest {from sharedManifest}
+}
+task buildSourceJar(type: Jar, dependsOn: buildSourceJar18) {
 	description 'Build Jar with class-Files and Source-Files'
 	group "Jar"; from {(sourceSets.main.output + sourceSets.main.allJava)}; classifier = 'sources'
 	exclude '**/test/**'
