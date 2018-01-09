@@ -9,6 +9,7 @@ import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.list.SimpleKeyValueList;
+import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SimpleSet;
 import de.uniks.networkparser.list.SortedSet;
 import de.uniks.networkparser.logic.SimpleObjectFilter;
@@ -34,37 +35,24 @@ public class ModelHistory {
 	//      "changeid":"S810276874033685","property":"name","new":"Alex","changeclass":"de.uniks.networkparser.test.model.Student"}
 
 	public boolean refactoringHistory() {
-//		int lowestId = 0;
 		SortedSet<NodeProxy> nodes = getSpace().getNodeProxies();
-		SimpleKeyValueList<String, Integer> keys = new SimpleKeyValueList<String, Integer>();
-		for(ModelChange change : history) {
-			keys.add(change.getKey(), 0);
-			if(change.getChange() instanceof JsonObject == false) { 
-				return false;
-			}
-		}
+		SimpleList<String> keys = new SimpleList<String>();
 		for (NodeProxy proxy : nodes) {
-//			if (!proxy.isOnline()) {
-//				return false;
-//			}
 			String key = proxy.getHistory();
-			int pos = keys.indexOf(key);
-			if(pos >= 0) {
-				keys.setValue(pos, keys.get(key) + 1);
-			}
+			keys.add(key);
 		}
 		// Now refacotring
 //		int refactoring
 		//TODO REFACOTRING
-		for(ModelChange change : history) {
-			int start=0;
-			int pos = 0;
-			while(keys.getValueByIndex(pos) == 0) {
-				BaseItem change2 = change.getChange();
-			}
-//			change.
-//			keys.add(change.getKey(), 0);
-		}
+//		for(ModelChange change : history) {
+//			int start=0;
+//			int pos = 0;
+//			while(keys.getValueByIndex(pos) == 0) {
+//				BaseItem change2 = change.getChange();
+//			}
+////			change.
+////			keys.add(change.getKey(), 0);
+//		}
 		return true;
 	}
 

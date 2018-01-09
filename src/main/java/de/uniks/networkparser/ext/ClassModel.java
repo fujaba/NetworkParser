@@ -29,6 +29,11 @@ public class ClassModel extends GraphModel {
 		this();
 		with(packageName);
 	}
+	
+	public ClassModel withFeature(FeatureProperty feature) {
+		this.generator.withFeature(feature);
+		return this;
+	}
 
 	public ClassModel withoutFeature(Feature feature) {
 		this.generator.withoutFeature(feature);

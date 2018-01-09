@@ -5,6 +5,7 @@ import java.util.Iterator;
 import de.uniks.networkparser.TextItems;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.ext.io.FileBuffer;
+import de.uniks.networkparser.graph.Attribute;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.Feature;
 import de.uniks.networkparser.graph.FeatureProperty;
@@ -249,6 +250,11 @@ public class ModelGenerator extends BasicGenerator {
 		this.features.without(feature);
 		return this;
 	}
+	
+	public ModelGenerator withFeature(FeatureProperty feature) {
+		this.features.with(feature);
+		return this;
+	}
 
 	public ModelGenerator withDefaultModel(GraphModel model) {
 		this.defaultModel = model;
@@ -320,4 +326,23 @@ public class ModelGenerator extends BasicGenerator {
 		Clazz clazz = ParserEntity.create(content);
 		return clazz;
 	}
+	
+	public static Clazz findClazz(String name) {
+//		ModelGenerator modelGenerator = new ModelGenerator().withDefaultModel(new ClassModel());
+		return null;
+	}
+
+	public static Attribute findAttribute(Clazz clazz, String name) {
+		// Update from Code and find the Clazz from Model
+		return null;
+	}
+	
+	public static Attribute findMethod(Clazz clazz, String name) {
+		return null;
+	}
+	
+	public static Clazz createClazz(String name) {
+		return null;
+	}
+
 }

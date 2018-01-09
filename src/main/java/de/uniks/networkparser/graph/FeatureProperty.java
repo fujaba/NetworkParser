@@ -15,7 +15,7 @@ public class FeatureProperty implements Comparable<FeatureProperty> {
 	private String value;
 	private Feature name;
 
-	FeatureProperty(Feature name) {
+	protected FeatureProperty(Feature name) {
 		this.name = name;
 		includeClazz.add(ALL);
 	}
