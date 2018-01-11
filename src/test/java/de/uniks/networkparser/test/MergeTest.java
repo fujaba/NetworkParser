@@ -5,10 +5,9 @@ import org.junit.Test;
 import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.ext.ClassModel;
 import de.uniks.networkparser.ext.MergeFeature;
-import de.uniks.networkparser.ext.ModelGenerator;
-import de.uniks.networkparser.graph.Attribute;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.DataType;
+//import de.uniks.networkparser.graph.DataType;
 import de.uniks.networkparser.interfaces.SimpleEventCondition;
 
 public class MergeTest {
@@ -39,15 +38,34 @@ public class MergeTest {
 		// private String name;
 	//}
 	
+	@Test
+	public void testMergeDiffV1() {
+		// V1
+		ClassModel model=new ClassModel();
 
-	public void genDiff() {
-//		Clazz person = ModelGenerator.createClazz("de.uniks.model.Person");
+//		<!--		
+		//V2
+		//model.withFeature() // OVERRIDE EVERYTHING
+		model.getGenerator().findClazz("de.uniks.model.Person").createAttribute("first", DataType.STRING);
+//	    -->	
+		//GENERATE
+		model.generate();
+	}
+	
+	@Test
+	public void testMergeDiffV2() {
+		de.uniks.networkparser.ext.ModelGenerator generator = new ClassModel().getGenerator("src/test/java");
+		generator.findClazz("de.uniks.model.Person").createAttribute("first", de.uniks.networkparser.graph.DataType.STRING);
 		
-		
-		Clazz person = ModelGenerator.findClazz("de.uniks.model.Person");
-		person.withAttribute("name", DataType.STRING);
-		
-		Attribute name = ModelGenerator.findAttribute(person, "name");
-		
+		generator.applyChange();
+	}
+	
+	@Test
+	public void testMergeDiffV3() {
+		// NEW ONE
+		ClassModel model = new ClassModel(); //.withFeature(feature);
+		model.createClazz("de.uniks.model.Person").createAttribute("first", de.uniks.networkparser.graph.DataType.STRING);
+//		model.createClazz("de.uniks.model.Person").remove()
+		model.generate("src/test/java");
 	}
 }

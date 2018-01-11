@@ -27,7 +27,6 @@ public class Message implements SendableEntityCreator, SendableEntityCreatorNoIn
 			PROPERTY_MSG,
 			PROPERTY_RECEIVED,
 			PROPERTY_PREVIOUSCHANGE
-			
 	);
 	protected String historyId;
 	protected Object received;

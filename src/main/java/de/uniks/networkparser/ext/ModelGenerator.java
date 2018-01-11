@@ -11,6 +11,7 @@ import de.uniks.networkparser.graph.Feature;
 import de.uniks.networkparser.graph.FeatureProperty;
 import de.uniks.networkparser.graph.GraphMember;
 import de.uniks.networkparser.graph.GraphModel;
+import de.uniks.networkparser.graph.Method;
 import de.uniks.networkparser.graph.util.ClazzSet;
 import de.uniks.networkparser.graph.util.FeatureSet;
 import de.uniks.networkparser.interfaces.ParserCondition;
@@ -45,6 +46,7 @@ public class ModelGenerator extends BasicGenerator {
 	private GraphModel defaultModel;
 	public SimpleKeyValueList<String, ParserCondition> customTemplate;
 	private boolean useSDMLibParser = true;
+	private String defaultRootDir;
 
 	private SimpleList<BasicGenerator> javaGeneratorTemplates = new SimpleList<BasicGenerator>().with(new JavaClazz(), new JavaSet(), new JavaCreator());
 	private SimpleList<BasicGenerator> typeScriptTemplates = new SimpleList<BasicGenerator>().with(new TypescriptClazz());
@@ -126,19 +128,26 @@ public class ModelGenerator extends BasicGenerator {
 		return null;
 	}
 	
+	private String getFileName(String path, String file) {
+		if (path == null) {
+			path = "";
+		} else if (path.endsWith("/") == false) {
+			path = path + "/";
+		}
+		path += file.replaceAll("\\.", "/") + "/";
+		return path;
+
+	}
+	
 	public SendableEntityCreator generating(String rootDir, GraphModel model, TextItems parameters,
 			SimpleList<BasicGenerator> templates, boolean writeFiles, boolean enableParser) {
-		if (rootDir == null) {
-			rootDir = "";
-		} else if (rootDir.endsWith("/") == false) {
-			rootDir = rootDir + "/";
-		}
+		
 		model.fixClassModel();
 		String name = model.getName();
 		if (name == null) {
 			name = "i.love.sdmlib";
 		}
-		rootDir += name.replaceAll("\\.", "/") + "/";
+		rootDir = getFileName(rootDir, name);
 
 		TemplateResultModel resultModel = getResultModel();
 		if (parameters == null) {
@@ -327,22 +336,44 @@ public class ModelGenerator extends BasicGenerator {
 		return clazz;
 	}
 	
-	public static Clazz findClazz(String name) {
-//		ModelGenerator modelGenerator = new ModelGenerator().withDefaultModel(new ClassModel());
-		return null;
+	
+	public ModelGenerator withRootDir(String rootDir) {
+		this.defaultRootDir = rootDir;
+		return this;
+	}
+	
+	public String getRootDir() {
+		return defaultRootDir;
+	}
+	
+	public Clazz findClazz(String name) {
+		Clazz clazz = (Clazz) this.defaultModel.getChildByName(name, Clazz.class);
+		if(clazz != null) {
+			return clazz;
+		}
+		
+		if(this.defaultRootDir == null) {
+			return null;
+		}
+		
+		CharacterBuffer buffer = FileBuffer.readFile(getFileName(this.defaultRootDir, name));
+		return parseSourceCode(buffer);
 	}
 
-	public static Attribute findAttribute(Clazz clazz, String name) {
+	public Attribute findAttribute(Clazz clazz, String name) {
 		// Update from Code and find the Clazz from Model
 		return null;
 	}
 	
-	public static Attribute findMethod(Clazz clazz, String name) {
+	public Method findMethod(Clazz clazz, String name) {
 		return null;
 	}
 	
-	public static Clazz createClazz(String name) {
+	public Clazz createClazz(String name) {
 		return null;
 	}
 
+	public void applyChange() {
+		this.generate(defaultRootDir, this.defaultModel);
+	}
 }

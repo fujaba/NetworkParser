@@ -4,8 +4,10 @@ import java.util.Collection;
 
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
+import de.uniks.networkparser.ext.petaf.messages.ChangeMessage;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Entity;
+import de.uniks.networkparser.interfaces.EntityList;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.list.SimpleKeyValueList;
@@ -17,6 +19,7 @@ import de.uniks.networkparser.logic.SimpleObjectFilter;
 public class ModelHistory {
 	public static final String PROPERTY_HISTORY = "history";
 	public static final String PROPERTY_LASTMODELCHANGE = "lastmodelchange";
+	public static final String PROPERTY_CHANGES = "changes";
 
 	private SimpleSet<ModelChange> history = new SimpleSet<ModelChange>();
 
@@ -42,20 +45,123 @@ public class ModelHistory {
 			keys.add(key);
 		}
 		// Now refacotring
-//		int refactoring
-		//TODO REFACOTRING
-//		for(ModelChange change : history) {
-//			int start=0;
-//			int pos = 0;
-//			while(keys.getValueByIndex(pos) == 0) {
-//				BaseItem change2 = change.getChange();
-//			}
-////			change.
-////			keys.add(change.getKey(), 0);
-//		}
+		SimpleKeyValueList<String, ModelChange> changes=new SimpleKeyValueList<String, ModelChange>();
+		SimpleKeyValueList<String, String> deletedChanges=new SimpleKeyValueList<String, String>();
+		String value;
+		int pos, i;
+		for(i=0;i<history.size();i++) {
+			ModelChange change = history.get(i);
+
+			BaseItem changeMsg = change.getChange();
+			if(changeMsg instanceof Entity == false) {
+				break;
+			}
+			Entity changeEntity = (Entity) changeMsg;
+			setNewPrevId(changeEntity, deletedChanges);
+			
+            value = change.getKey();
+            if(keys.contains(value)) {
+            	// Some Node know only this change
+            	break;
+            }
+			
+			value = changeEntity.getString(ChangeMessage.PROPERTY_ID);
+			if("ChangeMessage".equals(changeEntity.getString(IdMap.CLASS)) == false) {
+				// May be another Message ignore it
+				continue;
+			}
+			
+			pos = changes.indexOf(value);
+            if(pos < 0) {
+            	// First changes
+            	changes.put(value, change);
+            	continue;
+            }
+                        
+            EntityList changeChanges;
+            Entity changeListEntity = (Entity) changes.getValueByIndex(pos).getChange();
+
+            if(changeListEntity.has(PROPERTY_CHANGES)) {
+            	changeChanges = (EntityList) changeListEntity.getValue(PROPERTY_CHANGES);
+            } else {
+            	// Create List
+            	changeChanges = (EntityList) changeListEntity.getNewList(false);
+            	changeListEntity.put(PROPERTY_CHANGES, changeChanges);
+            	
+            	// Copy First Change to Child
+            	Entity changeChange = (Entity) changeChanges.getNewList(true);
+            	changeChanges.add(changeChange);
+            	
+            	value = changeListEntity.getString(ChangeMessage.PROPERTY_PROPERTY);
+            	changeChange.put(ChangeMessage.PROPERTY_PROPERTY, value);
+
+            	value = changeListEntity.getString(ChangeMessage.PROPERTY_OLD);
+            	changeChange.put(ChangeMessage.PROPERTY_OLD, value);
+
+            	value = changeListEntity.getString(ChangeMessage.PROPERTY_NEW);
+            	changeChange.put(ChangeMessage.PROPERTY_NEW, value);
+            	
+            	value = changeListEntity.getString(ChangeMessage.PROPERTY_ID);
+            	changeChange.put(ChangeMessage.PROPERTY_ID, value);
+            	
+            }
+            // Add Current Change to List or Merge
+            Entity changeChange = null;
+            value = changeEntity.getString(ChangeMessage.PROPERTY_PROPERTY);
+            for(int c=0; c < changeChanges.sizeChildren(); c++) {
+            	Entity child = (Entity) changeChanges.getChild(c);
+            	if(value.equals(child.getString(ChangeMessage.PROPERTY_PROPERTY))) {
+            		changeChange = child;
+            	}
+            }
+            if(changeChange == null) {
+	        	changeChange = (Entity) changeChanges.getNewList(true);
+	        	changeChanges.add(changeChange);
+	        	changeChange.put(ChangeMessage.PROPERTY_PROPERTY, value);
+	        	value = changeEntity.getString(ChangeMessage.PROPERTY_OLD);
+	        	changeChange.put(ChangeMessage.PROPERTY_OLD, value);
+            }
+
+        	value = changeEntity.getString(ChangeMessage.PROPERTY_NEW);
+        	changeChange.put(ChangeMessage.PROPERTY_NEW, value);
+        	
+        	value = changeEntity.getString(ChangeMessage.PROPERTY_ID);
+        	changeChange.put(ChangeMessage.PROPERTY_ID, value);
+        	
+        	setNewPrevId(changeEntity, deletedChanges);
+            
+            // Remove current Change
+            history.remove(i);
+            i--;
+		}
+		
+		// Change Rest of Items PREV-ID to new One
+		while(i<history.size()) {
+			ModelChange change = history.get(i);
+			BaseItem changeMsg = change.getChange();
+			if(changeMsg instanceof Entity) {
+				Entity changeEntity = (Entity) changeMsg;
+				setNewPrevId(changeEntity, deletedChanges);
+			}
+			i++;
+		}
 		return true;
 	}
 
+	private void setNewPrevId(Entity changeEntity, SimpleKeyValueList<String, String> deletedChanges) {
+		// Check IF PREV-ID IS DELETED
+		String value = changeEntity.getString(ChangeMessage.PROPERTY_PREVIOUSCHANGE);
+		if(value != null) {
+			int pos = deletedChanges.indexOf(value);
+			if(pos>=0) {
+				// Found deleted item
+				changeEntity.put(ChangeMessage.PROPERTY_PREVIOUSCHANGE, deletedChanges.getValueByIndex(pos));
+			}
+		}
+
+	}
+		
+		
 	protected boolean isToManyField(SendableEntityCreator createrClass, String fieldName) {
 		Object prototype = prototypeCache.get(createrClass);
 

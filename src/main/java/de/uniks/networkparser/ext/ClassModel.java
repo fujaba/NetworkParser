@@ -40,7 +40,12 @@ public class ClassModel extends GraphModel {
 		return this;
 	}
 	
-	public ModelGenerator getGenerator() {
+	public ModelGenerator getGenerator(String... params) {
+		if(params != null) {
+			if(params.length==1 && params[0] != null) {
+				this.generator.withRootDir(params[0]);
+			}
+		}
 		return generator;
 	}
 
