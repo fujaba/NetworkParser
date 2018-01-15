@@ -48,8 +48,8 @@ public class ModelHistory {
 		SimpleKeyValueList<String, ModelChange> changes=new SimpleKeyValueList<String, ModelChange>();
 		SimpleKeyValueList<String, String> deletedChanges=new SimpleKeyValueList<String, String>();
 		String value;
-		int pos, i;
-		for(i=0;i<history.size();i++) {
+		int pos, i = checkMergeInitModel();
+		for(;i<history.size();i++) {
 			ModelChange change = history.get(i);
 
 			BaseItem changeMsg = change.getChange();
@@ -146,6 +146,11 @@ public class ModelHistory {
 			i++;
 		}
 		return true;
+	}
+
+	private int checkMergeInitModel() {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 	private void setNewPrevId(Entity changeEntity, SimpleKeyValueList<String, String> deletedChanges) {

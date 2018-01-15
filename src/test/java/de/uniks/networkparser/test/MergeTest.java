@@ -46,7 +46,7 @@ public class MergeTest {
 //		<!--		
 		//V2
 		//model.withFeature() // OVERRIDE EVERYTHING
-		model.getGenerator().findClazz("de.uniks.model.Person").createAttribute("first", DataType.STRING);
+//		model.getGenerator().findClazz("de.uniks.model.Person").createAttribute("first", DataType.STRING);
 //	    -->	
 		//GENERATE
 		model.generate();
