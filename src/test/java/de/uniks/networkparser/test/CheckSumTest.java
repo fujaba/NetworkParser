@@ -180,7 +180,7 @@ public class CheckSumTest {
 
 	@Test
 	public void testAES() throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException{
-		byte[] key = new byte[]{'4', '2'}; // TODO
+		byte[] key = new byte[]{'4', '2'};
 		AES aes= new AES().withKey(key);
 		CharacterBuffer encode = aes.encode(new CharacterBuffer().withValue("Albert is safe"));
 		ByteConverterHex converter = new ByteConverterHex();

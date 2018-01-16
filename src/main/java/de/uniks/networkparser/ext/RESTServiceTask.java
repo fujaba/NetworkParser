@@ -15,11 +15,12 @@ import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.interfaces.Condition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
+import de.uniks.networkparser.interfaces.Server;
 import de.uniks.networkparser.json.JsonArray;
 import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.xml.XMLEntity;
 
-public class RESTServiceTask implements Runnable {
+public class RESTServiceTask implements Runnable, Server{
 	private int port;
 	public static final String PROPERTY_ERROR="error";
 	public static final String PROPERTY_ALLOW="allow";
@@ -118,6 +119,24 @@ public class RESTServiceTask implements Runnable {
 			}
 		}
 	}
+	
+	@Override
+	public boolean close() {
+		if( serverSocket == null ||  serverSocket.isClosed()) {
+			return true;
+		}
+		try{ 
+			serverSocket.close();
+		}catch (Exception e) {
+		}
+		return true;
+	}
+	
+	@Override
+	public boolean isRun() {
+		return serverSocket != null && serverSocket.isClosed() == false;
+	}
+
 	public String executeRequest(String request) {
 		return executeRequest(new CharacterBuffer().with(request));
 	}

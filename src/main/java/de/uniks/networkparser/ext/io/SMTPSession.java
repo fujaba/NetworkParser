@@ -11,6 +11,7 @@ import java.nio.charset.StandardCharsets;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
 
+import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.buffer.Buffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.converter.ByteConverter64;
@@ -62,7 +63,7 @@ public class SMTPSession {
 	public SMTPSession(String host, String sender) {
 		this(host, 25, sender);
 	}
-
+	
 	/**
 	 * Creates new SMTP session
 	 */
@@ -75,9 +76,34 @@ public class SMTPSession {
 		this.sender = sender;
 		this.connect(sender, password);
 		return this;
-		
 	}
 
+	public String getSender() {
+		return sender;
+	}
+	
+	public boolean setSender(String sender) {
+		if(EntityUtil.stringEquals(this.sender, sender) == false) {
+			this.sender = sender;
+			return true;
+		}
+		return false;
+	}
+	
+	public int getPort() {
+		return port;
+	}
+	
+	public SMTPSession withPort(int port) {
+		this.port = port;
+		return this;
+	}
+	
+	public SMTPSession withHost(String url) {
+		this.host = url;
+		return this;
+	}
+	
 	
 	/**
 	 * Closes down the connection to SMTP server (if open). Should be called if
@@ -94,6 +120,10 @@ public class SMTPSession {
 			return false;
 		}
 		return true;
+	}
+	
+	public boolean connect(String password) {
+		return this.connect(this.sender, password);
 	}
 	
 	/**

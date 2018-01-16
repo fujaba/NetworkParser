@@ -10,15 +10,16 @@ import java.nio.ByteOrder;
 import java.nio.channels.DatagramChannel;
 import java.util.Date;
 
-import de.uniks.networkparser.ext.petaf.proxy.NodeProxyBroadCast;
+import de.uniks.networkparser.ext.petaf.proxy.NodeProxyServer;
+import de.uniks.networkparser.interfaces.Server;
 
-public class Server_Time extends Thread{
+public class Server_Time extends Thread implements Server{
 	protected boolean run=true;
 	private int port = 37;
-	private NodeProxyBroadCast proxy;
+	private NodeProxyServer proxy;
 	private DatagramChannel channel;
 
-	public Server_Time(NodeProxyBroadCast proxy, boolean asyn) 
+	public Server_Time(NodeProxyServer proxy, boolean asyn) 
 	{
 		this.proxy = proxy;
 		if(init() && asyn){
@@ -33,7 +34,7 @@ public class Server_Time extends Thread{
 		}
 	}
 	
-	public boolean closeServer(){
+	public boolean close(){
 		this.run=false;
 		if(channel!=null){
 			try {
@@ -43,6 +44,11 @@ public class Server_Time extends Thread{
 			channel = null;
 		}
 		return true;
+	}
+	
+	@Override
+	public boolean isRun() {
+		return run;
 	}
 	
 	@Override

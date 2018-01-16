@@ -16,7 +16,7 @@ public class SocketTest {
 			Thread.sleep(1000);
 		} catch (Exception e) {
 		}
-		server_Time.closeServer();
+		server_Time.close();
 	}
 	
 	@Test

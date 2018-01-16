@@ -7,16 +7,16 @@ import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 
-import de.uniks.networkparser.ext.petaf.proxy.NodeProxyBroadCast;
+import de.uniks.networkparser.ext.petaf.proxy.NodeProxyServer;
 import de.uniks.networkparser.interfaces.Entity;
+import de.uniks.networkparser.interfaces.Server;
 
-public class Server_UPD extends Thread{
-	private static final String BROADCAST = "BROADCAST";
+public class Server_UPD extends Thread implements Server{
 	protected boolean run=true;
 	protected DatagramSocket socket;
-	private NodeProxyBroadCast proxy;
+	private NodeProxyServer proxy;
 
-	public Server_UPD(NodeProxyBroadCast proxy, boolean asyn) 
+	public Server_UPD(NodeProxyServer proxy, boolean asyn) 
 	{
 		this.proxy = proxy;
 		if(init() && asyn){
@@ -24,13 +24,18 @@ public class Server_UPD extends Thread{
 		}
 	}
 	
-	public boolean closeServer(){
+	public boolean close(){
 		this.run=false;
 		if(socket!=null){
 			socket.close();
 			socket = null;
 		}
 		return true;
+	}
+	
+	@Override
+	public boolean isRun() {
+		return socket!=null && socket.isClosed() == false;
 	}
 	
 	@Override

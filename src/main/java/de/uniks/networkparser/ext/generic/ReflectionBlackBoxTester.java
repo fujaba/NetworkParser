@@ -20,7 +20,7 @@ import de.uniks.networkparser.ext.petaf.Server_TCP;
 import de.uniks.networkparser.ext.petaf.Server_Time;
 import de.uniks.networkparser.ext.petaf.Server_UPD;
 import de.uniks.networkparser.ext.petaf.Space;
-import de.uniks.networkparser.ext.petaf.proxy.NodeProxyBroadCast;
+import de.uniks.networkparser.ext.petaf.proxy.NodeProxyServer;
 import de.uniks.networkparser.ext.petaf.proxy.NodeProxyTCP;
 import de.uniks.networkparser.ext.story.Story;
 import de.uniks.networkparser.interfaces.BaseItem;
@@ -51,7 +51,7 @@ public class ReflectionBlackBoxTester {
 		withIgnoreClazzes(Server_UPD.class);
 		withIgnoreClazzes(Server_Time.class);
 		withIgnoreClazzes(Space.class);
-		withIgnoreClazzes(NodeProxyBroadCast.class);
+		withIgnoreClazzes(NodeProxyServer.class);
 		withIgnoreClazzes(NodeProxyTCP.class, "initProxy");
 		
 //		withIgnoreClazzes(TimerExecutor.class.getName());

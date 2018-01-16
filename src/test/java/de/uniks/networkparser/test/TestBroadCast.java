@@ -9,13 +9,13 @@ import org.junit.Test;
 
 import de.uniks.networkparser.ext.petaf.NodeProxyType;
 import de.uniks.networkparser.ext.petaf.Space;
-import de.uniks.networkparser.ext.petaf.proxy.NodeProxyBroadCast;
+import de.uniks.networkparser.ext.petaf.proxy.NodeProxyServer;
 import de.uniks.networkparser.ext.petaf.proxy.NodeProxyTCP;
 
 public class TestBroadCast {
 	@Test(timeout=5000)
 	public void testBroadCast() throws IOException {
-		Space space = Space.newInstance(NodeProxyTCP.createServer(5000), NodeProxyBroadCast.createServer(9876));
+		Space space = Space.newInstance(NodeProxyTCP.createServer(5000), NodeProxyServer.createServer(9876));
 		Timer timer = new Timer();
 
 	    // Start in 10 Sekunden
@@ -33,7 +33,7 @@ public class TestBroadCast {
 	
 	class BroadCastClient extends TimerTask{
 		public void run() {
-			NodeProxyBroadCast broasCast = new NodeProxyBroadCast(NodeProxyType.OUT);
+			NodeProxyServer broasCast = new NodeProxyServer(NodeProxyType.OUT);
 			DatagramPacket answer = broasCast.executeBroadCast(false);
 			String modifiedSentence = new String(answer.getData());
 			System.out.println("FROM SERVER:" + modifiedSentence);

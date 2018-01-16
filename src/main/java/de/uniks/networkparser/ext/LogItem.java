@@ -202,7 +202,6 @@ public class LogItem extends SendableItem implements SendableEntityCreator {
 
 	@Override
 	public Object getSendableInstance(boolean prototyp) {
-		// TODO Auto-generated method stub
-		return null;
+		return new LogItem();
 	}
 }

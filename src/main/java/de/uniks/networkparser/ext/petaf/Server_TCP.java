@@ -6,8 +6,9 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 
 import de.uniks.networkparser.ext.petaf.proxy.NodeProxyTCP;
+import de.uniks.networkparser.interfaces.Server;
 
-public class Server_TCP extends Thread {
+public class Server_TCP extends Thread  implements Server{
 	protected boolean run=true;
 	protected ServerSocket serverSocket;
 	private NodeProxyTCP proxy;
@@ -33,7 +34,7 @@ public class Server_TCP extends Thread {
 		return run;
 	}
 	
-	public void closeServer(){
+	public boolean close(){
 		this.run=false;
 		try {
 			if(serverSocket!=null){
@@ -41,7 +42,9 @@ public class Server_TCP extends Thread {
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
+			return false;
 		}
+		return true;
 	}
 	
 	@Override

@@ -9,7 +9,6 @@ import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.xml.HTMLEntity;
 
-
 public class EMailMessage {
 	public static final String PROPERTY_FROM="From: ";
 	public static final String PROPERTY_TO="To";
