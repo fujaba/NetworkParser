@@ -111,7 +111,14 @@ public class SQLStatement {
 		connectStatement.with(DATABASE, database);
 		return connectStatement;
 	}
-
+	
+	public static SQLStatement update(String table, String id, String property, Object newValue) {
+		SQLStatement updateStatement = new SQLStatement(SQLCommand.UPDATE, table);
+		updateStatement.withCondition(ID, id);
+		updateStatement.withValues(property, newValue);
+		return updateStatement;
+	}
+	
 	public SQLStatement with(String key, Object value) {
 		if (values == null) {
 			values = new SimpleKeyValueList<String, Object>();

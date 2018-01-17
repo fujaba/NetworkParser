@@ -85,6 +85,7 @@ public class SQLTokener extends Tokener {
 		}
 		return result;
 	}
+	
 	private void parseAttributes(Clazz clazz, SQLStatement sqlClass) {
 		for (Attribute attribute : clazz.getAttributes()) {
 			sqlClass.with(attribute.getName(), EntityUtil.convertPrimitiveToObjectType(attribute.getType().getName(true)).toUpperCase());
@@ -171,6 +172,15 @@ public class SQLTokener extends Tokener {
 		}
 		return true;
 	}
+	
+	public boolean close() {
+		if(this.connection == null) {
+			return true;
+		}
+		Connection con = connection;
+		this.connection = null;
+		return this.disconnect(con);
+	}
 
 	public Connection connect(SQLStatement connect) {
 		if(connect == null) {
@@ -193,6 +203,10 @@ public class SQLTokener extends Tokener {
 		return this;
 	}
 	
+	 public Connection getConnection() {
+		return connection;
+	}
+	
 	@Override
 	public SQLStatementList encode(Object entity, MapEntity map) {
 		SQLStatementList statements = new SQLStatementList();
@@ -203,6 +217,15 @@ public class SQLTokener extends Tokener {
 		validateStatements(statements, results);
 		return statements;
 	}
+	
+	public SQLStatementList update(Object entity, String id, String property, Object newValue) {
+		SQLStatementList statements = new SQLStatementList();
+		statements.add(sqlConnection);
+		SQLStatement command = SQLStatement.update(entity.getClass().getSimpleName(), id, property, newValue);
+		statements.add(command);
+		return statements;
+	}
+	
 	private void addTableCreate(String tableName, Object item, SendableEntityCreator creator, SQLStatementList statements, MapEntity map) {
 		if (map.contains(tableName) == false) {
 			if( map.isTokenerFlag(FLAG_DROP)) {

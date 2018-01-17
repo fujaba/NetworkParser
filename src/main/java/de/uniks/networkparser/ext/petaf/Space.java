@@ -861,7 +861,7 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 		if(this.myNode == null) {
 			NodeProxy last=null;
 			for(NodeProxy item : proxies) {
-				if(NodeProxyType.isInput(item.getType())) {
+				if(NodeProxyType.isInput(item.getType()) && NodeProxyType.isOutput(item.getType()) == false) {
 					if(last == null) {
 						this.myNode = last = item;
 						item.setNextMyNode(null);

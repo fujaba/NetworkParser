@@ -488,4 +488,8 @@ public class SMTPSession {
 	public String getLastSended() {
 		return lastSended;
 	}
+
+	public String getUrl() {
+		return this.host;
+	}
 }

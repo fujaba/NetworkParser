@@ -32,10 +32,12 @@ public class NodeProxyEMail extends NodeProxy{
 		return 0;
 	}
 	
+	
+	
 	@Override
 	public Object getValue(Object element, String attrName) {
-		if(element instanceof NodeProxyTCP ) {
-			NodeProxyTCP nodeProxy = (NodeProxyTCP) element;
+		if(element instanceof NodeProxyEMail ) {
+			NodeProxyEMail nodeProxy = (NodeProxyEMail) element;
 			if (PROPERTY_URL.equals(attrName)) {
 				return nodeProxy.getUrl();
 			}
@@ -156,14 +158,30 @@ public class NodeProxyEMail extends NodeProxy{
 		this.connection.withPort(value);
 		return this;
 	}
+	
+	public int getPort() {
+		if(this.connection != null) {
+			return this.connection.getPort();
+		}
+		return -1;
+	}
 
 
-	private NodeProxyEMail withUrl(String value) {
+	public NodeProxyEMail withUrl(String value) {
 		if(this.connection == null) {
 			this.connection = getNewConnection();
 		}
 		this.connection.withHost(value);
 		return this;
+	}
+	
+	
+	public String getUrl() {
+		if(this.connection != null) {
+			return this.connection.getUrl();
+		}
+		return null;
+		
 	}
 
 	public NodeProxyEMail withPassword(String password) {

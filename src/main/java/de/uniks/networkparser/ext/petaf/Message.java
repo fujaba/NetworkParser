@@ -78,6 +78,7 @@ public class Message implements SendableEntityCreator, SendableEntityCreatorNoIn
 	public <ST extends Message> ST withAddToReceived(NodeProxy value) {
 		if(this.received == null) {
 			this.received = value;
+			return (ST) this;
 		}
 		SimpleSet<?> list;
 		if(this.received instanceof NodeProxy) {

@@ -11,6 +11,7 @@ import de.uniks.networkparser.ext.petaf.NodeProxy;
 import de.uniks.networkparser.ext.petaf.Space;
 import de.uniks.networkparser.ext.petaf.messages.ConnectMessage;
 import de.uniks.networkparser.ext.petaf.proxy.NodeProxyFileSystem;
+import de.uniks.networkparser.ext.petaf.proxy.NodeProxySQL;
 import de.uniks.networkparser.ext.petaf.proxy.NodeProxyTCP;
 import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.test.model.GroupAccount;
@@ -47,6 +48,20 @@ public class PetaFTest {
 		System.out.println(space.convertMessage(connectMsg));
 		
 		space.close();
+	}
+	
+	@Test
+	public void testSQL() {
+		University university = new University();
+		Student createStudents = university.createStudents();
+
+		Space space=new Space();
+		IdMap map = UniversityCreator.createIdMap("42");
+		space.withCreator(map);
+		space.with(new NodeProxySQL().withDriver("jdbc:sqlite:build/petaf.db"));
+		space.createModel(university);
+		
+		createStudents.setName("Albert");
 	}
 
 

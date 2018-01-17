@@ -1,11 +1,17 @@
 package de.uniks.networkparser.ext.generic;
 
+import java.io.File;
 import java.io.PrintStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.sql.Connection;
+import java.sql.DriverManager;
 import java.util.List;
+import java.util.Properties;
 
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.list.SimpleList;
@@ -498,4 +504,46 @@ public class ReflectionLoader {
 		}
 		return false;
 	}
+	
+	private static URLClassLoader initDriver() {
+		ClassLoader systemClassLoader = ClassLoader.getSystemClassLoader();
+		URLClassLoader sysloader = URLClassLoader.newInstance(new URL[] {}, systemClassLoader);
+		return sysloader;
+	}
+	
+	private static final URLClassLoader sysloader = initDriver();
+	public static Connection loadSQLDriver(String driver, String database) {
+		int pos=0;
+		if(driver == null || (pos = driver.lastIndexOf(':')) < 0) {
+			return null;
+		}
+		return loadSQLDriver(driver.substring(0, pos), driver.substring(pos + 1), database);
+	}
+
+	public static Connection loadSQLDriver(String driver, String host, String database) {
+		try {
+			if("jdbc:sqlite".equalsIgnoreCase(driver)) {
+				File f = new File(host);
+				URL url = new URL("file:///" + f.getAbsolutePath());
+				
+				Method method = URLClassLoader.class.getDeclaredMethod("addURL", new Class[] {URL.class});
+				method.setAccessible(true);
+
+				method.invoke(sysloader, url);
+				
+				Thread.currentThread().setContextClassLoader(sysloader);
+				
+				Method getConnection = DriverManager.class.getDeclaredMethod("getConnection", String.class, Properties.class,
+						Class.class);
+				getConnection.setAccessible(true);
+			
+				Object manager = getConnection.invoke(DriverManager.class, driver+":"+database, new Properties(), null);
+				return (Connection) manager;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 }

@@ -185,4 +185,12 @@ public class ChangeMessage extends ReceivingTimerTask {
 	public String getType() {
 		return PROPERTY_TYPE;
 	}
+	
+	public Object getNewValue() {
+		return newValue;
+	}
+	
+	public String getProperty() {
+		return property;
+	}
 }
