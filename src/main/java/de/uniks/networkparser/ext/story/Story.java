@@ -248,6 +248,7 @@ public class Story implements Comparable<Story> {
 			throw new RuntimeException(step.getMessage());
 		}
 	}
+	
 	public void assertEquals(String message, double expected, double actual, double delta) {
 		StoryStepCondition step = new StoryStepCondition();
 		step.withCondition(message, actual, new Equals().withValue(expected, delta));

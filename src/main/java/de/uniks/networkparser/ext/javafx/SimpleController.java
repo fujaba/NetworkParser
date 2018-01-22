@@ -14,6 +14,7 @@ import java.util.Map;
 import de.uniks.networkparser.ext.ErrorHandler;
 import de.uniks.networkparser.ext.Os;
 import de.uniks.networkparser.ext.StartData;
+import de.uniks.networkparser.ext.generic.ReflectionBlackBoxTester;
 import de.uniks.networkparser.ext.generic.ReflectionLoader;
 import de.uniks.networkparser.ext.io.StringPrintStream;
 import de.uniks.networkparser.interfaces.BaseItem;
@@ -37,6 +38,9 @@ public class SimpleController implements ObjectCondition{
 	protected Object trayIcon;
 	private SimpleList<Object> listener = new SimpleList<Object>();
 	private boolean isEclipse = Os.isEclipse();
+	private String javaAgent;
+	private String mainClass;
+	private String outputParameter;
 	
 	public SimpleController(Object primitiveStage) {
 		this(primitiveStage, true);
@@ -105,7 +109,7 @@ public class SimpleController implements ObjectCondition{
 		SimpleController controller = new SimpleController(primaryStage);
 		return controller;
 	}
-	protected void init() {
+	protected Process init() {
 		String outputFile = null;
 		String debugPort = null;
 		if (encodingCode != null && !encodingCode.equalsIgnoreCase(System.getProperty("file.encoding"))) {
@@ -159,32 +163,42 @@ public class SimpleController implements ObjectCondition{
 				}
 			}
 		}
-		if (debugPort != null) {
+		if(this.javaAgent != null || debugPort != null) {
 			ArrayList<String> items = new ArrayList<String>();
 			if (Os.isMac()) {
 				items.add(System.getProperty("java.home").replace("\\", "/") + "/bin/java");
 			} else {
 				items.add("\"" + System.getProperty("java.home").replace("\\", "/") + "/bin/java\"");
 			}
-	
-			items.add("-Xdebug");
-//			items.add("--XX:+HeapDumpOnOutOfMemoryError");
-			items.add("-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=" + debugPort);
-			// Now Add Custom Params
-			items.addAll(customParams);
-			
-			items.add("-jar");
-			String fileName = new Os().getFilename().toLowerCase();
-			if("bin".equals(fileName)) {
-				// Eclipse Start Can't run
-				return;
+			if (debugPort != null) {
+				items.add("-Xdebug");
+	//			items.add("--XX:+HeapDumpOnOutOfMemoryError");
+				items.add("-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=" + debugPort);
+				// Now Add Custom Params
+				items.addAll(customParams);
+				
+				items.add("-jar");
+				String fileName = new Os().getFilename().toLowerCase();
+				if("bin".equals(fileName)) {
+					// Eclipse Start Can't run
+					return null;
+				}
+				items.add(fileName);
 			}
-			items.add(fileName);
-	
+			if(this.javaAgent != null) {
+				items.add("-javaagent:"+this.javaAgent);
+				items.add(ReflectionBlackBoxTester.class.getName());
+				items.add("test="+mainClass);
+			}
+
 			ProcessBuilder processBuilder = new ProcessBuilder(items);
-			
+		    Map< String, String > environment = processBuilder.environment();
+		    environment.put("CLASSPATH", System.getProperty("java.class.path"));
 			// ReflectionLoader.PROCESSBUILDERREDIRECT
-			if(isEclipse == false) {
+		    if(outputFile == null && this.outputParameter != null) {
+		    	outputFile = this.outputParameter;
+		    }
+			if(isEclipse == false || this.outputParameter != null) {
 				if(outputFile != null) {
 					if (outputFile.equalsIgnoreCase("inherit")) {
 						processBuilder.redirectErrorStream(true);
@@ -203,31 +217,37 @@ public class SimpleController implements ObjectCondition{
 				}
 			}
 			try {
-				processBuilder.start();
+				Process start = processBuilder.start();
+				if(this.javaAgent != null) {
+					return start;
+				}
 				Runtime.getRuntime().exit(1);
 			} catch (IOException e) {
 				errorHandler.saveException(e);
 			}
 		}
+		return null;
 	}
 
 	@SuppressWarnings("unchecked")
 	public SimpleKeyValueList<String, String> getParameterMap() {
 		SimpleKeyValueList<String, String> map = new SimpleKeyValueList<String, String>();
 		List<String> raw = (List<String>) ReflectionLoader.callChain(application, "getParameters", "getRaw");
-		for (String item : raw) {
-			if (item.startsWith("--")) {
-				item = item.substring(2);
-			}
-			int pos = item.indexOf(":");
-			int posEnter = item.indexOf("=");
-			if (posEnter > 0 && (posEnter < pos || pos == -1)) {
-				pos = posEnter;
-			}
-			if (pos > 0) {
-				map.add(item.substring(0, pos), item.substring(pos + 1));
-			} else {
-				map.add(item, null);
+		if(raw != null) {
+			for (String item : raw) {
+				if (item.startsWith("--")) {
+					item = item.substring(2);
+				}
+				int pos = item.indexOf(":");
+				int posEnter = item.indexOf("=");
+				if (posEnter > 0 && (posEnter < pos || pos == -1)) {
+					pos = posEnter;
+				}
+				if (pos > 0) {
+					map.add(item.substring(0, pos), item.substring(pos + 1));
+				} else {
+					map.add(item, null);
+				}
 			}
 		}
 		return map;
@@ -306,6 +326,27 @@ public class SimpleController implements ObjectCondition{
 				}
 			}
 		}
+	}
+	
+	public int start() {
+		Process p = this.init();
+		try {
+			return p.waitFor();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		return -1;
+	}
+	
+	public SimpleController withAgent(String agent, String mainClass) {
+		this.javaAgent = agent;
+		this.mainClass = mainClass;
+		return this;
+	}
+	
+	public SimpleController withOutput(String value) {
+		this.outputParameter = value;
+		return this;
 	}
 	
 	public String getEncodingCode() {
@@ -566,4 +607,7 @@ public class SimpleController implements ObjectCondition{
 		return true;
 	}
 	
+	public static SimpleController create() {
+		return new SimpleController(null);
+	}
 }

@@ -130,6 +130,14 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 		this.name = name;
 		return this;
 	}
+	
+	
+	public Space withName(String name, Object root) {
+		this.withName(name);
+		this.createModel(root, name+".json");
+		startModelDistribution(false);
+		return this;
+	}
 
 
 	public Space with(NodeProxy... values) {

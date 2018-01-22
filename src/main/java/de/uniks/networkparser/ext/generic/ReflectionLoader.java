@@ -295,7 +295,21 @@ public class ReflectionLoader {
 		}
 		return null;
 	}
-	
+	public static Object newInstanceStr(String className, Object... arguments) {
+		try {
+			Class<?> clazz = Class.forName(className);
+			if(arguments != null && arguments.length % 2 == 0) {
+				for(int i=0;i<arguments.length;i +=2) {
+					if(arguments[i] instanceof String) {
+						arguments[i] = Class.forName((String) arguments[i]);
+					}
+				}
+			}
+			return newInstance(clazz, arguments);
+		} catch (ClassNotFoundException e) {
+		}
+		return null;
+	}
 	public static Object newInstance(Class<?> instance, Object... arguments) {
 		try {
 			if(arguments == null) {
@@ -348,6 +362,9 @@ public class ReflectionLoader {
 		try {
 			return Class.forName(name, false, ReflectionLoader.class.getClassLoader());
 		} catch (Throwable e) {
+			if(logger != null) {
+				e.printStackTrace(logger);
+			}
 		}
 		return null;
 	}
@@ -397,6 +414,22 @@ public class ReflectionLoader {
 	public static Object call(String methodName, Object item, Object... arguments) {
 		return calling(methodName, item, true, null, arguments);
 	}
+	
+	public static Object callStr(String methodName, Object item, Object... arguments) {
+		try {
+			if(arguments != null && arguments.length % 2 == 0) {
+				for(int i=0;i<arguments.length;i +=2) {
+					if(arguments[i] instanceof String) {
+						arguments[i] = Class.forName((String) arguments[i]);
+					}
+				}
+			}
+		} catch (Exception e) {
+			return null;
+		}
+		return calling(methodName, item, true, null, arguments);
+	}
+	
 	
 	@SuppressWarnings("unchecked")
 	public static List<Object> callList(String methodName, Object item, Object... arguments) {

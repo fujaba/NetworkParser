@@ -40,6 +40,47 @@ public class ReflectionBlackBoxTester {
 	private String packageName;
 	private NetworkParserLog logger;
 	
+	public static void main(String[] args) {
+		Object junitCore = ReflectionLoader.newInstanceStr("org.junit.runner.JUnitCore");
+		SimpleSet<Class<?>> testClasses=new SimpleSet<Class<?>>();
+		if(junitCore != null) {
+			for(String param : args) {
+				if(param.startsWith("test=")) {
+					param = param.substring(5);
+					String[] clazzes = param.split(",");
+					for(String item : clazzes) {
+						Class<?> testClazz = ReflectionLoader.getClass(item);
+						if(testClazz != null) {
+							testClasses.add(testClazz);
+						}
+					}
+				}
+			}
+			if(testClasses.size()<1) {
+				return;
+			}
+			Class<? extends Object> itemClass = junitCore.getClass();
+			Method method = null;
+			try {
+				method = itemClass.getMethod("run", Class[].class);
+			}catch (Exception e) {
+				try {
+					method = itemClass.getDeclaredMethod("run", Class[].class);
+				} catch (Exception e1) {
+				}
+			}
+			if(method != null) {
+				Class<?>[] list = testClasses.toArray(new Class<?>[testClasses.size()]);
+				try {
+					method.invoke(junitCore, new Object[] {list});
+				} catch (Exception e) {
+					System.out.println("error: "+e.getMessage());
+					e.printStackTrace(System.out);
+				}
+			}
+		}
+	}
+	
 	
 	public ReflectionBlackBoxTester() {
 		ignoreMethods =new SimpleKeyValueList<String, SimpleSet<String>>();
@@ -128,7 +169,7 @@ public class ReflectionBlackBoxTester {
 			}
 		}
 		// Write out all Results
-		output("Errors: "+errorCount+ "/" + (errorCount+ successCount), logger, NetworkParserLog.LOGLEVEL_INFO);
+		output(this, "Errors: "+errorCount+ "/" + (errorCount+ successCount), logger, NetworkParserLog.LOGLEVEL_INFO);
 	}
 	
 	
@@ -196,7 +237,7 @@ public class ReflectionBlackBoxTester {
 				f.setAccessible(true);
 				Object value = f.get(obj);
 				if(value == null) {
-					output("field null", logger, NetworkParserLog.LOGLEVEL_WARNING);
+					output(f, "field null", logger, NetworkParserLog.LOGLEVEL_WARNING);
 				}
 				if(Modifier.isFinal(f.getModifiers())) {
 					continue;
@@ -223,7 +264,7 @@ public class ReflectionBlackBoxTester {
 			String[] split = line.split("\\.");
 			shortName = line.substring(0, line.lastIndexOf(":") - 4) +m.getName()+"("+split[split.length - 2] + "."+split[split.length - 1]+")";
 		}
-		output("at "+clazz.getName()+": "+e.getCause()+" "+shortName+" : ", logger, NetworkParserLog.LOGLEVEL_WARNING);
+		output(m, "at "+clazz.getName()+": "+e.getCause()+" "+shortName+" : ", logger, NetworkParserLog.LOGLEVEL_WARNING);
 		errorCount++;
 	}
 
@@ -250,9 +291,9 @@ public class ReflectionBlackBoxTester {
 		return sb.toString();
 	}
 
-	public void output(String message, NetworkParserLog logger, int logLevel) {
+	public void output(Object owner, String message, NetworkParserLog logger, int logLevel) {
 		if(logger != null) {
-			logger.log(this, "output", message, logLevel);
+			logger.log(owner, "output", message, logLevel);
 		}
 	}
 	

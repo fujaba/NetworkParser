@@ -98,6 +98,28 @@ public class PetaFTest {
 		Assert.assertNotNull(history);
 	}
 
+	
+	// With Name
+	@Test
+	public void testModelChangeName() {
+		// DataModel
+		University university = new University();
+		Student stefan = university.createStudents();
+		
+		// Serialization
+		Space space=new Space().withCreator(UniversityCreator.createIdMap("42"));
+		space.withName("Albert", university);
+		
+		// Change Model
+		stefan.setName("Stefan");
+		Student alex = university.createStudents();
+		alex.setName("Alex");
+		
+		
+		ModelHistory history = space.getHistory();
+		Assert.assertNotNull(history);
+	}
+	
 
 	@Test
 	public void test() {
