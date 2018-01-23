@@ -88,6 +88,21 @@ public class Association extends GraphMember {
 		return super.getValue(attribute);
 	}
 	
+	public boolean isSelfAssoc() {
+		GraphSimpleSet collection = getParents();
+		if(collection.size()>0) {
+			GraphSimpleSet otherParents = getOther().getParents();
+			for(GraphMember parent : collection) {
+				if(parent instanceof Clazz) {
+					if(otherParents.contains(parent)) {
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
+	
 	public Cardinality getCardinality() {
 		if(cardinality != null) {
 			return cardinality;

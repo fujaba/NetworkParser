@@ -70,4 +70,15 @@ public class AssociationSet extends SimpleSet<Association> {
 	public AssociationSet hasName(String otherValue) {
 		return filter(Association.NAME.equals(otherValue));
 	}
+	
+	@Override
+	public boolean contains(Object o) {
+		if(super.contains(o)) {
+			return true;
+		}
+		if(o instanceof Association) {
+			return super.contains(((Association) o).getOther());
+		}
+		return false;
+	}
 }
