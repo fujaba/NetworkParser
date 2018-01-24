@@ -76,9 +76,11 @@ public class StoryStepJUnit implements ObjectCondition {
 //		ReflectionLoader.call("visitInfo", visitor, List.class, info, Collection.class, content);
 		ReflectionLoader.call("visitInfo", multiVisitor, List.class, info, Collection.class, content);
 		ReflectionLoader.callStr("visitBundle", multiVisitor, 
-//		ReflectionLoader.callStr("visitBundle", visitor, 
 				"org.jacoco.core.analysis.IBundleCoverage", bundle, 
 				"org.jacoco.report.ISourceFileLocator", getSourceLocator());
+		
+		
+		//		ReflectionLoader.callStr("visitBundle", visitor, 
 //		ReflectionLoader.call("visitEnd", visitor);
 		ReflectionLoader.call("visitEnd", multiVisitor);
 	}

@@ -26,8 +26,10 @@ import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.Tokener;
 import de.uniks.networkparser.buffer.Buffer;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
+import de.uniks.networkparser.json.JsonArray;
 import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.json.JsonTokener;
+import de.uniks.networkparser.xml.XMLEntity;
 import de.uniks.networkparser.xml.XMLTokener;
 
 public class SimpleParser {
@@ -119,15 +121,15 @@ public class SimpleParser {
 		char firstChar = buffer.nextClean(true);
 		Tokener tokener = null;
 		char endTag = 0;
-		if (firstChar == JsonTokener.STARTARRAY) {
+		if (firstChar == JsonArray.START) {
 			tokener = new JsonTokener();
-			endTag = JsonTokener.ENDARRAY;
-		} else if (firstChar == JsonTokener.STARTITEM) {
+			endTag = JsonArray.END;
+		} else if (firstChar == JsonObject.START) {
 			tokener = new JsonTokener();
-			endTag = JsonTokener.ENDITEM;
-		} else if (firstChar == XMLTokener.STARTITEM) {
+			endTag = JsonObject.END;
+		} else if (firstChar == XMLEntity.START) {
 			tokener = new XMLTokener();
-			endTag = XMLTokener.ENDITEM;
+			endTag = XMLEntity.END;
 		}
 		if(tokener == null) {
 			return null;
@@ -137,14 +139,14 @@ public class SimpleParser {
 	}
 	
 	private static char getEndTag(char startTag) {
-		if (startTag == JsonTokener.STARTARRAY) {
-			return JsonTokener.ENDARRAY;
+		if (startTag == JsonArray.START) {
+			return JsonArray.END;
 		}
-		if (startTag == JsonTokener.STARTITEM) {
-			return JsonTokener.ENDITEM;
+		if (startTag == JsonObject.START) {
+			return JsonObject.END;
 		}
-		if (startTag == XMLTokener.STARTITEM) {
-			return XMLTokener.ENDITEM;
+		if (startTag == XMLEntity.START) {
+			return XMLEntity.END;
 		}
 		return 0;
 	}
@@ -223,13 +225,13 @@ public class SimpleParser {
 							// new Subtype
 							Object subElement = decodingModel(buffer, map, tokener, propEndTag);
 							creator.setValue(result, key, subElement, SendableEntityCreator.NEW);
-						} else if(tokener.getCurrentChar() ==  JsonTokener.STARTARRAY) {
+						} else if(tokener.getCurrentChar() ==  JsonArray.START) {
 							// LIST of elements
 							do {
 								Object subElement = decodingModel(buffer, map, tokener, propEndTag);
 								creator.setValue(result, key, subElement, SendableEntityCreator.NEW);
 								currentChar = tokener.getCurrentChar();
-							} while(currentChar != JsonTokener.ENDARRAY && tokener.isEnd() == false);
+							} while(currentChar != JsonArray.END  && tokener.isEnd() == false);
 						} else {
 							String value = tokener.nextString().toString();
 							

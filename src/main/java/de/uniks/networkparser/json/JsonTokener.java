@@ -52,22 +52,17 @@ public class JsonTokener extends Tokener {
 	public final static String STOPCHARS = ",]}/\\\"[{;=# ";
 	public static final char COMMENT='#';
 
-	public static final char STARTARRAY='[';
-	public static final char ENDARRAY=']';
-	public static final char STARTITEM='{';
-	public static final char ENDITEM='}';
-
 	@Override
 	public void parseToEntity(EntityList entityList) {
 		char c = nextClean(true);
-		if (c != STARTARRAY) {
+		if (c != JsonArray.START) {
 			if (isError(this, "parseToEntity", NetworkParserLog.ERROR_TYP_PARSING, entityList)) {
 				throw new RuntimeException(
 						"A JSONArray text must start with '['");
 			}
 			return;
 		}
-		if ((nextClean(false)) != ENDARRAY) {
+		if ((nextClean(false)) != JsonArray.END) {
 			for (;;) {
 				c = getCurrentChar();
 				if (c != ',') {
@@ -77,11 +72,11 @@ public class JsonTokener extends Tokener {
 				switch (c) {
 				case ';':
 				case ',':
-					if (nextClean(false) == ENDARRAY) {
+					if (nextClean(false) == JsonArray.END) {
 						return;
 					}
 					break;
-				case ENDARRAY:
+				case JsonArray.END:
 					skip();
 					return;
 				default:
@@ -110,13 +105,13 @@ public class JsonTokener extends Tokener {
 			skip();
 			skip();
 			return nextString(new CharacterBuffer(), allowQuote, true, QUOTES);
-		case STARTITEM:
+		case JsonObject.START:
 			BaseItem element = creator.getNewList(true);
 			if (element instanceof Entity ) {
 				this.parseToEntity((Entity) element);
 			}
 			return element;
-		case STARTARRAY:
+		case JsonArray.START:
 			BaseItem item = creator.getNewList(false);
 			if (item instanceof EntityList) {
 				this.parseToEntity((EntityList) item);
@@ -131,7 +126,7 @@ public class JsonTokener extends Tokener {
 	@Override
 	public boolean parseToEntity(Entity entity) {
 		String key;
-		if (nextClean(true) != STARTITEM) {
+		if (nextClean(true) != JsonObject.START) {
 			if (isError(this, "parseToEntity", NetworkParserLog.ERROR_TYP_PARSING, entity)) {
 				throw new RuntimeException(
 						"A JsonObject text must begin with '{' \n" + buffer);
@@ -168,7 +163,7 @@ public class JsonTokener extends Tokener {
 					skipTo("*/", true, false);
 					continue;
 				}
-			case ENDITEM:
+			case JsonObject.END:
 				skip();
 				return true;
 			case ',':

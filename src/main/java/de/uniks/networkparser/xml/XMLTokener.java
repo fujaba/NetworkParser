@@ -45,13 +45,7 @@ public class XMLTokener extends Tokener {
 	/** The Constant ENDTAG. */
 	public static final char ENDTAG = '/';
 
-	/** The Constant ITEMEND. */
-	public static final char ENDITEM = '>';
-
-	/** The Constant ITEMSTART. */
-	public static final char STARTITEM = '<';
-
-	private static final char[] TOKEN = new char[]{' ', STARTITEM, ENDTAG, ENDITEM};
+	private static final char[] TOKEN = new char[]{' ', XMLEntity.START, ENDTAG, XMLEntity.END};
 
 	public static final String CHILDREN= "<CHILDREN>";
 
@@ -93,7 +87,7 @@ public class XMLTokener extends Tokener {
 			CharacterBuffer v = nextString(new CharacterBuffer(), allowQuote, true, c);
 			String g = EntityUtil.unQuote(v);
 			return g;
-		case STARTITEM:
+		case XMLEntity.START:
 			BaseItem element = creator.getNewList(false);
 			if (element instanceof Entity) {
 				parseToEntity((Entity) element);
@@ -108,7 +102,7 @@ public class XMLTokener extends Tokener {
 	public boolean parseToEntity(Entity entity) {
 		skipHeader();
 		char c = getCurrentChar();
-		if (c != STARTITEM) {
+		if (c != XMLEntity.START) {
 			c = nextClean(false);
 		}
 		if (entity instanceof XMLEntity == false) {
@@ -118,7 +112,7 @@ public class XMLTokener extends Tokener {
 			return false;
 		}
 		XMLEntity xmlEntity = (XMLEntity) entity;
-		if (c != STARTITEM) {
+		if (c != XMLEntity.START) {
 //			xmlEntity.withValue(this.buffer);
 			if (isError(this, "parseToEntity", NetworkParserLog.ERROR_TYP_PARSING, entity)) {
 				throw new RuntimeException("A XML text must begin with '<'");
@@ -131,12 +125,12 @@ public class XMLTokener extends Tokener {
  			c = nextClean(true);
 			if (c == 0) {
 				break;
-			} else if (c == ENDITEM) {
+			} else if (c == XMLEntity.END) {
 				c = nextClean(false);
 				if (c == 0) {
 					return true;
 				}
-				if (c != STARTITEM) {
+				if (c != XMLEntity.START) {
 					CharacterBuffer item = new CharacterBuffer();
 					nextString(item, false, false, '<');
 					char currentChar = getCurrentChar();
@@ -154,10 +148,10 @@ public class XMLTokener extends Tokener {
 				}
 			}
 
-			if (c == STARTITEM) {
+			if (c == XMLEntity.START) {
 				char nextChar = buffer.getChar();
 				if (nextChar == '/') {
-					skipTo(ENDITEM, false);
+					skipTo(XMLEntity.END, false);
 					break;
 				} else if(nextChar == '!') {
 					skipTo("-->", true, true);
@@ -280,7 +274,7 @@ public class XMLTokener extends Tokener {
 				if (tokener.getCurrentChar() == IdMap.SPACE) {
 					tokener.getChar();
 				}
-				tokener.nextString(token, true, false, IdMap.SPACE, IdMap.EQUALS, ENDITEM, ENDTAG);
+				tokener.nextString(token, true, false, IdMap.SPACE, IdMap.EQUALS, XMLEntity.END, ENDTAG);
 				myChar = tokener.getCurrentChar();
 				if (myChar == ENTER) {
 					String key = token.toString();
@@ -294,7 +288,7 @@ public class XMLTokener extends Tokener {
 					stack.setValue(key, value);
 					myChar = tokener.getCurrentChar();
 				}
-			} while (myChar != ENDITEM && myChar != 0 && myChar != ENDTAG);
+			} while (myChar != XMLEntity.END && myChar != 0 && myChar != ENDTAG);
 		}
 	}
 
@@ -314,7 +308,7 @@ public class XMLTokener extends Tokener {
 				return entity;
 			}
 
-			char quote = (char) STARTITEM;
+			char quote = (char) XMLEntity.START;
 			// Skip >
 			tokener.skip();
 			CharacterBuffer valueItem = new CharacterBuffer();
@@ -322,7 +316,7 @@ public class XMLTokener extends Tokener {
 			if (valueItem.isEmptyCharacter() == false) {
 				CharacterBuffer test = new CharacterBuffer();
 				while (tokener.isEnd() == false) {
-					if (tokener.getCurrentChar() == STARTITEM) {
+					if (tokener.getCurrentChar() == XMLEntity.START) {
 						test.with(tokener.getCurrentChar());
 						test.with(tokener.getChar());
 					}
@@ -340,7 +334,7 @@ public class XMLTokener extends Tokener {
 						valueItem.with(test);
 					} else {
 						char currentChar = tokener.getChar();
-						if (currentChar != STARTITEM) {
+						if (currentChar != XMLEntity.START) {
 							valueItem.with(currentChar);
 						}
 					}
@@ -354,7 +348,7 @@ public class XMLTokener extends Tokener {
 				tokener.skipEntity();
 				return entity;
 			}
-			if (tokener.getCurrentChar() == STARTITEM) {
+			if (tokener.getCurrentChar() == XMLEntity.START) {
 				// show next Tag
 				Object child;
 				do {
@@ -362,7 +356,7 @@ public class XMLTokener extends Tokener {
 					if (valueItem == null) {
 						if (tokener.getCurrentChar() == ENDTAG) {
 							// Show if Item is End
-							valueItem = tokener.nextToken(false, ENDITEM);
+							valueItem = tokener.nextToken(false, XMLEntity.END);
 							if (valueItem.equals(stack.getCurrentTag())) {
 								stack.popStack();
 								// SKip > EndTag
@@ -402,8 +396,8 @@ public class XMLTokener extends Tokener {
 		CharacterBuffer tag;
 		boolean isEmpty = true;
 		do {
-			if (tokener.getCurrentChar() != STARTITEM) {
-				tokener.nextString(valueItem, false, false, STARTITEM);
+			if (tokener.getCurrentChar() != XMLEntity.START) {
+				tokener.nextString(valueItem, false, false, XMLEntity.START);
 				if (valueItem.isEmpty() == false) {
 					valueItem.trim();
 					isEmpty = valueItem.isEmpty();
@@ -413,8 +407,8 @@ public class XMLTokener extends Tokener {
 			if (tag != null) {
 				for (String stopword : this.stopwords) {
 					if (tag.startsWith(stopword, 0, false)) {
-						tokener.skipTo(ENDITEM, false);
-						tokener.skipTo(STARTITEM, false);
+						tokener.skipTo(XMLEntity.END, false);
+						tokener.skipTo(XMLEntity.START, false);
 						tag = null;
 						break;
 					}
@@ -475,8 +469,8 @@ public class XMLTokener extends Tokener {
 				stack.popStack();
 			}else {
 				tokener.skip();
-				if (tokener.getCurrentChar() != STARTITEM) {
-					tokener.nextString(valueItem, false, false, STARTITEM);
+				if (tokener.getCurrentChar() != XMLEntity.START) {
+					tokener.nextString(valueItem, false, false, XMLEntity.START);
 					if (valueItem.isEmpty() == false) {
 						valueItem.trim();
 						Object entity = stack.getCurrentItem();
