@@ -23,6 +23,7 @@ import de.uniks.networkparser.ext.petaf.Space;
 import de.uniks.networkparser.ext.petaf.proxy.NodeProxyServer;
 import de.uniks.networkparser.ext.petaf.proxy.NodeProxyTCP;
 import de.uniks.networkparser.ext.story.Story;
+import de.uniks.networkparser.ext.story.StoryStepJUnit;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleSet;
@@ -32,6 +33,7 @@ public class ReflectionBlackBoxTester {
 	public static final String MINVALUE="minValue";
 	public static final String MAXVALUE="maxValue";
 	public static final String RANDOMVALUE="randomValue";
+	public static final String BLACKBOXTESTER="backboxtest";
 	private SimpleSet<String> tests=new SimpleSet<String>().with(NULLVALUE,MINVALUE,RANDOMVALUE);
 	private SimpleKeyValueList<String, SimpleSet<String>> ignoreMethods;
 //	private SimpleSet<String> ignoreClazz=new SimpleSet<String>().with("de.uniks.networkparser.NetworkParserLog");
@@ -43,20 +45,32 @@ public class ReflectionBlackBoxTester {
 	public static void main(String[] args) {
 		Object junitCore = ReflectionLoader.newInstanceStr("org.junit.runner.JUnitCore");
 		SimpleSet<Class<?>> testClasses=new SimpleSet<Class<?>>();
+		String blackBoxPackage = null;
+		String path = "doc/";
 		if(junitCore != null) {
 			for(String param : args) {
 				if(param.startsWith("test=")) {
 					param = param.substring(5);
 					String[] clazzes = param.split(",");
 					for(String item : clazzes) {
+						if(item.startsWith(BLACKBOXTESTER)) {
+							int pos = item.indexOf('=');
+							if(pos>0) {
+								blackBoxPackage = item.substring(pos + 1);
+							} else {
+								blackBoxPackage = "";
+							}
+						}
 						Class<?> testClazz = ReflectionLoader.getClass(item);
 						if(testClazz != null) {
 							testClasses.add(testClazz);
 						}
 					}
+				}else if(param.startsWith("path=")) {
+					path = param.substring(5);
 				}
 			}
-			if(testClasses.size()<1) {
+			if(testClasses.size()<1 && blackBoxPackage == null) {
 				return;
 			}
 			Class<? extends Object> itemClass = junitCore.getClass();
@@ -78,6 +92,12 @@ public class ReflectionBlackBoxTester {
 					e.printStackTrace(System.out);
 				}
 			}
+			// Now Check if BaclkBoxTester activ
+			if(blackBoxPackage != null) {
+				StoryStepJUnit storyStepJUnit = new StoryStepJUnit();
+				storyStepJUnit.withPackageName(blackBoxPackage);
+				storyStepJUnit.executeBlackBoxTest(path);
+			}
 		}
 	}
 	
@@ -87,13 +107,15 @@ public class ReflectionBlackBoxTester {
 
 		withIgnoreClazzes(Story.class, "dumpHTML", "writeFile");
 		withIgnoreClazzes(ErrorHandler.class);
-		withIgnoreClazzes(SimpleController.class, "init", "saveException", "createContent", "showContent", "withErrorPath");
+		withIgnoreClazzes(SimpleController.class, "init", "saveException", "createContent", "showContent", "withErrorPath", "start");
 		withIgnoreClazzes(Server_TCP.class);
 		withIgnoreClazzes(Server_UPD.class);
 		withIgnoreClazzes(Server_Time.class);
 		withIgnoreClazzes(Space.class);
 		withIgnoreClazzes(NodeProxyServer.class);
 		withIgnoreClazzes(NodeProxyTCP.class, "initProxy");
+		withIgnoreClazzes(ReflectionBlackBoxTester.class, "main");
+		withIgnoreClazzes(StoryStepJUnit.class, "update");
 		
 //		withIgnoreClazzes(TimerExecutor.class.getName());
 	}		
@@ -136,7 +158,11 @@ public class ReflectionBlackBoxTester {
 	}
 
 	public void test(String packageName, NetworkParserLog logger) throws ClassNotFoundException, IOException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		
+		
+		System.setProperty("Tester", "true");
 		ArrayList<Class<?>> classesForPackage = getClassesForPackage(packageName);
+		System.out.println("no"+classesForPackage.size());
 		errorCount = 0;
 		successCount = 0;
 		this.packageName = packageName;
@@ -145,7 +171,7 @@ public class ReflectionBlackBoxTester {
 		for(Class<?> clazz : classesForPackage) {
 			SimpleSet<String> methods = this.ignoreMethods.get(clazz.getName());
 			if(methods != null && methods.size()<1) {
-				System.out.println("Ignore:"+clazz.getName());
+//				System.out.println("Ignore:"+clazz.getName());
 				continue;
 			}
 			Constructor<?>[] constructors = clazz.getDeclaredConstructors();
@@ -169,7 +195,7 @@ public class ReflectionBlackBoxTester {
 			}
 		}
 		// Write out all Results
-		output(this, "Errors: "+errorCount+ "/" + (errorCount+ successCount), logger, NetworkParserLog.LOGLEVEL_INFO);
+		output(this, "Errors: "+errorCount+ "/" + (errorCount+ successCount), logger, NetworkParserLog.LOGLEVEL_INFO, null);
 	}
 	
 	
@@ -225,6 +251,7 @@ public class ReflectionBlackBoxTester {
 				try {
 					call = getParameters(parameterTypes, RANDOMVALUE);
 //					output(clazz.getName()+"-call: "+m.getName(), logger, NetworkParserLog.LOGLEVEL_ERROR);
+
 					m.invoke(obj, call);
 					successCount++;
 				} catch(Exception e) {
@@ -237,7 +264,7 @@ public class ReflectionBlackBoxTester {
 				f.setAccessible(true);
 				Object value = f.get(obj);
 				if(value == null) {
-					output(f, "field null", logger, NetworkParserLog.LOGLEVEL_WARNING);
+					output(f, "field null", logger, NetworkParserLog.LOGLEVEL_WARNING, null);
 				}
 				if(Modifier.isFinal(f.getModifiers())) {
 					continue;
@@ -264,7 +291,7 @@ public class ReflectionBlackBoxTester {
 			String[] split = line.split("\\.");
 			shortName = line.substring(0, line.lastIndexOf(":") - 4) +m.getName()+"("+split[split.length - 2] + "."+split[split.length - 1]+")";
 		}
-		output(m, "at "+clazz.getName()+": "+e.getCause()+" "+shortName+" : ", logger, NetworkParserLog.LOGLEVEL_WARNING);
+		output(m, "at "+clazz.getName()+": "+e.getCause()+" "+shortName+" : ", logger, NetworkParserLog.LOGLEVEL_ERROR, e);
 		errorCount++;
 	}
 
@@ -291,9 +318,9 @@ public class ReflectionBlackBoxTester {
 		return sb.toString();
 	}
 
-	public void output(Object owner, String message, NetworkParserLog logger, int logLevel) {
+	public void output(Object owner, String message, NetworkParserLog logger, int logLevel, Exception e) {
 		if(logger != null) {
-			logger.log(owner, "output", message, logLevel);
+			logger.log(owner, "output", message, logLevel, e);
 		}
 	}
 	
@@ -455,10 +482,13 @@ public class ReflectionBlackBoxTester {
 				if (file.endsWith(".class")) {
 					try {
 //						output(pckgname + '.' + file.substring(0, file.length() - 6), null, Net);
-						classes.add(Class.forName(pckgname + '.'
-								+ file.substring(0, file.length() - 6)));
-					} catch (NoClassDefFoundError e) {
-					} catch (ExceptionInInitializerError e) {
+						String className=pckgname; 
+						if(className.length()>0) {
+							className += ".";
+						}
+						className += file.substring(0, file.length() - 6);
+						classes.add(Class.forName(className));
+					} catch (Exception e) {
 						// do nothing. this class hasn't been found by the loader, and we don't care.
 					}
 				} else if ((tmpDirectory = new File(directory, file))	

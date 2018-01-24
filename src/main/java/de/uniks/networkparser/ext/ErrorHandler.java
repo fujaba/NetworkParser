@@ -359,4 +359,8 @@ public class ErrorHandler implements Thread.UncaughtExceptionHandler {
 	public void addListener(ObjectCondition world) {
 		list.add(world);
 	}
+
+	public String getPath() {
+		return path;
+	}
 }

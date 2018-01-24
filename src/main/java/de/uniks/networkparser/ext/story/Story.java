@@ -24,7 +24,8 @@ public class Story implements Comparable<Story> {
 	private int counter=-1;
 	private boolean breakOnAssert=true;
 	private IdMap map;
-	private SortedSet<Story> stories = new SortedSet<Story>(true); 
+	private SortedSet<Story> stories = new SortedSet<Story>(true);
+	private String path="doc/";
 
 	// COUNTER
 	// ADDTABLE
@@ -164,7 +165,11 @@ public class Story implements Comparable<Story> {
 				return false;
 			}
 		}
-		return FileBuffer.writeFile("doc/" + fileName, output.toString(2));
+		return FileBuffer.writeFile(path + fileName, output.toString(2));
+	}
+	
+	public String getPath() {
+		return path;
 	}
 	
 	public boolean addDescription(String key, String value) {

@@ -35,23 +35,6 @@ public final class SimpleEvent extends PropertyChangeEvent {
 	}
 	
 	/**
-	 * Constructor for example Filter Regard or Convertable
-	 * @param type		typ of Event
-	 * @param source	List Container
-	 * @param property	Property of Event
-	 * @param oldValue	Old Element
-	 * @param newValue	new Element
-	 * @param depth		depth of Element in Model structure
-	 * @param modelItem	the original modelItem 
-	 */
-	public SimpleEvent(String type, BaseItem source, String property, Object oldValue, Object newValue, int depth, Object modelItem) {
-		super(source, property, oldValue, newValue);
-		this.depth = depth;
-		this.type = type;
-		this.value = modelItem;
-	}
-	
-	/**
 	 * Constructor for example Filter and UpdateJson
 	 * @param type		typ of Event
 	 * @param entity	source Entity
@@ -84,18 +67,17 @@ public final class SimpleEvent extends PropertyChangeEvent {
 	 * @param type		typ of Event
 	 * @param source	List Container
 	 * @param property	Property of Event
+	 * @param index		is the Index of Evententity(List) or depth of Element in Model structure
 	 * @param oldValue	Old Element
-	 * @param newValue	new Element
-	 * @param beforeElement	beforeElement
-	 * @param value	Value of KeyValue List
-	 * @param index is the Index of Evententity
+	 * @param newValue	New Element
+	 * @param value		Value of KeyValue List or the original modelItem,
 	 */
-	public SimpleEvent(String type, BaseItem source, String property, Object oldValue, Object newValue, Object beforeElement, Object value, int index) {
+	public SimpleEvent(String type, BaseItem source, String property, int index, Object oldValue, Object newValue, Object value, Object before) {
 		super(source, property, oldValue, newValue);
 		this.type = type;
-		this.value = value;
-		this.beforeElement = beforeElement;
 		this.depth = index;
+		this.beforeElement = before;
+		this.value = value;
 	}
 	
 	public int getIndex() {

@@ -151,7 +151,7 @@ public class Filter {
 		if (this.convertable == null && this.property == null) {
 			return 1;
 		}
-		SimpleEvent event = new SimpleEvent(this.strategy, map, property, null, value, deep, entity);
+		SimpleEvent event = new SimpleEvent(this.strategy, map, property, deep, value, null, entity, null);
 		if(this.property != null && this.property.update(event) == false) {
 			return -1;
 		}

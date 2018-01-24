@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.ext.ErrorHandler;
 import de.uniks.networkparser.ext.Os;
 import de.uniks.networkparser.ext.StartData;
@@ -186,11 +187,26 @@ public class SimpleController implements ObjectCondition{
 				items.add(fileName);
 			}
 			if(this.javaAgent != null) {
-				items.add("-javaagent:"+this.javaAgent);
+				String path = this.errorHandler.getPath();
+				
+				String agent = this.javaAgent;
+				if(path != null) {
+					agent += "=destfile="+path+"jacoco.exec";
+							
+				}
+
+				items.add("-javaagent:" + agent);
 				items.add(ReflectionBlackBoxTester.class.getName());
 				items.add("test="+mainClass);
+				
+				if(path != null) {
+					items.add("path="+path);
+				}				
 			}
 
+			if(Os.isReflectionTest()) {
+				return null;
+			}
 			ProcessBuilder processBuilder = new ProcessBuilder(items);
 		    Map< String, String > environment = processBuilder.environment();
 		    environment.put("CLASSPATH", System.getProperty("java.class.path"));
@@ -338,10 +354,31 @@ public class SimpleController implements ObjectCondition{
 		return -1;
 	}
 	
-	public SimpleController withAgent(String agent, String mainClass) {
+	public SimpleController withAgent(String agent, String backBoxTester, String... mainClass) {
 		this.javaAgent = agent;
-		this.mainClass = mainClass;
+		CharacterBuffer testClasses=new CharacterBuffer();
+		if(mainClass != null) {
+			for(String test : mainClass) {
+				if(testClasses.length()>0) {
+					testClasses.with(',');
+				}
+				testClasses.with(test);
+			}
+		}
+		if(backBoxTester != null) {
+			if(testClasses.length()>0) {
+				testClasses.with(',');
+			}
+			testClasses.add("backboxtest="+backBoxTester);
+		}
+		this.mainClass = testClasses.toString();
 		return this;
+	}
+	public SimpleController withAgent(String agent, boolean backBoxTester, String... mainClass) {
+		if(backBoxTester) {
+			return withAgent(agent, "", mainClass);
+		}
+		return withAgent(agent, null, mainClass);
 	}
 	
 	public SimpleController withOutput(String value) {

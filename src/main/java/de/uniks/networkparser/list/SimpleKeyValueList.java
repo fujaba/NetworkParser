@@ -667,6 +667,5 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 			table[i][1] = this.getValueByIndex(i);
 		}
 		return table;
-		
 	}
 }

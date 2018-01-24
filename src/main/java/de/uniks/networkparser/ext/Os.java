@@ -15,7 +15,6 @@ public class Os {
 		String os = System.getProperty("os.name").toLowerCase();
 		// windows
 		return (os.indexOf("win") >= 0);
-
 	}
 
 	public static boolean isMac() {
@@ -26,8 +25,12 @@ public class Os {
 
 	public static boolean isIOS() {
 		String os = System.getProperty("os.name").toLowerCase();
-		// Mac
+		// IOS
 		return (os.indexOf("ios") >= 0);
+	}
+	
+	public static boolean isReflectionTest() {
+		return System.getProperty("Tester") != null;
 	}
 
 	public static boolean isAndroid() {

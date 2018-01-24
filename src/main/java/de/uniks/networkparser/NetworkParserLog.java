@@ -109,12 +109,17 @@ public class NetworkParserLog {
 	 * @param owner		The Element with call the Methods
 	 * @param method	The Caller-Method
 	 * @param message	log this message
+	 * @param params	advanced Information
 	 * @return boolean if method must Cancel
 	 */
-	public boolean info(Object owner, String method, String message) {
+	public boolean info(Object owner, String method, String message, Object... params) {
 		if((flag & LOGLEVEL_INFO) != 0) {
 			if(condition!= null) {
-				return condition.update(new SimpleEvent(owner, method, null, message).withType(INFO));
+				Object values=params;
+				if(params != null && params.length == 1) {
+					values = params[0];
+				}
+				return condition.update(new SimpleEvent(owner, method, null, message).withModelValue(values).withType(INFO));
 			}
 		}
 		return false;
@@ -137,12 +142,13 @@ public class NetworkParserLog {
 	 * @param owner		The Element with call the Methods
 	 * @param method	The Caller-Method
 	 * @param message	log this message
+	 * @param params	advanced Information
 	 * @return boolean if method must Cancel
 	 */
-	public boolean warn(Object owner, String method, String message) {
+	public boolean warn(Object owner, String method, String message, Object... params) {
 		if((flag & LOGLEVEL_WARNING) != 0) {
 			if(condition!= null) {
-				return condition.update(new SimpleEvent(owner, method, null, message).withType(WARNING));
+				return condition.update(new SimpleEvent(owner, method, null, message).withModelValue(params).withType(WARNING));
 			}
 		}
 		return false;
@@ -154,7 +160,7 @@ public class NetworkParserLog {
 	 * @param owner		The Element with call the Methods
 	 * @param method	The Caller-Method
 	 * @param message		Typ of Log Value
-	 * @param params	The Original Parameters
+	 * @param params	advanced Information
 	 * @return boolean if method must Cancel
 	 */
 	public boolean error(Object owner, String method, String message,
@@ -167,14 +173,14 @@ public class NetworkParserLog {
 		return false;
 	}
 	
-	public boolean log(Object owner, String method, String msg, int level) {
+	public boolean log(Object owner, String method, String msg, int level, Object... params) {
 		if(level == LOGLEVEL_ERROR) {
-			return this.error(owner, method, msg);
+			return this.error(owner, method, msg, params);
 		}
 		if(level == LOGLEVEL_WARNING) {
-			return this.warn(owner, method, msg);
+			return this.warn(owner, method, msg, params);
 		}
-		return this.info(owner, method, msg);
+		return this.info(owner, method, msg, params);
 	}
 	
 	public NetworkParserLog withListener(ObjectCondition condition) {
