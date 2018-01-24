@@ -101,6 +101,23 @@ public abstract class GraphModel extends GraphEntity implements BaseItem {
 	}
 	
 	public Clazz createClazz(String name) {
+		if (name == null || children == null || (children instanceof Clazz && name.equals(((Clazz)children).getName()))) {
+			Clazz clazz = new Clazz(name);
+			clazz.setClassModel(this);
+			return clazz;
+		}
+		// So its List
+		if(children instanceof GraphSimpleSet) {
+			GraphSimpleSet items = (GraphSimpleSet)children;
+			for (GraphMember child : items) {
+				if (child instanceof Clazz)  {
+					Clazz clazz=(Clazz) child;
+					if(name.equals(clazz.getName())) {
+						return clazz;
+					}
+				}
+			}
+		}
 		Clazz clazz = new Clazz(name);
 		clazz.setClassModel(this);
 		return clazz;
