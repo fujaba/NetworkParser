@@ -887,22 +887,6 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 		return null;
 	}
 
-	/**
-	 * Read json.
-	 *
-	 * @param value the value for decoding
-	 * @param target the target
-	 * @param filter the filter for decoding
-	 * @return the object
-	 */
-	public Object decode(BaseItem value, Object target, Filter filter) {
-		if (filter == null) {
-			filter = this.filter;
-		}
-		MapEntity map = new MapEntity(filter, flag, this, null);
-		map.withTarget(target);
-		return decoding(value, map);
-	}
 
 	/**
 	 * Read json.
@@ -912,21 +896,34 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 	 * @param filter the filter for decoding
 	 * @return the object
 	 */
-	public Object decode(Buffer value, Object target, Filter filter) {
-		char firstChar = value.nextClean(true);
+	public Object decode(Object value, Object target, Filter filter) {
+		if (filter == null) {
+			filter = this.filter;
+		}
 		BaseItem valueItem=null;
-		if(JsonObject.START == firstChar) {
-			JsonObject item= (JsonObject) this.jsonTokener.newInstance();
-			item.withValue(value);
-			valueItem = item;
-		} else if(JsonArray.START == firstChar) {
-			JsonArray item = (JsonArray) this.jsonTokener.newInstanceList();
-			item.withValue(value);
-			valueItem = item;
-		} else if(XMLEntity.START == firstChar) {
-			XMLEntity item = (XMLEntity) this.xmlTokener.newInstance();
-			item.withValue(value);
-			valueItem = item;
+		if(value instanceof String) {
+			value = new CharacterBuffer().with(((String)value).intern());
+		} else if(value instanceof byte[]) {
+			value = new CharacterBuffer().with((byte[]) value);
+		}
+		if(value instanceof BaseItem) {
+			valueItem = (BaseItem) value;
+		} else if(value instanceof Buffer) {
+			Buffer buffer = (Buffer) value;
+			char firstChar = buffer.nextClean(true);
+			if(JsonObject.START == firstChar) {
+				JsonObject item= (JsonObject) this.jsonTokener.newInstance();
+				item.withValue(buffer);
+				valueItem = item;
+			} else if(JsonArray.START == firstChar) {
+				JsonArray item = (JsonArray) this.jsonTokener.newInstanceList();
+				item.withValue(buffer);
+				valueItem = item;
+			} else if(XMLEntity.START == firstChar) {
+				XMLEntity item = (XMLEntity) this.xmlTokener.newInstance();
+				item.withValue(buffer);
+				valueItem = item;
+			}
 		}
 		if(valueItem == null) {
 			return null;
@@ -938,7 +935,6 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 		map.withTarget(target);
 		return decoding(valueItem, map);
 	}
-
 
 	/**
 	 * Decoding Element to model

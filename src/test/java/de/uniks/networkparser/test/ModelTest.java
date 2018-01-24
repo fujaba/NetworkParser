@@ -191,7 +191,7 @@ public class ModelTest implements ObjectCondition {
 		map.withCreator(new ItemCreator());
 
 		JsonObject jsonObject = map.toJsonObject(uni, Filter.regard(new WhiteListCondition().with(uni.getClass()).with(alice.getClass())));
-		Assert.assertEquals(434, jsonObject.toString().length());
+		Assert.assertEquals(504, jsonObject.toString().length());
 	}
 	@Test
 	public void testJabberChatMessage() {

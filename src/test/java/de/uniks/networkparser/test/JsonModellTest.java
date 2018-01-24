@@ -140,7 +140,7 @@ public class JsonModellTest implements ObjectCondition {
 		map.with(new GroupAccountCreator());
 		String jsonArray = map.toJsonArray(account.getPersons(), Filter.regard(InstanceOf.create(Person.class, Person.PROPERTY_PARENT))).toString(2);
 		System.out.println(jsonArray);
-		Assert.assertEquals(169, jsonArray.length());
+		Assert.assertEquals(229, jsonArray.length());
 	}
 
 	@Test
