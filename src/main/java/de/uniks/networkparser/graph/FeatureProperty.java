@@ -113,6 +113,10 @@ public class FeatureProperty implements Comparable<FeatureProperty> {
 		}
 		return result;
 	}
+	
+	public SimpleList<Clazz> getClazzes() {
+		return includeClazz;
+	}
 
 	public Feature getName() {
 		return name;

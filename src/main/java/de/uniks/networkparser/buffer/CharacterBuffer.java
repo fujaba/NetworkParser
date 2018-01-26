@@ -191,7 +191,31 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence {
 		this.position = 0;
 		return true;
 	}
-	
+
+	public void replace(char search, char replace) {
+		int len = this.length + start;
+		int pos = position + start;
+		if(replace>0) {
+			while(pos < len) {
+				if(buffer[pos] == search) {
+					buffer[pos] = replace;
+				}
+				pos++;
+			}
+		} else {
+			int offset = pos;
+			while(pos < len) {
+				if(buffer[pos] == search) {
+					this.length--;
+				} else {
+					buffer[offset] = buffer[pos];
+					offset++;
+				}
+				pos++;
+			}
+		}
+	}
+
 	public void replace(String search, String replace) {
 		int deleted=0;
 		CharacterBuffer inserts = null;
