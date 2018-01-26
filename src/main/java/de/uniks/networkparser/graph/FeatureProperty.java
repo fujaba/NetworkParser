@@ -15,11 +15,11 @@ public class FeatureProperty implements Comparable<FeatureProperty> {
 	private String value;
 	private Feature name;
 
-	protected FeatureProperty(Feature name) {
+	public FeatureProperty(Feature name) {
 		this.name = name;
 		includeClazz.add(ALL);
 	}
-
+	
 	public FeatureProperty withIncludeClazz(String... value) {
 		if (value == null) {
 			return this;

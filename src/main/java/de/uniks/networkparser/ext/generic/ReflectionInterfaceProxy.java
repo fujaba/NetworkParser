@@ -13,7 +13,13 @@ public class ReflectionInterfaceProxy implements InvocationHandler{
 	@Override
 	public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 		Class<?>[] newTypes = convertTypes(method.getParameterTypes());
-		Method proxyMethod = this.obj.getClass().getMethod(method.getName(), newTypes);
+		Method proxyMethod = null;
+		try {
+			proxyMethod = this.obj.getClass().getMethod(method.getName(), newTypes);
+		}catch(Exception e) {
+			newTypes = convertTypesObject(newTypes);
+			proxyMethod = this.obj.getClass().getMethod(method.getName(), newTypes);
+		}
 		if(proxyMethod != null) {
 			return proxyMethod.invoke(this.obj, args);
 		}
@@ -31,6 +37,14 @@ public class ReflectionInterfaceProxy implements InvocationHandler{
 			} else {
 				newTypes[i] = types[i];
 			}
+		}
+		return newTypes;
+	}
+	
+	private Class<?>[] convertTypesObject(Class<?> [] types) {
+		Class<?>[] newTypes=new Class<?>[types.length];
+		for(int i=0;i<newTypes.length;i++) {
+			newTypes[i] = Object.class;
 		}
 		return newTypes;
 	}

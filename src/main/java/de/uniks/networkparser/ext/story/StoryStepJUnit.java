@@ -1,7 +1,6 @@
 package de.uniks.networkparser.ext.story;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -11,8 +10,11 @@ import de.uniks.networkparser.ext.generic.ReflectionBlackBoxTester;
 import de.uniks.networkparser.ext.generic.ReflectionLoader;
 import de.uniks.networkparser.ext.io.FileBuffer;
 import de.uniks.networkparser.ext.javafx.SimpleController;
+import de.uniks.networkparser.graph.Feature;
+import de.uniks.networkparser.graph.FeatureProperty;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.ObjectCondition;
+import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SimpleSet;
 
@@ -23,7 +25,22 @@ public class StoryStepJUnit implements ObjectCondition {
 	private String packageName = null;
 	private String path = "lib/jacocoagent.jar";
 	private SimpleSet<String> testClasses;
+	private SimpleKeyValueList<String, JacocoColumn> columns = new SimpleKeyValueList<String, JacocoColumn>();
+	private SimpleList<FeatureProperty> groups=new SimpleList<FeatureProperty>();
 	int tabwidth = 4;
+	private JacocoColumn column;
+	public StoryStepJUnit() {
+		this.column = JacocoColumn.create();
+		this.addColumn("BBT", column);
+	}
+
+	public FeatureProperty addGroup(String label) {
+		FeatureProperty feature = new FeatureProperty(Feature.JUNIT);
+		feature.withStringValue(label);
+		
+		this.groups.add(feature);
+		return feature;
+	}
 
 	public boolean writeHTML(String executeData, String outputFile, String label) {
 		Object loader = ReflectionLoader.newInstance("org.jacoco.core.tools.ExecFileLoader");
@@ -32,11 +49,14 @@ public class StoryStepJUnit implements ObjectCondition {
 		}
 		ReflectionLoader.call("load", loader, File.class, new File(executeData));
 		
-		Object storage = ReflectionLoader.call("getExecutionDataStore", loader);
+//		Object storage = ReflectionLoader.call("getExecutionDataStore", loader);
 		
-		Object bundle = analyze(storage,  new File("bin"), label);
+		writeReports(loader, new File(outputFile));
 		
-		writeReports(bundle, loader, new File(outputFile));
+//		Object bundle = analyze(storage,  new File("bin"), label);
+		
+		
+//		writeReports(bundle, loader, new File(outputFile));
 		return true;
 	}
 		
@@ -55,45 +75,91 @@ public class StoryStepJUnit implements ObjectCondition {
 	}
 	
 	private void writeReports(Object bundle, Object loader, File html) {
-//        Object formater = ReflectionLoader.newInstance("org.jacoco.report.html.HTMLFormatter");
-		Object formater = getHTMLFormatter();
-
+        Object formater = ReflectionLoader.newInstance("org.jacoco.report.html.HTMLFormatter");
+		
+		Object table = ReflectionLoader.call("getTable", formater);
+		
+		for(int i=0;i<columns.size();i++) {
+			ReflectionLoader.callStr("add", table, 
+					String.class, columns.getKeyByIndex(i),
+					String.class, "ctr2",
+					"org.jacoco.report.internal.html.table.IColumnRenderer", columns.getValueByIndex(i).getProxy(),
+					boolean.class, false);
+		}
+		
 		Object output = ReflectionLoader.newInstance("org.jacoco.report.FileMultiReportOutput", File.class, html);
 		
 		Object visitor = ReflectionLoader.callStr("createVisitor", formater, "org.jacoco.report.IMultiReportOutput", output);
 		
-		ArrayList<Object> items = new ArrayList<Object>();
-		items.add(visitor);
-		
-		
-		items.add(getCustomVisitor());
-		
-		Object multiVisitor = ReflectionLoader.newInstanceStr("org.jacoco.report.MultiReportVisitor", List.class, items);
-		
-		
 		Object info = ReflectionLoader.callChain(loader, "getSessionInfoStore", "getInfos");
 		Object content = ReflectionLoader.callChain(loader, "getExecutionDataStore", "getContents");
-//		ReflectionLoader.call("visitInfo", visitor, List.class, info, Collection.class, content);
-		ReflectionLoader.call("visitInfo", multiVisitor, List.class, info, Collection.class, content);
-		ReflectionLoader.callStr("visitBundle", multiVisitor, 
+
+		ReflectionLoader.call("visitInfo", visitor, List.class, info, Collection.class, content);
+		
+		
+		
+		if (groups.isEmpty()) {
+		
+		} else {
+			final IReportGroupVisitor groupVisitor = visitor
+					.visitGroup(group.name);
+			for (final GroupElement child : group.children) {
+				createReport(groupVisitor, child);
+			}
+		}
+
+		ReflectionLoader.call("visitEnd", visitor);
+	}
+	private Object createBundle(Object executionDataStore, GroupElement group) {
+		Object builder = ReflectionLoader.newInstance("org.jacoco.core.analysis.CoverageBuilder");
+		if(builder == null) {
+			return null;
+		}
+		Object analyzer = ReflectionLoader.newInstanceStr("org.jacoco.core.analysis.Analyzer", 
+							"org.jacoco.core.data.ExecutionDataStore", executionDataStore,
+							"org.jacoco.core.analysis.ICoverageVisitor", builder);
+		
+		
+		for (final Iterator<?> i = group.classfiles.iterator(); i.hasNext();) {
+			final Resource resource = (Resource) i.next();
+			if (resource.isDirectory() && resource instanceof FileResource) {
+				analyzer.analyzeAll(((FileResource) resource).getFile());
+			} else {
+				final InputStream in = resource.getInputStream();
+				analyzer.analyzeAll(in, resource.getName());
+				in.close();
+			}
+		}
+		final IBundleCoverage bundle = builder.getBundle(group.name);
+		
+		
+		
+		
+		ReflectionLoader.call("analyzeAll", analyzer, File.class, classfiles);
+		
+		return ReflectionLoader.call("getBundle", builder, name);
+		
+		
+		final Analyzer analyzer = new Analyzer(executionDataStore, builder);
+		for (final Iterator<?> i = group.classfiles.iterator(); i.hasNext();) {
+			final Resource resource = (Resource) i.next();
+			if (resource.isDirectory() && resource instanceof FileResource) {
+				analyzer.analyzeAll(((FileResource) resource).getFile());
+			} else {
+				final InputStream in = resource.getInputStream();
+				analyzer.analyzeAll(in, resource.getName());
+				in.close();
+			}
+		}
+		final IBundleCoverage bundle = builder.getBundle(group.name);
+		return bundle;
+	}
+	private createReport(Object visitor, Object group) {
+		ReflectionLoader.callStr("visitBundle", visitor, 
 				"org.jacoco.core.analysis.IBundleCoverage", bundle, 
 				"org.jacoco.report.ISourceFileLocator", getSourceLocator());
-		
-		
-		//		ReflectionLoader.callStr("visitBundle", visitor, 
-//		ReflectionLoader.call("visitEnd", visitor);
-		ReflectionLoader.call("visitEnd", multiVisitor);
 	}
 	
-	protected Object getHTMLFormatter() {
-		return ReflectionLoader.newInstance("org.jacoco.report.html.HTMLFormatter");
-	}
-	
-	protected Object getCustomVisitor() {
-		//IReportVisitor
-		return null;
-	}
-		
 	private Object getSourceLocator() {
 		List<File> sourcefiles = new SimpleList<File>();
 		sourcefiles.add(new File("src/main/java"));
@@ -107,7 +173,6 @@ public class StoryStepJUnit implements ObjectCondition {
 		}
 		return multi;
 	}
-	
 	
 	public boolean executeBlackBoxTest(String path) {
 		this.path = path;
@@ -242,5 +307,13 @@ public class StoryStepJUnit implements ObjectCondition {
 		this.path = path;
 		return this;
 	}
+	
+	public StoryStepJUnit addColumn(String name, JacocoColumn callback) {
+		this.columns.add(name, callback);
+		return this;
+	}
 
+	public void addValueToList(String key, int no) {
+		this.column.addValueToList(key, no);
+	}
 }
