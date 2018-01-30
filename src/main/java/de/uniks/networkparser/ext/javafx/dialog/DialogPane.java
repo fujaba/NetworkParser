@@ -1,7 +1,7 @@
 package de.uniks.networkparser.ext.javafx.dialog;
 
-import de.uniks.networkparser.ext.HTMLUtil;
 import de.uniks.networkparser.ext.generic.ReflectionLoader;
+import de.uniks.networkparser.ext.javafx.JavaBridgeFX;
 
 public class DialogPane implements Runnable {
 	private Object opaqueLayer;
@@ -24,10 +24,10 @@ public class DialogPane implements Runnable {
 			this.initWidth  = this.owner.prefHeight(-1);
 			if(owner.isModel() == false) {
 				opaqueLayer = ReflectionLoader.newInstance(ReflectionLoader.REGION);
-				HTMLUtil.setStyle(opaqueLayer, false, "lightweight-dialog-background");
-				HTMLUtil.addChildren(pane, 0, opaqueLayer);
+				JavaBridgeFX.setStyle(opaqueLayer, false, "lightweight-dialog-background");
+				JavaBridgeFX.addChildren(pane, 0, opaqueLayer);
 			}
-			HTMLUtil.addChildren(pane, -1, owner.getRoot());
+			JavaBridgeFX.addChildren(pane, -1, owner.getRoot());
 		}
 		ReflectionLoader.call("setManaged", pane, boolean.class, true);
 	}

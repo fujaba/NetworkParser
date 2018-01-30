@@ -32,7 +32,7 @@ public class HTMLTest {
 		html.withValue("<!doctype html>"+sb.toString());
 //		Assert.assertEquals(sb.toString(), html.toString());
 		
-//		HTMLEntity answer = HTMLUtil.getHTTP("http://www.google.de");
+//		HTMLEntity answer = SocketUtil.getHTTP("http://www.google.de");
 //		System.out.println(answer);
 //		
 //		System.out.println(html);

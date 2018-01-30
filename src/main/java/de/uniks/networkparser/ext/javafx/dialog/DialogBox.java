@@ -28,8 +28,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import de.uniks.networkparser.ext.HTMLUtil;
 import de.uniks.networkparser.ext.generic.ReflectionLoader;
+import de.uniks.networkparser.ext.javafx.JavaBridgeFX;
 import de.uniks.networkparser.gui.controls.Button;
 import de.uniks.networkparser.gui.controls.Control;
 import de.uniks.networkparser.gui.controls.Label;
@@ -119,7 +119,7 @@ public class DialogBox implements ObjectCondition{
 		
 		ReflectionLoader.call("setVisible", root, boolean.class, true);
 		if (originalParent != null) {
-			HTMLUtil.addChildren(myPane.getPane(), 0, originalParent);
+			JavaBridgeFX.addChildren(myPane.getPane(), 0, originalParent);
 			Map<Object,Object> properties = (Map<Object, Object>) ReflectionLoader.call("getProperties", originalParent);
 			
 			Map<Object, Object> dialogProperties = (Map<Object, Object>) ReflectionLoader.call("getProperties", myPane.getPane());
@@ -146,8 +146,8 @@ public class DialogBox implements ObjectCondition{
 			Object scene = ReflectionLoader.call("getScene", stage);
 			Object oldParent = ReflectionLoader.call("getRoot", scene);
 			
-			HTMLUtil.removeChildren(oldParent, originalParent);
-			HTMLUtil.removeStyle(originalParent, "root");
+			JavaBridgeFX.removeChildren(oldParent, originalParent);
+			JavaBridgeFX.removeStyle(originalParent, "root");
 			ReflectionLoader.call("setRoot", scene, ReflectionLoader.PARENT, originalParent);
 			return;
 		}
@@ -239,7 +239,7 @@ public class DialogBox implements ObjectCondition{
 
 	public void createContent() {
 		root = ReflectionLoader.newInstance(ReflectionLoader.BORDERPANE);
-		HTMLUtil.setStyle(root, false, "dialog", "decorated-root");
+		JavaBridgeFX.setStyle(root, false, "dialog", "decorated-root");
 
 		ObjectCondition condition = new ObjectCondition() {
 			@Override
@@ -251,17 +251,17 @@ public class DialogBox implements ObjectCondition{
 		};
 		
 		Object property = ReflectionLoader.call("focusedProperty", stage);
-		HTMLUtil.addListener(property, "addListener", ReflectionLoader.CHANGELISTENER, condition);
+		JavaBridgeFX.addListener(property, "addListener", ReflectionLoader.CHANGELISTENER, condition);
 
 		// --- titlebar (only used for cross-platform look)
 		dialogTitleBar = ReflectionLoader.newInstance(ReflectionLoader.TOOLBAR);
-		HTMLUtil.setStyle(dialogTitleBar, false, "window-header");
+		JavaBridgeFX.setStyle(dialogTitleBar, false, "window-header");
 		ReflectionLoader.call("setPrefHeight", dialogTitleBar, double.class, HEADER_HEIGHT);
 		ReflectionLoader.call("setMinHeight", dialogTitleBar, double.class, HEADER_HEIGHT);
 		ReflectionLoader.call("setMaxHeight", dialogTitleBar, double.class, HEADER_HEIGHT);
 		for(Control element : titleElements) {
-			Object guiElement = HTMLUtil.convert(element, true);
-			HTMLUtil.addChildren(dialogTitleBar, -1, guiElement);
+			Object guiElement = JavaBridgeFX.convert(element, true);
+			JavaBridgeFX.addChildren(dialogTitleBar, -1, guiElement);
 		}
 		
 		condition = new ObjectCondition() {
@@ -273,7 +273,7 @@ public class DialogBox implements ObjectCondition{
 				return true;
 			}
 		};
-		HTMLUtil.addListener(dialogTitleBar, "setOnMousePressed", ReflectionLoader.EVENTHANDLER, condition);
+		JavaBridgeFX.addListener(dialogTitleBar, "setOnMousePressed", ReflectionLoader.EVENTHANDLER, condition);
 
 		
 		condition = new ObjectCondition() {
@@ -295,17 +295,17 @@ public class DialogBox implements ObjectCondition{
 				return true;
 			}
 		};
-		HTMLUtil.addListener(dialogTitleBar, "setOnMouseDragged", ReflectionLoader.EVENTHANDLER, condition);
+		JavaBridgeFX.addListener(dialogTitleBar, "setOnMouseDragged", ReflectionLoader.EVENTHANDLER, condition);
 
 		ReflectionLoader.call("setTop", root, ReflectionLoader.NODE, dialogTitleBar);
 		ReflectionLoader.call("setCenter", root, ReflectionLoader.NODE, center);
 		if(this.actionElements.size() > 0) {
 			Object actionToolbar = ReflectionLoader.newInstance(ReflectionLoader.HBOX);
-			HTMLUtil.setStyle(actionToolbar, false, "window-action");
+			JavaBridgeFX.setStyle(actionToolbar, false, "window-action");
 			for(Control item : this.actionElements) {
-				Object guiElement = HTMLUtil.convert(item, false);
+				Object guiElement = JavaBridgeFX.convert(item, false);
 //				item.withOwner(this);
-				HTMLUtil.addChildren(actionToolbar, -1, guiElement);
+				JavaBridgeFX.addChildren(actionToolbar, -1, guiElement);
 			}
 			Object pos = ReflectionLoader.getField("TOP_RIGHT", ReflectionLoader.POS);
 			ReflectionLoader.call("setAlignment", actionToolbar, ReflectionLoader.POS, pos);
@@ -383,15 +383,15 @@ public class DialogBox implements ObjectCondition{
 		Object imageView = ReflectionLoader.newInstance(ReflectionLoader.IMAGEVIEW, String.class, resource.toString());
 		
 		Object text = ReflectionLoader.newInstance(ReflectionLoader.LABEL, String.class, value);
-		HTMLUtil.setStyle(text, false, "labelText");
+		JavaBridgeFX.setStyle(text, false, "labelText");
 
 		Object vBox = ReflectionLoader.newInstance(ReflectionLoader.VBOX);
 		Object pos = ReflectionLoader.getField("CENTER", ReflectionLoader.POS);
 		ReflectionLoader.call("setAlignment", vBox, ReflectionLoader.POS, pos);
-		HTMLUtil.addChildren(vBox, -1, text);
+		JavaBridgeFX.addChildren(vBox, -1, text);
 
-		HTMLUtil.addChildren(box, -1, imageView, vBox);
-		HTMLUtil.setStyle(box, false, "centerbox");
+		JavaBridgeFX.addChildren(box, -1, imageView, vBox);
+		JavaBridgeFX.setStyle(box, false, "centerbox");
 		this.center = box;
 		return this;
 	}

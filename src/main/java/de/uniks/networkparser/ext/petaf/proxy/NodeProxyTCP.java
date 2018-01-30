@@ -3,21 +3,36 @@ package de.uniks.networkparser.ext.petaf.proxy;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.HttpURLConnection;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.net.URL;
 import java.net.UnknownHostException;
 import java.nio.charset.Charset;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.buffer.ByteBuffer;
+import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.ext.petaf.Message;
 import de.uniks.networkparser.ext.petaf.NodeProxy;
 import de.uniks.networkparser.ext.petaf.NodeProxyType;
 import de.uniks.networkparser.ext.petaf.Server_TCP;
 import de.uniks.networkparser.ext.petaf.messages.ConnectMessage;
+import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.ObjectCondition;
+import de.uniks.networkparser.xml.HTMLEntity;
 
 public class NodeProxyTCP extends NodeProxy {
+	public static int BUFFER=100*1024;
+	public static final String POST="POST";
+	public static final String GET="GET";
+	public static final String PUT = "PUT";
+	public static final String PATCH = "PATCH";
+	public static final String DELETE = "DELETE";
+	
 	public static final String PROPERTY_URL = "url";
 	public static final String PROPERTY_PORT = "port";
 	protected int port;
@@ -283,4 +298,104 @@ public class NodeProxyTCP extends NodeProxy {
 		this.allowAnswer = true;
 		return this;
 	}
+	
+	public static HTMLEntity postHTTP(String url, Map<String, String> params) {
+		HttpURLConnection conn = getConnection(url, POST);
+		if(conn == null) {
+			return null;
+		}
+		CharacterBuffer sb=new CharacterBuffer();
+		if(params != null) {
+			for(Iterator<Entry<String, String>> i = params.entrySet().iterator();i.hasNext();) {
+				Entry<String, String> item = i.next();
+				if(sb.length() > 0 ) {
+					sb.with('&');
+				}
+				sb.with(item.getKey(), "=", item.getValue());
+			}
+		}
+		byte[] byteArray = sb.toByteArray();
+		conn.setFixedLengthStreamingMode(byteArray.length);
+		conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
+		try {
+			conn.connect();
+			OutputStream os = conn.getOutputStream();
+			os.write(byteArray);
+			return readAnswer(conn);
+		} catch (IOException e) {
+		}
+		
+		return null;
+	}
+	
+	public static HTMLEntity postHTTP(String url, BaseItem params) {
+		HttpURLConnection conn = getConnection(url, POST);
+		if(conn == null) {
+			return null;
+		}
+		CharacterBuffer sb=new CharacterBuffer();
+		if(params != null) {
+			sb.with(params.toString());
+		}
+		byte[] byteArray = sb.toByteArray();
+		conn.setFixedLengthStreamingMode(byteArray.length);
+		conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
+		try {
+			conn.connect();
+			OutputStream os = conn.getOutputStream();
+			os.write(byteArray);
+			return readAnswer(conn);
+		} catch (IOException e) {
+		}
+		
+		return null;
+	}
+	
+	private static HttpURLConnection getConnection(String url, String type) {
+		HttpURLConnection conn =null;
+		try {
+			if(url.startsWith("localhost") ) {
+				url = "http://"+url;
+			}
+			URL remoteURL = new URL(url);
+			conn = (HttpURLConnection) remoteURL.openConnection();
+			if(POST.equals(type)) {
+				conn.setRequestMethod(POST);
+				conn.setDoOutput(true);
+			} else {
+				conn.setRequestMethod(GET);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return conn;
+	}
+	
+	private static HTMLEntity readAnswer(HttpURLConnection conn) {
+		HTMLEntity rootItem=new HTMLEntity();
+		try {
+			InputStream is = conn.getInputStream();
+			StringBuilder sb = new StringBuilder();
+			byte[] messageArray = new byte[BUFFER];
+			while (true) {
+				int bytesRead = is.read(messageArray, 0, BUFFER);
+				if (bytesRead <= 0)
+					break; // <======= no more data
+				sb.append(new String(messageArray, 0, bytesRead, Charset.forName("UTF-8")));
+			}
+			rootItem.withValue(sb.toString());
+		}catch (IOException e) {
+		}
+		conn.disconnect();
+		return rootItem;
+	}
+	
+	public static HTMLEntity getHTTP(String url) {
+		HttpURLConnection conn = getConnection(url, GET);
+		if(conn == null) {
+			return null;
+		}
+		return readAnswer(conn);
+	}
+	
 }
