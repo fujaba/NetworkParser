@@ -730,6 +730,7 @@ public class EntityUtil {
 
 	private static final String primitiveTypes = " void String char Char boolean Boolean byte Byte Object java.util.Date ";
 	private static final String numericTypes = " long Long short Short int Integer byte Byte float Float double Double ";
+    private static final String types = "         long    Long    short   Short   int     Integer byte    Byte    float   Float   double  Double  char    Char    boolean Boolean ";
 	private static final String javaLang="java.lang.";
 	private static final String modifier=" public protected private static abstract final native synchronized transient volatile strictfp ";
 	
@@ -762,6 +763,28 @@ public class EntityUtil {
 			type = type.substring(javaLang.length() +1 );
 		}
 		return numericTypes.indexOf(" " + type + " ") >= 0;
+	}
+	
+	public static final boolean isNumericTypeContainer(String typeA, String typeB) {
+		if (typeA == null || typeB == null) {
+			return typeA == typeB;
+		}
+		if(typeA.startsWith(javaLang)) {
+			typeA = typeA.substring(javaLang.length() +1 );
+		}
+		if(typeB.startsWith(javaLang)) {
+			typeB = typeB.substring(javaLang.length() +1 );
+		}
+		int posA = types.indexOf(" " + typeA + " ");
+		if(posA<0) {
+			return false;
+		}
+		posA = posA / 8;
+		int posB = types.indexOf(" " + typeB + " ") / 8;
+		if(posA % 2 == 1) {
+			return posB-1 == posA;
+		}
+		return posB+1 == posA;
 	}
 
 	public static final String convertPrimitiveToObjectType(String type) {

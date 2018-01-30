@@ -256,4 +256,48 @@ public class StringTest {
 		System.out.println(sb.toString());
 	}
 	
+	
+	@Test
+	public void testLeventaion() {
+		
+		Assert.assertEquals("NULL", 0, new CharacterBuffer().equalsLevenshtein(null), 0.001);
+		 
+		 Assert.assertEquals("EMPTY", 0, new CharacterBuffer().equalsLevenshtein(new CharacterBuffer().with("")), 0.001);
+		 
+		 Assert.assertEquals("a", 1, new CharacterBuffer().equalsLevenshtein(new CharacterBuffer().with("a")), 0.001);
+
+		 Assert.assertEquals("aaapppp", 7, new CharacterBuffer().with("aaapppp").equalsLevenshtein(new CharacterBuffer().with("")), 0.001);
+
+		 Assert.assertEquals("fog", 1, new CharacterBuffer().with("frog").equalsLevenshtein(new CharacterBuffer().with("fog")), 0.001);
+		 
+		 Assert.assertEquals("fly", 3, new CharacterBuffer().with("fly").equalsLevenshtein(new CharacterBuffer().with("ant")), 0.001);
+		 
+		 Assert.assertEquals("elephant", 7, new CharacterBuffer().with("elephant").equalsLevenshtein(new CharacterBuffer().with("hippo")), 0.001);
+		 
+		 Assert.assertEquals("hippo", 7, new CharacterBuffer().with("hippo").equalsLevenshtein(new CharacterBuffer().with("elephant")), 0.001);
+		 
+		 Assert.assertEquals("hippo", 8, new CharacterBuffer().with("hippo").equalsLevenshtein(new CharacterBuffer().with("zzzzzzzz")), 0.001);
+		 
+		 Assert.assertEquals("hello", 1, new CharacterBuffer().with("hello").equalsLevenshtein(new CharacterBuffer().with("hallo")), 0.001);
+
+		 Assert.assertEquals("hello", 0.01, new CharacterBuffer().with("hello").equalsLevenshtein(new CharacterBuffer().with("Hello")), 0.001);
+		 
+		 Assert.assertEquals("hippofant", 4, new CharacterBuffer().with("hippo").equalsLevenshtein(new CharacterBuffer().with("hippofant")), 0.001);
+		 
+		 Assert.assertEquals("hippofant", -7, new CharacterBuffer().with("hippofant").equalsLevenshtein(new CharacterBuffer().with("po")), 0.001);
+	}
+	
+	@Test
+	public void testModelType() {
+		Assert.assertTrue(EntityUtil.isNumericTypeContainer("long", "Long"));
+		Assert.assertTrue(EntityUtil.isNumericTypeContainer("boolean", "Boolean"));
+		Assert.assertTrue(EntityUtil.isNumericTypeContainer("int", "Integer"));
+		Assert.assertTrue(EntityUtil.isNumericTypeContainer("double", "Double"));
+		Assert.assertTrue(EntityUtil.isNumericTypeContainer("Boolean", "boolean"));
+		Assert.assertTrue(EntityUtil.isNumericTypeContainer("Integer", "int"));
+		Assert.assertTrue(EntityUtil.isNumericTypeContainer("Double", "double"));
+		Assert.assertFalse(EntityUtil.isNumericTypeContainer("int", "Short"));
+		Assert.assertFalse(EntityUtil.isNumericTypeContainer("int", "byte"));
+		Assert.assertFalse(EntityUtil.isNumericTypeContainer("int", "Byte"));
+	}
 }

@@ -800,6 +800,94 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence {
 		}
 		return l==other.length;
 	}
+	
+	/*
+	 * Get Levenstein distance
+	 * 
+	 * @param t the other String
+	 * 
+	 * == 0 both String are equals
+	 * pro Case difference ( + 0.01 )
+	 * pro difference ( + 1 )
+	 * if this contains t Levenstein is negativ 
+	 */
+	public double equalsLevenshtein(CharacterBuffer t) {
+		if(t == null || t.length() < 1) {
+			return this.length();
+		}
+		if(this.length()<1) {
+			return t.length();
+		}
+		int n = this.length();
+		int m = t.length();
+		CharacterBuffer s = this;
+		
+		if (n > m) {
+			// swap the input strings to consume less memory
+			s = t;
+			t = this;
+			n = m;
+			m = this.length();
+		}
+		final double p[] = new double[n + 1]; // indexes into strings s and t
+		int i; // iterates through s
+		int j; // iterates through t
+		double upper_left;
+		double upper;
+		char t_j; // jth character of t
+		double cost;
+		for (i = 0; i <= n; i++) {
+			p[i] = i;
+		}
+		int containsPos=1;
+		boolean search=true;
+		for (j = 1; j <= m; j++) {
+			upper_left = p[0];
+			t_j = t.charAt(j - 1);
+			p[0] = j;
+			search = true;
+			for (i = 1; i <= n; i++) {
+				upper = p[i];
+				if(s.charAt(i - 1) == t_j ) {
+					cost = 0;
+					if(containsPos == i) {
+						containsPos++;
+						search = false;
+					}
+				} else if(toLower(t_j) == toLower(s.charAt(i - 1) )) {
+					if(s.charAt(0) == t_j ) {
+						containsPos = 2;
+					} else {
+						containsPos = 1;
+					}
+					cost = 0.01;
+				}else {
+					cost = 1;
+					if(containsPos == i && search) {
+						if(s.charAt(0) == t_j ) {
+							containsPos = 2;
+						} else {
+							containsPos = 1;
+						}
+					}
+				}
+				// minimum of cell to the left+1, to the top+1, diagonally left and up +cost
+				p[i] = Math.min(Math.min(p[i - 1] + 1, p[i] + 1), upper_left + cost);
+				upper_left = upper;
+            }
+		}
+		if(containsPos>n) {
+			return p[n] * -1;
+		}
+		return p[n];
+	}
+
+	private static char toLower(char item) {
+		if(item>='A' && item <='Z') {
+			return item += 32;
+		}
+		return item;
+	}
 
 	public boolean isEmptyCharacter() {
 		if(super.isEmpty()) {
