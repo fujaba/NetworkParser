@@ -10,7 +10,6 @@ import java.nio.charset.Charset;
 import de.uniks.networkparser.buffer.ByteBuffer;
 import de.uniks.networkparser.ext.petaf.Message;
 import de.uniks.networkparser.ext.petaf.NodeProxy;
-import de.uniks.networkparser.ext.petaf.NodeProxyType;
 import de.uniks.networkparser.json.JsonObject;
 
 //TODO add functionality
@@ -35,7 +34,7 @@ public class NodeProxyGoogleCloud extends NodeProxy{
 
 	@Override
 	protected boolean initProxy() {
-		withType(NodeProxyType.OUT);
+		withType(NodeProxy.TYPE_OUT);
 		return true;
 	}
 

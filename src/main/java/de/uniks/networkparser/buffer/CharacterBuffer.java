@@ -801,15 +801,15 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence {
 		return l==other.length;
 	}
 	
-	/*
+	
+	/**
 	 * Get Levenstein distance
-	 * 
 	 * @param t the other String
-	 * 
-	 * == 0 both String are equals
-	 * pro Case difference ( + 0.01 )
-	 * pro difference ( + 1 )
-	 * if this contains t Levenstein is negativ 
+	 * @return Levenstein distance
+	 *         0 both String are equals
+	 *         pro Case difference ( + 0.01 )
+	 *         pro difference ( + 1 )
+	 *         if this contains t Levenstein is negativ
 	 */
 	public double equalsLevenshtein(CharacterBuffer t) {
 		if(t == null || t.length() < 1) {

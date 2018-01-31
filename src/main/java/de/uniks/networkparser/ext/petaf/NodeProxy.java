@@ -7,6 +7,10 @@ import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
 import de.uniks.networkparser.list.SimpleList;
 
 public abstract class NodeProxy extends SendableItem implements Comparable<NodeProxy>, SendableEntityCreatorNoIndex {
+	public static final String TYPE_IN="IN";
+	public static final String TYPE_OUT="OUT";
+	public static final String TYPE_INOUT="INOUT";
+
 	public static int BUFFER = 100 * 1024;
 	public static final String PROPERTY_SEND = "sendtime";
 	public static final String PROPERTY_RECEIVE = "receivetime";
@@ -25,7 +29,7 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 	protected PropertyList property = PropertyList.create(PROPERTY_ID, PROPERTY_SEND, PROPERTY_RECEIVE, PROPERTY_ONLINE,
 			PROPERTY_NODES, PROPERTY_HISTORY, PROPERTY_FILTER, PROPERTY_VERSION);
 
-	protected NodeProxyType type;
+	protected String type;
 	protected long sendtime;
 	protected long receivetime;
 	protected long lastSendTryTime;
@@ -83,16 +87,23 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 		return this.space.sendMessageToPeers(msg, this);
 	}
 
+	public boolean isValid() {
+		return true;
+	}
+	
 	protected boolean sending(Message msg) {
+		if(this.isValid() == false) {
+			return true;
+		}
 		msg.withAddToReceived(this);
 		this.lastSendTryTime = System.currentTimeMillis();
 		if(this.space!= null) {
-			this.space.updateNetwork(NodeProxyType.OUT, this);
+			this.space.updateNetwork(TYPE_OUT, this);
 		}
 		return false;
 	}
 
-	public NodeProxyType getType() {
+	public String getType() {
 		return type;
 	}
 
@@ -104,7 +115,7 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 		}
 	}
 
-	public NodeProxy withType(NodeProxyType value) {
+	public NodeProxy withType(String value) {
 		// if output is not configured, we don't allow OUT or INOUT as value...
 		// if(value.isInput()){
 		// }
@@ -187,6 +198,15 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 		}
 		return getKey().compareTo(o.getKey());
 	}
+	
+	
+	@Override
+	public boolean equals(Object obj) {
+		if(obj instanceof NodeProxy) {
+			return compareTo((NodeProxy) obj) ==0;
+		}
+		return super.equals(obj);
+	}
 
 	public String getHistory() {
 		return history;
@@ -263,7 +283,7 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 			return true;
 		}
 		if (PROPERTY_TYP.equals(attrName)) {
-			nodeProxy.withType(NodeProxyType.valueOf("" + value));
+			nodeProxy.withType("" + value);
 			return true;
 		}
 		return false;
@@ -359,4 +379,12 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 	}
 
 	public abstract String getKey();
+	
+    public static boolean isInput(String value) {
+        return (value != null && value.indexOf(TYPE_IN)>=0);
+    }
+
+    public static boolean isOutput(String value) {
+    	return (value != null && value.indexOf(TYPE_OUT)>=0);
+    }
 }

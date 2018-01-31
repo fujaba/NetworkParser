@@ -4,7 +4,6 @@ import de.uniks.networkparser.ext.io.EMailMessage;
 import de.uniks.networkparser.ext.io.SMTPSession;
 import de.uniks.networkparser.ext.petaf.Message;
 import de.uniks.networkparser.ext.petaf.NodeProxy;
-import de.uniks.networkparser.ext.petaf.NodeProxyType;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 
 // This.name is receiver
@@ -99,7 +98,7 @@ public class NodeProxyEMail extends NodeProxy{
 
 	@Override
 	protected boolean initProxy() {
-		withType(NodeProxyType.INOUT);
+		withType(NodeProxy.TYPE_INOUT);
 		return true;
 	}
 

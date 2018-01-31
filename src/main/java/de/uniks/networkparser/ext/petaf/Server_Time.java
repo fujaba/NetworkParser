@@ -95,7 +95,7 @@ public class Server_Time extends Thread implements Server{
 	{
 		boolean success=true;
 		try {
-			if(proxy !=  null && NodeProxyType.isInput(proxy.getType())) {
+			if(proxy !=  null && NodeProxy.isInput(proxy.getType())) {
 				this.port = proxy.getPort();
 			}
 			SocketAddress address = new InetSocketAddress(this.port);

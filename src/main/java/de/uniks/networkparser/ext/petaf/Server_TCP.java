@@ -10,6 +10,7 @@ import de.uniks.networkparser.interfaces.Server;
 
 public class Server_TCP extends Thread  implements Server{
 	protected boolean run=true;
+	private boolean searchFreePort=true;
 	protected ServerSocket serverSocket;
 	private NodeProxyTCP proxy;
 
@@ -78,19 +79,43 @@ public class Server_TCP extends Thread  implements Server{
 
 	private boolean init() 
 	{
-		boolean success=true;
 		try 
 		{
 			serverSocket = new ServerSocket(proxy.getPort(), 10, null);
+			return true;
 		} 
 		catch (UnknownHostException e) 
 		{
-			success=false;
+			return false;
 		} 
 		catch (IOException e) 
 		{
-			success=false;
+			if(searchFreePort) {
+				// Wrong PORT
+				try {
+					serverSocket = new ServerSocket(0, 10, null);
+					proxy.withPort(serverSocket.getLocalPort());
+					return true;
+				}catch (Exception exception) {
+				}
+			}
 		}
-		return success;
+		return false;
+	}
+
+	/**
+	 * @return the searchFreePort
+	 */
+	public boolean isSearchFreePort() {
+		return searchFreePort;
+	}
+
+	/**
+	 * @param searchFreePort the searchFreePort to set
+	 * @return ThisComponent
+	 */
+	public Server_TCP withSearchFreePort(boolean searchFreePort) {
+		this.searchFreePort = searchFreePort;
+		return this;
 	}
 }

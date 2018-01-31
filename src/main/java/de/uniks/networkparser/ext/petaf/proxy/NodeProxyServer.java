@@ -5,7 +5,6 @@ import java.net.DatagramPacket;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.ext.RESTServiceTask;
 import de.uniks.networkparser.ext.petaf.NodeProxy;
-import de.uniks.networkparser.ext.petaf.NodeProxyType;
 import de.uniks.networkparser.ext.petaf.Server_UPD;
 import de.uniks.networkparser.ext.petaf.Space;
 import de.uniks.networkparser.interfaces.Server;
@@ -18,7 +17,7 @@ public class NodeProxyServer extends NodeProxy {
 	private Server server;
 	private String serverType;
 	
-	public NodeProxyServer(NodeProxyType type) {
+	public NodeProxyServer(String type) {
 		super();
 		this.type = type;
 		this.property.addAll(PROPERTY_PORT);
@@ -58,7 +57,7 @@ public class NodeProxyServer extends NodeProxy {
 
 	@Override
 	public Object getSendableInstance(boolean prototyp) {
-		return new NodeProxyServer(NodeProxyType.IN);
+		return new NodeProxyServer(NodeProxy.TYPE_IN);
 	}
 
 	@Override
@@ -89,7 +88,7 @@ public class NodeProxyServer extends NodeProxy {
 	@Override
 	protected boolean initProxy() {
 		// May be Server or Client
-		if(NodeProxyType.isInput(this.type)) {
+		if(NodeProxy.isInput(this.type)) {
 			if(Server.TCP.equals(this.serverType)) {
 				
 			} else if(Server.TIME.equals(this.serverType)) {
@@ -110,7 +109,7 @@ public class NodeProxyServer extends NodeProxy {
 	}
 
 	public static NodeProxy createServer(int port) {
-		NodeProxyServer proxy = new NodeProxyServer(NodeProxyType.IN).withPort(port);
+		NodeProxyServer proxy = new NodeProxyServer(NodeProxy.TYPE_IN).withPort(port);
 		return proxy;
 	}
 }

@@ -3,7 +3,6 @@ package de.uniks.networkparser.ext.petaf.proxy;
 import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.ext.petaf.Message;
 import de.uniks.networkparser.ext.petaf.NodeProxy;
-import de.uniks.networkparser.ext.petaf.NodeProxyType;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 
 /**
@@ -76,7 +75,7 @@ public class NodeProxyLocal extends NodeProxy {
 
 	@Override
 	protected boolean initProxy() {
-		this.type = NodeProxyType.OUT;
+		this.type = NodeProxy.TYPE_OUT;
 		return true;
 	}
 

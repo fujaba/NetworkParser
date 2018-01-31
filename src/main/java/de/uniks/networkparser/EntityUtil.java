@@ -730,7 +730,7 @@ public class EntityUtil {
 
 	private static final String primitiveTypes = " void String char Char boolean Boolean byte Byte Object java.util.Date ";
 	private static final String numericTypes = " long Long short Short int Integer byte Byte float Float double Double ";
-    private static final String types = "         long    Long    short   Short   int     Integer byte    Byte    float   Float   double  Double  char    Char    boolean Boolean ";
+    private static final String types = "         long    Long    short   Short   int     Integer byte    Byte    float   Float   double  Double  boolean Boolean char    Char ";
 	private static final String javaLang="java.lang.";
 	private static final String modifier=" public protected private static abstract final native synchronized transient volatile strictfp ";
 	

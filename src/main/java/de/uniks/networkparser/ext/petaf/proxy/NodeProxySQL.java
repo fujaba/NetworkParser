@@ -5,7 +5,6 @@ import java.sql.Connection;
 import de.uniks.networkparser.ext.generic.ReflectionLoader;
 import de.uniks.networkparser.ext.petaf.Message;
 import de.uniks.networkparser.ext.petaf.NodeProxy;
-import de.uniks.networkparser.ext.petaf.NodeProxyType;
 import de.uniks.networkparser.ext.petaf.messages.ChangeMessage;
 import de.uniks.networkparser.ext.sql.SQLStatement;
 import de.uniks.networkparser.ext.sql.SQLStatementList;
@@ -98,7 +97,7 @@ public class NodeProxySQL extends NodeProxy{
 
 	@Override
 	protected boolean initProxy() {
-		withType(NodeProxyType.INOUT);
+		withType(NodeProxy.TYPE_INOUT);
 		return true;
 	}
 

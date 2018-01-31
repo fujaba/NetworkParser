@@ -250,7 +250,9 @@ public class Message implements SendableEntityCreator, SendableEntityCreatorNoIn
 			return true;
 		}
 		if(PROPERTY_RECEIVED.equalsIgnoreCase(attribute)){
-			msg.withAddToReceived((NodeProxy) value);
+			if(value instanceof NodeProxy) {
+				msg.withAddToReceived((NodeProxy) value);
+			}
 			return true;
 		}
 		if(PROPERTY_TYPE.equalsIgnoreCase(attribute)) {

@@ -88,7 +88,7 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 	}
 
 	protected TaskExecutor createExecutorTimer() {
-		return new SimpleExecutor();
+		return new SimpleExecutor().withSpace(this);
 	}
 	
 	public PetaFilter getMessageFilter() {
@@ -181,11 +181,18 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 		return firstPeer;
 	}
 
+	/**
+	 * Create a Server Proxy
+	 * 
+	 * @param port Port number 0 is for Search free Port
+	 * @return NodeProxy The created Server
+	 */
 	public NodeProxy createServer(int port) {
 		NodeProxy newProxy = getNewProxy();
-		newProxy.withType(NodeProxyType.INOUT);
+		newProxy.withType(NodeProxy.TYPE_INOUT);
 		newProxy.setValue(newProxy, NodeProxyTCP.PROPERTY_PORT, port, SendableEntityCreator.NEW);
 		this.with(newProxy);
+	
 		return newProxy;
 	}
 
@@ -323,7 +330,7 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 
 	public void close() {
 		for(NodeProxy proxy : proxies) {
-			if(NodeProxyType.isInput(proxy.getType())) {
+			if(NodeProxy.isInput(proxy.getType())) {
 				proxy.close();
 			}
 		}
@@ -339,7 +346,7 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 		EntityList proxies = tokener.newInstanceList();
 		MapEntity entity = new MapEntity(getMap());
 		for(NodeProxy proxy : this.proxies) {
-			if(NodeProxyType.isOutput(proxy.getType())) {
+			if(NodeProxy.isOutput(proxy.getType())) {
 				proxies.add(tokener.encode(proxy, entity));
 			}
 		}
@@ -428,10 +435,13 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 		if(sendAnyhow) {
 			msg.withSendAnyHow(sendAnyhow);
 		}
+		if(myProxy == null) {
+			myProxy = getMyNode();
+		}
 		String messageId = msg.getMessageId(this, myProxy);
 		msg.withPrevChange(history.getPrevChangeId(messageId));
 		// Add Receiver if possible
-		msg.withAddToReceived(getMyNode());
+		msg.withAddToReceived(myProxy);
 		if(msg instanceof ReceivingTimerTask) {
 			((ReceivingTimerTask)msg).withSpace(this);
 		}
@@ -472,7 +482,7 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 		// find my Proxy with Key
 		NodeProxy myProxy = null;
 		for(NodeProxy item : this.proxies) {
-			if(NodeProxyType.isOutput(item.getType()) && item.getKey() != null) {
+			if(NodeProxy.isOutput(item.getType()) && item.getKey() != null) {
 				myProxy = item;
 				break;
 			}
@@ -486,9 +496,9 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 			}
 			// Add to ProxyList if not Exist
 			with(proxy);
-			if(msg instanceof ConnectMessage) {
-				this.isInit = false;
-			}
+//			if(msg instanceof ConnectMessage) {
+//				this.isInit = false;
+//			}
 			if(proxy.filter(msg)) {
 				sended = sended && proxy.sending(msg);
 			}
@@ -537,7 +547,7 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 		if(receiver != null) {
 			for(int i=0;i<this.proxies.size();i++) {
 				proxy = this.proxies.get(i);
-				if(NodeProxyType.OUT == proxy.getType() || NodeProxyType.INOUT == proxy.getType()) {
+				if(NodeProxy.isOutput(proxy.getType())) {
 					out = true;
 				}
 				if(receiver == proxy || isMyNode(proxy, myNode)) {
@@ -552,10 +562,10 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 		} else {
 			for(int i=0;i<this.proxies.size();i++) {
 				proxy = this.proxies.get(i);
-				if(NodeProxyType.OUT == proxy.getType()) {
+				if(NodeProxy.TYPE_OUT.equals(proxy.getType())) {
 					out = true;
-				}else if(NodeProxyType.IN == proxy.getType() || NodeProxyType.INOUT == proxy.getType()) {
-					if (NodeProxyType.INOUT == proxy.getType()) {
+				}else if(NodeProxy.isInput(proxy.getType())) {
+					if (NodeProxy.isOutput(proxy.getType())) {
 						out = true;
 					}
 					receiverProxy.add(i);
@@ -584,7 +594,7 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 					step++;
 				}
 				proxy = this.proxies.get(number);
-				if(NodeProxyType.OUT == proxy.getType() || NodeProxyType.INOUT == proxy.getType()) {
+				if(NodeProxy.isOutput(proxy.getType())) {
 					// If the proxy not already received the message, we want to send it to the proxy
 					if(received.indexOf(proxy)<0 || proxy instanceof NodeProxyFileSystem) {
 						step++;
@@ -679,7 +689,7 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 
 	public Object execute(Runnable task) {
 		if(this.executor == null) {
-			this.executor = new SimpleExecutor();
+			this.executor = new SimpleExecutor().withSpace(this);
 		}
 		return this.executor.executeTask(task, 0);
 	}
@@ -869,7 +879,8 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 		if(this.myNode == null) {
 			NodeProxy last=null;
 			for(NodeProxy item : proxies) {
-				if(NodeProxyType.isInput(item.getType()) && NodeProxyType.isOutput(item.getType()) == false) {
+				if(NodeProxy.isInput(item.getType())) {
+//					&& NodeProxyType.isOutput(item.getType()) == false) {
 					if(last == null) {
 						this.myNode = last = item;
 						item.setNextMyNode(null);
@@ -1007,8 +1018,8 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 		return Space.class;
 	}
 
-	public boolean updateNetwork(NodeProxyType type, NodeProxy nodeProxy) {
-		SimpleEvent event = new SimpleEvent(this, ""+type, null, nodeProxy);
+	public boolean updateNetwork(String type, NodeProxy nodeProxy) {
+		SimpleEvent event = new SimpleEvent(this, type, null, nodeProxy);
 		return sendEventToClients(event);
 	}
 }

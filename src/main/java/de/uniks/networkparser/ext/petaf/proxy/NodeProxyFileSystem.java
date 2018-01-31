@@ -5,7 +5,6 @@ import de.uniks.networkparser.ext.io.FileBuffer;
 import de.uniks.networkparser.ext.petaf.FileWatcher;
 import de.uniks.networkparser.ext.petaf.Message;
 import de.uniks.networkparser.ext.petaf.NodeProxy;
-import de.uniks.networkparser.ext.petaf.NodeProxyType;
 import de.uniks.networkparser.ext.petaf.messages.ChangeMessage;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.EntityList;
@@ -173,7 +172,7 @@ public class NodeProxyFileSystem extends NodeProxy {
 
 	@Override
 	protected boolean initProxy() {
-		withType(NodeProxyType.INOUT);
+		withType(NodeProxy.TYPE_INOUT);
 		nodeProxyFileWatcher = new FileWatcher().init(this, this.fileName);
 		return true;
 	}

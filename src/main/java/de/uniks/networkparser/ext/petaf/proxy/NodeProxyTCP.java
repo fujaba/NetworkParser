@@ -18,7 +18,6 @@ import de.uniks.networkparser.buffer.ByteBuffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.ext.petaf.Message;
 import de.uniks.networkparser.ext.petaf.NodeProxy;
-import de.uniks.networkparser.ext.petaf.NodeProxyType;
 import de.uniks.networkparser.ext.petaf.Server_TCP;
 import de.uniks.networkparser.ext.petaf.messages.ConnectMessage;
 import de.uniks.networkparser.interfaces.BaseItem;
@@ -141,7 +140,7 @@ public class NodeProxyTCP extends NodeProxy {
 		if(this.space != null) {
 			IdMap map = this.space.getMap();
 			Object element = map.decode(buffer);
-			this.space.updateNetwork(NodeProxyType.IN, this);
+			this.space.updateNetwork(NodeProxy.TYPE_IN, this);
 			if(element instanceof Message) {
 				msg = (Message) element;
 				NodeProxy receiver = msg.getReceiver();
@@ -239,14 +238,14 @@ public class NodeProxyTCP extends NodeProxy {
 
 	@Override
 	protected boolean initProxy() {
-		boolean isInput = NodeProxyType.isInput(getType());
+		boolean isInput = NodeProxy.isInput(getType());
 		if (url == null && getType() == null || isInput) {
 			if(serverSocket != null) {
 				return true;
 			}
 			// Incoming Proxy
 			if(isInput == false) {
-				withType(NodeProxyType.IN);
+				withType(NodeProxy.TYPE_IN);
 			}
 			serverSocket = new Server_TCP(this);
 			if (url == null) {
@@ -259,7 +258,7 @@ public class NodeProxyTCP extends NodeProxy {
 				}
 			}
 		} else {
-			withType(NodeProxyType.OUT);
+			withType(NodeProxy.TYPE_OUT);
 			if (url == null) {
 				try {
 					url = InetAddress.getLocalHost().getHostAddress();
@@ -284,7 +283,7 @@ public class NodeProxyTCP extends NodeProxy {
 	public static NodeProxyTCP createServer(int port) {
 		NodeProxyTCP proxy = new NodeProxyTCP();
 		proxy.withPort(port);
-		proxy.withType(NodeProxyType.INOUT);
+		proxy.withType(NodeProxy.TYPE_INOUT);
 		return proxy;
 	}
 
@@ -398,4 +397,20 @@ public class NodeProxyTCP extends NodeProxy {
 		return readAnswer(conn);
 	}
 	
+	@Override
+	public String toString() {
+		if(this.url != null && this.port >0) {
+			return this.getClass().getSimpleName() + " "+this.url+":"+this.port;
+		}
+		return super.toString();
+	}
+	
+	
+	@Override
+	public boolean isValid() {
+		if(this.url != null && this.port >0) {
+			return true;
+		}
+		return false;
+	}
 }

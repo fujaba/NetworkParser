@@ -41,7 +41,7 @@ public class Server_UPD extends Thread implements Server{
 	@Override
 	public void run()
 	{
-		if(NodeProxyType.isInput(proxy.getType())) {
+		if(NodeProxy.isInput(proxy.getType())) {
 			runServer();
 		} else {
 			DatagramPacket data = runClient();
@@ -111,7 +111,7 @@ public class Server_UPD extends Thread implements Server{
 		boolean success=true;
 		try {
 			// Switch for Client / Server
-			if(proxy != null && NodeProxyType.isInput(proxy.getType())) {
+			if(proxy != null && NodeProxy.isInput(proxy.getType())) {
 				socket = new DatagramSocket(proxy.getPort());
 			}else {
 				socket = new DatagramSocket();

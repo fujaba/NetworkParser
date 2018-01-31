@@ -7,7 +7,7 @@ import java.util.TimerTask;
 
 import org.junit.Test;
 
-import de.uniks.networkparser.ext.petaf.NodeProxyType;
+import de.uniks.networkparser.ext.petaf.NodeProxy;
 import de.uniks.networkparser.ext.petaf.Space;
 import de.uniks.networkparser.ext.petaf.proxy.NodeProxyServer;
 import de.uniks.networkparser.ext.petaf.proxy.NodeProxyTCP;
@@ -33,7 +33,7 @@ public class TestBroadCast {
 	
 	class BroadCastClient extends TimerTask{
 		public void run() {
-			NodeProxyServer broasCast = new NodeProxyServer(NodeProxyType.OUT);
+			NodeProxyServer broasCast = new NodeProxyServer(NodeProxy.TYPE_OUT);
 			DatagramPacket answer = broasCast.executeBroadCast(false);
 			String modifiedSentence = new String(answer.getData());
 			System.out.println("FROM SERVER:" + modifiedSentence);

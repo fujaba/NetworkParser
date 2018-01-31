@@ -2,7 +2,6 @@ package de.uniks.networkparser.ext.petaf.proxy;
 
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.ext.petaf.NodeProxy;
-import de.uniks.networkparser.ext.petaf.NodeProxyType;
 import de.uniks.networkparser.ext.petaf.Space;
 
 public class NodeProxyModel extends NodeProxy {
@@ -12,7 +11,7 @@ public class NodeProxyModel extends NodeProxy {
 
 	public NodeProxyModel(Object root) {
 		this.root = root;
-		withType(NodeProxyType.IN);
+		withType(NodeProxy.TYPE_IN);
 	}
 
 	@Override

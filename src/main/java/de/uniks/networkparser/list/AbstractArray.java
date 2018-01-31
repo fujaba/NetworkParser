@@ -572,7 +572,7 @@ public abstract class AbstractArray<V> implements BaseItem {
 				Object value = getKeyByIndex(i);
 				int r = comparator().compare(value, element);
 				if (r == 0) {
-					if (!allowDuplicate && value.equals(element)) {
+					if (allowDuplicate == false && value.equals(element)) {
 						return REMOVED;
 					}
 				}else if(r > 0) {
