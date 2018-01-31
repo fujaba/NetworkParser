@@ -126,6 +126,9 @@ public class JavaAdapter implements JavaViewAdapter {
 	 */
 	@Override
 	public String readFile(String file) {
+		if(file == null) {
+			return "";
+		}
 		FileBuffer buffer = new FileBuffer().withFile(file);
 		return buffer.toString();
 	}

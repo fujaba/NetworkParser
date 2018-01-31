@@ -121,6 +121,9 @@ public class FileBuffer extends Buffer {
 			}
 		}
 		try {
+			if(values.length==0) {
+				return "";
+			}
 			int max = values.length - len;
 			int read = this.reader.read(values, len, max);
 			if(read<max) {

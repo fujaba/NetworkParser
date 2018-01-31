@@ -9,9 +9,12 @@ import java.io.IOException;
 import org.junit.Assert;
 import org.junit.Test;
 
+import de.uniks.networkparser.ext.generic.SimpleParser;
 import de.uniks.networkparser.ext.io.FileBuffer;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.EntityList;
+import de.uniks.networkparser.test.model.University;
+import de.uniks.networkparser.test.model.util.UniversityCreator;
 import de.uniks.networkparser.xml.XMLEntity;
 
 public class FileTest {
@@ -40,5 +43,17 @@ public class FileTest {
 		Assert.assertTrue(buffer instanceof EntityList);
 		EntityList list = (EntityList)buffer;
 		Assert.assertEquals(3, list.size());
+	}
+	
+	@Test
+	public void fileReaderModel() {
+		BaseItem modelJson = FileBuffer.readBaseFile("src/test/resources/de/uniks/networkparser/test/model.json");
+		University uni = (University) UniversityCreator.createIdMap("read").decode(modelJson);
+		Assert.assertEquals(2, uni.getStudents().size());
+	}
+	@Test
+	public void fileReaderModelSimple() {
+		University uni = SimpleParser.fromFile("src/test/resources/de/uniks/networkparser/test/model.json");
+		Assert.assertEquals(2, uni.getStudents().size());
 	}
 }

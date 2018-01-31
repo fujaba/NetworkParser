@@ -25,6 +25,8 @@ THE SOFTWARE.
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.Tokener;
 import de.uniks.networkparser.buffer.Buffer;
+import de.uniks.networkparser.ext.io.FileBuffer;
+import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.json.JsonArray;
 import de.uniks.networkparser.json.JsonObject;
@@ -106,6 +108,11 @@ public class SimpleParser {
 	public static <T> T fromJson(Object json) {
 		return new SimpleParser().decode(json);
 	}
+	public static <T> T fromFile(String file) {
+		BaseItem modelJson = FileBuffer.readBaseFile(file);
+		return new SimpleParser().decode(modelJson);
+	}
+
 	public static <T> T fromJson(Object json, Class<T> classOfT) {
 		return new SimpleParser().decode(json, classOfT);
 	}
