@@ -145,7 +145,7 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 			return this;
 		}
 		for(NodeProxy proxy : values) {
-			if (proxy != null) {
+			if (proxy != null && proxy.isValid()) {
 				boolean changed = this.proxies.add(proxy);
 
 				if (changed) {

@@ -157,7 +157,7 @@ public class Story implements Comparable<Story> {
 		output.withHeader("highlightjs-line-numbers.min.js");
 		output.withHeader("github.css");
 		output.withHeader("default.css");
-		output.withScript("hljs.initHighlightingOnLoad();" + BaseItem.CRLF + "hljs.initLineNumbersOnLoad();");
+		output.withScript("hljs.initHighlightingOnLoad();" + BaseItem.CRLF + "hljs.initLineNumbersOnLoad();", output.getHeader());
 
 		SimpleEvent evt = new SimpleEvent(this, null, null, output);
 		for (ObjectCondition step : steps) {
@@ -333,7 +333,7 @@ public class Story implements Comparable<Story> {
 			mainFrame.withKeyValue("src", fileName);
 		}
 		for(Story subStory : stories) {
-			XMLEntity link = refHtml.createBodyTag("A");
+			XMLEntity link = refHtml.createTag("A", refHtml.getBody());
 			link.add("href", subStory.getOutputFile());
 			link.withValueItem(subStory.getLabel());
 			if(subStory.size() > 0) {

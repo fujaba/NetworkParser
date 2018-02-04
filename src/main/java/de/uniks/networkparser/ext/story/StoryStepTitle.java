@@ -21,7 +21,7 @@ public class StoryStepTitle implements ObjectCondition {
 		HTMLEntity element = (HTMLEntity) evt.getNewValue();
 		if(this.title != null) {
 			element.withTitle(this.title);
-			XMLEntity headerLine = element.createBodyTag("h1");
+			XMLEntity headerLine = element.createTag("h1", element.getBody());
 			headerLine.withValue(this.title);
 		}
 		return true;

@@ -408,7 +408,7 @@ public class NodeProxyTCP extends NodeProxy {
 	
 	@Override
 	public boolean isValid() {
-		if(this.url != null && this.port >0) {
+		if(this.port >0) {
 			return true;
 		}
 		return false;

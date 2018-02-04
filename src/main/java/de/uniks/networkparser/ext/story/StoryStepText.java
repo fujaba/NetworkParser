@@ -23,7 +23,7 @@ public class StoryStepText implements ObjectCondition {
 		Story story = (Story) evt.getSource();
 		if(this.value != null) {
 			int counter = story.getCounter();
-			XMLEntity textItem = element.createBodyTag("p");
+			XMLEntity textItem = element.createTag("p", element.getBody());
 			textItem.add("class", "step");
 			String textValue = "";
 			if(counter>=0) {

@@ -31,7 +31,6 @@ public class JavaBridgeFX extends JavaBridge {
 		addEventListener(c, type, new MethodCallbackListener(object, methodName));
 	}
 	
-	
 	@SuppressWarnings("unchecked")
 	public static void addChildren(Object element, int pos, Object... childrenValues) {
 		Object children = ReflectionLoader.calling("getChildren", element, false, null);
@@ -118,7 +117,6 @@ public class JavaBridgeFX extends JavaBridge {
 		Object proxy = ReflectionLoader.createProxy(javaFXEvent, ReflectionLoader.EVENTHANDLER);
 		
 		ReflectionLoader.call("setOnAction", javaFXBtn, ReflectionLoader.EVENTHANDLER, proxy);
-		
 		
 		ReflectionLoader.call("setFocusTraversable", javaFXBtn, boolean.class, false);
 		

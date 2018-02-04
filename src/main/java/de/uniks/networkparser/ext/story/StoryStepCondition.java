@@ -39,10 +39,10 @@ public class StoryStepCondition implements ObjectCondition {
 		HTMLEntity element = (HTMLEntity) evt.getNewValue();
 		boolean success = checkCondition();
 	
-		XMLEntity div = element.createBodyTag("div");
-		XMLEntity p = element.createBodyTag("p", div);
+		XMLEntity div = element.createTag("div", element.getBody());
+		XMLEntity p = element.createTag("p", div);
 		p.withCloseTag();
-		XMLEntity textnode = element.createBodyTag("div", div);
+		XMLEntity textnode = element.createTag("div", div);
 		textnode.add("class", "notify-text");
 		if(success) {
 			div.add("class", "notify notify-green");

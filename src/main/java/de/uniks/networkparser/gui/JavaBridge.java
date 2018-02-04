@@ -20,6 +20,7 @@ public abstract class JavaBridge implements ObjectCondition {
 	public static String CONTENT_TYPE_INCLUDE = "INCLUDE";
 
 	public static String CONTENT_TYPE_EXCLUDE = "EXCLUDE";
+	public static String CONTENT_TYPE_NONE = "NONE";
 
 	protected static final String JAVA_BRIDGE = "JavaBridge";
 
@@ -36,15 +37,14 @@ public abstract class JavaBridge implements ObjectCondition {
 	private HTMLEntity entity;
 	
 	private XMLEntity debug;
-
-
+	
 	public JavaBridge() {
 		this(null, null, CONTENT_TYPE_INCLUDE);
 	}
 
 	public JavaBridge withDebug(boolean value) {
 		if(value) {
-			this.debug = entity.createScript("");
+			this.debug = entity.createScript("", null);
 		}else {
 			this.debug = null;
 		}
@@ -57,20 +57,20 @@ public abstract class JavaBridge implements ObjectCondition {
 			map = new IdMap();
 		}
 		this.map = map;
-		map.add(this);
-		if((CONTENT_TYPE_INCLUDE.equalsIgnoreCase(type) || CONTENT_TYPE_EXCLUDE.equalsIgnoreCase(type)) == false) {
-			type = CONTENT_TYPE_INCLUDE;
+		if(map!= null) {
+			map.add(this);
 		}
-
 		
 		this.webView = webView;
 		if(webView != null) { 
 			this.webView.withOwner(this);
 			
 		}
-		entity = init(type, "var bridge = new DiagramJS.Bridge();");
-		if(webView != null) {
-			this.webView.load(entity);
+		if(type.equals(CONTENT_TYPE_NONE) == false) {
+			entity = init(type, "var bridge = new DiagramJS.Bridge();");
+			if(webView != null) {
+				this.webView.load(entity);
+			}
 		}
 	}
 	
@@ -86,7 +86,7 @@ public abstract class JavaBridge implements ObjectCondition {
 	public HTMLEntity init(String type, String script) {
 		//		script = "classEditor = new ClassEditor(\"board\");";
 		HTMLEntity entity = new HTMLEntity();
-		entity.withScript(script);
+		entity.withScript(script, null);
 
 		if (CONTENT_TYPE_EXCLUDE.equals(type)) {
 			entity.withHeader("./res/diagram.js");
@@ -94,7 +94,7 @@ public abstract class JavaBridge implements ObjectCondition {
 			entity.withHeader("./res/style.css");
 		}
 		else {
-			entity.withHeaderScript(readFile("./res/diagram.js"));
+			entity.withScript(readFile("./res/diagram.js"), entity.getHeader());
 			entity.withHeaderStyle(readFile("./res/material.css"));
 			entity.withHeaderStyle(readFile("./res/style.css"));
 			
@@ -131,6 +131,16 @@ public abstract class JavaBridge implements ObjectCondition {
 		return true;
 	}
 
+	/**
+	 * Enables Firebug Lite for debugging a webEngine.
+	 */
+	public void enableFirebug() {
+		String script = "if (!document.getElementById('FirebugLite')) {var E = document['createElementNS'] && document.documentElement.namespaceURI;E = E ? document.createElementNS(E, 'script') : document.createElement('script');E.setAttribute('id', 'FirebugLite');E.setAttribute('src', 'https://getfirebug.com/firebug-lite.js#startOpened');E.setAttribute('FirebugLite', '4');(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(E);}";
+		executeScript(script);
+		script = "console.log = function(message) { java.log(message); }"; // Now where ever console.log is called in your html you will get a log in Java console
+		executeScript(script);
+	}
+	
 
 	public IdMap getMap() {
 		return this.map;
@@ -257,8 +267,13 @@ public abstract class JavaBridge implements ObjectCondition {
 			this.logger.log(owner, method, msg, level);
 		}
 	}
-
-
+	
+	public void load(String url) {
+		if(this.webView != null) {
+			this.webView.load(entity);
+		}
+	}
+	
 	/**
 	 * Register a Listener on the Control, that invokes a function, that has the given name, on the given object.
 	 * 
@@ -293,4 +308,5 @@ public abstract class JavaBridge implements ObjectCondition {
 	//	getStringValueFromUIElement(String)
 	//	getNumberValueFromUIElement(String)
 	//	getSelectedTableItem(String)
+
 }

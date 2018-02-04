@@ -58,7 +58,6 @@ public class SimpleController implements ObjectCondition{
 	public void showContent(Object element) {
 		Object content = this.createContent(element);
 		if(content != null) {
-//			System.setErr(err);
 			System.setOut(new StringPrintStream());
 			this.show(content);
 		}

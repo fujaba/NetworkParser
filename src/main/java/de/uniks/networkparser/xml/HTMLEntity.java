@@ -57,7 +57,7 @@ public class HTMLEntity implements BaseItem {
 		return parseItem(new EntityStringConverter(indentFactor));
 	}
 	
-	public XMLEntity getHeaders() {
+	public XMLEntity getHeader() {
 		return header;
 	}
 	public XMLEntity getBody() {
@@ -85,11 +85,30 @@ public class HTMLEntity implements BaseItem {
 		return this;
 	}
 
-	public HTMLEntity withHeaderScript(String value) {
-		XMLEntity headerChild = new XMLEntity().setType(SCRIPT).withKeyValue("language", "Javascript").withValue(value);
-		this.header.with(headerChild);
+	public HTMLEntity withScript(String value, XMLEntity parentNode) {
+		createScript(value, parentNode);
 		return this;
 	}
+
+	public XMLEntity createScript(String value, XMLEntity parentNode) {
+		XMLEntity node = new XMLEntity().setType(SCRIPT).withKeyValue("language", "Javascript");
+		if(value.endsWith(".js") && value.indexOf("\n")<0) {
+			// May be a Link
+			if(parentNode == null) {
+				parentNode = this.header;
+			}
+			node.withCloseTag();
+			node.withKeyValue(KEY_SRC, value);
+		} else {
+			if(parentNode == null) {
+				parentNode = this.body;
+			}
+			node.withValue(value);
+		}
+		parentNode.with(node);
+		return node;
+	}
+	
 	public HTMLEntity withHeaderStyle(String value) {
 		XMLEntity headerChild = new XMLEntity().setType("style").withValue(value);
 		this.header.with(headerChild);
@@ -198,7 +217,15 @@ public class HTMLEntity implements BaseItem {
 		return this;
 	}
 	
-	public XMLEntity createBodyTag(String tag, XMLEntity parentNode) {
+	/**
+	 * @param tag the new Tag
+	 * @param parentNode May be a child of Body or Body or head
+	 * @return the created XMLEntity Item
+	 */
+	public XMLEntity createTag(String tag, XMLEntity parentNode) {
+		if(parentNode == null) {
+			parentNode = this.body;
+		}
 		String[] tags = tag.split("\\.");
 		XMLEntity parent = null, child = null, firstChild = null;
 		for(int i=tags.length-1;i>=0;i--) {
@@ -212,22 +239,6 @@ public class HTMLEntity implements BaseItem {
 		}
 		parentNode.withChild(parent);
 		return firstChild;
-	}
-	public XMLEntity createBodyTag(String tag) {
-		return createBodyTag(tag, this.body);
-		
-	}
-
-	public XMLEntity createScript(String code) {
-		XMLEntity child = new XMLEntity().setType("script").withCloseTag();
-		child.with(code);
-		this.body.with(child);
-		return child;
-	}
-
-	public HTMLEntity withScript(String code) {
-		createScript(code);
-		return this;
 	}
 
 	@Override
@@ -273,7 +284,7 @@ public class HTMLEntity implements BaseItem {
 	}
 	
 	public HTMLEntity withGraph(String graph, String path) {
-		XMLEntity script = new XMLEntity().setType("script").withKeyValue("type", "text/javascript");
+		XMLEntity script = new XMLEntity().setType(SCRIPT).withKeyValue("type", "text/javascript");
 		StringBuilder sb=new StringBuilder();
 		sb.append("var json=");
 		sb.append( graph );

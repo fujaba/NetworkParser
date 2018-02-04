@@ -188,8 +188,8 @@ public class StoryStepSourceCode implements ObjectCondition {
 		}
 		SimpleEvent evt = (SimpleEvent) value;
 		HTMLEntity element = (HTMLEntity) evt.getNewValue();
-		XMLEntity pre = element.createBodyTag("pre");
-		XMLEntity code = element.createBodyTag("code", pre);
+		XMLEntity pre = element.createTag("pre", element.getBody());
+		XMLEntity code = element.createTag("code", pre);
 		if(this.endLine<1 && this.currentLine>0) {
 			// Body is Empty add the full method
 			readFile();
@@ -201,7 +201,7 @@ public class StoryStepSourceCode implements ObjectCondition {
 		code.withKeyValue("class", this.format);
 		code.withKeyValue("data-lang", this.format);
 
-		XMLEntity undertitle = element.createBodyTag("div", pre);
+		XMLEntity undertitle = element.createTag("div", pre);
 		String strValue;
 		String name;
 		if (this.methodName.startsWith("test")) {
@@ -217,7 +217,7 @@ public class StoryStepSourceCode implements ObjectCondition {
 		undertitle.with(strValue);
 		undertitle.with("class", "title");
 
-		XMLEntity table = element.createBodyTag("table");
+		XMLEntity table = element.createTag("table", element.getBody());
 		XMLEntity row;
 		String key;
 		for (int i = 0; i < this.variables.size(); i++) {
@@ -227,21 +227,21 @@ public class StoryStepSourceCode implements ObjectCondition {
 				System.err.println("Key: " + key + " has no value");
 				continue;
 			}
-			row = element.createBodyTag("tr", table);
-			code = element.createBodyTag("td", row);
+			row = element.createTag("tr", table);
+			code = element.createTag("td", row);
 			code.withValueItem(TEMPLATESTART + key + TEMPLATEEND);
 
 			char charAt = strValue.charAt(0);
 			if (charAt == '{' || charAt == '[') {
-				code = element.createBodyTag("td.pre.code", row);
+				code = element.createTag("td.pre.code", row);
 				code.withKeyValue("class", FORMAT_JSON);
 				code.withKeyValue("data-lang", FORMAT_JSON);
 			} else if (charAt == '<') {
-				code = element.createBodyTag("td.pre.code", row);
+				code = element.createTag("td.pre.code", row);
 				code.withKeyValue("class", FORMAT_XML);
 				code.withKeyValue("data-lang", FORMAT_XML);
 			} else {
-				code = element.createBodyTag("td", row);
+				code = element.createTag("td", row);
 			}
 			code.withValue(strValue);
 		}
