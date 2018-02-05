@@ -12,6 +12,7 @@ import de.uniks.networkparser.converter.ByteConverter;
 import de.uniks.networkparser.converter.ByteConverterString;
 import de.uniks.networkparser.ext.ErrorHandler;
 import de.uniks.networkparser.ext.LogItem;
+import de.uniks.networkparser.ext.generic.ReflectionLoader;
 import de.uniks.networkparser.ext.petaf.filter.ProxyFilter;
 import de.uniks.networkparser.ext.petaf.messages.AcceptMessage;
 import de.uniks.networkparser.ext.petaf.messages.ChangeMessage;
@@ -108,6 +109,12 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 				new AcceptMessage().withSpace(this),
 				new NodeProxyModel(null));
 		map.withListener(this);
+		
+		// Check for JavaFX-Tools
+		if(ReflectionLoader.PLATFORM != null) {
+			map.withModelExecutor(new ModelExecutor());
+		}
+		
 		return map;
 	}
 
@@ -1021,5 +1028,10 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 	public boolean updateNetwork(String type, NodeProxy nodeProxy) {
 		SimpleEvent event = new SimpleEvent(this, type, null, nodeProxy);
 		return sendEventToClients(event);
+	}
+	
+	public Space withModelExecutor(ObjectCondition modelExecutor) {
+		this.map.withModelExecutor(modelExecutor);
+		return this;
 	}
 }

@@ -1145,4 +1145,130 @@ public class EntityUtil {
 	public static final byte getSubGroup(byte type) {
 		return (byte) ((type % 16) - 10);
 	}
+	
+	/**
+	 * Counts how many times the substring appears in the larger string.
+	 * 
+	 * @param str the CharSequence to check, may be null
+	 * @param sub the substring to count, may be null
+	 * @return the number of occurrences, 0 if either CharSequence is {@code null}
+	 */
+	public static final int countMatches(CharSequence str, CharSequence sub) {
+		if (isEmpty(str) || isEmpty(sub)) {
+			return 0;
+		}
+		int count = 0;
+		int idx = 0;
+		String string = str.toString();
+		String subStr = sub.toString();
+		while ((idx = string.indexOf(subStr, idx)) != -1) {
+			count++;
+			idx += sub.length();
+		}
+		return count;
+	}
+	/**
+	 * Checks if a CharSequence is empty ("") or null.
+	 * 
+	 * @param cs the CharSequence to check, may be null
+	 * @return {@code true} if the CharSequence is empty or null
+	 */
+	public static final boolean isEmpty(CharSequence cs) {
+		return cs == null || cs.length() == 0;
+	}
+	
+	/**
+	 * Checks if the CharSequence equals any character in the given set of characters.
+	 * 
+	 * @param cs the CharSequence to check
+	 * @param strs the set of characters to check against
+	 * @return true if equals any
+	 */
+	public static final boolean equalsAny(CharSequence cs, CharSequence[] strs) {
+		boolean eq = false;
+		if (cs == null) {
+			eq = strs == null;
+		}
+
+		if (strs != null) {
+			for (int i = 0; i < strs.length; i++) {
+				eq = eq || strs[i].equals(cs);
+			}
+		}
+
+		return eq;
+	}
+	
+	/**
+	 * Checks if the CharSequence contains any character in the given set of characters.
+	 * 
+	 * @param cs the CharSequence to check, may be null
+	 * @param searchChars the chars to search for, may be null
+	 * @return the {@code true} if any of the chars are found, {@code false} if no match or null input
+	 */
+	public static final boolean containsAny(CharSequence cs, CharSequence searchChars) {
+		if (searchChars == null) {
+			return false;
+		}
+		return containsAny(cs, toCharArray(searchChars));
+	}
+
+	/**
+	 * Checks if the CharSequence contains any character in the given set of characters.
+	 * 
+	 * @param cs the CharSequence to check, may be null
+	 * @param searchChars the chars to search for, may be null
+	 * @return the {@code true} if any of the chars are found, {@code false} if no match or null input
+	 */
+	public static final boolean containsAny(CharSequence cs, char[] searchChars) {
+		if (isEmpty(cs) || searchChars == null || searchChars.length == 0) {
+			return false;
+		}
+		
+		int csLength = cs.length();
+		int searchLength = searchChars.length;
+		int csLast = csLength - 1;
+		int searchLast = searchLength - 1;
+		for (int i = 0; i < csLength; i++) {
+			char ch = cs.charAt(i);
+			for (int j = 0; j < searchLength; j++) {
+				if (searchChars[j] == ch) {
+					if (Character.isHighSurrogate(ch)) {
+						if (j == searchLast) {
+							// missing low surrogate, fine, like String.indexOf(String)
+							return true;
+						}
+						if (i < csLast && searchChars[j + 1] == cs.charAt(i + 1)) {
+							return true;
+						}
+					}
+					else {
+						// ch is in the Basic Multilingual Plane
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * Green implementation of toCharArray.
+	 * 
+	 * @param cs the {@code CharSequence} to be processed
+	 * @return the resulting char array
+	 */
+	private static final char[] toCharArray(CharSequence cs) {
+		if (cs instanceof String) {
+			return ((String) cs).toCharArray();
+		}
+		else {
+			int sz = cs.length();
+			char[] array = new char[cs.length()];
+			for (int i = 0; i < sz; i++) {
+				array[i] = cs.charAt(i);
+			}
+			return array;
+		}
+	}
 }

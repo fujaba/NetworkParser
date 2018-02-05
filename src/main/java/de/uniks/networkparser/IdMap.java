@@ -142,6 +142,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 	protected SimpleKeyValueList<String, SendableEntityCreator> creators = new SimpleKeyValueList<String, SendableEntityCreator>()
 		.withAllowDuplicate(false);
 
+	private ObjectCondition modelExecutor;
 
 	/**
 	 * Instantiates a new id map.
@@ -984,8 +985,19 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 
 	private Object decodingJsonObject(JsonObject jsonObject, MapEntity map) {
 		if (this.mapListener instanceof UpdateListener) {
-			UpdateListener listener = (UpdateListener) this.mapListener;
-			Object result = listener.execute(jsonObject, filter);
+			// SWITCH FOR JAVAFX THREAD
+			Object result = null;
+			if(this.modelExecutor == null) {
+				UpdateListener listener = (UpdateListener) this.mapListener;
+				result = listener.execute(jsonObject, filter);
+				 
+			} else {
+				SimpleEvent event=new SimpleEvent(this.mapListener, null, null, filter);
+				event.with(jsonObject);
+				this.modelExecutor.update(event);
+				result = event.getModelValue();
+			}
+			
 			if (result != null) {
 				return result;
 			}
@@ -1714,5 +1726,10 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 	@Deprecated
 	public String getId(Object obj) {
 		return getId(obj, true);
+	}
+
+	public IdMap withModelExecutor(ObjectCondition modelExecutor) {
+		this.modelExecutor = modelExecutor;
+		return this;
 	}
 }
