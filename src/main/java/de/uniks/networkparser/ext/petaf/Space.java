@@ -509,6 +509,9 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 			if(proxy.filter(msg)) {
 				sended = sended && proxy.sending(msg);
 			}
+			if(sended) {
+				proxy.withOnline(true);
+			}
 		}
 		return sended;
 	}

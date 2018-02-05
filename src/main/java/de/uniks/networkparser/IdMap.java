@@ -984,20 +984,17 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 
 
 	private Object decodingJsonObject(JsonObject jsonObject, MapEntity map) {
+		// SWITCH FOR JAVAFX THREAD
+		if(this.modelExecutor != null) {
+			SimpleEvent event=new SimpleEvent(this, null, map, jsonTokener);
+			event.with(jsonObject);
+			this.modelExecutor.update(event);
+			return event.getModelValue();
+		}
+						
 		if (this.mapListener instanceof UpdateListener) {
-			// SWITCH FOR JAVAFX THREAD
-			Object result = null;
-			if(this.modelExecutor == null) {
-				UpdateListener listener = (UpdateListener) this.mapListener;
-				result = listener.execute(jsonObject, filter);
-				 
-			} else {
-				SimpleEvent event=new SimpleEvent(this.mapListener, null, null, filter);
-				event.with(jsonObject);
-				this.modelExecutor.update(event);
-				result = event.getModelValue();
-			}
-			
+			UpdateListener listener = (UpdateListener) this.mapListener;
+			Object result = listener.execute(jsonObject, filter);
 			if (result != null) {
 				return result;
 			}

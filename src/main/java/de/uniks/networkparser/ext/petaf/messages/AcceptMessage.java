@@ -21,6 +21,7 @@ public class AcceptMessage extends ReceivingTimerTask {
 
 	private String id;
 	public AcceptMessage() {
+		this.type = PROPERTY_TYPE;
 		AcceptMessage.props.add(PROPERTY_PROXIES, PROPERTY_MODELID, PROPERTY_MODELCLASS, PROPERTY_MODEL);
 	}
 	
@@ -156,11 +157,6 @@ public class AcceptMessage extends ReceivingTimerTask {
 		return acceptMessage;
 	}
 
-	@Override
-	public String getType() {
-		return PROPERTY_TYPE;
-	}
-	
 	@Override
 	public boolean isSendingToPeers() {
 		return false;

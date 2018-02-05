@@ -18,6 +18,7 @@ import de.uniks.networkparser.buffer.ByteBuffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.ext.petaf.Message;
 import de.uniks.networkparser.ext.petaf.NodeProxy;
+import de.uniks.networkparser.ext.petaf.ReceivingTimerTask;
 import de.uniks.networkparser.ext.petaf.Server_TCP;
 import de.uniks.networkparser.ext.petaf.messages.ConnectMessage;
 import de.uniks.networkparser.interfaces.BaseItem;
@@ -70,6 +71,9 @@ public class NodeProxyTCP extends NodeProxy {
 
 	@Override
 	public String getKey() {
+		if(url ==null) {
+			return "server:"+port;
+		}
 		return url + ":" + port;
 	}
 
@@ -149,7 +153,9 @@ public class NodeProxyTCP extends NodeProxy {
 				} else {
 					receiver.updateReceive(buffer.size(), true);
 				}
-				
+				if(msg instanceof ReceivingTimerTask) {
+					((ReceivingTimerTask)msg).withSpace(this.space);
+				}
 				// Let my Know about the new Receiver
 				if(receiver != null) {
 					this.space.with(receiver);
@@ -190,6 +196,7 @@ public class NodeProxyTCP extends NodeProxy {
 				OutputStream os = requestSocket.getOutputStream();
 				byte[] buffer;
 				if(this.space != null) {
+//					System.out.println(msg.getType());
  					buffer = this.space.convertMessage(msg).getBytes();
 				} else {
 					buffer = msg.toString().getBytes();
