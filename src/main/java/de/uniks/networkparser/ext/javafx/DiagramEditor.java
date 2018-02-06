@@ -10,13 +10,15 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import de.uniks.networkparser.IdMap;
+import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.ext.ClassModel;
 import de.uniks.networkparser.ext.generic.ReflectionLoader;
 import de.uniks.networkparser.ext.io.FileBuffer;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.DataType;
-import de.uniks.networkparser.gui.JavaBridge;
 import de.uniks.networkparser.gui.JavaViewAdapter;
+import de.uniks.networkparser.interfaces.SimpleEventCondition;
 import de.uniks.networkparser.json.JsonArray;
 import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.list.SimpleKeyValueList;
@@ -25,8 +27,35 @@ import de.uniks.networkparser.xml.HTMLEntity;
 public class DiagramEditor extends JavaAdapter {
 	public static final String TYPE_EXPORT="EXPORT";
 	public static final String TYPE_EXPORTALL="EXPORTALL";
+	private static final String METHOD_GENERATE="generating";
 	private String type = TYPE_EXPORT;
 	private SimpleController controller;	
+	private Object logic;
+	private SimpleEventCondition listener;
+	private JavaBridgeFX bridge;
+	
+	public static void main(String[] args) {
+		final Class<?> preLoaderClass = ReflectionLoader.getClass("com.sun.deploy.uitoolkit.impl.fx.ui.FXDefaultPreloader");
+		final Class<?> launcherClass = ReflectionLoader.getClass("com.sun.javafx.application.LauncherImpl");
+		if(preLoaderClass != null && launcherClass != null) {
+			ReflectionLoader.call("startToolkit", launcherClass);
+			ReflectionLoader.call("runLater", ReflectionLoader.PLATFORM, Runnable.class, new Runnable() {
+				@Override
+				public void run() {
+					DiagramEditor editor = new DiagramEditor();
+					Object gui = ReflectionLoader.newInstance(preLoaderClass);
+					if(gui != null) {
+						Object stage = ReflectionLoader.newInstance(ReflectionLoader.STAGE);
+						ReflectionLoader.call("start", gui, ReflectionLoader.STAGE, stage);
+						editor.creating(stage);
+						editor.withIcon(IdMap.class.getResource("np.png").toString());
+//						editor.withIcon("np.ico");
+						editor.show();
+					}
+				}
+			});
+		}
+	}
 	
 	@Override
 	public boolean update(Object value) {
@@ -98,6 +127,21 @@ public class DiagramEditor extends JavaAdapter {
 	}
 	
 	public boolean generating(JsonObject model) {
+		if(this.listener != null) {
+			SimpleEvent event = new SimpleEvent(model, METHOD_GENERATE, null,null);
+			event.with(model);
+			if(this.update(event)) {
+				return true;
+			}
+		}
+		if(this.logic != null) {
+			Object result = ReflectionLoader.call(METHOD_GENERATE, this.logic, JsonObject.class, model);
+			if(result instanceof Boolean) {
+				return (Boolean) result;
+			}
+		}
+		
+		
 		if (!model.has("nodes")) {
 			System.err.println("no Nodes");
 			System.out.println("no Nodes");
@@ -150,7 +194,7 @@ public class DiagramEditor extends JavaAdapter {
 		return true;
 	}
 	
-	private boolean onDragOver(Object event) {
+	protected boolean onDragOver(Object event) {
 		List<File> files = getFiles(event);
 		if(files != null) {
 			boolean error=true;
@@ -174,7 +218,7 @@ public class DiagramEditor extends JavaAdapter {
 		ReflectionLoader.call("consume", event);
 		return true;
 	}
-	private boolean onDragDropped(Object event) {
+	protected boolean onDragDropped(Object event) {
 		List<File> files = getFiles(event);
 		if(files != null) {
 			Object webEngine = owner.getWebView();
@@ -207,21 +251,21 @@ public class DiagramEditor extends JavaAdapter {
 		return true;
 	}
 	
-	private boolean onDragExited(Object event) {
+	protected boolean onDragExited(Object event) {
 		this.owner.executeScript("classEditor.setBoardStyle(\"dragleave\");");
 		return true;
 	}
 
-	public void saveException(Object value) {
+	protected void saveException(Object value) {
 	}
 	
-	private boolean onError(Object event) {
+	protected boolean onError(Object event) {
 		System.err.println(ReflectionLoader.call("getMessage", event));
 		return true;
 	}
 	
 	@SuppressWarnings("unchecked")
-	private List<File> getFiles(Object event) {
+	protected List<File> getFiles(Object event) {
 		Object db = ReflectionLoader.call("getDragboard", event);
 		if((Boolean) ReflectionLoader.call("hasFiles", db)) {
 			List<File> files = (List<File>) ReflectionLoader.call("getFiles", db);
@@ -243,14 +287,14 @@ public class DiagramEditor extends JavaAdapter {
 				html.withHeader("drawer.js");
 				html.withHeader("graph.js");
 				html.withHeader("diagramstyle.css");
-				FileBuffer.writeFile("drawer.js", FileBuffer.readResource("../../graph/drawer.js"));
-				FileBuffer.writeFile("graph.js",FileBuffer.readResource("../../graph/graph.js"));
-				FileBuffer.writeFile("diagramstyle.css",FileBuffer.readResource("../../graph/diagramstyle.css"));
+				FileBuffer.writeFile("drawer.js", FileBuffer.readResource("graph/drawer.js"));
+				FileBuffer.writeFile("graph.js",FileBuffer.readResource("graph/graph.js"));
+				FileBuffer.writeFile("diagramstyle.css",FileBuffer.readResource("graph/diagramstyle.css"));
 			} else {
 				// Add external Files
-				html.withScript(readFile("../../graph/drawer.js"), html.getHeader());
-				html.withScript(readFile("../../graph/graph.js"), html.getHeader());
-				html.withScript(readFile("../../graph/diagramstyle.css"), html.getHeader());
+				html.withScript(readFile("graph/drawer.js"), html.getHeader());
+				html.withScript(readFile("graph/graph.js"), html.getHeader());
+				html.withScript(readFile("graph/diagramstyle.css"), html.getHeader());
 			}
 			FileBuffer.writeFile("Editor.html", html.toString());
 			try {
@@ -262,35 +306,61 @@ public class DiagramEditor extends JavaAdapter {
 			return false;
 		}
 		// Add external Files
-		html.withScript(readFile("../../graph/drawer.js"), html.getHeader());
-		html.withScript(readFile("../../graph/graph.js"), html.getHeader());
-		html.withScript(readFile("../../graph/diagramstyle.css"), html.getHeader());
+		html.withScript(readFile("graph/drawer.js"), html.getHeader());
+		html.withScript(readFile("graph/graph.js"), html.getHeader());
+		html.withScript(readFile("graph/diagramstyle.css"), html.getHeader());
 		ReflectionLoader.call("loadContent", webEngine, html.toString());
 		return true;
 	}
 	
-	public static JavaBridge create(Object stage, String... url) {
-		DiagramEditor event = new DiagramEditor();
+	public static DiagramEditor create(Object stage, String... url) {
+		DiagramEditor editor = new DiagramEditor();
+		editor.creating(stage, url);
+		return editor;
+	}
+	public DiagramEditor creating(Object stage, String... url) {
+		if(stage == null) {
+			return this;
+		}
 		SimpleController controller = new SimpleController(stage); 
-		event.withController(controller);
+		this.controller = controller;
 		SimpleKeyValueList<String, String> parameterMap = controller.getParameterMap();
 		
 		if(parameterMap != null) {
 			if(parameterMap.contains(TYPE_EXPORTALL)) {
-				event.type = TYPE_EXPORTALL;
+				this.type = TYPE_EXPORTALL;
 			}
 		}
-		event.registerListener(event);
+		this.registerListener(this);
 		if(url != null && url.length>0 && url[0] instanceof String) {
-			event.load(url[0]);
+			this.load(url[0]);
+		} else {
+			this.load( null );
 		}
-		JavaBridgeFX javaFX = new JavaBridgeFX(null, event, JavaBridgeFX.CONTENT_TYPE_NONE);
+		JavaBridgeFX javaFX = new JavaBridgeFX(null, this, JavaBridgeFX.CONTENT_TYPE_NONE);
 		controller.withTitle("ClassdiagrammEditor");
 		controller.withSize(900, 600);
 		controller.withErrorPath("errors");
-		
-		controller.show(javaFX.getWebView());
-		return javaFX;
+		this.bridge = javaFX;
+		return this;
+	}
+
+	public void show() {
+		controller.show(bridge.getWebView());
+	}
+	
+	
+	public DiagramEditor withListener(Object item) {
+		this.logic = item;
+		if(item instanceof SimpleEventCondition) {
+			this.listener = (SimpleEventCondition) logic;
+		}
+		return this;
+	}
+	
+	public DiagramEditor withIcon(String icon) {
+		controller.withIcon(icon);
+		return this;
 	}
 
 	/**
@@ -298,14 +368,5 @@ public class DiagramEditor extends JavaAdapter {
 	 */
 	public SimpleController getController() {
 		return controller;
-	}
-
-	/**
-	 * @param controller the controller to set
-	 * @return ThisComponent
-	 */
-	public DiagramEditor withController(SimpleController controller) {
-		this.controller = controller;
-		return this;
 	}
 }

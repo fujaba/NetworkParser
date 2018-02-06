@@ -16,9 +16,9 @@ import de.uniks.networkparser.json.JsonTokener;
 
 public class ModelExecutor extends SimpleEventCondition {
 	@Override
-	public boolean update(SimpleEvent event) {
-		IdMap map = (IdMap) event.getSource();
-		JsonObject change = (JsonObject) event.getEntity();
+	public boolean update(final SimpleEvent event) {
+		final IdMap map = (IdMap) event.getSource();
+		final JsonObject change = (JsonObject) event.getEntity();
 		
 		final FutureTask<Object> query = new FutureTask<Object>(new Callable<Object>() {
 			@Override

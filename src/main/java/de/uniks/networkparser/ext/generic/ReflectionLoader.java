@@ -495,7 +495,11 @@ public class ReflectionLoader {
 			}catch (Exception e) {
 				if(staticCall == false && item instanceof Class<?>) {
 					itemClass = ((Class<?>) item);
-					method = itemClass.getMethod(methodName, methodArguments);
+					try {
+						method = itemClass.getMethod(methodName, methodArguments);
+					}catch (Exception e2) {
+						method = itemClass.getDeclaredMethod(methodName, methodArguments);
+					}
 				}
 				if(method == null) {
 					for(int i=0;i<methodArguments.length;i++) {

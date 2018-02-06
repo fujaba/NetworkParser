@@ -72,7 +72,7 @@ public class ReflectionTest {
 //		System.out.println(Thread.activeCount());
 		ReflectionBlackBoxTester tester = new ReflectionBlackBoxTester();
 		NetworkParserLog logger=new NetworkParserLog();
-		tester.test("de.uniks.networkparser.ext.javafx.DiagramController", logger);
+		tester.test("de.uniks.networkparser.ext.javafx.DiagramEditor", logger);
 //		System.out.println(""+System.currentTimeMillis()+" FINISH:"+Thread.activeCount());
 	}
 	

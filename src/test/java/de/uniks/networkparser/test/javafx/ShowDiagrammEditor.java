@@ -15,6 +15,7 @@ public class ShowDiagrammEditor extends Application{
 	@Override
 	public void start(Stage stage) throws Exception {
 		String url = new File("diagram/diagram.html").toURI().toString();
-		DiagramEditor.create(stage, url);
+		DiagramEditor editor = DiagramEditor.create(stage, url);
+		editor.show();
 	}
 }

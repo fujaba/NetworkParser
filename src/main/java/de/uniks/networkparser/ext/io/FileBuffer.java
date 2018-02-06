@@ -209,7 +209,9 @@ public class FileBuffer extends Buffer {
 				int read;
 				do {
 					read = is.read(buffer);
-					sb.with(new String(buffer, 0, read, BaseItem.ENCODING));
+					if(read>0) {
+						sb.with(new String(buffer, 0, read, BaseItem.ENCODING));
+					}
 				} while (read>=0);
 			} catch (IOException e) {
 			} finally {

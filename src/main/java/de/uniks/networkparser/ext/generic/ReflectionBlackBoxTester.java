@@ -15,6 +15,7 @@ import java.util.Enumeration;
 
 import de.uniks.networkparser.NetworkParserLog;
 import de.uniks.networkparser.ext.ErrorHandler;
+import de.uniks.networkparser.ext.javafx.DiagramEditor;
 import de.uniks.networkparser.ext.javafx.SimpleController;
 import de.uniks.networkparser.ext.petaf.Server_TCP;
 import de.uniks.networkparser.ext.petaf.Server_Time;
@@ -116,6 +117,7 @@ public class ReflectionBlackBoxTester {
 		withIgnoreClazzes(NodeProxyTCP.class, "initProxy");
 		withIgnoreClazzes(ReflectionBlackBoxTester.class, "main");
 		withIgnoreClazzes(StoryStepJUnit.class, "update");
+		withIgnoreClazzes(DiagramEditor.class);
 		
 //		withIgnoreClazzes(TimerExecutor.class.getName());
 	}		

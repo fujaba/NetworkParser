@@ -1171,7 +1171,7 @@ public class EntityUtil {
 	 * Checks if a CharSequence is empty ("") or null.
 	 * 
 	 * @param cs the CharSequence to check, may be null
-	 * @return {@code true} if the CharSequence is empty or null
+	 * @return if the CharSequence is empty or null
 	 */
 	public static final boolean isEmpty(CharSequence cs) {
 		return cs == null || cs.length() == 0;

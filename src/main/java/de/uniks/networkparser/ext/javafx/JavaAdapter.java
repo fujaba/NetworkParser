@@ -87,12 +87,11 @@ public class JavaAdapter implements JavaViewAdapter {
 		ReflectionLoader.call("addListener", stateProperty, ReflectionLoader.CHANGELISTENER, proxy);
 		
 		ReflectionLoader.call("setOnError", webEngine, ReflectionLoader.EVENTHANDLER, proxy);
-		ReflectionLoader.call("setOnAlert", webEngine, proxy);
+		ReflectionLoader.call("setOnAlert", webEngine, ReflectionLoader.EVENTHANDLER, proxy);
 		
 		ReflectionLoader.call("setOnDragExited", webView, ReflectionLoader.EVENTHANDLER, proxy);
 		ReflectionLoader.call("setOnDragOver", webView, ReflectionLoader.EVENTHANDLER, proxy);
 		ReflectionLoader.call("setOnDragDropped", webView, ReflectionLoader.EVENTHANDLER, proxy);
-		
 		
 		return true;
 	}

@@ -149,7 +149,7 @@ public class JacocoColumn implements JacocoColumnListener {
 
 //			IMethodCoverage methodNode = (IMethodCoverage) node;
 //			int firstLine = methodNode.getFirstLine();
-			int firstLine = (int) ReflectionLoader.call("getFirstLine", node);
+			Integer firstLine = (Integer) ReflectionLoader.call("getFirstLine", node);
 			String name = getName(node);
 			if(name.indexOf("(")>0) {
 				name = name.substring(0, name.indexOf("("));

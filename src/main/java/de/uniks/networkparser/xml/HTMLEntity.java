@@ -218,6 +218,8 @@ public class HTMLEntity implements BaseItem {
 	}
 	
 	/**
+	 * Create a new Tag as Child of Parent
+	 * 
 	 * @param tag the new Tag
 	 * @param parentNode May be a child of Body or Body or head
 	 * @return the created XMLEntity Item
