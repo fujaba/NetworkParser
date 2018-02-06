@@ -70,7 +70,8 @@ public final class SimpleEvent extends PropertyChangeEvent {
 	 * @param index		is the Index of Evententity(List) or depth of Element in Model structure
 	 * @param oldValue	Old Element
 	 * @param newValue	New Element
-	 * @param value		Value of KeyValue List or the original modelItem,
+	 * @param value		Value of KeyValue List or the original modelItem
+	 * @param before	Value of BeforeElement of List
 	 */
 	public SimpleEvent(String type, BaseItem source, String property, int index, Object oldValue, Object newValue, Object value, Object before) {
 		super(source, property, oldValue, newValue);

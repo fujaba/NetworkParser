@@ -51,7 +51,6 @@ public class RestService {
 		Assert.assertEquals("{\"class\":\"de.uniks.networkparser.test.model.University\",\"id\":\"U1\",\"prop\":{\"name\":\"Uni Kassel\",\"students\":[{\"class\":\"de.uniks.networkparser.test.model.Student\",\"id\":\"S2\"},{\"class\":\"de.uniks.networkparser.test.model.Student\",\"id\":\"S3\"}]}}", task.executeRequest("/json/students[0]/in/students/university/"));
 	}
 	
-	@Test
 	public void RESTTestPOST() {
 		IdMap map = new IdMap();
 		map.withCreator(new UniversityCreator());
