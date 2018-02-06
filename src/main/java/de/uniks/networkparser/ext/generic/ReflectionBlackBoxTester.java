@@ -115,7 +115,7 @@ public class ReflectionBlackBoxTester {
 		withIgnoreClazzes(Server_Time.class);
 		withIgnoreClazzes(Space.class);
 		withIgnoreClazzes(NodeProxyServer.class);
-		withIgnoreClazzes(NodeProxyTCP.class, "initProxy");
+		withIgnoreClazzes(NodeProxyTCP.class, "initProxy", "postHTTP", "getHTTP");
 		withIgnoreClazzes(ReflectionBlackBoxTester.class, "main");
 		withIgnoreClazzes(StoryStepJUnit.class, "update");
 		withIgnoreClazzes(DiagramEditor.class);
