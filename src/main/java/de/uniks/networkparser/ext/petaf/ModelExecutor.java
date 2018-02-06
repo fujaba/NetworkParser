@@ -15,28 +15,38 @@ import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.json.JsonTokener;
 
 public class ModelExecutor extends SimpleEventCondition {
-	@Override
-	public boolean update(final SimpleEvent event) {
+	
+	private Object execute(SimpleEvent event) {
 		final IdMap map = (IdMap) event.getSource();
 		final JsonObject change = (JsonObject) event.getEntity();
-		
+		MapListener mapListener = map.getMapListener();
+		if(mapListener instanceof UpdateListener) {
+			UpdateListener listener = (UpdateListener) mapListener;
+			Object result = listener.execute(change, map.getFilter());
+			if (result != null) {
+				return result;
+			}
+		}
+		MapEntity mapEntry = (MapEntity) event.getOldValue();
+		JsonTokener jsonTokener = (JsonTokener) event.getNewValue();
+		return jsonTokener.decoding(change, mapEntry, false);
+	}
+	
+	
+	@Override
+	public boolean update(final SimpleEvent event) {
+		Object thread = ReflectionLoader.callChain(ReflectionLoader.TOOLKIT, "getFxUserThread", "getFxUserThread");
+		if(thread == null) {
+			Object result = this.execute(event);
+			event.withModelValue(result);
+			return result != null;
+		}
 		final FutureTask<Object> query = new FutureTask<Object>(new Callable<Object>() {
 			@Override
 			public Object call() {
-				MapListener mapListener = map.getMapListener();
-				if(mapListener instanceof UpdateListener) {
-					UpdateListener listener = (UpdateListener) mapListener;
-					Object result = listener.execute(change, map.getFilter());
-					if (result != null) {
-						return result;
-					}
-				}
-				MapEntity mapEntry = (MapEntity) event.getOldValue();
-				JsonTokener jsonTokener = (JsonTokener) event.getNewValue();
-				return jsonTokener.decoding(change, mapEntry, false);
+				return execute(event);
 			}
 		});
-		
 		ReflectionLoader.call("runLater", ReflectionLoader.PLATFORM, Runnable.class, query);
 		try {
 			event.withModelValue(query.get());

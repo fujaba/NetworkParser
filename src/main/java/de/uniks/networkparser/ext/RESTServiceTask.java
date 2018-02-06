@@ -378,7 +378,9 @@ public class RESTServiceTask implements Runnable, Server{
 					// JsonObject or XMLEntity
 					Object child = map.decode(entry);
 					SendableEntityCreator creator = map.getCreatorClass(element);
-					creator.setValue(element, propertyName, child, SendableEntityCreator.NEW);
+					if(creator != null) {
+						creator.setValue(element, propertyName, child, SendableEntityCreator.NEW);
+					}
 					return OK;
 				} else {
 					// PLAIN KEY VALUE

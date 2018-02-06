@@ -37,6 +37,8 @@ public class PetaFTest {
 		
 		createStudents.setName("Stefan");
       university.createStudents().setName("Alex");
+      
+      space.close();
 	}
 
 	@Test
