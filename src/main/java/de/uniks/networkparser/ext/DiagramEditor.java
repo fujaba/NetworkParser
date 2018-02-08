@@ -1,30 +1,39 @@
-package de.uniks.networkparser.ext.javafx;
+package de.uniks.networkparser.ext;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.net.MalformedURLException;
+import java.net.Socket;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import de.uniks.networkparser.DateTimeEntity;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.SimpleEvent;
-import de.uniks.networkparser.ext.ClassModel;
+import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.ext.generic.ReflectionLoader;
 import de.uniks.networkparser.ext.io.FileBuffer;
+import de.uniks.networkparser.ext.javafx.JavaAdapter;
+import de.uniks.networkparser.ext.javafx.JavaBridgeFX;
+import de.uniks.networkparser.ext.javafx.SimpleController;
+import de.uniks.networkparser.ext.petaf.Message;
+import de.uniks.networkparser.ext.petaf.proxy.NodeProxyTCP;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.DataType;
 import de.uniks.networkparser.gui.JavaViewAdapter;
+import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.SimpleEventCondition;
 import de.uniks.networkparser.json.JsonArray;
 import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.xml.HTMLEntity;
 
-public class DiagramEditor extends JavaAdapter {
+public class DiagramEditor extends JavaAdapter implements ObjectCondition {
+	private static final String FILE404="<!DOCTYPE HTML PUBLIC \"-//IETF//DTD HTML 2.0//EN\">\r\n<html><head><title>404 Not Found</title></head><body><h1>Not Found</h1><p>The requested URL was not found on this server.</p></body></html>";
 	public static final String TYPE_EXPORT="EXPORT";
 	public static final String TYPE_EXPORTALL="EXPORTALL";
 	private static final String METHOD_GENERATE="generating";
@@ -35,32 +44,90 @@ public class DiagramEditor extends JavaAdapter {
 	private JavaBridgeFX bridge;
 	
 	public static void main(String[] args) {
-		final Class<?> preLoaderClass = ReflectionLoader.getClass("com.sun.deploy.uitoolkit.impl.fx.ui.FXDefaultPreloader");
 		final Class<?> launcherClass = ReflectionLoader.getClass("com.sun.javafx.application.LauncherImpl");
-		if(preLoaderClass != null && launcherClass != null) {
+		if(launcherClass != null) {
 			ReflectionLoader.call("startToolkit", launcherClass);
 			ReflectionLoader.call("runLater", ReflectionLoader.PLATFORM, Runnable.class, new Runnable() {
 				@Override
 				public void run() {
 					DiagramEditor editor = new DiagramEditor();
-					Object gui = ReflectionLoader.newInstance(preLoaderClass);
-					if(gui != null) {
-						Object stage = ReflectionLoader.newInstance(ReflectionLoader.STAGE);
-						ReflectionLoader.call("start", gui, ReflectionLoader.STAGE, stage);
-						editor.creating(stage);
-						editor.withIcon(IdMap.class.getResource("np.png").toString());
-//						editor.withIcon("np.ico");
-						editor.show();
-					}
+					Object stage = ReflectionLoader.newInstance(ReflectionLoader.STAGE);
+//					editor.creating(stage, new File("diagram/diagram.html").toURI().toString());
+					editor.creating(stage);
+					editor.withIcon(IdMap.class.getResource("np.png").toString());
+					editor.show();
 				}
 			});
+		} else {
+			// NO JAVAFX Found
+			NodeProxyTCP server = NodeProxyTCP.createServer(8080);
+			server.withListener(new DiagramEditor());
+			if(server.start()) {
+				System.out.println("LISTEN ON: "+server.getKey());
+			}
 		}
 	}
+	
+	public boolean executeWebServer(Message msg) {
+		String  request = msg.getMessage().toString();
+		if(request.startsWith("GET")) {
+			CharacterBuffer path = new CharacterBuffer();
+			for(int i=4;i<request.length();i++) {
+				if(request.charAt(i) == ' ') {
+					break;
+				}
+				path.with(request.charAt(i));
+			}
+			if(path.equals("/")) {
+				HTMLEntity html = new HTMLEntity();
+				html.createScript("classEditor = new ClassEditor(\"board\");", html.getBody());
+				html.withHeader("drawer.js");
+				html.withHeader("graph.js");
+				html.withHeader("diagramstyle.css");
+				String response = html.toString(2);
+				writeHTTPResponse(msg, response, false);
+			} else if(path.equalsIgnoreCase("/drawer.js")) {
+				writeHTTPResponse(msg, FileBuffer.readResource("graph/drawer.js").toString(), false);
+			} else if(path.equalsIgnoreCase("/graph.js")) {
+				writeHTTPResponse(msg, FileBuffer.readResource("graph/graph.js").toString(), false);
+			} else if(path.equalsIgnoreCase("/diagramstyle.css")) {
+				writeHTTPResponse(msg, FileBuffer.readResource("graph/diagramstyle.css").toString(), false);
+			}else {
+				writeHTTPResponse(msg, FILE404, true);
+			}
+		}
+		return true;
+	}
+	
+	private void writeHTTPResponse(Message message, String response, boolean error) {
+		if(error) {
+			message.write("HTTP/1.1 404 Not Found\n");
+		}else {
+			message.write("HTTP/1.1 200 OK\n");
+		}
+		message.write("Date: "+new DateTimeEntity().toGMTString()+"\n");
+		message.write("Server: Java\n");
+		message.write("Last-Modified: "+new DateTimeEntity().toGMTString()+"\n");
+		message.write("Content-Length: "+response.length()+"\n");
+		message.write("Connection: Closed\n");
+		message.write("Content-Type: text/html\n\n");
+		message.write(response);
+		Socket session = (Socket) message.getSession();
+		try {
+			session.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	
 	@Override
 	public boolean update(Object value) {
         if(value ==null) {
             return false;
+        }
+        if(value instanceof Message) {
+        	return executeWebServer((Message) value);
         }
         if(JavaViewAdapter.STATE.equalsIgnoreCase(value.getClass().getName())) {
             if(value.toString().equals(JavaViewAdapter.SUCCEEDED)) {

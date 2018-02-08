@@ -25,6 +25,7 @@ ext.sharedManifest = manifest {
 			'Homepage': 'https://github.com/fujaba/Networkparser',
 			'scm': 'git@github.com/fujaba/Networkparser.git',
 			'Coverage': gitVersion.coverage,
+			'Main-Class': 'de.uniks.networkparser.ext.DiagramEditor',
 			'Bundle-ClassPath': '.'
 }
 
@@ -86,7 +87,7 @@ task buildMinCoreJar(type: Jar) {
 }
 task buildSourceJar18(type: Jar, dependsOn: buildCoreJar19) {
 	description 'Build Jar with class-Files and Source-Files for 1.8'
-	group "Jar"; from {( fileTree(dir: 'build/classes/main18') + sourceSets.main.allJava)}; classifier = 'sources18'
+	group "Jar"; from {( fileTree(dir: 'build/classes/main18') + fileTree(dir: 'src/main/resources') + sourceSets.main.allJava)}; classifier = 'sources18'
 	exclude '**/test/**'
 	manifest = project.manifest {from sharedManifest}
 }

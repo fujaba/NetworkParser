@@ -14,8 +14,8 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 
 import de.uniks.networkparser.NetworkParserLog;
+import de.uniks.networkparser.ext.DiagramEditor;
 import de.uniks.networkparser.ext.ErrorHandler;
-import de.uniks.networkparser.ext.javafx.DiagramEditor;
 import de.uniks.networkparser.ext.javafx.SimpleController;
 import de.uniks.networkparser.ext.petaf.Server_TCP;
 import de.uniks.networkparser.ext.petaf.Server_Time;

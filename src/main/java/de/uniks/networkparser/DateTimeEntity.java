@@ -452,7 +452,7 @@ public class DateTimeEntity {
 						this.weekDays[(int) get(DateField.DAY_OF_WEEK)]);
 				sub = sub.replace("ddd",
 						this.weekDays[(int) get(DateField.DAY_OF_WEEK)]
-								.substring(0, 2));
+								.substring(0, 3));
 				sub = sub
 						.replace("dd", EntityUtil.strZero(get(DateField.DAY_OF_MONTH), 2));
 				sub = sub.replace("d",
@@ -494,10 +494,15 @@ public class DateTimeEntity {
 		if(this.isDirty()) {
 			this.calculate();
 		}
-		return this.fields.get(DateField.DAY_OF_MONTH) + "."
+		return this.get(DateField.DAY_OF_MONTH) + "."
 				+ this.fields.get(DateField.MONTH) + "."
 				+ this.fields.get(DateField.YEAR);
 	}
+	
+    public String toGMTString() {
+        // d MMM yyyy HH:mm:ss 'GMT'
+    	return this.toString("ddd, dd mmm yyyy HH:MM:SS 'GMT'");
+    }
 
 	// SETTER
 	/**

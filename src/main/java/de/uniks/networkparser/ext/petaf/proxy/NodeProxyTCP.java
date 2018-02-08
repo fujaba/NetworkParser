@@ -37,6 +37,7 @@ public class NodeProxyTCP extends NodeProxy {
 	public static final String PROPERTY_PORT = "port";
 	protected int port;
 	protected String url;
+	protected int timeOut;
 	public static final String LOCALHOST = "127.0.0.1";
 	protected Server_TCP serverSocket;
 	protected boolean allowAnswer = false;
@@ -192,6 +193,8 @@ public class NodeProxyTCP extends NodeProxy {
 				Socket requestSocket = new Socket(addr, port);
 				if (msg.getTimeOut() > Message.TIMEOUTDEFAULT) {
 					requestSocket.setSoTimeout(msg.getTimeOut());
+				}else if(this.timeOut >0) {
+					requestSocket.setSoTimeout(this.timeOut);
 				}
 				OutputStream os = requestSocket.getOutputStream();
 				byte[] buffer;
@@ -412,7 +415,11 @@ public class NodeProxyTCP extends NodeProxy {
 		return super.toString();
 	}
 	
-	
+	public NodeProxyTCP withTimeOut(int value) {
+		this.timeOut = value;
+		return this;
+	}
+
 	@Override
 	public boolean isValid() {
 		if(this.port >0) {

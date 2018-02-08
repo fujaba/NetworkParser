@@ -5,7 +5,6 @@ import java.util.Collection;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.Feature;
 import de.uniks.networkparser.graph.util.FeatureSet;
-import de.uniks.networkparser.interfaces.Condition;
 import de.uniks.networkparser.interfaces.LocalisationInterface;
 import de.uniks.networkparser.list.SimpleSet;
 import de.uniks.networkparser.parser.Template;
@@ -58,23 +57,13 @@ public class JavaSet extends BasicGenerator {
 				"      return \"{{file.member.fullName}}\";",
 				"   }","",
 				"{{#if {{templatemodel.features.setclass.classstring}}=="+SimpleSet.class.getName()+"}}"+
-				"   @Override"+
+				"   @Override",
 				"{{#endif}}"+
 				"   public {{name}}Set getNewList(boolean keyValue)",
 				"   {",
 				"      return new {{name}}Set();",
 				"   }","","",
-				
-				"{{#import " + Condition.class.getName() + "}}" +
-				"   public {{name}}Set filter(Condition<{{name}}> condition)",
-				"   {",
-				"      {{name}}Set filterList = new {{name}}Set();"+
-				"{{#if {{templatemodel.features.setclass.classstring}}=="+SimpleSet.class.getName()+"}}"+
-						"      filterItems(filterList, condition);",
-				"{{#endif}}",
-				"      return filterList;",
-				"   }","","",
-				
+								
 				"{{#import " + Collection.class.getName() + "}}" +
 				"   @SuppressWarnings(\"unchecked\")",
 				"   public {{name}}Set with(Object value)",

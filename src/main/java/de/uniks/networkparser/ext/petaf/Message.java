@@ -261,4 +261,8 @@ public class Message implements SendableEntityCreator, SendableEntityCreatorNoIn
 		}
 		return false;
 	}
+
+	public Object getSession() {
+		return session;
+	}
 }

@@ -25,9 +25,11 @@ public class JavaAdapter implements JavaViewAdapter {
 	private SimpleList<String> queue=new SimpleList<String>();
 	
 	public JavaAdapter() {
-		this.webView = ReflectionLoader.newInstance(ReflectionLoader.WEBVIEW);
-		this.webEngine = ReflectionLoader.call("getEngine", this.webView);
-		ReflectionLoader.call("setMaxSize", this.webView, double.class, Double.MAX_VALUE, double.class, Double.MAX_VALUE);
+		if(ReflectionLoader.WEBVIEW != null) {
+			this.webView = ReflectionLoader.newInstance(ReflectionLoader.WEBVIEW);
+			this.webEngine = ReflectionLoader.call("getEngine", this.webView);
+			ReflectionLoader.call("setMaxSize", this.webView, double.class, Double.MAX_VALUE, double.class, Double.MAX_VALUE);
+		}
 	}
 	
 	public JavaAdapter withOwner(JavaBridge owner) {

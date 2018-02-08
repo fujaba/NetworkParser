@@ -1185,18 +1185,16 @@ public class EntityUtil {
 	 * @return true if equals any
 	 */
 	public static final boolean equalsAny(CharSequence cs, CharSequence[] strs) {
-		boolean eq = false;
-		if (cs == null) {
-			eq = strs == null;
+		if (strs == null) {
+			return cs == null;
 		}
 
-		if (strs != null) {
-			for (int i = 0; i < strs.length; i++) {
-				eq = eq || strs[i].equals(cs);
+		for (int i = 0; i < strs.length; i++) {
+			if(strs[i].equals(cs)) {
+				return true;
 			}
 		}
-
-		return eq;
+		return false;
 	}
 	
 	/**

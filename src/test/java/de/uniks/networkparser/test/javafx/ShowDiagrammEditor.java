@@ -3,7 +3,7 @@ package de.uniks.networkparser.test.javafx;
 
 import java.io.File;
 
-import de.uniks.networkparser.ext.javafx.DiagramEditor;
+import de.uniks.networkparser.ext.DiagramEditor;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
