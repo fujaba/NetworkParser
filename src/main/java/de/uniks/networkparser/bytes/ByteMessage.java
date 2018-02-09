@@ -1,5 +1,7 @@
 package de.uniks.networkparser.bytes;
 
+import de.uniks.networkparser.interfaces.SendableEntityCreatorTag;
+
 /*
 NetworkParser
 The MIT License
@@ -27,7 +29,10 @@ THE SOFTWARE.
  * The Class ByteMessage.
  */
 
-public class ByteMessage {
+public class ByteMessage implements SendableEntityCreatorTag {
+	/** The properties. */
+	private final String[] properties = new String[] {PROPERTY_VALUE };
+
 	/** The Constant PROPERTY_VALUE. */
 	public static final String PROPERTY_VALUE = "value";
 
@@ -39,7 +44,10 @@ public class ByteMessage {
 	 * @param attrName		Name of Attribute
 	 * @return				Value of Attribute
 	 */
-	public Object get(String attrName) {
+	public Object getValue(Object entity, String attrName) {
+		if(entity instanceof ByteMessage == false) {
+			return null;
+		}
 		String attribute;
 		int pos = attrName.indexOf(".");
 		if (pos > 0) {
@@ -48,7 +56,7 @@ public class ByteMessage {
 			attribute = attrName;
 		}
 		if (attribute.equalsIgnoreCase(PROPERTY_VALUE)) {
-			return this.value;
+			return ((ByteMessage)entity).value;
 		}
 		return null;
 	}
@@ -59,9 +67,16 @@ public class ByteMessage {
 	 * @param value			the Value of Attribute
 	 * @return 				success
 	 */
-	public boolean set(String attribute, Object value) {
+	
+
+	/* Setter for ByteMessage */
+	@Override
+	public boolean setValue(Object entity, String attribute, Object value, String type) {
+		if(entity instanceof ByteMessage == false) {
+			return false;
+		}
 		if (attribute.equalsIgnoreCase(PROPERTY_VALUE)) {
-			withValue((byte[]) value);
+			((ByteMessage)entity).withValue((byte[]) value);
 			return true;
 		}
 		return false;
@@ -107,4 +122,23 @@ public class ByteMessage {
 		this.value = value.getBytes();
 		return this;
 	}
+	
+	/** return the Properties */
+	@Override
+	public String[] getProperties() {
+		return properties;
+	}
+	
+	/** Create new Instance of ByteMessage */
+	@Override
+	public Object getSendableInstance(boolean reference) {
+		return new ByteMessage();
+	}
+	
+	/** Get the EventType of BasicMessage (0x42) UTF-8 */
+	@Override
+	public String getTag() {
+		return new String(new byte[]{0x42});
+	}
+
 }

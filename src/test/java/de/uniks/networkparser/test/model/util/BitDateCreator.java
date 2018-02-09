@@ -4,10 +4,9 @@ import java.util.ArrayList;
 
 import de.uniks.networkparser.bytes.BitEntity;
 import de.uniks.networkparser.bytes.BitEntityCreator;
-import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.test.model.BitDate;
 
-public class BitDateCreator implements SendableEntityCreator,BitEntityCreator {
+public class BitDateCreator implements BitEntityCreator {
 	private ArrayList<BitEntity> entities= new ArrayList<BitEntity>();
 
 	public BitDateCreator(){

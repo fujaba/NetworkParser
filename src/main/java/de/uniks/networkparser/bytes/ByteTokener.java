@@ -297,7 +297,7 @@ public class ByteTokener extends Tokener {
 		if (eventCreater == null) {
 			ByteMessage  e = new ByteMessage();
 			if(buffer != null)
-				e.set(ByteMessage.PROPERTY_VALUE, buffer.array(-1, true));
+				e.withValue(buffer.array(-1, true));
 			return e;
 		}
 		Object entity = eventCreater.getSendableInstance(false);

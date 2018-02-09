@@ -15,7 +15,6 @@ import de.uniks.networkparser.SimpleObject;
 import de.uniks.networkparser.UpdateAccumulate;
 import de.uniks.networkparser.UpdateListener;
 import de.uniks.networkparser.bytes.ByteMessage;
-import de.uniks.networkparser.bytes.ByteMessageCreator;
 import de.uniks.networkparser.ext.generic.SimpleParser;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.ObjectCondition;
@@ -267,7 +266,7 @@ public class JsonModellTest implements ObjectCondition {
 		ByteMessage message= new ByteMessage();
 		message.withValue("The answer to life the universe and everything is 42.");
 		IdMap map=new IdMap();
-		map.with(new ByteMessageCreator());
+		map.with(new ByteMessage());
 		map.withTimeStamp(1);
 		JsonObject jsonObject = map.toJsonObject(message);
 		Assert.assertEquals("{\"class\":\"de.uniks.networkparser.bytes.ByteMessage\",\"id\":\"B1\",\"prop\":{\"value\":\"The answer to life the universe and everything is 42.\"}}", jsonObject.toString());

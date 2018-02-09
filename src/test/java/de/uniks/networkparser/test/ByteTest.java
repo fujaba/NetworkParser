@@ -20,7 +20,6 @@ import de.uniks.networkparser.buffer.DERBuffer;
 import de.uniks.networkparser.bytes.AES;
 import de.uniks.networkparser.bytes.ByteEntity;
 import de.uniks.networkparser.bytes.ByteMessage;
-import de.uniks.networkparser.bytes.ByteMessageCreator;
 import de.uniks.networkparser.bytes.SHA1;
 import de.uniks.networkparser.converter.ByteConverter64;
 import de.uniks.networkparser.converter.ByteConverterAES;
@@ -183,7 +182,7 @@ public class ByteTest{
 	@Test
 	public void testMessages() throws RuntimeException {
 		IdMap map = new IdMap();
-		map.with(new ByteMessageCreator());
+		map.with(new ByteMessage());
 		map.with(new StringMessageCreator());
 
 		ByteMessage message = new ByteMessage().withValue(new byte[] { 52, 50 });
