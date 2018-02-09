@@ -21,6 +21,7 @@ import de.uniks.networkparser.ext.mqtt.MqttException;
 
 /**
  * An on-the-wire representation of an MQTT PINGREQ message.
+ * @author Paho Client
  */
 public class MqttPingReq extends MqttWireMessage {
 	public static final String KEY = "Ping";
@@ -34,8 +35,8 @@ public class MqttPingReq extends MqttWireMessage {
 	}
 	
 	/**
-	 * Returns <code>false</code> as message IDs are not required for MQTT
-	 * PINGREQ messages.
+	 * if Id is required
+	 * @return return boolean <code>false</code> as message IDs are not required for MQTT PINGREQ messages.
 	 */
 	public boolean isMessageIdRequired() {
 		return false;

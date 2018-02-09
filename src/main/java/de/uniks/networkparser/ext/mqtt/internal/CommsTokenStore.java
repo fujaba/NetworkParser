@@ -36,6 +36,7 @@ import de.uniks.networkparser.ext.mqtt.MqttException;
  * Note:
  *   Ping, connect and disconnect do not have a unique message id as
  *   only one outstanding request of each type is allowed to be outstanding
+ *   @author Paho Client
  */
 public class CommsTokenStore {
 	// Maps message-specific data (usually message IDs) to tokens
@@ -88,7 +89,7 @@ public class CommsTokenStore {
 	 * for a SEND of CONFIRM, but either way, the original SEND is what's 
 	 * needed to re-build the token.
 	 * @param message The {@link MqttPublish} message to restore
-	 * @return {@link MqttDeliveryToken}
+	 * @return a Token
 	 */
 	protected Token restoreToken(MqttPublish message) {
 		Token token;

@@ -25,6 +25,7 @@ import de.uniks.networkparser.ext.mqtt.MqttException;
 
 /**
  * An on-the-wire representation of an MQTT SUBACK.
+ * @author Paho Client
  */
 public class MqttSuback extends MqttWireMessage {
 	private int[] grantedQos;	

@@ -27,6 +27,7 @@ import de.uniks.networkparser.ext.mqtt.MqttMessage;
 
 /**
  * An on-the-wire representation of an MQTT SUBSCRIBE message.
+ * @author Paho Client
  */
 public class MqttSubscribe extends MqttWireMessage {
 	private String[] names;
@@ -82,6 +83,7 @@ public class MqttSubscribe extends MqttWireMessage {
 	}
 
 	/**
+	 * Convert Object to String 
 	 * @return string representation of this subscribe packet
 	 */
 	public String toString() {

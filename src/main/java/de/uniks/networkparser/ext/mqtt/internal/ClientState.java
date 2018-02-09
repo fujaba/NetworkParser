@@ -74,7 +74,7 @@ import de.uniks.networkparser.list.SimpleKeyValueList;
  * the wire it is possible for the receiving thread to receive the ack and to be processing 
  * the response before the sending side has finished processing.  For instance a connect may
  * be sent, the conack received before the connect notify send has been processed! 
- * 
+ * @author Paho Client
  */
 public class ClientState {
 	private static final String PERSISTENCE_SENT_PREFIX = "s-";
@@ -485,6 +485,7 @@ public class ClientState {
 	}
 	
 	/**
+	 * Remove Message
 	 * @param message The {@link MqttWireMessage} to un-persist
 	 */
 	public void unPersistBufferedMessage(MqttWireMessage message){
@@ -917,7 +918,7 @@ public class ClientState {
 	 * is tidied up so it only contains outstanding delivery tokens which are
 	 * valid after reconnect (if clean session is false)
 	 * @param reason The root cause of the disconnection, or null if it is a clean disconnect
-	 * @return {@link Vector} 
+	 * @return Vektor of Tokens {@link Vector} 
 	 */
 	public Vector<Token> resolveOldTokens(MqttException reason) {
 		//@TRACE 632=reason {0}

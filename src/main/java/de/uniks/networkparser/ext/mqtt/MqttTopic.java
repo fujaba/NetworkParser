@@ -24,6 +24,7 @@ import de.uniks.networkparser.ext.mqtt.internal.Token;
 
 /**
  * Represents a topic destination, used for publish/subscribe messaging.
+ * @author Paho Client
  */
 public class MqttTopic {
 
@@ -83,7 +84,7 @@ public class MqttTopic {
 	 * @param payload the byte array to use as the payload
 	 * @param qos the Quality of Service.  Valid values are 0, 1 or 2.
 	 * @param retained whether or not this message should be retained by the server.
-	 * @return {@link MqttDeliveryToken}
+	 * @return new Token {@link MqttDeliveryToken}
 	 * @throws MqttException If an error occurs publishing the message
 	 * @throws MqttPersistenceException If an error occurs persisting the message
 	 * @throws IllegalArgumentException if value of QoS is not 0, 1 or 2.
@@ -130,6 +131,8 @@ public class MqttTopic {
 
 	/**
 	 * Create a PUBLISH packet from the specified message.
+	 * @param message  MqttMessage message
+	 * @return new Publish Message
 	 */
 	private MqttPublish createPublish(MqttMessage message) {
 		return new MqttPublish(this.getName(), message);

@@ -24,6 +24,7 @@ import de.uniks.networkparser.ext.mqtt.MqttException;
 
 /**
  * An on-the-wire representation of an MQTT CONNACK.
+ * @author Paho Client
  */
 public class MqttConnack extends MqttWireMessage {
 	public static final String KEY = "Con";
@@ -54,7 +55,7 @@ public class MqttConnack extends MqttWireMessage {
 	}
 	
 	/**
-	 * Returns whether or not this message needs to include a message ID.
+	 * @return whether or not this message needs to include a message ID.
 	 */
 	public boolean isMessageIdRequired() {
 		return false;

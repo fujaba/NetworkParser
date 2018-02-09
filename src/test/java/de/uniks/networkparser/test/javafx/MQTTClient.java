@@ -1,18 +1,18 @@
 package de.uniks.networkparser.test.javafx;
 
 import de.uniks.networkparser.SimpleEvent;
-import de.uniks.networkparser.ext.mqtt.MqttClient;
 import de.uniks.networkparser.ext.mqtt.MqttException;
 import de.uniks.networkparser.ext.mqtt.MqttMessage;
+import de.uniks.networkparser.ext.petaf.proxy.NodeProxyMQTT;
 import de.uniks.networkparser.interfaces.SimpleEventCondition;
 
 public class MQTTClient {
 	public static void main(String[] args) throws MqttException {
-		MqttClient client = new MqttClient("tcp://broker.hivemq.com:1883", MqttClient.generateClientId());
+		NodeProxyMQTT client = new NodeProxyMQTT("tcp://broker.hivemq.com:1883", NodeProxyMQTT.generateClientId());
 		client.setCallback(new SimpleEventCondition() {
 				@Override
 				public boolean update(SimpleEvent event) {
-					if(MqttClient.EVENT_MESSAGE.equals(event.getType())) {
+					if(NodeProxyMQTT.EVENT_MESSAGE.equals(event.getType())) {
 						System.out.println("TOPIC: "+event.getPropertyName());
 						System.out.println("Message: "+event.getNewValue());
 					}

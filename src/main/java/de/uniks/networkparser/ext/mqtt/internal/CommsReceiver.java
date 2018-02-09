@@ -25,6 +25,7 @@ import de.uniks.networkparser.ext.mqtt.MqttException;
 
 /**
  * Receives MQTT packets from the server.
+ * @author Paho Client
  */
 public class CommsReceiver implements Runnable {
 	private boolean running = false;

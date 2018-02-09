@@ -29,6 +29,7 @@ import de.uniks.networkparser.ext.mqtt.MqttException;
 /**
  * An <code>MqttInputStream</code> lets applications read instances of
  * <code>MqttWireMessage</code>. 
+ * @author Paho Client
  */
 public class MqttInputStream extends InputStream {
 	private ClientState clientState = null;

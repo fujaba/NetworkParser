@@ -26,6 +26,7 @@ import de.uniks.networkparser.ext.mqtt.MqttException;
 
 /**
  * An on-the-wire representation of an MQTT PUBACK message.
+ * @author Paho Client
  */
 public class MqttPubAck extends MqttWireMessage {
 	public MqttPubAck(byte info, byte[] data) throws IOException {

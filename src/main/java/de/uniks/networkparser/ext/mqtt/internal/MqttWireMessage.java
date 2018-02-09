@@ -28,6 +28,7 @@ import de.uniks.networkparser.ext.mqtt.MqttException;
 
 /**
  * An on-the-wire representation of an MQTT message.
+ * @author Paho Client
  */
 public abstract class MqttWireMessage {	
 	public static final byte MESSAGE_TYPE_CONNECT = 1;
@@ -235,7 +236,7 @@ public abstract class MqttWireMessage {
 	/**
 	 * Decodes an MQTT Multi-Byte Integer from the given stream.
 	 * @param in the input stream 
-	 * @return {@link MultiByteInteger}
+	 * @return long Value of Read
 	 * @throws IOException if an exception occurs when reading the input stream
 	 */
 	protected static long readMBI(DataInputStream in) throws IOException {

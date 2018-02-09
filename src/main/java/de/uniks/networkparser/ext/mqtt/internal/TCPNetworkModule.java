@@ -30,6 +30,7 @@ import de.uniks.networkparser.ext.mqtt.MqttException;
 
 /**
  * A network module for connecting over TCP.
+ * @author Paho Client
  */
 public class TCPNetworkModule {
 	protected Socket socket;

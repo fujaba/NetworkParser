@@ -20,21 +20,20 @@
 package de.uniks.networkparser.ext.mqtt.internal;
 
 import java.util.Enumeration;
-import java.util.Properties;
 import java.util.Vector;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import de.uniks.networkparser.ext.mqtt.MqttClient;
-import de.uniks.networkparser.ext.mqtt.MqttConnectOptions;
 import de.uniks.networkparser.ext.mqtt.MqttException;
 import de.uniks.networkparser.ext.mqtt.MqttTopic;
+import de.uniks.networkparser.ext.petaf.proxy.NodeProxyMQTT;
 import de.uniks.networkparser.interfaces.SimpleEventCondition;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 
 /**
  * Handles client communications with the server.  Sends and receives MQTT V3
  * messages.
+ * @author Paho Client
  */
 public class ClientComms {
 	public static String 		VERSION = "${project.version}";
@@ -46,14 +45,12 @@ public class ClientComms {
 	private static final byte DISCONNECTED	= 3;
 	private static final byte CLOSED	= 4;
 
-	private MqttClient 		client;
-	private int 					networkModuleIndex;
-	private TCPNetworkModule[]			networkModules;
+	private NodeProxyMQTT 		client;
+	private TCPNetworkModule			networkModule;
 	private CommsReceiver 			receiver;
 	private CommsSender 			sender;
 	private CommsCallback 			callback;
 	private ClientState	 			clientState;
-	private MqttConnectOptions		conOptions;
 	private CommsTokenStore 		tokenStore;
 	private boolean 				stoppingComms = false;
 
@@ -73,7 +70,7 @@ public class ClientComms {
 	 * @param executorService the {@link ExecutorService}
 	 * @throws MqttException if an exception occurs whilst communicating with the server
 	 */
-	public ClientComms(MqttClient client, SimpleKeyValueList<String, MqttPublish> persistence, ExecutorService executorService) throws MqttException {
+	public ClientComms(NodeProxyMQTT client, SimpleKeyValueList<String, MqttPublish> persistence, ExecutorService executorService) throws MqttException {
 		this.conState = DISCONNECTED;
 		this.client 	= client;
 		this.executorService = executorService;
@@ -157,6 +154,7 @@ public class ClientComms {
 	 *
 	 * Call each main class and let it tidy up e.g. releasing the token
 	 * store which normally survives a disconnect.
+	 * @param force Force close
 	 * @throws MqttException  if not disconnected
 	 */
 	public void close(boolean force) throws MqttException {
@@ -184,8 +182,7 @@ public class ClientComms {
 				callback = null;
 				sender = null;
 				receiver = null;
-				networkModules = null;
-				conOptions = null;
+				networkModule = null;
 				tokenStore = null;
 			}
 		}
@@ -199,27 +196,25 @@ public class ClientComms {
 	 * @param token The {@link MqttToken} to track the connection
 	 * @throws MqttException if an error occurs when connecting
 	 */
-	public void connect(MqttConnectOptions options, Token token) throws MqttException {
+	public void connect(Token token) throws MqttException {
 		synchronized (conLock) {
 			if (isDisconnected() && !closePending) {
 				//@TRACE 214=state=CONNECTING
 
 				conState = CONNECTING;
-
-				conOptions = options;
-
+				
                 MqttConnect connect = new MqttConnect(client.getClientId(),
-                        conOptions.getMqttVersion(),
-                        conOptions.isCleanSession(),
-                        conOptions.getKeepAliveInterval(),
-                        conOptions.getUserName(),
-                        conOptions.getPassword(),
-                        conOptions.getWillMessage(),
-                        conOptions.getWillDestination());
+                        client.getMqttVersion(),
+                        client.isCleanSession(),
+                        client.getKeepAliveInterval(),
+                        client.getUserName(),
+                        client.getPassword());
+//                        client.getWillMessage(),
+//                        client.getWillDestination());
 
-                this.clientState.setKeepAliveSecs(conOptions.getKeepAliveInterval());
-                this.clientState.setCleanSession(conOptions.isCleanSession());
-                this.clientState.setMaxInflight(conOptions.getMaxInflight());
+                this.clientState.setKeepAliveSecs(client.getKeepAliveInterval());
+                this.clientState.setCleanSession(client.isCleanSession());
+                this.clientState.setMaxInflight(client.getMaxInflight());
 
 				tokenStore.open();
 				ConnectBG conbg = new ConnectBG(this, token, connect, executorService);
@@ -298,11 +293,8 @@ public class ClientComms {
 		
 		// Stop the network module, send and receive now not possible
 		try {
-			if (networkModules != null) {
-				TCPNetworkModule networkModule = networkModules[networkModuleIndex];
-				if (networkModule != null) {
-					networkModule.stop();
-				}
+			if (networkModule != null) {
+				networkModule.stop();
 			}
 		} catch (Exception ioe) {
 			// Ignore as we are shutting down
@@ -513,17 +505,11 @@ public class ClientComms {
 	protected MqttTopic getTopic(String topic) {
 		return new MqttTopic(topic, this);
 	}
-	public void setNetworkModuleIndex(int index) {
-		this.networkModuleIndex = index;
+	public TCPNetworkModule getNetworkModules() {
+		return networkModule;
 	}
-	public int getNetworkModuleIndex() {
-		return networkModuleIndex;
-	}
-	public TCPNetworkModule[] getNetworkModules() {
-		return networkModules;
-	}
-	public void setNetworkModules(TCPNetworkModule[] networkModules) {
-		this.networkModules = networkModules;
+	public void setNetworkModules(TCPNetworkModule networkModules) {
+		this.networkModule = networkModules;
 	}
 	
 	protected void deliveryComplete(MqttPublish msg) throws MqttException {
@@ -534,7 +520,7 @@ public class ClientComms {
 		this.clientState.deliveryComplete(messageId);
 	}
 
-	public MqttClient getClient() {
+	public NodeProxyMQTT getClient() {
 		return client;
 	}
 
@@ -545,21 +531,6 @@ public class ClientComms {
 	public ClientState getClientState() {
 		return clientState;
 	}
-
-	public MqttConnectOptions getConOptions() {
-		return conOptions;
-	}
-
-	public Properties getDebug() {
-		Properties props = new Properties();
-		props.put("conState", conState);
-		props.put("serverURI", getClient().getServerURI());
-		props.put("callback", callback);
-		props.put("stoppingComms", stoppingComms);
-		return props;
-	}
-
-
 
 	// Kick off the connect processing in the background so that it does not block. For instance
 	// the socket could take time to create.
@@ -592,7 +563,6 @@ public class ClientComms {
 				// Connect to the server at the network level e.g. TCP socket and then
 				// start the background processing threads before sending the connect
 				// packet.
-				TCPNetworkModule networkModule = networkModules[networkModuleIndex];
 				networkModule.start();
 				receiver = new CommsReceiver(clientComms, clientState, tokenStore, networkModule.getInputStream());
 				receiver.start("MQTT Rec: "+getClient().getClientId(), executorService);

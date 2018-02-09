@@ -20,6 +20,7 @@ package de.uniks.networkparser.ext.mqtt;
 
 /**
  * Thrown if an error occurs communicating with the server.
+ * @author Paho Client
  */
 public class MqttException extends Exception {
 	private static final long serialVersionUID = 300L;
@@ -171,6 +172,8 @@ public class MqttException extends Exception {
 	 * Set new Reason
 	 *
 	 * @param reasonCode the reason code for the exception.
+	 * @param exception add Exception
+	 * @return return new Exception
 	 */
 	public static MqttException withReason(short reasonCode, Object... exception) {
 		MqttException mqttException = new MqttException();

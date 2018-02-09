@@ -25,6 +25,7 @@ import de.uniks.networkparser.ext.mqtt.MqttException;
 
 /**
  * An on-the-wire representation of an MQTT UNSUBSCRIBE message.
+ * @author Paho Client
  */
 public class MqttUnsubscribe extends MqttWireMessage {
 	
@@ -67,6 +68,7 @@ public class MqttUnsubscribe extends MqttWireMessage {
 	}
 
 	/**
+	 * Convert Object to String
 	 * @return string representation of this un-subscribe packet
 	 */
 	public String toString() {

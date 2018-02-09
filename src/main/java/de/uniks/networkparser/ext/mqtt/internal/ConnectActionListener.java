@@ -18,9 +18,8 @@
 package de.uniks.networkparser.ext.mqtt.internal;
 
 import de.uniks.networkparser.SimpleEvent;
-import de.uniks.networkparser.ext.mqtt.MqttClient;
-import de.uniks.networkparser.ext.mqtt.MqttConnectOptions;
 import de.uniks.networkparser.ext.mqtt.MqttException;
+import de.uniks.networkparser.ext.petaf.proxy.NodeProxyMQTT;
 import de.uniks.networkparser.interfaces.SimpleEventCondition;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 
@@ -49,15 +48,14 @@ import de.uniks.networkparser.list.SimpleKeyValueList;
  * If a connection fails then another URL in the list is attempted, otherwise
  * the users token is notified and the users onFailure callback is called
  * </p>
+ * @author Paho Client
  */
 public class ConnectActionListener {
 
 	private SimpleKeyValueList<String, MqttPublish> persistence;
-	private MqttClient client;
+	private NodeProxyMQTT client;
 	private ClientComms comms;
-	private MqttConnectOptions options;
 	private Token userToken;
-	private int originalMqttVersion;
 	private SimpleEventCondition mqttCallback;
 	private boolean reconnect;
 
@@ -79,35 +77,29 @@ public class ConnectActionListener {
 	 * @param reconnect
 	 *            If true, this is a reconnect attempt
 	 */
-	public ConnectActionListener(MqttClient client, SimpleKeyValueList<String, MqttPublish> persistence,
-			ClientComms comms, MqttConnectOptions options, Token userToken, boolean reconnect) {
+	public ConnectActionListener(NodeProxyMQTT client, SimpleKeyValueList<String, MqttPublish> persistence,
+			ClientComms comms, Token userToken, boolean reconnect) {
 		this.persistence = persistence;
 		this.client = client;
 		this.comms = comms;
-		this.options = options;
 		this.userToken = userToken;
-		this.originalMqttVersion = options.getMqttVersion();
 		this.reconnect = reconnect;
 	}
 
 	/**
 	 * If the connect succeeded then call the users onSuccess callback
 	 * 
-	 * @param token
-	 *            the {@link IMqttToken} from the successful connection
+	 * @param token the {@link IMqttToken} from the successful connection
 	 */
 	public void onSuccess(Token token) {
-		if (originalMqttVersion == MqttConnectOptions.MQTT_VERSION_DEFAULT) {
-			options.setMqttVersion(MqttConnectOptions.MQTT_VERSION_DEFAULT);
-		}
 		userToken.markComplete(token.getResponse(), null);
 		userToken.notifyComplete();
 		userToken.setClient(this.client); // fix bug 469527 - maybe should be set elsewhere?
 
 		if (mqttCallback != null) {
-			String serverURI = comms.getNetworkModules()[comms.getNetworkModuleIndex()].getServerURI();
+			String serverURI = comms.getNetworkModules().getServerURI();
 
-			SimpleEvent event = new SimpleEvent(client, serverURI, null, reconnect).withType(MqttClient.EVENT_CONNECT);
+			SimpleEvent event = new SimpleEvent(client, serverURI, null, reconnect).withType(NodeProxyMQTT.EVENT_CONNECT);
 			mqttCallback.update(event);
 		}
 
@@ -117,48 +109,20 @@ public class ConnectActionListener {
 	 * The connect failed, so try the next URI on the list. If there are no more
 	 * URIs, then fail the overall connect.
 	 * 
-	 * @param token
-	 *            the {@link IMqttToken} from the failed connection attempt
-	 * @param exception
-	 *            the {@link Throwable} exception from the failed connection attempt
+	 * @param token the {@link IMqttToken} from the failed connection attempt
+	 * @param exception the {@link Throwable} exception from the failed connection attempt
 	 */
 	public void onFailure(Token token, Throwable exception) {
 
-		int numberOfURIs = comms.getNetworkModules().length;
-		int index = comms.getNetworkModuleIndex();
-
-		if ((index + 1) < numberOfURIs || (originalMqttVersion == MqttConnectOptions.MQTT_VERSION_DEFAULT
-				&& options.getMqttVersion() == MqttConnectOptions.MQTT_VERSION_3_1_1)) {
-
-			if (originalMqttVersion == MqttConnectOptions.MQTT_VERSION_DEFAULT) {
-				if (options.getMqttVersion() == MqttConnectOptions.MQTT_VERSION_3_1_1) {
-					options.setMqttVersion(MqttConnectOptions.MQTT_VERSION_3_1);
-				} else {
-					options.setMqttVersion(MqttConnectOptions.MQTT_VERSION_3_1_1);
-					comms.setNetworkModuleIndex(index + 1);
-				}
-			} else {
-				comms.setNetworkModuleIndex(index + 1);
-			}
-			try {
-				connect();
-			} catch (MqttException e) {
-				onFailure(token, e); // try the next URI in the list
-			}
+		MqttException ex;
+		if (exception instanceof MqttException) {
+			ex = (MqttException) exception;
 		} else {
-			if (originalMqttVersion == MqttConnectOptions.MQTT_VERSION_DEFAULT) {
-				options.setMqttVersion(MqttConnectOptions.MQTT_VERSION_DEFAULT);
-			}
-			MqttException ex;
-			if (exception instanceof MqttException) {
-				ex = (MqttException) exception;
-			} else {
-				ex = MqttException.withReason(MqttException.REASON_CODE_DEFAULT, exception);
-			}
-			userToken.markComplete(null, ex);
-			userToken.notifyComplete();
-			userToken.setClient(this.client); // fix bug 469527 - maybe should be set elsewhere?
+			ex = MqttException.withReason(MqttException.REASON_CODE_DEFAULT, exception);
 		}
+		userToken.markComplete(null, ex);
+		userToken.notifyComplete();
+		userToken.setClient(this.client); // fix bug 469527 - maybe should be set elsewhere?
 	}
 
 	/**
@@ -170,16 +134,16 @@ public class ConnectActionListener {
 	public void connect() throws MqttException {
 		Token token = new Token(client.getClientId());
 		token.setActionCallback(this);
-		if (options.isCleanSession()) {
+		if (client.isCleanSession()) {
 			persistence.clear();
 		}
 
-		if (options.getMqttVersion() == MqttConnectOptions.MQTT_VERSION_DEFAULT) {
-			options.setMqttVersion(MqttConnectOptions.MQTT_VERSION_3_1_1);
+		if (client.getMqttVersion() == NodeProxyMQTT.MQTT_VERSION_DEFAULT) {
+			client.withMqttVersion(NodeProxyMQTT.MQTT_VERSION_3_1_1);
 		}
 
 		try {
-			comms.connect(options, token);
+			comms.connect(token);
 		} catch (MqttException e) {
 			onFailure(token, e);
 		}
@@ -188,9 +152,7 @@ public class ConnectActionListener {
 	/**
 	 * Set the MqttCallbackExtened callback to receive connectComplete callbacks
 	 * 
-	 * @param mqttCallbackExtended
-	 *            the {@link MqttCallbackExtended} to be called when the connection
-	 *            completes
+	 * @param mqttCallbackExtended the {@link MqttCallbackExtended} to be called when the connection completes
 	 */
 	public void setMqttCallback(SimpleEventCondition mqttCallbackExtended) {
 		this.mqttCallback = mqttCallbackExtended;

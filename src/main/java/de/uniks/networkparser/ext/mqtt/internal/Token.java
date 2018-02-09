@@ -16,9 +16,9 @@
 
 package de.uniks.networkparser.ext.mqtt.internal;
 
-import de.uniks.networkparser.ext.mqtt.MqttClient;
 import de.uniks.networkparser.ext.mqtt.MqttException;
 import de.uniks.networkparser.ext.mqtt.MqttMessage;
+import de.uniks.networkparser.ext.petaf.proxy.NodeProxyMQTT;
 
 public class Token {
 	private volatile boolean completed = false;
@@ -36,7 +36,7 @@ public class Token {
 	private String key;
 	
 	private ConnectActionListener callback = null;
-	private MqttClient client = null;
+	private NodeProxyMQTT client = null;
 	
 	private int messageID = 0;
 	private boolean notified = false;
@@ -248,11 +248,11 @@ public class Token {
 		}
 	}
 	
-	public MqttClient getClient() {
+	public NodeProxyMQTT getClient() {
 		return client;
 	}
 	
-	protected void setClient(MqttClient client) {
+	protected void setClient(NodeProxyMQTT client) {
 		this.client = client;
 	}
 

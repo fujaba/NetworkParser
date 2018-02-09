@@ -21,6 +21,7 @@ package de.uniks.networkparser.ext.mqtt;
  * specifying how the message is to be delivered
  * The message includes a "payload" (the body of the message)
  * represented as a byte[].
+ * @author Paho Client
  */
 public class MqttMessage {
 
@@ -104,8 +105,7 @@ public class MqttMessage {
 	 * the message was from a current publisher, or was "retained" by the server as
 	 * the last message published on the topic.
 	 *
-	 * @return <code>true</code> if the message should be, or was, retained by
-	 * the server.
+	 * @return boolean <code>true</code> if the message should be, or was, retained by the server.
 	 * @see #setRetained(boolean)
 	 */
 	public boolean isRetained() {
@@ -196,7 +196,7 @@ public class MqttMessage {
 	/**
 	 * Sets the mutability of this object (whether or not its values can be
 	 * changed.
-	 * @param mutable <code>true</code> if the values can be changed,
+	 * @param mutable boolean <code>true</code> if the values can be changed,
 	 * <code>false</code> to prevent them from being changed.
 	 */
 	protected void setMutable(boolean mutable) {
@@ -217,7 +217,7 @@ public class MqttMessage {
 	 * Returns whether or not this message might be a duplicate of one which has
 	 * already been received.  This will only be set on messages received from
 	 * the server.
-	 * @return <code>true</code> if the message might be a duplicate.
+	 * @return boolean <code>true</code> if the message might be a duplicate.
 	 */
 	public boolean isDuplicate() {
 		return this.dup;

@@ -24,15 +24,16 @@ import java.util.concurrent.Future;
 import java.util.concurrent.Semaphore;
 
 import de.uniks.networkparser.SimpleEvent;
-import de.uniks.networkparser.ext.mqtt.MqttClient;
 import de.uniks.networkparser.ext.mqtt.MqttException;
 import de.uniks.networkparser.ext.mqtt.MqttMessage;
+import de.uniks.networkparser.ext.petaf.proxy.NodeProxyMQTT;
 import de.uniks.networkparser.interfaces.SimpleEventCondition;
 
 /**
  * Bridge between Receiver and the external API. This class gets called by
  * Receiver, and then converts the comms-centric MQTT message objects into ones
  * understood by the external API.
+ * @author Paho Client
  */
 public class CommsCallback implements Runnable {
 	private static final int INBOUND_QUEUE_SIZE = 10;
@@ -254,7 +255,7 @@ public class CommsCallback implements Runnable {
 		try {
 			if (mqttCallback != null && cause != null) {
 				// @TRACE 708=call connectionLost
-				SimpleEvent event=new SimpleEvent(this.clientComms.getClient(), MqttClient.EVENT_CONNECT, null, cause).withType(MqttClient.EVENT_CONNECTLOST);
+				SimpleEvent event=new SimpleEvent(this.clientComms.getClient(), NodeProxyMQTT.EVENT_CONNECT, null, cause).withType(NodeProxyMQTT.EVENT_CONNECTLOST);
 				mqttCallback.update(event);
 //				mqttCallback.connectionLost(cause);
 			}
@@ -291,8 +292,7 @@ public class CommsCallback implements Runnable {
 	 * only added to the queue for inbound messages if the client is not
 	 * quiescing.
 	 * 
-	 * @param sendMessage
-	 *            the MQTT SEND message.
+	 * @param sendMessage the MQTT SEND message.
 	 */
 	public void messageArrived(MqttPublish sendMessage) {
 		if (mqttCallback != null) {
@@ -410,7 +410,7 @@ public class CommsCallback implements Runnable {
 		/* if the message hasn't been delivered to a per subscription handler, give it to the default handler */
 		if (mqttCallback != null && !delivered) {
 			aMessage.setId(messageId);
-			SimpleEvent event = new SimpleEvent(this.clientComms.getClient(), topicName, null, aMessage).withType(MqttClient.EVENT_MESSAGE);
+			SimpleEvent event = new SimpleEvent(this.clientComms.getClient(), topicName, null, aMessage).withType(NodeProxyMQTT.EVENT_MESSAGE);
 			mqttCallback.update(event);
 			delivered = true;
 		}

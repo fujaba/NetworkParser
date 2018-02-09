@@ -23,10 +23,10 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 
 import de.uniks.networkparser.ext.mqtt.MqttException;
-import de.uniks.networkparser.ext.mqtt.MqttMessage;
 
 /**
  * An on-the-wire representation of an MQTT CONNECT message.
+ * @author Paho Client
  */
 public class MqttConnect extends MqttWireMessage {
 
@@ -34,11 +34,9 @@ public class MqttConnect extends MqttWireMessage {
 
 	private String clientId;
 	private boolean cleanSession;
-	private MqttMessage willMessage;
 	private String userName;
 	private char[] password;
 	private int keepAliveInterval;
-	private String willDestination;
 	private int MqttVersion;
 	
 	/**
@@ -65,15 +63,13 @@ public class MqttConnect extends MqttWireMessage {
 		dis.close();
 	}
 
-	public MqttConnect(String clientId, int MqttVersion, boolean cleanSession, int keepAliveInterval, String userName, char[] password, MqttMessage willMessage, String willDestination) {
+	public MqttConnect(String clientId, int MqttVersion, boolean cleanSession, int keepAliveInterval, String userName, char[] password) {
 		super(MqttWireMessage.MESSAGE_TYPE_CONNECT);
 		this.clientId = clientId;
 		this.cleanSession = cleanSession;
 		this.keepAliveInterval = keepAliveInterval;
 		this.userName = userName;
 		this.password = password;
-		this.willMessage = willMessage;
-		this.willDestination = willDestination;
 		this.MqttVersion = MqttVersion;
 	}
 
@@ -110,14 +106,6 @@ public class MqttConnect extends MqttWireMessage {
 				connectFlags |= 0x02;
 			}
 			
-			if (willMessage != null ) {
-				connectFlags |= 0x04;
-				connectFlags |= (willMessage.getQos()<<3);
-				if (willMessage.isRetained()) {
-					connectFlags |= 0x20;
-				}
-			}
-			
 			if (userName != null) {
 				connectFlags |= 0x80;
 				if (password != null) {
@@ -139,12 +127,6 @@ public class MqttConnect extends MqttWireMessage {
 			DataOutputStream dos = new DataOutputStream(baos);
 			encodeUTF8(dos,clientId);
 			
-			if (willMessage != null) {
-				encodeUTF8(dos,willDestination);
-				dos.writeShort(willMessage.getPayload().length);
-				dos.write(willMessage.getPayload());
-			}
-			
 			if (userName != null) {
 				encodeUTF8(dos,userName);
 				if (password != null) {
@@ -159,7 +141,7 @@ public class MqttConnect extends MqttWireMessage {
 	}
 	
 	/**
-	 * Returns whether or not this message needs to include a message ID.
+	 * @return whether or not this message needs to include a message ID.
 	 */
 	public boolean isMessageIdRequired() {
 		return false;

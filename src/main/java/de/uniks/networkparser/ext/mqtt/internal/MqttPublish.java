@@ -26,6 +26,7 @@ import de.uniks.networkparser.ext.mqtt.MqttMessage;
 
 /**
  * An on-the-wire representation of an MQTT SEND message.
+ * @author Paho Client
  */
 public class MqttPublish extends MqttWireMessage {
 	
