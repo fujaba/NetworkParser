@@ -30,9 +30,7 @@ public class NodeProxyEMail extends NodeProxy{
 	public int compareTo(NodeProxy o) {
 		return 0;
 	}
-	
-	
-	
+
 	@Override
 	public Object getValue(Object element, String attrName) {
 		if(element instanceof NodeProxyEMail ) {

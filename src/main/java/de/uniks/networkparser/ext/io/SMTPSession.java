@@ -3,11 +3,12 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.nio.charset.StandardCharsets;
 
+import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
 
@@ -18,6 +19,7 @@ import de.uniks.networkparser.converter.ByteConverter64;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
+import de.uniks.networkparser.xml.XMLEntity;
 
 public class SMTPSession {
 	public final static String RESPONSE_SERVERREADY = "220";
@@ -29,7 +31,8 @@ public class SMTPSession {
 	public static final int SSLPORT=587;
 	/** 15 sec. socket read timeout */
 	public static final int SOCKET_READ_TIMEOUT = 15 * 1000;
-	private static final byte[] CRLF = { (byte)'\r', (byte)'\n' };
+	public static String FEATURE_TLS = "STARTTLS";
+	public static final int BUFFER=1024;
 
 	private String host;
 	private int port;
@@ -38,38 +41,11 @@ public class SMTPSession {
 	protected BufferedReader in;
 	protected OutputStream out;
 	protected SimpleList<String> supportedFeature = new SimpleList<String>();
-	private boolean allowutf8;
 	private CharacterBuffer lastAnswer;
 	private String lastSended;
+	private SSLSocketFactory factory;
+	private String id;
 
-	/**
-	 * Creates new SMTP session by given SMTP host and port, sender email address
-	 * @param host SMTP host
-	 * @param port SMTP port
-	 * @param sender email address of sender
-	 */
-	public SMTPSession(String host, int port, String sender) {
-		this.host = host;
-		this.port = port;
-		this.sender = sender;
-	}
-
-	/**
-	 * Creates new SMTP session by given SMTP host, sender email address,
-	 * Assumes SMTP port is 25 (default for SMTP service).
-	 * @param host SMTP host
-	 * @param sender email address of sender
-	 */
-	public SMTPSession(String host, String sender) {
-		this(host, 25, sender);
-	}
-	
-	/**
-	 * Creates new SMTP session
-	 */
-	public SMTPSession() {
-	}
-	
 	public SMTPSession connectSSL(String host, String sender, String password) {
 		this.host = host;
 		this.port = SSLPORT;
@@ -77,7 +53,101 @@ public class SMTPSession {
 		this.connect(sender, password);
 		return this;
 	}
+	
+	public SMTPSession connect(String host, int port, String sender, String password) {
+		this.host = host;
+		this.port = port;
+		this.sender = sender;
+		try {
+			serverSocket = new Socket(host, port);
+			initSockets();
+			CharacterBuffer response = sendStartXMPP();
 
+			XMLEntity answer= new XMLEntity().withValue(response);
+			this.id = answer.getString("id");
+			XMLEntity features = (XMLEntity) answer.getElementBy(XMLEntity.PROPERTY_TAG, "stream:features");
+			for(int i=0;i<features.sizeChildren();i++) {
+				XMLEntity child = (XMLEntity) features.getChild(i);
+				this.supportedFeature.add(child.getTag().toUpperCase());
+			}
+			if(supportedFeature.contains(FEATURE_TLS)) {
+				response = sendCommand("<starttls xmlns=\"urn:ietf:params:xml:ns:xmpp-tls\" />");
+//				if(response.startsWith("<proceed "))
+
+				// Now create Factory
+	            SSLContext context = SSLContext.getInstance("TLS");
+	            context.init(null, new javax.net.ssl.TrustManager[] { new ServerTrustManager(host) }, 
+	            		new java.security.SecureRandom());
+				this.factory = context.getSocketFactory();
+				
+				if(startTLS() == false) {
+					return this;
+				}
+				response = sendStartXMPP();
+
+				String login = getLoginText(sender, password);
+				response = sendCommand("<auth mechanism=\"PLAIN\" xmlns=\"urn:ietf:params:xml:ns:xmpp-sasl\">"+login+"</auth>");
+//				if(response.startsWith("<success "))
+				
+				response = sendStartXMPP();
+				
+				bindXMPP();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return this;
+	}
+	
+	
+	private CharacterBuffer sendStartXMPP() {
+		return sendCommand("<stream:stream to=\""+host+"\" xmlns=\"jabber:client\" xmlns:stream=\"http://etherx.jabber.org/streams\" version=\"1.0\">");
+	}
+	
+	private CharacterBuffer bindXMPP() {
+		XMLEntity iq = XMLEntity.TAG("iq");
+		iq.with("id", nextID());
+		iq.with("type", "set");
+		XMLEntity bind = iq.createChild("bind");
+		bind.with("xmlns", "urn:ietf:params:xml:ns:xmpp-bind");
+		bind.createChild("resource").withValueItem("NetworkParser");
+////		bind.createChild("resource").withValueItem("Smack");
+		String command = iq.toString();
+		CharacterBuffer response = sendCommand(command);
+//		System.out.println(response);
+		
+		response = sendCommand("<iq id=\""+nextID()+"\" type=\"set\"><session xmlns=\"urn:ietf:params:xml:ns:xmpp-session\"/></iq>");
+
+		XMLEntity presence = XMLEntity.TAG("presence");
+		presence.with("id", nextID());
+		presence.withCloseTag();
+		command = presence.toString();
+		response = sendCommand(command);
+		
+		return response;
+//		System.out.println(response);
+	}
+	
+	private String getLoginText(String user, String password) {
+		if(user == null || password== null ) {
+			return "";
+		}
+		byte[] userBytes = user.getBytes();
+		byte[] passwordBytes = password.getBytes();
+		byte[] bytes = new byte[userBytes.length * 2 + passwordBytes.length + 2];
+		int i=0;
+		for(;i<userBytes.length;i++) {
+			bytes[i] = userBytes[i];
+			bytes[i+userBytes.length+1] = userBytes[i]; 
+		}
+		for(i=0;i<passwordBytes.length;i++) {
+			bytes[i+userBytes.length+userBytes.length + 2] = passwordBytes[i];
+		}
+		ByteConverter64 converter = new ByteConverter64();
+		CharacterBuffer staticString = converter.toStaticString(bytes);
+		return staticString.toString();
+	}
+	
 	public String getSender() {
 		return sender;
 	}
@@ -104,6 +174,9 @@ public class SMTPSession {
 		return this;
 	}
 	
+	public String getID() {
+		return id;
+	}
 	
 	/**
 	 * Closes down the connection to SMTP server (if open). Should be called if
@@ -122,10 +195,12 @@ public class SMTPSession {
 		return true;
 	}
 	
-	public boolean connect(String password) {
-		return this.connect(this.sender, password);
+	private void initSockets() throws UnsupportedEncodingException, IOException {
+		serverSocket.setSoTimeout(SOCKET_READ_TIMEOUT);
+        in = new BufferedReader(new InputStreamReader(serverSocket.getInputStream(), "UTF-8"));
+        out = serverSocket.getOutputStream();
 	}
-	
+
 	/**
 	 * Connects to the SMTP server and gets input and output streams (in, out).
 	 * @param userName the Username
@@ -139,17 +214,13 @@ public class SMTPSession {
 			}
 			try {
 				serverSocket = new Socket(host, port);
-				serverSocket.setSoTimeout(SOCKET_READ_TIMEOUT);
-	
-				in = new BufferedReader(new InputStreamReader(serverSocket.getInputStream()));
-				out = serverSocket.getOutputStream();
-				
+				initSockets();
+
 				checkServerResponse(getResponse(), RESPONSE_SERVERREADY);
 				
 				sendHelo();
 				
-				CharacterBuffer answer;
-				answer = sendCommand("STARTTLS");
+				CharacterBuffer answer = sendCommand(FEATURE_TLS);
 	
 				startTLS();
 				sendHelo();
@@ -190,33 +261,32 @@ public class SMTPSession {
 		return checkServerResponse(response, RESPONSE_MAILACTIONOKEY);
 	}
 
-	public void startTLS() {
-		SSLSocketFactory ssf = (SSLSocketFactory)SSLSocketFactory.getDefault();
+	public boolean startTLS() {
 		try {
-			this.serverSocket = ssf.createSocket(this.serverSocket, host, port, true);
-			in = new BufferedReader(new InputStreamReader(serverSocket.getInputStream()));
-			out = serverSocket.getOutputStream();
+			if(factory == null) {
+				this.factory = (SSLSocketFactory) SSLSocketFactory.getDefault();
+			}
+			this.serverSocket = factory.createSocket(this.serverSocket, host, port, true);
+			initSockets();
+
 			if (this.serverSocket instanceof SSLSocket) {
 				SSLSocket socket = (SSLSocket) this.serverSocket;
 				String[] prots = socket.getEnabledProtocols();
 				SimpleList<String> eprots = new SimpleList<String>();
 				for (int i = 0; i < prots.length; i++) {
-					if (prots[i] != null && !prots[i].startsWith("SSL"))
+					if (prots[i] != null && prots[i].startsWith("SSL")== false && prots[i].equalsIgnoreCase("TLSv1")== false)
 						eprots.add(prots[i]);
 				}
-				socket.setEnabledProtocols(eprots.toArray(new String[eprots.size()]));
+//		        socket.setSoTimeout(0);
+//		        socket.setKeepAlive(true);
+//				socket.setEnabledProtocols(eprots.toArray(new String[eprots.size()]));
 				socket.startHandshake();
-			}			
+				return true;
+			}
 		} catch (Exception e) {
+			e.printStackTrace();
 		}
-	}
-
-	/**
-	 * Connects to the SMTP server and gets input and output streams (in, out).
-	 * @return success
-	 */
-	protected boolean connect() {
-		return this.connect(null, null);
+		return false;
 	}
 
 	/**
@@ -225,52 +295,48 @@ public class SMTPSession {
 	 * @return response received from the server.
 	 */
 	protected CharacterBuffer sendCommand(String commandString) {
-		this.lastSended = commandString;
-		byte[] cmd = toBytes(commandString);
-		sendValues(cmd);
+		sendValues(commandString);
 		CharacterBuffer response = getResponse();
 		return response;
 	}
 	
-
-	protected void sendValues(String commandString) {
-		this.lastSended = commandString;
-		byte[] cmd = toBytes(commandString);
-		sendValues(cmd);
-	}
-
 	/**
 	 * Sends given command and waits for a response from server.
 	 * 
 	 * @param cmd bytes for sending
 	 */
-	protected void sendValues(byte... cmd) {
+	protected void sendValues(char... cmd) {
 		try {
-			out.write(cmd);
-			out.write(CRLF);
+			this.lastSended = new String(cmd);
+			out.write(new String(cmd).getBytes());
+			if(BaseItem.CRLF.equals(new String(cmd)) == false) {
+				out.write(BaseItem.CRLF.getBytes());
+			}
 			out.flush();
 		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * Sends given command and waits for a response from server.
+	 * 
+	 * @param cmd bytes for sending
+	 */
+	protected void sendValues(String cmd) {
+		if(cmd != null) {
+			try {
+				this.lastSended = cmd;
+				out.write(cmd.getBytes());
+				out.write(BaseItem.CRLF.getBytes());
+				out.flush();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 	
 	
-    /**
-     * Convert the String to either ASCII or UTF-8 bytes
-     * depending on allowutf8.
-     * @param s string to convert
-     * @return convert String to Byte
-     */
-	private byte[] toBytes(String s) {
-		if(s == null) {
-			return null;
-		}
-		if (allowutf8) {
-			return s.getBytes(StandardCharsets.UTF_8);
-		}
-		// don't use StandardCharsets.US_ASCII because it rejects non-ASCII
-		return s.getBytes();
-	}
-
 	/**
 	 * Sends given commandString to the server, gets its reply and checks if it
 	 * starts with expectedResponseStart. If not, throws IOException with
@@ -316,26 +382,26 @@ public class SMTPSession {
 	 * @return get the current Response
 	 */
 	protected CharacterBuffer getResponse() {
+		int readed = -1;
 		CharacterBuffer response = new CharacterBuffer();
-
-		String line = null;
+		char[] buffer=new char[BUFFER];
 		do {
 			try {
-				line = in.readLine();
-			}catch (Exception e) {
+				readed = in.read(buffer);
+				if(readed>0) {
+					response.with(buffer, 0 , readed);
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
-			if ((line == null)) {
-				// SMTP response lines should at the very least have a 3-digit
-				// number
-				response.with("[EOF]");
-				return response;
-			}
-			response.with(line).with('\n');
-		} while ((line.length() > 3) && (line.charAt(3) == '-'));
+		} while (readed == BUFFER);
+		if(readed < 0 || response.length() < 1) {
+			return response.with("[EOF]");
+		}
 		this.lastAnswer = response;
 		return response;
 	}
-
+	
 	/**
 	 * Get the name of the local host, for use in the EHLO and HELO commands.
 	 * The property InetAddress would tell us.
@@ -381,13 +447,52 @@ public class SMTPSession {
 	    return "mailer@localhost"; // worst-case default
 	}
 	
+	
+	public boolean connect(String password) {
+		return this.connect(this.sender, password);
+	}
+	
+	private static String prefix = EntityUtil.randomString(5) + "-";
+
+    /**
+     * Keeps track of the current increment, which is appended to the prefix to
+     * forum a unique ID.
+     */
+    private static long messageId = 0;
+
+    /**
+     * Returns the next unique id. Each id made up of a short alphanumeric
+     * prefix along with a unique numeric value.
+     *
+     * @return the next id.
+     */
+    public static String nextID() {
+        return prefix + Long.toString(messageId++);
+    }
+	
+	
+	public boolean sendXMPPMessage(String to, String message) {
+		XMLEntity messageXML=XMLEntity.TAG("message");
+		messageXML.setType("message");
+		messageXML.add("id", nextID());
+		messageXML.add("to", to);
+		messageXML.createChild("body").withValueItem(message);
+		
+		
+		System.out.println(messageXML.toString());
+		CharacterBuffer buffer = sendCommand(messageXML.toString());
+		System.out.println(buffer.toString());
+		return true;
+	}
+	
+	
 	/**
 	 * Sends a message using the SMTP protocol.
 	 * @param message to send
 	 * @return success
 	 */
 	public boolean sendMessage(EMailMessage message) {
-		if(connect() == false) {
+		if(connect(this.sender, null) == false) {
 			return false;
 		}
 
@@ -433,7 +538,7 @@ public class SMTPSession {
 			sendValues(EMailMessage.CONTENT_ENCODING);
 		}
 		// The CRLF separator between header and content
-		sendValues(CRLF);
+		sendValues(BaseItem.CRLF);
 		for(BaseItem msg : messages) {
 			CharacterBuffer buffer=new CharacterBuffer();
 			if(msg != null) {
@@ -445,15 +550,15 @@ public class SMTPSession {
 				sendValues(EMailMessage.CONTENT_ENCODING);
 			}
 			// The CRLF separator between header and content
-			sendValues(CRLF);
+			sendValues(BaseItem.CRLF);
 			
 			while(buffer.isEnd() == false) {
 				CharacterBuffer line=buffer.readLine();
 				// If the line begins with a ".", put an extra "." in front of it.
 				if (line.startsWith(".")) {
-					sendValues((byte)'.');
+					sendValues('.');
 				}
-				sendValues(line.toByteArray());
+				sendValues(line.toString());
 			}
 		}
 		SimpleKeyValueList<String, Buffer> attachments = message.getAttachments();
@@ -465,10 +570,10 @@ public class SMTPSession {
 			sendValues(EMailMessage.CONTENT_ENCODING);
 			sendValues("Content-Disposition: attachment; filename="+fileName);
 			// The CRLF separator between header and content
-			sendValues(CRLF);
+			sendValues(BaseItem.CRLF);
 			while(buffer.isEnd() == false) {
 				CharacterBuffer line=buffer.getString(1024);
-				sendValues(line.toByteArray());
+				sendValues(line.toString());
 			}
 		}
 		if(multiPart) {
