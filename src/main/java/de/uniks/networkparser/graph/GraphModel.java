@@ -32,6 +32,7 @@ permissions and limitations under the Licence.
 */
 
 public abstract class GraphModel extends GraphEntity implements BaseItem {
+	public static final String DEFAULTPACKAGE = "i.love.sdmlib";
 	private String defaultAuthorName;
 
 	/**
@@ -162,9 +163,31 @@ public abstract class GraphModel extends GraphEntity implements BaseItem {
 	public boolean fixClassModel() {
 		Clazz[] classes = getClazzes().toArray(new Clazz[getClazzes().size()]);
 		SimpleSet<Clazz> visited = new SimpleSet<Clazz>();
+		String packageName = null;
 		for (Clazz item : classes) {
+			String className = item.getName();
+			if(className != null && className.indexOf('.')>0) {
+				if(packageName == null) {
+					packageName = className.substring(0, className.lastIndexOf("."));
+				}else if(className.startsWith(packageName) == false) {
+					packageName = "";
+				}
+			}
 			fixClassModel(item, visited);
 		}
+		// CHECK PACKAGE
+		if(this.name == DEFAULTPACKAGE && packageName != null && packageName.length()>0) {
+			// Its valid all Clazz has the same PackageName
+			this.name = packageName;
+			packageName += ".";
+			for (Clazz item : classes) {
+				String className = item.getName();
+				if(className != null && className.startsWith(packageName)) {
+					item.setName(className.substring(packageName.length()));
+				}
+			}
+		}
+		
 		return true;
 	}
 

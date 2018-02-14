@@ -21,7 +21,10 @@ import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.xml.XMLEntity;
 
-public class SMTPSession {
+public class MessageSession {
+	public final static String TYPE_EMAIL="EMAIL";
+	public final static String TYPE_XMPP="XMPP";
+	
 	public final static String RESPONSE_SERVERREADY = "220";
 	public final static String RESPONSE_MAILACTIONOKEY="250";
 	public final static String RESPONSE_STARTMAILINPUT="354";
@@ -44,9 +47,10 @@ public class SMTPSession {
 	private CharacterBuffer lastAnswer;
 	private String lastSended;
 	private SSLSocketFactory factory;
+	private String type;
 	private String id;
 
-	public SMTPSession connectSSL(String host, String sender, String password) {
+	public MessageSession connectSSL(String host, String sender, String password) {
 		this.host = host;
 		this.port = SSLPORT;
 		this.sender = sender;
@@ -54,14 +58,18 @@ public class SMTPSession {
 		return this;
 	}
 	
-	public SMTPSession connect(String host, int port, String sender, String password) {
+	public MessageSession connect(String host, int port, String sender, String password) {
+		if(host == null || host.length() < 1) {
+			return null;
+		}
 		this.host = host;
 		this.port = port;
 		this.sender = sender;
 		try {
+			this.type = TYPE_XMPP;
 			serverSocket = new Socket(host, port);
 			initSockets();
-			CharacterBuffer response = sendStartXMPP();
+			CharacterBuffer response = sendStart();
 
 			XMLEntity answer= new XMLEntity().withValue(response);
 			this.id = answer.getString("id");
@@ -83,13 +91,13 @@ public class SMTPSession {
 				if(startTLS() == false) {
 					return this;
 				}
-				response = sendStartXMPP();
+				sendStart();
 
 				String login = getLoginText(sender, password);
 				response = sendCommand("<auth mechanism=\"PLAIN\" xmlns=\"urn:ietf:params:xml:ns:xmpp-sasl\">"+login+"</auth>");
 //				if(response.startsWith("<success "))
-				
-				response = sendStartXMPP();
+
+				sendStart();
 				
 				bindXMPP();
 			}
@@ -99,10 +107,6 @@ public class SMTPSession {
 		return this;
 	}
 	
-	
-	private CharacterBuffer sendStartXMPP() {
-		return sendCommand("<stream:stream to=\""+host+"\" xmlns=\"jabber:client\" xmlns:stream=\"http://etherx.jabber.org/streams\" version=\"1.0\">");
-	}
 	
 	private CharacterBuffer bindXMPP() {
 		XMLEntity iq = XMLEntity.TAG("iq");
@@ -164,12 +168,12 @@ public class SMTPSession {
 		return port;
 	}
 	
-	public SMTPSession withPort(int port) {
+	public MessageSession withPort(int port) {
 		this.port = port;
 		return this;
 	}
 	
-	public SMTPSession withHost(String url) {
+	public MessageSession withHost(String url) {
 		this.host = url;
 		return this;
 	}
@@ -209,6 +213,7 @@ public class SMTPSession {
 	 */
 	public boolean connect(String userName, String password) {
 		if(serverSocket == null) {
+			this.type = TYPE_EMAIL;
 			if(host == null) {
 				return false;
 			}
@@ -218,13 +223,14 @@ public class SMTPSession {
 
 				checkServerResponse(getResponse(), RESPONSE_SERVERREADY);
 				
-				sendHelo();
+				sendStart();
 				
 				CharacterBuffer answer = sendCommand(FEATURE_TLS);
 	
 				startTLS();
-				sendHelo();
-				
+
+				sendStart();
+
 				answer = sendCommand("AUTH LOGIN");
 	
 				if(checkServerResponse(answer, RESPONSE_SMTP_AUTH_NTLM_BLOB_Response) == false) {
@@ -250,19 +256,25 @@ public class SMTPSession {
 		return true;
 	}
 	
-	private boolean sendHelo() {
-		String response = sendCommand("EHLO " + getLocalHost()).toString();
+	private CharacterBuffer sendStart() {
+		if (type == TYPE_XMPP) {
+			return sendCommand("<stream:stream to=\""+host+"\" xmlns=\"jabber:client\" xmlns:stream=\"http://etherx.jabber.org/streams\" version=\"1.0\">");
+		}
+		CharacterBuffer response = sendCommand("EHLO " + getLocalHost());
 		supportedFeature.clear();
-		String[] lines = response.split("\n");
+		String[] lines = response.toString().split("\n");
 		// Skip first line
 		for(int i=1;i<lines.length;i++) {
 			supportedFeature.add(lines[i]);
 		}
-		return checkServerResponse(response, RESPONSE_MAILACTIONOKEY);
+		return response;
 	}
 
 	public boolean startTLS() {
 		try {
+			if(this.serverSocket == null) {
+				return false;
+			}
 			if(factory == null) {
 				this.factory = (SSLSocketFactory) SSLSocketFactory.getDefault();
 			}
@@ -382,8 +394,11 @@ public class SMTPSession {
 	 * @return get the current Response
 	 */
 	protected CharacterBuffer getResponse() {
-		int readed = -1;
 		CharacterBuffer response = new CharacterBuffer();
+		if(in == null) {
+			return response;
+		}
+		int readed = -1;
 		char[] buffer=new char[BUFFER];
 		do {
 			try {
@@ -471,27 +486,24 @@ public class SMTPSession {
     }
 	
 	
-	public boolean sendXMPPMessage(String to, String message) {
-		XMLEntity messageXML=XMLEntity.TAG("message");
-		messageXML.setType("message");
-		messageXML.add("id", nextID());
-		messageXML.add("to", to);
-		messageXML.createChild("body").withValueItem(message);
-		
-		
-		System.out.println(messageXML.toString());
-		CharacterBuffer buffer = sendCommand(messageXML.toString());
-		System.out.println(buffer.toString());
-		return true;
+	public boolean sendMessage(String to, String message) {
+		SocketMessage msg = new SocketMessage();
+		msg.withRecipient(to);
+		msg.withMessage(message);
+		return sending(msg);
 	}
-	
-	
+
 	/**
 	 * Sends a message using the SMTP protocol.
 	 * @param message to send
 	 * @return success
 	 */
-	public boolean sendMessage(EMailMessage message) {
+	public boolean sending(SocketMessage message) {
+		if(TYPE_XMPP.equals(this.type)) {
+			XMLEntity xml = message.toXML();
+			return sendCommand(xml.toString()) != null;
+		}
+		
 		if(connect(this.sender, null) == false) {
 			return false;
 		}
@@ -521,21 +533,21 @@ public class SMTPSession {
 		message.generateMessageId(this.getLocalAdress());
 		
 		// Send the message headers
-		sendValues(message.getHeader(EMailMessage.PROPERTY_DATE));
-		sendValues(message.getHeader(EMailMessage.PROPERTY_FROM));
-		sendValues(message.getHeader(EMailMessage.PROPERTY_TO));
-		sendValues(message.getHeader(EMailMessage.PROPERTY_ID));
-		sendValues(message.getHeader(EMailMessage.PROPERTY_SUBJECT));
-		sendValues(message.getHeader(EMailMessage.PROPERTY_MIME));
+		sendValues(message.getHeader(SocketMessage.PROPERTY_DATE));
+		sendValues(message.getHeader(SocketMessage.PROPERTY_FROM));
+		sendValues(message.getHeader(SocketMessage.PROPERTY_TO));
+		sendValues(message.getHeader(SocketMessage.PROPERTY_ID));
+		sendValues(message.getHeader(SocketMessage.PROPERTY_SUBJECT));
+		sendValues(message.getHeader(SocketMessage.PROPERTY_MIME));
 		
 		SimpleList<BaseItem> messages = message.getMessages();
 		boolean multiPart = message.isMultiPart();
 		String splitter="--";
 		if(multiPart) {
-			sendValues(message.getHeader(EMailMessage.PROPERTY_CONTENTTYPE)+message.getHeader(EMailMessage.PROPERTY_BOUNDARY));
+			sendValues(message.getHeader(SocketMessage.PROPERTY_CONTENTTYPE)+message.getHeader(SocketMessage.PROPERTY_BOUNDARY));
 		} else {
-			sendValues(message.getHeader(EMailMessage.PROPERTY_CONTENTTYPE));
-			sendValues(EMailMessage.CONTENT_ENCODING);
+			sendValues(message.getHeader(SocketMessage.PROPERTY_CONTENTTYPE));
+			sendValues(SocketMessage.CONTENT_ENCODING);
 		}
 		// The CRLF separator between header and content
 		sendValues(BaseItem.CRLF);
@@ -546,8 +558,8 @@ public class SMTPSession {
 			}
 			if(multiPart) {
 				sendValues(splitter+message.generateBoundaryValue());
-				sendValues(EMailMessage.PROPERTY_CONTENTTYPE+message.getContentType(msg));
-				sendValues(EMailMessage.CONTENT_ENCODING);
+				sendValues(SocketMessage.PROPERTY_CONTENTTYPE+message.getContentType(msg));
+				sendValues(SocketMessage.CONTENT_ENCODING);
 			}
 			// The CRLF separator between header and content
 			sendValues(BaseItem.CRLF);
@@ -566,8 +578,8 @@ public class SMTPSession {
 			String fileName = attachments.get(i);
 			Buffer buffer = attachments.getValueByIndex(i);
 			sendValues(splitter+message.generateBoundaryValue());
-			sendValues(EMailMessage.PROPERTY_CONTENTTYPE+EMailMessage.CONTENT_TYPE_PLAIN+" name="+fileName);
-			sendValues(EMailMessage.CONTENT_ENCODING);
+			sendValues(SocketMessage.PROPERTY_CONTENTTYPE+SocketMessage.CONTENT_TYPE_PLAIN+" name="+fileName);
+			sendValues(SocketMessage.CONTENT_ENCODING);
 			sendValues("Content-Disposition: attachment; filename="+fileName);
 			// The CRLF separator between header and content
 			sendValues(BaseItem.CRLF);

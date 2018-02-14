@@ -93,7 +93,7 @@ public class ReflectionTest {
 			}
 		});
 //				.withFlag(NetworkParserLog.LOGLEVEL_ALL);
-		tester.test("de.uniks.networkparser.ext.io.SMTPSession", logger);
+		tester.test("de.uniks.networkparser.ext.io.MessageSession", logger);
 //		System.out.println(""+System.currentTimeMillis()+" FINISH:"+Thread.activeCount());
 	}
 }

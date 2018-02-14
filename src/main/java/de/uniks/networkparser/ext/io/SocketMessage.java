@@ -4,12 +4,15 @@ import de.uniks.networkparser.DateTimeEntity;
 import de.uniks.networkparser.StringEntity;
 import de.uniks.networkparser.buffer.Buffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
+import de.uniks.networkparser.converter.EntityStringConverter;
 import de.uniks.networkparser.interfaces.BaseItem;
+import de.uniks.networkparser.interfaces.Converter;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.xml.HTMLEntity;
+import de.uniks.networkparser.xml.XMLEntity;
 
-public class EMailMessage {
+public class SocketMessage implements BaseItem {
 	public static final String PROPERTY_FROM="From: ";
 	public static final String PROPERTY_TO="To";
 	public static final String PROPERTY_DATE="Date: ";
@@ -22,31 +25,21 @@ public class EMailMessage {
 	public static final String CONTENT_TYPE_HTML = "text/html; charset=utf-8;";
 	public static final String CONTENT_TYPE_PLAIN = "text/plain; charset=utf-8;";
 	public static final String CONTENT_ENCODING = "Content-Transfer-Encoding: 7bit";
-	public static final String CRLF="\r\n";
+
 	private String subject;
 	private SimpleList<BaseItem> message = new SimpleList<BaseItem>();
 	private String id;
 	private String mimeVersion="1.0";
-//	private String contentType = "text/html; charset=utf-8";
 	private DateTimeEntity date;
 	private String from;
 	private SimpleList<String> to=new SimpleList<String>();
-	private static int counter;
 	private SimpleKeyValueList<String, Buffer> attachment = new SimpleKeyValueList<String, Buffer>();
 	private String boundary;
 	
-	public EMailMessage(String... toAdresses) {
+	public SocketMessage(String... toAdresses) {
 		this.withRecipient(toAdresses);
 	}
-	
-	//	private static final String HeaderKeys="Return-Path,"
-//			+ "Received,Resent-Date,Resent-From, Resent-Sender,Resent-To,Resent-Cc,Resent-Bcc,Resent-Message-Id,"
-//			+ "From,Sender,Reply-To,To,Cc,Bcc," 
-//			+ "In-Reply-To,References,Subject,Comments,Keywords,Errors-To,MIME-Version"
-//			+ "Content-Type,Content-Transfer-Encoding,Content-MD5,Content-Length,Status"; 
-//			
-//	private SimpleKeyValueList<String, String> headers=new SimpleKeyValueList<String, String>().withKeyValueString(HeaderKeys, String.class);
-	
+
 	public String getContentType() {
 		if(isMultiPart()) {
 			return CONTENT_TYPE_MULTIPART;
@@ -131,12 +124,18 @@ public class EMailMessage {
 		CharacterBuffer s = new CharacterBuffer();
 
 		// Unique string is <hashcode>.<id>.<currentTime><suffix>
-		s.with(s.hashCode()).with('.').
-		with(counter++).with('.').
-		with(System.currentTimeMillis()).
-		with(localHost);
+		String id=  MessageSession.nextID();
+		s.with(s.hashCode()).with('.').with(id).with('.').with(System.currentTimeMillis()).with(localHost);
 		this.id = s.toString();
 		return this.id;
+	}
+	
+	public XMLEntity toXML() {
+		XMLEntity messageXML=XMLEntity.TAG("message");
+		messageXML.add("id", MessageSession.nextID());
+		messageXML.add("to", to);
+		messageXML.createChild("body").withValueItem(message.toString());
+		return messageXML;
 	}
 	
     /**
@@ -155,17 +154,19 @@ public class EMailMessage {
 		long hash = s.hashCode();
 
 		// Unique string is ----=_Part_<part>_<hashcode>.<currentTime>
-		s.with("_Part_").with(counter++).with('_').with(hash).with('.').with(System.currentTimeMillis());
+		String id=  MessageSession.nextID();
+
+		s.with("_Part_").with(id).with('_').with(hash).with('.').with(System.currentTimeMillis());
 		this.boundary = s.toString();
 		return this.boundary;
 	}
 	
-	public EMailMessage withSubject(String value) {
+	public SocketMessage withSubject(String value) {
 		this.subject = value;
 		return this;
 	}
 	
-	public EMailMessage withRecipient(String... toAdresses) {
+	public SocketMessage withRecipient(String... toAdresses) {
 		if(toAdresses == null) {
 			return this;
 		}
@@ -193,18 +194,18 @@ public class EMailMessage {
 		return this.subject;
 	}
 	
-	public EMailMessage withMessage(HTMLEntity value) {
+	public SocketMessage withMessage(HTMLEntity value) {
 		this.message.add(value);
 		return this;
 	}
 	
-	public EMailMessage withMessage(String value) {
+	public SocketMessage withMessage(String value) {
 		BaseItem item = new StringEntity();
 		item.add(value);
 		this.message.add(item);
 		return this;
 	}
-	public EMailMessage withHTMLMessage(String value) {
+	public SocketMessage withHTMLMessage(String value) {
 		BaseItem item = new HTMLEntity().withBody(value);
 		this.message.add(item);
 		return this;
@@ -225,8 +226,43 @@ public class EMailMessage {
 		this.to.remove(pos);
 	}
 	
-	public EMailMessage withAttachment(String fileName, Buffer buffer) {
+	public SocketMessage withAttachment(String fileName, Buffer buffer) {
 		this.attachment.add(fileName, buffer);
 		return this;
 	}
+	
+	@Override
+	public BaseItem getNewList(boolean keyValue) {
+		return new SocketMessage();
+	}
+
+	@Override
+	public int size() {
+		return 0;
+	}
+
+	@Override
+	public String toString(Converter converter) {
+		if(converter instanceof EntityStringConverter) {
+			return toString();
+		}
+		if(converter == null) {
+			return null;
+		}
+		return converter.encode(this);
+	}
+
+	@Override
+	public boolean add(Object... values) {
+		if(values != null) {
+			for(Object item : values) {
+				if(item instanceof String && item != null) {
+					this.withRecipient((String) item);
+				}
+			}
+		}
+		return true;
+	}
+
+
 }

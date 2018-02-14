@@ -41,6 +41,7 @@ public class ByteMessage implements SendableEntityCreatorTag {
 
 	/**
 	 * Generic Getter for Attributes
+	 * @param entity		ByteMessage Entity 
 	 * @param attrName		Name of Attribute
 	 * @return				Value of Attribute
 	 */

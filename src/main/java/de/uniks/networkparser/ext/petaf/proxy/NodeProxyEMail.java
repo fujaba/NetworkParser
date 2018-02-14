@@ -1,7 +1,7 @@
 package de.uniks.networkparser.ext.petaf.proxy;
 
-import de.uniks.networkparser.ext.io.EMailMessage;
-import de.uniks.networkparser.ext.io.SMTPSession;
+import de.uniks.networkparser.ext.io.SocketMessage;
+import de.uniks.networkparser.ext.io.MessageSession;
 import de.uniks.networkparser.ext.petaf.Message;
 import de.uniks.networkparser.ext.petaf.NodeProxy;
 import de.uniks.networkparser.interfaces.ObjectCondition;
@@ -15,7 +15,7 @@ public class NodeProxyEMail extends NodeProxy{
 	public static final String PROPERTY_PORT = "port";
 	public static final String PROPERTY_ACCOUNT = "account";
 	public static final String PROPERTY_PASSWORD = "password";
-	private SMTPSession connection = null;
+	private MessageSession connection = null;
 	private ObjectCondition creator;
 	private String password;
 	
@@ -24,7 +24,6 @@ public class NodeProxyEMail extends NodeProxy{
 		this.propertyUpdate.addAll(PROPERTY_URL, PROPERTY_PORT);
 		this.propertyInfo.addAll(PROPERTY_URL, PROPERTY_PORT, PROPERTY_ACCOUNT);
 	}
-
 	
 	@Override
 	public int compareTo(NodeProxy o) {
@@ -87,7 +86,7 @@ public class NodeProxyEMail extends NodeProxy{
 	@Override
 	public boolean close() {
 		if(connection != null) {
-			SMTPSession conn = connection;
+			MessageSession conn = connection;
 			connection = null;
 			return conn.close();
 		}
@@ -128,24 +127,24 @@ public class NodeProxyEMail extends NodeProxy{
 		return this;
 	}
 	
-	protected SMTPSession getNewConnection() {
+	protected MessageSession getNewConnection() {
 		if(creator != null) {
 			Object item = creator.update(CONNECTION);
 			if(item != null) {
-				return (SMTPSession) item;
+				return (MessageSession) item;
 			}
 		}
-		return new SMTPSession();
+		return new MessageSession();
 	}
 	
-	protected EMailMessage getNewEMailMessage() {
+	protected SocketMessage getNewEMailMessage() {
 		if(creator != null) {
 			Object item = creator.update(MESSAGE);
 			if(item != null) {
-				return (EMailMessage) item;
+				return (SocketMessage) item;
 			}
 		}
-		return new EMailMessage(this.name).withSubject("Message from PetaF");
+		return new SocketMessage(this.name).withSubject("Message from PetaF");
 	}
 	
 	private NodeProxyEMail withPort(Integer value) {
@@ -194,7 +193,7 @@ public class NodeProxyEMail extends NodeProxy{
 		if(this.connection == null) {
 			return false;
 		}
-		EMailMessage message=getNewEMailMessage();
+		SocketMessage message=getNewEMailMessage();
 		
 		String buffer;
 		if(this.space != null) {
@@ -210,7 +209,7 @@ public class NodeProxyEMail extends NodeProxy{
 		}
 		
 		message.withMessage(buffer);
-		boolean success = this.connection.sendMessage(message);
+		boolean success = this.connection.sending(message);
 		if(success) {
 			setSendTime(buffer.length());
 		}

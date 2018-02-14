@@ -11,7 +11,6 @@ import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.xml.HTMLEntity;
 
 public class ClassModel extends GraphModel {
-	public static final String DEFAULTPACKAGE = "i.love.sdmlib";
 	private ModelGenerator generator = new ModelGenerator().withDefaultModel(this);
 
 	public ClassModel() {
