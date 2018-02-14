@@ -9,6 +9,8 @@ import java.util.HashSet;
 import org.junit.Assert;
 import org.junit.Test;
 
+import de.uniks.networkparser.buffer.CharacterBuffer;
+import de.uniks.networkparser.list.EntityComparator;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SimpleSet;
@@ -320,6 +322,24 @@ public class SimpleArrayListTest {
 		list.add(453);
 
 		Assert.assertTrue(list.contains(453));
+	}
+	
+	
+	@Test
+	public void testSortedMap() {
+		SimpleKeyValueList<Double, String> map = new SimpleKeyValueList<Double, String>().withComparator(EntityComparator.createComparator());
+		map.add(42, "Welt");
+		map.add(100, "Stefan");
+		map.add(23, "Hallo");
+		
+		CharacterBuffer sb=new CharacterBuffer();
+		for(int i=0;i<map.size();i++) {
+			sb.add(map.getValueByIndex(i));
+			sb.add(" ");
+		}
+		
+		Assert.assertEquals("Hallo Welt Stefan ", sb.toString());
+		
 	}
 
 }
