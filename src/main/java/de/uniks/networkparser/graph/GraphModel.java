@@ -32,7 +32,7 @@ permissions and limitations under the Licence.
 */
 
 public abstract class GraphModel extends GraphEntity implements BaseItem {
-	public static final String DEFAULTPACKAGE = "i.love.sdmlib";
+	public static final String DEFAULTPACKAGE2 = "i.love.networkparser";
 	private String defaultAuthorName;
 
 	/**
@@ -176,7 +176,7 @@ public abstract class GraphModel extends GraphEntity implements BaseItem {
 			fixClassModel(item, visited);
 		}
 		// CHECK PACKAGE
-		if(this.name == DEFAULTPACKAGE && packageName != null && packageName.length()>0) {
+		if(getDefaultPackage().equals(this.name) && packageName != null && packageName.length()>0) {
 			// Its valid all Clazz has the same PackageName
 			this.name = packageName;
 			packageName += ".";
@@ -189,6 +189,10 @@ public abstract class GraphModel extends GraphEntity implements BaseItem {
 		}
 		
 		return true;
+	}
+	
+	public String getDefaultPackage() {
+		return DEFAULTPACKAGE2;
 	}
 
 	private void fixClassModel(Clazz item, SimpleSet<Clazz> visited) {

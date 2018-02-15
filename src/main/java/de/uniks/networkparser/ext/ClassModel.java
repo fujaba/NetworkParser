@@ -14,7 +14,7 @@ public class ClassModel extends GraphModel {
 	private ModelGenerator generator = new ModelGenerator().withDefaultModel(this);
 
 	public ClassModel() {
-		name = DEFAULTPACKAGE;
+		name = getDefaultPackage();
 		setAuthorName(System.getProperty("user.name"));
 	}
 
