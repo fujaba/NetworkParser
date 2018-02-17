@@ -8,7 +8,7 @@ import java.net.UnknownHostException;
 import de.uniks.networkparser.ext.petaf.proxy.NodeProxyTCP;
 import de.uniks.networkparser.interfaces.Server;
 
-public class Server_TCP extends Thread  implements Server{
+public class Server_TCP extends Thread  implements Server {
 	protected boolean run=true;
 	private boolean searchFreePort=true;
 	protected ServerSocket serverSocket;

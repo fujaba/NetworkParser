@@ -46,7 +46,7 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 	/** Constant of VALUE. */
 	public static final String PROPERTY_VALUE = "value";
 	/** The children. */
-	private SimpleList<EntityList> children;
+	private SimpleList<BaseItem> children;
 
 	public static final char START = '<';
 
@@ -102,7 +102,7 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 	 * @param index the Index of Child
 	 * @return the children
 	 */
-	public EntityList getChild(int index) {
+	public BaseItem getChild(int index) {
 		if (this.children == null || index < 0 || index > this.children.size()) {
 			return null;
 		}
@@ -134,8 +134,8 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 			}
 		} else if (values.length % 2 == 1) {
 			for(Object item : values) {
-				if(item instanceof EntityList) {
-					this.withChild((EntityList) item);
+				if(item instanceof BaseItem) {
+					this.withChild((BaseItem) item);
 				}
 			}
 			return true;
@@ -150,9 +150,9 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 	 * @param value			the new Child
 	 * @return XMLEntity	Instance
 	 */
-	public XMLEntity withChild(EntityList value) {
+	public XMLEntity withChild(BaseItem value) {
 		if(this.children == null) {
-			this.children = new SimpleList<EntityList>();
+			this.children = new SimpleList<BaseItem>();
 		}
 		this.children.add(value);
 		return this;
@@ -192,7 +192,7 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 			// Complex children
 			boolean show=false;
 			for(int i=0;i<this.children.size();i++) {
-				EntityList item = this.children.get(i);
+				BaseItem item = this.children.get(i);
 				if(item instanceof XMLEntity) {
 					if(((XMLEntity)item).getTag() == null) {
 						show = true;
@@ -204,7 +204,7 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 				CharacterBuffer buffer=new CharacterBuffer();
 				String value = null;
 				for(int i=0;i<this.children.size();i++) {
-					EntityList item = this.children.get(i);
+					BaseItem item = this.children.get(i);
 					if(value != null && value.endsWith(">")) {
 						buffer.with(' ');
 					}
@@ -260,7 +260,7 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 				sb.with(END);
 			}
 			converter.add();
-			for (EntityList child : this.children) {
+			for (BaseItem child : this.children) {
 				sb.with(child.toString(converter));
 			}
 			converter.minus();
@@ -372,7 +372,7 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 			return null;
 		}
 		for(int i=0;i<this.children.size();i++) {
-			EntityList entity = this.children.get(i);
+			BaseItem entity = this.children.get(i);
 			if(entity instanceof XMLEntity) {
 				Entity item = ((XMLEntity) entity).getElementBy(key, value);
 				if(item != null) {
@@ -444,7 +444,7 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 			return children;
 		}
 		for(int i=0;i<this.children.size();i++) {
-			EntityList entity = this.children.get(i);
+			BaseItem entity = this.children.get(i);
 			if(entity instanceof XMLEntity) {
 				EntityList items = ((XMLEntity) entity).getElementsBy(key, value);
 				if(entity == items || items.size()>0) {

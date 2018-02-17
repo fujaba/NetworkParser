@@ -98,7 +98,7 @@ public class ExcelParser {
 						ExcelRow dataRow = new ExcelRow();
 						// <c r="A1" t="s"><v>2</v></c>
 						for(int c=0;c<row.size();c++) {
-							EntityList item = row.getChild(c); 
+							BaseItem item = row.getChild(c); 
 							if (item == null || item instanceof ExcelCell == false) {
 								continue;
 							}

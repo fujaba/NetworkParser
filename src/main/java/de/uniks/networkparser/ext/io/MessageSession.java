@@ -8,6 +8,7 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
+import javax.net.SocketFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
@@ -24,6 +25,7 @@ import de.uniks.networkparser.xml.XMLEntity;
 public class MessageSession {
 	public final static String TYPE_EMAIL="EMAIL";
 	public final static String TYPE_XMPP="XMPP";
+	public final static String TYPE_FCM="FCM";
 	
 	public final static String RESPONSE_SERVERREADY = "220";
 	public final static String RESPONSE_MAILACTIONOKEY="250";
@@ -46,7 +48,7 @@ public class MessageSession {
 	protected SimpleList<String> supportedFeature = new SimpleList<String>();
 	private CharacterBuffer lastAnswer;
 	private String lastSended;
-	private SSLSocketFactory factory;
+	private SocketFactory factory;
 	private String type;
 	private String id;
 
@@ -58,53 +60,11 @@ public class MessageSession {
 		return this;
 	}
 	
-	public MessageSession connect(String host, int port, String sender, String password) {
-		if(host == null || host.length() < 1) {
-			return null;
-		}
+
+	public boolean connect(String host, int port, String sender, String password) {
 		this.host = host;
 		this.port = port;
-		this.sender = sender;
-		try {
-			this.type = TYPE_XMPP;
-			serverSocket = new Socket(host, port);
-			initSockets();
-			CharacterBuffer response = sendStart();
-
-			XMLEntity answer= new XMLEntity().withValue(response);
-			this.id = answer.getString("id");
-			XMLEntity features = (XMLEntity) answer.getElementBy(XMLEntity.PROPERTY_TAG, "stream:features");
-			for(int i=0;i<features.sizeChildren();i++) {
-				XMLEntity child = (XMLEntity) features.getChild(i);
-				this.supportedFeature.add(child.getTag().toUpperCase());
-			}
-			if(supportedFeature.contains(FEATURE_TLS)) {
-				response = sendCommand("<starttls xmlns=\"urn:ietf:params:xml:ns:xmpp-tls\" />");
-//				if(response.startsWith("<proceed "))
-
-				// Now create Factory
-	            SSLContext context = SSLContext.getInstance("TLS");
-	            context.init(null, new javax.net.ssl.TrustManager[] { new ServerTrustManager(host) }, 
-	            		new java.security.SecureRandom());
-				this.factory = context.getSocketFactory();
-				
-				if(startTLS() == false) {
-					return this;
-				}
-				sendStart();
-
-				String login = getLoginText(sender, password);
-				response = sendCommand("<auth mechanism=\"PLAIN\" xmlns=\"urn:ietf:params:xml:ns:xmpp-sasl\">"+login+"</auth>");
-//				if(response.startsWith("<success "))
-
-				sendStart();
-				
-				bindXMPP();
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return this;
+		return connect(sender, password);
 	}
 	
 	
@@ -199,28 +159,124 @@ public class MessageSession {
 		return true;
 	}
 	
-	private void initSockets() throws UnsupportedEncodingException, IOException {
-		serverSocket.setSoTimeout(SOCKET_READ_TIMEOUT);
-        in = new BufferedReader(new InputStreamReader(serverSocket.getInputStream(), "UTF-8"));
-        out = serverSocket.getOutputStream();
+	private boolean initSockets(String host, int port) throws UnsupportedEncodingException, IOException {
+		if(factory == null) {
+			return false;
+		}
+		
+		Socket socket;
+		if(this.serverSocket != null && factory instanceof SSLSocketFactory) {
+			socket = ((SSLSocketFactory)factory).createSocket(this.serverSocket, host, port, true);
+		} else {
+			socket = factory.createSocket(host, port);
+		}
+		socket.setSoTimeout(SOCKET_READ_TIMEOUT);
+        in = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));
+        out = socket.getOutputStream();
+        this.serverSocket = socket;
+        return true;
 	}
 
+	public boolean connect(String password) {
+		return this.connect(this.sender, password);
+	}
+	
+	public boolean connectXMPP(String sender, String password) {
+		this.type = TYPE_XMPP;
+		return connect(sender, password);
+	}
+	
+	public boolean connectFCM(String sender, String password) {
+		this.type = TYPE_FCM;
+		return connect(sender, password);
+	}
+	
 	/**
 	 * Connects to the SMTP server and gets input and output streams (in, out).
-	 * @param userName the Username
-	 * @param password the password
+	 * @param sender	 the Username
+	 * @param password	 the password
 	 * @return success
 	 */
-	public boolean connect(String userName, String password) {
-		if(serverSocket == null) {
-			this.type = TYPE_EMAIL;
-			if(host == null) {
-				return false;
-			}
-			try {
-				serverSocket = new Socket(host, port);
-				initSockets();
+	public boolean connect(String sender, String password) {
+		if(host == null || host.length() < 1 || sender == null || sender.length() < 1) {
+			return false;
+		}
+		this.sender = sender;
+		try {
+			if(TYPE_FCM.equals(type)) {
+				this.factory = SSLSocketFactory.getDefault();
+				initSockets(host, port);
 
+				if (this.serverSocket instanceof SSLSocket) {
+					((SSLSocket)this.serverSocket).startHandshake();
+				}
+				CharacterBuffer response = sendStart();
+	
+				XMLEntity answer= new XMLEntity().withValue(response);
+				this.id = answer.getString("id");
+	
+				response = getResponse();
+					
+				answer= new XMLEntity().withValue(response);
+				XMLEntity features = (XMLEntity) answer.getElementBy(XMLEntity.PROPERTY_TAG, "mechanisms");
+				for(int i=0;i<features.sizeChildren();i++) {
+					XMLEntity child = (XMLEntity) features.getChild(i);
+					this.supportedFeature.add(child.getValue().toUpperCase());
+				}
+	//			System.out.println(this.supportedFeature.toString(null));
+				String login = getLoginText(sender, password);
+				response = sendCommand("<auth mechanism=\"PLAIN\" xmlns=\"urn:ietf:params:xml:ns:xmpp-sasl\">"+login+"</auth>");
+				
+				response = sendStart();
+				
+				XMLEntity iq = XMLEntity.TAG("iq");
+				iq.with("type", "set");
+				XMLEntity bind = iq.createChild("bind");
+				bind.with("xmlns", "urn:ietf:params:xml:ns:xmpp-bind");
+				
+				response = sendCommand(iq.toString());
+				return true;
+			}
+			if(TYPE_XMPP.equals(type)) {
+				this.factory = javax.net.SocketFactory.getDefault();
+				initSockets(host, port);
+	
+				CharacterBuffer response = sendStart();
+	
+				XMLEntity answer= new XMLEntity().withValue(response);
+				this.id = answer.getString("id");
+				XMLEntity features = (XMLEntity) answer.getElementBy(XMLEntity.PROPERTY_TAG, "stream:features");
+				for(int i=0;i<features.sizeChildren();i++) {
+					XMLEntity child = (XMLEntity) features.getChild(i);
+					this.supportedFeature.add(child.getTag().toUpperCase());
+				}
+				if(supportedFeature.contains(FEATURE_TLS)) {
+					response = sendCommand("<starttls xmlns=\"urn:ietf:params:xml:ns:xmpp-tls\" />");
+					// Now create Factory
+		            SSLContext context = SSLContext.getInstance("TLS");
+		            context.init(null, new javax.net.ssl.TrustManager[] { new ServerTrustManager(host) }, 
+		            		new java.security.SecureRandom());
+					this.factory = context.getSocketFactory();
+					
+					if(startTLS() == false) {
+						return false;
+					}
+					sendStart();
+	
+					String login = getLoginText(sender, password);
+					response = sendCommand("<auth mechanism=\"PLAIN\" xmlns=\"urn:ietf:params:xml:ns:xmpp-sasl\">"+login+"</auth>");
+//					if(response.startsWith("<success "))
+	
+					sendStart();
+					bindXMPP();
+				}
+			}
+			// DEFAULT EMAIL
+			if(serverSocket == null) {
+				this.type = TYPE_EMAIL;
+				this.factory = javax.net.SocketFactory.getDefault();
+				initSockets(host, port);
+	
 				checkServerResponse(getResponse(), RESPONSE_SERVERREADY);
 				
 				sendStart();
@@ -228,9 +284,9 @@ public class MessageSession {
 				CharacterBuffer answer = sendCommand(FEATURE_TLS);
 	
 				startTLS();
-
+	
 				sendStart();
-
+	
 				answer = sendCommand("AUTH LOGIN");
 	
 				if(checkServerResponse(answer, RESPONSE_SMTP_AUTH_NTLM_BLOB_Response) == false) {
@@ -238,7 +294,7 @@ public class MessageSession {
 					return false;
 				}
 				ByteConverter64 converter = new ByteConverter64();
-				answer= sendCommand(converter.toStaticString(userName).toString());
+				answer= sendCommand(converter.toStaticString(sender).toString());
 				if(checkServerResponse(answer, RESPONSE_SMTP_AUTH_NTLM_BLOB_Response) == false) {
 					close();
 					return false;
@@ -249,15 +305,15 @@ public class MessageSession {
 					close();
 					return false;
 				}
-			}catch (Exception e) {
-				return false;
 			}
+		}catch (Exception e) {
+			return false;
 		}
 		return true;
 	}
 	
 	private CharacterBuffer sendStart() {
-		if (type == TYPE_XMPP) {
+		if (TYPE_XMPP.equals(type) || TYPE_FCM.equals(type)) {
 			return sendCommand("<stream:stream to=\""+host+"\" xmlns=\"jabber:client\" xmlns:stream=\"http://etherx.jabber.org/streams\" version=\"1.0\">");
 		}
 		CharacterBuffer response = sendCommand("EHLO " + getLocalHost());
@@ -276,10 +332,9 @@ public class MessageSession {
 				return false;
 			}
 			if(factory == null) {
-				this.factory = (SSLSocketFactory) SSLSocketFactory.getDefault();
+				this.factory = SSLSocketFactory.getDefault();
 			}
-			this.serverSocket = factory.createSocket(this.serverSocket, host, port, true);
-			initSockets();
+			initSockets(host, port);
 
 			if (this.serverSocket instanceof SSLSocket) {
 				SSLSocket socket = (SSLSocket) this.serverSocket;
@@ -289,9 +344,8 @@ public class MessageSession {
 					if (prots[i] != null && prots[i].startsWith("SSL")== false && prots[i].equalsIgnoreCase("TLSv1")== false)
 						eprots.add(prots[i]);
 				}
-//		        socket.setSoTimeout(0);
-//		        socket.setKeepAlive(true);
-//				socket.setEnabledProtocols(eprots.toArray(new String[eprots.size()]));
+				socket.setEnabledProtocols(eprots.toArray(new String[eprots.size()]));
+				
 				socket.startHandshake();
 				return true;
 			}
@@ -462,11 +516,6 @@ public class MessageSession {
 	    return "mailer@localhost"; // worst-case default
 	}
 	
-	
-	public boolean connect(String password) {
-		return this.connect(this.sender, password);
-	}
-	
 	private static String prefix = EntityUtil.randomString(5) + "-";
 
     /**
@@ -499,8 +548,8 @@ public class MessageSession {
 	 * @return success
 	 */
 	public boolean sending(SocketMessage message) {
-		if(TYPE_XMPP.equals(this.type)) {
-			XMLEntity xml = message.toXML();
+		if(TYPE_XMPP.equals(this.type) || TYPE_FCM.equals(this.type)) {
+			XMLEntity xml = message.toXML(type);
 			return sendCommand(xml.toString()) != null;
 		}
 		
@@ -608,5 +657,11 @@ public class MessageSession {
 
 	public String getUrl() {
 		return this.host;
+	}
+
+
+	public MessageSession withType(String msgType) {
+		this.type = msgType;
+		return this;
 	}
 }

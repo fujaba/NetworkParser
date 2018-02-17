@@ -51,6 +51,7 @@ import de.uniks.networkparser.graph.util.AttributeSet;
 import de.uniks.networkparser.graph.util.ClazzSet;
 import de.uniks.networkparser.graph.util.MethodSet;
 import de.uniks.networkparser.graph.util.ParameterSet;
+import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.EntityList;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
@@ -294,7 +295,7 @@ public class EMFTokener extends Tokener{
 	private Object decodingClassModel(XMLEntity values, GraphModel model) {
 		SimpleKeyValueList<String, Clazz> items = new SimpleKeyValueList<String, Clazz>();
 		for(int c=0;c<values.sizeChildren();c++) {
-			EntityList item = values.getChild(c);
+			BaseItem item = values.getChild(c);
 			if(item instanceof XMLEntity == false) {
 				continue;
 			}
@@ -565,7 +566,7 @@ public class EMFTokener extends Tokener{
 		// add classes
 		SimpleKeyValueList<Entity, EntityList> parentList=new SimpleKeyValueList<Entity, EntityList>();
 		for(int i=0;i<ecore.sizeChildren();i++) {
-			EntityList eClassifier = ecore.getChild(i);
+			BaseItem eClassifier = ecore.getChild(i);
 			if(eClassifier instanceof XMLEntity == false) {
 				continue;
 			}
@@ -578,7 +579,7 @@ public class EMFTokener extends Tokener{
 				Clazz clazz = new Clazz(xml.getString(EMFTokener.NAME));
 				model.with(clazz);
 				for(int c=0;c<xml.sizeChildren();c++) {
-					EntityList child = xml.getChild(c);
+					BaseItem child = xml.getChild(c);
 					if(child instanceof Entity == false) {
 						continue;
 					}
@@ -604,7 +605,7 @@ public class EMFTokener extends Tokener{
 				Clazz graphEnum = new Clazz(xml.getString(EMFTokener.NAME));
 				GraphUtil.setClazzType(graphEnum, ClazzType.ENUMERATION);
 				for(int c=0;c<xml.sizeChildren();c++) {
-					EntityList child = ecore.getChild(i);
+					BaseItem child = ecore.getChild(i);
 					if(child instanceof Entity == false) {
 						continue;
 					}

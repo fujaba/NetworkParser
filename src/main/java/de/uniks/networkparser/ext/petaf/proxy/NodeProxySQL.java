@@ -63,7 +63,7 @@ public class NodeProxySQL extends NodeProxy{
 	
 	@Override
 	public boolean setValue(Object element, String attrName, Object value, String type) {
-		if(element instanceof NodeProxyEMail) {
+		if(element instanceof NodeProxyMessages) {
 			NodeProxySQL nodeProxy = (NodeProxySQL) element;
 			if (PROPERTY_DATABASE.equals(attrName)) {
 				nodeProxy.withDatabase((String) value);

@@ -36,9 +36,6 @@ import de.uniks.networkparser.list.SimpleKeyValueList;
  * @author Paho Client
  */
 public class ClientComms {
-	public static String 		VERSION = "${project.version}";
-	public static String 		BUILD_LEVEL = "L${build.level}";
-
 	private static final byte CONNECTED	= 0;
 	private static final byte CONNECTING	= 1;
 	private static final byte DISCONNECTING	= 2;

@@ -7,6 +7,7 @@ import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.converter.EntityStringConverter;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Converter;
+import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.xml.HTMLEntity;
@@ -130,11 +131,35 @@ public class SocketMessage implements BaseItem {
 		return this.id;
 	}
 	
-	public XMLEntity toXML() {
+	public XMLEntity toXML(String type) {
 		XMLEntity messageXML=XMLEntity.TAG("message");
-		messageXML.add("id", MessageSession.nextID());
-		messageXML.add("to", to);
-		messageXML.createChild("body").withValueItem(message.toString());
+		if(type ==MessageSession.TYPE_FCM) {
+			messageXML.add("id", "");
+			XMLEntity gcm = messageXML.createChild("gcm");
+			gcm.add("xmlns", "google:mobile:data");
+			
+			JsonObject container = new JsonObject();
+			gcm.add(container);
+			if(this.to.size()>0) {
+				container.put("to", this.to.first());
+			}
+			container.put("message_id", MessageSession.nextID());
+			
+			JsonObject data = new JsonObject();
+			container.put("data", data);
+			if(this.message.size() > 0) {
+				data.put("message", this.message.first());
+			}
+			
+//		      "time_to_live":"600",
+//		      "delay_while_idle": true/false,
+//		      "delivery_receipt_requested": true/false
+		}
+		if(type ==MessageSession.TYPE_XMPP) {
+			messageXML.add("id", MessageSession.nextID());
+			messageXML.add("to", to);
+			messageXML.createChild("body").withValueItem(message.toString());
+		}
 		return messageXML;
 	}
 	
@@ -235,10 +260,10 @@ public class SocketMessage implements BaseItem {
 	public BaseItem getNewList(boolean keyValue) {
 		return new SocketMessage();
 	}
-
+	
 	@Override
 	public int size() {
-		return 0;
+		return this.to.size();
 	}
 
 	@Override
@@ -264,5 +289,10 @@ public class SocketMessage implements BaseItem {
 		return true;
 	}
 
+	public static SocketMessage create(String message,String... toAdresses) {
+		SocketMessage socketMessage = new SocketMessage(toAdresses);
+		socketMessage.withMessage(message);
+		return socketMessage;
+	}
 
 }

@@ -28,7 +28,6 @@ import de.uniks.networkparser.converter.EntityStringConverter;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Converter;
 import de.uniks.networkparser.interfaces.Entity;
-import de.uniks.networkparser.interfaces.EntityList;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorTag;
 import de.uniks.networkparser.list.SimpleList;
 
@@ -293,7 +292,7 @@ public class PomFile implements SendableEntityCreatorTag, BaseItem{
 				// Parse Dependency
 				XMLEntity children = (XMLEntity) child;
 				for(int i=0;i<children.size();i++) {
-					EntityList dependency = children.getChild(i); 
+					BaseItem dependency = children.getChild(i); 
 					PomFile pomDependency = new PomFile().withValue((XMLEntity)dependency);
 					this.dependencies.add(pomDependency);
 				}

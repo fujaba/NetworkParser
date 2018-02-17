@@ -27,6 +27,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.Iterator;
 
+import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.converter.EntityStringConverter;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Converter;
@@ -1544,7 +1545,22 @@ public abstract class AbstractArray<V> implements BaseItem {
 	}
 
 	protected String parseItem(EntityStringConverter converter) {
-		return "";
+		CharacterBuffer sb = new CharacterBuffer();
+		int len = this.size();
+		for(int i=0;i<len;i++) {
+			Object key = getKeyByIndex(i);
+			if(key != null) {
+				if(sb.isEmpty()) {
+					sb.with(key.toString());
+				}else {
+					sb.with(',');
+					sb.with(key.toString());
+				}
+			}
+		}
+		sb.with(']');
+		sb.withStart('[');
+		return sb.toString();
 	}
 
 	/**
@@ -1556,7 +1572,7 @@ public abstract class AbstractArray<V> implements BaseItem {
 	@Override
 	public String toString(Converter converter) {
 		if (converter == null) {
-			return null;
+			return parseItem(new EntityStringConverter());
 		}
 		if (converter instanceof EntityStringConverter) {
 			return parseItem((EntityStringConverter) converter);

@@ -251,7 +251,7 @@ public class HTMLEntity implements BaseItem {
 	public HTMLEntity addStyle(String name, String style) {
 		XMLEntity styleElement = null;
 		for(int i=0;i<header.size();i++) {
-			EntityList child = header.getChild(i);
+			BaseItem child = header.getChild(i);
 			if(child instanceof XMLEntity == false) {
 				continue;
 			}
@@ -385,7 +385,7 @@ public class HTMLEntity implements BaseItem {
 		XMLEntity htmlPage = new XMLEntity().withValue(value);
 		//All Children possible head and body
 		for(int i=0;i<htmlPage.sizeChildren();i++) {
-			EntityList item = htmlPage.getChild(i);
+			BaseItem item = htmlPage.getChild(i);
 			if(item instanceof XMLEntity == false) {
 				continue;
 			}

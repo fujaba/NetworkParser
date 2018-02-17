@@ -6,7 +6,7 @@ import org.junit.Test;
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.GUILine;
 import de.uniks.networkparser.Style;
-import de.uniks.networkparser.interfaces.EntityList;
+import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.GUIPosition;
 import de.uniks.networkparser.xml.HTMLEntity;
 import de.uniks.networkparser.xml.XMLEntity;
@@ -75,7 +75,7 @@ public class HTMLTest {
 		XMLEntity list = entity.getElementsBy(EntityUtil.CLASS, "#mp-itn b a");
 		Assert.assertEquals(2, list.sizeChildren());
 		for(int i=0;i<list.sizeChildren();i++) {
-			EntityList child = list.getChild(i);
+			BaseItem child = list.getChild(i);
 			if(i==0) {
 				Assert.assertEquals("<a href=\"/wiki/2016_Kaikoura_earthquake\" title=\"2016 Kaikoura earthquake\">An earthquake</a>", child.toString());
 			} else {

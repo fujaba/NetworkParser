@@ -7,22 +7,26 @@ import de.uniks.networkparser.ext.petaf.NodeProxy;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 
 // This.name is receiver
-public class NodeProxyEMail extends NodeProxy{
-	public static final String CONNECTION="connection";
+// https://console.firebase.google.com/project/<Project>/settings/cloudmessaging/
+public class NodeProxyMessages extends NodeProxy{
+	public static final String EVENT_CONNECTION="connection";
 	public static final String BODY="body";
 	public static final String MESSAGE="message";
 	public static final String PROPERTY_URL = "url";
 	public static final String PROPERTY_PORT = "port";
 	public static final String PROPERTY_ACCOUNT = "account";
 	public static final String PROPERTY_PASSWORD = "password";
+	public static final String PROPERTY_MESSAGETYPE = "msgtype";
+	
 	private MessageSession connection = null;
 	private ObjectCondition creator;
 	private String password;
+	private String msgType=MessageSession.TYPE_EMAIL;
 	
-	public NodeProxyEMail() {
-		this.property.addAll(PROPERTY_URL, PROPERTY_PORT, PROPERTY_ACCOUNT);
-		this.propertyUpdate.addAll(PROPERTY_URL, PROPERTY_PORT);
-		this.propertyInfo.addAll(PROPERTY_URL, PROPERTY_PORT, PROPERTY_ACCOUNT);
+	public NodeProxyMessages() {
+		this.property.addAll(PROPERTY_URL, PROPERTY_PORT, PROPERTY_ACCOUNT, PROPERTY_MESSAGETYPE);
+		this.propertyUpdate.addAll(PROPERTY_URL, PROPERTY_PORT, PROPERTY_MESSAGETYPE);
+		this.propertyInfo.addAll(PROPERTY_URL, PROPERTY_PORT, PROPERTY_ACCOUNT,PROPERTY_MESSAGETYPE);
 	}
 	
 	@Override
@@ -32,8 +36,8 @@ public class NodeProxyEMail extends NodeProxy{
 
 	@Override
 	public Object getValue(Object element, String attrName) {
-		if(element instanceof NodeProxyEMail ) {
-			NodeProxyEMail nodeProxy = (NodeProxyEMail) element;
+		if(element instanceof NodeProxyMessages ) {
+			NodeProxyMessages nodeProxy = (NodeProxyMessages) element;
 			if (PROPERTY_URL.equals(attrName)) {
 				return nodeProxy.getUrl();
 			}
@@ -46,14 +50,17 @@ public class NodeProxyEMail extends NodeProxy{
 			if (PROPERTY_PASSWORD.equals(attrName)) {
 				return nodeProxy.getPort();
 			}
+			if (PROPERTY_MESSAGETYPE.equals(attrName)) {
+				return nodeProxy.getMessageType();
+			}
 		}
 		return super.getValue(element, attrName);
 	}
 
 	@Override
 	public boolean setValue(Object element, String attrName, Object value, String type) {
-		if(element instanceof NodeProxyEMail) {
-			NodeProxyEMail nodeProxy = (NodeProxyEMail) element;
+		if(element instanceof NodeProxyMessages) {
+			NodeProxyMessages nodeProxy = (NodeProxyMessages) element;
 			if (PROPERTY_URL.equals(attrName)) {
 				nodeProxy.withUrl((String) value);
 				return true;
@@ -63,17 +70,29 @@ public class NodeProxyEMail extends NodeProxy{
 				return true;
 			}
 			if (PROPERTY_ACCOUNT.equals(attrName)) {
-				nodeProxy.withEMailAccount((String) value);
+				nodeProxy.withSender((String) value);
 				return true;
 			}
 			if (PROPERTY_PASSWORD.equals(attrName)) {
 				nodeProxy.withPassword((String) value);
 				return true;
 			}
+			if (PROPERTY_MESSAGETYPE.equals(attrName)) {
+				nodeProxy.withMessageType((String) value);
+				return true;
+			}
 		}
 		return super.setValue(element, attrName, value, type);
 	}
 
+	private NodeProxyMessages withMessageType(String value) {
+		this.msgType = value;
+		return this;
+	}
+
+	private String getMessageType() {
+		return msgType;
+	}
 
 	@Override
 	public String getKey() {
@@ -109,17 +128,19 @@ public class NodeProxyEMail extends NodeProxy{
 
 	@Override
 	public Object getSendableInstance(boolean prototyp) {
-		return new NodeProxyEMail();
+		return new NodeProxyMessages();
 	}
 	
 	public boolean connect() {
 		if(this.connection != null) {
+			this.connection.withType(this.msgType);
 			return this.connection.connect(password);
+			// TYPE
 		}
 		return false;
 	}
 	
-	public NodeProxyEMail withEMailAccount(String name) {
+	public NodeProxyMessages withSender(String name) {
 		if(this.connection == null) {
 			this.connection = getNewConnection();
 		}
@@ -129,8 +150,8 @@ public class NodeProxyEMail extends NodeProxy{
 	
 	protected MessageSession getNewConnection() {
 		if(creator != null) {
-			Object item = creator.update(CONNECTION);
-			if(item != null) {
+			Object item = creator.update(EVENT_CONNECTION);
+			if(item instanceof MessageSession) {
 				return (MessageSession) item;
 			}
 		}
@@ -147,7 +168,7 @@ public class NodeProxyEMail extends NodeProxy{
 		return new SocketMessage(this.name).withSubject("Message from PetaF");
 	}
 	
-	private NodeProxyEMail withPort(Integer value) {
+	private NodeProxyMessages withPort(Integer value) {
 		if(this.connection == null) {
 			this.connection = getNewConnection();
 		}
@@ -163,7 +184,7 @@ public class NodeProxyEMail extends NodeProxy{
 	}
 
 
-	public NodeProxyEMail withUrl(String value) {
+	public NodeProxyMessages withUrl(String value) {
 		if(this.connection == null) {
 			this.connection = getNewConnection();
 		}
@@ -180,7 +201,7 @@ public class NodeProxyEMail extends NodeProxy{
 		
 	}
 
-	public NodeProxyEMail withPassword(String password) {
+	public NodeProxyMessages withPassword(String password) {
 		this.password = password;
 		return this;
 	}

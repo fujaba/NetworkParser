@@ -1176,6 +1176,8 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence {
 		for(Object item : values) {
 			if(item instanceof CharSequence) {
 				this.with((CharSequence)item);
+			}else if(item instanceof Character) {
+				this.with((Character)item);
 			} else {
 				addValues = false;
 			}

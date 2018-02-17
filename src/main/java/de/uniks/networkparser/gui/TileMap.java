@@ -2,8 +2,8 @@ package de.uniks.networkparser.gui;
 
 import de.uniks.networkparser.MapEntity;
 import de.uniks.networkparser.Pos;
+import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Entity;
-import de.uniks.networkparser.interfaces.EntityList;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorTag;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
@@ -301,7 +301,7 @@ public class TileMap implements SendableEntityCreatorTag {
 				this.objects.put(tag, objects);
 			}
 			for(int i=0;i<objectGroup.size();i++) {
-				EntityList item = objectGroup.getChild(i);
+				BaseItem item = objectGroup.getChild(i);
 				objects.add(TileObject.create((Entity)item));
 			}
 			return true;

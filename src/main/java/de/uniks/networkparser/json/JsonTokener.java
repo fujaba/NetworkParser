@@ -207,7 +207,7 @@ public class JsonTokener extends Tokener {
 				parseEntityProp(props, xmlEntity.getValueByIndex(i), xmlEntity.getKeyByIndex(i));
 			}
 			for (i = 0; i < xmlEntity.size(); i++) {
-				EntityList child = xmlEntity.getChild(i);
+				BaseItem child = xmlEntity.getChild(i);
 				if(child  instanceof XMLEntity == false) {
 					continue;
 				}
@@ -242,7 +242,7 @@ public class JsonTokener extends Tokener {
 			}
 
 			for (i = 0; i < xmlEntity.size(); i++) {
-				EntityList child = xmlEntity.getChild(i);
+				BaseItem child = xmlEntity.getChild(i);
 				if(child  instanceof XMLEntity == false) {
 					continue;
 				}
