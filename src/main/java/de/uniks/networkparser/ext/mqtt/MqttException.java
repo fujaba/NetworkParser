@@ -17,6 +17,7 @@
  */
 package de.uniks.networkparser.ext.mqtt;
 
+import de.uniks.networkparser.ext.petaf.proxy.NodeProxyMQTT;
 
 /**
  * Thrown if an error occurs communicating with the server.
@@ -88,11 +89,7 @@ public class MqttException extends Exception {
 	public static final short REASON_CODE_SERVER_CONNECT_ERROR          = 32103;
 
 	/** 
-	 * The client is not connected to the server.  The {@link MqttClient#connect()}
-	 * or {@link MqttClient#connect(MqttConnectOptions)} method must be called
-	 * first.  It is also possible that the connection was lost - see 
-	 * {@link MqttClient#setCallback(MqttCallback)} for a way to track lost
-	 * connections.  
+	 * The client is not connected to the server.  The {@link NodeProxyMQTT#connect()} method must be called first.
 	 */
 	public static final short REASON_CODE_CLIENT_NOT_CONNECTED          = 32104;
 
@@ -109,11 +106,8 @@ public class MqttException extends Exception {
 	public static final short REASON_CODE_SSL_CONFIG_ERROR              = 32106;
 
 	/** 
-	 * Thrown when an attempt to call {@link MqttClient#disconnect()} has been 
-	 * made from within a method on {@link MqttCallback}.  These methods are invoked
-	 * by the client's thread, and must not be used to control disconnection.
-	 * 
-	 * @see MqttCallback#messageArrived(String, MqttMessage)
+	 * Thrown when an attempt to call {@link NodeProxyMQTT#close()} has been 
+	 * made.  These methods are invoked by the client's thread, and must not be used to control disconnection.
 	 */
 	public static final short REASON_CODE_CLIENT_DISCONNECT_PROHIBITED  = 32107;
 
@@ -131,8 +125,7 @@ public class MqttException extends Exception {
 	public static final short REASON_CODE_CONNECTION_LOST               = 32109;
 	
 	/**
-	 * A connect operation in already in progress, only one connect can happen
-	 * at a time.
+	 * A connect operation in already in progress, only one connect can happen at a time.
 	 */
 	public static final short REASON_CODE_CONNECT_IN_PROGRESS           = 32110;
 	

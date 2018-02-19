@@ -164,13 +164,13 @@ public class CommsCallback implements Runnable {
 					}
 					
 					// Check for messageArrived callbacks...
-					MqttPublish message = null;
+					MqttWireMessage message = null;
 					synchronized (messageQueue) {
 					    if (!messageQueue.isEmpty()) {
 						    // Note, there is a window on connect where a publish
 						    // could arrive before we've
 						    // finished the connect logic.
-							message = (MqttPublish) messageQueue.elementAt(0);
+							message = messageQueue.elementAt(0);
 
 							messageQueue.removeElementAt(0);
 					    }
@@ -270,7 +270,7 @@ public class CommsCallback implements Runnable {
 	 * An action has completed - if a completion listener has been set on the
 	 * token then invoke it with the outcome of the action.
 	 * 
-	 * @param token The {@link MqttToken} that has completed
+	 * @param token The {@link Token} that has completed
 	 */
 	public void fireActionEvent(Token token) {
 		if (token != null) {
@@ -294,7 +294,7 @@ public class CommsCallback implements Runnable {
 	 * 
 	 * @param sendMessage the MQTT SEND message.
 	 */
-	public void messageArrived(MqttPublish sendMessage) {
+	public void messageArrived(MqttWireMessage sendMessage) {
 		if (mqttCallback != null) {
 			// If we already have enough messages queued up in memory, wait
 			// until some more queue space becomes available. This helps 
@@ -341,7 +341,7 @@ public class CommsCallback implements Runnable {
 		return false;
 	}
 
-	private void handleMessage(MqttPublish publishMessage)
+	private void handleMessage(MqttWireMessage publishMessage)
 			throws MqttException, Exception {
 		// If quisecing process any pending messages.
 
@@ -353,7 +353,8 @@ public class CommsCallback implements Runnable {
 
 		if (!this.manualAcks) {
 			if (publishMessage.getMessage().getQos() == 1) {
-				this.clientComms.internalSend(new MqttPubAck(publishMessage),
+				this.clientComms.internalSend(
+						MqttWireMessage.create(MqttWireMessage.MESSAGE_TYPE_PUBACK).withMessageId(publishMessage.getMessageId()),
 						new Token(clientComms.getClient().getClientId()));
 			} else if (publishMessage.getMessage().getQos() == 2) {
 				this.clientComms.deliveryComplete(publishMessage);
@@ -364,7 +365,8 @@ public class CommsCallback implements Runnable {
 	public void messageArrivedComplete(int messageId, int qos) 
 		throws MqttException {
 		if (qos == 1) {
-			this.clientComms.internalSend(new MqttPubAck(messageId),
+			this.clientComms.internalSend(
+					MqttWireMessage.create(MqttWireMessage.MESSAGE_TYPE_PUBACK).withMessageId(messageId),
 					new Token(clientComms.getClient().getClientId()));
 		} else if (qos == 2) {
 			this.clientComms.deliveryComplete(messageId);

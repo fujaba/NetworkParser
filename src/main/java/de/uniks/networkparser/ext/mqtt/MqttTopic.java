@@ -19,7 +19,7 @@ import java.io.UnsupportedEncodingException;
 
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.ext.mqtt.internal.ClientComms;
-import de.uniks.networkparser.ext.mqtt.internal.MqttPublish;
+import de.uniks.networkparser.ext.mqtt.internal.MqttWireMessage;
 import de.uniks.networkparser.ext.mqtt.internal.Token;
 
 /**
@@ -84,10 +84,8 @@ public class MqttTopic {
 	 * @param payload the byte array to use as the payload
 	 * @param qos the Quality of Service.  Valid values are 0, 1 or 2.
 	 * @param retained whether or not this message should be retained by the server.
-	 * @return new Token {@link MqttDeliveryToken}
+	 * @return new Token {@link Token}
 	 * @throws MqttException If an error occurs publishing the message
-	 * @throws MqttPersistenceException If an error occurs persisting the message
-	 * @throws IllegalArgumentException if value of QoS is not 0, 1 or 2.
 	 * @see #publish(MqttMessage)
 	 * @see MqttMessage#setQos(int)
 	 * @see MqttMessage#setRetained(boolean)
@@ -101,7 +99,7 @@ public class MqttTopic {
 
 	/**
 	 * Publishes the specified message to this topic, but does not wait for delivery
-	 * of the message to complete. The returned {@link MqttDeliveryToken token} can be used
+	 * of the message to complete. The returned {@link Token token} can be used
 	 * to track the delivery status of the message.  Once this method has
 	 * returned cleanly, the message has been accepted for publication by the
 	 * client. Message delivery will be completed in the background when a connection
@@ -110,7 +108,6 @@ public class MqttTopic {
 	 * @param message the message to publish
 	 * @return an MqttDeliveryToken for tracking the delivery of the message
 	 * @throws MqttException if an error occurs publishing the message
-	 * @throws MqttPersistenceException  if an error occurs persisting the message
 	 */
 	public Token publish(MqttMessage message) throws MqttException {
 		Token token = new Token(comms.getClient().getClientId());
@@ -134,8 +131,10 @@ public class MqttTopic {
 	 * @param message  MqttMessage message
 	 * @return new Publish Message
 	 */
-	private MqttPublish createPublish(MqttMessage message) {
-		return new MqttPublish(this.getName(), message);
+	private MqttWireMessage createPublish(MqttMessage message) {
+		MqttWireMessage msg = MqttWireMessage.create(MqttWireMessage.MESSAGE_TYPE_PUBLISH);
+		msg.withNames(this.getName()).withMessage(message);
+		return msg;
 	}
 
 	/**

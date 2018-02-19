@@ -125,7 +125,7 @@ public class CommsReceiver implements Runnable {
 							// can occur before request processing is complete if not!
 							clientState.notifyReceivedAck(message);
 						}
-					} else if(message instanceof MqttPubAck) {
+					} else if(message.getType() == MqttWireMessage.MESSAGE_TYPE_PUBACK) {
 						//This is an ack for a message we no longer have a ticket for.
 						//This probably means we already received this message and it's being send again
 						//because of timeouts, crashes, disconnects, restarts etc.

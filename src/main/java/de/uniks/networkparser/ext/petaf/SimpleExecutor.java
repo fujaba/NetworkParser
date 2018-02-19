@@ -1,12 +1,10 @@
 package de.uniks.networkparser.ext.petaf;
 
 import de.uniks.networkparser.DateTimeEntity;
-import de.uniks.networkparser.interfaces.Condition;
 
 public class SimpleExecutor implements TaskExecutor{
 	private DateTimeEntity lastRun=new DateTimeEntity();
 	private Space space;
-	private Condition<Message> messageHandler;
 
 	@Override
 	public Object executeTask(Runnable task, int delay, int interval) {
@@ -44,11 +42,6 @@ public class SimpleExecutor implements TaskExecutor{
 			return space.handleMsg(message);
 		}
 		return false;
-	}
-	
-	public SimpleExecutor withHandler(Condition<Message> messageHandler) {
-		this.messageHandler = messageHandler;
-		return this;
 	}
 
 	@Override

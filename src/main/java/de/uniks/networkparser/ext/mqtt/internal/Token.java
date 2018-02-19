@@ -331,16 +331,16 @@ public class Token {
 	
 	public int[] getGrantedQos() {
 		int[] val = new int[0];
-		if (response instanceof MqttSuback) {
-			val = ((MqttSuback)response).getGrantedQos();
+		if (response.getType() == MqttWireMessage.MESSAGE_TYPE_SUBACK) {
+			val = response.getGrantedQos();
 		}
 		return val;
 	}
 	
 	public boolean getSessionPresent() {
 		boolean val = false;
-		if (response instanceof MqttConnack) {
-			val = ((MqttConnack)response).getSessionPresent();
+		if (response.getType() == MqttWireMessage.MESSAGE_TYPE_CONNACK) {
+			val = response.getSessionPresent();
 		}
 		return val;
 	}

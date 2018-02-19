@@ -1,5 +1,7 @@
 package de.uniks.networkparser.buffer;
 
+import java.util.List;
+
 /*
 NetworkParser
 The MIT License
@@ -559,6 +561,33 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence {
 		this.with(bytes);
 		return this;
 	}
+	
+	public CharacterBuffer withCollection(String splitter, Object... values) {
+		if (values == null) {
+			return this;
+		}
+		int len = values.length;
+		if (len < 1) {
+			return this;
+		}
+		if (len == 1 && values[0] instanceof List<?>) {
+			List<?> collection = (List<?>) values[0];
+			len = collection.size();
+			this.add(collection.get(0));
+			for (int i = 1; i < len; i++) {
+				this.with(splitter);
+				this.add(collection.get(i));
+			}
+			return this;
+		}
+		this.add(values[0]);
+		for(int i=1;i<len;i++) {
+			this.with(splitter);
+			this.add(values[i]);
+		}
+		return this;
+	}
+
 	
 	/**
 	 * Append a new Character to CharacterBuffer

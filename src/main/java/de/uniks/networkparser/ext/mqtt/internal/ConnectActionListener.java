@@ -52,7 +52,7 @@ import de.uniks.networkparser.list.SimpleKeyValueList;
  */
 public class ConnectActionListener {
 
-	private SimpleKeyValueList<String, MqttPublish> persistence;
+	private SimpleKeyValueList<String, MqttWireMessage> persistence;
 	private NodeProxyMQTT client;
 	private ClientComms comms;
 	private Token userToken;
@@ -60,24 +60,13 @@ public class ConnectActionListener {
 	private boolean reconnect;
 
 	/**
-	 * @param persistence
-	 *            The {@link MqttClientPersistence} layer
-	 * @param client
-	 *            the {@link MqttClient}
-	 * @param comms
-	 *            {@link ClientComms}
-	 * @param options
-	 *            the {@link MqttConnectOptions}
-	 * @param userToken
-	 *            the {@link MqttToken}
-	 * @param userContext
-	 *            the User Context Object
-	 * @param userCallback
-	 *            the {@link IMqttActionListener} as the callback for the user
-	 * @param reconnect
-	 *            If true, this is a reconnect attempt
+	 * @param persistence   The MqttClientPersistence layer
+	 * @param client        the {@link NodeProxyMQTT}
+	 * @param comms         {@link ClientComms}
+	 * @param userToken     the {@link Token}
+	 * @param reconnect     If true, this is a reconnect attempt
 	 */
-	public ConnectActionListener(NodeProxyMQTT client, SimpleKeyValueList<String, MqttPublish> persistence,
+	public ConnectActionListener(NodeProxyMQTT client, SimpleKeyValueList<String, MqttWireMessage> persistence,
 			ClientComms comms, Token userToken, boolean reconnect) {
 		this.persistence = persistence;
 		this.client = client;
@@ -89,7 +78,7 @@ public class ConnectActionListener {
 	/**
 	 * If the connect succeeded then call the users onSuccess callback
 	 * 
-	 * @param token the {@link IMqttToken} from the successful connection
+	 * @param token the {@link Token} from the successful connection
 	 */
 	public void onSuccess(Token token) {
 		userToken.markComplete(token.getResponse(), null);
@@ -109,7 +98,7 @@ public class ConnectActionListener {
 	 * The connect failed, so try the next URI on the list. If there are no more
 	 * URIs, then fail the overall connect.
 	 * 
-	 * @param token the {@link IMqttToken} from the failed connection attempt
+	 * @param token the {@link Token} from the failed connection attempt
 	 * @param exception the {@link Throwable} exception from the failed connection attempt
 	 */
 	public void onFailure(Token token, Throwable exception) {
@@ -128,8 +117,7 @@ public class ConnectActionListener {
 	/**
 	 * Start the connect processing
 	 * 
-	 * @throws MqttPersistenceException
-	 *             if an error is thrown whilst setting up persistence
+	 * @throws MqttException  if an error is thrown whilst setting up persistence
 	 */
 	public void connect() throws MqttException {
 		Token token = new Token(client.getClientId());
@@ -152,7 +140,7 @@ public class ConnectActionListener {
 	/**
 	 * Set the MqttCallbackExtened callback to receive connectComplete callbacks
 	 * 
-	 * @param mqttCallbackExtended the {@link MqttCallbackExtended} to be called when the connection completes
+	 * @param mqttCallbackExtended the {@link SimpleEventCondition} to be called when the connection completes
 	 */
 	public void setMqttCallback(SimpleEventCondition mqttCallbackExtended) {
 		this.mqttCallback = mqttCallbackExtended;

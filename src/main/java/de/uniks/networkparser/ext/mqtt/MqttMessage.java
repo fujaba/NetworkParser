@@ -143,8 +143,7 @@ public class MqttMessage {
 	 * and will not be acknowledged across the network.  This QoS is the fastest,
 	 * but should only be used for messages which are not valuable - note that
 	 * if the server cannot process the message (for example, there
-	 * is an authorization problem), then an
-	 * {@link MqttCallback#deliveryComplete(IMqttDeliveryToken)}.
+	 * is an authorization problem)
 	 * Also known as "fire and forget".</li>
 	 *
 	 * <li>Quality of Service 1 - indicates that a message should

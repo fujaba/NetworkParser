@@ -126,7 +126,7 @@ public class CommsSender implements Runnable {
 									} catch (IOException ex) {
 										// The flush has been seen to fail on disconnect of a SSL socket
 										// as disconnect is in progress this should not be treated as an error
-										if (!(message instanceof MqttDisconnect)) {
+										if (message.getType() != MqttWireMessage.MESSAGE_TYPE_DISCONNECT) {
 											throw ex;
 										}
 									}
