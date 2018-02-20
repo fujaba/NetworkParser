@@ -24,6 +24,7 @@ import java.util.Vector;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.ext.mqtt.MqttException;
 import de.uniks.networkparser.ext.mqtt.MqttTopic;
 import de.uniks.networkparser.ext.petaf.proxy.NodeProxyMQTT;
@@ -192,10 +193,25 @@ public class ClientComms {
 	 * Sends a connect message and waits for an ACK or NACK.
 	 * Connecting is a special case which will also start up the
 	 * network connection, receive thread, and keep alive thread.
-	 * @param token The {@link Token} to track the connection
 	 * @throws MqttException if an error occurs when connecting
 	 */
-	public void connect(Token token) throws MqttException {
+	public Token connect() throws MqttException {
+		//private SimpleKeyValueList<String, MqttWireMessage> persistence;
+//		private NodeProxyMQTT client;
+//		private ClientComms comms;
+//		private Token userToken;
+//		private SimpleEventCondition mqttCallback;
+//		private boolean reconnect;
+
+		Token token = new Token(client.getClientId());
+		if (client.isCleanSession()) {
+			this.clientState.clearPersistence();
+		}
+
+		if (client.getMqttVersion() == NodeProxyMQTT.MQTT_VERSION_DEFAULT) {
+			client.withMqttVersion(NodeProxyMQTT.MQTT_VERSION_3_1_1);
+		}
+
 		synchronized (conLock) {
 			if (isDisconnected() && !closePending) {
 				//@TRACE 214=state=CONNECTING
@@ -229,6 +245,46 @@ public class ClientComms {
 				}
 			}
 		}
+		return token;
+	}
+	
+	/**
+	 * If the connect succeeded then call the users onSuccess callback
+	 *
+	 * @param token the {@link Token} from the successful connection
+	 */
+	public void onSuccess(Token token) {
+		SimpleEventCondition callBack = this.callback.getCallBack();
+		
+		token.markComplete(token.getResponse(), null);
+		token.notifyComplete();
+		token.setClient(this.client); // fix bug 469527 - maybe should be set elsewhere?
+
+		if (callBack != null) {
+			String serverURI = getNetworkModules().getServerURI();
+			boolean reconnect = this.client.getReconnecting();
+			SimpleEvent event = new SimpleEvent(client, serverURI, null, reconnect).withType(NodeProxyMQTT.EVENT_CONNECT);
+			callBack.update(event);
+		}
+	}
+
+	/**
+	 * The connect failed, so try the next URI on the list. If there are no more
+	 * URIs, then fail the overall connect.
+	 *
+	 * @param token the {@link Token} from the failed connection attempt
+	 * @param exception the {@link Throwable} exception from the failed connection attempt
+	 */
+	public void onFailure(Token token, Throwable exception) {
+		MqttException ex;
+		if (exception instanceof MqttException) {
+			ex = (MqttException) exception;
+		} else {
+			ex = MqttException.withReason(MqttException.REASON_CODE_DEFAULT, exception);
+		}
+		token.markComplete(null, ex);
+		token.notifyComplete();
+		token.setClient(this.client); // fix bug 469527 - maybe should be set elsewhere?
 	}
 
 	public void connectComplete(MqttWireMessage cack, MqttException mex) throws MqttException {
@@ -582,7 +638,7 @@ public class ClientComms {
 		} catch (MqttException ex) {
 			ex.printStackTrace();
 		} finally {
-			token.markComplete(null, null);
+			token.markComplete(message, null);
 			shutdownConnection(token, null);
 		}
 		return this;

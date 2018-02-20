@@ -137,7 +137,6 @@ public class MqttInputStream extends InputStream {
 			}
 		} catch (Exception e) {
 			// ignore socket read timeout
-			e.printStackTrace();
 		}
 
 		return message;

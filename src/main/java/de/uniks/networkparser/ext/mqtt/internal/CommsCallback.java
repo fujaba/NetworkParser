@@ -216,26 +216,10 @@ public class CommsCallback implements Runnable {
 			// Unblock any waiters and if pending complete now set completed
 			token.notifyComplete();
 
- 			if (!token.isNotified()) {
- 				// If a callback is registered and delivery has finished
- 				// call delivery complete callback.
-//TODO 	deliveryComplete			if ( mqttCallback != null
-//					&& token.isComplete()) {
-//						mqttCallback.deliveryComplete(token);
-//				}
-				// Now call async action completion callbacks
+			if (token.isNotified() == false) {
 				fireActionEvent(token);
+				token.setNotified(true);
 			}
-
-			// Set notified so we don't tell the user again about this action.
- 			if ( token.isComplete() ){
- 			   if ( token.getActionCallback() instanceof ConnectActionListener ) {
- 	                token.setNotified(true);
- 	            }
- 			}
-
-
-
 		}
 	}
 
@@ -273,15 +257,12 @@ public class CommsCallback implements Runnable {
 	 */
 	public void fireActionEvent(Token token) {
 		if (token != null) {
-			ConnectActionListener asyncCB = token.getActionCallback();
-			if (asyncCB != null) {
-				if (token.getException() == null) {
-					// @TRACE 716=call onSuccess key={0}
-					asyncCB.onSuccess(token);
-				} else {
-					// @TRACE 717=call onFailure key {0}
-					asyncCB.onFailure(token, token.getException());
-				}
+			if (token.getException() == null) {
+				// @TRACE 716=call onSuccess key={0}
+				clientComms.onSuccess(token);
+			}else {
+				// @TRACE 717=call onFailure key {0}
+				clientComms.onFailure(token, token.getException());
 			}
 		}
 	}

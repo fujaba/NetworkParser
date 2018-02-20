@@ -491,6 +491,9 @@ public class MqttWireMessage {
 
 
 	public static final boolean isMQTTAck(MqttWireMessage message) {
+		if(message == null) {
+			return false;
+		}
 		byte type = message.getType();
 		return type == MESSAGE_TYPE_SUBACK || type == MESSAGE_TYPE_PUBACK || type == MESSAGE_TYPE_CONNACK;
 	}

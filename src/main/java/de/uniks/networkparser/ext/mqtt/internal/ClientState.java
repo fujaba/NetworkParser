@@ -108,7 +108,6 @@ public class ClientState {
 
 	private long lastOutboundActivity = 0;
 	private long lastInboundActivity = 0;
-	private MqttWireMessage pingCommand;
 	private Object pingOutstandingLock = new Object();
 	private int pingOutstanding = 0;
 
@@ -121,7 +120,6 @@ public class ClientState {
 
 	protected ClientState(SimpleKeyValueList<String, MqttWireMessage> persistence, CommsTokenStore tokenStore,
 			CommsCallback callback, ClientComms clientComms) throws MqttException {
-		pingCommand = MqttWireMessage.create(MqttWireMessage.MESSAGE_TYPE_PINGREQ);
 		inFlightPubRels = 0;
 		actualInFlight = 0;
 
@@ -451,10 +449,6 @@ public class ClientState {
 					queueLock.notifyAll();
 				}
 			} else {
-				if (message.getType() == MqttWireMessage.MESSAGE_TYPE_PINGREQ) {
-					this.pingCommand = message;
-				}
-
 				synchronized (queueLock) {
 					if(MqttWireMessage.isMQTTAck(message) == false) {
 						tokenStore.saveToken(token, message);
@@ -520,87 +514,6 @@ public class ClientState {
 
 			checkQuiesceLock();
 		}
-	}
-
-	/**
-	 * Check and send a ping if needed and check for ping timeout.
-	 * Need to send a ping if nothing has been sent or received
-	 * in the last keepalive interval. It is important to check for
-	 * both sent and received packets in order to catch the case where an
-	 * app is solely sending QoS 0 messages or receiving QoS 0 messages.
-	 * QoS 0 message are not good enough for checking a connection is
-	 * alive as they are one way messages.
-	 *
-	 * If a ping has been sent but no data has been received in the
-	 * last keepalive interval then the connection is deamed to be broken.
-	 * @param pingCallback The {@link ConnectActionListener} to be called
-	 * @return token of ping command, null if no ping command has been sent.
-	 * @throws MqttException if an exception occurs during the Ping
-	 */
-	public Token checkForActivity(ConnectActionListener pingCallback) throws MqttException {
-		//@TRACE 616=checkForActivity entered
-
-        synchronized (quiesceLock) {
-            // ref bug: https://bugs.eclipse.org/bugs/show_bug.cgi?id=440698
-            // No ping while quiescing
-            if (quiescing) {
-                return null;
-            }
-        }
-
-		Token token = null;
-		if (connected && this.keepAlive > 0) {
-			long time = System.currentTimeMillis();
-			//Reduce schedule frequency since System.currentTimeMillis is no accurate, add a buffer
-			//It is 1/10 in minimum keepalive unit.
-			int delta = 100;
-
-			// ref bug: https://bugs.eclipse.org/bugs/show_bug.cgi?id=446663
-			synchronized (pingOutstandingLock) {
-				// Is the broker connection lost because the broker did not reply to my ping?
-				if (pingOutstanding > 0 && (time - lastInboundActivity >= keepAlive + delta)) {
-					// lastInboundActivity will be updated once receiving is done.
-					// Add a delta, since the timer and System.currentTimeMillis() is not accurate.
-					// A ping is outstanding but no packet has been received in KA so connection is deemed broken
-					//@TRACE 619=Timed out as no activity, keepAlive={0} lastOutboundActivity={1} lastInboundActivity={2} time={3} lastPing={4}
-
-					// A ping has already been sent. At this point, assume that the
-					// broker has hung and the TCP layer hasn't noticed.
-					throw MqttException.withReason(MqttException.REASON_CODE_CLIENT_TIMEOUT);
-				}
-
-				// Is the broker connection lost because I could not get any successful write for 2 keepAlive intervals?
-				if (pingOutstanding == 0 && (time - lastOutboundActivity >= 2*keepAlive)) {
-					// I am probably blocked on a write operations as I should have been able to write at least a ping message
-					// A ping has not been sent but I am not progressing on the current write operation.
-					// At this point, assume that the broker has hung and the TCP layer hasn't noticed.
-					throw MqttException.withReason(MqttException.REASON_CODE_WRITE_TIMEOUT);
-				}
-
-				// 1. Is a ping required by the client to verify whether the broker is down?
-				//    Condition: ((pingOutstanding == 0 && (time - lastInboundActivity >= keepAlive + delta)))
-				//    In this case only one ping is sent. If not confirmed, client will assume a lost connection to the broker.
-				// 2. Is a ping required by the broker to keep the client alive?
-				//    Condition: (time - lastOutboundActivity >= keepAlive - delta)
-				//    In this case more than one ping outstanding may be necessary.
-				//    This would be the case when receiving a large message;
-				//    the broker needs to keep receiving a regular ping even if the ping response are queued after the long message
-				//    If lacking to do so, the broker will consider my connection lost and cut my socket.
-				if ((pingOutstanding == 0 && (time - lastInboundActivity >= keepAlive - delta)) ||
-					(time - lastOutboundActivity >= keepAlive - delta)) {
-					//@TRACE 620=ping needed. keepAlive={0} lastOutboundActivity={1} lastInboundActivity={2}
-					// pingOutstanding++;  // it will be set after the ping has been written on the wire
-					// lastPing = time;    // it will be set after the ping has been written on the wire
-					token = new Token(clientComms.getClient().getClientId());
-					tokenStore.saveToken(token, pingCommand);
-					pendingFlows.insertElementAt(pingCommand, 0);
-					//Wake sender thread since it may be in wait state (in ClientState.get())
-					notifyQueueLock();
-				}
-			}
-			//@TRACE 624=Schedule next ping at {0}
-		}
-		return token;
 	}
 
 	/**
@@ -1104,7 +1017,6 @@ public class ClientState {
 		callback = null;
 		clientComms = null;
 		persistence = null;
-		pingCommand = null;
 	}
 
 	public Properties getDebug() {
@@ -1126,5 +1038,9 @@ public class ClientState {
 		props.put("inboundQoS2", inboundQoS2);
 		props.put("tokens", tokenStore);
 		return props;
+	}
+
+	public void clearPersistence() {
+		this.persistence.clear();
 	}
 }

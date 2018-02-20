@@ -9,7 +9,7 @@ import de.uniks.networkparser.interfaces.SimpleEventCondition;
 public class MQTTClient {
 	public static void main(String[] args) throws MqttException {
 		NodeProxyMQTT client = new NodeProxyMQTT("tcp://broker.hivemq.com:1883", NodeProxyMQTT.generateClientId());
-		client.setCallback(new SimpleEventCondition() {
+		client.withCallback(new SimpleEventCondition() {
 				@Override
 				public boolean update(SimpleEvent event) {
 					if(NodeProxyMQTT.EVENT_MESSAGE.equals(event.getType())) {

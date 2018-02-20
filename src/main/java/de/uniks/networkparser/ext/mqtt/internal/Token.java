@@ -34,8 +34,6 @@ public class Token {
 	private String[] topics = null;
 
 	private String key;
-
-	private ConnectActionListener callback = null;
 	private NodeProxyMQTT client = null;
 
 	private int messageID = 0;
@@ -73,14 +71,6 @@ public class Token {
 
 	protected boolean isInUse() {
 		return (getClient() != null && !isComplete());
-	}
-
-	public void setActionCallback(ConnectActionListener listener) {
-		this.callback  = listener;
-
-	}
-	public ConnectActionListener getActionCallback() {
-		return callback;
 	}
 
 	public void waitForCompletion() throws MqttException {
@@ -325,7 +315,6 @@ public class Token {
 		tok.append(" ,isComplete=").append(isComplete());
 		tok.append(" ,isNotified=").append(isNotified());
 		tok.append(" ,exception=").append(getException());
-		tok.append(" ,actioncallback=").append(getActionCallback());
 		return tok.toString();
 	}
 

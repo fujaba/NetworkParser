@@ -112,7 +112,6 @@ public class CommsSender implements Runnable {
 
 						if (MqttWireMessage.isMQTTAck(message)) {
 							write(message);
-							out.flush();
 						} else {
 							Token token = tokenStore.getToken(message);
 							// While quiescing the tokenstore can be cleared so need
@@ -121,26 +120,14 @@ public class CommsSender implements Runnable {
 							if (token != null) {
 								synchronized (token) {
 									write(message);
-									try {
-										out.flush();
-									} catch (IOException ex) {
-										// The flush has been seen to fail on disconnect of a SSL socket
-										// as disconnect is in progress this should not be treated as an error
-										if (message.getType() != MqttWireMessage.MESSAGE_TYPE_DISCONNECT) {
-											throw ex;
-										}
-									}
 									clientState.notifySent(message);
 								}
 							}
 						}
 					} else { // null message
 						//@TRACE 803=get message returned null, stopping}
-
 						running = false;
 					}
-				} catch (MqttException me) {
-					handleRunException(message, me);
 				} catch (Exception ex) {
 					handleRunException(message, ex);
 				}
@@ -151,30 +138,28 @@ public class CommsSender implements Runnable {
 		}
 	}
 
-    /**
-     * Writes an <code>MqttWireMessage</code> to the stream.
-     * @param message The {@link MqttMessage} to send
-     * @throws IOException if an exception is thrown when writing to the output stream.
-     * @throws MqttException if an exception is thrown when getting the header or payload
-     */
-    public void write(MqttWireMessage message) throws IOException, MqttException {
-        byte[] bytes = message.getHeader();
-        byte[] pl = message.getPayload();
-//        out.write(message.getHeader());
-//        out.write(message.getPayload());
-        out.write(bytes,0,bytes.length);
-        clientState.notifySentBytes(bytes.length);
+	/**
+	 * Writes an <code>MqttWireMessage</code> to the stream.
+	 * @param message The {@link MqttMessage} to send
+	 * @throws IOException if an exception is thrown when writing to the output stream.
+	 * @throws MqttException if an exception is thrown when getting the header or payload
+	**/
+	public void write(MqttWireMessage message) throws IOException, MqttException {
+		byte[] bytes = message.getHeader();
+		byte[] pl = message.getPayload();
+		out.write(bytes,0,bytes.length);
+		clientState.notifySentBytes(bytes.length);
 
-        int offset = 0;
-        int chunckSize = 1024;
-        while (offset < pl.length) {
-            int length = Math.min(chunckSize, pl.length - offset);
-            out.write(pl, offset, length);
-            offset += chunckSize;
-            clientState.notifySentBytes(length);
-        }
-        out.flush();
-    }
+		int offset = 0;
+		int chunckSize = 1024;
+		while (offset < pl.length) {
+			int length = Math.min(chunckSize, pl.length - offset);
+			out.write(pl, offset, length);
+			offset += chunckSize;
+			clientState.notifySentBytes(length);
+		}
+		out.flush();
+	}
 
 	private void handleRunException(MqttWireMessage message, Exception ex) {
 		//@TRACE 804=exception

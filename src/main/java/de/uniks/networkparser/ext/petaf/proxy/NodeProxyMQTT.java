@@ -12,7 +12,6 @@ import de.uniks.networkparser.ext.mqtt.MqttException;
 import de.uniks.networkparser.ext.mqtt.MqttMessage;
 import de.uniks.networkparser.ext.mqtt.MqttTopic;
 import de.uniks.networkparser.ext.mqtt.internal.ClientComms;
-import de.uniks.networkparser.ext.mqtt.internal.ConnectActionListener;
 import de.uniks.networkparser.ext.mqtt.internal.MqttWireMessage;
 import de.uniks.networkparser.ext.mqtt.internal.TCPNetworkModule;
 import de.uniks.networkparser.ext.mqtt.internal.Token;
@@ -171,14 +170,8 @@ public class NodeProxyMQTT extends NodeProxy {
 
 		// Insert our own callback to iterate through the URIs till the connect
 		// succeeds
-		Token userToken = new Token(getClientId());
-		ConnectActionListener connectActionListener = new ConnectActionListener(this, persistence, comms, userToken,
-				reconnecting);
-
-		// If we are using the MqttCallbackExtended, set it on the
-		connectActionListener.setMqttCallback(comms.getCallback());
-
-		connectActionListener.connect();
+		
+		Token userToken = comms.connect();
 
 		waitForCompletion(userToken);
 		return userToken;
@@ -400,14 +393,14 @@ public class NodeProxyMQTT extends NodeProxy {
 		for (int i = 0; i < topicFilter.length; i++) {
 			qos[i] = 1;
 		}
-		this.subscribe(topicFilter, qos, null);
+		this.subscribe(topicFilter, qos);
 	}
 
 	public Token subscribe(String topicFilter, int qos) throws MqttException {
-		return this.subscribe(new String[] { topicFilter }, new int[] { qos }, null);
+		return this.subscribe(new String[] { topicFilter }, new int[] { qos });
 	}
 
-	public Token subscribe(String[] topicFilters, int[] qos, ConnectActionListener callback) throws MqttException {
+	public Token subscribe(String[] topicFilters, int[] qos) throws MqttException {
 		if (topicFilters.length != qos.length) {
 			throw new IllegalArgumentException();
 		}
@@ -449,20 +442,17 @@ public class NodeProxyMQTT extends NodeProxy {
 		return token;
 	}
 
-	public void setCallback(SimpleEventCondition callback) {
+	public NodeProxyMQTT withCallback(SimpleEventCondition callback) {
 		comms.setCallback(callback);
-	}
-
-	public Token publish(String topic, MqttMessage message) throws MqttException {
-		return this.publish(topic, message, null);
+		return this;
 	}
 
 	public Token publish(String topic, byte... message) throws MqttException {
 		MqttMessage mqttMessage = new MqttMessage(message);
-		return this.publish(topic, mqttMessage, null);
+		return this.publish(topic, mqttMessage);
 	}
 
-	public Token publish(String topic, MqttMessage message, ConnectActionListener callback) throws MqttException {
+	public Token publish(String topic, MqttMessage message) throws MqttException {
 		// @TRACE 111=< topic={0} message={1}userContext={1} callback={2}
 
 		// Checks if a topic is valid when publishing a message.
@@ -556,5 +546,9 @@ public class NodeProxyMQTT extends NodeProxy {
 	public NodeProxyMQTT withMqttVersion(int version) {
 		this.mqttVersion = version;
 		return this;
+	}
+
+	public boolean getReconnecting() {
+		return reconnecting;
 	}
 }
