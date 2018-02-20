@@ -18,7 +18,7 @@ import de.uniks.networkparser.list.SimpleKeyValueList;
 public class Equals implements ParserCondition, SendableEntityCreator {
 	/** Constant of KEY. */
 	public static final String PROPERTY_KEY = "key";
-	
+
 	/** Constant of StrValue. */
 	public static final String PROPERTY_VALUE = "value";
 	/** Constant of Position. */
@@ -35,7 +35,7 @@ public class Equals implements ParserCondition, SendableEntityCreator {
 
 	/** Variable of Value. */
 	private Object value;
-	
+
 	/** Variable of ValueStrValue. */
 	private Object delta;
 	/**
@@ -66,22 +66,22 @@ public class Equals implements ParserCondition, SendableEntityCreator {
 		}
 		return null;
 	}
-	
+
 	@Override
 	public boolean update(Object evt) {
 		if (evt == null) {
 			return value == null;
 		}
 		if(evt instanceof LocalisationInterface && this.left != null && this.right != null) {
-			
+
 			Object leftValue = getValue(this.left, evt);
 			Object rightValue = getValue(this.right, evt);
 
 			if(leftValue == null) {
 				return rightValue == null;
 			}
-			
-			
+
+
 			if(this.position !=0) {
 				if(leftValue instanceof Number || EntityUtil.isNumeric(""+leftValue)) {
 					if(rightValue instanceof Number || EntityUtil.isNumeric(""+rightValue)) {
@@ -115,12 +115,12 @@ public class Equals implements ParserCondition, SendableEntityCreator {
 		if((evt instanceof PropertyChangeEvent) == false) {
 			if(value instanceof Number && evt instanceof Number) {
 				// Check for Number
-				if(value instanceof Byte 
+				if(value instanceof Byte
 						|| value instanceof Short
 						|| value instanceof Integer
 						|| value instanceof Long) {
 					if(delta == null) {
-						return value == evt;	
+						return value == evt;
 					}
 					Long expValue = Long.valueOf(""+value);
 					Long evtValue = Long.valueOf(""+evt);
@@ -138,7 +138,7 @@ public class Equals implements ParserCondition, SendableEntityCreator {
 			}
 			return value.equals(evt);
 		}
-		
+
 		PropertyChangeEvent event = (PropertyChangeEvent) evt;
 		if (event.getSource() instanceof BufferedBuffer && value instanceof Byte) {
 			Byte btrValue = (Byte) value;
@@ -151,7 +151,7 @@ public class Equals implements ParserCondition, SendableEntityCreator {
 			}
 			return buffer.byteAt(pos) == btrValue;
 		}
-		
+
 		if(event.getPropertyName() == null) {
 			return false;
 		}
@@ -182,7 +182,7 @@ public class Equals implements ParserCondition, SendableEntityCreator {
 		this.value = value;
 		return this;
 	}
-	
+
 	public Equals withValue(Object value, Object delta) {
 		this.withValue(value);
 		this.withDelta(delta);
@@ -211,7 +211,7 @@ public class Equals implements ParserCondition, SendableEntityCreator {
 	public ParserCondition getSendableInstance(boolean prototyp) {
 		return new Equals();
 	}
-	
+
 	public String getKey() {
 		return key;
 	}
@@ -265,14 +265,14 @@ public class Equals implements ParserCondition, SendableEntityCreator {
 		this.delta = delta;
 		return this;
 	}
-	
+
 	public static Equals create(String key, Object value) {
 		Equals condition = new Equals();
 		condition.withKey(key);
 		condition.withValue(value);
 		return condition;
 	}
-	
+
 	public static Equals createNullCondition() {
 		return new Equals().withValue(null);
 	}
@@ -285,7 +285,7 @@ public class Equals implements ParserCondition, SendableEntityCreator {
 		this.right = expression;
 		return this;
 	}
-	
+
 	@Override
 	public boolean isExpression() {
 		return false;

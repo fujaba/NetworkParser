@@ -17,13 +17,13 @@ public class NodeProxySQL extends NodeProxy{
 	private String database;
 	private String driver;
 	private SQLTokener tokener;
-	
+
 	public NodeProxySQL() {
 		this.property.addAll(PROPERTY_DATABASE, PROPERTY_DRIVER);
 		this.propertyInfo.addAll(PROPERTY_DATABASE, PROPERTY_DRIVER);
 		this.propertyUpdate.addAll(PROPERTY_DATABASE, PROPERTY_DRIVER);
 	}
-	
+
 	@Override
 	public Object getValue(Object element, String attrName) {
 		if(element instanceof NodeProxySQL) {
@@ -37,7 +37,7 @@ public class NodeProxySQL extends NodeProxy{
 		}
 		return super.getValue(element, attrName);
 	}
-	
+
 	public NodeProxySQL withConnection(Connection con) {
 		initTokener(con);
 		return this;
@@ -46,21 +46,21 @@ public class NodeProxySQL extends NodeProxy{
 	public String getDataBase() {
 		return this.database;
 	}
-	
+
 	public String getDriver() {
 		return driver;
 	}
-	
+
 	public NodeProxySQL withDriver(String value) {
 		this.driver = value;
 		return this;
 	}
-	
+
 	private NodeProxySQL withDatabase(String value) {
 		this.database = value;
 		return this;
 	}
-	
+
 	@Override
 	public boolean setValue(Object element, String attrName, Object value, String type) {
 		if(element instanceof NodeProxyMessages) {
@@ -110,7 +110,7 @@ public class NodeProxySQL extends NodeProxy{
 	public Object getSendableInstance(boolean prototyp) {
 		return new NodeProxySQL();
 	}
-	
+
 	public void initTokener(Connection con) {
 		if(this.tokener == null) {
 			String[] split = driver.split(":");
@@ -128,7 +128,7 @@ public class NodeProxySQL extends NodeProxy{
 			}
 		}
 	}
-	
+
 	@Override
 	protected boolean sending(Message msg) {
 		if (super.sending(msg)) {

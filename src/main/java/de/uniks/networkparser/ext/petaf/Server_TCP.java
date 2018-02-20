@@ -16,25 +16,25 @@ public class Server_TCP extends Thread  implements Server {
 
 	/**
 	 * Fallback for simple Creating a Server without proxy
-	 * 
+	 *
 	 * @param port Port of TCP-Server
 	 */
 	public Server_TCP(int port) {
 		this(NodeProxyTCP.createServer(port));
 	}
-	
-	public Server_TCP(NodeProxyTCP proxy) 
+
+	public Server_TCP(NodeProxyTCP proxy)
 	{
 		this.proxy = proxy;
 		if(init()){
 			start();
 		}
 	}
-	
+
 	public boolean isRun() {
 		return run;
 	}
-	
+
 	public boolean close(){
 		this.run=false;
 		try {
@@ -47,24 +47,24 @@ public class Server_TCP extends Thread  implements Server {
 		}
 		return true;
 	}
-	
+
 	@Override
-	public void run() 
+	public void run()
 	{
 		if(proxy.getUrl() != null) {
 			Thread.currentThread().setName(proxy.getUrl()+":"+proxy.getPort()+" com server");
 		}else {
 			Thread.currentThread().setName("localhost:"+proxy.getPort()+" com server");
 		}
-		while (!isInterrupted()&&this.run) 
+		while (!isInterrupted()&&this.run)
 		{
 			Socket requestSocket = null;
-			try 
+			try
 			{
 				requestSocket = serverSocket.accept();
 				MessageRequest.executeTask(this.proxy, requestSocket);
-			} 
-			catch (IOException e) 
+			}
+			catch (IOException e)
 			{
 			}finally{
 //				try {
@@ -77,18 +77,18 @@ public class Server_TCP extends Thread  implements Server {
 		}
 	}
 
-	private boolean init() 
+	private boolean init()
 	{
-		try 
+		try
 		{
 			serverSocket = new ServerSocket(proxy.getPort(), 10, null);
 			return true;
-		} 
-		catch (UnknownHostException e) 
+		}
+		catch (UnknownHostException e)
 		{
 			return false;
-		} 
-		catch (IOException e) 
+		}
+		catch (IOException e)
 		{
 			if(searchFreePort) {
 				// Wrong PORT

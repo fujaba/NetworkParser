@@ -43,14 +43,14 @@ import de.uniks.networkparser.test.model.util.StudentCreator;
 import de.uniks.networkparser.test.model.util.UniversityCreator;
 
 public class ModelTest implements ObjectCondition {
-	private SimpleList<SimpleEvent> events = new SimpleList<SimpleEvent>(); 
+	private SimpleList<SimpleEvent> events = new SimpleList<SimpleEvent>();
 
 	@Test(expected = UnsupportedOperationException.class)
 	public void testModelGroupAccount(){
 		GroupAccount ga = new GroupAccount();
 		ga.getPersons().add(new Person().withName("Albert"));
 	}
-	
+
 	@Test
 	public void testModel(){
 		PersonSet persons= new PersonSet();
@@ -164,26 +164,26 @@ public class ModelTest implements ObjectCondition {
 		events.add((SimpleEvent) value);
 		return true;
 	}
-	
+
 	@Test
 	public void testJsonArray() {
 		University uni = new University();
 		Student karli = uni.createStudents().withFirstName("Karli");
 		Student alice = uni.createStudents().withFirstName("Alice");
-		
+
 		karli.withFriends(alice);
 		IdMap map=new IdMap();
 		map.with(new UniversityCreator());
 		map.with(new StudentCreator());
-	}		
-	
+	}
+
 	@Test
 	public void testWhiteList() {
 		University uni = new University();
 		Student karli = uni.createStudents().withFirstName("Karli");
 		Student alice = uni.createStudents().withFirstName("Alice");
 		alice.createItem().withValue(42);
-		
+
 		karli.withFriends(alice);
 		IdMap map=new IdMap().withTimeStamp(1);
 		map.with(new UniversityCreator());
@@ -199,7 +199,7 @@ public class ModelTest implements ObjectCondition {
 		flower.setName("Flower");
 		flower.setId("42");
 		IdMap map;
-		
+
 		map = new IdMap().withCreator(new Plant());
 		JsonObject jsonObject = map.toJsonObject(flower);
 		Assert.assertNotNull(jsonObject);
@@ -211,18 +211,18 @@ public class ModelTest implements ObjectCondition {
 		map = new IdMap().withCreator(new PlantFullNoIndex());
 //		System.out.println(map.toJsonObject(flower));
 	}
-	
+
 	@Test
 	public void testAppleTree() {
 		IdMap map = new IdMap().withCreator(new AppleTreeCreatorNoIndex());
 		map.withCreator(new AppleCreatorNoIndex());
-		
+
 		AppleTree appleTree = new AppleTree();
 		appleTree.withHas(new Apple("red", 23, 42));
-		
+
 //		System.out.println(map.toJsonObject(appleTree));
 	}
-	
+
 	@Test
 	public void testBarbar() {
 		IdMap map = new IdMap().withCreator(new BarbarianCreator());
@@ -232,31 +232,31 @@ public class ModelTest implements ObjectCondition {
 
 		Assert.assertNotEquals(jsonObject, jsonObjectB);
 	}
-	
+
 	@Test
 	public void testSpeedImporter() {
 		IdMap map=new IdMap();
 		map.with(new UniversityCreator());
 		map.with(new StudentCreator());
 
-		
+
 		//		University uni = new University();
 //		uni.addToStudents(new Student().withFirstName("Albert"));
 //		map.toJsonObject(uni);
 //		uni.withStudents(new Student().withFirstName("Stefan"));
-		
+
 //		JsonObject json = map.toJsonObject(uni);
 //		FileBuffer.writeFile("src/test/resources/de/uniks/networkparser/test/model.json", json.toString(2));
-		
+
 		CharacterBuffer buffer = FileBuffer.readFile("src/test/resources/de/uniks/networkparser/test/model.json");
 
-		
+
 		// Really Nessessary???
 //		JsonObject json = new JsonObject().withValue(buffer);
-		
+
 		University uni2 = SimpleParser.decodeModel(buffer, map);
 		Assert.assertNotNull(uni2);
-		
+
 	}
 
 }

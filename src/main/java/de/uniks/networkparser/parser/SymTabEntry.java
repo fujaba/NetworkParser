@@ -54,7 +54,7 @@ public class SymTabEntry {
 
 	private SymTabEntry next;
 	private SymTabEntry prev;
-	
+
 	// SDMLIb Parser
 	private int startPos;
 	private int endPos;
@@ -77,12 +77,12 @@ public class SymTabEntry {
 		this.parent = parent;
 		return this;
 	}
-	
+
 	public SymTabEntry(SourceCode parent) {
 		this.parent = parent;
 	}
-	
-	
+
+
 	public String getValue() {
 		return this.value;
 	}
@@ -182,11 +182,11 @@ public class SymTabEntry {
 		this.endPos = end;
 		return this;
 	}
-	
+
 	public int getStartPos() {
 		return startPos;
 	}
-	
+
 	public int getEndPos() {
 		return endPos;
 	}
@@ -196,16 +196,16 @@ public class SymTabEntry {
 		this.annotationsEndPos = end;
 		return this;
 	}
-	
+
 	public SymTabEntry withAnnotationsStart(int start) {
 		this.annotationsStartPos = start;
 		return this;
 	}
-	
+
 	public int getAnnotationsEndPos() {
 		return annotationsEndPos;
 	}
-	
+
 	public int getAnnotationsStartPos() {
 		return annotationsStartPos;
 	}
@@ -215,7 +215,7 @@ public class SymTabEntry {
 		this.preCommentEndPos = end;
 		return this;
 	}
-	
+
 	public int getPreCommentStartPos() {
 		return preCommentStartPos;
 	}
@@ -228,7 +228,7 @@ public class SymTabEntry {
 		this.modifiers= modifiers;
 		return this;
 	}
-	
+
 	public String getModifiers() {
 		return modifiers;
 	}
@@ -245,7 +245,7 @@ public class SymTabEntry {
 		this.annotations = annotations;
 		return this;
 	}
-	
+
 	public String getAnnotations() {
 		return annotations;
 	}
@@ -254,7 +254,7 @@ public class SymTabEntry {
 		this.initCallSequence = initCallSequence;
 		return this;
 	}
-	
+
 	public ArrayList<ArrayList<String>> getInitCallSequence() {
 		return initCallSequence;
 	}
@@ -263,7 +263,7 @@ public class SymTabEntry {
 		this.bodyStartPos = value;
 		return this;
 	}
-	
+
 	public int getBodyStartPos() {
 		return bodyStartPos;
 	}
@@ -272,7 +272,7 @@ public class SymTabEntry {
 		this.dataType = value;
 		return this;
 	}
-	
+
 	public String getDataType() {
 		return dataType;
 	}
@@ -281,7 +281,7 @@ public class SymTabEntry {
 		this.params = params;
 		return this;
 	}
-	
+
 	public String getParams() {
 		return params;
 	}

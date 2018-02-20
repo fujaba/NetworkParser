@@ -196,7 +196,7 @@ public class YUMLConverter implements Converter{
 		}
 		return sb.toString();
 	}
-	
+
 	@Override
 	public String encode(BaseItem entity) {
 		if(entity instanceof GraphList) {

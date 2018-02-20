@@ -34,7 +34,7 @@ public class ErrorHandler implements Thread.UncaughtExceptionHandler {
 		}
 		return null;
 	}
-	
+
 	public String getMac() {
 		try {
 			InetAddress ip = InetAddress.getLocalHost();
@@ -50,7 +50,7 @@ public class ErrorHandler implements Thread.UncaughtExceptionHandler {
 		}
 		return null;
 	}
-	
+
 	public boolean saveErrorFile(String prefix, String fileName, String filePath, Throwable e){
 		boolean success;
 		try {
@@ -59,7 +59,7 @@ public class ErrorHandler implements Thread.UncaughtExceptionHandler {
 				return false;
 			}
 			FileOutputStream networkFile = new FileOutputStream(file);
-			
+
 			PrintStream ps = new PrintStream( networkFile );
 			ps.println("Error: "+e.getMessage());
 			ps.println("Start: "+getJVMStartUp().toString("dd.mm.yyyy HH:MM:SS"));
@@ -70,7 +70,7 @@ public class ErrorHandler implements Thread.UncaughtExceptionHandler {
 			ps.println("Version: "+SimpleController.getVersion());
 			ps.println("IP: "+getIP());
 			ps.println("MAC: "+getMac());
-			
+
 			ps.println("------------ SYSTEM-INFO ------------");
 			printProperty(ps, "java.class.version");
 			printProperty(ps, "java.runtime.version");
@@ -86,7 +86,7 @@ public class ErrorHandler implements Thread.UncaughtExceptionHandler {
 			printProperty(ps, "user.name");
 			printProperty(ps, "user.timezone");
 			ps.println("");
-			
+
 			Runtime r=Runtime.getRuntime();
 			ps.println("Prozessoren :       " + r.availableProcessors());
 			ps.println("Freier Speicher JVM:    " + r.freeMemory());
@@ -97,7 +97,7 @@ public class ErrorHandler implements Thread.UncaughtExceptionHandler {
 			ps.println();
 			// SubErrors
 			printSubTrace(ps, "", 1, e);
-			
+
 			ps.close();
 			if("Java heap space".equals(e.getMessage())) {
 				saveHeapSpace(prefix);
@@ -110,7 +110,7 @@ public class ErrorHandler implements Thread.UncaughtExceptionHandler {
 		}
 		return success;
 	}
-	
+
 	public boolean saveHeapSpace(String prefix) {
 		String filepath=createDir(this.path);
 		if(filepath == null) {
@@ -133,7 +133,7 @@ public class ErrorHandler implements Thread.UncaughtExceptionHandler {
 		}
 		return true;
 	}
-	
+
 	public DateTimeEntity getJVMStartUp() {
 		DateTimeEntity item = new DateTimeEntity();
 		if(ReflectionLoader.MANAGEMENTFACTORY == null) {
@@ -147,9 +147,9 @@ public class ErrorHandler implements Thread.UncaughtExceptionHandler {
 			}
 		}
 		return item;
-		
+
 	}
-	
+
 	public int getPID() {
 		int pid = -1;
 		if(ReflectionLoader.MANAGEMENTFACTORY == null) {
@@ -168,11 +168,11 @@ public class ErrorHandler implements Thread.UncaughtExceptionHandler {
 		}
 		return pid;
 	}
-	
+
 	public static void printProperty(PrintStream ps, String property){
 		ps.println(property+": "+System.getProperty(property));
 	}
-	
+
 	public static void printSubTrace(PrintStream ps, String prefix, int index, Throwable e) {
 		if(prefix == null) {
 			return;
@@ -184,7 +184,7 @@ public class ErrorHandler implements Thread.UncaughtExceptionHandler {
 			prefix= "Sub";
 		}
 		e.printStackTrace(ps);
-		
+
 		Throwable[] suppressed = e.getSuppressed();
 		if(suppressed != null) {
 			for(int number =0;number < suppressed.length;number++) {
@@ -192,7 +192,7 @@ public class ErrorHandler implements Thread.UncaughtExceptionHandler {
 			}
 		}
 	}
-	
+
 	public static String createDir(String path){
 		if(path == null) {
 			return "";
@@ -206,14 +206,14 @@ public class ErrorHandler implements Thread.UncaughtExceptionHandler {
 		}else{
 			return path;
 		}
-		return null; 
+		return null;
 	}
-	
+
 	public ErrorHandler withPath(String value) {
 		this.path = value;
 		return this;
 	}
-	
+
 	public File getFileName(String filepath, String prefix, String fileName ) throws IOException {
 		if(filepath == null ) {
 			return null;
@@ -261,7 +261,7 @@ public class ErrorHandler implements Thread.UncaughtExceptionHandler {
 				Double y= (Double) ReflectionLoader.call("getY", currentStage);
 				Double width = (Double) ReflectionLoader.call("getWidth", currentStage);
 				Double height = (Double) ReflectionLoader.call("getHeight", currentStage);
-				
+
 				String windowName = currentStage.getClass().getSimpleName();
 				target = getFileName(filePath, prefix+windowName, fileName);
 				rect = ReflectionLoader.newInstance(ReflectionLoader.RECTANGLE, int.class, x.intValue(), int.class, y.intValue(), int.class, width.intValue(), int.class, height.intValue());
@@ -272,11 +272,11 @@ public class ErrorHandler implements Thread.UncaughtExceptionHandler {
 		}
 		return null;
 	}
-	
+
 	private boolean writeScreen(File file, Object rectangle) {
 		Object robot = ReflectionLoader.newInstance(ReflectionLoader.ROBOT);
 		Object bi = ReflectionLoader.call("createScreenCapture", robot, ReflectionLoader.RECTANGLE, rectangle);
-		
+
 		Boolean result = (Boolean) ReflectionLoader.call("write", ReflectionLoader.IMAGEIO, ReflectionLoader.RENDEREDIMAGE, bi, String.class, "jpg", File.class, file);
 		return result;
 	}
@@ -286,7 +286,7 @@ public class ErrorHandler implements Thread.UncaughtExceptionHandler {
 	public void saveException(Throwable e, boolean throwException) {
 		saveException(e, this.stage, throwException);
 	}
-	
+
 	public boolean writeOutput(String output, boolean error) {
 		String fullFileName="";
 		if(this.path != null) {
@@ -312,17 +312,17 @@ public class ErrorHandler implements Thread.UncaughtExceptionHandler {
 			stream.write(output.getBytes());
 			stream.close();
 		} catch (IOException e) {
-			
+
 		}
 		return true;
 	}
-	
+
 	@Override
 	public void uncaughtException(Thread t, Throwable e) {
 		saveException(e, stage, true);
 	}
-	
-	
+
+
 	public String getPrefix() {
 		return new DateTimeEntity().toString("yyyymmdd_HHMMSS_");
 	}
@@ -334,7 +334,7 @@ public class ErrorHandler implements Thread.UncaughtExceptionHandler {
 		if(list.size()>0) {
 			SimpleEvent event = new SimpleEvent(this, prefixName, null, e);
 			event.withType(TYPE);
-			
+
 			for(ObjectCondition child : list) {
 				child.update(event);
 			}

@@ -873,13 +873,13 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 			tokener.parseToEntity(item);
 			return decode(item);
 		}
-		
+
 		BaseItem valueItem=null;
 		if(value instanceof String) {
 			value = new CharacterBuffer().with(((String)value).intern());
 		} else if(value instanceof byte[]) {
 			value = new CharacterBuffer().with((byte[]) value);
-		} 
+		}
 		if(value instanceof Buffer) {
 			Buffer buffer = (Buffer) value;
 			char firstChar = buffer.nextClean(true);
@@ -991,7 +991,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 			this.modelExecutor.update(event);
 			return event.getModelValue();
 		}
-						
+
 		if (this.mapListener instanceof UpdateListener) {
 			UpdateListener listener = (UpdateListener) this.mapListener;
 			Object result = listener.execute(jsonObject, filter);

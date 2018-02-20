@@ -3,11 +3,11 @@
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
- * and Eclipse Distribution License v1.0 which accompany this distribution. 
+ * and Eclipse Distribution License v1.0 which accompany this distribution.
  *
- * The Eclipse Public License is available at 
+ * The Eclipse Public License is available at
  *    http://www.eclipse.org/legal/epl-v10.html
- * and the Eclipse Distribution License is available at 
+ * and the Eclipse Distribution License is available at
  *   http://www.eclipse.org/org/documents/edl-v10.php.
  *
  * Contributors:
@@ -24,7 +24,6 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 
 import de.uniks.networkparser.buffer.CharacterBuffer;
-import de.uniks.networkparser.ext.io.StringInputStream;
 import de.uniks.networkparser.ext.mqtt.MqttException;
 import de.uniks.networkparser.ext.mqtt.MqttMessage;
 
@@ -33,7 +32,7 @@ import de.uniks.networkparser.ext.mqtt.MqttMessage;
  * An on-the-wire representation of an MQTT message.
  * @author Paho Client
  */
-public class MqttWireMessage {	
+public class MqttWireMessage {
 	public static final byte MESSAGE_TYPE_CONNECT = 1;
 	public static final byte MESSAGE_TYPE_CONNACK = 2;
 	public static final byte MESSAGE_TYPE_PUBLISH = 3;
@@ -50,7 +49,7 @@ public class MqttWireMessage {
 	public static final byte MESSAGE_TYPE_DISCONNECT = 14;
 
 	protected static final String STRING_ENCODING = "UTF-8";
-	
+
 	private static final String PACKET_NAMES[] = { "reserved", "CONNECT", "CONNACK", "PUBLISH",
 			"PUBACK", "PUBREC", "PUBREL", "PUBCOMP", "SUBSCRIBE", "SUBACK",
 			"UNSUBSCRIBE", "UNSUBACK", "PINGREQ", "PINGRESP", "DISCONNECT" };
@@ -59,31 +58,31 @@ public class MqttWireMessage {
 	private byte type;
 	//The MQTT message ID
 	protected int msgId;
-	
+
 	protected boolean duplicate = false;
-	
-	
+
+
 	// Sub Variable
 	public static final String KEY_CONNACK    = "Con";
 	public static final String KEY_DISCONNECT = "Disc";
 	public static final String KEY_PING = "Ping";
+	public static final String KEY_CONNECT = "Con";
 
 	protected int code;
-	protected boolean sessionPresent;
+	protected boolean session;
 	protected int[] data;
 	protected String[] names;
-	
+
+	protected int keepAliveInterval;
 	protected MqttMessage message;
-//	private String topicName;
-//	private byte[] encodedPayload = null;
-	
+
 	public MqttWireMessage(byte type) {
 		this.type = type;
 		// Use zero as the default message ID.  Can't use -1, as that is serialized
 		// as 65535, which would be a valid ID.
 		this.msgId = 0;
 	}
-	
+
 	/**
 	 * Sub-classes should override this to encode the message info.
 	 * Only the least-significant four bits will be used.
@@ -101,12 +100,12 @@ public class MqttWireMessage {
 			if (message.isDuplicate() || duplicate ) {
 				info |= 0x08;
 			}
-			
+
 			return info;
 		}
 		return 0;
 	}
-	
+
 	/**
 	 * Sub-classes should override this method to supply the payload bytes.
 	 * @return The payload byte array
@@ -128,6 +127,16 @@ public class MqttWireMessage {
 						encodeUTF8(dos,names[i]);
 					}
 				}
+				if(type == MESSAGE_TYPE_CONNECT) {
+					encodeUTF8(dos,names[0]);
+					if (names[1] != null) {
+						encodeUTF8(dos, names[1]);
+						if (names[2] != null) {
+							encodeUTF8(dos, names[2]);
+						}
+					}
+				}
+
 				dos.flush();
 				return baos.toByteArray();
 			} catch (IOException ex) {
@@ -139,25 +148,28 @@ public class MqttWireMessage {
 		}
 		return new byte[0];
 	}
-	
+
 	/**
 	 * @return the type of the message.
 	 */
 	public byte getType() {
 		return type;
 	}
-	
+
 	/**
 	 * @return the MQTT message ID.
 	 */
 	public int getMessageId() {
 		return msgId;
 	}
-	
+
 	/**
 	 * @return the MQTT message ID as String.
 	 */
 	public String getKey() {
+		if(type == MESSAGE_TYPE_CONNECT) {
+			return KEY_CONNECT;
+		}
 		if(type==MESSAGE_TYPE_CONNACK) {
 			return KEY_CONNACK;
 		}
@@ -169,7 +181,7 @@ public class MqttWireMessage {
 		}
 		return ""+msgId;
 	}
-	
+
 	/**
 	 * Sets the MQTT message ID.
 	 * @param msgId the MQTT message ID
@@ -182,40 +194,63 @@ public class MqttWireMessage {
 		}
 		return this;
 	}
-	
-	public byte[] getHeader() throws MqttException {
-	    try {
-	        int first = ((getType() & 0x0f) << 4) ^ (getMessageInfo() & 0x0f);
-	        byte[] varHeader = getVariableHeader();
-	        int remLen = varHeader.length + getPayload().length;
 
-	        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-	        DataOutputStream dos = new DataOutputStream(baos);
-	        dos.writeByte(first);
-	        dos.write(encodeMBI(remLen));
-	        dos.write(varHeader);
-	        dos.flush();
-	        return baos.toByteArray();
-	    } catch(IOException ioe) {
-	        throw MqttException.withReason(MqttException.REASON_CODE_DEFAULT, ioe);
-	    }
+	public byte[] getHeader() throws MqttException {
+		try {
+			int first = ((getType() & 0x0f) << 4) ^ (getMessageInfo() & 0x0f);
+			byte[] varHeader = getVariableHeader();
+			int remLen = varHeader.length + getPayload().length;
+
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			DataOutputStream dos = new DataOutputStream(baos);
+			dos.writeByte(first);
+			dos.write(encodeMBI(remLen));
+			dos.write(varHeader);
+			dos.flush();
+			return baos.toByteArray();
+		} catch(IOException ioe) {
+			throw MqttException.withReason(MqttException.REASON_CODE_DEFAULT, ioe);
+		}
 	}
-	
+
 	protected byte[] getVariableHeader() throws MqttException {
 		if(type == MESSAGE_TYPE_PUBACK) {
 			return encodeMessageId();
 		}
-		
+
 		if(type == MESSAGE_TYPE_SUBSCRIBE || type == MESSAGE_TYPE_UNSUBSCRIBE || type == MESSAGE_TYPE_PUBLISH) {
 			try {
 				ByteArrayOutputStream baos = new ByteArrayOutputStream();
 				DataOutputStream dos = new DataOutputStream(baos);
-				
+
 				if(type == MESSAGE_TYPE_PUBLISH) {
 					encodeUTF8(dos, names[0]);
 					if (message.getQos() > 0) {
 						dos.writeShort(msgId);
 					}
+				} else if(type == MESSAGE_TYPE_CONNECT) {
+					if (code == 3) {
+						encodeUTF8(dos,"MQIsdp");
+					}
+					else if (code == 4) {
+						encodeUTF8(dos,"MQTT");
+					}
+					dos.write(code);
+
+					byte connectFlags = 0;
+
+					if (session) {
+						connectFlags |= 0x02;
+					}
+
+					if (names[1] != null) {
+						connectFlags |= 0x80;
+						if (names[2] != null) {
+							connectFlags |= 0x40;
+						}
+					}
+					dos.write(connectFlags);
+					dos.writeShort(keepAliveInterval);
 				} else {
 					dos.writeShort(msgId);
 				}
@@ -228,12 +263,15 @@ public class MqttWireMessage {
 		// Not needed, as the client never encodes a CONNACK
 		return new byte[0];
 	}
-	
+
 
 	/**
 	 * @return whether or not this message needs to include a message ID.
 	 */
 	public boolean isMessageIdRequired() {
+		if(type == MESSAGE_TYPE_CONNECT) {
+			return false;
+		}
 		if(type == MESSAGE_TYPE_CONNACK) {
 			return false;
 		}
@@ -246,65 +284,11 @@ public class MqttWireMessage {
 		// FOR MQTTPUBLISH
 		return true;
 	}
-
-	public static MqttWireMessage createWireMessage(MqttWireMessage data) throws MqttException {
-		byte[] payload = data.getPayload();
-		// The persistable interface allows a message to be restored entirely in the header array
-		// Need to treat these two arrays as a single array of bytes and use the decoding
-		// logic to identify the true header/payload split
-		if (payload == null) {
-			payload = new byte[0];
-		}
-		
-		StringInputStream mbais = new StringInputStream();
-		mbais.with(data.getHeader());
-		mbais.with(payload);
-		return createWireMessage(mbais);
-	}
 	
-	public static MqttWireMessage createWireMessage(byte[] bytes) throws MqttException {
-		ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
-		return createWireMessage(bais);
+	public boolean isCleanSession() {
+		return session;
 	}
 
-	private static MqttWireMessage createWireMessage(InputStream inputStream) throws MqttException {
-		try {
-			MqttInputStream counter = new MqttInputStream(inputStream);
-			DataInputStream in = new DataInputStream(counter);
-			int first = in.readUnsignedByte();
-			byte type = (byte) (first >> 4);
-			byte info = (byte) (first &= 0x0f);
-			long remLen = readMBI(in);
-			long totalToRead = counter.getCounter() + remLen;
-
-			long remainder = totalToRead - counter.getCounter();
-			byte[] data = new byte[0];
-			// The remaining bytes must be the payload...
-			if (remainder > 0) {
-				data = new byte[(int) remainder];
-				in.readFully(data, 0, data.length);
-			}
-				
-			if (type == MqttWireMessage.MESSAGE_TYPE_CONNECT) {
-				return new MqttConnect(info, data);
-			}
-			if(type == MESSAGE_TYPE_CONNACK || 
-					type == MESSAGE_TYPE_DISCONNECT || 
-					type == MESSAGE_TYPE_PUBACK || 
-					type == MESSAGE_TYPE_SUBACK ||
-					type == MESSAGE_TYPE_PINGREQ ||
-					type == MESSAGE_TYPE_SUBSCRIBE || 
-					type == MESSAGE_TYPE_UNSUBSCRIBE ||
-					type == MESSAGE_TYPE_PUBLISH) {
-				return MqttWireMessage.create(type, info, data);
-			}
-
-			throw MqttException.withReason(MqttException.REASON_CODE_UNEXPECTED_ERROR);
-		} catch(IOException io) {
-			throw MqttException.withReason(MqttException.REASON_CODE_DEFAULT, io);
-		}
-	}
-		
 	protected static byte[] encodeMBI( long number) {
 		int numBytes = 0;
 		long no = number;
@@ -319,13 +303,13 @@ public class MqttWireMessage {
 			bos.write(digit);
 			numBytes++;
 		} while ( (no > 0) && (numBytes<4) );
-		
+
 		return bos.toByteArray();
 	}
-	
+
 	/**
 	 * Decodes an MQTT Multi-Byte Integer from the given stream.
-	 * @param in the input stream 
+	 * @param in the input stream
 	 * @return long Value of Read
 	 * @throws IOException if an exception occurs when reading the input stream
 	 */
@@ -333,16 +317,16 @@ public class MqttWireMessage {
 		byte digit;
 		long msgLength = 0;
 		int multiplier = 1;
-		
+
 		do {
 			digit = in.readByte();
 			msgLength += ((digit & 0x7F) * multiplier);
 			multiplier *= 128;
 		} while ((digit & 0x80) != 0);
-		
+
 		return msgLength;
 	}
-	
+
 	protected byte[] encodeMessageId() throws MqttException {
 		try {
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -355,14 +339,14 @@ public class MqttWireMessage {
 			throw MqttException.withReason(MqttException.REASON_CODE_DEFAULT, ex);
 		}
 	}
-	
+
 	public boolean isRetryable() {
 		if(type == MESSAGE_TYPE_SUBSCRIBE || type == MESSAGE_TYPE_UNSUBSCRIBE) {
 			return true;
 		}
 		return false;
 	}
-	
+
 	public void setDuplicate(boolean duplicate) {
 		this.duplicate = duplicate;
 	}
@@ -371,9 +355,9 @@ public class MqttWireMessage {
 	 * Encodes a String given into UTF-8, before writing this to the DataOutputStream the length of the
 	 * encoded string is encoded into two bytes and then written to the DataOutputStream. @link{DataOutputStream#writeUFT(String)}
 	 * should be no longer used. @link{DataOutputStream#writeUFT(String)} does not correctly encode UTF-16 surrogate characters.
-	 * 
+	 *
 	 * @param dos The stream to write the encoded UTF-8 String to.
-	 * @param stringToEncode The String to be encoded 
+	 * @param stringToEncode The String to be encoded
 	 * @throws MqttException Thrown when an error occurs with either the encoding or writing the data to the stream
 	 */
 	protected void encodeUTF8(DataOutputStream dos, String stringToEncode) throws MqttException
@@ -382,8 +366,8 @@ public class MqttWireMessage {
 
 			byte[] encodedString = stringToEncode.getBytes("UTF-8");
 			byte byte1 = (byte) ((encodedString.length >>> 8) & 0xFF);
-			byte byte2 =  (byte) ((encodedString.length >>> 0) & 0xFF);  
-			
+			byte byte2 =  (byte) ((encodedString.length >>> 0) & 0xFF);
+
 
 			dos.write(byte1);
 			dos.write(byte2);
@@ -396,11 +380,11 @@ public class MqttWireMessage {
 			throw MqttException.withReason(MqttException.REASON_CODE_DEFAULT, ex);
 		}
 	}
-	
+
 	/**
-	 * Decodes a UTF-8 string from the DataInputStream provided. @link(DataInoutStream#readUTF()) should be no longer used, because  @link(DataInoutStream#readUTF()) 
+	 * Decodes a UTF-8 string from the DataInputStream provided. @link(DataInoutStream#readUTF()) should be no longer used, because  @link(DataInoutStream#readUTF())
 	 * does not decode UTF-16 surrogate characters correctly.
-	 * 
+	 *
 	 * @param input The input stream from which to read the encoded string
 	 * @return a decoded String from the DataInputStream
 	 */
@@ -417,7 +401,7 @@ public class MqttWireMessage {
 		}
 		return null;
 	}
-	
+
 	public String toStringPublish() {
 		// Convert the first few bytes of the payload into a hex string
 		StringBuffer hex = new StringBuffer();
@@ -464,9 +448,13 @@ public class MqttWireMessage {
 		}
 		// CONNACK
 		CharacterBuffer sb = new CharacterBuffer();
-		sb.with(PACKET_NAMES[type]); 
+		sb.with(PACKET_NAMES[type]);
+		if(type == MESSAGE_TYPE_CONNECT) {
+			sb.with(" clientId ", names[0], " keepAliveInterval ", ""+keepAliveInterval);
+			return sb.toString();
+		}
 		if(type == MESSAGE_TYPE_CONNACK) {
-			sb.with(" session present:",  ""+sessionPresent," return code: ", ""+code);
+			sb.with(" session present:",  ""+session," return code: ", ""+code);
 			return sb.toString();
 		}
 		if(type == MESSAGE_TYPE_SUBSCRIBE) {
@@ -501,20 +489,56 @@ public class MqttWireMessage {
 		return PACKET_NAMES[type];
 	}
 
-	
+
 	public static final boolean isMQTTAck(MqttWireMessage message) {
 		byte type = message.getType();
 		return type == MESSAGE_TYPE_SUBACK || type == MESSAGE_TYPE_PUBACK || type == MESSAGE_TYPE_CONNACK;
 	}
-	
+
 	public int getReturnCode() {
 		return code;
 	}
 
 	public boolean getSessionPresent() {
-		return sessionPresent;
+		return session;
 	}
-	
+
+	public static MqttWireMessage createWireMessage(InputStream inputStream) throws MqttException {
+		try {
+			MqttInputStream counter = new MqttInputStream(inputStream);
+			DataInputStream in = new DataInputStream(counter);
+			int first = in.readUnsignedByte();
+			byte type = (byte) (first >> 4);
+			byte info = (byte) (first &= 0x0f);
+			long remLen = readMBI(in);
+			long totalToRead = counter.getCounter() + remLen;
+
+			long remainder = totalToRead - counter.getCounter();
+			byte[] data = new byte[0];
+			// The remaining bytes must be the payload...
+			if (remainder > 0) {
+				data = new byte[(int) remainder];
+				in.readFully(data, 0, data.length);
+			}
+
+			if(type == MESSAGE_TYPE_CONNACK ||
+					type == MESSAGE_TYPE_DISCONNECT ||
+					type == MESSAGE_TYPE_PUBACK ||
+					type == MESSAGE_TYPE_SUBACK ||
+					type == MESSAGE_TYPE_PINGREQ ||
+					type == MESSAGE_TYPE_SUBSCRIBE ||
+					type == MESSAGE_TYPE_UNSUBSCRIBE ||
+					type == MESSAGE_TYPE_CONNECT ||
+					type == MESSAGE_TYPE_PUBLISH) {
+				return MqttWireMessage.create(type, info, data);
+			}
+
+			throw MqttException.withReason(MqttException.REASON_CODE_UNEXPECTED_ERROR);
+		} catch(IOException io) {
+			throw MqttException.withReason(MqttException.REASON_CODE_DEFAULT, io);
+		}
+	}
+
 	public static MqttWireMessage create(byte type) {
 		try {
 			return create(type, (byte) 0, null);
@@ -523,15 +547,15 @@ public class MqttWireMessage {
 		}
 		return null;
 	}
-	
+
 	public static MqttWireMessage create(byte type, byte info, byte[] variableHeader) throws IOException {
 		MqttWireMessage message = new MqttWireMessage(type);
 		if(type == MESSAGE_TYPE_DISCONNECT) {
 			return message;
 		}
-		
+
 		if(type == MESSAGE_TYPE_PUBLISH) {
-			MqttReceivedMessage msg = new MqttReceivedMessage(); 
+			MqttReceivedMessage msg = new MqttReceivedMessage();
 			message.message = msg;
 			msg.setQos((info >> 1) & 0x03);
 			if ((info & 0x01) == 0x01) {
@@ -558,12 +582,26 @@ public class MqttWireMessage {
 		if(variableHeader == null) {
 			return message;
 		}
-		
+
 		//		MqttWireMessage.MESSAGE_TYPE_CONNACK
 		ByteArrayInputStream bais = new ByteArrayInputStream(variableHeader);
 		DataInputStream dis = new DataInputStream(bais);
+		if(type == MESSAGE_TYPE_CONNECT) {
+			// NEW
+			String[] values = new String[3];
+			message.names = values;
+//			String protocol_name =
+			message.decodeUTF8(dis);
+//			int protocol_version =
+					dis.readByte();
+//			byte connect_flags =
+					dis.readByte();
+			message.keepAliveInterval = dis.readUnsignedShort();
+			values[0] = message.decodeUTF8(dis);
+			
+		}
 		if(type == MESSAGE_TYPE_CONNACK) {
-			message.sessionPresent = (dis.readUnsignedByte() & 0x01) == 0x01;
+			message.session = (dis.readUnsignedByte() & 0x01) == 0x01;
 			message.code = dis.readUnsignedByte();
 		}
 		if(type == MESSAGE_TYPE_PUBACK) {
@@ -626,16 +664,16 @@ public class MqttWireMessage {
 		return this;
 	}
 
-	
+
 	public int[] getGrantedQos() {
 		return data;
 	}
-	
+
 	public MqttMessage getMessage() {
 		return message;
 	}
-	
-	
+
+
 	public String getTopicName() {
 		if(names != null && names.length>0) {
 			return names[0];
@@ -645,6 +683,21 @@ public class MqttWireMessage {
 
 	public MqttWireMessage withMessage(MqttMessage message) {
 		this.message = message;
+		return this;
+	}
+
+	public MqttWireMessage withKeepAliveInterval(int value) {
+		this.keepAliveInterval = value;
+		return this;
+	}
+	
+	public MqttWireMessage withCode(int value) {
+		this.code = value;
+		return this;
+	}
+
+	public MqttWireMessage withSession(boolean value) {
+		this.session = value;
 		return this;
 	}
 }

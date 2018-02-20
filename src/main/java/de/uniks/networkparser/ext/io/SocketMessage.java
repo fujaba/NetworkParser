@@ -36,7 +36,7 @@ public class SocketMessage implements BaseItem {
 	private SimpleList<String> to=new SimpleList<String>();
 	private SimpleKeyValueList<String, Buffer> attachment = new SimpleKeyValueList<String, Buffer>();
 	private String boundary;
-	
+
 	public SocketMessage(String... toAdresses) {
 		this.withRecipient(toAdresses);
 	}
@@ -51,7 +51,7 @@ public class SocketMessage implements BaseItem {
 		}
 		return getContentType(item);
 	}
-	
+
 	public String getContentType(BaseItem element) {
 		if(element instanceof HTMLEntity) {
 			return CONTENT_TYPE_HTML;
@@ -61,7 +61,7 @@ public class SocketMessage implements BaseItem {
 
 	public String getHeader(String key) {
 		if(PROPERTY_FROM.equalsIgnoreCase(key)) {
-			return PROPERTY_FROM + from;		
+			return PROPERTY_FROM + from;
 		}
 		if(PROPERTY_TO.equalsIgnoreCase(key)) {
 			CharacterBuffer values=new CharacterBuffer();
@@ -77,7 +77,7 @@ public class SocketMessage implements BaseItem {
 		if(PROPERTY_MIME.equalsIgnoreCase(key)) {
 			return PROPERTY_MIME+mimeVersion;
 		}
-		
+
 		if(PROPERTY_DATE.equalsIgnoreCase(key)) {
 			if(this.date == null) {
 				this.date = new DateTimeEntity();
@@ -99,21 +99,21 @@ public class SocketMessage implements BaseItem {
 
 		return null;
 	}
-	
+
 	public String getHeaderFrom(String defaultFrom) {
 		if(from == null) {
 			this.from = defaultFrom;
 		}
-		return "MAIL FROM:" + normalizeAddress(from);		
+		return "MAIL FROM:" + normalizeAddress(from);
 	}
 	public SimpleList<String> getHeaderTo() {
-		SimpleList<String> toList=new SimpleList<String>(); 
+		SimpleList<String> toList=new SimpleList<String>();
 		for(int i=0;i<to.size();i++) {
 			toList.add("RCPT TO:"+normalizeAddress(to.get(i)));
 		}
 		return toList;
 	}
-	
+
 	public String generateMessageId(String localHost) {
 		if(this.id != null) {
 			return this.id;
@@ -130,27 +130,27 @@ public class SocketMessage implements BaseItem {
 		this.id = s.toString();
 		return this.id;
 	}
-	
+
 	public XMLEntity toXML(String type) {
 		XMLEntity messageXML=XMLEntity.TAG("message");
 		if(type ==MessageSession.TYPE_FCM) {
 			messageXML.add("id", "");
 			XMLEntity gcm = messageXML.createChild("gcm");
 			gcm.add("xmlns", "google:mobile:data");
-			
+
 			JsonObject container = new JsonObject();
 			gcm.add(container);
 			if(this.to.size()>0) {
 				container.put("to", this.to.first());
 			}
 			container.put("message_id", MessageSession.nextID());
-			
+
 			JsonObject data = new JsonObject();
 			container.put("data", data);
 			if(this.message.size() > 0) {
 				data.put("message", this.message.first());
 			}
-			
+
 //		      "time_to_live":"600",
 //		      "delay_while_idle": true/false,
 //		      "delivery_receipt_requested": true/false
@@ -162,7 +162,7 @@ public class SocketMessage implements BaseItem {
 		}
 		return messageXML;
 	}
-	
+
     /**
      * Get a unique value for use in a multipart boundary string.
      *
@@ -185,12 +185,12 @@ public class SocketMessage implements BaseItem {
 		this.boundary = s.toString();
 		return this.boundary;
 	}
-	
+
 	public SocketMessage withSubject(String value) {
 		this.subject = value;
 		return this;
 	}
-	
+
 	public SocketMessage withRecipient(String... toAdresses) {
 		if(toAdresses == null) {
 			return this;
@@ -200,7 +200,7 @@ public class SocketMessage implements BaseItem {
 		}
 		return this;
 	}
-	
+
 	private String normalizeAddress(String value) {
 		String returnValue = value.trim();
 		if(returnValue.startsWith("<") == false) {
@@ -214,16 +214,16 @@ public class SocketMessage implements BaseItem {
 		}
 		return returnValue + ">";
 	}
-	
+
 	public String getSubject() {
 		return this.subject;
 	}
-	
+
 	public SocketMessage withMessage(HTMLEntity value) {
 		this.message.add(value);
 		return this;
 	}
-	
+
 	public SocketMessage withMessage(String value) {
 		BaseItem item = new StringEntity();
 		item.add(value);
@@ -235,14 +235,14 @@ public class SocketMessage implements BaseItem {
 		this.message.add(item);
 		return this;
 	}
-	
+
 	public SimpleList<BaseItem> getMessages() {
 		return this.message;
 	}
 	public SimpleKeyValueList<String, Buffer> getAttachments() {
 		return this.attachment;
 	}
-	
+
 	public boolean isMultiPart() {
 		return this.message.size()>1 || this.attachment.size()>0;
 	}
@@ -250,17 +250,17 @@ public class SocketMessage implements BaseItem {
 	public void removeToAdress(int pos) {
 		this.to.remove(pos);
 	}
-	
+
 	public SocketMessage withAttachment(String fileName, Buffer buffer) {
 		this.attachment.add(fileName, buffer);
 		return this;
 	}
-	
+
 	@Override
 	public BaseItem getNewList(boolean keyValue) {
 		return new SocketMessage();
 	}
-	
+
 	@Override
 	public int size() {
 		return this.to.size();

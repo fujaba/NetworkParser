@@ -19,7 +19,7 @@ public class FeatureProperty implements Comparable<FeatureProperty> {
 		this.name = name;
 		includeClazz.add(ALL);
 	}
-	
+
 	public FeatureProperty withIncludeClazz(String... value) {
 		if (value == null) {
 			return this;
@@ -113,7 +113,7 @@ public class FeatureProperty implements Comparable<FeatureProperty> {
 		}
 		return result;
 	}
-	
+
 	public SimpleList<Clazz> getClazzes() {
 		return includeClazz;
 	}

@@ -136,19 +136,19 @@ public abstract class GraphMember {
 		}
 		return result;
 	}
-	
+
 	public Clazz getClazz() {
 		if(this instanceof Clazz) {
 			return (Clazz) this;
 		}
 		if(parentNode instanceof Clazz) {
-			return (Clazz) parentNode; 
+			return (Clazz) parentNode;
 		}
 		if(parentNode instanceof GraphMember) {
 			return ((GraphMember) parentNode).getClazz();
 		}
 		return null;
-		
+
 	}
 
 	protected String getFullId() {
@@ -168,7 +168,7 @@ public abstract class GraphMember {
 		}
 		return collection;
 	}
-	
+
 	protected SimpleSet<GraphEntity> getNodes() {
 		SimpleSet<GraphEntity> collection = new SimpleSet<GraphEntity>();
 		if(this.children == null) {
@@ -223,7 +223,7 @@ public abstract class GraphMember {
 		}
 		return false;
 	}
-	
+
 	protected Object getParent() {
 		return parentNode;
 	}
@@ -257,7 +257,7 @@ public abstract class GraphMember {
 		}
 		return this;
 	}
-	
+
 	public GraphMember without(GraphMember... values) {
 		if (values == null || this.children == null) {
 			return this;
@@ -380,7 +380,7 @@ public abstract class GraphMember {
 		}
 		return this;
 	}
-	
+
 	public boolean remove(GraphMember member) {
 		if(member == null) {
 			return true;

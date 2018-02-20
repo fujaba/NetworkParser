@@ -17,17 +17,17 @@ public class TestAttributes {
 		model.createClazz("Person");
 		model.getGenerator().testGeneratedCode("java");
 	}
-	
+
 	@Test
 	public void testClassWithAttribute() {
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.attribute_b");
 		Clazz person = model.createClazz("Person");
-		
-		
+
+
 		person.createAttribute("name", DataType.STRING);
 		model.getGenerator().testGeneratedCode("java");
 	}
-	
+
 	@Test
 	public void testClassWithMultipleAttributes() {
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.attribute_c");
@@ -36,7 +36,7 @@ public class TestAttributes {
 		person.withAttribute("age", DataType.INT);
 		model.getGenerator().testGeneratedCode("java");
 	}
-	
+
 	@Test
 	public void testClassWithSetAttribute() {
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.attribute_d");
@@ -44,7 +44,7 @@ public class TestAttributes {
 		person.withAttribute("names", DataTypeSet.create(DataType.STRING));
 		model.getGenerator().testGeneratedCode("java");
 	}
-	
+
 	@Test
 	public void testClassWithSingleSetAttributes() {
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.attribute_e");
@@ -52,7 +52,7 @@ public class TestAttributes {
 		person.withAttribute("ages", DataTypeSet.create(DataType.INT));
 		model.getGenerator().testGeneratedCode("java");
 	}
-	
+
 	@Test
 	public void testClassWithMultipleSetAttributes() {
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.attribute_f");
@@ -61,7 +61,7 @@ public class TestAttributes {
 		person.withAttribute("ages", DataTypeSet.create(DataType.INT));
 		model.getGenerator().testGeneratedCode("java");
 	}
-	
+
 	@Test
 	public void testClassWithSetSetAttribute() {
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.attribute_g");
@@ -71,7 +71,7 @@ public class TestAttributes {
 	}
 	// FIXME Parser generiert withCreator(...) anstelle von with(...)
 	// (temporaer behoben)
-	
+
 	@Test
 	public void testClassWithMapAttribute() {
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.attribute_h");
@@ -79,7 +79,7 @@ public class TestAttributes {
 		person.createAttribute("names", DataTypeMap.create(DataType.STRING, DataType.STRING));
 		model.getGenerator().testGeneratedCode("java");
 	}
-	
+
 	@Test
 	public void testClassWithMapMapAttribute() {
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.attribute_i");
@@ -87,7 +87,7 @@ public class TestAttributes {
 		person.createAttribute("namesMap", DataTypeMap.create(DataType.STRING, DataTypeMap.create(DataType.STRING, DataType.STRING)));
 		model.getGenerator().testGeneratedCode("java");
 	}
-	
+
 	@Test
 	public void testClassWithSetMapAttribute() {
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.attribute_j");
@@ -95,7 +95,7 @@ public class TestAttributes {
 		person.createAttribute("namesList", DataTypeSet.create(DataTypeMap.create(DataType.STRING, DataType.STRING)));
 		model.getGenerator().testGeneratedCode("java");
 	}
-	
+
 	@Test
 	public void testClassWithMapSetAttribute() {
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.attribute_k");
@@ -103,10 +103,10 @@ public class TestAttributes {
 		person.createAttribute("names", DataTypeMap.create(DataType.STRING, DataTypeSet.create(DataType.STRING)));
 		model.getGenerator().testGeneratedCode("java");
 	}
-	
+
 	// FIXME withCreator(...) anstelle von with(...) in CreatorCreator
 	// (temporaer behoben)
-	
+
 	@Test
 	public void testClassWithPrivateModifiedAttribute() {
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.attribute_l");
@@ -114,9 +114,9 @@ public class TestAttributes {
 		person.withAttribute("personalName", DataType.STRING).with(Modifier.PRIVATE);
 		model.getGenerator().testGeneratedCode("java");
 	}
-	
+
 	// FIXME public Modifier verhindert die Generierung von gettern und settern
-	
+
 	@Test
 	public void testClassWithPublicModifiedAttribute() {
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.attribute_m");
@@ -124,7 +124,7 @@ public class TestAttributes {
 		person.withAttribute("personalName", DataType.STRING).with(Modifier.PUBLIC);
 		model.getGenerator().testGeneratedCode("java");
 	}
-	
+
 	@Test
 	public void testClassWithStaticModifiedAttribute() {
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.attribute_n");

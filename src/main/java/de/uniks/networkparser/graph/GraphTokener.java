@@ -145,7 +145,7 @@ public class GraphTokener extends Tokener {
 			// Add to Clazzes
 			element.with(edge);
 			subId.with(target);
-			
+
 			// Add to List
 			list.with(edge);
 		} else {
@@ -284,7 +284,7 @@ public class GraphTokener extends Tokener {
 			}
 			// Now try to Many Assoc
 			for(Iterator<Entry<String, Collection<?>>> i = assocMany.iterator();i.hasNext();){
-				Entry<String, Collection<?>> item = i.next(); 
+				Entry<String, Collection<?>> item = i.next();
 				Collection<?> masterCollection = item.getValue();
 				GraphPatternMatch match = GraphPatternMatch.create(item.getKey(), masterCollection);
 				Object slaveValue = slaveCreator.getValue(slave, item.getKey());

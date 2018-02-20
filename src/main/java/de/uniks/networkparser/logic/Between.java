@@ -73,7 +73,7 @@ public class Between implements ObjectCondition, SendableEntityCreator {
 			if (newValue instanceof Double) {
 				Double newNumber = ((Double) newValue);
 				if(fromValue != null) {
-					result = newNumber >= fromValue; 
+					result = newNumber >= fromValue;
 				}
 				if(toValue != null) {
 					result = result && newNumber <= toValue;
@@ -82,7 +82,7 @@ public class Between implements ObjectCondition, SendableEntityCreator {
 			}else if (newValue instanceof Integer) {
 				Integer newNumber = ((Integer) newValue);
 				if(fromValue != null) {
-					result = newNumber >= fromValue; 
+					result = newNumber >= fromValue;
 				}
 				if(toValue != null) {
 					result = result && newNumber <= toValue;
@@ -93,7 +93,7 @@ public class Between implements ObjectCondition, SendableEntityCreator {
 			if (newValue instanceof Double) {
 				Double newNumber = ((Double) newValue);
 				if(fromValue != null) {
-					result = newNumber > fromValue; 
+					result = newNumber > fromValue;
 				}
 				if(toValue != null) {
 					result = result && newNumber < toValue;
@@ -102,7 +102,7 @@ public class Between implements ObjectCondition, SendableEntityCreator {
 			}else if (newValue instanceof Integer) {
 				Integer newNumber = ((Integer) newValue);
 				if(fromValue != null) {
-					result = newNumber > fromValue; 
+					result = newNumber > fromValue;
 				}
 				if(toValue != null) {
 					result = result && newNumber < toValue;

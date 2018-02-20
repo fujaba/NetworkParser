@@ -24,10 +24,10 @@ public class TestModel {
 		Method createMethod = person.createMethod("getLong");
 		createMethod.with(DataType.LONG);
 		createMethod.withBody("return this.getCredits() + 42;");
-		
+
 		Clazz uni = model.createClazz("University");
 		uni.withBidirectional(person, "stud", Cardinality.MANY, "owner", Cardinality.ONE);
-		
+
 		model.getGenerator().testGeneratedCode("java");
 	}
 }

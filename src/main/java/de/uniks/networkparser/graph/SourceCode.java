@@ -20,22 +20,22 @@ public class SourceCode extends GraphMember {
 	private int bodyStart;
 	private int endOfAttributeInitialization;
 	private int endOfBody;
-	
+
 	public SourceCode() {
 		super();
 		this.name = NAME;
 	}
-	
-	
+
+
 	public SourceCode withFileName(String name) {
 		this.fileName = name;
 		return this;
 	}
-	
+
 	public String getFileName() {
 		return fileName;
 	}
-	
+
 	public CharacterBuffer getContent() {
 		return content;
 	}
@@ -44,11 +44,11 @@ public class SourceCode extends GraphMember {
 		this.size = content.length();
 		return this;
 	}
-	
+
 	public int size() {
 		return size;
 	}
-	
+
 	public SimpleList<SymTabEntry> getSymbolEntries(String type) {
 		SimpleList<SymTabEntry> list = keys.get(type);
 		if(list == null) {
@@ -57,7 +57,7 @@ public class SourceCode extends GraphMember {
 		}
 		return list;
 	}
-	
+
 	public SymTabEntry getSymbolEntry(String type, String name) {
 		if(name == null || type == null) {
 			return null;
@@ -72,11 +72,11 @@ public class SourceCode extends GraphMember {
 		}
 		return null;
 	}
-	
+
 	public SimpleKeyValueList<String, SimpleList<SymTabEntry>> getSymbolTab() {
 		return keys;
 	}
-	
+
 	/**
 	 * Set the Parent of Element
 	 * @param parent  Set The Parent Element
@@ -97,7 +97,7 @@ public class SourceCode extends GraphMember {
 		parent.withChildren(this);
 		return this;
 	}
-	
+
 	public boolean isFileBodyHasChanged() {
 		return fileBodyHasChanged;
 	}
@@ -133,7 +133,7 @@ public class SourceCode extends GraphMember {
 		this.endOfImplementsClause = value;
 		return this;
 	}
-	
+
 	public int getEndOfImplementsClause() {
 		return endOfImplementsClause;
 	}
@@ -141,7 +141,7 @@ public class SourceCode extends GraphMember {
 		this.bodyStart = value;
 		return this;
 	}
-	
+
 	public int getBodyStart() {
 		return bodyStart;
 	}
@@ -149,16 +149,16 @@ public class SourceCode extends GraphMember {
 		this.endOfAttributeInitialization = value;
 		return this;
 	}
-	
+
 	public int getEndOfAttributeInitialization() {
 		return endOfAttributeInitialization;
 	}
-	
+
 	public void replaceAll(int bodyStartPos, String value) {
 		this.content.replace(bodyStartPos, bodyStartPos, value);
 		this.fileBodyHasChanged = true;
 	}
-	
+
 	@Override
 	public String toString() {
 		return content.toString();
@@ -168,7 +168,7 @@ public class SourceCode extends GraphMember {
 		this.endOfBody = value;
 		return this;
 	}
-	
+
 	public int getEndOfBody() {
 		return endOfBody;
 	}
@@ -177,7 +177,7 @@ public class SourceCode extends GraphMember {
 		this.startOfImports = value;
 		return this;
 	}
-	
+
 	public int getStartOfImports() {
 		return startOfImports;
 	}

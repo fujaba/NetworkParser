@@ -11,8 +11,8 @@ import de.uniks.networkparser.interfaces.TemplateParser;
 /**
  * @author Stefan
  * FeatureCondition for ModelFilter
- * 
- * Format {{#import value}} 
+ *
+ * Format {{#import value}}
  */
 public class ForeachCondition implements ParserCondition {
 	private static final String ITEM="item";
@@ -24,7 +24,7 @@ public class ForeachCondition implements ParserCondition {
 	private ObjectCondition postLoopCondition;
 	@Override
 	public String
-	
+
 	getKey() {
 		return TAG;
 	}
@@ -33,7 +33,7 @@ public class ForeachCondition implements ParserCondition {
 	public CharSequence getValue(LocalisationInterface variables) {
 		return null;
 	}
-	
+
 	/**
 	 * @param value		Set the new Expression
 	 * @return 			IfCondition Instance
@@ -44,16 +44,16 @@ public class ForeachCondition implements ParserCondition {
 	}
 
 
-	
+
 	@Override
 	public boolean update(Object value) {
 		if (expression != null && loop != null) {
-			if(expression instanceof ParserCondition && 
+			if(expression instanceof ParserCondition &&
 					value instanceof LocalisationInterface){
 				ParserCondition parser = (ParserCondition) expression;
 				Object object = parser.getValue((LocalisationInterface)value);
 //				creator.getValue(value, expression);
-//				
+//
 				LocalisationInterface variablen = (LocalisationInterface) value;
 //				Object object = creator.getValue(variablen);
 				if(object instanceof Collection<?>) {
@@ -84,13 +84,13 @@ public class ForeachCondition implements ParserCondition {
 //		this.expression = StringCondition.create(buffer.nextToken(false, SPLITEND));
 		buffer.skipChar(SPACE);
 		this.expression  = parser.parsing(buffer, customTemplate, true, true);
-		
+
 		buffer.skipChar(SPLITEND);
 		if(buffer.getCurrentChar() != SPLITEND) {
 			this.preLoopCondition = parser.parsing(buffer, customTemplate, true, true);
 		}
 		buffer.skipChar(SPLITEND);
-		
+
 		// Add Children
 		this.loop = parser.parsing(buffer, customTemplate, false, true, "endfor");
 		buffer.skipChar(SPLITEND);
@@ -113,12 +113,12 @@ public class ForeachCondition implements ParserCondition {
 	public ObjectCondition getLoopCondition() {
 		return loop;
 	}
-	
+
 	@Override
 	public ForeachCondition getSendableInstance(boolean prototyp) {
 		return new ForeachCondition();
 	}
-	
+
 	@Override
 	public String toString() {
 		return "{{#FOREACH "+expression+"}}"+loop+"{{#ENDFOREACH}}";

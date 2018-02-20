@@ -12,10 +12,10 @@ public class ParserEndErrorTest {
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.test");
 		Clazz person = model.createClazz("Person");
 		person.enableInterface();
-		
+
 		model.getGenerator().testGeneratedCode("java");
-		
+
 		model.getGenerator().testGeneratedCode("java");
 	}
-	
+
 }

@@ -28,7 +28,7 @@ public class Os {
 		// IOS
 		return (os.indexOf("ios") >= 0);
 	}
-	
+
 	public static boolean isReflectionTest() {
 		return System.getProperty("Tester") != null;
 	}

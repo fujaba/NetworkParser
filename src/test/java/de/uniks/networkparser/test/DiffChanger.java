@@ -9,7 +9,7 @@ import de.uniks.networkparser.json.JsonArray;
 import de.uniks.networkparser.json.JsonObject;
 
 public class DiffChanger {
-	
+
 	private JsonObject createHelpClass(String name, String color) {
 		JsonObject master=new JsonObject();
 		JsonArray assoc=new JsonArray();

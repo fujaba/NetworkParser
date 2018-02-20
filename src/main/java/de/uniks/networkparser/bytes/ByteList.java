@@ -36,7 +36,7 @@ import de.uniks.networkparser.list.SimpleList;
 public class ByteList extends SimpleList<ByteItem> implements ByteItem {
 	/** The children of the ByteEntity. */
 	private byte type;
-	
+
 	public static final byte BIT_STRING = 0x53; // S = String;
 	public static final byte BIT_NUMBER = 0x4E; // N = Number
 	public static final byte BIT_BYTE = 0x42; // B = Byte

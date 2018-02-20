@@ -27,7 +27,7 @@ permissions and limitations under the Licence.
 */
 /**
  * Special Util for package Method
- * 
+ *
  * @author Stefan Lindel
  */
 public class GraphUtil {

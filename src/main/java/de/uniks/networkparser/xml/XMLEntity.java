@@ -108,7 +108,7 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 		}
 		return this.children.get(index);
 	}
-	
+
 	public int sizeChildren() {
 		if (this.children == null) {
 			return 0;
@@ -344,7 +344,7 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 		this.tag = value;
 		return this;
 	}
-	
+
 	/**
 	 * Return first Children with Filter
 	 * @param key The key of Filter
@@ -449,7 +449,7 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 				EntityList items = ((XMLEntity) entity).getElementsBy(key, value);
 				if(entity == items || items.size()>0) {
 					children.add(items);
-					
+
 				} else if(items.sizeChildren()>0 ) {
 					for(int c = 0;c < items.sizeChildren(); c++) {
 						children.add(items.getChild(c));
@@ -473,7 +473,7 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 		}
 		return children;
 	}
-	
+
 	public XMLEntity withValueItem(String value) {
 		this.valueItem = value;
 		return this;

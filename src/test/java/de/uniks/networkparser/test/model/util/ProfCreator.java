@@ -21,7 +21,7 @@ public class ProfCreator implements SendableEntityCreator {
 	public String[] getProperties() {
 		return new String[] { Prof.PROPERTY_NAME,
 				Prof.PROPERTY_UNIVERSITY,
-				Prof.PROPERTY_FIRSTNAME, Prof.PROPERTY_LASTNAME, 
+				Prof.PROPERTY_FIRSTNAME, Prof.PROPERTY_LASTNAME,
 				Prof.PROPERTY_ITEM
 		};
 	}

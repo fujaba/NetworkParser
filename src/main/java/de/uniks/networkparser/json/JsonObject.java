@@ -349,5 +349,5 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements En
     	this.add(Entity.CLASS, type);
         return this;
 }
-	
+
 }

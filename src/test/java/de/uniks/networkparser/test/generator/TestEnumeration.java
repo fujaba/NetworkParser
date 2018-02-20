@@ -17,13 +17,13 @@ public class TestEnumeration {
 		}
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.enums_a");
 		Clazz testEnum = model.createClazz("TestEnum");
-		
+
 		testEnum.enableEnumeration();
-		
+
 		model.getGenerator().testGeneratedCode("java");
-		
+
 	}
-	
+
 	@Test
 	public void testEnumerationWithEntry() {
 		if(Generator.DISABLE) {
@@ -35,11 +35,11 @@ public class TestEnumeration {
 		testEnum.enableEnumeration("PERSON");
 
 		model.getGenerator().testGeneratedCode("java");
-	
+
 	}
 
 	// FIXME bei mehreren Eintraegen ein , statt einem ; generiern außer bei letztem Eintrag
-	
+
 	@Test
 	public void testEnumerationWithMultipleEntries() {
 		if(Generator.DISABLE) {
@@ -47,10 +47,10 @@ public class TestEnumeration {
 		}
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.enums_c");
 		Clazz testEnum = model.createClazz("TestEnum");
-		
+
 		testEnum.enableEnumeration("PERSON","ROOM");
 		GraphUtil.setLiteral(testEnum, new Literal("TEACHER"));
-		
+
 		model.getGenerator().testGeneratedCode("java");
 	}
 	@Test
@@ -65,5 +65,5 @@ public class TestEnumeration {
 		model.generate("src/test/java");
 		model.getGenerator().testGeneratedCode("java");
 	}
-	
+
 }

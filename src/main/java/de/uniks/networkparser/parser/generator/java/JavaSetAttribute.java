@@ -54,7 +54,7 @@ public class JavaSetAttribute extends BasicGenerator {
 					"   }","" +
 				"{{#endif}}");
 	}
-	
+
 	@Override
 	public Class<?> getTyp() {
 		return Attribute.class;

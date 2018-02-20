@@ -31,7 +31,7 @@ public class Throws extends GraphMember {
 		super.with(name);
 		return this;
 	}
-	
+
 	@Override
 	public Throws without(GraphMember... values) {
 		super.without(values);

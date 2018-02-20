@@ -20,15 +20,14 @@ public class ClassModel extends GraphModel {
 
 	/**
 	 * Constructor
-	 * 
-	 * @param packageName
-	 *            PackageName of ClassModel
+	 *
+	 * @param packageName  PackageName of ClassModel
 	 */
 	public ClassModel(String packageName) {
 		this();
 		with(packageName);
 	}
-	
+
 	public ClassModel withFeature(FeatureProperty feature) {
 		this.generator.withFeature(feature);
 		return this;
@@ -38,7 +37,7 @@ public class ClassModel extends GraphModel {
 		this.generator.withoutFeature(feature);
 		return this;
 	}
-	
+
 	public ModelGenerator getGenerator(String... params) {
 		if(params != null) {
 			if(params.length==1 && params[0] != null) {
@@ -51,7 +50,7 @@ public class ClassModel extends GraphModel {
 	public FeatureProperty getFeature(Feature feature, Clazz... clazzes) {
 		return this.generator.getFeature(feature, clazzes);
 	}
-	
+
 	@Override
 	public boolean dumpHTML(String diagramName) {
 		HTMLEntity html = new HTMLEntity();
@@ -67,19 +66,19 @@ public class ClassModel extends GraphModel {
 		}
 		return FileBuffer.writeFile("doc/"+diagramName+".html", html.toString());
 	}
-	
+
 	@Override
 	public ClassModel generate() {
 		getGenerator().generate(this);
 		return this;
 	}
-	
+
 	@Override
 	public ClassModel generate(String rootDir) {
 		getGenerator().generate(rootDir, this);
 		return this;
 	}
-	
+
 	@Override
 	public boolean add(Object... values) {
 		if(values == null) {
@@ -109,13 +108,13 @@ public class ClassModel extends GraphModel {
 		super.with(name);
 		return this;
 	}
-	
+
 	@Override
 	public ClassModel without(GraphMember... values) {
 		super.without(values);
 		return this;
 	}
-	
+
 	@Override
 	public ClassModel withExternal(boolean value) {
 		super.withExternal(value);

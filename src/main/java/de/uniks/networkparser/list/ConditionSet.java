@@ -16,7 +16,7 @@ public class ConditionSet extends SimpleSet<ObjectCondition>{
 		}
 		return super.add(newValue);
 	}
-	
+
 	public CharacterBuffer getAllValue(LocalisationInterface variables) {
 		CharacterBuffer buffer=new CharacterBuffer();
 		for(ObjectCondition item : this) {

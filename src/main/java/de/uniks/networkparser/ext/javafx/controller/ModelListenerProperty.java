@@ -46,7 +46,7 @@ public class ModelListenerProperty implements ModelListenerInterface {
 	protected Object observable = null;
 	protected Condition<SimpleEvent> callBack;
 	protected PROPERTYTYPE type;
-	
+
 	public ModelListenerProperty(SendableEntityCreator creator, Object item, String property, PROPERTYTYPE type) {
 		this.creator = creator;
 		this.property = property;
@@ -122,7 +122,7 @@ public class ModelListenerProperty implements ModelListenerInterface {
 			}
 		}
 	}
-	
+
 	public void bind(Object newObservable) {
 		if (newObservable == null) {
 			throw new NullPointerException("Cannot bind to null");
@@ -174,7 +174,7 @@ public class ModelListenerProperty implements ModelListenerInterface {
 		}
 		executeCallBack();
 	}
-	
+
 	public void executeCallBack() {
 		if(callBack != null) {
 			SimpleEvent event = new SimpleEvent(this.item, this.property, null, getItemValue());
@@ -183,19 +183,19 @@ public class ModelListenerProperty implements ModelListenerInterface {
 			}
 		}
 	}
-	
+
 	public ModelListenerProperty withCallBack(Condition<SimpleEvent> listener) {
 		this.callBack = listener;
 		return this;
 	}
-	
+
 	public void invalidated(Object observable) {
 	}
 
 	public Object getValue() {
 		return getItemValue();
 	}
-	
+
 	public Object parseValue(Object value){
 		if(this.type == PROPERTYTYPE.COLOR) {
 			if(value != null && ReflectionLoader.COLOR.isAssignableFrom(value.getClass())) {
@@ -244,11 +244,11 @@ public class ModelListenerProperty implements ModelListenerInterface {
 		}
 		return value;
 	}
-	
+
 	public Object getProxy() {
 		return ReflectionLoader.createProxy(this, new Class[]{ModelListenerInterface.class, ReflectionLoader.PROPERTY});
 	}
-	
+
 	public void setValue(Object value) {
 //		if()
 		creator.setValue(item, property, value, SendableEntityCreator.NEW);
@@ -262,7 +262,7 @@ public class ModelListenerProperty implements ModelListenerInterface {
 //		Color color = (Color) value;
 //		 int green = (int) (color.getGreen()*255);
 //		 String greenString = (green<16 ? "0" : "") + Integer.toHexString(green);
-//	
+//
 //		 int red = (int) (color.getRed()*255);
 //		 String redString = (red<16 ? "0" : "") + Integer.toHexString(red);
 //

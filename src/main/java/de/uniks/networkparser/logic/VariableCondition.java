@@ -35,7 +35,7 @@ public class VariableCondition implements ParserCondition{
 	}
 	// key = Variable
 	// value = String
-	
+
 	//variable = string
 	//Variable = String
 	// VARIABLE = STRING
@@ -55,7 +55,7 @@ public class VariableCondition implements ParserCondition{
 			} else {
 				v = key;
 			}
-			pos = v.indexOf("("); 
+			pos = v.indexOf("(");
 			if(pos>0) {
 				String temp = v.substring(pos+1, v.length() - 1);
 				v = key.substring(0, pos);
@@ -85,7 +85,7 @@ public class VariableCondition implements ParserCondition{
 		}
 		return null;
 	}
-	
+
     public String replaceText(String name, String format, String value) {
     	boolean upper=false;
     	boolean firstUpper=false;
@@ -99,7 +99,7 @@ public class VariableCondition implements ParserCondition{
     	for(i = startIndex; i<name.length(); i++) {
     		if(name.charAt(i)>='A' && name.charAt(i)<='Z') {
     			upper = true;
-    			
+
     			firstUpper = startIndex==i;
     		} else if(name.charAt(i)>='a' && name.charAt(i)<='z') {
     			small = true;
@@ -150,11 +150,11 @@ public class VariableCondition implements ParserCondition{
         this.expression = value;
         return this;
     }
-    
+
     public static VariableCondition create(CharSequence sequence, boolean expression) {
         return new VariableCondition().withValue(sequence).withExpression(expression);
 	}
-	
+
 	@Override
 	public void create(CharacterBuffer buffer, TemplateParser parser, LocalisationInterface customTemplate) {
 		this.value = buffer.nextToken(true, ' ', '}');
@@ -168,7 +168,7 @@ public class VariableCondition implements ParserCondition{
 	public String getKey() {
 		return null;
 	}
-	
+
 	@Override
 	public String toString() {
 		return "{{"+this.value+"}}";

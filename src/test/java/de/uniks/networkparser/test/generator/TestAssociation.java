@@ -19,69 +19,69 @@ public class TestAssociation {
 		person.withUniDirectional(room, "room", Cardinality.ONE);
 		model.getGenerator().testGeneratedCode("java");
 //		model.generate("src/test/java");
-		
+
 	}
-	
+
 	@Test
 	public void testUniDirectionalAssociations() {
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.association_b");
 		Clazz person = model.createClazz("Person");
 		Clazz room = model.createClazz("Room");
-		
+
 		person.withUniDirectional(room, "room", Cardinality.ONE);
 		room.withUniDirectional(person, "persons", Cardinality.MANY);
 		model.getGenerator().testGeneratedCode("java");
 //		model.generate("src/test/java");
 	}
-	
+
 	@Test
 	public void testMultipleUniDirectionalAssociation() {
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.association_c");
 		Clazz person = model.createClazz("Person");
-		Clazz room = model.createClazz("Room"); 
-		
+		Clazz room = model.createClazz("Room");
+
 		person.withUniDirectional(room, "room", Cardinality.ONE);
 		person.withUniDirectional(person, "prevPerson", Cardinality.ONE);
 		person.withUniDirectional(person, "nextPerson", Cardinality.ONE);
-		
+
 		model.getGenerator().testGeneratedCode("java");
 //		model.generate("src/test/java");
 	}
-	
+
 	@Test
 	public void testOneToOneAssociation() {
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.association_d");
 		Clazz person = model.createClazz("Person");
 		Clazz room = model.createClazz("Room");
-		
+
 		person.withBidirectional(room, "room", Cardinality.ONE, "person", Cardinality.ONE);
 		model.getGenerator().testGeneratedCode("java");
 //		model.generate("src/test/java");
-		
+
 	}
-	
+
 	@Test
 	public void testOneToManyAssociation() {
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.association_e");
 		Clazz person = model.createClazz("Person");
 		Clazz room = model.createClazz("Room");
-		
+
 		room.withBidirectional(person, "persons", Cardinality.MANY, "room", Cardinality.ONE);
 		model.getGenerator().testGeneratedCode("java");
 //		model.generate("src/test/java");
-		
+
 	}
-	
+
 	@Test
 	public void testManyToOneAssociation() {
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.association_f");
 		Clazz person = model.createClazz("Person");
 		Clazz room = model.createClazz("Room");
-		
+
 		person.withBidirectional(room, "room", Cardinality.ONE, "persons", Cardinality.MANY);
 		model.getGenerator().testGeneratedCode("java");
 //		model.generate("src/test/java");
-		
+
 	}
 	@Test
 	public void testMultipleOneToOneAssociation() {
@@ -89,7 +89,7 @@ public class TestAssociation {
 		Clazz person = model.createClazz("Person");
 		Clazz room = model.createClazz("Room");
 		Clazz teacher = model.createClazz("Teacher");
-		
+
 		person.withBidirectional(room, "room", Cardinality.ONE, "person", Cardinality.ONE);
 		person.withBidirectional(teacher, "teacher", Cardinality.ONE, "person", Cardinality.ONE);
 		room.withBidirectional(teacher, "teacher", Cardinality.ONE, "room", Cardinality.ONE);
@@ -133,13 +133,13 @@ public class TestAssociation {
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.association_j");
 		Clazz person = model.createClazz("Person");
 		Clazz room = model.createClazz("Room");
-		
+
 		person.withUniDirectional(room, "rooms", Cardinality.MANY);
 		person.withBidirectional(room, "room", Cardinality.ONE, "persons", Cardinality.MANY);
 		model.getGenerator().testGeneratedCode("java");
 //		model.generate("src/test/java");
 	}
-	
+
 	@Test
 	public void testManyToMany() {
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.association_k");
@@ -147,7 +147,7 @@ public class TestAssociation {
 //		Clazz student = model.createClazz("Student");
 //
 //		student.withBidirectional(lecture, "attended", Cardinality.MANY, "has", Cardinality.MANY);
-		
+
 	    Clazz task = model.createClazz("Task").withAttribute("name", STRING);
 	    task.withBidirectional(task, "subTasks", MANY, "parentTasks", MANY);
 
@@ -165,7 +165,7 @@ public class TestAssociation {
 
 		student.withBidirectional(lecture, "attended", Cardinality.MANY, "has", Cardinality.MANY);
 		student.withBidirectional(uni, "studs", Cardinality.ONE, "students", Cardinality.MANY);
-		
+
 
 		model.getGenerator().testGeneratedCode("java");
 //		model.generate("src/test/java");

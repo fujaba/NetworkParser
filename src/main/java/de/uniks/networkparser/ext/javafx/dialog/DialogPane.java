@@ -12,8 +12,8 @@ public class DialogPane implements Runnable {
 	private double initWidth;
 	private double initHeight;
 	private int initCount=1;
-	
-	
+
+
 	public DialogPane(DialogBox owner, Object parent) {
 		this.owner = owner;
 		this.parent = parent;
@@ -31,7 +31,7 @@ public class DialogPane implements Runnable {
 		}
 		ReflectionLoader.call("setManaged", pane, boolean.class, true);
 	}
-	
+
 	public Object getPane() {
 		return pane;
 	}
@@ -50,7 +50,7 @@ public class DialogPane implements Runnable {
 		} else if(this.initCount > 0){
 			this.initCount = -1;
 		}
-		
+
 		final double w = owner.getOverlayWidth();
 		final double h = owner.getOverlayHeight();
 
@@ -75,10 +75,10 @@ public class DialogPane implements Runnable {
 			this.initCount = -2;
 			double dialogX = (Double) ReflectionLoader.call("getLayoutX", root);
 			dialogX = dialogX == 0.0 ? w / 2.0 - dialogWidth / 2.0 : dialogX;
-	
+
 			double dialogY = (Double) ReflectionLoader.call("getLayoutY", root);
 			dialogY = dialogY == 0.0 ? h / 2.0 - dialogHeight / 2.0 : dialogY;
-	
+
 			ReflectionLoader.call("relocate", root, double.class, (int) (dialogX), double.class, (int) (dialogY));
 		}
 	}

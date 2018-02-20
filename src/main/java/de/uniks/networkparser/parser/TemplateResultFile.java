@@ -19,7 +19,7 @@ public class TemplateResultFile extends SortedSet<TemplateResultFragment> implem
 	public static final String PROPERTY_PARENT="parent";
 	public static final String PROPERTY_CHILD="child";
 	public static final String PROPERTY_MEMBER="member";
-	
+
 	public static final String PROPERTY_NAME="name";
 	public static final String PROPERTY_HEADERS="headers";
 	private String name;
@@ -29,7 +29,7 @@ public class TemplateResultFile extends SortedSet<TemplateResultFragment> implem
 	private SendableEntityCreator parent;
 	private GraphEntity member;
 	private boolean metaModell;
-	
+
 	TemplateResultFile() {
 		super(true);
 	}
@@ -45,11 +45,11 @@ public class TemplateResultFile extends SortedSet<TemplateResultFragment> implem
 		this.withName(name);
 		this.withMember(clazz);
 	}
-	
+
 	public String getName() {
 		return name;
 	}
-	
+
 	public String getFileName() {
 		CharacterBuffer buffer=new CharacterBuffer();
 		if(path != null) {
@@ -67,7 +67,7 @@ public class TemplateResultFile extends SortedSet<TemplateResultFragment> implem
 		this.name = name;
 		return this;
 	}
-	
+
 	public TemplateResultFile withName(Clazz clazz) {
 		this.name = clazz.getName().replace(".", "/");
 		return this;
@@ -113,7 +113,7 @@ public class TemplateResultFile extends SortedSet<TemplateResultFragment> implem
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
 	public boolean setParent(SendableEntityCreator value) {
 		if(value != this.parent) {
 			this.parent = value;
@@ -125,7 +125,7 @@ public class TemplateResultFile extends SortedSet<TemplateResultFragment> implem
 	public SendableEntityCreator getParent() {
 		return this.parent;
 	}
-	
+
 	@Override
 	public Object getSendableInstance(boolean prototyp) {
 		return new TemplateResultFile();
@@ -169,7 +169,7 @@ public class TemplateResultFile extends SortedSet<TemplateResultFragment> implem
 			}
 			return headers;
 		}
-		
+
 		return null;
 	}
 
@@ -183,7 +183,7 @@ public class TemplateResultFile extends SortedSet<TemplateResultFragment> implem
 		}
 		return false;
 	}
-	
+
 	public SourceCode getCode() {
 		if(this.member instanceof Clazz) {
 			Clazz clazz = (Clazz) this.member;
@@ -194,7 +194,7 @@ public class TemplateResultFile extends SortedSet<TemplateResultFragment> implem
 		}
 		return null;
 	}
-	
+
 	@Override
 	public String toString() {
 		SourceCode code = getCode();
@@ -212,7 +212,7 @@ public class TemplateResultFile extends SortedSet<TemplateResultFragment> implem
 			TemplateResultFragment importDecl = null;
 			// REMVOE OLD SOURCE
 			GraphSimpleSet children = GraphUtil.getChildren(this.member);
-			
+
 			for(GraphMember member : children) {
 				if(member instanceof ModifyEntry == false) {
 					continue;
@@ -235,7 +235,7 @@ public class TemplateResultFile extends SortedSet<TemplateResultFragment> implem
 				}
 				if(fragment.getKey() == Template.IMPORT) {
 					// EVALUATION IMPORT
-//					TextItems 
+//					TextItems
 					fragment.update();
 					importDecl = fragment;
 					continue;
@@ -257,7 +257,7 @@ public class TemplateResultFile extends SortedSet<TemplateResultFragment> implem
 //					sb.append(fragment.getValue().toString());
 				}
 			}
-			
+
 			if(importDecl != null) {
 				int start = code.getStartOfImports();
 				int end = code.getEndOfImports();
@@ -272,7 +272,7 @@ public class TemplateResultFile extends SortedSet<TemplateResultFragment> implem
 			}
 			if(fragment.getKey() == Template.IMPORT) {
 				// EVALUATION IMPORT
-//				TextItems 
+//				TextItems
 				fragment.update();
 			}
 			buffer.with(fragment.getValue());
@@ -293,11 +293,11 @@ public class TemplateResultFile extends SortedSet<TemplateResultFragment> implem
 		this.metaModell = value;
 		return this;
 	}
-	
+
 	public boolean isMetaModell() {
 		return metaModell;
 	}
-	
+
 	public static TemplateResultFile createJava(Clazz clazz) {
 		TemplateResultFile templateResult = new TemplateResultFile(clazz, true);
 		templateResult.withExtension(BasicGenerator.TYPE_JAVA);

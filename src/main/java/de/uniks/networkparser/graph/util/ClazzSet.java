@@ -71,7 +71,7 @@ public class ClazzSet extends SimpleSet<Clazz> {
 	public ClazzSet hasName(String otherValue) {
 		return filter(Clazz.NAME.equals(otherValue));
 	}
-	
+
 	public String toString(String splitter) {
 		if(size() == 0) {
 			return null;

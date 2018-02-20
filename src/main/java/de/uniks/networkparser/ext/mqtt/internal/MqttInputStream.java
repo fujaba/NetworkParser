@@ -3,11 +3,11 @@
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
- * and Eclipse Distribution License v1.0 which accompany this distribution. 
+ * and Eclipse Distribution License v1.0 which accompany this distribution.
  *
- * The Eclipse Public License is available at 
+ * The Eclipse Public License is available at
  *    http://www.eclipse.org/legal/epl-v10.html
- * and the Eclipse Distribution License is available at 
+ * and the Eclipse Distribution License is available at
  *   http://www.eclipse.org/org/documents/edl-v10.php.
  *
  * Contributors:
@@ -15,6 +15,7 @@
  */
 package de.uniks.networkparser.ext.mqtt.internal;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.EOFException;
@@ -28,12 +29,12 @@ import de.uniks.networkparser.ext.mqtt.MqttException;
 
 /**
  * An <code>MqttInputStream</code> lets applications read instances of
- * <code>MqttWireMessage</code>. 
+ * <code>MqttWireMessage</code>.
  * @author Paho Client
  */
 public class MqttInputStream extends InputStream {
 	private ClientState clientState = null;
-	private DataInputStream in;	
+	private DataInputStream in;
 	private ByteArrayOutputStream bais;
 	private long remLen = -1;
 	private long packetLen;
@@ -48,7 +49,7 @@ public class MqttInputStream extends InputStream {
 		this.in = new DataInputStream(in);
 		this.bais = new ByteArrayOutputStream();
 	}
-	
+
 	public int read() throws IOException {
 		int i = in.read();
 		if (i != -1) {
@@ -56,29 +57,29 @@ public class MqttInputStream extends InputStream {
 		}
 		return i;
 	}
-	
+
 	public int available() throws IOException {
 		return in.available();
 	}
-	
+
 	public void close() throws IOException {
 		in.close();
 	}
-	
+
 	/**
 	 * @return  the number of bytes read since the last reset.
 	 */
 	public int getCounter() {
 		return counter;
 	}
-	
+
 	/**
 	 * Resets the counter to zero.
 	 */
 	public void resetCounter() {
 		counter = 0;
 	}
-	
+
 	/**
 	 * Reads an <code>MqttWireMessage</code> from the stream.
 	 * If the message cannot be fully read within the socket read timeout,
@@ -86,7 +87,7 @@ public class MqttInputStream extends InputStream {
 	 * the message is fully read.
 	 * @return The {@link MqttWireMessage}
 	 * @throws IOException if an exception is thrown when reading from the stream
-	 * @throws MqttException if the message is invalid 
+	 * @throws MqttException if the message is invalid
 	 */
 	public MqttWireMessage readMqttWireMessage() throws IOException, MqttException {
 		MqttWireMessage message = null;
@@ -102,7 +103,7 @@ public class MqttInputStream extends InputStream {
 				// the keepalive mechanism would kick in
 				// closing the connection.
 				bais.reset();
-				
+
 				byte first = in.readByte();
 				clientState.notifyReceivedBytes(1);
 
@@ -119,29 +120,31 @@ public class MqttInputStream extends InputStream {
 				packet = new byte[(int)(bais.size()+remLen)];
 				packetLen = 0;
 			}
-			
+
 			// read remaining packet
 			if (remLen >= 0) {
 				// the remaining packet can be read with timeouts
 				readFully();
 
-				// reset packet parsing state 
+				// reset packet parsing state
 				remLen = -1;
-				
+
 				byte[] header = bais.toByteArray();
 				System.arraycopy(header,0,packet,0, header.length);
-				message = MqttWireMessage.createWireMessage(packet);
-				// @TRACE 501= received {0} 
+				ByteArrayInputStream bais = new ByteArrayInputStream(packet);
+				
+				message = MqttWireMessage.createWireMessage(bais);
+				// @TRACE 501= received {0}
 			}
 		} catch (SocketTimeoutException e) {
 			// ignore socket read timeout
 		} catch (SocketException e) {
-			
+
 		}
-		
+
 		return message;
 	}
-	
+
     private void readFully() throws IOException {
     	int off = bais.size() + (int) packetLen;
     	int len = (int) (remLen - packetLen);
@@ -153,7 +156,7 @@ public class MqttInputStream extends InputStream {
     		try {
     			count = in.read(packet, off + n, len - n);
     		} catch (SocketTimeoutException e) {
-    			// remember the packet read so far 
+    			// remember the packet read so far
     			packetLen += n;
     			throw e;
     		}

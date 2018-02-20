@@ -16,13 +16,13 @@ public abstract class CustomCondition<T> implements ParserCondition {
 	public boolean isExpression() {
 		return isExpression;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public <ST extends CustomCondition<T>> ST withExpression(boolean value) {
 		this.isExpression = value;
 		return (ST) this;
 	}
-	
+
 	public void create(CharacterBuffer buffer, TemplateParser parser, LocalisationInterface customTemplate) {
 		skipEnd(buffer);
 	}
@@ -41,7 +41,7 @@ public abstract class CustomCondition<T> implements ParserCondition {
 		}
 		return false;
 	}
-	
+
 	protected GraphMember getMember(Object value) {
 		if(value instanceof SendableEntityCreator) {
 			SendableEntityCreator creator = (SendableEntityCreator) value;
@@ -50,13 +50,13 @@ public abstract class CustomCondition<T> implements ParserCondition {
 		}
 		return null;
 	}
-	
+
 	protected void skipEnd(CharacterBuffer buffer) {
 		buffer.skipTo(SPLITEND, true);
 		buffer.skipChar(SPLITEND);
 		buffer.skipChar(SPLITEND);
 	}
-	
+
 	@Override
 	public boolean update(Object value) {
 		if(value instanceof ObjectCondition) {
@@ -67,7 +67,7 @@ public abstract class CustomCondition<T> implements ParserCondition {
 		}
 		return false;
 	}
-	
+
 	@Override
 	@SuppressWarnings("unchecked")
 	public Object getValue(LocalisationInterface variables) {
@@ -77,6 +77,6 @@ public abstract class CustomCondition<T> implements ParserCondition {
 		}
 		return null;
 	}
-	
+
 	public abstract Object getValue(SendableEntityCreator creator, T member);
 }

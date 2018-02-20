@@ -39,7 +39,7 @@ public class PomFile implements SendableEntityCreatorTag, BaseItem{
 	public static final String PROPERTY_SCOPE ="scope?";
 	public static final String PROPERTY_DEPENDENCIES ="dependencies";
 	public static final String PROPERTY_DEPENDENCY ="dependency";
-	
+
 	private static final String TAG="project";
 	private String modelVersion;
 	private String groupId;
@@ -255,12 +255,12 @@ public class PomFile implements SendableEntityCreatorTag, BaseItem{
 		}
 		return converter.encode(this);
 	}
-	
+
 	private Object getChild(XMLEntity xmlEntity, String value) {
 		if(value == null) {
 			return null;
 		}
-		
+
 		boolean isValue=false;
 		String property;
 		if(value.endsWith("?")) {
@@ -280,7 +280,7 @@ public class PomFile implements SendableEntityCreatorTag, BaseItem{
 		}
 		return null;
 	}
-	
+
 	public PomFile withValue(String value) {
 		XMLEntity xmlEntity = new XMLEntity().withValue(value);
 		return withValue(xmlEntity);
@@ -292,7 +292,7 @@ public class PomFile implements SendableEntityCreatorTag, BaseItem{
 				// Parse Dependency
 				XMLEntity children = (XMLEntity) child;
 				for(int i=0;i<children.size();i++) {
-					BaseItem dependency = children.getChild(i); 
+					BaseItem dependency = children.getChild(i);
 					PomFile pomDependency = new PomFile().withValue((XMLEntity)dependency);
 					this.dependencies.add(pomDependency);
 				}
@@ -300,7 +300,7 @@ public class PomFile implements SendableEntityCreatorTag, BaseItem{
 		}
 		return this;
 	}
-	
+
 	public int size() {
 		return this.dependencies.size();
 	}

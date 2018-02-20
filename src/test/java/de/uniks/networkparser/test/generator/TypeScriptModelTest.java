@@ -15,26 +15,26 @@ public class TypeScriptModelTest {
 	public void testTypescriptClazz() {
 		ClassModel model = new ClassModel("org.sdmlib.simple.typescript.model.test");
 		Clazz person = model.createClazz("Person").enableInterface();
-		
+
 		Clazz student = model.createClazz("Student");
 		student.withSuperClazz(person);
-		
+
 		person.createAttribute("name", DataType.STRING);
 		person.createAttribute("credits", DataType.LONG);
-		
+
 		Method createMethod = person.createMethod("getLong");
 		createMethod.with(DataType.LONG);
-		
+
 		Clazz building = model.createClazz("Building");
-		
+
 		Clazz uni = model.createClazz("University");
 		uni.withSuperClazz(building);
-		
+
 		uni.withBidirectional(person, "stud", Cardinality.MANY, "owner", Cardinality.ONE);
-		
+
 		model.createClazz("Teacher");
-		
+
 		model.getGenerator().testGeneratedCode(ModelGenerator.TYPE_TYPESCRIPT);
 	}
-	
+
 }

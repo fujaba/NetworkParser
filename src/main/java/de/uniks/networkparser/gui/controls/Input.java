@@ -18,18 +18,18 @@ public class Input<T> extends Control {
 		this.addBaseElements(VALUE);
 		this.addBaseElements(TYPE);
 	}
-	
+
 	@Override
 	public Object getValue(String key) {
 		if (VALUE.equals(key)) {
 			return this.value;
-		} 
+		}
 		if (TYPE.equals(key)) {
 			return this.type;
-		} 
+		}
 		return super.getValue(key);
 	}
-	
+
 	@Override
 	@SuppressWarnings("unchecked")
 	public boolean setValue(String key, Object value) {
@@ -39,7 +39,7 @@ public class Input<T> extends Control {
 		}
 		if (TYPE.equals(key)) {
 			return this.setType(""+value);
-		} 
+		}
 		return super.setValue(key, value);
 	}
 
@@ -48,7 +48,7 @@ public class Input<T> extends Control {
 		this.type = value;
 		return firePropertyChange(TYPE, oldValue, value);
 	}
-	
+
 	public String getType(String value) {
 		return this.type;
 	}

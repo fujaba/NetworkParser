@@ -91,7 +91,7 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 	protected TaskExecutor createExecutorTimer() {
 		return new SimpleExecutor().withSpace(this);
 	}
-	
+
 	public PetaFilter getMessageFilter() {
 		return messageFilter;
 	}
@@ -109,12 +109,12 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 				new AcceptMessage().withSpace(this),
 				new NodeProxyModel(null));
 		map.withListener(this);
-		
+
 		// Check for JavaFX-Tools
 		if(ReflectionLoader.PLATFORM != null) {
 			map.withModelExecutor(new ModelExecutor());
 		}
-		
+
 		return map;
 	}
 
@@ -137,8 +137,8 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 		this.name = name;
 		return this;
 	}
-	
-	
+
+
 	public Space withName(String name, Object root) {
 		this.withName(name);
 		this.createModel(root, name+".json");
@@ -190,7 +190,7 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 
 	/**
 	 * Create a Server Proxy
-	 * 
+	 *
 	 * @param port Port number 0 is for Search free Port
 	 * @return NodeProxy The created Server
 	 */
@@ -199,7 +199,7 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 		newProxy.withType(NodeProxy.TYPE_INOUT);
 		newProxy.setValue(newProxy, NodeProxyTCP.PROPERTY_PORT, port, SendableEntityCreator.NEW);
 		this.with(newProxy);
-	
+
 		return newProxy;
 	}
 
@@ -396,7 +396,7 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 		ByteConverter byteConverter = getConverter();
 		return byteConverter.encode(encode);
 	}
-	
+
 	public boolean startModelDistribution(boolean alwaysEncode) {
 		IdMap map = getMap();
 		boolean result=true;
@@ -1032,7 +1032,7 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 		SimpleEvent event = new SimpleEvent(this, type, null, nodeProxy);
 		return sendEventToClients(event);
 	}
-	
+
 	public Space withModelExecutor(ObjectCondition modelExecutor) {
 		this.map.withModelExecutor(modelExecutor);
 		return this;

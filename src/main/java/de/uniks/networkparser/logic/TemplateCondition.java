@@ -4,7 +4,7 @@ import de.uniks.networkparser.interfaces.ObjectCondition;
 
 public class TemplateCondition implements ObjectCondition {
 	private ObjectCondition condition;
-	private ObjectCondition template; 
+	private ObjectCondition template;
 
 	@Override
 	public boolean update(Object value) {
@@ -18,7 +18,7 @@ public class TemplateCondition implements ObjectCondition {
 		this.condition = condition;
 		return this;
 	}
-	
+
 	public ObjectCondition getCondition() {
 		return condition;
 	}

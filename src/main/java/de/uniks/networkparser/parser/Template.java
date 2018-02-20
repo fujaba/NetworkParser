@@ -22,13 +22,13 @@ public class Template implements TemplateParser {
 	private static final char SPLITEND='}';
 	private static final char ENTER='=';
 	private static final char SPACE = ' ';
-	
+
 	private TemplateCondition token = new TemplateCondition();
-	
+
 	private int type = -1;
-	
+
 	public String name;
-	
+
 	private SimpleList<String> imports = new SimpleList<String>();
 
 	private SimpleList<String> variables = new SimpleList<String>();
@@ -39,10 +39,10 @@ public class Template implements TemplateParser {
 
 	public Template() {
 	}
-	
+
 	public TemplateResultFragment generate(LocalisationInterface parameters, SendableEntityCreator parent, GraphMember member) {
 		if(this.token.getCondition() instanceof StringCondition) {
-			this.token.withCondition(this.parsing((StringCondition)this.token.getCondition(), parameters, false));	
+			this.token.withCondition(this.parsing((StringCondition)this.token.getCondition(), parameters, false));
 		}
 		ObjectCondition template = this.token.getTemplate();
 		if(template instanceof StringCondition) {
@@ -56,7 +56,7 @@ public class Template implements TemplateParser {
 		templateFragment.setParent(parent);
 		templateFragment.withVariable(parameters);
 		templateFragment.withMember(member);
-		
+
 		if(this.token.update(templateFragment) == false) {
 			return null;
 		}
@@ -64,17 +64,17 @@ public class Template implements TemplateParser {
 		ObjectCondition templateCondition = this.token.getTemplate();
 		//Execute Template
 		templateCondition.update(templateFragment);
-		
-		
+
+
 //		templateFragment.withValue(parser.getResult());
 		return templateFragment;
 	}
-	
+
 	public ObjectCondition parsing(StringCondition tokenTemplate, LocalisationInterface customTemplate, boolean variable) {
 //		this.template = template;
 		// Parsing Variables
 		// Search for Variables and UIUf and combiVariables
-		
+
 		// {{Type}}
 		// {{#if Type}} {{#end}}
 		// {{#if Type}} {{#else}} {{#end}}
@@ -94,12 +94,12 @@ public class Template implements TemplateParser {
 		}
 		return parsing(template, customTemplate, false, true);
 	}
-	
+
 	public ObjectCondition parsing(CharacterBuffer buffer, LocalisationInterface customTemplate, boolean isExpression, boolean allowSpace, String... stopWords) {
 		int start=buffer.position(), end;
 		ObjectCondition child = null;
 		ChainCondition parent = new ChainCondition();
-		
+
 		while(buffer.isEnd() == false) {
 			if(isExpression && (buffer.getCurrentChar() == SPACE)) {
 				break;
@@ -146,7 +146,7 @@ public class Template implements TemplateParser {
 						}
 					}
 				}
-				
+
 				ParserCondition condition = null;
 				if(customTemplate instanceof TemplateResultModel) {
 					ParserCondition creator = ((TemplateResultModel)customTemplate).getTemplate(tokenPart.toString());
@@ -160,13 +160,13 @@ public class Template implements TemplateParser {
 				if(condition != null) {
 					condition.create(buffer, this, customTemplate);
 					parent.with(condition);
-					
-					// If StopWords and Expression may be And or 
+
+					// If StopWords and Expression may be And or
 					if(stopWords != null && isExpression) {
 						if(buffer.getCurrentChar() == ' ') {
 							buffer.skip();
 						}
-					}					
+					}
 				}
 				start=buffer.position();
 				continue;
@@ -179,7 +179,7 @@ public class Template implements TemplateParser {
 				buffer.getChar();
 				if(isExpression) {
 					// BREAK FOR ONLY VARIABLE
-					
+
 					char firstChar=buffer.getCurrentChar();
 					if(firstChar == ENTER || firstChar == '!') {
 						// CHECK NEXT TOKEN
@@ -254,7 +254,7 @@ public class Template implements TemplateParser {
 			IfCondition token = new IfCondition();
 			token.withExpression(createVariable(key, true));
 			token.withTrue(StringCondition.create(tokenPart.toString()));
-			
+
 			child = token;
 			parent.with(child);
 			buffer.skip();
@@ -274,7 +274,7 @@ public class Template implements TemplateParser {
 					}
 				}
 			}
-			
+
 			if(isExpression) {
 				if (buffer.charAt(start) == SPLITSTART) {
 					VariableCondition.create(token, isExpression);
@@ -305,13 +305,13 @@ public class Template implements TemplateParser {
 		}
 		return parent;
 	}
-	
+
 	private VariableCondition createVariable(CharSequence value, boolean expression) {
 		VariableCondition condition = VariableCondition.create(value, expression);
 		this.variables.add(value.toString());
 		return condition;
 	}
-	
+
 	public Template withTemplate(String... template) {
 		CharacterBuffer sb = new CharacterBuffer();
 		if(template == null) {
@@ -337,34 +337,34 @@ public class Template implements TemplateParser {
 	protected void setValue(CharSequence value) {
 		this.token.withTemplate(new StringCondition().withValue(value));
 	}
-	
+
 	public Template withCondition(CharSequence condition) {
 		this.token.withCondition(new StringCondition().withValue(condition));
 		return this;
 	}
-	
+
 	public Template withImport(String item) {
 		this.imports.add(item);
 		return this;
 	}
-	
+
 	public int getType() {
 		return type;
 	}
-	
+
 	public void setType(int type) {
 		this.type = type;
 	}
-	
+
 	public Template withType(int type) {
 		setType(type);
 		return this;
 	}
-	
+
 	public SimpleList<String> getVariables() {
 		return variables;
 	}
-	
+
 	@Override
 	public String toString() {
 		return type+": "+name;

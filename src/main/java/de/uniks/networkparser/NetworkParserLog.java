@@ -102,7 +102,7 @@ public class NetworkParserLog {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Log a message with info log level.
 	 *
@@ -124,12 +124,12 @@ public class NetworkParserLog {
 		}
 		return false;
 	}
-	
+
 	public NetworkParserLog withFlag(byte flag) {
-		this.flag = (byte) (this.flag | flag); 
+		this.flag = (byte) (this.flag | flag);
 		return this;
 	}
-	
+
 	public NetworkParserLog withoutFlag(byte flag) {
 		this.flag = (byte) (this.flag | flag);
 		this.flag -= flag;
@@ -172,7 +172,7 @@ public class NetworkParserLog {
 		}
 		return false;
 	}
-	
+
 	public boolean log(Object owner, String method, String msg, int level, Object... params) {
 		if(level == LOGLEVEL_ERROR) {
 			return this.error(owner, method, msg, params);
@@ -182,7 +182,7 @@ public class NetworkParserLog {
 		}
 		return this.info(owner, method, msg, params);
 	}
-	
+
 	public NetworkParserLog withListener(ObjectCondition condition) {
 		this.condition = condition;
 		return this;

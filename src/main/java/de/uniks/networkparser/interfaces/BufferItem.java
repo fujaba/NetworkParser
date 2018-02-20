@@ -114,13 +114,13 @@ public interface BufferItem {
 	 * @return the StringContainer with the new Value
 	 */
 	public CharacterBuffer nextString(char... quotes);
-	
+
 	/**
 	 * Return the characters up to the next close quote character. Remove QUOTES
 	 * @return the StringContainer with the new Value
 	 */
 	public CharacterBuffer nextString();
-	
+
 
 	/**
 	 * Return the characters up to the next close quote character. Backslash

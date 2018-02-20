@@ -84,7 +84,7 @@ public class ByteBuffer extends BufferedBuffer implements BaseItem {
 		}
 		return this.buffer[++position];
 	}
-	
+
 	public Byte[] getBytes() {
 		if(buffer == null || position>=buffer.length-1) {
 			return new Byte[0];
@@ -106,7 +106,7 @@ public class ByteBuffer extends BufferedBuffer implements BaseItem {
 		}
 		return result;
 	}
-	
+
 	public byte[] getValue(int start, int len) {
 		this.withPosition(start);
 
@@ -132,7 +132,7 @@ public class ByteBuffer extends BufferedBuffer implements BaseItem {
 		}
 		return addBytes(bytes, bytes.length);
 	}
-	
+
 	public boolean add(byte[] bytes) {
 		if(bytes == null) {
 			return false;
@@ -173,16 +173,16 @@ public class ByteBuffer extends BufferedBuffer implements BaseItem {
 			if(bytes instanceof byte[]) {
 				byte[] source = (byte[])bytes;
 				if(this.buffer != null && this.buffer.length>=position + len) {
-				    for(int i = 0; i < len; i++){
-				    	this.buffer[position + i] = source[i];
-				    }
+					for(int i = 0; i < len; i++){
+						this.buffer[position + i] = source[i];
+					}
 				}
 			}else {
 				Byte[] source = (Byte[])bytes;
 				if(this.buffer != null && this.buffer.length>=position + len) {
 					for(int i = 0; i < len; i++){
-				    	this.buffer[position + i] = source[i];
-				    }
+						this.buffer[position + i] = source[i];
+					}
 				}
 			}
 		}
@@ -334,7 +334,7 @@ public class ByteBuffer extends BufferedBuffer implements BaseItem {
 	public int size() {
 		return length();
 	}
-	
+
 	public String string() {
 		return new String(buffer);
 	}
@@ -367,14 +367,14 @@ public class ByteBuffer extends BufferedBuffer implements BaseItem {
 		}
 		return this;
 	}
-	
+
 	public boolean add(Object... values) {
 		if(values == null) {
 			return true;
 		}
 		for(Object item : values) {
 			if(item instanceof byte[]) {
-				with((byte[])item, -1);				
+				with((byte[])item, -1);
 			}
 		}
 		return true;

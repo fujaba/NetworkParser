@@ -44,7 +44,7 @@ public class MethodAddCondition implements ParserCondition, SendableEntityCreato
 	@Override
 	public void create(CharacterBuffer buffer, TemplateParser parser, LocalisationInterface customTemplate) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override

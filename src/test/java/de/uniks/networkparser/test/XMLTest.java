@@ -360,7 +360,7 @@ public class XMLTest extends IOClasses{
 		Object decode = decoder.decode(data);
 		assertNotNull(decode);
 	}
-	
+
 	@Test
 	public void PomTest() {
 		StringBuilder sb;
@@ -373,7 +373,7 @@ public class XMLTest extends IOClasses{
 		sb.append("</project>\r\n");
 		pomFile = new PomFile().withValue(sb.toString());
 		Assert.assertEquals("4.2.0", pomFile.getModelVersion());
-		
+
 		sb=new StringBuilder();
 		sb.append("<?xml version=\"1.0\"?>\r\n");
 		sb.append("<project\r\n");
@@ -382,7 +382,7 @@ public class XMLTest extends IOClasses{
 		sb.append("   <!--  -->\r\n");
 		sb.append("</project>\r\n");
 		Assert.assertEquals("4.2.0", pomFile.getModelVersion());
-		
+
 		sb=new StringBuilder();
 		sb.append("<!--\r\n");
 		sb.append(" My Framework\r\n");
@@ -392,14 +392,14 @@ public class XMLTest extends IOClasses{
 		sb.append("   <modelVersion>4.2.0</modelVersion>\r\n");
 		sb.append("</project>\r\n");
 		Assert.assertEquals("4.2.0", pomFile.getModelVersion());
-		
+
 		sb=new StringBuilder();
 		sb.append("<project>\r\n");
 		sb.append("   <modelVersion>4.2.0</modelVersion>\r\n");
 		sb.append("   <!-- =Compile time dependencies= -->\r\n");
 		sb.append("   <!-- ==Apache dependencies== -->\r\n");
 	    sb.append("</project>\r\n");
-		
+
 		pomFile = new PomFile().withValue(sb.toString());
 
 		Assert.assertEquals("4.2.0", pomFile.getModelVersion());

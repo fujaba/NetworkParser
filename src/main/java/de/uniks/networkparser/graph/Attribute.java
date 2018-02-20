@@ -86,7 +86,7 @@ public class Attribute extends Value {
 		}
 		return getType().getName(shortName);
 	}
-	
+
 	public Annotation getAnnotation() {
 		return super.getAnnotation();
 	}
@@ -95,7 +95,7 @@ public class Attribute extends Value {
 		super.withAnnotation(value);
 		return this;
 	}
-	
+
 	@Override
 	public String toString() {
 		CharacterBuffer sb = new CharacterBuffer();
@@ -108,7 +108,7 @@ public class Attribute extends Value {
 		}
 		return sb.toString();
 	}
-	
+
 	@Override
 	public boolean equals(Object obj) {
 		if(obj instanceof Attribute) {
@@ -129,7 +129,7 @@ public class Attribute extends Value {
 		}
 		return super.equals(obj);
 	}
-	
+
 	@Override
 	public Attribute without(GraphMember... values) {
 		super.without(values);

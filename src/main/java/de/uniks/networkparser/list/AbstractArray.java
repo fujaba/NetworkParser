@@ -95,7 +95,7 @@ public abstract class AbstractArray<V> implements BaseItem {
 
 	/** The size of the ArrayList (the number of elements it contains). */
 	int size;
-	
+
 	/**
 	 * Init-List with Collection
 	 *
@@ -317,7 +317,7 @@ public abstract class AbstractArray<V> implements BaseItem {
 			keys[i++] = null;
 		}
 	}
-	
+
 	public void clear() {
 		int arrayFlag = getArrayFlag(size);
 		if (arrayFlag < 1) {
@@ -684,13 +684,13 @@ public abstract class AbstractArray<V> implements BaseItem {
 	public Class<?> getTypClass() {
 		return type;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public <ST extends AbstractArray<V>> ST withType(Class<?> type) {
 		this.type = type;
 		return (ST)this;
 	}
-	
+
 	/**
 	 * Add a Key to internal List and Array if nesessary Method to manipulate
 	 * Array
@@ -785,7 +785,7 @@ public abstract class AbstractArray<V> implements BaseItem {
 		return sb.toString();
 	}
 
-	
+
 	@SuppressWarnings("unchecked")
 	public <ST extends AbstractArray<V>> ST with(Object... values) {
 		add(values);
@@ -1046,7 +1046,7 @@ public abstract class AbstractArray<V> implements BaseItem {
 				return false;
 		return true;
 	}
-	
+
 	public boolean containsAll(Object... keys) {
 		if (keys == null)
 			return true;
@@ -1277,15 +1277,15 @@ public abstract class AbstractArray<V> implements BaseItem {
 		if (end == 0 && len == keyString.length()) {
 			id = -1;
 		}
-	
+
 		Object child;
 		if ((flag & MAP) == 0) {
 			child = getByIndex(SMALL_KEY, id+this.index, size);
 		} else {
 			child = getByIndex(SMALL_VALUE, indexOf(keyString.substring(0, len))+this.index, size);
 		}
-		
-		
+
+
 		if (child == null) {
 			if("size".equalsIgnoreCase(keyString)) {
 				return this.size();

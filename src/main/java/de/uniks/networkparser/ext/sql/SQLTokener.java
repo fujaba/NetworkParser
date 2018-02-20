@@ -66,7 +66,7 @@ public class SQLTokener extends Tokener {
 		this.sqlConnection = connection;
 		this.stragety = stragety;
 	}
-	
+
 	public SQLStatementList encode(GraphList model) {
 		SQLStatementList result = new SQLStatementList();
 		result.add(sqlConnection);
@@ -85,7 +85,7 @@ public class SQLTokener extends Tokener {
 		}
 		return result;
 	}
-	
+
 	private void parseAttributes(Clazz clazz, SQLStatement sqlClass) {
 		for (Attribute attribute : clazz.getAttributes()) {
 			sqlClass.with(attribute.getName(), EntityUtil.convertPrimitiveToObjectType(attribute.getType().getName(true)).toUpperCase());
@@ -172,7 +172,7 @@ public class SQLTokener extends Tokener {
 		}
 		return true;
 	}
-	
+
 	public boolean close() {
 		if(this.connection == null) {
 			return true;
@@ -193,7 +193,7 @@ public class SQLTokener extends Tokener {
 		try {
 			return DriverManager.getConnection(string);
 		} catch (SQLException e) {
-			
+
 		}
 		return null;
 	}
@@ -202,11 +202,11 @@ public class SQLTokener extends Tokener {
 		this.connection = connection;
 		return this;
 	}
-	
+
 	 public Connection getConnection() {
 		return connection;
 	}
-	
+
 	@Override
 	public SQLStatementList encode(Object entity, MapEntity map) {
 		SQLStatementList statements = new SQLStatementList();
@@ -217,7 +217,7 @@ public class SQLTokener extends Tokener {
 		validateStatements(statements, results);
 		return statements;
 	}
-	
+
 	public SQLStatementList update(Object entity, String id, String property, Object newValue) {
 		SQLStatementList statements = new SQLStatementList();
 		statements.add(sqlConnection);
@@ -225,7 +225,7 @@ public class SQLTokener extends Tokener {
 		statements.add(command);
 		return statements;
 	}
-	
+
 	private void addTableCreate(String tableName, Object item, SendableEntityCreator creator, SQLStatementList statements, MapEntity map) {
 		if (map.contains(tableName) == false) {
 			if( map.isTokenerFlag(FLAG_DROP)) {
@@ -321,14 +321,14 @@ public class SQLTokener extends Tokener {
 			if(value.equals(creator.getValue(prototype, property))) {
 				continue;
 			}
-			
+
 			// SWITCH FOR TO N-ASSOC
-			
+
 			if (value instanceof Collection<?>) {
 				Collection<?> children = (Collection<?>) value;
 				for(Iterator<?> i = children.iterator();i.hasNext();) {
 					String neighbourId = parseModel(map, i.next(), statements);
-					
+
 					insertStatement = new SQLStatement(SQLCommand.INSERT, tableName, id);
 					insertStatement.with(SQLStatement.PROP, property);
 					insertStatement.with(SQLStatement.VALUE, neighbourId);

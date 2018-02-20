@@ -65,7 +65,7 @@ public abstract class GraphModel extends GraphEntity implements BaseItem {
 			}
 		}
 		return collection;
-	} 
+	}
 
 	protected boolean clearAddOnClazzes() {
 		if(this.children == null) {
@@ -74,7 +74,7 @@ public abstract class GraphModel extends GraphEntity implements BaseItem {
 		if(this.children instanceof GraphSimpleSet == false) {
 			if(this.children instanceof Clazz) {
 				Clazz clazz = (Clazz) this.children;
-				if(clazz.getType() == ClazzType.CREATOR 
+				if(clazz.getType() == ClazzType.CREATOR
 						|| clazz.getType() == ClazzType.PATTERNOBJECT
 						|| clazz.getType() == ClazzType.SET) {
 					clazz.setParentNode(null);
@@ -83,14 +83,14 @@ public abstract class GraphModel extends GraphEntity implements BaseItem {
 			}
 			return true;
 		}
-		
+
 		GraphSimpleSet list = (GraphSimpleSet) this.children;
 		Iterator<GraphMember> i = list.iterator();
 		while(i.hasNext()) {
 			GraphMember member = i.next();
 			if(member instanceof Clazz) {
 				Clazz clazz = (Clazz) member;
-				if(clazz.getType() == ClazzType.CREATOR 
+				if(clazz.getType() == ClazzType.CREATOR
 						|| clazz.getType() == ClazzType.PATTERNOBJECT
 						|| clazz.getType() == ClazzType.SET) {
 					clazz.setParentNode(null);
@@ -100,7 +100,7 @@ public abstract class GraphModel extends GraphEntity implements BaseItem {
 		}
 		return true;
 	}
-	
+
 	public Clazz createClazz(String name) {
 		if (name == null || children == null || (children instanceof Clazz && name.equals(((Clazz)children).getName()))) {
 			Clazz clazz = new Clazz(name);
@@ -159,7 +159,7 @@ public abstract class GraphModel extends GraphEntity implements BaseItem {
 	public boolean dumpHTML(String diagramName){
 		return false;
 	}
-	
+
 	public boolean fixClassModel() {
 		Clazz[] classes = getClazzes().toArray(new Clazz[getClazzes().size()]);
 		SimpleSet<Clazz> visited = new SimpleSet<Clazz>();
@@ -187,10 +187,10 @@ public abstract class GraphModel extends GraphEntity implements BaseItem {
 				}
 			}
 		}
-		
+
 		return true;
 	}
-	
+
 	public String getDefaultPackage() {
 		return DEFAULTPACKAGE2;
 	}
@@ -254,14 +254,14 @@ public abstract class GraphModel extends GraphEntity implements BaseItem {
 		}
 		return this;
 	}
-	
+
 	public String toString(Converter converter) {
 		if (converter == null) {
 			return null;
 		}
 		return converter.encode(this);
 	}
-	
+
 	public int size() {
 		if(this.children == null) {
 			return 0;

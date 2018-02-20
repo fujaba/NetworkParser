@@ -94,8 +94,8 @@ public class StoryStepSourceCode implements ObjectCondition {
 		}
 		return line;
 	}
-	
-	
+
+
 	boolean checkEnd(int linePos, CharacterBuffer line, FileBuffer fileBuffer) {
 		if(endLine<0 && FORMAT_JAVA.equals(format)) {
 			// End of Method
@@ -134,9 +134,9 @@ public class StoryStepSourceCode implements ObjectCondition {
 		}
 		int linePos = 1;
 		if(FORMAT_JAVA.equals(this.format) && startLine == -1) {
-			String search=this.methodName+"(";	
+			String search=this.methodName+"(";
 			if(this.methodSignature != null) {
-				search = this.methodSignature; 
+				search = this.methodSignature;
 			}
 			int start = this.currentLine;
 			while (line != null && linePos <= start) {
@@ -158,7 +158,7 @@ public class StoryStepSourceCode implements ObjectCondition {
 			line = fileBuffer.readLine();
 			linePos++;
 		}
-		
+
 		while (line != null) {
 			indexText.with(formatString(line));
 			line = analyseLine(fileBuffer.readLine());
@@ -172,7 +172,7 @@ public class StoryStepSourceCode implements ObjectCondition {
 		fileBuffer.close();
 		this.body = indexText;
 	}
-	
+
 	String formatString(CharacterBuffer buffer) {
 		if(FORMAT_JAVA.equals(format)) {
 			String string = buffer.toString();
@@ -260,15 +260,15 @@ public class StoryStepSourceCode implements ObjectCondition {
 		if (pos > 0) {
 			fileName = packagePath.substring(pos+1);
 			packagePath = packagePath.substring(0, pos);
-			
+
 		}
 		this.startStory(packagePath,fileName);
 		return this;
 	}
-	
+
 	public StoryStepSourceCode withCode(String path, Class<?> packageName) {
 		String fileName = packageName.getTypeName();
-		
+
 		this.contentFile = path+"/"+ fileName.replace('.', '/')+".java";
 		this.currentLine = Integer.MAX_VALUE;
 		return this;
@@ -315,8 +315,8 @@ public class StoryStepSourceCode implements ObjectCondition {
 		this.methodSignature = value;
 		int pos = this.methodSignature.indexOf("(");
 		if(pos>0) {
-			this.methodName = this.methodSignature.substring(0, pos);	
+			this.methodName = this.methodSignature.substring(0, pos);
 		}
 		return this;
-	}		
+	}
 }

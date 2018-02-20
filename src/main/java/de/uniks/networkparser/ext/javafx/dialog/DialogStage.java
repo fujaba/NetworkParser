@@ -71,7 +71,7 @@ public class DialogStage implements Runnable {
 
 			double ownerX = (Double) ReflectionLoader.call("getX", owner);
 			double ownerY = (Double) ReflectionLoader.call("getY", owner);
-			
+
 			if (ownerX < 0 || ownerY < 0) {
 				// Fix for #165
 				Object screen = ReflectionLoader.call("getPrimary", ReflectionLoader.SCREEN);

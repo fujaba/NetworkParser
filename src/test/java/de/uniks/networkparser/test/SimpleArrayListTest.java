@@ -18,20 +18,20 @@ import de.uniks.networkparser.list.SortedList;
 import de.uniks.networkparser.test.model.SortedMsg;
 
 public class SimpleArrayListTest {
-	
+
 	@Test
 	public void testSetElement() {
 		SimpleSet<String> set=new SimpleSet<String>();
-		
+
 		SimpleList<String> list=new SimpleList<String>();
 		set.add("Hallo", "Welt", "Stefan");
 		set.add("Stefan");
-		
+
 		list.add("Stefan", "Stefan");
 		Assert.assertEquals(3, set.size());
 		Assert.assertEquals(2, list.size());
 	}
-	
+
 	@Test
 	public void testSortElement() {
 		SortedList<SortedMsg> list = new SortedList<SortedMsg>(true);
@@ -46,7 +46,7 @@ public class SimpleArrayListTest {
 		Assert.assertEquals(42, list.get(3).getNumber());
 		Assert.assertEquals(80, list.get(4).getNumber());
 	}
-	
+
 	@Test
 	public void testRemoveFirstItem() {
 		SimpleList<String> list = new SimpleList<String>().with("Hello", "World", "Test");
@@ -323,23 +323,23 @@ public class SimpleArrayListTest {
 
 		Assert.assertTrue(list.contains(453));
 	}
-	
-	
+
+
 	@Test
 	public void testSortedMap() {
 		SimpleKeyValueList<Double, String> map = new SimpleKeyValueList<Double, String>().withComparator(EntityComparator.createComparator());
 		map.add(42, "Welt");
 		map.add(100, "Stefan");
 		map.add(23, "Hallo");
-		
+
 		CharacterBuffer sb=new CharacterBuffer();
 		for(int i=0;i<map.size();i++) {
 			sb.add(map.getValueByIndex(i));
 			sb.add(" ");
 		}
-		
+
 		Assert.assertEquals("Hallo Welt Stefan ", sb.toString());
-		
+
 	}
 
 }

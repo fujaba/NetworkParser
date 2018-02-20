@@ -16,21 +16,21 @@ public class AutoCompletionList {
 	//NUR JAVASCRIPT
 //	private TreeSet<String> result;
 //	private String oldSearch;
-	
+
 	public AutoCompletionList withMap(IdMap map, String property) {
 		this.map = map;
 		this.property = property;
 		return this;
 	}
-	
+
 	public IdMap getMap() {
 		return map;
 	}
-	
+
 	public String getProperty() {
 		return property;
 	}
-	
+
 	public AutoCompletionList withCaseSensitive(boolean value) {
 		this.caseSensitive =  value;
 		return this;
@@ -39,7 +39,7 @@ public class AutoCompletionList {
 	public boolean isCaseSensitive() {
 		return caseSensitive;
 	}
-	
+
 
 	public AutoCompletionList withSorted(boolean value) {
 		this.sort =  value;
@@ -49,8 +49,8 @@ public class AutoCompletionList {
 	public boolean isSorted() {
 		return sort;
 	}
-	
-	
+
+
 //
 //	public Set<String> items(String text) {
 //		if(oldSearch!=null && oldSearch.startsWith(text) && text.length()>0) {

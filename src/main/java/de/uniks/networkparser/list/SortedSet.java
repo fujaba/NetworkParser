@@ -35,7 +35,7 @@ public class SortedSet<V> extends SimpleSet<V> {
 			comparator();
 		}
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public Comparator<Object> comparator() {

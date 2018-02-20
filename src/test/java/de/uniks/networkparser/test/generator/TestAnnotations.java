@@ -12,25 +12,25 @@ public class TestAnnotations {
 	public void testClassWithAnnotation() {
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.annotation_a");
 		Clazz person = model.createClazz("Person");
-		
+
 		Annotation annotation = Annotation.create("Deprecated");
 		person.with(annotation);
 		model.getGenerator().testGeneratedCode("java");
 //		model.generate("src/test/java");
-		
+
 	}
-	
+
 	@Test
 	public void testClassWithMultipleAnnotations() {
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.annotation_b");
 		Clazz person = model.createClazz("Person");
-		
+
 		Annotation annotation = Annotation.create("Deprecated");
-		
+
 		person.with(annotation);
 		person.with(Annotation.DEPRECATED);
 		model.getGenerator().testGeneratedCode("java");
 //		model.generate("src/test/java");
 	}
-	
+
 }

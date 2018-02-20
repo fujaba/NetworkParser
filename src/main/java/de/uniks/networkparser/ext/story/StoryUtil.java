@@ -11,7 +11,7 @@ public class StoryUtil {
     {
     	StoryUtil.<RuntimeException>throwException(exception, null);
     }
-    
+
     public static Story withBreakOnAssert(Story story, boolean value) {
     	story.withBreakOnAssert(value);
     	return story;

@@ -3,11 +3,11 @@
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
- * and Eclipse Distribution License v1.0 which accompany this distribution. 
+ * and Eclipse Distribution License v1.0 which accompany this distribution.
  *
- * The Eclipse Public License is available at 
+ * The Eclipse Public License is available at
  *    http://www.eclipse.org/legal/epl-v10.html
- * and the Eclipse Distribution License is available at 
+ * and the Eclipse Distribution License is available at
  *   http://www.eclipse.org/org/documents/edl-v10.php.
  *
  * Contributors:
@@ -23,16 +23,16 @@ import de.uniks.networkparser.ext.mqtt.MqttException;
 
 
 /**
- * Provides a "token" based system for storing and tracking actions across 
- * multiple threads. 
+ * Provides a "token" based system for storing and tracking actions across
+ * multiple threads.
  * When a message is sent, a token is associated with the message
  * and saved using the {@link CommsTokenStore#saveToken(Token, MqttWireMessage)} method. Anyone interested
- * in tacking the state can call one of the wait methods on the token or using 
- * the asynchronous listener callback method on the operation. 
- * The {@link CommsReceiver} class, on another thread, reads responses back from 
- * the network. It uses the response to find the relevant token, which it can then 
- * notify. 
- * 
+ * in tacking the state can call one of the wait methods on the token or using
+ * the asynchronous listener callback method on the operation.
+ * The {@link CommsReceiver} class, on another thread, reads responses back from
+ * the network. It uses the response to find the relevant token, which it can then
+ * notify.
+ *
  * Note:
  *   Ping, connect and disconnect do not have a unique message id as
  *   only one outstanding request of each type is allowed to be outstanding
@@ -54,11 +54,11 @@ public class CommsTokenStore {
 	/**
 	 * Based on the message type that has just been received return the associated
 	 * token from the token store or null if one does not exist.
-	 * @param message whose token is to be returned 
+	 * @param message whose token is to be returned
 	 * @return token for the requested message
 	 */
 	public Token getToken(MqttWireMessage message) {
-		String key = ""+message.getMessageId(); 
+		String key = ""+message.getMessageId();
 		return (Token)tokens.get(key);
 	}
 
@@ -66,27 +66,27 @@ public class CommsTokenStore {
 		return (Token)tokens.get(key);
 	}
 
-	
+
 	public Token removeToken(MqttWireMessage message) {
 		if (message != null) {
 			return removeToken(""+message.getMessageId());
 		}
 		return null;
 	}
-	
+
 	public Token removeToken(String key) {
 		//@TRACE 306=key={0}
-		
+
 		if ( null != key ){
 		    return (Token) tokens.remove(key);
 		}
-		
+
 		return null;
 	}
-		
+
 	/**
 	 * Restores a token after a client restart.  This method could be called
-	 * for a SEND of CONFIRM, but either way, the original SEND is what's 
+	 * for a SEND of CONFIRM, but either way, the original SEND is what's
 	 * needed to re-build the token.
 	 * @param message The {@link MqttWireMessage} message to restore
 	 * @return a Token
@@ -107,22 +107,22 @@ public class CommsTokenStore {
 		}
 		return token;
 	}
-	
-	// For outbound messages store the token in the token store 
-	// For pubrel use the existing publish token 
+
+	// For outbound messages store the token in the token store
+	// For pubrel use the existing publish token
 	protected void saveToken(Token token, MqttWireMessage message) throws MqttException {
 		synchronized(tokens) {
 			if (closedResponse == null) {
 				String key = ""+message.getMessageId();
 				//@TRACE 300=key={0} message={1}
-				
+
 				saveToken(token,key);
 			} else {
 				throw closedResponse;
 			}
 		}
 	}
-	
+
 	protected void saveToken(Token token, String key) {
 		synchronized(tokens) {
 			//@TRACE 307=key={0} token={1}
@@ -137,7 +137,7 @@ public class CommsTokenStore {
 			closedResponse = quiesceResponse;
 		}
 	}
-	
+
 	public void open() {
 		synchronized(tokens) {
 			//@TRACE 310=>
@@ -155,17 +155,17 @@ public class CommsTokenStore {
 			Token token;
 			while(enumeration.hasMoreElements()) {
 				token = (Token)enumeration.nextElement();
-				if (token != null 
+				if (token != null
 					&& !token.isNotified()) {
 					list.addElement(token);
 				}
 			}
-	
+
 			Token[] result = new Token[list.size()];
 			return (Token[]) list.toArray(result);
 		}
 	}
-	
+
 	public Vector<Token> getOutstandingTokens() {
 		synchronized(tokens) {
 			//@TRACE 312=>
@@ -192,7 +192,7 @@ public class CommsTokenStore {
 			tokens.clear();
 		}
 	}
-	
+
 	public int count() {
 		synchronized(tokens) {
 			return tokens.size();

@@ -16,14 +16,14 @@ public class Server_UPD extends Thread implements Server{
 	protected DatagramSocket socket;
 	private NodeProxyServer proxy;
 
-	public Server_UPD(NodeProxyServer proxy, boolean asyn) 
+	public Server_UPD(NodeProxyServer proxy, boolean asyn)
 	{
 		this.proxy = proxy;
 		if(init() && asyn){
 			start();
 		}
 	}
-	
+
 	public boolean close(){
 		this.run=false;
 		if(socket!=null){
@@ -32,12 +32,12 @@ public class Server_UPD extends Thread implements Server{
 		}
 		return true;
 	}
-	
+
 	@Override
 	public boolean isRun() {
 		return socket!=null && socket.isClosed() == false;
 	}
-	
+
 	@Override
 	public void run()
 	{
@@ -50,7 +50,7 @@ public class Server_UPD extends Thread implements Server{
 			}
 		}
 	}
-	
+
 	public DatagramPacket createSendPacket() {
 		byte[] sendData = new byte[proxy.getBufferSize()];
 		if(proxy.getSpace() != null) {
@@ -70,7 +70,7 @@ public class Server_UPD extends Thread implements Server{
 		DatagramPacket receivePacket;
 		try {
 			socket.send(message);
-			
+
 			byte[] receiveData = new byte[proxy.getBufferSize()];
 			receivePacket = new DatagramPacket(receiveData, receiveData.length);
 			socket.receive(receivePacket);
@@ -79,18 +79,18 @@ public class Server_UPD extends Thread implements Server{
 		}
 		return receivePacket;
 	}
-	
-	public void runServer() 
+
+	public void runServer()
 	{
 		Thread.currentThread().setName(proxy.getPort()+" broadcast server");
-		while (!isInterrupted()&&this.run) 
+		while (!isInterrupted()&&this.run)
 		{
 			try
 			{
 				byte[] receiveData = new byte[proxy.getBufferSize()];
 				DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
 				socket.receive(receivePacket);
-				
+
 	//			String sentence = new String(receivePacket.getData());
 	//			System.out.println("RECEIVED: " + sentence);
 				InetAddress IPAddress = receivePacket.getAddress();
@@ -99,14 +99,14 @@ public class Server_UPD extends Thread implements Server{
 				byte[] sendData = answer.toString().getBytes();
 				DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, port);
 				socket.send(sendPacket);
-			} 
+			}
 			catch (IOException e) {
-				
+
 			}
 		}
 	}
 
-	private boolean init() 
+	private boolean init()
 	{
 		boolean success=true;
 		try {

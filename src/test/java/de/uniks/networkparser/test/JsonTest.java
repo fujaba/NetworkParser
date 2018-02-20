@@ -67,18 +67,18 @@ public class JsonTest extends IOClasses {
 	public void testJsonEquals() {
 		JsonObject jsonObject = new JsonObject();
 		jsonObject.withKeyValue("msg", "init");
-		
+
 		Assert.assertFalse(jsonObject.equals(Equals.create("msg", "game")));
 		Assert.assertTrue(jsonObject.equals(Equals.create("msg", "init")));
 	}
-	
+
 	@Test
 	public void testJSONDuplicate() {
 		JsonObject json = new JsonObject().withValue("{\"type\":\"new\", \"type\":\"old\"}");
 		Assert.assertEquals(json.get("type"), "old");
 		Assert.assertEquals(1, json.size());
 	}
-	
+
 	@Test
 	public void testJSONDelete() {
 		JsonObject json = new JsonObject().withValue("{\"id\":42, \"dice\":3}");
@@ -88,14 +88,14 @@ public class JsonTest extends IOClasses {
 		String key = json.getKeyByIndex(0);
 		Assert.assertEquals(json.getValue(key), 3);
 	}
-	
+
 	@Test
 	public void testJSONEmptyKey() {
 		JsonObject json = new JsonObject().withValue("{\"id\":42, }");
 		Assert.assertEquals(json.get("id"), 42);
 		Assert.assertEquals(1, json.size());
 	}
-	
+
 	@Test
 	public void testJSONPath() {
 		JsonObject json = new JsonObject().withValue("{\"id\":\"D:\\\\Roellmedia\\\\\"\n\r}");
@@ -432,7 +432,7 @@ public class JsonTest extends IOClasses {
 		chatMessage.setSender("Stefan Lindel");
 		IdMap jsonMap = new IdMap();
 		jsonMap.withTimeStamp(1);
-		
+
 		jsonMap.with(new ChatMessageCreator());
 
 		String reference = "{\r\n  \"class\":\"de.uniks.networkparser.test.model.ChatMessage\",\r\n  \"id\":\"C1\",\r\n  \"prop\":{\r\n    \"sender\":\"Stefan Lindel\",\r\n    \"txt\":\"Dies ist eine Testnachricht\"\r\n  }\r\n}";
@@ -688,7 +688,7 @@ public class JsonTest extends IOClasses {
 		JsonObject jsonB = new JsonObject().withValue("{id:42, no:24, list:[1,2], array:[1,3]}");
 		JsonObject same = new JsonObject();
 		TextDiff diffList = new TextDiff();
-		
+
 		Assert.assertFalse(EntityUtil.compareEntity(jsonA, jsonB, diffList, same));
 		Assert.assertEquals("{\"id\":42,\"list\":[1,2]}", same.toString());
 		Assert.assertEquals("{\"no\":23,\"array\":[2]}", jsonA.toString());
@@ -784,11 +784,11 @@ public class JsonTest extends IOClasses {
 		house.setName("University");
 		IdMap map=new IdMap().with(new HouseCreator());
 		map.withTimeStamp(1);
-		
+
 		SimpleList<String> messages= new SimpleList<String>();
 		messages.add("{\"class\":\"de.uniks.networkparser.test.model.House\",\"id\":\"H1\",\"prop\":{\"name\":\"University\",\"floor\":4}}");
 		messages.add("{\"class\":\"de.uniks.networkparser.test.model.House\",\"id\":\"H1\",\"rem\":{\"floor\":4},\"upd\":{\"floor\":42}}");
-		
+
 		map.with(new ObjectCondition() {
 			@Override
 			public boolean update(Object event) {
@@ -797,7 +797,7 @@ public class JsonTest extends IOClasses {
 				}
 				SimpleEvent simpleEvent = (SimpleEvent) event;
 				String testMessage = messages.first();
-				
+
 				String updateMessage = simpleEvent.getEntity().toString();
 				Assert.assertEquals(testMessage, updateMessage);
 				if(messages.size()>1) {
@@ -875,7 +875,7 @@ public class JsonTest extends IOClasses {
 		map.withTimeStamp(1);
 		map.toJsonObject(person);
 		UpdateAccumulate updateAccumulate = new UpdateAccumulate();
-		
+
 		map.getMapListener().suspendNotification(updateAccumulate);
 		map.withListener(new ObjectCondition() {
 			@Override
@@ -884,15 +884,15 @@ public class JsonTest extends IOClasses {
 				return false;
 			}
 		});
-		
+
 		person.setName("Albert");
 		person.setBalance(42);
 		map.getMapListener().resetNotification();
-		
+
 		System.out.println(updateAccumulate.getChange());
 		Assert.assertEquals("{\"class\":\"de.uniks.networkparser.test.model.Person\",\"id\":\"P1\",\"upd\":{\"name\":\"Albert\",\"balance\":42},\"rem\":{\"balance\":0}}", updateAccumulate.getChange().toString());
 	}
-	
+
 //	@Test
 //	public void testErrorHandler() {
 //		JsonObject item = new JsonObject();
@@ -902,9 +902,9 @@ public class JsonTest extends IOClasses {
 //			item.getInt("port");
 //		}catch (Exception e) {
 //			errorHandler.saveException(e);
-//			
+//
 //			// TODO: handle exception
 //		}
-//		
+//
 //	}
 }

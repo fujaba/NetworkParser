@@ -10,13 +10,13 @@ public class Import extends GraphMember {
 	public static Import create(Class<?> type) {
 		return new Import().withChildren(new Clazz(type));
 	}
-	
+
 	@Override
 	public Import with(String name) {
 		super.with(name);
 		return this;
 	}
-	
+
 	protected Import withChildren(GraphMember... values) {
 		super.withChildren(values);
 		return this;

@@ -10,6 +10,6 @@ public class CppClazz extends BasicGenerator {
 	}
 
 	public CppClazz() {
-		
+
 	}
 }

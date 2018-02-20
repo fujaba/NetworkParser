@@ -111,7 +111,7 @@ public abstract class AbstractList<V> extends AbstractArray<V> implements Iterab
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Get the before lower Value of a Set
 	 * @param element Element for check
@@ -179,7 +179,7 @@ public abstract class AbstractList<V> extends AbstractArray<V> implements Iterab
 		}
 		return (ST) filterCollection;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public <ST extends AbstractList<V>> ST filter(Condition<V> newValue) {
 		ST filterList = (ST) getNewList(false);
@@ -193,7 +193,7 @@ public abstract class AbstractList<V> extends AbstractArray<V> implements Iterab
 	public Iterator<V> iterator(boolean checkPointer) {
 		return new SimpleIterator<V>(this).withCheckPointer(checkPointer);
 	}
-	
+
 	@Override
 	public boolean equals(Object obj) {
 		if(obj instanceof Collection<?> == false) {

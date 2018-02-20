@@ -28,11 +28,11 @@ import de.uniks.networkparser.list.SimpleSet;
 
 public class AssociationSet extends SimpleSet<Association> {
 	public static final AssociationSet EMPTY_SET = new AssociationSet();
-	
+
 	public AssociationSet() {
 		this.withType(Association.class);
 	}
-	
+
 	public ClazzSet getClazzes() {
 		ClazzSet collection = new ClazzSet();
 		for(Association item : this) {
@@ -70,7 +70,7 @@ public class AssociationSet extends SimpleSet<Association> {
 	public AssociationSet hasName(String otherValue) {
 		return filter(Association.NAME.equals(otherValue));
 	}
-	
+
 	@Override
 	public boolean contains(Object o) {
 		if(super.contains(o)) {

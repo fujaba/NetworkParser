@@ -32,7 +32,7 @@ public class NodeProxyTCP extends NodeProxy {
 	public static final String PUT = "PUT";
 	public static final String PATCH = "PATCH";
 	public static final String DELETE = "DELETE";
-	
+
 	public static final String PROPERTY_URL = "url";
 	public static final String PROPERTY_PORT = "port";
 	protected int port;
@@ -307,7 +307,7 @@ public class NodeProxyTCP extends NodeProxy {
 		this.allowAnswer = true;
 		return this;
 	}
-	
+
 	public static HTMLEntity postHTTP(String url, Map<String, String> params) {
 		HttpURLConnection conn = getConnection(url, POST);
 		if(conn == null) {
@@ -333,10 +333,10 @@ public class NodeProxyTCP extends NodeProxy {
 			return readAnswer(conn);
 		} catch (IOException e) {
 		}
-		
+
 		return null;
 	}
-	
+
 	public static HTMLEntity postHTTP(String url, BaseItem params) {
 		HttpURLConnection conn = getConnection(url, POST);
 		if(conn == null) {
@@ -356,10 +356,10 @@ public class NodeProxyTCP extends NodeProxy {
 			return readAnswer(conn);
 		} catch (IOException e) {
 		}
-		
+
 		return null;
 	}
-	
+
 	private static HttpURLConnection getConnection(String url, String type) {
 		HttpURLConnection conn =null;
 		try {
@@ -379,7 +379,7 @@ public class NodeProxyTCP extends NodeProxy {
 		}
 		return conn;
 	}
-	
+
 	private static HTMLEntity readAnswer(HttpURLConnection conn) {
 		HTMLEntity rootItem=new HTMLEntity();
 		try {
@@ -398,7 +398,7 @@ public class NodeProxyTCP extends NodeProxy {
 		conn.disconnect();
 		return rootItem;
 	}
-	
+
 	public static HTMLEntity getHTTP(String url) {
 		HttpURLConnection conn = getConnection(url, GET);
 		if(conn == null) {
@@ -406,7 +406,7 @@ public class NodeProxyTCP extends NodeProxy {
 		}
 		return readAnswer(conn);
 	}
-	
+
 	@Override
 	public String toString() {
 		if(this.url != null && this.port >0) {
@@ -414,7 +414,7 @@ public class NodeProxyTCP extends NodeProxy {
 		}
 		return super.toString();
 	}
-	
+
 	public NodeProxyTCP withTimeOut(int value) {
 		this.timeOut = value;
 		return this;

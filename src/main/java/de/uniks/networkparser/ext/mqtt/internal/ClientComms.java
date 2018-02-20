@@ -3,11 +3,11 @@
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
- * and Eclipse Distribution License v1.0 which accompany this distribution. 
+ * and Eclipse Distribution License v1.0 which accompany this distribution.
  *
- * The Eclipse Public License is available at 
+ * The Eclipse Public License is available at
  *    http://www.eclipse.org/legal/epl-v10.html
- * and the Eclipse Distribution License is available at 
+ * and the Eclipse Distribution License is available at
  *   http://www.eclipse.org/org/documents/edl-v10.php.
  *
  * Contributors:
@@ -136,7 +136,7 @@ public class ClientComms {
 	 */
 	public void sendNoWait(MqttWireMessage message, Token token) throws MqttException {
 		if (isConnected() ||
-				(!isConnected() && message instanceof MqttConnect) ||
+				(!isConnected() && message.getType() == MqttWireMessage.MESSAGE_TYPE_CONNECT) ||
 				(isDisconnecting() && message.getType() == MqttWireMessage.MESSAGE_TYPE_DISCONNECT)) {
 				this.internalSend(message, token);
 		} else {
@@ -197,13 +197,13 @@ public class ClientComms {
 				//@TRACE 214=state=CONNECTING
 
 				conState = CONNECTING;
-				
-				MqttConnect connect = new MqttConnect(client.getClientId(),
-						client.getMqttVersion(),
-						client.isCleanSession(),
-						client.getKeepAliveInterval(),
-						client.getUserName(),
-						client.getPassword());
+
+				MqttWireMessage connect = MqttWireMessage.create(MqttWireMessage.MESSAGE_TYPE_CONNECT);
+				connect.withNames(client.getClientId(), client.getUserName(), client.getPassword());
+				connect.withKeepAliveInterval(client.getKeepAliveInterval()); 
+				connect.withCode(client.getMqttVersion());
+				connect.withSession(client.isCleanSession());
+
 				this.clientState.setKeepAliveSecs(client.getKeepAliveInterval());
 				this.clientState.setCleanSession(client.isCleanSession());
 				this.clientState.setMaxInflight(client.getMaxInflight());
@@ -282,7 +282,7 @@ public class ClientComms {
 
 		// Stop the thread that handles inbound work from the network
 		if (receiver != null) {receiver.stop();}
-		
+
 		// Stop the network module, send and receive now not possible
 		try {
 			if (networkModule != null) {
@@ -308,7 +308,7 @@ public class ClientComms {
 		}
 
 		if (sender != null) { sender.stop(); }
-		
+
 		// All disconnect logic has been completed allowing the
 		// client to be marked as disconnected.
 		synchronized(conLock) {
@@ -366,7 +366,7 @@ public class ClientComms {
 				Token tok = (Token)toksToNotE.nextElement();
 
 				if (tok.getKey().equals(MqttWireMessage.KEY_DISCONNECT) ||
-						tok.getKey().equals(MqttConnect.KEY)) {
+						tok.getKey().equals(MqttWireMessage.KEY_CONNECT)) {
 					// Its con or discon so remember and notify @ end of disc routine
 					tokToNotifyLater = tok;
 				} else {
@@ -408,7 +408,7 @@ public class ClientComms {
 
 	public void disconnectForcibly(long quiesceTimeout, long disconnectTimeout) throws MqttException {
 		disconnectForcibly(quiesceTimeout, disconnectTimeout, true);
-	}	
+	}
 
 	/**
 	 * Disconnect the connection and reset all the states.
@@ -470,7 +470,7 @@ public class ClientComms {
 			return conState == CLOSED;
 		}
 	}
-	
+
 	public boolean isResting() {
 		synchronized (conLock) {
 			return resting;
@@ -481,34 +481,34 @@ public class ClientComms {
 	public void setCallback(SimpleEventCondition mqttCallback) {
 		this.callback.setCallback(mqttCallback);
 	}
-	
+
 	public SimpleEventCondition getCallback() {
 		return callback.getCallBack();
 	}
-	
+
 	public void setManualAcks(boolean manualAcks) {
 		this.callback.setManualAcks(manualAcks);
 	}
-	
+
 	public void messageArrivedComplete(int messageId, int qos) throws MqttException {
 		this.callback.messageArrivedComplete(messageId, qos);
 	}
-	
+
 	protected MqttTopic getTopic(String topic) {
 		return new MqttTopic(topic, this);
 	}
-	
+
 	public TCPNetworkModule getNetworkModules() {
 		return networkModule;
 	}
 	public void setNetworkModules(TCPNetworkModule networkModules) {
 		this.networkModule = networkModules;
 	}
-	
+
 	protected void deliveryComplete(MqttWireMessage msg) throws MqttException {
 		this.clientState.deliveryComplete(msg);
 	}
-	
+
 	protected void deliveryComplete(int messageId) throws MqttException {
 		this.clientState.deliveryComplete(messageId);
 	}
@@ -530,10 +530,10 @@ public class ClientComms {
 	private class ConnectBG implements Runnable {
 		ClientComms 	clientComms = null;
 		Token 		conToken;
-		MqttConnect 	conPacket;
+		MqttWireMessage conPacket;
 		private String threadName;
 
-		ConnectBG(ClientComms cc, Token cToken, MqttConnect cPacket, ExecutorService executorService) {
+		ConnectBG(ClientComms cc, Token cToken, MqttWireMessage cPacket, ExecutorService executorService) {
 			clientComms = cc;
 			conToken 	= cToken;
 			conPacket 	= cPacket;
@@ -614,7 +614,7 @@ public class ClientComms {
 			}
 		}
 	}
-	
+
 	/**
 	 * When Automatic reconnect is enabled, we want ClientComs to enter the
 	 * 'resting' state if disconnected. This will allow us to publish messages

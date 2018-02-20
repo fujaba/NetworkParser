@@ -45,7 +45,7 @@ public class JsonArrayLazy extends JsonArray {
 		}
 		return true;
 	}
-	
+
 	@Override
 	protected Object getByIndex(int offset, int index, int size) {
 		Object result = super.getByIndex(offset, index, size);

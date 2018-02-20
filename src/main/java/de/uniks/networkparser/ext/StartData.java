@@ -19,12 +19,12 @@ public class StartData implements SendableEntityCreatorNoIndex
 	private static boolean editable=true;
 	private static String fileName = "config.json";
 	private static String NULLVALUE = "null";
-	
+
 	public StartData() {
-		
+
 	}
-	
-	
+
+
 	public static boolean setFileName(String value) {
 		if(value != null && value != fileName) {
 			StartData.fileName = value;
@@ -32,11 +32,11 @@ public class StartData implements SendableEntityCreatorNoIndex
 		}
 		return false;
 	}
-	
+
 	public static StartData instance() {
 		return instance;
 	}
-	
+
 	public static boolean addParameter(String key, String label, String description, Object values) {
 		if(PROPERTY_EDITABLE.equals(key)) {
 			return false;
@@ -52,12 +52,12 @@ public class StartData implements SendableEntityCreatorNoIndex
 		}
 		return success;
 	}
-	
+
 	public static boolean addParameter(String key, Object value) {
 		if(PROPERTY_EDITABLE.equals(key)) {
 			if(value instanceof Boolean) {
 				StartData.editable = (Boolean) value;
-				return true; 
+				return true;
 			}
 			return false;
 		}
@@ -70,7 +70,7 @@ public class StartData implements SendableEntityCreatorNoIndex
 		}
 		return success;
 	}
-	
+
 	public static boolean has(String key) {
 		if(key == null) {
 			return false;
@@ -82,11 +82,11 @@ public class StartData implements SendableEntityCreatorNoIndex
 		}
 		return false;
 	}
-	
+
 	public static boolean isEditable() {
 		return editable;
 	}
-	
+
 	public static String getString(String key) {
 		if(key == null) {
 			return null;
@@ -123,7 +123,7 @@ public class StartData implements SendableEntityCreatorNoIndex
 		if(PROPERTY_EDITABLE.equals(key)) {
 			if(value instanceof Boolean) {
 				StartData.editable = (Boolean) value;
-				return true; 
+				return true;
 			}
 			return false;
 		}
@@ -139,7 +139,7 @@ public class StartData implements SendableEntityCreatorNoIndex
 		}
 		return false;
 	}
-	
+
 	@Override
 	public String[] getProperties() {
 		if(StartData.attribute == null) {
@@ -157,7 +157,7 @@ public class StartData implements SendableEntityCreatorNoIndex
 	public Object getSendableInstance(boolean reference) {
 		return new StartData();
 	}
-	
+
 	public static SimpleList<StartElement> getElements() {
 		return properties;
 	}
@@ -206,7 +206,7 @@ public class StartData implements SendableEntityCreatorNoIndex
 		System.out.println(attrName+" not in Config-File");
 		return StartData.addParameter(attrName, value);
 	}
-	
+
 	public static boolean save() {
 		StartData startData = StartData.instance();
 		if(startData.size() <1) {
@@ -218,11 +218,11 @@ public class StartData implements SendableEntityCreatorNoIndex
 		JsonObject config = map.toJsonObject(startData, Filter.createFull());
 		return FileBuffer.writeFile(StartData.fileName, config.toString(2));
 	}
-	
+
 	public int size() {
 		return StartData.properties.size();
 	}
-	
+
 	public static boolean load() {
 		IdMap map = new IdMap();
 		map.with(StartData.instance());

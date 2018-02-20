@@ -40,7 +40,7 @@ public class TextItems extends SimpleKeyValueList<String, String> implements Sen
 					}
 				}
 			}
-		}		
+		}
 		if (customLanguage != null) {
 			text = customLanguage.getText(label, model, gui);
 			if (text != null) {

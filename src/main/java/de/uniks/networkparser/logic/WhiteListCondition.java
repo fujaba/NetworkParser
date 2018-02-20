@@ -22,12 +22,12 @@ public class WhiteListCondition implements ObjectCondition, SendableEntityCreato
 	public Object getSendableInstance(boolean prototyp) {
 		return new WhiteListCondition();
 	}
-	
+
 	public WhiteListCondition withPrimititve(boolean value) {
 		this.primitive = value;
 		return this;
 	}
-	
+
 	@Override
 	public boolean update(Object value) {
 		if(value instanceof SimpleEvent == false) {

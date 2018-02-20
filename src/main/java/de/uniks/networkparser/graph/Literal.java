@@ -52,7 +52,7 @@ public class Literal extends GraphMember{
 		}
 		return this;
 	}
-	
+
 	public Object getValue(String attribute) {
 		int pos = attribute.indexOf('.');
 		String attrName;

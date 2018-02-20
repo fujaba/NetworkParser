@@ -24,7 +24,7 @@ public class StudentCreator implements SendableEntityCreator {
 	public String[] getProperties() {
 		return new String[] { Student.PROPERTY_NAME, Student.PROPERTY_STUD_NO,
 				Student.PROPERTY_IN, Student.PROPERTY_UNIVERSITY,
-				 Student.PROPERTY_FIRSTNAME, Student.PROPERTY_LASTNAME, 
+				 Student.PROPERTY_FIRSTNAME, Student.PROPERTY_LASTNAME,
 				 Student.PROPERTY_CREDITS, Student.PROPERTY_FRIENDS, Student.PROPERTY_ITEM
 		};
 	}
@@ -78,7 +78,7 @@ public class StudentCreator implements SendableEntityCreator {
 		}
 		return null;
 	}
-	
+
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value, String typ) {
 		if(entity instanceof Student == false) {

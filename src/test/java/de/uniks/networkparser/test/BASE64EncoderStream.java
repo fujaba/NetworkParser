@@ -49,7 +49,7 @@ import java.io.OutputStream;
  * a FilterOutputStream, so one can just wrap this class around
  * any output stream and write bytes into this filter.  The encoding
  * is done as the bytes are written out.
- * 
+ *
  * @author John Mani
  * @author Bill Shannon
  */
@@ -102,7 +102,7 @@ public class BASE64EncoderStream extends FilterOutputStream {
      * @param out        the output stream
      */
     public BASE64EncoderStream(OutputStream out) {
-	this(out, 76);	
+	this(out, 76);
     }
 
     /**
@@ -186,7 +186,7 @@ public class BASE64EncoderStream extends FilterOutputStream {
 
     /**
      * Flushes this output stream and forces any buffered output bytes
-     * to be encoded out to the stream. 
+     * to be encoded out to the stream.
      *
      * @exception  IOException  if an I/O error occurs.
      */

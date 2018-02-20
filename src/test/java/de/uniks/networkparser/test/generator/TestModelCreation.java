@@ -15,18 +15,18 @@ import de.uniks.networkparser.graph.Parameter;
 public class TestModelCreation {
 
    /**
-    * 
+    *
     * @see <a href='../../../../../../doc/CreateEntireModel.html'>CreateEntireModel.html</a>
  */
    @Test
 	public void testCreateEntireModel() {
-		
+
 	   if(Generator.DISABLE) {
 		   return;
 	   }
-	   
+	
 	   	Story story = new Story();
-	   
+	
 		ClassModel model = new ClassModel("de.uniks.networkparser.test.model.modelling_a");
 
 		// Classes
@@ -36,44 +36,44 @@ public class TestModelCreation {
 		Clazz room = model.createClazz("Room");
 		Clazz enumStudent = model.createClazz("StudentEnum").enableEnumeration(new Literal("STUDENT").withValue(42));
 		Clazz roomInterface = model.createClazz("roomInterface").enableInterface();
-		
+
 		// Attributes
 		person.withAttribute("name", DataType.STRING)
 			.withAttribute("age", DataType.INT);
 		pupil.withAttribute("credits", DataType.INT);
 		teacher.withAttribute("rank", DataType.STRING);
 		roomInterface.withAttribute("number", DataType.INT);
-		
+
 		// Methods
 		Method teach = teacher.createMethod("teach");
 		teach.with(DataType.STRING)
 			.withBody("		String teachResult = \"greatResult\";\n"
 					+ "		return teachResult;\n");
-		
+
 		person.withMethod("think", DataType.VOID);
 		person.withMethod("dontThink", DataType.VOID, new Parameter(DataType.BOOLEAN));
 		pupil.withMethod("read", DataType.STRING);
-		
+
 		// Super Classes
 		pupil.withSuperClazz(person);
 		teacher.withSuperClazz(person);
-		
+
 		// implemented Intefaces
 		room.withSuperClazz(roomInterface);
-		
+
 		// Associations
 		room.withBidirectional(person, "persons", Cardinality.MANY, "room", Cardinality.ONE);
 		room.withBidirectional(pupil, "currentPupils", Cardinality.MANY, "currentRoom", Cardinality.ONE);
 		room.withBidirectional(teacher, "currentTeacher", Cardinality.ONE, "currentRoom", Cardinality.ONE);
 		pupil.withBidirectional(teacher, "teacher", Cardinality.ONE, "pupils", Cardinality.MANY);
-		
+
 		Assert.assertEquals(1, enumStudent.getAttributes().size());
 		model.generate("src/test/java");
-		
+
 		story.addDiagram(model);
-		
+
 		story.dumpHTML();
-		
+
 	}
-	
+
 }

@@ -30,7 +30,7 @@ public class MethodSet extends SimpleSet<Method>{
 	public MethodSet() {
 		this.withType(Method.class);
 	}
-	
+
 	public ClazzSet getClazzes() {
 		ClazzSet collection = new ClazzSet();
 		for(Method item : this) {

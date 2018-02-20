@@ -66,12 +66,12 @@ public class GraphSimpleSet extends SimpleSet<GraphMember> {
 		}
 		return idA.equalsIgnoreCase(idB);
 	}
-	
+
 	@Override
 	public Comparator<Object> comparator() {
 		return comparator;
 	}
-	
+
 	@Override
 	public boolean isComparator() {
 		return true;

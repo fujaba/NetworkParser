@@ -21,7 +21,7 @@ public class GitRevision {
 	public static final String LASTCOMMIT="lastcommit";
 	public static final String REVISIONNUMBER="revisionnumber";
 	public static final String COMMITS="commits";
-	
+
 	public static void main(String[] args) throws IOException {
 		GitRevision revision = new GitRevision();
 		revision.execute();
@@ -42,10 +42,10 @@ public class GitRevision {
 		Object headID = null;
 		JsonArray map= new JsonArray();
 		JsonObject info = new JsonObject();
-		
+
 		int count=0;
 		try {
-			
+
 			Object repoBuilder = ReflectionLoader.call("setWorkTree", builder, File.class, file);
 			repository = ReflectionLoader.callChain(repoBuilder, "readEnvironment", "findGitDir", "build");
 				// scan environment GIT_* variables
@@ -53,7 +53,7 @@ public class GitRevision {
 
 			calcGitTag(repository, info);
 			allRefs =(Map<String, ?>) ReflectionLoader.call("getAllRefs",repository);
-			
+
 			headID = ReflectionLoader.call("resolve", repository, String.class, "HEAD");
 			if(headID != null) {
 				id = (String) ReflectionLoader.call("name", headID);
@@ -95,8 +95,8 @@ public class GitRevision {
 		while(i.hasNext()) {
 			allBranches.append(" ").append(i.next());
 		}
-		
-		
+
+
 		info.put(BRANCHNAME, allBranches.toString());
 		info.put(LASTCOMMIT, id);
 		info.put(REVISIONNUMBER, count);
@@ -110,11 +110,11 @@ public class GitRevision {
 		}
 		return false;
 	}
-	
+
 	public boolean isFull() {
 		return full;
 	}
-	
+
 	public int calcGitTag(Object repository, JsonObject info) {
 		int minor=-1;
 		int mayor=-1;
@@ -146,7 +146,7 @@ public class GitRevision {
 				if(value>0 ) {
 					if(mayorNumber > mayor) {
 						tag = entry.getKey().trim();
-						mayor = mayorNumber; 
+						mayor = mayorNumber;
 						tagHash = (String) ReflectionLoader.call("getName", entry.getValue());
 						versionNumber = vNumber;
 						minor = value;

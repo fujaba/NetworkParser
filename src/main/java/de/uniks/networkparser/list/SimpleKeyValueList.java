@@ -250,7 +250,7 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 			throw new RuntimeException("SimpleKeyValueList is not a number.");
 		}
 	}
-		
+
 	/**
 	 * Get the string associated with an index.
 	 *
@@ -462,7 +462,7 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 		super.removeItem(index, SMALL_KEY, oldIndex);
 		return super.removeByIndex(index, SMALL_VALUE, oldIndex);
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public V remove(Object key) {
 		int index = this.indexOf(key);
@@ -610,7 +610,7 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 	public Iterator<Entry<K, V>> iterator() {
 		return new SimpleIteratorSet<K, V>(this);
 	}
-	
+
 	@Override
 	public void replaceAllValues(Object key, String search, String replace) {
 		if(key == null) {
@@ -637,7 +637,7 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 			}
 		}
 	}
-	
+
 	@Override
 	public boolean equals(Object obj) {
 		if(obj instanceof ObjectCondition) {
@@ -646,7 +646,7 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 		}
 		return super.equals(obj);
 	}
-	
+
 	public SimpleKeyValueList<K, V> withComparator(Comparator<Object> comparator) {
 		this.cpr = comparator;
 		return this;
@@ -659,7 +659,7 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 	public Comparator<Object> comparator() {
 		return cpr;
 	}
-	
+
 	public Object[][] toTable() {
 		Object[][] table=new Object[size()][2];
 		for(int i=0;i<size();i++) {

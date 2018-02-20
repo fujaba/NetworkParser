@@ -95,9 +95,9 @@ public class ParserEntity {
 			parseImport();
 		}
 		code.withEndOfImports(currentToken.startPos);
-		
+
 		nextToken();
-		
+
 		parseClassDecl();
 		return this.file;
 	}
@@ -170,7 +170,7 @@ public class ParserEntity {
 			nextToken();
 		}
 	}
-	
+
 	public void nextToken() {
 		Token tmp = previousToken;
 		previousToken = currentToken;
@@ -181,7 +181,7 @@ public class ParserEntity {
 		lookAheadToken.text.delete(0, lookAheadToken.text.length());
 
 		char state = 'i';
-		
+
 		while (true) {
 			switch (state) {
 			case 'i':
@@ -1103,7 +1103,7 @@ public class ParserEntity {
 				.get(SymTabEntry.TYPE_METHOD + ":" + setterPrefix + name + "(" + partnerClassName + ")").first();*/
 
 		SymTabEntry addToSymTabEntry = null;
-		
+
 		for (SymTabEntry entry : symbolTab.get(SymTabEntry.TYPE_METHOD)) {
 			String methodName = entry.getValue() + entry.getParams();
 			if (methodName.equals(setterPrefix + name + "(" + partnerClassName + ")")
@@ -1112,7 +1112,7 @@ public class ParserEntity {
 				break;
 			}
 		}
-		
+
 		if (addToSymTabEntry == null && "with".equals(setterPrefix)) {
 			addToSymTabEntry = symbolTab
 					.get(SymTabEntry.TYPE_METHOD + ":" + "with" + name + "(" + partnerClassName + "...)").first();
@@ -1150,25 +1150,25 @@ public class ParserEntity {
 		if (!done) {
 			// did not find reverse role, add as attribute
 			boolean found = false;
-			
+
 			String srcRoleName = "";
 			Cardinality srcCardinality = Cardinality.ONE;
 
 			String potentialCode = "";
-			
+
 			for (SymTabEntry qualifiedEntry : methodBodyQualifiedNames) {
 				String methodBody = this.code.getContent().toString().substring(qualifiedEntry.getStartPos(), qualifiedEntry.getEndPos());
 				if (card.equals(Cardinality.ONE) && qualifiedEntry.getValue().startsWith("set")) {
 					if (methodBody.contains("oldValue.without")) {
 						potentialCode = methodBody.substring(methodBody.indexOf("oldValue.without") + 16);
 						srcCardinality = Cardinality.MANY;
-						
+
 						found = true;
 						break;
 					} else if (methodBody.contains("oldValue.set")) {
 						potentialCode = methodBody.substring(methodBody.indexOf("oldValue.set") + 12);
 						srcCardinality = Cardinality.ONE;
-						
+
 						found = true;
 						break;
 					}
@@ -1176,47 +1176,47 @@ public class ParserEntity {
 					if (methodBody.contains("item.with")) {
 						potentialCode = methodBody.substring(methodBody.indexOf("item.with") + 9);
 						srcCardinality = Cardinality.MANY;
-						
+
 						found = true;
 						break;
 					} else if (methodBody.contains("item.set")) {
 						potentialCode = methodBody.substring(methodBody.indexOf("item.set") + 8);
 						srcCardinality = Cardinality.ONE;
-						
+
 						found = true;
 						break;
 					}
 				}
 			}
-			
+
 			if (found) {
 				boolean foundAssoc = false;
-				
+
 				for (Association association : this.file.getAssociations()) {
 					if (association.getName().equals(memberName)) {
 						continue;
 					}
 					if (association.getOther().getName().equalsIgnoreCase(srcRoleName)) {
 						continue;
-					}	
-					
+					}
+
 					foundAssoc = true;
 					break;
 				}
-				
+
 				if (foundAssoc == false) {
 					srcRoleName = potentialCode.substring(0, potentialCode.indexOf("(")).toLowerCase();
-					
+
 					SourceCode partnerCode = (SourceCode) partnerClass.getChildByName("SourceCode", SourceCode.class);
-					
+
 					String partnerFile = partnerCode.getContent().toString();
-					
+
 					if (partnerFile.contains("PROPERTY_" + srcRoleName.toUpperCase() + " = ")) {
 						String potentialName = partnerFile.substring(partnerFile.indexOf("PROPERTY_" + srcRoleName.toUpperCase()));
 						potentialName = potentialName.substring(0, potentialName.indexOf(";"));
 						srcRoleName = potentialName.substring(potentialName.indexOf("\"") + 1, potentialName.lastIndexOf("\""));
 					}
-					
+
 					this.file.withBidirectional(partnerClass, memberName, card, srcRoleName, srcCardinality);
 				}
 			} else {
@@ -1285,11 +1285,11 @@ public class ParserEntity {
 					method.with(new Parameter(DataType.create(param)));
 				}
 			}
-			
+
 			method = getMethod(method);
-			
+
 			method.withParent(this.file);
-			
+
 			if (!symTabEntry.getAnnotations().isEmpty()) {
 				method.with(new Annotation(symTabEntry.getAnnotations()));
 			}
@@ -1297,7 +1297,7 @@ public class ParserEntity {
 			method.withBody(this.code.subString(symTabEntry.getBodyStartPos(), symTabEntry.getEndPos() + 1).toString());
 		}
 	}
-	
+
 	private Method getMethod(Method search) {
 		MethodSet methods = this.file.getMethods();
 		for(Method method : methods) {
@@ -1358,7 +1358,7 @@ public class ParserEntity {
 		}
 		return true;
 	}
-	
+
 	public SourceCode getCode() {
 		return code;
 	}

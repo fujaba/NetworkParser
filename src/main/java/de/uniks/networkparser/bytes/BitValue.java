@@ -114,7 +114,7 @@ public class BitValue implements ByteItem {
 	@Override
 	public void writeBytes(ByteBuffer buffer, boolean isDynamic, boolean lastEntity, boolean isPrimitive) {
 	}
-	
+
 	@Override
 	public boolean add(Object... values) {
 		return false;

@@ -66,7 +66,7 @@ public class AttributeSet extends SimpleSet<Attribute>{
 	public AttributeSet hasName(String otherValue) {
 		return filter(Attribute.NAME.equals(otherValue));
 	}
-	
+
 	@Override
 	public AttributeSet getNewList(boolean keyValue) {
 		return new AttributeSet();

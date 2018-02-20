@@ -39,7 +39,7 @@ public class StoryStepJUnit implements ObjectCondition {
 	public FeatureProperty addGroup(String label) {
 		FeatureProperty feature = new FeatureProperty(Feature.JUNIT);
 		feature.withStringValue(label);
-		
+
 		this.groups.add(feature);
 		return feature;
 	}
@@ -50,7 +50,7 @@ public class StoryStepJUnit implements ObjectCondition {
 			return false;
 		}
 		ReflectionLoader.call("load", loader, File.class, new File(executeData));
-		
+
 		if(this.groups.size() < 1) {
 			addGroup(label);
 		}
@@ -64,25 +64,25 @@ public class StoryStepJUnit implements ObjectCondition {
 		Object info = ReflectionLoader.callChain(loader, "getSessionInfoStore", "getInfos");
 		Object content = ReflectionLoader.callChain(loader, "getExecutionDataStore", "getContents");
 		ReflectionLoader.call("visitInfo", visitor, List.class, info, Collection.class, content);
-		
+
 		// Create Files
 		for(FeatureProperty group : groups) {
 			Object bundle = writeReports(loader, formatter, htmlFile, group);
-			ReflectionLoader.callStr("visitBundle", visitor, 
-					"org.jacoco.core.analysis.IBundleCoverage", bundle, 
+			ReflectionLoader.callStr("visitBundle", visitor,
+					"org.jacoco.core.analysis.IBundleCoverage", bundle,
 					"org.jacoco.report.ISourceFileLocator", getSourceLocator());
 		}
 		ReflectionLoader.call("visitEnd", visitor);
 		return true;
 	}
-	
+
 	private Object createFormater() {
 		Object formater = ReflectionLoader.newInstance("org.jacoco.report.html.HTMLFormatter");
 
 		Object table = ReflectionLoader.call("getTable", formater);
-		
+
 		for(int i=0;i<columns.size();i++) {
-			ReflectionLoader.callStr("add", table, 
+			ReflectionLoader.callStr("add", table,
 					String.class, columns.getKeyByIndex(i),
 					String.class, "ctr2",
 					"org.jacoco.report.internal.html.table.IColumnRenderer", columns.getValueByIndex(i).getProxy(),
@@ -90,7 +90,7 @@ public class StoryStepJUnit implements ObjectCondition {
 		}
 		return formater;
 	}
-	
+
 	private Object writeReports(Object loader, Object formatter, File outputFile, FeatureProperty group) {
 		Object builder = ReflectionLoader.newInstance("org.jacoco.core.analysis.CoverageBuilder");
 		if(builder == null) {
@@ -98,8 +98,8 @@ public class StoryStepJUnit implements ObjectCondition {
 		}
 		Object data = ReflectionLoader.call("getExecutionDataStore", loader);
 
-		
-		Object analyzer = ReflectionLoader.newInstanceStr("org.jacoco.core.analysis.Analyzer", 
+
+		Object analyzer = ReflectionLoader.newInstanceStr("org.jacoco.core.analysis.Analyzer",
 							"org.jacoco.core.data.ExecutionDataStore", data,
 							"org.jacoco.core.analysis.ICoverageVisitor", builder);
 		String rootBin ="bin/";
@@ -112,7 +112,7 @@ public class StoryStepJUnit implements ObjectCondition {
 		}
 		return ReflectionLoader.call("getBundle", builder, group.getStringValue());
 	}
-	
+
 	private Object getSourceLocator() {
 		List<File> sourcefiles = new SimpleList<File>();
 		File file = new File("src/main/java");
@@ -122,15 +122,15 @@ public class StoryStepJUnit implements ObjectCondition {
 			sourcefiles.add(new File("src"));
 		}
 		String encoding = System.getProperty("file.encoding");
-		
+
 		Object multi = ReflectionLoader.newInstance("org.jacoco.report.MultiSourceFileLocator", int.class, tabwidth);
 		for (final File f : sourcefiles) {
 			Object sourceFile = ReflectionLoader.newInstance("org.jacoco.report.DirectorySourceFileLocator", File.class, f, String.class, encoding, int.class, tabwidth);
-			ReflectionLoader.callStr("add", multi,"org.jacoco.report.ISourceFileLocator" , sourceFile); 
+			ReflectionLoader.callStr("add", multi,"org.jacoco.report.ISourceFileLocator" , sourceFile);
 		}
 		return multi;
 	}
-	
+
 	public boolean executeBlackBoxTest(String path) {
 		this.path = path;
 		try {
@@ -140,12 +140,12 @@ public class StoryStepJUnit implements ObjectCondition {
 		}
 		return true;
 	}
-	
+
 	private boolean executeBlackBoxEvent(SimpleEvent event) {
 		FileBuffer.writeFile(this.path+BLACKBOXFILE, event.toString()+BaseItem.CRLF, true);
 		return true;
 	}
-	
+
 	@Override
 	public boolean update(Object value) {
 		if(value instanceof SimpleEvent == false) {
@@ -159,25 +159,25 @@ public class StoryStepJUnit implements ObjectCondition {
 			// Event from BlackBoxTester
 			return this.executeBlackBoxEvent(evt);
 		}
-		
+
 		if(packageName == null) {
 			return false;
 		}
 		// EXECUTE JUNIT AND JACOCO
-		
+
 		// PATH IS "doc/"
 		String path = "doc/";
 		String label = "JUnit - Jacoco";
 		if(evt.getSource() instanceof Story) {
 			Story story = (Story) evt.getSource();
-			
+
 			path = story.getPath();
 			if(story.getLabel() != null) {
 				label = story.getLabel();
 			}
 		}
-		
-		
+
+
 		if(new File(this.path).exists() == false) {
 			return false;
 		}
@@ -188,16 +188,16 @@ public class StoryStepJUnit implements ObjectCondition {
 		}
 		controller.withAgent(this.path, packageName, list);
 		controller.withErrorPath(path);
-		
+
 //		controller.withOutput("t.txt");
 		controller.start();
 
-		// Now Add 
-		
-		
+		// Now Add
+
+
 		// ADD RESULT TO STORY DOCUMENTATION FOR BLACKBOX AND JACOCO
 		this.writeHTML(path+"jacoco.exec", path+"jacoco", label);
-		
+
 //		HTMLEntity element = (HTMLEntity) evt.getNewValue();
 //		Story story = (Story) evt.getSource();
 //		if(this.value != null) {
@@ -209,7 +209,7 @@ public class StoryStepJUnit implements ObjectCondition {
 //				textValue = "Step "+ counter+": ";
 //			}
 //			textValue += this.value;
-//			
+//
 //			textItem.withValueItem(textValue);
 //		}
 		return true;
@@ -242,7 +242,7 @@ public class StoryStepJUnit implements ObjectCondition {
 		this.packageName = packageName;
 		return this;
 	}
-	
+
 	/**
 	 * @param classNames ClassNames of Tests
 	 * @return ThisComponent
@@ -259,12 +259,12 @@ public class StoryStepJUnit implements ObjectCondition {
 		}
 		return this;
 	}
-	
+
 	public StoryStepJUnit withAgentPath(String path) {
 		this.path = path;
 		return this;
 	}
-	
+
 	public StoryStepJUnit addColumn(String name, JacocoColumn callback) {
 		this.columns.add(name, callback);
 		return this;

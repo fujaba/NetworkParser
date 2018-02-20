@@ -14,25 +14,25 @@ import de.uniks.networkparser.parser.generator.BasicGenerator;
 public class JavaSet extends BasicGenerator {
 
 	public JavaSet() {
-		
-		createTemplate("Declaration", Template.TEMPLATE, 
+
+		createTemplate("Declaration", Template.TEMPLATE,
 				"{{#template PACKAGE}}{{#if {{packageName}}}}package {{packageName}}.util;{{#endif}}{{#endtemplate}}","",
-				
+
 				"{{#template IMPORT}}{{#foreach {{file.headers}}}}","import {{item}};{{#endfor}}{{#endtemplate}}","",
-				
+
 				"{{#import {{fullName}}}}" +
 				"{{visibility}} class {{name}}Set extends {{#feature SETCLASS="+SimpleSet.class.getName()+"}}<{{name}}>","{","",
-				
+
 				"   public Class<?> getTypClass()",
 				"   {",
 				"      return {{name}}.class;",
 				"   }","",
-				
+
 				"   public {{name}}Set()",
 				"   {",
 				"      // empty",
 				"   }","",
-				
+
 				"   public {{name}}Set({{name}}... objects)",
 				"   {",
 				"      for ({{name}} obj : objects)",
@@ -63,7 +63,7 @@ public class JavaSet extends BasicGenerator {
 				"   {",
 				"      return new {{name}}Set();",
 				"   }","","",
-								
+
 				"{{#import " + Collection.class.getName() + "}}" +
 				"   @SuppressWarnings(\"unchecked\")",
 				"   public {{name}}Set with(Object value)",
@@ -82,18 +82,18 @@ public class JavaSet extends BasicGenerator {
 				"      }",
 				"      return this;",
 				"   }","",
-				
+
 				"{{#template TEMPLATEEND}}}{{#endtemplate}}");
-		
+
 		this.extension = "java";
 		this.path = "util";
 		this.postfix = "Set";
-		
+
 		this.addGenerator(new JavaSetAttribute());
 		this.addGenerator(new JavaSetAssociation());
 		this.addGenerator(new JavaSetMethod());
 	}
-	
+
 	@Override
 	public TemplateResultFile executeClazz(Clazz clazz, LocalisationInterface parameters, boolean isStandard) {
 		FeatureSet features = getFeatures(parameters);
@@ -104,7 +104,7 @@ public class JavaSet extends BasicGenerator {
 		}
 		return super.executeClazz(clazz, parameters, isStandard);
 	}
-	
+
 	@Override
 	public Class<?> getTyp() {
 		return Clazz.class;

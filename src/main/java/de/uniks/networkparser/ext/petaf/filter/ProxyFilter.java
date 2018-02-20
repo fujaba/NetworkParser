@@ -10,7 +10,7 @@ public class ProxyFilter implements ObjectCondition {
 
 	public ProxyFilter(){
 	}
-	
+
 	private String getClassName(NodeProxy proxy) {
 		if(proxy == null) {
 			return null;
@@ -25,7 +25,7 @@ public class ProxyFilter implements ObjectCondition {
 		}
 		return null;
 	}
-	
+
 	public ProxyFilter with(NodeProxy... values) {
 		if(values == null) {
 			return this;
@@ -51,7 +51,7 @@ public class ProxyFilter implements ObjectCondition {
 		}
 		return this;
 	}
-	
+
 	/**
 	 * Gets the creator classes.
 	 *
@@ -65,13 +65,13 @@ public class ProxyFilter implements ObjectCondition {
 		}
 		return null;
 	}
-	
+
 	@Override
 	public boolean update(Object value) {
 		SimpleEvent evt = (SimpleEvent) value;
 		NodeProxy creator = null;
 		if(evt.getModelValue() != null) {
-			 creator = getCreator(evt.getModelValue().getClass().getName());	
+			 creator = getCreator(evt.getModelValue().getClass().getName());
 		}
 		if(creator == null) {return false;}
 		String[] sendableProperties = creator.getUpdateProperties();

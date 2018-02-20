@@ -7,13 +7,13 @@ import de.uniks.networkparser.interfaces.ParserCondition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.TemplateParser;
 
-// {{#template PACKAGE {{CONDITION}}}}{{#endtemplate}} 
+// {{#template PACKAGE {{CONDITION}}}}{{#endtemplate}}
 public class TemplateFragmentCondition implements ParserCondition{
 	public static final String PROPERTY_CLONE="clone";
 	public static final String PROPERTY_FILE="file";
 	public static final String PROPERTY_KEY="key";
 	public static final String PROPERTY_TEMPLATE="template";
-	public static final String TAG="template"; 
+	public static final String TAG="template";
 
 	private String id;
 	private ObjectCondition condition;
@@ -28,7 +28,7 @@ public class TemplateFragmentCondition implements ParserCondition{
 	public String getKey() {
 		return TAG;
 	}
-	
+
 	private int getIdKey() {
 		if("PACKAGE".equalsIgnoreCase(this.id)) {
 			return TemplateParser.PACKAGE;
@@ -53,7 +53,7 @@ public class TemplateFragmentCondition implements ParserCondition{
 		}
 		return TemplateParser.DECLARATION;
 	}
-	
+
 	@Override
 	public boolean update(Object value) {
 		if(value instanceof SendableEntityCreator) {
@@ -67,7 +67,7 @@ public class TemplateFragmentCondition implements ParserCondition{
 			SendableEntityCreator newInstance = (SendableEntityCreator) creator.getValue(creator, PROPERTY_CLONE);
 			newInstance.setValue(newInstance, PROPERTY_KEY, this.getIdKey(), SendableEntityCreator.NEW);
 			newInstance.setValue(newInstance, PROPERTY_TEMPLATE, this.child, SendableEntityCreator.NEW);
-			
+
 			newInstance.setValue(newInstance, PROPERTY_FILE, creator.getValue(creator, PROPERTY_FILE), SendableEntityCreator.NEW);
 
 			this.child.update(newInstance);
@@ -91,18 +91,18 @@ public class TemplateFragmentCondition implements ParserCondition{
 			// Condition
 			this.condition = parser.parsing(buffer, customTemplate, true, true);
 		}
-		
+
 		buffer.skipChar(SPLITEND);
 		buffer.skipChar(SPLITEND);
 		this.child = parser.parsing(buffer, customTemplate, false, true, "endtemplate");
 		//Skip }
 		buffer.skip();
-		
+
 		buffer.skipTo(SPLITEND, true);
 		buffer.skipChar(SPLITEND);
 		buffer.skipChar(SPLITEND);
 	}
-	
+
 	public String getId() {
 		return id;
 	}

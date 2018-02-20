@@ -6,13 +6,13 @@ public class StartElement {
 	private String description;
 	private Object defaultValue;
 	private Object value;
-	
+
 	/** @return the label */
 	public String getLabel() {
 		return label;
 	}
 	/**
-	 * @param label the label to set 
+	 * @param label the label to set
 	 * @return  ThisComponent
 	 */
 	public StartElement withLabel(String label) {
@@ -24,7 +24,7 @@ public class StartElement {
 		return description;
 	}
 	/**
-	 * @param description the description to set 
+	 * @param description the description to set
 	 * @return  ThisComponent
 	 */
 	public StartElement withDescription(String description) {
@@ -35,9 +35,9 @@ public class StartElement {
 	public Object getDefaultValues() {
 		return defaultValue;
 	}
-	
+
 	/**
-	 *  @param values the values to set  
+	 *  @param values the values to set
 	 * @return ThisComponent
 	 * */
 	public StartElement withDefaultValues(Object values) {

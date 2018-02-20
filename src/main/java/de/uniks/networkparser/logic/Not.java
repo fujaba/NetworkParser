@@ -104,7 +104,7 @@ public class Not implements ParserCondition, SendableEntityCreator {
 	public static Not create(ObjectCondition condition) {
 		return new Not().with(condition);
 	}
-	
+
 	@Override
 	public String toString() {
 		if(this.item != null) {
@@ -117,7 +117,7 @@ public class Not implements ParserCondition, SendableEntityCreator {
 	public String getKey() {
 		return TAG;
 	}
-	
+
 	@Override
 	public boolean isExpression() {
 		return true;
@@ -133,7 +133,7 @@ public class Not implements ParserCondition, SendableEntityCreator {
 	public void create(CharacterBuffer buffer, TemplateParser parser, LocalisationInterface customTemplate) {
 		buffer.skip();
 		buffer.skip();
-		
+
 		ObjectCondition expression = parser.parsing(buffer, customTemplate, true, true, "endnot");
 		this.item = expression;
 		buffer.skipTo(SPLITEND, false);

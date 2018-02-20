@@ -29,7 +29,7 @@ public class TestGameTest {
 		Clazz game = model.createClazz("Game");
 		Clazz entity = model.createClazz("GameEntity");
 		Clazz player = model.createClazz("Player");
-		
+
 		game.withSuperClazz(entity);
 		player.withSuperClazz(entity);
 		//		game.withBidirectional(player, "won", Cardinality.ONE, "winGame", Cardinality.ONE);

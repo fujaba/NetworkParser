@@ -42,26 +42,26 @@ public class CheckSumTest {
 //			Assert.assertEquals(publicKeyBytes[i], decode[i]);
 //		}
 //	}
-	
+
 	@Test
 	public void testRSA() throws InvalidKeySpecException, NoSuchAlgorithmException, IOException {
 		RSAKey key = RSAKey.generateKey(11, 13, 143);
 		key.withPubExp(23);
 		BigInteger encrypt = key.encrypt(BigInteger.valueOf(7));
-		
+
 		Assert.assertEquals(2, encrypt.intValue());
-		
+
 //		key = RSAKey.generateKey(512);
-		
+
 		DERBuffer publicStream = key.getPublicStream();
 		ByteConverter64 converter = new ByteConverter64();
 		String string = converter.toString(publicStream);
 		Assert.assertNotNull(string);
 //		BASE64Decoder b64 = new BASE64Decoder();
 //		byte[] decoded = b64.decodeBuffer(string);
-	
+
 //		byte[] decode = converter.decode(string);
-		
+
 //		X509EncodedKeySpec spec = new X509EncodedKeySpec(decoded);
 //	      KeyFactory kf = KeyFactory.getInstance("RSA");
 //	      PublicKey generatePublic2 = kf.generatePublic(spec);
@@ -69,11 +69,11 @@ public class CheckSumTest {
 		key = RSAKey.generateKey(1024);
 		StringBuilder textEncrypt = key.encrypt("Hallo");
 		Assert.assertNotNull(textEncrypt);
-		
+
 //FIXME		RSAKey descriptKey = RSAKey.getDecryptKey(1024, key.getPrivateKey());
 //		descriptKey.decrypt(textEncrypt.toString());
 	}
-	
+
 	@Test
 	public void testCRC32() {
 		CRC crc = new CRC(32);
@@ -101,7 +101,7 @@ public class CheckSumTest {
 //	      return s1.verify(decodeBuffer);
 //
 //		String publicKeyPEM = keyString.replace(BEGIN_PUBLIC_KEY, "");
-//		      
+//		
 //	      BASE64Decoder b64 = new BASE64Decoder();
 //	      byte[] decoded = b64.decodeBuffer(publicKeyPEM);
 

@@ -26,7 +26,7 @@ public class DataTypes extends DataType {
 	public static DataTypes create(Class<?> typ) {
 		return new DataTypes(new Clazz(typ));
 	}
-	
+
 	protected DataTypes withGeneric(DataType... values) {
 		if(values == null) {
 			return this;

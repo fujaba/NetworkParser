@@ -372,7 +372,7 @@ public class XMLTokener extends Tokener {
 						tokener.skipEntity();
 						return entity;
 					}
-					
+
 					String childTag = stack.getCurrentTag();
 					child = parse(tokener, map);
 					if(childTag != null && child != null) {
@@ -518,7 +518,7 @@ public class XMLTokener extends Tokener {
 		map.getStack().withStack(tag.toString(), entity, creator);
 		return entity;
 	}
-	
+
 	@Override
 	public Object transformValue(Object value, BaseItem reference) {
 		return EntityUtil.valueToString(value, true, reference, SIMPLECONVERTER);

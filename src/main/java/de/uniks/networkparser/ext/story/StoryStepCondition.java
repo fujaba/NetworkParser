@@ -17,12 +17,12 @@ public class StoryStepCondition implements ObjectCondition {
 		this.message = message;
 		return this;
 	}
-	
+
 	public StoryStepCondition withCondition(Condition<Object> condition) {
 		this.condition = condition;
 		return this;
 	}
-	
+
 	public boolean checkCondition() {
 		if(this.condition != null) {
 			return this.condition.update(value);
@@ -38,7 +38,7 @@ public class StoryStepCondition implements ObjectCondition {
 		SimpleEvent evt = (SimpleEvent) value;
 		HTMLEntity element = (HTMLEntity) evt.getNewValue();
 		boolean success = checkCondition();
-	
+
 		XMLEntity div = element.createTag("div", element.getBody());
 		XMLEntity p = element.createTag("p", div);
 		p.withCloseTag();
@@ -57,7 +57,7 @@ public class StoryStepCondition implements ObjectCondition {
 
 	public void withMessage(String message) {
 		this.message = message;
-		
+
 	}
 
 	public String getMessage() {

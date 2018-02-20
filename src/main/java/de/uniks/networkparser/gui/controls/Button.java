@@ -5,21 +5,21 @@ import de.uniks.networkparser.interfaces.ObjectCondition;
 public class Button extends Input<String> {
 	/* Constants */
 	protected static final String BUTTON = "button";
-	
+
 	private String actionType;
-	
+
 	public static final String MINIMIZE = "minimize";
-	
+
 	public static final String CLOSE = "close";
-	
+
 	public static final String MAXIMIZE = "maximize";
-	
+
 	public Button() {
 		super();
 		/* Set variables of parent class */
 		this.type = BUTTON;
 	}
-	
+
 	public String getActionType() {
 		return actionType;
 	}

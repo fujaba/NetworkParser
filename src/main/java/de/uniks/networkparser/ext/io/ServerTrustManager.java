@@ -34,74 +34,63 @@ import javax.net.ssl.X509TrustManager;
  */
 class ServerTrustManager implements X509TrustManager {
 
-    private static Pattern cnPattern = Pattern.compile("(?i)(cn=)([^,]*)");
+	private static Pattern cnPattern = Pattern.compile("(?i)(cn=)([^,]*)");
+	/**
+	 * Holds the domain of the remote server we are trying to connect
+	 */
+	public X509Certificate[] getAcceptedIssuers() {
+		return new X509Certificate[0];
+	}
+	public void checkClientTrusted(X509Certificate[] arg0, String arg1) throws CertificateException {
+	}
 
-    /**
-     * Holds the domain of the remote server we are trying to connect
-     */
-    public ServerTrustManager(String server) {
-    }
+	public void checkServerTrusted(X509Certificate[] x509Certificates, String arg1) throws CertificateException {
+	}
+	/**
+	 * Returns the identity of the remote server as defined in the specified certificate. The
+	 * identity is defined in the subjectDN of the certificate and it can also be defined in
+	 * the subjectAltName extension of type "xmpp". When the extension is being used then the
+	 * identity defined in the extension in going to be returned. Otherwise, the value stored in
+	 * the subjectDN is returned.
+	 *
+	 * @param x509Certificate the certificate the holds the identity of the remote server.
+	 * @return the identity of the remote server as defined in the specified certificate.
+	 */
+	public static List<String> getPeerIdentity(X509Certificate x509Certificate) {
+		// Look the identity in the subjectAltName extension if available
+		List<String> names = getSubjectAlternativeNames(x509Certificate);
+		if (names.isEmpty()) {
+			String name = x509Certificate.getSubjectDN().getName();
+			Matcher matcher = cnPattern.matcher(name);
+			if (matcher.find()) {
+				name = matcher.group(2);
+			}
+			// Create an array with the unique identity
+			names = new ArrayList<String>();
+			names.add(name);
+		}
+		return names;
+	}
 
-    public X509Certificate[] getAcceptedIssuers() {
-        return new X509Certificate[0];
-    }
-
-    public void checkClientTrusted(X509Certificate[] arg0, String arg1)
-            throws CertificateException {
-    }
-
-    public void checkServerTrusted(X509Certificate[] x509Certificates, String arg1)
-            throws CertificateException {
-//    	List<String> peerIdentities = getPeerIdentity(x509Certificates[0]);
-//    	System.out.println(peerIdentities);
-    }
-
-    /**
-     * Returns the identity of the remote server as defined in the specified certificate. The
-     * identity is defined in the subjectDN of the certificate and it can also be defined in
-     * the subjectAltName extension of type "xmpp". When the extension is being used then the
-     * identity defined in the extension in going to be returned. Otherwise, the value stored in
-     * the subjectDN is returned.
-     *
-     * @param x509Certificate the certificate the holds the identity of the remote server.
-     * @return the identity of the remote server as defined in the specified certificate.
-     */
-    public static List<String> getPeerIdentity(X509Certificate x509Certificate) {
-        // Look the identity in the subjectAltName extension if available
-        List<String> names = getSubjectAlternativeNames(x509Certificate);
-        if (names.isEmpty()) {
-            String name = x509Certificate.getSubjectDN().getName();
-            Matcher matcher = cnPattern.matcher(name);
-            if (matcher.find()) {
-                name = matcher.group(2);
-            }
-            // Create an array with the unique identity
-            names = new ArrayList<String>();
-            names.add(name);
-        }
-        return names;
-    }
-
-    /**
-     * Returns the JID representation of an XMPP entity contained as a SubjectAltName extension
-     * in the certificate. If none was found then return <tt>null</tt>.
-     *
-     * @param certificate the certificate presented by the remote entity.
-     * @return the JID representation of an XMPP entity contained as a SubjectAltName extension
-     *         in the certificate. If none was found then return <tt>null</tt>.
-     */
-    private static List<String> getSubjectAlternativeNames(X509Certificate certificate) {
-        List<String> identities = new ArrayList<String>();
-        try {
-            Collection<List<?>> altNames = certificate.getSubjectAlternativeNames();
-            // Check that the certificate includes the SubjectAltName extension
-            if (altNames == null) {
-                return Collections.emptyList();
-            }
-        }
-        catch (CertificateParsingException e) {
-            e.printStackTrace();
-        }
-        return identities;
-    }
+	/**
+	 * Returns the JID representation of an XMPP entity contained as a SubjectAltName extension
+	 * in the certificate. If none was found then return <tt>null</tt>.
+	 *
+	 * @param certificate the certificate presented by the remote entity.
+	 * @return the JID representation of an XMPP entity contained as a SubjectAltName extension
+	 *         in the certificate. If none was found then return <tt>null</tt>.
+	**/
+	private static List<String> getSubjectAlternativeNames(X509Certificate certificate) {
+		List<String> identities = new ArrayList<String>();
+		try {
+			Collection<List<?>> altNames = certificate.getSubjectAlternativeNames();
+			// Check that the certificate includes the SubjectAltName extension
+			if (altNames == null) {
+				return Collections.emptyList();
+			}
+		} catch (CertificateParsingException e) {
+			e.printStackTrace();
+		}
+		return identities;
+	}
 }

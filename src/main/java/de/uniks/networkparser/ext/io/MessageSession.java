@@ -26,13 +26,13 @@ public class MessageSession {
 	public final static String TYPE_EMAIL="EMAIL";
 	public final static String TYPE_XMPP="XMPP";
 	public final static String TYPE_FCM="FCM";
-	
+
 	public final static String RESPONSE_SERVERREADY = "220";
 	public final static String RESPONSE_MAILACTIONOKEY="250";
 	public final static String RESPONSE_STARTMAILINPUT="354";
 	public final static String RESPONSE_SMTP_AUTH_NTLM_BLOB_Response="334";
 	public final static String RESPONSE_LOGIN_SUCCESS="235";
-	public final static String RESPONSE_SERVICE_CLOSING_TRANSMISSION="221"; 
+	public final static String RESPONSE_SERVICE_CLOSING_TRANSMISSION="221";
 	public static final int SSLPORT=587;
 	/** 15 sec. socket read timeout */
 	public static final int SOCKET_READ_TIMEOUT = 15 * 1000;
@@ -59,15 +59,15 @@ public class MessageSession {
 		this.connect(sender, password);
 		return this;
 	}
-	
+
 
 	public boolean connect(String host, int port, String sender, String password) {
 		this.host = host;
 		this.port = port;
 		return connect(sender, password);
 	}
-	
-	
+
+
 	private CharacterBuffer bindXMPP() {
 		XMLEntity iq = XMLEntity.TAG("iq");
 		iq.with("id", nextID());
@@ -79,7 +79,7 @@ public class MessageSession {
 		String command = iq.toString();
 		CharacterBuffer response = sendCommand(command);
 //		System.out.println(response);
-		
+
 		response = sendCommand("<iq id=\""+nextID()+"\" type=\"set\"><session xmlns=\"urn:ietf:params:xml:ns:xmpp-session\"/></iq>");
 
 		XMLEntity presence = XMLEntity.TAG("presence");
@@ -87,11 +87,11 @@ public class MessageSession {
 		presence.withCloseTag();
 		command = presence.toString();
 		response = sendCommand(command);
-		
+
 		return response;
 //		System.out.println(response);
 	}
-	
+
 	private String getLoginText(String user, String password) {
 		if(user == null || password== null ) {
 			return "";
@@ -102,7 +102,7 @@ public class MessageSession {
 		int i=0;
 		for(;i<userBytes.length;i++) {
 			bytes[i] = userBytes[i];
-			bytes[i+userBytes.length+1] = userBytes[i]; 
+			bytes[i+userBytes.length+1] = userBytes[i];
 		}
 		for(i=0;i<passwordBytes.length;i++) {
 			bytes[i+userBytes.length+userBytes.length + 2] = passwordBytes[i];
@@ -111,11 +111,11 @@ public class MessageSession {
 		CharacterBuffer staticString = converter.toStaticString(bytes);
 		return staticString.toString();
 	}
-	
+
 	public String getSender() {
 		return sender;
 	}
-	
+
 	public boolean setSender(String sender) {
 		if(EntityUtil.stringEquals(this.sender, sender) == false) {
 			this.sender = sender;
@@ -123,25 +123,25 @@ public class MessageSession {
 		}
 		return false;
 	}
-	
+
 	public int getPort() {
 		return port;
 	}
-	
+
 	public MessageSession withPort(int port) {
 		this.port = port;
 		return this;
 	}
-	
+
 	public MessageSession withHost(String url) {
 		this.host = url;
 		return this;
 	}
-	
+
 	public String getID() {
 		return id;
 	}
-	
+
 	/**
 	 * Closes down the connection to SMTP server (if open). Should be called if
 	 * an exception is raised during the SMTP session.
@@ -158,12 +158,12 @@ public class MessageSession {
 		}
 		return true;
 	}
-	
+
 	private boolean initSockets(String host, int port) throws UnsupportedEncodingException, IOException {
 		if(factory == null) {
 			return false;
 		}
-		
+
 		Socket socket;
 		if(this.serverSocket != null && factory instanceof SSLSocketFactory) {
 			socket = ((SSLSocketFactory)factory).createSocket(this.serverSocket, host, port, true);
@@ -171,26 +171,26 @@ public class MessageSession {
 			socket = factory.createSocket(host, port);
 		}
 		socket.setSoTimeout(SOCKET_READ_TIMEOUT);
-        in = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));
-        out = socket.getOutputStream();
-        this.serverSocket = socket;
-        return true;
+		in = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));
+		out = socket.getOutputStream();
+		this.serverSocket = socket;
+		return true;
 	}
 
 	public boolean connect(String password) {
 		return this.connect(this.sender, password);
 	}
-	
+
 	public boolean connectXMPP(String sender, String password) {
 		this.type = TYPE_XMPP;
 		return connect(sender, password);
 	}
-	
+
 	public boolean connectFCM(String sender, String password) {
 		this.type = TYPE_FCM;
 		return connect(sender, password);
 	}
-	
+
 	/**
 	 * Connects to the SMTP server and gets input and output streams (in, out).
 	 * @param sender	 the Username
@@ -211,12 +211,12 @@ public class MessageSession {
 					((SSLSocket)this.serverSocket).startHandshake();
 				}
 				CharacterBuffer response = sendStart();
-	
+
 				XMLEntity answer= new XMLEntity().withValue(response);
 				this.id = answer.getString("id");
-	
+
 				response = getResponse();
-					
+
 				answer= new XMLEntity().withValue(response);
 				XMLEntity features = (XMLEntity) answer.getElementBy(XMLEntity.PROPERTY_TAG, "mechanisms");
 				for(int i=0;i<features.sizeChildren();i++) {
@@ -226,23 +226,23 @@ public class MessageSession {
 	//			System.out.println(this.supportedFeature.toString(null));
 				String login = getLoginText(sender, password);
 				response = sendCommand("<auth mechanism=\"PLAIN\" xmlns=\"urn:ietf:params:xml:ns:xmpp-sasl\">"+login+"</auth>");
-				
+
 				response = sendStart();
-				
+
 				XMLEntity iq = XMLEntity.TAG("iq");
 				iq.with("type", "set");
 				XMLEntity bind = iq.createChild("bind");
 				bind.with("xmlns", "urn:ietf:params:xml:ns:xmpp-bind");
-				
+
 				response = sendCommand(iq.toString());
 				return true;
 			}
 			if(TYPE_XMPP.equals(type)) {
 				this.factory = javax.net.SocketFactory.getDefault();
 				initSockets(host, port);
-	
+
 				CharacterBuffer response = sendStart();
-	
+
 				XMLEntity answer= new XMLEntity().withValue(response);
 				this.id = answer.getString("id");
 				XMLEntity features = (XMLEntity) answer.getElementBy(XMLEntity.PROPERTY_TAG, "stream:features");
@@ -253,20 +253,19 @@ public class MessageSession {
 				if(supportedFeature.contains(FEATURE_TLS)) {
 					response = sendCommand("<starttls xmlns=\"urn:ietf:params:xml:ns:xmpp-tls\" />");
 					// Now create Factory
-		            SSLContext context = SSLContext.getInstance("TLS");
-		            context.init(null, new javax.net.ssl.TrustManager[] { new ServerTrustManager(host) }, 
-		            		new java.security.SecureRandom());
+					SSLContext context = SSLContext.getInstance("TLS");
+					context.init(null, new javax.net.ssl.TrustManager[] { new ServerTrustManager() }, new java.security.SecureRandom());
 					this.factory = context.getSocketFactory();
-					
+
 					if(startTLS() == false) {
 						return false;
 					}
 					sendStart();
-	
+
 					String login = getLoginText(sender, password);
 					response = sendCommand("<auth mechanism=\"PLAIN\" xmlns=\"urn:ietf:params:xml:ns:xmpp-sasl\">"+login+"</auth>");
 //					if(response.startsWith("<success "))
-	
+
 					sendStart();
 					bindXMPP();
 				}
@@ -276,19 +275,19 @@ public class MessageSession {
 				this.type = TYPE_EMAIL;
 				this.factory = javax.net.SocketFactory.getDefault();
 				initSockets(host, port);
-	
+
 				checkServerResponse(getResponse(), RESPONSE_SERVERREADY);
-				
+
 				sendStart();
-				
+
 				CharacterBuffer answer = sendCommand(FEATURE_TLS);
-	
+
 				startTLS();
-	
+
 				sendStart();
-	
+
 				answer = sendCommand("AUTH LOGIN");
-	
+
 				if(checkServerResponse(answer, RESPONSE_SMTP_AUTH_NTLM_BLOB_Response) == false) {
 					close();
 					return false;
@@ -311,7 +310,7 @@ public class MessageSession {
 		}
 		return true;
 	}
-	
+
 	private CharacterBuffer sendStart() {
 		if (TYPE_XMPP.equals(type) || TYPE_FCM.equals(type)) {
 			return sendCommand("<stream:stream to=\""+host+"\" xmlns=\"jabber:client\" xmlns:stream=\"http://etherx.jabber.org/streams\" version=\"1.0\">");
@@ -345,7 +344,7 @@ public class MessageSession {
 						eprots.add(prots[i]);
 				}
 				socket.setEnabledProtocols(eprots.toArray(new String[eprots.size()]));
-				
+
 				socket.startHandshake();
 				return true;
 			}
@@ -365,10 +364,10 @@ public class MessageSession {
 		CharacterBuffer response = getResponse();
 		return response;
 	}
-	
+
 	/**
 	 * Sends given command and waits for a response from server.
-	 * 
+	 *
 	 * @param cmd bytes for sending
 	 */
 	protected void sendValues(char... cmd) {
@@ -383,10 +382,10 @@ public class MessageSession {
 			e.printStackTrace();
 		}
 	}
-	
+
 	/**
 	 * Sends given command and waits for a response from server.
-	 * 
+	 *
 	 * @param cmd bytes for sending
 	 */
 	protected void sendValues(String cmd) {
@@ -401,8 +400,8 @@ public class MessageSession {
 			}
 		}
 	}
-	
-	
+
+
 	/**
 	 * Sends given commandString to the server, gets its reply and checks if it
 	 * starts with expectedResponseStart. If not, throws IOException with
@@ -470,7 +469,7 @@ public class MessageSession {
 		this.lastAnswer = response;
 		return response;
 	}
-	
+
 	/**
 	 * Get the name of the local host, for use in the EHLO and HELO commands.
 	 * The property InetAddress would tell us.
@@ -506,7 +505,7 @@ public class MessageSession {
 		}
 		return localHostName;
 	}
-	
+
 	public String getLocalAdress() {
 		try {
 			InetAddress localHost = InetAddress.getLocalHost();
@@ -515,26 +514,25 @@ public class MessageSession {
 		}
 	    return "mailer@localhost"; // worst-case default
 	}
-	
+
 	private static String prefix = EntityUtil.randomString(5) + "-";
 
-    /**
-     * Keeps track of the current increment, which is appended to the prefix to
-     * forum a unique ID.
-     */
-    private static long messageId = 0;
+	/**
+	 * Keeps track of the current increment, which is appended to the prefix to
+	 * forum a unique ID.
+	 */
+	private static long messageId = 0;
 
-    /**
-     * Returns the next unique id. Each id made up of a short alphanumeric
-     * prefix along with a unique numeric value.
-     *
-     * @return the next id.
-     */
-    public static String nextID() {
-        return prefix + Long.toString(messageId++);
-    }
-	
-	
+	/**
+	 * Returns the next unique id. Each id made up of a short alphanumeric
+	 * prefix along with a unique numeric value.
+	 *
+	 * @return the next id.
+	 */
+	public static String nextID() {
+		return prefix + Long.toString(messageId++);
+	}
+
 	public boolean sendMessage(String to, String message) {
 		SocketMessage msg = new SocketMessage();
 		msg.withRecipient(to);
@@ -552,7 +550,7 @@ public class MessageSession {
 			XMLEntity xml = message.toXML(type);
 			return sendCommand(xml.toString()) != null;
 		}
-		
+
 		if(connect(this.sender, null) == false) {
 			return false;
 		}
@@ -578,9 +576,9 @@ public class MessageSession {
 		if(doCommand("DATA", RESPONSE_STARTMAILINPUT)  == false) {
 			return false;
 		}
-		
+
 		message.generateMessageId(this.getLocalAdress());
-		
+
 		// Send the message headers
 		sendValues(message.getHeader(SocketMessage.PROPERTY_DATE));
 		sendValues(message.getHeader(SocketMessage.PROPERTY_FROM));
@@ -588,7 +586,7 @@ public class MessageSession {
 		sendValues(message.getHeader(SocketMessage.PROPERTY_ID));
 		sendValues(message.getHeader(SocketMessage.PROPERTY_SUBJECT));
 		sendValues(message.getHeader(SocketMessage.PROPERTY_MIME));
-		
+
 		SimpleList<BaseItem> messages = message.getMessages();
 		boolean multiPart = message.isMultiPart();
 		String splitter="--";
@@ -612,7 +610,7 @@ public class MessageSession {
 			}
 			// The CRLF separator between header and content
 			sendValues(BaseItem.CRLF);
-			
+
 			while(buffer.isEnd() == false) {
 				CharacterBuffer line=buffer.readLine();
 				// If the line begins with a ".", put an extra "." in front of it.
@@ -646,11 +644,11 @@ public class MessageSession {
 		// Message is sent. Close the connection to the server
 		return doCommand("QUIT", RESPONSE_SERVICE_CLOSING_TRANSMISSION);
 	}
-	
+
 	public CharacterBuffer getLastAnswer() {
 		return lastAnswer;
 	}
-	
+
 	public String getLastSended() {
 		return lastSended;
 	}

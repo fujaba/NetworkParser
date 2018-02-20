@@ -19,7 +19,7 @@ public class And extends ListCondition {
 	public static And create(ObjectCondition... conditions) {
 		return new And().with(conditions);
 	}
-	
+
 	@Override
 	public And with(ObjectCondition... values) {
 		super.with(values);
@@ -30,7 +30,7 @@ public class And extends ListCondition {
 		super.with(values);
 		return this;
 	}
-	
+
 	@Override
 	public void create(CharacterBuffer buffer, TemplateParser parser, LocalisationInterface customTemplate) {
 		buffer.skip();

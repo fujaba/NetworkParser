@@ -12,7 +12,7 @@ public class TextDiff {
 	public static final char CHANGE='#';
 	public static final char REMOVE='-';
 	public static final String TO ="->";
-	
+
 	private String key;
 	private char type;
 	private Object left;
@@ -40,7 +40,7 @@ public class TextDiff {
 		}
 		return this;
 	}
-	
+
 	public TextDiff replaceChild(TextDiff last, String key, Object left, Object right) {
 		TextDiff lastChild = null;
 		if(this.children != null) {
@@ -60,15 +60,15 @@ public class TextDiff {
 		}
 		return lastChild;
 	}
-	
+
 
 	public TextDiff getLast() {
 		if(this.children!= null) {
-			return this.children.get(this.children.size() - 1);	
+			return this.children.get(this.children.size() - 1);
 		}
 		return null;
 	}
-	
+
 	public TextDiff withChild(TextDiff child) {
 		if(this.children == null) {
 			this.children = new SimpleList<TextDiff>();
@@ -76,7 +76,7 @@ public class TextDiff {
 		this.children.add(child);
 		return this;
 	}
-	
+
 	public TextDiff withChild(String key, char type, TextDiff child) {
 		if(this.children == null) {
 			this.children = new SimpleList<TextDiff>();
@@ -86,7 +86,7 @@ public class TextDiff {
 		this.children.add(child);
 		return this;
 	}
-	
+
 	public TextDiff createChild(String key, Object left, Object right) {
 		TextDiff child = new TextDiff();
 		if(this.children == null) {
@@ -96,19 +96,19 @@ public class TextDiff {
 		child.with(key, left, right);
 		return child;
 	}
-	
+
 	public Object getLeft() {
 		return left;
 	}
-	
+
 	public Object getRight() {
 		return right;
 	}
-	
+
 	public char getType() {
 		return type;
 	}
-	
+
 	public String getKey() {
 		return key;
 	}
@@ -148,7 +148,7 @@ public class TextDiff {
 				} else {
 					sb.with(""+right);
 				}
-			} else { 
+			} else {
 				if(splitAddAndRemove) {
 					sb.with(splitValue(left, type).toString(indentFactor, false));
 				} else {

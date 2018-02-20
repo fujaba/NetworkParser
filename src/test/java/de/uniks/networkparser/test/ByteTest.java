@@ -54,7 +54,7 @@ public class ByteTest{
 			Assert.assertEquals(i, buffer.byteAt(i));
 		}
 	}
-	
+
 	@Test
 	public void testBASE64() {
 		String item = "tlstest#42";
@@ -64,7 +64,7 @@ public class ByteTest{
 		Assert.assertEquals(reference.length, actuals.length);
 		Assert.assertArrayEquals(reference, actuals);
 	}
-	
+
 	@Test
 	public void testSHA1() throws NoSuchAlgorithmException, UnsupportedEncodingException {
 		String text="Hallo Welt";
@@ -400,7 +400,7 @@ public class ByteTest{
 		String string = item.toString();
 		Assert.assertEquals(128, string.length());
 	}
-	
+
 	@Test
 	public void testBASE64Converter() {
 		String item = "HalloWorld";
@@ -411,26 +411,26 @@ public class ByteTest{
 		String referenceString = new String(reference);
 		String string3 = converter.toStaticString(new CharacterBuffer().with(item)).toString();
 		Assert.assertEquals(referenceString, string3);
-		
+
 		CharacterBuffer string4 = ByteConverter64.toBase64String(item);
 		Assert.assertEquals(referenceString, string4.toString());
-		
+
 		byte[] encodedBytes = Base64.getEncoder().encode(item.getBytes());
 		String outPut = "encodedBytes " + new String(encodedBytes);
 		this.outputStream(outPut.getBytes(), stream);
-		
+
 		Assert.assertEquals(new String(encodedBytes), string4.toString());
-		
+
 		byte[] decodedBytes = Base64.getDecoder().decode(encodedBytes);
 		outPut = "decodedBytes " + new String(decodedBytes);
 		this.outputStream(outPut.getBytes(), stream);
-		
+
 		CharacterBuffer string5 = ByteConverter64.fromBase64String(string4);
 
 		Assert.assertEquals(new String(decodedBytes), string5.toString());
 
-		
-		
+
+
 	}
 
 }

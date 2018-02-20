@@ -17,7 +17,7 @@ public class YAMLTest {
 //		yamlEntity.withValue(new CharacterBuffer().with(text));
 		YamlEntity yamlEntity = parseEntity( "Hallo Welt");
 		Assert.assertNotNull(yamlEntity);
-		
+
 		yamlEntity = parseEntity("-Test");
 		Assert.assertNotNull(yamlEntity);
 
@@ -27,7 +27,7 @@ public class YAMLTest {
 		yamlEntity = parseEntity("- Test:Value");
 		Assert.assertNotNull(yamlEntity);
 	}
-	
+
 	private YamlEntity parseEntity(String text) {
 		YamlEntity yamlEntity = new YamlEntity();
 		YAMLTokener tokener = new YAMLTokener();
@@ -35,7 +35,7 @@ public class YAMLTest {
 		tokener.parseToEntity(yamlEntity);
 		return yamlEntity;
 	}
-	
+
 	@Test
 	public void YamlDecoder() {
 		String yaml = ""
@@ -67,7 +67,7 @@ public class YAMLTest {
 //		YamlIdMap yamlIdMap = new YamlIdMap("de.uniks.networkparser.test.model");
 //	    University studyRight = (University) yamlIdMap.decode(yaml);
 //	    Assert.assertNotNull(studyRight);
-	    
+	
 		// NEW
 		YAMLTokener tokener = new YAMLTokener();
 		IdMap map = UniversityCreator.createIdMap("");

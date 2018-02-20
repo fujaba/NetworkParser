@@ -10,12 +10,12 @@ import de.uniks.networkparser.interfaces.TemplateParser;
 import de.uniks.networkparser.list.ConditionSet;
 
 public class ChainCondition extends ListCondition {
-	
+
 	public ChainCondition enableHook() {
 		this.chain = false;
 		return this;
 	}
-	
+
 	@Override
 	public void create(CharacterBuffer buffer, TemplateParser parser, LocalisationInterface customTemplate) {
 		// CHAIN CANT CREATE
@@ -26,16 +26,16 @@ public class ChainCondition extends ListCondition {
 		super.with(values);
 		return this;
 	}
-	
+
 	@Override
 	public ChainCondition with(PropertyChangeListener... values) {
 		super.with(values);
 		return this;
 	}
-	
+
 	public ChainCondition with(Collection<ObjectCondition> values) {
 		ConditionSet list;
-		
+
 		if(this.list instanceof ConditionSet) {
 			list = (ConditionSet) this.list;
 		} else {
@@ -47,7 +47,7 @@ public class ChainCondition extends ListCondition {
 		return this;
 	}
 
-	
+
 	@Override
 	public boolean isExpression() {
 		return false;

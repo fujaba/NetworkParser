@@ -56,7 +56,7 @@ public class HTMLEntity implements BaseItem {
 	public String toString(int indentFactor) {
 		return parseItem(new EntityStringConverter(indentFactor));
 	}
-	
+
 	public XMLEntity getHeader() {
 		return header;
 	}
@@ -71,7 +71,7 @@ public class HTMLEntity implements BaseItem {
 		this.header.with(metaTag);
 		return this;
 	}
-	
+
 	public HTMLEntity withPageBreak() {
 		XMLEntity pageBreak = new XMLEntity().setType("div").withCloseTag();
 		pageBreak.put("style", "page-break-before:always");
@@ -108,7 +108,7 @@ public class HTMLEntity implements BaseItem {
 		parentNode.with(node);
 		return node;
 	}
-	
+
 	public HTMLEntity withHeaderStyle(String value) {
 		XMLEntity headerChild = new XMLEntity().setType("style").withValue(value);
 		this.header.with(headerChild);
@@ -125,7 +125,7 @@ public class HTMLEntity implements BaseItem {
 		sb.append("</html>");
 		return sb.toString();
 	}
-	
+
 	public HTMLEntity with(Object... values) {
 		add(values);
 		return this;
@@ -216,10 +216,10 @@ public class HTMLEntity implements BaseItem {
 		}
 		return this;
 	}
-	
+
 	/**
 	 * Create a new Tag as Child of Parent
-	 * 
+	 *
 	 * @param tag the new Tag
 	 * @param parentNode May be a child of Body or Body or head
 	 * @return the created XMLEntity Item
@@ -284,7 +284,7 @@ public class HTMLEntity implements BaseItem {
 		}
 		return withGraph(value.toString(2), resource.toString());
 	}
-	
+
 	public HTMLEntity withGraph(String graph, String path) {
 		XMLEntity script = new XMLEntity().setType(SCRIPT).withKeyValue("type", "text/javascript");
 		StringBuilder sb=new StringBuilder();
@@ -346,7 +346,7 @@ public class HTMLEntity implements BaseItem {
 		}
 		return converter.encode(this);
 	}
-	
+
 	@Override
 	public int size() {
 		return body.size();

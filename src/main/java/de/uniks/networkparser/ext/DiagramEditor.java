@@ -38,11 +38,11 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 	public static final String TYPE_EXPORTALL="EXPORTALL";
 	private static final String METHOD_GENERATE="generating";
 	private String type = TYPE_EXPORT;
-	private SimpleController controller;	
+	private SimpleController controller;
 	private Object logic;
 	private SimpleEventCondition listener;
 	private JavaBridgeFX bridge;
-	
+
 	public static void main(String[] args) {
 		final Class<?> launcherClass = ReflectionLoader.getClass("com.sun.javafx.application.LauncherImpl");
 		if(launcherClass != null) {
@@ -67,7 +67,7 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 			}
 		}
 	}
-	
+
 	public boolean executeWebServer(Message msg) {
 		String  request = msg.getMessage().toString();
 		if(request.startsWith("GET")) {
@@ -98,7 +98,7 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 		}
 		return true;
 	}
-	
+
 	private void writeHTTPResponse(Message message, String response, boolean error) {
 		if(error) {
 			message.write("HTTP/1.1 404 Not Found\n");
@@ -119,39 +119,39 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 			e.printStackTrace();
 		}
 	}
-	
-	
+
+
 	@Override
 	public boolean update(Object value) {
-        if(value ==null) {
-            return false;
-        }
-        if(value instanceof Message) {
-        	return executeWebServer((Message) value);
-        }
-        if(JavaViewAdapter.STATE.equalsIgnoreCase(value.getClass().getName())) {
-            if(value.toString().equals(JavaViewAdapter.SUCCEEDED)) {
-                Object win = ReflectionLoader.call("executeScript", webEngine, "window");
-                ReflectionLoader.call("setMember", win, String.class, "java", Object.class, this);
-            }
-            return true;
-        }
-        String name = (String) ReflectionLoader.callChain(value, "getEventType", "getName");
-        if(JavaViewAdapter.DRAGOVER.equalsIgnoreCase(name)) {
-            return onDragOver(value);
-        }
-        if(JavaViewAdapter.DRAGDROPPED.equalsIgnoreCase(name)) {
-            return onDragDropped(value);
-        }
-        if(JavaViewAdapter.ERROR.equalsIgnoreCase(name)) {
-            return onError(value);
-        }
-        if(JavaViewAdapter.DRAGEXITED.equalsIgnoreCase(name)) {
-            return onDragExited(value);
-        }
-        return false;
-    }
-	
+		if(value ==null) {
+			return false;
+		}
+		if(value instanceof Message) {
+			return executeWebServer((Message) value);
+		}
+		if(JavaViewAdapter.STATE.equalsIgnoreCase(value.getClass().getName())) {
+			if(value.toString().equals(JavaViewAdapter.SUCCEEDED)) {
+				Object win = ReflectionLoader.call("executeScript", webEngine, "window");
+				ReflectionLoader.call("setMember", win, String.class, "java", Object.class, this);
+			}
+			return true;
+		}
+		String name = (String) ReflectionLoader.callChain(value, "getEventType", "getName");
+		if(JavaViewAdapter.DRAGOVER.equalsIgnoreCase(name)) {
+			return onDragOver(value);
+		}
+		if(JavaViewAdapter.DRAGDROPPED.equalsIgnoreCase(name)) {
+			return onDragDropped(value);
+		}
+		if(JavaViewAdapter.ERROR.equalsIgnoreCase(name)) {
+			return onError(value);
+		}
+		if(JavaViewAdapter.DRAGEXITED.equalsIgnoreCase(name)) {
+			return onDragExited(value);
+		}
+		return false;
+	}
+
 	public void exit() {
 		ReflectionLoader.call("exit", ReflectionLoader.PLATFORM);
 	}
@@ -178,7 +178,7 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 	public void log(String value) {
 		this.owner.logScript(value, 0, this, null);
 	}
-	
+
 	public String generate(String value) {
 		try {
 			Thread.currentThread().setUncaughtExceptionHandler(new UncaughtExceptionHandler() {
@@ -192,7 +192,7 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 		}
 		return "";
 	}
-	
+
 	public boolean generating(JsonObject model) {
 		if(this.listener != null) {
 			SimpleEvent event = new SimpleEvent(model, METHOD_GENERATE, null,null);
@@ -207,8 +207,8 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 				return (Boolean) result;
 			}
 		}
-		
-		
+
+
 		if (!model.has("nodes")) {
 			System.err.println("no Nodes");
 			System.out.println("no Nodes");
@@ -260,7 +260,7 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 		classModel.generate("gen");
 		return true;
 	}
-	
+
 	protected boolean onDragOver(Object event) {
 		List<File> files = getFiles(event);
 		if(files != null) {
@@ -317,7 +317,7 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 		}
 		return true;
 	}
-	
+
 	protected boolean onDragExited(Object event) {
 		this.owner.executeScript("classEditor.setBoardStyle(\"dragleave\");");
 		return true;
@@ -325,12 +325,12 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 
 	protected void saveException(Object value) {
 	}
-	
+
 	protected boolean onError(Object event) {
 		System.err.println(ReflectionLoader.call("getMessage", event));
 		return true;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	protected List<File> getFiles(Object event) {
 		Object db = ReflectionLoader.call("getDragboard", event);
@@ -340,7 +340,7 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 		}
 		return null;
 	}
-	
+
 	// NULL Default
 	public boolean load(Object item) {
 		boolean result = super.load(item);
@@ -379,7 +379,7 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 		ReflectionLoader.call("loadContent", webEngine, html.toString());
 		return true;
 	}
-	
+
 	public static DiagramEditor create(Object stage, String... url) {
 		DiagramEditor editor = new DiagramEditor();
 		editor.creating(stage, url);
@@ -389,10 +389,10 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 		if(stage == null) {
 			return this;
 		}
-		SimpleController controller = new SimpleController(stage); 
+		SimpleController controller = new SimpleController(stage);
 		this.controller = controller;
 		SimpleKeyValueList<String, String> parameterMap = controller.getParameterMap();
-		
+
 		if(parameterMap != null) {
 			if(parameterMap.contains(TYPE_EXPORTALL)) {
 				this.type = TYPE_EXPORTALL;
@@ -415,8 +415,8 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 	public void show() {
 		controller.show(bridge.getWebView());
 	}
-	
-	
+
+
 	public DiagramEditor withListener(Object item) {
 		this.logic = item;
 		if(item instanceof SimpleEventCondition) {
@@ -424,7 +424,7 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 		}
 		return this;
 	}
-	
+
 	public DiagramEditor withIcon(String icon) {
 		controller.withIcon(icon);
 		return this;

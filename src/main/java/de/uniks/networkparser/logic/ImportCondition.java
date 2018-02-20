@@ -12,18 +12,18 @@ import de.uniks.networkparser.list.SimpleList;
 /**
  * @author Stefan
  * FeatureCondition for ModelFilter
- * 
- * Format {{#import value}} 
+ *
+ * Format {{#import value}}
  */
 public class ImportCondition implements ParserCondition {
 	public static final String TAG="import";
 	private ObjectCondition importExpression;
-	
+
 	@Override
 	public String getKey() {
 		return TAG;
 	}
-	
+
 	public void parseImport(String className, SimpleList<String> imports) {
 	   int genericType = className.indexOf("<");
 		if (genericType > 0) {
@@ -110,17 +110,17 @@ public class ImportCondition implements ParserCondition {
 		}
 		return false;
 	}
-	
+
 	@Override
 	public boolean isExpression() {
 		return true;
 	}
-	
+
 	@Override
 	public ImportCondition getSendableInstance(boolean prototyp) {
 		return new ImportCondition();
 	}
-	
+
 	@Override
 	public String toString() {
 		if(this.importExpression != null) {

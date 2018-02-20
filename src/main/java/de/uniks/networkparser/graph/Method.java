@@ -43,7 +43,7 @@ public class Method extends GraphMember {
 		if(name == null) {
 			return this;
 		}
-		int pos = name.indexOf("("); 
+		int pos = name.indexOf("(");
 		if(pos>0) {
 			name = name.substring(0, pos);
 		}
@@ -242,7 +242,7 @@ public class Method extends GraphMember {
 	{
 	   return getName(true);
 	}
-	
+
 	@Override
 	public Object getValue(String attribute) {
 		if(PROPERTY_RETURNTYPE.equalsIgnoreCase(attribute)) {
@@ -263,7 +263,7 @@ public class Method extends GraphMember {
 		return super.getValue(attribute);
 	}
 
-	
+
 	public boolean isValidReturn() {
 		if(getReturnType() == null || DataType.VOID.equals(getReturnType())) {
 			return true;
@@ -275,7 +275,7 @@ public class Method extends GraphMember {
 		if(lines.length<1) {
 			return false;
 		}
-		
+
 		for (String l : lines)
 		{
 		   if (l.trim().startsWith("return"))

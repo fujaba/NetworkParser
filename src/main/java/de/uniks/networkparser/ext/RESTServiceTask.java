@@ -35,7 +35,7 @@ public class RESTServiceTask implements Runnable, Server{
 	private Object root;
 	private SendableEntityCreator creator;
 	private Filter filter = Filter.regard(Deep.create(1));
-	
+
 	private Condition<Exception> errorListener;
 	private Condition<SimpleEvent> allowListener;
 	public static final String JSON="/json";
@@ -57,7 +57,7 @@ public class RESTServiceTask implements Runnable, Server{
 		this.allowListener = listener;
 		return this;
 	}
-	
+
 	@Override
 	public void run() {
 		try {
@@ -68,7 +68,7 @@ public class RESTServiceTask implements Runnable, Server{
 					Socket clientSocket = serverSocket.accept();
 
 					buffer.clear();
-					
+
 					InputStreamReader isr = new InputStreamReader(clientSocket.getInputStream());
 					BufferedReader br = new BufferedReader(isr);
 					int c;
@@ -92,7 +92,7 @@ public class RESTServiceTask implements Runnable, Server{
 					PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
 					SimpleEvent event=new SimpleEvent(clientSocket, buffer.toString(), br, out);
 					event.withType(type);
-					
+
 					if(allowListener != null) {
 						if(allowListener.update(event) == false) {
 							out.write("HTTP 403");
@@ -119,19 +119,19 @@ public class RESTServiceTask implements Runnable, Server{
 			}
 		}
 	}
-	
+
 	@Override
 	public boolean close() {
 		if( serverSocket == null ||  serverSocket.isClosed()) {
 			return true;
 		}
-		try{ 
+		try{
 			serverSocket.close();
 		}catch (Exception e) {
 		}
 		return true;
 	}
-	
+
 	@Override
 	public boolean isRun() {
 		return serverSocket != null && serverSocket.isClosed() == false;
@@ -167,7 +167,7 @@ public class RESTServiceTask implements Runnable, Server{
 	private Object getElement(CharacterBuffer request, CharacterBuffer path, CharacterBuffer listID, boolean lastElement) {
 		int pos = 0;
 		SendableEntityCreator creator = this.creator;
-		
+
 		if(request.startsWith(JSON, 0, false)) {
 			pos =6;
 		} else if(request.startsWith(XML, 0, false)) {
@@ -207,7 +207,7 @@ public class RESTServiceTask implements Runnable, Server{
 					} catch (NumberFormatException e) {
 						temp = -1;
 					}
-					
+
 					Collection<?> collection = (Collection<?>) element;
 					if(temp<0) {
 						Object item = null;
@@ -256,8 +256,8 @@ public class RESTServiceTask implements Runnable, Server{
 		}
 		return element;
 	}
-	
-	
+
+
 	//GET
 	// Read	200 (OK)
 	// 404 (Not Found) if ID not found or invalid
@@ -284,17 +284,17 @@ public class RESTServiceTask implements Runnable, Server{
 				return xml.toString();
 			}
 			if(element instanceof Collection<?>) {
-				JsonArray jsonArray = map.toJsonArray(element, filter);	
+				JsonArray jsonArray = map.toJsonArray(element, filter);
 				return jsonArray.toString();
-				
+
 			} else {
-				JsonObject jsonObject = map.toJsonObject(element, filter);	
+				JsonObject jsonObject = map.toJsonObject(element, filter);
 				return jsonObject.toString();
 			}
 		}
 		return ERROR404;
 	}
-	
+
 	// DELETE
 	// Delete 405 (Method Not Allowed)
 	// 200 (OK)
@@ -310,7 +310,7 @@ public class RESTServiceTask implements Runnable, Server{
 		}
 		return ERROR404;
 	}
-	
+
 	//POST
 	// Create 200 (Created)
 	// 404 (Not Found)
@@ -326,7 +326,7 @@ public class RESTServiceTask implements Runnable, Server{
 			}
 			BufferedReader br = (BufferedReader) socketRequest.getOldValue();
 			String propertyName = socketRequest.getPropertyName();
-			
+
 			CharacterBuffer path = new CharacterBuffer();
 			CharacterBuffer listID = new CharacterBuffer();
 			CharacterBuffer request = new CharacterBuffer().with(socketRequest.getPropertyName());
@@ -367,13 +367,13 @@ public class RESTServiceTask implements Runnable, Server{
 					if(c != 13 && c != 10 && c != ' ') {
 						break;
 					}
-					
+
 				}
 				item[0] = (char) c;
 				br.read(item, 1, item.length - 1);
 				CharacterBuffer entry = new CharacterBuffer();
 				entry.with(item, 0 , item.length);
-				
+
 				if(entry.charAt(0) == JsonObject.START || entry.charAt(0) == XMLEntity.START) {
 					// JsonObject or XMLEntity
 					Object child = map.decode(entry);
@@ -404,7 +404,7 @@ public class RESTServiceTask implements Runnable, Server{
 		}
 		return ERROR404;
 	}
-	
+
 	//PUT
 	// Update/Replace 405 (Method Not Allowed)
     // 200 (OK) or 204 (No Content)
@@ -412,7 +412,7 @@ public class RESTServiceTask implements Runnable, Server{
 	private String putExecute(SimpleEvent socketRequest) {
 		return ERROR404;
 	}
-	
+
 	//PATCH	Update/Modify
 	// 405 (Method Not Allowed), unless you want to modify the collection itself.
 	// 200 (OK) or 204 (No Content).

@@ -7,10 +7,10 @@ public class JsonObjectLazy extends JsonObject {
 //	public static final String JS_OBJECT="[object Object]";
 //	public static final String JS_SET="[object Set]";
 	public static final String FILTERPROP="$";
-	
+
 	private Object ref = null;
 	private boolean loaded;
-	
+
 	public JsonObjectLazy(Object element) {
 		this.ref = element;
 	}
@@ -54,7 +54,7 @@ public class JsonObjectLazy extends JsonObject {
 		}
 		return true;
 	}
-	
+
 	@Override
 	protected Object getByIndex(int offset, int index, int size) {
 		Object result = super.getByIndex(offset, index, size);
@@ -67,13 +67,13 @@ public class JsonObjectLazy extends JsonObject {
 		}
 		return result;
 	}
-	
+
 	public Object getReference() {
 		return this.ref;
 	}
-	
+
 	/**
-	 * Tries to load the Value directly from the JSObject, if it is not already loaded. 
+	 * Tries to load the Value directly from the JSObject, if it is not already loaded.
 	 * @param key load the Key from Json
 	 * @return the value, that the REF contains, otherwise null
 	 */
@@ -100,5 +100,5 @@ public class JsonObjectLazy extends JsonObject {
 	private static Object getMember(Object obj, String value) {
 		return ReflectionLoader.call("getMember", obj, String.class, value);
 	}
-	
+
 }

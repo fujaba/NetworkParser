@@ -43,8 +43,8 @@ public class Story implements Comparable<Story> {
 	public void add(ObjectCondition step) {
 		this.steps.add(step);
 	}
-	
-	
+
+
 	 public String getLabel() {
 		 if(this.label == null && this.outputFile != null) {
 			 int pos = this.outputFile.lastIndexOf('/');
@@ -58,15 +58,15 @@ public class Story implements Comparable<Story> {
 		 }
 		 return this.label;
 	 }
-	 
+	
 	 public Story withLabel(String value) {
 		 this.label = value;
 		 return this;
 	 }
-	 
+	
 	/**
 	 * Add JavaCode to Story board
-	 * 
+	 *
 	 * @param className ClassName of SourceCOde
 	 * @param position Position of Code StartPosition, Endposition
 	 * 			if positon == null Full Method
@@ -118,14 +118,14 @@ public class Story implements Comparable<Story> {
 		this.add(step);
 		return step;
 	}
-	
+
 	public StoryStepDiagram addDiagram(StoryObjectFilter filter) {
 		StoryStepDiagram step = new StoryStepDiagram();
 		step.withFilter(filter);
 		this.add(step);
 		return step;
 	}
-	
+
 	public Story withName(String name) {
 		if(name == null || name.length() <1) {
 			return this;
@@ -137,7 +137,7 @@ public class Story implements Comparable<Story> {
 		}
 		return this;
 	}
-	
+
 	public void addImage(String imageFile) {
 		add(new StoryStepImage().withFile(imageFile));
 	}
@@ -167,11 +167,11 @@ public class Story implements Comparable<Story> {
 		}
 		return FileBuffer.writeFile(path + fileName, output.toString(2));
 	}
-	
+
 	public String getPath() {
 		return path;
 	}
-	
+
 	public boolean addDescription(String key, String value) {
 		StoryStepSourceCode source = null;
 		for(int i=this.steps.size() - 1;i>=0;i--) {
@@ -187,12 +187,12 @@ public class Story implements Comparable<Story> {
 		}
 		return false;
 	}
-	
+
 	public Story withCounter(int counter) {
 		this.counter = counter;
 		return this;
 	}
-	
+
 	public int getCounter() {
 		int value=this.counter;
 		if(value >=0) {
@@ -200,31 +200,31 @@ public class Story implements Comparable<Story> {
 		}
 		return value;
 	}
-	
+
 	public Story addText(String text) {
 		StoryStepText step = new StoryStepText();
 		step.withText(text);
 		this.add(step);
 		return this;
 	}
-	
+
 	protected Story withBreakOnAssert(boolean value) {
 		this.breakOnAssert = value;
 		return this;
 	}
-	
+
 	public Story withMap(IdMap map) {
 		this.map = map;
 		return this;
 	}
-	
+
 	public IdMap getMap() {
 		if(map == null) {
 			map = new IdMap();
 		}
 		return map;
 	}
-	
+
 	public void finish() {
 		for (ObjectCondition step : steps) {
 			if(step instanceof StoryStepSourceCode) {
@@ -253,13 +253,13 @@ public class Story implements Comparable<Story> {
 			throw new RuntimeException(step.getMessage());
 		}
 	}
-	
+
 	public void assertEquals(String message, double expected, double actual, double delta) {
 		StoryStepCondition step = new StoryStepCondition();
 		step.withCondition(message, actual, new Equals().withValue(expected, delta));
 		this.addCondition(step);
 	}
-	
+
 	public void assertEquals(String message, int expected, int actual) {
 		StoryStepCondition step = new StoryStepCondition();
 		step.withCondition(message, actual, new Equals().withValue(expected));
@@ -271,7 +271,7 @@ public class Story implements Comparable<Story> {
 		step.withCondition(message, actual, new Equals().withValue(expected));
 		this.addCondition(step);
 	}
-	
+
 	public void assertEquals(String message, Object expected, Object actual) {
 		StoryStepCondition step = new StoryStepCondition();
 		step.withCondition(message, actual, new Equals().withValue(expected));
@@ -295,7 +295,7 @@ public class Story implements Comparable<Story> {
 		step.withCondition(message, actual, Equals.createNullCondition());
 		this.addCondition(step);
 	}
-	
+
 	public void assertNotNull(String message, Object actual) {
 		StoryStepCondition step = new StoryStepCondition();
 		step.withCondition(message, actual, new Not().with(Equals.createNullCondition()));
@@ -316,17 +316,17 @@ public class Story implements Comparable<Story> {
 		XMLEntity mainFrame = frameset.createChild("frame").withKeyValue("name", "Main");
 		frameset.createChild("noframes").withValue("<body><p><a href='refs.html'>Index</a> <a href='refs.html'>Main</a></p></body>");
 		output.with(frameset);
-		
-		
+
+
 		HTMLEntity refHtml = new HTMLEntity();
 		refHtml.withHeader("../src/main/resources/de/uniks/networkparser/graph/diagramstyle.css");
 		refHtml.withEncoding(HTMLEntity.ENCODING);
 		int pos = this.outputFile.lastIndexOf('/');
-		String fileName = ""; 
+		String fileName = "";
 		if(pos>0) {
 			fileName = subDir+this.outputFile.substring(0, pos) + "/";
-		} 
-		
+		}
+
 		if(this.steps.size()>0) {
 			// has main
 			this.writeToFile(fileName+"main.html");
@@ -342,11 +342,11 @@ public class Story implements Comparable<Story> {
 		}
 		return FileBuffer.writeFile(fileName+"index.html", output.toString());
 	}
-	
+
 	private int size() {
 		return this.stories.size();
 	}
-	
+
 	private Object getOutputFile() {
 		return outputFile;
 	}

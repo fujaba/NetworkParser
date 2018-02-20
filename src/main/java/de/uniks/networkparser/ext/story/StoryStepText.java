@@ -7,7 +7,7 @@ import de.uniks.networkparser.xml.XMLEntity;
 
 public class StoryStepText implements ObjectCondition {
 	private String value;
-	
+
 	public StoryStepText withText(String text) {
 		this.value = text;
 		return this;
@@ -30,7 +30,7 @@ public class StoryStepText implements ObjectCondition {
 				textValue = "Step "+ counter+": ";
 			}
 			textValue += this.value;
-			
+
 			textItem.withValueItem(textValue);
 		}
 		return true;

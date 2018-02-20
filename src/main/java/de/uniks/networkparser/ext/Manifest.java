@@ -18,7 +18,7 @@ public class Manifest extends SimpleKeyValueList<String, String>{
 	public static final String HOMEPAGE="Homepage";
 	public static final String COVERAGE="Coverage";
 	private boolean empty = true;
-	
+
 	public static Manifest create() {
 		String value = null;
 		InputStream resources = Manifest.class.getClassLoader().getResourceAsStream("META-INF/MANIFEST.MF");
@@ -39,7 +39,7 @@ public class Manifest extends SimpleKeyValueList<String, String>{
 		}
 		return create(value);
 	}
-	
+
 	public static void printVersion() {
 		Manifest manifest = create();
 		if(manifest.isEmptyManifest() == false) {
@@ -75,9 +75,9 @@ public class Manifest extends SimpleKeyValueList<String, String>{
 			manifest.add(key, sectionheader.trim().toString());
 		}
 		manifest.empty = manifest.containsAll(VERSION, TITLE, BUILD) == false;
-		return manifest; 
+		return manifest;
 	}
-	
+
 	public boolean isEmptyManifest() {
 		return empty;
 	}

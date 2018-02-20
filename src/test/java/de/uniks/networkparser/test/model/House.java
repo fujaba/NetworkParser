@@ -29,7 +29,7 @@ public class House implements SendableEntity{
 	public int getFloor() {return floor;}
 	public String getName() {return name;}
 	protected PropertyChangeSupport listeners = null;
-	   
+	
 	public boolean firePropertyChange(String propertyName, Object oldValue, Object newValue) {
 		if (listeners != null) {
 			listeners.firePropertyChange(propertyName, oldValue, newValue);

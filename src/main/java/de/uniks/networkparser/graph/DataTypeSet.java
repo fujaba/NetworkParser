@@ -57,7 +57,7 @@ public class DataTypeSet extends DataType {
 		}
 		return this.value.getName(shortName) + "<" + generic.getInternName(shortName, primitivAllow) + ">";
 	}
-	
+
 	public static DataTypeSet create(Object typ) {
 		return new DataTypeSet().withGeneric(DataType.create(typ));
 	}
@@ -83,7 +83,7 @@ public class DataTypeSet extends DataType {
 	public int hashCode() {
 		return super.hashCode();
 	}
-	
+
 	@Override
 	public DataTypeSet withExternal(boolean external) {
 		super.withExternal(external);

@@ -18,13 +18,13 @@ public class Clazz extends GraphEntity {
 	public static final String PROPERTY_SUPERCLAZZ = "superclazz";
 	public static final String PROPERTY_IMPLEMENTS = "implements";
 	public static final String PROPERTY_ATTRIBUTE = "attribute";
-	
+
 	private ClazzType type = ClazzType.CLAZZ;
 
 	Clazz() {
-		
+
 	}
-	
+
 	/**
 	 * Constructor with Name of Clazz
 	 * @param name Name of Clazz
@@ -37,13 +37,13 @@ public class Clazz extends GraphEntity {
 			with(name.getName().replace("$", "."));
 		}
 	}
-	
+
 	@Override
 	public Clazz with(String name) {
 		super.with(name);
 		return this;
 	}
-	
+
 	protected Clazz with(ClazzType clazzType) {
 		this.type = clazzType;
 		return this;
@@ -179,7 +179,7 @@ public class Clazz extends GraphEntity {
 		this.with(assocSource);
 		return this;
 	}
-	
+
 	/**
     * ********************************************************************
     * <pre>
@@ -197,7 +197,7 @@ public class Clazz extends GraphEntity {
     * @param srcCardinality      The sourcecardinality
     * @return The Association Instance
     */
-   public Association createBidirectional(Clazz tgtClass, String tgtRoleName, Cardinality tgtCardinality, String srcRoleName, Cardinality srcCardinality) 
+   public Association createBidirectional(Clazz tgtClass, String tgtRoleName, Cardinality tgtCardinality, String srcRoleName, Cardinality srcCardinality)
    {
       // Target
       Association assocTarget = new Association(tgtClass).with(tgtCardinality).with(tgtRoleName);
@@ -291,7 +291,7 @@ public class Clazz extends GraphEntity {
 		}
 		return collection;
 	}
-	
+
 	/**
 	 * Get All SuperClazzes
 	 * @param transitive Get all SuperClasses or direct SuperClasses
@@ -314,7 +314,7 @@ public class Clazz extends GraphEntity {
 		}
 		return collection;
 	}
-	
+
 	protected void repairAssociation(Association assoc) {
 		if(AssociationTypes.IMPLEMENTS.equals(assoc.getType()) == false && AssociationTypes.GENERALISATION.equals(assoc.getType()) == false) {
 			// Wrong way try another round
@@ -334,7 +334,7 @@ public class Clazz extends GraphEntity {
 				// Must be an Implements
 				if(AssociationTypes.IMPLEMENTS.equals(assoc.getType())==false) {
 					assoc.with(AssociationTypes.IMPLEMENTS);
-				}	
+				}
 			} else {
 				// Must be an Genralization
 				if(AssociationTypes.GENERALISATION.equals(assoc.getType())==false) {
@@ -399,7 +399,7 @@ public class Clazz extends GraphEntity {
 		}
 		return kidClazzes;
 	}
-	
+
 	/**
 	 * get All Implements Clazz
 	 * @return all implements of a Clazz
@@ -413,7 +413,7 @@ public class Clazz extends GraphEntity {
 		ClazzSet kidClazzes = getEdgeClazzes(AssociationTypes.IMPLEMENTS, AssociationTypes.EDGE);
 		return kidClazzes;
 	}
-	
+
 	protected ClazzSet getEdgeClazzes(AssociationTypes typ, AssociationTypes otherTyp) {
 		ClazzSet kidClazzes = new ClazzSet();
 		if (this.children == null || typ == null) {
@@ -482,7 +482,7 @@ public class Clazz extends GraphEntity {
 		if(this.children == null) {
 			return collection;
 		}
-		
+
 		ClazzSet superClasses= new ClazzSet();
 		if(this.children instanceof Attribute) {
 			if(check((Attribute)this.children, filters)) {
@@ -581,10 +581,10 @@ public class Clazz extends GraphEntity {
 			item.parseSuperElements(superClasses, collection, newMethods, foundMethods, filters);
 		}
 		collection.addAll(foundMethods);
-		
+
 		return collection;
 	}
-	
+
 	@Override
 	public AssociationSet getAssociations(Condition<?>... filters) {
 		AssociationSet collection = super.getAssociations(filters);
@@ -608,7 +608,7 @@ public class Clazz extends GraphEntity {
 		collection.addAll(foundAssocs);
 		return collection;
 	}
-	
+
 	/** get All Methods
 	 * @param superClasses Set of all SuperClasses
 	 * @param existsElements Set of Found Methods or new Attribute (Return Value)
@@ -640,7 +640,7 @@ public class Clazz extends GraphEntity {
 			newElements.removeAll(collection);
 			return;
 		}
-		
+
 		GraphSimpleSet list = this.getChildren();
 		for(GraphMember member : list) {
 			if(member instanceof Association) {
@@ -755,7 +755,7 @@ public class Clazz extends GraphEntity {
 		method.with(returnValue);
 		return method;
 	}
-	
+
 	public Method createMethod(String name, Parameter... parameters) {
 		Method method = new Method().with(name);
 		method.with(parameters);
@@ -778,12 +778,12 @@ public class Clazz extends GraphEntity {
 		method.with(returnType);
 		return this;
 	}
-	
+
 	@Override
 	public String toString() {
 		return getName();
 	}
-	
+
 	@Override
 	public Object getValue(String attribute) {
 		if(PROPERTY_PACKAGENAME.equalsIgnoreCase(attribute)) {
@@ -851,7 +851,7 @@ public class Clazz extends GraphEntity {
 		}
 		return super.getValue(attribute);
 	}
-	
+
 	@Override
 	public Clazz without(GraphMember... values) {
 		super.without(values);

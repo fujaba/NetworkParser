@@ -77,7 +77,7 @@ public class Column implements SendableEntityCreatorNoIndex {
 			Column.PROPERTY_ACTIVESTYLE };
 
 	private Style style;
-	
+
 	private String id;
 
 	private Style activestyle;
@@ -107,17 +107,17 @@ public class Column implements SendableEntityCreatorNoIndex {
 	protected CellHandler handler;
 
 	private Comparator<TableCellValue> comparator;
-	
+
 	/**
-	 * 
+	 *
 	 * @return the ID
 	 */
 	public String getId() {
 		return id;
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @param id the new id
 	 * @return itself
 	 */
@@ -439,7 +439,7 @@ public class Column implements SendableEntityCreatorNoIndex {
 	public boolean setValue(Object entity, String attribute, Object value,
 			String type) {
 		Column that = (Column) entity;
-		
+
 		if (attribute.equalsIgnoreCase(PROPERTY_ATTRIBUTE)) {
 			that.withAttribute((String) value);
 			return true;

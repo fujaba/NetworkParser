@@ -15,8 +15,8 @@ import de.uniks.networkparser.list.SimpleSet;
 /**
  * @author Stefan
  * FeatureCondition for ModelFilter
- * 
- * Format {{#feature SETCLASS=SimpleSet}} 
+ *
+ * Format {{#feature SETCLASS=SimpleSet}}
  */
 public class FeatureCondition extends CustomCondition<GraphMember> {
 	private static final String PROPERTY_FEATURE="variable.features";
@@ -27,7 +27,7 @@ public class FeatureCondition extends CustomCondition<GraphMember> {
 	public String getKey() {
 		return TAG;
 	}
-	
+
 	@Override
 	public void create(CharacterBuffer buffer, TemplateParser parser, LocalisationInterface customTemplate) {
 		CharacterBuffer temp = buffer.nextToken(false, SPLITEND, ENTER);

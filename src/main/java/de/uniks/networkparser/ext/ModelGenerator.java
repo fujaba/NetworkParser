@@ -95,7 +95,7 @@ public class ModelGenerator extends BasicGenerator {
 	public SendableEntityCreator generate(String rootDir, GraphModel model) {
 		return generateJava(rootDir, model, null);
 	}
-	
+
 	public SendableEntityCreator generateJava(String rootDir, GraphModel model, TextItems parameters) {
 		return generating(rootDir, model, parameters, javaGeneratorTemplates, true, true);
 	}
@@ -114,7 +114,7 @@ public class ModelGenerator extends BasicGenerator {
 		resultModel.withFeatures(this.features);
 		return resultModel;
 	}
-	
+
 	SendableEntityCreator generating(String rootDir, String type, GraphModel model) {
 		if(TYPE_JAVA.equalsIgnoreCase(type)) {
 			return generating(rootDir, model, null, javaGeneratorTemplates, true, true);
@@ -127,7 +127,7 @@ public class ModelGenerator extends BasicGenerator {
 		}
 		return null;
 	}
-	
+
 	private String getFileName(String path, String file) {
 		if (path == null) {
 			path = "";
@@ -138,10 +138,10 @@ public class ModelGenerator extends BasicGenerator {
 		return path;
 
 	}
-	
+
 	public SendableEntityCreator generating(String rootDir, GraphModel model, TextItems parameters,
 			SimpleList<BasicGenerator> templates, boolean writeFiles, boolean enableParser) {
-		
+
 		model.fixClassModel();
 		String name = model.getName();
 		if (name == null) {
@@ -161,7 +161,7 @@ public class ModelGenerator extends BasicGenerator {
 		}
 		FeatureProperty codeStyle = getFeature(Feature.CODESTYLE);
 		ClazzSet clazzes = model.getClazzes();
-		
+
 		for (Clazz clazz : clazzes) {
 			for (BasicGenerator template : templates) {
 				boolean isStandard = codeStyle.match(clazz);
@@ -195,14 +195,14 @@ public class ModelGenerator extends BasicGenerator {
 		}
 		return resultModel;
 	}
-	
+
 	public boolean write(String rootPath, TemplateResultFile entity) {
 		if(rootPath.endsWith("/") == false) {
 			rootPath += "/";
 		}
 		return FileBuffer.writeFile(rootPath + entity.getFileName(), entity.toString());
 	}
-	
+
 	public ParserEntity parse(String rootPath, TemplateResultFile entity) {
 		// check for each clazz, if a matching file already exists
 		String fileName = entity.getFileName();
@@ -223,7 +223,7 @@ public class ModelGenerator extends BasicGenerator {
 		}
 		return null;
 	}
-	
+
 	public boolean isSDMLibParser() {
 		return useSDMLibParser;
 	}
@@ -240,7 +240,7 @@ public class ModelGenerator extends BasicGenerator {
 					if(clazzes == null) {
 						return item;
 					}
-					
+
 					if(item.match(clazzes)) {
 						return item;
 					}
@@ -259,7 +259,7 @@ public class ModelGenerator extends BasicGenerator {
 		this.features.without(feature);
 		return this;
 	}
-	
+
 	public ModelGenerator withFeature(FeatureProperty feature) {
 		this.features.with(feature);
 		return this;
@@ -297,7 +297,7 @@ public class ModelGenerator extends BasicGenerator {
 		if(rootDir.endsWith("/") == false) {
 			rootDir = rootDir+"/";
 		}
-		
+
 		for (Clazz clazz : model.getClazzes()) {
 			boolean isStandard = codeStyle.match(clazz);
 			for(BasicGenerator generator : javaGeneratorTemplates) {
@@ -330,32 +330,32 @@ public class ModelGenerator extends BasicGenerator {
 		TemplateResultFragment generate = template.generate(model, parameters, member);
 		return generate;
 	}
-	
+
 	public Clazz parseSourceCode(CharacterBuffer content) {
 		Clazz clazz = ParserEntity.create(content);
 		return clazz;
 	}
-	
-	
+
+
 	public ModelGenerator withRootDir(String rootDir) {
 		this.defaultRootDir = rootDir;
 		return this;
 	}
-	
+
 	public String getRootDir() {
 		return defaultRootDir;
 	}
-	
+
 	public Clazz findClazz(String name) {
 		Clazz clazz = (Clazz) this.defaultModel.getChildByName(name, Clazz.class);
 		if(clazz != null) {
 			return clazz;
 		}
-		
+
 		if(this.defaultRootDir == null) {
 			return null;
 		}
-		
+
 		CharacterBuffer buffer = FileBuffer.readFile(getFileName(this.defaultRootDir, name));
 		return parseSourceCode(buffer);
 	}
@@ -364,11 +364,11 @@ public class ModelGenerator extends BasicGenerator {
 		// Update from Code and find the Clazz from Model
 		return null;
 	}
-	
+
 	public Method findMethod(Clazz clazz, String name) {
 		return null;
 	}
-	
+
 	public Clazz createClazz(String name) {
 		return null;
 	}

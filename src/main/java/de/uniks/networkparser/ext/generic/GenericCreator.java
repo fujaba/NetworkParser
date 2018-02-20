@@ -191,9 +191,9 @@ public class GenericCreator implements SendableEntityCreator {
 		if(attribute.endsWith("s")) {
 			if (setNewValue(entity, "addTo" + this.getMethodName(attribute), value)){
 				return true;
-			}	
+			}
 		}
-		
+
 		// No Method Found
 		try {
 			Field field = this.clazz.getDeclaredField(attribute);
@@ -210,7 +210,7 @@ public class GenericCreator implements SendableEntityCreator {
 		}
 		return false;
 	}
-	
+
 	private boolean isAccess(Field field, Object entity) {
 		try {
 			Method method = field.getClass().getMethod("canAccess", Object.class);
@@ -229,7 +229,7 @@ public class GenericCreator implements SendableEntityCreator {
 		}
 		return true;
 	}
-	
+
 	protected Class<?> getClassForName(String className) {
 		try {
 			return Class.forName(className);

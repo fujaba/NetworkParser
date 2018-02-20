@@ -21,7 +21,7 @@ public class TileMap implements SendableEntityCreatorTag {
 	public static final String HEIGHT="height";
 	public static final String TILEWIDTH="tilewidth";
 	public static final String TILEHEIGHT="tileheight";
-	
+
 	public static final String TILESET_FIRSTGID=".tileset.firstgid";
 	public static final String TILESET_TILEWIDTH =".tileset."+TILEWIDTH;
 	public static final String TILESET_TILEHEIGHT =".tileset."+TILEHEIGHT;
@@ -32,7 +32,7 @@ public class TileMap implements SendableEntityCreatorTag {
 	public static final String TILESET_HEIGHT=".tileset.image.height";
 	public static final String TILESET_LAYER="layer";
 	public static final String TILESET_OBJECTGROUP="objectgroup";
-	
+
 	public String version;
 	public String orientation;
 	public String renderorder;
@@ -41,7 +41,7 @@ public class TileMap implements SendableEntityCreatorTag {
 	public int tilewidth;
 	public int tileheight;
 	public SimpleKeyValueList<String, SimpleList<TileObject>> objects=new SimpleKeyValueList<String, SimpleList<TileObject>>();
-	
+
 	public int tileFirstGrid = 1;
 	public int count;
 	public int columns;
@@ -49,7 +49,7 @@ public class TileMap implements SendableEntityCreatorTag {
 	public int imagewidth;
 	public int imageheight;
 	public int[] background;
-	
+
 	@Override
 	public Object getSendableInstance(boolean prototyp) {
 		return new TileMap();
@@ -69,7 +69,7 @@ public class TileMap implements SendableEntityCreatorTag {
 				TILESET_OBJECTGROUP
 				};
 	}
-	
+
 	/**
 	 * Return the Position of the Background Sprite
 	 * @param backgroundPos Background Positoin 0..n
@@ -82,14 +82,14 @@ public class TileMap implements SendableEntityCreatorTag {
 		}
 		return this.getSpritePos(spritePos);
 	}
-	
+
 	public int getBackground(int sprite) {
 		if(sprite<0 || sprite>=background.length) {
 			return 0;
 		}
 		return background[sprite];
 	}
-	
+
 	/** Return the Position of Sprite
 	 * @param pos The Position 00..n
 	 * @return The Position
@@ -100,7 +100,7 @@ public class TileMap implements SendableEntityCreatorTag {
 		result.x = pos-(result.y*columns) - 1;
 		return result;
 	}
-	
+
 	/**
 	 * Return the Position of a Sprite
 	 * @param sprite the SpriteNumber
@@ -112,14 +112,14 @@ public class TileMap implements SendableEntityCreatorTag {
 		pos.x = sprite-(pos.y*this.width);
 		return pos;
 	}
-	
+
 	public int length() {
 		if(background == null) {
 			return 0;
 		}
 		return background.length;
 	}
-	
+
 	public SimpleList<TileObject> getByName(String element) {
 		return this.objects.get(element);
 	}
@@ -322,10 +322,10 @@ public class TileMap implements SendableEntityCreatorTag {
 		tokener.parse(tokener, map);
 		return entity;
 	}
-	
+
 	@Override
 	public String toString() {
-		
+
 		return super.toString();
 	}
 }

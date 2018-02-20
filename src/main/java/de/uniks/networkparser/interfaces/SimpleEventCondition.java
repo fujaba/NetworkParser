@@ -11,6 +11,6 @@ public abstract class SimpleEventCondition implements ObjectCondition{
 		}
 		return update((SimpleEvent) value);
 	}
-	
+
 	public abstract boolean update(SimpleEvent event);
 }

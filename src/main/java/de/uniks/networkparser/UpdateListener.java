@@ -50,7 +50,7 @@ public class UpdateListener implements MapListener {
 	private SimpleList<UpdateAccumulate> suspendIdList;
 
 	private Filter updateFilter = new Filter().withStrategy(SendableEntityCreator.UPDATE).withConvertable(new UpdateCondition());
-	
+
 	/**
 	 * Instantiates a new update listener.
 	 *
@@ -65,7 +65,7 @@ public class UpdateListener implements MapListener {
 	/**
 	 * Suspend notification.
 	 * @param accumulates Notification Listener
-	 * 
+	 *
 	 * @return success for suspend Notification
 	 */
 	public boolean suspendNotification(UpdateAccumulate... accumulates) {
@@ -115,7 +115,7 @@ public class UpdateListener implements MapListener {
 			// this class is not supported, do nor replicate
 			return;
 		}
-		
+
 		if (this.suspendIdList != null) {
 			boolean notifiy = true;
 			for(UpdateAccumulate listener : this.suspendIdList) {
@@ -127,9 +127,9 @@ public class UpdateListener implements MapListener {
 				return;
 			}
 		}
-		
+
 		Entity jsonObject = change(property, source, creatorClass, oldValue, newValue);
-		
+
 		// Add Message Value
 		ObjectCondition listener = this.map.getUpdateListener();
 		if(listener == null) {
@@ -138,10 +138,10 @@ public class UpdateListener implements MapListener {
 		if (oldValue != null && newValue != null) {
 			listener.update(new SimpleEvent(SendableEntityCreator.UPDATE, jsonObject, evt,  map));
 		} else {
-			listener.update(new SimpleEvent(SendableEntityCreator.NEW, jsonObject, evt,  map));	
+			listener.update(new SimpleEvent(SendableEntityCreator.NEW, jsonObject, evt,  map));
 		}
 	}
-	
+
 	public Entity change(String property, Object source, SendableEntityCreator creatorClass, Object oldValue, Object newValue) {
 		Entity jsonObject = factory.newInstance();
 		String id = this.map.getId(source, true);
@@ -150,7 +150,7 @@ public class UpdateListener implements MapListener {
 		change(property, creatorClass, jsonObject, oldValue, newValue);
 		return jsonObject;
 	}
-	
+
 	public boolean change(String property, SendableEntityCreator creator, Entity change, Object oldValue, Object newValue) {
 		boolean done = false;
 		String[] properties = creator.getProperties();
@@ -172,7 +172,7 @@ public class UpdateListener implements MapListener {
 			}
 			return false;
 		}
-	
+
 		SendableEntityCreator creatorClass;
 		Object child = null;
 		Entity entity;
@@ -185,7 +185,7 @@ public class UpdateListener implements MapListener {
 				entity = factory.newInstance();
 				change.put(SendableEntityCreator.REMOVE, entity);
 			}
-					
+
 			if (creatorClass != null) {
 				String oldId = this.map.getId(oldValue, true);
 				if (oldId != null) {
@@ -197,7 +197,7 @@ public class UpdateListener implements MapListener {
 				entity.put(property, oldValue);
 			}
 		}
-	
+
 		if (newValue != null) {
 			creatorClass = this.map.getCreatorClass(newValue);
 			child = change.getValue(SendableEntityCreator.UPDATE);
@@ -207,7 +207,7 @@ public class UpdateListener implements MapListener {
 				entity = factory.newInstance();
 				change.put(SendableEntityCreator.UPDATE, entity);
 			}
-	
+
 			if (creatorClass != null) {
 				String key = this.map.getKey(newValue);
 				if (key != null) {
@@ -307,7 +307,7 @@ public class UpdateListener implements MapListener {
 					Entity json = (Entity) removeJsonObject;
 					this.map.notify(new SimpleEvent(SendableEntityCreator.REMOVE, json, map, key, this.map.decode(json), null).withModelValue(masterObj));
 				}
-				
+
 			}
 			return masterObj;
 		} else if (update != null) {
@@ -345,7 +345,7 @@ public class UpdateListener implements MapListener {
 				// GLAUB ICH MAL
 				String oldId = (String) ((Entity) oldValue).getValue(IdMap.ID);
 				return oldId.equals(this.map.getId(value, true));
-			} 
+			}
 			return value.equals(oldValue);
 		}
 		return oldValue == null;
@@ -390,7 +390,7 @@ public class UpdateListener implements MapListener {
 	public Filter getFilter() {
 		return this.updateFilter;
 	}
-	
+
 	/**
 	 * Remove the given object from the IdMap
 	 * @param oldValue Object to remove

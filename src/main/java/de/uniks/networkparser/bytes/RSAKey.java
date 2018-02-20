@@ -72,18 +72,18 @@ public class RSAKey {
 		return N;
 	}
 
-	/** 
+	/**
 	 * Sets the public exponent.
 	 * @param value The the Public Exponent
 	 * @return ThisComponent
 	*/
-	
+
 	public RSAKey withPubExp(BigInteger value) {
 		e = weedOut(value);
 		return this;
 	}
 
-	/** 
+	/**
 	 * Sets the public exponent.
 	 * @param value The the Public Exponent
 	 * @return ThisComponent
@@ -118,12 +118,12 @@ public class RSAKey {
 	public StringBuilder decrypt(String message) {
 		return decrypt(new BigInteger(message));
 	}
-	
-    /** 
-     * Performs the classical RSA computation. 
-     * @param message Message to descrypt
-     * @return the descrypted Message 
-     * */
+
+	/**
+	 * Performs the classical RSA computation.
+	 * @param message Message to descrypt
+	 * @return the descrypted Message
+	**/
 	public StringBuilder decrypt(BigInteger message) {
 		BigInteger text = message.modPow(getPrivateKey(), getModulus());
 		BigInteger divider = BigInteger.valueOf(1000);
@@ -135,8 +135,8 @@ public class RSAKey {
 			text = text.divide(divider);
 			bitCount--;
 		}
-        return sb;
-    }
+		return sb;
+	}
 
 	public Entity sign(Entity value) {
 		String string = value.toString();
@@ -145,7 +145,7 @@ public class RSAKey {
 		value.put(TAG, hashCode);
 		return null;
 	}
-	
+
 	public StringBuilder encrypt(String value, int group) {
 		StringBuilder sb = new StringBuilder();
 		StringBuilder item = new StringBuilder();
@@ -188,7 +188,7 @@ public class RSAKey {
 		return string;
 	}
 
-	/** 
+	/**
 	 * Weeds out bad inputs.
 	 * @param value The Value for Check
 	 * @return the checked Value
@@ -201,7 +201,7 @@ public class RSAKey {
 		}
 	}
 
-	/** 
+	/**
 	 * Returns true when the argument is greater than zero.
 	 * @param number Number for Check
 	 * @return if number is Positive
@@ -210,7 +210,7 @@ public class RSAKey {
 		return (number.compareTo(BigInteger.ZERO) > 0);
 	}
 
-	/** 
+	/**
 	 * Returns true when the argument is null.
 	 * @param value Value for Check
 	 * @return if Value is Null
@@ -260,7 +260,7 @@ public class RSAKey {
 		return lcm(p.subtract(BigInteger.ONE), q.subtract(BigInteger.ONE));
 	}
 
-	/** 
+	/**
 	 * Computes the least common multiple.
 	 * @param a first value
 	 * @param b second value
@@ -275,7 +275,7 @@ public class RSAKey {
 		key.withPrivateKey(privateKey);
 		return key;
 	}
-	
+
 	@Override
 	public String toString() {
 		CharacterBuffer sb=new CharacterBuffer();
@@ -301,11 +301,11 @@ public class RSAKey {
 
 	public DERBuffer getStream(BigInteger key) {
 		DERBuffer bitString = new DERBuffer();
-		
+
 		bitString.addGroup(RSABYTE, new Object[]{N, key});
 		DERBuffer derBuffer = new DERBuffer();
-		derBuffer.addGroup(RSABYTE, new Object[]{ 
-				RSABYTE, new Object[]{DERBuffer.OBJECTID, new Byte[]{42, -122, 72, -122, -9, 13, 1, 1, 1}, DERBuffer.NULL}, 
+		derBuffer.addGroup(RSABYTE, new Object[]{
+				RSABYTE, new Object[]{DERBuffer.OBJECTID, new Byte[]{42, -122, 72, -122, -9, 13, 1, 1, 1}, DERBuffer.NULL},
 				DERBuffer.BITSTRING, bitString.getBytes()});
 		// 48 l:92[48 l:13 [ 6 l:9 [42, -122, 72, -122, -9, 13, 1, 1, 1],5 l:0] 3 l:75[n,e]]
 		return derBuffer;

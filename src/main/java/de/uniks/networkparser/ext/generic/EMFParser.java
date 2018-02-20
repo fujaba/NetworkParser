@@ -14,7 +14,7 @@ import de.uniks.networkparser.list.SimpleSet;
 
 public class EMFParser {
 	protected Object value;
-	
+
 	public EMFParser(Object value) {
 		this.value = value;
 	}
@@ -107,7 +107,7 @@ public class EMFParser {
 		}
 		return model;
 	}
-	
+
 	//REFACTORING
 	public static final List<Object> getEAttributes(Object eref) {
 		if(eref instanceof EMFParser) {
@@ -117,7 +117,7 @@ public class EMFParser {
 		return callList;
 	}
 
-	
+
 	public static final List<Object> getEReferences(Object eref) {
 		if(eref instanceof EMFParser) {
 			return getEReferences(((EMFParser)eref).getValue());
@@ -153,14 +153,14 @@ public class EMFParser {
 		}
 		return items;
 	}
-	
+
 	public static final String getInstanceClassName(Object eref) {
 		if(eref instanceof EMFParser) {
 			return getInstanceClassName(((EMFParser)eref).getValue());
 		}
 		return ""+ReflectionLoader.call("getInstanceClassName", eref);
 	}
-	
+
 	public static final EMFParser getEType(Object eref) {
 		if(eref instanceof EMFParser) {
 			return getEType(((EMFParser)eref).getValue());
@@ -177,7 +177,7 @@ public class EMFParser {
 			return (Integer)call;
 		}
 		return -1;
-		
+
 	}
 
 	public static final String getName(Object eref) {

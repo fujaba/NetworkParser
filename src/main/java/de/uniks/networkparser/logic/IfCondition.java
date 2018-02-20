@@ -44,7 +44,7 @@ public class IfCondition implements ParserCondition, SendableEntityCreator {
 	public static final String FALSECONDITION = "falsecondition";
 
 	private String tag=TAG;
-	
+
 	/** Variable for Expression. */
 	private ObjectCondition expression;
 	/** Variable for True Case. */
@@ -160,7 +160,7 @@ public class IfCondition implements ParserCondition, SendableEntityCreator {
 	public String getKey() {
 		return tag;
 	}
-	
+
 	public IfCondition withKey(String key) {
 		this.tag = key;
 		return this;
@@ -175,19 +175,19 @@ public class IfCondition implements ParserCondition, SendableEntityCreator {
 //		if(tokenPart.equalsIgnoreCase("ifnot") || tokenPart.equalsIgnoreCase("if")) {
 		buffer.skip();
 		ObjectCondition expression = parser.parsing(buffer, customTemplate, true, true);
-		
+
 		if(this.tag.equalsIgnoreCase("ifnot")) {
-			this.withExpression(Not.create(expression));	
+			this.withExpression(Not.create(expression));
 		} else {
 			this.withExpression(expression);
 		}
-		
+
 		buffer.skipChar(SPLITEND);
 		buffer.skipChar(SPLITEND);
-		
+
 		// Add Children
 		this.withTrue(parser.parsing(buffer, customTemplate, false, true, "else", "endif"));
-		
+
 		// ELSE OR ENDIF
 		CharacterBuffer tokenPart = buffer.nextToken(false, SPLITEND);
 		if("else".equalsIgnoreCase(tokenPart.toString())) {
@@ -204,7 +204,7 @@ public class IfCondition implements ParserCondition, SendableEntityCreator {
 	public boolean isExpression() {
 		return false;
 	}
-	
+
 	@Override
 	public String toString() {
 		return "{{IF "+expression+"}}"+trueCondition+"{{#else}}"+falseCondition+"{{#ENDIF}}";

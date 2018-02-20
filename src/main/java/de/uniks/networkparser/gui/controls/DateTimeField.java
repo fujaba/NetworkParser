@@ -11,7 +11,7 @@ public class DateTimeField extends Input<String> {
 		super();
 		this.type = DATE;
 	}
-	
+
 	public DateTimeField(String type) {
 		super();
 		this.type = type;

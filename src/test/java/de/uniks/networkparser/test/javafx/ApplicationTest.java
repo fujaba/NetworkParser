@@ -23,7 +23,7 @@ public class ApplicationTest extends Application {
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		SimpleController controller = SimpleController.create(primaryStage);
-		
+
 		System.out.println(primaryStage);
 		VBox root=new VBox();
 		   HBox box=new HBox();
@@ -43,19 +43,19 @@ public class ApplicationTest extends Application {
 	// TEST SIMPLE
 		  ModelListenerFactory.create(field, data, GUIEntity.PROPERTY_NUMBER);
 
-		  
+		
 		  Button button = new Button("Clicke Me");
 
-		  root.getChildren().addAll(box, field, button);	
-		  
+		  root.getChildren().addAll(box, field, button);
+		
 //		  controller.withIcon("de.uniks.networkparser.ext.javafx.dialog.JavaCup32.png");
 		  controller.withIcon("dialog/JavaCup32.png", SimpleController.class);
-		  
-		  
+		
+		
 		  controller.showTrayIcon();
-		  
+		
 		  controller.show(root);
 //		  primaryStage.show();
 	}
-	
+
 }

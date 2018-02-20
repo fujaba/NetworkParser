@@ -78,7 +78,7 @@ public class EMFTest extends IOClasses{
 
 		Assert.assertEquals(sb.toString(), root.toString());
 	}
-	
+
 	@Test
 	public void testImportXMI() {
 		String xmi="<?xml version=\"1.0\" encoding=\"ASCII\"?>"

@@ -12,7 +12,7 @@ import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 
 public class SimpleObject implements SendableEntityCreatorIndexId, SendableEntity {
-	
+
 	protected String className;
 
 	protected String id;
@@ -25,11 +25,11 @@ public class SimpleObject implements SendableEntityCreatorIndexId, SendableEntit
 	protected PropertyChangeSupport propertyChangeSupport;
 
 	private SimpleKeyValueList<String, Object> values = new SimpleKeyValueList<String, Object>();
-	
+
 	public String getClassName() {
 		return className;
 	}
-	
+
 	protected void addBaseElements(String... elements) {
 		if(elements == null) {
 			return;
@@ -60,7 +60,7 @@ public class SimpleObject implements SendableEntityCreatorIndexId, SendableEntit
 		}
 		return false;
 	}
-	
+
 	public Object getValue(String key) {
 		if(IdMap.ID.equals(key)) {
 			return this.getId();
@@ -76,7 +76,7 @@ public class SimpleObject implements SendableEntityCreatorIndexId, SendableEntit
 		}
 		return null;
 	}
-	
+
 	public boolean setValue(String key, Object value) {
 		key = key.trim();
 		boolean checked = false;
@@ -94,11 +94,11 @@ public class SimpleObject implements SendableEntityCreatorIndexId, SendableEntit
 		}
 		if(!checked){
 			int pos = this.values.indexOf(key);
-	
+
 			if (pos < 0) {
 				oldValue = null;
 				if(this.values.add(key, value)) {
-					this.baseElements.add(key);				
+					this.baseElements.add(key);
 					this.dirty = true;
 				}
 			}
@@ -108,7 +108,7 @@ public class SimpleObject implements SendableEntityCreatorIndexId, SendableEntit
 		}
 		return firePropertyChange(key, oldValue, value);
 	}
-	
+
 	public boolean firePropertyChange(String propertyName, Object oldValue, Object newValue) {
 		if (propertyChangeSupport != null) {
 			if (isChanged(oldValue, newValue)) {
@@ -118,11 +118,11 @@ public class SimpleObject implements SendableEntityCreatorIndexId, SendableEntit
 		}
 		return false;
 	}
-	
+
 	public boolean isChanged(Object oldValue, Object newValue) {
 		return !(oldValue != null && oldValue.equals(newValue) || oldValue == newValue);
 	}
-	
+
 	public Object withoutValue(String key) {
 		Object result =  this.values.remove(key);
 		if(result!= null) {

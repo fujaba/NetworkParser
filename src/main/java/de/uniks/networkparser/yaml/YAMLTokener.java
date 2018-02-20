@@ -45,7 +45,7 @@ public class YAMLTokener extends Tokener {
 				continue;
 			}
 			// Parsing the CurrentLine
-			
+
 			CharacterBuffer buffer = null;
 			switch (c) {
 				case 0:
@@ -56,11 +56,11 @@ public class YAMLTokener extends Tokener {
 					c = getChar();
 					// Must be a Space
 					if(c == SPACE) {
-						// Collection 
+						// Collection
 						if(deep <= newDeep) {
 							// Add to Current List
 							item = owner.getNewList(false);
-							
+
 						} else {
 							item = owner.getNewList(true);
 						}
@@ -86,7 +86,7 @@ public class YAMLTokener extends Tokener {
 		}
 		return newDeep;
 	}
-	
+
 	// yaml grammar
 	// yaml ::= objects*
 	// object ::= plainObject | objectList
@@ -110,13 +110,13 @@ public class YAMLTokener extends Tokener {
 				// usual
 				Object returnValue = parseUsualObjectAttrs(key);
 				if(root == null) {
-					root = returnValue; 
+					root = returnValue;
 				}
 				continue;
 			}
 			parseObjectTableAttrs(key);
 		}
-		
+
 		// CHECK IF REF NOT EMPTY
 		if(refs.size()>0) {
 			for(int o=0;o<refs.size();o++) {
@@ -234,7 +234,7 @@ public class YAMLTokener extends Tokener {
 		}
 		return obj;
 	}
-	
+
 	private boolean setValue(SendableEntityCreator creator, Object obj, String attrName, String attrValue)  {
 		Object targetObj = map.getObject(attrValue);
 		if (targetObj != null) {

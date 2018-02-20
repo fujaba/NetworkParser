@@ -30,7 +30,7 @@ import de.uniks.networkparser.interfaces.BaseItem;
 
 public class SortedList<V> extends SimpleList<V> {
 	protected Comparator<V> cpr;
-	
+
 	public SortedList(boolean comparator) {
 		if(comparator) {
 			comparator();
@@ -173,10 +173,10 @@ public class SortedList<V> extends SimpleList<V> {
 	public String toString(int indentFactor) {
 		return parseItem(new EntityStringConverter(indentFactor));
 	}
-	
+
 	/**
-	 * get a Child for index 
-	 * 
+	 * get a Child for index
+	 *
 	 * @param index for Child
 	 * @return BaseItem-Child or Null
 	 */

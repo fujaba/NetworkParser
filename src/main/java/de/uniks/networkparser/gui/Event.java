@@ -11,7 +11,7 @@ public class Event extends JsonObject implements SendableEntityCreator {
 	public static final String EVENT_TYPE = "eventType";
 	public static final String ID = "id";
 	public static final String EVENT = "event";
-	
+
 	// Optional Values
 	public static final String ALTKEY = "altKey";
 	public static final String CTRKEY = "ctrlKey";
@@ -50,7 +50,7 @@ public class Event extends JsonObject implements SendableEntityCreator {
 	public int getTimeStamp() {
 		return timeStamp;
 	}
-	
+
 	@Override
 	public String[] getProperties() {
 		return properties;
@@ -71,11 +71,11 @@ public class Event extends JsonObject implements SendableEntityCreator {
 		return e.get(attribute);
 	}
 
-	
+
 	public boolean setValue(String attribute, Object value) {
 		return setValue(this, attribute, value, SendableEntityCreator.NEW);
 	}
-	
+
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value,
 			String type) {
@@ -122,7 +122,7 @@ public class Event extends JsonObject implements SendableEntityCreator {
 	public Object getEvent() {
 		return event;
 	}
-	
+
 	public boolean isActive() {
 		return active;
 	}

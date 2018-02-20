@@ -59,14 +59,14 @@ public class DialogBox implements ObjectCondition{
 	private Object owner;
 	private Label titleElement = new Label().withType(Label.TITLE);
 
-	
+
 	//Inline Show
 	private boolean isInline;
 
 	private boolean iconified;
 	private Object center;
-	
-	
+
+
 
 	public DialogBox() {
 		titleElements.add(titleElement);
@@ -110,23 +110,23 @@ public class DialogBox implements ObjectCondition{
 
 		DialogPane myPane = new DialogPane(this, originalParent);
 
-		
-		
+
+
 		ReflectionLoader.call("pseudoClassStateChanged", root, ReflectionLoader.PSEUDOCLASS, ACTIVE_PSEUDO_CLASS, boolean.class, true);
 
 		// add to originalParent
 		ReflectionLoader.call("setRoot", scene, ReflectionLoader.PARENT, myPane.getPane());
-		
+
 		ReflectionLoader.call("setVisible", root, boolean.class, true);
 		if (originalParent != null) {
 			JavaBridgeFX.addChildren(myPane.getPane(), 0, originalParent);
 			Map<Object,Object> properties = (Map<Object, Object>) ReflectionLoader.call("getProperties", originalParent);
-			
+
 			Map<Object, Object> dialogProperties = (Map<Object, Object>) ReflectionLoader.call("getProperties", myPane.getPane());
 			dialogProperties.putAll(properties);
 		}
 		ReflectionLoader.call("requestFocus", root);
-		
+
 		ReflectionLoader.call("runLater", ReflectionLoader.PLATFORM, myPane);
 		return null;
 	}
@@ -145,7 +145,7 @@ public class DialogBox implements ObjectCondition{
 			// reset the scene root
 			Object scene = ReflectionLoader.call("getScene", stage);
 			Object oldParent = ReflectionLoader.call("getRoot", scene);
-			
+
 			JavaBridgeFX.removeChildren(oldParent, originalParent);
 			JavaBridgeFX.removeStyle(originalParent, "root");
 			ReflectionLoader.call("setRoot", scene, ReflectionLoader.PARENT, originalParent);
@@ -249,7 +249,7 @@ public class DialogBox implements ObjectCondition{
 				return true;
 			}
 		};
-		
+
 		Object property = ReflectionLoader.call("focusedProperty", stage);
 		JavaBridgeFX.addListener(property, "addListener", ReflectionLoader.CHANGELISTENER, condition);
 
@@ -263,7 +263,7 @@ public class DialogBox implements ObjectCondition{
 			Object guiElement = JavaBridgeFX.convert(element, true);
 			JavaBridgeFX.addChildren(dialogTitleBar, -1, guiElement);
 		}
-		
+
 		condition = new ObjectCondition() {
 			@Override
 			public boolean update(Object event) {
@@ -275,13 +275,13 @@ public class DialogBox implements ObjectCondition{
 		};
 		JavaBridgeFX.addListener(dialogTitleBar, "setOnMousePressed", ReflectionLoader.EVENTHANDLER, condition);
 
-		
+
 		condition = new ObjectCondition() {
 			@Override
 			public boolean update(Object event) {
 				double eventX = (Double) ReflectionLoader.call("getScreenX", event) - mouseDragDeltaX;
 				double eventY = (Double) ReflectionLoader.call("getScreenY", event) - mouseDragDeltaY;
-				
+
 				if(isInline) {
 					double x = (Double) ReflectionLoader.call("getLayoutX", root);
 					double y = (Double) ReflectionLoader.call("getLayoutY", root);
@@ -381,7 +381,7 @@ public class DialogBox implements ObjectCondition{
 			return this;
 		}
 		Object imageView = ReflectionLoader.newInstance(ReflectionLoader.IMAGEVIEW, String.class, resource.toString());
-		
+
 		Object text = ReflectionLoader.newInstance(ReflectionLoader.LABEL, String.class, value);
 		JavaBridgeFX.setStyle(text, false, "labelText");
 
@@ -452,7 +452,7 @@ public class DialogBox implements ObjectCondition{
 		}
 		return true;
 	}
-	
+
 	public double prefWidth(double value) {
 		return (Double) ReflectionLoader.call("prefWidth", root, double.class, -1);
 	}

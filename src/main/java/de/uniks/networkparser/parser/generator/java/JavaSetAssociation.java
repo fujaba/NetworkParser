@@ -23,7 +23,7 @@ public class JavaSetAssociation extends BasicGenerator {
 				"      }",
 				"      return result;",
 				"   }","","",
-				
+
 				"{{#import " + ObjectSet.class.getName() + "}}" +
 				"{{#if {{other.cardinality}}==n}}{{#import " + Collections.class.getName() + "}}{{#endif}}" +
 				"   public {{file.member.name}}Set filter{{other.Name}}(Object value)",
@@ -47,7 +47,7 @@ public class JavaSetAssociation extends BasicGenerator {
 				"      }",
 				"      return answer;",
 				"   }","",
-				
+
 				"   public {{file.member.name}}Set with{{other.Name}}({{other.clazz.name}} value)",
 				"   {",
 				"      for ({{file.member.name}} obj : this)",
@@ -56,7 +56,7 @@ public class JavaSetAssociation extends BasicGenerator {
 				"      }",
 				"      return this;",
 				"   }","",
-				
+
 				"{{#import {{other.clazz.fullName}}}}" +
 				"{{#if {{other.cardinality}}==MANY}}",
 				"   public {{file.member.name}}Set without{{other.Name}}({{other.clazz.name}} value)",
@@ -70,7 +70,7 @@ public class JavaSetAssociation extends BasicGenerator {
 				"{{#endif}}",
 				"{{#endif}}{{#endtemplate}}");
 	}
-	
+
 	@Override
 	public Class<?> getTyp() {
 		return Association.class;

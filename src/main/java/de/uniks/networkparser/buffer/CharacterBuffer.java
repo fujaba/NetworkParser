@@ -110,7 +110,7 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence {
 		}
 		return new CharacterBuffer().with(this.buffer, start, end, false);
 	}
-	
+
 	/**
 	 * Set the currentVlaue to Buffer
 	 *
@@ -134,7 +134,7 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence {
 		}
 		return result;
 	}
-	
+
 	public byte[] toByteArray() {
 		byte[] result = new byte[this.length];
 		for(int i=start; i< this.length;i++) {
@@ -153,7 +153,7 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence {
 			//Argh array is to Small
 			int newCapacity = (this.length + diff) * 2 + 2;
 			oldChar = this.buffer;
-			
+
 			char[] copy = new char[newCapacity];
 			System.arraycopy(buffer, this.start, copy, 0, start);
 			oldStart = end;
@@ -163,11 +163,11 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence {
 		}
 		start += this.start;
 		end += this.start;
-		
+
 	if(diff < 0) {
 			while(start<(end+diff)) {
 				this.buffer[start++] = replace.charAt(pos++);
-			} 
+			}
 			System.arraycopy(buffer, end, buffer, start, length - end);
 		} else {
 			while(start<end) {
@@ -180,7 +180,7 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence {
 					System.arraycopy(buffer, start, oldChar, 0, oldLen);
 				}
 				int no=0;
-				while(no<diff) { 
+				while(no<diff) {
 					this.buffer[start++] = replace.charAt(pos++);
 					no++;
 				}
@@ -311,6 +311,9 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence {
 	 * @return the new CharacterBuffer
 	 */
 	public CharacterBuffer with(byte[] values) {
+		if(values == null) {
+			return this;
+		}
 		this.buffer = new char[values.length];
 		start = 0;
 		length = values.length;
@@ -391,12 +394,12 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence {
 	 * @return the new CharacterBuffer
 	 */
 	public CharacterBuffer with(char[] values, int start, int length) {
-        if(values== null || start+length>values.length) {
-            return this;
-        }
-        if(this.length<0) {
-            this.length = this.buffer.length;
-        }
+		if(values== null || start+length>values.length) {
+			return this;
+		}
+		if(this.length<0) {
+			this.length = this.buffer.length;
+		}
 
 		int newLen = length+this.length;
 		if ( buffer == null || newLen+this.start>buffer.length) {
@@ -412,7 +415,7 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence {
 		this.length = newLen;
 		return this;
 	}
-	
+
 	/** Init the new CharList
 	 * @param values the reference CharArray
 	 * @param start the Startposition for the new CharacterBuffer
@@ -457,7 +460,7 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence {
 			length = values.length;
 		}
 		int newLen = length+this.length;
-		
+
 		if ( buffer == null || newLen+this.start>buffer.length) {
 			char[] oldValue = this.buffer;
 			this.buffer = new char[(newLen*2+2)];
@@ -473,7 +476,7 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence {
 		this.length = newLen;
 		return this;
 	}
-	
+
 	/** Init the new CharacterBuffer
 	 * @param values the reference CharSequence
 	 * @param start the Startposition for the new CharacterBuffer
@@ -481,12 +484,12 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence {
 	 * @return the new CharacterBuffer
 	 */
 	public CharacterBuffer with(CharSequence values, int start, int end) {
-        if(values== null) {
-            return this;
-        }
-        if(this.length<0) {
-            this.length = this.buffer.length;
-        }
+		if(values== null) {
+			return this;
+		}
+		if(this.length<0) {
+			this.length = this.buffer.length;
+		}
 
 		if(this.buffer == null) {
 			this.buffer = new char[end];
@@ -549,19 +552,19 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence {
 		}
 		return this;
 	}
-	
+
 	public CharacterBuffer with(int value) {
 		String bytes=""+value;
 		this.with(bytes);
 		return this;
 	}
-	
+
 	public CharacterBuffer with(long value) {
 		String bytes=""+value;
 		this.with(bytes);
 		return this;
 	}
-	
+
 	public CharacterBuffer withCollection(String splitter, Object... values) {
 		if (values == null) {
 			return this;
@@ -588,7 +591,7 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence {
 		return this;
 	}
 
-	
+
 	/**
 	 * Append a new Character to CharacterBuffer
 	 * @param item a new StartItem
@@ -685,7 +688,7 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence {
 		this.buffer[0] = value;
 		return this;
 	}
-	
+
 	public boolean startsWith(CharSequence prefix) {
 		return this.startsWith(prefix, 0, false);
 	}
@@ -755,7 +758,7 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence {
 		this.length -= pos;
 		return this;
 	}
-	
+
 	public CharacterBuffer trimEnd(int pos) {
 		this.length -= pos;
 		return this;
@@ -799,7 +802,7 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence {
 		}
 		return this;
 	}
-	
+
 	public boolean equalsText(char... other) {
 		if(other == null) {
 			return true;
@@ -829,8 +832,8 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence {
 		}
 		return l==other.length;
 	}
-	
-	
+
+
 	/**
 	 * Get Levenstein distance
 	 * @param t the other String
@@ -850,7 +853,7 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence {
 		int n = this.length();
 		int m = t.length();
 		CharacterBuffer s = this;
-		
+
 		if (n > m) {
 			// swap the input strings to consume less memory
 			s = t;
@@ -903,7 +906,7 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence {
 				// minimum of cell to the left+1, to the top+1, diagonally left and up +cost
 				p[i] = Math.min(Math.min(p[i - 1] + 1, p[i] + 1), upper_left + cost);
 				upper_left = upper;
-            }
+			}
 		}
 		if(containsPos>n) {
 			return p[n] * -1;
@@ -1031,7 +1034,7 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence {
 		this.position = 0;
 		this.start = 0;
 	}
-	
+
 	@Override
 	public String toString() {
 		if(length<1) {
@@ -1039,7 +1042,7 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence {
 		}
 		return new String(buffer, start, length);
 	}
-	
+
 	public boolean equals(CharSequence other) {
 		if(other==null || other.length() != length) {
 			return false;
@@ -1056,7 +1059,7 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence {
 	public int indexOf(int ch) {
 		return indexOf(ch, 0);
 	}
-	
+
 	public int indexOf(CharSequence value) {
 		return indexOf(value, 0);
 	}
@@ -1076,7 +1079,7 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence {
 		}
 		return -1;
 	}
-	
+
 	public int indexOf(CharSequence str, int fromIndex) {
 		final int max = length();
 		if (fromIndex < 0) {
@@ -1161,7 +1164,7 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence {
 
 	public static CharacterBuffer create(CharSequence value) {
 		if(value instanceof CharacterBuffer) {
-			return (CharacterBuffer) value; 
+			return (CharacterBuffer) value;
 		}
 		CharacterBuffer buffer = new CharacterBuffer();
 		if(value instanceof String) {
@@ -1177,24 +1180,24 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence {
 	}
 
 	public CharacterBuffer insert(int offset, String values) {
-	    if ((offset < 0) || (offset > length())) {
-	        return this;
-	    }
-	    if (values == null)
-	    	values = "null";
-	    int len = values.length();
-	    if(this.length + len > buffer.length) {
+		if ((offset < 0) || (offset > length())) {
+			return this;
+		}
+		if (values == null)
+			values = "null";
+		int len = values.length();
+		if(this.length + len > buffer.length) {
 			int newCapacity = (this.length + len) * 2 + 2;
 			char[] copy = new char[newCapacity];
 			System.arraycopy(buffer, this.start, copy, 0, length);
 			buffer = copy;
 			this.start = 0;
 		}
-	    // Move String 
-	    System.arraycopy(buffer, offset, buffer, offset + len, this.length - offset);
-	    values.getChars(0, len, buffer, offset);
-	    this.length += len;
-	    return this;
+		// Move String
+		System.arraycopy(buffer, offset, buffer, offset + len, this.length - offset);
+		values.getChars(0, len, buffer, offset);
+		this.length += len;
+		return this;
 	}
 
 	public boolean add(Object... values) {
@@ -1213,24 +1216,18 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence {
 		}
 		return addValues;
 	}
-	
+
 	@Override
 	public void printError(String msg) {
-	      int startPos = position;
-	      
-	      if (startPos >=  10) { 
-	         startPos -= 10;
-	      }
-	      else
-	      {
-	         startPos = 0;
-	      }
-	      int endPos = position + 20;
-	      
-	      if (endPos >=  length())
-	      { 
-	         endPos = length();
-	      }
-	      System.err.println(substring(startPos, position) + "<--" + msg + "-->" + substring(position, endPos));
+		int startPos = 0;
+		if (position >= 10) {
+			startPos = position - 10;
+		}
+		int endPos = position + 20;
+
+		if (endPos >=  length()) {
+			endPos = length();
+		}
+		System.err.println(substring(startPos, position) + "<--" + msg + "-->" + substring(position, endPos));
 	}
 }

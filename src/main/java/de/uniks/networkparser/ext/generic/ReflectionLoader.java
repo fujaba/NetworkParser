@@ -24,7 +24,7 @@ public class ReflectionLoader {
 	public static final Class<?> OBSERVABLEVALUE;
 	public static final Class<?> INVALIDATIONLISTENER;
 	public static final Class<?> BINDINGS;
-	
+
 	public static final Class<?> PROPERTY;
 	public static final Class<?> SIMPLEOBJECTPROPERTY;
 	public static final Class<?> STRINGPROPERTY;
@@ -46,7 +46,7 @@ public class ReflectionLoader {
 	public static final Class<?> PSEUDOCLASS;
 	public static final Class<?> TOOLBAR;
 	public static final Class<?> BUTTON;
-	public static final Class<?> EVENTHANDLER; 
+	public static final Class<?> EVENTHANDLER;
 	public static final Class<?> STACKPANE;
 	public static final Class<?> REGION;
 	public static final Class<?> HBOX;
@@ -74,7 +74,7 @@ public class ReflectionLoader {
 	public static final Class<?> FILEMODE;
 	public static final Class<?> REPOSITORY;
 	public static final Class<?> ANYOBJECTID;
-	
+
 	public static final Class<?> RECTANGLE;
 	public static final Class<?> ROBOT;
 	public static final Class<?> TOOLKIT;
@@ -89,13 +89,13 @@ public class ReflectionLoader {
 	public static final Class<?> AWTIMAGE;
 	public static final Class<?> PROCESSBUILDERREDIRECT;
 	public static final Class<?> MANAGEMENTFACTORY;
-	
+
 //	public static final Class<?> DIFFENTRY;
 //	public static final Class<?> OBJECTID;
 //	public static final Class<?> OBJECTREADER;
 //	public static final Class<?> REF;
 //	public static final Class<?> REVCOMMIT;
-	
+
 //	public static final Class<?> JUNIT = getClass("org.junit.Assert");
 
 	//EMF
@@ -106,9 +106,9 @@ public class ReflectionLoader {
 	public static final Class<?> EREFERENCE;
 
 	static {
-		MANAGEMENTFACTORY = getClass("java.lang.management.ManagementFactory"); 
+		MANAGEMENTFACTORY = getClass("java.lang.management.ManagementFactory");
 	}
-	
+
 	static {
 		//JAVAFX
 		CHANGELISTENER = getClass("javafx.beans.value.ChangeListener");
@@ -118,7 +118,7 @@ public class ReflectionLoader {
 			OBSERVABLEVALUE = getClass("javafx.beans.value.ObservableValue");
 			INVALIDATIONLISTENER = getClass("javafx.beans.InvalidationListener");
 			BINDINGS = getClass("javafx.beans.binding.Bindings");
-			
+
 			PROPERTY = getClass("javafx.beans.property.Property");
 			SIMPLEOBJECTPROPERTY = getClass("javafx.beans.property.SimpleObjectProperty");
 			STRINGPROPERTY = getClass("javafx.beans.property.StringProperty");
@@ -165,7 +165,7 @@ public class ReflectionLoader {
 			OBSERVABLEVALUE = null;
 			INVALIDATIONLISTENER = null;
 			BINDINGS = null;
-			
+
 			PROPERTY = null;
 			SIMPLEOBJECTPROPERTY = null;
 			STRINGPROPERTY = null;
@@ -209,7 +209,7 @@ public class ReflectionLoader {
 			TOOLKITFX = null;
 		}
 	}
-	
+
 	static {
 		//AWT
 		TOOLKIT = getClass("java.awt.Toolkit");
@@ -241,7 +241,7 @@ public class ReflectionLoader {
 			PROCESSBUILDERREDIRECT = null;
 		}
 	}
-	
+
 	static {
 		//GIT
 		GIT = getClass("org.eclipse.jgit.api.Git");
@@ -357,7 +357,7 @@ public class ReflectionLoader {
 		}
 		return null;
 	}
-	
+
 	public static Class<?> getClass(String name) {
 		try {
 			return Class.forName(name, false, ReflectionLoader.class.getClassLoader());
@@ -368,7 +368,7 @@ public class ReflectionLoader {
 		}
 		return null;
 	}
-	
+
 	public static Object createProxy(Object proxy, Class<?>... proxys){
 		return java.lang.reflect.Proxy.newProxyInstance(ReflectionLoader.class.getClassLoader(),
 				proxys, new ReflectionInterfaceProxy(proxy));
@@ -414,7 +414,7 @@ public class ReflectionLoader {
 	public static Object call(String methodName, Object item, Object... arguments) {
 		return calling(methodName, item, true, null, arguments);
 	}
-	
+
 	public static Object callStr(String methodName, Object item, Object... arguments) {
 		try {
 			if(arguments != null && arguments.length % 2 == 0) {
@@ -429,8 +429,8 @@ public class ReflectionLoader {
 		}
 		return calling(methodName, item, true, null, arguments);
 	}
-	
-	
+
+
 	@SuppressWarnings("unchecked")
 	public static List<Object> callList(String methodName, Object item, Object... arguments) {
 		Object returnValue = calling(methodName, item, true, null, arguments);
@@ -440,7 +440,7 @@ public class ReflectionLoader {
 		return (List<Object>)returnValue;
 	}
 
-	
+
 	public static Object calling(String methodName, Object item, boolean notify, Object notifyObject, Object... arguments) {
 		if(methodName == null || item == null) {
 			return null;
@@ -517,7 +517,7 @@ public class ReflectionLoader {
 				}
 				method.setAccessible(true);
 				return method.invoke(item, methodArgumentsValues);
-			}				
+			}
 		} catch (Exception e) {
 			if(logger != null && notify) {
 				e.printStackTrace(logger);
@@ -541,13 +541,13 @@ public class ReflectionLoader {
 		}
 		return false;
 	}
-	
+
 	private static URLClassLoader initDriver() {
 		ClassLoader systemClassLoader = ClassLoader.getSystemClassLoader();
 		URLClassLoader sysloader = URLClassLoader.newInstance(new URL[] {}, systemClassLoader);
 		return sysloader;
 	}
-	
+
 	private static final URLClassLoader sysloader = initDriver();
 	public static Connection loadSQLDriver(String driver, String database) {
 		int pos=0;
@@ -562,18 +562,18 @@ public class ReflectionLoader {
 			if("jdbc:sqlite".equalsIgnoreCase(driver)) {
 				File f = new File(host);
 				URL url = new URL("file:///" + f.getAbsolutePath());
-				
+
 				Method method = URLClassLoader.class.getDeclaredMethod("addURL", new Class[] {URL.class});
 				method.setAccessible(true);
 
 				method.invoke(sysloader, url);
-				
+
 				Thread.currentThread().setContextClassLoader(sysloader);
-				
+
 				Method getConnection = DriverManager.class.getDeclaredMethod("getConnection", String.class, Properties.class,
 						Class.class);
 				getConnection.setAccessible(true);
-			
+
 				Object manager = getConnection.invoke(DriverManager.class, driver+":"+database, new Properties(), null);
 				return (Connection) manager;
 			}
@@ -582,5 +582,5 @@ public class ReflectionLoader {
 		}
 		return null;
 	}
-	
+
 }

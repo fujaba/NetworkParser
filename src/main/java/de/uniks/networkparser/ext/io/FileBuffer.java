@@ -227,34 +227,28 @@ public class FileBuffer extends Buffer {
 	public static final CharacterBuffer readFile(String file) {
 		File content=new File(file);
 		CharacterBuffer sb = new CharacterBuffer();
-        if(content.exists()){
-   			final byte[] buffer = new byte[BUFFER];
-   			int read;
-   			FileInputStream is = null;
-   			try {
-   				is = new FileInputStream(content);
+		if(content.exists()){
+			final byte[] buffer = new byte[BUFFER];
+			int read;
+			FileInputStream is = null;
+			try {
+				is = new FileInputStream(content);
 				do {
 					read = is.read(buffer, 0, buffer.length);
 					if (read>0) {
 						sb.with(new String(buffer, 0, read, BaseItem.ENCODING));
-//FIXME						sb.with(buffer, 0, read);
 					}
 				} while (read>=0);
-//    				int count;
-//    				while (count>=0) {
-//    					count = ios.read(buffer);
-//    					sb.with(new String(buffer, 0, count, BaseItem.ENCODING));
-//    				}
-   			} catch (IOException e) {
-   			} finally {
-   				try {
-   					is.close();
-   				} catch (IOException e) {
-   				}
-    		}
-        }
-        return sb;
-    }
+			} catch (IOException e) {
+			} finally {
+				try {
+					is.close();
+				} catch (IOException e) {
+				}
+			}
+		}
+		return sb;
+	}
 
 	public static BaseItem readBaseFile(String configFile){
 		return readBaseFile(configFile, null);
@@ -321,7 +315,7 @@ public class FileBuffer extends Buffer {
 	public boolean createFile() {
 		return FileBuffer.createFile(this.file);
 	}
-	
+
 	public static boolean createFile(File file) {
 		if(file == null) {
 			return false;

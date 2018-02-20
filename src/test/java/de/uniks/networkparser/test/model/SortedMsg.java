@@ -119,7 +119,7 @@ public class SortedMsg implements SendableEntity, Comparable<SortedMsg>{
 	}
 
 	protected PropertyChangeSupport listeners = null;
-	   
+	
 	public boolean firePropertyChange(String propertyName, Object oldValue, Object newValue) {
 		if (listeners != null) {
 			listeners.firePropertyChange(propertyName, oldValue, newValue);
@@ -169,7 +169,7 @@ public class SortedMsg implements SendableEntity, Comparable<SortedMsg>{
 		}
 		return 1;
 	}
-	
+
 	@Override
 	public String toString() {
 		return this.number+": "+this.msg;

@@ -63,7 +63,7 @@ public class ChangeMessage extends ReceivingTimerTask {
 		}
 		return super.getMessage();
 	}
-	
+
 	public String getId() {
 		return id;
 	}
@@ -171,7 +171,7 @@ public class ChangeMessage extends ReceivingTimerTask {
 			this.entity = modell.getModel();
 		}
 	}
-	
+
 	public Object getEntity() {
 		return entity;
 	}
@@ -185,11 +185,11 @@ public class ChangeMessage extends ReceivingTimerTask {
 	public String getType() {
 		return PROPERTY_TYPE;
 	}
-	
+
 	public Object getNewValue() {
 		return newValue;
 	}
-	
+
 	public String getProperty() {
 		return property;
 	}

@@ -31,10 +31,10 @@ public abstract class ListCondition implements ParserCondition, SendableEntityCr
 		}
 		if(evt instanceof PropertyChangeEvent) {
 			return updatePCE((PropertyChangeEvent) evt);
-		} 
+		}
 		return updateSet(evt);
 	}
-	
+
 	public boolean updateSet(Object evt) {
 		Set<ObjectCondition> list = getList();
 		boolean result=true;
@@ -50,14 +50,14 @@ public abstract class ListCondition implements ParserCondition, SendableEntityCr
 	}
 
 	public boolean updatePCE(PropertyChangeEvent evt) {
-		if(list instanceof PropertyChangeListener) { 
+		if(list instanceof PropertyChangeListener) {
 			((PropertyChangeListener)list).propertyChange(evt);
 			return true;
 		} else if(list instanceof ObjectCondition) {
 			return ((ObjectCondition)list).update(evt);
 		}
 		SimpleSet<?> collection = (SimpleSet<?>) this.list;
-		
+
 		for(Iterator<?> i = collection.iterator();i.hasNext();) {
 			Object listener = i.next();
 			if(listener instanceof ObjectCondition) {
@@ -82,7 +82,7 @@ public abstract class ListCondition implements ParserCondition, SendableEntityCr
 		add((Object[])values);
 		return this;
 	}
-	
+
 	public boolean add(Object... values) {
 		if(values == null || values.length < 1) {
 			return false;
@@ -101,7 +101,7 @@ public abstract class ListCondition implements ParserCondition, SendableEntityCr
 			list = (SimpleSet<?>) this.list;
 		} else {
 			if(values[0] instanceof PropertyChangeListener) {
-				list = new SimpleSet<PropertyChangeListener>(); 
+				list = new SimpleSet<PropertyChangeListener>();
 			} else {
 				list = new ConditionSet();
 			}
@@ -123,24 +123,24 @@ public abstract class ListCondition implements ParserCondition, SendableEntityCr
 		}
 		return list.add(values);
 	}
-	
+
 	public ConditionSet getList() {
-		if(this.list instanceof ConditionSet) { 
+		if(this.list instanceof ConditionSet) {
 			return (ConditionSet)this.list;
 		}
 		ConditionSet  result = new ConditionSet();
 		result.with(this.list);
 		return result;
 	}
-	
+
 	public void clear() {
 		this.list = null;
 	}
-	
+
 	public ObjectCondition first() {
 		if(this.list instanceof ObjectCondition) {
 			return (ObjectCondition) this.list;
-		} else if(this.list instanceof SimpleSet<?>) { 
+		} else if(this.list instanceof SimpleSet<?>) {
 			Object first = ((SimpleSet<?>) this.list).first();
 			if(first instanceof ObjectCondition) {
 				return (ObjectCondition) first;
@@ -148,7 +148,7 @@ public abstract class ListCondition implements ParserCondition, SendableEntityCr
 		}
 		return null;
 	}
-	
+
 	public int size() {
 		if(this.list==null) {
 			return 0;
@@ -157,7 +157,7 @@ public abstract class ListCondition implements ParserCondition, SendableEntityCr
 		}
 		return 1;
 	}
-	
+
 	@Override
 	public String toString() {
 		Set<ObjectCondition> templates = getList();

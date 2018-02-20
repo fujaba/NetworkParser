@@ -11,11 +11,11 @@ public interface ModelListenerInterface extends PropertyChangeListener {
 	public String getName();
 	public void addListener(Object listener);
 	public void removeListener(Object listener);
-	
+
 	public void setValue(Object value);
 	public Object getValue();
 //	public Object parseValue(Object value);
-	
+
 	public Object getItemValue();
 	public void executeCallBack();
 	public void bind(Object value);
@@ -24,7 +24,7 @@ public interface ModelListenerInterface extends PropertyChangeListener {
 	public void bindBidirectional(Object value);
 	public void unbindBidirectional(Object value);
 	public ModelListenerInterface withCallBack(Condition<SimpleEvent> listener);
-	
+
 	public void invalidated(Object observable);
 
 	public Object getProxy();

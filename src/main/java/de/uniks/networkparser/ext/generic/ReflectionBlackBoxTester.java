@@ -45,7 +45,7 @@ public class ReflectionBlackBoxTester {
 	private int successCount;
 	private String packageName;
 	private NetworkParserLog logger;
-	
+
 	public static void main(String[] args) {
 		Object junitCore = ReflectionLoader.newInstanceStr("org.junit.runner.JUnitCore");
 		SimpleSet<Class<?>> testClasses=new SimpleSet<Class<?>>();
@@ -104,8 +104,8 @@ public class ReflectionBlackBoxTester {
 			}
 		}
 	}
-	
-	
+
+
 	public ReflectionBlackBoxTester() {
 		ignoreMethods =new SimpleKeyValueList<String, SimpleSet<String>>();
 
@@ -124,10 +124,10 @@ public class ReflectionBlackBoxTester {
 		withIgnoreClazzes(NodeProxyMessages.class);
 		withIgnoreClazzes(NodeProxyMQTT.class);
 		withIgnoreClazzes(Token.class);
-		
+
 //		withIgnoreClazzes(TimerExecutor.class.getName());
-	}		
-	
+	}
+
 	public ReflectionBlackBoxTester withIgnoreClazzes(Class<?> metaClass, String... methods) {
 		String className = metaClass.getName();
 		if(methods == null || methods.length < 1) {
@@ -139,7 +139,7 @@ public class ReflectionBlackBoxTester {
 		return this;
 	}
 
-	
+
 	public ReflectionBlackBoxTester withIgnoreClazzes(String... values) {
 		if(values == null) {
 			return this;
@@ -173,7 +173,7 @@ public class ReflectionBlackBoxTester {
 		successCount = 0;
 		this.packageName = packageName;
 		this.logger = logger;
-		
+
 		for(Class<?> clazz : classesForPackage) {
 			SimpleSet<String> methods = this.ignoreMethods.get(clazz.getName());
 			if(methods != null && methods.size()<1) {
@@ -184,7 +184,7 @@ public class ReflectionBlackBoxTester {
 			if(Modifier.isAbstract(clazz.getModifiers()) ) {
 				continue;
 			}
-			
+
 			Object obj = null;
 			for(Constructor<?> c : constructors) {
 				Object[] call = getParameters(c.getParameterTypes(), NULLVALUE);
@@ -203,8 +203,8 @@ public class ReflectionBlackBoxTester {
 		// Write out all Results
 		output(this, "Errors: "+errorCount+ "/" + (errorCount+ successCount), logger, NetworkParserLog.LOGLEVEL_INFO, null);
 	}
-	
-	
+
+
 	private void testClass(Object obj, Class<?> clazz, SimpleSet<String> ignoreMethods) {
 		for(Method m : clazz.getDeclaredMethods()) {
 			if(m.getDeclaringClass().isInterface()) {
@@ -214,7 +214,7 @@ public class ReflectionBlackBoxTester {
 //			if("main".equals(m.getName()) || "access".equals(m.getName())) {
 				continue;
 			}
-			
+
 //			output(clazz.getName()+":"+m.getName(), logger, NetworkParserLog.LOGLEVEL_ERROR);
 
 			Object[] call = null;
@@ -251,7 +251,7 @@ public class ReflectionBlackBoxTester {
 					saveException(e, clazz, m, call);
 				}
 			}
-			
+
 			// mit RANDOMVALUE as Parameter
 			if(tests.contains(RANDOMVALUE)) {
 				try {
@@ -283,7 +283,7 @@ public class ReflectionBlackBoxTester {
 			}
 		}
 	}
-	
+
 	private void saveException(Exception e, Class<?> clazz, Method m, Object[] call) {
 		String line =getLine(packageName, e, clazz.getSimpleName());
 		if(line.length()<1) {
@@ -329,7 +329,7 @@ public class ReflectionBlackBoxTester {
 			logger.log(owner, "output", message, logLevel, e);
 		}
 	}
-	
+
 	private Object[] getParameters(Class<?>[] parameters, String type) {
 		int length = parameters.length;
 		Object[] objects = new Object[length];
@@ -338,7 +338,7 @@ public class ReflectionBlackBoxTester {
 				objects[i] = getNullValue(parameters[i]);
 			}
 			return objects;
-			
+
 		}
 		if(MINVALUE.equals(type)) {
 			for (int i = 0; i < length; i++) {
@@ -400,7 +400,7 @@ public class ReflectionBlackBoxTester {
 		}
 		return null;
 	}
-	
+
 	private Object getRandomValue(Class<?> clazz) {
 		if (clazz.isPrimitive()) {
 			if(euqalsClass(clazz, byte.class, Byte.class)) {return 0x50;}
@@ -488,7 +488,7 @@ public class ReflectionBlackBoxTester {
 				if (file.endsWith(".class")) {
 					try {
 //						output(pckgname + '.' + file.substring(0, file.length() - 6), null, Net);
-						String className=pckgname; 
+						String className=pckgname;
 						if(className.length()>0) {
 							className += ".";
 						}
@@ -497,9 +497,7 @@ public class ReflectionBlackBoxTester {
 					} catch (Exception e) {
 						// do nothing. this class hasn't been found by the loader, and we don't care.
 					}
-				} else if ((tmpDirectory = new File(directory, file))	
-                    .isDirectory() && !file.equalsIgnoreCase("test") ) {
-
+				} else if ((tmpDirectory = new File(directory, file)).isDirectory() && !file.equalsIgnoreCase("test") ) {
 					checkDirectory(tmpDirectory, pckgname + "." + file, classes);
 				}
 			}

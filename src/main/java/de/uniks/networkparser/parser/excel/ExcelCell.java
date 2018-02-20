@@ -180,7 +180,7 @@ public class ExcelCell implements SendableEntityCreatorTag, EntityList{
 		Object context = getContent();
 		if(context == null){
 			if(this.children != null) {
-				CharacterBuffer buffer = new CharacterBuffer(); 
+				CharacterBuffer buffer = new CharacterBuffer();
 				for(EntityList item : this.children) {
 					buffer.with(item.toString());
 				}
@@ -234,7 +234,7 @@ public class ExcelCell implements SendableEntityCreatorTag, EntityList{
 	public BaseItem getNewList(boolean keyValue) {
 		return new ExcelCell();
 	}
-	
+
 	/**
 	 * Gets the children.
 	 * @param index the Index of Child
@@ -246,7 +246,7 @@ public class ExcelCell implements SendableEntityCreatorTag, EntityList{
 		}
 		return this.children.get(index);
 	}
-	
+
 	public int size() {
 		return sizeChildren();
 	}

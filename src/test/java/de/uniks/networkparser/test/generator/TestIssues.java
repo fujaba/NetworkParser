@@ -16,14 +16,14 @@ public class TestIssues {
 		}
 		ClassModel model=new ClassModel("org.sdmlib.simple.model.issue29");
 		Clazz a = model.createClazz("A").enableInterface();
-		
+
 		Clazz b = model.createClazz("B");
 		Clazz c = model.createClazz("C");
-		
+
 		b.withSuperClazz(a);
 		c.withSuperClazz(a);
 		b.withBidirectional(c, "c", Cardinality.ONE, "b", Cardinality.ONE);
-		
+
 		model.getGenerator().testGeneratedCode("java");
 	}
 //	@Test
@@ -33,10 +33,10 @@ public class TestIssues {
 		}
 		ClassModel model=new ClassModel("org.sdmlib.simple.model.issue30");
 		Clazz zoombieOwner = model.createClazz("ZoombieOwner").enableInterface();
-		
+
 		Clazz a = model.createClazz("A");
 		Clazz ground = model.createClazz("Ground");
-		
+
 		a.withSuperClazz(zoombieOwner);
 		a.withSuperClazz(ground);
 		Method method = a.createMethod("checkEnd");
@@ -53,11 +53,11 @@ public class TestIssues {
 		Clazz a = model.createClazz("A");
 		Clazz b = model.createClazz("B");
 		Clazz c = model.createClazz("C");
-		
+
 		a.withSuperClazz(b);
 		a.withSuperClazz(c);
 		model.getGenerator().testGeneratedCode("java");
-		
+
 	}
 
 }

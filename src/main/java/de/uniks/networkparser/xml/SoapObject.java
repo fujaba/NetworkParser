@@ -138,7 +138,7 @@ public class SoapObject implements BaseItem, SendableEntityCreatorTag {
 		}
 		return converter.encode(this);
 	}
-	
+
 	@Override
 	public String[] getProperties() {
 		return new String[] {

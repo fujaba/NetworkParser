@@ -8,21 +8,21 @@ public class UpdateAccumulate {
 	private Tokener tokener;
 	private Entity change;
 	private IdMap map;
-	
+
 	// Target
 	private Object target;
 	private Object defaultItem;
 	private SendableEntityCreator creator;
 	private String property;
-	
-	
+
+
 	public Tokener getTokener() {
 		if(this.tokener == null) {
 			this.tokener = new JsonTokener();
 		}
 		return tokener;
 	}
-	
+
 	/**
 	 * Set the Factory
 	 * @param tokener the new Factory Tokener
@@ -32,7 +32,7 @@ public class UpdateAccumulate {
 		this.tokener = tokener;
 		return this;
 	}
-	
+
 	public boolean changeItem(Object source, Object target, String property) {
 		SendableEntityCreator creator = map.getCreatorClass(source);
 		Object defaultItem = creator.getSendableInstance(true);
@@ -102,14 +102,14 @@ public class UpdateAccumulate {
 		changeAttribute(newValue, property);
 		return this;
 	}
-	
+
 	public UpdateAccumulate withTarget(Object value, SendableEntityCreator creator, String property) {
 		this.target = value;
 		this.creator = creator;
 		this.property = property;
 		return this;
 	}
-	
+
 	public UpdateAccumulate withTarget(Object value) {
 		this.target = value;
 		if(value != null && map != null) {
@@ -120,7 +120,7 @@ public class UpdateAccumulate {
 		}
 		return this;
 	}
-	
+
 	private void addChange(UpdateListener listener, Object source, SendableEntityCreator creator, String property, Object oldValue, Object newValue) {
 		if(this.change == null) {
 			this.change = listener.change(property, source, creator, oldValue, newValue);
@@ -142,8 +142,8 @@ public class UpdateAccumulate {
 		}
 		return false;
 	}
-	
-	
+
+
 	public boolean changeAttribute(Object newValue, String property) {
 		return changeAttribute(target, newValue, property, creator, defaultItem);
 	}

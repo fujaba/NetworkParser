@@ -7,15 +7,15 @@ import de.uniks.networkparser.parser.generator.BasicGenerator;
 public class JavaAssociation extends BasicGenerator {
 
 	public JavaAssociation() {
-		createTemplate("Declaration", Template.DECLARATION, 
+		createTemplate("Declaration", Template.DECLARATION,
 				"{{#template VALUE}}",
 				"{{#if {{other.isImplements}}==false}}",
 				"   public static final String PROPERTY_{{other.NAME}} = \"{{other.name}}\";","",
-		
+
 				"{{#ifnot {{file.member.type}}==interface}}",
 				"   {{visibility}} {{modifiers} }{{#if {{other.cardinality}}==1}}{{other.clazz.name}}{{#else}}{{other.clazz.name}}Set{{#endif}} {{other.name}} = null;","",
 				"{{#endif}}","",
-		
+
 				"{{#foreach {{parent.parent.child}}}}" +
 				   "{{#if {{item.type}}==class}}" +
 				      "{{#ifnot {{#OR}}{{item.name}}=={{file.member.name}} {{item.packagename}}=={{file.member.packagename}}{{#ENDOR}}}}" +
@@ -32,7 +32,7 @@ public class JavaAssociation extends BasicGenerator {
 				"      return this.{{other.name}};",
 				"   }","",
 				"{{#endif}}",
-				
+
 				"{{#if {{other.cardinality}}==1}}",
 				"   public {{modifiers} }boolean set{{other.Name}}({{other.clazz.name}} value){{#if {{file.member.type}}==interface}};","","{{#endif}}",
 				"{{#ifnot {{file.member.type}}==interface}}",
@@ -65,7 +65,7 @@ public class JavaAssociation extends BasicGenerator {
 				"   }","",
 				"{{#endif}}",
 				"{{#endif}}",
-				
+
 				"{{#if {{other.cardinality}}==1}}",
 				"   public {{modifiers} }{{clazz.name}} with{{other.Name}}({{other.clazz.name}} value){{#if {{file.member.type}}==interface}};","","{{#endif}}",
 				"{{#ifnot {{file.member.type}}==interface}}",
@@ -75,7 +75,7 @@ public class JavaAssociation extends BasicGenerator {
 				"   }","",
 				"{{#endif}}",
 				"{{#endif}}",
-				
+
 				"{{#if {{other.cardinality}}==n}}",
 				"   public {{modifiers} }{{clazz.name}} with{{other.Name}}({{other.clazz.name}}... value){{#if {{file.member.type}}==interface}};","","{{#endif}}",
 				"{{#ifnot {{file.member.type}}==interface}}",
@@ -106,7 +106,7 @@ public class JavaAssociation extends BasicGenerator {
 				"   }","",
 				"{{#endif}}",
 				"{{#endif}}",
-				
+
 				"{{#if {{other.cardinality}}==n}}",
 				"   public {{modifiers} }{{clazz.name}} without{{other.Name}}({{other.clazz.name}}... value){{#if {{file.member.type}}==interface}};","","{{#endif}}",
 				"{{#ifnot {{file.member.type}}==interface}}",
@@ -146,7 +146,7 @@ public class JavaAssociation extends BasicGenerator {
 				"{{#endif}}{{#endtemplate}}");
 
 	}
-	
+
 	@Override
 	public Class<?> getTyp() {
 		return Association.class;

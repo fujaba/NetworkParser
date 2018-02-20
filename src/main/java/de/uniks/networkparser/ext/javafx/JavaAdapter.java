@@ -23,7 +23,7 @@ public class JavaAdapter implements JavaViewAdapter {
 	protected Object webView;
 	protected Object webEngine;
 	private SimpleList<String> queue=new SimpleList<String>();
-	
+
 	public JavaAdapter() {
 		if(ReflectionLoader.WEBVIEW != null) {
 			this.webView = ReflectionLoader.newInstance(ReflectionLoader.WEBVIEW);
@@ -31,7 +31,7 @@ public class JavaAdapter implements JavaViewAdapter {
 			ReflectionLoader.call("setMaxSize", this.webView, double.class, Double.MAX_VALUE, double.class, Double.MAX_VALUE);
 		}
 	}
-	
+
 	public JavaAdapter withOwner(JavaBridge owner) {
 		this.owner = owner;
 		return this;
@@ -63,7 +63,7 @@ public class JavaAdapter implements JavaViewAdapter {
 				}
 			}
 		}
-		
+
 		// Call Body Script
 		XMLEntity body = entity.getHeader();
 		for(int i=0;i<body.sizeChildren();i++) {
@@ -81,24 +81,24 @@ public class JavaAdapter implements JavaViewAdapter {
 	}
 
 	public boolean registerListener(ObjectCondition listener) {
-		
+
 		Object stateProperty = ReflectionLoader.callChain(this.webEngine, "getLoadWorker", "stateProperty");
 		GUIEvent eventListener = new GUIEvent().withListener(listener);
 
 		Object proxy = ReflectionLoader.createProxy(eventListener, ReflectionLoader.CHANGELISTENER, ReflectionLoader.EVENTHANDLER);
 		ReflectionLoader.call("addListener", stateProperty, ReflectionLoader.CHANGELISTENER, proxy);
-		
+
 		ReflectionLoader.call("setOnError", webEngine, ReflectionLoader.EVENTHANDLER, proxy);
 		ReflectionLoader.call("setOnAlert", webEngine, ReflectionLoader.EVENTHANDLER, proxy);
-		
+
 		ReflectionLoader.call("setOnDragExited", webView, ReflectionLoader.EVENTHANDLER, proxy);
 		ReflectionLoader.call("setOnDragOver", webView, ReflectionLoader.EVENTHANDLER, proxy);
 		ReflectionLoader.call("setOnDragDropped", webView, ReflectionLoader.EVENTHANDLER, proxy);
-		
+
 		return true;
 	}
-	
-	
+
+
 	// CallBack Functions
 	@Override
 	public boolean update(Object value) {
@@ -117,7 +117,7 @@ public class JavaAdapter implements JavaViewAdapter {
 		}
 		return false;
 	}
-	
+
 	public void changed(Object observable, Object oldValue, Object newValue) {
 		if(SUCCEEDED.equals(""+newValue)) {
 			// FINISH
@@ -125,11 +125,11 @@ public class JavaAdapter implements JavaViewAdapter {
 			return;
 		}
 	}
-	
+
 	public void showAlert(String value) {
 		System.err.println(value);
 	}
-	
+
 	public boolean executeChange(String value) {
 		owner.setApplyingChangeMSG(true);
 		JsonObject json = JsonObject.create(value);
@@ -171,7 +171,7 @@ public class JavaAdapter implements JavaViewAdapter {
 		}
 		return _execute(script);
 	}
-	
+
 	/**
 	 * synchronous Execute of script
 	 * @param script Script for executing
@@ -202,13 +202,13 @@ public class JavaAdapter implements JavaViewAdapter {
 	public Object getWebView() {
 		return webView;
 	}
-	
+
 	@Override
 	public Object getWebEngine() {
 		return webEngine;
 	}
-	
-	
+
+
 	protected void addAdapter(ObjectCondition eventListener) {
 		JsonObjectLazy executeScript = (JsonObjectLazy) _execute("bridge.addAdapter(new DiagramJS.DelegateAdapter());");
 		Object reference = executeScript.getReference();
@@ -238,9 +238,9 @@ public class JavaAdapter implements JavaViewAdapter {
 		executeScript("bridge.registerListener(" + type + ", \"" + id + "\");");
 		return true;
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @param clazz Class for CallBack
 	 * @return return JavascriptCallbackname
 	 */

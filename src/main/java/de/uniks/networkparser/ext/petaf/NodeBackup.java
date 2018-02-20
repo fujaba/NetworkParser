@@ -18,7 +18,7 @@ public class NodeBackup implements Runnable{
 	public void enable() {
 		this.runnable = true;
 	}
-	
+
 	public NodeBackup with(NodeProxy... nodeProxies) {
 		if(nodeProxies == null) {
 			return this;
@@ -27,7 +27,7 @@ public class NodeBackup implements Runnable{
 			this.queries = new SimpleList<NodeProxy>();
 		}
 		for(NodeProxy proxy : nodeProxies) {
-			this.queries.add(proxy);	
+			this.queries.add(proxy);
 		}
 		return this;
 	}
@@ -36,7 +36,7 @@ public class NodeBackup implements Runnable{
 		runnable = false;
 		return true;
 	}
-	
+
 	public NodeBackup withSpace(Space space) {
 		this.space = space;
 		this.event = new SimpleEvent(this, KEY, null, space);
@@ -46,7 +46,7 @@ public class NodeBackup implements Runnable{
 	public void run() {
 		if(task != null && runnable) {
 			this.sendtime = System.currentTimeMillis();
-			
+
 			task.update(this.event);
 			if(this.space != null) {
 				SortedSet<NodeProxy> proxies = this.space.getNodeProxies();
@@ -61,7 +61,7 @@ public class NodeBackup implements Runnable{
 				for(NodeProxy proxy : this.queries) {
 					proxy.sending(null);
 				}
-				
+
 			}
 			runnable = false;
 		}
@@ -70,16 +70,16 @@ public class NodeBackup implements Runnable{
 	public boolean isEnable() {
 		return runnable;
 	}
-	
+
 	public long getSendtime() {
 		return sendtime;
 	}
-	
+
 	public NodeBackup withTask(SimpleEventCondition task) {
 		this.task = task;
 		return this;
 	}
-	
+
 	public Space getSpace() {
 		return space;
 	}

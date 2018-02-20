@@ -150,7 +150,7 @@ public class CommsSender implements Runnable {
 			runningSemaphore.release();
 		}
 	}
-	
+
     /**
      * Writes an <code>MqttWireMessage</code> to the stream.
      * @param message The {@link MqttWireMessage} to send
@@ -164,7 +164,7 @@ public class CommsSender implements Runnable {
 //        out.write(message.getPayload());
         out.write(bytes,0,bytes.length);
         clientState.notifySentBytes(bytes.length);
-        
+
         int offset = 0;
         int chunckSize = 1024;
         while (offset < pl.length) {
@@ -172,7 +172,7 @@ public class CommsSender implements Runnable {
             out.write(pl, offset, length);
             offset += chunckSize;
             clientState.notifySentBytes(length);
-        }        
+        }
         out.flush();
     }
 

@@ -18,7 +18,7 @@ public abstract class SendableItem implements SendableEntity {
 		getPropertyChangeSupport().addPropertyChangeListener(propertyName, listener);
 		return true;
 	}
-	
+
 	public boolean addPropertyChangeListener(PropertyChangeListener listener) {
 		getPropertyChangeSupport().addPropertyChangeListener(listener);
 		return true;

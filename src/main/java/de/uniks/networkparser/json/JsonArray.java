@@ -104,7 +104,7 @@ public class JsonArray extends SortedList<Object> implements EntityList {
       }
       return returnValue;
 	}
-	
+
 	@Override
 	public int sizeChildren() {
 		return super.size();

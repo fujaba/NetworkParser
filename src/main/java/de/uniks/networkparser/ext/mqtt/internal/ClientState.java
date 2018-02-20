@@ -3,11 +3,11 @@
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
- * and Eclipse Distribution License v1.0 which accompany this distribution. 
+ * and Eclipse Distribution License v1.0 which accompany this distribution.
  *
- * The Eclipse Public License is available at 
+ * The Eclipse Public License is available at
  *    http://www.eclipse.org/legal/epl-v10.html
- * and the Eclipse Distribution License is available at 
+ * and the Eclipse Distribution License is available at
  *   http://www.eclipse.org/org/documents/edl-v10.php.
  *
  * Contributors:
@@ -28,6 +28,7 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.Vector;
 
+import de.uniks.networkparser.ext.io.StringInputStream;
 import de.uniks.networkparser.ext.mqtt.MqttException;
 import de.uniks.networkparser.ext.mqtt.MqttMessage;
 import de.uniks.networkparser.list.SimpleKeyValueList;
@@ -35,45 +36,45 @@ import de.uniks.networkparser.list.SimpleKeyValueList;
 /**
  * The core of the client, which holds the state information for pending and
  * in-flight messages.
- * 
- * Messages that have been accepted for delivery are moved between several objects 
- * while being delivered. 
- * 
- * 1) When the client is not running messages are stored in a persistent store that 
+ *
+ * Messages that have been accepted for delivery are moved between several objects
+ * while being delivered.
+ *
+ * 1) When the client is not running messages are stored in a persistent store that
  * implements the MqttClientPersistent Interface. The default is MqttDefaultFilePersistencew
  * which stores messages safely across failures and system restarts. If no persistence
  * is specified there is a fall back to MemoryPersistence which will maintain the messages
- * while the Mqtt client is instantiated. 
- * 
- * 2) When the client or specifically ClientState is instantiated the messages are 
+ * while the Mqtt client is instantiated.
+ *
+ * 2) When the client or specifically ClientState is instantiated the messages are
  * read from the persistent store into:
  * - outboundqos2 hashtable if a QoS 2 PUBLISH or PUBREL
  * - outboundqos1 hashtable if a QoS 1 PUBLISH
  * (see restoreState)
- * 
- * 3) On Connect, copy messages from the outbound hashtables to the pendingMessages or 
+ *
+ * 3) On Connect, copy messages from the outbound hashtables to the pendingMessages or
  * pendingFlows vector in messageid order.
- * - Initial message publish goes onto the pendingmessages buffer. 
+ * - Initial message publish goes onto the pendingmessages buffer.
  * - PUBREL goes onto the pendingflows buffer
  * (see restoreInflightMessages)
- * 
+ *
  * 4) Sender thread reads messages from the pendingflows and pendingmessages buffer
- * one at a time.  The message is removed from the pendingbuffer but remains on the 
- * outbound* hashtable.  The hashtable is the place where the full set of outstanding 
+ * one at a time.  The message is removed from the pendingbuffer but remains on the
+ * outbound* hashtable.  The hashtable is the place where the full set of outstanding
  * messages are stored in memory. (Persistence is only used at start up)
- *  
- * 5) Receiver thread - receives wire messages: 
+ *
+ * 5) Receiver thread - receives wire messages:
  *  - if QoS 1 then remove from persistence and outboundqos1
  *  - if QoS 2 PUBREC send PUBREL. Updating the outboundqos2 entry with the PUBREL
  *    and update persistence.
- *  - if QoS 2 PUBCOMP remove from persistence and outboundqos2  
- * 
+ *  - if QoS 2 PUBCOMP remove from persistence and outboundqos2
+ *
  * Notes:
  * because of the multithreaded nature of the client it is vital that any changes to this
- * class take concurrency into account.  For instance as soon as a flow / message is put on 
- * the wire it is possible for the receiving thread to receive the ack and to be processing 
+ * class take concurrency into account.  For instance as soon as a flow / message is put on
+ * the wire it is possible for the receiving thread to receive the ack and to be processing
  * the response before the sending side has finished processing.  For instance a connect may
- * be sent, the conack received before the connect notify send has been processed! 
+ * be sent, the conack received before the connect notify send has been processed!
  * @author Paho Client
  */
 public class ClientState {
@@ -81,7 +82,7 @@ public class ClientState {
 	private static final String PERSISTENCE_SENT_BUFFERED_PREFIX = "sb-";
 	private static final String PERSISTENCE_CONFIRMED_PREFIX = "sc-";
 	private static final String PERSISTENCE_RECEIVED_PREFIX = "r-";
-	
+
 	private static final int MIN_MSG_ID = 1;		// Lowest possible MQTT message ID to use
 	private static final int MAX_MSG_ID = 65535;	// Highest possible MQTT message ID to use
 	private int nextMsgId = MIN_MSG_ID - 1;			// The next available message ID to use
@@ -89,22 +90,22 @@ public class ClientState {
 
 	volatile private Vector<MqttWireMessage> pendingMessages;
 	volatile private Vector<MqttWireMessage> pendingFlows = new Vector<MqttWireMessage>();
-	
+
 	private CommsTokenStore tokenStore;
 	private ClientComms clientComms = null;
 	private CommsCallback callback = null;
 	private long keepAlive;
 	private boolean cleanSession;
 	private SimpleKeyValueList<String, MqttWireMessage> persistence;
-	
-	private int maxInflight = 0;	
+
+	private int maxInflight = 0;
 	private int actualInFlight = 0;
 	private int inFlightPubRels = 0;
-	
+
 	private Object queueLock = new Object();
 	private Object quiesceLock = new Object();
 	private boolean quiescing = false;
-	
+
 	private long lastOutboundActivity = 0;
 	private long lastInboundActivity = 0;
 	private MqttWireMessage pingCommand;
@@ -112,26 +113,26 @@ public class ClientState {
 	private int pingOutstanding = 0;
 
 	private boolean connected = false;
-	
+
 	private SimpleKeyValueList<Integer, MqttWireMessage> outboundQoS0 = new SimpleKeyValueList<Integer, MqttWireMessage>();
 	private SimpleKeyValueList<Integer, MqttWireMessage> outboundQoS1 = new SimpleKeyValueList<Integer, MqttWireMessage>();
 	private SimpleKeyValueList<Integer, MqttWireMessage> outboundQoS2 = new SimpleKeyValueList<Integer, MqttWireMessage>();
 	private SimpleKeyValueList<Integer, MqttWireMessage> inboundQoS2 = new SimpleKeyValueList<Integer, MqttWireMessage>();
-	
-	protected ClientState(SimpleKeyValueList<String, MqttWireMessage> persistence, CommsTokenStore tokenStore, 
+
+	protected ClientState(SimpleKeyValueList<String, MqttWireMessage> persistence, CommsTokenStore tokenStore,
 			CommsCallback callback, ClientComms clientComms) throws MqttException {
 		pingCommand = MqttWireMessage.create(MqttWireMessage.MESSAGE_TYPE_PINGREQ);
 		inFlightPubRels = 0;
 		actualInFlight = 0;
-		
+
 		this.persistence = persistence;
 		this.callback = callback;
 		this.tokenStore = tokenStore;
 		this.clientComms = clientComms;
-		
+
 		restoreState();
 	}
-	
+
 	protected void setMaxInflight(int maxInflight) {
         this.maxInflight = maxInflight;
         pendingMessages = new Vector<MqttWireMessage>(this.maxInflight);
@@ -148,27 +149,27 @@ public class ClientState {
 	protected boolean getCleanSession() {
 		return this.cleanSession;
 	}
-	
+
 	private String getSendPersistenceKey(MqttWireMessage message) {
 		return PERSISTENCE_SENT_PREFIX + message.getMessageId();
 	}
-	
+
 	private String getSendConfirmPersistenceKey(MqttWireMessage message) {
 		return PERSISTENCE_CONFIRMED_PREFIX + message.getMessageId();
 	}
-	
+
 	private String getReceivedPersistenceKey(MqttWireMessage message) {
 		return PERSISTENCE_RECEIVED_PREFIX + message.getMessageId();
 	}
-	
+
 	private String getReceivedPersistenceKey(int messageId) {
 		return PERSISTENCE_RECEIVED_PREFIX + messageId;
 	}
-	
+
 	private String getSendBufferedPersistenceKey(MqttWireMessage message){
 		return PERSISTENCE_SENT_BUFFERED_PREFIX + message.getMessageId();
 	}
-	
+
 	protected void clearState() throws MqttException {
 		//@TRACE 603=clearState
 
@@ -182,12 +183,16 @@ public class ClientState {
 		inboundQoS2.clear();
 		tokenStore.clear();
 	}
-	
+
 	private MqttWireMessage restoreMessage(String key, MqttWireMessage persistable) throws MqttException {
 		MqttWireMessage message = null;
 
 		try {
-			message = MqttWireMessage.createWireMessage(persistable);
+			StringInputStream mbais = new StringInputStream();
+			mbais.with(persistable.getHeader());
+			mbais.with(persistable.getPayload());
+
+			message = MqttWireMessage.createWireMessage(mbais);
 		}
 		catch (MqttException ex) {
 			//@TRACE 602=key={0} exception
@@ -225,7 +230,7 @@ public class ClientState {
 
 	/**
 	 * Produces a new list with the messages properly ordered according to their message id's.
-	 * @param list the list containing the messages to produce a new reordered list for 
+	 * @param list the list containing the messages to produce a new reordered list for
 	 * - this will not be modified or replaced, i.e., be read-only to this method
 	 * @return a new reordered list
 	 */
@@ -237,7 +242,7 @@ public class ClientState {
 		if (list.size() == 0) {
 			return newList; // nothing to reorder
 		}
-		
+
 		int previousMsgId = 0;
 		int largestGap = 0;
 		int largestGapMsgIdPosInList = 0;
@@ -251,25 +256,25 @@ public class ClientState {
 		}
 		int lowestMsgId = ((MqttWireMessage) list.elementAt(0)).getMessageId();
 		int highestMsgId = previousMsgId; // last in the sorted list
-		
+
 		// we need to check that the gap after highest msg id to the lowest msg id is not beaten
 		if (MAX_MSG_ID - highestMsgId + lowestMsgId > largestGap) {
 			largestGapMsgIdPosInList = 0;
 		}
-		
+
 		// starting message has been located, let's start from this point on
 		for (int i = largestGapMsgIdPosInList; i < list.size(); i++) {
 			newList.addElement(list.elementAt(i));
 		}
-	
+
 		// and any wrapping back to the beginning
 		for (int i = 0; i < largestGapMsgIdPosInList; i++) {
 			newList.addElement(list.elementAt(i));
 		}
-		
+
 		return newList;
 	}
-	
+
 	/**
 	 * Restores the state information from persistence.
 	 * @throws MqttException if an exception occurs whilst restoring state
@@ -289,7 +294,7 @@ public class ClientState {
 				if (key.startsWith(PERSISTENCE_RECEIVED_PREFIX)) {
 					//@TRACE 604=inbound QoS 2 publish key={0} message={1}
 
-					// The inbound messages that we have persisted will be QoS 2 
+					// The inbound messages that we have persisted will be QoS 2
 					inboundQoS2.put(Integer.valueOf(message.getMessageId()),message);
 				} else if (key.startsWith(PERSISTENCE_SENT_PREFIX)) {
 					highestMsgId = Math.max(message.getMessageId(), highestMsgId);
@@ -303,7 +308,7 @@ public class ClientState {
 						message.setDuplicate(true);
 						if (message.getMessage().getQos() == 2) {
 							//@TRACE 607=outbound QoS 2 publish key={0} message={1}
-							
+
 							outboundQoS2.put(Integer.valueOf(message.getMessageId()),message);
 						} else {
 							//@TRACE 608=outbound QoS 1 publish key={0} message={1}
@@ -315,7 +320,7 @@ public class ClientState {
 					tok.setClient(clientComms.getClient());
 					inUseMsgIds.put(Integer.valueOf(message.getMessageId()), Integer.valueOf(message.getMessageId()));
 				} else if(key.startsWith(PERSISTENCE_SENT_BUFFERED_PREFIX)){
-					
+
 					// Buffered outgoing messages that have not yet been sent at all
 					highestMsgId = Math.max(message.getMessageId(), highestMsgId);
 					if(message.getMessage().getQos() == 2){
@@ -325,15 +330,15 @@ public class ClientState {
 						//@TRACE 608=outbound QoS 1 publish key={0} message={1}
 
 						outboundQoS1.put(Integer.valueOf(message.getMessageId()), message);
-						
+
 					} else {
 						//@TRACE 511=outbound QoS 0 publish key={0} message={1}
 						outboundQoS0.put(Integer.valueOf(message.getMessageId()), message);
 						// Because there is no Puback, we have to trust that this is enough to send the message
 						persistence.remove(key);
-						
+
 					}
-					
+
 					Token tok = tokenStore.restoreToken(message);
 					tok.setClient(clientComms.getClient());
 					inUseMsgIds.put(Integer.valueOf(message.getMessageId()), Integer.valueOf(message.getMessageId()));
@@ -347,10 +352,10 @@ public class ClientState {
 
 			persistence.remove(key);
 		}
-		
+
 		nextMsgId = highestMsgId;
 	}
-	
+
 	private void restoreInflightMessages() {
 		pendingMessages = new Vector<MqttWireMessage>(this.maxInflight);
 		pendingFlows = new Vector<MqttWireMessage>();
@@ -362,7 +367,7 @@ public class ClientState {
 			if (msg.getType() == MqttWireMessage.MESSAGE_TYPE_PUBLISH) {
 				//@TRACE 610=QoS 2 publish key={0}
 				// set DUP flag only for PUBLISH, but NOT for PUBREL (spec 3.1.1)
-				msg.setDuplicate(true);  
+				msg.setDuplicate(true);
 				insertInOrder(pendingMessages, msg);
 			}
 		}
@@ -383,12 +388,12 @@ public class ClientState {
 		this.pendingFlows = reOrder(pendingFlows);
 		this.pendingMessages = reOrder(pendingMessages);
 	}
-	
+
 	/**
 	 * Submits a message for delivery. This method will block until there is
 	 * room in the inFlightWindow for the message. The message is put into
 	 * persistence before returning.
-	 * 
+	 *
 	 * @param message  the message to send
 	 * @param token the token that can be used to track delivery of the message
 	 * @throws MqttException if an exception occurs whilst sending the message
@@ -411,7 +416,7 @@ public class ClientState {
 			} catch (Exception e) {
 			}
 		}
-			
+
 		if (message.getType() == MqttWireMessage.MESSAGE_TYPE_PUBLISH) {
 			synchronized (queueLock) {
 				if (actualInFlight >= this.maxInflight) {
@@ -419,7 +424,7 @@ public class ClientState {
 
 					throw MqttException.withReason(MqttException.REASON_CODE_MAX_INFLIGHT);
 				}
-				
+
 				MqttMessage innerMessage = message.getMessage();
 				//@TRACE 628=pending publish key={0} qos={1} message={2}
 
@@ -439,8 +444,8 @@ public class ClientState {
 			}
 		} else {
 			//@TRACE 615=pending send key={0} message {1}
-			
-			if (message instanceof MqttConnect) {
+
+			if (message.getType() == MqttWireMessage.MESSAGE_TYPE_CONNECT) {
 				synchronized (queueLock) {
 					// Add the connect action at the head of the pending queue ensuring it jumps
 					// ahead of any of other pending actions.
@@ -452,7 +457,7 @@ public class ClientState {
 				if (message.getType() == MqttWireMessage.MESSAGE_TYPE_PINGREQ) {
 					this.pingCommand = message;
 				}
-				
+
 				synchronized (queueLock) {
 					if(MqttWireMessage.isMQTTAck(message) == false) {
 						tokenStore.saveToken(token, message);
@@ -463,15 +468,15 @@ public class ClientState {
 			}
 		}
 	}
-	
+
 	/**
 	 * Persists a buffered message to the persistence layer
-	 * 
+	 *
 	 * @param message The {@link MqttWireMessage} to persist
 	 */
 	public void persistBufferedMessage(MqttWireMessage message) {
 		String key = getSendBufferedPersistenceKey(message);
-		
+
 		// Because the client will have disconnected, we will want to re-open persistence
 		try {
 			message.withMessageId(getNextMessageId());
@@ -480,9 +485,9 @@ public class ClientState {
 			//@TRACE 513=Persisted Buffered Message key={0}
 		} catch (MqttException ex){
 			//@TRACE 514=Failed to persist buffered message key={0}
-		} 
+		}
 	}
-	
+
 	/**
 	 * Remove Message
 	 * @param message The {@link MqttWireMessage} to un-persist
@@ -491,7 +496,7 @@ public class ClientState {
 		//@TRACE 517=Un-Persisting Buffered message key={0}
 		persistence.remove(getSendBufferedPersistenceKey(message));
 	}
-	
+
 	/**
 	 * This removes the MqttSend message from the outbound queue and persistence.
 	 * @param message the {@link MqttWireMessage} message to be removed
@@ -499,8 +504,8 @@ public class ClientState {
 	 */
 	protected void undo(MqttWireMessage message) throws MqttException {
 		synchronized (queueLock) {
-			//@TRACE 618=key={0} QoS={1} 
-			
+			//@TRACE 618=key={0} QoS={1}
+
 			if (message.getMessage().getQos() == 1) {
 				outboundQoS1.remove(Integer.valueOf(message.getMessageId()));
 			} else {
@@ -519,25 +524,25 @@ public class ClientState {
 			checkQuiesceLock();
 		}
 	}
-	
+
 	/**
 	 * Check and send a ping if needed and check for ping timeout.
-	 * Need to send a ping if nothing has been sent or received  
-	 * in the last keepalive interval. It is important to check for 
-	 * both sent and received packets in order to catch the case where an 
+	 * Need to send a ping if nothing has been sent or received
+	 * in the last keepalive interval. It is important to check for
+	 * both sent and received packets in order to catch the case where an
 	 * app is solely sending QoS 0 messages or receiving QoS 0 messages.
 	 * QoS 0 message are not good enough for checking a connection is
 	 * alive as they are one way messages.
-	 * 
-	 * If a ping has been sent but no data has been received in the 
-	 * last keepalive interval then the connection is deamed to be broken. 
+	 *
+	 * If a ping has been sent but no data has been received in the
+	 * last keepalive interval then the connection is deamed to be broken.
 	 * @param pingCallback The {@link ConnectActionListener} to be called
 	 * @return token of ping command, null if no ping command has been sent.
 	 * @throws MqttException if an exception occurs during the Ping
 	 */
 	public Token checkForActivity(ConnectActionListener pingCallback) throws MqttException {
 		//@TRACE 616=checkForActivity entered
-		
+
         synchronized (quiesceLock) {
             // ref bug: https://bugs.eclipse.org/bugs/show_bug.cgi?id=440698
             // No ping while quiescing
@@ -546,69 +551,61 @@ public class ClientState {
             }
         }
 
-        Token token = null;
-		
+		Token token = null;
 		if (connected && this.keepAlive > 0) {
 			long time = System.currentTimeMillis();
 			//Reduce schedule frequency since System.currentTimeMillis is no accurate, add a buffer
 			//It is 1/10 in minimum keepalive unit.
 			int delta = 100;
-			
+
 			// ref bug: https://bugs.eclipse.org/bugs/show_bug.cgi?id=446663
-            synchronized (pingOutstandingLock) {
+			synchronized (pingOutstandingLock) {
+				// Is the broker connection lost because the broker did not reply to my ping?
+				if (pingOutstanding > 0 && (time - lastInboundActivity >= keepAlive + delta)) {
+					// lastInboundActivity will be updated once receiving is done.
+					// Add a delta, since the timer and System.currentTimeMillis() is not accurate.
+					// A ping is outstanding but no packet has been received in KA so connection is deemed broken
+					//@TRACE 619=Timed out as no activity, keepAlive={0} lastOutboundActivity={1} lastInboundActivity={2} time={3} lastPing={4}
 
-                // Is the broker connection lost because the broker did not reply to my ping?
-                if (pingOutstanding > 0 && (time - lastInboundActivity >= keepAlive + delta)) {
-                    // lastInboundActivity will be updated once receiving is done.
-                    // Add a delta, since the timer and System.currentTimeMillis() is not accurate.
-                	// A ping is outstanding but no packet has been received in KA so connection is deemed broken
-                    //@TRACE 619=Timed out as no activity, keepAlive={0} lastOutboundActivity={1} lastInboundActivity={2} time={3} lastPing={4}
+					// A ping has already been sent. At this point, assume that the
+					// broker has hung and the TCP layer hasn't noticed.
+					throw MqttException.withReason(MqttException.REASON_CODE_CLIENT_TIMEOUT);
+				}
 
-                    // A ping has already been sent. At this point, assume that the                                                                                                                                       
-                    // broker has hung and the TCP layer hasn't noticed.                                                                                                                                                  
-                    throw MqttException.withReason(MqttException.REASON_CODE_CLIENT_TIMEOUT);
-                }
+				// Is the broker connection lost because I could not get any successful write for 2 keepAlive intervals?
+				if (pingOutstanding == 0 && (time - lastOutboundActivity >= 2*keepAlive)) {
+					// I am probably blocked on a write operations as I should have been able to write at least a ping message
+					// A ping has not been sent but I am not progressing on the current write operation.
+					// At this point, assume that the broker has hung and the TCP layer hasn't noticed.
+					throw MqttException.withReason(MqttException.REASON_CODE_WRITE_TIMEOUT);
+				}
 
-                // Is the broker connection lost because I could not get any successful write for 2 keepAlive intervals?
-                if (pingOutstanding == 0 && (time - lastOutboundActivity >= 2*keepAlive)) {
-                    
-                    // I am probably blocked on a write operations as I should have been able to write at least a ping message
-
-                    // A ping has not been sent but I am not progressing on the current write operation. 
-                	// At this point, assume that the broker has hung and the TCP layer hasn't noticed.
-                    throw MqttException.withReason(MqttException.REASON_CODE_WRITE_TIMEOUT);
-                }
-
-                // 1. Is a ping required by the client to verify whether the broker is down?
-                //    Condition: ((pingOutstanding == 0 && (time - lastInboundActivity >= keepAlive + delta)))
-                //    In this case only one ping is sent. If not confirmed, client will assume a lost connection to the broker.
-                // 2. Is a ping required by the broker to keep the client alive?
-                //    Condition: (time - lastOutboundActivity >= keepAlive - delta)
-                //    In this case more than one ping outstanding may be necessary.
-                //    This would be the case when receiving a large message;
-                //    the broker needs to keep receiving a regular ping even if the ping response are queued after the long message
-                //    If lacking to do so, the broker will consider my connection lost and cut my socket.
-                if ((pingOutstanding == 0 && (time - lastInboundActivity >= keepAlive - delta)) ||
-                    (time - lastOutboundActivity >= keepAlive - delta)) {
-
-                    //@TRACE 620=ping needed. keepAlive={0} lastOutboundActivity={1} lastInboundActivity={2}
-
-                    // pingOutstanding++;  // it will be set after the ping has been written on the wire
-                    // lastPing = time;    // it will be set after the ping has been written on the wire
-                    token = new Token(clientComms.getClient().getClientId());
-                    tokenStore.saveToken(token, pingCommand);
-                    pendingFlows.insertElementAt(pingCommand, 0);
-
-                    //Wake sender thread since it may be in wait state (in ClientState.get())
-                    notifyQueueLock();
-                }
-            }
-            //@TRACE 624=Schedule next ping at {0}
+				// 1. Is a ping required by the client to verify whether the broker is down?
+				//    Condition: ((pingOutstanding == 0 && (time - lastInboundActivity >= keepAlive + delta)))
+				//    In this case only one ping is sent. If not confirmed, client will assume a lost connection to the broker.
+				// 2. Is a ping required by the broker to keep the client alive?
+				//    Condition: (time - lastOutboundActivity >= keepAlive - delta)
+				//    In this case more than one ping outstanding may be necessary.
+				//    This would be the case when receiving a large message;
+				//    the broker needs to keep receiving a regular ping even if the ping response are queued after the long message
+				//    If lacking to do so, the broker will consider my connection lost and cut my socket.
+				if ((pingOutstanding == 0 && (time - lastInboundActivity >= keepAlive - delta)) ||
+					(time - lastOutboundActivity >= keepAlive - delta)) {
+					//@TRACE 620=ping needed. keepAlive={0} lastOutboundActivity={1} lastInboundActivity={2}
+					// pingOutstanding++;  // it will be set after the ping has been written on the wire
+					// lastPing = time;    // it will be set after the ping has been written on the wire
+					token = new Token(clientComms.getClient().getClientId());
+					tokenStore.saveToken(token, pingCommand);
+					pendingFlows.insertElementAt(pingCommand, 0);
+					//Wake sender thread since it may be in wait state (in ClientState.get())
+					notifyQueueLock();
+				}
+			}
+			//@TRACE 624=Schedule next ping at {0}
 		}
-		
 		return token;
 	}
-	
+
 	/**
 	 * This returns the next piece of work, ie message, for the CommsSender
 	 * to send over the network.
@@ -625,69 +622,69 @@ public class ClientState {
 
 		synchronized (queueLock) {
 			while (result == null) {
-				
+
 				// If there is no work wait until there is work.
 				// If the inflight window is full and no flows are pending wait until space is freed.
 				// In both cases queueLock will be notified.
-				if ((pendingMessages.isEmpty() && pendingFlows.isEmpty()) || 
+				if ((pendingMessages.isEmpty() && pendingFlows.isEmpty()) ||
 					(pendingFlows.isEmpty() && actualInFlight >= this.maxInflight)) {
 					try {
-						//@TRACE 644=wait for new work or for space in the inflight window 
- 
+						//@TRACE 644=wait for new work or for space in the inflight window
+
 						queueLock.wait();
-						
-						//@TRACE 647=new work or ping arrived 
+
+						//@TRACE 647=new work or ping arrived
 					} catch (InterruptedException e) {
 					}
 				}
-				
-				// Handle the case where not connected. This should only be the case if: 
+
+				// Handle the case where not connected. This should only be the case if:
 				// - in the process of disconnecting / shutting down
 				// - in the process of connecting
-				if (!connected && 
-						(pendingFlows.isEmpty() || !((MqttWireMessage)pendingFlows.elementAt(0) instanceof MqttConnect))) {
+				if (!connected &&
+						(pendingFlows.isEmpty() || pendingFlows.elementAt(0).getType() != MqttWireMessage.MESSAGE_TYPE_CONNECT)) {
 					//@TRACE 621=no outstanding flows and not connected
-					
+
 					return null;
 				}
 
-				// Check if there is a need to send a ping to keep the session alive. 
+				// Check if there is a need to send a ping to keep the session alive.
 				// Note this check is done before processing messages. If not done first
 				// an app that only publishes QoS 0 messages will prevent keepalive processing
-				// from functioning. 
+				// from functioning.
 //				checkForActivity(); //Use pinger, don't check here
-				
+
 				// Now process any queued flows or messages
 				if (!pendingFlows.isEmpty()) {
 					// Process the first "flow" in the queue
 					result = (MqttWireMessage)pendingFlows.remove(0);
-		
+
 					checkQuiesceLock();
 				} else if (!pendingMessages.isEmpty()) {
-					
-					// If the inflight window is full then messages are not 
-					// processed until the inflight window has space. 
+
+					// If the inflight window is full then messages are not
+					// processed until the inflight window has space.
 					if (actualInFlight < this.maxInflight) {
-						// The in flight window is not full so process the 
+						// The in flight window is not full so process the
 						// first message in the queue
 						result = (MqttWireMessage)pendingMessages.elementAt(0);
 						pendingMessages.removeElementAt(0);
 						actualInFlight++;
-	
+
 						//@TRACE 623=+1 actualInFlight={0}
 					} else {
 						//@TRACE 622=inflight window full
 					}
-				}			
+				}
 			}
 		}
 		return result;
 	}
-	
+
 	public void setKeepAliveInterval(long interval) {
 		this.keepAlive = interval;
 	}
-	
+
     public void notifySentBytes(int sentBytesCount) {
         if (sentBytesCount > 0) {
         	this.lastOutboundActivity = System.currentTimeMillis();
@@ -695,16 +692,16 @@ public class ClientState {
         // @TRACE 643=sent bytes count={0}
     }
 
-	
+
 	/**
 	 * Called by the CommsSender when a message has been sent
 	 * @param message the {@link MqttWireMessage} to notify
 	 */
 	protected void notifySent(MqttWireMessage message) {
-		
+
 		this.lastOutboundActivity = System.currentTimeMillis();
 		//@TRACE 625=key={0}
-		
+
 		Token token = tokenStore.getToken(message);
 		token.notifySent();
 		if (message.getType() == MqttWireMessage.MESSAGE_TYPE_PINGREQ) {
@@ -732,13 +729,13 @@ public class ClientState {
 		synchronized (queueLock) {
 			actualInFlight--;
 			//@TRACE 646=-1 actualInFlight={0}
-			
+
 			if (!checkQuiesceLock()) {
 				queueLock.notifyAll();
 			}
 		}
 	}
-	
+
 	protected boolean checkQuiesceLock() {
 //		if (quiescing && actualInFlight == 0 && pendingFlows.size() == 0 && inFlightPubRels == 0 && callback.isQuiesced()) {
 		int tokC = tokenStore.count();
@@ -751,17 +748,17 @@ public class ClientState {
 		}
 		return false;
 	}
-	
-    public void notifyReceivedBytes(int receivedBytesCount) {
-        if (receivedBytesCount > 0) {
-            this.lastInboundActivity = System.currentTimeMillis();
-        }
-        // @TRACE 630=received bytes count={0}                                                                                                                                                                                        
-    }
 
-    /**
-	 * Called by the CommsReceiver when an ack has arrived. 
-	 * 
+	public void notifyReceivedBytes(int receivedBytesCount) {
+		if (receivedBytesCount > 0) {
+			this.lastInboundActivity = System.currentTimeMillis();
+		}
+		// @TRACE 630=received bytes count={0}
+	}
+
+	/**
+	 * Called by the CommsReceiver when an ack has arrived.
+	 *
 	 * @param ack The {@link MqttWireMessage} that has arrived
 	 * @throws MqttException if an exception occurs when sending / notifying
 	 */
@@ -780,14 +777,14 @@ public class ClientState {
 			// persistence
 			notifyResult(ack, token, mex);
 			// Do not remove publish / delivery token at this stage
-			// do this when the persistence is removed later 
+			// do this when the persistence is removed later
 		} else if (ack.getType() == MqttWireMessage.MESSAGE_TYPE_CONNACK) {
 			int rc = ack.getReturnCode();
 			if (rc == 0) {
 				synchronized (queueLock) {
 					if (cleanSession) {
 						clearState();
-						// Add the connect token back in so that users can be  
+						// Add the connect token back in so that users can be
 						// notified when connect completes.
 						tokenStore.saveToken(token,ack);
 					}
@@ -814,14 +811,14 @@ public class ClientState {
 			releaseMessageId(ack.getMessageId());
 			tokenStore.removeToken(ack);
 		}
-		
+
 		checkQuiesceLock();
 	}
 
 	/**
 	 * Called by the CommsReceiver when a message has been received.
-	 * Handles inbound messages and other flows such as PUBREL. 
-	 * 
+	 * Handles inbound messages and other flows such as PUBREL.
+	 *
 	 * @param message The {@link MqttWireMessage} that has been received
 	 * @throws MqttException when an exception occurs whilst notifying
 	 */
@@ -851,13 +848,13 @@ public class ClientState {
 		}
 	}
 
-	
+
 	/**
 	 * Called when waiters and callbacks have processed the message. For
 	 * messages where delivery is complete the message can be removed from
 	 * persistence and counters adjusted accordingly. Also tidy up by removing
 	 * token from store...
-	 * 
+	 *
 	 * @param token The {@link Token} that will be used to notify
 	 * @throws MqttException if an exception occurs during notification
 	 */
@@ -865,7 +862,7 @@ public class ClientState {
 		MqttWireMessage message = token.getWireMessage();
 
 		if (message != null && MqttWireMessage.isMQTTAck(message)) {
-			
+
 			// @TRACE 629=received key={0} token={1} message={2}
 			if (message.getType() == MqttWireMessage.MESSAGE_TYPE_PUBACK) {
 				// QoS 1 - user notified now remove from persistence...
@@ -882,23 +879,23 @@ public class ClientState {
 	}
 
 	protected void notifyResult(MqttWireMessage ack, Token token, MqttException ex) {
-		// unblock any threads waiting on the token  
+		// unblock any threads waiting on the token
 		token.markComplete(ack, ex);
 		token.notifyComplete();
-		
+
 		// Let the user know an async operation has completed and then remove the token
 		if (ack != null && MqttWireMessage.isMQTTAck(ack)) {
 			//@TRACE 648=key{0}, msg={1}, excep={2}
 			callback.asyncOperationComplete(token);
 		}
-		// There are cases where there is no ack as the operation failed before 
-		// an ack was received 
+		// There are cases where there is no ack as the operation failed before
+		// an ack was received
 		if (ack == null ) {
 			//@TRACE 649=key={0},excep={1}
 			callback.asyncOperationComplete(token);
 		}
 	}
-	
+
 	/**
 	 * Called when the client has successfully connected to the broker
 	 */
@@ -906,31 +903,31 @@ public class ClientState {
 		//@TRACE 631=connected
 		this.connected = true;
 	}
-	
+
 	/**
 	 * Called during shutdown to work out if there are any tokens still
-	 * to be notified and waiters to be unblocked.  Notifying and unblocking 
+	 * to be notified and waiters to be unblocked.  Notifying and unblocking
 	 * takes place after most shutdown processing has completed. The tokenstore
 	 * is tidied up so it only contains outstanding delivery tokens which are
 	 * valid after reconnect (if clean session is false)
 	 * @param reason The root cause of the disconnection, or null if it is a clean disconnect
-	 * @return Vektor of Tokens {@link Vector} 
+	 * @return Vektor of Tokens {@link Vector}
 	 */
 	public Vector<Token> resolveOldTokens(MqttException reason) {
 		//@TRACE 632=reason {0}
-		
+
 		// If any outstanding let the user know the reason why it is still
-		// outstanding by putting the reason shutdown is occurring into the 
-		// token. 
+		// outstanding by putting the reason shutdown is occurring into the
+		// token.
 		MqttException shutReason = reason;
 		if (reason == null) {
 			shutReason = MqttException.withReason(MqttException.REASON_CODE_CLIENT_DISCONNECTING);
 		}
-		
+
 		// Set the token up so it is ready to be notified after disconnect
-		// processing has completed. Do not 
-		// remove the token from the store if it is a delivery token, it is 
-		// valid after a reconnect. 
+		// processing has completed. Do not
+		// remove the token from the store if it is a delivery token, it is
+		// valid after a reconnect.
 		Vector<Token> outT = tokenStore.getOutstandingTokens();
 		Enumeration<Token> outTE = outT.elements();
 		while (outTE.hasMoreElements()) {
@@ -944,7 +941,7 @@ public class ClientState {
 		}
 		return outT;
 	}
-	
+
 	/**
 	 * Called when the client has been disconnected from the broker.
 	 * @param reason The root cause of the disconnection, or null if it is a clean disconnect
@@ -962,16 +959,16 @@ public class ClientState {
 			synchronized (pingOutstandingLock) {
 				// Reset pingOutstanding to allow reconnects to assume no previous ping.
 			    pingOutstanding = 0;
-			}		    
+			}		
 		} catch (MqttException e) {
 			// Ignore as we have disconnected at this point
 		}
 	}
-	
+
 	/**
 	 * Releases a message ID back into the pool of available message IDs.
 	 * If the supplied message ID is not in use, then nothing will happen.
-	 * 
+	 *
 	 * @param msgId A message ID that can be freed up for re-use.
 	 */
 	private synchronized void releaseMessageId(int msgId) {
@@ -981,7 +978,7 @@ public class ClientState {
 	/**
 	 * Get the next MQTT message ID that is not already in use, and marks
 	 * it as now being in use.
-	 * 
+	 *
 	 * @return the next MQTT message ID to use
 	 */
 	private synchronized int getNextMessageId() throws MqttException {
@@ -1005,7 +1002,7 @@ public class ClientState {
 	    inUseMsgIds.put(id, id);
 	    return nextMsgId;
 	}
-	
+
 	/**
 	 * Quiesce the client state, preventing any new messages getting sent,
 	 * and preventing the callback on any newly received messages.
@@ -1025,10 +1022,10 @@ public class ClientState {
 			notifyQueueLock();
 
 			synchronized (quiesceLock) {
-				try {			
-					// If token count is not zero there is outbound work to process and 
+				try {
+					// If token count is not zero there is outbound work to process and
 					// if pending flows is not zero there is outstanding work to complete and
-					// if call back is not quiseced there it needs to complete. 
+					// if call back is not quiseced there it needs to complete.
 					int tokc = tokenStore.count();
 					if (tokc > 0 || pendingFlows.size() >0 || !callback.isQuiesced()) {
 						//@TRACE 639=wait for outstanding: actualInFlight={0} pendingFlows={1} inFlightPubRels={2} tokens={3}
@@ -1042,11 +1039,11 @@ public class ClientState {
 					// Don't care, as we're shutting down anyway
 				}
 			}
-			
+
 			// Quiesce time up or inflight messages delivered.  Ensure pending delivery
 			// vectors are cleared ready for disconnect to be sent as the final flow.
 			synchronized (queueLock) {
-				pendingMessages.clear();				
+				pendingMessages.clear();
 				pendingFlows.clear();
 				quiescing = false;
 				actualInFlight = 0;
@@ -1064,30 +1061,30 @@ public class ClientState {
 
 	protected void deliveryComplete(MqttWireMessage message) throws MqttException {
 		//@TRACE 641=remove publish from persistence. key={0}
-		
+
 		persistence.remove(getReceivedPersistenceKey(message));
 		inboundQoS2.remove(Integer.valueOf(message.getMessageId()));
 	}
-	
+
 	protected void deliveryComplete(int messageId) throws MqttException {
 		//@TRACE 641=remove publish from persistence. key={0}
-		
+
 		persistence.remove(getReceivedPersistenceKey(messageId));
 		inboundQoS2.remove(Integer.valueOf(messageId));
 	}
-	
+
 	public int getActualInFlight(){
 		return actualInFlight;
 	}
-	
+
 	public int getMaxInFlight(){
 		return maxInflight;
 	}
-	
+
 	/**
 	 * Tidy up
-	 * - ensure that tokens are released as they are maintained over a 
-	 * disconnect / connect cycle. 
+	 * - ensure that tokens are released as they are maintained over a
+	 * disconnect / connect cycle.
 	 */
 	protected void close() {
 		inUseMsgIds.clear();
@@ -1111,9 +1108,9 @@ public class ClientState {
 		callback = null;
 		clientComms = null;
 		persistence = null;
-		pingCommand = null;	
+		pingCommand = null;
 	}
-	
+
 	public Properties getDebug() {
 		Properties props = new Properties();
 		props.put("In use msgids", inUseMsgIds);

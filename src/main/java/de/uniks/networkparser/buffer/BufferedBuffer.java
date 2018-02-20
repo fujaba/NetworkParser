@@ -48,12 +48,12 @@ public abstract class BufferedBuffer extends Buffer {
 	public int length() {
 		return length;
 	}
-	
+
 	@Override
 	public boolean isEnd() {
 		return position()-start+1 >= length();
 	}
-	
+
 	public boolean isEndCharacter() {
 		if(position()-start+1 >= length()) {
 			return true;
@@ -202,7 +202,7 @@ public abstract class BufferedBuffer extends Buffer {
 		CharacterBuffer sb = subSequence(start, position()).trim();
 		return sb;
 	}
-	
+
 	public String nextString(int count) {
 		int start = position();
 		CharacterBuffer sb = subSequence(start, start+count).trim();

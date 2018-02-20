@@ -182,7 +182,7 @@ public class DateTimeEntity {
 		this.fields
 				.put(DateField.WEEK_OF_MONTH, week - ((dayOfYear - day) / 7));
 		this.fields.put(DateField.MILLISECONDSREAL, time);
-		
+
 		return false;
 	}
 
@@ -475,9 +475,9 @@ public class DateTimeEntity {
 				} else {
 					sub = sub.replace("Z", "0000");
 				}
-				
+
 				sub = sub.replace("z", "CEST");
-				
+
 			}
 			sb.with(sub);
 			if(tokener.getCurrentChar()=='\"') {
@@ -498,11 +498,11 @@ public class DateTimeEntity {
 				+ this.fields.get(DateField.MONTH) + "."
 				+ this.fields.get(DateField.YEAR);
 	}
-	
-    public String toGMTString() {
-        // d MMM yyyy HH:mm:ss 'GMT'
-    	return this.toString("ddd, dd mmm yyyy HH:MM:SS 'GMT'");
-    }
+
+	public String toGMTString() {
+		// d MMM yyyy HH:mm:ss 'GMT'
+		return this.toString("ddd, dd mmm yyyy HH:MM:SS 'GMT'");
+	}
 
 	// SETTER
 	/**

@@ -70,17 +70,17 @@ public class EntityUtil {
 		}
 		return string;
 	}
-	
+
 	public static final boolean isNumeric(String strNum) {
 		if(strNum == null) {
 			return false;
 		}
-	    try {
-	        Double.parseDouble(strNum);
-	    }catch (NumberFormatException e) {
-	        return false;
-	    }
-	    return true;
+		try {
+			Double.parseDouble(strNum);
+		}catch (NumberFormatException e) {
+			return false;
+		}
+		return true;
 	}
 
 	public static final SimpleList<Pos> getExcelRange(String tag) {
@@ -133,7 +133,7 @@ public class EntityUtil {
 		}
 		return string;
 	}
-	public static String CONTROLCHARACTER = "abtnvfr"; 
+	public static String CONTROLCHARACTER = "abtnvfr";
 	public static final String unQuoteControlCharacter(CharSequence value) {
 		if (value == null || value.length() == 0) {
 			return "";
@@ -251,7 +251,7 @@ public class EntityUtil {
 				+ (HEXVAL.indexOf(values[1]) << 16)
 				+ (HEXVAL.indexOf(values[2]) << 8) + HEXVAL.indexOf(values[3]));
 	}
-	
+
 	private static final char fromOctal(char... values) {
 		if(values == null) {
 			return 0;
@@ -262,7 +262,7 @@ public class EntityUtil {
 			result += values[i] * mult;
 			mult = mult *8;
 		}
-		return  (char)result; 
+		return  (char)result;
 	}
 	/**
 	 * Produce a string in double quotes with backslash sequences in all the
@@ -551,22 +551,21 @@ public class EntityUtil {
 		} else if("boolean".equalsIgnoreCase(datatype)) {
 			return "false";
 		} else if (datatype.endsWith("[]")) {
-           return datatype.substring(0, datatype.length() - 2);
-        } else if (datatype.endsWith("..."))
-        {
-           return datatype.substring(0, datatype.length() - 3);
-        }
+			return datatype.substring(0, datatype.length() - 2);
+		} else if (datatype.endsWith("...")) {
+			return datatype.substring(0, datatype.length() - 3);
+		}
 		return "null";
 	}
-	
+
 	public static final boolean compareEntity(Entity entityA, Entity entityB) {
 		return compareEntity(entityA, entityB, new TextDiff(), null);
 	}
-	
+
 	public static final boolean compareEntity(Collection<?> jsonA, Collection<?> jsonB) {
 		return compareEntity(jsonA, jsonB, new TextDiff(), null);
 	}
-	
+
 	public static final boolean compareEntity(Object entityA, Object entityB, TextDiff diffList, BaseItem sameObject) {
 		if(sameObject == null) {
 			if (entityA instanceof Entity) {
@@ -588,7 +587,7 @@ public class EntityUtil {
 				return false;
 			}
 			return true;
-			
+
 		}
 		if(entityA instanceof Entity && entityB instanceof Entity) {
 			Entity elementA = (Entity) entityA;
@@ -659,7 +658,7 @@ public class EntityUtil {
 			}
 			return true;
 		}
-		if(entityA instanceof Collection<?> && entityB instanceof Collection<?>) { 
+		if(entityA instanceof Collection<?> && entityB instanceof Collection<?>) {
 			Collection<?> colectionA = (Collection<?>) entityA;
 			Collection<?> colectionB = (Collection<?>) entityB;
 			Object[] itemsA = colectionA.toArray();
@@ -668,7 +667,7 @@ public class EntityUtil {
 				Object valueA = itemsA[i];
 				Object valueB = null;
 				if(itemsB.length>i) {
-					valueB = itemsB[i]; 
+					valueB = itemsB[i];
 				}
 				Object oldValue = compareValue(null, valueA, valueB, diffList, sameObject);
 				if(itemsB.length<=i) {
@@ -724,24 +723,24 @@ public class EntityUtil {
 		diffList.createChild(key, valueA, valueB);
 		return null;
 	}
-	
+
 	public static final boolean isEMFType(String tag) {
 		return emfTypes.indexOf(" " + tag.toUpperCase() + " ") >= 0;
 	}
 
 	private static final String primitiveTypes = " void String char Char boolean Boolean byte Byte Object java.util.Date ";
 	private static final String numericTypes = " long Long short Short int Integer byte Byte float Float double Double ";
-    private static final String types = "         long    Long    short   Short   int     Integer byte    Byte    float   Float   double  Double  boolean Boolean char    Char ";
+	private static final String types = "         long    Long    short   Short   int     Integer byte    Byte    float   Float   double  Double  boolean Boolean char    Char ";
 	private static final String javaLang="java.lang.";
 	private static final String modifier=" public protected private static abstract final native synchronized transient volatile strictfp ";
-	
+
 	public static final boolean isModifier(String type) {
 		if (type == null) {
 			return false;
 		}
 		return modifier.indexOf(type) >= 0;
 	}
-	
+
 	public static final boolean isPrimitiveType(String type) {
 		if (type == null) {
 			return false;
@@ -765,7 +764,7 @@ public class EntityUtil {
 		}
 		return numericTypes.indexOf(" " + type + " ") >= 0;
 	}
-	
+
 	public static final boolean isNumericTypeContainer(String typeA, String typeB) {
 		if (typeA == null || typeB == null) {
 			return typeA == typeB;
@@ -919,7 +918,7 @@ public class EntityUtil {
 		}
 		return buf.toString();
 	}
-	
+
 	public static final void writeByteHeader(ByteBuffer buffer, byte type, int valueLength) {
 		if (valueLength > 0 ) {
 			// Save Type
@@ -1004,7 +1003,7 @@ public class EntityUtil {
 		}
 		return 0;
 	}
-	
+
 
 	/**
 	 * Convert String to ByteArray
@@ -1019,7 +1018,7 @@ public class EntityUtil {
 		}
 		return bytes;
 	}
-	
+
 
 	public static final ByteBuffer getBuffer(int len) {
 		if (len < 1) {
@@ -1146,10 +1145,10 @@ public class EntityUtil {
 	public static final byte getSubGroup(byte type) {
 		return (byte) ((type % 16) - 10);
 	}
-	
+
 	/**
 	 * Counts how many times the substring appears in the larger string.
-	 * 
+	 *
 	 * @param str the CharSequence to check, may be null
 	 * @param sub the substring to count, may be null
 	 * @return the number of occurrences, 0 if either CharSequence is {@code null}
@@ -1170,17 +1169,17 @@ public class EntityUtil {
 	}
 	/**
 	 * Checks if a CharSequence is empty ("") or null.
-	 * 
+	 *
 	 * @param cs the CharSequence to check, may be null
 	 * @return if the CharSequence is empty or null
 	 */
 	public static final boolean isEmpty(CharSequence cs) {
 		return cs == null || cs.length() == 0;
 	}
-	
+
 	/**
 	 * Checks if the CharSequence equals any character in the given set of characters.
-	 * 
+	 *
 	 * @param cs the CharSequence to check
 	 * @param strs the set of characters to check against
 	 * @return true if equals any
@@ -1197,10 +1196,10 @@ public class EntityUtil {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Checks if the CharSequence contains any character in the given set of characters.
-	 * 
+	 *
 	 * @param cs the CharSequence to check, may be null
 	 * @param searchChars the chars to search for, may be null
 	 * @return the {@code true} if any of the chars are found, {@code false} if no match or null input
@@ -1214,7 +1213,7 @@ public class EntityUtil {
 
 	/**
 	 * Checks if the CharSequence contains any character in the given set of characters.
-	 * 
+	 *
 	 * @param cs the CharSequence to check, may be null
 	 * @param searchChars the chars to search for, may be null
 	 * @return the {@code true} if any of the chars are found, {@code false} if no match or null input
@@ -1223,7 +1222,7 @@ public class EntityUtil {
 		if (isEmpty(cs) || searchChars == null || searchChars.length == 0) {
 			return false;
 		}
-		
+
 		int csLength = cs.length();
 		int searchLength = searchChars.length;
 		int csLast = csLength - 1;
@@ -1250,10 +1249,10 @@ public class EntityUtil {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Green implementation of toCharArray.
-	 * 
+	 *
 	 * @param cs the {@code CharSequence} to be processed
 	 * @return the resulting char array
 	 */
@@ -1270,45 +1269,43 @@ public class EntityUtil {
 			return array;
 		}
 	}
-	
-    /**
-     * Pseudo-random number generator object for use with randomString().
-     * The Random class is not considered to be cryptographically secure, so
-     * only use these random Strings for low to medium security applications.
-     */
-    private static Random randGen = new Random();
 
-    /**
-     * Array of numbers and letters of mixed case. Numbers appear in the list
-     * twice so that there is a more equal chance that a number will be picked.
-     * We can use the array to get a random number or letter by picking a random
-     * array index.
-     */
-    private static char[] numbersAndLetters = ("0123456789abcdefghijklmnopqrstuvwxyz" +
-                    "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ").toCharArray();
+	/**
+	 * Pseudo-random number generator object for use with randomString().
+	 * The Random class is not considered to be cryptographically secure, so
+	 * only use these random Strings for low to medium security applications.
+	 */
+	private static Random randGen = new Random();
 
-    /**
-     * Returns a random String of numbers and letters (lower and upper case)
-     * of the specified length. The method uses the Random class that is
-     * built-in to Java which is suitable for low to medium grade security uses.
-     * This means that the output is only pseudo random, i.e., each number is
-     * mathematically generated so is not truly random.<p>
-     *
-     * The specified length must be at least one. If not, the method will return
-     * null.
-     *
-     * @param length the desired length of the random String to return.
-     * @return a random String of numbers and letters of the specified length.
-     */
-    public static String randomString(int length) {
-        if (length < 1) {
-            return null;
-        }
-        // Create a char buffer to put random letters and numbers in.
-        char [] randBuffer = new char[length];
-        for (int i=0; i<randBuffer.length; i++) {
-            randBuffer[i] = numbersAndLetters[randGen.nextInt(71)];
-        }
-        return new String(randBuffer);
-    }
+	/**
+	 * Array of numbers and letters of mixed case. Numbers appear in the list
+	 * twice so that there is a more equal chance that a number will be picked.
+	 * We can use the array to get a random number or letter by picking a random
+	 * array index.
+	 */
+	private static char[] numbersAndLetters = ("0123456789abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ").toCharArray();
+
+	/**
+	 * Returns a random String of numbers and letters (lower and upper case)
+	 * of the specified length. The method uses the Random class that is
+	 * built-in to Java which is suitable for low to medium grade security uses.
+	 * This means that the output is only pseudo random, i.e., each number is
+	 * mathematically generated so is not truly random.<p>
+	 *
+	 * The specified length must be at least one. If not, the method will return null.
+	 *
+	 * @param length the desired length of the random String to return.
+	 * @return a random String of numbers and letters of the specified length.
+	 */
+	public static String randomString(int length) {
+		if (length < 1) {
+			return null;
+		}
+		// Create a char buffer to put random letters and numbers in.
+		char [] randBuffer = new char[length];
+		for (int i=0; i<randBuffer.length; i++) {
+			randBuffer[i] = numbersAndLetters[randGen.nextInt(71)];
+		}
+		return new String(randBuffer);
+	}
 }

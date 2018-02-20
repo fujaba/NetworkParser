@@ -8,7 +8,7 @@ import de.uniks.networkparser.list.SimpleKeyValueList;
 public class MapFilter implements ObjectCondition {
 
 	private SimpleKeyValueList<Object, Entity> map = new SimpleKeyValueList<Object, Entity>();
-	
+
 	@Override
 	public boolean update(Object value) {
 		if(value instanceof SimpleEvent == false) {
@@ -22,7 +22,7 @@ public class MapFilter implements ObjectCondition {
 		map.put(item, event.getEntity());
 		return true;
 	}
-	
+
 	public Entity getValue(Object item) {
 		return map.get(item);
 	}

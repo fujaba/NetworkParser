@@ -43,7 +43,7 @@ public abstract class Value extends GraphMember {
 	public DataType getType() {
 		return type;
 	}
-	
+
 	@Override
 	public Object getValue(String attribute) {
 		int pos = attribute.indexOf('.');

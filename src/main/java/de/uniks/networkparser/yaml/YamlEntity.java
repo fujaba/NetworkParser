@@ -12,7 +12,7 @@ public class YamlEntity extends SortedList<Object> implements EntityList {
 	public YamlEntity() {
 		super(false);
 	}
-	
+
 	@Override
 	public int sizeChildren() {
 		return super.size();
@@ -24,7 +24,7 @@ public class YamlEntity extends SortedList<Object> implements EntityList {
 		new YAMLTokener().withBuffer(values).parseToEntity(this);
 		return this;
 	}
-	
+
 	@Override
 	public BaseItem getNewList(boolean keyValue) {
 		if(keyValue) {

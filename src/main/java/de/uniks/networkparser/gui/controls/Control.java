@@ -12,7 +12,7 @@ public abstract class Control extends SimpleObject {
 	/* Constants */
 	public static final String PROPERTY = "property";
 	private SimpleKeyValueList<EventTypes, List<ObjectCondition>> events;
-	
+
 	public boolean addEventListener(EventTypes type, ObjectCondition listener) {
 		if(events == null) {
 			events = new SimpleKeyValueList<EventTypes, List<ObjectCondition>>();
@@ -26,7 +26,7 @@ public abstract class Control extends SimpleObject {
 		list.add(listener);
 		return true;
 	}
-	
+
 	public boolean addClickListener(ObjectCondition listener) {
 		return addEventListener(EventTypes.CLICK, listener);
 	}
@@ -72,7 +72,7 @@ public abstract class Control extends SimpleObject {
 	public boolean addChangeListener(ObjectCondition listener) {
 		return addEventListener(EventTypes.CHANGE, listener);
 	}
-	
+
 	public List<ObjectCondition> getEvents(EventTypes type) {
 		if(this.events == null) {
 			return null;

@@ -7,7 +7,7 @@ import de.uniks.networkparser.xml.XMLEntity;
 
 public class StoryStepTitle implements ObjectCondition {
 	private String title;
-	
+
 	public void setTitle(String title) {
 		this.title = title;
 	}

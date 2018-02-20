@@ -41,7 +41,7 @@ public class SimpleList<V> extends AbstractList<V> implements List<V> {
 	public BaseItem getNewList(boolean keyValue) {
 		return new SimpleList<V>();
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public SimpleList<V> subList(int fromIndex, int toIndex) {
 		return (SimpleList<V>) super.subList(fromIndex, toIndex);
@@ -56,15 +56,15 @@ public class SimpleList<V> extends AbstractList<V> implements List<V> {
 	public boolean add(V e) {
 		return super.add(e);
 	}
-	
+
 	public SimpleList<V> withListener(ObjectCondition listener) {
 		this.listener = listener;
 		return this;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public AbstractList<V> clone() {
-		return ((AbstractList<V>) getNewList(false)).init(this); 
+		return ((AbstractList<V>) getNewList(false)).init(this);
 	}
 
 	@Override

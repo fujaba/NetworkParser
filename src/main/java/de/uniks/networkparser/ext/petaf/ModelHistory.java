@@ -28,12 +28,12 @@ public class ModelHistory {
 	private SimpleKeyValueList<SendableEntityCreator, Object> prototypeCache = new SimpleKeyValueList<SendableEntityCreator, Object>();
 	private SimpleKeyValueList<String, JsonObject> postponedChanges = new SimpleKeyValueList<String, JsonObject>();
 	private long allDataMsgNo;
-	
-	
+
+
 	public ModelChange getLastModelChange() {
 		return history.last();
 	}
-	
+
 	// {"session":"42","class":"ChangeMessage","id":"da39a3ee5e6b4b0d3255bfef95601890afd80709","received":[...],"prevChange":"da39a3ee5e6b4b0d3255bfef95601890afd80709",
 	//      "changeid":"S810276874033685","property":"name","new":"Alex","changeclass":"de.uniks.networkparser.test.model.Student"}
 
@@ -58,83 +58,80 @@ public class ModelHistory {
 			}
 			Entity changeEntity = (Entity) changeMsg;
 			setNewPrevId(changeEntity, deletedChanges);
-			
+
             value = change.getKey();
             if(keys.contains(value)) {
             	// Some Node know only this change
             	break;
             }
-			
+
 			value = changeEntity.getString(ChangeMessage.PROPERTY_ID);
 			if("ChangeMessage".equals(changeEntity.getString(IdMap.CLASS)) == false) {
 				// May be another Message ignore it
 				continue;
 			}
-			
+
 			pos = changes.indexOf(value);
-            if(pos < 0) {
-            	// First changes
-            	changes.put(value, change);
-            	continue;
-            }
-                        
-            EntityList changeChanges;
-            Entity changeListEntity = (Entity) changes.getValueByIndex(pos).getChange();
+			if(pos < 0) {
+				// First changes
+				changes.put(value, change);
+				continue;
+			}
 
-            if(changeListEntity.has(PROPERTY_CHANGES)) {
-            	changeChanges = (EntityList) changeListEntity.getValue(PROPERTY_CHANGES);
-            } else {
-            	// Create List
-            	changeChanges = (EntityList) changeListEntity.getNewList(false);
-            	changeListEntity.put(PROPERTY_CHANGES, changeChanges);
-            	
-            	// Copy First Change to Child
-            	Entity changeChange = (Entity) changeChanges.getNewList(true);
-            	changeChanges.add(changeChange);
-            	
-            	value = changeListEntity.getString(ChangeMessage.PROPERTY_PROPERTY);
-            	changeChange.put(ChangeMessage.PROPERTY_PROPERTY, value);
+			EntityList changeChanges;
+			Entity changeListEntity = (Entity) changes.getValueByIndex(pos).getChange();
+			if(changeListEntity.has(PROPERTY_CHANGES)) {
+				changeChanges = (EntityList) changeListEntity.getValue(PROPERTY_CHANGES);
+			} else {
+				// Create List
+				changeChanges = (EntityList) changeListEntity.getNewList(false);
+				changeListEntity.put(PROPERTY_CHANGES, changeChanges);
 
-            	value = changeListEntity.getString(ChangeMessage.PROPERTY_OLD);
-            	changeChange.put(ChangeMessage.PROPERTY_OLD, value);
+				// Copy First Change to Child
+				Entity changeChange = (Entity) changeChanges.getNewList(true);
+				changeChanges.add(changeChange);
 
-            	value = changeListEntity.getString(ChangeMessage.PROPERTY_NEW);
-            	changeChange.put(ChangeMessage.PROPERTY_NEW, value);
-            	
-            	value = changeListEntity.getString(ChangeMessage.PROPERTY_ID);
-            	changeChange.put(ChangeMessage.PROPERTY_ID, value);
-            	
-            }
-            // Add Current Change to List or Merge
-            Entity changeChange = null;
-            value = changeEntity.getString(ChangeMessage.PROPERTY_PROPERTY);
-            for(int c=0; c < changeChanges.sizeChildren(); c++) {
-            	Entity child = (Entity) changeChanges.getChild(c);
-            	if(value.equals(child.getString(ChangeMessage.PROPERTY_PROPERTY))) {
-            		changeChange = child;
-            	}
-            }
-            if(changeChange == null) {
-	        	changeChange = (Entity) changeChanges.getNewList(true);
-	        	changeChanges.add(changeChange);
-	        	changeChange.put(ChangeMessage.PROPERTY_PROPERTY, value);
-	        	value = changeEntity.getString(ChangeMessage.PROPERTY_OLD);
-	        	changeChange.put(ChangeMessage.PROPERTY_OLD, value);
-            }
+				value = changeListEntity.getString(ChangeMessage.PROPERTY_PROPERTY);
+				changeChange.put(ChangeMessage.PROPERTY_PROPERTY, value);
 
-        	value = changeEntity.getString(ChangeMessage.PROPERTY_NEW);
-        	changeChange.put(ChangeMessage.PROPERTY_NEW, value);
-        	
-        	value = changeEntity.getString(ChangeMessage.PROPERTY_ID);
-        	changeChange.put(ChangeMessage.PROPERTY_ID, value);
-        	
-        	setNewPrevId(changeEntity, deletedChanges);
-            
-            // Remove current Change
-            history.remove(i);
-            i--;
+				value = changeListEntity.getString(ChangeMessage.PROPERTY_OLD);
+				changeChange.put(ChangeMessage.PROPERTY_OLD, value);
+
+				value = changeListEntity.getString(ChangeMessage.PROPERTY_NEW);
+				changeChange.put(ChangeMessage.PROPERTY_NEW, value);
+
+				value = changeListEntity.getString(ChangeMessage.PROPERTY_ID);
+				changeChange.put(ChangeMessage.PROPERTY_ID, value);
+			}
+			// Add Current Change to List or Merge
+			Entity changeChange = null;
+			value = changeEntity.getString(ChangeMessage.PROPERTY_PROPERTY);
+			for(int c=0; c < changeChanges.sizeChildren(); c++) {
+				Entity child = (Entity) changeChanges.getChild(c);
+				if(value.equals(child.getString(ChangeMessage.PROPERTY_PROPERTY))) {
+					changeChange = child;
+				}
+			}
+			if(changeChange == null) {
+				changeChange = (Entity) changeChanges.getNewList(true);
+				changeChanges.add(changeChange);
+				changeChange.put(ChangeMessage.PROPERTY_PROPERTY, value);
+				value = changeEntity.getString(ChangeMessage.PROPERTY_OLD);
+				changeChange.put(ChangeMessage.PROPERTY_OLD, value);
+			}
+			value = changeEntity.getString(ChangeMessage.PROPERTY_NEW);
+			changeChange.put(ChangeMessage.PROPERTY_NEW, value);
+
+			value = changeEntity.getString(ChangeMessage.PROPERTY_ID);
+			changeChange.put(ChangeMessage.PROPERTY_ID, value);
+
+			setNewPrevId(changeEntity, deletedChanges);
+
+			// Remove current Change
+			history.remove(i);
+			i--;
 		}
-		
+
 		// Change Rest of Items PREV-ID to new One
 		while(i<history.size()) {
 			ModelChange change = history.get(i);
@@ -165,8 +162,8 @@ public class ModelHistory {
 		}
 
 	}
-		
-		
+
+
 	protected boolean isToManyField(SendableEntityCreator createrClass, String fieldName) {
 		Object prototype = prototypeCache.get(createrClass);
 
@@ -346,7 +343,7 @@ public class ModelHistory {
 	public void addFirstHistory(ModelChange change){
 		history.add(change);
 	}
-	
+
 	public ModelChange createChange(int key, BaseItem receiver, Entity value) {
 		ModelChange modelChange = new ModelChange();
 		modelChange.withKey(""+key);
@@ -359,7 +356,7 @@ public class ModelHistory {
 		modelChange.withChange(value);
 		return modelChange;
 	}
-	
+
 	public ModelChange createChange(int key, String receiver, Entity value) {
 		NodeProxy proxy = this.space.getProxy(receiver);
 		JsonObject receiverObj = this.space.getMap().toJsonObject(proxy, Filter.regard(new SimpleObjectFilter()));
@@ -369,17 +366,17 @@ public class ModelHistory {
 	public ModelChange ceiling(ModelChange element, boolean sameElement)	{
 		return this.history.ceiling(element, sameElement);
 	}
-	
+
 	public ModelChange last() {
 		return history.last();
 	}
-	
+
 	public boolean checkMessage(Entity change) {
         // ups, the sender of this message has a previous change, I do not know about
         // well, it might stem from before my alldata message.
 		Object value = change.getValue(Message.PROPERTY_PREVIOUSCHANGE);
 		int previousMsgNo = Integer.parseInt(""+value);
-		
+
 //		String previousChangeFullKey = (String) change.get();
         if (previousMsgNo > getAllDataMsgNo() && previousMsgNo > 1)
         {
@@ -393,7 +390,7 @@ public class ModelHistory {
         return true;
 	}
 
-	
+
 	public long getNewMsgNo()
 	{
 		if(this.space != null) {
@@ -404,8 +401,8 @@ public class ModelHistory {
 		}
 		return 0;
 	}
-	
-	//TODO OLD METHOD WITH NUMERIC-CHANGES 
+
+	//TODO OLD METHOD WITH NUMERIC-CHANGES
 	public long getAllDataMsgNo() {
 		return allDataMsgNo;
 	}

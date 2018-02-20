@@ -90,7 +90,7 @@ public class ModelListenerFactory {
 		}
 		return null;
 	}
-	
+
 	private static ModelListenerProperty createProperty(PROPERTYTYPE typ,Object property, SendableEntityCreator creator, Object item, String field){
 		ModelListenerProperty listener = new ModelListenerProperty(creator, item, field, PROPERTYTYPE.STRING);
 		Object proxy = listener.getProxy();

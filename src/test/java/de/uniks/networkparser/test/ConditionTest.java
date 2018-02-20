@@ -105,15 +105,15 @@ public class ConditionTest implements ObjectCondition {
 		falseCondition.setValue(falseCondition, BooleanCondition.VALUE, false, SendableEntityCreator.NEW);
 		Not not = new Not();
 		not.setValue(not, Not.ITEM, falseCondition, SendableEntityCreator.NEW);
-		
+
 		and.with(not);
 		IfCondition ifCon = new IfCondition();
 		ifCon.withTrue(BooleanCondition.create(true));
 		ifCon.withFalse(BooleanCondition.create(false));
 		ifCon.withExpression(new Not().with(new Between().withRange(0, 42)));
 		or.setValue(or, Or.CHILD, ifCon, SendableEntityCreator.NEW);
-		
-		
+
+
 		Assert.assertFalse(and.update(new PropertyChangeEvent(23, null, null, 23)));
 
 		IdMap map=new IdMap();
@@ -124,24 +124,24 @@ public class ConditionTest implements ObjectCondition {
 		map.with(new IfCondition());
 		map.with(new Between());
 		map.with(new Not());
-		
+
 		not.update(null);
-		
+
 		Assert.assertFalse(new IfCondition().update(null));
 
 		JsonObject jsonObject = map.toJsonObject(and);
-		
+
 		And newAnd = (And) map.decode(jsonObject);
-		
+
 		Assert.assertNotNull(newAnd);
-		
+
 		Between between = new Between();
 		between.withRange(0, 23);
 		between.setValue(between, Between.FROM, 1, SendableEntityCreator.NEW);
 		between.setValue(between, Between.FROM, 1.0, SendableEntityCreator.NEW);
 		between.setValue(between, Between.TO, 23, SendableEntityCreator.NEW);
 		between.setValue(between, Between.TO, 42.0, SendableEntityCreator.NEW);
-		
+
 //		InstanceOf	48154	76%	1521	58%	12	32	9	49	0	14	0	1
 //		UpdateCondition	722	76%	33	50%	2	5	0	6	0	2	0	1
 //		Deep	2055	73%	26	75%	2	13	3	17	0	9	0	1
@@ -161,22 +161,22 @@ public class ConditionTest implements ObjectCondition {
 		InstanceOf condition = new InstanceOf();
 		condition.setValue(condition, InstanceOf.PROPERTY, "root", SendableEntityCreator.NEW);
 		condition.setValue(condition, InstanceOf.VALUE, uni, SendableEntityCreator.NEW);
-		
+
 		Assert.assertTrue(new InstanceOf().update(new PropertyChangeEvent(this, null, null, uni)));
-		
+
 		condition = InstanceOf.create(uni, InstanceOf.VALUE);
 		Assert.assertNotNull(condition);
-		
+
 		Assert.assertFalse(condition.update(new PropertyChangeEvent(this, InstanceOf.VALUE, null, uni)));
 		Assert.assertFalse(condition.update(this));
-				
+
 		condition = new InstanceOf();
 		Assert.assertTrue(condition.update(new PropertyChangeEvent(this, InstanceOf.VALUE, null, uni)));
 		condition.withValue(uni);
 		Assert.assertFalse(condition.update(new PropertyChangeEvent(this, InstanceOf.VALUE, null, uni)));
 		Assert.assertTrue(condition.update(new PropertyChangeEvent(this, InstanceOf.VALUE, null, new University())));
 	}
-	
+
 	@Test
 	public void testUpdateCondition() {
 		UpdateCondition condition = new UpdateCondition();
@@ -184,10 +184,10 @@ public class ConditionTest implements ObjectCondition {
 		University uni = new University();
 		map.put("root", uni, true);
 		Assert.assertTrue(condition.update(new SimpleEvent("new", null, map,"VALUE", null, null)));
-		
+
 		Assert.assertFalse(condition.update(new SimpleEvent("new", null, map,"VALUE", null, uni)));
 	}
-	
+
 	@Test
 	public void testDeepCondition() {
 		Deep condition = Deep.create(23);
@@ -200,26 +200,26 @@ public class ConditionTest implements ObjectCondition {
 	public void testEqualsCondition() {
 		Equals condition = new Equals();
 		condition.setValue(condition, Equals.PROPERTY_VALUE, "Stefan", null);
-		
+
 		Assert.assertEquals("Stefan", condition.getValue(condition, Equals.PROPERTY_VALUE));
 		Assert.assertEquals("==Stefan ", condition.toString());
-		
+
 		condition = new Equals();
 		condition.setValue(condition, Equals.PROPERTY_POSITION, 42, null);
 		condition.setValue(condition, Equals.PROPERTY_VALUE, (byte)0x42, null);
 		Assert.assertEquals((byte)0x42, condition.getValue(condition, Equals.PROPERTY_VALUE));
 		Assert.assertEquals(42, condition.getValue(condition, Equals.PROPERTY_POSITION));
-		
+
 		CharacterBuffer source = new CharacterBuffer();
 		Assert.assertFalse(condition.update(new PropertyChangeEvent(source, "", null, null)));
 		Assert.assertFalse(condition.update(null));
 		condition.withPosition(-1);
-		
+
 		Assert.assertFalse(condition.update(new PropertyChangeEvent(source, "", null, null)));
-		
+
 		source.with((char)0x42);
 		Assert.assertTrue(condition.update(new PropertyChangeEvent(source, "", null, null)));
-		
+
 		condition = new Equals();
 		condition.withValue(Equals.PROPERTY_VALUE);
 		Assert.assertFalse(condition.update(new PropertyChangeEvent(this, "HALLO", null, null)));
@@ -229,10 +229,10 @@ public class ConditionTest implements ObjectCondition {
 	public void testCompareToCondition() {
 		CompareTo condition = new CompareTo();
 		condition.setValue(condition, CompareTo.COMPARE, 42, null);
-		
+
 		Person person = new Person().withName("");
 		condition.setValue(condition, CompareTo.VALUE, person, null);
-		
+
 		Assert.assertEquals(42, condition.getValue(condition, CompareTo.COMPARE));
 		Assert.assertEquals(person, condition.getValue(condition, CompareTo.VALUE));
 
@@ -245,6 +245,6 @@ public class ConditionTest implements ObjectCondition {
 		Assert.assertFalse(condition.update(new PropertyChangeEvent(this, "", null, person2)));
 		condition.withCompare(-1);
 		Assert.assertTrue(condition.update(new PropertyChangeEvent(this, "", null, person2)));
-		
+
 	}
 }

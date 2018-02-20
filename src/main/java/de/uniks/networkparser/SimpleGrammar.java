@@ -10,7 +10,7 @@ import de.uniks.networkparser.list.SimpleList;
 
 public class SimpleGrammar implements Grammar {
 	private SimpleList<String> basicProperties =new SimpleList<String>().with(IdMap.ID, IdMap.CLASS, IdMap.SESSION, IdMap.TIMESTAMP);
-	
+
 	@Override
 	public BaseItem getProperties(Entity item, MapEntity map, boolean isId) {
 		if (isId) {
@@ -66,7 +66,7 @@ public class SimpleGrammar implements Grammar {
 	}
 
 	@Override
-	public SendableEntityCreator getCreator(String type, Object item, MapEntity entity, String className) { 
+	public SendableEntityCreator getCreator(String type, Object item, MapEntity entity, String className) {
 //			IdMap map, boolean searchForSuperCreator, String className) {
 		if(item == null) {
 			return null;
@@ -84,7 +84,7 @@ public class SimpleGrammar implements Grammar {
 			if (item instanceof SendableEntityCreator) {
 				return (SendableEntityCreator) item;
 			}
-			return getSuperCreator(map, entity.isSearchForSuperClass(), item); 
+			return getSuperCreator(map, entity.isSearchForSuperClass(), item);
 		}
 		if(className == null && item instanceof Entity) {
 			Object name = ((Entity)item).getValue(IdMap.CLASS);
@@ -129,7 +129,7 @@ public class SimpleGrammar implements Grammar {
 	public BaseItem encode(Object entity, MapEntity map) {
 		return map.getTokener().encode(entity, map);
 	}
-	
+
 	public SimpleGrammar withBasicFeature(String... values) {
 		if(values == null) {
 			return this;

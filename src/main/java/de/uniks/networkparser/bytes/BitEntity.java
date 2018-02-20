@@ -34,7 +34,7 @@ public class BitEntity extends SimpleList<BitValue> implements ByteItem {
 	public static final byte BIT_NUMBER = 0x4E; // N = Number
 	public static final byte BIT_BYTE = 0x42; // B = Byte
 	public static final byte BIT_REFERENCE = 0x52; // R = Reference
-	
+
 	// Can be a Type
 	protected String property;
 	protected byte type = BIT_BYTE;
@@ -42,7 +42,7 @@ public class BitEntity extends SimpleList<BitValue> implements ByteItem {
 	public static final String PROPERTY_PROPERTY = "property";
 	public static final String PROPERTY_TYPE = "type";
 	public static final String PROPERTY_ORIENTATION = "orientation";
-	
+
 	public BitEntity with(String property, byte type) {
 		if(type != 0) {
 			this.property = property;
@@ -168,7 +168,7 @@ public class BitEntity extends SimpleList<BitValue> implements ByteItem {
 		}
 		return true;
 	}
-	
+
 	public BitEntity withType(byte value) {
 		if(value != 0) {
 			this.type = value;

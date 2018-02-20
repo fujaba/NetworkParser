@@ -49,7 +49,7 @@ public class JsonMessageTest implements ObjectCondition {
 		messages.with("{\"class\":\"de.uniks.networkparser.test.model.GroupAccount\",\"id\":\"G1\"}");
 		messages.with("{\"class\":\"de.uniks.networkparser.test.model.Person\",\"id\":\"P2\",\"prop\":{\"name\":\"Tobi\"}}");
 		messages.with("{\"class\":\"de.uniks.networkparser.test.model.GroupAccount\",\"id\":\"G1\",\"upd\":{\"persons\":{\"class\":\"de.uniks.networkparser.test.model.Person\",\"id\":\"P2\",\"prop\":{\"name\":\"Tobi\"}}}}");
-		
+
 		messages.with("{\"class\":\"de.uniks.networkparser.test.model.Person\",\"id\":\"P2\",\"upd\":{\"parent\":{\"class\":\"de.uniks.networkparser.test.model.GroupAccount\",\"id\":\"G1\"}}}");
 		messages.with("{\"class\":\"de.uniks.networkparser.test.model.Person\",\"id\":\"P3\",\"prop\":{\"parent\":{\"class\":\"de.uniks.networkparser.test.model.GroupAccount\",\"id\":\"G1\"}}}");
 		messages.with("{\"class\":\"de.uniks.networkparser.test.model.GroupAccount\",\"id\":\"G1\",\"upd\":{\"persons\":{\"class\":\"de.uniks.networkparser.test.model.Person\",\"id\":\"P3\",\"prop\":{\"parent\":{\"class\":\"de.uniks.networkparser.test.model.GroupAccount\",\"id\":\"G1\"}}}}}");

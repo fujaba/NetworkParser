@@ -3,13 +3,13 @@
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
- * and Eclipse Distribution License v1.0 which accompany this distribution. 
+ * and Eclipse Distribution License v1.0 which accompany this distribution.
  *
- * The Eclipse Public License is available at 
+ * The Eclipse Public License is available at
  *    http://www.eclipse.org/legal/epl-v10.html
- * and the Eclipse Distribution License is available at 
+ * and the Eclipse Distribution License is available at
  *   http://www.eclipse.org/org/documents/edl-v10.php.
- *   
+ *
  * Contributors:
  *   Ian Craggs - MQTT 3.1.1 support
  *   Ian Craggs - fix bug 469527
@@ -77,7 +77,7 @@ public class ConnectActionListener {
 
 	/**
 	 * If the connect succeeded then call the users onSuccess callback
-	 * 
+	 *
 	 * @param token the {@link Token} from the successful connection
 	 */
 	public void onSuccess(Token token) {
@@ -97,7 +97,7 @@ public class ConnectActionListener {
 	/**
 	 * The connect failed, so try the next URI on the list. If there are no more
 	 * URIs, then fail the overall connect.
-	 * 
+	 *
 	 * @param token the {@link Token} from the failed connection attempt
 	 * @param exception the {@link Throwable} exception from the failed connection attempt
 	 */
@@ -116,7 +116,7 @@ public class ConnectActionListener {
 
 	/**
 	 * Start the connect processing
-	 * 
+	 *
 	 * @throws MqttException  if an error is thrown whilst setting up persistence
 	 */
 	public void connect() throws MqttException {
@@ -139,7 +139,7 @@ public class ConnectActionListener {
 
 	/**
 	 * Set the MqttCallbackExtened callback to receive connectComplete callbacks
-	 * 
+	 *
 	 * @param mqttCallbackExtended the {@link SimpleEventCondition} to be called when the connection completes
 	 */
 	public void setMqttCallback(SimpleEventCondition mqttCallbackExtended) {

@@ -34,10 +34,10 @@ public class PetaFTest {
 		IdMap map = UniversityCreator.createIdMap("42");
 		space.withCreator(map);
 		space.createModel(university, "ModelFile.json").startModelDistribution();
-		
+
 		createStudents.setName("Stefan");
       university.createStudents().setName("Alex");
-      
+
       space.close();
 	}
 
@@ -48,10 +48,10 @@ public class PetaFTest {
 		space.createServer(5000);
 		space.sendMessage(connectMsg, false);
 		System.out.println(space.convertMessage(connectMsg));
-		
+
 		space.close();
 	}
-	
+
 	@Test
 	public void testSQL() {
 		University university = new University();
@@ -62,7 +62,7 @@ public class PetaFTest {
 		space.withCreator(map);
 		space.with(new NodeProxySQL().withDriver("jdbc:sqlite:build/petaf.db"));
 		space.createModel(university);
-		
+
 		createStudents.setName("Albert");
 	}
 
@@ -81,12 +81,12 @@ public class PetaFTest {
 		// DataModel
 		University university = new University();
 		Student stefan = university.createStudents();
-		
+
 		// Serialization
 		Space space=new Space().withCreator(UniversityCreator.createIdMap("42"));
 		space.createModel(university, "build/change.json");
 //		space.createServer(500);
-//		
+//
 //		space.connectToPeer("141.51.123.55", 500);
 
 		space.startModelDistribution(false);
@@ -94,34 +94,34 @@ public class PetaFTest {
 		stefan.setName("Stefan");
 		Student alex = university.createStudents();
 		alex.setName("Alex");
-		
-		
+
+
 		ModelHistory history = space.getHistory();
 		Assert.assertNotNull(history);
 	}
 
-	
+
 	// With Name
 	@Test
 	public void testModelChangeName() {
 		// DataModel
 		University university = new University();
 		Student stefan = university.createStudents();
-		
+
 		// Serialization
 		Space space=new Space().withCreator(UniversityCreator.createIdMap("42"));
 		space.withName("Albert", university);
-		
+
 		// Change Model
 		stefan.setName("Stefan");
 		Student alex = university.createStudents();
 		alex.setName("Alex");
-		
-		
+
+
 		ModelHistory history = space.getHistory();
 		Assert.assertNotNull(history);
 	}
-	
+
 
 	@Test
 	public void test() {
@@ -194,8 +194,8 @@ public class PetaFTest {
 		FileBuffer.deleteFile(fsProxy2.getFileName());
 		Assert.assertEquals(groupAccount.getName(), ga2.getName());
 	}
-	
-	
+
+
 	@Test
 	public void testFilter() {
 		ConnectMessage connectMessage = new ConnectMessage();

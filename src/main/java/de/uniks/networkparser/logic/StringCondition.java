@@ -23,7 +23,7 @@ public class StringCondition implements ParserCondition {
 	public CharSequence getValue(LocalisationInterface variables) {
 		return value;
 	}
-	
+
 	public static StringCondition create(CharSequence sequence) {
 		return new StringCondition().withValue(sequence);
 	}
@@ -45,7 +45,7 @@ public class StringCondition implements ParserCondition {
 	public String getKey() {
 		return null;
 	}
-	
+
 	@Override
 	public String toString() {
 		if(value == null) {
@@ -53,7 +53,7 @@ public class StringCondition implements ParserCondition {
 		}
 		return value.toString();
 	}
-	
+
 	@Override
 	public StringCondition getSendableInstance(boolean prototyp) {
 		return new StringCondition();

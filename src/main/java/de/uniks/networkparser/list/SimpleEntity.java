@@ -215,7 +215,7 @@ public class SimpleEntity<K, V> implements BaseItem, Entry<K, V>,
 	public Object getSendableInstance(boolean prototyp) {
 		return new SimpleEntity<K, V>();
 	}
-	
+
 	@Override
 	public boolean add(Object... values) {
 		if(values == null) {
@@ -250,7 +250,7 @@ public class SimpleEntity<K, V> implements BaseItem, Entry<K, V>,
 		}
 		return converter.encode(this);
 	}
-	
+
 	@Override
 	public int size() {
 		if(key != null) {

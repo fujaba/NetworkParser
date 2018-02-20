@@ -33,7 +33,7 @@ public final class SimpleEvent extends PropertyChangeEvent {
 		this.value = newValue;
 		this.type = SendableEntityCreator.NEW;
 	}
-	
+
 	/**
 	 * Constructor for example Filter and UpdateJson
 	 * @param type		typ of Event
@@ -53,7 +53,7 @@ public final class SimpleEvent extends PropertyChangeEvent {
 	 * @param type		typ of Event
 	 * @param entity	source Entity
 	 * @param source	source PropertyChange
-	 * @param map		IdMap 
+	 * @param map		IdMap
 	 */
 	public SimpleEvent(String type, Entity entity, PropertyChangeEvent source, IdMap map) {
 		super(map, source.getPropertyName(), source.getOldValue(), source.getNewValue());
@@ -80,7 +80,7 @@ public final class SimpleEvent extends PropertyChangeEvent {
 		this.beforeElement = before;
 		this.value = value;
 	}
-	
+
 	public int getIndex() {
 		return depth;
 	}
@@ -105,16 +105,16 @@ public final class SimpleEvent extends PropertyChangeEvent {
 	public String getType() {
 		return type;
 	}
-	
+
 	public SimpleEvent withType(String value) {
 		this.type = value;
 		return this;
 	}
-	
+
 	public boolean isNewEvent() {
 		return SendableEntityCreator.NEW.equals(this.type);
 	}
-	
+
 	public boolean isIdEvent() {
 		return "id".equals(this.type);
 	}
@@ -122,7 +122,7 @@ public final class SimpleEvent extends PropertyChangeEvent {
 	public boolean isUpdateEvent() {
 		return SendableEntityCreator.UPDATE.equals(this.type);
 	}
-	
+
     public SimpleEvent with(Entity entity) {
         this.entity = entity;
         return this;

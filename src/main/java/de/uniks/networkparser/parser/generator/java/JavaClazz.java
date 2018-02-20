@@ -10,35 +10,35 @@ import de.uniks.networkparser.parser.generator.BasicGenerator;
 public class JavaClazz extends BasicGenerator {
 
 	public JavaClazz() {
-		createTemplate("Declaration", Template.TEMPLATE, 
-				
+		createTemplate("Declaration", Template.TEMPLATE,
+
 				"{{#template PACKAGE {{packagename}}}}package {{packagename}};{{#endtemplate}}","",
-				
+
 				"{{#template IMPORT}}{{#foreach {{file.headers}}}}","import {{item}};{{#endfor}}{{#endtemplate}}","",
-				
+
 				"{{visibility}} {{modifiers} }{{type}} {{name}}{{#if {{superclazz}}}} extends {{superclazz}}{{#endif}}{{#if {{implements}}}} implements {{implements}}{{#endif}}","{","",
 
 				"{{#if {{#AND}}{{#feature PROPERTYCHANGESUPPORT}} {{type}}!=INTERFACE {{#NOT}}{{type}}==enum{{#ENDNOT}}{{#ENDAND}}}}"
-						+"{{#import "+PropertyChangeListener.class.getName()+"}}"+"{{#import "+PropertyChangeSupport.class.getName()+"}}"+ 
+						+"{{#import "+PropertyChangeListener.class.getName()+"}}"+"{{#import "+PropertyChangeSupport.class.getName()+"}}"+
 						"   protected PropertyChangeSupport listeners = null;","",
-						
-						"   public boolean firePropertyChange(String propertyName, Object oldValue, Object newValue) {", 
-						"      if (listeners != null) {", 
-						"         listeners.firePropertyChange(propertyName, oldValue, newValue);", 
-						"         return true;", 
-						"      }", 
-						"      return false;", 
+
+						"   public boolean firePropertyChange(String propertyName, Object oldValue, Object newValue) {",
+						"      if (listeners != null) {",
+						"         listeners.firePropertyChange(propertyName, oldValue, newValue);",
+						"         return true;",
+						"      }",
+						"      return false;",
 						"   }","",
-						
+
 						"   public boolean addPropertyChangeListener(PropertyChangeListener listener)",
 						"   {",
-						"      if (listeners == null) {", 
-						"         listeners = new PropertyChangeSupport(this);", 
-						"      }", 
-						"      listeners.addPropertyChangeListener(listener);", 
-						"      return true;", 
+						"      if (listeners == null) {",
+						"         listeners = new PropertyChangeSupport(this);",
+						"      }",
+						"      listeners.addPropertyChangeListener(listener);",
+						"      return true;",
 						"   }","",
-						
+
 						"   public boolean addPropertyChangeListener(String propertyName, PropertyChangeListener listener)",
 						"   {",
 						"      if (listeners == null) {",
@@ -47,7 +47,7 @@ public class JavaClazz extends BasicGenerator {
 						"      listeners.addPropertyChangeListener(propertyName, listener);",
 						"      return true;",
 						"   }","",
-						
+
 						"   public boolean removePropertyChangeListener(PropertyChangeListener listener)",
 					 	"   {",
 					 	"      if (listeners == null) {",
@@ -56,7 +56,7 @@ public class JavaClazz extends BasicGenerator {
 					 	"      listeners.removePropertyChangeListener(listener);",
 					 	"      return true;",
 					 	"   }","",
-					 	
+					
 					 	"   public boolean removePropertyChangeListener(String propertyName,PropertyChangeListener listener)",
 					 	"   {",
 					 	"      if (listeners != null) {",
@@ -65,7 +65,7 @@ public class JavaClazz extends BasicGenerator {
 					 	"      return true;",
 					 	"   }",""+
 					 	"{{#endif}}"+
-					 			
+					
 					 	"{{#if {{type}}==enum}}",
 					 		"{{#FOREACH {{literal}}},}"+
 				 				"{{item.name}}"+
@@ -84,7 +84,7 @@ public class JavaClazz extends BasicGenerator {
 					 				"){"+
 					 		"}"+
 					 	"{{#ENDIF}}",
-					 						 	
+					 						
 					 	"{{#template TEMPLATEEND}}}{{#endtemplate}}"
 				);
 //		,
@@ -95,7 +95,7 @@ public class JavaClazz extends BasicGenerator {
 		this.addGenerator(new JavaAssociation());
 		this.addGenerator(new JavaMethod());
 	}
-	
+
 	@Override
 	public Class<?> getTyp() {
 		return Clazz.class;

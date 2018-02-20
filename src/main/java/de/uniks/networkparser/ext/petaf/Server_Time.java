@@ -19,21 +19,21 @@ public class Server_Time extends Thread implements Server{
 	private NodeProxyServer proxy;
 	private DatagramChannel channel;
 
-	public Server_Time(NodeProxyServer proxy, boolean asyn) 
+	public Server_Time(NodeProxyServer proxy, boolean asyn)
 	{
 		this.proxy = proxy;
 		if(init() && asyn){
 			start();
 		}
 	}
-	
-	public Server_Time(boolean asyn) 
+
+	public Server_Time(boolean asyn)
 	{
 		if(init() && asyn){
 			start();
 		}
 	}
-	
+
 	public boolean close(){
 		this.run=false;
 		if(channel!=null){
@@ -45,30 +45,30 @@ public class Server_Time extends Thread implements Server{
 		}
 		return true;
 	}
-	
+
 	@Override
 	public boolean isRun() {
 		return run;
 	}
-	
+
 	@Override
 	public void run()
 	{
 		runServer();
 	}
 
-	public void runServer() 
+	public void runServer()
 	{
 		Thread.currentThread().setName(this.port+" time server");
 		ByteBuffer in = ByteBuffer.allocate(8192);
 	    ByteBuffer out = ByteBuffer.allocate(8);
 	    out.order(ByteOrder.BIG_ENDIAN);
-	    
-		while (!isInterrupted()&&this.run) 
+	
+		while (!isInterrupted()&&this.run)
 		{
 			try
 			{
-				
+
 				in.clear();
 		        SocketAddress client = channel.receive(in);
 		        System.err.println(client);
@@ -79,9 +79,9 @@ public class Server_Time extends Thread implements Server{
 		        // skip over the first four bytes to make this an unsigned int
 		        out.position(4);
 		        channel.send(out, client);
-			} 
+			}
 			catch (IOException e) {
-				
+
 			}
 		}
 	}
@@ -90,8 +90,8 @@ public class Server_Time extends Thread implements Server{
 		this.port = value;
 		return this;
 	}
-	
-	private boolean init() 
+
+	private boolean init()
 	{
 		boolean success=true;
 		try {
@@ -109,7 +109,7 @@ public class Server_Time extends Thread implements Server{
 		}
 		return success;
 	}
-	  
+	
 	private static long getTime() {
 		long differenceBetweenEpochs = 2208988800L;
 		Date now = new Date();

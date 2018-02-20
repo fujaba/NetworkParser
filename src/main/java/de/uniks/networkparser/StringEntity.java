@@ -10,12 +10,12 @@ public class StringEntity implements BaseItem {
 	public String toString() {
 		return toString(new EntityStringConverter());
 	}
-	
+
 	public StringEntity with(String value) {
 		this.value = value;
 		return this;
 	}
-	
+
 	@Override
 	public String toString(Converter converter) {
 		if(converter == null) {
@@ -26,7 +26,7 @@ public class StringEntity implements BaseItem {
 		}
 		return converter.encode(this);
 	}
-	
+
 	@Override
 	public boolean add(Object... values) {
 		if(values == null) {

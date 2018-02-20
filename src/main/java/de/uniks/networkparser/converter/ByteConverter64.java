@@ -8,7 +8,7 @@ public class ByteConverter64 extends ByteConverter {
 //	private static final int BYTEPERATOM = 3;
 	private static final char[] pem_array = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '/','=' };
 	private static final byte PADDING = 127;
-	
+
 	// ENCODE
 	@Override
 	public String toString(BufferedBuffer values) {
@@ -32,14 +32,14 @@ public class ByteConverter64 extends ByteConverter {
 	}
 
 	/**
-     * Base64 encode a byte array.  No line breaks are inserted.
-     * This method is suitable for short strings, such as those
-     * in the IMAP AUTHENTICATE protocol, but not to encode the
-     * entire content of a MIME part.
-     *
-     * @param values	the byte array
-     * @return the encoded byte array
-     */
+	 * Base64 encode a byte array.  No line breaks are inserted.
+	 * This method is suitable for short strings, such as those
+	 * in the IMAP AUTHENTICATE protocol, but not to encode the
+	 * entire content of a MIME part.
+	 *
+	 * @param values	the byte array
+	 * @return the encoded byte array
+	**/
 	public CharacterBuffer toStaticString(CharSequence values) {
 		if (values.length() == 0) {
 			return new CharacterBuffer();
@@ -51,16 +51,16 @@ public class ByteConverter64 extends ByteConverter {
 		buffer.withObjects(values);
 		return encode(buffer, 0,buffer.length());
 	}
-	
+
 	/**
-     * Base64 encode a byte array.  No line breaks are inserted.
-     * This method is suitable for short strings, such as those
-     * in the IMAP AUTHENTICATE protocol, but not to encode the
-     * entire content of a MIME part.
-     *
-     * @param values	the byte array
-     * @return the encoded byte array
-     */
+	 * Base64 encode a byte array.  No line breaks are inserted.
+	 * This method is suitable for short strings, such as those
+	 * in the IMAP AUTHENTICATE protocol, but not to encode the
+	 * entire content of a MIME part.
+	 *
+	 * @param values	the byte array
+	 * @return the encoded byte array
+	 */
 	public CharacterBuffer toStaticString(byte[] values) {
 		if (values.length == 0) {
 			return new CharacterBuffer();
@@ -68,7 +68,7 @@ public class ByteConverter64 extends ByteConverter {
 		ByteBuffer buffer = new ByteBuffer().with(values);
 		return encode(buffer, 0,buffer.length());
 	}
-	
+
 	/**
 	 * Convert a simpleString to Base64
 	 * @param values Input String
@@ -78,7 +78,7 @@ public class ByteConverter64 extends ByteConverter {
 		ByteConverter64 converter = new ByteConverter64();
 		return converter.toStaticString(values);
 	}
-	
+
 	/**
 	 * Convert a simpleString from Base64
 	 * @param values Input String(CharSequence) or byte[]
@@ -152,8 +152,8 @@ public class ByteConverter64 extends ByteConverter {
 		}
 		return new CharacterBuffer().with(outbuf);
 	}
-	
-	
+
+
 
 	private static byte[] pem_convert_array = null;
 	private void initPEMArray() {
@@ -166,7 +166,7 @@ public class ByteConverter64 extends ByteConverter {
 		}
 		pem_convert_array['='] = PADDING;
 	}
-	
+
 	@Override
 	public byte[] decode(String value) {
 		if(value == null) {

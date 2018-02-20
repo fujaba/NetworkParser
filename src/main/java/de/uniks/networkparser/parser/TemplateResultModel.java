@@ -21,7 +21,7 @@ public class TemplateResultModel extends SimpleList<TemplateResultFile> implemen
 		this.customTemplate = templates;
 		return this;
 	}
-	
+
 	public TemplateResultModel withTemplate(ParserCondition... templates) {
 		if(templates == null) {
 			return this;
@@ -36,16 +36,16 @@ public class TemplateResultModel extends SimpleList<TemplateResultFile> implemen
 		}
 		return this;
 	}
-	
+
 	public SimpleKeyValueList<String, ParserCondition> getCustomTemplate() {
 		return customTemplate;
 	}
-	
+
 	public TemplateResultModel withLanguage(LocalisationInterface customLanguage) {
 		this.language = customLanguage;
 		return this;
 	}
-	
+
 	@Override
 	public String getText(CharSequence label, Object model, Object gui) {
 		if(this.language != null) {
@@ -77,12 +77,12 @@ public class TemplateResultModel extends SimpleList<TemplateResultFile> implemen
 		return language;
 	}
 
-	
+
 	@Override
 	public Object getSendableInstance(boolean prototyp) {
 		return new TemplateResultModel();
 	}
-	
+
 	@Override
 	public String[] getProperties() {
 		return new String[] {PROPERTY_TEMPLATE, PROPERTY_TEXT};

@@ -470,7 +470,7 @@ public class AES {
 		if (key.length == 16 || key.length == 24 || key.length == 32) {
 			// ok is valid
 			Klen = key.length;
-		} else if(key.length>32) { 
+		} else if(key.length>32) {
 			Klen = 32;
 		} else {
 			if(key.length>24) {

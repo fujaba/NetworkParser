@@ -5,11 +5,11 @@ import de.uniks.networkparser.interfaces.SendableEntityCreator;
 public class Plant implements SendableEntityCreator{
 	public static final String ID="id";
 	public static final String NAME="name";
-	
+
 	private String name;
 	private String id;
-	
-	
+
+
 	@Override
 	public String[] getProperties() {
 		return new String[] {ID,NAME};

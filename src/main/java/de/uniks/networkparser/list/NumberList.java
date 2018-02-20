@@ -26,7 +26,7 @@ THE SOFTWARE.
 import de.uniks.networkparser.buffer.CharacterBuffer;
 
 /**
- * Class for List of Numbers  
+ * Class for List of Numbers
  * @author Stefan Lindel NumberList for List of Numbers (Integer Double etc.)
  *
  */
@@ -63,7 +63,7 @@ public class NumberList extends SimpleList<Number> {
 		}
 		return min;
 	}
-	
+
 
 	public double middle() {
 		double middleValue = 0;
@@ -75,7 +75,7 @@ public class NumberList extends SimpleList<Number> {
 		}
 		return middleValue;
 	}
-	
+
 	public String toString(String seperator) {
 		if (this.size < 1) {
 			return "";

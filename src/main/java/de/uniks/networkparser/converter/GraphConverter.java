@@ -104,8 +104,8 @@ public class GraphConverter implements Converter{
 	public Clazz parseJsonObject(GraphList root, JsonObject node) {
 		String id = node.getString(IdMap.ID);
 		String typeId = id;
-		boolean isClassDiagram = GraphTokener.CLASS.equalsIgnoreCase(root.getType()); 
-		
+		boolean isClassDiagram = GraphTokener.CLASS.equalsIgnoreCase(root.getType());
+
 		if(isClassDiagram) {
 			typeId = node.getString(IdMap.CLASS);
 			id = null;
@@ -132,10 +132,10 @@ public class GraphConverter implements Converter{
 					assocOther = new Association(graphNode).with(Cardinality.ONE).with(AssociationTypes.EDGE);
 					// Must be a Link to 1
 					Clazz newNode = parseJsonObject(root, (JsonObject) value);
-					
+
 					assoc = new Association(newNode).with(Cardinality.ONE).with(props.getKeyByIndex(i)).with(AssociationTypes.ASSOCIATION);
 					assoc.with(assocOther);
-					
+
 					GraphUtil.setAssociation(newNode, assoc);
 					GraphUtil.setAssociation(graphNode, assocOther);
 				} else if (value instanceof JsonArray) {
@@ -149,7 +149,7 @@ public class GraphConverter implements Converter{
 							Clazz newNode = parseJsonObject(root, (JsonObject) entity);
 							assoc = new Association(newNode).with(Cardinality.MANY).with(props.getKeyByIndex(i)).with(AssociationTypes.ASSOCIATION);
 							assoc.with(assocOther);
-							
+
 							GraphUtil.setAssociation(newNode, assoc);
 							GraphUtil.setAssociation(graphNode, assocOther);
 
@@ -357,7 +357,7 @@ public class GraphConverter implements Converter{
 		} else {
 			item.put(TYPE, NODE);
 		}
-		
+
 		if(entity instanceof GraphEntity) {
 			parseGraphEntity((GraphEntity)entity, item, type, shortName, removeParameterNames);
 			return item;

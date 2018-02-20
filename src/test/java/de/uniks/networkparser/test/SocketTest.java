@@ -18,14 +18,14 @@ public class SocketTest {
 		}
 		server_Time.close();
 	}
-	
+
 	@Test
 	public void testSocket() {
-		
+
 		// Server
 		NodeProxyTCP server=NodeProxyTCP.createServer(5000);
 		server.withListener(new ObjectCondition() {
-			
+
 			@Override
 			public boolean update(Object value) {
 				Message msg = (Message) value;
@@ -39,7 +39,7 @@ public class SocketTest {
 		// Client and send Hallo
 		NodeProxyTCP client=NodeProxyTCP.create("localhost", 5000);
 		client.withListener(new ObjectCondition() {
-			
+
 			@Override
 			public boolean update(Object value) {
 				System.out.println(value.toString());
@@ -48,7 +48,7 @@ public class SocketTest {
 		});
 		client.sendMessage(Message.createSimpleString("Hallo"));
 
-		
+
 		try {
 			Thread.sleep(1000);
 		} catch (InterruptedException e) {

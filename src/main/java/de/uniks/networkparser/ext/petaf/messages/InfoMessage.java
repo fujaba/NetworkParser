@@ -10,17 +10,17 @@ import de.uniks.networkparser.list.SortedSet;
 public class InfoMessage extends ReceivingTimerTask {
 	public static final String PROPERTY_PROXIES="proxies";
 	public static final String PROPERTY_LASTID="history_id";
-	
+
 	public InfoMessage() {
 		InfoMessage.props.add(PROPERTY_PROXIES, PROPERTY_LASTID);
 	}
-	
+
 	public static InfoMessage create(Space space) {
 		InfoMessage msg = new InfoMessage();
 		msg.withSpace(space);
 		return msg;
 	}
-	
+
 	@Override
 	public Object getValue(Object entity, String attribute) {
 		if(attribute == null || entity instanceof AcceptMessage == false ) {
@@ -48,12 +48,12 @@ public class InfoMessage extends ReceivingTimerTask {
 		}
 		return super.getValue(entity, attribute);
 	}
-	
+
 //	@Override
 //	public BaseItem getMessage() {
 //		if(msg == null && space != null) {
 //			SortedSet<NodeProxy> proxies = space.getNodeProxies();
-//			
+//
 //			IdMap map = getInternMap(space);
 //			Tokener tokener = space.getTokener();
 //			EntityList list = tokener.newInstanceList();
@@ -65,7 +65,7 @@ public class InfoMessage extends ReceivingTimerTask {
 //		}
 //		return super.getMessage();
 //	}
-	
+
 	@Override
 	public Object getSendableInstance(boolean prototyp) {
 		return new InfoMessage();

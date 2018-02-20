@@ -21,12 +21,12 @@ public class PopUpTest extends Application {
 	@Override
 	public void start(Stage stage) throws Exception {
 		ReflectionLoader.logger = System.out;
-		
+
 		DialogPane dialogPane = new DialogPane(null, null);
 		System.out.println(dialogPane.getPane() instanceof Pane);
 //		System.out.println(dialogPane.getProxy() instanceof Pane);
-		
-		
+
+
 		stage.setTitle("PopUpTest");
 		VBox root = new VBox();
 		root.setAlignment(Pos.CENTER);

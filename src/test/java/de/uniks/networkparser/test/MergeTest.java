@@ -21,45 +21,45 @@ public class MergeTest {
 				return false;
 			};
 		}));
-		
-		
+
+
 		ClassModel classModel = new ClassModel();
 		Clazz person = classModel.createClazz("Person");
-		
-		
+
+
 		classModel.generate();
-		
-		
+
+
 		// ADD
 		person.withAttribute("name", DataType.STRING);
 	}
-	
+
 	// class Person {
 		// private String name;
 	//}
-	
+
 	@Test
 	public void testMergeDiffV1() {
 		// V1
 		ClassModel model=new ClassModel();
 
-//		<!--		
+//		<!--
 		//V2
 		//model.withFeature() // OVERRIDE EVERYTHING
 //		model.getGenerator().findClazz("de.uniks.model.Person").createAttribute("first", DataType.STRING);
-//	    -->	
+//	    -->
 		//GENERATE
 		model.generate();
 	}
-	
+
 	@Test
 	public void testMergeDiffV2() {
 		de.uniks.networkparser.ext.ModelGenerator generator = new ClassModel().getGenerator("src/test/java");
 		generator.findClazz("de.uniks.model.Person").createAttribute("first", de.uniks.networkparser.graph.DataType.STRING);
-		
+
 		generator.applyChange();
 	}
-	
+
 	@Test
 	public void testMergeDiffV3() {
 		// NEW ONE

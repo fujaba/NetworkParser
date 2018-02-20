@@ -19,11 +19,11 @@ public class GXLTest {
 		StringBuilder reference = new StringBuilder();
 		xmlContainer.withPrefix("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
 		xmlContainer.withPrefix("<!DOCTYPE gxl SYSTEM \"http://www.gupro.de/GXL/gxl-1.0.dtd\">");
-		reference.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>").append(BaseItem.CRLF); 
+		reference.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>").append(BaseItem.CRLF);
 		reference.append("<!DOCTYPE gxl SYSTEM \"http://www.gupro.de/GXL/gxl-1.0.dtd\">").append(BaseItem.CRLF);
 		reference.append("<gxl xmlns:xlink=\"http://www.w3.org/1999/xlink\">").append(BaseItem.CRLF);
 		reference.append("</gxl>");
-		  
+		
 		  University uni = new University();
 		  uni.withName("University of Kassel");
 		  Student student = new Student();

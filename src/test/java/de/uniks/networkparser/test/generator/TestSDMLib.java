@@ -24,25 +24,25 @@ public class TestSDMLib {
 		}
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.sdmLib");
 		ModelGenerator generator = model.getGenerator();
-		
+
 		Clazz person = model.createClazz("Person");
 		Attribute nameAttribute = person.createAttribute("name", DataType.STRING);
 		Method eatMethod = person.createMethod("eat");
-		
+
 		// Generate and override SourceCode
 		generator.testGeneratedCode("java");
 
 		Assert.assertEquals(1, person.getAttributes().size());
 		Assert.assertEquals(1, person.getMethods().size());
-		
-		
+
+
 		person.createAttribute("age", DataType.INT);
 		person.createMethod("go");
-		
+
 		Assert.assertEquals(2, person.getAttributes().size());
 		Assert.assertEquals(2, person.getMethods().size());
-		
-		
+
+
 		// Change SourceCode
 		TemplateResultFile templateResult = TemplateResultFile.createJava(person);
 		ParserEntity parser = generator.parse("build/gen/java", templateResult);
@@ -51,28 +51,28 @@ public class TestSDMLib {
 			entry.writeBody("\r\n\t\tSystem.out.println(\"I am eating\");");
 			generator.write("build/gen/java", templateResult);
 		}
-		
+
 		person.remove(nameAttribute);
 		person.remove(eatMethod);
-		
+
 		Assert.assertEquals(1, person.getAttributes().size());
 		Assert.assertEquals(1, person.getMethods().size());
-		
-		
+
+
 		//model.generate("src/test/java");
 		generator.generateJava("build/gen/java", model, null);
-		
+
 		// Create a Person with name and age Attribute
 		// and eat and go Method
 		Assert.assertEquals(2, person.getAttributes().size());
 		MethodSet methods = person.getMethods();
 		Assert.assertEquals(2, methods.size());
-		
+
 
 		//Add Remove Modifier
 		GraphUtil.setModifierEntry(person, ModifyEntry.createDelete(eatMethod));
-		
-		
+
+
 		// Remove Element from SourceCode
 		generator.generateJava("build/gen/java", model, null);
 	}

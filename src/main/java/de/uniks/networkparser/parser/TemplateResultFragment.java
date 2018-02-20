@@ -16,7 +16,7 @@ public class TemplateResultFragment implements Comparable<TemplateResultFragment
 	public static final String PROPERTY_PARENT="parent";
 	public static final String PROPERTY_CHILD="child";
 	public static final String PROPERTY_CLONE="clone";
-	
+
 	public static final String PROPERTY_FILE="file";
 	public static final String PROPERTY_KEY="key";
 	public static final String PROPERTY_MEMBER="member";
@@ -35,14 +35,14 @@ public class TemplateResultFragment implements Comparable<TemplateResultFragment
 	private SendableEntityCreator parent;
 	private SimpleList<Object> stack;
 	private SimpleList<Integer> pos;
-	
+
 	private int key = -1;
-	
+
 	private CharacterBuffer value = new CharacterBuffer();
-	
+
 	private ObjectCondition template;
 	private String name;
-	
+
 	@Override
 	public int compareTo(TemplateResultFragment other) {
 		if (other.getKey() == key) {
@@ -64,7 +64,7 @@ public class TemplateResultFragment implements Comparable<TemplateResultFragment
 	public void setKey(int key) {
 		this.key = key;
 	}
-	
+
 	public TemplateResultFragment withKey(int key) {
 		setKey(key);
 		return this;
@@ -82,18 +82,18 @@ public class TemplateResultFragment implements Comparable<TemplateResultFragment
 		setValue(value);
 		return this;
 	}
-	
+
 	@Override
 	public String toString() {
 		return "" + key;
 	}
 
-	
+
 	public TemplateResultFragment withVariable(LocalisationInterface list) {
 		this.variables = list;
 		return this;
 	}
-	
+
 	@Override
 	public boolean update(Object value) {
 		if(value instanceof ObjectCondition == false) {
@@ -105,12 +105,12 @@ public class TemplateResultFragment implements Comparable<TemplateResultFragment
 				Object object = tc.getValue(this);
 				return  object != null && !object.equals("");
 			} else {
-				this.value.withObjects(tc.getValue(this));	
+				this.value.withObjects(tc.getValue(this));
 			}
 		}
 		return true;
 	}
-	
+
 	public CharacterBuffer getResult() {
 		return value;
 	}
@@ -119,11 +119,11 @@ public class TemplateResultFragment implements Comparable<TemplateResultFragment
 		this.member = member;
 		return this;
 	}
-	
+
 	public GraphMember getMember() {
 		return member;
 	}
-	
+
 	public TemplateResultFragment withExpression(boolean value) {
 		this.expression = value;
 		return this;
@@ -133,13 +133,13 @@ public class TemplateResultFragment implements Comparable<TemplateResultFragment
 		if(this.header == null) {
 			this.header = new SimpleSet<String>();
 		}
-		return this.header.add(value);	
+		return this.header.add(value);
 	}
 	public boolean removeHeader(String value) {
 		if(this.header == null) {
 			return true;
 		}
-		return this.header.remove(value);	
+		return this.header.remove(value);
 	}
 
 	public boolean setParent(SendableEntityCreator value) {
@@ -163,19 +163,19 @@ public class TemplateResultFragment implements Comparable<TemplateResultFragment
 	public SendableEntityCreator getParent() {
 		return parent;
 	}
-	
+
 	public TemplateResultFile getFile() {
 		if(parent instanceof TemplateResultFile) {
 			return (TemplateResultFile) parent;
 		}
 		return null;
 	}
-	
+
 	@Override
 	public String[] getProperties() {
 		return new String[] {PROPERTY_FILE, PROPERTY_MEMBER, PROPERTY_VARIABLE, PROPERTY_HEADERS};
 	}
-	
+
 	@Override
 	public Object getValue(Object entity, String attribute) {
 		if(entity instanceof TemplateResultFragment == false) {
@@ -252,7 +252,7 @@ public class TemplateResultFragment implements Comparable<TemplateResultFragment
 			}
 			return null;
 		}
-		
+
 		if(PROPERTY_TEMPLATE.equalsIgnoreCase(attrName)) {
 			if(pos>0) {
 				TemplateResultFragment item = element;
@@ -281,11 +281,11 @@ public class TemplateResultFragment implements Comparable<TemplateResultFragment
 	public LocalisationInterface getVariable() {
 		return variables;
 	}
-	
+
 	public SimpleSet<String> getHeaders() {
 		return header;
 	}
-	
+
 	public boolean isExpression() {
 		return expression;
 	}
@@ -332,11 +332,11 @@ public class TemplateResultFragment implements Comparable<TemplateResultFragment
 						continue;
 					}
 					while(itemType.endsWith(".")) {
-						itemType = itemType.substring(0, itemType.length() - 1); 
+						itemType = itemType.substring(0, itemType.length() - 1);
 			    	}
 					element.addHeader(itemType);
 				}
-				
+
 			}
 			return true;
 		}
@@ -351,12 +351,12 @@ public class TemplateResultFragment implements Comparable<TemplateResultFragment
 
 		return false;
 	}
-	
+
 	public TemplateResultFragment withTemplate(ObjectCondition template) {
 		this.template = template;
 		return this;
 	}
-	
+
 	@Override
 	public String getText(CharSequence label, Object model, Object gui) {
 		// Global Variables
@@ -376,7 +376,7 @@ public class TemplateResultFragment implements Comparable<TemplateResultFragment
 		}
 		return null;
 	}
-	
+
 	@Override
 	public String put(String label, Object object) {
 		if(label == null) {
@@ -425,7 +425,7 @@ public class TemplateResultFragment implements Comparable<TemplateResultFragment
 		}
 		return null;
 	}
-	
+
 	public void update() {
 		this.value.clear();
 		this.template.update(this);
@@ -435,7 +435,7 @@ public class TemplateResultFragment implements Comparable<TemplateResultFragment
 		this.name = name;
 		return this;
 	}
-	
+
 	public String getName() {
 		return name;
 	}

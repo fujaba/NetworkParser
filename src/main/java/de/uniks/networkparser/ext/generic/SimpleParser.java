@@ -38,7 +38,7 @@ public class SimpleParser {
 	private IdMap map;
 	private Tokener tokener;
 	private char endTag;
-	
+
 	public Tokener getTokener() {
 		if(this.tokener == null) {
 			this.tokener = new JsonTokener();
@@ -46,7 +46,7 @@ public class SimpleParser {
 		return tokener;
 	}
 
-	
+
 	public IdMap getMap() {
 		if(this.map == null) {
 			this.map = new IdMap();
@@ -71,7 +71,7 @@ public class SimpleParser {
 			if(classOfT == null) {
 				return null;
 			}
-			className = classOfT.getName(); 
+			className = classOfT.getName();
 			if(jsonObject.has(JsonTokener.PROPS) == false) {
 				JsonObject obj = new JsonObject();
 				obj.put(JsonTokener.PROPS, jsonObject);
@@ -95,7 +95,7 @@ public class SimpleParser {
 			}
 		}
 		return classOfT.cast(result);
-		
+
 	}
 	public JsonObject encode(Object src) {
 		if(src == null) {
@@ -119,11 +119,11 @@ public class SimpleParser {
 	public static JsonObject toJson(Object src) {
 		return new SimpleParser().encode(src);
 	}
-	
+
 	public <T> T decodeModel(Buffer buffer) {
 		return decodeModel(buffer, map, getTokener(), endTag);
 	}
-	
+
 	public static <T> T decodeModel(Buffer buffer, IdMap map) {
 		char firstChar = buffer.nextClean(true);
 		Tokener tokener = null;
@@ -144,7 +144,7 @@ public class SimpleParser {
 		buffer.nextClean(false);
 		return decodeModel(buffer, map, tokener, endTag);
 	}
-	
+
 	private static char getEndTag(char startTag) {
 		if (startTag == JsonArray.START) {
 			return JsonArray.END;
@@ -158,7 +158,7 @@ public class SimpleParser {
 		return 0;
 	}
 
-	
+
 	public static <T> T decodeModel(Buffer buffer, IdMap map, Tokener tokener, char endTag) {
 		Object result = decodingModel(buffer, map, tokener, endTag);
 		try {
@@ -176,20 +176,20 @@ public class SimpleParser {
 //		Assert.assertNotNull(uni2);
 		String className = null;
 		tokener.withBuffer(buffer);
-		
+
 		String key = tokener.nextString().toString();
-		Object result = null;	
+		Object result = null;
 		if(key!=null && IdMap.CLASS.equals(key)) {
 			// CLASSNAME
 			// :
 			tokener.getChar();
 			className = tokener.nextString().toString();
-			
+
 			SendableEntityCreator creator = map.getCreator(className, true);
 			if(creator == null) {
 				return null;
 			}
-			
+
 			// MAYBE ID
 			key = tokener.nextString().toString();
 			String id = null;
@@ -206,7 +206,7 @@ public class SimpleParser {
 			if(id != null) {
 				map.put(id, result, false);
 			}
-			
+
 			// So now decoding Attributes
 			char currentChar = tokener.getCurrentChar();
 			while(currentChar != endTag && tokener.isEnd() == false) {
@@ -216,7 +216,7 @@ public class SimpleParser {
 				}
 				if(Tokener.PROPS.equals(key)) {
 					// Now Skip
-					
+
 					// Start Tag
 					char propStartTag = currentChar = tokener.getChar();
 					char propEndTag = getEndTag(currentChar);
@@ -241,7 +241,7 @@ public class SimpleParser {
 							} while(currentChar != JsonArray.END  && tokener.isEnd() == false);
 						} else {
 							String value = tokener.nextString().toString();
-							
+
 							creator.setValue(result, key, value, SendableEntityCreator.NEW);
 							currentChar = tokener.getCurrentChar();
 						}

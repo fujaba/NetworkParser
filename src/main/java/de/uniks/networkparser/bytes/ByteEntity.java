@@ -52,8 +52,8 @@ public class ByteEntity implements ByteItem {
 	/** The values. */
 	protected byte[] values;
 
-	
-	
+
+
 	public String toBinaryString() {
 		if(values == null || values.length<1) {
 			return "";
@@ -71,7 +71,7 @@ public class ByteEntity implements ByteItem {
 		}
 		return new String(result);
 	}
-	
+
 	/**
 	 * Gets the value.
 	 *

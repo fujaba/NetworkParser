@@ -30,7 +30,7 @@ public class TestBroadCast {
 	    timer.cancel();
 	    space.close();
 	}
-	
+
 	class BroadCastClient extends TimerTask{
 		public void run() {
 			NodeProxyServer broasCast = new NodeProxyServer(NodeProxy.TYPE_OUT);

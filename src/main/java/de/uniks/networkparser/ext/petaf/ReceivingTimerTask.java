@@ -22,7 +22,7 @@ public abstract class ReceivingTimerTask extends Message implements Runnable {
        		 handler.saveException(e, false);
          }
 	}
-	
+
 	public Space getSpace() {
 		return space;
 	}

@@ -29,7 +29,7 @@ public class ChoiceField extends Input<String> {
 			this.type = CHECKBOX;
 		}
 	}
-	
+
 	public boolean isChecked() {
 		return checked;
 	}

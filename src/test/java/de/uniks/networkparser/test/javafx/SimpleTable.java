@@ -48,7 +48,7 @@ public class SimpleTable extends Application {
 
 //				table.withColumn(new Column().withAttrName(Person.PROPERTY_NAME).withLabel("Image"), tableCellFactory);
 		table.withList(groupAccount, GroupAccount.PROPERTY_PERSONS);
-//FIXME		return table;		
+//FIXME		return table;
 		controller.show(table);
 	}
 }

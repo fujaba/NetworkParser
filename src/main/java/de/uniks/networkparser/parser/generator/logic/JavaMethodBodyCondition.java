@@ -13,7 +13,7 @@ public class JavaMethodBodyCondition extends CustomCondition<Method> {
 	public String getKey() {
 		return TAG;
 	}
-		
+
 	@Override
 	public ParserCondition getSendableInstance(boolean prototyp) {
 		return new JavaMethodBodyCondition();

@@ -145,7 +145,7 @@ public class GitRevision {
 						if(versionNumber == 0) {
 							tagHash = entry.getValue().getName();
 							versionNumber = vNumber;
-						} else if(vNumber > versionNumber){ 
+						} else if(vNumber > versionNumber){
 							versionNumber = vNumber;
 							tagHash = entry.getValue().getName();
 						}

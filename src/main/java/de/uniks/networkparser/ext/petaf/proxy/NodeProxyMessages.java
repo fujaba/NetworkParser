@@ -17,18 +17,18 @@ public class NodeProxyMessages extends NodeProxy{
 	public static final String PROPERTY_ACCOUNT = "account";
 	public static final String PROPERTY_PASSWORD = "password";
 	public static final String PROPERTY_MESSAGETYPE = "msgtype";
-	
+
 	private MessageSession connection = null;
 	private ObjectCondition creator;
 	private String password;
 	private String msgType=MessageSession.TYPE_EMAIL;
-	
+
 	public NodeProxyMessages() {
 		this.property.addAll(PROPERTY_URL, PROPERTY_PORT, PROPERTY_ACCOUNT, PROPERTY_MESSAGETYPE);
 		this.propertyUpdate.addAll(PROPERTY_URL, PROPERTY_PORT, PROPERTY_MESSAGETYPE);
 		this.propertyInfo.addAll(PROPERTY_URL, PROPERTY_PORT, PROPERTY_ACCOUNT,PROPERTY_MESSAGETYPE);
 	}
-	
+
 	@Override
 	public int compareTo(NodeProxy o) {
 		return 0;
@@ -130,7 +130,7 @@ public class NodeProxyMessages extends NodeProxy{
 	public Object getSendableInstance(boolean prototyp) {
 		return new NodeProxyMessages();
 	}
-	
+
 	public boolean connect() {
 		if(this.connection != null) {
 			this.connection.withType(this.msgType);
@@ -139,7 +139,7 @@ public class NodeProxyMessages extends NodeProxy{
 		}
 		return false;
 	}
-	
+
 	public NodeProxyMessages withSender(String name) {
 		if(this.connection == null) {
 			this.connection = getNewConnection();
@@ -147,7 +147,7 @@ public class NodeProxyMessages extends NodeProxy{
 		this.connection.setSender(name);
 		return this;
 	}
-	
+
 	protected MessageSession getNewConnection() {
 		if(creator != null) {
 			Object item = creator.update(EVENT_CONNECTION);
@@ -157,7 +157,7 @@ public class NodeProxyMessages extends NodeProxy{
 		}
 		return new MessageSession();
 	}
-	
+
 	protected SocketMessage getNewEMailMessage() {
 		if(creator != null) {
 			Object item = creator.update(MESSAGE);
@@ -167,7 +167,7 @@ public class NodeProxyMessages extends NodeProxy{
 		}
 		return new SocketMessage(this.name).withSubject("Message from PetaF");
 	}
-	
+
 	private NodeProxyMessages withPort(Integer value) {
 		if(this.connection == null) {
 			this.connection = getNewConnection();
@@ -175,7 +175,7 @@ public class NodeProxyMessages extends NodeProxy{
 		this.connection.withPort(value);
 		return this;
 	}
-	
+
 	public int getPort() {
 		if(this.connection != null) {
 			return this.connection.getPort();
@@ -191,21 +191,21 @@ public class NodeProxyMessages extends NodeProxy{
 		this.connection.withHost(value);
 		return this;
 	}
-	
-	
+
+
 	public String getUrl() {
 		if(this.connection != null) {
 			return this.connection.getUrl();
 		}
 		return null;
-		
+
 	}
 
 	public NodeProxyMessages withPassword(String password) {
 		this.password = password;
 		return this;
 	}
-	
+
 	@Override
 	protected boolean sending(Message msg) {
 		if (super.sending(msg)) {
@@ -215,7 +215,7 @@ public class NodeProxyMessages extends NodeProxy{
 			return false;
 		}
 		SocketMessage message=getNewEMailMessage();
-		
+
 		String buffer;
 		if(this.space != null) {
 			buffer = this.space.convertMessage(msg);
@@ -228,7 +228,7 @@ public class NodeProxyMessages extends NodeProxy{
 				buffer = (String) item;
 			}
 		}
-		
+
 		message.withMessage(buffer);
 		boolean success = this.connection.sending(message);
 		if(success) {

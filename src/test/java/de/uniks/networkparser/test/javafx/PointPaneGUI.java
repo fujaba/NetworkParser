@@ -22,15 +22,15 @@ public class PointPaneGUI extends Application {
 		pane.setPrefSize(32, 32);
 		pane.setStyle("-fx-border-color: #2e8b57;-fx-border-width: 2px;");
 		layout.getChildren().add(pane);
-		
+
 		// Dice must be three at first throw
 //		PointPaneController.RandomSeed = 42;
-		
+
 //		pointPaneController = new  PointPaneController(pane);
 //		dice.addPropertyChangeListener(Dice.PROPERTY_VALUE, pointPaneController);
 //		pointPaneController.addW6Listener();
 		Platform.runLater(new Runnable() {
-			
+
 			@Override
 			public void run() {
 //				pointPaneController.throwDice();

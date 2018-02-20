@@ -33,38 +33,38 @@ public class SimpleUsage {
 		map.withTimeStamp(1);
 		JsonObject json = map.toJsonObject(house);
 		String string=json.toString(2); //<4>
-		
+
 		// Deserialization
 		IdMap decodeMap=new IdMap().withCreator(new HouseCreator()); //<3>
 		House newHouse = (House) decodeMap.decode(string);
 
 		newHouse.setFloor(42);
 		story.finish();
-		
+
 		story.addDescription("1", "Custom Model");
 		story.addDescription("2", "Serialization");
 		story.addDescription("3", "Deserialization");
 		story.addDescription("4", string);
-		
+
 		story.dumpHTML();
 		// end::serialization[]
 	}
-	
+
 	@Test
-	public void testUpdateChange() throws IOException { 
+	public void testUpdateChange() throws IOException {
 		// tag::PropertyChange[]
 		// Model
 		University uni=new University(); //<1>
 		uni.setName("Uni Kassel");
 
-		
-		
+
+
 		// Serialization
 		IdMap map=new IdMap().withCreator(new UniversityCreator(), new StudentCreator()); //<2>
 		map.withTimeStamp(1);
 		// Add UpdateListener
 		map.withListener(new ObjectCondition() {
-			
+
 			@Override
 			public boolean update(Object value) {
 				SimpleEvent event = (SimpleEvent) value;
@@ -72,12 +72,12 @@ public class SimpleUsage {
 				return true;
 			}
 		});
-		
+
 //		System.out.println("Start:");
 		JsonObject json = map.toJsonObject(uni);
 		Assert.assertNotNull(json);
 //		System.out.println("Update:");
-		
+
 		Student albert = new Student().withName("Albert");
 		uni.withStudents(albert);
 		// end::PropertyChange[]

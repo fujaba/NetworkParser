@@ -44,11 +44,11 @@ public class TableList extends SortedList<Object> implements SendableEntity, Sen
 	public TableList() {
 		super(false);
 	}
-	
+
 	public TableList(boolean comparator) {
 		super(comparator);
 	}
-	
+
 	@Override
 	public String[] getProperties() {
 		return properties;

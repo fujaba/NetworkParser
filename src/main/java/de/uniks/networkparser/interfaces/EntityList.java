@@ -53,6 +53,6 @@ public interface EntityList extends BaseItem {
 	public Comparator<Object> comparator();
 
 	public BaseItem withValue(Buffer values);
-	
+
 	public int sizeChildren();
 }

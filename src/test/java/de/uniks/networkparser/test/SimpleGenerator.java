@@ -32,8 +32,8 @@ public class SimpleGenerator {
 
 		TemplateResultFragment fragment = generator.parseTemplate(template, person);
 		Assert.assertEquals("Hallo\r\n", fragment.getResult().toString());
-		
-		
+
+
 		template ="{{#if {{type}}!=INTERFACE}}"
 				+ "Hallo"
 				+"{{#endif}}";
@@ -41,8 +41,8 @@ public class SimpleGenerator {
 		fragment = generator.parseTemplate(template, person);
 		Assert.assertEquals("Hallo\r\n", fragment.getResult().toString());
 	}
-	
-	
+
+
 	@Test
 	public void testIfAndStatement() {
 		String template ="{{#if {{#AND}}{{#feature PROPERTYCHANGESUPPORT}} {{type}}!=INTERFACE{{#ENDAND}}}}"
@@ -53,7 +53,7 @@ public class SimpleGenerator {
 		TemplateResultFragment fragment = generator.parseTemplate(template, person);
 		Assert.assertEquals("Hallo\r\n", fragment.getResult().toString());
 	}
-	
+
 //	@Test
 	//FIXME STUDENT NOT CORRECT
 	public void testGenerator() {
@@ -69,22 +69,22 @@ public class SimpleGenerator {
 		javaModelFactory.generate("build/gen/java", classModel);
 //		javaModelFactory.generateTypescript("build", classModel);
 	}
-	
+
 	@Test
 	public void testGeneratorTemplate() {
 		Template template = new Template().withTemplate(
 				"{{#ifnot {{parent.type}}==interface}}"+
 								"Hello World" +
 							"{{#endif}}");
-		
+
 		Clazz person = new Clazz("Person");
 		Attribute name = person.createAttribute("name", DataType.STRING);
 		ModelGenerator generator = new ModelGenerator();
 		TemplateResultFragment generate = generator.parseTemplate(template, name);
-		
+
 		Assert.assertEquals("Hello World\r\n", generate.getResult().toString());
 	}
-	
+
 	@Test
 	public void testGeneratorTemplateFragmentCondition() {
 		Template template = new Template().withType(TemplateParser.DECLARATION).withTemplate(
@@ -95,12 +95,12 @@ public class SimpleGenerator {
 		TemplateResultFile templateFile = new TemplateResultFile(person, true);
 		TemplateResultModel model = new TemplateResultModel();
 		model.withTemplate(new TemplateFragmentCondition());
-		
+
 		template.generate(model, templateFile, name);
-		
+
 		Assert.assertEquals("Hello ", templateFile.toString());
 	}
-	
+
 	@Test
 	public void testGeneratorTemplateFragment() {
 		Template template = new Template().withType(TemplateParser.DECLARATION).withTemplate(
@@ -111,13 +111,13 @@ public class SimpleGenerator {
 		TemplateResultFile templateFile = new TemplateResultFile(person, true);
 		TemplateResultModel model = new TemplateResultModel();
 		model.withTemplate(new TemplateFragmentCondition());
-		
+
 		template.generate(model, templateFile, name);
-		
+
 		Assert.assertEquals("Hello World", templateFile.toString());
 	}
-	
-	
+
+
 	@Test
 	public void testGeneratorTemplateFragmentIfCondition() {
 		GraphList classModel = new GraphList().with("de.uniks.test.model");
@@ -128,13 +128,13 @@ public class SimpleGenerator {
 		TemplateResultModel model = new TemplateResultModel();
 		model.withTemplate(new TemplateFragmentCondition());
 		model.withTemplate(new IfCondition().withKey(IfCondition.IFNOT));
-		
-		
+
+
 		template.generate(model, templateFile, person);
-		
+
 		Assert.assertEquals("Hello", templateFile.toString());
 	}
-	
+
 	@Test
 	public void testImport() {
 		GraphList classModel = new GraphList().with("de.uniks.test.model");
@@ -149,11 +149,11 @@ public class SimpleGenerator {
 		TemplateResultModel model = new TemplateResultModel();
 		ModelGenerator modelGenerator = new ModelGenerator();
 		model.withTemplate(modelGenerator.getTemplates());
-		
-		
+
+
 		TemplateResultFragment fragment = template.generate(model, templateFile, assoc);
 //		System.out.println(generate);
-		
+
 		Assert.assertEquals("de.uniks.test.model.UniSet", fragment.getHeaders().first());
 	}
 	@Test
@@ -163,17 +163,17 @@ public class SimpleGenerator {
 		Attribute name = person.createAttribute("name", DataType.STRING);
 		Template template = new Template().withType(TemplateParser.DECLARATION)
 				.withTemplate("{{#if {{member.type#sub(0,10)}}==SimpleSet<}}{{#import " + SimpleSet.class.getName() + "}}{{#endif}}");
-		
+
 
 		ModelGenerator generator = new ModelGenerator();
 		TemplateResultFragment fragment;
 		fragment = generator.parseTemplate(template, name);
 		Assert.assertEquals("", fragment.getResult().trim().toString());
 		Assert.assertNull(fragment.getHeaders());
-		
+
 		name.with(DataTypeSet.create(String.class));
 		fragment = generator.parseTemplate(template, name);
 		Assert.assertEquals("(de.uniks.networkparser.list.SimpleSet)", fragment.getHeaders().toString());
 	}
-	
+
 }

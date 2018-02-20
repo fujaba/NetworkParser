@@ -90,7 +90,7 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 	public boolean isValid() {
 		return true;
 	}
-	
+
 	protected boolean sending(Message msg) {
 		if(this.isValid() == false) {
 			return true;
@@ -130,7 +130,7 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 		}
 		return no;
 	}
-	
+
 	public void setSendTime(int bytes) {
 //		Long oldValue = sendtime;
 		this.sendtime = System.currentTimeMillis();
@@ -198,8 +198,8 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 		}
 		return getKey().compareTo(o.getKey());
 	}
-	
-	
+
+
 	@Override
 	public boolean equals(Object obj) {
 		if(obj instanceof NodeProxy) {
@@ -379,7 +379,7 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 	}
 
 	public abstract String getKey();
-	
+
     public static boolean isInput(String value) {
         return (value != null && value.indexOf(TYPE_IN)>=0);
     }

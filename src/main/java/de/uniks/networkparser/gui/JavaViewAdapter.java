@@ -9,7 +9,7 @@ public interface JavaViewAdapter extends ObjectCondition {
 	public static final String ERROR="Error";
 	public static final String DRAGEXITED="Drag_Exited";
     public static final String STATE="javafx.concurrent.Worker$State";
-	
+
 	public JavaViewAdapter withOwner(JavaBridge owner);
 	public String readFile(String file);
 	public Object executeScript(String script);

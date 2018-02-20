@@ -279,7 +279,7 @@ public class EntityComparator<V> implements Comparator<V> {
 		this.direction = direction.changeDirection();
 		return direction;
 	}
-	
+
 	public static EntityComparator<Object> createComparator() {
 		EntityComparator<Object> cpr = new EntityComparator<Object>().withColumn(EntityComparator.VALUES).withDirection(SortingDirection.ASC);
 		return cpr;

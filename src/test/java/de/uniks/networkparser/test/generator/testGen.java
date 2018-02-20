@@ -18,9 +18,9 @@ public class testGen {
 		person.createAttribute("age", DataType.INT);
 
 		room.withMethod("init", DataType.VOID);
-		
+
 		person.withBidirectional(room, "room", Cardinality.ONE, "persons", Cardinality.MANY);
-		
+
 //		model.generate("gen");
 	}
 }

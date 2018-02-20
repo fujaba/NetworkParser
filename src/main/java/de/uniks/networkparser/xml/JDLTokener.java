@@ -34,7 +34,7 @@ public class JDLTokener extends Tokener{
 		for(Association assoc : associations) {
 			result.add(this.encodeRelationship(assoc));
 		}
-		
+
 		return result;
 	}
 
@@ -56,7 +56,7 @@ public class JDLTokener extends Tokener{
 		for(Attribute attribute : attributes) {
 			attributeList.add(encodeAttribute(attribute));
 		}
-		
+
 		if(attributeList.size() > 0 ) {
 			attributeList.withTag(JsonObject.START);
 			attributeList.withTagEnd(JsonObject.END);
@@ -64,7 +64,7 @@ public class JDLTokener extends Tokener{
 		}
 		return result;
 	}
-	
+
 	/** Enocding Attribute
 	 * {@code
 	 * 		<field name> <type> [<validation>*]
@@ -77,7 +77,7 @@ public class JDLTokener extends Tokener{
 		result.withTag(item.getName()+" "+item.getType().getName(true));
 		return result;
 	}
-	
+
 	/**
 	 * Encoding RelationShip
 	 * {@code
@@ -98,10 +98,10 @@ public class JDLTokener extends Tokener{
 		values.add(encodeRelationshipClazz(assoc.getOther()));
 		values.withTagEnd(JsonObject.END);
 		relationship.add(values);
-		
+
 		return relationship;
 	}
-	
+
 	public TextEntity encodeRelationshipClazz(Association assoc) {
 		TextEntity result = new TextEntity();
 		result.withTag(assoc.getClazz().getName());
@@ -112,7 +112,7 @@ public class JDLTokener extends Tokener{
 		result.add(values);
 		return result;
 	}
-	
+
 	private String getCardinality(Association assoc) {
 		if(assoc.getCardinality()==Cardinality.ONE) {
 			if(assoc.getOther().getCardinality()==Cardinality.ONE) {

@@ -26,7 +26,7 @@ public class ReflectionInterfaceProxy implements InvocationHandler{
 		return null;
 //		return method.invoke(this.obj, args);
 	}
-	
+
 	private Class<?>[] convertTypes(Class<?> [] types) {
 		Class<?>[] newTypes=new Class<?>[types.length];
 		for(int i=0;i<newTypes.length;i++) {
@@ -40,7 +40,7 @@ public class ReflectionInterfaceProxy implements InvocationHandler{
 		}
 		return newTypes;
 	}
-	
+
 	private Class<?>[] convertTypesObject(Class<?> [] types) {
 		Class<?>[] newTypes=new Class<?>[types.length];
 		for(int i=0;i<newTypes.length;i++) {

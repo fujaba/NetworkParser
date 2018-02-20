@@ -21,12 +21,12 @@ public class ExcelTest extends IOClasses{
 
 		ExcelBuffer exBuf = new ExcelBuffer();
 		ExcelSheet sheet = exBuf.parse(myFile);
-	
+
 		ExcelRow tagRow = sheet.get(1);
 		Assert.assertEquals("FG Softwaretechnik", tagRow.get(0).getContent());
 		Assert.assertEquals("Albert", tagRow.get(2).getContent());
 	}
-	
+
 	@Test
 	public void testCreate() {
 		String path = getAbsolutePath("test.xlsx");

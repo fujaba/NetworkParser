@@ -9,14 +9,14 @@ public class SendingTimerTask extends SimpleTimerTask {
 		this.sender = sender;
 		return this;
 	}
-	
+
 	public NodeProxy getSender() {
 		return sender;
 	}
 	public Message getMessage() {
 		return null;
 	}
-	
+
 	@Override
 	public boolean runTask() throws Exception {
 		if(super.runTask()) {

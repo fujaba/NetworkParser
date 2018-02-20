@@ -25,7 +25,7 @@ THE SOFTWARE.
 */
 /**
  * Simple Generic Condition
- * 
+ *
  * @author Stefan Lindel Condition.
  */
 @FunctionalInterface

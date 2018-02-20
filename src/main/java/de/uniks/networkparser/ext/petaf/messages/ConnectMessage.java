@@ -4,7 +4,7 @@ import de.uniks.networkparser.ext.petaf.NodeProxy;
 import de.uniks.networkparser.ext.petaf.ReceivingTimerTask;
 
 /**
- * Sending Connection Link with all Input Proxies and Filter 
+ * Sending Connection Link with all Input Proxies and Filter
  * @author Stefan Lindel
  */
 public class ConnectMessage extends ReceivingTimerTask {
@@ -13,20 +13,20 @@ public class ConnectMessage extends ReceivingTimerTask {
 	public static ConnectMessage create() {
 		ConnectMessage msg = new ConnectMessage();
 		msg.withSendAnyHow(true);
-		return msg; 
+		return msg;
 	}
-	
+
 	@Override
 	public Object getSendableInstance(boolean prototyp) {
 		return new ConnectMessage();
 	}
-	
+
 	@Override
 	public boolean runTask() throws Exception {
 		if(super.runTask() ) {
 			return true;
 		}
-		
+
 		AcceptMessage acceptTaskSend = AcceptMessage.create();
 		NodeProxy sender = this.getReceiver();
 		if(sender != null) {
@@ -41,7 +41,7 @@ public class ConnectMessage extends ReceivingTimerTask {
 	public String getType() {
 		return PROPERTY_TYPE;
 	}
-	
+
 	@Override
 	public boolean isSendingToPeers() {
 		return false;

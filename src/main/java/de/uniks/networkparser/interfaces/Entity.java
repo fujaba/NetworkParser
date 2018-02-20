@@ -29,9 +29,9 @@ public interface Entity extends BaseItem{
 	public String getString(String key);
 
 	public Object getValue(Object key);
-	
+
 	public String getKeyByIndex(int pos);
-	
+
 	public Object getValueByIndex(int index);
 
 	public Entity without(String key);

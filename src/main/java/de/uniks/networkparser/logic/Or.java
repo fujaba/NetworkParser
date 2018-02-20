@@ -15,7 +15,7 @@ import de.uniks.networkparser.interfaces.TemplateParser;
 
 public class Or extends ListCondition {
 	public static final String TAG="or";
-	
+
 	/**
 	 * Static Method for instance a new Instance of Or Object.
 	 *
@@ -25,20 +25,20 @@ public class Or extends ListCondition {
 	public static Or create(ObjectCondition... conditions) {
 		return new Or().with(conditions);
 	}
-	
+
 	@Override
 	public void create(CharacterBuffer buffer, TemplateParser parser, LocalisationInterface customTemplate) {
 		buffer.skip();
 		buffer.skip();
 		ObjectCondition expression = parser.parsing(buffer, customTemplate, true, true, "endor");
-		this.with(expression);		
+		this.with(expression);
 
 		// SKIP TO END
 		buffer.skipTo(SPLITEND, false);
 		buffer.skip();
 		buffer.skip();
 	}
-	
+
 	@Override
 	public boolean updateSet(Object evt) {
 		Set<ObjectCondition> list = getList();
@@ -48,13 +48,13 @@ public class Or extends ListCondition {
 			}
 		}
 		return false;
-	}	
+	}
 	@Override
 	public Or with(ObjectCondition... values) {
 		super.with(values);
 		return this;
 	}
-	
+
 	@Override
 	public Or with(PropertyChangeListener... values) {
 		super.with(values);

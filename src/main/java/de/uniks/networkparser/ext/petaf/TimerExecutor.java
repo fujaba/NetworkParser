@@ -8,18 +8,18 @@ public class TimerExecutor extends Timer implements TaskExecutor {
 	private boolean isCancel;
 	private Space space;
 	private DateTimeEntity lastRun=new DateTimeEntity();
-	
-	
+
+
 	public TimerExecutor withSpace(Space space) {
 		this.space = space;
 		return this;
 	}
-	
+
 	@Override
 	public Space getSpace() {
 		return space;
 	}
-	
+
 	public TimerExecutor(String value) {
 		super(value);
 	}
@@ -31,7 +31,7 @@ public class TimerExecutor extends Timer implements TaskExecutor {
 	public boolean isCancel(){
 		return isCancel;
 	}
-	
+
 	@Override
 	public Object executeTask(Runnable task, int delay, int interval) {
 		if(isCancel()){

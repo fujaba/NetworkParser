@@ -25,7 +25,7 @@ THE SOFTWARE.
 
 /**
  * StringList for List of String
- * @author Stefan Lindel 
+ * @author Stefan Lindel
  */
 public class StringList extends SimpleList<String> {
 	@Override

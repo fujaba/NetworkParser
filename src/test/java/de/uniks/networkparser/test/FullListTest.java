@@ -37,39 +37,39 @@ public class FullListTest {
 		set.add(apple);
 		Assert.assertEquals(1, set.size());
 	}
-	
+
 	@Test
 	public void SortedListAppleSetDupplicate() {
 		SortedList<SortedMsg> list = new SortedList<SortedMsg>(true);
-		
+
 		SortedMsg first = new SortedMsg().withMsg("First").withNumber(1);
 		SortedMsg second = new SortedMsg().withMsg("Second").withNumber(2);
 		SortedMsg third = new SortedMsg().withMsg("Third").withNumber(3);
 		SortedMsg newSecond = new SortedMsg().withMsg("new Second").withNumber(1);
-		
+
 		list.add(first);
 		list.add(second);
 		list.add(third);
-		
+
 		Assert.assertEquals(first, list.get(0));
 		Assert.assertEquals(second, list.get(1));
 		Assert.assertEquals(third, list.get(2));
-		
+
 		list.add(newSecond);
-		
+
 		Assert.assertEquals(first, list.get(0));
 		Assert.assertEquals(newSecond, list.get(1));
 		Assert.assertEquals(second, list.get(2));
 		Assert.assertEquals(third, list.get(3));
 		Assert.assertEquals(4, list.size());
 	}
-	
+
 	@Test
 	public void AppleSet() {
 		AppleSet set = new AppleSet();
 		set.with("Hallo");
 	}
-	
+
 	@Test
 	public void CollectionCompare() {
 		ArrayList<Object> masterA=new ArrayList<Object>();
@@ -77,16 +77,16 @@ public class FullListTest {
 		slave.add("Hallo");
 		slave.add("Welt");
 		masterA.add(slave);
-		
+
 		ArrayList<Object> masterB=new ArrayList<Object>();
 		slave=new ArrayList<String>();
 		slave.add("Hallo");
 		slave.add("Welt");
 		masterB.add(slave);
-		
+
 		Assert.assertTrue(EntityUtil.compareEntity(masterA, masterB));
 	}
-	
+
 	private JsonObject createHelpClass(String name, String color) {
 		JsonObject master=new JsonObject();
 		JsonArray assoc=new JsonArray();
@@ -99,16 +99,16 @@ public class FullListTest {
 		props.add("color", color);
 		return master;
 	}
-	
+
 	@Test
 	public void compareJsonWithDifference() {
 		JsonObject master = this.createHelpClass("Alice", "green");
 		JsonObject slave = this.createHelpClass("Bob", "blue");
 		TextDiff diffs=new TextDiff();
 		Assert.assertFalse(EntityUtil.compareEntity(master, slave, diffs, null));
-		
+
 	}
-	
+
 
 	@Test
 	public void CollectionWith() {
@@ -117,7 +117,7 @@ public class FullListTest {
 		item.with("Hallo", "Welt", 42, null);
 		Assert.assertEquals(2, item.size());
 	}
-	
+
 	@Test
 	public void CollectionGetValue() {
 		SimpleList<String> item=new SimpleList<String>();
@@ -136,7 +136,7 @@ public class FullListTest {
 		bidiMap.remove("Tobi");
 		Assert.assertNull(bidiMap.getValue("Albert42"));
 	}
-	
+
 	@Test
 	public void CollectionBidiValueDelete() {
 		SimpleKeyValueList<String, Integer> bidiMap=new SimpleKeyValueList<String, Integer>().withFlag(SimpleKeyValueList.BIDI);
@@ -159,7 +159,7 @@ public class FullListTest {
 		bidiMap.without("Check");
 		Assert.assertNull(bidiMap.getValue("Albert.42"));
 	}
-	
+
 	@Test
 	public void CollectionBidiGetValue() {
 		SimpleKeyValueList<String, Integer> bidiMap=new SimpleKeyValueList<String, Integer>().withFlag(SimpleKeyValueList.BIDI);
@@ -170,7 +170,7 @@ public class FullListTest {
 //		bidiMap.add(delete, 42);
 		Assert.assertNull(bidiMap.getValue(delete));
 	}
-	
+
 	@Test
 	public void CollectionWithInstanceOf() {
 		FruitSet item=new FruitSet();
@@ -181,14 +181,14 @@ public class FullListTest {
 		AppleSet newSet=new AppleSet();
 		newSet.withType(Apple.class);
 		newSet.withList(item);
-		
+
 		Assert.assertEquals(1, newSet.size());
 
 		newSet.with(new Fruit().withX(3).withY(3));
-		
+
 		Assert.assertEquals(1, newSet.size());
 	}
-	
+
 	@Test
 	public void list() {
 		SimpleList<String> simpleList = new SimpleList<String>();

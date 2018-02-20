@@ -18,7 +18,7 @@ public class DebugCondition implements ParserCondition, SendableEntityCreator {
 		System.out.println("DEBUG");
 		return true;
 	}
-	
+
 	@Override
 	public void create(CharacterBuffer buffer, TemplateParser parser, LocalisationInterface customTemplate) {
 		// CREATE FIELD
@@ -29,7 +29,7 @@ public class DebugCondition implements ParserCondition, SendableEntityCreator {
 		buffer.skip();
 	}
 
-	
+
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value, String type) {
 		return true;
@@ -50,7 +50,7 @@ public class DebugCondition implements ParserCondition, SendableEntityCreator {
 	public Object getSendableInstance(boolean isExpression) {
 		return new DebugCondition();
 	}
-	
+
 	@Override
 	public boolean isExpression() {
 		return false;
@@ -65,7 +65,7 @@ public class DebugCondition implements ParserCondition, SendableEntityCreator {
 	public Object getValue(Object entity, String attribute) {
 		return null;
 	}
-	
+
 	@Override
 	public String toString() {
 		return "{{#DEBUG}}";

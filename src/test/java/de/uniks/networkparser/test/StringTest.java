@@ -23,25 +23,25 @@ public class StringTest {
 	public void testgetString() {
 		CharacterBuffer test=new CharacterBuffer();
 		String ref = "Hallo World"+BaseItem.CRLF+"Stefan";
-		
+
 		test.with(ref);
 		Assert.assertEquals(ref.length(), test.length());
 		XMLTokener tokener = new XMLTokener();
 		tokener.withBuffer(ref);
-		
+
 		Object item = tokener.getString(tokener.length() - tokener.position());
 
 		String tokenerString = item.toString();
 		Assert.assertEquals(ref.length(), tokenerString.length());
 		Assert.assertEquals(ref, tokenerString);
 	}
-	
+
 	@Test
 	public void testUmlaute() {
 		String uml = "\u00fcbung";
 //		System.out.println(uml);
 		byte[] umlBytes = uml.getBytes();
-		
+
 //		String newString = new String(umlBytes, 0, umlBytes.length);
 //		for(int i=0;i<umlBytes.length;i++) {
 //			System.out.println(umlBytes[i]+" ");
@@ -49,8 +49,8 @@ public class StringTest {
 //		System.out.println(newString);
 		Assert.assertNotNull(umlBytes);
 	}
-	
-	
+
+
 	@Test
 	public void testStringReplace(){
 		CharacterBuffer buffer = new CharacterBuffer().with("My %DEEP is not the %DEEP");
@@ -204,33 +204,33 @@ public class StringTest {
 		Assert.assertNotNull(jsonTokener.nextString(new CharacterBuffer(), true, false, '\"'));
 		Assert.assertNotNull(jsonTokener.nextString(new CharacterBuffer(), true, false, '\"'));
 	}
-	
+
 	@Test
 	public void testReplace(){
 		CharacterBuffer buffer = new CharacterBuffer();
 		buffer.with("apple, kiwi, cherry");
-		
+
 		Assert.assertEquals("apple, kiwi, cherry", buffer.toString()); // START
-		
+
 		buffer.replace(7, 11, "pear");
 
 		Assert.assertEquals("apple, pear, cherry", buffer.toString()); // SAME LENGTH
-		
+
 		buffer.replace(7, 11, "orange");
-		
+
 		Assert.assertEquals("apple, orange, cherry", buffer.toString()); // LONGER LENGTH
-		
+
 		buffer.replace(7, 13, "grape");
-		
+
 		Assert.assertEquals("apple, grape, cherry", buffer.toString()); // SHORTER LENGTH
 	}
-	
+
 	@Test
 	public void testReplaceExtended() {
 		CharacterBuffer test=new CharacterBuffer();
 		test.with("Hallo x");
 		test.replace(6, 7, "Welt");
-		
+
 		Assert.assertEquals("Hallo Welt", test.toString());
 	}
 
@@ -242,51 +242,51 @@ public class StringTest {
 		Assert.assertEquals("\t\tIdMap map=new IdMap().withCreator(new HouseCreator()); <i class=\"conum\" data-value=\"2\" />", test.toString());
 	}
 
-	
+
 	@Test
 	public void testStringReplaceLess() {
 		String value = "Apple, Pear, Cherry";
 		CharacterBuffer sb = new CharacterBuffer();
 		sb.with(value);
 //		GRAPE
-		
+
 //		sb.replace(7, 11, "Grape");
 		sb.replace(5, 11, "");
-		
+
 		System.out.println(sb.toString());
 	}
-	
-	
+
+
 	@Test
 	public void testLeventaion() {
-		
+
 		Assert.assertEquals("NULL", 0, new CharacterBuffer().equalsLevenshtein(null), 0.001);
-		 
+		
 		 Assert.assertEquals("EMPTY", 0, new CharacterBuffer().equalsLevenshtein(new CharacterBuffer().with("")), 0.001);
-		 
+		
 		 Assert.assertEquals("a", 1, new CharacterBuffer().equalsLevenshtein(new CharacterBuffer().with("a")), 0.001);
 
 		 Assert.assertEquals("aaapppp", 7, new CharacterBuffer().with("aaapppp").equalsLevenshtein(new CharacterBuffer().with("")), 0.001);
 
 		 Assert.assertEquals("fog", 1, new CharacterBuffer().with("frog").equalsLevenshtein(new CharacterBuffer().with("fog")), 0.001);
-		 
+		
 		 Assert.assertEquals("fly", 3, new CharacterBuffer().with("fly").equalsLevenshtein(new CharacterBuffer().with("ant")), 0.001);
-		 
+		
 		 Assert.assertEquals("elephant", 7, new CharacterBuffer().with("elephant").equalsLevenshtein(new CharacterBuffer().with("hippo")), 0.001);
-		 
+		
 		 Assert.assertEquals("hippo", 7, new CharacterBuffer().with("hippo").equalsLevenshtein(new CharacterBuffer().with("elephant")), 0.001);
-		 
+		
 		 Assert.assertEquals("hippo", 8, new CharacterBuffer().with("hippo").equalsLevenshtein(new CharacterBuffer().with("zzzzzzzz")), 0.001);
-		 
+		
 		 Assert.assertEquals("hello", 1, new CharacterBuffer().with("hello").equalsLevenshtein(new CharacterBuffer().with("hallo")), 0.001);
 
 		 Assert.assertEquals("hello", 0.01, new CharacterBuffer().with("hello").equalsLevenshtein(new CharacterBuffer().with("Hello")), 0.001);
-		 
+		
 		 Assert.assertEquals("hippofant", 4, new CharacterBuffer().with("hippo").equalsLevenshtein(new CharacterBuffer().with("hippofant")), 0.001);
-		 
+		
 		 Assert.assertEquals("hippofant", -7, new CharacterBuffer().with("hippofant").equalsLevenshtein(new CharacterBuffer().with("po")), 0.001);
 	}
-	
+
 	@Test
 	public void testModelType() {
 		Assert.assertTrue(EntityUtil.isNumericTypeContainer("long", "Long"));

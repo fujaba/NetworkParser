@@ -9,11 +9,11 @@ import de.uniks.networkparser.interfaces.BaseItem;
 public class StringPrintStream extends PrintStream{
 	private ErrorHandler handler;
 	private boolean error;
-	
+
 	public StringPrintStream() {
 		super(new StringOutputStream());
 	}
-	
+
 	public StringPrintStream(ErrorHandler handler, boolean error) {
 		super(new StringOutputStream());
 		this.handler = handler;
@@ -22,8 +22,8 @@ public class StringPrintStream extends PrintStream{
 	public StringPrintStream(OutputStream out) {
 		super(out);
 	}
-	
-	
+
+
 	public StringPrintStream withListener(ErrorHandler value) {
 		this.handler = value;
 		return this;
@@ -39,7 +39,7 @@ public class StringPrintStream extends PrintStream{
 			handler.writeOutput(value, error);
 		}
 	}
-	
+
 	public void println() {
 		if(handler != null) {
 			handler.writeOutput(BaseItem.CRLF, error);

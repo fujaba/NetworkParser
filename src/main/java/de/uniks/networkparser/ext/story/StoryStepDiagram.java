@@ -24,7 +24,7 @@ public class StoryStepDiagram implements ObjectCondition {
 		SimpleEvent evt = (SimpleEvent) value;
 		HTMLEntity element = (HTMLEntity) evt.getNewValue();
 		Story story = (Story) evt.getSource();
-		
+
 		if(this.model != null) {
 			element.withGraph(this.model);
 		}else if(filter!= null){
@@ -38,20 +38,20 @@ public class StoryStepDiagram implements ObjectCondition {
 				map.put(name, obj, false);
 			}
 			 JsonArray jsonArray = new JsonArray();
-			 
 			
+
 			SimpleList<Object> elements = filter.getElements();
 			// Add All Elements to JsonArray
 			for(Object object : elements) {
 				JsonObject jsonObject = map.toJsonObject(object, filter);
 				jsonArray.add(jsonObject);
 			}
-			
+
 	      // add icons
 			SimpleKeyValueList<String, String> images = filter.getImages();
 			for(int i=0;i<images.size();i++) {
 				String id = images.getKeyByIndex(i);
-				JsonObject jsonObject = jsonArray.get(id);	
+				JsonObject jsonObject = jsonArray.get(id);
 				if (jsonObject != null)
 				{
 					String image = images.getValueByIndex(i);

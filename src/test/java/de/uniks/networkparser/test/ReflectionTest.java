@@ -23,7 +23,7 @@ public class ReflectionTest {
 		Assert.assertNotNull(tester);
 //		System.out.println(""+System.currentTimeMillis()+" FINISH:"+Thread.activeCount());
 	}
-	
+
 	@Test
 	public void testReflectionVersion() throws Exception {
 //		System.out.println(Thread.activeCount());
@@ -52,21 +52,21 @@ public class ReflectionTest {
 			@Override
 			public boolean update(Object value) {
 				SimpleEvent event = (SimpleEvent) value;
-				
+
 //				Object exception = event.getModelValue();
 //				Object method = event.getSource();
 //				String msg = (String) event.getNewValue();
-				
-				
+
+
 				Assert.assertNotNull(event);
-				
+
 				return false;
 			}
 		});
 		tester.test("de.uniks.networkparser.ext.sql.SQLTokener", logger);
 //		System.out.println(""+System.currentTimeMillis()+" FINISH:"+Thread.activeCount());
 	}
-	
+
 	@Test
 	public void testDiagramEditor() throws Exception {
 //		System.out.println(Thread.activeCount());
@@ -75,14 +75,14 @@ public class ReflectionTest {
 		tester.test("de.uniks.networkparser.ext.DiagramEditor", logger);
 //		System.out.println(""+System.currentTimeMillis()+" FINISH:"+Thread.activeCount());
 	}
-	
+
 	@Test
 	public void testSMTPSession() throws Exception {
 //		System.out.println(Thread.activeCount());
 		ReflectionBlackBoxTester tester = new ReflectionBlackBoxTester();
 		NetworkParserLog logger=new NetworkParserLog()
 				.withListener(new ObjectCondition() {
-			
+
 			@Override
 			public boolean update(Object value) {
 				SimpleEvent event = (SimpleEvent) value;

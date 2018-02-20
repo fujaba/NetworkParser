@@ -59,7 +59,7 @@ public class TableComponent extends Control {
 		}
 		return changed;
 	}
-	
+
 	public boolean addSearchProperties(String... elements) {
 		if (elements == null) {
 			return false;
@@ -104,7 +104,7 @@ public class TableComponent extends Control {
 		addSearchProperties(elements);
 		return this;
 	}
-	
+
 	public TableComponent withList(Object entity, String property) {
 		return this;
 	}
@@ -130,7 +130,7 @@ public class TableComponent extends Control {
 		}
 		return changed;
 	}
-	
+
 
 	public SimpleList<String> getSearchColumn() {
 		return searchColumn;

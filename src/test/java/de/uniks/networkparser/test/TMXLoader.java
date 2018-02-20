@@ -12,7 +12,7 @@ public class TMXLoader extends IOClasses{
 		StringBuffer readFile = readFile("simpleMap.tmx");
 		TileMap tile = TileMap.create(readFile.toString());
 
-		
+
 
 		// Write TileMap
 		IdMap map=new IdMap();

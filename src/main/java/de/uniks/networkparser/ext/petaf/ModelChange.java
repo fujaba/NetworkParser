@@ -9,26 +9,26 @@ public class ModelChange implements Comparable<ModelChange>{
 
 	// Receiver
 	public static final String PROPERTY_RECEIVER = "receiver";
-	
+
 	// Json-Change
 	public static final String PROPERTY_CHANGE = "change";
 
 	private String key;
 	private BaseItem receiver;
 	private BaseItem change;
-	
+
 	@Override
 	public String toString()
 	{
 		return "" + key + " " + (receiver==null?"":receiver.toString());
 	}
-	
+
 	public String getFullKey()
 	{
 		String format = String.format("%%0%dd", 20);
 	    return String.format(format, key)+"!"+receiver;
 	}
-	
+
 	@Override
 	public int compareTo(ModelChange o)
 	{
@@ -45,11 +45,11 @@ public class ModelChange implements Comparable<ModelChange>{
 		}
 		return result;
 	}
-	
+
 	public String getKey() {
 		return key;
 	}
-	
+
 	public int getKeyNumber() {
 		int result=-1;
 		try {
@@ -70,7 +70,7 @@ public class ModelChange implements Comparable<ModelChange>{
 		this.change = value;
 		return this;
 	}
-	
+
 	public BaseItem getReceiver() {
 		return receiver;
 	}
@@ -78,7 +78,7 @@ public class ModelChange implements Comparable<ModelChange>{
 		this.receiver = value;
 		return this;
 	}
-	
+
 	public Object get(String attrName)
 	{
 		if (PROPERTY_KEY.equals(attrName))

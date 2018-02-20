@@ -1,22 +1,22 @@
 /*
-   Copyright (c) 2013 ulno (http://contact.ulno.net) 
+   Copyright (c) 2013 ulno (http://contact.ulno.net)
 
-   Permission is hereby granted, free of charge, to any person obtaining a copy of this software 
-   and associated documentation files (the "Software"), to deal in the Software without restriction, 
-   including without limitation the rights to use, copy, modify, merge, publish, distribute, 
-   sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is 
-   furnished to do so, subject to the following conditions: 
+   Permission is hereby granted, free of charge, to any person obtaining a copy of this software
+   and associated documentation files (the "Software"), to deal in the Software without restriction,
+   including without limitation the rights to use, copy, modify, merge, publish, distribute,
+   sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is
+   furnished to do so, subject to the following conditions:
 
-   The above copyright notice and this permission notice shall be included in all copies or 
-   substantial portions of the Software. 
+   The above copyright notice and this permission notice shall be included in all copies or
+   substantial portions of the Software.
 
-   The Software shall be used for Good, not Evil. 
+   The Software shall be used for Good, not Evil.
 
-   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING 
-   BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND 
-   NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, 
-   DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, 
-   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. 
+   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING
+   BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+   NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+   DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
 
@@ -33,7 +33,7 @@ import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.DataType;
 import de.uniks.networkparser.graph.Parameter;
 
-public class StudyRightWithAssignmentsModel 
+public class StudyRightWithAssignmentsModel
 {
 
 	/**
@@ -51,36 +51,36 @@ public class StudyRightWithAssignmentsModel
 	  //============================================================
 	  story.addText("1. generate class University");
 
-	  
+	
 	  StoryStepSourceCode code = story.addSourceCode(StudyRightWithAssignmentsModel.class, StoryStepSourceCode.CURRENTPOSITION);
 	  ClassModel model = new ClassModel("org.sdmlib.test.examples.studyrightWithAssignments.model");
 
-      Clazz universityClass = model.createClazz("University")      
+      Clazz universityClass = model.createClazz("University")
     		  .withAttribute("name", DataType.STRING);
       code.withEnd(StoryStepSourceCode.CURRENTPOSITION);
-      
+
       story.addDiagram(model);
 
       //============================================================
       story.addText("2. generate class Student");
 
-      
+
       code = story.addSourceCode(StudyRightWithAssignmentsModel.class, StoryStepSourceCode.CURRENTPOSITION);
       Clazz studentClass = model.createClazz("Student")
             .withAttribute("name", DataType.STRING)
             .withAttribute("id", DataType.STRING)
             .withAttribute("assignmentPoints", DataType.INT)
-            .withAttribute("motivation", DataType.INT) 
+            .withAttribute("motivation", DataType.INT)
             .withAttribute("credits", DataType.INT);
       code.withEnd(StoryStepSourceCode.CURRENTPOSITION);
-      
+
       story.addDiagram(model);
 
 
       //============================================================
       story.addText("3. add University --> Student association");
 
-      // Association universityToStudent = 
+      // Association universityToStudent =
       code = story.addSourceCode(StudyRightWithAssignmentsModel.class, StoryStepSourceCode.CURRENTPOSITION);
       universityClass.withBidirectional(studentClass, "students", Cardinality.MANY, "university", Cardinality.ONE);
       code.withEnd(StoryStepSourceCode.CURRENTPOSITION);
@@ -98,20 +98,20 @@ public class StudyRightWithAssignmentsModel
 
       roomClass.withMethod("findPath", DataType.STRING, new Parameter(DataType.INT).with("motivation"));
 
-      //Association universityToRoom = 
+      //Association universityToRoom =
       universityClass.createBidirectional(roomClass, "rooms", Cardinality.MANY, "university", Cardinality.ONE).with(AssociationTypes.AGGREGATION);
-      
-      // Association doors = 
+
+      // Association doors =
       roomClass.withBidirectional(roomClass, "doors", Cardinality.MANY, "doors", Cardinality.MANY);
 
-      // Association studentsInRoom = 
+      // Association studentsInRoom =
       studentClass.withBidirectional(roomClass, "in", Cardinality.ONE, "students", Cardinality.MANY);
       studentClass.withBidirectional(studentClass, "friends", Cardinality.MANY, "friends", Cardinality.MANY);
-      
+
       code.withEnd(StoryStepSourceCode.CURRENTPOSITION);
 
       story.addDiagram(model);
-      
+
       //============================================================
       story.addText("5. add assignments:");
 
@@ -120,32 +120,32 @@ public class StudyRightWithAssignmentsModel
                .withAttribute("content", DataType.STRING)
                .withAttribute("points", DataType.INT)
                .withBidirectional(roomClass, "room", Cardinality.ONE, "assignments", Cardinality.MANY);
-      
+
       studentClass.withBidirectional(assignmentClass, "done", Cardinality.MANY, "students", Cardinality.MANY);
       code.withEnd(StoryStepSourceCode.CURRENTPOSITION);
-      
+
       story.addDiagram(model);
-      
+
       studentClass.withBidirectional(studentClass, "friends", Cardinality.MANY, "friends", Cardinality.MANY);
-      
-      
+
+
       // some more classes for model navigation tests
       studentClass.withBidirectional(studentClass, "friends", Cardinality.MANY, "friends", Cardinality.MANY);
-      
+
       model.createClazz("TeachingAssistant")
       .withSuperClazz(studentClass)
       .withBidirectional(roomClass, "room", Cardinality.ONE, "tas", Cardinality.MANY)
       .withAttribute("certified", DataType.BOOLEAN);
-      
+
 
       Clazz presidentClass = model.createClazz("President");
       universityClass.createBidirectional(presidentClass, "president", Cardinality.ONE, "university", Cardinality.ONE).with(AssociationTypes.AGGREGATION);
-      
+
       //============================================================
       story.addText("6. generate class source files.");
 
       // model.removeAllGeneratedCode("src/test/java");
-      
+
       model.setAuthorName("zuendorf");
       code = story.addSourceCode(StudyRightWithAssignmentsModel.class, StoryStepSourceCode.CURRENTPOSITION);
 //      model.generate("src/test/java"); // usually don't specify anything here, then it goes into src

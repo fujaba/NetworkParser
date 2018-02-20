@@ -31,7 +31,7 @@ public class Form extends Control {
 
 	/**
 	 * The Submit Method. eg. "get".
-	 * 
+	 *
 	 * @param value Set Submit Method: POST, GET
 	 * @return return success
 	 */

@@ -42,11 +42,11 @@ public class SimpleController implements ObjectCondition{
 	private String javaAgent;
 	private String mainClass;
 	private String outputParameter;
-	
+
 	public SimpleController(Object primitiveStage) {
 		this(primitiveStage, true);
 	}
-	
+
 	public SimpleController(Object primitiveStage, boolean init) {
 		withStage(primitiveStage);
 		application = getApplication();
@@ -54,7 +54,7 @@ public class SimpleController implements ObjectCondition{
 			this.init();
 		}
 	}
-	
+
 	public void showContent(Object element) {
 		Object content = this.createContent(element);
 		if(content != null) {
@@ -62,7 +62,7 @@ public class SimpleController implements ObjectCondition{
 			this.show(content);
 		}
 	}
-	
+
 	public Object createContent(Object element) {
 		if(element == null) {
 			return null;
@@ -74,19 +74,19 @@ public class SimpleController implements ObjectCondition{
 		}
 		return null;
 	}
-	
+
 	public SimpleController withStage(Object stage) {
 		this.stage = stage;
 		GUIEvent proxyHandler=new GUIEvent();
 		proxyHandler.withListener(this);
-		
+
 		Object proxy = ReflectionLoader.createProxy(proxyHandler, ReflectionLoader.EVENTHANDLER);
-		
+
 		ReflectionLoader.call("setOnCloseRequest", stage, ReflectionLoader.EVENTHANDLER, proxy);
 		ReflectionLoader.call("setOnShowing", stage, ReflectionLoader.EVENTHANDLER, proxy);
 		return this;
 	}
-	
+
 	private Object getApplication() {
 		Field params;
 		try {
@@ -115,7 +115,7 @@ public class SimpleController implements ObjectCondition{
 		if (encodingCode != null && !encodingCode.equalsIgnoreCase(System.getProperty("file.encoding"))) {
 			System.setProperty("file.encoding", encodingCode);
 			Class<Charset> c = Charset.class;
-	
+
 			java.lang.reflect.Field defaultCharsetField;
 			try {
 				defaultCharsetField = c.getDeclaredField("defaultCharset");
@@ -125,7 +125,7 @@ public class SimpleController implements ObjectCondition{
 			}
 		}
 		SimpleKeyValueList<String, String> params = getParameterMap();
-		// Example 
+		// Example
 //		-Xms<size>        set initial Java heap size
 //		-Xmx<size>        set maximum Java heap size
 //		-Xss<size>        set java thread stack size
@@ -157,7 +157,7 @@ public class SimpleController implements ObjectCondition{
 				Runtime.getRuntime().exit(1);
 			} else if (key.startsWith("-")) {
 				if (value != null) {
-					customParams.add(key+"="+value);	
+					customParams.add(key+"="+value);
 				} else {
 					customParams.add(key);
 				}
@@ -176,7 +176,7 @@ public class SimpleController implements ObjectCondition{
 				items.add("-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=" + debugPort);
 				// Now Add Custom Params
 				items.addAll(customParams);
-				
+
 				items.add("-jar");
 				String fileName = new Os().getFilename().toLowerCase();
 				if("bin".equals(fileName)) {
@@ -187,20 +187,20 @@ public class SimpleController implements ObjectCondition{
 			}
 			if(this.javaAgent != null) {
 				String path = this.errorHandler.getPath();
-				
+
 				String agent = this.javaAgent;
 				if(path != null) {
 					agent += "=destfile="+path+"jacoco.exec";
-							
+
 				}
 
 				items.add("-javaagent:" + agent);
 				items.add(ReflectionBlackBoxTester.class.getName());
 				items.add("test="+mainClass);
-				
+
 				if(path != null) {
 					items.add("path="+path);
-				}				
+				}
 			}
 
 			if(Os.isReflectionTest()) {
@@ -223,7 +223,7 @@ public class SimpleController implements ObjectCondition{
 						if (pos > 0) {
 							ReflectionLoader.call("redirectError", processBuilder, File.class, new File(outputFile.substring(0, pos) + "_error" + outputFile.substring(pos)));
 							ReflectionLoader.call("redirectOutput", processBuilder, File.class, new File(outputFile.substring(0, pos) + "_stdout" + outputFile.substring(pos)));
-									
+
 						} else {
 							ReflectionLoader.call("redirectError", processBuilder, File.class, new File(outputFile + "_error.txt"));
 							ReflectionLoader.call("redirectOutput", processBuilder, File.class, new File(outputFile + "_stdout.txt"));
@@ -267,8 +267,8 @@ public class SimpleController implements ObjectCondition{
 		}
 		return map;
 	}
-	
-	
+
+
 	public String getUserName(String... defaultName) {
 		SimpleKeyValueList<String, String> parameterMap = getParameterMap();
 		for(int i=0;i<parameterMap.size();i++) {
@@ -284,7 +284,7 @@ public class SimpleController implements ObjectCondition{
 		}
 		return "";
 	}
-	
+
 
 	public void show(Object root, boolean newStage) {
 		Object oldStage = null;
@@ -305,7 +305,7 @@ public class SimpleController implements ObjectCondition{
 			scene =  ReflectionLoader.newInstance(ReflectionLoader.SCENE, ReflectionLoader.PARENT, root);
 		}
 		ReflectionLoader.call("setScene", stage, ReflectionLoader.SCENE, scene);
-		
+
 		if(root instanceof ObjectCondition) {
 			this.withListener((ObjectCondition)root);
 		}
@@ -318,15 +318,15 @@ public class SimpleController implements ObjectCondition{
 			ReflectionLoader.call("close", oldStage);
 		}
 	}
-	
+
 	public void show(Object root) {
 		show(root, firstShow == false);
 	}
-	
+
 	public Object getCurrentScene() {
 		return ReflectionLoader.call("getScene", stage);
 	}
-	
+
 	protected void showing() {
 		if(this.stage != null) {
 			init();
@@ -342,7 +342,7 @@ public class SimpleController implements ObjectCondition{
 			}
 		}
 	}
-	
+
 	public int start() {
 		Process p = this.init();
 		try {
@@ -352,7 +352,7 @@ public class SimpleController implements ObjectCondition{
 		}
 		return -1;
 	}
-	
+
 	public SimpleController withAgent(String agent, String backBoxTester, String... mainClass) {
 		this.javaAgent = agent;
 		CharacterBuffer testClasses=new CharacterBuffer();
@@ -379,12 +379,12 @@ public class SimpleController implements ObjectCondition{
 		}
 		return withAgent(agent, null, mainClass);
 	}
-	
+
 	public SimpleController withOutput(String value) {
 		this.outputParameter = value;
 		return this;
 	}
-	
+
 	public String getEncodingCode() {
 		return encodingCode;
 	}
@@ -392,7 +392,7 @@ public class SimpleController implements ObjectCondition{
 	public void withEncodingCode(String value) {
 		this.encodingCode = value;
 	}
-	
+
 	protected String getCommandHelp() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("Help for the Commandline - ");
@@ -404,12 +404,12 @@ public class SimpleController implements ObjectCondition{
 
 		return sb.toString();
 	}
-	
+
 	public SimpleController withEclipse(boolean enableThrows) {
 		this.isEclipse = enableThrows;
 		return this;
 	}
-	
+
 	public SimpleController withErrorPath(String value) {
 		this.errorHandler.withPath(value);
 		if(isEclipse == false) {
@@ -429,14 +429,14 @@ public class SimpleController implements ObjectCondition{
 			System.setErr(new StringPrintStream(this.errorHandler, true));
 		}
 		return this;
-		
+
 	}
 
 	public void withTitle(String value) {
 		this.title = value;
 	}
 
-	
+
 	public SimpleController withIcon(String value) {
 		return withIcon(value, null);
 	}
@@ -471,7 +471,7 @@ public class SimpleController implements ObjectCondition{
 		}
 		return this;
 	}
-	
+
 	private void refreshIcon() {
 		Object image;
 		if (this.icon.startsWith("file") || this.icon.startsWith("jar")) {
@@ -483,20 +483,20 @@ public class SimpleController implements ObjectCondition{
 		List<Object> icons = (List<Object>) ReflectionLoader.call("getIcons", stage);
 		icons.add(image);
 	}
-	
+
 	public SimpleController withToolTip(String text) {
 		if(this.trayIcon != null) {
 			ReflectionLoader.call("setToolTip", trayIcon, String.class, text);
 		}
 		return this;
 	}
-	
+
 	public SimpleController withSize(double width, double height) {
 		ReflectionLoader.call("setWidth", stage, double.class, width);
 		ReflectionLoader.call("setHeight", stage, double.class, height);
 		return this;
 	}
-	
+
 	public SimpleController withFullScreen(boolean value) {
 		ReflectionLoader.call("setFullScreen", stage, boolean.class, value);
 		return this;
@@ -516,32 +516,32 @@ public class SimpleController implements ObjectCondition{
 		return caption + getVersion() + " (" + System.getProperty("file.encoding") + " - "
 				+ System.getProperty("sun.arch.data.model") + "-Bit)";
 	}
-	
+
 	public Object addTrayMenuItem(String text, ObjectCondition listener) {
 		Object item  = ReflectionLoader.newInstance(ReflectionLoader.MENUITEM, String.class, text);
 
 		GUIEvent event = new GUIEvent().withListener(this);
 		this.withListener(listener);
-		
-		
+
+
 		Object actionListener = ReflectionLoader.createProxy(event, ReflectionLoader.ACTIONLISTENER);
-		
+
 		ReflectionLoader.call("addActionListener", item, ReflectionLoader.ACTIONLISTENER, actionListener);
 		ReflectionLoader.call("add", getPopUp(), ReflectionLoader.MENUITEM, item);
 		return item;
 	}
-	
+
 	public void addTraySeperator() {
 		ReflectionLoader.call("addSeparator", getPopUp());
 	}
-	
+
 	private Object getPopUp() {
 		if(popupMenu == null) {
 			popupMenu = ReflectionLoader.newInstance(ReflectionLoader.POPUPMENU);
 		}
 		return popupMenu;
 	}
-	
+
 	public Object showTrayIcon(String... labels) {
 		if(Os.checkSystemTray() == false) {
 			return null;
@@ -557,7 +557,7 @@ public class SimpleController implements ObjectCondition{
 				Object toolKit = ReflectionLoader.call("getDefaultToolkit", ReflectionLoader.TOOLKIT);
 				Object image = ReflectionLoader.call("getImage", toolKit, URL.class, iconURL);
 				Object newImage = ReflectionLoader.call("getScaledInstance", image, int.class, 16, int.class, 16, int.class, 4);
-						
+
 				this.close();
 				this.trayIcon = ReflectionLoader.newInstance(ReflectionLoader.TRAYICON, ReflectionLoader.AWTIMAGE, newImage);
 				Integer count = (Integer) ReflectionLoader.call("getItemCount", getPopUp());
@@ -571,17 +571,17 @@ public class SimpleController implements ObjectCondition{
 				if(count < 1) {
 					addTrayMenuItem(CLOSE, this);
 				}
-				
+
 				ReflectionLoader.call("setPopupMenu", trayIcon, ReflectionLoader.POPUPMENU, popupMenu);
 				Object systemTray = ReflectionLoader.call("getSystemTray", ReflectionLoader.SYSTEMTRAY);
 				ReflectionLoader.call("add", systemTray, ReflectionLoader.TRAYICON,this.trayIcon);
 			}catch (Exception e) {
 			}
-			
+
 		}
 		return this.trayIcon;
 	}
-	
+
 	public void close() {
 		if(this.stage != null) {
 			ReflectionLoader.call("close", this.stage);
@@ -593,7 +593,7 @@ public class SimpleController implements ObjectCondition{
 			this.trayIcon = null;
 		}
 	}
-	
+
 	public static String getVersion() {
 		String result = SimpleController.class.getPackage().getImplementationVersion();
 		if (result == null) {
@@ -601,12 +601,12 @@ public class SimpleController implements ObjectCondition{
 		}
 		return result;
 	}
-	
+
 	public SimpleController withListener(ObjectCondition value) {
 		this.listener.add(value);
 		return this;
 	}
-	
+
 	public void saveException(Throwable e) {
 		this.errorHandler.saveException(e);
 	}
@@ -615,7 +615,7 @@ public class SimpleController implements ObjectCondition{
 		this.listener.add(listener);
 		return this;
 	}
-	
+
 	@Override
 	public boolean update(Object value) {
 		if(value == null) {
@@ -642,7 +642,7 @@ public class SimpleController implements ObjectCondition{
 		}
 		return true;
 	}
-	
+
 	public static SimpleController create() {
 		return new SimpleController(null);
 	}

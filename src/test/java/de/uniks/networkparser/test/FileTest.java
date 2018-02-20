@@ -36,7 +36,7 @@ public class FileTest {
 		XMLEntity root = new XMLEntity().withValue(buffer);
 		Assert.assertEquals(18, root.sizeChildren());
 	}
-	
+
 	@Test
 	public void fileReaderChanges() throws IOException{
 		BaseItem buffer = FileBuffer.readBaseFile("src/test/resources/de/uniks/networkparser/test/change.json");
@@ -44,7 +44,7 @@ public class FileTest {
 		EntityList list = (EntityList)buffer;
 		Assert.assertEquals(3, list.size());
 	}
-	
+
 	@Test
 	public void fileReaderModel() {
 		BaseItem modelJson = FileBuffer.readBaseFile("src/test/resources/de/uniks/networkparser/test/model.json");

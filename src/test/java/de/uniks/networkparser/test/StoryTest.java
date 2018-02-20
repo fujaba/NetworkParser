@@ -20,23 +20,23 @@ public class StoryTest {
 		story.addImage("https://seblog.cs.uni-kassel.de/wp-content/themes/segroup/plugins/uni-logo-widget/img/uniks_logo.png");
 //		story.add(new StoryStepSourceCode().withCode(StoryTest.class).withCode("src/test/java"));
 		story.withName("test.html");
-		
+
 		story.addSourceCode(StoryTest.class, 0, 0);
-		
+
 		story.addSourceCode("src/main/java", IdMap.class, "cloneObject(Object reference, Object filter)");
-		
-		
-		
+
+
+
 		ClassModel model = new ClassModel();
 		model.createClazz("Person");
-		
+
 		story.addDiagram(model);
-		
-		
+
+
 		story.dumpHTML();
 	}
-	
-	
+
+
 	@Test
 	public void testStoryBook() {
 		Story story = new Story();
@@ -46,13 +46,13 @@ public class StoryTest {
 		story.with(halloWelt);
 		Story ludo = new Story().withName("Ludo");
 		story.with(ludo);
-		
+
 		Story startGame = new Story().withName("StartGame");
 		ludo.with(startGame);
 		Story winGame = new Story().withName("WinGame");
 		ludo.with(winGame);
-		
+
 		story.dumpIndexHTML();
 	}
-	
+
 }

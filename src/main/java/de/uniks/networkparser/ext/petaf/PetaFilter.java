@@ -10,19 +10,19 @@ public class PetaFilter extends Filter {
 	public static final String ID="id"; // UPDATE only send basic info
 	public static final String ATTRIBUTES = "attributes"; // ATTRIBUTES send all Attributes of Remote Proxy
 	public static final String INFO="info"; // Info send more Infos
-	
+
 	private String typ=UPDATE;
 	private String oldTyp;
-	
+
 	public PetaFilter() {
 		withFormat(FORMAT_SHORTCLASS);
 	}
-	
+
 	@Override
 	public void convertProperty(Object entity, String fullProp) {
 		super.convertProperty(entity, fullProp);
-		
-		
+
+
 		if(InfoMessage.PROPERTY_PROXIES.equals(fullProp) && entity instanceof InfoMessage) {
 			this.oldTyp = this.typ;
 			this.typ = INFO;
@@ -34,7 +34,7 @@ public class PetaFilter extends Filter {
 			this.oldTyp = null;
 		}
 	}
-	
+
 	@Override
 	public String[] getProperties(SendableEntityCreator creator) {
 		if(creator instanceof NodeProxy) {
@@ -51,7 +51,7 @@ public class PetaFilter extends Filter {
 		}
 		return super.getProperties(creator);
 	}
-	
+
 	public PetaFilter withTyp(String typ) {
 		this.typ = typ;
 		return this;

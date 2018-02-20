@@ -18,7 +18,7 @@ public class JavaAttribute extends BasicGenerator{
 				"{{#foreach {{parent.parent.child}}}}" +
 				   "{{#if {{item.type}}==class}}" +
 				      "{{#ifnot {{item.name}}=={{file.member.name}}}}" +
-				         "{{#if {{item.name}}=={{type}}}}" + 
+				         "{{#if {{item.name}}=={{type}}}}" +
 				            "{{#import {{item.fullName}}}}" +
 				         "{{#endif}}" +
 				      "{{#endif}}" +
@@ -54,9 +54,9 @@ public class JavaAttribute extends BasicGenerator{
 					"   }","",
 				"{{#endif}}","",
 				"{{#endif}}{{#endtemplate}}");
-		
+
 	}
-	
+
 	@Override
 	public Class<?> getTyp() {
 		return Attribute.class;

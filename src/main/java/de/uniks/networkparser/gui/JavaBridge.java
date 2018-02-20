@@ -35,9 +35,9 @@ public abstract class JavaBridge implements ObjectCondition {
 	private NetworkParserLog logger;
 
 	private HTMLEntity entity;
-	
+
 	private XMLEntity debug;
-	
+
 	public JavaBridge() {
 		this(null, null, CONTENT_TYPE_INCLUDE);
 	}
@@ -50,7 +50,7 @@ public abstract class JavaBridge implements ObjectCondition {
 		}
 		return this;
 	}
-	
+
 
 	public JavaBridge(IdMap map, JavaViewAdapter webView, String type) {
 		if (map == null) {
@@ -60,11 +60,11 @@ public abstract class JavaBridge implements ObjectCondition {
 		if(map!= null) {
 			map.add(this);
 		}
-		
+
 		this.webView = webView;
-		if(webView != null) { 
+		if(webView != null) {
 			this.webView.withOwner(this);
-			
+
 		}
 		if(type.equals(CONTENT_TYPE_NONE) == false) {
 			entity = init(type, "var bridge = new DiagramJS.Bridge();");
@@ -73,7 +73,7 @@ public abstract class JavaBridge implements ObjectCondition {
 			}
 		}
 	}
-	
+
 	public HTMLEntity getEntity() {
 		return entity;
 	}
@@ -97,7 +97,7 @@ public abstract class JavaBridge implements ObjectCondition {
 			entity.withScript(readFile("./res/diagram.js"), entity.getHeader());
 			entity.withHeaderStyle(readFile("./res/material.css"));
 			entity.withHeaderStyle(readFile("./res/style.css"));
-			
+
 		}
 		return entity;
 	}
@@ -121,7 +121,7 @@ public abstract class JavaBridge implements ObjectCondition {
 			return true;
 		}
 		JsonObject jsonObject = (JsonObject) simpleEvent.getEntity();
-		
+
 		if(jsonObject == null){
 			return false;
 		}
@@ -140,7 +140,7 @@ public abstract class JavaBridge implements ObjectCondition {
 		script = "console.log = function(message) { java.log(message); }"; // Now where ever console.log is called in your html you will get a log in Java console
 		executeScript(script);
 	}
-	
+
 
 	public IdMap getMap() {
 		return this.map;
@@ -267,16 +267,16 @@ public abstract class JavaBridge implements ObjectCondition {
 			this.logger.log(owner, method, msg, level);
 		}
 	}
-	
+
 	public void load(String url) {
 		if(this.webView != null) {
 			this.webView.load(entity);
 		}
 	}
-	
+
 	/**
 	 * Register a Listener on the Control, that invokes a function, that has the given name, on the given object.
-	 * 
+	 *
 	 * @param c the control
 	 * @param type the eventType
 	 * @param methodName the name of the function that is invoked

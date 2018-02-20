@@ -48,13 +48,13 @@ public class SQLModelConverterTest {
 		if (file.exists()) {
 			file.delete();
 		}
-		
-		
+
+
 		SQLTokener tokener = new SQLTokener(SQLStatement.connect("jdbc", "sqlite", "build/sampleA.db"));
-		
-		
+
+
 		tokener.withConnection(ReflectionLoader.loadSQLDriver("jdbc:sqlite", "lib/sql/sqlite-jdbc-3.8.11.2.jar", "build/sampleA.db"));
-		
+
 		SQLStatementList statements = tokener.encode(model);
 
 		SQLStatement insertStatement = new SQLStatement(SQLCommand.INSERT, "student");
@@ -245,11 +245,11 @@ public class SQLModelConverterTest {
 		}
 
 		SQLTokener tokener = new SQLTokener(SQLStatement.connect("jdbc", "sqlite", "build/sampleC.db"));
-		
+
 		Connection conn = ReflectionLoader.loadSQLDriver("jdbc:sqlite", "lib/sql/sqlite-jdbc-3.8.11.2.jar", "build/sampleC.db");
 		System.out.println(conn);
 		tokener.withConnection(conn);
-		
+
 		IdMap map = UniversityCreator.createIdMap("1");
 		map.withTimeStamp(1);
 
@@ -280,7 +280,7 @@ public class SQLModelConverterTest {
 //			System.out.println(statement.toString());
 //		}
 	}
-	
+
 	@Test
 	public void createTablesPrivotisierung() {
 		File file = new File("build/sampleB.db");
@@ -304,7 +304,7 @@ public class SQLModelConverterTest {
 		Assert.assertEquals("jdbc:sqlite:build/sampleD.db", list.get(0).toString());
 		Assert.assertEquals("CREATE TABLE IF NOT EXISTS Student ('_ID' STRING, 'PROP' STRING, 'VALUE' OBJECT)", list.get(1).toString());
 		Assert.assertEquals("CREATE TABLE IF NOT EXISTS University ('_ID' STRING, 'PROP' STRING, 'VALUE' OBJECT)", list.get(2).toString());
-		
+
 		Assert.assertEquals("INSERT INTO Student (_ID, PROP, VALUE) values('S2', 'university', 'U1')", list.get(3).toString());
 		Assert.assertEquals("INSERT INTO Student (_ID, PROP, VALUE) values('S2', 'firstName', 'Max')", list.get(4).toString());
 		Assert.assertEquals("INSERT INTO Student (_ID, PROP, VALUE) values('S2', 'lastName', 'Mustermann')", list.get(5).toString());

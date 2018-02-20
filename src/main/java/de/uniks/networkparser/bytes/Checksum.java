@@ -51,7 +51,7 @@ public abstract class Checksum {
 	 * Updates the checksum with the specified byte.
 	 *
 	 * @param data		the byte
-	 * @return success to add the new Value  
+	 * @return success to add the new Value
 	 */
 	public boolean update(int data) {
 		length++;

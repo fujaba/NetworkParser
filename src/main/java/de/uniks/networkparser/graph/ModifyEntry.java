@@ -8,16 +8,16 @@ public class ModifyEntry extends GraphMember{
 		super.withChildren(child);
 		return this;
 	}
-	
+
 	public ModifyEntry withModifier(String type) {
 		this.type = type;
 		return this;
 	}
-	
+
 	public String getType() {
 		return type;
 	}
-	
+
 	public static ModifyEntry createDelete(GraphMember child) {
 		ModifyEntry result = new ModifyEntry();
 		result.withModifier(TYPE_DELETE);

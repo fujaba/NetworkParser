@@ -32,7 +32,7 @@ public class PomFileCreation {
 		"</project>";
 		Assert.assertEquals(ref, pom.toString(2));
 	}
-	
+
 	@Test
 	public void testManifest(){
 		CharacterBuffer sb=new CharacterBuffer();
@@ -42,6 +42,6 @@ public class PomFileCreation {
 
 		Manifest manifest = Manifest.create(sb);
 		Assert.assertEquals(3, manifest.size());
-		
+
 	}
 }

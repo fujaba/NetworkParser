@@ -187,7 +187,7 @@ final class BitMatrixParser {
 		}
 		return result;
 	}
-	
+
 	/**
 	 * <p>
 	 * Implementations of this method reverse the data masking process applied

@@ -66,25 +66,21 @@ public class DERBuffer extends ByteBuffer {
 		add(BITSTRING);
 	}
 	public void addBigIntegerLength(int length) {
-	    if (length > 127)
-	    {
-	        int size = 1;
-	        int val = length;
-	
-	        while ((val >>>= 8) != 0) {
-	            size++;
-	        }
-	        add((byte)(size | 0x80));
-	
-	        for (int i = (size - 1) * 8; i >= 0; i -= 8)
-	        {
-	        	add((byte)(length >> i));
-	        }
-	    }
-	    else
-	    {
-	    	add((byte)length);
-	    }
+		if (length > 127) {
+			int size = 1;
+			int val = length;
+
+			while ((val >>>= 8) != 0) {
+				size++;
+			}
+			add((byte)(size | 0x80));
+
+			for (int i = (size - 1) * 8; i >= 0; i -= 8) {
+				add((byte)(length >> i));
+			}
+		} else {
+			add((byte)length);
+		}
 	}
 	public void addLength(int value) {
 		if (value < 128) {
@@ -123,7 +119,7 @@ public class DERBuffer extends ByteBuffer {
 			} else if(item instanceof Byte[]) {
 				pos = length;
 				add((Byte[])item);
-				
+
 				z--;
 				if((Byte)values[z] == DERBuffer.BITSTRING) {
 					add(0);

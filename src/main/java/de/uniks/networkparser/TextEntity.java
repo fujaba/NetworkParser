@@ -71,7 +71,7 @@ public class TextEntity implements EntityList {
 			for(Object item : values) {
 				if(item instanceof BaseItem) {
 					this.withChild((BaseItem) item);
-				} 
+				}
 			}
 			return true;
 		}
@@ -84,7 +84,7 @@ public class TextEntity implements EntityList {
 		}
 		this.children.add(item);
 	}
-	
+
 	public String getTag() {
 		return tag;
 	}
@@ -97,7 +97,7 @@ public class TextEntity implements EntityList {
 		this.tag = ""+value;
 		return this;
 	}
-	
+
 	public TextEntity withTagEnd(CharSequence value) {
 		this.tagEnd = value;
 		return this;

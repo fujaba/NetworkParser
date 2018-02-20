@@ -43,14 +43,14 @@ import de.uniks.networkparser.test.model.util.UniversityCreator;
 public class JsonModellTest implements ObjectCondition {
 	private IdMap secondMap;
 	BaseItem data;
-	
+
 	@Test
 	public void testJsonUpdate(){
 		JsonObject json = JsonObject.create("{id:number, upd:{value:42}, rem:{}}");
 		JsonTokener tokener = new JsonTokener();
 		UpdateListener updateListener = new UpdateListener(null, tokener);
 		updateListener.execute(json, null);
-		
+
 		IdMap map = new IdMap();
 		SimpleObject so = new SimpleObject();
 		so.setValue("value", 42);
@@ -59,7 +59,7 @@ public class JsonModellTest implements ObjectCondition {
 		updateListener = new UpdateListener(map, tokener);
 		updateListener.execute(json, null);
 	}
-	
+
 	@Test
 	public void testGenericJson(){
 		University uni = new University().withName("Uni Kassel");
@@ -76,7 +76,7 @@ public class JsonModellTest implements ObjectCondition {
 		uni.withStudents(new Student().withFirstName("Stefan"));
 
 		JsonObject json = SimpleParser.toJson(uni);
-		
+
 		University uniKassel = SimpleParser.fromJson(json, University.class);
 		Assert.assertEquals("Uni Kassel", uniKassel.getName());
 	}
@@ -86,7 +86,7 @@ public class JsonModellTest implements ObjectCondition {
 		uni.withStudents(new Student().withFirstName("Stefan"));
 
 		JsonObject json = SimpleParser.toJson(uni);
-		
+
 		University uniKassel = SimpleParser.fromJson(json);
 		Assert.assertEquals("Uni Kassel", uniKassel.getName());
 	}
@@ -102,13 +102,13 @@ public class JsonModellTest implements ObjectCondition {
 		University uni = new University();
 		uni.withStudents(new Student().withFirstName("Albert").withStudNo("geheim"));
 		uni.withStudents(new Student().withFirstName("Stefan"));
-		
+
 		IdMap map=new IdMap();
 		map.withCreator(new UniversityCreator(), new StudentCreator());
 		String json = map.toJsonArray(uni, Filter.regard(InstanceOf.create(Student.PROPERTY_STUD_NO))).toString();
 		Assert.assertFalse(json.indexOf("geheim") >= 0);
 	}
-	
+
 	@Test
 	public void testuniWithStudentsAndRoom(){
 		University uni = new University();
@@ -116,7 +116,7 @@ public class JsonModellTest implements ObjectCondition {
 		Student albert = new Student().withFirstName("Albert").withStudNo("geheim");
 		uni.withStudents(albert);
 		uni.withStudents(new Student().withFirstName("Stefan"));
-		
+
 		IdMap map=new IdMap();
 
 		InstanceOf classFilter = InstanceOf.create(Student.class);
@@ -126,7 +126,7 @@ public class JsonModellTest implements ObjectCondition {
 		Assert.assertFalse(json.indexOf("geheim") >= 0);
 		Assert.assertFalse(json.indexOf("de.uniks.networkparser.test.model.Room") >=0);
 	}
-	
+
 	@Test
 	public void testSet(){
 		GroupAccount account= new GroupAccount();
@@ -274,7 +274,7 @@ public class JsonModellTest implements ObjectCondition {
 		ByteMessage newMessage = (ByteMessage) map.decode(jsonObject);
 		Assert.assertEquals(message.getValue(), newMessage.getValue());
 	}
-	
+
 	@Test
 	public void testJSONAccumilateAssociation() {
 		//TODO MERGE SOME UPDATE NOTIFICATION
@@ -288,7 +288,7 @@ public class JsonModellTest implements ObjectCondition {
 //		map.toJsonObject(person);
 		UpdateAccumulate updateAccumulate = new UpdateAccumulate();
 		map.withListener(new ObjectCondition() {
-			
+
 			@Override
 			public boolean update(Object value) {
 				System.out.println(value);
@@ -298,9 +298,9 @@ public class JsonModellTest implements ObjectCondition {
 		account.withPersons(person);
 		person.withBalance(42);
 		person.withName("Albert");
-		
+
 		account.createItem();
 		Assert.assertNotNull(updateAccumulate);
-	
+
 	}
 }

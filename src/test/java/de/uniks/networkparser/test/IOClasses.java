@@ -49,11 +49,11 @@ public static String CRLF="\r\n";
 		}
 		return null;
 	}
-	
+
 //	public StringBuffer writeFile(String file){
 //		try {
 //			throw new Exception("Path");
 //		}
 //	}
-	
+
 }

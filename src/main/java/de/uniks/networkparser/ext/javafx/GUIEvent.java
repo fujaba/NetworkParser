@@ -15,7 +15,7 @@ public class GUIEvent extends Event {
 		this.listerner = value;
 		return this;
 	}
-	
+
 	public void handle(Object event) {
 		if(this.listerner != null) {
 			this.listerner.update(event);
@@ -26,23 +26,23 @@ public class GUIEvent extends Event {
 			this.listerner.update(event);
 		}
 	}
-	
+
 	public void actionPerformed(Object e) {
 		if(this.listerner != null) {
 			this.listerner.update(e);
 		}
 	}
-	
+
 	public void changed(Object observable, Object oldValue, Object newValue) {
 		if(this.listerner != null) {
 			this.listerner.update(newValue);
 		}
 	}
-	
+
 	private static Object getMember(Object obj, String value) {
 		return ReflectionLoader.call("getMember", obj, String.class, value);
 	}
-	
+
 	public boolean isSubEventName(String name) {
 		if(name == null || this.event == null) {
 			return false;
@@ -50,7 +50,7 @@ public class GUIEvent extends Event {
 		String subName = this.event.getClass().getName();
 		return subName.equals(name);
 	}
-	
+
 	public ObjectCondition match(Object other) {
 		if(other == null) {
 			return null;
@@ -68,7 +68,7 @@ public class GUIEvent extends Event {
 		}
 		return null;
 	}
-	
+
 	public static GUIEvent create(Object obj) {
 //			boolean isEvent = (boolean) obj.eval("this instanceof Event");
 		GUIEvent event = new GUIEvent();
@@ -91,7 +91,7 @@ public class GUIEvent extends Event {
 		if("javafx.stage.WindowEvent".equals(name)) {
 			event.setValue(EVENT_TYPE, EventTypes.WINDOWEVENT);
 			event.setValue(CURRENT_TARGET, ReflectionLoader.call("getTarget", obj));
-			
+
 			String type = ""+ReflectionLoader.call("getEventType", obj);
 			event.active = "WINDOW_CLOSE_REQUEST".equals(type) == false;
 			event.setValue(EVENT, obj);
@@ -125,7 +125,7 @@ public class GUIEvent extends Event {
 			String eventName = ""+value;
 			event.eventType = EventTypes.valueOf(eventName.toUpperCase());
 		}
-		
+
 		event.event = obj;
 		value = getMember(obj, TYPE);
 		if(value != null) {
@@ -141,7 +141,7 @@ public class GUIEvent extends Event {
 	public ObjectCondition getListener() {
 		return this.listerner;
 	}
-	
+
 	public GUIEvent withCode(int value) {
 		this.put(CODE, value);
 		return this;

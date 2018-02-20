@@ -18,14 +18,14 @@ public class GetMethodsTest {
 		Clazz person = model.createClazz("Person").with(Modifier.create(Modifier.ABSTRACT));
 		Method method = person.createMethod("think").with(DataType.BOOLEAN);
 		method.with(Modifier.create(Modifier.ABSTRACT));
-		
+
 		Clazz student = model.createClazz("Student").withSuperClazz(person);
 
 		MethodSet methods = student.getMethods();
 		Assert.assertEquals(1, methods.size());
 		Assert.assertEquals(method, methods.get(0));
 	}
-	
+
 	@Test
 	public void testInterface() {
 		GraphList model = new GraphList().with("de.uniks");
@@ -36,7 +36,7 @@ public class GetMethodsTest {
 		Assert.assertEquals(1, methods.size());
 		Assert.assertEquals(method, methods.get(0));
 	}
-	
+
 	@Test
 	public void testAbstractToNormal() {
 		GraphList model = new GraphList().with("de.uniks");
@@ -46,7 +46,7 @@ public class GetMethodsTest {
 		Method method = person.createMethod("think").with(DataType.BOOLEAN);
 		MethodSet humanMethods = human.getMethods();
 		Assert.assertEquals(0, humanMethods.size());
-		
+
 		method.with(Modifier.ABSTRACT);
 		humanMethods = human.getMethods();
 		Assert.assertEquals(1, humanMethods.size());
@@ -54,31 +54,31 @@ public class GetMethodsTest {
 		MethodSet studentMethods = student.getMethods();
 		Assert.assertEquals(0, studentMethods.size());
 	}
-	
+
 	@Test
 	public void testAbstractToAbstract() {
 		GraphList model = new GraphList().with("de.uniks");
 		Clazz person = model.createClazz("Person").with(Modifier.create(Modifier.ABSTRACT));
 		Method method = person.createMethod("think").with(DataType.BOOLEAN);
-		
+
 		Clazz human = model.createClazz("Human").withSuperClazz(person).with(Modifier.create(Modifier.ABSTRACT));
-		
+
 		Clazz student = model.createClazz("Student").withSuperClazz(human);
-		
+
 		MethodSet humanMethods = human.getMethods();
 		Assert.assertEquals(0, humanMethods.size());
 
 		MethodSet studentMethods = student.getMethods();
 		Assert.assertEquals(0, studentMethods.size());
-		
+
 		method.with(Modifier.ABSTRACT);
-		
+
 		studentMethods = student.getMethods();
-		
+
 		Assert.assertEquals(1, studentMethods.size());
 		Assert.assertEquals(method, studentMethods.get(0));
 	}
-	
+
 	@Test
 	public void testAbstractToNormalToAbstract() {
 		GraphList model = new GraphList().with("de.uniks");
@@ -88,7 +88,7 @@ public class GetMethodsTest {
 		Clazz pupil = model.createClazz("Pupil").withSuperClazz(student).with(Modifier.create(Modifier.ABSTRACT));
 		Method method = person.createMethod("think").with(DataType.BOOLEAN).with(Modifier.create(Modifier.ABSTRACT));
 		MethodSet humanMethods = human.getMethods();
-		
+
 		Assert.assertEquals(1, humanMethods.size());
 		Assert.assertEquals(method, humanMethods.get(0));
 		MethodSet studentMethods = student.getMethods();
@@ -96,7 +96,7 @@ public class GetMethodsTest {
 		MethodSet pupilMethods = pupil.getMethods();
 		Assert.assertEquals(0, pupilMethods.size());
 	}
-	
+
 	@Test
 	public void testAbstractToAbstractToNormal() {
 		GraphList model = new GraphList().with("de.uniks");
@@ -115,7 +115,7 @@ public class GetMethodsTest {
 		MethodSet pupilMethods = pupil.getMethods();
 		Assert.assertEquals(0, pupilMethods.size());
 	}
-	
+
 	@Test
 	public void testAbstractToAbstractToNormalToAbstract() {
 		GraphList model = new GraphList().with("de.uniks");
@@ -136,7 +136,7 @@ public class GetMethodsTest {
 		MethodSet subPupilMethods = subPupil.getMethods();
 		Assert.assertEquals(0, subPupilMethods.size());
 	}
-	
+
 	@Test
 	public void testAbstractToNormalToAbstractToNormal() {
 		GraphList model = new GraphList().with("de.uniks");
@@ -156,7 +156,7 @@ public class GetMethodsTest {
 		MethodSet subPupilMethods = subPupil.getMethods();
 		Assert.assertEquals(0, subPupilMethods.size());
 	}
-	
+
 	@Test
 	public void testInterfaceToAbstractToNormal() {
 		GraphList model = new GraphList().with("de.uniks");
@@ -170,7 +170,7 @@ public class GetMethodsTest {
 		Assert.assertEquals(1, pupilMethods.size());
 		Assert.assertEquals(method, pupilMethods.get(0));
 	}
-	
+
 	@Test
 	public void testInterfaceToNormalToAbstract() {
 		GraphList model = new GraphList().with("de.uniks");
@@ -184,7 +184,7 @@ public class GetMethodsTest {
 		MethodSet pupilMethods = pupil.getMethods();
 		Assert.assertEquals(0, pupilMethods.size());
 	}
-	
+
 	@Test
 	public void testInterfaceAndAbstract() {
 		GraphList model = new GraphList().with("de.uniks");
@@ -198,7 +198,7 @@ public class GetMethodsTest {
 		Assert.assertTrue(studentMethods.contains(method));
 		Assert.assertTrue(studentMethods.contains(method2));
 	}
-	
+
 	@Test
 	public void testInterfaceAndAbstractToNormal() {
 		GraphList model = new GraphList().with("de.uniks");
@@ -215,5 +215,5 @@ public class GetMethodsTest {
 		MethodSet pupilMethods = pupil.getMethods();
 		Assert.assertEquals(0, pupilMethods.size());
 	}
-	
+
 }

@@ -10,13 +10,13 @@ import de.uniks.networkparser.ext.petaf.Space;
 import de.uniks.networkparser.interfaces.Server;
 
 public class NodeProxyServer extends NodeProxy {
-	
+
 	public static final String PROPERTY_PORT = "port";
 	private int port = 9876;
 	private int bufferSize = 1024;
 	private Server server;
 	private String serverType;
-	
+
 	public NodeProxyServer(String type) {
 		super();
 		this.type = type;
@@ -24,13 +24,13 @@ public class NodeProxyServer extends NodeProxy {
 		this.propertyUpdate.addAll(PROPERTY_PORT);
 		this.propertyInfo.addAll(PROPERTY_PORT);
 	}
-	
+
 	public NodeProxyServer withServerType(String type) {
 		this.serverType = type;
 		return this;
 	}
 
-	
+
 	public DatagramPacket executeBroadCast(boolean async) {
 		if(async) {
 			this.server = new Server_UPD(this, true);
@@ -41,7 +41,7 @@ public class NodeProxyServer extends NodeProxy {
 		}
 		return null;
 	}
-	
+
 	public NodeProxyServer withAnswerSize(int answerSize) {
 		this.bufferSize = answerSize;
 		return this;
@@ -77,7 +77,7 @@ public class NodeProxyServer extends NodeProxy {
 		}
 		return true;
 	}
-	
+
 	public int getPort() {
 		return port;
 	}
@@ -90,7 +90,7 @@ public class NodeProxyServer extends NodeProxy {
 		// May be Server or Client
 		if(NodeProxy.isInput(this.type)) {
 			if(Server.TCP.equals(this.serverType)) {
-				
+
 			} else if(Server.TIME.equals(this.serverType)) {
 		    } else if(Server.REST.equals(this.serverType)) {
 		    	Space space = this.getSpace();

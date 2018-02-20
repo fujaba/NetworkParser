@@ -56,7 +56,7 @@ public class NodeProxyMQTT extends NodeProxy {
 	public static final String PROPERTY_SERVERURL = "url";
 
 	private String userName;
-	private char[] password;
+	private String password;
 	private boolean cleanSession = true;
 	private int keepAliveInterval = KEEP_ALIVE_INTERVAL_DEFAULT;
 	private int maxInflight = MAX_INFLIGHT_DEFAULT;
@@ -138,7 +138,7 @@ public class NodeProxyMQTT extends NodeProxy {
 	 * same client identifier when it reconnects to the server to resume state and
 	 * maintain assured message delivery.
 	 * </p>
-	 * 
+	 *
 	 * @return a generated client identifier
 	 */
 	public static String generateClientId() {
@@ -240,7 +240,7 @@ public class NodeProxyMQTT extends NodeProxy {
 				netModule = new TCPNetworkModule(factory, host, port, clientId);
 				((TCPNetworkModule) netModule).setConnectTimeout(getConnectionTimeout());
 				break;
-	
+
 			default:
 				// This shouldn't happen, as long as validateURI() has been called.
 				netModule = null;
@@ -261,7 +261,7 @@ public class NodeProxyMQTT extends NodeProxy {
 
 	/**
 	 * Validate a URI
-	 * 
+	 *
 	 * @param srvURI	 The Server URI
 	 * @return the URI type
 	 */
@@ -440,7 +440,7 @@ public class NodeProxyMQTT extends NodeProxy {
 
 		MqttWireMessage unregister = MqttWireMessage.create(MqttWireMessage.MESSAGE_TYPE_UNSUBSCRIBE);
 		unregister.withNames(topicFilters);
-		
+
 		comms.sendNoWait(unregister, token);
 		// @TRACE 110=<
 
@@ -487,7 +487,7 @@ public class NodeProxyMQTT extends NodeProxy {
 	 * client. Note that this number cannot be guaranteed to be 100% accurate as
 	 * some messages may have been sent or queued in the time taken for this method
 	 * to return.
-	 * 
+	 *
 	 * @return the current number of in-flight messages.
 	 */
 	public int getInFlightMessageCount() {
@@ -549,7 +549,7 @@ public class NodeProxyMQTT extends NodeProxy {
 		return userName;
 	}
 
-	public char[] getPassword() {
+	public String getPassword() {
 		return password;
 	}
 

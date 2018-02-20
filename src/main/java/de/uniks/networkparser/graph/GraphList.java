@@ -98,7 +98,7 @@ public class GraphList extends GraphModel {
 		super.withChildren(value);
 		return this;
 	}
-	
+
 	public GraphList withNode(GraphNode... value) {
 		super.withChildren(value);
 		return this;

@@ -59,7 +59,7 @@ public class MapEntity extends AbstractList<Object>{
 		this.grammar = map.getGrammar();
 		this.tokener = tokener;
 	}
-	
+
 	public MapEntity(IdMap map) {
 		if(map != null) {
 			this.filter = map.getFilter();
@@ -68,11 +68,11 @@ public class MapEntity extends AbstractList<Object>{
 		}
 		this.map = map;
 	}
-	
+
 	public Grammar getGrammar() {
 		return grammar;
 	}
-	
+
 	public Filter getFilter() {
 		return filter;
 	}
@@ -83,7 +83,7 @@ public class MapEntity extends AbstractList<Object>{
 	public int getDeep() {
 		return deep;
 	}
-	
+
 	public boolean isId(Object target) {
 		String className = target.getClass().getName();
 		return filter.isId(target, className, map);
@@ -171,7 +171,7 @@ public class MapEntity extends AbstractList<Object>{
 		this.stack = stack;
 		return this;
 	}
-	
+
 	public CharacterBuffer getPrefixProperties(SendableEntityCreator creator, Object entity, String className) {
 		CharacterBuffer result = new CharacterBuffer();
 		if(this.isSimpleFormat()) {
@@ -184,12 +184,12 @@ public class MapEntity extends AbstractList<Object>{
 		result.with(IdMap.ENTITYSPLITTER).with(Tokener.PROPS).with(IdMap.ENTITYSPLITTER);
 		return result;
 	}
-	
+
 	public MapEntity withFilter(Filter filter) {
 		this.filter = filter;
 		return this;
 	}
-	
+
 	// Method for Filter
 	public String getId(Object entity, String className) {
 		if (filter.isId(entity, className, map) == false) {

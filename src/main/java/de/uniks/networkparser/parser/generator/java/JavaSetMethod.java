@@ -18,7 +18,7 @@ public class JavaSetMethod extends BasicGenerator {
 				"      return {{file.member.name}}Set.EMPTY_SET;",
 				"   }","");
 	}
-	
+
 //    if ("void".equals(type))
 //    {
 //       type =  clazz2.getName(true) + "Set";
@@ -42,7 +42,7 @@ public class JavaSetMethod extends BasicGenerator {
 //       }
 //       else
 //       {
-//       	
+//
 //          type = type + "Set";
 //          importType = model.getClazz().getName(false);
 //          int dotpos = importType.lastIndexOf('.');
@@ -66,7 +66,7 @@ public class JavaSetMethod extends BasicGenerator {
 //       			"\n         returnSetAdd obj.methodName(actualParameter) returnSetEnd;" +
 //       			"\n      }" +
 //       			"\n      returnStat";
-	
+
 	@Override
 	public Class<?> getTyp() {
 		return Method.class;

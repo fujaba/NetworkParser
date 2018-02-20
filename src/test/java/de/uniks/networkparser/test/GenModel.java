@@ -39,12 +39,12 @@ public class GenModel {
 		count += showCounting(Method.class, sdmLib, model);
 		count += showCounting(DataType.class, sdmLib, model);
 		sdmLib.withGraph(model);
-		
+
 		model = new ClassModel(packageName);
 		count += showCounting(DataTypeSet.class, sdmLib, model);
 		count += showCounting(DataTypeMap.class, sdmLib, model);
 		sdmLib.withGraph(model).withPageBreak();
-		
+
 		model = new ClassModel(packageName);
 		count += showCounting(Annotation.class, sdmLib, model);
 		count += showCounting(Association.class, sdmLib, model);
@@ -52,17 +52,17 @@ public class GenModel {
 		sdmLib.withGraph(model);
 
 
-		
+
 		model = new ClassModel(packageName);
 		count += showCounting(Modifier.class, sdmLib, model);
 		count += showCounting(Parameter.class, sdmLib, model);
 		count += showCounting(Throws.class, sdmLib, model);
 		sdmLib.withGraph(model);
-		
+
 //		model = new ClassModel();
 //		count += showCounting(Value.class, sdmLib, model);
 //		sdmLib.withPageBreak().withGraph(model);
-		
+
 		sdmLib.withText("API-Count: "+count);
 //		sdmLib.withGraph(model);
 		FileBuffer.writeFile("build/sdmlib.html", sdmLib.toString());
@@ -120,12 +120,12 @@ public class GenModel {
 		}
 		return sb.toString();
 	}
-	
+
 
 	public int showCounting(Class<?> element, HTMLEntity htmlEntity, ClassModel model) {
 		Clazz graphClazz = model.createClazz(element.getSimpleName());
 		int count = getCounting(element, graphClazz);
-		
+
 		htmlEntity.withText(element.getSimpleName()+": "+count);
 		htmlEntity.withNewLine();
 
@@ -143,7 +143,7 @@ public class GenModel {
 				continue;
 			}
 
-			
+
 			if(element.getName().equals(methods[i].getDeclaringClass().getName())== false) {
 				String declaredClass = shortName(methods[i].getDeclaringClass());
 				String returnClass = shortName(methods[i].getReturnType());
@@ -158,7 +158,7 @@ public class GenModel {
 		}
 		return count;
 	}
-	
+
 	public static boolean isOverriden(java.lang.reflect.Method parent, java.lang.reflect.Method toCheck) {
 	    if (parent.getDeclaringClass().isAssignableFrom(toCheck.getDeclaringClass())
 	            && parent.getName().equals(toCheck.getName())) {
@@ -193,9 +193,9 @@ public class GenModel {
 						SimpleList<java.lang.reflect.Method> items = overridenMethods.get(methods[i].getName());
 						if(items == null) {
 							items = new SimpleList<java.lang.reflect.Method>();
-							overridenMethods.put(methods[i].getName(), items);							
+							overridenMethods.put(methods[i].getName(), items);
 						}
-				
+
 						boolean add = true;
 						for(java.lang.reflect.Method m1 : items) {
 							if(isOverriden(m1, methods[i])) {
@@ -218,7 +218,7 @@ public class GenModel {
 						items.add(methods[i]);
 						no++;
 			}
-//				
+//
 //				graphClazz.createMethod(item);
 ////				counts.add(signature);
 //			} else if ({

@@ -136,7 +136,7 @@ public class Modifier extends GraphMember {
 	public int hashCode() {
 		return super.hashCode();
 	}
-	
+
 	@Override
 	public Modifier without(GraphMember... values) {
 		super.without(values);

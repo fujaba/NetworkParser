@@ -98,9 +98,9 @@ public class Student extends Person implements SendableEntity{
 		this.setUniversity(null);
 		this.setIn(null);
 	}
-	
+
 	protected PropertyChangeSupport listeners = null;
-	   
+	
 	public boolean firePropertyChange(String propertyName, Object oldValue, Object newValue) {
 		if (listeners != null) {
 			listeners.firePropertyChange(propertyName, oldValue, newValue);
@@ -283,22 +283,22 @@ public class Student extends Person implements SendableEntity{
     *              friends                   friends
     * </pre>
     */
-   
+
    public static final String PROPERTY_FRIENDS = "friends";
 
    private SimpleSet<Student> friends = null;
-   
+
    public SimpleSet<Student> getFriends()
    {
       if (this.friends == null)
       {
          return new SimpleSet<Student>();
       }
-   
+
       return this.friends;
    }
    /**
-    * 
+    *
     * @see <a href='../../../../../../../../../src/test/java/org/sdmlib/test/examples/studyrightWithAssignments/StudyRightWithAssignmentsStoryboards.java'>StudyRightWithAssignmentsStoryboards.java</a>
  */
    public Student withFriends(Student... value)
@@ -314,7 +314,7 @@ public class Student extends Person implements SendableEntity{
             {
                this.friends = new SimpleSet<Student>();
             }
-            
+
             boolean changed = this.friends.add (item);
 
             if (changed)
@@ -325,7 +325,7 @@ public class Student extends Person implements SendableEntity{
          }
       }
       return this;
-   } 
+   }
 
    public Student withoutFriends(Student... value)
    {

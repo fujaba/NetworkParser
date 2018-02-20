@@ -15,7 +15,7 @@ import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.json.JsonTokener;
 
 public class ModelExecutor extends SimpleEventCondition {
-	
+
 	private Object execute(SimpleEvent event) {
 		final IdMap map = (IdMap) event.getSource();
 		final JsonObject change = (JsonObject) event.getEntity();
@@ -31,8 +31,8 @@ public class ModelExecutor extends SimpleEventCondition {
 		JsonTokener jsonTokener = (JsonTokener) event.getNewValue();
 		return jsonTokener.decoding(change, mapEntry, false);
 	}
-	
-	
+
+
 	@Override
 	public boolean update(final SimpleEvent event) {
 		Object thread = ReflectionLoader.callChain(ReflectionLoader.TOOLKIT, "getFxUserThread", "getFxUserThread");

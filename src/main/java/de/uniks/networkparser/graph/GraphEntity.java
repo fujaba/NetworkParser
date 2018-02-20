@@ -60,7 +60,7 @@ public abstract class GraphEntity extends GraphMember {
 	public String getId() {
 		return id;
 	}
-	
+
 	protected String getTyp(String typ, boolean shortName) {
 		if (typ.equals(GraphTokener.OBJECT)) {
 			return getId();
@@ -163,7 +163,7 @@ public abstract class GraphEntity extends GraphMember {
 					continue;
 				}
 				add = true;
-					
+
 				// If Nessesarry to search
 				// Assoc_Own - Otherclazz_Property
 
@@ -179,7 +179,7 @@ public abstract class GraphEntity extends GraphMember {
 					// Implements new Search for Association Only Search for duplicate
 					Association itemOther = item.getOther();
 					String name = itemOther.name();
-					
+
 					if(name != null && name.equals(assocOther.name()) && itemOther.getClazz() == assocOther.getClazz()) {
 						add = false;
 						break;
@@ -198,13 +198,13 @@ public abstract class GraphEntity extends GraphMember {
 										itemOther.getClazz().without(attribute);
 									}
 								}
-								
+
 							}else if(item.getType()==AssociationTypes.EDGE && itemOther.getType()==AssociationTypes.ASSOCIATION) {
 								// Cool its Bidirectional but remove Attributes
 								item.with(AssociationTypes.ASSOCIATION);
 								item.with(assoc.getName());
 								item.with(assoc.getCardinality());
-								
+
 								GraphMember attribute = item.getClazz().getChildByName(assoc.getName(), Attribute.class);
 								if(attribute != null) {
 									item.getClazz().without(attribute);
@@ -283,7 +283,7 @@ public abstract class GraphEntity extends GraphMember {
 		withAnnotation(value);
 		return this;
 	}
-	
+
 	protected GraphEntity with(ModifyEntry modifier) {
 		super.withChildren(modifier);
 		return this;

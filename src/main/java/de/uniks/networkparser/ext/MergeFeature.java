@@ -10,11 +10,11 @@ public class MergeFeature extends FeatureProperty{
 	public static final String CONFLICT="conflict";
 	public static final String CUSTOM="custom";
 	private SimpleEventCondition condition;
-	
+
 	protected MergeFeature(Feature name) {
 		super(name);
 	}
-	
+
 	/**
 	 * @return the condition
 	 */
@@ -29,13 +29,13 @@ public class MergeFeature extends FeatureProperty{
 		this.condition = condition;
 		return this;
 	}
-	
+
 	@Override
 	public MergeFeature withStringValue(String value) {
 		super.withStringValue(value);
 		return this;
 	}
-	
+
 	public static MergeFeature createIgnore() {
 		return new MergeFeature(Feature.DIFFERENCE_BEHAVIOUR).withStringValue(IGNORE);
 	}

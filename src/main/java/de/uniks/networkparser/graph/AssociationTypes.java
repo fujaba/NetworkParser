@@ -38,7 +38,7 @@ THE SOFTWARE.
  * Generalisation - Edge           : Generalisation
  * Implements     - Edge           : Implements
  * Dependency     - Edge           : Dependency
- * 
+ *
  * @author Stefan
  *
  */
@@ -74,7 +74,7 @@ public enum AssociationTypes {
 				);
 		}
 	private String value;
-	
+
 	@Override
 	public String toString() {
 		return this.value;

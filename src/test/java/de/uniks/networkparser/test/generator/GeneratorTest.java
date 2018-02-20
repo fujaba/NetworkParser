@@ -15,15 +15,15 @@ public class GeneratorTest {
 		String value ="{{#if {{#OR}}{{item.type}}==class {{item.type}}==interface{{#ENDOR}}}}{{#endif}}";
 		Template template = new Template("Declaration").withType(Template.DECLARATION);
 		template.withTemplate(value);
-		
-		
+
+
 		ModelGenerator generator = new ModelGenerator();
 		TemplateResultModel resultModel = generator.getResultModel();
-		
-		
+
+
 		template.generate(resultModel, null, new Attribute("name", DataType.STRING));
 		System.out.println(template);
 //		System.out.println(templateResult);
-		
+
 	}
 }

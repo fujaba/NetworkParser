@@ -14,17 +14,17 @@ public class SimpleTimerTask extends TimerTask {
 		handler.addListener(space);
 		this.space = space;
 	}
-	
+
 	public SimpleTimerTask withDateTime(DateTimeEntity entity) {
 		this.lastRun = entity;
 		return this;
 	}
-	
-	
+
+
 	public DateTimeEntity getLastRun() {
 		return lastRun;
 	}
-	
+
 	@Override
 	public void run() {
          try{
@@ -34,7 +34,7 @@ public class SimpleTimerTask extends TimerTask {
        		 handler.saveException(e, false);
          }
 	}
-	
+
 	public void updateLastRun() {
 		if (lastRun != null) {
 			lastRun.withValue(System.currentTimeMillis());
@@ -55,7 +55,7 @@ public class SimpleTimerTask extends TimerTask {
 		this.task = task;
 		return this;
 	}
-	
+
 	public Space getSpace() {
 		return space;
 	}

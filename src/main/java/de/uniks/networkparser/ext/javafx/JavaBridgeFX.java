@@ -21,7 +21,7 @@ public class JavaBridgeFX extends JavaBridge {
 	public JavaBridgeFX(IdMap map) {
 		super(map, new JavaAdapter(), CONTENT_TYPE_INCLUDE);
 	}
-	
+
 	public JavaBridgeFX(IdMap map, JavaViewAdapter webView, String type) {
 		super(map, webView, type);
 	}
@@ -30,7 +30,7 @@ public class JavaBridgeFX extends JavaBridge {
 	public void addListener(Control c, EventTypes type, String methodName, Object object) {
 		addEventListener(c, type, new MethodCallbackListener(object, methodName));
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public static void addChildren(Object element, int pos, Object... childrenValues) {
 		Object children = ReflectionLoader.calling("getChildren", element, false, null);
@@ -60,7 +60,7 @@ public class JavaBridgeFX extends JavaBridge {
 			}
 		}
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public static void setStyle(Object element, boolean clear, String...stylesValues) {
 		Object styles = ReflectionLoader.call("getStyleClass", element);
@@ -74,7 +74,7 @@ public class JavaBridgeFX extends JavaBridge {
 			}
 		}
 	}
-	
+
 	public static void removeStyle(Object element, String...stylesValues) {
 		Object styles = ReflectionLoader.call("getStyleClass", element);
 		if(styles != null && styles instanceof List<?>) {
@@ -82,17 +82,17 @@ public class JavaBridgeFX extends JavaBridge {
 			for(String item : stylesValues) {
 				styleList.remove(item);
 			}
-			
+
 		}
 	}
-	
+
 	public static void addListener(Object element, String method, Class<?> proxyClass, ObjectCondition condition) {
 		GUIEvent event = new GUIEvent();
 		event.withListener(condition);
 		Object proxy = ReflectionLoader.createProxy(event, proxyClass);
 		ReflectionLoader.call(method, element, proxyClass, proxy);
 	}
-	
+
 	public static Object convert(Control item, boolean clearStyle) {
 		if(item instanceof Button) {
 			return convertButton((Button) item, clearStyle);
@@ -110,31 +110,31 @@ public class JavaBridgeFX extends JavaBridge {
 		ChainCondition condition = new ChainCondition();
 		condition.with(events);
 		condition.withStaticEvent(button);
-		
-		
+
+
 		GUIEvent javaFXEvent = new GUIEvent();
 		javaFXEvent.withListener(condition);
 		Object proxy = ReflectionLoader.createProxy(javaFXEvent, ReflectionLoader.EVENTHANDLER);
-		
+
 		ReflectionLoader.call("setOnAction", javaFXBtn, ReflectionLoader.EVENTHANDLER, proxy);
-		
+
 		ReflectionLoader.call("setFocusTraversable", javaFXBtn, boolean.class, false);
-		
+
 		setStyle(javaFXBtn, clearStyle, "window-button", "window-"+button.getActionType()+"-button");
 
 		if(value == null) {
 			Object stackPane = ReflectionLoader.newInstance(ReflectionLoader.STACKPANE);
 			setStyle(stackPane, true, "graphic");
-			
+
 			ReflectionLoader.call("setGraphic", javaFXBtn, ReflectionLoader.NODE, stackPane);
 			ReflectionLoader.call("setMinSize", javaFXBtn, double.class, 17, double.class, 17);
 			ReflectionLoader.call("setPrefSize", javaFXBtn,double.class,  17, double.class, 17);
 		}
 		return javaFXBtn;
 	}
-	
+
 	private static Object convertLabel(Label label, boolean clearStyle) {
-		Object javaFXLabel; 
+		Object javaFXLabel;
 		if(Label.SPACER.equalsIgnoreCase(label.getType())) {
 			javaFXLabel = ReflectionLoader.newInstance(ReflectionLoader.REGION);
 			Object prio = ReflectionLoader.getField("ALWAYS", ReflectionLoader.PRIORITY) ;

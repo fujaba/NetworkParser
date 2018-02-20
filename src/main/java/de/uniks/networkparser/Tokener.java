@@ -43,7 +43,7 @@ public class Tokener implements BufferItem {
 
 	/** BUFFER */
 	protected Buffer buffer;
-	
+
 	// Methods for Map
 	public SendableEntityCreator getCreatorClass(Object reference) {
 		if(map == null) {
@@ -51,7 +51,7 @@ public class Tokener implements BufferItem {
 		}
 		return map.getCreatorClass(reference);
 	}
-	
+
 	public SendableEntityCreator getCreator(String className, boolean fullName, SimpleList<SendableEntityCreator> creators) {
 		if(map == null) {
 			return null;
@@ -106,7 +106,7 @@ public class Tokener implements BufferItem {
 	public boolean parseToEntity(Entity entity) {return true;}
 
 	public void parseToEntity(EntityList entity) {}
-	
+
 	public BaseItem encode(Object entity, MapEntity map) {
 		IdMap idMap = this.map;
 		if(this.map == null) {
@@ -180,8 +180,8 @@ public class Tokener implements BufferItem {
 		}
 		return null;
 	}
-	
-	
+
+
 	@Override
 	public CharacterBuffer nextString() {
 		if(buffer != null) {
@@ -189,7 +189,7 @@ public class Tokener implements BufferItem {
 		}
 		return null;
 	}
-	
+
 	@Override
 	public boolean skipTo(char search, boolean notEscape) {
 		if(buffer != null) {

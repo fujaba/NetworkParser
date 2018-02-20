@@ -3,13 +3,13 @@
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
- * and Eclipse Distribution License v1.0 which accompany this distribution. 
+ * and Eclipse Distribution License v1.0 which accompany this distribution.
  *
- * The Eclipse Public License is available at 
+ * The Eclipse Public License is available at
  *    http://www.eclipse.org/legal/epl-v10.html
- * and the Eclipse Distribution License is available at 
+ * and the Eclipse Distribution License is available at
  *   http://www.eclipse.org/org/documents/edl-v10.php.
- *   
+ *
  * Contributors:
  *   Ian Craggs - MQTT 3.1.1 support
  */
@@ -24,26 +24,26 @@ public class Token {
 	private volatile boolean completed = false;
 	private boolean pendingComplete = false;
 	private boolean sent = false;
-	
+
 	private Object responseLock = new Object();
 	private Object sentLock = new Object();
-	
-	protected MqttMessage message = null; 
+
+	protected MqttMessage message = null;
 	private MqttWireMessage response = null;
 	private MqttException exception = null;
 	private String[] topics = null;
-	
+
 	private String key;
-	
+
 	private ConnectActionListener callback = null;
 	private NodeProxyMQTT client = null;
-	
+
 	private int messageID = 0;
 	private boolean notified = false;
-	
+
 	public Token(String logContext) {
 	}
-	
+
 	public int getMessageID() {
 		return messageID;
 	}
@@ -51,7 +51,7 @@ public class Token {
 	public void setMessageID(int messageID) {
 		this.messageID = messageID;
 	}
-	
+
 	public boolean checkResult() throws MqttException {
 		if ( getException() != null)  {
 			throw getException();
@@ -98,11 +98,11 @@ public class Token {
 		}
 		checkResult();
 	}
-	
+
 	/**
 	 * Waits for the message delivery to complete, but doesn't throw an exception
 	 * in the case of a NACK.  It does still throw an exception if something else
-	 * goes wrong (e.g. an IOException).  This is used for packets like CONNECT, 
+	 * goes wrong (e.g. an IOException).  This is used for packets like CONNECT,
 	 * which have useful information in the ACK that needs to be accessed.
 	 * @return the {@link MqttWireMessage}
 	 * @throws MqttException if there is an error whilst waiting for the response
@@ -110,7 +110,7 @@ public class Token {
 	protected MqttWireMessage waitForResponse() throws MqttException {
 		return waitForResponse(-1);
 	}
-	
+
 	protected MqttWireMessage waitForResponse(long timeout) throws MqttException {
 		synchronized (responseLock) {
 			//@TRACE 400=>key={0} timeout={1} sent={2} completed={3} hasException={4} response={5} token={6}
@@ -119,7 +119,7 @@ public class Token {
 				if (this.exception == null) {
 					try {
 						//@TRACE 408=key={0} wait max={1}
-	
+
 						if (timeout <= 0) {
 							responseLock.wait();
 						} else {
@@ -134,7 +134,7 @@ public class Token {
 						//@TRACE 401=failed with exception
 						throw exception;
 					}
-					
+
 					if (timeout > 0) {
 						// time up and still not completed
 						break;
@@ -145,7 +145,7 @@ public class Token {
 		//@TRACE 402=key={0} response={1}
 		return this.response;
 	}
-	
+
 	/**
 	 * Mark the token as complete and ready for users to be notified.
 	 * @param msg response message. Optional - there are no response messages for some flows
@@ -153,7 +153,7 @@ public class Token {
 	 */
 	protected void markComplete(MqttWireMessage msg, MqttException ex) {
 		//@TRACE 404=>key={0} response={1} excep={2}
-				
+
 		synchronized(responseLock) {
 			// ACK means that everything was OK, so mark the message for garbage collection.
 			if (MqttWireMessage.isMQTTAck(msg)) {
@@ -173,7 +173,7 @@ public class Token {
 
 			synchronized (responseLock) {
 				// If pending complete is set then normally the token can be marked
-				// as complete and users notified. An abnormal error may have 
+				// as complete and users notified. An abnormal error may have
 				// caused the client to shutdown beween pending complete being set
 				// and notifying the user.  In this case - the action must be failed.
 				if (exception == null && pendingComplete) {
@@ -182,15 +182,15 @@ public class Token {
 				} else {
 					pendingComplete = false;
 				}
-				
+
 				responseLock.notifyAll();
 			}
 			synchronized (sentLock) {
-				sent=true;	
+				sent=true;
 				sentLock.notifyAll();
 			}
 		}
-	
+
 //	/**
 //	 * Notifies this token that an exception has occurred.  This is only
 //	 * used for things like IOException, and not for MQTT NACKs.
@@ -222,7 +222,7 @@ public class Token {
 				} catch (InterruptedException e) {
 				}
 			}
-			
+
 			while (!sent) {
 				if (this.exception == null) {
 					throw MqttException.withReason(MqttException.REASON_CODE_UNEXPECTED_ERROR);
@@ -231,7 +231,7 @@ public class Token {
 			}
 		}
 	}
-	
+
 	/**
 	 * Notifies this token that the associated message has been sent
 	 * (i.e. written to the TCP/IP socket).
@@ -247,22 +247,22 @@ public class Token {
 			sentLock.notifyAll();
 		}
 	}
-	
+
 	public NodeProxyMQTT getClient() {
 		return client;
 	}
-	
+
 	protected void setClient(NodeProxyMQTT client) {
 		this.client = client;
 	}
 
 	public void reset() throws MqttException {
 		if (isInUse() ) {
-			// Token is already in use - cannot reset 
+			// Token is already in use - cannot reset
 			throw MqttException.withReason(MqttException.REASON_CODE_TOKEN_INUSE);
 		}
 		//@TRACE 410=> key={0}
-		
+
 		client = null;
 		completed = false;
 		response = null;
@@ -273,24 +273,24 @@ public class Token {
 	public MqttMessage getMessage() {
 		return message;
 	}
-	
+
 	public MqttWireMessage getWireMessage() {
 		return response;
 	}
 
-	
+
 	public void setMessage(MqttMessage msg) {
 		this.message = msg;
 	}
-	
+
 	public String[] getTopics() {
 		return topics;
 	}
-	
+
 	public void setTopics(String[] topics) {
 		this.topics = topics;
 	}
-	
+
 	public void setKey(String key) {
 		this.key = key;
 	}
@@ -320,7 +320,7 @@ public class Token {
 		if (getTopics() != null) {
 			for (int i=0; i<getTopics().length; i++) {
 				tok.append(getTopics()[i]).append(", ");
-			} 
+			}
 		}
 		tok.append(" ,isComplete=").append(isComplete());
 		tok.append(" ,isNotified=").append(isNotified());
@@ -328,7 +328,7 @@ public class Token {
 		tok.append(" ,actioncallback=").append(getActionCallback());
 		return tok.toString();
 	}
-	
+
 	public int[] getGrantedQos() {
 		int[] val = new int[0];
 		if (response.getType() == MqttWireMessage.MESSAGE_TYPE_SUBACK) {
@@ -336,7 +336,7 @@ public class Token {
 		}
 		return val;
 	}
-	
+
 	public boolean getSessionPresent() {
 		boolean val = false;
 		if (response.getType() == MqttWireMessage.MESSAGE_TYPE_CONNACK) {
@@ -344,7 +344,7 @@ public class Token {
 		}
 		return val;
 	}
-	
+
 	public MqttWireMessage getResponse() {
 		return response;
 	}

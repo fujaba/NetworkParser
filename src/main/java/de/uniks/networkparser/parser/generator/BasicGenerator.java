@@ -33,18 +33,18 @@ public abstract class BasicGenerator {
 	protected SimpleList<Template> templates=new SimpleList<Template>();
 	protected SimpleKeyValueList<Class<?>, SimpleList<BasicGenerator>> children=new SimpleKeyValueList<Class<?>, SimpleList<BasicGenerator>>();
 	protected boolean metaModel;
-	
+
 	public BasicGenerator withMetaModell(boolean value) {
 		this.metaModel = value;
 		return this;
 	}
-	
+
 	public boolean isMetaModel() {
 		return metaModel;
 	}
-	
+
 	public abstract Class<?> getTyp();
-	
+
 	public boolean addGenerator(BasicGenerator generator) {
 		if(generator == null) {
 			return false;
@@ -58,26 +58,26 @@ public abstract class BasicGenerator {
 		list.add(generator);
 		return true;
 	}
-	
+
 	public BasicGenerator withOwner(BasicGenerator owner) {
 		this.owner = owner;
 		return this;
 	}
-	
+
 	public Template createTemplate(String name, int type, String... templates) {
 		Template template = new Template(name).withType(type);
 		template.withTemplate(templates);
 		this.templates.add(template);
 		return template;
 	}
-	
+
 	protected FeatureProperty getFeature(Feature value, Clazz... values) {
 		if(this.owner != null) {
-			return this.owner.getFeature(value, values); 
+			return this.owner.getFeature(value, values);
 		}
 		return null;
 	}
-	
+
 	public void executeTemplate(TemplateResultFile templateResult, LocalisationInterface parameters, GraphMember member) {
 		if(member == null || member.getClass() == getTyp() == false) {
 			return;
@@ -92,7 +92,7 @@ public abstract class BasicGenerator {
 			}
 		}
 	}
-	
+
 
 
 	protected FeatureSet getFeatures(LocalisationInterface value) {
@@ -105,9 +105,9 @@ public abstract class BasicGenerator {
 			return null;
 		}
 		return null;
-		
+
 	}
-	
+
 	public TemplateResultFile createResultFile(Clazz clazz, boolean isStandard) {
 		TemplateResultFile templateResult = new TemplateResultFile(clazz, isStandard);
 		templateResult.withExtension(this.extension);
@@ -115,13 +115,13 @@ public abstract class BasicGenerator {
 		templateResult.withPostfix(this.postfix);
 		return templateResult;
 	}
-	
+
 	public TemplateResultFile executeClazz(Clazz clazz, LocalisationInterface parameters, boolean isStandard) {
 		TemplateResultFile templateResult = createResultFile(clazz, isStandard);
 		if(parameters instanceof SendableEntityCreator) {
 			templateResult.setParent((SendableEntityCreator)parameters);
 		}
-		
+
 		SimpleList<BasicGenerator> templateList;
 		AttributeSet attributes = clazz.getAttributes();
 		templateList = children.get(attributes.getTypClass());
@@ -132,7 +132,7 @@ public abstract class BasicGenerator {
 				}
 			}
 		}
-		
+
 		AssociationSet associations = clazz.getAssociations();
 		templateList = children.get(associations.getTypClass());
 		if(templateList != null) {
@@ -145,7 +145,7 @@ public abstract class BasicGenerator {
 				}
 			}
 		}
-		
+
 		MethodSet methods = clazz.getMethods();
 		templateList = children.get(methods.getTypClass());
 		if(templateList != null) {

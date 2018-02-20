@@ -130,11 +130,11 @@ public class SimpleSet<V> extends AbstractList<V> implements Set<V> {
 		result.retainAll(other);
 		return result;
 	}
-	
+
 	 public <ST extends AbstractList<?>> ST instanceOf(ST target) {
 		for(Object obj : this) {
 			if(obj != null && obj.getClass()==target.getTypClass()) {
-				target.with(obj);	
+				target.with(obj);
 			}
 		}
 		return target;
@@ -151,12 +151,12 @@ public class SimpleSet<V> extends AbstractList<V> implements Set<V> {
 		}
 		return result;
 	}
-	
+
 	public SimpleSet<V> withListener(ObjectCondition listener) {
 		this.listener = listener;
 		return this;
 	}
-	
+
 	@Override
 	protected boolean fireProperty(String type, Object oldElement, Object newElement, Object beforeElement, int index, Object value) {
 		if(this.listener != null) {

@@ -84,10 +84,10 @@ public class Association extends GraphMember {
 		if (PROPERTY_ISIMPLEMENTS.equalsIgnoreCase(attrName)) {
 			return AssociationTypes.isImplements(getType());
 		}
-		
+
 		return super.getValue(attribute);
 	}
-	
+
 	public boolean isSelfAssoc() {
 		GraphSimpleSet collection = getParents();
 		if(collection.size()>0) {
@@ -102,7 +102,7 @@ public class Association extends GraphMember {
 		}
 		return false;
 	}
-	
+
 	public Cardinality getCardinality() {
 		if(cardinality != null) {
 			return cardinality;
@@ -401,7 +401,7 @@ public class Association extends GraphMember {
 		}
 		return contains;
 	}
-	
+
 
 	protected boolean containsAll(Association others, boolean both) {
 		if(parentNode == null) {
@@ -429,7 +429,7 @@ public class Association extends GraphMember {
 		withAnnotation(value);
 		return this;
 	}
-	
+
 	@Override
 	public Association without(GraphMember... values) {
 		super.without(values);

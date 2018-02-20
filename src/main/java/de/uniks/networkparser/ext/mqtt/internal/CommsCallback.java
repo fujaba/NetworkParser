@@ -3,18 +3,18 @@
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
- * and Eclipse Distribution License v1.0 which accompany this distribution. 
+ * and Eclipse Distribution License v1.0 which accompany this distribution.
  *
- * The Eclipse Public License is available at 
+ * The Eclipse Public License is available at
  *    http://www.eclipse.org/legal/epl-v10.html
- * and the Eclipse Distribution License is available at 
+ * and the Eclipse Distribution License is available at
  *   http://www.eclipse.org/org/documents/edl-v10.php.
  *
  * Contributors:
  *    Dave Locke - initial API and implementation and/or initial documentation
  *    Ian Craggs - per subscription message handlers (bug 466579)
  *    Ian Craggs - ack control (bug 472172)
- *    James Sutton - Automatic Reconnect & Offline Buffering    
+ *    James Sutton - Automatic Reconnect & Offline Buffering
  */
 package de.uniks.networkparser.ext.mqtt.internal;
 
@@ -85,7 +85,7 @@ public class CommsCallback implements Runnable {
 	}
 
 	/**
-	 * Stops the callback thread. 
+	 * Stops the callback thread.
 	 * This call will block until stop has completed.
 	 */
 	public void stop() {
@@ -119,7 +119,7 @@ public class CommsCallback implements Runnable {
 	public void setCallback(SimpleEventCondition mqttCallback) {
 		this.mqttCallback = mqttCallback;
 	}
-	
+
 	public void setManualAcks(boolean manualAcks) {
 		this.manualAcks = manualAcks;
 	}
@@ -162,7 +162,7 @@ public class CommsCallback implements Runnable {
 					if (null != token) {
 						handleActionComplete(token);
 					}
-					
+
 					// Check for messageArrived callbacks...
 					MqttWireMessage message = null;
 					synchronized (messageQueue) {
@@ -183,7 +183,7 @@ public class CommsCallback implements Runnable {
 				if (quiescing) {
 					clientState.checkQuiesceLock();
 				}
-				
+
 			} catch (Throwable ex) {
 				// Users code could throw an Error or Exception e.g. in the case
 				// of class NoClassDefFoundError
@@ -208,35 +208,35 @@ public class CommsCallback implements Runnable {
 		synchronized (token) {
 			// @TRACE 705=callback and notify for key={0}
 			if (token.isComplete()) {
-				// Finish by doing any post processing such as delete 
+				// Finish by doing any post processing such as delete
 				// from persistent store but only do so if the action
 				// is complete
 				clientState.notifyComplete(token);
 			}
-			
+
 			// Unblock any waiters and if pending complete now set completed
 			token.notifyComplete();
-			
+
  			if (!token.isNotified()) {
- 				// If a callback is registered and delivery has finished 
- 				// call delivery complete callback. 
-//TODO 	deliveryComplete			if ( mqttCallback != null 
+ 				// If a callback is registered and delivery has finished
+ 				// call delivery complete callback.
+//TODO 	deliveryComplete			if ( mqttCallback != null
 //					&& token.isComplete()) {
 //						mqttCallback.deliveryComplete(token);
 //				}
 				// Now call async action completion callbacks
 				fireActionEvent(token);
 			}
-			
+
 			// Set notified so we don't tell the user again about this action.
  			if ( token.isComplete() ){
  			   if ( token.getActionCallback() instanceof ConnectActionListener ) {
  	                token.setNotified(true);
  	            }
  			}
-			
 
-			
+
+
 		}
 	}
 
@@ -246,7 +246,7 @@ public class CommsCallback implements Runnable {
 	 * will be invoked if registered and run on the thread that requested
 	 * shutdown e.g. receiver or sender thread. If the request was a user
 	 * initiated disconnect then the disconnect token will be notified.
-	 * 
+	 *
 	 * @param cause  the reason behind the loss of connection.
 	 */
 	public void connectionLost(MqttException cause) {
@@ -260,7 +260,7 @@ public class CommsCallback implements Runnable {
 //				mqttCallback.connectionLost(cause);
 			}
 		} catch (java.lang.Throwable t) {
-			// Just log the fact that a throwable has caught connection lost 
+			// Just log the fact that a throwable has caught connection lost
 			// is called during shutdown processing so no need to do anything else
 			// @TRACE 720=exception from connectionLost {0}
 		}
@@ -269,7 +269,7 @@ public class CommsCallback implements Runnable {
 	/**
 	 * An action has completed - if a completion listener has been set on the
 	 * token then invoke it with the outcome of the action.
-	 * 
+	 *
 	 * @param token The {@link Token} that has completed
 	 */
 	public void fireActionEvent(Token token) {
@@ -291,14 +291,14 @@ public class CommsCallback implements Runnable {
 	 * This method is called when a message arrives on a topic. Messages are
 	 * only added to the queue for inbound messages if the client is not
 	 * quiescing.
-	 * 
+	 *
 	 * @param sendMessage the MQTT SEND message.
 	 */
 	public void messageArrived(MqttWireMessage sendMessage) {
 		if (mqttCallback != null) {
 			// If we already have enough messages queued up in memory, wait
-			// until some more queue space becomes available. This helps 
-			// the client protect itself from getting flooded by messages 
+			// until some more queue space becomes available. This helps
+			// the client protect itself from getting flooded by messages
 			// from the server.
 			synchronized (spaceAvailable) {
 				while (running && !quiescing && messageQueue.size() >= INBOUND_QUEUE_SIZE) {
@@ -361,8 +361,8 @@ public class CommsCallback implements Runnable {
 			}
 		}
 	}
-	
-	public void messageArrivedComplete(int messageId, int qos) 
+
+	public void messageArrivedComplete(int messageId, int qos)
 		throws MqttException {
 		if (qos == 1) {
 			this.clientComms.internalSend(
@@ -389,7 +389,7 @@ public class CommsCallback implements Runnable {
 				// Users code could throw an Error or Exception e.g. in the case
 				// of class NoClassDefFoundError
 				// @TRACE 719=callback threw ex:
-				
+
 				// Shutdown likely already in progress but no harm to confirm
 				clientComms.shutdownConnection(null, MqttException.withReason(MqttException.REASON_CODE_DEFAULT, ex));
 			}
@@ -404,11 +404,11 @@ public class CommsCallback implements Runnable {
 	protected Thread getThread() {
 		return callbackThread;
 	}
-	
+
 	protected boolean deliverMessage(String topicName, int messageId, MqttMessage aMessage) throws Exception
-	{		
+	{
 		boolean delivered = false;
-	
+
 		/* if the message hasn't been delivered to a per subscription handler, give it to the default handler */
 		if (mqttCallback != null && !delivered) {
 			aMessage.setId(messageId);
@@ -416,7 +416,7 @@ public class CommsCallback implements Runnable {
 			mqttCallback.update(event);
 			delivered = true;
 		}
-		
+
 		return delivered;
 	}
 

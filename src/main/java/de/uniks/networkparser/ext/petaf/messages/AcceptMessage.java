@@ -9,7 +9,7 @@ import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SortedSet;
 
 /**
- * Sending Connection Link with all Input Proxies and Filter 
+ * Sending Connection Link with all Input Proxies and Filter
  * @author Stefan Lindel
  */
 public class AcceptMessage extends ReceivingTimerTask {
@@ -24,7 +24,7 @@ public class AcceptMessage extends ReceivingTimerTask {
 		this.type = PROPERTY_TYPE;
 		AcceptMessage.props.add(PROPERTY_PROXIES, PROPERTY_MODELID, PROPERTY_MODELCLASS, PROPERTY_MODEL);
 	}
-	
+
 	@Override
 	public Object getValue(Object entity, String attribute) {
 		if(attribute == null || entity instanceof AcceptMessage == false ) {
@@ -50,10 +50,10 @@ public class AcceptMessage extends ReceivingTimerTask {
 					}
 				}
 				return null;
-			}			
+			}
 			if(PROPERTY_PROXIES.equalsIgnoreCase(attribute)) {
 				SortedSet<NodeProxy> nodeProxies = space.getNodeProxies();
-				SimpleList<NodeProxy> candidates = new SimpleList<NodeProxy>(); 
+				SimpleList<NodeProxy> candidates = new SimpleList<NodeProxy>();
 				for(NodeProxy proxy : nodeProxies) {
 					if(proxy.isSendable()) {
 						candidates.add(proxy);
@@ -68,7 +68,7 @@ public class AcceptMessage extends ReceivingTimerTask {
 		}
 		return super.getValue(entity, attribute);
 	}
-	
+
 	// Add helper Variable to creating Objects
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value, String type) {
@@ -88,13 +88,13 @@ public class AcceptMessage extends ReceivingTimerTask {
 					return false;
 				}
 				if(map.getObject(this.id) != null) {
-					// Object exist in Map everything is ok 
+					// Object exist in Map everything is ok
 					return true;
 				}
 				// Check ClassName and NodeProxyModel for Candidates
 				String className = ""+value;
 				SortedSet<NodeProxy> nodeProxies = space.getNodeProxies();
-				SimpleList<NodeProxyModel> candidates = new SimpleList<NodeProxyModel>(); 
+				SimpleList<NodeProxyModel> candidates = new SimpleList<NodeProxyModel>();
 				for(NodeProxy proxy : nodeProxies) {
 					if(proxy instanceof NodeProxyModel) {
 						NodeProxyModel modelProxy = (NodeProxyModel) proxy;
@@ -123,8 +123,8 @@ public class AcceptMessage extends ReceivingTimerTask {
 		}
 		return super.setValue(entity, attribute, value, type);
 	}
-	
-	
+
+
 	@Override
 	public boolean runTask() throws Exception {
 		if(super.runTask() ) {
@@ -133,20 +133,20 @@ public class AcceptMessage extends ReceivingTimerTask {
 		if(space == null) {
 			return false;
 		}
-		
+
 		NodeProxy proxy = space.updateProxy(this);
 		if (proxy == null) {
 			return false;
 		}
 		return true;
 	}
-	
+
 	public static AcceptMessage create() {
 		AcceptMessage msg = new AcceptMessage();
 		msg.withSendAnyHow(true);
-		return msg; 
+		return msg;
 	}
-	
+
 
 	@Override
 	public Object getSendableInstance(boolean prototyp) {
