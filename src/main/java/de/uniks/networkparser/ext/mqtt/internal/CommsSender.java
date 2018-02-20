@@ -153,7 +153,7 @@ public class CommsSender implements Runnable {
 
     /**
      * Writes an <code>MqttWireMessage</code> to the stream.
-     * @param message The {@link MqttWireMessage} to send
+     * @param message The {@link MqttMessage} to send
      * @throws IOException if an exception is thrown when writing to the output stream.
      * @throws MqttException if an exception is thrown when getting the header or payload
      */

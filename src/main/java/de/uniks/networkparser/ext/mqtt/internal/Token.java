@@ -104,7 +104,7 @@ public class Token {
 	 * in the case of a NACK.  It does still throw an exception if something else
 	 * goes wrong (e.g. an IOException).  This is used for packets like CONNECT,
 	 * which have useful information in the ACK that needs to be accessed.
-	 * @return the {@link MqttWireMessage}
+	 * @return the {@link MqttMessage}
 	 * @throws MqttException if there is an error whilst waiting for the response
 	 */
 	protected MqttWireMessage waitForResponse() throws MqttException {

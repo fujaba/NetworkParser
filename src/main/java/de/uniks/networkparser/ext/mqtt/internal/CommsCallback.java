@@ -166,14 +166,13 @@ public class CommsCallback implements Runnable {
 					// Check for messageArrived callbacks...
 					MqttWireMessage message = null;
 					synchronized (messageQueue) {
-					    if (!messageQueue.isEmpty()) {
-						    // Note, there is a window on connect where a publish
-						    // could arrive before we've
-						    // finished the connect logic.
+						if (!messageQueue.isEmpty()) {
+							// Note, there is a window on connect where a publish
+							// could arrive before we've
+							// finished the connect logic.
 							message = messageQueue.elementAt(0);
-
 							messageQueue.removeElementAt(0);
-					    }
+						}
 					}
 					if (null != message) {
 						handleMessage(message);

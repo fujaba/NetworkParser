@@ -21,7 +21,6 @@ import java.io.DataInputStream;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.SocketException;
 import java.net.SocketTimeoutException;
 
 import de.uniks.networkparser.ext.mqtt.MqttException;
@@ -85,11 +84,11 @@ public class MqttInputStream extends InputStream {
 	 * If the message cannot be fully read within the socket read timeout,
 	 * a null message is returned and the method can be called again until
 	 * the message is fully read.
-	 * @return The {@link MqttWireMessage}
+	 * @return The {@link MqttMessage}
 	 * @throws IOException if an exception is thrown when reading from the stream
 	 * @throws MqttException if the message is invalid
 	 */
-	public MqttWireMessage readMqttWireMessage() throws IOException, MqttException {
+	public MqttWireMessage readMqttWireMessage() {
 		MqttWireMessage message = null;
 		try {
 			// read header
@@ -136,35 +135,34 @@ public class MqttInputStream extends InputStream {
 				message = MqttWireMessage.createWireMessage(bais);
 				// @TRACE 501= received {0}
 			}
-		} catch (SocketTimeoutException e) {
+		} catch (Exception e) {
 			// ignore socket read timeout
-		} catch (SocketException e) {
-
+			e.printStackTrace();
 		}
 
 		return message;
 	}
 
-    private void readFully() throws IOException {
-    	int off = bais.size() + (int) packetLen;
-    	int len = (int) (remLen - packetLen);
-    	if (len < 0)
-    		throw new IndexOutOfBoundsException();
-    	int n = 0;
-    	while (n < len) {
-    		int count = -1;
-    		try {
-    			count = in.read(packet, off + n, len - n);
-    		} catch (SocketTimeoutException e) {
-    			// remember the packet read so far
-    			packetLen += n;
-    			throw e;
-    		}
-    		clientState.notifyReceivedBytes(count);
-
-    		if (count < 0)
-    			throw new EOFException();
-    		n += count;
-    	}
-    }
+	private void readFully() throws IOException {
+		int off = bais.size() + (int) packetLen;
+		int len = (int) (remLen - packetLen);
+		if (len < 0)
+			throw new IndexOutOfBoundsException();
+		int n = 0;
+		while (n < len) {
+			int count = -1;
+			try {
+				count = in.read(packet, off + n, len - n);
+			} catch (SocketTimeoutException e) {
+				// remember the packet read so far
+				packetLen += n;
+				throw e;
+			}
+			clientState.notifyReceivedBytes(count);
+			if (count < 0) {
+				throw new EOFException();
+			}
+			n += count;
+		}
+	}
 }

@@ -112,7 +112,7 @@ public class MqttWireMessage {
 	 * @throws MqttException if an exception occurs whilst getting the payload
 	 */
 	public byte[] getPayload() throws MqttException {
-		if(type == MESSAGE_TYPE_SUBSCRIBE || type == MESSAGE_TYPE_UNSUBSCRIBE) {
+		if(type == MESSAGE_TYPE_SUBSCRIBE || type == MESSAGE_TYPE_UNSUBSCRIBE || type == MESSAGE_TYPE_CONNECT) {
 			try {
 				ByteArrayOutputStream baos = new ByteArrayOutputStream();
 				DataOutputStream dos = new DataOutputStream(baos);
@@ -189,8 +189,8 @@ public class MqttWireMessage {
 	 */
 	public MqttWireMessage withMessageId(int msgId) {
 		this.msgId = msgId;
-		if (message instanceof MqttReceivedMessage) {
-			((MqttReceivedMessage)message).setMessageId(msgId);
+		if (message != null) {
+			message.setId(msgId);
 		}
 		return this;
 	}
@@ -218,7 +218,7 @@ public class MqttWireMessage {
 			return encodeMessageId();
 		}
 
-		if(type == MESSAGE_TYPE_SUBSCRIBE || type == MESSAGE_TYPE_UNSUBSCRIBE || type == MESSAGE_TYPE_PUBLISH) {
+		if(type == MESSAGE_TYPE_SUBSCRIBE || type == MESSAGE_TYPE_UNSUBSCRIBE || type == MESSAGE_TYPE_PUBLISH || type == MESSAGE_TYPE_CONNECT) {
 			try {
 				ByteArrayOutputStream baos = new ByteArrayOutputStream();
 				DataOutputStream dos = new DataOutputStream(baos);
@@ -555,7 +555,7 @@ public class MqttWireMessage {
 		}
 
 		if(type == MESSAGE_TYPE_PUBLISH) {
-			MqttReceivedMessage msg = new MqttReceivedMessage();
+			MqttMessage msg = new MqttMessage();
 			message.message = msg;
 			msg.setQos((info >> 1) & 0x03);
 			if ((info & 0x01) == 0x01) {

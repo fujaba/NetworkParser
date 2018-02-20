@@ -51,7 +51,6 @@ import de.uniks.networkparser.list.SimpleKeyValueList;
  * @author Paho Client
  */
 public class ConnectActionListener {
-
 	private SimpleKeyValueList<String, MqttWireMessage> persistence;
 	private NodeProxyMQTT client;
 	private ClientComms comms;

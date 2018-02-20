@@ -136,7 +136,7 @@ public class ClientState {
 	protected void setMaxInflight(int maxInflight) {
         this.maxInflight = maxInflight;
         pendingMessages = new Vector<MqttWireMessage>(this.maxInflight);
-    }
+	}
     protected void setKeepAliveSecs(long keepAliveSecs) {
 		this.keepAlive = keepAliveSecs*1000;
 	}
@@ -411,10 +411,7 @@ public class ClientState {
 				}
 		}
 		if (token != null ) {
-			try {
-				token.setMessageID(message.getMessageId());
-			} catch (Exception e) {
-			}
+			token.setMessageID(message.getMessageId());
 		}
 
 		if (message.getType() == MqttWireMessage.MESSAGE_TYPE_PUBLISH) {
@@ -472,7 +469,7 @@ public class ClientState {
 	/**
 	 * Persists a buffered message to the persistence layer
 	 *
-	 * @param message The {@link MqttWireMessage} to persist
+	 * @param message The {@link MqttMessage} to persist
 	 */
 	public void persistBufferedMessage(MqttWireMessage message) {
 		String key = getSendBufferedPersistenceKey(message);
@@ -490,7 +487,7 @@ public class ClientState {
 
 	/**
 	 * Remove Message
-	 * @param message The {@link MqttWireMessage} to un-persist
+	 * @param message The {@link MqttMessage} to un-persist
 	 */
 	public void unPersistBufferedMessage(MqttWireMessage message){
 		//@TRACE 517=Un-Persisting Buffered message key={0}
@@ -499,7 +496,7 @@ public class ClientState {
 
 	/**
 	 * This removes the MqttSend message from the outbound queue and persistence.
-	 * @param message the {@link MqttWireMessage} message to be removed
+	 * @param message the {@link MqttMessage} message to be removed
 	 * @throws MqttException if an exception occurs whilst removing the message
 	 */
 	protected void undo(MqttWireMessage message) throws MqttException {
@@ -695,7 +692,7 @@ public class ClientState {
 
 	/**
 	 * Called by the CommsSender when a message has been sent
-	 * @param message the {@link MqttWireMessage} to notify
+	 * @param message the {@link MqttMessage} to notify
 	 */
 	protected void notifySent(MqttWireMessage message) {
 
@@ -705,13 +702,13 @@ public class ClientState {
 		Token token = tokenStore.getToken(message);
 		token.notifySent();
 		if (message.getType() == MqttWireMessage.MESSAGE_TYPE_PINGREQ) {
-            synchronized (pingOutstandingLock) {
-                synchronized (pingOutstandingLock) {
-                	pingOutstanding++;
-                }
-                //@TRACE 635=ping sent. pingOutstanding: {0}
-            }
-        } else if (message.getType() == MqttWireMessage.MESSAGE_TYPE_PUBLISH) {
+			synchronized (pingOutstandingLock) {
+				synchronized (pingOutstandingLock) {
+					pingOutstanding++;
+				}
+				//@TRACE 635=ping sent. pingOutstanding: {0}
+			}
+		} else if (message.getType() == MqttWireMessage.MESSAGE_TYPE_PUBLISH) {
 			if (message.getMessage().getQos() == 0) {
 				// once a QoS 0 message is sent we can clean up its records straight away as
 				// we won't be hearing about it again
@@ -759,7 +756,7 @@ public class ClientState {
 	/**
 	 * Called by the CommsReceiver when an ack has arrived.
 	 *
-	 * @param ack The {@link MqttWireMessage} that has arrived
+	 * @param ack The {@link MqttMessage} that has arrived
 	 * @throws MqttException if an exception occurs when sending / notifying
 	 */
 	protected void notifyReceivedAck(MqttWireMessage ack) throws MqttException {
@@ -819,7 +816,7 @@ public class ClientState {
 	 * Called by the CommsReceiver when a message has been received.
 	 * Handles inbound messages and other flows such as PUBREL.
 	 *
-	 * @param message The {@link MqttWireMessage} that has been received
+	 * @param message The {@link MqttMessage} that has been received
 	 * @throws MqttException when an exception occurs whilst notifying
 	 */
 	protected void notifyReceivedMsg(MqttWireMessage message) throws MqttException {
@@ -828,17 +825,16 @@ public class ClientState {
 		// @TRACE 651=received key={0} message={1}
 		if (!quiescing) {
 			if (message.getType() == MqttWireMessage.MESSAGE_TYPE_PUBLISH) {
-				MqttWireMessage send = message;
-				switch (send.getMessage().getQos()) {
+				switch (message.getMessage().getQos()) {
 				case 0:
 				case 1:
 					if (callback != null) {
-						callback.messageArrived(send);
+						callback.messageArrived(message);
 					}
 					break;
 				case 2:
 					persistence.put(getReceivedPersistenceKey(message), message);
-					inboundQoS2.put(Integer.valueOf(send.getMessageId()), send);
+					inboundQoS2.put(Integer.valueOf(message.getMessageId()), message);
 					break;
 
 				default:
