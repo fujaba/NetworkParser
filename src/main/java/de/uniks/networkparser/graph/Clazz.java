@@ -6,6 +6,7 @@ import de.uniks.networkparser.graph.util.AttributeSet;
 import de.uniks.networkparser.graph.util.ClazzSet;
 import de.uniks.networkparser.graph.util.MethodSet;
 import de.uniks.networkparser.interfaces.Condition;
+import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SimpleSet;
 
 public class Clazz extends GraphEntity {
@@ -382,11 +383,34 @@ public class Clazz extends GraphEntity {
 
 	public Clazz withSuperClazz(Clazz... values) {
 		AssociationTypes type = AssociationTypes.GENERALISATION;
+		
 		if(values != null) {
-			for(Clazz item : values) {
+			if(values.length == 1) {
+				Clazz item  = values[0];
 				if(item != null && TYPE_INTERFACE.equals(item.getType())) {
 					type = AssociationTypes.IMPLEMENTS;
 				}
+			} else {
+				// COMPLEX
+				SimpleList<Clazz> interfaces = new SimpleList<Clazz>();
+				SimpleList<Clazz> generalizations = new SimpleList<Clazz>();
+				for(Clazz item : values) {
+					if(item != null) {
+						if(TYPE_INTERFACE.equals(item.getType())) {
+							interfaces.add(item);
+						}
+						if(TYPE_CLAZZ.equals(item.getType())) {
+							generalizations.add(item);
+						}
+					}
+				}
+				if(generalizations.size()>0) {
+					createAssociation(AssociationTypes.GENERALISATION, AssociationTypes.EDGE, generalizations.toArray(new Clazz[generalizations.size()]));
+				}
+				if(interfaces.size()>0) {
+					createAssociation(AssociationTypes.IMPLEMENTS, AssociationTypes.EDGE, interfaces.toArray(new Clazz[interfaces.size()]));
+				}
+				return this;
 			}
 		}
 		createAssociation(type, AssociationTypes.EDGE, values);
@@ -439,8 +463,9 @@ public class Clazz extends GraphEntity {
 				continue;
 			}
 			if(otherTyp == null || assoc.getOtherType() == otherTyp) {
-				Clazz clazz = assoc.getOtherClazz();
-				kidClazzes.with(clazz);
+				GraphSimpleSet parents = assoc.getOther().getParents();
+//				Clazz clazz = assoc.getOtherClazz();
+				kidClazzes.withList(parents);
 			}
 		}
 		return kidClazzes;
@@ -457,7 +482,7 @@ public class Clazz extends GraphEntity {
 					if(assoc.getType() == direction && assoc.getOtherType() == backDirection) {
 						if(assoc.contains(item, true, false) == false) {
 							assoc.getOther().setParentNode(item);
-							return false;
+							return true;
 						}
 					}
 				}

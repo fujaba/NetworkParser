@@ -37,6 +37,7 @@ class ServerTrustManager implements X509TrustManager {
 	private static Pattern cnPattern = Pattern.compile("(?i)(cn=)([^,]*)");
 	/**
 	 * Holds the domain of the remote server we are trying to connect
+	 * @return a X509Certificate Certifacte
 	 */
 	public X509Certificate[] getAcceptedIssuers() {
 		return new X509Certificate[0];

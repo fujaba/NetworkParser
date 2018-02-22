@@ -26,7 +26,7 @@ import de.uniks.networkparser.ext.mqtt.MqttException;
  * Provides a "token" based system for storing and tracking actions across
  * multiple threads.
  * When a message is sent, a token is associated with the message
- * and saved using the {@link CommsTokenStore#saveToken(Token, MqttMessage)} method. Anyone interested
+ * and saved using the {@link CommsTokenStore#saveToken(Token, MqttWireMessage)} method. Anyone interested
  * in tacking the state can call one of the wait methods on the token or using
  * the asynchronous listener callback method on the operation.
  * The {@link CommsReceiver} class, on another thread, reads responses back from
