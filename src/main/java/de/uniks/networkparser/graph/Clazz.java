@@ -10,7 +10,7 @@ import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SimpleSet;
 
 public class Clazz extends GraphEntity {
-	public static final String TYPE_CLAZZ = "class";
+	public static final String TYPE_CLASS = "class";
 	public static final String TYPE_ENUMERATION = "enum";
 	public static final String TYPE_INTERFACE = "interface";
 	public static final String TYPE_CREATOR = "creator";
@@ -27,7 +27,7 @@ public class Clazz extends GraphEntity {
 	public static final String PROPERTY_IMPLEMENTS = "implements";
 	public static final String PROPERTY_ATTRIBUTE = "attribute";
 
-	private String type = TYPE_CLAZZ;
+	private String type = TYPE_CLASS;
 
 	Clazz() {
 
@@ -399,7 +399,7 @@ public class Clazz extends GraphEntity {
 						if(TYPE_INTERFACE.equals(item.getType())) {
 							interfaces.add(item);
 						}
-						if(TYPE_CLAZZ.equals(item.getType())) {
+						if(TYPE_CLASS.equals(item.getType())) {
 							generalizations.add(item);
 						}
 					}

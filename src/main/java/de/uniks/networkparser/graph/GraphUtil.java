@@ -98,7 +98,7 @@ public class GraphUtil {
 	}
 
 	public static final void setClazzType(Clazz clazz, String clazzType) {
-		clazz.with(clazzType);
+		clazz.withType(clazzType);
 	}
 
 	public static final void setImport(Clazz clazz, Import... importClazzes) {
@@ -298,7 +298,7 @@ public class GraphUtil {
 	
 	public static final String createType(String value) {
 		if(value == null) {
-			return Clazz.TYPE_CLAZZ;
+			return Clazz.TYPE_CLASS;
 		}
 		String trim = value.trim().toLowerCase();
 		if(trim.equals(Clazz.TYPE_ENUMERATION)) {
@@ -316,7 +316,7 @@ public class GraphUtil {
 		if(trim.equals(Clazz.TYPE_PATTERNOBJECT)) {
 			return Clazz.TYPE_PATTERNOBJECT;
 		}
-		return Clazz.TYPE_CLAZZ;
+		return Clazz.TYPE_CLASS;
 
 	}
 }
