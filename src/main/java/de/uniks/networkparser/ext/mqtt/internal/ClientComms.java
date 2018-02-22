@@ -135,7 +135,7 @@ public class ClientComms {
 	/**
 	 * Sends a message to the broker if in connected state, but only waits for the message to be
 	 * stored, before returning.
-	 * @param message The {@link MqttMessage} to send
+	 * @param message The {@link MqttWireMessage} to send
 	 * @param token The {@link Token} to send.
 	 * @throws MqttException if an error occurs sending the message
 	 */
@@ -194,6 +194,7 @@ public class ClientComms {
 	 * Connecting is a special case which will also start up the
 	 * network connection, receive thread, and keep alive thread.
 	 * @throws MqttException if an error occurs when connecting
+	 * @return The ConnectToken
 	 */
 	public Token connect() throws MqttException {
 		//private SimpleKeyValueList<String, MqttWireMessage> persistence;

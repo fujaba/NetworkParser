@@ -36,7 +36,6 @@ import de.uniks.networkparser.graph.AssociationTypes;
 import de.uniks.networkparser.graph.Attribute;
 import de.uniks.networkparser.graph.Cardinality;
 import de.uniks.networkparser.graph.Clazz;
-import de.uniks.networkparser.graph.ClazzType;
 import de.uniks.networkparser.graph.DataType;
 import de.uniks.networkparser.graph.GraphList;
 import de.uniks.networkparser.graph.GraphModel;
@@ -603,7 +602,7 @@ public class EMFTokener extends Tokener{
 				}
 			} else if (xml.getString(XSI_TYPE).equals(TYPE_EEnum)) {
 				Clazz graphEnum = new Clazz(xml.getString(EMFTokener.NAME));
-				GraphUtil.setClazzType(graphEnum, ClazzType.ENUMERATION);
+				GraphUtil.setClazzType(graphEnum, Clazz.TYPE_ENUMERATION);
 				for(int c=0;c<xml.sizeChildren();c++) {
 					BaseItem child = ecore.getChild(i);
 					if(child instanceof Entity == false) {
@@ -746,7 +745,7 @@ public class EMFTokener extends Tokener{
 		root.withKeyValue(XMI_ID, clazz.getId());
 		root.withKeyValue(NAME, clazz.getName());
 		root.withKeyValue("isAbstract", clazz.getModifier().has(Modifier.ABSTRACT));
-		if(clazz.getType()==ClazzType.INTERFACE) {
+		if(Clazz.TYPE_INTERFACE.equals(clazz.getType())) {
 			root.withKeyValue(XMI_TYPE, "uml:Interface");
 		} else {
 			root.withKeyValue(XMI_TYPE, clazz.getName());

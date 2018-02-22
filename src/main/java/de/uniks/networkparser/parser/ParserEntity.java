@@ -9,7 +9,6 @@ import de.uniks.networkparser.graph.Association;
 import de.uniks.networkparser.graph.Attribute;
 import de.uniks.networkparser.graph.Cardinality;
 import de.uniks.networkparser.graph.Clazz;
-import de.uniks.networkparser.graph.ClazzType;
 import de.uniks.networkparser.graph.DataType;
 import de.uniks.networkparser.graph.GraphModel;
 import de.uniks.networkparser.graph.GraphUtil;
@@ -449,7 +448,7 @@ public class ParserEntity {
 		String classTyp = parseClassType();
 		String className = currentWord();
 		file.with(className);
-		GraphUtil.setClazzType(file, ClazzType.create(classTyp));
+		GraphUtil.setClazzType(file, GraphUtil.createType(classTyp));
 		code.withEndOfClassName(currentToken.endPos);
 
 		nextEntity = startNextSymTab(classTyp, className);

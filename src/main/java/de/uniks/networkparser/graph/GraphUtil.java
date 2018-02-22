@@ -97,7 +97,7 @@ public class GraphUtil {
 		clazz.with(modifier);
 	}
 
-	public static final void setClazzType(Clazz clazz, ClazzType clazzType) {
+	public static final void setClazzType(Clazz clazz, String clazzType) {
 		clazz.with(clazzType);
 	}
 
@@ -113,21 +113,21 @@ public class GraphUtil {
 		if (clazz == null) {
 			return false;
 		}
-		return (clazz.getModifier().has(Modifier.ABSTRACT) || clazz.getType() == ClazzType.INTERFACE);
+		return (clazz.getModifier().has(Modifier.ABSTRACT) || Clazz.TYPE_INTERFACE.equals(clazz.getType()));
 	}
 
 	public static final boolean isInterface(Clazz clazz) {
 		if (clazz == null) {
 			return false;
 		}
-		return clazz.getType() == ClazzType.INTERFACE;
+		return Clazz.TYPE_INTERFACE.equals(clazz.getType());
 	}
 
 	public static final boolean isEnumeration(Clazz clazz) {
 		if (clazz == null) {
 			return false;
 		}
-		return clazz.getType() == ClazzType.ENUMERATION;
+		return Clazz.TYPE_ENUMERATION.equals(clazz.getType());
 	}
 
 	public static final boolean isUndirectional(Association assoc) {
@@ -294,5 +294,29 @@ public class GraphUtil {
 			}
 		}
 		return null;
+	}
+	
+	public static final String createType(String value) {
+		if(value == null) {
+			return Clazz.TYPE_CLAZZ;
+		}
+		String trim = value.trim().toLowerCase();
+		if(trim.equals(Clazz.TYPE_ENUMERATION)) {
+			return Clazz.TYPE_ENUMERATION;
+		}
+		if(trim.equals(Clazz.TYPE_INTERFACE)) {
+			return Clazz.TYPE_INTERFACE;
+		}
+		if(trim.equals(Clazz.TYPE_CREATOR)) {
+			return Clazz.TYPE_CREATOR;
+		}
+		if(trim.equals(Clazz.TYPE_SET)) {
+			return Clazz.TYPE_SET;
+		}
+		if(trim.equals(Clazz.TYPE_PATTERNOBJECT)) {
+			return Clazz.TYPE_PATTERNOBJECT;
+		}
+		return Clazz.TYPE_CLAZZ;
+
 	}
 }

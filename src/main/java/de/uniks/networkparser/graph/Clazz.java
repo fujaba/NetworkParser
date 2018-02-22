@@ -9,6 +9,13 @@ import de.uniks.networkparser.interfaces.Condition;
 import de.uniks.networkparser.list.SimpleSet;
 
 public class Clazz extends GraphEntity {
+	public static final String TYPE_CLAZZ = "class";
+	public static final String TYPE_ENUMERATION = "enum";
+	public static final String TYPE_INTERFACE = "interface";
+	public static final String TYPE_CREATOR = "creator";
+	public static final String TYPE_SET = "set";
+	public static final String TYPE_PATTERNOBJECT = "pattern";
+	
 	public static final StringFilter<Clazz> NAME = new StringFilter<Clazz>(GraphMember.PROPERTY_NAME);
 	public static final String PROPERTY_PACKAGENAME = "packageName";
 	public static final String PROPERTY_FULLNAME = "fullName";
@@ -19,7 +26,7 @@ public class Clazz extends GraphEntity {
 	public static final String PROPERTY_IMPLEMENTS = "implements";
 	public static final String PROPERTY_ATTRIBUTE = "attribute";
 
-	private ClazzType type = ClazzType.CLAZZ;
+	private String type = TYPE_CLAZZ;
 
 	Clazz() {
 
@@ -44,18 +51,18 @@ public class Clazz extends GraphEntity {
 		return this;
 	}
 
-	protected Clazz with(ClazzType clazzType) {
+	protected Clazz withType(String clazzType) {
 		this.type = clazzType;
 		return this;
 	}
 
 	public Clazz enableInterface() {
-		this.with(ClazzType.INTERFACE);
+		this.withType(TYPE_INTERFACE);
 		return this;
 	}
 
 	public Clazz enableEnumeration(Object... literals) {
-		this.with(ClazzType.ENUMERATION);
+		this.withType(TYPE_ENUMERATION);
 		if(literals == null) {
 			return this;
 		}
@@ -73,7 +80,7 @@ public class Clazz extends GraphEntity {
 	}
 
 
-	public ClazzType getType() {
+	public String getType() {
 		return type;
 	}
 
@@ -277,7 +284,7 @@ public class Clazz extends GraphEntity {
 	public ClazzSet getInterfaces(boolean transitive) {
 		repairAssociations();
 		AssociationTypes type = AssociationTypes.IMPLEMENTS;
-		if(this.getType()==ClazzType.INTERFACE) {
+		if(TYPE_INTERFACE.equals(this.getType())) {
 			type = AssociationTypes.GENERALISATION;
 		}
 
@@ -324,13 +331,13 @@ public class Clazz extends GraphEntity {
 			// Ignore
 			return;
 		}
-		if(assoc.getClazz().getType().equals(ClazzType.INTERFACE)) {
+		if(TYPE_INTERFACE.equals(assoc.getClazz().getType())) {
 			if(AssociationTypes.GENERALISATION.equals(assoc.getType()) ==false) {
 				assoc.with(AssociationTypes.GENERALISATION);
 			}
 		} else {
 			// Its a Class
-			if(assoc.getOtherClazz().getType().equals(ClazzType.INTERFACE)) {
+			if(TYPE_INTERFACE.equals(assoc.getOtherClazz().getType())) {
 				// Must be an Implements
 				if(AssociationTypes.IMPLEMENTS.equals(assoc.getType())==false) {
 					assoc.with(AssociationTypes.IMPLEMENTS);
@@ -374,7 +381,15 @@ public class Clazz extends GraphEntity {
 	}
 
 	public Clazz withSuperClazz(Clazz... values) {
-		createAssociation(AssociationTypes.GENERALISATION, AssociationTypes.EDGE, values);
+		AssociationTypes type = AssociationTypes.GENERALISATION;
+		if(values != null) {
+			for(Clazz item : values) {
+				if(item != null && TYPE_INTERFACE.equals(item.getType())) {
+					type = AssociationTypes.IMPLEMENTS;
+				}
+			}
+		}
+		createAssociation(type, AssociationTypes.EDGE, values);
 		return this;
 	}
 
@@ -431,9 +446,9 @@ public class Clazz extends GraphEntity {
 		return kidClazzes;
 	}
 
-	protected void createAssociation(AssociationTypes direction, AssociationTypes backDirection, Clazz... values) {
+	protected boolean createAssociation(AssociationTypes direction, AssociationTypes backDirection, Clazz... values) {
 		if (values == null) {
-			return;
+			return false;
 		}
 		AssociationSet associations = getAssociations();
 		for (Clazz item : values) {
@@ -442,7 +457,7 @@ public class Clazz extends GraphEntity {
 					if(assoc.getType() == direction && assoc.getOtherType() == backDirection) {
 						if(assoc.contains(item, true, false) == false) {
 							assoc.getOther().setParentNode(item);
-							break;
+							return false;
 						}
 					}
 				}
@@ -453,6 +468,7 @@ public class Clazz extends GraphEntity {
 				item.with(superAssoc);
 			}
 		}
+		return true;
 	}
 
 	public Clazz withKidClazzes(Clazz... values) {
@@ -510,7 +526,7 @@ public class Clazz extends GraphEntity {
 				}
 			}
 		}
-		boolean isInterface = getType() == ClazzType.INTERFACE;
+		boolean isInterface = TYPE_INTERFACE.equals(getType());
 		boolean isAbstract = getModifier().has(Modifier.ABSTRACT);
 		if(isInterface || isAbstract) {
 			return collection;
@@ -568,7 +584,7 @@ public class Clazz extends GraphEntity {
 				}
 			}
 		}
-		boolean isInterface = getType() == ClazzType.INTERFACE;
+		boolean isInterface = TYPE_INTERFACE.equals(getType());
 		boolean isAbstract = getModifier().has(Modifier.ABSTRACT);
 		if(isInterface || isAbstract) {
 			return collection;
@@ -588,7 +604,7 @@ public class Clazz extends GraphEntity {
 	@Override
 	public AssociationSet getAssociations(Condition<?>... filters) {
 		AssociationSet collection = super.getAssociations(filters);
-		boolean isInterface = getType() == ClazzType.INTERFACE;
+		boolean isInterface = TYPE_INTERFACE.equals(getType());
 		boolean isAbstract = getModifier().has(Modifier.ABSTRACT);
 		if(isInterface || isAbstract) {
 			return collection;
@@ -625,7 +641,7 @@ public class Clazz extends GraphEntity {
 		if(this.children == null) {
 			return;
 		}
-		boolean isInterface = getType() == ClazzType.INTERFACE;
+		boolean isInterface = TYPE_INTERFACE.equals(getType());
 		boolean isAbstract = getModifier().has(Modifier.ABSTRACT);
 		Class<?> checkClassType = existsElements.getTypClass();
 		if(isInterface == false && isAbstract  == false ) {
@@ -816,11 +832,11 @@ public class Clazz extends GraphEntity {
 			return buffer.toString();
 		}
 		if(PROPERTY_TYPE.equalsIgnoreCase(attribute)) {
-			return this.getType().getValue();
+			return this.getType();
 		}
 		if(PROPERTY_SUPERCLAZZ.equalsIgnoreCase(attribute)) {
 			ClazzSet clazzes;
-			if(this.getType()==ClazzType.ENUMERATION || this.getType()==ClazzType.INTERFACE) {
+			if(TYPE_ENUMERATION.equals(this.getType()) || TYPE_INTERFACE.equals(this.getType())) {
 				clazzes = getImplements();
 			} else {
 				clazzes = getSuperClazzes(false);
@@ -828,7 +844,7 @@ public class Clazz extends GraphEntity {
 			return clazzes.toString(", ");
 		}
 		if(PROPERTY_IMPLEMENTS.equalsIgnoreCase(attribute)) {
-			if(this.getType()==ClazzType.ENUMERATION || this.getType()==ClazzType.INTERFACE) {
+			if(TYPE_ENUMERATION.equals(this.getType()) || TYPE_INTERFACE.equals(this.getType())) {
 				return null;
 			}
 

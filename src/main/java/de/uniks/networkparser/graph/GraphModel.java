@@ -74,9 +74,9 @@ public abstract class GraphModel extends GraphEntity implements BaseItem {
 		if(this.children instanceof GraphSimpleSet == false) {
 			if(this.children instanceof Clazz) {
 				Clazz clazz = (Clazz) this.children;
-				if(clazz.getType() == ClazzType.CREATOR
-						|| clazz.getType() == ClazzType.PATTERNOBJECT
-						|| clazz.getType() == ClazzType.SET) {
+				if(Clazz.TYPE_CREATOR.equals(clazz.getType())
+						|| Clazz.TYPE_PATTERNOBJECT.equals(clazz.getType())
+						|| Clazz.TYPE_SET.equals(clazz.getType())) {
 					clazz.setParentNode(null);
 					this.children = null;
 				}
@@ -90,9 +90,9 @@ public abstract class GraphModel extends GraphEntity implements BaseItem {
 			GraphMember member = i.next();
 			if(member instanceof Clazz) {
 				Clazz clazz = (Clazz) member;
-				if(clazz.getType() == ClazzType.CREATOR
-						|| clazz.getType() == ClazzType.PATTERNOBJECT
-						|| clazz.getType() == ClazzType.SET) {
+				if(Clazz.TYPE_CREATOR.equals(clazz.getType())
+						|| Clazz.TYPE_PATTERNOBJECT.equals(clazz.getType())
+						|| Clazz.TYPE_SET.equals(clazz.getType())) {
 					clazz.setParentNode(null);
 					list.remove(member);
 				}
@@ -211,7 +211,7 @@ public abstract class GraphModel extends GraphEntity implements BaseItem {
 		}
 
 		// Fix the Clazz
-		if (item.getType() == ClazzType.ENUMERATION) {
+		if (Clazz.TYPE_ENUMERATION.equals(item.getType())) {
 			SimpleSet<Literal> literals = item.getValues();
 			SimpleSet<Attribute> attributes = item.getAttributes();
 			for (Literal literal : literals) {

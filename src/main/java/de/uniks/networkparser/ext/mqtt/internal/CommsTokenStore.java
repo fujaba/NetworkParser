@@ -88,7 +88,7 @@ public class CommsTokenStore {
 	 * Restores a token after a client restart.  This method could be called
 	 * for a SEND of CONFIRM, but either way, the original SEND is what's
 	 * needed to re-build the token.
-	 * @param message The {@link MqttMessage} message to restore
+	 * @param message The {@link MqttWireMessage} message to restore
 	 * @return a Token
 	 */
 	protected Token restoreToken(MqttWireMessage message) {
