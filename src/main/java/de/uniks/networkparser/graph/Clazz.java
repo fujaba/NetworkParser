@@ -778,9 +778,13 @@ public class Clazz extends GraphEntity {
 		for (Clazz item : values) {
 			if (item != null) {
 				for (Association assoc : getAssociations()) {
-					if(assoc.getType() == AssociationTypes.GENERALISATION) {
-						if(assoc.contains(item, true, false)) {
-							this.without(assoc);
+					if(assoc.getType() == AssociationTypes.GENERALISATION || assoc.getType() == AssociationTypes.IMPLEMENTS) {
+						if(assoc.getOther().contains(item, true, false)) {
+							if(assoc.getOther().getParents().size() == 1) {
+								this.without(assoc);
+							} else {
+								assoc.getOther().withoutParent(item);
+							}
 							break;
 						}
 					}

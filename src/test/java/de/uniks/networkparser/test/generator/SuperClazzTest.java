@@ -110,4 +110,30 @@ public class SuperClazzTest {
 		Assert.assertEquals(1, regularClazz.getInterfaces(false).size());
 	}
 
+	@Test
+	public void testSuperRemove1() {
+		ClassModel model = new ClassModel();
+
+		Clazz superClazz = model.createClazz("SuperClazz");
+		Clazz interfaceClazz = model.createClazz("InterfaceClazz");
+		Clazz regularClazz = model.createClazz("RegularClazz");
+
+		regularClazz.withSuperClazz(superClazz, interfaceClazz);
+		interfaceClazz.enableInterface();
+
+		Assert.assertEquals(1, regularClazz.getSuperClazzes(false).size());
+		Assert.assertEquals(1, regularClazz.getInterfaces(false).size());
+
+		regularClazz.withoutSuperClazz(superClazz);
+
+		Assert.assertEquals(0, regularClazz.getSuperClazzes(false).size());
+		Assert.assertEquals(1, regularClazz.getInterfaces(false).size());
+
+		regularClazz.withoutSuperClazz(interfaceClazz);
+
+		Assert.assertEquals(0, regularClazz.getSuperClazzes(false).size());
+		Assert.assertEquals(0, regularClazz.getInterfaces(false).size());
+
+	}
+
 }
