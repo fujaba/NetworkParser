@@ -176,7 +176,7 @@ public class Method extends GraphMember {
 	 * one                          many
 	 *</pre>
 	 */
-	public ParameterSet getParameter(Condition<?>... filters) {
+	public ParameterSet getParameters(Condition<?>... filters) {
 		ParameterSet collection = new ParameterSet();
 		if (children == null) {
 			return collection;
@@ -249,7 +249,7 @@ public class Method extends GraphMember {
 			return this.getReturnType();
 		}
 		if(PROPERTY_PARAMETER.equalsIgnoreCase(attribute)) {
-			return this.getParameter();
+			return this.getParameters();
 		}
 		if (PROPERTY_PARAMETERNAME.equalsIgnoreCase(attribute)) {
 			return this.getParameterString(true, false);

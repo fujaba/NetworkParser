@@ -12,8 +12,12 @@ import de.uniks.networkparser.graph.FeatureProperty;
 import de.uniks.networkparser.graph.GraphMember;
 import de.uniks.networkparser.graph.GraphModel;
 import de.uniks.networkparser.graph.Method;
+import de.uniks.networkparser.graph.Parameter;
+import de.uniks.networkparser.graph.util.AttributeSet;
 import de.uniks.networkparser.graph.util.ClazzSet;
 import de.uniks.networkparser.graph.util.FeatureSet;
+import de.uniks.networkparser.graph.util.MethodSet;
+import de.uniks.networkparser.graph.util.ParameterSet;
 import de.uniks.networkparser.interfaces.ParserCondition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.list.SimpleKeyValueList;
@@ -361,17 +365,53 @@ public class ModelGenerator extends BasicGenerator {
 	}
 
 	public Attribute findAttribute(Clazz clazz, String name) {
+		if(name == null) {
+			return null;
+		}
+		AttributeSet attributes = clazz.getAttributes();
+		for(Attribute a : attributes) {
+			if( name.equals(a.getName())) {
+				return a;
+			}
+		}
 		// Update from Code and find the Clazz from Model
 		return null;
 	}
 
 	public Method findMethod(Clazz clazz, String name) {
+		if(name == null) {
+			return null;
+		}
+		MethodSet methods = clazz.getMethods();
+		for(Method m : methods) {
+			if( name.equals(m.getName())) {
+				return m;
+			}
+		}
+		return null;
+	}
+	
+	public Parameter findParameter(Method method, String name) {
+		if(name == null) {
+			return null;
+		}
+		ParameterSet parameters = method.getParameters();
+		for(Parameter p : parameters) {
+			if( name.equals(p.getName())) {
+				return p;
+			}
+		}
 		return null;
 	}
 
 	public Clazz createClazz(String name) {
-		return null;
+		return this.defaultModel.createClazz(name);
 	}
+	
+	public boolean removeClazz(Clazz clazz) {
+		return this.defaultModel.remove(clazz);
+	}
+
 
 	public void applyChange() {
 		this.generate(defaultRootDir, this.defaultModel);

@@ -41,7 +41,7 @@ public class MethodSet extends SimpleSet<Method>{
 	public ParameterSet getParameters() {
 		ParameterSet collection = new ParameterSet();
 		for(Method item : this) {
-			collection.addAll(item.getParameter());
+			collection.addAll(item.getParameters());
 		}
 		return collection;
 	}

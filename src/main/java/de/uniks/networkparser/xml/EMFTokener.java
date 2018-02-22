@@ -824,7 +824,7 @@ public class EMFTokener extends Tokener{
 		root.withKeyValue("visibility", method.getModifier());
 
 		// parameters
-		ParameterSet parameter = method.getParameter();
+		ParameterSet parameter = method.getParameters();
 		for(Parameter param : parameter) {
 			encodeOwnedValue(root.createChild(null), param);
 		}

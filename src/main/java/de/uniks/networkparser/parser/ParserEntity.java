@@ -1305,8 +1305,8 @@ public class ParserEntity {
 			} else  if(search.getName().equals(method.getName())) {
 				if(search.getReturnType().equals(method.getReturnType())) {
 					// Check all Parameter
-					ParameterSet searchParam = search.getParameter();
-					ParameterSet param = method.getParameter();
+					ParameterSet searchParam = search.getParameters();
+					ParameterSet param = method.getParameters();
 					if(searchParam.size() == param.size()) {
 						boolean found=true;
 						for(int i=0;i<param.size();i++) {
