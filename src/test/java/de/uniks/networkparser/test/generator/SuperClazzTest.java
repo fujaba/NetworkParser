@@ -94,4 +94,20 @@ public class SuperClazzTest {
 		Assert.assertEquals(1, regularClazz.getSuperClazzes(false).size());
 	}
 
+	@Test
+	public void testSuperAdd6() {
+		ClassModel model = new ClassModel();
+
+		Clazz superClazz = model.createClazz("SuperClazz");
+		Clazz interfaceClazz = model.createClazz("InterfaceClazz");
+		Clazz regularClazz = model.createClazz("RegularClazz");
+
+		regularClazz.withSuperClazz(superClazz, interfaceClazz);
+//		regularClazz.withSuperClazz(interfaceClazz);
+		interfaceClazz.enableInterface();
+
+		Assert.assertEquals(1, regularClazz.getSuperClazzes(false).size());
+		Assert.assertEquals(1, regularClazz.getInterfaces(false).size());
+	}
+
 }

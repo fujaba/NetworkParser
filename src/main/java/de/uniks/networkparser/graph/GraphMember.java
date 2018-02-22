@@ -266,7 +266,11 @@ public abstract class GraphMember {
 			for (GraphMember value : values) {
 				if(this.children == value) {
 					this.children = null;
-					value.setParentNode(null);
+					if(value instanceof Association) {
+						((Association)value).withoutParent(this);
+					} else {
+						((Association)value).setParentNode(null);
+					}
 				}
 			}
 			return this;

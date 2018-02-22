@@ -6,7 +6,6 @@ import de.uniks.networkparser.graph.util.AttributeSet;
 import de.uniks.networkparser.graph.util.ClazzSet;
 import de.uniks.networkparser.graph.util.MethodSet;
 import de.uniks.networkparser.interfaces.Condition;
-import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SimpleSet;
 
 public class Clazz extends GraphEntity {
@@ -323,34 +322,54 @@ public class Clazz extends GraphEntity {
 		return collection;
 	}
 
-	protected void repairAssociation(Association assoc) {
+	protected boolean repairAssociation(Association assoc) {
 		if(AssociationTypes.IMPLEMENTS.equals(assoc.getType()) == false && AssociationTypes.GENERALISATION.equals(assoc.getType()) == false) {
 			// Wrong way try another round
 			assoc = assoc.getOther();
 		}
 		if(AssociationTypes.IMPLEMENTS.equals(assoc.getType()) == false  && AssociationTypes.GENERALISATION.equals(assoc.getType()) == false) {
 			// Ignore
-			return;
+			return true;
 		}
-		if(TYPE_INTERFACE.equals(assoc.getClazz().getType())) {
-			if(AssociationTypes.GENERALISATION.equals(assoc.getType()) ==false) {
-				assoc.with(AssociationTypes.GENERALISATION);
-			}
-		} else {
-			// Its a Class
-			if(TYPE_INTERFACE.equals(assoc.getOtherClazz().getType())) {
-				// Must be an Implements
-				if(AssociationTypes.IMPLEMENTS.equals(assoc.getType())==false) {
-					assoc.with(AssociationTypes.IMPLEMENTS);
-				}
-			} else {
-				// Must be an Genralization
-				if(AssociationTypes.GENERALISATION.equals(assoc.getType())==false) {
-					assoc.with(AssociationTypes.GENERALISATION);
+		// REPAIR CLAZZES
+		GraphSimpleSet items = assoc.getOther().getParents();
+		ClazzSet interfaces = new ClazzSet();
+		ClazzSet generalizations = new ClazzSet();
+		for(GraphMember child : items) {
+			if(child != null && child instanceof Clazz) {
+				Clazz clazzChild = (Clazz) child;
+				if(TYPE_INTERFACE.equals(clazzChild.getType())) {
+					interfaces.add(child);
+				} else {
+					generalizations.add(child);
 				}
 			}
+		}
 
+		// CHECK FOR WRONG TYPE
+		if(AssociationTypes.GENERALISATION.equals(assoc.getType())) {
+			if(generalizations.size() < 1) {
+					//&& interfaces.size() > 0) {
+				assoc.with(AssociationTypes.IMPLEMENTS);
+			} else if(interfaces.size() > 0){
+				// BOTH
+				for(Clazz item : interfaces) {
+					item.without(assoc.getOther());
+				}
+				createAssociation(AssociationTypes.IMPLEMENTS, AssociationTypes.EDGE, interfaces.toArray());
+			}
+			return true;
 		}
+		if(interfaces.size() < 1) {
+			assoc.with(AssociationTypes.GENERALISATION);
+		} else if(generalizations.size() > 0){
+			// BOTH
+			for(Clazz item : interfaces) {
+				item.without(assoc.getOther());
+			}
+			createAssociation(AssociationTypes.GENERALISATION, AssociationTypes.EDGE, generalizations.toArray());
+		}
+		return true;
 	}
 
 	private void repairAssociations() {
@@ -362,8 +381,11 @@ public class Clazz extends GraphEntity {
 			repairAssociation((Association) this.children);
 		}else if(children instanceof GraphSimpleSet) {
 			GraphSimpleSet list = (GraphSimpleSet) this.children;
+			int size = list.size(); 
 			AssociationSet generalizations = new AssociationSet();
-			for (GraphMember item : list) {
+			for(int i=0;i<size;i++) {
+//			for (GraphMember item : list) {
+				GraphMember item = list.get(i);
 				if(item instanceof Association) {
 					Association assoc = (Association) item;
 					repairAssociation(assoc);
@@ -372,6 +394,7 @@ public class Clazz extends GraphEntity {
 					}
 				}
 			}
+			
 			if(generalizations.size() > 1) {
 				// Repair only valid last generalization
 				for(int i=0;i<generalizations.size() - 1;i++) {
@@ -392,8 +415,8 @@ public class Clazz extends GraphEntity {
 				}
 			} else {
 				// COMPLEX
-				SimpleList<Clazz> interfaces = new SimpleList<Clazz>();
-				SimpleList<Clazz> generalizations = new SimpleList<Clazz>();
+				ClazzSet interfaces = new ClazzSet();
+				ClazzSet generalizations = new ClazzSet();
 				for(Clazz item : values) {
 					if(item != null) {
 						if(TYPE_INTERFACE.equals(item.getType())) {
@@ -405,10 +428,10 @@ public class Clazz extends GraphEntity {
 					}
 				}
 				if(generalizations.size()>0) {
-					createAssociation(AssociationTypes.GENERALISATION, AssociationTypes.EDGE, generalizations.toArray(new Clazz[generalizations.size()]));
+					createAssociation(AssociationTypes.GENERALISATION, AssociationTypes.EDGE, generalizations.toArray());
 				}
 				if(interfaces.size()>0) {
-					createAssociation(AssociationTypes.IMPLEMENTS, AssociationTypes.EDGE, interfaces.toArray(new Clazz[interfaces.size()]));
+					createAssociation(AssociationTypes.IMPLEMENTS, AssociationTypes.EDGE, interfaces.toArray());
 				}
 				return this;
 			}
@@ -491,6 +514,7 @@ public class Clazz extends GraphEntity {
 				childAssoc.with(superAssoc);
 				this.with(childAssoc);
 				item.with(superAssoc);
+				associations = getAssociations();
 			}
 		}
 		return true;
