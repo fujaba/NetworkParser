@@ -323,7 +323,7 @@ public class NodeProxyTCP extends NodeProxy {
 				sb.with(item.getKey(), "=", item.getValue());
 			}
 		}
-		byte[] byteArray = sb.toByteArray();
+		byte[] byteArray = sb.toBytes();
 		conn.setFixedLengthStreamingMode(byteArray.length);
 		conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
 		try {
@@ -346,7 +346,7 @@ public class NodeProxyTCP extends NodeProxy {
 		if(params != null) {
 			sb.with(params.toString());
 		}
-		byte[] byteArray = sb.toByteArray();
+		byte[] byteArray = sb.toBytes();
 		conn.setFixedLengthStreamingMode(byteArray.length);
 		conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
 		try {

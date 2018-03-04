@@ -65,6 +65,8 @@ public abstract class BufferedBuffer extends Buffer {
 		this.length = value;
 		return this;
 	}
+	
+	public abstract BufferedBuffer newInstance();
 
 	public abstract byte byteAt(int index);
 
@@ -253,4 +255,34 @@ public abstract class BufferedBuffer extends Buffer {
 		}
 		return subSequence(start, end).toString();
 	}
+	
+	public abstract byte[] toBytes();
+	
+	public String toArrayString(boolean... addString) {
+		CharacterBuffer sb=new CharacterBuffer();
+		sb.with('[');
+		
+		byte[] byteArray = this.toBytes();
+		if(byteArray != null && byteArray.length > 0 ) {
+			sb.with(""+byteArray[0]);
+			for(int i=1;i<this.length;i++) {
+				sb.with(","+byteArray[i]);
+			}
+		}
+		sb.with(']');
+		if(addString != null && addString.length>0 && addString[0]) {
+			sb.with(' ').with('(').with(new String(byteArray)).with(')');
+		}
+		return sb.toString();
+	}
+
+	public final void clear() {
+		this.length = 0;
+		this.start = 0;
+		this.position = 0;
+	}
+
+	public abstract BufferedBuffer with(char[] buffer, int i, int readed);
+
+	public abstract BufferedBuffer with(CharSequence... items);
 }

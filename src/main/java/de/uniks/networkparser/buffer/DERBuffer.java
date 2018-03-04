@@ -154,7 +154,6 @@ public class DERBuffer extends ByteBuffer {
 		}
 		return true;
 	}
-
 	@Override
 	protected boolean addBytes(Object bytes, int len) {
 		if (bytes != null) {

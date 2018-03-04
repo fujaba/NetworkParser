@@ -107,7 +107,12 @@ public class ByteEntity implements ByteItem {
 	 */
 	public ByteEntity withValue(byte type, byte value) {
 		this.type = type;
-		this.values = new byte[] {value };
+		this.values = new byte[] {value};
+		return this;
+	}
+	
+	public ByteEntity withType(byte type) {
+		this.type = type;
 		return this;
 	}
 
@@ -371,6 +376,12 @@ public class ByteEntity implements ByteItem {
 	public static ByteEntity create(Object value) {
 		ByteEntity item = new ByteEntity();
 		item.setValues(value);
+		return item;
+	}
+	public static ByteEntity create(int type, Object value) {
+		ByteEntity item = new ByteEntity();
+		item.setValues(value);
+		item.withType((byte) type);
 		return item;
 	}
 

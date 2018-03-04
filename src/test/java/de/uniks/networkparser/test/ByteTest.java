@@ -44,6 +44,14 @@ import de.uniks.networkparser.test.model.util.UniversityCreator;
 
 public class ByteTest{
 	@Test
+	public void testShortToByte() {
+		ByteBuffer byteBuffer = new ByteBuffer();
+		byteBuffer.add((short) 206);
+		System.out.println(byteBuffer.toArrayString());
+	}
+	
+	
+	@Test
 	public void testBuffer() {
 		DERBuffer buffer = new DERBuffer();
 		buffer.add(new byte[]{24,25,26,27,28,29,30,31,32});
@@ -60,7 +68,7 @@ public class ByteTest{
 		String item = "tlstest#42";
 		byte[] itemByte = item.getBytes();
 		byte[] reference = BASE64EncoderStream.encode(itemByte);
-		byte[] actuals = new ByteConverter64().toStaticString(item).toByteArray();
+		byte[] actuals = new ByteConverter64().toStaticString(item).toBytes();
 		Assert.assertEquals(reference.length, actuals.length);
 		Assert.assertArrayEquals(reference, actuals);
 	}

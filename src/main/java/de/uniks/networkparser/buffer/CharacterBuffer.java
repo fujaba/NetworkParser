@@ -135,7 +135,7 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence {
 		return result;
 	}
 
-	public byte[] toByteArray() {
+	public byte[] toBytes() {
 		byte[] result = new byte[this.length];
 		for(int i=start; i< this.length;i++) {
 			result[i] = (byte) buffer[i];
@@ -729,12 +729,6 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence {
 		return buffer.length - start;
 	}
 
-	public final void clear() {
-		this.length = 0;
-		this.start = 0;
-		this.position = 0;
-	}
-
 	public char remove(int position) {
 		char oldChar = this.buffer[position];
 		if(position == start ) {
@@ -1229,5 +1223,10 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence {
 			endPos = length();
 		}
 		System.err.println(substring(startPos, position) + "<--" + msg + "-->" + substring(position, endPos));
+	}
+
+	@Override
+	public CharacterBuffer newInstance() {
+		return new CharacterBuffer();
 	}
 }

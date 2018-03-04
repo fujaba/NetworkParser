@@ -1,5 +1,6 @@
 package de.uniks.networkparser.ext.io;
 import java.io.BufferedReader;
+import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -15,6 +16,8 @@ import javax.net.ssl.SSLSocketFactory;
 
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.buffer.Buffer;
+import de.uniks.networkparser.buffer.BufferedBuffer;
+import de.uniks.networkparser.buffer.ByteBuffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.converter.ByteConverter64;
 import de.uniks.networkparser.interfaces.BaseItem;
@@ -35,7 +38,8 @@ public class MessageSession {
 	public final static String RESPONSE_SMTP_AUTH_NTLM_BLOB_Response="334";
 	public final static String RESPONSE_LOGIN_SUCCESS="235";
 	public final static String RESPONSE_SERVICE_CLOSING_TRANSMISSION="221";
-	public static final int SSLPORT=587;
+	public static final int SSL_PORT=587;
+	public static final int AMQP_PORT = 5672;
 	/** 15 sec. socket read timeout */
 	public static final int SOCKET_READ_TIMEOUT = 15 * 1000;
 	public static String FEATURE_TLS = "STARTTLS";
@@ -48,15 +52,15 @@ public class MessageSession {
 	protected BufferedReader in;
 	protected OutputStream out;
 	protected SimpleList<String> supportedFeature = new SimpleList<String>();
-	private CharacterBuffer lastAnswer;
+	private BufferedBuffer lastAnswer;
 	private String lastSended;
 	private SocketFactory factory;
 	private String type;
 	private String id;
-
+	private BufferedBuffer responseFactory = new CharacterBuffer();
 	public MessageSession connectSSL(String host, String sender, String password) {
 		this.host = host;
-		this.port = SSLPORT;
+		this.port = SSL_PORT;
 		this.sender = sender;
 		this.connect(sender, password);
 		return this;
@@ -70,7 +74,7 @@ public class MessageSession {
 	}
 
 
-	private CharacterBuffer bindXMPP() {
+	private BufferedBuffer bindXMPP() {
 		XMLEntity iq = XMLEntity.TAG("iq");
 		iq.with("id", nextID());
 		iq.with("type", "set");
@@ -79,7 +83,7 @@ public class MessageSession {
 		bind.createChild("resource").withValueItem("NetworkParser");
 ////		bind.createChild("resource").withValueItem("Smack");
 		String command = iq.toString();
-		CharacterBuffer response = sendCommand(command);
+		BufferedBuffer response = sendCommand(command);
 //		System.out.println(response);
 
 		response = sendCommand("<iq id=\""+nextID()+"\" type=\"set\"><session xmlns=\"urn:ietf:params:xml:ns:xmpp-session\"/></iq>");
@@ -100,6 +104,19 @@ public class MessageSession {
 		}
 		byte[] userBytes = user.getBytes();
 		byte[] passwordBytes = password.getBytes();
+
+		if(type== TYPE_AMQ) {
+			byte[] bytes = new byte[userBytes.length + passwordBytes.length + 2];
+			int i=0;
+			for(;i<userBytes.length;i++) {
+				bytes[i+1] = userBytes[i];
+			}
+			for(i=0;i<passwordBytes.length;i++) {
+				bytes[i+userBytes.length + 2] = passwordBytes[i];
+			}
+			return new String(bytes);
+		}
+
 		byte[] bytes = new byte[userBytes.length * 2 + passwordBytes.length + 2];
 		int i=0;
 		for(;i<userBytes.length;i++) {
@@ -154,11 +171,18 @@ public class MessageSession {
 			in.close();
 			out.close();
 			serverSocket.close();
+			serverSocket = null;
+			in = null;
+			out = null;
 		} catch (Exception ex) {
 			// Ignore the exception. Probably the socket is not open.
 			return false;
 		}
 		return true;
+	}
+	
+	public boolean isClose() {
+		return in != null;
 	}
 
 	private boolean initSockets(String host, int port) throws UnsupportedEncodingException, IOException {
@@ -192,7 +216,7 @@ public class MessageSession {
 		try {
 			initSockets(host, port);
 	
-			CharacterBuffer response = sendStart();
+			BufferedBuffer response = sendStart();
 	
 			XMLEntity answer= new XMLEntity().withValue(response);
 			this.id = answer.getString("id");
@@ -238,7 +262,7 @@ public class MessageSession {
 			if (this.serverSocket instanceof SSLSocket) {
 				((SSLSocket)this.serverSocket).startHandshake();
 			}
-			CharacterBuffer response = sendStart();
+			BufferedBuffer response = sendStart();
 	
 			XMLEntity answer= new XMLEntity().withValue(response);
 			this.id = answer.getString("id");
@@ -283,7 +307,7 @@ public class MessageSession {
 	
 				sendStart();
 	
-				CharacterBuffer answer = sendCommand(FEATURE_TLS);
+				BufferedBuffer answer = sendCommand(FEATURE_TLS);
 	
 				startTLS();
 	
@@ -313,48 +337,70 @@ public class MessageSession {
 		}
 		return false;
 	}
+	
+	public boolean connectingAMQ(String host, String... authentification) {
+		String user = null;
+		String password = null;
+		this.host = host;
+		if(authentification != null) {
+			if(authentification.length>0) {
+				user = authentification[0];
+			}
+			if(authentification.length>1) {
+				password = authentification[1];
+			}
+		}
+		return connectAMQ(user, password);
+	}
 
 	public boolean connectAMQ(String sender, String password) {
 		this.type = TYPE_AMQ;
+		if(this.port == 0) {
+			this.port = AMQP_PORT;
+		}
 		this.factory = javax.net.SocketFactory.getDefault();
+		if(sender == null && password == null) {
+			sender = "guest";
+			password = "guest";
+		}		
 		if(isValid(sender) == false) {
 			return false;
 		}
 		try {
 			if(serverSocket == null) {
 				initSockets(host, port);
-	
-				checkServerResponse(getResponse(), RESPONSE_SERVERREADY);
-	
 				sendStart();
-	
-				CharacterBuffer answer = sendCommand(FEATURE_TLS);
-	
-				startTLS();
-	
-				sendStart();
-	
-				answer = sendCommand("AUTH LOGIN");
-	
-				if(checkServerResponse(answer, RESPONSE_SMTP_AUTH_NTLM_BLOB_Response) == false) {
-					close();
-					return false;
-				}
-				ByteConverter64 converter = new ByteConverter64();
-				answer= sendCommand(converter.toStaticString(sender).toString());
-				if(checkServerResponse(answer, RESPONSE_SMTP_AUTH_NTLM_BLOB_Response) == false) {
-					close();
-					return false;
-				}
-				// send passwd
-				answer = sendCommand(converter.toStaticString(password).toString());
-				if(checkServerResponse(answer, RESPONSE_LOGIN_SUCCESS) == false) {
-					close();
-					return false;
-				}
+				
+				RabbitMessage message = RabbitMessage.createStartOK(sender, password);
+				message.write(this.out);
+				DataInputStream in = new DataInputStream(this.serverSocket.getInputStream());
+				RabbitMessage response = RabbitMessage.readFrom(in);
+				System.out.println(response);
+				
+				message = RabbitMessage.createTuneOK();
+				message.write(this.out);
+//				answer = sendCommand("AUTH LOGIN");
+//	
+//				if(checkServerResponse(answer, RESPONSE_SMTP_AUTH_NTLM_BLOB_Response) == false) {
+//					close();
+//					return false;
+//				}
+//				ByteConverter64 converter = new ByteConverter64();
+//				answer= sendCommand(converter.toStaticString(sender).toString());
+//				if(checkServerResponse(answer, RESPONSE_SMTP_AUTH_NTLM_BLOB_Response) == false) {
+//					close();
+//					return false;
+//				}
+//				// send passwd
+//				answer = sendCommand(converter.toStaticString(password).toString());
+//				if(checkServerResponse(answer, RESPONSE_LOGIN_SUCCESS) == false) {
+//					close();
+//					return false;
+//				}
 			}
 			return true;
 		}catch (Exception e) {
+			e.printStackTrace();
 		}
 		return false;
 	}
@@ -388,11 +434,18 @@ public class MessageSession {
 		return true;
 	}
 
-	private CharacterBuffer sendStart() {
+	private BufferedBuffer sendStart() {
 		if (TYPE_XMPP.equals(type) || TYPE_FCM.equals(type)) {
 			return sendCommand("<stream:stream to=\""+host+"\" xmlns=\"jabber:client\" xmlns:stream=\"http://etherx.jabber.org/streams\" version=\"1.0\">");
 		}
-		CharacterBuffer response = sendCommand("EHLO " + getLocalHost());
+		if(TYPE_AMQ.equals(type)) {
+			int major = 0;
+			int minor = 9;
+			int revision = 1;
+			write("AMQP".getBytes(), 0, major, minor, revision);
+			return new CharacterBuffer();
+		}
+		BufferedBuffer response = sendCommand("EHLO " + getLocalHost());
 		supportedFeature.clear();
 		String[] lines = response.toString().split("\n");
 		// Skip first line
@@ -436,9 +489,9 @@ public class MessageSession {
 	 * @param commandString String for sending
 	 * @return response received from the server.
 	 */
-	protected CharacterBuffer sendCommand(String commandString) {
+	protected BufferedBuffer sendCommand(String commandString) {
 		sendValues(commandString);
-		CharacterBuffer response = getResponse();
+		BufferedBuffer response = getResponse();
 		return response;
 	}
 
@@ -478,7 +531,7 @@ public class MessageSession {
 		}
 	}
 
-	public boolean  write(byte... values) {
+	public boolean write(byte... values) {
 		try {
 			if(values == null) {
 				return true;
@@ -527,7 +580,7 @@ public class MessageSession {
 	 * @return success
 	 */
 	protected boolean doCommand(String commandString, String responseCode) {
-		CharacterBuffer response = sendCommand(commandString);
+		BufferedBuffer response = sendCommand(commandString);
 		return checkServerResponse(response, responseCode);
 	}
 
@@ -537,7 +590,7 @@ public class MessageSession {
 	 * @param code check the response for response code
 	 * @return success
 	 */
-	protected boolean checkServerResponse(CharSequence response, String code) {
+	protected boolean checkServerResponse(BufferedBuffer response, String code) {
 		if(response == null || code == null) {
 			return false;
 		}
@@ -553,6 +606,8 @@ public class MessageSession {
 		}
 		return true;
 	}
+	
+	
 
 	/**
 	 * Gets a response back from the server. Handles multi-line responses
@@ -562,8 +617,40 @@ public class MessageSession {
 	 * continues on the next line. Otherwise it finished at this line.
 	 * @return get the current Response
 	 */
-	protected CharacterBuffer getResponse() {
-		CharacterBuffer response = new CharacterBuffer();
+	protected BufferedBuffer getResponse() {
+		BufferedBuffer response = this.responseFactory.newInstance();
+		if(in == null) {
+			return response;
+		}
+		int readed = -1;
+		char[] buffer=new char[BUFFER];
+		do {
+			try {
+				readed = in.read(buffer);
+				if(readed>0) {
+					response.with(buffer, 0, readed);
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		} while (readed == BUFFER);
+		if(readed < 0 || response.length() < 1) {
+			return response.with("[EOF]");
+		}
+		this.lastAnswer = response;
+		return response;
+	}
+
+	/**
+	 * Gets a response back from the server. Handles multi-line responses
+	 * (according to SMTP protocol) and returns them as multi-line string. Each
+	 * line of the server's reply consists of 3-digit number followed by some
+	 * text. If there is a '-' immediately after the number, the SMTP response
+	 * continues on the next line. Otherwise it finished at this line.
+	 * @return get the current Response
+	 */
+	protected ByteBuffer getByteResponse() {
+		ByteBuffer response = new ByteBuffer();
 		if(in == null) {
 			return response;
 		}
@@ -761,7 +848,7 @@ public class MessageSession {
 		return doCommand("QUIT", RESPONSE_SERVICE_CLOSING_TRANSMISSION);
 	}
 
-	public CharacterBuffer getLastAnswer() {
+	public BufferedBuffer getLastAnswer() {
 		return lastAnswer;
 	}
 

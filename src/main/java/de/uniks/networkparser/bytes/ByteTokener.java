@@ -525,4 +525,13 @@ public class ByteTokener extends Tokener {
 		super.withMap(map);
 		return this;
 	}
+	
+	public static final byte[] intToByte(int value) {
+		byte[] result=new byte[4];
+		result[0] = (byte) (value >>> 24);
+		result[1] = (byte) (value >>> 16);
+		result[2] = (byte) (value >>> 8);
+		result[3] = (byte) (value & 0xff);;
+		return result;
+	}
 }
