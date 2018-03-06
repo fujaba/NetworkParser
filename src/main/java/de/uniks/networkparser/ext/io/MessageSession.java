@@ -375,10 +375,16 @@ public class MessageSession {
 				message.write(this.out);
 				DataInputStream in = new DataInputStream(this.serverSocket.getInputStream());
 				RabbitMessage response = RabbitMessage.readFrom(in);
+				
+				response.analysePayLoad();
+				
+				
 				System.out.println(response);
 				
 				message = RabbitMessage.createTuneOK();
-				message.write(this.out);
+				if(message != null) {
+					message.write(this.out);
+				}
 //				answer = sendCommand("AUTH LOGIN");
 //	
 //				if(checkServerResponse(answer, RESPONSE_SMTP_AUTH_NTLM_BLOB_Response) == false) {

@@ -269,7 +269,7 @@ public abstract class GraphMember {
 					if(value instanceof Association) {
 						((Association)value).withoutParent(this);
 					} else {
-						((Association)value).setParentNode(null);
+						value.setParentNode(null);
 					}
 				}
 			}

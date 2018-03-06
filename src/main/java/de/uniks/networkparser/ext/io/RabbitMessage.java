@@ -6,7 +6,6 @@ import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.SocketTimeoutException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -339,8 +338,10 @@ public class RabbitMessage {
 	/**
 	* Protected API - Factory method to instantiate a Frame by reading an
 	* AMQP-wire-protocol frame from the given input stream.
+	* 
+	* @param is DataInputStrem for reading
 	*
-	* @return a new Frame if we read a frame successfully, otherwise null
+	* @return a new RabbitMessage if we read a frame successfully, otherwise null
 	*/
 	public static RabbitMessage readFrom(DataInputStream is) throws IOException {
 		byte type;
@@ -382,9 +383,10 @@ public class RabbitMessage {
 		switch (classId) {
 			case 10:
 				switch (methodId) {
-					case 10: {
+					case 10: { // START
 						payloadData.add("version", payload.getByte() + "." + payload.getByte());
 						payloadData.add("properties", readTable(payload));
+						//FIXME 
 //					public Start(int versionMajor, int versionMinor, 
 						//Map<String,Object> serverProperties, LongString mechanisms, LongString locales) {
 //					this(rdr.readOctet(), rdr.readOctet(), rdr.readTable(), rdr.readLongstr(), rdr.readLongstr());C
@@ -693,9 +695,12 @@ public class RabbitMessage {
 		return value;
 	}
 
-	/** Read a field-array */
-	private static List<Object> readArray(ByteBuffer in) {
-		List<Object> array = new ArrayList<Object>();
+	/** Read a field-array
+	 * @param in Buffer for reading
+	 * @return The new ArrayList 
+	 */
+	private static SimpleList<Object> readArray(ByteBuffer in) {
+		SimpleList<Object> array = new SimpleList<Object>();
 		try {
 //			long length =  & INT_MASK;
 			in.getInt();
@@ -710,6 +715,8 @@ public class RabbitMessage {
 	
 	/** Convenience method - reads a 32-bit-length-prefix
 	 * byte vector from a DataInputStream.
+	 * @param in Buffer for reading
+	 * @return the readed bytes
 	 */
 	private static byte[] readBytes(ByteBuffer in) {
 		try {
@@ -723,7 +730,10 @@ public class RabbitMessage {
 		return null;
 	}
 
-	/** Convenience method - reads a short string from a DataInput Stream.  */
+	/** Convenience method - reads a short string from a DataInput Stream.
+	 * @param in Buffer for reading
+	 * @return a new String
+	 */
 	private static String readShortstr(ByteBuffer in) {
 		try {
 			final int contentLength = (int) (in.getInt() & INT_MASK);;

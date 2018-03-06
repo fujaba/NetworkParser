@@ -16,6 +16,7 @@ public class ReaderComm implements Runnable {
 
 	/**
 	 * Stops the Receiver's thread.  This call will block.
+	 * @return boolean for success
 	 */
 	public boolean stop() {
 		if (running) {

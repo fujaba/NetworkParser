@@ -403,6 +403,8 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 		if(pos+this.index>=size) {
 			grow(size + 1);
 			super.addKeyValue(pos, key, value);
+		} else if(isComparator() && pos == 0 && comparator().compare(getKeyByIndex(0), key) >= 0) {
+			super.addKeyValue(pos, key, value);
 		} else {
 			super.setValue(pos+this.index, value, SMALL_VALUE);
 		}

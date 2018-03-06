@@ -242,8 +242,15 @@ public class ByteBuffer extends BufferedBuffer implements BaseItem {
 		if(value instanceof Byte) {
 			this.buffer[position] = (Byte) value;
 		} else {
-			if(value instanceof byte[] || value instanceof Byte[] ) {
+			if(value instanceof byte[]) {
 				byte[] source = (byte[])value;
+				if(this.buffer != null && this.buffer.length>=position + len) {
+					for(int i = 0; i < len; i++){
+						this.buffer[position + i] = source[i];
+					}
+				}
+			} else if(value instanceof Byte[] ) {
+				Byte[] source = (Byte[])value;
 				if(this.buffer != null && this.buffer.length>=position + len) {
 					for(int i = 0; i < len; i++){
 						this.buffer[position + i] = source[i];

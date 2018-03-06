@@ -339,7 +339,27 @@ public class SimpleArrayListTest {
 		}
 
 		Assert.assertEquals("Hallo Welt Stefan ", sb.toString());
-
+	}
+	
+	@Test
+	public void testDoubleMap() {
+		SimpleKeyValueList<Double, String> map = new SimpleKeyValueList<Double, String>().withComparator(EntityComparator.createComparator());
+		for(int i=0;i<10;i++) {
+			double d = i;
+			map.add(d, "" +d);
+		}
+		Assert.assertEquals(10, map.size());
+		for(int i=0;i<10;i++) {
+			Assert.assertEquals(""+i+".0", map.getValue((double)i));
+		}
+	}
+	@Test
+	public void testDoubleMapAdd() {
+		SimpleKeyValueList<Double, String> map = new SimpleKeyValueList<Double, String>().withComparator(EntityComparator.createComparator());
+		map.put(7.0, "7");
+		map.put(14.0, "14");
+		map.put(3.0, "3");
+		Assert.assertEquals(3, map.size());
 	}
 
 }

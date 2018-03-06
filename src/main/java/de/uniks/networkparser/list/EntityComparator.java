@@ -131,7 +131,17 @@ public class EntityComparator<V> implements Comparator<V> {
 			if (v2 != null) {
 				Integer valueB = (Integer) v2;
 				int value = valueB.compareTo(valueA);
-
+				if (value < 1) {
+					return -1;
+				}
+			}
+			return 1;
+		}
+		if (v1 instanceof Double) {
+			Double valueA = (Double) v1;
+			if (v2 != null) {
+				Double valueB = (Double) v2;
+				int value = valueB.compareTo(valueA);
 				if (value < 1) {
 					return -1;
 				}
@@ -165,7 +175,7 @@ public class EntityComparator<V> implements Comparator<V> {
 			if(v2 instanceof Comparable<?>) {
 				return ((Comparable<Object>)v2).compareTo(v1);
 			}
-        }
+		}
 		return 1;
 	}
 
