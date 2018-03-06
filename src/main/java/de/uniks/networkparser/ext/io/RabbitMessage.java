@@ -376,16 +376,15 @@ public class RabbitMessage {
 	}
 
 	public void analysePayLoad() {
-		int classId = payload.getShort();
-		int methodId = payload.getShort();
+		classId = payload.getShort();
+		methodId = payload.getShort();
 		
 		switch (classId) {
 			case 10:
 				switch (methodId) {
 					case 10: {
-						payloadData.add("versionMajor", payload.getByte());
-						payloadData.add("versionMinor", payload.getByte());
-						
+						payloadData.add("version", payload.getByte() + "." + payload.getByte());
+						payloadData.add("properties", readTable(payload));
 //					public Start(int versionMajor, int versionMinor, 
 						//Map<String,Object> serverProperties, LongString mechanisms, LongString locales) {
 //					this(rdr.readOctet(), rdr.readOctet(), rdr.readTable(), rdr.readLongstr(), rdr.readLongstr());C
@@ -618,24 +617,15 @@ public class RabbitMessage {
 	private static final long INT_MASK = 0xffffffffL;
 
 	/**
-	 * Protected API - Cast an int to a long without extending the
-	 * sign bit of the int out into the high half of the long.
-	 */
-	private static long unsignedExtend(int value) {
-		long extended = value;
-		return extended & INT_MASK;
-	}
-
-	/**
 	 * Reads a table argument from a given stream.
 	 */
-	private static Map<String, Object> readTable(DataInputStream in) {
+	private static Map<String, Object> readTable(ByteBuffer in) {
 		Map<String, Object> table = new SimpleKeyValueList<String, Object>();
 		try {
-			long tableLength = unsignedExtend(in.readInt());
+			long tableLength = in.getInt() & INT_MASK;
 			if (tableLength == 0) return table;;
 
-			while(in.available() > 0) {
+			while(in.remaining() > 0) {
 				String name = readShortstr(in);
 				Object value = readFieldValue(in);
 				if(!table.containsKey(name)) {
@@ -647,24 +637,23 @@ public class RabbitMessage {
 		return table;
 	}
 	
-	private static Object readFieldValue(DataInputStream in) {
+	private static Object readFieldValue(ByteBuffer in) {
 		Object value = null;
 		try {
-			switch(in.readUnsignedByte()) {
+			switch(in.getByte()) {
 				case 'S':
-					value = in.readLong();
+					value = in.getLong();
 					break;
 				case 'I':
-					value = in.readInt();
+					value = in.getInt();
 					break;
 				case 'D':
-					int scale = in.readUnsignedByte();
-					byte [] unscaled = new byte[4];
-					in.readFully(unscaled);
+					int scale = in.getByte();
+					byte[] unscaled = in.getBytes(new byte[4]);
 					value = new BigDecimal(new BigInteger(unscaled), scale);
 					break;
 				case 'T':
-					value = new Date(in.readLong()*1000);
+					value = new Date(in.getLong()*1000);
 					break;
 				case 'F':
 					value = readTable(in);
@@ -673,22 +662,22 @@ public class RabbitMessage {
 					value = readArray(in);
 					break;
 				case 'b':
-					value = in.readByte();
+					value = in.getByte();
 					break;
 				case 'd':
-					value = in.readDouble();
+					value = in.getDouble();
 					break;
 				case 'f':
-					value = in.readFloat();
+					value = in.getFloat();
 					break;
 				case 'l':
-					value = in.readLong();
+					value = in.getLong();
 					break;
 				case 's':
-					value = in.readShort();
+					value = in.getShort();
 					break;
 				case 't':
-					value = in.readBoolean();
+					value = in.getBoolean();
 					break;
 				case 'x':
 					value = readBytes(in);
@@ -705,12 +694,12 @@ public class RabbitMessage {
 	}
 
 	/** Read a field-array */
-	private static List<Object> readArray(DataInputStream in) {
+	private static List<Object> readArray(ByteBuffer in) {
 		List<Object> array = new ArrayList<Object>();
 		try {
-//			long length = 
-			unsignedExtend(in.readInt());
-			while(in.available() > 0) {
+//			long length =  & INT_MASK;
+			in.getInt();
+			while(in.remaining() > 0) {
 				Object value = readFieldValue(in);
 				array.add(value);
 			}
@@ -722,12 +711,11 @@ public class RabbitMessage {
 	/** Convenience method - reads a 32-bit-length-prefix
 	 * byte vector from a DataInputStream.
 	 */
-	private static byte[] readBytes(final DataInputStream in) {
+	private static byte[] readBytes(ByteBuffer in) {
 		try {
-			final long contentLength = unsignedExtend(in.readInt());
+			final long contentLength = in.getInt() & INT_MASK;;
 			if(contentLength < Integer.MAX_VALUE) {
-				final byte [] buffer = new byte[(int)contentLength];
-				in.readFully(buffer);
+				final byte [] buffer = in.getBytes(new byte[(int)contentLength]);
 				return buffer;
 			}			
 		}catch (Exception e) {
@@ -736,10 +724,10 @@ public class RabbitMessage {
 	}
 
 	/** Convenience method - reads a short string from a DataInput Stream.  */
-	private static String readShortstr(DataInputStream in) {
+	private static String readShortstr(ByteBuffer in) {
 		try {
-			byte[] b = new byte[in.readUnsignedByte()];
-			in.readFully(b);
+			final int contentLength = (int) (in.getInt() & INT_MASK);;
+			byte[] b = in.getBytes(new byte[contentLength]);
 			return new String(b, "utf-8");
 		} catch (IOException e) {
 		}

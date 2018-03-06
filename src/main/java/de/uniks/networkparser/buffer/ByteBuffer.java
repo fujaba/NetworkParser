@@ -85,12 +85,32 @@ public class ByteBuffer extends BufferedBuffer implements BaseItem {
 		return this.buffer[++position];
 	}
 
-	public Byte[] getBytes() {
+	
+	/**
+	 * Get a Byte Field
+	 * 
+	 * @param parameter Null for full, Number Length, or new Byte Array
+	 * @return a ByteArray
+	 */
+	public byte[] getBytes(Object... parameter ) {
 		if(buffer == null || position>=buffer.length-1) {
-			return new Byte[0];
+			return new byte[0];
 		}
-		Byte[] result=new Byte[length];
-		for(int i=0;i<length;i++) {
+		
+		int len = length;
+		byte[] result = null;
+		if(parameter != null && parameter.length>0) {
+			if(parameter[0] instanceof Integer) {
+				len = (int) parameter[0];
+			} else if(parameter[0] instanceof Byte[] || parameter[0] instanceof byte[]) {
+				result = (byte[]) parameter[0];
+				len = result.length;
+			}
+		}
+		if(result == null) {
+			result = new byte[len];
+		}
+		for(int i=0;i<len;i++) {
 			result[i] = this.buffer[i+position];
 		}
 		return result;

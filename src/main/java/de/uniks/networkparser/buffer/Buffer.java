@@ -1,5 +1,6 @@
 package de.uniks.networkparser.buffer;
 
+
 /*
 NetworkParser
 The MIT License
@@ -110,6 +111,11 @@ public abstract class Buffer implements BufferItem {
 	@Override
 	public byte getByte() {
 		return (byte) getChar();
+	}
+
+	public boolean getBoolean() {
+		int ch = getChar();
+		return ch != 1 && ch != 0;
 	}
 
 	@Override
