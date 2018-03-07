@@ -44,14 +44,23 @@ public abstract class Buffer implements BufferItem {
 
 	public short getShort() {
 		byte[] bytes = array(Short.SIZE / Byte.SIZE, false);
-		short result = bytes[0];
-		result = (short) (result << 8 + bytes[1]);
+		short result = (short) ((bytes[0] << 8) + bytes[1]);
 		return result;
 	}
 
 	public int getInt() {
 		byte[] bytes = array(Integer.SIZE / Byte.SIZE, false);
 		return (int) ((bytes[0] << 24) + (bytes[1] << 16) + (bytes[2] << 8) + bytes[3]);
+	}
+
+	public int getUnsignedInt() {
+		byte[] bytes = array(Integer.SIZE / Byte.SIZE, false);
+		return (int) (
+					((bytes[0] & 0xff) << 24) + 
+					((bytes[1] & 0xff)<< 16) + 
+					((bytes[2] & 0xff)<< 8) + 
+					(bytes[3] & 0xff)
+					);
 	}
 
 	public abstract char getChar();

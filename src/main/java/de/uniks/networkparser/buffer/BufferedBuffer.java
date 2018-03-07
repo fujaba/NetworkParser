@@ -256,7 +256,21 @@ public abstract class BufferedBuffer extends Buffer {
 		return subSequence(start, end).toString();
 	}
 	
-	public abstract byte[] toBytes();
+	public byte[] toBytes(boolean... all) {
+		byte[] result;
+		int i=start;
+		if(all != null && all.length>0 && all[0]) {
+			result=new byte[length];
+		} else {
+			result=new byte[length - position];
+			i = position;
+		}
+
+		for(; i< result.length;i++) {
+			result[i] = byteAt(i);
+		}
+		return result;
+	}
 	
 	public String toArrayString(boolean... addString) {
 		CharacterBuffer sb=new CharacterBuffer();

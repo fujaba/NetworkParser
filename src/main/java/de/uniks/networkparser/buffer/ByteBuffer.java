@@ -111,18 +111,7 @@ public class ByteBuffer extends BufferedBuffer implements BaseItem {
 			result = new byte[len];
 		}
 		for(int i=0;i<len;i++) {
-			result[i] = this.buffer[i+position];
-		}
-		return result;
-	}
-
-	public byte[] toBytes() {
-		if(buffer == null || position>=buffer.length-1) {
-			return new byte[0];
-		}
-		byte[] result=new byte[length - position];
-		for(int i=0;i<length - position;i++) {
-			result[i] = this.buffer[i+position];
+			result[i] = this.buffer[++position];
 		}
 		return result;
 	}

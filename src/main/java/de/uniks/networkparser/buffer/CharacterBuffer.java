@@ -135,14 +135,6 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence {
 		return result;
 	}
 
-	public byte[] toBytes() {
-		byte[] result = new byte[this.length];
-		for(int i=start; i< this.length;i++) {
-			result[i] = (byte) buffer[i];
-		}
-		return result;
-	}
-
 	public boolean replace(int start, int end, String replace) {
 		int pos =0;
 		int diff = replace.length() - (end-start);
