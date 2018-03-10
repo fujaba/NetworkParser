@@ -25,11 +25,15 @@ public class RabbitMessage {
 	public static final byte FRAME_HEADER = 2;
 	public static final byte FRAME_BODY = 3;
 	public static final byte FRAME_HEARTBEAT = 8;
+	
+	public static final short CONNECTION_CLASS=10;
+	public static final short CHANNEL_CLASS=20;
+	public static final short ACCESS_CLASS=30;
+	public static final short Exchange_CLASS=40;
+	public static final short STARTOK_METHOD=11;
+	public static final short TUNE_METHOD=30;
+	public static final short TUNEOK_METHOD=31;
 
-	public static final short START_CLASS=10;
-	public static final short TUNE_CLASS=10;
-	public static final short START_METHOD=11;
-	public static final short TUNE_METHOD=31;
 	private byte[] headers=new byte[3];
 	private static final byte FRAME_END =-50;
 	private ByteBuffer payload;
@@ -257,7 +261,7 @@ public class RabbitMessage {
 	}	
 	public static RabbitMessage createStartOK(String... login) {
 		RabbitMessage msg = new RabbitMessage().withType(FRAME_METHOD);
-		msg.withFrame(START_CLASS, START_METHOD);
+		msg.withFrame(CONNECTION_CLASS, STARTOK_METHOD);
 		String userStr ="guest", passwordStr = "guest";
 		if(login.length>0) {
 			userStr = login[0];
@@ -278,7 +282,7 @@ public class RabbitMessage {
 	
 	public static RabbitMessage createTuneOK() {
 		RabbitMessage msg = new RabbitMessage();
-		msg.withFrame(TUNE_CLASS, TUNE_METHOD);
+		msg.withFrame(CONNECTION_CLASS, TUNEOK_METHOD);
 		
 		return null;
 	}
@@ -369,125 +373,141 @@ public class RabbitMessage {
 		return this;
 	}
 
-	public void analysePayLoad() {
+	public boolean analysePayLoad() {
 		classId = payload.getShort();
 		methodId = payload.getShort();
 		
-		switch (classId) {
-			case 10:
-				switch (methodId) {
-					case 10: { // START
-						payloadData.add("version", payload.getByte() + "." + payload.getByte());
-						payloadData.add("properties", readTable(payload));
-						payloadData.add("mechanisms", new String(readBytes(payload)));
-						payloadData.add("locales", new String(readBytes(payload)));
-						break;
-					}
-					case 11: { // StartOk
-					}
-					case 20: { // Secure
-					}
-					case 21: { // SecureOk
-					}
-					case 30: { // Tune
-						payloadData.add("channelMax", payload.getShort());
-						payloadData.add("frameMax", payload.getLong());
-						payloadData.add("heartbeat", payload.getShort());
-						break;
-					}
-				}
-//                 case 11: {
-//                     return new Connection.StartOk(new MethodArgumentReader(new ValueReader(in)));
-//                 }
-//                 case 20: {
-//                     return new Connection.Secure(new MethodArgumentReader(new ValueReader(in)));
-//                 }
-//                 case 21: {
-//                     return new Connection.SecureOk(new MethodArgumentReader(new ValueReader(in)));
-//                 }
-//                 case 31: {
-//                     return new Connection.TuneOk(new MethodArgumentReader(new ValueReader(in)));
-//                 }
-//                 case 40: {
-//                     return new Connection.Open(new MethodArgumentReader(new ValueReader(in)));
-//                 }
-//                 case 41: {
-//                     return new Connection.OpenOk(new MethodArgumentReader(new ValueReader(in)));
-//                 }
-//                 case 50: {
-//                     return new Connection.Close(new MethodArgumentReader(new ValueReader(in)));
-//                 }
-//                 case 51: {
-//                     return new Connection.CloseOk(new MethodArgumentReader(new ValueReader(in)));
-//                 }
-//                 case 60: {
-//                     return new Connection.Blocked(new MethodArgumentReader(new ValueReader(in)));
-//                 }
-//                 case 61: {
-//                     return new Connection.Unblocked(new MethodArgumentReader(new ValueReader(in)));
-//                 }
-//                 default: break;
-//             } break;
-//         case 20:
-//             switch (methodId) {
-//                 case 10: {
-//                     return new Channel.Open(new MethodArgumentReader(new ValueReader(in)));
-//                 }
-//                 case 11: {
-//                     return new Channel.OpenOk(new MethodArgumentReader(new ValueReader(in)));
-//                 }
-//                 case 20: {
-//                     return new Channel.Flow(new MethodArgumentReader(new ValueReader(in)));
-//                 }
-//                 case 21: {
-//                     return new Channel.FlowOk(new MethodArgumentReader(new ValueReader(in)));
-//                 }
-//                 case 40: {
-//                     return new Channel.Close(new MethodArgumentReader(new ValueReader(in)));
-//                 }
-//                 case 41: {
-//                     return new Channel.CloseOk(new MethodArgumentReader(new ValueReader(in)));
-//                 }
-//                 default: break;
-//             } break;
-//         case 30:
-//             switch (methodId) {
-//                 case 10: {
-//                     return new Access.Request(new MethodArgumentReader(new ValueReader(in)));
-//                 }
-//                 case 11: {
-//                     return new Access.RequestOk(new MethodArgumentReader(new ValueReader(in)));
-//                 }
-//                 default: break;
-//             } break;
-//         case 40:
-//             switch (methodId) {
-//                 case 10: {
-//                     return new Exchange.Declare(new MethodArgumentReader(new ValueReader(in)));
-//                 }
-//                 case 11: {
-//                     return new Exchange.DeclareOk(new MethodArgumentReader(new ValueReader(in)));
-//                 }
-//                 case 20: {
-//                     return new Exchange.Delete(new MethodArgumentReader(new ValueReader(in)));
-//                 }
-//                 case 21: {
-//                     return new Exchange.DeleteOk(new MethodArgumentReader(new ValueReader(in)));
-//                 }
-//                 case 30: {
-//                     return new Exchange.Bind(new MethodArgumentReader(new ValueReader(in)));
-//                 }
-//                 case 31: {
-//                     return new Exchange.BindOk(new MethodArgumentReader(new ValueReader(in)));
-//                 }
-//                 case 40: {
-//                     return new Exchange.Unbind(new MethodArgumentReader(new ValueReader(in)));
-//                 }
-//                 case 51: {
-//                     return new Exchange.UnbindOk(new MethodArgumentReader(new ValueReader(in)));
-//                 }
-//                 default: break;
-//             } break;
+		if(classId == CONNECTION_CLASS) {
+			if(methodId == 10 ) { // START
+				payloadData.add("version", payload.getByte() + "." + payload.getByte());
+				payloadData.add("properties", readTable(payload));
+				payloadData.add("mechanisms", new String(readBytes(payload)));
+				return payloadData.add("locales", new String(readBytes(payload)));
+			}
+			if(methodId == STARTOK_METHOD) { // StartOk
+				payloadData.add("clientProperties", readTable(payload));
+				payloadData.add("mechanisms", payload.getShortstr());
+				payloadData.add("response", new String(readBytes(payload)));
+				return payloadData.add("locale", payload.getShortstr());
+			}
+			if(methodId == 20 || methodId == 21) {  // Secure, SecureOk
+				return payloadData.add("challenge", new String(readBytes(payload)));
+			}
+			if(methodId == TUNEOK_METHOD || methodId == TUNEOK_METHOD) { // TuneOK, Tune
+				payloadData.add("channelMax", payload.getShort());
+				payloadData.add("frameMax", payload.getLong());
+				return payloadData.add("heartbeat", payload.getShort());
+			}
+			if(methodId == 40) {  // Open
+				return payloadData.add("outOfBand", payload.getShortstr());
+			}
+			if(methodId == 41) {  // OpenOK
+				return payloadData.add("outOfBand", new String(readBytes(payload)));
+			}
+			if(methodId == 50) {  // Close`
+				payloadData.add("replyCode", payload.getShort());
+				payloadData.add("replyText", payload.getShortstr());
+				payloadData.add("classId", payload.getShort());
+				return payloadData.add("methodId", payload.getShort());
+			}
+			if(methodId == 51) {  // CloseOK
+				return true;
+			}
+			if(methodId == 60) {  // Blocked
+				return payloadData.add("reason", payload.getShortstr());
+			}
+			if(methodId == 61) {  // Unblocked
+				return true;
+			}
+			return false;
+		}
+		if(classId == CHANNEL_CLASS) {
+			if(methodId == 10) { // Open
+				return payloadData.add("outOfBand", payload.getShortstr());
+			}
+			if(methodId == 11) { // OpenOK
+				return payloadData.add("outOfBand", new String(readBytes(payload)));
+			}
+			if(methodId == 20) { // Flow
+				return payloadData.add("active", payload.getBit());
+			}
+			if(methodId == 21) { //FlowOK
+				return payloadData.add("active", payload.getBit());
+			}
+			if(methodId == 40) { // Close
+				payloadData.add("replyCode", payload.getShort());
+				payloadData.add("replyText", payload.getShortstr());
+				payloadData.add("classId", payload.getShort());
+				return payloadData.add("methodId", payload.getShort());
+			}
+			if(methodId == 41) { // CloseOK
+				return true;
+			}
+			return false;
+		}
+		if(classId == ACCESS_CLASS) { // Request
+			if(methodId == 10) {
+				payloadData.add("realm", payload.getShortstr());
+				payloadData.add("exclusive", payload.getBit());
+				payloadData.add("passive", payload.getBit());
+				payloadData.add("active", payload.getBit());
+				payloadData.add("write", payload.getBit());
+				return payloadData.add("read", payload.getBit());
+			}
+			if(methodId == 11) { //RequestOK
+				return payloadData.add("ticket", payload.getShort());
+			}
+			return false;
+		}
+		if(classId == Exchange_CLASS) {
+			if(methodId == 10) { // Declare
+				payloadData.add("ticket", payload.getShort());
+				payloadData.add("exchange", payload.getShortstr());
+				payloadData.add("type", payload.getShortstr());
+				payloadData.add("passive", payload.getBit());
+				payloadData.add("durable", payload.getBit());
+				payloadData.add("autoDelete", payload.getBit());
+				payloadData.add("internal", payload.getBit());
+				payloadData.add("nowait", payload.getBit());
+				return payloadData.add("arguments", readTable(payload));
+			}
+			if(methodId == 11) { //DeclareOK
+				return true;
+			}
+			if(methodId == 20) { // Delete
+				payloadData.add("ticket", payload.getShort());
+				payloadData.add("exchange", payload.getShortstr());
+				payloadData.add("ifUnused", payload.getBit());
+				return payloadData.add("nowait", payload.getBit());
+			}
+			if(methodId == 21) { // DeleteOk
+				return true;
+			}
+			if(methodId == 30) { // Bind
+				payloadData.add("ticket", payload.getShort());
+				payloadData.add("destination", payload.getShortstr());
+				payloadData.add("source", payload.getShortstr());
+				payloadData.add("routingKey", payload.getShortstr());
+				payloadData.add("nowait", payload.getBit());
+				return payloadData.add("arguments", readTable(payload));
+			}
+			if(methodId == 31) { // BindOK
+				return true;
+			}
+			if(methodId == 40) { // Unbind
+				payloadData.add("ticket", payload.getShort());
+				payloadData.add("destination", payload.getShortstr());
+				payloadData.add("source", payload.getShortstr());
+				payloadData.add("routingKey", payload.getShortstr());
+				payloadData.add("nowait", payload.getBit());
+				return payloadData.add("arguments", readTable(payload));
+			}
+			if(methodId == 51) { // UnbindOk
+				return true;
+			}
+			return false;
+		}
+		return false;
 //         case 50:
 //             switch (methodId) {
 //                 case 10: {
@@ -612,8 +632,6 @@ public class RabbitMessage {
 //                 }
 //                 default: break;
 //             } break;
-//     }
-		}
 	}
 
 	/**
@@ -626,7 +644,7 @@ public class RabbitMessage {
 		
 		endPos += in.position();
 		while(in.position() < endPos) {
-			String name = readShortstr(in);
+			String name = in.getShortstr();
 			Object value = readFieldValue(in);
 			if(!table.containsKey(name)) {
 				table.put(name, value);
@@ -718,17 +736,10 @@ public class RabbitMessage {
 		return null;
 	}
 
-	/** Convenience method - reads a short string from a DataInput Stream.
-	 * @param in Buffer for reading
-	 * @return a new String
+	/**
+	 * @return the payloadData
 	 */
-	private static String readShortstr(ByteBuffer in) {
-		try {
-			final int contentLength = (int) (in.getByte() & 0xff);
-			byte[] b = in.getBytes(new byte[contentLength]);
-			return new String(b, "utf-8");
-		} catch (IOException e) {
-		}
-		return null;
+	public SimpleKeyValueList<String, Object> getPayloadData() {
+		return payloadData;
 	}
 }

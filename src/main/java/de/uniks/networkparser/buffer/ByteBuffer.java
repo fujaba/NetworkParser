@@ -499,4 +499,26 @@ public class ByteBuffer extends BufferedBuffer implements BaseItem {
 		this.length = newLen;
 		return this;
 	}
+	private int bits = 0;
+	private int nextBitMask = 0x100; // triggers readOctet first time
+
+	/** Public API - reads a bit/boolean argument. */
+	public boolean getBit() {
+		if (nextBitMask > 0x80) {
+			bits = getByte();
+			nextBitMask = 0x01;
+		}
+		boolean result = (bits&nextBitMask) != 0;
+		nextBitMask = nextBitMask << 1;
+		return result;
+	}
+	
+	/** Convenience method - reads a short string from a DataInput Stream.
+	 * @return a new String
+	 */
+	public String getShortstr() {
+		final int contentLength = (int) (getByte() & 0xff);
+		byte[] b = getBytes(new byte[contentLength]);
+		return new String(b);
+	}
 }

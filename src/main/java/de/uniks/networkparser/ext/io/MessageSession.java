@@ -378,6 +378,10 @@ public class MessageSession {
 
 				response.analysePayLoad();
 
+				response = RabbitMessage.readFrom(in);
+
+				response.analysePayLoad();
+				
 				System.out.println(response);
 				
 				message = RabbitMessage.createTuneOK();
