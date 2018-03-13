@@ -5,8 +5,9 @@ import java.io.ByteArrayOutputStream;
 import org.junit.Test;
 
 import de.uniks.networkparser.buffer.ByteBuffer;
-import de.uniks.networkparser.ext.io.MessageSession;
 import de.uniks.networkparser.ext.io.RabbitMessage;
+import de.uniks.networkparser.ext.petaf.proxy.NodeProxyRabbit;
+import de.uniks.networkparser.interfaces.ObjectCondition;
 
 public class RabbitTest {
 	@Test
@@ -21,8 +22,19 @@ public class RabbitTest {
 	
 	@Test
 	public void connectRabbit() {
-		MessageSession session = new MessageSession().withHost("localhost");
-		session.connectAMQ(null, null);
+		NodeProxyRabbit proxy = new NodeProxyRabbit("localhost");
+		System.out.println(proxy.connect());
+		
+		proxy.createChannel("hello", new ObjectCondition() {
+			@Override
+			public boolean update(Object value) {
+				System.out.println(value);
+				return false;
+			}
+		});
+		
+		proxy.publish("hello", "Hello World!");
+		
 	}
 	@Test
 	public void connectRabbitDecoding() {

@@ -50,6 +50,7 @@ public class MessageSession {
 	private String sender;
 	protected Socket serverSocket;
 	protected BufferedReader in;
+	protected DataInputStream rabbitInput;
 	protected OutputStream out;
 	protected SimpleList<String> supportedFeature = new SimpleList<String>();
 	private BufferedBuffer lastAnswer;
@@ -182,7 +183,7 @@ public class MessageSession {
 	}
 	
 	public boolean isClose() {
-		return in != null;
+		return in == null;
 	}
 
 	private boolean initSockets(String host, int port) throws UnsupportedEncodingException, IOException {
@@ -353,6 +354,25 @@ public class MessageSession {
 		return connectAMQ(user, password);
 	}
 
+	public RabbitMessage sending(RabbitMessage message, boolean answer) {
+		if(message == null) {
+			return null;
+		}
+		message.write(this.out);
+		if(answer == false) {
+			return message;
+		}
+		try {
+			RabbitMessage response;
+			response = RabbitMessage.readFrom(rabbitInput);
+			response.analysePayLoad();
+			return response;
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 	public boolean connectAMQ(String sender, String password) {
 		this.type = TYPE_AMQ;
 		if(this.port == 0) {
@@ -371,41 +391,22 @@ public class MessageSession {
 				initSockets(host, port);
 				sendStart();
 				
+				this.rabbitInput = new DataInputStream(this.serverSocket.getInputStream());
 				RabbitMessage message = RabbitMessage.createStartOK(sender, password);
-				message.write(this.out);
-				DataInputStream in = new DataInputStream(this.serverSocket.getInputStream());
-				RabbitMessage response = RabbitMessage.readFrom(in);
+				// START MESSAGE
+				RabbitMessage response = sending(message, true);
 
-				response.analysePayLoad();
 
-				response = RabbitMessage.readFrom(in);
-
+				// TUNE MESSAGE
+				response = RabbitMessage.readFrom(rabbitInput);
 				response.analysePayLoad();
 				
-				System.out.println(response);
+				message = RabbitMessage.createTuneOK((short)response.getData("channelMax"), (int)response.getData("frameMax"), (short)response.getData("heartbeat"));
+				response = sending(message, false);
+
 				
-				message = RabbitMessage.createTuneOK();
-				if(message != null) {
-					message.write(this.out);
-				}
-//				answer = sendCommand("AUTH LOGIN");
-//	
-//				if(checkServerResponse(answer, RESPONSE_SMTP_AUTH_NTLM_BLOB_Response) == false) {
-//					close();
-//					return false;
-//				}
-//				ByteConverter64 converter = new ByteConverter64();
-//				answer= sendCommand(converter.toStaticString(sender).toString());
-//				if(checkServerResponse(answer, RESPONSE_SMTP_AUTH_NTLM_BLOB_Response) == false) {
-//					close();
-//					return false;
-//				}
-//				// send passwd
-//				answer = sendCommand(converter.toStaticString(password).toString());
-//				if(checkServerResponse(answer, RESPONSE_LOGIN_SUCCESS) == false) {
-//					close();
-//					return false;
-//				}
+				message = RabbitMessage.createConnectionOpen(null);
+				response = sending(message, false);
 			}
 			return true;
 		}catch (Exception e) {

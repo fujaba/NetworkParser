@@ -521,4 +521,12 @@ public class ByteBuffer extends BufferedBuffer implements BaseItem {
 		byte[] b = getBytes(new byte[contentLength]);
 		return new String(b);
 	}
+
+	public boolean set(int pos, byte value) {
+		if(pos>=0 && pos <=this.length) {
+			this.buffer[pos] = value;
+			return true;
+		}
+		return false;
+	}
 }
