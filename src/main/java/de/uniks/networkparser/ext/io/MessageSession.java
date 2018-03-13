@@ -403,8 +403,6 @@ public class MessageSession {
 				
 				message = RabbitMessage.createTuneOK((short)response.getData("channelMax"), (int)response.getData("frameMax"), (short)response.getData("heartbeat"));
 				response = sending(message, false);
-
-				
 				message = RabbitMessage.createConnectionOpen(null);
 				response = sending(message, false);
 			}
@@ -650,6 +648,21 @@ public class MessageSession {
 		this.lastAnswer = response;
 		return response;
 	}
+	
+	public Object getServerResponse() {
+		if(rabbitInput != null) {
+			RabbitMessage response;
+			try {
+				response = RabbitMessage.readFrom(rabbitInput);
+				response.analysePayLoad();
+				return response;
+			} catch (IOException e) {
+			}
+			return null;
+		}
+		return getResponse();
+
+	}
 
 	/**
 	 * Gets a response back from the server. Handles multi-line responses
@@ -722,10 +735,10 @@ public class MessageSession {
 	public String getLocalAdress() {
 		try {
 			InetAddress localHost = InetAddress.getLocalHost();
-		    return "@"+localHost.getHostName();
+			return "@"+localHost.getHostName();
 		}catch (Exception e) {
 		}
-	    return "mailer@localhost"; // worst-case default
+		return "mailer@localhost"; // worst-case default
 	}
 
 	private static String prefix = EntityUtil.randomString(5) + "-";

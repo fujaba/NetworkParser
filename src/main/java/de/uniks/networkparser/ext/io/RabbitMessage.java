@@ -39,8 +39,10 @@ public class RabbitMessage {
 	public static final short TUNE_METHOD=30;
 	public static final short TUNEOK_METHOD=31;
 	public static final short OPEN_METHOD = 40;
+	public static final short OPENCHANNEL_METHOD = 10;
 	public static final short PUBLISH_METHOD = 40;
 	public static final short CREATE_QUEUE_METHOD=10;
+	public static final short CONSUME_METHOD = 20;
 
 	private byte[] headers=new byte[3];
 	private static final byte FRAME_END =-50;
@@ -51,13 +53,23 @@ public class RabbitMessage {
 	private short classId;
 	private short methodId;
 	private SimpleKeyValueList<String, Object> payloadData = new SimpleKeyValueList<String, Object>();
+	public static short channel;
 
 	// with values or ByteEntity
+	public RabbitMessage withShortString(String value) {
+		withValues(ByteEntity.create(ByteTokener.DATATYPE_STRING + ByteTokener.LEN_LITTLE, value));
+		return this;
+	}
 	public RabbitMessage withValues(Object... args) {
 		if(accumulator == null) {
 			accumulator = new ByteBuffer();
-			accumulator.insert(new byte[4]);
-			this.writeMap(this.table);
+			if(getType() != 3) {
+				accumulator.insert(new byte[4]);
+			}
+			// ONly for 
+			if(table != null || (CONNECTION_CLASS == this.classId && STARTOK_METHOD == this.methodId)) {
+				this.writeMap(this.table);
+			}
 		}
 		if(args != null) {
 			for(Object item : args) {
@@ -66,12 +78,11 @@ public class RabbitMessage {
 		}
 		return this;
 	}
-	
+
 	public RabbitMessage withEmptyValues() {
 		if(accumulator == null) {
 			accumulator = new ByteBuffer();
 			accumulator.insert(new byte[4]);
-			this.writeMap(this.table);
 		}
 		writeValue( null );
 		return this;
@@ -300,14 +311,15 @@ public class RabbitMessage {
 			stream.write(headers);
 
 			if(accumulator != null) {
-				accumulator.set(0, (byte)((this.classId >> 8) & 0xff));
-				accumulator.set(1, (byte)(this.classId & 0xff));
-				accumulator.set(2, (byte)((this.methodId >> 8) & 0xff));
-				accumulator.set(3, (byte)(this.methodId & 0xff));
-
-				// As 
 				int length = accumulator.length();
-				stream.write(ByteTokener.intToByte(length));
+				if(getType() != 3) {
+					accumulator.set(0, (byte)((this.classId >> 8) & 0xff));
+					accumulator.set(1, (byte)(this.classId & 0xff));
+					accumulator.set(2, (byte)((this.methodId >> 8) & 0xff));
+					accumulator.set(3, (byte)(this.methodId & 0xff));
+					stream.write(ByteTokener.intToByte(length));
+				}
+				// As 
 				stream.write(accumulator.array(), 0, length);
 			} else if(payload != null) {
 				stream.write(payload.length());
@@ -317,29 +329,36 @@ public class RabbitMessage {
 			stream.flush();
 		} catch (Exception e) {
 			// Oh Error Write full Message
-			ByteBuffer errorMessage = new ByteBuffer();
-			errorMessage.insert(headers);
-//			if(accumulator != null) {
-//				accumulator.set(0, (byte)((this.classId >> 8) & 0xff));
-//				accumulator.set(1, (byte)(this.classId & 0xff));
-//				accumulator.set(2, (byte)((this.methodId >> 8) & 0xff));
-//				accumulator.set(3, (byte)(this.methodId & 0xff));
-//
-//				// As 
-//				int length = accumulator.length();
-//				
-//				stream.write(ByteTokener.intToByte(length));
-//				stream.write(accumulator.array(), 0, length);
-//			} else if(payload != null) {
-//				stream.write(payload.length());
-//				stream.write(payload.array());
-//			}
-//			stream.write(FRAME_END);
-//			stream.flush();
-
+//			e.printStackTrace();
+			System.out.println("WRONG MESSGAE: "+getDebugString());
 			return false;
+//		} finally {
+//			System.out.println("Sent: "+getDebugString());
 		}
 		return true;
+	}
+	
+	public String getDebugString() {
+		ByteBuffer errorMessage = new ByteBuffer();
+		errorMessage.insert(headers);
+		if(accumulator != null) {
+			int length = accumulator.length();
+			if(getType() != 3) {
+				accumulator.set(0, (byte)((this.classId >> 8) & 0xff));
+				accumulator.set(1, (byte)(this.classId & 0xff));
+				accumulator.set(2, (byte)((this.methodId >> 8) & 0xff));
+				accumulator.set(3, (byte)(this.methodId & 0xff));
+				errorMessage.insert(ByteTokener.intToByte(length));
+			}
+			errorMessage.addBytes(accumulator.array(), length);
+			errorMessage.withEnd();
+		} else if(payload != null) {
+			errorMessage.insert(payload.length());
+			errorMessage.insert(payload.array());
+		}
+		errorMessage.insert(FRAME_END);
+		errorMessage.flip(false);
+		return errorMessage.toArrayString();
 	}
 	
 	/**
@@ -419,7 +438,7 @@ public class RabbitMessage {
 				new Object[]{EXCHANGE_CLASS, 31}, // BindOK
 				new Object[]{EXCHANGE_CLASS, 40, "ticket", SHORT, "destination", SHORTSTR, "source", SHORTSTR, "routingKey", SHORTSTR, "nowait", BIT, "arguments", TABLE}, // Unbind
 				new Object[]{EXCHANGE_CLASS, 51}, // UnbindOk
-				new Object[]{QUEUE_CLASS, 10, "ticket", SHORT, "queue", SHORTSTR, "passive", BIT, "durable", BIT, "exclusive", BIT, "autoDelete", BIT, "nowait", BIT, "arguments", TABLE}, // Declare
+				new Object[]{QUEUE_CLASS, CREATE_QUEUE_METHOD, "ticket", SHORT, "queue", SHORTSTR, "passive", BIT, "durable", BIT, "exclusive", BIT, "autoDelete", BIT, "nowait", BIT, "arguments", TABLE}, // Declare
 				new Object[]{QUEUE_CLASS, 11, "queue", SHORTSTR, "messageCount", INT, "consumerCount", INT}, // DeclareOk
 				new Object[]{QUEUE_CLASS, 20, "ticket", SHORT, "queue", SHORTSTR, "exchange", SHORTSTR, "routingKey", SHORTSTR, "nowait", BIT, "arguments", TABLE}, // Bind
 				new Object[]{QUEUE_CLASS, 21},  // BindOk
@@ -431,7 +450,7 @@ public class RabbitMessage {
 				new Object[]{QUEUE_CLASS, 51}, // UnbindOk
 				new Object[]{BASIC_CLASS, 10, "prefetchSize", INT, "prefetchCount", SHORT, "global", BIT}, // Qos
 				new Object[]{BASIC_CLASS, 11}, // QosOk
-				new Object[]{BASIC_CLASS, 20, "ticket", SHORT, "queue", SHORTSTR, "consumerTag", SHORTSTR, "noLocal", BIT, "noAck", BIT, "exclusive", BIT, "nowait", BIT, "arguments", TABLE}, // Consume
+				new Object[]{BASIC_CLASS, CONSUME_METHOD, "ticket", SHORT, "queue", SHORTSTR, "consumerTag", SHORTSTR, "noLocal", BIT, "noAck", BIT, "exclusive", BIT, "nowait", BIT, "arguments", TABLE}, // Consume
 				new Object[]{BASIC_CLASS, 21, "consumerTag", SHORTSTR}, // ConsumeOk
 				new Object[]{BASIC_CLASS, 30, "consumerTag", SHORTSTR, "nowait", BIT}, // Cancel
 				new Object[]{BASIC_CLASS, 31, "consumerTag", SHORTSTR}, // CancelOk
@@ -646,6 +665,14 @@ public class RabbitMessage {
 		return null;
 	}
 
+	public String getText() {
+		if(getType() != 3) {
+			return null;
+		}
+		String text = new String(payload.array());
+		return text;
+	}
+
 	public static RabbitMessage createStartOK(String... login) {
 		RabbitMessage msg = new RabbitMessage().withType(FRAME_METHOD);
 		msg.withFrame(CONNECTION_CLASS, STARTOK_METHOD);
@@ -678,16 +705,19 @@ public class RabbitMessage {
 		RabbitMessage msg = new RabbitMessage().withType(FRAME_METHOD);
 		msg.withFrame(CONNECTION_CLASS, OPEN_METHOD);
 		if(virtualHost == null) {
-			msg.withValues(virtualHost);
-		} else {
-			msg.withValues(ByteEntity.create(ByteTokener.DATATYPE_STRING + ByteTokener.LEN_LITTLE, virtualHost));
+			virtualHost = "/";
 		}
+		msg.withShortString(virtualHost);
+		msg.withShortString("");
+		msg.withValues(false);
 		return msg;
 	}
 
 	public static RabbitMessage createChannelOpen(String outOfBand) {
 		RabbitMessage msg = new RabbitMessage().withType(FRAME_METHOD);
-		msg.withFrame(CHANNEL_CLASS, OPEN_METHOD);
+		channel++;
+		msg.withFrame(CHANNEL_CLASS, OPENCHANNEL_METHOD);
+		msg.withChannel(channel);
 		msg.withEmptyValues();
 		return msg;
 	}
@@ -703,17 +733,67 @@ public class RabbitMessage {
 	 */
 	public static RabbitMessage createQueue(String queue, boolean durable, boolean exclusive, boolean autoDelete, Map<String, Object> table) {
 		RabbitMessage msg = new RabbitMessage().withType(FRAME_METHOD);
-		msg.withFrame(QUEUE_CLASS, CREATE_QUEUE_METHOD);
-		msg.withValues(durable, exclusive, autoDelete, table);
+		msg.withFrame(QUEUE_CLASS, CREATE_QUEUE_METHOD).withChannel(channel);
+		short ticket =0;
+		msg.withValues(ticket);
+		msg.withShortString(queue);
+		boolean nowait = false;
+		msg.withValues(durable, exclusive, autoDelete, nowait, table);
 		return msg;
 	}
 
-	public static RabbitMessage createPublish(String exchange, String routingKey, byte[] body) {
+	public static RabbitMessage createConsume(String queue, String consumerTag, boolean noLocal, boolean noAck, boolean exclusive, boolean nowait,  Map<String, Object> table) {
+		RabbitMessage msg = new RabbitMessage().withType(FRAME_METHOD);
+		msg.withFrame(BASIC_CLASS, CONSUME_METHOD).withChannel(channel);
+		short ticket =0;
+		msg.withValues(ticket);
+		msg.withShortString(queue);
+		msg.withShortString(consumerTag);
+		msg.withValues(noLocal, noAck, exclusive, nowait, table);
+		return msg;
+	}
+
+	public static RabbitMessage createPublish(String queue, String routingKey, byte[] body) {
+		RabbitMessage msg = new RabbitMessage().withType(FRAME_METHOD);
+		msg.withFrame(BASIC_CLASS, PUBLISH_METHOD).withChannel(channel);
+		short ticket =0;
+		msg.withValues(ticket);
+		msg.withShortString(queue);
+		msg.withShortString(routingKey);
+		msg.withValues(false);
+//		msg.withValues(body);
+		return msg;
+	}
+	
+	public static RabbitMessage createPublishHeader(String queue) {
+		RabbitMessage msg = new RabbitMessage().withType(FRAME_HEADER);
+		msg.withFrame(BASIC_CLASS, (short)0).withChannel(channel);
+		msg.withValues((long)queue.length());
+		msg.withValues(false, false);
+		return msg;
+	}
+	
+	public static RabbitMessage createPublishBody(String queue) {
+		RabbitMessage msg = new RabbitMessage().withType(FRAME_BODY);
+		msg.withChannel(channel);
+		msg.withValues(queue);
+		return msg;
+	}
+	
+	public static RabbitMessage createClose() {
 		RabbitMessage msg = new RabbitMessage();
-		msg.withFrame(BASIC_CLASS, PUBLISH_METHOD);
-		int ticket =0;
-		msg.withValues(ticket, exchange, routingKey, false, false);
-		msg.withValues(body);
+		msg.withChannel(channel);
+		if(channel>0) {
+			msg.withType(FRAME_HEADER);
+			msg.withFrame(CHANNEL_CLASS, (short)20).withChannel(channel);
+			channel--;
+		}else {
+			msg.withType(FRAME_METHOD);
+			msg.withFrame(CONNECTION_CLASS, (short)10).withChannel(channel);
+		}
+		msg.withValues((short)200);
+		msg.withShortString("OK");
+		msg.withValues((short)0, (short)0);
 		return msg;
 	}
 }

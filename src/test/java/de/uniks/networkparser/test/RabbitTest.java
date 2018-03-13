@@ -23,18 +23,23 @@ public class RabbitTest {
 	@Test
 	public void connectRabbit() {
 		NodeProxyRabbit proxy = new NodeProxyRabbit("localhost");
-		System.out.println(proxy.connect());
+		proxy.connect();
 		
 		proxy.createChannel("hello", new ObjectCondition() {
 			@Override
 			public boolean update(Object value) {
-				System.out.println(value);
+				System.out.println("RECEIVED: "+value);
 				return false;
 			}
 		});
-		
-		proxy.publish("hello", "Hello World!");
-		
+//		proxy.publish("hello", "Hello World!");
+		try {
+			Thread.sleep(3000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		proxy.close();
 	}
 	@Test
 	public void connectRabbitDecoding() {

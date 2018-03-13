@@ -157,7 +157,7 @@ public class ByteBuffer extends BufferedBuffer implements BaseItem {
 		this.position = this.length;
 		return true;
 	}
-	
+
 	public boolean insert(Object item) {
 		if(item instanceof Byte) {
 			if(add((byte)item)) {
@@ -196,10 +196,28 @@ public class ByteBuffer extends BufferedBuffer implements BaseItem {
 				return withEnd();
 			}
 		}
+		if(item instanceof Long) {
+			resize(8);
+			if(put((long)item)) {
+				this.length += 8;
+				return true;
+			}
+		}
+		if(item instanceof Boolean) {
+			if((Boolean)item) {
+				if(add((byte)1)) {
+					return withEnd();
+				}
+			} else {
+				if(add((byte)0)) {
+					return withEnd();
+				}
+			}
+		}
 		return false;
 	}
 	
-	protected boolean addBytes(Object value, int len) {
+	private void resize(int len) {
 		int bufferLen = 0;
 		if(this.buffer != null) {
 			bufferLen = this.buffer.length;
@@ -227,6 +245,10 @@ public class ByteBuffer extends BufferedBuffer implements BaseItem {
 				this.buffer = new byte[len];
 			}
 		}
+	}
+	
+	public boolean addBytes(Object value, int len) {
+		resize(len);
 		// one Byte
 		if(value instanceof Byte) {
 			this.buffer[position] = (Byte) value;

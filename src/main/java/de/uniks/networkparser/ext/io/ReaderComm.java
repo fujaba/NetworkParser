@@ -1,7 +1,6 @@
 package de.uniks.networkparser.ext.io;
 
 import de.uniks.networkparser.SimpleEvent;
-import de.uniks.networkparser.buffer.BufferedBuffer;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 
 public class ReaderComm implements Runnable {
@@ -20,11 +19,6 @@ public class ReaderComm implements Runnable {
 	
 	public ReaderComm withSession(MessageSession session) {
 		this.session = session;
-		return this;
-	}
-
-	public ReaderComm withThreadName(String name) {
-		this.threadName = name;
 		return this;
 	}
 
@@ -49,13 +43,20 @@ public class ReaderComm implements Runnable {
 		}
 		while (running && (session.isClose() == false)) {
 			try {
-				BufferedBuffer response = session.getResponse();
+				Object response = session.getServerResponse();
 				
 				// Answer
 				if(condition != null) {
-					this.condition.update(new SimpleEvent(this, channel, null, response));
+					if(response instanceof RabbitMessage) {
+						RabbitMessage msg = (RabbitMessage) response;
+						String text = msg.getText();
+						if(text != null) {
+							this.condition.update(new SimpleEvent(this, channel, null, text));
+						}
+					} else {
+						this.condition.update(new SimpleEvent(this, channel, null, response));
+					}
 				}
-				System.out.println(response.toString());
 			}catch (Exception e) {
 			
 			}}

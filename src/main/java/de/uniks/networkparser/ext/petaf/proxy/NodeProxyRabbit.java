@@ -74,6 +74,14 @@ public class NodeProxyRabbit extends NodeProxy {
 		if(session == null) {
 			return true;
 		}
+		// SEND CLOSE MESSAGES
+		RabbitMessage msg;
+		while(RabbitMessage.channel > 0) {
+			msg = RabbitMessage.createClose();
+			session.sending(msg, false);
+		}
+		msg = RabbitMessage.createClose();
+		session.sending(msg, false);
 		return session.close();
 	}
 
@@ -128,8 +136,12 @@ public class NodeProxyRabbit extends NodeProxy {
 				this.readerComm.withSession(session);
 				this.readerComm.withChannel(queue);
 				this.readerComm.withCondition(condition);
-				this.readerComm.withThreadName("Rabbit-Reader: "+queue);
+				this.readerComm.start("Rabbit-Reader: "+queue);
 				executorService.execute(readerComm);
+				
+				message = RabbitMessage.createConsume(queue, "", false, false, false, false, null);
+				session.sending(message, false);
+				return true;
 			}
 		}
 		return false;
@@ -137,7 +149,13 @@ public class NodeProxyRabbit extends NodeProxy {
 	
 	public boolean publish(String channel, String message) {
 		RabbitMessage msg = RabbitMessage.createPublish("", channel, message.getBytes());
-		RabbitMessage respone = session.sending(msg, true);
-		return respone != null;
+		session.sending(msg, false);
+		
+		msg = RabbitMessage.createPublishHeader(message);
+		session.sending(msg, false);
+
+		msg = RabbitMessage.createPublishBody(message);
+		session.sending(msg, false);
+		return true;
 	}
 }
