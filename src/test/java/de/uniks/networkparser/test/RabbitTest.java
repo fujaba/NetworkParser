@@ -20,7 +20,7 @@ public class RabbitTest {
 		System.out.println(buffer.toArrayString());
 	}
 	
-	@Test
+
 	public void connectRabbit() {
 		NodeProxyRabbit proxy = new NodeProxyRabbit("localhost");
 		proxy.connect();

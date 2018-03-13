@@ -329,11 +329,8 @@ public class RabbitMessage {
 			stream.flush();
 		} catch (Exception e) {
 			// Oh Error Write full Message
-//			e.printStackTrace();
 			System.out.println("WRONG MESSGAE: "+getDebugString());
 			return false;
-//		} finally {
-//			System.out.println("Sent: "+getDebugString());
 		}
 		return true;
 	}
@@ -368,6 +365,7 @@ public class RabbitMessage {
 	* @param is DataInputStrem for reading
 	*
 	* @return a new RabbitMessage if we read a frame successfully, otherwise null
+	* @throws IOException
 	*/
 	public static RabbitMessage readFrom(DataInputStream is) throws IOException {
 
@@ -489,7 +487,7 @@ public class RabbitMessage {
 			if(items[1] instanceof Short) {
 				group.put((Short) items[1], msgValues);
 			} else {
-				int type = (int) items[1];
+				int type = (Integer) items[1];
 				group.put((short)type, msgValues);
 			}
 		}
@@ -728,7 +726,7 @@ public class RabbitMessage {
 	 * @param durable true if we are declaring a durable queue (the queue will survive a server restart)
 	 * @param exclusive true if we are declaring an exclusive queue (restricted to this connection)
 	 * @param autoDelete true if we are declaring an autodelete queue (server will delete it when no longer in use)
-	 * @param arguments other properties (construction arguments) for the queue
+	 * @param table other properties (construction arguments) for the queue
 	 * @return a new Message
 	 */
 	public static RabbitMessage createQueue(String queue, boolean durable, boolean exclusive, boolean autoDelete, Map<String, Object> table) {

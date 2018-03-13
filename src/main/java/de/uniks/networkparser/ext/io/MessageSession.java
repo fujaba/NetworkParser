@@ -401,7 +401,7 @@ public class MessageSession {
 				response = RabbitMessage.readFrom(rabbitInput);
 				response.analysePayLoad();
 				
-				message = RabbitMessage.createTuneOK((short)response.getData("channelMax"), (int)response.getData("frameMax"), (short)response.getData("heartbeat"));
+				message = RabbitMessage.createTuneOK((Short)response.getData("channelMax"), (Integer)response.getData("frameMax"), (Short)response.getData("heartbeat"));
 				response = sending(message, false);
 				message = RabbitMessage.createConnectionOpen(null);
 				response = sending(message, false);

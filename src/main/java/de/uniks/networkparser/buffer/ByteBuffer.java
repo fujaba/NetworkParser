@@ -101,7 +101,7 @@ public class ByteBuffer extends BufferedBuffer implements BaseItem {
 		byte[] result = null;
 		if(parameter != null && parameter.length>0) {
 			if(parameter[0] instanceof Integer) {
-				len = (int) parameter[0];
+				len = (Integer) parameter[0];
 			} else if(parameter[0] instanceof Byte[] || parameter[0] instanceof byte[]) {
 				result = (byte[]) parameter[0];
 				len = result.length;
@@ -160,7 +160,7 @@ public class ByteBuffer extends BufferedBuffer implements BaseItem {
 
 	public boolean insert(Object item) {
 		if(item instanceof Byte) {
-			if(add((byte)item)) {
+			if(add((Byte)item)) {
 				return withEnd();
 			}
 		}
@@ -198,7 +198,7 @@ public class ByteBuffer extends BufferedBuffer implements BaseItem {
 		}
 		if(item instanceof Long) {
 			resize(8);
-			if(put((long)item)) {
+			if(put((Long)item)) {
 				this.length += 8;
 				return true;
 			}
@@ -269,7 +269,7 @@ public class ByteBuffer extends BufferedBuffer implements BaseItem {
 				}
 			// two Bytes
 			} else if(value instanceof Character || value instanceof Short ) {
-				short item = (short) value;
+				short item = (Short) value;
 				this.buffer[position] = (byte) (item >>> 8);
 				this.buffer[position + 1] = (byte) item;
 				// 4 bytes
@@ -524,7 +524,10 @@ public class ByteBuffer extends BufferedBuffer implements BaseItem {
 	private int bits = 0;
 	private int nextBitMask = 0x100; // triggers readOctet first time
 
-	/** Public API - reads a bit/boolean argument. */
+	/** Public API - reads a bit/boolean argument.
+	 * @return boolean
+	 */
+	
 	public boolean getBit() {
 		if (nextBitMask > 0x80) {
 			bits = getByte();
