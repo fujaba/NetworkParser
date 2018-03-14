@@ -97,6 +97,13 @@ task buildSourceJar(type: Jar, dependsOn: buildSourceJar18) {
 	exclude '**/test/**'
 	manifest = project.manifest {from sharedManifest}
 }
+task buildLocalJar(type: Jar) {
+	archiveName='networkparser.local.jar'
+	description 'Build Local Jar with class-Files and Source-Files'
+	group "Jar"; from {(sourceSets.main.output + sourceSets.main.allJava)}; classifier = 'sources'
+	exclude '**/test/**'
+	manifest = project.manifest {from sharedManifest}
+}
 task buildJavadoc(type: Jar, dependsOn: buildSourceJar) {
 	description 'Build JavaDoc Jar'
 	group "Jar"; from javadoc.outputs.files; classifier = 'javadoc'
