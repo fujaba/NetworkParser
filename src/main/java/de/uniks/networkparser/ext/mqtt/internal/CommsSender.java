@@ -22,6 +22,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
+import de.uniks.networkparser.buffer.ByteBuffer;
 import de.uniks.networkparser.ext.mqtt.MqttException;
 
 
@@ -147,17 +148,21 @@ public class CommsSender implements Runnable {
 	public void write(MqttWireMessage message) throws IOException, MqttException {
 		byte[] bytes = message.getHeader();
 		byte[] pl = message.getPayload();
+		ByteBuffer test = new ByteBuffer();
+		test.addBytes(bytes, bytes.length);
 		out.write(bytes,0,bytes.length);
 		clientState.notifySentBytes(bytes.length);
 
 		int offset = 0;
 		int chunckSize = 1024;
+		test.addBytes(pl, pl.length);
 		while (offset < pl.length) {
 			int length = Math.min(chunckSize, pl.length - offset);
 			out.write(pl, offset, length);
 			offset += chunckSize;
 			clientState.notifySentBytes(length);
 		}
+		System.out.println(test.toArrayString());
 		out.flush();
 	}
 

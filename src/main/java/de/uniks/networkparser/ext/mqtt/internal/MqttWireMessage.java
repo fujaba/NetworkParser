@@ -24,8 +24,8 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 
 import de.uniks.networkparser.buffer.CharacterBuffer;
+import de.uniks.networkparser.ext.io.Message;
 import de.uniks.networkparser.ext.mqtt.MqttException;
-import de.uniks.networkparser.ext.mqtt.MqttMessage;
 
 
 /**
@@ -74,7 +74,7 @@ public class MqttWireMessage {
 	protected String[] names;
 
 	protected int keepAliveInterval;
-	protected MqttMessage message;
+	protected Message message;
 
 	public MqttWireMessage(byte type) {
 		this.type = type;
@@ -558,7 +558,7 @@ public class MqttWireMessage {
 		}
 
 		if(type == MESSAGE_TYPE_PUBLISH) {
-			MqttMessage msg = new MqttMessage();
+			Message msg = new Message();
 			message.message = msg;
 			msg.setQos((info >> 1) & 0x03);
 			if ((info & 0x01) == 0x01) {
@@ -662,7 +662,7 @@ public class MqttWireMessage {
 	public MqttWireMessage withQOS(int[] qos) {
 		this.data = qos;
 		for (int i=0;i<qos.length;i++) {
-			MqttMessage.validateQos(qos[i]);
+//			Message.validateQos(qos[i]);
 		}
 		return this;
 	}
@@ -672,7 +672,7 @@ public class MqttWireMessage {
 		return data;
 	}
 
-	public MqttMessage getMessage() {
+	public Message getMessage() {
 		return message;
 	}
 
@@ -684,7 +684,7 @@ public class MqttWireMessage {
 		return "";
 	}
 
-	public MqttWireMessage withMessage(MqttMessage message) {
+	public MqttWireMessage withMessage(Message message) {
 		this.message = message;
 		return this;
 	}

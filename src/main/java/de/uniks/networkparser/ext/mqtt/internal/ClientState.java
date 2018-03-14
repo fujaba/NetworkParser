@@ -28,9 +28,9 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.Vector;
 
+import de.uniks.networkparser.ext.io.Message;
 import de.uniks.networkparser.ext.io.StringInputStream;
 import de.uniks.networkparser.ext.mqtt.MqttException;
-import de.uniks.networkparser.ext.mqtt.MqttMessage;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 
 /**
@@ -420,7 +420,7 @@ public class ClientState {
 					throw MqttException.withReason(MqttException.REASON_CODE_MAX_INFLIGHT);
 				}
 
-				MqttMessage innerMessage = message.getMessage();
+				Message innerMessage = message.getMessage();
 				//@TRACE 628=pending publish key={0} qos={1} message={2}
 
 				switch(innerMessage.getQos()) {
@@ -463,7 +463,7 @@ public class ClientState {
 	/**
 	 * Persists a buffered message to the persistence layer
 	 *
-	 * @param message The {@link MqttMessage} to persist
+	 * @param message The {@link Message} to persist
 	 */
 	public void persistBufferedMessage(MqttWireMessage message) {
 		String key = getSendBufferedPersistenceKey(message);
@@ -481,7 +481,7 @@ public class ClientState {
 
 	/**
 	 * Remove Message
-	 * @param message The {@link MqttMessage} to un-persist
+	 * @param message The {@link Message} to un-persist
 	 */
 	public void unPersistBufferedMessage(MqttWireMessage message){
 		//@TRACE 517=Un-Persisting Buffered message key={0}
@@ -490,7 +490,7 @@ public class ClientState {
 
 	/**
 	 * This removes the MqttSend message from the outbound queue and persistence.
-	 * @param message the {@link MqttMessage} message to be removed
+	 * @param message the {@link Message} message to be removed
 	 * @throws MqttException if an exception occurs whilst removing the message
 	 */
 	protected void undo(MqttWireMessage message) throws MqttException {
@@ -605,7 +605,7 @@ public class ClientState {
 
 	/**
 	 * Called by the CommsSender when a message has been sent
-	 * @param message the {@link MqttMessage} to notify
+	 * @param message the {@link Message} to notify
 	 */
 	protected void notifySent(MqttWireMessage message) {
 
@@ -669,7 +669,7 @@ public class ClientState {
 	/**
 	 * Called by the CommsReceiver when an ack has arrived.
 	 *
-	 * @param ack The {@link MqttMessage} that has arrived
+	 * @param ack The {@link Message} that has arrived
 	 * @throws MqttException if an exception occurs when sending / notifying
 	 */
 	protected void notifyReceivedAck(MqttWireMessage ack) throws MqttException {
@@ -729,7 +729,7 @@ public class ClientState {
 	 * Called by the CommsReceiver when a message has been received.
 	 * Handles inbound messages and other flows such as PUBREL.
 	 *
-	 * @param message The {@link MqttMessage} that has been received
+	 * @param message The {@link Message} that has been received
 	 * @throws MqttException when an exception occurs whilst notifying
 	 */
 	protected void notifyReceivedMsg(MqttWireMessage message) throws MqttException {

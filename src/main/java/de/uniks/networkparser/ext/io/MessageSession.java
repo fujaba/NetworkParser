@@ -20,6 +20,8 @@ import de.uniks.networkparser.buffer.BufferedBuffer;
 import de.uniks.networkparser.buffer.ByteBuffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.converter.ByteConverter64;
+import de.uniks.networkparser.ext.mqtt.MqttException;
+import de.uniks.networkparser.ext.mqtt.internal.MqttWireMessage;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
@@ -31,7 +33,8 @@ public class MessageSession {
 	public final static String TYPE_FCM="FCM";
 	public final static String TYPE_PLAIN="PLAIN";
 	public final static String TYPE_AMQ="AMQ";
-
+	public final static String TYPE_MQTT = "MQTT";
+	
 	public final static String RESPONSE_SERVERREADY = "220";
 	public final static String RESPONSE_MAILACTIONOKEY="250";
 	public final static String RESPONSE_STARTMAILINPUT="354";
@@ -40,10 +43,12 @@ public class MessageSession {
 	public final static String RESPONSE_SERVICE_CLOSING_TRANSMISSION="221";
 	public static final int SSL_PORT=587;
 	public static final int AMQP_PORT = 5672;
+	public static final int MQTT_PORT = 1883;
 	/** 15 sec. socket read timeout */
 	public static final int SOCKET_READ_TIMEOUT = 15 * 1000;
 	public static String FEATURE_TLS = "STARTTLS";
 	public static final int BUFFER=1024;
+
 
 	private String host;
 	private int port;
@@ -373,6 +378,74 @@ public class MessageSession {
 		return null;
 	}
 	
+
+	public MQTTMessage sending(MQTTMessage message, boolean answer) {
+		return message;
+		//FIXME
+//		byte[] bytes = message.getHeader();
+//		byte[] pl = message.getPayload();
+//		ByteBuffer test = new ByteBuffer();
+//		test.addBytes(bytes, bytes.length);
+//		out.write(bytes,0,bytes.length);
+//
+//		int offset = 0;
+//		int chunckSize = 1024;
+//		test.addBytes(pl, pl.length);
+//		while (offset < pl.length) {
+//			int length = Math.min(chunckSize, pl.length - offset);
+//			out.write(pl, offset, length);
+//			offset += chunckSize;
+//		}
+//		System.out.println(test.toArrayString());
+//		out.flush();
+	}
+
+	public boolean connectMQTT(String sender, String password) {
+		this.type = TYPE_MQTT;
+		if(this.port == 0) {
+			this.port = MQTT_PORT;
+		}
+		if(isValid(sender) == false) {
+			return false;
+		}
+		try {
+			if(serverSocket == null) {
+				initSockets(host, port);
+				sendStart();
+				
+				this.rabbitInput = new DataInputStream(this.serverSocket.getInputStream());
+				RabbitMessage message = RabbitMessage.createStartOK(sender, password);
+				// START MESSAGE
+				RabbitMessage response = sending(message, true);
+
+
+				// TUNE MESSAGE
+				response = RabbitMessage.readFrom(rabbitInput);
+				response.analysePayLoad();
+				
+				message = RabbitMessage.createTuneOK((Short)response.getData("channelMax"), (Integer)response.getData("frameMax"), (Short)response.getData("heartbeat"));
+				response = sending(message, false);
+				message = RabbitMessage.createConnectionOpen(null);
+				response = sending(message, false);
+			}
+			return true;
+		}catch (Exception e) {
+		}
+//	MqttWireMessage connect = MqttWireMessage.create(MqttWireMessage.MESSAGE_TYPE_CONNECT);
+//	connect.withNames(client.getClientId(), client.getUserName(), client.getPassword());
+//	connect.withKeepAliveInterval(client.getKeepAliveInterval()); 
+//	connect.withCode(client.getMqttVersion());
+//	connect.withSession(client.isCleanSession());
+//
+//	this.clientState.setKeepAliveSecs(client.getKeepAliveInterval());
+//	this.clientState.setCleanSession(client.isCleanSession());
+//	this.clientState.setMaxInflight(client.getMaxInflight());
+//
+//	tokenStore.open();
+//	Connection connection = new Connection(this, token, connect);
+//	connection.start();
+		return false;
+	}
 	public boolean connectAMQ(String sender, String password) {
 		this.type = TYPE_AMQ;
 		if(this.port == 0) {
@@ -408,7 +481,6 @@ public class MessageSession {
 			}
 			return true;
 		}catch (Exception e) {
-			e.printStackTrace();
 		}
 		return false;
 	}

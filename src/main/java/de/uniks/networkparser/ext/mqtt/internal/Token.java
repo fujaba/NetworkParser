@@ -16,8 +16,8 @@
 
 package de.uniks.networkparser.ext.mqtt.internal;
 
+import de.uniks.networkparser.ext.io.Message;
 import de.uniks.networkparser.ext.mqtt.MqttException;
-import de.uniks.networkparser.ext.mqtt.MqttMessage;
 import de.uniks.networkparser.ext.petaf.proxy.NodeProxyMQTT;
 
 public class Token {
@@ -28,7 +28,7 @@ public class Token {
 	private Object responseLock = new Object();
 	private Object sentLock = new Object();
 
-	protected MqttMessage message = null;
+	protected Message message = null;
 	private MqttWireMessage response = null;
 	private MqttException exception = null;
 	private String[] topics = null;
@@ -94,7 +94,7 @@ public class Token {
 	 * in the case of a NACK.  It does still throw an exception if something else
 	 * goes wrong (e.g. an IOException).  This is used for packets like CONNECT,
 	 * which have useful information in the ACK that needs to be accessed.
-	 * @return the {@link MqttMessage}
+	 * @return the {@link Message}
 	 * @throws MqttException if there is an error whilst waiting for the response
 	 */
 	protected MqttWireMessage waitForResponse() throws MqttException {
@@ -260,7 +260,7 @@ public class Token {
 		exception = null;
 	}
 
-	public MqttMessage getMessage() {
+	public Message getMessage() {
 		return message;
 	}
 
@@ -269,7 +269,7 @@ public class Token {
 	}
 
 
-	public void setMessage(MqttMessage msg) {
+	public void setMessage(Message msg) {
 		this.message = msg;
 	}
 

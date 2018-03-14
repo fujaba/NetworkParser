@@ -8,8 +8,8 @@ import java.util.concurrent.ScheduledExecutorService;
 
 import javax.net.SocketFactory;
 
+import de.uniks.networkparser.ext.io.Message;
 import de.uniks.networkparser.ext.mqtt.MqttException;
-import de.uniks.networkparser.ext.mqtt.MqttMessage;
 import de.uniks.networkparser.ext.mqtt.MqttTopic;
 import de.uniks.networkparser.ext.mqtt.internal.ClientComms;
 import de.uniks.networkparser.ext.mqtt.internal.MqttWireMessage;
@@ -130,19 +130,10 @@ public class NodeProxyMQTT extends NodeProxy {
 	}
 
 	/**
-	 * Returns a randomly generated client identifier based on the the fixed prefix
-	 * (paho) and the system time.
-	 * <p>
-	 * When cleanSession is set to false, an application must ensure it uses the
-	 * same client identifier when it reconnects to the server to resume state and
-	 * maintain assured message delivery.
-	 * </p>
-	 *
+	 * Returns a randomly generated client identifier based on the the fixed prefix and the system time.
 	 * @return a generated client identifier
 	 */
 	public static String generateClientId() {
-		// length of nanoTime = 15, so total length = 19 < 65535(defined in
-		// spec)
 		return CLIENT_ID_PREFIX + System.nanoTime();
 	}
 
@@ -448,11 +439,11 @@ public class NodeProxyMQTT extends NodeProxy {
 	}
 
 	public Token publish(String topic, byte... message) throws MqttException {
-		MqttMessage mqttMessage = new MqttMessage(message);
+		Message mqttMessage = new Message(message);
 		return this.publish(topic, mqttMessage);
 	}
 
-	public Token publish(String topic, MqttMessage message) throws MqttException {
+	public Token publish(String topic, Message message) throws MqttException {
 		// @TRACE 111=< topic={0} message={1}userContext={1} callback={2}
 
 		// Checks if a topic is valid when publishing a message.

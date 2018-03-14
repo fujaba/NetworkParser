@@ -24,8 +24,8 @@ import java.util.concurrent.Future;
 import java.util.concurrent.Semaphore;
 
 import de.uniks.networkparser.SimpleEvent;
+import de.uniks.networkparser.ext.io.Message;
 import de.uniks.networkparser.ext.mqtt.MqttException;
-import de.uniks.networkparser.ext.mqtt.MqttMessage;
 import de.uniks.networkparser.ext.petaf.proxy.NodeProxyMQTT;
 import de.uniks.networkparser.interfaces.SimpleEventCondition;
 
@@ -385,7 +385,7 @@ public class CommsCallback implements Runnable {
 		return callbackThread;
 	}
 
-	protected boolean deliverMessage(String topicName, int messageId, MqttMessage aMessage) throws Exception
+	protected boolean deliverMessage(String topicName, int messageId, Message aMessage) throws Exception
 	{
 		boolean delivered = false;
 

@@ -18,6 +18,7 @@ package de.uniks.networkparser.ext.mqtt;
 import java.io.UnsupportedEncodingException;
 
 import de.uniks.networkparser.EntityUtil;
+import de.uniks.networkparser.ext.io.Message;
 import de.uniks.networkparser.ext.mqtt.internal.ClientComms;
 import de.uniks.networkparser.ext.mqtt.internal.MqttWireMessage;
 import de.uniks.networkparser.ext.mqtt.internal.Token;
@@ -77,7 +78,7 @@ public class MqttTopic {
 
 	/**
 	 * Publishes a message on the topic.  This is a convenience method, which will
-	 * create a new {@link MqttMessage} object with a byte array payload and the
+	 * create a new {@link Message} object with a byte array payload and the
 	 * specified QoS, and then publish it.  All other values in the
 	 * message will be set to the defaults.
 
@@ -86,12 +87,12 @@ public class MqttTopic {
 	 * @param retained whether or not this message should be retained by the server.
 	 * @return new Token {@link Token}
 	 * @throws MqttException If an error occurs publishing the message
-	 * @see #publish(MqttMessage)
-	 * @see MqttMessage#setQos(int)
-	 * @see MqttMessage#setRetained(boolean)
+	 * @see #publish(Message)
+	 * @see Message#setQos(int)
+	 * @see Message#setRetained(boolean)
 	 */
 	public Token publish(byte[] payload, int qos, boolean retained) throws MqttException {
-		MqttMessage message = new MqttMessage(payload);
+		Message message = new Message(payload);
 		message.setQos(qos);
 		message.setRetained(retained);
 		return this.publish(message);
@@ -109,7 +110,7 @@ public class MqttTopic {
 	 * @return an MqttDeliveryToken for tracking the delivery of the message
 	 * @throws MqttException if an error occurs publishing the message
 	 */
-	public Token publish(MqttMessage message) throws MqttException {
+	public Token publish(Message message) throws MqttException {
 		Token token = new Token(comms.getClient().getClientId());
 		token.setMessage(message);
 		comms.sendNoWait(createPublish(message), token);
@@ -131,7 +132,7 @@ public class MqttTopic {
 	 * @param message  MqttMessage message
 	 * @return new Publish Message
 	 */
-	private MqttWireMessage createPublish(MqttMessage message) {
+	private MqttWireMessage createPublish(Message message) {
 		MqttWireMessage msg = MqttWireMessage.create(MqttWireMessage.MESSAGE_TYPE_PUBLISH);
 		msg.withNames(this.getName()).withMessage(message);
 		return msg;

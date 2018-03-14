@@ -6,7 +6,7 @@ import org.junit.Test;
 
 import de.uniks.networkparser.buffer.ByteBuffer;
 import de.uniks.networkparser.ext.io.RabbitMessage;
-import de.uniks.networkparser.ext.petaf.proxy.NodeProxyRabbit;
+import de.uniks.networkparser.ext.petaf.proxy.NodeProxyBroker;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 
 public class RabbitTest {
@@ -21,8 +21,9 @@ public class RabbitTest {
 	}
 	
 
+	@Test
 	public void connectRabbit() {
-		NodeProxyRabbit proxy = new NodeProxyRabbit("localhost");
+		NodeProxyBroker proxy = new NodeProxyBroker("localhost");
 		proxy.connect();
 		
 		proxy.createChannel("hello", new ObjectCondition() {
@@ -32,7 +33,7 @@ public class RabbitTest {
 				return false;
 			}
 		});
-//		proxy.publish("hello", "Hello World!");
+		proxy.publish("hello", "Hello World!");
 		try {
 			Thread.sleep(3000);
 		} catch (InterruptedException e) {

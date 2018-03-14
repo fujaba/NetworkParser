@@ -1,20 +1,4 @@
-/*******************************************************************************
- * Copyright (c) 2009, 2014 IBM Corp.
- *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * and Eclipse Distribution License v1.0 which accompany this distribution.
- *
- * The Eclipse Public License is available at
- *    http://www.eclipse.org/legal/epl-v10.html
- * and the Eclipse Distribution License is available at
- *   http://www.eclipse.org/org/documents/edl-v10.php.
- *
- * Contributors:
- *    Dave Locke - initial API and implementation and/or initial documentation
- *    Ian Craggs - ack control (bug 472172)
- */
-package de.uniks.networkparser.ext.mqtt;
+package de.uniks.networkparser.ext.io;
 
 /**
  * An MQTT message holds the application payload and options
@@ -23,25 +7,12 @@ package de.uniks.networkparser.ext.mqtt;
  * represented as a byte[].
  * @author Paho Client
  */
-public class MqttMessage {
-
-	private boolean mutable = true;
+public class Message {
 	private byte[] payload;
 	private int qos = 1;
 	private boolean retained = false;
 	private boolean dup = false;
 	private int messageId;
-
-	/**
-	 * Utility method to validate the supplied QoS value.
-	 * @param qos The QoS Level
-	 * @throws IllegalArgumentException if value of QoS is not 0, 1 or 2.
-	 */
-	public static void validateQos(int qos) {
-		if ((qos < 0) || (qos > 2)) {
-			throw new IllegalArgumentException();
-		}
-	}
 
 	/**
 	 * Constructs a message with an empty payload, and all other values
@@ -53,8 +24,7 @@ public class MqttMessage {
 	 *    <li>Message will not be "retained" by the server</li>
 	 * </ul>
 	 */
-	public MqttMessage() {
-		setPayload(new byte[]{});
+	public Message() {
 	}
 
 	/**
@@ -62,7 +32,7 @@ public class MqttMessage {
 	 * and all other values set to defaults.
 	 * @param payload The Bytearray of the payload
 	 */
-	public MqttMessage(byte[] payload) {
+	public Message(byte[] payload) {
 		setPayload(payload);
 	}
 
@@ -76,15 +46,6 @@ public class MqttMessage {
 	}
 
 	/**
-	 * Clears the payload, resetting it to be empty.
-	 * @throws IllegalStateException if this message cannot be edited
-	 */
-	public void clearPayload() {
-		checkMutable();
-		this.payload = new byte[] {};
-	}
-
-	/**
 	 * Sets the payload of this message to be the specified byte array.
 	 *
 	 * @param payload the payload for this message.
@@ -92,10 +53,6 @@ public class MqttMessage {
 	 * @throws NullPointerException if no payload is provided
 	 */
 	public void setPayload(byte[] payload) {
-		checkMutable();
-		if (payload == null) {
-			throw new NullPointerException();
-		}
 		this.payload = payload;
 	}
 
@@ -122,7 +79,6 @@ public class MqttMessage {
 	 * @throws IllegalStateException if this message cannot be edited
 	 */
 	public void setRetained(boolean retained) {
-		checkMutable();
 		this.retained = retained;
 	}
 
@@ -176,8 +132,6 @@ public class MqttMessage {
 	 * @throws IllegalStateException if this message cannot be edited
 	 */
 	public void setQos(int qos) {
-		checkMutable();
-		validateQos(qos);
 		this.qos = qos;
 	}
 
@@ -190,22 +144,6 @@ public class MqttMessage {
 	 */
 	public String toString() {
 		return new String(payload);
-	}
-
-	/**
-	 * Sets the mutability of this object (whether or not its values can be
-	 * changed.
-	 * @param mutable boolean <code>true</code> if the values can be changed,
-	 * <code>false</code> to prevent them from being changed.
-	 */
-	protected void setMutable(boolean mutable) {
-		this.mutable = mutable;
-	}
-
-	protected void checkMutable() throws IllegalStateException {
-		if (!mutable) {
-			throw new IllegalStateException();
-		}
 	}
 
 	public void setDuplicate(boolean dup) {
@@ -239,7 +177,4 @@ public class MqttMessage {
 	public int getId() {
 		return this.messageId;
 	}
-
-
-
 }

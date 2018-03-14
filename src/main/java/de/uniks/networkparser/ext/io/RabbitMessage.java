@@ -64,7 +64,7 @@ public class RabbitMessage {
 		if(accumulator == null) {
 			accumulator = new ByteBuffer();
 			if(getType() != 3) {
-				accumulator.insert(new byte[4]);
+				accumulator.insert(new byte[4], true);
 			}
 			// ONly for 
 			if(table != null || (CONNECTION_CLASS == this.classId && STARTOK_METHOD == this.methodId)) {
@@ -82,7 +82,7 @@ public class RabbitMessage {
 	public RabbitMessage withEmptyValues() {
 		if(accumulator == null) {
 			accumulator = new ByteBuffer();
-			accumulator.insert(new byte[4]);
+			accumulator.insert(new byte[4], true);
 		}
 		writeValue( null );
 		return this;
@@ -94,14 +94,14 @@ public class RabbitMessage {
 	}
 	public RabbitMessage writeMap(Map<?, ?> map) {
 		if (map == null) {
-			accumulator.insert(NULL);
+			accumulator.insert(NULL, true);
 		}else {
 			Set<?> keySet = map.keySet();
 			for(Object key : keySet) {
 				if(key instanceof String) {
 					byte[] keyStr = ((String) key).getBytes();
-					accumulator.insert((byte)keyStr.length);
-					accumulator.insert(keyStr);
+					accumulator.insert((byte)keyStr.length, true);
+					accumulator.insert(keyStr, true);
 					writeFieldValue(map.get(key));
 				}
 			}
@@ -111,7 +111,7 @@ public class RabbitMessage {
 
 	public boolean writeValue(Object value) {
 		if(value == null) {
-			accumulator.insert(NULL);
+			accumulator.insert(NULL, true);
 			return true;
 		}
 		if(value instanceof ByteEntity) {
@@ -122,17 +122,17 @@ public class RabbitMessage {
 			if(group == ByteTokener.DATATYPE_STRING) {
 				byte[] bytes = entity.getValue();
 				if(subgroup == ByteTokener.LEN_LITTLE) {
-					accumulator.insert((byte)bytes.length);
+					accumulator.insert((byte)bytes.length, true);
 				} else {
-					accumulator.insert((Integer)bytes.length);
+					accumulator.insert((Integer)bytes.length, true);
 				}
-				accumulator.insert(bytes);
+				accumulator.insert(bytes, true);
 			}
 		}
 		if(value instanceof String) {
 			byte [] bytes = ((String)value).getBytes();
-			accumulator.insert((Integer)bytes.length);
-			accumulator.insert(bytes);
+			accumulator.insert((Integer)bytes.length, true);
+			accumulator.insert(bytes, true);
 			return true;
 		}
 		if(value instanceof Integer ||
@@ -142,13 +142,13 @@ public class RabbitMessage {
 				value instanceof Long ||
 				value instanceof Short ||
 				value instanceof Boolean) {
-			accumulator.insert(value);
+			accumulator.insert(value, true);
 			return true;
 		}
 
 		if(value instanceof Date) {
 			Date date = (Date) value;
-			accumulator.insert((long)date.getTime()/1000);
+			accumulator.insert((long)date.getTime()/1000, true);
 			return true;
 		}
 		
@@ -158,13 +158,13 @@ public class RabbitMessage {
 		}
 		if(value instanceof byte[]) {
 			byte[] array = (byte[]) value;
-			accumulator.insert((Integer) array.length);
-			accumulator.insert(array);
+			accumulator.insert((Integer) array.length, true);
+			accumulator.insert(array, true);
 			return true;
 		}
 		if(value instanceof List<?> || value instanceof Object[]) {
 			int newPos, pos = accumulator.position();
-			accumulator.insert((Integer) 1);
+			accumulator.insert((Integer) 1, true);
 			if(value instanceof List<?>) {
 				List<?> list = (List<?>) value;
 				// Now Write Value
@@ -189,74 +189,74 @@ public class RabbitMessage {
 
 	public boolean writeFieldValue(Object value) {
 		if(value == null) {
-			accumulator.insert('V');
+			accumulator.insert('V', true);
 			return true;
 		}
 		if(value instanceof String) {
-			accumulator.insert('S');
+			accumulator.insert('S', true);
 			byte [] bytes = ((String)value).getBytes();
-			accumulator.insert(bytes.length);
-			accumulator.insert(bytes);
+			accumulator.insert(bytes.length, true);
+			accumulator.insert(bytes, true);
 			return true;
 		}
 		if(value instanceof Integer) {
-			accumulator.insert('I');
-			accumulator.insert(value);
+			accumulator.insert('I', true);
+			accumulator.insert(value, true);
 			return true;
 		}
 		if(value instanceof Date) {
-			accumulator.insert('T');
+			accumulator.insert('T', true);
 			Date date = (Date) value;
-			accumulator.insert((long)date.getTime()/1000);
+			accumulator.insert((long)date.getTime()/1000, true);
 			return true;
 		}
 		
 		if(value instanceof Map<?,?>) {
-			accumulator.insert('F');
+			accumulator.insert('F', true);
 			writeMap((Map<?, ?>) value);
 			return true;
 		}
 		if(value instanceof Byte) {
-			accumulator.insert('b');
-			accumulator.insert(value);
+			accumulator.insert('b', true);
+			accumulator.insert(value, true);
 			return true;
 		}
 		if(value instanceof Double) {
-			accumulator.insert('d');
-			accumulator.insert(value);
+			accumulator.insert('d', true);
+			accumulator.insert(value, true);
 			return true;
 		}
 		if(value instanceof Float) {
-			accumulator.insert('f');
-			accumulator.insert(value);
+			accumulator.insert('f', true);
+			accumulator.insert(value, true);
 			return true;
 		}
 		if(value instanceof Long) {
-			accumulator.insert('l');
-			accumulator.insert(value);
+			accumulator.insert('l', true);
+			accumulator.insert(value, true);
 			return true;
 		}
 		if(value instanceof Short) {
-			accumulator.insert('s');
-			accumulator.insert(value);
+			accumulator.insert('s', true);
+			accumulator.insert(value, true);
 			return true;
 		}
 		if(value instanceof Boolean) {
-			accumulator.insert('t');
-			accumulator.insert(value);
+			accumulator.insert('t', true);
+			accumulator.insert(value, true);
 			return true;
 		}
 		if(value instanceof byte[]) {
-			accumulator.insert('x');
+			accumulator.insert('x', true);
 			byte[] array = (byte[]) value;
-			accumulator.insert((Integer) array.length);
-			accumulator.insert(array);
+			accumulator.insert((Integer) array.length, true);
+			accumulator.insert(array, true);
 			return true;
 		}
 		if(value instanceof List<?> || value instanceof Object[]) {
-			accumulator.insert('A');
+			accumulator.insert('A', true);
 			int newPos, pos = accumulator.position();
-			accumulator.insert((Integer) 1);
+			accumulator.insert((Integer) 1, true);
 			if(value instanceof List<?>) {
 				List<?> list = (List<?>) value;
 				// Now Write Value
@@ -337,7 +337,7 @@ public class RabbitMessage {
 	
 	public String getDebugString() {
 		ByteBuffer errorMessage = new ByteBuffer();
-		errorMessage.insert(headers);
+		errorMessage.insert(headers, true);
 		if(accumulator != null) {
 			int length = accumulator.length();
 			if(getType() != 3) {
@@ -345,15 +345,14 @@ public class RabbitMessage {
 				accumulator.set(1, (byte)(this.classId & 0xff));
 				accumulator.set(2, (byte)((this.methodId >> 8) & 0xff));
 				accumulator.set(3, (byte)(this.methodId & 0xff));
-				errorMessage.insert(ByteTokener.intToByte(length));
+				errorMessage.insert(ByteTokener.intToByte(length), true);
 			}
 			errorMessage.addBytes(accumulator.array(), length);
-			errorMessage.withEnd();
 		} else if(payload != null) {
-			errorMessage.insert(payload.length());
-			errorMessage.insert(payload.array());
+			errorMessage.insert(payload.length(), true);
+			errorMessage.insert(payload.array(), true);
 		}
-		errorMessage.insert(FRAME_END);
+		errorMessage.insert(FRAME_END, false);
 		errorMessage.flip(false);
 		return errorMessage.toArrayString();
 	}

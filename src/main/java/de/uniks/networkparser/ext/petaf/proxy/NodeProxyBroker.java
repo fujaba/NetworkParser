@@ -9,7 +9,7 @@ import de.uniks.networkparser.ext.io.ReaderComm;
 import de.uniks.networkparser.ext.petaf.NodeProxy;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 
-public class NodeProxyRabbit extends NodeProxy {
+public class NodeProxyBroker extends NodeProxy {
 	public static final String PROPERTY_SERVERURL = "url";
 	public static final String PROPERTY_clientId = "clientId";
 	private String sender;
@@ -21,23 +21,33 @@ public class NodeProxyRabbit extends NodeProxy {
 	// Standalone Variables
 	private ExecutorService executorService;
 	private ReaderComm readerComm;
+	private static final String CLIENTID_PREFIX = "np_broker";
 
-	public NodeProxyRabbit() {
+	public NodeProxyBroker() {
 		this.property.addAll(PROPERTY_SERVERURL);
 		this.propertyUpdate.addAll(PROPERTY_SERVERURL);
 		this.propertyInfo.addAll(PROPERTY_SERVERURL);
 	}
 
-	public NodeProxyRabbit(String serverURI) {
+	public NodeProxyBroker(String serverURI) {
 		this(serverURI, null);
 	}
 
-	public NodeProxyRabbit(String url, String clientId) {
+	public NodeProxyBroker(String url, String clientId) {
 		this.url = url;
-//		if (clientId == null) {
-//			clientId = NodeProxyRabbit.generateClientId();
-//		}
+		if (clientId == null) {
+			clientId = NodeProxyBroker.generateClientId();
+		}
 	}
+	
+	/**
+	 * Returns a randomly generated client identifier based on the the fixed prefix and the system time.
+	 * @return a generated client identifier
+	 */
+	public static String generateClientId() {
+		return CLIENTID_PREFIX + System.nanoTime();
+	}
+
 
 	public boolean connect() {
 		if (session == null) {
@@ -112,8 +122,8 @@ public class NodeProxyRabbit extends NodeProxy {
 	}
 
 	@Override
-	public NodeProxyRabbit getSendableInstance(boolean prototyp) {
-		return new NodeProxyRabbit();
+	public NodeProxyBroker getSendableInstance(boolean prototyp) {
+		return new NodeProxyBroker();
 	}
 	
 	public boolean createChannel(String queue, ObjectCondition condition) {

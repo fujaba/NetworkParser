@@ -1,8 +1,11 @@
 package de.uniks.networkparser.test.javafx;
 
+import org.junit.Test;
+
 import de.uniks.networkparser.SimpleEvent;
+import de.uniks.networkparser.ext.io.Message;
 import de.uniks.networkparser.ext.mqtt.MqttException;
-import de.uniks.networkparser.ext.mqtt.MqttMessage;
+import de.uniks.networkparser.ext.petaf.proxy.NodeProxyBroker;
 import de.uniks.networkparser.ext.petaf.proxy.NodeProxyMQTT;
 import de.uniks.networkparser.interfaces.SimpleEventCondition;
 
@@ -22,7 +25,7 @@ public class MQTTClient {
 		);
 		client.connect();
 		client.subscribe("ALL");
-		MqttMessage message = new MqttMessage("Hallo World 42".getBytes());
+		Message message = new Message("Hallo World 42".getBytes());
 		client.publish("ALL", message);
 		try {
 			Thread.sleep(5000);
@@ -30,6 +33,11 @@ public class MQTTClient {
 			e.printStackTrace();
 		}
 		client.close();
-
+	}
+	
+	
+	@Test
+	public void testMQTT() {
+		NodeProxyBroker broker = new NodeProxyBroker("tcp://broker.hivemq.com:1883");
 	}
 }
