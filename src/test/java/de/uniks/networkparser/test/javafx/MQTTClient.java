@@ -38,6 +38,7 @@ public class MQTTClient {
 	
 	@Test
 	public void testMQTT() {
-		NodeProxyBroker broker = new NodeProxyBroker("tcp://broker.hivemq.com:1883");
+		NodeProxyBroker broker = NodeProxyBroker.createMQTTBroker("broker.hivemq.com");
+		broker.connect();
 	}
 }

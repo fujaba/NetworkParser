@@ -1,11 +1,6 @@
 package de.uniks.networkparser.ext.io;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
-
 import de.uniks.networkparser.buffer.ByteBuffer;
-import de.uniks.networkparser.ext.mqtt.MqttException;
 
 public class MQTTMessage {
 	public static final byte MESSAGE_TYPE_CONNECT = 1;
@@ -43,22 +38,28 @@ public class MQTTMessage {
 	protected Message message;
 	protected int keepAliveInterval;
 
-	public byte[] getHeader() throws MqttException {
-		try {
-			int first = ((getType() & 0x0f) << 4) ^ (getMessageInfo() & 0x0f);
-			byte[] varHeader = getVariableHeader();
-			int remLen = varHeader.length + getPayload().length;
+	public ByteBuffer getHeader() {
+		int first = ((getType() & 0x0f) << 4) ^ (getMessageInfo() & 0x0f);
+		byte[] varHeader = getVariableHeader();
+		int remLen = varHeader.length + getPayload().length;
+		ByteBuffer buffer=new ByteBuffer();
 
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			DataOutputStream dos = new DataOutputStream(baos);
-			dos.writeByte(first);
-			dos.write(encodeMBI(remLen));
-			dos.write(varHeader);
-			dos.flush();
-			return baos.toByteArray();
-		} catch(IOException ioe) {
-			throw MqttException.withReason(MqttException.REASON_CODE_DEFAULT, ioe);
-		}
+		buffer.insert(first, true);
+
+		int numBytes = 0;
+		// Encode the remaining length fields in the four bytes
+		do {
+			byte digit = (byte)(remLen % 128);
+			remLen = remLen / 128;
+			if (remLen > 0) {
+				digit |= 0x80;
+			}
+			buffer.insert(digit, false);
+			numBytes++;
+		} while ( (remLen > 0) && (numBytes<4) );
+		
+		buffer.insert(varHeader, false);
+		return buffer;
 	}
 	
 	/** @return the type of the message. */
@@ -66,16 +67,12 @@ public class MQTTMessage {
 		return type;
 	}
 
-	protected byte[] encodeMessageId() throws MqttException {
-		ByteBuffer buffer=new ByteBuffer();
-		short id = (short) msgId;
-		buffer.insert(id, false);
-		return buffer.array();
-	}
-
-	protected byte[] getVariableHeader() throws MqttException {
+	protected byte[] getVariableHeader() {
 		if(type == MESSAGE_TYPE_PUBACK) {
-			return encodeMessageId();
+			ByteBuffer buffer=new ByteBuffer();
+			short id = (short) msgId;
+			buffer.insert(id, false);
+			return buffer.array();
 		}
 
 		if(type == MESSAGE_TYPE_SUBSCRIBE || type == MESSAGE_TYPE_UNSUBSCRIBE || type == MESSAGE_TYPE_PUBLISH || type == MESSAGE_TYPE_CONNECT) {
@@ -122,9 +119,8 @@ public class MQTTMessage {
 	/**
 	 * Sub-classes should override this method to supply the payload bytes.
 	 * @return The payload byte array
-	 * @throws MqttException if an exception occurs whilst getting the payload
 	 */
-	public byte[] getPayload() throws MqttException {
+	public byte[] getPayload() {
 		if(type == MESSAGE_TYPE_SUBSCRIBE || type == MESSAGE_TYPE_UNSUBSCRIBE || type == MESSAGE_TYPE_CONNECT) {
 			ByteBuffer buffer = new ByteBuffer();
 			if(type == MESSAGE_TYPE_SUBSCRIBE) {
@@ -153,24 +149,6 @@ public class MQTTMessage {
 			return message.getPayload();
 		}
 		return new byte[0];
-	}
-
-	protected static byte[] encodeMBI( long number) {
-		int numBytes = 0;
-		long no = number;
-		ByteBuffer bos = new ByteBuffer();
-		// Encode the remaining length fields in the four bytes
-		do {
-			byte digit = (byte)(no % 128);
-			no = no / 128;
-			if (no > 0) {
-				digit |= 0x80;
-			}
-			bos.add(digit);
-			numBytes++;
-		} while ( (no > 0) && (numBytes<4) );
-		bos.flip(true);
-		return bos.getBytes();
 	}
 
 	/**

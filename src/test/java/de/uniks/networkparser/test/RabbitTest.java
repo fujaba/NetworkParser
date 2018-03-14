@@ -21,7 +21,7 @@ public class RabbitTest {
 	}
 	
 
-	@Test
+//	@Test
 	public void connectRabbit() {
 		NodeProxyBroker proxy = new NodeProxyBroker("localhost");
 		proxy.connect();

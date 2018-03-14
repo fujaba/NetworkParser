@@ -22,6 +22,7 @@ public class NodeProxyBroker extends NodeProxy {
 	private ExecutorService executorService;
 	private ReaderComm readerComm;
 	private static final String CLIENTID_PREFIX = "np_broker";
+	private String format = MessageSession.TYPE_AMQ;
 
 	public NodeProxyBroker() {
 		this.property.addAll(PROPERTY_SERVERURL);
@@ -57,6 +58,10 @@ public class NodeProxyBroker extends NodeProxy {
 			return false;
 		}
 		session.withHost(url);
+		if(MessageSession.TYPE_MQTT.equals(format)) {
+			return session.connectMQTT(sender, password);
+		}
+		// Default MessageSession.TYPE_AMQ;
 		return session.connectAMQ(sender, password);
 	}
 
@@ -168,4 +173,16 @@ public class NodeProxyBroker extends NodeProxy {
 		session.sending(msg, false);
 		return true;
 	}
+	
+	public NodeProxyBroker withFormat(String format) {
+		this.format = format;
+		return this;
+	}
+	
+	public static NodeProxyBroker createMQTTBroker(String url) {
+		NodeProxyBroker broker = new NodeProxyBroker(url);
+		broker.withFormat(MessageSession.TYPE_MQTT);
+		return broker;
+	}
+
 }

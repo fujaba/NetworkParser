@@ -118,7 +118,7 @@ public class DERBuffer extends ByteBuffer {
 				addBitString((String) item);
 			} else if(item instanceof Byte[]) {
 				pos = length;
-				add((Byte[])item);
+				insert((Byte[])item, true);;
 
 				z--;
 				if((Byte)values[z] == DERBuffer.BITSTRING) {

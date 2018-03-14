@@ -20,8 +20,6 @@ import de.uniks.networkparser.buffer.BufferedBuffer;
 import de.uniks.networkparser.buffer.ByteBuffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.converter.ByteConverter64;
-import de.uniks.networkparser.ext.mqtt.MqttException;
-import de.uniks.networkparser.ext.mqtt.internal.MqttWireMessage;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
@@ -380,33 +378,21 @@ public class MessageSession {
 	
 
 	public MQTTMessage sending(MQTTMessage message, boolean answer) {
+		ByteBuffer bytes = message.getHeader();
+		bytes.insert(message.getPayload(), false);
+		try {
+			out.write(bytes.array(), 0, bytes.length());
+			out.flush();
+		} catch (IOException e) {
+			return null;
+		}
 		return message;
-		//FIXME
-//		byte[] bytes = message.getHeader();
-//		byte[] pl = message.getPayload();
-//		ByteBuffer test = new ByteBuffer();
-//		test.addBytes(bytes, bytes.length);
-//		out.write(bytes,0,bytes.length);
-//
-//		int offset = 0;
-//		int chunckSize = 1024;
-//		test.addBytes(pl, pl.length);
-//		while (offset < pl.length) {
-//			int length = Math.min(chunckSize, pl.length - offset);
-//			out.write(pl, offset, length);
-//			offset += chunckSize;
-//		}
-//		System.out.println(test.toArrayString());
-//		out.flush();
 	}
 
 	public boolean connectMQTT(String sender, String password) {
 		this.type = TYPE_MQTT;
 		if(this.port == 0) {
 			this.port = MQTT_PORT;
-		}
-		if(isValid(sender) == false) {
-			return false;
 		}
 		try {
 			if(serverSocket == null) {
@@ -517,6 +503,9 @@ public class MessageSession {
 	private BufferedBuffer sendStart() {
 		if (TYPE_XMPP.equals(type) || TYPE_FCM.equals(type)) {
 			return sendCommand("<stream:stream to=\""+host+"\" xmlns=\"jabber:client\" xmlns:stream=\"http://etherx.jabber.org/streams\" version=\"1.0\">");
+		}
+		if(TYPE_MQTT.equals(type)) {
+			
 		}
 		if(TYPE_AMQ.equals(type)) {
 			int major = 0;
@@ -954,7 +943,6 @@ public class MessageSession {
 	public String getUrl() {
 		return this.host;
 	}
-
 
 	public MessageSession withType(String msgType) {
 		this.type = msgType;
