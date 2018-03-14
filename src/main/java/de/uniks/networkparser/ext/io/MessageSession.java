@@ -389,7 +389,7 @@ public class MessageSession {
 		return message;
 	}
 
-	public boolean connectMQTT(String sender, String password) {
+	public boolean connectMQTT(String clientId, String sender, String password, int keepAlive, int mqttVersion, boolean cleanSession) {
 		this.type = TYPE_MQTT;
 		if(this.port == 0) {
 			this.port = MQTT_PORT;
@@ -397,31 +397,18 @@ public class MessageSession {
 		try {
 			if(serverSocket == null) {
 				initSockets(host, port);
-				sendStart();
 				
-				this.rabbitInput = new DataInputStream(this.serverSocket.getInputStream());
-				RabbitMessage message = RabbitMessage.createStartOK(sender, password);
-				// START MESSAGE
-				RabbitMessage response = sending(message, true);
-
-
-				// TUNE MESSAGE
-				response = RabbitMessage.readFrom(rabbitInput);
-				response.analysePayLoad();
 				
-				message = RabbitMessage.createTuneOK((Short)response.getData("channelMax"), (Integer)response.getData("frameMax"), (Short)response.getData("heartbeat"));
-				response = sending(message, false);
-				message = RabbitMessage.createConnectionOpen(null);
-				response = sending(message, false);
+				MQTTMessage connect = MQTTMessage.create(MQTTMessage.MESSAGE_TYPE_CONNECT);
+				connect.withNames(clientId, sender, password);
+				connect.withValues(keepAlive, mqttVersion, cleanSession);
+				sending(connect, false);
+//				this.rabbitInput = new DataInputStream(this.serverSocket.getInputStream());
+
 			}
 			return true;
 		}catch (Exception e) {
 		}
-//	MqttWireMessage connect = MqttWireMessage.create(MqttWireMessage.MESSAGE_TYPE_CONNECT);
-//	connect.withNames(client.getClientId(), client.getUserName(), client.getPassword());
-//	connect.withKeepAliveInterval(client.getKeepAliveInterval()); 
-//	connect.withCode(client.getMqttVersion());
-//	connect.withSession(client.isCleanSession());
 //
 //	this.clientState.setKeepAliveSecs(client.getKeepAliveInterval());
 //	this.clientState.setCleanSession(client.isCleanSession());
@@ -503,13 +490,6 @@ public class MessageSession {
 	private BufferedBuffer sendStart() {
 		if (TYPE_XMPP.equals(type) || TYPE_FCM.equals(type)) {
 			return sendCommand("<stream:stream to=\""+host+"\" xmlns=\"jabber:client\" xmlns:stream=\"http://etherx.jabber.org/streams\" version=\"1.0\">");
-		}
-		if(TYPE_MQTT.equals(type)) {
-//			MqttWireMessage connect = MqttWireMessage.create(MqttWireMessage.MESSAGE_TYPE_CONNECT);
-//			connect.withNames(client.getClientId(), client.getUserName(), client.getPassword());
-//			connect.withKeepAliveInterval(client.getKeepAliveInterval()); 
-//			connect.withCode(client.getMqttVersion());
-//			connect.withSession(client.isCleanSession());
 		}
 		if(TYPE_AMQ.equals(type)) {
 			int major = 0;

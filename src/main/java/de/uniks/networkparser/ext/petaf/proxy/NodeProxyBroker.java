@@ -3,6 +3,7 @@ package de.uniks.networkparser.ext.petaf.proxy;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import de.uniks.networkparser.ext.io.MQTTMessage;
 import de.uniks.networkparser.ext.io.MessageSession;
 import de.uniks.networkparser.ext.io.RabbitMessage;
 import de.uniks.networkparser.ext.io.ReaderComm;
@@ -59,7 +60,7 @@ public class NodeProxyBroker extends NodeProxy {
 		}
 		session.withHost(url);
 		if(MessageSession.TYPE_MQTT.equals(format)) {
-			return session.connectMQTT(sender, password);
+			return session.connectMQTT(clientId, sender, password, 60, MQTTMessage.MQTT_VERSION_3_1_1, true);
 		}
 		// Default MessageSession.TYPE_AMQ;
 		return session.connectAMQ(sender, password);

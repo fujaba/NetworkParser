@@ -1,6 +1,7 @@
 package de.uniks.networkparser.ext.io;
 
 import de.uniks.networkparser.buffer.ByteBuffer;
+import de.uniks.networkparser.list.SimpleList;
 
 public class MQTTMessage {
 	public static final byte MESSAGE_TYPE_CONNECT = 1;
@@ -18,11 +19,8 @@ public class MQTTMessage {
 	public static final byte MESSAGE_TYPE_PINGRESP = 13;
 	public static final byte MESSAGE_TYPE_DISCONNECT = 14;
 
-	protected static final String STRING_ENCODING = "UTF-8";
-
 	private byte type;
 	protected int msgId;
-
 	protected boolean duplicate = false;
 
 	// Sub Variable
@@ -30,6 +28,8 @@ public class MQTTMessage {
 	public static final String KEY_DISCONNECT = "Disc";
 	public static final String KEY_PING = "Ping";
 	public static final String KEY_CONNECT = "Con";
+	/** Mqtt Version 3.1.1 */
+	public static final int MQTT_VERSION_3_1_1 = 4;
 
 	protected int code;
 	protected boolean session;
@@ -37,6 +37,12 @@ public class MQTTMessage {
 	protected String[] names;
 	protected Message message;
 	protected int keepAliveInterval;
+	private SimpleList<Object> values;
+	
+	public MQTTMessage withType(byte type) {
+		this.type = type;
+		return this;
+	}
 
 	public ByteBuffer getHeader() {
 		int first = ((getType() & 0x0f) << 4) ^ (getMessageInfo() & 0x0f);
@@ -172,5 +178,133 @@ public class MQTTMessage {
 			return info;
 		}
 		return 0;
+	}
+	
+	public static MQTTMessage create(byte type) {
+		return create(type, (byte) 0, null);
+	}
+	
+	/**
+	 * Decodes a UTF-8 string from the DataInputStream provided. @link(DataInoutStream#readUTF()) should be no longer used, because  @link(DataInoutStream#readUTF())
+	 * does not decode UTF-16 surrogate characters correctly.
+	 *
+	 * @param input The input stream from which to read the encoded string
+	 * @return a decoded String from the DataInputStream
+	 */
+	protected String decodeUTF8(ByteBuffer input) {
+		int encodedLength;
+		encodedLength = input.getShort();
+		byte[] encodedString = input.getBytes(new byte[encodedLength]);
+		return new String(encodedString);
+	}
+	
+	public MQTTMessage withNames(String... names) {
+		this.names = names;
+		this.code = names.length;
+		return this;
+	}
+
+	public static MQTTMessage create(byte type, byte info, byte[] variableHeader) {
+		MQTTMessage message = new MQTTMessage().withType(type);
+		if(type == MESSAGE_TYPE_DISCONNECT) {
+			return message;
+		}
+		if(type == MESSAGE_TYPE_PUBLISH) {
+			Message msg = new Message();
+			message.message = msg;
+			msg.setQos((info >> 1) & 0x03);
+			if ((info & 0x01) == 0x01) {
+				msg.setRetained(true);
+			}
+			if ((info & 0x08) == 0x08) {
+				msg.setDuplicate(true);
+			}
+			if(variableHeader == null) {
+				return message;
+			}
+			ByteBuffer buffer=new ByteBuffer().with(variableHeader);
+
+			message.names = new String[] { message.decodeUTF8(buffer) };
+			if (msg.getQos() > 0) {
+				message.msgId = buffer.getShort();
+			}
+			byte[] payload = buffer.getBytes(new byte[variableHeader.length-buffer.position()]);
+			msg.setPayload(payload);
+		}
+		if(variableHeader == null) {
+			return message;
+		}
+	//		MqttWireMessage.MESSAGE_TYPE_CONNACK
+	ByteBuffer buffer=new ByteBuffer().with(variableHeader);
+	if(type == MESSAGE_TYPE_CONNECT) {
+		// NEW
+		String[] values = new String[3];
+		message.names = values;
+//		String protocol_name =
+		message.decodeUTF8(buffer);
+//		int protocol_version =
+		buffer.getByte();
+//		byte connect_flags =
+		buffer.getByte();
+		message.keepAliveInterval = buffer.getShort();
+		values[0] = message.decodeUTF8(buffer);
+		
+	}
+	if(type == MESSAGE_TYPE_CONNACK) {
+		message.session = (buffer.getByte() & 0x01) == 0x01;
+		message.code = buffer.getByte();
+	}
+	if(type == MESSAGE_TYPE_PUBACK) {
+		message.msgId = buffer.getShort();
+	}
+
+	if(type == MESSAGE_TYPE_SUBACK) {
+		message.msgId = buffer.getShort();
+		int index = 0;
+		message.data = new int[variableHeader.length-2];
+		int qos = buffer.getByte();
+		while (qos != -1) {
+			message.data[index] = qos;
+			index++;
+			qos = buffer.getByte();
+		}
+	}
+	if(type == MESSAGE_TYPE_SUBSCRIBE) {
+		message.msgId = buffer.getShort();
+		message.code = 0;
+		message.names = new String[10];
+		message.data = new int[10];
+		boolean end = false;
+		while (!end) {
+			try {
+				message.names[message.code] = message.decodeUTF8(buffer);
+				message.data[message.code++] = buffer.getByte();
+			} catch (Exception e) {
+				end = true;
+			}
+		}
+	}
+	if(type == MESSAGE_TYPE_UNSUBSCRIBE) {
+		message.msgId = buffer.getShort();
+		message.code = 0;
+		message.names = new String[10];
+		boolean end = false;
+		while (!end) {
+			try {
+				message.names[message.code] = message.decodeUTF8(buffer);
+			} catch (Exception e) {
+				end = true;
+			}
+		}
+	}
+	return message;
+}
+
+	public MQTTMessage withValues(int keepAlive, int mqttVersion, boolean cleanSession) {
+		if(this.values == null) {
+			this.values = new SimpleList<Object>();
+		}
+		this.values.add(keepAlive, mqttVersion, cleanSession);
+		return this;
 	}
 }
