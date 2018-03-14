@@ -122,8 +122,15 @@ if (project.hasProperty('branch')) {
 test.finalizedBy jacocoTestReport
 
 
-sourceCompatibility = 1.9
-targetCompatibility = 1.9
+if(JavaVersion.current() != JavaVersion.VERSION_1_8){
+	println "JavaVersion:" + JavaVersion.current() + " (1.9)"
+	sourceCompatibility = 1.9
+	targetCompatibility = 1.9
+} else {
+	println "JavaVersion:" + JavaVersion.current() + " (1.8)"
+	sourceCompatibility = 1.8
+	targetCompatibility = 1.8
+}
 
 defaultTasks 'test', 'jacocoTestReport', 'buildJavadoc'
 node {

@@ -9,19 +9,19 @@ import org.junit.Test;
 import de.uniks.networkparser.NetworkParserLog;
 import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.ext.generic.ReflectionBlackBoxTester;
+import de.uniks.networkparser.ext.io.OutputCondition;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 
 public class ReflectionTest {
 	@Test
 	public void testReflection() throws ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, IOException {
-//		System.out.println(Thread.activeCount());
+		System.out.println(Thread.activeCount());
 		ReflectionBlackBoxTester tester = new ReflectionBlackBoxTester();
-		NetworkParserLog logger=new NetworkParserLog();
-//				.withFlag(NetworkParserLog.LOGLEVEL_ALL);
-//		.withLogLevel(NetworkParserLog.LOGLEVEL_INFO);
+		NetworkParserLog logger=new NetworkParserLog()
+				.withFlag(NetworkParserLog.LOGLEVEL_ALL).withListener(new OutputCondition());
 		tester.test("de.uniks.networkparser", logger);
 		Assert.assertNotNull(tester);
-//		System.out.println(""+System.currentTimeMillis()+" FINISH:"+Thread.activeCount());
+		System.out.println(""+System.currentTimeMillis()+" FINISH:"+Thread.activeCount());
 	}
 
 	@Test
