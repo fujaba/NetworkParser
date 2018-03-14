@@ -325,14 +325,6 @@ public class NodeProxyMQTT extends NodeProxy {
 	 * <p>
 	 * There are two alternative methods that should be used in preference to this
 	 * one when publishing a message:
-	 * </p>
-	 * <ul>
-	 * <li>{@link publish(String, MqttMessage)} to publish a message in
-	 * a non-blocking manner or</li>
-	 * <li>{@link publish(String, MqttMessage)} to publish a message in
-	 * a blocking manner</li>
-	 * </ul>
-	 * <p>
 	 * When you build an application, the design of the topic tree should take into
 	 * account the following principles of topic name syntax and semantics:
 	 * </p>

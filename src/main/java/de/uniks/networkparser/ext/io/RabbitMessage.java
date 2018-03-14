@@ -364,7 +364,7 @@ public class RabbitMessage {
 	* @param is DataInputStrem for reading
 	*
 	* @return a new RabbitMessage if we read a frame successfully, otherwise null
-	* @throws IOException
+	* @throws IOException Error on InputStream
 	*/
 	public static RabbitMessage readFrom(DataInputStream is) throws IOException {
 
