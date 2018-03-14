@@ -505,7 +505,11 @@ public class MessageSession {
 			return sendCommand("<stream:stream to=\""+host+"\" xmlns=\"jabber:client\" xmlns:stream=\"http://etherx.jabber.org/streams\" version=\"1.0\">");
 		}
 		if(TYPE_MQTT.equals(type)) {
-			
+//			MqttWireMessage connect = MqttWireMessage.create(MqttWireMessage.MESSAGE_TYPE_CONNECT);
+//			connect.withNames(client.getClientId(), client.getUserName(), client.getPassword());
+//			connect.withKeepAliveInterval(client.getKeepAliveInterval()); 
+//			connect.withCode(client.getMqttVersion());
+//			connect.withSession(client.isCleanSession());
 		}
 		if(TYPE_AMQ.equals(type)) {
 			int major = 0;
