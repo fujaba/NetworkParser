@@ -33,12 +33,11 @@ public class PetaFTest {
 		Space space=new Space();
 		IdMap map = UniversityCreator.createIdMap("42");
 		space.withCreator(map);
-		space.createModel(university, "ModelFile.json").startModelDistribution();
+		space.createModel(university, "build/ModelFile.json").startModelDistribution();
 
 		createStudents.setName("Stefan");
-      university.createStudents().setName("Alex");
-
-      space.close();
+		university.createStudents().setName("Alex");
+		space.close();
 	}
 
 	@Test
@@ -110,7 +109,7 @@ public class PetaFTest {
 
 		// Serialization
 		Space space=new Space().withCreator(UniversityCreator.createIdMap("42"));
-		space.withName("Albert", university);
+		space.withName("build/Albert", university);
 
 		// Change Model
 		stefan.setName("Stefan");

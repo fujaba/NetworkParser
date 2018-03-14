@@ -185,8 +185,7 @@ public class MQTTMessage {
 	}
 	
 	/**
-	 * Decodes a UTF-8 string from the DataInputStream provided. @link(DataInoutStream#readUTF()) should be no longer used, because  @link(DataInoutStream#readUTF())
-	 * does not decode UTF-16 surrogate characters correctly.
+	 * Decodes a UTF-8 string
 	 *
 	 * @param input The input stream from which to read the encoded string
 	 * @return a decoded String from the DataInputStream

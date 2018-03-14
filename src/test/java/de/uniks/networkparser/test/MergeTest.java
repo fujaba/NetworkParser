@@ -27,7 +27,7 @@ public class MergeTest {
 		Clazz person = classModel.createClazz("Person");
 
 
-		classModel.generate();
+		classModel.generate("build/src");
 
 
 		// ADD
@@ -66,6 +66,6 @@ public class MergeTest {
 		ClassModel model = new ClassModel(); //.withFeature(feature);
 		model.createClazz("de.uniks.model.Person").createAttribute("first", de.uniks.networkparser.graph.DataType.STRING);
 //		model.createClazz("de.uniks.model.Person").remove()
-		model.generate("src/test/java");
+		model.generate("build/src/test/java");
 	}
 }
