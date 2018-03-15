@@ -1,12 +1,10 @@
 package de.uniks.networkparser.ext.io;
 
 import java.io.DataInputStream;
-import java.io.EOFException;
 import java.io.IOException;
 import java.net.SocketTimeoutException;
 
 import de.uniks.networkparser.buffer.ByteBuffer;
-import de.uniks.networkparser.ext.mqtt.internal.MqttWireMessage;
 
 public class MQTTMessage {
 	public static final byte MESSAGE_TYPE_CONNECT = 1;
@@ -148,6 +146,7 @@ public class MQTTMessage {
 			if(type == MESSAGE_TYPE_SUBSCRIBE) {
 				for (int i=0; i<names.length; i++) {
 					encodeUTF8(buffer, names[i]);
+					buffer.addBytes((byte)data[i], 1, false);
 				}
 			}
 			if(type == MESSAGE_TYPE_UNSUBSCRIBE) {
@@ -275,11 +274,8 @@ public class MQTTMessage {
 			message.msgId = buffer.getShort();
 			int index = 0;
 			message.data = new int[variableHeader.length-2];
-			int qos = buffer.getByte();
-			while (qos != -1) {
-				message.data[index] = qos;
-				index++;
-				qos = buffer.getByte();
+			for(int i=0;i<message.data.length;i++) {
+				message.data[index] = buffer.getByte();
 			}
 		}
 		if(type == MESSAGE_TYPE_SUBSCRIBE) {
@@ -319,9 +315,9 @@ public class MQTTMessage {
 	 * @return long Value of Read
 	 * @throws IOException if an exception occurs when reading the input stream
 	 */
-	protected static long readMBI(DataInputStream in) throws IOException {
+	protected static int readMBI(DataInputStream in) throws IOException {
 		byte digit;
-		long msgLength = 0;
+		int msgLength = 0;
 		int multiplier = 1;
 
 		do {
@@ -353,12 +349,12 @@ public class MQTTMessage {
 			// read header
 			byte first = in.readByte();
 			byte type = (byte) ((first >>> 4) & 0x0F);
-			if ((type < MqttWireMessage.MESSAGE_TYPE_CONNECT) ||
-					(type > MqttWireMessage.MESSAGE_TYPE_DISCONNECT)) {
+			if ((type < MESSAGE_TYPE_CONNECT) ||
+					(type > MESSAGE_TYPE_DISCONNECT)) {
 				// Invalid MQTT message type...
 				return null;
 			}
-			long remLen = readMBI(in);
+			int remLen = readMBI(in);
 			ByteBuffer buffer = new ByteBuffer();
 			buffer.insert(first, false);
 
@@ -367,22 +363,16 @@ public class MQTTMessage {
 
 			// read remaining packet
 			if (remLen >= 0) {
-				int off = buffer.size();
-				int len = (int) (remLen);
-				int n = 0;
-				byte[] packet = new byte[(int)(buffer.size()+remLen)];
-				while (n < len) {
-					int count = -1;
-					try {
-						count = in.read(packet, off + n, len - n);
-					} catch (SocketTimeoutException e) {
-						// remember the packet read so far
-						throw e;
-					}
-					if (count < 0) {
-						throw new EOFException();
-					}
-					n += count;
+				if(type==9) {
+					System.out.println("DEBUG");
+				}
+				byte[] packet = new byte[remLen];
+//				int count;
+				try {
+//					count = 
+					in.read(packet,0, remLen);
+				} catch (SocketTimeoutException e) {
+					// remember the packet read so far
 				}
 				// reset packet parsing state
 				remLen = -1;
@@ -397,9 +387,7 @@ public class MQTTMessage {
 						type == MESSAGE_TYPE_UNSUBSCRIBE ||
 						type == MESSAGE_TYPE_CONNECT ||
 						type == MESSAGE_TYPE_PUBLISH) {
-					byte[] bytes = buffer.getBytes(buffer.size() - remLen, remLen);
-					return MQTTMessage.create(type, info, bytes);
-//					message = create(type, info, ddd);
+					return MQTTMessage.create(type, info, packet);
 				}
 			}
 		} catch (Exception e) {

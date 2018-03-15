@@ -1,6 +1,5 @@
 package de.uniks.networkparser.ext.io;
 
-import java.awt.image.BufferedImage;
 /*
 NetworkParser
 The MIT License
@@ -35,11 +34,9 @@ import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 
 import de.uniks.networkparser.IdMap;
-import de.uniks.networkparser.Pos;
 import de.uniks.networkparser.buffer.Buffer;
 import de.uniks.networkparser.buffer.ByteBuffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
-import de.uniks.networkparser.gui.TileMap;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.json.JsonArray;
 import de.uniks.networkparser.json.JsonObject;
@@ -71,30 +68,6 @@ public class FileBuffer extends Buffer {
 		}
 		this.position = 0;
 		return this;
-	}
-	
-	public static byte[] getTileImage(TileMap map, int sprite) {
-		String source = map.getPath() + map.getSource();
-		ByteBuffer readFile = FileBuffer.readBinaryFile(source);
-		Pos pos = map.getPos(sprite);
-		int height = map.tileheight;
-		int width = map.tilewidth;
-		int imageWidth = map.width;
-		ByteBuffer buffer=new ByteBuffer();
-		for(int i=0;i<height;i++) {
-			int start = pos.y*map.width+pos.x;
-			buffer.addBytes(readFile.getValue(start, width), width, false);
-			start+= imageWidth;
-		}
-//		BufferedImage img = null;
-//		try {
-//		    img = ImageIO.read(new File("strawberry.jpg"));
-//		new BufferedImage().
-//		BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-//		image.getWritableTile(tileX, tileY)
-//		
-//		FileBuffer.writeFile("zoombie.png", buffer.array());
-		return null;
 	}
 
 	public FileBuffer withFile(File file) {

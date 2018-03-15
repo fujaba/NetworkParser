@@ -8,7 +8,6 @@ import de.uniks.networkparser.ext.io.MQTTMessage;
 import de.uniks.networkparser.ext.io.MessageSession;
 import de.uniks.networkparser.ext.io.RabbitMessage;
 import de.uniks.networkparser.ext.io.ReaderComm;
-import de.uniks.networkparser.ext.mqtt.internal.MqttWireMessage;
 import de.uniks.networkparser.ext.petaf.NodeProxy;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.list.SimpleKeyValueList;
@@ -80,7 +79,7 @@ public class NodeProxyBroker extends NodeProxy {
 			success = session.connectAMQ(this, sender, password);
 		}
 		if(success  && callBack != null) {
-			SimpleEvent event = new SimpleEvent(this, url, null, session).withType(NodeProxyMQTT.EVENT_CONNECT);
+			SimpleEvent event = new SimpleEvent(this, url, null, session).withType(NodeProxyBroker.EVENT_CONNECT);
 			callBack.update(event);
 		}
 		return success;
@@ -122,6 +121,9 @@ public class NodeProxyBroker extends NodeProxy {
 				}
 			}
 			msg = RabbitMessage.createClose((short)0);
+			session.sending(this, msg, false);
+		} else if(MessageSession.TYPE_MQTT.equals(format)) {
+			MQTTMessage msg = MQTTMessage.create(MQTTMessage.MESSAGE_TYPE_DISCONNECT);
 			session.sending(this, msg, false);
 		}
 		return session.close();
@@ -229,7 +231,7 @@ public class NodeProxyBroker extends NodeProxy {
 			session.sending(this, msg, false);
 			return true;
 		} else if(MessageSession.TYPE_MQTT.equals(format)) {
-			MQTTMessage msg = MQTTMessage.create(MqttWireMessage.MESSAGE_TYPE_PUBLISH);
+			MQTTMessage msg = MQTTMessage.create(MQTTMessage.MESSAGE_TYPE_PUBLISH);
 			msg.withNames(channel).createMessage(message);
 			session.sending(this, msg, true);
 			return true;

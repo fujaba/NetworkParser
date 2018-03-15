@@ -18,13 +18,11 @@ import de.uniks.networkparser.ext.DiagramEditor;
 import de.uniks.networkparser.ext.ErrorHandler;
 import de.uniks.networkparser.ext.io.MessageSession;
 import de.uniks.networkparser.ext.javafx.SimpleController;
-import de.uniks.networkparser.ext.mqtt.internal.Token;
 import de.uniks.networkparser.ext.petaf.Server_TCP;
 import de.uniks.networkparser.ext.petaf.Server_Time;
 import de.uniks.networkparser.ext.petaf.Server_UPD;
 import de.uniks.networkparser.ext.petaf.Space;
 import de.uniks.networkparser.ext.petaf.proxy.NodeProxyBroker;
-import de.uniks.networkparser.ext.petaf.proxy.NodeProxyMQTT;
 import de.uniks.networkparser.ext.petaf.proxy.NodeProxyMessages;
 import de.uniks.networkparser.ext.petaf.proxy.NodeProxyServer;
 import de.uniks.networkparser.ext.petaf.proxy.NodeProxyTCP;
@@ -124,11 +122,8 @@ public class ReflectionBlackBoxTester {
 		withIgnoreClazzes(StoryStepJUnit.class, "update");
 		withIgnoreClazzes(DiagramEditor.class);
 		withIgnoreClazzes(NodeProxyMessages.class);
-		withIgnoreClazzes(NodeProxyMQTT.class);
 		withIgnoreClazzes(NodeProxyBroker.class);
 		withIgnoreClazzes(MessageSession.class);
-		withIgnoreClazzes(Token.class);
-
 //		withIgnoreClazzes(TimerExecutor.class.getName());
 	}
 
