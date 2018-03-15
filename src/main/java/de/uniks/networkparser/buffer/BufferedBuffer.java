@@ -51,7 +51,7 @@ public abstract class BufferedBuffer extends Buffer {
 
 	@Override
 	public boolean isEnd() {
-		if(position()-start < 0) {
+		if(position()-start+1 < 0) {
 			return true;
 		}
 		return position()-start+1 >= length();

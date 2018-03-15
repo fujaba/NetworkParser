@@ -140,7 +140,7 @@ public class RegCalculator {
 			if (current != ' ') {
 				sb.append(current);
 			}
-			while (!tokener.isEnd()) {
+			while (tokener.isEnd() == false) {
 				if (addOperator(sb.toString(), tokener, parts)) {
 					sb = new StringBuilder();
 					defaultMulti = false;

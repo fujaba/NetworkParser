@@ -16,7 +16,9 @@ import java.util.Enumeration;
 import de.uniks.networkparser.NetworkParserLog;
 import de.uniks.networkparser.ext.DiagramEditor;
 import de.uniks.networkparser.ext.ErrorHandler;
+import de.uniks.networkparser.ext.io.MQTTMessage;
 import de.uniks.networkparser.ext.io.MessageSession;
+import de.uniks.networkparser.ext.io.RabbitMessage;
 import de.uniks.networkparser.ext.javafx.SimpleController;
 import de.uniks.networkparser.ext.petaf.Server_TCP;
 import de.uniks.networkparser.ext.petaf.Server_Time;
@@ -123,6 +125,8 @@ public class ReflectionBlackBoxTester {
 		withIgnoreClazzes(DiagramEditor.class);
 		withIgnoreClazzes(NodeProxyMessages.class);
 		withIgnoreClazzes(NodeProxyBroker.class);
+		withIgnoreClazzes(MQTTMessage.class);
+		withIgnoreClazzes(RabbitMessage.class);
 		withIgnoreClazzes(MessageSession.class);
 //		withIgnoreClazzes(TimerExecutor.class.getName());
 	}

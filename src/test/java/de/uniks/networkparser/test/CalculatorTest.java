@@ -181,6 +181,13 @@ public class CalculatorTest {
 
 		Assert.assertEquals(863.2857142, calculator.calculate("(((2-1/5)^2)/((3-2/9)^(-1))) / (((6/7)*(5/4)-(2/7)/(1/2))^3)/((1/2)-(1/3)*(1/4)/(1/5))-5(1/7)"), 0.0000001);
 	}
+	
+	@Test
+	public void testAddSimple(){
+		RegCalculator calculator= new RegCalculator();
+		calculator.withStandard();
+		Assert.assertEquals(3.0, calculator.calculate("(1+2)"), 0.01);
+	}
 
 	@Test
 	public void testAdd(){
