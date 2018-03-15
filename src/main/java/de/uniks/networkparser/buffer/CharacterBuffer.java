@@ -210,7 +210,10 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence {
 		}
 	}
 
-	public void replace(String search, String replace) {
+	public boolean replace(String search, String replace) {
+		if(search == null || search.length() < 1) {
+			return false;
+		}
 		int deleted=0;
 		CharacterBuffer inserts = null;
 		int pos=position + start;
@@ -273,6 +276,7 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence {
 			}
 		}
 		this.length = pos;
+		return true;
 	}
 
 	/**
@@ -347,6 +351,9 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence {
 	 * @return This Component
 	 */
 	public CharacterBuffer withStartPosition(int pos) {
+		if(pos<0) {
+			return this;
+		}
 		int diff = pos - start;
 		this.start = pos;
 		if(length > diff) {

@@ -65,6 +65,9 @@ public class SoapObject implements BaseItem, SendableEntityCreatorTag {
 	}
 
 	protected String parseItem(EntityStringConverter converter) {
+		if(converter == null) {
+			return null;
+		}
 		CharacterBuffer sb = new CharacterBuffer();
 		sb.with("<", nameSpace, ":Envelope xmlns:xsi=\"", XMLNS_XSI,"\" xmlns:xsd=\"", XMLNS_XSD, "\"");
 		sb.with(" xmlns:", nameSpace, "=\"", XMLNS_SOAP, "\">");
@@ -153,6 +156,9 @@ public class SoapObject implements BaseItem, SendableEntityCreatorTag {
 
 	@Override
 	public Object getValue(Object entity, String attribute) {
+		if(attribute == null || entity instanceof SoapObject == false) {
+			return false;
+		}
 		if (attribute.endsWith(":" + SoapObject.PROPERTY_HEADER)) {
 			return ((SoapObject) entity).getHeader();
 		}
@@ -165,6 +171,9 @@ public class SoapObject implements BaseItem, SendableEntityCreatorTag {
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value,
 			String type) {
+		if(attribute == null || entity instanceof SoapObject == false) {
+			return false;
+		}
 		if(XMLTokener.CHILDREN.equals(type)) {
 			((SoapObject) entity).add(value);
 			return true;

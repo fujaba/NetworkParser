@@ -224,7 +224,9 @@ public class XMLTokener extends Tokener {
 			}
 		}while(skip);
 		String item = tag.toString();
-		this.buffer.withLookAHead(item);
+		if(buffer != null) {
+			this.buffer.withLookAHead(item);
+		}
 		return item;
 	}
 
@@ -263,7 +265,13 @@ public class XMLTokener extends Tokener {
 	}
 
 	protected void parseAttribute(XMLTokener tokener, MapEntity map) {
+		if(map == null) {
+			return;
+		}
 		MapEntityStack stack = map.getStack();
+		if(stack == null) {
+			return;
+		}
 		Object entity = stack.getCurrentItem();
 		SendableEntityCreator creator = stack.getCurrentCreator();
 		if (entity != null) {
@@ -293,8 +301,13 @@ public class XMLTokener extends Tokener {
 	}
 
 	protected Object parseChildren(XMLTokener tokener, MapEntity map) {
+		if(map == null) {
+			return null;
+		}
 		MapEntityStack stack = map.getStack();
-		Object entity = stack.getCurrentItem();
+		if(stack == null) {
+			return null;
+		}Object entity = stack.getCurrentItem();
 		SendableEntityCreator creator = stack.getCurrentCreator();
 		if(creator == null) {
 			return null;
@@ -393,6 +406,9 @@ public class XMLTokener extends Tokener {
 	 */
 	public CharacterBuffer parseEntity(XMLTokener tokener, MapEntity map) {
 		CharacterBuffer valueItem = new CharacterBuffer();
+		if(tokener == null) {
+			return valueItem;
+		}
 		CharacterBuffer tag;
 		boolean isEmpty = true;
 		do {
@@ -418,7 +434,7 @@ public class XMLTokener extends Tokener {
 				break;
 			}
 		} while (tag == null);
-		if(tag.length()<1) {
+		if(tag == null || tag.length()<1) {
 			return null;
 		}
 		if (tag.isEmpty() && isEmpty) {
@@ -505,11 +521,16 @@ public class XMLTokener extends Tokener {
 	}
 
 	public Entity createLink(Entity parent, String property, String className, String id) {
-		parent.put(property, id);
+		if(parent != null) {
+			parent.put(property, id);
+		}
 		return null;
 	}
 
 	protected Object addToStack(SendableEntityCreatorTag creator, XMLTokener tokener, CharacterBuffer tag, CharacterBuffer value, MapEntity map) {
+		if(creator == null) {
+			return null;
+		}
 		Object entity = creator.getSendableInstance(false);
 		if(entity instanceof EntityList) {
 			creator.setValue(entity, XMLEntity.PROPERTY_VALUE, value.toString(), SendableEntityCreator.NEW);

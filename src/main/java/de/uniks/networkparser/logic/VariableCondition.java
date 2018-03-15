@@ -11,7 +11,7 @@ import de.uniks.networkparser.interfaces.TemplateParser;
 
 public class VariableCondition implements ParserCondition{
 	private CharSequence value;
-    private boolean expression;
+	private boolean expression;
 
 	@Override
 	public boolean update(Object value) {
@@ -86,73 +86,76 @@ public class VariableCondition implements ParserCondition{
 		return null;
 	}
 
-    public String replaceText(String name, String format, String value) {
-    	boolean upper=false;
-    	boolean firstUpper=false;
-    	boolean small=false;
-    	int startIndex;
-    	int i;
-    	// other.NAME
-    	startIndex = name.lastIndexOf('.');
-    	// startIndex is last '.' therefore next proper index is startIndex + 1
-    	startIndex++;
-    	for(i = startIndex; i<name.length(); i++) {
-    		if(name.charAt(i)>='A' && name.charAt(i)<='Z') {
-    			upper = true;
+	public String replaceText(String name, String format, String value) {
+		if(name == null) {
+			return name;
+		}
+		boolean upper=false;
+		boolean firstUpper=false;
+		boolean small=false;
+		int startIndex;
+		int i;
+		// other.NAME
+		startIndex = name.lastIndexOf('.');
+		// startIndex is last '.' therefore next proper index is startIndex + 1
+		startIndex++;
+		for(i = startIndex; i<name.length(); i++) {
+			if(name.charAt(i)>='A' && name.charAt(i)<='Z') {
+				upper = true;
 
-    			firstUpper = startIndex==i;
-    		} else if(name.charAt(i)>='a' && name.charAt(i)<='z') {
-    			small = true;
-    		}
-    	}
-//    	if ((small && upper==false) || "tolower".equalsIgnoreCase(format)) {
-    	if ("tolower".equalsIgnoreCase(format)) {
-    		return value.toLowerCase();
-    	}
-    	if((small == false && upper) || "toupper".equalsIgnoreCase(format)) {
-    		return value.toUpperCase();
-    	}
-    	if(firstUpper || "firstUpper".equalsIgnoreCase(format)) {
-    		return EntityUtil.upFirstChar(value);
-    	}
-    	if(format == null) {
-    		return value;
-    	}
-    	if(format.startsWith("sub(")) {
-    		String substring = format.substring(4, format.length() - 1);
-    		String[] item = substring.split(",");
-    		int start=0;
-    		int end=value.length() - 1;
-    		if(item.length>0) {
-    			start = Integer.valueOf(item[0].trim());
-    		}
-    		if(item.length>1) {
-    			int temp = Integer.valueOf(item[1].trim());;
-    			if(temp < end) {
-    				end = temp;
-    			}
-    		}
-    		return value.substring(start, end);
-    	}
-    	if(format.startsWith("contains(")) {
-    		String substring = format.substring(9, format.length() - 1);
-    		boolean boolValue = value.indexOf(substring)>=0;
-    		if(boolValue) {
-    			return "true";
-    		}
-    		return "";
-    	}
-    	return value;
-    }
+				firstUpper = startIndex==i;
+			} else if(name.charAt(i)>='a' && name.charAt(i)<='z') {
+				small = true;
+			}
+		}
+//		if ((small && upper==false) || "tolower".equalsIgnoreCase(format)) {
+		if ("tolower".equalsIgnoreCase(format)) {
+			return value.toLowerCase();
+		}
+		if((small == false && upper) || "toupper".equalsIgnoreCase(format)) {
+			return value.toUpperCase();
+		}
+		if(firstUpper || "firstUpper".equalsIgnoreCase(format)) {
+			return EntityUtil.upFirstChar(value);
+		}
+		if(format == null) {
+			return value;
+		}
+		if(format.startsWith("sub(")) {
+			String substring = format.substring(4, format.length() - 1);
+			String[] item = substring.split(",");
+			int start=0;
+			int end=value.length() - 1;
+			if(item.length>0) {
+				start = Integer.valueOf(item[0].trim());
+			}
+			if(item.length>1) {
+				int temp = Integer.valueOf(item[1].trim());;
+				if(temp < end) {
+					end = temp;
+				}
+			}
+			return value.substring(start, end);
+		}
+		if(format.startsWith("contains(")) {
+			String substring = format.substring(9, format.length() - 1);
+			boolean boolValue = value.indexOf(substring)>=0;
+			if(boolValue) {
+				return "true";
+			}
+			return "";
+		}
+		return value;
+	}
 
 
-    public VariableCondition withExpression(boolean value) {
-        this.expression = value;
-        return this;
-    }
+	public VariableCondition withExpression(boolean value) {
+		this.expression = value;
+		return this;
+	}
 
-    public static VariableCondition create(CharSequence sequence, boolean expression) {
-        return new VariableCondition().withValue(sequence).withExpression(expression);
+	public static VariableCondition create(CharSequence sequence, boolean expression) {
+		return new VariableCondition().withValue(sequence).withExpression(expression);
 	}
 
 	@Override
@@ -160,10 +163,10 @@ public class VariableCondition implements ParserCondition{
 		this.value = buffer.nextToken(true, ' ', '}');
 	}
 
-    @Override
-    public boolean isExpression() {
-        return expression;
-    }
+	@Override
+	public boolean isExpression() {
+		return expression;
+	}
 	@Override
 	public String getKey() {
 		return null;

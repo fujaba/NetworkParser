@@ -16,6 +16,9 @@ public class XMLStyledEntity extends XMLEntity {
 
 	@Override
 	protected void toStringChildren(CharacterBuffer sb, EntityStringConverter converter) {
+		if(style == null || sb == null) {
+			return;
+		}
 		// Starttag
 		if (style.isBold()) {
 			sb.with("<b>");

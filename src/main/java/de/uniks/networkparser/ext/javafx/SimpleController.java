@@ -635,7 +635,7 @@ public class SimpleController implements ObjectCondition{
 		for(Object listener : listener) {
 			ObjectCondition match = evt.match(listener);
 			if(match != null) {
-				if(match != null) {
+				if(match != null && match != this) {
 					match.update(evt);
 				}
 			}

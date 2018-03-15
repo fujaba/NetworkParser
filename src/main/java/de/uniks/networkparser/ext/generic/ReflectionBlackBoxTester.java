@@ -409,6 +409,7 @@ public class ReflectionBlackBoxTester {
 			if(euqalsClass(clazz, char.class, Character.class)) {return 'g';}
 			if(euqalsClass(clazz, float.class, Float.class)) {return 6;}
 			if(euqalsClass(clazz, double.class, Double.class)) {return 8;}
+			if(euqalsClass(clazz, boolean.class, Boolean.class)) {return true;}
 			if(euqalsClass(clazz, String.class, CharSequence.class)) {return "Albert";}
 		} else if(clazz.isArray()) {
 			Class<?> arrayClazz = clazz.getComponentType();

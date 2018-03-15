@@ -229,6 +229,9 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 
 	@Override
 	protected String parseItem(EntityStringConverter converter) {
+		if(converter == null)  {
+			return null;
+		}
 		CharacterBuffer sb = new CharacterBuffer().with(converter.getPrefixFirst());
 		if(this.getTag() != null ) {
 			sb.with(START);
@@ -239,7 +242,7 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 		for (int i = 0; i < size; i++) {
 			Object value = getValueByIndex(i);
 			if(value != null) {
-				sb.with(" ", get(i), "=", EntityUtil.quote(value.toString()));
+				sb.with(" ", ""+get(i), "=", EntityUtil.quote(value.toString()));
 			}
 		}
 
@@ -255,7 +258,10 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 	 */
 	protected void toStringChildren(CharacterBuffer sb, EntityStringConverter converter) {
 		// parse Children
-		if (this.children != null && this.children.size() > 0) {
+		if(sb == null) {
+			return;
+		}
+		if (this.children != null && this.children.size() > 0 && converter != null) {
 			if(this.getTag() != null) {
 				sb.with(END);
 			}

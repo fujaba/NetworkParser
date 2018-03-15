@@ -269,34 +269,48 @@ public class Style implements Cloneable, SendableEntityCreatorNoIndex {
 	@Override
 	public Object getValue(Object entity, String attrName) {
 		String attribute;
+		if(attrName == null || entity instanceof Style == false) {
+			return false;
+		}
+		Style style = (Style) entity;
 		int pos = attrName.indexOf(".");
 		if (pos > 0) {
 			attribute = attrName.substring(0, pos);
 		} else {
 			attribute = attrName;
 		}
-		if (attribute.equalsIgnoreCase(PROPERTY_BOLD)) {
-			return isBold();
-		} else if (attribute.equalsIgnoreCase(PROPERTY_ITALIC)) {
-			return isItalic();
-		} else if (attribute.equalsIgnoreCase(PROPERTY_FONTFAMILY)) {
-			return getFontFamily();
-		} else if (attribute.equalsIgnoreCase(PROPERTY_FONTSIZE)) {
-			return getFontSize();
-		} else if (attribute.equalsIgnoreCase(PROPERTY_FORGROUND)) {
-			return getForground();
-		} else if (attribute.equalsIgnoreCase(PROPERTY_BACKGROUND)) {
-			return getBackground();
-		} else if (attribute.equalsIgnoreCase(PROPERTY_UNDERLINE)) {
-			return isUnderline();
-		} else if (attribute.equalsIgnoreCase(PROPERTY_ALIGNMENT)) {
-			return getAlignment();
-		} else if (attribute.equalsIgnoreCase(PROPERTY_WIDTH)) {
-			return getWidth();
-		} else if (attribute.equalsIgnoreCase(PROPERTY_HEIGHT)) {
-			return getHeight();
-		} else if (attribute.equalsIgnoreCase(PROPERTY_NAME)) {
-			return getName();
+		if (PROPERTY_BOLD.equalsIgnoreCase(attribute)) {
+			return style.isBold();
+		}
+		if (PROPERTY_ITALIC.equalsIgnoreCase(attribute)) {
+			return style.isItalic();
+		}
+		if (PROPERTY_FONTFAMILY.equalsIgnoreCase(attribute)) {
+			return style.getFontFamily();
+		}
+		if (PROPERTY_FONTSIZE.equalsIgnoreCase(attribute)) {
+			return style.getFontSize();
+		}
+		if (PROPERTY_FORGROUND.equalsIgnoreCase(attribute)) {
+			return style.getForground();
+		}
+		if (PROPERTY_BACKGROUND.equalsIgnoreCase(attribute)) {
+			return style.getBackground();
+		}
+		if (PROPERTY_UNDERLINE.equalsIgnoreCase(attribute)) {
+			return style.isUnderline();
+		}
+		if (PROPERTY_ALIGNMENT.equalsIgnoreCase(attribute)) {
+			return style.getAlignment();
+		}
+		if (PROPERTY_WIDTH.equalsIgnoreCase(attribute)) {
+			return style.getWidth();
+		}
+		if (PROPERTY_HEIGHT.equalsIgnoreCase(attribute)) {
+			return style.getHeight();
+		}
+		if (PROPERTY_NAME.equalsIgnoreCase(attribute)) {
+			return style.getName();
 		}
 		return null;
 	}
@@ -304,40 +318,54 @@ public class Style implements Cloneable, SendableEntityCreatorNoIndex {
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value,
 			String type) {
-		if (attribute.equalsIgnoreCase(PROPERTY_BOLD)) {
-			withBold((Boolean) value);
+		if(entity instanceof Style == false) {
+			return false;
+		}
+		Style style = (Style) entity;
+		if (PROPERTY_BOLD.equalsIgnoreCase(attribute)) {
+			style.withBold((Boolean) value);
 			return true;
-		} else if (attribute.equalsIgnoreCase(PROPERTY_ITALIC)) {
-			withItalic((Boolean) value);
+		}
+		if (PROPERTY_ITALIC.equalsIgnoreCase(attribute)) {
+			style.withItalic((Boolean) value);
 			return true;
-		} else if (attribute.equalsIgnoreCase(PROPERTY_FONTFAMILY)) {
-			withFontFamily((String) value);
+		}
+		if (PROPERTY_FONTFAMILY.equalsIgnoreCase(attribute)) {
+			style.withFontFamily((String) value);
 			return true;
-		} else if (attribute.equalsIgnoreCase(PROPERTY_FONTSIZE)) {
+		}
+		if (PROPERTY_FONTSIZE.equalsIgnoreCase(attribute)) {
 			if(value != null) {
-				withFontSize(value.toString());
+				style.withFontSize(value.toString());
 			}
 			return true;
-		} else if (attribute.equalsIgnoreCase(PROPERTY_FORGROUND)) {
-			withForground((String) value);
+		}
+		if (PROPERTY_FORGROUND.equalsIgnoreCase(attribute)) {
+			style.withForground((String) value);
 			return true;
-		} else if (attribute.equalsIgnoreCase(PROPERTY_BACKGROUND)) {
-			withBackground((String) value);
+		}
+		if (PROPERTY_BACKGROUND.equalsIgnoreCase(attribute)) {
+			style.withBackground((String) value);
 			return true;
-		} else if (attribute.equalsIgnoreCase(PROPERTY_UNDERLINE)) {
-			withUnderline((Boolean) value);
+		}
+		if (PROPERTY_UNDERLINE.equalsIgnoreCase(attribute)) {
+			style.withUnderline((Boolean) value);
 			return true;
-		} else if (attribute.equalsIgnoreCase(PROPERTY_ALIGNMENT)) {
-			withAlignment((String) value);
+		}
+		if (PROPERTY_ALIGNMENT.equalsIgnoreCase(attribute)) {
+			style.withAlignment((String) value);
 			return true;
-		} else if (attribute.equalsIgnoreCase(PROPERTY_WIDTH)) {
-			withWidth(Double.valueOf("" + value));
+		}
+		if (PROPERTY_WIDTH.equalsIgnoreCase(attribute)) {
+			style.withWidth(Double.valueOf("" + value));
 			return true;
-		} else if (attribute.equalsIgnoreCase(PROPERTY_HEIGHT)) {
-			withHeight(Double.valueOf("" + value));
+		}
+		if (PROPERTY_HEIGHT.equalsIgnoreCase(attribute)) {
+			style.withHeight(Double.valueOf("" + value));
 			return true;
-		} else if (attribute.equalsIgnoreCase(PROPERTY_NAME)) {
-			withName(""+value);
+		}
+		if (PROPERTY_NAME.equalsIgnoreCase(attribute)) {
+			style.withName(""+value);
 			return true;
 		}
 		return false;

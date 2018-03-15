@@ -75,7 +75,7 @@ public class YAMLTokener extends Tokener {
 					break;
 			}
 		}while(c!=0);
-		if(buffer != null) {
+		if(buffer != null && owner != null) {
 			if(item == null) {
 				item = owner.getNewList(false);
 			}
@@ -138,10 +138,11 @@ public class YAMLTokener extends Tokener {
 		return root;
 	}
 
-
-	   private void parseObjectTableAttrs(CharacterBuffer currentToken)
-	   {
+	private void parseObjectTableAttrs(CharacterBuffer currentToken) {
 		// skip column names
+		if(currentToken == null || map == null) {
+			return;
+		}
 		String className = currentToken.toString();
 
 		SendableEntityCreator creator = map.getCreator(className, false);
@@ -206,6 +207,9 @@ public class YAMLTokener extends Tokener {
 	}
 
 	private Object parseUsualObjectAttrs(CharacterBuffer currentToken) {
+		if(buffer == null || currentToken == null || map == null) {
+			return null;
+		}
 		String objectId = currentToken.trimEnd(1).toString();
 		String className = buffer.nextString().rtrim().toString();
 		currentToken = buffer.nextString();
@@ -236,6 +240,9 @@ public class YAMLTokener extends Tokener {
 	}
 
 	private boolean setValue(SendableEntityCreator creator, Object obj, String attrName, String attrValue)  {
+		if(map == null) {
+			return false;
+		}
 		Object targetObj = map.getObject(attrValue);
 		if (targetObj != null) {
 			try {
