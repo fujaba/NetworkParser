@@ -723,7 +723,7 @@ public class RabbitMessage {
 	
 	/**
 	 * Declare a queue
-	 * @param queue the name of the queue
+	 * @param channel the name of the queue
 	 * @param durable true if we are declaring a durable queue (the queue will survive a server restart)
 	 * @param exclusive true if we are declaring an exclusive queue (restricted to this connection)
 	 * @param autoDelete true if we are declaring an autodelete queue (server will delete it when no longer in use)
