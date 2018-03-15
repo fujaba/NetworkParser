@@ -1,5 +1,6 @@
 package de.uniks.networkparser.ext.io;
 
+import java.awt.image.BufferedImage;
 /*
 NetworkParser
 The MIT License
@@ -34,8 +35,11 @@ import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 
 import de.uniks.networkparser.IdMap;
+import de.uniks.networkparser.Pos;
 import de.uniks.networkparser.buffer.Buffer;
+import de.uniks.networkparser.buffer.ByteBuffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
+import de.uniks.networkparser.gui.TileMap;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.json.JsonArray;
 import de.uniks.networkparser.json.JsonObject;
@@ -67,6 +71,30 @@ public class FileBuffer extends Buffer {
 		}
 		this.position = 0;
 		return this;
+	}
+	
+	public static byte[] getTileImage(TileMap map, int sprite) {
+		String source = map.getPath() + map.getSource();
+		ByteBuffer readFile = FileBuffer.readBinaryFile(source);
+		Pos pos = map.getPos(sprite);
+		int height = map.tileheight;
+		int width = map.tilewidth;
+		int imageWidth = map.width;
+		ByteBuffer buffer=new ByteBuffer();
+		for(int i=0;i<height;i++) {
+			int start = pos.y*map.width+pos.x;
+			buffer.addBytes(readFile.getValue(start, width), width, false);
+			start+= imageWidth;
+		}
+//		BufferedImage img = null;
+//		try {
+//		    img = ImageIO.read(new File("strawberry.jpg"));
+//		new BufferedImage().
+//		BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+//		image.getWritableTile(tileX, tileY)
+//		
+//		FileBuffer.writeFile("zoombie.png", buffer.array());
+		return null;
 	}
 
 	public FileBuffer withFile(File file) {
@@ -184,6 +212,13 @@ public class FileBuffer extends Buffer {
 	}
 
 	public static final boolean writeFile(String fileName, CharSequence data, boolean appendData) {
+		if(data != null) {
+			return writeFile(fileName, data.toString().getBytes(), appendData);
+		}
+		return false;
+	}
+
+	public static final boolean writeFile(String fileName, byte[] data, boolean appendData) {
 		if(fileName == null || fileName.length()<1) {
 			return false;
 		}
@@ -197,6 +232,10 @@ public class FileBuffer extends Buffer {
 		return buffer.write(data, appendData);
 	}
 	public static final boolean writeFile(String fileName, CharSequence data) {
+		return writeFile(fileName, data, false);
+	}
+	
+	public static final boolean writeFile(String fileName, byte[] data) {
 		return writeFile(fileName, data, false);
 	}
 
@@ -249,6 +288,33 @@ public class FileBuffer extends Buffer {
 		}
 		return sb;
 	}
+	
+	public static final ByteBuffer readBinaryFile(String file) {
+		File content=new File(file);
+		ByteBuffer sb = new ByteBuffer();
+		if(content.exists()){
+			final byte[] buffer = new byte[BUFFER];
+			int read;
+			FileInputStream is = null;
+			try {
+				is = new FileInputStream(content);
+				do {
+					read = is.read(buffer, 0, buffer.length);
+					if (read>0) {
+						sb.addBytes(buffer,  read, false);
+					}
+				} while (read>=0);
+			} catch (IOException e) {
+			} finally {
+				try {
+					is.close();
+				} catch (IOException e) {
+				}
+			}
+		}
+		return sb;
+	}
+
 
 	public static BaseItem readBaseFile(String configFile){
 		return readBaseFile(configFile, null);
@@ -335,12 +401,18 @@ public class FileBuffer extends Buffer {
 	}
 
 	public boolean write(CharSequence data, boolean append) {
+		if(data != null) {
+			return write(data.toString().getBytes(), append);
+		}
+		return false;
+	}
+	public boolean write(byte[] data, boolean append) {
 		if(this.file == null) {
 			return false;
 		}
 		try {
 			FileOutputStream os = new FileOutputStream(this.file, append);
-			os.write(data.toString().getBytes());
+			os.write(data);
 			os.flush();
 			os.close();
 			return true;

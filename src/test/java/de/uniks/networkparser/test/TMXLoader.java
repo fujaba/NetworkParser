@@ -4,6 +4,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import de.uniks.networkparser.IdMap;
+import de.uniks.networkparser.ext.io.FileBuffer;
 import de.uniks.networkparser.gui.TileMap;
 
 public class TMXLoader extends IOClasses{
@@ -11,8 +12,11 @@ public class TMXLoader extends IOClasses{
 	public void testTMXLoader() {
 		StringBuffer readFile = readFile("simpleMap.tmx");
 		TileMap tile = TileMap.create(readFile.toString());
+		tile.withPath("src/test/resources/de/uniks/networkparser/test/");
+		
+		FileBuffer.getTileImage(tile, 48);
 
-
+//		tile.getImage()
 
 		// Write TileMap
 		IdMap map=new IdMap();

@@ -363,10 +363,25 @@ public class MessageSession {
 	}
 
 
-	public MQTTMessage sending(MQTTMessage message, boolean answer) {
+	public MQTTMessage sending(NodeProxyBroker broker, MQTTMessage message, boolean answer) {
+
+		if (message.isMessageIdRequired() && (message.getMessageId() == 0)) {
+			if(message.getType() == MQTTMessage.MESSAGE_TYPE_PUBLISH && (message.getMessageQOS() != 0)){
+					message.withMessageId(broker.getNextMessageId());
+			}else if(
+					message.getType() == MQTTMessage.MESSAGE_TYPE_PUBACK ||
+					message.getType() == MQTTMessage.MESSAGE_TYPE_SUBACK ||
+					message.getType() == MQTTMessage.MESSAGE_TYPE_SUBSCRIBE ||
+					message.getType() == MQTTMessage.MESSAGE_TYPE_UNSUBSCRIBE){
+				message.withMessageId(broker.getNextMessageId());
+			}
+		}
+		
 		ByteBuffer bytes = message.getHeader();
 		bytes.insert(message.getPayload(), false);
 		try {
+			bytes.flip(false);
+			System.out.println(bytes.toArrayString(false));
 			out.write(bytes.array(), 0, bytes.length());
 			out.flush();
 			if(answer == false) {
@@ -379,7 +394,7 @@ public class MessageSession {
 		return null;
 	}
 
-	public boolean connectMQTT(String clientId, String sender, String password, int keepAlive, int mqttVersion, boolean cleanSession) {
+	public boolean connectMQTT(NodeProxyBroker broker, String clientId, String sender, String password, int keepAlive, int mqttVersion, boolean cleanSession) {
 		this.type = TYPE_MQTT;
 		if(this.port == 0) {
 			this.port = MQTT_PORT;
@@ -395,7 +410,7 @@ public class MessageSession {
 				connect.withCode(mqttVersion);
 				connect.withSession(cleanSession);
 				this.diInput = new DataInputStream(this.serverSocket.getInputStream());
-				sending(connect, true);
+				sending(broker, connect, true);
 			}
 			return true;
 		}catch (Exception e) {

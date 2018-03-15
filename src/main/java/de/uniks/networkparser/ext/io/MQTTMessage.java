@@ -403,6 +403,7 @@ public class MQTTMessage {
 				}
 			}
 		} catch (Exception e) {
+			e.printStackTrace();
 			// ignore socket read timeout
 		}
 
@@ -439,6 +440,42 @@ public class MQTTMessage {
 
 	public MQTTMessage createMessage(String content) {
 		this.messagePayload = content.getBytes();
+		this.messageQOS = 1;
+		return this;
+	}
+
+	/**
+	 * @return whether or not this message needs to include a message ID.
+	 */
+	public boolean isMessageIdRequired() {
+		if(type == MESSAGE_TYPE_CONNECT) {
+			return false;
+		}
+		if(type == MESSAGE_TYPE_CONNACK) {
+			return false;
+		}
+		if(type == MESSAGE_TYPE_DISCONNECT) {
+			return false;
+		}
+		if(type == MESSAGE_TYPE_PINGREQ) {
+			return false;
+		}
+		// FOR MQTTPUBLISH
+		return true;
+	}
+	/**
+	 * @return the MQTT message ID.
+	 */
+	public int getMessageId() {
+		return msgId;
+	}
+
+	public int getMessageQOS() {
+		return messageQOS;
+	}
+
+	public MQTTMessage withMessageId(int value) {
+		this.msgId = value;
 		return this;
 	}
 }

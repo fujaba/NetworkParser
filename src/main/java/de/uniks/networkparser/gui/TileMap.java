@@ -49,6 +49,7 @@ public class TileMap implements SendableEntityCreatorTag {
 	public int imagewidth;
 	public int imageheight;
 	public int[] background;
+	private String path = "";
 
 	@Override
 	public Object getSendableInstance(boolean prototyp) {
@@ -323,9 +324,16 @@ public class TileMap implements SendableEntityCreatorTag {
 		return entity;
 	}
 
-	@Override
-	public String toString() {
+	public String getSource() {
+		return this.source;
+	}
 
-		return super.toString();
+	public TileMap withPath(String value) {
+		this.path = value;
+		return this;
+	}
+	
+	public String getPath() {
+		return path;
 	}
 }

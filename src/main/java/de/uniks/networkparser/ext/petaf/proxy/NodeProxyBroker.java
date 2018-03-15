@@ -34,7 +34,9 @@ public class NodeProxyBroker extends NodeProxy {
 	public static final String EVENT_CONNECT = "connected";
 	public static final String EVENT_CONNECTLOST = "ConnectionLost";
 	public static final String EVENT_MESSAGE = "Message";
-
+	private static final int MIN_MSG_ID = 1;		// Lowest possible MQTT message ID to use
+	private static final int MAX_MSG_ID = 65535;	// Highest possible MQTT message ID to use
+	private int nextMsgId = MIN_MSG_ID - 1;			// The next available message ID to use
 
 	public NodeProxyBroker() {
 		this.property.addAll(PROPERTY_SERVERURL);
@@ -72,7 +74,7 @@ public class NodeProxyBroker extends NodeProxy {
 		session.withHost(url);
 		boolean success = false;
 		if(MessageSession.TYPE_MQTT.equals(format)) {
-			success = session.connectMQTT(clientId, sender, password, 60, mqttVersion, true);
+			success = session.connectMQTT(this, clientId, sender, password, 60, mqttVersion, true);
 		} else {
 			// Default MessageSession.TYPE_AMQ;
 			success = session.connectAMQ(this, sender, password);
@@ -184,7 +186,7 @@ public class NodeProxyBroker extends NodeProxy {
 				MQTTMessage.createChannelOpen(topic);
 				MQTTMessage register = MQTTMessage.createChannelOpen(topic);
 				register.withNames(topic).withQOS(1);
-				session.sending(register, false);
+				session.sending(this, register, false);
 
 				startConsume(topic, callBack);
 
@@ -229,7 +231,7 @@ public class NodeProxyBroker extends NodeProxy {
 		} else if(MessageSession.TYPE_MQTT.equals(format)) {
 			MQTTMessage msg = MQTTMessage.create(MqttWireMessage.MESSAGE_TYPE_PUBLISH);
 			msg.withNames(channel).createMessage(message);
-			session.sending(msg, false);
+			session.sending(this, msg, true);
 			return true;
 		}
 		return false;
@@ -263,5 +265,24 @@ public class NodeProxyBroker extends NodeProxy {
 
 	public String getFormat() {
 		return format;
+	}
+
+	/**
+	 * Get the next MQTT message ID that is not already in use, and marks
+	 * it as now being in use.
+	 *
+	 * @return the next MQTT message ID to use
+	 */
+	public int getNextMessageId() {
+//		int startingMessageId = nextMsgId;
+		// Allow two complete passes of the message ID range. This gives
+		// any asynchronous releases a chance to occur
+//		int loopCount = 0;
+		nextMsgId++;
+		if ( nextMsgId > MAX_MSG_ID ) {
+			nextMsgId = MIN_MSG_ID;
+		}
+//		Integer id = Integer.valueOf(nextMsgId);
+		return nextMsgId;
 	}
 }
