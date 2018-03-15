@@ -3,12 +3,15 @@ package de.uniks.networkparser.ext.petaf.proxy;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.ext.io.MQTTMessage;
 import de.uniks.networkparser.ext.io.MessageSession;
 import de.uniks.networkparser.ext.io.RabbitMessage;
 import de.uniks.networkparser.ext.io.ReaderComm;
+import de.uniks.networkparser.ext.mqtt.internal.MqttWireMessage;
 import de.uniks.networkparser.ext.petaf.NodeProxy;
 import de.uniks.networkparser.interfaces.ObjectCondition;
+import de.uniks.networkparser.list.SimpleKeyValueList;
 
 public class NodeProxyBroker extends NodeProxy {
 	public static final String PROPERTY_SERVERURL = "url";
@@ -24,6 +27,14 @@ public class NodeProxyBroker extends NodeProxy {
 	private ReaderComm readerComm;
 	private static final String CLIENTID_PREFIX = "np_broker";
 	private String format = MessageSession.TYPE_AMQ;
+	private int mqttVersion = MQTTMessage.MQTT_VERSION_3_1_1;
+	private SimpleKeyValueList<String, String> topics = new SimpleKeyValueList<String, String>();
+	private SimpleKeyValueList<Short, SimpleKeyValueList<Short, SimpleKeyValueList<String, Byte>>> values;
+	private ObjectCondition callBack;
+	public static final String EVENT_CONNECT = "connected";
+	public static final String EVENT_CONNECTLOST = "ConnectionLost";
+	public static final String EVENT_MESSAGE = "Message";
+
 
 	public NodeProxyBroker() {
 		this.property.addAll(PROPERTY_SERVERURL);
@@ -38,7 +49,7 @@ public class NodeProxyBroker extends NodeProxy {
 	public NodeProxyBroker(String url, String clientId) {
 		this.url = url;
 		if (clientId == null) {
-			clientId = NodeProxyBroker.generateClientId();
+			this.clientId = NodeProxyBroker.generateClientId();
 		}
 	}
 	
@@ -59,11 +70,18 @@ public class NodeProxyBroker extends NodeProxy {
 			return false;
 		}
 		session.withHost(url);
+		boolean success = false;
 		if(MessageSession.TYPE_MQTT.equals(format)) {
-			return session.connectMQTT(clientId, sender, password, 60, MQTTMessage.MQTT_VERSION_3_1_1, true);
+			success = session.connectMQTT(clientId, sender, password, 60, mqttVersion, true);
+		} else {
+			// Default MessageSession.TYPE_AMQ;
+			success = session.connectAMQ(this, sender, password);
 		}
-		// Default MessageSession.TYPE_AMQ;
-		return session.connectAMQ(sender, password);
+		if(success  && callBack != null) {
+			SimpleEvent event = new SimpleEvent(this, url, null, session).withType(NodeProxyMQTT.EVENT_CONNECT);
+			callBack.update(event);
+		}
+		return success;
 	}
 
 	public String getClientId() {
@@ -91,13 +109,19 @@ public class NodeProxyBroker extends NodeProxy {
 			return true;
 		}
 		// SEND CLOSE MESSAGES
-		RabbitMessage msg;
-		while(RabbitMessage.channel > 0) {
-			msg = RabbitMessage.createClose();
-			session.sending(msg, false);
+		if(MessageSession.TYPE_AMQ.equals(format)) {
+			RabbitMessage msg;
+			if(topics != null) {
+				while(topics.size() > 0) {
+					String channel = topics.removePos(topics.size() - 1);
+					short no = Short.valueOf(channel);
+					msg = RabbitMessage.createClose(no);
+					session.sending(this, msg, false);
+				}
+			}
+			msg = RabbitMessage.createClose((short)0);
+			session.sending(this, msg, false);
 		}
-		msg = RabbitMessage.createClose();
-		session.sending(msg, false);
 		return session.close();
 	}
 
@@ -132,47 +156,83 @@ public class NodeProxyBroker extends NodeProxy {
 		return new NodeProxyBroker();
 	}
 	
-	public boolean createChannel(String queue, ObjectCondition condition) {
+	public NodeProxyBroker withCallback(ObjectCondition condition) {
+		this.callBack = condition;
+		return this;
+	}
+	
+	public boolean subscribe(String topic) {
 		if(session != null) {
-			RabbitMessage message;
-			message = RabbitMessage.createChannelOpen(null);
-			if(session.sending(message, true) == null) {
-				return false;
-			}
-
-			message = RabbitMessage.createQueue(queue, false, false, false, null);
-			if(session.sending(message, true) == null) {
-				return false;
-			}
-
-			if(this.space == null) {
-				// Make a now Thread
-				executorService = Executors.newScheduledThreadPool(1);
-				this.readerComm = new ReaderComm();
-				this.readerComm.withSession(session);
-				this.readerComm.withChannel(queue);
-				this.readerComm.withCondition(condition);
-				this.readerComm.start("Rabbit-Reader: "+queue);
-				executorService.execute(readerComm);
-				
-				message = RabbitMessage.createConsume(queue, "", false, false, false, false, null);
-				session.sending(message, false);
+			if(MessageSession.TYPE_AMQ.equals(format)) {
+				RabbitMessage message;
+				message = RabbitMessage.createChannelOpen(this, topic);
+				if(session.sending(this, message, true) == null) {
+					return false;
+				}
+				short channel = message.getChannel();
+	
+				message = RabbitMessage.createQueue(channel, topic, false, false, false, null);
+				if(session.sending(this, message, true) == null) {
+					return false;
+				}
+				startConsume(topic, callBack);
+				message = RabbitMessage.createConsume(channel, topic, "", false, false, false, false, null);
+				session.sending(this, message, false);
 				return true;
 			}
+			if(MessageSession.TYPE_MQTT.equals(format)) {
+				MQTTMessage.createChannelOpen(topic);
+				MQTTMessage register = MQTTMessage.createChannelOpen(topic);
+				register.withNames(topic).withQOS(1);
+				session.sending(register, false);
+
+				startConsume(topic, callBack);
+
+				return true;
+			}
+			// NOW ADdfknhklasfjhzgzuni gr 8bfuih89
+		}
+		return false;
+	}
+	
+	private boolean startConsume(String queue, ObjectCondition condition) {
+
+		if(this.space == null) {
+			// Make a now Thread
+			executorService = Executors.newScheduledThreadPool(1);
+			this.readerComm = new ReaderComm();
+			this.readerComm.withSession(session);
+			this.readerComm.withChannel(queue);
+			this.readerComm.withCondition(condition);
+			this.readerComm.start(this, "Broker-Reader: "+queue);
+			executorService.execute(readerComm);
+			
+			return true;
 		}
 		return false;
 	}
 	
 	public boolean publish(String channel, String message) {
-		RabbitMessage msg = RabbitMessage.createPublish("", channel, message.getBytes());
-		session.sending(msg, false);
-		
-		msg = RabbitMessage.createPublishHeader(message);
-		session.sending(msg, false);
-
-		msg = RabbitMessage.createPublishBody(message);
-		session.sending(msg, false);
-		return true;
+		if(MessageSession.TYPE_AMQ.equals(format)) {
+			SimpleKeyValueList<String, String> topics = getTopics();
+			short channelNo = Short.valueOf(topics.get(channel));
+	
+			RabbitMessage msg = RabbitMessage.createPublish(channelNo, "", channel, message.getBytes());
+			session.sending(this, msg, false);
+			
+			msg = RabbitMessage.createPublishHeader(channelNo, message);
+			session.sending(this, msg, false);
+	
+			msg = RabbitMessage.createPublishBody(channelNo, message);
+			session.sending(this, msg, false);
+			return true;
+		} else if(MessageSession.TYPE_MQTT.equals(format)) {
+			MQTTMessage msg = MQTTMessage.create(MqttWireMessage.MESSAGE_TYPE_PUBLISH);
+			msg.withNames(channel).createMessage(message);
+			session.sending(msg, false);
+			return true;
+		}
+		return false;
 	}
 	
 	public NodeProxyBroker withFormat(String format) {
@@ -186,4 +246,22 @@ public class NodeProxyBroker extends NodeProxy {
 		return broker;
 	}
 
+	public SimpleKeyValueList<Short, SimpleKeyValueList<Short, SimpleKeyValueList<String, Byte>>> getGrammar(boolean create) {
+		if(create == false) {
+			return values;
+		}
+		values = new SimpleKeyValueList<Short, SimpleKeyValueList<Short, SimpleKeyValueList<String, Byte>>>();
+		return values;
+	}
+
+	public SimpleKeyValueList<String, String> getTopics() {
+		if(topics == null) {
+			topics = new SimpleKeyValueList<String, String>();
+		}
+		return topics;
+	}
+
+	public String getFormat() {
+		return format;
+	}
 }

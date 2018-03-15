@@ -60,14 +60,10 @@ buildscript {
 		}
 	}
 	dependencies {
-//classpath(group: 'org.jfrog.buildinfo', name: 'build-info-extractor-gradle', version: '[2,)')
 		classpath "org.kt3k.gradle.plugin:coveralls-gradle-plugin:[2,)"
 		classpath 'com.moowork.gradle:gradle-node-plugin:[1,)'
 	}
 }
-//dependencies {
-//	compile group: 'org.webjars', name: 'jquery', version: '2.1.4'
-//}
 
 artifacts { 
 	archives buildCoreJar16, buildCoreJar17, buildCoreJar18, buildCoreJar19, buildSourceJar, buildSourceJar18, buildMinCoreJar, buildJavadoc

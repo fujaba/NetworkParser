@@ -1,6 +1,7 @@
 package de.uniks.networkparser.ext.io;
 
 import de.uniks.networkparser.SimpleEvent;
+import de.uniks.networkparser.ext.petaf.proxy.NodeProxyBroker;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 
 public class ReaderComm implements Runnable {
@@ -8,10 +9,12 @@ public class ReaderComm implements Runnable {
 	private String threadName;
 	private MessageSession session;
 	private String channel;
+	private NodeProxyBroker broker;
 	private ObjectCondition condition;
 
-	public void start(String threadName) {
+	public void start(NodeProxyBroker broker, String threadName) {
 		this.threadName = threadName;
+		this.broker = broker;
 		if (!running) {
 			running = true;
 		}
@@ -43,7 +46,7 @@ public class ReaderComm implements Runnable {
 		}
 		while (running && (session.isClose() == false)) {
 			try {
-				Object response = session.getServerResponse();
+				Object response = session.getServerResponse(broker);
 				
 				// Answer
 				if(condition != null) {
@@ -53,7 +56,7 @@ public class ReaderComm implements Runnable {
 						if(text != null) {
 							this.condition.update(new SimpleEvent(this, channel, null, text));
 						}
-					} else {
+					} else if(response != null) {
 						this.condition.update(new SimpleEvent(this, channel, null, response));
 					}
 				}

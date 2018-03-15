@@ -20,6 +20,7 @@ import de.uniks.networkparser.buffer.BufferedBuffer;
 import de.uniks.networkparser.buffer.ByteBuffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.converter.ByteConverter64;
+import de.uniks.networkparser.ext.petaf.proxy.NodeProxyBroker;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
@@ -53,7 +54,7 @@ public class MessageSession {
 	private String sender;
 	protected Socket serverSocket;
 	protected BufferedReader in;
-	protected DataInputStream rabbitInput;
+	protected DataInputStream diInput;
 	protected OutputStream out;
 	protected SimpleList<String> supportedFeature = new SimpleList<String>();
 	private BufferedBuffer lastAnswer;
@@ -62,6 +63,7 @@ public class MessageSession {
 	private String type;
 	private String id;
 	private BufferedBuffer responseFactory = new CharacterBuffer();
+
 	public MessageSession connectSSL(String host, String sender, String password) {
 		this.host = host;
 		this.port = SSL_PORT;
@@ -341,23 +343,8 @@ public class MessageSession {
 		}
 		return false;
 	}
-	
-	public boolean connectingAMQ(String host, String... authentification) {
-		String user = null;
-		String password = null;
-		this.host = host;
-		if(authentification != null) {
-			if(authentification.length>0) {
-				user = authentification[0];
-			}
-			if(authentification.length>1) {
-				password = authentification[1];
-			}
-		}
-		return connectAMQ(user, password);
-	}
 
-	public RabbitMessage sending(RabbitMessage message, boolean answer) {
+	public RabbitMessage sending(NodeProxyBroker broker, RabbitMessage message, boolean answer) {
 		if(message == null) {
 			return null;
 		}
@@ -366,16 +353,15 @@ public class MessageSession {
 			return message;
 		}
 		try {
-			RabbitMessage response;
-			response = RabbitMessage.readFrom(rabbitInput);
-			response.analysePayLoad();
+			RabbitMessage response = RabbitMessage.readFrom(diInput);
+			response.analysePayLoad(broker);
 			return response;
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		return null;
 	}
-	
+
 
 	public MQTTMessage sending(MQTTMessage message, boolean answer) {
 		ByteBuffer bytes = message.getHeader();
@@ -383,10 +369,14 @@ public class MessageSession {
 		try {
 			out.write(bytes.array(), 0, bytes.length());
 			out.flush();
+			if(answer == false) {
+				return message;
+			}
+			MQTTMessage response = MQTTMessage.readFrom(diInput);
+			return response;
 		} catch (IOException e) {
-			return null;
 		}
-		return message;
+		return null;
 	}
 
 	public boolean connectMQTT(String clientId, String sender, String password, int keepAlive, int mqttVersion, boolean cleanSession) {
@@ -394,32 +384,26 @@ public class MessageSession {
 		if(this.port == 0) {
 			this.port = MQTT_PORT;
 		}
+		this.factory = javax.net.SocketFactory.getDefault();
 		try {
 			if(serverSocket == null) {
 				initSockets(host, port);
-				
-				
+
 				MQTTMessage connect = MQTTMessage.create(MQTTMessage.MESSAGE_TYPE_CONNECT);
 				connect.withNames(clientId, sender, password);
-				connect.withValues(keepAlive, mqttVersion, cleanSession);
-				sending(connect, false);
-//				this.rabbitInput = new DataInputStream(this.serverSocket.getInputStream());
-
+				connect.withKeepAliveInterval(keepAlive);
+				connect.withCode(mqttVersion);
+				connect.withSession(cleanSession);
+				this.diInput = new DataInputStream(this.serverSocket.getInputStream());
+				sending(connect, true);
 			}
 			return true;
 		}catch (Exception e) {
+			e.printStackTrace();
 		}
-//
-//	this.clientState.setKeepAliveSecs(client.getKeepAliveInterval());
-//	this.clientState.setCleanSession(client.isCleanSession());
-//	this.clientState.setMaxInflight(client.getMaxInflight());
-//
-//	tokenStore.open();
-//	Connection connection = new Connection(this, token, connect);
-//	connection.start();
 		return false;
 	}
-	public boolean connectAMQ(String sender, String password) {
+	public boolean connectAMQ(NodeProxyBroker broker, String sender, String password) {
 		this.type = TYPE_AMQ;
 		if(this.port == 0) {
 			this.port = AMQP_PORT;
@@ -437,20 +421,20 @@ public class MessageSession {
 				initSockets(host, port);
 				sendStart();
 				
-				this.rabbitInput = new DataInputStream(this.serverSocket.getInputStream());
+				this.diInput = new DataInputStream(this.serverSocket.getInputStream());
 				RabbitMessage message = RabbitMessage.createStartOK(sender, password);
 				// START MESSAGE
-				RabbitMessage response = sending(message, true);
+				RabbitMessage response = sending(broker, message, true);
 
 
 				// TUNE MESSAGE
-				response = RabbitMessage.readFrom(rabbitInput);
-				response.analysePayLoad();
+				response = RabbitMessage.readFrom(diInput);
+				response.analysePayLoad(broker);
 				
 				message = RabbitMessage.createTuneOK((Short)response.getData("channelMax"), (Integer)response.getData("frameMax"), (Short)response.getData("heartbeat"));
-				response = sending(message, false);
+				response = sending(broker, message, false);
 				message = RabbitMessage.createConnectionOpen(null);
-				response = sending(message, false);
+				response = sending(broker, message, false);
 			}
 			return true;
 		}catch (Exception e) {
@@ -473,7 +457,7 @@ public class MessageSession {
 			return connectXMPP(sender, password);
 		}
 		if(TYPE_AMQ.equals(type)) {
-			return connectAMQ(sender, password);
+			return false;
 		}
 		// DEFAULT EMAIL
 		return connectSMTP(sender, password);
@@ -694,13 +678,19 @@ public class MessageSession {
 		return response;
 	}
 	
-	public Object getServerResponse() {
-		if(rabbitInput != null) {
-			RabbitMessage response;
+	public Object getServerResponse(NodeProxyBroker broker) {
+		if(diInput != null) {
 			try {
-				response = RabbitMessage.readFrom(rabbitInput);
-				response.analysePayLoad();
-				return response;
+				if(TYPE_AMQ.equals(broker.getFormat())) {
+					RabbitMessage response = RabbitMessage.readFrom(diInput);
+					response.analysePayLoad(broker);
+					return response;
+				}
+				if(TYPE_XMPP.equals(broker.getFormat())) {
+					MQTTMessage resonse = MQTTMessage.readFrom(diInput);
+					
+					return resonse;
+				}
 			} catch (IOException e) {
 			}
 			return null;

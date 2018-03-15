@@ -155,11 +155,11 @@ public class DERBuffer extends ByteBuffer {
 		return true;
 	}
 	@Override
-	public boolean addBytes(Object bytes, int len) {
+	public boolean addBytes(Object bytes, int len, boolean bufferAtEnd) {
 		if (bytes != null) {
 			position -= len;
 			this.start = position;
-			return super.addBytes(bytes, len);
+			return super.addBytes(bytes, len, bufferAtEnd);
 		}
 		return false;
 	}

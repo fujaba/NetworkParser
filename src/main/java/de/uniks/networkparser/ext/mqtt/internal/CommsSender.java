@@ -149,20 +149,21 @@ public class CommsSender implements Runnable {
 		byte[] bytes = message.getHeader();
 		byte[] pl = message.getPayload();
 		ByteBuffer test = new ByteBuffer();
-		test.addBytes(bytes, bytes.length);
+		test.addBytes(bytes, bytes.length, false);
 		out.write(bytes,0,bytes.length);
 		clientState.notifySentBytes(bytes.length);
 
 		int offset = 0;
 		int chunckSize = 1024;
-		test.addBytes(pl, pl.length);
+		test.addBytes(pl, pl.length, false);
 		while (offset < pl.length) {
 			int length = Math.min(chunckSize, pl.length - offset);
 			out.write(pl, offset, length);
 			offset += chunckSize;
 			clientState.notifySentBytes(length);
 		}
-		System.out.println(test.toArrayString());
+		test.flip(false);
+		System.out.println(message.getType()+": "+test.toArrayString());
 		out.flush();
 	}
 

@@ -15,6 +15,7 @@ import de.uniks.networkparser.buffer.ByteBuffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.bytes.ByteEntity;
 import de.uniks.networkparser.bytes.ByteTokener;
+import de.uniks.networkparser.ext.petaf.proxy.NodeProxyBroker;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 
@@ -44,6 +45,16 @@ public class RabbitMessage {
 	public static final short CREATE_QUEUE_METHOD=10;
 	public static final short CONSUME_METHOD = 20;
 
+	public static final byte BIT=1;
+	public static final byte BYTE=2;
+	public static final byte SHORT=3;
+	public static final byte INT=4;
+	public static final byte LONG = 5;
+	public static final byte SHORTSTR=6;
+	public static final byte STRING=7;
+	public static final byte VERSION=8;
+	public static final byte TABLE=9;
+
 	private byte[] headers=new byte[3];
 	private static final byte FRAME_END =-50;
 
@@ -53,7 +64,6 @@ public class RabbitMessage {
 	private short classId;
 	private short methodId;
 	private SimpleKeyValueList<String, Object> payloadData = new SimpleKeyValueList<String, Object>();
-	public static short channel;
 
 	// with values or ByteEntity
 	public RabbitMessage withShortString(String value) {
@@ -347,7 +357,7 @@ public class RabbitMessage {
 				accumulator.set(3, (byte)(this.methodId & 0xff));
 				errorMessage.insert(ByteTokener.intToByte(length), true);
 			}
-			errorMessage.addBytes(accumulator.array(), length);
+			errorMessage.addBytes(accumulator.array(), length, false);
 		} else if(payload != null) {
 			errorMessage.insert(payload.length(), true);
 			errorMessage.insert(payload.array(), true);
@@ -392,20 +402,9 @@ public class RabbitMessage {
 		this.payload = new ByteBuffer().with(value).flip(true);
 		return this;
 	}
-	
-	private static SimpleKeyValueList<Short, SimpleKeyValueList<Short, SimpleKeyValueList<String, Byte>>> values;
-	public static final byte BIT=1;
-	public static final byte BYTE=2;
-	public static final byte SHORT=3;
-	public static final byte INT=4;
-	public static final byte LONG = 5;
-	public static final byte SHORTSTR=6;
-	public static final byte STRING=7;
-	public static final byte VERSION=8;
-	public static final byte TABLE=9;
 
 	// 1=Bit, 2, Byte, 3=Short, 4=Int, 5=ShortString, 6=String, 7 = Version, 8 = Table
-	private void initValues() {
+	private void initValues(NodeProxyBroker broker) {
 		Object[][] data=new Object[][] {
 				new Object[]{CONNECTION_CLASS, 10,"version", VERSION, "properties", TABLE, "mechanisms", STRING, "locales", STRING}, // START
 				new Object[]{CONNECTION_CLASS, STARTOK_METHOD, "clientProperties", TABLE, "mechanisms", SHORTSTR, "response", STRING, "locale", SHORTSTR}, // StartOk
@@ -472,7 +471,7 @@ public class RabbitMessage {
 				new Object[]{TX_CLASS, 30}, // Rollback
 				new Object[]{TX_CLASS, 31} // RollbackOk
 		};
-		values = new SimpleKeyValueList<Short, SimpleKeyValueList<Short, SimpleKeyValueList<String, Byte>>>();
+		SimpleKeyValueList<Short, SimpleKeyValueList<Short, SimpleKeyValueList<String, Byte>>> values = broker.getGrammar(true);
 		for(Object[] items : data) {
 			SimpleKeyValueList<Short, SimpleKeyValueList<String, Byte>> group = values.get(items[0]);
 			if(group == null) {
@@ -492,12 +491,12 @@ public class RabbitMessage {
 		}
 	}
 
-	public boolean analysePayLoad() {
+	public boolean analysePayLoad(NodeProxyBroker broker) {
 		classId = payload.getShort();
-		if(values == null) {
-			initValues();
+		if(broker.getGrammar(false) == null) {
+			initValues(broker);
 		}
-		SimpleKeyValueList<Short, SimpleKeyValueList<String, Byte>> group = values.get((Short)classId);
+		SimpleKeyValueList<Short, SimpleKeyValueList<String, Byte>> group = broker.getGrammar(false).get((Short)classId);
 		if(group != null) {
 			methodId = payload.getShort();
 			SimpleKeyValueList<String, Byte> values = group.get((Short)methodId);
@@ -710,11 +709,14 @@ public class RabbitMessage {
 		return msg;
 	}
 
-	public static RabbitMessage createChannelOpen(String outOfBand) {
+	public static RabbitMessage createChannelOpen(NodeProxyBroker broker, String queue) {
 		RabbitMessage msg = new RabbitMessage().withType(FRAME_METHOD);
-		channel++;
 		msg.withFrame(CHANNEL_CLASS, OPENCHANNEL_METHOD);
-		msg.withChannel(channel);
+
+		SimpleKeyValueList<String, String> topics = broker.getTopics();
+		short no = (short) (topics.size()+1);
+		topics.add(queue, ""+no);
+		msg.withChannel(no);
 		msg.withEmptyValues();
 		return msg;
 	}
@@ -728,7 +730,7 @@ public class RabbitMessage {
 	 * @param table other properties (construction arguments) for the queue
 	 * @return a new Message
 	 */
-	public static RabbitMessage createQueue(String queue, boolean durable, boolean exclusive, boolean autoDelete, Map<String, Object> table) {
+	public static RabbitMessage createQueue(short channel, String queue, boolean durable, boolean exclusive, boolean autoDelete, Map<String, Object> table) {
 		RabbitMessage msg = new RabbitMessage().withType(FRAME_METHOD);
 		msg.withFrame(QUEUE_CLASS, CREATE_QUEUE_METHOD).withChannel(channel);
 		short ticket =0;
@@ -739,7 +741,7 @@ public class RabbitMessage {
 		return msg;
 	}
 
-	public static RabbitMessage createConsume(String queue, String consumerTag, boolean noLocal, boolean noAck, boolean exclusive, boolean nowait,  Map<String, Object> table) {
+	public static RabbitMessage createConsume(short channel, String queue, String consumerTag, boolean noLocal, boolean noAck, boolean exclusive, boolean nowait,  Map<String, Object> table) {
 		RabbitMessage msg = new RabbitMessage().withType(FRAME_METHOD);
 		msg.withFrame(BASIC_CLASS, CONSUME_METHOD).withChannel(channel);
 		short ticket =0;
@@ -750,7 +752,7 @@ public class RabbitMessage {
 		return msg;
 	}
 
-	public static RabbitMessage createPublish(String queue, String routingKey, byte[] body) {
+	public static RabbitMessage createPublish(short channel, String queue, String routingKey, byte[] body) {
 		RabbitMessage msg = new RabbitMessage().withType(FRAME_METHOD);
 		msg.withFrame(BASIC_CLASS, PUBLISH_METHOD).withChannel(channel);
 		short ticket =0;
@@ -762,7 +764,7 @@ public class RabbitMessage {
 		return msg;
 	}
 	
-	public static RabbitMessage createPublishHeader(String queue) {
+	public static RabbitMessage createPublishHeader(short channel, String queue) {
 		RabbitMessage msg = new RabbitMessage().withType(FRAME_HEADER);
 		msg.withFrame(BASIC_CLASS, (short)0).withChannel(channel);
 		msg.withValues((long)queue.length());
@@ -770,23 +772,22 @@ public class RabbitMessage {
 		return msg;
 	}
 	
-	public static RabbitMessage createPublishBody(String queue) {
+	public static RabbitMessage createPublishBody(short channel, String queue) {
 		RabbitMessage msg = new RabbitMessage().withType(FRAME_BODY);
 		msg.withChannel(channel);
 		msg.withValues(queue);
 		return msg;
 	}
 	
-	public static RabbitMessage createClose() {
+	public static RabbitMessage createClose(short channel) {
 		RabbitMessage msg = new RabbitMessage();
 		msg.withChannel(channel);
 		if(channel>0) {
 			msg.withType(FRAME_HEADER);
 			msg.withFrame(CHANNEL_CLASS, (short)20).withChannel(channel);
-			channel--;
-		}else {
+		} else {
 			msg.withType(FRAME_METHOD);
-			msg.withFrame(CONNECTION_CLASS, (short)10).withChannel(channel);
+			msg.withFrame(CONNECTION_CLASS, (short)10);
 		}
 		msg.withValues((short)200);
 		msg.withShortString("OK");

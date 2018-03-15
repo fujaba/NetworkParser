@@ -141,37 +141,43 @@ public class ByteBuffer extends BufferedBuffer implements BaseItem {
 	}
 	public boolean insert(Object item, boolean bufferAdEnd) {
 		if(item instanceof Byte) {
-			return addBytes(item, 1);
+			return addBytes(item, 1, bufferAdEnd);
 		}
 		if(item instanceof Character) {
-			return addBytes((Character)item, 1);
+			return addBytes((Character)item, 1, bufferAdEnd);
+		}
+		if(item instanceof String) {
+			String str = (String) item;
+			byte[] array = str.getBytes();
+			return addBytes(array, array.length, bufferAdEnd);
 		}
 		if(item instanceof CharSequence) {
 			CharSequence str = (CharSequence) item;
+			resize(str.length(), bufferAdEnd);
 			for(int i = 0;i<str.length();i++) {
-				addBytes((Character)str.charAt(i), 1);
+				addBytes((Character)str.charAt(i), 1, bufferAdEnd);
 			}
 			return true;
 		}
 		if(item instanceof byte[]) {
 			byte[] array = (byte[])item;
-			return addBytes(array, array.length);
+			return addBytes(array, array.length, bufferAdEnd);
 		}
 		if(item instanceof Byte[]) {
 			Byte[] array = (Byte[])item;
-			return addBytes(array, array.length);
+			return addBytes(array, array.length, bufferAdEnd);
 		}
 		if(item instanceof Integer) {
-			return addBytes(item, 4);
+			return addBytes(item, 4, bufferAdEnd);
 		}
 		if(item instanceof Short) {
-			return addBytes(item, 2);
+			return addBytes(item, 2, bufferAdEnd);
 		}
 		if(item instanceof Long) {
-			return addBytes(item, 8);
+			return addBytes(item, 8, bufferAdEnd);
 		}
 		if(item instanceof Boolean) {
-			return addBytes(item, 1);
+			return addBytes(item, 1, bufferAdEnd);
 		}
 		return false;
 	}
@@ -202,7 +208,12 @@ public class ByteBuffer extends BufferedBuffer implements BaseItem {
 		} else if(position + len > bufferLen) {
 			// New Size with Buffer
 			if(bufferLen > 0) {
-				int newSize = (position + len) + (position + len) / 2 + 5;
+				int newSize;
+				if(bufferAtEnd) { 
+					newSize = (length + len) + (length + len) / 2 + 5;
+				}else {
+					newSize = length + len;
+				}
 				byte[] oldBuffer = this.buffer;
 				this.buffer = new byte[newSize];
 				System.arraycopy(oldBuffer, 0, this.buffer, 0, position);
@@ -214,12 +225,12 @@ public class ByteBuffer extends BufferedBuffer implements BaseItem {
 		return false;
 	}
 	
-	public boolean addBytes(Object value, int len) {
+	public boolean addBytes(Object value, int len, boolean bufferAtEnd) {
 		boolean addEnd = false;
 		if(this.position == this.length) {
 			addEnd = true;
 		}
-		resize(len, true);
+		resize(len, bufferAtEnd);
 		// one Byte
 		if(value instanceof Byte) {
 			this.buffer[position] = (Byte) value;
@@ -231,15 +242,23 @@ public class ByteBuffer extends BufferedBuffer implements BaseItem {
 						this.buffer[position + i] = source[i];
 					}
 				}
-			} else if(value instanceof Byte[] ) {
+			} else if(value instanceof Byte[]) {
 				Byte[] source = (Byte[])value;
 				if(this.buffer != null && this.buffer.length>=position + len) {
 					for(int i = 0; i < len; i++){
 						this.buffer[position + i] = source[i];
 					}
 				}
+			} else if(value instanceof Character) {
+				char charItem = (Character) value;
+				if(len == 1) {
+					this.buffer[position] = (byte) (charItem);
+				} else {
+					this.buffer[position] = (byte) (charItem >>> 8);
+					this.buffer[position + 1] = (byte) charItem;
+				}
 			// two Bytes
-			} else if(value instanceof Character || value instanceof Short ) {
+			} else if(value instanceof Short) {
 				short item = (Short) value;
 				this.buffer[position] = (byte) (item >>> 8);
 				this.buffer[position + 1] = (byte) item;
