@@ -17,3 +17,4 @@ gradle.properties
 *.gpg
 node_modules/
 package-lock.json
+out/
