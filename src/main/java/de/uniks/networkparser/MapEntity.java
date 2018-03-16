@@ -77,6 +77,9 @@ public class MapEntity extends AbstractList<Object>{
 		return filter;
 	}
 	public Entity encode(Object entity) {
+		if(tokener == null || tokener.getMap() == null) {
+			return null;
+		}
 		return tokener.getMap().encode(entity, this);
 	}
 

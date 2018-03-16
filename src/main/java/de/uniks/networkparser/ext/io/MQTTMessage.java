@@ -236,12 +236,13 @@ public class MQTTMessage {
 				return message;
 			}
 			ByteBuffer buffer=new ByteBuffer().with(variableHeader);
+			buffer.flip(true);
 
 			message.names = new String[] { message.decodeUTF8(buffer) };
 			if (message.messageQOS > 0) {
 				message.msgId = buffer.getShort();
 			}
-			message.messagePayload = buffer.getBytes(new byte[variableHeader.length-buffer.position()]);
+			message.messagePayload = buffer.getBytes(new byte[variableHeader.length-buffer.position() - 1]);
 		}
 		if(variableHeader == null) {
 			return message;
@@ -465,5 +466,16 @@ public class MQTTMessage {
 	public MQTTMessage withMessageId(int value) {
 		this.msgId = value;
 		return this;
+	}
+
+	public String getText() {
+		if(type == MESSAGE_TYPE_PUBLISH) {
+			return new String(this.messagePayload);
+		}
+		return null;
+	}
+
+	public String[] getNames() {
+		return names;
 	}
 }

@@ -64,14 +64,16 @@ public class GXLTokener extends Tokener {
 		if(entity != null) {
 			String className = entity.getClass().getName();
 			Grammar grammar = map.getGrammar();
-			SendableEntityCreator creator = grammar.getCreator(SendableEntityCreator.NEW, entity, map, className);
-			encodeChildren(entity, graph, creator, map);
+			if(grammar != null ) {
+				SendableEntityCreator creator = grammar.getCreator(SendableEntityCreator.NEW, entity, map, className);
+				encodeChildren(entity, graph, creator, map);
+			}
 		}
 		return instance;
 	}
 
 	private boolean encodeChildren(Object item, XMLEntity root, SendableEntityCreator creator, MapEntity map) {
-		if(map.contains(item)) {
+		if(map == null || map.contains(item)) {
 			return false;
 		}
 		map.with(item);
@@ -91,6 +93,9 @@ public class GXLTokener extends Tokener {
 	}
 
 	private void parseValue(String property, Object value, XMLEntity parent, XMLEntity root, XMLEntity node, MapEntity map) {
+		if(parent == null || this.map == null) {
+			return;
+		}
 		if(value == null) {
 			// Null Value
 			XMLEntity attribute = this.newInstance();

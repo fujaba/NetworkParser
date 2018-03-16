@@ -94,6 +94,9 @@ public class UpdateListener implements MapListener {
 	 */
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
+		if(evt == null) {
+			return;
+		}
 		Object oldValue = evt.getOldValue();
 		Object newValue = evt.getNewValue();
 
@@ -143,6 +146,9 @@ public class UpdateListener implements MapListener {
 	}
 
 	public Entity change(String property, Object source, SendableEntityCreator creatorClass, Object oldValue, Object newValue) {
+		if(factory == null) {
+			return null;
+		}
 		Entity jsonObject = factory.newInstance();
 		String id = this.map.getId(source, true);
 		Grammar grammar = this.map.getGrammar();
@@ -153,6 +159,9 @@ public class UpdateListener implements MapListener {
 
 	public boolean change(String property, SendableEntityCreator creator, Entity change, Object oldValue, Object newValue) {
 		boolean done = false;
+		if(creator == null) {
+			return false;
+		}
 		String[] properties = creator.getProperties();
 		if(properties == null) {
 			return false;
@@ -339,6 +348,9 @@ public class UpdateListener implements MapListener {
 	 */
 	private boolean checkValue(Object value, String key,
 			Entity oldJsonObject) {
+		if(oldJsonObject == null) {
+			return false;
+		}
 		Object oldValue = oldJsonObject.getValue(key);
 		if (value != null) {
 			if (oldValue instanceof Entity) {

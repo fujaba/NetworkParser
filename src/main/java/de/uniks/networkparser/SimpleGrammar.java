@@ -36,6 +36,9 @@ public class SimpleGrammar implements Grammar {
 
 	@Override
 	public Entity writeBasicValue(Entity entity, String className, String id, IdMap map) {
+		if(entity == null || map == null) {
+			return null;
+		}
 		if(basicProperties.contains(IdMap.SESSION)) {
 			String session = map.getSession();
 			if(session != null) {
@@ -71,11 +74,14 @@ public class SimpleGrammar implements Grammar {
 		if(item == null) {
 			return null;
 		}
+		IdMap map =entity.getMap();
+		if(map == null) {
+			return null;
+		}
 		if(Grammar.WRITE.equals(type)) {
 			if(className == null) {
 				className = item.getClass().getName();
 			}
-			IdMap map =entity.getMap();
 			SendableEntityCreator creator = map.getCreator(className, true, null);
 
 			if(creator != null) {
@@ -93,7 +99,6 @@ public class SimpleGrammar implements Grammar {
 			}
 			className = (String) name;
 		}
-		IdMap map =entity.getMap();
 		SendableEntityCreator creator = map.getCreator(className, false, null);
 		if(creator != null) {
 			return creator;
@@ -112,6 +117,9 @@ public class SimpleGrammar implements Grammar {
 
 	@Override
 	public boolean hasValue(Entity item, String property) {
+		if(item == null) {
+			return false;
+		}
 		return item.has(property);
 	}
 

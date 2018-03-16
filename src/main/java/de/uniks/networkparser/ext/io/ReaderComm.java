@@ -54,10 +54,20 @@ public class ReaderComm implements Runnable {
 						RabbitMessage msg = (RabbitMessage) response;
 						String text = msg.getText();
 						if(text != null) {
-							this.condition.update(new SimpleEvent(this, channel, null, text));
+							this.condition.update(new SimpleEvent(this, channel, null, text).withType(NodeProxyBroker.EVENT_MESSAGE));
 						}
-					} else if(response != null) {
-						this.condition.update(new SimpleEvent(this, channel, null, response));
+					} else if(response instanceof MQTTMessage) {
+						MQTTMessage msg = (MQTTMessage) response;
+						String text = msg.getText();
+						if(text != null) {
+							String myChannel = channel;
+							if(msg.getNames() != null && msg.getNames().length>0) {
+								myChannel = msg.getNames()[0];
+							}
+							
+							this.condition.update(new SimpleEvent(this, myChannel, null, text).withType(NodeProxyBroker.EVENT_MESSAGE));
+						}
+//						this.condition.update(new SimpleEvent(this, channel, null, response));
 					}
 				}
 			}catch (Exception e) {

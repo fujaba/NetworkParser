@@ -68,7 +68,7 @@ public class EntityStringConverter implements Converter {
 		return new String(buf);
 	}
 	public String getPrefixFirst() {
-		if(indent == 0) {
+		if(indent < 1) {
 			return EMPTY;
 		}
 		char[] buf = new char[indent + 2];

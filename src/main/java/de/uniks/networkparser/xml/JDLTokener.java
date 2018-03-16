@@ -25,6 +25,9 @@ public class JDLTokener extends Tokener{
 	}
 
 	private BaseItem encodeClassModel(GraphList entity, MapEntity map) {
+		if(entity == null || map == null) {
+			return null;
+		}
 		TextEntity result = new TextEntity();
 		ClazzSet clazzes = entity.getClazzes();
 		for(Clazz item : clazzes) {
@@ -49,6 +52,9 @@ public class JDLTokener extends Tokener{
 	 */
 	public TextEntity encodeEntity(Clazz item) {
 		TextEntity result = new TextEntity();
+		if(item == null) {
+			return result;
+		}
 		result.withTag("entity "+item.getName());
 		AttributeSet attributes = item.getAttributes();
 		TextEntity attributeList = new TextEntity();
@@ -74,6 +80,9 @@ public class JDLTokener extends Tokener{
 	 */
 	public TextEntity encodeAttribute(Attribute item) {
 		TextEntity result = new TextEntity();
+		if(item == null || item.getType() == null) {
+			return result;
+		}
 		result.withTag(item.getName()+" "+item.getType().getName(true));
 		return result;
 	}
@@ -90,6 +99,9 @@ public class JDLTokener extends Tokener{
 	 */
 	public TextEntity encodeRelationship(Association assoc) {
 		TextEntity relationship = new TextEntity();
+		if(assoc == null) {
+			return relationship;
+		}
 		relationship.withTag("relationship "+getCardinality(assoc));
 		TextEntity values = new TextEntity();
 		values.withTag(JsonObject.START);
@@ -104,6 +116,9 @@ public class JDLTokener extends Tokener{
 
 	public TextEntity encodeRelationshipClazz(Association assoc) {
 		TextEntity result = new TextEntity();
+		if(assoc == null || assoc.getClazz() == null) {
+			return result;
+		}
 		result.withTag(assoc.getClazz().getName());
 		TextEntity values = new TextEntity();
 		values.withTag("["+JsonObject.START);
@@ -114,6 +129,9 @@ public class JDLTokener extends Tokener{
 	}
 
 	private String getCardinality(Association assoc) {
+		if(assoc == null || assoc.getOther() == null) {
+			return null;
+		}
 		if(assoc.getCardinality()==Cardinality.ONE) {
 			if(assoc.getOther().getCardinality()==Cardinality.ONE) {
 				return "OneToOne";

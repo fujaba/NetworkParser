@@ -82,6 +82,9 @@ public class MapEntityStack {
 	 * @return XMLTokener Instance
 	 */
 	public MapEntityStack withStack(String tag, Object item, SendableEntityCreator creator) {
+		if(creator == null) {
+			return this;
+		}
 		stack.add(item, creator);
 		tags.add(tag);
 		String[] properties = creator.getProperties();
@@ -132,6 +135,9 @@ public class MapEntityStack {
 	}
 
 	private int getEntityPos(String entity) {
+		if(entity == null) {
+			return -1;
+		}
 		int start=entity.lastIndexOf(IdMap.ENTITYSPLITTER);
 		int pos = this.tags.size() - 1;
 		for(int end=start-1;end>=0;end --) {

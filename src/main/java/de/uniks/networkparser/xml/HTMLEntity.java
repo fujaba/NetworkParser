@@ -92,6 +92,9 @@ public class HTMLEntity implements BaseItem {
 
 	public XMLEntity createScript(String value, XMLEntity parentNode) {
 		XMLEntity node = new XMLEntity().setType(SCRIPT).withKeyValue("language", "Javascript");
+		if(value == null) {
+			return node;
+		}
 		if(value.endsWith(".js") && value.indexOf("\n")<0) {
 			// May be a Link
 			if(parentNode == null) {
@@ -116,6 +119,9 @@ public class HTMLEntity implements BaseItem {
 	}
 
 	protected String parseItem(EntityStringConverter converter) {
+		if(converter == null) {
+			return null;
+		}
 		StringBuilder sb = new StringBuilder();
 		sb.append("<html>");
 		converter.add();
@@ -228,6 +234,9 @@ public class HTMLEntity implements BaseItem {
 		if(parentNode == null) {
 			parentNode = this.body;
 		}
+		if(tag == null) {
+			return null;
+		}
 		String[] tags = tag.split("\\.");
 		XMLEntity parent = null, child = null, firstChild = null;
 		for(int i=tags.length-1;i>=0;i--) {
@@ -271,7 +280,7 @@ public class HTMLEntity implements BaseItem {
 
 	public HTMLEntity withGraph(GraphModel value) {
 		URL resource = GraphList.class.getResource("");
-		if(resource == null) {
+		if(resource == null || value == null) {
 			return this;
 		}
 		String graph = value.toString(new GraphConverter());
@@ -279,7 +288,7 @@ public class HTMLEntity implements BaseItem {
 	}
 	public HTMLEntity withGraph(JsonObject value) {
 		URL resource = GraphList.class.getResource("");
-		if(resource == null) {
+		if(resource == null || value == null) {
 			return this;
 		}
 		return withGraph(value.toString(2), resource.toString());
@@ -356,17 +365,21 @@ public class HTMLEntity implements BaseItem {
 		XMLEntity item = new XMLEntity();
 		EntityList headerList = this.header.getElementsBy(key, value);
 		EntityList bodyList = this.body.getElementsBy(key, value);
-		int z=0;
-		for(z=0;z<headerList.sizeChildren();z++) {
-			BaseItem child = headerList.getChild(z);
-			if(child instanceof EntityList) {
-				item.withChild((EntityList) child);
+		int z;
+		if(headerList != null) {
+			for(z=0;z<headerList.sizeChildren();z++) {
+				BaseItem child = headerList.getChild(z);
+				if(child instanceof EntityList) {
+					item.withChild((EntityList) child);
+				}
 			}
 		}
-		for(z=0;z<bodyList.sizeChildren();z++) {
-			BaseItem child = bodyList.getChild(z);
-			if(child instanceof EntityList) {
-				item.withChild((EntityList) child);
+		if(bodyList != null) {
+			for(z=0;z<bodyList.sizeChildren();z++) {
+				BaseItem child = bodyList.getChild(z);
+				if(child instanceof EntityList) {
+					item.withChild((EntityList) child);
+				}
 			}
 		}
 		return item;

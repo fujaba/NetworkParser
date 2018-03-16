@@ -84,6 +84,13 @@ public class NodeProxyBroker extends NodeProxy {
 		}
 		return success;
 	}
+	
+	public void executeException(Exception e) {
+		if(this.callBack != null) {
+			SimpleEvent event = new SimpleEvent(this, url, null, session).withType(NodeProxyBroker.EVENT_CONNECTLOST);
+			callBack.update(event);
+		}
+	}
 
 	public String getClientId() {
 		return clientId;
@@ -125,6 +132,9 @@ public class NodeProxyBroker extends NodeProxy {
 		} else if(MessageSession.TYPE_MQTT.equals(format)) {
 			MQTTMessage msg = MQTTMessage.create(MQTTMessage.MESSAGE_TYPE_DISCONNECT);
 			session.sending(this, msg, false);
+		}
+		if(executorService != null) {
+			executorService.shutdownNow();
 		}
 		return session.close();
 	}

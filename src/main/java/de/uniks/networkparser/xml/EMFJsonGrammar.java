@@ -42,10 +42,10 @@ public class EMFJsonGrammar extends SimpleGrammar {
 	@Override
 	public BaseItem getProperties(Entity item, MapEntity map, boolean isId) {
 		JsonObject props= new JsonObject();
-		if(item.has(PROP)){
+		if(item != null && item.has(PROP)){
 			String key = item.getString(PROP);
 			String value = item.getString(NV);
-            SendableEntityCreator creator = getCreator(Grammar.READ, null, map, value);
+			SendableEntityCreator creator = getCreator(Grammar.READ, null, map, value);
 
 			if(creator!=null){
 				props.put(key, new JsonObject().withValue(SRC, value));
@@ -95,6 +95,9 @@ public class EMFJsonGrammar extends SimpleGrammar {
 
 	@Override
 	public String getId(Object obj, IdMap map) {
+		if(obj == null) {
+			return null;
+		}
 		String name = obj.getClass().getName();
 		int pos = name.lastIndexOf(".");
 		if (pos > 0) {
@@ -105,6 +108,9 @@ public class EMFJsonGrammar extends SimpleGrammar {
 
 	@Override
 	public String getValue(Entity item, String property) {
+		if(item == null) {
+			return null;
+		}
 		if (IdMap.ID.equals(property)) {
 			return item.getString(SRC);
 		}
@@ -113,6 +119,9 @@ public class EMFJsonGrammar extends SimpleGrammar {
 
 	@Override
 	public boolean hasValue(Entity json, String property) {
+		if(property == null) {
+			return false;
+		}
 		if(property.equals(IdMap.ID)){
 			property = SRC;
 		}
@@ -121,7 +130,7 @@ public class EMFJsonGrammar extends SimpleGrammar {
 
 	@Override
 	public Entity writeBasicValue(Entity entity, String className, String id, IdMap map) {
-		if(id != null) {
+		if(id != null && entity != null) {
 			entity.put(SRC, id);
 		}
 		return entity;

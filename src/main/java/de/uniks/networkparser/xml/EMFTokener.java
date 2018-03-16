@@ -118,6 +118,9 @@ public class EMFTokener extends Tokener{
 	}
 
 	public XMLEntity encode(Object entity, MapEntity map) {
+		if(entity == null || map == null) {
+			return null;
+		}
 		if(entity instanceof GraphList) {
 			return  encodeClassModel((GraphList)entity, map);
 		}
@@ -134,6 +137,9 @@ public class EMFTokener extends Tokener{
 	public XMLEntity encodeClassModel(GraphList entity, MapEntity map) {
 		XMLContainer container = new XMLContainer();
 		container.withStandardPrefix();
+		if(entity == null || map == null) {
+			return container;
+		}
 
 		XMLEntity root = container.createChild(EPACKAGE);
 		root.withKeyValue("xmi:version", "2.0");
@@ -238,6 +244,9 @@ public class EMFTokener extends Tokener{
 		}
 		// build root entity
 		String tag = xmlEntity.getTag();
+		if(tag == null) {
+			return null;
+		}
 		String[] splitTag = tag.split("\\:");
 		if(splitTag.length<2) {
 			return null;
@@ -292,6 +301,9 @@ public class EMFTokener extends Tokener{
 	}
 
 	private Object decodingClassModel(XMLEntity values, GraphModel model) {
+		if(values == null || model == null) {
+			return null;
+		}
 		SimpleKeyValueList<String, Clazz> items = new SimpleKeyValueList<String, Clazz>();
 		for(int c=0;c<values.sizeChildren();c++) {
 			BaseItem item = values.getChild(c);
@@ -327,13 +339,11 @@ public class EMFTokener extends Tokener{
 						found = new Association(clazz);
 						found.with(key);
 						SimpleList<String> refs = getRef(key, child, null);
-						for (String ref : refs)
-                  {
-                     Association back = new Association(items.get(ref));
-                     found.with(back);
-                  }
+						for (String ref : refs) {
+							Association back = new Association(items.get(ref));
+							found.with(back);
+						}
 					}
-
 					if(value.indexOf("/", 1) > 0) {
 						// To Many
 						found.with(Cardinality.MANY);
@@ -346,8 +356,11 @@ public class EMFTokener extends Tokener{
 	}
 
 	private SimpleList<String> getRef(String value, XMLEntity xmlEntity, SendableEntityCreator rootFactory) {
+		if(value == null) {
+			return null;
+		}
 		SimpleList<String> result = new SimpleList<String>();
-	   if (value.startsWith("//@")) {
+		if (value.startsWith("//@")) {
 			for (String ref : value.split(" ")) {
 				String myRef = "_" + ref.substring(3);
 				if (myRef.indexOf('.') > 0) {
@@ -389,6 +402,9 @@ public class EMFTokener extends Tokener{
 
 	@SuppressWarnings("unchecked")
 	private void parsing(XMLEntity xmlEntity, SendableEntityCreator entityFactory, Object entityObject, String rootId) {
+		if(xmlEntity == null || this.map == null) {
+			return;
+		}
 		String id = (String) xmlEntity.getValue(XMI_ID);
 		Collection<Object> rootCollection = null;
 		if (id == null) {
@@ -560,6 +576,9 @@ public class EMFTokener extends Tokener{
 		if(model == null) {
 			model = new GraphList();
 		}
+		if(ecore ==null) {
+			return model;
+		}
 		SimpleList<Entity> superClazzes = new SimpleList<Entity>();
 
 		// add classes
@@ -673,6 +692,9 @@ public class EMFTokener extends Tokener{
 	}
 
 	private Association getOrCreate(SimpleKeyValueList<String, Association> items, GraphList model, String className, String roleName) {
+		if(items == null) {
+			return null;
+		}
 		if(className != null ) {
 			int pos = className.indexOf("/");
 			if(pos>0) {
@@ -707,6 +729,9 @@ public class EMFTokener extends Tokener{
 	public XMLEntity toXMI(GraphList list) {
 		XMLContainer container = new XMLContainer();
 		container.withStandardPrefix();
+		if(list == null) {
+			return container;
+		}
 
 		XMLEntity root = container.createChild("uml:Model");
 		root.withKeyValue("xmlns:xmi", "http://www.omg.org/XMI");
@@ -741,6 +766,9 @@ public class EMFTokener extends Tokener{
 	}
 
 	public void encodePackagedElementClass(XMLEntity root, Clazz clazz) {
+		if(clazz == null || root == null) {
+			return;
+		}
 		root.setType("packagedElement");
 		root.withKeyValue(XMI_ID, clazz.getId());
 		root.withKeyValue(NAME, clazz.getName());
@@ -784,12 +812,13 @@ public class EMFTokener extends Tokener{
 		for(Method method : methods) {
 			encodeOwnedOperation(root.createChild(null), method);
 		}
-		/*
-        result += this.operations.reduce((acc, method) => acc + method.toString(), '');
-       */
+		/* result += this.operations.reduce((acc, method) => acc + method.toString(), '');  */
 	}
 
 	public void encodeOwnedValue(XMLEntity root, Value value) {
+		if(root == null || value == null) {
+			return;
+		}
 		if(value instanceof Attribute) {
 			root.setType("ownedAttribute");
 		} else {
@@ -818,6 +847,9 @@ public class EMFTokener extends Tokener{
 	}
 
 	public void encodeOwnedOperation(XMLEntity root, Method method) {
+		if(root == null || method == null) {
+			return;
+		}
 		root.setType("ownedOperation");
 		root.withKeyValue(XMI_ID, method.getName());
 		root.withKeyValue(NAME, method.getName());
@@ -828,7 +860,7 @@ public class EMFTokener extends Tokener{
 		for(Parameter param : parameter) {
 			encodeOwnedValue(root.createChild(null), param);
 		}
-        // return type
+		// return type
 		DataType returnType = method.getReturnType();
 		if(method.getReturnType().equals(DataType.VOID) == false) {
 			XMLEntity returnChild = root.createChild("ownedParameter");
@@ -854,20 +886,26 @@ public class EMFTokener extends Tokener{
 	}
 
 	public void encodeAssoc(XMLEntity root, Association assoc) {
+		if(root == null || assoc == null || assoc.getOther() == null) {
+			return;
+		}
 		root.setType("packagedElement");
 		root.withKeyValue(XMI_TYPE, assoc.getType());
 		root.withKeyValue(XMI_ID, assoc.getName());
 		root.withKeyValue(NAME, assoc.getName());
 		root.withKeyValue("memberEnd", "_end-"+assoc.getName()+" _end-"+assoc.getOther().getName());
 
-        // source
+		// source
 		encodeSubAssoc(root, assoc);
 
-        //target
-        encodeSubAssoc(root, assoc.getOther());
+		//target
+		encodeSubAssoc(root, assoc.getOther());
 	}
 
 	public void encodeSubAssoc(XMLEntity root, Association assoc) {
+		if(root == null || assoc == null || assoc.getClazz() == null) {
+			return;
+		}
 		XMLEntity child = root.createChild("ownedEnd");
 		root.withKeyValue(XMI_TYPE, "uml:Property");
 		root.withKeyValue(XMI_ID, assoc.getName());
@@ -891,6 +929,9 @@ public class EMFTokener extends Tokener{
 	}
 
 	private void encodeAnnotations(XMLEntity child) {
+		if(child == null) {
+			return;
+		}
 		String modelid="_modelid";
 		child.setType("eAnnotations");
 		child.withKeyValue(XMI_ID, modelid);

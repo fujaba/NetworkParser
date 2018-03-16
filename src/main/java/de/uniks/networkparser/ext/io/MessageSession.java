@@ -357,7 +357,7 @@ public class MessageSession {
 			response.analysePayLoad(broker);
 			return response;
 		} catch (IOException e) {
-			e.printStackTrace();
+			broker.executeException(e);
 		}
 		return null;
 	}
@@ -390,6 +390,7 @@ public class MessageSession {
 			MQTTMessage response = MQTTMessage.readFrom(diInput);
 			return response;
 		} catch (IOException e) {
+			broker.executeException(e);
 		}
 		return null;
 	}
@@ -701,7 +702,7 @@ public class MessageSession {
 					response.analysePayLoad(broker);
 					return response;
 				}
-				if(TYPE_XMPP.equals(broker.getFormat())) {
+				if(TYPE_MQTT.equals(broker.getFormat())) {
 					MQTTMessage resonse = MQTTMessage.readFrom(diInput);
 					
 					return resonse;

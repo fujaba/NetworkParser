@@ -46,6 +46,9 @@ public class HTMLGrammar extends SimpleGrammar{
 
 	@Override
 	public BaseItem encode(Object entity, MapEntity map) {
+		if(entity == null || map == null) {
+			return null;
+		}
 		HTMLEntity rootItem=new HTMLEntity();
 		rootItem.withEncoding(HTMLEntity.ENCODING);
 		Entity child = map.encode(entity);
@@ -63,7 +66,7 @@ public class HTMLGrammar extends SimpleGrammar{
 					return true;
 				}
 			}
-			if(value.equals(item.getKey())) {
+			if(value != null && value.equals(item.getKey())) {
 				String property = value.toString();
 				value.set(item.getValue());
 				value.replace(DEEP, ""+deep);
@@ -78,7 +81,7 @@ public class HTMLGrammar extends SimpleGrammar{
 	@Override
 	public Entity writeBasicValue(Entity entity, String className, String id, IdMap map) {
 		CharacterBuffer value = new CharacterBuffer().with(className);
-		if(transformValue(value, 0, true)) {
+		if(transformValue(value, 0, true) && entity != null) {
 //			if(value.charAt(0) == IdMap.ENTITYSPLITTER) {
 //				entity = map.convertProperty(value, parent);
 //			} else {

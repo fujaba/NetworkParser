@@ -105,6 +105,9 @@ public class PomFile implements SendableEntityCreatorTag, BaseItem{
 	}
 
 	public PomFile withDependency(PomFile value) {
+		if(value == null) {
+			return this;
+		}
 		value.withTag("dependency");
 		this.dependencies.add( value );
 		return this;
@@ -133,6 +136,9 @@ public class PomFile implements SendableEntityCreatorTag, BaseItem{
 	}
 
 	private void addChildren(StringBuilder sb, String spaces) {
+		if(sb == null) {
+			return;
+		}
 		for(String property : getProperties()) {
 			Object value = getValue(this, property);
 			if(value!=null){
@@ -257,7 +263,7 @@ public class PomFile implements SendableEntityCreatorTag, BaseItem{
 	}
 
 	private Object getChild(XMLEntity xmlEntity, String value) {
-		if(value == null) {
+		if(value == null || xmlEntity == null) {
 			return null;
 		}
 
