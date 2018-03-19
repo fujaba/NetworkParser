@@ -35,6 +35,9 @@ public class UpdateAccumulate {
 
 	public boolean changeItem(Object source, Object target, String property) {
 		SendableEntityCreator creator = map.getCreatorClass(source);
+		if(creator == null) {
+			return false;
+		}
 		Object defaultItem = creator.getSendableInstance(true);
 		Object oldValue = creator.getValue(source, property);
 		Object newValue = creator.getValue(source, property);
@@ -122,6 +125,9 @@ public class UpdateAccumulate {
 	}
 
 	private void addChange(UpdateListener listener, Object source, SendableEntityCreator creator, String property, Object oldValue, Object newValue) {
+		if(listener == null) {
+			return;
+		}
 		if(this.change == null) {
 			this.change = listener.change(property, source, creator, oldValue, newValue);
 		} else {

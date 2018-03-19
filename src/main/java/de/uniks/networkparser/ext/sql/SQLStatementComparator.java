@@ -31,6 +31,14 @@ public class SQLStatementComparator implements Comparator<Object>, Serializable{
 
 	@Override
 	public int compare(Object o1, Object o2) {
+		if(o1 instanceof SQLStatement == false || o2 instanceof SQLStatement) {
+			if(o1 != null) {
+				if(o1.equals(o2)) {
+					return 0;
+				}
+			}
+			return -1;
+		}
 		SQLStatement s1 = (SQLStatement) o1;
 		SQLStatement s2 = (SQLStatement) o2;
 		SQLCommand c1 = s1.getCommand();

@@ -12,6 +12,9 @@ public class TextItems extends SimpleKeyValueList<String, String> implements Sen
 
 	@Override
 	public Object getValue(Object entity, String attribute) {
+		if(entity instanceof TextItems == false) {
+			return null;
+		}
 		return ((TextItems) entity).get(attribute);
 	}
 
@@ -58,6 +61,9 @@ public class TextItems extends SimpleKeyValueList<String, String> implements Sen
 			return text;
 		}
 		if(this.defaultLabel == false) {
+			return null;
+		}
+		if(label == null) {
 			return null;
 		}
 		return label.toString();

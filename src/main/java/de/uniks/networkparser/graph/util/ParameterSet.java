@@ -46,4 +46,9 @@ public class ParameterSet extends SimpleSet<Parameter>{
 	public ParameterSet hasName(String otherValue) {
 		return filter(Parameter.NAME.equals(otherValue));
 	}
+	
+	@Override
+	public ParameterSet getNewList(boolean keyValue) {
+		return new ParameterSet();
+	}
 }

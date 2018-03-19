@@ -59,6 +59,9 @@ public class AssociationSet extends SimpleSet<Association> {
 
 	@Override
 	public boolean add(Association newValue) {
+		if(newValue == null) {
+			return false;
+		}
 		if(newValue.getOther() != null) {
 			if(indexOf(newValue.getOther()) >= 0) {
 				return false;
@@ -80,5 +83,10 @@ public class AssociationSet extends SimpleSet<Association> {
 			return super.contains(((Association) o).getOther());
 		}
 		return false;
+	}
+	
+	@Override
+	public AssociationSet getNewList(boolean keyValue) {
+		return new AssociationSet();
 	}
 }

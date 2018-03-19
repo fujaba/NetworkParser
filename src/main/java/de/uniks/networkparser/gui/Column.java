@@ -395,6 +395,9 @@ public class Column implements SendableEntityCreatorNoIndex {
 	@Override
 	public Object getValue(Object entity, String attribute) {
 		String attrName;
+		if(attribute == null || entity instanceof Column == false) {
+			return null;
+		}
 		int pos = attribute.indexOf(".");
 		if (pos > 0) {
 			attrName = attribute.substring(0, pos);
@@ -438,6 +441,9 @@ public class Column implements SendableEntityCreatorNoIndex {
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value,
 			String type) {
+		if(entity instanceof Column == false) {
+			return false;
+		}
 		Column that = (Column) entity;
 
 		if (attribute.equalsIgnoreCase(PROPERTY_ATTRIBUTE)) {

@@ -155,11 +155,8 @@ public class Style implements Cloneable, SendableEntityCreatorNoIndex {
 
 	@Override
 	public Style clone() {
-		return clone(new Style());
-	}
-
-	public Style clone(Style prototyp) {
-		return prototyp.withFontFamily(fontfamily).withFontSize(fontsize)
+		Style newInstance = getSendableInstance(false);
+		return newInstance.withFontFamily(fontfamily).withFontSize(fontsize)
 				.withForground(forground).withBackground(background)
 				.withBold(bold).withItalic(italic).withAlignment(alignment)
 				.withUnderline(underline).withWidth(width).withHeight(height);
@@ -372,7 +369,7 @@ public class Style implements Cloneable, SendableEntityCreatorNoIndex {
 	}
 
 	@Override
-	public Object getSendableInstance(boolean prototyp) {
+	public Style getSendableInstance(boolean prototyp) {
 		return new Style();
 	}
 

@@ -90,4 +90,9 @@ public class ClazzSet extends SimpleSet<Clazz> {
 	public Clazz[] toArray() {
 		return super.toArray(new Clazz[size()]);
 	}
+	
+	@Override
+	public ClazzSet getNewList(boolean keyValue) {
+		return new ClazzSet();
+	}
 }

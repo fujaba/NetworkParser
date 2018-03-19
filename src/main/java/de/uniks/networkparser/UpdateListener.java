@@ -245,7 +245,8 @@ public class UpdateListener implements MapListener {
 	 * @return 					the MasterObject, if successful
 	 */
 	public Object execute(Entity updateMessage, Filter filter) {
-		if(!updateMessage.has(SendableEntityCreator.UPDATE) && !updateMessage.has(SendableEntityCreator.REMOVE)) {
+		
+		if(updateMessage == null || (updateMessage.has(SendableEntityCreator.UPDATE) == false && !updateMessage.has(SendableEntityCreator.REMOVE))) {
 			return null;
 		}
 		if(this.map == null) {
@@ -384,7 +385,7 @@ public class UpdateListener implements MapListener {
 					return element;
 				}
 			}
-		} else {
+		} else if(creator != null){
 			creator.setValue(element, key, newValue, typ);
 			if(this.map.notify(new SimpleEvent(typ, null, map, key, null, newValue).withModelValue(element))){
 				return element;

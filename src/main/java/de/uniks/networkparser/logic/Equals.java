@@ -44,6 +44,9 @@ public class Equals implements ParserCondition, SendableEntityCreator {
 	private int position = -1;
 
 	private Object getValue(ObjectCondition condition, Object evt) {
+		if(evt instanceof LocalisationInterface == false) {
+			return null;
+		}
 		LocalisationInterface li = (LocalisationInterface) evt;
 		if (condition instanceof ParserCondition) {
 			return ((ParserCondition)condition).getValue(li);

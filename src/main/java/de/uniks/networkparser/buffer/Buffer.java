@@ -389,6 +389,9 @@ public abstract class Buffer implements BufferItem {
 
 	@Override
 	public boolean skipTo(String search, boolean order, boolean notEscape) {
+		if(search == null) {
+			return false;
+		}
 		char[] character = search.toCharArray();
 		int z = 0;
 		int strLen = character.length;
@@ -453,6 +456,9 @@ public abstract class Buffer implements BufferItem {
 
 	@Override
 	public boolean checkValues(char... items) {
+		if(items == null) {
+			return false;
+		}
 		char current = getCurrentChar();
 		for (char item : items) {
 			if (current == item) {
@@ -483,6 +489,9 @@ public abstract class Buffer implements BufferItem {
 	@Override
 	public SimpleList<String> splitStrings(String value, boolean split) {
 		SimpleList<String> result = new SimpleList<String>();
+		if(value == null) {
+			return result;
+		}
 		if (value.startsWith("\"") && value.endsWith("\"")) {
 			result.add(value.substring(1, value.length() - 1));
 			return result;

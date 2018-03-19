@@ -53,4 +53,9 @@ public class ModifierSet extends SimpleSet<Modifier> {
 	public ModifierSet hasName(String otherValue) {
 		return filter(Modifier.NAME.equals(otherValue));
 	}
+	
+	@Override
+	public ModifierSet getNewList(boolean keyValue) {
+		return new ModifierSet();
+	}
 }

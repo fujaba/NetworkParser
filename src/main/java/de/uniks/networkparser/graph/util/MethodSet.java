@@ -71,4 +71,9 @@ public class MethodSet extends SimpleSet<Method>{
 	public MethodSet hasName(String otherValue) {
 		return filter(Method.NAME.equals(otherValue));
 	}
+	
+	@Override
+	public MethodSet getNewList(boolean keyValue) {
+		return new MethodSet();
+	}
 }

@@ -78,6 +78,9 @@ public class SimpleObject implements SendableEntityCreatorIndexId, SendableEntit
 	}
 
 	public boolean setValue(String key, Object value) {
+		if(key == null) {
+			return false;
+		}
 		key = key.trim();
 		boolean checked = false;
 		Object oldValue = null;

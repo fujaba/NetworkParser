@@ -70,10 +70,13 @@ public class TableList extends SortedList<Object> implements SendableEntity, Sen
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value,
 			String type) {
-		if (SendableEntityCreator.REMOVE.equalsIgnoreCase(type)) {
-			attribute += SendableEntityCreator.REMOVE;
+		if(entity instanceof TableList) {
+			if (SendableEntityCreator.REMOVE.equalsIgnoreCase(type)) {
+				attribute += SendableEntityCreator.REMOVE;
+			}
+			return ((TableList) entity).setValue(attribute, value);
 		}
-		return ((TableList) entity).setValue(attribute, value);
+		return false;
 	}
 
 	public boolean setIdMap(IdMap map) {

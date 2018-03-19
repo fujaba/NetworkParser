@@ -176,6 +176,9 @@ public class SimpleEntity<K, V> implements BaseItem, Entry<K, V>,
 
 	@Override
 	public Object getValue(Object entity, String attribute) {
+		if(entity instanceof Entry == false) {
+			return null;
+		}
 		Entry<?, ?> obj = ((Entry<?, ?>) entity);
 		if (PROPERTY_KEY.equalsIgnoreCase(attribute)) {
 			return obj.getKey();

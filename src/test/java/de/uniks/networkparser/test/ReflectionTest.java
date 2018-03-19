@@ -19,7 +19,7 @@ public class ReflectionTest {
 		System.out.println(Thread.activeCount());
 		ReflectionBlackBoxTester tester = new ReflectionBlackBoxTester();
 		NetworkParserLog logger=new NetworkParserLog();
-//		logger.withFlag(NetworkParserLog.LOGLEVEL_ALL).withListener(output);
+		logger.withFlag(NetworkParserLog.LOGLEVEL_ALL).withListener(output);
 		tester.test("de.uniks.networkparser", logger);
 		Assert.assertNotNull(tester);
 		System.out.println(""+System.currentTimeMillis()+" FINISH:"+Thread.activeCount());

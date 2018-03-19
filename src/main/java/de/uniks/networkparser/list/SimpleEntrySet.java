@@ -72,7 +72,10 @@ public class SimpleEntrySet<K, V> implements Set<Entry<K, V>>{
 
 	@Override
 	public boolean add(Entry<K, V> e) {
-		return this.map.add(e.getKey(), e.getValue());
+		if(e!= null) {
+			return this.map.add(e.getKey(), e.getValue());
+		}
+		return false;
 	}
 
 	@Override

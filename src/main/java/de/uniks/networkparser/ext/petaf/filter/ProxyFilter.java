@@ -68,6 +68,9 @@ public class ProxyFilter implements ObjectCondition {
 
 	@Override
 	public boolean update(Object value) {
+		if(value instanceof SimpleEvent == false) {
+			return false;
+		}
 		SimpleEvent evt = (SimpleEvent) value;
 		NodeProxy creator = null;
 		if(evt.getModelValue() != null) {

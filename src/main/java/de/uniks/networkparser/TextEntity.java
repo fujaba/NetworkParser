@@ -28,7 +28,10 @@ public class TextEntity implements EntityList {
 	}
 
 	private String parseItem(EntityStringConverter converter) {
-		CharacterBuffer sb = new CharacterBuffer().with(converter.getPrefixFirst());
+		CharacterBuffer sb = new CharacterBuffer();
+		if(converter != null) {
+			sb.with(converter.getPrefixFirst());
+		}
 		sb.with(this.tag);
 		 if(this.children != null) {
 			 for(int i=0;i<this.children.size();i++) {

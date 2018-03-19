@@ -244,9 +244,12 @@ public class DialogBox implements ObjectCondition{
 		ObjectCondition condition = new ObjectCondition() {
 			@Override
 			public boolean update(Object value) {
-				boolean active = (Boolean) value;
-				 ReflectionLoader.call("pseudoClassStateChanged", root, ReflectionLoader.PSEUDOCLASS, ACTIVE_PSEUDO_CLASS, boolean.class, active);
-				return true;
+				if(value instanceof Boolean) {
+					boolean active = (Boolean) value;
+					 ReflectionLoader.call("pseudoClassStateChanged", root, ReflectionLoader.PSEUDOCLASS, ACTIVE_PSEUDO_CLASS, boolean.class, active);
+					return true;
+				}
+				return false;
 			}
 		};
 
