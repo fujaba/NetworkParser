@@ -1,24 +1,31 @@
 package de.uniks.networkparser.ext.petaf;
 
 import java.util.concurrent.Callable;
+import java.util.function.Supplier;
 
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
-public class UpdateModel implements Callable<Object>, Runnable {
+public class UpdateModel implements Callable<Object>, Runnable,Supplier<Object> {
 	private Object newValue;
-	protected Object oldValue;
+//	protected Object oldValue;
 	private String property;
 	private Object entity;
 	private ModelThread owner;
 	private String id;
 
-	public UpdateModel(ModelThread owner, Object element, String property, Object oldValue, Object newValue) {
+	public UpdateModel(ModelThread owner, Object element, String property, Object newValue) {
 		this.owner = owner;
 		this.entity = element;
 		this.property = property;
-		this.oldValue = oldValue;
+//		this.oldValue = oldValue;
 		this.newValue = newValue;
+	}
+	
+	public UpdateModel(ModelThread owner, String id, String property) {
+		this.owner = owner;
+		this.id = id;
+		this.property = property;
 	}
 	
 	public UpdateModel withId(String id) {
@@ -32,11 +39,26 @@ public class UpdateModel implements Callable<Object>, Runnable {
 	}
 
 	@Override
+	public Object get() {
+		return call();
+	}
+
+	@Override
 	public Object call() {
 		try{
 			SendableEntityCreator creator;
 			IdMap map = this.owner.getMap();
 			Object element;
+
+			if(this.id != null && this.entity == null) {
+				element = map.getObject(this.id);
+				if(this.property != null) {
+					creator = map.getCreatorClass(entity);
+					return creator.getValue(element, property);
+				}
+				return element;
+			}
+
 			if(this.entity instanceof String) {
 				String className = (String) this.entity;
 				creator = map.getCreator(className, true);
@@ -57,5 +79,4 @@ public class UpdateModel implements Callable<Object>, Runnable {
 		}
 		return false;
 	}
-
 }
