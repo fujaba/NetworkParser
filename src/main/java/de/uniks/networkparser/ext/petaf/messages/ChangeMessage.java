@@ -25,7 +25,6 @@ public class ChangeMessage extends ReceivingTimerTask {
 	private Object oldValue;
 	private Object newValue;
 
-
 	public ChangeMessage() {
 		ChangeMessage.props.add(PROPERTY_ID, PROPERTY_PROPERTY, PROPERTY_OLD, PROPERTY_NEW, PROPERTY_CHANGECLASS);
 	}

@@ -27,12 +27,12 @@ public class SimpleTimerTask extends TimerTask {
 
 	@Override
 	public void run() {
-         try{
-        	updateLastRun();
-         	runTask();
-         }catch(Exception e){
-       		 handler.saveException(e, false);
-         }
+		try{
+			updateLastRun();
+			runTask();
+		}catch(Exception e){
+			handler.saveException(e, false);
+		}
 	}
 
 	public void updateLastRun() {

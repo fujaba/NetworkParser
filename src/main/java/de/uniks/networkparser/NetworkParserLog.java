@@ -73,17 +73,22 @@ public class NetworkParserLog extends Handler {
 	public static final String ERROR_TYP_CONCURRENTMODIFICATION = "CONCURRENTMODIFICATION";
 	public static final String ERROR_TYP_NOCREATOR = "NOCREATORFOUND";
 	public static final String ERROR_TYP_DUPPLICATE = "DUPPLICATE";
-	public static final byte LOGLEVEL_INFO = 1;
-	public static final byte LOGLEVEL_WARNING = 2;
-	public static final byte LOGLEVEL_ERROR = 4;
-	public static final byte LOGLEVEL_ALL = 7;
+	public static final byte LOGLEVEL_TRACE = 1;
+	public static final byte LOGLEVEL_DEBUG = 2;
+	public static final byte LOGLEVEL_INFO = 4;
+	public static final byte LOGLEVEL_WARNING = 8;
+	public static final byte LOGLEVEL_ERROR = 16;
+	public static final byte LOGLEVEL_FATAL = 32;
+	public static final byte LOGLEVEL_ALL = 63;
+	public static final String TRACE = "TRACE";
+	public static final String DEBUG = "DEBUG";
 	public static final String INFO = "INFO";
 	public static final String WARNING = "WARNING";
-	public static final String DEBUG = "DEBUG";
 	public static final String ERROR = "ERROR";
+	public static final String FATAL = "FATAL";
 	public static final String LOG = "LOG";
 
-	private byte flag = 5; // ERROR + INFO
+	private byte flag = LOGLEVEL_ERROR + LOGLEVEL_INFO; // ERROR + INFO
 	private ObjectCondition condition;
 
 	/**
@@ -215,6 +220,10 @@ public class NetworkParserLog extends Handler {
 		}
 		this.info(record.getSourceClassName(), record.getSourceMethodName(), record.getMessage());
 	}
+	
+	public void trace(Object owner, String method, String message, Object... params) {
+		
+	}
 
 	@Override
 	public void flush() {
@@ -223,7 +232,7 @@ public class NetworkParserLog extends Handler {
 	@Override
 	public void close() throws SecurityException {
 	}
-	
+
 	public static NetworkParserLog createLogger(byte flag, boolean removeConsoleHandler, ObjectCondition... conditions) {
 		if(global != null) {
 			return global;
@@ -245,5 +254,10 @@ public class NetworkParserLog extends Handler {
 		global = logger;
 		return logger;
 	}
+	
 	static NetworkParserLog global;
+
+	public boolean isLevel(byte logLevel) {
+		return (flag & logLevel) != 0;
+	}
 }
