@@ -23,10 +23,9 @@ public class ModelChange implements Comparable<ModelChange>{
 		return "" + key + " " + (receiver==null?"":receiver.toString());
 	}
 
-	public String getFullKey()
-	{
+	public String getFullKey() {
 		String format = String.format("%%0%dd", 20);
-	    return String.format(format, key)+"!"+receiver;
+		return String.format(format, key)+"!"+receiver;
 	}
 
 	@Override

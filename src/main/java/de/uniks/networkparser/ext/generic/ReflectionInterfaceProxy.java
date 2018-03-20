@@ -3,7 +3,7 @@ package de.uniks.networkparser.ext.generic;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 
-public class ReflectionInterfaceProxy implements InvocationHandler{
+public class ReflectionInterfaceProxy implements InvocationHandler {
 	private Object obj;
 
 	public ReflectionInterfaceProxy(Object obj) {

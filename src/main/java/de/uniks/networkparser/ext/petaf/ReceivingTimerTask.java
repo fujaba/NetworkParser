@@ -16,11 +16,11 @@ public abstract class ReceivingTimerTask extends Message implements Runnable {
 
 	@Override
 	public void run() {
-         try{
-         	runTask();
-         }catch(Exception e){
-       		 handler.saveException(e, false);
-         }
+		try{
+			runTask();
+		}catch(Exception e){
+			handler.saveException(e, false);
+		}
 	}
 
 	public Space getSpace() {

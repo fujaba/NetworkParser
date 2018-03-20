@@ -1,5 +1,10 @@
 package de.uniks.networkparser;
 
+import java.util.logging.ConsoleHandler;
+import java.util.logging.Handler;
+import java.util.logging.LogRecord;
+import java.util.logging.Logger;
+
 import de.uniks.networkparser.ext.LogItem;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 
@@ -63,7 +68,7 @@ THE SOFTWARE.
  * @version $Id: Log.java 1432663 2013-01-13 17:24:18Z tn $
  * @author Stefan Lindel
  */
-public class NetworkParserLog {
+public class NetworkParserLog extends Handler {
 	public static final String ERROR_TYP_PARSING = "PARSING";
 	public static final String ERROR_TYP_CONCURRENTMODIFICATION = "CONCURRENTMODIFICATION";
 	public static final String ERROR_TYP_NOCREATOR = "NOCREATORFOUND";
@@ -187,4 +192,58 @@ public class NetworkParserLog {
 		this.condition = condition;
 		return this;
 	}
+
+	@Override
+	public void publish(LogRecord record) {
+		 // <li>SEVERE (highest value)
+		 // <li>WARNING
+		// <li>INFO
+		// <li>CONFIG
+		// <li>FINE
+		// <li>FINER
+		// <li>FINEST  (lowest value)
+		if(global != null && global != this) {
+			global.publish(record);;
+			return;
+		}
+		String level = record.getLevel().toString();
+		if("SEVERE".equals(level)) {
+			this.error(record.getSourceClassName(), record.getSourceMethodName(), record.getMessage());
+		}
+		if("WARNING".equals(level)) {
+			this.warn(record.getSourceClassName(), record.getSourceMethodName(), record.getMessage());
+		}
+		this.info(record.getSourceClassName(), record.getSourceMethodName(), record.getMessage());
+	}
+
+	@Override
+	public void flush() {
+	}
+
+	@Override
+	public void close() throws SecurityException {
+	}
+	
+	public static NetworkParserLog createLogger(byte flag, boolean removeConsoleHandler, ObjectCondition... conditions) {
+		if(global != null) {
+			return global;
+		}
+		// suppress the logging output to the console
+		Logger rootLogger = Logger.getLogger("");
+		NetworkParserLog logger = new NetworkParserLog().withFlag(flag);
+		if(conditions != null && conditions.length>0) {
+			logger.withListener(conditions[0]);
+		}
+		if(removeConsoleHandler) {
+			Handler[] handlers = rootLogger.getHandlers();
+			if(handlers != null && handlers.length>0 && handlers[0] instanceof ConsoleHandler)
+			if (handlers[0] instanceof ConsoleHandler) {
+				rootLogger.removeHandler(handlers[0]);
+			}
+		}
+		rootLogger.addHandler(new NetworkParserLog());
+		global = logger;
+		return logger;
+	}
+	static NetworkParserLog global;
 }
