@@ -11,13 +11,73 @@ ext{
 //----------------------
 
 ant.importBuild 'buildAnt.xml'
-ant.importBuild 'gource.xml'
 ant.importBuild 'Copyright.xml'
-ant.importBuild 'ikvm.xml'
-gource.group "Git"
-makefilm.group "Git"
-ikvm.group "Git"
 AddCopyRightToSource.group "Build"
+
+
+def execute(String... args) {
+	if(args.length == 1) {
+		args = args[0].split(" ")
+	}
+	ByteArrayOutputStream stdOutput = new ByteArrayOutputStream()
+	//org.apache.tools.ant.util.TeeOutputStream tee = new org.apache.tools.ant.util.TeeOutputStream(standardOutput, System.out)
+	
+	exec{
+		commandLine args
+		standardOutput = stdOutput
+	}
+	stdOutput.toString()
+}
+def copyFile(String source, String dest) {
+	InputStream is = null;
+	OutputStream os = null;
+	try {
+		is = new FileInputStream(new File(source));
+		os = new FileOutputStream(new File(dest));
+		byte[] buffer = new byte[1024];
+		int length;
+		while ((length = is.read(buffer)) > 0) {
+			os.write(buffer, 0, length);
+		}
+	} finally {
+		is.close();
+		os.close();
+	}
+}
+def unzip(String src, String dest) {
+	byte[] buffer = new byte[1024];
+	java.util.zip.ZipInputStream zis = new java.util.zip.ZipInputStream(new FileInputStream(src));
+	java.util.zip.ZipEntry zipEntry = zis.getNextEntry();
+	while(zipEntry != null) {
+		String fileName = zipEntry.getName()
+		if(zipEntry.isDirectory() == false) {
+			File newFile = new File(dest+"/" + fileName)
+			if(newFile.getParentFile().exists() == false) {
+				newFile.getParentFile().mkdirs()
+			}
+			FileOutputStream fos = new FileOutputStream(newFile)
+			int len
+			while ((len = zis.read(buffer)) > 0) {
+				fos.write(buffer, 0, len);
+			}
+			fos.close()
+		}
+		zipEntry = zis.getNextEntry();
+	}
+	zis.closeEntry();
+	zis.close();
+}
+def delete(File file) {
+	if(file.isDirectory()) {
+		File[] contents = file.listFiles();
+		if (contents != null) {
+			for (File f : contents) {
+				deleteDir(f);
+			}
+		}
+	}
+	file.delete();
+}
 
 apply from: 'gradle/version.gradle'
 apply from: 'gradle/tasks.gradle'

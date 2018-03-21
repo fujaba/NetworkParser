@@ -2,8 +2,8 @@ import java.text.SimpleDateFormat
 
 ext{
 	try{
-		buildAntCompile.execute()
-		buildAnt.execute()
+		//buildAntCompile.execute()
+		//buildAnt.execute()
 		project.ext.Revisionnumber = Integer.parseInt(ant.Revisionnumber)
 		if (project.hasProperty("branch")) {
 			project.ext.Branchname = ant.Branchname + " " + project.get("branch")
@@ -79,34 +79,10 @@ def buildTime() {
 	return df.format(new Date())
 }
 
-def executeCommand(String[] args) {
-	def pb = new ProcessBuilder(args)
-	def result = ""
-	InputStream is = null
-	ByteArrayOutputStream stdout
-	try {
-		def prs = pb.start()
-		is = prs.getInputStream();
-		byte[] b = new byte[1024];
-		int size = 0;
-		stdout = new ByteArrayOutputStream();
-		while((size = is.read(b)) != -1){
-			stdout.write(b, 0, size);
-		}
-		result = stdout.toString()
-	} catch (Exception e) {
-	} finally{
-		try {
-			if(is != null) is.close();
-			if(stdout != null) stdout.close();
-		} catch (Exception ex){}
-	}
-	result
-}
 def getGitTag() {
 	def gittag=0
 	def test = [0]
-	executeCommand("git", "tag").eachLine {
+	execute("git", "tag").eachLine {
 		try {
 			def id = it.trim()
 			def start = id.indexOf(".")
@@ -127,7 +103,7 @@ def getGitTag() {
 }
 def getGitLastCommit() {
 	def gittag=""
-	executeCommand("git", "log", "--pretty=format:\"%H\"", "-1").eachLine {
+	execute("git", "log", "--pretty=format:\"%H\"", "-1").eachLine {
 		gittag = it.trim()
 	}
 	gittag
@@ -135,7 +111,7 @@ def getGitLastCommit() {
 
 def revisionNumber() {
 	def count = 0
-	executeCommand("git", "log", "--oneline").eachLine {
+	execute("git", "log", "--oneline").eachLine {
 		count = count + 1
 	}
 	if( count == 0) {
@@ -146,10 +122,10 @@ def revisionNumber() {
 def getWorkingBranch() {
 	// Triple double-quotes for the breaklines
 	def commit, branch="", value
-	executeCommand("git", "rev-parse", "HEAD").eachLine {
+	execute("git", "rev-parse", "HEAD").eachLine {
 		commit = it.trim()
 		println "Commit: "+commit
-		executeCommand("git", "branch", "-r", "--contains", commit).eachLine {
+		execute("git", "branch", "-r", "--contains", commit).eachLine {
 			if(it.startsWith("* ")) {
 				value = it.substring(1).trim()
 			} else {

@@ -61,24 +61,22 @@ public class Server_Time extends Thread implements Server{
 	{
 		Thread.currentThread().setName(this.port+" time server");
 		ByteBuffer in = ByteBuffer.allocate(8192);
-	    ByteBuffer out = ByteBuffer.allocate(8);
-	    out.order(ByteOrder.BIG_ENDIAN);
+		ByteBuffer out = ByteBuffer.allocate(8);
+		out.order(ByteOrder.BIG_ENDIAN);
 	
 		while (!isInterrupted()&&this.run)
 		{
 			try
 			{
-
 				in.clear();
-		        SocketAddress client = channel.receive(in);
-		        System.err.println(client);
-				 out.clear();
-				 long secondsSince1900 = getTime();
-		        out.putLong(secondsSince1900);
-		        out.flip();
-		        // skip over the first four bytes to make this an unsigned int
-		        out.position(4);
-		        channel.send(out, client);
+				SocketAddress client = channel.receive(in);
+				out.clear();
+				long secondsSince1900 = getTime();
+				out.putLong(secondsSince1900);
+				out.flip();
+				// skip over the first four bytes to make this an unsigned int
+				out.position(4);
+				channel.send(out, client);
 			}
 			catch (IOException e) {
 

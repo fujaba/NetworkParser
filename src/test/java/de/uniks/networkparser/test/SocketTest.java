@@ -13,7 +13,7 @@ public class SocketTest {
 	public void testTimeServer() {
 		Server_Time server_Time = new Server_Time(true);
 		try {
-			Thread.sleep(1000);
+			Thread.sleep(100000);
 		} catch (Exception e) {
 		}
 		server_Time.close();

@@ -17,6 +17,8 @@ addons:
   #srcclr: true
   sonarcloud:
     organization: "Fujaba"
+    branches:
+      - master
 before_script:
   - sudo service postgresql stop || true
   - sudo service mysql stop || true
@@ -41,4 +43,4 @@ after_success:
   - ./gradlew version build uploadArchives
   - ./gradlew jacocoTestReport coveralls
   # other script steps might be done before running the actual sonarcloud analysis
-  - ./sonarcube.sh
+  - sonar-scanner

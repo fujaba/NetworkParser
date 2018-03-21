@@ -207,12 +207,12 @@ public class SimpleController implements ObjectCondition{
 				return null;
 			}
 			ProcessBuilder processBuilder = new ProcessBuilder(items);
-		    Map< String, String > environment = processBuilder.environment();
-		    environment.put("CLASSPATH", System.getProperty("java.class.path"));
+			Map< String, String > environment = processBuilder.environment();
+			environment.put("CLASSPATH", System.getProperty("java.class.path"));
 			// ReflectionLoader.PROCESSBUILDERREDIRECT
-		    if(outputFile == null && this.outputParameter != null) {
-		    	outputFile = this.outputParameter;
-		    }
+			if(outputFile == null && this.outputParameter != null) {
+				outputFile = this.outputParameter;
+			}
 			if(isEclipse == false || this.outputParameter != null) {
 				if(outputFile != null) {
 					if (outputFile.equalsIgnoreCase("inherit")) {
@@ -223,7 +223,6 @@ public class SimpleController implements ObjectCondition{
 						if (pos > 0) {
 							ReflectionLoader.call("redirectError", processBuilder, File.class, new File(outputFile.substring(0, pos) + "_error" + outputFile.substring(pos)));
 							ReflectionLoader.call("redirectOutput", processBuilder, File.class, new File(outputFile.substring(0, pos) + "_stdout" + outputFile.substring(pos)));
-
 						} else {
 							ReflectionLoader.call("redirectError", processBuilder, File.class, new File(outputFile + "_error.txt"));
 							ReflectionLoader.call("redirectOutput", processBuilder, File.class, new File(outputFile + "_stdout.txt"));

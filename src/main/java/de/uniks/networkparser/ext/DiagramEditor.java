@@ -6,9 +6,6 @@ import java.io.IOException;
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.net.MalformedURLException;
 import java.net.Socket;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 import de.uniks.networkparser.DateTimeEntity;
@@ -170,8 +167,8 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 				return false;
 			}
 		}
-		DateFormat formatter = new SimpleDateFormat("yyyyMMdd_HHmmss");
-		name = name + "_" + formatter.format(new Date().getTime()) + ".json";
+		DateTimeEntity entity = new DateTimeEntity();
+		name = name + "_" + entity.toString("yyyyMMdd_HHmmss") + ".json";
 		return FileBuffer.writeFile(name, model.toString());
 	}
 
