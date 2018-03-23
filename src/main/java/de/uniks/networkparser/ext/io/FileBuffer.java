@@ -237,14 +237,16 @@ public class FileBuffer extends Buffer {
 	}
 
 	public static final CharacterBuffer readFile(String file) {
-		File content=new File(file);
+		return readFile(new File(file));
+	}
+	public static final CharacterBuffer readFile(File file) {
 		CharacterBuffer sb = new CharacterBuffer();
-		if(content.exists()){
+		if(file.exists()){
 			final byte[] buffer = new byte[BUFFER];
 			int read;
 			FileInputStream is = null;
 			try {
-				is = new FileInputStream(content);
+				is = new FileInputStream(file);
 				do {
 					read = is.read(buffer, 0, buffer.length);
 					if (read>0) {

@@ -1,5 +1,28 @@
 package de.uniks.networkparser.ext.git;
 
+/*
+The MIT License
+
+Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+*/
 import java.io.File;
 import java.io.IOException;
 import java.util.Iterator;
@@ -8,9 +31,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.ext.generic.ReflectionLoader;
+import de.uniks.networkparser.ext.io.FileBuffer;
 import de.uniks.networkparser.json.JsonArray;
 import de.uniks.networkparser.json.JsonObject;
+import de.uniks.networkparser.list.SimpleKeyValueList;
 
 public class GitRevision {
 	public static final String MAYOR="mayor";
@@ -24,7 +50,8 @@ public class GitRevision {
 
 	public static void main(String[] args) throws IOException {
 		GitRevision revision = new GitRevision();
-		System.out.println(revision.execute());
+//		System.out.println(revision.execute());
+		System.out.println(revision.createdComment("src/main/java/de/uniks/networkparser/", "src/main/resources/Licence.txt"));
 	}
 	private boolean full=false;
 
@@ -243,5 +270,62 @@ public class GitRevision {
 		}catch(Exception e) {
 		}
 		return null;
+	}
+	
+	private SimpleKeyValueList<String, Integer> createdComment(String sourcePath, String licenceFile){
+		SimpleKeyValueList<String, Integer> values = new SimpleKeyValueList<String, Integer>();
+		values.put("LOC", 0);
+		
+		CharacterBuffer licence = FileBuffer.readFile(licenceFile);
+		createdComment(sourcePath, licence, values);
+		return values;
+	}
+	
+	private void createdComment(String sourcePath, CharacterBuffer licence, SimpleKeyValueList<String, Integer> values){
+		File path= new File(sourcePath);
+
+		File[] listFiles = path.listFiles();
+		if(listFiles == null) {
+			return;
+		}
+		for (File child : listFiles){
+			if(child == null) {
+				continue;
+			}
+
+			if(child.isDirectory()){
+				createdComment(sourcePath+child.getName()+ "/", licence, values);
+			} else {
+				if(!child.getAbsolutePath().endsWith(".java")){
+					continue;
+				}
+//				ParserEntity parser = new ParserEntity();
+//				Clazz create = parser.parse(FileBuffer.readFile(child));
+//				values.put("LOC", values.get("LOC") + parser.getLOC());
+//				lineofCode += source.getLineOfCode();
+//				String customComment = source.getCustomComment();
+//				if(customComment.length()>0){
+//					 customItems.put(customComment, source.getFileName());
+////					 System.out.println("Thirdparty-Source (" +source.getFileName()+":1)");
+//					 String relativ = source.getFileName().substring(new File("src\\main\\java").getAbsolutePath().length() + 1);
+//					 int pos = relativ.lastIndexOf("\\");
+//					 System.out.println("Thirdparty-Source "+relativ.replaceAll("\\\\", ".")+"("+relativ.substring(pos+1)+":1)");
+//					 thirdparty++;
+//					 continue;
+//				 }
+//				if(source.skipComment()){
+//					skip++;
+//					continue;
+//				}
+//				if(source.changeComment(commentFile.getComment())){
+//					System.out.println(source.getFileName());
+//					change++;
+//
+//					source.write();
+//				} else {
+//					ok++;
+//				}
+			}
+		}
 	}
 }

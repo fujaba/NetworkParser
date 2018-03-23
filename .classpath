@@ -30,6 +30,5 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.buildship.core.gradleclasspathcontainer"/>
-	<classpathentry kind="lib" path="lib/findbugs/lib/ant.jar"/>
 	<classpathentry kind="output" path="bin/default"/>
 </classpath>
