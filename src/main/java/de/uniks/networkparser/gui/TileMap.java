@@ -85,6 +85,7 @@ public class TileMap implements SendableEntityCreatorTag {
 
 	/**
 	 * Return the Position of the Background Sprite
+	 * @param ebene Ebene of background
 	 * @param backgroundPos Background Positoin 0..n
 	 * @return Position of Background Pos
 	 */
@@ -98,6 +99,7 @@ public class TileMap implements SendableEntityCreatorTag {
 	
 
 	/** Return the Position of Sprite
+	 * @param ebene Ebene of background
 	 * @param pos The Position 00..n
 	 * @return The Position
 	 */

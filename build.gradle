@@ -78,7 +78,29 @@ apply from: 'gradle/tasks.gradle'
 apply plugin: 'jacoco'
 apply plugin: 'eclipse'
 apply plugin: 'idea'
-apply plugin: 'findbugs'
+
+
+//buildscript {
+//	repositories {
+//			maven {url "https://plugins.gradle.org/m2/"}
+//	}
+//	dependencies {
+//		classpath "gradle.plugin.com.github.spotbugs:spotbugs-gradle-plugin:1.6.1"
+//		}
+//	}
+
+if(JavaVersion.current() != JavaVersion.VERSION_1_8){
+	println "JavaVersion:" + JavaVersion.current() + " (1.9)"
+	sourceCompatibility = 1.9
+	targetCompatibility = 1.9
+//	apply plugin: "com.github.spotbugs"
+} else {
+	println "JavaVersion:" + JavaVersion.current() + " (1.8)"
+	sourceCompatibility = 1.8
+	targetCompatibility = 1.8
+	apply plugin: 'findbugs'
+}
+
 apply plugin: 'checkstyle'
 apply plugin: "com.github.kt3k.coveralls"
 apply from: 'gradle/mavencentral.gradle'
@@ -175,17 +197,6 @@ if (project.hasProperty('branch')) {
 
 test.finalizedBy jacocoTestReport
 
-
-if(JavaVersion.current() != JavaVersion.VERSION_1_8){
-	println "JavaVersion:" + JavaVersion.current() + " (1.9)"
-	sourceCompatibility = 1.9
-	targetCompatibility = 1.9
-} else {
-	println "JavaVersion:" + JavaVersion.current() + " (1.8)"
-	sourceCompatibility = 1.8
-	targetCompatibility = 1.8
-}
-
 defaultTasks 'test', 'jacocoTestReport', 'buildJavadoc'
 
 tasks.withType(Checkstyle) {
@@ -195,9 +206,10 @@ tasks.withType(Checkstyle) {
 		html.enabled true
 		html.destination = "build/checkStyle.html"
 	}
+	showViolations = false
+	ignoreFailures = true
 }
-
-task findbugs(type: FindBugs) {
+tasks.withType(FindBugs) {
 	reports {
 		xml.enabled = false
 		html.enabled = true
@@ -205,8 +217,12 @@ task findbugs(type: FindBugs) {
 	}
 	classes = fileTree(dir: 'build/classes/main18')
 	source = sourceSets.main.java
-	classpath = (fileTree(dir: 'build/classes/main18')+ sourceSets.main.compileClasspath)
-}
+	//classpath += fileTree(dir: 'build/classes/main18')
+	//+ sourceSets.main.compileClasspath)
+	sourceCompatibility = '1.8'
+	targetCompatibility = '1.8'
+
+	}
 
 
 
