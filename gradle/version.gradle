@@ -1,5 +1,22 @@
 import java.text.SimpleDateFormat
 
+task JavaGit(type:JavaExec, dependsOn:compileJava) {
+	
+	errorOutput = System.err
+	main = "de.uniks.networkparser.ext.git.GitRevision"
+	classpath = (sourceSets.main.compileClasspath + sourceSets.main.output)
+	ByteArrayOutputStream stdOutput = new ByteArrayOutputStream()
+	standardOutput = stdOutput
+	doLast {
+		def slurper = new groovy.json.JsonSlurper()
+		def result = slurper.parseText(stdOutput.toString())
+		println result.get("branchname")
+	}
+
+}
+
+
+
 ext{
 	try{
 		//buildAntCompile.execute()
@@ -36,7 +53,7 @@ task version {
 		println "Branchname: " 		+ project.ext.Branchname
 		println "LastCommit: "		+ project.ext.LastCommit
 		println "GitTag: "			+ project.ext.GitTag
-    }
+	}
 }
 
 // Define a method using a closure as the method body

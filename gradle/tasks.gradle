@@ -150,29 +150,12 @@ task FinishTest() {
 	}
 }
 
-task compileIKVM(type: JavaCompile) {
-	source = fileTree(dir: 'src', exclude: ['**/test/**'])
-	destinationDir = file('build/classes/ikvm')
-	sourceCompatibility = '1.8'
-	targetCompatibility = '1.8'
-	classpath = files('build/classes/ikvm')
-}
-
-task ikvm(type: Jar, dependsOn: compileIKVM) {
+task ikvm(type: Jar, dependsOn: compileJava18) {
 	description "Crosscompile Networkparser with IKVM.NET to .Net Dll"
-	group "Git"
+	group "Jar"
 	doLast {
 		unzip("lib/ikvm-8.1.5717.0.zip", "build/ikvm" )
-		List<String> result = new ArrayList<String>()
-		result.add("build\\ikvm\\bin\\ikvmc.exe")
-		result.add("-out:build/networkparser.dll")
-		result.add("-target:library")
-		result.add("-version:"+gitVersion.major+"."+gitVersion.minor+"."+gitVersion.revision)
-		result.add("-recurse:build/classes/ikvm")
-		for(int i=0;i<result.size();i++) {
-			print result.get(i)+" "
-		}
-		println executeCommand(result.toArray(new String[result.size]))
+		execute("build/ikvm/bin/ikvmc.exe -out:build/networkparser.dll -target:library -version:"+gitVersion.major+"."+gitVersion.minor+"."+gitVersion.revision+" -recurse:build/classes/main18")
 		copyFile("build/ikvm/bin/IKVM.OpenJDK.Core.dll", "build/IKVM.OpenJDK.Core.dll")
 		copyFile("build/ikvm/bin/IKVM.OpenJDK.Util.dll", "build/IKVM.OpenJDK.Util.dll")
 		copyFile("build/ikvm/bin/IKVM.Runtime.dll", "build/IKVM.Runtime.dll")
@@ -182,7 +165,7 @@ task ikvm(type: Jar, dependsOn: compileIKVM) {
 
 task gource(type: Jar) {
 	description "Visualization Git-Changes with Gource"
-	group "Git"
+	group "documentation"
 	doLast {
 		unzip("lib/gource-0.42.win32.zip", "build/avi" )
 		execute("build/avi/gource.exe -o build/NetworkParser.ppm --title NetworkParser -s 1 -a 1 -c 4")

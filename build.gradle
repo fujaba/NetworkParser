@@ -10,18 +10,12 @@ ext{
 }
 //----------------------
 
-ant.importBuild 'buildAnt.xml'
-ant.importBuild 'Copyright.xml'
-AddCopyRightToSource.group "Build"
-
-
 def execute(String... args) {
 	if(args.length == 1) {
 		args = args[0].split(" ")
 	}
 	ByteArrayOutputStream stdOutput = new ByteArrayOutputStream()
-	//org.apache.tools.ant.util.TeeOutputStream tee = new org.apache.tools.ant.util.TeeOutputStream(standardOutput, System.out)
-	
+
 	exec{
 		commandLine args
 		standardOutput = stdOutput
@@ -84,7 +78,8 @@ apply from: 'gradle/tasks.gradle'
 apply plugin: 'jacoco'
 apply plugin: 'eclipse'
 apply plugin: 'idea'
-
+apply plugin: 'findbugs'
+apply plugin: 'checkstyle'
 apply plugin: "com.github.kt3k.coveralls"
 apply from: 'gradle/mavencentral.gradle'
 //apply from: 'gradle/artifactory.gradle'
@@ -121,8 +116,11 @@ buildscript {
 	}
 	dependencies {
 		classpath "org.kt3k.gradle.plugin:coveralls-gradle-plugin:[2,)"
-		classpath 'com.moowork.gradle:gradle-node-plugin:[1,)'
+		classpath "com.moowork.gradle:gradle-node-plugin:[1,)"
 	}
+}
+dependencies {
+	compile "org.eclipse.jgit:org.eclipse.jgit:[4,)"
 }
 
 artifacts { 
@@ -189,21 +187,44 @@ if(JavaVersion.current() != JavaVersion.VERSION_1_8){
 }
 
 defaultTasks 'test', 'jacocoTestReport', 'buildJavadoc'
+
+tasks.withType(Checkstyle) {
+	configFile = new File("src/test/resources/de/uniks/networkparser/test/sun_checks.xml")
+	reports {
+		xml.enabled false
+		html.enabled true
+		html.destination = "build/checkStyle.html"
+	}
+}
+
+task findbugs(type: FindBugs) {
+	reports {
+		xml.enabled = false
+		html.enabled = true
+		html.destination = "build/FindBugs.html"
+	}
+	classes = fileTree(dir: 'build/classes/main18')
+	source = sourceSets.main.java
+	classpath = (fileTree(dir: 'build/classes/main18')+ sourceSets.main.compileClasspath)
+}
+
+
+
+//NODE
 node {
 	version = '0.12.2'
 	npmVersion = '2.7.5'
 	download = false
 }
-
 task npmCacheConfig(type: NpmTask) {
-    description = "Configure the NPM cache"
-    def npmCacheDir = "${gradle.getGradleUserHomeDir()}/caches/npm"
-    outputs.files file(npmCacheDir)
-    args = [ 'config', 'set', 'cache', npmCacheDir ]
+	description = "Configure the NPM cache"
+	def npmCacheDir = "${gradle.getGradleUserHomeDir()}/caches/npm"
+	outputs.files file(npmCacheDir)
+	args = [ 'config', 'set', 'cache', npmCacheDir ]
 }
 task npmPackages(type: NpmTask, dependsOn: npmCacheConfig) {
-    description = "Install Node.js packages"
-    args = [ 'install' ]
-    inputs.files file('package.json')
-    outputs.files file('node_modules')
+	description = "Install Node.js packages"
+	args = [ 'install' ]
+	inputs.files file('package.json')
+	outputs.files file('node_modules')
 }

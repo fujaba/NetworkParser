@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE project>
-<project name="convertKey" default="converter" basedir=".">
-	<target name="converter" description="Convert GPGkey to hex">
-		<taskdef name="ConvertKey" classname="de.uniks.networkparser.test.ant.ConvertKey"  classpath="src/Ant:bin:NetworkParserAnt.jar"/>
-		<ConvertKey input="secring.gpg" />
-	</target>
-</project>

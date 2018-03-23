@@ -11,15 +11,19 @@ public class TileObject implements SendableEntityCreatorTag {
 	public static final String PROPERTY_GID="gid";
 	public static final String PROPERTY_WIDTH="width";
 	public static final String PROPERTY_HEIGHT="height";
+	public static final String PROPERTY_SOURCE="source";
+
 	public static final String PROPERTY_X="x";
 	public static final String PROPERTY_Y="y";
 	public String id;
 	public String name;
+	public String source;
 	public int gid;
 	public int x;
 	public int y;
 	public int width;
 	public int height;
+	public int count;
 
 	@Override
 	public Object getSendableInstance(boolean prototyp) {
@@ -51,6 +55,9 @@ public class TileObject implements SendableEntityCreatorTag {
 		if(PROPERTY_WIDTH.equalsIgnoreCase(attribute)) {
 			return tileObj.width;
 		}
+		if(PROPERTY_SOURCE.equalsIgnoreCase(attribute)) {
+			return tileObj.source;
+		}
 		if(PROPERTY_HEIGHT.equalsIgnoreCase(attribute)) {
 			return tileObj.height;
 		}
@@ -74,6 +81,10 @@ public class TileObject implements SendableEntityCreatorTag {
 		}
 		if(PROPERTY_NAME.equalsIgnoreCase(attribute)) {
 			tileObj.name = ""+value;
+			return true;
+		}
+		if(PROPERTY_SOURCE.equalsIgnoreCase(attribute)) {
+			tileObj.source = "" + value;
 			return true;
 		}
 		if(PROPERTY_GID.equalsIgnoreCase(attribute)) {

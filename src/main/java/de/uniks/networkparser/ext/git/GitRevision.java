@@ -24,7 +24,7 @@ public class GitRevision {
 
 	public static void main(String[] args) throws IOException {
 		GitRevision revision = new GitRevision();
-		revision.execute();
+		System.out.println(revision.execute());
 	}
 	private boolean full=false;
 
