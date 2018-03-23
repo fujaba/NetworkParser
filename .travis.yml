@@ -33,7 +33,6 @@ before_script:
   - unzip -P $SIGNITURE_PASSWORD signiture.zip
 before_install:
   - chmod +x gradlew
-  - chmod +x sonarcube.sh
 # safelist
 branches:
   only:
