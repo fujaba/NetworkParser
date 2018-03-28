@@ -29,6 +29,8 @@ import java.io.IOException;
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.net.MalformedURLException;
 import java.net.Socket;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 import de.uniks.networkparser.DateTimeEntity;
 import de.uniks.networkparser.IdMap;
@@ -83,6 +85,15 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 			server.withListener(new DiagramEditor());
 			if(server.start()) {
 				System.out.println("LISTEN ON: "+server.getKey());
+				if(ReflectionLoader.DESKTOP != null) {
+					Object desktop = ReflectionLoader.call("getDesktop", ReflectionLoader.DESKTOP);
+					if(desktop != null) {
+						try {
+							ReflectionLoader.call("browse", desktop, URI.class, new URI("http://"+server.getKey()));
+						} catch (URISyntaxException e) {
+						}
+					}
+				}
 			}
 		}
 	}

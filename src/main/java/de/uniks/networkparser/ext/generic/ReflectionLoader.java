@@ -54,6 +54,7 @@ public class ReflectionLoader {
 	public static final Class<?> INTEGERPROPERTY;
 	public static final Class<?> DOUBLEPROPERTY;
 
+	public static final Class<?> DESKTOP;
 	public static final Class<?> COLOR;
 	public static final Class<?> COLORPICKER;
 	public static final Class<?> PAINT;
@@ -248,6 +249,7 @@ public class ReflectionLoader {
 			TRAYICON = getClass("java.awt.TrayIcon");
 			AWTIMAGE = getClass("java.awt.Image");
 			PROCESSBUILDERREDIRECT = getClass("java.lang.ProcessBuilder.Redirect");
+			DESKTOP = getClass("java.awt.Desktop");
 		} else {
 			SYSTEMTRAY = null;
 			RECTANGLE = null;
@@ -261,6 +263,7 @@ public class ReflectionLoader {
 			TRAYICON = null;
 			AWTIMAGE = null;
 			PROCESSBUILDERREDIRECT = null;
+			DESKTOP = null;
 		}
 	}
 

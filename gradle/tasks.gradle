@@ -1,3 +1,4 @@
+apply from: 'gradle/version.gradle'
 String args="";
 try {
 	args = ""+gradle.startParameter.taskRequests.get(0).args
@@ -5,17 +6,9 @@ try {
 	e.printStackTrace()
 }
 
-gradle.projectsEvaluated {
-	if(args != "[buildLocalJar]") {
-		compileJava.dependsOn(compileJava16)
-		compileJava.dependsOn(compileJava17)
-		compileJava.dependsOn(compileJava18)
-		test.dependsOn(FinishTest)
-	}
-}
-
-ext.sharedManifest = manifest {
-	attributes 'Specification-Version': gitVersion.major+"."+gitVersion.minor+"."+gitVersion.revision,
+ext{
+	sharedManifest = manifest {
+			attributes 'Specification-Version': gitVersion.major+"."+gitVersion.minor+"."+gitVersion.revision,
 			'Implementation-Title': 'Networkparser',
 			'Specification-Title': 'Networkparser',
 			'Built-Time': gitVersion.buildTime,
@@ -28,7 +21,7 @@ ext.sharedManifest = manifest {
 			'Implementation-Version': gitVersion.major+"."+gitVersion.minor+"."+gitVersion.revision,
 			'GIT-Revision': gitVersion.revision,
 			'Hash': gitVersion.hash,
-			'Java-Version': "${System.properties['java.version']}",
+			'Java-Version': JavaVersion.current(),
 			'Bundle-Description': 'NetworkParser',
 			'Licence': 'MIT and Apache License 2.0',
 			'Homepage': 'https://github.com/fujaba/Networkparser',
@@ -36,6 +29,16 @@ ext.sharedManifest = manifest {
 			'Coverage': gitVersion.coverage,
 			'Main-Class': 'de.uniks.networkparser.ext.DiagramEditor',
 			'Bundle-ClassPath': '.'
+	}
+}
+
+gradle.projectsEvaluated {
+	if(args != "[buildLocalJar]") {
+		compileJava.dependsOn(compileJava16)
+		compileJava.dependsOn(compileJava17)
+		compileJava.dependsOn(compileJava18)
+		test.dependsOn(FinishTest)
+	}
 }
 
 task compileJava16(type: JavaCompile) {
@@ -58,6 +61,7 @@ task compileJava18(type: JavaCompile) {
 	sourceCompatibility = '1.8'
 	targetCompatibility = '1.8'
 	classpath = files('build/classes/main18')
+	tasks.version.execute()
 }
 
 jar {

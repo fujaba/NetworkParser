@@ -10,6 +10,33 @@ ext{
 }
 //----------------------
 
+repositories {
+	jcenter()
+	mavenCentral()
+}
+test {
+	// enable TestNG support (default is JUnit)
+	useJUnit {
+		dependencies {
+			implementation(group: 'junit', name: 'junit', version: '[4,)')
+			testImplementation group: 'org.xerial', name: 'sqlite-jdbc', version: '[3,)'
+		}
+	}
+}
+buildscript {
+	repositories {
+		maven {
+			url "https://plugins.gradle.org/m2/"
+		}
+	}
+	dependencies {
+		classpath "org.kt3k.gradle.plugin:coveralls-gradle-plugin:[2,)"
+		classpath "com.moowork.gradle:gradle-node-plugin:[1,)"
+	}
+}
+
+
+
 def execute(String... args) {
 	if(args.length == 1) {
 		args = args[0].split(" ")
@@ -73,11 +100,15 @@ def delete(File file) {
 	file.delete();
 }
 
-apply from: 'gradle/version.gradle'
 apply from: 'gradle/tasks.gradle'
 apply plugin: 'jacoco'
 apply plugin: 'eclipse'
 apply plugin: 'idea'
+
+
+
+
+
 
 
 //buildscript {
@@ -114,35 +145,6 @@ idea {
 		// jdkName = '1.7'
 		// languageLevel = '1.7'
 	}
-}
-
-repositories {
-	jcenter()
-	mavenCentral()
-}
-test {
-	// enable TestNG support (default is JUnit)
-	useJUnit {
-		dependencies {
-			implementation(group: 'junit', name: 'junit', version: '[4,)')
-			testImplementation group: 'org.xerial', name: 'sqlite-jdbc', version: '[3,)'
-		}
-	}
-}
-
-buildscript {
-	repositories {
-		maven {
-			url "https://plugins.gradle.org/m2/"
-		}
-	}
-	dependencies {
-		classpath "org.kt3k.gradle.plugin:coveralls-gradle-plugin:[2,)"
-		classpath "com.moowork.gradle:gradle-node-plugin:[1,)"
-	}
-}
-dependencies {
-	compile "org.eclipse.jgit:org.eclipse.jgit:[4,)"
 }
 
 artifacts { 
@@ -221,8 +223,7 @@ tasks.withType(FindBugs) {
 	//+ sourceSets.main.compileClasspath)
 	sourceCompatibility = '1.8'
 	targetCompatibility = '1.8'
-
-	}
+}
 
 
 

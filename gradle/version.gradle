@@ -1,71 +1,23 @@
 import java.text.SimpleDateFormat
 
-task JavaGit(type:JavaExec, dependsOn:compileJava) {
-	
-	errorOutput = System.err
-	main = "de.uniks.networkparser.ext.git.GitRevision"
-	classpath = (sourceSets.main.compileClasspath + sourceSets.main.output)
-	ByteArrayOutputStream stdOutput = new ByteArrayOutputStream()
-	standardOutput = stdOutput
-	doLast {
-		def slurper = new groovy.json.JsonSlurper()
-		def result = slurper.parseText(stdOutput.toString())
-		println result.get("branchname")
-	}
 
+repositories {
+	mavenCentral()
 }
-
-
-
-ext{
-	try{
-		//buildAntCompile.execute()
-		//buildAnt.execute()
-		project.ext.Revisionnumber = Integer.parseInt(ant.Revisionnumber)
-		if (project.hasProperty("branch")) {
-			project.ext.Branchname = ant.Branchname + " " + project.get("branch")
-		}else {
-			project.ext.Branchname = ant.Branchname
-		}
-		project.ext.LastCommit = ant.LastCommit
-		project.ext.GitTag = Integer.parseInt(ant.GitTag)
-	}catch(Exception e) {
-		println e
-		project.ext.Revisionnumber = revisionNumber()
-		if (project.hasProperty("branch")) {
-			project.ext.Branchname = project.get("branch")
-		} else {
-			project.ext.Branchname = getWorkingBranch()
-		}
-		project.ext.LastCommit = getGitLastCommit()
-		project.ext.GitTag = getGitTag()
-	}
-	gitVersion = new GITVersion(major: ext.majorNumber,minor: ext.GitTag, revision: ext.Revisionnumber, hash: ext.LastCommit, buildTime: buildTime(), branch: ext.Branchname, latest: project.hasProperty('latest'))
-}
-version = gitVersion
-task version {
-	group "Git"
-	description "Show Final Version of Repository"
-	doLast {
-		println gitVersion
-
-		println "Revisionnumber: "	+ project.ext.Revisionnumber
-		println "Branchname: " 		+ project.ext.Branchname
-		println "LastCommit: "		+ project.ext.LastCommit
-		println "GitTag: "			+ project.ext.GitTag
-	}
+dependencies {
+	compile "org.eclipse.jgit:org.eclipse.jgit:[4,)"
 }
 
 // Define a method using a closure as the method body
-public class GITVersion {
+class GITVersion {
 	// MAJOR VERSION - Manually set
 	int major = -1
 	int minor = -1
 	int revision = -1
-	String buildTime
+	String buildTime = ""
 	String hash = ""
 	String coverage = ""
-	String branch
+	String branch = ""
 	String prefix = ""
 	boolean latest
 
@@ -75,17 +27,77 @@ public class GITVersion {
 		}
 		if(latest) {
 			""
-		} else if(!isRelease() && !isMaster()) {
+		} else if(isRelease() == false && !isMaster()) {
 			"$major.$minor.$revision${'-SNAPSHOT'}"
 		} else {
 			"$major.$minor.$revision"
 		}
 	}
 	boolean isMaster() {
+		if(branch == null) {
+			return false;
+		}
 		return branch.contains("master")
 	}
 	boolean isRelease() {
+		if(branch == null) {
+			return false;
+		}
 		return branch.contains("release")
+	}
+}
+
+task JavaGit(type:JavaExec) {
+	errorOutput = System.err
+	main = "de.uniks.networkparser.ext.git.GitRevision"
+	classpath = (sourceSets.main.compileClasspath + sourceSets.main.output)
+
+	ByteArrayOutputStream stdOutput = new ByteArrayOutputStream()
+	standardOutput = stdOutput
+	doLast {
+		try {
+			def slurper = new groovy.json.JsonSlurper()
+			def json = slurper.parseText(stdOutput.toString())
+			gitVersion.minor = json.get("minor")
+			gitVersion.revision = json.get("revisionnumber")
+			gitVersion.hash = json.get("lastcommit")
+			gitVersion.buildTime = buildTime()
+			gitVersion.branch = json.get("branchname")
+		} catch(Exception e) {
+			println e
+
+			gitVersion.minor = getGitTag()
+			gitVersion.revision = revisionNumber()
+			gitVersion.hash = getGitLastCommit()
+			gitVersion.buildTime = buildTime()
+			if (project.hasProperty("branch")) {
+				gitVersion.branch = project.get("branch")
+			} else {
+				gitVersion.branch = getWorkingBranch()
+			}
+			gitVersion.latest = getGitLastCommit() != null
+		}
+	}
+}
+
+ext {
+	gitVersion = new GITVersion(major: ext.majorNumber)
+	println tasks.JavaGit
+	tasks.JavaGit.execute()
+}
+
+
+task version {
+	group "Git"
+	description "Show Final Version of Repository"
+	doLast {
+	
+	}
+	if(gitVersion != null) {
+		println "Revisionnumber: "	+ gitVersion.revision
+		println "Branchname: " 		+ gitVersion.branch
+		println "LastCommit: "		+ gitVersion.hash
+		println "GitTag: "			+ gitVersion.minor
 	}
 }
 
