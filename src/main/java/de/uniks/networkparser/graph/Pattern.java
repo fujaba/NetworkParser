@@ -3,23 +3,36 @@ package de.uniks.networkparser.graph;
 import java.util.Iterator;
 import java.util.List;
 
+import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.list.SimpleList;
+import de.uniks.networkparser.list.SimpleSet;
 import de.uniks.networkparser.logic.Equals;
 
 public class Pattern implements Iterator<Pattern>, Iterable<Pattern>{
-	private Pattern children;
-	private SimpleList<Object> candidates=new SimpleList<Object>();
+	private SimpleSet<Pattern> children;
+	private SimpleList<Object> candidates=null;
 	private Object match;
 	private ObjectCondition condition;
 	private Pattern root;
+	private IdMap map;
+	
+	public Pattern getRoot() {
+		return root;
+	}
+	
+	public IdMap getMap() {
+		return root.map;
+	}
 
 	public Pattern(Object match) {
 		this.match = match;
 		this.candidates.add(match);
+		this.root = this;
 	}
 	
 	public Pattern() {
+		this.root = this;
 	}
 
 	public Pattern has(String property) {
@@ -29,9 +42,13 @@ public class Pattern implements Iterator<Pattern>, Iterable<Pattern>{
 	public Pattern has(ObjectCondition condition) {
 		if(this.condition == null) {
 			this.condition = condition;
+			if(match == null)
 			return this;
 		}
 		Pattern subPattern = new Pattern().has(condition);
+		this.children.add(subPattern);
+		subPattern.root = this.root;
+		subPattern.find();
 		return subPattern;
 	}
 
@@ -59,6 +76,9 @@ public class Pattern implements Iterator<Pattern>, Iterable<Pattern>{
 	}
 
 	public boolean find() {
+		if(candidates == null) {
+			
+		}
 		if(condition == null || condition.update(candidates)) {
 			return true;
 		}

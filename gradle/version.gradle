@@ -47,10 +47,20 @@ class GITVersion {
 	}
 }
 
+task compileJavaSimple(type: JavaCompile) {
+	source = fileTree(dir: 'src', exclude: ['**/test/**'])
+	destinationDir = file('build/classes/java/main')
+	sourceCompatibility = '1.8'
+	targetCompatibility = '1.8'
+	classpath = sourceSets.main.output
+}
+
+
 task JavaGit(type:JavaExec) {
 	errorOutput = System.err
 	main = "de.uniks.networkparser.ext.git.GitRevision"
 	classpath = (sourceSets.main.compileClasspath + sourceSets.main.output)
+	classpath.each { println it }
 
 	ByteArrayOutputStream stdOutput = new ByteArrayOutputStream()
 	standardOutput = stdOutput
@@ -82,7 +92,7 @@ task JavaGit(type:JavaExec) {
 
 ext {
 	gitVersion = new GITVersion(major: ext.majorNumber)
-	println tasks.JavaGit
+	tasks.compileJavaSimple.execute()
 	tasks.JavaGit.execute()
 }
 

@@ -58,8 +58,15 @@ public class DataTypeSet extends DataType {
 		return this.value.getName(shortName) + "<" + generic.getInternName(shortName, primitivAllow) + ">";
 	}
 
-	public static DataTypeSet create(Object typ) {
-		return new DataTypeSet().withGeneric(DataType.create(typ));
+	public static DataTypeSet create(Object genericType) {
+		return new DataTypeSet().withGeneric(DataType.create(genericType));
+	}
+	public static DataTypeSet create(Clazz container, Object genericType) {
+		DataTypeSet list = new DataTypeSet().withGeneric(DataType.create(genericType));
+		if(container != null) {
+			list.value = container;
+		}
+		return list;
 	}
 
 	@Override

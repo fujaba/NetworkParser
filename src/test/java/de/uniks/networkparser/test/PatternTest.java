@@ -67,12 +67,14 @@ public class PatternTest {
 //		PawnPO pawnPO = fieldPO.createPawnsPO();
 
 //		ludoPO.getCurrentMatch();
-
-		while (ludoPO.isHasMatch()) {
-			System.out.println(
-					"LUDO: " + fieldPO.getCurrentMatch().getName() + " -- " + pawnPO.getCurrentMatch().getColor());
-			ludoPO.nextMatch();
-		}
+		
+		ludoPO.hasNext();
+//
+//		while (ludoPO.isHasMatch()) {
+//			System.out.println(
+//					"LUDO: " + fieldPO.getCurrentMatch().getName() + " -- " + pawnPO.getCurrentMatch().getColor());
+//			ludoPO.nextMatch();
+//		}
 		System.out.println("FINISH");
 	}
 
