@@ -7,11 +7,11 @@ import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SimpleSet;
-import de.uniks.networkparser.logic.Equals;
+import de.uniks.networkparser.logic.PatternCondition;
 
 public class Pattern implements Iterator<Pattern>, Iterable<Pattern>{
 	private SimpleSet<Pattern> children;
-	private SimpleList<Object> candidates=null;
+	private SimpleSet<Object> candidates=null;
 	private Object match;
 	private ObjectCondition condition;
 	private Pattern root;
@@ -27,6 +27,9 @@ public class Pattern implements Iterator<Pattern>, Iterable<Pattern>{
 
 	public Pattern(Object match) {
 		this.match = match;
+		if(candidates == null) {
+			candidates = new SimpleSet<Object>();
+		}
 		this.candidates.add(match);
 		this.root = this;
 	}
@@ -36,7 +39,7 @@ public class Pattern implements Iterator<Pattern>, Iterable<Pattern>{
 	}
 
 	public Pattern has(String property) {
-		return has(new Equals().withKey(property));
+		return has(new PatternCondition().withLinkName(property));
 	}
 	
 	public Pattern has(ObjectCondition condition) {
@@ -46,6 +49,9 @@ public class Pattern implements Iterator<Pattern>, Iterable<Pattern>{
 			return this;
 		}
 		Pattern subPattern = new Pattern().has(condition);
+		if(children == null) {
+			children = new SimpleSet<Pattern>();
+		}
 		this.children.add(subPattern);
 		subPattern.root = this.root;
 		subPattern.find();
