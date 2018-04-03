@@ -36,7 +36,6 @@ gradle.projectsEvaluated {
 	if(args != "[buildLocalJar]") {
 		compileJava.dependsOn(compileJava16)
 		compileJava.dependsOn(compileJava17)
-		compileJava.dependsOn(compileJava18)
 		test.dependsOn(FinishTest)
 	}
 }
@@ -54,14 +53,6 @@ task compileJava17(type: JavaCompile) {
 	sourceCompatibility = '1.7'
 	targetCompatibility = '1.7'
 	classpath = files('build/classes/main17')
-}
-task compileJava18(type: JavaCompile) {
-	source = fileTree(dir: 'src', exclude: ['**/test/**'])
-	destinationDir = file('build/classes/main18')
-	sourceCompatibility = '1.8'
-	targetCompatibility = '1.8'
-	classpath = files('build/classes/main18')
-	tasks.version.execute()
 }
 
 jar {

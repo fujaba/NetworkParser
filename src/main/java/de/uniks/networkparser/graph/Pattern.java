@@ -43,17 +43,17 @@ public class Pattern implements Iterator<Pattern>, Iterable<Pattern>{
 	}
 	
 	public Pattern has(ObjectCondition condition) {
-		if(this.condition == null) {
+		if(root != this && this.condition == null) {
 			this.condition = condition;
-			if(match == null)
 			return this;
 		}
-		Pattern subPattern = new Pattern().has(condition);
+		Pattern subPattern = new Pattern();
 		if(children == null) {
 			children = new SimpleSet<Pattern>();
 		}
 		this.children.add(subPattern);
 		subPattern.root = this.root;
+		subPattern.has(condition);
 		subPattern.find();
 		return subPattern;
 	}
@@ -85,7 +85,7 @@ public class Pattern implements Iterator<Pattern>, Iterable<Pattern>{
 		if(candidates == null) {
 			
 		}
-		if(condition == null || condition.update(candidates)) {
+		if(condition == null || condition.update(this)) {
 			return true;
 		}
 		//
