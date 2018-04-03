@@ -1,4 +1,4 @@
-package de.uniks.networkparser.test.model.ludo.creator;
+package de.uniks.networkparser.test.model.ludo.util;
 
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.test.model.ludo.Player;

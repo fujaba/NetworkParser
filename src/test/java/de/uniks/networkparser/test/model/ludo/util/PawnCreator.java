@@ -1,15 +1,17 @@
-package de.uniks.networkparser.test.model.ludo.creator;
+package de.uniks.networkparser.test.model.ludo.util;
 
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
-import de.uniks.networkparser.test.model.ludo.Dice;
+import de.uniks.networkparser.test.model.ludo.Pawn;
 
-public class DiceCreator implements SendableEntityCreator {
-   private final String[] properties = new String[]
-		   {
-			  Dice.PROPERTY_VALUE,
-			  Dice.PROPERTY_GAME,
-			  Dice.PROPERTY_PLAYER,
-		   };
+public class PawnCreator implements SendableEntityCreator {
+	private final String[] properties = new String[]
+		{
+			Pawn.PROPERTY_COLOR,
+			Pawn.PROPERTY_X,
+			Pawn.PROPERTY_Y,
+			Pawn.PROPERTY_PLAYER,
+			Pawn.PROPERTY_POS
+		};
 
 	@Override
 	public String[] getProperties() {
@@ -18,12 +20,12 @@ public class DiceCreator implements SendableEntityCreator {
 
 	@Override
 	public Object getSendableInstance(boolean reference) {
-		return new Dice();
+		return new Pawn();
 	}
 
 	@Override
 	public Object getValue(Object target, String attrName) {
-		return ((Dice) target).get(attrName);
+		return ((Pawn) target).get(attrName);
 	}
 
 	@Override
@@ -32,6 +34,6 @@ public class DiceCreator implements SendableEntityCreator {
 		if (SendableEntityCreator.REMOVE.equals(type)) {
 			attrName = attrName + type;
 		}
-		return ((Dice) target).set(attrName, value);
+		return ((Pawn) target).set(attrName, value);
 	}
 }

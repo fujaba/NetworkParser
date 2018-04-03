@@ -25,10 +25,12 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.LinkedHashSet;
 
+import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
+import de.uniks.networkparser.test.model.ludo.util.LabelSet;
 
 public class Field {
-	//==========================================================================
+	// ==========================================================================
 	public Object get(String attrName) {
 		if (PROPERTY_COLOR.equalsIgnoreCase(attrName)) {
 			return getColor();
@@ -72,7 +74,7 @@ public class Field {
 		return null;
 	}
 
-	//==========================================================================
+	// ==========================================================================
 	public boolean set(String attrName, Object value) {
 		if (PROPERTY_COLOR.equalsIgnoreCase(attrName)) {
 			setColor((String) value);
@@ -133,22 +135,23 @@ public class Field {
 		return false;
 	}
 
-	//==========================================================================
+	// ==========================================================================
 	protected PropertyChangeSupport listeners = null;
+
 	public void firePropertyChange(String propertyName, Object oldValue, Object newValue) {
-		if(listeners != null) {
+		if (listeners != null) {
 			listeners.firePropertyChange(propertyName, oldValue, newValue);
 		}
 	}
 
 	public void addPropertyChangeListener(PropertyChangeListener listener) {
-		if(listeners == null) {
+		if (listeners == null) {
 			listeners = new PropertyChangeSupport(this);
 		}
 		listeners.addPropertyChangeListener(listener);
 	}
 
-	//==========================================================================
+	// ==========================================================================
 	public void removeYou() {
 		setGame(null);
 		setNext(null);
@@ -162,7 +165,7 @@ public class Field {
 		firePropertyChange("REMOVE_YOU", this, null);
 	}
 
-   //==========================================================================
+	// ==========================================================================
 	public static final String PROPERTY_COLOR = "color";
 	private String color;
 
@@ -171,7 +174,7 @@ public class Field {
 	}
 
 	public void setColor(String value) {
-		if ( ! StrUtil.stringEquals(this.color, value)) {
+		if (!StrUtil.stringEquals(this.color, value)) {
 			String oldValue = this.color;
 			this.color = value;
 			firePropertyChange(PROPERTY_COLOR, oldValue, value);
@@ -193,7 +196,7 @@ public class Field {
 		return result.substring(1);
 	}
 
-	//==========================================================================
+	// ==========================================================================
 	public static final String PROPERTY_KIND = "kind";
 	private String kind;
 
@@ -202,7 +205,7 @@ public class Field {
 	}
 
 	public void setKind(String value) {
-		if ( ! StrUtil.stringEquals(this.kind, value)) {
+		if (!StrUtil.stringEquals(this.kind, value)) {
 			String oldValue = this.kind;
 			this.kind = value;
 			firePropertyChange(PROPERTY_KIND, oldValue, value);
@@ -214,7 +217,7 @@ public class Field {
 		return this;
 	}
 
-	//==========================================================================
+	// ==========================================================================
 	public static final String PROPERTY_X = "x";
 	private int x;
 
@@ -235,7 +238,7 @@ public class Field {
 		return this;
 	}
 
-	//==========================================================================
+	// ==========================================================================
 	public static final String PROPERTY_Y = "y";
 	private int y;
 
@@ -257,12 +260,12 @@ public class Field {
 	}
 
 	/********************************************************************
-	* <pre>
+	 * <pre>
 	*			  many					   one
 	* Field ----------------------------------- Ludo
 	*			  fields				   game
-	* </pre>
-	*/
+	 * </pre>
+	 */
 	public static final String PROPERTY_GAME = "game";
 	private Ludo game = null;
 
@@ -300,12 +303,12 @@ public class Field {
 	}
 
 	/********************************************************************
-	* <pre>
+	 * <pre>
 	*			  one					   one
 	* Field ----------------------------------- Field
 	*			  prev				   next
-	* </pre>
-	*/
+	 * </pre>
+	 */
 	public static final String PROPERTY_NEXT = "next";
 	private Field next = null;
 
@@ -342,22 +345,21 @@ public class Field {
 		return value;
 	}
 
-   /********************************************************************
-	* <pre>
+	/********************************************************************
+	 * <pre>
 	*			  one					   one
 	* Field ----------------------------------- Field
 	*			  next				   prev
-	* </pre>
-	*/
+	 * </pre>
+	 */
 
-   public static final String PROPERTY_PREV = "prev";
+	public static final String PROPERTY_PREV = "prev";
 
-   private Field prev = null;
+	private Field prev = null;
 
-   public Field getPrev()
-   {
-	  return this.prev;
-   }
+	public Field getPrev() {
+		return this.prev;
+	}
 
 	public boolean setPrev(Field value) {
 		boolean changed = false;
@@ -389,12 +391,12 @@ public class Field {
 	}
 
 	/********************************************************************
-	* <pre>
+	 * <pre>
 	*			  one					   one
 	* Field ----------------------------------- Field
 	*			  entry				   landing
-	* </pre>
-	*/
+	 * </pre>
+	 */
 	public static final String PROPERTY_LANDING = "landing";
 	private Field landing = null;
 
@@ -432,12 +434,12 @@ public class Field {
 	}
 
 	/********************************************************************
-	* <pre>
+	 * <pre>
 	*			  one					   one
 	* Field ----------------------------------- Field
 	*			  landing				   entry
-	* </pre>
-	*/
+	 * </pre>
+	 */
 	public static final String PROPERTY_ENTRY = "entry";
 	private Field entry = null;
 
@@ -475,12 +477,12 @@ public class Field {
 	}
 
 	/********************************************************************
-	* <pre>
+	 * <pre>
 	*			  one					   one
 	* Field ----------------------------------- Player
 	*			  start				   starter
-	* </pre>
-	*/
+	 * </pre>
+	 */
 	public static final String PROPERTY_STARTER = "starter";
 	private Player starter = null;
 
@@ -518,12 +520,12 @@ public class Field {
 	}
 
 	/********************************************************************
-	* <pre>
+	 * <pre>
 	*			  one					   one
 	* Field ----------------------------------- Player
 	*			  base				   baseowner
-	* </pre>
-	*/
+	 * </pre>
+	 */
 	public static final String PROPERTY_BASEOWNER = "baseowner";
 	private Player baseowner = null;
 
@@ -561,12 +563,12 @@ public class Field {
 	}
 
 	/********************************************************************
-	* <pre>
+	 * <pre>
 	*			one					one
 	* Field -------------------------------- Player
 	*			landing				lander
-	* </pre>
-	*/
+	 * </pre>
+	 */
 	public static final String PROPERTY_LANDER = "lander";
 	private Player lander = null;
 
@@ -604,12 +606,12 @@ public class Field {
 	}
 
 	/********************************************************************
-	* <pre>
+	 * <pre>
 	*			  one					   many
 	* Field ----------------------------------- Pawn
 	*			  pos				   pawns
-	* </pre>
-	*/
+	 * </pre>
+	 */
 	public static final String PROPERTY_PAWNS = "pawns";
 	private LinkedHashSet<Pawn> pawns = null;
 
@@ -623,7 +625,7 @@ public class Field {
 			if (this.pawns == null) {
 				this.pawns = new LinkedHashSet<Pawn>();
 			}
-			changed = this.pawns.add (value);
+			changed = this.pawns.add(value);
 			if (changed) {
 				value.withPos(this);
 				firePropertyChange(PROPERTY_PAWNS, null, value);
@@ -635,7 +637,7 @@ public class Field {
 	public boolean removeFromPawns(Pawn value) {
 		boolean changed = false;
 		if ((this.pawns != null) && (value != null)) {
-			changed = this.pawns.remove (value);
+			changed = this.pawns.remove(value);
 			if (changed) {
 				value.setPos(null);
 				firePropertyChange(PROPERTY_PAWNS, value, null);
@@ -666,4 +668,88 @@ public class Field {
 		withPawns(value);
 		return value;
 	}
+
+	/********************************************************************
+	 * <pre>
+	 *              many                       many
+	 * Field ----------------------------------- Label
+	 *              field                   label
+	 * </pre>
+	 */
+
+	public static final String PROPERTY_LABEL = "label";
+
+	private LabelSet label = null;
+
+	public LabelSet getLabel() {
+		if (this.label == null) {
+			return LabelSet.EMPTY_SET;
+		}
+
+		return this.label;
+	}
+
+	public Field withLabel(Label... value) {
+		if (value == null) {
+			return this;
+		}
+		for (Label item : value) {
+			if (item != null) {
+				if (this.label == null) {
+					this.label = new LabelSet();
+				}
+
+				boolean changed = this.label.add(item);
+
+				if (changed) {
+					item.withField(this);
+					firePropertyChange(PROPERTY_LABEL, null, item);
+				}
+			}
+		}
+		return this;
+	}
+
+	public Field withoutLabel(Label... value) {
+		for (Label item : value) {
+			if ((this.label != null) && (item != null)) {
+				if (this.label.remove(item)) {
+					item.withoutField(this);
+					firePropertyChange(PROPERTY_LABEL, item, null);
+				}
+			}
+		}
+		return this;
+	}
+
+	public Label createLabel() {
+		Label value = new Label();
+		withLabel(value);
+		return value;
+	}
+
+	// ==========================================================================
+
+	public static final String PROPERTY_NAME = "name";
+
+	private String name;
+
+	public String getName() {
+		return this.name;
+	}
+
+	public void setName(String value) {
+		if (!EntityUtil.stringEquals(this.name, value)) {
+
+			String oldValue = this.name;
+			this.name = value;
+			this.firePropertyChange(PROPERTY_NAME, oldValue, value);
+		}
+	}
+
+	public Field withName(String value) {
+		setName(value);
+		return this;
+	}
+
 }

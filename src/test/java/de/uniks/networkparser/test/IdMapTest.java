@@ -17,8 +17,8 @@ import de.uniks.networkparser.test.model.Student;
 import de.uniks.networkparser.test.model.University;
 import de.uniks.networkparser.test.model.ludo.Ludo;
 import de.uniks.networkparser.test.model.ludo.Player;
-import de.uniks.networkparser.test.model.ludo.creator.LudoCreator;
-import de.uniks.networkparser.test.model.ludo.creator.PlayerCreator;
+import de.uniks.networkparser.test.model.ludo.util.LudoCreator;
+import de.uniks.networkparser.test.model.ludo.util.PlayerCreator;
 import de.uniks.networkparser.test.model.util.StudentCreator;
 
 public class IdMapTest

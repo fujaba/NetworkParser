@@ -25,4 +25,4 @@ THE SOFTWARE.
 */
 
 public interface ObjectCondition extends Condition<Object>{
-	}
+}

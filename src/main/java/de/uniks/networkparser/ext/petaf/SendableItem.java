@@ -65,14 +65,14 @@ public abstract class SendableItem implements SendableEntity {
 		return listeners;
 	}
 
-	public void firePropertyChange(String propertyName, Object oldValue, Object newValue) {
+	public boolean firePropertyChange(String propertyName, Object oldValue, Object newValue) {
 		boolean change = false;
 		if (oldValue == null) {
 			change = (newValue != null);
 		} else {
 			change = !oldValue.equals(newValue);
 		}
-		firePropertyChange(propertyName, oldValue, newValue, change);
+		return firePropertyChange(propertyName, oldValue, newValue, change);
 	}
 
 	public boolean firePropertyChange(String property, Object oldValue, Object newValue, boolean changed) {
