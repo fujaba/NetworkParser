@@ -57,7 +57,10 @@ task compileJava18(type: JavaCompile) {
 
 task JavaGit(type:JavaExec, dependsOn: compileJava18) {
 	doFirst {
-		compileJava18.execute()
+		try {
+			compileJava18.execute()
+		}catch(Exception e) {
+		}
 	}
 	errorOutput = System.err
 	main = "de.uniks.networkparser.ext.git.GitRevision"
@@ -107,10 +110,8 @@ task version() {
 	}
 	
 }
-
 ext {
 	gitVersion = new GITVersion(major: ext.majorNumber)
-	compileJava.dependsOn(version)
 	tasks.version.execute()
 
 }

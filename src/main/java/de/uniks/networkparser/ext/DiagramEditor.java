@@ -32,6 +32,7 @@ import java.net.Socket;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
+
 import de.uniks.networkparser.DateTimeEntity;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.SimpleEvent;
@@ -63,6 +64,34 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 	private Object logic;
 	private SimpleEventCondition listener;
 	private JavaBridgeFX bridge;
+	private String file;
+
+	public static boolean convertToPNG(HTMLEntity entity, String file) {
+		return converting(entity, file);
+	}
+	public static boolean convertToPNG(String url, String file) {
+		return converting(url, file);
+	}
+	private static boolean converting(Object entity, String file) {
+		final Class<?> launcherClass = ReflectionLoader.getClass("com.sun.javafx.application.LauncherImpl");
+		if(launcherClass == null) {
+			return false;
+		}
+		ReflectionLoader.call("startToolkit", launcherClass);
+		ReflectionLoader.call("runLater", ReflectionLoader.PLATFORM, Runnable.class, new Runnable() {
+			@Override
+			public void run() {
+				DiagramEditor editor = new DiagramEditor();
+				Object stage = ReflectionLoader.newInstance(ReflectionLoader.STAGE);
+				editor.file = file;
+				editor.loadHTMLEntity = true;
+				editor.creating(stage, entity);
+				editor.withIcon(IdMap.class.getResource("np.png").toString());
+				editor.show();
+			}
+		});
+		return true;
+	}
 
 	public static void main(String[] args) {
 		final Class<?> launcherClass = ReflectionLoader.getClass("com.sun.javafx.application.LauncherImpl");
@@ -73,8 +102,7 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 				public void run() {
 					DiagramEditor editor = new DiagramEditor();
 					Object stage = ReflectionLoader.newInstance(ReflectionLoader.STAGE);
-//					editor.creating(stage, new File("diagram/diagram.html").toURI().toString());
-					editor.creating(stage);
+					editor.creating(stage, null);
 					editor.withIcon(IdMap.class.getResource("np.png").toString());
 					editor.show();
 				}
@@ -163,6 +191,8 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 			if(value.toString().equals(JavaViewAdapter.SUCCEEDED)) {
 				Object win = ReflectionLoader.call("executeScript", webEngine, "window");
 				ReflectionLoader.call("setMember", win, String.class, "java", Object.class, this);
+
+				this.changed(null, null, JavaViewAdapter.SUCCEEDED);
 			}
 			return true;
 		}
@@ -415,7 +445,7 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 		editor.creating(stage, url);
 		return editor;
 	}
-	public DiagramEditor creating(Object stage, String... url) {
+	private DiagramEditor creating(Object stage, Object url) {
 		if(stage == null) {
 			return this;
 		}
@@ -429,8 +459,8 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 			}
 		}
 		this.registerListener(this);
-		if(url != null && url.length>0 && url[0] instanceof String) {
-			this.load(url[0]);
+		if(url != null && url instanceof String) {
+			this.load(url);
 		} else {
 			this.load( null );
 		}
@@ -466,4 +496,27 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 	public SimpleController getController() {
 		return controller;
 	}
+	
+	@Override
+	public boolean changed(Object observable, Object oldValue, Object newValue) {
+		if(loadHTMLEntity == false) {
+			super.changed(observable, oldValue, newValue);
+			return true;
+		}
+		if(SUCCEEDED.equals(""+newValue)) {
+			// TEST
+			Object snapshotParametersClass = ReflectionLoader.getClass("javafx.scene.SnapshotParameters");
+			Object writableImageClass = ReflectionLoader.getClass("javafx.scene.image.WritableImage");
+			Object image = ReflectionLoader.call("snapshot", webView, snapshotParametersClass, null, writableImageClass, null);
+			
+			Class<?> swingUtil = ReflectionLoader.getClass("javafx.embed.swing.SwingFXUtils");
+			Object bufferedImageClass = ReflectionLoader.getClass("java.awt.image.BufferedImage");
+			Object bufferedImage = ReflectionLoader.call("fromFXImage", swingUtil, ReflectionLoader.IMAGE, image, bufferedImageClass, null);
+			ReflectionLoader.call("write", ReflectionLoader.IMAGEIO, ReflectionLoader.RENDEREDIMAGE, bufferedImage, String.class, "png", File.class, new File(this.file));
+			return true;
+		}
+		return true;
+		
+	}
 }
+

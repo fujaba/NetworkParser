@@ -21,6 +21,7 @@
 
 package de.uniks.networkparser.test.model.ludo.util;
 
+import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.interfaces.AggregatedEntityCreator;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.test.model.ludo.Field;
@@ -107,4 +108,9 @@ public class LabelCreator implements AggregatedEntityCreator {
 	public void removeObject(Object entity) {
 		((Label) entity).removeYou();
 	}
+
+	public static IdMap createIdMap(String sessionID) {
+		return LudoCreator.createIdMap(sessionID);
+	}
+
 }

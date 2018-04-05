@@ -19,16 +19,16 @@
    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. 
  */
 
-package de.uniks.networkparser.test.ferrymansproblem.util;
+package de.uniks.networkparser.test.model.util;
 
 import java.util.Collection;
 
 import de.uniks.networkparser.list.ObjectSet;
 import de.uniks.networkparser.list.SimpleSet;
-import de.uniks.networkparser.test.ferrymansproblem.Bank;
-import de.uniks.networkparser.test.ferrymansproblem.Boat;
-import de.uniks.networkparser.test.ferrymansproblem.Cargo;
-import de.uniks.networkparser.test.ferrymansproblem.River;
+import de.uniks.networkparser.test.model.ferryman.Bank;
+import de.uniks.networkparser.test.model.ferryman.Boat;
+import de.uniks.networkparser.test.model.ferryman.Cargo;
+import de.uniks.networkparser.test.model.ferryman.River;
 
 public class BoatSet extends SimpleSet<Boat> {
 

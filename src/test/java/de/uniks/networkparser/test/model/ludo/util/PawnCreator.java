@@ -1,5 +1,6 @@
 package de.uniks.networkparser.test.model.ludo.util;
 
+import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.test.model.ludo.Pawn;
 
@@ -36,4 +37,9 @@ public class PawnCreator implements SendableEntityCreator {
 		}
 		return ((Pawn) target).set(attrName, value);
 	}
+
+	public static IdMap createIdMap(String sessionID) {
+		return LudoCreator.createIdMap(sessionID);
+	}
+
 }

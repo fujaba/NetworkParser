@@ -46,6 +46,7 @@ public class JavaAdapter implements JavaViewAdapter {
 	protected Object webView;
 	protected Object webEngine;
 	private SimpleList<String> queue=new SimpleList<String>();
+	protected boolean loadHTMLEntity = false;
 
 	public JavaAdapter() {
 		if(ReflectionLoader.WEBVIEW != null) {
@@ -70,6 +71,10 @@ public class JavaAdapter implements JavaViewAdapter {
 			return false;
 		}
 		HTMLEntity entity = (HTMLEntity) item;
+		if(loadHTMLEntity) {
+			ReflectionLoader.call("loadContent", webEngine, entity.toString());
+			return true;
+		}
 		// Add Dummy Script
 		XMLEntity headers = entity.getHeader();
 		for(int i=0;i<headers.sizeChildren();i++) {
@@ -141,12 +146,13 @@ public class JavaAdapter implements JavaViewAdapter {
 		return false;
 	}
 
-	public void changed(Object observable, Object oldValue, Object newValue) {
+	public boolean changed(Object observable, Object oldValue, Object newValue) {
 		if(SUCCEEDED.equals(""+newValue)) {
 			// FINISH
 			this.loadFinish();
-			return;
+			return true;
 		}
+		return false;
 	}
 
 	public void showAlert(String value) {
