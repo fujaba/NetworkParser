@@ -72,7 +72,7 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 	public static boolean convertToPNG(String url, String file) {
 		return converting(url, file);
 	}
-	private static boolean converting(Object entity, String file) {
+	private static boolean converting(final Object entity, final String file) {
 		final Class<?> launcherClass = ReflectionLoader.getClass("com.sun.javafx.application.LauncherImpl");
 		if(launcherClass == null) {
 			return false;
