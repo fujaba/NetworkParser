@@ -30,49 +30,7 @@ import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.test.model.ludo.util.LabelSet;
 
 public class Field {
-	// ==========================================================================
-	public Object get(String attrName) {
-		if (PROPERTY_COLOR.equalsIgnoreCase(attrName)) {
-			return getColor();
-		}
-		if (PROPERTY_KIND.equalsIgnoreCase(attrName)) {
-			return getKind();
-		}
-		if (PROPERTY_X.equalsIgnoreCase(attrName)) {
-			return getX();
-		}
-		if (PROPERTY_Y.equalsIgnoreCase(attrName)) {
-			return getY();
-		}
-		if (PROPERTY_GAME.equalsIgnoreCase(attrName)) {
-			return getGame();
-		}
-		if (PROPERTY_NEXT.equalsIgnoreCase(attrName)) {
-			return getNext();
-		}
-		if (PROPERTY_PREV.equalsIgnoreCase(attrName)) {
-			return getPrev();
-		}
-		if (PROPERTY_LANDING.equalsIgnoreCase(attrName)) {
-			return getLanding();
-		}
-		if (PROPERTY_ENTRY.equalsIgnoreCase(attrName)) {
-			return getEntry();
-		}
-		if (PROPERTY_STARTER.equalsIgnoreCase(attrName)) {
-			return getStarter();
-		}
-		if (PROPERTY_BASEOWNER.equalsIgnoreCase(attrName)) {
-			return getBaseowner();
-		}
-		if (PROPERTY_LANDER.equalsIgnoreCase(attrName)) {
-			return getLander();
-		}
-		if (PROPERTY_PAWNS.equalsIgnoreCase(attrName)) {
-			return getPawns();
-		}
-		return null;
-	}
+	
 
 	// ==========================================================================
 	public boolean set(String attrName, Object value) {

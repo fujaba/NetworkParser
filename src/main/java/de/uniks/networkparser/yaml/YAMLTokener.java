@@ -223,7 +223,6 @@ public class YAMLTokener extends Tokener {
 			}
 			if (currentToken.equals("-")) {
 				buffer.withLookAHead(DASH);
-				System.out.println(currentToken);
 				// currentToken = buffer.nextString();
 			}
 		}

@@ -19,7 +19,7 @@
    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. 
  */
 
-package de.uniks.networkparser.test.ferrymansproblem;
+package de.uniks.networkparser.test.model.ferryman;
 
 import de.uniks.networkparser.ext.petaf.SendableItem;
 

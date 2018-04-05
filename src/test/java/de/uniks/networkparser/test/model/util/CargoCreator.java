@@ -19,18 +19,16 @@
    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. 
  */
 
-package de.uniks.networkparser.test.ferrymansproblem.util;
+package de.uniks.networkparser.test.model.util;
 
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
-import de.uniks.networkparser.test.ferrymansproblem.Bank;
-import de.uniks.networkparser.test.ferrymansproblem.Boat;
-import de.uniks.networkparser.test.ferrymansproblem.Cargo;
-import de.uniks.networkparser.test.ferrymansproblem.River;
+import de.uniks.networkparser.test.model.ferryman.Bank;
+import de.uniks.networkparser.test.model.ferryman.Boat;
+import de.uniks.networkparser.test.model.ferryman.Cargo;
 
-public class BankCreator implements SendableEntityCreator {
-	private final String[] properties = new String[] { Bank.PROPERTY_NAME, Bank.PROPERTY_AGE, Bank.PROPERTY_BOAT,
-			Bank.PROPERTY_RIVER, Bank.PROPERTY_CARGOS, };
+public class CargoCreator implements SendableEntityCreator {
+	private final String[] properties = new String[] { Cargo.PROPERTY_NAME, Cargo.PROPERTY_BANK, Cargo.PROPERTY_BOAT, };
 
 	@Override
 	public String[] getProperties() {
@@ -39,7 +37,7 @@ public class BankCreator implements SendableEntityCreator {
 
 	@Override
 	public Object getSendableInstance(boolean reference) {
-		return new Bank();
+		return new Cargo();
 	}
 
 	@Override
@@ -51,24 +49,16 @@ public class BankCreator implements SendableEntityCreator {
 			attribute = attrName.substring(0, pos);
 		}
 
-		if (Bank.PROPERTY_NAME.equalsIgnoreCase(attribute)) {
-			return ((Bank) target).getName();
+		if (Cargo.PROPERTY_NAME.equalsIgnoreCase(attribute)) {
+			return ((Cargo) target).getName();
 		}
 
-		if (Bank.PROPERTY_AGE.equalsIgnoreCase(attribute)) {
-			return ((Bank) target).getAge();
+		if (Cargo.PROPERTY_BANK.equalsIgnoreCase(attribute)) {
+			return ((Cargo) target).getBank();
 		}
 
-		if (Bank.PROPERTY_BOAT.equalsIgnoreCase(attribute)) {
-			return ((Bank) target).getBoat();
-		}
-
-		if (Bank.PROPERTY_RIVER.equalsIgnoreCase(attribute)) {
-			return ((Bank) target).getRiver();
-		}
-
-		if (Bank.PROPERTY_CARGOS.equalsIgnoreCase(attribute)) {
-			return ((Bank) target).getCargos();
+		if (Cargo.PROPERTY_BOAT.equalsIgnoreCase(attribute)) {
+			return ((Cargo) target).getBoat();
 		}
 
 		return null;
@@ -80,33 +70,18 @@ public class BankCreator implements SendableEntityCreator {
 			attrName = attrName + type;
 		}
 
-		if (Bank.PROPERTY_NAME.equalsIgnoreCase(attrName)) {
-			((Bank) target).withName((String) value);
+		if (Cargo.PROPERTY_NAME.equalsIgnoreCase(attrName)) {
+			((Cargo) target).withName((String) value);
 			return true;
 		}
 
-		if (Bank.PROPERTY_AGE.equalsIgnoreCase(attrName)) {
-			((Bank) target).withAge(Integer.parseInt(value.toString()));
+		if (Cargo.PROPERTY_BANK.equalsIgnoreCase(attrName)) {
+			((Cargo) target).setBank((Bank) value);
 			return true;
 		}
 
-		if (Bank.PROPERTY_BOAT.equalsIgnoreCase(attrName)) {
-			((Bank) target).setBoat((Boat) value);
-			return true;
-		}
-
-		if (Bank.PROPERTY_RIVER.equalsIgnoreCase(attrName)) {
-			((Bank) target).setRiver((River) value);
-			return true;
-		}
-
-		if (Bank.PROPERTY_CARGOS.equalsIgnoreCase(attrName)) {
-			((Bank) target).withCargos((Cargo) value);
-			return true;
-		}
-
-		if ((Bank.PROPERTY_CARGOS + REMOVE).equalsIgnoreCase(attrName)) {
-			((Bank) target).withoutCargos((Cargo) value);
+		if (Cargo.PROPERTY_BOAT.equalsIgnoreCase(attrName)) {
+			((Cargo) target).setBoat((Boat) value);
 			return true;
 		}
 
@@ -114,6 +89,12 @@ public class BankCreator implements SendableEntityCreator {
 	}
 
 	public static IdMap createIdMap(String sessionID) {
-		return de.uniks.networkparser.test.ferrymansproblem.util.CreatorCreator.createIdMap(sessionID);
+		IdMap map = new IdMap().withSession(sessionID);
+		map.with(new RiverCreator());
+		map.with(new BoatCreator());
+		map.with(new BankCreator());
+		map.with(new CargoCreator());
+		map.withTimeStamp(1);
+		return map;
 	}
 }

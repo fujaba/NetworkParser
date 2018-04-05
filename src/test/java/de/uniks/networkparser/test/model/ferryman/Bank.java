@@ -19,12 +19,12 @@
    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. 
  */
 
-package de.uniks.networkparser.test.ferrymansproblem;
+package de.uniks.networkparser.test.model.ferryman;
 
 import de.uniks.networkparser.ext.petaf.SendableItem;
-import de.uniks.networkparser.test.ferrymansproblem.util.BankSet;
-import de.uniks.networkparser.test.ferrymansproblem.util.CargoSet;
 import de.uniks.networkparser.test.model.ludo.StrUtil;
+import de.uniks.networkparser.test.model.util.BankSet;
+import de.uniks.networkparser.test.model.util.CargoSet;
 
 /**
  * 
@@ -219,7 +219,7 @@ public class Bank extends SendableItem {
 
 	private CargoSet cargos = null;
 
-	private de.uniks.networkparser.test.ferrymansproblem.Ferryman ferryman;
+	private de.uniks.networkparser.test.model.ferryman.Ferryman ferryman;
 
 	public CargoSet getCargos() {
 		if (this.cargos == null) {

@@ -1,5 +1,6 @@
 package de.uniks.networkparser.test.model.ludo.util;
 
+import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.test.model.ludo.Dice;
 
@@ -33,5 +34,9 @@ public class DiceCreator implements SendableEntityCreator {
 			attrName = attrName + type;
 		}
 		return ((Dice) target).set(attrName, value);
+	}
+	
+	public static IdMap createIdMap(String sessionID) {
+		return LudoCreator.createIdMap(sessionID);
 	}
 }

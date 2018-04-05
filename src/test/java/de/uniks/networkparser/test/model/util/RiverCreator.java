@@ -19,17 +19,23 @@
    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. 
  */
 
-package de.uniks.networkparser.test.ferrymansproblem.util;
+package de.uniks.networkparser.test.model.util;
 
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
-import de.uniks.networkparser.test.ferrymansproblem.Bank;
-import de.uniks.networkparser.test.ferrymansproblem.Boat;
-import de.uniks.networkparser.test.ferrymansproblem.Cargo;
-import de.uniks.networkparser.test.ferrymansproblem.River;
+import de.uniks.networkparser.test.model.ferryman.Bank;
+import de.uniks.networkparser.test.model.ferryman.Boat;
+import de.uniks.networkparser.test.model.ferryman.River;
 
-public class BoatCreator implements SendableEntityCreator {
-	private final String[] properties = new String[] { Boat.PROPERTY_RIVER, Boat.PROPERTY_BANK, Boat.PROPERTY_CARGO, };
+/**
+ * 
+ * @see <a href=
+ *      '../../../../../../../../../../src/test/java/org/sdmlib/test/examples/reachabilitygraphs/ReachabilityGraphFerrymansProblemExample.java'>ReachabilityGraphFerrymansProblemExample.java</a>
+ * @see <a href=
+ *      '../../../../../../../../../../src/test/java/org/sdmlib/test/examples/reachabilitygraphs/ReachabilityGraphFerrymansProblemExample.java'>ReachabilityGraphFerrymansProblemExample.java</a>
+ */
+public class RiverCreator implements SendableEntityCreator {
+	private final String[] properties = new String[] { River.PROPERTY_BOAT, River.PROPERTY_BANKS, };
 
 	@Override
 	public String[] getProperties() {
@@ -38,7 +44,7 @@ public class BoatCreator implements SendableEntityCreator {
 
 	@Override
 	public Object getSendableInstance(boolean reference) {
-		return new Boat();
+		return new River();
 	}
 
 	@Override
@@ -50,16 +56,12 @@ public class BoatCreator implements SendableEntityCreator {
 			attribute = attrName.substring(0, pos);
 		}
 
-		if (Boat.PROPERTY_RIVER.equalsIgnoreCase(attribute)) {
-			return ((Boat) target).getRiver();
+		if (River.PROPERTY_BOAT.equalsIgnoreCase(attribute)) {
+			return ((River) target).getBoat();
 		}
 
-		if (Boat.PROPERTY_BANK.equalsIgnoreCase(attribute)) {
-			return ((Boat) target).getBank();
-		}
-
-		if (Boat.PROPERTY_CARGO.equalsIgnoreCase(attribute)) {
-			return ((Boat) target).getCargo();
+		if (River.PROPERTY_BANKS.equalsIgnoreCase(attribute)) {
+			return ((River) target).getBanks();
 		}
 
 		return null;
@@ -71,18 +73,18 @@ public class BoatCreator implements SendableEntityCreator {
 			attrName = attrName + type;
 		}
 
-		if (Boat.PROPERTY_RIVER.equalsIgnoreCase(attrName)) {
-			((Boat) target).setRiver((River) value);
+		if (River.PROPERTY_BOAT.equalsIgnoreCase(attrName)) {
+			((River) target).setBoat((Boat) value);
 			return true;
 		}
 
-		if (Boat.PROPERTY_BANK.equalsIgnoreCase(attrName)) {
-			((Boat) target).setBank((Bank) value);
+		if (River.PROPERTY_BANKS.equalsIgnoreCase(attrName)) {
+			((River) target).withBanks((Bank) value);
 			return true;
 		}
 
-		if (Boat.PROPERTY_CARGO.equalsIgnoreCase(attrName)) {
-			((Boat) target).setCargo((Cargo) value);
+		if ((River.PROPERTY_BANKS + REMOVE).equalsIgnoreCase(attrName)) {
+			((River) target).withoutBanks((Bank) value);
 			return true;
 		}
 
@@ -90,6 +92,12 @@ public class BoatCreator implements SendableEntityCreator {
 	}
 
 	public static IdMap createIdMap(String sessionID) {
-		return de.uniks.networkparser.test.ferrymansproblem.util.CreatorCreator.createIdMap(sessionID);
+		IdMap map = new IdMap().withSession(sessionID);
+		map.with(new RiverCreator());
+		map.with(new BoatCreator());
+		map.with(new BankCreator());
+		map.with(new CargoCreator());
+		map.withTimeStamp(1);
+		return map;
 	}
 }

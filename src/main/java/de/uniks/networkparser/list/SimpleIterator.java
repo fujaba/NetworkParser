@@ -145,4 +145,11 @@ public class SimpleIterator<E> implements ListIterator<E> {
 		}
 		return this;
 	}
+
+	public E current() {
+		if(lastRet >=0) {
+			return (E) list.get(lastRet);
+		}
+		return null;
+	}
 }

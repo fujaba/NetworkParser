@@ -92,6 +92,9 @@ public class UpdateModel implements Callable<Object>, Runnable,Supplier<Object> 
 				map.put(this.id, element, false);
 				return element;
 			} else {
+				if(map == null) {
+					return null;
+				}
 				creator = map.getCreatorClass(entity);
 				element = this.entity;
 			}

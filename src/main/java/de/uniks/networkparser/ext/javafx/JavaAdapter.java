@@ -1,5 +1,7 @@
 package de.uniks.networkparser.ext.javafx;
 
+import java.io.File;
+
 /*
 The MIT License
 
@@ -25,6 +27,7 @@ THE SOFTWARE.
 */
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.NetworkParserLog;
+import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.SimpleObject;
 import de.uniks.networkparser.ext.generic.ReflectionLoader;
 import de.uniks.networkparser.ext.io.FileBuffer;
@@ -46,6 +49,7 @@ public class JavaAdapter implements JavaViewAdapter {
 	protected Object webView;
 	protected Object webEngine;
 	private SimpleList<String> queue=new SimpleList<String>();
+	protected boolean loadHTMLEntity = false;
 
 	public JavaAdapter() {
 		if(ReflectionLoader.WEBVIEW != null) {
@@ -66,10 +70,19 @@ public class JavaAdapter implements JavaViewAdapter {
 			ReflectionLoader.call("load", webEngine, item);
 			return true;
 		}
+		if(item instanceof File) {
+			ReflectionLoader.call("load", webEngine, ((File)item).toURI().toString());
+			return true;
+		}
+
 		if(item instanceof HTMLEntity == false) {
 			return false;
 		}
 		HTMLEntity entity = (HTMLEntity) item;
+		if(loadHTMLEntity) {
+			ReflectionLoader.call("loadContent", webEngine, entity.toString());
+			return true;
+		}
 		// Add Dummy Script
 		XMLEntity headers = entity.getHeader();
 		for(int i=0;i<headers.sizeChildren();i++) {
@@ -141,12 +154,13 @@ public class JavaAdapter implements JavaViewAdapter {
 		return false;
 	}
 
-	public void changed(Object observable, Object oldValue, Object newValue) {
-		if(SUCCEEDED.equals(""+newValue)) {
+	public boolean changed(SimpleEvent event) {
+		if(SUCCEEDED.equals(""+event.getNewValue())) {
 			// FINISH
 			this.loadFinish();
-			return;
+			return true;
 		}
+		return false;
 	}
 
 	public void showAlert(String value) {
@@ -201,7 +215,6 @@ public class JavaAdapter implements JavaViewAdapter {
 	 * @return return value from Javascript
 	 */
 	private Object _execute(String script) {
-		System.out.println(script);
 		Object jsObject = ReflectionLoader.call("executeScript", this.webEngine, String.class, script);
 		if(jsObject != null && ReflectionLoader.JSOBJECT.isAssignableFrom(jsObject.getClass())){
 			JsonObject item = convertJSObject(jsObject);
@@ -274,7 +287,6 @@ public class JavaAdapter implements JavaViewAdapter {
 			callBackName = "_callBack" + (callBack.size() + 1);
 			callBack.put(clazz, callBackName);
 			ReflectionLoader.call("setMember", window, String.class, callBackName, Object.class, clazz);
-			System.out.println("regiter: " + clazz);
 		}
 		return callBackName;
 	}

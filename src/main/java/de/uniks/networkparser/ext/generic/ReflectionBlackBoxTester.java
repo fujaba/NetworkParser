@@ -38,6 +38,7 @@ import java.util.Enumeration;
 import de.uniks.networkparser.NetworkParserLog;
 import de.uniks.networkparser.ext.DiagramEditor;
 import de.uniks.networkparser.ext.ErrorHandler;
+import de.uniks.networkparser.ext.git.GitRevision;
 import de.uniks.networkparser.ext.io.MQTTMessage;
 import de.uniks.networkparser.ext.io.MessageSession;
 import de.uniks.networkparser.ext.io.RabbitMessage;
@@ -150,6 +151,7 @@ public class ReflectionBlackBoxTester {
 		withIgnoreClazzes(MQTTMessage.class);
 		withIgnoreClazzes(RabbitMessage.class);
 		withIgnoreClazzes(MessageSession.class);
+		withIgnoreClazzes(GitRevision.class, "main");
 //		withIgnoreClazzes(TimerExecutor.class.getName());
 	}
 

@@ -43,7 +43,6 @@ public class NodeProxyFileSystem extends NodeProxy {
 			@Override
 			public boolean update(Object value) {
 				// Filter if it should be written on disk
-				System.out.println(value);
 //				if (value instanceof ChangeMessage) {
 //					SimpleList<NodeProxy> receiver = ((ChangeMessage) value).getReceived();
 //					if (receiver != null && receiver.contains(this) ) {
@@ -121,7 +120,6 @@ public class NodeProxyFileSystem extends NodeProxy {
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
-			System.out.println(e.getMessage());
 		}
 		return result;
 	}

@@ -32,6 +32,7 @@ import java.net.Socket;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
+
 import de.uniks.networkparser.DateTimeEntity;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.SimpleEvent;
@@ -63,23 +64,52 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 	private Object logic;
 	private SimpleEventCondition listener;
 	private JavaBridgeFX bridge;
+	private String file;
+	private final int WIDTH=900;
+	private final int HEIGHT=600;
+
+	public static boolean convertToPNG(HTMLEntity entity, String file, int... dimension) {
+		return converting(entity, file, dimension);
+	}
+	public static boolean convertToPNG(String url, String file, int...dimension) {
+		return converting(url, file, dimension);
+	}
+	public static boolean convertToPNG(File localFile, String file, int...dimension) {
+		return converting(localFile, file, dimension);
+	}
+	private static boolean converting(final Object entity, final String file, int...dimension) {
+		final int width, height;
+		if(dimension != null && dimension.length>1) {
+			width = dimension[0];
+			height = dimension[1];
+		} else {
+			width = -1;
+			height = -1;
+		}
+		final Class<?> launcherClass = ReflectionLoader.getClass("com.sun.javafx.application.LauncherImpl");
+		if(launcherClass == null) {
+			return false;
+		}
+		ReflectionLoader.call("startToolkit", launcherClass);
+		ReflectionLoader.call("runLater", ReflectionLoader.PLATFORM, Runnable.class, new Runnable() {
+			@Override
+			public void run() {
+				DiagramEditor editor = new DiagramEditor();
+				Object stage = ReflectionLoader.newInstance(ReflectionLoader.STAGE);
+				if(file != null) {
+					editor.file = file;
+					editor.loadHTMLEntity = true;
+				}
+				editor.creating(stage, entity, width, height);
+				editor.withIcon(IdMap.class.getResource("np.png").toString());
+				editor.show();
+			}
+		});
+		return true;
+	}
 
 	public static void main(String[] args) {
-		final Class<?> launcherClass = ReflectionLoader.getClass("com.sun.javafx.application.LauncherImpl");
-		if(launcherClass != null) {
-			ReflectionLoader.call("startToolkit", launcherClass);
-			ReflectionLoader.call("runLater", ReflectionLoader.PLATFORM, Runnable.class, new Runnable() {
-				@Override
-				public void run() {
-					DiagramEditor editor = new DiagramEditor();
-					Object stage = ReflectionLoader.newInstance(ReflectionLoader.STAGE);
-//					editor.creating(stage, new File("diagram/diagram.html").toURI().toString());
-					editor.creating(stage);
-					editor.withIcon(IdMap.class.getResource("np.png").toString());
-					editor.show();
-				}
-			});
-		} else {
+		if(converting(null, null) == false) {
 			// NO JAVAFX Found
 			NodeProxyTCP server = NodeProxyTCP.createServer(8080);
 			server.withListener(new DiagramEditor());
@@ -159,10 +189,12 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 		if(value instanceof Message) {
 			return executeWebServer((Message) value);
 		}
-		if(JavaViewAdapter.STATE.equalsIgnoreCase(value.getClass().getName())) {
-			if(value.toString().equals(JavaViewAdapter.SUCCEEDED)) {
+		SimpleEvent evt = (SimpleEvent) value;
+		if(JavaViewAdapter.STATE.equalsIgnoreCase(evt.getNewValue().getClass().getName())) {
+			if(evt.getNewValue().toString().equals(JavaViewAdapter.SUCCEEDED)) {
 				Object win = ReflectionLoader.call("executeScript", webEngine, "window");
 				ReflectionLoader.call("setMember", win, String.class, "java", Object.class, this);
+				this.changed(evt);
 			}
 			return true;
 		}
@@ -412,10 +444,10 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 
 	public static DiagramEditor create(Object stage, String... url) {
 		DiagramEditor editor = new DiagramEditor();
-		editor.creating(stage, url);
+		editor.creating(stage, url, -1, -1);
 		return editor;
 	}
-	public DiagramEditor creating(Object stage, String... url) {
+	private DiagramEditor creating(Object stage, Object url, int width, int height) {
 		if(stage == null) {
 			return this;
 		}
@@ -429,14 +461,16 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 			}
 		}
 		this.registerListener(this);
-		if(url != null && url.length>0 && url[0] instanceof String) {
-			this.load(url[0]);
-		} else {
-			this.load( null );
-		}
+		this.load(url);
 		JavaBridgeFX javaFX = new JavaBridgeFX(null, this, JavaBridgeFX.CONTENT_TYPE_NONE);
+		if(width<0) {
+			width = WIDTH;
+		}
+		if(height<0) {
+			height = HEIGHT;
+		}
 		controller.withTitle("ClassdiagrammEditor");
-		controller.withSize(900, 600);
+		controller.withSize(width, height);
 		controller.withErrorPath("errors");
 		this.bridge = javaFX;
 		return this;
@@ -466,4 +500,40 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 	public SimpleController getController() {
 		return controller;
 	}
+	
+	@Override
+	public boolean changed(SimpleEvent evt) {
+		if(loadHTMLEntity == false) {
+			super.changed(evt);
+			return true;
+		}
+		if(SUCCEEDED.equals(""+evt.getNewValue())) {
+			// TEST
+			ReflectionLoader.call("runLater", ReflectionLoader.PLATFORM, Runnable.class, new Runnable() {
+				@Override
+				public void run() {
+					onScreenDump();
+				}
+			});
+			return true;
+		}
+		return true;
+	}
+	
+	private void onScreenDump() {
+		Object snapshotParametersClass = ReflectionLoader.getClass("javafx.scene.SnapshotParameters");
+		Object writableImageClass = ReflectionLoader.getClass("javafx.scene.image.WritableImage");
+		Object image = ReflectionLoader.call("snapshot", webView, snapshotParametersClass, null, writableImageClass, null);
+		
+		Class<?> swingUtil = ReflectionLoader.getClass("javafx.embed.swing.SwingFXUtils");
+		Object bufferedImageClass = ReflectionLoader.getClass("java.awt.image.BufferedImage");
+		Object bufferedImage = ReflectionLoader.call("fromFXImage", swingUtil, ReflectionLoader.IMAGE, image, bufferedImageClass, null);
+		ReflectionLoader.call("write", ReflectionLoader.IMAGEIO, ReflectionLoader.RENDEREDIMAGE, bufferedImage, String.class, "png", File.class, new File(this.file));
+		controller.close();
+	}
+	
+	public void onLoad() {
+		System.out.println("FUBU");
+	}
 }
+

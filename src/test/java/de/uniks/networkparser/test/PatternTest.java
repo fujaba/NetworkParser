@@ -1,17 +1,17 @@
 package de.uniks.networkparser.test;
 
-import java.util.List;
-
 import org.junit.Test;
 
 import de.uniks.networkparser.graph.Pattern;
-import de.uniks.networkparser.test.ferrymansproblem.Bank;
-import de.uniks.networkparser.test.ferrymansproblem.Boat;
-import de.uniks.networkparser.test.ferrymansproblem.Cargo;
-import de.uniks.networkparser.test.ferrymansproblem.River;
+import de.uniks.networkparser.test.model.ferryman.Bank;
+import de.uniks.networkparser.test.model.ferryman.Boat;
+import de.uniks.networkparser.test.model.ferryman.River;
 import de.uniks.networkparser.test.model.ludo.Field;
 import de.uniks.networkparser.test.model.ludo.Label;
 import de.uniks.networkparser.test.model.ludo.Ludo;
+import de.uniks.networkparser.test.model.ludo.Pawn;
+import de.uniks.networkparser.test.model.ludo.util.LudoCreator;
+import de.uniks.networkparser.test.model.util.RiverCreator;
 
 public class PatternTest {
 	@Test
@@ -27,17 +27,18 @@ public class PatternTest {
 
 		river.createBanks().withName("right");
 
-		List<Object> allMatches = new Pattern(river).has(River.PROPERTY_BANKS).has(Bank.PROPERTY_CARGOS).allMatches();
-		Pattern pattern = new Pattern(river).has(River.PROPERTY_BANKS).has(Bank.PROPERTY_CARGOS);
-		for (Pattern matchPattern : pattern) {
+//		List<Object> allMatches = new Pattern(river).has(River.PROPERTY_BANKS).has(Bank.PROPERTY_CARGOS).allMatches();
+		Pattern pattern = new Pattern(RiverCreator.createIdMap("42"), river).has(River.PROPERTY_BANKS).has(Bank.PROPERTY_CARGOS);
+//		pattern.withMatch(candidate)
+		for (Object matchPattern : pattern) {
 			System.out.println(pattern);
 		}
 
-		System.out.println(allMatches);
-		for (Object found : allMatches) {
-			Cargo cargo = (Cargo) found;
-			System.out.println(cargo.getName());
-		}
+//		System.out.println(allMatches);
+//		for (Object found : allMatches) {
+//			Cargo cargo = (Cargo) found;
+//			System.out.println(cargo.getName());
+//		}
 	}
 
 	@Test
@@ -61,19 +62,23 @@ public class PatternTest {
 		field.createPawns().withColor("3-4");
 
 		
-		Pattern ludoPO = new Pattern(ludo);
+		Pattern ludoPO = new Pattern(LudoCreator.createIdMap("42"), ludo);
 		Pattern fieldPO = ludoPO.has(Ludo.PROPERTY_FIELDS);
 		Pattern pawnPO = fieldPO.has(Field.PROPERTY_PAWNS);
+		while(ludoPO.hasNext()) {
+			System.out.println("LUDO: " + fieldPO.getMatch(Field.class).getName() + " -- " + pawnPO.getMatch(Pawn.class).getColor());
+			ludoPO.find();
+		}
+//		for(Object result : pawnPO) {
+//			System.out.println("LUDO: "+result); 
+//		}
 //		PawnPO pawnPO = fieldPO.createPawnsPO();
-
 //		ludoPO.getCurrentMatch();
 		
-		ludoPO.hasNext();
+//		ludoPO.hasNext();
 //
 //		while (ludoPO.isHasMatch()) {
-//			System.out.println(
-//					"LUDO: " + fieldPO.getCurrentMatch().getName() + " -- " + pawnPO.getCurrentMatch().getColor());
-//			ludoPO.nextMatch();
+//			
 //		}
 		System.out.println("FINISH");
 	}
@@ -133,15 +138,13 @@ public class PatternTest {
 		field.withLabel(labelB);
 		field.withLabel(labelC);
 
-//		LudoPO ludoPO = new LudoPO(ludo);
-//		FieldPO fieldPO = ludoPO.createFieldsPO();
-//		LabelPO labelPO = fieldPO.createLabelPO();
-//
-//		while (ludoPO.isHasMatch()) {
-//			System.out.println(
-//					"LUDO: " + fieldPO.getCurrentMatch().getName() + " -- " + labelPO.getCurrentMatch().getName());
-//			ludoPO.nextMatch();
-//		}
+		Pattern ludoPO = new Pattern(LudoCreator.createIdMap("42"), ludo);
+		Pattern fieldPO = ludoPO.has(Ludo.PROPERTY_FIELDS);
+		Pattern labelPO = fieldPO.has(Field.PROPERTY_LABEL);
+		while (ludoPO.hasNext()) {
+			System.out.println("LUDO: " + fieldPO.getMatch(Field.class).getName() + " -- " + labelPO.getMatch(Label.class).getName());
+			ludoPO.next();
+		}
 	}
 
 }
