@@ -272,7 +272,7 @@ public class GitRevision {
 		return null;
 	}
 	
-	private SimpleKeyValueList<String, Integer> createdComment(String sourcePath, String licenceFile){
+	protected SimpleKeyValueList<String, Integer> createdComment(String sourcePath, String licenceFile){
 		SimpleKeyValueList<String, Integer> values = new SimpleKeyValueList<String, Integer>();
 		values.put("LOC", 0);
 		
