@@ -1,5 +1,6 @@
 package de.uniks.networkparser.ext.javafx;
 
+import de.uniks.networkparser.SimpleEvent;
 /*
 The MIT License
 
@@ -58,7 +59,7 @@ public class GUIEvent extends Event {
 
 	public void changed(Object observable, Object oldValue, Object newValue) {
 		if(this.listerner != null) {
-			this.listerner.update(newValue);
+			this.listerner.update(new SimpleEvent(observable, "State", oldValue,newValue));
 		}
 	}
 

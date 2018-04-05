@@ -1,5 +1,7 @@
 package de.uniks.networkparser.ext.javafx;
 
+import java.io.File;
+
 /*
 The MIT License
 
@@ -25,6 +27,7 @@ THE SOFTWARE.
 */
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.NetworkParserLog;
+import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.SimpleObject;
 import de.uniks.networkparser.ext.generic.ReflectionLoader;
 import de.uniks.networkparser.ext.io.FileBuffer;
@@ -67,6 +70,11 @@ public class JavaAdapter implements JavaViewAdapter {
 			ReflectionLoader.call("load", webEngine, item);
 			return true;
 		}
+		if(item instanceof File) {
+			ReflectionLoader.call("load", webEngine, ((File)item).toURI().toString());
+			return true;
+		}
+
 		if(item instanceof HTMLEntity == false) {
 			return false;
 		}
@@ -146,8 +154,8 @@ public class JavaAdapter implements JavaViewAdapter {
 		return false;
 	}
 
-	public boolean changed(Object observable, Object oldValue, Object newValue) {
-		if(SUCCEEDED.equals(""+newValue)) {
+	public boolean changed(SimpleEvent event) {
+		if(SUCCEEDED.equals(""+event.getNewValue())) {
 			// FINISH
 			this.loadFinish();
 			return true;
