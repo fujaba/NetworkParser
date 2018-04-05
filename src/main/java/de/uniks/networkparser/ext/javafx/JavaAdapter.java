@@ -207,7 +207,6 @@ public class JavaAdapter implements JavaViewAdapter {
 	 * @return return value from Javascript
 	 */
 	private Object _execute(String script) {
-		System.out.println(script);
 		Object jsObject = ReflectionLoader.call("executeScript", this.webEngine, String.class, script);
 		if(jsObject != null && ReflectionLoader.JSOBJECT.isAssignableFrom(jsObject.getClass())){
 			JsonObject item = convertJSObject(jsObject);
@@ -280,7 +279,6 @@ public class JavaAdapter implements JavaViewAdapter {
 			callBackName = "_callBack" + (callBack.size() + 1);
 			callBack.put(clazz, callBackName);
 			ReflectionLoader.call("setMember", window, String.class, callBackName, Object.class, clazz);
-			System.out.println("regiter: " + clazz);
 		}
 		return callBackName;
 	}

@@ -89,7 +89,6 @@ public class JacocoColumn implements JacocoColumnListener {
 				}
 			}
 		}
-		System.out.println(items);
 		return true;
 	}
 
@@ -154,7 +153,6 @@ public class JacocoColumn implements JacocoColumnListener {
 		Object node = ReflectionLoader.call("getNode", item);
 		String type = getType(node);
 		String search;
-		System.out.println(type);
 		if(SOURCEFILE.equalsIgnoreCase(type)) {
 			String name = getName(node);
 			int pos = name.lastIndexOf(".");
@@ -200,7 +198,6 @@ public class JacocoColumn implements JacocoColumnListener {
 			//compare(ITableItem o1, ITableItem o2)
 			public int compare(Object o1, Object o2) {
 //				o1.getNode().get
-//				System.out.println(o1);
 				return 1;
 			}
 

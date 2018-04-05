@@ -109,10 +109,8 @@ public class MessageSession {
 		XMLEntity bind = iq.createChild("bind");
 		bind.with("xmlns", "urn:ietf:params:xml:ns:xmpp-bind");
 		bind.createChild("resource").withValueItem("NetworkParser");
-////		bind.createChild("resource").withValueItem("Smack");
 		String command = iq.toString();
 		BufferedBuffer response = sendCommand(command);
-//		System.out.println(response);
 
 		response = sendCommand("<iq id=\""+nextID()+"\" type=\"set\"><session xmlns=\"urn:ietf:params:xml:ns:xmpp-session\"/></iq>");
 
@@ -123,7 +121,6 @@ public class MessageSession {
 		response = sendCommand(command);
 
 		return response;
-//		System.out.println(response);
 	}
 
 	private String getLoginText(String user, String password) {
@@ -303,7 +300,6 @@ public class MessageSession {
 				XMLEntity child = (XMLEntity) features.getChild(i);
 				this.supportedFeature.add(child.getValue().toUpperCase());
 			}
-	//			System.out.println(this.supportedFeature.toString(null));
 			String login = getLoginText(sender, password);
 			response = sendCommand("<auth mechanism=\"PLAIN\" xmlns=\"urn:ietf:params:xml:ns:xmpp-sasl\">"+login+"</auth>");
 	
@@ -403,7 +399,6 @@ public class MessageSession {
 		bytes.insert(message.getPayload(), false);
 		try {
 			bytes.flip(false);
-			System.out.println(bytes.toArrayString(false));
 			out.write(bytes.array(), 0, bytes.length());
 			out.flush();
 			if(answer == false) {

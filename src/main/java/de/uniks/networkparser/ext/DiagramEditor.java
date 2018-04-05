@@ -513,6 +513,8 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 			Object bufferedImageClass = ReflectionLoader.getClass("java.awt.image.BufferedImage");
 			Object bufferedImage = ReflectionLoader.call("fromFXImage", swingUtil, ReflectionLoader.IMAGE, image, bufferedImageClass, null);
 			ReflectionLoader.call("write", ReflectionLoader.IMAGEIO, ReflectionLoader.RENDEREDIMAGE, bufferedImage, String.class, "png", File.class, new File(this.file));
+			
+			this.exit();
 			return true;
 		}
 		return true;

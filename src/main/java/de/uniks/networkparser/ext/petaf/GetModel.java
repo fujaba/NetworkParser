@@ -49,6 +49,9 @@ public class GetModel implements Supplier<Object> {
 				}
 				return element;
 			}
+			if(map == null) {
+				return null;
+			}
 			SendableEntityCreator creator = map.getCreatorClass(entity);
 			return creator.getValue(entity, property);
 		}catch(Exception e){

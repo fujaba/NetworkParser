@@ -221,7 +221,6 @@ public class NodeProxyTCP extends NodeProxy {
 				OutputStream os = requestSocket.getOutputStream();
 				byte[] buffer;
 				if(this.space != null) {
-//					System.out.println(msg.getType());
  					buffer = this.space.convertMessage(msg).getBytes();
 				} else {
 					buffer = msg.toString().getBytes();

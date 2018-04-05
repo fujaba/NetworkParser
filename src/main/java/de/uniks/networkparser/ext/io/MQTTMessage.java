@@ -386,9 +386,6 @@ public class MQTTMessage {
 
 			// read remaining packet
 			if (remLen >= 0) {
-				if(type==9) {
-					System.out.println("DEBUG");
-				}
 				byte[] packet = new byte[remLen];
 //				int count;
 				try {

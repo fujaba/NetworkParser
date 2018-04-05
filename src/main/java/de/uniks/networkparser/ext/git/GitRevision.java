@@ -51,7 +51,6 @@ public class GitRevision {
 	public static void main(String[] args) throws IOException {
 		GitRevision revision = new GitRevision();
 		System.out.println(revision.execute());
-//		System.out.println(revision.createdComment("src/main/java/de/uniks/networkparser/", "src/main/resources/Licence.txt"));
 	}
 	private boolean full=false;
 
