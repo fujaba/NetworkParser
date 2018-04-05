@@ -10,7 +10,6 @@ import de.uniks.networkparser.xml.HTMLEntity;
 
 public class ConvertWebtest {
 
-	@Test
 	public void testGoogle() throws InterruptedException {
 		DiagramEditor.convertToPNG("http://www.google.de", "build/cap.png");
 		DiagramEditor.convertToPNG(new File("doc/Serialization.html"), "build/cap2.png");
