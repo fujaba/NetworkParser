@@ -3,7 +3,7 @@ String args="";
 try {
 	args = ""+gradle.startParameter.taskRequests.get(0).args
 }catch(Exception e) {
-	e.printStackTrace()
+	//e.printStackTrace()
 }
 
 ext{

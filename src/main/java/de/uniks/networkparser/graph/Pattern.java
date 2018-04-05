@@ -12,7 +12,12 @@ import de.uniks.networkparser.list.SimpleSet;
 import de.uniks.networkparser.logic.PatternCondition;
 
 public class Pattern implements Iterator<Object>, Iterable<Object>{
+	public static final String MODIFIER_SEARCH="search";
+	public static final String MODIFIER_CHANGE="change";
+	public static final String MODIFIER_ADD="add";
+	public static final String MODIFIER_REMOVE="remove";
 	private Object match;
+	private String modifier = MODIFIER_SEARCH;
 
 	private SimpleSet<Pattern> children;
 	private Pattern parent;
@@ -21,7 +26,7 @@ public class Pattern implements Iterator<Object>, Iterable<Object>{
 	private IdMap map;
 	private SimpleIterator<Object> iterator;
 	private SimpleSet<Pattern> chain;
-	
+
 	public Pattern getRoot() {
 		if(this.getParent() != null) {
 			return this.getParent().getRoot();
@@ -70,7 +75,9 @@ public class Pattern implements Iterator<Object>, Iterable<Object>{
 			children = new SimpleSet<Pattern>();
 		}
 		this.children.add(subPattern);
-		subPattern.find();
+		if(MODIFIER_SEARCH.equals(this.modifier)) {
+			subPattern.find();
+		}
 		return subPattern;
 	}
 
