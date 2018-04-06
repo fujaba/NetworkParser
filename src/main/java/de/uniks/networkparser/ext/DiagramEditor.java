@@ -428,7 +428,7 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 			FileBuffer.writeFile("Editor.html", html.toString());
 			try {
 				String string = new File("Editor.html").toURI().toURL().toString();
-				ReflectionLoader.call("load", webEngine, string);
+ 				ReflectionLoader.call("load", webEngine, string);
 				return true;
 			} catch (MalformedURLException e) {
 			}
@@ -521,13 +521,15 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 	}
 	
 	private void onScreenDump() {
+		System.out.println("onScreenDump");
 		Object snapshotParametersClass = ReflectionLoader.getClass("javafx.scene.SnapshotParameters");
 		Object writableImageClass = ReflectionLoader.getClass("javafx.scene.image.WritableImage");
 		Object image = ReflectionLoader.call("snapshot", webView, snapshotParametersClass, null, writableImageClass, null);
-		
+
 		Class<?> swingUtil = ReflectionLoader.getClass("javafx.embed.swing.SwingFXUtils");
 		Object bufferedImageClass = ReflectionLoader.getClass("java.awt.image.BufferedImage");
 		Object bufferedImage = ReflectionLoader.call("fromFXImage", swingUtil, ReflectionLoader.IMAGE, image, bufferedImageClass, null);
+//		System.out.println(bufferedImage+ this.file);
 		ReflectionLoader.call("write", ReflectionLoader.IMAGEIO, ReflectionLoader.RENDEREDIMAGE, bufferedImage, String.class, "png", File.class, new File(this.file));
 		controller.close();
 	}

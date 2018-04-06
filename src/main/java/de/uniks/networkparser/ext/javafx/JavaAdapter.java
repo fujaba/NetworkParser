@@ -71,7 +71,11 @@ public class JavaAdapter implements JavaViewAdapter {
 			return true;
 		}
 		if(item instanceof File) {
-			ReflectionLoader.call("load", webEngine, ((File)item).toURI().toString());
+			File file = ((File)item);
+			if(file.exists() == false) {
+				System.out.println("FILE NOT FOUND");
+			}
+			ReflectionLoader.call("load", webEngine, file.toURI().toString());
 			return true;
 		}
 
@@ -247,8 +251,10 @@ public class JavaAdapter implements JavaViewAdapter {
 
 	protected void addAdapter(ObjectCondition eventListener) {
 		JsonObjectLazy executeScript = (JsonObjectLazy) _execute("bridge.addAdapter(new DiagramJS.DelegateAdapter());");
-		Object reference = executeScript.getReference();
-		ReflectionLoader.call("setAdapter", reference, Object.class, eventListener);
+		if(executeScript != null) {
+			Object reference = executeScript.getReference();
+			ReflectionLoader.call("setAdapter", reference, Object.class, eventListener);
+		}
 	}
 
 	@Override

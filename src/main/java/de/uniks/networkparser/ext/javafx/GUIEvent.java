@@ -106,10 +106,12 @@ public class GUIEvent extends Event {
 			event.put(ALTKEY, ReflectionLoader.call("isAltDown", obj));
 			event.put(CTRKEY, ReflectionLoader.call("isControlDown", obj));
 			event.put(SHIFTKEY, ReflectionLoader.call("isShiftDown", obj));
-			event.withCode((Integer)ReflectionLoader.callChain(obj, "getCode", "impl_getCode"));
-
-			event.setValue(CURRENT_TARGET, ReflectionLoader.call("getTarget", obj));
-			event.setValue(EVENT, obj);
+			if(obj != null) {
+				event.withCode((Integer)ReflectionLoader.callChain(obj, "getCode", "impl_getCode"));
+				
+				event.setValue(CURRENT_TARGET, ReflectionLoader.call("getTarget", obj));
+				event.setValue(EVENT, obj);
+			}
 			return event;
 		}
 		if("javafx.stage.WindowEvent".equals(name)) {
