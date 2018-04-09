@@ -6,6 +6,7 @@ import java.util.List;
 
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.interfaces.ObjectCondition;
+import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.list.SimpleIterator;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SimpleSet;
@@ -170,6 +171,7 @@ public class Pattern implements Iterator<Object>, Iterable<Object>{
 		}
 		if(save) {
 			this.match = iterator.current();
+			applyPattern();
 		}
 		return this.match != null;
 	}
@@ -216,5 +218,65 @@ public class Pattern implements Iterator<Object>, Iterable<Object>{
 	public Pattern withMatch(Object candidate) {
 		this.match = candidate;
 		return this;
+	}
+	
+	public boolean applyPattern() {
+		if(MODIFIER_SEARCH.equals(this.modifier)) {
+			return true;
+		}
+		// Go throw all Matches
+		SimpleSet<Pattern> chain = getChain();
+
+		// FROM LAST TO FIRST
+//		for(int i=chain.size() - 1;i>=0;i--) {
+		for(int i=0;i< chain.size();i++) {
+			Pattern pattern = chain.get(i);
+			pattern.appling();
+		}
+		return true;
+	}
+	
+	public boolean appling() {
+		if(condition instanceof PatternCondition == false) {
+			return false;
+		}
+		PatternCondition patternCondition = (PatternCondition) condition;
+		if(MODIFIER_ADD.equals(this.modifier)) {
+			if(this.match == null) {
+				return false;
+			}
+			Object value = patternCondition.getValue();
+			String clazzName = ""+value;
+			SendableEntityCreator creatorClass = getMap().getCreator(clazzName, true);
+			if(creatorClass != null) {
+				this.match = creatorClass.getSendableInstance(false);
+				if(this.parent != null) {
+					this.parent.setValue(patternCondition.getLinkName(), this.match);
+				}
+			}
+			return true;
+		}
+		if(MODIFIER_CHANGE.equals(this.modifier)) {
+			if(this.parent != null) {
+				this.parent.setValue(patternCondition.getLinkName(), patternCondition.getValue());
+			}
+			return true;
+		}
+		if(MODIFIER_REMOVE.equals(this.modifier)) {
+			SendableEntityCreator creatorClass = getMap().getCreatorClass(this.match);
+			if(creatorClass instanceof SendableEntityCreator){
+				((SendableEntityCreator) creatorClass).setValue(this.match, null, null, SendableEntityCreator.REMOVE_YOU);
+			}
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean setValue(String property, Object value) {
+		if(this.match != null) {
+			SendableEntityCreator creatorClass = getMap().getCreatorClass(this.match);
+			creatorClass.setValue(this.match, property, value, SendableEntityCreator.NEW);
+		}
+		return false;
 	}
 }

@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 
 import de.uniks.networkparser.ext.generic.ReflectionLoader;
+import de.uniks.networkparser.ext.javafx.JavaAdapter;
 import de.uniks.networkparser.ext.javafx.JavaBridgeFX;
 import de.uniks.networkparser.gui.controls.Button;
 import de.uniks.networkparser.gui.controls.Control;
@@ -127,7 +128,7 @@ public class DialogBox implements ObjectCondition{
 		}
 		ReflectionLoader.call("requestFocus", root);
 
-		ReflectionLoader.call("runLater", ReflectionLoader.PLATFORM, myPane);
+		JavaAdapter.execute(myPane);
 		return null;
 	}
 
@@ -199,7 +200,7 @@ public class DialogBox implements ObjectCondition{
 			new DialogStage(this, owner).run();
 			return action;
 		}
-		ReflectionLoader.call("runLater", ReflectionLoader.PLATFORM, Runnable.class, new DialogStage(this, owner));
+		JavaAdapter.execute(new DialogStage(this, owner));
 		return null;
 	}
 

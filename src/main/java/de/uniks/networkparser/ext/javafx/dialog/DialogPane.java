@@ -24,6 +24,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 import de.uniks.networkparser.ext.generic.ReflectionLoader;
+import de.uniks.networkparser.ext.javafx.JavaAdapter;
 import de.uniks.networkparser.ext.javafx.JavaBridgeFX;
 
 public class DialogPane implements Runnable {
@@ -68,7 +69,7 @@ public class DialogPane implements Runnable {
 		if(dialogHeight == this.initHeight && dialogWidth == this.initWidth) {
 			if(this.initCount>0) {
 				this.initCount++;
-				ReflectionLoader.call("runLater", ReflectionLoader.PLATFORM, this);
+				JavaAdapter.execute(this);
 			}
 		} else if(this.initCount > 0){
 			this.initCount = -1;

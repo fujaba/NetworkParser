@@ -16,6 +16,6 @@ public class ShowDiagrammEditor extends Application{
 	public void start(Stage stage) throws Exception {
 		String url = new File("diagram/diagram.html").toURI().toString();
 		DiagramEditor editor = DiagramEditor.create(stage, url);
-		editor.show();
+		editor.show(false);
 	}
 }

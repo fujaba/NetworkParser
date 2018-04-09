@@ -72,4 +72,8 @@ public class PatternCondition implements ObjectCondition{
 	public String getLinkName() {
 		return link;
 	}
+	
+	public Object getValue() {
+		return value;
+	}
 }

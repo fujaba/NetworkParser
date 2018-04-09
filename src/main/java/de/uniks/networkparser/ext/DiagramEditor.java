@@ -67,17 +67,18 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 	private String file;
 	private final int WIDTH=900;
 	private final int HEIGHT=600;
+	private boolean autoClose=true;
 
 	public static boolean convertToPNG(HTMLEntity entity, String file, int... dimension) {
-		return converting(entity, file, dimension);
+		return converting(entity, file, true, true, dimension);
 	}
 	public static boolean convertToPNG(String url, String file, int...dimension) {
-		return converting(url, file, dimension);
+		return converting(url, file, true, true, dimension);
 	}
 	public static boolean convertToPNG(File localFile, String file, int...dimension) {
-		return converting(localFile, file, dimension);
+		return converting(localFile, file, true, true, dimension);
 	}
-	private static boolean converting(final Object entity, final String file, int...dimension) {
+	public static boolean converting(final Object entity, final String file, final boolean wait, final boolean autoClose, int...dimension) {
 		final int width, height;
 		if(dimension != null && dimension.length>1) {
 			width = dimension[0];
@@ -91,25 +92,27 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 			return false;
 		}
 		ReflectionLoader.call("startToolkit", launcherClass);
-		ReflectionLoader.call("runLater", ReflectionLoader.PLATFORM, Runnable.class, new Runnable() {
+		ReflectionLoader.call("setImplicitExit", ReflectionLoader.PLATFORM, boolean.class, false);
+		JavaAdapter.executeAndWait(new Runnable() {
 			@Override
 			public void run() {
-				DiagramEditor editor = new DiagramEditor();
 				Object stage = ReflectionLoader.newInstance(ReflectionLoader.STAGE);
+				DiagramEditor editor = new DiagramEditor();
 				if(file != null) {
 					editor.file = file;
 					editor.loadHTMLEntity = true;
+					editor.autoClose = autoClose;
 				}
 				editor.creating(stage, entity, width, height);
 				editor.withIcon(IdMap.class.getResource("np.png").toString());
-				editor.show();
+				editor.show(wait);
 			}
 		});
 		return true;
 	}
 
 	public static void main(String[] args) {
-		if(converting(null, null) == false) {
+		if(converting(null, null, false, true) == false) {
 			// NO JAVAFX Found
 			NodeProxyTCP server = NodeProxyTCP.createServer(8080);
 			server.withListener(new DiagramEditor());
@@ -451,8 +454,10 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 		if(stage == null) {
 			return this;
 		}
-		SimpleController controller = new SimpleController(stage);
-		this.controller = controller;
+		if(this.controller == null) {
+			SimpleController controller = new SimpleController(stage);
+			this.controller = controller;
+		}
 		SimpleKeyValueList<String, String> parameterMap = controller.getParameterMap();
 
 		if(parameterMap != null) {
@@ -476,8 +481,8 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 		return this;
 	}
 
-	public void show() {
-		controller.show(bridge.getWebView());
+	public void show(boolean waitFor) {
+		controller.show(bridge.getWebView(), waitFor, true);
 	}
 
 
@@ -509,10 +514,10 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 		}
 		if(SUCCEEDED.equals(""+evt.getNewValue())) {
 			// TEST
-			ReflectionLoader.call("runLater", ReflectionLoader.PLATFORM, Runnable.class, new Runnable() {
+			JavaAdapter.execute(new Runnable() {
 				@Override
 				public void run() {
-					onScreenDump();
+					screendump(null);
 				}
 			});
 			return true;
@@ -520,8 +525,7 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 		return true;
 	}
 	
-	private void onScreenDump() {
-		System.out.println("onScreenDump");
+	public void screendump(String nameExtension) {
 		Object snapshotParametersClass = ReflectionLoader.getClass("javafx.scene.SnapshotParameters");
 		Object writableImageClass = ReflectionLoader.getClass("javafx.scene.image.WritableImage");
 		Object image = ReflectionLoader.call("snapshot", webView, snapshotParametersClass, null, writableImageClass, null);
@@ -529,13 +533,27 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 		Class<?> swingUtil = ReflectionLoader.getClass("javafx.embed.swing.SwingFXUtils");
 		Object bufferedImageClass = ReflectionLoader.getClass("java.awt.image.BufferedImage");
 		Object bufferedImage = ReflectionLoader.call("fromFXImage", swingUtil, ReflectionLoader.IMAGE, image, bufferedImageClass, null);
-//		System.out.println(bufferedImage+ this.file);
-		ReflectionLoader.call("write", ReflectionLoader.IMAGEIO, ReflectionLoader.RENDEREDIMAGE, bufferedImage, String.class, "png", File.class, new File(this.file));
-		controller.close();
+		
+		String fileName = this.file;
+		if(nameExtension != null) {
+			int pos = fileName.indexOf(".");
+			if(pos<1) {
+				fileName = fileName + nameExtension;
+			}else {
+				fileName = fileName.substring(0, pos)+"-"+nameExtension+fileName.substring(pos);
+			}
+		}
+		ReflectionLoader.call("write", ReflectionLoader.IMAGEIO, ReflectionLoader.RENDEREDIMAGE, bufferedImage, String.class, "png", File.class, new File(fileName));
+		if(autoClose) {
+			controller.close();
+		}
 	}
 	
-	public void onLoad() {
-		System.out.println("FUBU");
+	public void close() {
+		if(controller != null) {
+			controller.close();
+		}
 	}
+
 }
 

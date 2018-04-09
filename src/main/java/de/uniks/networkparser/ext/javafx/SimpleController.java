@@ -307,7 +307,7 @@ public class SimpleController implements ObjectCondition{
 	}
 
 
-	public void show(Object root, boolean newStage) {
+	public void show(Object root, boolean wait, boolean newStage) {
 		Object oldStage = null;
 		if(newStage) {
 			oldStage = this.stage;
@@ -334,29 +334,37 @@ public class SimpleController implements ObjectCondition{
 		event.withListener(this);
 		Object proxy = ReflectionLoader.createProxy(event, ReflectionLoader.EVENTHANDLER);
 		ReflectionLoader.call("setOnKeyPressed", scene, ReflectionLoader.EVENTHANDLER, proxy);
-		showing();
+		showing(wait);
 		if(oldStage != null) {
 			ReflectionLoader.call("close", oldStage);
 		}
 	}
 
 	public void show(Object root) {
-		show(root, firstShow == false);
+		show(root, false, firstShow == false);
 	}
 
 	public Object getCurrentScene() {
 		return ReflectionLoader.call("getScene", stage);
 	}
 
-	protected void showing() {
+	protected void showing(boolean wait) {
 		if(this.stage != null) {
 			init();
 			ReflectionLoader.call("setTitle", this.stage, getTitle());
 			if (Os.isEclipse()) {
-				ReflectionLoader.call("show", this.stage);
+				if(wait) {
+					ReflectionLoader.call("showAndWait", this.stage);
+				} else {
+					ReflectionLoader.call("show", this.stage);
+				}
 			} else {
 				try {
-					ReflectionLoader.call("show", this.stage);
+					if(wait) {
+						ReflectionLoader.call("showAndWait", this.stage);
+					} else {
+						ReflectionLoader.call("show", this.stage);
+					}
 				} catch (Exception e) {
 					errorHandler.saveException(e, this.stage, true);
 				}
@@ -666,5 +674,11 @@ public class SimpleController implements ObjectCondition{
 
 	public static SimpleController create() {
 		return new SimpleController(null);
+	}
+
+	public void hide() {
+		if(this.stage != null) {
+			ReflectionLoader.call("hide", this.stage);
+		}
 	}
 }

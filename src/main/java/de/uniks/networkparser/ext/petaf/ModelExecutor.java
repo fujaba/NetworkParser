@@ -30,6 +30,7 @@ import de.uniks.networkparser.MapEntity;
 import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.UpdateListener;
 import de.uniks.networkparser.ext.generic.ReflectionLoader;
+import de.uniks.networkparser.ext.javafx.JavaAdapter;
 import de.uniks.networkparser.interfaces.MapListener;
 import de.uniks.networkparser.interfaces.SimpleEventCondition;
 import de.uniks.networkparser.json.JsonObject;
@@ -67,7 +68,7 @@ public class ModelExecutor extends SimpleEventCondition {
 				return execute(event);
 			}
 		});
-		ReflectionLoader.call("runLater", ReflectionLoader.PLATFORM, Runnable.class, query);
+		JavaAdapter.execute(query);
 		try {
 			event.withModelValue(query.get());
 		} catch (Exception e) {

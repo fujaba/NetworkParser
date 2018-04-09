@@ -1,6 +1,7 @@
 package de.uniks.networkparser.ext.javafx;
 
 import java.io.File;
+import java.util.concurrent.CountDownLatch;
 
 /*
 The MIT License
@@ -295,5 +296,33 @@ public class JavaAdapter implements JavaViewAdapter {
 			ReflectionLoader.call("setMember", window, String.class, callBackName, Object.class, clazz);
 		}
 		return callBackName;
+	}
+	
+	
+	public static void execute(final Runnable runnable) {
+		ReflectionLoader.call("runLater", ReflectionLoader.PLATFORM, Runnable.class, runnable);
+	}
+	public static void executeAndWait(final Runnable runnable) {
+		if((Boolean) ReflectionLoader.call("isFxApplicationThread",  ReflectionLoader.PLATFORM)) {
+			runnable.run();
+			return;
+		}
+		final CountDownLatch doneLatch = new CountDownLatch(1);
+		Runnable task = new Runnable() {
+
+			@Override
+			public void run() {
+				try {
+					runnable.run();
+				} finally {
+					doneLatch.countDown();
+				}
+			}
+		};
+		execute(task);
+		try {
+			doneLatch.await();
+		} catch (InterruptedException e) {
+		}
 	}
 }
