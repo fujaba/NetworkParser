@@ -303,6 +303,9 @@ public class JavaAdapter implements JavaViewAdapter {
 		ReflectionLoader.call("runLater", ReflectionLoader.PLATFORM, Runnable.class, runnable);
 	}
 	public static void executeAndWait(final Runnable runnable) {
+		if(runnable == null) {
+			return;
+		}
 		if((Boolean) ReflectionLoader.call("isFxApplicationThread",  ReflectionLoader.PLATFORM)) {
 			runnable.run();
 			return;
