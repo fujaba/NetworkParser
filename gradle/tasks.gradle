@@ -55,7 +55,7 @@ task compileJava17(type: JavaCompile) {
 	classpath = files('build/classes/main17')
 }
 
-jar {
+jar{
 	group "Jar"
 	exclude '**/test/**'
 	from sourceSets.main.output

@@ -105,12 +105,6 @@ apply plugin: 'jacoco'
 apply plugin: 'eclipse'
 apply plugin: 'idea'
 
-
-
-
-
-
-
 //buildscript {
 //	repositories {
 //			maven {url "https://plugins.gradle.org/m2/"}
@@ -224,8 +218,6 @@ tasks.withType(FindBugs) {
 	sourceCompatibility = '1.8'
 	targetCompatibility = '1.8'
 }
-
-
 
 //NODE
 node {

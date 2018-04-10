@@ -108,13 +108,12 @@ task version() {
 			println "GitTag: "			+ gitVersion.minor
 		}
 	}
-	
 }
 ext {
 	gitVersion = new GITVersion(major: ext.majorNumber)
 	tasks.version.execute()
-
 }
+version = gitVersion
 
 def buildTime() {
 	//def df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'") //you can change it
