@@ -2,7 +2,7 @@ if(project.hasProperty("signing.keyId")) {
 	apply plugin: 'signing'
 
 	signing {
-		println "IsSigning "+( gitVersion.isRelease() || gitVersion.isMaster() )&& gradle.taskGraph.hasTask("uploadArchives")
+		println "IsSigning "+( gitVersion.isRelease() || gitVersion.isMaster() )
 		required { ( gitVersion.isRelease() || gitVersion.isMaster() )&& gradle.taskGraph.hasTask("uploadArchives")}
 		sign configurations.archives
 	}
