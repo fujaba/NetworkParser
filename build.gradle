@@ -155,7 +155,7 @@ test {
 	}
 }
 task wrapper(type: Wrapper) {
-		gradleVersion = '4.4'
+		gradleVersion = '4.7-rc-1'
 }
 jacoco.toolVersion = "0.7.+"
 
