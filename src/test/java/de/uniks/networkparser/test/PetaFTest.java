@@ -46,7 +46,7 @@ public class PetaFTest {
 		Space space=new Space();
 		space.createServer(5000);
 		space.sendMessage(connectMsg, false);
-		System.out.println(space.convertMessage(connectMsg));
+		Assert.assertNotNull(space.convertMessage(connectMsg));
 
 		space.close();
 	}
@@ -136,7 +136,7 @@ public class PetaFTest {
 		buffer.with(convertMessage);
 
 		ConnectMessage newMessage = (ConnectMessage) space.getMap().decode(buffer);
-		System.out.println(newMessage);
+//		System.out.println(newMessage);
 		Assert.assertEquals(newMessage.getReceiver(), proxy);
 	}
 
@@ -148,8 +148,7 @@ public class PetaFTest {
 		JsonObject json = new JsonObject();
 		json.with("Key", "42");
 		connect.withMessage(json);
-
-		System.out.println(space.convertMessage(connect));
+		Assert.assertEquals("{\"class\":\"ConnectMessage\",\"msg\":{\"Key\":\"42\"}}", space.convertMessage(connect));
 
 	}
 
@@ -200,6 +199,6 @@ public class PetaFTest {
 		ConnectMessage connectMessage = new ConnectMessage();
 		Space space=new Space();
 		space.getMessageFilter().withFormat((byte)4); // Filter.FORMAT_SHORTCLASS
-		System.out.println(space.convertMessage(connectMessage));
+		Assert.assertEquals("{\"class\":\"ConnectMessage\"}", space.convertMessage(connectMessage));
 	}
 }

@@ -47,10 +47,9 @@ public class ByteTest{
 	public void testShortToByte() {
 		ByteBuffer byteBuffer = new ByteBuffer();
 		byteBuffer.add((short) 206);
-		System.out.println(byteBuffer.toArrayString());
+		Assert.assertEquals("[]", byteBuffer.toArrayString());
 	}
-	
-	
+
 	@Test
 	public void testBuffer() {
 		DERBuffer buffer = new DERBuffer();

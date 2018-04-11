@@ -699,14 +699,18 @@ public class QRTokener {
 	}
 
 	static void append8BitBytes(String content, BitArray bits, String encoding) throws RuntimeException {
-		byte[] bytes;
+		byte[] bytes = null;
 		try {
-			bytes = content.getBytes(encoding);
+			if(encoding != null && encoding.length()>0) {
+				bytes = content.getBytes(encoding);
+			}
 		} catch (UnsupportedEncodingException uee) {
 			throw new RuntimeException(uee);
 		}
-		for (byte b : bytes) {
-			bits.appendBits(b, 8);
+		if(bytes != null) {
+			for (byte b : bytes) {
+				bits.appendBits(b, 8);
+			}
 		}
 	}
 

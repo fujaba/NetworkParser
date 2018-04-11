@@ -15,14 +15,12 @@ public class DebugCondition implements ParserCondition, SendableEntityCreator {
 	public static final String KEY="debug";
 	@Override
 	public boolean update(Object value) {
-		System.out.println("DEBUG");
 		return true;
 	}
 
 	@Override
 	public void create(CharacterBuffer buffer, TemplateParser parser, LocalisationInterface customTemplate) {
-		// CREATE FIELD
-		System.out.println("DEBUG");
+//		 CREATE FIELD
 		// SKIP TO END
 		buffer.skipTo(SPLITEND, false);
 		buffer.skip();

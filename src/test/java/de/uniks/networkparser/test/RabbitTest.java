@@ -2,6 +2,7 @@ package de.uniks.networkparser.test;
 
 import java.io.ByteArrayOutputStream;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import de.uniks.networkparser.buffer.ByteBuffer;
@@ -17,7 +18,7 @@ public class RabbitTest {
 		startOK.write(byteBuffer);
 		ByteBuffer buffer = new ByteBuffer();
 		buffer.add(byteBuffer.toByteArray());
-		System.out.println(buffer.toArrayString());
+		Assert.assertEquals("[]", buffer.toArrayString());
 	}
 	
 

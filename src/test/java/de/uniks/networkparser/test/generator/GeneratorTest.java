@@ -1,5 +1,6 @@
 package de.uniks.networkparser.test.generator;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import de.uniks.networkparser.ext.ModelGenerator;
@@ -22,7 +23,7 @@ public class GeneratorTest {
 
 
 		template.generate(resultModel, null, new Attribute("name", DataType.STRING));
-		System.out.println(template);
+		Assert.assertEquals("0: Declaration", template.toString());
 //		System.out.println(templateResult);
 
 	}

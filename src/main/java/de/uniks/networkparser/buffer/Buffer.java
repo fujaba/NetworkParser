@@ -518,6 +518,8 @@ public abstract class Buffer implements BufferItem {
 	}
 
 	public void printError(String msg) {
-		System.err.println(msg);
+		if(msg != null && msg.length() > 0) {
+			System.err.println(msg);
+		}
 	}
 }

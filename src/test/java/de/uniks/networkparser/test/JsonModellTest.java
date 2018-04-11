@@ -138,8 +138,21 @@ public class JsonModellTest implements ObjectCondition {
 		map.with(new PersonCreator());
 		map.with(new GroupAccountCreator());
 		String jsonArray = map.toJsonArray(account.getPersons(), Filter.regard(InstanceOf.create(Person.class, Person.PROPERTY_PARENT))).toString(2);
-		System.out.println(jsonArray);
+//		System.out.println(jsonArray);
 		Assert.assertEquals(229, jsonArray.length());
+		Assert.assertEquals("[\r\n"+
+				"  {\r\n"+
+				"    \"class\":\"de.uniks.networkparser.test.model.Person\",\r\n" +
+				"    \"id\":\"P1\",\r\n" + 
+				"    \"prop\":{\"name\":\"Albert\"}\r\n" + 
+				"  },\r\n" + 
+				"  {\r\n" + 
+				"    \"class\":\"de.uniks.networkparser.test.model.Person\",\r\n" + 
+				"    \"id\":\"P2\",\r\n" + 
+				"    \"prop\":{\"name\":\"Tobi\"}\r\n" + 
+				"  }\r\n" + 
+				"]" + 
+				"", jsonArray.toString());
 	}
 
 	@Test
@@ -274,7 +287,7 @@ public class JsonModellTest implements ObjectCondition {
 		ByteMessage newMessage = (ByteMessage) map.decode(jsonObject);
 		Assert.assertEquals(message.getValue(), newMessage.getValue());
 	}
-
+	private int i;
 	@Test
 	public void testJSONAccumilateAssociation() {
 		//TODO MERGE SOME UPDATE NOTIFICATION
@@ -287,11 +300,17 @@ public class JsonModellTest implements ObjectCondition {
 		map.toJsonObject(account);
 //		map.toJsonObject(person);
 		UpdateAccumulate updateAccumulate = new UpdateAccumulate();
+		String[] output= {"de.uniks.networkparser.SimpleEvent[propertyName=new; oldValue=null; newValue=null 0.0; propagationId=null; source=de.uniks.networkparser.IdMap (2)]",
+						"de.uniks.networkparser.SimpleEvent[propertyName=persons; oldValue=null; newValue=null 0.0; propagationId=null; source=de.uniks.networkparser.IdMap (2)]",
+						"de.uniks.networkparser.SimpleEvent[propertyName=balance; oldValue=0.0; newValue=42.0; propagationId=null; source=de.uniks.networkparser.IdMap (2)]",
+						"de.uniks.networkparser.SimpleEvent[propertyName=name; oldValue=null; newValue=Albert; propagationId=null; source=de.uniks.networkparser.IdMap (2)]",
+						"de.uniks.networkparser.SimpleEvent[propertyName=item; oldValue=null; newValue=null 0.0; propagationId=null; source=de.uniks.networkparser.IdMap (2)]"};
 		map.withListener(new ObjectCondition() {
 
 			@Override
 			public boolean update(Object value) {
-				System.out.println(value);
+				Assert.assertEquals(output[i++], value.toString());
+//				System.out.println(value);
 				return false;
 			}
 		});

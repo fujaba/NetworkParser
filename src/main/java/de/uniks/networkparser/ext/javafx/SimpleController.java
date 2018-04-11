@@ -575,7 +575,7 @@ public class SimpleController implements ObjectCondition{
 		if(Os.checkSystemTray() == false) {
 			return null;
 		}
-		if(this.icon != null) {
+		if(this.icon != null && this.icon.length() > 0 ) {
 			URL iconURL;
 			try {
 				if (this.icon.startsWith("file") || this.icon.startsWith("jar")) {

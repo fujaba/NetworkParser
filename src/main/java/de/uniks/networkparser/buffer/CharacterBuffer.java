@@ -1221,7 +1221,9 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence {
 		if (endPos >=  length()) {
 			endPos = length();
 		}
-		System.err.println(substring(startPos, position) + "<--" + msg + "-->" + substring(position, endPos));
+		if(msg != null && msg.length() > 0) {
+			System.err.println(substring(startPos, position) + "<--" + msg + "-->" + substring(position, endPos));
+		}
 	}
 
 	@Override

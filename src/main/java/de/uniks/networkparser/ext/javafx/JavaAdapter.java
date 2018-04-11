@@ -169,7 +169,9 @@ public class JavaAdapter implements JavaViewAdapter {
 	}
 
 	public void showAlert(String value) {
-		System.err.println(value);
+		if(value != null && value.length()>0) {
+			System.err.println(value);
+		}
 	}
 
 	public boolean executeChange(String value) {

@@ -247,7 +247,8 @@ public class SQLModelConverterTest {
 		SQLTokener tokener = new SQLTokener(SQLStatement.connect("jdbc", "sqlite", "build/sampleC.db"));
 
 		Connection conn = ReflectionLoader.loadSQLDriver("jdbc:sqlite", "lib/sql/sqlite-jdbc-3.8.11.2.jar", "build/sampleC.db");
-		System.out.println(conn);
+//		System.out.println(conn);
+		Assert.assertNotNull(conn);
 		tokener.withConnection(conn);
 
 		IdMap map = UniversityCreator.createIdMap("1");

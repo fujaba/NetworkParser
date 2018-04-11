@@ -33,6 +33,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import de.uniks.networkparser.NetworkParserLog;
@@ -195,7 +196,6 @@ public class ReflectionBlackBoxTester {
 	public void test(String packageName, NetworkParserLog logger) throws ClassNotFoundException, IOException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		System.setProperty("Tester", "true");
 		ArrayList<Class<?>> classesForPackage = getClassesForPackage(packageName);
-		System.out.println("no"+classesForPackage.size());
 		errorCount = 0;
 		successCount = 0;
 		this.packageName = packageName;
@@ -211,7 +211,7 @@ public class ReflectionBlackBoxTester {
 			if(Modifier.isAbstract(clazz.getModifiers()) ) {
 				continue;
 			}
-
+System.out.println(clazz);
 			Object obj = null;
 			for(Constructor<?> c : constructors) {
 				Object[] call = getParameters(c.getParameterTypes(), NULLVALUE);
@@ -234,6 +234,12 @@ public class ReflectionBlackBoxTester {
 
 	private void testClass(Object obj, Class<?> clazz, SimpleSet<String> ignoreMethods) {
 		for(Method m : clazz.getDeclaredMethods()) {
+			if(clazz.toString().equals("class de.uniks.networkparser.ext.javafx.dialog.DialogBox")) {
+				System.out.println(m.getName());
+				if("showExtern".equals(m.getName()) || "show".equals(m.getName())) {
+					System.out.println("ERORR");
+				}
+			}
 			if(m.getDeclaringClass().isInterface()) {
 				continue;
 			}
@@ -241,7 +247,6 @@ public class ReflectionBlackBoxTester {
 //			if("main".equals(m.getName()) || "access".equals(m.getName())) {
 				continue;
 			}
-
 //			output(clazz.getName()+":"+m.getName(), logger, NetworkParserLog.LOGLEVEL_ERROR);
 
 			Object[] call = null;
@@ -252,6 +257,7 @@ public class ReflectionBlackBoxTester {
 			if(tests.contains(NULLVALUE)) {
 				try {
 					call = getParameters(parameterTypes, NULLVALUE);
+
 					m.invoke(obj, call);
 					successCount++;
 				}catch(Exception e) {
@@ -387,7 +393,7 @@ public class ReflectionBlackBoxTester {
 		return objects;
 	}
 
-	private boolean euqalsClass(Class<?> clazz, Class<?>... checkClasses) {
+	private boolean equalsClass(Class<?> clazz, Class<?>... checkClasses) {
 		if(checkClasses == null) {
 			return true;
 		}
@@ -401,44 +407,52 @@ public class ReflectionBlackBoxTester {
 
 	private Object getNullValue(Class<?> clazz) {
 		if (clazz.isPrimitive()) {
-			if(euqalsClass(clazz, boolean.class, Boolean.class)) {return false;}
-			if(euqalsClass(clazz, byte.class, Byte.class)) {return (byte) 0;}
-			if(euqalsClass(clazz, short.class, Short.class)) {return 0;}
-			if(euqalsClass(clazz, int.class, Integer.class)) {return 0;}
-			if(euqalsClass(clazz, long.class, Long.class)) {return 0L;}
-			if(euqalsClass(clazz, char.class, Character.class)) {return '\u0000';}
-			if(euqalsClass(clazz, float.class, Float.class)) {return 0.0f;}
-			if(euqalsClass(clazz, double.class, Double.class)) {return 0.0d;}
-			if(euqalsClass(clazz, String.class, CharSequence.class)) {return null;}
+			if(equalsClass(clazz, boolean.class, Boolean.class)) {return false;}
+			if(equalsClass(clazz, byte.class, Byte.class)) {return (byte) 0;}
+			if(equalsClass(clazz, short.class, Short.class)) {return 0;}
+			if(equalsClass(clazz, int.class, Integer.class)) {return 0;}
+			if(equalsClass(clazz, long.class, Long.class)) {return 0L;}
+			if(equalsClass(clazz, char.class, Character.class)) {return '\u0000';}
+			if(equalsClass(clazz, float.class, Float.class)) {return 0.0f;}
+			if(equalsClass(clazz, double.class, Double.class)) {return 0.0d;}
+			if(equalsClass(clazz, String.class, CharSequence.class)) {return null;}
 		}
 		return null;
 	}
 	private Object getMinValue(Class<?> clazz) {
 		if (clazz.isPrimitive()) {
-			if(euqalsClass(clazz, boolean.class, Boolean.class)) {return false;}
-			if(euqalsClass(clazz, byte.class, Byte.class)) {return Byte.MIN_VALUE;}
-			if(euqalsClass(clazz, int.class, Integer.class)) {return Integer.MIN_VALUE;}
-			if(euqalsClass(clazz, short.class, Short.class)) {return Short.MIN_VALUE;}
-			if(euqalsClass(clazz, long.class, Long.class)) {return Long.MIN_VALUE;}
-			if(euqalsClass(clazz, char.class, Character.class)) {return Character.MIN_VALUE;}
-			if(euqalsClass(clazz, float.class, Float.class)) {return Float.MIN_VALUE;}
-			if(euqalsClass(clazz, double.class, Double.class)) {return Double.MIN_VALUE;}
-			if(euqalsClass(clazz, String.class, CharSequence.class)) {return "";}
+			if(equalsClass(clazz, boolean.class, Boolean.class)) {return false;}
+			if(equalsClass(clazz, byte.class, Byte.class)) {return Byte.MIN_VALUE;}
+			if(equalsClass(clazz, int.class, Integer.class)) {return Integer.MIN_VALUE;}
+			if(equalsClass(clazz, short.class, Short.class)) {return Short.MIN_VALUE;}
+			if(equalsClass(clazz, long.class, Long.class)) {return Long.MIN_VALUE;}
+			if(equalsClass(clazz, char.class, Character.class)) {return Character.MIN_VALUE;}
+			if(equalsClass(clazz, float.class, Float.class)) {return Float.MIN_VALUE;}
+			if(equalsClass(clazz, double.class, Double.class)) {return Double.MIN_VALUE;}
+			if(equalsClass(clazz, String.class, CharSequence.class)) {return "";}
 		}
 		return null;
 	}
 
 	private Object getRandomValue(Class<?> clazz) {
 		if (clazz.isPrimitive()) {
-			if(euqalsClass(clazz, byte.class, Byte.class)) {return 0x50;}
-			if(euqalsClass(clazz, int.class, Integer.class)) {return 42;}
-			if(euqalsClass(clazz, short.class, Short.class)) {return 2;}
-			if(euqalsClass(clazz, long.class, Long.class)) {return 3;}
-			if(euqalsClass(clazz, char.class, Character.class)) {return 'g';}
-			if(euqalsClass(clazz, float.class, Float.class)) {return 6;}
-			if(euqalsClass(clazz, double.class, Double.class)) {return 8;}
-			if(euqalsClass(clazz, boolean.class, Boolean.class)) {return true;}
-			if(euqalsClass(clazz, String.class, CharSequence.class)) {return "Albert";}
+			if(equalsClass(clazz, byte.class, Byte.class)) {return 0x50;}
+			if(equalsClass(clazz, int.class, Integer.class)) {return 42;}
+			if(equalsClass(clazz, short.class, Short.class)) {return 2;}
+			if(equalsClass(clazz, long.class, Long.class)) {return 3;}
+			if(equalsClass(clazz, char.class, Character.class)) {return 'g';}
+			if(equalsClass(clazz, float.class, Float.class)) {return 6;}
+			if(equalsClass(clazz, double.class, Double.class)) {return 8;}
+			if(equalsClass(clazz, boolean.class, Boolean.class)) {return true;}
+			if(equalsClass(clazz, String.class, CharSequence.class)) {return "Albert";}
+		} else if(equalsClass(clazz, Class.class)) {
+			return null;
+		} else if(equalsClass(clazz, Field.class, Method.class)) {
+			return null;
+		} else if(equalsClass(clazz, X509Certificate.class)) {
+			return null;
+		} else if(equalsClass(clazz, File.class)) {
+			return new File("");
 		} else if(clazz.isArray()) {
 			Class<?> arrayClazz = clazz.getComponentType();
 			int nrDims = 1 + clazz.getName().lastIndexOf('[');
@@ -455,7 +469,20 @@ public class ReflectionBlackBoxTester {
 				return clazz.getConstructor().newInstance();
 			}catch (Exception e) {
 					Constructor<?>[] declaredConstructors = clazz.getDeclaredConstructors();
+					ArrayList<Constructor<?>> skipConstructor=new ArrayList<Constructor<?>>();
 					for(Constructor<?> c : declaredConstructors) {
+						try {
+							Object[] call = getParameters(c.getParameterTypes(), NULLVALUE);
+							if(ReflectionLoader.isAccess(c, null)) {
+								c.setAccessible(true);
+								return c.newInstance(call);
+							}else {
+								skipConstructor.add(c);
+							}
+						} catch (Exception e2) {
+						}
+					}
+					for(Constructor<?> c : skipConstructor) {
 						try {
 							Object[] call = getParameters(c.getParameterTypes(), NULLVALUE);
 							c.setAccessible(true);
@@ -469,14 +496,14 @@ public class ReflectionBlackBoxTester {
 	}
 	private Object getMaxValue(Class<?> clazz) {
 		if (clazz.isPrimitive()) {
-			if(euqalsClass(clazz, boolean.class, Boolean.class)) {return false;}
-			if(euqalsClass(clazz, byte.class, Byte.class)) {return Byte.MAX_VALUE;}
-			if(euqalsClass(clazz, int.class, Integer.class)) {return Integer.MAX_VALUE;}
-			if(euqalsClass(clazz, short.class, Short.class)) {return Short.MAX_VALUE;}
-			if(euqalsClass(clazz, long.class, Long.class)) {return Long.MAX_VALUE;}
-			if(euqalsClass(clazz, char.class, Character.class)) {return Character.MAX_VALUE;}
-			if(euqalsClass(clazz, float.class, Float.class)) {return Float.MAX_VALUE;}
-			if(euqalsClass(clazz, double.class, Double.class)) {return Double.MAX_VALUE;}
+			if(equalsClass(clazz, boolean.class, Boolean.class)) {return false;}
+			if(equalsClass(clazz, byte.class, Byte.class)) {return Byte.MAX_VALUE;}
+			if(equalsClass(clazz, int.class, Integer.class)) {return Integer.MAX_VALUE;}
+			if(equalsClass(clazz, short.class, Short.class)) {return Short.MAX_VALUE;}
+			if(equalsClass(clazz, long.class, Long.class)) {return Long.MAX_VALUE;}
+			if(equalsClass(clazz, char.class, Character.class)) {return Character.MAX_VALUE;}
+			if(equalsClass(clazz, float.class, Float.class)) {return Float.MAX_VALUE;}
+			if(equalsClass(clazz, double.class, Double.class)) {return Double.MAX_VALUE;}
 		}
 		return null;
 	}

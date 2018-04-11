@@ -1,5 +1,6 @@
 package de.uniks.networkparser.test;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import de.uniks.networkparser.graph.Pattern;
@@ -30,9 +31,14 @@ public class PatternTest {
 //		List<Object> allMatches = new Pattern(river).has(River.PROPERTY_BANKS).has(Bank.PROPERTY_CARGOS).allMatches();
 		Pattern pattern = new Pattern(RiverCreator.createIdMap("42"), river).has(River.PROPERTY_BANKS).has(Bank.PROPERTY_CARGOS);
 //		pattern.withMatch(candidate)
+		int i=1;
 		for (Object matchPattern : pattern) {
-			System.out.println(pattern);
+			if(matchPattern != null) {
+				i++;
+			}
+//			System.out.println(pattern);
 		}
+		Assert.assertEquals(3, i);
 
 //		System.out.println(allMatches);
 //		for (Object found : allMatches) {
@@ -65,8 +71,11 @@ public class PatternTest {
 		Pattern ludoPO = new Pattern(LudoCreator.createIdMap("42"), ludo);
 		Pattern fieldPO = ludoPO.has(Ludo.PROPERTY_FIELDS);
 		Pattern pawnPO = fieldPO.has(Field.PROPERTY_PAWNS);
+		
+		String[] output= {"LUDO: 1 -- 1-1", "LUDO: 1 -- 1-2","LUDO: 1 -- 1-3", "LUDO: 2 -- 2-1", "LUDO: 2 -- 2-2", "LUDO: 2 -- 2-3", "LUDO: 2 -- 2-4", "LUDO: 3 -- 3-1", "LUDO: 3 -- 3-2", "LUDO: 3 -- 3-3","LUDO: 3 -- 3-4"};
+		int i=0;
 		while(ludoPO.hasNext()) {
-			System.out.println("LUDO: " + fieldPO.getMatch(Field.class).getName() + " -- " + pawnPO.getMatch(Pawn.class).getColor());
+			Assert.assertEquals(output[i++], "LUDO: " + fieldPO.getMatch(Field.class).getName() + " -- " + pawnPO.getMatch(Pawn.class).getColor());
 			ludoPO.find();
 		}
 //		for(Object result : pawnPO) {
@@ -80,7 +89,7 @@ public class PatternTest {
 //		while (ludoPO.isHasMatch()) {
 //			
 //		}
-		System.out.println("FINISH");
+//		System.out.println("FINISH");
 	}
 
 	@Test
@@ -141,8 +150,10 @@ public class PatternTest {
 		Pattern ludoPO = new Pattern(LudoCreator.createIdMap("42"), ludo);
 		Pattern fieldPO = ludoPO.has(Ludo.PROPERTY_FIELDS);
 		Pattern labelPO = fieldPO.has(Field.PROPERTY_LABEL);
+		String[] output = {"LUDO: 1 -- A", "LUDO: 1 -- B", "LUDO: 1 -- C", "LUDO: 2 -- A", "LUDO: 2 -- B", "LUDO: 2 -- C","LUDO: 3 -- A", "LUDO: 3 -- B", "LUDO: 3 -- C"};
+		int i=0;
 		while (ludoPO.hasNext()) {
-			System.out.println("LUDO: " + fieldPO.getMatch(Field.class).getName() + " -- " + labelPO.getMatch(Label.class).getName());
+			Assert.assertEquals(output[i++], "LUDO: " + fieldPO.getMatch(Field.class).getName() + " -- " + labelPO.getMatch(Label.class).getName());
 			ludoPO.next();
 		}
 	}

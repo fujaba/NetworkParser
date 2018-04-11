@@ -27,6 +27,7 @@ import java.io.File;
 import java.io.PrintStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.net.URL;
@@ -520,6 +521,7 @@ public class ReflectionLoader {
 			}catch (Exception e) {
 				if(staticCall == false && item instanceof Class<?>) {
 					itemClass = ((Class<?>) item);
+					staticCall = true;
 					try {
 						method = itemClass.getMethod(methodName, methodArguments);
 					}catch (Exception e2) {
@@ -540,7 +542,9 @@ public class ReflectionLoader {
 				if(staticCall) {
 					return method.invoke(null, methodArgumentsValues);
 				}
-				method.setAccessible(true);
+				if(isAccess(method, item) == false) {
+					method.setAccessible(true);
+				}
 				return method.invoke(item, methodArgumentsValues);
 			}
 		} catch (Exception e) {
@@ -607,5 +611,23 @@ public class ReflectionLoader {
 		}
 		return null;
 	}
-
+	
+	public static boolean isAccess(Member member, Object entity) {
+		try {
+			Method method = member.getClass().getMethod("canAccess", Object.class);
+			if(method != null) {
+//				field.canAccess(entity)
+				return (Boolean) method.invoke(member, entity);
+			}
+		} catch (Exception e) {
+		}
+		try {
+			Method method = member.getClass().getMethod("isAccessible");
+			if(method != null) {
+				return (Boolean) method.invoke(member, entity);
+			}
+		} catch (Exception e) {
+		}
+		return true;
+	}
 }

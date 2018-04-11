@@ -1,5 +1,6 @@
 package de.uniks.networkparser.test;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import de.uniks.networkparser.ext.petaf.Message;
@@ -18,7 +19,8 @@ public class SocketTest {
 		}
 		server_Time.close();
 	}
-
+	
+	private int i;
 	@Test
 	public void testSocket() {
 
@@ -29,7 +31,7 @@ public class SocketTest {
 			@Override
 			public boolean update(Object value) {
 				Message msg = (Message) value;
-				System.out.println(value);
+//				System.out.println(value);
 				msg.write("Welt");
 				return false;
 			}
@@ -37,12 +39,16 @@ public class SocketTest {
 		server.start();
 
 		// Client and send Hallo
+		
+		String[] output = {"Welt","Hallo"};
+		
 		NodeProxyTCP client=NodeProxyTCP.create("localhost", 5000);
 		client.withListener(new ObjectCondition() {
 
 			@Override
 			public boolean update(Object value) {
-				System.out.println(value.toString());
+				Assert.assertEquals(output[i++], value.toString());
+//				System.out.println();
 				return false;
 			}
 		});
@@ -57,6 +63,6 @@ public class SocketTest {
 		}
 		server.close();
 		client.close();
-		System.out.println("END");
+//		System.out.println("END");
 	}
 }

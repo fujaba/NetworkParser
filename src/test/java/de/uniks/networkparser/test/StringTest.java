@@ -252,8 +252,7 @@ public class StringTest {
 
 //		sb.replace(7, 11, "Grape");
 		sb.replace(5, 11, "");
-
-		System.out.println(sb.toString());
+		Assert.assertEquals("Apple, Cherry", sb.toString());
 	}
 
 

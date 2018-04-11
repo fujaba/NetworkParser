@@ -34,12 +34,16 @@ public class OutputCondition implements ObjectCondition {
 			return false;
 		}
 		SimpleEvent event = (SimpleEvent) value;
-		if(NetworkParserLog.ERROR.equals(event.getType())) {
-			System.err.println(event.getType() +": "+event.getNewValue());
-		}else {
-			System.out.println(event.getType() +": "+event.getNewValue());
+		if(event.getNewValue() != null) {
+			String msg = ""+event.getNewValue();
+			if(msg.length() >0 ) {
+				if(NetworkParserLog.ERROR.equals(event.getType())) {
+					System.err.println(event.getType() +": "+event.getNewValue());
+				}else {
+					System.out.println(event.getType() +": "+event.getNewValue());
+				}
+			}
 		}
 		return false;
 	}
-
 }

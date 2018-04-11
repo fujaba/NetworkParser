@@ -16,13 +16,19 @@ public class ReflectionTest {
 	public OutputCondition output = new OutputCondition();
 	@Test
 	public void testReflection() throws ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, IOException {
-		System.out.println(Thread.activeCount());
 		ReflectionBlackBoxTester tester = new ReflectionBlackBoxTester();
 		NetworkParserLog logger=new NetworkParserLog();
+		logger.withListener(new ObjectCondition() {
+			
+			@Override
+			public boolean update(Object value) {
+				return false;
+			}
+		});
 //		logger.withFlag(NetworkParserLog.LOGLEVEL_ALL).withListener(output);
 		tester.test("de.uniks.networkparser", logger);
 		Assert.assertNotNull(tester);
-		System.out.println(""+System.currentTimeMillis()+" FINISH:"+Thread.activeCount());
+//		System.out.println(""+System.currentTimeMillis()+" FINISH:"+Thread.activeCount());
 	}
 
 	@Test

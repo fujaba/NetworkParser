@@ -124,7 +124,7 @@ public class GenericCreator implements SendableEntityCreator {
 		// No Method Found
 		try {
 			Field field = this.clazz.getDeclaredField(attribute);
-			if(isAccess(field, entity) == false) {
+			if(ReflectionLoader.isAccess(field, entity) == false) {
 				field.setAccessible(true);
 				Object invoke = field.get(entity);
 				field.setAccessible(false);
@@ -197,7 +197,7 @@ public class GenericCreator implements SendableEntityCreator {
 		// No Method Found
 		try {
 			Field field = this.clazz.getDeclaredField(attribute);
-			if(isAccess(field, entity) == false) {
+			if(ReflectionLoader.isAccess(field, entity) == false) {
 				field.setAccessible(true);
 				field.set(entity, value);
 				field.setAccessible(false);
@@ -209,25 +209,6 @@ public class GenericCreator implements SendableEntityCreator {
 			System.out.println(e);
 		}
 		return false;
-	}
-
-	private boolean isAccess(Field field, Object entity) {
-		try {
-			Method method = field.getClass().getMethod("canAccess", Object.class);
-			if(method != null) {
-//				field.canAccess(entity)
-				return (Boolean) method.invoke(field, entity);
-			}
-		} catch (Exception e) {
-		}
-		try {
-			Method method = field.getClass().getMethod("isAccessible");
-			if(method != null) {
-				return (Boolean) method.invoke(field, entity);
-			}
-		} catch (Exception e) {
-		}
-		return true;
 	}
 
 	protected Class<?> getClassForName(String className) {
@@ -254,7 +235,9 @@ public class GenericCreator implements SendableEntityCreator {
 	}
 	public static GenericCreator create(IdMap map, String className) {
 		try {
-			return create(map, Class.forName(className));
+			if(className != null && className.length() >0) {
+				return create(map, Class.forName(className));
+			}
 		} catch (ClassNotFoundException e) {
 		}
 		return null;

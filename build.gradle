@@ -157,7 +157,7 @@ test {
 task wrapper(type: Wrapper) {
 		gradleVersion = '4.7-rc-1'
 }
-jacoco.toolVersion = "0.7.+"
+jacoco.toolVersion = "0.8.+"
 
 jacocoTestReport {
 	group = "Reporting"
@@ -200,7 +200,7 @@ tasks.withType(Checkstyle) {
 	reports {
 		xml.enabled false
 		html.enabled true
-		html.destination = "build/checkStyle.html"
+		html.destination = new File("build/checkStyle.html")
 	}
 	showViolations = false
 	ignoreFailures = true
@@ -209,7 +209,7 @@ tasks.withType(FindBugs) {
 	reports {
 		xml.enabled = false
 		html.enabled = true
-		html.destination = "build/FindBugs.html"
+		html.destination =  new File("build/FindBugs.html")
 	}
 	classes = fileTree(dir: 'build/classes/main18')
 	source = sourceSets.main.java
