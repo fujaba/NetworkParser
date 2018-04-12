@@ -34,6 +34,7 @@ ext{
 
 gradle.projectsEvaluated {
 	if(args != "[buildLocalJar]") {
+		compileJava.dependsOn(npmPackages)
 		compileJava.dependsOn(compileJava16)
 		compileJava.dependsOn(compileJava17)
 		test.dependsOn(FinishTest)
