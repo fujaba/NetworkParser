@@ -92,8 +92,10 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 			return false;
 		}
 		ReflectionLoader.call("startToolkit", launcherClass);
-		ReflectionLoader.call("setImplicitExit", ReflectionLoader.PLATFORM, boolean.class, false);
-		JavaAdapter.executeAndWait(new Runnable() {
+		if(entity != null && file != null) {
+			ReflectionLoader.call("setImplicitExit", ReflectionLoader.PLATFORM, boolean.class, false);
+		}
+		Runnable runnable = new Runnable() {
 			@Override
 			public void run() {
 				Object stage = ReflectionLoader.newInstance(ReflectionLoader.STAGE);
@@ -107,7 +109,12 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 				editor.withIcon(IdMap.class.getResource("np.png").toString());
 				editor.show(wait);
 			}
-		});
+		};
+		if(wait) {
+			JavaAdapter.executeAndWait(runnable);
+		} else {
+			JavaAdapter.execute(runnable);
+		}
 		return true;
 	}
 
@@ -144,15 +151,12 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 			if(path.equals("/")) {
 				HTMLEntity html = new HTMLEntity();
 				html.createScript("classEditor = new ClassEditor(\"board\");", html.getBody());
-				html.withHeader("drawer.js");
-				html.withHeader("graph.js");
+				html.withHeader("diagram.js");
 				html.withHeader("diagramstyle.css");
 				String response = html.toString(2);
 				writeHTTPResponse(msg, response, false);
-			} else if(path.equalsIgnoreCase("/drawer.js")) {
-				writeHTTPResponse(msg, FileBuffer.readResource("graph/drawer.js").toString(), false);
-			} else if(path.equalsIgnoreCase("/graph.js")) {
-				writeHTTPResponse(msg, FileBuffer.readResource("graph/graph.js").toString(), false);
+			} else if(path.equalsIgnoreCase("/diagram.js")) {
+				writeHTTPResponse(msg, FileBuffer.readResource("graph/diagram.js").toString(), false);
 			} else if(path.equalsIgnoreCase("/diagramstyle.css")) {
 				writeHTTPResponse(msg, FileBuffer.readResource("graph/diagramstyle.css").toString(), false);
 			}else {
@@ -416,16 +420,16 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 		html.createScript("classEditor = new ClassEditor(\"board\");", html.getBody());
 		if(type.equals(TYPE_EXPORT) || type.equals(TYPE_EXPORTALL)) {
 			if(type.equals(TYPE_EXPORT)) {
-				html.withHeader("drawer.js");
-				html.withHeader("graph.js");
+				html.withHeader("dagre-min.js");
+				html.withHeader("diagram.js");
 				html.withHeader("diagramstyle.css");
-				FileBuffer.writeFile("drawer.js", FileBuffer.readResource("graph/drawer.js"));
-				FileBuffer.writeFile("graph.js",FileBuffer.readResource("graph/graph.js"));
+				FileBuffer.writeFile("dagre-min.js", FileBuffer.readResource("graph/dagre-min.js"));
+				FileBuffer.writeFile("diagram.js",FileBuffer.readResource("graph/diagram.js"));
 				FileBuffer.writeFile("diagramstyle.css",FileBuffer.readResource("graph/diagramstyle.css"));
 			} else {
 				// Add external Files
-				html.withScript(readFile("graph/drawer.js"), html.getHeader());
-				html.withScript(readFile("graph/graph.js"), html.getHeader());
+				html.withScript(readFile("graph/dagre-min.js"), html.getHeader());
+				html.withScript(readFile("graph/diagram.js"), html.getHeader());
 				html.withScript(readFile("graph/diagramstyle.css"), html.getHeader());
 			}
 			FileBuffer.writeFile("Editor.html", html.toString());
@@ -438,8 +442,8 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 			return false;
 		}
 		// Add external Files
-		html.withScript(readFile("graph/drawer.js"), html.getHeader());
-		html.withScript(readFile("graph/graph.js"), html.getHeader());
+		html.withScript(readFile("graph/dagre-min.js"), html.getHeader());
+		html.withScript(readFile("graph/diagram.js"), html.getHeader());
 		html.withScript(readFile("graph/diagramstyle.css"), html.getHeader());
 		ReflectionLoader.call("loadContent", webEngine, html.toString());
 		return true;

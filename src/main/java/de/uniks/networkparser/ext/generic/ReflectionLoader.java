@@ -29,6 +29,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -539,10 +540,11 @@ public class ReflectionLoader {
 				}
 			}
 			if(method != null) {
-				if(staticCall) {
+				boolean isPublic = Modifier.isPublic(method.getModifiers());
+				if(staticCall && isPublic) {
 					return method.invoke(null, methodArgumentsValues);
 				}
-				if(isAccess(method, item) == false) {
+				if(isAccess(method, item) == false || isPublic == false) {
 					method.setAccessible(true);
 				}
 				return method.invoke(item, methodArgumentsValues);
