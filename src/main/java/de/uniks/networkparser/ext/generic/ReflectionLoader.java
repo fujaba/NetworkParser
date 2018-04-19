@@ -91,6 +91,7 @@ public class ReflectionLoader {
 	public static final Class<?> BORDERPANE;
 	public static final Class<?> PARAMETER;
 	public static final Class<?> TRANSFERMODE;
+	public static final Class<?> FILECHOOSERFX;
 
 	public static final Class<?> GIT;
 	public static final Class<?> FILEREPOSITORYBUILDER;
@@ -114,7 +115,8 @@ public class ReflectionLoader {
 	public static final Class<?> AWTIMAGE;
 	public static final Class<?> PROCESSBUILDERREDIRECT;
 	public static final Class<?> MANAGEMENTFACTORY;
-
+	public static final Class<?> JFILECHOOSER;
+	public static final Class<?> JFRAME;
 //	public static final Class<?> DIFFENTRY;
 //	public static final Class<?> OBJECTID;
 //	public static final Class<?> OBJECTREADER;
@@ -185,6 +187,7 @@ public class ReflectionLoader {
 			PARAMETER = getClass("com.sun.javafx.application.ParametersImpl");
 			TRANSFERMODE = getClass("javafx.scene.input.TransferMode");
 			TOOLKITFX = getClass("com.sun.javafx.tk.Toolkit");
+			FILECHOOSERFX = getClass("javafx.stage.FileChooser");
 		} else {
 			NODE = null;
 			OBSERVABLEVALUE = null;
@@ -232,6 +235,7 @@ public class ReflectionLoader {
 			PARAMETER = null;
 			TRANSFERMODE = null;
 			TOOLKITFX = null;
+			FILECHOOSERFX = null;
 		}
 	}
 
@@ -252,6 +256,8 @@ public class ReflectionLoader {
 			AWTIMAGE = getClass("java.awt.Image");
 			PROCESSBUILDERREDIRECT = getClass("java.lang.ProcessBuilder.Redirect");
 			DESKTOP = getClass("java.awt.Desktop");
+			JFILECHOOSER = getClass("javax.swing.JFileChooser");
+			JFRAME = getClass("javax.swing.JFrame");
 		} else {
 			SYSTEMTRAY = null;
 			RECTANGLE = null;
@@ -266,6 +272,8 @@ public class ReflectionLoader {
 			AWTIMAGE = null;
 			PROCESSBUILDERREDIRECT = null;
 			DESKTOP = null;
+			JFILECHOOSER = null;
+			JFRAME = null;
 		}
 	}
 

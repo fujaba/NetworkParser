@@ -56,6 +56,9 @@ public class JsonObjectLazy extends JsonObject {
 				continue;
 			}
 			Object value = getMember(this.ref, keys[i]);
+			if(value == null) {
+				return false;
+			}
 			if (ReflectionLoader.JSOBJECT.isAssignableFrom(value.getClass())) {
 //				JSObject jsValue = (JSObject) value;
 				boolean isArray = (Boolean) ReflectionLoader.call("eval", value, "Array.isArray(this);");

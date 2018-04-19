@@ -42,6 +42,7 @@ import de.uniks.networkparser.ext.io.FileBuffer;
 import de.uniks.networkparser.ext.javafx.JavaAdapter;
 import de.uniks.networkparser.ext.javafx.JavaBridgeFX;
 import de.uniks.networkparser.ext.javafx.SimpleController;
+import de.uniks.networkparser.ext.javafx.dialog.DialogBox;
 import de.uniks.networkparser.ext.petaf.Message;
 import de.uniks.networkparser.ext.petaf.proxy.NodeProxyTCP;
 import de.uniks.networkparser.graph.Clazz;
@@ -152,6 +153,7 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 				HTMLEntity html = new HTMLEntity();
 				html.createScript("classEditor = new ClassEditor(\"board\");", html.getBody());
 				html.withHeader("diagram.js");
+				html.withHeader("jspdf.min.js");
 				html.withHeader("diagramstyle.css");
 				String response = html.toString(2);
 				writeHTTPResponse(msg, response, false);
@@ -159,6 +161,8 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 				writeHTTPResponse(msg, FileBuffer.readResource("graph/diagram.js").toString(), false);
 			} else if(path.equalsIgnoreCase("/diagramstyle.css")) {
 				writeHTTPResponse(msg, FileBuffer.readResource("graph/diagramstyle.css").toString(), false);
+			} else if(path.equalsIgnoreCase("/jspdf.min.js")) {
+				writeHTTPResponse(msg, FileBuffer.readResource("graph/jspdf.min.js").toString(), false);
 			}else {
 				writeHTTPResponse(msg, FILE404, true);
 			}
@@ -422,14 +426,17 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 			if(type.equals(TYPE_EXPORT)) {
 				html.withHeader("dagre-min.js");
 				html.withHeader("diagram.js");
+				html.withHeader("jspdf.min.js");
 				html.withHeader("diagramstyle.css");
 				FileBuffer.writeFile("dagre-min.js", FileBuffer.readResource("graph/dagre-min.js"));
 				FileBuffer.writeFile("diagram.js",FileBuffer.readResource("graph/diagram.js"));
+				FileBuffer.writeFile("jspdf.min.js",FileBuffer.readResource("graph/jspdf.min.js"));
 				FileBuffer.writeFile("diagramstyle.css",FileBuffer.readResource("graph/diagramstyle.css"));
 			} else {
 				// Add external Files
 				html.withScript(readFile("graph/dagre-min.js"), html.getHeader());
 				html.withScript(readFile("graph/diagram.js"), html.getHeader());
+				html.withScript(readFile("graph/jspdf.min.js"), html.getHeader());
 				html.withScript(readFile("graph/diagramstyle.css"), html.getHeader());
 			}
 			FileBuffer.writeFile("Editor.html", html.toString());
@@ -552,7 +559,28 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 			controller.close();
 		}
 	}
-	
+
+	public void export(String type, Object value, String name, String context) {
+		String typeName = "files"; 
+		if("PNG".equalsIgnoreCase(type)) {
+			typeName = "Portable Network Graphics";
+		} else if("SVG".equalsIgnoreCase(type)) {
+			typeName = "Scalable Vector Graphics";
+		} else if("JSON".equalsIgnoreCase(type)) {
+			typeName = "JavaScript Object Notation";
+		} else if("HTML".equalsIgnoreCase(type)) {
+			typeName = "Hypertext Markup Language";
+		} else if("PDF".equalsIgnoreCase(type)) {
+			typeName = "Portable Document Format";
+		}
+		String file = DialogBox.showFileSaveChooser("Export Diagramm", name, typeName, type, this.controller.getStage());
+		if(file != null) {
+			if(value instanceof String) {
+				FileBuffer.writeFile(file, ((String) value).getBytes());
+			}
+		}
+	}
+
 	public void close() {
 		if(controller != null) {
 			controller.close();

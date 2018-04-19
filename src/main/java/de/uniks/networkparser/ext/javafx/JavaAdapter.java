@@ -264,9 +264,11 @@ public class JavaAdapter implements JavaViewAdapter {
 	public void loadFinish() {
 		addAdapter(this);
 		// REGISTER LISTENER
-		while(this.queue.size() > 0 ) {
-			String command = this.queue.remove(0);
-			this._execute(command);
+		if(this.queue != null) {
+			while(this.queue.size() > 0 ) {
+				String command = this.queue.remove(0);
+				this._execute(command);
+			}
 		}
 		this.queue = null; // Disable QUEUE
 	}

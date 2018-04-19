@@ -348,6 +348,10 @@ public class SimpleController implements ObjectCondition{
 		return ReflectionLoader.call("getScene", stage);
 	}
 
+	public Object getStage() {
+		return stage;
+	}
+
 	protected void showing(boolean wait) {
 		if(this.stage != null) {
 			init();

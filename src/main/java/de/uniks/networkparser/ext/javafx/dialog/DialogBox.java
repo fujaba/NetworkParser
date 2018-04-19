@@ -1,5 +1,7 @@
 package de.uniks.networkparser.ext.javafx.dialog;
 
+import java.io.File;
+import java.io.PrintStream;
 /*
 NetworkParser
 The MIT License
@@ -475,5 +477,72 @@ public class DialogBox implements ObjectCondition{
 
 	public Object getScene() {
 		return ReflectionLoader.call("getScene", stage);
+	}
+	
+
+	public static String showFileSaveChooser(String caption, String defaultValue, String typeName, String typeExtension, Object... parent) {
+		return fileChooser("save", caption, defaultValue, typeName, typeExtension, parent);
+	}
+	@SuppressWarnings("unchecked")
+	public static String fileChooser(String art, String caption, String defaultValue, String typeName, String extensions, Object... parent) {
+		Object parentObj = null;
+		if(parent != null && parent.length>0) {
+			parentObj = parent[0];
+		}
+		if(typeName != null) {
+			typeName += " (*."+extensions+")";
+		}
+		File result;
+		if(ReflectionLoader.FILECHOOSERFX != null) {
+			// try JavaFX Dialog
+			Object fileChooser = ReflectionLoader.newInstance(ReflectionLoader.FILECHOOSERFX);
+			ReflectionLoader.call("setTitle", fileChooser, caption);
+			ReflectionLoader.call("setInitialFileName", fileChooser, defaultValue);
+			if(typeName != null) {
+				Class<?> filterClass = ReflectionLoader.getClass("javafx.stage.FileChooser$ExtensionFilter");
+				Object filter = ReflectionLoader.newInstance(filterClass, String.class, typeName, String[].class, new String[] {"*."+extensions});
+				List<Object> list = (List<Object>) ReflectionLoader.call("getExtensionFilters", fileChooser);
+				list.add(filter);
+			}
+			Class<?> windowClass = ReflectionLoader.getClass("javafx.stage.Window");
+			
+			if("save".equals(art)) {
+				result = (File) ReflectionLoader.call("showSaveDialog", fileChooser, windowClass, parentObj);
+			}else {
+				result = (File) ReflectionLoader.call("showOpenDialog", fileChooser, windowClass, parentObj);
+			}
+			if(result != null) {
+				return result.getAbsolutePath();
+			}	
+		} else {
+			// SWING???
+			ReflectionLoader.logger = new PrintStream(System.out);
+			if(parentObj == null || ReflectionLoader.JFRAME.isAssignableFrom(parentObj.getClass()) == false) {
+				parentObj = ReflectionLoader.newInstance(ReflectionLoader.JFRAME);
+			}
+			Object fileChooser = ReflectionLoader.newInstance(ReflectionLoader.JFILECHOOSER);
+			ReflectionLoader.call("setDialogTitle", fileChooser, caption);
+			int userSelection = -1;
+			if(defaultValue != null) {
+				ReflectionLoader.call("setSelectedFile", fileChooser, new File(defaultValue));
+			}
+			if(typeName != null) {
+				Class<?> filterClass = ReflectionLoader.getClass("javax.swing.filechooser.FileNameExtensionFilter");
+				Class<?> fileFilter = ReflectionLoader.getClass("javax.swing.filechooser.FileFilter");
+				Object filter = ReflectionLoader.newInstance(filterClass, String.class, typeName, String[].class, new String[] {extensions});
+				ReflectionLoader.call("setFileFilter", fileChooser, fileFilter, filter);
+			}
+			Class<?> componentClass = ReflectionLoader.getClass("java.awt.Component");
+			if("save".equals(art)) {
+				userSelection = (Integer) ReflectionLoader.call("showSaveDialog", fileChooser, componentClass, parentObj);
+			}else {
+				userSelection = (Integer) ReflectionLoader.call("showOpenDialog", fileChooser, componentClass, parentObj);
+			}
+			if (userSelection == 0) {
+				File fileToSave = (File) ReflectionLoader.call("getSelectedFile", fileChooser);
+				return fileToSave.getAbsolutePath();
+			}
+		}
+		return null;
 	}
 }

@@ -41,23 +41,27 @@ public class GUIEvent extends Event {
 	}
 
 	public void handle(Object event) {
+		System.out.println("handle");
 		if(this.listerner != null) {
 			this.listerner.update(event);
 		}
 	}
 	public void invalidated(Object event) {
+		System.out.println("invalidated");
 		if(this.listerner != null) {
 			this.listerner.update(event);
 		}
 	}
 
 	public void actionPerformed(Object e) {
+		System.out.println("actionPerformed");
 		if(this.listerner != null) {
 			this.listerner.update(e);
 		}
 	}
 
 	public void changed(Object observable, Object oldValue, Object newValue) {
+		System.out.println("changed");
 		if(this.listerner != null) {
 			this.listerner.update(new SimpleEvent(observable, "State", oldValue,newValue));
 		}
@@ -107,7 +111,10 @@ public class GUIEvent extends Event {
 			event.put(CTRKEY, ReflectionLoader.call("isControlDown", obj));
 			event.put(SHIFTKEY, ReflectionLoader.call("isShiftDown", obj));
 			if(obj != null) {
-				event.withCode((Integer)ReflectionLoader.callChain(obj, "getCode", "impl_getCode"));
+				Object value = ReflectionLoader.callChain(obj, "getCode", "getCode");
+				if(value != null) {
+					event.withCode((Integer)value);
+				}
 				
 				event.setValue(CURRENT_TARGET, ReflectionLoader.call("getTarget", obj));
 				event.setValue(EVENT, obj);
