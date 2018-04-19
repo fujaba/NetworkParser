@@ -40,4 +40,5 @@ public interface JavaViewAdapter extends ObjectCondition {
 	public Object getWebView();
 	public Object getWebEngine();
 	public void loadFinish();
+	public void enableDebug();
 }

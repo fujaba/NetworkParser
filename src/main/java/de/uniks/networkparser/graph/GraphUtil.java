@@ -56,6 +56,15 @@ public class GraphUtil {
 		return (Clazz) item.getByObject(clazz, fullName);
 	}
 
+	public static final GraphModel setGenPath(GraphModel model, String path) {
+		model.genPath = path;
+		return model;
+	}
+
+	public String getGenPath(GraphModel model) {
+		return model.genPath;
+	}
+
 	public static final SimpleSet<Annotation> getAnnotations(GraphMember item) {
 		if (item == null) {
 			return null;

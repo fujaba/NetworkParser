@@ -107,7 +107,7 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements En
 		}
 		JsonArray returnValue = new JsonArray();
 		if(object != null) {
-		   returnValue.add(object);
+			returnValue.add(object);
 		}
 		return returnValue;
 	}

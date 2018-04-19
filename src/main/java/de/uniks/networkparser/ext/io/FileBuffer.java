@@ -49,6 +49,9 @@ public class FileBuffer extends Buffer {
 	private CharacterBuffer lookAHead = new CharacterBuffer();
 	private int length;
 	private char currentChar;
+	public static byte NONE=0;
+	public static byte APPEND=1;
+	public static byte OVERRIDE=2;
 
 	public FileBuffer withFile(String fileName) {
 		if(fileName != null) {
@@ -79,7 +82,7 @@ public class FileBuffer extends Buffer {
 		return length;
 	}
 
-	public boolean exist() {
+	public boolean exists() {
 		if(this.file == null) {
 			return false;
 		}
@@ -184,32 +187,36 @@ public class FileBuffer extends Buffer {
 		}
 	}
 
-	public static final boolean writeFile(String fileName, CharSequence data, boolean appendData) {
+	public static final boolean writeFile(String fileName, CharSequence data, byte flag) {
 		if(data != null) {
-			return writeFile(fileName, data.toString().getBytes(), appendData);
+			return writeFile(fileName, data.toString().getBytes(), flag);
 		}
 		return false;
 	}
 
-	public static final boolean writeFile(String fileName, byte[] data, boolean appendData) {
+	public static final boolean writeFile(String fileName, byte[] data, byte flag) {
 		if(fileName == null || fileName.length()<1) {
 			return false;
 		}
 		FileBuffer buffer = new FileBuffer();
 		buffer.withFile(fileName);
-		if(buffer.exist() == false) {
+		if(buffer.exists()) {
+			if(flag==NONE) {
+				return false;
+			}
+		} else {
 			if(buffer.createFile() == false) {
 				return false;
 			}
 		}
-		return buffer.write(data, appendData);
+		return buffer.write(flag, data);
 	}
 	public static final boolean writeFile(String fileName, CharSequence data) {
-		return writeFile(fileName, data, false);
+		return writeFile(fileName, data, OVERRIDE);
 	}
 	
 	public static final boolean writeFile(String fileName, byte[] data) {
-		return writeFile(fileName, data, false);
+		return writeFile(fileName, data, OVERRIDE);
 	}
 
 	public static final CharacterBuffer readResource(String file) {
@@ -375,17 +382,21 @@ public class FileBuffer extends Buffer {
 		return false;
 	}
 
-	public boolean write(CharSequence data, boolean append) {
+	public boolean write(byte flag, CharSequence data) {
 		if(data != null) {
-			return write(data.toString().getBytes(), append);
+			return write(flag, data.toString().getBytes());
 		}
 		return false;
 	}
-	public boolean write(byte[] data, boolean append) {
+	public boolean write(byte flag, byte... data) {
 		if(this.file == null) {
 			return false;
 		}
 		try {
+			boolean append = false;
+			if(flag==APPEND) {
+				append = true;
+			}
 			FileOutputStream os = new FileOutputStream(this.file, append);
 			os.write(data);
 			os.flush();
@@ -398,11 +409,11 @@ public class FileBuffer extends Buffer {
 	}
 
 	public boolean println(CharSequence string) {
-		this.write(string, true);
+		this.write(APPEND, string);
 		return newline();
 	}
 
 	public boolean newline() {
-		return this.write(BaseItem.CRLF, true);
+		return this.write(APPEND, BaseItem.CRLF);
 	}
 }

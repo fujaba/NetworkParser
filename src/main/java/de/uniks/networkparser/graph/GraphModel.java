@@ -34,6 +34,7 @@ permissions and limitations under the Licence.
 public abstract class GraphModel extends GraphEntity implements BaseItem {
 	public static final String DEFAULTPACKAGE2 = "i.love.networkparser";
 	private String defaultAuthorName;
+	protected String genPath;
 
 	/**
 	 * get All GraphClazz
@@ -47,7 +48,7 @@ public abstract class GraphModel extends GraphEntity implements BaseItem {
 	 *		 </pre>
 	 */
 	public ClazzSet getClazzes(Condition<?>... filters) {
-	   ClazzSet collection = new ClazzSet();
+		ClazzSet collection = new ClazzSet();
 		if (children == null) {
 			return collection;
 		}

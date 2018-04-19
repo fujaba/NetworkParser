@@ -28,6 +28,7 @@ import java.util.Collection;
 
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.buffer.CharacterBuffer;
+import de.uniks.networkparser.ext.ClassModel;
 import de.uniks.networkparser.graph.Association;
 import de.uniks.networkparser.graph.AssociationTypes;
 import de.uniks.networkparser.graph.Attribute;
@@ -68,6 +69,7 @@ public class GraphConverter implements Converter{
 	public static final String ATTRIBUTES = "attributes";
 	public static final String METHODS = "methods";
 	public static final String NODES = "nodes";
+	public static final String LABEL = "label";
 	public static final String EDGES = "edges";
 	public static final String SOURCE = "source";
 	public static final String TARGET = "target";
@@ -217,8 +219,54 @@ public class GraphConverter implements Converter{
 			jsonRoot.put(STYLE, style);
 		}
 		jsonRoot.put(NODES, parseEntities(type, root, removePackage, removeParameterNames));
-		jsonRoot.withKeyValue(EDGES, parseEdges(type, root.getAssociations(), removePackage));
+		jsonRoot.put(EDGES, parseEdges(type, root.getAssociations(), removePackage));
 		return jsonRoot;
+	}
+
+	public ClassModel convertFromJson(JsonObject model) {
+		if (model.has(NODES) == false) {
+			return null;
+		}
+		JsonArray nodes = model.getJsonArray(NODES);
+		ClassModel classModel = new ClassModel(model.getString("package"));
+		for (int i = 0; i < nodes.size(); i++) {
+			Object item = nodes.get(i);
+			if (item instanceof JsonObject) {
+				JsonObject node = (JsonObject) item;
+				Clazz clazz;
+				if(node.has(LABEL)) {
+					clazz = classModel.createClazz(node.getString(LABEL));
+				} else {
+					clazz = classModel.createClazz(node.getString(ID));
+				}
+				JsonArray attributes = node.getJsonArray(ATTRIBUTES);
+				for (Object entity : attributes) {
+					if (entity instanceof String) {
+						String attribute = (String) entity;
+						int pos = attribute.indexOf(":");
+						if (pos > 0) {
+							clazz.createAttribute(attribute.substring(0, pos),
+									DataType.create(attribute.substring(pos + 1)));
+						}
+					}
+				}
+				// All Methods
+			}
+		}
+		JsonArray edges = model.getJsonArray("edges");
+		for(Object entity : edges) {
+			if(entity instanceof JsonObject) {
+				JsonObject edge = (JsonObject) entity;
+				JsonObject source = (JsonObject) edge.getJsonObject(SOURCE);
+				JsonObject target = (JsonObject) edge.getJsonObject(TARGET);
+				if(edge.getString(TYPE).equalsIgnoreCase("edge")) {
+					Clazz fromClazz = GraphUtil.getByObject(classModel, source.getString(ID), true);
+					Clazz toClazz = GraphUtil.getByObject(classModel, target.getString(ID), true);
+					fromClazz.withBidirectional(toClazz, target.getString("property"), Cardinality.ONE, source.getString("property"), Cardinality.ONE);
+				}
+			}
+		}
+		return classModel;
 	}
 
 	private Collection<?> parseEdges(String type, SimpleSet<Association> edges,

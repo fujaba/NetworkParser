@@ -164,7 +164,7 @@ public class StoryStepJUnit implements ObjectCondition {
 	}
 
 	private boolean executeBlackBoxEvent(SimpleEvent event) {
-		FileBuffer.writeFile(this.path+BLACKBOXFILE, event.toString()+BaseItem.CRLF, true);
+		FileBuffer.writeFile(this.path+BLACKBOXFILE, event.toString()+BaseItem.CRLF, FileBuffer.APPEND);
 		return true;
 	}
 

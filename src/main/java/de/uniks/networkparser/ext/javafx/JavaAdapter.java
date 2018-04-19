@@ -332,4 +332,16 @@ public class JavaAdapter implements JavaViewAdapter {
 		} catch (InterruptedException e) {
 		}
 	}
+	/**
+	 * Enables Firebug Lite for debugging a webEngine.
+	 */
+	public void enableDebug() {
+		// https://getfirebug.com/firebug-lite.js#startOpened
+		String firebugLite="http://getfirebug.com/releases/lite/1.2/firebug-lite-compressed.js";
+		String script = "if (!document.getElementById('FirebugLite')) {var E = document['createElementNS'] && document.documentElement.namespaceURI;E = E ? document.createElementNS(E, 'script') : document.createElement('script');E.setAttribute('id', 'FirebugLite');E.setAttribute('src', '"+firebugLite+"');E.setAttribute('FirebugLite', '4');(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(E);}";
+		executeScript(script);
+		script = "console.log = function(message) { java.log(message); }"; // Now where ever console.log is called in your html you will get a log in Java console
+		executeScript(script);
+	}
+
 }

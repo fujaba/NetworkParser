@@ -110,11 +110,11 @@ public class NodeProxyFileSystem extends NodeProxy {
 				BaseItem value = this.space.encode(modell, null);
 				String data = value.toString();
 				len = data.length();
-				file.write(data, false);
+				file.write(FileBuffer.OVERRIDE, data);
 			} else if (msg != null) {
 				String data = this.space.convertMessage(msg)+BaseItem.CRLF;
 				len = data.length();
-				file.write(data, true);
+				file.write(FileBuffer.APPEND, data);
 			}
 			setSendTime(len);
 			return true;

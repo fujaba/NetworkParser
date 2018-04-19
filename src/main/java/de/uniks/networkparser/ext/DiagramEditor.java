@@ -37,20 +37,20 @@ import de.uniks.networkparser.DateTimeEntity;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.buffer.CharacterBuffer;
+import de.uniks.networkparser.converter.GraphConverter;
 import de.uniks.networkparser.ext.generic.ReflectionLoader;
 import de.uniks.networkparser.ext.io.FileBuffer;
+import de.uniks.networkparser.ext.javafx.GUIEvent;
 import de.uniks.networkparser.ext.javafx.JavaAdapter;
 import de.uniks.networkparser.ext.javafx.JavaBridgeFX;
 import de.uniks.networkparser.ext.javafx.SimpleController;
 import de.uniks.networkparser.ext.javafx.dialog.DialogBox;
 import de.uniks.networkparser.ext.petaf.Message;
 import de.uniks.networkparser.ext.petaf.proxy.NodeProxyTCP;
-import de.uniks.networkparser.graph.Clazz;
-import de.uniks.networkparser.graph.DataType;
+import de.uniks.networkparser.gui.EventTypes;
 import de.uniks.networkparser.gui.JavaViewAdapter;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.SimpleEventCondition;
-import de.uniks.networkparser.json.JsonArray;
 import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.xml.HTMLEntity;
@@ -200,14 +200,16 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 		if(value instanceof Message) {
 			return executeWebServer((Message) value);
 		}
-		SimpleEvent evt = (SimpleEvent) value;
-		if(JavaViewAdapter.STATE.equalsIgnoreCase(evt.getNewValue().getClass().getName())) {
-			if(evt.getNewValue().toString().equals(JavaViewAdapter.SUCCEEDED)) {
-				Object win = ReflectionLoader.call("executeScript", webEngine, "window");
-				ReflectionLoader.call("setMember", win, String.class, "java", Object.class, this);
-				this.changed(evt);
+		if(value instanceof SimpleEvent) {
+			SimpleEvent evt = (SimpleEvent) value;
+			if(JavaViewAdapter.STATE.equalsIgnoreCase(evt.getNewValue().getClass().getName())) {
+				if(evt.getNewValue().toString().equals(JavaViewAdapter.SUCCEEDED)) {
+					Object win = ReflectionLoader.call("executeScript", webEngine, "window");
+					ReflectionLoader.call("setMember", win, String.class, "java", Object.class, this);
+					this.changed(evt);
+				}
+				return true;
 			}
-			return true;
 		}
 		String name = (String) ReflectionLoader.callChain(value, "getEventType", "getName");
 		if(JavaViewAdapter.DRAGOVER.equalsIgnoreCase(name)) {
@@ -220,8 +222,19 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 			return onError(value);
 		}
 		if(JavaViewAdapter.DRAGEXITED.equalsIgnoreCase(name)) {
-			return onDragExited(value);
+			return onDragDropped(value);
+//			return onDragExited(value);
 		}
+		if(value instanceof GUIEvent) {
+			GUIEvent evt = (GUIEvent) value;
+			EventTypes evtName = evt.getEventType();
+			if(EventTypes.KEYPRESS == evtName) {
+				if(evt.getCode() == 123) {
+					enableDebug();
+				}
+			}
+		}
+		
 		return false;
 	}
 
@@ -280,57 +293,15 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 				return (Boolean) result;
 			}
 		}
-
-
-		if (!model.has("nodes")) {
+		GraphConverter converter = new GraphConverter();
+		ClassModel modelGen = converter.convertFromJson(model);
+		if(modelGen == null) {
+//		if (model.has(GraphConverter.NODES) == false) {
 			System.err.println("no Nodes");
 			System.out.println("no Nodes");
 			return false;
 		}
-		JsonObject nodes = model.getJsonObject("nodes");
-		ClassModel classModel = new ClassModel(model.getString("package"));
-		for (int i = 0; i < nodes.size(); i++) {
-			Object item = nodes.getValueByIndex(i);
-			if (item instanceof JsonObject) {
-				JsonObject node = (JsonObject) item;
-				Clazz clazz = classModel.createClazz(node.getString("id"));
-				if (node.has("attributes")) {
-					JsonArray attributes = node.getJsonArray("attributes");
-					for (Object entity : attributes) {
-						if (entity instanceof String) {
-							String attribute = (String) entity;
-							int pos = attribute.indexOf(":");
-							if (pos > 0) {
-								clazz.createAttribute(attribute.substring(0, pos),
-										DataType.create(attribute.substring(pos + 1)));
-							}
-						}
-					}
-				}
-			}
-		}
-		// if(model.has("edges")){
-		// JsonArray edges = model.getJsonArray("edges");
-		// for(Object entity : edges) {
-		// if(entity instanceof JsonObject) {
-		// JsonObject edge = (JsonObject) entity;
-		// JsonObject source = (JsonObject) edge.getJsonObject("source");
-		// JsonObject target = (JsonObject) edge.getJsonObject("target");
-		// if(edge.getString("typ").equalsIgnoreCase("edge")) {
-		// Clazz fromClazz = classModel.getClazz(source.getString("id"));
-		// Clazz toClazz = classModel.getClazz(target.getString("id"));
-		//
-		// fromClazz.withBidirectional(toClazz, target.getString("property"),
-		// Cardinality.ONE, source.getString("property"), Cardinality.ONE);
-		// }
-		// }
-		// }
-		// }
-
-		// String genModel = classModel.getName() + ".genModel";
-		// classModel.getGenerator().testGeneratedCode(type);insertModelCreationCodeHere("gen",
-		// genModel, "testGenModel");
-		classModel.generate("gen");
+		modelGen.generate("src/main/java");
 		return true;
 	}
 
@@ -384,7 +355,8 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 						}
 					}
 				}
-				ReflectionLoader.call("executeScript", webEngine, String.class, "classEditor.dropFile('"+sb.toString()+"', \""+file.getAbsolutePath()+"\");");
+				//ReflectionLoader.call("executeScript", webEngine, String.class, "classEditor.import('"+sb.toString()+"', \""+file.getAbsolutePath()+"\");");
+				ReflectionLoader.call("executeScript", webEngine, String.class, "classEditor.import('"+sb.toString()+"');");
 				break;
 			}
 		}
@@ -428,10 +400,10 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 				html.withHeader("diagram.js");
 				html.withHeader("jspdf.min.js");
 				html.withHeader("diagramstyle.css");
-				FileBuffer.writeFile("dagre-min.js", FileBuffer.readResource("graph/dagre-min.js"));
-				FileBuffer.writeFile("diagram.js",FileBuffer.readResource("graph/diagram.js"));
-				FileBuffer.writeFile("jspdf.min.js",FileBuffer.readResource("graph/jspdf.min.js"));
-				FileBuffer.writeFile("diagramstyle.css",FileBuffer.readResource("graph/diagramstyle.css"));
+				FileBuffer.writeFile("dagre-min.js", FileBuffer.readResource("graph/dagre-min.js"), FileBuffer.NONE);
+				FileBuffer.writeFile("diagram.js",FileBuffer.readResource("graph/diagram.js"), FileBuffer.NONE);
+				FileBuffer.writeFile("jspdf.min.js",FileBuffer.readResource("graph/jspdf.min.js"), FileBuffer.NONE);
+				FileBuffer.writeFile("diagramstyle.css",FileBuffer.readResource("graph/diagramstyle.css"), FileBuffer.NONE);
 			} else {
 				// Add external Files
 				html.withScript(readFile("graph/dagre-min.js"), html.getHeader());
@@ -439,7 +411,7 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 				html.withScript(readFile("graph/jspdf.min.js"), html.getHeader());
 				html.withScript(readFile("graph/diagramstyle.css"), html.getHeader());
 			}
-			FileBuffer.writeFile("Editor.html", html.toString());
+			FileBuffer.writeFile("Editor.html", html.toString(), FileBuffer.NONE);
 			try {
 				String string = new File("Editor.html").toURI().toURL().toString();
  				ReflectionLoader.call("load", webEngine, string);
@@ -468,6 +440,7 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 		if(this.controller == null) {
 			SimpleController controller = new SimpleController(stage);
 			this.controller = controller;
+			this.controller.withListener(this);
 		}
 		SimpleKeyValueList<String, String> parameterMap = controller.getParameterMap();
 
@@ -559,7 +532,7 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 			controller.close();
 		}
 	}
-
+	
 	public void export(String type, Object value, String name, String context) {
 		String typeName = "files"; 
 		if("PNG".equalsIgnoreCase(type)) {
@@ -586,6 +559,4 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 			controller.close();
 		}
 	}
-
 }
-
