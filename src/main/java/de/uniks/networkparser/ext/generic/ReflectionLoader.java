@@ -25,6 +25,7 @@ THE SOFTWARE.
 */
 import java.io.File;
 import java.io.PrintStream;
+import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Member;
@@ -538,10 +539,23 @@ public class ReflectionLoader {
 					}
 				}
 				if(method == null) {
-					for(int i=0;i<methodArguments.length;i++) {
-						methodArguments[i] = Object.class;
+					// next Try Last may be an ...
+					if(methodArguments.length>0) {
+						Class<?> simpleType = methodArguments[methodArguments.length - 1];
+						methodArguments[methodArguments.length - 1] = ReflectionLoader.getClass("[L"+simpleType.getName()+";");
+						if(methodArguments[methodArguments.length - 1] != null) {
+							Object newValue = Array.newInstance(simpleType, 1);
+							Array.set(newValue, 0, methodArgumentsValues[methodArgumentsValues.length - 1]);
+							methodArgumentsValues[methodArgumentsValues.length - 1] = newValue;
+							method = itemClass.getMethod(methodName, methodArguments);
+						}
 					}
-					method = itemClass.getMethod(methodName, methodArguments);
+					if(method == null) {
+						for(int i=0;i<methodArguments.length;i++) {
+							methodArguments[i] = Object.class;
+						}
+						method = itemClass.getMethod(methodName, methodArguments);
+					}
 					if(method == null) {
 						method = itemClass.getMethod(methodName, new Class[0]);
 					}

@@ -43,6 +43,10 @@ public class JacocoColumn implements JacocoColumnListener {
 	public static JacocoColumn create() {
 		JacocoColumn jacocoColumn = new JacocoColumn();
 		Class<?> proxyClass = ReflectionLoader.getClass(COLUMRENDERER);
+		if(proxyClass == null) {
+			System.out.println("NO JACOCO FOUND ON BUILD-PATH");
+			return null;
+		}
 		Object item = ReflectionLoader.createProxy(jacocoColumn, proxyClass);
 
 		jacocoColumn.withProxy(item);

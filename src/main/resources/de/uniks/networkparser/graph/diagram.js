@@ -72,7 +72,7 @@ var DiagramJS =
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var CSS_1 = __webpack_require__(31);
-var BaseElements_1 = __webpack_require__(1);
+var BaseElements_1 = __webpack_require__(2);
 var Util = (function () {
     function Util() {
     }
@@ -581,6 +581,7 @@ var Util = (function () {
         }
         if (Util.isIE()) {
             var children = parent.childNodes;
+            var found = false;
             for (var i = 0; i < children.length; i++) {
                 var childItem = children[i];
                 if (childItem === child) {
@@ -607,12 +608,17 @@ var Util = (function () {
             return false;
         }
         if (Util.isLocalStorageSupported()) {
-            if (model.$isLoading) {
-                return false;
+            if (model) {
+                if (model.$isLoading) {
+                    return false;
+                }
+                var jsonObj = Util.toJson(model);
+                var data = JSON.stringify(jsonObj, null, '\t');
+                localStorage.setItem('diagram', data);
             }
-            var jsonObj = Util.toJson(model);
-            var data = JSON.stringify(jsonObj, null, '\t');
-            localStorage.setItem('diagram', data);
+            else {
+                localStorage.removeItem('diagram');
+            }
             return true;
         }
         return false;
@@ -640,6 +646,119 @@ exports.Util = Util;
 
 "use strict";
 
+Object.defineProperty(exports, "__esModule", { value: true });
+var EventBus = (function () {
+    function EventBus() {
+    }
+    EventBus.setActiveHandler = function (handler) {
+        this.$activeHandler = handler;
+    };
+    EventBus.isHandlerActiveOrFree = function (handler, notEmpty) {
+        if (notEmpty) {
+            return this.$activeHandler === handler;
+        }
+        return this.$activeHandler === handler || this.$activeHandler === '' || this.$activeHandler === undefined;
+    };
+    EventBus.isAnyHandlerActive = function () {
+        return !(this.$activeHandler === '' || this.$activeHandler === undefined);
+    };
+    EventBus.releaseActiveHandler = function () {
+        this.$activeHandler = '';
+    };
+    EventBus.getActiveHandler = function () {
+        return this.$activeHandler;
+    };
+    EventBus.register = function (control, view) {
+        var events;
+        if (typeof control['getEvents'] === 'function') {
+            events = control['getEvents']();
+        }
+        if (!events || !view) {
+            return;
+        }
+        for (var _i = 0, events_1 = events; _i < events_1.length; _i++) {
+            var event_1 = events_1[_i];
+            this.registerEvent(view, event_1, control);
+        }
+    };
+    EventBus.registerEvent = function (view, event, control) {
+        var pos = event.indexOf(':');
+        if (pos > 0) {
+            view.addEventListener(event.substr(pos + 1).toLowerCase(), function (evt) { EventBus.publish(control, evt); });
+        }
+        else {
+            view.addEventListener(event.substr(pos + 1).toLowerCase(), function (evt) { EventBus.publish(control, evt); });
+        }
+    };
+    EventBus.publish = function (element, evt) {
+        var handlers = EventBus.handlers[evt.type];
+        if (handlers) {
+            for (var _i = 0, handlers_1 = handlers; _i < handlers_1.length; _i++) {
+                var handler = handlers_1[_i];
+                handler.handle(evt, element);
+            }
+        }
+    };
+    EventBus.subscribe = function (handler) {
+        var eventTypes = [];
+        for (var _i = 1; _i < arguments.length; _i++) {
+            eventTypes[_i - 1] = arguments[_i];
+        }
+        for (var _a = 0, eventTypes_1 = eventTypes; _a < eventTypes_1.length; _a++) {
+            var event_2 = eventTypes_1[_a];
+            var handlers = EventBus.handlers[event_2];
+            if (handlers === null || handlers === undefined) {
+                handlers = [];
+                EventBus.handlers[event_2] = handlers;
+            }
+            handlers.push(handler);
+        }
+    };
+    EventBus.CREATE = 'Create';
+    EventBus.EDITOR = 'Editor';
+    EventBus.OPENPROPERTIES = 'openProperties';
+    EventBus.RELOADPROPERTIES = 'reloadProperties';
+    EventBus.ELEMENTMOUSEDOWN = 'ELEMENT:MOUSEDOWN';
+    EventBus.ELEMENTMOUSEUP = 'ELEMENT:MOUSEUP';
+    EventBus.ELEMENTMOUSELEAVE = 'ELEMENT:MOUSELEAVE';
+    EventBus.ELEMENTMOUSEMOVE = 'ELEMENT:MOUSEMOVE';
+    EventBus.ELEMENTMOUSEWHEEL = 'ELEMENT:MOUSEWHEEL';
+    EventBus.ELEMENTCLICK = 'ELEMENT:CLICK';
+    EventBus.ELEMENTDBLCLICK = 'ELEMENT:DBLCLICK';
+    EventBus.ELEMENTDRAG = 'ELEMENT:DRAG';
+    EventBus.ELEMENTDRAGOVER = 'ELEMENT:DRAGOVER';
+    EventBus.ELEMENTDROP = 'ELEMENT:DROP';
+    EventBus.ELEMENTDRAGLEAVE = 'ELEMENT:DRAGLEAVE';
+    EventBus.EVENTS = [
+        EventBus.CREATE,
+        EventBus.EDITOR,
+        EventBus.OPENPROPERTIES,
+        EventBus.RELOADPROPERTIES,
+        EventBus.ELEMENTMOUSEDOWN,
+        EventBus.ELEMENTMOUSEUP,
+        EventBus.ELEMENTMOUSELEAVE,
+        EventBus.ELEMENTMOUSEMOVE,
+        EventBus.ELEMENTMOUSEWHEEL,
+        EventBus.ELEMENTCLICK,
+        EventBus.ELEMENTDRAG,
+        EventBus.ELEMENTDBLCLICK,
+        EventBus.ELEMENTDRAGOVER,
+        EventBus.ELEMENTDROP,
+        EventBus.ELEMENTDRAGLEAVE,
+    ];
+    EventBus.handlers = {};
+    EventBus.$activeHandler = '';
+    return EventBus;
+}());
+exports.EventBus = EventBus;
+
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -652,7 +771,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var util_1 = __webpack_require__(0);
-var Control_1 = __webpack_require__(2);
+var Control_1 = __webpack_require__(3);
 var DiagramElement = (function (_super) {
     __extends(DiagramElement, _super);
     function DiagramElement() {
@@ -725,10 +844,10 @@ var DiagramElement = (function (_super) {
             this.$size = new Point(width, height);
         }
         else {
-            if (typeof (width) !== 'undefined') {
+            if (typeof (width) !== 'undefined' && width !== null) {
                 this.$size.x = width;
             }
-            if (typeof (height) !== 'undefined') {
+            if (typeof (height) !== 'undefined' && height !== null) {
                 this.$size.y = height;
             }
         }
@@ -903,7 +1022,7 @@ exports.Line = Line;
 
 
 /***/ }),
-/* 2 */
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1220,119 +1339,6 @@ exports.Control = Control;
 
 
 /***/ }),
-/* 3 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var EventBus = (function () {
-    function EventBus() {
-    }
-    EventBus.setActiveHandler = function (handler) {
-        this.$activeHandler = handler;
-    };
-    EventBus.isHandlerActiveOrFree = function (handler, notEmpty) {
-        if (notEmpty) {
-            return this.$activeHandler == handler;
-        }
-        return this.$activeHandler == handler || this.$activeHandler == '' || this.$activeHandler == undefined;
-    };
-    EventBus.isAnyHandlerActive = function () {
-        return !(this.$activeHandler === '' || this.$activeHandler == undefined);
-    };
-    EventBus.releaseActiveHandler = function () {
-        this.$activeHandler = '';
-    };
-    EventBus.getActiveHandler = function () {
-        return this.$activeHandler;
-    };
-    EventBus.register = function (control, view) {
-        var events;
-        if (typeof control['getEvents'] === 'function') {
-            events = control['getEvents']();
-        }
-        if (!events || !view) {
-            return;
-        }
-        var pos;
-        for (var _i = 0, events_1 = events; _i < events_1.length; _i++) {
-            var event_1 = events_1[_i];
-            if (EventBus.EVENTS.indexOf(event_1) < 0) {
-            }
-            pos = event_1.indexOf(':');
-            if (pos > 0) {
-                view.addEventListener(event_1.substr(pos + 1).toLowerCase(), function (evt) { EventBus.publish(control, evt); });
-            }
-            else {
-                view.addEventListener(event_1.substr(pos + 1).toLowerCase(), function (evt) { EventBus.publish(control, evt); });
-            }
-        }
-    };
-    EventBus.publish = function (element, evt) {
-        var handlers = EventBus.handlers[evt.type];
-        if (handlers) {
-            for (var _i = 0, handlers_1 = handlers; _i < handlers_1.length; _i++) {
-                var handler = handlers_1[_i];
-                handler.handle(evt, element);
-            }
-        }
-    };
-    EventBus.subscribe = function (handler) {
-        var eventTypes = [];
-        for (var _i = 1; _i < arguments.length; _i++) {
-            eventTypes[_i - 1] = arguments[_i];
-        }
-        for (var _a = 0, eventTypes_1 = eventTypes; _a < eventTypes_1.length; _a++) {
-            var event_2 = eventTypes_1[_a];
-            var handlers = EventBus.handlers[event_2];
-            if (handlers === null || handlers === undefined) {
-                handlers = [];
-                EventBus.handlers[event_2] = handlers;
-            }
-            handlers.push(handler);
-        }
-    };
-    EventBus.CREATE = 'Create';
-    EventBus.EDITOR = 'Editor';
-    EventBus.OPENPROPERTIES = 'openProperties';
-    EventBus.RELOADPROPERTIES = 'reloadProperties';
-    EventBus.ELEMENTMOUSEDOWN = 'ELEMENT:MOUSEDOWN';
-    EventBus.ELEMENTMOUSEUP = 'ELEMENT:MOUSEUP';
-    EventBus.ELEMENTMOUSELEAVE = 'ELEMENT:MOUSELEAVE';
-    EventBus.ELEMENTMOUSEMOVE = 'ELEMENT:MOUSEMOVE';
-    EventBus.ELEMENTMOUSEWHEEL = 'ELEMENT:MOUSEWHEEL';
-    EventBus.ELEMENTCLICK = 'ELEMENT:CLICK';
-    EventBus.ELEMENTDBLCLICK = 'ELEMENT:DBLCLICK';
-    EventBus.ELEMENTDRAG = 'ELEMENT:DRAG';
-    EventBus.ELEMENTDRAGOVER = 'ELEMENT:DRAGOVER';
-    EventBus.ELEMENTDROP = 'ELEMENT:DROP';
-    EventBus.ELEMENTDRAGLEAVE = 'ELEMENT:DRAGLEAVE';
-    EventBus.EVENTS = [
-        EventBus.CREATE,
-        EventBus.EDITOR,
-        EventBus.OPENPROPERTIES,
-        EventBus.RELOADPROPERTIES,
-        EventBus.ELEMENTMOUSEDOWN,
-        EventBus.ELEMENTMOUSEUP,
-        EventBus.ELEMENTMOUSELEAVE,
-        EventBus.ELEMENTMOUSEMOVE,
-        EventBus.ELEMENTMOUSEWHEEL,
-        EventBus.ELEMENTCLICK,
-        EventBus.ELEMENTDRAG,
-        EventBus.ELEMENTDBLCLICK,
-        EventBus.ELEMENTDRAGOVER,
-        EventBus.ELEMENTDROP,
-        EventBus.ELEMENTDRAGLEAVE,
-    ];
-    EventBus.handlers = {};
-    EventBus.$activeHandler = '';
-    return EventBus;
-}());
-exports.EventBus = EventBus;
-
-
-/***/ }),
 /* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -1342,7 +1348,7 @@ function __export(m) {
     for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 }
 Object.defineProperty(exports, "__esModule", { value: true });
-__export(__webpack_require__(11));
+__export(__webpack_require__(12));
 __export(__webpack_require__(45));
 __export(__webpack_require__(46));
 __export(__webpack_require__(47));
@@ -1360,26 +1366,26 @@ function __export(m) {
     for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 }
 Object.defineProperty(exports, "__esModule", { value: true });
-var AutoComplete_1 = __webpack_require__(13);
-var BR_1 = __webpack_require__(14);
-var Div_1 = __webpack_require__(15);
-var Label_1 = __webpack_require__(16);
+var AutoComplete_1 = __webpack_require__(14);
+var BR_1 = __webpack_require__(15);
+var Div_1 = __webpack_require__(16);
+var Label_1 = __webpack_require__(17);
 __export(__webpack_require__(6));
-__export(__webpack_require__(17));
-__export(__webpack_require__(20));
+__export(__webpack_require__(18));
 __export(__webpack_require__(21));
-__export(__webpack_require__(14));
-__export(__webpack_require__(33));
+__export(__webpack_require__(11));
 __export(__webpack_require__(15));
+__export(__webpack_require__(33));
+__export(__webpack_require__(16));
 __export(__webpack_require__(34));
 __export(__webpack_require__(35));
-__export(__webpack_require__(16));
+__export(__webpack_require__(17));
 __export(__webpack_require__(37));
 __export(__webpack_require__(39));
 __export(__webpack_require__(40));
-__export(__webpack_require__(13));
-__export(__webpack_require__(18));
+__export(__webpack_require__(14));
 __export(__webpack_require__(19));
+__export(__webpack_require__(20));
 __export(__webpack_require__(41));
 __export(__webpack_require__(42));
 __export(__webpack_require__(10));
@@ -1406,7 +1412,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var BaseElements_1 = __webpack_require__(1);
+var BaseElements_1 = __webpack_require__(2);
 var Node = (function (_super) {
     __extends(Node, _super);
     function Node(data) {
@@ -1421,9 +1427,6 @@ var Node = (function (_super) {
             }
             if (data['width'] || data['height']) {
                 _this.withSize(data['width'], data['height']);
-            }
-            if (data['label']) {
-                _this.label = data['label'];
             }
         }
         return _this;
@@ -1667,14 +1670,15 @@ var nodes = __webpack_require__(5);
 var layouts = __webpack_require__(49);
 var Model_1 = __webpack_require__(50);
 var Palette_1 = __webpack_require__(51);
-var PropertiesPanel = __webpack_require__(29);
-var BaseElements_1 = __webpack_require__(1);
+var BaseElements_1 = __webpack_require__(2);
 var util_1 = __webpack_require__(0);
-var Control_1 = __webpack_require__(2);
-var EventBus_1 = __webpack_require__(3);
+var Control_1 = __webpack_require__(3);
+var EventBus_1 = __webpack_require__(1);
 var handlers_1 = __webpack_require__(52);
-var ImportFile_1 = __webpack_require__(30);
-var Toolbar_1 = __webpack_require__(59);
+var ImportFile_1 = __webpack_require__(29);
+var Toolbar_1 = __webpack_require__(60);
+var JSEPS_1 = __webpack_require__(30);
+var SVGConverter_1 = __webpack_require__(61);
 var Graph = (function (_super) {
     __extends(Graph, _super);
     function Graph(json, options) {
@@ -1701,6 +1705,9 @@ var Graph = (function (_super) {
         if (!_this.options.origin) {
             _this.options.origin = new BaseElements_1.Point(150, 45);
         }
+        if (!_this.options.style) {
+            _this.options.style = 'classic';
+        }
         if (_this.options.autoSave) {
             util_1.Util.isAutoSave = options.autoSave;
         }
@@ -1725,7 +1732,11 @@ var Graph = (function (_super) {
             if (confirm('Restore previous session?')) {
                 var jsonData = JSON.parse(diagram);
                 this.load(jsonData);
+                this.layout();
                 return true;
+            }
+            else {
+                util_1.Util.saveToLocalStorage(null);
             }
         }
         return false;
@@ -1771,9 +1782,13 @@ var Graph = (function (_super) {
         this.root.setAttributeNS(null, 'width', '' + currentSize.width);
         this.root.setAttributeNS(null, 'height', '' + currentSize.height);
     };
-    Graph.prototype.save = function (typ, data, name) {
+    Graph.prototype.save = function (type, data, name, context) {
+        if (window['java']) {
+            window['java'].export(type, data, name, context);
+            return;
+        }
         var a = document.createElement('a');
-        a.href = window.URL.createObjectURL(new Blob([data], { type: typ }));
+        a.href = window.URL.createObjectURL(new Blob([data], { type: context }));
         a.download = name;
         document.body.appendChild(a);
         a.click();
@@ -1781,42 +1796,48 @@ var Graph = (function (_super) {
     };
     Graph.prototype.exportSvg = function () {
         var wellFormatedSvgDom = this.getSvgWithStyleAttributes();
-        this.save('image/svg+xml', this.serializeXmlNode(wellFormatedSvgDom), 'class_diagram.svg');
+        this.save('svg', this.serializeXmlNode(wellFormatedSvgDom), 'class_diagram.svg', 'image/svg+xml');
     };
     Graph.prototype.exportHtml = function () {
         var htmlFacade = '<html><head><title>DiagramJS - Classdiagram</title></head><body>$content</body></html>';
         var wellFormatedSvgDom = this.getSvgWithStyleAttributes();
         var svgAsXml = this.serializeXmlNode(wellFormatedSvgDom);
         var htmlResult = htmlFacade.replace('$content', svgAsXml);
-        this.save('text/plain', htmlResult, 'class_diagram.htm');
+        this.save('html', htmlResult, 'class_diagram.htm', 'text/plain');
     };
     Graph.prototype.exportJson = function () {
-        var typ = 'text/plain';
+        var type = 'text/plain';
         var jsonObj = util_1.Util.toJson(this.$graphModel);
         var data = JSON.stringify(jsonObj, null, '\t');
-        this.save(typ, data, 'class_diagram.json');
+        this.save('json', data, 'class_diagram.json', type);
     };
     Graph.prototype.exportPdf = function () {
         if (!window['jsPDF']) {
             console.log('jspdf n.a.');
             return;
         }
-        var typ = 'image/svg+xml';
-        var xmlNode = this.serializeXmlNode(this.getSvgWithStyleAttributes());
-        var url = window.URL.createObjectURL(new Blob([xmlNode], { type: typ }));
-        var canvas, context, a, image = new Image();
-        var size = this.getRootSize();
-        image.onload = function () {
-            canvas = document.createElement('canvas');
-            canvas.width = size.width;
-            canvas.height = size.height;
-            context = canvas.getContext('2d');
-            context.drawImage(image, 0, 0);
-            var pdf = new window['jsPDF']();
-            pdf.addImage(canvas.toDataURL('image/jpeg'), 'jpeg', 15, 40, 180, 160);
-            pdf.save('class_diagram.pdf');
-        };
-        image.src = url;
+        var type = 'image/svg+xml';
+        var converter, pdf = new window['jsPDF']('l', 'px', [this.$graphModel.getSize().x, this.$graphModel.getSize().y]);
+        converter = new SVGConverter_1.SVGConverter(this.$view, pdf, { removeInvalid: false });
+        pdf.save('Download.pdf');
+    };
+    Graph.prototype.import = function (data) {
+        var rootElement = this.$graphModel.$view;
+        while (rootElement.hasChildNodes()) {
+            rootElement.removeChild(rootElement.firstChild);
+        }
+        while (this.$view.hasChildNodes()) {
+            this.$view.removeChild(this.$view.firstChild);
+        }
+        this.clearModel();
+        var jsonData = JSON.parse(data);
+        this.load(jsonData);
+        this.layout();
+    };
+    Graph.prototype.exportEPS = function () {
+        var converter, doc = new JSEPS_1.JSEPS({ inverting: true });
+        converter = new SVGConverter_1.SVGConverter(this.$view, doc, { removeInvalid: false });
+        this.save('eps', doc.getData(), 'diagram.eps', doc.getType());
     };
     Graph.prototype.exportPng = function () {
         var canvas, context, a, image = new Image();
@@ -1987,8 +2008,9 @@ var Graph = (function (_super) {
             this.root.removeChild(alreadyDisplayingSvg);
         }
     };
-    Graph.prototype.generate = function (workspace) {
-        this.$graphModel.workspace = workspace;
+    Graph.prototype.generate = function (packageName, path) {
+        this.$graphModel.package = packageName;
+        this.$graphModel.genPath = path;
         var data, result = util_1.Util.toJson(this.$graphModel);
         data = JSON.stringify(result, null, '\t');
         if (window['java'] && typeof window['java'].generate === 'function') {
@@ -2123,8 +2145,9 @@ var Graph = (function (_super) {
             if (features.newedge) {
                 EventBus_1.EventBus.subscribe(new handlers_1.NewEdge(this), 'mousedown', 'mouseup', 'mousemove', 'mouseleave');
             }
+            this.importFile = new ImportFile_1.ImportFile(this);
             if (features.import) {
-                EventBus_1.EventBus.subscribe(new ImportFile_1.ImportFile(this), 'dragover', 'dragleave', 'drop');
+                EventBus_1.EventBus.subscribe(this.importFile, 'dragover', 'dragleave', 'drop');
             }
             if (features.zoom) {
                 var mousewheel = 'onwheel' in document.createElement('div') ? 'wheel' : document.onmousewheel !== undefined ? 'mousewheel' : 'DOMMouseScroll';
@@ -2144,7 +2167,7 @@ var Graph = (function (_super) {
             }
             if (features.properties) {
                 var dispatcher = new handlers_1.PropertiesDispatcher(this);
-                dispatcher.dispatch(PropertiesPanel.PropertiesPanel.PropertiesView.Clear);
+                dispatcher.dispatch('Clear');
                 EventBus_1.EventBus.subscribe(dispatcher, 'dblclick', 'click', EventBus_1.EventBus.RELOADPROPERTIES);
             }
             if (features.addnode) {
@@ -2167,9 +2190,9 @@ function __export(m) {
     for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 }
 Object.defineProperty(exports, "__esModule", { value: true });
-var BaseElements_1 = __webpack_require__(1);
+var BaseElements_1 = __webpack_require__(2);
 exports.Point = BaseElements_1.Point;
-var Bridge_1 = __webpack_require__(12);
+var Bridge_1 = __webpack_require__(13);
 exports.Bridge = Bridge_1.Bridge;
 exports.DelegateAdapter = Bridge_1.DelegateAdapter;
 var Graph_1 = __webpack_require__(8);
@@ -2177,11 +2200,11 @@ exports.Graph = Graph_1.Graph;
 __export(__webpack_require__(5));
 __export(__webpack_require__(4));
 __export(__webpack_require__(23));
-__export(__webpack_require__(60));
-var BaseElements_2 = __webpack_require__(1);
+__export(__webpack_require__(63));
+var BaseElements_2 = __webpack_require__(2);
 var Graph_2 = __webpack_require__(8);
-var ClassEditor_1 = __webpack_require__(61);
-var Bridge_2 = __webpack_require__(12);
+var ClassEditor_1 = __webpack_require__(64);
+var Bridge_2 = __webpack_require__(13);
 var util_1 = __webpack_require__(0);
 var nodes = __webpack_require__(5);
 var edges = __webpack_require__(4);
@@ -2215,7 +2238,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var util_1 = __webpack_require__(0);
-var BaseElements_1 = __webpack_require__(1);
+var BaseElements_1 = __webpack_require__(2);
 var ClazzProperty = (function (_super) {
     __extends(ClazzProperty, _super);
     function ClazzProperty(data) {
@@ -2224,6 +2247,36 @@ var ClazzProperty = (function (_super) {
         _this.extractData(data);
         return _this;
     }
+    ClazzProperty.prototype.update = function (data) {
+        this.extractData(data);
+        this.updateTextOfView();
+    };
+    ClazzProperty.prototype.updateModifier = function (modifier) {
+        this.modifier = modifier;
+        this.updateTextOfView();
+    };
+    ClazzProperty.prototype.updateType = function (type) {
+        this.type = type;
+        this.updateTextOfView();
+    };
+    ClazzProperty.prototype.updateName = function (name) {
+        this.name = name;
+        this.updateTextOfView();
+    };
+    ClazzProperty.prototype.getSVG = function () {
+        var attrText = {
+            tag: 'text',
+            'text-anchor': 'start',
+            'alignment-baseline': 'middle',
+        };
+        var attrSvg = util_1.Util.createShape(attrText);
+        attrSvg.textContent = this.toString();
+        this.$view = attrSvg;
+        return attrSvg;
+    };
+    ClazzProperty.prototype.toString = function () {
+        return this.modifier + " " + this.name + " : " + this.type;
+    };
     ClazzProperty.prototype.extractData = function (data) {
         if (!data) {
             return;
@@ -2258,39 +2311,9 @@ var ClazzProperty = (function (_super) {
             }
         }
     };
-    ClazzProperty.prototype.update = function (data) {
-        this.extractData(data);
-        this.updateTextOfView();
-    };
-    ClazzProperty.prototype.updateModifier = function (modifier) {
-        this.modifier = modifier;
-        this.updateTextOfView();
-    };
-    ClazzProperty.prototype.updateType = function (type) {
-        this.type = type;
-        this.updateTextOfView();
-    };
-    ClazzProperty.prototype.updateName = function (name) {
-        this.name = name;
-        this.updateTextOfView();
-    };
     ClazzProperty.prototype.updateTextOfView = function () {
         this.$view.textContent = this.toString();
         util_1.Util.saveToLocalStorage(this.$owner.$owner);
-    };
-    ClazzProperty.prototype.getSVG = function () {
-        var attrText = {
-            tag: 'text',
-            'text-anchor': 'start',
-            'alignment-baseline': 'middle',
-        };
-        var attrSvg = util_1.Util.createShape(attrText);
-        attrSvg.textContent = this.toString();
-        this.$view = attrSvg;
-        return attrSvg;
-    };
-    ClazzProperty.prototype.toString = function () {
-        return this.modifier + " " + this.name + " : " + this.type;
     };
     return ClazzProperty;
 }(BaseElements_1.DiagramElement));
@@ -2314,1602 +2337,9 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var BaseElements_1 = __webpack_require__(1);
-var InfoText_1 = __webpack_require__(44);
-var util_1 = __webpack_require__(0);
-var EventBus_1 = __webpack_require__(3);
-var edges = __webpack_require__(4);
-var Direction;
-(function (Direction) {
-    Direction[Direction["Up"] = 0] = "Up";
-    Direction[Direction["Down"] = 1] = "Down";
-    Direction[Direction["Left"] = 2] = "Left";
-    Direction[Direction["Right"] = 3] = "Right";
-})(Direction = exports.Direction || (exports.Direction = {}));
-var Association = (function (_super) {
-    __extends(Association, _super);
-    function Association(data) {
-        var _this = _super.call(this) || this;
-        _this.$points = [];
-        _this.withData(data);
-        return _this;
-    }
-    Association.prototype.withData = function (data) {
-        if (!data) {
-            return this;
-        }
-        var srcInfo;
-        var trgInfo;
-        if (data.source && typeof data.source !== 'string') {
-            srcInfo = data.source;
-        }
-        else if (data.sourceInfo && typeof data.sourceInfo !== 'string') {
-            srcInfo = data.sourceInfo;
-        }
-        if (srcInfo) {
-            this.sourceInfo = new InfoText_1.InfoText(srcInfo);
-            this.sourceInfo.$owner = this;
-        }
-        if (data.target && typeof data.target !== 'string') {
-            trgInfo = data.target;
-        }
-        else if (data.targetInfo && typeof data.targetInfo !== 'string') {
-            trgInfo = data.targetInfo;
-        }
-        if (trgInfo) {
-            this.targetInfo = new InfoText_1.InfoText(trgInfo);
-            this.targetInfo.$owner = this;
-        }
-        return this;
-    };
-    Association.prototype.updateSrcCardinality = function (cardinality) {
-        this.sourceInfo = this.updateCardinality(this.$sNode, this.sourceInfo, cardinality);
-        this.redrawSourceInfo();
-        util_1.Util.saveToLocalStorage(this.$owner);
-    };
-    Association.prototype.updateTargetCardinality = function (cardinality) {
-        this.targetInfo = this.updateCardinality(this.$tNode, this.targetInfo, cardinality);
-        this.redrawTargetInfo();
-        util_1.Util.saveToLocalStorage(this.$owner);
-    };
-    Association.prototype.updateCardinality = function (node, infoText, cardinality) {
-        if (!infoText) {
-            infoText = new InfoText_1.InfoText({ 'cardinality': cardinality });
-            infoText.$owner = this;
-            var calcPos = this.calcInfoPosNew(infoText, node);
-            infoText.withPos(calcPos.x, calcPos.y);
-            this.$view.appendChild(infoText.getSVG());
-            return infoText;
-        }
-        infoText.cardinality = cardinality;
-        if (infoText.isEmpty()) {
-            this.$view.removeChild(infoText.$view);
-            return undefined;
-        }
-        infoText.updateCardinality(cardinality);
-        return infoText;
-    };
-    Association.prototype.updateSrcProperty = function (property) {
-        this.sourceInfo = this.updateProperty(this.$sNode, this.sourceInfo, property);
-        this.redrawSourceInfo();
-        util_1.Util.saveToLocalStorage(this.$owner);
-    };
-    Association.prototype.updateTargetProperty = function (property) {
-        this.targetInfo = this.updateProperty(this.$tNode, this.targetInfo, property);
-        this.redrawTargetInfo();
-        util_1.Util.saveToLocalStorage(this.$owner);
-    };
-    Association.prototype.updateProperty = function (node, infoText, property) {
-        if (!infoText) {
-            infoText = new InfoText_1.InfoText({ 'property': property });
-            infoText.$owner = this;
-            var calcPos = this.calcInfoPosNew(infoText, node);
-            infoText.withPos(calcPos.x, calcPos.y);
-            this.$view.appendChild(infoText.getSVG());
-            return infoText;
-        }
-        infoText.property = property;
-        if (infoText.isEmpty()) {
-            this.$view.removeChild(infoText.$view);
-            return undefined;
-        }
-        infoText.updateProperty(property);
-        return infoText;
-    };
-    Association.prototype.withItem = function (source, target) {
-        source.$edges.push(this);
-        target.$edges.push(this);
-        this.$sNode = source;
-        this.$tNode = target;
-        this.source = source.label;
-        this.target = target.label;
-        return this;
-    };
-    Association.prototype.getSVG = function () {
-        var group = util_1.Util.createShape({ tag: 'g', id: this.id, class: 'SVGEdge' });
-        var path = this.getPath();
-        var attr = {
-            tag: 'path',
-            d: path,
-            fill: 'none'
-        };
-        var pathLine = this.createShape(attr);
-        attr['style'] = 'stroke-width:20;opacity:0';
-        var extendedPathLine = util_1.Util.createShape(attr);
-        group.appendChild(extendedPathLine);
-        group.appendChild(pathLine);
-        if (this.sourceInfo) {
-            var calcPos = this.calcInfoPosNew(this.sourceInfo, this.$sNode);
-            this.sourceInfo.withPos(calcPos.x, calcPos.y);
-            group.appendChild(this.sourceInfo.getSVG());
-        }
-        if (this.targetInfo) {
-            var calcPos = this.calcInfoPosNew(this.targetInfo, this.$tNode);
-            this.targetInfo.withPos(calcPos.x, calcPos.y);
-            group.appendChild(this.targetInfo.getSVG());
-        }
-        this.$pathWideSvg = extendedPathLine;
-        this.$pathSvg = pathLine;
-        this.$view = group;
-        return group;
-    };
-    Association.prototype.getEvents = function () {
-        return [EventBus_1.EventBus.ELEMENTCLICK, EventBus_1.EventBus.ELEMENTDBLCLICK, EventBus_1.EventBus.EDITOR, EventBus_1.EventBus.OPENPROPERTIES];
-    };
-    Association.prototype.convertEdge = function (type, newId, redraw) {
-        if (!edges[type]) {
-            return this;
-        }
-        var newEdge = new edges[type]();
-        newEdge.withItem(this.$sNode, this.$tNode);
-        newEdge.id = newId;
-        newEdge.type = type;
-        newEdge.lineStyle = this.lineStyle;
-        newEdge.$owner = this.$owner;
-        if (this.sourceInfo) {
-            newEdge.sourceInfo = new InfoText_1.InfoText({ property: this.sourceInfo.property, cardinality: this.sourceInfo.cardinality });
-            newEdge.sourceInfo.$owner = newEdge;
-        }
-        if (this.targetInfo) {
-            newEdge.targetInfo = new InfoText_1.InfoText({ property: this.targetInfo.property, cardinality: this.targetInfo.cardinality });
-            newEdge.targetInfo.$owner = newEdge;
-        }
-        this.$points.forEach(function (point) {
-            newEdge.addPoint(point.x, point.y);
-        });
-        var graph = this.getRoot();
-        if (!graph) {
-            return this;
-        }
-        var idx = graph.$graphModel.edges.indexOf(this);
-        graph.$graphModel.removeElement(this.id);
-        if (idx > -1) {
-            graph.$graphModel.edges.splice(idx, 0, newEdge);
-        }
-        else {
-            graph.$graphModel.edges.push(newEdge);
-        }
-        if (!redraw) {
-            return newEdge;
-        }
-        var svgRoot;
-        if (graph) {
-            svgRoot = graph.root;
-        }
-        else {
-            svgRoot = document.getElementById('root');
-        }
-        var newEdgeSvg = newEdge.getSVG();
-        graph.removeElement(this);
-        svgRoot.appendChild(newEdgeSvg);
-        var dontDrawPath = (type !== 'Edge');
-        newEdge.redraw(newEdge.$sNode, dontDrawPath);
-        newEdge.redraw(newEdge.$tNode, dontDrawPath);
-        EventBus_1.EventBus.register(newEdge, newEdgeSvg);
-        this.sourceInfo = undefined;
-        this.targetInfo = undefined;
-        return newEdge;
-    };
-    Association.prototype.redraw = function (startNode, dontDrawPoints) {
-        if (!startNode) {
-            return;
-        }
-        var endPoint;
-        var recalcPoint;
-        var endPointIdx;
-        if (this.$sNode.id === startNode.id) {
-            recalcPoint = this.$points[0];
-            endPointIdx = 1;
-        }
-        else if (this.$tNode.id === startNode.id) {
-            recalcPoint = this.$points[this.$points.length - 1];
-            endPointIdx = this.$points.length - 2;
-        }
-        endPoint = this.$points[endPointIdx];
-        this.calcIntersection(startNode, recalcPoint, endPoint);
-        if (this.$points.length > 2 && this.$tNode.id === startNode.id && endPoint.y > (startNode.getPos().y + (startNode.getSize().y / 2))) {
-            this.$points.splice(endPointIdx, 1);
-        }
-        if (this.$tNode.id === startNode.id && this.$points.length == 2) {
-            this.calcIntersection(this.$sNode, endPoint, recalcPoint);
-        }
-        if (this.$points.length > 2 && this.$sNode.id === startNode.id && (startNode.getPos().y + (startNode.getSize().y / 2) > endPoint.y)) {
-            this.$points.splice(endPointIdx, 1);
-        }
-        if (this.$sNode.id === startNode.id && this.$points.length == 2) {
-            this.calcIntersection(this.$tNode, endPoint, recalcPoint);
-        }
-        if (!dontDrawPoints) {
-            this.redrawPointsAndInfo();
-        }
-    };
-    Association.prototype.redrawPointsAndInfo = function () {
-        var path = this.getPath();
-        this.$pathSvg.setAttributeNS(null, 'd', path);
-        this.$pathWideSvg.setAttributeNS(null, 'd', path);
-        this.redrawSourceInfo();
-        this.redrawTargetInfo();
-    };
-    Association.prototype.redrawSourceInfo = function () {
-        if (this.sourceInfo) {
-            var newPosOfSrc = this.calcInfoPosNew(this.sourceInfo, this.$sNode);
-            this.sourceInfo.redrawFromEdge(newPosOfSrc);
-        }
-    };
-    Association.prototype.redrawTargetInfo = function () {
-        if (this.targetInfo) {
-            var newPosOfTarget = this.calcInfoPosNew(this.targetInfo, this.$tNode);
-            this.targetInfo.redrawFromEdge(newPosOfTarget);
-        }
-    };
-    Association.prototype.getPath = function () {
-        if (this.$points.length == 0)
-            return '';
-        var path = 'M';
-        for (var i = 0; i < this.$points.length; i++) {
-            var point = this.$points[i];
-            if (i > 0) {
-                path += 'L';
-            }
-            path += Math.floor(point.x) + ' ' + Math.floor(point.y) + ' ';
-        }
-        return path;
-    };
-    Association.prototype.calcIntersection = function (startNode, recalcPoint, endPoint) {
-        var h = startNode.getSize().y;
-        var w = startNode.getSize().x;
-        var x1 = startNode.getPos().x + (w / 2);
-        var y1 = startNode.getPos().y + (h / 2);
-        var x2 = endPoint.x;
-        var y2 = endPoint.y;
-        var newX = recalcPoint.x;
-        var newY = recalcPoint.y;
-        if (x2 > x1) {
-            newX = x1 + (w / 2);
-        }
-        else if (x2 < x1) {
-            newX = x1 - (w / 2);
-        }
-        else {
-            newX = x1;
-        }
-        if ((x2 - x1) != 0) {
-            newY = ((y2 - y1) / (x2 - x1) * (newX - x1)) + y1;
-        }
-        else {
-            if (y1 > y2) {
-                newY = startNode.getPos().y;
-            }
-            else {
-                newY = startNode.getPos().y + h;
-            }
-        }
-        if (!((y1 - (h / 2) <= newY) && newY <= y1 + (h / 2))) {
-            if (y2 > y1) {
-                newY = y1 + (h / 2);
-            }
-            else {
-                newY = y1 - (h / 2);
-            }
-            if ((x2 - x1) != 0) {
-                var tmp = ((y2 - y1) / (x2 - x1));
-                newX = (newY + (tmp * x1) - y1) / tmp;
-            }
-            else {
-                newX = x1;
-            }
-        }
-        recalcPoint.x = Math.ceil(newX);
-        recalcPoint.y = Math.ceil(newY);
-        return null;
-    };
-    Association.prototype.calcInfoPosNew = function (infoTxt, node) {
-        if (!infoTxt || !node)
-            return null;
-        var startPoint;
-        var nextToStartPoint;
-        if (this.$sNode.id === node.id) {
-            startPoint = this.$points[0];
-            nextToStartPoint = this.$points[1];
-        }
-        else if (this.$tNode.id === node.id) {
-            startPoint = this.$points[this.$points.length - 1];
-            nextToStartPoint = this.$points[this.$points.length - 2];
-        }
-        var direction = this.getDirectionOfPointToNode(node, startPoint);
-        var x;
-        var y;
-        switch (direction) {
-            case 0:
-                if (startPoint.x >= nextToStartPoint.x) {
-                    x = startPoint.x + 5;
-                }
-                else {
-                    x = startPoint.x - (infoTxt.getSize().x);
-                }
-                y = startPoint.y + (infoTxt.getSize().y / 2);
-                break;
-            case 3:
-                if (startPoint.y >= nextToStartPoint.y) {
-                    y = startPoint.y + (infoTxt.getSize().y / 2);
-                }
-                else {
-                    y = startPoint.y - (infoTxt.getSize().y / 2) - 5;
-                }
-                x = startPoint.x - (infoTxt.getSize().x) - 5;
-                break;
-            case 2:
-                if (startPoint.y >= nextToStartPoint.y) {
-                    y = startPoint.y + (infoTxt.getSize().y / 2);
-                }
-                else {
-                    y = startPoint.y - (infoTxt.getSize().y / 2) - 5;
-                }
-                x = startPoint.x + 5;
-                break;
-            case 1:
-                if (startPoint.x >= nextToStartPoint.x) {
-                    x = startPoint.x + 5;
-                }
-                else {
-                    x = startPoint.x - (infoTxt.getSize().x);
-                }
-                y = startPoint.y - (infoTxt.getSize().y / 2) - 5;
-                break;
-            default:
-                break;
-        }
-        return new BaseElements_1.Point(x, y);
-    };
-    Association.prototype.clearPoints = function () {
-        this.$points = [];
-        this.$points = [];
-    };
-    Association.prototype.getDirectionOfPointToNode = function (node, pointNearNode) {
-        var x1 = node.getPos();
-        var x2 = new BaseElements_1.Point((x1.x + node.getSize().x), (x1.y + node.getSize().y));
-        var direction = 1;
-        if (x1.y >= pointNearNode.y) {
-            direction = 1;
-        }
-        if (x2.y <= pointNearNode.y) {
-            direction = 0;
-        }
-        if (x1.x >= pointNearNode.x) {
-            direction = 3;
-        }
-        if (x2.x <= pointNearNode.x) {
-            direction = 2;
-        }
-        return direction;
-    };
-    Association.prototype.addPoint = function (x, y) {
-        this.$points.push(new BaseElements_1.Point(x, y));
-        return this.$points;
-    };
-    return Association;
-}(BaseElements_1.DiagramElement));
-exports.Association = Association;
-
-
-/***/ }),
-/* 12 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var controls = __webpack_require__(5);
-var adapters = __webpack_require__(23);
-var Data_1 = __webpack_require__(7);
-var Control_1 = __webpack_require__(2);
-var Adapter_1 = __webpack_require__(24);
-var Graph_1 = __webpack_require__(8);
-var util_1 = __webpack_require__(0);
-var Bridge = (function (_super) {
-    __extends(Bridge, _super);
-    function Bridge(viewRoot) {
-        var _this = _super.call(this) || this;
-        _this.controlFactory = {};
-        _this.adapterFactory = {};
-        _this.controls = {};
-        _this.adapters = {};
-        _this.items = {};
-        _this.controlNo = 1;
-        _this.online = true;
-        _this.language = navigator.language.toUpperCase();
-        _this.addListener = function (listener) {
-            this.listener.push(listener);
-        };
-        var i;
-        if (viewRoot) {
-            _this.$view = viewRoot;
-        }
-        var keys = Object.keys(adapters);
-        for (i = 0; i < keys.length; i++) {
-            var child = adapters[keys[i]];
-            if (child && child.id) {
-                _this.adapterFactory[child.id.toLowerCase()] = child;
-            }
-        }
-        keys = Object.keys(controls);
-        for (i = 0; i < keys.length; i++) {
-            _this.addControl(controls[keys[i]]);
-        }
-        _this.addControl(Graph_1.Graph);
-        var that = _this;
-        window.addEventListener('load', function () {
-            var updateOnlineStatus = function updateOnlineStatus() {
-                that.setOnline(navigator.onLine);
-            };
-            window.addEventListener('online', updateOnlineStatus);
-            window.addEventListener('offline', updateOnlineStatus);
-        });
-        return _this;
-    }
-    Bridge.prototype.setOnline = function (value) {
-        this.online = value;
-        if (this.toolBar.children[0]) {
-            this.toolBar.children[0].className = value ? 'online' : 'offline';
-        }
-    };
-    Bridge.prototype.addToolbar = function () {
-        if (this.toolBar) {
-            return false;
-        }
-        this.toolBar = document.createElement('div');
-        this.toolBar.className = 'onlineStatus';
-        var child = document.createElement('div');
-        child.className = 'online';
-        this.toolBar.appendChild(child);
-        child = document.createElement('div');
-        child.className = 'lang';
-        child.innerHTML = this.language;
-        this.toolBar.appendChild(child);
-        var body = document.getElementsByTagName('body')[0];
-        body.insertBefore(this.toolBar, body.firstChild);
-        this.setOnline(this.online);
-        return true;
-    };
-    Bridge.prototype.addControl = function (control) {
-        if (control && control.name) {
-            this.controlFactory[control.name.toLowerCase()] = control;
-        }
-    };
-    Bridge.prototype.getId = function () {
-        return 'control' + (this.controlNo++);
-    };
-    Bridge.prototype.adapterUpdate = function (message) {
-        var keys = Object.keys(this.adapters);
-        if (keys.length > 0) {
-            var i = void 0;
-            for (i = 0; i < keys.length; i++) {
-                var adapterList = this.adapters[keys[i]];
-                if (adapterList instanceof Adapter_1.Adapter) {
-                    adapterList.update(message);
-                }
-                else {
-                    for (var _i = 0, adapterList_1 = adapterList; _i < adapterList_1.length; _i++) {
-                        var adapter = adapterList_1[_i];
-                        adapter.update(message);
-                    }
-                }
-            }
-        }
-    };
-    Bridge.prototype.load = function (json, owner) {
-        var config = {}, className, id;
-        if (typeof (json) === 'string') {
-            config['id'] = '' + json;
-            var item = document.getElementById(config['id']);
-            var className_1;
-            if (item) {
-                className_1 = item.getAttribute('class');
-                if (!className_1) {
-                    className_1 = item.getAttribute('classname') || '';
-                }
-                if (item.getAttribute('property')) {
-                    if (this.hasItem(item.getAttribute('property'))) {
-                        var data = this.getItem(item.getAttribute('property'));
-                        for (var key in data.prop) {
-                            if (item.getAttribute(key)) {
-                                data.setValue(key, item.getAttribute(key));
-                            }
-                        }
-                        if (item.getAttribute('property')) {
-                        }
-                    }
-                }
-            }
-            else {
-                className_1 = '' + json;
-            }
-            className_1 = className_1.toLowerCase();
-            config['className'] = className_1;
-        }
-        else {
-            config = json;
-        }
-        if (!config['id']) {
-            config['id'] = this.getId();
-        }
-        if (!config['className'] && (config['type'] === 'clazzdiagram' || config['type'] === 'objectdiagram')) {
-            config['className'] = 'graph';
-        }
-        className = config['className'] || config['class'];
-        className = className.toLocaleLowerCase();
-        id = config['id'];
-        if ((config['prop'] || config['upd'] || config['rem']) && this.controls[id] === null) {
-            var newData = !this.hasItem(config['id']);
-            var item = this.getItem(config['id']);
-            if (newData) {
-                for (var i in this.controls) {
-                    if (this.controls.hasOwnProperty(i) === false) {
-                        continue;
-                    }
-                    this.controls[i].addItem(this, item);
-                }
-            }
-            item.addProperties(config);
-            this.adapterUpdate(JSON.stringify(config));
-            return item;
-        }
-        var control;
-        if (this.controls[id]) {
-            control = this.controls[id];
-            control.initControl(json);
-            this.adapterUpdate(JSON.stringify(config));
-            return control;
-        }
-        if (typeof (this.controlFactory[className]) === 'object' || typeof (this.controlFactory[className]) === 'function') {
-            var obj = this.controlFactory[className];
-            control = new obj(json);
-            util_1.Util.initControl(owner || this, control, config['property'], id, json);
-            if (control.id) {
-                this.controls[control.id] = control;
-            }
-            else {
-                this.controls[id] = control;
-            }
-            if (typeof control.getSVG === 'function' && typeof control.getSize === 'function') {
-                var size = control.getSize();
-                var svg = util_1.Util.createShape({
-                    tag: 'svg',
-                    id: 'root',
-                    width: size.x,
-                    height: size.y
-                });
-                var view = control.getSVG();
-                svg.appendChild(view);
-                document.getElementsByTagName('body')[0].appendChild(svg);
-            }
-            return control;
-        }
-        return null;
-    };
-    Bridge.prototype.hasItem = function (id) {
-        if (this.items[id] !== undefined) {
-            return true;
-        }
-        id = id.split('.')[0];
-        return (this.items[id] !== undefined);
-    };
-    Bridge.prototype.getItems = function () {
-        return this.items;
-    };
-    Bridge.prototype.getItem = function (id) {
-        var item = this.items[id];
-        if (!item) {
-            id = id.split('.')[0];
-            item = this.items[id];
-            if (!item) {
-                item = new Data_1.default();
-                item.id = id;
-                this.items[id] = item;
-            }
-        }
-        return item;
-    };
-    Bridge.prototype.setValue = function (object, attribute, newValue, oldValue) {
-        alert('Bridge.setValue: oldVal:' + oldValue + ', newVal: ' + +newValue + ', attribute: ' + attribute + ', object: ' + JSON.stringify(object));
-        var obj;
-        var id;
-        if (object instanceof String || typeof object === 'string') {
-            id = object.toString();
-            obj = this.getItem(id);
-        }
-        else if (object instanceof Data_1.default) {
-            obj = object;
-            id = object.id;
-        }
-        else if (object.hasOwnProperty('id')) {
-            obj = object;
-            id = object['id'];
-        }
-        else {
-            console.log('object is neither Data nor String..');
-            return false;
-        }
-        if (obj) {
-            obj.setValue(attribute, newValue);
-        }
-        return true;
-    };
-    Bridge.prototype.getValue = function (object, attribute) {
-        var obj;
-        var id;
-        if (object instanceof String || typeof object === 'string') {
-            id = object.toString();
-            obj = this.getItem(id);
-        }
-        else if (object.hasOwnProperty('id')) {
-            obj = object;
-        }
-        else {
-            console.log('object is neither Data nor String..');
-            return;
-        }
-        if (obj) {
-            if (obj.hasOwnProperty(attribute)) {
-                return obj[attribute];
-            }
-            else if (obj instanceof Data_1.default) {
-                return obj.getValue(attribute);
-            }
-            else {
-                return null;
-            }
-        }
-    };
-    Bridge.prototype.getNumber = function (object, attribute, defaultValue) {
-        if (defaultValue === void 0) { defaultValue = 0; }
-        var res = this.getValue(object, attribute);
-        if (typeof res === 'number') {
-            return res;
-        }
-        else if (typeof res === 'string') {
-            var value = Number(res);
-            if (value || value === 0) {
-                return value;
-            }
-        }
-        return defaultValue;
-    };
-    Bridge.prototype.getControl = function (controlId) {
-        return this.controls[controlId];
-    };
-    Bridge.prototype.registerListener = function (eventType, control, callBackfunction) {
-        if (typeof control === 'string') {
-            control = this.getControl(control);
-        }
-        if (!control) {
-            return null;
-        }
-        if (eventType) {
-            eventType = eventType.toLowerCase();
-        }
-        control.registerListenerOnHTMLObject(eventType);
-        if (callBackfunction) {
-            var adapter = new DelegateAdapter();
-            adapter.callBackfunction = callBackfunction;
-            adapter.id = control.getId();
-            this.addAdapter(adapter, eventType);
-        }
-        return control;
-    };
-    Bridge.prototype.addAdapter = function (adapter, eventType) {
-        if (!eventType) {
-            eventType = '';
-        }
-        var result;
-        if (adapter instanceof String) {
-            var obj = this.adapterFactory[adapter.toLowerCase()];
-            result = new obj();
-        }
-        else {
-            result = adapter;
-        }
-        var handlers = this.adapters[eventType];
-        if (handlers === null || handlers === undefined) {
-            handlers = [];
-            this.adapters[eventType] = handlers;
-        }
-        handlers.push(result);
-        return result;
-    };
-    Bridge.prototype.fireEvent = function (evt) {
-        var handlers = this.adapters[''];
-        if (handlers) {
-            for (var i = 0; i < handlers.length; i++) {
-                var adapter = handlers[i];
-                if (adapter.id === null || adapter.id === evt['id']) {
-                    adapter.update(evt);
-                }
-            }
-        }
-        handlers = this.adapters[evt['eventType']];
-        if (handlers) {
-            for (var i = 0; i < handlers.length; i++) {
-                var adapter = handlers[i];
-                if (adapter.id === null || adapter.id === evt['id']) {
-                    adapter.update(evt);
-                }
-            }
-        }
-    };
-    Bridge.version = '0.42.01.1601007-1739';
-    return Bridge;
-}(Control_1.Control));
-exports.Bridge = Bridge;
-var DelegateAdapter = (function (_super) {
-    __extends(DelegateAdapter, _super);
-    function DelegateAdapter() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    DelegateAdapter.prototype.update = function (evt) {
-        if (this.adapter) {
-            this.adapter.update(evt);
-            return true;
-        }
-        else if (this.callBackfunction) {
-            return this.executeFunction(this.callBackfunction, evt);
-        }
-        return false;
-    };
-    DelegateAdapter.prototype.setAdapter = function (adapter) {
-        this.adapter = adapter;
-        return true;
-    };
-    DelegateAdapter.prototype.executeFunction = function (strValue, evt) {
-        var scope = window;
-        var scopeSplit = strValue.split('.');
-        for (var i = 0; i < scopeSplit.length - 1; i++) {
-            scope = scope[scopeSplit[i]];
-            if (scope === undefined) {
-                return false;
-            }
-        }
-        var fn = scope[scopeSplit[scopeSplit.length - 1]];
-        if (typeof fn === 'function') {
-            fn.call(scope);
-            return true;
-        }
-        else {
-            window['callBack1'].update(evt);
-        }
-        return false;
-    };
-    return DelegateAdapter;
-}(Adapter_1.Adapter));
-exports.DelegateAdapter = DelegateAdapter;
-
-
-/***/ }),
-/* 13 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var Control_1 = __webpack_require__(2);
-var AutoComplete = (function (_super) {
-    __extends(AutoComplete, _super);
-    function AutoComplete() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    AutoComplete.prototype.load = function (json, owner) {
-        this.createControl(this.$owner, json);
-    };
-    AutoComplete.prototype.createControl = function (parent, data) {
-        if (typeof (data) === 'string') {
-            this.id = data;
-        }
-        else {
-            this.id = data['id'];
-        }
-        var div = document.createElement('div');
-        this.$view = div;
-        this.$inputField = document.createElement('input');
-        this.$dataList = document.createElement("datalist");
-        this.$dataList.id = "data_" + this.id;
-        this.$inputField.setAttribute("list", "data_" + this.id);
-        if (data["value"]) {
-            var values = data["value"];
-            this.isMultiple = data["multiple"] != null;
-            var option = void 0;
-            if (this.isMultiple) {
-                this.$selected = document.createElement("select");
-                this.$selected.className = "hide";
-                this.$selected.multiple = true;
-                this.$selected.id = this.id;
-                this.$items = document.createElement("div");
-                this.$items.className = "selectedList";
-                div.appendChild(this.$items);
-                this.$inputField.className = "selectedInput";
-                div.appendChild(this.$selected);
-                this.$view["style"].setProperty("float", "left");
-                var that_1 = this;
-                this.$inputField.oninput = function () { that_1.onChange(); };
-            }
-            else {
-                this.$inputField.id = this.id;
-            }
-            for (var attr in values) {
-                if (!values.hasOwnProperty(attr)) {
-                    continue;
-                }
-                option = document.createElement("option");
-                option.value = values[attr];
-                this.$dataList.appendChild(option);
-                if (this.isMultiple) {
-                    option = document.createElement("option");
-                    option.value = values[attr];
-                    option.innerHTML = values[attr];
-                    this.$selected.appendChild(option);
-                }
-            }
-            div.appendChild(this.$inputField);
-            div.appendChild(this.$dataList);
-        }
-        if (data instanceof Object) {
-            for (var attr in data) {
-                if (!data.hasOwnProperty(attr)) {
-                    continue;
-                }
-                this.$view.setAttribute(attr, data[attr]);
-            }
-            if (this.isMultiple) {
-                div.appendChild(this.$selected);
-            }
-        }
-        parent.appendChild(this);
-    };
-    AutoComplete.prototype.onChange = function () {
-        var textValue = this.$inputField.value;
-        if (textValue.length < 1) {
-            return;
-        }
-        var _loop_1 = function (i) {
-            var item = this_1.$selected.children[i];
-            if (item.value == textValue) {
-                if (item.selected == false) {
-                    item.selected = true;
-                    item.defaultSelected = true;
-                    var test_1 = document.createElement("li");
-                    var that_2 = this_1;
-                    test_1.onclick = function () { that_2.onDelete(item.value, test_1); };
-                    test_1.className = "selectedItem";
-                    test_1.innerHTML = item.value;
-                    this_1.$items.appendChild(test_1);
-                    this_1.$inputField.value = "";
-                }
-            }
-        };
-        var this_1 = this;
-        for (var i = 0; i < this.$selected.children.length; i++) {
-            _loop_1(i);
-        }
-    };
-    AutoComplete.prototype.onDelete = function (value, selectedItem) {
-        this.$items.removeChild(selectedItem);
-        for (var i = 0; i < this.$selected.children.length; i++) {
-            var item = this.$selected.children[i];
-            if (item.value == value) {
-                if (item.selected) {
-                    item.selected = false;
-                }
-            }
-        }
-    };
-    return AutoComplete;
-}(Control_1.Control));
-exports.AutoComplete = AutoComplete;
-
-
-/***/ }),
-/* 14 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var Control_1 = __webpack_require__(2);
-var BR = (function (_super) {
-    __extends(BR, _super);
-    function BR() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    BR.prototype.load = function (json) {
-        this.createControl(this.$owner, json);
-    };
-    BR.prototype.createControl = function (parent, data) {
-        this.$view = document.createElement('br');
-        for (var attr in data) {
-            if (!data.hasOwnProperty(attr)) {
-                continue;
-            }
-            this.$view.setAttribute(attr, data[attr]);
-        }
-        parent.appendChild(this);
-    };
-    return BR;
-}(Control_1.Control));
-exports.BR = BR;
-
-
-/***/ }),
-/* 15 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var Control_1 = __webpack_require__(2);
-var Div = (function (_super) {
-    __extends(Div, _super);
-    function Div() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    Div.prototype.load = function (data) {
-        var id;
-        if (typeof (data) === 'string') {
-            id = data;
-        }
-        else {
-            id = data.id;
-            this.className = data.class;
-            this.property = data.property;
-        }
-        if (!id) {
-            return;
-        }
-        this.id = id;
-        var div = document.getElementById(id);
-        if (!this.property) {
-            this.property = div.getAttribute('Property');
-        }
-        if (div instanceof HTMLDivElement) {
-            this.$view = div;
-        }
-        else {
-            if (!div) {
-                this.$view = document.createElement('div');
-                this.$view.setAttribute('id', this.id);
-                this.$view.setAttribute('property', this.property);
-                this.$owner.appendChild(this);
-            }
-            else {
-                return;
-            }
-        }
-        if (data.hasOwnProperty('property')) {
-            this.setProperty(data['property']);
-        }
-    };
-    Div.prototype.addItem = function (source, entity) {
-        this.$model = entity;
-        if (entity) {
-            if (!this.className || entity.hasProperty(this.className)) {
-                if (entity.id === this.property.split('.')[0]) {
-                    entity.addListener(this, this.className);
-                }
-            }
-        }
-    };
-    Div.prototype.updateElement = function (property, oldValue, newValue) {
-        this.$view.innerHTML = newValue;
-    };
-    return Div;
-}(Control_1.Control));
-exports.Div = Div;
-
-
-/***/ }),
-/* 16 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var Control_1 = __webpack_require__(2);
-var Label = (function (_super) {
-    __extends(Label, _super);
-    function Label() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    Label.prototype.load = function (data) {
-        this.createControl(this.$owner, data);
-    };
-    Label.prototype.createControl = function (parent, data) {
-        this.$view = document.createElement('label');
-        for (var attr in data) {
-            if (!data.hasOwnProperty(attr)) {
-                continue;
-            }
-            if (attr === 'textContent') {
-                this.$view.textContent = data['textContent'];
-            }
-            else {
-                this.$view.setAttribute(attr, data[attr]);
-            }
-        }
-        parent.appendChild(this);
-    };
-    return Label;
-}(Control_1.Control));
-exports.Label = Label;
-
-
-/***/ }),
-/* 17 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
 var Node_1 = __webpack_require__(6);
-var EventBus_1 = __webpack_require__(3);
-var util_1 = __webpack_require__(0);
-var Attribute_1 = __webpack_require__(18);
-var Method_1 = __webpack_require__(19);
-var Clazz = (function (_super) {
-    __extends(Clazz, _super);
-    function Clazz(json) {
-        var _this = _super.call(this, json) || this;
-        _this.attributes = [];
-        _this.methods = [];
-        _this.$labelHeight = 25;
-        _this.$labelFontSize = 14;
-        _this.$attrHeight = 25;
-        _this.$attrFontSize = 12;
-        return _this;
-    }
-    Clazz.prototype.load = function (json) {
-        if (!json) {
-            json = {};
-        }
-        var y = this.$labelHeight;
-        var labelObj = json.name || json.label || json.id || ('New ' + this.property);
-        if (typeof labelObj === 'object') {
-            if (labelObj.cardinality === 'one') {
-                this.label = '0..1';
-            }
-            else {
-                this.label = '0..*';
-            }
-        }
-        else {
-            this.label = labelObj;
-        }
-        var width = 150;
-        width = Math.max(width, util_1.Util.sizeOf(this.label).width + 30);
-        if (json['attributes']) {
-            for (var _i = 0, _a = json['attributes']; _i < _a.length; _i++) {
-                var attr = _a[_i];
-                var attrObj = new Attribute_1.default(attr);
-                attrObj.$owner = this;
-                this.attributes.push(attrObj);
-                y += this.$attrHeight;
-                width = Math.max(width, util_1.Util.sizeOf(attrObj.toString()).width);
-            }
-        }
-        if (json['methods']) {
-            for (var _b = 0, _c = json['methods']; _b < _c.length; _b++) {
-                var method = _c[_b];
-                var methodObj = new Method_1.default(method);
-                methodObj.$owner = this;
-                this.methods.push(methodObj);
-                y += this.$attrHeight;
-                width = Math.max(width, util_1.Util.sizeOf(methodObj.toString()).width);
-            }
-            y += this.$attrHeight;
-        }
-        this.withSize(width, y);
-    };
-    Clazz.prototype.getAttributes = function () {
-        return this.attributes;
-    };
-    Clazz.prototype.getMethods = function () {
-        return this.methods;
-    };
-    Clazz.prototype.getSVG = function () {
-        var pos = this.getPos();
-        var size = this.getSize();
-        var group = this.createShape({ tag: 'g', id: this.id, class: 'SVGClazz', transform: 'translate(0 0)' });
-        var nodeShape = this.createShape({
-            tag: 'rect',
-            x: pos.x,
-            y: pos.y,
-            height: size.y,
-            width: size.x,
-            rx: 5,
-            ry: 5
-        });
-        var label = this.createShape({
-            tag: 'text',
-            x: pos.x + size.x / 2,
-            y: pos.y + this.$labelHeight / 2,
-            'text-anchor': 'middle',
-            'alignment-baseline': 'central',
-            'font-family': 'Verdana',
-            'font-size': this.$labelFontSize,
-            'font-weight': 'bold',
-            fill: 'black'
-        });
-        label.textContent = this.label;
-        this.$labelView = label;
-        group.appendChild(nodeShape);
-        group.appendChild(label);
-        if (this.attributes.length > 0) {
-            var separatorLabelAttr = this.createShape({
-                tag: 'line',
-                x1: pos.x,
-                y1: pos.y + this.$labelHeight,
-                x2: pos.x + size.x,
-                y2: pos.y + this.$labelHeight,
-                'stroke-width': 1
-            });
-            group.appendChild(separatorLabelAttr);
-            var groupOfAttributes = this.createShape({ tag: 'g', id: (this.id + 'Attributes') });
-            groupOfAttributes.setAttributeNS(null, 'class', 'SVGClazzProperty SVGClazzAttribute');
-            group.appendChild(groupOfAttributes);
-            var y_1 = pos.y + this.$labelHeight + this.$attrHeight / 2;
-            for (var _i = 0, _a = this.attributes; _i < _a.length; _i++) {
-                var attr = _a[_i];
-                var attrSvg = attr.getSVG();
-                attr.$owner = this;
-                attrSvg.setAttributeNS(null, 'x', '' + (pos.x + 10));
-                attrSvg.setAttributeNS(null, 'y', '' + y_1);
-                groupOfAttributes.appendChild(attrSvg);
-                y_1 += this.$attrHeight;
-            }
-        }
-        var height = this.attributes.length * this.$attrHeight;
-        var y = pos.y + this.$labelHeight + height + this.$attrHeight / 2;
-        if (this.methods.length > 0) {
-            var separatorAttrMethods = this.createShape({
-                tag: 'line',
-                x1: pos.x,
-                y1: pos.y + this.$labelHeight + (this.$attrHeight * this.attributes.length),
-                x2: pos.x + size.x,
-                y2: pos.y + this.$labelHeight + (this.$attrHeight * this.attributes.length),
-                'stroke-width': 1
-            });
-            group.appendChild(separatorAttrMethods);
-            var groupOfMethods = this.createShape({ tag: 'g', id: (this.id + 'Methods') });
-            groupOfMethods.setAttributeNS(null, 'class', 'SVGClazzProperty SVGClazzMethod');
-            group.appendChild(groupOfMethods);
-            y += this.$attrHeight / 2;
-            for (var _b = 0, _c = this.methods; _b < _c.length; _b++) {
-                var method = _c[_b];
-                var methodSvg = method.getSVG();
-                method.$owner = this;
-                methodSvg.setAttributeNS(null, 'x', '' + (pos.x + 10));
-                methodSvg.setAttributeNS(null, 'y', '' + y);
-                groupOfMethods.appendChild(methodSvg);
-                y += this.$attrHeight;
-            }
-        }
-        this.$view = group;
-        return group;
-    };
-    Clazz.prototype.copy = function () {
-        var copy;
-        copy = _super.prototype.copy.call(this);
-        copy.label = this.label + 'Copy';
-        this.attributes.forEach(function (attr) {
-            copy.attributes.push(new Attribute_1.default(attr.toString()));
-        });
-        this.methods.forEach(function (method) {
-            copy.methods.push(new Method_1.default(method.toString()));
-        });
-        copy.reCalcSize();
-        return copy;
-    };
-    Clazz.prototype.getEvents = function () {
-        return [EventBus_1.EventBus.ELEMENTMOUSEDOWN, EventBus_1.EventBus.ELEMENTMOUSEMOVE, EventBus_1.EventBus.ELEMENTCLICK,
-            EventBus_1.EventBus.ELEMENTDRAG, EventBus_1.EventBus.ELEMENTDBLCLICK, EventBus_1.EventBus.OPENPROPERTIES, EventBus_1.EventBus.RELOADPROPERTIES];
-    };
-    Clazz.prototype.addProperty = function (value, type) {
-        if (!this[type] || !value || value.length === 0) {
-            return;
-        }
-        var extractedValue;
-        if (type === 'attributes') {
-            extractedValue = new Attribute_1.default(value);
-        }
-        else if (type === 'methods') {
-            extractedValue = new Method_1.default(value);
-        }
-        for (var _i = 0, _a = this[type]; _i < _a.length; _i++) {
-            var valueOfType = _a[_i];
-            if (valueOfType.toString() === extractedValue.toString()) {
-                alert(extractedValue.toString() + ' already exists.');
-                extractedValue = undefined;
-                return;
-            }
-        }
-        this[type].push(extractedValue);
-        util_1.Util.saveToLocalStorage(this.$owner);
-        return extractedValue;
-    };
-    Clazz.prototype.addAttribute = function (value) {
-        return this.addProperty(value, 'attributes');
-    };
-    Clazz.prototype.addAttributeObj = function (attr) {
-        this.attributes.push(attr);
-        return this.getAttributes();
-    };
-    Clazz.prototype.addMethodObj = function (method) {
-        this.methods.push(method);
-        return this.getMethods();
-    };
-    Clazz.prototype.addMethod = function (value) {
-        return this.addProperty(value, 'methods');
-    };
-    Clazz.prototype.removeAttribute = function (attr) {
-        var idx = this.attributes.indexOf(attr);
-        this.attributes.splice(idx, 1);
-    };
-    Clazz.prototype.removeMethod = function (method) {
-        var idx = this.methods.indexOf(method);
-        this.methods.splice(idx, 1);
-    };
-    Clazz.prototype.removeProperty = function (property) {
-        if (property instanceof Attribute_1.default) {
-            this.removeAttribute(property);
-        }
-        if (property instanceof Method_1.default) {
-            this.removeMethod(property);
-        }
-        util_1.Util.saveToLocalStorage(this.$owner);
-    };
-    Clazz.prototype.reDraw = function (drawOnlyIfSizeChanged) {
-        var hasSizeChanged = this.hasSizeChanged();
-        if (drawOnlyIfSizeChanged) {
-            if (!hasSizeChanged[0]) {
-                return;
-            }
-        }
-        if (!this.$view) {
-            return;
-        }
-        this.$owner.$view.removeChild(this.$view);
-        var newSvg = this.getSVG();
-        this.$owner.$view.appendChild(newSvg);
-        this.$view = newSvg;
-        EventBus_1.EventBus.register(this, newSvg);
-        this.redrawEdges();
-    };
-    Clazz.prototype.hasSizeChanged = function () {
-        var oldSize = { width: this.getSize().x, height: this.getSize().y };
-        var newSize = this.reCalcSize();
-        if (oldSize.width === newSize.width && oldSize.height === newSize.height) {
-            return [false, newSize];
-        }
-        return [true, newSize];
-    };
-    Clazz.prototype.updateLabel = function (newLabel) {
-        var _this = this;
-        this.label = newLabel;
-        if (this.$labelView) {
-            this.$labelView.textContent = newLabel;
-        }
-        this.$edges.forEach(function (edge) {
-            if (_this.id === edge.$sNode.id) {
-                edge.source = newLabel;
-            }
-            else if (_this.id === edge.$tNode.id) {
-                edge.target = newLabel;
-            }
-        });
-        util_1.Util.saveToLocalStorage(this.$owner);
-        this.reDraw(true);
-    };
-    Clazz.prototype.updateModifier = function (modifier) {
-        this.modifier = modifier;
-        util_1.Util.saveToLocalStorage(this.$owner);
-    };
-    Clazz.prototype.reCalcSize = function () {
-        var newWidth = 150;
-        newWidth = Math.max(newWidth, util_1.Util.sizeOf(this.label).width + 30);
-        this.attributes.forEach(function (attrEl) {
-            var widthOfAttr;
-            if (attrEl.$view) {
-                widthOfAttr = attrEl.$view.getBoundingClientRect().width;
-            }
-            else {
-                widthOfAttr = util_1.Util.sizeOf(attrEl.toString()).width;
-            }
-            newWidth = Math.max(newWidth, widthOfAttr + 15);
-        });
-        this.methods.forEach(function (methodEl) {
-            var widthOfMethod;
-            if (methodEl.$view) {
-                widthOfMethod = methodEl.$view.getBoundingClientRect().width;
-            }
-            else {
-                widthOfMethod = util_1.Util.sizeOf(methodEl.toString()).width;
-            }
-            newWidth = Math.max(newWidth, widthOfMethod + 15);
-        });
-        this.getSize().x = newWidth;
-        this.getSize().y = this.$labelHeight + ((this.attributes.length + this.methods.length) * this.$attrHeight)
-            + this.$attrHeight;
-        var newSize = { width: newWidth, height: this.getSize().y };
-        return newSize;
-    };
-    Clazz.prototype.redrawEdges = function () {
-        for (var _i = 0, _a = this.$edges; _i < _a.length; _i++) {
-            var edge = _a[_i];
-            edge.redraw(this);
-        }
-    };
-    return Clazz;
-}(Node_1.Node));
-exports.Clazz = Clazz;
-
-
-/***/ }),
-/* 18 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var ClazzProperty_1 = __webpack_require__(10);
-var Attribute = (function (_super) {
-    __extends(Attribute, _super);
-    function Attribute(data) {
-        return _super.call(this, data) || this;
-    }
-    return Attribute;
-}(ClazzProperty_1.default));
-exports.default = Attribute;
-
-
-/***/ }),
-/* 19 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var util_1 = __webpack_require__(0);
-var ClazzProperty_1 = __webpack_require__(10);
-var Method = (function (_super) {
-    __extends(Method, _super);
-    function Method(data) {
-        return _super.call(this, data) || this;
-    }
-    Method.prototype.extractData = function (data) {
-        if (!data) {
-            return;
-        }
-        if (data.type) {
-            this.type = data.type;
-        }
-        if (data.name) {
-            this.name = data.name;
-        }
-        if (data.modifier) {
-            this.modifier = data.modifier;
-        }
-        if (typeof data === 'string') {
-            var dataSplitted = data.split(':');
-            if (dataSplitted && dataSplitted.length === 2) {
-                var modifierAndNameSplitted = dataSplitted[0].trim();
-                var firstChar = modifierAndNameSplitted[0];
-                if (firstChar === '+' || firstChar === '-' || firstChar === '#') {
-                    this.modifier = firstChar;
-                    this.name = modifierAndNameSplitted.substring(1, modifierAndNameSplitted.length).trim();
-                }
-                else {
-                    this.name = modifierAndNameSplitted;
-                }
-                this.type = dataSplitted[1].trim() || 'void';
-            }
-            else {
-                var modifierAndNameSplitted = data.trim();
-                var firstChar = modifierAndNameSplitted[0];
-                if (firstChar === '+' || firstChar === '-' || firstChar === '#') {
-                    this.modifier = firstChar;
-                    this.name = modifierAndNameSplitted.substring(1, modifierAndNameSplitted.length).trim();
-                }
-                else {
-                    this.name = modifierAndNameSplitted;
-                }
-                this.type = 'void';
-            }
-        }
-        if (!util_1.Util.includes(this.name, '(') && !util_1.Util.includes(this.name, ')')) {
-            this.name += '()';
-        }
-    };
-    return Method;
-}(ClazzProperty_1.default));
-exports.default = Method;
-
-
-/***/ }),
-/* 20 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var BaseElements_1 = __webpack_require__(1);
-var SO = (function (_super) {
-    __extends(SO, _super);
-    function SO() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    SO.create = function (element) {
-        var result = new SO();
-        for (var key in element) {
-            if (element.hasOwnProperty(key) === false) {
-                continue;
-            }
-            result.withKeyValue(key, element[key]);
-        }
-        return result;
-    };
-    SO.prototype.withKeyValue = function (key, value) {
-        if (key === 'typ') {
-            this.property = value;
-        }
-        else if (key === 'x') {
-            this.withPos(value, null);
-        }
-        else if (key === 'y') {
-            this.withPos(null, value);
-        }
-        else if (key === 'width') {
-            this.withSize(value, null);
-        }
-        else if (key === 'height') {
-            this.withSize(null, value);
-        }
-        else {
-            this[key] = value;
-        }
-        return this;
-    };
-    return SO;
-}(BaseElements_1.DiagramElement));
-exports.SO = SO;
-
-
-/***/ }),
-/* 21 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var Node_1 = __webpack_require__(6);
-var SO_1 = __webpack_require__(20);
-var BaseElements_1 = __webpack_require__(1);
+var SO_1 = __webpack_require__(21);
+var BaseElements_1 = __webpack_require__(2);
 var util_1 = __webpack_require__(0);
 var Symbol = (function (_super) {
     __extends(Symbol, _super);
@@ -3978,11 +2408,11 @@ var SymbolLibary = (function () {
         return typeof fn === 'function';
     };
     SymbolLibary.getName = function (node) {
-        if (node.property) {
-            return 'draw' + SymbolLibary.upFirstChar(node.property);
-        }
         if (node['type']) {
             return 'draw' + SymbolLibary.upFirstChar(node['type']);
+        }
+        if (node.property) {
+            return 'draw' + SymbolLibary.upFirstChar(node.property);
         }
         if (node['src']) {
             return 'draw' + SymbolLibary.upFirstChar(node['src']);
@@ -4197,8 +2627,8 @@ var SymbolLibary = (function () {
             width: 50,
             height: 52,
             items: [
-                { tag: 'circle', r: 10, fill: '#ccc', cx: 8, cy: 8 },
-                { tag: 'path', d: 'M 2,3 H 13 M 2,8 H 13 M 2,13 H 13', stroke: 'black', fill: 'none' }
+                { tag: 'circle', r: 10, fill: '#ccc', cx: 12, cy: 12, 'stroke-width': 1, stroke: 'black' },
+                { tag: 'path', d: 'M 8,7 H 16 M 8,12 H 16 M 8,17 H 16', stroke: 'black', fill: 'none' }
             ]
         });
     };
@@ -4679,6 +3109,1725 @@ exports.SymbolLibary = SymbolLibary;
 
 
 /***/ }),
+/* 12 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var BaseElements_1 = __webpack_require__(2);
+var InfoText_1 = __webpack_require__(44);
+var util_1 = __webpack_require__(0);
+var EventBus_1 = __webpack_require__(1);
+var edges = __webpack_require__(4);
+var Direction;
+(function (Direction) {
+    Direction[Direction["Up"] = 0] = "Up";
+    Direction[Direction["Down"] = 1] = "Down";
+    Direction[Direction["Left"] = 2] = "Left";
+    Direction[Direction["Right"] = 3] = "Right";
+})(Direction = exports.Direction || (exports.Direction = {}));
+var Association = (function (_super) {
+    __extends(Association, _super);
+    function Association(data) {
+        var _this = _super.call(this) || this;
+        _this.$points = [];
+        _this.withData(data);
+        return _this;
+    }
+    Association.prototype.withData = function (data) {
+        if (!data) {
+            return this;
+        }
+        var srcInfo;
+        var trgInfo;
+        if (data.source && typeof data.source !== 'string') {
+            srcInfo = data.source;
+        }
+        else if (data.sourceInfo && typeof data.sourceInfo !== 'string') {
+            srcInfo = data.sourceInfo;
+        }
+        if (srcInfo) {
+            this.sourceInfo = new InfoText_1.InfoText(srcInfo);
+            this.sourceInfo.$owner = this;
+        }
+        if (data.target && typeof data.target !== 'string') {
+            trgInfo = data.target;
+        }
+        else if (data.targetInfo && typeof data.targetInfo !== 'string') {
+            trgInfo = data.targetInfo;
+        }
+        if (trgInfo) {
+            this.targetInfo = new InfoText_1.InfoText(trgInfo);
+            this.targetInfo.$owner = this;
+        }
+        return this;
+    };
+    Association.prototype.updateSrcCardinality = function (cardinality) {
+        this.sourceInfo = this.updateCardinality(this.$sNode, this.sourceInfo, cardinality);
+        this.redrawSourceInfo();
+        util_1.Util.saveToLocalStorage(this.$owner);
+    };
+    Association.prototype.updateTargetCardinality = function (cardinality) {
+        this.targetInfo = this.updateCardinality(this.$tNode, this.targetInfo, cardinality);
+        this.redrawTargetInfo();
+        util_1.Util.saveToLocalStorage(this.$owner);
+    };
+    Association.prototype.updateSrcProperty = function (property) {
+        this.sourceInfo = this.updateProperty(this.$sNode, this.sourceInfo, property);
+        this.redrawSourceInfo();
+        util_1.Util.saveToLocalStorage(this.$owner);
+    };
+    Association.prototype.updateTargetProperty = function (property) {
+        this.targetInfo = this.updateProperty(this.$tNode, this.targetInfo, property);
+        this.redrawTargetInfo();
+        util_1.Util.saveToLocalStorage(this.$owner);
+    };
+    Association.prototype.withItem = function (source, target) {
+        source.$edges.push(this);
+        target.$edges.push(this);
+        this.$sNode = source;
+        this.$tNode = target;
+        this.source = source.id;
+        this.target = target.id;
+        return this;
+    };
+    Association.prototype.getSVG = function () {
+        var group = util_1.Util.createShape({ tag: 'g', id: this.id, class: 'SVGEdge' });
+        var path = this.getPath();
+        var attr = {
+            tag: 'path',
+            d: path,
+            fill: 'none'
+        };
+        var pathLine = this.createShape(attr);
+        attr['style'] = 'stroke-width:20;opacity:0;width:20;height:20';
+        var extendedPathLine = util_1.Util.createShape(attr);
+        group.appendChild(extendedPathLine);
+        group.appendChild(pathLine);
+        if (this.sourceInfo) {
+            var calcPos = this.calcInfoPosNew(this.sourceInfo, this.$sNode);
+            this.sourceInfo.withPos(calcPos.x, calcPos.y);
+            group.appendChild(this.sourceInfo.getSVG());
+        }
+        if (this.targetInfo) {
+            var calcPos = this.calcInfoPosNew(this.targetInfo, this.$tNode);
+            this.targetInfo.withPos(calcPos.x, calcPos.y);
+            group.appendChild(this.targetInfo.getSVG());
+        }
+        this.$pathWideSvg = extendedPathLine;
+        this.$pathSvg = pathLine;
+        this.$view = group;
+        return group;
+    };
+    Association.prototype.getEvents = function () {
+        return [EventBus_1.EventBus.ELEMENTCLICK, EventBus_1.EventBus.ELEMENTDBLCLICK, EventBus_1.EventBus.EDITOR, EventBus_1.EventBus.OPENPROPERTIES];
+    };
+    Association.prototype.convertEdge = function (type, newId, redraw) {
+        if (!edges[type]) {
+            return this;
+        }
+        var newEdge = new edges[type]();
+        newEdge.withItem(this.$sNode, this.$tNode);
+        newEdge.id = newId;
+        newEdge.type = type;
+        newEdge.lineStyle = this.lineStyle;
+        newEdge.$owner = this.$owner;
+        if (this.sourceInfo) {
+            newEdge.sourceInfo = new InfoText_1.InfoText({ property: this.sourceInfo.property, cardinality: this.sourceInfo.cardinality });
+            newEdge.sourceInfo.$owner = newEdge;
+        }
+        if (this.targetInfo) {
+            newEdge.targetInfo = new InfoText_1.InfoText({ property: this.targetInfo.property, cardinality: this.targetInfo.cardinality });
+            newEdge.targetInfo.$owner = newEdge;
+        }
+        this.$points.forEach(function (point) {
+            newEdge.addPoint(point.x, point.y);
+        });
+        var graph = this.getRoot();
+        if (!graph) {
+            return this;
+        }
+        var idx = graph.$graphModel.edges.indexOf(this);
+        graph.$graphModel.removeElement(this.id);
+        if (idx > -1) {
+            graph.$graphModel.edges.splice(idx, 0, newEdge);
+        }
+        else {
+            graph.$graphModel.edges.push(newEdge);
+        }
+        if (!redraw) {
+            return newEdge;
+        }
+        var svgRoot;
+        if (graph) {
+            svgRoot = graph.root;
+        }
+        else {
+            svgRoot = document.getElementById('root');
+        }
+        var newEdgeSvg = newEdge.getSVG();
+        graph.removeElement(this);
+        svgRoot.appendChild(newEdgeSvg);
+        var dontDrawPath = (type !== 'Edge');
+        newEdge.redraw(newEdge.$sNode, dontDrawPath);
+        newEdge.redraw(newEdge.$tNode, dontDrawPath);
+        EventBus_1.EventBus.register(newEdge, newEdgeSvg);
+        this.sourceInfo = undefined;
+        this.targetInfo = undefined;
+        return newEdge;
+    };
+    Association.prototype.redraw = function (startNode, dontDrawPoints) {
+        if (!startNode) {
+            return;
+        }
+        var endPoint;
+        var recalcPoint;
+        var endPointIdx;
+        if (this.$sNode.id === startNode.id) {
+            recalcPoint = this.$points[0];
+            endPointIdx = 1;
+        }
+        else if (this.$tNode.id === startNode.id) {
+            recalcPoint = this.$points[this.$points.length - 1];
+            endPointIdx = this.$points.length - 2;
+        }
+        endPoint = this.$points[endPointIdx];
+        this.calcIntersection(startNode, recalcPoint, endPoint);
+        if (this.$points.length > 2 && this.$tNode.id === startNode.id && endPoint.y > (startNode.getPos().y + (startNode.getSize().y / 2))) {
+            this.$points.splice(endPointIdx, 1);
+        }
+        if (this.$tNode.id === startNode.id && this.$points.length === 2) {
+            this.calcIntersection(this.$sNode, endPoint, recalcPoint);
+        }
+        if (this.$points.length > 2 && this.$sNode.id === startNode.id && (startNode.getPos().y + (startNode.getSize().y / 2) > endPoint.y)) {
+            this.$points.splice(endPointIdx, 1);
+        }
+        if (this.$sNode.id === startNode.id && this.$points.length === 2) {
+            this.calcIntersection(this.$tNode, endPoint, recalcPoint);
+        }
+        if (!dontDrawPoints) {
+            this.redrawPointsAndInfo();
+        }
+    };
+    Association.prototype.getPath = function () {
+        if (this.$points.length === 0) {
+            return '';
+        }
+        var path = 'M';
+        for (var i = 0; i < this.$points.length; i++) {
+            var point = this.$points[i];
+            if (i > 0) {
+                path += 'L';
+            }
+            path += Math.floor(point.x) + ' ' + Math.floor(point.y) + ' ';
+        }
+        return path;
+    };
+    Association.prototype.calcInfoPosNew = function (infoTxt, node) {
+        if (!infoTxt || !node) {
+            return null;
+        }
+        var startPoint;
+        var nextToStartPoint;
+        if (this.$sNode.id === node.id) {
+            startPoint = this.$points[0];
+            nextToStartPoint = this.$points[1];
+        }
+        else if (this.$tNode.id === node.id) {
+            startPoint = this.$points[this.$points.length - 1];
+            nextToStartPoint = this.$points[this.$points.length - 2];
+        }
+        var direction = this.getDirectionOfPointToNode(node, startPoint);
+        var x;
+        var y;
+        switch (direction) {
+            case 0:
+                if (startPoint.x >= nextToStartPoint.x) {
+                    x = startPoint.x + 5;
+                }
+                else {
+                    x = startPoint.x - (infoTxt.getSize().x);
+                }
+                y = startPoint.y + (infoTxt.getSize().y / 2);
+                break;
+            case 3:
+                if (startPoint.y >= nextToStartPoint.y) {
+                    y = startPoint.y + (infoTxt.getSize().y / 2);
+                }
+                else {
+                    y = startPoint.y - (infoTxt.getSize().y / 2) - 5;
+                }
+                x = startPoint.x - (infoTxt.getSize().x) - 5;
+                break;
+            case 2:
+                if (startPoint.y >= nextToStartPoint.y) {
+                    y = startPoint.y + (infoTxt.getSize().y / 2);
+                }
+                else {
+                    y = startPoint.y - (infoTxt.getSize().y / 2) - 5;
+                }
+                x = startPoint.x + 5;
+                break;
+            case 1:
+                if (startPoint.x >= nextToStartPoint.x) {
+                    x = startPoint.x + 5;
+                }
+                else {
+                    x = startPoint.x - (infoTxt.getSize().x);
+                }
+                y = startPoint.y - (infoTxt.getSize().y / 2) - 5;
+                break;
+            default:
+                break;
+        }
+        return new BaseElements_1.Point(x, y);
+    };
+    Association.prototype.clearPoints = function () {
+        this.$points = [];
+        this.$points = [];
+    };
+    Association.prototype.addPoint = function (x, y) {
+        this.$points.push(new BaseElements_1.Point(x, y));
+        return this.$points;
+    };
+    Association.prototype.redrawPointsAndInfo = function () {
+        var path = this.getPath();
+        this.$pathSvg.setAttributeNS(null, 'd', path);
+        this.$pathWideSvg.setAttributeNS(null, 'd', path);
+        this.redrawSourceInfo();
+        this.redrawTargetInfo();
+    };
+    Association.prototype.redrawSourceInfo = function () {
+        if (this.sourceInfo) {
+            var newPosOfSrc = this.calcInfoPosNew(this.sourceInfo, this.$sNode);
+            this.sourceInfo.redrawFromEdge(newPosOfSrc);
+        }
+    };
+    Association.prototype.redrawTargetInfo = function () {
+        if (this.targetInfo) {
+            var newPosOfTarget = this.calcInfoPosNew(this.targetInfo, this.$tNode);
+            this.targetInfo.redrawFromEdge(newPosOfTarget);
+        }
+    };
+    Association.prototype.getDirectionOfPointToNode = function (node, pointNearNode) {
+        var x1 = node.getPos();
+        var x2 = new BaseElements_1.Point((x1.x + node.getSize().x), (x1.y + node.getSize().y));
+        var direction = 1;
+        if (x1.y >= pointNearNode.y) {
+            direction = 1;
+        }
+        if (x2.y <= pointNearNode.y) {
+            direction = 0;
+        }
+        if (x1.x >= pointNearNode.x) {
+            direction = 3;
+        }
+        if (x2.x <= pointNearNode.x) {
+            direction = 2;
+        }
+        return direction;
+    };
+    Association.prototype.updateCardinality = function (node, infoText, cardinality) {
+        if (!infoText) {
+            infoText = new InfoText_1.InfoText({ 'cardinality': cardinality });
+            infoText.$owner = this;
+            var calcPos = this.calcInfoPosNew(infoText, node);
+            infoText.withPos(calcPos.x, calcPos.y);
+            this.$view.appendChild(infoText.getSVG());
+            return infoText;
+        }
+        infoText.cardinality = cardinality;
+        if (infoText.isEmpty()) {
+            this.$view.removeChild(infoText.$view);
+            return undefined;
+        }
+        infoText.updateCardinality(cardinality);
+        return infoText;
+    };
+    Association.prototype.updateProperty = function (node, infoText, property) {
+        if (!infoText) {
+            infoText = new InfoText_1.InfoText({ 'property': property });
+            infoText.$owner = this;
+            var calcPos = this.calcInfoPosNew(infoText, node);
+            infoText.withPos(calcPos.x, calcPos.y);
+            this.$view.appendChild(infoText.getSVG());
+            return infoText;
+        }
+        infoText.property = property;
+        if (infoText.isEmpty()) {
+            this.$view.removeChild(infoText.$view);
+            return undefined;
+        }
+        infoText.updateProperty(property);
+        return infoText;
+    };
+    Association.prototype.calcIntersection = function (startNode, recalcPoint, endPoint) {
+        var h = startNode.getSize().y;
+        var w = startNode.getSize().x;
+        var x1 = startNode.getPos().x + (w / 2);
+        var y1 = startNode.getPos().y + (h / 2);
+        var x2 = endPoint.x;
+        var y2 = endPoint.y;
+        var newX = recalcPoint.x;
+        var newY = recalcPoint.y;
+        if (x2 > x1) {
+            newX = x1 + (w / 2);
+        }
+        else if (x2 < x1) {
+            newX = x1 - (w / 2);
+        }
+        else {
+            newX = x1;
+        }
+        if ((x2 - x1) !== 0) {
+            newY = ((y2 - y1) / (x2 - x1) * (newX - x1)) + y1;
+        }
+        else {
+            if (y1 > y2) {
+                newY = startNode.getPos().y;
+            }
+            else {
+                newY = startNode.getPos().y + h;
+            }
+        }
+        if (!((y1 - (h / 2) <= newY) && newY <= y1 + (h / 2))) {
+            if (y2 > y1) {
+                newY = y1 + (h / 2);
+            }
+            else {
+                newY = y1 - (h / 2);
+            }
+            if ((x2 - x1) !== 0) {
+                var tmp = ((y2 - y1) / (x2 - x1));
+                newX = (newY + (tmp * x1) - y1) / tmp;
+            }
+            else {
+                newX = x1;
+            }
+        }
+        recalcPoint.x = Math.ceil(newX);
+        recalcPoint.y = Math.ceil(newY);
+        return null;
+    };
+    return Association;
+}(BaseElements_1.DiagramElement));
+exports.Association = Association;
+
+
+/***/ }),
+/* 13 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var controls = __webpack_require__(5);
+var adapters = __webpack_require__(23);
+var Data_1 = __webpack_require__(7);
+var Control_1 = __webpack_require__(3);
+var Adapter_1 = __webpack_require__(24);
+var Graph_1 = __webpack_require__(8);
+var util_1 = __webpack_require__(0);
+var Bridge = (function (_super) {
+    __extends(Bridge, _super);
+    function Bridge(viewRoot) {
+        var _this = _super.call(this) || this;
+        _this.controlFactory = {};
+        _this.adapterFactory = {};
+        _this.controls = {};
+        _this.adapters = {};
+        _this.items = {};
+        _this.controlNo = 1;
+        _this.online = true;
+        _this.language = navigator.language.toUpperCase();
+        _this.addListener = function (listener) {
+            this.listener.push(listener);
+        };
+        var i;
+        if (viewRoot) {
+            _this.$view = viewRoot;
+        }
+        var keys = Object.keys(adapters);
+        for (i = 0; i < keys.length; i++) {
+            var child = adapters[keys[i]];
+            if (child && child.id) {
+                _this.adapterFactory[child.id.toLowerCase()] = child;
+            }
+        }
+        keys = Object.keys(controls);
+        for (i = 0; i < keys.length; i++) {
+            _this.addControl(controls[keys[i]]);
+        }
+        _this.addControl(Graph_1.Graph);
+        var that = _this;
+        window.addEventListener('load', function () {
+            var updateOnlineStatus = function updateOnlineStatus() {
+                that.setOnline(navigator.onLine);
+            };
+            window.addEventListener('online', updateOnlineStatus);
+            window.addEventListener('offline', updateOnlineStatus);
+        });
+        return _this;
+    }
+    Bridge.prototype.setOnline = function (value) {
+        this.online = value;
+        if (this.toolBar.children[0]) {
+            this.toolBar.children[0].className = value ? 'online' : 'offline';
+        }
+    };
+    Bridge.prototype.addToolbar = function () {
+        if (this.toolBar) {
+            return false;
+        }
+        this.toolBar = document.createElement('div');
+        this.toolBar.className = 'onlineStatus';
+        var child = document.createElement('div');
+        child.className = 'online';
+        this.toolBar.appendChild(child);
+        child = document.createElement('div');
+        child.className = 'lang';
+        child.innerHTML = this.language;
+        this.toolBar.appendChild(child);
+        var body = document.getElementsByTagName('body')[0];
+        body.insertBefore(this.toolBar, body.firstChild);
+        this.setOnline(this.online);
+        return true;
+    };
+    Bridge.prototype.addControl = function (control) {
+        if (control && control.name) {
+            this.controlFactory[control.name.toLowerCase()] = control;
+        }
+    };
+    Bridge.prototype.getId = function () {
+        return 'control' + (this.controlNo++);
+    };
+    Bridge.prototype.adapterUpdate = function (message) {
+        var keys = Object.keys(this.adapters);
+        if (keys.length > 0) {
+            var i = void 0;
+            for (i = 0; i < keys.length; i++) {
+                var adapterList = this.adapters[keys[i]];
+                if (adapterList instanceof Adapter_1.Adapter) {
+                    adapterList.update(message);
+                }
+                else {
+                    for (var _i = 0, adapterList_1 = adapterList; _i < adapterList_1.length; _i++) {
+                        var adapter = adapterList_1[_i];
+                        adapter.update(message);
+                    }
+                }
+            }
+        }
+    };
+    Bridge.prototype.load = function (json, owner) {
+        var config = {}, className, id;
+        if (typeof (json) === 'string') {
+            config['id'] = '' + json;
+            var item = document.getElementById(config['id']);
+            var className_1;
+            if (item) {
+                className_1 = item.getAttribute('class');
+                if (!className_1) {
+                    className_1 = item.getAttribute('classname') || '';
+                }
+                if (item.getAttribute('property')) {
+                    if (this.hasItem(item.getAttribute('property'))) {
+                        var data = this.getItem(item.getAttribute('property'));
+                        for (var key in data.prop) {
+                            if (item.getAttribute(key)) {
+                                data.setValue(key, item.getAttribute(key));
+                            }
+                        }
+                        if (item.getAttribute('property')) {
+                        }
+                    }
+                }
+            }
+            else {
+                className_1 = '' + json;
+            }
+            className_1 = className_1.toLowerCase();
+            config['className'] = className_1;
+        }
+        else {
+            config = json;
+        }
+        if (!config['id']) {
+            config['id'] = this.getId();
+        }
+        if (!config['className'] && (config['type'] === 'clazzdiagram' || config['type'] === 'objectdiagram')) {
+            config['className'] = 'graph';
+        }
+        className = config['className'] || config['class'];
+        className = className.toLocaleLowerCase();
+        id = config['id'];
+        if ((config['prop'] || config['upd'] || config['rem']) && this.controls[id] === null) {
+            var newData = !this.hasItem(config['id']);
+            var item = this.getItem(config['id']);
+            if (newData) {
+                for (var i in this.controls) {
+                    if (this.controls.hasOwnProperty(i) === false) {
+                        continue;
+                    }
+                    this.controls[i].addItem(this, item);
+                }
+            }
+            item.addProperties(config);
+            this.adapterUpdate(JSON.stringify(config));
+            return item;
+        }
+        var control;
+        if (this.controls[id]) {
+            control = this.controls[id];
+            control.initControl(json);
+            this.adapterUpdate(JSON.stringify(config));
+            return control;
+        }
+        if (typeof (this.controlFactory[className]) === 'object' || typeof (this.controlFactory[className]) === 'function') {
+            var obj = this.controlFactory[className];
+            control = new obj(json);
+            util_1.Util.initControl(owner || this, control, config['property'], id, json);
+            if (control.id) {
+                this.controls[control.id] = control;
+            }
+            else {
+                this.controls[id] = control;
+            }
+            if (typeof control.getSVG === 'function' && typeof control.getSize === 'function') {
+                var size = control.getSize();
+                var svg = util_1.Util.createShape({
+                    tag: 'svg',
+                    id: 'root',
+                    width: size.x,
+                    height: size.y
+                });
+                var view = control.getSVG();
+                svg.appendChild(view);
+                document.getElementsByTagName('body')[0].appendChild(svg);
+            }
+            return control;
+        }
+        return null;
+    };
+    Bridge.prototype.hasItem = function (id) {
+        if (this.items[id] !== undefined) {
+            return true;
+        }
+        id = id.split('.')[0];
+        return (this.items[id] !== undefined);
+    };
+    Bridge.prototype.getItems = function () {
+        return this.items;
+    };
+    Bridge.prototype.getItem = function (id) {
+        var item = this.items[id];
+        if (!item) {
+            id = id.split('.')[0];
+            item = this.items[id];
+            if (!item) {
+                item = new Data_1.default();
+                item.id = id;
+                this.items[id] = item;
+            }
+        }
+        return item;
+    };
+    Bridge.prototype.setValue = function (object, attribute, newValue, oldValue) {
+        alert('Bridge.setValue: oldVal:' + oldValue + ', newVal: ' + +newValue + ', attribute: ' + attribute + ', object: ' + JSON.stringify(object));
+        var obj;
+        var id;
+        if (object instanceof String || typeof object === 'string') {
+            id = object.toString();
+            obj = this.getItem(id);
+        }
+        else if (object instanceof Data_1.default) {
+            obj = object;
+            id = object.id;
+        }
+        else if (object.hasOwnProperty('id')) {
+            obj = object;
+            id = object['id'];
+        }
+        else {
+            console.log('object is neither Data nor String..');
+            return false;
+        }
+        if (obj) {
+            obj.setValue(attribute, newValue);
+        }
+        return true;
+    };
+    Bridge.prototype.getValue = function (object, attribute) {
+        var obj;
+        var id;
+        if (object instanceof String || typeof object === 'string') {
+            id = object.toString();
+            obj = this.getItem(id);
+        }
+        else if (object.hasOwnProperty('id')) {
+            obj = object;
+        }
+        else {
+            console.log('object is neither Data nor String..');
+            return;
+        }
+        if (obj) {
+            if (obj.hasOwnProperty(attribute)) {
+                return obj[attribute];
+            }
+            else if (obj instanceof Data_1.default) {
+                return obj.getValue(attribute);
+            }
+            else {
+                return null;
+            }
+        }
+    };
+    Bridge.prototype.getNumber = function (object, attribute, defaultValue) {
+        if (defaultValue === void 0) { defaultValue = 0; }
+        var res = this.getValue(object, attribute);
+        if (typeof res === 'number') {
+            return res;
+        }
+        else if (typeof res === 'string') {
+            var value = Number(res);
+            if (value || value === 0) {
+                return value;
+            }
+        }
+        return defaultValue;
+    };
+    Bridge.prototype.getControl = function (controlId) {
+        return this.controls[controlId];
+    };
+    Bridge.prototype.registerListener = function (eventType, control, callBackfunction) {
+        if (typeof control === 'string') {
+            control = this.getControl(control);
+        }
+        if (!control) {
+            return null;
+        }
+        if (eventType) {
+            eventType = eventType.toLowerCase();
+        }
+        control.registerListenerOnHTMLObject(eventType);
+        if (callBackfunction) {
+            var adapter = new DelegateAdapter();
+            adapter.callBackfunction = callBackfunction;
+            adapter.id = control.getId();
+            this.addAdapter(adapter, eventType);
+        }
+        return control;
+    };
+    Bridge.prototype.addAdapter = function (adapter, eventType) {
+        if (!eventType) {
+            eventType = '';
+        }
+        var result;
+        if (adapter instanceof String) {
+            var obj = this.adapterFactory[adapter.toLowerCase()];
+            result = new obj();
+        }
+        else {
+            result = adapter;
+        }
+        var handlers = this.adapters[eventType];
+        if (handlers === null || handlers === undefined) {
+            handlers = [];
+            this.adapters[eventType] = handlers;
+        }
+        handlers.push(result);
+        return result;
+    };
+    Bridge.prototype.fireEvent = function (evt) {
+        var handlers = this.adapters[''];
+        if (handlers) {
+            for (var i = 0; i < handlers.length; i++) {
+                var adapter = handlers[i];
+                if (adapter.id === null || adapter.id === evt['id']) {
+                    adapter.update(evt);
+                }
+            }
+        }
+        handlers = this.adapters[evt['eventType']];
+        if (handlers) {
+            for (var i = 0; i < handlers.length; i++) {
+                var adapter = handlers[i];
+                if (adapter.id === null || adapter.id === evt['id']) {
+                    adapter.update(evt);
+                }
+            }
+        }
+    };
+    Bridge.version = '0.42.01.1601007-1739';
+    return Bridge;
+}(Control_1.Control));
+exports.Bridge = Bridge;
+var DelegateAdapter = (function (_super) {
+    __extends(DelegateAdapter, _super);
+    function DelegateAdapter() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    DelegateAdapter.prototype.update = function (evt) {
+        if (this.adapter) {
+            this.adapter.update(evt);
+            return true;
+        }
+        else if (this.callBackfunction) {
+            return this.executeFunction(this.callBackfunction, evt);
+        }
+        return false;
+    };
+    DelegateAdapter.prototype.setAdapter = function (adapter) {
+        this.adapter = adapter;
+        return true;
+    };
+    DelegateAdapter.prototype.executeFunction = function (strValue, evt) {
+        var scope = window;
+        var scopeSplit = strValue.split('.');
+        for (var i = 0; i < scopeSplit.length - 1; i++) {
+            scope = scope[scopeSplit[i]];
+            if (scope === undefined) {
+                return false;
+            }
+        }
+        var fn = scope[scopeSplit[scopeSplit.length - 1]];
+        if (typeof fn === 'function') {
+            fn.call(scope);
+            return true;
+        }
+        else {
+            window['callBack1'].update(evt);
+        }
+        return false;
+    };
+    return DelegateAdapter;
+}(Adapter_1.Adapter));
+exports.DelegateAdapter = DelegateAdapter;
+
+
+/***/ }),
+/* 14 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var Control_1 = __webpack_require__(3);
+var AutoComplete = (function (_super) {
+    __extends(AutoComplete, _super);
+    function AutoComplete() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    AutoComplete.prototype.load = function (json, owner) {
+        this.createControl(this.$owner, json);
+    };
+    AutoComplete.prototype.createControl = function (parent, data) {
+        if (typeof (data) === 'string') {
+            this.id = data;
+        }
+        else {
+            this.id = data['id'];
+        }
+        var div = document.createElement('div');
+        this.$view = div;
+        this.$inputField = document.createElement('input');
+        this.$dataList = document.createElement("datalist");
+        this.$dataList.id = "data_" + this.id;
+        this.$inputField.setAttribute("list", "data_" + this.id);
+        if (data["value"]) {
+            var values = data["value"];
+            this.isMultiple = data["multiple"] != null;
+            var option = void 0;
+            if (this.isMultiple) {
+                this.$selected = document.createElement("select");
+                this.$selected.className = "hide";
+                this.$selected.multiple = true;
+                this.$selected.id = this.id;
+                this.$items = document.createElement("div");
+                this.$items.className = "selectedList";
+                div.appendChild(this.$items);
+                this.$inputField.className = "selectedInput";
+                div.appendChild(this.$selected);
+                this.$view["style"].setProperty("float", "left");
+                var that_1 = this;
+                this.$inputField.oninput = function () { that_1.onChange(); };
+            }
+            else {
+                this.$inputField.id = this.id;
+            }
+            for (var attr in values) {
+                if (!values.hasOwnProperty(attr)) {
+                    continue;
+                }
+                option = document.createElement("option");
+                option.value = values[attr];
+                this.$dataList.appendChild(option);
+                if (this.isMultiple) {
+                    option = document.createElement("option");
+                    option.value = values[attr];
+                    option.innerHTML = values[attr];
+                    this.$selected.appendChild(option);
+                }
+            }
+            div.appendChild(this.$inputField);
+            div.appendChild(this.$dataList);
+        }
+        if (data instanceof Object) {
+            for (var attr in data) {
+                if (!data.hasOwnProperty(attr)) {
+                    continue;
+                }
+                this.$view.setAttribute(attr, data[attr]);
+            }
+            if (this.isMultiple) {
+                div.appendChild(this.$selected);
+            }
+        }
+        parent.appendChild(this);
+    };
+    AutoComplete.prototype.onChange = function () {
+        var textValue = this.$inputField.value;
+        if (textValue.length < 1) {
+            return;
+        }
+        var _loop_1 = function (i) {
+            var item = this_1.$selected.children[i];
+            if (item.value == textValue) {
+                if (item.selected == false) {
+                    item.selected = true;
+                    item.defaultSelected = true;
+                    var test_1 = document.createElement("li");
+                    var that_2 = this_1;
+                    test_1.onclick = function () { that_2.onDelete(item.value, test_1); };
+                    test_1.className = "selectedItem";
+                    test_1.innerHTML = item.value;
+                    this_1.$items.appendChild(test_1);
+                    this_1.$inputField.value = "";
+                }
+            }
+        };
+        var this_1 = this;
+        for (var i = 0; i < this.$selected.children.length; i++) {
+            _loop_1(i);
+        }
+    };
+    AutoComplete.prototype.onDelete = function (value, selectedItem) {
+        this.$items.removeChild(selectedItem);
+        for (var i = 0; i < this.$selected.children.length; i++) {
+            var item = this.$selected.children[i];
+            if (item.value == value) {
+                if (item.selected) {
+                    item.selected = false;
+                }
+            }
+        }
+    };
+    return AutoComplete;
+}(Control_1.Control));
+exports.AutoComplete = AutoComplete;
+
+
+/***/ }),
+/* 15 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var Control_1 = __webpack_require__(3);
+var BR = (function (_super) {
+    __extends(BR, _super);
+    function BR() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    BR.prototype.load = function (json) {
+        this.createControl(this.$owner, json);
+    };
+    BR.prototype.createControl = function (parent, data) {
+        this.$view = document.createElement('br');
+        for (var attr in data) {
+            if (!data.hasOwnProperty(attr)) {
+                continue;
+            }
+            this.$view.setAttribute(attr, data[attr]);
+        }
+        parent.appendChild(this);
+    };
+    return BR;
+}(Control_1.Control));
+exports.BR = BR;
+
+
+/***/ }),
+/* 16 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var Control_1 = __webpack_require__(3);
+var Div = (function (_super) {
+    __extends(Div, _super);
+    function Div() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    Div.prototype.load = function (data) {
+        var id;
+        if (typeof (data) === 'string') {
+            id = data;
+        }
+        else {
+            id = data.id;
+            this.className = data.class;
+            this.property = data.property;
+        }
+        if (!id) {
+            return;
+        }
+        this.id = id;
+        var div = document.getElementById(id);
+        if (!this.property) {
+            this.property = div.getAttribute('Property');
+        }
+        if (div instanceof HTMLDivElement) {
+            this.$view = div;
+        }
+        else {
+            if (!div) {
+                this.$view = document.createElement('div');
+                this.$view.setAttribute('id', this.id);
+                this.$view.setAttribute('property', this.property);
+                this.$owner.appendChild(this);
+            }
+            else {
+                return;
+            }
+        }
+        if (data.hasOwnProperty('property')) {
+            this.setProperty(data['property']);
+        }
+    };
+    Div.prototype.addItem = function (source, entity) {
+        this.$model = entity;
+        if (entity) {
+            if (!this.className || entity.hasProperty(this.className)) {
+                if (entity.id === this.property.split('.')[0]) {
+                    entity.addListener(this, this.className);
+                }
+            }
+        }
+    };
+    Div.prototype.updateElement = function (property, oldValue, newValue) {
+        this.$view.innerHTML = newValue;
+    };
+    return Div;
+}(Control_1.Control));
+exports.Div = Div;
+
+
+/***/ }),
+/* 17 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var Control_1 = __webpack_require__(3);
+var Label = (function (_super) {
+    __extends(Label, _super);
+    function Label() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    Label.prototype.load = function (data) {
+        this.createControl(this.$owner, data);
+    };
+    Label.prototype.createControl = function (parent, data) {
+        this.$view = document.createElement('label');
+        for (var attr in data) {
+            if (!data.hasOwnProperty(attr)) {
+                continue;
+            }
+            if (attr === 'textContent') {
+                this.$view.textContent = data['textContent'];
+            }
+            else {
+                this.$view.setAttribute(attr, data[attr]);
+            }
+        }
+        parent.appendChild(this);
+    };
+    return Label;
+}(Control_1.Control));
+exports.Label = Label;
+
+
+/***/ }),
+/* 18 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var Node_1 = __webpack_require__(6);
+var EventBus_1 = __webpack_require__(1);
+var util_1 = __webpack_require__(0);
+var Attribute_1 = __webpack_require__(19);
+var Method_1 = __webpack_require__(20);
+var Clazz = (function (_super) {
+    __extends(Clazz, _super);
+    function Clazz(json) {
+        var _this = _super.call(this, json) || this;
+        _this.attributes = [];
+        _this.methods = [];
+        _this.$labelHeight = 25;
+        _this.$labelFontSize = 14;
+        _this.$attrHeight = 25;
+        _this.$attrFontSize = 12;
+        return _this;
+    }
+    Clazz.prototype.load = function (json) {
+        if (!json) {
+            json = {};
+        }
+        var y = this.$labelHeight;
+        var labelObj = json.name || json.id || ('New ' + this.property);
+        var width = 150;
+        width = Math.max(width, util_1.Util.sizeOf(labelObj).width + 60);
+        if (json['attributes']) {
+            for (var _i = 0, _a = json['attributes']; _i < _a.length; _i++) {
+                var attr = _a[_i];
+                var attrObj = new Attribute_1.default(attr);
+                attrObj.$owner = this;
+                this.attributes.push(attrObj);
+                y += this.$attrHeight;
+                width = Math.max(width, util_1.Util.sizeOf(attrObj.toString()).width);
+            }
+        }
+        if (json['methods']) {
+            for (var _b = 0, _c = json['methods']; _b < _c.length; _b++) {
+                var method = _c[_b];
+                var methodObj = new Method_1.default(method);
+                methodObj.$owner = this;
+                this.methods.push(methodObj);
+                y += this.$attrHeight;
+                width = Math.max(width, util_1.Util.sizeOf(methodObj.toString()).width);
+            }
+            y += this.$attrHeight;
+        }
+        this.withSize(width, y);
+    };
+    Clazz.prototype.getAttributes = function () {
+        return this.attributes;
+    };
+    Clazz.prototype.getMethods = function () {
+        return this.methods;
+    };
+    Clazz.prototype.getSVG = function () {
+        var pos = this.getPos();
+        var size = this.getSize();
+        var group = this.createShape({ tag: 'g', id: this.id, class: 'SVGClazz', transform: 'translate(0 0)' });
+        var options = null;
+        var style;
+        var clazzName;
+        if (this.$owner['options']) {
+            var options_1 = this.$owner['options'];
+            if (options_1) {
+                style = options_1.style;
+            }
+        }
+        if (style === 'modern') {
+            clazzName = 'ClazzHeader';
+        }
+        clazzName = 'ClazzHeader';
+        var nodeShape = this.createShape({
+            tag: 'rect',
+            x: pos.x,
+            y: pos.y,
+            height: size.y,
+            width: size.x,
+            rx: 5,
+            ry: 5,
+            fill: 'none',
+            stroke: 'black',
+            'stroke-width': 1
+        });
+        if (clazzName) {
+            nodeShape.setAttribute('className', clazzName);
+            var styleHeader = util_1.Util.getStyle('ClazzHeader');
+        }
+        var label = this.createShape({
+            tag: 'text',
+            x: pos.x + size.x / 2,
+            y: pos.y + this.$labelHeight / 2,
+            'text-anchor': 'middle',
+            'alignment-baseline': 'central',
+            'font-family': 'Verdana',
+            'font-size': this.$labelFontSize,
+            fill: 'black'
+        });
+        label.textContent = this.id;
+        this.$labelView = label;
+        group.appendChild(nodeShape);
+        group.appendChild(label);
+        if (this.attributes.length > 0) {
+            var separatorLabelAttr = this.createShape({
+                tag: 'line',
+                x1: pos.x,
+                y1: pos.y + this.$labelHeight,
+                x2: pos.x + size.x,
+                y2: pos.y + this.$labelHeight,
+                'stroke-width': 1
+            });
+            group.appendChild(separatorLabelAttr);
+            var groupOfAttributes = this.createShape({ tag: 'g', id: (this.id + 'Attributes') });
+            groupOfAttributes.setAttributeNS(null, 'class', 'SVGClazzProperty SVGClazzAttribute');
+            group.appendChild(groupOfAttributes);
+            var y_1 = pos.y + this.$labelHeight + this.$attrHeight / 2;
+            for (var _i = 0, _a = this.attributes; _i < _a.length; _i++) {
+                var attr = _a[_i];
+                var attrSvg = attr.getSVG();
+                attr.$owner = this;
+                attrSvg.setAttributeNS(null, 'x', '' + (pos.x + 10));
+                attrSvg.setAttributeNS(null, 'y', '' + y_1);
+                groupOfAttributes.appendChild(attrSvg);
+                y_1 += this.$attrHeight;
+            }
+        }
+        var height = this.attributes.length * this.$attrHeight;
+        var y = pos.y + this.$labelHeight + height + this.$attrHeight / 2;
+        if (this.methods.length > 0) {
+            var separatorAttrMethods = this.createShape({
+                tag: 'line',
+                x1: pos.x,
+                y1: pos.y + this.$labelHeight + (this.$attrHeight * this.attributes.length),
+                x2: pos.x + size.x,
+                y2: pos.y + this.$labelHeight + (this.$attrHeight * this.attributes.length),
+                'stroke-width': 1
+            });
+            group.appendChild(separatorAttrMethods);
+            var groupOfMethods = this.createShape({ tag: 'g', id: (this.id + 'Methods') });
+            groupOfMethods.setAttributeNS(null, 'class', 'SVGClazzProperty SVGClazzMethod');
+            group.appendChild(groupOfMethods);
+            y += this.$attrHeight / 2;
+            for (var _b = 0, _c = this.methods; _b < _c.length; _b++) {
+                var method = _c[_b];
+                var methodSvg = method.getSVG();
+                method.$owner = this;
+                methodSvg.setAttributeNS(null, 'x', '' + (pos.x + 10));
+                methodSvg.setAttributeNS(null, 'y', '' + y);
+                groupOfMethods.appendChild(methodSvg);
+                y += this.$attrHeight;
+            }
+        }
+        this.$view = group;
+        return group;
+    };
+    Clazz.prototype.copy = function () {
+        var copy;
+        copy = _super.prototype.copy.call(this);
+        copy.id = this.id + 'Copy';
+        this.attributes.forEach(function (attr) {
+            copy.attributes.push(new Attribute_1.default(attr.toString()));
+        });
+        this.methods.forEach(function (method) {
+            copy.methods.push(new Method_1.default(method.toString()));
+        });
+        copy.reCalcSize();
+        return copy;
+    };
+    Clazz.prototype.getEvents = function () {
+        return [EventBus_1.EventBus.ELEMENTMOUSEDOWN, EventBus_1.EventBus.ELEMENTMOUSEMOVE, EventBus_1.EventBus.ELEMENTCLICK,
+            EventBus_1.EventBus.ELEMENTDRAG, EventBus_1.EventBus.ELEMENTDBLCLICK, EventBus_1.EventBus.OPENPROPERTIES, EventBus_1.EventBus.RELOADPROPERTIES];
+    };
+    Clazz.prototype.addProperty = function (value, type) {
+        if (!this[type] || !value || value.length === 0) {
+            return;
+        }
+        var extractedValue;
+        if (type === 'attributes') {
+            extractedValue = new Attribute_1.default(value);
+        }
+        else if (type === 'methods') {
+            extractedValue = new Method_1.default(value);
+        }
+        for (var _i = 0, _a = this[type]; _i < _a.length; _i++) {
+            var valueOfType = _a[_i];
+            if (valueOfType.toString() === extractedValue.toString()) {
+                alert(extractedValue.toString() + ' already exists.');
+                extractedValue = undefined;
+                return;
+            }
+        }
+        this[type].push(extractedValue);
+        util_1.Util.saveToLocalStorage(this.$owner);
+        return extractedValue;
+    };
+    Clazz.prototype.addAttribute = function (value) {
+        return this.addProperty(value, 'attributes');
+    };
+    Clazz.prototype.addAttributeObj = function (attr) {
+        this.attributes.push(attr);
+        return this.getAttributes();
+    };
+    Clazz.prototype.addMethodObj = function (method) {
+        this.methods.push(method);
+        return this.getMethods();
+    };
+    Clazz.prototype.addMethod = function (value) {
+        return this.addProperty(value, 'methods');
+    };
+    Clazz.prototype.removeAttribute = function (attr) {
+        var idx = this.attributes.indexOf(attr);
+        this.attributes.splice(idx, 1);
+    };
+    Clazz.prototype.removeMethod = function (method) {
+        var idx = this.methods.indexOf(method);
+        this.methods.splice(idx, 1);
+    };
+    Clazz.prototype.removeProperty = function (property) {
+        if (property instanceof Attribute_1.default) {
+            this.removeAttribute(property);
+        }
+        if (property instanceof Method_1.default) {
+            this.removeMethod(property);
+        }
+        util_1.Util.saveToLocalStorage(this.$owner);
+    };
+    Clazz.prototype.reDraw = function (drawOnlyIfSizeChanged) {
+        var hasSizeChanged = this.hasSizeChanged();
+        if (drawOnlyIfSizeChanged) {
+            if (!hasSizeChanged[0]) {
+                return;
+            }
+        }
+        if (!this.$view) {
+            return;
+        }
+        this.$owner.$view.removeChild(this.$view);
+        var newSvg = this.getSVG();
+        this.$owner.$view.appendChild(newSvg);
+        this.$view = newSvg;
+        EventBus_1.EventBus.register(this, newSvg);
+        this.redrawEdges();
+    };
+    Clazz.prototype.hasSizeChanged = function () {
+        var oldSize = { width: this.getSize().x, height: this.getSize().y };
+        var newSize = this.reCalcSize();
+        if (oldSize.width === newSize.width && oldSize.height === newSize.height) {
+            return [false, newSize];
+        }
+        return [true, newSize];
+    };
+    Clazz.prototype.updateLabel = function (newLabel) {
+        var _this = this;
+        if (this.$labelView) {
+            this.$labelView.textContent = newLabel;
+        }
+        this.$edges.forEach(function (edge) {
+            if (_this.id === edge.$sNode.id) {
+                edge.source = newLabel;
+            }
+            else if (_this.id === edge.$tNode.id) {
+                edge.target = newLabel;
+            }
+        });
+        util_1.Util.saveToLocalStorage(this.$owner);
+        this.reDraw(true);
+    };
+    Clazz.prototype.updateModifier = function (modifier) {
+        this.modifier = modifier;
+        util_1.Util.saveToLocalStorage(this.$owner);
+    };
+    Clazz.prototype.reCalcSize = function () {
+        var newWidth = 150;
+        newWidth = Math.max(newWidth, util_1.Util.sizeOf(this.id).width + 30);
+        this.attributes.forEach(function (attrEl) {
+            var widthOfAttr;
+            if (attrEl.$view) {
+                widthOfAttr = attrEl.$view.getBoundingClientRect().width;
+            }
+            else {
+                widthOfAttr = util_1.Util.sizeOf(attrEl.toString()).width;
+            }
+            newWidth = Math.max(newWidth, widthOfAttr + 15);
+        });
+        this.methods.forEach(function (methodEl) {
+            var widthOfMethod;
+            if (methodEl.$view) {
+                widthOfMethod = methodEl.$view.getBoundingClientRect().width;
+            }
+            else {
+                widthOfMethod = util_1.Util.sizeOf(methodEl.toString()).width;
+            }
+            newWidth = Math.max(newWidth, widthOfMethod + 15);
+        });
+        this.getSize().x = newWidth;
+        this.getSize().y = this.$labelHeight + ((this.attributes.length + this.methods.length) * this.$attrHeight)
+            + this.$attrHeight;
+        var newSize = { width: newWidth, height: this.getSize().y };
+        return newSize;
+    };
+    Clazz.prototype.redrawEdges = function () {
+        for (var _i = 0, _a = this.$edges; _i < _a.length; _i++) {
+            var edge = _a[_i];
+            edge.redraw(this);
+        }
+    };
+    Clazz.prototype.getModernStyle = function () {
+        var width, height, id, size, z, item, rect, g, board, styleHeader, headerHeight, x, y;
+        board = this.getRoot()['board'];
+        styleHeader = util_1.Util.getStyle('ClazzHeader');
+        headerHeight = styleHeader.getNumber('height');
+        width = 0;
+        height = 10 + headerHeight;
+        if (this.property === 'Object' || this.getRoot()['$graphModel'].getType().toLowerCase() === 'objectdiagram') {
+            id = this.id.charAt(0).toLowerCase() + this.id.slice(1);
+            item = 'Object';
+        }
+        else {
+            id = this.id;
+            item = 'Clazz';
+            if (this['counter']) {
+                id += ' (' + this['counter'] + ')';
+            }
+        }
+        g = util_1.Util.create({ tag: 'g', model: this });
+        size = util_1.Util.sizeOf(id, this);
+        width = Math.max(width, size.width);
+        if (this.attributes && this.attributes.length > 0) {
+            height = height + this.attributes.length * 25;
+            for (z = 0; z < this.attributes.length; z += 1) {
+                width = Math.max(width, util_1.Util.sizeOf(this.attributes[z], this).width);
+            }
+        }
+        else {
+            height += 20;
+        }
+        if (this.methods && this.methods.length > 0) {
+            height = height + this.methods.length * 25;
+            for (z = 0; z < this.methods.length; z += 1) {
+                width = Math.max(width, util_1.Util.sizeOf(this.methods[z], this).width);
+            }
+        }
+        width += 20;
+        var pos = this.getPos();
+        y = pos.y;
+        x = pos.x;
+        rect = {
+            tag: 'rect',
+            'width': width,
+            'height': height,
+            'x': x,
+            'y': y,
+            'class': item + ' draggable',
+            'fill': 'none'
+        };
+        g.appendChild(util_1.Util.create(rect));
+        g.appendChild(util_1.Util.create({
+            tag: 'rect',
+            rx: 0,
+            'x': x,
+            'y': y,
+            height: headerHeight,
+            'width': width,
+            'class': 'ClazzHeader'
+        }));
+        item = util_1.Util.create({
+            tag: 'text',
+            $font: true,
+            'class': 'InfoText',
+            'text-anchor': 'right',
+            'x': x + width / 2 - size.width / 2,
+            'y': y + (headerHeight / 2) + (size.height / 2),
+            'width': size.width
+        });
+        if (this.property === 'Object' || this.getRoot()['$graphModel'].type.toLowerCase() === 'objectdiagram') {
+            item.setAttribute('text-decoration', 'underline');
+        }
+        item.appendChild(document.createTextNode(id));
+        g.appendChild(item);
+        g.appendChild(util_1.Util.create({
+            tag: 'line',
+            x1: x,
+            y1: y + headerHeight,
+            x2: x + width,
+            y2: y + headerHeight,
+            stroke: '#000'
+        }));
+        y += headerHeight + 20;
+        if (this.attributes) {
+            for (z = 0; z < this.attributes.length; z += 1) {
+                g.appendChild(util_1.Util.create({
+                    tag: 'text',
+                    $font: true,
+                    'text-anchor': 'left',
+                    'width': width,
+                    'x': (x + 10),
+                    'y': y,
+                    value: this.attributes[z]
+                }));
+                y += 20;
+            }
+            if (this.attributes.length > 0) {
+                y -= 10;
+            }
+        }
+        if (this.methods && this.methods.length > 0) {
+            g.appendChild(util_1.Util.create({ tag: 'line', x1: x, y1: y, x2: x + width, y2: y, stroke: '#000' }));
+            y += 20;
+            for (z = 0; z < this.methods.length; z += 1) {
+                g.appendChild(util_1.Util.create({
+                    tag: 'text',
+                    $font: true,
+                    'text-anchor': 'left',
+                    'width': width,
+                    'x': x + 10,
+                    'y': y,
+                    value: this.methods[z]
+                }));
+                y += 20;
+            }
+        }
+        return g;
+    };
+    return Clazz;
+}(Node_1.Node));
+exports.Clazz = Clazz;
+
+
+/***/ }),
+/* 19 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var ClazzProperty_1 = __webpack_require__(10);
+var Attribute = (function (_super) {
+    __extends(Attribute, _super);
+    function Attribute(data) {
+        return _super.call(this, data) || this;
+    }
+    return Attribute;
+}(ClazzProperty_1.default));
+exports.default = Attribute;
+
+
+/***/ }),
+/* 20 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var util_1 = __webpack_require__(0);
+var ClazzProperty_1 = __webpack_require__(10);
+var Method = (function (_super) {
+    __extends(Method, _super);
+    function Method(data) {
+        return _super.call(this, data) || this;
+    }
+    Method.prototype.extractData = function (data) {
+        if (!data) {
+            return;
+        }
+        if (data.type) {
+            this.type = data.type;
+        }
+        if (data.name) {
+            this.name = data.name;
+        }
+        if (data.modifier) {
+            this.modifier = data.modifier;
+        }
+        if (typeof data === 'string') {
+            var dataSplitted = data.split(':');
+            if (dataSplitted && dataSplitted.length === 2) {
+                var modifierAndNameSplitted = dataSplitted[0].trim();
+                var firstChar = modifierAndNameSplitted[0];
+                if (firstChar === '+' || firstChar === '-' || firstChar === '#') {
+                    this.modifier = firstChar;
+                    this.name = modifierAndNameSplitted.substring(1, modifierAndNameSplitted.length).trim();
+                }
+                else {
+                    this.name = modifierAndNameSplitted;
+                }
+                this.type = dataSplitted[1].trim() || 'void';
+            }
+            else {
+                var modifierAndNameSplitted = data.trim();
+                var firstChar = modifierAndNameSplitted[0];
+                if (firstChar === '+' || firstChar === '-' || firstChar === '#') {
+                    this.modifier = firstChar;
+                    this.name = modifierAndNameSplitted.substring(1, modifierAndNameSplitted.length).trim();
+                }
+                else {
+                    this.name = modifierAndNameSplitted;
+                }
+                this.type = 'void';
+            }
+        }
+        if (!util_1.Util.includes(this.name, '(') && !util_1.Util.includes(this.name, ')')) {
+            this.name += '()';
+        }
+    };
+    return Method;
+}(ClazzProperty_1.default));
+exports.default = Method;
+
+
+/***/ }),
+/* 21 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var BaseElements_1 = __webpack_require__(2);
+var SO = (function (_super) {
+    __extends(SO, _super);
+    function SO() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    SO.create = function (element) {
+        var result = new SO();
+        for (var key in element) {
+            if (element.hasOwnProperty(key) === false) {
+                continue;
+            }
+            result.withKeyValue(key, element[key]);
+        }
+        return result;
+    };
+    SO.prototype.withKeyValue = function (key, value) {
+        if (key === 'typ') {
+            this.property = value;
+        }
+        else if (key === 'x') {
+            this.withPos(value, null);
+        }
+        else if (key === 'y') {
+            this.withPos(null, value);
+        }
+        else if (key === 'width') {
+            this.withSize(value, null);
+        }
+        else if (key === 'height') {
+            this.withSize(null, value);
+        }
+        else {
+            this[key] = value;
+        }
+        return this;
+    };
+    return SO;
+}(BaseElements_1.DiagramElement));
+exports.SO = SO;
+
+
+/***/ }),
 /* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -4741,7 +4890,7 @@ var StereoType = (function (_super) {
             'font-weight': 'bold',
             fill: 'black'
         });
-        label.textContent = this.label;
+        label.textContent = this.id;
         this.$labelView = label;
         var group = this.createShape({ tag: 'g', id: this.id, class: 'SVGClazz', transform: 'translate(0 0)' });
         group.appendChild(nodeShape);
@@ -4857,7 +5006,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var Association_1 = __webpack_require__(11);
+var Association_1 = __webpack_require__(12);
 var Generalisation = (function (_super) {
     __extends(Generalisation, _super);
     function Generalisation() {
@@ -5370,515 +5519,8 @@ exports.DagreLayoutMin = DagreLayoutMin;
 
 "use strict";
 
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
 Object.defineProperty(exports, "__esModule", { value: true });
-var edges = __webpack_require__(4);
-var PropertiesPanel;
-(function (PropertiesPanel) {
-    var PropertiesView;
-    (function (PropertiesView) {
-        PropertiesView["Clazz"] = "clazz";
-        PropertiesView["Edge"] = "edge";
-        PropertiesView["Clear"] = "clear";
-    })(PropertiesView = PropertiesPanel.PropertiesView || (PropertiesPanel.PropertiesView = {}));
-    var BlankView = (function () {
-        function BlankView(graph) {
-            this.graph = graph;
-            this.initMainPanel();
-        }
-        BlankView.prototype.show = function (panel, showTabWithValue) {
-            if (this.propertiesContent) {
-                while (this.propertiesContent.hasChildNodes()) {
-                    this.propertiesContent.removeChild(this.propertiesContent.childNodes[0]);
-                }
-            }
-            var children = panel.getPanel().childNodes;
-            while (children.length > 0) {
-                this.propertiesContent.appendChild(children[0]);
-            }
-            this.displayingPanel = panel;
-            if (showTabWithValue) {
-                panel.showTab(showTabWithValue);
-            }
-            else {
-                panel.showFirstTab();
-            }
-        };
-        BlankView.prototype.openProperties = function () {
-            this.isHidden = false;
-            document.getElementById('propertiesContent').className = 'properties';
-            document.getElementById('propertiesMasterPanel').className = 'propertiespanel';
-            var btn = document.getElementById('propClassHeaderButtonDisplay');
-            btn.innerHTML = '&#8897;';
-            btn.title = 'Hide properties';
-        };
-        BlankView.prototype.setPropertiesHeaderText = function (text) {
-            var divHeaderLabel = document.getElementById('classPropHeaderLabel');
-            if (divHeaderLabel) {
-                divHeaderLabel.innerHTML = text;
-            }
-        };
-        BlankView.prototype.getCurrentView = function () {
-            return this.displayingPanel.getPropertiesView();
-        };
-        BlankView.prototype.getCurrentPanel = function () {
-            return this.displayingPanel;
-        };
-        BlankView.prototype.initMainPanel = function () {
-            var _this = this;
-            if (document.getElementById('propertiesMasterPanel')) {
-                return;
-            }
-            this.propertiesMasterPanel = document.createElement('div');
-            this.propertiesMasterPanel.id = 'propertiesMasterPanel';
-            this.propertiesMasterPanel.className = 'propertiespanel-hidden';
-            this.propertiesContent = document.createElement('div');
-            this.propertiesContent.id = 'propertiesContent';
-            this.propertiesContent.className = 'properties-hidden';
-            var propertiesHeader = document.createElement('div');
-            propertiesHeader.id = 'propertiesHeader';
-            propertiesHeader.style.display = 'inline';
-            var propHeaderLabel = document.createElement('div');
-            propHeaderLabel.id = 'classPropHeaderLabel';
-            propHeaderLabel.innerHTML = 'Select any element to see its properties';
-            propHeaderLabel.style.display = 'inherit';
-            propHeaderLabel.style.cursor = 'pointer';
-            propHeaderLabel.onclick = function (e) { return _this.hideproperties(e); };
-            var btnPropClassHeaderDisplay = document.createElement('button');
-            btnPropClassHeaderDisplay.id = 'propClassHeaderButtonDisplay';
-            btnPropClassHeaderDisplay.title = 'Show properties';
-            btnPropClassHeaderDisplay.className = 'btnHideProp';
-            btnPropClassHeaderDisplay.innerHTML = '&#8896;';
-            btnPropClassHeaderDisplay.style.cssFloat = 'right';
-            btnPropClassHeaderDisplay.onclick = function (e) { return _this.hideproperties(e); };
-            propertiesHeader.appendChild(propHeaderLabel);
-            propertiesHeader.appendChild(btnPropClassHeaderDisplay);
-            this.propertiesMasterPanel.appendChild(propertiesHeader);
-            this.propertiesMasterPanel.appendChild(this.propertiesContent);
-            document.body.appendChild(this.propertiesMasterPanel);
-        };
-        BlankView.prototype.hideproperties = function (evt) {
-            evt.stopPropagation();
-            if (this.isHidden === false) {
-                document.getElementById('propertiesContent').className = 'properties-hidden';
-                document.getElementById('propertiesMasterPanel').className = 'propertiespanel-hidden';
-                var btn = document.getElementById('propClassHeaderButtonDisplay');
-                btn.innerHTML = '&#8896;';
-                btn.title = 'Show properties';
-            }
-            else {
-                document.getElementById('propertiesContent').className = 'properties';
-                document.getElementById('propertiesMasterPanel').className = 'propertiespanel';
-                var btn = document.getElementById('propClassHeaderButtonDisplay');
-                btn.innerHTML = '&#8897;';
-                btn.title = 'Hide properties';
-            }
-            this.isHidden = !this.isHidden;
-        };
-        return BlankView;
-    }());
-    PropertiesPanel.BlankView = BlankView;
-    var APanel = (function () {
-        function APanel() {
-            this.divPropertiesPanel = document.createElement('div');
-            this.divPropertiesTabbedPanel = document.createElement('div');
-            this.divPropertiesTabbedPanel.id = 'propertiesTabbedPanel';
-            this.divPropertiesTabbedPanel.className = 'tabbedpane';
-            this.divPropertiesPanel.appendChild(this.divPropertiesTabbedPanel);
-        }
-        APanel.prototype.getPanel = function () {
-            return this.divPropertiesPanel;
-        };
-        APanel.prototype.showFirstTab = function () {
-            var tabs = document.getElementsByClassName('tablinks');
-            if (tabs && tabs.length > 0) {
-                this.openTab(tabs[0].id);
-            }
-        };
-        APanel.prototype.showTab = function (btnValue) {
-            var tabs = document.getElementsByClassName('tablinks');
-            for (var index = 0; index < tabs.length; index++) {
-                var tab = tabs[index];
-                if (tab.value === btnValue) {
-                    this.openTab(tab.id);
-                }
-            }
-        };
-        APanel.prototype.createTabElement = function (id, tabText, tabValue) {
-            var _this = this;
-            var tabElementBtn = document.createElement('button');
-            tabElementBtn.id = id;
-            tabElementBtn.className = 'tablinks';
-            tabElementBtn.innerText = tabText;
-            tabElementBtn.value = tabValue;
-            tabElementBtn.onclick = function () { return _this.openTab(id); };
-            return tabElementBtn;
-        };
-        APanel.prototype.openTab = function (clickedId) {
-            var tabs = document.getElementsByClassName('tablinks');
-            for (var i = 0; i < tabs.length; i++) {
-                tabs[i].className = tabs[i].className.replace('active', '');
-            }
-            var tab = document.getElementById(clickedId);
-            tab.className += ' active';
-            var tabContents = document.getElementsByClassName('tabcontent');
-            for (var i = 0; i < tabContents.length; i++) {
-                tabContents[i].style.display = 'none';
-            }
-            document.getElementById(this.getPropertiesView().toString().toLowerCase() + tab.value.toString())
-                .style.display = 'block';
-        };
-        return APanel;
-    }());
-    PropertiesPanel.APanel = APanel;
-    var ClassPanel = (function (_super) {
-        __extends(ClassPanel, _super);
-        function ClassPanel() {
-            return _super.call(this) || this;
-        }
-        ClassPanel.prototype.init = function () {
-            var _this = this;
-            var typeList = ['boolean', 'byte', 'char', 'double', 'float', 'int', 'long', 'short', 'String', 'void'];
-            this.dataTypes = document.createElement('datalist');
-            this.dataTypes.id = 'dataTypes';
-            typeList.forEach(function (type) {
-                var modifierOption = document.createElement('option');
-                modifierOption.value = type;
-                modifierOption.innerHTML = type;
-                _this.dataTypes.appendChild(modifierOption);
-            });
-            this.divPropertiesPanel.appendChild(this.dataTypes);
-            this.divPropertiesTabbedPanel.appendChild(this.createTabElement('generalClassPropBtn', 'General', 'general'));
-            this.divPropertiesTabbedPanel.appendChild(this.createTabElement('attrClassPropBtn', 'Attributes', 'attribute'));
-            this.divPropertiesTabbedPanel.appendChild(this.createTabElement('methodClassPropBtn', 'Methods', 'method'));
-            this.createTabGeneralContent();
-            this.createTabAttrContent();
-            this.createTabMethodContent();
-        };
-        ClassPanel.prototype.getPropertiesView = function () {
-            return PropertiesView.Clazz;
-        };
-        ClassPanel.prototype.createTabGeneralContent = function () {
-            var div = document.createElement('div');
-            div.id = this.getPropertiesView().toString().toLowerCase() + 'general';
-            div.className = 'tabcontent';
-            var divTable = document.createElement('div');
-            divTable.className = 'divTable';
-            var divTableBody = document.createElement('div');
-            divTableBody.className = 'divTableBody';
-            var divRowClazzName = document.createElement('div');
-            divRowClazzName.className = 'divTableRow';
-            var divRowClazzNameCellText = document.createElement('div');
-            divRowClazzNameCellText.className = 'divTableCell';
-            divRowClazzNameCellText.innerHTML = 'Name:';
-            var divRowClazzNameCellInput = document.createElement('div');
-            divRowClazzNameCellInput.className = 'divTableCell';
-            var textBoxClass = document.createElement('input');
-            textBoxClass.type = 'text';
-            textBoxClass.id = 'className';
-            textBoxClass.placeholder = 'Class name';
-            textBoxClass.style.width = '100%';
-            divRowClazzNameCellInput.appendChild(textBoxClass);
-            divRowClazzName.appendChild(divRowClazzNameCellText);
-            divRowClazzName.appendChild(divRowClazzNameCellInput);
-            divTableBody.appendChild(divRowClazzName);
-            var divRowClazzModifier = document.createElement('div');
-            divRowClazzModifier.className = 'divTableRow';
-            var divRowClazzModifierCellText = document.createElement('div');
-            divRowClazzModifierCellText.className = 'divTableCell';
-            divRowClazzModifierCellText.innerHTML = 'Access modifier:';
-            var divRowClazzModifierCellInput = document.createElement('div');
-            divRowClazzModifierCellInput.className = 'divTableCell';
-            var selectClazzModifier = document.createElement('select');
-            selectClazzModifier.id = 'classModifier';
-            selectClazzModifier.style.width = '100%';
-            var modifierObj = {};
-            modifierObj['public'] = '+';
-            modifierObj['private'] = '-';
-            modifierObj['protected'] = '#';
-            modifierObj['package'] = '~';
-            for (var title in modifierObj) {
-                var modifierOption = document.createElement('option');
-                modifierOption.value = title;
-                modifierOption.innerHTML = title;
-                selectClazzModifier.appendChild(modifierOption);
-            }
-            selectClazzModifier.value = 'public';
-            divRowClazzModifierCellInput.appendChild(selectClazzModifier);
-            divRowClazzModifier.appendChild(divRowClazzModifierCellText);
-            divRowClazzModifier.appendChild(divRowClazzModifierCellInput);
-            divTableBody.appendChild(divRowClazzModifier);
-            divTable.appendChild(divTableBody);
-            div.appendChild(divTable);
-            this.divPropertiesPanel.appendChild(div);
-        };
-        ClassPanel.prototype.createTabAttrContent = function () {
-            this.createtabPropertyContent('attribute');
-        };
-        ClassPanel.prototype.createTabMethodContent = function () {
-            this.createtabPropertyContent('method');
-        };
-        ClassPanel.prototype.createtabPropertyContent = function (propertyType) {
-            var div = document.createElement('div');
-            div.id = this.getPropertiesView().toString().toLowerCase() + propertyType;
-            div.className = 'tabcontent';
-            var divEditProperty = document.createElement('div');
-            divEditProperty.id = div.id + 'Add';
-            divEditProperty.style.marginTop = '5px';
-            var selectPropertyModifier = document.createElement('select');
-            selectPropertyModifier.id = div.id + 'AddModifier';
-            var modifierObj = {};
-            modifierObj['public'] = '+';
-            modifierObj['private'] = '-';
-            modifierObj['protected'] = '#';
-            modifierObj['package'] = '~';
-            for (var title in modifierObj) {
-                var modifierOption = document.createElement('option');
-                modifierOption.value = modifierObj[title];
-                modifierOption.innerHTML = modifierObj[title];
-                modifierOption.title = title;
-                selectPropertyModifier.appendChild(modifierOption);
-            }
-            selectPropertyModifier.value = modifierObj['public'];
-            var textBoxPropertyName = document.createElement('input');
-            textBoxPropertyName.style.marginLeft = '5px';
-            textBoxPropertyName.style.marginRight = '5px';
-            textBoxPropertyName.id = div.id + 'AddName';
-            textBoxPropertyName.type = 'text';
-            textBoxPropertyName.placeholder = 'Add new ' + propertyType;
-            var selectPropertyType = document.createElement('input');
-            selectPropertyType.id = div.id + 'AddType';
-            selectPropertyType.setAttribute('list', this.dataTypes.id);
-            var btnAdd = document.createElement('button');
-            btnAdd.id = div.id + 'BtnAdd' + propertyType;
-            btnAdd.innerHTML = '+';
-            btnAdd.title = 'Add ' + propertyType;
-            btnAdd.style.marginLeft = '5px';
-            btnAdd.style.color = 'green';
-            divEditProperty.appendChild(selectPropertyModifier);
-            divEditProperty.appendChild(textBoxPropertyName);
-            divEditProperty.appendChild(selectPropertyType);
-            divEditProperty.appendChild(btnAdd);
-            div.appendChild(divEditProperty);
-            this.divPropertiesPanel.appendChild(div);
-        };
-        return ClassPanel;
-    }(APanel));
-    PropertiesPanel.ClassPanel = ClassPanel;
-    var EdgePanel = (function (_super) {
-        __extends(EdgePanel, _super);
-        function EdgePanel() {
-            return _super.call(this) || this;
-        }
-        EdgePanel.prototype.init = function () {
-            this.divPropertiesTabbedPanel.appendChild(this.createTabElement('generalEdgePropBtn', 'General', 'general'));
-            this.createTabGeneralEdgeContent();
-        };
-        EdgePanel.prototype.getPropertiesView = function () {
-            return PropertiesView.Edge;
-        };
-        EdgePanel.prototype.createTabGeneralEdgeContent = function () {
-            var cardinalityTypes = ['0..1', '1', '0..*'];
-            var dataListCardinalityTypes = document.createElement('datalist');
-            dataListCardinalityTypes.id = 'cardinalityTypesDataList';
-            cardinalityTypes.forEach(function (type) {
-                var cardinalityoption = document.createElement('option');
-                cardinalityoption.value = type;
-                cardinalityoption.innerHTML = type;
-                dataListCardinalityTypes.appendChild(cardinalityoption);
-            });
-            var div = document.createElement('div');
-            div.id = this.getPropertiesView().toString().toLowerCase() + 'general';
-            div.className = 'tabcontent';
-            var divTable = document.createElement('div');
-            divTable.className = 'divTable';
-            var divTableBody = document.createElement('div');
-            divTableBody.className = 'divTableBody';
-            var divRowEdgeType = document.createElement('div');
-            divRowEdgeType.className = 'divTableRow';
-            var divRowEdgeTypeCellText = document.createElement('div');
-            divRowEdgeTypeCellText.className = 'divTableCell';
-            divRowEdgeTypeCellText.innerHTML = 'Type:';
-            var divRowEdgeTypeCellSelect = document.createElement('div');
-            divRowEdgeTypeCellSelect.className = 'divTableCell';
-            var selectEdgeType = document.createElement('select');
-            selectEdgeType.id = 'edgeTypeSelect';
-            selectEdgeType.className = 'col2';
-            var edgeTypes = [];
-            for (var type in edges) {
-                if (type.toString() === 'Aggregate' || type.toString() === 'Direction') {
-                    continue;
-                }
-                edgeTypes.push(type);
-            }
-            edgeTypes.sort();
-            for (var _i = 0, edgeTypes_1 = edgeTypes; _i < edgeTypes_1.length; _i++) {
-                var type = edgeTypes_1[_i];
-                var selectOption = document.createElement('option');
-                selectOption.value = type;
-                selectOption.innerHTML = type;
-                selectEdgeType.appendChild(selectOption);
-            }
-            divRowEdgeTypeCellSelect.appendChild(selectEdgeType);
-            divRowEdgeType.appendChild(divRowEdgeTypeCellText);
-            divRowEdgeType.appendChild(divRowEdgeTypeCellSelect);
-            divTableBody.appendChild(divRowEdgeType);
-            var divRowEdgeLabel = document.createElement('div');
-            divRowEdgeLabel.className = 'divTableRow';
-            var divRowEdgeLabelCellText = document.createElement('div');
-            divRowEdgeLabelCellText.className = 'divTableCell';
-            divRowEdgeLabelCellText.innerHTML = 'Label:';
-            var divRowEdgeLabelCellInput = document.createElement('div');
-            divRowEdgeLabelCellInput.className = 'divTableCell';
-            var textBoxEdgeLabel = document.createElement('input');
-            textBoxEdgeLabel.type = 'text';
-            textBoxEdgeLabel.id = 'edgeLabelInput';
-            textBoxEdgeLabel.placeholder = 'Edge label';
-            textBoxEdgeLabel.className = 'col2';
-            textBoxEdgeLabel.readOnly = true;
-            divRowEdgeLabelCellInput.appendChild(textBoxEdgeLabel);
-            divRowEdgeLabel.appendChild(divRowEdgeLabelCellText);
-            divRowEdgeLabel.appendChild(divRowEdgeLabelCellInput);
-            divTableBody.appendChild(divRowEdgeLabel);
-            var divRowEdgeSrcNode = document.createElement('div');
-            divRowEdgeSrcNode.className = 'divTableRow';
-            var divRowEdgeSrcNodeCellText = document.createElement('div');
-            divRowEdgeSrcNodeCellText.className = 'divTableCell';
-            divRowEdgeSrcNodeCellText.innerHTML = 'Source:';
-            var divRowEdgeSrcNodeCellInput = document.createElement('div');
-            divRowEdgeSrcNodeCellInput.className = 'divTableCell';
-            var textBoxEdgeSrc = document.createElement('input');
-            textBoxEdgeSrc.type = 'text';
-            textBoxEdgeSrc.id = 'edgeSrcInput';
-            textBoxEdgeSrc.placeholder = 'Edge Source';
-            textBoxEdgeSrc.className = 'col2';
-            textBoxEdgeSrc.readOnly = true;
-            divRowEdgeSrcNodeCellInput.appendChild(textBoxEdgeSrc);
-            divRowEdgeSrcNode.appendChild(divRowEdgeSrcNodeCellText);
-            divRowEdgeSrcNode.appendChild(divRowEdgeSrcNodeCellInput);
-            divTableBody.appendChild(divRowEdgeSrcNode);
-            var divRowEdgeSrcNodeProperty = document.createElement('div');
-            divRowEdgeSrcNodeProperty.className = 'divTableRow';
-            var divRowEdgeSrcNodePropertyCellText = document.createElement('div');
-            divRowEdgeSrcNodePropertyCellText.className = 'divTableCell';
-            divRowEdgeSrcNodePropertyCellText.innerHTML = 'Source Property:';
-            var divRowEdgeSrcNodePropertyCellInput = document.createElement('div');
-            divRowEdgeSrcNodePropertyCellInput.className = 'divTableCell';
-            var textBoxEdgeSrcProperty = document.createElement('input');
-            textBoxEdgeSrcProperty.type = 'text';
-            textBoxEdgeSrcProperty.id = 'edgeSrcProperty';
-            textBoxEdgeSrcProperty.placeholder = 'Add source property';
-            textBoxEdgeSrcProperty.className = 'col2';
-            divRowEdgeSrcNodePropertyCellInput.appendChild(textBoxEdgeSrcProperty);
-            divRowEdgeSrcNodeProperty.appendChild(divRowEdgeSrcNodePropertyCellText);
-            divRowEdgeSrcNodeProperty.appendChild(divRowEdgeSrcNodePropertyCellInput);
-            divTableBody.appendChild(divRowEdgeSrcNodeProperty);
-            var divRowEdgeSrcNodeCardinality = document.createElement('div');
-            divRowEdgeSrcNodeCardinality.className = 'divTableRow';
-            var divRowEdgeSrcNodeCardinalityCellText = document.createElement('div');
-            divRowEdgeSrcNodeCardinalityCellText.className = 'divTableCell';
-            divRowEdgeSrcNodeCardinalityCellText.innerHTML = 'Source Cardinality:';
-            var divRowEdgeSrcNodeCardinalityCellInput = document.createElement('div');
-            divRowEdgeSrcNodeCardinalityCellInput.className = 'divTableCell';
-            var inputSrcCardinalityType = document.createElement('input');
-            inputSrcCardinalityType.id = 'inputEdgeSrcCardinality';
-            inputSrcCardinalityType.className = 'col2';
-            inputSrcCardinalityType.placeholder = 'Add source cardinality';
-            inputSrcCardinalityType.setAttribute('list', dataListCardinalityTypes.id);
-            divRowEdgeSrcNodeCardinalityCellInput.appendChild(inputSrcCardinalityType);
-            divRowEdgeSrcNodeCardinality.appendChild(divRowEdgeSrcNodeCardinalityCellText);
-            divRowEdgeSrcNodeCardinality.appendChild(divRowEdgeSrcNodeCardinalityCellInput);
-            divTableBody.appendChild(divRowEdgeSrcNodeCardinality);
-            var divRowEdgeTargetNode = document.createElement('div');
-            divRowEdgeTargetNode.className = 'divTableRow';
-            var divRowEdgeTargetNodeCellText = document.createElement('div');
-            divRowEdgeTargetNodeCellText.className = 'divTableCell';
-            divRowEdgeTargetNodeCellText.innerHTML = 'Target:';
-            var divRowEdgeTargetNodeCellInput = document.createElement('div');
-            divRowEdgeTargetNodeCellInput.className = 'divTableCell';
-            var textBoxEdgeTarget = document.createElement('input');
-            textBoxEdgeTarget.type = 'text';
-            textBoxEdgeTarget.id = 'edgeTargetInput';
-            textBoxEdgeTarget.placeholder = 'Edge Source';
-            textBoxEdgeTarget.className = 'col2';
-            textBoxEdgeTarget.readOnly = true;
-            divRowEdgeTargetNodeCellInput.appendChild(textBoxEdgeTarget);
-            divRowEdgeTargetNode.appendChild(divRowEdgeTargetNodeCellText);
-            divRowEdgeTargetNode.appendChild(divRowEdgeTargetNodeCellInput);
-            divTableBody.appendChild(divRowEdgeTargetNode);
-            var divRowEdgeTargetNodeProperty = document.createElement('div');
-            divRowEdgeTargetNodeProperty.className = 'divTableRow';
-            var divRowEdgeTargetNodePropertyCellText = document.createElement('div');
-            divRowEdgeTargetNodePropertyCellText.className = 'divTableCell';
-            divRowEdgeTargetNodePropertyCellText.innerHTML = 'Target Property:';
-            var divRowEdgeTargetNodePropertyCellInput = document.createElement('div');
-            divRowEdgeTargetNodePropertyCellInput.className = 'divTableCell';
-            var textBoxEdgeTargetProperty = document.createElement('input');
-            textBoxEdgeTargetProperty.type = 'text';
-            textBoxEdgeTargetProperty.id = 'edgeTargetProperty';
-            textBoxEdgeTargetProperty.placeholder = 'Add target property';
-            textBoxEdgeTargetProperty.className = 'col2';
-            divRowEdgeTargetNodePropertyCellInput.appendChild(textBoxEdgeTargetProperty);
-            divRowEdgeTargetNodeProperty.appendChild(divRowEdgeTargetNodePropertyCellText);
-            divRowEdgeTargetNodeProperty.appendChild(divRowEdgeTargetNodePropertyCellInput);
-            divTableBody.appendChild(divRowEdgeTargetNodeProperty);
-            var divRowEdgeTargetNodeCardinality = document.createElement('div');
-            divRowEdgeTargetNodeCardinality.className = 'divTableRow';
-            var divRowEdgeTargetNodeCardinalityCellText = document.createElement('div');
-            divRowEdgeTargetNodeCardinalityCellText.className = 'divTableCell';
-            divRowEdgeTargetNodeCardinalityCellText.innerHTML = 'Target Cardinality:';
-            var divRowEdgeTargetNodeCardinalityCellInput = document.createElement('div');
-            divRowEdgeTargetNodeCardinalityCellInput.className = 'divTableCell';
-            var inputTargetCardinalityType = document.createElement('input');
-            inputTargetCardinalityType.id = 'inputEdgeTargetCardinality';
-            inputTargetCardinalityType.className = 'col2';
-            inputTargetCardinalityType.placeholder = 'Add target cardinality';
-            inputTargetCardinalityType.setAttribute('list', dataListCardinalityTypes.id);
-            divRowEdgeTargetNodeCardinalityCellInput.appendChild(inputTargetCardinalityType);
-            divRowEdgeTargetNodeCardinality.appendChild(divRowEdgeTargetNodeCardinalityCellText);
-            divRowEdgeTargetNodeCardinality.appendChild(divRowEdgeTargetNodeCardinalityCellInput);
-            divTableBody.appendChild(divRowEdgeTargetNodeCardinality);
-            divTable.appendChild(divTableBody);
-            div.appendChild(dataListCardinalityTypes);
-            div.appendChild(divTable);
-            this.divPropertiesPanel.appendChild(div);
-        };
-        return EdgePanel;
-    }(APanel));
-    PropertiesPanel.EdgePanel = EdgePanel;
-    var ClearPanel = (function (_super) {
-        __extends(ClearPanel, _super);
-        function ClearPanel() {
-            return _super.call(this) || this;
-        }
-        ClearPanel.prototype.init = function () {
-        };
-        ClearPanel.prototype.getPropertiesView = function () {
-            return PropertiesView.Clear;
-        };
-        return ClearPanel;
-    }(APanel));
-    PropertiesPanel.ClearPanel = ClearPanel;
-})(PropertiesPanel = exports.PropertiesPanel || (exports.PropertiesPanel = {}));
-
-
-/***/ }),
-/* 30 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var EventBus_1 = __webpack_require__(3);
+var EventBus_1 = __webpack_require__(1);
 var util_1 = __webpack_require__(0);
 var ImportFile = (function () {
     function ImportFile(graph) {
@@ -5896,7 +5538,8 @@ var ImportFile = (function () {
         return EventBus_1.EventBus.isHandlerActiveOrFree(ImportFile.name);
     };
     ImportFile.prototype.handle = function (event, element) {
-        if (event instanceof DragEvent === false) {
+        var type = typeof event;
+        if (type !== 'DragEvent') {
             return false;
         }
         var evt = event;
@@ -5914,6 +5557,28 @@ var ImportFile = (function () {
         }
         return true;
     };
+    ImportFile.prototype.setBoardStyle = function (typ) {
+        var b = this.graph.$view;
+        util_1.Util.removeClass(b, 'Error');
+        util_1.Util.removeClass(b, 'Ok');
+        util_1.Util.removeClass(b, 'Add');
+        if (typ === 'dragleave') {
+            if (b['errorText']) {
+                b.removeChild(b['errorText']);
+                b['errorText'] = null;
+            }
+            return true;
+        }
+        util_1.Util.addClass(b, typ);
+        if (typ === 'Error') {
+            if (!b['errorText']) {
+                b['errorText'] = util_1.Util.create({ tag: 'div', style: 'margin-top: 30%', value: 'NO TEXTFILE' });
+                b.appendChild(b['errorText']);
+            }
+            return true;
+        }
+        return false;
+    };
     ImportFile.prototype.handleLoadFile = function (evt) {
         evt.stopPropagation();
         evt.preventDefault();
@@ -5930,19 +5595,8 @@ var ImportFile = (function () {
             reader.onload = function (event) {
                 htmlResult = event.target['result'];
                 console.log('fileContent: ' + htmlResult);
-                var rootElement = document.getElementById('root');
-                var canvasElement = document.getElementById('canvas');
-                while (rootElement.hasChildNodes()) {
-                    rootElement.removeChild(rootElement.firstChild);
-                }
-                while (canvasElement.hasChildNodes()) {
-                    canvasElement.removeChild(canvasElement.firstChild);
-                }
                 if (that.graph) {
-                    that.graph.clearModel();
-                    var jsonData = JSON.parse(htmlResult);
-                    that.graph.load(jsonData);
-                    that.graph.layout();
+                    that.graph.import(htmlResult);
                 }
             };
             reader.readAsText(f);
@@ -5995,28 +5649,6 @@ var ImportFile = (function () {
         event.preventDefault();
         this.setBoardStyle(typ);
     };
-    ImportFile.prototype.setBoardStyle = function (typ) {
-        var b = this.graph.$view;
-        util_1.Util.removeClass(b, 'Error');
-        util_1.Util.removeClass(b, 'Ok');
-        util_1.Util.removeClass(b, 'Add');
-        if (typ === 'dragleave') {
-            if (b['errorText']) {
-                b.removeChild(b['errorText']);
-                b['errorText'] = null;
-            }
-            return true;
-        }
-        util_1.Util.addClass(b, typ);
-        if (typ === 'Error') {
-            if (!b['errorText']) {
-                b['errorText'] = util_1.Util.create({ tag: 'div', style: 'margin-top: 30%', value: 'NO TEXTFILE' });
-                b.appendChild(b['errorText']);
-            }
-            return true;
-        }
-        return false;
-    };
     ImportFile.prototype.handleDragLeave = function (evt) {
         evt.stopPropagation();
         evt.preventDefault();
@@ -6027,6 +5659,71 @@ var ImportFile = (function () {
     return ImportFile;
 }());
 exports.ImportFile = ImportFile;
+
+
+/***/ }),
+/* 30 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var JSEPS = (function () {
+    function JSEPS(options) {
+        this.max = 0;
+        this.min = 999;
+        var hasInverting = typeof (options.inverting);
+        this.inverting = (options && hasInverting !== 'undefined' ? options.inverting : true);
+        this.output = ['%!PS-Adobe-3.0 EPSF-3.0', '1 setlinewidth'];
+        this.out('/FSD {findfont exch scalefont def} bind def % In the document prolog: define');
+        this.out('/SMS {setfont moveto show} bind def % some useful procedures');
+        this.out('/MS {moveto show} bind def');
+        this.out('/F1  10  /Helvetica  FSD % At the start of the script: set up');
+        this.font = 1;
+    }
+    JSEPS.prototype.out = function (value) { this.output.push(value); };
+    JSEPS.prototype.rect = function (x, y, width, height, style) {
+        y = y + (this.inverting ? height : 0);
+        if (style && style.indexOf('fill:url(#classelement);') >= 0) {
+            this.out('gsave 0.93 0.93 0.93 setrgbcolor newpath ' + x + ' ' + this.y(y) + ' ' + width + ' ' + height + ' rectfill grestore');
+        }
+        else {
+            this.out('newpath ' + x + ' ' + this.y(y) + ' ' + width + ' ' + height + ' rectstroke');
+        }
+    };
+    JSEPS.prototype.setFillColor = function (r, g, b) { };
+    JSEPS.prototype.y = function (value) { this.max = Math.max(this.max, value); this.min = Math.min(this.min, value); return this.inverting ? '%y(' + value + ')' : value; };
+    JSEPS.prototype.getType = function () {
+        return 'application/postscript';
+    };
+    JSEPS.prototype.getData = function () {
+        var t, end, url, text, typ = 'application/postscript', a = document.createElement('a'), data = '', pos, i;
+        for (i = 0; i < this.output.length; i += 1) {
+            text = this.output[i];
+            if (this.inverting) {
+                while ((pos = text.indexOf('%y')) >= 0) {
+                    end = text.indexOf(')', pos);
+                    t = this.max - parseInt(text.substring(pos + 3, end), 10);
+                    text = text.substring(0, pos) + t + text.substring(end + 1);
+                }
+            }
+            data = data + text + '\r\n';
+        }
+        return data;
+    };
+    JSEPS.prototype.setDrawColor = function (r, g, b) { };
+    JSEPS.prototype.ellipse = function (cx, cy, rx, ry, colorMode) { };
+    JSEPS.prototype.circle = function (cx, cy, r, colorMode) { };
+    JSEPS.prototype.setTextColor = function (r, g, b) { };
+    JSEPS.prototype.text = function (x, y, text) { this.out('(' + text.replace('&lt;', '<').replace('&gt;', '>') + ') ' + x + ' ' + this.y(y) + ' F1 SMS'); };
+    JSEPS.prototype.lineto = function (x, y) { this.out(x + ' ' + this.y(y) + ' lineto'); this.out('stroke'); };
+    JSEPS.prototype.moveto = function (x, y) { this.out(x + ' ' + this.y(y) + ' moveto'); };
+    JSEPS.prototype.line = function (x1, y1, x2, y2) { this.out('newpath ' + x1 + ' ' + this.y(y1) + ' moveto ' + x2 + ' ' + this.y(y2) + ' lineto stroke'); };
+    JSEPS.prototype.setLineWidth = function (value) { this.out(value + ' setlinewidth'); };
+    JSEPS.prototype.setFont = function (value) { this.out('/F' + (this.font += 1) + ' 10 /' + value + ' FSD'); };
+    return JSEPS;
+}());
+exports.JSEPS = JSEPS;
 
 
 /***/ }),
@@ -6313,7 +6010,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var Control_1 = __webpack_require__(2);
+var Control_1 = __webpack_require__(3);
 var Button = (function (_super) {
     __extends(Button, _super);
     function Button() {
@@ -6362,7 +6059,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var Control_1 = __webpack_require__(2);
+var Control_1 = __webpack_require__(3);
 var Form = (function (_super) {
     __extends(Form, _super);
     function Form() {
@@ -6478,7 +6175,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var Control_1 = __webpack_require__(2);
+var Control_1 = __webpack_require__(3);
 var PropertyBinder_1 = __webpack_require__(36);
 var Input = (function (_super) {
     __extends(Input, _super);
@@ -6669,7 +6366,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var Control_1 = __webpack_require__(2);
+var Control_1 = __webpack_require__(3);
 var BridgeElement_1 = __webpack_require__(38);
 var Data_1 = __webpack_require__(7);
 var util_1 = __webpack_require__(0);
@@ -7453,7 +7150,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var Control_1 = __webpack_require__(2);
+var Control_1 = __webpack_require__(3);
 var HTML = (function (_super) {
     __extends(HTML, _super);
     function HTML(data) {
@@ -7841,10 +7538,10 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var BaseElements_1 = __webpack_require__(1);
+var BaseElements_1 = __webpack_require__(2);
 var util_1 = __webpack_require__(0);
 var Node_1 = __webpack_require__(6);
-var EventBus_1 = __webpack_require__(3);
+var EventBus_1 = __webpack_require__(1);
 var InfoText = (function (_super) {
     __extends(InfoText, _super);
     function InfoText(info) {
@@ -8052,7 +7749,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var Association_1 = __webpack_require__(11);
+var Association_1 = __webpack_require__(12);
 var Aggregate = (function (_super) {
     __extends(Aggregate, _super);
     function Aggregate() {
@@ -8250,11 +7947,11 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var BaseElements_1 = __webpack_require__(1);
+var BaseElements_1 = __webpack_require__(2);
 var edges_1 = __webpack_require__(4);
 var nodes_1 = __webpack_require__(5);
 var util_1 = __webpack_require__(0);
-var EventBus_1 = __webpack_require__(3);
+var EventBus_1 = __webpack_require__(1);
 var GraphModel = (function (_super) {
     __extends(GraphModel, _super);
     function GraphModel() {
@@ -8432,7 +8129,7 @@ var GraphModel = (function (_super) {
         var source;
         var sourceAsString = edge.source.id || edge.source;
         if (sourceAsString) {
-            source = this.getNodeByLabel(sourceAsString);
+            source = this.getNodeById(sourceAsString);
             if (!source) {
                 source = this.createElement('Clazz', this.getNewId('Clazz'), { name: edge.source });
                 source.init(this);
@@ -8441,7 +8138,7 @@ var GraphModel = (function (_super) {
         var target;
         var targetAsString = edge.target.id || edge.target;
         if (targetAsString) {
-            target = this.getNodeByLabel(targetAsString);
+            target = this.getNodeById(targetAsString);
             if (!target) {
                 target = this.createElement('Clazz', this.getNewId('Clazz'), { name: edge.target });
                 target.init(this);
@@ -8498,15 +8195,6 @@ var GraphModel = (function (_super) {
         for (var _i = 0, _a = this.nodes; _i < _a.length; _i++) {
             var node = _a[_i];
             if (node.id === id) {
-                return node;
-            }
-        }
-        return undefined;
-    };
-    GraphModel.prototype.getNodeByLabel = function (label) {
-        for (var _i = 0, _a = this.nodes; _i < _a.length; _i++) {
-            var node = _a[_i];
-            if (node.label === label) {
                 return node;
             }
         }
@@ -8576,7 +8264,7 @@ __export(__webpack_require__(53));
 __export(__webpack_require__(54));
 __export(__webpack_require__(55));
 __export(__webpack_require__(56));
-__export(__webpack_require__(30));
+__export(__webpack_require__(29));
 __export(__webpack_require__(57));
 __export(__webpack_require__(58));
 
@@ -8588,8 +8276,8 @@ __export(__webpack_require__(58));
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var EventBus_1 = __webpack_require__(3);
-var BaseElements_1 = __webpack_require__(1);
+var EventBus_1 = __webpack_require__(1);
+var BaseElements_1 = __webpack_require__(2);
 var nodes_1 = __webpack_require__(5);
 var util_1 = __webpack_require__(0);
 var Drag = (function () {
@@ -8713,8 +8401,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var nodes_1 = __webpack_require__(5);
 var edges_1 = __webpack_require__(4);
 var util_1 = __webpack_require__(0);
-var Symbol_1 = __webpack_require__(21);
-var EventBus_1 = __webpack_require__(3);
+var Symbol_1 = __webpack_require__(11);
+var EventBus_1 = __webpack_require__(1);
 var main_1 = __webpack_require__(9);
 var Select = (function () {
     function Select(graph) {
@@ -8800,7 +8488,7 @@ var Select = (function () {
             document.body.appendChild(divInlineEdit_1);
             inputText_1.addEventListener('focusout', function (evt) {
                 if (util_1.Util.isChrome()) {
-                    if ((!inputText_1.value || inputText_1.value.length === 0) && (!_this.lastSelectedNode || element.id != _this.lastSelectedNode.id)) {
+                    if ((!inputText_1.value || inputText_1.value.length === 0) && (!_this.lastSelectedNode || element.id !== _this.lastSelectedNode.id)) {
                         _this.removeLastInlineEdit();
                     }
                     return;
@@ -8935,7 +8623,7 @@ exports.Select = Select;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var EventBus_1 = __webpack_require__(3);
+var EventBus_1 = __webpack_require__(1);
 var Zoom = (function () {
     function Zoom(graph) {
     }
@@ -8972,7 +8660,7 @@ exports.Zoom = Zoom;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var util_1 = __webpack_require__(0);
-var EventBus_1 = __webpack_require__(3);
+var EventBus_1 = __webpack_require__(1);
 var index_1 = __webpack_require__(5);
 var NewEdge = (function () {
     function NewEdge(graph) {
@@ -9070,8 +8758,8 @@ var NewEdge = (function () {
         var edgeType = this.sourceNode.$defaulEdgeType || 'Association';
         var jsonData = {
             type: edgeType,
-            source: this.sourceNode.label,
-            target: targetNode.label
+            source: this.sourceNode.id,
+            target: targetNode.id
         };
         var newEdge = this.graph.$graphModel.addEdge(jsonData, true);
         this.graph.drawElement(newEdge);
@@ -9101,7 +8789,7 @@ exports.NewEdge = NewEdge;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var EventBus_1 = __webpack_require__(3);
+var EventBus_1 = __webpack_require__(1);
 var util_1 = __webpack_require__(0);
 var AddNode = (function () {
     function AddNode(graph) {
@@ -9286,46 +8974,50 @@ exports.AddNode = AddNode;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var EventBus_1 = __webpack_require__(3);
-var properties = __webpack_require__(29);
+var EventBus_1 = __webpack_require__(1);
+var properties = __webpack_require__(59);
 var main_1 = __webpack_require__(9);
-var Clazz_1 = __webpack_require__(17);
+var Clazz_1 = __webpack_require__(18);
 var PropertiesDispatcher = (function () {
     function PropertiesDispatcher(graph) {
-        this._blankView = new properties.PropertiesPanel.BlankView(graph);
-        this._graph = graph;
+        this.blankView = new properties.PropertiesPanel.BlankView(graph);
+        this.graph = graph;
     }
     PropertiesDispatcher.prototype.dispatch = function (view) {
         var createdView = this.createView(view);
-        this._blankView.show(createdView);
+        this.blankView.show(createdView);
     };
     PropertiesDispatcher.prototype.getCurrentView = function () {
-        return this._blankView.getCurrentView();
+        return this.blankView.getCurrentView();
     };
     PropertiesDispatcher.prototype.openProperties = function () {
-        this._blankView.openProperties();
+        this.blankView.openProperties();
     };
     PropertiesDispatcher.prototype.handle = function (event, element) {
         this.handleOpenProperties(event, element);
         if (event.type === EventBus_1.EventBus.RELOADPROPERTIES
-            && this._selectedElement && element.id === this._selectedElement.id) {
+            && this.selectedElement && element.id === this.selectedElement.id) {
             this.handleSelectNodeEvent(event, element);
             this.handleSelectEdgeEvent(event, element);
         }
-        if (this._selectedElement && this._selectedElement.id === element.id) {
+        if (this.selectedElement && this.selectedElement.id === element.id) {
             return true;
         }
         if (element.id === 'RootElement') {
-            this.dispatch(properties.PropertiesPanel.PropertiesView.Clear);
+            this.dispatch('Clear');
             this.setPropertiesHeaderText('Select any element to see its properties');
         }
-        this._selectedElement = element;
+        if (element.id === 'GenerateProp') {
+            this.dispatch('Generate');
+            this.setPropertiesHeaderText('Properties');
+        }
+        this.selectedElement = element;
         this.handleSelectNodeEvent(event, element);
         this.handleSelectEdgeEvent(event, element);
         return true;
     };
     PropertiesDispatcher.prototype.setPropertiesHeaderText = function (text) {
-        this._blankView.setPropertiesHeaderText(text);
+        this.blankView.setPropertiesHeaderText(text);
     };
     PropertiesDispatcher.prototype.canHandle = function () {
         return EventBus_1.EventBus.isHandlerActiveOrFree(PropertiesDispatcher.name);
@@ -9340,14 +9032,17 @@ var PropertiesDispatcher = (function () {
     };
     PropertiesDispatcher.prototype.createView = function (view) {
         var panel;
-        if (view === properties.PropertiesPanel.PropertiesView.Clazz) {
+        if (view === 'Clazz') {
             panel = new properties.PropertiesPanel.ClassPanel();
         }
-        if (view === properties.PropertiesPanel.PropertiesView.Clear) {
+        if (view === 'Clear') {
             panel = new properties.PropertiesPanel.ClearPanel();
         }
-        if (view === properties.PropertiesPanel.PropertiesView.Edge) {
+        if (view === 'Edge') {
             panel = new properties.PropertiesPanel.EdgePanel();
+        }
+        if (view === 'Generate') {
+            panel = new properties.PropertiesPanel.GeneratePanel(this.graph);
         }
         panel.init();
         return panel;
@@ -9363,9 +9058,9 @@ var PropertiesDispatcher = (function () {
             return false;
         }
         var edge = element;
-        this.dispatch(properties.PropertiesPanel.PropertiesView.Edge);
-        this._blankView.setPropertiesHeaderText('Properties of Edge: ' + edge.$sNode.label + '---' + edge.$tNode.label);
-        var g = this._graph;
+        this.dispatch('Edge');
+        this.blankView.setPropertiesHeaderText('Properties of Edge: ' + edge.$sNode.id + '---' + edge.$tNode.id);
+        var g = this.graph;
         var cBoxEdgeType = document.getElementById('edgeTypeSelect');
         cBoxEdgeType.value = edge.type;
         cBoxEdgeType.addEventListener('change', function () {
@@ -9374,9 +9069,9 @@ var PropertiesDispatcher = (function () {
             edge = newEdge;
         });
         var inputTypeEdgeLabel = document.getElementById('edgeLabelInput');
-        inputTypeEdgeLabel.setAttribute('value', edge.$sNode.label + ' -> ' + edge.$tNode.label);
+        inputTypeEdgeLabel.setAttribute('value', edge.$sNode.id + ' -> ' + edge.$tNode.id);
         var inputTypeEdgeSrc = document.getElementById('edgeSrcInput');
-        inputTypeEdgeSrc.setAttribute('value', edge.$sNode.label);
+        inputTypeEdgeSrc.setAttribute('value', edge.$sNode.id);
         var inputEdgeSrcProperty = document.getElementById('edgeSrcProperty');
         inputEdgeSrcProperty.addEventListener('input', function (evt) {
             edge.updateSrcProperty(inputEdgeSrcProperty.value);
@@ -9402,7 +9097,7 @@ var PropertiesDispatcher = (function () {
             inputEdgeTargetCardinality.setAttribute('value', edge.targetInfo.cardinality);
         }
         var inputTypeEdgeTarget = document.getElementById('edgeTargetInput');
-        inputTypeEdgeTarget.setAttribute('value', edge.$tNode.label);
+        inputTypeEdgeTarget.setAttribute('value', edge.$tNode.id);
         return true;
     };
     PropertiesDispatcher.prototype.handleSelectNodeEvent = function (event, element) {
@@ -9410,17 +9105,17 @@ var PropertiesDispatcher = (function () {
             return false;
         }
         var that = this;
-        var graph = this._graph;
+        var graph = this.graph;
         var clazz = element;
-        this.dispatch(properties.PropertiesPanel.PropertiesView.Clazz);
-        this._blankView.setPropertiesHeaderText('Properties of Class: ' + clazz.label);
+        this.dispatch('Clazz');
+        this.blankView.setPropertiesHeaderText('Properties of Class: ' + clazz.id);
         var classNameInputText = document.getElementById('className');
-        classNameInputText.setAttribute('value', clazz.label);
+        classNameInputText.setAttribute('value', clazz.id);
         classNameInputText.addEventListener('input', function () {
             clazz.updateLabel(classNameInputText.value);
         });
         var clasModifierSelect = document.getElementById('classModifier');
-        clasModifierSelect.setAttribute('value', clazz.label);
+        clasModifierSelect.setAttribute('value', clazz.id);
         clasModifierSelect.addEventListener('change', function () {
             clazz.updateModifier(clasModifierSelect.value);
         });
@@ -9441,7 +9136,7 @@ var PropertiesDispatcher = (function () {
             var modifier = document.getElementById('clazzattributeAddModifier');
             var name = document.getElementById('clazzattributeAddName');
             var type = document.getElementById('clazzattributeAddType');
-            if (!name.value || name.value.length == 0) {
+            if (!name.value || name.value.length === 0) {
                 return;
             }
             var attrValue = modifier.value + " " + name.value + " : " + type.value;
@@ -9470,7 +9165,7 @@ var PropertiesDispatcher = (function () {
             var modifier = document.getElementById('clazzmethodAddModifier');
             var name = document.getElementById('clazzmethodAddName');
             var type = document.getElementById('clazzmethodAddType');
-            if (!name.value || name.value.length == 0) {
+            if (!name.value || name.value.length === 0) {
                 return;
             }
             var methodValue = modifier.value + " " + name.value + " : " + type.value;
@@ -9550,13 +9245,617 @@ exports.PropertiesDispatcher = PropertiesDispatcher;
 
 "use strict";
 
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 Object.defineProperty(exports, "__esModule", { value: true });
+var edges = __webpack_require__(4);
+var PropertiesPanel;
+(function (PropertiesPanel) {
+    var BlankView = (function () {
+        function BlankView(graph) {
+            this.graph = graph;
+            this.initMainPanel();
+        }
+        BlankView.prototype.show = function (panel, showTabWithValue) {
+            if (this.propertiesContent) {
+                while (this.propertiesContent.hasChildNodes()) {
+                    this.propertiesContent.removeChild(this.propertiesContent.childNodes[0]);
+                }
+            }
+            var children = panel.getPanel().childNodes;
+            while (children.length > 0) {
+                this.propertiesContent.appendChild(children[0]);
+            }
+            this.displayingPanel = panel;
+            if (showTabWithValue) {
+                panel.showTab(showTabWithValue);
+            }
+            else {
+                panel.showFirstTab();
+            }
+        };
+        BlankView.prototype.openProperties = function () {
+            this.isHidden = false;
+            document.getElementById('propertiesContent').className = 'properties';
+            document.getElementById('propertiesMasterPanel').className = 'propertiespanel';
+            var btn = document.getElementById('propClassHeaderButtonDisplay');
+            btn.innerHTML = '&#8897;';
+            btn.title = 'Hide properties';
+        };
+        BlankView.prototype.setPropertiesHeaderText = function (text) {
+            var divHeaderLabel = document.getElementById('classPropHeaderLabel');
+            if (divHeaderLabel) {
+                divHeaderLabel.innerHTML = text;
+            }
+        };
+        BlankView.prototype.getCurrentView = function () {
+            return this.displayingPanel.getPropertiesView();
+        };
+        BlankView.prototype.getCurrentPanel = function () {
+            return this.displayingPanel;
+        };
+        BlankView.prototype.initMainPanel = function () {
+            var _this = this;
+            if (document.getElementById('propertiesMasterPanel')) {
+                return;
+            }
+            this.propertiesMasterPanel = document.createElement('div');
+            this.propertiesMasterPanel.id = 'propertiesMasterPanel';
+            this.propertiesMasterPanel.className = 'propertiespanel-hidden';
+            this.propertiesContent = document.createElement('div');
+            this.propertiesContent.id = 'propertiesContent';
+            this.propertiesContent.className = 'properties-hidden';
+            var propertiesHeader = document.createElement('div');
+            propertiesHeader.id = 'propertiesHeader';
+            propertiesHeader.style.display = 'inline';
+            var propHeaderLabel = document.createElement('div');
+            propHeaderLabel.id = 'classPropHeaderLabel';
+            propHeaderLabel.innerHTML = 'Select any element to see its properties';
+            propHeaderLabel.style.display = 'inherit';
+            propHeaderLabel.style.cursor = 'pointer';
+            propHeaderLabel.onclick = function (e) { return _this.hideproperties(e); };
+            var btnPropClassHeaderDisplay = document.createElement('button');
+            btnPropClassHeaderDisplay.id = 'propClassHeaderButtonDisplay';
+            btnPropClassHeaderDisplay.title = 'Show properties';
+            btnPropClassHeaderDisplay.className = 'btnHideProp';
+            btnPropClassHeaderDisplay.innerHTML = '&#8896;';
+            btnPropClassHeaderDisplay.style.cssFloat = 'right';
+            btnPropClassHeaderDisplay.onclick = function (e) { return _this.hideproperties(e); };
+            propertiesHeader.appendChild(propHeaderLabel);
+            propertiesHeader.appendChild(btnPropClassHeaderDisplay);
+            this.propertiesMasterPanel.appendChild(propertiesHeader);
+            this.propertiesMasterPanel.appendChild(this.propertiesContent);
+            document.body.appendChild(this.propertiesMasterPanel);
+        };
+        BlankView.prototype.hideproperties = function (evt) {
+            evt.stopPropagation();
+            if (this.isHidden === false) {
+                document.getElementById('propertiesContent').className = 'properties-hidden';
+                document.getElementById('propertiesMasterPanel').className = 'propertiespanel-hidden';
+                var btn = document.getElementById('propClassHeaderButtonDisplay');
+                btn.innerHTML = '&#8896;';
+                btn.title = 'Show properties';
+            }
+            else {
+                document.getElementById('propertiesContent').className = 'properties';
+                document.getElementById('propertiesMasterPanel').className = 'propertiespanel';
+                var btn = document.getElementById('propClassHeaderButtonDisplay');
+                btn.innerHTML = '&#8897;';
+                btn.title = 'Hide properties';
+            }
+            this.isHidden = !this.isHidden;
+        };
+        return BlankView;
+    }());
+    PropertiesPanel.BlankView = BlankView;
+    var APanel = (function () {
+        function APanel() {
+            this.divPropertiesPanel = document.createElement('div');
+            this.divPropertiesTabbedPanel = document.createElement('div');
+            this.divPropertiesTabbedPanel.id = 'propertiesTabbedPanel';
+            this.divPropertiesTabbedPanel.className = 'tabbedpane';
+            this.divPropertiesPanel.appendChild(this.divPropertiesTabbedPanel);
+        }
+        APanel.prototype.getPanel = function () {
+            return this.divPropertiesPanel;
+        };
+        APanel.prototype.showFirstTab = function () {
+            var tabs = document.getElementsByClassName('tablinks');
+            if (tabs && tabs.length > 0) {
+                this.openTab(tabs[0].id);
+            }
+        };
+        APanel.prototype.showTab = function (btnValue) {
+            var tabs = document.getElementsByClassName('tablinks');
+            for (var index = 0; index < tabs.length; index++) {
+                var tab = tabs[index];
+                if (tab.value === btnValue) {
+                    this.openTab(tab.id);
+                }
+            }
+        };
+        APanel.prototype.createTabElement = function (id, tabText, tabValue) {
+            var _this = this;
+            var tabElementBtn = document.createElement('button');
+            tabElementBtn.id = id;
+            tabElementBtn.className = 'tablinks';
+            tabElementBtn.innerText = tabText;
+            tabElementBtn.value = tabValue;
+            tabElementBtn.onclick = function () { return _this.openTab(id); };
+            return tabElementBtn;
+        };
+        APanel.prototype.openTab = function (clickedId) {
+            var tabs = document.getElementsByClassName('tablinks');
+            for (var i = 0; i < tabs.length; i++) {
+                tabs[i].className = tabs[i].className.replace('active', '');
+            }
+            var tab = document.getElementById(clickedId);
+            tab.className += ' active';
+            var tabContents = document.getElementsByClassName('tabcontent');
+            for (var i = 0; i < tabContents.length; i++) {
+                tabContents[i].style.display = 'none';
+            }
+            document.getElementById(this.getPropertiesView().toLowerCase() + tab.value.toString())
+                .style.display = 'block';
+        };
+        return APanel;
+    }());
+    PropertiesPanel.APanel = APanel;
+    var ClassPanel = (function (_super) {
+        __extends(ClassPanel, _super);
+        function ClassPanel() {
+            return _super.call(this) || this;
+        }
+        ClassPanel.prototype.init = function () {
+            var _this = this;
+            var typeList = ['boolean', 'byte', 'char', 'double', 'float', 'int', 'long', 'short', 'String', 'void'];
+            this.dataTypes = document.createElement('datalist');
+            this.dataTypes.id = 'dataTypes';
+            typeList.forEach(function (type) {
+                var modifierOption = document.createElement('option');
+                modifierOption.value = type;
+                modifierOption.innerHTML = type;
+                _this.dataTypes.appendChild(modifierOption);
+            });
+            this.divPropertiesPanel.appendChild(this.dataTypes);
+            this.divPropertiesTabbedPanel.appendChild(this.createTabElement('generalClassPropBtn', 'General', 'general'));
+            this.divPropertiesTabbedPanel.appendChild(this.createTabElement('attrClassPropBtn', 'Attributes', 'attribute'));
+            this.divPropertiesTabbedPanel.appendChild(this.createTabElement('methodClassPropBtn', 'Methods', 'method'));
+            this.createTabGeneralContent();
+            this.createTabAttrContent();
+            this.createTabMethodContent();
+        };
+        ClassPanel.prototype.getPropertiesView = function () {
+            return 'Clazz';
+        };
+        ClassPanel.prototype.createTabGeneralContent = function () {
+            var div = document.createElement('div');
+            div.id = this.getPropertiesView().toLowerCase() + 'general';
+            div.className = 'tabcontent';
+            var divTable = document.createElement('div');
+            divTable.className = 'divTable';
+            var divTableBody = document.createElement('div');
+            divTableBody.className = 'divTableBody';
+            var divRowClazzName = document.createElement('div');
+            divRowClazzName.className = 'divTableRow';
+            var divRowClazzNameCellText = document.createElement('div');
+            divRowClazzNameCellText.className = 'divTableCell';
+            divRowClazzNameCellText.innerHTML = 'Name:';
+            var divRowClazzNameCellInput = document.createElement('div');
+            divRowClazzNameCellInput.className = 'divTableCell';
+            var textBoxClass = document.createElement('input');
+            textBoxClass.type = 'text';
+            textBoxClass.id = 'className';
+            textBoxClass.placeholder = 'Class name';
+            textBoxClass.style.width = '100%';
+            divRowClazzNameCellInput.appendChild(textBoxClass);
+            divRowClazzName.appendChild(divRowClazzNameCellText);
+            divRowClazzName.appendChild(divRowClazzNameCellInput);
+            divTableBody.appendChild(divRowClazzName);
+            var divRowClazzModifier = document.createElement('div');
+            divRowClazzModifier.className = 'divTableRow';
+            var divRowClazzModifierCellText = document.createElement('div');
+            divRowClazzModifierCellText.className = 'divTableCell';
+            divRowClazzModifierCellText.innerHTML = 'Access modifier:';
+            var divRowClazzModifierCellInput = document.createElement('div');
+            divRowClazzModifierCellInput.className = 'divTableCell';
+            var selectClazzModifier = document.createElement('select');
+            selectClazzModifier.id = 'classModifier';
+            selectClazzModifier.style.width = '100%';
+            var modifierObj = {};
+            modifierObj['public'] = '+';
+            modifierObj['private'] = '-';
+            modifierObj['protected'] = '#';
+            modifierObj['package'] = '~';
+            for (var title in modifierObj) {
+                var modifierOption = document.createElement('option');
+                modifierOption.value = title;
+                modifierOption.innerHTML = title;
+                selectClazzModifier.appendChild(modifierOption);
+            }
+            selectClazzModifier.value = 'public';
+            divRowClazzModifierCellInput.appendChild(selectClazzModifier);
+            divRowClazzModifier.appendChild(divRowClazzModifierCellText);
+            divRowClazzModifier.appendChild(divRowClazzModifierCellInput);
+            divTableBody.appendChild(divRowClazzModifier);
+            divTable.appendChild(divTableBody);
+            div.appendChild(divTable);
+            this.divPropertiesPanel.appendChild(div);
+        };
+        ClassPanel.prototype.createTabAttrContent = function () {
+            this.createtabPropertyContent('attribute');
+        };
+        ClassPanel.prototype.createTabMethodContent = function () {
+            this.createtabPropertyContent('method');
+        };
+        ClassPanel.prototype.createtabPropertyContent = function (propertyType) {
+            var div = document.createElement('div');
+            div.id = this.getPropertiesView().toLowerCase() + propertyType;
+            div.className = 'tabcontent';
+            var divEditProperty = document.createElement('div');
+            divEditProperty.id = div.id + 'Add';
+            divEditProperty.style.marginTop = '5px';
+            var selectPropertyModifier = document.createElement('select');
+            selectPropertyModifier.id = div.id + 'AddModifier';
+            var modifierObj = {};
+            modifierObj['public'] = '+';
+            modifierObj['private'] = '-';
+            modifierObj['protected'] = '#';
+            modifierObj['package'] = '~';
+            for (var title in modifierObj) {
+                var modifierOption = document.createElement('option');
+                modifierOption.value = modifierObj[title];
+                modifierOption.innerHTML = modifierObj[title];
+                modifierOption.title = title;
+                selectPropertyModifier.appendChild(modifierOption);
+            }
+            selectPropertyModifier.value = modifierObj['public'];
+            var textBoxPropertyName = document.createElement('input');
+            textBoxPropertyName.style.marginLeft = '5px';
+            textBoxPropertyName.style.marginRight = '5px';
+            textBoxPropertyName.id = div.id + 'AddName';
+            textBoxPropertyName.type = 'text';
+            textBoxPropertyName.placeholder = 'Add new ' + propertyType;
+            var selectPropertyType = document.createElement('input');
+            selectPropertyType.id = div.id + 'AddType';
+            selectPropertyType.setAttribute('list', this.dataTypes.id);
+            var btnAdd = document.createElement('button');
+            btnAdd.id = div.id + 'BtnAdd' + propertyType;
+            btnAdd.innerHTML = '+';
+            btnAdd.title = 'Add ' + propertyType;
+            btnAdd.style.marginLeft = '5px';
+            btnAdd.style.color = 'green';
+            divEditProperty.appendChild(selectPropertyModifier);
+            divEditProperty.appendChild(textBoxPropertyName);
+            divEditProperty.appendChild(selectPropertyType);
+            divEditProperty.appendChild(btnAdd);
+            div.appendChild(divEditProperty);
+            this.divPropertiesPanel.appendChild(div);
+        };
+        return ClassPanel;
+    }(APanel));
+    PropertiesPanel.ClassPanel = ClassPanel;
+    var EdgePanel = (function (_super) {
+        __extends(EdgePanel, _super);
+        function EdgePanel() {
+            return _super.call(this) || this;
+        }
+        EdgePanel.prototype.init = function () {
+            this.divPropertiesTabbedPanel.appendChild(this.createTabElement('generalEdgePropBtn', 'General', 'general'));
+            this.createTabGeneralEdgeContent();
+        };
+        EdgePanel.prototype.getPropertiesView = function () {
+            return 'Edge';
+        };
+        EdgePanel.prototype.createTabGeneralEdgeContent = function () {
+            var cardinalityTypes = ['0..1', '1', '0..*'];
+            var dataListCardinalityTypes = document.createElement('datalist');
+            dataListCardinalityTypes.id = 'cardinalityTypesDataList';
+            cardinalityTypes.forEach(function (type) {
+                var cardinalityoption = document.createElement('option');
+                cardinalityoption.value = type;
+                cardinalityoption.innerHTML = type;
+                dataListCardinalityTypes.appendChild(cardinalityoption);
+            });
+            var div = document.createElement('div');
+            div.id = this.getPropertiesView().toLowerCase() + 'general';
+            div.className = 'tabcontent';
+            var divTable = document.createElement('div');
+            divTable.className = 'divTable';
+            var divTableBody = document.createElement('div');
+            divTableBody.className = 'divTableBody';
+            var divRowEdgeType = document.createElement('div');
+            divRowEdgeType.className = 'divTableRow';
+            var divRowEdgeTypeCellText = document.createElement('div');
+            divRowEdgeTypeCellText.className = 'divTableCell';
+            divRowEdgeTypeCellText.innerHTML = 'Type:';
+            var divRowEdgeTypeCellSelect = document.createElement('div');
+            divRowEdgeTypeCellSelect.className = 'divTableCell';
+            var selectEdgeType = document.createElement('select');
+            selectEdgeType.id = 'edgeTypeSelect';
+            selectEdgeType.className = 'col2';
+            var edgeTypes = [];
+            for (var type in edges) {
+                if (type.toString() === 'Aggregate' || type.toString() === 'Direction') {
+                    continue;
+                }
+                edgeTypes.push(type);
+            }
+            edgeTypes.sort();
+            for (var _i = 0, edgeTypes_1 = edgeTypes; _i < edgeTypes_1.length; _i++) {
+                var type = edgeTypes_1[_i];
+                var selectOption = document.createElement('option');
+                selectOption.value = type;
+                selectOption.innerHTML = type;
+                selectEdgeType.appendChild(selectOption);
+            }
+            divRowEdgeTypeCellSelect.appendChild(selectEdgeType);
+            divRowEdgeType.appendChild(divRowEdgeTypeCellText);
+            divRowEdgeType.appendChild(divRowEdgeTypeCellSelect);
+            divTableBody.appendChild(divRowEdgeType);
+            var divRowEdgeLabel = document.createElement('div');
+            divRowEdgeLabel.className = 'divTableRow';
+            var divRowEdgeLabelCellText = document.createElement('div');
+            divRowEdgeLabelCellText.className = 'divTableCell';
+            divRowEdgeLabelCellText.innerHTML = 'Label:';
+            var divRowEdgeLabelCellInput = document.createElement('div');
+            divRowEdgeLabelCellInput.className = 'divTableCell';
+            var textBoxEdgeLabel = document.createElement('input');
+            textBoxEdgeLabel.type = 'text';
+            textBoxEdgeLabel.id = 'edgeLabelInput';
+            textBoxEdgeLabel.placeholder = 'Edge label';
+            textBoxEdgeLabel.className = 'col2';
+            textBoxEdgeLabel.readOnly = true;
+            divRowEdgeLabelCellInput.appendChild(textBoxEdgeLabel);
+            divRowEdgeLabel.appendChild(divRowEdgeLabelCellText);
+            divRowEdgeLabel.appendChild(divRowEdgeLabelCellInput);
+            divTableBody.appendChild(divRowEdgeLabel);
+            var divRowEdgeSrcNode = document.createElement('div');
+            divRowEdgeSrcNode.className = 'divTableRow';
+            var divRowEdgeSrcNodeCellText = document.createElement('div');
+            divRowEdgeSrcNodeCellText.className = 'divTableCell';
+            divRowEdgeSrcNodeCellText.innerHTML = 'Source:';
+            var divRowEdgeSrcNodeCellInput = document.createElement('div');
+            divRowEdgeSrcNodeCellInput.className = 'divTableCell';
+            var textBoxEdgeSrc = document.createElement('input');
+            textBoxEdgeSrc.type = 'text';
+            textBoxEdgeSrc.id = 'edgeSrcInput';
+            textBoxEdgeSrc.placeholder = 'Edge Source';
+            textBoxEdgeSrc.className = 'col2';
+            textBoxEdgeSrc.readOnly = true;
+            divRowEdgeSrcNodeCellInput.appendChild(textBoxEdgeSrc);
+            divRowEdgeSrcNode.appendChild(divRowEdgeSrcNodeCellText);
+            divRowEdgeSrcNode.appendChild(divRowEdgeSrcNodeCellInput);
+            divTableBody.appendChild(divRowEdgeSrcNode);
+            var divRowEdgeSrcNodeProperty = document.createElement('div');
+            divRowEdgeSrcNodeProperty.className = 'divTableRow';
+            var divRowEdgeSrcNodePropertyCellText = document.createElement('div');
+            divRowEdgeSrcNodePropertyCellText.className = 'divTableCell';
+            divRowEdgeSrcNodePropertyCellText.innerHTML = 'Source Property:';
+            var divRowEdgeSrcNodePropertyCellInput = document.createElement('div');
+            divRowEdgeSrcNodePropertyCellInput.className = 'divTableCell';
+            var textBoxEdgeSrcProperty = document.createElement('input');
+            textBoxEdgeSrcProperty.type = 'text';
+            textBoxEdgeSrcProperty.id = 'edgeSrcProperty';
+            textBoxEdgeSrcProperty.placeholder = 'Add source property';
+            textBoxEdgeSrcProperty.className = 'col2';
+            divRowEdgeSrcNodePropertyCellInput.appendChild(textBoxEdgeSrcProperty);
+            divRowEdgeSrcNodeProperty.appendChild(divRowEdgeSrcNodePropertyCellText);
+            divRowEdgeSrcNodeProperty.appendChild(divRowEdgeSrcNodePropertyCellInput);
+            divTableBody.appendChild(divRowEdgeSrcNodeProperty);
+            var divRowEdgeSrcNodeCardinality = document.createElement('div');
+            divRowEdgeSrcNodeCardinality.className = 'divTableRow';
+            var divRowEdgeSrcNodeCardinalityCellText = document.createElement('div');
+            divRowEdgeSrcNodeCardinalityCellText.className = 'divTableCell';
+            divRowEdgeSrcNodeCardinalityCellText.innerHTML = 'Source Cardinality:';
+            var divRowEdgeSrcNodeCardinalityCellInput = document.createElement('div');
+            divRowEdgeSrcNodeCardinalityCellInput.className = 'divTableCell';
+            var inputSrcCardinalityType = document.createElement('input');
+            inputSrcCardinalityType.id = 'inputEdgeSrcCardinality';
+            inputSrcCardinalityType.className = 'col2';
+            inputSrcCardinalityType.placeholder = 'Add source cardinality';
+            inputSrcCardinalityType.setAttribute('list', dataListCardinalityTypes.id);
+            divRowEdgeSrcNodeCardinalityCellInput.appendChild(inputSrcCardinalityType);
+            divRowEdgeSrcNodeCardinality.appendChild(divRowEdgeSrcNodeCardinalityCellText);
+            divRowEdgeSrcNodeCardinality.appendChild(divRowEdgeSrcNodeCardinalityCellInput);
+            divTableBody.appendChild(divRowEdgeSrcNodeCardinality);
+            var divRowEdgeTargetNode = document.createElement('div');
+            divRowEdgeTargetNode.className = 'divTableRow';
+            var divRowEdgeTargetNodeCellText = document.createElement('div');
+            divRowEdgeTargetNodeCellText.className = 'divTableCell';
+            divRowEdgeTargetNodeCellText.innerHTML = 'Target:';
+            var divRowEdgeTargetNodeCellInput = document.createElement('div');
+            divRowEdgeTargetNodeCellInput.className = 'divTableCell';
+            var textBoxEdgeTarget = document.createElement('input');
+            textBoxEdgeTarget.type = 'text';
+            textBoxEdgeTarget.id = 'edgeTargetInput';
+            textBoxEdgeTarget.placeholder = 'Edge Source';
+            textBoxEdgeTarget.className = 'col2';
+            textBoxEdgeTarget.readOnly = true;
+            divRowEdgeTargetNodeCellInput.appendChild(textBoxEdgeTarget);
+            divRowEdgeTargetNode.appendChild(divRowEdgeTargetNodeCellText);
+            divRowEdgeTargetNode.appendChild(divRowEdgeTargetNodeCellInput);
+            divTableBody.appendChild(divRowEdgeTargetNode);
+            var divRowEdgeTargetNodeProperty = document.createElement('div');
+            divRowEdgeTargetNodeProperty.className = 'divTableRow';
+            var divRowEdgeTargetNodePropertyCellText = document.createElement('div');
+            divRowEdgeTargetNodePropertyCellText.className = 'divTableCell';
+            divRowEdgeTargetNodePropertyCellText.innerHTML = 'Target Property:';
+            var divRowEdgeTargetNodePropertyCellInput = document.createElement('div');
+            divRowEdgeTargetNodePropertyCellInput.className = 'divTableCell';
+            var textBoxEdgeTargetProperty = document.createElement('input');
+            textBoxEdgeTargetProperty.type = 'text';
+            textBoxEdgeTargetProperty.id = 'edgeTargetProperty';
+            textBoxEdgeTargetProperty.placeholder = 'Add target property';
+            textBoxEdgeTargetProperty.className = 'col2';
+            divRowEdgeTargetNodePropertyCellInput.appendChild(textBoxEdgeTargetProperty);
+            divRowEdgeTargetNodeProperty.appendChild(divRowEdgeTargetNodePropertyCellText);
+            divRowEdgeTargetNodeProperty.appendChild(divRowEdgeTargetNodePropertyCellInput);
+            divTableBody.appendChild(divRowEdgeTargetNodeProperty);
+            var divRowEdgeTargetNodeCardinality = document.createElement('div');
+            divRowEdgeTargetNodeCardinality.className = 'divTableRow';
+            var divRowEdgeTargetNodeCardinalityCellText = document.createElement('div');
+            divRowEdgeTargetNodeCardinalityCellText.className = 'divTableCell';
+            divRowEdgeTargetNodeCardinalityCellText.innerHTML = 'Target Cardinality:';
+            var divRowEdgeTargetNodeCardinalityCellInput = document.createElement('div');
+            divRowEdgeTargetNodeCardinalityCellInput.className = 'divTableCell';
+            var inputTargetCardinalityType = document.createElement('input');
+            inputTargetCardinalityType.id = 'inputEdgeTargetCardinality';
+            inputTargetCardinalityType.className = 'col2';
+            inputTargetCardinalityType.placeholder = 'Add target cardinality';
+            inputTargetCardinalityType.setAttribute('list', dataListCardinalityTypes.id);
+            divRowEdgeTargetNodeCardinalityCellInput.appendChild(inputTargetCardinalityType);
+            divRowEdgeTargetNodeCardinality.appendChild(divRowEdgeTargetNodeCardinalityCellText);
+            divRowEdgeTargetNodeCardinality.appendChild(divRowEdgeTargetNodeCardinalityCellInput);
+            divTableBody.appendChild(divRowEdgeTargetNodeCardinality);
+            divTable.appendChild(divTableBody);
+            div.appendChild(dataListCardinalityTypes);
+            div.appendChild(divTable);
+            this.divPropertiesPanel.appendChild(div);
+        };
+        return EdgePanel;
+    }(APanel));
+    PropertiesPanel.EdgePanel = EdgePanel;
+    var GeneratePanel = (function (_super) {
+        __extends(GeneratePanel, _super);
+        function GeneratePanel(graph) {
+            var _this = _super.call(this) || this;
+            _this.graph = graph;
+            return _this;
+        }
+        GeneratePanel.prototype.init = function () {
+            var _this = this;
+            this.divPropertiesTabbedPanel.appendChild(this.createTabElement('generalGeneratePropBtn', 'General', 'general'));
+            var div = document.createElement('div');
+            div.id = this.getPropertiesView().toLowerCase() + 'general';
+            div.className = 'tabcontent';
+            var inputGenerateWorkspace = document.createElement('input');
+            inputGenerateWorkspace.id = 'inputWorkspace';
+            inputGenerateWorkspace.type = 'text';
+            inputGenerateWorkspace.placeholder = 'Type your Folder for generated code...';
+            inputGenerateWorkspace.value = 'src/main/java';
+            inputGenerateWorkspace.style.marginRight = '5px';
+            inputGenerateWorkspace.style.width = '260px';
+            var inputGeneratePackage = document.createElement('input');
+            inputGeneratePackage.id = 'inputWorkspace';
+            inputGeneratePackage.type = 'text';
+            inputGeneratePackage.placeholder = 'Type your workspace for generated code...';
+            inputGeneratePackage.style.marginRight = '5px';
+            inputGeneratePackage.style.width = '260px';
+            div.appendChild(inputGenerateWorkspace);
+            div.appendChild(inputGeneratePackage);
+            var options = document.createElement('div');
+            options.style.textAlign = 'center';
+            options.style.margin = '3';
+            options.style.padding = '5';
+            div.appendChild(options);
+            options.style.borderStyle = 'groove';
+            options.style.borderRadius = '10px';
+            options.appendChild(document.createTextNode('Options'));
+            options.appendChild(document.createElement('br'));
+            var btnGenerate = document.createElement('button');
+            btnGenerate.textContent = 'Generate';
+            btnGenerate.title = 'Generate code into your workspace';
+            btnGenerate.className = 'OptionElement';
+            btnGenerate.onclick = function () {
+                var workspace = inputGeneratePackage.value;
+                if (workspace.length === 0) {
+                    alert('No workspace set.\nEnter first your workspace');
+                    inputGeneratePackage.focus();
+                    return;
+                }
+                _this.graph.generate(workspace, inputGenerateWorkspace.value);
+            };
+            options.appendChild(btnGenerate);
+            options.appendChild(document.createElement('hr'));
+            options.appendChild(document.createElement('br'));
+            var btnAutoLayout = document.createElement('button');
+            btnAutoLayout.id = 'layoutBtn';
+            btnAutoLayout.className = 'OptionElement';
+            btnAutoLayout.textContent = 'Auto Layout';
+            btnAutoLayout.onclick = function () {
+                _this.graph.layout();
+            };
+            options.appendChild(btnAutoLayout);
+            options.appendChild(document.createElement('br'));
+            var btnDeleteAll = document.createElement('button');
+            btnDeleteAll.id = 'btnDeleteAll';
+            btnDeleteAll.className = 'OptionElement';
+            btnDeleteAll.textContent = 'Delete All';
+            btnDeleteAll.title = 'Delete all nodes from diagram';
+            btnDeleteAll.onclick = function () {
+                var confirmDelete = confirm('All classes will be deleted!');
+                if (!confirmDelete) {
+                    return;
+                }
+                _this.graph.$graphModel.removeAllElements();
+            };
+            options.appendChild(btnDeleteAll);
+            options.appendChild(document.createElement('br'));
+            var exportTypes = ['Export', 'HTML', 'JSON', 'PDF', 'PNG', 'SVG'];
+            var selectExport = document.createElement('select');
+            exportTypes.forEach(function (type) {
+                if (!(!window['jsPDF'] && type === 'PDF')) {
+                    var option = document.createElement('option');
+                    option.value = type;
+                    option.textContent = type;
+                    selectExport.appendChild(option);
+                }
+            });
+            selectExport.onchange = function (evt) {
+                var selectedExportType = selectExport.options[selectExport.selectedIndex].value;
+                selectExport.selectedIndex = 0;
+                _this.graph.saveAs(selectedExportType);
+            };
+            selectExport.className = 'OptionElement';
+            options.appendChild(selectExport);
+            options.appendChild(document.createElement('br'));
+            this.divPropertiesPanel.appendChild(div);
+        };
+        GeneratePanel.prototype.getPropertiesView = function () {
+            return 'generate';
+        };
+        return GeneratePanel;
+    }(APanel));
+    PropertiesPanel.GeneratePanel = GeneratePanel;
+    var ClearPanel = (function (_super) {
+        __extends(ClearPanel, _super);
+        function ClearPanel() {
+            return _super.call(this) || this;
+        }
+        ClearPanel.prototype.init = function () {
+        };
+        ClearPanel.prototype.getPropertiesView = function () {
+            return 'Clear';
+        };
+        return ClearPanel;
+    }(APanel));
+    PropertiesPanel.ClearPanel = ClearPanel;
+})(PropertiesPanel = exports.PropertiesPanel || (exports.PropertiesPanel = {}));
+
+
+/***/ }),
+/* 60 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var Symbol_1 = __webpack_require__(11);
+var EventBus_1 = __webpack_require__(1);
 var Toolbar = (function () {
     function Toolbar(graph) {
         this.graph = graph;
     }
     Toolbar.prototype.show = function () {
-        var _this = this;
         if (this.mainDiv) {
             return;
         }
@@ -9565,72 +9864,11 @@ var Toolbar = (function () {
         var h1Logo = document.createElement('h1');
         h1Logo.className = 'logo';
         h1Logo.textContent = 'DiagramJS';
-        var btnAutoLayout = document.createElement('button');
-        btnAutoLayout.id = 'layoutBtn';
-        btnAutoLayout.style.marginLeft = '195px';
-        btnAutoLayout.style.marginTop = '12px';
-        btnAutoLayout.textContent = 'Auto Layout';
-        btnAutoLayout.onclick = function () {
-            _this.graph.layout();
-        };
+        var node = { type: 'Hamburger', property: 'HTML', width: 24, height: 24, id: 'GenerateProp' };
+        var hamburger = Symbol_1.SymbolLibary.draw(node);
+        EventBus_1.EventBus.registerEvent(hamburger, 'click', node);
+        this.mainDiv.appendChild(hamburger);
         this.mainDiv.appendChild(h1Logo);
-        this.mainDiv.appendChild(btnAutoLayout);
-        var btnDeleteAll = document.createElement('button');
-        btnDeleteAll.id = 'btnDeleteAll';
-        btnDeleteAll.textContent = 'Delete All';
-        btnDeleteAll.title = 'Delete all nodes from diagram';
-        btnDeleteAll.style.marginLeft = '20px';
-        btnDeleteAll.style.marginTop = '12px';
-        btnDeleteAll.onclick = function () {
-            var confirmDelete = confirm('All classes will be deleted!');
-            if (!confirmDelete) {
-                return;
-            }
-            _this.graph.$graphModel.removeAllElements();
-        };
-        this.mainDiv.appendChild(btnDeleteAll);
-        var divGenerate = document.createElement('div');
-        divGenerate.style.display = 'inline';
-        divGenerate.style.marginLeft = '20px';
-        var inputGenerateWorkspace = document.createElement('input');
-        inputGenerateWorkspace.id = 'inputWorkspace';
-        inputGenerateWorkspace.type = 'text';
-        inputGenerateWorkspace.placeholder = 'Type your workspace for generated code...';
-        inputGenerateWorkspace.style.marginRight = '5px';
-        inputGenerateWorkspace.style.width = '260px';
-        var btnGenerate = document.createElement('button');
-        btnGenerate.textContent = 'Generate';
-        btnGenerate.title = 'Generate code into your workspace';
-        btnGenerate.onclick = function () {
-            var workspace = inputGenerateWorkspace.value;
-            if (workspace.length === 0) {
-                alert('No workspace set.\nEnter first your workspace');
-                inputGenerateWorkspace.focus();
-                return;
-            }
-            _this.graph.generate(workspace);
-        };
-        divGenerate.appendChild(inputGenerateWorkspace);
-        divGenerate.appendChild(btnGenerate);
-        this.mainDiv.appendChild(divGenerate);
-        var divExport = document.createElement('div');
-        divExport.style.display = 'inline';
-        divExport.style.marginLeft = '20px';
-        var exportTypes = ['Export', 'HTML', 'JSON', 'PDF', 'PNG', 'SVG'];
-        var selectExport = document.createElement('select');
-        exportTypes.forEach(function (type) {
-            var option = document.createElement('option');
-            option.value = type;
-            option.textContent = type;
-            selectExport.appendChild(option);
-        });
-        selectExport.onchange = function (evt) {
-            var selectedExportType = selectExport.options[selectExport.selectedIndex].value;
-            selectExport.selectedIndex = 0;
-            _this.graph.saveAs(selectedExportType);
-        };
-        divExport.appendChild(selectExport);
-        this.mainDiv.appendChild(divExport);
         document.body.appendChild(this.mainDiv);
     };
     return Toolbar;
@@ -9639,7 +9877,213 @@ exports.Toolbar = Toolbar;
 
 
 /***/ }),
-/* 60 */
+/* 61 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var RGBColor_1 = __webpack_require__(62);
+var JSEPS_1 = __webpack_require__(30);
+var epsSvgAttr = {
+    g: ['stroke', 'fill', 'stroke-width'],
+    line: ['x1', 'y1', 'x2', 'y2', 'stroke', 'stroke-width'],
+    rect: ['x', 'y', 'width', 'height', 'stroke', 'fill', 'stroke-width'],
+    ellipse: ['cx', 'cy', 'rx', 'ry', 'stroke', 'fill', 'stroke-width'],
+    circle: ['cx', 'cy', 'r', 'stroke', 'fill', 'stroke-width'],
+    text: ['x', 'y', 'font-size', 'font-family', 'text-anchor', 'font-weight', 'font-style', 'fill'],
+    path: ['']
+};
+var SVGConverter = (function () {
+    function SVGConverter(element, target, options) {
+        this.k = 1.0;
+        var hasScale = typeof (options.scale), hasRemoveInvalid = typeof (options.removeInvalid);
+        this.k = (options && hasScale !== 'undefined' ? options.scale : 1.0);
+        this.remove = (options && hasRemoveInvalid !== 'undefined' ? options.removeInvalid : false);
+        this.target = target;
+        this.parse(element);
+    }
+    SVGConverter.prototype.parse = function (element) {
+        var el, i, n, colorMode, hasFillColor, fillRGB, fillColor, strokeColor, strokeRGB, fontType, pdfFontSize, x, y, box, xOffset;
+        if (!element) {
+            return;
+        }
+        if (typeof element === 'string') {
+            el = document.createElement('div');
+            el.innerHTML = element;
+            element = el.childNodes[0];
+        }
+        for (i = 0; i < element.children.length; i += 1) {
+            n = element.children[i];
+            colorMode = null;
+            hasFillColor = false;
+            if ('g,line,rect,ellipse,circle,text'.indexOf(n.tagName) >= 0) {
+                fillColor = n.getAttribute('fill');
+                if (fillColor) {
+                    fillRGB = new RGBColor_1.RGBColor(fillColor);
+                    if (fillRGB.ok) {
+                        hasFillColor = true;
+                        colorMode = 'F';
+                    }
+                }
+            }
+            if ('g,line,rect,ellipse,circle'.indexOf(n.tagName) >= 0) {
+                if (hasFillColor) {
+                    this.target.setFillColor(fillRGB.r, fillRGB.g, fillRGB.b);
+                }
+                strokeColor = n.getAttribute('stroke');
+                if (n.hasAttribute('stroke-width')) {
+                    this.target.setLineWidth(this.attr(n, 'stroke-width'));
+                }
+                if (strokeColor) {
+                    strokeRGB = new RGBColor_1.RGBColor(strokeColor);
+                    if (strokeRGB.ok) {
+                        this.target.setDrawColor(strokeRGB.r, strokeRGB.g, strokeRGB.b);
+                        if (colorMode === 'F') {
+                            colorMode = 'FD';
+                        }
+                        else if (!hasFillColor) {
+                            colorMode = 'S';
+                        }
+                    }
+                    else {
+                        colorMode = null;
+                    }
+                }
+            }
+            switch (n.tagName.toLowerCase()) {
+                case 'svg':
+                case 'a':
+                case 'g':
+                    this.parse(n);
+                    break;
+                case 'line':
+                    this.target.line(this.attr(n, 'x1'), this.attr(n, 'y1'), this.attr(n, 'x2'), this.attr(n, 'y2'));
+                    break;
+                case 'rect':
+                    this.target.rect(this.attr(n, 'x'), this.attr(n, 'y'), this.attr(n, 'width'), this.attr(n, 'height'), n.getAttribute('style'));
+                    break;
+                case 'ellipse':
+                    this.target.ellipse(this.attr(n, 'cx'), this.attr(n, 'cy'), this.attr(n, 'rx'), this.attr(n, 'ry'), colorMode);
+                    break;
+                case 'circle':
+                    this.target.circle(this.attr(n, 'cx'), this.attr(n, 'cy'), this.attr(n, 'r'), colorMode);
+                    break;
+                case 'text':
+                    if (n.hasAttribute('font-family')) {
+                        switch (n.getAttribute('font-family').toLowerCase()) {
+                            case 'serif':
+                                this.target.setFont('times');
+                                break;
+                            case 'monospace':
+                                this.target.setFont('courier');
+                                break;
+                            default:
+                                n.getAttribute('font-family', 'sans-serif');
+                                this.target.setFont('Helvetica');
+                        }
+                    }
+                    if (hasFillColor) {
+                        this.target.setTextColor(fillRGB.r, fillRGB.g, fillRGB.b);
+                    }
+                    if (this.target instanceof JSEPS_1.JSEPS) {
+                        this.target.text(this.attr(n, 'x'), this.attr(n, 'y'), n.innerHTML);
+                        break;
+                    }
+                    fontType = '';
+                    if (n.hasAttribute('font-weight')) {
+                        if (n.getAttribute('font-weight') === 'bold') {
+                            fontType = 'bold';
+                        }
+                    }
+                    if (n.hasAttribute('font-style')) {
+                        if (n.getAttribute('font-style') === 'italic') {
+                            fontType += 'italic';
+                        }
+                    }
+                    this.target.setFontType(fontType);
+                    pdfFontSize = 16;
+                    if (n.hasAttribute('font-size')) {
+                        pdfFontSize = parseInt(n.getAttribute('font-size'), 10);
+                    }
+                    box = n.getBBox();
+                    x = this.attr(n, 'x');
+                    y = this.attr(n, 'y');
+                    xOffset = 0;
+                    if (n.hasAttribute('text-anchor')) {
+                        switch (n.getAttribute('text-anchor')) {
+                            case 'end':
+                                xOffset = box.width;
+                                break;
+                            case 'middle':
+                                xOffset = box.width / 2;
+                                break;
+                            case 'start':
+                                break;
+                            case 'default':
+                                n.getAttribute('text-anchor', 'start');
+                                break;
+                        }
+                        x = x - (xOffset * this.k);
+                    }
+                    this.target.setFontSize(pdfFontSize).text(x, y, n.innerHTML);
+                    break;
+                default:
+                    if (this.remove) {
+                        console.log('cant translate to target:', n);
+                        element.removeChild(n);
+                        i -= 1;
+                    }
+            }
+        }
+    };
+    SVGConverter.prototype.attr = function (node, name) {
+        return this.k * parseInt(node.getAttribute(name), 10);
+    };
+    return SVGConverter;
+}());
+exports.SVGConverter = SVGConverter;
+
+
+/***/ }),
+/* 62 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var RGBColor = (function () {
+    function RGBColor(value) {
+        this.ok = false;
+        if (value === 'none') {
+            return;
+        }
+        var computedColor, div = document.createElement('div');
+        div.style.backgroundColor = value;
+        document.body.appendChild(div);
+        computedColor = window.getComputedStyle(div).backgroundColor;
+        document.body.removeChild(div);
+        this.convert(computedColor);
+    }
+    RGBColor.prototype.convert = function (value) {
+        var values, regex = /rgb *\( *([0-9]{1,3}) *, *([0-9]{1,3}) *, *([0-9]{1,3}) *\)/;
+        values = regex.exec(value);
+        this.r = parseInt(values[1], 10);
+        this.g = parseInt(values[2], 10);
+        this.b = parseInt(values[3], 10);
+        this.ok = true;
+    };
+    RGBColor.prototype.toRGB = function () { return 'rgb(' + this.r + ', ' + this.g + ', ' + this.b + ')'; };
+    RGBColor.prototype.toHex = function () {
+        return '#' + (this.r + 0x10000).toString(16).substring(3).toUpperCase() + (this.g + 0x10000).toString(16).substring(3).toUpperCase() + (this.b + 0x10000).toString(16).substring(3).toUpperCase();
+    };
+    return RGBColor;
+}());
+exports.RGBColor = RGBColor;
+
+
+/***/ }),
+/* 63 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9715,7 +10159,7 @@ window['UML'] = UML;
 
 
 /***/ }),
-/* 61 */
+/* 64 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9740,18 +10184,28 @@ var ClassEditor = (function (_super) {
             options = {};
         }
         options.canvas = options.canvas || 'canvas';
+        options.autoSave = options.autoSave || true;
         if (!options.features) {
             options.features = {
                 drag: true,
                 editor: true,
                 palette: true,
                 select: true,
-                zoom: true
+                zoom: true,
+                toolbar: true,
+                import: true,
+                properties: true,
+                addnode: true,
+                newedge: true
             };
         }
         _this = _super.call(this, json, options) || this;
         return _this;
     }
+    ClassEditor.prototype.setBoardStyle = function (value) {
+        console.log(value);
+        this.importFile.setBoardStyle(value);
+    };
     return ClassEditor;
 }(Graph_1.Graph));
 exports.ClassEditor = ClassEditor;

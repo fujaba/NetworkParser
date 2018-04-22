@@ -219,7 +219,7 @@ public class GraphConverter implements Converter{
 			jsonRoot.put(STYLE, style);
 		}
 		jsonRoot.put(NODES, parseEntities(type, root, removePackage, removeParameterNames));
-		jsonRoot.put(EDGES, parseEdges(type, root.getAssociations(), removePackage));
+		jsonRoot.withKeyValue(EDGES, parseEdges(type, root.getAssociations(), removePackage));
 		return jsonRoot;
 	}
 

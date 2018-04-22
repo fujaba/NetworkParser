@@ -43,6 +43,7 @@ import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.xml.HTMLEntity;
 import de.uniks.networkparser.xml.XMLEntity;
+import javafx.scene.web.WebView;
 
 public class JavaAdapter implements JavaViewAdapter {
 	private SimpleKeyValueList<Object, String> callBack = new SimpleKeyValueList<Object, String>();
@@ -97,10 +98,10 @@ public class JavaAdapter implements JavaViewAdapter {
 				Object value = child.getValue(HTMLEntity.KEY_SRC);
 				if(value != null) {
 					// External Script
-					this._execute(readFile(""+value));
+					this._execute(readFile(""+value), false);
 				} else {
 					// Inline Script
-					this._execute(child.getValue());
+					this._execute(child.getValue(), false);
 				}
 			}
 		}
@@ -111,7 +112,7 @@ public class JavaAdapter implements JavaViewAdapter {
 			XMLEntity child = (XMLEntity) body.getChild(i);
 			if(HTMLEntity.SCRIPT.equalsIgnoreCase(child.getTag())) {
 				if(child.has(HTMLEntity.KEY_SRC) == false) {
-					this._execute(child.getValue());
+					this._execute(child.getValue(), false);
 				}
 			}
 		}
@@ -135,7 +136,7 @@ public class JavaAdapter implements JavaViewAdapter {
 		ReflectionLoader.call("setOnDragExited", webView, ReflectionLoader.EVENTHANDLER, proxy);
 		ReflectionLoader.call("setOnDragOver", webView, ReflectionLoader.EVENTHANDLER, proxy);
 		ReflectionLoader.call("setOnDragDropped", webView, ReflectionLoader.EVENTHANDLER, proxy);
-
+		ReflectionLoader.call("setOnDragDone", webView, ReflectionLoader.EVENTHANDLER, proxy);
 		return true;
 	}
 
@@ -213,21 +214,37 @@ public class JavaAdapter implements JavaViewAdapter {
 			// Must be cached
 			this.queue.add(script);
 		}
-		return _execute(script);
+		return _execute(script, true);
+	}
+
+	/**
+	 * Asynchronous execute of the script.
+	 * @param script Script for executing
+	 * @param convert convert Result
+	 * @return return value from Javascript
+	 */
+	public Object executeScript(String script, boolean convert) {
+		this.owner.logScript(script, NetworkParserLog.LOGLEVEL_INFO, this, "executeScript");
+		if(this.queue != null) {
+			// Must be cached
+			this.queue.add(script);
+		}
+		return _execute(script, convert);
 	}
 
 	/**
 	 * synchronous Execute of script
 	 * @param script Script for executing
+	 * @param convert convert Result
 	 * @return return value from Javascript
 	 */
-	private Object _execute(String script) {
+	private Object _execute(String script, boolean convert) {
 		Object jsObject = ReflectionLoader.call("executeScript", this.webEngine, String.class, script);
-		if(jsObject != null && ReflectionLoader.JSOBJECT.isAssignableFrom(jsObject.getClass())){
+		if(convert && jsObject != null && ReflectionLoader.JSOBJECT.isAssignableFrom(jsObject.getClass())){
 			JsonObject item = convertJSObject(jsObject);
 			return item;
 		}
-		else return jsObject;
+		return jsObject;
 	}
 
 	/**
@@ -253,7 +270,7 @@ public class JavaAdapter implements JavaViewAdapter {
 
 
 	protected void addAdapter(ObjectCondition eventListener) {
-		JsonObjectLazy executeScript = (JsonObjectLazy) _execute("bridge.addAdapter(new DiagramJS.DelegateAdapter());");
+		JsonObjectLazy executeScript = (JsonObjectLazy) _execute("bridge.addAdapter(new DiagramJS.DelegateAdapter());", true);
 		if(executeScript != null) {
 			Object reference = executeScript.getReference();
 			ReflectionLoader.call("setAdapter", reference, Object.class, eventListener);
@@ -267,7 +284,7 @@ public class JavaAdapter implements JavaViewAdapter {
 		if(this.queue != null) {
 			while(this.queue.size() > 0 ) {
 				String command = this.queue.remove(0);
-				this._execute(command);
+				this._execute(command, true);
 			}
 		}
 		this.queue = null; // Disable QUEUE
@@ -293,7 +310,7 @@ public class JavaAdapter implements JavaViewAdapter {
 	 */
 	public String getCallBackName(Object clazz) {
 		String callBackName = callBack.get(clazz);
-		Object window = this._execute("window");
+		Object window = this._execute("window", false);
 		if (callBackName == null) {
 			callBackName = "_callBack" + (callBack.size() + 1);
 			callBack.put(clazz, callBackName);

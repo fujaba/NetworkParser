@@ -5,6 +5,7 @@ import org.junit.Test;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.ext.ClassModel;
 import de.uniks.networkparser.ext.story.Story;
+import de.uniks.networkparser.ext.story.StoryStepJUnit;
 import de.uniks.networkparser.ext.story.StoryUtil;
 
 public class StoryTest {
@@ -33,6 +34,13 @@ public class StoryTest {
 		story.addDiagram(model);
 
 
+		story.dumpHTML();
+	}
+	
+	@Test
+	public void testStoryJUnit() {
+		Story story = new Story();
+		story.add(new StoryStepJUnit());
 		story.dumpHTML();
 	}
 

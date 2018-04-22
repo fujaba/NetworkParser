@@ -69,6 +69,7 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 	private final int WIDTH=900;
 	private final int HEIGHT=600;
 	private boolean autoClose=true;
+	private JSEditor jsEditor;
 
 	public static boolean convertToPNG(HTMLEntity entity, String file, int... dimension) {
 		return converting(entity, file, true, true, dimension);
@@ -207,11 +208,23 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 					Object win = ReflectionLoader.call("executeScript", webEngine, "window");
 					ReflectionLoader.call("setMember", win, String.class, "java", Object.class, this);
 					this.changed(evt);
+					
+					// Load Editor
+					Object result = super.executeScript("window['editor'] = new ClassEditor(\"board\");", false);
+//					result = super.executeScript("return window['editor']");
+					Object JSwin = super.executeScript("window", false);
+					result  = ReflectionLoader.call("getMember", JSwin, String.class, "editor");
+					
+//					netscape.javascript.JSObject type = (netscape.javascript.JSObject) result;
+//					type.call(methodName, args)<
+//					Object result = super.executeScript("return new ClassEditor(\"board\");");
+					jsEditor = new JSEditor(result);
 				}
 				return true;
 			}
 		}
 		String name = (String) ReflectionLoader.callChain(value, "getEventType", "getName");
+		System.out.println(name);
 		if(JavaViewAdapter.DRAGOVER.equalsIgnoreCase(name)) {
 			return onDragOver(value);
 		}
@@ -222,8 +235,8 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 			return onError(value);
 		}
 		if(JavaViewAdapter.DRAGEXITED.equalsIgnoreCase(name)) {
-			return onDragDropped(value);
-//			return onDragExited(value);
+//			return onDragDropped(value);
+			return onDragExited(value);
 		}
 		if(value instanceof GUIEvent) {
 			GUIEvent evt = (GUIEvent) value;
@@ -307,6 +320,7 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 
 	protected boolean onDragOver(Object event) {
 		List<File> files = getFiles(event);
+		System.out.println(files);
 		if(files != null) {
 			boolean error=true;
 			for(File file:files){
@@ -315,15 +329,14 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 					error = false;
 				}
 			}
-			Object webEngine = owner.getWebView();
 			if(!error) {
 				Object mode = ReflectionLoader.getField("COPY", ReflectionLoader.TRANSFERMODE);
 				ReflectionLoader.call("acceptTransferModes", event, ReflectionLoader.TRANSFERMODE, mode);
-				ReflectionLoader.call("executeScript", webEngine, String.class, "classEditor.setBoardStyle(\"Ok\");");
+				jsEditor.setBoardStyle("OK");
 			}else {
 				Object mode = ReflectionLoader.getField("NONE", ReflectionLoader.TRANSFERMODE);
 				ReflectionLoader.call("acceptTransferModes", event, ReflectionLoader.TRANSFERMODE, mode);
-				ReflectionLoader.call("executeScript", webEngine, String.class, "classEditor.setBoardStyle(\"Error\");");
+				jsEditor.setBoardStyle("Error");
 			}
 		}
 		ReflectionLoader.call("consume", event);
@@ -332,7 +345,6 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 	protected boolean onDragDropped(Object event) {
 		List<File> files = getFiles(event);
 		if(files != null) {
-			Object webEngine = owner.getWebView();
 			for(File file : files){
 				StringBuilder sb = new StringBuilder();
 				byte buf[] = new byte[1024];
@@ -355,8 +367,7 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 						}
 					}
 				}
-				//ReflectionLoader.call("executeScript", webEngine, String.class, "classEditor.import('"+sb.toString()+"', \""+file.getAbsolutePath()+"\");");
-				ReflectionLoader.call("executeScript", webEngine, String.class, "classEditor.import('"+sb.toString()+"');");
+				jsEditor.importModel(sb.toString());
 				break;
 			}
 		}
@@ -364,7 +375,7 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 	}
 
 	protected boolean onDragExited(Object event) {
-		this.owner.executeScript("classEditor.setBoardStyle(\"dragleave\");");
+		jsEditor.setBoardStyle("dragleave");
 		return true;
 	}
 
@@ -393,7 +404,7 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 			return result;
 		}
 		HTMLEntity html = new HTMLEntity();
-		html.createScript("classEditor = new ClassEditor(\"board\");", html.getBody());
+		//html.createScript("classEditor = new ClassEditor(\"board\");", html.getBody());
 		if(type.equals(TYPE_EXPORT) || type.equals(TYPE_EXPORTALL)) {
 			if(type.equals(TYPE_EXPORT)) {
 				html.withHeader("dagre-min.js");

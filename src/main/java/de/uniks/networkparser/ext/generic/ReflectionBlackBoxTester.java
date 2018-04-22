@@ -72,7 +72,7 @@ public class ReflectionBlackBoxTester {
 	private String packageName;
 	private NetworkParserLog logger;
 
-	public static void main(String[] args) {
+	public static void mainTester(String[] args) {
 		Object junitCore = ReflectionLoader.newInstanceStr("org.junit.runner.JUnitCore");
 		SimpleSet<Class<?>> testClasses=new SimpleSet<Class<?>>();
 		String blackBoxPackage = null;

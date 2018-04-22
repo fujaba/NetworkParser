@@ -41,27 +41,23 @@ public class GUIEvent extends Event {
 	}
 
 	public void handle(Object event) {
-		System.out.println("handle");
 		if(this.listerner != null) {
 			this.listerner.update(event);
 		}
 	}
 	public void invalidated(Object event) {
-		System.out.println("invalidated");
 		if(this.listerner != null) {
 			this.listerner.update(event);
 		}
 	}
 
 	public void actionPerformed(Object e) {
-		System.out.println("actionPerformed");
 		if(this.listerner != null) {
 			this.listerner.update(e);
 		}
 	}
 
 	public void changed(Object observable, Object oldValue, Object newValue) {
-		System.out.println("changed");
 		if(this.listerner != null) {
 			this.listerner.update(new SimpleEvent(observable, "State", oldValue,newValue));
 		}
