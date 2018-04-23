@@ -58,10 +58,7 @@ import de.uniks.networkparser.xml.HTMLEntity;
 
 public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 	private static final String FILE404="<!DOCTYPE HTML PUBLIC \"-//IETF//DTD HTML 2.0//EN\">\r\n<html><head><title>404 Not Found</title></head><body><h1>Not Found</h1><p>The requested URL was not found on this server.</p></body></html>";
-	public static final String TYPE_EXPORT="EXPORT";
-	public static final String TYPE_EXPORTALL="EXPORTALL";
 	private static final String METHOD_GENERATE="generating";
-	private String type = TYPE_EXPORT;
 	private SimpleController controller;
 	private Object logic;
 	private SimpleEventCondition listener;
@@ -103,9 +100,10 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 			public void run() {
 				Object stage = ReflectionLoader.newInstance(ReflectionLoader.STAGE);
 				DiagramEditor editor = new DiagramEditor();
+				editor.type = DiagramEditor.TYPE_EDITOR;
 				if(file != null) {
 					editor.file = file;
-					editor.loadHTMLEntity = true;
+					editor.type = DiagramEditor.TYPE_CONTENT;
 					editor.autoClose = autoClose;
 				}
 				editor.creating(stage, entity, width, height);
@@ -221,16 +219,7 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 					this.changed(evt);
 
 					// Load Editor
-//					System.out.println(super.executeScript("window.onload = function(e){window['editor'] = new ClassEditor(\"board\");}", false));
-//					System.out.println(super.executeScript("new ClassEditor(\"board\");", false));
-					System.out.println(super.executeScript("ClassEditor", false));
 					System.out.println(super.executeScript("window['editor'] = new ClassEditor(\"board\");", false));
-					System.out.println(super.executeScript("window", false));
-					System.out.println(super.executeScript("window['editor']", false));
-					System.out.println(super.executeScript("window['editor'] = 'Hallo'", false));
-					System.out.println(super.executeScript("window['editor']", false));
-//					Object result  = ReflectionLoader.call("getMember", win, String.class, "editor");
-//					jsEditor = new JSEditor(result);
 				}
 				return true;
 			}
@@ -423,25 +412,39 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 			return result;
 		}
 		HTMLEntity html = new HTMLEntity();
+		boolean loadFile = false;
 		//html.createScript("classEditor = new ClassEditor(\"board\");", html.getBody());
-		if(type.equals(TYPE_EXPORT) || type.equals(TYPE_EXPORTALL)) {
-			if(type.equals(TYPE_EXPORT)) {
-				html.withHeader("dagre-min.js");
-				html.withHeader("diagram.js");
-				html.withHeader("jspdf.min.js");
-				html.withHeader("diagramstyle.css");
-				html.withScript("window.onload = function(e){window['editor'] = new ClassEditor(\\\"board\\\");}", html.getBody());
-				FileBuffer.writeFile("dagre-min.js", FileBuffer.readResource("graph/dagre-min.js"), FileBuffer.NONE);
-				FileBuffer.writeFile("diagram.js",FileBuffer.readResource("graph/diagram.js"), FileBuffer.NONE);
-				FileBuffer.writeFile("jspdf.min.js",FileBuffer.readResource("graph/jspdf.min.js"), FileBuffer.NONE);
-				FileBuffer.writeFile("diagramstyle.css",FileBuffer.readResource("graph/diagramstyle.css"), FileBuffer.NONE);
-			} else {
-				// Add external Files
-				html.withScript(readFile("graph/dagre-min.js"), html.getHeader());
-				html.withScript(readFile("graph/diagram.js"), html.getHeader());
-				html.withScript(readFile("graph/jspdf.min.js"), html.getHeader());
-				html.withScript(readFile("graph/diagramstyle.css"), html.getHeader());
-			}
+		if(TYPE_EDITOR.equalsIgnoreCase(type)) {
+			loadFile = true;
+			html.withScript(FileBuffer.readResource("graph/diagram.js").toString(), html.getHeader());
+			html.withHeader("dagre.min.js");
+			html.withHeader("jspdf.min.js");
+			html.withHeader("diagramstyle.css");
+			FileBuffer.writeFile("dagre-min.js", FileBuffer.readResource("graph/dagre-min.js"), FileBuffer.NONE);
+			FileBuffer.writeFile("diagram.js",FileBuffer.readResource("graph/diagram.js"), FileBuffer.NONE);
+			FileBuffer.writeFile("jspdf.min.js",FileBuffer.readResource("graph/jspdf.min.js"), FileBuffer.NONE);
+			FileBuffer.writeFile("diagramstyle.css",FileBuffer.readResource("graph/diagramstyle.css"), FileBuffer.NONE);
+		}
+		if(TYPE_EXPORT.equalsIgnoreCase(type)) {
+			loadFile = true;
+			html.withHeader("dagre.min.js");
+			html.withHeader("diagram.js");
+			html.withHeader("jspdf.min.js");
+			html.withHeader("diagramstyle.css");
+			FileBuffer.writeFile("dagre.min.js", FileBuffer.readResource("graph/dagre.min.js"), FileBuffer.NONE);
+			FileBuffer.writeFile("diagram.js",FileBuffer.readResource("graph/diagram.js"), FileBuffer.NONE);
+			FileBuffer.writeFile("jspdf.min.js",FileBuffer.readResource("graph/jspdf.min.js"), FileBuffer.NONE);
+			FileBuffer.writeFile("diagramstyle.css",FileBuffer.readResource("graph/diagramstyle.css"), FileBuffer.NONE);
+		} 
+		if(TYPE_EXPORTALL.equalsIgnoreCase(type)) {
+			// Add external Files
+			loadFile = true;
+			html.withScript(readFile("graph/dagre.min.js"), html.getHeader());
+			html.withScript(readFile("graph/diagram.js"), html.getHeader());
+			html.withScript(readFile("graph/jspdf.min.js"), html.getHeader());
+			html.withScript(readFile("graph/diagramstyle.css"), html.getHeader());
+		}
+		if(loadFile) {
 			FileBuffer.writeFile("Editor.html", html.toString(), FileBuffer.NONE);
 			try {
 				String string = new File("Editor.html").toURI().toURL().toString();
@@ -523,7 +526,7 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 	
 	@Override
 	public boolean changed(SimpleEvent evt) {
-		if(loadHTMLEntity == false) {
+		if(TYPE_CONTENT.equalsIgnoreCase(type) == false) {
 			super.changed(evt);
 			return true;
 		}

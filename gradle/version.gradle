@@ -63,7 +63,8 @@ task JavaGit(type:JavaExec, dependsOn: compileJava18) {
 		}
 	}
 	errorOutput = System.err
-	main = "de.uniks.networkparser.ext.git.GitRevision"
+	main = "de.uniks.networkparser.ext.DiagramEditor"
+	args 'GIT'
 	classpath = (sourceSets.main.compileClasspath + sourceSets.main.output + files('build/classes/main18'))
 
 	ByteArrayOutputStream stdOutput = new ByteArrayOutputStream()

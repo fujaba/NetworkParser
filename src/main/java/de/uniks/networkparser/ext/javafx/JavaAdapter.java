@@ -43,8 +43,6 @@ import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.xml.HTMLEntity;
 import de.uniks.networkparser.xml.XMLEntity;
-import javafx.scene.web.WebEngine;
-import javafx.scene.web.WebView;
 
 public class JavaAdapter implements JavaViewAdapter {
 	private SimpleKeyValueList<Object, String> callBack = new SimpleKeyValueList<Object, String>();
@@ -52,7 +50,11 @@ public class JavaAdapter implements JavaViewAdapter {
 	protected Object webView;
 	protected Object webEngine;
 	private SimpleList<String> queue=new SimpleList<String>();
-	protected boolean loadHTMLEntity = false;
+	public static final String TYPE_EXPORT="EXPORT";
+	public static final String TYPE_EDITOR="EDITOR";
+	public static final String TYPE_EXPORTALL="EXPORTALL";
+	public static final String TYPE_CONTENT="CONTENT";
+	protected String type = TYPE_EXPORT;
 
 	public JavaAdapter() {
 		if(ReflectionLoader.WEBVIEW != null) {
@@ -86,7 +88,7 @@ public class JavaAdapter implements JavaViewAdapter {
 			return false;
 		}
 		HTMLEntity entity = (HTMLEntity) item;
-		if(loadHTMLEntity) {
+		if(TYPE_CONTENT.equalsIgnoreCase(type)) {
 			ReflectionLoader.call("loadContent", webEngine, entity.toString());
 			return true;
 		}
@@ -130,15 +132,6 @@ public class JavaAdapter implements JavaViewAdapter {
 
 		Object proxy = ReflectionLoader.createProxy(eventListener, ReflectionLoader.CHANGELISTENER, ReflectionLoader.EVENTHANDLER);
 		ReflectionLoader.call("addListener", stateProperty, ReflectionLoader.CHANGELISTENER, proxy);
-WebEngine web = (WebEngine) webEngine;
-//web.setOnError(new EventHandler<WebErrorEvent>() {
-//	
-//	@Override
-//	public void handle(WebErrorEvent event) {
-//		// TODO Auto-generated method stub
-//		
-//	}
-//});
 		ReflectionLoader.call("setOnError", webEngine, ReflectionLoader.EVENTHANDLER, proxy);
 		ReflectionLoader.call("setOnAlert", webEngine, ReflectionLoader.EVENTHANDLER, proxy);
 
