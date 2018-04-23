@@ -100,7 +100,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 	public static final byte FLAG_SEARCHFORSUPERCLASS = 0x02;
 
 	public static final byte FLAG_SIMPLEFORMAT = 0x02;
-
+	
 	protected byte flag = FLAG_ID;
 
 	public static final String SESSION = "session";
@@ -893,9 +893,6 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 				tokener.withBuffer(buffer);
 				tokener.skipHeader();
 				return decodingXMLEntity(tokener, map);
-//				XMLEntity item = (XMLEntity) this.xmlTokener.newInstance();
-//				item.withValue(buffer);
-//				valueItem = item;
 			} else {
 				MapEntity map = new MapEntity(filter, flag, this, byteTokener);
 				// MUST BE BYTE
@@ -967,15 +964,22 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 	 */
 	private Object decodingJsonArray(JsonArray jsonArray, MapEntity map) {
 		Object result = null;
+		SimpleList<?> list = null;
 		int len = jsonArray.size() - 1;
 		// Add all Objects
+		if(map.isFlag(FLAG_SIMPLEFORMAT)) {
+			list = new SimpleList<Object>();
+			result = list;
+		}
+		
 		for (int i = 0; i <= len; i++) {
 			JsonObject kidObject = jsonArray.getJSONObject(i);
 			Object tmp = decodingJsonObject(kidObject, map);
-			if (kidObject.has(MAINITEM)) {
+			if(map.isFlag(FLAG_SIMPLEFORMAT)) {
+				list.add(tmp);
+			} else if (kidObject.has(MAINITEM)) {
 				result = tmp;
-			}
-			else if (i == 0) {
+			} else if (i == 0) {
 				result = tmp;
 			}
 		}

@@ -185,6 +185,13 @@ public class HTMLEntity implements BaseItem {
 		}
 		return this;
 	}
+	
+	public HTMLEntity withBase(String path) {
+		XMLEntity child = XMLEntity.TAG("base");
+		child.add("href", path);
+		this.header.with(child);
+		return this;
+	}
 
 	XMLEntity getChild(String ref) {
 		XMLEntity child = null;

@@ -39,6 +39,7 @@ import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.converter.GraphConverter;
 import de.uniks.networkparser.ext.generic.ReflectionLoader;
+import de.uniks.networkparser.ext.git.GitRevision;
 import de.uniks.networkparser.ext.io.FileBuffer;
 import de.uniks.networkparser.ext.javafx.GUIEvent;
 import de.uniks.networkparser.ext.javafx.JavaAdapter;
@@ -121,6 +122,16 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 	}
 
 	public static void main(String[] args) {
+		if(args != null && args.length>0) {
+			if("GIT".equalsIgnoreCase(args[0])) {
+				GitRevision revision = new GitRevision();
+				try {
+					System.out.println(revision.execute());
+				}catch (Exception e) {
+				}
+				return;
+			}
+		}
 		if(converting(null, null, false, true) == false) {
 			// NO JAVAFX Found
 			NodeProxyTCP server = NodeProxyTCP.createServer(8080);
@@ -205,26 +216,26 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 			SimpleEvent evt = (SimpleEvent) value;
 			if(JavaViewAdapter.STATE.equalsIgnoreCase(evt.getNewValue().getClass().getName())) {
 				if(evt.getNewValue().toString().equals(JavaViewAdapter.SUCCEEDED)) {
-					Object win = ReflectionLoader.call("executeScript", webEngine, "window");
+					Object win = super.executeScript("window", false);
 					ReflectionLoader.call("setMember", win, String.class, "java", Object.class, this);
 					this.changed(evt);
-					
+
 					// Load Editor
-					Object result = super.executeScript("window['editor'] = new ClassEditor(\"board\");", false);
-//					result = super.executeScript("return window['editor']");
-					Object JSwin = super.executeScript("window", false);
-					result  = ReflectionLoader.call("getMember", JSwin, String.class, "editor");
-					
-//					netscape.javascript.JSObject type = (netscape.javascript.JSObject) result;
-//					type.call(methodName, args)<
-//					Object result = super.executeScript("return new ClassEditor(\"board\");");
-					jsEditor = new JSEditor(result);
+//					System.out.println(super.executeScript("window.onload = function(e){window['editor'] = new ClassEditor(\"board\");}", false));
+//					System.out.println(super.executeScript("new ClassEditor(\"board\");", false));
+					System.out.println(super.executeScript("ClassEditor", false));
+					System.out.println(super.executeScript("window['editor'] = new ClassEditor(\"board\");", false));
+					System.out.println(super.executeScript("window", false));
+					System.out.println(super.executeScript("window['editor']", false));
+					System.out.println(super.executeScript("window['editor'] = 'Hallo'", false));
+					System.out.println(super.executeScript("window['editor']", false));
+//					Object result  = ReflectionLoader.call("getMember", win, String.class, "editor");
+//					jsEditor = new JSEditor(result);
 				}
 				return true;
 			}
 		}
 		String name = (String) ReflectionLoader.callChain(value, "getEventType", "getName");
-		System.out.println(name);
 		if(JavaViewAdapter.DRAGOVER.equalsIgnoreCase(name)) {
 			return onDragOver(value);
 		}
@@ -249,6 +260,15 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 		}
 		
 		return false;
+	}
+	
+	public JSEditor getJSEditor() {
+		if(this.jsEditor == null) {
+			Object JSwin = super.executeScript("window", false);
+			Object result  = ReflectionLoader.call("getMember", JSwin, String.class, "editor");
+			jsEditor = new JSEditor(result);
+		}
+		return jsEditor;
 	}
 
 	public void exit() {
@@ -320,7 +340,6 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 
 	protected boolean onDragOver(Object event) {
 		List<File> files = getFiles(event);
-		System.out.println(files);
 		if(files != null) {
 			boolean error=true;
 			for(File file:files){
@@ -332,11 +351,11 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 			if(!error) {
 				Object mode = ReflectionLoader.getField("COPY", ReflectionLoader.TRANSFERMODE);
 				ReflectionLoader.call("acceptTransferModes", event, ReflectionLoader.TRANSFERMODE, mode);
-				jsEditor.setBoardStyle("OK");
+				getJSEditor().setBoardStyle("OK");
 			}else {
 				Object mode = ReflectionLoader.getField("NONE", ReflectionLoader.TRANSFERMODE);
 				ReflectionLoader.call("acceptTransferModes", event, ReflectionLoader.TRANSFERMODE, mode);
-				jsEditor.setBoardStyle("Error");
+				getJSEditor().setBoardStyle("Error");
 			}
 		}
 		ReflectionLoader.call("consume", event);
@@ -367,7 +386,7 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 						}
 					}
 				}
-				jsEditor.importModel(sb.toString());
+				getJSEditor().importModel(sb.toString());
 				break;
 			}
 		}
@@ -375,7 +394,7 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 	}
 
 	protected boolean onDragExited(Object event) {
-		jsEditor.setBoardStyle("dragleave");
+		getJSEditor().setBoardStyle("dragleave");
 		return true;
 	}
 
@@ -411,6 +430,7 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 				html.withHeader("diagram.js");
 				html.withHeader("jspdf.min.js");
 				html.withHeader("diagramstyle.css");
+				html.withScript("window.onload = function(e){window['editor'] = new ClassEditor(\\\"board\\\");}", html.getBody());
 				FileBuffer.writeFile("dagre-min.js", FileBuffer.readResource("graph/dagre-min.js"), FileBuffer.NONE);
 				FileBuffer.writeFile("diagram.js",FileBuffer.readResource("graph/diagram.js"), FileBuffer.NONE);
 				FileBuffer.writeFile("jspdf.min.js",FileBuffer.readResource("graph/jspdf.min.js"), FileBuffer.NONE);
@@ -425,11 +445,11 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 			FileBuffer.writeFile("Editor.html", html.toString(), FileBuffer.NONE);
 			try {
 				String string = new File("Editor.html").toURI().toURL().toString();
- 				ReflectionLoader.call("load", webEngine, string);
+				ReflectionLoader.call("load", webEngine, string);
 				return true;
 			} catch (MalformedURLException e) {
 			}
-			return false;
+			return true;
 		}
 		// Add external Files
 		html.withScript(readFile("graph/dagre-min.js"), html.getHeader());

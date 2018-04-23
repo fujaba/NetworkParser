@@ -45,7 +45,7 @@ public class MapEntity extends AbstractList<Object>{
 	protected MapEntityStack stack;
 	/** The show line. */
 	protected byte tokenerFlag;
-    private IdMap map;
+	private IdMap map;
 	public byte mapFlag;
 	private Grammar grammar;
 	private Tokener tokener;

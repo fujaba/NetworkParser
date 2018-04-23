@@ -43,6 +43,7 @@ import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.xml.HTMLEntity;
 import de.uniks.networkparser.xml.XMLEntity;
+import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 
 public class JavaAdapter implements JavaViewAdapter {
@@ -129,7 +130,15 @@ public class JavaAdapter implements JavaViewAdapter {
 
 		Object proxy = ReflectionLoader.createProxy(eventListener, ReflectionLoader.CHANGELISTENER, ReflectionLoader.EVENTHANDLER);
 		ReflectionLoader.call("addListener", stateProperty, ReflectionLoader.CHANGELISTENER, proxy);
-
+WebEngine web = (WebEngine) webEngine;
+//web.setOnError(new EventHandler<WebErrorEvent>() {
+//	
+//	@Override
+//	public void handle(WebErrorEvent event) {
+//		// TODO Auto-generated method stub
+//		
+//	}
+//});
 		ReflectionLoader.call("setOnError", webEngine, ReflectionLoader.EVENTHANDLER, proxy);
 		ReflectionLoader.call("setOnAlert", webEngine, ReflectionLoader.EVENTHANDLER, proxy);
 
@@ -284,7 +293,7 @@ public class JavaAdapter implements JavaViewAdapter {
 		if(this.queue != null) {
 			while(this.queue.size() > 0 ) {
 				String command = this.queue.remove(0);
-				this._execute(command, true);
+				this._execute(command, false);
 			}
 		}
 		this.queue = null; // Disable QUEUE

@@ -48,10 +48,6 @@ public class GitRevision {
 	public static final String REVISIONNUMBER="revisionnumber";
 	public static final String COMMITS="commits";
 
-	public static void main(String[] args) throws IOException {
-		GitRevision revision = new GitRevision();
-		System.out.println(revision.execute());
-	}
 	private boolean full=false;
 
 	@SuppressWarnings("unchecked")

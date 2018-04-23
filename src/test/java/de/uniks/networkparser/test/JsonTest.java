@@ -166,6 +166,26 @@ public class JsonTest extends IOClasses {
 	}
 
 	@Test
+	public void testJSONUni() {
+		University university = new University();
+		university.withName("Uni Kassel");
+		
+		IdMap map = new IdMap();
+		map.with(new UniversityCreator());
+		map.withTimeStamp(1);
+		
+		JsonArray jsonArray = map.toJsonArray(university);
+		
+		String value = jsonArray.toString();
+
+		Assert.assertTrue(map.decode(value) instanceof University);
+		map.withFlag(IdMap.FLAG_SIMPLEFORMAT);
+		Object uniList = map.decode(value);
+		Assert.assertTrue(map.decode(value) instanceof SimpleList<?>);
+
+	}
+
+	@Test
 	public void testSimpleMap() {
 		IdMap map = new IdMap();
 		map.with(new FullAssocsCreator());
