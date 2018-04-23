@@ -108,16 +108,25 @@ public class ParserEntity {
 		nextToken();
 		nextToken();
 		// [packagestat] importlist classlist
+		// TODO need this to ensure parser is working when no package is present
+		if (currentTokenEquals(SymTabEntry.TYPE_PACKAGE) == false) {
+			nextToken();
+		}
 		if (currentTokenEquals(SymTabEntry.TYPE_PACKAGE)) {
 			parsePackageDecl();
 		}
 		code.withStartImports(currentToken.startPos);
+		// TODO need this to ensure parser is working when no imports are present
+		if (currentTokenEquals(SymTabEntry.TYPE_IMPORT) == false) {
+			nextToken();
+		}
 		while (currentTokenEquals(SymTabEntry.TYPE_IMPORT)) {
 			parseImport();
 		}
 		code.withEndOfImports(currentToken.startPos);
 
-		nextToken();
+		// TODO need to remove this call, as is may skip public modifier of class
+		//nextToken();
 
 		parseClassDecl();
 		return this.file;
