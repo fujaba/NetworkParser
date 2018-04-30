@@ -66,6 +66,18 @@ public class Story implements Comparable<Story> {
 		this.steps.add(step);
 	}
 
+	public Story withPath(String value) {
+		if(value == null) {
+			this.path = "";
+			return this;
+		}
+		if(value.endsWith("/") || value.endsWith("\\") ) {
+			this.path = value;
+		}else {
+			this.path = value + "/";
+		}
+		return this;
+	}
 
 	 public String getLabel() {
 		 if(this.label == null && this.outputFile != null) {
@@ -172,13 +184,13 @@ public class Story implements Comparable<Story> {
 			return false;
 		}
 		HTMLEntity output = new HTMLEntity();
-		output.withHeader("../src/main/resources/de/uniks/networkparser/graph/diagramstyle.css");
+		addScript(path, "diagramstyle.css", output);
+
+		addScript(path, "highlight.pack.js", output);
+		addScript(path, "highlightjs-line-numbers.min.js", output);
+
 		output.withEncoding(HTMLEntity.ENCODING);
 
-		output.withHeader("highlight.pack.js");
-		output.withHeader("highlightjs-line-numbers.min.js");
-		output.withHeader("github.css");
-		output.withHeader("default.css");
 		output.withScript("hljs.initHighlightingOnLoad();" + BaseItem.CRLF + "hljs.initLineNumbersOnLoad();", output.getHeader());
 
 		SimpleEvent evt = new SimpleEvent(this, null, null, output);
@@ -190,6 +202,11 @@ public class Story implements Comparable<Story> {
 		return FileBuffer.writeFile(path + fileName, output.toString(2));
 	}
 
+	public static void addScript(String path, String name, HTMLEntity entry) {
+		FileBuffer.writeFile(path + name, FileBuffer.readResource("graph/"+name), FileBuffer.NONE);
+		entry.withHeader(name);
+	}
+	
 	public String getPath() {
 		return path;
 	}

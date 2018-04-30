@@ -38,6 +38,7 @@ import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.converter.GraphConverter;
+import de.uniks.networkparser.ext.generic.ReflectionBlackBoxTester;
 import de.uniks.networkparser.ext.generic.ReflectionLoader;
 import de.uniks.networkparser.ext.git.GitRevision;
 import de.uniks.networkparser.ext.io.FileBuffer;
@@ -127,6 +128,10 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 					System.out.println(revision.execute());
 				}catch (Exception e) {
 				}
+				return;
+			}
+			if(args[0] != null && args[0].toLowerCase().startsWith("test=")) {
+				ReflectionBlackBoxTester.mainTester(args);
 				return;
 			}
 		}
@@ -219,7 +224,7 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 					this.changed(evt);
 
 					// Load Editor
-					System.out.println(super.executeScript("window['editor'] = new ClassEditor(\"board\");", false));
+					super.executeScript("window['editor'] = new ClassEditor(\"board\");", false);
 				}
 				return true;
 			}
@@ -420,7 +425,7 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 			html.withHeader("dagre.min.js");
 			html.withHeader("jspdf.min.js");
 			html.withHeader("diagramstyle.css");
-			FileBuffer.writeFile("dagre-min.js", FileBuffer.readResource("graph/dagre-min.js"), FileBuffer.NONE);
+			FileBuffer.writeFile("dagre.min.js", FileBuffer.readResource("graph/dagre.min.js"), FileBuffer.NONE);
 			FileBuffer.writeFile("diagram.js",FileBuffer.readResource("graph/diagram.js"), FileBuffer.NONE);
 			FileBuffer.writeFile("jspdf.min.js",FileBuffer.readResource("graph/jspdf.min.js"), FileBuffer.NONE);
 			FileBuffer.writeFile("diagramstyle.css",FileBuffer.readResource("graph/diagramstyle.css"), FileBuffer.NONE);
@@ -455,7 +460,7 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 			return true;
 		}
 		// Add external Files
-		html.withScript(readFile("graph/dagre-min.js"), html.getHeader());
+		html.withScript(readFile("graph/dagre.min.js"), html.getHeader());
 		html.withScript(readFile("graph/diagram.js"), html.getHeader());
 		html.withScript(readFile("graph/diagramstyle.css"), html.getHeader());
 		ReflectionLoader.call("loadContent", webEngine, html.toString());

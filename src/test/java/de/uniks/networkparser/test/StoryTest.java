@@ -40,7 +40,14 @@ public class StoryTest {
 	@Test
 	public void testStoryJUnit() {
 		Story story = new Story();
-		story.add(new StoryStepJUnit());
+		story.withPath("build/story");
+		StoryStepJUnit storyTest = new StoryStepJUnit().withPackageName("de.uniks.networkparser.test.model");
+		// MUST BE JACOCO TO BUILD-Path MAVEN EXAMPLE: dependencies {compile "org.jacoco:jacoco:0.8.1"}
+		
+		// MSUT BE A LINK TO JACOCO AGENT
+		storyTest.withAgentPath("lib/jacocoagent.jar");
+		story.add(storyTest);
+		story.withName("StoryJUnit");
 		story.dumpHTML();
 	}
 

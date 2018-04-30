@@ -26,6 +26,7 @@ THE SOFTWARE.
 import java.io.File;
 import java.util.Collection;
 import java.util.List;
+
 import de.uniks.networkparser.NetworkParserLog;
 import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.buffer.CharacterBuffer;
@@ -41,6 +42,8 @@ import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SimpleSet;
+import de.uniks.networkparser.xml.HTMLEntity;
+import de.uniks.networkparser.xml.XMLEntity;
 
 public class StoryStepJUnit implements ObjectCondition {
 	private static final String BLACKBOXFILE="backbox.txt";
@@ -219,21 +222,50 @@ public class StoryStepJUnit implements ObjectCondition {
 
 		// ADD RESULT TO STORY DOCUMENTATION FOR BLACKBOX AND JACOCO
 		this.writeHTML(path+"jacoco.exec", path+"jacoco", label);
-
-//		HTMLEntity element = (HTMLEntity) evt.getNewValue();
-//		Story story = (Story) evt.getSource();
-//		if(this.value != null) {
-//			int counter = story.getCounter();
-//			XMLEntity textItem = element.createBodyTag("p");
-//			textItem.add("class", "step");
-//			String textValue = "";
-//			if(counter>=0) {
-//				textValue = "Step "+ counter+": ";
-//			}
-//			textValue += this.value;
-//
-//			textItem.withValueItem(textValue);
-//		}
+		CharacterBuffer indexFile = FileBuffer.readFile(path+"jacoco/index.html");
+		if(indexFile != null) {
+			String search = "<tfoot><tr><td>Total</td><td class=\"bar\">";
+			int pos = indexFile.indexOf(search);
+			if(pos>0) {
+				pos +=search.length();
+				int end = indexFile.indexOf("<", pos);
+				if(end>0) {
+					String name = indexFile.substring(pos, end);
+					HTMLEntity output = (HTMLEntity) evt.getNewValue();
+					XMLEntity div = output.createTag("div", output.getBody());
+					XMLEntity p = output.createTag("p", div);
+					p.withCloseTag();
+					int level=0;
+					try {
+						String[] split = name.split("of");
+						if(split.length==2) {
+							Integer no = Integer.valueOf(split[0].trim());
+							Integer sum = Integer.valueOf(split[1].trim());
+							int proz = ((no/sum) * 100);
+							if(proz<50) {
+								level = 2;
+							} else if(proz<80) {
+								level = 1;
+							}
+						}
+					}catch (Exception e) {
+					}
+					XMLEntity textnode = output.createTag("div", div);
+					textnode.add("class", "notify-text");
+					if(level == 0) {
+						div.add("class", "notify notify-red");
+						p.add("class", "symbol icon-error");
+					} else if(level == 1) {
+						div.add("class", "notify notify-yellow");
+						p.add("class", "symbol icon-info");
+					} else {
+						div.add("class", "notify notify-green");
+						p.add("class", "symbol icon-tick");
+					}
+					textnode.withValueItem("MISSED INDUDUCTION: "+name);
+				}
+			}
+		}
 		return true;
 	}
 	/**

@@ -106,7 +106,6 @@ public class ReflectionBlackBoxTester {
 			Class<? extends Object> itemClass = junitCore.getClass();
 			Method method = null;
 			try {
-				method = itemClass.getMethod("run", Class[].class);
 			}catch (Exception e) {
 				try {
 					method = itemClass.getDeclaredMethod("run", Class[].class);
@@ -211,7 +210,6 @@ public class ReflectionBlackBoxTester {
 			if(Modifier.isAbstract(clazz.getModifiers()) ) {
 				continue;
 			}
-System.out.println(clazz);
 			Object obj = null;
 			for(Constructor<?> c : constructors) {
 				Object[] call = getParameters(c.getParameterTypes(), NULLVALUE);
@@ -235,9 +233,8 @@ System.out.println(clazz);
 	private void testClass(Object obj, Class<?> clazz, SimpleSet<String> ignoreMethods) {
 		for(Method m : clazz.getDeclaredMethods()) {
 			if(clazz.toString().equals("class de.uniks.networkparser.ext.javafx.dialog.DialogBox")) {
-				System.out.println(m.getName());
 				if("showExtern".equals(m.getName()) || "show".equals(m.getName())) {
-					System.out.println("ERORR");
+					System.out.println("ERROR");
 				}
 			}
 			if(m.getDeclaringClass().isInterface()) {

@@ -240,5 +240,7 @@ task npmPackages(type: NpmTask, dependsOn: npmCacheConfig) {
 		copyFile("node_modules/dagre/dist/dagre.min.js", "src/main/resources/de/uniks/networkparser/graph/dagre.min.js")
 		copyFile("node_modules/diagramjs/diagram.js", "src/main/resources/de/uniks/networkparser/graph/diagram.js")
 		copyFile("node_modules/jspdf/dist/jspdf.min.js", "src/main/resources/de/uniks/networkparser/graph/jspdf.min.js")
+		
+		copyFile("node_modules/highlightjs-line-numbers.js/dist/highlightjs-line-numbers.min.js", "src/main/resources/de/uniks/networkparser/graph/highlightjs-line-numbers.min.js")
 	}
 }

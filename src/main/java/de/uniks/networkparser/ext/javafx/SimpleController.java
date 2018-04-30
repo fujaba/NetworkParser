@@ -33,11 +33,12 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
 import de.uniks.networkparser.buffer.CharacterBuffer;
+import de.uniks.networkparser.ext.DiagramEditor;
 import de.uniks.networkparser.ext.ErrorHandler;
 import de.uniks.networkparser.ext.Os;
 import de.uniks.networkparser.ext.StartData;
-import de.uniks.networkparser.ext.generic.ReflectionBlackBoxTester;
 import de.uniks.networkparser.ext.generic.ReflectionLoader;
 import de.uniks.networkparser.ext.io.StringPrintStream;
 import de.uniks.networkparser.interfaces.BaseItem;
@@ -217,7 +218,7 @@ public class SimpleController implements ObjectCondition{
 				}
 
 				items.add("-javaagent:" + agent);
-				items.add(ReflectionBlackBoxTester.class.getName());
+				items.add(DiagramEditor.class.getName());
 				items.add("test="+mainClass);
 
 				if(path != null) {
