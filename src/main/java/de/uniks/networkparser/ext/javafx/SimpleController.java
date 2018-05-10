@@ -28,12 +28,14 @@ import java.io.IOException;
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.lang.reflect.Field;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.ext.DiagramEditor;
 import de.uniks.networkparser.ext.ErrorHandler;
@@ -41,6 +43,9 @@ import de.uniks.networkparser.ext.Os;
 import de.uniks.networkparser.ext.StartData;
 import de.uniks.networkparser.ext.generic.ReflectionLoader;
 import de.uniks.networkparser.ext.io.StringPrintStream;
+import de.uniks.networkparser.ext.petaf.proxy.NodeProxyTCP;
+import de.uniks.networkparser.gui.JavaBridge;
+import de.uniks.networkparser.gui.JavaViewAdapter;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.list.SimpleKeyValueList;
@@ -51,8 +56,8 @@ public class SimpleController implements ObjectCondition{
 	public static final String USER="USER";
 	public static final String USERNAME="USERNAME";
 	public static final String CLOSE="close";
-	private Object application;
 	private Object stage;
+	private JavaBridge bridge;
 	private boolean firstShow=true;
 	protected String icon;
 	private String encodingCode=BaseItem.ENCODING;
@@ -72,7 +77,6 @@ public class SimpleController implements ObjectCondition{
 
 	public SimpleController(Object primitiveStage, boolean init) {
 		withStage(primitiveStage);
-		application = getApplication();
 		if(init) {
 			this.init();
 		}
@@ -91,7 +95,7 @@ public class SimpleController implements ObjectCondition{
 			return null;
 		}
 		try {
-			return ReflectionLoader.calling("createContent", element, false, this);
+			return ReflectionLoader.calling(element, "createContent", false, this);
 		}catch (Exception e) {
 			errorHandler.saveException(e);
 		}
@@ -105,13 +109,17 @@ public class SimpleController implements ObjectCondition{
 
 		Object proxy = ReflectionLoader.createProxy(proxyHandler, ReflectionLoader.EVENTHANDLER);
 
-		ReflectionLoader.call("setOnCloseRequest", stage, ReflectionLoader.EVENTHANDLER, proxy);
-		ReflectionLoader.call("setOnShowing", stage, ReflectionLoader.EVENTHANDLER, proxy);
+		ReflectionLoader.call(stage, "setOnCloseRequest", ReflectionLoader.EVENTHANDLER, proxy);
+		ReflectionLoader.call(stage, "setOnShowing", ReflectionLoader.EVENTHANDLER, proxy);
 		return this;
 	}
 
 	private Object getApplication() {
 		Field params;
+		Object result = ReflectionLoader.call(ReflectionLoader.PLATFORM, "isFxApplicationThread"); 
+		if(Boolean.TRUE.equals(result) == false){
+			return null;
+		}
 		try {
 			params = ReflectionLoader.PARAMETER.getDeclaredField("params");
 			params.setAccessible(true);
@@ -124,6 +132,7 @@ public class SimpleController implements ObjectCondition{
 				}
 			}
 		} catch (Exception e) {
+			errorHandler.saveException(e);
 		}
 		return null;
 	}
@@ -240,15 +249,15 @@ public class SimpleController implements ObjectCondition{
 				if(outputFile != null) {
 					if (outputFile.equalsIgnoreCase("inherit")) {
 						processBuilder.redirectErrorStream(true);
-						ReflectionLoader.call("redirectOutput", processBuilder, ReflectionLoader.PROCESSBUILDERREDIRECT, ReflectionLoader.getField("INHERIT", ReflectionLoader.PROCESSBUILDERREDIRECT));
+						ReflectionLoader.call(processBuilder, "redirectOutput", ReflectionLoader.PROCESSBUILDERREDIRECT, ReflectionLoader.getField("INHERIT", ReflectionLoader.PROCESSBUILDERREDIRECT));
 					} else {
 						int pos = outputFile.lastIndexOf(".");
 						if (pos > 0) {
-							ReflectionLoader.call("redirectError", processBuilder, File.class, new File(outputFile.substring(0, pos) + "_error" + outputFile.substring(pos)));
-							ReflectionLoader.call("redirectOutput", processBuilder, File.class, new File(outputFile.substring(0, pos) + "_stdout" + outputFile.substring(pos)));
+							ReflectionLoader.call(processBuilder, "redirectError", File.class, new File(outputFile.substring(0, pos) + "_error" + outputFile.substring(pos)));
+							ReflectionLoader.call(processBuilder, "redirectOutput", File.class, new File(outputFile.substring(0, pos) + "_stdout" + outputFile.substring(pos)));
 						} else {
-							ReflectionLoader.call("redirectError", processBuilder, File.class, new File(outputFile + "_error.txt"));
-							ReflectionLoader.call("redirectOutput", processBuilder, File.class, new File(outputFile + "_stdout.txt"));
+							ReflectionLoader.call(processBuilder, "redirectError", File.class, new File(outputFile + "_error.txt"));
+							ReflectionLoader.call(processBuilder, "redirectOutput", File.class, new File(outputFile + "_stdout.txt"));
 						}
 					}
 				}
@@ -269,7 +278,7 @@ public class SimpleController implements ObjectCondition{
 	@SuppressWarnings("unchecked")
 	public SimpleKeyValueList<String, String> getParameterMap() {
 		SimpleKeyValueList<String, String> map = new SimpleKeyValueList<String, String>();
-		List<String> raw = (List<String>) ReflectionLoader.callChain(application, "getParameters", "getRaw");
+		List<String> raw = (List<String>) ReflectionLoader.callChain(getApplication(), "getParameters", "getRaw");
 		if(raw != null) {
 			for (String item : raw) {
 				if (item.startsWith("--")) {
@@ -323,10 +332,15 @@ public class SimpleController implements ObjectCondition{
 		}
 		if(ReflectionLoader.SCENE.isAssignableFrom(root.getClass())) {
 			scene = root;
-		} else {
+		} else if(root instanceof JavaBridge){
+			this.bridge = (JavaBridge) root;
+			JavaViewAdapter adapter = this.bridge.getViewAdapter();
+			Object webView = adapter.getWebView();
+			scene =  ReflectionLoader.newInstance(ReflectionLoader.SCENE, ReflectionLoader.PARENT, webView);
+		}else {
 			scene =  ReflectionLoader.newInstance(ReflectionLoader.SCENE, ReflectionLoader.PARENT, root);
 		}
-		ReflectionLoader.call("setScene", stage, ReflectionLoader.SCENE, scene);
+		ReflectionLoader.call(stage, "setScene", ReflectionLoader.SCENE, scene);
 
 		if(root instanceof ObjectCondition) {
 			this.withListener((ObjectCondition)root);
@@ -334,10 +348,10 @@ public class SimpleController implements ObjectCondition{
 		GUIEvent event = new GUIEvent();
 		event.withListener(this);
 		Object proxy = ReflectionLoader.createProxy(event, ReflectionLoader.EVENTHANDLER);
-		ReflectionLoader.call("setOnKeyPressed", scene, ReflectionLoader.EVENTHANDLER, proxy);
+		ReflectionLoader.call(scene, "setOnKeyPressed", ReflectionLoader.EVENTHANDLER, proxy);
 		showing(wait);
 		if(oldStage != null) {
-			ReflectionLoader.call("close", oldStage);
+			ReflectionLoader.call(oldStage, "close");
 		}
 	}
 
@@ -346,7 +360,7 @@ public class SimpleController implements ObjectCondition{
 	}
 
 	public Object getCurrentScene() {
-		return ReflectionLoader.call("getScene", stage);
+		return ReflectionLoader.call(stage, "getScene");
 	}
 
 	public Object getStage() {
@@ -356,19 +370,19 @@ public class SimpleController implements ObjectCondition{
 	protected void showing(boolean wait) {
 		if(this.stage != null) {
 			init();
-			ReflectionLoader.call("setTitle", this.stage, getTitle());
+			ReflectionLoader.call(this.stage, "setTitle", getTitle());
 			if (Os.isEclipse()) {
 				if(wait) {
-					ReflectionLoader.call("showAndWait", this.stage);
+					ReflectionLoader.calling(this.stage, "showAndWait", true, this.errorHandler);
 				} else {
-					ReflectionLoader.call("show", this.stage);
+					ReflectionLoader.calling(this.stage, "show", true, this.errorHandler);
 				}
 			} else {
 				try {
 					if(wait) {
-						ReflectionLoader.call("showAndWait", this.stage);
+						ReflectionLoader.calling(this.stage, "showAndWait", true, this.errorHandler);
 					} else {
-						ReflectionLoader.call("show", this.stage);
+						ReflectionLoader.calling(this.stage, "show", true, this.errorHandler);
 					}
 				} catch (Exception e) {
 					errorHandler.saveException(e, this.stage, true);
@@ -496,10 +510,10 @@ public class SimpleController implements ObjectCondition{
 				}else {
 					iconURL = new URL("file:" + this.icon);
 				}
-				Object toolKit = ReflectionLoader.call("getDefaultToolkit", ReflectionLoader.TOOLKIT);
-				Object image = ReflectionLoader.call("getImage", toolKit, URL.class, iconURL);
-				Object newImage = ReflectionLoader.call("getScaledInstance", image, int.class, 16, int.class, 16, int.class, 4);
-				ReflectionLoader.call("setImage", trayIcon, ReflectionLoader.AWTIMAGE, newImage);
+				Object toolKit = ReflectionLoader.call(ReflectionLoader.TOOLKIT, "getDefaultToolkit");
+				Object image = ReflectionLoader.call(toolKit, "getImage", URL.class, iconURL);
+				Object newImage = ReflectionLoader.call(image, "getScaledInstance", int.class, 16, int.class, 16, int.class, 4);
+				ReflectionLoader.call(trayIcon, "setImage", ReflectionLoader.AWTIMAGE, newImage);
 			} catch (MalformedURLException e) {
 			}
 		}
@@ -514,29 +528,29 @@ public class SimpleController implements ObjectCondition{
 			image = ReflectionLoader.newInstance(ReflectionLoader.IMAGE, "file:" + this.icon);
 		}
 		@SuppressWarnings("unchecked")
-		List<Object> icons = (List<Object>) ReflectionLoader.call("getIcons", stage);
+		List<Object> icons = (List<Object>) ReflectionLoader.call(stage, "getIcons");
 		icons.add(image);
 	}
 
 	public SimpleController withToolTip(String text) {
 		if(this.trayIcon != null) {
-			ReflectionLoader.call("setToolTip", trayIcon, String.class, text);
+			ReflectionLoader.call(trayIcon, "setToolTip", String.class, text);
 		}
 		return this;
 	}
 
 	public SimpleController withSize(double width, double height) {
-		ReflectionLoader.call("setWidth", stage, double.class, width);
-		ReflectionLoader.call("setHeight", stage, double.class, height);
+		ReflectionLoader.call(stage, "setWidth", double.class, width);
+		ReflectionLoader.call(stage, "setHeight", double.class, height);
 		return this;
 	}
 
 	public SimpleController withFullScreen(boolean value) {
-		ReflectionLoader.call("setFullScreen", stage, boolean.class, value);
+		ReflectionLoader.call(stage, "setFullScreen", boolean.class, value);
 		return this;
 	}
 	public SimpleController withAlwaysOnTop(boolean value) {
-		ReflectionLoader.call("setAlwaysOnTop", stage, boolean.class, value);
+		ReflectionLoader.call(stage, "setAlwaysOnTop", boolean.class, value);
 		return this;
 	}
 
@@ -560,13 +574,13 @@ public class SimpleController implements ObjectCondition{
 
 		Object actionListener = ReflectionLoader.createProxy(event, ReflectionLoader.ACTIONLISTENER);
 
-		ReflectionLoader.call("addActionListener", item, ReflectionLoader.ACTIONLISTENER, actionListener);
-		ReflectionLoader.call("add", getPopUp(), ReflectionLoader.MENUITEM, item);
+		ReflectionLoader.call(item, "addActionListener", ReflectionLoader.ACTIONLISTENER, actionListener);
+		ReflectionLoader.call(getPopUp(), "add", ReflectionLoader.MENUITEM, item);
 		return item;
 	}
 
 	public void addTraySeperator() {
-		ReflectionLoader.call("addSeparator", getPopUp());
+		ReflectionLoader.call(getPopUp(), "addSeparator");
 	}
 
 	private Object getPopUp() {
@@ -588,13 +602,13 @@ public class SimpleController implements ObjectCondition{
 				}else {
 					iconURL = new URL("file:" + this.icon);
 				}
-				Object toolKit = ReflectionLoader.call("getDefaultToolkit", ReflectionLoader.TOOLKIT);
-				Object image = ReflectionLoader.call("getImage", toolKit, URL.class, iconURL);
-				Object newImage = ReflectionLoader.call("getScaledInstance", image, int.class, 16, int.class, 16, int.class, 4);
+				Object toolKit = ReflectionLoader.call(ReflectionLoader.TOOLKIT, "getDefaultToolkit");
+				Object image = ReflectionLoader.call(toolKit, "getImage", URL.class, iconURL);
+				Object newImage = ReflectionLoader.call(image, "getScaledInstance", int.class, 16, int.class, 16, int.class, 4);
 
 				this.close();
 				this.trayIcon = ReflectionLoader.newInstance(ReflectionLoader.TRAYICON, ReflectionLoader.AWTIMAGE, newImage);
-				Integer count = (Integer) ReflectionLoader.call("getItemCount", getPopUp());
+				Integer count = (Integer) ReflectionLoader.call(getPopUp(), "getItemCount");
 				if(labels != null) {
 					for(String label : labels) {
 						if(label != null) {
@@ -606,9 +620,9 @@ public class SimpleController implements ObjectCondition{
 					addTrayMenuItem(CLOSE, this);
 				}
 
-				ReflectionLoader.call("setPopupMenu", trayIcon, ReflectionLoader.POPUPMENU, popupMenu);
-				Object systemTray = ReflectionLoader.call("getSystemTray", ReflectionLoader.SYSTEMTRAY);
-				ReflectionLoader.call("add", systemTray, ReflectionLoader.TRAYICON,this.trayIcon);
+				ReflectionLoader.call(trayIcon, "setPopupMenu", ReflectionLoader.POPUPMENU, popupMenu);
+				Object systemTray = ReflectionLoader.call(ReflectionLoader.SYSTEMTRAY, "getSystemTray");
+				ReflectionLoader.call(systemTray, "add", ReflectionLoader.TRAYICON,this.trayIcon);
 			}catch (Exception e) {
 			}
 
@@ -618,12 +632,12 @@ public class SimpleController implements ObjectCondition{
 
 	public void close() {
 		if(this.stage != null) {
-			ReflectionLoader.call("close", this.stage);
+			ReflectionLoader.call(this.stage, "close");
 			this.stage = null;
 		}
 		if(this.trayIcon != null) {
-			Object systemTray = ReflectionLoader.call("getSystemTray", ReflectionLoader.SYSTEMTRAY);
-			ReflectionLoader.call("remove", systemTray, ReflectionLoader.TRAYICON, this.trayIcon);
+			Object systemTray = ReflectionLoader.call(ReflectionLoader.SYSTEMTRAY, "getSystemTray");
+			ReflectionLoader.call(systemTray, "remove", ReflectionLoader.TRAYICON, this.trayIcon);
 			this.trayIcon = null;
 		}
 	}
@@ -683,7 +697,62 @@ public class SimpleController implements ObjectCondition{
 
 	public void hide() {
 		if(this.stage != null) {
-			ReflectionLoader.call("hide", this.stage);
+			ReflectionLoader.call(this.stage, "hide");
 		}
+	}
+	
+	
+	public static SimpleController create(JavaBridge bridge, ObjectCondition listener, boolean exitOnClose, boolean wait) {
+		SimpleController controller = new SimpleController(null);
+		final Class<?> launcherClass = ReflectionLoader.getClass("com.sun.javafx.application.LauncherImpl");
+		controller.withBridge(bridge);
+		if(launcherClass == null) {
+			// NO JAVAFX
+			NodeProxyTCP server = NodeProxyTCP.createServer(8080);
+			server.withListener(listener);
+			if(server.start()) {
+				System.out.println("LISTEN ON: "+server.getKey());
+				if(ReflectionLoader.DESKTOP != null) {
+					Object desktop = ReflectionLoader.call(ReflectionLoader.DESKTOP, "getDesktop");
+					if(desktop != null) {
+						try {
+							ReflectionLoader.call(desktop, "browse", URI.class, new URI("http://"+server.getKey()));
+						} catch (Exception e) {
+						}
+					}
+				}
+			}
+			return controller;
+		}
+		ReflectionLoader.call(launcherClass, "startToolkit");
+		if(exitOnClose == false) {
+			ReflectionLoader.call(ReflectionLoader.PLATFORM, "setImplicitExit", boolean.class, false);
+		}
+
+		Runnable runnable = new Runnable() {
+			@Override
+			public void run() {
+				Object stage = ReflectionLoader.newInstance(ReflectionLoader.STAGE);
+				controller.withStage(stage);
+				controller.withListener(listener);
+				controller.withIcon(IdMap.class.getResource("np.png").toString());
+				controller.show(controller.getBridge());
+			}
+		};
+		if(wait) {
+			JavaAdapter.executeAndWait(runnable);
+		}else {
+			JavaAdapter.execute(runnable);
+		}
+		return controller;
+	}
+
+	public SimpleController withBridge(JavaBridge value) {
+		this.bridge = value;
+		return this;
+	}
+	
+	public JavaBridge getBridge() {
+		return bridge;
 	}
 }

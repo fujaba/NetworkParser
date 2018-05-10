@@ -38,6 +38,9 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.util.List;
 import java.util.Properties;
+
+import de.uniks.networkparser.ext.ErrorHandler;
+import de.uniks.networkparser.ext.Os;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.list.SimpleList;
 
@@ -415,7 +418,7 @@ public class ReflectionLoader {
 		}
 		Object callObj = item;
 		for(String method : methodNames) {
-			callObj = calling(method, callObj, true, null);
+			callObj = calling(callObj, method, true, null);
 		}
 		return callObj;
 	}
@@ -447,11 +450,11 @@ public class ReflectionLoader {
 		return null;
 	}
 
-	public static Object call(String methodName, Object item, Object... arguments) {
-		return calling(methodName, item, true, null, arguments);
+	public static Object call(Object item, String methodName, Object... arguments) {
+		return calling(item, methodName, true, null, arguments);
 	}
 
-	public static Object callStr(String methodName, Object item, Object... arguments) {
+	public static Object callStr(Object item, String methodName, Object... arguments) {
 		try {
 			if(arguments != null && arguments.length % 2 == 0) {
 				for(int i=0;i<arguments.length;i +=2) {
@@ -463,13 +466,13 @@ public class ReflectionLoader {
 		} catch (Exception e) {
 			return null;
 		}
-		return calling(methodName, item, true, null, arguments);
+		return calling(item, methodName, true, null, arguments);
 	}
 
 
 	@SuppressWarnings("unchecked")
-	public static List<Object> callList(String methodName, Object item, Object... arguments) {
-		Object returnValue = calling(methodName, item, true, null, arguments);
+	public static List<Object> callList(Object item, String methodName, Object... arguments) {
+		Object returnValue = calling(item, methodName, true, null, arguments);
 		if(returnValue == null || returnValue instanceof List<?> == false) {
 			return new SimpleList<Object>();
 		}
@@ -477,7 +480,7 @@ public class ReflectionLoader {
 	}
 
 
-	public static Object calling(String methodName, Object item, boolean notify, Object notifyObject, Object... arguments) {
+	public static Object calling(Object item, String methodName, boolean notify, Object notifyObject, Object... arguments) {
 		if(methodName == null || item == null) {
 			return null;
 		}
@@ -576,6 +579,11 @@ public class ReflectionLoader {
 				e.printStackTrace(logger);
 			} else if(notifyObject instanceof ObjectCondition){
 				((ObjectCondition) notifyObject).update(e);
+			} else if(notifyObject instanceof ErrorHandler){
+				ErrorHandler handler = (ErrorHandler) notifyObject;
+				handler.saveException(e);
+			} else if(notify && Os.isEclipse()) {
+				e.printStackTrace();
 			}
 		}
 		return null;

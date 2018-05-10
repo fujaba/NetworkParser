@@ -30,6 +30,7 @@ import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.NetworkParserLog;
 import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.SimpleObject;
+import de.uniks.networkparser.ext.JSEditor;
 import de.uniks.networkparser.ext.generic.ReflectionLoader;
 import de.uniks.networkparser.ext.io.FileBuffer;
 import de.uniks.networkparser.gui.BridgeCommand;
@@ -56,14 +57,6 @@ public class JavaAdapter implements JavaViewAdapter {
 	public static final String TYPE_CONTENT="CONTENT";
 	protected String type = TYPE_EXPORT;
 
-	public JavaAdapter() {
-		if(ReflectionLoader.WEBVIEW != null) {
-			this.webView = ReflectionLoader.newInstance(ReflectionLoader.WEBVIEW);
-			this.webEngine = ReflectionLoader.call("getEngine", this.webView);
-			ReflectionLoader.call("setMaxSize", this.webView, double.class, Double.MAX_VALUE, double.class, Double.MAX_VALUE);
-		}
-	}
-
 	public JavaAdapter withOwner(JavaBridge owner) {
 		this.owner = owner;
 		return this;
@@ -72,7 +65,7 @@ public class JavaAdapter implements JavaViewAdapter {
 	@Override
 	public boolean load(Object item) {
 		if(item instanceof String) {
-			ReflectionLoader.call("load", webEngine, item);
+			ReflectionLoader.call(webEngine, "load", item);
 			return true;
 		}
 		if(item instanceof File) {
@@ -80,7 +73,7 @@ public class JavaAdapter implements JavaViewAdapter {
 			if(file.exists() == false) {
 				System.out.println("FILE NOT FOUND");
 			}
-			ReflectionLoader.call("load", webEngine, file.toURI().toString());
+			ReflectionLoader.call(webEngine, "load", file.toURI().toString());
 			return true;
 		}
 
@@ -89,7 +82,7 @@ public class JavaAdapter implements JavaViewAdapter {
 		}
 		HTMLEntity entity = (HTMLEntity) item;
 		if(TYPE_CONTENT.equalsIgnoreCase(type)) {
-			ReflectionLoader.call("loadContent", webEngine, entity.toString());
+			ReflectionLoader.call(webEngine, "loadContent", entity.toString());
 			return true;
 		}
 		// Add Dummy Script
@@ -121,7 +114,7 @@ public class JavaAdapter implements JavaViewAdapter {
 		}
 		registerListener(this);
 		// Load Real Content
-		ReflectionLoader.call("loadContent", this.webEngine, String.class, entity.toString());
+		ReflectionLoader.call(this.webEngine, "loadContent", String.class, entity.toString());
 		return true;
 	}
 
@@ -131,14 +124,14 @@ public class JavaAdapter implements JavaViewAdapter {
 		GUIEvent eventListener = new GUIEvent().withListener(listener);
 
 		Object proxy = ReflectionLoader.createProxy(eventListener, ReflectionLoader.CHANGELISTENER, ReflectionLoader.EVENTHANDLER);
-		ReflectionLoader.call("addListener", stateProperty, ReflectionLoader.CHANGELISTENER, proxy);
-		ReflectionLoader.call("setOnError", webEngine, ReflectionLoader.EVENTHANDLER, proxy);
-		ReflectionLoader.call("setOnAlert", webEngine, ReflectionLoader.EVENTHANDLER, proxy);
+		ReflectionLoader.call(stateProperty, "addListener", ReflectionLoader.CHANGELISTENER, proxy);
+		ReflectionLoader.call(webEngine, "setOnError", ReflectionLoader.EVENTHANDLER, proxy);
+		ReflectionLoader.call(webEngine, "setOnAlert", ReflectionLoader.EVENTHANDLER, proxy);
 
-		ReflectionLoader.call("setOnDragExited", webView, ReflectionLoader.EVENTHANDLER, proxy);
-		ReflectionLoader.call("setOnDragOver", webView, ReflectionLoader.EVENTHANDLER, proxy);
-		ReflectionLoader.call("setOnDragDropped", webView, ReflectionLoader.EVENTHANDLER, proxy);
-		ReflectionLoader.call("setOnDragDone", webView, ReflectionLoader.EVENTHANDLER, proxy);
+		ReflectionLoader.call(webView, "setOnDragExited", ReflectionLoader.EVENTHANDLER, proxy);
+		ReflectionLoader.call(webView, "setOnDragOver", ReflectionLoader.EVENTHANDLER, proxy);
+		ReflectionLoader.call(webView, "setOnDragDropped", ReflectionLoader.EVENTHANDLER, proxy);
+		ReflectionLoader.call(webView, "setOnDragDone", ReflectionLoader.EVENTHANDLER, proxy);
 		return true;
 	}
 
@@ -241,7 +234,7 @@ public class JavaAdapter implements JavaViewAdapter {
 	 * @return return value from Javascript
 	 */
 	private Object _execute(String script, boolean convert) {
-		Object jsObject = ReflectionLoader.call("executeScript", this.webEngine, String.class, script);
+		Object jsObject = ReflectionLoader.call(getWebEngine(), "executeScript", String.class, script);
 		if(convert && jsObject != null && ReflectionLoader.JSOBJECT.isAssignableFrom(jsObject.getClass())){
 			JsonObject item = convertJSObject(jsObject);
 			return item;
@@ -262,11 +255,24 @@ public class JavaAdapter implements JavaViewAdapter {
 
 	@Override
 	public Object getWebView() {
+		if(webView == null) {
+			if(ReflectionLoader.WEBVIEW != null) {
+				Object result = ReflectionLoader.call(ReflectionLoader.PLATFORM, "isFxApplicationThread"); 
+				if(Boolean.TRUE.equals(result)){
+					this.webView = ReflectionLoader.newInstance(ReflectionLoader.WEBVIEW);
+					this.webEngine = ReflectionLoader.call(this.webView, "getEngine");
+					ReflectionLoader.call(this.webView, "setMaxSize", double.class, Double.MAX_VALUE, double.class, Double.MAX_VALUE);
+				}
+			}
+		}
 		return webView;
 	}
 
 	@Override
 	public Object getWebEngine() {
+		if(webEngine == null) {
+			getWebView();
+		}
 		return webEngine;
 	}
 
@@ -275,7 +281,7 @@ public class JavaAdapter implements JavaViewAdapter {
 		JsonObjectLazy executeScript = (JsonObjectLazy) _execute("bridge.addAdapter(new DiagramJS.DelegateAdapter());", true);
 		if(executeScript != null) {
 			Object reference = executeScript.getReference();
-			ReflectionLoader.call("setAdapter", reference, Object.class, eventListener);
+			ReflectionLoader.call(reference, "setAdapter", Object.class, eventListener);
 		}
 	}
 
@@ -316,20 +322,20 @@ public class JavaAdapter implements JavaViewAdapter {
 		if (callBackName == null) {
 			callBackName = "_callBack" + (callBack.size() + 1);
 			callBack.put(clazz, callBackName);
-			ReflectionLoader.call("setMember", window, String.class, callBackName, Object.class, clazz);
+			ReflectionLoader.call(window, "setMember", String.class, callBackName, Object.class, clazz);
 		}
 		return callBackName;
 	}
 	
 	
 	public static void execute(final Runnable runnable) {
-		ReflectionLoader.call("runLater", ReflectionLoader.PLATFORM, Runnable.class, runnable);
+		ReflectionLoader.call(ReflectionLoader.PLATFORM, "runLater", Runnable.class, runnable);
 	}
 	public static void executeAndWait(final Runnable runnable) {
 		if(runnable == null) {
 			return;
 		}
-		if((Boolean) ReflectionLoader.call("isFxApplicationThread",  ReflectionLoader.PLATFORM)) {
+		if((Boolean) ReflectionLoader.call(ReflectionLoader.PLATFORM, "isFxApplicationThread")) {
 			runnable.run();
 			return;
 		}
@@ -358,9 +364,20 @@ public class JavaAdapter implements JavaViewAdapter {
 		// https://getfirebug.com/firebug-lite.js#startOpened
 		String firebugLite="http://getfirebug.com/releases/lite/1.2/firebug-lite-compressed.js";
 		String script = "if (!document.getElementById('FirebugLite')) {var E = document['createElementNS'] && document.documentElement.namespaceURI;E = E ? document.createElementNS(E, 'script') : document.createElement('script');E.setAttribute('id', 'FirebugLite');E.setAttribute('src', '"+firebugLite+"');E.setAttribute('FirebugLite', '4');(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(E);}";
+		String script2 = "console.log = function(message) { java.log(message); }"; // Now where ever console.log is called in your html you will get a log in Java console
+		if(this.webEngine == null) {
+			Object result = ReflectionLoader.call(ReflectionLoader.PLATFORM, "isFxApplicationThread"); 
+			if(Boolean.TRUE.equals(result) == false){
+				JSEditor editor = new JSEditor(this).withScript(script);
+				JavaAdapter.execute(editor);
+				
+				editor = new JSEditor(this).withScript(script2);
+				JavaAdapter.execute(editor);
+				return;
+			}
+		}
 		executeScript(script);
-		script = "console.log = function(message) { java.log(message); }"; // Now where ever console.log is called in your html you will get a log in Java console
-		executeScript(script);
+		executeScript(script2);
 	}
 
 }

@@ -88,6 +88,18 @@ public class JsonTest extends IOClasses {
 		String key = json.getKeyByIndex(0);
 		Assert.assertEquals(json.getValue(key), 3);
 	}
+	
+	@Test
+	public void testJSONCase() {
+		JsonObject json = new JsonObject().withValue("{\"id\":42}");
+		Assert.assertEquals(json.get("id"), 42);
+		Assert.assertNull(json.get("Id"));
+		
+		json.withCaseSensitive(false);
+		Assert.assertEquals(json.get("id"), 42);
+		Assert.assertEquals(json.get("Id"), 42);
+		Assert.assertEquals(json.get("ID"), 42);
+	}
 
 	@Test
 	public void testJSONEmptyKey() {
@@ -180,7 +192,7 @@ public class JsonTest extends IOClasses {
 
 		Assert.assertTrue(map.decode(value) instanceof University);
 		map.withFlag(IdMap.FLAG_SIMPLEFORMAT);
-		Object uniList = map.decode(value);
+//		Object uniList = map.decode(value);
 		Assert.assertTrue(map.decode(value) instanceof SimpleList<?>);
 
 	}

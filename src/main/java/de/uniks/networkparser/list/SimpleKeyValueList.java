@@ -182,12 +182,9 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 		Object value = get(key);
 
 		if (Boolean.FALSE.equals(value)
-				|| (value instanceof String && ((String) value)
-						.equalsIgnoreCase("false"))) {
+				|| (value instanceof String && "false".equalsIgnoreCase((String) value))) {
 			return false;
-		} else if (Boolean.TRUE.equals(value)
-				|| (value instanceof String && ((String) value)
-						.equalsIgnoreCase("true"))) {
+		} else if (Boolean.TRUE.equals(value) || (value instanceof String && "true".equalsIgnoreCase((String) value))) {
 			return true;
 		}
 		throw new RuntimeException("SimpleKeyValueList is not a boolean.");

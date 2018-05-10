@@ -99,10 +99,10 @@ public class JsonArray extends SortedList<Object> implements EntityList {
 			return (JsonArray) object;
 		}
 		JsonArray returnValue = new JsonArray();
-      if(object != null) {
-         returnValue.add(object);
-      }
-      return returnValue;
+		if(object != null) {
+			returnValue.add(object);
+		}
+		return returnValue;
 	}
 
 	@Override
@@ -130,7 +130,7 @@ public class JsonArray extends SortedList<Object> implements EntityList {
 				+ "] is not a JSONObject.");
 	}
 
-   /**
+	/**
 	* Get the JSONObject associated with an index.
 	*
 	* @param index	subscript
@@ -139,14 +139,13 @@ public class JsonArray extends SortedList<Object> implements EntityList {
 	*			 If there is no value for the index or if the value is not a
 	*			 JSONObject
 	*/
-   public String getString(int index) {
-	  Object object = get(index);
-	  if (object instanceof String) {
-		 return (String) object;
-	  }
-	  throw new RuntimeException("JSONArray[" + index
-			+ "] is not a String.");
-   }
+	public String getString(int index) {
+		Object object = get(index);
+		if (object instanceof String) {
+			return (String) object;
+		}
+		throw new RuntimeException("JSONArray[" + index + "] is not a String.");
+	}
 
 	/**
 	 * Produce a JSONObject by combining a JSONArray of names with the values of
@@ -294,6 +293,10 @@ public class JsonArray extends SortedList<Object> implements EntityList {
 	@Override
 	public JsonArray subList(int fromIndex, int toIndex) {
 		return (JsonArray) super.subList(fromIndex, toIndex);
+	}
+	
+	public static JsonArray create(String value) {
+		return new JsonArray().withValue(value);
 	}
 }
 

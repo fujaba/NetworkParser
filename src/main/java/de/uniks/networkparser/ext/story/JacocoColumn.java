@@ -64,7 +64,7 @@ public class JacocoColumn implements JacocoColumnListener {
 	}
 
 	public String getType(Object element) {
-		Object call = ReflectionLoader.call("getElementType", element);
+		Object call = ReflectionLoader.call(element, "getElementType");
 		if(call != null) {
 			return call.toString();
 		}
@@ -72,7 +72,7 @@ public class JacocoColumn implements JacocoColumnListener {
 	}
 
 	public String getName(Object element) {
-		Object call = ReflectionLoader.call("getName", element);
+		Object call = ReflectionLoader.call(element, "getName");
 		if(call instanceof String) {
 			return (String) call;
 		}
@@ -83,11 +83,11 @@ public class JacocoColumn implements JacocoColumnListener {
 	public boolean init(Object items, Object total) {
 		String type = getType(total);
 		if(PACKAGE.equalsIgnoreCase(type)) {
-			Collection<?> classes = (Collection<?>) ReflectionLoader.call("getClasses", total);
+			Collection<?> classes = (Collection<?>) ReflectionLoader.call(total, "getClasses");
 
 			for(Object item : classes) {
 				String name = getName(item);
-				Collection<?> methods = (Collection<?>) ReflectionLoader.call("getMethods", item);
+				Collection<?> methods = (Collection<?>) ReflectionLoader.call(item, "getMethods");
 				for(Object method : methods) {
 					this.classes.add(method, name);
 				}
@@ -109,7 +109,7 @@ public class JacocoColumn implements JacocoColumnListener {
 	}
 
 	public void setText(Object item, String text) {
-		ReflectionLoader.call("text", item, text);
+		ReflectionLoader.call(item, "text", text);
 	}
 
 	private String getSearch(Object node) {
@@ -154,7 +154,7 @@ public class JacocoColumn implements JacocoColumnListener {
 
 //	public void item(HTMLElement td, ITableItem item, Resources resources, ReportOutputFolder base) throws IOException {
 	public void item(Object td, Object item, Object resources, Object base) {
-		Object node = ReflectionLoader.call("getNode", item);
+		Object node = ReflectionLoader.call(item, "getNode");
 		String type = getType(node);
 		String search;
 		if(SOURCEFILE.equalsIgnoreCase(type)) {
@@ -174,7 +174,7 @@ public class JacocoColumn implements JacocoColumnListener {
 
 //			IMethodCoverage methodNode = (IMethodCoverage) node;
 //			int firstLine = methodNode.getFirstLine();
-			Integer firstLine = (Integer) ReflectionLoader.call("getFirstLine", node);
+			Integer firstLine = (Integer) ReflectionLoader.call(node, "getFirstLine");
 			String name = getName(node);
 			if(name.indexOf("(")>0) {
 				name = name.substring(0, name.indexOf("("));

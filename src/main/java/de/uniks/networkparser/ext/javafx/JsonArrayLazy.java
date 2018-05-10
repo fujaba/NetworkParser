@@ -45,11 +45,11 @@ public class JsonArrayLazy extends JsonArray {
 		else {
 			return false;
 		}
-		int size = (Integer) ReflectionLoader.call("eval", ref, "this.length;");
+		int size = (Integer) ReflectionLoader.call(ref, "eval", "this.length;");
 		for (int i = 0; i < size; i++) {
-			Object value = ReflectionLoader.call("eval", ref, "this[" + i + "]");
+			Object value = ReflectionLoader.call(ref, "eval", "this[" + i + "]");
 			if(ReflectionLoader.JSOBJECT.isAssignableFrom(value.getClass())) {
-				boolean isArray = (Boolean) ReflectionLoader.call("eval", value, "Array.isArray(this);");
+				boolean isArray = (Boolean) ReflectionLoader.call(value, "eval", "Array.isArray(this);");
 
 				if (isArray) {
 					JsonArrayLazy child = new JsonArrayLazy(value);

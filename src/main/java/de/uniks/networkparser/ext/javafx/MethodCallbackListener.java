@@ -35,7 +35,7 @@ public class MethodCallbackListener implements ObjectCondition {
 	}
 	@Override
 	public boolean update(Object value) {
-		ReflectionLoader.call(this.methodName, element, value);
+		ReflectionLoader.call(element, this.methodName, value);
 		return true;
 //		throw new RuntimeException("The function cannot be found on the given Object...");
 	}

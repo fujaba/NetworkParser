@@ -92,9 +92,9 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 		if(launcherClass == null) {
 			return false;
 		}
-		ReflectionLoader.call("startToolkit", launcherClass);
+		ReflectionLoader.call(launcherClass, "startToolkit");
 		if(entity != null && file != null) {
-			ReflectionLoader.call("setImplicitExit", ReflectionLoader.PLATFORM, boolean.class, false);
+			ReflectionLoader.call(ReflectionLoader.PLATFORM, "setImplicitExit", boolean.class, false);
 		}
 		Runnable runnable = new Runnable() {
 			@Override
@@ -142,10 +142,10 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 			if(server.start()) {
 				System.out.println("LISTEN ON: "+server.getKey());
 				if(ReflectionLoader.DESKTOP != null) {
-					Object desktop = ReflectionLoader.call("getDesktop", ReflectionLoader.DESKTOP);
+					Object desktop = ReflectionLoader.call(ReflectionLoader.DESKTOP, "getDesktop");
 					if(desktop != null) {
 						try {
-							ReflectionLoader.call("browse", desktop, URI.class, new URI("http://"+server.getKey()));
+							ReflectionLoader.call(desktop, "browse", URI.class, new URI("http://"+server.getKey()));
 						} catch (URISyntaxException e) {
 						}
 					}
@@ -220,7 +220,7 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 			if(JavaViewAdapter.STATE.equalsIgnoreCase(evt.getNewValue().getClass().getName())) {
 				if(evt.getNewValue().toString().equals(JavaViewAdapter.SUCCEEDED)) {
 					Object win = super.executeScript("window", false);
-					ReflectionLoader.call("setMember", win, String.class, "java", Object.class, this);
+					ReflectionLoader.call(win, "setMember", String.class, "java", Object.class, this);
 					this.changed(evt);
 
 					// Load Editor
@@ -259,14 +259,14 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 	public JSEditor getJSEditor() {
 		if(this.jsEditor == null) {
 			Object JSwin = super.executeScript("window", false);
-			Object result  = ReflectionLoader.call("getMember", JSwin, String.class, "editor");
+			Object result  = ReflectionLoader.call(JSwin, "getMember", String.class, "editor");
 			jsEditor = new JSEditor(result);
 		}
 		return jsEditor;
 	}
 
 	public void exit() {
-		ReflectionLoader.call("exit", ReflectionLoader.PLATFORM);
+		ReflectionLoader.call(ReflectionLoader.PLATFORM, "exit");
 	}
 
 	public boolean save(Object value) {
@@ -315,7 +315,7 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 			}
 		}
 		if(this.logic != null) {
-			Object result = ReflectionLoader.call(METHOD_GENERATE, this.logic, JsonObject.class, model);
+			Object result = ReflectionLoader.call(this.logic, METHOD_GENERATE, JsonObject.class, model);
 			if(result instanceof Boolean) {
 				return (Boolean) result;
 			}
@@ -344,15 +344,15 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 			}
 			if(!error) {
 				Object mode = ReflectionLoader.getField("COPY", ReflectionLoader.TRANSFERMODE);
-				ReflectionLoader.call("acceptTransferModes", event, ReflectionLoader.TRANSFERMODE, mode);
+				ReflectionLoader.call(event, "acceptTransferModes", ReflectionLoader.TRANSFERMODE, mode);
 				getJSEditor().setBoardStyle("OK");
 			}else {
 				Object mode = ReflectionLoader.getField("NONE", ReflectionLoader.TRANSFERMODE);
-				ReflectionLoader.call("acceptTransferModes", event, ReflectionLoader.TRANSFERMODE, mode);
+				ReflectionLoader.call(event, "acceptTransferModes", ReflectionLoader.TRANSFERMODE, mode);
 				getJSEditor().setBoardStyle("Error");
 			}
 		}
-		ReflectionLoader.call("consume", event);
+		ReflectionLoader.call(event,"consume");
 		return true;
 	}
 	protected boolean onDragDropped(Object event) {
@@ -396,15 +396,15 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 	}
 
 	protected boolean onError(Object event) {
-		System.err.println(ReflectionLoader.call("getMessage", event));
+		System.err.println(ReflectionLoader.call(event, "getMessage"));
 		return true;
 	}
 
 	@SuppressWarnings("unchecked")
 	protected List<File> getFiles(Object event) {
-		Object db = ReflectionLoader.call("getDragboard", event);
-		if((Boolean) ReflectionLoader.call("hasFiles", db)) {
-			List<File> files = (List<File>) ReflectionLoader.call("getFiles", db);
+		Object db = ReflectionLoader.call(event, "getDragboard");
+		if((Boolean) ReflectionLoader.call(db, "hasFiles")) {
+			List<File> files = (List<File>) ReflectionLoader.call(db, "getFiles");
 			return files;
 		}
 		return null;
@@ -453,7 +453,7 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 			FileBuffer.writeFile("Editor.html", html.toString(), FileBuffer.NONE);
 			try {
 				String string = new File("Editor.html").toURI().toURL().toString();
-				ReflectionLoader.call("load", webEngine, string);
+				ReflectionLoader.call(webEngine, "load", string);
 				return true;
 			} catch (MalformedURLException e) {
 			}
@@ -463,7 +463,7 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 		html.withScript(readFile("graph/dagre.min.js"), html.getHeader());
 		html.withScript(readFile("graph/diagram.js"), html.getHeader());
 		html.withScript(readFile("graph/diagramstyle.css"), html.getHeader());
-		ReflectionLoader.call("loadContent", webEngine, html.toString());
+		ReflectionLoader.call(webEngine, "loadContent", html.toString());
 		return true;
 	}
 
@@ -551,11 +551,11 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 	public void screendump(String nameExtension) {
 		Object snapshotParametersClass = ReflectionLoader.getClass("javafx.scene.SnapshotParameters");
 		Object writableImageClass = ReflectionLoader.getClass("javafx.scene.image.WritableImage");
-		Object image = ReflectionLoader.call("snapshot", webView, snapshotParametersClass, null, writableImageClass, null);
+		Object image = ReflectionLoader.call(webView, "snapshot", snapshotParametersClass, null, writableImageClass, null);
 
 		Class<?> swingUtil = ReflectionLoader.getClass("javafx.embed.swing.SwingFXUtils");
 		Object bufferedImageClass = ReflectionLoader.getClass("java.awt.image.BufferedImage");
-		Object bufferedImage = ReflectionLoader.call("fromFXImage", swingUtil, ReflectionLoader.IMAGE, image, bufferedImageClass, null);
+		Object bufferedImage = ReflectionLoader.call(swingUtil, "fromFXImage", ReflectionLoader.IMAGE, image, bufferedImageClass, null);
 		
 		String fileName = this.file;
 		if(nameExtension != null) {
@@ -566,7 +566,7 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 				fileName = fileName.substring(0, pos)+"-"+nameExtension+fileName.substring(pos);
 			}
 		}
-		ReflectionLoader.call("write", ReflectionLoader.IMAGEIO, ReflectionLoader.RENDEREDIMAGE, bufferedImage, String.class, "png", File.class, new File(fileName));
+		ReflectionLoader.call(ReflectionLoader.IMAGEIO, "write", ReflectionLoader.RENDEREDIMAGE, bufferedImage, String.class, "png", File.class, new File(fileName));
 		if(autoClose) {
 			controller.close();
 		}

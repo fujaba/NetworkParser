@@ -1,1 +1,10444 @@
-var DiagramJS=function(t){function e(r){if(i[r])return i[r].exports;var n=i[r]={i:r,l:!1,exports:{}};return t[r].call(n.exports,n,n.exports,e),n.l=!0,n.exports}var i={};return e.m=t,e.c=i,e.d=function(t,i,r){e.o(t,i)||Object.defineProperty(t,i,{configurable:!1,enumerable:!0,get:r})},e.n=function(t){var i=t&&t.__esModule?function(){return t.default}:function(){return t};return e.d(i,"a",i),i},e.o=function(t,e){return Object.prototype.hasOwnProperty.call(t,e)},e.p="",e(e.s=8)}([function(t,e,i){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var r=i(31),n=i(1),o=function(){function t(){}return t.getRandomInt=function(t,e){return Math.floor(Math.random()*(e-t+1))+t},t.createShape=function(t){var e=t.xmlns||"http://www.w3.org/2000/svg",i=document.createElementNS(e,t.tag);for(var r in t)"tag"!==r&&i.setAttribute(r,t[r]);return i},t.toPascalCase=function(t){return t=t.charAt(0).toUpperCase()+t.substring(1).toLowerCase()},t.isSVG=function(t){var e,i=["svg","path","polygon","polyline","line","title","rect","filter","feGaussianBlur","feOffset","feBlend","linearGradient","stop","text","symbol","textPath","defs","fegaussianblur","feoffset","feblend","circle","ellipse","g"];for(e=0;e<i.length;e+=1)if(i[e]===t)return!0;return!1},t.create=function(t){var e,i,r,n,o,s;document.createElementNS&&(this.isSVG(t.tag)||t.xmlns)?(r=t.xmlns?t.xmlns:"http://www.w3.org/2000/svg","img"===t.tag&&r?(i=document.createElementNS(r,"image"),i.setAttribute("xmlns:xlink","http://www.w3.org/1999/xlink"),i.setAttributeNS("http://www.w3.org/1999/xlink","href",t.src)):i=document.createElementNS(r,t.tag)):i=document.createElement(t.tag),o=t.tag.toLowerCase();for(n in t)if(t.hasOwnProperty(n)&&(s=n.toLowerCase(),null!==t[n]&&"tag"!==s&&"$"!==s.charAt(0)&&"$graphModel"!==s))if("#"!==s.charAt(0))if("rotate"!==s)if("value"!==s)if(0!==s.indexOf("on"))if(s.indexOf("-")>=0)i.style[n]=t[n];else if("style"===s&&"object"==typeof t[n])for(e in t[n])t[n].hasOwnProperty(e)&&t[n][e]&&("transform"===e?(i.style.transform=t[n][e],i.style.msTransform=i.style.MozTransform=i.style.WebkitTransform=i.style.OTransform=t[n][e]):i.style[e]=t[n][e]);else i.setAttribute(n,t[n]);else this.bind(i,s.substring(2),t[n]);else{if(!t[n])continue;"input"!==o?"text"===o?i.appendChild(document.createTextNode(t[n])):i.innerHTML=t[n]:i[n]=t[n]}else i.setAttribute("transform","rotate("+t[n]+","+t.$graphModel.x+","+t.$graphModel.y+")");else i[s.substring(1)]=t[n];return t.$parent&&t.$parent.appendChild(i),t.$graphModel&&(i.$graphModel=t.$graphModel),i},t.setSize=function(e,i,r){var n;n=t.getValue(i),e.setAttribute("width",n),e.style.width=Math.ceil(n),n=t.getValue(r),e.setAttribute("height",n),e.style.height=Math.ceil(n)},t.setAttributeSize=function(e,i,r){var n;n=t.getValue(i),e.setAttributeNS(null,"width",n),n=t.getValue(r),e.setAttributeNS(null,"height",n)},t.setStyleSize=function(e,i,r){var n;n=t.getValue(i),e.style.width=Math.ceil(n),n=t.getValue(r),e.style.height=Math.ceil(n)},t.setPos=function(t,e,i){t.x&&t.x.baseVal?(t.style.left=e+"px",t.style.top=i+"px"):(t.x=e,t.y=i)},t.getValue=function(t){return parseInt(("0"+t).replace("px",""),10)},t.isIE=function(){return navigator.userAgent.toLowerCase().indexOf(".net")>-1},t.isEdge=function(){return navigator.userAgent.toLowerCase().indexOf("edge")>-1},t.isFireFox=function(){return navigator.userAgent.toLowerCase().indexOf("firefox")>-1},t.isSafari=function(){var e=t.isEdge();return navigator.userAgent.toLowerCase().indexOf("safari")>-1&&!e},t.isOpera=function(){return navigator.userAgent.toLowerCase().indexOf("opera")>-1},t.isChrome=function(){var e=t.isEdge(),i=t.isSafari();return navigator.userAgent.toLowerCase().indexOf("chrome")>-1&&!e&&i},t.getEventX=function(e){return t.isIE()||t.isEdge()?e.offsetX:e.layerX},t.getEventY=function(e){return t.isIE()||t.isEdge()?e.offsetY:e.layerY},t.getNumber=function(t){return parseInt((t||"0").replace("px",""),10)},t.getStyle=function(e){var i,n,o,s,a,l,h=document.createElement("div");document.body.appendChild(h),l=new r.CSS(e),a=new r.CSS(e,h).css,n=window.getComputedStyle(h,null),h.className=e,s=new r.CSS(e,h).css,o=t.getNumber(n.getPropertyValue("border-width"));for(i in s)s.hasOwnProperty(i)&&("width"===i||"height"===i?0!==t.getNumber(s[i])&&t.getNumber(s[i])+2*o!==t.getNumber(a[i])&&l.add(i,s[i]):s[i]!==a[i]&&l.add(i,s[i]));return document.body.removeChild(h),l},t.sizeOf=function(e,i){var r,n,o;if(e)return i&&(r=i.$owner.$view,o=!1),r||(o=!0,r=t.createShape({tag:"svg",id:"root",width:200,height:200}),document.body.appendChild(r)),"svg"===r.tagName?"string"==typeof e&&(e=t.create({tag:"text",$font:!0,value:e}),e.setAttribute("width","5px")):"string"==typeof e&&(e=document.createTextNode(e)),r.appendChild(e),n=e.getBoundingClientRect(),r.removeChild(e),o&&document.body.removeChild(r),n},t.getColor=function(t,e){if(t){if("create"===t.toLowerCase())return"#008000";if("nac"===t.toLowerCase())return"#FE3E3E";if(0===t.indexOf("#"))return t}return e||"#000"},t.utf8$to$b64=function(t){return window.btoa(encodeURIComponent(t))},t.showSVG=function(e){var i=t.create({tag:"svg",style:{left:e.getPos().x,top:e.getPos().y,position:"absolute"}}),r=e.getSVG();r&&i.appendChild(r),t.setSize(i,e.getSize().x,e.getSize().y),document.body.appendChild(i)},t.toJson=function(e){var i={};return t.copy(i,e,!1,!1)},t.initControl=function(t,e,i,r,n){"function"==typeof e.init&&e.init(t,i,r),"function"==typeof e.load&&e.load(n)},t.copy=function(e,i,r,n){if(i){var o=void 0;for(o in i)if(i.hasOwnProperty(o)&&"function"!=typeof i[o])if("$"!==o.charAt(0))if("object"==typeof i[o]){if(n){e[o]=i[o];continue}e[o]||(i[o]instanceof Array?e[o]=[]:e[o]={}),t.copy(e[o],i[o],r,!1)}else{if(""===i[o])continue;e[o]=i[o]}else r&&(e[o]=i[o])}return e},t.xmlstringify=function(t){return t=t.replace("<","&lt;"),t=t.replace(">","&gt;")},t.toXML=function(e,i,r,n){var o;if(e||(o=i.constructor.name,n=document.implementation.createDocument(null,o,null),e=n.childNodes[0]),i){var s=void 0;for(s in i)if(i.hasOwnProperty(s)&&"function"!=typeof i[s])if("$"!==s.charAt(0))if("object"==typeof i[s])if(e.getAttribute(s))t.toXML(e.getAttribute(s),i[s],r,n);else if(i[s]instanceof Array)for(var a in i[s]){o=i[s][a].constructor.name;var l=n.createElement(o);e.appendChild(l),t.toXML(l,i[s][a],r,n)}else{o=i[s].constructor.name;var l=n.createElement(o);e.appendChild(l),t.toXML(l,i[s],r,n)}else{if(""===i[s])continue;e.setAttribute(s,i[s])}else r&&(e[s]=i[s])}return e},t.Range=function(t,e,i,r){e.x=Math.max(e.x,i),e.y=Math.max(e.y,r),t.x=Math.min(t.x,i),t.y=Math.min(t.y,r)},t.getPosition=function(e,i,r,o){var s,a,l,h,d=[],p=[],c=999999999,u=r.getPos(),f=r.getSize();for(a=[n.Point.LEFT,n.Point.RIGHT],h=0;h<2;h+=1)s=this.getLRPosition(e,i,r,a[h]),s.y>=u.y&&s.y<=u.y+f.y+1&&(s.y+=15*r["$"+a[h]],s.y>u.y+f.y&&(s=t.getUDPosition(e,i,r,n.Point.DOWN,15)),d.push(s),p.push(Math.sqrt((o.x-s.x)*(o.x-s.x)+(o.y-s.y)*(o.y-s.y))));for(a=[n.Point.UP,n.Point.DOWN],h=0;h<2;h+=1)s=t.getUDPosition(e,i,r,a[h]),s.x>=u.x&&s.x<=u.x+f.x+1&&(s.x+=15*r["$"+a[h]],s.x>u.x+f.x&&(s=this.getLRPosition(e,i,r,n.Point.RIGHT,15)),d.push(s),p.push(Math.sqrt((o.x-s.x)*(o.x-s.x)+(o.y-s.y)*(o.y-s.y))));for(h=0;h<d.length;h+=1)p[h]<c&&(c=p[h],l=d[h]);return l},t.getUDPosition=function(t,e,i,r,o){var s,a=i.getPos(),l=i.getSize(),h=a.y;return r===n.Point.DOWN&&(h+=l.y),s=(h-e)/t,o&&(s+=i["$"+r]*o,s<a.x?s=a.x:s>a.x+l.x&&(s=a.x+l.x)),new n.Point(s,h,r)},t.getLRPosition=function(t,e,i,r,o){var s,a=i.getPos(),l=i.getSize(),h=a.x;return r===n.Point.RIGHT&&(h+=l.x),s=t*h+e,o&&(s+=i["$"+r]*o,s<a.y?s=a.y:s>a.y+l.y&&(s=a.y+l.y)),new n.Point(h,s,r)},t.hasClass=function(t,e){return t.getAttribute("class").indexOf(e)>0},t.addClass=function(e,i){if(!t.hasClass(e,i)){var r=e.getAttribute("class");e.setAttributeNS(null,"class",r+" "+i)}},t.removeClass=function(e,i){if(t.hasClass(e,i)){var r=new RegExp("(\\s|^)"+i+"(\\s|$)"),n=e.getAttribute("class");e.setAttributeNS(null,"class",n.replace(r," ").trim())}},t.startsWith=function(t,e){return String.prototype.startsWith?t.startsWith(e):0===t.indexOf(e)},t.endsWith=function(t,e){if(!String.prototype.endsWith){var i=t.lastIndexOf(e);return-1!==i&&i===t.length-1}return t.endsWith(e)},t.includes=function(t,e){if(!String.prototype.includes){return t.indexOf(e)>-1}return t.includes(e)},t.isParentOfChild=function(e,i){if(!e||!i)return!1;if(t.isIE()){for(var r=e.childNodes,n=0;n<r.length;n++){if(r[n]===i)return!0}return!1}return e.contains(i)},t.createCustomEvent=function(t,e){var i;return"function"!=typeof window.CustomEvent?(e=e||{bubbles:!1,cancelable:!1,detail:void 0},i=document.createEvent("CustomEvent"),i.initCustomEvent(t,e.bubbles,e.cancelable,e.detail),i):i=new CustomEvent(t)},t.saveToLocalStorage=function(e){if(!this.isAutoSave)return!1;if(t.isLocalStorageSupported()){if(e.$isLoading)return!1;var i=t.toJson(e),r=JSON.stringify(i,null,"\t");return localStorage.setItem("diagram",r),!0}return!1},t.getDiagramFromLocalStorage=function(){if(t.isLocalStorageSupported())return localStorage.getItem("diagram")},t.isLocalStorageSupported=function(){return!this.isEdge()&&void 0!==localStorage},t}();e.Util=o},function(t,e,i){"use strict";var r=this&&this.__extends||function(){var t=Object.setPrototypeOf||{__proto__:[]}instanceof Array&&function(t,e){t.__proto__=e}||function(t,e){for(var i in e)e.hasOwnProperty(i)&&(t[i]=e[i])};return function(e,i){function r(){this.constructor=e}t(e,i),e.prototype=null===i?Object.create(i):(r.prototype=i.prototype,new r)}}();Object.defineProperty(e,"__esModule",{value:!0});var n=i(0),o=i(2),s=function(t){function e(){var e=null!==t&&t.apply(this,arguments)||this;return e.$isDraggable=!0,e.$pos=new a,e.$size=new a,e}return r(e,t),e.prototype.getPos=function(){return this.$pos},e.prototype.getSize=function(){return this.$size},e.prototype.getCenter=function(){var t=this.getPos(),e=this.getSize();return new a(t.x+e.x/2,t.y+e.y/2)},e.prototype.getCenterPosition=function(t){var e=this.getPos(),i=this.getSize(),r=this["$"+t],n=this.getCenter();return t===a.DOWN?new a(Math.min(n.x+r,n.x),e.y+i.y,a.DOWN):t===a.UP?new a(Math.min(n.x+r,n.x),e.y,a.UP):t===a.LEFT?new a(e.x,Math.min(n.y+r,e.y+i.y),a.LEFT):t===a.RIGHT?new a(e.x+i.x,Math.min(n.y+r,e.y+i.y),a.RIGHT):new a},e.prototype.getSVG=function(){return null},e.prototype.getCanvas=function(){return null},e.prototype.getEvents=function(){return null},e.prototype.getAlreadyDisplayingSVG=function(){return document.getElementById(this.id)||this.getSVG()},e.prototype.load=function(t){},e.prototype.withPos=function(t,e){return t&&e?this.$pos=new a(t,e):(void 0!==t&&null!==t&&(this.$pos.x=t),void 0!==e&&null!==e&&(this.$pos.y=e)),this},e.prototype.withSize=function(t,e){return t&&e?this.$size=new a(t,e):(void 0!==t&&(this.$size.x=t),void 0!==e&&(this.$size.y=e)),this},e.prototype.getShowed=function(){return t.prototype.getShowed.call(this)},e.prototype.createShape=function(t){return n.Util.createShape(t)},e}(o.Control);e.DiagramElement=s;var a=function(){function t(t,e,i){this.x=0,this.y=0,this.x=Math.ceil(t||0),this.y=Math.ceil(e||0),i&&(this.pos=i)}return t.prototype.add=function(t){return this.x+=t.x,this.y+=t.y,this},t.prototype.getPosition=function(){return this.pos?this.pos:""},t.prototype.addNum=function(t,e){return this.x+=t,this.y+=e,this},t.prototype.sum=function(e){var i=new t(this.x,this.y);return i.add(e),i},t.prototype.center=function(t,e){var i=0;t&&(this.x+=t.x,this.y+=t.y,i++),e&&(this.x+=e.x,this.y+=e.y,i++),i>0&&(this.x=this.x/i,this.y=this.y/i)},t.prototype.isEmpty=function(){return this.x<1&&this.y<1},t.prototype.size=function(t,e){var i=0,r=0,n=0,o=0;t&&(i=t.x,n=t.y),e&&(r=e.x,o=e.y),this.x=i>r?i-r:r-i,this.y=n>o?n-o:o-n},t.UP="UP",t.LEFT="LEFT",t.RIGHT="RIGHT",t.DOWN="DOWN",t}();e.Point=a;var l=function(t){function e(e){var i=t.call(this)||this;return i.lineType=e,i}return r(e,t),e.prototype.getTyp=function(){return"SVG"},e.prototype.getPos=function(){var t=new a;return t.center(this.source,this.target),t},e.prototype.getSize=function(){var t=new a;return t.size(this.source,this.target),t},e.prototype.withColor=function(t){return this.color=t,this},e.prototype.withSize=function(t,e){return this},e.prototype.withPath=function(t,i,r){var n,o="M"+t[0].x+" "+t[0].y;for(this.lineType=e.FORMAT.PATH,n=1;n<t.length;n+=1)o=o+"L "+t[n].x+" "+t[n].y;return i?(o+=" Z",this.target=t[0]):this.target=t[t.length-1],this.path=o,r instanceof Number&&(this.angle=r),this},e.prototype.getSVG=function(){if("PATH"===this.lineType)return n.Util.create({tag:"path",d:this.path,fill:this.color,stroke:"#000","stroke-width":"1px"});var t=n.Util.create({tag:"line",x1:this.source.x,y1:this.source.y,x2:this.target.x,y2:this.target.y,stroke:n.Util.getColor(this.color)});return this.lineType&&"dotted"===this.lineType.toLowerCase()&&(t.setAttribute("stroke-miterlimit","4"),t.setAttribute("stroke-dasharray","1,1")),t},e.FORMAT={SOLID:"SOLID",DOTTED:"DOTTED",PATH:"PATH"},e}(s);e.Line=l},function(t,e,i){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var r=i(7),n=i(32),o=function(){function t(){this.$viewData=this.initViewDataProperties(this.$viewData)}return t.prototype.initViewDataProperties=function(t){var e=new r.default;if(t){t.removeListener(this);for(var i=t.getKeys(),n=0;n<i.length;n++){var o=i[n];if(this.$view){if(null===this.$view[o])continue;e.setValue(o,this.$view[o])}else e.setValue(o,null)}}return e.addListener(this),e},t.prototype.setView=function(t){var e=null;return this.$view&&(e=this.$view,this.$viewListener&&e.removeEventListener("change",this.$viewListener)),this.$view=t,this.$viewListener&&t.addEventListener("change",this.$viewListener),this.$viewData=this.initViewDataProperties(this.$viewData),t},t.prototype.init=function(t,e,i){return this.$owner||(this.$owner=t),this.id||(this.id=i),this.property||(this.property=this.generateID(e,i)),this},t.prototype.createEventListener=function(){return new n.default},t.prototype.getRoot=function(){return this.$owner?this.$owner.getRoot():this},t.prototype.initControl=function(t){var e=this;if(null!==this.$view)if(t.hasOwnProperty("prop"))for(var i in t.prop){var r=this.$viewData.getValue(i);this.$view&&this.updateElement(i,r,t.prop[i])}else{var n=t.hasOwnProperty("rem"),o=[];if(t.hasOwnProperty("upd"))for(var i in t.upd){var r=void 0,s=t.upd[i],a=void 0;if((!n||!t.rem.hasOwnProperty(i)||(r=t.rem[i],this.$model&&this.$model.getValue(i)==r&&(a=this.$model),delete t.rem[i],null!==a))&&(a?n||a===this.$model&&(r=this.$model.getValue(i)):this.$model&&(r=this.$model.getValue(i),a=this.$model),s!=r)){var l=this.$viewData.getValue(i);a==this.$viewData?this.$view&&this.updateElement(i,l,s):this.updateElement(i,l,s),this.getRoot().setValue(a,i,s,r)}}if(n)for(var i in t.rem)if(!o.hasOwnProperty(i)){var r=void 0;this.updateElement(i,null,null),this.$model}this.property&&(this.$view.onchange=function(t){e.controlChanged(t)})}},t.prototype.getItem=function(t){return null},t.prototype.hasItem=function(t){return!1},t.prototype.getItems=function(){return new Object},t.prototype.setValue=function(t,e,i,r){return!1},t.prototype.propertyChange=function(t,e,i,r){i!==r&&i!==this.$viewData.getValue(e)&&(this.$viewData.setValue(e,r),this.$viewData&&this.$viewData.setValue(e,r),this.$model&&this.$model.setValue(e,r),this.updateElement(e,i,r))},t.prototype.controlChanged=function(t){if(this.$view instanceof HTMLInputElement!=!1){this.$view.checkValidity()}},t.prototype.updateElement=function(t,e,i){this.$view&&this.$view.hasAttribute(t)&&this.$view.setAttribute(t,i)},t.prototype.getId=function(){return this.id},t.prototype.load=function(t,e){},t.prototype.addItem=function(t,e){e&&(this.property&&!e.hasProperty(this.property)||(e.addListener(this,this.property),this.$model=e))},t.prototype.appendChild=function(t){this.$view?this.$view.appendChild(t.$view):document.getElementsByTagName("body")[0].appendChild(t.$view)},t.prototype.removeChild=function(t){this.$view?this.$view.removeChild(t.$view):document.getElementsByTagName("body")[0].removeChild(t.$view)},t.prototype.setProperty=function(t){if(this.property){var e=t.split(".")[0],i=null;this.$owner.hasItem(e)&&(i=this.$owner.getItem(e)),this.$model&&this.$model.removeListener(this,this.lastProperty),this.property=t,i&&(i.addListener(this,this.lastProperty),this.$model=i,this.updateElement(this.lastProperty,this.$viewData.getValue(this.lastProperty),i.prop[this.lastProperty]))}},t.prototype.registerListenerOnHTMLObject=function(t){return this.registerEventListener(t,this.$view)},t.prototype.fireEvent=function(t){},t.prototype.isClosed=function(){return this.closed},t.prototype.getShowed=function(){return this.isClosed()?this.$owner.getShowed():this},t.prototype.getControlDataID=function(){return this.id+"_data"},t.prototype.generateID=function(t,e){return t||(e?e+"._data":null)},t.prototype.updateViewData=function(){if(this.$view)for(var t=this.$viewData.getKeys(),e=0;e<t.length;e++){var i=t[e];null!==this.$view[i]&&this.$viewData.setValue(i,this.$view[i])}},t.prototype.registerEventListener=function(t,e){if(!e)return!1;if(e instanceof HTMLElement==!1)return!1;var i=this,r=function(e){e.eventType=t,e.id=i.id,i.$owner.fireEvent(e)};return e.addEventListener(t,r),!0},Object.defineProperty(t.prototype,"lastProperty",{get:function(){if(!this.property)return"";var t=this.property.split(".");return t[t.length-1]},enumerable:!0,configurable:!0}),t}();e.Control=o},function(t,e,i){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var r=function(){function t(){}return t.setActiveHandler=function(t){this.$activeHandler=t},t.isHandlerActiveOrFree=function(t,e){return e?this.$activeHandler==t:this.$activeHandler==t||""==this.$activeHandler||void 0==this.$activeHandler},t.isAnyHandlerActive=function(){return!(""===this.$activeHandler||void 0==this.$activeHandler)},t.releaseActiveHandler=function(){this.$activeHandler=""},t.getActiveHandler=function(){return this.$activeHandler},t.register=function(e,i){var r;if("function"==typeof e.getEvents&&(r=e.getEvents()),r&&i)for(var n,o=0,s=r;o<s.length;o++){var a=s[o];t.EVENTS.indexOf(a),n=a.indexOf(":"),i.addEventListener(a.substr(n+1).toLowerCase(),function(i){t.publish(e,i)})}},t.publish=function(e,i){var r=t.handlers[i.type];if(r)for(var n=0,o=r;n<o.length;n++){var s=o[n];s.handle(i,e)}},t.subscribe=function(e){for(var i=[],r=1;r<arguments.length;r++)i[r-1]=arguments[r];for(var n=0,o=i;n<o.length;n++){var s=o[n],a=t.handlers[s];null!==a&&void 0!==a||(a=[],t.handlers[s]=a),a.push(e)}},t.CREATE="Create",t.EDITOR="Editor",t.OPENPROPERTIES="openProperties",t.RELOADPROPERTIES="reloadProperties",t.ELEMENTMOUSEDOWN="ELEMENT:MOUSEDOWN",t.ELEMENTMOUSEUP="ELEMENT:MOUSEUP",t.ELEMENTMOUSELEAVE="ELEMENT:MOUSELEAVE",t.ELEMENTMOUSEMOVE="ELEMENT:MOUSEMOVE",t.ELEMENTMOUSEWHEEL="ELEMENT:MOUSEWHEEL",t.ELEMENTCLICK="ELEMENT:CLICK",t.ELEMENTDBLCLICK="ELEMENT:DBLCLICK",t.ELEMENTDRAG="ELEMENT:DRAG",t.ELEMENTDRAGOVER="ELEMENT:DRAGOVER",t.ELEMENTDROP="ELEMENT:DROP",t.ELEMENTDRAGLEAVE="ELEMENT:DRAGLEAVE",t.EVENTS=[t.CREATE,t.EDITOR,t.OPENPROPERTIES,t.RELOADPROPERTIES,t.ELEMENTMOUSEDOWN,t.ELEMENTMOUSEUP,t.ELEMENTMOUSELEAVE,t.ELEMENTMOUSEMOVE,t.ELEMENTMOUSEWHEEL,t.ELEMENTCLICK,t.ELEMENTDRAG,t.ELEMENTDBLCLICK,t.ELEMENTDRAGOVER,t.ELEMENTDROP,t.ELEMENTDRAGLEAVE],t.handlers={},t.$activeHandler="",t}();e.EventBus=r},function(t,e,i){"use strict";function r(t){for(var i in t)e.hasOwnProperty(i)||(e[i]=t[i])}Object.defineProperty(e,"__esModule",{value:!0}),r(i(11)),r(i(45)),r(i(46)),r(i(47)),r(i(25)),r(i(48))},function(t,e,i){"use strict";function r(t){for(var i in t)e.hasOwnProperty(i)||(e[i]=t[i])}Object.defineProperty(e,"__esModule",{value:!0});var n=i(13),o=i(14),s=i(15),a=i(16);r(i(6)),r(i(17)),r(i(20)),r(i(21)),r(i(14)),r(i(33)),r(i(15)),r(i(34)),r(i(35)),r(i(16)),r(i(37)),r(i(39)),r(i(40)),r(i(13)),r(i(18)),r(i(19)),r(i(41)),r(i(42)),r(i(9)),new n.AutoComplete,new o.BR,new s.Div,new a.Label},function(t,e,i){"use strict";var r=this&&this.__extends||function(){var t=Object.setPrototypeOf||{__proto__:[]}instanceof Array&&function(t,e){t.__proto__=e}||function(t,e){for(var i in e)e.hasOwnProperty(i)&&(t[i]=e[i])};return function(e,i){function r(){this.constructor=e}t(e,i),e.prototype=null===i?Object.create(i):(r.prototype=i.prototype,new r)}}();Object.defineProperty(e,"__esModule",{value:!0});var n=i(1),o=function(t){function e(e){var i=t.call(this)||this;return i.$edges=[],i.$minWidth=150,i.$minheight=25,i.withSize(i.$minWidth,i.$minheight),e&&(e.x&&e.y&&i.withPos(e.x,e.y),(e.width||e.height)&&i.withSize(e.width,e.height),e.label&&(i.label=e.label)),i}return r(e,t),e.prototype.getSVG=function(){var t=this.getPos(),e=this.getSize(),i={tag:"rect",x:t.x-e.x/2,y:t.y-e.y/2,rx:4,ry:4,height:e.y,width:e.x,style:"fill:white;stroke:black;stroke-width:2"},r=this.createShape(i),n={tag:"text",x:t.x,y:t.y,"text-anchor":"middle","alignment-baseline":"middle","font-family":"Verdana","font-size":"14",fill:"black"},o=this.createShape(n);o.textContent=this.id;var s=this.createShape({tag:"g",id:this.id});return s.appendChild(r),s.appendChild(o),s},e.prototype.copy=function(){var t,i=this.$owner||this.getRoot();if(i){var r=this.property||e.name,n=i.getNewId(r);t=i.createElement(r,n,null),t.withSize(this.getSize().x,this.getSize().y),t.$owner=i}else t.id=this.id+"-copy",t.$owner=this.getRoot();return t},e.prototype.redrawEdges=function(){for(var t=0,e=this.$edges;t<e.length;t++){e[t].redraw(this)}},e}(n.DiagramElement);e.Node=o},function(t,e,i){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var r=function(){function t(){this.prop={},this.$listener={}}return t.prototype.getKeys=function(){return Object.keys(this.prop)},t.prototype.addProperties=function(t){if(t)if(t.prop){var e=t.prop;for(var i in e)!1!==e.hasOwnProperty(i)&&null!==e[i]&&""!==e[i]&&this.setValue(i,e[i])}else{var r=t.upd||{},n=t.rem||{};for(var i in r)!1!==r.hasOwnProperty(i)&&(!1===n.hasOwnProperty(i)?this.setValue(i,r[i]):this.getValue(i)===n[i]&&this.setValue(i,r[i]))}},t.nullCheck=function(t){return void 0!==t&&null!=t||(t=""),t},t.prototype.getListeners=function(e){return e=t.nullCheck(e),this.$listener[e]},t.prototype.getValue=function(t){return this.prop[t]},t.prototype.setValue=function(t,e){var i=this.prop[t];i==e&&null!==e||(this.prop[t]=e,this.firePropertyChange(t,i,e))},t.prototype.firePropertyChange=function(e,i,r){e=t.nullCheck(e);var n=this.getListeners(e);if(n)for(var o in n)n[o].propertyChange(this,e,i,r);if(n=this.getListeners(null))for(var o in n)n[o].propertyChange(this,e,i,r)},t.prototype.addTo=function(t,e){var i;return this.prop[t]?!1===this.prop[t].contains(e)&&(i=!0):(this.prop[t]=[],i=!0),i&&(this.prop[t].push(e),this.firePropertyChange(t,null,e)),i},t.prototype.removeFrom=function(t,e){if(!this.prop[t])return!0;var i=this.prop[t].indexOf(e);return i<0||(this.prop[t].splice(i,1),this.firePropertyChange(t,e,null),!0)},t.prototype.addListener=function(e,i){var r=this.getListeners(i);r||(r=[],this.$listener[t.nullCheck(i)]=r),r.push(e)},t.prototype.removeListener=function(e,i){var r=this.getListeners(i);if(null!==r){var n=r.indexOf(e);n>=0&&r.splice(n,1),0==r.length&&""!=t.nullCheck(i)&&delete this.$listener[i]}},t.prototype.hasProperty=function(t){return this.prop.hasOwnProperty(t)},t.prototype.addFrom=function(t,e){e?this.setValue(t,e.getValue(t)):this.setValue(t,null)},t.prototype.removeKey=function(t){if(this.hasProperty(t)){var e=this.prop[t];return delete this.prop[t],e}return null},t}();e.default=r},function(t,e,i){"use strict";function r(t){for(var i in t)e.hasOwnProperty(i)||(e[i]=t[i])}Object.defineProperty(e,"__esModule",{value:!0});var n=i(1);e.Point=n.Point;var o=i(12);e.Bridge=o.Bridge,e.DelegateAdapter=o.DelegateAdapter;var s=i(10);e.Graph=s.Graph,r(i(5)),r(i(4)),r(i(23)),r(i(60));var a=i(1),l=i(10),h=i(12),d=i(0),p=i(5),c=i(4);window.Point||(window.Point=a.Point,window.Graph=l.Graph,window.bridge=new h.Bridge,window.Util=d.Util,window.Clazz=p.Clazz,window.Association=c.Association,window.SymbolLibary=p.SymbolLibary)},function(t,e,i){"use strict";var r=this&&this.__extends||function(){var t=Object.setPrototypeOf||{__proto__:[]}instanceof Array&&function(t,e){t.__proto__=e}||function(t,e){for(var i in e)e.hasOwnProperty(i)&&(t[i]=e[i])};return function(e,i){function r(){this.constructor=e}t(e,i),e.prototype=null===i?Object.create(i):(r.prototype=i.prototype,new r)}}();Object.defineProperty(e,"__esModule",{value:!0});var n=i(0),o=i(1),s=function(t){function e(e){var i=t.call(this)||this;return i.modifier="+",i.extractData(e),i}return r(e,t),e.prototype.extractData=function(t){if(t&&(t.type&&(this.type=t.type),t.name&&(this.name=t.name),t.modifier&&(this.modifier=t.modifier),"string"==typeof t)){var e=t.split(":");if(e&&2===e.length){var i=e[0].trim(),r=i[0];"+"===r||"-"===r||"#"===r?(this.modifier=r,this.name=i.substring(1,i.length).trim()):this.name=i,this.name=this.name.replace(/ /g,"_"),this.type=e[1].trim()||"String","string"===this.type.toLowerCase()&&(this.type="String"),this.type=this.type.replace(/ /g,"_")}}},e.prototype.update=function(t){this.extractData(t),this.updateTextOfView()},e.prototype.updateModifier=function(t){this.modifier=t,this.updateTextOfView()},e.prototype.updateType=function(t){this.type=t,this.updateTextOfView()},e.prototype.updateName=function(t){this.name=t,this.updateTextOfView()},e.prototype.updateTextOfView=function(){this.$view.textContent=this.toString(),n.Util.saveToLocalStorage(this.$owner.$owner)},e.prototype.getSVG=function(){var t={tag:"text","text-anchor":"start","alignment-baseline":"middle"},e=n.Util.createShape(t);return e.textContent=this.toString(),this.$view=e,e},e.prototype.toString=function(){return this.modifier+" "+this.name+" : "+this.type},e}(o.DiagramElement);e.default=s},function(t,e,i){"use strict";var r=this&&this.__extends||function(){var t=Object.setPrototypeOf||{__proto__:[]}instanceof Array&&function(t,e){t.__proto__=e}||function(t,e){for(var i in e)e.hasOwnProperty(i)&&(t[i]=e[i])};return function(e,i){function r(){this.constructor=e}t(e,i),e.prototype=null===i?Object.create(i):(r.prototype=i.prototype,new r)}}();Object.defineProperty(e,"__esModule",{value:!0});var n=i(4),o=i(4),s=i(5),a=i(49),l=i(50),h=i(51),d=i(29),p=i(1),c=i(0),u=i(2),f=i(3),g=i(52),v=i(30),y=i(59),m=function(t){function e(e,i){var r=t.call(this)||this;return r.containerElements=["svg","g"],r.relevantStyles={rect:["fill","stroke","stroke-width"],path:["fill","stroke","stroke-width","opacity"],circle:["fill","stroke","stroke-width"],line:["stroke","stroke-width"],text:["fill","font-size","text-anchor","font-family"],polygon:["stroke","fill"]},e=e||{},e.data&&(i=e.options,e=e.data,r.id=e.id),r.options=i||{},e.init?r:(r.options.origin||(r.options.origin=new p.Point(150,45)),r.options.autoSave&&(c.Util.isAutoSave=i.autoSave),r.initFactories(),r.initCanvas(),r.initFeatures(r.options.features),r.lookupInLocalStorage()||r.load(e),f.EventBus.register(r,r.$view),r)}return r(e,t),e.prototype.lookupInLocalStorage=function(){if(!this.options.autoSave)return!1;if(!c.Util.isLocalStorageSupported())return!1;var t=c.Util.getDiagramFromLocalStorage();if(t&&t.length>0&&confirm("Restore previous session?")){var e=JSON.parse(t);return this.load(e),!0}return!1},e.prototype.fitSizeOnNodes=function(){for(var t=0,e=0,i=0,r=this.$graphModel.nodes;i<r.length;i++){var n=r[i],o=n.getPos(),s=n.getSize(),a=o.x+s.x,l=o.y+s.y;a>t&&(t=a),l>e&&(e=l)}this.root.setAttributeNS(null,"width",""+(t+100)),this.root.setAttributeNS(null,"height",""+(e+50))},e.prototype.saveAs=function(t){t=t.toLowerCase();var e=this.getRootSize();this.fitSizeOnNodes(),"svg"===t?this.exportSvg():"png"===t?this.exportPng():"html"===t?this.exportHtml():"pdf"===t?this.exportPdf():"json"===t&&this.exportJson(),this.root.setAttributeNS(null,"width",""+e.width),this.root.setAttributeNS(null,"height",""+e.height)},e.prototype.save=function(t,e,i){var r=document.createElement("a");r.href=window.URL.createObjectURL(new Blob([e],{type:t})),r.download=i,document.body.appendChild(r),r.click(),document.body.removeChild(r)},e.prototype.exportSvg=function(){var t=this.getSvgWithStyleAttributes();this.save("image/svg+xml",this.serializeXmlNode(t),"class_diagram.svg")},e.prototype.exportHtml=function(){var t="<html><head><title>DiagramJS - Classdiagram</title></head><body>$content</body></html>",e=this.getSvgWithStyleAttributes(),i=this.serializeXmlNode(e),r=t.replace("$content",i);this.save("text/plain",r,"class_diagram.htm")},e.prototype.exportJson=function(){var t=c.Util.toJson(this.$graphModel),e=JSON.stringify(t,null,"\t");this.save("text/plain",e,"class_diagram.json")},e.prototype.exportPdf=function(){if(!window.jsPDF)return void console.log("jspdf n.a.");var t,e,i=this.serializeXmlNode(this.getSvgWithStyleAttributes()),r=window.URL.createObjectURL(new Blob([i],{type:"image/svg+xml"})),n=new Image,o=this.getRootSize();n.onload=function(){t=document.createElement("canvas"),t.width=o.width,t.height=o.height,e=t.getContext("2d"),e.drawImage(n,0,0);var i=new window.jsPDF;i.addImage(t.toDataURL("image/jpeg"),"jpeg",15,40,180,160),i.save("class_diagram.pdf")},n.src=r},e.prototype.exportPng=function(){var t,e,i,r=new Image,n=this.serializeXmlNode(this.getSvgWithStyleAttributes()),o=window.URL.createObjectURL(new Blob([n],{type:"image/svg+xml"})),s=this.getRootSize();r.onload=function(){t=document.createElement("canvas"),t.width=s.width,t.height=s.height,e=t.getContext("2d"),e.drawImage(r,0,0),i=document.createElement("a"),i.download="class_diagram.png",i.href=t.toDataURL("image/png"),document.body.appendChild(i),i.click(),document.body.removeChild(i)},r.src=o},e.prototype.getSvgWithStyleAttributes=function(){var t=this.$graphModel.$view.cloneNode(!0);return this.readElement(t,this.$graphModel.$view),t},e.prototype.readElement=function(t,e){for(var i=t.childNodes,r=e.childNodes,n=0;n<i.length;n++){var o=i[n],s=o.tagName;if(-1!==this.containerElements.indexOf(s))this.readElement(o,r[n]);else if(s in this.relevantStyles){for(var a=window.getComputedStyle(r[n]),l="",h=0;h<this.relevantStyles[s].length;h++)l+=this.relevantStyles[s][h]+":"+a.getPropertyValue(this.relevantStyles[s][h])+"; ";o.setAttribute("style",l)}}},e.prototype.serializeXmlNode=function(t){return void 0!==window.XMLSerializer?(new window.XMLSerializer).serializeToString(t):void 0!==t.xml?t.xml:t.outerHTML},e.prototype.getRootSize=function(){var t,e;return t=+this.root.getAttribute("width"),e=+this.root.getAttribute("height"),{width:t,height:e}},e.prototype.load=function(t,e){this.$graphModel=new l.GraphModel,this.$graphModel.init(this),this.$graphModel.load(t)},e.prototype.clearModel=function(){this.$graphModel.removeAllElements(),this.clearSvgRoot()},e.prototype.init=function(e,i,r){return t.prototype.init.call(this,e,i,r),this.layout(),this},e.prototype.propertyChange=function(t,e,i,r){},e.prototype.getNextFreePosition=function(){if(!this.$graphModel)return new p.Point(50,50);for(var t=new p.Point(0,50),e=0,i=9e3,r=0,n=this.$graphModel.nodes;r<n.length;r++){var o=n[r];e=Math.max(e,o.getPos().x),i=Math.min(i,o.getPos().x)}return t.x=i>170?10:e+200,t},e.prototype.addElement=function(t,e){var i=this.$graphModel.addElement(t);return!0===i&&this.layout(e),i},e.prototype.addElementWithValues=function(t,e,i,r){var n=this.$graphModel.addElementWithValues(t,e);return n&&i&&this.layout(r),n},e.prototype.layout=function(t){this.getLayout().layout(this,this.$graphModel),t||this.draw()},e.prototype.getEvents=function(){return[f.EventBus.ELEMENTDRAGOVER,f.EventBus.ELEMENTDRAGLEAVE,f.EventBus.ELEMENTDROP]},e.prototype.draw=function(){this.clearSvgRoot();var t=this.$graphModel,e=this.root,i=new p.Point;this.options&&(i.x=this.options.minWidth||0,i.y=this.options.minHeight||0);for(var r=0,n=t.nodes;r<n.length;r++){var o=n[r],s=o.getSVG();f.EventBus.register(o,s),e.appendChild(s);var a=void 0;a=o.getPos().x+o.getSize().x,a>i.x&&(i.x=a),a=o.getPos().y+o.getSize().y,a>i.y&&(i.y=a)}c.Util.setAttributeSize(this.root,i.x+60,i.y+40);for(var l=0,h=t.edges;l<h.length;l++){var d=h[l],s=d.getSVG();f.EventBus.register(d,s),e.appendChild(s)}},e.prototype.drawElement=function(t){if(t){var e=t.getSVG();this.root.appendChild(e);var i=this.getRootSize(),r=t.getPos().x+t.getSize().x+40,n=t.getPos().y+t.getSize().y;if(i.width<r&&this.root.setAttributeNS(null,"width",""+r),i.height<n&&this.root.setAttributeNS(null,"height",""+n),t instanceof o.Association){var s=t;s.redraw(s.$sNode);var a=t.$sNode.getAlreadyDisplayingSVG(),l=t.$tNode.getAlreadyDisplayingSVG();this.root.appendChild(a),this.root.appendChild(l)}f.EventBus.register(t,e)}},e.prototype.removeElement=function(t){if(t){var e=t.getAlreadyDisplayingSVG();c.Util.isParentOfChild(this.root,e)&&this.root.removeChild(e)}},e.prototype.generate=function(t){this.$graphModel.workspace=t;var e,i=c.Util.toJson(this.$graphModel);e=JSON.stringify(i,null,"\t"),window.java&&"function"==typeof window.java.generate&&window.java.generate(e)},e.prototype.createPattern=function(){var t=c.Util.createShape({tag:"defs"}),e=c.Util.createShape({tag:"pattern",id:"raster",patternUnits:"userSpaceOnUse",width:40,height:40}),i=c.Util.createShape({tag:"path",d:"M0 4 L0 0 L4 0 M36 0 L40 0 L40 4 M40 36 L40 40 L36 40 M4 40 L0 40 L0 36",stroke:"#DDD","stroke-width":1,fill:"none"}),r=c.Util.createShape({tag:"rect",x:0,y:0,width:40,height:40,fill:"none"});return e.appendChild(r),e.appendChild(i),t.appendChild(e),t},e.prototype.clearSvgRoot=function(){var t=this.root;for(this.$graphModel.$view.dispatchEvent(c.Util.createCustomEvent("click"));t.firstChild;)t.removeChild(t.firstChild);t.appendChild(this.createPattern());var e=c.Util.createShape({tag:"rect",id:"background",width:5e3,height:5e3,x:0,y:0,stroke:"#999","stroke-width":"1",fill:"url(#raster)"});t.appendChild(e);var i=document.getElementById("inlineEdit");i&&document.body.contains(i)&&document.body.removeChild(i)},e.prototype.getLayout=function(){if(this.currentlayout)return this.currentlayout;var t=this.options.layout||"";return this.layoutFactory[t]?this.currentlayout=new this.layoutFactory[t]:this.currentlayout=new a.DagreLayout,this.currentlayout},e.prototype.initFactories=function(){var t=s;this.nodeFactory={};for(var e in t)!0===t.hasOwnProperty(e)&&(this.nodeFactory[e]=t[e]);var i=n;this.edgeFactory={};for(var e in i)!0===i.hasOwnProperty(e)&&(this.edgeFactory[e]=i[e]);var r=a;this.layoutFactory={};for(var e in r)!0===r.hasOwnProperty(e)&&(this.layoutFactory[e]=r[e])},e.prototype.initCanvas=function(){this.options.canvas&&(this.$view=document.getElementById(this.options.canvas)),this.$view||(this.$view=document.createElement("div"),this.$view.setAttribute("class","diagram"),document.body.appendChild(this.$view))},e.prototype.initFeatures=function(t){if(t){if(t.newedge&&f.EventBus.subscribe(new g.NewEdge(this),"mousedown","mouseup","mousemove","mouseleave"),t.import&&f.EventBus.subscribe(new v.ImportFile(this),"dragover","dragleave","drop"),t.zoom){var e="onwheel"in document.createElement("div")?"wheel":void 0!==document.onmousewheel?"mousewheel":"DOMMouseScroll";f.EventBus.subscribe(new g.Zoom(this),e)}if(t.drag&&f.EventBus.subscribe(new g.Drag(this),"mousedown","mouseup","mousemove","mouseleave"),t.select&&f.EventBus.subscribe(new g.Select(this),"click","drag"),t.palette){new h.default(this)}if(t.toolbar&&new y.Toolbar(this).show(),t.properties){var i=new g.PropertiesDispatcher(this);i.dispatch(d.PropertiesPanel.PropertiesView.Clear),f.EventBus.subscribe(i,"dblclick","click",f.EventBus.RELOADPROPERTIES)}t.addnode&&f.EventBus.subscribe(new g.AddNode(this),"mousedown","mouseup","mousemove","mouseleave")}},e}(u.Control);e.Graph=m},function(t,e,i){"use strict";var r=this&&this.__extends||function(){var t=Object.setPrototypeOf||{__proto__:[]}instanceof Array&&function(t,e){t.__proto__=e}||function(t,e){for(var i in e)e.hasOwnProperty(i)&&(t[i]=e[i])};return function(e,i){function r(){this.constructor=e}t(e,i),e.prototype=null===i?Object.create(i):(r.prototype=i.prototype,new r)}}();Object.defineProperty(e,"__esModule",{value:!0});var n=i(1),o=i(44),s=i(0),a=i(3),l=i(4);!function(t){t[t.Up=0]="Up",t[t.Down=1]="Down",t[t.Left=2]="Left",t[t.Right=3]="Right"}(e.Direction||(e.Direction={}));var h=function(t){function e(e){var i=t.call(this)||this;return i.$points=[],i.withData(e),i}return r(e,t),e.prototype.withData=function(t){if(!t)return this;var e,i;return t.source&&"string"!=typeof t.source?e=t.source:t.sourceInfo&&"string"!=typeof t.sourceInfo&&(e=t.sourceInfo),e&&(this.sourceInfo=new o.InfoText(e),this.sourceInfo.$owner=this),t.target&&"string"!=typeof t.target?i=t.target:t.targetInfo&&"string"!=typeof t.targetInfo&&(i=t.targetInfo),i&&(this.targetInfo=new o.InfoText(i),this.targetInfo.$owner=this),this},e.prototype.updateSrcCardinality=function(t){this.sourceInfo=this.updateCardinality(this.$sNode,this.sourceInfo,t),this.redrawSourceInfo(),s.Util.saveToLocalStorage(this.$owner)},e.prototype.updateTargetCardinality=function(t){this.targetInfo=this.updateCardinality(this.$tNode,this.targetInfo,t),this.redrawTargetInfo(),s.Util.saveToLocalStorage(this.$owner)},e.prototype.updateCardinality=function(t,e,i){if(!e){e=new o.InfoText({cardinality:i}),e.$owner=this;var r=this.calcInfoPosNew(e,t);return e.withPos(r.x,r.y),this.$view.appendChild(e.getSVG()),e}return e.cardinality=i,e.isEmpty()?void this.$view.removeChild(e.$view):(e.updateCardinality(i),e)},e.prototype.updateSrcProperty=function(t){this.sourceInfo=this.updateProperty(this.$sNode,this.sourceInfo,t),this.redrawSourceInfo(),s.Util.saveToLocalStorage(this.$owner)},e.prototype.updateTargetProperty=function(t){this.targetInfo=this.updateProperty(this.$tNode,this.targetInfo,t),this.redrawTargetInfo(),s.Util.saveToLocalStorage(this.$owner)},e.prototype.updateProperty=function(t,e,i){if(!e){e=new o.InfoText({property:i}),e.$owner=this;var r=this.calcInfoPosNew(e,t);return e.withPos(r.x,r.y),this.$view.appendChild(e.getSVG()),e}return e.property=i,e.isEmpty()?void this.$view.removeChild(e.$view):(e.updateProperty(i),e)},e.prototype.withItem=function(t,e){return t.$edges.push(this),e.$edges.push(this),this.$sNode=t,this.$tNode=e,this.source=t.label,this.target=e.label,this},e.prototype.getSVG=function(){var t=s.Util.createShape({tag:"g",id:this.id,class:"SVGEdge"}),e=this.getPath(),i={tag:"path",d:e,fill:"none"},r=this.createShape(i);i.style="stroke-width:20;opacity:0";var n=s.Util.createShape(i);if(t.appendChild(n),t.appendChild(r),this.sourceInfo){var o=this.calcInfoPosNew(this.sourceInfo,this.$sNode);this.sourceInfo.withPos(o.x,o.y),t.appendChild(this.sourceInfo.getSVG())}if(this.targetInfo){var o=this.calcInfoPosNew(this.targetInfo,this.$tNode);this.targetInfo.withPos(o.x,o.y),t.appendChild(this.targetInfo.getSVG())}return this.$pathWideSvg=n,this.$pathSvg=r,this.$view=t,t},e.prototype.getEvents=function(){return[a.EventBus.ELEMENTCLICK,a.EventBus.ELEMENTDBLCLICK,a.EventBus.EDITOR,a.EventBus.OPENPROPERTIES]},e.prototype.convertEdge=function(t,e,i){if(!l[t])return this;var r=new l[t];r.withItem(this.$sNode,this.$tNode),r.id=e,r.type=t,r.lineStyle=this.lineStyle,r.$owner=this.$owner,this.sourceInfo&&(r.sourceInfo=new o.InfoText({property:this.sourceInfo.property,cardinality:this.sourceInfo.cardinality}),r.sourceInfo.$owner=r),this.targetInfo&&(r.targetInfo=new o.InfoText({property:this.targetInfo.property,cardinality:this.targetInfo.cardinality}),r.targetInfo.$owner=r),this.$points.forEach(function(t){r.addPoint(t.x,t.y)});var n=this.getRoot();if(!n)return this;var s=n.$graphModel.edges.indexOf(this);if(n.$graphModel.removeElement(this.id),s>-1?n.$graphModel.edges.splice(s,0,r):n.$graphModel.edges.push(r),!i)return r;var h;h=n?n.root:document.getElementById("root");var d=r.getSVG();n.removeElement(this),h.appendChild(d);var p="Edge"!==t;return r.redraw(r.$sNode,p),r.redraw(r.$tNode,p),a.EventBus.register(r,d),this.sourceInfo=void 0,this.targetInfo=void 0,r},e.prototype.redraw=function(t,e){if(t){var i,r,n;this.$sNode.id===t.id?(r=this.$points[0],n=1):this.$tNode.id===t.id&&(r=this.$points[this.$points.length-1],n=this.$points.length-2),i=this.$points[n],this.calcIntersection(t,r,i),this.$points.length>2&&this.$tNode.id===t.id&&i.y>t.getPos().y+t.getSize().y/2&&this.$points.splice(n,1),this.$tNode.id===t.id&&2==this.$points.length&&this.calcIntersection(this.$sNode,i,r),this.$points.length>2&&this.$sNode.id===t.id&&t.getPos().y+t.getSize().y/2>i.y&&this.$points.splice(n,1),this.$sNode.id===t.id&&2==this.$points.length&&this.calcIntersection(this.$tNode,i,r),e||this.redrawPointsAndInfo()}},e.prototype.redrawPointsAndInfo=function(){var t=this.getPath();this.$pathSvg.setAttributeNS(null,"d",t),this.$pathWideSvg.setAttributeNS(null,"d",t),this.redrawSourceInfo(),this.redrawTargetInfo()},e.prototype.redrawSourceInfo=function(){if(this.sourceInfo){var t=this.calcInfoPosNew(this.sourceInfo,this.$sNode);this.sourceInfo.redrawFromEdge(t)}},e.prototype.redrawTargetInfo=function(){if(this.targetInfo){var t=this.calcInfoPosNew(this.targetInfo,this.$tNode);this.targetInfo.redrawFromEdge(t)}},e.prototype.getPath=function(){if(0==this.$points.length)return"";for(var t="M",e=0;e<this.$points.length;e++){var i=this.$points[e];e>0&&(t+="L"),t+=Math.floor(i.x)+" "+Math.floor(i.y)+" "}return t},e.prototype.calcIntersection=function(t,e,i){var r=t.getSize().y,n=t.getSize().x,o=t.getPos().x+n/2,s=t.getPos().y+r/2,a=i.x,l=i.y,h=e.x,d=e.y;if(h=a>o?o+n/2:a<o?o-n/2:o,d=a-o!=0?(l-s)/(a-o)*(h-o)+s:s>l?t.getPos().y:t.getPos().y+r,!(s-r/2<=d&&d<=s+r/2))if(d=l>s?s+r/2:s-r/2,a-o!=0){var p=(l-s)/(a-o);h=(d+p*o-s)/p}else h=o;return e.x=Math.ceil(h),e.y=Math.ceil(d),null},e.prototype.calcInfoPosNew=function(t,e){if(!t||!e)return null;var i,r;this.$sNode.id===e.id?(i=this.$points[0],r=this.$points[1]):this.$tNode.id===e.id&&(i=this.$points[this.$points.length-1],r=this.$points[this.$points.length-2]);var o,s,a=this.getDirectionOfPointToNode(e,i);switch(a){case 0:o=i.x>=r.x?i.x+5:i.x-t.getSize().x,s=i.y+t.getSize().y/2;break;case 3:s=i.y>=r.y?i.y+t.getSize().y/2:i.y-t.getSize().y/2-5,o=i.x-t.getSize().x-5;break;case 2:s=i.y>=r.y?i.y+t.getSize().y/2:i.y-t.getSize().y/2-5,o=i.x+5;break;case 1:o=i.x>=r.x?i.x+5:i.x-t.getSize().x,s=i.y-t.getSize().y/2-5}return new n.Point(o,s)},e.prototype.clearPoints=function(){this.$points=[],this.$points=[]},e.prototype.getDirectionOfPointToNode=function(t,e){var i=t.getPos(),r=new n.Point(i.x+t.getSize().x,i.y+t.getSize().y),o=1;return i.y>=e.y&&(o=1),r.y<=e.y&&(o=0),i.x>=e.x&&(o=3),r.x<=e.x&&(o=2),o},e.prototype.addPoint=function(t,e){return this.$points.push(new n.Point(t,e)),this.$points},e}(n.DiagramElement);e.Association=h},function(t,e,i){"use strict";var r=this&&this.__extends||function(){var t=Object.setPrototypeOf||{__proto__:[]}instanceof Array&&function(t,e){t.__proto__=e}||function(t,e){for(var i in e)e.hasOwnProperty(i)&&(t[i]=e[i])};return function(e,i){function r(){this.constructor=e}t(e,i),e.prototype=null===i?Object.create(i):(r.prototype=i.prototype,new r)}}();Object.defineProperty(e,"__esModule",{value:!0});var n=i(5),o=i(23),s=i(7),a=i(2),l=i(24),h=i(10),d=i(0),p=function(t){function e(e){var i=t.call(this)||this;i.controlFactory={},i.adapterFactory={},i.controls={},i.adapters={},i.items={},i.controlNo=1,i.online=!0,i.language=navigator.language.toUpperCase(),i.addListener=function(t){this.listener.push(t)};var r;e&&(i.$view=e);var s=Object.keys(o);for(r=0;r<s.length;r++){var a=o[s[r]];a&&a.id&&(i.adapterFactory[a.id.toLowerCase()]=a)}for(s=Object.keys(n),r=0;r<s.length;r++)i.addControl(n[s[r]]);i.addControl(h.Graph);var l=i;return window.addEventListener("load",function(){var t=function(){l.setOnline(navigator.onLine)};window.addEventListener("online",t),window.addEventListener("offline",t)}),i}return r(e,t),e.prototype.setOnline=function(t){this.online=t,this.toolBar.children[0]&&(this.toolBar.children[0].className=t?"online":"offline")},e.prototype.addToolbar=function(){if(this.toolBar)return!1;this.toolBar=document.createElement("div"),this.toolBar.className="onlineStatus";var t=document.createElement("div");t.className="online",this.toolBar.appendChild(t),t=document.createElement("div"),t.className="lang",t.innerHTML=this.language,this.toolBar.appendChild(t);var e=document.getElementsByTagName("body")[0];return e.insertBefore(this.toolBar,e.firstChild),this.setOnline(this.online),!0},e.prototype.addControl=function(t){t&&t.name&&(this.controlFactory[t.name.toLowerCase()]=t)},e.prototype.getId=function(){return"control"+this.controlNo++},e.prototype.adapterUpdate=function(t){var e=Object.keys(this.adapters);if(e.length>0){var i=void 0;for(i=0;i<e.length;i++){var r=this.adapters[e[i]];if(r instanceof l.Adapter)r.update(t);else for(var n=0,o=r;n<o.length;n++){var s=o[n];s.update(t)}}}},e.prototype.load=function(t,e){var i,r,n={};if("string"==typeof t){n.id=""+t;var o,s=document.getElementById(n.id);if(s){if(o=s.getAttribute("class"),o||(o=s.getAttribute("classname")||""),s.getAttribute("property")&&this.hasItem(s.getAttribute("property"))){var a=this.getItem(s.getAttribute("property"));for(var l in a.prop)s.getAttribute(l)&&a.setValue(l,s.getAttribute(l));s.getAttribute("property")}}else o=""+t;o=o.toLowerCase(),n.className=o}else n=t;if(n.id||(n.id=this.getId()),n.className||"clazzdiagram"!==n.type&&"objectdiagram"!==n.type||(n.className="graph"),i=n.className||n.class,i=i.toLocaleLowerCase(),r=n.id,(n.prop||n.upd||n.rem)&&null===this.controls[r]){var h=!this.hasItem(n.id),s=this.getItem(n.id);if(h)for(var p in this.controls)!1!==this.controls.hasOwnProperty(p)&&this.controls[p].addItem(this,s);return s.addProperties(n),this.adapterUpdate(JSON.stringify(n)),s}var c;if(this.controls[r])return c=this.controls[r],c.initControl(t),this.adapterUpdate(JSON.stringify(n)),c;if("object"==typeof this.controlFactory[i]||"function"==typeof this.controlFactory[i]){if(c=new(0,this.controlFactory[i])(t),d.Util.initControl(e||this,c,n.property,r,t),c.id?this.controls[c.id]=c:this.controls[r]=c,"function"==typeof c.getSVG&&"function"==typeof c.getSize){var u=c.getSize(),f=d.Util.createShape({tag:"svg",id:"root",width:u.x,height:u.y}),g=c.getSVG();f.appendChild(g),document.getElementsByTagName("body")[0].appendChild(f)}return c}return null},e.prototype.hasItem=function(t){return void 0!==this.items[t]||(t=t.split(".")[0],void 0!==this.items[t])},e.prototype.getItems=function(){return this.items},e.prototype.getItem=function(t){var e=this.items[t];return e||(t=t.split(".")[0],(e=this.items[t])||(e=new s.default,e.id=t,this.items[t]=e)),e},e.prototype.setValue=function(t,e,i,r){alert("Bridge.setValue: oldVal:"+r+", newVal: "+ +i+", attribute: "+e+", object: "+JSON.stringify(t));var n,o;if(t instanceof String||"string"==typeof t)o=t.toString(),n=this.getItem(o);else if(t instanceof s.default)n=t,o=t.id;else{if(!t.hasOwnProperty("id"))return console.log("object is neither Data nor String.."),!1;n=t,o=t.id}return n&&n.setValue(e,i),!0},e.prototype.getValue=function(t,e){var i,r;if(t instanceof String||"string"==typeof t)r=t.toString(),i=this.getItem(r);else{if(!t.hasOwnProperty("id"))return void console.log("object is neither Data nor String..");i=t}if(i)return i.hasOwnProperty(e)?i[e]:i instanceof s.default?i.getValue(e):null},e.prototype.getNumber=function(t,e,i){void 0===i&&(i=0);var r=this.getValue(t,e);if("number"==typeof r)return r;if("string"==typeof r){var n=Number(r);if(n||0===n)return n}return i},e.prototype.getControl=function(t){return this.controls[t]},e.prototype.registerListener=function(t,e,i){if("string"==typeof e&&(e=this.getControl(e)),!e)return null;if(t&&(t=t.toLowerCase()),e.registerListenerOnHTMLObject(t),i){var r=new c;r.callBackfunction=i,r.id=e.getId(),this.addAdapter(r,t)}return e},e.prototype.addAdapter=function(t,e){e||(e="");var i;if(t instanceof String){i=new(0,this.adapterFactory[t.toLowerCase()])}else i=t;var r=this.adapters[e];return null!==r&&void 0!==r||(r=[],this.adapters[e]=r),r.push(i),i},e.prototype.fireEvent=function(t){var e=this.adapters[""];if(e)for(var i=0;i<e.length;i++){var r=e[i];null!==r.id&&r.id!==t.id||r.update(t)}if(e=this.adapters[t.eventType])for(var i=0;i<e.length;i++){var r=e[i];null!==r.id&&r.id!==t.id||r.update(t)}},e.version="0.42.01.1601007-1739",e}(a.Control);e.Bridge=p;var c=function(t){function e(){return null!==t&&t.apply(this,arguments)||this}return r(e,t),e.prototype.update=function(t){return this.adapter?(this.adapter.update(t),!0):!!this.callBackfunction&&this.executeFunction(this.callBackfunction,t)},e.prototype.setAdapter=function(t){return this.adapter=t,!0},e.prototype.executeFunction=function(t,e){for(var i=window,r=t.split("."),n=0;n<r.length-1;n++)if(void 0===(i=i[r[n]]))return!1;var o=i[r[r.length-1]];return"function"==typeof o?(o.call(i),!0):(window.callBack1.update(e),!1)},e}(l.Adapter);e.DelegateAdapter=c},function(t,e,i){"use strict";var r=this&&this.__extends||function(){var t=Object.setPrototypeOf||{__proto__:[]}instanceof Array&&function(t,e){t.__proto__=e}||function(t,e){for(var i in e)e.hasOwnProperty(i)&&(t[i]=e[i])};return function(e,i){function r(){this.constructor=e}t(e,i),e.prototype=null===i?Object.create(i):(r.prototype=i.prototype,new r)}}();Object.defineProperty(e,"__esModule",{value:!0});var n=i(2),o=function(t){function e(){return null!==t&&t.apply(this,arguments)||this}return r(e,t),e.prototype.load=function(t,e){this.createControl(this.$owner,t)},e.prototype.createControl=function(t,e){this.id="string"==typeof e?e:e.id;var i=document.createElement("div");if(this.$view=i,this.$inputField=document.createElement("input"),this.$dataList=document.createElement("datalist"),this.$dataList.id="data_"+this.id,this.$inputField.setAttribute("list","data_"+this.id),e.value){var r=e.value;this.isMultiple=null!=e.multiple;var n=void 0;if(this.isMultiple){this.$selected=document.createElement("select"),this.$selected.className="hide",this.$selected.multiple=!0,this.$selected.id=this.id,this.$items=document.createElement("div"),this.$items.className="selectedList",i.appendChild(this.$items),this.$inputField.className="selectedInput",i.appendChild(this.$selected),this.$view.style.setProperty("float","left");var o=this;this.$inputField.oninput=function(){o.onChange()}}else this.$inputField.id=this.id;for(var s in r)r.hasOwnProperty(s)&&(n=document.createElement("option"),n.value=r[s],this.$dataList.appendChild(n),this.isMultiple&&(n=document.createElement("option"),n.value=r[s],n.innerHTML=r[s],this.$selected.appendChild(n)));i.appendChild(this.$inputField),i.appendChild(this.$dataList)}if(e instanceof Object){for(var s in e)e.hasOwnProperty(s)&&this.$view.setAttribute(s,e[s]);this.isMultiple&&i.appendChild(this.$selected)}t.appendChild(this)},e.prototype.onChange=function(){var t=this.$inputField.value;if(!(t.length<1))for(var e=this,i=0;i<this.$selected.children.length;i++)!function(i){var r=e.$selected.children[i];if(r.value==t&&0==r.selected){r.selected=!0,r.defaultSelected=!0;var n=document.createElement("li"),o=e;n.onclick=function(){o.onDelete(r.value,n)},n.className="selectedItem",n.innerHTML=r.value,e.$items.appendChild(n),e.$inputField.value=""}}(i)},e.prototype.onDelete=function(t,e){this.$items.removeChild(e);for(var i=0;i<this.$selected.children.length;i++){var r=this.$selected.children[i];r.value==t&&r.selected&&(r.selected=!1)}},e}(n.Control);e.AutoComplete=o},function(t,e,i){"use strict";var r=this&&this.__extends||function(){var t=Object.setPrototypeOf||{__proto__:[]}instanceof Array&&function(t,e){t.__proto__=e}||function(t,e){for(var i in e)e.hasOwnProperty(i)&&(t[i]=e[i])};return function(e,i){function r(){this.constructor=e}t(e,i),e.prototype=null===i?Object.create(i):(r.prototype=i.prototype,new r)}}();Object.defineProperty(e,"__esModule",{value:!0});var n=i(2),o=function(t){function e(){return null!==t&&t.apply(this,arguments)||this}return r(e,t),e.prototype.load=function(t){this.createControl(this.$owner,t)},e.prototype.createControl=function(t,e){this.$view=document.createElement("br");for(var i in e)e.hasOwnProperty(i)&&this.$view.setAttribute(i,e[i]);t.appendChild(this)},e}(n.Control);e.BR=o},function(t,e,i){"use strict";var r=this&&this.__extends||function(){var t=Object.setPrototypeOf||{__proto__:[]}instanceof Array&&function(t,e){t.__proto__=e}||function(t,e){for(var i in e)e.hasOwnProperty(i)&&(t[i]=e[i])};return function(e,i){function r(){this.constructor=e}t(e,i),e.prototype=null===i?Object.create(i):(r.prototype=i.prototype,new r)}}();Object.defineProperty(e,"__esModule",{value:!0});var n=i(2),o=function(t){function e(){return null!==t&&t.apply(this,arguments)||this}return r(e,t),e.prototype.load=function(t){var e;if("string"==typeof t?e=t:(e=t.id,this.className=t.class,this.property=t.property),e){this.id=e;var i=document.getElementById(e);if(this.property||(this.property=i.getAttribute("Property")),i instanceof HTMLDivElement)this.$view=i;else{if(i)return;this.$view=document.createElement("div"),this.$view.setAttribute("id",this.id),this.$view.setAttribute("property",this.property),this.$owner.appendChild(this)}t.hasOwnProperty("property")&&this.setProperty(t.property)}},e.prototype.addItem=function(t,e){this.$model=e,e&&(this.className&&!e.hasProperty(this.className)||e.id===this.property.split(".")[0]&&e.addListener(this,this.className))},e.prototype.updateElement=function(t,e,i){this.$view.innerHTML=i},e}(n.Control);e.Div=o},function(t,e,i){"use strict";var r=this&&this.__extends||function(){var t=Object.setPrototypeOf||{__proto__:[]}instanceof Array&&function(t,e){t.__proto__=e}||function(t,e){for(var i in e)e.hasOwnProperty(i)&&(t[i]=e[i])};return function(e,i){function r(){this.constructor=e}t(e,i),e.prototype=null===i?Object.create(i):(r.prototype=i.prototype,new r)}}();Object.defineProperty(e,"__esModule",{value:!0});var n=i(2),o=function(t){function e(){return null!==t&&t.apply(this,arguments)||this}return r(e,t),e.prototype.load=function(t){this.createControl(this.$owner,t)},e.prototype.createControl=function(t,e){this.$view=document.createElement("label");for(var i in e)e.hasOwnProperty(i)&&("textContent"===i?this.$view.textContent=e.textContent:this.$view.setAttribute(i,e[i]));t.appendChild(this)},e}(n.Control);e.Label=o},function(t,e,i){"use strict";var r=this&&this.__extends||function(){var t=Object.setPrototypeOf||{__proto__:[]}instanceof Array&&function(t,e){t.__proto__=e}||function(t,e){for(var i in e)e.hasOwnProperty(i)&&(t[i]=e[i])};return function(e,i){function r(){this.constructor=e}t(e,i),e.prototype=null===i?Object.create(i):(r.prototype=i.prototype,new r)}}();Object.defineProperty(e,"__esModule",{value:!0});var n=i(6),o=i(3),s=i(0),a=i(18),l=i(19),h=function(t){function e(e){var i=t.call(this,e)||this;return i.$labelHeight=25,i.$labelFontSize=14,i.$attrHeight=25,i.$attrFontSize=12,i.attributes=[],i.methods=[],i}return r(e,t),e.prototype.load=function(t){t||(t={});var e=this.$labelHeight;this.label=t.name||t.label||"New "+this.property;var i=150;if(i=Math.max(i,s.Util.sizeOf(this.label).width+30),t.attributes)for(var r=0,n=t.attributes;r<n.length;r++){var o=n[r],h=new a.default(o);h.$owner=this,this.attributes.push(h),e+=this.$attrHeight,i=Math.max(i,s.Util.sizeOf(h.toString()).width)}if(t.methods){for(var d=0,p=t.methods;d<p.length;d++){var c=p[d],u=new l.default(c);u.$owner=this,this.methods.push(u),e+=this.$attrHeight,i=Math.max(i,s.Util.sizeOf(u.toString()).width)}e+=this.$attrHeight}this.withSize(i,e)},e.prototype.getAttributes=function(){return this.attributes},e.prototype.getMethods=function(){return this.methods},e.prototype.getSVG=function(){var t=this.getPos(),e=this.getSize(),i=this.createShape({tag:"g",id:this.id,class:"SVGClazz",transform:"translate(0 0)"}),r=this.createShape({tag:"rect",x:t.x,y:t.y,height:e.y,width:e.x,rx:5,ry:5}),n=this.createShape({tag:"text",x:t.x+e.x/2,y:t.y+this.$labelHeight/2,"text-anchor":"middle","alignment-baseline":"central","font-family":"Verdana","font-size":this.$labelFontSize,"font-weight":"bold",fill:"black"});if(n.textContent=this.label,this.$labelView=n,i.appendChild(r),i.appendChild(n),this.attributes.length>0){var o=this.createShape({tag:"line",x1:t.x,y1:t.y+this.$labelHeight,x2:t.x+e.x,y2:t.y+this.$labelHeight,"stroke-width":1});i.appendChild(o);var s=this.createShape({tag:"g",id:this.id+"Attributes"});s.setAttributeNS(null,"class","SVGClazzProperty SVGClazzAttribute"),i.appendChild(s);for(var a=t.y+this.$labelHeight+this.$attrHeight/2,l=0,h=this.attributes;l<h.length;l++){var d=h[l],p=d.getSVG();d.$owner=this,p.setAttributeNS(null,"x",""+(t.x+10)),p.setAttributeNS(null,"y",""+a),s.appendChild(p),a+=this.$attrHeight}}var c=this.attributes.length*this.$attrHeight,u=t.y+this.$labelHeight+c+this.$attrHeight/2;if(this.methods.length>0){var f=this.createShape({tag:"line",x1:t.x,y1:t.y+this.$labelHeight+this.$attrHeight*this.attributes.length,x2:t.x+e.x,y2:t.y+this.$labelHeight+this.$attrHeight*this.attributes.length,"stroke-width":1});i.appendChild(f);var g=this.createShape({tag:"g",id:this.id+"Methods"});g.setAttributeNS(null,"class","SVGClazzProperty SVGClazzMethod"),i.appendChild(g),u+=this.$attrHeight/2;for(var v=0,y=this.methods;v<y.length;v++){var m=y[v],w=m.getSVG();m.$owner=this,w.setAttributeNS(null,"x",""+(t.x+10)),w.setAttributeNS(null,"y",""+u),g.appendChild(w),u+=this.$attrHeight}}return this.$view=i,i},e.prototype.copy=function(){var e;return e=t.prototype.copy.call(this),e.label=this.label+"Copy",this.attributes.forEach(function(t){e.attributes.push(new a.default(t.toString()))}),this.methods.forEach(function(t){e.methods.push(new l.default(t.toString()))}),e.reCalcSize(),e},e.prototype.getEvents=function(){return[o.EventBus.ELEMENTMOUSEDOWN,o.EventBus.ELEMENTMOUSEMOVE,o.EventBus.ELEMENTCLICK,o.EventBus.ELEMENTDRAG,o.EventBus.ELEMENTDBLCLICK,o.EventBus.OPENPROPERTIES,o.EventBus.RELOADPROPERTIES]},e.prototype.addProperty=function(t,e){if(this[e]&&t&&0!==t.length){var i;"attributes"===e?i=new a.default(t):"methods"===e&&(i=new l.default(t));for(var r=0,n=this[e];r<n.length;r++){if(n[r].toString()===i.toString())return alert(i.toString()+" already exists."),void(i=void 0)}return this[e].push(i),s.Util.saveToLocalStorage(this.$owner),i}},e.prototype.addAttribute=function(t){return this.addProperty(t,"attributes")},e.prototype.addAttributeObj=function(t){return this.attributes.push(t),this.getAttributes()},e.prototype.addMethodObj=function(t){return this.methods.push(t),this.getMethods()},e.prototype.addMethod=function(t){return this.addProperty(t,"methods")},e.prototype.removeAttribute=function(t){var e=this.attributes.indexOf(t);this.attributes.splice(e,1)},e.prototype.removeMethod=function(t){var e=this.methods.indexOf(t);this.methods.splice(e,1)},e.prototype.removeProperty=function(t){t instanceof a.default&&this.removeAttribute(t),t instanceof l.default&&this.removeMethod(t),s.Util.saveToLocalStorage(this.$owner)},e.prototype.reDraw=function(t){var e=this.hasSizeChanged();if((!t||e[0])&&this.$view){this.$owner.$view.removeChild(this.$view);var i=this.getSVG();this.$owner.$view.appendChild(i),this.$view=i,o.EventBus.register(this,i),this.redrawEdges()}},e.prototype.hasSizeChanged=function(){var t={width:this.getSize().x,height:this.getSize().y},e=this.reCalcSize();return t.width===e.width&&t.height===e.height?[!1,e]:[!0,e]},e.prototype.updateLabel=function(t){var e=this;this.label=t,this.$labelView&&(this.$labelView.textContent=t),this.$edges.forEach(function(i){e.id===i.$sNode.id?i.source=t:e.id===i.$tNode.id&&(i.target=t)}),s.Util.saveToLocalStorage(this.$owner),this.reDraw(!0)},e.prototype.updateModifier=function(t){this.modifier=t,s.Util.saveToLocalStorage(this.$owner)},e.prototype.reCalcSize=function(){var t=150;return t=Math.max(t,s.Util.sizeOf(this.label).width+30),this.attributes.forEach(function(e){var i;i=e.$view?e.$view.getBoundingClientRect().width:s.Util.sizeOf(e.toString()).width,t=Math.max(t,i+15)}),this.methods.forEach(function(e){var i;i=e.$view?e.$view.getBoundingClientRect().width:s.Util.sizeOf(e.toString()).width,t=Math.max(t,i+15)}),this.getSize().x=t,this.getSize().y=this.$labelHeight+(this.attributes.length+this.methods.length)*this.$attrHeight+this.$attrHeight,{width:t,height:this.getSize().y}},e.prototype.redrawEdges=function(){for(var t=0,e=this.$edges;t<e.length;t++){e[t].redraw(this)}},e}(n.Node);e.Clazz=h},function(t,e,i){"use strict";var r=this&&this.__extends||function(){var t=Object.setPrototypeOf||{__proto__:[]}instanceof Array&&function(t,e){t.__proto__=e}||function(t,e){for(var i in e)e.hasOwnProperty(i)&&(t[i]=e[i])};return function(e,i){function r(){this.constructor=e}t(e,i),e.prototype=null===i?Object.create(i):(r.prototype=i.prototype,new r)}}();Object.defineProperty(e,"__esModule",{value:!0});var n=i(9),o=function(t){function e(e){return t.call(this,e)||this}return r(e,t),e}(n.default);e.default=o},function(t,e,i){"use strict";var r=this&&this.__extends||function(){var t=Object.setPrototypeOf||{__proto__:[]}instanceof Array&&function(t,e){t.__proto__=e}||function(t,e){for(var i in e)e.hasOwnProperty(i)&&(t[i]=e[i])};return function(e,i){function r(){this.constructor=e}t(e,i),e.prototype=null===i?Object.create(i):(r.prototype=i.prototype,new r)}}();Object.defineProperty(e,"__esModule",{value:!0});var n=i(0),o=i(9),s=function(t){function e(e){return t.call(this,e)||this}return r(e,t),e.prototype.extractData=function(t){if(t){if(t.type&&(this.type=t.type),t.name&&(this.name=t.name),t.modifier&&(this.modifier=t.modifier),"string"==typeof t){var e=t.split(":");if(e&&2===e.length){var i=e[0].trim(),r=i[0];"+"===r||"-"===r||"#"===r?(this.modifier=r,this.name=i.substring(1,i.length).trim()):this.name=i,this.type=e[1].trim()||"void"}else{var i=t.trim(),r=i[0];"+"===r||"-"===r||"#"===r?(this.modifier=r,this.name=i.substring(1,i.length).trim()):this.name=i,this.type="void"}}n.Util.includes(this.name,"(")||n.Util.includes(this.name,")")||(this.name+="()")}},e}(o.default);e.default=s},function(t,e,i){"use strict";var r=this&&this.__extends||function(){var t=Object.setPrototypeOf||{__proto__:[]}instanceof Array&&function(t,e){t.__proto__=e}||function(t,e){for(var i in e)e.hasOwnProperty(i)&&(t[i]=e[i])};return function(e,i){function r(){this.constructor=e}t(e,i),e.prototype=null===i?Object.create(i):(r.prototype=i.prototype,new r)}}();Object.defineProperty(e,"__esModule",{value:!0});var n=i(1),o=function(t){function e(){return null!==t&&t.apply(this,arguments)||this}return r(e,t),e.create=function(t){var i=new e;for(var r in t)!1!==t.hasOwnProperty(r)&&i.withKeyValue(r,t[r]);return i},e.prototype.withKeyValue=function(t,e){return"typ"===t?this.property=e:"x"===t?this.withPos(e,null):"y"===t?this.withPos(null,e):"width"===t?this.withSize(e,null):"height"===t?this.withSize(null,e):this[t]=e,this},e}(n.DiagramElement);e.SO=o},function(t,e,i){"use strict";var r=this&&this.__extends||function(){var t=Object.setPrototypeOf||{__proto__:[]}instanceof Array&&function(t,e){t.__proto__=e}||function(t,e){for(var i in e)e.hasOwnProperty(i)&&(t[i]=e[i])};return function(e,i){function r(){this.constructor=e}t(e,i),e.prototype=null===i?Object.create(i):(r.prototype=i.prototype,new r)}}();Object.defineProperty(e,"__esModule",{value:!0});var n=i(6),o=i(20),s=i(1),a=i(0),l=function(t){function e(e){var i=t.call(this,e)||this;return i.$heightMax=0,i.$heightMin=0,i}return r(e,t),e.prototype.draw=function(t){return h.draw(this)},e}(n.Node);e.Symbol=l;var h=function(){function t(){}return t.drawSVG=function(e){var i,r=this[t.getName(e)];if("function"==typeof r){var n=o.SO.create(e);return n.property="SVG",i=r(n),t.createGroup(n,i)}return i},t.draw=function(e,i){var r,n=this[t.getName(e)];if("function"==typeof n)return e instanceof s.DiagramElement||(e=o.SO.create(e),e.property||(e.property="SVG")),r=n.apply(this,[e]),t.createGroup(e,r);if(e.property){r=new l(e.property),r.init(e);var a=e.getPos(),h=e.getSize();return r.withPos(a.x,a.y),r.withSize(h.x,h.y),r.value=e.value,i=e.$parent,t.draw(r,i)}return null},t.upFirstChar=function(t){return t.charAt(0).toUpperCase()+t.slice(1).toLowerCase()},t.isSymbolName=function(e){return"function"==typeof t["draw"+t.upFirstChar(e)]},t.isSymbol=function(e){return"function"==typeof t[t.getName(e)]},t.getName=function(e){return e.property?"draw"+t.upFirstChar(e.property):e.type?"draw"+t.upFirstChar(e.type):e.src?"draw"+t.upFirstChar(e.src):"drawNode"},t.createGroup=function(t,e){var i,r,n,o,s,l,h,d;if("HTML"===t.property.toUpperCase()?d=a.Util.create({tag:"svg",style:{left:e.x+t.getPos().x,top:e.y+t.getPos().y,position:"absolute"}}):(d=a.Util.create({tag:"g"}),l="translate("+e.getPos().x+" "+e.getPos().y+")",e.scale&&(l+=" scale("+e.scale+")"),e.rotate&&(l+=" rotate("+e.rotate+")"),d.setAttribute("transform",l),e.id&&(d.id=e.id)),t.tooltip){var p={tag:"title"},c=a.Util.createShape(p);c.textContent=t.tooltip,d.appendChild(c)}if(t.background){var u={tag:"circle",cx:20,cy:20,r:17,stroke:"#888","stroke-width":0,fill:"#DDD"};d.appendChild(a.Util.create(u))}for(h=0;h<e.items.length;h+=1)d.appendChild(a.Util.create(e.items[h]));var f=t.elements;if(a.Util.setSize(d,e.width+t.getSize().x,e.height+t.getSize().y),t.$heightMin=t.getSize().y,f){for(h=0;h<f.length;h+=1)!f[h]&&f[h].length<1&&(f.splice(h,1),h-=1);o=a.Util.create({tag:"g"});var g=void 0;for(n=0,g=0;g<f.length;g+=1)"string"==typeof f[g]?n+=1:n+=f[g].length;n=25*n+6,o.appendChild(a.Util.create({tag:"rect",rx:0,x:0,y:28,width:70,height:n,stroke:"#000",fill:"#fff",opacity:"0.7"})),t.$heightMax=n+t.$heightMin,d.elements=f,"DropDown"===t.type&&(d.activ=a.Util.create({tag:"text",$font:!0,"text-anchor":"left",width:60,x:10,y:20,value:t.activText}),d.appendChild(d.activ)),r=46,i=function(t){d.activ&&(d.activ.textContent=t.currentTarget.value)};var v=void 0;for(n=0;n<f.length;n+=1)if("string"==typeof f[n])v=f[n],s=this.addText(r,0,o,v,"SVGTEXT"),s.value=f[n],t.action?s.onclick=t.action:s.onclick=i,r+=26;else{for(s=this.addText(r,0,o,f[n][0],"SVGTEXT"),r+=26,g=1;g<f[n].length;g+=1)s=this.addText(r,0,o,"* "+f[n][g],"SVGTEXTITEM"),s.value=f[n],t.action?s.onclick=t.action:s.onclick=i,r+=26;v=f[n];a.Util.create({tag:"rect",rx:0,x:0,y:28,width:60,height:n,stroke:"#000",fill:"#fff",opacity:"0.7"})}d.choicebox=o}return d.tool=t,d.onclick=function(){"close"===d.status?d.open():d.close()},d.close=function(){"open"===d.status&&d.choicebox&&this.removeChild(d.choicebox),d.status="close",d.tool.$size.height=d.tool.heightMin,a.Util.setSize(d,d.tool.$size.x,d.tool.$size.y)},d.open=function(){"svg"!==this.tagName&&("close"===d.status&&d.choicebox&&this.appendChild(d.choicebox),d.status="open",d.tool.$size.height=d.tool.heightMax,a.Util.setSize(d,d.tool.width,d.tool.height))},d.close(),d},t.addChild=function(t,e){var i;i=e.offsetLeft?e:a.Util.create(e),i.setAttribute("class","draggable"),t.appendChild(i)},t.all=function(e){t.drawSmiley(e),t.drawDatabase(e),t.drawLetter(e),t.drawMobilephone(e),t.drawWall(e),t.drawActor(e),t.drawLamp(e),t.drawArrow(e),t.drawButton(e),t.drawDropdown(e),t.drawClassicon(e),t.drawClassWithEdgeicon(e)},t.drawHamburger=function(t){return o.SO.create({x:t.getPos().x,y:t.getPos().y,width:50,height:52,items:[{tag:"circle",r:10,fill:"#ccc",cx:8,cy:8},{tag:"path",d:"M 2,3 H 13 M 2,8 H 13 M 2,13 H 13",stroke:"black",fill:"none"}]})},t.drawSmiley=function(t){return o.SO.create({x:t.getPos().x,y:t.getPos().y,width:50,height:52,items:[{tag:"path",d:"m49.01774,25.64542a24.5001,24.5 0 1 1 -49.0001,0a24.5001,24.5 0 1 1 49.0001,0z",stroke:"black",fill:"none"},{tag:"path",d:"m8,31.5c16,20 32,0.3 32,0.3"},{tag:"path",d:"m19.15,20.32a1.74,2.52 0 1 1 -3.49,0a1.74,2.52 0 1 1 3.49,0z"},{tag:"path",d:"m33,20.32a1.74,2.52 0 1 1 -3.48,0a1.74,2.52 0 1 1 3.48,0z"},{tag:"path",d:"m5.57,31.65c3.39,0.91 4.03,-2.20 4.03,-2.20"},{tag:"path",d:"m43,32c-3,0.91 -4,-2.20 -4.04,-2.20"}]})},t.drawDatabase=function(t){return o.SO.create({x:t.getPos().x||0,y:t.getPos().y||0,width:25,height:40,items:[{tag:"path",d:"m0,6.26c0,-6.26 25.03,-6.26 25.03,0l0,25.82c0,6.26 -25.03,6.26 -25.03,0l0,-25.82z",stroke:"black",fill:"none"},{tag:"path",d:"m0,6.26c0,4.69 25.03,4.69 25.03,0m-25.03,2.35c0,4.69 25.03,4.69 25.03,0m-25.03,2.35c0,4.69 25.03,4.69 25.03,0",stroke:"black",fill:"none"}]})},t.drawLetter=function(t){return o.SO.create({x:t.getPos().x||0,y:t.getPos().y||0,width:25,height:17,items:[{tag:"path",stroke:"black",fill:"none",d:"m1,1l22,0l0,14l-22,0l0,-14z"},{tag:"path",stroke:"black",fill:"none",d:"m1.06,1.14l10.94,6.81l10.91,-6.91"}]})},t.drawMobilephone=function(t){return o.SO.create({x:t.getPos().x||0,y:t.getPos().y||0,width:25,height:50,items:[{tag:"path",d:"m 4.2 0.5 15.61 0c 2 0 3.7 1.65 3.7 3.7l 0 41.6c 0 2-1.65 3.7-3.7 3.7l-15.6 0c-2 0-3.7-1.6-3.7-3.7l 0-41.6c 0-2 1.6-3.7 3.7-3.7z",fill:"none",stroke:"black"},{tag:"path",d:"m 12.5 2.73a 0.5 0.5 0 1 1-1 0 0.5 0.5 0 1 1 1 0z"},{tag:"path",d:"m 14 46a 2 2 0 1 1-4 0 2 2 0 1 1 4 0z"},{tag:"path",d:"m 8 5 7 0"},{tag:"path",d:"m 1.63 7.54 20.73 0 0 34-20.73 0z"}]})},t.drawWall=function(t){return o.SO.create({x:t.getPos().x||0,y:t.getPos().y||0,width:25,height:50,items:[{tag:"path",d:"m26,45.44l-5,3.56l-21,-9l0,-36.41l5,-3.56l20.96,9l-0,36.4z"},{tag:"path",stroke:"white",d:"m2.21,11l18.34,7.91m-14.46,-12.57l0,6.3m8.2,21.74l0,6.35m-8.6,-10l0,6.351m4.1,-10.67l0,6.3m4.8,-10.2l0,6.3m-8.87,-10.23l0,6.35m4.78,-10.22l0,6.35m-8,14.5l18.34,7.91m-18.34,-13.91l18.34,7.91m-18.34,-13.91l18.34,7.91m-18.34,-13.91l18.34,7.91m0,-13l0,34m-18.23,-41.84l18.3,8m0,0.11l5,-3.57"}]})},t.drawActor=function(t){return o.SO.create({x:t.getPos().x||0,y:t.getPos().y||0,width:25,height:50,items:[{tag:"line",stroke:"#000",x1:"12",y1:"10",x2:"12",y2:"30"},{tag:"circle",stroke:"#000",cy:"5",cx:"12",r:"5"},{tag:"line",stroke:"#000",y2:"18",x2:"25",y1:"18",x1:"0"},{tag:"line",stroke:"#000",y2:"39",x2:"5",y1:"30",x1:"12"},{tag:"line",stroke:"#000",y2:"39",x2:"20",y1:"30",x1:"12"}]})},t.drawLamp=function(t){return o.SO.create({x:t.getPos().x||0,y:t.getPos().y||0,width:25,height:50,items:[{tag:"path",d:"m 22.47 10.58c-6.57 0-11.89 5.17-11.89 11.54 0 2.35 0.74 4.54 2 6.36 2 4 4.36 5.63 4.42 10.4l 11.15 0c 0.12-4.9 2.5-6.8 4.43-10.4 1.39-1.5 1.8-4.5 1.8-6.4 0-6.4-5.3-11.5-11.9-11.5z",fill:"white",stroke:"black"},{tag:"path",d:"m 18.4 40 8 0c 0.58 0 1 0.5 1 1 0 0.6-0.5 1-1 1l-8 0c-0.6 0-1-0.47-1-1 0-0.58 0.47-1 1-1z"},{tag:"path",d:"m 18.4 42.7 8 0c 0.58 0 1 0.47 1 1 0 0.58-0.47 1-1 1l-8 0c-0.58 0-1-0.47-1-1 0-0.58 0.46-1 1-1z"},{tag:"path",d:"m 18.4 45.3 8 0c 0.58 0 1 0.47 1 1 0 0.58-0.47 1-1 1l-8 0c-0.58 0-1-0.47-1-1 0-0.58 0.46-1 1-1z"},{tag:"path",d:"m 19.5 48c 0.37 0.8 1 1.3 1.9 1.7 0.6 0.3 1.5 0.3 2 0 0.8-0.3 1.4-0.8 1.9-1.8z"},{tag:"path",d:"m 6 37.5 4.2-4c 0.3-0.3 0.8-0.3 1 0 0.3 0.3 0.3 0.8 0 1.1l-4.2 4c-0.3 0.3-0.8 0.3-1.1 0-0.3-0.3-0.3-0.8 0-1z"},{tag:"path",d:"m 39 37.56-4.15-4c-0.3-0.3-0.8-0.3-1 0-0.3 0.3-0.3 0.8 0 1l 4.2 4c 0.3 0.3 0.8 0.3 1 0 0.3-0.3 0.3-0.8 0-1z"},{tag:"path",d:"m 38 23 5.8 0c 0.4 0 0.8-0.3 0.8-0.8 0-0.4-0.3-0.8-0.8-0.8l-5.8 0c-0.4 0-0.8 0.3-0.8 0.8 0 0.4 0.3 0.8 0.8 0.8z"},{tag:"path",d:"m 1.3 23 6 0c 0.4 0 0.8-0.3 0.8-0.8 0-0.4-0.3-0.8-0.8-0.8l-5.9 0c-0.4 0-0.8 0.3-0.8 0.8 0 0.4 0.3 0.8 0.8 0.8z"},{tag:"path",d:"m 34.75 11.2 4-4.1c 0.3-0.3 0.3-0.8 0-1-0.3-0.3-0.8-0.3-1 0l-4 4.1c-0.3 0.3-0.3 0.8 0 1 0.3 0.3 0.8 0.3 1 0z"},{tag:"path",d:"m 11.23 10-4-4c-0.3-0.3-0.8-0.3-1 0-0.3 0.3-0.3 0.8 0 1l 4.2 4c 0.3 0.3 0.8 0.3 1 0 0.3-0.3 0.3-0.8 0-1z"},{tag:"path",d:"m 21.64 1.3 0 5.8c 0 0.4 0.3 0.8 0.8 0.8 0.4 0 0.8-0.3 0.8-0.8l 0-5.8c 0-0.4-0.3-0.8-0.8-0.8-0.4 0-0.8 0.3-0.8 0.8z"},{tag:"path",d:"m 26.1 24.3c-0.5 0-1 0.2-1.3 0.4-1.1 0.6-2 3-2.27 3.5-0.26-0.69-1.14-2.9-2.2-3.5-0.7-0.4-2-0.7-2.5 0-0.6 0.8 0.2 2.2 0.9 2.9 1 0.9 3.9 0.9 3.9 0.9 0 0 0 0 0 0 0.54 0 2.8 0 3.7-0.9 0.7-0.7 1.5-2 0.9-2.9-0.2-0.3-0.7-0.4-1.2-0.4z"},{tag:"path",d:"m 22.5 28.57 0 10.7"}]})},t.drawStop=function(t){return o.SO.create({x:t.getPos().x||0,y:t.getPos().y||0,width:30,height:30,items:[{tag:"path",fill:"#FFF","stroke-width":"2",stroke:"#B00",d:"m 6,6 a 14,14 0 1 0 0.06,-0.06 z m 0,0 20,21"}]})},t.drawMin=function(t){return o.SO.create({x:t.getPos().x||0,y:t.getPos().y||0,width:20,height:20,items:[{tag:"path",fill:"white",stroke:"#000","stroke-width":.2,"stroke-linejoin":"round",d:"m 0,0 19,0 0,19 -19,0 z"},{tag:"path",fill:"none",stroke:"#000","stroke-width":"1px","stroke-linejoin":"miter",d:"m 4,10 13,-0.04"}]})},t.drawArrow=function(t){return o.SO.create({x:t.getPos().x||0,y:t.getPos().y||0,width:10,height:9,rotate:t.rotate,items:[{tag:"path",fill:"#000",stroke:"#000",d:"M 0,0 10,4 0,9 z"}]})},t.drawMax=function(t){return o.SO.create({x:t.getPos().x||0,y:t.getPos().y||0,width:20,height:20,items:[{tag:"path",fill:"white",stroke:"#000","stroke-width":.2,"stroke-linejoin":"round","stroke-dashoffset":2,"stroke-dasharray":"4.8,4.8",d:"m 0,0 4.91187,0 5.44643,0 9.11886,0 0,19.47716 -19.47716,0 0,-15.88809 z"},{tag:"path",fill:"none",stroke:"#000","stroke-width":"1px","stroke-linejoin":"miter",d:"m 4,10 6,0.006 0.02,5 0.01,-11 -0.03,6.02 c 2,-0.01 4,-0.002 6,0.01"}]})},t.drawButton=function(t){var e,i,r,n,s;return e=t.getPos().x||0,i=t.getPos().y||0,r=t.getSize().x||60,n=t.getSize().y||28,s=t.value||"",o.SO.create({x:e,y:i,width:60,height:28,items:[{tag:"rect",rx:8,x:0,y:0,width:r,height:n,stroke:"#000",filter:"url(#drop-shadow)",class:"SVGBtn"},{tag:"text",$font:!0,x:10,y:18,fill:"black",value:s,class:"hand"}]})},t.drawDropdown=function(t){var e,i,r,n;return e=t.getPos().x||0,i=t.getPos().y||0,r=t.getSize().x||60,n=t.getSize().y||28,o.SO.create({x:e,y:i,width:r,height:n,items:[{tag:"rect",rx:0,x:0,y:0,width:r-20,height:n,stroke:"#000",fill:"none"},{tag:"rect",rx:2,x:r-20,y:0,width:20,height:28,stroke:"#000",class:"SVGBtn"},{tag:"path",style:"fill:#000000;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;fill-opacity:1",d:"m "+(r-15)+",13 10,0 L "+(r-10)+",20 z"}]})},t.drawClassicon=function(t){var e,i,r,n;return e=t.getPos().x||0,i=t.getPos().y||0,r=t.getSize().x||60,n=t.getSize().y||28,o.SO.create({x:e,y:i,width:r,height:n,items:[{tag:"path",d:"m0,0l10.78832,0l0,4.49982l-10.78832,0.19999l0,9.19963l10.78832,0l0,-9.49962l-10.78832,0.19999l0,-4.59982z",style:"fill:none;stroke:#000000;"},{tag:"path",d:"m25.68807,0l10.78832,0l0,4.49982l-10.78832,0.19999l0,9.19963l10.78832,0l0,-9.49962l-10.78832,0.2l0,-4.59982z",style:"fill:none;stroke:#000000;"},{tag:"line",x1:11,y1:7,x2:25,y2:7,stroke:"#000"}]})},t.drawClassWithEdgeicon=function(t){return o.SO.create({x:0,y:0,id:t.id,width:0,height:0,items:[{tag:"path",d:"M2,10 20,10 20,35 2,35 Z M2,17 20,17 M20,10 28,5 28,9 M 28.5,4.7 24,4",style:"fill:none;stroke:#000000;transform:scale(0.8);"}]})},t.drawEdgeicon=function(t){return o.SO.create({x:0,y:0,id:t.id,width:0,height:0,items:[{tag:"path",d:"M10,30 30,10 M19,10 30,10 30,21",style:"fill:none;stroke:#555;stroke-width:2;"}]})},t.drawCopynode=function(t){return o.SO.create({x:0,y:0,id:t.id,width:0,height:0,items:[{tag:"path",d:"M5 5 L15 5 L15 20 L5 20 Z M5 10 L15 10",style:"fill:white;stroke:#000;stroke-width: 1;",transform:"scale(1.3) translate(4 4)"},{tag:"path",d:"M8 2 L18 2 L18 17 L8 17 Z M8 7 L18 7M11 4.5 L15 4.5 M10 10 L16 10 M10 13 L16 13 ",style:"fill:white;stroke:#000;stroke-width: 1;",transform:"scale(1.3) translate(4 4)"}]})},t.drawBasket=function(t){return o.SO.create({x:0,y:0,id:t.id,background:t.brackground||!1,width:0,height:0,items:[{tag:"path",d:"M12 12 L18 12 L18 11 L22 11 L22 12 L28 12 L28 14 L27 14 L27 29 L13 29 L13 14 L12 14 Z M13 14 L27 14 M20 17 L20 26 M17 16 L17 27 M23 16 L23 27",style:"fill:white;stroke:#000;stroke-width: 1;"}]})},t.drawPencil=function(t){return o.SO.create({x:0,y:0,id:t.id,background:t.brackground||!1,width:0,height:0,items:[{tag:"path",d:"M6 20 L12 23 L33 23 L33 17 L12 17 Z M30 17 L30 23 M12 17 L12 23 M15 19 L28 19 M15 21 L28 21",stroke:"#000","stroke-width":1,fill:"white"}]})},t.addText=function(t,e,i,r,n){var o;return i.appendChild(a.Util.create({tag:"text",$font:!0,"text-anchor":"left",width:70,x:10,y:t,class:n,value:r,eventValue:r})),n="SVGTEXT"===n?"SVGChoiceText":"SVGChoice",o=a.Util.create({tag:"rect",rx:0,x:e,y:t-18,width:70,height:24,stroke:"none",class:n}),o.eventValue=r,i.appendChild(o),o},t}();e.SymbolLibary=h},function(t,e,i){"use strict";var r=this&&this.__extends||function(){var t=Object.setPrototypeOf||{__proto__:[]}instanceof Array&&function(t,e){t.__proto__=e}||function(t,e){for(var i in e)e.hasOwnProperty(i)&&(t[i]=e[i])};return function(e,i){function r(){this.constructor=e}t(e,i),e.prototype=null===i?Object.create(i):(r.prototype=i.prototype,new r)}}();Object.defineProperty(e,"__esModule",{value:!0});var n=i(5),o=function(t){function e(e){return t.call(this,e)||this}return r(e,t),e.prototype.load=function(e){t.prototype.load.call(this,e),this.withSize(this.getSize().x,this.getSize().y+this.$labelHeight/2)},e.prototype.getSVG=function(){var t=this.getPos(),e=this.getSize(),i=this.createShape({tag:"rect",x:t.x,y:t.y,height:e.y,width:e.x,rx:10,ry:10}),r=this.createShape({tag:"text",x:t.x+e.x/2,y:t.y+this.$labelHeight/2,"text-anchor":"middle","alignment-baseline":"central","font-family":"Verdana","font-size":10,"font-weight":"bold",fill:"black"});r.textContent=this.stereoType,this.$stereoTypeView=r;var n=this.createShape({tag:"text",x:t.x+e.x/2,y:t.y+this.$labelHeight,"text-anchor":"middle","alignment-baseline":"central","font-family":"Verdana","font-size":this.$labelFontSize,"font-weight":"bold",fill:"black"});n.textContent=this.label,this.$labelView=n;var o=this.createShape({tag:"g",id:this.id,class:"SVGClazz",transform:"translate(0 0)"});if(o.appendChild(i),o.appendChild(r),o.appendChild(n),this.attributes.length>0){var s=this.createShape({tag:"line",x1:t.x,y1:t.y+this.$labelHeight+this.$labelHeight/2,x2:t.x+e.x,y2:t.y+this.$labelHeight+this.$labelHeight/2,"stroke-width":1});o.appendChild(s);var a=this.createShape({tag:"g",id:this.id+"Attributes"});a.setAttributeNS(null,"class","SVGClazzProperty SVGClazzAttribute"),o.appendChild(a);for(var l=t.y+this.$labelHeight+this.$labelHeight/2+this.$attrHeight/2,h=0,d=this.attributes;h<d.length;h++){var p=d[h],c=p.getSVG();p.$owner=this,c.setAttributeNS(null,"x",""+(t.x+10)),c.setAttributeNS(null,"y",""+l),a.appendChild(c),l+=this.$attrHeight}}var u=this.attributes.length*this.$attrHeight,f=t.y+1.5*this.$labelHeight+u+this.$attrHeight/2;if(this.methods.length>0){var g=this.createShape({tag:"line",x1:t.x,y1:t.y+1.5*this.$labelHeight+this.$attrHeight*this.attributes.length,x2:t.x+e.x,y2:t.y+1.5*this.$labelHeight+this.$attrHeight*this.attributes.length,"stroke-width":1});o.appendChild(g);var v=this.createShape({tag:"g",id:this.id+"Methods"});v.setAttributeNS(null,"class","SVGClazzProperty SVGClazzMethod"),o.appendChild(v),f+=this.$attrHeight/2;for(var y=0,m=this.methods;y<m.length;y++){var w=m[y],E=w.getSVG();w.$owner=this,E.setAttributeNS(null,"x",""+(t.x+10)),E.setAttributeNS(null,"y",""+f),v.appendChild(E),f+=this.$attrHeight}}return this.$view=o,o},e.prototype.setStereoTyp=function(t){this.stereoType="<<"+t+">>"},e.prototype.getStereoType=function(){return this.stereoType},e}(n.Clazz);e.StereoType=o},function(t,e,i){"use strict";Object.defineProperty(e,"__esModule",{value:!0}),function(t){for(var i in t)e.hasOwnProperty(i)||(e[i]=t[i])}(i(43))},function(t,e,i){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var r=function(){function t(){this.id=null}return t}();e.Adapter=r},function(t,e,i){"use strict";var r=this&&this.__extends||function(){var t=Object.setPrototypeOf||{__proto__:[]}instanceof Array&&function(t,e){t.__proto__=e}||function(t,e){for(var i in e)e.hasOwnProperty(i)&&(t[i]=e[i])};return function(e,i){function r(){this.constructor=e}t(e,i),e.prototype=null===i?Object.create(i):(r.prototype=i.prototype,new r)}}();Object.defineProperty(e,"__esModule",{value:!0});var n=i(11),o=function(t){function e(){var e=null!==t&&t.apply(this,arguments)||this;return e.$TARGET_ELEMENT_HEIGHT=12,e}return r(e,t),e.prototype.getSVG=function(){var e=this.$points[0],i=this.getDirectionOfPointToNode(this.$sNode,e),r=this.calcCorrectPath(e,i),n=t.prototype.getSVG.call(this),o={tag:"path",d:r,fill:"white"};return this.$targetElement=this.createShape(o),n.appendChild(this.$targetElement),n},e.prototype.redraw=function(e,i){t.prototype.redraw.call(this,e,!0);var r=this.$points[0],n=0;if(this.$sNode.id===e.id||2==this.$points.length){n=this.getDirectionOfPointToNode(this.$sNode,r);var o=this.calcCorrectPath(r,n);this.$targetElement.setAttributeNS(null,"d",o)}this.redrawPointsAndInfo()},e.prototype.calcCorrectPath=function(t,e){var i,r=t.x,n=t.y;switch(e){case 0:i="M"+r+" "+(n+3)+" L"+(r+this.$TARGET_ELEMENT_HEIGHT)+" "+(n+this.$TARGET_ELEMENT_HEIGHT)+" L"+(r-this.$TARGET_ELEMENT_HEIGHT)+" "+(n+this.$TARGET_ELEMENT_HEIGHT)+" Z",t.y=t.y+12;break;case 3:i="M"+(r-3)+" "+n+" L"+(r-this.$TARGET_ELEMENT_HEIGHT)+" "+(n+this.$TARGET_ELEMENT_HEIGHT)+" L"+(r-this.$TARGET_ELEMENT_HEIGHT)+" "+(n-this.$TARGET_ELEMENT_HEIGHT)+" Z",t.x=t.x-12;break;case 2:i="M"+(r+3)+" "+n+" L"+(r+this.$TARGET_ELEMENT_HEIGHT)+" "+(n-this.$TARGET_ELEMENT_HEIGHT)+" L"+(r+this.$TARGET_ELEMENT_HEIGHT)+" "+(n+this.$TARGET_ELEMENT_HEIGHT)+" Z",t.x=t.x+12;break;case 1:i="M"+r+" "+(n-3)+" L"+(r+this.$TARGET_ELEMENT_HEIGHT)+" "+(n-this.$TARGET_ELEMENT_HEIGHT)+" L"+(r-this.$TARGET_ELEMENT_HEIGHT)+" "+(n-this.$TARGET_ELEMENT_HEIGHT)+" Z",t.y=t.y-12}return i},e}(n.Association);e.Generalisation=o},function(t,e,i){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var r=function(){function t(){}return t.prototype.layout=function(t,e){if(window.dagre){var i=t.$graphModel,r=new window.dagre.graphlib.Graph;r.setGraph({marginx:100,marginy:20}).setDefaultEdgeLabel(function(){return{}});for(var n=0,o=i.nodes;n<o.length;n++){var s=o[n];r.setNode(s.id,{width:s.getSize().x,height:s.getSize().y})}for(var a=0,l=i.edges;a<l.length;a++){var h=l[a];r.setEdge(h.$sNode.id,h.$tNode.id)}window.dagre.layout(r),r.nodes().forEach(function(t){for(var e=0,n=i.nodes;e<n.length;e++){var o=n[e];o.id===t&&o.withPos(r.node(t).x-r.node(t).width/2,r.node(t).y-r.node(t).height/2)}}),r.edges().forEach(function(t){for(var e=0,n=i.edges;e<n.length;e++){var o=n[e];if(o.$sNode.id===t.v&&o.$tNode.id===t.w){var s=r.edge(t).points.length;o.clearPoints();for(var a=0;a<s;a++){var l=r.edge(t).points[a];o.addPoint(l.x,l.y)}}}})}},t}();e.DagreLayout=r},function(t,e,i){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var r=i(0),n=function(){function t(){}return t.prototype.layout=function(t){var e=t.$graphModel;if(e.nodes)for(var i=0,n=e.nodes;i<n.length;i++){var o=n[i],s=o.getPos();if(0===s.x&&0===s.y){var a=r.Util.getRandomInt(0,t.canvasSize.width),l=r.Util.getRandomInt(0,t.canvasSize.height);o.withPos(a,l)}}},t}();e.Random=n},function(t,e,i){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var r=function(){function t(){this.nodes={},this.edges=[],this.outEdges={},this.inEdges={},this.dummyNodes=[],this.dummyEdges={},this.count=0,this.minRank=Number.POSITIVE_INFINITY,this.maxRank=0,this.maxHeight=0,this.maxWidth=0,this.ranksep=0,this.edgesLabel=[]}return t.prototype.nodeCount=function(){return this.count},t.prototype.node=function(t){return this.nodes[t]},t.prototype.setNode=function(t,e){e&&!this.nodes[t]?(this.nodes[t]=e,this.count=this.count+1):!e&&this.nodes[t]&&delete this.nodes[t]},t}();e.LayoutGraphMin=r;var n=function(){function t(t,e,i,r,n){this.id=t,this.width=e,this.height=i,this.x=r,this.y=n}return t}();e.LayoutGraphNode=n;var o=function(){function t(){}return t}();e.LayoutGraphEdge=o;var s=function(){function t(){}return t.prototype.layout=function(e,i){var o,s,a,l,h,d,p,c,u,f,g,v,y=t.EDGE_KEY_DELIM;a=i.nodes,h=i.edges,o=new r;for(d in a)a.hasOwnProperty(d)&&"function"!=typeof a[d]&&(p=a[d],o.setNode(p.id,new n(p.id,p.getSize().x,p.getSize().y,p.getPos().x,p.getPos().y)));for(d in h)if(h.hasOwnProperty(d)&&"function"!=typeof h[d]){if(v=h[d],f=this.getNodeId(v.$sNode),g=this.getNodeId(v.$tNode),f>g){var m=g;g=f,f=m}var w=f+y+g+y,E=g+y+f+y;f!==g&&o.edgesLabel.indexOf(w)<0&&o.edgesLabel.indexOf(E)<0&&(l={source:f,target:g,minlen:1,weight:1},o.edges.push(l),o.edgesLabel.push(w),o.inEdges[g]||(o.inEdges[g]=[]),o.inEdges[g].push(l),o.outEdges[f]||(o.outEdges[f]=[]),o.outEdges[f].push(l))}this.layouting(o);for(d in a)a.hasOwnProperty(d)&&"function"!=typeof a[d]&&(p=a[d],s=o.node(p.id),c=p.getPos().x,u=p.getPos().y,c<1&&u<1&&p.withPos(Math.ceil(s.x),Math.ceil(s.y)));for(d in h)h.hasOwnProperty(d)&&"function"!=typeof h[d]&&(v=h[d]);e.draw()},t.prototype.getNodeId=function(t){return t.$owner?this.getNodeId(t.$owner)||t.id:t.id},t.prototype.layouting=function(t){this.longestPath(t),this.normalizeRanks(t),this.normalizeEdge(t),this.order(t),t.ranksep=25,this.removeDummy(t),this.position(t)},t.prototype.setSimpleOrder=function(t){var e,i;for(e in t.nodes)i=t.nodes[e],i.order=i.rank},t.prototype.order=function(t){var e,i,r,n,o=Array(t.maxRank+1),s={};for(n=0;n<o.length;n++)o[n]=[];for(i in t.nodes)s[i]||(s[i]=!0,e=t.nodes[i],void 0!==e.rank&&o[e.rank].push(i));for(r in o)for(i in o[r])!1!==o[r].hasOwnProperty(i)&&(t.nodes[o[r][i]].order=parseInt(i));for(r in o)if(o[r].length>1){for(i in o[r])if(!1!==o[r].hasOwnProperty(i)){var a=o[r][i],l=0,h=1,d=t.dummyEdges[a];if(d)for(n in d)if(!1!==d.hasOwnProperty(n)){var p=d[n],c=t.node(p.target);l+=p.weight*c.order,h+=p.weight}t.node(a).barycenter=l/h,t.node(a).weight=h}}else if(o[r].length>0)for(i in o[r]){var u=o[r][i];t.node(u).barycenter=1,t.node(u).weight=1}for(r in o)for(i in o[r])if(!1!==o[r].hasOwnProperty(i)){var f=t.nodes[o[r][i]];f.order=parseInt(i)+f.barycenter*f.weight,isNaN(f.order)&&console.log("ERROR")}},t.prototype.removeDummy=function(t){for(var e in t.dummyNodes){var i=t.dummyNodes[e];t.setNode(i.id,null)}t.dummyNodes=[],t.dummyEdges={}},t.prototype.normalizeEdge=function(t){var e=1;for(var i in t.edges){var r=t.edges[i],o=r.source,s=t.node(o).rank,a=r.target,l=t.node(a).rank,h=void 0;if(l!==s+1){var d=void 0;for(s+=1;s<l;++s){h="_d"+r.source+r.target+e++;var p={source:o,target:h,minlen:1,weight:1};d=new n(h,0,0,0,0),d.edgeObj=r,d.rank=s,t.dummyEdges[o]||(t.dummyEdges[o]=[]),t.dummyEdges[o].push(p),t.dummyNodes.push(d),t.setNode(d.id,d),o=h}}}},t.prototype.longestPath=function(t){var e,i,r=[];for(e in t.nodes)i=t.nodes[e],r.push(e),i.rank=this.findAllPaths(t,i,0,r),t.minRank=Math.min(t.minRank,i.rank)},t.prototype.findAllPaths=function(t,e,i,r){var n,o,s,a=0;if(t.outEdges[e.id]){for(o=0;o<t.outEdges[e.id].length;o++)n=t.outEdges[e.id][o].target,s=t.nodes[n],a=r[n]?Math.min(a,s.rank):r.indexOf(n)<0?Math.min(a,this.findAllPaths(t,s,i-2,r)):i;return a}return i},t.prototype.normalizeRanks=function(t){var e,i=t.minRank;t.maxRank=Number.NEGATIVE_INFINITY,t.maxHeight=0,t.maxWidth=0;for(var r in t.nodes){var n=t.nodes[r];void 0!==n.rank&&(n.rank-=i,e=Math.abs(n.rank),e>t.maxRank&&(t.maxRank=e),t.maxHeight=Math.max(t.maxHeight,n.height),t.maxWidth=Math.max(t.maxWidth,n.width))}},t.prototype.position=function(t){this.positionY(t);var e=this.positionX(t);for(var i in e)for(var r in e[i])!1!==e[i].hasOwnProperty(r)&&t.node(e[i][r])&&(t.node(e[i][r]).x=parseInt(r)*t.maxWidth)},t.prototype.positionY=function(t){var e=this.buildLayerMatrix(t),i=t.ranksep,r=0;for(var n in e){var o=t.maxHeight;for(var s in e[n])if(!1!==e[n].hasOwnProperty(s)){var a=e[n][s];t.nodes[a].y=r+o/2}r+=o+i}},t.prototype.buildLayerMatrix=function(t){for(var e=Array(t.maxRank+1),i=0;i<e.length;i++)e[i]=[];for(var r in t.nodes){var n=t.nodes[r];void 0!==n.rank&&(e[n.rank][n.order]=r)}return e},t.prototype.positionX=function(t){return this.buildLayerMatrix(t)},t.EDGE_KEY_DELIM="",t}();e.DagreLayoutMin=s},function(t,e,i){"use strict";var r=this&&this.__extends||function(){var t=Object.setPrototypeOf||{__proto__:[]}instanceof Array&&function(t,e){t.__proto__=e}||function(t,e){for(var i in e)e.hasOwnProperty(i)&&(t[i]=e[i])};return function(e,i){function r(){this.constructor=e}t(e,i),e.prototype=null===i?Object.create(i):(r.prototype=i.prototype,new r)}}();Object.defineProperty(e,"__esModule",{value:!0});var n=i(4);!function(t){var e;!function(t){t.Clazz="clazz",t.Edge="edge",t.Clear="clear"}(e=t.PropertiesView||(t.PropertiesView={}));var i=function(){function t(t){this.graph=t,this.initMainPanel()}return t.prototype.show=function(t,e){if(this.propertiesContent)for(;this.propertiesContent.hasChildNodes();)this.propertiesContent.removeChild(this.propertiesContent.childNodes[0]);for(var i=t.getPanel().childNodes;i.length>0;)this.propertiesContent.appendChild(i[0]);this.displayingPanel=t,e?t.showTab(e):t.showFirstTab()},t.prototype.openProperties=function(){this.isHidden=!1,document.getElementById("propertiesContent").className="properties",document.getElementById("propertiesMasterPanel").className="propertiespanel";var t=document.getElementById("propClassHeaderButtonDisplay");t.innerHTML="&#8897;",t.title="Hide properties"},t.prototype.setPropertiesHeaderText=function(t){var e=document.getElementById("classPropHeaderLabel");e&&(e.innerHTML=t)},t.prototype.getCurrentView=function(){return this.displayingPanel.getPropertiesView()},t.prototype.getCurrentPanel=function(){return this.displayingPanel},t.prototype.initMainPanel=function(){var t=this;if(!document.getElementById("propertiesMasterPanel")){this.propertiesMasterPanel=document.createElement("div"),this.propertiesMasterPanel.id="propertiesMasterPanel",this.propertiesMasterPanel.className="propertiespanel-hidden",this.propertiesContent=document.createElement("div"),this.propertiesContent.id="propertiesContent",this.propertiesContent.className="properties-hidden";var e=document.createElement("div");e.id="propertiesHeader",e.style.display="inline";var i=document.createElement("div");i.id="classPropHeaderLabel",i.innerHTML="Select any element to see its properties",i.style.display="inherit",i.style.cursor="pointer",i.onclick=function(e){return t.hideproperties(e)};var r=document.createElement("button");r.id="propClassHeaderButtonDisplay",r.title="Show properties",r.className="btnHideProp",r.innerHTML="&#8896;",r.style.cssFloat="right",r.onclick=function(e){return t.hideproperties(e)},e.appendChild(i),e.appendChild(r),this.propertiesMasterPanel.appendChild(e),this.propertiesMasterPanel.appendChild(this.propertiesContent),document.body.appendChild(this.propertiesMasterPanel)}},t.prototype.hideproperties=function(t){if(t.stopPropagation(),!1===this.isHidden){document.getElementById("propertiesContent").className="properties-hidden",document.getElementById("propertiesMasterPanel").className="propertiespanel-hidden";var e=document.getElementById("propClassHeaderButtonDisplay");e.innerHTML="&#8896;",e.title="Show properties"}else{document.getElementById("propertiesContent").className="properties",document.getElementById("propertiesMasterPanel").className="propertiespanel";var e=document.getElementById("propClassHeaderButtonDisplay");e.innerHTML="&#8897;",e.title="Hide properties"}this.isHidden=!this.isHidden},t}();t.BlankView=i;var o=function(){function t(){this.divPropertiesPanel=document.createElement("div"),this.divPropertiesTabbedPanel=document.createElement("div"),this.divPropertiesTabbedPanel.id="propertiesTabbedPanel",this.divPropertiesTabbedPanel.className="tabbedpane",this.divPropertiesPanel.appendChild(this.divPropertiesTabbedPanel)}return t.prototype.getPanel=function(){return this.divPropertiesPanel},t.prototype.showFirstTab=function(){var t=document.getElementsByClassName("tablinks");t&&t.length>0&&this.openTab(t[0].id)},t.prototype.showTab=function(t){for(var e=document.getElementsByClassName("tablinks"),i=0;i<e.length;i++){var r=e[i];r.value===t&&this.openTab(r.id)}},t.prototype.createTabElement=function(t,e,i){var r=this,n=document.createElement("button");return n.id=t,n.className="tablinks",n.innerText=e,n.value=i,n.onclick=function(){return r.openTab(t)},n},t.prototype.openTab=function(t){for(var e=document.getElementsByClassName("tablinks"),i=0;i<e.length;i++)e[i].className=e[i].className.replace("active","");var r=document.getElementById(t);r.className+=" active";for(var n=document.getElementsByClassName("tabcontent"),i=0;i<n.length;i++)n[i].style.display="none";document.getElementById(this.getPropertiesView().toString().toLowerCase()+r.value.toString()).style.display="block"},t}();t.APanel=o;var s=function(t){function i(){return t.call(this)||this}return r(i,t),i.prototype.init=function(){var t=this,e=["boolean","byte","char","double","float","int","long","short","String","void"];this.dataTypes=document.createElement("datalist"),this.dataTypes.id="dataTypes",e.forEach(function(e){var i=document.createElement("option");i.value=e,i.innerHTML=e,t.dataTypes.appendChild(i)}),this.divPropertiesPanel.appendChild(this.dataTypes),this.divPropertiesTabbedPanel.appendChild(this.createTabElement("generalClassPropBtn","General","general")),this.divPropertiesTabbedPanel.appendChild(this.createTabElement("attrClassPropBtn","Attributes","attribute")),this.divPropertiesTabbedPanel.appendChild(this.createTabElement("methodClassPropBtn","Methods","method")),this.createTabGeneralContent(),this.createTabAttrContent(),this.createTabMethodContent()},i.prototype.getPropertiesView=function(){return e.Clazz},i.prototype.createTabGeneralContent=function(){var t=document.createElement("div");t.id=this.getPropertiesView().toString().toLowerCase()+"general",t.className="tabcontent";var e=document.createElement("div");e.className="divTable";var i=document.createElement("div");i.className="divTableBody";var r=document.createElement("div");r.className="divTableRow";var n=document.createElement("div");n.className="divTableCell",n.innerHTML="Name:";var o=document.createElement("div");o.className="divTableCell";var s=document.createElement("input");s.type="text",s.id="className",s.placeholder="Class name",s.style.width="100%",o.appendChild(s),r.appendChild(n),r.appendChild(o),i.appendChild(r);var a=document.createElement("div");a.className="divTableRow";var l=document.createElement("div");l.className="divTableCell",l.innerHTML="Access modifier:";var h=document.createElement("div");h.className="divTableCell";var d=document.createElement("select");d.id="classModifier",d.style.width="100%";var p={};p.public="+",p.private="-",p.protected="#",p.package="~";for(var c in p){var u=document.createElement("option");u.value=c,u.innerHTML=c,d.appendChild(u)}d.value="public",h.appendChild(d),a.appendChild(l),a.appendChild(h),i.appendChild(a),e.appendChild(i),t.appendChild(e),this.divPropertiesPanel.appendChild(t)},i.prototype.createTabAttrContent=function(){this.createtabPropertyContent("attribute")},i.prototype.createTabMethodContent=function(){this.createtabPropertyContent("method")},i.prototype.createtabPropertyContent=function(t){var e=document.createElement("div");e.id=this.getPropertiesView().toString().toLowerCase()+t,e.className="tabcontent";var i=document.createElement("div");i.id=e.id+"Add",i.style.marginTop="5px";var r=document.createElement("select");r.id=e.id+"AddModifier";var n={};n.public="+",n.private="-",n.protected="#",n.package="~";for(var o in n){var s=document.createElement("option");s.value=n[o],s.innerHTML=n[o],s.title=o,r.appendChild(s)}r.value=n.public;var a=document.createElement("input");a.style.marginLeft="5px",a.style.marginRight="5px",a.id=e.id+"AddName",a.type="text",a.placeholder="Add new "+t;var l=document.createElement("input");l.id=e.id+"AddType",l.setAttribute("list",this.dataTypes.id);var h=document.createElement("button");h.id=e.id+"BtnAdd"+t,h.innerHTML="+",h.title="Add "+t,h.style.marginLeft="5px",h.style.color="green",i.appendChild(r),i.appendChild(a),i.appendChild(l),i.appendChild(h),e.appendChild(i),this.divPropertiesPanel.appendChild(e)},i}(o);t.ClassPanel=s;var a=function(t){function i(){return t.call(this)||this}return r(i,t),i.prototype.init=function(){this.divPropertiesTabbedPanel.appendChild(this.createTabElement("generalEdgePropBtn","General","general")),this.createTabGeneralEdgeContent()},i.prototype.getPropertiesView=function(){return e.Edge},i.prototype.createTabGeneralEdgeContent=function(){var t=["0..1","1","0..*"],e=document.createElement("datalist");e.id="cardinalityTypesDataList",t.forEach(function(t){var i=document.createElement("option");i.value=t,i.innerHTML=t,e.appendChild(i)});var i=document.createElement("div");i.id=this.getPropertiesView().toString().toLowerCase()+"general",i.className="tabcontent";var r=document.createElement("div");r.className="divTable";var o=document.createElement("div");o.className="divTableBody";var s=document.createElement("div");s.className="divTableRow";var a=document.createElement("div");a.className="divTableCell",a.innerHTML="Type:";var l=document.createElement("div");l.className="divTableCell";var h=document.createElement("select");h.id="edgeTypeSelect",h.className="col2";var d=[];for(var p in n)"Aggregate"!==p.toString()&&"Direction"!==p.toString()&&d.push(p);d.sort();for(var c=0,u=d;c<u.length;c++){var p=u[c],f=document.createElement("option");f.value=p,f.innerHTML=p,h.appendChild(f)}l.appendChild(h),s.appendChild(a),s.appendChild(l),o.appendChild(s);var g=document.createElement("div");g.className="divTableRow";var v=document.createElement("div");v.className="divTableCell",v.innerHTML="Label:";var y=document.createElement("div");y.className="divTableCell";var m=document.createElement("input");m.type="text",m.id="edgeLabelInput",m.placeholder="Edge label",m.className="col2",m.readOnly=!0,y.appendChild(m),g.appendChild(v),g.appendChild(y),o.appendChild(g);var w=document.createElement("div");w.className="divTableRow";var E=document.createElement("div");E.className="divTableCell",E.innerHTML="Source:";var b=document.createElement("div");b.className="divTableCell";var x=document.createElement("input");x.type="text",x.id="edgeSrcInput",x.placeholder="Edge Source",x.className="col2",x.readOnly=!0,b.appendChild(x),w.appendChild(E),w.appendChild(b),o.appendChild(w);var C=document.createElement("div");C.className="divTableRow";var S=document.createElement("div");S.className="divTableCell",S.innerHTML="Source Property:";var $=document.createElement("div");$.className="divTableCell";var P=document.createElement("input");P.type="text",P.id="edgeSrcProperty",P.placeholder="Add source property",P.className="col2",$.appendChild(P),C.appendChild(S),C.appendChild($),o.appendChild(C);var N=document.createElement("div");N.className="divTableRow";var _=document.createElement("div");_.className="divTableCell",_.innerHTML="Source Cardinality:";var T=document.createElement("div");T.className="divTableCell";var O=document.createElement("input");O.id="inputEdgeSrcCardinality",O.className="col2",O.placeholder="Add source cardinality",O.setAttribute("list",e.id),T.appendChild(O),N.appendChild(_),N.appendChild(T),o.appendChild(N);var L=document.createElement("div");L.className="divTableRow";var A=document.createElement("div");A.className="divTableCell",A.innerHTML="Target:";var M=document.createElement("div");M.className="divTableCell";var I=document.createElement("input");I.type="text",I.id="edgeTargetInput",I.placeholder="Edge Source",I.className="col2",I.readOnly=!0,M.appendChild(I),L.appendChild(A),L.appendChild(M),o.appendChild(L);var z=document.createElement("div");z.className="divTableRow";var k=document.createElement("div");k.className="divTableCell",k.innerHTML="Target Property:";var D=document.createElement("div");D.className="divTableCell";var V=document.createElement("input");V.type="text",V.id="edgeTargetProperty",V.placeholder="Add target property",V.className="col2",D.appendChild(V),z.appendChild(k),z.appendChild(D),o.appendChild(z);var B=document.createElement("div");B.className="divTableRow";var H=document.createElement("div");H.className="divTableCell",H.innerHTML="Target Cardinality:";var U=document.createElement("div");U.className="divTableCell";var R=document.createElement("input");R.id="inputEdgeTargetCardinality",R.className="col2",R.placeholder="Add target cardinality",R.setAttribute("list",e.id),U.appendChild(R),B.appendChild(H),B.appendChild(U),o.appendChild(B),r.appendChild(o),i.appendChild(e),i.appendChild(r),this.divPropertiesPanel.appendChild(i)},i}(o);t.EdgePanel=a;var l=function(t){function i(){return t.call(this)||this}return r(i,t),i.prototype.init=function(){},i.prototype.getPropertiesView=function(){return e.Clear},i}(o);t.ClearPanel=l}(e.PropertiesPanel||(e.PropertiesPanel={}))},function(t,e,i){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var r=i(3),n=i(0),o=function(){function t(t){this.graph=t}return t.prototype.setActive=function(e){e?r.EventBus.setActiveHandler(t.name):r.EventBus.releaseActiveHandler()},t.prototype.canHandle=function(){return r.EventBus.isHandlerActiveOrFree(t.name)},t.prototype.handle=function(t,e){if(t instanceof DragEvent==!1)return!1;var i=t;if("dragover"===i.type)this.handleDragOver(i);else if("dragleave"===i.type){if(this.graph.$view!==i.target)return!1;this.setBoardStyle("dragleave")}else"drop"===i.type&&this.handleLoadFile(i);return!0},t.prototype.handleLoadFile=function(t){t.stopPropagation(),t.preventDefault();var e=t.dataTransfer.files;if(e.length>1)return void(t.dataTransfer.dropEffect="none");for(var i=new FileReader,r="",n=this,o=0,s=void 0;s=e[o];o++)i.onload=function(t){r=t.target.result,console.log("fileContent: "+r);for(var e=document.getElementById("root"),i=document.getElementById("canvas");e.hasChildNodes();)e.removeChild(e.firstChild);for(;i.hasChildNodes();)i.removeChild(i.firstChild);if(n.graph){n.graph.clearModel();var o=JSON.parse(r);n.graph.load(o),n.graph.layout()}},i.readAsText(s);this.setBoardStyle("dragleave")},t.prototype.handleDragOver=function(t){var e,i,r=!0,n=t.dataTransfer.files;if(n&&n.length>0)for(var o=0;o<n.length;o+=1)i=n[o],0===i.type.indexOf("text")?r=!1:""===i.type&&(e=i.name.toLowerCase(),-1!==e.indexOf("json",e.length-4)&&(r=!1));else{var s=t.dataTransfer.items;if(!(s&&s.length>0))return;for(var a=0;a<s.length;a++)""!==s[a].type&&"text/plain"!==s[a].type||(r=!1)}t.dataTransfer.dropEffect="copy",r?this.dragStyler(t,"Error"):t.ctrlKey?this.dragStyler(t,"Add"):this.dragStyler(t,"Ok")},t.prototype.dragStyler=function(t,e){t.stopPropagation(),t.preventDefault(),this.setBoardStyle(e)},t.prototype.setBoardStyle=function(t){var e=this.graph.$view;return n.Util.removeClass(e,"Error"),n.Util.removeClass(e,"Ok"),n.Util.removeClass(e,"Add"),"dragleave"===t?(e.errorText&&(e.removeChild(e.errorText),e.errorText=null),!0):(n.Util.addClass(e,t),"Error"===t&&(e.errorText||(e.errorText=n.Util.create({tag:"div",style:"margin-top: 30%",value:"NO TEXTFILE"}),e.appendChild(e.errorText)),!0))},t.prototype.handleDragLeave=function(t){t.stopPropagation(),t.preventDefault(),t.dataTransfer.dropEffect="link",t.target.className="diagram",console.log("handDragLeave")},t}();e.ImportFile=o},function(t,e,i){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var r=i(0),n=function(){function t(t,e){var i,r,n,o,s;if(this.name=t,this.css={},e){s=window.getComputedStyle(e,null),n=s.getPropertyValue("border");for(i in s)o=i,(r=s.getPropertyValue(o))&&""!==r&&(n?"border-bottom"===o||"border-right"===o||"border-top"===o||"border-left"===o?r!==n&&(this.css[o]=r):"border-color"===o||"border-bottom-color"===o||"border-right-color"===o||"border-top-color"===o||"border-left-color"===o?n.substring(n.length-r.length)!==r&&(this.css[o]=r):"border-width"===o?n.substring(0,r.length)!==r&&(this.css[o]=r):this.css[o]=r:this.css[o]=r)}}return t.getStdDef=function(){var t,e=r.Util.create({tag:"defs"});return t=r.Util.create({tag:"filter",id:"drop-shadow"}),t.appendChild(r.Util.create({tag:"feGaussianBlur",in:"SourceAlpha",result:"blur-out",stdDeviation:2})),t.appendChild(r.Util.create({tag:"feOffset",in:"blur-out",dx:2,dy:2})),t.appendChild(r.Util.create({tag:"feBlend",in:"SourceGraphic",mode:"normal"})),e.appendChild(t),t=r.Util.create({tag:"linearGradient",id:"reflect",x1:0,x2:0,y1:"50%",y2:0,spreadMethod:"reflect"}),t.appendChild(r.Util.create({tag:"stop","stop-color":"#aaa",offset:0})),t.appendChild(r.Util.create({tag:"stop","stop-color":"#eee",offset:"100%"})),e.appendChild(t),t=r.Util.create({tag:"linearGradient",id:"classelement",x1:0,x2:"100%",y1:"100%",y2:0}),t.appendChild(r.Util.create({tag:"stop","stop-color":"#fff",offset:0})),t.appendChild(r.Util.create({tag:"stop","stop-color":"#d3d3d3",offset:1})),e.appendChild(t),e},t.getSubstring=function(t,e,i,r,n){var o,s,a=0,l=[];if((o=t.indexOf(e))>0){if(s=t.indexOf(i,o),o=s+1,s>0){for(;s<t.length;){if(t.charAt(s)===i&&(a+=1),t.charAt(s)===r&&0===(a-=1)){n&&o!==s&&l.push(t.substring(o,s).trim());break}t.charAt(s)===n&&1===a&&(l.push(t.substring(o,s).trim()),o=s+1),s+=1}return n?l:t.substring(o,s)}return t.substring(o)}return""},t.addStyle=function(e,i){var n,o,s;(i.baseVal||""===i.baseVal)&&(i=i.baseVal),i&&(n=t.getDefs(e),n.getElementsByTagName("style").length>0?o=n.getElementsByTagName("style")[0]:(o=r.Util.create({tag:"style"}),o.item={},n.appendChild(o)),o.item[i]||(s=r.Util.getStyle(i),o.item[i]=s,o.innerHTML=o.innerHTML+"\n."+i+s.getSVGString(e)))},t.addStyles=function(e,i){if(i){var r,n,o=i.className;if(o&&(o.baseVal||""===o.baseVal)&&(o=o.baseVal),o)for(r=o.split(" "),n=0;n<r.length;n+=1)t.addStyle(e,r[n].trim());for(n=0;n<i.childNodes.length;n+=1)this.addStyles(e,i.childNodes[n])}},t.getDefs=function(t){var e;return t.getElementsByTagName("defs").length<1?(e=r.Util.create({tag:"defs"}),t.insertBefore(e,t.childNodes[0])):e=t.getElementsByTagName("defs")[0],e},t.prototype.add=function(t,e){this.css[t]=e},t.prototype.get=function(t){var e;for(e in this.css)if(e===t)return this.css[t];return null},t.prototype.getNumber=function(t){return parseInt((this.get(t)||"0").replace("px",""),10)},t.prototype.getSVGString=function(e){var i,n,o,s,a,l,h;i="{";for(o in this.css)if(this.css.hasOwnProperty(o))if("border"===o)n=this.css[o].indexOf(" "),i=i+"stroke-width: "+this.css[o].substring(0,n)+";",n=this.css[o].indexOf(" ",n+1),i=i+"stroke:"+this.css[o].substring(n)+";";else if("background-color"===o)i=i+"fill: "+this.css[o]+";";else if("background"===o){if(a=t.getSubstring(this.css[o],"linear-gradient","(",")",","),a.length>0){for(s=t.getDefs(e),"45deg"===a[0]?(n=1,l=r.Util.create({tag:"linearGradient",id:this.name,x1:"0%",x2:"100%",y1:"100%",y2:"0%"})):(l=r.Util.create({tag:"linearGradient",id:this.name,x1:"0%",x2:"0%",y1:"100%",y2:"0%"}),n=0),s.appendChild(l);n<a.length;)a[n]=a[n].trim(),h=a[n].lastIndexOf(" "),l.appendChild(r.Util.create({tag:"stop",offset:a[n].substring(h+1),style:{"stop-color":a[n].substring(0,h)}})),n+=1;i=i+"fill: url(#"+this.name+");";continue}i=i+o+": "+this.css[o]+";"}else i=i+o+": "+this.css[o]+";";return i+="}"},t}();e.CSS=n},function(t,e,i){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var r=function(){function t(){}return Object.defineProperty(t.prototype,"onUpdate",{get:function(){return this.$onUpdate},set:function(t){this.$onUpdate=t},enumerable:!0,configurable:!0}),t.prototype.update=function(t){this.$onUpdate(t)},t}();e.default=r},function(t,e,i){"use strict";var r=this&&this.__extends||function(){var t=Object.setPrototypeOf||{__proto__:[]}instanceof Array&&function(t,e){t.__proto__=e}||function(t,e){for(var i in e)e.hasOwnProperty(i)&&(t[i]=e[i])};return function(e,i){function r(){this.constructor=e}t(e,i),e.prototype=null===i?Object.create(i):(r.prototype=i.prototype,new r)}}();Object.defineProperty(e,"__esModule",{value:!0});var n=i(2),o=function(t){function e(){return null!==t&&t.apply(this,arguments)||this}return r(e,t),e.prototype.load=function(t,e){this.createControl(this.$owner,t)},e.prototype.createControl=function(t,e){if(this.id="string"==typeof e?e:e.id,this.$view=document.createElement("button"),e instanceof Object)for(var i in e)e.hasOwnProperty(i)&&this.$view.setAttribute(i,e[i]);t.appendChild(this)},e}(n.Control);e.Button=o},function(t,e,i){"use strict";var r=this&&this.__extends||function(){var t=Object.setPrototypeOf||{__proto__:[]}instanceof Array&&function(t,e){t.__proto__=e}||function(t,e){for(var i in e)e.hasOwnProperty(i)&&(t[i]=e[i])};return function(e,i){function r(){this.constructor=e}t(e,i),e.prototype=null===i?Object.create(i):(r.prototype=i.prototype,new r)}}();Object.defineProperty(e,"__esModule",{value:!0});var n=i(2),o=function(t){function e(){var e=null!==t&&t.apply(this,arguments)||this;return e.children={},e}return r(e,t),e.prototype.load=function(t){var e;if(e="string"==typeof t?t:t.id){this.id=e;var i=document.getElementById(e);if(i instanceof HTMLFormElement)this.$view=i,this.$view.hasAttribute("property")&&(this.property=this.$view.getAttribute("property"));else{if(i)return;this.$view=document.createElement("form"),this.$view.setAttribute("id",this.id),t.hasOwnProperty("property")&&(this.property=t.property);for(var r in t)!1!==t.hasOwnProperty(r)&&"elements"!==r&&this.$view.setAttribute(r,t[r]);this.$owner.appendChild(this)}var n=this.property;if(this.$owner.hasItem(n)){var o=this.$owner.getItem(n);o.addListener(this),this.$model=o}for(var s=0,a=t.elements;s<a.length;s++){var l=a[s];if(l.hasOwnProperty("property")){var h=l.property;h=this.property+"."+h,l.property=h}l.hasOwnProperty("class")||(l.class="input");var d=this.$owner.load(l,this);this.children[d.getId()]=d}}},e.prototype.setProperty=function(t){this.property=t;for(var e=Object.keys(this.children),i=0;i<e.length;i++){var r=e[i],n=this.children[r];n.property&&n.setProperty(this.property+"."+n.lastProperty)}},Object.defineProperty(e.prototype,"lastProperty",{get:function(){return this.property.split(".")[0]},enumerable:!0,configurable:!0}),e.prototype.setValue=function(e,i,r,n){return null!=this.$owner?this.getRoot().setValue(e,i,r,n):t.prototype.setValue.call(this,e,i,r,n)},e}(n.Control);e.Form=o},function(t,e,i){"use strict";var r=this&&this.__extends||function(){var t=Object.setPrototypeOf||{__proto__:[]}instanceof Array&&function(t,e){t.__proto__=e}||function(t,e){for(var i in e)e.hasOwnProperty(i)&&(t[i]=e[i])};return function(e,i){function r(){this.constructor=e}t(e,i),e.prototype=null===i?Object.create(i):(r.prototype=i.prototype,new r)}}();Object.defineProperty(e,"__esModule",{value:!0});var n=i(2),o=i(36),s=function(t){function e(){return t.call(this)||this}return r(e,t),e.prototype.initViewDataProperties=function(e){var i=t.prototype.initViewDataProperties.call(this,e);return"checkbox"!==this.type&&"radio"!==this.type||i.addFrom("checked",e),i.addFrom("value",e),i.addFrom("type",e),i},e.prototype.load=function(t){var e,i,r;if("string"==typeof t?(e=t,r=!0):(e=t.id,t.type?this.setType(t.type):this.setType("text"),t.hasOwnProperty("property")&&this.setProperty(t.property),r=!1),e)if(this.id=e,i=document.getElementById(e),r&&i&&i.hasAttribute("Property")&&this.setProperty(i.getAttribute("Property")),i instanceof HTMLInputElement)this.setView(i),this.type=i.type;else{if(i)return;if(this.setView(document.createElement("input")),this.$viewData=this.initViewDataProperties(this.$viewData),"string"!=typeof t)for(var n in t)!1!==t.hasOwnProperty(n)&&this.$viewData.setValue(n,t[n]);else this.type&&this.$view.setAttribute("type",this.type),t.hasOwnProperty("class")&&this.$view.setAttribute("class",t.class),this.$view.setAttribute("id",this.id),this.$view.setAttribute("property",this.property);t.value&&this.$model&&this.$model.setValue(this.lastProperty,t.value),this.$model&&o.PropertyBinder.bind(this.$viewData,this.$model,"value",this.lastProperty),this.$owner.appendChild(this)}},e.prototype.addItem=function(t,e){this.property&&e&&e.id===this.property.split(".")[0]&&(this.$model=e,o.PropertyBinder.bind(this.$viewData,this.$model,"value",this.lastProperty))},e.prototype.controlChanged=function(e){if(this.$view instanceof HTMLInputElement!=!1){this.$view.checkValidity()&&t.prototype.controlChanged.call(this,e)}},e.prototype.setType=function(t){this.type!==t&&("radio"===t?this.$viewData.setValue("checked",null):this.$viewData.removeKey("checked"))},e}(n.Control);e.Input=s},function(t,e,i){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var r=function(){function t(t,e,i,r){this.applyingChange=!1,this.data1=t,this.data2=e,this.propertyClass1=i,this.propertyClass2=r}return t.bind=function(e,i,r,n){if(!e||!i||!r)return console.error("NullValue!!"),null;var o=new t(e,i,r,n);return o.bind(),o},t.prototype.propertyChange=function(t,e,i,r){this.applyingChange||(this.applyingChange=!0,t===this.data1?this.data2.setValue(this.propertyClass2,r):t===this.data2&&this.data1.setValue(this.propertyClass1,r),this.applyingChange=!1)},t.prototype.bind=function(){this.data1.setValue(this.propertyClass1,this.data2.getValue(this.propertyClass2)),this.data1.addListener(this,this.propertyClass1),this.data2.addListener(this,this.propertyClass2)},t.prototype.unbind=function(){this.data1.removeListener(this,this.propertyClass2),this.data1.removeListener(this,this.propertyClass2)},t}();e.PropertyBinder=r},function(t,e,i){"use strict";var r=this&&this.__extends||function(){var t=Object.setPrototypeOf||{__proto__:[]}instanceof Array&&function(t,e){t.__proto__=e}||function(t,e){for(var i in e)e.hasOwnProperty(i)&&(t[i]=e[i])};return function(e,i){function r(){this.constructor=e}t(e,i),e.prototype=null===i?Object.create(i):(r.prototype=i.prototype,new r)}}();Object.defineProperty(e,"__esModule",{value:!0});var n=i(2),o=i(38),s=i(7),a=i(0),l=function(t){function e(){var e=null!==t&&t.apply(this,arguments)||this;return e.items=[],e.columns=[],e.cells={},e.showedItems=[],e.itemsIds={},e.searchColumns=[],e.searchText=[],e.moveElement=null,e.isDrag=!1,e}return r(e,t),Object.defineProperty(e.prototype,"lastProperty",{get:function(){return this.property.split(".")[0]},enumerable:!0,configurable:!0}),e.indexOfChild=function(t){for(var e=0,i=t.gui;null!==(i=i.previousSibling);)e++;return e},e.prototype.load=function(t){var e;if("string"==typeof t)e=t;else if(e=t.id,t.property&&(this.property=t.property),t.searchColumns){var i=[];i="string"==typeof t.searchColumns?t.searchColumns.split(" "):t.searchColumns;for(var r=0;r<i.length;r++){var n=i[r].trim();n.length>0&&this.searchColumns.indexOf(n)<0&&this.searchColumns.push(n)}}if(e)if(this.$view){if(t.columns){for(var o in t.columns)if(!1!==t.columns.hasOwnProperty(o)){var s=this.parseData(t.columns[o]);this.addHeaderInfo(s),this.columns.push(s),this.tableOption.parentElement.insertBefore(s.$element,this.tableOption)}for(var o in this.showedItems){for(var n=this.showedItems[o],a=void 0;n.gui.children.length<this.columns.length;)a=document.createElement("td"),n.gui.appendChild(a);for(;n.gui.children.length>this.columns.length;)n.gui.removeChild(n.gui.children[n.gui.children.length-1]);for(var l=0;l<this.columns.length;l++){var h=this.columns[l].attribute;a=n.gui.children[l],a.innerHTML=n.model.getValue(h)}}}}else{this.$view=document.getElementById(e);var d;this.$view?this.property||(this.property=this.$view.getAttribute("property")):(this.$view=document.createElement("table"),this.$owner.appendChild(this)),this.$bodysection||(this.$bodysection=document.createElement("tbody"),this.$view.appendChild(this.$bodysection)),t.classname?this.$view.className=t.classname:this.$view.className="mdl-data-table mdl-js-data-table mdl-data-table--selectable mdl-shadow--2dp",this.id=e,this.$view.id=e,this.$view.setAttribute("type",this.constructor.name.toLowerCase());for(var p=0,l=0;l<this.$view.children.length;l++){var c=this.$view.children[l];if(c instanceof HTMLTableSectionElement)if("THEAD"===c.tagName){d=c;for(var u=c.children,o=0;o<u.length;o++)this.parsingHeader(c.children[o])}else for(var u=c.children,o=0;o<u.length;o++)this.parsingData(c.children[o]);else 0===p?(d=c,this.parsingHeader(c)):this.parsingData(c);p++}if(!d||!this.$headersection){if(!this.$headersection){var f=this.$view.getElementsByTagName("thead");0===f.length?(this.$headersection=document.createElement("thead"),this.$view.appendChild(this.$headersection)):this.$headersection=f.item(0)}d||(d=document.createElement("tr"),this.$headersection.appendChild(d))}if(t.columns){for(var o in t.columns)if(!1!==t.columns.hasOwnProperty(o)){var s=this.parseData(t.columns[o]);this.addHeaderInfo(s),this.columns.push(s),d.appendChild(s.$element)}this.tableOption=document.createElement("th"),this.tableOption.classList.add("tableOption"),d.appendChild(this.tableOption);var g=this.addOptionItem(null,this.tableOption,!0),v=this.addOptionItem("show",g,!0);this.addOptionItem("show",v,!1)}this.registerEvents(["mousemove","mousedown","mouseup","resize","dragstart","dragover","drop","dragend"]);var y=document.createElement("tr"),m=document.createElement("td");m.setAttribute("colspan",""+this.columns.length),y.appendChild(m);var w=document.createElement("input");w.className="search";var E=this;if(w.addEventListener("keyup",function(t){E.search(t.target.value)}),m.appendChild(w),this.resultColumn)if(0!==this.resultColumn.indexOf("#"))this.countElement=document.createElement("div"),y.appendChild(this.countElement);else for(var r=0;r<this.$headersection.children.length;r++)if(this.$headersection.children[r].innerHTML===this.resultColumn){this.countColumn=this.$headersection.children[r],this.countColumnPos=r;break}var b=this.$headersection.children.item(0);this.$headersection.insertBefore(y,b),this.updateElement(this.property,null)}},e.prototype.tableEvent=function(t,e){var i=0,r=0;if(e instanceof MouseEvent&&(i=e.buttons,r=e.pageX),"mouseup"===t)this.moveElement=null;else if("mousedown"===t||"resize"===t)if(this.moveElement=null,1===i){var n=void 0;for(n=0;n<this.columns.length;n++){if(this.columns[n].$resize===e.target){this.moveElement=this.columns[n],this.movePos=n,this.isDrag=!1;break}this.columns[n].$element===e.target&&(this.moveElement=this.columns[n],this.movePos=n,this.isDrag=!0)}this.moveTimeStamp=e.timeStamp,this.moveX=r}else this.moveTimeStamp=0;else if("mousemove"===t){if(1===i&&this.moveElement){if(this.moveTimeStamp&&e.timeStamp-this.moveTimeStamp<2e3)if(this.isDrag);else{var o=r-this.moveX,s=this.moveElement.$element.offsetWidth;this.moveElement.$element.width=""+(s+o),e.stopPropagation()}this.moveX=r,this.moveTimeStamp=e.timeStamp}}else this.isDrag&&this.columnDragEvent(t,e)},e.prototype.parsingHeader=function(t){for(var e in t.children)if(!1!==t.children.hasOwnProperty(e)){var i=t.children[e],r=i.innerHTML.trim(),n=null;for(var o in this.columns)if(!1!==this.columns.hasOwnProperty(e)&&this.columns[o].label===r){n=this.columns[o],n.$element=i;break}null===n&&(n=new h,n.label=r,n.attribute=i.getAttribute("attribute"),n.$element=i,this.columns.push(n)),this.addHeaderInfo(n)}},e.prototype.parsingData=function(t){var e=t.getAttribute("id"),i=this.$owner.getItem(e);for(var r in t.children)if(!1!==t.children.hasOwnProperty(r)){var n=t.children[r],o=this.columns[r].attribute;o.indexOf(".")<0&&(i[o]=n.innerHTML.trim())}},e.prototype.propertyChange=function(t,e,i,r){if((!t||!this.property||t.hasProperty(e))&&void 0!==t.id){var n,s=this.itemsIds[t.id];if(s||(s=new o.default(t),this.items.push(s),this.itemsIds[t.id]=s),n=this.cells[t.id],n&&(s.gui=n),!1!==this.searching(s)){var a,l=!1;if(!n){l=!0,n=document.createElement("tr");for(var h=this.columns.length,d=0;d<h;d++)a=document.createElement("td"),n.appendChild(a);this.cells[t.id]=n,s.gui=n}for(var p=0;p<this.columns.length;p++){this.columns[p].attribute===e&&(a=n.children[p],a.innerHTML=r)}l&&this.showItem(s,!0)}}},e.prototype.sort=function(t){this.sortColumn===t?1===this.direction?(this.direction=-1,t.$element.classList.remove("asc"),t.$element.classList.add("desc")):(this.direction=1,t.$element.classList.remove("desc"),t.$element.classList.add("asc")):(null!==this.sortColumn&&(this.sortColumn.$element.classList.remove("desc"),this.sortColumn.$element.classList.remove("asc")),this.sortColumn=t,this.sortColumn.$element.classList.add("asc"),this.direction=1);var i=this,r=function(t,e){return i.sorting(t,e)};this.showedItems.sort(r);for(var n=this.showedItems.length,o=this.$bodysection,s=0;s<n;){var a=this.showedItems[s];if(s!==e.indexOfChild(a))break;s+=1}for(;o.children.length>s;)o.removeChild(o.children.item(o.children.length-1));for(;s<n;){var a=this.showedItems[s];o.appendChild(a.gui),s+=1}},e.prototype.sorting=function(t,e){for(var i=this.sortColumn.attribute.split("."),r=t.model.prop,n=e.model.prop,o=this.sortColumn.attribute,s=0;s<i.length;s++){if(o=i[s],!r[o])return 0;if(r=r[o],!n[o])return 0;n=n[o]}return r!==n?1===this.direction?r<n?-1:1:r<n?1:-1:0},e.prototype.search=function(t){t||(t="");var e=t.trim().toLowerCase();if(e!==this.lastSearchText||""===e){var i=this.lastSearchText;this.lastSearchText=e,this.parseSearchArray(),""!==e&&null!==i&&e.indexOf(i)>=0&&e.indexOf("|")<0?this.searchArray(this.showedItems):this.searchSet(this.items),this.refreshCounter()}},e.prototype.refreshCounter=function(){this.countColumn&&(this.countColumn.innerHTML=this.columns[this.countColumnPos].label+" ("+this.showedItems.length+")")},e.prototype.parseSearchArray=function(){for(var t=0,e=[],i=!1,r=0;r<this.lastSearchText.length;r++)if(" "!==this.lastSearchText.charAt(r)||i){if('"'===this.lastSearchText.charAt(r)){if(i){var n=this.lastSearchText.substring(t,r).trim();n.length>0&&e.push(n),t=r+1}else t=r+1;i=!i}}else{var n=this.lastSearchText.substring(t,r).trim();n.length>0&&e.push(n),t=r+1}return t<this.lastSearchText.length&&e.push(this.lastSearchText.substring(t,this.lastSearchText.length).trim()),this.searchText=e,e},e.prototype.searchArray=function(t){this.showedItems=[];for(var e=0;e<t.length;e++){var i=t[e];this.showItem(i,this.searching(i))}},e.prototype.searchSet=function(t){this.showedItems=[];for(var e=0,i=t;e<i.length;e++){var r=i[e],n=r;this.showItem(n,this.searching(n))}},e.prototype.showItem=function(t,e){e?(this.showedItems.push(t),this.$bodysection.appendChild(t.gui)):t.gui&&t.gui.parentElement&&this.$bodysection.removeChild(t.gui)},e.prototype.searching=function(t){for(var e="",i=0;i<this.searchColumns.length;i++)e=e+" "+t.model.getValue(this.searchColumns[i]);e=e.trim().toLowerCase();for(var r=0;r<this.searchText.length;r++)if(""!==this.searchText[r]){var n=void 0;n=this.searchText[r].indexOf("|")>0?this.searchText[r].split("|"):[this.searchText[r]];for(var o=0;o<n.length;o++){var s=n[o].indexOf(":");if(0===n[o].indexOf("#")&&s>1){var a=n[o].substring(s+1),l=n[o].substring(1,s-1),h=t.model.getValue(l);if(h&&h.toString().toLowerCase().indexOf(a)>=0)break}else if(n[o].length>1&&0===n[o].indexOf("-")){if(e.indexOf(n[o].substring(1))<0)break}else if(e.indexOf(n[o])>=0)break}if(o===n.length)return!1}return!0},e.prototype.getColumn=function(){return this.columns},e.prototype.updateElement=function(t,e){for(var i=0,r=this.items;i<r.length;i++){var n=r[i];n instanceof o.default&&n.model.removeListener(this)}if(this.items=[],this.itemsIds={},void 0!==this.property){var a=this.$owner.getItems();for(var l in a)if(a.hasOwnProperty(l)){var n=a[l];if(n instanceof s.default&&t===l){var h=new o.default(n);this.items.push(h),this.itemsIds[n.id]=h}}this.redrawAllElements()}},e.prototype.setValue=function(e,i,r,n){return null!==this.$owner?this.getRoot().setValue(e,i,r,n):t.prototype.setValue.call(this,e,i,r,n)},e.prototype.redrawAllElements=function(){for(var t=this.$bodysection.children,e=0;e<t.length;e++){var i=t.item(e);this.$bodysection.removeChild(i)}for(var r=0,n=this.items;r<n.length;r++){var o=n[r];o.model.addListener(this);var s=this.createRow(o);this.$bodysection.appendChild(s),this.cells[o.id]=s}},e.prototype.parseData=function(t){var e=new h;return e.label=t.label||t.id,e.attribute=t.attribute||t.label||t.id,e.$element=document.createElement("th"),e.$element.innerHTML=e.label,e.$element.draggable=!0,e.$resize=document.createElement("div"),e.$resize.classList.add("resize"),e.$element.appendChild(e.$resize),e},e.prototype.createRow=function(t){for(var e=document.createElement("tr"),i=0,r=this.columns;i<r.length;i++){var n=r[i],o=document.createElement("td");e.appendChild(o),o.innerHTML=t.model.getValue(n.attribute)}return e},e.prototype.addHeaderInfo=function(t){var e=t.$element,i=this;e.classList.add("sort"),e.addEventListener("click",function(){i.sort(t)},!1)},e.prototype.columnDragEvent=function(t,e){if("dragstart"===t)this.moveElement.$element.style.opacity="0.4",e.dataTransfer.effectAllowed="move",e.dataTransfer.setData("text/json",JSON.stringify(a.Util.toJson(this.moveElement)));else if("dragenter"===t);else if("dragleave"===t)this.moveElement.$element.classList.remove("over");else if("dragover"===t){e.preventDefault&&e.preventDefault();for(var i=0;i<this.columns.length;i++)this.columns[i].$element===e.target?(this.dragColumn=this.columns[i],this.dragPos=i,this.columns[i].$element.classList.add("over")):this.columns[i].$element.classList.remove("over");e.target===this.tableOption?(this.tableOption.classList.add("over"),this.dragPos=this.columns.length):this.tableOption.classList.remove("over"),e.dataTransfer.dropEffect="move"}else if("drop"===t){if(e.stopPropagation&&e.stopPropagation(),this.movePos===this.dragPos)return;this.columns.splice(this.movePos,1),this.movePos>=this.dragPos?this.columns.splice(this.dragPos,0,this.moveElement):this.columns.splice(this.dragPos-1,0,this.moveElement);var r=this.moveElement.$element.parentElement;r.removeChild(this.moveElement.$element),this.dragPos<this.columns.length?r.insertBefore(this.moveElement.$element,this.dragColumn.$element):r.insertBefore(this.moveElement.$element,this.tableOption);for(var n=void 0,o=void 0,s=0;s<this.$bodysection.children.length;s++)r=this.$bodysection.children.item(s),n=r.children.item(this.movePos),o=r.children.item(this.dragPos),r.removeChild(n),r.insertBefore(n,o)}else if("dragend"===t){this.moveElement.$element.style.opacity="1";for(var s=0;s<this.columns.length;s++)this.columns[s].$element.classList.remove("over");this.tableOption.classList.remove("over")}},e.prototype.addOptionItem=function(t,e,i){var r;if(t&&(r=document.createElement("a"),r.appendChild(document.createTextNode(t)),r.href="javascript:void(0);",e.appendChild(r)),i){var n=document.createElement("div");return n.classList.add("dropdown-content"),n.style.setProperty("position","absolute"),e.appendChild(n),e.addEventListener("click",function(){n.classList.toggle("show")},!1),n}return r},e.prototype.registerEvents=function(t){for(var e=this,i=this,r=0;r<t.length;r++)!function(r){i.$view.addEventListener(t[r],function(i){return e.tableEvent(t[r],i)})}(r)},e}(n.Control);e.Table=l;var h=function(){function t(){}return t}()},function(t,e,i){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var r=function(){function t(e){this.model=e,this.id=e.id,t.elementSet.push(this)}return t.elementSet=[],t}();e.default=r},function(t,e,i){"use strict";var r=this&&this.__extends||function(){var t=Object.setPrototypeOf||{__proto__:[]}instanceof Array&&function(t,e){t.__proto__=e}||function(t,e){for(var i in e)e.hasOwnProperty(i)&&(t[i]=e[i])};return function(e,i){function r(){this.constructor=e}t(e,i),e.prototype=null===i?Object.create(i):(r.prototype=i.prototype,new r)}}();Object.defineProperty(e,"__esModule",{value:!0});var n=i(2),o=function(t){function e(e){var i,r,n=t.call(this)||this;if("string"==typeof e?(i=e,e={}):i=e.id,i&&(n.id=i,n.$view=document.getElementById(i)),!n.$view){r=e.tag||"div",n.$view=document.createElement(r);document.getElementsByTagName("body")[0].appendChild(n.$view)}return parent?(n.writeAttribute(e,n.$view),n):n}return r(e,t),e.prototype.writeAttribute=function(t,e){var i;e||(i=t.tag||"div",e=document.createElement(i));for(var r in t)if(t.hasOwnProperty(r))if(i=r.toLowerCase(),null!==t[r]){if("tag"!==i&&"$"!==i.charAt(0)&&"$graphModel"!==i&&"class"!==i)if("children"!==i)e[r]=t[r];else if(Array.isArray(t[r])){for(var n in t[r])if(!1!==t[r].hasOwnProperty(n)){var o=this.writeAttribute(n);o&&e.appendChild(o)}}else{var o=this.writeAttribute(t[r]);o&&e.appendChild(o)}}else e.setAttribute(r,"");return e},e}(n.Control);e.HTML=o},function(t,e,i){"use strict";var r=this&&this.__extends||function(){var t=Object.setPrototypeOf||{__proto__:[]}instanceof Array&&function(t,e){t.__proto__=e}||function(t,e){for(var i in e)e.hasOwnProperty(i)&&(t[i]=e[i])};return function(e,i){function r(){this.constructor=e}t(e,i),e.prototype=null===i?Object.create(i):(r.prototype=i.prototype,new r)}}();Object.defineProperty(e,"__esModule",{value:!0});var n=i(6),o=function(t){function e(e){var i=t.call(this,e)||this;return i.max=6,i.$zoom=.6,i.$border=.2,i.withSize(100,100),i}return r(e,t),e.prototype.setNumber=function(t){this.value=t,this.refresh()},e.prototype.refresh=function(){if(this.$view){this.reset();var t=this.createPointValue();t&&this.$view.appendChild(t)}},e.prototype.reset=function(){if(this.$view)for(;this.$view.children.length>1&&"animateTransform"!==this.$view.children.item(this.$view.children.length-1).tagName;)console.log(this.$view.children.item(this.$view.children.length-1)),this.$view.removeChild(this.$view.children.item(this.$view.children.length-1))},e.prototype.getSVG=function(){var t=this.getPos(),e=this.getSize(),i=this.createShape({tag:"g"}),r={tag:"rect",x:t.x+e.x*this.$border,y:t.y+e.y*this.$border,rx:4,ry:4,height:e.y*this.$zoom,width:e.x*this.$zoom,style:"fill:white;stroke:black;stroke-width:2"};i.appendChild(this.createShape(r));var n=this.createPointValue();return n&&i.appendChild(n),this.$view=i,i},e.prototype.animationTimeout=function(t){if(t.length>0){var e=t.shift();this.setNumber(e);var i=this;setTimeout(function(){i.animationTimeout(t)},100)}},e.prototype.roll=function(){this.startAnimation();var t,e=[];for(t=1;t<this.max;t++)e.push(t);for(t=this.max;t>0;t--)e.push(t);var i=this;e.push(Math.floor(Math.random()*this.max)+1),setTimeout(function(){i.animationTimeout(e)},100)},e.prototype.startAnimation=function(){if(!this.$animation){var t=this.getPos().x+this.getSize().x/2,e={tag:"animateTransform",attributeType:"xml",attributeName:"transform",type:"rotate",dur:"1s",repeatCount:"1",from:"0 "+t+" "+t,to:"360 "+t+" "+t};this.$animation=this.createShape(e),this.$view.appendChild(this.$animation)}},e.prototype.stopAnimation=function(){this.$animation&&(this.$view.removeChild(this.$animation),this.$animation=null)},e.prototype.createPointValue=function(){return 1==this.value?this.getCircle(2,2):2==this.value?this.getCircle(1,1,3,3):3==this.value?this.getCircle(1,1,2,2,3,3):4==this.value?this.getCircle(1,1,1,3,3,1,3,3):5==this.value?this.getCircle(1,1,1,3,2,2,3,1,3,3):6==this.value?this.getCircle(1,1,1,2,1,3,3,1,3,2,3,3):7==this.value?this.getCircle(1,1,1,2,1,3,2,2,3,1,3,2,3,3):8==this.value?this.getCircle(1,1,1,2,1,3,2,1,2,3,3,1,3,2,3,3):9==this.value?this.getCircle(1,1,1,2,1,3,2,1,2,2,2,3,3,1,3,2,3,3):null},e.prototype.getCircle=function(){for(var t=[],e=0;e<arguments.length;e++)t[e]=arguments[e];if(t.length%2>0)return null;for(var i=(this.getSize(),this.getPos(),this.createShape({tag:"g"})),r=0;r<t.length;r+=2)i.appendChild(this.createCircle(t[r],t[r+1]));return i},e.prototype.createCircle=function(t,e){var i=this.getSize(),r=i.x/10*this.$zoom,n=i.y*this.$border,o=(i.y,this.$zoom,{tag:"circle",r:r,cx:i.x*this.$zoom*t/4+n,cy:i.y*this.$zoom*e/4+n,stroke:"black","stroke-width":"3",fill:"red",style:"fill:black;stroke:black;stroke-width:2"});return this.createShape(o)},e}(n.Node);e.Dice=o},function(t,e,i){"use strict";var r=this&&this.__extends||function(){var t=Object.setPrototypeOf||{__proto__:[]}instanceof Array&&function(t,e){t.__proto__=e}||function(t,e){for(var i in e)e.hasOwnProperty(i)&&(t[i]=e[i])};return function(e,i){function r(){this.constructor=e}t(e,i),e.prototype=null===i?Object.create(i):(r.prototype=i.prototype,new r)}}();Object.defineProperty(e,"__esModule",{value:!0});var n=i(22),o=function(t){function e(e){var i=t.call(this,e)||this;return i.$ABSTRACT="Abstract",i.$defaulEdgeType="Generalisation",i.setStereoTyp(i.$ABSTRACT),i}return r(e,t),e}(n.StereoType);e.Abstract=o},function(t,e,i){"use strict";var r=this&&this.__extends||function(){var t=Object.setPrototypeOf||{__proto__:[]}instanceof Array&&function(t,e){t.__proto__=e}||function(t,e){for(var i in e)e.hasOwnProperty(i)&&(t[i]=e[i])};return function(e,i){function r(){this.constructor=e}t(e,i),e.prototype=null===i?Object.create(i):(r.prototype=i.prototype,new r)}}();Object.defineProperty(e,"__esModule",{value:!0});var n=i(22),o=function(t){function e(e){var i=t.call(this,e)||this;return i.$INTERFACE="Interface",i.$defaulEdgeType="Implements",i.setStereoTyp(i.$INTERFACE),i}return r(e,t),e}(n.StereoType);e.Interface=o},function(t,e,i){"use strict";var r=this&&this.__extends||function(){var t=Object.setPrototypeOf||{__proto__:[]}instanceof Array&&function(t,e){t.__proto__=e}||function(t,e){for(var i in e)e.hasOwnProperty(i)&&(t[i]=e[i])};return function(e,i){function r(){this.constructor=e}t(e,i),e.prototype=null===i?Object.create(i):(r.prototype=i.prototype,new r)}}();Object.defineProperty(e,"__esModule",{value:!0});var n=i(24),o=function(t){function e(){var e=t.call(this)||this;return e.id="JavaAdapter",e}return r(e,t),e.prototype.update=function(t){return!!this.isActive()&&(window.JavaBridge.executeChange(t),!0)},e.prototype.isActive=function(){return window.JavaBridge},e}(n.Adapter);e.JavaAdapter=o},function(t,e,i){"use strict";var r=this&&this.__extends||function(){var t=Object.setPrototypeOf||{__proto__:[]}instanceof Array&&function(t,e){t.__proto__=e}||function(t,e){for(var i in e)e.hasOwnProperty(i)&&(t[i]=e[i])};return function(e,i){function r(){this.constructor=e}t(e,i),e.prototype=null===i?Object.create(i):(r.prototype=i.prototype,new r)}}();Object.defineProperty(e,"__esModule",{value:!0});var n=i(1),o=i(0),s=i(6),a=i(3),l=function(t){function e(e){var i=t.call(this,e)||this;i.cardinality="","string"==typeof e?i.id=e:(e.property&&(i.property=e.property),e.cardinality&&(i.cardinality=e.cardinality)),i.$isDraggable=!0;var r=i.calcSize();return i.withSize(r.x,r.y),i}return r(e,t),e.prototype.calcSize=function(){var t=this.getText(),e=t.split("\n"),i=new n.Point(0,0);if(0===t.length)return i;for(var r=0;r<e.length;r+=1){var s=o.Util.sizeOf(e[r]);i.x=Math.max(i.x,s.width),i.y+=s.height,this.$heightOfOneTextItem=s.height}return i},e.prototype.updateCardinality=function(t){this.cardinality=t;var e=this.calcSize();if(this.withSize(e.x,e.y),this.$rectBackground&&(this.$rectBackground.setAttributeNS(null,"width",""+e.x),this.$rectBackground.setAttributeNS(null,"height",""+e.y)),!this.$view){var i=this.getSVG();return void this.$owner.$view.appendChild(i)}if(0===t.length&&this.property.length>0||!this.$cardinalitySvg){this.$owner.$view.removeChild(this.$view),this.resetAllSvgElements();var i=this.getSVG();return void this.$owner.$view.appendChild(i)}return this.$cardinalitySvg?(this.$cardinalitySvg.textContent=t,void(this.$rectBackground&&(this.$rectBackground.setAttributeNS(null,"width",""+e.x),this.$rectBackground.setAttributeNS(null,"height",""+e.y)))):0==this.property.length?(this.$owner.$view.removeChild(this.$view),void this.resetAllSvgElements()):void 0},e.prototype.resetAllSvgElements=function(){this.$cardinalitySvg=void 0,this.$view=void 0,this.$propertySvg=void 0},e.prototype.updateProperty=function(t){this.property=t;var e=this.calcSize();if(this.withSize(e.x,e.y),!this.$view){var i=this.getSVG();return void this.$owner.$view.appendChild(i)}if(0===t.length&&this.cardinality.length>0||!this.$propertySvg){this.$owner.$view.removeChild(this.$view),this.resetAllSvgElements();var i=this.getSVG();return void this.$owner.$view.appendChild(i)}if(this.$propertySvg)return this.$propertySvg.textContent=t,void(this.$rectBackground&&(this.$rectBackground.setAttributeNS(null,"width",""+e.x),this.$rectBackground.setAttributeNS(null,"height",""+e.y)));0==this.cardinality.length&&(this.$owner.$view.removeChild(this.$view),this.resetAllSvgElements())},e.prototype.getSVG=function(){var t=this.getPos(),e=o.Util.create({tag:"g",class:"SVGEdgeInfo",transform:"translate(0, 0)"});this.$rectBackground=o.Util.createShape({tag:"rect",x:t.x,y:t.y-this.$heightOfOneTextItem+3,width:this.getSize().x,height:this.getSize().y,fill:"#DDD","stroke-width":0,rx:"5",ry:"5"}),e.appendChild(this.$rectBackground);var i=t.y;return this.property&&(this.$propertySvg=o.Util.createShape({tag:"text",x:t.x+3,y:i,"text-anchor":"left"}),this.$propertySvg.textContent=this.property,e.appendChild(this.$propertySvg),i+=this.$heightOfOneTextItem),this.cardinality&&(this.$cardinalitySvg=o.Util.createShape({tag:"text",x:t.x+3,y:i,"text-anchor":"left"}),this.$cardinalitySvg.textContent=this.cardinality,e.appendChild(this.$cardinalitySvg)),this.$view=e,e},e.prototype.isEmpty=function(){var t=this.cardinality&&this.cardinality.length>0;return!(this.property&&this.property.length>0||t)},e.prototype.redrawFromEdge=function(t){if(t){var e=this.getPos(),i=new n.Point;i.x=t.x-e.x,i.y=t.y-e.y;var r=this.$view.getAttributeNS(null,"transform").slice(10,-1).split(" "),o=parseInt(r[0]),s=0;r.length>1&&(s=parseInt(r[1]));var a=o+i.x,l=s+i.y;this.$view.setAttributeNS(null,"transform","translate("+a+" "+l+")"),this.getPos().x=t.x,this.getPos().y=t.y}},e.prototype.getText=function(){var t="";return this.property&&(t=this.property),this.cardinality&&(t.length>0&&(t+="\n"),t+=this.cardinality),t},e.prototype.getEvents=function(){return[a.EventBus.ELEMENTCLICK,a.EventBus.ELEMENTDBLCLICK,a.EventBus.OPENPROPERTIES]},e}(s.Node);e.InfoText=l},function(t,e,i){"use strict";var r=this&&this.__extends||function(){var t=Object.setPrototypeOf||{__proto__:[]}instanceof Array&&function(t,e){t.__proto__=e}||function(t,e){for(var i in e)e.hasOwnProperty(i)&&(t[i]=e[i])};return function(e,i){function r(){this.constructor=e}t(e,i),e.prototype=null===i?Object.create(i):(r.prototype=i.prototype,new r)}}();Object.defineProperty(e,"__esModule",{value:!0});var n=i(11),o=function(t){function e(){return null!==t&&t.apply(this,arguments)||this}return r(e,t),e.prototype.getSVG=function(){var e=this.$points[0],i=this.getDirectionOfPointToNode(this.$sNode,e),r=this.calcCorrectPath(e,i),n=t.prototype.getSVG.call(this),o={tag:"path",d:r};return this.$diamond=this.createShape(o),n.appendChild(this.$diamond),n},e.prototype.redraw=function(e,i){t.prototype.redraw.call(this,e,!0);var r=this.$points[0],n=1;if(this.$sNode.id===e.id||2==this.$points.length){n=this.getDirectionOfPointToNode(this.$sNode,r);var o=this.calcCorrectPath(r,n);this.$diamond.setAttributeNS(null,"d",o)}this.redrawPointsAndInfo()},e.prototype.calcCorrectPath=function(t,e){var i,r=t.x,n=t.y;switch(e){case 0:i="M"+r+" "+n+" L"+(r+6)+" "+(n+10)+" L"+r+" "+(n+20)+" L"+(r-6)+" "+(n+10)+" Z",t.y=t.y+20;break;case 3:i="M"+r+" "+n+" L"+(r-10)+" "+(n+6)+" L"+(r-20)+" "+n+" L"+(r-10)+" "+(n-6)+" Z",t.x=t.x-20;break;case 2:i="M"+r+" "+n+" L"+(r+10)+" "+(n-6)+" L"+(r+20)+" "+n+" L"+(r+10)+" "+(n+6)+" Z",t.x=t.x+20;break;case 1:i="M"+r+" "+n+" L"+(r-6)+" "+(n-10)+" L"+r+" "+(n-20)+" L"+(r+6)+" "+(n-10)+" Z",t.y=t.y-20}return i},e}(n.Association);e.Aggregate=o},function(t,e,i){"use strict";var r=this&&this.__extends||function(){var t=Object.setPrototypeOf||{__proto__:[]}instanceof Array&&function(t,e){t.__proto__=e}||function(t,e){for(var i in e)e.hasOwnProperty(i)&&(t[i]=e[i])};return function(e,i){function r(){this.constructor=e}t(e,i),e.prototype=null===i?Object.create(i):(r.prototype=i.prototype,new r)}}();Object.defineProperty(e,"__esModule",{value:!0});var n=i(4),o=function(t){function e(){return null!==t&&t.apply(this,arguments)||this}return r(e,t),e.prototype.getSVG=function(){var e=t.prototype.getSVG.call(this);return this.$diamond.setAttributeNS(null,"fill","white"),e},e}(n.Aggregate);e.Aggregation=o},function(t,e,i){"use strict";var r=this&&this.__extends||function(){var t=Object.setPrototypeOf||{__proto__:[]}instanceof Array&&function(t,e){t.__proto__=e}||function(t,e){for(var i in e)e.hasOwnProperty(i)&&(t[i]=e[i])};return function(e,i){function r(){this.constructor=e}t(e,i),e.prototype=null===i?Object.create(i):(r.prototype=i.prototype,new r)}}();Object.defineProperty(e,"__esModule",{value:!0});var n=i(4),o=function(t){function e(){return null!==t&&t.apply(this,arguments)||this}return r(e,t),e.prototype.getSVG=function(){var e=t.prototype.getSVG.call(this);return this.$diamond.setAttributeNS(null,"fill","black"),e},e}(n.Aggregate);e.Composition=o},function(t,e,i){"use strict";var r=this&&this.__extends||function(){var t=Object.setPrototypeOf||{__proto__:[]}instanceof Array&&function(t,e){t.__proto__=e}||function(t,e){for(var i in e)e.hasOwnProperty(i)&&(t[i]=e[i])};return function(e,i){function r(){this.constructor=e}t(e,i),e.prototype=null===i?Object.create(i):(r.prototype=i.prototype,new r)}}();Object.defineProperty(e,"__esModule",{value:!0});var n=i(25),o=function(t){function e(){return null!==t&&t.apply(this,arguments)||this}return r(e,t),e.prototype.getSVG=function(){var e=t.prototype.getSVG.call(this);return this.$pathSvg.setAttributeNS(null,"stroke-dasharray","3, 3"),e},e}(n.Generalisation);e.Implements=o},function(t,e,i){"use strict";function r(t){for(var i in t)e.hasOwnProperty(i)||(e[i]=t[i])}Object.defineProperty(e,"__esModule",{value:!0}),r(i(26)),r(i(27)),r(i(28));var n=i(26),o=i(28),s=i(27);new n.DagreLayout,new o.DagreLayoutMin,new s.Random},function(t,e,i){"use strict";var r=this&&this.__extends||function(){var t=Object.setPrototypeOf||{__proto__:[]}instanceof Array&&function(t,e){t.__proto__=e}||function(t,e){for(var i in e)e.hasOwnProperty(i)&&(t[i]=e[i])};return function(e,i){function r(){this.constructor=e}t(e,i),e.prototype=null===i?Object.create(i):(r.prototype=i.prototype,new r)}}();Object.defineProperty(e,"__esModule",{value:!0});var n=i(1),o=i(4),s=i(5),a=i(0),l=i(3),h=function(t){function e(){var e=null!==t&&t.apply(this,arguments)||this;return e.nodes=[],e.edges=[],e}return r(e,t),e.prototype.load=function(t){if(this.$isLoading=!0,t=t||{},this.property=t.type||t.property||"classdiagram",this.id="RootElement",t.nodes)for(var e=0,i=t.nodes;e<i.length;e++){var r=i[e];this.addNode(r)}if(t.edges)for(var n=0,o=t.edges;n<o.length;n++){var s=o[n];this.addEdge(s)}this.$isLoading=!1},e.prototype.getNodeByPosition=function(t,e){for(var i=0,r=this.nodes;i<r.length;i++){var n=r[i],o=n.getPos(),s=n.getSize();if(o.x<=t&&o.x+s.x>=t&&o.y<=e&&o.y+s.y>=e)return n}return null},e.prototype.init=function(e,i,r){return t.prototype.init.call(this,e,i,r),this.initCanvas(),this},e.prototype.addElement=function(t){t=a.Util.toPascalCase(t);var e=this.getNewId(t);return!!this.createElement(t,e,{})&&(a.Util.saveToLocalStorage(this),!0)},e.prototype.addElementWithValues=function(t,e){t=a.Util.toPascalCase(t);var i=this.getNewId(t),r=this.createElement(t,i,{});if(e&&e.hasOwnProperty("x")&&e.hasOwnProperty("y")){var n=e.x,o=e.y;r.withPos(n,o)}return a.Util.saveToLocalStorage(this),r},e.prototype.removeAllElements=function(){for(var t=this.nodes.length,e=0;e<t;e++)this.removeElement(this.nodes[0].id);this.$view.dispatchEvent(a.Util.createCustomEvent("click"))},e.prototype.removeElement=function(t){var e=this.getDiagramElementById(t);if(!e)return!1;if(this.$owner.removeElement(e),e instanceof s.Node){var i=this.nodes.indexOf(e);for(i>-1&&this.nodes.splice(i,1);e.$edges.length>0;)this.removeElement(e.$edges[0].id);e.$edges=[]}else if(e instanceof o.Association){var r=this.edges.indexOf(e);r>-1&&this.edges.splice(r,1),r=e.$sNode.$edges.indexOf(e),r>-1&&e.$sNode.$edges.splice(r,1),r=e.$tNode.$edges.indexOf(e),r>-1&&e.$tNode.$edges.splice(r,1)}return a.Util.saveToLocalStorage(this),!0},e.prototype.getSVG=function(){var t={tag:"path",id:"origin",d:"M-10 0 L10 0 M0 -10 L0 10",stroke:"#999","stroke-width":"1",fill:"none"},e=this.createShape(t),i={tag:"text",x:-10,y:0-10/1.5,"text-anchor":"end","font-family":"Verdana","font-size":"9",fill:"#999"},r=this.createShape(i);r.textContent="(0, 0)";var n=this.createShape({tag:"g"});return n.appendChild(e),n.appendChild(r),n},e.prototype.getEvents=function(){return[l.EventBus.ELEMENTMOUSEDOWN,l.EventBus.ELEMENTMOUSEUP,l.EventBus.ELEMENTMOUSELEAVE,l.EventBus.ELEMENTMOUSEMOVE,l.EventBus.ELEMENTMOUSEWHEEL,l.EventBus.ELEMENTCLICK,l.EventBus.ELEMENTDRAG]},e.prototype.getNewId=function(t){return(t?t.toLowerCase()+"-":"")+Math.floor(1e5*Math.random())},e.prototype.getEdgeById=function(t){for(var e=0,i=this.edges;e<i.length;e++){var r=i[e];if(r.id===t)return r}},e.prototype.getDiagramElementById=function(t){return this.getNodeById(t)||this.getEdgeById(t)},e.prototype.addEdge=function(t,e){if(t&&t.type){var i=this.$owner,r=!1;for(var n in i.edgeFactory)if(n===t.type){r=!0;break}r||(t.type="Association")}var o=t.type||"Association";o=a.Util.toPascalCase(o);var s=this.getNewId(o),l=this.createElement(o,s,t);l.type=o;var h,d=t.source.id||t.source;d&&((h=this.getNodeByLabel(d))||(h=this.createElement("Clazz",this.getNewId("Clazz"),{name:t.source}),h.init(this)));var p,c=t.target.id||t.target;if(c&&((p=this.getNodeByLabel(c))||(p=this.createElement("Clazz",this.getNewId("Clazz"),{name:t.target}),p.init(this))),l.withItem(h,p),e){var u=h.getPos().x+h.getSize().x/2,f=h.getPos().y+h.getSize().y/2,g=p.getPos().x+p.getSize().x/2,v=p.getPos().y+p.getSize().y/2;l.addPoint(u,f),l.addPoint(g,v)}return a.Util.saveToLocalStorage(this),l},e.prototype.createElement=function(t,e,i){var r,n=this.$owner;return n.nodeFactory[t]&&(r=new n.nodeFactory[t](i),a.Util.initControl(this,r,t,e,i),this.nodes.push(r)),n.edgeFactory[t]&&(r=new n.edgeFactory[t](i),a.Util.initControl(this,r,t,e,i),this.edges.push(r)),r},e.prototype.initCanvas=function(){var t=this.$owner;t.canvasSize={width:t.$view.clientWidth,height:t.$view.clientHeight},t.root=a.Util.createShape({tag:"svg",id:"root",width:t.canvasSize.width,height:t.canvasSize.height}),this.$view=t.root,t.$view.appendChild(t.root);"onwheel"in document.createElement("div")||document.onmousewheel;l.EventBus.register(this,this.$view)},e.prototype.addNode=function(t){var e=t.type||t.property||"Node";e=a.Util.toPascalCase(e);var i=t.name||this.getNewId(e);return this.createElement(e,i,t)},e.prototype.getNodeById=function(t){for(var e=0,i=this.nodes;e<i.length;e++){var r=i[e];if(r.id===t)return r}},e.prototype.getNodeByLabel=function(t){for(var e=0,i=this.nodes;e<i.length;e++){var r=i[e];if(r.label===t)return r}},e}(n.DiagramElement);e.GraphModel=h},function(t,e,i){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var r={abstract:'<svg width="100%" height="100%" viewbox="0 0 550 450"><g><rect width="500" height="400" x="25" y="25" rx="5" ry="5" stroke-width="10" stroke="black" fill="none"/><rect width="500" height="125" x="25" y="180" stroke-width="7" stroke="black" fill="none"/><text x="275" y="140" text-anchor="middle" font-size="111">Abstract</text><text x="50" y="240" font-size="50">+ field: type</text><text x="50" y="360" font-size="50">+ method(type)</text></g></svg>',clazz:'<svg width="100%" height="100%" viewbox="0 0 550 450"><g><rect width="500" height="400" x="25" y="25" rx="5" ry="5" stroke-width="10" stroke="black" fill="none"/><rect width="500" height="125" x="25" y="180" stroke-width="7" stroke="black" fill="none"/><text x="275" y="140" text-anchor="middle" font-size="111">Class</text><text x="50" y="240" font-size="50">+ field: type</text><text x="50" y="360" font-size="50">+ method(type)</text></g></svg>',interface:'<svg width="100%" height="100%" viewbox="0 0 550 450"><g><rect width="500" height="400" x="25" y="25" rx="5" ry="5" stroke-width="10" stroke="black" fill="none"/><rect width="500" height="125" x="25" y="180" stroke-width="7" stroke="black" fill="none"/><text x="275" y="140" text-anchor="middle" font-size="111">Interface</text><text x="50" y="240" font-size="50">+ field: type</text><text x="50" y="360" font-size="50">+ method(type)</text></g></svg>'},n=function(){function t(t){this.graph=t;var e=document.createElement("div");e.className="palette",e.id="palette",document.body.appendChild(e),this.palette=e,this.addButtons()}return t.prototype.addButtons=function(){var t=this,e=this;for(var i in r)!function(i){var n=document.createElement("button");n.className="add"+i+"Btn",n.innerHTML=r[i],n.onclick=function(e){var r=t.graph.getNextFreePosition(),n=t.graph.addElementWithValues(i,{x:r.x,y:r.y},!1);t.graph.drawElement(n)},e.palette.appendChild(n)}(i)},t}();e.default=n},function(t,e,i){"use strict";function r(t){for(var i in t)e.hasOwnProperty(i)||(e[i]=t[i])}Object.defineProperty(e,"__esModule",{value:!0}),r(i(53)),r(i(54)),r(i(55)),r(i(56)),r(i(30)),r(i(57)),r(i(58))},function(t,e,i){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var r=i(3),n=i(1),o=i(5),s=i(0),a=function(){function t(t){this.dragging=!1,this.reinsert=!1,this.mouseOffset=new n.Point,this.graph=t}return t.prototype.handle=function(t,e){if(!this.canHandle())return!0;switch(t.type){case"mousedown":this.dragging||"RootElement"===e.id||(this.element=e,this.svgElement=e.$view,this.start(t,e),this.setActive(!0));break;case"mouseup":this.dragging&&this.reset(),this.setActive(!1);break;case"mousemove":this.dragging&&this.drag(t,e);break;case"mouseleave":this.dragging&&this.reset(),this.setActive(!1)}return!0},t.prototype.canHandle=function(){return r.EventBus.isHandlerActiveOrFree(t.name)},t.prototype.setActive=function(e){e?r.EventBus.setActiveHandler(t.name):r.EventBus.releaseActiveHandler()},t.prototype.reset=function(){if(this.dragging=!1,this.svgElement.style.cursor="pointer",s.Util.isChrome()){var t=s.Util.createCustomEvent("click");this.svgElement.dispatchEvent(t)}},t.prototype.start=function(t,e){this.dragging=!0,this.mouseOffset.x=t.clientX,this.mouseOffset.y=t.clientY,this.reinsert=!0,this.svgElement.style.cursor="move"},t.prototype.drag=function(t,e){if(this.reinsert){"RootElement"!==this.element.id&&this.graph.root.appendChild(this.svgElement);var i=s.Util.createCustomEvent("drag");e.$view.dispatchEvent(i)}this.reinsert=!1,t.stopPropagation();var r=this.svgElement.getAttributeNS(null,"transform").slice(10,-1).split(" "),n=parseInt(r[0]),a=0;r.length>1&&(a=parseInt(r[1]));var l=n+t.clientX-this.mouseOffset.x,h=a+t.clientY-this.mouseOffset.y;this.svgElement.setAttributeNS(null,"transform","translate("+l+" "+h+")"),this.element.getPos().addNum(l-n,h-a),this.element instanceof o.Node&&this.element.redrawEdges(),this.mouseOffset.x=t.clientX,this.mouseOffset.y=t.clientY;var d=this.element.getPos().x+this.element.getSize().x,p=this.element.getPos().y+this.element.getSize().y,c=this.graph.root.getBoundingClientRect();c&&(d>c.width&&this.graph.root.setAttributeNS(null,"width",""+d),p>c.height&&this.graph.root.setAttributeNS(null,"height",""+p))},t}();e.Drag=a},function(t,e,i){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var r=i(5),n=i(4),o=i(0),s=i(21),a=i(3),l=i(8),h=function(){function t(t){this.padding=5,this.graph=t,this.deleteShape=s.SymbolLibary.drawSVG({type:"Basket",background:!0,id:"trashcan",tooltip:"Delete class"}),this.copyNodeShape=s.SymbolLibary.drawSVG({type:"Copynode",background:!0,id:"copyNode",tooltip:"Copy class"}),this.addEdgeShape=s.SymbolLibary.drawSVG({type:"Edgeicon",background:!0,id:"addEdge",tooltip:"Click and drag to connect this class"})}return t.prototype.handle=function(t,e){var i=this,s=o.Util.getEventX(t),h=o.Util.getEventY(t);if(t.stopPropagation(),"drag"===t.type&&(this.isDragged=!0,this.deleteShape.setAttributeNS(null,"visibility","hidden"),this.addEdgeShape.setAttributeNS(null,"visibility","hidden"),this.copyNodeShape.setAttributeNS(null,"visibility","hidden"),this.resetLastSelectedElements(),e instanceof r.Node&&(this.lastSelectedNode=e.$view),o.Util.addClass(this.lastSelectedNode,"SVGClazz-selected")),"background"===t.target.id||e===this.graph.$graphModel)return this.resetLastSelectedElements(),this.deleteShape.setAttributeNS(null,"visibility","hidden"),this.addEdgeShape.setAttributeNS(null,"visibility","hidden"),this.copyNodeShape.setAttributeNS(null,"visibility","hidden"),!0;if(e instanceof r.Node&&"click"===t.type){var d=e;this.graph.root.appendChild(this.deleteShape),this.graph.root.appendChild(this.addEdgeShape),this.graph.root.appendChild(this.copyNodeShape),this.graph.root.appendChild(e.$view),this.deleteShape.setAttributeNS(null,"visibility","visible"),this.addEdgeShape.setAttributeNS(null,"visibility","visible"),this.copyNodeShape.setAttributeNS(null,"visibility","visible");var p=d.getPos().x+d.getSize().x+5,c=d.getPos().y;this.deleteShape.setAttributeNS(null,"transform","translate("+p+" "+(c+this.padding)+")"),this.deleteShape.onclick=function(t){return i.graph.$graphModel.removeElement(e.id)},this.copyNodeShape.setAttributeNS(null,"transform","translate("+p+" "+(c+40+this.padding)+")"),this.copyNodeShape.onclick=function(t){var r=i.graph.getNextFreePosition(),n=e.copy();n.withPos(r.x,r.y),i.graph.drawElement(n)},this.addEdgeShape.setAttributeNS(null,"transform","translate("+p+" "+(c+80+this.padding)+")"),this.addEdgeShape.onmousedown=function(){a.EventBus.setActiveHandler("NewEdge"),e.$view.dispatchEvent(o.Util.createCustomEvent("mousedown"))}}if(e instanceof l.Clazz&&"click"===t.type){var u=e;if(o.Util.isChrome()&&this.lastSelectedNode&&e.id===this.lastSelectedNode.id&&!this.isDragged)return!0;this.isDragged=!1,this.resetLastSelectedElements(),this.lastSelectedNode=e.$view,o.Util.addClass(this.lastSelectedNode,"SVGClazz-selected"),this.setTooltipOfShape(this.deleteShape,"Delete class");var f=document.createElement("div");f.id="inlineEdit",f.style.position="absolute",f.style.top=u.getPos().y+u.getSize().y+52+"px",f.style.left=u.getPos().x+"px",f.style.width=u.getSize().x+"px",f.style.zIndex="42";var g=document.createElement("input");g.type="text",g.style.width="100%",g.placeholder="Add properties, edit label",f.appendChild(g),document.body.appendChild(f),g.addEventListener("focusout",function(t){if(o.Util.isChrome())return void(g.value&&0!==g.value.length||i.lastSelectedNode&&e.id==i.lastSelectedNode.id||i.removeLastInlineEdit());g.value&&0!==g.value.length||i.removeLastInlineEdit()});var v=(this.graph,["boolean","byte","char","double","float","int","long","short","String","void"]);return g.addEventListener("keydown",function(t){var e=t.which,i=g.value;if(o.Util.endsWith(i,":")&&!document.getElementById("selectPropertyType")){var r=document.createElement("select");r.id="selectPropertyType",r.style.width="100%";for(var n=0,s=v;n<s.length;n++){var a=s[n],l=document.createElement("option");l.value=a,l.innerHTML=a,r.appendChild(l)}r.addEventListener("change",function(t){var e=i.split(":"),n=r.options[r.selectedIndex].value;e.length>=1&&(g.value=e[0].trim()+" : "+n,g.focus())}),f.appendChild(r)}else if(!o.Util.includes(i,":")){var h=document.getElementById("selectPropertyType");h&&h.remove()}if(13===e){!o.Util.includes(i,":")||o.Util.includes(i,"(")&&o.Util.includes(i,")")?o.Util.includes(i,"(")&&o.Util.includes(i,")")?(u.addMethod(i.trim()),u.reDraw()):1===i.trim().split(" ").length&&i.trim().length>0&&u.updateLabel(i.trim()):(u.addAttribute(i.trim()),u.reDraw()),f.style.top=u.getPos().y+u.getSize().y+52+"px",f.style.left=u.getPos().x+"px",f.style.width=u.getSize().x+"px",g.value="";var d=document.getElementById("selectPropertyType");d&&d.remove()}}),f.children[0].focus(),!0}if(e instanceof n.Association){this.graph.root.appendChild(e.$view),this.graph.root.appendChild(e.$sNode.$view),this.graph.root.appendChild(e.$tNode.$view),this.graph.root.appendChild(this.deleteShape),this.setTooltipOfShape(this.deleteShape,"Delete edge"),this.deleteShape.setAttributeNS(null,"visibility","visible"),this.addEdgeShape.setAttributeNS(null,"visibility","hidden"),this.copyNodeShape.setAttributeNS(null,"visibility","hidden"),this.deleteShape.setAttributeNS(null,"transform","translate("+s+" "+h+")"),this.deleteShape.onclick=function(t){return i.graph.$graphModel.removeElement(e.id)},this.resetLastSelectedElements();var y=e;this.lastSelectedEdge=y.$view,o.Util.addClass(this.lastSelectedEdge,"SVGEdge-selected")}return!0},t.prototype.setTooltipOfShape=function(t,e){if(t&&t.hasChildNodes()){var i=t.childNodes[0];i&&"title"===i.tagName&&(i.textContent=e)}},t.prototype.resetLastSelectedElements=function(){this.lastSelectedNode&&(o.Util.removeClass(this.lastSelectedNode,"SVGClazz-selected"),this.lastSelectedNode=void 0),this.lastSelectedEdge&&(o.Util.removeClass(this.lastSelectedEdge,"SVGEdge-selected"),this.lastSelectedEdge=void 0),this.removeLastInlineEdit()},t.prototype.removeLastInlineEdit=function(){var t=document.getElementById("inlineEdit");t&&document.body.removeChild(t)},t.prototype.canHandle=function(){return a.EventBus.isHandlerActiveOrFree(t.name)},t.prototype.setActive=function(e){e?a.EventBus.setActiveHandler(t.name):a.EventBus.releaseActiveHandler()},t}();e.Select=h},function(t,e,i){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var r=i(3),n=function(){function t(t){}return t.prototype.handle=function(t,e){var i=t.deltaY||t.wheelDeltaY||-t.wheelDelta,r=1+i/1e3,n=this.graph.root.getAttribute("viewBox").split(" "),o=n[0]+" "+n[1]+" "+parseInt(n[2])*r+" "+parseInt(n[3])*r;return this.graph.root.setAttribute("viewBox",o),t.preventDefault(),!0},t.prototype.canHandle=function(){return r.EventBus.isHandlerActiveOrFree(t.name)},t.prototype.setActive=function(e){e?r.EventBus.setActiveHandler(t.name):r.EventBus.releaseActiveHandler()},t}();e.Zoom=n},function(t,e,i){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var r=i(0),n=i(3),o=i(5),s=function(){function t(t){this.graph=t}return t.prototype.setActive=function(e){e?n.EventBus.setActiveHandler(t.name):n.EventBus.releaseActiveHandler()},t.prototype.canHandle=function(){return n.EventBus.isHandlerActiveOrFree(t.name)},t.prototype.handle=function(t,e){if(!t.ctrlKey&&!n.EventBus.isHandlerActiveOrFree("NewEdge",!0))return this.removeLine(),!0;switch(t.type){case"mousedown":e instanceof o.Node&&(this.start(t,e),this.setActive(!0));break;case"mousemove":this.drawEdge(t,e);break;case"mouseleave":this.setActive(!1);break;case"mouseup":this.setNewEdgeToNode(t),this.setActive(!1)}return!0},t.prototype.drawEdge=function(t,e){if(this.isEdgeDrawing){var i=r.Util.getEventX(t),n=r.Util.getEventY(t),o="M"+this.x+" "+this.y+" L"+i+" "+n;if(this.svgLine){this.svgLine.setAttributeNS(null,"d",o);var s=this.graph.$graphModel.getNodeByPosition(r.Util.getEventX(t),r.Util.getEventY(t));s?(this.lastTargetNode&&this.lastTargetNode.id!==s.id&&this.lastTargetNode.$view.setAttributeNS(null,"class","SVGClazz"),this.lastTargetNode=s,this.lastTargetNode.$view.setAttributeNS(null,"class","SVGClazz-drawedge")):this.lastTargetNode&&this.lastTargetNode.$view.setAttributeNS(null,"class","SVGClazz")}else{var a={tag:"path",id:"newEdgePath",d:o,class:"SVGEdge"},l=r.Util.createShape(a);this.svgLine=l,this.graph.root.appendChild(l),this.graph.root.appendChild(this.sourceNode.$view)}}},t.prototype.removeLine=function(){this.isEdgeDrawing=!1,this.svgLine&&(this.graph.root.removeChild(this.svgLine),this.svgLine=null),this.lastTargetNode&&this.lastTargetNode.$view.setAttributeNS(null,"class","SVGClazz")},t.prototype.setNewEdgeToNode=function(t){var e=this.graph.$graphModel.getNodeByPosition(r.Util.getEventX(t),r.Util.getEventY(t));if(!e)return void this.removeLine();this.removeLine();var i=this.sourceNode.$defaulEdgeType||"Association",n={type:i,source:this.sourceNode.label,target:e.label},o=this.graph.$graphModel.addEdge(n,!0);this.graph.drawElement(o)},t.prototype.start=function(t,e){if(!this.isEdgeDrawing){this.isEdgeDrawing=!0,this.sourceNode=e,this.x=this.sourceNode.getPos().x+this.sourceNode.getSize().x/2,this.y=this.sourceNode.getPos().y+this.sourceNode.getSize().y/2;var i=document.getElementById("inlineEdit");i&&document.body.removeChild(i)}},t}();e.NewEdge=s},function(t,e,i){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var r=i(3),n=i(0),o=function(){function t(t){this.MIN_SIZE_TO_ADD_NODE=30,this.MIN_SIZE_TO_ADD_TEXT=10,this.graph=t}return t.prototype.canHandle=function(){return r.EventBus.isHandlerActiveOrFree(t.name)},t.prototype.setActive=function(e){e?r.EventBus.setActiveHandler(t.name):r.EventBus.releaseActiveHandler()},t.prototype.handle=function(t,e){if(!this.canHandle())return!0;if("RootElement"!==e.id)return!1;switch(t.type){case"mousedown":"RootElement"===e.id&&(this.start(t,e),this.setActive(!0));break;case"mousemove":this.drawRect(t,e);break;case"mouseleave":this.removeRect(),this.setActive(!1);break;case"mouseup":this.addNode(),this.setActive(!1)}return!0},t.prototype.drawRect=function(t,e){if(this.isRectDrawing){t.stopPropagation();var i=n.Util.getEventX(t)-this.x,r=n.Util.getEventY(t)-this.y;if(i<0?(this.isDrawToLeft=!0,i*=-1):this.isDrawToLeft=!1,r<0?(this.isDrawToTop=!0,r*=-1):this.isDrawToTop=!1,i>this.MIN_SIZE_TO_ADD_NODE&&r>this.MIN_SIZE_TO_ADD_NODE?this.isBigEnoughForAddNode=!0:this.isBigEnoughForAddNode=!1,this.graph.root.style.cursor="pointer",this.svgRect){var o=this.svgRect.getBBox();if((o.width>this.MIN_SIZE_TO_ADD_TEXT||o.height>this.MIN_SIZE_TO_ADD_TEXT)&&!this.svgTextAddNode){var s=n.Util.createShape({tag:"text",x:this.x,y:this.y-5,"font-family":"Verdana","font-size":12,fill:"black"});s.textContent="Hold on and move to create a new class",this.svgGroupAddNode.appendChild(s);var a=s.getBoundingClientRect(),l=n.Util.createShape({tag:"rect",x:this.x,y:this.y-a.height,width:a.width,height:a.height,fill:"#DDD","stroke-width":0});this.svgTextRectAddNode=l,this.svgTextAddNode=s,this.svgGroupAddNode.appendChild(l),this.svgGroupAddNode.appendChild(s)}this.isDrawToLeft&&this.svgRect.setAttributeNS(null,"x",""+n.Util.getEventX(t)),this.isDrawToTop&&this.svgRect.setAttributeNS(null,"y",""+n.Util.getEventY(t)),this.svgRect.setAttributeNS(null,"width",i.toString()),this.svgRect.setAttributeNS(null,"height",r.toString()),this.isBigEnoughForAddNode?this.svgRect.setAttributeNS(null,"class","SVGAddNode-ready"):this.svgRect.setAttributeNS(null,"class","SVGAddNode")}else{var h=n.Util.createShape({tag:"rect",id:"addNodeRect",x:this.x,y:this.y,width:1,height:1,class:"SVGAddNode"}),d=n.Util.createShape({tag:"g",id:"groupAddNode"});d.appendChild(h),this.graph.root.appendChild(d),this.svgRect=h,this.svgGroupAddNode=d}}},t.prototype.removeRect=function(){this.isRectDrawing=!1,this.isBigEnoughForAddNode=!1,this.graph.root.style.cursor="default",this.svgGroupAddNode&&(this.graph.root.removeChild(this.svgGroupAddNode),this.svgGroupAddNode=void 0),this.svgRect&&(this.svgRect=void 0),this.svgTextAddNode&&(this.svgTextAddNode=void 0),this.svgTextRectAddNode&&(this.svgTextRectAddNode=void 0)},t.prototype.addNode=function(){if(!this.isBigEnoughForAddNode)return void this.removeRect();this.removeRect();var t=this.graph.addElementWithValues("Clazz",{x:this.x,y:this.y});this.graph.drawElement(t)},t.prototype.start=function(t,e){this.isRectDrawing||(this.isRectDrawing=!0,this.x=n.Util.getEventX(t),this.y=n.Util.getEventY(t))},t}();e.AddNode=o},function(t,e,i){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var r=i(3),n=i(29),o=i(8),s=i(17),a=function(){function t(t){this._blankView=new n.PropertiesPanel.BlankView(t),this._graph=t}return t.prototype.dispatch=function(t){var e=this.createView(t);this._blankView.show(e)},t.prototype.getCurrentView=function(){return this._blankView.getCurrentView()},t.prototype.openProperties=function(){this._blankView.openProperties()},t.prototype.handle=function(t,e){return this.handleOpenProperties(t,e),t.type===r.EventBus.RELOADPROPERTIES&&this._selectedElement&&e.id===this._selectedElement.id&&(this.handleSelectNodeEvent(t,e),this.handleSelectEdgeEvent(t,e)),!(!this._selectedElement||this._selectedElement.id!==e.id)||("RootElement"===e.id&&(this.dispatch(n.PropertiesPanel.PropertiesView.Clear),this.setPropertiesHeaderText("Select any element to see its properties")),this._selectedElement=e,this.handleSelectNodeEvent(t,e),this.handleSelectEdgeEvent(t,e),!0)},t.prototype.setPropertiesHeaderText=function(t){this._blankView.setPropertiesHeaderText(t)},t.prototype.canHandle=function(){return r.EventBus.isHandlerActiveOrFree(t.name)},t.prototype.setActive=function(e){e?r.EventBus.setActiveHandler(t.name):r.EventBus.releaseActiveHandler()},t.prototype.createView=function(t){var e;return t===n.PropertiesPanel.PropertiesView.Clazz&&(e=new n.PropertiesPanel.ClassPanel),t===n.PropertiesPanel.PropertiesView.Clear&&(e=new n.PropertiesPanel.ClearPanel),t===n.PropertiesPanel.PropertiesView.Edge&&(e=new n.PropertiesPanel.EdgePanel),e.init(),e},t.prototype.handleOpenProperties=function(t,e){"dblclick"===t.type&&(t.stopPropagation(),this.openProperties())},t.prototype.handleSelectEdgeEvent=function(t,e){if(!(e instanceof o.Association))return!1;var i=e;this.dispatch(n.PropertiesPanel.PropertiesView.Edge),this._blankView.setPropertiesHeaderText("Properties of Edge: "+i.$sNode.label+"---"+i.$tNode.label);var r=this._graph,s=document.getElementById("edgeTypeSelect");s.value=i.type,s.addEventListener("change",function(){var t=s.options[s.selectedIndex].value,e=i.convertEdge(t,r.$graphModel.getNewId(t),!0);i=e}),document.getElementById("edgeLabelInput").setAttribute("value",i.$sNode.label+" -> "+i.$tNode.label),document.getElementById("edgeSrcInput").setAttribute("value",i.$sNode.label);var a=document.getElementById("edgeSrcProperty");a.addEventListener("input",function(t){i.updateSrcProperty(a.value)});var l=document.getElementById("inputEdgeSrcCardinality");l.addEventListener("input",function(t){i.updateSrcCardinality(l.value)}),i.sourceInfo&&(a.setAttribute("value",i.sourceInfo.property),l.setAttribute("value",i.sourceInfo.cardinality));var h=document.getElementById("edgeTargetProperty");h.addEventListener("input",function(t){i.updateTargetProperty(h.value)});var d=document.getElementById("inputEdgeTargetCardinality");return d.addEventListener("input",function(t){i.updateTargetCardinality(d.value)}),i.targetInfo&&(h.setAttribute("value",i.targetInfo.property),d.setAttribute("value",i.targetInfo.cardinality)),document.getElementById("edgeTargetInput").setAttribute("value",i.$tNode.label),!0},t.prototype.handleSelectNodeEvent=function(t,e){if(!(e instanceof s.Clazz))return!1;var i=this,r=(this._graph,e);this.dispatch(n.PropertiesPanel.PropertiesView.Clazz),this._blankView.setPropertiesHeaderText("Properties of Class: "+r.label);var o=document.getElementById("className");o.setAttribute("value",r.label),o.addEventListener("input",function(){r.updateLabel(o.value)});var a=document.getElementById("classModifier");a.setAttribute("value",r.label),a.addEventListener("change",function(){r.updateModifier(a.value)});for(var l=document.getElementById("clazzattribute"),h=document.getElementById("clazzattributeAdd");l.firstChild;)l.removeChild(l.firstChild);for(var d=r.getAttributes(),p=0,c=d;p<c.length;p++){var u=c[p],f=this.createDivEditProperty(r,u,"attribute",l);l.appendChild(f)}l.appendChild(h),document.getElementById("clazzattributeBtnAddattribute").addEventListener("click",function(){var t=document.getElementById("clazzattributeAddModifier"),e=document.getElementById("clazzattributeAddName"),n=document.getElementById("clazzattributeAddType");if(e.value&&0!=e.value.length){var o=t.value+" "+e.value+" : "+n.value,s=r.addAttribute(o),a=i.createDivEditProperty(r,s,"attribute",l);t.value="+",e.value="",n.value="",l.insertBefore(a,h),r.reDraw()}});for(var g=document.getElementById("clazzmethod"),v=document.getElementById("clazzmethodAdd");g.firstChild;)g.removeChild(g.firstChild);for(var y=r.getMethods(),m=0,w=y;m<w.length;m++){var E=w[m],b=this.createDivEditProperty(r,E,"method",g);g.appendChild(b)}return g.appendChild(v),document.getElementById("clazzmethodBtnAddmethod").addEventListener("click",function(){var t=document.getElementById("clazzmethodAddModifier"),e=document.getElementById("clazzmethodAddName"),n=document.getElementById("clazzmethodAddType");if(e.value&&0!=e.value.length){var o=t.value+" "+e.value+" : "+n.value,s=r.addMethod(o),a=i.createDivEditProperty(r,s,"method",g);t.value="+",e.value="",n.value="",g.insertBefore(a,v),r.reDraw()}}),!0},t.prototype.createDivEditProperty=function(t,e,i,r){var n=document.createElement("div");n.style.marginTop="5px";var o=document.createElement("select"),s={};s.public="+",s.private="-",s.protected="#",s.package="~";for(var a in s){var l=document.createElement("option");l.value=s[a],l.innerHTML=s[a],l.title=a,o.appendChild(l)}o.value=e.modifier,o.addEventListener("input",function(){e.updateModifier(o.options[o.selectedIndex].value)});var h=document.createElement("input");h.style.marginLeft="5px",h.style.marginRight="5px",h.type="text",h.value=e.name,h.addEventListener("input",function(){e.updateName(h.value),t.reDraw(!0)});var d=document.getElementById("dataTypes"),p=document.createElement("input");d&&p.setAttribute("list",d.id),p.value=e.type,p.addEventListener("input",function(){e.updateType(p.value),t.reDraw(!0)});var c=document.createElement("button");return c.innerHTML="X",c.title="Delete "+i,c.style.marginLeft="5px",c.style.color="red",c.addEventListener("click",function(){t.removeProperty(e),r.removeChild(n),t.reDraw()}),n.appendChild(o),n.appendChild(h),n.appendChild(p),n.appendChild(c),n},t}();e.PropertiesDispatcher=a},function(t,e,i){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var r=function(){function t(t){this.graph=t}return t.prototype.show=function(){var t=this;if(!this.mainDiv){this.mainDiv=document.createElement("div"),this.mainDiv.className="toolbar";var e=document.createElement("h1");e.className="logo",e.textContent="DiagramJS";var i=document.createElement("button");i.id="layoutBtn",i.style.marginLeft="195px",i.style.marginTop="12px",i.textContent="Auto Layout",i.onclick=function(){t.graph.layout()},this.mainDiv.appendChild(e),this.mainDiv.appendChild(i);var r=document.createElement("button");r.id="btnDeleteAll",r.textContent="Delete All",r.title="Delete all nodes from diagram",r.style.marginLeft="20px",r.style.marginTop="12px",r.onclick=function(){confirm("All classes will be deleted!")&&t.graph.$graphModel.removeAllElements()},this.mainDiv.appendChild(r);var n=document.createElement("div");n.style.display="inline",n.style.marginLeft="20px";var o=document.createElement("input");o.id="inputWorkspace",o.type="text",o.placeholder="Type your workspace for generated code...",o.style.marginRight="5px",o.style.width="260px";var s=document.createElement("button");s.textContent="Generate",s.title="Generate code into your workspace",s.onclick=function(){var e=o.value;if(0===e.length)return alert("No workspace set.\nEnter first your workspace"),void o.focus();t.graph.generate(e)},n.appendChild(o),n.appendChild(s),this.mainDiv.appendChild(n);var a=document.createElement("div");a.style.display="inline",a.style.marginLeft="20px";var l=["Export","HTML","JSON","PDF","PNG","SVG"],h=document.createElement("select");l.forEach(function(t){var e=document.createElement("option");e.value=t,e.textContent=t,h.appendChild(e)}),h.onchange=function(e){var i=h.options[h.selectedIndex].value;h.selectedIndex=0,t.graph.saveAs(i)},a.appendChild(h),this.mainDiv.appendChild(a),document.body.appendChild(this.mainDiv)}},t}();e.Toolbar=r},function(t,e,i){"use strict";var r=this&&this.__extends||function(){var t=Object.setPrototypeOf||{__proto__:[]}instanceof Array&&function(t,e){t.__proto__=e}||function(t,e){for(var i in e)e.hasOwnProperty(i)&&(t[i]=e[i])};return function(e,i){function r(){this.constructor=e}t(e,i),e.prototype=null===i?Object.create(i):(r.prototype=i.prototype,new r)}}();Object.defineProperty(e,"__esModule",{value:!0});var n,o=i(7);!function(t){var e=function(t){function e(){var e=t.call(this)||this;return e.property="Clazz",e}return r(e,t),e.prototype.getName=function(){return this.prop[e.NAME]},e.prototype.setName=function(t){this.setValue(e.NAME,t)},e.prototype.getAttributes=function(){return this.prop[e.ATTRIBUTES]},e.prototype.addToAttributes=function(t){this.addTo(e.ATTRIBUTES,t)},e.prototype.removeFromAttributes=function(t){this.removeFrom(e.ATTRIBUTES,t)},e.NAME="name",e.ATTRIBUTES="attributes",e.METHODS="methods",e}(o.default);t.Clazz=e;var i=function(t){function i(){var e=t.call(this)||this;return e.property="Attribute",e}return r(i,t),i.prototype.getName=function(){return this.prop[e.NAME]},i.prototype.setName=function(t){this.setValue(e.NAME,t)},i}(o.default);t.Attribute=i;var n=function(t){function e(){return null!==t&&t.apply(this,arguments)||this}return r(e,t),e}(o.default);t.Methods=n}(n=e.UML||(e.UML={})),window.UML=n}]);
+var DiagramJS =
+/******/ (function(modules) { // webpackBootstrap
+/******/ 	// The module cache
+/******/ 	var installedModules = {};
+/******/
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/
+/******/ 		// Check if module is in cache
+/******/ 		if(installedModules[moduleId]) {
+/******/ 			return installedModules[moduleId].exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = installedModules[moduleId] = {
+/******/ 			i: moduleId,
+/******/ 			l: false,
+/******/ 			exports: {}
+/******/ 		};
+/******/
+/******/ 		// Execute the module function
+/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+/******/
+/******/ 		// Flag the module as loaded
+/******/ 		module.l = true;
+/******/
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/
+/******/
+/******/ 	// expose the modules object (__webpack_modules__)
+/******/ 	__webpack_require__.m = modules;
+/******/
+/******/ 	// expose the module cache
+/******/ 	__webpack_require__.c = installedModules;
+/******/
+/******/ 	// define getter function for harmony exports
+/******/ 	__webpack_require__.d = function(exports, name, getter) {
+/******/ 		if(!__webpack_require__.o(exports, name)) {
+/******/ 			Object.defineProperty(exports, name, {
+/******/ 				configurable: false,
+/******/ 				enumerable: true,
+/******/ 				get: getter
+/******/ 			});
+/******/ 		}
+/******/ 	};
+/******/
+/******/ 	// define __esModule on exports
+/******/ 	__webpack_require__.r = function(exports) {
+/******/ 		Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 	};
+/******/
+/******/ 	// getDefaultExport function for compatibility with non-harmony modules
+/******/ 	__webpack_require__.n = function(module) {
+/******/ 		var getter = module && module.__esModule ?
+/******/ 			function getDefault() { return module['default']; } :
+/******/ 			function getModuleExports() { return module; };
+/******/ 		__webpack_require__.d(getter, 'a', getter);
+/******/ 		return getter;
+/******/ 	};
+/******/
+/******/ 	// Object.prototype.hasOwnProperty.call
+/******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
+/******/
+/******/ 	// __webpack_public_path__
+/******/ 	__webpack_require__.p = "";
+/******/
+/******/
+/******/ 	// Load entry module and return exports
+/******/ 	return __webpack_require__(__webpack_require__.s = "./main.ts");
+/******/ })
+/************************************************************************/
+/******/ ({
+
+/***/ "./Adapter.ts":
+/*!********************!*\
+  !*** ./Adapter.ts ***!
+  \********************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var Adapter = (function () {
+    function Adapter() {
+        this.id = null;
+    }
+    return Adapter;
+}());
+exports.Adapter = Adapter;
+
+
+/***/ }),
+
+/***/ "./Bridge.ts":
+/*!*******************!*\
+  !*** ./Bridge.ts ***!
+  \*******************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var controls = __webpack_require__(/*! ./elements/nodes */ "./elements/nodes/index.ts");
+var adapters = __webpack_require__(/*! ./adapters */ "./adapters/index.ts");
+var Data_1 = __webpack_require__(/*! ./Data */ "./Data.ts");
+var Control_1 = __webpack_require__(/*! ./Control */ "./Control.ts");
+var Adapter_1 = __webpack_require__(/*! ./Adapter */ "./Adapter.ts");
+var Graph_1 = __webpack_require__(/*! ./elements/Graph */ "./elements/Graph.ts");
+var util_1 = __webpack_require__(/*! ./util */ "./util.ts");
+var Bridge = (function (_super) {
+    __extends(Bridge, _super);
+    function Bridge(viewRoot) {
+        var _this = _super.call(this) || this;
+        _this.controlFactory = {};
+        _this.adapterFactory = {};
+        _this.controls = {};
+        _this.adapters = {};
+        _this.items = {};
+        _this.controlNo = 1;
+        _this.online = true;
+        _this.language = navigator.language.toUpperCase();
+        _this.addListener = function (listener) {
+            this.listener.push(listener);
+        };
+        var i;
+        if (viewRoot) {
+            _this.$view = viewRoot;
+        }
+        var keys = Object.keys(adapters);
+        for (i = 0; i < keys.length; i++) {
+            var child = adapters[keys[i]];
+            if (child && child.id) {
+                _this.adapterFactory[child.id.toLowerCase()] = child;
+            }
+        }
+        keys = Object.keys(controls);
+        for (i = 0; i < keys.length; i++) {
+            _this.addControl(controls[keys[i]]);
+        }
+        _this.addControl(Graph_1.Graph);
+        var that = _this;
+        window.addEventListener('load', function () {
+            var updateOnlineStatus = function updateOnlineStatus() {
+                that.setOnline(navigator.onLine);
+            };
+            window.addEventListener('online', updateOnlineStatus);
+            window.addEventListener('offline', updateOnlineStatus);
+        });
+        return _this;
+    }
+    Bridge.prototype.setOnline = function (value) {
+        this.online = value;
+        if (this.toolBar.children[0]) {
+            this.toolBar.children[0].className = value ? 'online' : 'offline';
+        }
+    };
+    Bridge.prototype.addToolbar = function () {
+        if (this.toolBar) {
+            return false;
+        }
+        this.toolBar = document.createElement('div');
+        this.toolBar.className = 'onlineStatus';
+        var child = document.createElement('div');
+        child.className = 'online';
+        this.toolBar.appendChild(child);
+        child = document.createElement('div');
+        child.className = 'lang';
+        child.innerHTML = this.language;
+        this.toolBar.appendChild(child);
+        var body = document.getElementsByTagName('body')[0];
+        body.insertBefore(this.toolBar, body.firstChild);
+        this.setOnline(this.online);
+        return true;
+    };
+    Bridge.prototype.addControl = function (control) {
+        if (control && control.name) {
+            this.controlFactory[control.name.toLowerCase()] = control;
+        }
+    };
+    Bridge.prototype.getId = function () {
+        return 'control' + (this.controlNo++);
+    };
+    Bridge.prototype.adapterUpdate = function (message) {
+        var keys = Object.keys(this.adapters);
+        if (keys.length > 0) {
+            var i = void 0;
+            for (i = 0; i < keys.length; i++) {
+                var adapterList = this.adapters[keys[i]];
+                if (adapterList instanceof Adapter_1.Adapter) {
+                    adapterList.update(message);
+                }
+                else {
+                    for (var _i = 0, adapterList_1 = adapterList; _i < adapterList_1.length; _i++) {
+                        var adapter = adapterList_1[_i];
+                        adapter.update(message);
+                    }
+                }
+            }
+        }
+    };
+    Bridge.prototype.load = function (json, owner) {
+        var config = {}, className, id;
+        if (typeof (json) === 'string') {
+            config['id'] = '' + json;
+            var item = document.getElementById(config['id']);
+            var className_1;
+            if (item) {
+                className_1 = item.getAttribute('class');
+                if (!className_1) {
+                    className_1 = item.getAttribute('classname') || '';
+                }
+                if (item.getAttribute('property')) {
+                    if (this.hasItem(item.getAttribute('property'))) {
+                        var data = this.getItem(item.getAttribute('property'));
+                        for (var key in data.prop) {
+                            if (item.getAttribute(key)) {
+                                data.setValue(key, item.getAttribute(key));
+                            }
+                        }
+                        if (item.getAttribute('property')) {
+                        }
+                    }
+                }
+            }
+            else {
+                className_1 = '' + json;
+            }
+            className_1 = className_1.toLowerCase();
+            config['className'] = className_1;
+        }
+        else {
+            config = json;
+        }
+        if (!config['id']) {
+            config['id'] = this.getId();
+        }
+        if (!config['className'] && (config['type'] === 'clazzdiagram' || config['type'] === 'objectdiagram')) {
+            config['className'] = 'graph';
+        }
+        className = config['className'] || config['class'];
+        className = className.toLocaleLowerCase();
+        id = config['id'];
+        if ((config['prop'] || config['upd'] || config['rem']) && this.controls[id] === null) {
+            var newData = !this.hasItem(config['id']);
+            var item = this.getItem(config['id']);
+            if (newData) {
+                for (var i in this.controls) {
+                    if (this.controls.hasOwnProperty(i) === false) {
+                        continue;
+                    }
+                    this.controls[i].addItem(this, item);
+                }
+            }
+            item.addProperties(config);
+            this.adapterUpdate(JSON.stringify(config));
+            return item;
+        }
+        var control;
+        if (this.controls[id]) {
+            control = this.controls[id];
+            control.initControl(json);
+            this.adapterUpdate(JSON.stringify(config));
+            return control;
+        }
+        if (typeof (this.controlFactory[className]) === 'object' || typeof (this.controlFactory[className]) === 'function') {
+            var obj = this.controlFactory[className];
+            control = new obj(json);
+            util_1.Util.initControl(owner || this, control, config['property'], id, json);
+            if (control.id) {
+                this.controls[control.id] = control;
+            }
+            else {
+                this.controls[id] = control;
+            }
+            if (typeof control.getSVG === 'function' && typeof control.getSize === 'function') {
+                var size = control.getSize();
+                var svg = util_1.Util.createShape({
+                    tag: 'svg',
+                    id: 'root',
+                    width: size.x,
+                    height: size.y
+                });
+                var view = control.getSVG();
+                svg.appendChild(view);
+                document.getElementsByTagName('body')[0].appendChild(svg);
+            }
+            return control;
+        }
+        return null;
+    };
+    Bridge.prototype.hasItem = function (id) {
+        if (this.items[id] !== undefined) {
+            return true;
+        }
+        id = id.split('.')[0];
+        return (this.items[id] !== undefined);
+    };
+    Bridge.prototype.getItems = function () {
+        return this.items;
+    };
+    Bridge.prototype.getItem = function (id) {
+        var item = this.items[id];
+        if (!item) {
+            id = id.split('.')[0];
+            item = this.items[id];
+            if (!item) {
+                item = new Data_1.default();
+                item.id = id;
+                this.items[id] = item;
+            }
+        }
+        return item;
+    };
+    Bridge.prototype.setValue = function (object, attribute, newValue, oldValue) {
+        alert('Bridge.setValue: oldVal:' + oldValue + ', newVal: ' + +newValue + ', attribute: ' + attribute + ', object: ' + JSON.stringify(object));
+        var obj;
+        var id;
+        if (object instanceof String || typeof object === 'string') {
+            id = object.toString();
+            obj = this.getItem(id);
+        }
+        else if (object instanceof Data_1.default) {
+            obj = object;
+            id = object.id;
+        }
+        else if (object.hasOwnProperty('id')) {
+            obj = object;
+            id = object['id'];
+        }
+        else {
+            console.log('object is neither Data nor String..');
+            return false;
+        }
+        if (obj) {
+            obj.setValue(attribute, newValue);
+        }
+        return true;
+    };
+    Bridge.prototype.getValue = function (object, attribute) {
+        var obj;
+        var id;
+        if (object instanceof String || typeof object === 'string') {
+            id = object.toString();
+            obj = this.getItem(id);
+        }
+        else if (object.hasOwnProperty('id')) {
+            obj = object;
+        }
+        else {
+            console.log('object is neither Data nor String..');
+            return;
+        }
+        if (obj) {
+            if (obj.hasOwnProperty(attribute)) {
+                return obj[attribute];
+            }
+            else if (obj instanceof Data_1.default) {
+                return obj.getValue(attribute);
+            }
+            else {
+                return null;
+            }
+        }
+    };
+    Bridge.prototype.getNumber = function (object, attribute, defaultValue) {
+        if (defaultValue === void 0) { defaultValue = 0; }
+        var res = this.getValue(object, attribute);
+        if (typeof res === 'number') {
+            return res;
+        }
+        else if (typeof res === 'string') {
+            var value = Number(res);
+            if (value || value === 0) {
+                return value;
+            }
+        }
+        return defaultValue;
+    };
+    Bridge.prototype.getControl = function (controlId) {
+        return this.controls[controlId];
+    };
+    Bridge.prototype.registerListener = function (eventType, control, callBackfunction) {
+        if (typeof control === 'string') {
+            control = this.getControl(control);
+        }
+        if (!control) {
+            return null;
+        }
+        if (eventType) {
+            eventType = eventType.toLowerCase();
+        }
+        control.registerListenerOnHTMLObject(eventType);
+        if (callBackfunction) {
+            var adapter = new DelegateAdapter();
+            adapter.callBackfunction = callBackfunction;
+            adapter.id = control.getId();
+            this.addAdapter(adapter, eventType);
+        }
+        return control;
+    };
+    Bridge.prototype.addAdapter = function (adapter, eventType) {
+        if (!eventType) {
+            eventType = '';
+        }
+        var result;
+        if (adapter instanceof String) {
+            var obj = this.adapterFactory[adapter.toLowerCase()];
+            result = new obj();
+        }
+        else {
+            result = adapter;
+        }
+        var handlers = this.adapters[eventType];
+        if (handlers === null || handlers === undefined) {
+            handlers = [];
+            this.adapters[eventType] = handlers;
+        }
+        handlers.push(result);
+        return result;
+    };
+    Bridge.prototype.fireEvent = function (evt) {
+        var handlers = this.adapters[''];
+        if (handlers) {
+            for (var i = 0; i < handlers.length; i++) {
+                var adapter = handlers[i];
+                if (adapter.id === null || adapter.id === evt['id']) {
+                    adapter.update(evt);
+                }
+            }
+        }
+        handlers = this.adapters[evt['eventType']];
+        if (handlers) {
+            for (var i = 0; i < handlers.length; i++) {
+                var adapter = handlers[i];
+                if (adapter.id === null || adapter.id === evt['id']) {
+                    adapter.update(evt);
+                }
+            }
+        }
+    };
+    Bridge.version = '0.42.01.1601007-1739';
+    return Bridge;
+}(Control_1.Control));
+exports.Bridge = Bridge;
+var DelegateAdapter = (function (_super) {
+    __extends(DelegateAdapter, _super);
+    function DelegateAdapter() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    DelegateAdapter.prototype.update = function (evt) {
+        if (this.adapter) {
+            this.adapter.update(evt);
+            return true;
+        }
+        else if (this.callBackfunction) {
+            return this.executeFunction(this.callBackfunction, evt);
+        }
+        return false;
+    };
+    DelegateAdapter.prototype.setAdapter = function (adapter) {
+        this.adapter = adapter;
+        return true;
+    };
+    DelegateAdapter.prototype.executeFunction = function (strValue, evt) {
+        var scope = window;
+        var scopeSplit = strValue.split('.');
+        for (var i = 0; i < scopeSplit.length - 1; i++) {
+            scope = scope[scopeSplit[i]];
+            if (scope === undefined) {
+                return false;
+            }
+        }
+        var fn = scope[scopeSplit[scopeSplit.length - 1]];
+        if (typeof fn === 'function') {
+            fn.call(scope);
+            return true;
+        }
+        else {
+            window['callBack1'].update(evt);
+        }
+        return false;
+    };
+    return DelegateAdapter;
+}(Adapter_1.Adapter));
+exports.DelegateAdapter = DelegateAdapter;
+
+
+/***/ }),
+
+/***/ "./BridgeElement.ts":
+/*!**************************!*\
+  !*** ./BridgeElement.ts ***!
+  \**************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var BridgeElement = (function () {
+    function BridgeElement(model) {
+        this.model = model;
+        this.id = model.id;
+        BridgeElement.elementSet.push(this);
+    }
+    BridgeElement.elementSet = [];
+    return BridgeElement;
+}());
+exports.default = BridgeElement;
+
+
+/***/ }),
+
+/***/ "./CSS.ts":
+/*!****************!*\
+  !*** ./CSS.ts ***!
+  \****************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var util_1 = __webpack_require__(/*! ./util */ "./util.ts");
+var CSS = (function () {
+    function CSS(name, item) {
+        var i, value, border, prop, el;
+        this.name = name;
+        this.css = {};
+        if (!item) {
+            return;
+        }
+        el = window.getComputedStyle(item, null);
+        border = el.getPropertyValue('border');
+        for (i in el) {
+            prop = i;
+            value = el.getPropertyValue(prop);
+            if (value && value !== '') {
+                if (border) {
+                    if (prop === 'border-bottom' || prop === 'border-right' || prop === 'border-top' || prop === 'border-left') {
+                        if (value !== border) {
+                            this.css[prop] = value;
+                        }
+                    }
+                    else if (prop === 'border-color' || prop === 'border-bottom-color' || prop === 'border-right-color' || prop === 'border-top-color' || prop === 'border-left-color') {
+                        if (border.substring(border.length - value.length) !== value) {
+                            this.css[prop] = value;
+                        }
+                    }
+                    else if (prop === 'border-width') {
+                        if (border.substring(0, value.length) !== value) {
+                            this.css[prop] = value;
+                        }
+                    }
+                    else {
+                        this.css[prop] = value;
+                    }
+                }
+                else {
+                    this.css[prop] = value;
+                }
+            }
+        }
+    }
+    CSS.getStdDef = function () {
+        var child, def = util_1.Util.create({ tag: 'defs' });
+        child = util_1.Util.create({ tag: 'filter', id: 'drop-shadow' });
+        child.appendChild(util_1.Util.create({ tag: 'feGaussianBlur', 'in': 'SourceAlpha', result: 'blur-out', stdDeviation: 2 }));
+        child.appendChild(util_1.Util.create({ tag: 'feOffset', 'in': 'blur-out', dx: 2, dy: 2 }));
+        child.appendChild(util_1.Util.create({ tag: 'feBlend', 'in': 'SourceGraphic', mode: 'normal' }));
+        def.appendChild(child);
+        child = util_1.Util.create({ tag: 'linearGradient', id: 'reflect', x1: 0, x2: 0, y1: '50%', y2: 0, spreadMethod: 'reflect' });
+        child.appendChild(util_1.Util.create({ tag: 'stop', 'stop-color': '#aaa', offset: 0 }));
+        child.appendChild(util_1.Util.create({ tag: 'stop', 'stop-color': '#eee', offset: '100%' }));
+        def.appendChild(child);
+        child = util_1.Util.create({ tag: 'linearGradient', id: 'classelement', x1: 0, x2: '100%', y1: '100%', y2: 0 });
+        child.appendChild(util_1.Util.create({ tag: 'stop', 'stop-color': '#fff', offset: 0 }));
+        child.appendChild(util_1.Util.create({ tag: 'stop', 'stop-color': '#d3d3d3', offset: 1 }));
+        def.appendChild(child);
+        return def;
+    };
+    CSS.getSubstring = function (str, search, startChar, endChar, splitter) {
+        var pos, end, count = 0, array = [];
+        pos = str.indexOf(search);
+        if (pos > 0) {
+            end = str.indexOf(startChar, pos);
+            pos = end + 1;
+            if (end > 0) {
+                while (end < str.length) {
+                    if (str.charAt(end) === startChar) {
+                        count += 1;
+                    }
+                    if (str.charAt(end) === endChar) {
+                        count -= 1;
+                        if (count === 0) {
+                            if (splitter && pos !== end) {
+                                array.push(str.substring(pos, end).trim());
+                            }
+                            break;
+                        }
+                    }
+                    if (str.charAt(end) === splitter && count === 1) {
+                        array.push(str.substring(pos, end).trim());
+                        pos = end + 1;
+                    }
+                    end += 1;
+                }
+                if (splitter) {
+                    return array;
+                }
+                return str.substring(pos, end);
+            }
+            return str.substring(pos);
+        }
+        return '';
+    };
+    CSS.addStyle = function (board, styleName) {
+        var defs, style, css;
+        if (styleName.baseVal || styleName.baseVal === '') {
+            styleName = styleName.baseVal;
+        }
+        if (!styleName) {
+            return;
+        }
+        defs = CSS.getDefs(board);
+        if (defs.getElementsByTagName('style').length > 0) {
+            style = defs.getElementsByTagName('style')[0];
+        }
+        else {
+            style = util_1.Util.create({ tag: 'style' });
+            style.item = {};
+            defs.appendChild(style);
+        }
+        if (!style.item[styleName]) {
+            css = util_1.Util.getStyle(styleName);
+            style.item[styleName] = css;
+            style.innerHTML = style.innerHTML + '\n.' + styleName + css.getSVGString(board);
+        }
+    };
+    CSS.addStyles = function (board, item) {
+        if (!item) {
+            return;
+        }
+        var items, i, className = item.className;
+        if (className) {
+            if (className.baseVal || className.baseVal === '') {
+                className = className.baseVal;
+            }
+        }
+        if (className) {
+            items = className.split(' ');
+            for (i = 0; i < items.length; i += 1) {
+                CSS.addStyle(board, items[i].trim());
+            }
+        }
+        for (i = 0; i < item.childNodes.length; i += 1) {
+            this.addStyles(board, item.childNodes[i]);
+        }
+    };
+    CSS.getDefs = function (board) {
+        var defs;
+        if (board.getElementsByTagName('defs').length < 1) {
+            defs = util_1.Util.create({ tag: 'defs' });
+            board.insertBefore(defs, board.childNodes[0]);
+        }
+        else {
+            defs = board.getElementsByTagName('defs')[0];
+        }
+        return defs;
+    };
+    CSS.prototype.add = function (key, value) {
+        this.css[key] = value;
+    };
+    CSS.prototype.get = function (key) {
+        var i;
+        for (i in this.css) {
+            if (i === key) {
+                return this.css[key];
+            }
+        }
+        return null;
+    };
+    CSS.prototype.getNumber = function (key) {
+        return parseInt((this.get(key) || '0').replace('px', ''), 10);
+    };
+    CSS.prototype.getSVGString = function (board) {
+        var str, pos, style, defs, value, filter, z;
+        str = '{';
+        for (style in this.css) {
+            if (!this.css.hasOwnProperty(style)) {
+                continue;
+            }
+            if (style === 'border') {
+                pos = this.css[style].indexOf(' ');
+                str = str + 'stroke-width: ' + this.css[style].substring(0, pos) + ';';
+                pos = this.css[style].indexOf(' ', pos + 1);
+                str = str + 'stroke:' + this.css[style].substring(pos) + ';';
+            }
+            else if (style === 'background-color') {
+                str = str + 'fill: ' + this.css[style] + ';';
+            }
+            else if (style === 'background') {
+                value = CSS.getSubstring(this.css[style], 'linear-gradient', '(', ')', ',');
+                if (value.length > 0) {
+                    defs = CSS.getDefs(board);
+                    if (value[0] === '45deg') {
+                        pos = 1;
+                        filter = util_1.Util.create({
+                            tag: 'linearGradient',
+                            'id': this.name,
+                            x1: '0%',
+                            x2: '100%',
+                            y1: '100%',
+                            y2: '0%'
+                        });
+                    }
+                    else {
+                        filter = util_1.Util.create({
+                            tag: 'linearGradient',
+                            'id': this.name,
+                            x1: '0%',
+                            x2: '0%',
+                            y1: '100%',
+                            y2: '0%'
+                        });
+                        pos = 0;
+                    }
+                    defs.appendChild(filter);
+                    while (pos < value.length) {
+                        value[pos] = value[pos].trim();
+                        z = value[pos].lastIndexOf(' ');
+                        filter.appendChild(util_1.Util.create({
+                            tag: 'stop',
+                            'offset': value[pos].substring(z + 1),
+                            style: { 'stop-color': value[pos].substring(0, z) }
+                        }));
+                        pos += 1;
+                    }
+                    str = str + 'fill: url(#' + this.name + ');';
+                    continue;
+                }
+                str = str + style + ': ' + this.css[style] + ';';
+            }
+            else {
+                str = str + style + ': ' + this.css[style] + ';';
+            }
+        }
+        str = str + '}';
+        return str;
+    };
+    return CSS;
+}());
+exports.CSS = CSS;
+
+
+/***/ }),
+
+/***/ "./Control.ts":
+/*!********************!*\
+  !*** ./Control.ts ***!
+  \********************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var Data_1 = __webpack_require__(/*! ./Data */ "./Data.ts");
+var EventListener_1 = __webpack_require__(/*! ./EventListener */ "./EventListener.ts");
+var Control = (function () {
+    function Control() {
+        this.$viewData = null;
+        this.$viewData = this.initViewDataProperties(this.$viewData);
+    }
+    Control.prototype.getToolBarIcon = function () {
+        return null;
+    };
+    Control.prototype.initViewDataProperties = function (oldData) {
+        var data = new Data_1.default();
+        if (oldData) {
+            oldData.removeListener(this);
+            var keys = oldData.getKeys();
+            for (var i = 0; i < keys.length; i++) {
+                var attr = keys[i];
+                if (this.$view) {
+                    if (this.$view[attr] === null) {
+                        continue;
+                    }
+                    data.setValue(attr, this.$view[attr]);
+                }
+                else {
+                    data.setValue(attr, null);
+                }
+            }
+        }
+        data.addListener(this);
+        return data;
+    };
+    Control.prototype.setView = function (element) {
+        var oldElement = null;
+        if (this.$view) {
+            oldElement = this.$view;
+            if (this.$viewListener) {
+                oldElement.removeEventListener('change', this.$viewListener);
+            }
+        }
+        this.$view = element;
+        if (this.$viewListener) {
+            element.addEventListener('change', this.$viewListener);
+        }
+        this.$viewData = this.initViewDataProperties(this.$viewData);
+        return element;
+    };
+    Control.prototype.init = function (owner, property, id) {
+        if (!this.$owner) {
+            this.$owner = owner;
+        }
+        if (!this.id) {
+            this.id = id;
+        }
+        if (!this.property) {
+            this.property = this.generateID(property, id);
+        }
+        return this;
+    };
+    Control.prototype.createEventListener = function () {
+        return new EventListener_1.default();
+    };
+    Control.prototype.getRoot = function () {
+        if (this.$owner) {
+            return this.$owner.getRoot();
+        }
+        return this;
+    };
+    Control.prototype.initControl = function (data) {
+        var _this = this;
+        if (this.$view === null || this.$viewData === null) {
+            return;
+        }
+        if (data.hasOwnProperty('prop')) {
+            for (var key in data.prop) {
+                var oldValue = this.$viewData.getValue(key);
+                if (this.$view) {
+                    this.updateElement(key, oldValue, data.prop[key]);
+                }
+            }
+            return;
+        }
+        var hasRem = data.hasOwnProperty('rem');
+        var removed = [];
+        if (data.hasOwnProperty('upd')) {
+            for (var key in data.upd) {
+                var oldValue = void 0;
+                var newValue = data.upd[key];
+                var entity = void 0;
+                var temp = false;
+                if (temp) {
+                    if (hasRem && data.rem.hasOwnProperty(key)) {
+                        removed.push(data.rem[key]);
+                    }
+                    continue;
+                }
+                if (hasRem && data.rem.hasOwnProperty(key)) {
+                    oldValue = data.rem[key];
+                    if (this.$model && this.$model.getValue(key) == oldValue) {
+                        entity = this.$model;
+                    }
+                    delete data.rem[key];
+                    if (entity === null) {
+                        continue;
+                    }
+                }
+                if (entity) {
+                    if (!hasRem) {
+                        if (entity === this.$model) {
+                            oldValue = this.$model.getValue(key);
+                        }
+                        else {
+                        }
+                    }
+                }
+                else {
+                    if (this.$model) {
+                        oldValue = this.$model.getValue(key);
+                        entity = this.$model;
+                    }
+                    if (oldValue === null) {
+                    }
+                }
+                if (newValue === oldValue) {
+                    continue;
+                }
+                var viewDataOldValue = this.$viewData.getValue(key);
+                if (entity === this.$viewData) {
+                    if (this.$view) {
+                        this.updateElement(key, viewDataOldValue, newValue);
+                    }
+                }
+                else {
+                    this.updateElement(key, viewDataOldValue, newValue);
+                }
+                this.getRoot().setValue(entity, key, newValue, oldValue);
+            }
+        }
+        if (hasRem) {
+            for (var key in data.rem) {
+                if (removed.hasOwnProperty(key)) {
+                    continue;
+                }
+                var oldValue = void 0;
+                this.updateElement(key, null, null);
+                if (this.$model) {
+                }
+            }
+        }
+        if (this.property) {
+            this.$view['onchange'] = (function (ev) {
+                _this.controlChanged(ev);
+            });
+        }
+    };
+    Control.prototype.getItem = function (id) {
+        return null;
+    };
+    Control.prototype.hasItem = function (id) {
+        return false;
+    };
+    Control.prototype.getItems = function () {
+        return new Object();
+    };
+    Control.prototype.setValue = function (object, attribute, newValue, oldValue) {
+        return false;
+    };
+    Control.prototype.propertyChange = function (entity, property, oldValue, newValue) {
+        if (oldValue === newValue || this.$viewData === null) {
+            return;
+        }
+        if (oldValue === this.$viewData.getValue(property)) {
+            return;
+        }
+        this.$viewData.setValue(property, newValue);
+        if (this.$viewData) {
+            this.$viewData.setValue(property, newValue);
+        }
+        if (this.$model) {
+            this.$model.setValue(property, newValue);
+        }
+        this.updateElement(property, oldValue, newValue);
+    };
+    Control.prototype.controlChanged = function (ev) {
+        if (this.$view instanceof HTMLInputElement === false) {
+            return;
+        }
+        var element = this.$view;
+        if (element.checkValidity()) {
+        }
+    };
+    Control.prototype.updateElement = function (property, oldValue, newValue) {
+        if (this.$view && this.$view.hasAttribute(property)) {
+            this.$view.setAttribute(property, newValue);
+        }
+    };
+    Control.prototype.getId = function () {
+        return this.id;
+    };
+    Control.prototype.load = function (json, owner) {
+    };
+    Control.prototype.addItem = function (source, entity) {
+        if (entity) {
+            if (!this.property || entity.hasProperty(this.property)) {
+                entity.addListener(this, this.property);
+                this.$model = entity;
+            }
+        }
+    };
+    Control.prototype.appendChild = function (child) {
+        if (this.$view) {
+            this.$view.appendChild(child.$view);
+        }
+        else {
+            document.getElementsByTagName('body')[0].appendChild(child.$view);
+        }
+    };
+    Control.prototype.removeChild = function (child) {
+        if (this.$view) {
+            this.$view.removeChild(child.$view);
+        }
+        else {
+            document.getElementsByTagName('body')[0].removeChild(child.$view);
+        }
+    };
+    Control.prototype.setProperty = function (property) {
+        if (!this.property) {
+            return;
+        }
+        var objId = property.split('.')[0];
+        var object = null;
+        if (this.$owner.hasItem(objId)) {
+            object = this.$owner.getItem(objId);
+        }
+        if (this.$model) {
+            this.$model.removeListener(this, this.lastProperty);
+        }
+        this.property = property;
+        if (object) {
+            object.addListener(this, this.lastProperty);
+            this.$model = object;
+            this.updateElement(this.lastProperty, this.$viewData.getValue(this.lastProperty), object.prop[this.lastProperty]);
+        }
+    };
+    Control.prototype.registerListenerOnHTMLObject = function (eventType) {
+        return this.registerEventListener(eventType, this.$view);
+    };
+    Control.prototype.fireEvent = function (evt) {
+    };
+    Control.prototype.isClosed = function () {
+        return this['closed'];
+    };
+    Control.prototype.getShowed = function () {
+        if (this.isClosed()) {
+            return this.$owner.getShowed();
+        }
+        return this;
+    };
+    Control.prototype.getControlDataID = function () {
+        return this.id + '_data';
+    };
+    Control.prototype.generateID = function (property, id) {
+        if (property) {
+            return property;
+        }
+        if (id) {
+            return id + '.' + '_data';
+        }
+        return null;
+    };
+    Control.prototype.updateViewData = function () {
+        if (!this.$view) {
+            return;
+        }
+        var keys = this.$viewData.getKeys();
+        for (var i = 0; i < keys.length; i++) {
+            var attr = keys[i];
+            if (this.$view[attr] === null) {
+                continue;
+            }
+            this.$viewData.setValue(attr, this.$view[attr]);
+        }
+    };
+    Control.prototype.registerEventListener = function (eventType, htmlElement) {
+        if (!htmlElement) {
+            return false;
+        }
+        if (htmlElement instanceof HTMLElement === false) {
+            return false;
+        }
+        var control = this;
+        var listener = function (t) {
+            t.eventType = eventType;
+            t.id = control.id;
+            control.$owner.fireEvent(t);
+        };
+        htmlElement.addEventListener(eventType, listener);
+        return true;
+    };
+    Object.defineProperty(Control.prototype, "lastProperty", {
+        get: function () {
+            if (!this.property) {
+                return '';
+            }
+            var arr = this.property.split('.');
+            return arr[arr.length - 1];
+        },
+        enumerable: true,
+        configurable: true
+    });
+    return Control;
+}());
+exports.Control = Control;
+
+
+/***/ }),
+
+/***/ "./Data.ts":
+/*!*****************!*\
+  !*** ./Data.ts ***!
+  \*****************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var Data = (function () {
+    function Data() {
+        this.prop = {};
+        this.$listener = {};
+    }
+    Data.prototype.getKeys = function () {
+        return Object.keys(this.prop);
+    };
+    Data.prototype.addProperties = function (values) {
+        if (!values) {
+            return;
+        }
+        if (values['prop']) {
+            var prop = values['prop'];
+            for (var property in prop) {
+                if (prop.hasOwnProperty(property) === false) {
+                    continue;
+                }
+                if (prop[property] !== null && '' !== prop[property]) {
+                    this.setValue(property, prop[property]);
+                }
+            }
+        }
+        else {
+            var upd = values['upd'] || {};
+            var rem = values['rem'] || {};
+            for (var property in upd) {
+                if (upd.hasOwnProperty(property) === false) {
+                    continue;
+                }
+                if (rem.hasOwnProperty(property) === false) {
+                    this.setValue(property, upd[property]);
+                }
+                else {
+                    if (this.getValue(property) === rem[property]) {
+                        this.setValue(property, upd[property]);
+                    }
+                }
+            }
+        }
+    };
+    Data.nullCheck = function (property) {
+        if (property === undefined || property == null) {
+            property = "";
+        }
+        return property;
+    };
+    Data.prototype.getListeners = function (property) {
+        property = Data.nullCheck(property);
+        return this.$listener[property];
+    };
+    Data.prototype.getValue = function (attribute) {
+        return this.prop[attribute];
+    };
+    Data.prototype.setValue = function (attribute, newValue) {
+        var oldValue = this.prop[attribute];
+        if (oldValue == newValue && newValue !== null) {
+            return;
+        }
+        this.prop[attribute] = newValue;
+        this.firePropertyChange(attribute, oldValue, newValue);
+    };
+    Data.prototype.firePropertyChange = function (attribute, oldValue, newValue) {
+        attribute = Data.nullCheck(attribute);
+        var listeners = this.getListeners(attribute);
+        if (listeners) {
+            for (var i in listeners) {
+                listeners[i].propertyChange(this, attribute, oldValue, newValue);
+            }
+        }
+        listeners = this.getListeners(null);
+        if (listeners) {
+            for (var i in listeners) {
+                listeners[i].propertyChange(this, attribute, oldValue, newValue);
+            }
+        }
+    };
+    Data.prototype.addTo = function (attribute, newValue) {
+        var add;
+        if (this.prop[attribute]) {
+            if (this.prop[attribute].contains(newValue) === false) {
+                add = true;
+            }
+        }
+        else {
+            this.prop[attribute] = [];
+            add = true;
+        }
+        if (add) {
+            this.prop[attribute].push(newValue);
+            this.firePropertyChange(attribute, null, newValue);
+        }
+        return add;
+    };
+    Data.prototype.removeFrom = function (attribute, newValue) {
+        if (!this.prop[attribute]) {
+            return true;
+        }
+        var pos = this.prop[attribute].indexOf(newValue);
+        if (pos < 0) {
+            return true;
+        }
+        this.prop[attribute].splice(pos, 1);
+        this.firePropertyChange(attribute, newValue, null);
+        return true;
+    };
+    Data.prototype.addListener = function (control, property) {
+        var listeners = this.getListeners(property);
+        if (!listeners) {
+            listeners = [];
+            this.$listener[Data.nullCheck(property)] = listeners;
+        }
+        listeners.push(control);
+    };
+    Data.prototype.removeListener = function (control, property) {
+        var listeners = this.getListeners(property);
+        if (listeners === null) {
+            return;
+        }
+        var pos = listeners.indexOf(control);
+        if (pos >= 0) {
+            listeners.splice(pos, 1);
+        }
+        if (listeners.length == 0 && Data.nullCheck(property) != "") {
+            delete this.$listener[property];
+        }
+    };
+    Data.prototype.hasProperty = function (property) {
+        return this.prop.hasOwnProperty(property);
+    };
+    Data.prototype.addFrom = function (attribute, oldData) {
+        if (oldData) {
+            this.setValue(attribute, oldData.getValue(attribute));
+        }
+        else {
+            this.setValue(attribute, null);
+        }
+    };
+    Data.prototype.removeKey = function (key) {
+        if (this.hasProperty(key)) {
+            var oldValue = this.prop[key];
+            delete this.prop[key];
+            return oldValue;
+        }
+        return null;
+    };
+    return Data;
+}());
+exports.default = Data;
+
+
+/***/ }),
+
+/***/ "./EventBus.ts":
+/*!*********************!*\
+  !*** ./EventBus.ts ***!
+  \*********************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var EventBus = (function () {
+    function EventBus() {
+    }
+    EventBus.setActiveHandler = function (handler) {
+        this.$activeHandler = handler;
+    };
+    EventBus.isHandlerActiveOrFree = function (handler, notEmpty) {
+        if (notEmpty) {
+            return this.$activeHandler === handler;
+        }
+        return this.$activeHandler === handler || this.$activeHandler === '' || this.$activeHandler === undefined;
+    };
+    EventBus.isAnyHandlerActive = function () {
+        return !(this.$activeHandler === '' || this.$activeHandler === undefined);
+    };
+    EventBus.releaseActiveHandler = function () {
+        this.$activeHandler = '';
+    };
+    EventBus.getActiveHandler = function () {
+        return this.$activeHandler;
+    };
+    EventBus.register = function (control, view) {
+        var events;
+        if (typeof control['getEvents'] === 'function') {
+            events = control['getEvents']();
+        }
+        if (!events || !view) {
+            return;
+        }
+        for (var _i = 0, events_1 = events; _i < events_1.length; _i++) {
+            var event_1 = events_1[_i];
+            this.registerEvent(view, event_1, control);
+        }
+    };
+    EventBus.registerEvent = function (view, event, control) {
+        var pos = event.indexOf(':');
+        if (pos > 0) {
+            view.addEventListener(event.substr(pos + 1).toLowerCase(), function (evt) { EventBus.publish(control, evt); });
+        }
+        else {
+            view.addEventListener(event.substr(pos + 1).toLowerCase(), function (evt) { EventBus.publish(control, evt); });
+        }
+    };
+    EventBus.publish = function (element, evt) {
+        var handlers = EventBus.handlers[evt.type];
+        if (handlers) {
+            for (var _i = 0, handlers_1 = handlers; _i < handlers_1.length; _i++) {
+                var handler = handlers_1[_i];
+                handler.handle(evt, element);
+            }
+        }
+    };
+    EventBus.subscribe = function (handler) {
+        var eventTypes = [];
+        for (var _i = 1; _i < arguments.length; _i++) {
+            eventTypes[_i - 1] = arguments[_i];
+        }
+        for (var _a = 0, eventTypes_1 = eventTypes; _a < eventTypes_1.length; _a++) {
+            var event_2 = eventTypes_1[_a];
+            var handlers = EventBus.handlers[event_2];
+            if (handlers === null || handlers === undefined) {
+                handlers = [];
+                EventBus.handlers[event_2] = handlers;
+            }
+            handlers.push(handler);
+        }
+    };
+    EventBus.CREATE = 'Create';
+    EventBus.EDITOR = 'Editor';
+    EventBus.OPENPROPERTIES = 'openProperties';
+    EventBus.RELOADPROPERTIES = 'reloadProperties';
+    EventBus.ELEMENTMOUSEDOWN = 'ELEMENT:MOUSEDOWN';
+    EventBus.ELEMENTMOUSEUP = 'ELEMENT:MOUSEUP';
+    EventBus.ELEMENTMOUSELEAVE = 'ELEMENT:MOUSELEAVE';
+    EventBus.ELEMENTMOUSEMOVE = 'ELEMENT:MOUSEMOVE';
+    EventBus.ELEMENTMOUSEWHEEL = 'ELEMENT:MOUSEWHEEL';
+    EventBus.ELEMENTCLICK = 'ELEMENT:CLICK';
+    EventBus.ELEMENTDBLCLICK = 'ELEMENT:DBLCLICK';
+    EventBus.ELEMENTDRAG = 'ELEMENT:DRAG';
+    EventBus.ELEMENTDRAGOVER = 'ELEMENT:DRAGOVER';
+    EventBus.ELEMENTDROP = 'ELEMENT:DROP';
+    EventBus.ELEMENTDRAGLEAVE = 'ELEMENT:DRAGLEAVE';
+    EventBus.EVENTS = [
+        EventBus.CREATE,
+        EventBus.EDITOR,
+        EventBus.OPENPROPERTIES,
+        EventBus.RELOADPROPERTIES,
+        EventBus.ELEMENTMOUSEDOWN,
+        EventBus.ELEMENTMOUSEUP,
+        EventBus.ELEMENTMOUSELEAVE,
+        EventBus.ELEMENTMOUSEMOVE,
+        EventBus.ELEMENTMOUSEWHEEL,
+        EventBus.ELEMENTCLICK,
+        EventBus.ELEMENTDRAG,
+        EventBus.ELEMENTDBLCLICK,
+        EventBus.ELEMENTDRAGOVER,
+        EventBus.ELEMENTDROP,
+        EventBus.ELEMENTDRAGLEAVE,
+    ];
+    EventBus.handlers = {};
+    EventBus.$activeHandler = '';
+    return EventBus;
+}());
+exports.EventBus = EventBus;
+
+
+/***/ }),
+
+/***/ "./EventListener.ts":
+/*!**************************!*\
+  !*** ./EventListener.ts ***!
+  \**************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var EventListener = (function () {
+    function EventListener() {
+    }
+    Object.defineProperty(EventListener.prototype, "onUpdate", {
+        get: function () {
+            return this.$onUpdate;
+        },
+        set: function (value) {
+            this.$onUpdate = value;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    EventListener.prototype.update = function (event) {
+        this.$onUpdate(event);
+    };
+    return EventListener;
+}());
+exports.default = EventListener;
+
+
+/***/ }),
+
+/***/ "./JSEPS.ts":
+/*!******************!*\
+  !*** ./JSEPS.ts ***!
+  \******************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var JSEPS = (function () {
+    function JSEPS(options) {
+        this.max = 0;
+        this.min = 999;
+        var hasInverting = typeof (options.inverting);
+        this.inverting = (options && hasInverting !== 'undefined' ? options.inverting : true);
+        this.output = ['%!PS-Adobe-3.0 EPSF-3.0', '1 setlinewidth'];
+        this.out('/FSD {findfont exch scalefont def} bind def % In the document prolog: define');
+        this.out('/SMS {setfont moveto show} bind def % some useful procedures');
+        this.out('/MS {moveto show} bind def');
+        this.out('/F1  10  /Helvetica  FSD % At the start of the script: set up');
+        this.font = 1;
+    }
+    JSEPS.prototype.out = function (value) { this.output.push(value); };
+    JSEPS.prototype.rect = function (x, y, width, height, style) {
+        y = y + (this.inverting ? height : 0);
+        if (style && style.indexOf('fill:url(#classelement);') >= 0) {
+            this.out('gsave 0.93 0.93 0.93 setrgbcolor newpath ' + x + ' ' + this.y(y) + ' ' + width + ' ' + height + ' rectfill grestore');
+        }
+        else {
+            this.out('newpath ' + x + ' ' + this.y(y) + ' ' + width + ' ' + height + ' rectstroke');
+        }
+    };
+    JSEPS.prototype.setFillColor = function (r, g, b) { };
+    JSEPS.prototype.y = function (value) { this.max = Math.max(this.max, value); this.min = Math.min(this.min, value); return this.inverting ? '%y(' + value + ')' : value; };
+    JSEPS.prototype.getType = function () {
+        return 'application/postscript';
+    };
+    JSEPS.prototype.getData = function () {
+        var t, end, url, text, typ = 'application/postscript', a = document.createElement('a'), data = '', pos, i;
+        for (i = 0; i < this.output.length; i += 1) {
+            text = this.output[i];
+            if (this.inverting) {
+                while ((pos = text.indexOf('%y')) >= 0) {
+                    end = text.indexOf(')', pos);
+                    t = this.max - parseInt(text.substring(pos + 3, end), 10);
+                    text = text.substring(0, pos) + t + text.substring(end + 1);
+                }
+            }
+            data = data + text + '\r\n';
+        }
+        return data;
+    };
+    JSEPS.prototype.setDrawColor = function (r, g, b) { };
+    JSEPS.prototype.ellipse = function (cx, cy, rx, ry, colorMode) { };
+    JSEPS.prototype.circle = function (cx, cy, r, colorMode) { };
+    JSEPS.prototype.setTextColor = function (r, g, b) { };
+    JSEPS.prototype.text = function (x, y, text) { this.out('(' + text.replace('&lt;', '<').replace('&gt;', '>') + ') ' + x + ' ' + this.y(y) + ' F1 SMS'); };
+    JSEPS.prototype.lineto = function (x, y) { this.out(x + ' ' + this.y(y) + ' lineto'); this.out('stroke'); };
+    JSEPS.prototype.moveto = function (x, y) { this.out(x + ' ' + this.y(y) + ' moveto'); };
+    JSEPS.prototype.line = function (x1, y1, x2, y2) { this.out('newpath ' + x1 + ' ' + this.y(y1) + ' moveto ' + x2 + ' ' + this.y(y2) + ' lineto stroke'); };
+    JSEPS.prototype.setLineWidth = function (value) { this.out(value + ' setlinewidth'); };
+    JSEPS.prototype.setFont = function (value) { this.out('/F' + (this.font += 1) + ' 10 /' + value + ' FSD'); };
+    return JSEPS;
+}());
+exports.JSEPS = JSEPS;
+
+
+/***/ }),
+
+/***/ "./Palette.ts":
+/*!********************!*\
+  !*** ./Palette.ts ***!
+  \********************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var Palette = (function () {
+    function Palette(graph) {
+        var _this = this;
+        this.graph = graph;
+        var div = document.createElement('div');
+        div.className = 'palette';
+        div.id = 'palette';
+        document.body.appendChild(div);
+        this.palette = div;
+        var _loop_1 = function (key) {
+            var element = graph.nodeFactory[key];
+            var control = new element();
+            var icon = control.getToolBarIcon();
+            if (icon) {
+                var button = document.createElement('button');
+                button.className = 'add' + key + 'Btn';
+                button.innerHTML = icon.outerHTML;
+                button.onclick = function (e) {
+                    var nextFreePosition = _this.graph.getNextFreePosition();
+                    var node = _this.graph.addElementWithValues(graph.nodeFactory[key], { x: nextFreePosition.x, y: nextFreePosition.y }, false);
+                    _this.graph.drawElement(node);
+                };
+                this_1.palette.appendChild(button);
+            }
+        };
+        var this_1 = this;
+        for (var key in graph.nodeFactory) {
+            _loop_1(key);
+        }
+    }
+    Palette.prototype.addButtons = function () {
+    };
+    return Palette;
+}());
+exports.default = Palette;
+
+
+/***/ }),
+
+/***/ "./PropertiesPanel.ts":
+/*!****************************!*\
+  !*** ./PropertiesPanel.ts ***!
+  \****************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var edges = __webpack_require__(/*! ./elements/edges */ "./elements/edges/index.ts");
+var PropertiesPanel;
+(function (PropertiesPanel) {
+    var BlankView = (function () {
+        function BlankView(graph) {
+            this.graph = graph;
+            this.initMainPanel();
+        }
+        BlankView.prototype.show = function (panel, showTabWithValue) {
+            if (this.propertiesContent) {
+                while (this.propertiesContent.hasChildNodes()) {
+                    this.propertiesContent.removeChild(this.propertiesContent.childNodes[0]);
+                }
+            }
+            var children = panel.getPanel().childNodes;
+            while (children.length > 0) {
+                this.propertiesContent.appendChild(children[0]);
+            }
+            this.displayingPanel = panel;
+            if (showTabWithValue) {
+                panel.showTab(showTabWithValue);
+            }
+            else {
+                panel.showFirstTab();
+            }
+        };
+        BlankView.prototype.openProperties = function () {
+            this.isHidden = false;
+            document.getElementById('propertiesContent').className = 'properties';
+            document.getElementById('propertiesMasterPanel').className = 'propertiespanel';
+            var btn = document.getElementById('propClassHeaderButtonDisplay');
+            btn.innerHTML = '&#8897;';
+            btn.title = 'Hide properties';
+        };
+        BlankView.prototype.setPropertiesHeaderText = function (text) {
+            var divHeaderLabel = document.getElementById('classPropHeaderLabel');
+            if (divHeaderLabel) {
+                divHeaderLabel.innerHTML = text;
+            }
+        };
+        BlankView.prototype.getCurrentView = function () {
+            return this.displayingPanel.getPropertiesView();
+        };
+        BlankView.prototype.getCurrentPanel = function () {
+            return this.displayingPanel;
+        };
+        BlankView.prototype.initMainPanel = function () {
+            var _this = this;
+            if (document.getElementById('propertiesMasterPanel')) {
+                return;
+            }
+            this.propertiesMasterPanel = document.createElement('div');
+            this.propertiesMasterPanel.id = 'propertiesMasterPanel';
+            this.propertiesMasterPanel.className = 'propertiespanel-hidden';
+            this.propertiesContent = document.createElement('div');
+            this.propertiesContent.id = 'propertiesContent';
+            this.propertiesContent.className = 'properties-hidden';
+            var propertiesHeader = document.createElement('div');
+            propertiesHeader.id = 'propertiesHeader';
+            propertiesHeader.style.display = 'inline';
+            var propHeaderLabel = document.createElement('div');
+            propHeaderLabel.id = 'classPropHeaderLabel';
+            propHeaderLabel.innerHTML = 'Select any element to see its properties';
+            propHeaderLabel.style.display = 'inherit';
+            propHeaderLabel.style.cursor = 'pointer';
+            propHeaderLabel.onclick = function (e) { return _this.hideproperties(e); };
+            var btnPropClassHeaderDisplay = document.createElement('button');
+            btnPropClassHeaderDisplay.id = 'propClassHeaderButtonDisplay';
+            btnPropClassHeaderDisplay.title = 'Show properties';
+            btnPropClassHeaderDisplay.className = 'btnHideProp';
+            btnPropClassHeaderDisplay.innerHTML = '&#8896;';
+            btnPropClassHeaderDisplay.style.cssFloat = 'right';
+            btnPropClassHeaderDisplay.onclick = function (e) { return _this.hideproperties(e); };
+            propertiesHeader.appendChild(propHeaderLabel);
+            propertiesHeader.appendChild(btnPropClassHeaderDisplay);
+            this.propertiesMasterPanel.appendChild(propertiesHeader);
+            this.propertiesMasterPanel.appendChild(this.propertiesContent);
+            document.body.appendChild(this.propertiesMasterPanel);
+        };
+        BlankView.prototype.hideproperties = function (evt) {
+            evt.stopPropagation();
+            if (this.isHidden === false) {
+                document.getElementById('propertiesContent').className = 'properties-hidden';
+                document.getElementById('propertiesMasterPanel').className = 'propertiespanel-hidden';
+                var btn = document.getElementById('propClassHeaderButtonDisplay');
+                btn.innerHTML = '&#8896;';
+                btn.title = 'Show properties';
+            }
+            else {
+                document.getElementById('propertiesContent').className = 'properties';
+                document.getElementById('propertiesMasterPanel').className = 'propertiespanel';
+                var btn = document.getElementById('propClassHeaderButtonDisplay');
+                btn.innerHTML = '&#8897;';
+                btn.title = 'Hide properties';
+            }
+            this.isHidden = !this.isHidden;
+        };
+        return BlankView;
+    }());
+    PropertiesPanel.BlankView = BlankView;
+    var APanel = (function () {
+        function APanel() {
+            this.divPropertiesPanel = document.createElement('div');
+            this.divPropertiesTabbedPanel = document.createElement('div');
+            this.divPropertiesTabbedPanel.id = 'propertiesTabbedPanel';
+            this.divPropertiesTabbedPanel.className = 'tabbedpane';
+            this.divPropertiesPanel.appendChild(this.divPropertiesTabbedPanel);
+        }
+        APanel.prototype.getPanel = function () {
+            return this.divPropertiesPanel;
+        };
+        APanel.prototype.showFirstTab = function () {
+            var tabs = document.getElementsByClassName('tablinks');
+            if (tabs && tabs.length > 0) {
+                this.openTab(tabs[0].id);
+            }
+        };
+        APanel.prototype.showTab = function (btnValue) {
+            var tabs = document.getElementsByClassName('tablinks');
+            for (var index = 0; index < tabs.length; index++) {
+                var tab = tabs[index];
+                if (tab.value === btnValue) {
+                    this.openTab(tab.id);
+                }
+            }
+        };
+        APanel.prototype.createTabElement = function (id, tabText, tabValue) {
+            var _this = this;
+            var tabElementBtn = document.createElement('button');
+            tabElementBtn.id = id;
+            tabElementBtn.className = 'tablinks';
+            tabElementBtn.innerText = tabText;
+            tabElementBtn.value = tabValue;
+            tabElementBtn.onclick = function () { return _this.openTab(id); };
+            return tabElementBtn;
+        };
+        APanel.prototype.openTab = function (clickedId) {
+            var tabs = document.getElementsByClassName('tablinks');
+            for (var i = 0; i < tabs.length; i++) {
+                tabs[i].className = tabs[i].className.replace('active', '');
+            }
+            var tab = document.getElementById(clickedId);
+            tab.className += ' active';
+            var tabContents = document.getElementsByClassName('tabcontent');
+            for (var i = 0; i < tabContents.length; i++) {
+                tabContents[i].style.display = 'none';
+            }
+            document.getElementById(this.getPropertiesView().toLowerCase() + tab.value.toString())
+                .style.display = 'block';
+        };
+        return APanel;
+    }());
+    PropertiesPanel.APanel = APanel;
+    var ClassPanel = (function (_super) {
+        __extends(ClassPanel, _super);
+        function ClassPanel() {
+            return _super.call(this) || this;
+        }
+        ClassPanel.prototype.init = function () {
+            var _this = this;
+            var typeList = ['boolean', 'byte', 'char', 'double', 'float', 'int', 'long', 'short', 'String', 'void'];
+            this.dataTypes = document.createElement('datalist');
+            this.dataTypes.id = 'dataTypes';
+            typeList.forEach(function (type) {
+                var modifierOption = document.createElement('option');
+                modifierOption.value = type;
+                modifierOption.innerHTML = type;
+                _this.dataTypes.appendChild(modifierOption);
+            });
+            this.divPropertiesPanel.appendChild(this.dataTypes);
+            this.divPropertiesTabbedPanel.appendChild(this.createTabElement('generalClassPropBtn', 'General', 'general'));
+            this.divPropertiesTabbedPanel.appendChild(this.createTabElement('attrClassPropBtn', 'Attributes', 'attribute'));
+            this.divPropertiesTabbedPanel.appendChild(this.createTabElement('methodClassPropBtn', 'Methods', 'method'));
+            this.createTabGeneralContent();
+            this.createTabAttrContent();
+            this.createTabMethodContent();
+        };
+        ClassPanel.prototype.getPropertiesView = function () {
+            return 'Clazz';
+        };
+        ClassPanel.prototype.createTabGeneralContent = function () {
+            var div = document.createElement('div');
+            div.id = this.getPropertiesView().toLowerCase() + 'general';
+            div.className = 'tabcontent';
+            var divTable = document.createElement('div');
+            divTable.className = 'divTable';
+            var divTableBody = document.createElement('div');
+            divTableBody.className = 'divTableBody';
+            var divRowClazzName = document.createElement('div');
+            divRowClazzName.className = 'divTableRow';
+            var divRowClazzNameCellText = document.createElement('div');
+            divRowClazzNameCellText.className = 'divTableCell';
+            divRowClazzNameCellText.innerHTML = 'Name:';
+            var divRowClazzNameCellInput = document.createElement('div');
+            divRowClazzNameCellInput.className = 'divTableCell';
+            var textBoxClass = document.createElement('input');
+            textBoxClass.type = 'text';
+            textBoxClass.id = 'className';
+            textBoxClass.placeholder = 'Class name';
+            textBoxClass.style.width = '100%';
+            divRowClazzNameCellInput.appendChild(textBoxClass);
+            divRowClazzName.appendChild(divRowClazzNameCellText);
+            divRowClazzName.appendChild(divRowClazzNameCellInput);
+            divTableBody.appendChild(divRowClazzName);
+            var divRowClazzModifier = document.createElement('div');
+            divRowClazzModifier.className = 'divTableRow';
+            var divRowClazzModifierCellText = document.createElement('div');
+            divRowClazzModifierCellText.className = 'divTableCell';
+            divRowClazzModifierCellText.innerHTML = 'Access modifier:';
+            var divRowClazzModifierCellInput = document.createElement('div');
+            divRowClazzModifierCellInput.className = 'divTableCell';
+            var selectClazzModifier = document.createElement('select');
+            selectClazzModifier.id = 'classModifier';
+            selectClazzModifier.style.width = '100%';
+            var modifierObj = {};
+            modifierObj['public'] = '+';
+            modifierObj['private'] = '-';
+            modifierObj['protected'] = '#';
+            modifierObj['package'] = '~';
+            for (var title in modifierObj) {
+                var modifierOption = document.createElement('option');
+                modifierOption.value = title;
+                modifierOption.innerHTML = title;
+                selectClazzModifier.appendChild(modifierOption);
+            }
+            selectClazzModifier.value = 'public';
+            divRowClazzModifierCellInput.appendChild(selectClazzModifier);
+            divRowClazzModifier.appendChild(divRowClazzModifierCellText);
+            divRowClazzModifier.appendChild(divRowClazzModifierCellInput);
+            divTableBody.appendChild(divRowClazzModifier);
+            divTable.appendChild(divTableBody);
+            div.appendChild(divTable);
+            this.divPropertiesPanel.appendChild(div);
+        };
+        ClassPanel.prototype.createTabAttrContent = function () {
+            this.createtabPropertyContent('attribute');
+        };
+        ClassPanel.prototype.createTabMethodContent = function () {
+            this.createtabPropertyContent('method');
+        };
+        ClassPanel.prototype.createtabPropertyContent = function (propertyType) {
+            var div = document.createElement('div');
+            div.id = this.getPropertiesView().toLowerCase() + propertyType;
+            div.className = 'tabcontent';
+            var divEditProperty = document.createElement('div');
+            divEditProperty.id = div.id + 'Add';
+            divEditProperty.style.marginTop = '5px';
+            var selectPropertyModifier = document.createElement('select');
+            selectPropertyModifier.id = div.id + 'AddModifier';
+            var modifierObj = {};
+            modifierObj['public'] = '+';
+            modifierObj['private'] = '-';
+            modifierObj['protected'] = '#';
+            modifierObj['package'] = '~';
+            for (var title in modifierObj) {
+                var modifierOption = document.createElement('option');
+                modifierOption.value = modifierObj[title];
+                modifierOption.innerHTML = modifierObj[title];
+                modifierOption.title = title;
+                selectPropertyModifier.appendChild(modifierOption);
+            }
+            selectPropertyModifier.value = modifierObj['public'];
+            var textBoxPropertyName = document.createElement('input');
+            textBoxPropertyName.style.marginLeft = '5px';
+            textBoxPropertyName.style.marginRight = '5px';
+            textBoxPropertyName.id = div.id + 'AddName';
+            textBoxPropertyName.type = 'text';
+            textBoxPropertyName.placeholder = 'Add new ' + propertyType;
+            var selectPropertyType = document.createElement('input');
+            selectPropertyType.id = div.id + 'AddType';
+            selectPropertyType.setAttribute('list', this.dataTypes.id);
+            var btnAdd = document.createElement('button');
+            btnAdd.id = div.id + 'BtnAdd' + propertyType;
+            btnAdd.innerHTML = '+';
+            btnAdd.title = 'Add ' + propertyType;
+            btnAdd.style.marginLeft = '5px';
+            btnAdd.style.color = 'green';
+            divEditProperty.appendChild(selectPropertyModifier);
+            divEditProperty.appendChild(textBoxPropertyName);
+            divEditProperty.appendChild(selectPropertyType);
+            divEditProperty.appendChild(btnAdd);
+            div.appendChild(divEditProperty);
+            this.divPropertiesPanel.appendChild(div);
+        };
+        return ClassPanel;
+    }(APanel));
+    PropertiesPanel.ClassPanel = ClassPanel;
+    var EdgePanel = (function (_super) {
+        __extends(EdgePanel, _super);
+        function EdgePanel() {
+            return _super.call(this) || this;
+        }
+        EdgePanel.prototype.init = function () {
+            this.divPropertiesTabbedPanel.appendChild(this.createTabElement('generalEdgePropBtn', 'General', 'general'));
+            this.createTabGeneralEdgeContent();
+        };
+        EdgePanel.prototype.getPropertiesView = function () {
+            return 'Edge';
+        };
+        EdgePanel.prototype.createTabGeneralEdgeContent = function () {
+            var cardinalityTypes = ['0..1', '1', '0..*'];
+            var dataListCardinalityTypes = document.createElement('datalist');
+            dataListCardinalityTypes.id = 'cardinalityTypesDataList';
+            cardinalityTypes.forEach(function (type) {
+                var cardinalityoption = document.createElement('option');
+                cardinalityoption.value = type;
+                cardinalityoption.innerHTML = type;
+                dataListCardinalityTypes.appendChild(cardinalityoption);
+            });
+            var div = document.createElement('div');
+            div.id = this.getPropertiesView().toLowerCase() + 'general';
+            div.className = 'tabcontent';
+            var divTable = document.createElement('div');
+            divTable.className = 'divTable';
+            var divTableBody = document.createElement('div');
+            divTableBody.className = 'divTableBody';
+            var divRowEdgeType = document.createElement('div');
+            divRowEdgeType.className = 'divTableRow';
+            var divRowEdgeTypeCellText = document.createElement('div');
+            divRowEdgeTypeCellText.className = 'divTableCell';
+            divRowEdgeTypeCellText.innerHTML = 'Type:';
+            var divRowEdgeTypeCellSelect = document.createElement('div');
+            divRowEdgeTypeCellSelect.className = 'divTableCell';
+            var selectEdgeType = document.createElement('select');
+            selectEdgeType.id = 'edgeTypeSelect';
+            selectEdgeType.className = 'col2';
+            var edgeTypes = [];
+            for (var type in edges) {
+                if (type.toString() === 'Aggregate' || type.toString() === 'Direction') {
+                    continue;
+                }
+                edgeTypes.push(type);
+            }
+            edgeTypes.sort();
+            for (var _i = 0, edgeTypes_1 = edgeTypes; _i < edgeTypes_1.length; _i++) {
+                var type = edgeTypes_1[_i];
+                var selectOption = document.createElement('option');
+                selectOption.value = type;
+                selectOption.innerHTML = type;
+                selectEdgeType.appendChild(selectOption);
+            }
+            divRowEdgeTypeCellSelect.appendChild(selectEdgeType);
+            divRowEdgeType.appendChild(divRowEdgeTypeCellText);
+            divRowEdgeType.appendChild(divRowEdgeTypeCellSelect);
+            divTableBody.appendChild(divRowEdgeType);
+            var divRowEdgeLabel = document.createElement('div');
+            divRowEdgeLabel.className = 'divTableRow';
+            var divRowEdgeLabelCellText = document.createElement('div');
+            divRowEdgeLabelCellText.className = 'divTableCell';
+            divRowEdgeLabelCellText.innerHTML = 'Label:';
+            var divRowEdgeLabelCellInput = document.createElement('div');
+            divRowEdgeLabelCellInput.className = 'divTableCell';
+            var textBoxEdgeLabel = document.createElement('input');
+            textBoxEdgeLabel.type = 'text';
+            textBoxEdgeLabel.id = 'edgeLabelInput';
+            textBoxEdgeLabel.placeholder = 'Edge label';
+            textBoxEdgeLabel.className = 'col2';
+            textBoxEdgeLabel.readOnly = true;
+            divRowEdgeLabelCellInput.appendChild(textBoxEdgeLabel);
+            divRowEdgeLabel.appendChild(divRowEdgeLabelCellText);
+            divRowEdgeLabel.appendChild(divRowEdgeLabelCellInput);
+            divTableBody.appendChild(divRowEdgeLabel);
+            var divRowEdgeSrcNode = document.createElement('div');
+            divRowEdgeSrcNode.className = 'divTableRow';
+            var divRowEdgeSrcNodeCellText = document.createElement('div');
+            divRowEdgeSrcNodeCellText.className = 'divTableCell';
+            divRowEdgeSrcNodeCellText.innerHTML = 'Source:';
+            var divRowEdgeSrcNodeCellInput = document.createElement('div');
+            divRowEdgeSrcNodeCellInput.className = 'divTableCell';
+            var textBoxEdgeSrc = document.createElement('input');
+            textBoxEdgeSrc.type = 'text';
+            textBoxEdgeSrc.id = 'edgeSrcInput';
+            textBoxEdgeSrc.placeholder = 'Edge Source';
+            textBoxEdgeSrc.className = 'col2';
+            textBoxEdgeSrc.readOnly = true;
+            divRowEdgeSrcNodeCellInput.appendChild(textBoxEdgeSrc);
+            divRowEdgeSrcNode.appendChild(divRowEdgeSrcNodeCellText);
+            divRowEdgeSrcNode.appendChild(divRowEdgeSrcNodeCellInput);
+            divTableBody.appendChild(divRowEdgeSrcNode);
+            var divRowEdgeSrcNodeProperty = document.createElement('div');
+            divRowEdgeSrcNodeProperty.className = 'divTableRow';
+            var divRowEdgeSrcNodePropertyCellText = document.createElement('div');
+            divRowEdgeSrcNodePropertyCellText.className = 'divTableCell';
+            divRowEdgeSrcNodePropertyCellText.innerHTML = 'Source Property:';
+            var divRowEdgeSrcNodePropertyCellInput = document.createElement('div');
+            divRowEdgeSrcNodePropertyCellInput.className = 'divTableCell';
+            var textBoxEdgeSrcProperty = document.createElement('input');
+            textBoxEdgeSrcProperty.type = 'text';
+            textBoxEdgeSrcProperty.id = 'edgeSrcProperty';
+            textBoxEdgeSrcProperty.placeholder = 'Add source property';
+            textBoxEdgeSrcProperty.className = 'col2';
+            divRowEdgeSrcNodePropertyCellInput.appendChild(textBoxEdgeSrcProperty);
+            divRowEdgeSrcNodeProperty.appendChild(divRowEdgeSrcNodePropertyCellText);
+            divRowEdgeSrcNodeProperty.appendChild(divRowEdgeSrcNodePropertyCellInput);
+            divTableBody.appendChild(divRowEdgeSrcNodeProperty);
+            var divRowEdgeSrcNodeCardinality = document.createElement('div');
+            divRowEdgeSrcNodeCardinality.className = 'divTableRow';
+            var divRowEdgeSrcNodeCardinalityCellText = document.createElement('div');
+            divRowEdgeSrcNodeCardinalityCellText.className = 'divTableCell';
+            divRowEdgeSrcNodeCardinalityCellText.innerHTML = 'Source Cardinality:';
+            var divRowEdgeSrcNodeCardinalityCellInput = document.createElement('div');
+            divRowEdgeSrcNodeCardinalityCellInput.className = 'divTableCell';
+            var inputSrcCardinalityType = document.createElement('input');
+            inputSrcCardinalityType.id = 'inputEdgeSrcCardinality';
+            inputSrcCardinalityType.className = 'col2';
+            inputSrcCardinalityType.placeholder = 'Add source cardinality';
+            inputSrcCardinalityType.setAttribute('list', dataListCardinalityTypes.id);
+            divRowEdgeSrcNodeCardinalityCellInput.appendChild(inputSrcCardinalityType);
+            divRowEdgeSrcNodeCardinality.appendChild(divRowEdgeSrcNodeCardinalityCellText);
+            divRowEdgeSrcNodeCardinality.appendChild(divRowEdgeSrcNodeCardinalityCellInput);
+            divTableBody.appendChild(divRowEdgeSrcNodeCardinality);
+            var divRowEdgeTargetNode = document.createElement('div');
+            divRowEdgeTargetNode.className = 'divTableRow';
+            var divRowEdgeTargetNodeCellText = document.createElement('div');
+            divRowEdgeTargetNodeCellText.className = 'divTableCell';
+            divRowEdgeTargetNodeCellText.innerHTML = 'Target:';
+            var divRowEdgeTargetNodeCellInput = document.createElement('div');
+            divRowEdgeTargetNodeCellInput.className = 'divTableCell';
+            var textBoxEdgeTarget = document.createElement('input');
+            textBoxEdgeTarget.type = 'text';
+            textBoxEdgeTarget.id = 'edgeTargetInput';
+            textBoxEdgeTarget.placeholder = 'Edge Source';
+            textBoxEdgeTarget.className = 'col2';
+            textBoxEdgeTarget.readOnly = true;
+            divRowEdgeTargetNodeCellInput.appendChild(textBoxEdgeTarget);
+            divRowEdgeTargetNode.appendChild(divRowEdgeTargetNodeCellText);
+            divRowEdgeTargetNode.appendChild(divRowEdgeTargetNodeCellInput);
+            divTableBody.appendChild(divRowEdgeTargetNode);
+            var divRowEdgeTargetNodeProperty = document.createElement('div');
+            divRowEdgeTargetNodeProperty.className = 'divTableRow';
+            var divRowEdgeTargetNodePropertyCellText = document.createElement('div');
+            divRowEdgeTargetNodePropertyCellText.className = 'divTableCell';
+            divRowEdgeTargetNodePropertyCellText.innerHTML = 'Target Property:';
+            var divRowEdgeTargetNodePropertyCellInput = document.createElement('div');
+            divRowEdgeTargetNodePropertyCellInput.className = 'divTableCell';
+            var textBoxEdgeTargetProperty = document.createElement('input');
+            textBoxEdgeTargetProperty.type = 'text';
+            textBoxEdgeTargetProperty.id = 'edgeTargetProperty';
+            textBoxEdgeTargetProperty.placeholder = 'Add target property';
+            textBoxEdgeTargetProperty.className = 'col2';
+            divRowEdgeTargetNodePropertyCellInput.appendChild(textBoxEdgeTargetProperty);
+            divRowEdgeTargetNodeProperty.appendChild(divRowEdgeTargetNodePropertyCellText);
+            divRowEdgeTargetNodeProperty.appendChild(divRowEdgeTargetNodePropertyCellInput);
+            divTableBody.appendChild(divRowEdgeTargetNodeProperty);
+            var divRowEdgeTargetNodeCardinality = document.createElement('div');
+            divRowEdgeTargetNodeCardinality.className = 'divTableRow';
+            var divRowEdgeTargetNodeCardinalityCellText = document.createElement('div');
+            divRowEdgeTargetNodeCardinalityCellText.className = 'divTableCell';
+            divRowEdgeTargetNodeCardinalityCellText.innerHTML = 'Target Cardinality:';
+            var divRowEdgeTargetNodeCardinalityCellInput = document.createElement('div');
+            divRowEdgeTargetNodeCardinalityCellInput.className = 'divTableCell';
+            var inputTargetCardinalityType = document.createElement('input');
+            inputTargetCardinalityType.id = 'inputEdgeTargetCardinality';
+            inputTargetCardinalityType.className = 'col2';
+            inputTargetCardinalityType.placeholder = 'Add target cardinality';
+            inputTargetCardinalityType.setAttribute('list', dataListCardinalityTypes.id);
+            divRowEdgeTargetNodeCardinalityCellInput.appendChild(inputTargetCardinalityType);
+            divRowEdgeTargetNodeCardinality.appendChild(divRowEdgeTargetNodeCardinalityCellText);
+            divRowEdgeTargetNodeCardinality.appendChild(divRowEdgeTargetNodeCardinalityCellInput);
+            divTableBody.appendChild(divRowEdgeTargetNodeCardinality);
+            divTable.appendChild(divTableBody);
+            div.appendChild(dataListCardinalityTypes);
+            div.appendChild(divTable);
+            this.divPropertiesPanel.appendChild(div);
+        };
+        return EdgePanel;
+    }(APanel));
+    PropertiesPanel.EdgePanel = EdgePanel;
+    var GeneratePanel = (function (_super) {
+        __extends(GeneratePanel, _super);
+        function GeneratePanel(graph) {
+            var _this = _super.call(this) || this;
+            _this.graph = graph;
+            return _this;
+        }
+        GeneratePanel.prototype.init = function () {
+            var _this = this;
+            this.divPropertiesTabbedPanel.appendChild(this.createTabElement('generalGeneratePropBtn', 'General', 'general'));
+            var div = document.createElement('div');
+            div.id = this.getPropertiesView().toLowerCase() + 'general';
+            div.className = 'tabcontent';
+            var inputGenerateWorkspace = document.createElement('input');
+            inputGenerateWorkspace.id = 'inputWorkspace';
+            inputGenerateWorkspace.type = 'text';
+            inputGenerateWorkspace.placeholder = 'Type your Folder for generated code...';
+            inputGenerateWorkspace.value = 'src/main/java';
+            inputGenerateWorkspace.style.marginRight = '5px';
+            inputGenerateWorkspace.style.width = '260px';
+            var inputGeneratePackage = document.createElement('input');
+            inputGeneratePackage.id = 'inputWorkspace';
+            inputGeneratePackage.type = 'text';
+            inputGeneratePackage.placeholder = 'Type your workspace for generated code...';
+            inputGeneratePackage.style.marginRight = '5px';
+            inputGeneratePackage.style.width = '260px';
+            div.appendChild(inputGenerateWorkspace);
+            div.appendChild(inputGeneratePackage);
+            var options = document.createElement('div');
+            options.style.textAlign = 'center';
+            options.style.margin = '3';
+            options.style.padding = '5';
+            div.appendChild(options);
+            options.style.borderStyle = 'groove';
+            options.style.borderRadius = '10px';
+            options.appendChild(document.createTextNode('Options'));
+            options.appendChild(document.createElement('br'));
+            var btnGenerate = document.createElement('button');
+            btnGenerate.textContent = 'Generate';
+            btnGenerate.title = 'Generate code into your workspace';
+            btnGenerate.className = 'OptionElement';
+            btnGenerate.onclick = function () {
+                var workspace = inputGeneratePackage.value;
+                if (workspace.length === 0) {
+                    alert('No workspace set.\nEnter first your workspace');
+                    inputGeneratePackage.focus();
+                    return;
+                }
+                _this.graph.generate(workspace, inputGenerateWorkspace.value);
+            };
+            options.appendChild(btnGenerate);
+            options.appendChild(document.createElement('hr'));
+            options.appendChild(document.createElement('br'));
+            var btnAutoLayout = document.createElement('button');
+            btnAutoLayout.id = 'layoutBtn';
+            btnAutoLayout.className = 'OptionElement';
+            btnAutoLayout.textContent = 'Auto Layout';
+            btnAutoLayout.onclick = function () {
+                _this.graph.layout();
+            };
+            options.appendChild(btnAutoLayout);
+            options.appendChild(document.createElement('br'));
+            var btnDeleteAll = document.createElement('button');
+            btnDeleteAll.id = 'btnDeleteAll';
+            btnDeleteAll.className = 'OptionElement';
+            btnDeleteAll.textContent = 'Delete All';
+            btnDeleteAll.title = 'Delete all nodes from diagram';
+            btnDeleteAll.onclick = function () {
+                var confirmDelete = confirm('All classes will be deleted!');
+                if (!confirmDelete) {
+                    return;
+                }
+                _this.graph.$graphModel.removeAllElements();
+            };
+            options.appendChild(btnDeleteAll);
+            options.appendChild(document.createElement('br'));
+            var exportTypes = ['Export', 'HTML', 'JSON', 'PDF', 'PNG', 'SVG'];
+            var selectExport = document.createElement('select');
+            exportTypes.forEach(function (type) {
+                if (!(!window['jsPDF'] && type === 'PDF')) {
+                    var option = document.createElement('option');
+                    option.value = type;
+                    option.textContent = type;
+                    selectExport.appendChild(option);
+                }
+            });
+            selectExport.onchange = function (evt) {
+                var selectedExportType = selectExport.options[selectExport.selectedIndex].value;
+                selectExport.selectedIndex = 0;
+                _this.graph.saveAs(selectedExportType);
+            };
+            selectExport.className = 'OptionElement';
+            options.appendChild(selectExport);
+            options.appendChild(document.createElement('br'));
+            this.divPropertiesPanel.appendChild(div);
+        };
+        GeneratePanel.prototype.getPropertiesView = function () {
+            return 'generate';
+        };
+        return GeneratePanel;
+    }(APanel));
+    PropertiesPanel.GeneratePanel = GeneratePanel;
+    var ClearPanel = (function (_super) {
+        __extends(ClearPanel, _super);
+        function ClearPanel() {
+            return _super.call(this) || this;
+        }
+        ClearPanel.prototype.init = function () {
+        };
+        ClearPanel.prototype.getPropertiesView = function () {
+            return 'Clear';
+        };
+        return ClearPanel;
+    }(APanel));
+    PropertiesPanel.ClearPanel = ClearPanel;
+})(PropertiesPanel = exports.PropertiesPanel || (exports.PropertiesPanel = {}));
+
+
+/***/ }),
+
+/***/ "./PropertyBinder.ts":
+/*!***************************!*\
+  !*** ./PropertyBinder.ts ***!
+  \***************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var PropertyBinder = (function () {
+    function PropertyBinder(data1, data2, propertyClass1, propertyClass2) {
+        this.applyingChange = false;
+        this.data1 = data1;
+        this.data2 = data2;
+        this.propertyClass1 = propertyClass1;
+        this.propertyClass2 = propertyClass2;
+    }
+    PropertyBinder.bind = function (data1, data2, property1, property2) {
+        if (!data1 || !data2 || !property1) {
+            console.error('NullValue!!');
+            return null;
+        }
+        var propertyBinder = new PropertyBinder(data1, data2, property1, property2);
+        propertyBinder.bind();
+        return propertyBinder;
+    };
+    PropertyBinder.prototype.propertyChange = function (entity, property, oldValue, newValue) {
+        if (!this.applyingChange) {
+            this.applyingChange = true;
+            if (entity === this.data1) {
+                this.data2.setValue(this.propertyClass2, newValue);
+            }
+            else if (entity === this.data2) {
+                this.data1.setValue(this.propertyClass1, newValue);
+            }
+            this.applyingChange = false;
+        }
+    };
+    PropertyBinder.prototype.bind = function () {
+        this.data1.setValue(this.propertyClass1, this.data2.getValue(this.propertyClass2));
+        this.data1.addListener(this, this.propertyClass1);
+        this.data2.addListener(this, this.propertyClass2);
+    };
+    PropertyBinder.prototype.unbind = function () {
+        this.data1.removeListener(this, this.propertyClass2);
+        this.data1.removeListener(this, this.propertyClass2);
+    };
+    return PropertyBinder;
+}());
+exports.PropertyBinder = PropertyBinder;
+
+
+/***/ }),
+
+/***/ "./RGBColor.ts":
+/*!*********************!*\
+  !*** ./RGBColor.ts ***!
+  \*********************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var RGBColor = (function () {
+    function RGBColor(value) {
+        this.ok = false;
+        if (value === 'none') {
+            return;
+        }
+        var computedColor, div = document.createElement('div');
+        div.style.backgroundColor = value;
+        document.body.appendChild(div);
+        computedColor = window.getComputedStyle(div).backgroundColor;
+        document.body.removeChild(div);
+        this.convert(computedColor);
+    }
+    RGBColor.prototype.convert = function (value) {
+        var values, regex = /rgb *\( *([0-9]{1,3}) *, *([0-9]{1,3}) *, *([0-9]{1,3}) *\)/;
+        values = regex.exec(value);
+        this.r = parseInt(values[1], 10);
+        this.g = parseInt(values[2], 10);
+        this.b = parseInt(values[3], 10);
+        this.ok = true;
+    };
+    RGBColor.prototype.toRGB = function () { return 'rgb(' + this.r + ', ' + this.g + ', ' + this.b + ')'; };
+    RGBColor.prototype.toHex = function () {
+        return '#' + (this.r + 0x10000).toString(16).substring(3).toUpperCase() + (this.g + 0x10000).toString(16).substring(3).toUpperCase() + (this.b + 0x10000).toString(16).substring(3).toUpperCase();
+    };
+    return RGBColor;
+}());
+exports.RGBColor = RGBColor;
+
+
+/***/ }),
+
+/***/ "./SVGConverter.ts":
+/*!*************************!*\
+  !*** ./SVGConverter.ts ***!
+  \*************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var RGBColor_1 = __webpack_require__(/*! ./RGBColor */ "./RGBColor.ts");
+var JSEPS_1 = __webpack_require__(/*! ./JSEPS */ "./JSEPS.ts");
+var epsSvgAttr = {
+    g: ['stroke', 'fill', 'stroke-width'],
+    line: ['x1', 'y1', 'x2', 'y2', 'stroke', 'stroke-width'],
+    rect: ['x', 'y', 'width', 'height', 'stroke', 'fill', 'stroke-width'],
+    ellipse: ['cx', 'cy', 'rx', 'ry', 'stroke', 'fill', 'stroke-width'],
+    circle: ['cx', 'cy', 'r', 'stroke', 'fill', 'stroke-width'],
+    text: ['x', 'y', 'font-size', 'font-family', 'text-anchor', 'font-weight', 'font-style', 'fill'],
+    path: ['']
+};
+var SVGConverter = (function () {
+    function SVGConverter(element, target, options) {
+        this.k = 1.0;
+        var hasScale = typeof (options.scale), hasRemoveInvalid = typeof (options.removeInvalid);
+        this.k = (options && hasScale !== 'undefined' ? options.scale : 1.0);
+        this.remove = (options && hasRemoveInvalid !== 'undefined' ? options.removeInvalid : false);
+        this.target = target;
+        this.parse(element);
+    }
+    SVGConverter.prototype.parse = function (element) {
+        var el, i, n, colorMode, hasFillColor, fillRGB, fillColor, strokeColor, strokeRGB, fontType, pdfFontSize, x, y, box, xOffset;
+        if (!element) {
+            return;
+        }
+        if (typeof element === 'string') {
+            el = document.createElement('div');
+            el.innerHTML = element;
+            element = el.childNodes[0];
+        }
+        for (i = 0; i < element.children.length; i += 1) {
+            n = element.children[i];
+            colorMode = null;
+            hasFillColor = false;
+            if ('g,line,rect,ellipse,circle,text'.indexOf(n.tagName) >= 0) {
+                fillColor = n.getAttribute('fill');
+                if (fillColor) {
+                    fillRGB = new RGBColor_1.RGBColor(fillColor);
+                    if (fillRGB.ok) {
+                        hasFillColor = true;
+                        colorMode = 'F';
+                    }
+                }
+            }
+            if ('g,line,rect,ellipse,circle'.indexOf(n.tagName) >= 0) {
+                if (hasFillColor) {
+                    this.target.setFillColor(fillRGB.r, fillRGB.g, fillRGB.b);
+                }
+                strokeColor = n.getAttribute('stroke');
+                if (n.hasAttribute('stroke-width')) {
+                    this.target.setLineWidth(this.attr(n, 'stroke-width'));
+                }
+                if (strokeColor) {
+                    strokeRGB = new RGBColor_1.RGBColor(strokeColor);
+                    if (strokeRGB.ok) {
+                        this.target.setDrawColor(strokeRGB.r, strokeRGB.g, strokeRGB.b);
+                        if (colorMode === 'F') {
+                            colorMode = 'FD';
+                        }
+                        else if (!hasFillColor) {
+                            colorMode = 'S';
+                        }
+                    }
+                    else {
+                        colorMode = null;
+                    }
+                }
+            }
+            switch (n.tagName.toLowerCase()) {
+                case 'svg':
+                case 'a':
+                case 'g':
+                    this.parse(n);
+                    break;
+                case 'line':
+                    this.target.line(this.attr(n, 'x1'), this.attr(n, 'y1'), this.attr(n, 'x2'), this.attr(n, 'y2'));
+                    break;
+                case 'rect':
+                    this.target.rect(this.attr(n, 'x'), this.attr(n, 'y'), this.attr(n, 'width'), this.attr(n, 'height'), n.getAttribute('style'));
+                    break;
+                case 'ellipse':
+                    this.target.ellipse(this.attr(n, 'cx'), this.attr(n, 'cy'), this.attr(n, 'rx'), this.attr(n, 'ry'), colorMode);
+                    break;
+                case 'circle':
+                    this.target.circle(this.attr(n, 'cx'), this.attr(n, 'cy'), this.attr(n, 'r'), colorMode);
+                    break;
+                case 'text':
+                    if (n.hasAttribute('font-family')) {
+                        switch (n.getAttribute('font-family').toLowerCase()) {
+                            case 'serif':
+                                this.target.setFont('times');
+                                break;
+                            case 'monospace':
+                                this.target.setFont('courier');
+                                break;
+                            default:
+                                n.getAttribute('font-family', 'sans-serif');
+                                this.target.setFont('Helvetica');
+                        }
+                    }
+                    if (hasFillColor) {
+                        this.target.setTextColor(fillRGB.r, fillRGB.g, fillRGB.b);
+                    }
+                    if (this.target instanceof JSEPS_1.JSEPS) {
+                        this.target.text(this.attr(n, 'x'), this.attr(n, 'y'), n.innerHTML);
+                        break;
+                    }
+                    fontType = '';
+                    if (n.hasAttribute('font-weight')) {
+                        if (n.getAttribute('font-weight') === 'bold') {
+                            fontType = 'bold';
+                        }
+                    }
+                    if (n.hasAttribute('font-style')) {
+                        if (n.getAttribute('font-style') === 'italic') {
+                            fontType += 'italic';
+                        }
+                    }
+                    this.target.setFontType(fontType);
+                    pdfFontSize = 16;
+                    if (n.hasAttribute('font-size')) {
+                        pdfFontSize = parseInt(n.getAttribute('font-size'), 10);
+                    }
+                    box = n.getBBox();
+                    x = this.attr(n, 'x');
+                    y = this.attr(n, 'y');
+                    xOffset = 0;
+                    if (n.hasAttribute('text-anchor')) {
+                        switch (n.getAttribute('text-anchor')) {
+                            case 'end':
+                                xOffset = box.width;
+                                break;
+                            case 'middle':
+                                xOffset = box.width / 2;
+                                break;
+                            case 'start':
+                                break;
+                            case 'default':
+                                n.getAttribute('text-anchor', 'start');
+                                break;
+                        }
+                        x = x - (xOffset * this.k);
+                    }
+                    this.target.setFontSize(pdfFontSize).text(x, y, n.innerHTML);
+                    break;
+                default:
+                    if (this.remove) {
+                        console.log('cant translate to target:', n);
+                        element.removeChild(n);
+                        i -= 1;
+                    }
+            }
+        }
+    };
+    SVGConverter.prototype.attr = function (node, name) {
+        return this.k * parseInt(node.getAttribute(name), 10);
+    };
+    return SVGConverter;
+}());
+exports.SVGConverter = SVGConverter;
+
+
+/***/ }),
+
+/***/ "./Toolbar.ts":
+/*!********************!*\
+  !*** ./Toolbar.ts ***!
+  \********************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var Symbol_1 = __webpack_require__(/*! ./elements/nodes/Symbol */ "./elements/nodes/Symbol.ts");
+var EventBus_1 = __webpack_require__(/*! ./EventBus */ "./EventBus.ts");
+var Toolbar = (function () {
+    function Toolbar(graph) {
+        this.graph = graph;
+    }
+    Toolbar.prototype.show = function () {
+        if (this.mainDiv) {
+            return;
+        }
+        this.mainDiv = document.createElement('div');
+        this.mainDiv.className = 'toolbar';
+        var h1Logo = document.createElement('h1');
+        h1Logo.className = 'logo';
+        h1Logo.textContent = 'DiagramJS';
+        var node = { type: 'Hamburger', property: 'HTML', width: 24, height: 24, id: 'GenerateProp' };
+        var hamburger = Symbol_1.SymbolLibary.draw(node);
+        EventBus_1.EventBus.registerEvent(hamburger, 'click', node);
+        this.mainDiv.appendChild(hamburger);
+        this.mainDiv.appendChild(h1Logo);
+        document.body.appendChild(this.mainDiv);
+    };
+    return Toolbar;
+}());
+exports.Toolbar = Toolbar;
+
+
+/***/ }),
+
+/***/ "./UML.ts":
+/*!****************!*\
+  !*** ./UML.ts ***!
+  \****************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var Data_1 = __webpack_require__(/*! ./Data */ "./Data.ts");
+var UML;
+(function (UML) {
+    var Clazz = (function (_super) {
+        __extends(Clazz, _super);
+        function Clazz() {
+            var _this = _super.call(this) || this;
+            _this.property = 'Clazz';
+            return _this;
+        }
+        Clazz.prototype.getName = function () {
+            return this.prop[Clazz.NAME];
+        };
+        Clazz.prototype.setName = function (newValue) {
+            this.setValue(Clazz.NAME, newValue);
+        };
+        Clazz.prototype.getAttributes = function () {
+            return this.prop[Clazz.ATTRIBUTES];
+        };
+        Clazz.prototype.addToAttributes = function (newValue) {
+            this.addTo(Clazz.ATTRIBUTES, newValue);
+        };
+        Clazz.prototype.removeFromAttributes = function (newValue) {
+            this.removeFrom(Clazz.ATTRIBUTES, newValue);
+        };
+        Clazz.NAME = 'name';
+        Clazz.ATTRIBUTES = 'attributes';
+        Clazz.METHODS = 'methods';
+        return Clazz;
+    }(Data_1.default));
+    UML.Clazz = Clazz;
+    var Attribute = (function (_super) {
+        __extends(Attribute, _super);
+        function Attribute() {
+            var _this = _super.call(this) || this;
+            _this.property = 'Attribute';
+            return _this;
+        }
+        Attribute.prototype.getName = function () {
+            return this.prop[Clazz.NAME];
+        };
+        Attribute.prototype.setName = function (newValue) {
+            this.setValue(Clazz.NAME, newValue);
+        };
+        return Attribute;
+    }(Data_1.default));
+    UML.Attribute = Attribute;
+    var Methods = (function (_super) {
+        __extends(Methods, _super);
+        function Methods() {
+            return _super !== null && _super.apply(this, arguments) || this;
+        }
+        return Methods;
+    }(Data_1.default));
+    UML.Methods = Methods;
+})(UML = exports.UML || (exports.UML = {}));
+window['UML'] = UML;
+
+
+/***/ }),
+
+/***/ "./adapters/JavaAdapter.ts":
+/*!*********************************!*\
+  !*** ./adapters/JavaAdapter.ts ***!
+  \*********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var Adapter_1 = __webpack_require__(/*! ../Adapter */ "./Adapter.ts");
+var JavaAdapter = (function (_super) {
+    __extends(JavaAdapter, _super);
+    function JavaAdapter() {
+        var _this = _super.call(this) || this;
+        _this.id = 'JavaAdapter';
+        return _this;
+    }
+    JavaAdapter.prototype.update = function (evt) {
+        if (this.isActive()) {
+            window['JavaBridge'].executeChange(evt);
+            return true;
+        }
+        return false;
+    };
+    JavaAdapter.prototype.isActive = function () {
+        return window['JavaBridge'];
+    };
+    return JavaAdapter;
+}(Adapter_1.Adapter));
+exports.JavaAdapter = JavaAdapter;
+
+
+/***/ }),
+
+/***/ "./adapters/index.ts":
+/*!***************************!*\
+  !*** ./adapters/index.ts ***!
+  \***************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+function __export(m) {
+    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+}
+Object.defineProperty(exports, "__esModule", { value: true });
+__export(__webpack_require__(/*! ./JavaAdapter */ "./adapters/JavaAdapter.ts"));
+
+
+/***/ }),
+
+/***/ "./elements/BaseElements.ts":
+/*!**********************************!*\
+  !*** ./elements/BaseElements.ts ***!
+  \**********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var util_1 = __webpack_require__(/*! ../util */ "./util.ts");
+var Control_1 = __webpack_require__(/*! ../Control */ "./Control.ts");
+var DiagramElement = (function (_super) {
+    __extends(DiagramElement, _super);
+    function DiagramElement() {
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.$isDraggable = true;
+        _this.$labelHeight = 25;
+        _this.$labelFontSize = 14;
+        _this.$pos = new Point();
+        _this.$size = new Point();
+        return _this;
+    }
+    DiagramElement.prototype.getToolBarIcon = function () {
+        return null;
+    };
+    DiagramElement.prototype.getPos = function () {
+        return this.$pos;
+    };
+    DiagramElement.prototype.getSize = function () {
+        return this.$size;
+    };
+    DiagramElement.prototype.getCenter = function () {
+        var pos = this.getPos();
+        var size = this.getSize();
+        return new Point(pos.x + size.x / 2, pos.y + size.y / 2);
+    };
+    DiagramElement.prototype.getCenterPosition = function (p) {
+        var pos = this.getPos();
+        var size = this.getSize();
+        var offset = this['$' + p];
+        var center = this.getCenter();
+        if (p === Point.DOWN) {
+            return new Point(Math.min(center.x + offset, center.x), pos.y + size.y, Point.DOWN);
+        }
+        if (p === Point.UP) {
+            return new Point(Math.min(center.x + offset, center.x), pos.y, Point.UP);
+        }
+        if (p === Point.LEFT) {
+            return new Point(pos.x, Math.min(center.y + offset, pos.y + size.y), Point.LEFT);
+        }
+        if (p === Point.RIGHT) {
+            return new Point(pos.x + size.x, Math.min(center.y + offset, pos.y + size.y), Point.RIGHT);
+        }
+        return new Point();
+    };
+    DiagramElement.prototype.getSVG = function () {
+        return null;
+    };
+    DiagramElement.prototype.getCanvas = function () {
+        return null;
+    };
+    DiagramElement.prototype.getEvents = function () {
+        return null;
+    };
+    DiagramElement.prototype.getAlreadyDisplayingSVG = function () {
+        return document.getElementById(this.id) || this.getSVG();
+    };
+    DiagramElement.prototype.load = function (data) {
+    };
+    DiagramElement.prototype.withPos = function (x, y) {
+        if (x && y) {
+            this.$pos = new Point(x, y);
+        }
+        else {
+            if (typeof (x) !== 'undefined' && x !== null) {
+                this.$pos.x = x;
+            }
+            if (typeof (y) !== 'undefined' && y !== null) {
+                this.$pos.y = y;
+            }
+        }
+        return this;
+    };
+    DiagramElement.prototype.withSize = function (width, height) {
+        if (width && height) {
+            this.$size = new Point(width, height);
+        }
+        else {
+            if (typeof (width) !== 'undefined' && width !== null) {
+                this.$size.x = width;
+            }
+            if (typeof (height) !== 'undefined' && height !== null) {
+                this.$size.y = height;
+            }
+        }
+        return this;
+    };
+    DiagramElement.prototype.getShowed = function () {
+        return _super.prototype.getShowed.call(this);
+    };
+    DiagramElement.prototype.loadProperties = function (properties) {
+    };
+    DiagramElement.prototype.createShape = function (attrs) {
+        return util_1.Util.createShape(attrs);
+    };
+    return DiagramElement;
+}(Control_1.Control));
+exports.DiagramElement = DiagramElement;
+var Point = (function () {
+    function Point(x, y, pos) {
+        this.x = 0;
+        this.y = 0;
+        this.x = Math.ceil(x || 0);
+        this.y = Math.ceil(y || 0);
+        if (pos) {
+            this['pos'] = pos;
+        }
+    }
+    Point.prototype.add = function (pos) {
+        this.x += pos.x;
+        this.y += pos.y;
+        return this;
+    };
+    Point.prototype.getPosition = function () {
+        if (!this['pos']) {
+            return '';
+        }
+        return this['pos'];
+    };
+    Point.prototype.addNum = function (x, y) {
+        this.x += x;
+        this.y += y;
+        return this;
+    };
+    Point.prototype.sum = function (pos) {
+        var sum = new Point(this.x, this.y);
+        sum.add(pos);
+        return sum;
+    };
+    Point.prototype.center = function (posA, posB) {
+        var count = 0;
+        if (posA) {
+            this.x += posA.x;
+            this.y += posA.y;
+            count++;
+        }
+        if (posB) {
+            this.x += posB.x;
+            this.y += posB.y;
+            count++;
+        }
+        if (count > 0) {
+            this.x = (this.x / count);
+            this.y = (this.y / count);
+        }
+    };
+    Point.prototype.isEmpty = function () {
+        return this.x < 1 && this.y < 1;
+    };
+    Point.prototype.size = function (posA, posB) {
+        var x1 = 0, x2 = 0, y1 = 0, y2 = 0;
+        if (posA) {
+            x1 = posA.x;
+            y1 = posA.y;
+        }
+        if (posB) {
+            x2 = posB.x;
+            y2 = posB.y;
+        }
+        if (x1 > x2) {
+            this.x = x1 - x2;
+        }
+        else {
+            this.x = x2 - x1;
+        }
+        if (y1 > y2) {
+            this.y = y1 - y2;
+        }
+        else {
+            this.y = y2 - y1;
+        }
+    };
+    Point.UP = 'UP';
+    Point.LEFT = 'LEFT';
+    Point.RIGHT = 'RIGHT';
+    Point.DOWN = 'DOWN';
+    return Point;
+}());
+exports.Point = Point;
+var Line = (function (_super) {
+    __extends(Line, _super);
+    function Line(lineType) {
+        var _this = _super.call(this) || this;
+        _this.lineType = lineType;
+        return _this;
+    }
+    Line.prototype.getTyp = function () {
+        return 'SVG';
+    };
+    Line.prototype.getPos = function () {
+        var pos = new Point();
+        pos.center(this.source, this.target);
+        return pos;
+    };
+    Line.prototype.getSize = function () {
+        var pos = new Point();
+        pos.size(this.source, this.target);
+        return pos;
+    };
+    Line.prototype.withColor = function (color) {
+        this.color = color;
+        return this;
+    };
+    Line.prototype.withSize = function (x, y) {
+        return this;
+    };
+    Line.prototype.withPath = function (path, close, angle) {
+        var i, d = 'M' + path[0].x + ' ' + path[0].y;
+        this.lineType = Line.FORMAT.PATH;
+        for (i = 1; i < path.length; i += 1) {
+            d = d + 'L ' + path[i].x + ' ' + path[i].y;
+        }
+        if (close) {
+            d = d + ' Z';
+            this.target = path[0];
+        }
+        else {
+            this.target = path[path.length - 1];
+        }
+        this.path = d;
+        if (angle instanceof Number) {
+            this.angle = angle;
+        }
+        else if (angle) {
+        }
+        return this;
+    };
+    Line.prototype.getSVG = function () {
+        if (this.lineType === 'PATH') {
+            return util_1.Util.create({
+                tag: 'path',
+                'd': this.path,
+                'fill': this.color,
+                stroke: '#000',
+                'stroke-width': '1px'
+            });
+        }
+        var line = util_1.Util.create({
+            tag: 'line',
+            'x1': this.source.x,
+            'y1': this.source.y,
+            'x2': this.target.x,
+            'y2': this.target.y,
+            'stroke': util_1.Util.getColor(this.color)
+        });
+        if (this.lineType && this.lineType.toLowerCase() === 'dotted') {
+            line.setAttribute('stroke-miterlimit', '4');
+            line.setAttribute('stroke-dasharray', '1,1');
+        }
+        return line;
+    };
+    Line.FORMAT = { SOLID: 'SOLID', DOTTED: 'DOTTED', PATH: 'PATH' };
+    return Line;
+}(DiagramElement));
+exports.Line = Line;
+
+
+/***/ }),
+
+/***/ "./elements/ClassEditor.ts":
+/*!*********************************!*\
+  !*** ./elements/ClassEditor.ts ***!
+  \*********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var Graph_1 = __webpack_require__(/*! ./Graph */ "./elements/Graph.ts");
+var ClassEditor = (function (_super) {
+    __extends(ClassEditor, _super);
+    function ClassEditor(json, options) {
+        var _this = this;
+        if (!options) {
+            options = {};
+        }
+        options.canvas = options.canvas || 'canvas';
+        options.autoSave = options.autoSave || true;
+        if (!options.features) {
+            options.features = {
+                drag: true,
+                editor: true,
+                palette: true,
+                select: true,
+                zoom: true,
+                toolbar: true,
+                import: true,
+                properties: true,
+                addnode: true,
+                newedge: true
+            };
+        }
+        _this = _super.call(this, json, options) || this;
+        return _this;
+    }
+    ClassEditor.prototype.setBoardStyle = function (value) {
+        console.log(value);
+        this.importFile.setBoardStyle(value);
+    };
+    return ClassEditor;
+}(Graph_1.Graph));
+exports.ClassEditor = ClassEditor;
+
+
+/***/ }),
+
+/***/ "./elements/Graph.ts":
+/*!***************************!*\
+  !*** ./elements/Graph.ts ***!
+  \***************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var edges = __webpack_require__(/*! ./edges */ "./elements/edges/index.ts");
+var edges_1 = __webpack_require__(/*! ./edges */ "./elements/edges/index.ts");
+var nodes = __webpack_require__(/*! ./nodes */ "./elements/nodes/index.ts");
+var layouts = __webpack_require__(/*! ../layouts */ "./layouts/index.ts");
+var Model_1 = __webpack_require__(/*! ./Model */ "./elements/Model.ts");
+var BaseElements_1 = __webpack_require__(/*! ./BaseElements */ "./elements/BaseElements.ts");
+var util_1 = __webpack_require__(/*! ../util */ "./util.ts");
+var Control_1 = __webpack_require__(/*! ../Control */ "./Control.ts");
+var EventBus_1 = __webpack_require__(/*! ../EventBus */ "./EventBus.ts");
+var handlers_1 = __webpack_require__(/*! ../handlers */ "./handlers/index.ts");
+var ImportFile_1 = __webpack_require__(/*! ../handlers/ImportFile */ "./handlers/ImportFile.ts");
+var Toolbar_1 = __webpack_require__(/*! ../Toolbar */ "./Toolbar.ts");
+var JSEPS_1 = __webpack_require__(/*! ../JSEPS */ "./JSEPS.ts");
+var SVGConverter_1 = __webpack_require__(/*! ../SVGConverter */ "./SVGConverter.ts");
+var Palette_1 = __webpack_require__(/*! ../Palette */ "./Palette.ts");
+var Graph = (function (_super) {
+    __extends(Graph, _super);
+    function Graph(json, options) {
+        var _this = _super.call(this) || this;
+        _this.containerElements = ['svg', 'g'];
+        _this.relevantStyles = {
+            'rect': ['fill', 'stroke', 'stroke-width'],
+            'path': ['fill', 'stroke', 'stroke-width', 'opacity'],
+            'circle': ['fill', 'stroke', 'stroke-width'],
+            'line': ['stroke', 'stroke-width'],
+            'text': ['fill', 'font-size', 'text-anchor', 'font-family'],
+            'polygon': ['stroke', 'fill']
+        };
+        json = json || {};
+        if (json['data']) {
+            options = json['options'];
+            json = json['data'];
+            _this.id = json['id'];
+        }
+        _this.options = options || { features: { drag: true } };
+        if (json['init']) {
+            return _this;
+        }
+        if (!_this.options.origin) {
+            _this.options.origin = new BaseElements_1.Point(150, 45);
+        }
+        if (!_this.options.style) {
+            _this.options.style = 'classic';
+        }
+        if (_this.options.autoSave) {
+            util_1.Util.isAutoSave = options.autoSave;
+        }
+        _this.initFactories();
+        _this.initCanvas();
+        _this.initFeatures(_this.options.features);
+        if (!_this.lookupInLocalStorage()) {
+            _this.load(json);
+        }
+        EventBus_1.EventBus.register(_this, _this.$view);
+        return _this;
+    }
+    Graph.prototype.lookupInLocalStorage = function () {
+        if (!this.options.autoSave) {
+            return false;
+        }
+        if (!util_1.Util.isLocalStorageSupported()) {
+            return false;
+        }
+        var diagram = util_1.Util.getDiagramFromLocalStorage();
+        if (diagram && diagram.length > 0) {
+            if (confirm('Restore previous session?')) {
+                var jsonData = JSON.parse(diagram);
+                this.load(jsonData);
+                this.layout();
+                return true;
+            }
+            else {
+                util_1.Util.saveToLocalStorage(null);
+            }
+        }
+        return false;
+    };
+    Graph.prototype.fitSizeOnNodes = function () {
+        var maxWidth = 0;
+        var maxHeight = 0;
+        for (var _i = 0, _a = this.$graphModel.nodes; _i < _a.length; _i++) {
+            var node = _a[_i];
+            var nodePos = node.getPos();
+            var nodeSize = node.getSize();
+            var nodeWidestPosX = nodePos.x + nodeSize.x;
+            var nodeWidestPosY = nodePos.y + nodeSize.y;
+            if (nodeWidestPosX > maxWidth) {
+                maxWidth = nodeWidestPosX;
+            }
+            if (nodeWidestPosY > maxHeight) {
+                maxHeight = nodeWidestPosY;
+            }
+        }
+        this.root.setAttributeNS(null, 'width', '' + (maxWidth + 100));
+        this.root.setAttributeNS(null, 'height', '' + (maxHeight + 50));
+    };
+    Graph.prototype.saveAs = function (typ) {
+        typ = typ.toLowerCase();
+        var currentSize = this.getRootSize();
+        this.fitSizeOnNodes();
+        if (typ === 'svg') {
+            this.exportSvg();
+        }
+        else if (typ === 'png') {
+            this.exportPng();
+        }
+        else if (typ === 'html') {
+            this.exportHtml();
+        }
+        else if (typ === 'pdf') {
+            this.exportPdf();
+        }
+        else if (typ === 'json') {
+            this.exportJson();
+        }
+        this.root.setAttributeNS(null, 'width', '' + currentSize.width);
+        this.root.setAttributeNS(null, 'height', '' + currentSize.height);
+    };
+    Graph.prototype.save = function (type, data, name, context) {
+        if (window['java']) {
+            window['java'].export(type, data, name, context);
+            return;
+        }
+        var a = document.createElement('a');
+        a.href = window.URL.createObjectURL(new Blob([data], { type: context }));
+        a.download = name;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+    };
+    Graph.prototype.exportSvg = function () {
+        var wellFormatedSvgDom = this.getSvgWithStyleAttributes();
+        this.save('svg', this.serializeXmlNode(wellFormatedSvgDom), 'class_diagram.svg', 'image/svg+xml');
+    };
+    Graph.prototype.exportHtml = function () {
+        var htmlFacade = '<html><head><title>DiagramJS - Classdiagram</title></head><body>$content</body></html>';
+        var wellFormatedSvgDom = this.getSvgWithStyleAttributes();
+        var svgAsXml = this.serializeXmlNode(wellFormatedSvgDom);
+        var htmlResult = htmlFacade.replace('$content', svgAsXml);
+        this.save('html', htmlResult, 'class_diagram.htm', 'text/plain');
+    };
+    Graph.prototype.exportJson = function () {
+        var type = 'text/plain';
+        var jsonObj = util_1.Util.toJson(this.$graphModel);
+        var data = JSON.stringify(jsonObj, null, '\t');
+        this.save('json', data, 'class_diagram.json', type);
+    };
+    Graph.prototype.exportPdf = function () {
+        if (!window['jsPDF']) {
+            console.log('jspdf n.a.');
+            return;
+        }
+        var type = 'image/svg+xml';
+        var converter, pdf = new window['jsPDF']('l', 'px', [this.$graphModel.getSize().x, this.$graphModel.getSize().y]);
+        converter = new SVGConverter_1.SVGConverter(this.$view, pdf, { removeInvalid: false });
+        pdf.save('Download.pdf');
+    };
+    Graph.prototype.import = function (data) {
+        var rootElement = this.$graphModel.$view;
+        while (rootElement.hasChildNodes()) {
+            rootElement.removeChild(rootElement.firstChild);
+        }
+        while (this.$view.hasChildNodes()) {
+            this.$view.removeChild(this.$view.firstChild);
+        }
+        this.clearModel();
+        var jsonData = JSON.parse(data);
+        this.load(jsonData);
+        this.layout();
+    };
+    Graph.prototype.exportEPS = function () {
+        var converter, doc = new JSEPS_1.JSEPS({ inverting: true });
+        converter = new SVGConverter_1.SVGConverter(this.$view, doc, { removeInvalid: false });
+        this.save('eps', doc.getData(), 'diagram.eps', doc.getType());
+    };
+    Graph.prototype.exportPng = function () {
+        var canvas, context, a, image = new Image();
+        var xmlNode = this.serializeXmlNode(this.getSvgWithStyleAttributes());
+        var typ = 'image/svg+xml';
+        var url = window.URL.createObjectURL(new Blob([xmlNode], { type: typ }));
+        var size = this.getRootSize();
+        image.onload = function () {
+            canvas = document.createElement('canvas');
+            canvas.width = size.width;
+            canvas.height = size.height;
+            context = canvas.getContext('2d');
+            context.drawImage(image, 0, 0);
+            a = document.createElement('a');
+            a.download = 'class_diagram.png';
+            a.href = canvas.toDataURL('image/png');
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        };
+        image.src = url;
+    };
+    Graph.prototype.getSvgWithStyleAttributes = function () {
+        var oDOM = this.$graphModel.$view.cloneNode(true);
+        this.readElement(oDOM, this.$graphModel.$view);
+        return oDOM;
+    };
+    Graph.prototype.serializeXmlNode = function (xmlNode) {
+        if (window['XMLSerializer'] !== undefined) {
+            return (new window['XMLSerializer']()).serializeToString(xmlNode);
+        }
+        if (xmlNode.xml !== undefined) {
+            return xmlNode.xml;
+        }
+        return xmlNode.outerHTML;
+    };
+    Graph.prototype.getRootSize = function () {
+        var width;
+        var height;
+        width = +this.root.getAttribute('width');
+        height = +this.root.getAttribute('height');
+        return { width: width, height: height };
+    };
+    Graph.prototype.load = function (json, owner) {
+        this.$graphModel = new Model_1.GraphModel();
+        this.$graphModel.init(this);
+        this.$graphModel.load(json);
+    };
+    Graph.prototype.clearModel = function () {
+        this.$graphModel.removeAllElements();
+        this.clearSvgRoot();
+    };
+    Graph.prototype.init = function (owner, property, id) {
+        _super.prototype.init.call(this, owner, property, id);
+        this.layout();
+        return this;
+    };
+    Graph.prototype.propertyChange = function (entity, property, oldValue, newValue) {
+        return;
+    };
+    Graph.prototype.getNextFreePosition = function () {
+        if (!this.$graphModel) {
+            return new BaseElements_1.Point(50, 50);
+        }
+        var point = new BaseElements_1.Point(0, 50);
+        var maxX = 0;
+        var minX = 9000;
+        for (var _i = 0, _a = this.$graphModel.nodes; _i < _a.length; _i++) {
+            var node = _a[_i];
+            maxX = Math.max(maxX, node.getPos().x);
+            minX = Math.min(minX, node.getPos().x);
+        }
+        if (minX > 170) {
+            point.x = 10;
+        }
+        else {
+            point.x = maxX + 200;
+        }
+        return point;
+    };
+    Graph.prototype.addElement = function (type, dontDraw) {
+        var success = this.$graphModel.addElement(type);
+        if (success === true) {
+            this.layout(dontDraw);
+        }
+        return success;
+    };
+    Graph.prototype.addElementWithValues = function (type, optionalValues, layout, dontDraw) {
+        var element = this.$graphModel.addElementWithValues(type, optionalValues);
+        if (element && layout) {
+            this.layout(dontDraw);
+        }
+        return element;
+    };
+    Graph.prototype.layout = function (dontDraw) {
+        this.getLayout().layout(this, this.$graphModel);
+        if (dontDraw) {
+            return;
+        }
+        this.draw();
+    };
+    Graph.prototype.getEvents = function () {
+        return [EventBus_1.EventBus.ELEMENTDRAGOVER, EventBus_1.EventBus.ELEMENTDRAGLEAVE, EventBus_1.EventBus.ELEMENTDROP];
+    };
+    Graph.prototype.draw = function () {
+        this.clearSvgRoot();
+        var model = this.$graphModel;
+        var root = this.root;
+        var max = new BaseElements_1.Point();
+        if (this.options) {
+            max.x = this.options.minWidth || 0;
+            max.y = this.options.minHeight || 0;
+        }
+        for (var _i = 0, _a = model.nodes; _i < _a.length; _i++) {
+            var node = _a[_i];
+            var svg = node.getSVG();
+            EventBus_1.EventBus.register(node, svg);
+            root.appendChild(svg);
+            var temp = void 0;
+            temp = node.getPos().x + node.getSize().x;
+            if (temp > max.x) {
+                max.x = temp;
+            }
+            temp = node.getPos().y + node.getSize().y;
+            if (temp > max.y) {
+                max.y = temp;
+            }
+        }
+        util_1.Util.setAttributeSize(this.root, max.x + 60, max.y + 40);
+        for (var _b = 0, _c = model.edges; _b < _c.length; _b++) {
+            var edge = _c[_b];
+            var svg = edge.getSVG();
+            EventBus_1.EventBus.register(edge, svg);
+            root.appendChild(svg);
+        }
+    };
+    Graph.prototype.drawElement = function (element) {
+        if (!element) {
+            return;
+        }
+        var svg = element.getSVG();
+        this.root.appendChild(svg);
+        var rootSize = this.getRootSize();
+        var newWidth = element.getPos().x + element.getSize().x + 40;
+        var newHeight = element.getPos().y + element.getSize().y;
+        if (rootSize.width < newWidth) {
+            this.root.setAttributeNS(null, 'width', '' + newWidth);
+        }
+        if (rootSize.height < newHeight) {
+            this.root.setAttributeNS(null, 'height', '' + newHeight);
+        }
+        if (element instanceof edges_1.Association) {
+            var edge = element;
+            edge.redraw(edge.$sNode);
+            var srcSvg = element.$sNode.getAlreadyDisplayingSVG();
+            var targetSvg = element.$tNode.getAlreadyDisplayingSVG();
+            this.root.appendChild(srcSvg);
+            this.root.appendChild(targetSvg);
+        }
+        EventBus_1.EventBus.register(element, svg);
+    };
+    Graph.prototype.removeElement = function (element) {
+        if (!element) {
+            return;
+        }
+        var alreadyDisplayingSvg = element.getAlreadyDisplayingSVG();
+        if (util_1.Util.isParentOfChild(this.root, alreadyDisplayingSvg)) {
+            this.root.removeChild(alreadyDisplayingSvg);
+        }
+    };
+    Graph.prototype.generate = function (packageName, path) {
+        this.$graphModel.package = packageName;
+        this.$graphModel.genPath = path;
+        var data, result = util_1.Util.toJson(this.$graphModel);
+        data = JSON.stringify(result, null, '\t');
+        if (window['java'] && typeof window['java'].generate === 'function') {
+            window['java'].generate(data);
+        }
+    };
+    Graph.prototype.readElement = function (parent, origData) {
+        var children = parent.childNodes;
+        var origChildDat = origData.childNodes;
+        for (var cd = 0; cd < children.length; cd++) {
+            var child = children[cd];
+            var tagName = child.tagName;
+            if (this.containerElements.indexOf(tagName) !== -1) {
+                this.readElement(child, origChildDat[cd]);
+            }
+            else if (tagName in this.relevantStyles) {
+                var styleDef = window.getComputedStyle(origChildDat[cd]);
+                var styleString = '';
+                for (var st = 0; st < this.relevantStyles[tagName].length; st++) {
+                    styleString += this.relevantStyles[tagName][st] + ':' + styleDef.getPropertyValue(this.relevantStyles[tagName][st]) + '; ';
+                }
+                child.setAttribute('style', styleString);
+            }
+        }
+    };
+    Graph.prototype.createPattern = function () {
+        var defs = util_1.Util.createShape({ tag: 'defs' });
+        var pattern = util_1.Util.createShape({
+            tag: 'pattern',
+            id: 'raster',
+            patternUnits: 'userSpaceOnUse',
+            width: 40,
+            height: 40
+        });
+        var path = 'M0 4 L0 0 L4 0 M36 0 L40 0 L40 4 M40 36 L40 40 L36 40 M4 40 L0 40 L0 36';
+        var cross = util_1.Util.createShape({
+            tag: 'path',
+            d: path,
+            stroke: '#DDD',
+            'stroke-width': 1,
+            fill: 'none'
+        });
+        var rect = util_1.Util.createShape({
+            tag: 'rect',
+            x: 0,
+            y: 0,
+            width: 40,
+            height: 40,
+            fill: 'none'
+        });
+        pattern.appendChild(rect);
+        pattern.appendChild(cross);
+        defs.appendChild(pattern);
+        return defs;
+    };
+    Graph.prototype.clearSvgRoot = function () {
+        var root = this.root;
+        this.$graphModel.$view.dispatchEvent(util_1.Util.createCustomEvent('click'));
+        while (root.firstChild) {
+            root.removeChild(root.firstChild);
+        }
+        root.appendChild(this.createPattern());
+        var fillValue = 'none';
+        if (this.options.raster) {
+            fillValue = 'url(#raster)';
+        }
+        var background = util_1.Util.createShape({
+            tag: 'rect',
+            id: 'background',
+            width: 5000,
+            height: 5000,
+            x: 0,
+            y: 0,
+            stroke: '#999',
+            'stroke-width': '1',
+            fill: fillValue
+        });
+        root.appendChild(background);
+        var inlineEdit = document.getElementById('inlineEdit');
+        if (inlineEdit && document.body.contains(inlineEdit)) {
+            document.body.removeChild(inlineEdit);
+        }
+    };
+    Graph.prototype.getLayout = function () {
+        if (this.currentlayout) {
+            return this.currentlayout;
+        }
+        var layout = this.options.layout || '';
+        if (this.layoutFactory[layout]) {
+            this.currentlayout = new this.layoutFactory[layout]();
+        }
+        else {
+            this.currentlayout = new layouts.DagreLayout();
+        }
+        return this.currentlayout;
+    };
+    Graph.prototype.initFactories = function () {
+        var noder = nodes;
+        this.nodeFactory = {};
+        for (var id in noder) {
+            if (noder.hasOwnProperty(id) === true) {
+                this.nodeFactory[id] = noder[id];
+            }
+        }
+        var edger = edges;
+        this.edgeFactory = {};
+        for (var id in edger) {
+            if (edger.hasOwnProperty(id) === true) {
+                this.edgeFactory[id] = edger[id];
+            }
+        }
+        var layouter = layouts;
+        this.layoutFactory = {};
+        for (var id in layouter) {
+            if (layouter.hasOwnProperty(id) === true) {
+                this.layoutFactory[id] = layouter[id];
+            }
+        }
+    };
+    Graph.prototype.initCanvas = function () {
+        if (this.options.canvas) {
+            this.$view = document.getElementById(this.options.canvas);
+        }
+        if (!this.$view) {
+            this.$view = document.createElement('div');
+            this.$view.setAttribute('class', 'diagram');
+            document.body.appendChild(this.$view);
+        }
+    };
+    Graph.prototype.initFeatures = function (features) {
+        if (features) {
+            if (features.newedge) {
+                EventBus_1.EventBus.subscribe(new handlers_1.NewEdge(this), 'mousedown', 'mouseup', 'mousemove', 'mouseleave');
+            }
+            this.importFile = new ImportFile_1.ImportFile(this);
+            if (features.import) {
+                EventBus_1.EventBus.subscribe(this.importFile, 'dragover', 'dragleave', 'drop');
+            }
+            if (features.zoom) {
+                var mousewheel = 'onwheel' in document.createElement('div') ? 'wheel' : document.onmousewheel !== undefined ? 'mousewheel' : 'DOMMouseScroll';
+                EventBus_1.EventBus.subscribe(new handlers_1.Zoom(this), mousewheel);
+            }
+            if (features.drag) {
+                EventBus_1.EventBus.subscribe(new handlers_1.Drag(this), 'mousedown', 'mouseup', 'mousemove', 'mouseleave');
+            }
+            if (features.select) {
+                EventBus_1.EventBus.subscribe(new handlers_1.Select(this), 'click', 'drag');
+            }
+            if (features.palette) {
+                var palette = new Palette_1.default(this);
+            }
+            if (features.toolbar) {
+                new Toolbar_1.Toolbar(this).show();
+            }
+            if (features.properties) {
+                var dispatcher = new handlers_1.PropertiesDispatcher(this);
+                dispatcher.dispatch('Clear');
+                EventBus_1.EventBus.subscribe(dispatcher, 'dblclick', 'click', EventBus_1.EventBus.RELOADPROPERTIES);
+            }
+            if (features.addnode) {
+                EventBus_1.EventBus.subscribe(new handlers_1.AddNode(this), 'mousedown', 'mouseup', 'mousemove', 'mouseleave');
+            }
+        }
+    };
+    return Graph;
+}(Control_1.Control));
+exports.Graph = Graph;
+
+
+/***/ }),
+
+/***/ "./elements/Model.ts":
+/*!***************************!*\
+  !*** ./elements/Model.ts ***!
+  \***************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var BaseElements_1 = __webpack_require__(/*! ./BaseElements */ "./elements/BaseElements.ts");
+var edges_1 = __webpack_require__(/*! ./edges */ "./elements/edges/index.ts");
+var nodes_1 = __webpack_require__(/*! ./nodes */ "./elements/nodes/index.ts");
+var util_1 = __webpack_require__(/*! ../util */ "./util.ts");
+var EventBus_1 = __webpack_require__(/*! ../EventBus */ "./EventBus.ts");
+var GraphModel = (function (_super) {
+    __extends(GraphModel, _super);
+    function GraphModel() {
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.nodes = [];
+        _this.edges = [];
+        return _this;
+    }
+    GraphModel.prototype.load = function (data) {
+        this.$isLoading = true;
+        data = data || {};
+        this.property = data.type || data.property || 'classdiagram';
+        this.id = 'RootElement';
+        if (data.nodes) {
+            for (var _i = 0, _a = data.nodes; _i < _a.length; _i++) {
+                var node = _a[_i];
+                this.addNode(node);
+            }
+        }
+        if (data.edges) {
+            for (var _b = 0, _c = data.edges; _b < _c.length; _b++) {
+                var edge = _c[_b];
+                this.addEdge(edge);
+            }
+        }
+        this.$isLoading = false;
+    };
+    GraphModel.prototype.getNodeByPosition = function (x, y) {
+        for (var _i = 0, _a = this.nodes; _i < _a.length; _i++) {
+            var node = _a[_i];
+            var posOfNode = node.getPos();
+            var sizeOfNode = node.getSize();
+            if ((posOfNode.x <= x && (posOfNode.x + sizeOfNode.x) >= x)
+                && (posOfNode.y <= y && (posOfNode.y + sizeOfNode.y) >= y)) {
+                return node;
+            }
+        }
+        return null;
+    };
+    GraphModel.prototype.init = function (owner, property, id) {
+        _super.prototype.init.call(this, owner, property, id);
+        this.initCanvas();
+        return this;
+    };
+    GraphModel.prototype.addElement = function (type) {
+        type = util_1.Util.toPascalCase(type);
+        var id = this.getNewId(type);
+        var element = this.createElement(type, id, {});
+        if (element) {
+            util_1.Util.saveToLocalStorage(this);
+            return true;
+        }
+        return false;
+    };
+    GraphModel.prototype.addElementWithValues = function (type, optionalValues) {
+        type = util_1.Util.toPascalCase(type);
+        var id = this.getNewId(type);
+        var element = this.createElement(type, id, {});
+        if (optionalValues) {
+            if (optionalValues.hasOwnProperty('x') && optionalValues.hasOwnProperty('y')) {
+                var x = optionalValues['x'];
+                var y = optionalValues['y'];
+                element.withPos(x, y);
+            }
+        }
+        util_1.Util.saveToLocalStorage(this);
+        return element;
+    };
+    GraphModel.prototype.removeAllElements = function () {
+        var nodesLength = this.nodes.length;
+        for (var i = 0; i < nodesLength; i++) {
+            this.removeElement(this.nodes[0].id);
+        }
+        this.$view.dispatchEvent(util_1.Util.createCustomEvent('click'));
+    };
+    GraphModel.prototype.removeElement = function (id) {
+        var element = this.getDiagramElementById(id);
+        if (!element) {
+            return false;
+        }
+        this.$owner.removeElement(element);
+        if (element instanceof nodes_1.Node) {
+            var idxOfNode = this.nodes.indexOf(element);
+            if (idxOfNode > -1) {
+                this.nodes.splice(idxOfNode, 1);
+            }
+            while (element.$edges.length > 0) {
+                this.removeElement(element.$edges[0].id);
+            }
+            element.$edges = [];
+        }
+        else if (element instanceof edges_1.Association) {
+            var idxOfEdge = this.edges.indexOf(element);
+            if (idxOfEdge > -1) {
+                this.edges.splice(idxOfEdge, 1);
+            }
+            idxOfEdge = element.$sNode.$edges.indexOf(element);
+            if (idxOfEdge > -1) {
+                element.$sNode.$edges.splice(idxOfEdge, 1);
+            }
+            idxOfEdge = element.$tNode.$edges.indexOf(element);
+            if (idxOfEdge > -1) {
+                element.$tNode.$edges.splice(idxOfEdge, 1);
+            }
+        }
+        util_1.Util.saveToLocalStorage(this);
+        return true;
+    };
+    GraphModel.prototype.getSVG = function () {
+        var size = 10;
+        var path = "M" + -size + " 0 L" + +size + " 0 M0 " + -size + " L0 " + +size;
+        var attr = {
+            tag: 'path',
+            id: 'origin',
+            d: path,
+            stroke: '#999',
+            'stroke-width': '1',
+            fill: 'none'
+        };
+        var shape = this.createShape(attr);
+        var attrText = {
+            tag: 'text',
+            x: 0 - size,
+            y: 0 - size / 1.5,
+            'text-anchor': 'end',
+            'font-family': 'Verdana',
+            'font-size': '9',
+            fill: '#999'
+        };
+        var text = this.createShape(attrText);
+        text.textContent = '(0, 0)';
+        var group = this.createShape({ tag: 'g' });
+        group.appendChild(shape);
+        group.appendChild(text);
+        return group;
+    };
+    GraphModel.prototype.getEvents = function () {
+        return [EventBus_1.EventBus.ELEMENTMOUSEDOWN, EventBus_1.EventBus.ELEMENTMOUSEUP, EventBus_1.EventBus.ELEMENTMOUSELEAVE, EventBus_1.EventBus.ELEMENTMOUSEMOVE, EventBus_1.EventBus.ELEMENTMOUSEWHEEL, EventBus_1.EventBus.ELEMENTCLICK, EventBus_1.EventBus.ELEMENTDRAG];
+    };
+    GraphModel.prototype.getNewId = function (prefix) {
+        var id = (prefix ? prefix.toLowerCase() + '-' : '') + Math.floor(Math.random() * 100000);
+        return id;
+    };
+    GraphModel.prototype.getEdgeById = function (id) {
+        for (var _i = 0, _a = this.edges; _i < _a.length; _i++) {
+            var edge = _a[_i];
+            if (edge.id === id) {
+                return edge;
+            }
+        }
+        return undefined;
+    };
+    GraphModel.prototype.getDiagramElementById = function (id) {
+        return this.getNodeById(id) || this.getEdgeById(id);
+    };
+    GraphModel.prototype.addEdge = function (edge, withPosOfNodes) {
+        if (edge && edge.type) {
+            var graph = this.$owner;
+            var typeExists = false;
+            for (var edgeType in graph.edgeFactory) {
+                if (edgeType === edge.type) {
+                    typeExists = true;
+                    break;
+                }
+            }
+            if (!typeExists) {
+                edge.type = 'Association';
+            }
+        }
+        var type = edge.type || 'Association';
+        type = util_1.Util.toPascalCase(type);
+        var id = this.getNewId(type);
+        var newEdge = this.createElement(type, id, edge);
+        newEdge.type = type;
+        var source;
+        var sourceAsString = edge.source.id || edge.source;
+        if (sourceAsString) {
+            source = this.getNodeById(sourceAsString);
+            if (!source) {
+                source = this.createElement('Clazz', this.getNewId('Clazz'), { name: edge.source });
+                source.init(this);
+            }
+        }
+        var target;
+        var targetAsString = edge.target.id || edge.target;
+        if (targetAsString) {
+            target = this.getNodeById(targetAsString);
+            if (!target) {
+                target = this.createElement('Clazz', this.getNewId('Clazz'), { name: edge.target });
+                target.init(this);
+            }
+        }
+        newEdge.withItem(source, target);
+        if (withPosOfNodes) {
+            var srcX = source.getPos().x + (source.getSize().x / 2);
+            var srcY = source.getPos().y + (source.getSize().y / 2);
+            var targetX = target.getPos().x + (target.getSize().x / 2);
+            var targetY = target.getPos().y + (target.getSize().y / 2);
+            newEdge.addPoint(srcX, srcY);
+            newEdge.addPoint(targetX, targetY);
+        }
+        util_1.Util.saveToLocalStorage(this);
+        return newEdge;
+    };
+    GraphModel.prototype.createElement = function (type, id, data) {
+        var graph = this.$owner;
+        var element;
+        if (graph.nodeFactory[type]) {
+            element = new graph.nodeFactory[type](data);
+            util_1.Util.initControl(this, element, type, id, data);
+            this.nodes.push(element);
+        }
+        if (graph.edgeFactory[type]) {
+            element = new graph.edgeFactory[type](data);
+            util_1.Util.initControl(this, element, type, id, data);
+            this.edges.push(element);
+        }
+        return element;
+    };
+    GraphModel.prototype.initCanvas = function () {
+        var graph = this.$owner;
+        graph.canvasSize = { width: graph.$view.clientWidth, height: graph.$view.clientHeight };
+        graph.root = util_1.Util.createShape({
+            tag: 'svg',
+            id: 'root',
+            width: graph.canvasSize.width,
+            height: graph.canvasSize.height
+        });
+        this.$view = graph.root;
+        graph.$view.appendChild(graph.root);
+        var mousewheel = 'onwheel' in document.createElement('div') ? 'wheel' : document.onmousewheel !== undefined ? 'mousewheel' : 'DOMMouseScroll';
+        EventBus_1.EventBus.register(this, this.$view);
+    };
+    GraphModel.prototype.addNode = function (node) {
+        var type = node['type'] || node.property || 'Node';
+        type = util_1.Util.toPascalCase(type);
+        var id = node['id'] || node['name'] || this.getNewId(type);
+        return this.createElement(type, id, node);
+    };
+    GraphModel.prototype.getNodeById = function (id) {
+        for (var _i = 0, _a = this.nodes; _i < _a.length; _i++) {
+            var node = _a[_i];
+            if (node.id === id) {
+                return node;
+            }
+        }
+        return undefined;
+    };
+    return GraphModel;
+}(BaseElements_1.DiagramElement));
+exports.GraphModel = GraphModel;
+
+
+/***/ }),
+
+/***/ "./elements/edges/Aggregate.ts":
+/*!*************************************!*\
+  !*** ./elements/edges/Aggregate.ts ***!
+  \*************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var Association_1 = __webpack_require__(/*! ./Association */ "./elements/edges/Association.ts");
+var Aggregate = (function (_super) {
+    __extends(Aggregate, _super);
+    function Aggregate() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    Aggregate.prototype.getSVG = function () {
+        var startPoint = this.$points[0];
+        var direction = this.getDirectionOfPointToNode(this.$sNode, startPoint);
+        var path = this.calcCorrectPath(startPoint, direction);
+        var group = _super.prototype.getSVG.call(this);
+        var attr = {
+            tag: 'path',
+            d: path,
+        };
+        this.$diamond = this.createShape(attr);
+        group.appendChild(this.$diamond);
+        return group;
+    };
+    Aggregate.prototype.redraw = function (startNode, dontDrawPoints) {
+        _super.prototype.redraw.call(this, startNode, true);
+        var startPoint = this.$points[0];
+        var direction = 1;
+        if (this.$sNode.id === startNode.id || this.$points.length == 2) {
+            direction = this.getDirectionOfPointToNode(this.$sNode, startPoint);
+            var path = this.calcCorrectPath(startPoint, direction);
+            this.$diamond.setAttributeNS(null, 'd', path);
+        }
+        this.redrawPointsAndInfo();
+    };
+    Aggregate.prototype.calcCorrectPath = function (startPoint, direction) {
+        var startX = startPoint.x;
+        var startY = startPoint.y;
+        var path;
+        switch (direction) {
+            case 0:
+                path = "M" + startX + " " + startY + " L" + (startX + 6) + " " + (startY + 10) + " L" + startX + " " + (startY + 20) + " L" + (startX - 6) + " " + (startY + 10) + " Z";
+                startPoint.y = startPoint.y + 20;
+                break;
+            case 3:
+                path = "M" + startX + " " + startY + " L" + (startX - 10) + " " + (startY + 6) + " L" + (startX - 20) + " " + startY + " L" + (startX - 10) + " " + (startY - 6) + " Z";
+                startPoint.x = startPoint.x - 20;
+                break;
+            case 2:
+                path = "M" + startX + " " + startY + " L" + (startX + 10) + " " + (startY - 6) + " L" + (startX + 20) + " " + startY + " L" + (startX + 10) + " " + (startY + 6) + " Z";
+                startPoint.x = startPoint.x + 20;
+                break;
+            case 1:
+                path = "M" + startX + " " + startY + " L" + (startX - 6) + " " + (startY - 10) + " L" + startX + " " + (startY - 20) + " L" + (startX + 6) + " " + (startY - 10) + " Z";
+                startPoint.y = startPoint.y - 20;
+                break;
+            default:
+                break;
+        }
+        return path;
+    };
+    return Aggregate;
+}(Association_1.Association));
+exports.Aggregate = Aggregate;
+
+
+/***/ }),
+
+/***/ "./elements/edges/Aggregation.ts":
+/*!***************************************!*\
+  !*** ./elements/edges/Aggregation.ts ***!
+  \***************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var index_1 = __webpack_require__(/*! ./index */ "./elements/edges/index.ts");
+var Aggregation = (function (_super) {
+    __extends(Aggregation, _super);
+    function Aggregation() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    Aggregation.prototype.getSVG = function () {
+        var group = _super.prototype.getSVG.call(this);
+        this.$diamond.setAttributeNS(null, 'fill', 'white');
+        return group;
+    };
+    return Aggregation;
+}(index_1.Aggregate));
+exports.Aggregation = Aggregation;
+
+
+/***/ }),
+
+/***/ "./elements/edges/Association.ts":
+/*!***************************************!*\
+  !*** ./elements/edges/Association.ts ***!
+  \***************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var BaseElements_1 = __webpack_require__(/*! ../BaseElements */ "./elements/BaseElements.ts");
+var InfoText_1 = __webpack_require__(/*! ../nodes/InfoText */ "./elements/nodes/InfoText.ts");
+var util_1 = __webpack_require__(/*! ../../util */ "./util.ts");
+var EventBus_1 = __webpack_require__(/*! ../../EventBus */ "./EventBus.ts");
+var edges = __webpack_require__(/*! ../edges */ "./elements/edges/index.ts");
+var Direction;
+(function (Direction) {
+    Direction[Direction["Up"] = 0] = "Up";
+    Direction[Direction["Down"] = 1] = "Down";
+    Direction[Direction["Left"] = 2] = "Left";
+    Direction[Direction["Right"] = 3] = "Right";
+})(Direction = exports.Direction || (exports.Direction = {}));
+var Association = (function (_super) {
+    __extends(Association, _super);
+    function Association(data) {
+        var _this = _super.call(this) || this;
+        _this.$points = [];
+        _this.withData(data);
+        return _this;
+    }
+    Association.prototype.withData = function (data) {
+        if (!data) {
+            return this;
+        }
+        var srcInfo;
+        var trgInfo;
+        if (data.source && typeof data.source !== 'string') {
+            srcInfo = data.source;
+        }
+        else if (data.sourceInfo && typeof data.sourceInfo !== 'string') {
+            srcInfo = data.sourceInfo;
+        }
+        if (srcInfo) {
+            this.sourceInfo = new InfoText_1.InfoText(srcInfo);
+            this.sourceInfo.$owner = this;
+        }
+        if (data.target && typeof data.target !== 'string') {
+            trgInfo = data.target;
+        }
+        else if (data.targetInfo && typeof data.targetInfo !== 'string') {
+            trgInfo = data.targetInfo;
+        }
+        if (trgInfo) {
+            this.targetInfo = new InfoText_1.InfoText(trgInfo);
+            this.targetInfo.$owner = this;
+        }
+        return this;
+    };
+    Association.prototype.updateSrcCardinality = function (cardinality) {
+        this.sourceInfo = this.updateCardinality(this.$sNode, this.sourceInfo, cardinality);
+        this.redrawSourceInfo();
+        util_1.Util.saveToLocalStorage(this.$owner);
+    };
+    Association.prototype.updateTargetCardinality = function (cardinality) {
+        this.targetInfo = this.updateCardinality(this.$tNode, this.targetInfo, cardinality);
+        this.redrawTargetInfo();
+        util_1.Util.saveToLocalStorage(this.$owner);
+    };
+    Association.prototype.updateSrcProperty = function (property) {
+        this.sourceInfo = this.updateProperty(this.$sNode, this.sourceInfo, property);
+        this.redrawSourceInfo();
+        util_1.Util.saveToLocalStorage(this.$owner);
+    };
+    Association.prototype.updateTargetProperty = function (property) {
+        this.targetInfo = this.updateProperty(this.$tNode, this.targetInfo, property);
+        this.redrawTargetInfo();
+        util_1.Util.saveToLocalStorage(this.$owner);
+    };
+    Association.prototype.withItem = function (source, target) {
+        source.$edges.push(this);
+        target.$edges.push(this);
+        this.$sNode = source;
+        this.$tNode = target;
+        this.source = source.id;
+        this.target = target.id;
+        return this;
+    };
+    Association.prototype.getSVG = function () {
+        var group = util_1.Util.createShape({ tag: 'g', id: this.id, class: 'SVGEdge' });
+        var path = this.getPath();
+        var attr = {
+            tag: 'path',
+            d: path,
+            fill: 'none'
+        };
+        var pathLine = this.createShape(attr);
+        attr['style'] = 'stroke-width:20;opacity:0;width:20;height:20';
+        var extendedPathLine = util_1.Util.createShape(attr);
+        group.appendChild(extendedPathLine);
+        group.appendChild(pathLine);
+        if (this.sourceInfo) {
+            var calcPos = this.calcInfoPosNew(this.sourceInfo, this.$sNode);
+            this.sourceInfo.withPos(calcPos.x, calcPos.y);
+            group.appendChild(this.sourceInfo.getSVG());
+        }
+        if (this.targetInfo) {
+            var calcPos = this.calcInfoPosNew(this.targetInfo, this.$tNode);
+            this.targetInfo.withPos(calcPos.x, calcPos.y);
+            group.appendChild(this.targetInfo.getSVG());
+        }
+        this.$pathWideSvg = extendedPathLine;
+        this.$pathSvg = pathLine;
+        this.$view = group;
+        return group;
+    };
+    Association.prototype.getEvents = function () {
+        return [EventBus_1.EventBus.ELEMENTCLICK, EventBus_1.EventBus.ELEMENTDBLCLICK, EventBus_1.EventBus.EDITOR, EventBus_1.EventBus.OPENPROPERTIES];
+    };
+    Association.prototype.convertEdge = function (type, newId, redraw) {
+        if (!edges[type]) {
+            return this;
+        }
+        var newEdge = new edges[type]();
+        newEdge.withItem(this.$sNode, this.$tNode);
+        newEdge.id = newId;
+        newEdge.type = type;
+        newEdge.lineStyle = this.lineStyle;
+        newEdge.$owner = this.$owner;
+        if (this.sourceInfo) {
+            newEdge.sourceInfo = new InfoText_1.InfoText({ property: this.sourceInfo.property, cardinality: this.sourceInfo.cardinality });
+            newEdge.sourceInfo.$owner = newEdge;
+        }
+        if (this.targetInfo) {
+            newEdge.targetInfo = new InfoText_1.InfoText({ property: this.targetInfo.property, cardinality: this.targetInfo.cardinality });
+            newEdge.targetInfo.$owner = newEdge;
+        }
+        this.$points.forEach(function (point) {
+            newEdge.addPoint(point.x, point.y);
+        });
+        var graph = this.getRoot();
+        if (!graph) {
+            return this;
+        }
+        var idx = graph.$graphModel.edges.indexOf(this);
+        graph.$graphModel.removeElement(this.id);
+        if (idx > -1) {
+            graph.$graphModel.edges.splice(idx, 0, newEdge);
+        }
+        else {
+            graph.$graphModel.edges.push(newEdge);
+        }
+        if (!redraw) {
+            return newEdge;
+        }
+        var svgRoot;
+        if (graph) {
+            svgRoot = graph.root;
+        }
+        else {
+            svgRoot = document.getElementById('root');
+        }
+        var newEdgeSvg = newEdge.getSVG();
+        graph.removeElement(this);
+        svgRoot.appendChild(newEdgeSvg);
+        var dontDrawPath = (type !== 'Edge');
+        newEdge.redraw(newEdge.$sNode, dontDrawPath);
+        newEdge.redraw(newEdge.$tNode, dontDrawPath);
+        EventBus_1.EventBus.register(newEdge, newEdgeSvg);
+        this.sourceInfo = undefined;
+        this.targetInfo = undefined;
+        return newEdge;
+    };
+    Association.prototype.redraw = function (startNode, dontDrawPoints) {
+        if (!startNode) {
+            return;
+        }
+        var endPoint;
+        var recalcPoint;
+        var endPointIdx;
+        if (this.$sNode.id === startNode.id) {
+            recalcPoint = this.$points[0];
+            endPointIdx = 1;
+        }
+        else if (this.$tNode.id === startNode.id) {
+            recalcPoint = this.$points[this.$points.length - 1];
+            endPointIdx = this.$points.length - 2;
+        }
+        endPoint = this.$points[endPointIdx];
+        this.calcIntersection(startNode, recalcPoint, endPoint);
+        if (this.$points.length > 2 && this.$tNode.id === startNode.id && endPoint.y > (startNode.getPos().y + (startNode.getSize().y / 2))) {
+            this.$points.splice(endPointIdx, 1);
+        }
+        if (this.$tNode.id === startNode.id && this.$points.length === 2) {
+            this.calcIntersection(this.$sNode, endPoint, recalcPoint);
+        }
+        if (this.$points.length > 2 && this.$sNode.id === startNode.id && (startNode.getPos().y + (startNode.getSize().y / 2) > endPoint.y)) {
+            this.$points.splice(endPointIdx, 1);
+        }
+        if (this.$sNode.id === startNode.id && this.$points.length === 2) {
+            this.calcIntersection(this.$tNode, endPoint, recalcPoint);
+        }
+        if (!dontDrawPoints) {
+            this.redrawPointsAndInfo();
+        }
+    };
+    Association.prototype.getPath = function () {
+        if (this.$points.length === 0) {
+            return '';
+        }
+        var path = 'M';
+        for (var i = 0; i < this.$points.length; i++) {
+            var point = this.$points[i];
+            if (i > 0) {
+                path += 'L';
+            }
+            path += Math.floor(point.x) + ' ' + Math.floor(point.y) + ' ';
+        }
+        return path;
+    };
+    Association.prototype.calcInfoPosNew = function (infoTxt, node) {
+        if (!infoTxt || !node) {
+            return null;
+        }
+        var startPoint;
+        var nextToStartPoint;
+        if (this.$sNode.id === node.id) {
+            startPoint = this.$points[0];
+            nextToStartPoint = this.$points[1];
+        }
+        else if (this.$tNode.id === node.id) {
+            startPoint = this.$points[this.$points.length - 1];
+            nextToStartPoint = this.$points[this.$points.length - 2];
+        }
+        var direction = this.getDirectionOfPointToNode(node, startPoint);
+        var x;
+        var y;
+        switch (direction) {
+            case 0:
+                if (startPoint.x >= nextToStartPoint.x) {
+                    x = startPoint.x + 5;
+                }
+                else {
+                    x = startPoint.x - (infoTxt.getSize().x);
+                }
+                y = startPoint.y + (infoTxt.getSize().y / 2);
+                break;
+            case 3:
+                if (startPoint.y >= nextToStartPoint.y) {
+                    y = startPoint.y + (infoTxt.getSize().y / 2);
+                }
+                else {
+                    y = startPoint.y - (infoTxt.getSize().y / 2) - 5;
+                }
+                x = startPoint.x - (infoTxt.getSize().x) - 5;
+                break;
+            case 2:
+                if (startPoint.y >= nextToStartPoint.y) {
+                    y = startPoint.y + (infoTxt.getSize().y / 2);
+                }
+                else {
+                    y = startPoint.y - (infoTxt.getSize().y / 2) - 5;
+                }
+                x = startPoint.x + 5;
+                break;
+            case 1:
+                if (startPoint.x >= nextToStartPoint.x) {
+                    x = startPoint.x + 5;
+                }
+                else {
+                    x = startPoint.x - (infoTxt.getSize().x);
+                }
+                y = startPoint.y - (infoTxt.getSize().y / 2) - 5;
+                break;
+            default:
+                break;
+        }
+        return new BaseElements_1.Point(x, y);
+    };
+    Association.prototype.clearPoints = function () {
+        this.$points = [];
+        this.$points = [];
+    };
+    Association.prototype.addPoint = function (x, y) {
+        this.$points.push(new BaseElements_1.Point(x, y));
+        return this.$points;
+    };
+    Association.prototype.redrawPointsAndInfo = function () {
+        var path = this.getPath();
+        this.$pathSvg.setAttributeNS(null, 'd', path);
+        this.$pathWideSvg.setAttributeNS(null, 'd', path);
+        this.redrawSourceInfo();
+        this.redrawTargetInfo();
+    };
+    Association.prototype.redrawSourceInfo = function () {
+        if (this.sourceInfo) {
+            var newPosOfSrc = this.calcInfoPosNew(this.sourceInfo, this.$sNode);
+            this.sourceInfo.redrawFromEdge(newPosOfSrc);
+        }
+    };
+    Association.prototype.redrawTargetInfo = function () {
+        if (this.targetInfo) {
+            var newPosOfTarget = this.calcInfoPosNew(this.targetInfo, this.$tNode);
+            this.targetInfo.redrawFromEdge(newPosOfTarget);
+        }
+    };
+    Association.prototype.getDirectionOfPointToNode = function (node, pointNearNode) {
+        var x1 = node.getPos();
+        var x2 = new BaseElements_1.Point((x1.x + node.getSize().x), (x1.y + node.getSize().y));
+        var direction = 1;
+        if (x1.y >= pointNearNode.y) {
+            direction = 1;
+        }
+        if (x2.y <= pointNearNode.y) {
+            direction = 0;
+        }
+        if (x1.x >= pointNearNode.x) {
+            direction = 3;
+        }
+        if (x2.x <= pointNearNode.x) {
+            direction = 2;
+        }
+        return direction;
+    };
+    Association.prototype.updateCardinality = function (node, infoText, cardinality) {
+        if (!infoText) {
+            infoText = new InfoText_1.InfoText({ 'cardinality': cardinality });
+            infoText.$owner = this;
+            var calcPos = this.calcInfoPosNew(infoText, node);
+            infoText.withPos(calcPos.x, calcPos.y);
+            this.$view.appendChild(infoText.getSVG());
+            return infoText;
+        }
+        infoText.cardinality = cardinality;
+        if (infoText.isEmpty()) {
+            this.$view.removeChild(infoText.$view);
+            return undefined;
+        }
+        infoText.updateCardinality(cardinality);
+        return infoText;
+    };
+    Association.prototype.updateProperty = function (node, infoText, property) {
+        if (!infoText) {
+            infoText = new InfoText_1.InfoText({ 'property': property });
+            infoText.$owner = this;
+            var calcPos = this.calcInfoPosNew(infoText, node);
+            infoText.withPos(calcPos.x, calcPos.y);
+            this.$view.appendChild(infoText.getSVG());
+            return infoText;
+        }
+        infoText.property = property;
+        if (infoText.isEmpty()) {
+            this.$view.removeChild(infoText.$view);
+            return undefined;
+        }
+        infoText.updateProperty(property);
+        return infoText;
+    };
+    Association.prototype.calcIntersection = function (startNode, recalcPoint, endPoint) {
+        var h = startNode.getSize().y;
+        var w = startNode.getSize().x;
+        var x1 = startNode.getPos().x + (w / 2);
+        var y1 = startNode.getPos().y + (h / 2);
+        var x2 = endPoint.x;
+        var y2 = endPoint.y;
+        var newX = recalcPoint.x;
+        var newY = recalcPoint.y;
+        if (x2 > x1) {
+            newX = x1 + (w / 2);
+        }
+        else if (x2 < x1) {
+            newX = x1 - (w / 2);
+        }
+        else {
+            newX = x1;
+        }
+        if ((x2 - x1) !== 0) {
+            newY = ((y2 - y1) / (x2 - x1) * (newX - x1)) + y1;
+        }
+        else {
+            if (y1 > y2) {
+                newY = startNode.getPos().y;
+            }
+            else {
+                newY = startNode.getPos().y + h;
+            }
+        }
+        if (!((y1 - (h / 2) <= newY) && newY <= y1 + (h / 2))) {
+            if (y2 > y1) {
+                newY = y1 + (h / 2);
+            }
+            else {
+                newY = y1 - (h / 2);
+            }
+            if ((x2 - x1) !== 0) {
+                var tmp = ((y2 - y1) / (x2 - x1));
+                newX = (newY + (tmp * x1) - y1) / tmp;
+            }
+            else {
+                newX = x1;
+            }
+        }
+        recalcPoint.x = Math.ceil(newX);
+        recalcPoint.y = Math.ceil(newY);
+        return null;
+    };
+    return Association;
+}(BaseElements_1.DiagramElement));
+exports.Association = Association;
+
+
+/***/ }),
+
+/***/ "./elements/edges/Composition.ts":
+/*!***************************************!*\
+  !*** ./elements/edges/Composition.ts ***!
+  \***************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var index_1 = __webpack_require__(/*! ./index */ "./elements/edges/index.ts");
+var Composition = (function (_super) {
+    __extends(Composition, _super);
+    function Composition() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    Composition.prototype.getSVG = function () {
+        var group = _super.prototype.getSVG.call(this);
+        this.$diamond.setAttributeNS(null, 'fill', 'black');
+        return group;
+    };
+    return Composition;
+}(index_1.Aggregate));
+exports.Composition = Composition;
+
+
+/***/ }),
+
+/***/ "./elements/edges/Generalisation.ts":
+/*!******************************************!*\
+  !*** ./elements/edges/Generalisation.ts ***!
+  \******************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var Association_1 = __webpack_require__(/*! ./Association */ "./elements/edges/Association.ts");
+var Generalisation = (function (_super) {
+    __extends(Generalisation, _super);
+    function Generalisation() {
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.$TARGET_ELEMENT_HEIGHT = 12;
+        return _this;
+    }
+    Generalisation.prototype.getSVG = function () {
+        var startPoint = this.$points[0];
+        var direction = this.getDirectionOfPointToNode(this.$sNode, startPoint);
+        var path = this.calcCorrectPath(startPoint, direction);
+        var group = _super.prototype.getSVG.call(this);
+        var attr = {
+            tag: 'path',
+            d: path,
+            fill: 'white'
+        };
+        this.$targetElement = this.createShape(attr);
+        group.appendChild(this.$targetElement);
+        return group;
+    };
+    Generalisation.prototype.redraw = function (startNode, dontDrawPoints) {
+        _super.prototype.redraw.call(this, startNode, true);
+        var startPoint = this.$points[0];
+        var direction = 0;
+        if (this.$sNode.id === startNode.id || this.$points.length == 2) {
+            direction = this.getDirectionOfPointToNode(this.$sNode, startPoint);
+            var path = this.calcCorrectPath(startPoint, direction);
+            this.$targetElement.setAttributeNS(null, 'd', path);
+        }
+        this.redrawPointsAndInfo();
+    };
+    Generalisation.prototype.calcCorrectPath = function (startPoint, direction) {
+        var startX = startPoint.x;
+        var startY = startPoint.y;
+        var path;
+        switch (direction) {
+            case 0:
+                path = "M" + startX + " " + (startY + 3) + " L" + (startX + this.$TARGET_ELEMENT_HEIGHT) + " " + (startY + this.$TARGET_ELEMENT_HEIGHT) + " L" + (startX - this.$TARGET_ELEMENT_HEIGHT) + " " + (startY + this.$TARGET_ELEMENT_HEIGHT) + " Z";
+                startPoint.y = startPoint.y + 12;
+                break;
+            case 3:
+                path = "M" + (startX - 3) + " " + startY + " L" + (startX - this.$TARGET_ELEMENT_HEIGHT) + " " + (startY + this.$TARGET_ELEMENT_HEIGHT) + " L" + (startX - this.$TARGET_ELEMENT_HEIGHT) + " " + (startY - this.$TARGET_ELEMENT_HEIGHT) + " Z";
+                startPoint.x = startPoint.x - 12;
+                break;
+            case 2:
+                path = "M" + (startX + 3) + " " + startY + " L" + (startX + this.$TARGET_ELEMENT_HEIGHT) + " " + (startY - this.$TARGET_ELEMENT_HEIGHT) + " L" + (startX + this.$TARGET_ELEMENT_HEIGHT) + " " + (startY + this.$TARGET_ELEMENT_HEIGHT) + " Z";
+                startPoint.x = startPoint.x + 12;
+                break;
+            case 1:
+                path = "M" + startX + " " + (startY - 3) + " L" + (startX + this.$TARGET_ELEMENT_HEIGHT) + " " + (startY - this.$TARGET_ELEMENT_HEIGHT) + " L" + (startX - this.$TARGET_ELEMENT_HEIGHT) + " " + (startY - this.$TARGET_ELEMENT_HEIGHT) + " Z";
+                startPoint.y = startPoint.y - 12;
+                break;
+            default:
+                break;
+        }
+        return path;
+    };
+    return Generalisation;
+}(Association_1.Association));
+exports.Generalisation = Generalisation;
+
+
+/***/ }),
+
+/***/ "./elements/edges/Implements.ts":
+/*!**************************************!*\
+  !*** ./elements/edges/Implements.ts ***!
+  \**************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var Generalisation_1 = __webpack_require__(/*! ./Generalisation */ "./elements/edges/Generalisation.ts");
+var Implements = (function (_super) {
+    __extends(Implements, _super);
+    function Implements() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    Implements.prototype.getSVG = function () {
+        var group = _super.prototype.getSVG.call(this);
+        this.$pathSvg.setAttributeNS(null, 'stroke-dasharray', '3, 3');
+        return group;
+    };
+    return Implements;
+}(Generalisation_1.Generalisation));
+exports.Implements = Implements;
+
+
+/***/ }),
+
+/***/ "./elements/edges/index.ts":
+/*!*********************************!*\
+  !*** ./elements/edges/index.ts ***!
+  \*********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+function __export(m) {
+    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+}
+Object.defineProperty(exports, "__esModule", { value: true });
+__export(__webpack_require__(/*! ./Association */ "./elements/edges/Association.ts"));
+__export(__webpack_require__(/*! ./Aggregate */ "./elements/edges/Aggregate.ts"));
+__export(__webpack_require__(/*! ./Aggregation */ "./elements/edges/Aggregation.ts"));
+__export(__webpack_require__(/*! ./Composition */ "./elements/edges/Composition.ts"));
+__export(__webpack_require__(/*! ./Generalisation */ "./elements/edges/Generalisation.ts"));
+__export(__webpack_require__(/*! ./Implements */ "./elements/edges/Implements.ts"));
+
+
+/***/ }),
+
+/***/ "./elements/nodes/Attribute.ts":
+/*!*************************************!*\
+  !*** ./elements/nodes/Attribute.ts ***!
+  \*************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var ClazzProperty_1 = __webpack_require__(/*! ./ClazzProperty */ "./elements/nodes/ClazzProperty.ts");
+var Attribute = (function (_super) {
+    __extends(Attribute, _super);
+    function Attribute(data) {
+        return _super.call(this, data) || this;
+    }
+    return Attribute;
+}(ClazzProperty_1.default));
+exports.default = Attribute;
+
+
+/***/ }),
+
+/***/ "./elements/nodes/AutoComplete.ts":
+/*!****************************************!*\
+  !*** ./elements/nodes/AutoComplete.ts ***!
+  \****************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var Control_1 = __webpack_require__(/*! ../../Control */ "./Control.ts");
+var AutoComplete = (function (_super) {
+    __extends(AutoComplete, _super);
+    function AutoComplete() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    AutoComplete.prototype.load = function (json, owner) {
+        this.createControl(this.$owner, json);
+    };
+    AutoComplete.prototype.createControl = function (parent, data) {
+        if (typeof (data) === 'string') {
+            this.id = data;
+        }
+        else {
+            this.id = data['id'];
+        }
+        var div = document.createElement('div');
+        this.$view = div;
+        this.$inputField = document.createElement('input');
+        this.$dataList = document.createElement("datalist");
+        this.$dataList.id = "data_" + this.id;
+        this.$inputField.setAttribute("list", "data_" + this.id);
+        if (data["value"]) {
+            var values = data["value"];
+            this.isMultiple = data["multiple"] != null;
+            var option = void 0;
+            if (this.isMultiple) {
+                this.$selected = document.createElement("select");
+                this.$selected.className = "hide";
+                this.$selected.multiple = true;
+                this.$selected.id = this.id;
+                this.$items = document.createElement("div");
+                this.$items.className = "selectedList";
+                div.appendChild(this.$items);
+                this.$inputField.className = "selectedInput";
+                div.appendChild(this.$selected);
+                this.$view["style"].setProperty("float", "left");
+                var that_1 = this;
+                this.$inputField.oninput = function () { that_1.onChange(); };
+            }
+            else {
+                this.$inputField.id = this.id;
+            }
+            for (var attr in values) {
+                if (!values.hasOwnProperty(attr)) {
+                    continue;
+                }
+                option = document.createElement("option");
+                option.value = values[attr];
+                this.$dataList.appendChild(option);
+                if (this.isMultiple) {
+                    option = document.createElement("option");
+                    option.value = values[attr];
+                    option.innerHTML = values[attr];
+                    this.$selected.appendChild(option);
+                }
+            }
+            div.appendChild(this.$inputField);
+            div.appendChild(this.$dataList);
+        }
+        if (data instanceof Object) {
+            for (var attr in data) {
+                if (!data.hasOwnProperty(attr)) {
+                    continue;
+                }
+                this.$view.setAttribute(attr, data[attr]);
+            }
+            if (this.isMultiple) {
+                div.appendChild(this.$selected);
+            }
+        }
+        parent.appendChild(this);
+    };
+    AutoComplete.prototype.onChange = function () {
+        var textValue = this.$inputField.value;
+        if (textValue.length < 1) {
+            return;
+        }
+        var _loop_1 = function (i) {
+            var item = this_1.$selected.children[i];
+            if (item.value == textValue) {
+                if (item.selected == false) {
+                    item.selected = true;
+                    item.defaultSelected = true;
+                    var test_1 = document.createElement("li");
+                    var that_2 = this_1;
+                    test_1.onclick = function () { that_2.onDelete(item.value, test_1); };
+                    test_1.className = "selectedItem";
+                    test_1.innerHTML = item.value;
+                    this_1.$items.appendChild(test_1);
+                    this_1.$inputField.value = "";
+                }
+            }
+        };
+        var this_1 = this;
+        for (var i = 0; i < this.$selected.children.length; i++) {
+            _loop_1(i);
+        }
+    };
+    AutoComplete.prototype.onDelete = function (value, selectedItem) {
+        this.$items.removeChild(selectedItem);
+        for (var i = 0; i < this.$selected.children.length; i++) {
+            var item = this.$selected.children[i];
+            if (item.value == value) {
+                if (item.selected) {
+                    item.selected = false;
+                }
+            }
+        }
+    };
+    return AutoComplete;
+}(Control_1.Control));
+exports.AutoComplete = AutoComplete;
+
+
+/***/ }),
+
+/***/ "./elements/nodes/BR.ts":
+/*!******************************!*\
+  !*** ./elements/nodes/BR.ts ***!
+  \******************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var Control_1 = __webpack_require__(/*! ../../Control */ "./Control.ts");
+var BR = (function (_super) {
+    __extends(BR, _super);
+    function BR() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    BR.prototype.load = function (json) {
+        this.createControl(this.$owner, json);
+    };
+    BR.prototype.createControl = function (parent, data) {
+        this.$view = document.createElement('br');
+        for (var attr in data) {
+            if (!data.hasOwnProperty(attr)) {
+                continue;
+            }
+            this.$view.setAttribute(attr, data[attr]);
+        }
+        parent.appendChild(this);
+    };
+    return BR;
+}(Control_1.Control));
+exports.BR = BR;
+
+
+/***/ }),
+
+/***/ "./elements/nodes/Button.ts":
+/*!**********************************!*\
+  !*** ./elements/nodes/Button.ts ***!
+  \**********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var Control_1 = __webpack_require__(/*! ../../Control */ "./Control.ts");
+var Button = (function (_super) {
+    __extends(Button, _super);
+    function Button() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    Button.prototype.load = function (json, owner) {
+        this.createControl(this.$owner, json);
+    };
+    Button.prototype.createControl = function (parent, data) {
+        if (typeof (data) === 'string') {
+            this.id = data;
+        }
+        else {
+            this.id = data['id'];
+        }
+        this.$view = document.createElement('button');
+        if (data instanceof Object) {
+            for (var attr in data) {
+                if (!data.hasOwnProperty(attr)) {
+                    continue;
+                }
+                this.$view.setAttribute(attr, data[attr]);
+            }
+        }
+        parent.appendChild(this);
+    };
+    return Button;
+}(Control_1.Control));
+exports.Button = Button;
+
+
+/***/ }),
+
+/***/ "./elements/nodes/Clazz.ts":
+/*!*********************************!*\
+  !*** ./elements/nodes/Clazz.ts ***!
+  \*********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var Node_1 = __webpack_require__(/*! ./Node */ "./elements/nodes/Node.ts");
+var EventBus_1 = __webpack_require__(/*! ../../EventBus */ "./EventBus.ts");
+var util_1 = __webpack_require__(/*! ../../util */ "./util.ts");
+var Attribute_1 = __webpack_require__(/*! ./Attribute */ "./elements/nodes/Attribute.ts");
+var Method_1 = __webpack_require__(/*! ./Method */ "./elements/nodes/Method.ts");
+var Symbol_1 = __webpack_require__(/*! ./Symbol */ "./elements/nodes/Symbol.ts");
+var StereoType_1 = __webpack_require__(/*! ./StereoType */ "./elements/nodes/StereoType.ts");
+var Clazz = (function (_super) {
+    __extends(Clazz, _super);
+    function Clazz(json) {
+        var _this = _super.call(this, json) || this;
+        _this.attributes = [];
+        _this.methods = [];
+        _this.$attrHeight = 25;
+        _this.$attrFontSize = 12;
+        return _this;
+    }
+    Clazz.prototype.load = function (json) {
+        if (!json) {
+            json = {};
+        }
+        var y = this.$labelHeight;
+        var labelObj = json.name || json.id || ('New ' + this.property);
+        var width = 150;
+        width = Math.max(width, util_1.Util.sizeOf(labelObj).width + 60);
+        if (json['attributes']) {
+            for (var _i = 0, _a = json['attributes']; _i < _a.length; _i++) {
+                var attr = _a[_i];
+                var attrObj = new Attribute_1.default(attr);
+                attrObj.$owner = this;
+                this.attributes.push(attrObj);
+                y += this.$attrHeight;
+                width = Math.max(width, util_1.Util.sizeOf(attrObj.toString()).width);
+            }
+        }
+        if (json['stereotype']) {
+            this.stereoType = json['stereotype'];
+        }
+        if (json['methods']) {
+            for (var _b = 0, _c = json['methods']; _b < _c.length; _b++) {
+                var method = _c[_b];
+                var methodObj = new Method_1.default(method);
+                methodObj.$owner = this;
+                this.methods.push(methodObj);
+                y += this.$attrHeight;
+                width = Math.max(width, util_1.Util.sizeOf(methodObj.toString()).width);
+            }
+            y += this.$attrHeight;
+        }
+        this.withSize(width, y);
+    };
+    Clazz.prototype.getAttributes = function () {
+        return this.attributes;
+    };
+    Clazz.prototype.getMethods = function () {
+        return this.methods;
+    };
+    Clazz.prototype.getToolBarIcon = function () {
+        var icon = Symbol_1.SymbolLibary.draw({ type: 'Clazz', property: 'HTML', width: '50', height: '50', transform: 'translate(-26,-21)' });
+        return icon;
+    };
+    Clazz.prototype.getSVG = function () {
+        var pos = this.getPos();
+        var size = this.getSize();
+        var group = this.createShape({ tag: 'g', id: this.id, class: 'SVGClazz', transform: 'translate(0 0)' });
+        if (this.stereoType) {
+            var type = new StereoType_1.StereoType(this.stereoType, pos.x, pos.y);
+            group.appendChild(type.getSVG());
+        }
+        var options = null;
+        var style;
+        var clazzName;
+        if (this.$owner['options']) {
+            var options_1 = this.$owner['options'];
+            if (options_1) {
+                style = options_1.style;
+            }
+        }
+        if (style === 'modern') {
+            clazzName = 'ClazzHeader';
+        }
+        clazzName = 'ClazzHeader';
+        var nodeShape = this.createShape({
+            tag: 'rect',
+            x: pos.x,
+            y: pos.y,
+            height: size.y,
+            width: size.x,
+            rx: 5,
+            ry: 5,
+            fill: 'none',
+            stroke: 'black',
+            'stroke-width': 1
+        });
+        if (clazzName) {
+            nodeShape.setAttribute('className', clazzName);
+            var styleHeader = util_1.Util.getStyle('ClazzHeader');
+        }
+        var label = this.createShape({
+            tag: 'text',
+            x: pos.x + size.x / 2,
+            y: pos.y + this.$labelHeight / 2,
+            'text-anchor': 'middle',
+            'alignment-baseline': 'central',
+            'font-family': 'Verdana',
+            'font-size': this.$labelFontSize,
+            fill: 'black'
+        });
+        label.textContent = this.id;
+        this.$labelView = label;
+        group.appendChild(nodeShape);
+        group.appendChild(label);
+        if (this.attributes.length > 0) {
+            var separatorLabelAttr = this.createShape({
+                tag: 'line',
+                x1: pos.x,
+                y1: pos.y + this.$labelHeight,
+                x2: pos.x + size.x,
+                y2: pos.y + this.$labelHeight,
+                'stroke-width': 1
+            });
+            group.appendChild(separatorLabelAttr);
+            var groupOfAttributes = this.createShape({ tag: 'g', id: (this.id + 'Attributes') });
+            groupOfAttributes.setAttributeNS(null, 'class', 'SVGClazzProperty SVGClazzAttribute');
+            group.appendChild(groupOfAttributes);
+            var y_1 = pos.y + this.$labelHeight + this.$attrHeight / 2;
+            for (var _i = 0, _a = this.attributes; _i < _a.length; _i++) {
+                var attr = _a[_i];
+                var attrSvg = attr.getSVG();
+                attr.$owner = this;
+                attrSvg.setAttributeNS(null, 'x', '' + (pos.x + 10));
+                attrSvg.setAttributeNS(null, 'y', '' + y_1);
+                groupOfAttributes.appendChild(attrSvg);
+                y_1 += this.$attrHeight;
+            }
+        }
+        var height = this.attributes.length * this.$attrHeight;
+        var y = pos.y + this.$labelHeight + height + this.$attrHeight / 2;
+        if (this.methods.length > 0) {
+            var separatorAttrMethods = this.createShape({
+                tag: 'line',
+                x1: pos.x,
+                y1: pos.y + this.$labelHeight + (this.$attrHeight * this.attributes.length),
+                x2: pos.x + size.x,
+                y2: pos.y + this.$labelHeight + (this.$attrHeight * this.attributes.length),
+                'stroke-width': 1
+            });
+            group.appendChild(separatorAttrMethods);
+            var groupOfMethods = this.createShape({ tag: 'g', id: (this.id + 'Methods') });
+            groupOfMethods.setAttributeNS(null, 'class', 'SVGClazzProperty SVGClazzMethod');
+            group.appendChild(groupOfMethods);
+            y += this.$attrHeight / 2;
+            for (var _b = 0, _c = this.methods; _b < _c.length; _b++) {
+                var method = _c[_b];
+                var methodSvg = method.getSVG();
+                method.$owner = this;
+                methodSvg.setAttributeNS(null, 'x', '' + (pos.x + 10));
+                methodSvg.setAttributeNS(null, 'y', '' + y);
+                groupOfMethods.appendChild(methodSvg);
+                y += this.$attrHeight;
+            }
+        }
+        this.$view = group;
+        return group;
+    };
+    Clazz.prototype.copy = function () {
+        var copy;
+        copy = _super.prototype.copy.call(this);
+        copy.id = this.id + 'Copy';
+        this.attributes.forEach(function (attr) {
+            copy.attributes.push(new Attribute_1.default(attr.toString()));
+        });
+        this.methods.forEach(function (method) {
+            copy.methods.push(new Method_1.default(method.toString()));
+        });
+        copy.reCalcSize();
+        return copy;
+    };
+    Clazz.prototype.getEvents = function () {
+        return [EventBus_1.EventBus.ELEMENTMOUSEDOWN, EventBus_1.EventBus.ELEMENTMOUSEMOVE, EventBus_1.EventBus.ELEMENTCLICK,
+            EventBus_1.EventBus.ELEMENTDRAG, EventBus_1.EventBus.ELEMENTDBLCLICK, EventBus_1.EventBus.OPENPROPERTIES, EventBus_1.EventBus.RELOADPROPERTIES];
+    };
+    Clazz.prototype.addProperty = function (value, type) {
+        if (!this[type] || !value || value.length === 0) {
+            return;
+        }
+        var extractedValue;
+        if (type === 'attributes') {
+            extractedValue = new Attribute_1.default(value);
+        }
+        else if (type === 'methods') {
+            extractedValue = new Method_1.default(value);
+        }
+        for (var _i = 0, _a = this[type]; _i < _a.length; _i++) {
+            var valueOfType = _a[_i];
+            if (valueOfType.toString() === extractedValue.toString()) {
+                alert(extractedValue.toString() + ' already exists.');
+                extractedValue = undefined;
+                return;
+            }
+        }
+        this[type].push(extractedValue);
+        util_1.Util.saveToLocalStorage(this.$owner);
+        return extractedValue;
+    };
+    Clazz.prototype.addAttribute = function (value) {
+        return this.addProperty(value, 'attributes');
+    };
+    Clazz.prototype.addAttributeObj = function (attr) {
+        this.attributes.push(attr);
+        return this.getAttributes();
+    };
+    Clazz.prototype.addMethodObj = function (method) {
+        this.methods.push(method);
+        return this.getMethods();
+    };
+    Clazz.prototype.addMethod = function (value) {
+        return this.addProperty(value, 'methods');
+    };
+    Clazz.prototype.removeAttribute = function (attr) {
+        var idx = this.attributes.indexOf(attr);
+        this.attributes.splice(idx, 1);
+    };
+    Clazz.prototype.removeMethod = function (method) {
+        var idx = this.methods.indexOf(method);
+        this.methods.splice(idx, 1);
+    };
+    Clazz.prototype.removeProperty = function (property) {
+        if (property instanceof Attribute_1.default) {
+            this.removeAttribute(property);
+        }
+        if (property instanceof Method_1.default) {
+            this.removeMethod(property);
+        }
+        util_1.Util.saveToLocalStorage(this.$owner);
+    };
+    Clazz.prototype.reDraw = function (drawOnlyIfSizeChanged) {
+        var hasSizeChanged = this.hasSizeChanged();
+        if (drawOnlyIfSizeChanged) {
+            if (!hasSizeChanged[0]) {
+                return;
+            }
+        }
+        if (!this.$view) {
+            return;
+        }
+        this.$owner.$view.removeChild(this.$view);
+        var newSvg = this.getSVG();
+        this.$owner.$view.appendChild(newSvg);
+        this.$view = newSvg;
+        EventBus_1.EventBus.register(this, newSvg);
+        this.redrawEdges();
+    };
+    Clazz.prototype.hasSizeChanged = function () {
+        var oldSize = { width: this.getSize().x, height: this.getSize().y };
+        var newSize = this.reCalcSize();
+        if (oldSize.width === newSize.width && oldSize.height === newSize.height) {
+            return [false, newSize];
+        }
+        return [true, newSize];
+    };
+    Clazz.prototype.updateLabel = function (newLabel) {
+        var _this = this;
+        if (this.$labelView) {
+            this.$labelView.textContent = newLabel;
+        }
+        this.$edges.forEach(function (edge) {
+            if (_this.id === edge.$sNode.id) {
+                edge.source = newLabel;
+            }
+            else if (_this.id === edge.$tNode.id) {
+                edge.target = newLabel;
+            }
+        });
+        util_1.Util.saveToLocalStorage(this.$owner);
+        this.reDraw(true);
+    };
+    Clazz.prototype.updateModifier = function (modifier) {
+        this.modifier = modifier;
+        util_1.Util.saveToLocalStorage(this.$owner);
+    };
+    Clazz.prototype.reCalcSize = function () {
+        var newWidth = 150;
+        newWidth = Math.max(newWidth, util_1.Util.sizeOf(this.id).width + 30);
+        this.attributes.forEach(function (attrEl) {
+            var widthOfAttr;
+            if (attrEl.$view) {
+                widthOfAttr = attrEl.$view.getBoundingClientRect().width;
+            }
+            else {
+                widthOfAttr = util_1.Util.sizeOf(attrEl.toString()).width;
+            }
+            newWidth = Math.max(newWidth, widthOfAttr + 15);
+        });
+        this.methods.forEach(function (methodEl) {
+            var widthOfMethod;
+            if (methodEl.$view) {
+                widthOfMethod = methodEl.$view.getBoundingClientRect().width;
+            }
+            else {
+                widthOfMethod = util_1.Util.sizeOf(methodEl.toString()).width;
+            }
+            newWidth = Math.max(newWidth, widthOfMethod + 15);
+        });
+        this.getSize().x = newWidth;
+        this.getSize().y = this.$labelHeight + ((this.attributes.length + this.methods.length) * this.$attrHeight)
+            + this.$attrHeight;
+        var newSize = { width: newWidth, height: this.getSize().y };
+        return newSize;
+    };
+    Clazz.prototype.redrawEdges = function () {
+        for (var _i = 0, _a = this.$edges; _i < _a.length; _i++) {
+            var edge = _a[_i];
+            edge.redraw(this);
+        }
+    };
+    Clazz.prototype.getModernStyle = function () {
+        var width, height, id, size, z, item, rect, g, board, styleHeader, headerHeight, x, y;
+        board = this.getRoot()['board'];
+        styleHeader = util_1.Util.getStyle('ClazzHeader');
+        headerHeight = styleHeader.getNumber('height');
+        width = 0;
+        height = 10 + headerHeight;
+        if (this.property === 'Object' || this.getRoot()['$graphModel'].getType().toLowerCase() === 'objectdiagram') {
+            id = this.id.charAt(0).toLowerCase() + this.id.slice(1);
+            item = 'Object';
+        }
+        else {
+            id = this.id;
+            item = 'Clazz';
+            if (this['counter']) {
+                id += ' (' + this['counter'] + ')';
+            }
+        }
+        g = util_1.Util.create({ tag: 'g', model: this });
+        size = util_1.Util.sizeOf(id, this);
+        width = Math.max(width, size.width);
+        if (this.attributes && this.attributes.length > 0) {
+            height = height + this.attributes.length * 25;
+            for (z = 0; z < this.attributes.length; z += 1) {
+                width = Math.max(width, util_1.Util.sizeOf(this.attributes[z], this).width);
+            }
+        }
+        else {
+            height += 20;
+        }
+        if (this.methods && this.methods.length > 0) {
+            height = height + this.methods.length * 25;
+            for (z = 0; z < this.methods.length; z += 1) {
+                width = Math.max(width, util_1.Util.sizeOf(this.methods[z], this).width);
+            }
+        }
+        width += 20;
+        var pos = this.getPos();
+        y = pos.y;
+        x = pos.x;
+        rect = {
+            tag: 'rect',
+            'width': width,
+            'height': height,
+            'x': x,
+            'y': y,
+            'class': item + ' draggable',
+            'fill': 'none'
+        };
+        g.appendChild(util_1.Util.create(rect));
+        g.appendChild(util_1.Util.create({
+            tag: 'rect',
+            rx: 0,
+            'x': x,
+            'y': y,
+            height: headerHeight,
+            'width': width,
+            'class': 'ClazzHeader'
+        }));
+        item = util_1.Util.create({
+            tag: 'text',
+            $font: true,
+            'class': 'InfoText',
+            'text-anchor': 'right',
+            'x': x + width / 2 - size.width / 2,
+            'y': y + (headerHeight / 2) + (size.height / 2),
+            'width': size.width
+        });
+        if (this.property === 'Object' || this.getRoot()['$graphModel'].type.toLowerCase() === 'objectdiagram') {
+            item.setAttribute('text-decoration', 'underline');
+        }
+        item.appendChild(document.createTextNode(id));
+        g.appendChild(item);
+        g.appendChild(util_1.Util.create({
+            tag: 'line',
+            x1: x,
+            y1: y + headerHeight,
+            x2: x + width,
+            y2: y + headerHeight,
+            stroke: '#000'
+        }));
+        y += headerHeight + 20;
+        if (this.attributes) {
+            for (z = 0; z < this.attributes.length; z += 1) {
+                g.appendChild(util_1.Util.create({
+                    tag: 'text',
+                    $font: true,
+                    'text-anchor': 'left',
+                    'width': width,
+                    'x': (x + 10),
+                    'y': y,
+                    value: this.attributes[z]
+                }));
+                y += 20;
+            }
+            if (this.attributes.length > 0) {
+                y -= 10;
+            }
+        }
+        if (this.methods && this.methods.length > 0) {
+            g.appendChild(util_1.Util.create({ tag: 'line', x1: x, y1: y, x2: x + width, y2: y, stroke: '#000' }));
+            y += 20;
+            for (z = 0; z < this.methods.length; z += 1) {
+                g.appendChild(util_1.Util.create({
+                    tag: 'text',
+                    $font: true,
+                    'text-anchor': 'left',
+                    'width': width,
+                    'x': x + 10,
+                    'y': y,
+                    value: this.methods[z]
+                }));
+                y += 20;
+            }
+        }
+        return g;
+    };
+    return Clazz;
+}(Node_1.Node));
+exports.Clazz = Clazz;
+
+
+/***/ }),
+
+/***/ "./elements/nodes/ClazzProperty.ts":
+/*!*****************************************!*\
+  !*** ./elements/nodes/ClazzProperty.ts ***!
+  \*****************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var util_1 = __webpack_require__(/*! ../../util */ "./util.ts");
+var BaseElements_1 = __webpack_require__(/*! ../BaseElements */ "./elements/BaseElements.ts");
+var ClazzProperty = (function (_super) {
+    __extends(ClazzProperty, _super);
+    function ClazzProperty(data) {
+        var _this = _super.call(this) || this;
+        _this.modifier = '+';
+        _this.extractData(data);
+        return _this;
+    }
+    ClazzProperty.prototype.update = function (data) {
+        this.extractData(data);
+        this.updateTextOfView();
+    };
+    ClazzProperty.prototype.updateModifier = function (modifier) {
+        this.modifier = modifier;
+        this.updateTextOfView();
+    };
+    ClazzProperty.prototype.updateType = function (type) {
+        this.type = type;
+        this.updateTextOfView();
+    };
+    ClazzProperty.prototype.updateName = function (name) {
+        this.name = name;
+        this.updateTextOfView();
+    };
+    ClazzProperty.prototype.getSVG = function () {
+        var attrText = {
+            tag: 'text',
+            'text-anchor': 'start',
+            'alignment-baseline': 'middle',
+        };
+        var attrSvg = util_1.Util.createShape(attrText);
+        attrSvg.textContent = this.toString();
+        this.$view = attrSvg;
+        return attrSvg;
+    };
+    ClazzProperty.prototype.toString = function () {
+        return this.modifier + " " + this.name + " : " + this.type;
+    };
+    ClazzProperty.prototype.extractData = function (data) {
+        if (!data) {
+            return;
+        }
+        if (data.type) {
+            this.type = data.type;
+        }
+        if (data.name) {
+            this.name = data.name;
+        }
+        if (data.modifier) {
+            this.modifier = data.modifier;
+        }
+        if (typeof data === 'string') {
+            var dataSplitted = data.split(':');
+            if (dataSplitted && dataSplitted.length === 2) {
+                var modifierAndNameSplitted = dataSplitted[0].trim();
+                var firstChar = modifierAndNameSplitted[0];
+                if (firstChar === '+' || firstChar === '-' || firstChar === '#') {
+                    this.modifier = firstChar;
+                    this.name = modifierAndNameSplitted.substring(1, modifierAndNameSplitted.length).trim();
+                }
+                else {
+                    this.name = modifierAndNameSplitted;
+                }
+                this.name = this.name.replace(/ /g, '_');
+                this.type = dataSplitted[1].trim() || 'String';
+                if (this.type.toLowerCase() === 'string') {
+                    this.type = 'String';
+                }
+                this.type = this.type.replace(/ /g, '_');
+            }
+        }
+    };
+    ClazzProperty.prototype.updateTextOfView = function () {
+        this.$view.textContent = this.toString();
+        util_1.Util.saveToLocalStorage(this.$owner.$owner);
+    };
+    return ClazzProperty;
+}(BaseElements_1.DiagramElement));
+exports.default = ClazzProperty;
+
+
+/***/ }),
+
+/***/ "./elements/nodes/Dice.ts":
+/*!********************************!*\
+  !*** ./elements/nodes/Dice.ts ***!
+  \********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var Node_1 = __webpack_require__(/*! ./Node */ "./elements/nodes/Node.ts");
+var Dice = (function (_super) {
+    __extends(Dice, _super);
+    function Dice(data) {
+        var _this = _super.call(this, data) || this;
+        _this.max = 6;
+        _this.$zoom = 0.6;
+        _this.$border = 0.2;
+        _this.withSize(100, 100);
+        return _this;
+    }
+    Dice.prototype.setNumber = function (number) {
+        this.value = number;
+        this.refresh();
+    };
+    Dice.prototype.refresh = function () {
+        if (this.$view) {
+            this.reset();
+            var group = this.createPointValue();
+            if (group) {
+                this.$view.appendChild(group);
+            }
+        }
+    };
+    Dice.prototype.reset = function () {
+        if (this.$view) {
+            while (this.$view.children.length > 1) {
+                if (this.$view.children.item(this.$view.children.length - 1).tagName !== "animateTransform") {
+                    console.log(this.$view.children.item(this.$view.children.length - 1));
+                    this.$view.removeChild(this.$view.children.item(this.$view.children.length - 1));
+                }
+                else {
+                    break;
+                }
+            }
+        }
+    };
+    Dice.prototype.getSVG = function () {
+        var pos = this.getPos();
+        var size = this.getSize();
+        var dice = this.createShape({ tag: 'g' });
+        var attr = {
+            tag: 'rect',
+            x: pos.x + size.x * this.$border,
+            y: pos.y + size.y * this.$border,
+            rx: 4,
+            ry: 4,
+            height: size.y * this.$zoom,
+            width: size.x * this.$zoom,
+            style: 'fill:white;stroke:black;stroke-width:2'
+        };
+        dice.appendChild(this.createShape(attr));
+        var group = this.createPointValue();
+        if (group) {
+            dice.appendChild(group);
+        }
+        this.$view = dice;
+        return dice;
+    };
+    Dice.prototype.animationTimeout = function (newValues) {
+        if (newValues.length > 0) {
+            var newValue = newValues.shift();
+            this.setNumber(newValue);
+            var that_1 = this;
+            setTimeout(function () { that_1.animationTimeout(newValues); }, 100);
+        }
+    };
+    Dice.prototype.roll = function () {
+        this.startAnimation();
+        var values = [];
+        var i;
+        for (i = 1; i < this.max; i++) {
+            values.push(i);
+        }
+        for (i = this.max; i > 0; i--) {
+            values.push(i);
+        }
+        var that = this;
+        values.push(Math.floor(Math.random() * this.max) + 1);
+        setTimeout(function () { that.animationTimeout(values); }, 100);
+    };
+    Dice.prototype.startAnimation = function () {
+        if (this.$animation) {
+            return;
+        }
+        var center = this.getPos().x + this.getSize().x / 2;
+        var attr = {
+            tag: 'animateTransform',
+            attributeType: "xml",
+            attributeName: "transform",
+            type: "rotate",
+            dur: "1s",
+            repeatCount: "1",
+            from: "0 " + center + " " + center,
+            to: "360 " + center + " " + center
+        };
+        this.$animation = this.createShape(attr);
+        this.$view.appendChild(this.$animation);
+    };
+    Dice.prototype.stopAnimation = function () {
+        if (this.$animation) {
+            this.$view.removeChild(this.$animation);
+            this.$animation = null;
+        }
+    };
+    Dice.prototype.createPointValue = function () {
+        if (this.value == 1) {
+            return this.getCircle(2, 2);
+        }
+        else if (this.value == 2) {
+            return this.getCircle(1, 1, 3, 3);
+        }
+        else if (this.value == 3) {
+            return this.getCircle(1, 1, 2, 2, 3, 3);
+        }
+        else if (this.value == 4) {
+            return this.getCircle(1, 1, 1, 3, 3, 1, 3, 3);
+        }
+        else if (this.value == 5) {
+            return this.getCircle(1, 1, 1, 3, 2, 2, 3, 1, 3, 3);
+        }
+        else if (this.value == 6) {
+            return this.getCircle(1, 1, 1, 2, 1, 3, 3, 1, 3, 2, 3, 3);
+        }
+        else if (this.value == 7) {
+            return this.getCircle(1, 1, 1, 2, 1, 3, 2, 2, 3, 1, 3, 2, 3, 3);
+        }
+        else if (this.value == 8) {
+            return this.getCircle(1, 1, 1, 2, 1, 3, 2, 1, 2, 3, 3, 1, 3, 2, 3, 3);
+        }
+        else if (this.value == 9) {
+            return this.getCircle(1, 1, 1, 2, 1, 3, 2, 1, 2, 2, 2, 3, 3, 1, 3, 2, 3, 3);
+        }
+        return null;
+    };
+    Dice.prototype.getCircle = function () {
+        var values = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            values[_i] = arguments[_i];
+        }
+        if (values.length % 2 > 0) {
+            return null;
+        }
+        var size = this.getSize();
+        var pos = this.getPos();
+        var group = this.createShape({ tag: 'g' });
+        for (var i = 0; i < values.length; i += 2) {
+            group.appendChild(this.createCircle(values[i], values[i + 1]));
+        }
+        return group;
+    };
+    Dice.prototype.createCircle = function (x, y) {
+        var size = this.getSize();
+        var radius = size.x / 10 * this.$zoom;
+        var border = size.y * this.$border;
+        var zoom = size.y * this.$zoom;
+        var attr = {
+            tag: 'circle',
+            r: radius,
+            cx: (size.x * this.$zoom * x) / 4 + border,
+            cy: (size.y * this.$zoom * y) / 4 + border,
+            stroke: "black",
+            "stroke-width": "3",
+            fill: "red",
+            style: 'fill:black;stroke:black;stroke-width:2'
+        };
+        return this.createShape(attr);
+    };
+    return Dice;
+}(Node_1.Node));
+exports.Dice = Dice;
+
+
+/***/ }),
+
+/***/ "./elements/nodes/Div.ts":
+/*!*******************************!*\
+  !*** ./elements/nodes/Div.ts ***!
+  \*******************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var Control_1 = __webpack_require__(/*! ../../Control */ "./Control.ts");
+var Div = (function (_super) {
+    __extends(Div, _super);
+    function Div() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    Div.prototype.load = function (data) {
+        var id;
+        if (typeof (data) === 'string') {
+            id = data;
+        }
+        else {
+            id = data.id;
+            this.className = data.class;
+            this.property = data.property;
+        }
+        if (!id) {
+            return;
+        }
+        this.id = id;
+        var div = document.getElementById(id);
+        if (!this.property) {
+            this.property = div.getAttribute('Property');
+        }
+        if (div instanceof HTMLDivElement) {
+            this.$view = div;
+        }
+        else {
+            if (!div) {
+                this.$view = document.createElement('div');
+                this.$view.setAttribute('id', this.id);
+                this.$view.setAttribute('property', this.property);
+                this.$owner.appendChild(this);
+            }
+            else {
+                return;
+            }
+        }
+        if (data.hasOwnProperty('property')) {
+            this.setProperty(data['property']);
+        }
+    };
+    Div.prototype.addItem = function (source, entity) {
+        this.$model = entity;
+        if (entity) {
+            if (!this.className || entity.hasProperty(this.className)) {
+                if (entity.id === this.property.split('.')[0]) {
+                    entity.addListener(this, this.className);
+                }
+            }
+        }
+    };
+    Div.prototype.updateElement = function (property, oldValue, newValue) {
+        this.$view.innerHTML = newValue;
+    };
+    return Div;
+}(Control_1.Control));
+exports.Div = Div;
+
+
+/***/ }),
+
+/***/ "./elements/nodes/Form.ts":
+/*!********************************!*\
+  !*** ./elements/nodes/Form.ts ***!
+  \********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var Control_1 = __webpack_require__(/*! ../../Control */ "./Control.ts");
+var Form = (function (_super) {
+    __extends(Form, _super);
+    function Form() {
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.children = {};
+        return _this;
+    }
+    Form.prototype.load = function (data) {
+        var id;
+        if (typeof (data) === 'string') {
+            id = data;
+        }
+        else {
+            id = data.id;
+        }
+        if (!id) {
+            return;
+        }
+        this.id = id;
+        var form = document.getElementById(id);
+        if (form instanceof HTMLFormElement) {
+            this.$view = form;
+            if (this.$view.hasAttribute('property')) {
+                this.property = this.$view.getAttribute('property');
+            }
+        }
+        else {
+            if (!form) {
+                this.$view = document.createElement('form');
+                this.$view.setAttribute('id', this.id);
+                if (data.hasOwnProperty('property')) {
+                    this.property = data['property'];
+                }
+                for (var attr in data) {
+                    if (data.hasOwnProperty(attr) === false) {
+                        continue;
+                    }
+                    if (attr === 'elements') {
+                        continue;
+                    }
+                    this.$view.setAttribute(attr, data[attr]);
+                }
+                this.$owner.appendChild(this);
+            }
+            else {
+                return;
+            }
+        }
+        var objId = this.property;
+        var hasItem = this.$owner.hasItem(objId);
+        if (hasItem) {
+            var item = this.$owner.getItem(objId);
+            item.addListener(this);
+            this.$model = item;
+        }
+        for (var _i = 0, _a = data.elements; _i < _a.length; _i++) {
+            var field = _a[_i];
+            if (field.hasOwnProperty('property')) {
+                var property = field['property'];
+                property = this.property + '.' + property;
+                field['property'] = property;
+            }
+            if (!field.hasOwnProperty('class')) {
+                field['class'] = 'input';
+            }
+            var control = this.$owner.load(field, this);
+            this.children[control.getId()] = control;
+        }
+    };
+    Form.prototype.setProperty = function (id) {
+        this.property = id;
+        var keys = Object.keys(this.children);
+        for (var k = 0; k < keys.length; k++) {
+            var key = keys[k];
+            var childControl = this.children[key];
+            if (childControl.property) {
+                childControl.setProperty(this.property + '.' + childControl.lastProperty);
+            }
+        }
+    };
+    Object.defineProperty(Form.prototype, "lastProperty", {
+        get: function () {
+            return this.property.split('.')[0];
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Form.prototype.setValue = function (object, attribute, newValue, oldValue) {
+        if (this.$owner != null) {
+            return this.getRoot().setValue(object, attribute, newValue, oldValue);
+        }
+        return _super.prototype.setValue.call(this, object, attribute, newValue, oldValue);
+    };
+    return Form;
+}(Control_1.Control));
+exports.Form = Form;
+
+
+/***/ }),
+
+/***/ "./elements/nodes/HTML.ts":
+/*!********************************!*\
+  !*** ./elements/nodes/HTML.ts ***!
+  \********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var Control_1 = __webpack_require__(/*! ../../Control */ "./Control.ts");
+var HTML = (function (_super) {
+    __extends(HTML, _super);
+    function HTML(data) {
+        var _this = _super.call(this) || this;
+        var id;
+        var tag;
+        if (typeof (data) === 'string') {
+            id = data;
+            data = {};
+        }
+        else if (data) {
+            id = data.id;
+        }
+        if (id) {
+            _this.id = id;
+            _this.$view = document.getElementById(id);
+        }
+        if (!_this.$view) {
+            if (data) {
+                tag = data['tag'] || 'div';
+            }
+            else {
+                tag = 'div';
+            }
+            _this.$view = document.createElement(tag);
+            var parent_1 = document.getElementsByTagName('body')[0];
+            parent_1.appendChild(_this.$view);
+        }
+        if (!parent) {
+            return _this;
+        }
+        _this.writeAttribute(data, _this.$view);
+        return _this;
+    }
+    HTML.prototype.writeAttribute = function (properties, entity) {
+        var lowKey;
+        if (!entity) {
+            lowKey = properties['tag'] || 'div';
+            entity = document.createElement(lowKey);
+        }
+        for (var key in properties) {
+            if (!properties.hasOwnProperty(key)) {
+                continue;
+            }
+            lowKey = key.toLowerCase();
+            if (properties[key] === null) {
+                entity.setAttribute(key, '');
+                continue;
+            }
+            if (lowKey === 'tag' || lowKey.charAt(0) === '$' || lowKey === '$graphModel' || lowKey === 'class') {
+                continue;
+            }
+            if (lowKey === 'children') {
+                if (Array.isArray(properties[key])) {
+                    for (var item in properties[key]) {
+                        if (properties[key].hasOwnProperty(item) === false) {
+                            continue;
+                        }
+                        var child = this.writeAttribute(item);
+                        if (child) {
+                            entity.appendChild(child);
+                        }
+                    }
+                }
+                else {
+                    var child = this.writeAttribute(properties[key]);
+                    if (child) {
+                        entity.appendChild(child);
+                    }
+                }
+                continue;
+            }
+            entity[key] = properties[key];
+        }
+        return entity;
+    };
+    return HTML;
+}(Control_1.Control));
+exports.HTML = HTML;
+
+
+/***/ }),
+
+/***/ "./elements/nodes/InfoText.ts":
+/*!************************************!*\
+  !*** ./elements/nodes/InfoText.ts ***!
+  \************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var BaseElements_1 = __webpack_require__(/*! ../BaseElements */ "./elements/BaseElements.ts");
+var util_1 = __webpack_require__(/*! ../../util */ "./util.ts");
+var Node_1 = __webpack_require__(/*! ./Node */ "./elements/nodes/Node.ts");
+var EventBus_1 = __webpack_require__(/*! ../../EventBus */ "./EventBus.ts");
+var InfoText = (function (_super) {
+    __extends(InfoText, _super);
+    function InfoText(info) {
+        var _this = _super.call(this, info) || this;
+        _this.cardinality = '';
+        if (typeof (info) === 'string') {
+            _this.id = info;
+        }
+        else {
+            if (info.property) {
+                _this.property = info.property;
+            }
+            if (info.cardinality) {
+                _this.cardinality = info.cardinality;
+            }
+        }
+        _this.$isDraggable = true;
+        var calcSize = _this.calcSize();
+        _this.withSize(calcSize.x, calcSize.y);
+        return _this;
+    }
+    InfoText.prototype.updateCardinality = function (cardinality) {
+        this.cardinality = cardinality;
+        var calcSize = this.calcSize();
+        this.withSize(calcSize.x, calcSize.y);
+        if (this.$rectBackground) {
+            this.$rectBackground.setAttributeNS(null, 'width', '' + calcSize.x);
+            this.$rectBackground.setAttributeNS(null, 'height', '' + calcSize.y);
+        }
+        if (!this.$view) {
+            var svg = this.getSVG();
+            this.$owner.$view.appendChild(svg);
+            return;
+        }
+        if ((cardinality.length === 0 && this.property.length > 0) || !this.$cardinalitySvg) {
+            this.$owner.$view.removeChild(this.$view);
+            this.resetAllSvgElements();
+            var svg = this.getSVG();
+            this.$owner.$view.appendChild(svg);
+            return;
+        }
+        if (this.$cardinalitySvg) {
+            this.$cardinalitySvg.textContent = cardinality;
+            if (this.$rectBackground) {
+                this.$rectBackground.setAttributeNS(null, 'width', '' + calcSize.x);
+                this.$rectBackground.setAttributeNS(null, 'height', '' + calcSize.y);
+            }
+            return;
+        }
+        if (this.property.length === 0) {
+            this.$owner.$view.removeChild(this.$view);
+            this.resetAllSvgElements();
+            return;
+        }
+    };
+    InfoText.prototype.updateProperty = function (property) {
+        this.property = property;
+        var calcSize = this.calcSize();
+        this.withSize(calcSize.x, calcSize.y);
+        if (!this.$view) {
+            var svg = this.getSVG();
+            this.$owner.$view.appendChild(svg);
+            return;
+        }
+        if ((property.length === 0 && this.cardinality.length > 0) || !this.$propertySvg) {
+            this.$owner.$view.removeChild(this.$view);
+            this.resetAllSvgElements();
+            var svg = this.getSVG();
+            this.$owner.$view.appendChild(svg);
+            return;
+        }
+        if (this.$propertySvg) {
+            this.$propertySvg.textContent = property;
+            if (this.$rectBackground) {
+                this.$rectBackground.setAttributeNS(null, 'width', '' + calcSize.x);
+                this.$rectBackground.setAttributeNS(null, 'height', '' + calcSize.y);
+            }
+            return;
+        }
+        if (this.cardinality.length === 0) {
+            this.$owner.$view.removeChild(this.$view);
+            this.resetAllSvgElements();
+        }
+    };
+    InfoText.prototype.getSVG = function () {
+        var pos = this.getPos();
+        var group = util_1.Util.create({ tag: 'g', class: 'SVGEdgeInfo', transform: 'translate(0, 0)' });
+        this.$rectBackground = util_1.Util.createShape({
+            tag: 'rect',
+            x: pos.x,
+            y: pos.y - this.$heightOfOneTextItem + 3,
+            width: this.getSize().x,
+            height: this.getSize().y,
+            fill: '#DDD',
+            'stroke-width': 0,
+            rx: '5',
+            ry: '5'
+        });
+        group.appendChild(this.$rectBackground);
+        var y = pos.y;
+        if (this.property) {
+            this.$propertySvg = util_1.Util.createShape({
+                tag: 'text',
+                x: pos.x + 3,
+                y: y,
+                'text-anchor': 'left'
+            });
+            this.$propertySvg.textContent = this.property;
+            group.appendChild(this.$propertySvg);
+            y += this.$heightOfOneTextItem;
+        }
+        if (this.cardinality) {
+            this.$cardinalitySvg = util_1.Util.createShape({
+                tag: 'text',
+                x: pos.x + 3,
+                y: y,
+                'text-anchor': 'left'
+            });
+            this.$cardinalitySvg.textContent = this.cardinality;
+            group.appendChild(this.$cardinalitySvg);
+        }
+        this.$view = group;
+        return group;
+    };
+    InfoText.prototype.isEmpty = function () {
+        var cardinalityAvailable = this.cardinality && this.cardinality.length > 0;
+        var propertyAvailable = this.property && this.property.length > 0;
+        return !propertyAvailable && !cardinalityAvailable;
+    };
+    InfoText.prototype.redrawFromEdge = function (newPos) {
+        if (!newPos) {
+            return;
+        }
+        var oldPos = this.getPos();
+        var diffPos = new BaseElements_1.Point();
+        diffPos.x = newPos.x - oldPos.x;
+        diffPos.y = newPos.y - oldPos.y;
+        var translation = this.$view.getAttributeNS(null, 'transform').slice(10, -1).split(' ');
+        var sx = parseInt(translation[0]);
+        var sy = 0;
+        if (translation.length > 1) {
+            sy = parseInt(translation[1]);
+        }
+        var newTransX = (sx + diffPos.x);
+        var newTransY = (sy + diffPos.y);
+        this.$view.setAttributeNS(null, 'transform', 'translate(' + newTransX + ' ' + newTransY + ')');
+        this.getPos().x = newPos.x;
+        this.getPos().y = newPos.y;
+    };
+    InfoText.prototype.getText = function () {
+        var infoTxt = '';
+        if (this.property) {
+            infoTxt = this.property;
+        }
+        if (this.cardinality) {
+            if (infoTxt.length > 0) {
+                infoTxt += '\n';
+            }
+            infoTxt += this.cardinality;
+        }
+        return infoTxt;
+    };
+    InfoText.prototype.getEvents = function () {
+        return [EventBus_1.EventBus.ELEMENTCLICK, EventBus_1.EventBus.ELEMENTDBLCLICK, EventBus_1.EventBus.OPENPROPERTIES];
+    };
+    InfoText.prototype.calcSize = function () {
+        var text = this.getText();
+        var items = text.split('\n');
+        var maxSize = new BaseElements_1.Point(0, 0);
+        if (text.length === 0) {
+            return maxSize;
+        }
+        for (var i = 0; i < items.length; i += 1) {
+            var sizeOfText = util_1.Util.sizeOf(items[i]);
+            maxSize.x = Math.max(maxSize.x, sizeOfText.width);
+            maxSize.y += sizeOfText.height;
+            this.$heightOfOneTextItem = sizeOfText.height;
+        }
+        return maxSize;
+    };
+    InfoText.prototype.resetAllSvgElements = function () {
+        this.$cardinalitySvg = undefined;
+        this.$view = undefined;
+        this.$propertySvg = undefined;
+    };
+    return InfoText;
+}(Node_1.Node));
+exports.InfoText = InfoText;
+
+
+/***/ }),
+
+/***/ "./elements/nodes/Input.ts":
+/*!*********************************!*\
+  !*** ./elements/nodes/Input.ts ***!
+  \*********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var Control_1 = __webpack_require__(/*! ../../Control */ "./Control.ts");
+var PropertyBinder_1 = __webpack_require__(/*! ../../PropertyBinder */ "./PropertyBinder.ts");
+var Input = (function (_super) {
+    __extends(Input, _super);
+    function Input() {
+        return _super.call(this) || this;
+    }
+    Input.prototype.initViewDataProperties = function (oldData) {
+        var data = _super.prototype.initViewDataProperties.call(this, oldData);
+        if ('checkbox' === this.type || 'radio' === this.type) {
+            data.addFrom('checked', oldData);
+        }
+        data.addFrom('value', oldData);
+        data.addFrom('type', oldData);
+        return data;
+    };
+    Input.prototype.load = function (data) {
+        var id;
+        var inputField;
+        var useData;
+        if (typeof (data) === 'string') {
+            id = data;
+            useData = true;
+        }
+        else {
+            id = data.id;
+            if (data.type) {
+                this.setType(data['type']);
+            }
+            else {
+                this.setType('text');
+            }
+            if (data.hasOwnProperty('property')) {
+                this.setProperty(data['property']);
+            }
+            useData = false;
+        }
+        if (!id) {
+            return;
+        }
+        this.id = id;
+        inputField = document.getElementById(id);
+        if (useData) {
+            if (inputField) {
+                if (inputField.hasAttribute('Property')) {
+                    this.setProperty(inputField.getAttribute('Property'));
+                }
+            }
+        }
+        if (inputField instanceof HTMLInputElement) {
+            this.setView(inputField);
+            this.type = inputField.type;
+        }
+        else {
+            if (!inputField) {
+                this.setView(document.createElement('input'));
+                this.$viewData = this.initViewDataProperties(this.$viewData);
+                if (typeof (data) !== 'string') {
+                    for (var attr in data) {
+                        if (data.hasOwnProperty(attr) === false) {
+                            continue;
+                        }
+                        this.$viewData.setValue(attr, data[attr]);
+                    }
+                }
+                else {
+                    if (this.type) {
+                        this.$view.setAttribute('type', this.type);
+                    }
+                    if (data.hasOwnProperty('class')) {
+                        this.$view.setAttribute('class', data['class']);
+                    }
+                    this.$view.setAttribute('id', this.id);
+                    this.$view.setAttribute('property', this.property);
+                }
+                if (data.value) {
+                    if (this.$model) {
+                        this.$model.setValue(this.lastProperty, data.value);
+                    }
+                }
+                if (this.$model) {
+                    PropertyBinder_1.PropertyBinder.bind(this.$viewData, this.$model, 'value', this.lastProperty);
+                }
+                this.$owner.appendChild(this);
+            }
+            else {
+                return;
+            }
+        }
+    };
+    Input.prototype.addItem = function (source, entity) {
+        if (this.property && entity) {
+            if (entity.id === this.property.split('.')[0]) {
+                this.$model = entity;
+                PropertyBinder_1.PropertyBinder.bind(this.$viewData, this.$model, 'value', this.lastProperty);
+            }
+        }
+    };
+    Input.prototype.controlChanged = function (ev) {
+        if (this.$view instanceof HTMLInputElement === false) {
+            return;
+        }
+        var element = this.$view;
+        if (element.checkValidity()) {
+            _super.prototype.controlChanged.call(this, ev);
+        }
+    };
+    Input.prototype.setType = function (type) {
+        var oldValue = this.type;
+        if (oldValue === type) {
+            return;
+        }
+        if (type === 'radio') {
+            this.$viewData.setValue('checked', null);
+        }
+        else {
+            this.$viewData.removeKey('checked');
+        }
+    };
+    return Input;
+}(Control_1.Control));
+exports.Input = Input;
+
+
+/***/ }),
+
+/***/ "./elements/nodes/Label.ts":
+/*!*********************************!*\
+  !*** ./elements/nodes/Label.ts ***!
+  \*********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var Control_1 = __webpack_require__(/*! ../../Control */ "./Control.ts");
+var Label = (function (_super) {
+    __extends(Label, _super);
+    function Label() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    Label.prototype.load = function (data) {
+        this.createControl(this.$owner, data);
+    };
+    Label.prototype.createControl = function (parent, data) {
+        this.$view = document.createElement('label');
+        for (var attr in data) {
+            if (!data.hasOwnProperty(attr)) {
+                continue;
+            }
+            if (attr === 'textContent') {
+                this.$view.textContent = data['textContent'];
+            }
+            else {
+                this.$view.setAttribute(attr, data[attr]);
+            }
+        }
+        parent.appendChild(this);
+    };
+    return Label;
+}(Control_1.Control));
+exports.Label = Label;
+
+
+/***/ }),
+
+/***/ "./elements/nodes/Method.ts":
+/*!**********************************!*\
+  !*** ./elements/nodes/Method.ts ***!
+  \**********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var util_1 = __webpack_require__(/*! ../../util */ "./util.ts");
+var ClazzProperty_1 = __webpack_require__(/*! ./ClazzProperty */ "./elements/nodes/ClazzProperty.ts");
+var Method = (function (_super) {
+    __extends(Method, _super);
+    function Method(data) {
+        return _super.call(this, data) || this;
+    }
+    Method.prototype.extractData = function (data) {
+        if (!data) {
+            return;
+        }
+        if (data.type) {
+            this.type = data.type;
+        }
+        if (data.name) {
+            this.name = data.name;
+        }
+        if (data.modifier) {
+            this.modifier = data.modifier;
+        }
+        if (typeof data === 'string') {
+            var dataSplitted = data.split(':');
+            if (dataSplitted && dataSplitted.length === 2) {
+                var modifierAndNameSplitted = dataSplitted[0].trim();
+                var firstChar = modifierAndNameSplitted[0];
+                if (firstChar === '+' || firstChar === '-' || firstChar === '#') {
+                    this.modifier = firstChar;
+                    this.name = modifierAndNameSplitted.substring(1, modifierAndNameSplitted.length).trim();
+                }
+                else {
+                    this.name = modifierAndNameSplitted;
+                }
+                this.type = dataSplitted[1].trim() || 'void';
+            }
+            else {
+                var modifierAndNameSplitted = data.trim();
+                var firstChar = modifierAndNameSplitted[0];
+                if (firstChar === '+' || firstChar === '-' || firstChar === '#') {
+                    this.modifier = firstChar;
+                    this.name = modifierAndNameSplitted.substring(1, modifierAndNameSplitted.length).trim();
+                }
+                else {
+                    this.name = modifierAndNameSplitted;
+                }
+                this.type = 'void';
+            }
+        }
+        if (!util_1.Util.includes(this.name, '(') && !util_1.Util.includes(this.name, ')')) {
+            this.name += '()';
+        }
+    };
+    return Method;
+}(ClazzProperty_1.default));
+exports.default = Method;
+
+
+/***/ }),
+
+/***/ "./elements/nodes/Node.ts":
+/*!********************************!*\
+  !*** ./elements/nodes/Node.ts ***!
+  \********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var BaseElements_1 = __webpack_require__(/*! ../BaseElements */ "./elements/BaseElements.ts");
+var Node = (function (_super) {
+    __extends(Node, _super);
+    function Node(data) {
+        var _this = _super.call(this) || this;
+        _this.$edges = [];
+        _this.$minWidth = 150;
+        _this.$minheight = 25;
+        _this.withSize(_this.$minWidth, _this.$minheight);
+        if (data) {
+            if (data['x'] && data['y']) {
+                _this.withPos(data['x'], data['y']);
+            }
+            if (data['width'] || data['height']) {
+                _this.withSize(data['width'], data['height']);
+            }
+        }
+        return _this;
+    }
+    Node.prototype.getSVG = function () {
+        var pos = this.getPos();
+        var size = this.getSize();
+        var attr = {
+            tag: 'rect',
+            x: pos.x - size.x / 2,
+            y: pos.y - size.y / 2,
+            rx: 4,
+            ry: 4,
+            height: size.y,
+            width: size.x,
+            style: 'fill:white;stroke:black;stroke-width:2'
+        };
+        var shape = this.createShape(attr);
+        var attrText = {
+            tag: 'text',
+            x: pos.x,
+            y: pos.y,
+            'text-anchor': 'middle',
+            'alignment-baseline': 'middle',
+            'font-family': 'Verdana',
+            'font-size': '14',
+            fill: 'black'
+        };
+        var text = this.createShape(attrText);
+        text.textContent = this.id;
+        var group = this.createShape({ tag: 'g', id: this.id });
+        group.appendChild(shape);
+        group.appendChild(text);
+        return group;
+    };
+    Node.prototype.copy = function () {
+        var copy;
+        var model = this.$owner || this.getRoot();
+        if (model) {
+            var type = this.property || Node.name;
+            var newId = model.getNewId(type);
+            copy = model.createElement(type, newId, null);
+            copy.withSize(this.getSize().x, this.getSize().y);
+            copy.$owner = model;
+        }
+        else {
+            copy.id = this.id + '-copy';
+            copy.$owner = this.getRoot();
+        }
+        return copy;
+    };
+    Node.prototype.redrawEdges = function () {
+        for (var _i = 0, _a = this.$edges; _i < _a.length; _i++) {
+            var edge = _a[_i];
+            edge.redraw(this);
+        }
+    };
+    return Node;
+}(BaseElements_1.DiagramElement));
+exports.Node = Node;
+
+
+/***/ }),
+
+/***/ "./elements/nodes/SO.ts":
+/*!******************************!*\
+  !*** ./elements/nodes/SO.ts ***!
+  \******************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var BaseElements_1 = __webpack_require__(/*! ../BaseElements */ "./elements/BaseElements.ts");
+var SO = (function (_super) {
+    __extends(SO, _super);
+    function SO() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    SO.create = function (element) {
+        var result = new SO();
+        for (var key in element) {
+            if (element.hasOwnProperty(key) === false) {
+                continue;
+            }
+            result.withKeyValue(key, element[key]);
+        }
+        return result;
+    };
+    SO.prototype.withKeyValue = function (key, value) {
+        if (key === 'typ') {
+            this.property = value;
+        }
+        else if (key === 'x') {
+            this.withPos(value, null);
+        }
+        else if (key === 'y') {
+            this.withPos(null, value);
+        }
+        else if (key === 'width') {
+            this.withSize(value, null);
+        }
+        else if (key === 'height') {
+            this.withSize(null, value);
+        }
+        else {
+            this[key] = value;
+        }
+        return this;
+    };
+    return SO;
+}(BaseElements_1.DiagramElement));
+exports.SO = SO;
+
+
+/***/ }),
+
+/***/ "./elements/nodes/StereoType.ts":
+/*!**************************************!*\
+  !*** ./elements/nodes/StereoType.ts ***!
+  \**************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var Node_1 = __webpack_require__(/*! ./Node */ "./elements/nodes/Node.ts");
+var StereoType = (function (_super) {
+    __extends(StereoType, _super);
+    function StereoType(type, x, y) {
+        var _this = _super.call(this, '') || this;
+        _this.withPos(x, y);
+        _this.setStereoType(type);
+        return _this;
+    }
+    StereoType.prototype.getSVG = function () {
+        var pos = this.getPos();
+        var size = this.getSize();
+        var stereoType = this.createShape({
+            tag: 'text',
+            x: pos.x + size.x / 2,
+            y: pos.y - this.$labelHeight / 2,
+            'text-anchor': 'middle',
+            'alignment-baseline': 'central',
+            'font-family': 'Verdana',
+            'font-size': 10,
+            'font-weight': 'bold',
+            fill: 'black'
+        });
+        stereoType.textContent = this.stereoType;
+        this.$view = stereoType;
+        return stereoType;
+    };
+    StereoType.prototype.setStereoType = function (value) {
+        this.stereoType = '<<' + value + '>>';
+    };
+    StereoType.prototype.getStereoType = function () {
+        return this.stereoType;
+    };
+    return StereoType;
+}(Node_1.Node));
+exports.StereoType = StereoType;
+
+
+/***/ }),
+
+/***/ "./elements/nodes/Symbol.ts":
+/*!**********************************!*\
+  !*** ./elements/nodes/Symbol.ts ***!
+  \**********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var Node_1 = __webpack_require__(/*! ./Node */ "./elements/nodes/Node.ts");
+var SO_1 = __webpack_require__(/*! ./SO */ "./elements/nodes/SO.ts");
+var BaseElements_1 = __webpack_require__(/*! ../BaseElements */ "./elements/BaseElements.ts");
+var util_1 = __webpack_require__(/*! ../../util */ "./util.ts");
+var Symbol = (function (_super) {
+    __extends(Symbol, _super);
+    function Symbol(typ) {
+        var _this = _super.call(this, typ) || this;
+        _this.$heightMax = 0;
+        _this.$heightMin = 0;
+        return _this;
+    }
+    Symbol.prototype.draw = function (typ) {
+        return SymbolLibary.draw(this);
+    };
+    return Symbol;
+}(Node_1.Node));
+exports.Symbol = Symbol;
+var SymbolLibary = (function () {
+    function SymbolLibary() {
+    }
+    SymbolLibary.drawSVG = function (node) {
+        var symbol, fn = this[SymbolLibary.getName(node)];
+        if (typeof fn === 'function') {
+            var parent_1 = SO_1.SO.create(node);
+            parent_1['property'] = 'SVG';
+            symbol = fn(parent_1);
+            return SymbolLibary.createGroup(parent_1, symbol);
+        }
+        return symbol;
+    };
+    SymbolLibary.draw = function (node, parent) {
+        var symbol, fn = this[SymbolLibary.getName(node)];
+        if (typeof fn === 'function') {
+            if (!(node instanceof BaseElements_1.DiagramElement)) {
+                node = SO_1.SO.create(node);
+                if (!node.property) {
+                    node.property = 'SVG';
+                }
+            }
+            symbol = fn.apply(this, [node]);
+            if (!parent) {
+                return SymbolLibary.createGroup(node, symbol);
+            }
+            return SymbolLibary.createGroup(node, symbol);
+        }
+        else if (node.property) {
+            symbol = new Symbol(node.property);
+            symbol.init(node);
+            var pos = node.getPos();
+            var size = node.getSize();
+            symbol.withPos(pos.x, pos.y);
+            symbol.withSize(size.x, size.y);
+            symbol['value'] = node['value'];
+            parent = node['$parent'];
+            return SymbolLibary.draw(symbol, parent);
+        }
+        return null;
+    };
+    SymbolLibary.upFirstChar = function (txt) {
+        return txt.charAt(0).toUpperCase() + txt.slice(1).toLowerCase();
+    };
+    SymbolLibary.isSymbolName = function (typ) {
+        var fn = SymbolLibary['draw' + SymbolLibary.upFirstChar(typ)];
+        return typeof fn === 'function';
+    };
+    SymbolLibary.isSymbol = function (node) {
+        var fn = SymbolLibary[SymbolLibary.getName(node)];
+        return typeof fn === 'function';
+    };
+    SymbolLibary.getName = function (node) {
+        if (node['type']) {
+            return 'draw' + SymbolLibary.upFirstChar(node['type']);
+        }
+        if (node.property) {
+            return 'draw' + SymbolLibary.upFirstChar(node.property);
+        }
+        if (node['src']) {
+            return 'draw' + SymbolLibary.upFirstChar(node['src']);
+        }
+        return 'drawNode';
+    };
+    SymbolLibary.createGroup = function (node, group) {
+        var func, y, z, box, item, transform, i, offsetX = 0, offsetY = 0;
+        var svg;
+        if (node.property.toUpperCase() === 'HTML') {
+            var so = {
+                tag: 'svg',
+                style: { left: (group.x | 0) + node.getPos().x, top: (group.y | 0) + node.getPos().y, position: 'absolute' }
+            };
+            if (node['transform']) {
+                so['transform'] = node['transform'];
+            }
+            svg = util_1.Util.create(so);
+        }
+        else {
+            svg = util_1.Util.create({ tag: 'g' });
+            transform = 'translate(' + group.getPos().x + ' ' + group.getPos().y + ')';
+            if (group.scale) {
+                transform += ' scale(' + group.scale + ')';
+            }
+            if (group.rotate) {
+                transform += ' rotate(' + group.rotate + ')';
+            }
+            svg.setAttribute('transform', transform);
+            if (group['id']) {
+                svg.id = group['id'];
+            }
+        }
+        if (node['tooltip']) {
+            var tooltipTitleAttr = {
+                tag: 'title'
+            };
+            var tooltipTitle = util_1.Util.createShape(tooltipTitleAttr);
+            tooltipTitle.textContent = node['tooltip'];
+            svg.appendChild(tooltipTitle);
+        }
+        if (node['background']) {
+            var attrCircle = {
+                tag: 'circle',
+                cx: 20,
+                cy: 20,
+                r: 17,
+                stroke: '#888',
+                'stroke-width': 0,
+                fill: '#DDD'
+            };
+            svg.appendChild(util_1.Util.create(attrCircle));
+        }
+        for (i = 0; i < group.items.length; i += 1) {
+            svg.appendChild(util_1.Util.create(group.items[i]));
+        }
+        var elements = node['elements'];
+        util_1.Util.setSize(svg, group.width + node.getSize().x, group.height + node.getSize().y);
+        node['$heightMin'] = node.getSize().y;
+        if (elements) {
+            for (i = 0; i < elements.length; i += 1) {
+                if (!elements[i] && elements[i].length < 1) {
+                    elements.splice(i, 1);
+                    i -= 1;
+                }
+            }
+            box = util_1.Util.create({ tag: 'g' });
+            var c = void 0;
+            z = 0;
+            for (c = 0; c < elements.length; c += 1) {
+                if (typeof elements[c] === 'string') {
+                    z += 1;
+                }
+                else {
+                    z += elements[c].length;
+                }
+            }
+            z = z * 25 + 6;
+            box.appendChild(util_1.Util.create({
+                tag: 'rect',
+                rx: 0,
+                x: offsetX,
+                y: (offsetY + 28),
+                width: 70,
+                height: z,
+                stroke: '#000',
+                fill: '#fff',
+                opacity: '0.7'
+            }));
+            node['$heightMax'] = z + node['$heightMin'];
+            svg['elements'] = elements;
+            if (node['type'] === 'DropDown') {
+                svg['activ'] = util_1.Util.create({
+                    tag: 'text',
+                    $font: true,
+                    'text-anchor': 'left',
+                    'width': 60,
+                    'x': (10 + offsetX),
+                    'y': 20,
+                    value: node['activText']
+                });
+                svg.appendChild(svg.activ);
+            }
+            y = offsetY + 46;
+            func = function (event) {
+                if (svg.activ) {
+                    svg.activ.textContent = event.currentTarget.value;
+                }
+            };
+            var txt = void 0;
+            var textClass = 'SVGTEXT';
+            for (z = 0; z < elements.length; z += 1) {
+                if (typeof elements[z] === 'string') {
+                    txt = elements[z];
+                }
+                else {
+                    item = this.addText(y, offsetX, box, elements[z][0], 'SVGTEXT');
+                    y += 26;
+                    for (c = 1; c < elements[z].length; c += 1) {
+                        item = this.addText(y, offsetX, box, '* ' + elements[z][c], 'SVGTEXTITEM');
+                        item['value'] = elements[z];
+                        if (node['action']) {
+                            item['onclick'] = node['action'];
+                        }
+                        else {
+                            item['onclick'] = func;
+                        }
+                        y += 26;
+                    }
+                    txt = elements[z];
+                    var subBox = util_1.Util.create({
+                        tag: 'rect',
+                        rx: 0,
+                        x: offsetX,
+                        y: (offsetY + 28),
+                        width: 60,
+                        height: z,
+                        stroke: '#000',
+                        fill: '#fff',
+                        opacity: '0.7'
+                    });
+                    continue;
+                }
+                item = this.addText(y, offsetX, box, txt, textClass);
+                item['value'] = elements[z];
+                if (node['action']) {
+                    item['onclick'] = node['action'];
+                }
+                else {
+                    item['onclick'] = func;
+                }
+                y += 26;
+            }
+            svg.choicebox = box;
+        }
+        svg.tool = node;
+        svg.onclick = function () {
+            if (svg.status === 'close') {
+                svg.open();
+            }
+            else {
+                svg.close();
+            }
+        };
+        svg.close = function () {
+            if (svg.status === 'open' && svg.choicebox) {
+                this.removeChild(svg.choicebox);
+            }
+            svg.status = 'close';
+            svg.tool.$size.height = svg.tool.heightMin;
+            util_1.Util.setSize(svg, svg.tool.$size.x, svg.tool.$size.y);
+        };
+        svg.open = function () {
+            if (this.tagName === 'svg') {
+                return;
+            }
+            if (svg.status === 'close' && svg.choicebox) {
+                this.appendChild(svg.choicebox);
+            }
+            svg.status = 'open';
+            svg.tool.$size.height = svg.tool.heightMax;
+            util_1.Util.setSize(svg, svg.tool.width, svg.tool.height);
+        };
+        svg.close();
+        return svg;
+    };
+    SymbolLibary.addChild = function (parent, json) {
+        var item;
+        if (json.offsetLeft) {
+            item = json;
+        }
+        else {
+            item = util_1.Util.create(json);
+        }
+        item.setAttribute('class', 'draggable');
+        parent.appendChild(item);
+    };
+    SymbolLibary.all = function (node) {
+        SymbolLibary.drawSmiley(node);
+        SymbolLibary.drawDatabase(node);
+        SymbolLibary.drawLetter(node);
+        SymbolLibary.drawMobilephone(node);
+        SymbolLibary.drawWall(node);
+        SymbolLibary.drawActor(node);
+        SymbolLibary.drawLamp(node);
+        SymbolLibary.drawArrow(node);
+        SymbolLibary.drawButton(node);
+        SymbolLibary.drawDropdown(node);
+        SymbolLibary.drawClassicon(node);
+        SymbolLibary.drawClassWithEdgeicon(node);
+    };
+    SymbolLibary.drawHamburger = function (node) {
+        return SO_1.SO.create({
+            x: node.getPos().x,
+            y: node.getPos().y,
+            width: 50,
+            height: 52,
+            items: [
+                { tag: 'circle', r: 10, fill: '#ccc', cx: 12, cy: 12, 'stroke-width': 1, stroke: 'black' },
+                { tag: 'path', d: 'M 8,7 H 16 M 8,12 H 16 M 8,17 H 16', stroke: 'black', fill: 'none' }
+            ]
+        });
+    };
+    SymbolLibary.drawSmiley = function (node) {
+        return SO_1.SO.create({
+            x: node.getPos().x,
+            y: node.getPos().y,
+            width: 50,
+            height: 52,
+            items: [
+                { tag: 'path', d: 'm49.01774,25.64542a24.5001,24.5 0 1 1 -49.0001,0a24.5001,24.5 0 1 1 49.0001,0z', stroke: 'black', fill: 'none' }, { tag: 'path', d: 'm8,31.5c16,20 32,0.3 32,0.3' },
+                { tag: 'path', d: 'm19.15,20.32a1.74,2.52 0 1 1 -3.49,0a1.74,2.52 0 1 1 3.49,0z' },
+                { tag: 'path', d: 'm33,20.32a1.74,2.52 0 1 1 -3.48,0a1.74,2.52 0 1 1 3.48,0z' },
+                { tag: 'path', d: 'm5.57,31.65c3.39,0.91 4.03,-2.20 4.03,-2.20' },
+                { tag: 'path', d: 'm43,32c-3,0.91 -4,-2.20 -4.04,-2.20' }
+            ]
+        });
+    };
+    SymbolLibary.drawDatabase = function (node) {
+        return SO_1.SO.create({
+            x: node.getPos().x || 0,
+            y: node.getPos().y || 0,
+            width: 25,
+            height: 40,
+            items: [
+                {
+                    tag: 'path',
+                    d: 'm0,6.26c0,-6.26 25.03,-6.26 25.03,0l0,25.82c0,6.26 -25.03,6.26 -25.03,0l0,-25.82z',
+                    stroke: 'black',
+                    fill: 'none'
+                },
+                {
+                    tag: 'path',
+                    d: 'm0,6.26c0,4.69 25.03,4.69 25.03,0m-25.03,2.35c0,4.69 25.03,4.69 25.03,0m-25.03,2.35c0,4.69 25.03,4.69 25.03,0',
+                    stroke: 'black',
+                    fill: 'none'
+                }
+            ]
+        });
+    };
+    SymbolLibary.drawLetter = function (node) {
+        return SO_1.SO.create({
+            x: node.getPos().x || 0,
+            y: node.getPos().y || 0,
+            width: 25,
+            height: 17,
+            items: [
+                { tag: 'path', stroke: 'black', fill: 'none', d: 'm1,1l22,0l0,14l-22,0l0,-14z' },
+                { tag: 'path', stroke: 'black', fill: 'none', d: 'm1.06,1.14l10.94,6.81l10.91,-6.91' }
+            ]
+        });
+    };
+    SymbolLibary.drawMobilephone = function (node) {
+        return SO_1.SO.create({
+            x: node.getPos().x || 0,
+            y: node.getPos().y || 0,
+            width: 25,
+            height: 50,
+            items: [
+                {
+                    tag: 'path',
+                    d: 'm 4.2 0.5 15.61 0c 2 0 3.7 1.65 3.7 3.7l 0 41.6c 0 2-1.65 3.7-3.7 3.7l-15.6 0c-2 0-3.7-1.6-3.7-3.7l 0-41.6c 0-2 1.6-3.7 3.7-3.7z',
+                    fill: 'none',
+                    stroke: 'black'
+                },
+                { tag: 'path', d: 'm 12.5 2.73a 0.5 0.5 0 1 1-1 0 0.5 0.5 0 1 1 1 0z' },
+                { tag: 'path', d: 'm 14 46a 2 2 0 1 1-4 0 2 2 0 1 1 4 0z' },
+                { tag: 'path', d: 'm 8 5 7 0' },
+                { tag: 'path', d: 'm 1.63 7.54 20.73 0 0 34-20.73 0z' }
+            ]
+        });
+    };
+    SymbolLibary.drawWall = function (node) {
+        return SO_1.SO.create({
+            x: node.getPos().x || 0,
+            y: node.getPos().y || 0,
+            width: 25,
+            height: 50,
+            items: [
+                { tag: 'path', d: 'm26,45.44l-5,3.56l-21,-9l0,-36.41l5,-3.56l20.96,9l-0,36.4z' },
+                {
+                    tag: 'path',
+                    stroke: 'white',
+                    d: 'm2.21,11l18.34,7.91m-14.46,-12.57l0,6.3m8.2,21.74l0,6.35m-8.6,-10l0,6.351m4.1,-10.67l0,6.3m4.8,-10.2l0,6.3m-8.87,-10.23l0,6.35m4.78,-10.22l0,6.35m-8,14.5l18.34,7.91m-18.34,-13.91l18.34,7.91m-18.34,-13.91l18.34,7.91m-18.34,-13.91l18.34,7.91m0,-13l0,34m-18.23,-41.84l18.3,8m0,0.11l5,-3.57'
+                }
+            ]
+        });
+    };
+    SymbolLibary.drawActor = function (node) {
+        return SO_1.SO.create({
+            x: node.getPos().x || 0,
+            y: node.getPos().y || 0,
+            width: 25,
+            height: 50,
+            items: [
+                { tag: 'line', stroke: '#000', x1: '12', y1: '10', x2: '12', y2: '30' },
+                { tag: 'circle', stroke: '#000', cy: '5', cx: '12', r: '5' },
+                { tag: 'line', stroke: '#000', y2: '18', x2: '25', y1: '18', x1: '0' },
+                { tag: 'line', stroke: '#000', y2: '39', x2: '5', y1: '30', x1: '12' },
+                { tag: 'line', stroke: '#000', y2: '39', x2: '20', y1: '30', x1: '12' }
+            ]
+        });
+    };
+    SymbolLibary.drawLamp = function (node) {
+        return SO_1.SO.create({
+            x: node.getPos().x || 0,
+            y: node.getPos().y || 0,
+            width: 25,
+            height: 50,
+            items: [
+                {
+                    tag: 'path',
+                    d: 'm 22.47 10.58c-6.57 0-11.89 5.17-11.89 11.54 0 2.35 0.74 4.54 2 6.36 2 4 4.36 5.63 4.42 10.4l 11.15 0c 0.12-4.9 2.5-6.8 4.43-10.4 1.39-1.5 1.8-4.5 1.8-6.4 0-6.4-5.3-11.5-11.9-11.5z',
+                    fill: 'white',
+                    stroke: 'black'
+                },
+                {
+                    tag: 'path',
+                    d: 'm 18.4 40 8 0c 0.58 0 1 0.5 1 1 0 0.6-0.5 1-1 1l-8 0c-0.6 0-1-0.47-1-1 0-0.58 0.47-1 1-1z'
+                },
+                {
+                    tag: 'path',
+                    d: 'm 18.4 42.7 8 0c 0.58 0 1 0.47 1 1 0 0.58-0.47 1-1 1l-8 0c-0.58 0-1-0.47-1-1 0-0.58 0.46-1 1-1z'
+                },
+                {
+                    tag: 'path',
+                    d: 'm 18.4 45.3 8 0c 0.58 0 1 0.47 1 1 0 0.58-0.47 1-1 1l-8 0c-0.58 0-1-0.47-1-1 0-0.58 0.46-1 1-1z'
+                },
+                { tag: 'path', d: 'm 19.5 48c 0.37 0.8 1 1.3 1.9 1.7 0.6 0.3 1.5 0.3 2 0 0.8-0.3 1.4-0.8 1.9-1.8z' },
+                {
+                    tag: 'path',
+                    d: 'm 6 37.5 4.2-4c 0.3-0.3 0.8-0.3 1 0 0.3 0.3 0.3 0.8 0 1.1l-4.2 4c-0.3 0.3-0.8 0.3-1.1 0-0.3-0.3-0.3-0.8 0-1z'
+                },
+                {
+                    tag: 'path',
+                    d: 'm 39 37.56-4.15-4c-0.3-0.3-0.8-0.3-1 0-0.3 0.3-0.3 0.8 0 1l 4.2 4c 0.3 0.3 0.8 0.3 1 0 0.3-0.3 0.3-0.8 0-1z'
+                },
+                {
+                    tag: 'path',
+                    d: 'm 38 23 5.8 0c 0.4 0 0.8-0.3 0.8-0.8 0-0.4-0.3-0.8-0.8-0.8l-5.8 0c-0.4 0-0.8 0.3-0.8 0.8 0 0.4 0.3 0.8 0.8 0.8z'
+                },
+                {
+                    tag: 'path',
+                    d: 'm 1.3 23 6 0c 0.4 0 0.8-0.3 0.8-0.8 0-0.4-0.3-0.8-0.8-0.8l-5.9 0c-0.4 0-0.8 0.3-0.8 0.8 0 0.4 0.3 0.8 0.8 0.8z'
+                },
+                {
+                    tag: 'path',
+                    d: 'm 34.75 11.2 4-4.1c 0.3-0.3 0.3-0.8 0-1-0.3-0.3-0.8-0.3-1 0l-4 4.1c-0.3 0.3-0.3 0.8 0 1 0.3 0.3 0.8 0.3 1 0z'
+                },
+                {
+                    tag: 'path',
+                    d: 'm 11.23 10-4-4c-0.3-0.3-0.8-0.3-1 0-0.3 0.3-0.3 0.8 0 1l 4.2 4c 0.3 0.3 0.8 0.3 1 0 0.3-0.3 0.3-0.8 0-1z'
+                },
+                {
+                    tag: 'path',
+                    d: 'm 21.64 1.3 0 5.8c 0 0.4 0.3 0.8 0.8 0.8 0.4 0 0.8-0.3 0.8-0.8l 0-5.8c 0-0.4-0.3-0.8-0.8-0.8-0.4 0-0.8 0.3-0.8 0.8z'
+                },
+                {
+                    tag: 'path',
+                    d: 'm 26.1 24.3c-0.5 0-1 0.2-1.3 0.4-1.1 0.6-2 3-2.27 3.5-0.26-0.69-1.14-2.9-2.2-3.5-0.7-0.4-2-0.7-2.5 0-0.6 0.8 0.2 2.2 0.9 2.9 1 0.9 3.9 0.9 3.9 0.9 0 0 0 0 0 0 0.54 0 2.8 0 3.7-0.9 0.7-0.7 1.5-2 0.9-2.9-0.2-0.3-0.7-0.4-1.2-0.4z'
+                },
+                { tag: 'path', d: 'm 22.5 28.57 0 10.7' }
+            ]
+        });
+    };
+    SymbolLibary.drawStop = function (node) {
+        return SO_1.SO.create({
+            x: node.getPos().x || 0,
+            y: node.getPos().y || 0,
+            width: 30,
+            height: 30,
+            items: [
+                {
+                    tag: 'path',
+                    fill: '#FFF',
+                    'stroke-width': '2',
+                    stroke: '#B00',
+                    d: 'm 6,6 a 14,14 0 1 0 0.06,-0.06 z m 0,0 20,21'
+                }
+            ]
+        });
+    };
+    SymbolLibary.drawMin = function (node) {
+        return SO_1.SO.create({
+            x: node.getPos().x || 0,
+            y: node.getPos().y || 0,
+            width: 20,
+            height: 20,
+            items: [
+                {
+                    tag: 'path',
+                    fill: 'white',
+                    stroke: '#000',
+                    'stroke-width': 0.2,
+                    'stroke-linejoin': 'round',
+                    d: 'm 0,0 19,0 0,19 -19,0 z'
+                },
+                {
+                    tag: 'path',
+                    fill: 'none',
+                    stroke: '#000',
+                    'stroke-width': '1px',
+                    'stroke-linejoin': 'miter',
+                    d: 'm 4,10 13,-0.04'
+                }
+            ]
+        });
+    };
+    SymbolLibary.drawArrow = function (node) {
+        return SO_1.SO.create({
+            x: node.getPos().x || 0,
+            y: node.getPos().y || 0,
+            width: 10,
+            height: 9,
+            rotate: node['rotate'],
+            items: [
+                { tag: 'path', fill: '#000', stroke: '#000', d: 'M 0,0 10,4 0,9 z' }
+            ]
+        });
+    };
+    SymbolLibary.drawMax = function (node) {
+        return SO_1.SO.create({
+            x: node.getPos().x || 0,
+            y: node.getPos().y || 0,
+            width: 20,
+            height: 20,
+            items: [
+                {
+                    tag: 'path',
+                    fill: 'white',
+                    stroke: '#000',
+                    'stroke-width': 0.2,
+                    'stroke-linejoin': 'round',
+                    'stroke-dashoffset': 2,
+                    'stroke-dasharray': '4.8,4.8',
+                    d: 'm 0,0 4.91187,0 5.44643,0 9.11886,0 0,19.47716 -19.47716,0 0,-15.88809 z'
+                },
+                {
+                    tag: 'path',
+                    fill: 'none',
+                    stroke: '#000',
+                    'stroke-width': '1px',
+                    'stroke-linejoin': 'miter',
+                    d: 'm 4,10 6,0.006 0.02,5 0.01,-11 -0.03,6.02 c 2,-0.01 4,-0.002 6,0.01'
+                }
+            ]
+        });
+    };
+    SymbolLibary.drawButton = function (node) {
+        var btnX, btnY, btnWidth, btnHeight, btnValue;
+        btnX = node.getPos().x || 0;
+        btnY = node.getPos().y || 0;
+        btnWidth = node.getSize().x || 60;
+        btnHeight = node.getSize().y || 28;
+        btnValue = node['value'] || '';
+        return SO_1.SO.create({
+            x: btnX,
+            y: btnY,
+            width: 60,
+            height: 28,
+            items: [
+                {
+                    tag: 'rect',
+                    rx: 8,
+                    x: 0,
+                    y: 0,
+                    width: btnWidth,
+                    height: btnHeight,
+                    stroke: '#000',
+                    filter: 'url(#drop-shadow)',
+                    'class': 'SVGBtn'
+                },
+                { tag: 'text', $font: true, x: 10, y: 18, fill: 'black', value: btnValue, 'class': 'hand' }
+            ]
+        });
+    };
+    SymbolLibary.drawDropdown = function (node) {
+        var btnX, btnY, btnWidth, btnHeight;
+        btnX = node.getPos().x || 0;
+        btnY = node.getPos().y || 0;
+        btnWidth = node.getSize().x || 60;
+        btnHeight = node.getSize().y || 28;
+        return SO_1.SO.create({
+            x: btnX,
+            y: btnY,
+            width: btnWidth,
+            height: btnHeight,
+            items: [
+                {
+                    tag: 'rect',
+                    rx: 0,
+                    x: 0,
+                    y: 0,
+                    width: btnWidth - 20,
+                    height: btnHeight,
+                    stroke: '#000',
+                    fill: 'none'
+                },
+                {
+                    tag: 'rect',
+                    rx: 2,
+                    x: btnWidth - 20,
+                    y: 0,
+                    width: 20,
+                    height: 28,
+                    stroke: '#000',
+                    'class': 'SVGBtn'
+                },
+                {
+                    tag: 'path',
+                    style: 'fill:#000000;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;fill-opacity:1',
+                    d: 'm ' + (btnWidth - 15) + ',13 10,0 L ' + (btnWidth - 10) + ',20 z'
+                }
+            ]
+        });
+    };
+    SymbolLibary.drawClassicon = function (node) {
+        var btnX, btnY, btnWidth, btnHeight;
+        btnX = node.getPos().x || 0;
+        btnY = node.getPos().y || 0;
+        btnWidth = node.getSize().x || 60;
+        btnHeight = node.getSize().y || 28;
+        return SO_1.SO.create({
+            x: btnX,
+            y: btnY,
+            width: btnWidth,
+            height: btnHeight,
+            items: [
+                {
+                    tag: 'path',
+                    d: 'm0,0l10.78832,0l0,4.49982l-10.78832,0.19999l0,9.19963l10.78832,0l0,-9.49962l-10.78832,0.19999l0,-4.59982z',
+                    style: 'fill:none;stroke:#000000;'
+                },
+                {
+                    tag: 'path',
+                    d: 'm25.68807,0l10.78832,0l0,4.49982l-10.78832,0.19999l0,9.19963l10.78832,0l0,-9.49962l-10.78832,0.2l0,-4.59982z',
+                    style: 'fill:none;stroke:#000000;'
+                },
+                { tag: 'line', x1: 11, y1: 7, x2: 25, y2: 7, stroke: '#000' }
+            ]
+        });
+    };
+    SymbolLibary.drawClassWithEdgeicon = function (node) {
+        var btnX = 0, btnY = 0, btnWidth = 0, btnHeight = 0;
+        return SO_1.SO.create({
+            x: btnX,
+            y: btnY,
+            id: node['id'],
+            width: btnWidth,
+            height: btnHeight,
+            items: [
+                {
+                    tag: 'path',
+                    d: 'M2,10 20,10 20,35 2,35 Z M2,17 20,17 M20,10 28,5 28,9 M 28.5,4.7 24,4',
+                    style: 'fill:none;stroke:#000000;transform:scale(0.8);'
+                }
+            ]
+        });
+    };
+    SymbolLibary.drawClazz = function (node) {
+        var btnX = 0, btnY = 0, btnWidth = 0, btnHeight = 0;
+        return SO_1.SO.create({
+            x: btnX,
+            y: btnY,
+            id: node['id'],
+            width: '100%',
+            height: '100%',
+            items: [
+                { tag: 'rect', width: 50, height: 40, x: 0, y: 0, 'stroke-width': 2, stroke: 'black', fill: 'none' },
+                { tag: 'rect', width: 50, height: 12, x: 0, y: 18, 'stroke-width': 1, stroke: 'black', fill: 'none' },
+                { tag: 'text', x: 27, y: 14, 'text-anchor': 'middle', 'font-size': 11, value: 'Class' },
+                { tag: 'text', x: 5, y: 24, 'font-size': 5, value: '+ field: type' },
+                { tag: 'text', x: 5, y: 36, 'font-size': 5, value: '+ method(type)' }
+            ]
+        });
+    };
+    SymbolLibary.drawEdgeicon = function (node) {
+        var btnX = 0, btnY = 0, btnWidth = 0, btnHeight = 0;
+        return SO_1.SO.create({
+            x: btnX,
+            y: btnY,
+            id: node['id'],
+            width: btnWidth,
+            height: btnHeight,
+            items: [
+                {
+                    tag: 'path',
+                    d: 'M10,30 30,10 M19,10 30,10 30,21',
+                    style: 'fill:none;stroke:#555;stroke-width:2;'
+                }
+            ]
+        });
+    };
+    SymbolLibary.drawCopynode = function (node) {
+        var btnX = 0, btnY = 0, btnWidth = 0, btnHeight = 0;
+        return SO_1.SO.create({
+            x: btnX,
+            y: btnY,
+            id: node['id'],
+            width: btnWidth,
+            height: btnHeight,
+            items: [
+                {
+                    tag: 'path',
+                    d: 'M5 5 L15 5 L15 20 L5 20 Z M5 10 L15 10',
+                    style: 'fill:white;stroke:#000;stroke-width: 1;',
+                    transform: 'scale(1.3) translate(4 4)'
+                },
+                {
+                    tag: 'path',
+                    d: 'M8 2 L18 2 L18 17 L8 17 Z M8 7 L18 7'
+                        + 'M11 4.5 L15 4.5 '
+                        + 'M10 10 L16 10 '
+                        + 'M10 13 L16 13 ',
+                    style: 'fill:white;stroke:#000;stroke-width: 1;',
+                    transform: 'scale(1.3) translate(4 4)'
+                }
+            ]
+        });
+    };
+    SymbolLibary.drawBasket = function (node) {
+        var btnX = 0, btnY = 0, btnWidth = 0, btnHeight = 0;
+        return SO_1.SO.create({
+            x: btnX,
+            y: btnY,
+            id: node['id'],
+            background: node['brackground'] || false,
+            width: btnWidth,
+            height: btnHeight,
+            items: [
+                {
+                    tag: 'path',
+                    d: 'M12 12 L18 12 L18 11 L22 11 L22 12 L28 12 L28 14 L27 14 L27 29 L13 29 L13 14 L12 14 Z M13 14 L27 14 M20 17 L20 26 M17 16 L17 27 M23 16 L23 27',
+                    style: 'fill:white;stroke:#000;stroke-width: 1;'
+                }
+            ]
+        });
+    };
+    SymbolLibary.drawPencil = function (node) {
+        var btnX = 0, btnY = 0, btnWidth = 0, btnHeight = 0;
+        return SO_1.SO.create({
+            x: btnX,
+            y: btnY,
+            id: node['id'],
+            background: node['brackground'] || false,
+            width: btnWidth,
+            height: btnHeight,
+            items: [
+                {
+                    tag: 'path',
+                    d: 'M6 20 L12 23 L33 23 L33 17 L12 17 Z M30 17 L30 23 M12 17 L12 23 M15 19 L28 19 M15 21 L28 21',
+                    stroke: '#000',
+                    'stroke-width': 1,
+                    fill: 'white'
+                }
+            ]
+        });
+    };
+    SymbolLibary.addText = function (y, offsetX, box, text, textClass) {
+        var item;
+        box.appendChild(util_1.Util.create({
+            tag: 'text',
+            $font: true,
+            'text-anchor': 'left',
+            width: 70,
+            x: 10,
+            y: y,
+            class: textClass,
+            value: text,
+            eventValue: text
+        }));
+        if (textClass === 'SVGTEXT') {
+            textClass = 'SVGChoiceText';
+        }
+        else {
+            textClass = 'SVGChoice';
+        }
+        item = util_1.Util.create({
+            tag: 'rect',
+            rx: 0,
+            x: offsetX,
+            y: y - 18,
+            width: 70,
+            height: 24,
+            stroke: 'none',
+            class: textClass,
+        });
+        item['eventValue'] = text;
+        box.appendChild(item);
+        return item;
+    };
+    SymbolLibary.prototype.getToolBarIcon = function () {
+        return null;
+    };
+    return SymbolLibary;
+}());
+exports.SymbolLibary = SymbolLibary;
+
+
+/***/ }),
+
+/***/ "./elements/nodes/Table.ts":
+/*!*********************************!*\
+  !*** ./elements/nodes/Table.ts ***!
+  \*********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var Control_1 = __webpack_require__(/*! ../../Control */ "./Control.ts");
+var BridgeElement_1 = __webpack_require__(/*! ../../BridgeElement */ "./BridgeElement.ts");
+var Data_1 = __webpack_require__(/*! ../../Data */ "./Data.ts");
+var util_1 = __webpack_require__(/*! ../../util */ "./util.ts");
+var Table = (function (_super) {
+    __extends(Table, _super);
+    function Table() {
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.items = [];
+        _this.columns = [];
+        _this.cells = {};
+        _this.showedItems = [];
+        _this.itemsIds = {};
+        _this.searchColumns = [];
+        _this.searchText = [];
+        _this.moveElement = null;
+        _this.isDrag = false;
+        return _this;
+    }
+    Object.defineProperty(Table.prototype, "lastProperty", {
+        get: function () {
+            return this.property.split('.')[0];
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Table.indexOfChild = function (item) {
+        var i = 0;
+        var child = item.gui;
+        while ((child = child.previousSibling) !== null) {
+            i++;
+        }
+        return i;
+    };
+    Table.prototype.load = function (data) {
+        var id;
+        if (typeof (data) === 'string') {
+            id = data;
+        }
+        else {
+            id = data.id;
+            if (data.property) {
+                this.property = data.property;
+            }
+            if (data.searchColumns) {
+                var search_1 = [];
+                if (typeof (data.searchColumns) === 'string') {
+                    search_1 = data.searchColumns.split(' ');
+                }
+                else {
+                    search_1 = data.searchColumns;
+                }
+                for (var z = 0; z < search_1.length; z++) {
+                    var item = search_1[z].trim();
+                    if (item.length > 0) {
+                        if (this.searchColumns.indexOf(item) < 0) {
+                            this.searchColumns.push(item);
+                        }
+                    }
+                }
+            }
+        }
+        if (!id) {
+            return;
+        }
+        if (this.$view) {
+            if (data['columns']) {
+                for (var i in data['columns']) {
+                    if (data['columns'].hasOwnProperty(i) === false) {
+                        continue;
+                    }
+                    var col = this.parseData(data['columns'][i]);
+                    this.addHeaderInfo(col);
+                    this.columns.push(col);
+                    this.tableOption.parentElement.insertBefore(col.$element, this.tableOption);
+                }
+                for (var i in this.showedItems) {
+                    var item = this.showedItems[i];
+                    var cell_1 = void 0;
+                    while (item.gui.children.length < this.columns.length) {
+                        cell_1 = document.createElement('td');
+                        item.gui.appendChild(cell_1);
+                    }
+                    while (item.gui.children.length > this.columns.length) {
+                        item.gui.removeChild(item.gui.children[item.gui.children.length - 1]);
+                    }
+                    for (var c = 0; c < this.columns.length; c++) {
+                        var name_1 = this.columns[c].attribute;
+                        cell_1 = item.gui.children[c];
+                        cell_1.innerHTML = item.model.getValue(name_1);
+                    }
+                }
+            }
+            return;
+        }
+        this.$view = document.getElementById(id);
+        var headerrow;
+        if (this.$view) {
+            if (!this.property) {
+                this.property = this.$view.getAttribute('property');
+            }
+        }
+        else {
+            this.$view = document.createElement('table');
+            this.$owner.appendChild(this);
+        }
+        if (!this.$bodysection) {
+            this.$bodysection = document.createElement('tbody');
+            this.$view.appendChild(this.$bodysection);
+        }
+        if (data['classname']) {
+            this.$view.className = data['classname'];
+        }
+        else {
+            this.$view.className = 'mdl-data-table mdl-js-data-table mdl-data-table--selectable mdl-shadow--2dp';
+        }
+        this.id = id;
+        this.$view.id = id;
+        this.$view.setAttribute('type', this.constructor['name'].toLowerCase());
+        var counter = 0;
+        for (var c = 0; c < this.$view.children.length; c++) {
+            var row = this.$view.children[c];
+            if (row instanceof HTMLTableSectionElement) {
+                if (row.tagName === 'THEAD') {
+                    headerrow = row;
+                    var children = row.children;
+                    for (var i = 0; i < children.length; i++) {
+                        this.parsingHeader(row.children[i]);
+                    }
+                }
+                else {
+                    var children = row.children;
+                    for (var i = 0; i < children.length; i++) {
+                        this.parsingData(row.children[i]);
+                    }
+                }
+            }
+            else {
+                if (counter === 0) {
+                    headerrow = row;
+                    this.parsingHeader(row);
+                }
+                else {
+                    this.parsingData(row);
+                }
+            }
+            counter++;
+        }
+        if (!headerrow || !this.$headersection) {
+            if (!this.$headersection) {
+                var header = this.$view.getElementsByTagName('thead');
+                if (header.length === 0) {
+                    this.$headersection = document.createElement('thead');
+                    this.$view.appendChild(this.$headersection);
+                }
+                else {
+                    this.$headersection = header.item(0);
+                }
+            }
+            if (!headerrow) {
+                headerrow = document.createElement('tr');
+                this.$headersection.appendChild(headerrow);
+            }
+        }
+        if (data['columns']) {
+            for (var i in data['columns']) {
+                if (data['columns'].hasOwnProperty(i) === false) {
+                    continue;
+                }
+                var col = this.parseData(data['columns'][i]);
+                this.addHeaderInfo(col);
+                this.columns.push(col);
+                headerrow.appendChild(col.$element);
+            }
+            this.tableOption = document.createElement('th');
+            this.tableOption.classList.add('tableOption');
+            headerrow.appendChild(this.tableOption);
+            var context = this.addOptionItem(null, this.tableOption, true);
+            var contentChild = this.addOptionItem('show', context, true);
+            this.addOptionItem('show', contentChild, false);
+        }
+        this.registerEvents(['mousemove', 'mousedown', 'mouseup', 'resize', 'dragstart', 'dragover', 'drop', 'dragend']);
+        var searchBar = document.createElement('tr');
+        var cell = document.createElement('td');
+        cell.setAttribute('colspan', '' + (this.columns.length));
+        searchBar.appendChild(cell);
+        var search = document.createElement('input');
+        search.className = 'search';
+        var that = this;
+        search.addEventListener('keyup', function (evt) {
+            that.search(evt.target['value']);
+        });
+        cell.appendChild(search);
+        if (this.resultColumn) {
+            if (this.resultColumn.indexOf('#') !== 0) {
+                this.countElement = document.createElement('div');
+                searchBar.appendChild(this.countElement);
+            }
+            else {
+                for (var z = 0; z < this.$headersection.children.length; z++) {
+                    if (this.$headersection.children[z].innerHTML === this.resultColumn) {
+                        this.countColumn = this.$headersection.children[z];
+                        this.countColumnPos = z;
+                        break;
+                    }
+                }
+            }
+        }
+        var first = this.$headersection.children.item(0);
+        this.$headersection.insertBefore(searchBar, first);
+        this.updateElement(this.property, null);
+    };
+    Table.prototype.tableEvent = function (type, e) {
+        var button = 0;
+        var eventX = 0;
+        if (e instanceof MouseEvent) {
+            button = e.buttons;
+            eventX = e.pageX;
+        }
+        if (type === 'mouseup') {
+            this.moveElement = null;
+        }
+        else if (type === 'mousedown' || type === 'resize') {
+            this.moveElement = null;
+            if (button === 1) {
+                var c = void 0;
+                for (c = 0; c < this.columns.length; c++) {
+                    if (this.columns[c].$resize === e.target) {
+                        this.moveElement = this.columns[c];
+                        this.movePos = c;
+                        this.isDrag = false;
+                        break;
+                    }
+                    else if (this.columns[c].$element === e.target) {
+                        this.moveElement = this.columns[c];
+                        this.movePos = c;
+                        this.isDrag = true;
+                    }
+                }
+                this.moveTimeStamp = e.timeStamp;
+                this.moveX = eventX;
+            }
+            else {
+                this.moveTimeStamp = 0;
+            }
+        }
+        else if (type === 'mousemove') {
+            if (button === 1 && this.moveElement) {
+                if (this.moveTimeStamp && e.timeStamp - this.moveTimeStamp < 2000) {
+                    if (this.isDrag) {
+                    }
+                    else {
+                        var x = eventX - this.moveX;
+                        var width = this.moveElement.$element.offsetWidth;
+                        this.moveElement.$element.width = '' + (width + x);
+                        e.stopPropagation();
+                    }
+                }
+                this.moveX = eventX;
+                this.moveTimeStamp = e.timeStamp;
+            }
+        }
+        else if (this.isDrag) {
+            this.columnDragEvent(type, e);
+        }
+    };
+    Table.prototype.parsingHeader = function (row) {
+        for (var i in row.children) {
+            if (row.children.hasOwnProperty(i) === false) {
+                continue;
+            }
+            var column = row.children[i];
+            var id = column.innerHTML.trim();
+            var col = null;
+            for (var c in this.columns) {
+                if (this.columns.hasOwnProperty(i) === false) {
+                    continue;
+                }
+                if (this.columns[c].label === id) {
+                    col = this.columns[c];
+                    col.$element = column;
+                    break;
+                }
+            }
+            if (col === null) {
+                col = new Column();
+                col.label = id;
+                col.attribute = column.getAttribute('attribute');
+                col.$element = column;
+                this.columns.push(col);
+            }
+            this.addHeaderInfo(col);
+        }
+    };
+    Table.prototype.parsingData = function (row) {
+        var id = row.getAttribute('id');
+        var item = this.$owner.getItem(id);
+        for (var i in row.children) {
+            if (row.children.hasOwnProperty(i) === false) {
+                continue;
+            }
+            var cell = row.children[i];
+            var colAttribute = this.columns[i].attribute;
+            if (colAttribute.indexOf('\.') < 0) {
+                item[colAttribute] = cell.innerHTML.trim();
+            }
+        }
+    };
+    Table.prototype.propertyChange = function (entity, property, oldValue, newValue) {
+        if (entity) {
+            if (this.property && !entity.hasProperty(property)) {
+                return;
+            }
+        }
+        if (entity.id === undefined) {
+            return;
+        }
+        var item = this.itemsIds[entity.id];
+        var row;
+        if (!item) {
+            item = new BridgeElement_1.default(entity);
+            this.items.push(item);
+            this.itemsIds[entity.id] = item;
+        }
+        row = this.cells[entity.id];
+        if (row) {
+            item.gui = row;
+        }
+        if (this.searching(item) === false) {
+            return;
+        }
+        var cell;
+        var showItem = false;
+        if (!row) {
+            showItem = true;
+            row = document.createElement('tr');
+            var count = this.columns.length;
+            for (var i = 0; i < count; i++) {
+                cell = document.createElement('td');
+                row.appendChild(cell);
+            }
+            this.cells[entity.id] = row;
+            item.gui = row;
+        }
+        for (var c = 0; c < this.columns.length; c++) {
+            var name_2 = this.columns[c].attribute;
+            if (name_2 === property) {
+                cell = row.children[c];
+                cell.innerHTML = newValue;
+            }
+        }
+        if (showItem) {
+            this.showItem(item, true);
+        }
+    };
+    Table.prototype.sort = function (column) {
+        if (this.sortColumn === column) {
+            if (this.direction === 1) {
+                this.direction = -1;
+                column.$element.classList.remove('asc');
+                column.$element.classList.add('desc');
+            }
+            else {
+                this.direction = 1;
+                column.$element.classList.remove('desc');
+                column.$element.classList.add('asc');
+            }
+        }
+        else {
+            if (this.sortColumn !== null) {
+                this.sortColumn.$element.classList.remove('desc');
+                this.sortColumn.$element.classList.remove('asc');
+            }
+            this.sortColumn = column;
+            this.sortColumn.$element.classList.add('asc');
+            this.direction = 1;
+        }
+        var that = this;
+        var sort = function (a, b) {
+            return that.sorting(a, b);
+        };
+        this.showedItems.sort(sort);
+        var len = this.showedItems.length;
+        var body = this.$bodysection;
+        var i = 0;
+        while (i < len) {
+            var item = this.showedItems[i];
+            if (i !== Table.indexOfChild(item)) {
+                break;
+            }
+            i = i + 1;
+        }
+        while (body.children.length > i) {
+            body.removeChild(body.children.item(body.children.length - 1));
+        }
+        while (i < len) {
+            var item = this.showedItems[i];
+            body.appendChild(item.gui);
+            i = i + 1;
+        }
+    };
+    Table.prototype.sorting = function (a, b) {
+        var path = this.sortColumn.attribute.split('.');
+        var itemA = a.model.prop;
+        var itemB = b.model.prop;
+        var check = this.sortColumn.attribute;
+        for (var p = 0; p < path.length; p++) {
+            check = path[p];
+            if (itemA[check]) {
+                itemA = itemA[check];
+            }
+            else {
+                return 0;
+            }
+            if (itemB[check]) {
+                itemB = itemB[check];
+            }
+            else {
+                return 0;
+            }
+        }
+        if (itemA !== itemB) {
+            if (this.direction === 1) {
+                return (itemA < itemB) ? -1 : 1;
+            }
+            return (itemA < itemB) ? 1 : -1;
+        }
+        return 0;
+    };
+    Table.prototype.search = function (origSearchText) {
+        if (!origSearchText) {
+            origSearchText = '';
+        }
+        var searchText = origSearchText.trim().toLowerCase();
+        if (searchText === this.lastSearchText && searchText !== '') {
+            return;
+        }
+        var oldSearch = this.lastSearchText;
+        this.lastSearchText = searchText;
+        this.parseSearchArray();
+        if (searchText !== '' && oldSearch !== null && searchText.indexOf(oldSearch) >= 0 && searchText.indexOf('|') < 0) {
+            this.searchArray(this.showedItems);
+        }
+        else {
+            this.searchSet(this.items);
+        }
+        this.refreshCounter();
+    };
+    Table.prototype.refreshCounter = function () {
+        if (this.countColumn) {
+            this.countColumn.innerHTML = this.columns[this.countColumnPos].label + ' (' + this.showedItems.length + ')';
+        }
+    };
+    Table.prototype.parseSearchArray = function () {
+        var pos = 0;
+        var split = [];
+        var quote = false;
+        for (var i = 0; i < this.lastSearchText.length; i++) {
+            if ((this.lastSearchText.charAt(i) === ' ') && !quote) {
+                var txt = this.lastSearchText.substring(pos, i).trim();
+                if (txt.length > 0) {
+                    split.push(txt);
+                }
+                pos = i + 1;
+            }
+            else if (this.lastSearchText.charAt(i) === '\"') {
+                if (quote) {
+                    var txt = this.lastSearchText.substring(pos, i).trim();
+                    if (txt.length > 0) {
+                        split.push(txt);
+                    }
+                    pos = i + 1;
+                }
+                else {
+                    pos = i + 1;
+                }
+                quote = !quote;
+            }
+        }
+        if (pos < this.lastSearchText.length) {
+            split.push(this.lastSearchText.substring(pos, this.lastSearchText.length).trim());
+        }
+        this.searchText = split;
+        return split;
+    };
+    Table.prototype.searchArray = function (root) {
+        this.showedItems = [];
+        for (var i = 0; i < root.length; i++) {
+            var item = root[i];
+            this.showItem(item, this.searching(item));
+        }
+    };
+    Table.prototype.searchSet = function (root) {
+        this.showedItems = [];
+        for (var _i = 0, root_1 = root; _i < root_1.length; _i++) {
+            var item = root_1[_i];
+            var child = item;
+            this.showItem(child, this.searching(child));
+        }
+    };
+    Table.prototype.showItem = function (item, visible) {
+        if (visible) {
+            this.showedItems.push(item);
+            this.$bodysection.appendChild(item.gui);
+        }
+        else if (item.gui && item.gui.parentElement) {
+            this.$bodysection.removeChild(item.gui);
+        }
+    };
+    Table.prototype.searching = function (item) {
+        var fullText = '';
+        for (var i = 0; i < this.searchColumns.length; i++) {
+            fullText = fullText + ' ' + item.model.getValue(this.searchColumns[i]);
+        }
+        fullText = fullText.trim().toLowerCase();
+        for (var z = 0; z < this.searchText.length; z++) {
+            if ('' !== this.searchText[z]) {
+                var orSplit = void 0;
+                if (this.searchText[z].indexOf('|') > 0) {
+                    orSplit = this.searchText[z].split('|');
+                }
+                else {
+                    orSplit = [this.searchText[z]];
+                }
+                var o = 0;
+                for (; o < orSplit.length; o++) {
+                    var pos = orSplit[o].indexOf(':');
+                    if (orSplit[o].indexOf('#') === 0 && pos > 1) {
+                        var value = orSplit[o].substring(pos + 1);
+                        var column = orSplit[o].substring(1, pos - 1);
+                        var dataValue = item.model.getValue(column);
+                        if (dataValue) {
+                            if (dataValue.toString().toLowerCase().indexOf(value) >= 0) {
+                                break;
+                            }
+                        }
+                    }
+                    else if (orSplit[o].length > 1 && orSplit[o].indexOf('-') === 0) {
+                        if (fullText.indexOf(orSplit[o].substring(1)) < 0) {
+                            break;
+                        }
+                    }
+                    else if (fullText.indexOf(orSplit[o]) >= 0) {
+                        break;
+                    }
+                }
+                if (o === orSplit.length) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    };
+    Table.prototype.getColumn = function () {
+        return this.columns;
+    };
+    Table.prototype.updateElement = function (property, value) {
+        for (var _i = 0, _a = this.items; _i < _a.length; _i++) {
+            var item = _a[_i];
+            if (item instanceof BridgeElement_1.default) {
+                item.model.removeListener(this);
+            }
+        }
+        this.items = [];
+        this.itemsIds = {};
+        if (this.property !== undefined) {
+            var items = this.$owner.getItems();
+            for (var j in items) {
+                if (items.hasOwnProperty(j)) {
+                    var item = items[j];
+                    if (item instanceof Data_1.default) {
+                        if (property === j) {
+                            var i = new BridgeElement_1.default(item);
+                            this.items.push(i);
+                            this.itemsIds[item.id] = i;
+                        }
+                    }
+                }
+            }
+            this.redrawAllElements();
+        }
+    };
+    Table.prototype.setValue = function (object, attribute, newValue, oldValue) {
+        if (this.$owner !== null) {
+            return this.getRoot().setValue(object, attribute, newValue, oldValue);
+        }
+        return _super.prototype.setValue.call(this, object, attribute, newValue, oldValue);
+    };
+    Table.prototype.redrawAllElements = function () {
+        var children = this.$bodysection.children;
+        for (var i = 0; i < children.length; i++) {
+            var child = children.item(i);
+            this.$bodysection.removeChild(child);
+        }
+        for (var _i = 0, _a = this.items; _i < _a.length; _i++) {
+            var obj = _a[_i];
+            obj.model.addListener(this);
+            var row = this.createRow(obj);
+            this.$bodysection.appendChild(row);
+            this.cells[obj.id] = row;
+        }
+    };
+    Table.prototype.parseData = function (column) {
+        var col = new Column();
+        col.label = column.label || column.id;
+        col.attribute = column.attribute || column.label || column.id;
+        col.$element = document.createElement('th');
+        col.$element.innerHTML = col.label;
+        col.$element.draggable = true;
+        col.$resize = document.createElement('div');
+        col.$resize.classList.add('resize');
+        col.$element.appendChild(col.$resize);
+        return col;
+    };
+    Table.prototype.createRow = function (data) {
+        var tr = document.createElement('tr');
+        for (var _i = 0, _a = this.columns; _i < _a.length; _i++) {
+            var id = _a[_i];
+            var td = document.createElement('td');
+            tr.appendChild(td);
+            td.innerHTML = data.model.getValue(id.attribute);
+        }
+        return tr;
+    };
+    Table.prototype.addHeaderInfo = function (col) {
+        var element = col.$element;
+        var that = this;
+        element.classList.add('sort');
+        element.addEventListener('click', function () {
+            that.sort(col);
+        }, false);
+    };
+    Table.prototype.columnDragEvent = function (type, e) {
+        if (type === 'dragstart') {
+            this.moveElement.$element.style.opacity = '0.4';
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/json', JSON.stringify(util_1.Util.toJson(this.moveElement)));
+        }
+        else if (type === 'dragenter') {
+        }
+        else if (type === 'dragleave') {
+            this.moveElement.$element.classList.remove('over');
+        }
+        else if (type === 'dragover') {
+            if (e.preventDefault) {
+                e.preventDefault();
+            }
+            for (var c = 0; c < this.columns.length; c++) {
+                if (this.columns[c].$element === e.target) {
+                    this.dragColumn = this.columns[c];
+                    this.dragPos = c;
+                    this.columns[c].$element.classList.add('over');
+                }
+                else {
+                    this.columns[c].$element.classList.remove('over');
+                }
+            }
+            if (e.target === this.tableOption) {
+                this.tableOption.classList.add('over');
+                this.dragPos = this.columns.length;
+            }
+            else {
+                this.tableOption.classList.remove('over');
+            }
+            e.dataTransfer.dropEffect = 'move';
+        }
+        else if (type === 'drop') {
+            if (e.stopPropagation) {
+                e.stopPropagation();
+            }
+            if (this.movePos === this.dragPos) {
+                return;
+            }
+            this.columns.splice(this.movePos, 1);
+            if (this.movePos >= this.dragPos) {
+                this.columns.splice(this.dragPos, 0, this.moveElement);
+            }
+            else {
+                this.columns.splice(this.dragPos - 1, 0, this.moveElement);
+            }
+            var line = this.moveElement.$element.parentElement;
+            line.removeChild(this.moveElement.$element);
+            if (this.dragPos < this.columns.length) {
+                line.insertBefore(this.moveElement.$element, this.dragColumn.$element);
+            }
+            else {
+                line.insertBefore(this.moveElement.$element, this.tableOption);
+            }
+            var oldElement = void 0;
+            var newElement = void 0;
+            for (var i = 0; i < this.$bodysection.children.length; i++) {
+                line = this.$bodysection.children.item(i);
+                oldElement = line.children.item(this.movePos);
+                newElement = line.children.item(this.dragPos);
+                line.removeChild(oldElement);
+                line.insertBefore(oldElement, newElement);
+            }
+        }
+        else if (type === 'dragend') {
+            this.moveElement.$element.style.opacity = '1';
+            for (var i = 0; i < this.columns.length; i++) {
+                this.columns[i].$element.classList.remove('over');
+            }
+            this.tableOption.classList.remove('over');
+        }
+    };
+    Table.prototype.addOptionItem = function (label, parent, sub) {
+        var labelControl;
+        if (label) {
+            labelControl = document.createElement('a');
+            labelControl.appendChild(document.createTextNode(label));
+            labelControl.href = 'javascript:void(0);';
+            parent.appendChild(labelControl);
+        }
+        if (sub) {
+            var context_1 = document.createElement('div');
+            context_1.classList.add('dropdown-content');
+            context_1.style.setProperty('position', 'absolute');
+            parent.appendChild(context_1);
+            parent.addEventListener('click', function () {
+                context_1.classList.toggle('show');
+            }, false);
+            return context_1;
+        }
+        return labelControl;
+    };
+    Table.prototype.registerEvents = function (events) {
+        var that = this;
+        var _loop_1 = function (i) {
+            this_1.$view.addEventListener(events[i], function (evt) {
+                return that.tableEvent(events[i], evt);
+            });
+        };
+        var this_1 = this;
+        for (var i = 0; i < events.length; i++) {
+            _loop_1(i);
+        }
+    };
+    return Table;
+}(Control_1.Control));
+exports.Table = Table;
+var Column = (function () {
+    function Column() {
+    }
+    return Column;
+}());
+
+
+/***/ }),
+
+/***/ "./elements/nodes/index.ts":
+/*!*********************************!*\
+  !*** ./elements/nodes/index.ts ***!
+  \*********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+function __export(m) {
+    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+}
+Object.defineProperty(exports, "__esModule", { value: true });
+var AutoComplete_1 = __webpack_require__(/*! ./AutoComplete */ "./elements/nodes/AutoComplete.ts");
+var BR_1 = __webpack_require__(/*! ./BR */ "./elements/nodes/BR.ts");
+var Div_1 = __webpack_require__(/*! ./Div */ "./elements/nodes/Div.ts");
+var Label_1 = __webpack_require__(/*! ./Label */ "./elements/nodes/Label.ts");
+__export(__webpack_require__(/*! ./Node */ "./elements/nodes/Node.ts"));
+__export(__webpack_require__(/*! ./Clazz */ "./elements/nodes/Clazz.ts"));
+__export(__webpack_require__(/*! ./SO */ "./elements/nodes/SO.ts"));
+__export(__webpack_require__(/*! ./Symbol */ "./elements/nodes/Symbol.ts"));
+__export(__webpack_require__(/*! ./BR */ "./elements/nodes/BR.ts"));
+__export(__webpack_require__(/*! ./Button */ "./elements/nodes/Button.ts"));
+__export(__webpack_require__(/*! ./Div */ "./elements/nodes/Div.ts"));
+__export(__webpack_require__(/*! ./Form */ "./elements/nodes/Form.ts"));
+__export(__webpack_require__(/*! ./Input */ "./elements/nodes/Input.ts"));
+__export(__webpack_require__(/*! ./Label */ "./elements/nodes/Label.ts"));
+__export(__webpack_require__(/*! ./Table */ "./elements/nodes/Table.ts"));
+__export(__webpack_require__(/*! ./HTML */ "./elements/nodes/HTML.ts"));
+__export(__webpack_require__(/*! ./Dice */ "./elements/nodes/Dice.ts"));
+__export(__webpack_require__(/*! ./AutoComplete */ "./elements/nodes/AutoComplete.ts"));
+__export(__webpack_require__(/*! ./Attribute */ "./elements/nodes/Attribute.ts"));
+__export(__webpack_require__(/*! ./Method */ "./elements/nodes/Method.ts"));
+__export(__webpack_require__(/*! ./ClazzProperty */ "./elements/nodes/ClazzProperty.ts"));
+new AutoComplete_1.AutoComplete();
+new BR_1.BR();
+new Div_1.Div();
+new Label_1.Label();
+
+
+/***/ }),
+
+/***/ "./handlers/AddNode.ts":
+/*!*****************************!*\
+  !*** ./handlers/AddNode.ts ***!
+  \*****************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var EventBus_1 = __webpack_require__(/*! ../EventBus */ "./EventBus.ts");
+var util_1 = __webpack_require__(/*! ../util */ "./util.ts");
+var AddNode = (function () {
+    function AddNode(graph) {
+        this.MIN_SIZE_TO_ADD_NODE = 30;
+        this.MIN_SIZE_TO_ADD_TEXT = 10;
+        this.graph = graph;
+    }
+    AddNode.prototype.canHandle = function () {
+        return EventBus_1.EventBus.isHandlerActiveOrFree(AddNode.name);
+    };
+    AddNode.prototype.setActive = function (active) {
+        if (active) {
+            EventBus_1.EventBus.setActiveHandler(AddNode.name);
+        }
+        else {
+            EventBus_1.EventBus.releaseActiveHandler();
+        }
+    };
+    AddNode.prototype.handle = function (event, element) {
+        if (!this.canHandle()) {
+            return true;
+        }
+        if (element.id !== 'RootElement') {
+            return false;
+        }
+        switch (event.type) {
+            case 'mousedown':
+                if (element.id === 'RootElement') {
+                    this.start(event, element);
+                    this.setActive(true);
+                }
+                break;
+            case 'mousemove':
+                this.drawRect(event, element);
+                break;
+            case 'mouseleave':
+                this.removeRect();
+                this.setActive(false);
+                break;
+            case 'mouseup':
+                this.addNode();
+                this.setActive(false);
+                break;
+            default:
+                break;
+        }
+        return true;
+    };
+    AddNode.prototype.drawRect = function (evt, element) {
+        if (!this.isRectDrawing) {
+            return;
+        }
+        evt.stopPropagation();
+        var width = util_1.Util.getEventX(evt) - this.x;
+        var height = util_1.Util.getEventY(evt) - this.y;
+        if (width < 0) {
+            this.isDrawToLeft = true;
+            width *= -1;
+        }
+        else {
+            this.isDrawToLeft = false;
+        }
+        if (height < 0) {
+            this.isDrawToTop = true;
+            height *= -1;
+        }
+        else {
+            this.isDrawToTop = false;
+        }
+        if (width > this.MIN_SIZE_TO_ADD_NODE && height > this.MIN_SIZE_TO_ADD_NODE) {
+            this.isBigEnoughForAddNode = true;
+        }
+        else {
+            this.isBigEnoughForAddNode = false;
+        }
+        this.graph.root.style.cursor = 'pointer';
+        if (!this.svgRect) {
+            var rectAddNode = util_1.Util.createShape({
+                tag: 'rect',
+                id: 'addNodeRect',
+                x: this.x,
+                y: this.y,
+                width: 1,
+                height: 1,
+                class: 'SVGAddNode'
+            });
+            var group = util_1.Util.createShape({ tag: 'g', id: 'groupAddNode' });
+            group.appendChild(rectAddNode);
+            this.graph.root.appendChild(group);
+            this.svgRect = rectAddNode;
+            this.svgGroupAddNode = group;
+        }
+        else {
+            var svgRectBBox = this.svgRect.getBBox();
+            if ((svgRectBBox.width > this.MIN_SIZE_TO_ADD_TEXT
+                || svgRectBBox.height > this.MIN_SIZE_TO_ADD_TEXT) && !this.svgTextAddNode) {
+                var textAddNode = util_1.Util.createShape({
+                    tag: 'text',
+                    x: this.x,
+                    y: this.y - 5,
+                    'font-family': 'Verdana',
+                    'font-size': 12,
+                    fill: 'black'
+                });
+                textAddNode.textContent = 'Hold on and move to create a new class';
+                this.svgGroupAddNode.appendChild(textAddNode);
+                var sizeClientRect = textAddNode.getBoundingClientRect();
+                var rectBackgroundForText = util_1.Util.createShape({
+                    tag: 'rect',
+                    x: this.x,
+                    y: this.y - sizeClientRect.height,
+                    width: sizeClientRect.width,
+                    height: sizeClientRect.height,
+                    fill: '#DDD',
+                    'stroke-width': 0
+                });
+                this.svgTextRectAddNode = rectBackgroundForText;
+                this.svgTextAddNode = textAddNode;
+                this.svgGroupAddNode.appendChild(rectBackgroundForText);
+                this.svgGroupAddNode.appendChild(textAddNode);
+            }
+            if (this.isDrawToLeft) {
+                this.svgRect.setAttributeNS(null, 'x', '' + util_1.Util.getEventX(evt));
+            }
+            if (this.isDrawToTop) {
+                this.svgRect.setAttributeNS(null, 'y', '' + util_1.Util.getEventY(evt));
+            }
+            this.svgRect.setAttributeNS(null, 'width', width.toString());
+            this.svgRect.setAttributeNS(null, 'height', height.toString());
+            if (this.isBigEnoughForAddNode) {
+                this.svgRect.setAttributeNS(null, 'class', 'SVGAddNode-ready');
+            }
+            else {
+                this.svgRect.setAttributeNS(null, 'class', 'SVGAddNode');
+            }
+        }
+    };
+    AddNode.prototype.removeRect = function () {
+        this.isRectDrawing = false;
+        this.isBigEnoughForAddNode = false;
+        this.graph.root.style.cursor = 'default';
+        if (this.svgGroupAddNode) {
+            this.graph.root.removeChild(this.svgGroupAddNode);
+            this.svgGroupAddNode = undefined;
+        }
+        if (this.svgRect) {
+            this.svgRect = undefined;
+        }
+        if (this.svgTextAddNode) {
+            this.svgTextAddNode = undefined;
+        }
+        if (this.svgTextRectAddNode) {
+            this.svgTextRectAddNode = undefined;
+        }
+    };
+    AddNode.prototype.addNode = function () {
+        if (!this.isBigEnoughForAddNode) {
+            this.removeRect();
+            return;
+        }
+        this.removeRect();
+        var node = this.graph.addElementWithValues('Clazz', { x: this.x, y: this.y });
+        this.graph.drawElement(node);
+    };
+    AddNode.prototype.start = function (evt, element) {
+        if (this.isRectDrawing) {
+            return;
+        }
+        this.isRectDrawing = true;
+        this.x = util_1.Util.getEventX(evt);
+        this.y = util_1.Util.getEventY(evt);
+    };
+    return AddNode;
+}());
+exports.AddNode = AddNode;
+
+
+/***/ }),
+
+/***/ "./handlers/Drag.ts":
+/*!**************************!*\
+  !*** ./handlers/Drag.ts ***!
+  \**************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var EventBus_1 = __webpack_require__(/*! ../EventBus */ "./EventBus.ts");
+var BaseElements_1 = __webpack_require__(/*! ../elements/BaseElements */ "./elements/BaseElements.ts");
+var nodes_1 = __webpack_require__(/*! ../elements/nodes */ "./elements/nodes/index.ts");
+var util_1 = __webpack_require__(/*! ../util */ "./util.ts");
+var Drag = (function () {
+    function Drag(graph) {
+        this.dragging = false;
+        this.reinsert = false;
+        this.mouseOffset = new BaseElements_1.Point();
+        this.graph = graph;
+    }
+    Drag.prototype.handle = function (event, element) {
+        if (!this.canHandle()) {
+            return true;
+        }
+        switch (event.type) {
+            case 'mousedown':
+                if ((!this.dragging) && (element.id !== 'RootElement')) {
+                    this.element = element;
+                    this.svgElement = element.$view;
+                    this.start(event, element);
+                    this.setActive(true);
+                }
+                break;
+            case 'mouseup':
+                if (this.dragging) {
+                    this.reset();
+                }
+                this.setActive(false);
+                break;
+            case 'mousemove':
+                if (this.dragging) {
+                    this.drag(event, element);
+                }
+                break;
+            case 'mouseleave':
+                if (this.dragging) {
+                    this.reset();
+                }
+                this.setActive(false);
+                break;
+            default:
+                break;
+        }
+        return true;
+    };
+    Drag.prototype.canHandle = function () {
+        return EventBus_1.EventBus.isHandlerActiveOrFree(Drag.name);
+    };
+    Drag.prototype.setActive = function (active) {
+        if (active) {
+            EventBus_1.EventBus.setActiveHandler(Drag.name);
+        }
+        else {
+            EventBus_1.EventBus.releaseActiveHandler();
+        }
+    };
+    Drag.prototype.reset = function () {
+        this.dragging = false;
+        this.svgElement.style.cursor = 'pointer';
+        if (util_1.Util.isChrome()) {
+            var clickEvt = util_1.Util.createCustomEvent('click');
+            this.svgElement.dispatchEvent(clickEvt);
+        }
+    };
+    Drag.prototype.start = function (evt, element) {
+        this.dragging = true;
+        this.mouseOffset.x = evt.clientX;
+        this.mouseOffset.y = evt.clientY;
+        this.reinsert = true;
+        this.svgElement.style.cursor = 'move';
+    };
+    Drag.prototype.drag = function (evt, element) {
+        if (this.reinsert) {
+            if (this.element.id !== 'RootElement') {
+                this.graph.root.appendChild(this.svgElement);
+            }
+            var dragEvent = util_1.Util.createCustomEvent('drag');
+            element.$view.dispatchEvent(dragEvent);
+        }
+        this.reinsert = false;
+        evt.stopPropagation();
+        var translation = this.svgElement.getAttributeNS(null, 'transform').slice(10, -1).split(' ');
+        var sx = parseInt(translation[0]);
+        var sy = 0;
+        if (translation.length > 1) {
+            sy = parseInt(translation[1]);
+        }
+        var transX = sx + evt.clientX - this.mouseOffset.x;
+        var transY = sy + evt.clientY - this.mouseOffset.y;
+        this.svgElement.setAttributeNS(null, 'transform', 'translate(' + transX + ' ' + transY + ')');
+        this.element.getPos().addNum(transX - sx, transY - sy);
+        if (this.element instanceof nodes_1.Node) {
+            this.element.redrawEdges();
+        }
+        this.mouseOffset.x = evt.clientX;
+        this.mouseOffset.y = evt.clientY;
+        var maxX = this.element.getPos().x + this.element.getSize().x;
+        var maxY = this.element.getPos().y + this.element.getSize().y;
+        var domRectRoot = this.graph.root.getBoundingClientRect();
+        if (!domRectRoot) {
+            return;
+        }
+        if (maxX > domRectRoot.width) {
+            this.graph.root.setAttributeNS(null, 'width', '' + maxX);
+        }
+        if (maxY > domRectRoot.height) {
+            this.graph.root.setAttributeNS(null, 'height', '' + maxY);
+        }
+    };
+    return Drag;
+}());
+exports.Drag = Drag;
+
+
+/***/ }),
+
+/***/ "./handlers/ImportFile.ts":
+/*!********************************!*\
+  !*** ./handlers/ImportFile.ts ***!
+  \********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var EventBus_1 = __webpack_require__(/*! ../EventBus */ "./EventBus.ts");
+var util_1 = __webpack_require__(/*! ../util */ "./util.ts");
+var ImportFile = (function () {
+    function ImportFile(graph) {
+        this.graph = graph;
+    }
+    ImportFile.prototype.setActive = function (active) {
+        if (active) {
+            EventBus_1.EventBus.setActiveHandler(ImportFile.name);
+        }
+        else {
+            EventBus_1.EventBus.releaseActiveHandler();
+        }
+    };
+    ImportFile.prototype.canHandle = function () {
+        return EventBus_1.EventBus.isHandlerActiveOrFree(ImportFile.name);
+    };
+    ImportFile.prototype.handle = function (event, element) {
+        var type = typeof event;
+        if (type !== 'DragEvent') {
+            return false;
+        }
+        var evt = event;
+        if (evt.type === 'dragover') {
+            this.handleDragOver(evt);
+        }
+        else if (evt.type === 'dragleave') {
+            if (this.graph.$view !== evt.target) {
+                return false;
+            }
+            this.setBoardStyle('dragleave');
+        }
+        else if (evt.type === 'drop') {
+            this.handleLoadFile(evt);
+        }
+        return true;
+    };
+    ImportFile.prototype.setBoardStyle = function (typ) {
+        var b = this.graph.$view;
+        util_1.Util.removeClass(b, 'Error');
+        util_1.Util.removeClass(b, 'Ok');
+        util_1.Util.removeClass(b, 'Add');
+        if (typ === 'dragleave') {
+            if (b['errorText']) {
+                b.removeChild(b['errorText']);
+                b['errorText'] = null;
+            }
+            return true;
+        }
+        util_1.Util.addClass(b, typ);
+        if (typ === 'Error') {
+            if (!b['errorText']) {
+                b['errorText'] = util_1.Util.create({ tag: 'div', style: 'margin-top: 30%', value: 'NO TEXTFILE' });
+                b.appendChild(b['errorText']);
+            }
+            return true;
+        }
+        return false;
+    };
+    ImportFile.prototype.handleLoadFile = function (evt) {
+        evt.stopPropagation();
+        evt.preventDefault();
+        var files = evt.dataTransfer.files;
+        if (files.length > 1) {
+            evt.dataTransfer.dropEffect = 'none';
+            return;
+        }
+        var reader = new FileReader();
+        var output = [];
+        var htmlResult = '';
+        var that = this;
+        for (var i = 0, f = void 0; f = files[i]; i++) {
+            reader.onload = function (event) {
+                htmlResult = event.target['result'];
+                console.log('fileContent: ' + htmlResult);
+                if (that.graph) {
+                    that.graph.import(htmlResult);
+                }
+            };
+            reader.readAsText(f);
+        }
+        this.setBoardStyle('dragleave');
+    };
+    ImportFile.prototype.handleDragOver = function (evt) {
+        var error = true, n, f;
+        var files = evt.dataTransfer.files;
+        if (files && files.length > 0) {
+            for (var i = 0; i < files.length; i += 1) {
+                f = files[i];
+                if (f.type.indexOf('text') === 0) {
+                    error = false;
+                }
+                else if (f.type === '') {
+                    n = f.name.toLowerCase();
+                    if (n.indexOf('json', n.length - 4) !== -1) {
+                        error = false;
+                    }
+                }
+            }
+        }
+        else {
+            var items = evt.dataTransfer.items;
+            if (items && items.length > 0) {
+                for (var z = 0; z < items.length; z++) {
+                    if (items[z].type === '' || items[z].type === 'text/plain') {
+                        error = false;
+                    }
+                }
+            }
+            else {
+                return;
+            }
+        }
+        evt.dataTransfer.dropEffect = 'copy';
+        if (error) {
+            this.dragStyler(evt, 'Error');
+        }
+        else if (evt.ctrlKey) {
+            this.dragStyler(evt, 'Add');
+        }
+        else {
+            this.dragStyler(evt, 'Ok');
+        }
+    };
+    ImportFile.prototype.dragStyler = function (event, typ) {
+        event.stopPropagation();
+        event.preventDefault();
+        this.setBoardStyle(typ);
+    };
+    ImportFile.prototype.handleDragLeave = function (evt) {
+        evt.stopPropagation();
+        evt.preventDefault();
+        evt.dataTransfer.dropEffect = 'link';
+        evt.target['className'] = 'diagram';
+        console.log('handDragLeave');
+    };
+    return ImportFile;
+}());
+exports.ImportFile = ImportFile;
+
+
+/***/ }),
+
+/***/ "./handlers/NewEdge.ts":
+/*!*****************************!*\
+  !*** ./handlers/NewEdge.ts ***!
+  \*****************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var util_1 = __webpack_require__(/*! ../util */ "./util.ts");
+var EventBus_1 = __webpack_require__(/*! ../EventBus */ "./EventBus.ts");
+var index_1 = __webpack_require__(/*! ../elements/nodes/index */ "./elements/nodes/index.ts");
+var NewEdge = (function () {
+    function NewEdge(graph) {
+        this.graph = graph;
+    }
+    NewEdge.prototype.setActive = function (active) {
+        if (active) {
+            EventBus_1.EventBus.setActiveHandler(NewEdge.name);
+        }
+        else {
+            EventBus_1.EventBus.releaseActiveHandler();
+        }
+    };
+    NewEdge.prototype.canHandle = function () {
+        return EventBus_1.EventBus.isHandlerActiveOrFree(NewEdge.name);
+    };
+    NewEdge.prototype.handle = function (event, element) {
+        if (!(event.ctrlKey || EventBus_1.EventBus.isHandlerActiveOrFree('NewEdge', true))) {
+            this.removeLine();
+            return true;
+        }
+        switch (event.type) {
+            case 'mousedown':
+                if (element instanceof index_1.Node) {
+                    this.start(event, element);
+                    this.setActive(true);
+                }
+                break;
+            case 'mousemove':
+                this.drawEdge(event, element);
+                break;
+            case 'mouseleave':
+                this.setActive(false);
+                break;
+            case 'mouseup':
+                this.setNewEdgeToNode(event);
+                this.setActive(false);
+                break;
+            default: break;
+        }
+        return true;
+    };
+    NewEdge.prototype.drawEdge = function (evt, element) {
+        if (!this.isEdgeDrawing) {
+            return;
+        }
+        var lineToX = util_1.Util.getEventX(evt);
+        var lineToy = util_1.Util.getEventY(evt);
+        var path = "M" + this.x + " " + this.y + " L" + lineToX + " " + lineToy;
+        if (!this.svgLine) {
+            var attr = {
+                tag: 'path',
+                id: 'newEdgePath',
+                d: path,
+                class: 'SVGEdge'
+            };
+            var shape = util_1.Util.createShape(attr);
+            this.svgLine = shape;
+            this.graph.root.appendChild(shape);
+            this.graph.root.appendChild(this.sourceNode.$view);
+        }
+        else {
+            this.svgLine.setAttributeNS(null, 'd', path);
+            var targetNode = this.graph.$graphModel.getNodeByPosition(util_1.Util.getEventX(evt), util_1.Util.getEventY(evt));
+            if (targetNode) {
+                if (this.lastTargetNode && this.lastTargetNode.id !== targetNode.id) {
+                    this.lastTargetNode.$view.setAttributeNS(null, 'class', 'SVGClazz');
+                }
+                this.lastTargetNode = targetNode;
+                this.lastTargetNode.$view.setAttributeNS(null, 'class', 'SVGClazz-drawedge');
+            }
+            else if (this.lastTargetNode) {
+                this.lastTargetNode.$view.setAttributeNS(null, 'class', 'SVGClazz');
+            }
+        }
+    };
+    NewEdge.prototype.removeLine = function () {
+        this.isEdgeDrawing = false;
+        if (this.svgLine) {
+            this.graph.root.removeChild(this.svgLine);
+            this.svgLine = null;
+        }
+        if (this.lastTargetNode) {
+            this.lastTargetNode.$view.setAttributeNS(null, 'class', 'SVGClazz');
+        }
+    };
+    NewEdge.prototype.setNewEdgeToNode = function (event) {
+        var targetNode = this.graph.$graphModel
+            .getNodeByPosition(util_1.Util.getEventX(event), util_1.Util.getEventY(event));
+        if (!targetNode) {
+            this.removeLine();
+            return;
+        }
+        this.removeLine();
+        var edgeType = this.sourceNode.$defaulEdgeType || 'Association';
+        var jsonData = {
+            type: edgeType,
+            source: this.sourceNode.id,
+            target: targetNode.id
+        };
+        var newEdge = this.graph.$graphModel.addEdge(jsonData, true);
+        this.graph.drawElement(newEdge);
+    };
+    NewEdge.prototype.start = function (evt, element) {
+        if (this.isEdgeDrawing) {
+            return;
+        }
+        this.isEdgeDrawing = true;
+        this.sourceNode = element;
+        this.x = this.sourceNode.getPos().x + (this.sourceNode.getSize().x / 2);
+        this.y = this.sourceNode.getPos().y + (this.sourceNode.getSize().y / 2);
+        var lastInlineEdit = document.getElementById('inlineEdit');
+        if (lastInlineEdit) {
+            document.body.removeChild(lastInlineEdit);
+        }
+    };
+    return NewEdge;
+}());
+exports.NewEdge = NewEdge;
+
+
+/***/ }),
+
+/***/ "./handlers/PropertiesDispatcher.ts":
+/*!******************************************!*\
+  !*** ./handlers/PropertiesDispatcher.ts ***!
+  \******************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var EventBus_1 = __webpack_require__(/*! ../EventBus */ "./EventBus.ts");
+var properties = __webpack_require__(/*! ../PropertiesPanel */ "./PropertiesPanel.ts");
+var main_1 = __webpack_require__(/*! ../main */ "./main.ts");
+var Clazz_1 = __webpack_require__(/*! ../elements/nodes/Clazz */ "./elements/nodes/Clazz.ts");
+var PropertiesDispatcher = (function () {
+    function PropertiesDispatcher(graph) {
+        this.blankView = new properties.PropertiesPanel.BlankView(graph);
+        this.graph = graph;
+    }
+    PropertiesDispatcher.prototype.dispatch = function (view) {
+        var createdView = this.createView(view);
+        this.blankView.show(createdView);
+    };
+    PropertiesDispatcher.prototype.getCurrentView = function () {
+        return this.blankView.getCurrentView();
+    };
+    PropertiesDispatcher.prototype.openProperties = function () {
+        this.blankView.openProperties();
+    };
+    PropertiesDispatcher.prototype.handle = function (event, element) {
+        this.handleOpenProperties(event, element);
+        if (event.type === EventBus_1.EventBus.RELOADPROPERTIES
+            && this.selectedElement && element.id === this.selectedElement.id) {
+            this.handleSelectNodeEvent(event, element);
+            this.handleSelectEdgeEvent(event, element);
+        }
+        if (this.selectedElement && this.selectedElement.id === element.id) {
+            return true;
+        }
+        if (element.id === 'RootElement') {
+            this.dispatch('Clear');
+            this.setPropertiesHeaderText('Select any element to see its properties');
+        }
+        if (element.id === 'GenerateProp') {
+            this.dispatch('Generate');
+            this.setPropertiesHeaderText('Properties');
+        }
+        this.selectedElement = element;
+        this.handleSelectNodeEvent(event, element);
+        this.handleSelectEdgeEvent(event, element);
+        return true;
+    };
+    PropertiesDispatcher.prototype.setPropertiesHeaderText = function (text) {
+        this.blankView.setPropertiesHeaderText(text);
+    };
+    PropertiesDispatcher.prototype.canHandle = function () {
+        return EventBus_1.EventBus.isHandlerActiveOrFree(PropertiesDispatcher.name);
+    };
+    PropertiesDispatcher.prototype.setActive = function (active) {
+        if (active) {
+            EventBus_1.EventBus.setActiveHandler(PropertiesDispatcher.name);
+        }
+        else {
+            EventBus_1.EventBus.releaseActiveHandler();
+        }
+    };
+    PropertiesDispatcher.prototype.createView = function (view) {
+        var panel;
+        if (view === 'Clazz') {
+            panel = new properties.PropertiesPanel.ClassPanel();
+        }
+        if (view === 'Clear') {
+            panel = new properties.PropertiesPanel.ClearPanel();
+        }
+        if (view === 'Edge') {
+            panel = new properties.PropertiesPanel.EdgePanel();
+        }
+        if (view === 'Generate') {
+            panel = new properties.PropertiesPanel.GeneratePanel(this.graph);
+        }
+        panel.init();
+        return panel;
+    };
+    PropertiesDispatcher.prototype.handleOpenProperties = function (event, element) {
+        if (event.type === 'dblclick') {
+            event.stopPropagation();
+            this.openProperties();
+        }
+    };
+    PropertiesDispatcher.prototype.handleSelectEdgeEvent = function (event, element) {
+        if (!(element instanceof main_1.Association)) {
+            return false;
+        }
+        var edge = element;
+        this.dispatch('Edge');
+        this.blankView.setPropertiesHeaderText('Properties of Edge: ' + edge.$sNode.id + '---' + edge.$tNode.id);
+        var g = this.graph;
+        var cBoxEdgeType = document.getElementById('edgeTypeSelect');
+        cBoxEdgeType.value = edge.type;
+        cBoxEdgeType.addEventListener('change', function () {
+            var selectedType = cBoxEdgeType.options[cBoxEdgeType.selectedIndex].value;
+            var newEdge = edge.convertEdge(selectedType, g.$graphModel.getNewId(selectedType), true);
+            edge = newEdge;
+        });
+        var inputTypeEdgeLabel = document.getElementById('edgeLabelInput');
+        inputTypeEdgeLabel.setAttribute('value', edge.$sNode.id + ' -> ' + edge.$tNode.id);
+        var inputTypeEdgeSrc = document.getElementById('edgeSrcInput');
+        inputTypeEdgeSrc.setAttribute('value', edge.$sNode.id);
+        var inputEdgeSrcProperty = document.getElementById('edgeSrcProperty');
+        inputEdgeSrcProperty.addEventListener('input', function (evt) {
+            edge.updateSrcProperty(inputEdgeSrcProperty.value);
+        });
+        var inputEdgeSrcCardinality = document.getElementById('inputEdgeSrcCardinality');
+        inputEdgeSrcCardinality.addEventListener('input', function (evt) {
+            edge.updateSrcCardinality(inputEdgeSrcCardinality.value);
+        });
+        if (edge.sourceInfo) {
+            inputEdgeSrcProperty.setAttribute('value', edge.sourceInfo.property);
+            inputEdgeSrcCardinality.setAttribute('value', edge.sourceInfo.cardinality);
+        }
+        var inputEdgeTargetProperty = document.getElementById('edgeTargetProperty');
+        inputEdgeTargetProperty.addEventListener('input', function (evt) {
+            edge.updateTargetProperty(inputEdgeTargetProperty.value);
+        });
+        var inputEdgeTargetCardinality = document.getElementById('inputEdgeTargetCardinality');
+        inputEdgeTargetCardinality.addEventListener('input', function (evt) {
+            edge.updateTargetCardinality(inputEdgeTargetCardinality.value);
+        });
+        if (edge.targetInfo) {
+            inputEdgeTargetProperty.setAttribute('value', edge.targetInfo.property);
+            inputEdgeTargetCardinality.setAttribute('value', edge.targetInfo.cardinality);
+        }
+        var inputTypeEdgeTarget = document.getElementById('edgeTargetInput');
+        inputTypeEdgeTarget.setAttribute('value', edge.$tNode.id);
+        return true;
+    };
+    PropertiesDispatcher.prototype.handleSelectNodeEvent = function (event, element) {
+        if (!(element instanceof Clazz_1.Clazz)) {
+            return false;
+        }
+        var that = this;
+        var graph = this.graph;
+        var clazz = element;
+        this.dispatch('Clazz');
+        this.blankView.setPropertiesHeaderText('Properties of Class: ' + clazz.id);
+        var classNameInputText = document.getElementById('className');
+        classNameInputText.setAttribute('value', clazz.id);
+        classNameInputText.addEventListener('input', function () {
+            clazz.updateLabel(classNameInputText.value);
+        });
+        var clasModifierSelect = document.getElementById('classModifier');
+        clasModifierSelect.setAttribute('value', clazz.id);
+        clasModifierSelect.addEventListener('change', function () {
+            clazz.updateModifier(clasModifierSelect.value);
+        });
+        var tabContentAttr = document.getElementById('clazzattribute');
+        var divAddAttr = document.getElementById('clazzattributeAdd');
+        while (tabContentAttr.firstChild) {
+            tabContentAttr.removeChild(tabContentAttr.firstChild);
+        }
+        var attributes = clazz.getAttributes();
+        for (var _i = 0, attributes_1 = attributes; _i < attributes_1.length; _i++) {
+            var attr = attributes_1[_i];
+            var divEditAttr = this.createDivEditProperty(clazz, attr, 'attribute', tabContentAttr);
+            tabContentAttr.appendChild(divEditAttr);
+        }
+        tabContentAttr.appendChild(divAddAttr);
+        var btnAddAttr = document.getElementById('clazzattributeBtnAddattribute');
+        btnAddAttr.addEventListener('click', function () {
+            var modifier = document.getElementById('clazzattributeAddModifier');
+            var name = document.getElementById('clazzattributeAddName');
+            var type = document.getElementById('clazzattributeAddType');
+            if (!name.value || name.value.length === 0) {
+                return;
+            }
+            var attrValue = modifier.value + " " + name.value + " : " + type.value;
+            var newAttribute = clazz.addAttribute(attrValue);
+            var divEditNewAttr = that.createDivEditProperty(clazz, newAttribute, 'attribute', tabContentAttr);
+            modifier.value = '+';
+            name.value = '';
+            type.value = '';
+            tabContentAttr.insertBefore(divEditNewAttr, divAddAttr);
+            clazz.reDraw();
+        });
+        var tabContentMethods = document.getElementById('clazzmethod');
+        var divAddMethod = document.getElementById('clazzmethodAdd');
+        while (tabContentMethods.firstChild) {
+            tabContentMethods.removeChild(tabContentMethods.firstChild);
+        }
+        var methods = clazz.getMethods();
+        for (var _a = 0, methods_1 = methods; _a < methods_1.length; _a++) {
+            var method = methods_1[_a];
+            var divEditMethod = this.createDivEditProperty(clazz, method, 'method', tabContentMethods);
+            tabContentMethods.appendChild(divEditMethod);
+        }
+        tabContentMethods.appendChild(divAddMethod);
+        var btnAddMethod = document.getElementById('clazzmethodBtnAddmethod');
+        btnAddMethod.addEventListener('click', function () {
+            var modifier = document.getElementById('clazzmethodAddModifier');
+            var name = document.getElementById('clazzmethodAddName');
+            var type = document.getElementById('clazzmethodAddType');
+            if (!name.value || name.value.length === 0) {
+                return;
+            }
+            var methodValue = modifier.value + " " + name.value + " : " + type.value;
+            var newMethod = clazz.addMethod(methodValue);
+            var divEditNewMethod = that.createDivEditProperty(clazz, newMethod, 'method', tabContentMethods);
+            modifier.value = '+';
+            name.value = '';
+            type.value = '';
+            tabContentMethods.insertBefore(divEditNewMethod, divAddMethod);
+            clazz.reDraw();
+        });
+        return true;
+    };
+    PropertiesDispatcher.prototype.createDivEditProperty = function (clazz, prop, propType, tabContentAttr) {
+        var divEditProp = document.createElement('div');
+        divEditProp.style.marginTop = '5px';
+        var selectPropModifier = document.createElement('select');
+        var modifierObj = {};
+        modifierObj['public'] = '+';
+        modifierObj['private'] = '-';
+        modifierObj['protected'] = '#';
+        modifierObj['package'] = '~';
+        for (var title in modifierObj) {
+            var modifierOption = document.createElement('option');
+            modifierOption.value = modifierObj[title];
+            modifierOption.innerHTML = modifierObj[title];
+            modifierOption.title = title;
+            selectPropModifier.appendChild(modifierOption);
+        }
+        selectPropModifier.value = prop.modifier;
+        selectPropModifier.addEventListener('input', function () {
+            prop.updateModifier(selectPropModifier.options[selectPropModifier.selectedIndex].value);
+        });
+        var textBoxPropName = document.createElement('input');
+        textBoxPropName.style.marginLeft = '5px';
+        textBoxPropName.style.marginRight = '5px';
+        textBoxPropName.type = 'text';
+        textBoxPropName.value = prop.name;
+        textBoxPropName.addEventListener('input', function () {
+            prop.updateName(textBoxPropName.value);
+            clazz.reDraw(true);
+        });
+        var dataListTypes = document.getElementById('dataTypes');
+        var selectPropType = document.createElement('input');
+        if (dataListTypes) {
+            selectPropType.setAttribute('list', dataListTypes.id);
+        }
+        selectPropType.value = prop.type;
+        selectPropType.addEventListener('input', function () {
+            prop.updateType(selectPropType.value);
+            clazz.reDraw(true);
+        });
+        var btnDelete = document.createElement('button');
+        btnDelete.innerHTML = 'X';
+        btnDelete.title = 'Delete ' + propType;
+        btnDelete.style.marginLeft = '5px';
+        btnDelete.style.color = 'red';
+        btnDelete.addEventListener('click', function () {
+            clazz.removeProperty(prop);
+            tabContentAttr.removeChild(divEditProp);
+            clazz.reDraw();
+        });
+        divEditProp.appendChild(selectPropModifier);
+        divEditProp.appendChild(textBoxPropName);
+        divEditProp.appendChild(selectPropType);
+        divEditProp.appendChild(btnDelete);
+        return divEditProp;
+    };
+    return PropertiesDispatcher;
+}());
+exports.PropertiesDispatcher = PropertiesDispatcher;
+
+
+/***/ }),
+
+/***/ "./handlers/Select.ts":
+/*!****************************!*\
+  !*** ./handlers/Select.ts ***!
+  \****************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var nodes_1 = __webpack_require__(/*! ../elements/nodes */ "./elements/nodes/index.ts");
+var edges_1 = __webpack_require__(/*! ../elements/edges */ "./elements/edges/index.ts");
+var util_1 = __webpack_require__(/*! ../util */ "./util.ts");
+var Symbol_1 = __webpack_require__(/*! ../elements/nodes/Symbol */ "./elements/nodes/Symbol.ts");
+var EventBus_1 = __webpack_require__(/*! ../EventBus */ "./EventBus.ts");
+var main_1 = __webpack_require__(/*! ../main */ "./main.ts");
+var Select = (function () {
+    function Select(graph) {
+        this.padding = 5;
+        this.graph = graph;
+        this.deleteShape = Symbol_1.SymbolLibary.drawSVG({ type: 'Basket', background: true, id: 'trashcan', tooltip: 'Delete class' });
+        this.copyNodeShape = Symbol_1.SymbolLibary.drawSVG({ type: 'Copynode', background: true, id: 'copyNode', tooltip: 'Copy class' });
+        this.addEdgeShape = Symbol_1.SymbolLibary.drawSVG({ type: 'Edgeicon', background: true, id: 'addEdge', tooltip: 'Click and drag to connect this class' });
+    }
+    Select.prototype.handle = function (event, element) {
+        var _this = this;
+        var x = util_1.Util.getEventX(event);
+        var y = util_1.Util.getEventY(event);
+        event.stopPropagation();
+        if (event.type === 'drag') {
+            this.isDragged = true;
+            this.deleteShape.setAttributeNS(null, 'visibility', 'hidden');
+            this.addEdgeShape.setAttributeNS(null, 'visibility', 'hidden');
+            this.copyNodeShape.setAttributeNS(null, 'visibility', 'hidden');
+            this.resetLastSelectedElements();
+            if (element instanceof nodes_1.Node) {
+                this.lastSelectedNode = element.$view;
+            }
+            util_1.Util.addClass(this.lastSelectedNode, 'SVGClazz-selected');
+        }
+        if (event.target['id'] === 'background' || element === this.graph.$graphModel) {
+            this.resetLastSelectedElements();
+            this.deleteShape.setAttributeNS(null, 'visibility', 'hidden');
+            this.addEdgeShape.setAttributeNS(null, 'visibility', 'hidden');
+            this.copyNodeShape.setAttributeNS(null, 'visibility', 'hidden');
+            return true;
+        }
+        if (element instanceof nodes_1.Node && event.type === 'click') {
+            var e = element;
+            this.graph.root.appendChild(this.deleteShape);
+            this.graph.root.appendChild(this.addEdgeShape);
+            this.graph.root.appendChild(this.copyNodeShape);
+            this.graph.root.appendChild(element.$view);
+            this.deleteShape.setAttributeNS(null, 'visibility', 'visible');
+            this.addEdgeShape.setAttributeNS(null, 'visibility', 'visible');
+            this.copyNodeShape.setAttributeNS(null, 'visibility', 'visible');
+            var x_1 = (e.getPos().x + e.getSize().x) + 5;
+            var y_1 = e.getPos().y;
+            this.deleteShape.setAttributeNS(null, 'transform', "translate(" + x_1 + " " + (y_1 + this.padding) + ")");
+            this.deleteShape.onclick = function (e) { return _this.graph.$graphModel.removeElement(element.id); };
+            this.copyNodeShape.setAttributeNS(null, 'transform', "translate(" + x_1 + " " + (y_1 + 40 + this.padding) + ")");
+            this.copyNodeShape.onclick = function (evt) {
+                var nextFreePosition = _this.graph.getNextFreePosition();
+                var copyClass = element.copy();
+                copyClass.withPos(nextFreePosition.x, nextFreePosition.y);
+                _this.graph.drawElement(copyClass);
+            };
+            this.addEdgeShape.setAttributeNS(null, 'transform', "translate(" + x_1 + " " + (y_1 + 80 + this.padding) + ")");
+            this.addEdgeShape.onmousedown = function () {
+                EventBus_1.EventBus.setActiveHandler('NewEdge');
+                element.$view.dispatchEvent(util_1.Util.createCustomEvent('mousedown'));
+            };
+        }
+        if (element instanceof main_1.Clazz && event.type === 'click') {
+            var clazz_1 = element;
+            if (util_1.Util.isChrome()) {
+                if (this.lastSelectedNode && element.id === this.lastSelectedNode.id && !this.isDragged) {
+                    return true;
+                }
+            }
+            this.isDragged = false;
+            this.resetLastSelectedElements();
+            this.lastSelectedNode = element.$view;
+            util_1.Util.addClass(this.lastSelectedNode, 'SVGClazz-selected');
+            this.setTooltipOfShape(this.deleteShape, 'Delete class');
+            var divInlineEdit_1 = document.createElement('div');
+            divInlineEdit_1.id = 'inlineEdit';
+            divInlineEdit_1.style.position = 'absolute';
+            divInlineEdit_1.style.top = (clazz_1.getPos().y + clazz_1.getSize().y) + 52 + 'px';
+            divInlineEdit_1.style.left = clazz_1.getPos().x + 'px';
+            divInlineEdit_1.style.width = clazz_1.getSize().x + 'px';
+            divInlineEdit_1.style.zIndex = '42';
+            var inputText_1 = document.createElement('input');
+            inputText_1.type = 'text';
+            inputText_1.style.width = '100%';
+            inputText_1.placeholder = 'Add properties, edit label';
+            divInlineEdit_1.appendChild(inputText_1);
+            document.body.appendChild(divInlineEdit_1);
+            inputText_1.addEventListener('focusout', function (evt) {
+                if (util_1.Util.isChrome()) {
+                    if ((!inputText_1.value || inputText_1.value.length === 0) && (!_this.lastSelectedNode || element.id !== _this.lastSelectedNode.id)) {
+                        _this.removeLastInlineEdit();
+                    }
+                    return;
+                }
+                if ((!inputText_1.value || inputText_1.value.length === 0)) {
+                    _this.removeLastInlineEdit();
+                }
+            });
+            var g = this.graph;
+            var propertyTypes_1 = ['boolean', 'byte', 'char', 'double', 'float', 'int', 'long', 'short', 'String', 'void'];
+            inputText_1.addEventListener('keydown', function (evt) {
+                var keyCode = evt.which;
+                var inputValue = inputText_1.value;
+                if (util_1.Util.endsWith(inputValue, ':') && !document.getElementById('selectPropertyType')) {
+                    var selectType_1 = document.createElement('select');
+                    selectType_1.id = 'selectPropertyType';
+                    selectType_1.style.width = '100%';
+                    for (var _i = 0, propertyTypes_2 = propertyTypes_1; _i < propertyTypes_2.length; _i++) {
+                        var type = propertyTypes_2[_i];
+                        var selectOption = document.createElement('option');
+                        selectOption.value = type;
+                        selectOption.innerHTML = type;
+                        selectType_1.appendChild(selectOption);
+                    }
+                    selectType_1.addEventListener('change', function (evt) {
+                        var inputValueSplitted = inputValue.split(':');
+                        var selectedPropertyType = selectType_1.options[selectType_1.selectedIndex].value;
+                        if (inputValueSplitted.length >= 1) {
+                            inputText_1.value = inputValueSplitted[0].trim() + ' : ' + selectedPropertyType;
+                            inputText_1.focus();
+                        }
+                    });
+                    divInlineEdit_1.appendChild(selectType_1);
+                }
+                else if (!util_1.Util.includes(inputValue, ':')) {
+                    var selectType_2 = document.getElementById('selectPropertyType');
+                    if (selectType_2) {
+                        selectType_2.remove();
+                    }
+                }
+                if (keyCode !== 13) {
+                    return;
+                }
+                if (util_1.Util.includes(inputValue, ':') && !(util_1.Util.includes(inputValue, '(') && util_1.Util.includes(inputValue, ')'))) {
+                    clazz_1.addAttribute(inputValue.trim());
+                    clazz_1.reDraw();
+                }
+                else if (util_1.Util.includes(inputValue, '(') && util_1.Util.includes(inputValue, ')')) {
+                    clazz_1.addMethod(inputValue.trim());
+                    clazz_1.reDraw();
+                }
+                else if (inputValue.trim().split(' ').length === 1 && inputValue.trim().length > 0) {
+                    clazz_1.updateLabel(inputValue.trim());
+                }
+                divInlineEdit_1.style.top = (clazz_1.getPos().y + clazz_1.getSize().y) + 52 + 'px';
+                divInlineEdit_1.style.left = clazz_1.getPos().x + 'px';
+                divInlineEdit_1.style.width = clazz_1.getSize().x + 'px';
+                inputText_1.value = '';
+                var selectType = document.getElementById('selectPropertyType');
+                if (selectType) {
+                    selectType.remove();
+                }
+            });
+            divInlineEdit_1.children[0].focus();
+            return true;
+        }
+        if (element instanceof edges_1.Association) {
+            this.graph.root.appendChild(element.$view);
+            this.graph.root.appendChild(element.$sNode.$view);
+            this.graph.root.appendChild(element.$tNode.$view);
+            this.graph.root.appendChild(this.deleteShape);
+            this.setTooltipOfShape(this.deleteShape, 'Delete edge');
+            this.deleteShape.setAttributeNS(null, 'visibility', 'visible');
+            this.addEdgeShape.setAttributeNS(null, 'visibility', 'hidden');
+            this.copyNodeShape.setAttributeNS(null, 'visibility', 'hidden');
+            this.deleteShape.setAttributeNS(null, 'transform', "translate(" + x + " " + y + ")");
+            this.deleteShape.onclick = function (e) { return _this.graph.$graphModel.removeElement(element.id); };
+            this.resetLastSelectedElements();
+            var edge = element;
+            this.lastSelectedEdge = edge.$view;
+            util_1.Util.addClass(this.lastSelectedEdge, 'SVGEdge-selected');
+        }
+        return true;
+    };
+    Select.prototype.setTooltipOfShape = function (shape, tooltip) {
+        if (!shape || !shape.hasChildNodes()) {
+            return;
+        }
+        var titleElement = shape.childNodes[0];
+        if (!titleElement || titleElement.tagName !== 'title') {
+            return;
+        }
+        titleElement.textContent = tooltip;
+    };
+    Select.prototype.resetLastSelectedElements = function () {
+        if (this.lastSelectedNode) {
+            util_1.Util.removeClass(this.lastSelectedNode, 'SVGClazz-selected');
+            this.lastSelectedNode = undefined;
+        }
+        if (this.lastSelectedEdge) {
+            util_1.Util.removeClass(this.lastSelectedEdge, 'SVGEdge-selected');
+            this.lastSelectedEdge = undefined;
+        }
+        this.removeLastInlineEdit();
+    };
+    Select.prototype.removeLastInlineEdit = function () {
+        var lastInlineEdit = document.getElementById('inlineEdit');
+        if (lastInlineEdit) {
+            document.body.removeChild(lastInlineEdit);
+        }
+    };
+    Select.prototype.canHandle = function () {
+        return EventBus_1.EventBus.isHandlerActiveOrFree(Select.name);
+    };
+    Select.prototype.setActive = function (active) {
+        if (active) {
+            EventBus_1.EventBus.setActiveHandler(Select.name);
+        }
+        else {
+            EventBus_1.EventBus.releaseActiveHandler();
+        }
+    };
+    return Select;
+}());
+exports.Select = Select;
+
+
+/***/ }),
+
+/***/ "./handlers/Zoom.ts":
+/*!**************************!*\
+  !*** ./handlers/Zoom.ts ***!
+  \**************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var EventBus_1 = __webpack_require__(/*! ../EventBus */ "./EventBus.ts");
+var Zoom = (function () {
+    function Zoom(graph) {
+    }
+    Zoom.prototype.handle = function (e, element) {
+        var delta = e.deltaY || e.wheelDeltaY || -e.wheelDelta;
+        var d = 1 + (delta / 1000);
+        var values = this.graph.root.getAttribute('viewBox').split(' ');
+        var newViewBox = values[0] + " " + values[1] + " " + parseInt(values[2]) * d + " " + parseInt(values[3]) * d;
+        this.graph.root.setAttribute('viewBox', newViewBox);
+        e.preventDefault();
+        return true;
+    };
+    Zoom.prototype.canHandle = function () {
+        return EventBus_1.EventBus.isHandlerActiveOrFree(Zoom.name);
+    };
+    Zoom.prototype.setActive = function (active) {
+        if (active) {
+            EventBus_1.EventBus.setActiveHandler(Zoom.name);
+        }
+        else {
+            EventBus_1.EventBus.releaseActiveHandler();
+        }
+    };
+    return Zoom;
+}());
+exports.Zoom = Zoom;
+
+
+/***/ }),
+
+/***/ "./handlers/index.ts":
+/*!***************************!*\
+  !*** ./handlers/index.ts ***!
+  \***************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+function __export(m) {
+    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+}
+Object.defineProperty(exports, "__esModule", { value: true });
+__export(__webpack_require__(/*! ./Drag */ "./handlers/Drag.ts"));
+__export(__webpack_require__(/*! ./Select */ "./handlers/Select.ts"));
+__export(__webpack_require__(/*! ./Zoom */ "./handlers/Zoom.ts"));
+__export(__webpack_require__(/*! ./NewEdge */ "./handlers/NewEdge.ts"));
+__export(__webpack_require__(/*! ./ImportFile */ "./handlers/ImportFile.ts"));
+__export(__webpack_require__(/*! ./AddNode */ "./handlers/AddNode.ts"));
+__export(__webpack_require__(/*! ./PropertiesDispatcher */ "./handlers/PropertiesDispatcher.ts"));
+
+
+/***/ }),
+
+/***/ "./layouts/DagreLayout.ts":
+/*!********************************!*\
+  !*** ./layouts/DagreLayout.ts ***!
+  \********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var DagreLayout = (function () {
+    function DagreLayout() {
+    }
+    DagreLayout.prototype.layout = function (graph, node) {
+        if (!window['dagre']) {
+            return;
+        }
+        var model = graph.$graphModel;
+        var g = new window['dagre'].graphlib.Graph();
+        g.setGraph({ marginx: 100, marginy: 20 }).setDefaultEdgeLabel(function () {
+            return {};
+        });
+        for (var _i = 0, _a = model.nodes; _i < _a.length; _i++) {
+            var node_1 = _a[_i];
+            g.setNode(node_1.id, { width: node_1.getSize().x, height: node_1.getSize().y });
+        }
+        for (var _b = 0, _c = model.edges; _b < _c.length; _b++) {
+            var edge = _c[_b];
+            g.setEdge(edge.$sNode.id, edge.$tNode.id);
+        }
+        window['dagre'].layout(g);
+        g.nodes().forEach(function (nodeId) {
+            for (var _i = 0, _a = model.nodes; _i < _a.length; _i++) {
+                var node_2 = _a[_i];
+                if (node_2.id === nodeId) {
+                    node_2.withPos(g.node(nodeId).x - g.node(nodeId).width / 2, g.node(nodeId).y - g.node(nodeId).height / 2);
+                }
+            }
+        });
+        g.edges().forEach(function (e) {
+            for (var _i = 0, _a = model.edges; _i < _a.length; _i++) {
+                var edge = _a[_i];
+                if (edge.$sNode.id === e.v && edge.$tNode.id === e.w) {
+                    var size = g.edge(e).points.length;
+                    edge.clearPoints();
+                    for (var i = 0; i < size; i++) {
+                        var point = g.edge(e).points[i];
+                        edge.addPoint(point.x, point.y);
+                    }
+                }
+            }
+        });
+    };
+    return DagreLayout;
+}());
+exports.DagreLayout = DagreLayout;
+
+
+/***/ }),
+
+/***/ "./layouts/DagreLayoutMin.ts":
+/*!***********************************!*\
+  !*** ./layouts/DagreLayoutMin.ts ***!
+  \***********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var LayoutGraphMin = (function () {
+    function LayoutGraphMin() {
+        this.nodes = {};
+        this.edges = [];
+        this.outEdges = {};
+        this.inEdges = {};
+        this.dummyNodes = [];
+        this.dummyEdges = {};
+        this.count = 0;
+        this.minRank = Number.POSITIVE_INFINITY;
+        this.maxRank = 0;
+        this.maxHeight = 0;
+        this.maxWidth = 0;
+        this.ranksep = 0;
+        this.edgesLabel = [];
+    }
+    LayoutGraphMin.prototype.nodeCount = function () {
+        return this.count;
+    };
+    LayoutGraphMin.prototype.node = function (id) {
+        return this.nodes[id];
+    };
+    LayoutGraphMin.prototype.setNode = function (id, n) {
+        if (n && !this.nodes[id]) {
+            this.nodes[id] = n;
+            this.count = this.count + 1;
+        }
+        else if (!n && this.nodes[id]) {
+            delete this.nodes[id];
+        }
+    };
+    return LayoutGraphMin;
+}());
+exports.LayoutGraphMin = LayoutGraphMin;
+var LayoutGraphNode = (function () {
+    function LayoutGraphNode(id, width, height, x, y) {
+        this.id = id;
+        this.width = width;
+        this.height = height;
+        this.x = x;
+        this.y = y;
+    }
+    return LayoutGraphNode;
+}());
+exports.LayoutGraphNode = LayoutGraphNode;
+var LayoutGraphEdge = (function () {
+    function LayoutGraphEdge() {
+    }
+    return LayoutGraphEdge;
+}());
+exports.LayoutGraphEdge = LayoutGraphEdge;
+var DagreLayoutMin = (function () {
+    function DagreLayoutMin() {
+    }
+    DagreLayoutMin.prototype.layout = function (graph, node) {
+        var g, layoutNode, nodes, newEdge, edges;
+        var i, n, x, y, sId, tId, split = DagreLayoutMin.EDGE_KEY_DELIM;
+        var e;
+        nodes = node['nodes'];
+        edges = node['edges'];
+        g = new LayoutGraphMin();
+        for (i in nodes) {
+            if (!nodes.hasOwnProperty(i) || typeof (nodes[i]) === 'function') {
+                continue;
+            }
+            n = nodes[i];
+            g.setNode(n.id, new LayoutGraphNode(n.id, n.getSize().x, n.getSize().y, n.getPos().x, n.getPos().y));
+        }
+        for (i in edges) {
+            if (!edges.hasOwnProperty(i) || typeof (edges[i]) === 'function') {
+                continue;
+            }
+            e = edges[i];
+            sId = this.getNodeId(e.$sNode);
+            tId = this.getNodeId(e.$tNode);
+            if (sId > tId) {
+                var tmp = tId;
+                tId = sId;
+                sId = tmp;
+            }
+            var idAB = sId + split + tId + split;
+            var idBA = tId + split + sId + split;
+            if (sId !== tId && g.edgesLabel.indexOf(idAB) < 0 && g.edgesLabel.indexOf(idBA) < 0) {
+                newEdge = { source: sId, target: tId, minlen: 1, weight: 1 };
+                g.edges.push(newEdge);
+                g.edgesLabel.push(idAB);
+                if (!g.inEdges[tId]) {
+                    g.inEdges[tId] = [];
+                }
+                g.inEdges[tId].push(newEdge);
+                if (!g.outEdges[sId]) {
+                    g.outEdges[sId] = [];
+                }
+                g.outEdges[sId].push(newEdge);
+            }
+        }
+        this.layouting(g);
+        for (i in nodes) {
+            if (!nodes.hasOwnProperty(i) || typeof (nodes[i]) === 'function') {
+                continue;
+            }
+            n = nodes[i];
+            layoutNode = g.node(n.id);
+            x = n.getPos().x;
+            y = n.getPos().y;
+            if (x < 1 && y < 1) {
+                n.withPos(Math.ceil(layoutNode.x), Math.ceil(layoutNode.y));
+            }
+        }
+        for (i in edges) {
+            if (!edges.hasOwnProperty(i) || typeof (edges[i]) === 'function') {
+                continue;
+            }
+            e = edges[i];
+        }
+        graph.draw();
+    };
+    DagreLayoutMin.prototype.getNodeId = function (node) {
+        if (node.$owner) {
+            return this.getNodeId(node.$owner) || node.id;
+        }
+        return node.id;
+    };
+    DagreLayoutMin.prototype.layouting = function (g) {
+        this.longestPath(g);
+        this.normalizeRanks(g);
+        this.normalizeEdge(g);
+        this.order(g);
+        g.ranksep = 25;
+        this.removeDummy(g);
+        this.position(g);
+    };
+    DagreLayoutMin.prototype.setSimpleOrder = function (g) {
+        var i, n;
+        for (i in g.nodes) {
+            n = g.nodes[i];
+            n.order = n.rank;
+        }
+    };
+    DagreLayoutMin.prototype.order = function (g) {
+        var layering = Array(g.maxRank + 1);
+        var visited = {};
+        var node, n, order, i;
+        for (i = 0; i < layering.length; i++) {
+            layering[i] = [];
+        }
+        for (n in g.nodes) {
+            if (visited[n]) {
+                continue;
+            }
+            visited[n] = true;
+            node = g.nodes[n];
+            if (node.rank !== undefined) {
+                layering[node.rank].push(n);
+            }
+        }
+        for (order in layering) {
+            for (n in layering[order]) {
+                if (layering[order].hasOwnProperty(n) === false) {
+                    continue;
+                }
+                g.nodes[layering[order][n]].order = parseInt(n);
+            }
+        }
+        for (order in layering) {
+            if (layering[order].length > 1) {
+                for (n in layering[order]) {
+                    if (layering[order].hasOwnProperty(n) === false) {
+                        continue;
+                    }
+                    var name_1 = layering[order][n];
+                    var sum = 0;
+                    var weight = 1;
+                    var edges = g.dummyEdges[name_1];
+                    if (edges) {
+                        for (i in edges) {
+                            if (edges.hasOwnProperty(i) === false) {
+                                continue;
+                            }
+                            var edge = edges[i];
+                            var nodeU = g.node(edge.target);
+                            sum = sum + (edge.weight * nodeU.order);
+                            weight = weight + edge.weight;
+                        }
+                    }
+                    g.node(name_1).barycenter = sum / weight;
+                    g.node(name_1).weight = weight;
+                }
+            }
+            else if (layering[order].length > 0) {
+                for (n in layering[order]) {
+                    var name_2 = layering[order][n];
+                    g.node(name_2).barycenter = 1;
+                    g.node(name_2).weight = 1;
+                }
+            }
+        }
+        for (order in layering) {
+            for (n in layering[order]) {
+                if (layering[order].hasOwnProperty(n) === false) {
+                    continue;
+                }
+                var node_1 = g.nodes[layering[order][n]];
+                node_1.order = parseInt(n) + node_1.barycenter * node_1.weight;
+                if (isNaN(node_1.order)) {
+                    console.log('ERROR');
+                }
+            }
+        }
+    };
+    DagreLayoutMin.prototype.removeDummy = function (g) {
+        for (var z in g.dummyNodes) {
+            var node = g.dummyNodes[z];
+            g.setNode(node.id, null);
+        }
+        g.dummyNodes = [];
+        g.dummyEdges = {};
+    };
+    DagreLayoutMin.prototype.normalizeEdge = function (g) {
+        var i = 1;
+        for (var id in g.edges) {
+            var e = g.edges[id];
+            var v = e.source;
+            var vRank = g.node(v).rank;
+            var w = e.target;
+            var wRank = g.node(w).rank;
+            var name_3 = void 0;
+            if (wRank === vRank + 1) {
+                continue;
+            }
+            var dummy = void 0;
+            for (vRank = vRank + 1; vRank < wRank; ++vRank) {
+                name_3 = '_d' + e.source + e.target + (i++);
+                var newEdge = { source: v, target: name_3, minlen: 1, weight: 1 };
+                dummy = new LayoutGraphNode(name_3, 0, 0, 0, 0);
+                dummy.edgeObj = e;
+                dummy.rank = vRank;
+                if (!g.dummyEdges[v]) {
+                    g.dummyEdges[v] = [];
+                }
+                g.dummyEdges[v].push(newEdge);
+                g.dummyNodes.push(dummy);
+                g.setNode(dummy.id, dummy);
+                v = name_3;
+            }
+        }
+    };
+    DagreLayoutMin.prototype.longestPath = function (g) {
+        var i, n, visited = [];
+        for (i in g.nodes) {
+            n = g.nodes[i];
+            visited.push(i);
+            n.rank = this.findAllPaths(g, n, 0, visited);
+            g.minRank = Math.min(g.minRank, n.rank);
+        }
+    };
+    DagreLayoutMin.prototype.findAllPaths = function (g, n, currentCost, path) {
+        var min = 0;
+        var id;
+        var z;
+        var target;
+        if (g.outEdges[n.id]) {
+            for (z = 0; z < g.outEdges[n.id].length; z++) {
+                id = g.outEdges[n.id][z].target;
+                target = g.nodes[id];
+                if (path[id]) {
+                    min = Math.min(min, target.rank);
+                }
+                else if (path.indexOf(id) < 0) {
+                    min = Math.min(min, this.findAllPaths(g, target, currentCost - 2, path));
+                }
+                else {
+                    min = currentCost;
+                }
+            }
+            return min;
+        }
+        return currentCost;
+    };
+    DagreLayoutMin.prototype.normalizeRanks = function (g) {
+        var min = g.minRank;
+        var value;
+        g.maxRank = Number.NEGATIVE_INFINITY;
+        g.maxHeight = 0;
+        g.maxWidth = 0;
+        for (var i in g.nodes) {
+            var node = g.nodes[i];
+            if (node.rank !== undefined) {
+                node.rank -= min;
+                value = Math.abs(node.rank);
+                if (value > g.maxRank) {
+                    g.maxRank = value;
+                }
+                g.maxHeight = Math.max(g.maxHeight, node.height);
+                g.maxWidth = Math.max(g.maxWidth, node.width);
+            }
+        }
+    };
+    DagreLayoutMin.prototype.position = function (g) {
+        this.positionY(g);
+        var list = this.positionX(g);
+        for (var i in list) {
+            for (var pos in list[i]) {
+                if (list[i].hasOwnProperty(pos) === false) {
+                    continue;
+                }
+                if (g.node(list[i][pos])) {
+                    g.node(list[i][pos]).x = parseInt(pos) * g.maxWidth;
+                }
+            }
+        }
+    };
+    DagreLayoutMin.prototype.positionY = function (g) {
+        var layering = this.buildLayerMatrix(g);
+        var rankSep = g.ranksep;
+        var prevY = 0;
+        for (var layer in layering) {
+            var maxHeight = g.maxHeight;
+            for (var v in layering[layer]) {
+                if (layering[layer].hasOwnProperty(v) === false) {
+                    continue;
+                }
+                var id = layering[layer][v];
+                g.nodes[id].y = prevY + maxHeight / 2;
+            }
+            prevY += maxHeight + rankSep;
+        }
+    };
+    DagreLayoutMin.prototype.buildLayerMatrix = function (g) {
+        var layering = Array(g.maxRank + 1);
+        for (var i = 0; i < layering.length; i++) {
+            layering[i] = [];
+        }
+        for (var n in g.nodes) {
+            var node = g.nodes[n];
+            if (node.rank !== undefined) {
+                layering[node.rank][node.order] = n;
+            }
+        }
+        return layering;
+    };
+    DagreLayoutMin.prototype.positionX = function (g) {
+        var layering = this.buildLayerMatrix(g);
+        return layering;
+    };
+    DagreLayoutMin.EDGE_KEY_DELIM = '\x01';
+    return DagreLayoutMin;
+}());
+exports.DagreLayoutMin = DagreLayoutMin;
+
+
+/***/ }),
+
+/***/ "./layouts/Random.ts":
+/*!***************************!*\
+  !*** ./layouts/Random.ts ***!
+  \***************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var util_1 = __webpack_require__(/*! ../util */ "./util.ts");
+var Random = (function () {
+    function Random() {
+    }
+    Random.prototype.layout = function (graph) {
+        var model = graph.$graphModel;
+        if (model.nodes) {
+            for (var _i = 0, _a = model.nodes; _i < _a.length; _i++) {
+                var node = _a[_i];
+                var pos = node.getPos();
+                if (pos.x === 0 && pos.y === 0) {
+                    var x = util_1.Util.getRandomInt(0, graph.canvasSize.width);
+                    var y = util_1.Util.getRandomInt(0, graph.canvasSize.height);
+                    node.withPos(x, y);
+                }
+            }
+        }
+    };
+    return Random;
+}());
+exports.Random = Random;
+
+
+/***/ }),
+
+/***/ "./layouts/index.ts":
+/*!**************************!*\
+  !*** ./layouts/index.ts ***!
+  \**************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+function __export(m) {
+    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+}
+Object.defineProperty(exports, "__esModule", { value: true });
+__export(__webpack_require__(/*! ./DagreLayout */ "./layouts/DagreLayout.ts"));
+__export(__webpack_require__(/*! ./Random */ "./layouts/Random.ts"));
+__export(__webpack_require__(/*! ./DagreLayoutMin */ "./layouts/DagreLayoutMin.ts"));
+var DagreLayout_1 = __webpack_require__(/*! ./DagreLayout */ "./layouts/DagreLayout.ts");
+var DagreLayoutMin_1 = __webpack_require__(/*! ./DagreLayoutMin */ "./layouts/DagreLayoutMin.ts");
+var Random_1 = __webpack_require__(/*! ./Random */ "./layouts/Random.ts");
+new DagreLayout_1.DagreLayout();
+new DagreLayoutMin_1.DagreLayoutMin();
+new Random_1.Random();
+
+
+/***/ }),
+
+/***/ "./main.ts":
+/*!*****************!*\
+  !*** ./main.ts ***!
+  \*****************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+function __export(m) {
+    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+}
+Object.defineProperty(exports, "__esModule", { value: true });
+var BaseElements_1 = __webpack_require__(/*! ./elements/BaseElements */ "./elements/BaseElements.ts");
+exports.Point = BaseElements_1.Point;
+var Bridge_1 = __webpack_require__(/*! ./Bridge */ "./Bridge.ts");
+exports.Bridge = Bridge_1.Bridge;
+exports.DelegateAdapter = Bridge_1.DelegateAdapter;
+var Graph_1 = __webpack_require__(/*! ./elements/Graph */ "./elements/Graph.ts");
+exports.Graph = Graph_1.Graph;
+__export(__webpack_require__(/*! ./elements/nodes */ "./elements/nodes/index.ts"));
+__export(__webpack_require__(/*! ./elements/edges */ "./elements/edges/index.ts"));
+__export(__webpack_require__(/*! ./adapters */ "./adapters/index.ts"));
+__export(__webpack_require__(/*! ./UML */ "./UML.ts"));
+var BaseElements_2 = __webpack_require__(/*! ./elements/BaseElements */ "./elements/BaseElements.ts");
+var Graph_2 = __webpack_require__(/*! ./elements/Graph */ "./elements/Graph.ts");
+var ClassEditor_1 = __webpack_require__(/*! ./elements/ClassEditor */ "./elements/ClassEditor.ts");
+var Bridge_2 = __webpack_require__(/*! ./Bridge */ "./Bridge.ts");
+var util_1 = __webpack_require__(/*! ./util */ "./util.ts");
+var nodes = __webpack_require__(/*! ./elements/nodes */ "./elements/nodes/index.ts");
+var edges = __webpack_require__(/*! ./elements/edges */ "./elements/edges/index.ts");
+if (!window['Point']) {
+    window['Point'] = BaseElements_2.Point;
+    window['Graph'] = Graph_2.Graph;
+    window['bridge'] = new Bridge_2.Bridge();
+    window['Util'] = util_1.Util;
+    window['Clazz'] = nodes.Clazz;
+    window['Association'] = edges.Association;
+    window['SymbolLibary'] = nodes.SymbolLibary;
+    window['ClassEditor'] = ClassEditor_1.ClassEditor;
+}
+
+
+/***/ }),
+
+/***/ "./util.ts":
+/*!*****************!*\
+  !*** ./util.ts ***!
+  \*****************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var CSS_1 = __webpack_require__(/*! ./CSS */ "./CSS.ts");
+var BaseElements_1 = __webpack_require__(/*! ./elements/BaseElements */ "./elements/BaseElements.ts");
+var Util = (function () {
+    function Util() {
+    }
+    Util.getRandomInt = function (min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    };
+    Util.createShape = function (attrs) {
+        var xmlns = attrs.xmlns || 'http://www.w3.org/2000/svg';
+        var shape = document.createElementNS(xmlns, attrs.tag);
+        for (var attr in attrs) {
+            if (attr !== 'tag') {
+                shape.setAttribute(attr, attrs[attr]);
+            }
+        }
+        return shape;
+    };
+    Util.toPascalCase = function (value) {
+        value = value.charAt(0).toUpperCase() + value.substring(1).toLowerCase();
+        return value;
+    };
+    Util.isSVG = function (tag) {
+        var i, list = ['svg', 'path', 'polygon', 'polyline', 'line', 'title', 'rect', 'filter', 'feGaussianBlur', 'feOffset', 'feBlend', 'linearGradient', 'stop', 'text', 'symbol', 'textPath', 'defs', 'fegaussianblur', 'feoffset', 'feblend', 'circle', 'ellipse', 'g'];
+        for (i = 0; i < list.length; i += 1) {
+            if (list[i] === tag) {
+                return true;
+            }
+        }
+        return false;
+    };
+    Util.create = function (node) {
+        var style, item, xmlns, key, tag, k;
+        if (document.createElementNS && (this.isSVG(node.tag) || node.xmlns)) {
+            if (node.xmlns) {
+                xmlns = node.xmlns;
+            }
+            else {
+                xmlns = 'http://www.w3.org/2000/svg';
+            }
+            if (node.tag === 'img' && xmlns) {
+                item = document.createElementNS(xmlns, 'image');
+                item.setAttribute('xmlns:xlink', 'http://www.w3.org/1999/xlink');
+                item.setAttributeNS('http://www.w3.org/1999/xlink', 'href', node.src);
+            }
+            else {
+                item = document.createElementNS(xmlns, node.tag);
+            }
+        }
+        else {
+            item = document.createElement(node.tag);
+        }
+        tag = node.tag.toLowerCase();
+        for (key in node) {
+            if (!node.hasOwnProperty(key)) {
+                continue;
+            }
+            k = key.toLowerCase();
+            if (node[key] === null) {
+                continue;
+            }
+            if (k === 'tag' || k.charAt(0) === '$' || k === '$graphModel') {
+                continue;
+            }
+            if (k.charAt(0) === '#') {
+                item[k.substring(1)] = node[key];
+                continue;
+            }
+            if (k === 'rotate') {
+                item.setAttribute('transform', 'rotate(' + node[key] + ',' + node.$graphModel.x + ',' + node.$graphModel.y + ')');
+                continue;
+            }
+            if (k === 'value') {
+                if (!node[key]) {
+                    continue;
+                }
+                if (tag !== 'input') {
+                    if (tag === 'text') {
+                        item.appendChild(document.createTextNode(node[key]));
+                    }
+                    else {
+                        item.innerHTML = node[key];
+                    }
+                }
+                else {
+                    item[key] = node[key];
+                }
+                continue;
+            }
+            if (k.indexOf('on') === 0) {
+                this.bind(item, k.substring(2), node[key]);
+                continue;
+            }
+            if (k.indexOf('-') >= 0) {
+                item.style[key] = node[key];
+            }
+            else {
+                if (k === 'style' && typeof (node[key]) === 'object') {
+                    for (style in node[key]) {
+                        if (!node[key].hasOwnProperty(style)) {
+                            continue;
+                        }
+                        if (node[key][style]) {
+                            if ('transform' === style) {
+                                item.style.transform = node[key][style];
+                                item.style.msTransform = item.style.MozTransform = item.style.WebkitTransform = item.style.OTransform = node[key][style];
+                            }
+                            else {
+                                item.style[style] = node[key][style];
+                            }
+                        }
+                    }
+                }
+                else {
+                    item.setAttribute(key, node[key]);
+                }
+            }
+        }
+        if (node.$parent) {
+            node.$parent.appendChild(item);
+        }
+        if (node.$graphModel) {
+            item.$graphModel = node.$graphModel;
+        }
+        return item;
+    };
+    Util.setSize = function (item, width, height) {
+        var value;
+        value = Util.getValue(width);
+        item.setAttribute('width', value);
+        item.style.width = Math.ceil(value);
+        value = Util.getValue(height);
+        item.setAttribute('height', value);
+        item.style.height = Math.ceil(value);
+    };
+    Util.setAttributeSize = function (item, width, height) {
+        var value;
+        value = Util.getValue(width);
+        item.setAttributeNS(null, 'width', value);
+        value = Util.getValue(height);
+        item.setAttributeNS(null, 'height', value);
+    };
+    Util.setStyleSize = function (item, width, height) {
+        var value;
+        value = Util.getValue(width);
+        item.style.width = Math.ceil(value);
+        value = Util.getValue(height);
+        item.style.height = Math.ceil(value);
+    };
+    Util.setPos = function (item, x, y) {
+        if (item.x && item.x.baseVal) {
+            item.style.left = x + 'px';
+            item.style.top = y + 'px';
+        }
+        else {
+            item.x = x;
+            item.y = y;
+        }
+    };
+    Util.getValue = function (value) {
+        return parseInt(('0' + value).replace('px', ''), 10);
+    };
+    Util.isIE = function () {
+        return navigator.userAgent.toLowerCase().indexOf('.net') > -1;
+    };
+    Util.isEdge = function () {
+        return navigator.userAgent.toLowerCase().indexOf('edge') > -1;
+    };
+    Util.isFireFox = function () {
+        return navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
+    };
+    Util.isSafari = function () {
+        var isEdge = Util.isEdge();
+        return navigator.userAgent.toLowerCase().indexOf('safari') > -1 && !isEdge;
+    };
+    Util.isOpera = function () {
+        return navigator.userAgent.toLowerCase().indexOf('opera') > -1;
+    };
+    Util.isChrome = function () {
+        var isEdge = Util.isEdge();
+        var isSafari = Util.isSafari();
+        return navigator.userAgent.toLowerCase().indexOf('chrome') > -1 && !isEdge && isSafari;
+    };
+    Util.getEventX = function (event) {
+        return (Util.isIE() || Util.isEdge()) ? event['offsetX'] : event.layerX;
+    };
+    Util.getEventY = function (event) {
+        return (Util.isIE() || Util.isEdge()) ? event['offsetY'] : event.layerY;
+    };
+    Util.getNumber = function (str) {
+        return parseInt((str || '0').replace('px', ''), 10);
+    };
+    Util.getStyle = function (styleProp) {
+        var i, style, diff, current, ref, el = document.createElement('div'), css;
+        document.body.appendChild(el);
+        css = new CSS_1.CSS(styleProp);
+        ref = new CSS_1.CSS(styleProp, el).css;
+        style = window.getComputedStyle(el, null);
+        el.className = styleProp;
+        current = new CSS_1.CSS(styleProp, el).css;
+        diff = Util.getNumber(style.getPropertyValue('border-width'));
+        for (i in current) {
+            if (!current.hasOwnProperty(i)) {
+                continue;
+            }
+            if (i === 'width' || i === 'height') {
+                if (Util.getNumber(current[i]) !== 0 && Util.getNumber(current[i]) + diff * 2 !== Util.getNumber(ref[i])) {
+                    css.add(i, current[i]);
+                }
+            }
+            else if (current[i] !== ref[i]) {
+                css.add(i, current[i]);
+            }
+        }
+        document.body.removeChild(el);
+        return css;
+    };
+    Util.sizeOf = function (item, node) {
+        var board;
+        var rect;
+        var addBoard;
+        if (!item) {
+            return undefined;
+        }
+        if (node) {
+            board = node.$owner.$view;
+            addBoard = false;
+        }
+        if (!board) {
+            addBoard = true;
+            board = Util.createShape({ tag: 'svg', id: 'root', width: 200, height: 200 });
+            document.body.appendChild(board);
+        }
+        if (board.tagName === 'svg') {
+            if (typeof item === 'string') {
+                item = Util.create({ tag: 'text', $font: true, value: item });
+                item.setAttribute('width', '5px');
+            }
+        }
+        else if (typeof item === 'string') {
+            item = document.createTextNode(item);
+        }
+        board.appendChild(item);
+        rect = item.getBoundingClientRect();
+        board.removeChild(item);
+        if (addBoard) {
+            document.body.removeChild(board);
+        }
+        return rect;
+    };
+    Util.getColor = function (style, defaultColor) {
+        if (style) {
+            if (style.toLowerCase() === 'create') {
+                return '#008000';
+            }
+            if (style.toLowerCase() === 'nac') {
+                return '#FE3E3E';
+            }
+            if (style.indexOf('#') === 0) {
+                return style;
+            }
+        }
+        if (defaultColor) {
+            return defaultColor;
+        }
+        return '#000';
+    };
+    Util.utf8$to$b64 = function (str) {
+        return window.btoa(encodeURIComponent(str));
+    };
+    Util.showSVG = function (control) {
+        var svg = Util.create({
+            tag: 'svg',
+            style: { left: control.getPos().x, top: control.getPos().y, position: 'absolute' }
+        });
+        var child = control.getSVG();
+        if (child) {
+            svg.appendChild(child);
+        }
+        Util.setSize(svg, control.getSize().x, control.getSize().y);
+        document.body.appendChild(svg);
+    };
+    Util.toJson = function (ref) {
+        var result = {};
+        return Util.copy(result, ref, false, false);
+    };
+    Util.initControl = function (parent, control, type, id, json) {
+        if (typeof control.init === 'function') {
+            control.init(parent, type, id);
+        }
+        if (typeof control.load === 'function') {
+            control.load(json);
+        }
+    };
+    Util.copy = function (ref, src, full, replace) {
+        if (src) {
+            var i = void 0;
+            for (i in src) {
+                if (!src.hasOwnProperty(i) || typeof (src[i]) === 'function') {
+                    continue;
+                }
+                if (i.charAt(0) === '$') {
+                    if (full) {
+                        ref[i] = src[i];
+                    }
+                    continue;
+                }
+                if (typeof (src[i]) === 'object') {
+                    if (replace) {
+                        ref[i] = src[i];
+                        continue;
+                    }
+                    if (!ref[i]) {
+                        if (src[i] instanceof Array) {
+                            ref[i] = [];
+                        }
+                        else {
+                            ref[i] = {};
+                        }
+                    }
+                    Util.copy(ref[i], src[i], full, false);
+                }
+                else {
+                    if (src[i] === '') {
+                        continue;
+                    }
+                    ref[i] = src[i];
+                }
+            }
+        }
+        return ref;
+    };
+    Util.xmlstringify = function (text) {
+        text = text.replace('<', '&lt;');
+        text = text.replace('>', '&gt;');
+        return text;
+    };
+    Util.toXML = function (ref, src, full, doc) {
+        var name;
+        if (!ref) {
+            name = src.constructor.name;
+            doc = document.implementation.createDocument(null, name, null);
+            ref = doc.childNodes[0];
+        }
+        if (src) {
+            var i = void 0;
+            for (i in src) {
+                if (!src.hasOwnProperty(i) || typeof (src[i]) === 'function') {
+                    continue;
+                }
+                if (i.charAt(0) === '$') {
+                    if (full) {
+                        ref[i] = src[i];
+                    }
+                    continue;
+                }
+                if (typeof (src[i]) === 'object') {
+                    if (!ref.getAttribute(i)) {
+                        if (src[i] instanceof Array) {
+                            for (var c in src[i]) {
+                                name = src[i][c].constructor.name;
+                                var child = doc.createElement(name);
+                                ref.appendChild(child);
+                                Util.toXML(child, src[i][c], full, doc);
+                            }
+                        }
+                        else {
+                            name = src[i].constructor.name;
+                            var child = doc.createElement(name);
+                            ref.appendChild(child);
+                            Util.toXML(child, src[i], full, doc);
+                        }
+                    }
+                    else {
+                        Util.toXML(ref.getAttribute(i), src[i], full, doc);
+                    }
+                }
+                else {
+                    if (src[i] === '') {
+                        continue;
+                    }
+                    ref.setAttribute(i, src[i]);
+                }
+            }
+        }
+        return ref;
+    };
+    Util.Range = function (min, max, x, y) {
+        max.x = Math.max(max.x, x);
+        max.y = Math.max(max.y, y);
+        min.x = Math.min(min.x, x);
+        min.y = Math.min(min.y, y);
+    };
+    Util.getPosition = function (m, n, entity, refCenter) {
+        var t, p = [], list, distance = [], min = 999999999, position, i, step = 15;
+        var pos = entity.getPos();
+        var size = entity.getSize();
+        list = [BaseElements_1.Point.LEFT, BaseElements_1.Point.RIGHT];
+        for (i = 0; i < 2; i += 1) {
+            t = this.getLRPosition(m, n, entity, list[i]);
+            if (t.y >= pos.y && t.y <= (pos.y + size.y + 1)) {
+                t.y += (entity['$' + list[i]] * step);
+                if (t.y > (pos.y + size.y)) {
+                    t = Util.getUDPosition(m, n, entity, BaseElements_1.Point.DOWN, step);
+                }
+                p.push(t);
+                distance.push(Math.sqrt((refCenter.x - t.x) * (refCenter.x - t.x) + (refCenter.y - t.y) * (refCenter.y - t.y)));
+            }
+        }
+        list = [BaseElements_1.Point.UP, BaseElements_1.Point.DOWN];
+        for (i = 0; i < 2; i += 1) {
+            t = Util.getUDPosition(m, n, entity, list[i]);
+            if (t.x >= pos.x && t.x <= (pos.x + size.x + 1)) {
+                t.x += (entity['$' + list[i]] * step);
+                if (t.x > (pos.x + size.x)) {
+                    t = this.getLRPosition(m, n, entity, BaseElements_1.Point.RIGHT, step);
+                }
+                p.push(t);
+                distance.push(Math.sqrt((refCenter.x - t.x) * (refCenter.x - t.x) + (refCenter.y - t.y) * (refCenter.y - t.y)));
+            }
+        }
+        for (i = 0; i < p.length; i += 1) {
+            if (distance[i] < min) {
+                min = distance[i];
+                position = p[i];
+            }
+        }
+        return position;
+    };
+    Util.getUDPosition = function (m, n, e, p, step) {
+        var pos = e.getPos();
+        var size = e.getSize();
+        var x, y = pos.y;
+        if (p === BaseElements_1.Point.DOWN) {
+            y += size.y;
+        }
+        x = (y - n) / m;
+        if (step) {
+            x += e['$' + p] * step;
+            if (x < pos.x) {
+                x = pos.x;
+            }
+            else if (x > (pos.x + size.x)) {
+                x = pos.x + size.x;
+            }
+        }
+        return new BaseElements_1.Point(x, y, p);
+    };
+    Util.getLRPosition = function (m, n, e, p, step) {
+        var pos = e.getPos();
+        var size = e.getSize();
+        var y, x = pos.x;
+        if (p === BaseElements_1.Point.RIGHT) {
+            x += size.x;
+        }
+        y = m * x + n;
+        if (step) {
+            y += e['$' + p] * step;
+            if (y < pos.y) {
+                y = pos.y;
+            }
+            else if (y > (pos.y + size.y)) {
+                y = pos.y + size.y;
+            }
+        }
+        return new BaseElements_1.Point(x, y, p);
+    };
+    Util.hasClass = function (element, cls) {
+        var className = element.getAttribute('class');
+        return className.indexOf(cls) > 0;
+    };
+    Util.addClass = function (element, cls) {
+        if (!Util.hasClass(element, cls)) {
+            var className = element.getAttribute('class');
+            element.setAttributeNS(null, 'class', className + ' ' + cls);
+        }
+    };
+    Util.removeClass = function (element, cls) {
+        if (Util.hasClass(element, cls)) {
+            var reg = new RegExp('(\\s|^)' + cls + '(\\s|$)');
+            var className = element.getAttribute('class');
+            element.setAttributeNS(null, 'class', className.replace(reg, ' ').trim());
+        }
+    };
+    Util.startsWith = function (s, searchS) {
+        if (!String.prototype.startsWith) {
+            return s.indexOf(searchS) === 0;
+        }
+        return s.startsWith(searchS);
+    };
+    Util.endsWith = function (s, searchS) {
+        if (!String.prototype.endsWith) {
+            var lastIndex = s.lastIndexOf(searchS);
+            return lastIndex !== -1 && lastIndex === (s.length - 1);
+        }
+        return s.endsWith(searchS);
+    };
+    Util.includes = function (s, searchS) {
+        if (!String.prototype.includes) {
+            var idx = s.indexOf(searchS);
+            return idx > -1;
+        }
+        return s.includes(searchS);
+    };
+    Util.isParentOfChild = function (parent, child) {
+        if (!parent || !child) {
+            return false;
+        }
+        if (Util.isIE()) {
+            var children = parent.childNodes;
+            var found = false;
+            for (var i = 0; i < children.length; i++) {
+                var childItem = children[i];
+                if (childItem === child) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        return parent.contains(child);
+    };
+    Util.createCustomEvent = function (type, params) {
+        var evt;
+        if (typeof window['CustomEvent'] !== 'function') {
+            params = params || { bubbles: false, cancelable: false, detail: undefined };
+            evt = document.createEvent('CustomEvent');
+            evt.initCustomEvent(type, params.bubbles, params.cancelable, params.detail);
+            return evt;
+        }
+        evt = new CustomEvent(type);
+        return evt;
+    };
+    Util.saveToLocalStorage = function (model) {
+        if (!this.isAutoSave) {
+            return false;
+        }
+        if (Util.isLocalStorageSupported()) {
+            if (model) {
+                if (model.$isLoading) {
+                    return false;
+                }
+                var jsonObj = Util.toJson(model);
+                var data = JSON.stringify(jsonObj, null, '\t');
+                localStorage.setItem('diagram', data);
+            }
+            else {
+                localStorage.removeItem('diagram');
+            }
+            return true;
+        }
+        return false;
+    };
+    Util.getDiagramFromLocalStorage = function () {
+        if (Util.isLocalStorageSupported()) {
+            return localStorage.getItem('diagram');
+        }
+        return undefined;
+    };
+    Util.isLocalStorageSupported = function () {
+        if (this.isEdge()) {
+            return false;
+        }
+        return localStorage !== undefined;
+    };
+    return Util;
+}());
+exports.Util = Util;
+
+
+/***/ })
+
+/******/ });
+//# sourceMappingURL=diagram.js.map

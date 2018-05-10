@@ -55,9 +55,9 @@ public class JavaBridgeFX extends JavaBridge {
 
 	@SuppressWarnings("unchecked")
 	public static void addChildren(Object element, int pos, Object... childrenValues) {
-		Object children = ReflectionLoader.calling("getChildren", element, false, null);
+		Object children = ReflectionLoader.calling(element, "getChildren", false, null);
 		if(children == null) {
-			children = ReflectionLoader.call("getItems", element);
+			children = ReflectionLoader.call(element, "getItems");
 		}
 		if(children != null && children instanceof List<?>) {
 			List<Object> childrenList = (List<Object>) children;
@@ -71,9 +71,9 @@ public class JavaBridgeFX extends JavaBridge {
 		}
 	}
 	public static void removeChildren(Object element, Object... childrenValues) {
-		Object children = ReflectionLoader.calling("getChildren", element, false, null);
+		Object children = ReflectionLoader.calling(element, "getChildren", false, null);
 		if(children == null) {
-			children = ReflectionLoader.call("getItems", element);
+			children = ReflectionLoader.call(element, "getItems");
 		}
 		if(children != null && children instanceof List<?>) {
 			List<?> childrenList = (List<?>) children;
@@ -85,7 +85,7 @@ public class JavaBridgeFX extends JavaBridge {
 
 	@SuppressWarnings("unchecked")
 	public static void setStyle(Object element, boolean clear, String...stylesValues) {
-		Object styles = ReflectionLoader.call("getStyleClass", element);
+		Object styles = ReflectionLoader.call(element, "getStyleClass");
 		if(styles != null && styles instanceof List<?>) {
 			List<String> styleList = (List<String>) styles;
 			if(clear) {
@@ -98,7 +98,7 @@ public class JavaBridgeFX extends JavaBridge {
 	}
 
 	public static void removeStyle(Object element, String...stylesValues) {
-		Object styles = ReflectionLoader.call("getStyleClass", element);
+		Object styles = ReflectionLoader.call(element, "getStyleClass");
 		if(styles != null && styles instanceof List<?>) {
 			List<?> styleList = (List<?>) styles;
 			for(String item : stylesValues) {
@@ -112,7 +112,7 @@ public class JavaBridgeFX extends JavaBridge {
 		GUIEvent event = new GUIEvent();
 		event.withListener(condition);
 		Object proxy = ReflectionLoader.createProxy(event, proxyClass);
-		ReflectionLoader.call(method, element, proxyClass, proxy);
+		ReflectionLoader.call(element, method, proxyClass, proxy);
 	}
 
 	public static Object convert(Control item, boolean clearStyle) {
@@ -138,9 +138,9 @@ public class JavaBridgeFX extends JavaBridge {
 		javaFXEvent.withListener(condition);
 		Object proxy = ReflectionLoader.createProxy(javaFXEvent, ReflectionLoader.EVENTHANDLER);
 
-		ReflectionLoader.call("setOnAction", javaFXBtn, ReflectionLoader.EVENTHANDLER, proxy);
+		ReflectionLoader.call(javaFXBtn, "setOnAction", ReflectionLoader.EVENTHANDLER, proxy);
 
-		ReflectionLoader.call("setFocusTraversable", javaFXBtn, boolean.class, false);
+		ReflectionLoader.call(javaFXBtn, "setFocusTraversable", boolean.class, false);
 
 		setStyle(javaFXBtn, clearStyle, "window-button", "window-"+button.getActionType()+"-button");
 
@@ -148,9 +148,9 @@ public class JavaBridgeFX extends JavaBridge {
 			Object stackPane = ReflectionLoader.newInstance(ReflectionLoader.STACKPANE);
 			setStyle(stackPane, true, "graphic");
 
-			ReflectionLoader.call("setGraphic", javaFXBtn, ReflectionLoader.NODE, stackPane);
-			ReflectionLoader.call("setMinSize", javaFXBtn, double.class, 17, double.class, 17);
-			ReflectionLoader.call("setPrefSize", javaFXBtn,double.class,  17, double.class, 17);
+			ReflectionLoader.call(javaFXBtn, "setGraphic", ReflectionLoader.NODE, stackPane);
+			ReflectionLoader.call(javaFXBtn, "setMinSize", double.class, 17, double.class, 17);
+			ReflectionLoader.call(javaFXBtn, "setPrefSize", double.class,  17, double.class, 17);
 		}
 		return javaFXBtn;
 	}
@@ -160,10 +160,10 @@ public class JavaBridgeFX extends JavaBridge {
 		if(Label.SPACER.equalsIgnoreCase(label.getType())) {
 			javaFXLabel = ReflectionLoader.newInstance(ReflectionLoader.REGION);
 			Object prio = ReflectionLoader.getField("ALWAYS", ReflectionLoader.PRIORITY) ;
-			ReflectionLoader.call("setHgrow", ReflectionLoader.HBOX, ReflectionLoader.NODE, javaFXLabel, ReflectionLoader.PRIORITY, prio);
+			ReflectionLoader.call(ReflectionLoader.HBOX, "setHgrow", ReflectionLoader.NODE, javaFXLabel, ReflectionLoader.PRIORITY, prio);
 		} else if(Label.TITLE.equalsIgnoreCase(label.getType())) {
 			javaFXLabel = ReflectionLoader.newInstance(ReflectionLoader.LABEL, label.getValue());
-			ReflectionLoader.call("setMaxHeight", javaFXLabel, double.class, Double.MAX_VALUE);
+			ReflectionLoader.call(javaFXLabel, "setMaxHeight", double.class, Double.MAX_VALUE);
 			setStyle(javaFXLabel, false, "window-title");
 		} else {
 			javaFXLabel = ReflectionLoader.newInstance(ReflectionLoader.LABEL, label.getValue());

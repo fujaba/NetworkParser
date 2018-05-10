@@ -344,10 +344,10 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements En
 		}
 		return child;
 	}
-    @Override
-    public JsonObject setType(String type) {
-    	this.add(Entity.CLASS, type);
-        return this;
-}
 
+	@Override
+	public JsonObject setType(String type) {
+		this.add(Entity.CLASS, type);
+		return this;
+	}
 }

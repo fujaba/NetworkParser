@@ -45,7 +45,7 @@ public class ModelListenerFactory {
 			return null;
 		}
 		if(field == null) {
-			field = ""+ReflectionLoader.call("getId", node);
+			field = ""+ReflectionLoader.call(node, "getId");
 		}
 		Object property;
 		// Check for Controls
@@ -65,27 +65,27 @@ public class ModelListenerFactory {
 			return createProperty(PROPERTYTYPE.OBJECT, node, creator, item, field);
 		}
 		if(ReflectionLoader.COLORPICKER.isAssignableFrom(node.getClass())) {
-			property = ReflectionLoader.call("valueProperty", node);
+			property = ReflectionLoader.call(node, "valueProperty");
 			return createProperty(PROPERTYTYPE.COLOR, property, creator, item, field);
 		}
 		if(ReflectionLoader.TEXTFIELD.isAssignableFrom(node.getClass())) {
-			property = ReflectionLoader.call("textProperty", node);
+			property = ReflectionLoader.call(node, "textProperty");
 			return createProperty(PROPERTYTYPE.STRING, property, creator, item, field);
 		}
 		if(ReflectionLoader.COMBOBOX.isAssignableFrom(node.getClass())) {
-			property = ReflectionLoader.call("valueProperty", node);
+			property = ReflectionLoader.call(node, "valueProperty");
 			return createProperty(PROPERTYTYPE.STRING, property, creator, item, field);
 		}
 		if(ReflectionLoader.LABEL.isAssignableFrom(node.getClass())) {
-			property = ReflectionLoader.call("textProperty", node);
+			property = ReflectionLoader.call(node, "textProperty");
 			return createProperty(PROPERTYTYPE.STRING, property, creator, item, field);
 		}
 		if(ReflectionLoader.CHECKBOX.isAssignableFrom(node.getClass())) {
-			property = ReflectionLoader.call("selectedProperty", node);
+			property = ReflectionLoader.call(node, "selectedProperty");
 			return createProperty(PROPERTYTYPE.BOOLEAN, property, creator, item, field);
 		}
 		if(ReflectionLoader.RADIOBUTTON.isAssignableFrom(node.getClass())) {
-			property = ReflectionLoader.call("selectedProperty", node);
+			property = ReflectionLoader.call(node, "selectedProperty");
 			return createProperty(PROPERTYTYPE.BOOLEAN, property, creator, item, field);
 		}
 		return null;
@@ -94,7 +94,7 @@ public class ModelListenerFactory {
 	private static ModelListenerProperty createProperty(PROPERTYTYPE typ,Object property, SendableEntityCreator creator, Object item, String field){
 		ModelListenerProperty listener = new ModelListenerProperty(creator, item, field, PROPERTYTYPE.STRING);
 		Object proxy = listener.getProxy();
-		ReflectionLoader.call("bindBidirectional", property, ReflectionLoader.PROPERTY, proxy);
+		ReflectionLoader.call(property, "bindBidirectional", ReflectionLoader.PROPERTY, proxy);
 		return listener;
 	}
 }

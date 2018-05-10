@@ -65,7 +65,7 @@ public class GUIEvent extends Event {
 	}
 
 	private static Object getMember(Object obj, String value) {
-		return ReflectionLoader.call("getMember", obj, String.class, value);
+		return ReflectionLoader.call(obj, "getMember", String.class, value);
 	}
 
 	public boolean isSubEventName(String name) {
@@ -104,25 +104,25 @@ public class GUIEvent extends Event {
 		if("javafx.scene.input.KeyEvent".equals(name)) {
 			// KeyEvent
 			event.setValue(EVENT_TYPE, EventTypes.KEYPRESS);
-			event.put(ALTKEY, ReflectionLoader.call("isAltDown", obj));
-			event.put(CTRKEY, ReflectionLoader.call("isControlDown", obj));
-			event.put(SHIFTKEY, ReflectionLoader.call("isShiftDown", obj));
+			event.put(ALTKEY, ReflectionLoader.call(obj, "isAltDown"));
+			event.put(CTRKEY, ReflectionLoader.call(obj, "isControlDown"));
+			event.put(SHIFTKEY, ReflectionLoader.call(obj, "isShiftDown"));
 			if(obj != null) {
 				Object value = ReflectionLoader.callChain(obj, "getCode", "getCode");
 				if(value != null) {
 					event.withCode((Integer)value);
 				}
 				
-				event.setValue(CURRENT_TARGET, ReflectionLoader.call("getTarget", obj));
+				event.setValue(CURRENT_TARGET, ReflectionLoader.call(obj, "getTarget"));
 				event.setValue(EVENT, obj);
 			}
 			return event;
 		}
 		if("javafx.stage.WindowEvent".equals(name)) {
 			event.setValue(EVENT_TYPE, EventTypes.WINDOWEVENT);
-			event.setValue(CURRENT_TARGET, ReflectionLoader.call("getTarget", obj));
+			event.setValue(CURRENT_TARGET, ReflectionLoader.call(obj, "getTarget"));
 
-			String type = ""+ReflectionLoader.call("getEventType", obj);
+			String type = ""+ReflectionLoader.call(obj, "getEventType");
 			event.active = "WINDOW_CLOSE_REQUEST".equals(type) == false;
 			event.setValue(EVENT, obj);
 			return event;
@@ -130,10 +130,10 @@ public class GUIEvent extends Event {
 		if("java.awt.event.ActionEvent".equals(name)) {
 			// KeyEvent
 			event.setValue(EVENT_TYPE, EventTypes.CLICK);
-			Long longValue = (Long) ReflectionLoader.call("getWhen", obj);
+			Long longValue = (Long) ReflectionLoader.call(obj, "getWhen");
 			event.setValue(TIME_STAMP, longValue.intValue());
-			event.setValue(CURRENT_TARGET, ReflectionLoader.call("getSource", obj));
-			event.setValue(ID, ""+ReflectionLoader.callChain(obj, "getSource","getLabel"));
+			event.setValue(CURRENT_TARGET, ReflectionLoader.call(obj, "getSource"));
+			event.setValue(ID, ""+ReflectionLoader.callChain(obj, "getSource", "getLabel"));
 			event.setValue(EVENT, obj);
 			return event;
 		}

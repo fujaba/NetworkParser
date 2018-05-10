@@ -113,7 +113,7 @@ public class Os {
 	}
 
 	public static boolean checkSystemTray() {
-		Object value = ReflectionLoader.call("isSupported", ReflectionLoader.SYSTEMTRAY);
+		Object value = ReflectionLoader.call(ReflectionLoader.SYSTEMTRAY, "isSupported");
 		if(value != null) {
 			return (Boolean)value;
 		}

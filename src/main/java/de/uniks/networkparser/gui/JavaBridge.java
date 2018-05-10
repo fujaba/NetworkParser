@@ -30,6 +30,7 @@ import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.NetworkParserLog;
 import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.SimpleObject;
+import de.uniks.networkparser.ext.javafx.GUIEvent;
 import de.uniks.networkparser.gui.controls.Control;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.ObjectCondition;
@@ -136,6 +137,9 @@ public abstract class JavaBridge implements ObjectCondition {
 	@Override
 	public boolean update(Object event) {
 		if (isApplyingChangeMSG) {
+			return false;
+		}
+		if(event instanceof GUIEvent) {
 			return false;
 		}
 		SimpleEvent simpleEvent = (SimpleEvent) event;

@@ -1,12 +1,19 @@
 package de.uniks.networkparser.ext;
 
 import de.uniks.networkparser.ext.generic.ReflectionLoader;
+import de.uniks.networkparser.ext.javafx.JavaAdapter;
 
-public class JSEditor {
+public class JSEditor implements Runnable{
+	private String executeScript;
 	private Object editor;
 
 	public JSEditor(Object jsEditor) {
 		this.editor = jsEditor;
+	}
+	
+	public JSEditor withScript(String value) {
+		this.executeScript = value;
+		return this;
 	}
 
 	public Object getEditor() {
@@ -23,7 +30,14 @@ public class JSEditor {
 	
 	private void execute(String method, Object... args) {
 		if(editor != null) {
-			ReflectionLoader.call("call", editor, String.class, method, Object[].class, args);
+			ReflectionLoader.call(editor, "call", String.class, method, Object[].class, args);
+		}
+	}
+
+	@Override
+	public void run() {
+		if(editor instanceof JavaAdapter) {
+			((JavaAdapter) editor).executeScript(executeScript);
 		}
 	}
 }

@@ -48,7 +48,7 @@ public class JsonObjectLazy extends JsonObject {
 		else {
 			return false;
 		}
-		Object eval = ReflectionLoader.call("eval", ref, "Object.keys(this).map(function (key) {return key;});");
+		Object eval = ReflectionLoader.call(ref, "eval", "Object.keys(this).map(function (key) {return key;});");
 		String[] keys = eval.toString().split(",");
 		for (int i = 0; i < keys.length; i++) {
 			// Get from Javascript the full Object and Filter the $ for not necessary links or bidirectional links
@@ -61,7 +61,7 @@ public class JsonObjectLazy extends JsonObject {
 			}
 			if (ReflectionLoader.JSOBJECT.isAssignableFrom(value.getClass())) {
 //				JSObject jsValue = (JSObject) value;
-				boolean isArray = (Boolean) ReflectionLoader.call("eval", value, "Array.isArray(this);");
+				boolean isArray = (Boolean) ReflectionLoader.call(value, "eval", "Array.isArray(this);");
 //				boolean isArray = Boolean.parseBoolean("" + jsValue.eval());
 				if (isArray) {
 					JsonArrayLazy child = new JsonArrayLazy(value);
@@ -124,7 +124,7 @@ public class JsonObjectLazy extends JsonObject {
 		return null;
 	}
 	private static Object getMember(Object obj, String value) {
-		return ReflectionLoader.call("getMember", obj, String.class, value);
+		return ReflectionLoader.call(obj, "getMember", String.class, value);
 	}
 
 }

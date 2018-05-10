@@ -37,10 +37,10 @@ public class DialogStage implements Runnable {
 
 	public void showAndWait() {
 		centerOnScreen();
-		ReflectionLoader.call("showAndWait", stage);
+		ReflectionLoader.call(stage, "showAndWait");
 	}
 	public void show() {
-		ReflectionLoader.call("show", stage);
+		ReflectionLoader.call(stage, "show");
 	}
 
 	@Override
@@ -60,13 +60,13 @@ public class DialogStage implements Runnable {
 		} else {
 			modality = ReflectionLoader.getField("NONE", ReflectionLoader.MODALITY);
 		}
-		ReflectionLoader.call("initModality", this.stage, ReflectionLoader.MODALITY, modality);
+		ReflectionLoader.call(this.stage, "initModality", ReflectionLoader.MODALITY, modality);
 
 		parent.createContent();
 		Object scene = ReflectionLoader.newInstance(ReflectionLoader.SCENE, ReflectionLoader.PARENT, parent.getRoot());
 		Object color = ReflectionLoader.getField("TRANSPARENT", ReflectionLoader.COLOR);
-		ReflectionLoader.call("setFill", scene, ReflectionLoader.PAINT, color);
-		ReflectionLoader.call("setScene", this.stage, scene);
+		ReflectionLoader.call(scene, "setFill", ReflectionLoader.PAINT, color);
+		ReflectionLoader.call(this.stage, "setScene", scene);
 		parent.configScene();
 
 		if (parent.modal) {
@@ -77,13 +77,13 @@ public class DialogStage implements Runnable {
 	}
 
 	public void centerOnScreen() {
-		Object scene = ReflectionLoader.call("getScene", owner);
+		Object scene = ReflectionLoader.call(owner, "getScene");
 		if (scene != null) {
 			// scene.getY() seems to represent the y-offset from the top of the titlebar to
 			// the
 			// start point of the scene, so it is the titlebar height
-			double sceneX = (Double) ReflectionLoader.call("getX", owner);
-			double sceneY = (Double) ReflectionLoader.call("getY", owner);
+			double sceneX = (Double) ReflectionLoader.call(owner, "getX");
+			double sceneY = (Double) ReflectionLoader.call(owner, "getY");
 
 			// because Stage does not seem to centre itself over its owner, we
 			// do it here.
@@ -92,12 +92,12 @@ public class DialogStage implements Runnable {
 			double dialogWidth = parent.prefWidth(-1);
 			double dialogHeight = parent.prefHeight(-1);
 
-			double ownerX = (Double) ReflectionLoader.call("getX", owner);
-			double ownerY = (Double) ReflectionLoader.call("getY", owner);
+			double ownerX = (Double) ReflectionLoader.call(owner, "getX");
+			double ownerY = (Double) ReflectionLoader.call(owner, "getY");
 
 			if (ownerX < 0 || ownerY < 0) {
 				// Fix for #165
-				Object screen = ReflectionLoader.call("getPrimary", ReflectionLoader.SCREEN);
+				Object screen = ReflectionLoader.call(ReflectionLoader.SCREEN, "getPrimary");
 				double maxW = (Double) ReflectionLoader.callChain(screen, "getVisualBounds", "getWidth");
 				double maxH = (Double) ReflectionLoader.callChain(screen, "getVisualBounds", "getHeight");
 
@@ -108,8 +108,8 @@ public class DialogStage implements Runnable {
 				y = ownerY + sceneY + (sceneY / 2.0) - (dialogHeight / 2.0);
 			}
 
-			ReflectionLoader.call("setX", stage, double.class, x);
-			ReflectionLoader.call("setY", stage, double.class, y);
+			ReflectionLoader.call(stage, "setX", double.class, x);
+			ReflectionLoader.call(stage, "setY", double.class, y);
 		}
 	}
 }

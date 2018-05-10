@@ -130,7 +130,7 @@ public class ModelListenerProperty implements ModelListenerInterface {
 		if (!newObservable.equals(observable)) {
 			unbind();
 			observable = newObservable;
-			ReflectionLoader.call("addListener", observable, ReflectionLoader.INVALIDATIONLISTENER, this);
+			ReflectionLoader.call(observable, "addListener", ReflectionLoader.INVALIDATIONLISTENER, this);
 		}
 	}
 
@@ -144,7 +144,7 @@ public class ModelListenerProperty implements ModelListenerInterface {
 
 	public void unbind() {
 		if (observable != null) {
-			ReflectionLoader.call("removeListener", observable, ReflectionLoader.OBSERVABLEVALUE, this);
+			ReflectionLoader.call(observable, "removeListener", ReflectionLoader.OBSERVABLEVALUE, this);
 			observable = null;
 		}
 	}
@@ -167,10 +167,10 @@ public class ModelListenerProperty implements ModelListenerInterface {
 			Object event = ReflectionLoader.newInstance(ReflectionLoader.SIMPLEOBJECTPROPERTY);
 			Object oldValue = parseValue(evt.getOldValue());
 			Object newValue = parseValue(evt.getNewValue());
-			ReflectionLoader.call("changed", listener, ReflectionLoader.OBSERVABLEVALUE, event, Object.class, oldValue, Object.class, newValue);
+			ReflectionLoader.call(listener, "changed", ReflectionLoader.OBSERVABLEVALUE, event, Object.class, oldValue, Object.class, newValue);
 		}
 		for(Object listener : invalidationListeners) {
-			ReflectionLoader.call("invalidated", listener, ReflectionLoader.INVALIDATIONLISTENER, this);
+			ReflectionLoader.call(listener, "invalidated", ReflectionLoader.INVALIDATIONLISTENER, this);
 		}
 		executeCallBack();
 	}
@@ -179,7 +179,7 @@ public class ModelListenerProperty implements ModelListenerInterface {
 		if(callBack != null) {
 			SimpleEvent event = new SimpleEvent(this.item, this.property, null, getItemValue());
 			if(callBack.update(event)) {
-				ReflectionLoader.call("set", observable, String.class, ""+event.getModelValue());
+				ReflectionLoader.call(observable, "set", String.class, ""+event.getModelValue());
 			}
 		}
 	}
@@ -202,9 +202,9 @@ public class ModelListenerProperty implements ModelListenerInterface {
 				return value;
 			}
 			if(value instanceof String) {
-				return ReflectionLoader.call("web", PROPERTYTYPE.COLOR, String.class, value);
+				return ReflectionLoader.call(PROPERTYTYPE.COLOR, "web", String.class, value);
 			}
-			return ReflectionLoader.call("web", PROPERTYTYPE.COLOR, String.class, "#FFFFFF");
+			return ReflectionLoader.call(PROPERTYTYPE.COLOR, "web", String.class, "#FFFFFF");
 		}
 		if(this.type == PROPERTYTYPE.STRING) {
 			return ""+value;

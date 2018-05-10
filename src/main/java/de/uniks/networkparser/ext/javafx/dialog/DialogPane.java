@@ -53,7 +53,7 @@ public class DialogPane implements Runnable {
 			}
 			JavaBridgeFX.addChildren(pane, -1, owner.getRoot());
 		}
-		ReflectionLoader.call("setManaged", pane, boolean.class, true);
+		ReflectionLoader.call(pane, "setManaged", boolean.class, true);
 	}
 
 	public Object getPane() {
@@ -81,56 +81,56 @@ public class DialogPane implements Runnable {
 		final double x = 0;
 		final double y = 0;
 		if (parent != null) {
-			ReflectionLoader.call("resizeRelocate", parent, double.class, x, double.class, y, double.class, w, double.class, h);
+			ReflectionLoader.call(parent, "resizeRelocate", double.class, x, double.class, y, double.class, w, double.class, h);
 		}
 
 		if (opaqueLayer != null) {
-			ReflectionLoader.call("resizeRelocate", opaqueLayer, double.class, x, double.class, y, double.class, w, double.class, h);
+			ReflectionLoader.call(opaqueLayer, "resizeRelocate", double.class, x, double.class, y, double.class, w, double.class, h);
 		}
 		Object root = owner.getRoot();
 
 
-		ReflectionLoader.call("resize", root, double.class, (int) (dialogWidth), double.class, (int) (dialogHeight));
+		ReflectionLoader.call(root, "resize", double.class, (int) (dialogWidth), double.class, (int) (dialogHeight));
 
 		// hacky, but we only want to position the dialog the first time
 		// it is laid out - after that the only way it should move is if
 		// the user moves it.
 		if(this.initCount == -1) {
 			this.initCount = -2;
-			double dialogX = (Double) ReflectionLoader.call("getLayoutX", root);
+			double dialogX = (Double) ReflectionLoader.call(root, "getLayoutX");
 			dialogX = dialogX == 0.0 ? w / 2.0 - dialogWidth / 2.0 : dialogX;
 
-			double dialogY = (Double) ReflectionLoader.call("getLayoutY", root);
+			double dialogY = (Double) ReflectionLoader.call(root,"getLayoutY");
 			dialogY = dialogY == 0.0 ? h / 2.0 - dialogHeight / 2.0 : dialogY;
 
-			ReflectionLoader.call("relocate", root, double.class, (int) (dialogX), double.class, (int) (dialogY));
+			ReflectionLoader.call(root, "relocate", double.class, (int) (dialogX), double.class, (int) (dialogY));
 		}
 	}
 
 	// These are the actual implementations in Region (the parent of Pane),
 	// but just for clarify I reproduce them here
 	protected double computeMinHeight(double width) {
-		return (Double) ReflectionLoader.call("minHeight", parent, width);
+		return (Double) ReflectionLoader.call(parent, "minHeight", width);
 	}
 
 	protected double computeMinWidth(double height) {
-		return (Double) ReflectionLoader.call("minWidth", parent, height);
+		return (Double) ReflectionLoader.call(parent, "minWidth", height);
 	}
 
 	protected double computePrefHeight(double width) {
-		return (Double) ReflectionLoader.call("prefHeight", parent, width);
+		return (Double) ReflectionLoader.call(parent, "prefHeight", width);
 	}
 
 	protected double computePrefWidth(double height) {
-		return (Double) ReflectionLoader.call("prefWidth", parent, height);
+		return (Double) ReflectionLoader.call(parent, "prefWidth", height);
 	}
 
 	protected double computeMaxHeight(double width) {
-		return (Double) ReflectionLoader.call("maxHeight", parent, width);
+		return (Double) ReflectionLoader.call(parent, "maxHeight", width);
 	}
 
 	protected double computeMaxWidth(double height) {
-		return (Double) ReflectionLoader.call("maxWidth", parent, height);
+		return (Double) ReflectionLoader.call(parent, "maxWidth", height);
 	}
 
 	@Override

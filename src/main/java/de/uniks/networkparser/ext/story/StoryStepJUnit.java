@@ -74,7 +74,7 @@ public class StoryStepJUnit implements ObjectCondition {
 		if(loader == null) {
 			return false;
 		}
-		ReflectionLoader.call("load", loader, File.class, new File(executeData));
+		ReflectionLoader.call(loader, "load", File.class, new File(executeData));
 
 		if(this.groups.size() < 1) {
 			addGroup(label);
@@ -85,29 +85,29 @@ public class StoryStepJUnit implements ObjectCondition {
 		Object formatter = createFormater();
 		// Analyse Jacaco.exec
 		Object output = ReflectionLoader.newInstance("org.jacoco.report.FileMultiReportOutput", File.class, htmlFile);
-		Object visitor = ReflectionLoader.callStr("createVisitor", formatter, "org.jacoco.report.IMultiReportOutput", output);
+		Object visitor = ReflectionLoader.callStr(formatter, "createVisitor", "org.jacoco.report.IMultiReportOutput", output);
 		Object info = ReflectionLoader.callChain(loader, "getSessionInfoStore", "getInfos");
 		Object content = ReflectionLoader.callChain(loader, "getExecutionDataStore", "getContents");
-		ReflectionLoader.call("visitInfo", visitor, List.class, info, Collection.class, content);
+		ReflectionLoader.call(visitor, "visitInfo", List.class, info, Collection.class, content);
 
 		// Create Files
 		for(FeatureProperty group : groups) {
 			Object bundle = writeReports(loader, formatter, htmlFile, group);
-			ReflectionLoader.callStr("visitBundle", visitor,
+			ReflectionLoader.callStr(visitor,"visitBundle", 
 					"org.jacoco.core.analysis.IBundleCoverage", bundle,
 					"org.jacoco.report.ISourceFileLocator", getSourceLocator());
 		}
-		ReflectionLoader.call("visitEnd", visitor);
+		ReflectionLoader.call(visitor, "visitEnd");
 		return true;
 	}
 
 	private Object createFormater() {
 		Object formater = ReflectionLoader.newInstance("org.jacoco.report.html.HTMLFormatter");
 
-		Object table = ReflectionLoader.call("getTable", formater);
+		Object table = ReflectionLoader.call(formater, "getTable");
 
 		for(int i=0;i<columns.size();i++) {
-			ReflectionLoader.callStr("add", table,
+			ReflectionLoader.callStr(table, "add",
 					String.class, columns.getKeyByIndex(i),
 					String.class, "ctr2",
 					"org.jacoco.report.internal.html.table.IColumnRenderer", columns.getValueByIndex(i).getProxy(),
@@ -121,7 +121,7 @@ public class StoryStepJUnit implements ObjectCondition {
 		if(builder == null) {
 			return null;
 		}
-		Object data = ReflectionLoader.call("getExecutionDataStore", loader);
+		Object data = ReflectionLoader.call(loader, "getExecutionDataStore");
 
 
 		Object analyzer = ReflectionLoader.newInstanceStr("org.jacoco.core.analysis.Analyzer",
@@ -133,9 +133,9 @@ public class StoryStepJUnit implements ObjectCondition {
 			buffer.replace('*', (char)0);
 			buffer.replace('.', '/');
 			File classfiles = new File(buffer.toString());
-			ReflectionLoader.call("analyzeAll", analyzer, File.class, classfiles);
+			ReflectionLoader.call(analyzer, "analyzeAll", File.class, classfiles);
 		}
-		return ReflectionLoader.call("getBundle", builder, group.getStringValue());
+		return ReflectionLoader.call(builder, "getBundle", group.getStringValue());
 	}
 
 	private Object getSourceLocator() {
@@ -151,7 +151,7 @@ public class StoryStepJUnit implements ObjectCondition {
 		Object multi = ReflectionLoader.newInstance("org.jacoco.report.MultiSourceFileLocator", int.class, tabwidth);
 		for (final File f : sourcefiles) {
 			Object sourceFile = ReflectionLoader.newInstance("org.jacoco.report.DirectorySourceFileLocator", File.class, f, String.class, encoding, int.class, tabwidth);
-			ReflectionLoader.callStr("add", multi,"org.jacoco.report.ISourceFileLocator" , sourceFile);
+			ReflectionLoader.callStr(multi, "add", "org.jacoco.report.ISourceFileLocator" , sourceFile);
 		}
 		return multi;
 	}

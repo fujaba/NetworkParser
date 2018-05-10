@@ -68,33 +68,33 @@ public class GitRevision {
 		int count=0;
 		try {
 
-			Object repoBuilder = ReflectionLoader.call("setWorkTree", builder, File.class, file);
+			Object repoBuilder = ReflectionLoader.call(builder, "setWorkTree", File.class, file);
 			repository = ReflectionLoader.callChain(repoBuilder, "readEnvironment", "findGitDir", "build");
 				// scan environment GIT_* variables
 				// scan up the file system tree
 
 			calcGitTag(repository, info);
-			allRefs =(Map<String, ?>) ReflectionLoader.call("getAllRefs",repository);
+			allRefs =(Map<String, ?>) ReflectionLoader.call(repository, "getAllRefs");
 
-			headID = ReflectionLoader.call("resolve", repository, String.class, "HEAD");
+			headID = ReflectionLoader.call(repository, "resolve", String.class, "HEAD");
 			if(headID != null) {
-				id = (String) ReflectionLoader.call("name", headID);
+				id = (String) ReflectionLoader.call(headID, "name");
 			}
 			commitInfo(map, repository, headID, null);
-			String branch = (String) ReflectionLoader.call("getBranch", repository);
+			String branch = (String) ReflectionLoader.call(repository, "getBranch");
 			branches.add(branch);
 
 			while (headID!=null){
 				count++;
 				Object oldId = headID;
-				String name = (String) ReflectionLoader.call("getName", headID);
-				headID = ReflectionLoader.call("resolve", repository, String.class, name+ "^1");
+				String name = (String) ReflectionLoader.call(headID, "getName");
+				headID = ReflectionLoader.call(repository, "resolve", String.class, name+ "^1");
 				commitInfo(map, repository, headID, oldId);
 			}
 		}catch(Exception e) {
 		} finally {
 			if(repository != null) {
-				ReflectionLoader.call("close", repository);
+				ReflectionLoader.call(repository, "close");
 			}
 		}
 		if(allRefs != null) {
@@ -143,7 +143,7 @@ public class GitRevision {
 		String tag = null;
 		String tagHash = "";
 		@SuppressWarnings("unchecked")
-		Map<String, Object> tags = (Map<String, Object>) ReflectionLoader.call("getTags", repository);
+		Map<String, Object> tags = (Map<String, Object>) ReflectionLoader.call(repository, "getTags");
 		int versionNumber = 0;
 		for(Iterator<Entry<String, Object>> i = tags.entrySet().iterator();i.hasNext();) {
 			Entry<String, Object> entry = i.next();
@@ -169,23 +169,23 @@ public class GitRevision {
 					if(mayorNumber > mayor) {
 						tag = entry.getKey().trim();
 						mayor = mayorNumber;
-						tagHash = (String) ReflectionLoader.call("getName", entry.getValue());
+						tagHash = (String) ReflectionLoader.call(entry.getValue(), "getName");
 						versionNumber = vNumber;
 						minor = value;
 					} else if(value > minor) {
 						tag = entry.getKey().trim();
-						tagHash = (String) ReflectionLoader.call("getName", entry.getValue());
+						tagHash = (String) ReflectionLoader.call(entry.getValue(), "getName");
 						versionNumber = vNumber;
 						minor = value;
 					} else if(value == minor) {
 						if(versionNumber == 0) {
-							tagHash = (String) ReflectionLoader.call("getName", entry.getValue());
+							tagHash = (String) ReflectionLoader.call(entry.getValue(), "getName");
 							versionNumber = vNumber;
 							tag = entry.getKey().trim();
 						} else if(vNumber > versionNumber){
 							tag = entry.getKey().trim();
 							versionNumber = vNumber;
-							tagHash = (String) ReflectionLoader.call("getName", entry.getValue());
+							tagHash = (String) ReflectionLoader.call(entry.getValue(), "getName");
 						}
 						minor = value;
 					}
@@ -208,35 +208,35 @@ public class GitRevision {
 			Object walk = ReflectionLoader.newInstance(ReflectionLoader.REVWALK, ReflectionLoader.REPOSITORY, repository);
 			Object commit = null;
 			if(objectID!=null){
-				commit = ReflectionLoader.call("parseCommit", walk, ReflectionLoader.ANYOBJECTID, objectID);
+				commit = ReflectionLoader.call(walk, "parseCommit", ReflectionLoader.ANYOBJECTID, objectID);
 //				commit = walk.parseCommit(objectID);
 			}
 			if(commit!=null){
-				jsonObject.put("ID", ReflectionLoader.call("getName", objectID));
-				jsonObject.put("TIME", "" + ReflectionLoader.call("getCommitTime", commit));
-				Object temp = ReflectionLoader.call("getCommitterIdent", commit);
+				jsonObject.put("ID", ReflectionLoader.call(objectID, "getName"));
+				jsonObject.put("TIME", "" + ReflectionLoader.call(commit, "getCommitTime"));
+				Object temp = ReflectionLoader.call(commit,"getCommitterIdent");
 				if(temp != null) {
-					jsonObject.put("COMMITER", ReflectionLoader.call("getName", temp));
+					jsonObject.put("COMMITER", ReflectionLoader.call(temp, "getName"));
 				}
-				jsonObject.put("MESSAGE", ReflectionLoader.call("getFullMessage", commit));
+				jsonObject.put("MESSAGE", ReflectionLoader.call(commit, "getFullMessage"));
 
 				if(newerrId!=null && full){
-					Object newerCommit = ReflectionLoader.call("parseCommit", walk, newerrId);
-					Object reader = ReflectionLoader.call("newObjectReader", repository);
+					Object newerCommit = ReflectionLoader.call(walk, "parseCommit", newerrId);
+					Object reader = ReflectionLoader.call(repository, "newObjectReader");
 					Object newerTreeIter = ReflectionLoader.newInstance(ReflectionLoader.CANONICALTREEPARSER);
 					List<Object> diffs=null;
-					Object tree = ReflectionLoader.call("getTree", newerCommit);
+					Object tree = ReflectionLoader.call(newerCommit, "getTree");
 					if(tree!=null){
-						ReflectionLoader.call("reset", newerTreeIter, tree);
+						ReflectionLoader.call(newerTreeIter, "reset", tree);
 						Object newTreeIter = ReflectionLoader.newInstance(ReflectionLoader.CANONICALTREEPARSER);
-						Object newtree = ReflectionLoader.call("getTree", commit);
+						Object newtree = ReflectionLoader.call(commit, "getTree");
 						if(newtree != null){
-							ReflectionLoader.call("reset", newTreeIter, reader, newtree);
+							ReflectionLoader.call(newTreeIter, "reset", reader, newtree);
 							Object git = ReflectionLoader.newInstance(ReflectionLoader.GIT, repository);
-							git = ReflectionLoader.call("diff", git);
-							git = ReflectionLoader.call("setNewTree", git, newerTreeIter);
-							git = ReflectionLoader.call("setOldTree", git, newTreeIter);
-							diffs = (List<Object>) ReflectionLoader.call("call", git);
+							git = ReflectionLoader.call(git, "diff");
+							git = ReflectionLoader.call(git, "setNewTree", newerTreeIter);
+							git = ReflectionLoader.call(git, "setOldTree", newTreeIter);
+							diffs = (List<Object>) ReflectionLoader.call(git, "call");
 //							diffs= new Git(repository).diff()
 //													.setNewTree(newerTreeIter)
 //													.setOldTree(newTreeIter)
@@ -247,8 +247,8 @@ public class GitRevision {
 						JsonArray files= new JsonArray();
 						Object refmode = ReflectionLoader.getField("MISSING", ReflectionLoader.FILEMODE);
 						for (Object entry : diffs) {
-							Object mode = ReflectionLoader.call("getNewMode", entry);
-							String value = (String) ReflectionLoader.call("getNewPath", entry);
+							Object mode = ReflectionLoader.call(entry, "getNewMode");
+							String value = (String) ReflectionLoader.call(entry, "getNewPath");
 							if(mode==refmode) {
 								files.add(new JsonObject().withValue("REM", value));
 							} else {
@@ -260,7 +260,7 @@ public class GitRevision {
 				}
 				map.add(jsonObject);
 			}
-			ReflectionLoader.call("close", walk);
+			ReflectionLoader.call(walk, "close");
 			return jsonObject;
 		}catch(Exception e) {
 		}

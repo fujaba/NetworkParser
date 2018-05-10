@@ -161,7 +161,7 @@ public class ErrorHandler implements Thread.UncaughtExceptionHandler {
 		if(ReflectionLoader.MANAGEMENTFACTORY == null) {
 			return item;
 		}
-		Object runTime = ReflectionLoader.call("getRuntimeMXBean", ReflectionLoader.MANAGEMENTFACTORY);
+		Object runTime = ReflectionLoader.call(ReflectionLoader.MANAGEMENTFACTORY, "getRuntimeMXBean");
 		if(runTime != null) {
 			Object returnValue = ReflectionLoader.getField("vmStartupTime", runTime);
 			if(returnValue instanceof Long) {
@@ -177,13 +177,13 @@ public class ErrorHandler implements Thread.UncaughtExceptionHandler {
 		if(ReflectionLoader.MANAGEMENTFACTORY == null) {
 			return pid;
 		}
-		Object runTime = ReflectionLoader.call("getRuntimeMXBean", ReflectionLoader.MANAGEMENTFACTORY);
+		Object runTime = ReflectionLoader.call(ReflectionLoader.MANAGEMENTFACTORY, "getRuntimeMXBean");
 		if(runTime == null) {
 			return pid;
 		}
 		Object jvm = ReflectionLoader.getField("jvm", runTime);
 		if(jvm != null) {
-			Object returnValue = ReflectionLoader.call("getProcessId", jvm);
+			Object returnValue = ReflectionLoader.call(jvm, "getProcessId");
 			if(returnValue instanceof Integer) {
 				pid = (Integer) returnValue;
 			}
@@ -279,10 +279,10 @@ public class ErrorHandler implements Thread.UncaughtExceptionHandler {
 			Object rect = ReflectionLoader.newInstance(ReflectionLoader.RECTANGLE, ReflectionLoader.DIMENSION, ReflectionLoader.callChain(ReflectionLoader.TOOLKIT, "getDefaultToolkit", "getScreenSize"));
 			writeScreen(target, rect);
 			if (currentStage != null) {
-				Double x = (Double) ReflectionLoader.call("getX", currentStage);
-				Double y= (Double) ReflectionLoader.call("getY", currentStage);
-				Double width = (Double) ReflectionLoader.call("getWidth", currentStage);
-				Double height = (Double) ReflectionLoader.call("getHeight", currentStage);
+				Double x = (Double) ReflectionLoader.call(currentStage, "getX");
+				Double y= (Double) ReflectionLoader.call(currentStage, "getY");
+				Double width = (Double) ReflectionLoader.call(currentStage, "getWidth");
+				Double height = (Double) ReflectionLoader.call(currentStage, "getHeight");
 
 				String windowName = currentStage.getClass().getSimpleName();
 				target = getFileName(filePath, prefix+windowName, fileName);
@@ -297,9 +297,9 @@ public class ErrorHandler implements Thread.UncaughtExceptionHandler {
 
 	private boolean writeScreen(File file, Object rectangle) {
 		Object robot = ReflectionLoader.newInstance(ReflectionLoader.ROBOT);
-		Object bi = ReflectionLoader.call("createScreenCapture", robot, ReflectionLoader.RECTANGLE, rectangle);
+		Object bi = ReflectionLoader.call(robot, "createScreenCapture", ReflectionLoader.RECTANGLE, rectangle);
 
-		Boolean result = (Boolean) ReflectionLoader.call("write", ReflectionLoader.IMAGEIO, ReflectionLoader.RENDEREDIMAGE, bi, String.class, "jpg", File.class, file);
+		Boolean result = (Boolean) ReflectionLoader.call(ReflectionLoader.IMAGEIO, "write", ReflectionLoader.RENDEREDIMAGE, bi, String.class, "jpg", File.class, file);
 		return result;
 	}
 	public void saveException(Throwable e) {
