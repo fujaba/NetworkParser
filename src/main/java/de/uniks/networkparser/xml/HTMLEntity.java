@@ -85,8 +85,10 @@ public class HTMLEntity implements BaseItem {
 		return this;
 	}
 
-	public HTMLEntity withScript(String value, XMLEntity parentNode) {
-		createScript(value, parentNode);
+	public HTMLEntity withScript(CharSequence value, XMLEntity parentNode) {
+		if(value != null) {
+			createScript(value.toString(), parentNode);
+		}
 		return this;
 	}
 
@@ -112,9 +114,11 @@ public class HTMLEntity implements BaseItem {
 		return node;
 	}
 
-	public HTMLEntity withHeaderStyle(String value) {
-		XMLEntity headerChild = new XMLEntity().setType("style").withValue(value);
-		this.header.with(headerChild);
+	public HTMLEntity withHeaderStyle(CharSequence value) {
+		if(value != null) {
+			XMLEntity headerChild = new XMLEntity().setType("style").withValue(value.toString());
+			this.header.with(headerChild);
+		}
 		return this;
 	}
 

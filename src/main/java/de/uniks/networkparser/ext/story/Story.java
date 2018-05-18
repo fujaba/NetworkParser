@@ -25,6 +25,7 @@ THE SOFTWARE.
 */
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.ext.ClassModel;
@@ -32,21 +33,18 @@ import de.uniks.networkparser.ext.io.FileBuffer;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.list.SimpleList;
-import de.uniks.networkparser.list.SortedSet;
 import de.uniks.networkparser.logic.BooleanCondition;
 import de.uniks.networkparser.logic.Equals;
 import de.uniks.networkparser.logic.Not;
 import de.uniks.networkparser.xml.HTMLEntity;
-import de.uniks.networkparser.xml.XMLEntity;
 
-public class Story implements Comparable<Story> {
+public class Story extends StoryElement implements Comparable<Story>{
 	private String outputFile;
 	private String label;
 	private SimpleList<ObjectCondition> steps = new SimpleList<ObjectCondition>();
 	private int counter=-1;
 	private boolean breakOnAssert=true;
 	private IdMap map;
-	private SortedSet<Story> stories = new SortedSet<Story>(true);
 	private String path="doc/";
 
 	// COUNTER
@@ -340,53 +338,8 @@ public class Story implements Comparable<Story> {
 		step.withCondition(message, actual, new Not().with(Equals.createNullCondition()));
 		this.addCondition(step);
 	}
-	public boolean dumpIndexHTML() {
-		return dumpIndexHTML("");
-	}
-	public boolean dumpIndexHTML(String subDir) {
-		if(this.stories.size() <1 ) {
-			return this.dumpHTML();
-		}
-		HTMLEntity output = new HTMLEntity();
-		// INDEX HTML
-		output.withEncoding(HTMLEntity.ENCODING);
-		XMLEntity frameset = XMLEntity.TAG("frameset").withKeyValue("cols", "250,*");
-		frameset.createChild("frame").withKeyValue("src", "refs.html").withKeyValue("name", "Index");
-		XMLEntity mainFrame = frameset.createChild("frame").withKeyValue("name", "Main");
-		frameset.createChild("noframes").withValue("<body><p><a href='refs.html'>Index</a> <a href='refs.html'>Main</a></p></body>");
-		output.with(frameset);
 
-
-		HTMLEntity refHtml = new HTMLEntity();
-		refHtml.withHeader("../src/main/resources/de/uniks/networkparser/graph/diagramstyle.css");
-		refHtml.withEncoding(HTMLEntity.ENCODING);
-		int pos = this.outputFile.lastIndexOf('/');
-		String fileName = "";
-		if(pos>0) {
-			fileName = subDir+this.outputFile.substring(0, pos) + "/";
-		}
-
-		if(this.steps.size()>0) {
-			// has main
-			this.writeToFile(fileName+"main.html");
-			mainFrame.withKeyValue("src", fileName);
-		}
-		for(Story subStory : stories) {
-			XMLEntity link = refHtml.createTag("A", refHtml.getBody());
-			link.add("href", subStory.getOutputFile());
-			link.withValueItem(subStory.getLabel());
-			if(subStory.size() > 0) {
-				subStory.dumpIndexHTML(fileName);
-			}
-		}
-		return FileBuffer.writeFile(fileName+"index.html", output.toString());
-	}
-
-	private int size() {
-		return this.stories.size();
-	}
-
-	private Object getOutputFile() {
+	public String getOutputFile() {
 		return outputFile;
 	}
 
@@ -408,11 +361,5 @@ public class Story implements Comparable<Story> {
 			return 0;
 		}
 		return label.compareTo(otherLabel);
-	}
-
-
-	public Story with(Story value) {
-		this.stories.add(value);
-		return this;
 	}
 }

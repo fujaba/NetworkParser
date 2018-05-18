@@ -1495,7 +1495,7 @@ var Palette = (function () {
         var div = document.createElement('div');
         div.className = 'palette';
         div.id = 'palette';
-        document.body.appendChild(div);
+        this.root = div;
         this.palette = div;
         var _loop_1 = function (key) {
             var element = graph.nodeFactory[key];
@@ -1518,6 +1518,9 @@ var Palette = (function () {
             _loop_1(key);
         }
     }
+    Palette.prototype.show = function () {
+        document.body.appendChild(this.root);
+    };
     Palette.prototype.addButtons = function () {
     };
     return Palette;
@@ -1547,590 +1550,327 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var edges = __webpack_require__(/*! ./elements/edges */ "./elements/edges/index.ts");
-var PropertiesPanel;
-(function (PropertiesPanel) {
-    var BlankView = (function () {
-        function BlankView(graph) {
-            this.graph = graph;
-            this.initMainPanel();
+var EventBus_1 = __webpack_require__(/*! ./EventBus */ "./EventBus.ts");
+var util_1 = __webpack_require__(/*! ./util */ "./util.ts");
+var PanelGroup = (function () {
+    function PanelGroup(graph) {
+        this.graph = graph;
+        this.clearPanel = new ClearPanel(this);
+        this.generatePanel = new GeneratePanel(this);
+    }
+    PanelGroup.prototype.handle = function (event, element) {
+        this.handleOpenProperties(event, element);
+        if (event.type === EventBus_1.EventBus.RELOADPROPERTIES
+            && this.selectedElement && element.id === this.selectedElement.id) {
+            this.handleEvent(event, element);
         }
-        BlankView.prototype.show = function (panel, showTabWithValue) {
-            if (this.propertiesContent) {
-                while (this.propertiesContent.hasChildNodes()) {
-                    this.propertiesContent.removeChild(this.propertiesContent.childNodes[0]);
-                }
+        if (this.selectedElement && this.selectedElement.id === element.id) {
+            return true;
+        }
+        if (element.id === 'RootElement') {
+            this.setActivePanel(this.clearPanel);
+        }
+        if (element.id === 'GenerateProp') {
+            this.setActivePanel(this.generatePanel);
+        }
+        this.selectedElement = element;
+        return true;
+    };
+    PanelGroup.prototype.getGraph = function () {
+        return this.graph;
+    };
+    PanelGroup.prototype.canHandle = function () {
+        return EventBus_1.EventBus.isHandlerActiveOrFree(PanelGroup.name);
+    };
+    PanelGroup.prototype.setActive = function (active) {
+        if (active) {
+            EventBus_1.EventBus.setActiveHandler(PanelGroup.name);
+        }
+        else {
+            EventBus_1.EventBus.releaseActiveHandler();
+        }
+    };
+    PanelGroup.prototype.handleEvent = function (event, element) {
+    };
+    PanelGroup.prototype.show = function () {
+        var _this = this;
+        this.propertiesMasterPanel = document.createElement('div');
+        this.propertiesMasterPanel.className = 'propertiespanel-hidden';
+        this.propertiesContent = document.createElement('div');
+        this.propertiesContent.className = 'properties-hidden';
+        this.propHeaderLabel = document.createElement('div');
+        this.propHeaderLabel.style.display = 'inherit';
+        this.propHeaderLabel.style.cursor = 'pointer';
+        this.propHeaderLabel.onclick = function (e) { return _this.toogleProperties(e); };
+        this.propHeaderButton = document.createElement('button');
+        this.propHeaderButton.className = 'btnHideProp';
+        this.propHeaderButton.style.cssFloat = 'right';
+        this.propHeaderButton.onclick = function (e) { return _this.toogleProperties(e); };
+        var propertiesHeader = document.createElement('div');
+        propertiesHeader.style.display = 'inline';
+        propertiesHeader.appendChild(this.propHeaderLabel);
+        propertiesHeader.appendChild(this.propHeaderButton);
+        this.propertiesMasterPanel.appendChild(propertiesHeader);
+        this.propertiesMasterPanel.appendChild(this.propertiesContent);
+        document.body.appendChild(this.propertiesMasterPanel);
+        this.setActivePanel(this.clearPanel);
+    };
+    PanelGroup.prototype.setActivePanel = function (panel) {
+        this.selectedPanel = panel;
+        this.propHeaderLabel.innerHTML = panel.getHeaderText();
+        if (this.propertiesContent) {
+            while (this.propertiesContent.hasChildNodes()) {
+                this.propertiesContent.removeChild(this.propertiesContent.childNodes[0]);
             }
-            var children = panel.getPanel().childNodes;
-            while (children.length > 0) {
-                this.propertiesContent.appendChild(children[0]);
+        }
+        panel.show();
+        panel.showFirstTab();
+        if (panel !== this.clearPanel) {
+            this.showProperties(null);
+        }
+        else {
+            this.hideProperties(null);
+        }
+    };
+    PanelGroup.prototype.getProperiesContent = function () {
+        return this.propertiesContent;
+    };
+    PanelGroup.prototype.handleOpenProperties = function (event, element) {
+        if (event.type === 'dblclick') {
+            this.showProperties(event);
+        }
+    };
+    PanelGroup.prototype.showProperties = function (evt) {
+        if (evt) {
+            evt.stopPropagation();
+        }
+        this.propHeaderButton.innerHTML = '&#8897;';
+        this.propHeaderButton.title = 'Hide properties';
+        this.propertiesMasterPanel.className = 'propertiespanel';
+        this.propertiesContent.className = 'properties';
+    };
+    PanelGroup.prototype.toogleProperties = function (evt) {
+        if (this.propHeaderButton.title === 'Show properties') {
+            this.showProperties(evt);
+        }
+        else {
+            this.hideProperties(evt);
+        }
+    };
+    PanelGroup.prototype.hideProperties = function (evt) {
+        if (evt) {
+            evt.stopPropagation();
+        }
+        this.propHeaderButton.innerHTML = '&#8896;';
+        this.propHeaderButton.title = 'Show properties';
+        this.propertiesMasterPanel.className = 'propertiespanel-hidden';
+        this.propertiesContent.className = 'properties-hidden';
+    };
+    return PanelGroup;
+}());
+exports.PanelGroup = PanelGroup;
+var Panel = (function () {
+    function Panel(group, element) {
+        this.panelItem = [];
+        this.divPropertiesPanel = document.createElement('div');
+        this.element = element;
+        this.group = group;
+        this.divPropertiesTabbedPanel = document.createElement('div');
+        this.divPropertiesTabbedPanel.className = 'tabbedpane';
+        this.divPropertiesPanel.appendChild(this.divPropertiesTabbedPanel);
+    }
+    Panel.prototype.show = function () {
+        var propertiesContent = this.group.getProperiesContent();
+        if (this.panelItem.length > 1) {
+            propertiesContent.appendChild(this.getPropertiesTabbedPanel());
+        }
+        propertiesContent.appendChild(this.getPropertiesPanel());
+    };
+    Panel.prototype.getPropertiesTabbedPanel = function () {
+        return this.divPropertiesTabbedPanel;
+    };
+    Panel.prototype.getPropertiesPanel = function () {
+        return this.divPropertiesPanel;
+    };
+    Panel.prototype.getPanel = function () {
+        return this.divPropertiesPanel;
+    };
+    Panel.prototype.getHeaderText = function () {
+        return '';
+    };
+    Panel.prototype.showFirstTab = function () {
+        if (this.panelItem.length > 0) {
+            this.openTab(this.panelItem[0]);
+        }
+    };
+    Panel.prototype.createTabElement = function (tabText, tabValue, item) {
+        var _this = this;
+        var tabElementBtn = document.createElement('button');
+        tabElementBtn.className = 'tablinks';
+        tabElementBtn.innerText = tabText;
+        tabElementBtn.value = tabValue;
+        if (item === null) {
+            item = new PanelItem(this);
+        }
+        item.withButton(tabElementBtn);
+        tabElementBtn.onclick = function () { return _this.openTab(item); };
+        this.divPropertiesTabbedPanel.appendChild(tabElementBtn);
+        this.panelItem.push(item);
+        return item;
+    };
+    Panel.prototype.openTab = function (panelItem) {
+        for (var key in this.panelItem) {
+            var child = this.panelItem[key];
+            if (child !== panelItem) {
+                child.deactive();
             }
-            this.displayingPanel = panel;
-            if (showTabWithValue) {
-                panel.showTab(showTabWithValue);
+        }
+        panelItem.active();
+        if (this.divPropertiesPanel) {
+            while (this.divPropertiesPanel.hasChildNodes()) {
+                this.divPropertiesPanel.removeChild(this.divPropertiesPanel.childNodes[0]);
             }
-            else {
-                panel.showFirstTab();
-            }
-        };
-        BlankView.prototype.openProperties = function () {
-            this.isHidden = false;
-            document.getElementById('propertiesContent').className = 'properties';
-            document.getElementById('propertiesMasterPanel').className = 'propertiespanel';
-            var btn = document.getElementById('propClassHeaderButtonDisplay');
-            btn.innerHTML = '&#8897;';
-            btn.title = 'Hide properties';
-        };
-        BlankView.prototype.setPropertiesHeaderText = function (text) {
-            var divHeaderLabel = document.getElementById('classPropHeaderLabel');
-            if (divHeaderLabel) {
-                divHeaderLabel.innerHTML = text;
-            }
-        };
-        BlankView.prototype.getCurrentView = function () {
-            return this.displayingPanel.getPropertiesView();
-        };
-        BlankView.prototype.getCurrentPanel = function () {
-            return this.displayingPanel;
-        };
-        BlankView.prototype.initMainPanel = function () {
-            var _this = this;
-            if (document.getElementById('propertiesMasterPanel')) {
+        }
+        if (panelItem.getContent()) {
+            this.divPropertiesPanel.appendChild(panelItem.getContent());
+        }
+    };
+    return Panel;
+}());
+exports.Panel = Panel;
+var GeneratePanel = (function (_super) {
+    __extends(GeneratePanel, _super);
+    function GeneratePanel(group) {
+        var _this = _super.call(this, group, null) || this;
+        var item = _this.createTabElement('General', 'General', null);
+        var inputGenerateWorkspace = util_1.Util.createHTML({ tag: 'input', id: 'workspace', type: 'text', placeholder: 'Type your Folder for generated code...', value: 'src/main/java', style: { marginRight: '5px', width: '260px' } });
+        item.withInput('Folder:', inputGenerateWorkspace);
+        var inputGeneratePackage = util_1.Util.createHTML({ tag: 'input', id: 'package', type: 'text', placeholder: 'Type your workspace for generated code...', value: '', style: { marginRight: '5px', width: '260px' } });
+        item.withInput('Package:', inputGeneratePackage);
+        var options = document.createElement('div');
+        options.style.textAlign = 'center';
+        options.style.margin = '3';
+        options.style.padding = '5';
+        item.withContent(document.createElement('br'));
+        item.withContent(document.createElement('br'));
+        item.withContent(options);
+        options.style.borderStyle = 'groove';
+        options.style.borderRadius = '10px';
+        var btnGenerate = document.createElement('button');
+        btnGenerate.textContent = 'Generate';
+        btnGenerate.title = 'Generate code into your workspace';
+        btnGenerate.className = 'OptionElement';
+        var that = _this;
+        btnGenerate.onclick = function () {
+            var workspace = inputGeneratePackage.value;
+            if (workspace.length === 0) {
+                alert('No workspace set.\nEnter first your workspace');
+                inputGeneratePackage.focus();
                 return;
             }
-            this.propertiesMasterPanel = document.createElement('div');
-            this.propertiesMasterPanel.id = 'propertiesMasterPanel';
-            this.propertiesMasterPanel.className = 'propertiespanel-hidden';
-            this.propertiesContent = document.createElement('div');
-            this.propertiesContent.id = 'propertiesContent';
-            this.propertiesContent.className = 'properties-hidden';
-            var propertiesHeader = document.createElement('div');
-            propertiesHeader.id = 'propertiesHeader';
-            propertiesHeader.style.display = 'inline';
-            var propHeaderLabel = document.createElement('div');
-            propHeaderLabel.id = 'classPropHeaderLabel';
-            propHeaderLabel.innerHTML = 'Select any element to see its properties';
-            propHeaderLabel.style.display = 'inherit';
-            propHeaderLabel.style.cursor = 'pointer';
-            propHeaderLabel.onclick = function (e) { return _this.hideproperties(e); };
-            var btnPropClassHeaderDisplay = document.createElement('button');
-            btnPropClassHeaderDisplay.id = 'propClassHeaderButtonDisplay';
-            btnPropClassHeaderDisplay.title = 'Show properties';
-            btnPropClassHeaderDisplay.className = 'btnHideProp';
-            btnPropClassHeaderDisplay.innerHTML = '&#8896;';
-            btnPropClassHeaderDisplay.style.cssFloat = 'right';
-            btnPropClassHeaderDisplay.onclick = function (e) { return _this.hideproperties(e); };
-            propertiesHeader.appendChild(propHeaderLabel);
-            propertiesHeader.appendChild(btnPropClassHeaderDisplay);
-            this.propertiesMasterPanel.appendChild(propertiesHeader);
-            this.propertiesMasterPanel.appendChild(this.propertiesContent);
-            document.body.appendChild(this.propertiesMasterPanel);
+            that.group.getGraph().generate(workspace, inputGenerateWorkspace.value);
         };
-        BlankView.prototype.hideproperties = function (evt) {
-            evt.stopPropagation();
-            if (this.isHidden === false) {
-                document.getElementById('propertiesContent').className = 'properties-hidden';
-                document.getElementById('propertiesMasterPanel').className = 'propertiespanel-hidden';
-                var btn = document.getElementById('propClassHeaderButtonDisplay');
-                btn.innerHTML = '&#8896;';
-                btn.title = 'Show properties';
+        options.appendChild(btnGenerate);
+        options.appendChild(document.createElement('hr'));
+        options.appendChild(document.createElement('br'));
+        var btnAutoLayout = util_1.Util.createHTML({ tag: 'button', className: 'OptionElement', value: 'Auto Layout', style: { marginRight: '10px' }, onclick: function () {
+                that.group.getGraph().layout();
+            } });
+        options.appendChild(btnAutoLayout);
+        var btnDeleteAll = document.createElement('button');
+        btnDeleteAll.className = 'OptionElement';
+        btnDeleteAll.textContent = 'Delete All';
+        btnDeleteAll.title = 'Delete all nodes from diagram';
+        btnDeleteAll.onclick = function () {
+            var confirmDelete = confirm('All classes will be deleted!');
+            if (!confirmDelete) {
+                return;
             }
-            else {
-                document.getElementById('propertiesContent').className = 'properties';
-                document.getElementById('propertiesMasterPanel').className = 'propertiespanel';
-                var btn = document.getElementById('propClassHeaderButtonDisplay');
-                btn.innerHTML = '&#8897;';
-                btn.title = 'Hide properties';
-            }
-            this.isHidden = !this.isHidden;
+            that.group.getGraph().$graphModel.removeAllElements();
         };
-        return BlankView;
-    }());
-    PropertiesPanel.BlankView = BlankView;
-    var APanel = (function () {
-        function APanel() {
-            this.divPropertiesPanel = document.createElement('div');
-            this.divPropertiesTabbedPanel = document.createElement('div');
-            this.divPropertiesTabbedPanel.id = 'propertiesTabbedPanel';
-            this.divPropertiesTabbedPanel.className = 'tabbedpane';
-            this.divPropertiesPanel.appendChild(this.divPropertiesTabbedPanel);
+        btnDeleteAll.style.marginRight = '10px';
+        options.appendChild(btnDeleteAll);
+        var exportTypes = ['Export', 'HTML', 'JSON', 'PDF', 'PNG', 'SVG'];
+        var selectExport = document.createElement('select');
+        exportTypes.forEach(function (type) {
+            if (!(!window['jsPDF'] && type === 'PDF')) {
+                var option = document.createElement('option');
+                option.value = type;
+                option.textContent = type;
+                selectExport.appendChild(option);
+            }
+        });
+        selectExport.onchange = function (evt) {
+            var selectedExportType = selectExport.options[selectExport.selectedIndex].value;
+            selectExport.selectedIndex = 0;
+            that.group.getGraph().saveAs(selectedExportType);
+        };
+        selectExport.className = 'OptionElement';
+        options.appendChild(selectExport);
+        options.appendChild(document.createElement('br'));
+        return _this;
+    }
+    GeneratePanel.prototype.getHeaderText = function () {
+        return 'Properties';
+    };
+    return GeneratePanel;
+}(Panel));
+exports.GeneratePanel = GeneratePanel;
+var ClearPanel = (function (_super) {
+    __extends(ClearPanel, _super);
+    function ClearPanel(group) {
+        return _super.call(this, group, null) || this;
+    }
+    ClearPanel.prototype.getHeaderText = function () {
+        return 'Select any element to see its properties';
+    };
+    return ClearPanel;
+}(Panel));
+exports.ClearPanel = ClearPanel;
+var PanelItem = (function () {
+    function PanelItem(panel, label) {
+        this.content = util_1.Util.create({ tag: 'div', className: 'tabContent' });
+        this.panel = panel;
+        this.label = label;
+    }
+    PanelItem.prototype.active = function () {
+        if (this.getButton()) {
+            this.getButton().className += ' active';
         }
-        APanel.prototype.getPanel = function () {
-            return this.divPropertiesPanel;
-        };
-        APanel.prototype.showFirstTab = function () {
-            var tabs = document.getElementsByClassName('tablinks');
-            if (tabs && tabs.length > 0) {
-                this.openTab(tabs[0].id);
-            }
-        };
-        APanel.prototype.showTab = function (btnValue) {
-            var tabs = document.getElementsByClassName('tablinks');
-            for (var index = 0; index < tabs.length; index++) {
-                var tab = tabs[index];
-                if (tab.value === btnValue) {
-                    this.openTab(tab.id);
-                }
-            }
-        };
-        APanel.prototype.createTabElement = function (id, tabText, tabValue) {
-            var _this = this;
-            var tabElementBtn = document.createElement('button');
-            tabElementBtn.id = id;
-            tabElementBtn.className = 'tablinks';
-            tabElementBtn.innerText = tabText;
-            tabElementBtn.value = tabValue;
-            tabElementBtn.onclick = function () { return _this.openTab(id); };
-            return tabElementBtn;
-        };
-        APanel.prototype.openTab = function (clickedId) {
-            var tabs = document.getElementsByClassName('tablinks');
-            for (var i = 0; i < tabs.length; i++) {
-                tabs[i].className = tabs[i].className.replace('active', '');
-            }
-            var tab = document.getElementById(clickedId);
-            tab.className += ' active';
-            var tabContents = document.getElementsByClassName('tabcontent');
-            for (var i = 0; i < tabContents.length; i++) {
-                tabContents[i].style.display = 'none';
-            }
-            document.getElementById(this.getPropertiesView().toLowerCase() + tab.value.toString())
-                .style.display = 'block';
-        };
-        return APanel;
-    }());
-    PropertiesPanel.APanel = APanel;
-    var ClassPanel = (function (_super) {
-        __extends(ClassPanel, _super);
-        function ClassPanel() {
-            return _super.call(this) || this;
+    };
+    PanelItem.prototype.deactive = function () {
+        if (this.getButton()) {
+            util_1.Util.removeClass(this.getButton(), 'active');
         }
-        ClassPanel.prototype.init = function () {
-            var _this = this;
-            var typeList = ['boolean', 'byte', 'char', 'double', 'float', 'int', 'long', 'short', 'String', 'void'];
-            this.dataTypes = document.createElement('datalist');
-            this.dataTypes.id = 'dataTypes';
-            typeList.forEach(function (type) {
-                var modifierOption = document.createElement('option');
-                modifierOption.value = type;
-                modifierOption.innerHTML = type;
-                _this.dataTypes.appendChild(modifierOption);
-            });
-            this.divPropertiesPanel.appendChild(this.dataTypes);
-            this.divPropertiesTabbedPanel.appendChild(this.createTabElement('generalClassPropBtn', 'General', 'general'));
-            this.divPropertiesTabbedPanel.appendChild(this.createTabElement('attrClassPropBtn', 'Attributes', 'attribute'));
-            this.divPropertiesTabbedPanel.appendChild(this.createTabElement('methodClassPropBtn', 'Methods', 'method'));
-            this.createTabGeneralContent();
-            this.createTabAttrContent();
-            this.createTabMethodContent();
-        };
-        ClassPanel.prototype.getPropertiesView = function () {
-            return 'Clazz';
-        };
-        ClassPanel.prototype.createTabGeneralContent = function () {
-            var div = document.createElement('div');
-            div.id = this.getPropertiesView().toLowerCase() + 'general';
-            div.className = 'tabcontent';
-            var divTable = document.createElement('div');
-            divTable.className = 'divTable';
-            var divTableBody = document.createElement('div');
-            divTableBody.className = 'divTableBody';
-            var divRowClazzName = document.createElement('div');
-            divRowClazzName.className = 'divTableRow';
-            var divRowClazzNameCellText = document.createElement('div');
-            divRowClazzNameCellText.className = 'divTableCell';
-            divRowClazzNameCellText.innerHTML = 'Name:';
-            var divRowClazzNameCellInput = document.createElement('div');
-            divRowClazzNameCellInput.className = 'divTableCell';
-            var textBoxClass = document.createElement('input');
-            textBoxClass.type = 'text';
-            textBoxClass.id = 'className';
-            textBoxClass.placeholder = 'Class name';
-            textBoxClass.style.width = '100%';
-            divRowClazzNameCellInput.appendChild(textBoxClass);
-            divRowClazzName.appendChild(divRowClazzNameCellText);
-            divRowClazzName.appendChild(divRowClazzNameCellInput);
-            divTableBody.appendChild(divRowClazzName);
-            var divRowClazzModifier = document.createElement('div');
-            divRowClazzModifier.className = 'divTableRow';
-            var divRowClazzModifierCellText = document.createElement('div');
-            divRowClazzModifierCellText.className = 'divTableCell';
-            divRowClazzModifierCellText.innerHTML = 'Access modifier:';
-            var divRowClazzModifierCellInput = document.createElement('div');
-            divRowClazzModifierCellInput.className = 'divTableCell';
-            var selectClazzModifier = document.createElement('select');
-            selectClazzModifier.id = 'classModifier';
-            selectClazzModifier.style.width = '100%';
-            var modifierObj = {};
-            modifierObj['public'] = '+';
-            modifierObj['private'] = '-';
-            modifierObj['protected'] = '#';
-            modifierObj['package'] = '~';
-            for (var title in modifierObj) {
-                var modifierOption = document.createElement('option');
-                modifierOption.value = title;
-                modifierOption.innerHTML = title;
-                selectClazzModifier.appendChild(modifierOption);
-            }
-            selectClazzModifier.value = 'public';
-            divRowClazzModifierCellInput.appendChild(selectClazzModifier);
-            divRowClazzModifier.appendChild(divRowClazzModifierCellText);
-            divRowClazzModifier.appendChild(divRowClazzModifierCellInput);
-            divTableBody.appendChild(divRowClazzModifier);
-            divTable.appendChild(divTableBody);
-            div.appendChild(divTable);
-            this.divPropertiesPanel.appendChild(div);
-        };
-        ClassPanel.prototype.createTabAttrContent = function () {
-            this.createtabPropertyContent('attribute');
-        };
-        ClassPanel.prototype.createTabMethodContent = function () {
-            this.createtabPropertyContent('method');
-        };
-        ClassPanel.prototype.createtabPropertyContent = function (propertyType) {
-            var div = document.createElement('div');
-            div.id = this.getPropertiesView().toLowerCase() + propertyType;
-            div.className = 'tabcontent';
-            var divEditProperty = document.createElement('div');
-            divEditProperty.id = div.id + 'Add';
-            divEditProperty.style.marginTop = '5px';
-            var selectPropertyModifier = document.createElement('select');
-            selectPropertyModifier.id = div.id + 'AddModifier';
-            var modifierObj = {};
-            modifierObj['public'] = '+';
-            modifierObj['private'] = '-';
-            modifierObj['protected'] = '#';
-            modifierObj['package'] = '~';
-            for (var title in modifierObj) {
-                var modifierOption = document.createElement('option');
-                modifierOption.value = modifierObj[title];
-                modifierOption.innerHTML = modifierObj[title];
-                modifierOption.title = title;
-                selectPropertyModifier.appendChild(modifierOption);
-            }
-            selectPropertyModifier.value = modifierObj['public'];
-            var textBoxPropertyName = document.createElement('input');
-            textBoxPropertyName.style.marginLeft = '5px';
-            textBoxPropertyName.style.marginRight = '5px';
-            textBoxPropertyName.id = div.id + 'AddName';
-            textBoxPropertyName.type = 'text';
-            textBoxPropertyName.placeholder = 'Add new ' + propertyType;
-            var selectPropertyType = document.createElement('input');
-            selectPropertyType.id = div.id + 'AddType';
-            selectPropertyType.setAttribute('list', this.dataTypes.id);
-            var btnAdd = document.createElement('button');
-            btnAdd.id = div.id + 'BtnAdd' + propertyType;
-            btnAdd.innerHTML = '+';
-            btnAdd.title = 'Add ' + propertyType;
-            btnAdd.style.marginLeft = '5px';
-            btnAdd.style.color = 'green';
-            divEditProperty.appendChild(selectPropertyModifier);
-            divEditProperty.appendChild(textBoxPropertyName);
-            divEditProperty.appendChild(selectPropertyType);
-            divEditProperty.appendChild(btnAdd);
-            div.appendChild(divEditProperty);
-            this.divPropertiesPanel.appendChild(div);
-        };
-        return ClassPanel;
-    }(APanel));
-    PropertiesPanel.ClassPanel = ClassPanel;
-    var EdgePanel = (function (_super) {
-        __extends(EdgePanel, _super);
-        function EdgePanel() {
-            return _super.call(this) || this;
-        }
-        EdgePanel.prototype.init = function () {
-            this.divPropertiesTabbedPanel.appendChild(this.createTabElement('generalEdgePropBtn', 'General', 'general'));
-            this.createTabGeneralEdgeContent();
-        };
-        EdgePanel.prototype.getPropertiesView = function () {
-            return 'Edge';
-        };
-        EdgePanel.prototype.createTabGeneralEdgeContent = function () {
-            var cardinalityTypes = ['0..1', '1', '0..*'];
-            var dataListCardinalityTypes = document.createElement('datalist');
-            dataListCardinalityTypes.id = 'cardinalityTypesDataList';
-            cardinalityTypes.forEach(function (type) {
-                var cardinalityoption = document.createElement('option');
-                cardinalityoption.value = type;
-                cardinalityoption.innerHTML = type;
-                dataListCardinalityTypes.appendChild(cardinalityoption);
-            });
-            var div = document.createElement('div');
-            div.id = this.getPropertiesView().toLowerCase() + 'general';
-            div.className = 'tabcontent';
-            var divTable = document.createElement('div');
-            divTable.className = 'divTable';
-            var divTableBody = document.createElement('div');
-            divTableBody.className = 'divTableBody';
-            var divRowEdgeType = document.createElement('div');
-            divRowEdgeType.className = 'divTableRow';
-            var divRowEdgeTypeCellText = document.createElement('div');
-            divRowEdgeTypeCellText.className = 'divTableCell';
-            divRowEdgeTypeCellText.innerHTML = 'Type:';
-            var divRowEdgeTypeCellSelect = document.createElement('div');
-            divRowEdgeTypeCellSelect.className = 'divTableCell';
-            var selectEdgeType = document.createElement('select');
-            selectEdgeType.id = 'edgeTypeSelect';
-            selectEdgeType.className = 'col2';
-            var edgeTypes = [];
-            for (var type in edges) {
-                if (type.toString() === 'Aggregate' || type.toString() === 'Direction') {
-                    continue;
-                }
-                edgeTypes.push(type);
-            }
-            edgeTypes.sort();
-            for (var _i = 0, edgeTypes_1 = edgeTypes; _i < edgeTypes_1.length; _i++) {
-                var type = edgeTypes_1[_i];
-                var selectOption = document.createElement('option');
-                selectOption.value = type;
-                selectOption.innerHTML = type;
-                selectEdgeType.appendChild(selectOption);
-            }
-            divRowEdgeTypeCellSelect.appendChild(selectEdgeType);
-            divRowEdgeType.appendChild(divRowEdgeTypeCellText);
-            divRowEdgeType.appendChild(divRowEdgeTypeCellSelect);
-            divTableBody.appendChild(divRowEdgeType);
-            var divRowEdgeLabel = document.createElement('div');
-            divRowEdgeLabel.className = 'divTableRow';
-            var divRowEdgeLabelCellText = document.createElement('div');
-            divRowEdgeLabelCellText.className = 'divTableCell';
-            divRowEdgeLabelCellText.innerHTML = 'Label:';
-            var divRowEdgeLabelCellInput = document.createElement('div');
-            divRowEdgeLabelCellInput.className = 'divTableCell';
-            var textBoxEdgeLabel = document.createElement('input');
-            textBoxEdgeLabel.type = 'text';
-            textBoxEdgeLabel.id = 'edgeLabelInput';
-            textBoxEdgeLabel.placeholder = 'Edge label';
-            textBoxEdgeLabel.className = 'col2';
-            textBoxEdgeLabel.readOnly = true;
-            divRowEdgeLabelCellInput.appendChild(textBoxEdgeLabel);
-            divRowEdgeLabel.appendChild(divRowEdgeLabelCellText);
-            divRowEdgeLabel.appendChild(divRowEdgeLabelCellInput);
-            divTableBody.appendChild(divRowEdgeLabel);
-            var divRowEdgeSrcNode = document.createElement('div');
-            divRowEdgeSrcNode.className = 'divTableRow';
-            var divRowEdgeSrcNodeCellText = document.createElement('div');
-            divRowEdgeSrcNodeCellText.className = 'divTableCell';
-            divRowEdgeSrcNodeCellText.innerHTML = 'Source:';
-            var divRowEdgeSrcNodeCellInput = document.createElement('div');
-            divRowEdgeSrcNodeCellInput.className = 'divTableCell';
-            var textBoxEdgeSrc = document.createElement('input');
-            textBoxEdgeSrc.type = 'text';
-            textBoxEdgeSrc.id = 'edgeSrcInput';
-            textBoxEdgeSrc.placeholder = 'Edge Source';
-            textBoxEdgeSrc.className = 'col2';
-            textBoxEdgeSrc.readOnly = true;
-            divRowEdgeSrcNodeCellInput.appendChild(textBoxEdgeSrc);
-            divRowEdgeSrcNode.appendChild(divRowEdgeSrcNodeCellText);
-            divRowEdgeSrcNode.appendChild(divRowEdgeSrcNodeCellInput);
-            divTableBody.appendChild(divRowEdgeSrcNode);
-            var divRowEdgeSrcNodeProperty = document.createElement('div');
-            divRowEdgeSrcNodeProperty.className = 'divTableRow';
-            var divRowEdgeSrcNodePropertyCellText = document.createElement('div');
-            divRowEdgeSrcNodePropertyCellText.className = 'divTableCell';
-            divRowEdgeSrcNodePropertyCellText.innerHTML = 'Source Property:';
-            var divRowEdgeSrcNodePropertyCellInput = document.createElement('div');
-            divRowEdgeSrcNodePropertyCellInput.className = 'divTableCell';
-            var textBoxEdgeSrcProperty = document.createElement('input');
-            textBoxEdgeSrcProperty.type = 'text';
-            textBoxEdgeSrcProperty.id = 'edgeSrcProperty';
-            textBoxEdgeSrcProperty.placeholder = 'Add source property';
-            textBoxEdgeSrcProperty.className = 'col2';
-            divRowEdgeSrcNodePropertyCellInput.appendChild(textBoxEdgeSrcProperty);
-            divRowEdgeSrcNodeProperty.appendChild(divRowEdgeSrcNodePropertyCellText);
-            divRowEdgeSrcNodeProperty.appendChild(divRowEdgeSrcNodePropertyCellInput);
-            divTableBody.appendChild(divRowEdgeSrcNodeProperty);
-            var divRowEdgeSrcNodeCardinality = document.createElement('div');
-            divRowEdgeSrcNodeCardinality.className = 'divTableRow';
-            var divRowEdgeSrcNodeCardinalityCellText = document.createElement('div');
-            divRowEdgeSrcNodeCardinalityCellText.className = 'divTableCell';
-            divRowEdgeSrcNodeCardinalityCellText.innerHTML = 'Source Cardinality:';
-            var divRowEdgeSrcNodeCardinalityCellInput = document.createElement('div');
-            divRowEdgeSrcNodeCardinalityCellInput.className = 'divTableCell';
-            var inputSrcCardinalityType = document.createElement('input');
-            inputSrcCardinalityType.id = 'inputEdgeSrcCardinality';
-            inputSrcCardinalityType.className = 'col2';
-            inputSrcCardinalityType.placeholder = 'Add source cardinality';
-            inputSrcCardinalityType.setAttribute('list', dataListCardinalityTypes.id);
-            divRowEdgeSrcNodeCardinalityCellInput.appendChild(inputSrcCardinalityType);
-            divRowEdgeSrcNodeCardinality.appendChild(divRowEdgeSrcNodeCardinalityCellText);
-            divRowEdgeSrcNodeCardinality.appendChild(divRowEdgeSrcNodeCardinalityCellInput);
-            divTableBody.appendChild(divRowEdgeSrcNodeCardinality);
-            var divRowEdgeTargetNode = document.createElement('div');
-            divRowEdgeTargetNode.className = 'divTableRow';
-            var divRowEdgeTargetNodeCellText = document.createElement('div');
-            divRowEdgeTargetNodeCellText.className = 'divTableCell';
-            divRowEdgeTargetNodeCellText.innerHTML = 'Target:';
-            var divRowEdgeTargetNodeCellInput = document.createElement('div');
-            divRowEdgeTargetNodeCellInput.className = 'divTableCell';
-            var textBoxEdgeTarget = document.createElement('input');
-            textBoxEdgeTarget.type = 'text';
-            textBoxEdgeTarget.id = 'edgeTargetInput';
-            textBoxEdgeTarget.placeholder = 'Edge Source';
-            textBoxEdgeTarget.className = 'col2';
-            textBoxEdgeTarget.readOnly = true;
-            divRowEdgeTargetNodeCellInput.appendChild(textBoxEdgeTarget);
-            divRowEdgeTargetNode.appendChild(divRowEdgeTargetNodeCellText);
-            divRowEdgeTargetNode.appendChild(divRowEdgeTargetNodeCellInput);
-            divTableBody.appendChild(divRowEdgeTargetNode);
-            var divRowEdgeTargetNodeProperty = document.createElement('div');
-            divRowEdgeTargetNodeProperty.className = 'divTableRow';
-            var divRowEdgeTargetNodePropertyCellText = document.createElement('div');
-            divRowEdgeTargetNodePropertyCellText.className = 'divTableCell';
-            divRowEdgeTargetNodePropertyCellText.innerHTML = 'Target Property:';
-            var divRowEdgeTargetNodePropertyCellInput = document.createElement('div');
-            divRowEdgeTargetNodePropertyCellInput.className = 'divTableCell';
-            var textBoxEdgeTargetProperty = document.createElement('input');
-            textBoxEdgeTargetProperty.type = 'text';
-            textBoxEdgeTargetProperty.id = 'edgeTargetProperty';
-            textBoxEdgeTargetProperty.placeholder = 'Add target property';
-            textBoxEdgeTargetProperty.className = 'col2';
-            divRowEdgeTargetNodePropertyCellInput.appendChild(textBoxEdgeTargetProperty);
-            divRowEdgeTargetNodeProperty.appendChild(divRowEdgeTargetNodePropertyCellText);
-            divRowEdgeTargetNodeProperty.appendChild(divRowEdgeTargetNodePropertyCellInput);
-            divTableBody.appendChild(divRowEdgeTargetNodeProperty);
-            var divRowEdgeTargetNodeCardinality = document.createElement('div');
-            divRowEdgeTargetNodeCardinality.className = 'divTableRow';
-            var divRowEdgeTargetNodeCardinalityCellText = document.createElement('div');
-            divRowEdgeTargetNodeCardinalityCellText.className = 'divTableCell';
-            divRowEdgeTargetNodeCardinalityCellText.innerHTML = 'Target Cardinality:';
-            var divRowEdgeTargetNodeCardinalityCellInput = document.createElement('div');
-            divRowEdgeTargetNodeCardinalityCellInput.className = 'divTableCell';
-            var inputTargetCardinalityType = document.createElement('input');
-            inputTargetCardinalityType.id = 'inputEdgeTargetCardinality';
-            inputTargetCardinalityType.className = 'col2';
-            inputTargetCardinalityType.placeholder = 'Add target cardinality';
-            inputTargetCardinalityType.setAttribute('list', dataListCardinalityTypes.id);
-            divRowEdgeTargetNodeCardinalityCellInput.appendChild(inputTargetCardinalityType);
-            divRowEdgeTargetNodeCardinality.appendChild(divRowEdgeTargetNodeCardinalityCellText);
-            divRowEdgeTargetNodeCardinality.appendChild(divRowEdgeTargetNodeCardinalityCellInput);
-            divTableBody.appendChild(divRowEdgeTargetNodeCardinality);
-            divTable.appendChild(divTableBody);
-            div.appendChild(dataListCardinalityTypes);
-            div.appendChild(divTable);
-            this.divPropertiesPanel.appendChild(div);
-        };
-        return EdgePanel;
-    }(APanel));
-    PropertiesPanel.EdgePanel = EdgePanel;
-    var GeneratePanel = (function (_super) {
-        __extends(GeneratePanel, _super);
-        function GeneratePanel(graph) {
-            var _this = _super.call(this) || this;
-            _this.graph = graph;
-            return _this;
-        }
-        GeneratePanel.prototype.init = function () {
-            var _this = this;
-            this.divPropertiesTabbedPanel.appendChild(this.createTabElement('generalGeneratePropBtn', 'General', 'general'));
-            var div = document.createElement('div');
-            div.id = this.getPropertiesView().toLowerCase() + 'general';
-            div.className = 'tabcontent';
-            var inputGenerateWorkspace = document.createElement('input');
-            inputGenerateWorkspace.id = 'inputWorkspace';
-            inputGenerateWorkspace.type = 'text';
-            inputGenerateWorkspace.placeholder = 'Type your Folder for generated code...';
-            inputGenerateWorkspace.value = 'src/main/java';
-            inputGenerateWorkspace.style.marginRight = '5px';
-            inputGenerateWorkspace.style.width = '260px';
-            var inputGeneratePackage = document.createElement('input');
-            inputGeneratePackage.id = 'inputWorkspace';
-            inputGeneratePackage.type = 'text';
-            inputGeneratePackage.placeholder = 'Type your workspace for generated code...';
-            inputGeneratePackage.style.marginRight = '5px';
-            inputGeneratePackage.style.width = '260px';
-            div.appendChild(inputGenerateWorkspace);
-            div.appendChild(inputGeneratePackage);
-            var options = document.createElement('div');
-            options.style.textAlign = 'center';
-            options.style.margin = '3';
-            options.style.padding = '5';
-            div.appendChild(options);
-            options.style.borderStyle = 'groove';
-            options.style.borderRadius = '10px';
-            options.appendChild(document.createTextNode('Options'));
-            options.appendChild(document.createElement('br'));
-            var btnGenerate = document.createElement('button');
-            btnGenerate.textContent = 'Generate';
-            btnGenerate.title = 'Generate code into your workspace';
-            btnGenerate.className = 'OptionElement';
-            btnGenerate.onclick = function () {
-                var workspace = inputGeneratePackage.value;
-                if (workspace.length === 0) {
-                    alert('No workspace set.\nEnter first your workspace');
-                    inputGeneratePackage.focus();
-                    return;
-                }
-                _this.graph.generate(workspace, inputGenerateWorkspace.value);
-            };
-            options.appendChild(btnGenerate);
-            options.appendChild(document.createElement('hr'));
-            options.appendChild(document.createElement('br'));
-            var btnAutoLayout = document.createElement('button');
-            btnAutoLayout.id = 'layoutBtn';
-            btnAutoLayout.className = 'OptionElement';
-            btnAutoLayout.textContent = 'Auto Layout';
-            btnAutoLayout.onclick = function () {
-                _this.graph.layout();
-            };
-            options.appendChild(btnAutoLayout);
-            options.appendChild(document.createElement('br'));
-            var btnDeleteAll = document.createElement('button');
-            btnDeleteAll.id = 'btnDeleteAll';
-            btnDeleteAll.className = 'OptionElement';
-            btnDeleteAll.textContent = 'Delete All';
-            btnDeleteAll.title = 'Delete all nodes from diagram';
-            btnDeleteAll.onclick = function () {
-                var confirmDelete = confirm('All classes will be deleted!');
-                if (!confirmDelete) {
-                    return;
-                }
-                _this.graph.$graphModel.removeAllElements();
-            };
-            options.appendChild(btnDeleteAll);
-            options.appendChild(document.createElement('br'));
-            var exportTypes = ['Export', 'HTML', 'JSON', 'PDF', 'PNG', 'SVG'];
-            var selectExport = document.createElement('select');
-            exportTypes.forEach(function (type) {
-                if (!(!window['jsPDF'] && type === 'PDF')) {
-                    var option = document.createElement('option');
-                    option.value = type;
-                    option.textContent = type;
-                    selectExport.appendChild(option);
-                }
-            });
-            selectExport.onchange = function (evt) {
-                var selectedExportType = selectExport.options[selectExport.selectedIndex].value;
-                selectExport.selectedIndex = 0;
-                _this.graph.saveAs(selectedExportType);
-            };
-            selectExport.className = 'OptionElement';
-            options.appendChild(selectExport);
-            options.appendChild(document.createElement('br'));
-            this.divPropertiesPanel.appendChild(div);
-        };
-        GeneratePanel.prototype.getPropertiesView = function () {
-            return 'generate';
-        };
-        return GeneratePanel;
-    }(APanel));
-    PropertiesPanel.GeneratePanel = GeneratePanel;
-    var ClearPanel = (function (_super) {
-        __extends(ClearPanel, _super);
-        function ClearPanel() {
-            return _super.call(this) || this;
-        }
-        ClearPanel.prototype.init = function () {
-        };
-        ClearPanel.prototype.getPropertiesView = function () {
-            return 'Clear';
-        };
-        return ClearPanel;
-    }(APanel));
-    PropertiesPanel.ClearPanel = ClearPanel;
-})(PropertiesPanel = exports.PropertiesPanel || (exports.PropertiesPanel = {}));
+    };
+    PanelItem.prototype.withButton = function (button) {
+        this.button = button;
+        return this;
+    };
+    PanelItem.prototype.withContent = function (element) {
+        this.content.appendChild(element);
+        return this;
+    };
+    PanelItem.prototype.withInput = function (labelText, element) {
+        var group = util_1.Util.createHTML({ tag: 'div' });
+        var label = util_1.Util.createHTML({ tag: 'label', for: element.id, value: labelText });
+        group.appendChild(label);
+        group.appendChild(element);
+        this.content.appendChild(group);
+        return this;
+    };
+    PanelItem.prototype.getButton = function () {
+        return this.button;
+    };
+    PanelItem.prototype.getContent = function () {
+        return this.content;
+    };
+    PanelItem.prototype.getHeader = function () {
+        return this.label;
+    };
+    return PanelItem;
+}());
+exports.PanelItem = PanelItem;
 
 
 /***/ }),
@@ -2962,6 +2702,7 @@ var Toolbar_1 = __webpack_require__(/*! ../Toolbar */ "./Toolbar.ts");
 var JSEPS_1 = __webpack_require__(/*! ../JSEPS */ "./JSEPS.ts");
 var SVGConverter_1 = __webpack_require__(/*! ../SVGConverter */ "./SVGConverter.ts");
 var Palette_1 = __webpack_require__(/*! ../Palette */ "./Palette.ts");
+var PropertiesPanel_1 = __webpack_require__(/*! ../PropertiesPanel */ "./PropertiesPanel.ts");
 var Graph = (function (_super) {
     __extends(Graph, _super);
     function Graph(json, options) {
@@ -3443,15 +3184,15 @@ var Graph = (function (_super) {
                 EventBus_1.EventBus.subscribe(new handlers_1.Select(this), 'click', 'drag');
             }
             if (features.palette) {
-                var palette = new Palette_1.default(this);
+                new Palette_1.default(this).show();
             }
             if (features.toolbar) {
                 new Toolbar_1.Toolbar(this).show();
             }
             if (features.properties) {
-                var dispatcher = new handlers_1.PropertiesDispatcher(this);
-                dispatcher.dispatch('Clear');
-                EventBus_1.EventBus.subscribe(dispatcher, 'dblclick', 'click', EventBus_1.EventBus.RELOADPROPERTIES);
+                var propertyPanel = new PropertiesPanel_1.PanelGroup(this);
+                EventBus_1.EventBus.subscribe(propertyPanel, 'dblclick', 'click', EventBus_1.EventBus.RELOADPROPERTIES);
+                propertyPanel.show();
             }
             if (features.addnode) {
                 EventBus_1.EventBus.subscribe(new handlers_1.AddNode(this), 'mousedown', 'mouseup', 'mousemove', 'mouseleave');
@@ -3669,7 +3410,11 @@ var GraphModel = (function (_super) {
         if (sourceAsString) {
             source = this.getNodeById(sourceAsString);
             if (!source) {
-                source = this.createElement('Clazz', this.getNewId('Clazz'), { name: edge.source });
+                var id_1 = edge.source;
+                if (typeof id_1 === 'object') {
+                    id_1 = id_1.id;
+                }
+                source = this.createElement('Clazz', this.getNewId('Clazz'), { name: id_1 });
                 source.init(this);
             }
         }
@@ -3678,7 +3423,11 @@ var GraphModel = (function (_super) {
         if (targetAsString) {
             target = this.getNodeById(targetAsString);
             if (!target) {
-                target = this.createElement('Clazz', this.getNewId('Clazz'), { name: edge.target });
+                var id_2 = edge.target;
+                if (typeof id_2 === 'object') {
+                    id_2 = id_2.id;
+                }
+                target = this.createElement('Clazz', this.getNewId('Clazz'), { name: id_2 });
                 target.init(this);
             }
         }
@@ -8758,283 +8507,6 @@ exports.NewEdge = NewEdge;
 
 /***/ }),
 
-/***/ "./handlers/PropertiesDispatcher.ts":
-/*!******************************************!*\
-  !*** ./handlers/PropertiesDispatcher.ts ***!
-  \******************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var EventBus_1 = __webpack_require__(/*! ../EventBus */ "./EventBus.ts");
-var properties = __webpack_require__(/*! ../PropertiesPanel */ "./PropertiesPanel.ts");
-var main_1 = __webpack_require__(/*! ../main */ "./main.ts");
-var Clazz_1 = __webpack_require__(/*! ../elements/nodes/Clazz */ "./elements/nodes/Clazz.ts");
-var PropertiesDispatcher = (function () {
-    function PropertiesDispatcher(graph) {
-        this.blankView = new properties.PropertiesPanel.BlankView(graph);
-        this.graph = graph;
-    }
-    PropertiesDispatcher.prototype.dispatch = function (view) {
-        var createdView = this.createView(view);
-        this.blankView.show(createdView);
-    };
-    PropertiesDispatcher.prototype.getCurrentView = function () {
-        return this.blankView.getCurrentView();
-    };
-    PropertiesDispatcher.prototype.openProperties = function () {
-        this.blankView.openProperties();
-    };
-    PropertiesDispatcher.prototype.handle = function (event, element) {
-        this.handleOpenProperties(event, element);
-        if (event.type === EventBus_1.EventBus.RELOADPROPERTIES
-            && this.selectedElement && element.id === this.selectedElement.id) {
-            this.handleSelectNodeEvent(event, element);
-            this.handleSelectEdgeEvent(event, element);
-        }
-        if (this.selectedElement && this.selectedElement.id === element.id) {
-            return true;
-        }
-        if (element.id === 'RootElement') {
-            this.dispatch('Clear');
-            this.setPropertiesHeaderText('Select any element to see its properties');
-        }
-        if (element.id === 'GenerateProp') {
-            this.dispatch('Generate');
-            this.setPropertiesHeaderText('Properties');
-        }
-        this.selectedElement = element;
-        this.handleSelectNodeEvent(event, element);
-        this.handleSelectEdgeEvent(event, element);
-        return true;
-    };
-    PropertiesDispatcher.prototype.setPropertiesHeaderText = function (text) {
-        this.blankView.setPropertiesHeaderText(text);
-    };
-    PropertiesDispatcher.prototype.canHandle = function () {
-        return EventBus_1.EventBus.isHandlerActiveOrFree(PropertiesDispatcher.name);
-    };
-    PropertiesDispatcher.prototype.setActive = function (active) {
-        if (active) {
-            EventBus_1.EventBus.setActiveHandler(PropertiesDispatcher.name);
-        }
-        else {
-            EventBus_1.EventBus.releaseActiveHandler();
-        }
-    };
-    PropertiesDispatcher.prototype.createView = function (view) {
-        var panel;
-        if (view === 'Clazz') {
-            panel = new properties.PropertiesPanel.ClassPanel();
-        }
-        if (view === 'Clear') {
-            panel = new properties.PropertiesPanel.ClearPanel();
-        }
-        if (view === 'Edge') {
-            panel = new properties.PropertiesPanel.EdgePanel();
-        }
-        if (view === 'Generate') {
-            panel = new properties.PropertiesPanel.GeneratePanel(this.graph);
-        }
-        panel.init();
-        return panel;
-    };
-    PropertiesDispatcher.prototype.handleOpenProperties = function (event, element) {
-        if (event.type === 'dblclick') {
-            event.stopPropagation();
-            this.openProperties();
-        }
-    };
-    PropertiesDispatcher.prototype.handleSelectEdgeEvent = function (event, element) {
-        if (!(element instanceof main_1.Association)) {
-            return false;
-        }
-        var edge = element;
-        this.dispatch('Edge');
-        this.blankView.setPropertiesHeaderText('Properties of Edge: ' + edge.$sNode.id + '---' + edge.$tNode.id);
-        var g = this.graph;
-        var cBoxEdgeType = document.getElementById('edgeTypeSelect');
-        cBoxEdgeType.value = edge.type;
-        cBoxEdgeType.addEventListener('change', function () {
-            var selectedType = cBoxEdgeType.options[cBoxEdgeType.selectedIndex].value;
-            var newEdge = edge.convertEdge(selectedType, g.$graphModel.getNewId(selectedType), true);
-            edge = newEdge;
-        });
-        var inputTypeEdgeLabel = document.getElementById('edgeLabelInput');
-        inputTypeEdgeLabel.setAttribute('value', edge.$sNode.id + ' -> ' + edge.$tNode.id);
-        var inputTypeEdgeSrc = document.getElementById('edgeSrcInput');
-        inputTypeEdgeSrc.setAttribute('value', edge.$sNode.id);
-        var inputEdgeSrcProperty = document.getElementById('edgeSrcProperty');
-        inputEdgeSrcProperty.addEventListener('input', function (evt) {
-            edge.updateSrcProperty(inputEdgeSrcProperty.value);
-        });
-        var inputEdgeSrcCardinality = document.getElementById('inputEdgeSrcCardinality');
-        inputEdgeSrcCardinality.addEventListener('input', function (evt) {
-            edge.updateSrcCardinality(inputEdgeSrcCardinality.value);
-        });
-        if (edge.sourceInfo) {
-            inputEdgeSrcProperty.setAttribute('value', edge.sourceInfo.property);
-            inputEdgeSrcCardinality.setAttribute('value', edge.sourceInfo.cardinality);
-        }
-        var inputEdgeTargetProperty = document.getElementById('edgeTargetProperty');
-        inputEdgeTargetProperty.addEventListener('input', function (evt) {
-            edge.updateTargetProperty(inputEdgeTargetProperty.value);
-        });
-        var inputEdgeTargetCardinality = document.getElementById('inputEdgeTargetCardinality');
-        inputEdgeTargetCardinality.addEventListener('input', function (evt) {
-            edge.updateTargetCardinality(inputEdgeTargetCardinality.value);
-        });
-        if (edge.targetInfo) {
-            inputEdgeTargetProperty.setAttribute('value', edge.targetInfo.property);
-            inputEdgeTargetCardinality.setAttribute('value', edge.targetInfo.cardinality);
-        }
-        var inputTypeEdgeTarget = document.getElementById('edgeTargetInput');
-        inputTypeEdgeTarget.setAttribute('value', edge.$tNode.id);
-        return true;
-    };
-    PropertiesDispatcher.prototype.handleSelectNodeEvent = function (event, element) {
-        if (!(element instanceof Clazz_1.Clazz)) {
-            return false;
-        }
-        var that = this;
-        var graph = this.graph;
-        var clazz = element;
-        this.dispatch('Clazz');
-        this.blankView.setPropertiesHeaderText('Properties of Class: ' + clazz.id);
-        var classNameInputText = document.getElementById('className');
-        classNameInputText.setAttribute('value', clazz.id);
-        classNameInputText.addEventListener('input', function () {
-            clazz.updateLabel(classNameInputText.value);
-        });
-        var clasModifierSelect = document.getElementById('classModifier');
-        clasModifierSelect.setAttribute('value', clazz.id);
-        clasModifierSelect.addEventListener('change', function () {
-            clazz.updateModifier(clasModifierSelect.value);
-        });
-        var tabContentAttr = document.getElementById('clazzattribute');
-        var divAddAttr = document.getElementById('clazzattributeAdd');
-        while (tabContentAttr.firstChild) {
-            tabContentAttr.removeChild(tabContentAttr.firstChild);
-        }
-        var attributes = clazz.getAttributes();
-        for (var _i = 0, attributes_1 = attributes; _i < attributes_1.length; _i++) {
-            var attr = attributes_1[_i];
-            var divEditAttr = this.createDivEditProperty(clazz, attr, 'attribute', tabContentAttr);
-            tabContentAttr.appendChild(divEditAttr);
-        }
-        tabContentAttr.appendChild(divAddAttr);
-        var btnAddAttr = document.getElementById('clazzattributeBtnAddattribute');
-        btnAddAttr.addEventListener('click', function () {
-            var modifier = document.getElementById('clazzattributeAddModifier');
-            var name = document.getElementById('clazzattributeAddName');
-            var type = document.getElementById('clazzattributeAddType');
-            if (!name.value || name.value.length === 0) {
-                return;
-            }
-            var attrValue = modifier.value + " " + name.value + " : " + type.value;
-            var newAttribute = clazz.addAttribute(attrValue);
-            var divEditNewAttr = that.createDivEditProperty(clazz, newAttribute, 'attribute', tabContentAttr);
-            modifier.value = '+';
-            name.value = '';
-            type.value = '';
-            tabContentAttr.insertBefore(divEditNewAttr, divAddAttr);
-            clazz.reDraw();
-        });
-        var tabContentMethods = document.getElementById('clazzmethod');
-        var divAddMethod = document.getElementById('clazzmethodAdd');
-        while (tabContentMethods.firstChild) {
-            tabContentMethods.removeChild(tabContentMethods.firstChild);
-        }
-        var methods = clazz.getMethods();
-        for (var _a = 0, methods_1 = methods; _a < methods_1.length; _a++) {
-            var method = methods_1[_a];
-            var divEditMethod = this.createDivEditProperty(clazz, method, 'method', tabContentMethods);
-            tabContentMethods.appendChild(divEditMethod);
-        }
-        tabContentMethods.appendChild(divAddMethod);
-        var btnAddMethod = document.getElementById('clazzmethodBtnAddmethod');
-        btnAddMethod.addEventListener('click', function () {
-            var modifier = document.getElementById('clazzmethodAddModifier');
-            var name = document.getElementById('clazzmethodAddName');
-            var type = document.getElementById('clazzmethodAddType');
-            if (!name.value || name.value.length === 0) {
-                return;
-            }
-            var methodValue = modifier.value + " " + name.value + " : " + type.value;
-            var newMethod = clazz.addMethod(methodValue);
-            var divEditNewMethod = that.createDivEditProperty(clazz, newMethod, 'method', tabContentMethods);
-            modifier.value = '+';
-            name.value = '';
-            type.value = '';
-            tabContentMethods.insertBefore(divEditNewMethod, divAddMethod);
-            clazz.reDraw();
-        });
-        return true;
-    };
-    PropertiesDispatcher.prototype.createDivEditProperty = function (clazz, prop, propType, tabContentAttr) {
-        var divEditProp = document.createElement('div');
-        divEditProp.style.marginTop = '5px';
-        var selectPropModifier = document.createElement('select');
-        var modifierObj = {};
-        modifierObj['public'] = '+';
-        modifierObj['private'] = '-';
-        modifierObj['protected'] = '#';
-        modifierObj['package'] = '~';
-        for (var title in modifierObj) {
-            var modifierOption = document.createElement('option');
-            modifierOption.value = modifierObj[title];
-            modifierOption.innerHTML = modifierObj[title];
-            modifierOption.title = title;
-            selectPropModifier.appendChild(modifierOption);
-        }
-        selectPropModifier.value = prop.modifier;
-        selectPropModifier.addEventListener('input', function () {
-            prop.updateModifier(selectPropModifier.options[selectPropModifier.selectedIndex].value);
-        });
-        var textBoxPropName = document.createElement('input');
-        textBoxPropName.style.marginLeft = '5px';
-        textBoxPropName.style.marginRight = '5px';
-        textBoxPropName.type = 'text';
-        textBoxPropName.value = prop.name;
-        textBoxPropName.addEventListener('input', function () {
-            prop.updateName(textBoxPropName.value);
-            clazz.reDraw(true);
-        });
-        var dataListTypes = document.getElementById('dataTypes');
-        var selectPropType = document.createElement('input');
-        if (dataListTypes) {
-            selectPropType.setAttribute('list', dataListTypes.id);
-        }
-        selectPropType.value = prop.type;
-        selectPropType.addEventListener('input', function () {
-            prop.updateType(selectPropType.value);
-            clazz.reDraw(true);
-        });
-        var btnDelete = document.createElement('button');
-        btnDelete.innerHTML = 'X';
-        btnDelete.title = 'Delete ' + propType;
-        btnDelete.style.marginLeft = '5px';
-        btnDelete.style.color = 'red';
-        btnDelete.addEventListener('click', function () {
-            clazz.removeProperty(prop);
-            tabContentAttr.removeChild(divEditProp);
-            clazz.reDraw();
-        });
-        divEditProp.appendChild(selectPropModifier);
-        divEditProp.appendChild(textBoxPropName);
-        divEditProp.appendChild(selectPropType);
-        divEditProp.appendChild(btnDelete);
-        return divEditProp;
-    };
-    return PropertiesDispatcher;
-}());
-exports.PropertiesDispatcher = PropertiesDispatcher;
-
-
-/***/ }),
-
 /***/ "./handlers/Select.ts":
 /*!****************************!*\
   !*** ./handlers/Select.ts ***!
@@ -9325,7 +8797,6 @@ __export(__webpack_require__(/*! ./Zoom */ "./handlers/Zoom.ts"));
 __export(__webpack_require__(/*! ./NewEdge */ "./handlers/NewEdge.ts"));
 __export(__webpack_require__(/*! ./ImportFile */ "./handlers/ImportFile.ts"));
 __export(__webpack_require__(/*! ./AddNode */ "./handlers/AddNode.ts"));
-__export(__webpack_require__(/*! ./PropertiesDispatcher */ "./handlers/PropertiesDispatcher.ts"));
 
 
 /***/ }),
@@ -9899,6 +9370,9 @@ var Util = (function () {
             }
         }
         return false;
+    };
+    Util.createHTML = function (node) {
+        return this.create(node);
     };
     Util.create = function (node) {
         var style, item, xmlns, key, tag, k;
