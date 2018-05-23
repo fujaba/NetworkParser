@@ -1,6 +1,10 @@
 package de.uniks.networkparser.xml;
 import java.net.URL;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
+import de.uniks.networkparser.buffer.CharacterBuffer;
 /*
 NetworkParser
 The MIT License
@@ -33,6 +37,7 @@ import de.uniks.networkparser.interfaces.Converter;
 import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.EntityList;
 import de.uniks.networkparser.json.JsonObject;
+import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SimpleSet;
 
@@ -45,9 +50,11 @@ public class HTMLEntity implements BaseItem {
 	public static final String KEY_HREF="href";
 	public static final String KEY_SRC="src";
 
+
 	private XMLEntity body = new XMLEntity().setType("body");
 	private XMLEntity header = new XMLEntity().setType("head");
-	
+
+	private Map<String, List<String>> conenctionHeader = new SimpleKeyValueList<String, List<String>>();
 	private int statusCode = 200;
 	private String statusMessage;
 
@@ -171,6 +178,8 @@ public class HTMLEntity implements BaseItem {
 			for(Object item : values) {
 				if(item instanceof XMLEntity) {
 					this.body.withChild((XMLEntity) item);
+				} else if(item instanceof CharacterBuffer) {
+					this.body.withValue(item.toString());
 				}
 			}
 		}
@@ -438,5 +447,34 @@ public class HTMLEntity implements BaseItem {
 
 	public String getStatusMessage() {
 		return statusMessage;
+	}
+
+	
+	public HTMLEntity withConnectionHeader(String key, String value) {
+		this.conenctionHeader.put(key, new SimpleList<String>().with(value));
+		return this;
+	}
+	public HTMLEntity withConnectionHeader(Map<String, List<String>> headerFields) {
+		for(Iterator<String> i = headerFields.keySet().iterator();i.hasNext();) {
+			String key = i.next();
+			this.conenctionHeader.put(key, headerFields.get(key));
+		}
+		return this;
+	}
+	
+	public Map<String, List<String>> getConnectionHeader() {
+		return conenctionHeader;
+	}
+	
+	public String getConnectionHeader(String key) {
+		List<String> list = conenctionHeader.get(key);
+		if(list != null && list.size() == 1) {
+			return list.get(0);
+		}
+		return null;
+	}
+	
+	public List<String> getConnectionHeaders(String key) {
+		return conenctionHeader.get(key);
 	}
 }

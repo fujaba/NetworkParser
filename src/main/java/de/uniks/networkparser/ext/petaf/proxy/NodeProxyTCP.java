@@ -32,6 +32,7 @@ import java.net.Socket;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.nio.charset.Charset;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -45,6 +46,7 @@ import de.uniks.networkparser.ext.petaf.Server_TCP;
 import de.uniks.networkparser.ext.petaf.messages.ConnectMessage;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.ObjectCondition;
+import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.xml.HTMLEntity;
 
 public class NodeProxyTCP extends NodeProxy {
@@ -59,6 +61,7 @@ public class NodeProxyTCP extends NodeProxy {
 	public static final String PROPERTY_PORT = "port";
 	
 	public static final String BODY_PLAIN = "plain";
+	public static final String HEADER_PLAIN = "plainHeader";
 	public static final String BODY_JSON = "json";
 	protected int port;
 	protected String url;
@@ -336,14 +339,28 @@ public class NodeProxyTCP extends NodeProxy {
 		if(uri == null) {
 			return null;
 		}
-		if(BODY_JSON.equalsIgnoreCase(bodyType) == false && BODY_PLAIN.equalsIgnoreCase(bodyType) == false) {
+		if(BODY_JSON.equalsIgnoreCase(bodyType) == false && BODY_PLAIN.equalsIgnoreCase(bodyType) == false && HEADER_PLAIN.equalsIgnoreCase(bodyType) == false) {
 			return null;
 		}
 		HttpURLConnection conn = getConnection(uri, POST);
-		CharacterBuffer sb = convertParams(bodyType, params);
-		byte[] byteArray = sb.toBytes();
+		
+		byte[] byteArray = null;
+		if(HEADER_PLAIN.equalsIgnoreCase(bodyType)) {
+			for(int i=0;i<params.length;i+=2) {
+				conn.setRequestProperty(""+params[i], ""+params[i + 1]);
+			}
+		} else if(BODY_PLAIN.equalsIgnoreCase(bodyType)) {
+			CharacterBuffer sb =new CharacterBuffer();
+			convertParams(sb, params);
+			byteArray = sb.toBytes();
+			conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
+		} else if(BODY_JSON.equalsIgnoreCase(bodyType)) {
+			JsonObject json =new JsonObject();
+			convertParams(json, params);
+			byteArray = json.toString().getBytes();
+			conn.setRequestProperty("Content-Type", "application/json; charset=utf-8");
+		}
 		conn.setFixedLengthStreamingMode(byteArray.length);
-		conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
 		try {
 			conn.connect();
 			OutputStream os = conn.getOutputStream();
@@ -354,33 +371,90 @@ public class NodeProxyTCP extends NodeProxy {
 		return null;
 	}
 
-	
-	public static CharacterBuffer convertParams(String type, Object... params) {
-		CharacterBuffer sb=new CharacterBuffer();
+	public static HTMLEntity postHTTP(HTMLEntity session, String path, String bodyType, Object...params) {
+		CharacterBuffer buffer = new CharacterBuffer();
+//		String uri = convertPath(url, port, path);
+		buffer.add(session.getConnectionHeader("remote"));
+		
+		if(path != null) {
+			if(path.startsWith("/")) {
+				buffer.with(path);
+			}else {
+				buffer.with('/');
+				buffer.with(path);
+			}
+		}
+		String uri = buffer.toString();
+		if(uri == null) {
+			return null;
+		}
+		if(BODY_JSON.equalsIgnoreCase(bodyType) == false && BODY_PLAIN.equalsIgnoreCase(bodyType) == false && HEADER_PLAIN.equalsIgnoreCase(bodyType) == false) {
+			return null;
+		}
+		HttpURLConnection conn = getConnection(uri, POST);
+		List<String> cookies = session.getConnectionHeaders("Set-Cookie");
+		if(cookies != null) {
+			for(int i=0;i<cookies.size();i++) {
+				String cookie = cookies.get(i).substring(0, cookies.get(i).indexOf(';'));
+				conn.setRequestProperty("Cookie", cookie);
+			}
+		}
+		byte[] byteArray = null;
+		if(HEADER_PLAIN.equalsIgnoreCase(bodyType)) {
+			for(int i=0;i<params.length;i+=2) {
+				conn.setRequestProperty(""+params[i], ""+params[i + 1]);
+			}
+		} else if(BODY_PLAIN.equalsIgnoreCase(bodyType)) {
+			CharacterBuffer sb =new CharacterBuffer();
+			convertParams(sb, params);
+			byteArray = sb.toBytes();
+			conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
+		} else if(BODY_JSON.equalsIgnoreCase(bodyType)) {
+			JsonObject json =new JsonObject();
+			convertParams(json, params);
+			byteArray = json.toString().getBytes();
+			conn.setRequestProperty("Content-Type", "application/json; charset=utf-8");
+		}
+		if(byteArray != null) {
+			conn.setFixedLengthStreamingMode(byteArray.length);
+		}
+		try {
+			conn.connect();
+			if(byteArray != null) {
+				OutputStream os = conn.getOutputStream();
+				os.write(byteArray);
+			}
+			return readAnswer(conn);
+		} catch (IOException e) {
+		}
+		return null;
+	}
+
+	public static BaseItem convertParams(BaseItem result, Object... params) {
 		if(params == null || params.length<1) {
-			return sb;
+			return result;
 		}
 		if(params[0] instanceof Map<?,?>) {
 			Map<?,?> map = (Map<?, ?>) params[0];
 			Set<?> keySet = (Set<?>) map.keySet();
 			for(Object key : keySet) {
-				addToList(type, sb, ""+key, ""+map.get(key));
+				addToList(result, ""+key, ""+map.get(key));
 			}
 		} else if(params.length % 2 == 0) {
 			for(int i=0;i<params.length;i+=2) {
-				addToList(type, sb, ""+params[i], ""+params[i + 1]);
+				addToList(result, ""+params[i], ""+params[i + 1]);
 			}
 		}
-		return sb;
+		return result;
 	}
 	
-	private static void addToList(String type, BaseItem params, String key, String value) {
-		if(BODY_PLAIN.equalsIgnoreCase(type)) {
+	private static void addToList(BaseItem params, String key, String value) {
+		if(params instanceof CharacterBuffer) {
 			if(params.size() > 0 ) {
 				params.add('&');
 			}
 			params.add(key, "=", value);
-		} else if(BODY_JSON.equalsIgnoreCase(type)) {
+		} else {
 			params.add(key, value);
 		}
 	}
@@ -390,7 +464,8 @@ public class NodeProxyTCP extends NodeProxy {
 		if(conn == null) {
 			return null;
 		}
-		CharacterBuffer sb = convertParams(BODY_PLAIN, params);
+		CharacterBuffer sb =new CharacterBuffer();
+		convertParams(sb, params);
 		byte[] byteArray = sb.toBytes();
 		conn.setFixedLengthStreamingMode(byteArray.length);
 		conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
@@ -455,17 +530,40 @@ public class NodeProxyTCP extends NodeProxy {
 		}
 		try {
 			rootItem.withStatus(conn.getResponseCode(), conn.getResponseMessage());
+			String uri = conn.getURL().toString();
+			String path = conn.getURL().getPath();
+			if(uri.length()> path.length()) {
+				uri = uri.substring(0, uri.length() - path.length());
+			}
+			rootItem.withConnectionHeader("remote", uri);
+			
+			rootItem.withConnectionHeader(conn.getHeaderFields());
+
 			InputStream is = conn.getInputStream();
-			StringBuilder sb = new StringBuilder();
+			CharacterBuffer sb = new CharacterBuffer();
 			byte[] messageArray = new byte[BUFFER];
 			while (true) {
 				int bytesRead = is.read(messageArray, 0, BUFFER);
 				if (bytesRead <= 0)
 					break; // <======= no more data
-				sb.append(new String(messageArray, 0, bytesRead, Charset.forName("UTF-8")));
+				sb.add(new String(messageArray, 0, bytesRead, Charset.forName("UTF-8")));
 			}
-			rootItem.withValue(sb.toString());
+			rootItem.with(sb);
 		}catch (IOException e) {
+			InputStream is = conn.getErrorStream();
+			byte[] messageArray = new byte[BUFFER];
+			CharacterBuffer sb = new CharacterBuffer();
+			try {
+				while (true) {
+					int bytesRead = is.read(messageArray, 0, BUFFER);
+					if (bytesRead <= 0)
+						break; // <======= no more data
+					sb.add(new String(messageArray, 0, bytesRead, Charset.forName("UTF-8")));
+				}
+				rootItem.with(sb);
+			}catch (Exception e2) {
+			}
+//			e.printStackTrace();
 		}
 		
 
@@ -534,4 +632,5 @@ public class NodeProxyTCP extends NodeProxy {
 		}
 		return false;
 	}
+
 }

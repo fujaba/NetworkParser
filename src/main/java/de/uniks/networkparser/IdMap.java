@@ -1724,7 +1724,6 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 		return this.put(id, item, true);
 	}
 
-	@Deprecated
 	public String getId(Object obj) {
 		return getId(obj, true);
 	}
