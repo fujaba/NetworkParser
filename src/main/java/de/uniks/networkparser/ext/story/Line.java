@@ -1,9 +1,9 @@
 package de.uniks.networkparser.ext.story;
 
-import de.uniks.simplescrum.model.BoardElement;
-import de.uniks.simplescrum.model.util.TaskSet;
+import de.uniks.networkparser.ext.petaf.SendableItem;
+import de.uniks.networkparser.ext.story.util.TaskSet;
 
-public class Line extends BoardElement {
+public class Line extends SendableItem {
 	public static final String PROPERTY_CAPTION = "caption";
 
 	private String caption;
@@ -68,16 +68,16 @@ public class Line extends BoardElement {
 
 	public static final String PROPERTY_OWNER = "owner";
 
-	private Board owner = null;
+	private StoryBook owner = null;
 
-	public Board getOwner() {
+	public StoryBook getOwner() {
 		return this.owner;
 	}
 
-	public boolean setOwner(Board value) {
+	public boolean setOwner(StoryBook value) {
 		boolean changed = false;
 		if (this.owner != value) {
-			Board oldValue = this.owner;
+			StoryBook oldValue = this.owner;
 			this.owner = value;
 			firePropertyChange(PROPERTY_OWNER, oldValue, value);
 			changed = true;
@@ -85,13 +85,13 @@ public class Line extends BoardElement {
 		return changed;
 	}
 
-	public Line withOwner(Board value) {
+	public Line withOwner(StoryBook value) {
 		this.setOwner(value);
 		return this;
 	}
 
-	public Board createOwner() {
-		Board value = new Board();
+	public StoryBook createOwner() {
+		StoryBook value = new StoryBook();
 		withOwner(value);
 		return value;
 	}

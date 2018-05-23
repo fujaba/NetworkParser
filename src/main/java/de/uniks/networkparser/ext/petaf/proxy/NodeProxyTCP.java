@@ -32,9 +32,9 @@ import java.net.Socket;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.nio.charset.Charset;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.Map.Entry;
+import java.util.Set;
+
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.buffer.ByteBuffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
@@ -57,6 +57,9 @@ public class NodeProxyTCP extends NodeProxy {
 
 	public static final String PROPERTY_URL = "url";
 	public static final String PROPERTY_PORT = "port";
+	
+	public static final String BODY_PLAIN = "plain";
+	public static final String BODY_JSON = "json";
 	protected int port;
 	protected String url;
 	protected int timeOut;
@@ -328,22 +331,66 @@ public class NodeProxyTCP extends NodeProxy {
 		this.allowAnswer = true;
 		return this;
 	}
+	public static HTMLEntity postHTTP(String url, int port, String path, String bodyType, Object...params) {
+		String uri = convertPath(url, port, path);
+		if(uri == null) {
+			return null;
+		}
+		if(BODY_JSON.equalsIgnoreCase(bodyType) == false && BODY_PLAIN.equalsIgnoreCase(bodyType) == false) {
+			return null;
+		}
+		HttpURLConnection conn = getConnection(uri, POST);
+		CharacterBuffer sb = convertParams(bodyType, params);
+		byte[] byteArray = sb.toBytes();
+		conn.setFixedLengthStreamingMode(byteArray.length);
+		conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
+		try {
+			conn.connect();
+			OutputStream os = conn.getOutputStream();
+			os.write(byteArray);
+			return readAnswer(conn);
+		} catch (IOException e) {
+		}
+		return null;
+	}
+
+	
+	public static CharacterBuffer convertParams(String type, Object... params) {
+		CharacterBuffer sb=new CharacterBuffer();
+		if(params == null || params.length<1) {
+			return sb;
+		}
+		if(params[0] instanceof Map<?,?>) {
+			Map<?,?> map = (Map<?, ?>) params[0];
+			Set<?> keySet = (Set<?>) map.keySet();
+			for(Object key : keySet) {
+				addToList(type, sb, ""+key, ""+map.get(key));
+			}
+		} else if(params.length % 2 == 0) {
+			for(int i=0;i<params.length;i+=2) {
+				addToList(type, sb, ""+params[i], ""+params[i + 1]);
+			}
+		}
+		return sb;
+	}
+	
+	private static void addToList(String type, BaseItem params, String key, String value) {
+		if(BODY_PLAIN.equalsIgnoreCase(type)) {
+			if(params.size() > 0 ) {
+				params.add('&');
+			}
+			params.add(key, "=", value);
+		} else if(BODY_JSON.equalsIgnoreCase(type)) {
+			params.add(key, value);
+		}
+	}
 
 	public static HTMLEntity postHTTP(String url, Map<String, String> params) {
 		HttpURLConnection conn = getConnection(url, POST);
 		if(conn == null) {
 			return null;
 		}
-		CharacterBuffer sb=new CharacterBuffer();
-		if(params != null) {
-			for(Iterator<Entry<String, String>> i = params.entrySet().iterator();i.hasNext();) {
-				Entry<String, String> item = i.next();
-				if(sb.length() > 0 ) {
-					sb.with('&');
-				}
-				sb.with(item.getKey(), "=", item.getValue());
-			}
-		}
+		CharacterBuffer sb = convertParams(BODY_PLAIN, params);
 		byte[] byteArray = sb.toBytes();
 		conn.setFixedLengthStreamingMode(byteArray.length);
 		conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
@@ -403,7 +450,11 @@ public class NodeProxyTCP extends NodeProxy {
 
 	private static HTMLEntity readAnswer(HttpURLConnection conn) {
 		HTMLEntity rootItem=new HTMLEntity();
+		if(conn == null) {
+			return rootItem;
+		}
 		try {
+			rootItem.withStatus(conn.getResponseCode(), conn.getResponseMessage());
 			InputStream is = conn.getInputStream();
 			StringBuilder sb = new StringBuilder();
 			byte[] messageArray = new byte[BUFFER];
@@ -416,10 +467,45 @@ public class NodeProxyTCP extends NodeProxy {
 			rootItem.withValue(sb.toString());
 		}catch (IOException e) {
 		}
+		
+
 		conn.disconnect();
 		return rootItem;
 	}
+	
+	public static String convertPath(String url, int port, String path) {
+		if(url == null) {
+			return null;
+		}
+		CharacterBuffer buffer=new CharacterBuffer();
+		if(url.toLowerCase().startsWith("http")) {
+			buffer.with(url);
+		} else {
+			buffer.with("http://"+url);
+		}
+		if(buffer.indexOf(':', 6)<1) {
+			buffer.with(':');
+			buffer.with(port);
+		}
+		if(path != null) {
+			if(path.startsWith("/")) {
+				buffer.with(path);
+			}else {
+				buffer.with('/');
+				buffer.with(path);
+			}
+		}
+		return buffer.toString();
+	}
 
+	public static HTMLEntity getHTTP(String url, int port, String path) {
+		String uri = convertPath(url, port, path);
+		if(uri == null) {
+			return null;
+		}
+		return getHTTP(url);
+	}
+	
 	public static HTMLEntity getHTTP(String url) {
 		HttpURLConnection conn = getConnection(url, GET);
 		if(conn == null) {

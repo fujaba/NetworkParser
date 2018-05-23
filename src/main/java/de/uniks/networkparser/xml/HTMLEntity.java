@@ -47,6 +47,9 @@ public class HTMLEntity implements BaseItem {
 
 	private XMLEntity body = new XMLEntity().setType("body");
 	private XMLEntity header = new XMLEntity().setType("head");
+	
+	private int statusCode = 200;
+	private String statusMessage;
 
 	@Override
 	public String toString() {
@@ -421,5 +424,19 @@ public class HTMLEntity implements BaseItem {
 			}
 		}
 		return this;
+	}
+
+	public HTMLEntity withStatus(int code, String message) {
+		this.statusCode = code;
+		this.statusMessage = message;
+		return this;
+	}
+	
+	public int getStatusCode() {
+		return statusCode;
+	}
+
+	public String getStatusMessage() {
+		return statusMessage;
 	}
 }

@@ -688,7 +688,7 @@ public class MessageSession {
 	 * @return get the current Response
 	 */
 	protected BufferedBuffer getResponse() {
-		BufferedBuffer response = this.responseFactory.newInstance();
+		BufferedBuffer response = this.responseFactory.getNewList(false);
 		if(in == null) {
 			return response;
 		}

@@ -26,10 +26,9 @@ import java.nio.charset.Charset;
 import de.uniks.networkparser.converter.ByteConverter;
 import de.uniks.networkparser.converter.ByteConverterHTTP;
 import de.uniks.networkparser.converter.ByteConverterString;
-import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Converter;
 
-public class ByteBuffer extends BufferedBuffer implements BaseItem {
+public class ByteBuffer extends BufferedBuffer {
 	/** The buffer. */
 	protected byte[] buffer;
 
@@ -417,6 +416,7 @@ public class ByteBuffer extends BufferedBuffer implements BaseItem {
 	public ByteBuffer getNewBuffer(byte[] array) {
 		return new ByteBuffer().with(array);
 	}
+
 	public ByteBuffer with(CharSequence... string) {
 		if(string != null && string.length>0 && string[0] instanceof String) {
 			this.buffer = ((String)string[0]).getBytes(Charset.forName(ENCODING));
@@ -450,7 +450,7 @@ public class ByteBuffer extends BufferedBuffer implements BaseItem {
 	}
 
 	@Override
-	public BaseItem getNewList(boolean keyValue) {
+	public ByteBuffer getNewList(boolean keyValue) {
 		return new ByteBuffer();
 	}
 
@@ -490,11 +490,6 @@ public class ByteBuffer extends BufferedBuffer implements BaseItem {
 			this.length += len;
 		}
 		return this;
-	}
-
-	@Override
-	public ByteBuffer newInstance() {
-		return new ByteBuffer();
 	}
 
 	public ByteBuffer with(char[] values, int start, int len) {
@@ -551,4 +546,5 @@ public class ByteBuffer extends BufferedBuffer implements BaseItem {
 		}
 		return false;
 	}
+
 }

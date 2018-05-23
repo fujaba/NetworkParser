@@ -1,8 +1,8 @@
 package de.uniks.networkparser.ext.story;
 
-import de.uniks.simplescrum.model.BoardElement;
+import de.uniks.networkparser.ext.petaf.SendableItem;
 
-public class PartTask extends BoardElement {
+public class PartTask extends SendableItem {
 	public static final String PROPERTY_TYPE = "type";
 
 	private String type;

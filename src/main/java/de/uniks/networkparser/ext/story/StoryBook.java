@@ -2,15 +2,13 @@ package de.uniks.networkparser.ext.story;
 
 import de.uniks.networkparser.ext.io.FileBuffer;
 import de.uniks.networkparser.ext.petaf.SendableItem;
+import de.uniks.networkparser.ext.story.util.LineSet;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.list.SortedSet;
 import de.uniks.networkparser.xml.HTMLEntity;
 import de.uniks.networkparser.xml.XMLEntity;
-import de.uniks.simplescrum.model.BoardElement;
-import de.uniks.simplescrum.model.util.LineSet;
-import de.uniks.simplescrum.model.util.TaskSet;
 
-public class Board extends SendableItem implements SendableEntityCreator {
+public class StoryBook extends SendableItem implements SendableEntityCreator {
 	public static final String PROPERTY_STORIES = "stories";
 	public static final String PROPERTY_PART = "part";
 	public static final String[] properties = new String[]{PROPERTY_PART, PROPERTY_STORIES};
@@ -52,7 +50,7 @@ public class Board extends SendableItem implements SendableEntityCreator {
 		return FileBuffer.writeFile(fileName+"index.html", output.toString());
 	}
 
-	public Board withTask(Task... value) {
+	public StoryBook withTask(Task... value) {
 		if (value == null) {
 			return this;
 		}
@@ -67,7 +65,7 @@ public class Board extends SendableItem implements SendableEntityCreator {
 		return this;
 	}
 
-	public Board withoutTask(Task... value) {
+	public StoryBook withoutTask(Task... value) {
 		for (Task item : value) {
 			if (item != null) {
 				this.children.remove((Object) item);
@@ -82,7 +80,7 @@ public class Board extends SendableItem implements SendableEntityCreator {
 		return value;
 	}
 	
-	public Board withStory(Story... value) {
+	public StoryBook withStory(Story... value) {
 		if (value == null) {
 			return this;
 		}
@@ -97,7 +95,7 @@ public class Board extends SendableItem implements SendableEntityCreator {
 		return this;
 	}
 
-	public Board withoutStory(Story... value) {
+	public StoryBook withoutStory(Story... value) {
 		for (Story item : value) {
 			if (item != null) {
 				this.children.remove((Object) item);
@@ -116,7 +114,7 @@ public class Board extends SendableItem implements SendableEntityCreator {
 		return this.part;
 	}
 
-	public Board withPart(Line... value) {
+	public StoryBook withPart(Line... value) {
 		if (value == null) {
 			return this;
 		}
@@ -134,7 +132,7 @@ public class Board extends SendableItem implements SendableEntityCreator {
 		return this;
 	}
 
-	public Board withoutPart(Line... value) {
+	public StoryBook withoutPart(Line... value) {
 		for (Line item : value) {
 			if (this.part != null && item != null) {
 				this.part.remove(item);
@@ -156,7 +154,7 @@ public class Board extends SendableItem implements SendableEntityCreator {
 
 	@Override
 	public Object getSendableInstance(boolean prototyp) {
-		return new Board();
+		return new StoryBook();
 	}
 
 	@Override
