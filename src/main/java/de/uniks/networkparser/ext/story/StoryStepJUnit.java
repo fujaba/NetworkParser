@@ -133,7 +133,12 @@ public class StoryStepJUnit implements ObjectCondition {
 			buffer.replace('*', (char)0);
 			buffer.replace('.', '/');
 			File classfiles = new File(buffer.toString());
-			ReflectionLoader.call(analyzer, "analyzeAll", File.class, classfiles);
+			try {
+				ReflectionLoader.call(analyzer, "analyzeAll", File.class, classfiles);
+			}catch (Exception e) {
+//				e.printStackTrace();
+				System.out.println("ERROR");
+			}
 		}
 		return ReflectionLoader.call(builder, "getBundle", group.getStringValue());
 	}

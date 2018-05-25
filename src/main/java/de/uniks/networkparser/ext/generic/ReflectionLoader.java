@@ -46,7 +46,7 @@ import de.uniks.networkparser.list.SimpleList;
 
 public class ReflectionLoader {
 	public static PrintStream logger = null;
-
+	private static int errorCount;
 	public static final Class<?> CHANGELISTENER;
 	public static final Class<?> NODE;
 	public static final Class<?> OBSERVABLEVALUE;
@@ -135,6 +135,7 @@ public class ReflectionLoader {
 	public static final Class<?> ECLASSIFIER;
 	public static final Class<?> EPACKAGE;
 	public static final Class<?> EREFERENCE;
+	public static final Class<?> EOBJECT;
 
 	static {
 		MANAGEMENTFACTORY = getClass("java.lang.management.ManagementFactory");
@@ -319,11 +320,13 @@ public class ReflectionLoader {
 			EATTRIBUTE = getClass("org.eclipse.emf.ecore.EAttribute");
 			ECLASSIFIER = getClass("org.eclipse.emf.ecore.EClassifier");
 			EREFERENCE = getClass("org.eclipse.emf.ecore.EReference");
+			EOBJECT = getClass("org.eclipse.emf.ecore.EObject");
 		} else {
 			ECLASS = null;
 			EATTRIBUTE = null;
 			ECLASSIFIER = null;
 			EREFERENCE = null;
+			EOBJECT = null;
 		}
 	}
 	public static Object newInstance(String className, Object... arguments) {
@@ -550,17 +553,23 @@ public class ReflectionLoader {
 							Object newValue = Array.newInstance(simpleType, 1);
 							Array.set(newValue, 0, methodArgumentsValues[methodArgumentsValues.length - 1]);
 							methodArgumentsValues[methodArgumentsValues.length - 1] = newValue;
-							method = itemClass.getMethod(methodName, methodArguments);
+							if(methodName != null && methodName.length()>0) {
+								method = itemClass.getMethod(methodName, methodArguments);
+							}
 						}
 					}
 					if(method == null) {
 						for(int i=0;i<methodArguments.length;i++) {
 							methodArguments[i] = Object.class;
 						}
-						method = itemClass.getMethod(methodName, methodArguments);
+						if(methodName != null && methodName.length()>0) {
+							method = itemClass.getMethod(methodName, methodArguments);
+						}
 					}
 					if(method == null) {
-						method = itemClass.getMethod(methodName, new Class[0]);
+						if(methodName != null && methodName.length()>0) {
+							method = itemClass.getMethod(methodName, new Class[0]);
+						}
 					}
 				}
 			}
@@ -575,6 +584,7 @@ public class ReflectionLoader {
 				return method.invoke(item, methodArgumentsValues);
 			}
 		} catch (Exception e) {
+			errorCount++;
 			if(logger != null && notify) {
 				e.printStackTrace(logger);
 			} else if(notifyObject instanceof ObjectCondition){
@@ -583,6 +593,7 @@ public class ReflectionLoader {
 				ErrorHandler handler = (ErrorHandler) notifyObject;
 				handler.saveException(e);
 			} else if(notify && Os.isEclipse()) {
+				System.out.println(errorCount);
 				e.printStackTrace();
 			}
 		}

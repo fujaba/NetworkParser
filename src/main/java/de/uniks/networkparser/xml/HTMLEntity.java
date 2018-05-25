@@ -274,6 +274,21 @@ public class HTMLEntity implements BaseItem {
 		parentNode.withChild(parent);
 		return firstChild;
 	}
+	
+	public XMLEntity createTable(XMLEntity parentNode, String... labels) {
+		XMLEntity table = createTag("table", parentNode);
+		if(labels != null && labels.length>0) {
+			table.with("style", labels[0]);
+			XMLEntity tr= createTag("tr", table);
+			for(int i=1;i<labels.length;i+=2) {
+				createTag("td", tr);
+				table.with("style", labels[i]);
+				table.withValue(labels[i + 1]);
+			}
+		}
+		return table;
+	}
+	
 
 	@Override
 	public BaseItem getNewList(boolean keyValue) {

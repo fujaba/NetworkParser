@@ -395,6 +395,7 @@ public class JsonTokener extends Tokener {
 	 */
 	private void parseValue(Object target, String property, Object value, SendableEntityCreator creator,
 			MapEntity map) {
+		//FIXME IF STATGEGY IS UPDATE SET NEW VALUE
 		if (value == null) {
 			return;
 		}

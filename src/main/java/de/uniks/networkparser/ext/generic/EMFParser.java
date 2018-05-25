@@ -135,6 +135,9 @@ public class EMFParser {
 		if(eref instanceof EMFParser) {
 			return getEAttributes(((EMFParser)eref).getValue());
 		}
+		if(isEMF(eref) == false) {
+			return null;
+		}
 		List<Object> callList = ReflectionLoader.callList(eref, "getEAttributes");
 		return callList;
 	}
@@ -143,6 +146,9 @@ public class EMFParser {
 	public static final List<Object> getEReferences(Object eref) {
 		if(eref instanceof EMFParser) {
 			return getEReferences(((EMFParser)eref).getValue());
+		}
+		if(isEMF(eref) == false) {
+			return null;
 		}
 		List<Object> callList = ReflectionLoader.callList(eref, "getEReferences");
 		return callList;
@@ -153,6 +159,9 @@ public class EMFParser {
 			return getESuperTypes(((EMFParser)eref).getValue());
 		}
 		SimpleList<EMFParser> list=new SimpleList<EMFParser>();
+		if(isEMF(eref) == false) {
+			return list;
+		}
 		List<Object> callList = ReflectionLoader.callList(eref, "getESuperTypes");
 		for(Object item : callList) {
 			if(item != null) {
@@ -167,6 +176,9 @@ public class EMFParser {
 			return getEClasses(((EMFParser)eref).getValue());
 		}
 		SimpleList<EMFParser> items = new SimpleList<EMFParser>();
+		if(isEMF(eref) == false) {
+			return items;
+		}
 		List<Object> callList = ReflectionLoader.callList(eref, "getEClassifiers");
 		for(Object item : callList) {
 			if(item != null && ReflectionLoader.ECLASS.isAssignableFrom(item.getClass())) {
@@ -180,6 +192,9 @@ public class EMFParser {
 		if(eref instanceof EMFParser) {
 			return getInstanceClassName(((EMFParser)eref).getValue());
 		}
+		if(isEMF(eref) == false) {
+			return "";
+		}
 		return ""+ReflectionLoader.call(eref, "getInstanceClassName");
 	}
 
@@ -187,12 +202,18 @@ public class EMFParser {
 		if(eref instanceof EMFParser) {
 			return getEType(((EMFParser)eref).getValue());
 		}
+		if(isEMF(eref) == false) {
+			return null;
+		}
 		return new EMFParser(ReflectionLoader.call(eref, "getEType"));
 	}
 
 	public static final Integer getUpperBound(Object eref) {
 		if(eref instanceof EMFParser) {
 			return getUpperBound(((EMFParser)eref).getValue());
+		}
+		if(isEMF(eref) == false) {
+			return -1;
 		}
 		Object call = ReflectionLoader.call(eref, "getUpperBound");
 		if(call instanceof Integer) {
@@ -206,11 +227,27 @@ public class EMFParser {
 		if(eref instanceof EMFParser) {
 			return getName(((EMFParser)eref).getValue());
 		}
+		if(isEMF(eref) == false) {
+			return "";
+		}
 		return "" + ReflectionLoader.call(eref, "getName");
+	}
+	
+	public static final boolean isEMF(Object eref) {
+		if(ReflectionLoader.EOBJECT == null || eref == null) {
+			return false;
+		}
+		if(ReflectionLoader.EOBJECT.isAssignableFrom(eref.getClass()) == false) {
+			return false;
+		}
+		return true;
 	}
 	public static final Object getEOpposite(Object eref) {
 		if(eref instanceof EMFParser) {
 			return getEOpposite(((EMFParser)eref).getValue());
+		}
+		if(isEMF(eref) == false) {
+			return "";
 		}
 		return ReflectionLoader.call(eref, "getEOpposite");
 	}

@@ -1,8 +1,7 @@
 package de.uniks.networkparser.ext.story;
 
 import de.uniks.networkparser.ext.petaf.SendableItem;
-import de.uniks.networkparser.ext.story.util.LogEntrySet;
-import de.uniks.networkparser.ext.story.util.PartTaskSet;
+import de.uniks.networkparser.list.ModelSet;
 
 public class Task extends SendableItem {
 	public static final String PROPERTY_COMPLEXITY = "complexity";
@@ -184,9 +183,9 @@ public class Task extends SendableItem {
 
 	public static final String PROPERTY_PART = "part";
 
-	private PartTaskSet part = null;
+	private ModelSet<Task> part = null;
 
-	public PartTaskSet getPart() {
+	public ModelSet<Task> getPart() {
 		return this.part;
 	}
 
@@ -197,7 +196,7 @@ public class Task extends SendableItem {
 		for (PartTask item : value) {
 			if (item != null) {
 				if (this.part == null) {
-					this.part = new PartTaskSet();
+					this.part = new ModelSet<Task>();
 				}
 				boolean changed = this.part.add(item);
 				if (changed) {
@@ -211,7 +210,7 @@ public class Task extends SendableItem {
 	public Task withoutPart(PartTask... value) {
 		for (PartTask item : value) {
 			if (this.part != null && item != null) {
-				this.part.remove(item);
+				this.part.remove((Object)item);
 			}
 		}
 		return this;
@@ -225,9 +224,9 @@ public class Task extends SendableItem {
 
 	public static final String PROPERTY_UPDATE = "update";
 
-	private LogEntrySet update = null;
+	private ModelSet<LogEntry> update = null;
 
-	public LogEntrySet getUpdate() {
+	public ModelSet<LogEntry> getUpdate() {
 		return this.update;
 	}
 
@@ -238,7 +237,7 @@ public class Task extends SendableItem {
 		for (LogEntry item : value) {
 			if (item != null) {
 				if (this.update == null) {
-					this.update = new LogEntrySet();
+					this.update = new ModelSet<LogEntry>();
 				}
 				boolean changed = this.update.add(item);
 				if (changed) {

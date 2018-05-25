@@ -2,8 +2,8 @@ package de.uniks.networkparser.ext.story;
 
 import de.uniks.networkparser.ext.io.FileBuffer;
 import de.uniks.networkparser.ext.petaf.SendableItem;
-import de.uniks.networkparser.ext.story.util.LineSet;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
+import de.uniks.networkparser.list.ModelSet;
 import de.uniks.networkparser.list.SortedSet;
 import de.uniks.networkparser.xml.HTMLEntity;
 import de.uniks.networkparser.xml.XMLEntity;
@@ -13,7 +13,7 @@ public class StoryBook extends SendableItem implements SendableEntityCreator {
 	public static final String PROPERTY_PART = "part";
 	public static final String[] properties = new String[]{PROPERTY_PART, PROPERTY_STORIES};
 
-	private LineSet part = null;
+	private ModelSet<Line> part = null;
 	private String outputFile;
 	private SortedSet<StoryElement> children = new SortedSet<StoryElement>(true);
 
@@ -22,6 +22,9 @@ public class StoryBook extends SendableItem implements SendableEntityCreator {
 	}
 	
 	public boolean dumpIndexHTML(String subDir) {
+		if(this.outputFile == null) {
+			return false;
+		}
 		HTMLEntity output = new HTMLEntity();
 		// INDEX HTML
 		output.withEncoding(HTMLEntity.ENCODING);
@@ -110,7 +113,7 @@ public class StoryBook extends SendableItem implements SendableEntityCreator {
 		return value;
 	}
 
-	public LineSet getPart() {
+	public ModelSet<Line> getPart() {
 		return this.part;
 	}
 
@@ -121,7 +124,7 @@ public class StoryBook extends SendableItem implements SendableEntityCreator {
 		for (Line item : value) {
 			if (item != null) {
 				if (this.part == null) {
-					this.part = new LineSet();
+					this.part = new ModelSet<Line>();
 				}
 				boolean changed = this.part.add(item);
 				if (changed) {
@@ -168,6 +171,24 @@ public class StoryBook extends SendableItem implements SendableEntityCreator {
 		// TODO Auto-generated method stub
 		return false;
 	}
-
 	
+	public HTMLEntity createKanbanBoard() {
+		HTMLEntity element = new HTMLEntity();
+		XMLEntity parent = element.getBody();
+		for(Line child : this.part) {
+			XMLEntity swimLine = element.createTag("div", parent);
+			XMLEntity header = element.createTag("div", swimLine).with("style", "width:100px");
+			XMLEntity button = element.createTag("button", header).with("style", "width:15px;height:15px;margin:0;padding:0;border: none;");
+			button.withValue("-");
+			XMLEntity tag = element.createTag("div", header).with("style", "margin-left:5px;float:right;");
+			tag.withValue(child.getCaption());
+
+			for(Task task : child.getChildren()) {
+				XMLEntity taskContent = element.createTag("div", swimLine).with("style", "width:100px;height: 200px;background-color:#ccc;");
+				XMLEntity taskBody = element.createTag("div", taskContent).with("style", "width:100px;height: 200px;background-color:#ccc;");
+				element.createTable(taskBody, "border:1px solid black", "background-color:#f00;width:10px", "", "", task.getName());
+			}
+		}
+		return element;
+	}
 }

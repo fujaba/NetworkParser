@@ -138,6 +138,9 @@ public class GitRevision {
 	}
 
 	public int calcGitTag(Object repository, JsonObject info) {
+		if(ReflectionLoader.REPOSITORY == null || repository == null || ReflectionLoader.REPOSITORY.isAssignableFrom(repository.getClass()) == false ) {
+			return -1;
+		}
 		int minor=-1;
 		int mayor=-1;
 		String tag = null;

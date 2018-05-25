@@ -62,6 +62,8 @@ public class SimpleGrammar implements Grammar {
 		if(entity == null || map == null) {
 			return null;
 		}
+		
+//FIXME		entity.put(IdMap.TYPE, this.filter.get);
 		if(basicProperties.contains(IdMap.SESSION)) {
 			String session = map.getSession();
 			if(session != null) {

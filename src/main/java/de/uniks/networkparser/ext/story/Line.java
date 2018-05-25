@@ -1,10 +1,11 @@
 package de.uniks.networkparser.ext.story;
 
 import de.uniks.networkparser.ext.petaf.SendableItem;
-import de.uniks.networkparser.ext.story.util.TaskSet;
+import de.uniks.networkparser.list.ModelSet;
 
 public class Line extends SendableItem {
 	public static final String PROPERTY_CAPTION = "caption";
+	public static final String PROPERTY_COLOR = "color";
 
 	private String caption;
 
@@ -12,12 +13,14 @@ public class Line extends SendableItem {
 		return this.caption;
 	}
 
-	public void setCaption(String value) {
+	public boolean setCaption(String value) {
 		if (this.caption != value) {
 			String oldValue = this.caption;
 			this.caption = value;
 			firePropertyChange(PROPERTY_CAPTION, oldValue, value);
+			return true;
 		}
+		return false;
 	}
 
 	public Line withCaption(String value) {
@@ -25,11 +28,32 @@ public class Line extends SendableItem {
 		return this;
 	}
 
+	private String color;
+
+	public String getColor() {
+		return this.color;
+	}
+
+	public boolean setColor(String value) {
+		if (this.caption != value) {
+			String oldValue = this.color;
+			this.color = value;
+			firePropertyChange(PROPERTY_COLOR, oldValue, value);
+			return true;
+		}
+		return false;
+	}
+
+	public Line withColor(String value) {
+		setColor(value);
+		return this;
+	}
+	
 	public static final String PROPERTY_CHILDREN = "children";
 
-	private TaskSet children = null;
+	private ModelSet<Task> children = null;
 
-	public TaskSet getChildren() {
+	public ModelSet<Task> getChildren() {
 		return this.children;
 	}
 
@@ -40,7 +64,7 @@ public class Line extends SendableItem {
 		for (Task item : value) {
 			if (item != null) {
 				if (this.children == null) {
-					this.children = new TaskSet();
+					this.children = new ModelSet<Task>();
 				}
 				boolean changed = this.children.add(item);
 				if (changed) {

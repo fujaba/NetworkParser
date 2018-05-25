@@ -358,8 +358,7 @@ public class JavaAdapter implements JavaViewAdapter, Runnable {
 	
 	
 	public static void execute(final Runnable runnable) {
-		ReflectionLoader.call(ReflectionLoader.PLATFORM, "runLater", Runnable.class, runnable);
-//		ReflectionLoader.call(ReflectionLoader.PLATFORM, "startup", Runnable.class, runnable);
+		ReflectionLoader.call(ReflectionLoader.PLATFORM, "startup", Runnable.class, runnable);
 	}
 	public static void executeAndWait(final Runnable runnable) {
 		if(runnable == null) {
