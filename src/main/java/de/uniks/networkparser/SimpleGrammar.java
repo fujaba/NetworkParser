@@ -58,12 +58,13 @@ public class SimpleGrammar implements Grammar {
 	}
 
 	@Override
-	public Entity writeBasicValue(Entity entity, String className, String id, IdMap map) {
+	public Entity writeBasicValue(Entity entity, String className, String id, String type, IdMap map) {
 		if(entity == null || map == null) {
 			return null;
 		}
-		
-//FIXME		entity.put(IdMap.TYPE, this.filter.get);
+		if(type != null && SendableEntityCreator.UPDATE.equalsIgnoreCase(type) == false) {
+			entity.put(IdMap.TYPE, type);
+		}
 		if(basicProperties.contains(IdMap.SESSION)) {
 			String session = map.getSession();
 			if(session != null) {

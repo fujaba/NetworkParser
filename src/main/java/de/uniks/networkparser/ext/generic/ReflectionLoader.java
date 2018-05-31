@@ -584,15 +584,18 @@ public class ReflectionLoader {
 				return method.invoke(item, methodArgumentsValues);
 			}
 		} catch (Exception e) {
-			errorCount++;
 			if(logger != null && notify) {
+				errorCount++;
 				e.printStackTrace(logger);
 			} else if(notifyObject instanceof ObjectCondition){
+				errorCount++;
 				((ObjectCondition) notifyObject).update(e);
 			} else if(notifyObject instanceof ErrorHandler){
+				errorCount++;
 				ErrorHandler handler = (ErrorHandler) notifyObject;
 				handler.saveException(e);
 			} else if(notify && Os.isEclipse()) {
+				errorCount++;
 				System.out.println(errorCount);
 				e.printStackTrace();
 			}

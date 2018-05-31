@@ -44,6 +44,7 @@ import de.uniks.networkparser.ext.io.MQTTMessage;
 import de.uniks.networkparser.ext.io.MessageSession;
 import de.uniks.networkparser.ext.io.RabbitMessage;
 import de.uniks.networkparser.ext.javafx.JavaAdapter;
+import de.uniks.networkparser.ext.javafx.JavaBridgeFX;
 import de.uniks.networkparser.ext.javafx.SimpleController;
 import de.uniks.networkparser.ext.javafx.dialog.DialogBox;
 import de.uniks.networkparser.ext.petaf.Server_TCP;
@@ -138,7 +139,8 @@ public class ReflectionBlackBoxTester {
 
 		withIgnoreClazzes(Story.class, "dumpHTML", "writeFile");
 		withIgnoreClazzes(ErrorHandler.class);
-		withIgnoreClazzes(SimpleController.class, "init", "saveException", "createContent", "showContent", "withErrorPath", "start");
+		withIgnoreClazzes(SimpleController.class);
+//		withIgnoreClazzes(SimpleController.class, "create", "init", "saveException", "createContent", "showContent", "withErrorPath", "start");
 		withIgnoreClazzes(Server_TCP.class);
 		withIgnoreClazzes(Server_UPD.class);
 		withIgnoreClazzes(Server_Time.class);
@@ -156,6 +158,7 @@ public class ReflectionBlackBoxTester {
 		withIgnoreClazzes(GitRevision.class, "main");
 		withIgnoreClazzes(DialogBox.class);
 		withIgnoreClazzes(JavaAdapter.class);
+		withIgnoreClazzes(JavaBridgeFX.class);
 //		withIgnoreClazzes(TimerExecutor.class.getName());
 	}
 

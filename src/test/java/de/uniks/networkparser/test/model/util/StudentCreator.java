@@ -110,6 +110,10 @@ public class StudentCreator implements SendableEntityCreator {
 			return true;
 		}
 		if (Student.PROPERTY_CREDITS.equalsIgnoreCase(attribute)) {
+			if(value == null) {
+				student.setCredits(0);
+				return true;
+			}
 			student.setCredits((int) value);
 			return true;
 		}

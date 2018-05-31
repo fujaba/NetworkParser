@@ -299,6 +299,7 @@ public class JsonTokener extends Tokener {
 		if (typeInfo != null) {
 			Object result = null;
 			if(kid == false) {
+				map.withStrategy(jsonObject.getString(IdMap.TYPE));
 				result = map.getTarget();
 			}
 			if (grammar.hasValue(jsonObject, IdMap.ID) && result == null) {
@@ -374,10 +375,21 @@ public class JsonTokener extends Tokener {
 			}
 			String[] properties = creator.getProperties();
 			if (properties != null) {
-				for (String property : properties) {
-					if(jsonProp.has(property)) {
-						Object obj = jsonProp.get(property);
-						parseValue(target, property, obj, creator, map);
+				if(map.isStrategyNew()) {
+					for (String property : properties) {
+						if(jsonProp.has(property)) {
+							Object obj = jsonProp.get(property);
+							parseValue(target, property, obj, creator, map);
+						} else {
+							parseValue(target, property, null, creator, map);
+						}
+					}
+				} else {
+					for (String property : properties) {
+						if(jsonProp.has(property)) {
+							Object obj = jsonProp.get(property);
+							parseValue(target, property, obj, creator, map);
+						}
 					}
 				}
 			}
@@ -393,10 +405,9 @@ public class JsonTokener extends Tokener {
 	 * @param creator		the creator
 	 * @param map			the MapEntity Runtime Infos
 	 */
-	private void parseValue(Object target, String property, Object value, SendableEntityCreator creator,
-			MapEntity map) {
+	private void parseValue(Object target, String property, Object value, SendableEntityCreator creator, MapEntity map) {
 		//FIXME IF STATGEGY IS UPDATE SET NEW VALUE
-		if (value == null) {
+		if (value == null && map.isStrategyNew() == false) {
 			return;
 		}
 		Filter filter = map.getFilter();

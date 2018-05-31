@@ -107,6 +107,8 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 
 	public static final String TIMESTAMP = "timestamp";
 
+	public static final String TYPE = "type";
+
 	/** The prefix id. */
 	protected String session = null;
 

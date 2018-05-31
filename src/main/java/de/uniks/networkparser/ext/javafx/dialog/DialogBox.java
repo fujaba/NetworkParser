@@ -270,6 +270,12 @@ public class DialogBox implements ObjectCondition{
 		condition = new ObjectCondition() {
 			@Override
 			public boolean update(Object event) {
+				if(event == null ) {
+					return false;
+				}
+				if(event.getClass().getName().startsWith("javafx") == false) {
+					return false;
+				}
 				mouseDragDeltaX = (Double) ReflectionLoader.call(event,"getSceneX");
 				mouseDragDeltaY = (Double) ReflectionLoader.call(event, "getSceneY");
 
@@ -282,6 +288,12 @@ public class DialogBox implements ObjectCondition{
 		condition = new ObjectCondition() {
 			@Override
 			public boolean update(Object event) {
+				if(event == null ) {
+					return false;
+				}
+				if(event.getClass().getName().startsWith("javafx") == false) {
+					return false;
+				}
 				double eventX = (Double) ReflectionLoader.call(event, "getScreenX") - mouseDragDeltaX;
 				double eventY = (Double) ReflectionLoader.call(event, "getScreenY") - mouseDragDeltaY;
 

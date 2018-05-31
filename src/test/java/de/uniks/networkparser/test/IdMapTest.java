@@ -120,25 +120,26 @@ public class IdMapTest {
 	public void testIdMap2() {
 		IdMap idMap = new IdMap().withCreator(new StudentCreator());
 		Student alice = new Student().withName("alice");
-		alice.setStudNo("424242");
+		alice.setFirstName("Alice");
 		Assert.assertNotNull(alice);
 		JsonObject jsonObject = idMap.toJsonObject(alice);
 		Assert.assertNotNull(jsonObject);
+		Assert.assertEquals("Alice", alice.getFirstName());
 
 
 		IdMap idMapB = new IdMap().withCreator(new StudentCreator());
 		Student aliceKassel  = (Student) idMapB.decode(jsonObject);
 		Assert.assertNotNull(aliceKassel);
-		Assert.assertNotNull(aliceKassel.getStudNo());
+		Assert.assertEquals("Alice", aliceKassel.getFirstName());
 		
-		alice.setStudNo(null);
+		alice.setFirstName(null);
 		jsonObject = idMap.toJsonObject(alice, Filter.createChange());
 		System.out.println(jsonObject);
 		
 		// Remove old and set New One
 		aliceKassel  = (Student) idMapB.decode(jsonObject);
 		Assert.assertNotNull(aliceKassel);
-		Assert.assertNull(aliceKassel.getStudNo());
+		Assert.assertNull(aliceKassel.getFirstName());
 	}
 
 }

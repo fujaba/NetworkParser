@@ -129,7 +129,7 @@ public class EMFJsonGrammar extends SimpleGrammar {
 	}
 
 	@Override
-	public Entity writeBasicValue(Entity entity, String className, String id, IdMap map) {
+	public Entity writeBasicValue(Entity entity, String className, String id, String type, IdMap map) {
 		if(id != null && entity != null) {
 			entity.put(SRC, id);
 		}

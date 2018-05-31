@@ -104,13 +104,14 @@ public class SimpleController implements ObjectCondition{
 
 	public SimpleController withStage(Object stage) {
 		this.stage = stage;
-		GUIEvent proxyHandler=new GUIEvent();
-		proxyHandler.withListener(this);
+		if(stage != null && stage.getClass().getName().startsWith("javafx")) {
+			GUIEvent proxyHandler=new GUIEvent();
+			proxyHandler.withListener(this);
+			Object proxy = ReflectionLoader.createProxy(proxyHandler, ReflectionLoader.EVENTHANDLER);
 
-		Object proxy = ReflectionLoader.createProxy(proxyHandler, ReflectionLoader.EVENTHANDLER);
-
-		ReflectionLoader.call(stage, "setOnCloseRequest", ReflectionLoader.EVENTHANDLER, proxy);
-		ReflectionLoader.call(stage, "setOnShowing", ReflectionLoader.EVENTHANDLER, proxy);
+			ReflectionLoader.call(stage, "setOnCloseRequest", ReflectionLoader.EVENTHANDLER, proxy);
+			ReflectionLoader.call(stage, "setOnShowing", ReflectionLoader.EVENTHANDLER, proxy);
+		}
 		return this;
 	}
 

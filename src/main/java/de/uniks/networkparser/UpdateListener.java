@@ -152,7 +152,7 @@ public class UpdateListener implements MapListener {
 		Entity jsonObject = factory.newInstance();
 		String id = this.map.getId(source, true);
 		Grammar grammar = this.map.getGrammar();
-		grammar.writeBasicValue(jsonObject, source.getClass().getName(), id, map);
+		grammar.writeBasicValue(jsonObject, source.getClass().getName(), id, SendableEntityCreator.UPDATE, map);
 		change(property, creatorClass, jsonObject, oldValue, newValue);
 		return jsonObject;
 	}

@@ -370,10 +370,50 @@ public class NodeProxyTCP extends NodeProxy {
 		}
 		return null;
 	}
+	
+	public static HTMLEntity getHTTP(HTMLEntity session, String path, Object...params) {
+		if(session == null) {
+			return null;
+		}
+		CharacterBuffer buffer = new CharacterBuffer();
+		buffer.add(session.getConnectionHeader("remote"));
+		if(path != null) {
+			if(path.startsWith("/")) {
+				buffer.with(path);
+			}else {
+				buffer.with('/');
+				buffer.with(path);
+			}
+		}
+		if(params != null && params.length > 0) {
+			buffer.add("?");
+			convertParams(buffer, params);
+		}
+		String uri = buffer.toString();
+		if(uri == null) {
+			return null;
+		}
+		HttpURLConnection conn = getConnection(uri, GET);
+		List<String> cookies = session.getConnectionHeaders("Set-Cookie");
+		if(cookies != null) {
+			for(int i=0;i<cookies.size();i++) {
+				String cookie = cookies.get(i).substring(0, cookies.get(i).indexOf(';'));
+				conn.setRequestProperty("Cookie", cookie);
+			}
+		}
+		try {
+			conn.connect();
+			return readAnswer(conn);
+		} catch (IOException e) {
+		}
+		return null;
+	}
 
 	public static HTMLEntity postHTTP(HTMLEntity session, String path, String bodyType, Object...params) {
+		if(session == null) {
+			return null;
+		}
 		CharacterBuffer buffer = new CharacterBuffer();
-//		String uri = convertPath(url, port, path);
 		buffer.add(session.getConnectionHeader("remote"));
 		
 		if(path != null) {

@@ -56,7 +56,7 @@ public class ModelExecutor extends SimpleEventCondition {
 
 	@Override
 	public boolean update(final SimpleEvent event) {
-		Object thread = ReflectionLoader.callChain(ReflectionLoader.TOOLKIT, "getFxUserThread", "getFxUserThread");
+		Object thread = ReflectionLoader.callChain(ReflectionLoader.TOOLKITFX, "getFxUserThread", "getFxUserThread");
 		if(thread == null) {
 			Object result = this.execute(event);
 			event.withModelValue(result);
