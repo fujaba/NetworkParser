@@ -1,5 +1,6 @@
 package de.uniks.networkparser.json;
 
+import java.util.Collection;
 /*
 NetworkParser
 The MIT License
@@ -128,8 +129,7 @@ public class JsonTokener extends Tokener {
 		String key;
 		if (nextClean(true) != JsonObject.START) {
 			if (isError(this, "parseToEntity", NetworkParserLog.ERROR_TYP_PARSING, entity)) {
-				throw new RuntimeException(
-						"A JsonObject text must begin with '{' \n" + buffer);
+				throw new RuntimeException("A JsonObject text must begin with '{' \n" + buffer);
 			}
 		}
 		skip();
@@ -141,8 +141,7 @@ public class JsonTokener extends Tokener {
 			switch (c) {
 			case 0:
 				if (isError(this, "parseToEntity", NetworkParserLog.ERROR_TYP_PARSING, entity)) {
-					throw new RuntimeException(
-							"A JsonObject text must end with '}'");
+					throw new RuntimeException("A JsonObject text must end with '}'");
 				}
 				return false;
 			case '\\':
@@ -376,12 +375,26 @@ public class JsonTokener extends Tokener {
 			String[] properties = creator.getProperties();
 			if (properties != null) {
 				if(map.isStrategyNew()) {
+					Object prototype = creator.getSendableInstance(true);
 					for (String property : properties) {
 						if(jsonProp.has(property)) {
 							Object obj = jsonProp.get(property);
 							parseValue(target, property, obj, creator, map);
 						} else {
-							parseValue(target, property, null, creator, map);
+							Object defaultValue = creator.getValue(prototype, property);
+							if(defaultValue instanceof Collection<?>) {
+								defaultValue = creator.getValue(target, property);
+								if(defaultValue instanceof Collection<?>) {
+									Collection<?> collection = (Collection<?>) defaultValue;
+									for(Object item : collection) {
+										creator.setValue(target, property, item, SendableEntityCreator.REMOVE);
+									}
+								} else {
+									creator.setValue(target, property, null, SendableEntityCreator.NEW);
+								}
+							} else {
+								parseValue(target, property, defaultValue, creator, map);
+							}
 						}
 					}
 				} else {

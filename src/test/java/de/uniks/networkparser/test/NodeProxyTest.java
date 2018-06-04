@@ -19,7 +19,7 @@ public class NodeProxyTest {
 
 	@Test
 	public void UniversityOfMadnessCreate() {
-		HTMLEntity answer = NodeProxyTCP.postHTTP("avocado.uniks.de", 33000, "user/create", NodeProxyTCP.BODY_JSON, "Username", "Eraser6");
+		HTMLEntity answer = NodeProxyTCP.postHTTP("avocado.uniks.de", 33000, "user/create", NodeProxyTCP.BODY_JSON, "Username", "Eraser");
 
 		HTMLEntity login = NodeProxyTCP.postHTTP("avocado.uniks.de", 33000, "user/login", NodeProxyTCP.BODY_JSON, "Username", "Eraser", "Password", "crazy");
 		System.out.println(login.getStatusCode()+": "+login.getStatusMessage());
@@ -38,11 +38,12 @@ public class NodeProxyTest {
 		String user = value.getString("rabbit_user");
 		String password = value.getString("rabbit_password");
 		String queueName = value.getString("chat_queue");
+
 		NodeProxyBroker broker = new NodeProxyBroker("avocado.uniks.de:32777");
 		broker.withAuth(user, password);
 		broker.connect();
-		broker.bindExchange("General", queueName);
-		broker.consume("General", new ObjectCondition() {
+//		broker.bindExchange("General", queueName);
+		broker.subscribe(queueName, new ObjectCondition() {
 			@Override
 			public boolean update(Object value) {
 				SimpleEvent event=(SimpleEvent) value;

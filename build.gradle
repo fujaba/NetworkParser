@@ -228,8 +228,8 @@ tasks.withType(FindBugs) {
 
 //NODE
 node {
-	version = '0.12.2'
-	npmVersion = '2.7.5'
+	version = '10.3.0'
+	npmVersion = '6.1.0'
 	download = false
 }
 task npmCacheConfig(type: NpmTask) {
