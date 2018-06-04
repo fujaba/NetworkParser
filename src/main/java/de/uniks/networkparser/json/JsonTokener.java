@@ -1,6 +1,7 @@
 package de.uniks.networkparser.json;
 
 import java.util.Collection;
+import java.util.Iterator;
 /*
 NetworkParser
 The MIT License
@@ -385,9 +386,9 @@ public class JsonTokener extends Tokener {
 							if(defaultValue instanceof Collection<?>) {
 								defaultValue = creator.getValue(target, property);
 								if(defaultValue instanceof Collection<?>) {
-									Collection<?> collection = (Collection<?>) defaultValue;
-									for(Object item : collection) {
-										creator.setValue(target, property, item, SendableEntityCreator.REMOVE);
+									Object[] elements = ((Collection<?>) defaultValue).toArray();
+									for(int i=0;i<elements.length;i++) {
+										creator.setValue(target, property, elements[i], SendableEntityCreator.REMOVE);
 									}
 								} else {
 									creator.setValue(target, property, null, SendableEntityCreator.NEW);
