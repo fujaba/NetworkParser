@@ -228,6 +228,16 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 			throw exception;
 		}
 	}
+	
+	public int getInt(K key, int defaultValue) {
+		Object object = get(key);
+		try {
+			return object instanceof Number ? ((Number) object).intValue()
+					: Integer.parseInt((String) object);
+		}catch (Exception e) {
+		}
+		return defaultValue;
+	}
 
 	/**
 	 * Get the long value associated with an index.
