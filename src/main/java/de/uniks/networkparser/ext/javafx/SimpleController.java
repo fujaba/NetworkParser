@@ -703,8 +703,8 @@ public class SimpleController implements ObjectCondition{
 	}
 	
 	
-	public static SimpleController create(JavaBridge bridge, ObjectCondition listener, boolean exitOnClose, boolean wait) {
-		SimpleController controller = new SimpleController(null);
+	public static SimpleController create(JavaBridge bridge, final ObjectCondition listener, boolean exitOnClose, boolean wait) {
+		final SimpleController controller = new SimpleController(null);
 		final Class<?> launcherClass = ReflectionLoader.getClass("com.sun.javafx.application.LauncherImpl");
 		controller.withBridge(bridge);
 		if(launcherClass == null) {

@@ -69,6 +69,12 @@ public class NodeProxyBroker extends NodeProxy {
 		this(serverURI, null);
 	}
 
+	public NodeProxyBroker withAuth(String sender, String password) {
+		this.sender = sender;
+		this.password = password;
+		return this;
+	}
+	
 	public NodeProxyBroker(String url, String clientId) {
 		this.url = url;
 		if (clientId == null) {
@@ -197,6 +203,23 @@ public class NodeProxyBroker extends NodeProxy {
 		return this;
 	}
 	
+	public boolean subscribe(String topic, ObjectCondition callBack) {
+		this.callBack = callBack;
+		return subscribe(topic);
+	}
+	
+	public boolean consume(String topic, ObjectCondition condition) {
+//		SimpleKeyValueList<String, String> topics = getTopics();
+//		short channelNo = Short.valueOf(topics.get(topic));
+
+		this.callBack = condition;
+		startConsume(topic, callBack);
+
+//		RabbitMessage message = RabbitMessage.createConsume(channelNo, topic, "", false, false, false, false, null);
+//		System.out.println(session.sending(this, message, true));
+		return true;
+	}
+	
 	public boolean subscribe(String topic) {
 		if(session != null) {
 			if(MessageSession.TYPE_AMQ.equals(format)) {
@@ -265,6 +288,29 @@ public class NodeProxyBroker extends NodeProxy {
 		} else if(MessageSession.TYPE_MQTT.equals(format)) {
 			MQTTMessage msg = MQTTMessage.create(MQTTMessage.MESSAGE_TYPE_PUBLISH);
 			msg.withNames(channel).createMessage(message);
+			session.sending(this, msg, true);
+			return true;
+		}
+		return false;
+	}
+	
+	
+	public boolean bindExchange(String exchange, String queue) {
+		if(MessageSession.TYPE_AMQ.equals(format)) {
+			SimpleKeyValueList<String, String> topics = getTopics();
+			short channelNo;
+			RabbitMessage msg;
+			if(topics.get(exchange) != null) {
+				channelNo = Short.valueOf(topics.get(exchange));
+			} else {
+				msg = RabbitMessage.createChannelOpen(this, exchange);
+				session.sending(this, msg, false);
+				channelNo = Short.valueOf(topics.get(exchange));
+			}
+			msg = RabbitMessage.createExange(channelNo, exchange, null);
+			session.sending(this, msg, true);
+			
+			msg = RabbitMessage.createBind(channelNo, exchange, queue);
 			session.sending(this, msg, true);
 			return true;
 		}

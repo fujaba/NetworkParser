@@ -466,7 +466,8 @@ public class HTMLEntity implements BaseItem {
 
 	
 	public HTMLEntity withConnectionHeader(String key, String value) {
-		this.conenctionHeader.put(key, new SimpleList<String>().with(value));
+		SimpleList<String> list = new SimpleList<String>().with(value);
+		this.conenctionHeader.put(key, list);
 		return this;
 	}
 	public HTMLEntity withConnectionHeader(Map<String, List<String>> headerFields) {

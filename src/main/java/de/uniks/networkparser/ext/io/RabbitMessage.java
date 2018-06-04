@@ -736,7 +736,7 @@ public class RabbitMessage {
 		msg.withFrame(CHANNEL_CLASS, OPENCHANNEL_METHOD);
 
 		SimpleKeyValueList<String, String> topics = broker.getTopics();
-		short no = (short) (topics.size()+1);
+		short no = (short) (topics.size() + 1);
 		topics.add(queue, ""+no);
 		msg.withChannel(no);
 		msg.withEmptyValues();
@@ -787,6 +787,39 @@ public class RabbitMessage {
 		return msg;
 	}
 	
+	public static RabbitMessage createExange(short channel, String exchange, String type) {
+		RabbitMessage msg = new RabbitMessage().withType(FRAME_METHOD);
+		msg.withFrame(EXCHANGE_CLASS, OPENCHANNEL_METHOD).withChannel(channel);
+		short ticket =0;
+		if(type == null) {
+			type = "fanout";
+		}
+//		 DIRECT("direct"), FANOUT("fanout"), TOPIC("topic"), HEADERS("headers");
+		msg.withValues(ticket);
+		msg.withShortString(exchange);
+		msg.withShortString(type);
+		msg.withValues(false); // passive
+		msg.withValues(false); // durable
+		msg.withValues(false); // autoDelete
+		msg.withValues(false); // internal
+		msg.withValues(false); // nowait
+//		msg.writeValue(null); // arguments
+		return msg;
+	}
+
+	public static RabbitMessage createBind(short channel, String exchange, String queue) {
+		RabbitMessage msg = new RabbitMessage().withType(FRAME_METHOD);
+		msg.withFrame(QUEUE_CLASS, CONSUME_METHOD).withChannel(channel);
+		short ticket =0;
+		msg.withValues(ticket);
+		msg.withShortString(queue);
+		msg.withShortString(exchange);
+		msg.withShortString("");	// routingKey
+		msg.withValues(false); // nowait
+		msg.writeValue(null); // arguments
+		return msg;
+	}
+
 	public static RabbitMessage createPublishHeader(short channel, String queue) {
 		RabbitMessage msg = new RabbitMessage().withType(FRAME_HEADER);
 		msg.withFrame(BASIC_CLASS, (short)0).withChannel(channel);
