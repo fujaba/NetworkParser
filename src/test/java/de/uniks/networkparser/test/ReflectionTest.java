@@ -25,6 +25,8 @@ public class ReflectionTest {
 				return false;
 			}
 		});
+		
+		System.setProperty("Tester", "No Output");
 //		logger.withFlag(NetworkParserLog.LOGLEVEL_ALL).withListener(output);
 		tester.test("de.uniks.networkparser", logger);
 		Assert.assertNotNull(tester);

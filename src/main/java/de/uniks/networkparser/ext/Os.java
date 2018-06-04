@@ -61,8 +61,15 @@ public class Os {
 		return ("android".equals(javafxPlatform) || "dalvik".equals(vmName));
 	}
 
+	public static boolean isEclipseAndNoReflection(){
+		if(isReflectionTest()) {
+			return false;
+		}
+		return isEclipse();
+	}
+
 	public static boolean isEclipse(){
-		String fileName=new Os().getFilename().toLowerCase();
+		String fileName=Os.getFilename().toLowerCase();
 		if(!fileName.endsWith(".jar")){
 			// Eclipse
 			return true;
@@ -93,8 +100,8 @@ public class Os {
 		return UNKNOWN;
 	}
 
-	public String getFilename() {
-		File jar = new File(this.getClass().getProtectionDomain().getCodeSource().getLocation()
+	public static String getFilename() {
+		File jar = new File(Os.class.getProtectionDomain().getCodeSource().getLocation()
 				.getPath());
 		return jar.getAbsoluteFile().getName();
 	}
