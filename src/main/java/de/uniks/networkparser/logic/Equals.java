@@ -5,6 +5,7 @@ import java.util.Set;
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.buffer.BufferedBuffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
+import de.uniks.networkparser.graph.AssociationTypes;
 import de.uniks.networkparser.interfaces.LocalisationInterface;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.ParserCondition;
@@ -96,6 +97,12 @@ public class Equals implements ParserCondition, SendableEntityCreator {
 			}
 			if(leftValue instanceof String && rightValue instanceof String) {
 				return ((String)leftValue).equalsIgnoreCase((String)rightValue);
+			}
+			if(leftValue instanceof AssociationTypes) {
+				return ((AssociationTypes)leftValue).IsSame(rightValue);
+			}
+			if(rightValue instanceof AssociationTypes) {
+				return ((AssociationTypes)rightValue).IsSame(rightValue);
 			}
 			if(leftValue instanceof Number && rightValue instanceof String) {
 				leftValue = ""+leftValue;

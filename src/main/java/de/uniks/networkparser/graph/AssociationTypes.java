@@ -64,6 +64,17 @@ public enum AssociationTypes {
 				value.equals(COMPOSITION)
 				);
 	}
+	
+	public boolean IsSame(Object value) {
+		if(value instanceof AssociationTypes) {
+			return this == value;
+		}
+		if(value instanceof String && this.getValue() != null) {
+			return this.getValue().equals(value); 
+		}
+		return false;
+	}
+	
 	public static Object isImplements(AssociationTypes value) {
 		if(value == null) {
 			return false;

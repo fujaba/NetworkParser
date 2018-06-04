@@ -71,7 +71,7 @@ public class JavaClazz extends BasicGenerator {
 
 						"   public boolean removePropertyChangeListener(PropertyChangeListener listener)",
 					 	"   {",
-					 	"      if (listeners == null) {",
+					 	"      if (listeners != null) {",
 					 	"         listeners.removePropertyChangeListener(listener);",
 					 	"      }",
 					 	"      listeners.removePropertyChangeListener(listener);",
