@@ -39,7 +39,7 @@ branches:
   - master
   - develop
 after_success: 
-  - ./gradlew version build uploadArchives
+  - ./gradlew version build uploadArchives --no-parallel --max-workers=1
   - ./gradlew jacocoTestReport coveralls
   # other script steps might be done before running the actual sonarcloud analysis
   - sonar-scanner
