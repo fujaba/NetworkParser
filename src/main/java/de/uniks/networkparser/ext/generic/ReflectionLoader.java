@@ -596,7 +596,7 @@ public class ReflectionLoader {
 				handler.saveException(e);
 			} else if(notify && Os.isEclipse()) {
 				errorCount++;
-				System.out.println(errorCount);
+				System.err.println("ErrorCount: "+errorCount + " "+new Os().getFilename().toLowerCase());
 				e.printStackTrace();
 			}
 		}
