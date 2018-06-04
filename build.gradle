@@ -53,6 +53,9 @@ def copyFile(String source, String dest) {
 	InputStream is = null;
 	OutputStream os = null;
 	try {
+		if(new File(source).exists() == false) {
+			return;
+		}
 		is = new FileInputStream(new File(source));
 		os = new FileOutputStream(new File(dest));
 		byte[] buffer = new byte[1024];
@@ -61,8 +64,12 @@ def copyFile(String source, String dest) {
 			os.write(buffer, 0, length);
 		}
 	} finally {
-		is.close();
-		os.close();
+		if(is != null) {
+			is.close();
+		}
+		if(os != null) {
+			os.close();
+		}
 	}
 }
 def unzip(String src, String dest) {
