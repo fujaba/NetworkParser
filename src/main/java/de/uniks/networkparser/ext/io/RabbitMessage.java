@@ -98,14 +98,18 @@ public class RabbitMessage {
 			if(getType() != 3) {
 				accumulator.insert(new byte[4], true);
 			}
-			// ONly for 
+			// Only for 
 			if(table != null || (CONNECTION_CLASS == this.classId && STARTOK_METHOD == this.methodId)) {
 				this.writeMap(this.table);
 			}
 		}
 		if(args != null) {
 			for(Object item : args) {
-				writeValue( item );
+				if(item instanceof Boolean) {
+					withBit((Boolean)item);
+				}else {
+					writeValue( item );
+				}
 			}
 		}
 		return this;
@@ -331,7 +335,7 @@ public class RabbitMessage {
 		this.headers[2] = (byte) value;
 		return this;
 	}
-	
+
 	public short getChannel() {
 		short result = headers[1];
 		result = (short) (result << 8 + headers[2]);
@@ -361,6 +365,7 @@ public class RabbitMessage {
 			stream.flush();
 		} catch (Exception e) {
 			// Oh Error Write full Message
+			e.printStackTrace();
 			System.out.println("WRONG MESSGAE: "+getDebugString());
 			return false;
 		}
@@ -834,6 +839,49 @@ public class RabbitMessage {
 		msg.withValues(queue);
 		return msg;
 	}
+
+	/**
+	 * When encoding one or more bits, records whether a group of bits is waiting to
+	 * be written
+	 */
+	private boolean needBitFlush;
+	/** The current group of bits */
+	private byte bitAccumulator;
+	/** The current position within the group of bits */
+	private int bitMask;
+	
+	/**
+	 * Private API - called when we may be transitioning from encoding a group of
+	 * bits to encoding a non-bit value.
+	 */
+	private final void bitflush() {
+		if (needBitFlush) {
+			this.withValues(bitAccumulator);
+			resetBitAccumulator();
+		}
+	}
+	
+	/** Private API - called to reset the bit group variables. */
+	private void resetBitAccumulator() {
+		needBitFlush = false;
+		bitAccumulator = 0;
+		bitMask = 1;
+	}
+	
+	public RabbitMessage withBit(boolean b) {
+		if (bitMask > 0x80) {
+			bitflush();
+		}
+		if (b) {
+			bitAccumulator |= bitMask;
+		} else {
+			// um, don't set the bit.
+		}
+		bitMask = bitMask << 1;
+		needBitFlush = true;
+		return this;
+	}
+
 	
 	public static RabbitMessage createClose(short channel) {
 		RabbitMessage msg = new RabbitMessage();

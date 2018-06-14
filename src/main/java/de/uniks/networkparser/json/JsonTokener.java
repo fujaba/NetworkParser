@@ -1,7 +1,6 @@
 package de.uniks.networkparser.json;
 
 import java.util.Collection;
-import java.util.Iterator;
 /*
 NetworkParser
 The MIT License

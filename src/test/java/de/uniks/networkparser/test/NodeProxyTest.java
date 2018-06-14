@@ -17,7 +17,7 @@ public class NodeProxyTest {
 		System.out.println(answer);
 	}
 
-//	@Test
+	@Test
 	public void UniversityOfMadnessCreate() {
 		HTMLEntity answer = NodeProxyTCP.postHTTP("avocado.uniks.de", 33000, "user/create", NodeProxyTCP.BODY_JSON, "Username", "Eraser");
 
@@ -42,7 +42,6 @@ public class NodeProxyTest {
 		NodeProxyBroker broker = new NodeProxyBroker("avocado.uniks.de:32777");
 		broker.withAuth(user, password);
 		broker.connect();
-//		broker.bindExchange("General", queueName);
 		broker.subscribe(queueName, new ObjectCondition() {
 			@Override
 			public boolean update(Object value) {
@@ -52,13 +51,6 @@ public class NodeProxyTest {
 				return true;
 			}
 		});
-//		connection = factory.newConnection();
-//		Channel channel = connection.createChannel();
-//		channel.exchangeDeclare(PUBLIC_CHANNEL, BuiltinExchangeType.FANOUT);
-//		channel.queueBind(queueName, PUBLIC_CHANNEL, "");
-
-		
-		
 		answer = NodeProxyTCP.postHTTP(login, "/api/chat/channel/General", NodeProxyTCP.BODY_PLAIN, "Hallo Welt");
 		System.out.println(answer.getStatusCode()+": "+answer.getStatusMessage() + "BODY: "+answer.getBody().getValue());
 		try {

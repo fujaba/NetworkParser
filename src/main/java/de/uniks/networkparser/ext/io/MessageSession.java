@@ -471,11 +471,10 @@ public class MessageSession {
 				// START MESSAGE
 				RabbitMessage response = sending(broker, message, true);
 
-
 				// TUNE MESSAGE
 				response = RabbitMessage.readFrom(diInput);
 				response.analysePayLoad(broker);
-				
+
 				message = RabbitMessage.createTuneOK((Short)response.getData("channelMax"), (Integer)response.getData("frameMax"), (Short)response.getData("heartbeat"));
 				response = sending(broker, message, false);
 				message = RabbitMessage.createConnectionOpen(null);

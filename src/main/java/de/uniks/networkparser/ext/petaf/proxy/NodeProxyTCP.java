@@ -446,9 +446,15 @@ public class NodeProxyTCP extends NodeProxy {
 			}
 		} else if(BODY_PLAIN.equalsIgnoreCase(bodyType)) {
 			CharacterBuffer sb =new CharacterBuffer();
-			convertParams(sb, params);
+			if(params != null && params.length == 1) {
+				sb.with(params[0].toString());
+			}else {
+				convertParams(sb, params);
+			}
 			byteArray = sb.toBytes();
-			conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
+			conn.setRequestProperty("Content-Type", "text/plain"); 
+			conn.setRequestProperty("charset", "utf-8");
+			conn.setRequestProperty( "Content-Length", "" + byteArray.length);
 		} else if(BODY_JSON.equalsIgnoreCase(bodyType)) {
 			JsonObject json =new JsonObject();
 			convertParams(json, params);
