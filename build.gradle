@@ -29,8 +29,11 @@ test {
 		showStackTraces	true
 		showStandardStreams true
 		showCauses true
-
     }
+	reports.junitXml {
+		enabled true
+		destination new File("${buildDir}/reports/")
+	}
 }
 buildscript {
 	repositories {
