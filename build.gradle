@@ -22,6 +22,15 @@ test {
 			testImplementation group: 'org.xerial', name: 'sqlite-jdbc', version: '[3,)'
 		}
 	}
+	//we want display the following test events
+    testLogging {
+        events "FAILED", "SKIPPED"
+		exceptionFormat "short"
+		showStackTraces	true
+		showStandardStreams true
+		showCauses true
+
+    }
 }
 buildscript {
 	repositories {
@@ -152,15 +161,6 @@ artifacts {
 	archives buildCoreJar16, buildCoreJar17, buildCoreJar18, buildCoreJar19, buildSourceJar, buildSourceJar18, buildMinCoreJar, buildJavadoc
 }
 
-test {
-	testLogging {
-		events "failed"
-		exceptionFormat "short"
-		showStackTraces	true
-		showStandardStreams true
-		showCauses true
-	}
-}
 task wrapper(type: Wrapper) {
 		gradleVersion = '4.7-rc-1'
 }

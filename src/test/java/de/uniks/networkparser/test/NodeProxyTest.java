@@ -1,7 +1,5 @@
 package de.uniks.networkparser.test;
 
-import org.junit.Test;
-
 import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.ext.petaf.proxy.NodeProxyBroker;
 import de.uniks.networkparser.ext.petaf.proxy.NodeProxyTCP;
@@ -17,7 +15,7 @@ public class NodeProxyTest {
 		System.out.println(answer);
 	}
 
-	@Test
+//	@Test
 	public void UniversityOfMadnessCreate() {
 		HTMLEntity answer = NodeProxyTCP.postHTTP("avocado.uniks.de", 33000, "user/create", NodeProxyTCP.BODY_JSON, "Username", "Eraser");
 
