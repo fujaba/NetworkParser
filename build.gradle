@@ -31,9 +31,6 @@ test {
 		showCauses true
 
     }
-	reports {
-        junitXml.enabled = true
-    }
 }
 buildscript {
 	repositories {
@@ -177,7 +174,7 @@ jacocoTestReport {
 		xml {
 			enabled = true
 			//Following value is a file
-			//destination = new File("${buildDir}/jacoco/jacoco.xml")
+			destination = new File("${buildDir}/test-results/jacoco.xml")
 			//build/reports/jacoco/test/jacocoTestReport.xml
 		}
 		csv{
