@@ -230,7 +230,7 @@ tasks.withType(FindBugs) {
 node {
 	version = '10.3.0'
 	npmVersion = '6.1.0'
-	download = false
+	download = true
 }
 task npmCacheConfig(type: NpmTask) {
 	description = "Configure the NPM cache"
