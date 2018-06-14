@@ -31,6 +31,9 @@ test {
 		showCauses true
 
     }
+	reports {
+        junitXml.enabled = true
+    }
 }
 buildscript {
 	repositories {
