@@ -25,6 +25,7 @@ THE SOFTWARE.
 */
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.graph.Method;
+import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.ParserCondition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.logic.CustomCondition;
@@ -44,17 +45,22 @@ public class JavaMethodBodyCondition extends CustomCondition<Method> {
 
 	@Override
 	public Object getValue(SendableEntityCreator creator, Method method) {
-		String result;
+		String result = "";
 		if (method.getBody() == null) {
 			String defaultValue = EntityUtil.getDefaultValue(method.getReturnType().getName(false));
-			if (defaultValue.equals("void")) {
-				result = "";
-			} else {
+			if (defaultValue.equals("void") == false) {
 				result = "return " + defaultValue + ";";
 			}
 		} else {
 			result = method.getBody();
 		}
-		return result;
+		
+		// Check for {}
+		String trim = result.trim();
+		if(trim.startsWith("{") && trim.endsWith("}")) {
+			// Its Ok full body
+			return result;
+		}
+		return "    {"+BaseItem.CRLF+"      "+result+BaseItem.CRLF+"    }"+BaseItem.CRLF;
 	}
 }

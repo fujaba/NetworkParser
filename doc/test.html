@@ -1,17 +1,15 @@
 <html>
   <head>
-    <link rel="stylesheet" type="text/css" href="../src/main/resources/de/uniks/networkparser/graph/diagramstyle.css"/>
-    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+    <link rel="stylesheet" type="text/css" href="diagramstyle.css"/>
     <script src="highlight.pack.js"></script>
     <script src="highlightjs-line-numbers.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="github.css"/>
-    <link rel="stylesheet" type="text/css" href="default.css"/>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
     <script language="Javascript">hljs.initHighlightingOnLoad();
 hljs.initLineNumbersOnLoad();</script>
     <title>testStory</title>
-    <script src="file:/C:/Arbeit/workspace/NetworkParser/bin/de/uniks/networkparser/graph/graph.js"></script>
-    <script src="file:/C:/Arbeit/workspace/NetworkParser/bin/de/uniks/networkparser/graph/dagre.min.js"></script>
-    <script src="file:/C:/Arbeit/workspace/NetworkParser/bin/de/uniks/networkparser/graph/drawer.js"></script>
+    <script src="file:/C:/Arbeit/workspace_neu/NetworkParser/build/classes/java/main/de/uniks/networkparser/graph/graph.js"></script>
+    <script src="file:/C:/Arbeit/workspace_neu/NetworkParser/build/classes/java/main/de/uniks/networkparser/graph/dagre.min.js"></script>
+    <script src="file:/C:/Arbeit/workspace_neu/NetworkParser/build/classes/java/main/de/uniks/networkparser/graph/drawer.js"></script>
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
   </head>
   <body>
@@ -55,11 +53,14 @@ hljs.initLineNumbersOnLoad();</script>
     <pre>
       <code class="java" data-lang="java">package de.uniks.networkparser.test;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.ext.ClassModel;
 import de.uniks.networkparser.ext.story.Story;
+import de.uniks.networkparser.ext.story.StoryBook;
+import de.uniks.networkparser.ext.story.StoryStepJUnit;
 import de.uniks.networkparser.ext.story.StoryUtil;
 
 public class StoryTest {
@@ -91,23 +92,42 @@ public class StoryTest {
 		story.dumpHTML();
 	}
 
+	@Test
+	public void testStoryJUnit() {
+		Story story = new Story().withName("StoryJUnit");
+		story.withPath("build/story");
+		StoryStepJUnit storyTest = new StoryStepJUnit().withPackageName("de.uniks.networkparser.test.model");
+		// MUST BE JACOCO TO BUILD-Path MAVEN EXAMPLE: dependencies {compile "org.jacoco:jacoco:0.8.1"}
+
+		// MSUT BE A LINK TO JACOCO AGENT
+		storyTest.withAgentPath("lib/jacocoagent.jar");
+		story.add(storyTest);
+		story.dumpHTML();
+	}
+
 
 	@Test
 	public void testStoryBook() {
-		Story story = new Story();
+		StoryBook book = new StoryBook();
+
+
+		Story story = book.createStory("Main");
 		story.withName("story/kk.html");
 		story.addText("MainText");
-		Story halloWelt = new Story().withName("HalloWelt");
-		story.with(halloWelt);
-		Story ludo = new Story().withName("Ludo");
-		story.with(ludo);
 
-		Story startGame = new Story().withName("StartGame");
-		ludo.with(startGame);
-		Story winGame = new Story().withName("WinGame");
-		ludo.with(winGame);
+		Story halloWelt = book.createStory("HalloWelt");
+		Assert.assertNotNull(halloWelt);
 
-		story.dumpIndexHTML();
+		Story ludo = book.createStory("Ludo");
+		Assert.assertNotNull(ludo);
+
+		Story startGame = book.createStory("StartGame");
+		Assert.assertNotNull(startGame);
+
+		Story winGame  = book.createStory("WinGame");
+		Assert.assertNotNull(winGame);
+
+		book.dumpIndexHTML();
 	}
 
 }</code>

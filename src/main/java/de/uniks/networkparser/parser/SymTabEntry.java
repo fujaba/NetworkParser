@@ -72,6 +72,7 @@ public class SymTabEntry {
 	private String dataType; 	// DataType of Attribute or ReturnType of Method
 	private String params; // Parameter of Methods
 	private SourceCode parent;
+	private String body;
 
 	public SymTabEntry withParent(SourceCode parent) {
 		this.parent = parent;
@@ -266,6 +267,15 @@ public class SymTabEntry {
 
 	public int getBodyStartPos() {
 		return bodyStartPos;
+	}
+	
+	public SymTabEntry withBody(String value) {
+		this.body = value;
+		return this;
+	}
+	
+	public String getBody() {
+		return body;
 	}
 
 	public SymTabEntry withDataType(String value) {

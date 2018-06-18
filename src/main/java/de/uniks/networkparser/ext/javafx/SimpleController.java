@@ -211,7 +211,7 @@ public class SimpleController implements ObjectCondition{
 				items.addAll(customParams);
 
 				items.add("-jar");
-				String fileName = new Os().getFilename().toLowerCase();
+				String fileName = Os.getFilename().toLowerCase();
 				if("bin".equals(fileName)) {
 					// Eclipse Start Can't run
 					return null;

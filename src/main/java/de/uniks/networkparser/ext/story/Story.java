@@ -201,6 +201,9 @@ public class Story extends StoryElement implements Comparable<Story>{
 	}
 
 	public static void addScript(String path, String name, HTMLEntity entry) {
+		if(path == null || name == null) {
+			return;
+		}
 		FileBuffer.writeFile(path + name, FileBuffer.readResource("graph/"+name), FileBuffer.NONE);
 		entry.withHeader(name);
 	}
