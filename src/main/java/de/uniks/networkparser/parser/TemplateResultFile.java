@@ -57,13 +57,13 @@ public class TemplateResultFile extends SortedSet<TemplateResultFragment> implem
 		super(true);
 	}
 
-	public TemplateResultFile(Clazz clazz, boolean comparator) {
+	public TemplateResultFile(GraphEntity clazz, boolean comparator) {
 		super(comparator);
 		this.withName(clazz);
 		this.withMember(clazz);
 	}
 
-	public TemplateResultFile(Clazz clazz, String name, boolean comparator) {
+	public TemplateResultFile(GraphEntity clazz, String name, boolean comparator) {
 		super(comparator);
 		this.withName(name);
 		this.withMember(clazz);
@@ -91,7 +91,7 @@ public class TemplateResultFile extends SortedSet<TemplateResultFragment> implem
 		return this;
 	}
 
-	public TemplateResultFile withName(Clazz clazz) {
+	public TemplateResultFile withName(GraphEntity clazz) {
 		this.name = clazz.getName().replace(".", "/");
 		return this;
 	}

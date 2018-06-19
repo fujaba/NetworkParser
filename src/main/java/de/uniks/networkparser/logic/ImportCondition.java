@@ -78,6 +78,7 @@ public class ImportCondition implements ParserCondition {
 		ObjectCondition result = null;
 		ObjectCondition expression;
 		while(buffer.getCurrentChar() != SPLITEND) {
+			int position = buffer.position();
 			expression = parser.parsing(buffer, customTemplate, true, true, "}");
 //			if(expression instanceof VariableCondition) {
 //				((VariableCondition)expression).withExpression(true);
@@ -86,6 +87,9 @@ public class ImportCondition implements ParserCondition {
 				result = expression;
 			}else if(result instanceof ChainCondition) {
 				((ChainCondition)result).with(expression);
+				if(position == buffer.position()) {
+					buffer.skip();
+				}
 			} else {
 				ChainCondition chainCondition = new ChainCondition();
 				chainCondition.with(result);

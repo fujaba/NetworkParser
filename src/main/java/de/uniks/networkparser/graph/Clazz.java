@@ -41,7 +41,6 @@ public class Clazz extends GraphEntity {
 	public static final String TYPE_PATTERNOBJECT = "pattern";
 	
 	public static final StringFilter<Clazz> NAME = new StringFilter<Clazz>(GraphMember.PROPERTY_NAME);
-	public static final String PROPERTY_PACKAGENAME = "packageName";
 	public static final String PROPERTY_FULLNAME = "fullName";
 	public static final String PROPERTY_VISIBILITY = "visibility";
 	public static final String PROPERTY_MODIFIERS = "modifiers";

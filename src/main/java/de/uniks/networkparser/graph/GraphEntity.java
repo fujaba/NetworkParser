@@ -24,6 +24,7 @@ import de.uniks.networkparser.graph.util.AssociationSet;
 import de.uniks.networkparser.interfaces.Condition;
 
 public abstract class GraphEntity extends GraphMember {
+	public static final String PROPERTY_PACKAGENAME = "packageName";
 	private boolean external;
 	private String id;
 

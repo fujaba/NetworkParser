@@ -28,6 +28,7 @@ import de.uniks.networkparser.graph.Attribute;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.Feature;
 import de.uniks.networkparser.graph.FeatureProperty;
+import de.uniks.networkparser.graph.GraphEntity;
 import de.uniks.networkparser.graph.GraphMember;
 import de.uniks.networkparser.graph.Method;
 import de.uniks.networkparser.graph.util.AssociationSet;
@@ -131,15 +132,34 @@ public abstract class BasicGenerator {
 
 	}
 
-	public TemplateResultFile createResultFile(Clazz clazz, boolean isStandard) {
+	public TemplateResultFile createResultFile(GraphEntity clazz, boolean isStandard) {
 		TemplateResultFile templateResult = new TemplateResultFile(clazz, isStandard);
 		templateResult.withExtension(this.extension);
+		String fileName = this.getFileName();
+		if(fileName != null) {
+			templateResult.withName(fileName);
+		}
 		templateResult.withPath(this.path);
 		templateResult.withPostfix(this.postfix);
 		return templateResult;
 	}
 
+	public String getFileName() {
+		return null;
+	}
+	
+	public TemplateResultFile executeEntity(GraphEntity model, LocalisationInterface parameters, boolean isStandard) {
+		if(model == null || model.getClass() == getTyp() == false) {
+			return null;
+		}
+		TemplateResultFile templateResult = createResultFile(model, isStandard);
+		return templateResult;
+	}
+	
 	public TemplateResultFile executeClazz(Clazz clazz, LocalisationInterface parameters, boolean isStandard) {
+		if(clazz == null || clazz.getClass() == getTyp() == false) {
+			return null;
+		}
 		TemplateResultFile templateResult = createResultFile(clazz, isStandard);
 		if(parameters instanceof SendableEntityCreator) {
 			templateResult.setParent((SendableEntityCreator)parameters);

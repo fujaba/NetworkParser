@@ -33,6 +33,7 @@ permissions and limitations under the Licence.
 
 public abstract class GraphModel extends GraphEntity implements BaseItem {
 	public static final String DEFAULTPACKAGE2 = "i.love.networkparser";
+	public static final String PROPERTY_CLAZZ = "clazz";
 	private String defaultAuthorName;
 	protected String genPath;
 
@@ -66,6 +67,17 @@ public abstract class GraphModel extends GraphEntity implements BaseItem {
 			}
 		}
 		return collection;
+	}
+	
+	@Override
+	public Object getValue(String attribute) {
+		if(PROPERTY_CLAZZ.equalsIgnoreCase(attribute)) {
+			return getClazzes();
+		}
+		if(PROPERTY_PACKAGENAME.equalsIgnoreCase(attribute)) {
+			return this.getName(false);
+		}
+		return super.getValue(attribute);
 	}
 
 	protected boolean clearAddOnClazzes() {

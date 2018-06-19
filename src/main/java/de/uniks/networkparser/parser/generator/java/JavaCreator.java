@@ -1,5 +1,6 @@
 package de.uniks.networkparser.parser.generator.java;
 
+import de.uniks.networkparser.IdMap;
 /*
 The MIT License
 
@@ -137,7 +138,10 @@ public class JavaCreator extends BasicGenerator {
 			    "{{#endfor}}",
 				"      return false;",
 				"   }","",
-
+				"{{#import " + IdMap.class.getName() + "}}" +
+				"    public IdMap createMap(String session) {",
+				" 	   return CreatorCreator.createIdMap(session);",
+				"    }",
 				"{{#template TEMPLATEEND}}}{{#endtemplate}}");
 
 		this.extension = "java";

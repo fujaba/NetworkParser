@@ -70,43 +70,42 @@ public class JavaClazz extends BasicGenerator {
 						"   }","",
 
 						"   public boolean removePropertyChangeListener(PropertyChangeListener listener)",
-					 	"   {",
-					 	"      if (listeners != null) {",
-					 	"         listeners.removePropertyChangeListener(listener);",
-					 	"      }",
-					 	"      listeners.removePropertyChangeListener(listener);",
-					 	"      return true;",
-					 	"   }","",
-					
-					 	"   public boolean removePropertyChangeListener(String propertyName,PropertyChangeListener listener)",
-					 	"   {",
-					 	"      if (listeners != null) {",
-					 	"         listeners.removePropertyChangeListener(propertyName, listener);",
-					 	"      }",
-					 	"      return true;",
-					 	"   }",""+
-					 	"{{#endif}}"+
-					
-					 	"{{#if {{type}}==enum}}",
-					 		"{{#FOREACH {{literal}}},}"+
-				 				"{{item.name}}"+
-					 			    "{{#IF {{item.value.size}}==>0}}("+
-					 				"{{#FOREACH {{item.value}}}}"+
-					 				   "{{#IF {{itemPos}}==>0}},{{#ENDIF}}"+
-					 				   "{{item}}"+
-					 				"{{#ENDFOR}}"+
-					 			    "){{#ENDIF}}"+
-					 		"{{#ENDFOR}}"+
-					 		"{{#IF {{literal.size}}==>0}};{{#ENDIF}}",
-					 		"{{name}}("+
-					 				"{{#FOREACH {{attribute}}}}"+
-					 				  "{{item.type}} {{item.name}}"+
-					 				"{{#ENDFOR}}"+
-					 				"){"+
-					 		"}"+
-					 	"{{#ENDIF}}",
-					 						
-					 	"{{#template TEMPLATEEND}}}{{#endtemplate}}"
+						"   {",
+						"      if (listeners != null) {",
+						"         listeners.removePropertyChangeListener(listener);",
+						"      }",
+						"      listeners.removePropertyChangeListener(listener);",
+						"      return true;",
+						"   }","",
+
+						"   public boolean removePropertyChangeListener(String propertyName,PropertyChangeListener listener)",
+						"   {",
+						"      if (listeners != null) {",
+						"         listeners.removePropertyChangeListener(propertyName, listener);",
+						"      }",
+						"      return true;",
+						"   }",""+
+						"{{#endif}}"+
+
+						"{{#if {{type}}==enum}}",
+							"{{#FOREACH {{literal}}},}"+
+								"{{item.name}}"+
+								    "{{#IF {{item.value.size}}==>0}}("+
+									"{{#FOREACH {{item.value}}}}"+
+									   "{{#IF {{itemPos}}==>0}},{{#ENDIF}}"+
+									   "{{item}}"+
+									"{{#ENDFOR}}"+
+								    "){{#ENDIF}}"+
+							"{{#ENDFOR}}"+
+							"{{#IF {{literal.size}}==>0}};{{#ENDIF}}",
+							"{{name}}("+
+									"{{#FOREACH {{attribute}}}}"+
+									  "{{item.type}} {{item.name}}"+
+									"{{#ENDFOR}}"+
+									"){"+
+							"}"+
+						"{{#ENDIF}}",
+						"{{#template TEMPLATEEND}}}{{#endtemplate}}"
 				);
 //		,
 //			 	"{{attributes}}" + "{{fields}}" + "{{methods}}"+

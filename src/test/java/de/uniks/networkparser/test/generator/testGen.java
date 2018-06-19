@@ -11,7 +11,7 @@ public class testGen {
 
 	@Test
 	public void testModel() {
-		ClassModel model = new ClassModel("org.sdmlib.simple.model");
+		ClassModel model = new ClassModel("org.networkparser.simple.model");
 		Clazz person = model.createClazz("Person");
 		Clazz room = model.createClazz("Room");
 		person.createAttribute("name", DataType.STRING);
@@ -21,6 +21,6 @@ public class testGen {
 
 		person.withBidirectional(room, "room", Cardinality.ONE, "persons", Cardinality.MANY);
 
-//		model.generate("gen");
+		model.generate("gen");
 	}
 }
