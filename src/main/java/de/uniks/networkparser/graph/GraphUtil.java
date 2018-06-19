@@ -188,6 +188,16 @@ public class GraphUtil {
 		return (assoc.getOtherType() == AssociationTypes.ASSOCIATION
 				|| assoc.getOtherType() == AssociationTypes.UNDIRECTIONAL) && assoc.getType() == AssociationTypes.EDGE;
 	}
+	
+	public static final boolean isAssociation(Association assoc) {
+		if(assoc == null || assoc.getOther() == null) {
+			return false;
+		}
+		if(isUndirectional(assoc)) {
+			return true;
+		}
+		return (assoc.getType() == AssociationTypes.ASSOCIATION && assoc.getOther().getType() == AssociationTypes.ASSOCIATION);
+	}
 
 	public static final boolean isInterfaceAssociation(Association assoc) {
 		if (assoc == null) {
