@@ -1,10 +1,12 @@
 package de.uniks.networkparser.test;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.ext.ClassModel;
 import de.uniks.networkparser.ext.story.Story;
+import de.uniks.networkparser.ext.story.StoryBook;
 import de.uniks.networkparser.ext.story.StoryStepJUnit;
 import de.uniks.networkparser.ext.story.StoryUtil;
 
@@ -53,20 +55,26 @@ public class StoryTest {
 
 	@Test
 	public void testStoryBook() {
-		Story story = new Story();
+		StoryBook book = new StoryBook();
+		
+		
+		Story story = book.createStory("Main");
 		story.withName("story/kk.html");
 		story.addText("MainText");
-		Story halloWelt = new Story().withName("HalloWelt");
-		story.with(halloWelt);
-		Story ludo = new Story().withName("Ludo");
-		story.with(ludo);
 
-		Story startGame = new Story().withName("StartGame");
-		ludo.with(startGame);
-		Story winGame = new Story().withName("WinGame");
-		ludo.with(winGame);
+		Story halloWelt = book.createStory("HalloWelt");
+		Assert.assertNotNull(halloWelt);
 
-		story.dumpIndexHTML();
+		Story ludo = book.createStory("Ludo");
+		Assert.assertNotNull(ludo);
+
+		Story startGame = book.createStory("StartGame");
+		Assert.assertNotNull(startGame);
+
+		Story winGame  = book.createStory("WinGame");
+		Assert.assertNotNull(winGame);
+
+		book.dumpIndexHTML();
 	}
 
 }

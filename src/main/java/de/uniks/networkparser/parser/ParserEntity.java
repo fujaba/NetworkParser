@@ -174,6 +174,26 @@ public class ParserEntity {
 		return false;
 	}
 
+	public boolean skip(String string, boolean skipCRLF, CharacterBuffer body) {
+		if (currentTokenEquals(string)) {
+			if(skipCRLF) {
+				body.add(currentToken.originalText);
+				nextToken();
+				while (currentToken.kind == NEW_LINE) {
+					body.add(currentToken.originalText);
+					nextToken();
+				}
+				return true;
+			}
+			body.add(currentToken.originalText);
+			nextToken();
+			return true;
+		} else {
+			error(string);
+		}
+		return false;
+	}
+	
 	public boolean skip(String string, boolean skipCRLF) {
 		if (currentTokenEquals(string)) {
 			if(skipCRLF) {
@@ -208,7 +228,8 @@ public class ParserEntity {
 
 		lookAheadToken = tmp;
 		lookAheadToken.kind = EOF;
-		lookAheadToken.text.delete(0, lookAheadToken.text.length());
+		lookAheadToken.clear();
+//		delete(0, lookAheadToken.text.length());
 
 		char state = 'i';
 
@@ -218,7 +239,7 @@ public class ParserEntity {
 				if (Character.isLetter(currentChar) || (currentChar == '_')) {
 					state = 'v';
 					lookAheadToken.kind = 'v';
-					lookAheadToken.text.append(currentChar);
+					lookAheadToken.addText(currentChar);
 					lookAheadToken.startPos = index;
 				} else if (currentChar == EOF) {
 					lookAheadToken.kind = EOF;
@@ -228,16 +249,16 @@ public class ParserEntity {
 				} else if (Character.isDigit(currentChar)) {
 					state = '9';
 					lookAheadToken.kind = '9';
-					lookAheadToken.text.append(currentChar);
+					lookAheadToken.addText(currentChar);
 					// lookAheadToken.value = currentChar - '0';
 					lookAheadToken.startPos = index;
 				} else if (currentChar == '/' && (lookAheadChar == '*' || lookAheadChar == '/')) {
 					// start of comment
 					lookAheadToken.kind = COMMENT_START;
 					lookAheadToken.startPos = index;
-					lookAheadToken.text.append(currentChar);
+					lookAheadToken.addText(currentChar);
 					nextChar();
-					lookAheadToken.text.append(currentChar);
+					lookAheadToken.addText(currentChar);
 					lookAheadToken.endPos = index;
 					nextChar();
 					return;
@@ -245,24 +266,24 @@ public class ParserEntity {
 					// start of comment
 					lookAheadToken.kind = LONG_COMMENT_END;
 					lookAheadToken.startPos = index;
-					lookAheadToken.text.append(currentChar);
+					lookAheadToken.addText(currentChar);
 					nextChar();
-					lookAheadToken.text.append(currentChar);
+					lookAheadToken.addText(currentChar);
 					lookAheadToken.endPos = index;
 					nextChar();
 					return;
 				} else if ("+-*/\\\"'~=()><{}!.,@[]&|?;:#".indexOf(currentChar) >= 0) {
 					lookAheadToken.kind = currentChar;
-					lookAheadToken.text.append(currentChar);
+					lookAheadToken.addText(currentChar);
 					lookAheadToken.startPos = index;
 					lookAheadToken.endPos = index;
 					nextChar();
 					return;
 				} else if (currentChar == '\r') {
 					lookAheadToken.startPos = index;
-					lookAheadToken.text.append(currentChar);
+					lookAheadToken.addText(currentChar);
 					nextChar();
-					lookAheadToken.text.append(currentChar);
+					lookAheadToken.addText(currentChar);
 					lookAheadToken.kind = NEW_LINE;
 					lookAheadToken.endPos = index;
 					nextChar();
@@ -271,17 +292,18 @@ public class ParserEntity {
 					lookAheadToken.kind = NEW_LINE;
 					lookAheadToken.startPos = index;
 					lookAheadToken.endPos = index;
-					lookAheadToken.text.append(currentChar);
+					lookAheadToken.addText(currentChar);
 					nextChar();
 					return;
 				} else if (Character.isWhitespace(currentChar)) {
+					lookAheadToken.addText(currentChar);
 				}
 
 				break;
 
 			case '9':
 				if (Character.isDigit(currentChar)) {
-					lookAheadToken.text.append(currentChar);
+					lookAheadToken.addText(currentChar);
 					// lookAheadToken.value = lookAheadToken.value * 10 + (currentChar - '0');
 				} else if (currentChar == '.') {
 					state = '8';
@@ -301,7 +323,7 @@ public class ParserEntity {
 			case 'v':
 				if (Character.isLetter(currentChar) || Character.isDigit(currentChar) || currentChar == '_') {
 					// keep reading
-					lookAheadToken.text.append(currentChar);
+					lookAheadToken.addText(currentChar);
 				} else {
 					lookAheadToken.endPos = index - 1;
 					return; // <==== sudden death
@@ -700,7 +722,7 @@ public class ParserEntity {
 				skipTo('{');
 			}
 			code.withStartBody(currentToken.startPos);
-			parseBlock();
+			parseBlock(new CharacterBuffer());
 
 			String constructorSignature = SymTabEntry.TYPE_CONSTRUCTOR + ":" + file.getName() + params;
 			SymTabEntry nextEntity = startNextSymTab(SymTabEntry.TYPE_CONSTRUCTOR, file.getName() + params);
@@ -766,14 +788,17 @@ public class ParserEntity {
 					throwsTags = code.subString(temp, currentToken.startPos).toString();
 				}
 
-				code.withStartBody(currentToken.startPos);
+				code.withStartBody(previousToken.startPos);
 
+				CharacterBuffer body = new CharacterBuffer();
 				if (currentKindEquals('{')) {
-					parseBlock();
+					skip("{", true, body);
+					parseBlock(body);
+				} else {
+					if (currentKindEquals(';')) {
+						skip(';', true);
+					}
 				}
-
-				else if (currentKindEquals(';'))
-					skip(';', true);
 
 				String methodSignature = SymTabEntry.TYPE_METHOD + ":" + memberName + params;
 
@@ -781,6 +806,7 @@ public class ParserEntity {
 				nextEntity.withThrowsTags(throwsTags);
 				nextEntity.withDataType(type);
 				nextEntity.withParams(params);
+				nextEntity.withBody(body.toString());
 				nextEntity.withPosition(startPos, previousToken.startPos);
 				nextEntity.withModifiers(modifiers).withBodyStartPos(code.getBodyStart());
 				nextEntity.withAnnotations(annotations);
@@ -812,19 +838,20 @@ public class ParserEntity {
 		}
 	}
 
-	private void parseBlock() {
+	private void parseBlock(CharacterBuffer body) {
 		// { stat ... }
-		skip("{", true);
 
-		while (!currentKindEquals(EOF) && !currentKindEquals('}')) {
+		while (currentKindEquals(EOF) == false && currentKindEquals('}') == false) {
 			if (currentKindEquals('{')) {
-				parseBlock();
+				skip("{", true, body);
+				parseBlock(body);
 			} else {
+				body.add(currentToken.originalText);
 				nextToken();
 			}
 		}
 
-		skip("}", true);
+		skip("}", true, body);
 	}
 
 	private String parseFormalParamList() {
@@ -931,7 +958,7 @@ public class ParserEntity {
 		// ... { ;;; } ;
 		while (!currentKindEquals(EOF) && !currentKindEquals(';')) {
 			if (currentKindEquals('{')) {
-				parseBlock();
+				parseBlock(new CharacterBuffer());
 			} else {
 				nextToken();
 			}

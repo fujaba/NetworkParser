@@ -25,11 +25,13 @@ THE SOFTWARE.
 */
 import java.util.List;
 import java.util.Map;
+
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.NetworkParserLog;
 import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.SimpleObject;
+import de.uniks.networkparser.ext.io.FileBuffer;
 import de.uniks.networkparser.ext.javafx.GUIEvent;
 import de.uniks.networkparser.gui.controls.Control;
 import de.uniks.networkparser.interfaces.BaseItem;
@@ -112,14 +114,15 @@ public abstract class JavaBridge implements ObjectCondition {
 		entity.withScript(script, null);
 
 		if (CONTENT_TYPE_EXCLUDE.equals(type)) {
-			entity.withHeader("./res/diagram.js");
-			entity.withHeader("./res/material.css");
-			entity.withHeader("./res/style.css");
+			entity.withHeader("diagram.js");
+			entity.withHeader("material.css");
+			entity.withHeader("style.css");
 		}
 		else {
-			entity.withScript(readFile("./res/diagram.js"), entity.getHeader());
-			entity.withHeaderStyle(readFile("./res/material.css"));
-			entity.withHeaderStyle(readFile("./res/style.css"));
+			
+			entity.withScript(FileBuffer.readResource("graph/diagram.js"), entity.getHeader());
+			entity.withHeaderStyle(FileBuffer.readResource("graph/material.css"));
+			entity.withHeaderStyle(FileBuffer.readResource("graph/style.css"));
 
 		}
 		return entity;

@@ -64,7 +64,7 @@ public class JacocoColumn implements JacocoColumnListener {
 	}
 
 	public String getType(Object element) {
-		Object call = ReflectionLoader.call(element, "getElementType");
+		Object call = ReflectionLoader.calling(element, "getElementType", false, null);
 		if(call != null) {
 			return call.toString();
 		}
@@ -72,7 +72,7 @@ public class JacocoColumn implements JacocoColumnListener {
 	}
 
 	public String getName(Object element) {
-		Object call = ReflectionLoader.call(element, "getName");
+		Object call = ReflectionLoader.calling(element, "getName", false, null);
 		if(call instanceof String) {
 			return (String) call;
 		}
@@ -109,7 +109,7 @@ public class JacocoColumn implements JacocoColumnListener {
 	}
 
 	public void setText(Object item, String text) {
-		ReflectionLoader.call(item, "text", text);
+		ReflectionLoader.calling(item, "text", false, null, text);
 	}
 
 	private String getSearch(Object node) {
@@ -154,7 +154,7 @@ public class JacocoColumn implements JacocoColumnListener {
 
 //	public void item(HTMLElement td, ITableItem item, Resources resources, ReportOutputFolder base) throws IOException {
 	public void item(Object td, Object item, Object resources, Object base) {
-		Object node = ReflectionLoader.call(item, "getNode");
+		Object node = ReflectionLoader.calling(item, "getNode", false, null);
 		String type = getType(node);
 		String search;
 		if(SOURCEFILE.equalsIgnoreCase(type)) {

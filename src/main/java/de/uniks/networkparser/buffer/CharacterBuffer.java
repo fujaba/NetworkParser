@@ -26,12 +26,13 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 import de.uniks.networkparser.interfaces.BaseItem;
+import de.uniks.networkparser.interfaces.Converter;
 /**
  * Buffer of String for alternative for StringBuffer.
  *
  */
 
-public class CharacterBuffer extends BufferedBuffer implements CharSequence {
+public class CharacterBuffer extends BufferedBuffer implements CharSequence, BaseItem {
 	/** The value is used for character storage. */
 	char[] buffer;
 
@@ -1227,7 +1228,17 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence {
 	}
 
 	@Override
-	public CharacterBuffer newInstance() {
+	public CharacterBuffer getNewList(boolean keyValue) {
 		return new CharacterBuffer();
+	}
+
+	@Override
+	public int size() {
+		return length();
+	}
+	
+	@Override
+	public String toString(Converter converter) {
+		return toString();
 	}
 }

@@ -79,7 +79,7 @@ public class HTMLGrammar extends SimpleGrammar{
 	}
 
 	@Override
-	public Entity writeBasicValue(Entity entity, String className, String id, IdMap map) {
+	public Entity writeBasicValue(Entity entity, String className, String id, String type, IdMap map) {
 		CharacterBuffer value = new CharacterBuffer().with(className);
 		if(transformValue(value, 0, true) && entity != null) {
 //			if(value.charAt(0) == IdMap.ENTITYSPLITTER) {
@@ -100,9 +100,9 @@ public class HTMLGrammar extends SimpleGrammar{
 			}
 			entity.add(item);
 			entity = item;
-			super.writeBasicValue(item, prop, id, map);
+			super.writeBasicValue(item, prop, id, type, map);
 		}else {
-			super.writeBasicValue(entity, className, id, map);
+			super.writeBasicValue(entity, className, id, type, map);
 		}
 		return entity;
 	}

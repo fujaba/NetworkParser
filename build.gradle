@@ -22,6 +22,18 @@ test {
 			testImplementation group: 'org.xerial', name: 'sqlite-jdbc', version: '[3,)'
 		}
 	}
+	//we want display the following test events
+    testLogging {
+        events "FAILED", "SKIPPED"
+		exceptionFormat "short"
+		showStackTraces	true
+		showStandardStreams true
+		showCauses true
+    }
+	reports.junitXml {
+		enabled true
+		destination new File("${buildDir}/reports/")
+	}
 }
 buildscript {
 	repositories {
@@ -53,6 +65,9 @@ def copyFile(String source, String dest) {
 	InputStream is = null;
 	OutputStream os = null;
 	try {
+		if(new File(source).exists() == false) {
+			return;
+		}
 		is = new FileInputStream(new File(source));
 		os = new FileOutputStream(new File(dest));
 		byte[] buffer = new byte[1024];
@@ -61,8 +76,12 @@ def copyFile(String source, String dest) {
 			os.write(buffer, 0, length);
 		}
 	} finally {
-		is.close();
-		os.close();
+		if(is != null) {
+			is.close();
+		}
+		if(os != null) {
+			os.close();
+		}
 	}
 }
 def unzip(String src, String dest) {
@@ -123,7 +142,7 @@ if(JavaVersion.current() != JavaVersion.VERSION_1_8){
 	println "JavaVersion:" + JavaVersion.current() + " (1.8)"
 	sourceCompatibility = 1.8
 	targetCompatibility = 1.8
-	apply plugin: 'findbugs'
+//	apply plugin: 'findbugs'
 }
 
 apply plugin: 'checkstyle'
@@ -145,15 +164,6 @@ artifacts {
 	archives buildCoreJar16, buildCoreJar17, buildCoreJar18, buildCoreJar19, buildSourceJar, buildSourceJar18, buildMinCoreJar, buildJavadoc
 }
 
-test {
-	testLogging {
-		events "failed"
-		exceptionFormat "short"
-		showStackTraces	true
-		showStandardStreams true
-		showCauses true
-	}
-}
 task wrapper(type: Wrapper) {
 		gradleVersion = '4.7-rc-1'
 }
@@ -167,7 +177,7 @@ jacocoTestReport {
 		xml {
 			enabled = true
 			//Following value is a file
-			//destination = new File("${buildDir}/jacoco/jacoco.xml")
+			destination = new File("${buildDir}/test-results/jacoco.xml")
 			//build/reports/jacoco/test/jacocoTestReport.xml
 		}
 		csv{
@@ -221,9 +231,9 @@ tasks.withType(FindBugs) {
 
 //NODE
 node {
-	version = '0.12.2'
-	npmVersion = '2.7.5'
-	download = false
+	version = '10.3.0'
+	npmVersion = '6.1.0'
+	download = true
 }
 task npmCacheConfig(type: NpmTask) {
 	description = "Configure the NPM cache"

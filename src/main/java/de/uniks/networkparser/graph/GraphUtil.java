@@ -1,5 +1,6 @@
 package de.uniks.networkparser.graph;
 
+import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SimpleSet;
@@ -31,6 +32,43 @@ permissions and limitations under the Licence.
  * @author Stefan Lindel
  */
 public class GraphUtil {
+	public static double compareName(String source, String other) {
+		int counter = 0;
+		int caseDiff = 0;
+		double score = 0;
+		char sourceChar;
+		char otherChar;
+		while (counter < source.length() && counter < other.length()) {
+			sourceChar = source.charAt(counter);
+			otherChar = other.charAt(counter);
+			if (sourceChar != otherChar) {
+				if (Math.abs(sourceChar - otherChar) != 32) {
+					score += 1;
+				} else if (caseDiff < 100) {
+					score += 0.01;
+					caseDiff++;
+				}
+			}
+			counter++;
+		}
+		score += Math.abs(source.length() - other.length());
+		return score;
+	}
+	
+	public static double compareType(String sourceType, String otherType) {
+		if (EntityUtil.isNumericType(sourceType) && EntityUtil.isNumericType(otherType)) {
+			return 0;
+		}
+		if (EntityUtil.isPrimitiveType(sourceType) && EntityUtil.isPrimitiveType(otherType)) {
+			return 0;
+		}
+		if (sourceType.equals(otherType)) {
+			return 0;
+		}
+		return -1;
+	}
+	
+	
 	public static final String getPackage(Class<?> classObj) {
 		if (classObj != null) {
 			return getPackage(classObj.getName());
@@ -149,6 +187,16 @@ public class GraphUtil {
 		}
 		return (assoc.getOtherType() == AssociationTypes.ASSOCIATION
 				|| assoc.getOtherType() == AssociationTypes.UNDIRECTIONAL) && assoc.getType() == AssociationTypes.EDGE;
+	}
+	
+	public static final boolean isAssociation(Association assoc) {
+		if(assoc == null || assoc.getOther() == null) {
+			return false;
+		}
+		if(isUndirectional(assoc)) {
+			return true;
+		}
+		return (assoc.getType() == AssociationTypes.ASSOCIATION && assoc.getOther().getType() == AssociationTypes.ASSOCIATION);
 	}
 
 	public static final boolean isInterfaceAssociation(Association assoc) {

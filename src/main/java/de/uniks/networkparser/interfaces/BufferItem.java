@@ -30,7 +30,7 @@ public interface BufferItem {
 	public static final char SPACE=' ';
 	public static final char QUOTES ='"';
 	/** @return the length of the buffer */
-	public abstract int length();
+	public int length();
 
 	/** @return The next Char */
 	public abstract char getChar();

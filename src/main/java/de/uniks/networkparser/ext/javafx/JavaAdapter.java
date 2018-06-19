@@ -45,7 +45,7 @@ import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.xml.HTMLEntity;
 import de.uniks.networkparser.xml.XMLEntity;
 
-public class JavaAdapter implements JavaViewAdapter {
+public class JavaAdapter implements JavaViewAdapter, Runnable {
 	private SimpleKeyValueList<Object, String> callBack = new SimpleKeyValueList<Object, String>();
 	protected JavaBridge owner;
 	protected Object webView;
@@ -56,6 +56,7 @@ public class JavaAdapter implements JavaViewAdapter {
 	public static final String TYPE_EXPORTALL="EXPORTALL";
 	public static final String TYPE_CONTENT="CONTENT";
 	protected String type = TYPE_EXPORT;
+	private HTMLEntity entity;
 
 	public JavaAdapter withOwner(JavaBridge owner) {
 		this.owner = owner;
@@ -112,26 +113,45 @@ public class JavaAdapter implements JavaViewAdapter {
 				}
 			}
 		}
+		Object engine = getWebEngine();
+		if(engine == null) {
+			this.entity = entity;
+			try {
+				ReflectionLoader.call(ReflectionLoader.PLATFORM, "startup", Runnable.class, this);
+			}catch (Exception e) {
+				JavaAdapter.execute(this);
+			}
+			return true;
+		}
 		registerListener(this);
 		// Load Real Content
 		ReflectionLoader.call(this.webEngine, "loadContent", String.class, entity.toString());
 		return true;
 	}
 
+	@Override
+	public void run() {
+		registerListener(this);
+		// Load Real Content
+		ReflectionLoader.call(this.webEngine, "loadContent", String.class, entity.toString());
+	}
+
 	public boolean registerListener(ObjectCondition listener) {
-
-		Object stateProperty = ReflectionLoader.callChain(this.webEngine, "getLoadWorker", "stateProperty");
-		GUIEvent eventListener = new GUIEvent().withListener(listener);
-
-		Object proxy = ReflectionLoader.createProxy(eventListener, ReflectionLoader.CHANGELISTENER, ReflectionLoader.EVENTHANDLER);
-		ReflectionLoader.call(stateProperty, "addListener", ReflectionLoader.CHANGELISTENER, proxy);
-		ReflectionLoader.call(webEngine, "setOnError", ReflectionLoader.EVENTHANDLER, proxy);
-		ReflectionLoader.call(webEngine, "setOnAlert", ReflectionLoader.EVENTHANDLER, proxy);
-
-		ReflectionLoader.call(webView, "setOnDragExited", ReflectionLoader.EVENTHANDLER, proxy);
-		ReflectionLoader.call(webView, "setOnDragOver", ReflectionLoader.EVENTHANDLER, proxy);
-		ReflectionLoader.call(webView, "setOnDragDropped", ReflectionLoader.EVENTHANDLER, proxy);
-		ReflectionLoader.call(webView, "setOnDragDone", ReflectionLoader.EVENTHANDLER, proxy);
+		Object engine = getWebEngine();
+		if(engine != null) {
+			Object stateProperty = ReflectionLoader.callChain(this.webEngine, "getLoadWorker", "stateProperty");
+			GUIEvent eventListener = new GUIEvent().withListener(listener);
+			
+			Object proxy = ReflectionLoader.createProxy(eventListener, ReflectionLoader.CHANGELISTENER, ReflectionLoader.EVENTHANDLER);
+			ReflectionLoader.call(stateProperty, "addListener", ReflectionLoader.CHANGELISTENER, proxy);
+			ReflectionLoader.call(webEngine, "setOnError", ReflectionLoader.EVENTHANDLER, proxy);
+			ReflectionLoader.call(webEngine, "setOnAlert", ReflectionLoader.EVENTHANDLER, proxy);
+			
+			ReflectionLoader.call(webView, "setOnDragExited", ReflectionLoader.EVENTHANDLER, proxy);
+			ReflectionLoader.call(webView, "setOnDragOver", ReflectionLoader.EVENTHANDLER, proxy);
+			ReflectionLoader.call(webView, "setOnDragDropped", ReflectionLoader.EVENTHANDLER, proxy);
+			ReflectionLoader.call(webView, "setOnDragDone", ReflectionLoader.EVENTHANDLER, proxy);
+		}
 		return true;
 	}
 
@@ -209,6 +229,10 @@ public class JavaAdapter implements JavaViewAdapter {
 			// Must be cached
 			this.queue.add(script);
 		}
+		if(isFXThread() == false) {
+			JavaAdapter.execute(new JSEditor(this).withScript(script));
+			return null;
+		}
 		return _execute(script, true);
 	}
 
@@ -251,6 +275,11 @@ public class JavaAdapter implements JavaViewAdapter {
 		JsonObjectLazy result = new JsonObjectLazy(element);
 		result.lazyLoad();
 		return result;
+	}
+	
+	public boolean isFXThread() {
+		Object result = ReflectionLoader.call(ReflectionLoader.PLATFORM, "isFxApplicationThread"); 
+		return Boolean.TRUE.equals(result);
 	}
 
 	@Override
@@ -329,7 +358,7 @@ public class JavaAdapter implements JavaViewAdapter {
 	
 	
 	public static void execute(final Runnable runnable) {
-		ReflectionLoader.call(ReflectionLoader.PLATFORM, "runLater", Runnable.class, runnable);
+		ReflectionLoader.call(ReflectionLoader.PLATFORM, "startup", Runnable.class, runnable);
 	}
 	public static void executeAndWait(final Runnable runnable) {
 		if(runnable == null) {
@@ -365,19 +394,18 @@ public class JavaAdapter implements JavaViewAdapter {
 		String firebugLite="http://getfirebug.com/releases/lite/1.2/firebug-lite-compressed.js";
 		String script = "if (!document.getElementById('FirebugLite')) {var E = document['createElementNS'] && document.documentElement.namespaceURI;E = E ? document.createElementNS(E, 'script') : document.createElement('script');E.setAttribute('id', 'FirebugLite');E.setAttribute('src', '"+firebugLite+"');E.setAttribute('FirebugLite', '4');(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(E);}";
 		String script2 = "console.log = function(message) { java.log(message); }"; // Now where ever console.log is called in your html you will get a log in Java console
-		if(this.webEngine == null) {
-			Object result = ReflectionLoader.call(ReflectionLoader.PLATFORM, "isFxApplicationThread"); 
-			if(Boolean.TRUE.equals(result) == false){
-				JSEditor editor = new JSEditor(this).withScript(script);
-				JavaAdapter.execute(editor);
-				
-				editor = new JSEditor(this).withScript(script2);
-				JavaAdapter.execute(editor);
-				return;
-			}
+		Object result = ReflectionLoader.call(ReflectionLoader.PLATFORM, "isFxApplicationThread"); 
+		if(this.webEngine == null || Boolean.TRUE.equals(result) == false) {
+			JSEditor editor = new JSEditor(this).withScript(script);
+			JavaAdapter.execute(editor);
+			
+			editor = new JSEditor(this).withScript(script2);
+			JavaAdapter.execute(editor);
+			return;
 		}
 		executeScript(script);
 		executeScript(script2);
 	}
 
 }
+

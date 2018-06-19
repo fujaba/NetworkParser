@@ -924,6 +924,19 @@ public class JsonTest extends IOClasses {
 //		System.out.println(updateAccumulate.getChange());
 		Assert.assertEquals("{\"class\":\"de.uniks.networkparser.test.model.Person\",\"id\":\"P1\",\"upd\":{\"name\":\"Albert\",\"balance\":42},\"rem\":{\"balance\":0}}", updateAccumulate.getChange().toString());
 	}
+	
+	@Test
+	public void test() {
+		JsonObject jsonObject = new JsonObject();
+		jsonObject.with("id", 42);
+		jsonObject.with("value", "[{id:23},{id:32}]");
+		jsonObject.with("description", "Hallo Welt");
+		JsonArray jsonArray = jsonObject.getJsonArray("value");
+		Assert.assertEquals(2, jsonArray.size());
+		jsonArray = jsonObject.getJsonArray("description");
+		Assert.assertEquals(1, jsonArray.size());
+		Assert.assertEquals("Hallo Welt", jsonArray.first());
+	}
 
 //	@Test
 //	public void testErrorHandler() {

@@ -35,6 +35,6 @@ public class HJsonTest {
 		Assert.assertEquals(json.get("prename").toString(), "Albert");
 		Assert.assertEquals(json.get("lastname"), "Zuendorf");
 		Assert.assertEquals(json.size(), 3);
-		Assert.assertEquals("{\"id\":42,\"prename\":\"Albert\",\"lastname\":\"Zuendorf\"}", json.toString());
+		Assert.assertEquals("{\"id\":42,\"prename\":Albert,\"lastname\":\"Zuendorf\"}", json.toString());
 	}
 }

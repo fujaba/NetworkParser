@@ -1,5 +1,7 @@
 package de.uniks.networkparser.parser;
 
+import de.uniks.networkparser.buffer.CharacterBuffer;
+
 /*
 NetworkParser
 The MIT License
@@ -30,7 +32,8 @@ public class Token {
 	public int startPos;
 	public int endPos;
 
-	public StringBuilder text = new StringBuilder();
+	public CharacterBuffer text = new CharacterBuffer();
+	public CharacterBuffer originalText = new CharacterBuffer();
 
 	public int preCommentStartPos;
 	public int preCommentEndPos;
@@ -45,6 +48,18 @@ public class Token {
 	@Override
 	public String toString() {
 		return kind + " " + name();
-
+	}
+	
+	public Token addText(char value) {
+		if(Character.isWhitespace(value) == false) {
+			text.with(value);
+		}
+		originalText.with(value);
+		return this;
+	}
+	
+	public void clear() {
+		this.text.clear();
+		this.originalText.clear();
 	}
 }

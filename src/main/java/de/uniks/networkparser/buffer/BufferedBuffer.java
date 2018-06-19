@@ -1,5 +1,7 @@
 package de.uniks.networkparser.buffer;
 
+import de.uniks.networkparser.interfaces.BaseItem;
+
 /*
 NetworkParser
 The MIT License
@@ -24,7 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-public abstract class BufferedBuffer extends Buffer {
+public abstract class BufferedBuffer extends Buffer implements BaseItem {
 	/** The count is the number of characters used. */
 	protected int length;
 
@@ -68,8 +70,6 @@ public abstract class BufferedBuffer extends Buffer {
 		this.length = value;
 		return this;
 	}
-	
-	public abstract BufferedBuffer newInstance();
 
 	public abstract byte byteAt(int index);
 
@@ -302,4 +302,6 @@ public abstract class BufferedBuffer extends Buffer {
 	public abstract BufferedBuffer with(char[] buffer, int i, int readed);
 
 	public abstract BufferedBuffer with(CharSequence... items);
+	
+	public abstract BufferedBuffer getNewList(boolean list);
 }

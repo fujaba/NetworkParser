@@ -43,7 +43,10 @@ import de.uniks.networkparser.ext.git.GitRevision;
 import de.uniks.networkparser.ext.io.MQTTMessage;
 import de.uniks.networkparser.ext.io.MessageSession;
 import de.uniks.networkparser.ext.io.RabbitMessage;
+import de.uniks.networkparser.ext.javafx.JavaAdapter;
+import de.uniks.networkparser.ext.javafx.JavaBridgeFX;
 import de.uniks.networkparser.ext.javafx.SimpleController;
+import de.uniks.networkparser.ext.javafx.dialog.DialogBox;
 import de.uniks.networkparser.ext.petaf.Server_TCP;
 import de.uniks.networkparser.ext.petaf.Server_Time;
 import de.uniks.networkparser.ext.petaf.Server_UPD;
@@ -136,7 +139,8 @@ public class ReflectionBlackBoxTester {
 
 		withIgnoreClazzes(Story.class, "dumpHTML", "writeFile");
 		withIgnoreClazzes(ErrorHandler.class);
-		withIgnoreClazzes(SimpleController.class, "init", "saveException", "createContent", "showContent", "withErrorPath", "start");
+		withIgnoreClazzes(SimpleController.class);
+//		withIgnoreClazzes(SimpleController.class, "create", "init", "saveException", "createContent", "showContent", "withErrorPath", "start");
 		withIgnoreClazzes(Server_TCP.class);
 		withIgnoreClazzes(Server_UPD.class);
 		withIgnoreClazzes(Server_Time.class);
@@ -152,6 +156,9 @@ public class ReflectionBlackBoxTester {
 		withIgnoreClazzes(RabbitMessage.class);
 		withIgnoreClazzes(MessageSession.class);
 		withIgnoreClazzes(GitRevision.class, "main");
+		withIgnoreClazzes(DialogBox.class);
+		withIgnoreClazzes(JavaAdapter.class);
+		withIgnoreClazzes(JavaBridgeFX.class);
 //		withIgnoreClazzes(TimerExecutor.class.getName());
 	}
 
@@ -232,11 +239,6 @@ public class ReflectionBlackBoxTester {
 
 	private void testClass(Object obj, Class<?> clazz, SimpleSet<String> ignoreMethods) {
 		for(Method m : clazz.getDeclaredMethods()) {
-			if(clazz.toString().equals("class de.uniks.networkparser.ext.javafx.dialog.DialogBox")) {
-				if("showExtern".equals(m.getName()) || "show".equals(m.getName())) {
-					System.out.println("ERROR");
-				}
-			}
 			if(m.getDeclaringClass().isInterface()) {
 				continue;
 			}

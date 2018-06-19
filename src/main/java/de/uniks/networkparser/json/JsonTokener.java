@@ -1,5 +1,6 @@
 package de.uniks.networkparser.json;
 
+import java.util.Collection;
 /*
 NetworkParser
 The MIT License
@@ -128,8 +129,7 @@ public class JsonTokener extends Tokener {
 		String key;
 		if (nextClean(true) != JsonObject.START) {
 			if (isError(this, "parseToEntity", NetworkParserLog.ERROR_TYP_PARSING, entity)) {
-				throw new RuntimeException(
-						"A JsonObject text must begin with '{' \n" + buffer);
+				throw new RuntimeException("A JsonObject text must begin with '{' \n" + buffer);
 			}
 		}
 		skip();
@@ -141,8 +141,7 @@ public class JsonTokener extends Tokener {
 			switch (c) {
 			case 0:
 				if (isError(this, "parseToEntity", NetworkParserLog.ERROR_TYP_PARSING, entity)) {
-					throw new RuntimeException(
-							"A JsonObject text must end with '}'");
+					throw new RuntimeException("A JsonObject text must end with '}'");
 				}
 				return false;
 			case '\\':
@@ -299,6 +298,7 @@ public class JsonTokener extends Tokener {
 		if (typeInfo != null) {
 			Object result = null;
 			if(kid == false) {
+				map.withStrategy(jsonObject.getString(IdMap.TYPE));
 				result = map.getTarget();
 			}
 			if (grammar.hasValue(jsonObject, IdMap.ID) && result == null) {
@@ -374,10 +374,35 @@ public class JsonTokener extends Tokener {
 			}
 			String[] properties = creator.getProperties();
 			if (properties != null) {
-				for (String property : properties) {
-					if(jsonProp.has(property)) {
-						Object obj = jsonProp.get(property);
-						parseValue(target, property, obj, creator, map);
+				if(map.isStrategyNew()) {
+					Object prototype = creator.getSendableInstance(true);
+					for (String property : properties) {
+						if(jsonProp.has(property)) {
+							Object obj = jsonProp.get(property);
+							parseValue(target, property, obj, creator, map);
+						} else {
+							Object defaultValue = creator.getValue(prototype, property);
+							if(defaultValue instanceof Collection<?>) {
+								defaultValue = creator.getValue(target, property);
+								if(defaultValue instanceof Collection<?>) {
+									Object[] elements = ((Collection<?>) defaultValue).toArray();
+									for(int i=0;i<elements.length;i++) {
+										creator.setValue(target, property, elements[i], SendableEntityCreator.REMOVE);
+									}
+								} else {
+									creator.setValue(target, property, null, SendableEntityCreator.NEW);
+								}
+							} else {
+								parseValue(target, property, defaultValue, creator, map);
+							}
+						}
+					}
+				} else {
+					for (String property : properties) {
+						if(jsonProp.has(property)) {
+							Object obj = jsonProp.get(property);
+							parseValue(target, property, obj, creator, map);
+						}
 					}
 				}
 			}
@@ -393,9 +418,9 @@ public class JsonTokener extends Tokener {
 	 * @param creator		the creator
 	 * @param map			the MapEntity Runtime Infos
 	 */
-	private void parseValue(Object target, String property, Object value, SendableEntityCreator creator,
-			MapEntity map) {
-		if (value == null) {
+	private void parseValue(Object target, String property, Object value, SendableEntityCreator creator, MapEntity map) {
+		//FIXME IF STATGEGY IS UPDATE SET NEW VALUE
+		if (value == null && map.isStrategyNew() == false) {
 			return;
 		}
 		Filter filter = map.getFilter();

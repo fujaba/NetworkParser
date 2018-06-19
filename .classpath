@@ -30,18 +30,5 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.buildship.core.gradleclasspathcontainer"/>
-	<classpathentry kind="lib" path="lib/jacoco/org.jacoco.core-0.8.1.201803210924.jar"/>
-	<classpathentry kind="lib" path="lib/jacoco/jacocoagent.jar"/>
-	<classpathentry kind="lib" path="lib/jacoco/jacocoant.jar"/>
-	<classpathentry kind="lib" path="lib/jacoco/jacococli.jar"/>
-	<classpathentry kind="lib" path="lib/jacoco/org.jacoco.agent-0.8.1.201803210924.jar"/>
-	<classpathentry kind="lib" path="lib/jacoco/org.jacoco.ant-0.8.1.201803210924.jar"/>
-	<classpathentry kind="lib" path="lib/jacoco/org.jacoco.report-0.8.1.201803210924.jar"/>
-	<classpathentry kind="lib" path="lib/jacoco/args4j-2.0.28.jar"/>
-	<classpathentry kind="lib" path="lib/jacoco/asm-6.0.jar"/>
-	<classpathentry kind="lib" path="lib/jacoco/asm-analysis-6.0.jar"/>
-	<classpathentry kind="lib" path="lib/jacoco/asm-commons-6.0.jar"/>
-	<classpathentry kind="lib" path="lib/jacoco/asm-tree-6.0.jar"/>
-	<classpathentry kind="lib" path="lib/jacoco/asm-util-6.0.jar"/>
 	<classpathentry kind="output" path="bin/default"/>
 </classpath>

@@ -69,7 +69,7 @@ public interface Grammar {
 	 */
 	public Object getNewEntity(SendableEntityCreator creator, String className, boolean prototype);
 
-	public Entity writeBasicValue(Entity entity, String className, String id, IdMap map);
+	public Entity writeBasicValue(Entity entity, String className, String id, String type, IdMap map);
 
 	public BaseItem encode(Object entity, MapEntity map);
 

@@ -30,29 +30,15 @@ import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
 public class UpdateModel implements Callable<Object>, Runnable,Supplier<Object> {
 	private Object newValue;
-//	protected Object oldValue;
 	private String property;
 	private Object entity;
 	private ModelThread owner;
-	private String id;
 
 	public UpdateModel(ModelThread owner, Object element, String property, Object newValue) {
 		this.owner = owner;
 		this.entity = element;
 		this.property = property;
-//		this.oldValue = oldValue;
 		this.newValue = newValue;
-	}
-	
-	public UpdateModel(ModelThread owner, String id, String property) {
-		this.owner = owner;
-		this.id = id;
-		this.property = property;
-	}
-	
-	public UpdateModel withId(String id) {
-		this.id = id;
-		return this;
 	}
 
 	@Override
@@ -68,36 +54,50 @@ public class UpdateModel implements Callable<Object>, Runnable,Supplier<Object> 
 	@Override
 	public Object call() {
 		try{
-			SendableEntityCreator creator;
 			IdMap map = this.owner.getMap();
+			if(map == null || this.entity == null) {
+				return null;
+			}
+			SendableEntityCreator creator;
 			Object element;
 
-			if(this.id != null && this.entity == null) {
-				element = map.getObject(this.id);
-				if(this.property != null) {
-					creator = map.getCreatorClass(entity);
-					return creator.getValue(element, property);
-				}
-				return element;
-			}
-
 			if(this.entity instanceof String) {
-				String className = (String) this.entity;
-				creator = map.getCreator(className, true);
+				String name = (String) this.entity;
+				
+				// Check if name is ClassName or Id
+				element = map.getObject(name);
+				if(element != null) {
+					if(this.property != null) {
+						creator = map.getCreatorClass(element);
+						if(creator != null) {
+							Object value = creator.getValue(element, property);
+							if(newValue == null) {
+								return value;
+							} else {
+								// Its Remove
+								return creator.setValue(element, property, newValue, SendableEntityCreator.REMOVE);
+							}
+						}
+					}
+					return element;
+				}
+				creator = map.getCreator(name, true);
 				// TEST FOR NEW ONE
 				element = creator.getSendableInstance(true);
-				if(this.id == null) {
-					this.id = map.getId(element, true);
+				String newid;
+				if(this.newValue instanceof String) {
+					newid = (String) this.newValue; 
+				} else {
+					newid  = map.getId(element, true);
 				}
-				map.put(this.id, element, false);
+				map.put(newid, element, false);
 				return element;
 			} else {
-				if(map == null) {
-					return null;
-				}
-				creator = map.getCreatorClass(entity);
 				element = this.entity;
+				creator = map.getCreatorClass(element);
 			}
+
+			// Switch for Add or Delete
 			return creator.setValue(element, property, newValue, SendableEntityCreator.NEW);
 		}catch(Exception e){
 			this.owner.getErrorHandler().saveException(e, false);

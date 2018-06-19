@@ -124,6 +124,9 @@ public class JsonObjectLazy extends JsonObject {
 		return null;
 	}
 	private static Object getMember(Object obj, String value) {
+		if(obj == null || obj.getClass().getName().startsWith("javafx") == false) {
+			return null;
+		}
 		return ReflectionLoader.call(obj, "getMember", String.class, value);
 	}
 

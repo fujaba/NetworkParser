@@ -117,6 +117,13 @@ public class MapEntity extends AbstractList<Object>{
 		this.target = target;
 		return this;
 	}
+	
+	public MapEntity withStrategy(String value) {
+		if(value != null) {
+			this.filter.withStrategy(value);
+		}
+		return this;
+	}
 
 	public MapEntity withDeep(int value) {
 		this.deep = value;
@@ -217,7 +224,7 @@ public class MapEntity extends AbstractList<Object>{
 				className = className.substring(className.lastIndexOf('.') + 1);
 			}
 		}
-		return grammar.writeBasicValue(entity, className, id, this.getMap());
+		return grammar.writeBasicValue(entity, className, id, this.filter.getStrategy(), this.getMap());
 	}
 
 	/**
@@ -358,5 +365,9 @@ public class MapEntity extends AbstractList<Object>{
 			tokener = map.jsonTokener;
 		}
 		return this.tokener;
+	}
+
+	public boolean isStrategyNew() {
+		return SendableEntityCreator.NEW.equalsIgnoreCase(this.filter.getStrategy());
 	}
 }

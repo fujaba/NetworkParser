@@ -178,7 +178,19 @@ public class MessageSession {
 	}
 
 	public MessageSession withHost(String url) {
-		this.host = url;
+		int pos = url.lastIndexOf(":");
+		if(pos > 0) {
+			String port = url.substring(pos+1);
+			try {
+				this.port = Integer.valueOf(port);
+				this.host = url.substring(0, pos);
+			} catch (Exception e) {
+				pos = -1;
+			}
+		}
+		if(pos<0) {
+			this.host = url;
+		}
 		return this;
 	}
 
@@ -459,11 +471,10 @@ public class MessageSession {
 				// START MESSAGE
 				RabbitMessage response = sending(broker, message, true);
 
-
 				// TUNE MESSAGE
 				response = RabbitMessage.readFrom(diInput);
 				response.analysePayLoad(broker);
-				
+
 				message = RabbitMessage.createTuneOK((Short)response.getData("channelMax"), (Integer)response.getData("frameMax"), (Short)response.getData("heartbeat"));
 				response = sending(broker, message, false);
 				message = RabbitMessage.createConnectionOpen(null);
@@ -471,6 +482,7 @@ public class MessageSession {
 			}
 			return true;
 		}catch (Exception e) {
+			e.printStackTrace();
 		}
 		return false;
 	}
@@ -688,7 +700,7 @@ public class MessageSession {
 	 * @return get the current Response
 	 */
 	protected BufferedBuffer getResponse() {
-		BufferedBuffer response = this.responseFactory.newInstance();
+		BufferedBuffer response = this.responseFactory.getNewList(false);
 		if(in == null) {
 			return response;
 		}

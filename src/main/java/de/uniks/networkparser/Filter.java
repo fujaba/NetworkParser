@@ -43,8 +43,8 @@ public class Filter {
 	protected static final byte FORMAT_NULL=1;
 	protected static final byte FORMAT_FULL=2;
 	protected static final byte FORMAT_TYPESAVE=3;
-
 	protected static final byte FORMAT_SHORTCLASS=4;
+
 	/**
 	 * Format
 	 * 0= REFERENCE
@@ -55,7 +55,7 @@ public class Filter {
 	private byte format; // FORMAT:
 
 	// Temporary variables
-	private String strategy = SendableEntityCreator.NEW;
+	private String strategy = SendableEntityCreator.UPDATE;
 	private boolean simpleFormat;
 
 	public Filter withIdFilter(ObjectCondition idFilter) {
@@ -215,7 +215,7 @@ public class Filter {
 	}
 
 	public void suspendNotification() {
-		this.strategy = SendableEntityCreator.UPDATE;
+		this.strategy = SendableEntityCreator.NEW;
 	}
 
 
@@ -225,6 +225,14 @@ public class Filter {
 	 */
 	public static Filter createFull() {
 		return new Filter().withFormat(FORMAT_FULL);
+	}
+
+	/**
+	 * Full Serialization
+	 * @return a Filter for Full Serialization
+	 */
+	public static Filter createChange() {
+		return new Filter().withStrategy(SendableEntityCreator.NEW);
 	}
 
 	/**

@@ -104,13 +104,14 @@ public class SimpleController implements ObjectCondition{
 
 	public SimpleController withStage(Object stage) {
 		this.stage = stage;
-		GUIEvent proxyHandler=new GUIEvent();
-		proxyHandler.withListener(this);
+		if(stage != null && stage.getClass().getName().startsWith("javafx")) {
+			GUIEvent proxyHandler=new GUIEvent();
+			proxyHandler.withListener(this);
+			Object proxy = ReflectionLoader.createProxy(proxyHandler, ReflectionLoader.EVENTHANDLER);
 
-		Object proxy = ReflectionLoader.createProxy(proxyHandler, ReflectionLoader.EVENTHANDLER);
-
-		ReflectionLoader.call(stage, "setOnCloseRequest", ReflectionLoader.EVENTHANDLER, proxy);
-		ReflectionLoader.call(stage, "setOnShowing", ReflectionLoader.EVENTHANDLER, proxy);
+			ReflectionLoader.call(stage, "setOnCloseRequest", ReflectionLoader.EVENTHANDLER, proxy);
+			ReflectionLoader.call(stage, "setOnShowing", ReflectionLoader.EVENTHANDLER, proxy);
+		}
 		return this;
 	}
 
@@ -210,7 +211,7 @@ public class SimpleController implements ObjectCondition{
 				items.addAll(customParams);
 
 				items.add("-jar");
-				String fileName = new Os().getFilename().toLowerCase();
+				String fileName = Os.getFilename().toLowerCase();
 				if("bin".equals(fileName)) {
 					// Eclipse Start Can't run
 					return null;
@@ -702,8 +703,8 @@ public class SimpleController implements ObjectCondition{
 	}
 	
 	
-	public static SimpleController create(JavaBridge bridge, ObjectCondition listener, boolean exitOnClose, boolean wait) {
-		SimpleController controller = new SimpleController(null);
+	public static SimpleController create(JavaBridge bridge, final ObjectCondition listener, boolean exitOnClose, boolean wait) {
+		final SimpleController controller = new SimpleController(null);
 		final Class<?> launcherClass = ReflectionLoader.getClass("com.sun.javafx.application.LauncherImpl");
 		controller.withBridge(bridge);
 		if(launcherClass == null) {

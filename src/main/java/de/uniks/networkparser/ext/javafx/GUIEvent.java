@@ -65,6 +65,9 @@ public class GUIEvent extends Event {
 	}
 
 	private static Object getMember(Object obj, String value) {
+		if(obj == null || obj.getClass().getName().startsWith("javafx") == false) {
+			return null;
+		}
 		return ReflectionLoader.call(obj, "getMember", String.class, value);
 	}
 
@@ -127,6 +130,7 @@ public class GUIEvent extends Event {
 			event.setValue(EVENT, obj);
 			return event;
 		}
+		event.setValue(EVENT, obj);
 		if("java.awt.event.ActionEvent".equals(name)) {
 			// KeyEvent
 			event.setValue(EVENT_TYPE, EventTypes.CLICK);
@@ -134,10 +138,12 @@ public class GUIEvent extends Event {
 			event.setValue(TIME_STAMP, longValue.intValue());
 			event.setValue(CURRENT_TARGET, ReflectionLoader.call(obj, "getSource"));
 			event.setValue(ID, ""+ReflectionLoader.callChain(obj, "getSource", "getLabel"));
-			event.setValue(EVENT, obj);
 			return event;
 		}
 		Object value;
+		if(name.startsWith("javafx") == false) {
+			return event;
+		}
 		value = getMember(obj, TIME_STAMP);
 		if(value != null) {
 			if(value instanceof Double) {
@@ -156,7 +162,6 @@ public class GUIEvent extends Event {
 			event.eventType = EventTypes.valueOf(eventName.toUpperCase());
 		}
 
-		event.event = obj;
 		value = getMember(obj, TYPE);
 		if(value != null) {
 			event.put(TYPE, ""+value);

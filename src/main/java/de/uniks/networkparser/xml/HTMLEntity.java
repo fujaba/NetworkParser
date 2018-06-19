@@ -1,6 +1,10 @@
 package de.uniks.networkparser.xml;
 import java.net.URL;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
+import de.uniks.networkparser.buffer.CharacterBuffer;
 /*
 NetworkParser
 The MIT License
@@ -33,6 +37,7 @@ import de.uniks.networkparser.interfaces.Converter;
 import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.EntityList;
 import de.uniks.networkparser.json.JsonObject;
+import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SimpleSet;
 
@@ -45,8 +50,13 @@ public class HTMLEntity implements BaseItem {
 	public static final String KEY_HREF="href";
 	public static final String KEY_SRC="src";
 
+
 	private XMLEntity body = new XMLEntity().setType("body");
 	private XMLEntity header = new XMLEntity().setType("head");
+
+	private Map<String, List<String>> conenctionHeader = new SimpleKeyValueList<String, List<String>>();
+	private int statusCode = 200;
+	private String statusMessage;
 
 	@Override
 	public String toString() {
@@ -85,8 +95,10 @@ public class HTMLEntity implements BaseItem {
 		return this;
 	}
 
-	public HTMLEntity withScript(String value, XMLEntity parentNode) {
-		createScript(value, parentNode);
+	public HTMLEntity withScript(CharSequence value, XMLEntity parentNode) {
+		if(value != null) {
+			createScript(value.toString(), parentNode);
+		}
 		return this;
 	}
 
@@ -112,9 +124,11 @@ public class HTMLEntity implements BaseItem {
 		return node;
 	}
 
-	public HTMLEntity withHeaderStyle(String value) {
-		XMLEntity headerChild = new XMLEntity().setType("style").withValue(value);
-		this.header.with(headerChild);
+	public HTMLEntity withHeaderStyle(CharSequence value) {
+		if(value != null) {
+			XMLEntity headerChild = new XMLEntity().setType("style").withValue(value.toString());
+			this.header.with(headerChild);
+		}
 		return this;
 	}
 
@@ -164,6 +178,8 @@ public class HTMLEntity implements BaseItem {
 			for(Object item : values) {
 				if(item instanceof XMLEntity) {
 					this.body.withChild((XMLEntity) item);
+				} else if(item instanceof CharacterBuffer) {
+					this.body.withValue(item.toString());
 				}
 			}
 		}
@@ -258,6 +274,21 @@ public class HTMLEntity implements BaseItem {
 		parentNode.withChild(parent);
 		return firstChild;
 	}
+	
+	public XMLEntity createTable(XMLEntity parentNode, String... labels) {
+		XMLEntity table = createTag("table", parentNode);
+		if(labels != null && labels.length>0) {
+			table.with("style", labels[0]);
+			XMLEntity tr= createTag("tr", table);
+			for(int i=1;i<labels.length;i+=2) {
+				createTag("td", tr);
+				table.with("style", labels[i]);
+				table.withValue(labels[i + 1]);
+			}
+		}
+		return table;
+	}
+	
 
 	@Override
 	public BaseItem getNewList(boolean keyValue) {
@@ -417,5 +448,49 @@ public class HTMLEntity implements BaseItem {
 			}
 		}
 		return this;
+	}
+
+	public HTMLEntity withStatus(int code, String message) {
+		this.statusCode = code;
+		this.statusMessage = message;
+		return this;
+	}
+	
+	public int getStatusCode() {
+		return statusCode;
+	}
+
+	public String getStatusMessage() {
+		return statusMessage;
+	}
+
+	
+	public HTMLEntity withConnectionHeader(String key, String value) {
+		SimpleList<String> list = new SimpleList<String>().with(value);
+		this.conenctionHeader.put(key, list);
+		return this;
+	}
+	public HTMLEntity withConnectionHeader(Map<String, List<String>> headerFields) {
+		for(Iterator<String> i = headerFields.keySet().iterator();i.hasNext();) {
+			String key = i.next();
+			this.conenctionHeader.put(key, headerFields.get(key));
+		}
+		return this;
+	}
+	
+	public Map<String, List<String>> getConnectionHeader() {
+		return conenctionHeader;
+	}
+	
+	public String getConnectionHeader(String key) {
+		List<String> list = conenctionHeader.get(key);
+		if(list != null && list.size() == 1) {
+			return list.get(0);
+		}
+		return null;
+	}
+	
+	public List<String> getConnectionHeaders(String key) {
+		return conenctionHeader.get(key);
 	}
 }

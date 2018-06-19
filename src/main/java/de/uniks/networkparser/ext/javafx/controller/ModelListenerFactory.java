@@ -41,7 +41,7 @@ public class ModelListenerFactory {
 		return create(node, map.getCreatorClass(item), item, field);
 	}
 	public static ModelListenerProperty create(Object node, SendableEntityCreator creator, Object item, String field){
-		if(node == null) {
+		if(node == null || ReflectionLoader.NODE == null || ReflectionLoader.NODE.isAssignableFrom(node.getClass()) == false) {
 			return null;
 		}
 		if(field == null) {
@@ -94,6 +94,9 @@ public class ModelListenerFactory {
 	private static ModelListenerProperty createProperty(PROPERTYTYPE typ,Object property, SendableEntityCreator creator, Object item, String field){
 		ModelListenerProperty listener = new ModelListenerProperty(creator, item, field, PROPERTYTYPE.STRING);
 		Object proxy = listener.getProxy();
+		if(ReflectionLoader.PROPERTY == null || property == null || ReflectionLoader.PROPERTY.isAssignableFrom(property.getClass()) == false) {
+			return listener;
+		}
 		ReflectionLoader.call(property, "bindBidirectional", ReflectionLoader.PROPERTY, proxy);
 		return listener;
 	}

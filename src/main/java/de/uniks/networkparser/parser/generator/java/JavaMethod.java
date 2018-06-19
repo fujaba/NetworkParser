@@ -36,9 +36,8 @@ public class JavaMethod extends BasicGenerator {
 				   "{{#endif}}" +
 				"{{#endfor}}" +
 				"   {{visibility}} {{modifiers} }{{returnType}} {{name}}{{parameterName}}{{#if {{file.member.type}}==interface}};","","{{#else}}",
-				"   {",
-				"      {{#methodbody}}",
-				"   }","",
+				"{{#methodbody}}"
+				,"",
 				"{{#endif}}");
 	}
 
