@@ -24,12 +24,15 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 import java.util.Collection;
+
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
+import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.ext.petaf.messages.ChangeMessage;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.EntityList;
+import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.list.SimpleKeyValueList;
@@ -38,7 +41,7 @@ import de.uniks.networkparser.list.SimpleSet;
 import de.uniks.networkparser.list.SortedSet;
 import de.uniks.networkparser.logic.SimpleObjectFilter;
 
-public class ModelHistory {
+public class ModelHistory implements ObjectCondition {
 	public static final String PROPERTY_HISTORY = "history";
 	public static final String PROPERTY_LASTMODELCHANGE = "lastmodelchange";
 	public static final String PROPERTY_CHANGES = "changes";
@@ -50,7 +53,8 @@ public class ModelHistory {
 	private SimpleKeyValueList<SendableEntityCreator, Object> prototypeCache = new SimpleKeyValueList<SendableEntityCreator, Object>();
 	private SimpleKeyValueList<String, JsonObject> postponedChanges = new SimpleKeyValueList<String, JsonObject>();
 	private long allDataMsgNo;
-
+	private boolean isReading = false;
+	protected long currentStep;
 
 	public ModelChange getLastModelChange() {
 		return history.last();
@@ -510,4 +514,202 @@ public class ModelHistory {
 	// this.world = world;
 	// this.myProxy = myProxy;
 	// }
+	
+	
+	
+	// LOCAL HISTORY
+	public static final ModelHistory createLocalHistory(IdMap map) {
+		ModelHistory history = new ModelHistory();
+		Space space = new Space();
+		space.withHistory(history);
+		space.withMap(map);
+		history.withSpace(space);
+		map.with(history);
+		
+		history.init();
+		
+		return history;
+	}
+	
+	public ModelHistory init() {
+		// read stopStep from file
+//		String fileName = "doc/history.json";
+//			CharacterBuffer readFile = FileBuffer.readFile(fileName);
+//			char firstChar = readFile.nextClean(true);
+//			Entity entity;
+//			if(JsonObject.START == firstChar) {
+//				entity = new JsonObject().withValue(readFile);
+//			} else if(XMLEntity.START == firstChar) {
+//				entity = new XMLEntity().withValue(readFile);
+//			}
+////			if(entity != null) {
+////				long value = (Long) entity.getValue("stopStep");
+////				this.stop
+////			}
+//			stopStep = value;
+		return this;
+	}
+
+	public boolean isReading() {
+		return isReading;
+	}
+
+	public ModelHistory withReading(boolean isReading) {
+		this.isReading = isReading;
+		return this;
+	}
+
+	@Override
+	public boolean update(Object event) {
+		if (isReading) {
+			// do nothing
+			return true;
+		}
+		// store message in list
+		SimpleEvent simpleEvent = (SimpleEvent) event;
+		if (simpleEvent.isIdEvent()) {
+			return true;
+		}
+		if (simpleEvent.getEntity() == null) {
+			// looks like a bug in IDMap. It fires an empty property change within
+			// Filter.isPropertyRegard
+			return false;
+		}
+		ModelChange change = new ModelChange().withChange(simpleEvent.getEntity());
+		this.history.add(change);
+		currentStep = history.size();
+		return true;
+	}
+	
+
+	public ModelHistory back(long steps) {
+		for (long l = 0; l < steps; l++) {
+			back();
+		}
+		return this;
+	}
+
+	public ModelHistory forward(long steps) {
+		for (long l = 0; l < steps; l++) {
+			forward();
+		}
+		return this;
+	}
+	
+	public ModelHistory forward() {
+		if (currentStep >= history.size()) {
+			// already at start
+			return this;
+		}
+		ModelChange step = history.get((int) (currentStep));
+		// redo step
+		BaseItem jo = step.getChange();
+
+		withReading(true);
+		space.getMap().decode(jo);
+		withReading(false);
+		currentStep++;
+
+		return this;
+	}
+	public ModelHistory back() {
+		if (currentStep <= 0) {
+			// already at start
+			return this;
+		}
+
+		ModelChange step = history.get((int) (currentStep - 1));
+
+		// undo step by swapping rem and upd
+		BaseItem jo = step.getChange();
+		if(jo instanceof Entity == false) {
+			return this;
+		}
+		Entity entity = (Entity) jo;
+		JsonObject undo = new JsonObject();
+		undo.put(IdMap.ID, entity.getString(IdMap.ID));
+		Object update = entity.getValue(SendableEntityCreator.UPDATE);
+		if (update != null && update instanceof JsonObject) {
+			// if the value is a JsonObject, just use the id
+			JsonObject jsonUpdate = (JsonObject) update;
+			String key = jsonUpdate.keyIterator().next();
+			Object value = jsonUpdate.get(key);
+			if (value instanceof Entity) {
+				Entity jsonValue = (Entity) value;
+
+				JsonObject newValue = new JsonObject();
+				newValue.put(IdMap.ID, jsonValue.getString(IdMap.ID));
+				JsonObject newUpdate = new JsonObject();
+				newUpdate.put(key, newValue);
+				undo.put(SendableEntityCreator.REMOVE, newUpdate);
+			} else {
+				undo.put(SendableEntityCreator.REMOVE, update);
+			}
+		}
+
+		Object remove = entity.getValue(SendableEntityCreator.REMOVE);
+		if (remove != null) {
+			undo.put(SendableEntityCreator.UPDATE, remove);
+		}
+			
+		this.withReading(true);
+		space.getMap().decode(jo);
+		this.withReading(false);
+		currentStep--;
+		return this;
+	}
+	public ModelHistory back(Object target) {
+		while (true) {
+			back();
+			if (currentStep <= 0) {
+				return this;
+			}
+
+			// does current step operate on target?
+			ModelChange step = history.get((int) (currentStep - 1));
+			BaseItem jo = step.getChange();
+			if(jo instanceof Entity == false) {
+				return this;
+			}
+			Entity change = (Entity) jo;
+			String id = change.getString(IdMap.ID);
+
+			Object obj =space.getMap().getObject(id);
+
+			if (obj == target) {
+				return this;
+			}
+		}
+	}
+	
+	public ModelHistory back(Object target, String property) {
+		while (true) {
+			back();
+
+			if (currentStep <= 0) {
+				return this;
+			}
+
+			// does current step operate on target?
+			ModelChange step = history.get((int) (currentStep - 1));
+			BaseItem jo = step.getChange();
+			if(jo instanceof Entity == false) {
+				return this;
+			}
+			Entity change = (Entity) jo;
+			String id = change.getString(IdMap.ID);
+			Object obj =space.getMap().getObject(id);
+
+			if (obj == target) {
+				Object update = change.getValue(SendableEntityCreator.UPDATE);
+				if (update != null) {
+					JsonObject jsonUpdate = (JsonObject) update;
+					String key = jsonUpdate.keyIterator().next();
+					if (key.equals(property)) {
+						return this;
+					}
+				}
+			}
+		}
+	}
 }
