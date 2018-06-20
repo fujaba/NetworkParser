@@ -8,6 +8,7 @@ import java.beans.PropertyChangeEvent;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Map;
 
 import org.junit.Assert;
@@ -20,6 +21,7 @@ import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.TextDiff;
 import de.uniks.networkparser.UpdateAccumulate;
+import de.uniks.networkparser.converter.EntityStringConverter;
 import de.uniks.networkparser.ext.PropertyChangeEventWrapper;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.json.JsonArray;
@@ -101,6 +103,15 @@ public class JsonTest extends IOClasses {
 		Assert.assertEquals(json.get("ID"), 42);
 	}
 
+	@Test
+	public void testLinkedHashSet() {
+		LinkedHashSet<Student> list  = new LinkedHashSet<Student>();
+		list.add(new Student());
+		
+		EntityUtil.valueToString(list, false, new JsonObject(), new EntityStringConverter(2));
+	}
+	
+	
 	@Test
 	public void testJSONEmptyKey() {
 		JsonObject json = new JsonObject().withValue("{\"id\":42, }");

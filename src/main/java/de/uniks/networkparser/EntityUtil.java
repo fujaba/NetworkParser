@@ -343,7 +343,7 @@ public class EntityUtil {
 			return item.toString(converter);
 		}
 		if (value instanceof Collection) {
-			BaseItem item = reference.getNewList(true);
+			BaseItem item = reference.getNewList(false);
 			if(item instanceof SimpleKeyValueList<?,?>) {
 				return ((SimpleKeyValueList<?,?>) item).withList((Collection<?>) value).toString(converter);
 			}
