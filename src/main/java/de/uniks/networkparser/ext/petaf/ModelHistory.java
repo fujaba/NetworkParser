@@ -653,7 +653,7 @@ public class ModelHistory implements ObjectCondition {
 		}
 			
 		this.withReading(true);
-		space.getMap().decode(jo);
+		space.getMap().decode(undo);
 		this.withReading(false);
 		currentStep--;
 		return this;

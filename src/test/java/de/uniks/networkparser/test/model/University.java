@@ -261,7 +261,7 @@ public class University implements SendableEntity {
 	private String name;
 
 	public void setName(String value) {
-		if (value != null && !value.equalsIgnoreCase(this.name)) {
+		if (value != null && !value.equalsIgnoreCase(this.name) || value == null) {
 			String oldValue = this.name;
 			this.name = value;
 			getPropertyChangeSupport().firePropertyChange(PROPERTY_NAME,
