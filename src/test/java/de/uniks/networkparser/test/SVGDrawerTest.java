@@ -22,7 +22,7 @@ import de.uniks.networkparser.graph.GraphList;
 import de.uniks.networkparser.graph.GraphPattern;
 import de.uniks.networkparser.graph.GraphUtil;
 import de.uniks.networkparser.graph.Parameter;
-import de.uniks.networkparser.json.JsonObject;
+import de.uniks.networkparser.interfaces.Entity;
 
 public class SVGDrawerTest {
 	public static final String CRLF = "\r\n";
@@ -128,7 +128,7 @@ public class SVGDrawerTest {
 		writeJson("petaf.html", converter.convertToJson(map, false, false));
 	}
 
-	private void writeJson(String fileName, JsonObject item) throws IOException {
+	private void writeJson(String fileName, Entity item) throws IOException {
 		StringBuilder sb=new StringBuilder();
 		sb.append("<html><head>"+CRLF);
 		sb.append("\t<link rel=\"stylesheet\" type=\"text/css\" href=\"../src/main/resources/de/uniks/networkparser/graph/diagramstyle.css\">"+CRLF);

@@ -30,7 +30,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import de.uniks.networkparser.graph.GraphList;
-import de.uniks.networkparser.json.JsonObject;
+import de.uniks.networkparser.interfaces.Entity;
 
 public class DocEnvironment {
 	public static final String CRLF = "\r\n";
@@ -44,7 +44,7 @@ public class DocEnvironment {
 		copyDocFile(target, "diagramstyle.css");
 	}
 
-	public void writeJson(String fileName, String path, JsonObject item) throws IOException {
+	public void writeJson(String fileName, String path, Entity item) throws IOException {
 
 		StringBuilder sb=new StringBuilder();
 //		copyJS("build");

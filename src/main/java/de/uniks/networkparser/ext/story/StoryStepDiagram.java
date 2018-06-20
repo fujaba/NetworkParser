@@ -28,6 +28,7 @@ import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.converter.GraphConverter;
 import de.uniks.networkparser.graph.GraphModel;
 import de.uniks.networkparser.graph.GraphTokener;
+import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.json.JsonArray;
 import de.uniks.networkparser.json.JsonObject;
@@ -81,10 +82,10 @@ public class StoryStepDiagram implements ObjectCondition {
 					jsonObject.put("head", new JsonObject().withKeyValue("src", image));
 				}
 			}
-		      // new diagram
-		      GraphConverter graphConverter = new GraphConverter();
-		      JsonObject objectModel = graphConverter.convertToJson(GraphTokener.OBJECT, jsonArray, true);
-		      element.withGraph(objectModel);
+			// new diagram
+			GraphConverter graphConverter = new GraphConverter();
+			Entity objectModel = graphConverter.convertToJson(GraphTokener.OBJECT, jsonArray, true);
+			element.withGraph(objectModel);
 		}
 		return true;
 	}

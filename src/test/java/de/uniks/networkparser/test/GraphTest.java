@@ -375,7 +375,7 @@ public class GraphTest {
 		YUMLConverter converterYUML = new YUMLConverter();
 		GraphList root  = graphConverter.convertGraphList(GraphTokener.CLASS, jsonArray);
 
-		JsonObject converter = graphConverter.convertToJson(GraphTokener.CLASS, jsonArray, true);
+		Entity converter = graphConverter.convertToJson(GraphTokener.CLASS, jsonArray, true);
 		showDebugInfos(converter, 1537, null);
 
 
@@ -412,7 +412,7 @@ public class GraphTest {
 		GraphConverter graphConverter = new GraphConverter();
 
 		// May be 8 Asssocs and write 11
-		JsonObject converter = graphConverter.convertToJson(GraphTokener.CLASS, jsonArray, true);
+		Entity converter = graphConverter.convertToJson(GraphTokener.CLASS, jsonArray, true);
 		showDebugInfos(converter, 2191, null);
 	}
 
@@ -455,10 +455,10 @@ public class GraphTest {
 
 		JsonArray jsonArray = map.toJsonArray(root, Filter.createFull());
 		GraphConverter graphConverter = new GraphConverter();
-		JsonObject objectModel = graphConverter.convertToJson(GraphTokener.OBJECT, jsonArray, true);
+		Entity objectModel = graphConverter.convertToJson(GraphTokener.OBJECT, jsonArray, true);
 		showDebugInfos(objectModel, 627, null);
 
-		JsonObject clazzModel = graphConverter.convertToJson(GraphTokener.CLASS, jsonArray, true);
+		Entity clazzModel = graphConverter.convertToJson(GraphTokener.CLASS, jsonArray, true);
 		showDebugInfos(clazzModel, 472, null);
 		Assert.assertEquals(new CharacterBuffer().withLine("{").withLine("  \"type\":\"classdiagram\",")
 				.withLine("  \"nodes\":[").withLine("    {")
@@ -466,10 +466,14 @@ public class GraphTest {
 				.withLine("      \"attributes\":[").withLine("        \"msg:String\",")
 				.withLine("        \"number:Integer\"").withLine("      ]").withLine("    }").withLine("  ],")
 				.withLine("  \"edges\":[").withLine("    {").withLine("      \"type\":\"assoc\",")
-				.withLine("      \"source\":{").withLine("        \"cardinality\":\"one\",")
-				.withLine("        \"property\":\"child\",").withLine("        \"id\":\"SortedMsg\"")
-				.withLine("      },").withLine("      \"target\":{").withLine("        \"cardinality\":\"one\",")
-				.withLine("        \"property\":\"parent\",").withLine("        \"id\":\"SortedMsg\"")
+				.withLine("      \"source\":{")
+				.withLine("        \"property\":\"child\",")
+				.withLine("        \"cardinality\":\"one\",")
+				.withLine("        \"id\":\"SortedMsg\"")
+				.withLine("      },").withLine("      \"target\":{")
+				.withLine("        \"property\":\"parent\",")
+				.withLine("        \"cardinality\":\"one\",")
+				.withLine("        \"id\":\"SortedMsg\"")
 				.withLine("      }").withLine("    }").withLine("  ]").with("}").toString(), clazzModel.toString(2));
 	}
 
@@ -504,7 +508,7 @@ public class GraphTest {
 		JsonArray jsonArray = jsonIdMap.toJsonArray(ludo);
 		GraphConverter graphConverter = new GraphConverter();
 
-		JsonObject converter = graphConverter.convertToJson(GraphTokener.CLASS, jsonArray, true);
+		Entity converter = graphConverter.convertToJson(GraphTokener.CLASS, jsonArray, true);
 		showDebugInfos(converter, 550, null);
 	}
 	@Test

@@ -36,7 +36,6 @@ import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Converter;
 import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.EntityList;
-import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SimpleSet;
@@ -324,7 +323,7 @@ public class HTMLEntity implements BaseItem {
 		String graph = value.toString(new GraphConverter());
 		return withGraph(graph, resource.toString());
 	}
-	public HTMLEntity withGraph(JsonObject value) {
+	public HTMLEntity withGraph(Entity value) {
 		URL resource = GraphList.class.getResource("");
 		if(resource == null || value == null) {
 			return this;
