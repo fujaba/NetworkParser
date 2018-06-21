@@ -265,24 +265,26 @@ public class GraphConverter implements Converter{
 				}
 				
 				EntityList attributes = (EntityList) node.getValue(ATTRIBUTES);
-				for(int a=0;a<attributes.size();a++) {
-					Object entity = attributes.getChild(a);
-					if (entity instanceof String) {
-						String attribute = (String) entity;
-						int pos = attribute.indexOf(":");
-						if (pos > 0) {
-							clazz.createAttribute(attribute.substring(0, pos),
-									DataType.create(attribute.substring(pos + 1)));
-						}
-					} else if(entity instanceof Entity) {
-						Entity json = (Entity) entity;
-						if(json.has(ID)) {
-							Attribute attribute = clazz.createAttribute(json.getString(ID), DataType.create(json.getString(TYPE)));
-							String string = json.getString(MODIFIERS);
-							if(string != null && string.length()>0) {
-								for(String modifier : string.split(" ")) {
-									if(modifier.length()>0) {
-										attribute.with(Modifier.create(modifier));
+				if(attributes != null) {
+					for(int a=0;a<attributes.size();a++) {
+						Object entity = attributes.getChild(a);
+						if (entity instanceof String) {
+							String attribute = (String) entity;
+							int pos = attribute.indexOf(":");
+							if (pos > 0) {
+								clazz.createAttribute(attribute.substring(0, pos),
+										DataType.create(attribute.substring(pos + 1)));
+							}
+						} else if(entity instanceof Entity) {
+							Entity json = (Entity) entity;
+							if(json.has(ID)) {
+								Attribute attribute = clazz.createAttribute(json.getString(ID), DataType.create(json.getString(TYPE)));
+								String string = json.getString(MODIFIERS);
+								if(string != null && string.length()>0) {
+									for(String modifier : string.split(" ")) {
+										if(modifier.length()>0) {
+											attribute.with(Modifier.create(modifier));
+										}
 									}
 								}
 							}
@@ -293,16 +295,18 @@ public class GraphConverter implements Converter{
 			}
 		}
 		EntityList edges = (EntityList) model.getValue("edges");
-		for(int e = 0;e<edges.size();e++) {
-			Object entity = edges.getChild(e);
-			if(entity instanceof Entity) {
-				Entity edge = (Entity) entity;
-				Entity source = (Entity) edge.getValue(SOURCE);
-				Entity target = (Entity) edge.getValue(TARGET);
-				if(edge.getString(TYPE).equalsIgnoreCase("edge")) {
-					Clazz fromClazz = GraphUtil.getByObject(classModel, source.getString(ID), true);
-					Clazz toClazz = GraphUtil.getByObject(classModel, target.getString(ID), true);
-					fromClazz.withBidirectional(toClazz, target.getString("property"), Cardinality.ONE, source.getString("property"), Cardinality.ONE);
+		if(edges != null) {
+			for(int e = 0;e<edges.size();e++) {
+				Object entity = edges.getChild(e);
+				if(entity instanceof Entity) {
+					Entity edge = (Entity) entity;
+					Entity source = (Entity) edge.getValue(SOURCE);
+					Entity target = (Entity) edge.getValue(TARGET);
+					if(edge.getString(TYPE).equalsIgnoreCase("edge")) {
+						Clazz fromClazz = GraphUtil.getByObject(classModel, source.getString(ID), true);
+						Clazz toClazz = GraphUtil.getByObject(classModel, target.getString(ID), true);
+						fromClazz.withBidirectional(toClazz, target.getString("property"), Cardinality.ONE, source.getString("property"), Cardinality.ONE);
+					}
 				}
 			}
 		}
