@@ -202,7 +202,7 @@ public class GraphTest {
 		list.fixClassModel();
 
 		GraphConverter converter = new GraphConverter();
-		showDebugInfos(converter.convertToJson(list, true, false), 505, null);
+		showDebugInfos(converter.convertToJson(list, true, false), 509, null);
 	}
 
 	@Test
@@ -220,7 +220,7 @@ public class GraphTest {
 
 		GraphConverter converter = new GraphConverter();
 		Assert.assertEquals(
-				"{\"type\":\"classdiagram\",\"nodes\":[{\"type\":\"clazz\",\"id\":\"Item\",\"head\":{\"src\":\"karli.png\"}}]}",
+				"{\"type\":\"classdiagram\",\"nodes\":[{\"type\":\"class\",\"id\":\"Item\",\"head\":{\"src\":\"karli.png\"}}]}",
 				converter.convertToJson(list, false, false).toString());
 	}
 
@@ -462,7 +462,7 @@ public class GraphTest {
 		showDebugInfos(clazzModel, 472, null);
 		Assert.assertEquals(new CharacterBuffer().withLine("{").withLine("  \"type\":\"classdiagram\",")
 				.withLine("  \"nodes\":[").withLine("    {")
-				.withLine("      \"type\":\"clazz\",").withLine("      \"id\":\"SortedMsg\",")
+				.withLine("      \"type\":\"class\",").withLine("      \"id\":\"SortedMsg\",")
 				.withLine("      \"attributes\":[").withLine("        \"msg:String\",")
 				.withLine("        \"number:Integer\"").withLine("      ]").withLine("    }").withLine("  ],")
 				.withLine("  \"edges\":[").withLine("    {").withLine("      \"type\":\"assoc\",")

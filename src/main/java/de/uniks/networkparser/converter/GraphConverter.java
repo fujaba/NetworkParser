@@ -48,7 +48,9 @@ import de.uniks.networkparser.graph.GraphSimpleSet;
 import de.uniks.networkparser.graph.GraphTokener;
 import de.uniks.networkparser.graph.GraphUtil;
 import de.uniks.networkparser.graph.Method;
+import de.uniks.networkparser.graph.Parameter;
 import de.uniks.networkparser.graph.util.AssociationSet;
+import de.uniks.networkparser.graph.util.ParameterSet;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Converter;
 import de.uniks.networkparser.interfaces.Entity;
@@ -81,10 +83,14 @@ public class GraphConverter implements Converter{
 	private static final String STYLE = "style";
 	private static final String INFO = "info";
 	private static final String COUNTER = "counter";
+	private static final String MODIFIERS = "modifiers";
+	private static final String BODY = "body";
+	private static final String PARAMETER = "parameter";
+
 	private Entity factory = new JsonObject();
 	private boolean full = false;
-	
-	
+
+
 	public GraphList convertGraphList(String type, EntityList list) {
 		GraphList root = new GraphList().withType(type);
 
@@ -252,6 +258,11 @@ public class GraphConverter implements Converter{
 				} else {
 					clazz = classModel.createClazz(node.getString(ID));
 				}
+				String type = node.getString(TYPE);
+				if(type != null && type.length() > 0) {
+					GraphUtil.setClazzType(clazz, type);
+				}
+				
 				EntityList attributes = (EntityList) node.getValue(ATTRIBUTES);
 				for(int a=0;a<attributes.size();a++) {
 					Object entity = attributes.getChild(a);
@@ -331,9 +342,7 @@ public class GraphConverter implements Converter{
 			return child;
 		}else{
 			String id = new CharacterBuffer()
-					.with(source.getName(false), ":", edge.getName(),
-							"-",
-					target.getName(false), ":",edge.getOther().getName()).toString();
+					.with(source.getName(false), ":", edge.getName(), 	"-", target.getName(false), ":",edge.getOther().getName()).toString();
 			if (!ids.contains(id)) {
 				GraphDiff diff = GraphUtil.getDifference(edge);
 				if(diff != null && diff.getCount()>0) {
@@ -375,6 +384,9 @@ public class GraphConverter implements Converter{
 		if(cardinality) {
 			result.put(CARDINALITY, edge.getCardinality());
 		}
+		if(full) {
+			result.put(CLAZZ, edge.getClazz().getName());
+		}
 		return result;
 	}
 
@@ -412,13 +424,17 @@ public class GraphConverter implements Converter{
 		Entity item = (Entity) factory.getNewList(true);
 
 		if(entity instanceof Clazz) {
-			item.put(TYPE, CLAZZ);
-			Clazz element = (Clazz) entity;
+//			item.put(TYPE, CLAZZ);
+			Clazz clazz = (Clazz) entity;
+			if(full) {
+				item.put(MODIFIERS, clazz.getModifier());
+			}
+			item.put(TYPE, clazz.getType());
 			if (type == GraphTokener.OBJECT) {
 				item.put(ID,
-						element.getId() + " : " + element.getName(shortName));
+						clazz.getId() + " : " + clazz.getName(shortName));
 			} else {
-				item.put(ID, element.getName(shortName));
+				item.put(ID, clazz.getName(shortName));
 			}
 		}else if(entity instanceof GraphPattern) {
 			item.put(TYPE, PATTERN);
@@ -432,6 +448,7 @@ public class GraphConverter implements Converter{
 		} else {
 			item.put(TYPE, NODE);
 		}
+		
 
 		if(entity instanceof GraphEntity) {
 			parseGraphEntity((GraphEntity)entity, item, type, shortName, removeParameterNames);
@@ -489,8 +506,19 @@ public class GraphConverter implements Converter{
 				continue;
 			}
 			Attribute attribute = (Attribute) item;
-			result.add(attribute.getName() + splitter
-					+ attribute.getValue(type, shortName));
+			String name = attribute.getName();
+			if(name == null || name.length()<1) {
+				continue;
+			}
+			if(full) {
+				Entity json = (Entity) factory.getNewList(true);
+				json.put(ID, name);
+				json.put(MODIFIERS, attribute.getModifier());
+				json.put(TYPE, attribute.getType());
+				result.add(json);
+			}else {
+				result.add(attribute.getName() + splitter + attribute.getValue(type, shortName));
+			}
 		}
 		return result;
 	}
@@ -499,11 +527,33 @@ public class GraphConverter implements Converter{
 		EntityList result = (EntityList) factory.getNewList(false);
 		GraphSimpleSet children = GraphUtil.getChildren(list);
 		for (GraphMember item : children) {
-			if (!(item instanceof Method)) {
+			if (item instanceof Method == false) {
 				continue;
 			}
 			Method method = (Method) item;
-			result.add( method.getName(false, removeParameterNames));
+			if (full) {
+				Entity json = (Entity) factory.getNewList(true);
+				json.put(ID, method.getName());
+				json.put(TYPE, method.getReturnType());	// RETURNTYPE
+				json.put(MODIFIERS, method.getModifier());
+				if(method.getBody() != null && method.getBody().length()>0) {
+					json.put(BODY, method.getBody());
+				}
+				ParameterSet parameters = method.getParameters();
+				if (parameters.size()>0) {
+					EntityList paramList = (EntityList) factory.getNewList(false);
+					for(Parameter parameter : parameters) {
+						Entity param = (Entity) factory.getNewList(true);
+						param.put(ID, parameter.getName());
+						param.put(TYPE, parameter.getType());
+						paramList.add(param);
+					}
+					json.put(PARAMETER, paramList);
+				}
+				result.add(json);
+			}else {
+				result.add( method.getName(false, removeParameterNames));
+			}
 		}
 		return result;
 	}

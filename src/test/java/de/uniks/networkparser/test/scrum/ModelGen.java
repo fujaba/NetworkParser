@@ -52,8 +52,8 @@ public class ModelGen {
 
 //		model.withoutFeature(Feature.PatternObject);
 //		model.withoutFeature(Feature.ALBERTsSets);
-		model.generate("gen");
-		model.dumpHTML("Scrum");
+//		model.generate("gen");
+//		model.dumpHTML("Scrum");
 		
 //	      StackTraceElement[] stackTrace = new RuntimeException().getStackTrace();
 //

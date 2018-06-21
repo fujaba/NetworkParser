@@ -27,7 +27,7 @@ public class MergeTest {
 		Clazz person = classModel.createClazz("Person");
 
 
-		classModel.generate("build/src");
+//		classModel.generate("build/src");
 
 
 		// ADD

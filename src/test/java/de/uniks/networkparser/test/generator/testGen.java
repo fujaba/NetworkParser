@@ -1,7 +1,5 @@
 package de.uniks.networkparser.test.generator;
 
-import org.junit.Test;
-
 import de.uniks.networkparser.ext.ClassModel;
 import de.uniks.networkparser.graph.Cardinality;
 import de.uniks.networkparser.graph.Clazz;
@@ -9,7 +7,7 @@ import de.uniks.networkparser.graph.DataType;
 
 public class testGen {
 
-	@Test
+//	@Test
 	public void testModel() {
 		ClassModel model = new ClassModel("org.networkparser.simple.model");
 		Clazz person = model.createClazz("Person");
