@@ -4,6 +4,7 @@ import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.ext.ClassModel;
 import de.uniks.networkparser.graph.Feature;
 import de.uniks.networkparser.graph.GraphEntity;
+import de.uniks.networkparser.graph.GraphModel;
 import de.uniks.networkparser.graph.util.FeatureSet;
 import de.uniks.networkparser.interfaces.LocalisationInterface;
 import de.uniks.networkparser.parser.Template;
@@ -40,13 +41,15 @@ public class JavaCreatorCreator extends BasicGenerator {
 			if(features.match(Feature.SERIALIZATION, null) == false) {
 				return null;
 			}
+//			if(entity instanceof )
+//			entity.get
 		}
 		return super.executeEntity(entity, parameters, isStandard);
 	}
 
 	@Override
 	public Class<?> getTyp() {
-		return ClassModel.class;
+		return GraphModel.class;
 	}
 	
 	@Override

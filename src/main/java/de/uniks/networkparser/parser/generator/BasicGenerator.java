@@ -149,7 +149,7 @@ public abstract class BasicGenerator {
 	}
 	
 	public TemplateResultFile executeEntity(GraphEntity model, LocalisationInterface parameters, boolean isStandard) {
-		if(model == null || model.getClass() == getTyp() == false) {
+		if(model == null || getTyp() == null || getTyp().isAssignableFrom(model.getClass()) == false) {
 			return null;
 		}
 		TemplateResultFile templateResult = createResultFile(model, isStandard);
