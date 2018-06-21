@@ -72,7 +72,6 @@ task JavaGit(type:JavaExec, dependsOn: compileJava18) {
 	doLast {
 		try {
 			def slurper = new groovy.json.JsonSlurper()
-			System.out.println(stdOutput.toString())
 			def json = slurper.parseText(stdOutput.toString())
 			
 			gitVersion.minor = json.get("minor")

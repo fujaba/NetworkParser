@@ -132,8 +132,7 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 						}catch (Exception e) {
 						}
 					}
-					System.out.println("COUNT: "+commit);
-//					System.out.println(revision.execute(commit));
+					System.out.println(revision.execute(commit));
 				}catch (Exception e) {
 				}
 				return;

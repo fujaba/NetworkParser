@@ -103,7 +103,7 @@ public abstract class BasicGenerator {
 	}
 
 	public void executeTemplate(TemplateResultFile templateResult, LocalisationInterface parameters, GraphMember member) {
-		if(member == null || member.getClass() == getTyp() == false) {
+		if(isValid(member) == false) {
 			return;
 		}
 		for(Template template : templates) {
@@ -117,7 +117,12 @@ public abstract class BasicGenerator {
 		}
 	}
 
-
+	private boolean isValid(GraphMember member) {
+		if(member == null || getTyp() == null || getTyp().isAssignableFrom(member.getClass()) == false) {
+			return false;
+		}
+		return true;
+	}
 
 	protected FeatureSet getFeatures(LocalisationInterface value) {
 		if(value instanceof TemplateResultModel) {
@@ -149,7 +154,7 @@ public abstract class BasicGenerator {
 	}
 	
 	public TemplateResultFile executeEntity(GraphEntity model, LocalisationInterface parameters, boolean isStandard) {
-		if(model == null || getTyp() == null || getTyp().isAssignableFrom(model.getClass()) == false) {
+		if(isValid(model) == false) {
 			return null;
 		}
 		TemplateResultFile templateResult = createResultFile(model, isStandard);
@@ -157,7 +162,7 @@ public abstract class BasicGenerator {
 	}
 	
 	public TemplateResultFile executeClazz(Clazz clazz, LocalisationInterface parameters, boolean isStandard) {
-		if(clazz == null || clazz.getClass() == getTyp() == false) {
+		if(isValid(clazz) == false) {
 			return null;
 		}
 		TemplateResultFile templateResult = createResultFile(clazz, isStandard);
