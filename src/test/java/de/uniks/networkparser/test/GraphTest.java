@@ -19,6 +19,7 @@ import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.converter.DotConverter;
 import de.uniks.networkparser.converter.GraphConverter;
 import de.uniks.networkparser.converter.YUMLConverter;
+import de.uniks.networkparser.ext.ClassModel;
 import de.uniks.networkparser.graph.Annotation;
 import de.uniks.networkparser.graph.Association;
 import de.uniks.networkparser.graph.AssociationTypes;
@@ -101,8 +102,22 @@ public class GraphTest {
 
 
 		Assert.assertEquals(list.size(), size + 2);
-
-
+	}
+	
+	@Test
+	public void testGraphConvert() {
+		GraphConverter converter = new GraphConverter().withFull(true);
+		ClassModel model = new ClassModel();
+		Clazz uni = model.createClazz("Uni");
+		Clazz student = model.createClazz("Student");
+		student.createAttribute("uni", DataType.create(uni));
+		Entity json = converter.convertToJson(model, true, true);
+		
+		System.out.println(json);
+		
+		ClassModel modelB = converter.convertFromJson(json);
+		System.out.println(modelB);
+		
 	}
 
 	@Test

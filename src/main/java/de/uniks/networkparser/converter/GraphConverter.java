@@ -48,6 +48,7 @@ import de.uniks.networkparser.graph.GraphSimpleSet;
 import de.uniks.networkparser.graph.GraphTokener;
 import de.uniks.networkparser.graph.GraphUtil;
 import de.uniks.networkparser.graph.Method;
+import de.uniks.networkparser.graph.Modifier;
 import de.uniks.networkparser.graph.Parameter;
 import de.uniks.networkparser.graph.util.AssociationSet;
 import de.uniks.networkparser.graph.util.ParameterSet;
@@ -272,6 +273,19 @@ public class GraphConverter implements Converter{
 						if (pos > 0) {
 							clazz.createAttribute(attribute.substring(0, pos),
 									DataType.create(attribute.substring(pos + 1)));
+						}
+					} else if(entity instanceof Entity) {
+						Entity json = (Entity) entity;
+						if(json.has(ID)) {
+							Attribute attribute = clazz.createAttribute(json.getString(ID), DataType.create(json.getString(TYPE)));
+							String string = json.getString(MODIFIERS);
+							if(string != null && string.length()>0) {
+								for(String modifier : string.split(" ")) {
+									if(modifier.length()>0) {
+										attribute.with(Modifier.create(modifier));
+									}
+								}
+							}
 						}
 					}
 				}
@@ -514,7 +528,7 @@ public class GraphConverter implements Converter{
 				Entity json = (Entity) factory.getNewList(true);
 				json.put(ID, name);
 				json.put(MODIFIERS, attribute.getModifier());
-				json.put(TYPE, attribute.getType());
+				json.put(TYPE, attribute.getType().getName(true));
 				result.add(json);
 			}else {
 				result.add(attribute.getName() + splitter + attribute.getValue(type, shortName));
@@ -534,7 +548,7 @@ public class GraphConverter implements Converter{
 			if (full) {
 				Entity json = (Entity) factory.getNewList(true);
 				json.put(ID, method.getName());
-				json.put(TYPE, method.getReturnType());	// RETURNTYPE
+				json.put(TYPE, method.getReturnType().getName(true));	// RETURNTYPE
 				json.put(MODIFIERS, method.getModifier());
 				if(method.getBody() != null && method.getBody().length()>0) {
 					json.put(BODY, method.getBody());
@@ -545,7 +559,7 @@ public class GraphConverter implements Converter{
 					for(Parameter parameter : parameters) {
 						Entity param = (Entity) factory.getNewList(true);
 						param.put(ID, parameter.getName());
-						param.put(TYPE, parameter.getType());
+						param.put(TYPE, parameter.getType().getName(true));
 						paramList.add(param);
 					}
 					json.put(PARAMETER, paramList);
@@ -568,5 +582,10 @@ public class GraphConverter implements Converter{
 	public static Entity convertModel(GraphModel model) {
 		GraphConverter converter = new GraphConverter();
 		return converter.convertToJson(model, false, true);
+	}
+
+	public GraphConverter withFull(boolean value) {
+		this.full = value;
+		return this;
 	}
 }
