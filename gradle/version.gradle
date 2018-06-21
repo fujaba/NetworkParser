@@ -4,8 +4,12 @@ import java.text.SimpleDateFormat
 repositories {
 	mavenCentral()
 }
+configurations {
+	gitVersion{}
+}
 dependencies {
-	compile "org.eclipse.jgit:org.eclipse.jgit:[4.0,5)"
+    gitVersion "org.eclipse.jgit:org.eclipse.jgit:[4.0,5)"
+	gitVersion "org.slf4j:slf4j-simple:1.6.1"
 }
 
 // Define a method using a closure as the method body
@@ -65,7 +69,8 @@ task JavaGit(type:JavaExec, dependsOn: compileJava18) {
 	errorOutput = System.err
 	main = "de.uniks.networkparser.ext.DiagramEditor"
 	args 'GIT', '3'
-	classpath = (sourceSets.main.compileClasspath + sourceSets.main.output + files('build/classes/main18'))
+	classpath = (sourceSets.main.compileClasspath + sourceSets.main.output + files('build/classes/main18') + files(configurations.gitVersion))
+	//.filter({it.name.indexOf("jgit")>=0})))
 
 	ByteArrayOutputStream stdOutput = new ByteArrayOutputStream()
 	standardOutput = stdOutput
