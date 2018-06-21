@@ -8,7 +8,7 @@ configurations {
 	gitVersion{}
 }
 dependencies {
-    gitVersion "org.eclipse.jgit:org.eclipse.jgit:[4.0,5)"
+    gitVersion "org.eclipse.jgit:org.eclipse.jgit:[4,)"
 	gitVersion "org.slf4j:slf4j-simple:1.6.1"
 }
 
@@ -118,7 +118,7 @@ task version() {
 }
 ext {
 	gitVersion = new GITVersion(major: ext.majorNumber)
-	tasks.version.execute()
+	tasks.JavaGit.execute()
 }
 version = gitVersion
 
