@@ -125,7 +125,15 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 			if("GIT".equalsIgnoreCase(args[0])) {
 				GitRevision revision = new GitRevision();
 				try {
-					System.out.println(revision.execute());
+					int commit = -1;
+					if(args.length>1) {
+						try {
+							commit = Integer.valueOf(args[1]);
+						}catch (Exception e) {
+						}
+					}
+					System.out.println("COUNT: "+commit);
+//					System.out.println(revision.execute(commit));
 				}catch (Exception e) {
 				}
 				return;

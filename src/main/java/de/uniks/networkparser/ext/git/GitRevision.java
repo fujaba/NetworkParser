@@ -51,7 +51,7 @@ public class GitRevision {
 	private boolean full=false;
 
 	@SuppressWarnings("unchecked")
-	public JsonObject execute() throws IOException {
+	public JsonObject execute(int maxCommit) throws IOException {
 		if(ReflectionLoader.FILEREPOSITORYBUILDER == null) {
 			return null;
 		}
@@ -89,7 +89,9 @@ public class GitRevision {
 				Object oldId = headID;
 				String name = (String) ReflectionLoader.call(headID, "getName");
 				headID = ReflectionLoader.call(repository, "resolve", String.class, name+ "^1");
-				commitInfo(map, repository, headID, oldId);
+				if(maxCommit <0 || count < maxCommit) {
+					commitInfo(map, repository, headID, oldId);
+				}
 			}
 		}catch(Exception e) {
 		} finally {
@@ -221,7 +223,14 @@ public class GitRevision {
 				if(temp != null) {
 					jsonObject.put("COMMITER", ReflectionLoader.call(temp, "getName"));
 				}
-				jsonObject.put("MESSAGE", ReflectionLoader.call(commit, "getFullMessage"));
+				String msg = (String) ReflectionLoader.call(commit, "getFullMessage");
+				if(msg != null) {
+					msg = msg.trim();
+					if(msg.endsWith("\\u000a")) {
+						msg = msg.substring(0, msg.length() - 6);
+					}
+					jsonObject.put("MESSAGE", msg);
+				}
 
 				if(newerrId!=null && full){
 					Object newerCommit = ReflectionLoader.call(walk, "parseCommit", newerrId);

@@ -64,7 +64,7 @@ task JavaGit(type:JavaExec, dependsOn: compileJava18) {
 	}
 	errorOutput = System.err
 	main = "de.uniks.networkparser.ext.DiagramEditor"
-	args 'GIT'
+	args 'GIT', '3'
 	classpath = (sourceSets.main.compileClasspath + sourceSets.main.output + files('build/classes/main18'))
 
 	ByteArrayOutputStream stdOutput = new ByteArrayOutputStream()
@@ -72,9 +72,11 @@ task JavaGit(type:JavaExec, dependsOn: compileJava18) {
 	doLast {
 		try {
 			def slurper = new groovy.json.JsonSlurper()
+			System.out.println(stdOutput.toString())
 			def json = slurper.parseText(stdOutput.toString())
+			
 			gitVersion.minor = json.get("minor")
-			gitVersion.revision = json.get("revisionnumber")+15
+			gitVersion.revision = json.get("revisionnumber")
 			gitVersion.hash = json.get("lastcommit")
 			gitVersion.buildTime = buildTime()
 			gitVersion.branch = json.get("branchname")
