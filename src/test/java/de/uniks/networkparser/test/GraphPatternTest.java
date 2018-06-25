@@ -74,6 +74,6 @@ public class GraphPatternTest {
 
 		GraphPatternMatch diff = mapA.getDiff(uni, uniB, true);
 
-		Assert.assertEquals(3, diff.size());
+		Assert.assertEquals(4, diff.size());
 	}
 }

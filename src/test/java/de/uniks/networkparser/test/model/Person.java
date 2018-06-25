@@ -278,7 +278,6 @@ public class Person  implements SendableEntity, Comparable<Object> {
 			return this.getName().compareTo(((Person)o).getName());
 		}
 		return -1;
-
 	}
 }
 

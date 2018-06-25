@@ -264,10 +264,10 @@ public class GraphConverter implements Converter{
 					GraphUtil.setClazzType(clazz, type);
 				}
 				
-				EntityList attributes = (EntityList) node.getValue(ATTRIBUTES);
-				if(attributes != null) {
-					for(int a=0;a<attributes.size();a++) {
-						Object entity = attributes.getChild(a);
+				EntityList list = (EntityList) node.getValue(ATTRIBUTES);
+				if(list != null) {
+					for(int a=0;a<list.size();a++) {
+						Object entity = list.getChild(a);
 						if (entity instanceof String) {
 							String attribute = (String) entity;
 							int pos = attribute.indexOf(":");
@@ -292,9 +292,48 @@ public class GraphConverter implements Converter{
 					}
 				}
 				// All Methods
+				list = (EntityList) node.getValue(METHODS);
+				if(list != null) {
+					for(int a=0;a<list.size();a++) {
+						Object entity = list.getChild(a);
+						if (entity instanceof String) {
+						} else if(entity instanceof Entity) {
+							Entity json = (Entity) entity;
+							if(json.has(ID)) {
+								Method method = clazz.createMethod(json.getString(ID));
+
+								Object value = json.getValue(PARAMETER);
+								if(value != null && value instanceof EntityList) {
+									EntityList params = (EntityList) value;
+									for(int p=0; p< params.sizeChildren();p++) {
+										Object paramJson = params.getChild(p);
+										if(paramJson != null && paramJson instanceof Entity) {
+											Parameter param = new Parameter(DataType.create(((Entity) paramJson).getString(TYPE)));
+											param.with(((Entity) paramJson).getString(ID));
+											method.with(param);
+										}
+									}
+								}
+								method.with(DataType.create(json.getString(TYPE)));
+								String string = json.getString(MODIFIERS);
+								if(string != null && string.length()>0) {
+									for(String modifier : string.split(" ")) {
+										if(modifier.length()>0) {
+											method.with(Modifier.create(modifier));
+										}
+									}
+								}
+								string = json.getString(BODY);
+								if(string != null && string.length()>0) {
+									method.withBody(string);
+								}
+							}
+						}
+					}
+				}
 			}
 		}
-		EntityList edges = (EntityList) model.getValue("edges");
+		EntityList edges = (EntityList) model.getValue(EDGES);
 		if(edges != null) {
 			for(int e = 0;e<edges.size();e++) {
 				Object entity = edges.getChild(e);
@@ -302,7 +341,17 @@ public class GraphConverter implements Converter{
 					Entity edge = (Entity) entity;
 					Entity source = (Entity) edge.getValue(SOURCE);
 					Entity target = (Entity) edge.getValue(TARGET);
-					if(edge.getString(TYPE).equalsIgnoreCase("edge")) {
+					if(source.has(CLAZZ) && target.has(CLAZZ)) {
+						Association from = new Association(GraphUtil.getByObject(classModel, source.getString(CLAZZ), true));
+						Association to = new Association(GraphUtil.getByObject(classModel, target.getString(CLAZZ), true));
+						from.with(to);
+						from.with(Cardinality.create(source.getString(CARDINALITY)));
+						to.with(Cardinality.create(target.getString(CARDINALITY)));
+						from.with(source.getString(PROPERTY));
+						to.with(target.getString(PROPERTY));
+						from.with(AssociationTypes.valueOf(source.getString(TYPE)));
+						to.with(AssociationTypes.valueOf(target.getString(TYPE)));
+					} else if(edge.getString(TYPE).equalsIgnoreCase("edge")) {
 						Clazz fromClazz = GraphUtil.getByObject(classModel, source.getString(ID), true);
 						Clazz toClazz = GraphUtil.getByObject(classModel, target.getString(ID), true);
 						fromClazz.withBidirectional(toClazz, target.getString("property"), Cardinality.ONE, source.getString("property"), Cardinality.ONE);
@@ -310,6 +359,7 @@ public class GraphConverter implements Converter{
 				}
 			}
 		}
+		classModel.fixClassModel();
 		return classModel;
 	}
 
@@ -403,6 +453,7 @@ public class GraphConverter implements Converter{
 			result.put(CARDINALITY, edge.getCardinality());
 		}
 		if(full) {
+			result.put(TYPE, edge.getType().getValue());
 			result.put(CLAZZ, edge.getClazz().getName());
 		}
 		return result;

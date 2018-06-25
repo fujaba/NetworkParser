@@ -116,8 +116,12 @@ public class GraphTest {
 		System.out.println(json);
 		
 		ClassModel modelB = converter.convertFromJson(json);
+		Assert.assertEquals(modelB.getClazzes().size(), 2);
 		System.out.println(modelB);
 		
+		String meta = "{\"type\":\"classdiagram\",\"id\":\"i.love.networkparser\",\"nodes\":[{\"modifiers\":\"public\",\"type\":\"class\",\"id\":\"Student\",\"attributes\":[{\"id\":\"uni\",\"modifiers\":\"private\",\"type\":\"Uni\"}]}]}";
+		ClassModel modelC = converter.convertFromJson(JsonObject.create(meta));
+		Assert.assertEquals(modelC.getClazzes().size(), 2);
 	}
 
 	@Test

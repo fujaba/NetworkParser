@@ -2,6 +2,7 @@ package de.uniks.networkparser.graph;
 
 import java.util.Iterator;
 
+import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.graph.util.AssociationSet;
 import de.uniks.networkparser.graph.util.ClazzSet;
 import de.uniks.networkparser.interfaces.BaseItem;
@@ -253,7 +254,32 @@ public abstract class GraphModel extends GraphEntity implements BaseItem {
 				}
 			}
 		}
+		
+		// FIX Attribute and Methods
+		for(Attribute attribute : item.getAttributes()) {
+			fixDataType(attribute.getType());
+		}
+
+		for(Method method: item.getMethods()) {
+			fixDataType(method.getReturnType());
+			for(Parameter param : method.getParameters()) {
+				fixDataType(param.getType());
+			}
+		}
 	}
+	
+	private void fixDataType(DataType dataType) {
+		Clazz clazz = dataType.getClazz();
+		if(clazz.isExternal() == false && EntityUtil.isPrimitiveType(clazz.getName()) == false)  {
+			GraphMember byObject = this.getByObject(clazz.getName(), true);
+			if(byObject == null) {
+				this.add(clazz);
+			} else if(byObject instanceof Clazz){
+				GraphUtil.setClazz(dataType, (Clazz)byObject);
+			}
+		}
+	}
+	
 	protected GraphModel with(GraphModel model) {
 		if(model == null) {
 			return this;

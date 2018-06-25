@@ -25,7 +25,8 @@ public class StudentCreator implements SendableEntityCreator {
 		return new String[] { Student.PROPERTY_NAME, Student.PROPERTY_STUD_NO,
 				Student.PROPERTY_IN, Student.PROPERTY_UNIVERSITY,
 				 Student.PROPERTY_FIRSTNAME, Student.PROPERTY_LASTNAME,
-				 Student.PROPERTY_CREDITS, Student.PROPERTY_FRIENDS, Student.PROPERTY_ITEM
+				 Student.PROPERTY_CREDITS, Student.PROPERTY_FRIENDS, Student.PROPERTY_ITEM,
+				 SendableEntityCreator.DYNAMIC
 		};
 	}
 
@@ -36,7 +37,7 @@ public class StudentCreator implements SendableEntityCreator {
 
 	@Override
 	public Object getValue(Object entity, String attrName) {
-		if(entity instanceof Student == false) {
+		if (attrName == null || entity instanceof Student == false) {
 			return null;
 		}
 		Student student = (Student) entity;
@@ -76,12 +77,16 @@ public class StudentCreator implements SendableEntityCreator {
 		if (Student.PROPERTY_ITEM.equalsIgnoreCase(attribute)) {
 			return student.getItem();
 		}
-		return null;
+		if (SendableEntityCreator.DYNAMIC.equalsIgnoreCase(attrName)) {
+			return student.getDynamicValues();
+		}
+		return student.getDynamicValue(attrName);
+//		return null;
 	}
 
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value, String typ) {
-		if(entity instanceof Student == false) {
+		if (attribute == null || entity instanceof Student == false) {
 			return false;
 		}
 		Student student = (Student) entity;
@@ -121,6 +126,8 @@ public class StudentCreator implements SendableEntityCreator {
 			student.withItem((Item) value);
 			return true;
 		}
-		return false;
+		student.withDynamicValue(attribute, value);
+		return true;
+//		return false;
 	}
 }

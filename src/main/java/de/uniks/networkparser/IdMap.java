@@ -1420,8 +1420,29 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 			CharacterBuffer prop = map.getPrefixProperties(creator, entity, className);
 			int pos = prop.length();
 			Tokener tokener = map.getTokener();
-			for (String property : properties) {
+			for(int i=0; i < properties.length; i++) {
+//			for (String property : properties) {
+				String property = properties[i];
 				Object value = creator.getValue(entity, property);
+				if(property == SendableEntityCreator.DYNAMIC) {
+					if(value == null) {
+						continue;
+					}
+					SimpleList<String> props = new SimpleList<String>();
+					int p;
+					for(p = 0;p<properties.length;p++) {
+						props.add(properties[p]);
+					}
+					
+					Object[][] array = (Object[][]) value;
+					
+					for(p = 0;p<array.length;p++) {
+						props.with(array[p][0]);
+					}
+					properties = props.toArray(new String[props.size()]);
+					continue;
+				}
+
 				if (value != null) {
 					int convert = filter.convert(entity, property, value, this, map.getDeep());
 					if (convert < 0) {

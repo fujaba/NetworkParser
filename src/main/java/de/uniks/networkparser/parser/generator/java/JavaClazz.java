@@ -25,7 +25,9 @@ THE SOFTWARE.
 */
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+
 import de.uniks.networkparser.graph.Clazz;
+import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.parser.Template;
 import de.uniks.networkparser.parser.generator.BasicGenerator;
 
@@ -104,6 +106,20 @@ public class JavaClazz extends BasicGenerator {
 									"{{#ENDFOR}}"+
 									"){"+
 							"}"+
+						"{{#ENDIF}}",
+						"{{#if {{#feature DYNAMICVALUES}}}}" +
+								"{{#import "+SimpleKeyValueList.class.getName()+"}}",
+								"   private SimpleKeyValueList<String, Object> dynamicValues=new SimpleKeyValueList<String, Object>();",
+								"   public Object getDynamicValue(String key) {",
+								"      return this.dynamicValues.getValue(key);",
+								"   }",
+								"   public {{name}} withDynamicValue(String key, Object value) {",
+								"      this.dynamicValues.put(key, value);",
+								"      return this;",
+								"   }",
+								"   public Object[][] getDynamicValues() {",
+								"      return this.dynamicValues.toTable();",
+								"   }",
 						"{{#ENDIF}}",
 						"{{#template TEMPLATEEND}}}{{#endtemplate}}"
 				);

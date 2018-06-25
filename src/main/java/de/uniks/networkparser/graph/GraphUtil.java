@@ -376,4 +376,9 @@ public class GraphUtil {
 		return Clazz.TYPE_CLASS;
 
 	}
+
+	public static final DataType setClazz(DataType type, Clazz value) {
+		type.value = value;
+		return type;
+	}
 }

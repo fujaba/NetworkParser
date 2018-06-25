@@ -42,6 +42,8 @@ public class GenericCreator implements SendableEntityCreator {
 	public GenericCreator() {
 		badProperties.add("getClass");
 		badProperties.add("getPropertyChangeSupport");
+		badProperties.add("getDynamicValue");
+		badProperties.add("withDynamicValue");
 	}
 
 	public GenericCreator(Object item) {
@@ -291,7 +293,7 @@ public class GenericCreator implements SendableEntityCreator {
 		Field[] fields = instance.getDeclaredFields();
 		for (Field field : fields) {
 			Class<?> child = field.getType();
-			if (EntityUtil.isPrimitiveType(child.getName()) == false) {
+			if (EntityUtil.isPrimitiveType(child.getName()) == false && field.getName().equals("dynamicValues") == false) {
 				Type types = field.getGenericType();
 				if (types != null && types instanceof ParameterizedType) {
 					ParameterizedType genericSuperclass = (ParameterizedType) types;

@@ -29,10 +29,10 @@ THE SOFTWARE.
  */
 
 public interface SendableEntityCreator {
-   /** The Constant REMOVE_YOU. */
-   public static final String REMOVE_YOU = "REMOVE_YOU";
+	/** The Constant REMOVE_YOU. */
+	public static final String REMOVE_YOU = "REMOVE_YOU";
 
-   /** The Constant REMOVE. */
+	/** The Constant REMOVE. */
 	public static final String REMOVE = "rem";
 
 	/** The Constant UPDATE. */
@@ -41,8 +41,11 @@ public interface SendableEntityCreator {
 	/** The Constant NEW. */
 	public static final String NEW = "new";
 
-	/** The Constant NEW. */
+	/** The Constant SimpleFormat. */
 	public static final String SIMPLE = "simple";
+
+	/** The Constant Dynamic for save additional values. */
+	public static final String DYNAMIC = "dynamic";
 
 	/**
 	 * Gets the properties.

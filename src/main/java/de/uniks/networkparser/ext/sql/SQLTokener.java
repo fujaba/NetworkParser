@@ -243,10 +243,10 @@ public class SQLTokener extends Tokener {
 				}
 				if(properties != null) {
 					for(int i = 0; i < properties.length; i++) {
-						String type = null;
-						if(properties[i].indexOf('.')>=0) {
+						if(properties[i].indexOf('.')>=0 || properties[i] == SendableEntityCreator.DYNAMIC) {
 							continue;
 						}
+						String type = null;
 						Object value = creator.getValue(item, properties[i]);
 						if(value instanceof Collection<?>) {
 							Collection<?> collection = (Collection<?>) value;
@@ -314,7 +314,7 @@ public class SQLTokener extends Tokener {
 		for (String property : properties) {
 			Object value = creator.getValue(item, property);
 			// Null Value
-			if(value == null) {
+			if(value == null || property == SendableEntityCreator.DYNAMIC) {
 				continue;
 			}
 			// DefaultValue
@@ -323,7 +323,6 @@ public class SQLTokener extends Tokener {
 			}
 
 			// SWITCH FOR TO N-ASSOC
-
 			if (value instanceof Collection<?>) {
 				Collection<?> children = (Collection<?>) value;
 				for(Iterator<?> i = children.iterator();i.hasNext();) {
@@ -353,7 +352,7 @@ public class SQLTokener extends Tokener {
 
 		for (String property : creator.getProperties()) {
 			Object value = creator.getValue(item, property);
-			if(value == null) {
+			if(value == null || property == SendableEntityCreator.DYNAMIC) {
 				continue;
 			}
 			if (value instanceof Collection<?>) {

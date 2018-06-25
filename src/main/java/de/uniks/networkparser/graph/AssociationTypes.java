@@ -90,4 +90,8 @@ public enum AssociationTypes {
 	public String toString() {
 		return this.value;
 	}
+	
+	public static AssociationTypes create(String value) {
+		return AssociationTypes.valueOf(value);
+	}
 }

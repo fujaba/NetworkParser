@@ -372,11 +372,11 @@ public class JsonTokener extends Tokener {
 			if(creator == null) {
 				return null;
 			}
-			String[] properties = creator.getProperties();
-			if (properties != null) {
-				if(map.isStrategyNew()) {
-					Object prototype = creator.getSendableInstance(true);
-					for (String property : properties) {
+			if(map.isStrategyNew()) {
+				Object prototype = creator.getSendableInstance(true);
+				String[] properties = creator.getProperties();
+				if (properties != null) {
+					for(String property : properties) {
 						if(jsonProp.has(property)) {
 							Object obj = jsonProp.get(property);
 							parseValue(target, property, obj, creator, map);
@@ -397,13 +397,14 @@ public class JsonTokener extends Tokener {
 							}
 						}
 					}
-				} else {
-					for (String property : properties) {
-						if(jsonProp.has(property)) {
-							Object obj = jsonProp.get(property);
-							parseValue(target, property, obj, creator, map);
-						}
-					}
+				}
+			} else {
+				for(int p=0; p < jsonProp.size(); p++) {
+					String property = jsonProp.getKeyByIndex(p);
+//					if(jsonProp.has(property)) {
+					Object obj = jsonProp.get(property);
+					parseValue(target, property, obj, creator, map);
+//					}
 				}
 			}
 		}

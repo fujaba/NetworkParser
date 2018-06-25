@@ -62,6 +62,29 @@ public class JsonModellTest implements ObjectCondition {
 
 	@Test
 	public void testGenericJson(){
+		Student student = new Student().withName("Albert");
+		IdMap map=new IdMap();
+		map.withCreator(new StudentCreator());
+		Assert.assertEquals(student.getDynamicValue("job"), null);
+		student.withDynamicValue("department", "se");
+
+		JsonObject json = map.toJsonObject(student);
+		JsonObject props = json.getJsonObject(JsonTokener.PROPS);
+		props.put("job", "prof");
+		System.out.println(props);
+		
+		IdMap mapB=new IdMap();
+		mapB.withCreator(new StudentCreator());
+		Student albert = (Student) mapB.decode(json);
+		
+		Assert.assertEquals(albert.getDynamicValue("job"), "prof");
+		Assert.assertEquals(albert.getDynamicValue("department"), "se");
+		
+//		Assert.assertEquals("Uni Kassel", uniKassel.getName());
+	}
+	
+	@Test
+	public void testDynamicJson(){
 		University uni = new University().withName("Uni Kassel");
 		IdMap map=new IdMap();
 		map.withCreator(new UniversityCreator(), new StudentCreator());
@@ -69,6 +92,7 @@ public class JsonModellTest implements ObjectCondition {
 		University uniKassel = SimpleParser.fromJson(json, University.class);
 		Assert.assertEquals("Uni Kassel", uniKassel.getName());
 	}
+
 
 	@Test
 	public void testGenericJsonModel(){

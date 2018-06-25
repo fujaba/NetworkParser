@@ -42,7 +42,8 @@ public enum Feature {
 	METADATA,
 	DOCUMENTATION,
 	SOURCECODE,
-	GENCODE;
+	GENCODE,
+	DYNAMICVALUES;
 
 	public static final String CODESTYLE_STANDARD = "standard";
 	public static final String CODESTYLE_DIVIDED = "divided";
