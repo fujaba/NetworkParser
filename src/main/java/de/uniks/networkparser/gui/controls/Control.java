@@ -33,6 +33,7 @@ import de.uniks.networkparser.list.SimpleList;
 public abstract class Control extends SimpleObject {
 	/* Constants */
 	public static final String PROPERTY = "property";
+	public static final String PROPERTY_ELEMENTS = "elements";
 	private SimpleKeyValueList<EventTypes, List<ObjectCondition>> events;
 
 	public boolean addEventListener(EventTypes type, ObjectCondition listener) {
@@ -143,7 +144,8 @@ public abstract class Control extends SimpleObject {
 		return super.setValue(key, value);
 	}
 
-
+	public abstract Control newInstance();
+	
 //	public void fireEvent(String method, Object value) {
 //		if (!this.events.containsKey(method)) {
 //			return;

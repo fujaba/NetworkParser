@@ -46,4 +46,8 @@ public class DateTimeField extends Input<String> {
 	public static DateTimeField createTimeField() {
 		return new DateTimeField(TIME);
 	}
+	@Override
+	public DateTimeField newInstance() {
+		return new DateTimeField();
+	}
 }

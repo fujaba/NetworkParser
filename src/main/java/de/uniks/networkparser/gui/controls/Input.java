@@ -93,4 +93,9 @@ public class Input<T> extends Control {
 		this.value = value;
 		return firePropertyChange(VALUE, oldValue, value);
 	}
+
+	@Override
+	public Input<T> newInstance() {
+		return new Input<T>();
+	}
 }

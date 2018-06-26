@@ -370,6 +370,16 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 		add(key, value);
 		return (ST)this;
 	}
+	
+	@SuppressWarnings("unchecked")
+	public <ST extends SimpleKeyValueList<K, V>> ST withGroup(V value, K... keys) {
+		if(keys != null && value !=  null) {
+			for(Object key : keys) {
+				add(key, value);
+			}
+		}
+		return (ST)this;
+	}
 
 	@SuppressWarnings("unchecked")
 	public <ST extends SimpleKeyValueList<K, V>> ST withMultIndex(K[] keys, V value) {

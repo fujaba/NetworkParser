@@ -28,6 +28,7 @@ public class Label extends Control {
 	public static final String SPACER = "spacer";
 	public static final String TITLE = "title";
 	public static final String VALUE = "value";
+	
 	private String type;
 	private String value;
 
@@ -67,5 +68,10 @@ public class Label extends Control {
 			return 0;
 		}
 		return this.value.length();
+	}
+
+	@Override
+	public Label newInstance() {
+		return new Label();
 	}
 }

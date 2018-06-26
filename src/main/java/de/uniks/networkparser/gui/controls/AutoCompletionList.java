@@ -25,7 +25,7 @@ THE SOFTWARE.
 */
 import de.uniks.networkparser.IdMap;
 
-public class AutoCompletionList {
+public class AutoCompletionList extends Control {
 	private boolean caseSensitive=false;
 	private boolean sort=false;
 
@@ -71,6 +71,11 @@ public class AutoCompletionList {
 
 	public boolean isSorted() {
 		return sort;
+	}
+
+	@Override
+	public AutoCompletionList newInstance() {
+		return new AutoCompletionList();
 	}
 
 

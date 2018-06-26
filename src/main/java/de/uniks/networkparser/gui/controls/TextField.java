@@ -34,5 +34,10 @@ public class TextField extends Input<String> {
 		super();
 		this.type = TEXT;
 	}
+	
+	@Override
+	public TextField newInstance() {
+		return new TextField();
+	}
 
 }

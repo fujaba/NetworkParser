@@ -60,4 +60,9 @@ public class Button extends Input<String> {
 		super.setValue(value);
 		return this;
 	}
+	
+	@Override
+	public Button newInstance() {
+		return new Button();
+	}
 }

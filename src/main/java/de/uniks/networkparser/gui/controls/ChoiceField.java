@@ -98,4 +98,9 @@ public class ChoiceField extends Input<String> {
 		}
 		return super.getValue(key);
 	}
+	
+	@Override
+	public ChoiceField newInstance() {
+		return new ChoiceField(false);
+	}
 }

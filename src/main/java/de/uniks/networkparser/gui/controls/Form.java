@@ -33,8 +33,6 @@ public class Form extends Control {
 
 	public static final String METHOD = "method";
 
-	public static final String ELEMENTS = "elements";
-
 	protected String method = "get";
 
 	private SimpleList<Control> elements;
@@ -44,7 +42,7 @@ public class Form extends Control {
 		/* Set variables of parent class */
 		this.className = FORM;
 		this.addBaseElements(METHOD);
-		this.addBaseElements(ELEMENTS);
+		this.addBaseElements(PROPERTY_ELEMENTS);
 	}
 
 	public String getMethod() {
@@ -82,7 +80,7 @@ public class Form extends Control {
 		for (Control control : elements) {
 			if(this.elements.add(control)) {
 				changed = true;
-				firePropertyChange(ELEMENTS, null, control);
+				firePropertyChange(PROPERTY_ELEMENTS, null, control);
 			}
 		}
 		return changed;
@@ -93,7 +91,7 @@ public class Form extends Control {
 		if (METHOD.equals(key)) {
 			return this.getMethod();
 		}
-		else if (ELEMENTS.equals(key)) {
+		else if (PROPERTY_ELEMENTS.equals(key)) {
 			return this.getElements();
 		}
 		return super.getValue(key);
@@ -104,7 +102,7 @@ public class Form extends Control {
 		if (METHOD.equals(key)) {
 			return this.setMethod(""+value);
 		}
-		else if (ELEMENTS.equals(key)) {
+		else if (PROPERTY_ELEMENTS.equals(key)) {
 			if(value instanceof Control) {
 				return this.addElement((Control)value);
 			} else if(value instanceof Control[]) {
@@ -128,5 +126,10 @@ public class Form extends Control {
 //			withDataBinding(addCommandBtn, creator.getProperties());
 //		}
 		return this;
+	}
+
+	@Override
+	public Form newInstance() {
+		return new Form();
 	}
 }

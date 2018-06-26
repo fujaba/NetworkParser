@@ -34,8 +34,6 @@ public class TableComponent extends Control {
 
 	public static final String PROPERTY_COLUMNS = "columns";
 
-	public static final String PROPERTY_ITEM = "item";
-
 	public static final String PROPERTY_SEARCHCOLUMNS = "searchColumns";
 
 	protected IdMap map;
@@ -55,7 +53,7 @@ public class TableComponent extends Control {
 		super();
 		this.className = TABLE;
 		addBaseElements(PROPERTY_COLUMNS);
-		addBaseElements(PROPERTY_ITEM);
+		addBaseElements(PROPERTY_ELEMENTS);
 		addBaseElements(PROPERTY_SEARCHCOLUMNS);
 	}
 
@@ -147,7 +145,7 @@ public class TableComponent extends Control {
 		for (Object c : elements) {
 			if(this.items.add(c)) {
 				changed = true;
-				firePropertyChange(PROPERTY_ITEM, null, c);
+				firePropertyChange(PROPERTY_ELEMENTS, null, c);
 			}
 		}
 		return changed;
@@ -168,7 +166,7 @@ public class TableComponent extends Control {
 		if (PROPERTY_COLUMNS.equals(key)) {
 			return this.columns;
 		}
-		else if (PROPERTY_ITEM.equals(key)) {
+		else if (PROPERTY_ELEMENTS.equals(key)) {
 			return this.items;
 		}
 		else if (PROPERTY_SEARCHCOLUMNS.equals(key)) {
@@ -192,7 +190,7 @@ public class TableComponent extends Control {
 			}
 			return false;
 		}
-		if (PROPERTY_ITEM.equals(key)) {
+		if (PROPERTY_ELEMENTS.equals(key)) {
 			if(value instanceof Object[]) {
 				return this.addList((Object[])value);
 			} else if(value instanceof Collection<?>) {
@@ -216,5 +214,9 @@ public class TableComponent extends Control {
 		}
 		return super.setValue(key, value);
 	}
-
+	
+	@Override
+	public TableComponent newInstance() {
+		return new TableComponent();
+	}
 }
