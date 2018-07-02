@@ -25,6 +25,7 @@ THE SOFTWARE.
 */
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.ext.ClassModel;
+import de.uniks.networkparser.graph.Association;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.GraphEntity;
 import de.uniks.networkparser.graph.GraphMember;
@@ -272,8 +273,13 @@ public class TemplateResultFile extends SortedSet<TemplateResultFragment> implem
 						}
 					}
 				} else if(fragment.getKey() == Template.VALUE){
-					SymTabEntry symbolEntry = code.getSymbolEntry("ATTRIBUTE", fragment.getMember().getName());
+					SymTabEntry symbolEntry = code.getSymbolEntry("ATTRIBUTE", fragment.getMember().getName()); 
+					if(fragment.getMember() instanceof Association) {
+						Association assoc = (Association) fragment.getMember(); 
+						symbolEntry = code.getSymbolEntry("ATTRIBUTE", assoc.getOther().getName());
+					}
 					if(symbolEntry == null) {
+						// Dont Found it appen it
 						int pos = code.getEndOfBody();
 						sb.replace(pos, pos, fragment.getValue().toString());
 					}

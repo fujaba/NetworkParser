@@ -67,13 +67,13 @@ public abstract class BasicGenerator {
 		return metaModel;
 	}
 
-	public abstract Class<?> getTyp();
+	public abstract Class<?> getType();
 
 	public boolean addGenerator(BasicGenerator generator) {
 		if(generator == null) {
 			return false;
 		}
-		Class<?> typ = generator.getTyp();
+		Class<?> typ = generator.getType();
 		SimpleList<BasicGenerator> list = this.children.get(typ);
 		if(list == null) {
 			list = new SimpleList<BasicGenerator>();
@@ -118,7 +118,7 @@ public abstract class BasicGenerator {
 	}
 
 	private boolean isValid(GraphMember member) {
-		if(member == null || getTyp() == null || getTyp().isAssignableFrom(member.getClass()) == false) {
+		if(member == null || getType() == null || getType().isAssignableFrom(member.getClass()) == false) {
 			return false;
 		}
 		return true;

@@ -42,7 +42,7 @@ public class JavaMethod extends BasicGenerator {
 	}
 
 	@Override
-	public Class<?> getTyp() {
+	public Class<?> getType() {
 		return Method.class;
 	}
 }

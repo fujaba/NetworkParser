@@ -90,7 +90,7 @@ public class JavaSetMethod extends BasicGenerator {
 //       			"\n      returnStat";
 
 	@Override
-	public Class<?> getTyp() {
+	public Class<?> getType() {
 		return Method.class;
 	}
 }

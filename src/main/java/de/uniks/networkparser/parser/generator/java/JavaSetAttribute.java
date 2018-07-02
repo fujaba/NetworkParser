@@ -78,7 +78,7 @@ public class JavaSetAttribute extends BasicGenerator {
 	}
 
 	@Override
-	public Class<?> getTyp() {
+	public Class<?> getType() {
 		return Attribute.class;
 	}
 }

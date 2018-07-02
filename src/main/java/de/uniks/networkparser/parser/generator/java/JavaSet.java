@@ -127,7 +127,7 @@ public class JavaSet extends BasicGenerator {
 	}
 
 	@Override
-	public Class<?> getTyp() {
+	public Class<?> getType() {
 		return Clazz.class;
 	}
 }

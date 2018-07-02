@@ -1330,12 +1330,24 @@ public class ParserEntity {
 			return;
 		}
 		String sign = signature + symTabEntry.getParams();
-		if (SKIPMETGODS.indexOf(sign) < 0 && isGetterSetter(signature, symTab) == false
-				&& isNewMethod(signature)) {
+		if (SKIPMETGODS.indexOf(sign) < 0) {
+			if(isGetterSetter(signature, symTab)) {
+				return;
+			}
+			if(isAssoc(signature, symTab)) {
+				return;
+			}
+			Method method = getMethod(signature);
+			if(method != null) {
+				// Replace Body
+				method.withBody(this.code.subString(symTabEntry.getBodyStartPos(), symTabEntry.getEndPos() + 1).toString());
+				return;
+			}
+			
 			String paramsStr = symTabEntry.getParams();
 			String[] params = paramsStr.substring(1, paramsStr.length() - 1).split(",");
 
-			Method method = new Method(signature)
+			method = new Method(signature)
 					.with(DataType.create(symTabEntry.getDataType()));
 			for (String param : params) {
 				if (param != null && param.length() > 0) {
@@ -1407,13 +1419,38 @@ public class ParserEntity {
 		}
 		return false;
 	}
+	
+	private boolean isAssoc(String methodName, SimpleKeyValueList<String, SimpleList<SymTabEntry>> symTab) {
+		// method starts with: with set get ...
+		if (methodName.startsWith("with") || methodName.startsWith("set") || methodName.startsWith("get")
+				|| methodName.startsWith("add") || methodName.startsWith("remove") || methodName.startsWith("create")) {
 
-	private boolean isNewMethod(String memberName) {
+			SimpleList<SymTabEntry> assoc = new SimpleList<SymTabEntry>();
+			for (String key : symTab.keySet()) {
+				if (key.startsWith("attribute")) {
+					SimpleList<SymTabEntry> simpleList = symTab.get(key);
+					assoc.addAll(simpleList);
+				}
+			}
+
+			// is class attribute
+			for (SymTabEntry entry : assoc) {
+				String attrName = entry.getValue();
+//				String signName = entry.getValue();
+				if (methodName.toLowerCase().endsWith(attrName.toLowerCase())) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	private Method getMethod(String memberName) {
 		for (Method method : this.file.getMethods()) {
 			if (method.getName(false).equals(memberName))
-				return false;
+				return method;
 		}
-		return true;
+		return null;
 	}
 
 	public SourceCode getCode() {

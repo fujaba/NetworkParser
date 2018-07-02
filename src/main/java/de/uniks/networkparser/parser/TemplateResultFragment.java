@@ -83,8 +83,12 @@ public class TemplateResultFragment implements Comparable<TemplateResultFragment
 		return key;
 	}
 
-	public void setKey(int key) {
-		this.key = key;
+	public boolean setKey(int key) {
+		if(key != this.key) {
+			this.key = key;
+			return true;
+		}
+		return false;
 	}
 
 	public TemplateResultFragment withKey(int key) {

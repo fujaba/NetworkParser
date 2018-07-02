@@ -28,7 +28,7 @@ import de.uniks.networkparser.parser.generator.BasicGenerator;
 
 public class CppClazz extends BasicGenerator {
 	@Override
-	public Class<?> getTyp() {
+	public Class<?> getType() {
 		return Clazz.class;
 	}
 
