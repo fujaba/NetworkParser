@@ -71,28 +71,37 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 	 */
 	public XMLEntity withValue(String value) {
 		XMLTokener tokener = new XMLTokener();
-		tokener.withBuffer(value);
-		withValue(tokener);
-		return this;
+		CharacterBuffer buffer = new CharacterBuffer().with(value);
+		return withValue(tokener, buffer);
 	}
 
 	/**
 	 * Construct a XMLEntity from a Tokener.
 	 *
 	 * @param tokener	A Tokener object containing the source string. or a duplicated key.
+	 * @param values	Value of Element
 	 * @return 			Itself
 	 */
-	public XMLEntity withValue(Tokener tokener) {
+	public XMLEntity withValue(Tokener tokener, Object values) {
 		if(tokener!=null) {
-			char c = tokener.nextClean(true);
+			Buffer buffer = null;
+			if(values instanceof Buffer) {
+				buffer = (Buffer) values;
+			} else if (values instanceof CharSequence) {
+				buffer = new CharacterBuffer().with((CharSequence) values);
+			}
+			if(buffer == null) {
+				return null;
+			}
+			char c = buffer.nextClean(true);
 			if(c != START) {
-				Object item = tokener.getString(tokener.length() - tokener.position());
+				Object item = buffer.getString(buffer.length() - buffer.position());
 				if(item  != null) {
 					this.valueItem = item.toString();
 				}
 				return this;
 			}
-			tokener.parseToEntity((Entity)this);
+			tokener.parseToEntity((Entity)this, buffer);
 		}
 		return this;
 	}
@@ -336,8 +345,8 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 
 	@Override
 	public XMLEntity withValue(Buffer values) {
-		Tokener tokener = new XMLTokener().withBuffer(values);
-		return withValue(tokener);
+		Tokener tokener = new XMLTokener();
+		return withValue(tokener, values);
 	}
 
 	/**

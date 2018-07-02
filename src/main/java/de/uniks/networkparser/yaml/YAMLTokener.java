@@ -24,8 +24,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 import de.uniks.networkparser.Tokener;
+import de.uniks.networkparser.buffer.Buffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.interfaces.BaseItem;
+import de.uniks.networkparser.interfaces.BufferItem;
 import de.uniks.networkparser.interfaces.EntityList;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.list.SimpleKeyValueList;
@@ -36,22 +38,24 @@ public class YAMLTokener extends Tokener {
 	public final static String STOPCHARS = "=# ";
 	public static final char RETURN='\n';
 	private SimpleKeyValueList<Object, SimpleKeyValueList<String, SimpleList<String>>> refs;
+
 	@Override
-	public void parseToEntity(EntityList entity) {
-		parseLine(0, entity);
+	public EntityList parseToEntity(EntityList entity, Buffer buffer) {
+		parseLine(0, entity,buffer);
+		return entity;
 	}
 
-	protected int parseLine(int deep, EntityList owner) {
-		char c = getCurrentChar();
+	protected int parseLine(int deep, EntityList owner, Buffer buffer) {
+		char c = buffer.getCurrentChar();
 		int newDeep = 0;
 		boolean read=false;
 		BaseItem item = null;
 		do {
 			if(read) {
-				c = getChar();
+				c = buffer.getChar();
 			}
 			read=true;
-			if(c == SPACE) {
+			if(c == BufferItem.SPACE) {
 				newDeep++;
 				continue;
 			}
@@ -59,26 +63,26 @@ public class YAMLTokener extends Tokener {
 				return newDeep;
 			}
 			if(c == '\r') {
-				c = getChar();
+				c = buffer.getChar();
 			}
 			if(c == '\n') {
 				// Next Line
-				parseLine(newDeep, owner);
+				parseLine(newDeep, owner, buffer);
 				c=0;
 				continue;
 			}
 			// Parsing the CurrentLine
 
-			CharacterBuffer buffer = null;
+			CharacterBuffer subBuffer = null;
 			switch (c) {
 				case 0:
 					break;
 				case ENTER:
 					break;
 				case '-':
-					c = getChar();
+					c = buffer.getChar();
 					// Must be a Space
-					if(c == SPACE) {
+					if(c == BufferItem.SPACE) {
 						// Collection
 						if(deep <= newDeep) {
 							// Add to Current List
@@ -91,10 +95,10 @@ public class YAMLTokener extends Tokener {
 					// Must be a String so its default
 //					break;
 				default:
-					if(buffer == null) {
-						buffer = new CharacterBuffer();
+					if(subBuffer == null) {
+						subBuffer = new CharacterBuffer();
 					}
-					buffer.with(c);
+					subBuffer.with(c);
 					break;
 			}
 		}while(c!=0);
@@ -119,7 +123,7 @@ public class YAMLTokener extends Tokener {
 	// objectList ::= type colName:* \n key: attrValue* \n*
 	// valueRow ::= attrValue* \n
 	public Object decode(String yaml) {
-		this.buffer = new CharacterBuffer().with(yaml);
+		CharacterBuffer buffer = new CharacterBuffer().with(yaml);
 		Object root = null;
 		refs = new SimpleKeyValueList<Object, SimpleKeyValueList<String, SimpleList<String>>>();
 		while (buffer.isEnd() == false) {
@@ -131,13 +135,13 @@ public class YAMLTokener extends Tokener {
 			CharacterBuffer key = buffer.nextString();
 			if (key.endsWith(":", true)) {
 				// usual
-				Object returnValue = parseUsualObjectAttrs(key);
+				Object returnValue = parseUsualObjectAttrs(key, buffer);
 				if(root == null) {
 					root = returnValue;
 				}
 				continue;
 			}
-			parseObjectTableAttrs(key);
+			parseObjectTableAttrs(key,buffer);
 		}
 
 		// CHECK IF REF NOT EMPTY
@@ -161,7 +165,7 @@ public class YAMLTokener extends Tokener {
 		return root;
 	}
 
-	private void parseObjectTableAttrs(CharacterBuffer currentToken) {
+	private void parseObjectTableAttrs(CharacterBuffer currentToken, Buffer buffer) {
 		// skip column names
 		if(currentToken == null || map == null) {
 			return;
@@ -175,7 +179,7 @@ public class YAMLTokener extends Tokener {
 
 		while (currentToken.length() > 0 && currentToken.endsWith(":", true)) {
 			colNameList.add(currentToken.rtrim(COLON).toString());
-			buffer.skipChar(SPACE);
+			buffer.skipChar(BufferItem.SPACE);
 			if(buffer.getCurrentChar()==RETURN) {
 				currentToken = buffer.nextString();
 				break;
@@ -228,7 +232,7 @@ public class YAMLTokener extends Tokener {
 		}
 	}
 
-	private Object parseUsualObjectAttrs(CharacterBuffer currentToken) {
+	private Object parseUsualObjectAttrs(CharacterBuffer currentToken, Buffer buffer) {
 		if(buffer == null || currentToken == null || map == null) {
 			return null;
 		}

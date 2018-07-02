@@ -49,7 +49,6 @@ public class HTMLEntity implements BaseItem {
 	public static final String KEY_HREF="href";
 	public static final String KEY_SRC="src";
 
-
 	private XMLEntity body = new XMLEntity().setType("body");
 	private XMLEntity header = new XMLEntity().setType("head");
 
@@ -157,10 +156,9 @@ public class HTMLEntity implements BaseItem {
 		}
 		if(values.length == 1 && values[0] instanceof String) {
 			XMLTokener tokener = new XMLTokener();
-			String content = (String) values[0];
-			tokener.withBuffer( content );
+			CharacterBuffer buffer = new CharacterBuffer().with((String) values[0]);
 			XMLEntity item=new XMLEntity();
-			tokener.parseToEntity((Entity)item);
+			tokener.parseToEntity((Entity)item, buffer);
 			Entity header = item.getElementBy(XMLEntity.PROPERTY_TAG, "header");
 			if(header != null && header instanceof XMLEntity) {
 				this.header = (XMLEntity) header;

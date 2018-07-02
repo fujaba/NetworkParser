@@ -119,7 +119,7 @@ public class XMLTest extends IOClasses{
 	@Test
 	public void simpleXMLDOM(){
 		String xml="<chatmsg sender=\"Stefan (\\\"Eraser\\\")\"><child item=\"child\">Value</child><child item=\"2.Kind\"/></chatmsg>";
-		XMLEntity xmlEntity = new XMLEntity().withValue(new XMLTokener().withBuffer(xml).withAllowQuote(true));
+		XMLEntity xmlEntity = new XMLEntity().withValue(new XMLTokener().withAllowQuote(true), xml);
 		xmlEntity.toString();
 		assertEquals(1, xmlEntity.size());
 		assertEquals(xml, xmlEntity.toString());

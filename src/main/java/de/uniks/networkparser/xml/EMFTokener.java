@@ -30,6 +30,7 @@ import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.MapEntity;
 import de.uniks.networkparser.Tokener;
+import de.uniks.networkparser.buffer.Buffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.graph.Association;
 import de.uniks.networkparser.graph.AssociationTypes;
@@ -84,26 +85,27 @@ public class EMFTokener extends Tokener{
 
 	/**
 	 * Skip the Current Entity to &gt;.
+	 * @param buffer	Buffer for Values
 	 */
-	protected void skipEntity() {
-		skipTo('>', false);
+	protected void skipEntity(Buffer buffer) {
+		buffer.skipTo('>', false);
 		// Skip >
-		nextClean(false);
+		buffer.nextClean(false);
 	}
 
-	public String skipHeader() {
+	public String skipHeader(Buffer buffer) {
 		boolean skip=false;
 		CharacterBuffer tag;
 		do {
-			tag = this.getString(2);
+			tag = buffer.getString(2);
 			if(tag == null) {
 				break;
 			}
 			if(tag.equals("<?")) {
-				skipEntity();
+				skipEntity(buffer);
 				skip = true;
 			} else if(tag.equals("<!")) {
-				skipEntity();
+				skipEntity(buffer);
 				skip = true;
 			} else {
 				skip = false;
@@ -111,7 +113,7 @@ public class EMFTokener extends Tokener{
 		}while(skip);
 		if(tag != null) {
 			String item = tag.toString();
-			this.buffer.withLookAHead(item);
+			buffer.withLookAHead(item);
 			return item;
 		}
 		return "";
@@ -229,13 +231,14 @@ public class EMFTokener extends Tokener{
 	 * Decode a Element from EMF
 	 *
 	 * @param map decoding runtime values
+	 * @param buffer	Buffer for Values
 	 * @param root The Root Element of Returnvalue
 	 * @return decoded Object
 	 */
-	public Object decode(MapEntity map, Object root) {
-		skipHeader();
+	public Object decode(MapEntity map, Buffer buffer, Object root) {
+		skipHeader(buffer);
 		XMLEntity xmlEntity = new XMLEntity();
-		xmlEntity.withValue(this.buffer);
+		xmlEntity.withValue(buffer);
 		if(EPACKAGE.equals(xmlEntity.getTag())) {
 			if(root instanceof GraphList) {
 				return decoding(xmlEntity, (GraphList)root);
@@ -568,8 +571,8 @@ public class EMFTokener extends Tokener{
 	public GraphList decoding(String content) {
 		return decoding(new XMLEntity().withValue(content), null);
 	}
-	public GraphList decoding(Tokener content) {
-		return decoding(new XMLEntity().withValue(this), null);
+	public GraphList decoding(Tokener content, Buffer buffer) {
+		return decoding(new XMLEntity().withValue(this, buffer), null);
 	}
 
 	private GraphList decoding(XMLEntity ecore, GraphList model) {

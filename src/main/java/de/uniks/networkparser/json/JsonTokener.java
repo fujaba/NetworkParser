@@ -34,8 +34,10 @@ import de.uniks.networkparser.MapEntity;
 import de.uniks.networkparser.NetworkParserLog;
 import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.Tokener;
+import de.uniks.networkparser.buffer.Buffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.interfaces.BaseItem;
+import de.uniks.networkparser.interfaces.BufferItem;
 import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.EntityList;
 import de.uniks.networkparser.interfaces.Grammar;
@@ -54,90 +56,89 @@ public class JsonTokener extends Tokener {
 	public static final char COMMENT='#';
 
 	@Override
-	public void parseToEntity(EntityList entityList) {
-		char c = nextClean(true);
+	public EntityList parseToEntity(EntityList entityList, Buffer buffer) {
+		char c = buffer.nextClean(true);
 		if (c != JsonArray.START) {
 			if (isError(this, "parseToEntity", NetworkParserLog.ERROR_TYP_PARSING, entityList)) {
 				throw new RuntimeException(
 						"A JSONArray text must start with '['");
 			}
-			return;
+			return entityList;
 		}
-		if ((nextClean(false)) != JsonArray.END) {
+		if ((buffer.nextClean(false)) != JsonArray.END) {
 			for (;;) {
-				c = getCurrentChar();
+				c = buffer.getCurrentChar();
 				if (c != ',') {
-					entityList.add(nextValue(entityList, false, false, (char)0));
+					entityList.add(nextValue(buffer, entityList, false, false, (char)0));
 				}
-				c = nextClean(true);
+				c = buffer.nextClean(true);
 				switch (c) {
 				case ';':
 				case ',':
-					if (nextClean(false) == JsonArray.END) {
-						return;
+					if (buffer.nextClean(false) == JsonArray.END) {
+						return entityList;
 					}
 					break;
 				case JsonArray.END:
-					skip();
-					return;
+					buffer.skip();
+					return entityList;
 				default:
 					if (isError(this, "parseToEntity", NetworkParserLog.ERROR_TYP_PARSING, entityList)) {
-						throw new RuntimeException(
-								"Expected a ',' or ']' not '"
-										+ getCurrentChar() + "'");
+						throw new RuntimeException( "Expected a ',' or ']' not '" + buffer.getCurrentChar() + "'");
 					}
-					return;
+					return entityList;
 				}
 			}
 		}
-		skip();
+		buffer.skip();
+		return entityList;
 	}
 
 	@Override
-	public Object nextValue(BaseItem creator, boolean allowQuote, boolean  allowDuppleMarks, char stopChar) {
-		stopChar = nextClean(true);
+	public Object nextValue(Buffer buffer, BaseItem creator, boolean allowQuote, boolean  allowDuppleMarks, char stopChar) {
+		stopChar = buffer. nextClean(true);
 
 		switch (stopChar) {
-		case QUOTES:
-			skip();
-			return EntityUtil.unQuote(nextString(new CharacterBuffer(), true, true, stopChar));
+		case BufferItem.QUOTES:
+			buffer.skip();
+			return EntityUtil.unQuote(nextString(buffer, new CharacterBuffer(), true, true, stopChar));
 		case '\\':
 			// Must be unquote
-			skip();
-			skip();
-			return nextString(new CharacterBuffer(), allowQuote, true, QUOTES);
+			buffer.skip();
+			buffer.skip();
+			return nextString(buffer, new CharacterBuffer(), allowQuote, true, BufferItem.QUOTES);
 		case JsonObject.START:
 			BaseItem element = creator.getNewList(true);
 			if (element instanceof Entity ) {
-				this.parseToEntity((Entity) element);
+				this.parseToEntity((Entity) element, buffer);
 			}
 			return element;
 		case JsonArray.START:
 			BaseItem item = creator.getNewList(false);
 			if (item instanceof EntityList) {
-				this.parseToEntity((EntityList) item);
+				this.parseToEntity((EntityList) item, buffer);
 			}
 			return item;
 		default:
 			break;
 		}
-		return super.nextValue(creator, allowQuote, allowDuppleMarks, stopChar);
+		return super.nextValue(buffer, creator, allowQuote, allowDuppleMarks, stopChar);
 	}
 
 	@Override
-	public boolean parseToEntity(Entity entity) {
+	public boolean parseToEntity(Entity entity, Buffer buffer) {
 		String key;
-		if (nextClean(true) != JsonObject.START) {
+		if (buffer.nextClean(true) != JsonObject.START) {
 			if (isError(this, "parseToEntity", NetworkParserLog.ERROR_TYP_PARSING, entity)) {
 				throw new RuntimeException("A JsonObject text must begin with '{' \n" + buffer);
 			}
 		}
-		skip();
+		buffer.skip();
 		boolean isQuote = true;
 		char stop=(char)0;
 		char c;
 		do {
-			c = nextClean(true);
+			c = buffer.nextClean(true);
 			switch (c) {
 			case 0:
 				if (isError(this, "parseToEntity", NetworkParserLog.ERROR_TYP_PARSING, entity)) {
@@ -146,28 +147,28 @@ public class JsonTokener extends Tokener {
 				return false;
 			case '\\':
 				// unquote
-				skip();
+				buffer.skip();
 				isQuote = false;
 				continue;
 			case COMMENT:
-				skip();
-				skipTo(BaseItem.CRLF, false, false);
+				buffer.skip();
+				buffer.skipTo(BaseItem.CRLF, false, false);
 				continue;
 			case '/':
-				c = nextClean(false);
+				c = buffer.nextClean(false);
 				if('/' == c) {
-					skipTo(BaseItem.CRLF, false, false);
+					buffer.skipTo(BaseItem.CRLF, false, false);
 					continue;
 				} else if('*' == c) {
-					skipTo("*/", true, false);
+					buffer.skipTo("*/", true, false);
 					continue;
 				}
 			case JsonObject.END:
-				skip();
+				buffer.skip();
 				return true;
 			case ',':
-				skip();
-				Object keyValue = nextValue(entity, isQuote, false, stop);
+				buffer.skip();
+				Object keyValue = nextValue(buffer, entity, isQuote, false, stop);
 				if(keyValue == null) {
 					// No Key Found Must be an empty statement
 					return true;
@@ -175,17 +176,17 @@ public class JsonTokener extends Tokener {
 				key = keyValue.toString();
 				break;
 			default:
-				key = nextValue(entity, isQuote, false, stop).toString();
+				key = nextValue(buffer, entity, isQuote, false, stop).toString();
 			}
-			c = nextClean(true);
+			c = buffer.nextClean(true);
 			if (c != COLON && c != ENTER) {
 				if (isError(this, "parseToEntity", NetworkParserLog.ERROR_TYP_PARSING, entity)) {
-					throw new RuntimeException("Expected a ':' after a key ["+ getString(30).toString() + "]");
+					throw new RuntimeException("Expected a ':' after a key ["+ buffer.getString(30).toString() + "]");
 				}
 				return false;
 			}
-			getChar();
-			entity.put(key, nextValue(entity, isQuote, false, stop));
+			buffer.getChar();
+			entity.put(key, nextValue(buffer, entity, isQuote, false, stop));
 		}while(c!=0);
 		return true;
 	}

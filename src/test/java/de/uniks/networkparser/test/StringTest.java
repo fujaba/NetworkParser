@@ -14,9 +14,7 @@ import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.buffer.CharacterReader;
 import de.uniks.networkparser.converter.ByteConverterHex;
 import de.uniks.networkparser.interfaces.BaseItem;
-import de.uniks.networkparser.json.JsonTokener;
 import de.uniks.networkparser.list.SimpleList;
-import de.uniks.networkparser.xml.XMLTokener;
 
 public class StringTest {
 	@Test
@@ -26,10 +24,9 @@ public class StringTest {
 
 		test.with(ref);
 		Assert.assertEquals(ref.length(), test.length());
-		XMLTokener tokener = new XMLTokener();
-		tokener.withBuffer(ref);
 
-		Object item = tokener.getString(tokener.length() - tokener.position());
+		CharacterBuffer buffer = new CharacterBuffer().with(ref);
+		Object item = buffer.getString(buffer.length() - buffer.position());
 
 		String tokenerString = item.toString();
 		Assert.assertEquals(ref.length(), tokenerString.length());
@@ -200,9 +197,10 @@ public class StringTest {
 		Assert.assertEquals(2, bytes.length);
 		Assert.assertNotNull((Character)test.charAt(0));
 		Assert.assertNotNull(bytes[0]);
-		JsonTokener jsonTokener = (JsonTokener) new JsonTokener().withBuffer(test);
-		Assert.assertNotNull(jsonTokener.nextString(new CharacterBuffer(), true, false, '\"'));
-		Assert.assertNotNull(jsonTokener.nextString(new CharacterBuffer(), true, false, '\"'));
+//		JsonTokener jsonTokener = (JsonTokener) new JsonTokener();
+		CharacterBuffer buffer = new CharacterBuffer().with(test);
+		Assert.assertNotNull(buffer.nextString(new CharacterBuffer(), true, false, '\"'));
+		Assert.assertNotNull(buffer.nextString(new CharacterBuffer(), true, false, '\"'));
 	}
 
 	@Test

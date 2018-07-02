@@ -21,6 +21,7 @@ import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.TextDiff;
 import de.uniks.networkparser.UpdateAccumulate;
+import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.converter.EntityStringConverter;
 import de.uniks.networkparser.ext.PropertyChangeEventWrapper;
 import de.uniks.networkparser.interfaces.ObjectCondition;
@@ -130,7 +131,7 @@ public class JsonTest extends IOClasses {
 		String functionJson = "{body:\"public main() {\r\n\tconsole.log('Hallo Welt');\n\t}\"}";
 
 		JsonObject jsonObject = new JsonObject();
-		new JsonTokener().withBuffer(functionJson).parseToEntity(jsonObject);
+		new JsonTokener().parseToEntity(jsonObject, new CharacterBuffer().with(functionJson));
 		Assert.assertEquals(
 				"{\"body\":\"public main() {\\u000d\\u000a\\u0009console.log(\'Hallo Welt\');\\u000a\\u0009}\"}",
 				jsonObject.toString(2));

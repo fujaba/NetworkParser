@@ -439,20 +439,20 @@ public class DateTimeEntity {
 	/**
 	 * format a date with the formatString
 	 *
-	 * @param dateFormat	The Format
+	 * @param format		The Format
 	 * @return 				a String of Date
 	 */
-	public String toString(String dateFormat) {
+	public String toString(String format) {
 		initDate();
 		calculate();
 		CharacterBuffer sb = new CharacterBuffer();
 		String sub;
 		Tokener tokener = new Tokener();
-		dateFormat = dateFormat.replaceAll("'", "\"");
-		tokener.withBuffer(dateFormat);
+		CharacterBuffer dateFormat = new CharacterBuffer().with(format);
+		dateFormat.replace('\'', '\"');
 		boolean isString = false;
 		do {
-			sub = tokener.nextString(new CharacterBuffer(), false, false, '"').toString();
+			sub = tokener.nextString(dateFormat, new CharacterBuffer(), false, false, '"').toString();
 			//FIXME Change String to StringContainter
 			if (sub.length() > 0 && !isString) {
 				// System.out.println(count++
@@ -503,8 +503,8 @@ public class DateTimeEntity {
 
 			}
 			sb.with(sub);
-			if(tokener.getCurrentChar()=='\"') {
-				tokener.getChar();
+			if(dateFormat.getCurrentChar()=='\"') {
+				dateFormat.getChar();
 			}
 			isString = !isString;
 		} while (sub.length() > 0);

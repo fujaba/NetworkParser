@@ -26,6 +26,7 @@ THE SOFTWARE.
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.Tokener;
 import de.uniks.networkparser.buffer.Buffer;
+import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.converter.EntityStringConverter;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Entity;
@@ -219,8 +220,10 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements En
 			return this;
 		}
 		if (values.length > 0) {
-			Tokener tokener = new JsonTokener().withBuffer(values[0]);
-			return withTokener(tokener);
+			CharacterBuffer buffer = new CharacterBuffer().with(values[0]);
+			Tokener tokener = new JsonTokener();
+			tokener.parseToEntity(this, buffer);
+			return this;
 		}
 		return this;
 	}
@@ -232,20 +235,11 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements En
 	 * @return Itself
 	 */
 	public JsonObject withValue(Buffer values) {
-		new JsonTokener().withBuffer(values).parseToEntity(this);
+		new JsonTokener().parseToEntity(this, values);
 		return this;
 	}
 
-	/**
-	 * Tokener to init the JsonObject
-	 *
-	 * @param x		tokener to add values with the tokener
-	 * @return Itself
-	 */
-	public JsonObject withTokener(Tokener x) {
-		x.parseToEntity(this);
-		return this;
-	}
+
 
 	/**
 	 * Tokener to init the JsonObject

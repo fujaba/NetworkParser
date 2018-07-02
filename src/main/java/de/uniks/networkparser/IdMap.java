@@ -799,8 +799,8 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 		EMFTokener tokener = new EMFTokener();
 		MapEntity map = new MapEntity(filter, flag, this, tokener);
 		tokener.withMap(this);
-		tokener.withBuffer(value);
-		return tokener.decode(map, root);
+		CharacterBuffer buffer = new CharacterBuffer().with(value);
+		return tokener.decode(map, buffer, root);
 	}
 
 	/**
@@ -848,23 +848,24 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 		if (filter == null) {
 			filter = this.filter;
 		}
-		if(value instanceof Tokener) {
+		if(value instanceof Tokener && target instanceof Buffer) {
+			Buffer element = (Buffer) target;
 			Tokener tokener = (Tokener) value;
-			char firstChar = tokener.nextClean(true);
+			char firstChar = element.nextClean(true);
 			if (firstChar == JsonArray.START) {
-				return decode(new JsonArray().withValue(tokener));
+				return decode(tokener.parseToEntity(new JsonArray(), element));
 			}
 			if (firstChar == XMLEntity.START) {
 				MapEntity map = new MapEntity(filter, flag, this, tokener);
 				if (tokener instanceof XMLTokener) {
 					XMLTokener xmlTokener = (XMLTokener) tokener;
-					xmlTokener.skipHeader();
-					return decodingXMLEntity(xmlTokener, map);
+					xmlTokener.skipHeader(element);
+					return decodingXMLEntity(xmlTokener, element, map);
 				}
 				else if (tokener instanceof EMFTokener) {
 					EMFTokener xmlTokener = (EMFTokener) tokener;
 					xmlTokener.withMap(this);
-					return ((EMFTokener) xmlTokener).decode(map, null);
+					return ((EMFTokener) xmlTokener).decode(map, element, null);
 				}
 				return null;
 			}
@@ -872,7 +873,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 			if (item == null) {
 				return null;
 			}
-			tokener.parseToEntity(item);
+			tokener.parseToEntity(item, element);
 			return decode(item);
 		}
 
@@ -890,11 +891,10 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 			} else if(JsonArray.START == firstChar) {
 				valueItem = this.jsonTokener.newInstanceList().withValue(buffer);
 			} else if(XMLEntity.START == firstChar) {
-				XMLTokener tokener = new XMLTokener().withMap(this);
+				XMLTokener tokener = this.xmlTokener; 
 				MapEntity map = new MapEntity(filter, flag, this, tokener);
-				tokener.withBuffer(buffer);
-				tokener.skipHeader();
-				return decodingXMLEntity(tokener, map);
+				tokener.skipHeader(buffer);
+				return decodingXMLEntity(tokener, buffer, map);
 			} else {
 				MapEntity map = new MapEntity(filter, flag, this, byteTokener);
 				// MUST BE BYTE
@@ -926,7 +926,8 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 			return decodingJsonArray((JsonArray) value, map);
 		}
 		if (value instanceof XMLEntity) {
-			return decodingXMLEntity(new XMLTokener().withMap(this).withBuffer(value.toString()), map);
+			CharacterBuffer buffer = new CharacterBuffer().with(value.toString());
+			return decodingXMLEntity(this.xmlTokener, buffer, map);
 		}
 		if (value instanceof ByteEntity) {
 			ByteEntity entity = (ByteEntity) value;
@@ -945,12 +946,12 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 	 * @return the Model-Instance
 	 */
 
-	private Object decodingXMLEntity(XMLTokener tokener, MapEntity map) {
-		if (tokener.skipTo(XMLEntity.START, false)) {
+	private Object decodingXMLEntity(XMLTokener tokener, Buffer buffer, MapEntity map) {
+		if (buffer.skipTo(XMLEntity.START, false)) {
 			map.withStack(new MapEntityStack());
 			//FIRST TAG
-			tokener.parseEntity(tokener, map);
-			return tokener.parse(tokener, map);
+			tokener.parseEntity(tokener, buffer, map);
+			return tokener.parse(tokener, buffer, map);
 		}
 		return null;
 	}

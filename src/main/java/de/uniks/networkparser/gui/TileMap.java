@@ -25,6 +25,7 @@ THE SOFTWARE.
 */
 import de.uniks.networkparser.MapEntity;
 import de.uniks.networkparser.Pos;
+import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorTag;
@@ -338,10 +339,11 @@ public class TileMap implements SendableEntityCreatorTag {
 		MapEntity map = new MapEntity(null);
 		map.withStack(new MapEntityStack().withStack(tag, entity, entity));
 		XMLTokener tokener = new XMLTokener();
-		tokener.withBuffer(value);
-		tokener.skipHeader();
-		tokener.skipTo(' ', false);
-		tokener.parse(tokener, map);
+		CharacterBuffer buffer = new CharacterBuffer().with(value);
+		tokener.skipHeader(buffer);
+		buffer.skipTo(' ', false);
+
+		tokener.parse(tokener, buffer, map);
 		return entity;
 	}
 

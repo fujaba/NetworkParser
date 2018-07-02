@@ -57,9 +57,16 @@ public class ExcelParser {
 
 		IdMap map = new IdMap();
 		map.add(new ExcelCell());
-		XMLTokener tokener = new XMLTokener().withBuffer(sheetFile.toString()).withMap(map);
+		XMLTokener tokener = new XMLTokener().withMap(map);
 		tokener.withDefaultFactory(new XMLEntityCreator());
-		XMLEntity sheet = (XMLEntity) map.decode(tokener);
+		CharacterBuffer buffer = null;
+		if(sheetFile instanceof CharacterBuffer) {
+			buffer = (CharacterBuffer) sheetFile;
+		} else {
+			buffer = new CharacterBuffer().with(sheetFile.toString());
+		}
+		
+		XMLEntity sheet = (XMLEntity) map.decode(tokener, buffer, map.getFilter());
 		XMLEntity sharedStrings = null;
 		if (stringFile != null) {
 			sharedStrings = (XMLEntity) map.decode(stringFile.toString());

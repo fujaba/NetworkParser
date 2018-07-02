@@ -27,8 +27,8 @@ import java.util.Iterator;
 
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.IdMap;
-import de.uniks.networkparser.Tokener;
 import de.uniks.networkparser.buffer.Buffer;
+import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.converter.EntityStringConverter;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.EntityList;
@@ -222,19 +222,8 @@ public class JsonArray extends SortedList<Object> implements EntityList {
 	public JsonArray withValue(String value) {
 		clear();
 		JsonTokener tokener = new JsonTokener();
-		tokener.withBuffer(value);
-		tokener.parseToEntity(this);
-		return this;
-	}
-
-	/**
-	 * JSONArray from a JSONTokener.
-	 *
-	 * @param x	A JSONTokener
-	 * @return Itself
-	 */
-	public JsonArray withValue(Tokener x) {
-		x.parseToEntity(this);
+		CharacterBuffer buffer = new CharacterBuffer().with(value);
+		tokener.parseToEntity(this, buffer);
 		return this;
 	}
 
@@ -245,7 +234,7 @@ public class JsonArray extends SortedList<Object> implements EntityList {
 	 * @return Itself
 	 */
 	public JsonArray withValue(Buffer values) {
-		new JsonTokener().withBuffer(values).parseToEntity(this);
+		new JsonTokener().parseToEntity(this, values);
 		return this;
 	}
 

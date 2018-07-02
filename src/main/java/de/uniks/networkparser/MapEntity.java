@@ -117,7 +117,7 @@ public class MapEntity extends AbstractList<Object>{
 		this.target = target;
 		return this;
 	}
-	
+
 	public MapEntity withStrategy(String value) {
 		if(value != null) {
 			this.filter.withStrategy(value);

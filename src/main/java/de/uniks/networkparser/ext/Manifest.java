@@ -25,7 +25,7 @@ THE SOFTWARE.
 */
 import java.io.IOException;
 import java.io.InputStream;
-import de.uniks.networkparser.Tokener;
+
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 
@@ -77,7 +77,8 @@ public class Manifest extends SimpleKeyValueList<String, String>{
 
 	public static Manifest create(CharSequence value) {
 		Manifest manifest = new Manifest();
-		Tokener tokener=new Tokener().withBuffer(value);
+		CharacterBuffer tokener = new CharacterBuffer().with(value);
+//		Tokener tokener=new Tokener().withBuffer(value);
 		while(tokener.isEnd() == false) {
 			CharacterBuffer section = tokener.nextToken(true, SPLITTER);
 			CharacterBuffer sectionheader = tokener.nextToken(false, CRLF);

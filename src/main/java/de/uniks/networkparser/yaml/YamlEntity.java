@@ -44,7 +44,7 @@ public class YamlEntity extends SortedList<Object> implements EntityList {
 
 	@Override
 	public YamlEntity withValue(Buffer values) {
-		new YAMLTokener().withBuffer(values).parseToEntity(this);
+		new YAMLTokener().parseToEntity(this, values);
 		return this;
 	}
 
