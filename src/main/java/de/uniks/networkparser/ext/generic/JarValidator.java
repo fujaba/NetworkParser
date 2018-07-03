@@ -239,6 +239,9 @@ public class JarValidator {
 	}
 	
 	private boolean analyseFile(File file) {
+		if(file == null || file.exists() == false) {
+			return false;
+		}
 		JarClassLoader jarClassLoader = null;
 		JarFile jarFile = null;
 		try {

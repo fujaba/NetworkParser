@@ -80,7 +80,7 @@ task JavaGit(type:JavaExec, dependsOn: compileJava18) {
 			def json = slurper.parseText(stdOutput.toString())
 			
 			gitVersion.minor = json.get("minor")
-			gitVersion.revision = json.get("revisionnumber")
+			gitVersion.revision = json.get("revisionnumber") + 3
 			gitVersion.hash = json.get("lastcommit")
 			gitVersion.buildTime = buildTime()
 			gitVersion.branch = json.get("branchname")
