@@ -35,7 +35,6 @@ import java.net.UnknownHostException;
 import de.uniks.networkparser.DateTimeEntity;
 import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.ext.generic.ReflectionLoader;
-import de.uniks.networkparser.ext.javafx.SimpleController;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.list.SimpleList;
 

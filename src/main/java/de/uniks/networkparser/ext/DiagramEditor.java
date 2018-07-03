@@ -38,6 +38,7 @@ import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.converter.GraphConverter;
+import de.uniks.networkparser.ext.generic.JarValidator;
 import de.uniks.networkparser.ext.generic.ReflectionBlackBoxTester;
 import de.uniks.networkparser.ext.generic.ReflectionLoader;
 import de.uniks.networkparser.ext.git.GitRevision;
@@ -45,7 +46,6 @@ import de.uniks.networkparser.ext.io.FileBuffer;
 import de.uniks.networkparser.ext.javafx.GUIEvent;
 import de.uniks.networkparser.ext.javafx.JavaAdapter;
 import de.uniks.networkparser.ext.javafx.JavaBridgeFX;
-import de.uniks.networkparser.ext.javafx.SimpleController;
 import de.uniks.networkparser.ext.javafx.dialog.DialogBox;
 import de.uniks.networkparser.ext.petaf.Message;
 import de.uniks.networkparser.ext.petaf.proxy.NodeProxyTCP;
@@ -121,7 +121,7 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 	}
 
 	public static void main(String[] args) {
-		if(args != null && args.length>0) {
+		if(args != null && args.length>0 && args[0] != null) {
 			if("GIT".equalsIgnoreCase(args[0])) {
 				GitRevision revision = new GitRevision();
 				try {
@@ -134,10 +134,48 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 					}
 					System.out.println(revision.execute(commit));
 				}catch (Exception e) {
+					e.printStackTrace();
 				}
 				return;
 			}
-			if(args[0] != null && args[0].toLowerCase().startsWith("test=")) {
+			if("JARVALIDATOR".equalsIgnoreCase(args[0])) {
+				JarValidator validator = new JarValidator();
+				boolean isValidate=false;
+				boolean isAnalyseJar=false;
+				for(String item : args) {
+					if(item == null) {
+						continue;
+					}
+					item = item.toLowerCase();
+					if(item.startsWith("coverage=")) {
+						String param = item.substring(9);
+						try {
+							Integer no = Integer.valueOf(param);
+							validator.withMinCoverage(no);
+							isValidate = true;
+						}catch (Exception e) {
+						}
+					} else if(item.startsWith("path=")) {
+						String param = item.substring(5);
+						validator.withPath(param);
+						isAnalyseJar = true;
+					} else if(item.startsWith("fatjar")) {
+						isAnalyseJar = true;
+					}
+				}
+				if(isValidate) {
+					validator.validate();
+					validator.analyseReport();
+				}
+				if(isAnalyseJar) {
+					validator.searchFiles();
+					if(validator.printAnalyse()) {
+						System.exit(validator.count() * -1);
+					}
+				}
+				return;
+			}
+			if(args[0].toLowerCase().startsWith("test=")) {
 				ReflectionBlackBoxTester.mainTester(args);
 				return;
 			}
@@ -328,7 +366,7 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 			}
 		}
 		GraphConverter converter = new GraphConverter();
-		ClassModel modelGen = converter.convertFromJson(model);
+		ClassModel modelGen = (ClassModel) converter.convertFromJson(model, new ClassModel());
 		if(modelGen == null) {
 //		if (model.has(GraphConverter.NODES) == false) {
 			System.err.println("no Nodes");

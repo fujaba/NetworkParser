@@ -1,7 +1,7 @@
 package de.uniks.networkparser.test.javafx;
 
 import de.uniks.networkparser.IdMap;
-import de.uniks.networkparser.ext.javafx.SimpleController;
+import de.uniks.networkparser.ext.SimpleController;
 import de.uniks.networkparser.gui.Column;
 import de.uniks.networkparser.gui.controls.TableComponent;
 import de.uniks.networkparser.test.model.GroupAccount;

@@ -13,7 +13,7 @@ import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.xml.XMLEntity;
 
-public class GUIConverter implements Converter{
+public class GUIConverter implements Converter {
 	private SimpleKeyValueList<String, Control> factory;
 	
 	public GUIConverter() {

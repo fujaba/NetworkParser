@@ -27,7 +27,6 @@ import java.util.ArrayList;
 
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.buffer.CharacterBuffer;
-import de.uniks.networkparser.ext.ClassModel;
 import de.uniks.networkparser.graph.Association;
 import de.uniks.networkparser.graph.AssociationTypes;
 import de.uniks.networkparser.graph.Attribute;
@@ -243,21 +242,24 @@ public class GraphConverter implements Converter{
 		return jsonRoot;
 	}
 
-	public ClassModel convertFromJson(Entity model) {
+	public GraphModel convertFromJson(Entity model, GraphModel reference) {
 		if (model.has(NODES) == false) {
 			return null;
 		}
 		EntityList nodes = (EntityList) model.getValue(NODES);
-		ClassModel classModel = new ClassModel(model.getString("package"));
+		if(reference == null) {
+			reference = new GraphList().with(model.getString("package"));
+		}
+		reference.with(model.getString("package"));
 		for (int i = 0; i < nodes.size(); i++) {
 			Object item = nodes.getChild(i);
 			if (item instanceof Entity) {
 				Entity node = (Entity) item;
 				Clazz clazz;
 				if(node.has(LABEL)) {
-					clazz = classModel.createClazz(node.getString(LABEL));
+					clazz = reference.createClazz(node.getString(LABEL));
 				} else {
-					clazz = classModel.createClazz(node.getString(ID));
+					clazz = reference.createClazz(node.getString(ID));
 				}
 				String type = node.getString(TYPE);
 				if(type != null && type.length() > 0) {
@@ -342,8 +344,8 @@ public class GraphConverter implements Converter{
 					Entity source = (Entity) edge.getValue(SOURCE);
 					Entity target = (Entity) edge.getValue(TARGET);
 					if(source.has(CLAZZ) && target.has(CLAZZ)) {
-						Association from = new Association(GraphUtil.getByObject(classModel, source.getString(CLAZZ), true));
-						Association to = new Association(GraphUtil.getByObject(classModel, target.getString(CLAZZ), true));
+						Association from = new Association(GraphUtil.getByObject(reference, source.getString(CLAZZ), true));
+						Association to = new Association(GraphUtil.getByObject(reference, target.getString(CLAZZ), true));
 						from.with(to);
 						from.with(Cardinality.create(source.getString(CARDINALITY)));
 						to.with(Cardinality.create(target.getString(CARDINALITY)));
@@ -352,15 +354,15 @@ public class GraphConverter implements Converter{
 						from.with(AssociationTypes.valueOf(source.getString(TYPE)));
 						to.with(AssociationTypes.valueOf(target.getString(TYPE)));
 					} else if(edge.getString(TYPE).equalsIgnoreCase("edge")) {
-						Clazz fromClazz = GraphUtil.getByObject(classModel, source.getString(ID), true);
-						Clazz toClazz = GraphUtil.getByObject(classModel, target.getString(ID), true);
+						Clazz fromClazz = GraphUtil.getByObject(reference, source.getString(ID), true);
+						Clazz toClazz = GraphUtil.getByObject(reference, target.getString(ID), true);
 						fromClazz.withBidirectional(toClazz, target.getString("property"), Cardinality.ONE, source.getString("property"), Cardinality.ONE);
 					}
 				}
 			}
 		}
-		classModel.fixClassModel();
-		return classModel;
+		reference.fixClassModel();
+		return reference;
 	}
 
 	private EntityList parseEdges(String type, SimpleSet<Association> edges,

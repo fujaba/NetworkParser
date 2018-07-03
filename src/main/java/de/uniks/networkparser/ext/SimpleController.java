@@ -1,5 +1,6 @@
-package de.uniks.networkparser.ext.javafx;
+package de.uniks.networkparser.ext;
 
+import java.io.BufferedReader;
 /*
 The MIT License
 
@@ -25,6 +26,7 @@ THE SOFTWARE.
 */
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.lang.reflect.Field;
 import java.net.MalformedURLException;
@@ -37,12 +39,10 @@ import java.util.Map;
 
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.buffer.CharacterBuffer;
-import de.uniks.networkparser.ext.DiagramEditor;
-import de.uniks.networkparser.ext.ErrorHandler;
-import de.uniks.networkparser.ext.Os;
-import de.uniks.networkparser.ext.StartData;
 import de.uniks.networkparser.ext.generic.ReflectionLoader;
 import de.uniks.networkparser.ext.io.StringPrintStream;
+import de.uniks.networkparser.ext.javafx.GUIEvent;
+import de.uniks.networkparser.ext.javafx.JavaAdapter;
 import de.uniks.networkparser.ext.petaf.proxy.NodeProxyTCP;
 import de.uniks.networkparser.gui.JavaBridge;
 import de.uniks.networkparser.gui.JavaViewAdapter;
@@ -755,5 +755,38 @@ public class SimpleController implements ObjectCondition{
 	
 	public JavaBridge getBridge() {
 		return bridge;
+	}
+	
+	public static CharacterBuffer executeProcess(String...values) {
+		CharacterBuffer result = new CharacterBuffer();
+		if(values == null) {
+			return result;
+		}
+		try {
+			String line;
+			ArrayList<String> param=new ArrayList<String>();
+			if(Os.isUnix()) {
+				param.add("/bin/sh");
+				param.add("-c");
+			} else {
+				param.add("cmd.exe");
+				param.add("/c");
+			}
+			for(String item : values) {
+				if(item != null) {
+					param.add(item);
+				}
+			}
+			values = param.toArray(new String[param.size()]);
+			Process p = Runtime.getRuntime().exec(values);
+			BufferedReader input = new BufferedReader(new InputStreamReader(p.getInputStream()));
+			while ((line = input.readLine()) != null) {
+				result.withLine(line);
+			}
+			input.close();
+		} catch (Exception err) {
+			err.printStackTrace();
+		}
+		return result;
 	}
 }

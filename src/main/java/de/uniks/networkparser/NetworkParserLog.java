@@ -5,7 +5,6 @@ import java.util.logging.Handler;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
-import de.uniks.networkparser.ext.LogItem;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 
 /*
@@ -106,7 +105,7 @@ public class NetworkParserLog extends Handler {
 		return false;
 	}
 
-	public boolean print(Object owner, LogItem item) {
+	public boolean print(Object owner, Object item) {
 		if(condition!= null) {
 			return condition.update(new SimpleEvent(owner, null, null, item).withType(LOG));
 		}

@@ -1,6 +1,6 @@
 package de.uniks.networkparser.test.javafx;
 
-import de.uniks.networkparser.ext.javafx.SimpleController;
+import de.uniks.networkparser.ext.SimpleController;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.layout.AnchorPane;

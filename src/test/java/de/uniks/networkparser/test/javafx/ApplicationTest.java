@@ -1,6 +1,6 @@
 package de.uniks.networkparser.test.javafx;
 
-import de.uniks.networkparser.ext.javafx.SimpleController;
+import de.uniks.networkparser.ext.SimpleController;
 import de.uniks.networkparser.ext.javafx.controller.ModelListenerFactory;
 import de.uniks.networkparser.test.model.GUIEntity;
 import javafx.application.Application;
