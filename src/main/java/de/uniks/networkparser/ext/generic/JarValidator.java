@@ -19,13 +19,13 @@ import de.uniks.networkparser.ext.io.FileBuffer;
 
 public class JarValidator {
 	private int minCoverage=0;
-	private String path="build/libs";
+	private String path;
 	private String file = "build/jacoco/html/index.html";
 	public static final String JARFILE = ".jar";
 	public static final String CLASSFILESUFFIX = ".class";
 	private ArrayList<String> warnings = new ArrayList<String>();
 	private ArrayList<String> errors = new ArrayList<String>();
-
+	
 	public JarValidator withMinCoverage(int no) {
 		this.minCoverage = no;
 		return this;

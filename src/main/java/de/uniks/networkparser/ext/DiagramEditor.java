@@ -140,6 +140,7 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 			}
 			if("JARVALIDATOR".equalsIgnoreCase(args[0])) {
 				JarValidator validator = new JarValidator();
+				validator.withPath("build/libs");
 				boolean isValidate=false;
 				boolean isAnalyseJar=false;
 				for(String item : args) {
@@ -163,15 +164,21 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 						isAnalyseJar = true;
 					}
 				}
+				int exit=0;
 				if(isValidate) {
 					validator.validate();
-					validator.analyseReport();
+					if(validator.analyseReport() == false) {
+						exit = -1;
+					}
 				}
 				if(isAnalyseJar) {
 					validator.searchFiles();
 					if(validator.printAnalyse()) {
-						System.exit(validator.count() * -1);
+						exit = validator.count() * -1;
 					}
+				}
+				if(exit < 0) {
+					System.exit(exit);
 				}
 				return;
 			}
