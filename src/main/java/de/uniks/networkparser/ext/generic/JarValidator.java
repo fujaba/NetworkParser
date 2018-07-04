@@ -293,22 +293,48 @@ public class JarValidator {
 						method.getName();
 //	//					System.out.println(method.getReturnType());
 					}
-					Constructor<?> emptyConstructor = wantedClass.getConstructor();
-					if (emptyConstructor != null) {
-						if(Modifier.isPublic(emptyConstructor.getModifiers()) == false) {
-							continue;
-						}
+					
+					// Find Constructor
+					Constructor<?>[] constructors = wantedClass.getConstructors();
+					if(constructors == null || constructors.length<1) {
 						Object newInstance = ReflectionLoader.newInstance(wantedClass);
 						if(newInstance == null) {
 							errors.add(jarEntry.getName());
+						}
+					} else {
+						boolean valid=false;
+						for(Constructor<?> con : constructors) {
+							try {
+							}catch (Exception e) {
+							}
+						}
+//						if (emptyConstructor != null) {
+//						if(Modifier.isPublic(emptyConstructor.getModifiers()) == false) {
+//							continue;
+//						}
+//						Object newInstance = ReflectionLoader.newInstance(wantedClass);
+//						if(newInstance == null) {
+//							errors.add(jarEntry.getName());
+//						}
 					}
+				} catch (Exception e) {
+					errors.add(jarEntry.getName() + "-"+e.getMessage());
 				}
-			} catch (Exception e) {
-				errors.add(jarEntry.getName() + "-"+e.getMessage());
+//				
+//				
+//						Object newInstance = ReflectionLoader.newInstance(wantedClass);
+//						if(newInstance == null) {
+//							errors.add(jarEntry.getName());
+//						}
+//			}
+//					}
+//				} catch (Throwable e) {
+//					errors.add(jarEntry.getName() + "-"+e.getMessage());
+//				}
 			}
-		}
 		} catch (IOException e) {
-			e.printStackTrace();
+			errors.add(file.getName() + "-"+e.getMessage());
+//			e.printStackTrace();
 		} finally {
 			try {
 				if(jarClassLoader != null) {

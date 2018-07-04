@@ -118,7 +118,11 @@ task version() {
 }
 ext {
 	gitVersion = new GITVersion(major: ext.majorNumber)
-	tasks.JavaGit.execute()
+	try {
+		tasks.JavaGit.execute()
+	} catch(e){
+	}
+	
 }
 version = gitVersion
 

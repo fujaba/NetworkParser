@@ -34,20 +34,15 @@ import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.list.SimpleIteratorSet;
 import de.uniks.networkparser.list.SimpleList;
-/**
- * The listener interface for receiving update events. The class that is
- * interested in processing a update event implements this interface, and the
- * object created with that class is registered with a component using the
- * component's <code>addUpdateListener</code> method. When the update event
- * occurs, that object's appropriate method is invoked.
- * @author Stefan Lindel
- */
-public class UpdateListener implements MapListener {
+public class UpdateListener implements MapListener, ObjectCondition {
 	/** The map. */
 	private IdMap map;
 	private Tokener factory;
 	/** The suspend id list. */
 	private SimpleList<UpdateAccumulate> suspendIdList;
+
+	/** The update listener. */
+	protected ObjectCondition condition;
 
 	private Filter updateFilter = new Filter().withStrategy(SendableEntityCreator.UPDATE).withConvertable(new UpdateCondition());
 
@@ -258,18 +253,16 @@ public class UpdateListener implements MapListener {
 //		Object prio = updateMessage.getValue(Filter.PRIO);
 		Object masterObj = this.map.getObject(id);
 		if (masterObj == null) {
-		   String masterObjClassName = (String) updateMessage.getValue(IdMap.CLASS);
-
-		   if (masterObjClassName != null) {
-			  // cool, lets make it
-			  SendableEntityCreator creator = this.map.getCreator(masterObjClassName, true, null);
-			  masterObj = creator.getSendableInstance(false);
-		   }
-		   if (masterObj == null)
-		   {
-			   return null;
-		   }
-		   this.map.put(id, masterObj, false);
+			String masterObjClassName = (String) updateMessage.getValue(IdMap.CLASS);
+			if (masterObjClassName != null) {
+				// cool, lets make it
+				SendableEntityCreator creator = this.map.getCreator(masterObjClassName, true, null);
+				masterObj = creator.getSendableInstance(false);
+			}
+			if (masterObj == null) {
+				return null;
+			}
+			this.map.put(id, masterObj, false);
 		}
 		SendableEntityCreator creator = this.map.getCreatorClass(masterObj);
 		if (remove == null && update != null) {
@@ -414,5 +407,41 @@ public class UpdateListener implements MapListener {
 			return this.map.removeObj(oldValue, destroy);
 		}
 		return false;
+	}
+	
+	public UpdateListener withCondition(ObjectCondition condition) {
+		this.condition = condition;
+		return this;
+	}
+
+	@Override
+	public boolean update(Object value) {
+		if(value instanceof SimpleEvent == false || condition == null) {
+			return false;
+		}
+		SimpleEvent evt = (SimpleEvent) value;
+		Object oldValue = evt.getOldValue();
+		Object newValue = evt.getNewValue();
+
+		if ((oldValue == null && newValue == null)
+				|| (oldValue != null && oldValue.equals(newValue))) {
+			// Nothing to do
+			return false;
+		}
+		// put changes into msg and send to receiver
+		Object source;
+		if(evt instanceof SimpleEvent) {
+			source = ((SimpleEvent)evt).getModelValue();
+		} else {
+			source = evt.getSource();
+		}
+		String property = evt.getPropertyName();
+		SendableEntityCreator creatorClass = this.map.getCreatorClass(source);
+		if (creatorClass == null) {
+			// this class is not supported, do nor replicate
+			return false;
+		}
+		condition.update(change(property, source, creatorClass, oldValue, newValue));
+		return true;
 	}
 }
