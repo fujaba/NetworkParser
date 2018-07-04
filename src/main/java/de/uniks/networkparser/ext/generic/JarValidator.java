@@ -10,6 +10,7 @@ import java.lang.reflect.Modifier;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.TreeSet;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -24,6 +25,7 @@ public class JarValidator {
 	public static final String JARFILE = ".jar";
 	public static final String CLASSFILESUFFIX = ".class";
 	private ArrayList<String> warnings = new ArrayList<String>();
+	private TreeSet<String> warningsPackages = new TreeSet<String>();
 	private ArrayList<String> errors = new ArrayList<String>();
 	
 	public JarValidator withMinCoverage(int no) {
@@ -251,7 +253,12 @@ public class JarValidator {
 			for (Enumeration<? extends JarEntry> jarEntries = jarFile.entries(); jarEntries.hasMoreElements();) {
 				JarEntry jarEntry = jarEntries.nextElement();
 				String name = jarEntry.getName().toLowerCase(); 
-				if (name.endsWith(".class") == false) {
+				if (name.endsWith(".class")) {
+					int pos = name.lastIndexOf(".");
+					if(pos>0) {
+						warningsPackages.add(name.substring(0, pos));
+					}
+				} else {
 					if (name.endsWith(".jpg")) {
 						warnings.add(jarEntry.getName());
 					} else if (name.endsWith(".png")) {
@@ -295,7 +302,7 @@ public class JarValidator {
 					}
 					
 					// Find Constructor
-					Constructor<?>[] constructors = wantedClass.getConstructors();
+					Constructor<?>[] constructors = wantedClass.getDeclaredConstructors();
 					if(constructors == null || constructors.length<1) {
 						Object newInstance = ReflectionLoader.newInstance(wantedClass);
 						if(newInstance == null) {
@@ -305,8 +312,18 @@ public class JarValidator {
 						boolean valid=false;
 						for(Constructor<?> con : constructors) {
 							try {
-							}catch (Exception e) {
+								if(Modifier.isPublic(con.getModifiers()) == false) {
+									con.setAccessible(true);
+//									continue;
+								}
+								con.newInstance();
+								valid = true;
+								break;
+							} catch (Exception e) {
 							}
+						}
+						if(valid == false) {
+							errors.add(jarEntry.getName());
 						}
 //						if (emptyConstructor != null) {
 //						if(Modifier.isPublic(emptyConstructor.getModifiers()) == false) {
@@ -347,5 +364,38 @@ public class JarValidator {
 			}
 		}
 		return false;
+	}
+	
+	public ArrayList<String> mergePackages() {
+		ArrayList<String> projects = new ArrayList<String>();
+//		ArrayList<String> list = new ArrayList<String>();
+//		list.addAll(this.warningsPackages);
+		for(String item : this.warningsPackages) {
+			String[] list = item.split("/");
+			if(list.length<3) {
+				continue;
+			}
+			String group = list[0];
+			for(int i=1;i<list.length - 1;i++) {
+				group += "."+list[i];
+			}
+			String name = list[list.length - 1];
+			
+			
+		}
+//		script.withLine("def dep = new ArrayList<String>()");
+//		script.withLine("dep.addAll(list)");
+//		script.withLine("for(int i=dep.size()-1;i>=0;i--) {");
+//		script.withLine("   if(i>0) {");
+//		script.withLine("      for(int z=i-1;z>=0;z--) {");
+//		script.withLine("         if(dep.get(i).startsWith(dep.get(z))) {");
+//		script.withLine("            dep.remove(i)");
+//		script.withLine("            z=0;");
+//		script.withLine("         }");
+//		script.withLine("      }");
+//		script.withLine("   }");
+//		script.withLine("}");
+		return projects;
+		
 	}
 }

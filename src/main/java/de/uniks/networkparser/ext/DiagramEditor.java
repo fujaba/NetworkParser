@@ -172,7 +172,11 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 					}
 				}
 				if(isAnalyseJar) {
-					validator.searchFiles();
+					try {
+						validator.searchFiles();
+					}catch (Throwable e) {
+						e.printStackTrace();
+					}
 					if(validator.printAnalyse()) {
 						exit = validator.count() * -1;
 					}
