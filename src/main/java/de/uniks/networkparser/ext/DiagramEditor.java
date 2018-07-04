@@ -51,11 +51,14 @@ import de.uniks.networkparser.ext.petaf.Message;
 import de.uniks.networkparser.ext.petaf.proxy.NodeProxyTCP;
 import de.uniks.networkparser.gui.EventTypes;
 import de.uniks.networkparser.gui.JavaViewAdapter;
+import de.uniks.networkparser.interfaces.Entity;
+import de.uniks.networkparser.interfaces.EntityList;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.SimpleEventCondition;
 import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.xml.HTMLEntity;
+import de.uniks.networkparser.xml.XMLEntity;
 
 public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 	private static final String FILE404="<!DOCTYPE HTML PUBLIC \"-//IETF//DTD HTML 2.0//EN\">\r\n<html><head><title>404 Not Found</title></head><body><h1>Not Found</h1><p>The requested URL was not found on this server.</p></body></html>";
@@ -143,6 +146,7 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 				validator.withPath("build/libs");
 				boolean isValidate=false;
 				boolean isAnalyseJar=false;
+				boolean isLicence = false;
 				for(String item : args) {
 					if(item == null) {
 						continue;
@@ -162,6 +166,8 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 						isAnalyseJar = true;
 					} else if(item.startsWith("fatjar")) {
 						isAnalyseJar = true;
+					} else if(item.startsWith("licence")) {
+						isLicence = true;
 					}
 				}
 				int exit=0;
@@ -172,15 +178,34 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 					}
 				}
 				if(isAnalyseJar) {
-					try {
-						validator.searchFiles();
-					}catch (Throwable e) {
-						e.printStackTrace();
-					}
+					validator.searchFiles();
 					if(validator.printAnalyse()) {
 						exit = validator.count() * -1;
 					}
+					// Check for Licence
+					if(isLicence) {
+						SimpleKeyValueList<String, JsonObject> projects = validator.mergePackages();
+						for(int i=0;i<projects.size();i++) {
+							System.out.println("FIND PROJECT:" +projects.getKeyByIndex(i));
+							JsonObject elements = projects.getValueByIndex(i);
+							JsonObject last = (JsonObject) elements.getJsonArray("docs").first();
+							String group = last.getString("g").replace('.', '/');
+							String url = group+"/"+last.getString("a")+"/"+last.getString("v")+"/";
+							url+=last.getString("a")+"-" + last.getString("v")+".pom";
+							HTMLEntity pom = NodeProxyTCP.getHTTP("http://search.maven.org/remotecontent?filepath="+url);
+							XMLEntity body = pom.getBody();
+							EntityList licences = body.getElementsBy(XMLEntity.PROPERTY_TAG, "licence");
+							for(int l=0;l<licences.size();l++) {
+								Entity licence = (Entity) licences.getChild(l);
+								System.out.println(((XMLEntity)licence.getElementBy(XMLEntity.PROPERTY_TAG, "name")).getValue());
+								System.out.println(((XMLEntity)licence.getElementBy(XMLEntity.PROPERTY_TAG, "url")).getValue());
+							}
+							
+						}
+//						de/uniks/NetworkParser/4.7.1176/NetworkParser-4.7.1176.pom
+					}
 				}
+				
 				if(exit < 0) {
 					System.exit(exit);
 				}

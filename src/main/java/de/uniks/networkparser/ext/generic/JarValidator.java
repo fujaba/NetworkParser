@@ -17,6 +17,11 @@ import java.util.jar.JarFile;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.ext.SimpleController;
 import de.uniks.networkparser.ext.io.FileBuffer;
+import de.uniks.networkparser.ext.petaf.proxy.NodeProxyTCP;
+import de.uniks.networkparser.json.JsonObject;
+import de.uniks.networkparser.list.SimpleKeyValueList;
+import de.uniks.networkparser.xml.HTMLEntity;
+import de.uniks.networkparser.xml.XMLEntity;
 
 public class JarValidator {
 	private int minCoverage=0;
@@ -222,7 +227,7 @@ public class JarValidator {
 		for(String entry : errors) {
 			System.err.println("- Can't create instance of "+entry);
 		}
-		System.out.println("There are "+warnings.size()+" Warnings in HeadlessJar");
+		System.out.println("There are "+warnings.size()+" Warnings in Jar");
 		for(String entry : warnings) {
 			System.out.println("- Not necessary file "+entry);
 		}
@@ -254,9 +259,9 @@ public class JarValidator {
 				JarEntry jarEntry = jarEntries.nextElement();
 				String name = jarEntry.getName().toLowerCase(); 
 				if (name.endsWith(".class")) {
-					int pos = name.lastIndexOf(".");
-					if(pos>0) {
-						warningsPackages.add(name.substring(0, pos));
+					if(name.indexOf("$")<0 && name.split("/").length>2) {
+						int pos = name.lastIndexOf("/");
+						warningsPackages.add(name.substring(0, pos).replaceAll("/", "."));
 					}
 				} else {
 					if (name.endsWith(".jpg")) {
@@ -325,31 +330,12 @@ public class JarValidator {
 						if(valid == false) {
 							errors.add(jarEntry.getName());
 						}
-//						if (emptyConstructor != null) {
-//						if(Modifier.isPublic(emptyConstructor.getModifiers()) == false) {
-//							continue;
-//						}
-//						Object newInstance = ReflectionLoader.newInstance(wantedClass);
-//						if(newInstance == null) {
-//							errors.add(jarEntry.getName());
-//						}
 					}
 				} catch (Exception e) {
 					errors.add(jarEntry.getName() + "-"+e.getMessage());
 				}
-//				
-//				
-//						Object newInstance = ReflectionLoader.newInstance(wantedClass);
-//						if(newInstance == null) {
-//							errors.add(jarEntry.getName());
-//						}
-//			}
-//					}
-//				} catch (Throwable e) {
-//					errors.add(jarEntry.getName() + "-"+e.getMessage());
-//				}
 			}
-		} catch (IOException e) {
+		} catch (Throwable e) {
 			errors.add(file.getName() + "-"+e.getMessage());
 //			e.printStackTrace();
 		} finally {
@@ -366,35 +352,67 @@ public class JarValidator {
 		return false;
 	}
 	
-	public ArrayList<String> mergePackages() {
-		ArrayList<String> projects = new ArrayList<String>();
-//		ArrayList<String> list = new ArrayList<String>();
-//		list.addAll(this.warningsPackages);
-		for(String item : this.warningsPackages) {
-			String[] list = item.split("/");
-			if(list.length<3) {
-				continue;
+	SimpleKeyValueList<String, JsonObject> projects = new SimpleKeyValueList<String, JsonObject>();
+	
+	private boolean isProject(String item) {
+		for(int i=0;i<projects.size();i++) {
+			if(item.startsWith(projects.getKeyByIndex(i))) {
+				// SUB PACKAGE OF FOUND PROJECT
+				return false;
 			}
-			String group = list[0];
-			for(int i=1;i<list.length - 1;i++) {
-				group += "."+list[i];
-			}
-			String name = list[list.length - 1];
-			
-			
 		}
-//		script.withLine("def dep = new ArrayList<String>()");
-//		script.withLine("dep.addAll(list)");
-//		script.withLine("for(int i=dep.size()-1;i>=0;i--) {");
-//		script.withLine("   if(i>0) {");
-//		script.withLine("      for(int z=i-1;z>=0;z--) {");
-//		script.withLine("         if(dep.get(i).startsWith(dep.get(z))) {");
-//		script.withLine("            dep.remove(i)");
-//		script.withLine("            z=0;");
-//		script.withLine("         }");
-//		script.withLine("      }");
-//		script.withLine("   }");
-//		script.withLine("}");
+		return true;
+	}
+	private JsonObject getHTTPJson(String value) {
+		HTMLEntity http = NodeProxyTCP.getHTTP("http://search.maven.org/solrsearch/select?rows=20&wt=json&q=fc:"+value);
+		XMLEntity body = http.getBody();
+		if(body != null && body.getValue() != null) {
+			return JsonObject.create(body.getValue());
+		}
+		return null;
+	}
+	
+	public SimpleKeyValueList<String, JsonObject> mergePackages() {
+//		list.addAll(this.warningsPackages);
+		projects.clear();
+		TreeSet<String> cache = new TreeSet<String>();
+		cache.add("de.uniks");
+		cache.add("de");
+		for(String item : this.warningsPackages) {
+			if(isProject(item)) {
+				JsonObject json = getHTTPJson(item);
+				if(json != null) {
+					JsonObject responseJson = json.getJsonObject("response");
+					if(responseJson.getInt("numFound")>0) {
+						// FOUND IT
+						projects.add(item, responseJson);
+					} else {
+						// Search for SubPackage???
+						String[] split = item.split("\\.");
+						for(int i=split.length-1;i>0;i--) {
+							String search=split[0];
+							for(int z=1;z<i;z++) {
+								search+="."+split[z];
+							}
+							if(cache.contains(search)) {
+								continue;
+							}
+							json = getHTTPJson(search);
+							if(json != null) {
+								responseJson = json.getJsonObject("response");
+								if(responseJson.getInt("numFound")>0) {
+									// FOUND IT
+									projects.add(search, responseJson);
+									break;
+								} else {
+									cache.add(search);
+								}
+							}
+						}
+					}
+				}
+			}
+		}
 		return projects;
 		
 	}
