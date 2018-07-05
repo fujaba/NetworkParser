@@ -52,6 +52,9 @@ public class ModelListenerProperty implements ModelListenerInterface {
 		this.property = property;
 		this.item = item;
 		this.type = type;
+		if(item == null) {
+			return;
+		}
 		if (item instanceof SendableEntity) {
 			((SendableEntity) item).addPropertyChangeListener(property, this);
 			return;

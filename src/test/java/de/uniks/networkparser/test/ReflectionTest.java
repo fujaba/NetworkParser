@@ -9,11 +9,13 @@ import org.junit.Test;
 import de.uniks.networkparser.NetworkParserLog;
 import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.ext.generic.ReflectionBlackBoxTester;
+import de.uniks.networkparser.ext.generic.ReflectionLoader;
 import de.uniks.networkparser.ext.io.OutputCondition;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 
 public class ReflectionTest {
 	public OutputCondition output = new OutputCondition();
+
 	@Test
 	public void testReflection() throws ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, IOException {
 		ReflectionBlackBoxTester tester = new ReflectionBlackBoxTester();
@@ -104,5 +106,30 @@ public class ReflectionTest {
 //				.withFlag(NetworkParserLog.LOGLEVEL_ALL);
 		tester.test("de.uniks.networkparser.ext.io.MessageSession", logger);
 //		System.out.println(""+System.currentTimeMillis()+" FINISH:"+Thread.activeCount());
+	}
+	
+	@Test
+	public void createInstance() {
+		Object result;
+		result = ReflectionLoader.newInstanceSimple(de.uniks.networkparser.bytes.qr.Version.class);
+		Assert.assertNotNull(result);
+		
+		result = ReflectionLoader.newInstanceSimple(de.uniks.networkparser.ext.javafx.controller.ModelListenerProperty.class);
+		Assert.assertNotNull(result);
+
+//		result = ReflectionLoader.newInstanceSimple(de.uniks.networkparser.ext.javafx.DiagramController.class);
+//		Assert.assertNotNull(result);
+
+		result = ReflectionLoader.newInstanceSimple(de.uniks.networkparser.ext.SimpleController.class);
+		Assert.assertNotNull(result);
+
+		result = ReflectionLoader.newInstanceSimple(de.uniks.networkparser.ext.RESTServiceTask.class);
+		Assert.assertNotNull(result);
+
+		result = ReflectionLoader.newInstanceSimple(de.uniks.networkparser.ext.petaf.TimerExecutor.class);
+		Assert.assertNotNull(result);
+
+//		result = ReflectionLoader.newInstanceSimple(de.uniks.networkparser.ext.petaf.proxy.NodeProxyBroadCast.class);
+//		Assert.assertNotNull(result);
 	}
 }

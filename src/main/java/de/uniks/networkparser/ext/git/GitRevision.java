@@ -106,7 +106,8 @@ public class GitRevision {
 			for(Iterator<?> i = allRefs.entrySet().iterator();i.hasNext();){
 				Entry<String, Object> item = (Entry<String, Object>) i.next();
 				Object value = item.getValue();
-				String newId = (String) ReflectionLoader.callChain(value, "getObjectId", "name");
+			
+				String newId = (String) ReflectionLoader.callChain(value, false, "getObjectId", "getName");
 				if(id.equals(newId)) {
 					if(branches.contains(item.getKey()) == false) {
 						branches.add(item.getKey());

@@ -1,13 +1,8 @@
 package de.uniks.networkparser.ext.generic;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.TreeSet;
@@ -18,6 +13,8 @@ import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.ext.SimpleController;
 import de.uniks.networkparser.ext.io.FileBuffer;
 import de.uniks.networkparser.ext.petaf.proxy.NodeProxyTCP;
+import de.uniks.networkparser.interfaces.Entity;
+import de.uniks.networkparser.interfaces.EntityList;
 import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.xml.HTMLEntity;
@@ -32,6 +29,7 @@ public class JarValidator {
 	private ArrayList<String> warnings = new ArrayList<String>();
 	private TreeSet<String> warningsPackages = new TreeSet<String>();
 	private ArrayList<String> errors = new ArrayList<String>();
+	private ArrayList<String> mergePackages = new ArrayList<String>();
 	
 	public JarValidator withMinCoverage(int no) {
 		this.minCoverage = no;
@@ -43,39 +41,14 @@ public class JarValidator {
 		return this;
 	}
 	
-	public void validate() {
-		CharacterBuffer script = FileBuffer.readFile("build.gradle");
-		script.withLine("task showDependency() {");
-		script.withLine("def list=new TreeSet();");
-		script.withLine("sourceSets.each{ it.java.each {");
-		script.withLine("	list.add( it.getParentFile().getAbsolutePath().toString())");
-		script.withLine("} }");
-		script.withLine("def dep = new ArrayList<String>()");
-		script.withLine("dep.addAll(list)");
-		script.withLine("for(int i=dep.size()-1;i>=0;i--) {");
-		script.withLine("   if(i>0) {");
-		script.withLine("      for(int z=i-1;z>=0;z--) {");
-		script.withLine("         if(dep.get(i).startsWith(dep.get(z))) {");
-		script.withLine("            dep.remove(i)");
-		script.withLine("            z=0;");
-		script.withLine("         }");
-		script.withLine("      }");
-		script.withLine("   }");
-		script.withLine("}");
-		script.withLine("println \"##DEPENDENCY##\"");
-		script.withLine("dep.each{ println it; }");
-		script.withLine("println \"##ENDDEPENDENCY##\"");
-		script.withLine("}");
-
-		FileBuffer.writeFile("test.gradle", script.toString());
-
-		CharacterBuffer executeProcess = SimpleController.executeProcess("gradlew", "showDependency", "-b", "test.gradle");
-		int pos = executeProcess.indexOf("##DEPENDENCY##");
-		ArrayList<String> packages=new ArrayList<String>();
+	private TreeSet<String> getDependency(CharacterBuffer executeProcess, String search) {
+		int pos = executeProcess.indexOf("##"+search+"##");
+		TreeSet<String> packages=new TreeSet<String>();
 		if(pos>0) {
-			int end = executeProcess.indexOf("##ENDDEPENDENCY##", pos);
+			System.out.println("FOUND DEPENDENCY:" +search);
+			int end = executeProcess.indexOf("##"+search+"END##", pos);
 			if(end>0) {
-				CharacterBuffer subSequence = executeProcess.subSequence(pos+14, end);
+				CharacterBuffer subSequence = executeProcess.subSequence(pos+search.length() + 4, end);
 				end = subSequence.indexOf('\n');
 				pos = 0;
 				while(end>0) {
@@ -88,6 +61,37 @@ public class JarValidator {
 				}
 			}
 		}
+		return packages;
+	}
+	
+	public void validate() {
+		CharacterBuffer script = FileBuffer.readFile("build.gradle");
+		script.withLine("task showDependency() {");
+		script.withLine("def listMain=new TreeSet();");
+		script.withLine("def listTest=new TreeSet();");
+		script.withLine("sourceSets.each{ if(it ==sourceSets.test) {");
+		script.withLine("		it.java.each { listTest.add( it.getParentFile().getAbsolutePath().toString()) }");
+		script.withLine("	} else {");
+		script.withLine("		it.java.each { listMain.add( it.getParentFile().getAbsolutePath().toString()) }");
+		script.withLine("	}");
+		script.withLine("}");
+		script.withLine("println \"##SRCDEPENDENCY##\"");
+		script.withLine("listMain.each{ println it; }");
+		script.withLine("sourceSets.main.compileClasspath.each { println it }");
+		script.withLine("println \"##SRCDEPENDENCYEND##\"");
+		
+		script.withLine("println \"##TESTDEPENDENCY##\"");
+		script.withLine("listTest.each{ println it; }");
+		script.withLine("sourceSets.test.compileClasspath.each { println it }");
+		script.withLine("println \"##TESTDEPENDENCYEND##\"");
+		script.withLine("}");
+
+		FileBuffer.writeFile("test.gradle", script.toString());
+
+		CharacterBuffer executeProcess = SimpleController.executeProcess("gradlew", "showDependency", "-b", "test.gradle");
+		ArrayList<String> packages = this.mergePacking(getDependency(executeProcess, "SRCDEPENDENCY"));
+		ArrayList<String> testPackages = this.mergePacking(getDependency(executeProcess, "TESTDEPENDENCY"));
+
 		script = new CharacterBuffer(); 
 		script.withLine("repositories { jcenter() }");
 		script.withLine("apply plugin: 'java'");
@@ -125,15 +129,50 @@ public class JarValidator {
 		script.withLine("	}");
 		script.withLine("}");
 		
+		TreeSet<String> dependency = new TreeSet<String>();
 		if(packages.size()>0) {
 			script.withLine("sourceSets.main.java.srcDirs(");
 			for(String item : packages) {
-				script.withLine("	\""+item+"\",");
+				item = item.replace('\\', '/');
+				if(item.toLowerCase().endsWith(".jar")) {
+					dependency.add(item);
+				} else {
+					script.withLine("	\""+item +"\",");
+				}
 			}
+			script.withLine("	\"src/main/java/\"");
 			script.withLine(")");
+			
 		}
 		
-		script.withLine("defaultTasks 'test', 'jacocoTestReport'");
+		if(testPackages.size()>0) {
+			script.withLine("sourceSets.test.java.srcDirs(");
+			for(String item : testPackages) {
+				item = item.replace('\\', '/');
+				if(item.toLowerCase().endsWith(".jar")) {
+					dependency.add(item);
+				} else {
+					script.withLine("	\""+item +"\",");
+				}
+			}
+			script.withLine("	\"src/test/java/\"");
+			script.withLine(")");
+		}
+
+		script.withLine("dependencies {");
+		script.withLine("	// Test framework");
+		script.withLine("	compile 'org.junit.jupiter:junit-jupiter-api:5.+'");
+		script.withLine("	compile 'org.junit.jupiter:junit-jupiter-engine:5.+'");
+		for(String item : dependency) {
+			script.withLine("compile files(\""+item+"\")");
+		}
+		script.withLine("}");
+		script.withLine("test {");
+		script.withLine("	useJUnitPlatform()");
+		script.withLine("	finalizedBy jacocoTestReport");
+		script.withLine("}");
+		
+		script.withLine("defaultTasks 'test'");
 		FileBuffer.writeFile("jacoco.gradle", script.toString());
 		
 		executeProcess = SimpleController.executeProcess("gradlew", "-b", "jacoco.gradle");
@@ -143,42 +182,35 @@ public class JarValidator {
 	public boolean analyseReport() {
 		File file = new File(this.file);
 		if(file.exists()) {
-			byte[] buffer = new byte[ (int) file.length() ];
-			try {
-				InputStream in = new FileInputStream( file );
-				in.read( buffer );
-				in.close();
-			} catch (IOException e) {
-				buffer = null;
-			}
-			if(buffer != null) {
-				String content = new String(buffer, Charset.forName("UTF-8"));
-				String search = "<td class=\"ctr2\">";
-				int pos = content.indexOf(search);
-				if(pos>0) {
-					int end = content.indexOf("</td", pos);
-					pos+=search.length();
-					String cc = content.substring(pos, end);
-					cc = cc.replaceAll("&nbsp;", "");
-					cc = cc.replaceAll("%", "");
-					cc = cc.replace((char)160, ' ');
-					cc = cc.trim();
-					System.out.println("Found: "+cc);
-					int no = Integer.valueOf(cc);
-					if(no >= this.minCoverage) {
-						return true;
-					}
+			
+			CharacterBuffer content = FileBuffer.readFile(file);
+			String search = "<td class=\"ctr2\">";
+			int pos = content.indexOf(search);
+			if(pos>0) {
+				int end = content.indexOf("</td", pos);
+				pos+=search.length();
+				String cc = content.substring(pos, end);
+				cc = cc.replaceAll("&nbsp;", "");
+				cc = cc.replaceAll("%", "");
+				cc = cc.replace((char)160, ' ');
+				cc = cc.trim();
+				System.out.println("Found: "+cc);
+				int no = Integer.valueOf(cc);
+				if(no >= this.minCoverage) {
+					return true;
 				}
 			}
+		} else {
+			System.out.println("File not found:" +this.file);
 		}
 		return false;
 	}
 	
-	public boolean searchFiles() {
+	public int searchFiles(boolean output, boolean isLicence) {
 		if(this.path == null) {
-			return false;
+			return -1;
 		}
-		return searching(new File(this.path));
+		return searching(new File(this.path), output, isLicence);
 	}
 	
 	public boolean isError() {
@@ -193,15 +225,16 @@ public class JarValidator {
 		return warnings;
 	}
 	
-	public boolean searching(File file) {
+	public int searching(File file, boolean output, boolean isLicence) {
 		if(file == null) {
-			return false;
+			return -1;
 		}
-		boolean result = true;
+		int result = 0;
 		for(File child : file.listFiles()) {
 			if(child.isDirectory()) {
-				if(searching(child) == false) {
-					result = false;
+				int subresult = searching(child, output, isLicence);
+				if(subresult < 0 ) {
+					result += subresult;
 				}
 			} else {
 				// Analyse File
@@ -210,7 +243,30 @@ public class JarValidator {
 				if (fileName.endsWith(JARFILE)) {
 					System.out.println("FOUND: " + child.toString());
 					if (analyseFile(child) == false) {
-						result = false;
+						if(output) {
+							printAnalyse(fileName);
+						}
+						if(isLicence) {
+							SimpleKeyValueList<String, JsonObject> projects = mergePackages();
+							for(int i=0;i<projects.size();i++) {
+								System.out.println("FIND PROJECT:" +projects.getKeyByIndex(i));
+								JsonObject elements = projects.getValueByIndex(i);
+								JsonObject last = (JsonObject) elements.getJsonArray("docs").first();
+								String group = last.getString("g").replace('.', '/');
+								String url = group+"/"+last.getString("a")+"/"+last.getString("v")+"/";
+								url+=last.getString("a")+"-" + last.getString("v")+".pom";
+								HTMLEntity pom = NodeProxyTCP.getHTTP("http://search.maven.org/remotecontent?filepath="+url);
+								XMLEntity body = pom.getBody();
+								EntityList licences = body.getElementsBy(XMLEntity.PROPERTY_TAG, "licence");
+								for(int l=0;l<licences.size();l++) {
+									Entity licence = (Entity) licences.getChild(l);
+									System.out.println(((XMLEntity)licence.getElementBy(XMLEntity.PROPERTY_TAG, "name")).getValue());
+									System.out.println(((XMLEntity)licence.getElementBy(XMLEntity.PROPERTY_TAG, "url")).getValue());
+								}
+								
+							}
+						}
+						result = count() * -1;
 					}
 				}
 			}
@@ -218,16 +274,23 @@ public class JarValidator {
 		return result;
 	}
 	
-	public boolean printAnalyse() {
+	public boolean printAnalyse(String file) {
 		if(isError() == false) {
-			System.out.println("Everything is ok");
+			System.out.println("Everything is ok ("+file+")");
 			return false;
 		}
-		System.err.println("There are "+errors.size()+" Errors in Jar");
+		this.mergePackages.clear();
+		mergePacking(warningsPackages);
+
+		if(this.mergePackages.size()<1) {
+			System.out.println("May be not the fatJar ("+file+")");
+			return false;
+		}
+		System.err.println("There are "+errors.size()+" Errors in Jar ("+file+")");
 		for(String entry : errors) {
 			System.err.println("- Can't create instance of "+entry);
 		}
-		System.out.println("There are "+warnings.size()+" Warnings in Jar");
+		System.out.println("There are "+warnings.size()+" Warnings in Jar ("+file+")");
 		for(String entry : warnings) {
 			System.out.println("- Not necessary file "+entry);
 		}
@@ -245,6 +308,38 @@ public class JarValidator {
 		return count;
 	}
 	
+	public void clear() {
+		this.warnings.clear();
+		this.warningsPackages.clear();
+		this.mergePackages.clear();
+		this.errors.clear();
+	}
+	
+	public ArrayList<String> mergePacking(TreeSet<String> sources) {
+		ArrayList<String> dep = new ArrayList<String>();
+		dep.addAll(sources);
+		for(int i=dep.size()-1;i>0;i--) {
+			for(int z=i-1;z>=0;z--) {
+				if(dep.get(i).startsWith(dep.get(z))) {
+					dep.remove(i);
+					z=0;
+				}
+			}
+		}
+		boolean copy=false;
+		if(dep.size()>1) {
+			copy=true;
+		}else if (dep.size() == 1) {
+			if(dep.get(0).equalsIgnoreCase("de")|| dep.get(0).equalsIgnoreCase("de.uniks") || dep.get(0).equalsIgnoreCase("de.uniks.networkparser")) {
+				copy = true;
+			}
+		}
+		if(copy == false) {
+			dep.clear();
+		}
+		return dep;
+	}
+	
 	private boolean analyseFile(File file) {
 		if(file == null || file.exists() == false) {
 			return false;
@@ -254,6 +349,7 @@ public class JarValidator {
 		try {
 			jarClassLoader = new JarClassLoader(ClassLoader.getSystemClassLoader(), file.toURI().toURL());
 			jarFile = new JarFile(file);
+			clear();
 	
 			for (Enumeration<? extends JarEntry> jarEntries = jarFile.entries(); jarEntries.hasMoreElements();) {
 				JarEntry jarEntry = jarEntries.nextElement();
@@ -307,29 +403,9 @@ public class JarValidator {
 					}
 					
 					// Find Constructor
-					Constructor<?>[] constructors = wantedClass.getDeclaredConstructors();
-					if(constructors == null || constructors.length<1) {
-						Object newInstance = ReflectionLoader.newInstance(wantedClass);
-						if(newInstance == null) {
-							errors.add(jarEntry.getName());
-						}
-					} else {
-						boolean valid=false;
-						for(Constructor<?> con : constructors) {
-							try {
-								if(Modifier.isPublic(con.getModifiers()) == false) {
-									con.setAccessible(true);
-//									continue;
-								}
-								con.newInstance();
-								valid = true;
-								break;
-							} catch (Exception e) {
-							}
-						}
-						if(valid == false) {
-							errors.add(jarEntry.getName());
-						}
+					Object newInstance = ReflectionLoader.newInstanceSimple(wantedClass);
+					if(newInstance == null) {
+						errors.add(jarEntry.getName());
 					}
 				} catch (Exception e) {
 					errors.add(jarEntry.getName() + "-"+e.getMessage());
@@ -415,5 +491,9 @@ public class JarValidator {
 		}
 		return projects;
 		
+	}
+
+	public int getMinCoverage() {
+		return this.minCoverage;
 	}
 }

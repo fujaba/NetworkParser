@@ -68,6 +68,9 @@ public final class Version {
 	}
 
 	ECB getECBS(JsonObject jsonObject, int index) {
+		if(jsonObject == null || jsonObject.size() < 1) {
+			return new ECB(-1, -1, -1);
+		}
 		int ecCodeBlocks = Integer.valueOf(jsonObject.getKeyByIndex(index));
 		JsonArray array = (JsonArray) jsonObject.getValueByIndex(index);
 		ECB prev = null;

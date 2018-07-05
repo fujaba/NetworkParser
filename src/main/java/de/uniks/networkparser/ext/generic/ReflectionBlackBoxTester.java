@@ -362,7 +362,7 @@ public class ReflectionBlackBoxTester {
 		}
 	}
 
-	private Object[] getParameters(Class<?>[] parameters, String type) {
+	public static Object[] getParameters(Class<?>[] parameters, String type) {
 		int length = parameters.length;
 		Object[] objects = new Object[length];
 		if(NULLVALUE.equals(type)) {
@@ -392,7 +392,7 @@ public class ReflectionBlackBoxTester {
 		return objects;
 	}
 
-	private boolean equalsClass(Class<?> clazz, Class<?>... checkClasses) {
+	private static  boolean equalsClass(Class<?> clazz, Class<?>... checkClasses) {
 		if(checkClasses == null) {
 			return true;
 		}
@@ -404,7 +404,7 @@ public class ReflectionBlackBoxTester {
 		return false;
 	}
 
-	private Object getNullValue(Class<?> clazz) {
+	private static Object getNullValue(Class<?> clazz) {
 		if (clazz.isPrimitive()) {
 			if(equalsClass(clazz, boolean.class, Boolean.class)) {return false;}
 			if(equalsClass(clazz, byte.class, Byte.class)) {return (byte) 0;}
@@ -418,7 +418,7 @@ public class ReflectionBlackBoxTester {
 		}
 		return null;
 	}
-	private Object getMinValue(Class<?> clazz) {
+	private static Object getMinValue(Class<?> clazz) {
 		if (clazz.isPrimitive()) {
 			if(equalsClass(clazz, boolean.class, Boolean.class)) {return false;}
 			if(equalsClass(clazz, byte.class, Byte.class)) {return Byte.MIN_VALUE;}
@@ -433,7 +433,7 @@ public class ReflectionBlackBoxTester {
 		return null;
 	}
 
-	private Object getRandomValue(Class<?> clazz) {
+	private static Object getRandomValue(Class<?> clazz) {
 		if (clazz.isPrimitive()) {
 			if(equalsClass(clazz, byte.class, Byte.class)) {return 0x50;}
 			if(equalsClass(clazz, int.class, Integer.class)) {return 42;}
@@ -493,7 +493,7 @@ public class ReflectionBlackBoxTester {
 		}
 		return null;
 	}
-	private Object getMaxValue(Class<?> clazz) {
+	private static Object getMaxValue(Class<?> clazz) {
 		if (clazz.isPrimitive()) {
 			if(equalsClass(clazz, boolean.class, Boolean.class)) {return false;}
 			if(equalsClass(clazz, byte.class, Byte.class)) {return Byte.MAX_VALUE;}

@@ -43,7 +43,7 @@ public class TimerExecutor extends Timer implements TaskExecutor {
 	}
 
 	public TimerExecutor(String value) {
-		super(value);
+		super(value != null ? value : "TimerExecutor");
 	}
 	@Override
 	public void cancel() {

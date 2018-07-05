@@ -352,6 +352,31 @@ public class ReflectionLoader {
 		}
 		return null;
 	}
+	
+	public static Object newInstanceSimple(Class<?> instance) {
+		Constructor<?>[] constructors = instance.getDeclaredConstructors();
+		if(constructors == null || constructors.length<1) {
+			return ReflectionLoader.newInstance(instance);
+		} else {
+			for(Constructor<?> con : constructors) {
+				try {
+					if(Modifier.isPublic(con.getModifiers()) == false) {
+						con.setAccessible(true);
+//						continue;
+					}
+					Object[] values = ReflectionBlackBoxTester.getParameters(con.getParameterTypes(), ReflectionBlackBoxTester.NULLVALUE);
+					Object newInstance = con.newInstance(values);
+					if(newInstance != null) {
+						return newInstance;
+					}
+					break;
+				} catch (Exception e) {
+				}
+			}
+		}
+		return null;
+	}
+	
 	public static Object newInstance(Class<?> instance, Object... arguments) {
 		try {
 			if(arguments == null) {
@@ -416,15 +441,39 @@ public class ReflectionLoader {
 				proxys, new ReflectionInterfaceProxy(proxy));
 	}
 	public static Object callChain(Object item, String... methodNames) {
+		return callChain(item, true, methodNames);
+	}
+
+	public static Object callChain(Object item, boolean notify, String... methodNames) {
 		if(methodNames == null) {
 			return item;
 		}
 		Object callObj = item;
 		for(String method : methodNames) {
-			callObj = calling(callObj, method, true, null);
+			callObj = calling(callObj, method, notify, null);
 		}
 		return callObj;
 	}
+	public static boolean isAccessMethod(Object item, String methodName) {
+		if(item == null || methodName == null) {
+			return false;
+		}
+		Method method = null;
+		try {
+			method = item.getClass().getMethod(methodName);
+		}catch (Exception e) {
+			try {
+				method = item.getClass().getDeclaredMethod(methodName);
+			}catch (Exception e2) {
+				method = null;
+			}
+		}
+		if(method == null) {
+			return false;
+		}
+		return isAccess(method, item);
+	}
+
 	public static Object getField(String fieldName, Object item) {
 		Class<?> className = null;
 		Object itemObj = null;
@@ -516,6 +565,7 @@ public class ReflectionLoader {
 				pos++;
 			}
 		}
+		Method method = null;
 		try {
 			boolean staticCall =false;
 			if(item instanceof Type == false) {
@@ -527,7 +577,6 @@ public class ReflectionLoader {
 			}else {
 				itemClass = item.getClass();
 			}
-			Method method = null;
 			try {
 				try {
 					method = itemClass.getMethod(methodName, methodArguments);
@@ -596,7 +645,7 @@ public class ReflectionLoader {
 				handler.saveException(e);
 			} else if(notify && Os.isEclipseAndNoReflection()) {
 				errorCount++;
-				System.err.println("ErrorCount: "+errorCount);
+				System.err.println("ErrorCount: "+errorCount+" ("+method+")");
 				e.printStackTrace();
 			}
 		}

@@ -68,7 +68,9 @@ public class RESTServiceTask implements Runnable, Server{
 		this.port = port;
 		this.map = map;
 		this.root = root;
-		creator = map.getCreatorClass(root);
+		if(map != null) {
+			creator = map.getCreatorClass(root);
+		}
 	}
 
 	public RESTServiceTask withErrorListener(Condition<Exception> listener) {

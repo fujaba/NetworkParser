@@ -210,6 +210,9 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements En
 	 * @return Itself
 	 */
 	public JsonObject withValue(String... values) {
+		if(values == null || values.length == 1 && values[0]== null) {
+			return this;
+		}
 		if (values.length % 2 == 0) {
 			for (int z = 0; z < values.length; z += 2) {
 				if(values[z + 1]!= null) {

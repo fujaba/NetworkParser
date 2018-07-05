@@ -1,0 +1,27 @@
+repositories { 
+	jcenter()
+	maven { url "http://oss.sonatype.org/content/repositories/snapshots" }
+}
+apply plugin: 'java'
+
+dependencies {
+	if (new File("../NetworkParser/build/libs/networkparser.local.jar").exists() ) {
+		println "using local networkparser.local.jar"
+		implementation files("../NetworkParser/build/libs/networkparser.local.jar")
+	} else {
+		compile group: "de.uniks", name: "NetworkParser", version: "4.7+", changing: true
+	}
+}
+
+sourceSets {
+	main.java.srcDirs = files('gradle')
+	test.java.srcDirs = files('gradle')
+}
+task runJavValidator(type:JavaExec) {
+	errorOutput = System.err
+	main = "de.uniks.networkparser.ext.DiagramEditor"
+	args 'JARVALIDATOR', 'coverage=60', 'fatjar', 'noError'
+	classpath = sourceSets.main.compileClasspath
+}
+
+defaultTasks 'build', 'runJavValidator'
