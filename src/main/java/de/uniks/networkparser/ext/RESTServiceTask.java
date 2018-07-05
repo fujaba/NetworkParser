@@ -85,6 +85,9 @@ public class RESTServiceTask implements Runnable, Server{
 	@Override
 	public void run() {
 		try {
+			if(port == 0) {
+				return;
+			}
 			serverSocket = new ServerSocket(this.port);
 			CharacterBuffer buffer = new CharacterBuffer();
 			while(serverSocket != null) {
