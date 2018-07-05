@@ -1241,5 +1241,9 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
 	public String toString(Converter converter) {
 		return toString();
 	}
-	
+
+	public CharacterBuffer newLine() {
+		this.with(BaseItem.CRLF);
+		return this;
+	}
 }

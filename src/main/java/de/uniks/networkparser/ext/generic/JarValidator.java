@@ -66,7 +66,8 @@ public class JarValidator {
 	
 	public void validate() {
 		CharacterBuffer script = FileBuffer.readFile("build.gradle");
-		script.withLine("");
+		script.newLine();
+		script.newLine();
 		script.withLine("task showDependency() {");
 		script.withLine("def listMain=new TreeSet();");
 		script.withLine("def listTest=new TreeSet();");
