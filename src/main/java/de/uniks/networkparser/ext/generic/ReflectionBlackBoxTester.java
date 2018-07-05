@@ -159,6 +159,7 @@ public class ReflectionBlackBoxTester {
 		withIgnoreClazzes(DialogBox.class);
 		withIgnoreClazzes(JavaAdapter.class);
 		withIgnoreClazzes(JavaBridgeFX.class);
+		withIgnoreClazzes(JarValidator.class);
 //		withIgnoreClazzes(TimerExecutor.class.getName());
 	}
 
