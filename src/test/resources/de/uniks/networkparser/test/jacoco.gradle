@@ -9,7 +9,7 @@ dependencies {
 		println "using local networkparser.local.jar"
 		implementation files("../NetworkParser/build/libs/networkparser.local.jar")
 	} else {
-		compile group: "de.uniks", name: "NetworkParser", version: "4.7+", changing: true
+		compile group: "de.uniks", name: "NetworkParser", version: "4.7+", classifier: 'core18', changing: true
 	}
 }
 

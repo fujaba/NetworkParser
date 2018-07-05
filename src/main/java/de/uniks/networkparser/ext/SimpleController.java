@@ -765,12 +765,12 @@ public class SimpleController implements ObjectCondition{
 		try {
 			String line;
 			ArrayList<String> param=new ArrayList<String>();
-			if(Os.isUnix()) {
-				param.add("/bin/sh");
-				param.add("-c");
-			} else {
+			if(Os.isWindows()) {
 				param.add("cmd.exe");
 				param.add("/c");
+			} else {
+				param.add("/bin/sh");
+				param.add("-c");
 			}
 			for(String item : values) {
 				if(item != null) {
