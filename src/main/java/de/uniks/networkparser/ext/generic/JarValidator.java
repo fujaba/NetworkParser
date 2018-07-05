@@ -13,8 +13,8 @@ import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.ext.SimpleController;
 import de.uniks.networkparser.ext.io.FileBuffer;
 import de.uniks.networkparser.ext.petaf.proxy.NodeProxyTCP;
+import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Entity;
-import de.uniks.networkparser.interfaces.EntityList;
 import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.xml.HTMLEntity;
@@ -176,9 +176,9 @@ public class JarValidator {
 		
 		script.withLine("defaultTasks 'test'");
 		FileBuffer.writeFile("jacoco.gradle", script.toString());
-		
-		executeProcess = SimpleController.executeProcess("gradlew", "-b", "jacoco.gradle");
-		System.out.println(executeProcess);
+		SimpleController.executeProcess("gradlew", "-b", "jacoco.gradle");
+//		executeProcess = SimpleController.executeProcess("gradlew", "-b", "jacoco.gradle");
+//		System.out.println(executeProcess);
 	}
 	
 	public boolean analyseReport() {
@@ -243,7 +243,7 @@ public class JarValidator {
 				// Check if it is a java file
 				String fileName = child.getName().toLowerCase();
 				if (fileName.endsWith(JARFILE)) {
-					System.out.println("FOUND: " + child.toString());
+					System.out.println("FOUND: " + child.toString() + " ("+child.length()+")");
 					if (analyseFile(child) == false) {
 						if(output) {
 							printAnalyse(fileName);
@@ -251,7 +251,7 @@ public class JarValidator {
 						if(isLicence) {
 							SimpleKeyValueList<String, JsonObject> projects = mergePackages();
 							for(int i=0;i<projects.size();i++) {
-								System.out.println("FIND PROJECT:" +projects.getKeyByIndex(i));
+								System.out.print(projects.getKeyByIndex(i));
 								JsonObject elements = projects.getValueByIndex(i);
 								JsonObject last = (JsonObject) elements.getJsonArray("docs").first();
 								String group = last.getString("g").replace('.', '/');
@@ -259,13 +259,23 @@ public class JarValidator {
 								url+=last.getString("a")+"-" + last.getString("v")+".pom";
 								HTMLEntity pom = NodeProxyTCP.getHTTP("http://search.maven.org/remotecontent?filepath="+url);
 								XMLEntity body = pom.getBody();
-								EntityList licences = body.getElementsBy(XMLEntity.PROPERTY_TAG, "licence");
-								for(int l=0;l<licences.size();l++) {
-									Entity licence = (Entity) licences.getChild(l);
-									System.out.println(((XMLEntity)licence.getElementBy(XMLEntity.PROPERTY_TAG, "name")).getValue());
-									System.out.println(((XMLEntity)licence.getElementBy(XMLEntity.PROPERTY_TAG, "url")).getValue());
+								Entity nameTag = body.getElementBy(XMLEntity.PROPERTY_TAG, "name");
+								if(nameTag!= null) {
+									System.out.print(" - "+((XMLEntity)nameTag).getValue());
 								}
-								
+								XMLEntity licences = (XMLEntity) body.getElementBy(XMLEntity.PROPERTY_TAG, "licenses");
+								if(licences != null) {
+									for(int l=0;l<licences.sizeChildren();l++) {
+										XMLEntity licence = (XMLEntity) licences.getChild(l);
+										if("license".equalsIgnoreCase(licence.getTag())) {
+											System.out.print(" - ");
+											System.out.print(((XMLEntity)licence.getElementBy(XMLEntity.PROPERTY_TAG, "name")).getValue());
+											System.out.print(" - ");
+											System.out.print(((XMLEntity)licence.getElementBy(XMLEntity.PROPERTY_TAG, "url")).getValue());
+										}
+									}
+								}
+								System.out.print(BaseItem.CRLF);
 							}
 						}
 						result = count() * -1;
@@ -282,7 +292,7 @@ public class JarValidator {
 			return false;
 		}
 		this.mergePackages.clear();
-		mergePacking(warningsPackages);
+		this.mergePackages.addAll(mergePacking(warningsPackages));
 
 		if(this.mergePackages.size()<1) {
 			System.out.println("May be not the fatJar ("+file+")");
