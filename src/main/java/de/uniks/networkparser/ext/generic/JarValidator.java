@@ -66,6 +66,7 @@ public class JarValidator {
 	
 	public void validate() {
 		CharacterBuffer script = FileBuffer.readFile("build.gradle");
+		script.withLine("");
 		script.withLine("task showDependency() {");
 		script.withLine("def listMain=new TreeSet();");
 		script.withLine("def listTest=new TreeSet();");
@@ -168,7 +169,7 @@ public class JarValidator {
 		}
 		script.withLine("}");
 		script.withLine("test {");
-		script.withLine("	useJUnitPlatform()");
+//		script.withLine("	useJUnitPlatform()");
 		script.withLine("	finalizedBy jacocoTestReport");
 		script.withLine("}");
 		
