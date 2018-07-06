@@ -182,6 +182,9 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 					// Check for Licence
 					if(isError) {
 						exit = validator.searchFiles(true, isLicence);
+						if(isValidate && exit == 0 && validator.isExistFullJar() == false) {
+							exit = -1;
+						}
 					}else {
 						validator.searchFiles(true, isLicence);
 					}

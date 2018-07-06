@@ -30,6 +30,7 @@ public class JarValidator {
 	private TreeSet<String> warningsPackages = new TreeSet<String>();
 	private ArrayList<String> errors = new ArrayList<String>();
 	private ArrayList<String> mergePackages = new ArrayList<String>();
+	private boolean isExistFullJar;
 	
 	public JarValidator withMinCoverage(int no) {
 		this.minCoverage = no;
@@ -245,8 +246,26 @@ public class JarValidator {
 				if (fileName.endsWith(JARFILE)) {
 					System.out.println("FOUND: " + child.toString() + " ("+child.length()+")");
 					if (analyseFile(child) == false) {
-						if(output) {
-							printAnalyse(fileName);
+						if(isError() == false) {
+							System.out.println("Everything is ok ("+file+")");
+						} else {
+							this.mergePackages.clear();
+							this.mergePackages.addAll(mergePacking(warningsPackages));
+							if(this.mergePackages.size()<1) {
+								System.out.println("May be not the fatJar ("+file+")");
+							} else {
+								this.isExistFullJar = true;
+								if(output){
+									System.err.println("There are "+errors.size()+" Errors in Jar ("+file+")");
+									for(String entry : errors) {
+										System.err.println("- Can't create instance of "+entry);
+									}
+									System.out.println("There are "+warnings.size()+" Warnings in Jar ("+file+")");
+									for(String entry : warnings) {
+										System.out.println("- Not necessary file "+entry);
+									}
+								}
+							}
 						}
 						if(isLicence) {
 							SimpleKeyValueList<String, JsonObject> projects = mergePackages();
@@ -286,29 +305,10 @@ public class JarValidator {
 		return result;
 	}
 	
-	public boolean printAnalyse(String file) {
-		if(isError() == false) {
-			System.out.println("Everything is ok ("+file+")");
-			return false;
-		}
-		this.mergePackages.clear();
-		this.mergePackages.addAll(mergePacking(warningsPackages));
-
-		if(this.mergePackages.size()<1) {
-			System.out.println("May be not the fatJar ("+file+")");
-			return false;
-		}
-		System.err.println("There are "+errors.size()+" Errors in Jar ("+file+")");
-		for(String entry : errors) {
-			System.err.println("- Can't create instance of "+entry);
-		}
-		System.out.println("There are "+warnings.size()+" Warnings in Jar ("+file+")");
-		for(String entry : warnings) {
-			System.out.println("- Not necessary file "+entry);
-		}
-		return true;
+	public boolean isExistFullJar() {
+		return isExistFullJar;
 	}
-
+	
 	public int count() {
 		int count = 0;
 		if(errors != null) {
