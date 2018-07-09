@@ -252,15 +252,15 @@ public class JarValidator {
 							this.mergePackages.clear();
 							this.mergePackages.addAll(mergePacking(warningsPackages));
 							if(this.mergePackages.size()<1) {
-								System.out.println("May be not the fatJar ("+file+")");
+								System.out.println("May be not the fatJar ("+child.toString()+")");
 							} else {
 								this.isExistFullJar = true;
 								if(output){
-									System.err.println("There are "+errors.size()+" Errors in Jar ("+file+")");
+									System.err.println("There are "+errors.size()+" Errors in Jar ("+child.toString()+")");
 									for(String entry : errors) {
 										System.err.println("- Can't create instance of "+entry);
 									}
-									System.out.println("There are "+warnings.size()+" Warnings in Jar ("+file+")");
+									System.out.println("There are "+warnings.size()+" Warnings in Jar ("+child.toString()+")");
 									for(String entry : warnings) {
 										System.out.println("- Not necessary file "+entry);
 									}
