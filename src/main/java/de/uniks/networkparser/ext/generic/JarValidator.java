@@ -31,6 +31,7 @@ public class JarValidator {
 	private ArrayList<String> errors = new ArrayList<String>();
 	private ArrayList<String> mergePackages = new ArrayList<String>();
 	private boolean isExistFullJar;
+	private boolean isUseJUnit;
 	
 	public JarValidator withMinCoverage(int no) {
 		this.minCoverage = no;
@@ -67,6 +68,8 @@ public class JarValidator {
 	
 	public void validate() {
 		CharacterBuffer script = FileBuffer.readFile("build.gradle");
+		this.isUseJUnit = script.indexOf("useJUnitPlatform()")>0;
+
 		script.newLine();
 		script.newLine();
 		script.withLine("task showDependency() {");
@@ -171,7 +174,9 @@ public class JarValidator {
 		}
 		script.withLine("}");
 		script.withLine("test {");
-//		script.withLine("	useJUnitPlatform()");
+		if(this.isUseJUnit) {
+			script.withLine("	useJUnitPlatform()");
+		}
 		script.withLine("	finalizedBy jacocoTestReport");
 		script.withLine("}");
 		
