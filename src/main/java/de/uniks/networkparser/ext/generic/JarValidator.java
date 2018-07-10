@@ -69,7 +69,7 @@ public class JarValidator {
 	}
 	
 	public void validate() {
-		CharacterBuffer script = FileBuffer.readFile("build.gradle");
+		CharacterBuffer script = FileBuffer.readFile(rootPath+"build.gradle");
 		this.isUseJUnit = script.indexOf("useJUnitPlatform()")>0;
 
 		script.newLine();
@@ -94,9 +94,9 @@ public class JarValidator {
 		script.withLine("println \"##TESTDEPENDENCYEND##\"");
 		script.withLine("}");
 
-		FileBuffer.writeFile("test.gradle", script.toString());
+		FileBuffer.writeFile(rootPath+"test.gradle", script.toString());
 
-		CharacterBuffer executeProcess = SimpleController.executeProcess("gradlew", "showDependency", "-b", "test.gradle");
+		CharacterBuffer executeProcess = SimpleController.executeProcess(rootPath+"gradlew", "showDependency", "-b", "test.gradle");
 		ArrayList<String> packages = this.mergePacking(getDependency(executeProcess, "SRCDEPENDENCY"));
 		ArrayList<String> testPackages = this.mergePacking(getDependency(executeProcess, "TESTDEPENDENCY"));
 
@@ -183,10 +183,8 @@ public class JarValidator {
 		script.withLine("}");
 		
 		script.withLine("defaultTasks 'test'");
-		FileBuffer.writeFile("jacoco.gradle", script.toString());
-		SimpleController.executeProcess("gradlew", "-b", "jacoco.gradle");
-//		executeProcess = SimpleController.executeProcess("gradlew", "-b", "jacoco.gradle");
-//		System.out.println(executeProcess);
+		FileBuffer.writeFile(rootPath+"jacoco.gradle", script.toString());
+		SimpleController.executeProcess(rootPath+"gradlew", "-b", "jacoco.gradle");
 	}
 	
 	public boolean analyseReport() {
