@@ -238,7 +238,11 @@ public class JarValidator {
 			return -1;
 		}
 		int result = 0;
-		for(File child : file.listFiles()) {
+		File[] listFiles = file.listFiles();
+		if(listFiles == null) {
+			return -1;
+		}
+		for(File child : listFiles) {
 			if(child.isDirectory()) {
 				int subresult = searching(child, output, isLicence);
 				if(subresult < 0 ) {
