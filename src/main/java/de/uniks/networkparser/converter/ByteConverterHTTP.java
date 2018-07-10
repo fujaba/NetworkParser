@@ -58,8 +58,11 @@ public class ByteConverterHTTP extends ByteConverter {
 	 * @return the object
 	 */
 	@Override
-	public byte[] decode(String values) {
-		return decode(values.getBytes(Charset.forName(BaseItem.ENCODING)));
+	public byte[] decode(CharSequence values) {
+		if(values instanceof String) {
+			return decode(((String)values).getBytes(Charset.forName(BaseItem.ENCODING)));
+		}
+		return null;
 	}
 	public byte[] decode(byte[] values) {
 		if(values == null) {

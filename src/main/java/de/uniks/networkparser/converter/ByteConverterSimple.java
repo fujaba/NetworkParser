@@ -36,7 +36,7 @@ public class ByteConverterSimple extends ByteConverter {
 	}
 
 	@Override
-	public byte[] decode(String value) {
+	public byte[] decode(CharSequence value) {
 		return null;
 	}
 }

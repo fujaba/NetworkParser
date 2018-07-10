@@ -48,7 +48,7 @@ public class ByteConverterAES extends ByteConverter {
 	}
 
 	@Override
-	public byte[] decode(String value) {
+	public byte[] decode(CharSequence value) {
 		return aes.decodeString(value);
 	}
 }

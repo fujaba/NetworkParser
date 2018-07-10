@@ -51,5 +51,5 @@ public abstract class ByteConverter implements Converter{
 		return "";
 	}
 
-	public abstract byte[] decode(String value);
+	public abstract byte[] decode(CharSequence value);
 }

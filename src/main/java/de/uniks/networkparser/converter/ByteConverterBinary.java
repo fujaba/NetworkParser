@@ -71,7 +71,7 @@ public class ByteConverterBinary extends ByteConverter {
 	 * @return the byte[]
 	 */
 	@Override
-	public byte[] decode(String value) {
+	public byte[] decode(CharSequence value) {
 		byte[] out = new byte[value.length() / 8];
 
 		int n = value.length();

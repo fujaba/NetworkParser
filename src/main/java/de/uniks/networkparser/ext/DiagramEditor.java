@@ -175,6 +175,7 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 				if(isValidate) {
 					validator.validate();
 					if(validator.analyseReport() == false) {
+						System.err.println("CodeCoverage not enought");
 						exit = -1;
 					}
 				}
@@ -182,7 +183,11 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 					// Check for Licence
 					if(isError) {
 						exit = validator.searchFiles(true, isLicence);
+						if(exit<0) {
+							System.err.println("FatJar Error");
+						}
 						if(isValidate && exit == 0 && validator.isExistFullJar() == false) {
+							System.err.println("No FatJar found");
 							exit = -1;
 						}
 					}else {

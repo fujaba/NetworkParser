@@ -53,7 +53,7 @@ public class ByteConverterString extends ByteConverter {
 	 * @return the byte[]
 	 */
 	@Override
-	public byte[] decode(String value) {
+	public byte[] decode(CharSequence value) {
 		if(value == null) {
 			return null;
 		}

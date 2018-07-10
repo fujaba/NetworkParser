@@ -191,14 +191,14 @@ public class ByteConverter64 extends ByteConverter {
 	}
 
 	@Override
-	public byte[] decode(String value) {
-		if(value == null) {
+	public byte[] decode(CharSequence value) {
+		if(value == null || value instanceof String == false) {
 			return new byte[0];
 		}
 		if(pem_convert_array == null) {
 			initPEMArray();
 		}
-		byte[] bytes = value.getBytes();
+		byte[] bytes = ((String)value).getBytes();
 		int i;
 		byte[] result = null;
 		for(i=bytes.length - 1;i>=bytes.length - 3;i--) {

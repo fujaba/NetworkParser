@@ -318,7 +318,7 @@ public class AES {
 		return plain;
 	}
 
-	public CharacterBuffer decode(String data) {
+	public CharacterBuffer decode(CharSequence data) {
 		CharacterBuffer string = new CharacterBuffer().with(data);
 		int rest = ((int) data.length() / 32) * 32;
 		if(rest < data.length()) {
@@ -338,7 +338,7 @@ public class AES {
 		return result.trim();
 	}
 
-	public byte[] decodeString(String value) {
+	public byte[] decodeString(CharSequence value) {
 		return decode(value).array(-2, true);
 	}
 

@@ -29,6 +29,7 @@ import java.util.Random;
 
 import de.uniks.networkparser.buffer.ByteBuffer;
 import de.uniks.networkparser.bytes.ByteTokener;
+import de.uniks.networkparser.converter.ByteConverterHex;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Converter;
 import de.uniks.networkparser.interfaces.Entity;
@@ -42,7 +43,6 @@ import de.uniks.networkparser.xml.XMLEntity;
 
 public class EntityUtil {
 	public static final String CLASS="class";
-	private static final String HEXVAL = "0123456789abcdef";
 	public static final String NON_FILE_CHARSSIMPLE = "[\\\\/\\:\\;\\*\\?\"<>\\|!&', \u001F\u0084\u0093\u0094\u0096\u2013\u201E\u201C\u03B1 ]";
 	public static final String emfTypes = " EOBJECT EBIG_DECIMAL EBOOLEAN EBYTE EBYTE_ARRAY ECHAR EDATE EDOUBLE EFLOAT EINT EINTEGER ELONG EMAP ERESOURCE ESHORT ESTRING ";
 
@@ -133,50 +133,7 @@ public class EntityUtil {
 		}
 		return string;
 	}
-	public static String CONTROLCHARACTER = "abtnvfr";
-	public static final String unQuoteControlCharacter(CharSequence value) {
-		if (value == null || value.length() == 0) {
-			return "";
-		}
-		StringBuilder sb = new StringBuilder(value.length());
-		char c;
-		int i = 0;
-		int len = value.length();
-		if(value.charAt(0)=='\"'){
-			i++;
-			len--;
-		}
-		for (; i < len; i++) {
-			c = value.charAt(i);
-			if (c == '\\') {
-				if (i + 1 == len) {
-					sb.append('\\');
-					break;
-				}
-				c = value.charAt(++i);
-				int pos = CONTROLCHARACTER.indexOf(c);
-				if(pos>=0) {
-					sb.append(pos+7);
-				} else if(c == '\"') {
-					sb.append('\"');
-				} else if(c == 0x39) {
-					sb.append(0x39);
-				} else if(c == 'u') {
-					char no = fromHex(value.charAt(++i), value.charAt(++i),
-							value.charAt(++i), value.charAt(++i));
-					sb.append(no);
-				} else if(c == 'o') {
-					char no = fromOctal(value.charAt(++i), value.charAt(++i), value.charAt(++i));
-					sb.append(no);
-				} else {
-					sb.append(c);
-				}
-				continue;
-			}
-			sb.append(c);
-		}
-		return sb.toString();
-	}
+	
 
 	public static final String unQuote(CharSequence value) {
 		if (value == null || value.length() == 0) {
@@ -199,9 +156,8 @@ public class EntityUtil {
 				}
 				c = value.charAt(++i);
 				if (c == 'u') {
-					char no = fromHex(value.charAt(++i), value.charAt(++i),
-							value.charAt(++i), value.charAt(++i));
-					sb.append((char) no);
+					sb.append((char) ByteConverterHex.fromHex(value, ++i, 4));
+					i+=3;
 					continue;
 				} else if (c == '"' || c == '\\') {
 					// remove the backslash
@@ -229,8 +185,8 @@ public class EntityUtil {
 				}
 				c = value.charAt(++i);
 				if (c == 'u') {
-					char no = fromHex(value.charAt(++i), value.charAt(++i), value.charAt(++i), value.charAt(++i));
-					sb.append((char) no);
+					sb.append((char) ByteConverterHex.fromHex(value, ++i, 4));
+					i+=3;
 					continue;
 				//			} else if (c == '"') {
 				//			// remove the backslash
@@ -243,27 +199,6 @@ public class EntityUtil {
 		return sb.toString();
 	}
 
-	private static final char fromHex(char... values) {
-		if(values == null) {
-			return 0;
-		}
-		return (char) ((HEXVAL.indexOf(values[0]) << 24)
-				+ (HEXVAL.indexOf(values[1]) << 16)
-				+ (HEXVAL.indexOf(values[2]) << 8) + HEXVAL.indexOf(values[3]));
-	}
-
-	private static final char fromOctal(char... values) {
-		if(values == null) {
-			return 0;
-		}
-		int result=0;
-		int mult=1;
-		for(int i=values.length-1;i>=0;i--) {
-			result += values[i] * mult;
-			mult = mult *8;
-		}
-		return  (char)result;
-	}
 	/**
 	 * Produce a string in double quotes with backslash sequences in all the
 	 * right places. A backslash will be inserted within &lt;/, producing
