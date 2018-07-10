@@ -3,6 +3,7 @@ package de.uniks.networkparser.test;
 import java.beans.PropertyChangeEvent;
 import java.io.PrintStream;
 import java.math.BigInteger;
+import java.util.LinkedHashSet;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -59,6 +60,17 @@ public class JsonModellTest implements ObjectCondition {
 		updateListener = new UpdateListener(map, tokener);
 		updateListener.execute(json, null);
 	}
+	
+
+	@Test
+	public void testJsonList(){
+		LinkedHashSet<Student> users=new LinkedHashSet<Student>();
+		users.add(new Student().withName("Albert"));
+		JsonObject json = new JsonObject();
+		json.add("readyUser", users);
+		System.out.println(json.toString());
+	}
+
 
 	@Test
 	public void testGenericJson(){

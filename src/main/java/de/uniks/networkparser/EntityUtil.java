@@ -279,8 +279,11 @@ public class EntityUtil {
 		}
 		if (value instanceof Collection) {
 			BaseItem item = reference.getNewList(false);
-			if(item instanceof SimpleKeyValueList<?,?>) {
-				return ((SimpleKeyValueList<?,?>) item).withList((Collection<?>) value).toString(converter);
+//			if(item instanceof SimpleKeyValueList<?,?>) {
+//				return ((SimpleKeyValueList<?,?>) item).withList((Collection<?>) value).toString(converter);
+//			}else
+			if(item instanceof AbstractList<?>){
+				((AbstractList<?>)item).withList((Collection<?>) value).toString(converter);
 			}
 			return ((BaseItem) item).toString(converter);
 		}
