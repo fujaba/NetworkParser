@@ -97,6 +97,12 @@ public class JarValidator {
 		FileBuffer.writeFile(rootPath+"test.gradle", script.toString());
 
 		CharacterBuffer executeProcess = SimpleController.executeProcess(rootPath+"gradlew", "showDependency", "-b", "test.gradle");
+		if(executeProcess.length()>0) {
+			System.out.println("CHECK DEPENDENCY: "+new File(rootPath+"test.gradle").exists());
+		}else {
+			System.out.println("ERROR DEPENDENCY: "+new File(rootPath+"test.gradle").exists());
+			System.out.println(executeProcess.toString());
+		}
 		ArrayList<String> packages = this.mergePacking(getDependency(executeProcess, "SRCDEPENDENCY"));
 		ArrayList<String> testPackages = this.mergePacking(getDependency(executeProcess, "TESTDEPENDENCY"));
 
@@ -184,7 +190,13 @@ public class JarValidator {
 		
 		script.withLine("defaultTasks 'test'");
 		FileBuffer.writeFile(rootPath+"jacoco.gradle", script.toString());
-		SimpleController.executeProcess(rootPath+"gradlew", "-b", "jacoco.gradle");
+		executeProcess = SimpleController.executeProcess(rootPath+"gradlew", "-b", "jacoco.gradle");
+		if(executeProcess.length()>0) {
+			System.out.println("CHECK TEST: "+new File(rootPath+"jacoco.gradle").exists());
+		}else {
+			System.out.println("ERROR TEST: "+new File(rootPath+"jacoco.gradle").exists());
+			System.out.println(executeProcess.toString());
+		}
 	}
 	
 	public boolean analyseReport() {
