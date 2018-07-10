@@ -33,7 +33,7 @@ permissions and limitations under the Licence.
 */
 
 public abstract class GraphModel extends GraphEntity implements BaseItem {
-	public static final String DEFAULTPACKAGE2 = "i.love.networkparser";
+	public static final String DEFAULTPACKAGE = "i.love.networkparser";
 	public static final String PROPERTY_CLAZZ = "clazz";
 	private String defaultAuthorName;
 	protected String genPath;
@@ -207,7 +207,7 @@ public abstract class GraphModel extends GraphEntity implements BaseItem {
 	}
 
 	public String getDefaultPackage() {
-		return DEFAULTPACKAGE2;
+		return DEFAULTPACKAGE;
 	}
 
 	private void fixClassModel(Clazz item, SimpleSet<Clazz> visited) {

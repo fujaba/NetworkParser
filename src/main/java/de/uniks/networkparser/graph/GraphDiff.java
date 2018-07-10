@@ -28,6 +28,9 @@ public class GraphDiff extends GraphMember{
 	private int count;
 	private GraphMember match;
 	private GraphEntity mainFile;
+	private Object oldValue;
+	private Object newValue;
+	private String type;
 
 	public GraphDiff withMain(GraphEntity node) {
 		this.mainFile = node;
@@ -63,4 +66,48 @@ public class GraphDiff extends GraphMember{
 	protected void addCounter() {
 		this.count++;
 	}
+
+	public Object getOldValue() {
+		return oldValue;
+	}
+
+	public boolean setOldValue(Object oldValue) {
+		if(oldValue != this.oldValue) {
+			this.oldValue = oldValue;
+			return true;
+		}
+		return false;
+	}
+	
+	public GraphDiff withOldValue(Object oldValue) {
+		setOldValue(oldValue);
+		return this;
+	}
+
+	public Object getNewValue() {
+		return newValue;
+	}
+
+	public boolean setNewValue(Object newValue) {
+		if(newValue != this.newValue) {
+			this.newValue = newValue;
+			return true;
+		}
+		return false;
+	}
+	
+	public GraphDiff withNewValue(Object newValue) {
+		setNewValue(newValue);
+		return this;
+	}
+	
+	public GraphDiff withType(String value) {
+		this.type = value;
+		return this;
+	}
+	
+	public String getType() {
+		return this.type;
+	}
+
 }

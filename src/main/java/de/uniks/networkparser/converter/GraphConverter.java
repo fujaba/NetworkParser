@@ -27,6 +27,7 @@ import java.util.ArrayList;
 
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.buffer.CharacterBuffer;
+import de.uniks.networkparser.ext.ClassModel;
 import de.uniks.networkparser.graph.Association;
 import de.uniks.networkparser.graph.AssociationTypes;
 import de.uniks.networkparser.graph.Attribute;
@@ -50,6 +51,10 @@ import de.uniks.networkparser.graph.Method;
 import de.uniks.networkparser.graph.Modifier;
 import de.uniks.networkparser.graph.Parameter;
 import de.uniks.networkparser.graph.util.AssociationSet;
+import de.uniks.networkparser.graph.util.AttributeSet;
+import de.uniks.networkparser.graph.util.ClazzSet;
+import de.uniks.networkparser.graph.util.MethodSet;
+import de.uniks.networkparser.graph.util.ModifierSet;
 import de.uniks.networkparser.graph.util.ParameterSet;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Converter;
@@ -57,7 +62,9 @@ import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.EntityList;
 import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.json.JsonTokener;
+import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleSet;
+import de.uniks.networkparser.parser.TemplateResultFragment;
 
 public class GraphConverter implements Converter{
 	public static final String TYPE = "type";
@@ -644,5 +651,168 @@ public class GraphConverter implements Converter{
 	public GraphConverter withFull(boolean value) {
 		this.full = value;
 		return this;
+	}
+	
+	public TemplateResultFragment convertToMetaText(GraphModel model, boolean useImport) {
+		TemplateResultFragment fragment = new TemplateResultFragment().withMember(model);
+		if(model.getDefaultPackage().equalsIgnoreCase(model.getName()) == false) {
+			String packageName = model.getName();
+			fragment.withLine("#IMPORT model = new #IMPORT(\""+packageName+"\");", useImport, ClassModel.class);
+		}else {
+			fragment.withLine("#IMPORT model = new #IMPORT();", useImport, ClassModel.class);
+
+		}
+		AssociationSet associations = new AssociationSet();
+		AttributeSet attributes = new AttributeSet();
+
+		ModifierSet refModifier = GraphUtil.getModifier(new Clazz(""));
+		MethodSet methods = new MethodSet();
+		AssociationSet superAssocs = new AssociationSet();
+		SimpleKeyValueList<GraphMember, String> names = new SimpleKeyValueList<GraphMember, String>();
+		ClazzSet clazzes = model.getClazzes();
+		String name;
+		String variable;
+
+		for(int i = 0;i < clazzes.size(); i++) {
+			Clazz clazz = clazzes.get(i);
+
+			AttributeSet subAttr = clazz.getAttributes();
+			MethodSet subMethod = clazz.getMethods();
+			ModifierSet modifiers = this.getModifier(clazz, refModifier);
+			boolean isVariable = subAttr.size()>0 || subMethod.size()>0 || modifiers.size()>0;
+			attributes.addAll(subAttr);
+			methods.addAll(subMethod);
+
+			name = getFreeName(names, clazz);
+			if(isVariable) {
+				variable = "#IMPORT "+name+" = ";
+			} else {
+				variable = "";
+			}
+			String temp ="";
+			if (clazz.getType().equals(Clazz.TYPE_INTERFACE)) {
+				temp = ".enableInterface()";
+			}
+			fragment.withLine(variable + "model.createClazz(\""+clazz.getName()+"\")"+temp+";", useImport, Clazz.class);
+
+			for(Modifier m : modifiers ) {
+				fragment.withLine(name+".with(#IMPORT.create(\"" + m.getName() + "\"));", useImport, Modifier.class);
+			}
+
+			for (Association association : associations) {
+				if(GraphUtil.isAssociation(association)) {
+					associations.add(association);
+				} else {
+					superAssocs.add(association);
+				}
+			}
+
+			clazzes.addAll(clazz.getSuperClazzes(false));
+			clazzes.addAll(clazz.getInterfaces(false));
+		}
+		
+		refModifier = GraphUtil.getModifier(new Attribute("", DataType.VOID));
+		for (Attribute attribute : attributes) {
+			ModifierSet modifiers = this.getModifier(attribute, refModifier);
+
+			name = getFreeName(names, attribute);
+			if(modifiers.size()>0) {
+				variable = "#IMPORT "+name+" = ";
+ 			} else {
+				variable = "";
+			}
+			String clazzName = (String) names.getValue(attribute.getClazz());
+			fragment.withLine(variable + clazzName + ".createAttribute(\"" + attribute.getName() + "\", " + attribute.getType().toString(useImport) + ");\n", useImport, Attribute.class);
+
+			for(Modifier m : modifiers) {
+				fragment.withLine(name+".with(#IMPORT.create(\"" + m.getName() + "\"));", useImport, Modifier.class);
+			}
+		}
+
+		for (Association assoc : associations) {
+			name = (String) names.getValue(assoc.getClazz());
+			String otherName = (String)names.getValue(assoc.getOtherClazz());
+			String card = assoc.getOther().getCardinality().toString().toUpperCase();
+			if(GraphUtil.isUndirectional(assoc)) {
+				fragment.withLine(name+".createUniDirectional("+otherName.toLowerCase()+", \"" + otherName + "\", #IMPORT."+card, useImport, Cardinality.class);
+			} else {
+				fragment.withLine(name+".createBidirectional(" + otherName.toLowerCase() + ", \"" + assoc.getOther().getName() + "\", #IMPORT."+card+ ", \"" + 
+						assoc.getName() + "\", #IMPORT."+assoc.getCardinality().toString().toUpperCase()+");", useImport, Cardinality.class);
+			}
+		}
+		refModifier = GraphUtil.getModifier(new Method());
+		for (Method method : methods) {
+			ModifierSet modifiers = this.getModifier(method, refModifier);
+
+			name = getFreeName(names, method);
+			if(modifiers.size()>0) {
+				variable = "#IMPORT "+name+" = ";
+ 			} else {
+				variable = "";
+			}
+			String clazzName = (String) names.getValue(method.getClazz());
+			CharacterBuffer paramsString = new CharacterBuffer();
+			String split = ", ";
+			for(Parameter param : method.getParameters()) {
+				if(paramsString.isEmpty() == false) {
+					paramsString.with(split);
+				}
+				paramsString.with("new #IMPORTB("+param.getType().toString(useImport)+")");
+				if(param.getName() != null) {
+					paramsString.with(".with(\"" + param.getName() + "\")");
+				}
+			}
+			if(paramsString.isEmpty()) {
+				split = "";
+			}
+			fragment.withLine(variable + clazzName + ".createMethod(\"" + method.getName() + "\", " + method.getReturnType().toString(useImport)+split+paramsString.toString()+");", useImport, Method.class, Parameter.class);
+			for(Modifier m : modifiers) {
+				fragment.withLine(name+".with(#IMPORT.create(\"" + m.getName() + "\"));", useImport, Modifier.class);
+			}
+		}
+		String root = GraphUtil.getGenPath(model);
+		if(root != null && root.isEmpty() == false) {
+			fragment.withLine("model.generate(\""+root+"\");", useImport);
+		} else {
+			fragment.withLine("model.generate();", useImport);
+		}
+		return fragment;
+	}
+
+	private String getFreeName(SimpleKeyValueList<GraphMember, String> names, GraphMember member) {
+		String value = member.getName().toLowerCase();
+		if(names.containsValue(value) == false) {
+			names.add(member, value);
+			return value;
+		}
+		if(member instanceof Clazz == false) {
+			// Search for Clazz
+			String clazzName = (String) names.getValue(member.getClazz());
+			value = clazzName + "_" + member.getName().toLowerCase();
+			if(names.containsValue(value) == false) {
+				names.add(member, value);
+				return value;
+			}
+		}
+		int i=1;
+		String startValue = value;
+		while(i<1000) {
+			value = startValue + i;
+			if(names.containsValue(value) == false) {
+				names.add(member, value);
+				return value;
+			}
+		}
+		return null;
+	}
+
+	private ModifierSet getModifier(GraphMember owner, ModifierSet ref) {
+		ModifierSet modifierSet = GraphUtil.getModifier(owner);
+		for(int i=modifierSet.size() - 1;i>=0;i--) {
+			if(ref.contains(modifierSet.get(i))) {
+				modifierSet.remove(i);
+			}
+		}
+		return modifierSet;
 	}
 }

@@ -452,6 +452,36 @@ public class TemplateResultFragment implements Comparable<TemplateResultFragment
 		return null;
 	}
 
+	public TemplateResultFragment withLine(String value, boolean useImport, Class<?>... importClass) {
+		if(importClass != null) {
+			if(importClass.length<1 || importClass[0] == null) {
+				this.value.withLine(value);
+				return this;
+			}
+			if(useImport) {
+				for(int a = importClass.length-1;a>=0;a--) {
+					if(importClass[a]!= null) {
+						value = value.replaceAll("#IMPORT"+(char)(65+a), importClass[a].getSimpleName());
+						this.addHeader("import "+importClass[a].getName()+";");
+					}
+				}
+				value = value.replaceAll("#IMPORT", importClass[0].getSimpleName());
+				this.value.withLine(value);
+			}else {
+				for(int a = importClass.length-1;a>=0;a--) {
+					if(importClass[a]!= null) {
+						value = value.replaceAll("#IMPORT"+(char)(65+a), importClass[a].getName());
+					}
+				}
+				value = value.replaceAll("#IMPORT", importClass[0].getName());
+				this.value.withLine(value);
+			}
+			return this;
+		}
+		this.value.withLine(value.replaceAll("#IMPORT", ""));
+		return this;
+	}
+
 	public void update() {
 		this.value.clear();
 		this.template.update(this);

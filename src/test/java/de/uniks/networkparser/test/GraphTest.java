@@ -56,6 +56,7 @@ import de.uniks.networkparser.json.JsonArray;
 import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.logic.BooleanCondition;
+import de.uniks.networkparser.parser.TemplateResultFragment;
 import de.uniks.networkparser.test.model.Apple;
 import de.uniks.networkparser.test.model.AppleTree;
 import de.uniks.networkparser.test.model.ChatMessage;
@@ -916,6 +917,34 @@ public class GraphTest {
 		XMLEntity xmi = emfTokener.toXMI(graphList);
 		Assert.assertNotNull(xmi);
 //		System.out.println(xmi.toString(2));
+	}
+	
+	@Test
+	public void GraphConverterTest() {
+		ClassModel model=new ClassModel();
+		model.createClazz("Person");
+		
+		GraphConverter converter = new GraphConverter();
+		TemplateResultFragment convertToMetaText = converter.convertToMetaText(model, true);
+		System.out.println(convertToMetaText.getValue().toString());
+	}
+
+	@Test
+	public void GraphConverterTestMethod() {
+		ClassModel model=new ClassModel();
+		Clazz person = model.createClazz("Person");
+		Attribute attr = person.createAttribute("name", DataType.STRING);
+		attr.with(Modifier.FINAL);
+		Method method = person.createMethod("name", DataType.BOOLEAN, new Parameter(DataType.STRING));
+		method.with(Modifier.FINAL);
+		
+		
+		GraphConverter converter = new GraphConverter();
+		TemplateResultFragment convertToMetaText = converter.convertToMetaText(model, true);
+		System.out.println(convertToMetaText.getValue().toString());
+		
+		System.out.println("#### HEADER ###");
+		System.out.println(convertToMetaText.getHeaders().toString());
 	}
 
 }

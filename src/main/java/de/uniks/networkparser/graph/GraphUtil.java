@@ -2,6 +2,7 @@ package de.uniks.networkparser.graph;
 
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.buffer.CharacterBuffer;
+import de.uniks.networkparser.graph.util.ModifierSet;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SimpleSet;
 
@@ -99,7 +100,7 @@ public class GraphUtil {
 		return model;
 	}
 
-	public String getGenPath(GraphModel model) {
+	public static final String getGenPath(GraphModel model) {
 		return model.genPath;
 	}
 
@@ -213,6 +214,19 @@ public class GraphUtil {
 		return method.getParameterString(shortName, false);
 	}
 
+	public static final ModifierSet getModifier(GraphMember member) {
+		ModifierSet set = new ModifierSet();
+		Modifier modifier = member.getModifier();
+		set.add(modifier);
+		for(GraphMember child : modifier.getChildren()) {
+			if(child instanceof Modifier) {
+				set.add(child);
+			}
+		}
+		return set;
+	}
+
+	
 	public static final SimpleSet<Association> getOtherAssociations(Clazz clazz) {
 		SimpleSet<Association> collection = new SimpleSet<Association>();
 		for (Association assoc : clazz.getAssociations()) {

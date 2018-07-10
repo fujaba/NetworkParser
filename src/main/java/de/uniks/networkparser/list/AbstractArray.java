@@ -986,10 +986,24 @@ public abstract class AbstractArray<V> implements BaseItem {
 			return REMOVED;
 		}
 		Object[] hashCodes;
-		if (elements[offset + 1] != null) {
+		int len;
+		int lastIndex = -1;
+		if (elements.length <= offset+1) {
+			// Ups only small KeyValueList
+			hashCodes = ((Object[]) elements[offset]);
+			for(int i=0;i<hashCodes.length;i++) {
+				if (checkValue(o, hashCodes[i])) {
+					lastIndex = i;
+					if (!last) {
+						break;
+					}
+				}
+			}
+			return lastIndex;
+		} else if (elements[offset + 1] != null) {
 			hashCodes = (Object[]) elements[offset + 1];
 		} else {
-			int len = ((Object[]) elements[offset]).length;
+			len = ((Object[]) elements[offset]).length;
 			resizeBig(len * 2, offset + 1);
 			hashCodes = (Object[]) elements[offset + 1];
 		}
@@ -997,9 +1011,8 @@ public abstract class AbstractArray<V> implements BaseItem {
 		if (hashCodes[index] == null) {
 			return REMOVED;
 		}
-		int len = ((Object[]) elements[offset]).length;
+		len = ((Object[]) elements[offset]).length;
 		int indexItem = -1;
-		int lastIndex = -1;
 
 		while (hashCodes[index] != null) {
 			if (REMOVED.equals(hashCodes[index])) {

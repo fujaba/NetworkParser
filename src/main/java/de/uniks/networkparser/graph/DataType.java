@@ -112,10 +112,25 @@ public class DataType {
 		return super.hashCode();
 	}
 
+	
+	public String toString(boolean ref) {
+		String internName = this.getInternName(false, true);
+		if ("void char byte int long float double String boolean Object".indexOf(internName) >= 0) {
+			if(ref) {
+				return DataType.class.getSimpleName()+"." + internName.toUpperCase();
+			}
+			return DataType.class.getName()+"." + internName.toUpperCase();
+		} else {
+			if(ref) {
+				return DataType.class.getSimpleName()+ ".create(\"" + internName + "\")";
+			}
+			return DataType.class.getName()+".create(\"" + internName + "\")";
+		}
+	}
 	@Override
 	public String toString() {
 		String internName = this.getInternName(false, true);
-		if ("void int long double String boolean Object".indexOf(internName) >= 0) {
+		if ("void char byte int long float double String boolean Object".indexOf(internName) >= 0) {
 			return "DataType." + internName.toUpperCase();
 		} else {
 			return "DataType.create(\"" + internName + "\")";
