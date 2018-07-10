@@ -357,7 +357,7 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 		}
 		DateTimeEntity entity = new DateTimeEntity();
 		name = name + "_" + entity.toString("yyyyMMdd_HHmmss") + ".json";
-		return FileBuffer.writeFile(name, model.toString());
+		return FileBuffer.writeFile(name, model.toString())>=0;
 	}
 
 	public void log(String value) {

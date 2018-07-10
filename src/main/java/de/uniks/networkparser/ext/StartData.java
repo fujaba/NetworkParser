@@ -238,7 +238,7 @@ public class StartData implements SendableEntityCreatorNoIndex
 		IdMap map = new IdMap();
 		map.with(startData);
 		JsonObject config = map.toJsonObject(startData, Filter.createFull());
-		return FileBuffer.writeFile(StartData.fileName, config.toString(2));
+		return FileBuffer.writeFile(StartData.fileName, config.toString(2))>=0;
 	}
 
 	public int size() {

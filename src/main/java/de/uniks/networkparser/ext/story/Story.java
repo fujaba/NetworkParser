@@ -197,7 +197,7 @@ public class Story extends StoryElement implements Comparable<Story>{
 				return false;
 			}
 		}
-		return FileBuffer.writeFile(path + fileName, output.toString(2));
+		return FileBuffer.writeFile(path + fileName, output.toString(2))>=0;
 	}
 
 	public static void addScript(String path, String name, HTMLEntity entry) {

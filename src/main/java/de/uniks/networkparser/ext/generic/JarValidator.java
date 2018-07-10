@@ -188,7 +188,7 @@ public class JarValidator {
 		script.withLine("	finalizedBy jacocoTestReport");
 		script.withLine("}");
 		
-		script.withLine("defaultTasks 'test'");
+		script.withLine("defaultTasks 'clean' 'test'");
 		FileBuffer.writeFile(rootPath+"jacoco.gradle", script.toString());
 		executeProcess = SimpleController.executeProcess(rootPath+"gradlew", "-b", "jacoco.gradle");
 		if(executeProcess.length()>0) {

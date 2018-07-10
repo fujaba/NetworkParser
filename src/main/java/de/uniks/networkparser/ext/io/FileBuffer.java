@@ -187,35 +187,35 @@ public class FileBuffer extends Buffer {
 		}
 	}
 
-	public static final boolean writeFile(String fileName, CharSequence data, byte flag) {
+	public static final int writeFile(String fileName, CharSequence data, byte flag) {
 		if(data != null) {
 			return writeFile(fileName, data.toString().getBytes(), flag);
 		}
-		return false;
+		return -1;
 	}
 
-	public static final boolean writeFile(String fileName, byte[] data, byte flag) {
+	public static final int writeFile(String fileName, byte[] data, byte flag) {
 		if(fileName == null || fileName.length()<1) {
-			return false;
+			return -1;
 		}
 		FileBuffer buffer = new FileBuffer();
 		buffer.withFile(fileName);
 		if(buffer.exists()) {
 			if(flag==NONE) {
-				return false;
+				return -1;
 			}
 		} else {
 			if(buffer.createFile() == false) {
-				return false;
+				return -1;
 			}
 		}
 		return buffer.write(flag, data);
 	}
-	public static final boolean writeFile(String fileName, CharSequence data) {
+	public static final int writeFile(String fileName, CharSequence data) {
 		return writeFile(fileName, data, OVERRIDE);
 	}
 	
-	public static final boolean writeFile(String fileName, byte[] data) {
+	public static final int writeFile(String fileName, byte[] data) {
 		return writeFile(fileName, data, OVERRIDE);
 	}
 
@@ -382,15 +382,15 @@ public class FileBuffer extends Buffer {
 		return false;
 	}
 
-	public boolean write(byte flag, CharSequence data) {
+	public int write(byte flag, CharSequence data) {
 		if(data != null) {
 			return write(flag, data.toString().getBytes());
 		}
-		return false;
+		return -1;
 	}
-	public boolean write(byte flag, byte... data) {
+	public int write(byte flag, byte... data) {
 		if(this.file == null) {
-			return false;
+			return -1;
 		}
 		try {
 			boolean append = false;
@@ -401,11 +401,11 @@ public class FileBuffer extends Buffer {
 			os.write(data);
 			os.flush();
 			os.close();
-			return true;
+			return data.length;
 		} catch (FileNotFoundException e) {
 		} catch (IOException e) {
 		}
-		return false;
+		return -1;
 	}
 
 	public boolean println(CharSequence string) {
@@ -414,6 +414,6 @@ public class FileBuffer extends Buffer {
 	}
 
 	public boolean newline() {
-		return this.write(APPEND, BaseItem.CRLF);
+		return this.write(APPEND, BaseItem.CRLF)>0;
 	}
 }

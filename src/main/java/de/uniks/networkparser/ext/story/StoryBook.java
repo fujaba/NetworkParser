@@ -50,7 +50,7 @@ public class StoryBook extends SendableItem implements SendableEntityCreator {
 			link.add("href", subStory.getOutputFile());
 			link.withValueItem(subStory.getLabel());
 		}
-		return FileBuffer.writeFile(fileName+"index.html", output.toString());
+		return FileBuffer.writeFile(fileName+"index.html", output.toString())>=0;
 	}
 
 	public StoryBook withTask(Task... value) {

@@ -87,7 +87,7 @@ public class ClassModel extends GraphModel {
 		if(diagramName.length() < 1) {
 			return false;
 		}
-		return FileBuffer.writeFile("doc/"+diagramName+".html", html.toString());
+		return FileBuffer.writeFile("doc/"+diagramName+".html", html.toString())>=0;
 	}
 
 	@Override

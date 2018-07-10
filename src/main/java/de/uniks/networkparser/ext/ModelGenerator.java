@@ -238,7 +238,7 @@ public class ModelGenerator extends BasicGenerator {
 		if(rootPath.endsWith("/") == false) {
 			rootPath += "/";
 		}
-		return FileBuffer.writeFile(rootPath + entity.getFileName(), entity.toString());
+		return FileBuffer.writeFile(rootPath + entity.getFileName(), entity.toString())>=0;
 	}
 
 	public ParserEntity parse(String rootPath, TemplateResultFile entity) {
