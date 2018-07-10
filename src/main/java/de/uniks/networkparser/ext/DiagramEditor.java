@@ -162,6 +162,9 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 						String param = item.substring(5);
 						validator.withPath(param);
 						isAnalyseJar = true;
+					} else if(item.startsWith("root=")) {
+						String param = item.substring(5);
+						validator.withRootPath(param);
 					} else if(item.startsWith("fatjar")) {
 						isAnalyseJar = true;
 					} else if(item.startsWith("licence")) {

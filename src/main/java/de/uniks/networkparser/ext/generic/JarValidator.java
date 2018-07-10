@@ -32,6 +32,8 @@ public class JarValidator {
 	private ArrayList<String> mergePackages = new ArrayList<String>();
 	private boolean isExistFullJar;
 	private boolean isUseJUnit;
+	SimpleKeyValueList<String, JsonObject> projects = new SimpleKeyValueList<String, JsonObject>();
+	private String rootPath = "";
 	
 	public JarValidator withMinCoverage(int no) {
 		this.minCoverage = no;
@@ -188,7 +190,7 @@ public class JarValidator {
 	}
 	
 	public boolean analyseReport() {
-		File file = new File(this.file);
+		File file = new File(rootPath+this.file);
 		if(file.exists()) {
 			
 			CharacterBuffer content = FileBuffer.readFile(file);
@@ -218,7 +220,7 @@ public class JarValidator {
 		if(this.path == null) {
 			return -1;
 		}
-		return searching(new File(this.path), output, isLicence);
+		return searching(new File(rootPath+this.path), output, isLicence);
 	}
 	
 	public boolean isError() {
@@ -448,9 +450,7 @@ public class JarValidator {
 		}
 		return false;
 	}
-	
-	SimpleKeyValueList<String, JsonObject> projects = new SimpleKeyValueList<String, JsonObject>();
-	
+
 	private boolean isProject(String item) {
 		for(int i=0;i<projects.size();i++) {
 			if(item.startsWith(projects.getKeyByIndex(i))) {
@@ -516,5 +516,10 @@ public class JarValidator {
 
 	public int getMinCoverage() {
 		return this.minCoverage;
+	}
+
+	public JarValidator withRootPath(String param) {
+		this.rootPath = param;
+		return this;
 	}
 }
