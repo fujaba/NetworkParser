@@ -758,17 +758,19 @@ public class SimpleController implements ObjectCondition{
 	public JavaBridge getBridge() {
 		return bridge;
 	}
-	
 	public static CharacterBuffer executeProcess(String...values) {
+		return executeProcess(new CharacterBuffer(), values);
+	}
+	public static CharacterBuffer executeProcess(CharacterBuffer command, String...values) {
 		CharacterBuffer result = new CharacterBuffer();
 		if(values == null) {
 			return result;
 		}
 		try {
 			String line;
-			CharacterBuffer command = new CharacterBuffer();
-			
-
+			if(command == null) {
+				command = new CharacterBuffer();
+			}
 			int i=0;
 			if(Os.isWindows()) {
 				command.with("cmd.exe /c ");
@@ -784,11 +786,16 @@ public class SimpleController implements ObjectCondition{
 //			}
 			// So now add executeCommand to String
 			command.with('"');
-			if(values.length>0 && values[0] != null && i == 1) {
-				if((values[0].startsWith("/") || values[0].startsWith("\\"))) {
+			if(values.length>0 && values[0] != null) {
+				if(i == 1) {
+					if((values[0].startsWith("/") || values[0].startsWith("\\"))) {
+						command.with(values[0]);
+					} else {
+						command.with("./"+values[0]);
+					}
+				}else {
 					command.with(values[0]);
-				} else {
-					command.with("./"+values[0]);
+					i++;
 				}
 			}
 			for(;i<values.length;i++) {
