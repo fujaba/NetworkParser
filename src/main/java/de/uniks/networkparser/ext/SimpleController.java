@@ -771,14 +771,16 @@ public class SimpleController implements ObjectCondition{
 			if(command == null) {
 				command = new CharacterBuffer();
 			}
-			int i=0;
+			
+			ArrayList<String> commands = null;
 			if(Os.isWindows()) {
 				command.with("cmd.exe /c ");
 			} else {
-				command.with("/bin/sh -c ");
-				i=1;
-				
+				commands = new ArrayList<String>();
+				commands.add("/bin/sh");
+				commands.add("-c");
 			}
+			
 //			for(String item : values) {
 //				if(item != null) {
 //					param.add(item);
@@ -787,7 +789,7 @@ public class SimpleController implements ObjectCondition{
 			// So now add executeCommand to String
 			command.with('"');
 			if(values.length>0 && values[0] != null) {
-				if(i == 1) {
+				if(commands != null) {
 					if((values[0].startsWith("/") || values[0].startsWith("\\"))) {
 						command.with(values[0]);
 					} else {
@@ -795,16 +797,28 @@ public class SimpleController implements ObjectCondition{
 					}
 				}else {
 					command.with(values[0]);
-					i++;
 				}
 			}
+			int i=1;
 			for(;i<values.length;i++) {
 				if(values[i] != null) {
 					command.with(" "+values[i]);
 				}
 			}
 			command.with('"');
-			Process p = Runtime.getRuntime().exec(command.toString());
+			Process p;
+			if(commands != null) {
+				// Its Mac
+				commands.add(command.toString());
+				p = Runtime.getRuntime().exec(commands.toArray(new String[commands.size()]));
+				command.clear();
+				command.with(commands.get(0));
+				for(i=1;i<commands.size();i++) {
+					command.with(" "+commands.get(i));
+				}
+			}else {
+				p = Runtime.getRuntime().exec(command.toString());
+			}
 			BufferedReader input = new BufferedReader(new InputStreamReader(p.getInputStream()));
 			while ((line = input.readLine()) != null) {
 				result.withLine(line);
