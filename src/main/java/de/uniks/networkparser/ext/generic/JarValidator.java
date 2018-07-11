@@ -132,6 +132,10 @@ public class JarValidator {
 		script.withLine("		enabled true");
 		script.withLine("		destination new File(\"${buildDir}/reports/\")");
 		script.withLine("	}");
+		if(this.isUseJUnit) {
+			script.withLine("	useJUnitPlatform()");
+		}
+		script.withLine("	finalizedBy jacocoTestReport");
 		script.withLine("}");
 		script.withLine("jacocoTestReport {");
 		script.withLine("	group = \"Reporting\"");
@@ -184,14 +188,7 @@ public class JarValidator {
 			script.withLine("compile files(\""+item+"\")");
 		}
 		script.withLine("}");
-		script.withLine("test {");
-		if(this.isUseJUnit) {
-			script.withLine("	useJUnitPlatform()");
-		}
-		script.withLine("	finalizedBy jacocoTestReport");
-		script.withLine("}");
-		
-		script.withLine("defaultTasks 'clean' 'test'");
+		script.withLine("defaultTasks 'clean', 'test'");
 		FileBuffer.writeFile(rootPath+"jacoco.gradle", script.toString());
 
 		command = new CharacterBuffer();
