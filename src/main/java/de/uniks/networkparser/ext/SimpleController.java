@@ -27,6 +27,7 @@ THE SOFTWARE.
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintStream;
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.lang.reflect.Field;
 import java.net.MalformedURLException;
@@ -40,6 +41,7 @@ import java.util.Map;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.ext.generic.ReflectionLoader;
+import de.uniks.networkparser.ext.io.StringOutputStream;
 import de.uniks.networkparser.ext.io.StringPrintStream;
 import de.uniks.networkparser.ext.javafx.GUIEvent;
 import de.uniks.networkparser.ext.javafx.JavaAdapter;
@@ -802,7 +804,9 @@ public class SimpleController implements ObjectCondition{
 			}
 			input.close();
 		} catch (Exception err) {
-			err.printStackTrace();
+			StringOutputStream stream = new StringOutputStream();
+			err.printStackTrace(new PrintStream(stream));
+			result.with(stream.toString());
 		}
 		return result;
 	}
