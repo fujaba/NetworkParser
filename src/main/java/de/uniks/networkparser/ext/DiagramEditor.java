@@ -169,7 +169,7 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 						isAnalyseJar = true;
 					} else if(item.startsWith("licence")) {
 						isLicence = true;
-					} else if(item.startsWith("noError")) {
+					} else if(item.startsWith("noerror")) {
 						isError = false;
 					}
 				}

@@ -207,7 +207,6 @@ public class JarValidator {
 	public boolean analyseReport() {
 		File file = new File(rootPath+this.file);
 		if(file.exists()) {
-			
 			CharacterBuffer content = FileBuffer.readFile(file);
 			String search = "<td class=\"ctr2\">";
 			int pos = content.indexOf(search);
@@ -219,7 +218,7 @@ public class JarValidator {
 				cc = cc.replaceAll("%", "");
 				cc = cc.replace((char)160, ' ');
 				cc = cc.trim();
-				System.out.println("Found: "+cc);
+				System.out.println("Found CC: "+cc);
 				int no = Integer.valueOf(cc);
 				if(no >= this.minCoverage) {
 					return true;
@@ -252,11 +251,13 @@ public class JarValidator {
 	
 	public int searching(File file, boolean output, boolean isLicence) {
 		if(file == null) {
+			System.out.println("NO FILES FOUND");
 			return -1;
 		}
 		int result = 0;
 		File[] listFiles = file.listFiles();
 		if(listFiles == null) {
+			System.out.println("NO FILES FOUND: "+file.getPath());
 			return -1;
 		}
 		for(File child : listFiles) {
