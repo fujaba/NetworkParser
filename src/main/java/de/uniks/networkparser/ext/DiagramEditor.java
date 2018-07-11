@@ -185,16 +185,17 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 				if(isAnalyseJar) {
 					// Check for Licence
 					if(isError) {
-						exit = validator.searchFiles(true, isLicence);
-						if(exit<0) {
+						int subExit = validator.searchFiles(System.err, isLicence);
+						if(subExit < 0) {
+							exit = subExit;
 							System.err.println("FatJar Error");
 						}
-						if(isValidate && exit == 0 && validator.isExistFullJar() == false) {
+						if(isValidate && subExit == 0 && validator.isExistFullJar() == false) {
 							System.err.println("No FatJar found");
 							exit = -1;
 						}
 					}else {
-						validator.searchFiles(true, isLicence);
+						validator.searchFiles(System.err, isLicence);
 					}
 				}
 				if(exit < 0) {

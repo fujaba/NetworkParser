@@ -1,6 +1,7 @@
 package de.uniks.networkparser.ext.generic;
 
 import java.io.File;
+import java.io.PrintStream;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -188,7 +189,8 @@ public class JarValidator {
 			script.withLine("compile files(\""+item+"\")");
 		}
 		script.withLine("}");
-		script.withLine("defaultTasks 'clean', 'test'");
+//		script.withLine("defaultTasks 'clean', 'test'");
+		script.withLine("defaultTasks 'test'");
 		FileBuffer.writeFile(rootPath+"jacoco.gradle", script.toString());
 
 		command = new CharacterBuffer();
@@ -230,7 +232,7 @@ public class JarValidator {
 		return false;
 	}
 	
-	public int searchFiles(boolean output, boolean isLicence) {
+	public int searchFiles(PrintStream output, boolean isLicence) {
 		if(this.path == null) {
 			return -1;
 		}
@@ -249,15 +251,19 @@ public class JarValidator {
 		return warnings;
 	}
 	
-	public int searching(File file, boolean output, boolean isLicence) {
+	public int searching(File file, PrintStream output, boolean isLicence) {
 		if(file == null) {
-			System.out.println("NO FILES FOUND");
+			if(output != null){
+				output.println("NO FILES FOUND");
+			}
 			return -1;
 		}
 		int result = 0;
 		File[] listFiles = file.listFiles();
 		if(listFiles == null) {
-			System.out.println("NO FILES FOUND: "+file.getPath());
+			if(output != null){
+				output.println("NO FILES FOUND: "+file.getPath());
+			}
 			return -1;
 		}
 		for(File child : listFiles) {
@@ -271,25 +277,33 @@ public class JarValidator {
 				// Check if it is a java file
 				String fileName = child.getName().toLowerCase();
 				if (fileName.endsWith(JARFILE)) {
-					System.out.println("FOUND: " + child.toString() + " ("+child.length()+")");
+					if(output != null){
+						output.println("FOUND: " + child.toString() + " ("+child.length()+")");
+					}
 					if (analyseFile(child) == false) {
 						if(isError() == false) {
-							System.out.println("Everything is ok ("+file+")");
+							if(output != null){
+								output.println("Everything is ok ("+file+")");
+							}
 						} else {
 							this.mergePackages.clear();
 							this.mergePackages.addAll(mergePacking(warningsPackages));
 							if(this.mergePackages.size()<1) {
-								System.out.println("May be not the fatJar ("+child.toString()+")");
+								if(output != null){
+									output.println("May be not the fatJar ("+child.toString()+")");
+								}
 							} else {
 								this.isExistFullJar = true;
-								if(output){
-									System.err.println("There are "+errors.size()+" Errors in Jar ("+child.toString()+")");
+								if(output != null){
+									output.println("There are "+errors.size()+" Errors in Jar ("+child.toString()+")");
 									for(String entry : errors) {
-										System.err.println("- Can't create instance of "+entry);
+										output.println("- Can't create instance of "+entry);
 									}
-									System.out.println("There are "+warnings.size()+" Warnings in Jar ("+child.toString()+")");
+									output.println("There are "+warnings.size()+" Warnings in Jar ("+child.toString()+")");
 									for(String entry : warnings) {
-										System.out.println("- Not necessary file "+entry);
+										if(output != null){
+											output.println("- Not necessary file "+entry);
+										}
 									}
 								}
 							}
@@ -297,7 +311,9 @@ public class JarValidator {
 						if(isLicence) {
 							SimpleKeyValueList<String, JsonObject> projects = mergePackages();
 							for(int i=0;i<projects.size();i++) {
-								System.out.print(projects.getKeyByIndex(i));
+								if(output != null){
+									output.print(projects.getKeyByIndex(i));
+								}
 								JsonObject elements = projects.getValueByIndex(i);
 								JsonObject last = (JsonObject) elements.getJsonArray("docs").first();
 								String group = last.getString("g").replace('.', '/');
@@ -307,21 +323,27 @@ public class JarValidator {
 								XMLEntity body = pom.getBody();
 								Entity nameTag = body.getElementBy(XMLEntity.PROPERTY_TAG, "name");
 								if(nameTag!= null) {
-									System.out.print(" - "+((XMLEntity)nameTag).getValue());
+									if(output != null){
+										output.print(" - "+((XMLEntity)nameTag).getValue());
+									}
 								}
 								XMLEntity licences = (XMLEntity) body.getElementBy(XMLEntity.PROPERTY_TAG, "licenses");
 								if(licences != null) {
 									for(int l=0;l<licences.sizeChildren();l++) {
 										XMLEntity licence = (XMLEntity) licences.getChild(l);
 										if("license".equalsIgnoreCase(licence.getTag())) {
-											System.out.print(" - ");
-											System.out.print(((XMLEntity)licence.getElementBy(XMLEntity.PROPERTY_TAG, "name")).getValue());
-											System.out.print(" - ");
-											System.out.print(((XMLEntity)licence.getElementBy(XMLEntity.PROPERTY_TAG, "url")).getValue());
+											if(output != null){
+												output.print(" - ");
+												output.print(((XMLEntity)licence.getElementBy(XMLEntity.PROPERTY_TAG, "name")).getValue());
+												output.print(" - ");
+												output.print(((XMLEntity)licence.getElementBy(XMLEntity.PROPERTY_TAG, "url")).getValue());
+											}
 										}
 									}
 								}
-								System.out.print(BaseItem.CRLF);
+								if(output != null){
+									output.print(BaseItem.CRLF);
+								}
 							}
 						}
 						result = count() * -1;
