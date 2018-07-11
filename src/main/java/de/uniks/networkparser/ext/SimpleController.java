@@ -764,21 +764,38 @@ public class SimpleController implements ObjectCondition{
 		}
 		try {
 			String line;
-			ArrayList<String> param=new ArrayList<String>();
+			CharacterBuffer command = new CharacterBuffer();
+			
+
+			int i=0;
 			if(Os.isWindows()) {
-				param.add("cmd.exe");
-				param.add("/c");
+				command.with("cmd.exe /c ");
 			} else {
-				param.add("/bin/sh");
-				param.add("-c");
+				command.with("/bin/sh -c ");
+				i=1;
+				
 			}
-			for(String item : values) {
-				if(item != null) {
-					param.add(item);
+//			for(String item : values) {
+//				if(item != null) {
+//					param.add(item);
+//				}
+//			}
+			// So now add executeCommand to String
+			command.with('"');
+			if(values.length>0 && values[0] != null && i == 1) {
+				if((values[0].startsWith("/") || values[0].startsWith("\\"))) {
+					command.with(values[0]);
+				} else {
+					command.with("./"+values[0]);
 				}
 			}
-			values = param.toArray(new String[param.size()]);
-			Process p = Runtime.getRuntime().exec(values);
+			for(;i<values.length;i++) {
+				if(values[i] != null) {
+					command.with(" "+values[i]);
+				}
+			}
+			command.with('"');
+			Process p = Runtime.getRuntime().exec(command.toString());
 			BufferedReader input = new BufferedReader(new InputStreamReader(p.getInputStream()));
 			while ((line = input.readLine()) != null) {
 				result.withLine(line);
