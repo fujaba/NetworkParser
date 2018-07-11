@@ -820,8 +820,17 @@ public class SimpleController implements ObjectCondition{
 				p = Runtime.getRuntime().exec(command.toString());
 			}
 			BufferedReader input = new BufferedReader(new InputStreamReader(p.getInputStream()));
+			BufferedReader error = new BufferedReader(new InputStreamReader(p.getErrorStream()));
 			while ((line = input.readLine()) != null) {
 				result.withLine(line);
+			}
+			CharacterBuffer errorString = new CharacterBuffer();
+			while ((line = error.readLine()) != null) {
+				errorString.withLine(line);
+			}
+			if(errorString.size()>0) {
+				result.withLine("ERROR: ");
+				result.with(errorString.toString());
 			}
 			input.close();
 		} catch (Exception err) {
