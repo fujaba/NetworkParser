@@ -97,7 +97,8 @@ public class JarValidator {
 		FileBuffer.writeFile(rootPath+"test.gradle", script.toString());
 
 		CharacterBuffer executeProcess = SimpleController.executeProcess(rootPath+"gradlew", "showDependency", "-b", rootPath+"test.gradle");
-		FileBuffer.writeFile(rootPath+"test.out", executeProcess.toString());
+		String exec = rootPath+"gradlew showDependency -b "+rootPath+"test.gradle";
+		FileBuffer.writeFile(rootPath+"test.out", exec+BaseItem.CRLF+executeProcess.toString());
 		if(executeProcess.length()>0) {
 			System.out.println("CHECK DEPENDENCY: "+new File(rootPath+"test.gradle").exists());
 		}else {
@@ -191,8 +192,9 @@ public class JarValidator {
 		
 		script.withLine("defaultTasks 'clean' 'test'");
 		FileBuffer.writeFile(rootPath+"jacoco.gradle", script.toString());
+		exec = rootPath+"gradlew -b " + rootPath+"jacoco.gradle";
 		executeProcess = SimpleController.executeProcess(rootPath+"gradlew", "-b", rootPath+"jacoco.gradle");
-		FileBuffer.writeFile(rootPath+"jacoco.out", executeProcess.toString());
+		FileBuffer.writeFile(rootPath+"jacoco.out", exec+BaseItem.CRLF+executeProcess.toString());
 		if(executeProcess.length()>0) {
 			System.out.println("CHECK TEST: "+new File(rootPath+"jacoco.gradle").exists());
 		}else {
