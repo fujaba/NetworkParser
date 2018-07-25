@@ -354,7 +354,7 @@ public class ReflectionBlackBoxTester {
 			}
 		}
 		if(obj instanceof SendableEntityCreator) {
-			((SendableEntityCreator)obj).setValue(obj, null, null, SendableEntityCreator.REMOVE_YOU);
+			((SendableEntityCreator)obj).setValue(obj, DEFAULTMETHODS, null, SendableEntityCreator.REMOVE_YOU);
 		}
 		
 	}

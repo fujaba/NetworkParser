@@ -48,7 +48,10 @@ public class JsonArrayCreator implements SendableEntityCreator,	SendableEntityCr
 
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value,
-			String typ) {
+			String type) {
+		if(SendableEntityCreator.REMOVE_YOU.equalsIgnoreCase(type)) {
+			return false;
+		}
 		((JsonArray) entity).withValue((String) value);
 		return true;
 	}

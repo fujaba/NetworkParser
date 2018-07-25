@@ -54,7 +54,10 @@ public class JsonObjectCreator implements SendableEntityCreator, SendableEntityC
 
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value,
-			String typ) {
+			String type) {
+		if(SendableEntityCreator.REMOVE_YOU.equalsIgnoreCase(type)) {
+			return false;
+		}
 		JsonObject json = (JsonObject) entity;
 		if(VALUE.equals(attribute)) {
 			json.withValue((String)value);

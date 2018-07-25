@@ -102,6 +102,9 @@ public class GenericCreator implements SendableEntityCreator {
 	}
 
 	private String getMethodName(String value) {
+		if(value == null || value.length()< 1) {
+			return "";
+		}
 		return value.substring(0, 1).toUpperCase()
 				+ value.substring(1);
 	}
@@ -141,6 +144,9 @@ public class GenericCreator implements SendableEntityCreator {
 	}
 
 	private boolean setNewValue(Object entity, String methodName, Object value) {
+		if(this.clazz == null || value == null) {
+			return false;
+		}
 		try {
 			this.clazz.getMethod(methodName, value.getClass()).invoke(entity,
 					value);
