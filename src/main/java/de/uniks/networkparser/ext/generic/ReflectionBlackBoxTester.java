@@ -40,10 +40,25 @@ import java.util.Set;
 import java.util.Timer;
 
 import de.uniks.networkparser.NetworkParserLog;
+import de.uniks.networkparser.ext.DiagramEditor;
 import de.uniks.networkparser.ext.ErrorHandler;
 import de.uniks.networkparser.ext.SimpleController;
+import de.uniks.networkparser.ext.io.MQTTMessage;
+import de.uniks.networkparser.ext.io.MessageSession;
+import de.uniks.networkparser.ext.io.RabbitMessage;
+import de.uniks.networkparser.ext.javafx.JavaAdapter;
+import de.uniks.networkparser.ext.javafx.JavaBridgeFX;
 import de.uniks.networkparser.ext.javafx.dialog.DialogBox;
+import de.uniks.networkparser.ext.petaf.Server_TCP;
+import de.uniks.networkparser.ext.petaf.Server_Time;
+import de.uniks.networkparser.ext.petaf.Server_UPD;
 import de.uniks.networkparser.ext.petaf.SimpleTimerTask;
+import de.uniks.networkparser.ext.petaf.Space;
+import de.uniks.networkparser.ext.petaf.TimerExecutor;
+import de.uniks.networkparser.ext.petaf.proxy.NodeProxyBroker;
+import de.uniks.networkparser.ext.petaf.proxy.NodeProxyMessages;
+import de.uniks.networkparser.ext.petaf.proxy.NodeProxyServer;
+import de.uniks.networkparser.ext.petaf.proxy.NodeProxyTCP;
 import de.uniks.networkparser.ext.story.Story;
 import de.uniks.networkparser.ext.story.StoryStepJUnit;
 import de.uniks.networkparser.interfaces.BaseItem;
@@ -141,22 +156,23 @@ public class ReflectionBlackBoxTester {
 		withIgnoreClazzes(SimpleController.class, "create");
 		withIgnoreClazzes(DialogBox.class, "createContent");
 		withIgnoreClazzes(JarValidator.class);
-//		withIgnoreClazzes(Server_TCP.class);
-//		withIgnoreClazzes(Server_UPD.class);
-//		withIgnoreClazzes(Server_Time.class);
-//		withIgnoreClazzes(Space.class);
-//		withIgnoreClazzes(NodeProxyServer.class);
-//		withIgnoreClazzes(NodeProxyTCP.class, "initProxy", "postHTTP", "getHTTP", "getConnection");
-//		withIgnoreClazzes(DiagramEditor.class);
-//		withIgnoreClazzes(NodeProxyMessages.class);
-//		withIgnoreClazzes(NodeProxyBroker.class);
-//		withIgnoreClazzes(MQTTMessage.class);
-//		withIgnoreClazzes(RabbitMessage.class);
-//		withIgnoreClazzes(MessageSession.class);
-//		
-//		withIgnoreClazzes(JavaAdapter.class);
-//		withIgnoreClazzes(JavaBridgeFX.class);
-//		withIgnoreClazzes(TimerExecutor.class.getName());
+
+		// TEST
+		withIgnoreClazzes(Server_TCP.class);
+		withIgnoreClazzes(Server_UPD.class);
+		withIgnoreClazzes(Server_Time.class);
+		withIgnoreClazzes(Space.class);
+		withIgnoreClazzes(NodeProxyServer.class);
+		withIgnoreClazzes(NodeProxyTCP.class, "initProxy", "postHTTP", "getHTTP", "getConnection");
+		withIgnoreClazzes(DiagramEditor.class);
+		withIgnoreClazzes(NodeProxyMessages.class);
+		withIgnoreClazzes(NodeProxyBroker.class);
+		withIgnoreClazzes(MQTTMessage.class);
+		withIgnoreClazzes(RabbitMessage.class);
+		withIgnoreClazzes(MessageSession.class);
+		withIgnoreClazzes(JavaAdapter.class);
+		withIgnoreClazzes(JavaBridgeFX.class);
+		withIgnoreClazzes(TimerExecutor.class);
 	}
 
 	public ReflectionBlackBoxTester withIgnoreClazzes(Class<?> metaClass, String... methods) {
