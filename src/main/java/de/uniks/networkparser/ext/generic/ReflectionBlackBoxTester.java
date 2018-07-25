@@ -140,7 +140,7 @@ public class ReflectionBlackBoxTester {
 		// Add for new Threads
 		withIgnoreClazzes(SimpleController.class, "create");
 		withIgnoreClazzes(DialogBox.class, "createContent");
-//		withIgnoreClazzes(JarValidator.class);
+		withIgnoreClazzes(JarValidator.class);
 //		withIgnoreClazzes(Server_TCP.class);
 //		withIgnoreClazzes(Server_UPD.class);
 //		withIgnoreClazzes(Server_Time.class);
