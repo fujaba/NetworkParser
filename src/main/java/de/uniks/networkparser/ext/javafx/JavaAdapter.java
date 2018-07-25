@@ -382,11 +382,9 @@ public class JavaAdapter implements JavaViewAdapter, Runnable {
 			}
 		};
 		execute(task);
-		if(ReflectionBlackBoxTester.isTester() == false) {
-			try {
-				doneLatch.await();
-			} catch (InterruptedException e) {
-			}
+		try {
+			doneLatch.await();
+		} catch (InterruptedException e) {
 		}
 	}
 	/**

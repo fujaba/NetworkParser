@@ -41,6 +41,7 @@ import java.util.Timer;
 
 import de.uniks.networkparser.NetworkParserLog;
 import de.uniks.networkparser.ext.ErrorHandler;
+import de.uniks.networkparser.ext.SimpleController;
 import de.uniks.networkparser.ext.petaf.SimpleTimerTask;
 import de.uniks.networkparser.ext.story.Story;
 import de.uniks.networkparser.ext.story.StoryStepJUnit;
@@ -136,8 +137,8 @@ public class ReflectionBlackBoxTester {
 		withIgnoreClazzes(StoryStepJUnit.class, "update");
 		ignoreMethods.add(DEFAULTMETHODS, new SimpleSet<String>().with("show*", "run", "execute*", "checkSystemTray"));
 		// Add for new Threads
+		withIgnoreClazzes(SimpleController.class, "create");
 //		withIgnoreClazzes(JarValidator.class);
-//		withIgnoreClazzes(SimpleController.class);
 //		withIgnoreClazzes(Server_TCP.class);
 //		withIgnoreClazzes(Server_UPD.class);
 //		withIgnoreClazzes(Server_Time.class);
