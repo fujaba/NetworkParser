@@ -136,7 +136,7 @@ public class ReflectionBlackBoxTester {
 		withIgnoreClazzes(Story.class, "dumpHTML", "writeFile");
 		withIgnoreClazzes(ErrorHandler.class);
 		withIgnoreClazzes(StoryStepJUnit.class, "update");
-		ignoreMethods.add(DEFAULTMETHODS, new SimpleSet<String>().with("show*", "run", "execute*", "checkSystemTray"));
+		ignoreMethods.add(DEFAULTMETHODS, new SimpleSet<String>().with("show*", "run", "execute*", "checkSystemTray", "main"));
 		// Add for new Threads
 		withIgnoreClazzes(SimpleController.class, "create");
 		withIgnoreClazzes(DialogBox.class, "createContent");
