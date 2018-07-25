@@ -492,11 +492,11 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
 		}
 
 		if(this.buffer == null) {
-			this.buffer = new char[end];
-			start = 0;
-			length = end;
+			this.buffer = new char[end-start];
+			length = this.buffer.length;
 			this.position = 0;
-			System.arraycopy(values, start, this.buffer, 0, end);
+			System.arraycopy(values, start, this.buffer, 0, length);
+			start = 0;
 		} else {
 			if(this.length +values.length() > buffer.length) {
 				int newCapacity = (this.length + values.length()) * 2 + 2;
@@ -1251,14 +1251,17 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
 		CharacterBuffer buffer = new CharacterBuffer();
 		if(pos>0 && pos < length()) {
 			int start=pos;
-			while(buffer.charAt(start) != '\r' && buffer.charAt(start) != '\n' && start>0) {
+			while(this.buffer[start] != '\r' &&this.buffer[start] != '\n' && start>0) {
 				start--;
 			}
+			if(start>0) {
+				start++;
+			}
 			int end = pos;
-			while(buffer.charAt(end) != '\r' && buffer.charAt(end) != '\n' && end<length) {
+			while(this.buffer[end] != '\r' && this.buffer[end] != '\n' && end<length) {
 				end++;
 			}
-			buffer.with(buffer, start, end);
+			buffer.with(this.buffer, start, end-start);
 		}
 		return buffer;
 	}

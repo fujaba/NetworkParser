@@ -40,28 +40,14 @@ import java.util.Set;
 import java.util.Timer;
 
 import de.uniks.networkparser.NetworkParserLog;
-import de.uniks.networkparser.ext.DiagramEditor;
 import de.uniks.networkparser.ext.ErrorHandler;
 import de.uniks.networkparser.ext.SimpleController;
-import de.uniks.networkparser.ext.io.MQTTMessage;
-import de.uniks.networkparser.ext.io.MessageSession;
-import de.uniks.networkparser.ext.io.RabbitMessage;
-import de.uniks.networkparser.ext.javafx.JavaAdapter;
-import de.uniks.networkparser.ext.javafx.JavaBridgeFX;
 import de.uniks.networkparser.ext.javafx.dialog.DialogBox;
-import de.uniks.networkparser.ext.petaf.Server_TCP;
-import de.uniks.networkparser.ext.petaf.Server_Time;
-import de.uniks.networkparser.ext.petaf.Server_UPD;
 import de.uniks.networkparser.ext.petaf.SimpleTimerTask;
-import de.uniks.networkparser.ext.petaf.Space;
-import de.uniks.networkparser.ext.petaf.TimerExecutor;
-import de.uniks.networkparser.ext.petaf.proxy.NodeProxyBroker;
-import de.uniks.networkparser.ext.petaf.proxy.NodeProxyMessages;
-import de.uniks.networkparser.ext.petaf.proxy.NodeProxyServer;
-import de.uniks.networkparser.ext.petaf.proxy.NodeProxyTCP;
 import de.uniks.networkparser.ext.story.Story;
 import de.uniks.networkparser.ext.story.StoryStepJUnit;
 import de.uniks.networkparser.interfaces.BaseItem;
+import de.uniks.networkparser.interfaces.SimpleCloseable;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleSet;
 
@@ -159,7 +145,6 @@ public class ReflectionBlackBoxTester {
 		withIgnoreClazzes(JarValidator.class);
 
 		// TEST
-//		withIgnoreClazzes(Server_TCP.class);
 //		withIgnoreClazzes(Server_UPD.class);
 //		withIgnoreClazzes(Server_Time.class);
 //		withIgnoreClazzes(Space.class);
@@ -268,6 +253,9 @@ public class ReflectionBlackBoxTester {
 
 	public void testClass(Object obj, Class<?> clazz, SimpleSet<String> ignoreMethods) {
 		boolean reg=false;
+		if(obj == null) {
+			return;
+		}
 		for(String m : ignoreMethods) {
 			if(m != null && m.endsWith("*")) {
 				reg=true;
@@ -365,6 +353,10 @@ public class ReflectionBlackBoxTester {
 			} catch(Exception e) {
 			}
 		}
+		if(obj instanceof SimpleCloseable) {
+			((SimpleCloseable)obj).close();
+		}
+		
 	}
 	
 	public ReflectionBlackBoxTester withTest(String value) {

@@ -27,9 +27,10 @@ import de.uniks.networkparser.ext.petaf.messages.ConnectMessage;
 import de.uniks.networkparser.ext.petaf.messages.InfoMessage;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
+import de.uniks.networkparser.interfaces.SimpleCloseable;
 import de.uniks.networkparser.list.SimpleList;
 
-public abstract class NodeProxy extends SendableItem implements Comparable<NodeProxy>, SendableEntityCreatorNoIndex {
+public abstract class NodeProxy extends SendableItem implements Comparable<NodeProxy>, SendableEntityCreatorNoIndex, SimpleCloseable {
 	public static final String TYPE_IN="IN";
 	public static final String TYPE_OUT="OUT";
 	public static final String TYPE_INOUT="INOUT";
