@@ -343,6 +343,9 @@ public class RabbitMessage {
 	}
 
 	public boolean write(OutputStream stream) {
+		if(stream == null) {
+			return false;
+		}
 		try {
 			stream.write(headers);
 

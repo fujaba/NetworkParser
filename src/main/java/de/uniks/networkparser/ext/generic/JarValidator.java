@@ -76,6 +76,10 @@ public class JarValidator {
 	}
 	
 	public void validate() {
+		if(ReflectionBlackBoxTester.isTester()) {
+			return;
+		}
+
 		CharacterBuffer script = FileBuffer.readFile(rootPath+"build.gradle");
 		this.isUseJUnit = script.indexOf("useJUnitPlatform()")>0;
 
@@ -498,7 +502,7 @@ public class JarValidator {
 					SimpleTimerTask task = new SimpleTimerTask(Thread.currentThread());
 					timer.schedule(task, 2000);
 
-					Object newInstance = ReflectionLoader.newInstanceSimple(wantedClass, "run");
+					Object newInstance = ReflectionLoader.newInstanceSimple(wantedClass, ReflectionBlackBoxTester.IGNOREMETHOD);
 					task.withSimpleExit(null);
 					if(newInstance == null) {
 						errors.add(name);

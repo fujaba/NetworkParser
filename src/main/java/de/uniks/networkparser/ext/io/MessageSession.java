@@ -223,7 +223,7 @@ public class MessageSession {
 	}
 
 	private boolean initSockets(String host, int port) throws UnsupportedEncodingException, IOException {
-		if(factory == null) {
+		if(factory == null || host == null || host.isEmpty() || port < 1) {
 			return false;
 		}
 

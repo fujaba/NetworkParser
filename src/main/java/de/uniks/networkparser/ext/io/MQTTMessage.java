@@ -339,6 +339,9 @@ public class MQTTMessage {
 	 * @throws IOException if an exception occurs when reading the input stream
 	 */
 	protected static int readMBI(DataInputStream in) throws IOException {
+		if(in == null) {
+			return -1;
+		}
 		byte digit;
 		int msgLength = 0;
 		int multiplier = 1;
@@ -367,6 +370,9 @@ public class MQTTMessage {
 	}
 
 	public static MQTTMessage readFrom(DataInputStream in) {
+		if(in == null) {
+			return null;
+		}
 		MQTTMessage message = null;
 		try {
 			// read header

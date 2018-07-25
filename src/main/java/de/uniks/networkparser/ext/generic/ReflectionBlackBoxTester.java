@@ -36,28 +36,12 @@ import java.net.URLDecoder;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.Set;
 import java.util.Timer;
 
 import de.uniks.networkparser.NetworkParserLog;
-import de.uniks.networkparser.ext.DiagramEditor;
 import de.uniks.networkparser.ext.ErrorHandler;
-import de.uniks.networkparser.ext.SimpleController;
-import de.uniks.networkparser.ext.git.GitRevision;
-import de.uniks.networkparser.ext.io.MQTTMessage;
-import de.uniks.networkparser.ext.io.MessageSession;
-import de.uniks.networkparser.ext.io.RabbitMessage;
-import de.uniks.networkparser.ext.javafx.JavaAdapter;
-import de.uniks.networkparser.ext.javafx.JavaBridgeFX;
-import de.uniks.networkparser.ext.javafx.dialog.DialogBox;
-import de.uniks.networkparser.ext.petaf.Server_TCP;
-import de.uniks.networkparser.ext.petaf.Server_Time;
-import de.uniks.networkparser.ext.petaf.Server_UPD;
 import de.uniks.networkparser.ext.petaf.SimpleTimerTask;
-import de.uniks.networkparser.ext.petaf.Space;
-import de.uniks.networkparser.ext.petaf.proxy.NodeProxyBroker;
-import de.uniks.networkparser.ext.petaf.proxy.NodeProxyMessages;
-import de.uniks.networkparser.ext.petaf.proxy.NodeProxyServer;
-import de.uniks.networkparser.ext.petaf.proxy.NodeProxyTCP;
 import de.uniks.networkparser.ext.story.Story;
 import de.uniks.networkparser.ext.story.StoryStepJUnit;
 import de.uniks.networkparser.interfaces.BaseItem;
@@ -71,6 +55,7 @@ public class ReflectionBlackBoxTester {
 	public static final String RANDOMVALUE="randomValue";
 	public static final String BLACKBOXTESTER="backboxtest";
 	public static final String INSTANCE="instance";
+	public static final String IGNOREMETHOD="run";
 
 	private SimpleSet<String> tests=new SimpleSet<String>().with(NULLVALUE,MINVALUE,RANDOMVALUE);
 	private SimpleKeyValueList<String, SimpleSet<String>> ignoreMethods;
@@ -142,29 +127,31 @@ public class ReflectionBlackBoxTester {
 	public ReflectionBlackBoxTester() {
 		ignoreMethods =new SimpleKeyValueList<String, SimpleSet<String>>();
 
+		withIgnoreClazzes(ReflectionBlackBoxTester.class, "main");
+
+		// Add for Files
 		withIgnoreClazzes(Story.class, "dumpHTML", "writeFile");
 		withIgnoreClazzes(ErrorHandler.class);
-		withIgnoreClazzes(SimpleController.class);
-//		withIgnoreClazzes(SimpleController.class, "create", "init", "saveException", "createContent", "showContent", "withErrorPath", "start");
-		withIgnoreClazzes(Server_TCP.class);
-		withIgnoreClazzes(Server_UPD.class);
-		withIgnoreClazzes(Server_Time.class);
-		withIgnoreClazzes(Space.class);
-		withIgnoreClazzes(NodeProxyServer.class);
-		withIgnoreClazzes(NodeProxyTCP.class, "initProxy", "postHTTP", "getHTTP", "getConnection");
-		withIgnoreClazzes(ReflectionBlackBoxTester.class, "main");
 		withIgnoreClazzes(StoryStepJUnit.class, "update");
-		withIgnoreClazzes(DiagramEditor.class);
-		withIgnoreClazzes(NodeProxyMessages.class);
-		withIgnoreClazzes(NodeProxyBroker.class);
-		withIgnoreClazzes(MQTTMessage.class);
-		withIgnoreClazzes(RabbitMessage.class);
-		withIgnoreClazzes(MessageSession.class);
-		withIgnoreClazzes(GitRevision.class, "main");
-		withIgnoreClazzes(DialogBox.class);
-		withIgnoreClazzes(JavaAdapter.class);
-		withIgnoreClazzes(JavaBridgeFX.class);
-		withIgnoreClazzes(JarValidator.class);
+		// Add for new Threads
+//		withIgnoreClazzes(JarValidator.class);
+//		withIgnoreClazzes(SimpleController.class);
+//		withIgnoreClazzes(Server_TCP.class);
+//		withIgnoreClazzes(Server_UPD.class);
+//		withIgnoreClazzes(Server_Time.class);
+//		withIgnoreClazzes(Space.class);
+//		withIgnoreClazzes(NodeProxyServer.class);
+//		withIgnoreClazzes(NodeProxyTCP.class, "initProxy", "postHTTP", "getHTTP", "getConnection");
+//		withIgnoreClazzes(DiagramEditor.class);
+//		withIgnoreClazzes(NodeProxyMessages.class);
+//		withIgnoreClazzes(NodeProxyBroker.class);
+//		withIgnoreClazzes(MQTTMessage.class);
+//		withIgnoreClazzes(RabbitMessage.class);
+//		withIgnoreClazzes(MessageSession.class);
+//		withIgnoreClazzes(GitRevision.class, "main");
+//		withIgnoreClazzes(DialogBox.class);
+//		withIgnoreClazzes(JavaAdapter.class);
+//		withIgnoreClazzes(JavaBridgeFX.class);
 //		withIgnoreClazzes(TimerExecutor.class.getName());
 	}
 
@@ -205,6 +192,11 @@ public class ReflectionBlackBoxTester {
 		return this;
 	}
 
+	public static final boolean isTester() {
+		String property = System.getProperty("Tester");
+		return property != null && "true".equalsIgnoreCase(property);
+	}
+	
 	public void test(String packageName, NetworkParserLog logger) throws ClassNotFoundException, IOException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		System.setProperty("Tester", "true");
 		ArrayList<Class<?>> classesForPackage = getClassesForPackage(packageName);
@@ -212,7 +204,7 @@ public class ReflectionBlackBoxTester {
 		successCount = 0;
 		this.packageName = packageName;
 		this.logger = logger;
-
+		Set<Thread> oldThreads = ReflectionLoader.closeThreads(null);
 		Timer timer = new Timer();
 
 		for(Class<?> clazz : classesForPackage) {
@@ -226,7 +218,7 @@ public class ReflectionBlackBoxTester {
 			}
 			SimpleTimerTask task = new SimpleTimerTask(Thread.currentThread());
 			timer.schedule(task, 2000);
-			Object obj = ReflectionLoader.newInstanceSimple(clazz);
+			Object obj = ReflectionLoader.newInstanceSimple(clazz, IGNOREMETHOD);
 			if(obj != null) {
 				testClass(obj, clazz, methods);
 			}
@@ -237,6 +229,8 @@ public class ReflectionBlackBoxTester {
 			timer.cancel();
 			timer = null;
 		}
+		
+		ReflectionLoader.closeThreads(oldThreads);
 
 		// Write out all Results
 		output(this, "Errors: "+errorCount+ "/" + (errorCount+ successCount), logger, NetworkParserLog.LOGLEVEL_INFO, null);
