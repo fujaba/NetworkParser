@@ -204,7 +204,7 @@ public class JarValidator {
 		FileBuffer.writeFile(rootPath+"jacoco.gradle", script.toString());
 
 		command = new CharacterBuffer();
-		executeProcess = SimpleController.executeProcess(command, rootPath+"gradlew", "-b", rootPath+"jacoco.gradle");
+		executeProcess = SimpleController.executeProcess(command, rootPath+"gradlew", "-b", rootPath+"jacoco.gradle", "--stacktrace");
 		value = command.toString()+BaseItem.CRLF+executeProcess.toString();
 		FileBuffer.writeFile(rootPath+"jacoco.out", value);
 
