@@ -30,7 +30,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import de.uniks.networkparser.ext.generic.ReflectionBlackBoxTester;
 import de.uniks.networkparser.ext.generic.ReflectionLoader;
 import de.uniks.networkparser.ext.javafx.JavaAdapter;
 import de.uniks.networkparser.ext.javafx.JavaBridgeFX;
@@ -224,7 +223,10 @@ public class DialogBox implements ObjectCondition{
 
 	@SuppressWarnings("unchecked")
 	void configScene() {
-		Object scene = ReflectionLoader.call(stage, "getScene");
+		if(stage == null) {
+			return;
+		}
+ 		Object scene = ReflectionLoader.call(stage, "getScene");
 		String dialogsCssUrl = DIALOGS_CSS_URL.toExternalForm();
 		if (scene == null && owner != null) {
 			scene = ReflectionLoader.call(owner, "getScene");
@@ -242,9 +244,6 @@ public class DialogBox implements ObjectCondition{
 	}
 
 	public void createContent() {
-		if(ReflectionBlackBoxTester.isTester()) {
-			return;
-		}
 		root = ReflectionLoader.newInstance(ReflectionLoader.BORDERPANE);
 		JavaBridgeFX.setStyle(root, false, "dialog", "decorated-root");
 
@@ -438,7 +437,7 @@ public class DialogBox implements ObjectCondition{
 			.withActionButton(new Button().withValue("Yes").withActionType(Button.CLOSE, dialogBox), new Button().withValue("No").withActionType(Button.CLOSE, dialogBox))
 			.show(parent);
 	}
-	public static boolean createQuestionCheck(Object parent, String title, String text, String... check) {
+	public static boolean showQuestionCheck(Object parent, String title, String text, String... check) {
 		Button action = showQuestion(parent, title, text);
 		if(action==null) {
 			return false;

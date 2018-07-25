@@ -138,12 +138,12 @@ apply plugin: 'idea'
 //	}
 
 if(JavaVersion.current() != JavaVersion.VERSION_1_8){
-	println "JavaVersion:" + JavaVersion.current() + " (1.9)"
+	println "JavaVersion: " + JavaVersion.current() + " (1.9)"
 	sourceCompatibility = 1.9
 	targetCompatibility = 1.9
 //	apply plugin: "com.github.spotbugs"
 } else {
-	println "JavaVersion:" + JavaVersion.current() + " (1.8)"
+	println "JavaVersion: " + JavaVersion.current() + " (1.8)"
 	sourceCompatibility = 1.8
 	targetCompatibility = 1.8
 //	apply plugin: 'findbugs'
