@@ -426,6 +426,9 @@ public class MessageSession {
 
 	public boolean connectMQTT(NodeProxyBroker broker, String clientId, String sender, String password, int keepAlive, int mqttVersion, boolean cleanSession) {
 		this.type = TYPE_MQTT;
+		if(host == null || host.isEmpty()) {
+			return false;
+		}
 		if(this.port == 0) {
 			this.port = MQTT_PORT;
 		}

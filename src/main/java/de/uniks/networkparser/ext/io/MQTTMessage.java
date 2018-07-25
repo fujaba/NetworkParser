@@ -417,7 +417,7 @@ public class MQTTMessage {
 				}
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+//			e.printStackTrace();
 			// ignore socket read timeout
 		}
 

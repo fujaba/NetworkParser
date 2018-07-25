@@ -56,6 +56,7 @@ public class ReflectionBlackBoxTester {
 	public static final String BLACKBOXTESTER="backboxtest";
 	public static final String INSTANCE="instance";
 	public static final String IGNOREMETHOD="run";
+	public static final String DEFAULTMETHODS="";
 
 	private SimpleSet<String> tests=new SimpleSet<String>().with(NULLVALUE,MINVALUE,RANDOMVALUE);
 	private SimpleKeyValueList<String, SimpleSet<String>> ignoreMethods;
@@ -133,6 +134,7 @@ public class ReflectionBlackBoxTester {
 		withIgnoreClazzes(Story.class, "dumpHTML", "writeFile");
 		withIgnoreClazzes(ErrorHandler.class);
 		withIgnoreClazzes(StoryStepJUnit.class, "update");
+		ignoreMethods.add(DEFAULTMETHODS, new SimpleSet<String>().with("show*", "run", "execute*"));
 		// Add for new Threads
 //		withIgnoreClazzes(JarValidator.class);
 //		withIgnoreClazzes(SimpleController.class);
@@ -220,6 +222,14 @@ public class ReflectionBlackBoxTester {
 			timer.schedule(task, 2000);
 			Object obj = ReflectionLoader.newInstanceSimple(clazz, IGNOREMETHOD);
 			if(obj != null) {
+				// Show For Ignore DefaultMethods
+				SimpleSet<String> defaultMethods = this.ignoreMethods.get(DEFAULTMETHODS);
+				if(defaultMethods!= null) {
+					if(methods == null) {
+						methods = new SimpleSet<String>();
+					}
+					methods.withList(defaultMethods);
+				}
 				testClass(obj, clazz, methods);
 			}
 			task.withSimpleExit(null);
@@ -238,6 +248,13 @@ public class ReflectionBlackBoxTester {
 
 
 	public void testClass(Object obj, Class<?> clazz, SimpleSet<String> ignoreMethods) {
+		boolean reg=false;
+		for(String m : ignoreMethods) {
+			if(m != null && m.endsWith("*")) {
+				reg=true;
+				break;
+			}
+		}
 		for(Method m : clazz.getDeclaredMethods()) {
 			if(m.getDeclaringClass().isInterface()) {
 				continue;
@@ -245,7 +262,23 @@ public class ReflectionBlackBoxTester {
 			if(ignoreMethods != null && ignoreMethods.contains(m.getName())) {
 				continue;
 			}
-//			output(clazz.getName()+":"+m.getName(), logger, NetworkParserLog.LOGLEVEL_ERROR);
+			if(reg) {
+				boolean continueFlag = false;
+				for(String name : ignoreMethods) {
+					if(name != null && name.endsWith("*")) {
+						String lowerCase = name.substring(0, name.length() - 1).toLowerCase();
+						if(m.getName().toLowerCase().startsWith(lowerCase)) {
+							continueFlag=true;
+							break;
+						}
+						
+					}
+				}
+				if(continueFlag) {
+					continue;
+				}
+			}
+			output(this, clazz.getName()+":"+m.getName(), logger, NetworkParserLog.LOGLEVEL_ERROR, null);
 
 			Object[] call = null;
 			m.setAccessible(true);
@@ -450,7 +483,9 @@ public class ReflectionBlackBoxTester {
 			if(equalsClass(clazz, boolean.class, Boolean.class)) {return true;}
 			if(equalsClass(clazz, String.class, CharSequence.class)) {return "Albert";}
 		} else if(equalsClass(clazz, Class.class)) {
-			return null;
+			return Object.class;
+		} else if(equalsClass(clazz, Object.class)) {
+			return "Albert"; 
 		} else if(equalsClass(clazz, Field.class, Method.class)) {
 			return null;
 		} else if(equalsClass(clazz, X509Certificate.class)) {
