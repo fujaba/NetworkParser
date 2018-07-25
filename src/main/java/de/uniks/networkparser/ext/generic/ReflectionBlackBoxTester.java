@@ -210,6 +210,7 @@ public class ReflectionBlackBoxTester {
 		successCount = 0;
 		this.packageName = packageName;
 		this.logger = logger;
+		long start = System.currentTimeMillis();
 		Set<Thread> oldThreads = ReflectionLoader.closeThreads(null);
 		Timer timer = new Timer();
 
@@ -248,6 +249,8 @@ public class ReflectionBlackBoxTester {
 
 		// Write out all Results
 		output(this, "Errors: "+errorCount+ "/" + (errorCount+ successCount), logger, NetworkParserLog.LOGLEVEL_INFO, null);
+		output(this, "Time: "+(System.currentTimeMillis() - start) + "ms - Thread: "+ oldThreads.size() + " -> "+ Thread.activeCount(), logger, NetworkParserLog.LOGLEVEL_INFO, null);
+
 	}
 
 
