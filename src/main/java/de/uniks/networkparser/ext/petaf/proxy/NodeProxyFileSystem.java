@@ -108,6 +108,9 @@ public class NodeProxyFileSystem extends NodeProxy {
 				NodeProxyModel model = getSpace().getModel();
 				Object modell = model.getModel();
 				BaseItem value = this.space.encode(modell, null);
+				if(value == null) {
+					return false;
+				}
 				String data = value.toString();
 				len = data.length();
 				file.write(FileBuffer.OVERRIDE, data);

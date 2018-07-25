@@ -14,7 +14,7 @@ import de.uniks.networkparser.graph.GraphList;
 import de.uniks.networkparser.xml.EMFTokener;
 import de.uniks.networkparser.xml.XMLEntity;
 
-public class EMFTest extends IOClasses{
+public class EMFTest {
 
 	@Test
 	public void testEMF() {
@@ -26,7 +26,7 @@ public class EMFTest extends IOClasses{
 
 	@Test
 	public void testEMFDecode() {
-		StringBuffer value = readFile("railway.ecore");
+		StringBuffer value = DocEnvironment.readFile("railway.ecore");
 		Object model = new IdMap().decodeEMF(value.toString());
 		GraphList list = (GraphList) model;
 		Assert.assertEquals(9, list.getClazzes().size());
@@ -38,7 +38,7 @@ public class EMFTest extends IOClasses{
 	@Test
 	public void testEMFTTC2014() throws FileNotFoundException {
 		IdMap map=new IdMap();
-		StringBuffer value = readFile("imdb.movies");
+		StringBuffer value = DocEnvironment.readFile("imdb.movies");
 		ArrayList<?> decode = (ArrayList<?>) map.decodeEMF(value.toString());
 		Assert.assertEquals(0, decode.size());
 	}
@@ -46,7 +46,7 @@ public class EMFTest extends IOClasses{
 	@Test
 	public void testXMITOEMF() throws FileNotFoundException {
 		IdMap map=new IdMap();
-		StringBuffer value = readFile("imdb.movies");
+		StringBuffer value = DocEnvironment.readFile("imdb.movies");
 		GraphList decode = new GraphList();
 		map.decodeEMF(value.toString(), decode);
 		Assert.assertEquals(3, decode.getClazzes().size());

@@ -134,8 +134,7 @@ public class IdMapTest {
 		
 		alice.setFirstName(null);
 		jsonObject = idMap.toJsonObject(alice, Filter.createChange());
-		System.out.println(jsonObject);
-		
+
 		// Remove old and set New One
 		aliceKassel  = (Student) idMapB.decode(jsonObject);
 		Assert.assertNotNull(aliceKassel);

@@ -31,6 +31,7 @@ import de.uniks.networkparser.NetworkParserLog;
 import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.SimpleObject;
 import de.uniks.networkparser.ext.JSEditor;
+import de.uniks.networkparser.ext.generic.ReflectionBlackBoxTester;
 import de.uniks.networkparser.ext.generic.ReflectionLoader;
 import de.uniks.networkparser.ext.io.FileBuffer;
 import de.uniks.networkparser.gui.BridgeCommand;
@@ -381,9 +382,11 @@ public class JavaAdapter implements JavaViewAdapter, Runnable {
 			}
 		};
 		execute(task);
-		try {
-			doneLatch.await();
-		} catch (InterruptedException e) {
+		if(ReflectionBlackBoxTester.isTester() == false) {
+			try {
+				doneLatch.await();
+			} catch (InterruptedException e) {
+			}
 		}
 	}
 	/**

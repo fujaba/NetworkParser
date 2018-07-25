@@ -7,10 +7,10 @@ import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.gui.TileMap;
 import de.uniks.networkparser.xml.XMLEntity;
 
-public class TMXLoader extends IOClasses{
+public class TMXLoader {
 	@Test
 	public void testTMXLoader() {
-		StringBuffer readFile = readFile("simpleMap.tmx");
+		StringBuffer readFile = DocEnvironment.readFile("simpleMap.tmx");
 		TileMap tile = TileMap.create(readFile.toString());
 		tile.withPath("src/test/resources/de/uniks/networkparser/test/");
 	

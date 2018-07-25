@@ -377,6 +377,9 @@ public class NodeProxyTCP extends NodeProxy {
 		}
 		CharacterBuffer buffer = new CharacterBuffer();
 		buffer.add(session.getConnectionHeader("remote"));
+		if(buffer.length() <1) {
+			return null;
+		}
 		if(path != null) {
 			if(path.startsWith("/")) {
 				buffer.with(path);
@@ -552,6 +555,9 @@ public class NodeProxyTCP extends NodeProxy {
 	private static HttpURLConnection getConnection(String url, String type) {
 		HttpURLConnection conn =null;
 		try {
+			if(url == null || url.isEmpty()) {
+				return null;
+			}
 			if(url.startsWith("localhost") ) {
 				url = "http://"+url;
 			}

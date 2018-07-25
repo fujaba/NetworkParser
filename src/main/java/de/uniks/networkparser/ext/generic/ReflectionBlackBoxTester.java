@@ -134,7 +134,7 @@ public class ReflectionBlackBoxTester {
 		withIgnoreClazzes(Story.class, "dumpHTML", "writeFile");
 		withIgnoreClazzes(ErrorHandler.class);
 		withIgnoreClazzes(StoryStepJUnit.class, "update");
-		ignoreMethods.add(DEFAULTMETHODS, new SimpleSet<String>().with("show*", "run", "execute*"));
+		ignoreMethods.add(DEFAULTMETHODS, new SimpleSet<String>().with("show*", "run", "execute*", "checkSystemTray"));
 		// Add for new Threads
 //		withIgnoreClazzes(JarValidator.class);
 //		withIgnoreClazzes(SimpleController.class);
@@ -505,8 +505,11 @@ public class ReflectionBlackBoxTester {
 				if(ReflectionLoader.STAGE == clazz) {
 					return null;
 				}
+				if(Throwable.class == clazz) {
+					return null;
+				}
 				return clazz.getConstructor().newInstance();
-			}catch (Exception e) {
+			}catch (Throwable e) {
 					Constructor<?>[] declaredConstructors = clazz.getDeclaredConstructors();
 					ArrayList<Constructor<?>> skipConstructor=new ArrayList<Constructor<?>>();
 					for(Constructor<?> c : declaredConstructors) {

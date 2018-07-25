@@ -68,7 +68,7 @@ public class JsonModellTest implements ObjectCondition {
 		users.add(new Student().withName("Albert"));
 		JsonObject json = new JsonObject();
 		json.add("readyUser", users);
-		System.out.println(json.toString());
+		Assert.assertEquals("{\"readyUser\":[\"Albert 0.0\"]}", json.toString());
 	}
 
 
@@ -83,7 +83,7 @@ public class JsonModellTest implements ObjectCondition {
 		JsonObject json = map.toJsonObject(student);
 		JsonObject props = json.getJsonObject(JsonTokener.PROPS);
 		props.put("job", "prof");
-		System.out.println(props);
+		Assert.assertEquals("{\"name\":\"Albert\",\"department\":\"se\",\"job\":\"prof\"}", props.toString());
 		
 		IdMap mapB=new IdMap();
 		mapB.withCreator(new StudentCreator());

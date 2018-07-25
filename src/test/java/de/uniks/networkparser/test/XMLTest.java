@@ -41,7 +41,7 @@ import de.uniks.networkparser.xml.PomFile;
 import de.uniks.networkparser.xml.XMLEntity;
 import de.uniks.networkparser.xml.XMLTokener;
 
-public class XMLTest extends IOClasses{
+public class XMLTest {
 	@Test
 	public void testSimpleExport(){
 		AppleTree appleTree = new AppleTree();
@@ -331,7 +331,7 @@ public class XMLTest extends IOClasses{
 
 	@Test
 	public void testPattern() {
-		String XMLText = readFile("test3.xml").toString();
+		String XMLText = DocEnvironment.readFile("test3.xml").toString();
 
 		IdMap map= new IdMap();
 		map.with(new FIXMLMessageCreator());
@@ -344,7 +344,7 @@ public class XMLTest extends IOClasses{
 
 	@Test
 	public void testSimpleXMLEntity(){
-		String str = readFile("test3.xml").toString();
+		String str = DocEnvironment.readFile("test3.xml").toString();
 
 		XMLEntity item= new XMLEntity();
 		item.withValue(str);
@@ -353,7 +353,7 @@ public class XMLTest extends IOClasses{
 
 	@Test
 	public void testJISMEngine(){
-		StringBuffer stringBuffer = readFile("template.html");
+		StringBuffer stringBuffer = DocEnvironment.readFile("template.html");
 
 		IdMap decoder= new IdMap();
 		String data = stringBuffer.toString();

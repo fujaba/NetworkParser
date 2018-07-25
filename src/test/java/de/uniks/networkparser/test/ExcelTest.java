@@ -13,10 +13,10 @@ import de.uniks.networkparser.parser.excel.ExcelRow;
 import de.uniks.networkparser.parser.excel.ExcelSheet;
 import de.uniks.networkparser.parser.excel.ExcelWorkBook;
 
-public class ExcelTest extends IOClasses{
+public class ExcelTest {
 	@Test
 	public void testLoad() throws FileNotFoundException {
-		String path = getAbsolutePath("UniKassel.xlsx");
+		String path = DocEnvironment.getAbsolutePath("UniKassel.xlsx");
 		File myFile = new File(path);
 
 		ExcelBuffer exBuf = new ExcelBuffer();
@@ -29,7 +29,7 @@ public class ExcelTest extends IOClasses{
 
 	@Test
 	public void testCreate() {
-		String path = getAbsolutePath("test.xlsx");
+		String path =  DocEnvironment.getAbsolutePath("test.xlsx");
 		String output = "build/test2.xlsx";
 		File file = new File(path);
 		if(file.exists()) {

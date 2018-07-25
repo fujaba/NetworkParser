@@ -65,7 +65,7 @@ import de.uniks.networkparser.test.model.util.StringMessageCreator;
 import de.uniks.networkparser.test.model.util.UniversityCreator;
 import de.uniks.networkparser.xml.EMFJsonGrammar;
 
-public class JsonTest extends IOClasses {
+public class JsonTest {
 	@Test
 	public void testJsonEquals() {
 		JsonObject jsonObject = new JsonObject();
@@ -871,7 +871,7 @@ public class JsonTest extends IOClasses {
 
 	@Test
 	public void testImport(){
-		StringBuffer result=readFile("location.json");
+		StringBuffer result=DocEnvironment.readFile("location.json");
 		JsonObject item = new JsonObject().withValue(result.toString());
 		assertEquals(((JsonArray)item.get("results")).size(), 1);
 	}

@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import de.uniks.networkparser.ext.generic.ReflectionBlackBoxTester;
 import de.uniks.networkparser.ext.generic.ReflectionLoader;
 import de.uniks.networkparser.ext.javafx.JavaAdapter;
 import de.uniks.networkparser.ext.javafx.JavaBridgeFX;
@@ -241,6 +242,9 @@ public class DialogBox implements ObjectCondition{
 	}
 
 	public void createContent() {
+		if(ReflectionBlackBoxTester.isTester()) {
+			return;
+		}
 		root = ReflectionLoader.newInstance(ReflectionLoader.BORDERPANE);
 		JavaBridgeFX.setStyle(root, false, "dialog", "decorated-root");
 
@@ -390,6 +394,9 @@ public class DialogBox implements ObjectCondition{
 	}
 
 	public DialogBox withCenterText(String image, String value) {
+		if(value == null) {
+			return this;
+		}
 		Object box =ReflectionLoader.newInstance(ReflectionLoader.HBOX);
 		URL resource = DialogBox.class.getResource(image);
 		if(resource == null) {
@@ -493,10 +500,10 @@ public class DialogBox implements ObjectCondition{
 	
 
 	public static String showFileSaveChooser(String caption, String defaultValue, String typeName, String typeExtension, Object... parent) {
-		return fileChooser("save", caption, defaultValue, typeName, typeExtension, parent);
+		return showFileChooser("save", caption, defaultValue, typeName, typeExtension, parent);
 	}
 	@SuppressWarnings("unchecked")
-	public static String fileChooser(String art, String caption, String defaultValue, String typeName, String extensions, Object... parent) {
+	public static String showFileChooser(String art, String caption, String defaultValue, String typeName, String extensions, Object... parent) {
 		Object parentObj = null;
 		if(parent != null && parent.length>0) {
 			parentObj = parent[0];

@@ -22,7 +22,7 @@ package de.uniks.networkparser.test;
 //import de.uniks.networkparser.xml.XMLTokener;
 //import de.uniks.networkparser.xml.creator.XSDEntityCreator;
 //
-public class TodoXMLValidatorTests extends IOClasses{
+public class TodoXMLValidatorTests {
 //
 //	@Test
 //	public void testValitdator() throws IOException {

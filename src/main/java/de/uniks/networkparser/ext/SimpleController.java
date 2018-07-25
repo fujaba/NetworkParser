@@ -97,6 +97,9 @@ public class SimpleController implements ObjectCondition{
 			return null;
 		}
 		try {
+			if(element instanceof String) {
+				return null;
+			}
 			return ReflectionLoader.calling(element, "createContent", false, this);
 		}catch (Exception e) {
 			errorHandler.saveException(e);
