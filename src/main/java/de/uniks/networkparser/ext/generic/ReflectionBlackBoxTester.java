@@ -153,26 +153,27 @@ public class ReflectionBlackBoxTester {
 		withIgnoreClazzes(StoryStepJUnit.class, "update");
 		ignoreMethods.add(DEFAULTMETHODS, new SimpleSet<String>().with("show*", "run", "execute*", "checkSystemTray", "main"));
 		// Add for new Threads
-		withIgnoreClazzes(SimpleController.class, "create");
+//		withIgnoreClazzes(SimpleController.class, "create", "init");
+		withIgnoreClazzes(SimpleController.class);
 		withIgnoreClazzes(DialogBox.class, "createContent");
 		withIgnoreClazzes(JarValidator.class);
 
 		// TEST
-		withIgnoreClazzes(Server_TCP.class);
-		withIgnoreClazzes(Server_UPD.class);
-		withIgnoreClazzes(Server_Time.class);
-		withIgnoreClazzes(Space.class);
-		withIgnoreClazzes(NodeProxyServer.class);
-		withIgnoreClazzes(NodeProxyTCP.class, "initProxy", "postHTTP", "getHTTP", "getConnection");
-		withIgnoreClazzes(DiagramEditor.class);
-		withIgnoreClazzes(NodeProxyMessages.class);
-		withIgnoreClazzes(NodeProxyBroker.class);
-		withIgnoreClazzes(MQTTMessage.class);
-		withIgnoreClazzes(RabbitMessage.class);
-		withIgnoreClazzes(MessageSession.class);
-		withIgnoreClazzes(JavaAdapter.class);
-		withIgnoreClazzes(JavaBridgeFX.class);
-		withIgnoreClazzes(TimerExecutor.class);
+//		withIgnoreClazzes(Server_TCP.class);
+//		withIgnoreClazzes(Server_UPD.class);
+//		withIgnoreClazzes(Server_Time.class);
+//		withIgnoreClazzes(Space.class);
+//		withIgnoreClazzes(NodeProxyServer.class);
+//		withIgnoreClazzes(NodeProxyTCP.class, "initProxy", "postHTTP", "getHTTP", "getConnection");
+//		withIgnoreClazzes(DiagramEditor.class);
+//		withIgnoreClazzes(NodeProxyMessages.class);
+//		withIgnoreClazzes(NodeProxyBroker.class);
+//		withIgnoreClazzes(MQTTMessage.class);
+//		withIgnoreClazzes(RabbitMessage.class);
+//		withIgnoreClazzes(MessageSession.class);
+//		withIgnoreClazzes(JavaAdapter.class);
+//		withIgnoreClazzes(JavaBridgeFX.class);
+//		withIgnoreClazzes(TimerExecutor.class);
 	}
 
 	public ReflectionBlackBoxTester withIgnoreClazzes(Class<?> metaClass, String... methods) {

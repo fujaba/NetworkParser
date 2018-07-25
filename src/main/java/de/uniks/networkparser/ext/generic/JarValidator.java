@@ -26,6 +26,9 @@ import de.uniks.networkparser.xml.HTMLEntity;
 import de.uniks.networkparser.xml.XMLEntity;
 
 public class JarValidator {
+	
+//    runtimeOnly 'org.glassfish.jersey.inject:jersey-hk2:2.27'
+
 	private int minCoverage=0;
 	private String path;
 	private String file = "build/jacoco/html/index.html";
@@ -82,6 +85,8 @@ public class JarValidator {
 
 		CharacterBuffer script = FileBuffer.readFile(rootPath+"build.gradle");
 		this.isUseJUnit = script.indexOf("useJUnitPlatform()")>0;
+		int pos = script.indexOf("org.glassfish.jersey.inject:");
+		String jerseyLine = script.getLine(pos).toString();
 
 		script.newLine();
 		script.newLine();
@@ -198,6 +203,7 @@ public class JarValidator {
 		for(String item : dependency) {
 			script.withLine("compile files(\""+item+"\")");
 		}
+		script.withLine(jerseyLine);
 		script.withLine("}");
 //		script.withLine("defaultTasks 'clean', 'test'");
 		script.withLine("defaultTasks 'test'");

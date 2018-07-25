@@ -1246,4 +1246,20 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
 		this.with(BaseItem.CRLF);
 		return this;
 	}
+
+	public CharacterBuffer getLine(int pos) {
+		CharacterBuffer buffer = new CharacterBuffer();
+		if(pos>0 && pos < length()) {
+			int start=pos;
+			while(buffer.charAt(start) != '\r' && buffer.charAt(start) != '\n' && start>0) {
+				start--;
+			}
+			int end = pos;
+			while(buffer.charAt(end) != '\r' && buffer.charAt(end) != '\n' && end<length) {
+				end++;
+			}
+			buffer.with(buffer, start, end);
+		}
+		return buffer;
+	}
 }
