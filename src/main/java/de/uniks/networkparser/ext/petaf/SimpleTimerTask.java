@@ -32,7 +32,12 @@ public class SimpleTimerTask extends TimerTask {
 	protected Runnable task;
 	protected Space space;
 	protected DateTimeEntity lastRun;
-
+	private Thread simpleExit;
+	
+	public SimpleTimerTask(Thread simpleExit){
+		this.simpleExit = simpleExit;
+	}
+	
 	public SimpleTimerTask(Space space){
 		handler.addListener(space);
 		this.space = space;
@@ -43,6 +48,10 @@ public class SimpleTimerTask extends TimerTask {
 		return this;
 	}
 
+	public SimpleTimerTask withSimpleExit(Thread value) {
+		this.simpleExit = value;
+		return this;
+	}
 
 	public DateTimeEntity getLastRun() {
 		return lastRun;
@@ -50,6 +59,9 @@ public class SimpleTimerTask extends TimerTask {
 
 	@Override
 	public void run() {
+		if(simpleExit != null) {
+			simpleExit.interrupt();
+		}
 		try{
 			updateLastRun();
 			runTask();

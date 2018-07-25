@@ -38,6 +38,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.util.List;
 import java.util.Properties;
+import java.util.Set;
 
 import de.uniks.networkparser.ext.ErrorHandler;
 import de.uniks.networkparser.ext.Os;
@@ -353,7 +354,17 @@ public class ReflectionLoader {
 		return null;
 	}
 	
-	public static Object newInstanceSimple(Class<?> instance) {
+	public static Object newInstanceSimple(Class<?> instance, String... ignoreCreateMethods) {
+		if(ignoreCreateMethods != null) {
+			for(Method method : instance.getMethods()) {
+				String methodName = method.getName();
+				for(String m : ignoreCreateMethods) {
+					if(methodName.equalsIgnoreCase(m)) {
+						return null;
+					}
+				}
+			}
+		}
 		Constructor<?>[] constructors = instance.getDeclaredConstructors();
 		if(constructors == null || constructors.length<1) {
 			return ReflectionLoader.newInstance(instance);
@@ -375,6 +386,24 @@ public class ReflectionLoader {
 			}
 		}
 		return null;
+	}
+	
+	public static final Set<Thread> closeThreads(Set<Thread> oldThreads) {
+		Set<Thread> newThreads = Thread.getAllStackTraces().keySet();
+		if(oldThreads != null) {
+			try {
+				if(oldThreads.size() != newThreads.size()) {
+					for(Thread newThread : newThreads) {
+						if(oldThreads.contains(newThread)) {
+							continue;
+						}
+						newThread.interrupt();
+					}
+				}
+			}catch(Exception e) {
+			}
+		}
+		return newThreads;
 	}
 	
 	public static Object newInstance(Class<?> instance, Object... arguments) {

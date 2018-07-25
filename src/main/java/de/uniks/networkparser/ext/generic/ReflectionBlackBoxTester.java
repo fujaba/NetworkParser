@@ -36,6 +36,8 @@ import java.net.URLDecoder;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.Timer;
+
 import de.uniks.networkparser.NetworkParserLog;
 import de.uniks.networkparser.ext.DiagramEditor;
 import de.uniks.networkparser.ext.ErrorHandler;
@@ -50,6 +52,7 @@ import de.uniks.networkparser.ext.javafx.dialog.DialogBox;
 import de.uniks.networkparser.ext.petaf.Server_TCP;
 import de.uniks.networkparser.ext.petaf.Server_Time;
 import de.uniks.networkparser.ext.petaf.Server_UPD;
+import de.uniks.networkparser.ext.petaf.SimpleTimerTask;
 import de.uniks.networkparser.ext.petaf.Space;
 import de.uniks.networkparser.ext.petaf.proxy.NodeProxyBroker;
 import de.uniks.networkparser.ext.petaf.proxy.NodeProxyMessages;
@@ -67,6 +70,8 @@ public class ReflectionBlackBoxTester {
 	public static final String MAXVALUE="maxValue";
 	public static final String RANDOMVALUE="randomValue";
 	public static final String BLACKBOXTESTER="backboxtest";
+	public static final String INSTANCE="instance";
+
 	private SimpleSet<String> tests=new SimpleSet<String>().with(NULLVALUE,MINVALUE,RANDOMVALUE);
 	private SimpleKeyValueList<String, SimpleSet<String>> ignoreMethods;
 //	private SimpleSet<String> ignoreClazz=new SimpleSet<String>().with("de.uniks.networkparser.NetworkParserLog");
@@ -208,43 +213,42 @@ public class ReflectionBlackBoxTester {
 		this.packageName = packageName;
 		this.logger = logger;
 
+		Timer timer = new Timer();
+
 		for(Class<?> clazz : classesForPackage) {
 			SimpleSet<String> methods = this.ignoreMethods.get(clazz.getName());
 			if(methods != null && methods.size()<1) {
 //				System.out.println("Ignore:"+clazz.getName());
 				continue;
 			}
-			Constructor<?>[] constructors = clazz.getDeclaredConstructors();
 			if(Modifier.isAbstract(clazz.getModifiers()) ) {
 				continue;
 			}
-			Object obj = null;
-			for(Constructor<?> c : constructors) {
-				Object[] call = getParameters(c.getParameterTypes(), NULLVALUE);
-				c.setAccessible(true);
-				try{
-					obj = c.newInstance(call);
-					if(obj != null) {
-						if(obj != null) {
-							testClass(obj, clazz, methods);
-						}
-					}
-				}catch (Exception e) {
-				}
+			SimpleTimerTask task = new SimpleTimerTask(Thread.currentThread());
+			timer.schedule(task, 2000);
+			Object obj = ReflectionLoader.newInstanceSimple(clazz);
+			if(obj != null) {
+				testClass(obj, clazz, methods);
 			}
+			task.withSimpleExit(null);
 		}
+
+		if(timer != null) {
+			timer.cancel();
+			timer = null;
+		}
+
 		// Write out all Results
 		output(this, "Errors: "+errorCount+ "/" + (errorCount+ successCount), logger, NetworkParserLog.LOGLEVEL_INFO, null);
 	}
 
 
-	private void testClass(Object obj, Class<?> clazz, SimpleSet<String> ignoreMethods) {
+	public void testClass(Object obj, Class<?> clazz, SimpleSet<String> ignoreMethods) {
 		for(Method m : clazz.getDeclaredMethods()) {
 			if(m.getDeclaringClass().isInterface()) {
 				continue;
 			}
 			if(ignoreMethods != null && ignoreMethods.contains(m.getName())) {
-//			if("main".equals(m.getName()) || "access".equals(m.getName())) {
 				continue;
 			}
 //			output(clazz.getName()+":"+m.getName(), logger, NetworkParserLog.LOGLEVEL_ERROR);
@@ -315,6 +319,12 @@ public class ReflectionBlackBoxTester {
 			} catch(Exception e) {
 			}
 		}
+	}
+	
+	public ReflectionBlackBoxTester withTest(String value) {
+		this.tests.clear();
+		this.tests.add(value);
+		return this;
 	}
 
 	private void saveException(Exception e, Class<?> clazz, Method m, Object[] call) {

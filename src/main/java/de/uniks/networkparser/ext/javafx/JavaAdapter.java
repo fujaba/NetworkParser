@@ -118,7 +118,7 @@ public class JavaAdapter implements JavaViewAdapter, Runnable {
 			this.entity = entity;
 			try {
 				ReflectionLoader.call(ReflectionLoader.PLATFORM, "startup", Runnable.class, this);
-			}catch (Exception e) {
+			}catch (Throwable e) {
 				JavaAdapter.execute(this);
 			}
 			return true;

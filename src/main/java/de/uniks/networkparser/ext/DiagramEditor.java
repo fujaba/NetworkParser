@@ -145,6 +145,7 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 				boolean isAnalyseJar=false;
 				boolean isLicence = false;
 				boolean isError = true;
+				boolean isWarning = true;
 				for(String item : args) {
 					if(item == null) {
 						continue;
@@ -171,6 +172,8 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 						isLicence = true;
 					} else if(item.startsWith("noerror")) {
 						isError = false;
+					} else if(item.startsWith("nowarning")) {
+						isWarning = false;
 					}
 				}
 				int exit=0;
@@ -185,7 +188,7 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 				if(isAnalyseJar) {
 					// Check for Licence
 					if(isError) {
-						int subExit = validator.searchFiles(System.err, isLicence);
+						int subExit = validator.searchFiles(System.err, isLicence, isWarning);
 						if(subExit < 0) {
 							exit = subExit;
 							System.err.println("FatJar Error");
@@ -195,7 +198,7 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 							exit = -1;
 						}
 					}else {
-						validator.searchFiles(System.err, isLicence);
+						validator.searchFiles(System.err, isLicence, isWarning);
 					}
 				}
 				if(exit < 0) {

@@ -1,18 +1,22 @@
 package de.uniks.networkparser.ext.generic;
 
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.PrintStream;
-import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
-import java.util.Enumeration;
+import java.util.Set;
+import java.util.Timer;
 import java.util.TreeSet;
-import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.ext.SimpleController;
 import de.uniks.networkparser.ext.io.FileBuffer;
+import de.uniks.networkparser.ext.petaf.SimpleTimerTask;
 import de.uniks.networkparser.ext.petaf.proxy.NodeProxyTCP;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Entity;
@@ -35,6 +39,8 @@ public class JarValidator {
 	private boolean isUseJUnit;
 	SimpleKeyValueList<String, JsonObject> projects = new SimpleKeyValueList<String, JsonObject>();
 	private String rootPath = "";
+	private int count;
+	private int classes;
 	
 	public JarValidator withMinCoverage(int no) {
 		this.minCoverage = no;
@@ -232,11 +238,11 @@ public class JarValidator {
 		return false;
 	}
 	
-	public int searchFiles(PrintStream output, boolean isLicence) {
+	public int searchFiles(PrintStream output, boolean isLicence, boolean isWarning) {
 		if(this.path == null) {
 			return -1;
 		}
-		return searching(new File(rootPath+this.path), output, isLicence);
+		return searching(new File(rootPath+this.path), output, isLicence, isWarning);
 	}
 	
 	public boolean isError() {
@@ -251,7 +257,7 @@ public class JarValidator {
 		return warnings;
 	}
 	
-	public int searching(File file, PrintStream output, boolean isLicence) {
+	public int searching(File file, PrintStream output, boolean isLicence, boolean isWarning) {
 		if(file == null) {
 			if(output != null){
 				output.println("NO FILES FOUND");
@@ -268,7 +274,7 @@ public class JarValidator {
 		}
 		for(File child : listFiles) {
 			if(child.isDirectory()) {
-				int subresult = searching(child, output, isLicence);
+				int subresult = searching(child, output, isLicence, isWarning);
 				if(subresult < 0 ) {
 					result += subresult;
 				}
@@ -296,53 +302,67 @@ public class JarValidator {
 								this.isExistFullJar = true;
 								if(output != null){
 									output.println("There are "+errors.size()+" Errors in Jar ("+child.toString()+")");
-									for(String entry : errors) {
-										output.println("- Can't create instance of "+entry);
+									if(isWarning) {
+										for(String entry : errors) {
+											output.println("- Can't create instance of "+entry);
+										}
 									}
 									output.println("There are "+warnings.size()+" Warnings in Jar ("+child.toString()+")");
-									for(String entry : warnings) {
-										if(output != null){
-											output.println("- Not necessary file "+entry);
+									if(isWarning) {
+										for(String entry : warnings) {
+											if(output != null){
+												output.println("- Not necessary file "+entry);
+											}
 										}
 									}
 								}
 							}
 						}
 						if(isLicence) {
+							System.out.println("Classes: "+this.classes + "/"+this.count);
 							SimpleKeyValueList<String, JsonObject> projects = mergePackages();
 							for(int i=0;i<projects.size();i++) {
 								if(output != null){
 									output.print(projects.getKeyByIndex(i));
+									if("org.sdmlib".equalsIgnoreCase(projects.getKeyByIndex(i))) {
+										System.out.println("JJ");
+									}
 								}
 								JsonObject elements = projects.getValueByIndex(i);
 								JsonObject last = (JsonObject) elements.getJsonArray("docs").first();
 								String group = last.getString("g").replace('.', '/');
 								String url = group+"/"+last.getString("a")+"/"+last.getString("v")+"/";
 								url+=last.getString("a")+"-" + last.getString("v")+".pom";
-								HTMLEntity pom = NodeProxyTCP.getHTTP("http://search.maven.org/remotecontent?filepath="+url);
-								XMLEntity body = pom.getBody();
-								Entity nameTag = body.getElementBy(XMLEntity.PROPERTY_TAG, "name");
-								if(nameTag!= null) {
-									if(output != null){
-										output.print(" - "+((XMLEntity)nameTag).getValue());
-									}
+								HTMLEntity pom = null;
+								try {
+									pom = NodeProxyTCP.getHTTP("http://search.maven.org/remotecontent?filepath="+url);
+								}catch (Exception e) {
 								}
-								XMLEntity licences = (XMLEntity) body.getElementBy(XMLEntity.PROPERTY_TAG, "licenses");
-								if(licences != null) {
-									for(int l=0;l<licences.sizeChildren();l++) {
-										XMLEntity licence = (XMLEntity) licences.getChild(l);
-										if("license".equalsIgnoreCase(licence.getTag())) {
-											if(output != null){
-												output.print(" - ");
-												output.print(((XMLEntity)licence.getElementBy(XMLEntity.PROPERTY_TAG, "name")).getValue());
-												output.print(" - ");
-												output.print(((XMLEntity)licence.getElementBy(XMLEntity.PROPERTY_TAG, "url")).getValue());
+								if(pom != null) {
+									XMLEntity body = pom.getBody();
+									Entity nameTag = body.getElementBy(XMLEntity.PROPERTY_TAG, "name");
+									if(nameTag!= null) {
+										if(output != null){
+											output.print(" - "+((XMLEntity)nameTag).getValue());
+										}
+									}
+									XMLEntity licences = (XMLEntity) body.getElementBy(XMLEntity.PROPERTY_TAG, "licenses");
+									if(licences != null) {
+										for(int l=0;l<licences.sizeChildren();l++) {
+											XMLEntity licence = (XMLEntity) licences.getChild(l);
+											if("license".equalsIgnoreCase(licence.getTag())) {
+												if(output != null){
+													output.print(" - ");
+													output.print(((XMLEntity)licence.getElementBy(XMLEntity.PROPERTY_TAG, "name")).getValue());
+													output.print(" - ");
+													output.print(((XMLEntity)licence.getElementBy(XMLEntity.PROPERTY_TAG, "url")).getValue());
+												}
 											}
 										}
 									}
-								}
-								if(output != null){
-									output.print(BaseItem.CRLF);
+									if(output != null){
+										output.print(BaseItem.CRLF);
+									}
 								}
 							}
 						}
@@ -374,6 +394,8 @@ public class JarValidator {
 		this.warningsPackages.clear();
 		this.mergePackages.clear();
 		this.errors.clear();
+		this.count = 0;
+		this.classes = 0;
 	}
 	
 	public ArrayList<String> mergePacking(TreeSet<String> sources) {
@@ -400,52 +422,62 @@ public class JarValidator {
 		}
 		return dep;
 	}
-	
+
 	private boolean analyseFile(File file) {
 		if(file == null || file.exists() == false) {
 			return false;
 		}
 		JarClassLoader jarClassLoader = null;
 		JarFile jarFile = null;
+		ZipInputStream zip = null;
+		Set<Thread> oldThreads = ReflectionLoader.closeThreads(null);
+		Timer timer = null;
+		ReflectionBlackBoxTester tester = new ReflectionBlackBoxTester();
+		tester.withTest(ReflectionBlackBoxTester.INSTANCE);
 		try {
 			jarClassLoader = new JarClassLoader(ClassLoader.getSystemClassLoader(), file.toURI().toURL());
-			jarFile = new JarFile(file);
+//			jarFile = new JarFile(file);
 			clear();
-	
-			for (Enumeration<? extends JarEntry> jarEntries = jarFile.entries(); jarEntries.hasMoreElements();) {
-				JarEntry jarEntry = jarEntries.nextElement();
-				String name = jarEntry.getName().toLowerCase(); 
-				if (name.endsWith(".class")) {
+			FileInputStream fis = new FileInputStream(file);
+			BufferedInputStream bis = new BufferedInputStream(fis);
+			zip = new ZipInputStream(bis);
+			ZipEntry entry;
+
+			while ((entry = zip.getNextEntry()) != null) {
+				String name = entry.getName();
+				String lName = name.toLowerCase();
+				this.count ++;
+				if (lName.endsWith(".class")) {
+					this.classes++;
 					if(name.indexOf("$")<0 && name.split("/").length>2) {
 						int pos = name.lastIndexOf("/");
 						warningsPackages.add(name.substring(0, pos).replaceAll("/", "."));
 					}
 				} else {
-					if (name.endsWith(".jpg")) {
-						warnings.add(jarEntry.getName());
-					} else if (name.endsWith(".png")) {
-						if(name.equals("de/uniks/networkparser/np.png") == false) {
-							warnings.add(jarEntry.getName());
+					if (lName.endsWith(".jpg")) {
+						warnings.add(name);
+					} else if (lName.endsWith(".png")) {
+						if(lName.equals("de/uniks/networkparser/np.png") == false) {
+							warnings.add(name);
 						}
-					} else if (name.endsWith(".obj")) {
-						warnings.add(jarEntry.getName());
-					} else if (name.endsWith(".mtl")) {
-						warnings.add(jarEntry.getName());
-					} else if (name.endsWith(".jar")) {
-						warnings.add(jarEntry.getName());
-					} else if (name.endsWith(".java")) {
-						warnings.add(jarEntry.getName());
-					} else if (name.endsWith(".html")) {
-						warnings.add(jarEntry.getName());
+					} else if (lName.endsWith(".obj")) {
+						warnings.add(name);
+					} else if (lName.endsWith(".mtl")) {
+						warnings.add(name);
+					} else if (lName.endsWith(".jar")) {
+						warnings.add(name);
+					} else if (lName.endsWith(".java")) {
+						warnings.add(name);
+					} else if (lName.endsWith(".html")) {
+						warnings.add(name);
 					}
 					continue;
 				}
-	
-				String entryName = jarEntry.getName();
-				entryName = entryName.substring(0, entryName.length() - ".class".length());
+				String entryName = name.substring(0, name.length() - ".class".length());
 				entryName = entryName.replace("/", ".");
 				try {
 					Class<?> wantedClass = jarClassLoader.loadClass(entryName);
+					
 					if(Modifier.isAbstract(wantedClass.getModifiers())) {
 						continue;
 					}
@@ -458,25 +490,33 @@ public class JarValidator {
 					if(Modifier.isStatic(wantedClass.getModifiers())) {
 						continue;
 					}
-					for(Method method : wantedClass.getMethods()) {
-						method.getName();
-//	//					System.out.println(method.getReturnType());
-					}
 					
 					// Find Constructor
-					Object newInstance = ReflectionLoader.newInstanceSimple(wantedClass);
-					if(newInstance == null) {
-						errors.add(jarEntry.getName());
+					if(timer == null) {
+						timer = new Timer();
 					}
-				} catch (Exception e) {
-					errors.add(jarEntry.getName() + "-"+e.getMessage());
+					SimpleTimerTask task = new SimpleTimerTask(Thread.currentThread());
+					timer.schedule(task, 2000);
+
+					Object newInstance = ReflectionLoader.newInstanceSimple(wantedClass, "run");
+					task.withSimpleExit(null);
+					if(newInstance == null) {
+						errors.add(name);
+					} else {
+						tester.testClass(newInstance, wantedClass, null);
+					}
+				} catch (Throwable e) {
+					errors.add(name + "-"+e.getMessage());
 				}
 			}
 		} catch (Throwable e) {
 			errors.add(file.getName() + "-"+e.getMessage());
-//			e.printStackTrace();
+			e.printStackTrace();
 		} finally {
 			try {
+				if(zip != null) {
+					zip.close();
+				}
 				if(jarClassLoader != null) {
 					jarClassLoader.close();
 				}
@@ -486,6 +526,12 @@ public class JarValidator {
 			} catch (Exception e) {
 			}
 		}
+		if(timer != null) {
+			timer.cancel();
+			timer = null;
+		}
+
+		ReflectionLoader.closeThreads(oldThreads);
 		return false;
 	}
 
