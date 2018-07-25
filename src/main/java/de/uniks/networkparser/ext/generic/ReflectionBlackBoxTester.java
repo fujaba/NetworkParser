@@ -153,7 +153,6 @@ public class ReflectionBlackBoxTester {
 //		withIgnoreClazzes(MQTTMessage.class);
 //		withIgnoreClazzes(RabbitMessage.class);
 //		withIgnoreClazzes(MessageSession.class);
-//		withIgnoreClazzes(GitRevision.class, "main");
 //		
 //		withIgnoreClazzes(JavaAdapter.class);
 //		withIgnoreClazzes(JavaBridgeFX.class);

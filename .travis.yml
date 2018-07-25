@@ -43,3 +43,5 @@ after_success:
   - ./gradlew jacocoTestReport coveralls
   # other script steps might be done before running the actual sonarcloud analysis
   - sonar-scanner
+after_failure:
+  - cat build/reports/tests/test/index.html
