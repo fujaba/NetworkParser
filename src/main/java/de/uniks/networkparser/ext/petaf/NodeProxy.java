@@ -26,11 +26,11 @@ THE SOFTWARE.
 import de.uniks.networkparser.ext.petaf.messages.ConnectMessage;
 import de.uniks.networkparser.ext.petaf.messages.InfoMessage;
 import de.uniks.networkparser.interfaces.ObjectCondition;
+import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
-import de.uniks.networkparser.interfaces.SimpleCloseable;
 import de.uniks.networkparser.list.SimpleList;
 
-public abstract class NodeProxy extends SendableItem implements Comparable<NodeProxy>, SendableEntityCreatorNoIndex, SimpleCloseable {
+public abstract class NodeProxy extends SendableItem implements Comparable<NodeProxy>, SendableEntityCreatorNoIndex {
 	public static final String TYPE_IN="IN";
 	public static final String TYPE_OUT="OUT";
 	public static final String TYPE_INOUT="INOUT";
@@ -278,6 +278,9 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 			return false;
 		}
 		NodeProxy nodeProxy = (NodeProxy) element;
+		if(SendableEntityCreator.REMOVE_YOU.equalsIgnoreCase(type)) {
+			return nodeProxy.close();
+		}
 		if (PROPERTY_SEND.equals(attrName)) {
 			long oldValue = nodeProxy.sendtime;
 			nodeProxy.sendtime = Long.valueOf("" + value);

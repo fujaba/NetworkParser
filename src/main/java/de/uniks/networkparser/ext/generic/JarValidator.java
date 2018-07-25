@@ -86,7 +86,9 @@ public class JarValidator {
 		CharacterBuffer script = FileBuffer.readFile(rootPath+"build.gradle");
 		this.isUseJUnit = script.indexOf("useJUnitPlatform()")>0;
 		int pos = script.indexOf("org.glassfish.jersey.inject:");
-		String jerseyLine = script.getLine(pos).toString();
+		String jerseyInject = script.getLine(pos).toString();
+		pos = script.indexOf("org.glassfish.jersey.media:");
+		String jerseyMedia = script.getLine(pos).toString();
 
 		script.newLine();
 		script.newLine();
@@ -203,7 +205,9 @@ public class JarValidator {
 		for(String item : dependency) {
 			script.withLine("compile files(\""+item+"\")");
 		}
-		script.withLine(jerseyLine);
+		script.withLine(jerseyInject);
+		script.withLine(jerseyMedia);
+
 		script.withLine("}");
 //		script.withLine("defaultTasks 'clean', 'test'");
 		script.withLine("defaultTasks 'test'");

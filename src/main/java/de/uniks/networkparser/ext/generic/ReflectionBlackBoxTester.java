@@ -47,7 +47,7 @@ import de.uniks.networkparser.ext.petaf.SimpleTimerTask;
 import de.uniks.networkparser.ext.story.Story;
 import de.uniks.networkparser.ext.story.StoryStepJUnit;
 import de.uniks.networkparser.interfaces.BaseItem;
-import de.uniks.networkparser.interfaces.SimpleCloseable;
+import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleSet;
 
@@ -353,8 +353,8 @@ public class ReflectionBlackBoxTester {
 			} catch(Exception e) {
 			}
 		}
-		if(obj instanceof SimpleCloseable) {
-			((SimpleCloseable)obj).close();
+		if(obj instanceof SendableEntityCreator) {
+			((SendableEntityCreator)obj).setValue(obj, null, null, SendableEntityCreator.REMOVE_YOU);
 		}
 		
 	}
