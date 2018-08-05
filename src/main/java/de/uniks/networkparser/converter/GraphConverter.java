@@ -162,6 +162,9 @@ public class GraphConverter implements Converter{
 
 					for(int e=0; e < array.size();e++) {
 						Object entity = array.getChild(e);
+						if(entity == null) {
+							continue;
+						}
 						if (entity instanceof Entity) {
 							assocOther = new Association(graphNode).with(Cardinality.ONE).with(AssociationTypes.EDGE);
 							Clazz newNode = parseJsonObject(root, (Entity) entity);
