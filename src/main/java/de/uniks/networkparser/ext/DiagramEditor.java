@@ -141,11 +141,6 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 			if("JARVALIDATOR".equalsIgnoreCase(args[0])) {
 				JarValidator validator = new JarValidator();
 				validator.withPath("build/libs");
-				boolean isValidate=false;
-				boolean isAnalyseJar=false;
-				boolean isLicence = false;
-				boolean isError = true;
-				boolean isWarning = true;
 				for(String item : args) {
 					if(item == null) {
 						continue;
@@ -156,49 +151,49 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 						try {
 							Integer no = Integer.valueOf(param);
 							validator.withMinCoverage(no);
-							isValidate = true;
 						}catch (Exception e) {
 						}
 					} else if(item.startsWith("path=")) {
 						String param = item.substring(5);
 						validator.withPath(param);
-						isAnalyseJar = true;
 					} else if(item.startsWith("root=")) {
 						String param = item.substring(5);
 						validator.withRootPath(param);
 					} else if(item.startsWith("fatjar")) {
-						isAnalyseJar = true;
+						validator.isAnalyseJar = true;
 					} else if(item.startsWith("licence")) {
-						isLicence = true;
+						validator.isLicence = true;
 					} else if(item.startsWith("noerror")) {
-						isError = false;
+						validator.isError = false;
 					} else if(item.startsWith("nowarning")) {
-						isWarning = false;
+						validator.isWarning = false;
+					} else if(item.startsWith("noinstance")) {
+						validator.isInstance = false;
 					}
 				}
 				int exit=0;
-				System.out.println("CHECK CC="+isValidate + "("+validator.getMinCoverage()+")");
-				if(isValidate) {
+				System.out.println("CHECK CC = "+validator.isValidate + "("+validator.getMinCoverage()+")");
+				if(validator.isValidate) {
 					validator.validate();
 					if(validator.analyseReport() == false) {
-						System.err.println("CodeCoverage not enought");
+						System.err.println("CodeCoverage not enough");
 						exit = -1;
 					}
 				}
-				if(isAnalyseJar) {
+				if(validator.isAnalyseJar) {
 					// Check for Licence
-					if(isError) {
-						int subExit = validator.searchFiles(System.err, isLicence, isWarning);
+					if(validator.isError) {
+						int subExit = validator.searchFiles(System.err);
 						if(subExit < 0) {
 							exit = subExit;
 							System.err.println("FatJar Error");
 						}
-						if(isValidate && subExit == 0 && validator.isExistFullJar() == false) {
+						if(validator.isValidate && subExit == 0 && validator.isExistFullJar() == false) {
 							System.err.println("No FatJar found");
 							exit = -1;
 						}
 					}else {
-						validator.searchFiles(System.err, isLicence, isWarning);
+						validator.searchFiles(System.err);
 					}
 				}
 				if(exit < 0) {

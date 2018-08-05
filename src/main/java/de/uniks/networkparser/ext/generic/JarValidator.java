@@ -29,7 +29,7 @@ public class JarValidator {
 	
 //    runtimeOnly 'org.glassfish.jersey.inject:jersey-hk2:2.27'
 
-	private int minCoverage=0;
+	
 	private String path;
 	private String file = "build/jacoco/html/index.html";
 	public static final String JARFILE = ".jar";
@@ -44,14 +44,24 @@ public class JarValidator {
 	private String rootPath = "";
 	private int count;
 	private int classes;
-	
-	public JarValidator withMinCoverage(int no) {
-		this.minCoverage = no;
+
+	private int minCoverage=0;
+	public boolean isAnalyseJar = false;
+	public boolean isLicence = false;
+	public boolean isError = true;
+	public boolean isWarning = true;
+	public boolean isInstance = true;
+	public boolean isValidate = false;
+
+	public JarValidator withMinCoverage(int value) {
+		this.minCoverage = value;
+		this.isValidate = true;
 		return this;
 	}
 	
 	public JarValidator withPath(String path) {
 		this.path = path;
+		this.isAnalyseJar = true;
 		return this;
 	}
 	
@@ -252,11 +262,11 @@ public class JarValidator {
 		return false;
 	}
 	
-	public int searchFiles(PrintStream output, boolean isLicence, boolean isWarning) {
+	public int searchFiles(PrintStream output) {
 		if(this.path == null) {
 			return -1;
 		}
-		return searching(new File(rootPath+this.path), output, isLicence, isWarning);
+		return searching(new File(rootPath+this.path), output);
 	}
 	
 	public boolean isError() {
@@ -271,7 +281,7 @@ public class JarValidator {
 		return warnings;
 	}
 	
-	public int searching(File file, PrintStream output, boolean isLicence, boolean isWarning) {
+	public int searching(File file, PrintStream output) {
 		if(file == null) {
 			if(output != null){
 				output.println("NO FILES FOUND");
@@ -288,7 +298,7 @@ public class JarValidator {
 		}
 		for(File child : listFiles) {
 			if(child.isDirectory()) {
-				int subresult = searching(child, output, isLicence, isWarning);
+				int subresult = searching(child, output);
 				if(subresult < 0 ) {
 					result += subresult;
 				}
@@ -485,6 +495,9 @@ public class JarValidator {
 					} else if (lName.endsWith(".html")) {
 						warnings.add(name);
 					}
+					continue;
+				}
+				if(isInstance == false) {
 					continue;
 				}
 				String entryName = name.substring(0, name.length() - ".class".length());
