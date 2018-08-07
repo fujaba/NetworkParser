@@ -940,11 +940,11 @@ public class GraphTest {
 		
 		
 		GraphConverter converter = new GraphConverter();
-		TemplateResultFragment convertToMetaText = converter.convertToMetaText(model, true);
+		TemplateResultFragment convertToMetaText = converter.convertToMetaText(model, false);
 		System.out.println(convertToMetaText.getValue().toString());
 		
 		System.out.println("#### HEADER ###");
-		System.out.println(convertToMetaText.getHeaders().toString());
+		System.out.println(""+convertToMetaText.getHeaders());
 	}
 
 }

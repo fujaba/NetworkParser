@@ -6,8 +6,12 @@ import static de.uniks.networkparser.graph.DataType.STRING;
 import org.junit.Test;
 
 import de.uniks.networkparser.ext.ClassModel;
+import de.uniks.networkparser.graph.Association;
 import de.uniks.networkparser.graph.Cardinality;
 import de.uniks.networkparser.graph.Clazz;
+import de.uniks.networkparser.graph.DataType;
+import de.uniks.networkparser.graph.DataTypeSet;
+import de.uniks.networkparser.graph.util.AssociationSet;
 
 public class TestAssociation {
 
@@ -169,5 +173,94 @@ public class TestAssociation {
 
 		model.getGenerator().testGeneratedCode("java");
 //		model.generate("src/test/java");
+	}
+	
+	@Test
+	public void testDuppleTest() {
+		// class model
+		ClassModel model = new ClassModel("de.uniks.universityofmadness.model");
+
+		// classes
+		Clazz character = model.createClazz("Character");
+		Clazz hero = model.createClazz("Hero");
+		Clazz board = model.createClazz("Board");
+		Clazz room = model.createClazz("Room");
+
+		// superclasses
+		hero.withSuperClazz(character);
+
+		
+		board.createBidirectional(character, "characters", Cardinality.MANY, "board", Cardinality.ONE);
+		board.createBidirectional(room, "rooms", Cardinality.MANY, "board", Cardinality.ONE);
+
+		room.createBidirectional(character, "characters", Cardinality.MANY, "room", Cardinality.ONE);
+
+//		System.out.println(model.getAssociations().size());
+
+	}
+	
+	@Test
+	public void testDuppleTestFull() {
+		// class model
+		ClassModel model = new ClassModel("de.uniks.universityofmadness.model");
+
+		// classes
+		Clazz gameSession = model.createClazz("GameSession");
+		Clazz gameSessionController = model.createClazz("GameSessionController");
+		Clazz player = model.createClazz("Player");
+		Clazz character = model.createClazz("Character");
+		Clazz hero = model.createClazz("Hero");
+		Clazz item = model.createClazz("Item");
+		Clazz weapon = model.createClazz("Weapon");
+		Clazz board = model.createClazz("Board");
+		Clazz room = model.createClazz("Room");
+		Clazz door = model.createClazz("Door");
+		Clazz hint = model.createClazz("Hint");
+		Clazz enemy = model.createClazz("Enemy");
+		Clazz adjutant = model.createClazz("Adjutant");
+
+		// superclasses
+		hero.withSuperClazz(character);
+		enemy.withSuperClazz(character);
+		adjutant.withSuperClazz(character);
+		weapon.withSuperClazz(item);
+
+		// links
+		player.createBidirectional(hero, "hero", Cardinality.ONE, "player", Cardinality.ONE);
+		character.createBidirectional(item, "items", Cardinality.MANY, "owner", Cardinality.ONE);
+		
+		gameSession.createUniDirectional(player, "currentPlayer", Cardinality.ONE);
+		gameSession.createBidirectional(board, "board", Cardinality.ONE, "gameSession", Cardinality.ONE);
+		gameSession.createBidirectional(player, "players", Cardinality.MANY, "gameSession", Cardinality.ONE);
+		gameSessionController.createBidirectional(gameSession, "gameSession", Cardinality.ONE, "gameSessionController",
+				Cardinality.ONE);
+		
+		board.createBidirectional(room, "rooms", Cardinality.MANY, "board", Cardinality.ONE);
+		board.createBidirectional(character, "characters", Cardinality.MANY, "board", Cardinality.ONE);
+
+		room.createBidirectional(item, "items", Cardinality.MANY, "room", Cardinality.ONE);
+		room.createBidirectional(door, "doors", Cardinality.MANY, "rooms", Cardinality.MANY);
+		room.createBidirectional(hint, "hints", Cardinality.MANY, "room", Cardinality.ONE);
+		Association createBidirectional = room.createBidirectional(character, "characters", Cardinality.MANY, "room", Cardinality.ONE);
+		// TODO: attributes
+
+		gameSessionController.createAttribute("tmxPath", DataType.STRING);
+		board.createAttribute("tileSets", DataTypeSet.create(DataType.STRING));
+		
+		room.createAttribute("name", DataType.STRING);
+		item.createAttribute("name", DataType.STRING);
+		character.createAttribute("name", DataType.STRING);
+		player.createAttribute("name", DataType.STRING);
+		hint.createAttribute("name", DataType.STRING);
+		
+		room.createAttribute("visible", DataType.BOOLEAN);
+		room.createAttribute("state", DataType.STRING);
+		
+		player.createAttribute("health", DataType.INT);
+		player.createAttribute("madness", DataType.INT);
+		player.createAttribute("actionsleft", DataType.INT);
+		AssociationSet associations = model.getAssociations();
+		
+		System.out.println(associations.size());
 	}
 }

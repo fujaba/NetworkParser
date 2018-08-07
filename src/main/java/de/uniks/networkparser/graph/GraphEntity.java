@@ -83,7 +83,7 @@ public abstract class GraphEntity extends GraphMember {
 	 *</pre>
 	 */
 	AssociationSet getEdges(AssociationTypes type, Condition<?>... filters) {
-		if (this.children == null ) {
+		if (this.children == null || type == null) {
 			return AssociationSet.EMPTY_SET;
 		}
 		AssociationSet collection = new AssociationSet();
@@ -103,6 +103,8 @@ public abstract class GraphEntity extends GraphMember {
 							if(AssociationTypes.isEdge(assoc.getType())) {
 								collection.add(assoc);
 							}
+						}else if(type.equals(assoc.getType())) {
+							collection.add(assoc);
 						}
 					}
 				}
@@ -157,7 +159,7 @@ public abstract class GraphEntity extends GraphMember {
 	protected GraphEntity with(Association... values) {
 		if (values != null) {
 			boolean add;
-			AssociationSet allAssoc = this.getEdges(AssociationTypes.ASSOCIATION);
+			AssociationSet allAssoc;
  			for (Association assoc : values) {
 				// Do Nothing
 				if (assoc == null || assoc.getOther() == null) {
@@ -171,6 +173,13 @@ public abstract class GraphEntity extends GraphMember {
 				Association assocOther = assoc.getOther();
 				boolean mergeFlag = (assoc.getType()==AssociationTypes.ASSOCIATION && assocOther.getType() == AssociationTypes.EDGE) ||
 						(assoc.getType()==AssociationTypes.EDGE && assocOther.getType() == AssociationTypes.ASSOCIATION);
+				boolean generalizationFlag = (assoc.getType()==AssociationTypes.GENERALISATION && assocOther.getType() == AssociationTypes.EDGE) ||
+						(assoc.getType()==AssociationTypes.EDGE && assocOther.getType() == AssociationTypes.GENERALISATION);
+				if(generalizationFlag) {
+					allAssoc = this.getEdges(AssociationTypes.GENERALISATION);
+				}else {
+					allAssoc = this.getEdges(AssociationTypes.ASSOCIATION);
+				}
 				for(Association item : allAssoc) {
 					if(item == assoc || item.getOther() == assoc) {
 						// I Know the Assoc
@@ -180,9 +189,13 @@ public abstract class GraphEntity extends GraphMember {
 					// Implements new Search for Association Only Search for duplicate
 					Association itemOther = item.getOther();
 					String name = itemOther.name();
-
+					if(generalizationFlag && item.getClazz() == assoc.getClazz()) {
+						break;
+					}
 					if(name != null && name.equals(assocOther.name()) && itemOther.getClazz() == assocOther.getClazz()) {
-						add = false;
+						if(item != assoc ) {
+							add = false;
+						}
 						break;
 					}
 					// Check for Merge Association
