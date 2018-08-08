@@ -69,7 +69,7 @@ public abstract class GraphModel extends GraphEntity implements BaseItem {
 		}
 		return collection;
 	}
-	
+
 	@Override
 	public Object getValue(String attribute) {
 		if(PROPERTY_CLAZZ.equalsIgnoreCase(attribute)) {
@@ -235,10 +235,10 @@ public abstract class GraphModel extends GraphEntity implements BaseItem {
 				if (values != null) {
 					for (Object value : values) {
 						if (value != null) {
-							String type = value.getClass().getName();
+							String type = EntityUtil.shortClassName(value.getClass().getName());
 							if (attributes.size() > no) {
 								Attribute attribute = attributes.get(no);
-								if (attribute.getType().getName(false).equals(type)) {
+								if (attribute.getType().getName(true).equals(type)) {
 									// Everthing is ok
 								} else {
 									attribute.with(DataType.OBJECT);
@@ -254,7 +254,7 @@ public abstract class GraphModel extends GraphEntity implements BaseItem {
 				}
 			}
 		}
-		
+
 		// FIX Attribute and Methods
 		for(Attribute attribute : item.getAttributes()) {
 			fixDataType(attribute.getType());
@@ -267,7 +267,7 @@ public abstract class GraphModel extends GraphEntity implements BaseItem {
 			}
 		}
 	}
-	
+
 	private void fixDataType(DataType dataType) {
 		Clazz clazz = dataType.getClazz();
 		if(clazz.isExternal() == false && EntityUtil.isPrimitiveType(clazz.getName()) == false)  {
@@ -279,7 +279,7 @@ public abstract class GraphModel extends GraphEntity implements BaseItem {
 			}
 		}
 	}
-	
+
 	protected GraphModel with(GraphModel model) {
 		if(model == null) {
 			return this;
