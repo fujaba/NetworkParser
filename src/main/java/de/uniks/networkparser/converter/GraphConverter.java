@@ -27,7 +27,6 @@ import java.util.ArrayList;
 
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.buffer.CharacterBuffer;
-import de.uniks.networkparser.ext.ClassModel;
 import de.uniks.networkparser.graph.Association;
 import de.uniks.networkparser.graph.AssociationTypes;
 import de.uniks.networkparser.graph.Attribute;
@@ -60,6 +59,7 @@ import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Converter;
 import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.EntityList;
+import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.json.JsonTokener;
 import de.uniks.networkparser.list.SimpleKeyValueList;
@@ -655,15 +655,185 @@ public class GraphConverter implements Converter{
 		this.full = value;
 		return this;
 	}
-	
-	public TemplateResultFragment convertToMetaText(GraphModel model, boolean useImport) {
-		TemplateResultFragment fragment = new TemplateResultFragment().withMember(model);
-		if(model.getDefaultPackage().equalsIgnoreCase(model.getName()) == false) {
-			String packageName = model.getName();
-			fragment.withLine("#IMPORT model = new #IMPORT(\""+packageName+"\");", useImport, ClassModel.class);
-		}else {
-			fragment.withLine("#IMPORT model = new #IMPORT();", useImport, ClassModel.class);
+	public TemplateResultFragment convertToAdvanced(TemplateResultFragment fragment ) {
+		if(fragment == null) {
+			return null;
+		}
+		GraphModel model = (GraphModel) fragment.getMember();
+		GraphSimpleSet diffs = GraphUtil.getGraphDiff(null,  model);
+		if(diffs.size() < 0) {
+			return fragment;
+		}
+		SimpleKeyValueList<GraphMember, String> names = new SimpleKeyValueList<GraphMember, String>();
+		if(fragment.isExpression()) {
+			// Add Model
+			names.add(model, "model");
+		}
 
+		for(int i=0;i<diffs.size();i++) {
+			GraphDiff diff = (GraphDiff) diffs.get(i);
+			GraphMember match = diff.getMatch();
+			if(match == null) {
+				continue;
+			}
+			String matchNameMatch = (String) names.getValue(match);
+			String matchNameClazz = null;
+			String type = diff.getType();
+			Clazz clazz = match.getClazz();
+			if(matchNameMatch == null) {
+				// MUST BE CREATE
+				matchNameClazz = (String) names.getValue(match);
+				if(matchNameClazz == null) {
+					matchNameClazz = getFreeName(names, clazz);
+					fragment.withLine("#IMPORT "+matchNameClazz + " = model.createClazz(\""+clazz.getName()+"\");", Clazz.class);
+//					if(match instanceof Clazz) {
+//						continue;
+//					}
+					//TODO MISSING ATTRIBUTES OF CLAZZ
+				}
+				// SO DO NEW, UPDATE, REMOVE
+				if(SendableEntityCreator.NEW.equalsIgnoreCase(type)) {
+					// IST NEW ONE
+					Object newValue = diff.getNewValue();
+					if (newValue instanceof Attribute) {
+						createMember(fragment, (Attribute)newValue, names, null);
+						continue;
+					}
+					if (newValue instanceof Association) {
+						createMember(fragment, (Association) newValue, names, null);
+						continue;
+					}
+					if (newValue instanceof Method) {
+						ModifierSet refModifier = GraphUtil.getModifier(new Method());
+						createMember(fragment, (Method)newValue, names, refModifier);
+					}
+					continue;
+				}
+			}
+			// SO CHECK
+			Object newValue = diff.getNewValue();
+			Object oldValue = diff.getOldValue();
+			if(SendableEntityCreator.UPDATE.equalsIgnoreCase(type)) {
+				// RENAME
+				if(Clazz.PROPERTY_MODIFIERS.equalsIgnoreCase(diff.getType()) && newValue instanceof String) {
+					newValue = fragment.replacing("#IMPORT.create(\""+ (String) newValue+"\")", Modifier.class.getName());
+				}
+				if (match instanceof Clazz) {
+					if(Clazz.PROPERTY_TYPE.equalsIgnoreCase(diff.getType())) {
+						fragment.withLine("#IMPORTA.setClazzType("+matchNameClazz+", #IMPORTB.TYPE_" + ((String) newValue).toUpperCase()+")", GraphUtil.class, Clazz.class);
+					}
+					if(Clazz.PROPERTY_SUPERCLAZZ.equalsIgnoreCase(diff.getType())) {
+						if (oldValue == null) {
+							String key = (String) names.getValue(newValue);
+							if(key != null) {
+								fragment.withLineString(matchNameMatch + ".withSuperClazz(\"" + key + "\");");
+							} else {
+								fragment.withLineString(matchNameMatch + ".withSuperClazz(\"model.getGenerator().findClazz(\"" + ((Clazz)newValue).getName(false) + "\"));");
+							}
+						}else {
+							String key = (String) names.getValue(oldValue);
+							if(key != null) {
+								fragment.withLineString(matchNameMatch + ".withoutSuperClazz(\"" + key + "\");");
+							} else {
+								fragment.withLineString(matchNameMatch + ".withSuperClazz(\"model.getGenerator().findClazz(\"" + ((Clazz)oldValue).getName(false) + "\"));");
+							}
+						}
+						continue;
+					}
+					if(matchNameMatch != null) {
+						fragment.withLineString(matchNameMatch+".with(\"" + newValue + "\");");
+					} else {
+						fragment.withLineString("model.getGenerator().findClazz(\""+clazz.getName()+"\", true).with(\"" + newValue + "\");");
+					}
+				} else if (match instanceof Attribute) {
+					if(Clazz.PROPERTY_TYPE.equalsIgnoreCase(diff.getType())) {
+						newValue = fragment.replacing("#IMPORT.create(\""+ newValue+"\")", DataType.class.getName());
+					}
+					if(matchNameMatch != null) {
+						fragment.withLineString(matchNameMatch+".with(\"" + newValue + "\");");
+					} else {
+						fragment.withLineString("model.getGenerator().findAttribute(\""+matchNameClazz, clazz.getName()+"\", true).with(\"" + newValue + "\");");
+					}
+				} else if (match instanceof Association) {
+					if(Association.PROPERTY_CARDINALITY.equalsIgnoreCase(diff.getType()) && newValue instanceof String) {
+						newValue = fragment.replacing(""+ newValue, Cardinality.class.getName());
+					}
+					if(matchNameMatch != null) {
+						fragment.withLineString(matchNameMatch+".with(\"" + newValue + "\");");
+					} else {
+						fragment.withLineString("model.getGenerator().findAssociation(\""+matchNameClazz, clazz.getName()+"\", true).with(\"" + newValue + "\");");
+					}
+				} else if (match instanceof Method) {
+					if(Clazz.PROPERTY_TYPE.equalsIgnoreCase(diff.getType())) {
+						newValue = fragment.replacing("#IMPORT.create(\""+ newValue+"\")", DataType.class.getName());
+					}
+					if(Method.PROPERTY_PARAMETER.equalsIgnoreCase(diff.getType())) {
+						// SO  Method
+						if(matchNameMatch == null) {
+							matchNameMatch = getFreeName(names, match);
+							fragment.withLine("#IMPORT "+matchNameMatch + " = model.findMethod(" + matchNameClazz+", "+match.getName()+"\");", Method.class);
+						}
+						if(oldValue == null) {
+							Parameter parameter = (Parameter) newValue;
+							fragment.withLine(matchNameMatch+".createParameter(\"" + parameter.getName() + "\", " + parameter.getType() + ");", DataType.class);
+						} else {
+							Parameter parameter = (Parameter) oldValue;
+							fragment.withLine(matchNameMatch+".remove(model.getGenerator().findParameter("+matchNameMatch+", \"" + parameter.getName() + "\"));");
+						}
+						continue;
+					}
+					if(matchNameMatch != null) {
+						fragment.withLineString(matchNameMatch+".with(\"" + newValue + "\");");
+					} else {
+						fragment.withLineString("model.getGenerator().findMethod (\""+matchNameClazz, clazz.getName()+"\", true).with(\"" + newValue + "\");");
+					}
+				}
+			}
+			if(SendableEntityCreator.REMOVE.equalsIgnoreCase(type)) {
+				if(Clazz.PROPERTY_MODIFIERS.equalsIgnoreCase(diff.getType()) && oldValue instanceof String) {
+					oldValue = fragment.replacing("#IMPORT.create(\""+ (String) oldValue +"\")", Modifier.class.getName());
+				}
+				if (match instanceof GraphModel) {
+					fragment.withLineString("model.getGenerator().removeClazz(\"" + matchNameClazz + "\");");
+				}
+				if (match instanceof Clazz) {
+					if(Clazz.PROPERTY_ATTRIBUTE.equalsIgnoreCase(diff.getType())) {
+						fragment.withLineString(matchNameClazz+".without(model.getGenerator().findAttribute(" + matchNameClazz + ", \"" + ((GraphMember)oldValue).getName() + "));");
+						continue;
+					} else if(Clazz.PROPERTY_METHOD.equalsIgnoreCase(diff.getType())) {
+						fragment.withLineString(matchNameClazz+".without(model.getGenerator().findMethod(" + matchNameClazz + ", \"" + ((GraphMember)oldValue).getName() + "));");
+						continue;
+					} else if(Clazz.PROPERTY_ASSOCIATION.equalsIgnoreCase(diff.getType())) {
+						fragment.withLineString(matchNameClazz+".without(model.getGenerator().findAssociation(" + matchNameClazz + ", \"" + ((Association)oldValue).getOther().getName() + "));");
+						continue;
+					}
+					if(matchNameMatch != null) {
+						fragment.withLineString(matchNameMatch+".remove(\"" + oldValue + "\");");
+					} else {
+						fragment.withLineString("model.getGenerator().findClazz(\""+clazz.getName()+"\", true).remove(\"" + newValue + "\");");
+					}
+				} else if (match instanceof Attribute) {
+					if(matchNameMatch != null) {
+						fragment.withLineString(matchNameMatch+".with(\"" + oldValue + "\");");
+					} else {
+						fragment.withLineString("model.getGenerator().findAttribute(\""+matchNameClazz, clazz.getName()+"\", true).with(\"" + newValue + "\");");
+					}
+				} else if (match instanceof Method) {
+					if(matchNameMatch != null) {
+						fragment.withLineString(matchNameMatch+".with(\"" + oldValue + "\");");
+					} else {
+						fragment.withLineString("model.getGenerator().findMethod (\""+matchNameClazz, clazz.getName()+"\", true).with(\"" + newValue + "\");");
+					}
+				}
+			}
+		}
+		return fragment;
+	}
+
+	public TemplateResultFragment convertToMetaText(GraphModel model, boolean full, boolean useImport) {
+		TemplateResultFragment fragment = TemplateResultFragment.create(model, useImport, true);
+		if(full == false) {
+			return convertToAdvanced(fragment);
 		}
 		AssociationSet associations = new AssociationSet();
 		AttributeSet attributes = new AttributeSet();
@@ -672,6 +842,8 @@ public class GraphConverter implements Converter{
 		MethodSet methods = new MethodSet();
 		AssociationSet superAssocs = new AssociationSet();
 		SimpleKeyValueList<GraphMember, String> names = new SimpleKeyValueList<GraphMember, String>();
+		// Add Model
+		names.add(model, "model");
 		ClazzSet clazzes = model.getClazzes();
 		String name;
 		String variable;
@@ -696,10 +868,10 @@ public class GraphConverter implements Converter{
 			if (clazz.getType().equals(Clazz.TYPE_INTERFACE)) {
 				temp = ".enableInterface()";
 			}
-			fragment.withLine(variable + "model.createClazz(\""+clazz.getName()+"\")"+temp+";", useImport, Clazz.class);
+			fragment.withLine(variable + "model.createClazz(\""+clazz.getName()+"\")"+temp+";", Clazz.class);
 
 			for(Modifier m : modifiers ) {
-				fragment.withLine(name+".with(#IMPORT.create(\"" + m.getName() + "\"));", useImport, Modifier.class);
+				fragment.withLine(name+".with(#IMPORT.create(\"" + m.getName() + "\"));", Modifier.class);
 			}
 
 			for (Association association : associations) {
@@ -716,38 +888,44 @@ public class GraphConverter implements Converter{
 		
 		refModifier = GraphUtil.getModifier(new Attribute("", DataType.VOID));
 		for (Attribute attribute : attributes) {
-			ModifierSet modifiers = this.getModifier(attribute, refModifier);
-
-			name = getFreeName(names, attribute);
-			if(modifiers.size()>0) {
-				variable = "#IMPORT "+name+" = ";
- 			} else {
-				variable = "";
-			}
-			String clazzName = (String) names.getValue(attribute.getClazz());
-			fragment.withLine(variable + clazzName + ".createAttribute(\"" + attribute.getName() + "\", " + attribute.getType().toString(useImport) + ");\n", useImport, Attribute.class);
-
-			for(Modifier m : modifiers) {
-				fragment.withLine(name+".with(#IMPORT.create(\"" + m.getName() + "\"));", useImport, Modifier.class);
-			}
+			createMember(fragment, attribute, names, refModifier);
 		}
 
 		for (Association assoc : associations) {
-			name = (String) names.getValue(assoc.getClazz());
-			String otherName = (String)names.getValue(assoc.getOtherClazz());
-			String card = assoc.getOther().getCardinality().toString().toUpperCase();
-			if(GraphUtil.isUndirectional(assoc)) {
-				fragment.withLine(name+".createUniDirectional("+otherName.toLowerCase()+", \"" + otherName + "\", #IMPORT."+card, useImport, Cardinality.class);
-			} else {
-				fragment.withLine(name+".createBidirectional(" + otherName.toLowerCase() + ", \"" + assoc.getOther().getName() + "\", #IMPORT."+card+ ", \"" + 
-						assoc.getName() + "\", #IMPORT."+assoc.getCardinality().toString().toUpperCase()+");", useImport, Cardinality.class);
-			}
+			createMember(fragment, assoc, names, null);
 		}
 		refModifier = GraphUtil.getModifier(new Method());
 		for (Method method : methods) {
+			createMember(fragment, method, names, refModifier);
+		}
+		String root = GraphUtil.getGenPath(model);
+		if(root != null && root.isEmpty() == false) {
+			fragment.withLine("model.generate(\""+root+"\");");
+		} else {
+			fragment.withLine("model.generate();");
+		}
+		return fragment;
+	}
+	
+	private void createMember(TemplateResultFragment fragment, GraphMember member, SimpleKeyValueList<GraphMember, String> names, ModifierSet refModifier) {
+		if(member instanceof Association) {
+			Association assoc = (Association) member;
+			String name = (String) names.getValue(assoc.getClazz());
+			String otherName = (String)names.getValue(assoc.getOtherClazz());
+			String card = assoc.getOther().getCardinality().toString().toUpperCase();
+			if(GraphUtil.isUndirectional(assoc)) {
+				fragment.withLine(name+".createUniDirectional("+otherName.toLowerCase()+", \"" + otherName + "\", #IMPORT."+card, Cardinality.class);
+			} else {
+				fragment.withLine(name+".createBidirectional(" + otherName.toLowerCase() + ", \"" + assoc.getOther().getName() + "\", #IMPORT."+card+ ", \"" + 
+						assoc.getName() + "\", #IMPORT."+assoc.getCardinality().toString().toUpperCase()+");", Cardinality.class);
+			}
+		}
+		if(member instanceof Method) {
+			Method method = (Method) member;
 			ModifierSet modifiers = this.getModifier(method, refModifier);
+			String variable;
 
-			name = getFreeName(names, method);
+			String name = getFreeName(names, method);
 			if(modifiers.size()>0) {
 				variable = "#IMPORT "+name+" = ";
  			} else {
@@ -760,7 +938,7 @@ public class GraphConverter implements Converter{
 				if(paramsString.isEmpty() == false) {
 					paramsString.with(split);
 				}
-				paramsString.with("new #IMPORTB("+param.getType().toString(useImport)+")");
+				paramsString.with("new #IMPORTB("+param.getType().toString(fragment.isUseImports())+")");
 				if(param.getName() != null) {
 					paramsString.with(".with(\"" + param.getName() + "\")");
 				}
@@ -768,18 +946,28 @@ public class GraphConverter implements Converter{
 			if(paramsString.isEmpty()) {
 				split = "";
 			}
-			fragment.withLine(variable + clazzName + ".createMethod(\"" + method.getName() + "\", " + method.getReturnType().toString(useImport)+split+paramsString.toString()+");", useImport, Method.class, Parameter.class);
+			fragment.withLine(variable + clazzName + ".createMethod(\"" + method.getName() + "\", " + method.getReturnType().toString(fragment.isUseImports())+split+paramsString.toString()+");", Method.class, Parameter.class);
 			for(Modifier m : modifiers) {
-				fragment.withLine(name+".with(#IMPORT.create(\"" + m.getName() + "\"));", useImport, Modifier.class);
+				fragment.withLine(name+".with(#IMPORT.create(\"" + m.getName() + "\"));", Modifier.class);
 			}
 		}
-		String root = GraphUtil.getGenPath(model);
-		if(root != null && root.isEmpty() == false) {
-			fragment.withLine("model.generate(\""+root+"\");", useImport);
-		} else {
-			fragment.withLine("model.generate();", useImport);
+		if(member instanceof Attribute) {
+			Attribute attribute = (Attribute) member;
+			ModifierSet modifiers = this.getModifier(attribute, refModifier);
+			String name = getFreeName(names, attribute);
+			String variable;
+			if(modifiers.size()>0) {
+				variable = "#IMPORT "+name+" = ";
+ 			} else {
+				variable = "";
+			}
+			String clazzName = (String) names.getValue(attribute.getClazz());
+			fragment.withLine(variable + clazzName + ".createAttribute(\"" + attribute.getName() + "\", " + attribute.getType().toString(fragment.isUseImports()) + ");\n", Attribute.class);
+
+			for(Modifier m : modifiers) {
+				fragment.withLine(name+".with(#IMPORT.create(\"" + m.getName() + "\"));", Modifier.class);
+			}
 		}
-		return fragment;
 	}
 
 	private String getFreeName(SimpleKeyValueList<GraphMember, String> names, GraphMember member) {

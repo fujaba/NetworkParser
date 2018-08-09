@@ -265,6 +265,12 @@ public class ReflectionBlackBoxTester {
 				break;
 			}
 		}
+		Field propertyChangeListener = null;
+		try {
+			propertyChangeListener = clazz.getDeclaredField("listeners");
+			propertyChangeListener.setAccessible(true);
+		}catch (Exception e) {
+		}
 		for(Method m : clazz.getDeclaredMethods()) {
 			if(m.getDeclaringClass().isInterface()) {
 				continue;
@@ -303,6 +309,21 @@ public class ReflectionBlackBoxTester {
 					successCount++;
 				}catch(Exception e) {
 					saveException(e, clazz, m, call);
+				}
+				// specialcase
+				if(propertyChangeListener != null && "addPropertyChangeListener".equals(m.getName())) {
+					// So try again
+					try {
+						propertyChangeListener.set(obj, null);
+					}catch (Exception e) {
+							e.printStackTrace();
+					}
+						
+					try {
+						m.invoke(obj, call);
+						successCount++;
+					}catch (Exception e) {
+					}
 				}
 			}
 			// mit MINVALUE as Parameter
@@ -357,7 +378,15 @@ public class ReflectionBlackBoxTester {
 			}
 		}
 		if(obj instanceof SendableEntityCreator) {
-			((SendableEntityCreator)obj).setValue(obj, DEFAULTMETHODS, null, SendableEntityCreator.REMOVE_YOU);
+			try {
+				((SendableEntityCreator)obj).setValue(obj, DEFAULTMETHODS, null, SendableEntityCreator.REMOVE_YOU);
+			}catch (Throwable e) {
+				Exception e2 = null;
+				if(e instanceof Exception) {
+					e2 = (Exception) e;
+				}
+				output(this, "Dont kill: "+obj, logger, NetworkParserLog.LOGLEVEL_WARNING, e2);
+			}
 		}
 		
 	}
@@ -524,27 +553,30 @@ public class ReflectionBlackBoxTester {
 				}
 				return clazz.getConstructor().newInstance();
 			}catch (Throwable e) {
-					Constructor<?>[] declaredConstructors = clazz.getDeclaredConstructors();
-					ArrayList<Constructor<?>> skipConstructor=new ArrayList<Constructor<?>>();
-					for(Constructor<?> c : declaredConstructors) {
-						try {
-							Object[] call = getParameters(c.getParameterTypes(), NULLVALUE);
-							if(ReflectionLoader.isAccess(c, null)) {
+					try {
+						Constructor<?>[] declaredConstructors = clazz.getDeclaredConstructors();
+						ArrayList<Constructor<?>> skipConstructor=new ArrayList<Constructor<?>>();
+						for(Constructor<?> c : declaredConstructors) {
+							try {
+								Object[] call = getParameters(c.getParameterTypes(), NULLVALUE);
+								if(ReflectionLoader.isAccess(c, null)) {
+									c.setAccessible(true);
+									return c.newInstance(call);
+								}else {
+									skipConstructor.add(c);
+								}
+							} catch (Throwable e2) {
+							}
+						}
+						for(Constructor<?> c : skipConstructor) {
+							try {
+								Object[] call = getParameters(c.getParameterTypes(), NULLVALUE);
 								c.setAccessible(true);
 								return c.newInstance(call);
-							}else {
-								skipConstructor.add(c);
+							} catch (Exception e2) {
 							}
-						} catch (Exception e2) {
 						}
-					}
-					for(Constructor<?> c : skipConstructor) {
-						try {
-							Object[] call = getParameters(c.getParameterTypes(), NULLVALUE);
-							c.setAccessible(true);
-							return c.newInstance(call);
-						} catch (Exception e2) {
-						}
+					}catch (Throwable e2) {
 					}
 			}
 		}

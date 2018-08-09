@@ -925,8 +925,9 @@ public class GraphTest {
 		model.createClazz("Person");
 		
 		GraphConverter converter = new GraphConverter();
-		TemplateResultFragment convertToMetaText = converter.convertToMetaText(model, true);
-		System.out.println(convertToMetaText.getValue().toString());
+		TemplateResultFragment convertToMetaText = converter.convertToMetaText(model, true, true);
+		Assert.assertNotNull(convertToMetaText);
+//		System.out.println(convertToMetaText.getValue().toString());
 	}
 
 	@Test
@@ -940,11 +941,33 @@ public class GraphTest {
 		
 		
 		GraphConverter converter = new GraphConverter();
-		TemplateResultFragment convertToMetaText = converter.convertToMetaText(model, false);
+		TemplateResultFragment convertToMetaText = converter.convertToMetaText(model, true, false);
+		Assert.assertNotNull(convertToMetaText);
+//		System.out.println(convertToMetaText.getValue().toString());
+		
+//		System.out.println("#### HEADER ###");
+//		System.out.println(""+convertToMetaText.getHeaders());
+	}
+	
+	@Test
+	public void GraphConverterTestAdvanced() {
+		ClassModel oldModel = new ClassModel("de.uniks.model");
+		oldModel.createClazz("Clazz");
+
+		ClassModel model = new ClassModel("de.uniks.model");
+		
+//		Advance=	private void testClazzFileAddWithoutMetaWithFilesAdvance()
+//		{
+//			de.uniks.networkparser.ext.ClassModel model = new de.uniks.networkparser.ext.ClassModel("de.uniks.model");
+//			de.uniks.networkparser.ext.ModelGenerator generator = model.getGenerator("src/main/java");
+//			de.uniks.networkparser.graph.Clazz clazz = generator.createClazz("Clazz");
+//			generator.applyChange();
+//		}
+		GraphConverter converter = new GraphConverter();
+		TemplateResultFragment convertToMetaText = converter.convertToMetaText(model, false, false);
+		
 		System.out.println(convertToMetaText.getValue().toString());
 		
-		System.out.println("#### HEADER ###");
-		System.out.println(""+convertToMetaText.getHeaders());
 	}
 
 }

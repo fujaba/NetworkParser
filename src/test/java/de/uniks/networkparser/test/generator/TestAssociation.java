@@ -6,7 +6,6 @@ import static de.uniks.networkparser.graph.DataType.STRING;
 import org.junit.Test;
 
 import de.uniks.networkparser.ext.ClassModel;
-import de.uniks.networkparser.graph.Association;
 import de.uniks.networkparser.graph.Cardinality;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.DataType;
@@ -241,7 +240,8 @@ public class TestAssociation {
 		room.createBidirectional(item, "items", Cardinality.MANY, "room", Cardinality.ONE);
 		room.createBidirectional(door, "doors", Cardinality.MANY, "rooms", Cardinality.MANY);
 		room.createBidirectional(hint, "hints", Cardinality.MANY, "room", Cardinality.ONE);
-		Association createBidirectional = room.createBidirectional(character, "characters", Cardinality.MANY, "room", Cardinality.ONE);
+//		Association createBidirectional = room.createBidirectional(character, "characters", Cardinality.MANY, "room", Cardinality.ONE);
+		room.createBidirectional(character, "characters", Cardinality.MANY, "room", Cardinality.ONE);
 		// TODO: attributes
 
 		gameSessionController.createAttribute("tmxPath", DataType.STRING);

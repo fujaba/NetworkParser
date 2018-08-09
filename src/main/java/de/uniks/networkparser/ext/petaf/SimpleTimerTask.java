@@ -24,6 +24,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 import java.util.TimerTask;
+
 import de.uniks.networkparser.DateTimeEntity;
 import de.uniks.networkparser.ext.ErrorHandler;
 
@@ -37,7 +38,7 @@ public class SimpleTimerTask extends TimerTask {
 	public SimpleTimerTask(Thread simpleExit){
 		this.simpleExit = simpleExit;
 	}
-	
+
 	public SimpleTimerTask(Space space){
 		handler.addListener(space);
 		this.space = space;

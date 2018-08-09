@@ -56,14 +56,15 @@ public class StringCondition implements ParserCondition {
 		this.value = buffer;
 	}
 
-    @Override
-    public boolean isExpression() {
-        if(value == null) {
-            return false;
-        }
-        CharacterBuffer item = CharacterBuffer.create(value);
-        return item.equalsIgnoreCase("true");
-    }
+	@Override
+	public boolean isExpression() {
+		if(value == null) {
+			return false;
+		}
+		CharacterBuffer item = CharacterBuffer.create(value);
+		return item.equalsIgnoreCase("true");
+	}
+
 	@Override
 	public String getKey() {
 		return null;

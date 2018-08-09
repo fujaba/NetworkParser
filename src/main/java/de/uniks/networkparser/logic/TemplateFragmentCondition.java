@@ -29,6 +29,7 @@ import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.ParserCondition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.TemplateParser;
+import de.uniks.networkparser.parser.TemplateResultFragment;
 
 // {{#template PACKAGE {{CONDITION}}}}{{#endtemplate}}
 	public class TemplateFragmentCondition implements ParserCondition{
@@ -94,6 +95,7 @@ import de.uniks.networkparser.interfaces.TemplateParser;
 			newInstance.setValue(newInstance, PROPERTY_FILE, creator.getValue(creator, PROPERTY_FILE), SendableEntityCreator.NEW);
 
 			this.child.update(newInstance);
+			newInstance.setValue(newInstance, TemplateResultFragment.FINISH_GENERATE, newInstance, SendableEntityCreator.NEW);
 			return true;
 		}
 		return false;

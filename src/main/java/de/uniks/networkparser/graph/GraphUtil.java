@@ -238,6 +238,24 @@ public class GraphUtil {
 	public static final GraphSimpleSet getChildren(GraphMember item) {
 		return item.getChildren();
 	}
+	
+	public static final GraphSimpleSet getGraphDiff(GraphSimpleSet owner, GraphMember item) {
+		if(item == null) {
+			return owner;
+		}
+		if(owner == null) {
+			owner = new GraphSimpleSet();
+		}
+		GraphSimpleSet children = item.getChildren();
+		for(GraphMember member : children) {
+			if(member instanceof GraphDiff) {
+				owner.add(member);
+				continue;
+			}
+			getGraphDiff(owner, member);
+		}
+		return owner;
+	}
 
 	public static final String getSeperator(Association item) {
 		return item.getSeperator();

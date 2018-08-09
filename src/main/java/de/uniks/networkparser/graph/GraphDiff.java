@@ -1,5 +1,8 @@
 package de.uniks.networkparser.graph;
 
+import de.uniks.networkparser.interfaces.ObjectCondition;
+import de.uniks.networkparser.interfaces.SendableEntityCreator;
+
 /*
 NetworkParser
 The MIT License
@@ -24,13 +27,14 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-public class GraphDiff extends GraphMember{
+public class GraphDiff extends GraphMember implements Comparable<GraphDiff>{
 	private int count;
 	private GraphMember match;
 	private GraphEntity mainFile;
 	private Object oldValue;
 	private Object newValue;
 	private String type;
+
 
 	public GraphDiff withMain(GraphEntity node) {
 		this.mainFile = node;
@@ -109,5 +113,44 @@ public class GraphDiff extends GraphMember{
 	public String getType() {
 		return this.type;
 	}
+	
+	@Override
+	public int compareTo(GraphDiff o) {
+		String action = getType();
+		if(o == null || action == null) {
+			return 1;
+		}
+		// REMOVE, NEW, UPDATE
+		if(action.equals(o.getType())) {
+			return 0;
+		}
+		if(action.equals(SendableEntityCreator.REMOVE)) {
+			// o.getAction() must be UPDATE OR NEW
+			return -1;
+		}
+//		if(action.equals(SendableEntityCreator.UPDATE) && SendableEntityCreator.REMOVE.equals(o.getType())) {
+//		if(action.equals(SendableEntityCreator.NEW)) { // o.getAction() must be REMOVE OR UPDATE 1
+		return 1;
+	}
 
+	public String getUpdate() {
+		if(this.oldValue == null) {
+			if(this.newValue != null) {
+				return SendableEntityCreator.NEW;
+			}
+		} else if(this.newValue == null) {
+			return SendableEntityCreator.REMOVE;
+		}
+		return SendableEntityCreator.UPDATE;
+	}
+
+	public static GraphDiff create(GraphMember owner, ObjectCondition role, String type, Object oldValue, Object newValue) {
+		GraphDiff graphDiff = new GraphDiff();
+		graphDiff.withRole(role);
+		graphDiff.with(owner);
+		graphDiff.withType(type);
+		graphDiff.withOldValue(oldValue);
+		graphDiff.withNewValue(newValue);
+		return graphDiff;
+	}
 }

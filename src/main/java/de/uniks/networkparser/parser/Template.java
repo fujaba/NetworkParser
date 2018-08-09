@@ -88,8 +88,9 @@ public class Template implements TemplateParser {
 		//Execute Template
 		templateCondition.update(templateFragment);
 
-
 //		templateFragment.withValue(parser.getResult());
+		templateFragment.setValue(templateCondition, TemplateResultFragment.FINISH_GENERATE, templateCondition, SendableEntityCreator.NEW);
+		
 		return templateFragment;
 	}
 
@@ -287,6 +288,11 @@ public class Template implements TemplateParser {
 		if(end-start>0) {
 			// Is It a stopword
 			String token = buffer.substring(start,end);
+			if(token.equals("##")) {
+				buffer.back();
+				buffer.back();
+				return parent;
+			}
 			if(token.startsWith("#")) {
 				token = token.substring(1);
 				if(stopWords != null) {

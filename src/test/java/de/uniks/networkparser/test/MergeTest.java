@@ -55,7 +55,7 @@ public class MergeTest {
 	@Test
 	public void testMergeDiffV2() {
 		de.uniks.networkparser.ext.ModelGenerator generator = new ClassModel().getGenerator("src/test/java");
-		generator.findClazz("de.uniks.model.Person").createAttribute("first", de.uniks.networkparser.graph.DataType.STRING);
+		generator.findClazz("de.uniks.model.Person", false).createAttribute("first", de.uniks.networkparser.graph.DataType.STRING);
 
 		generator.applyChange();
 	}

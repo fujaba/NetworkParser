@@ -27,6 +27,7 @@ import java.util.List;
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.graph.GraphMember;
+import de.uniks.networkparser.graph.GraphModel;
 import de.uniks.networkparser.interfaces.LocalisationInterface;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.ParserCondition;
@@ -38,6 +39,8 @@ public class TemplateResultFragment implements Comparable<TemplateResultFragment
 	public static final String PROPERTY_PARENT="parent";
 	public static final String PROPERTY_CHILD="child";
 	public static final String PROPERTY_CLONE="clone";
+	
+	public static final String FINISH_GENERATE="generate";
 
 	public static final String PROPERTY_FILE="file";
 	public static final String PROPERTY_KEY="key";
@@ -54,6 +57,7 @@ public class TemplateResultFragment implements Comparable<TemplateResultFragment
 	private SimpleSet<String> header = null;
 	private GraphMember member;
 	private boolean expression=true;
+	private boolean useImport;
 	private SendableEntityCreator parent;
 	private SimpleList<Object> stack;
 	private SimpleList<Integer> pos;
@@ -61,7 +65,6 @@ public class TemplateResultFragment implements Comparable<TemplateResultFragment
 	private int key = -1;
 
 	private CharacterBuffer value = new CharacterBuffer();
-
 	private ObjectCondition template;
 	private String name;
 
@@ -131,7 +134,15 @@ public class TemplateResultFragment implements Comparable<TemplateResultFragment
 				Object object = tc.getValue(this);
 				return  object != null && !object.equals("");
 			} else {
-				this.value.withObjects(tc.getValue(this));
+				// Check Stack
+				Object result = tc.getValue(this);
+				this.value.withObjects(result);
+				if(this.stack != null) {
+					Object last = this.stack.last();
+					if(last instanceof SendableEntityCreator) {
+						((SendableEntityCreator)last).setValue(member, ParserCondition.NOTIFY, result, SendableEntityCreator.NEW);
+					}
+				}
 			}
 		}
 		return true;
@@ -330,6 +341,14 @@ public class TemplateResultFragment implements Comparable<TemplateResultFragment
 		TemplateResultFragment element = (TemplateResultFragment) entity;
 //		public static final String PROPERTY_HEADERS="headers";
 //		public static final String PROPERTY_EXPRESSION="expression";
+		if(FINISH_GENERATE.equalsIgnoreCase(attribute)) {
+			// NOTIFY GRAPHMEMBER
+			ObjectCondition role = element.member.getRole();
+			if(role != null) {
+				role.update(value);
+			}
+		}
+		
 		if(PROPERTY_FILE.equalsIgnoreCase(attribute)) {
 			element.setParent((SendableEntityCreator) value);
 			return true;
@@ -359,7 +378,7 @@ public class TemplateResultFragment implements Comparable<TemplateResultFragment
 					}
 					while(itemType.endsWith(".")) {
 						itemType = itemType.substring(0, itemType.length() - 1);
-			    	}
+					}
 					element.addHeader(itemType);
 				}
 
@@ -408,7 +427,8 @@ public class TemplateResultFragment implements Comparable<TemplateResultFragment
 		if(label == null) {
 			return null;
 		}
-		if(PROPERTY_ITEM.equalsIgnoreCase(label.toString())) {
+		if(ParserCondition.NOTIFY.equalsIgnoreCase(label.toString()) || 
+				PROPERTY_ITEM.equalsIgnoreCase(label.toString())) {
 			if(object == null) {
 				if(this.stack != null) {
 					this.stack.remove(this.stack.size() - 1);
@@ -452,33 +472,52 @@ public class TemplateResultFragment implements Comparable<TemplateResultFragment
 		return null;
 	}
 
-	public TemplateResultFragment withLine(String value, boolean useImport, Class<?>... importClass) {
+	public TemplateResultFragment withLineString(String value, String... importClass) {
+		String result = replacing(value, importClass);
+		this.value.withLine(result);
+		return this;
+	}
+
+	public String replacing(String value, String... importClass) {
 		if(importClass != null) {
 			if(importClass.length<1 || importClass[0] == null) {
-				this.value.withLine(value);
-				return this;
+				return value;
 			}
 			if(useImport) {
 				for(int a = importClass.length-1;a>=0;a--) {
 					if(importClass[a]!= null) {
-						value = value.replaceAll("#IMPORT"+(char)(65+a), importClass[a].getSimpleName());
-						this.addHeader("import "+importClass[a].getName()+";");
+						value = value.replaceAll("#IMPORT"+(char)(65+a), EntityUtil.shortClassName(importClass[a]));
+						this.addHeader("import "+importClass[a]+";");
 					}
 				}
-				value = value.replaceAll("#IMPORT", importClass[0].getSimpleName());
-				this.value.withLine(value);
-			}else {
+				value = value.replaceAll("#IMPORT", EntityUtil.shortClassName(importClass[0]));
+			} else {
 				for(int a = importClass.length-1;a>=0;a--) {
 					if(importClass[a]!= null) {
-						value = value.replaceAll("#IMPORT"+(char)(65+a), importClass[a].getName());
+						value = value.replaceAll("#IMPORT"+(char)(65+a), importClass[a]);
 					}
 				}
-				value = value.replaceAll("#IMPORT", importClass[0].getName());
-				this.value.withLine(value);
+				value = value.replaceAll("#IMPORT", importClass[0]);
 			}
-			return this;
+			return value;
 		}
-		this.value.withLine(value.replaceAll("#IMPORT", ""));
+		return value.replaceAll("#IMPORT", "");
+	}
+
+	public TemplateResultFragment withLine(String value, Class<?>... importClass) {
+		String[] imports=null;
+		if(importClass != null) {
+			imports = new String[importClass.length];
+			for(int i=0;i<importClass.length;i++) {
+				if(importClass[i] != null) {
+					imports[i] = importClass[i].getName();
+				}else {
+					imports[i] = "";
+				}
+			}
+		}
+		String result = replacing(value, imports);
+		this.value.withLine(result);
 		return this;
 	}
 
@@ -494,5 +533,25 @@ public class TemplateResultFragment implements Comparable<TemplateResultFragment
 
 	public String getName() {
 		return name;
+	}
+	
+	public static final TemplateResultFragment create(GraphModel model, boolean useImport, boolean createModel) {
+		TemplateResultFragment fragment = new TemplateResultFragment().withMember(model);
+		fragment.useImport = useImport;
+		if(createModel) {
+			String classModel="de.uniks.networkparser.ext.ClassModel";
+			if(model.getDefaultPackage().equalsIgnoreCase(model.getName()) == false) {
+				String packageName = model.getName();
+				fragment.withLineString("#IMPORT model = new #IMPORT(\""+packageName+"\");", classModel);
+			}else {
+				fragment.withLineString("#IMPORT model = new #IMPORT();", classModel);
+			}
+		}
+		fragment.expression = createModel;
+		return fragment;
+	}
+
+	public boolean isUseImports() {
+		return useImport;
 	}
 }

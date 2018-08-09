@@ -22,10 +22,10 @@ public class ForeachCondition implements ParserCondition {
 	private ObjectCondition loop;
 	private ObjectCondition preLoopCondition;
 	private ObjectCondition postLoopCondition;
+	private boolean notify;
+	
 	@Override
-	public String
-
-	getKey() {
+	public String getKey() {
 		return TAG;
 	}
 
@@ -52,7 +52,6 @@ public class ForeachCondition implements ParserCondition {
 					value instanceof LocalisationInterface){
 				ParserCondition parser = (ParserCondition) expression;
 				Object object = parser.getValue((LocalisationInterface)value);
-//				creator.getValue(value, expression);
 //
 				LocalisationInterface variablen = (LocalisationInterface) value;
 //				Object object = creator.getValue(variablen);
@@ -65,7 +64,13 @@ public class ForeachCondition implements ParserCondition {
 						if(this.preLoopCondition != null && pos>0) {
 							this.preLoopCondition.update(value);
 						}
+						if(notify) {
+							((LocalisationInterface) value).put(NOTIFY, this);
+						}
 						loop.update(value);
+						if(notify) {
+							((LocalisationInterface) value).put(NOTIFY, null);
+						}
 						if(this.postLoopCondition != null && pos>0) {
 							this.postLoopCondition.update(value);
 						}
@@ -86,6 +91,9 @@ public class ForeachCondition implements ParserCondition {
 		this.expression  = parser.parsing(buffer, customTemplate, true, true);
 
 		buffer.skipChar(SPLITEND);
+		if(buffer.checkValues('#', '#')) {
+				this.notify = true;
+		}
 		if(buffer.getCurrentChar() != SPLITEND) {
 			this.preLoopCondition = parser.parsing(buffer, customTemplate, true, true);
 		}

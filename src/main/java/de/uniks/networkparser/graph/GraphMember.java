@@ -25,6 +25,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 import de.uniks.networkparser.interfaces.Condition;
+import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.list.SimpleSet;
 
 public abstract class GraphMember {
@@ -41,6 +42,16 @@ public abstract class GraphMember {
 	protected String name;
 	protected Object children;
 	protected Object parentNode;
+	private ObjectCondition role;
+
+	public GraphMember withRole(ObjectCondition condition) {
+		this.role = condition;
+		return this;
+	}
+
+	public ObjectCondition getRole() {
+		return role;
+	}
 
 	public Object getValue(String attribute) {
 		if(PROPERTY_PATH.equalsIgnoreCase(attribute)) {

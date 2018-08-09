@@ -46,7 +46,7 @@ public class JavaCreator extends BasicGenerator {
 				"   private final String[] properties = new String[]",
 				"   {",
 				"{{#foreach child}}",
-					"{{#if {{item.className}}==" + Attribute.class.getName() + "}}",
+					"{{#if {{item.className}}==" + Attribute.class.getName() + " ##}}",
 					"      {{name}}.PROPERTY_{{item.NAME}},",
 					"{{#endif}}",
 					"{{#if {{item.className}}==" + Association.class.getName() + "}}",

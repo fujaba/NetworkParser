@@ -86,6 +86,7 @@ public class ReflectionLoader {
 	public static final Class<?> PANE;
 	public static final Class<?> SCENE;
 	public static final Class<?> PLATFORM;
+	public static final Class<?> PLATFORMIMPL;
 	public static final Class<?> STAGE;
 	public static final Class<?> SCREEN;
 	public static final Class<?> MODALITY;
@@ -194,6 +195,7 @@ public class ReflectionLoader {
 			TRANSFERMODE = getClass("javafx.scene.input.TransferMode");
 			TOOLKITFX = getClass("com.sun.javafx.tk.Toolkit");
 			FILECHOOSERFX = getClass("javafx.stage.FileChooser");
+			PLATFORMIMPL = getClass("com.sun.javafx.application.PlatformImpl");
 		} else {
 			NODE = null;
 			OBSERVABLEVALUE = null;
@@ -242,6 +244,7 @@ public class ReflectionLoader {
 			TRANSFERMODE = null;
 			TOOLKITFX = null;
 			FILECHOOSERFX = null;
+			PLATFORMIMPL = null;
 		}
 	}
 
@@ -653,12 +656,13 @@ public class ReflectionLoader {
 			}
 			if(method != null) {
 				boolean isPublic = Modifier.isPublic(method.getModifiers());
+//				boolean isFinal = Modifier.isFinal(method.getModifiers());
 				if(staticCall && isPublic) {
 					return method.invoke(null, methodArgumentsValues);
 				}
-				if(isAccess(method, item) == false || isPublic == false) {
+//				if(isAccess(method, item) == false || isPublic == false || (isPublic && isFinal)) {
 					method.setAccessible(true);
-				}
+//				}
 				return method.invoke(item, methodArgumentsValues);
 			}
 		} catch (Exception e) {

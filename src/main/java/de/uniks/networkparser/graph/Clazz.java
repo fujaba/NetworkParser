@@ -48,6 +48,8 @@ public class Clazz extends GraphEntity {
 	public static final String PROPERTY_SUPERCLAZZ = "superclazz";
 	public static final String PROPERTY_IMPLEMENTS = "implements";
 	public static final String PROPERTY_ATTRIBUTE = "attribute";
+	public static final String PROPERTY_ASSOCIATION = "association";
+	public static final String PROPERTY_METHOD = "method";
 
 	private String type = TYPE_CLASS;
 

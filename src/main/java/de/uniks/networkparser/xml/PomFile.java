@@ -314,4 +314,14 @@ public class PomFile implements SendableEntityCreatorTag, BaseItem{
 	public SimpleList<PomFile> getDependencies() {
 		return dependencies;
 	}
+	
+	public boolean isValid() {
+		boolean valid=true;
+		for(PomFile dep : dependencies) {
+			if(dep.getVersion().indexOf("+")>0) {
+				valid = false;
+			}
+		}
+		return valid;
+	}
 }

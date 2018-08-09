@@ -645,6 +645,8 @@ public class ParserEntity {
 		if (currentKindEquals('}')) {
 			code.withEndBody(currentToken.startPos);
 			checkSearchStringFound(CLASS_END, currentToken.startPos);
+		} else if(previousToken.kind == '}') {
+			code.withEndBody(previousToken.startPos);
 		}
 
 		if (!currentKindEquals(EOF)) {

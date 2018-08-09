@@ -32,6 +32,7 @@ import java.net.Socket;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.Timer;
 
 import de.uniks.networkparser.DateTimeEntity;
 import de.uniks.networkparser.IdMap;
@@ -48,6 +49,7 @@ import de.uniks.networkparser.ext.javafx.JavaAdapter;
 import de.uniks.networkparser.ext.javafx.JavaBridgeFX;
 import de.uniks.networkparser.ext.javafx.dialog.DialogBox;
 import de.uniks.networkparser.ext.petaf.Message;
+import de.uniks.networkparser.ext.petaf.SimpleTimerTask;
 import de.uniks.networkparser.ext.petaf.proxy.NodeProxyTCP;
 import de.uniks.networkparser.gui.EventTypes;
 import de.uniks.networkparser.gui.JavaViewAdapter;
@@ -141,6 +143,7 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 			if("JARVALIDATOR".equalsIgnoreCase(args[0])) {
 				JarValidator validator = new JarValidator();
 				validator.withPath("build/libs");
+				int timeOut=-1;
 				for(String item : args) {
 					if(item == null) {
 						continue;
@@ -159,6 +162,12 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 					} else if(item.startsWith("root=")) {
 						String param = item.substring(5);
 						validator.withRootPath(param);
+					} else if(item.startsWith("time=")) {
+						String param = item.substring(5);
+						try {
+							timeOut = Integer.valueOf(param)*1000;
+						}catch (Exception e) {
+						}
 					} else if(item.startsWith("fatjar")) {
 						validator.isAnalyseJar = true;
 					} else if(item.startsWith("licence")) {
@@ -167,12 +176,31 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 						validator.isError = false;
 					} else if(item.startsWith("nowarning")) {
 						validator.isWarning = false;
+					} else if(item.startsWith("noinstance=")) {
+						//Filter for Instance of SubPackage
+						validator.instancePackage = item.substring(11);
 					} else if(item.startsWith("noinstance")) {
 						validator.isInstance = false;
 					}
 				}
+				// ADD TIME OUT
+				Timer timer = null;
+				if(timeOut>0) {
+					System.out.println("FOUND TIMEOUT= "+timeOut);
+					timer = new Timer();
+					SimpleTimerTask task = new SimpleTimerTask(Thread.currentThread());
+					task.withTask(new Runnable() {
+						
+						@Override
+						public void run() {
+							System.err.println("TIMEOUT EXIT");
+							System.exit(1);
+						}
+					});
+					timer.schedule(task, timeOut);
+				}
 				int exit=0;
-				System.out.println("CHECK CC = "+validator.isValidate + "("+validator.getMinCoverage()+")");
+				System.out.println("CHECK CC = "+validator.isValidate + " ("+validator.getMinCoverage()+")");
 				if(validator.isValidate) {
 					validator.validate();
 					if(validator.analyseReport() == false) {
@@ -195,6 +223,9 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 					}else {
 						validator.searchFiles(System.err);
 					}
+				}
+				if(timer != null) {
+					timer.cancel();
 				}
 				if(exit < 0) {
 					System.exit(exit);
@@ -300,7 +331,7 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 				return true;
 			}
 		}
-		String name = (String) ReflectionLoader.callChain(value, "getEventType", "getName");
+		String name = (String) ReflectionLoader.callChain(value, "getEventType", "toString");
 		if(JavaViewAdapter.DRAGOVER.equalsIgnoreCase(name)) {
 			return onDragOver(value);
 		}

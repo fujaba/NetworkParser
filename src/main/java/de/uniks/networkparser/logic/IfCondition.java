@@ -1,6 +1,7 @@
 package de.uniks.networkparser.logic;
 
 import de.uniks.networkparser.buffer.CharacterBuffer;
+import de.uniks.networkparser.graph.GraphMember;
 import de.uniks.networkparser.interfaces.LocalisationInterface;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.ParserCondition;
@@ -51,6 +52,9 @@ public class IfCondition implements ParserCondition, SendableEntityCreator {
 	private ObjectCondition trueCondition;
 	/** Variable for False Case. */
 	private ObjectCondition falseCondition;
+	
+	private CharacterBuffer notifyBuffer = null;
+	private GraphMember member;
 
 	/**
 	 * @param value		Set the new Expression
@@ -98,12 +102,38 @@ public class IfCondition implements ParserCondition, SendableEntityCreator {
 	public boolean update(Object evt) {
 		if (expression != null && expression.update(evt)) {
 			if (trueCondition != null) {
-				return trueCondition.update(evt);
+				if(this.notifyBuffer == null || evt instanceof LocalisationInterface == false) {
+					return trueCondition.update(evt);
+				}
+				LocalisationInterface li = (LocalisationInterface)evt;
+				li.put(NOTIFY, this);
+				notifyBuffer.clear();
+				boolean success = trueCondition.update(evt);
+				li.put(NOTIFY, null);
+				// NOTIFY
+				ObjectCondition oc = member.getRole();
+				if(oc != null) {
+					oc.update(notifyBuffer);
+				}
+				return success;
 			}
 			return true;
 		} else {
 			if (falseCondition != null) {
-				falseCondition.update(evt);
+				if(this.notifyBuffer == null || evt instanceof LocalisationInterface == false) {
+					return falseCondition.update(evt);
+				}
+				LocalisationInterface li = (LocalisationInterface)evt;
+				li.put(NOTIFY, this);
+				notifyBuffer.clear();
+				boolean success = trueCondition.update(evt);
+				li.put(NOTIFY, null);
+				// NOTIFY
+				ObjectCondition oc = member.getRole();
+				if(oc != null) {
+					oc.update(notifyBuffer);
+				}
+				return success;
 			}
 		}
 		return false;
@@ -136,6 +166,11 @@ public class IfCondition implements ParserCondition, SendableEntityCreator {
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value,
 			String type) {
+		if(ParserCondition.NOTIFY.equalsIgnoreCase(attribute)) {
+			this.member = (GraphMember) entity;
+			notifyBuffer.withObjects(value);
+			return true;
+		}
 		if (EXPRESSION.equalsIgnoreCase(attribute)) {
 			((IfCondition) entity).withExpression((ObjectCondition) value);
 			return true;
@@ -181,7 +216,11 @@ public class IfCondition implements ParserCondition, SendableEntityCreator {
 		} else {
 			this.withExpression(expression);
 		}
-
+		// CHECK ##
+		if(buffer.checkValues('#', '#')) {
+			this.notifyBuffer = new CharacterBuffer();
+			buffer.skip(2);
+		}
 		buffer.skipChar(SPLITEND);
 		buffer.skipChar(SPLITEND);
 

@@ -52,6 +52,7 @@ public class JarValidator {
 	public boolean isWarning = true;
 	public boolean isInstance = true;
 	public boolean isValidate = false;
+	public String instancePackage;
 
 	public JarValidator withMinCoverage(int value) {
 		this.minCoverage = value;
@@ -502,6 +503,9 @@ public class JarValidator {
 				}
 				String entryName = name.substring(0, name.length() - ".class".length());
 				entryName = entryName.replace("/", ".");
+				if(instancePackage != null && entryName.startsWith(instancePackage) == false) {
+					continue;
+				}
 				try {
 					Class<?> wantedClass = jarClassLoader.loadClass(entryName);
 					
@@ -630,7 +634,13 @@ public class JarValidator {
 	}
 
 	public JarValidator withRootPath(String param) {
-		this.rootPath = param;
+		if(param != null) {
+			if(param.endsWith("\\") || param.endsWith("/")) {
+				this.rootPath = param;
+				return this;
+			}
+			this.rootPath = param + "\\";
+		}
 		return this;
 	}
 }

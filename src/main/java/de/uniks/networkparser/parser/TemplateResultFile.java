@@ -227,6 +227,10 @@ public class TemplateResultFile extends SortedSet<TemplateResultFragment> implem
 				return code.toString();
 			}
 		}
+		if(code != null && this.size() > 0) {
+			return code.toString();
+		}
+		//TODO DONT ADD CORRECTLY ADD
 		// ADD CODE
 		// Check for Existing
 		if(code != null && isMetaModell()) {
@@ -288,8 +292,8 @@ public class TemplateResultFile extends SortedSet<TemplateResultFragment> implem
 			}
 
 			if(importDecl != null) {
-				int start = code.getStartOfImports();
-				int end = code.getEndOfImports();
+//				int start = code.getStartOfImports();
+//				int end = code.getEndOfImports();
 //FIXME STEFAN				buffer.replace(start, end, importDecl.getValue().toString());
 			}
 			return sb.toString();

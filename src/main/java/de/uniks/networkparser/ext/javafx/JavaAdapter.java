@@ -310,7 +310,7 @@ public class JavaAdapter implements JavaViewAdapter, Runnable {
 		JsonObjectLazy executeScript = (JsonObjectLazy) _execute("bridge.addAdapter(new DiagramJS.DelegateAdapter());", true);
 		if(executeScript != null) {
 			Object reference = executeScript.getReference();
-			ReflectionLoader.call(reference, "setAdapter", Object.class, eventListener);
+			ReflectionLoader.calling(reference, "setAdapter", false, null, Object.class, eventListener);
 		}
 	}
 
@@ -358,7 +358,7 @@ public class JavaAdapter implements JavaViewAdapter, Runnable {
 	
 	
 	public static void execute(final Runnable runnable) {
-		ReflectionLoader.call(ReflectionLoader.PLATFORM, "startup", Runnable.class, runnable);
+		ReflectionLoader.call(ReflectionLoader.PLATFORMIMPL, "startup", Runnable.class, runnable);
 	}
 	public static void executeAndWait(final Runnable runnable) {
 		if(runnable == null) {

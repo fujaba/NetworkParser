@@ -27,14 +27,17 @@ import java.util.Iterator;
 import de.uniks.networkparser.TextItems;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.ext.io.FileBuffer;
+import de.uniks.networkparser.graph.Association;
 import de.uniks.networkparser.graph.Attribute;
 import de.uniks.networkparser.graph.Clazz;
+import de.uniks.networkparser.graph.DataType;
 import de.uniks.networkparser.graph.Feature;
 import de.uniks.networkparser.graph.FeatureProperty;
 import de.uniks.networkparser.graph.GraphMember;
 import de.uniks.networkparser.graph.GraphModel;
 import de.uniks.networkparser.graph.Method;
 import de.uniks.networkparser.graph.Parameter;
+import de.uniks.networkparser.graph.util.AssociationSet;
 import de.uniks.networkparser.graph.util.AttributeSet;
 import de.uniks.networkparser.graph.util.ClazzSet;
 import de.uniks.networkparser.graph.util.FeatureSet;
@@ -142,9 +145,9 @@ public class ModelGenerator extends BasicGenerator {
 		return resultModel;
 	}
 
-	SendableEntityCreator generating(String rootDir, String type, GraphModel model) {
+	public SendableEntityCreator generating(String rootDir, String type, GraphModel model) {
 		if(TYPE_JAVA.equalsIgnoreCase(type)) {
-			return generating(rootDir, model, null, javaGeneratorTemplates, true, true);
+			return generating(rootDir, model, null, javaGeneratorTemplates, rootDir != null, rootDir != null);
 		}
 		if(TYPE_TYPESCRIPT.equalsIgnoreCase(type)) {
 			return generating(rootDir, model, null, typeScriptTemplates, true, false);
@@ -387,22 +390,35 @@ public class ModelGenerator extends BasicGenerator {
 		return defaultRootDir;
 	}
 
-	public Clazz findClazz(String name) {
+	public Clazz findClazz(String name, boolean defaultValue) {
 		Clazz clazz = (Clazz) this.defaultModel.getChildByName(name, Clazz.class);
 		if(clazz != null) {
 			return clazz;
 		}
 
 		if(this.defaultRootDir == null) {
+			if(defaultValue) {
+				return new Clazz("");
+			}
 			return null;
 		}
 
 		CharacterBuffer buffer = FileBuffer.readFile(getFileName(this.defaultRootDir, name));
-		return parseSourceCode(buffer);
+		clazz = parseSourceCode(buffer);
+		if(clazz != null) {
+			return clazz;
+		}
+		if(defaultValue) {
+			return new Clazz("");
+		}
+		return null;
 	}
 
-	public Attribute findAttribute(Clazz clazz, String name) {
+	public Attribute findAttribute(Clazz clazz, String name, boolean defaultValue) {
 		if(name == null) {
+			if(defaultValue) {
+				return new Attribute("", DataType.VOID);
+			}
 			return null;
 		}
 		AttributeSet attributes = clazz.getAttributes();
@@ -412,10 +428,33 @@ public class ModelGenerator extends BasicGenerator {
 			}
 		}
 		// Update from Code and find the Clazz from Model
+		if(defaultValue) {
+			return new Attribute("", DataType.VOID);
+		}
+		return null;
+	}
+	
+	public Association findAssociation(Clazz clazz, String name, boolean defaultValue) {
+		if(name == null) {
+			if(defaultValue) {
+				return new Association(null);
+			}
+			return null;
+		}
+		AssociationSet assocs = clazz.getAssociations();
+		for(Association a : assocs) {
+			if(name.equals(a.getName())) {
+				return a;
+			}
+		}
+		// Update from Code and find the Clazz from Model
+		if(defaultValue) {
+			return new Association(null);
+		}
 		return null;
 	}
 
-	public Method findMethod(Clazz clazz, String name) {
+	public Method findMethod(Clazz clazz, String name, boolean defaultValue) {
 		if(name == null) {
 			return null;
 		}
@@ -428,7 +467,7 @@ public class ModelGenerator extends BasicGenerator {
 		return null;
 	}
 	
-	public Parameter findParameter(Method method, String name) {
+	public Parameter findParameter(Method method, String name, boolean defaultValue) {
 		if(name == null) {
 			return null;
 		}

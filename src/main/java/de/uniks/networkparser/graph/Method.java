@@ -35,6 +35,8 @@ public class Method extends GraphMember {
 	public static final String PROPERTY_PARAMETERNAME = "parameterName";
 	public static final String PROPERTY_NODE = "node";
 	public static final String PROPERTY_ANNOTATIONS = "annotations";
+	public static final String PROPERTY_BODY = "body";
+
 	private DataType returnType = DataType.VOID;
 	private String body;
 
@@ -259,6 +261,9 @@ public class Method extends GraphMember {
 		}
 		if(PROPERTY_NODE.equalsIgnoreCase(attribute)) {
 			return this.getNodes();
+		}
+		if(PROPERTY_BODY.equalsIgnoreCase(attribute)) {
+			return this.getBody();
 		}
 		return super.getValue(attribute);
 	}
