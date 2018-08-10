@@ -5,6 +5,8 @@ dist: trusty
 
 git:
   depth: 42000
+cache:
+    - bundler
 addons:
   coverity_scan:
     project:
