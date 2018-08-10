@@ -39,10 +39,22 @@ branches:
   - master
   - develop
 after_success: 
+  - ./gradlew version build uploadArchives jacocoTestReport coveralls
   # other script steps might be done before running the actual sonarcloud analysis
   - sonar-scanner
-deploy:
-  - ./gradlew version build uploadArchives jacocoTestReport coveralls
+#deploy:
+#  provider: releases
+#  api_key: "GITHUB OAUTH TOKEN"
+#  file_glob: true
+#  file: build/libs/NetworkParser-*.jar
+#  skip_cleanup: true
+#  on:
+#    tags: true
 after_failure:
   - cat build/reports/tests/test/index.html
   - cat build/reports/tests/test/classes/Gradle*.html
+notifications:
+  email:
+    - EMAILNotify
+    on_success: change # default: change
+    on_failure: always # default: always
