@@ -143,14 +143,14 @@ public class MapEntity extends AbstractList<Object>{
 		return null;
 	}
 
-   public Object getEntityByClone(Object value) {
-      for (int i = 1; i < size(); i += 2) {
-         if (get(i) == value) {
-            return get(i - 1);
-         }
-      }
-      return null;
-   }
+	public Object getEntityByClone(Object value) {
+		for (int i = 1; i < size(); i += 2) {
+			if (get(i) == value) {
+				return get(i - 1);
+			}
+		}
+		return null;
+	}
 
 
 	/**

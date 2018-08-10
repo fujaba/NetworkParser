@@ -13,40 +13,40 @@ import de.uniks.networkparser.json.JsonObject;
  */
 abstract class ReceivingProxy implements Runnable {
 
-    protected Future<?> future = null;
+	protected Future<?> future = null;
 
-    protected boolean handleMessage(String messageContent){
-        if (messageContent == null || "".equals(messageContent)) {
-            return true;
-        }
-        return false;
-    }
-
-    protected abstract boolean lookForMessage();
-
-    @Override
-    public void run() {
-        try {
-            while (!Thread.interrupted()) {
-                lookForMessage();
-            }
-        } catch (Exception e) {
-//            e.printStackTrace();
-        }
-    }
-
-    protected Object recreateMessage(Space space, JsonObject jsonObject) {
-        IdMap idMap = space.getMap();
-        String className = jsonObject.getString("class");
-        SendableEntityCreator creator = idMap.getCreator(className, true);
-        if(creator == null) {
-        	return null;
-        }
-        Object object = creator.getSendableInstance(false);
-        Set<String> keys = jsonObject.keySet();
-        for(String key : keys) {
-		    creator.setValue(object, key, jsonObject.getValue(key), IdMap.VALUE);
+	protected boolean handleMessage(String messageContent){
+		if (messageContent == null || "".equals(messageContent)) {
+			return true;
 		}
-        return object;
-    }
+		return false;
+	}
+
+	protected abstract boolean lookForMessage();
+
+	@Override
+	public void run() {
+		try {
+			while (!Thread.interrupted()) {
+				lookForMessage();
+			}
+		} catch (Exception e) {
+//			e.printStackTrace();
+		}
+	}
+
+	protected Object recreateMessage(Space space, JsonObject jsonObject) {
+		IdMap idMap = space.getMap();
+		String className = jsonObject.getString("class");
+		SendableEntityCreator creator = idMap.getCreator(className, true);
+		if(creator == null) {
+			return null;
+		}
+		Object object = creator.getSendableInstance(false);
+		Set<String> keys = jsonObject.keySet();
+		for(String key : keys) {
+			creator.setValue(object, key, jsonObject.getValue(key), IdMap.VALUE);
+		}
+		return object;
+	}
 }

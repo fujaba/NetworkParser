@@ -85,11 +85,11 @@ public class ModelHistory implements ObjectCondition {
 			Entity changeEntity = (Entity) changeMsg;
 			setNewPrevId(changeEntity, deletedChanges);
 
-            value = change.getKey();
-            if(keys.contains(value)) {
-            	// Some Node know only this change
-            	break;
-            }
+			value = change.getKey();
+			if(keys.contains(value)) {
+				// Some Node know only this change
+				break;
+			}
 
 			value = changeEntity.getString(ChangeMessage.PROPERTY_ID);
 			if("ChangeMessage".equals(changeEntity.getString(IdMap.CLASS)) == false) {

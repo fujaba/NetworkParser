@@ -99,10 +99,8 @@ public abstract class AbstractArray<V> implements BaseItem {
 	/**
 	 * Init-List with Collection
 	 *
-	 * @param list
-	 *            add all new Items
-	 * @param <ST>
-	 *            Container Class
+	 * @param list   add all new Items
+	 * @param <ST>   Container Class
 	 * @return return self
 	 */
 	@SuppressWarnings("unchecked")

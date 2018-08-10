@@ -143,16 +143,16 @@ public class RGBColor {
 		return color;
 	}
 	private void calcCMYK() {
-        int black = min(min(255 - (int)red, 255 - (int)green), 255 - (int)blue);
-        if (black!=255) {
-            this.cyan    = (255-red-black)/(255-black);
-            this.magenta = (255-green-black)/(255-black);
-            this.yellow  = (255-blue-black)/(255-black);
-        } else {
-        	this.cyan = 255 - (int)red;
-        	this.magenta = 255 - (int)green;
-        	this.yellow = 255 - (int)blue;
-        }
+		int black = min(min(255 - (int)red, 255 - (int)green), 255 - (int)blue);
+		if (black!=255) {
+			this.cyan    = (255-red-black)/(255-black);
+			this.magenta = (255-green-black)/(255-black);
+			this.yellow  = (255-blue-black)/(255-black);
+		} else {
+			this.cyan = 255 - (int)red;
+			this.magenta = 255 - (int)green;
+			this.yellow = 255 - (int)blue;
+		}
 	}
 
 	public RGBColor minus(RGBColor second) {

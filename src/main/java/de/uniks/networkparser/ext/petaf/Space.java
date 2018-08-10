@@ -264,11 +264,11 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 							}
 							fileSystemNodes = candidates.toArray(new NodeProxyFileSystem[candidates.size()]);
 						}
-		            	Object modell = modelProxy.getModel();
-		            	BaseItem value = this.encode(modell, null);
-		            	ChangeMessage msg = new ChangeMessage();
-		            	msg.withMessage(value);
-		            	this.sendMessage(msg, false, fileSystemNodes);
+						Object modell = modelProxy.getModel();
+						BaseItem value = this.encode(modell, null);
+						ChangeMessage msg = new ChangeMessage();
+						msg.withMessage(value);
+						this.sendMessage(msg, false, fileSystemNodes);
 					}
 				}
 			}
