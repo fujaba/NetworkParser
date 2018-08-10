@@ -1,5 +1,6 @@
 package de.uniks.networkparser.parser;
 
+import de.uniks.networkparser.SimpleEvent;
 /*
 The MIT License
 
@@ -227,15 +228,12 @@ public class TemplateResultFile extends SortedSet<TemplateResultFragment> implem
 				return code.toString();
 			}
 		}
-		if(code != null && this.size() > 0) {
-			return code.toString();
-		}
 		//TODO DONT ADD CORRECTLY ADD
 		// ADD CODE
 		// Check for Existing
 		if(code != null && isMetaModell()) {
-			StringBuilder sb=new StringBuilder();
-			sb.append(code.getContent().toString());
+			CharacterBuffer sb=new CharacterBuffer();
+			sb.with(code.getContent().toString());
 //			buffer = code.getContent();
 			TemplateResultFragment importDecl = null;
 			// REMVOE OLD SOURCE
@@ -257,7 +255,11 @@ public class TemplateResultFile extends SortedSet<TemplateResultFragment> implem
 					}
 				}
 			}
+			SimpleEvent event = new SimpleEvent(code, "GENERATE", null, sb);
 			for(TemplateResultFragment fragment : this) {
+				if(fragment.addToCode(event)) {
+					continue;
+				}
 				if(fragment.getKey() == Template.DECLARATION) {
 					continue;
 				}

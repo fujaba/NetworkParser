@@ -25,9 +25,11 @@ THE SOFTWARE.
 */
 import java.util.List;
 import de.uniks.networkparser.EntityUtil;
+import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.graph.GraphMember;
 import de.uniks.networkparser.graph.GraphModel;
+import de.uniks.networkparser.graph.SourceCode;
 import de.uniks.networkparser.interfaces.LocalisationInterface;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.ParserCondition;
@@ -553,5 +555,14 @@ public class TemplateResultFragment implements Comparable<TemplateResultFragment
 
 	public boolean isUseImports() {
 		return useImport;
+	}
+
+	public boolean addToCode(SimpleEvent event) {
+		if(event == null || event.getSource() instanceof SourceCode == false && event.getNewValue() instanceof CharacterBuffer == false) {
+			return false;
+		}
+//		SourceCode source = (SourceCode) event.getSource();
+//		CharacterBuffer sb = (CharacterBuffer) event.getNewValue();
+		return true;
 	}
 }
