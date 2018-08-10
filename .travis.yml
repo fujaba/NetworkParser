@@ -49,6 +49,6 @@ after_failure:
   - cat build/reports/tests/test/classes/Gradle*.html
 notifications:
   email:
-    - EMAILNotify
-    on_success: change # default: change
-    on_failure: always # default: always
+    - Stefan@uni-kassel.de
+  # on_success: change
+  # on_failure: always
