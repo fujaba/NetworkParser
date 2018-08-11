@@ -12,7 +12,7 @@ addons:
     project:
       name: "fujaba/NetworkParser"
       description: "Build submitted via Travis CI"
-    notification_email: Stefan.Lindel@cs.uni-kassel.de
+    notification_email: Stefan@uni-kassel.de
     build_command_prepend: "gradle clean"
     build_command:   "gradle -xTest -xJavadoc"
     branch_pattern: master

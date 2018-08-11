@@ -2,7 +2,6 @@
 **/bin
 **/.idea
 **/gen
-**/.settings
 **/.gradle
 *.*~
 .classpath
