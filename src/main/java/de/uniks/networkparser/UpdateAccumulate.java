@@ -24,20 +24,125 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 import de.uniks.networkparser.interfaces.Entity;
+import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.json.JsonTokener;
+import de.uniks.networkparser.list.SimpleSet;
 
-public class UpdateAccumulate {
+public class UpdateAccumulate implements ObjectCondition {
 	private Tokener tokener;
 	private Entity change;
 	private IdMap map;
 
 	// Target
-	private Object target;
 	private Object defaultItem;
-	private SendableEntityCreator creator;
-	private String property;
 
+	// Target or StartClass
+	private Object target;
+	private SendableEntityCreator creator;
+	private String property;	// May be class<?> or Object
+	private ObjectCondition startCondition;
+	
+	private ObjectCondition endCondition;
+	private String endProperty; // May be class<?> or Object
+	private Object endClass;
+	private ObjectCondition condition;
+	private SimpleSet<SimpleEvent> changes;
+	private SendableEntityCreator endCreator;
+
+	
+	public UpdateAccumulate(IdMap map) {
+		this.map = map;
+	}
+
+	public UpdateAccumulate withStart(String property, Object startClass) {
+		this.target = startClass;
+		this.property = property;
+		if(startClass instanceof Class<?> == false) {
+			this.creator = map.getCreatorClass(startClass);
+		}
+		return this;
+	}
+
+	public UpdateAccumulate withEnd(String property, Object endClass) {
+		this.endClass = endClass;
+		this.endProperty = property;
+		if(endClass instanceof Class<?> == false) {
+			endCreator = map.getCreatorClass(endClass);
+		}
+		return this;
+	}
+
+	public UpdateAccumulate withEndConition(ObjectCondition condition) {
+		this.endCondition = condition;
+		return this;
+	}
+	
+	@Override
+	public boolean update(Object value) {
+		if(value instanceof SimpleEvent == false) {
+			return false;
+		}
+		if(startCondition != null && startCondition.update(value) == false) {
+			return false;
+		}
+		SimpleEvent event = (SimpleEvent) value;
+		Object source = event.getSource(); 
+		if(source == null) {
+			return false;
+		}
+		// 
+		if(changes == null && property != null && property.equalsIgnoreCase(event.getPropertyName())) {
+			// Search for Start Transaction
+			if(target instanceof Class<?>) {
+				if(source.getClass() == target) {
+					this.changes = new SimpleSet<SimpleEvent>();
+					return true;
+				}
+			} else if(target != null && creator != null) {
+				SendableEntityCreator creator = map.getCreatorClass(source);
+				if(creator != null && creator == this.creator) {
+					this.changes = new SimpleSet<SimpleEvent>();
+					return true;
+				}
+			}
+		}
+		if(this.changes != null) {
+			this.changes.add(event);
+			// Check for End
+			if(endCondition != null && endCondition.update(value) == false) {
+				return true;
+			}
+			if(endProperty != null && endProperty.equalsIgnoreCase(event.getPropertyName())) {
+				// Search for Start Transaction
+				if(endClass instanceof Class<?>) {
+					if(source.getClass() == endClass) {
+						if(this.condition != null) {
+							return this.condition.update(this.changes);
+						}
+						this.changes = null;
+						return true;
+					}
+				} else if(endClass != null && endCreator != null) {
+					SendableEntityCreator creator = map.getCreatorClass(source);
+					if(creator != null && creator == endCreator) {
+						if(this.condition != null) {
+							return this.condition.update(this.changes);
+						}
+						this.changes = null;
+						return true;
+					}
+				}
+			}
+			return true;
+		}
+		return false;
+	}
+
+	public UpdateAccumulate withStartConition(ObjectCondition condition) {
+		this.startCondition = condition;
+		return this;
+	}
 
 	public Tokener getTokener() {
 		if(this.tokener == null) {
@@ -114,11 +219,6 @@ public class UpdateAccumulate {
 			}
 		}
 		return true;
-	}
-
-	public UpdateAccumulate withMap(IdMap map) {
-		this.map = map;
-		return this;
 	}
 
 	public UpdateAccumulate withAttribute(Object newValue, String property) {

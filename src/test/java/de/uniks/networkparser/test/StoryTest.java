@@ -76,5 +76,11 @@ public class StoryTest {
 
 		book.dumpIndexHTML();
 	}
+	@Test
+	public void testStorySimple() {
+		Story story = new Story();
+		story.addText("Sample");
+		story.dumpHTML();
+	}
 
 }

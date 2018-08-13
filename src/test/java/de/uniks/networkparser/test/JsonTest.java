@@ -918,7 +918,7 @@ public class JsonTest {
 		map.withCreator(new PersonCreator());
 		map.withTimeStamp(1);
 		map.toJsonObject(person);
-		UpdateAccumulate updateAccumulate = new UpdateAccumulate();
+		UpdateAccumulate updateAccumulate = new UpdateAccumulate(map);
 
 		map.getMapListener().suspendNotification(updateAccumulate);
 		map.withListener(new ObjectCondition() {

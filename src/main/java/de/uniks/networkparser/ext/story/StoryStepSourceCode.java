@@ -53,11 +53,10 @@ public class StoryStepSourceCode implements ObjectCondition {
 	private SimpleKeyValueList<String, String> variables = new SimpleKeyValueList<String, String>()
 			.withComparator(EntityComparator.createComparator());
 	private String fileName;
+	private int stepOverPackageName;
 
-	private void startStory(String path, String fileName) {
-		this.packageName = path;
-		this.fileName = fileName;
-		getLineFromThrowable();
+	public String getFileName() {
+		return fileName;
 	}
 
 	private String getLineFromThrowable() {
@@ -65,25 +64,54 @@ public class StoryStepSourceCode implements ObjectCondition {
 			return null;
 		}
 		StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
-		String fullName;
+		String search;
 		if(this.fileName != null) {
-			fullName = this.packageName+"."+this.fileName;
+			search = this.packageName+"."+this.fileName;
+			
 		}else {
-			fullName = this.packageName;
+			search = this.packageName;
 		}
-		for (StackTraceElement ste : stackTrace) {
+		int equalsPos= -1;
+		int startPos=-1;
+		StackTraceElement ste;
+		for(int i=0;i<stackTrace.length;i++) {
+			ste = stackTrace[i];
 			String name = ste.getClassName();
-			if (name.startsWith(fullName)) {
-				if (this.methodName == null) {
-					// StartLine
-					this.contentFile = "src/test/java/" + this.packageName.replace('.', '/') + "/" + ste.getFileName();
-					this.methodName = ste.getMethodName();
-					this.currentLine = ste.getLineNumber() + 1;
-				} else {
-					this.endLine = ste.getLineNumber() - 1;
-				}
-				return name + ".java:" + ste.getLineNumber();
+			if(name.equals(search)) {
+				equalsPos = i;
+				break;
+			} else if(startPos<0 && name.startsWith(search)) {
+				startPos = i;
 			}
+		}
+		if(equalsPos<0 && startPos>=0) {
+			equalsPos = startPos;
+		}
+		if(equalsPos>=0) {
+			// Steps
+			if(stepOverPackageName>0 && equalsPos+stepOverPackageName<stackTrace.length) {
+				ste = stackTrace[equalsPos + stepOverPackageName];
+			} else {
+				ste = stackTrace[equalsPos];
+			}
+			if (this.methodName == null) {
+				// StartLine
+				// REWRITE METHOD
+				String full = ste.getClassName();
+				int pos = full.lastIndexOf('.');
+				if (pos > 0) {
+					this.fileName = full.substring(pos+1);
+					this.packageName = full.substring(0, pos);
+				}
+
+				this.contentFile = "src/test/java/" + this.packageName.replace('.', '/') + "/" + ste.getFileName();
+				this.methodName = ste.getMethodName();
+				this.currentLine = ste.getLineNumber() + 1;
+			} else {
+				this.endLine = ste.getLineNumber() - 1;
+			}
+			String name = ste.getClassName();
+			return name + ".java:" + ste.getLineNumber();
 		}
 		//Argh not found
 		return "";
@@ -271,21 +299,23 @@ public class StoryStepSourceCode implements ObjectCondition {
 		return true;
 	}
 
-	public StoryStepSourceCode withCode(String path) {
-		this.startStory(path, null);
-		return this;
-	}
 
-	public StoryStepSourceCode withCode(Class<?> packageName) {
+	public StoryStepSourceCode withCode(Class<?> packageName, int stepOver) {
 		String packagePath = packageName.getName();
 		String fileName = null;
 		int pos = packagePath.lastIndexOf('.');
 		if (pos > 0) {
 			fileName = packagePath.substring(pos+1);
 			packagePath = packagePath.substring(0, pos);
-
 		}
-		this.startStory(packagePath,fileName);
+		this.packageName = packagePath;
+		this.fileName = fileName;
+		this.stepOverPackageName = stepOver;
+		getLineFromThrowable();
+		return this;
+	}
+	public StoryStepSourceCode withCode(Class<?> packageName) {
+		withCode(packageName, 0);
 		return this;
 	}
 

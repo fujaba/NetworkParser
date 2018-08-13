@@ -66,7 +66,7 @@ public class UpdateListener implements MapListener, ObjectCondition {
 	public boolean suspendNotification(UpdateAccumulate... accumulates) {
 		this.suspendIdList = new SimpleList<UpdateAccumulate>();
 		if(accumulates == null) {
-			this.suspendIdList.add(new UpdateAccumulate().withTokener(this.factory));
+			this.suspendIdList.add(new UpdateAccumulate(this.map).withTokener(this.factory));
 		}else {
 			for(UpdateAccumulate item : accumulates) {
 				this.suspendIdList.add(item);

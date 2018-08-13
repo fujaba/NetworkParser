@@ -27,6 +27,7 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Executable;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -40,6 +41,7 @@ import java.util.Set;
 import java.util.Timer;
 
 import de.uniks.networkparser.NetworkParserLog;
+import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.ext.ErrorHandler;
 import de.uniks.networkparser.ext.SimpleController;
 import de.uniks.networkparser.ext.javafx.dialog.DialogBox;
@@ -47,27 +49,30 @@ import de.uniks.networkparser.ext.petaf.SimpleTimerTask;
 import de.uniks.networkparser.ext.story.Story;
 import de.uniks.networkparser.ext.story.StoryStepJUnit;
 import de.uniks.networkparser.interfaces.BaseItem;
+import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleSet;
 
 public class ReflectionBlackBoxTester {
-	public static final String NULLVALUE="nullValue";
-	public static final String MINVALUE="minValue";
-	public static final String MAXVALUE="maxValue";
-	public static final String RANDOMVALUE="randomValue";
-	public static final String BLACKBOXTESTER="backboxtest";
-	public static final String INSTANCE="instance";
-	public static final String IGNOREMETHOD="run";
-	public static final String DEFAULTMETHODS="";
+	public static final String TYPE_NULLVALUE = "null";
+	public static final String TYPE_MINVALUE = "min";
+	public static final String TYPE_MAXVALUE = "max";
+	public static final String TYPE_RANDOMVALUE = "random";
+	public static final String TYPE_CUSTOMVALUE = "custom";
+	public static final String BLACKBOXTESTER = "backboxtest";
+	public static final String INSTANCE = "instance";
+	public static final String IGNOREMETHOD = "run";
+	public static final String DEFAULTMETHODS = "";
 
-	private SimpleSet<String> tests=new SimpleSet<String>().with(NULLVALUE,MINVALUE,RANDOMVALUE);
+	private SimpleSet<String> tests=new SimpleSet<String>().with(TYPE_NULLVALUE,TYPE_MINVALUE,TYPE_RANDOMVALUE, TYPE_CUSTOMVALUE);
 	private SimpleKeyValueList<String, SimpleSet<String>> ignoreMethods;
 //	private SimpleSet<String> ignoreClazz=new SimpleSet<String>().with("de.uniks.networkparser.NetworkParserLog");
 	private int errorCount;
 	private int successCount;
 	private String packageName;
 	private NetworkParserLog logger;
+	private ObjectCondition custom;
 
 	public static void mainTester(String[] args) {
 		Object junitCore = ReflectionLoader.newInstanceStr("org.junit.runner.JUnitCore");
@@ -301,9 +306,9 @@ public class ReflectionBlackBoxTester {
 			// mit Null as Parameter
 //			System.out.println(System.currentTimeMillis()+" TEST:"+clazz.getName()+":"+m.getName());
 			Class<?>[] parameterTypes = m.getParameterTypes();
-			if(tests.contains(NULLVALUE)) {
+			if(tests.contains(TYPE_NULLVALUE)) {
 				try {
-					call = getParameters(parameterTypes, NULLVALUE);
+					call = getParameters(m, parameterTypes, TYPE_NULLVALUE, this);
 
 					m.invoke(obj, call);
 					successCount++;
@@ -327,9 +332,9 @@ public class ReflectionBlackBoxTester {
 				}
 			}
 			// mit MINVALUE as Parameter
-			if(tests.contains(MINVALUE)) {
+			if(tests.contains(TYPE_MINVALUE)) {
 				try {
-					call = getParameters(parameterTypes, MINVALUE);
+					call = getParameters(m, parameterTypes, TYPE_MINVALUE, this);
 					m.invoke(obj, call);
 					successCount++;
 				}catch(Exception e) {
@@ -337,9 +342,9 @@ public class ReflectionBlackBoxTester {
 				}
 			}
 			// mit MAXVALUE as Parameter
-			if(tests.contains(MAXVALUE)) {
+			if(tests.contains(TYPE_MAXVALUE)) {
 				try {
-					call = getParameters(parameterTypes, MAXVALUE);
+					call = getParameters(m, parameterTypes, TYPE_MAXVALUE, this);
 					m.invoke(obj, call);
 					successCount++;
 				} catch(Exception e) {
@@ -348,9 +353,9 @@ public class ReflectionBlackBoxTester {
 			}
 
 			// mit RANDOMVALUE as Parameter
-			if(tests.contains(RANDOMVALUE)) {
+			if(tests.contains(TYPE_RANDOMVALUE)) {
 				try {
-					call = getParameters(parameterTypes, RANDOMVALUE);
+					call = getParameters(m, parameterTypes, TYPE_RANDOMVALUE, this);
 //					output(clazz.getName()+"-call: "+m.getName(), logger, NetworkParserLog.LOGLEVEL_ERROR);
 
 					m.invoke(obj, call);
@@ -443,32 +448,35 @@ public class ReflectionBlackBoxTester {
 		}
 	}
 
-	public static Object[] getParameters(Class<?>[] parameters, String type) {
+	public static Object[] getParameters(Executable m, Class<?>[] parameters, String type, Object owner) {
 		int length = parameters.length;
 		Object[] objects = new Object[length];
-		if(NULLVALUE.equals(type)) {
+		if(TYPE_NULLVALUE.equals(type)) {
 			for (int i = 0; i < length; i++) {
 				objects[i] = getNullValue(parameters[i]);
 			}
 			return objects;
 
 		}
-		if(MINVALUE.equals(type)) {
+		if(TYPE_MINVALUE.equals(type)) {
 			for (int i = 0; i < length; i++) {
 				objects[i] = getMinValue(parameters[i]);
 			}
 			return objects;
 		}
-		if(MAXVALUE.equals(type)) {
+		if(TYPE_MAXVALUE.equals(type)) {
 			for (int i = 0; i < length; i++) {
 				objects[i] = getMaxValue(parameters[i]);
 			}
 			return objects;
 		}
-		if(RANDOMVALUE.equals(type)) {
+		if(TYPE_RANDOMVALUE.equals(type)) {
 			for (int i = 0; i < length; i++) {
 				objects[i] = getRandomValue(parameters[i]);
 			}
+		}
+		if(TYPE_CUSTOMVALUE.equals(type)) {
+			return getCustomValue(m, parameters, owner);
 		}
 		return objects;
 	}
@@ -512,6 +520,26 @@ public class ReflectionBlackBoxTester {
 			if(equalsClass(clazz, String.class, CharSequence.class)) {return "";}
 		}
 		return null;
+	}
+	
+	private static Object[] getCustomValue(Executable exec, Class<?>[] clazz, Object owner) {
+		if(clazz == null) {
+			return new Object[0];
+		}
+		Object[] items = new Object[clazz.length];
+		if(owner != null && owner instanceof ReflectionBlackBoxTester) {
+			ReflectionBlackBoxTester tester = (ReflectionBlackBoxTester) owner;
+			ObjectCondition customListener = tester.getCustom();
+			if(customListener != null) {
+				customListener.update(new SimpleEvent(exec, "parameter", null, items));
+				return items;
+			}
+		}
+		return null;
+	}
+
+	public ObjectCondition getCustom() {
+		return custom;
 	}
 
 	private static Object getRandomValue(Class<?> clazz) {
@@ -558,7 +586,7 @@ public class ReflectionBlackBoxTester {
 						ArrayList<Constructor<?>> skipConstructor=new ArrayList<Constructor<?>>();
 						for(Constructor<?> c : declaredConstructors) {
 							try {
-								Object[] call = getParameters(c.getParameterTypes(), NULLVALUE);
+								Object[] call = getParameters(c, c.getParameterTypes(), TYPE_NULLVALUE, null);
 								if(ReflectionLoader.isAccess(c, null)) {
 									c.setAccessible(true);
 									return c.newInstance(call);
@@ -570,7 +598,7 @@ public class ReflectionBlackBoxTester {
 						}
 						for(Constructor<?> c : skipConstructor) {
 							try {
-								Object[] call = getParameters(c.getParameterTypes(), NULLVALUE);
+								Object[] call = getParameters(c, c.getParameterTypes(), TYPE_NULLVALUE, null);
 								c.setAccessible(true);
 								return c.newInstance(call);
 							} catch (Exception e2) {

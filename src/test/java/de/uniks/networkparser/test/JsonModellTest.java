@@ -335,7 +335,7 @@ public class JsonModellTest implements ObjectCondition {
 		map.withTimeStamp(1);
 		map.toJsonObject(account);
 //		map.toJsonObject(person);
-		UpdateAccumulate updateAccumulate = new UpdateAccumulate();
+		UpdateAccumulate updateAccumulate = new UpdateAccumulate(map);
 		String[] output= {"de.uniks.networkparser.SimpleEvent[propertyName=new; oldValue=null; newValue=null 0.0; propagationId=null; source=de.uniks.networkparser.IdMap (2)]",
 						"de.uniks.networkparser.SimpleEvent[propertyName=persons; oldValue=null; newValue=null 0.0; propagationId=null; source=de.uniks.networkparser.IdMap (2)]",
 						"de.uniks.networkparser.SimpleEvent[propertyName=balance; oldValue=0.0; newValue=42.0; propagationId=null; source=de.uniks.networkparser.IdMap (2)]",
