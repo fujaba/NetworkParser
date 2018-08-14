@@ -54,6 +54,7 @@ public class TemplateResultFragment implements Comparable<TemplateResultFragment
 	public static final String PROPERTY_ITEMPOS="itempos";
 	public static final String PROPERTY_TEMPLATE="template";
 	public static final String PROPERTY_TEMPLATEMODEL="templatemodel";
+	public static final String PROPERTY_CURRENTMEMBER="currentMember";
 
 	private LocalisationInterface variables;
 	private SimpleSet<String> header = null;
@@ -163,6 +164,17 @@ public class TemplateResultFragment implements Comparable<TemplateResultFragment
 	public GraphMember getMember() {
 		return member;
 	}
+	
+	
+	public GraphMember getCurrentMember() {
+		if(this.stack != null) {
+			Object item = this.stack.last();
+			if(item instanceof GraphMember) {
+				return (GraphMember) item;
+			}
+		}
+		return this.member;
+	}
 
 	public TemplateResultFragment withExpression(boolean value) {
 		this.expression = value;
@@ -228,6 +240,10 @@ public class TemplateResultFragment implements Comparable<TemplateResultFragment
 			attrName = attribute.substring(0, pos);
 		}else {
 			attrName = attribute;
+		}
+		
+		if(PROPERTY_CURRENTMEMBER.equalsIgnoreCase(attrName)) {
+			return getCurrentMember();
 		}
 		if(PROPERTY_CLONE.equalsIgnoreCase(attrName)) {
 			TemplateResultFragment cloneObj = element.getSendableInstance(false);

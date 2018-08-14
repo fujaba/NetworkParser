@@ -30,6 +30,7 @@ THE SOFTWARE.
 */
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.TemplateParser;
+import de.uniks.networkparser.parser.TemplateResultFragment;
 /**
  * @author Stefan Lindel IfCondition Clazz
  */
@@ -54,7 +55,6 @@ public class IfCondition implements ParserCondition, SendableEntityCreator {
 	private ObjectCondition falseCondition;
 	
 	private CharacterBuffer notifyBuffer = null;
-	private GraphMember member;
 
 	/**
 	 * @param value		Set the new Expression
@@ -97,7 +97,7 @@ public class IfCondition implements ParserCondition, SendableEntityCreator {
 	public ObjectCondition getFalse() {
 		return falseCondition;
 	}
-
+	
 	@Override
 	public boolean update(Object evt) {
 		if (expression != null && expression.update(evt)) {
@@ -111,9 +111,14 @@ public class IfCondition implements ParserCondition, SendableEntityCreator {
 				boolean success = trueCondition.update(evt);
 				li.put(NOTIFY, null);
 				// NOTIFY
-				ObjectCondition oc = member.getRole();
-				if(oc != null) {
-					oc.update(notifyBuffer);
+				if(evt instanceof SendableEntityCreator) {
+					GraphMember member = (GraphMember) ((SendableEntityCreator)evt).getValue(evt, TemplateResultFragment.PROPERTY_CURRENTMEMBER);
+					if(member != null) {
+						ObjectCondition oc = member.getRole();
+						if(oc != null) {
+							oc.update(notifyBuffer);
+						}
+					}
 				}
 				return success;
 			}
@@ -129,9 +134,14 @@ public class IfCondition implements ParserCondition, SendableEntityCreator {
 				boolean success = trueCondition.update(evt);
 				li.put(NOTIFY, null);
 				// NOTIFY
-				ObjectCondition oc = member.getRole();
-				if(oc != null) {
-					oc.update(notifyBuffer);
+				if(evt instanceof SendableEntityCreator) {
+					GraphMember member = (GraphMember) ((SendableEntityCreator)evt).getValue(evt, TemplateResultFragment.PROPERTY_CURRENTMEMBER);
+					if(member != null) {
+						ObjectCondition oc = member.getRole();
+						if(oc != null) {
+							oc.update(notifyBuffer);
+						}
+					}
 				}
 				return success;
 			}
@@ -167,7 +177,7 @@ public class IfCondition implements ParserCondition, SendableEntityCreator {
 	public boolean setValue(Object entity, String attribute, Object value,
 			String type) {
 		if(ParserCondition.NOTIFY.equalsIgnoreCase(attribute)) {
-			this.member = (GraphMember) entity;
+//			this.member = (GraphMember) entity;
 			notifyBuffer.withObjects(value);
 			return true;
 		}

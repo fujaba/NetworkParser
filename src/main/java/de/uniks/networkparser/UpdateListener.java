@@ -349,11 +349,11 @@ public class UpdateListener implements MapListener, ObjectCondition {
 //		Removes a value from an object or array.
 //
 //		{ "op": "remove", "path": "/biscuits/0" }
-//		Removes the first element of the array at biscuits (or just removes the “0” key if biscuits is an object)
+//		Removes the first element of the array at biscuits (or just removes the "0" key if biscuits is an object)
 //
 //		Replace
 //		{ "op": "replace", "path": "/biscuits/0/name", "value": "Chocolate Digestive" }
-//		Replaces a value. Equivalent to a “remove” followed by an “add”.
+//		Replaces a value. Equivalent to a "remove" followed by an "add".
 //
 //		Copy
 //		{ "op": "copy", "from": "/biscuits/0", "path": "/best_biscuit" }

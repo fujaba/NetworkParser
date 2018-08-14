@@ -92,7 +92,7 @@ public class ForeachCondition implements ParserCondition {
 
 		buffer.skipChar(SPLITEND);
 		if(buffer.checkValues('#', '#')) {
-				this.notify = true;
+			this.notify = true;
 		}
 		if(buffer.getCurrentChar() != SPLITEND) {
 			this.preLoopCondition = parser.parsing(buffer, customTemplate, true, true);
