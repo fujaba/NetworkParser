@@ -33,28 +33,6 @@ import de.uniks.networkparser.graph.GraphModel;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.xml.HTMLEntity;
 
-/**
- *
- * <h3>Storyboard StudyRightWithAssignmentsClassGeneration</h3>
- * <h4><a name = 'step_1'>Step 1: Build model for class University</a></h4>
- * <pre><code class="java" data-lang="java">
- *       ClassModel model = new ClassModel(&quot;org.sdmlib.test.examples.studyrightWithAssignments.model&quot;);
- *
- *       Clazz universityClass = model.createClazz(&quot;University&quot;)
- *               .withAttribute(&quot;name&quot;, DataType.STRING);
- * </code></pre>
- * <img src="doc-files/StudyRightWithAssignmentsClassGenerationStep2.png" alt="StudyRightWithAssignmentsClassGenerationStep2.png">
- * <h4><a name = 'step_2'>Step 2: Add class Student</a></h4>
- * <pre><code class="java" data-lang="java">
- *       Clazz studentClass = model.createClazz(&quot;Student&quot;)
- *               .withAttribute(&quot;name&quot;, DataType.STRING)
- *               .withAttribute(&quot;id&quot;, DataType.STRING)
- *               .withAttribute(&quot;assignmentPoints&quot;, DataType.INT)
- *               .withAttribute(&quot;motivation&quot;, DataType.INT)
- *               .withAttribute(&quot;credits&quot;, DataType.INT);
- * </code></pre>
- * <img src="doc-files/StudyRightWithAssignmentsClassGenerationStep5.png" alt="StudyRightWithAssignmentsClassGenerationStep5.png">
- */
 public class ClassModel extends GraphModel {
 	private ModelGenerator generator = new ModelGenerator().withDefaultModel(this);
 

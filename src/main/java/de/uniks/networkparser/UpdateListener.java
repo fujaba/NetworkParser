@@ -40,12 +40,19 @@ public class UpdateListener implements MapListener, ObjectCondition {
 	private Tokener factory;
 	/** The suspend id list. */
 	private SimpleList<UpdateCondition> suspendIdList;
+	
+	public static final String TYPE_OP_ADD = "add";
+	public static final String TYPE_OP_REMOVE = "remove";
+	public static final String TYPE_OP_REPLACE = "replace";
+	public static final String TYPE_OP_COPY = "copy";
+	public static final String TYPE_OP_MOVE = "move";
+	public static final String TYPE_OP_TEST = "test";
 
 	/** The update listener. */
 	protected ObjectCondition condition;
 
 	private Filter updateFilter = new Filter().withStrategy(SendableEntityCreator.UPDATE).withConvertable(new UpdateCondition());
-
+	private Object root;
 	/**
 	 * Instantiates a new update listener.
 	 *
@@ -251,7 +258,7 @@ public class UpdateListener implements MapListener, ObjectCondition {
 		// Check for JSONPatch
 		String op = updateMessage.getString("OP");
 		String path = updateMessage.getString("PATH");
-		if(op != null && path != null) {
+		if(op.length()>0 && path.length() >0) {
 			return this.executePatch(op,path, updateMessage);
 		}
 		Entity remove = (Entity) updateMessage.getValue(SendableEntityCreator.REMOVE);
@@ -338,8 +345,47 @@ public class UpdateListener implements MapListener, ObjectCondition {
 		return null;
 	}
 	
+	private Entity getElement(String path, Entity element, Entity parent) {
+		int pos = path.indexOf("/");
+		if(pos>0) {
+			Object child = element.getValue(path.substring(0, pos));
+			if(child != null && child instanceof Entity) {
+				return getElement(path.substring(pos+1), (Entity) child, element);
+			}
+		} else {
+			// Last One
+			return parent;
+		}
+		return null;
+	}
+	
 	public Object executePatch(String op, String path, Entity updateMessage) {
-		
+		if(root == null || path == null) {
+			return null;
+		}
+		if(root instanceof Entity) {
+			// Check for Element
+			Entity element = getElement(path, (Entity) root, (Entity) root);
+			if(element != null) {
+				String key=path;
+				int pos = path.lastIndexOf("/");
+				if(pos>0) {
+					key = path.substring(pos+1);
+				}
+				if(TYPE_OP_ADD.equalsIgnoreCase(op)) {
+					element.put(key, updateMessage.getValue("value"));
+					return element;
+				}
+//				public static final String  = "add";
+//				public static final String TYPE_OP_REMOVE = "remove";
+//				public static final String TYPE_OP_REPLACE = "replace";
+//				public static final String TYPE_OP_COPY = "copy";
+//				public static final String TYPE_OP_MOVE = "move";
+//				public static final String TYPE_OP_TEST = "test";
+
+			}
+			
+		}
 //		Add
 //		{ "op": "add", "path": "/biscuits/1", "value": { "name": "Ginger Nut" } }
 //		Adds a value to an object or inserts it into an array. In the case of an array, the value is inserted before the given index. The - character can be used instead of an index to insert at the end of an array.
