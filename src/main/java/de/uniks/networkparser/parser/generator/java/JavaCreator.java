@@ -41,13 +41,13 @@ public class JavaCreator extends BasicGenerator {
 				"{{#import " + SendableEntityCreator.class.getName() + "}}" +
 				"{{#import {{fullName}}}}",
 				"{{visibility}} class {{name}}Creator implements SendableEntityCreator",
-				"{","",
-
+				"{",
+				"",
 				"   private final String[] properties = new String[]",
 				"   {",
 				"{{#foreach child}}",
 					"{{#if {{item.className}}==" + Attribute.class.getName() + " ##}}",
-					"      {{name}}.PROPERTY_{{item.NAME}},",
+					"      {{#debug}}{{name}}.PROPERTY_{{item.NAME}},",
 					"{{#endif}}",
 					"{{#if {{item.className}}==" + Association.class.getName() + "}}",
 						"{{#if {{item.other.isImplements}}==false}}",
@@ -98,7 +98,7 @@ public class JavaCreator extends BasicGenerator {
 
 				"{{#foreach child}}",
 					"{{#if {{item.className}}==" + Attribute.class.getName() + "}}",
-					"      if ({{name}}.PROPERTY_{{item.NAME}}.equalsIgnoreCase(attrName))",
+					"      if ({{name}}.PROPERTY_{{#debug}}{{item.NAME}}.equalsIgnoreCase(attrName))",
 					"      {",
 					"         return element.{{#if {{item.type}}==boolean}}is{{#else}}get{{#endif}}{{item.Name}}();",
 					"      }","",

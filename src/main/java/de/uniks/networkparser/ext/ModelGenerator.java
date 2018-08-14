@@ -189,6 +189,7 @@ public class ModelGenerator extends BasicGenerator {
 		for (BasicGenerator template : templates) {
 			template.withOwner(this);
 		}
+
 		FeatureProperty codeStyle = getFeature(Feature.CODESTYLE);
 		ClazzSet clazzes = model.getClazzes();
 
