@@ -127,7 +127,6 @@ public class Story extends StoryElement implements Comparable<Story>{
 	/**
 	 * Add JavaCode to Story board
 	 *
-	 * @param className ClassName of SourceCOde
 	 * @param position Position of Code StartPosition, Endposition
 	 * 			if positon == null Full Method
 	 * 			StartPosition == -1 // Start at Method
