@@ -39,7 +39,7 @@ public class UpdateListener implements MapListener, ObjectCondition {
 	private IdMap map;
 	private Tokener factory;
 	/** The suspend id list. */
-	private SimpleList<UpdateAccumulate> suspendIdList;
+	private SimpleList<UpdateCondition> suspendIdList;
 
 	/** The update listener. */
 	protected ObjectCondition condition;
@@ -63,20 +63,20 @@ public class UpdateListener implements MapListener, ObjectCondition {
 	 *
 	 * @return success for suspend Notification
 	 */
-	public boolean suspendNotification(UpdateAccumulate... accumulates) {
-		this.suspendIdList = new SimpleList<UpdateAccumulate>();
+	public boolean suspendNotification(UpdateCondition... accumulates) {
+		this.suspendIdList = new SimpleList<UpdateCondition>();
 		if(accumulates == null) {
-			this.suspendIdList.add(new UpdateAccumulate(this.map).withTokener(this.factory));
+			this.suspendIdList.add(UpdateCondition.createAcumulateCondition(this.factory));
 		}else {
-			for(UpdateAccumulate item : accumulates) {
+			for(UpdateCondition item : accumulates) {
 				this.suspendIdList.add(item);
 			}
 		}
 		return true;
 	}
 
-	public SimpleList<UpdateAccumulate> resetNotification() {
-		SimpleList<UpdateAccumulate> list = this.suspendIdList;
+	public SimpleList<UpdateCondition> resetNotification() {
+		SimpleList<UpdateCondition> list = this.suspendIdList;
 		this.suspendIdList = null;
 		return list;
 	}
@@ -116,7 +116,7 @@ public class UpdateListener implements MapListener, ObjectCondition {
 
 		if (this.suspendIdList != null) {
 			boolean notifiy = true;
-			for(UpdateAccumulate listener : this.suspendIdList) {
+			for(UpdateCondition listener : this.suspendIdList) {
 				if( listener.changeAttribute(this, source,creatorClass, property, oldValue, newValue) ) {
 					notifiy = false;
 				}
@@ -248,8 +248,15 @@ public class UpdateListener implements MapListener, ObjectCondition {
 		}
 
 		String id = updateMessage.getString(IdMap.ID);
+		// Check for JSONPatch
+		String op = updateMessage.getString("OP");
+		String path = updateMessage.getString("PATH");
+		if(op != null && path != null) {
+			return this.executePatch(op,path, updateMessage);
+		}
 		Entity remove = (Entity) updateMessage.getValue(SendableEntityCreator.REMOVE);
 		Entity update = (Entity) updateMessage.getValue(SendableEntityCreator.UPDATE);
+
 //		Object prio = updateMessage.getValue(Filter.PRIO);
 		Object masterObj = this.map.getObject(id);
 		if (masterObj == null) {
@@ -328,6 +335,37 @@ public class UpdateListener implements MapListener, ObjectCondition {
 			}
 			return masterObj;
 		}
+		return null;
+	}
+	
+	public Object executePatch(String op, String path, Entity updateMessage) {
+		
+//		Add
+//		{ "op": "add", "path": "/biscuits/1", "value": { "name": "Ginger Nut" } }
+//		Adds a value to an object or inserts it into an array. In the case of an array, the value is inserted before the given index. The - character can be used instead of an index to insert at the end of an array.
+//
+//		Remove
+//		{ "op": "remove", "path": "/biscuits" }
+//		Removes a value from an object or array.
+//
+//		{ "op": "remove", "path": "/biscuits/0" }
+//		Removes the first element of the array at biscuits (or just removes the “0” key if biscuits is an object)
+//
+//		Replace
+//		{ "op": "replace", "path": "/biscuits/0/name", "value": "Chocolate Digestive" }
+//		Replaces a value. Equivalent to a “remove” followed by an “add”.
+//
+//		Copy
+//		{ "op": "copy", "from": "/biscuits/0", "path": "/best_biscuit" }
+//		Copies a value from one location to another within the JSON document. Both from and path are JSON Pointers.
+//
+//		Move
+//		{ "op": "move", "from": "/biscuits", "path": "/cookies" }
+//		Moves a value from one location to the other. Both from and path are JSON Pointers.
+//
+//		Test
+//		{ "op": "test", "path": "/best_biscuit/name", "value": "Choco Leibniz" }
+//		Tests that the specified value is set in the document. If the test fails, then the patch as a whole should not apply.
 		return null;
 	}
 

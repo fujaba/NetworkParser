@@ -7,7 +7,7 @@ import de.uniks.networkparser.MapEntity;
 import de.uniks.networkparser.NetworkParserLog;
 import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.Tokener;
-import de.uniks.networkparser.UpdateAccumulate;
+import de.uniks.networkparser.UpdateCondition;
 import de.uniks.networkparser.converter.ByteConverter;
 import de.uniks.networkparser.converter.ByteConverterString;
 import de.uniks.networkparser.ext.ErrorHandler;
@@ -918,12 +918,12 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 		this.proxies.clear();
 	}
 
-	public boolean suspendNotification(UpdateAccumulate... accumulates) {
+	public boolean suspendNotification(UpdateCondition... accumulates) {
 		MapListener mapListener = getMap().getMapListener();
 		return mapListener.suspendNotification(accumulates);
 	}
 
-	public SimpleList<UpdateAccumulate> resetNotification() {
+	public SimpleList<UpdateCondition> resetNotification() {
 		MapListener mapListener = getMap().getMapListener();
 		return mapListener.resetNotification();
 	}

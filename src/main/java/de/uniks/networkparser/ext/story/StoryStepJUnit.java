@@ -56,6 +56,7 @@ public class StoryStepJUnit implements ObjectCondition {
 	private SimpleList<FeatureProperty> groups=new SimpleList<FeatureProperty>();
 	int tabwidth = 4;
 	private JacocoColumn column;
+	
 	public StoryStepJUnit() {
 		this.column = JacocoColumn.create();
 		this.addColumn("BBT", column);

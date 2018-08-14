@@ -237,7 +237,7 @@ public class JarValidator {
 		}
 	}
 	
-	public boolean analyseReport() {
+	public int analyseReport() {
 		File file = new File(rootPath+this.file);
 		if(file.exists()) {
 			CharacterBuffer content = FileBuffer.readFile(file);
@@ -254,13 +254,14 @@ public class JarValidator {
 				System.out.println("Found CC: "+cc);
 				int no = Integer.valueOf(cc);
 				if(no >= this.minCoverage) {
-					return true;
+					return 0;
 				}
+				return no;
 			}
 		} else {
 			System.out.println("File not found:" +this.file);
 		}
-		return false;
+		return -1;
 	}
 	
 	public int searchFiles(PrintStream output) {

@@ -139,7 +139,7 @@ public class ModelTest implements ObjectCondition {
 		IdMap map=new IdMap();
 		map.with(new UniversityCreator());
 		map.with(new StudentCreator());
-		map.withListener(new UpdateCondition().withAtomarListener(this));
+		map.withListener(UpdateCondition.createAtomarCondition(this));
 		events.clear();
 		map.toJsonObject(uni);
 		uni.withStudents(new Student().withFirstName("Stefan"));

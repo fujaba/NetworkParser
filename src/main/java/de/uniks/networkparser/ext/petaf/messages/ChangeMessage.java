@@ -26,7 +26,7 @@ THE SOFTWARE.
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.SimpleEvent;
-import de.uniks.networkparser.UpdateAccumulate;
+import de.uniks.networkparser.UpdateCondition;
 import de.uniks.networkparser.ext.petaf.ReceivingTimerTask;
 import de.uniks.networkparser.ext.petaf.Space;
 import de.uniks.networkparser.ext.petaf.proxy.NodeProxyModel;
@@ -113,8 +113,8 @@ public class ChangeMessage extends ReceivingTimerTask {
 			Object currentValue = creator.getValue(element, this.property);
 			if((currentValue == null && this.oldValue == null) ||
 					(currentValue != null && currentValue.equals(this.oldValue))) {
-				UpdateAccumulate changeMessage=new UpdateAccumulate();
-				changeMessage.withTarget(element, creator, this.property);
+				UpdateCondition changeMessage = UpdateCondition.createUpdateCondition();
+				changeMessage.withAcumulateTarget(element, creator, this.property);
 				space.suspendNotification(changeMessage);
 				creator.setValue(element, property, this.newValue, SendableEntityCreator.UPDATE);
 				space.resetNotification();
