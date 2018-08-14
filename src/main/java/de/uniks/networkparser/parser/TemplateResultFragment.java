@@ -62,6 +62,7 @@ public class TemplateResultFragment implements Comparable<TemplateResultFragment
 	private boolean useImport;
 	private SendableEntityCreator parent;
 	private SimpleList<Object> stack;
+	private SimpleList<Object> notify;
 	private SimpleList<Integer> pos;
 
 	private int key = -1;
@@ -429,8 +430,22 @@ public class TemplateResultFragment implements Comparable<TemplateResultFragment
 		if(label == null) {
 			return null;
 		}
-		if(ParserCondition.NOTIFY.equalsIgnoreCase(label.toString()) || 
-				PROPERTY_ITEM.equalsIgnoreCase(label.toString())) {
+		if(ParserCondition.NOTIFY.equalsIgnoreCase(label.toString())) {
+			if(object == null) {
+				if(this.notify != null) {
+					this.notify.remove(this.stack.size() - 1);
+					return null;
+				}
+			} else {
+				if(this.notify == null) {
+					this.notify = new SimpleList<Object>();
+				}
+				if(this.notify.add(object)) {
+					return object.toString();
+				}
+			}
+		}
+		if(PROPERTY_ITEM.equalsIgnoreCase(label.toString())) {
 			if(object == null) {
 				if(this.stack != null) {
 					this.stack.remove(this.stack.size() - 1);

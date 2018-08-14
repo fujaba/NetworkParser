@@ -61,7 +61,7 @@ public class JsonTokener extends Tokener {
 		if (c != JsonArray.START) {
 			if (isError(this, "parseToEntity", NetworkParserLog.ERROR_TYP_PARSING, entityList)) {
 				throw new RuntimeException(
-						"A JSONArray text must start with '['");
+						"A JSONArray text must start with '['. It is "+c +"(" + buffer.getString(20)+")");
 			}
 			return entityList;
 		}

@@ -123,6 +123,35 @@ public class Story extends StoryElement implements Comparable<Story>{
 		addSourceCodeStep(step);
 		return step;
 	}
+	
+	/**
+	 * Add JavaCode to Story board
+	 *
+	 * @param className ClassName of SourceCOde
+	 * @param position Position of Code StartPosition, Endposition
+	 * 			if positon == null Full Method
+	 * 			StartPosition == -1 // Start at Method
+	 * 			EndPosition == -1 End of Method
+	 * 	 		EndPosition == 0 End of File
+	 * @return the SourceCodeStep
+	 */
+	public StoryStepSourceCode addSourceCode(int... position) {
+		StoryStepSourceCode step = new StoryStepSourceCode();
+		if(position != null) {
+			if(position.length>0) {
+				int start = position[0];
+				step.withStart(start);
+			}
+			if(position.length>1) {
+				int start = position[1];
+				step.withEnd(start);
+			}
+		}
+		step.withCode(this.getClass(), 1);
+		addSourceCodeStep(step);
+		return step;
+	}
+	
 	public StoryStepSourceCode addSourceCode(String rootDir, Class<?> className, String methodSignature) {
 		StoryStepSourceCode step = new StoryStepSourceCode();
 		step.withMethodSignature(methodSignature);
@@ -177,9 +206,21 @@ public class Story extends StoryElement implements Comparable<Story>{
 	public boolean dumpHTML() {
 		return writeToFile(this.outputFile);
 	}
+	public boolean dumpHTML(String fileName) {
+		return writeToFile(fileName);
+	}
+
 	protected boolean writeToFile(String fileName) {
 		if (fileName == null || fileName.length() < 1) {
-			return false;
+			if(steps.size()<1) {
+				return false;
+			}
+			// get FileName from Stack
+			StoryStepSourceCode step = new StoryStepSourceCode().withCode(this.getClass(), 2);
+			fileName = step.getFileName();
+			if(fileName == null || fileName.length()<1) {
+				return false;
+			}
 		}
 		HTMLEntity output = new HTMLEntity();
 		addScript(path, "diagramstyle.css", output);

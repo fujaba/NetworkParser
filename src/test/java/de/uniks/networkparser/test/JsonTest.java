@@ -20,7 +20,7 @@ import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.TextDiff;
-import de.uniks.networkparser.UpdateAccumulate;
+import de.uniks.networkparser.UpdateCondition;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.converter.EntityStringConverter;
 import de.uniks.networkparser.ext.PropertyChangeEventWrapper;
@@ -918,7 +918,7 @@ public class JsonTest {
 		map.withCreator(new PersonCreator());
 		map.withTimeStamp(1);
 		map.toJsonObject(person);
-		UpdateAccumulate updateAccumulate = new UpdateAccumulate();
+		UpdateCondition updateAccumulate = UpdateCondition.createUpdateCondition();
 
 		map.getMapListener().suspendNotification(updateAccumulate);
 		map.withListener(new ObjectCondition() {

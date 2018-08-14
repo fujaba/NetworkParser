@@ -378,7 +378,7 @@ public class ReflectionLoader {
 						con.setAccessible(true);
 //						continue;
 					}
-					Object[] values = ReflectionBlackBoxTester.getParameters(con.getParameterTypes(), ReflectionBlackBoxTester.NULLVALUE);
+					Object[] values = ReflectionBlackBoxTester.getParameters(con, con.getParameterTypes(), ReflectionBlackBoxTester.TYPE_NULLVALUE, null);
 					Object newInstance = con.newInstance(values);
 					if(newInstance != null) {
 						return newInstance;

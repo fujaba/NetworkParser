@@ -203,8 +203,9 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 				System.out.println("CHECK CC = "+validator.isValidate + " ("+validator.getMinCoverage()+")");
 				if(validator.isValidate) {
 					validator.validate();
-					if(validator.analyseReport() == false) {
-						System.err.println("CodeCoverage not enough");
+					int result = validator.analyseReport();
+					if(result != 0) {
+						System.err.println("CodeCoverage not enough ("+ result+")");
 						exit = -1;
 					}
 				}
