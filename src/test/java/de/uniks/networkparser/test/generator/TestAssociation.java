@@ -6,11 +6,11 @@ import static de.uniks.networkparser.graph.DataType.STRING;
 import org.junit.Test;
 
 import de.uniks.networkparser.ext.ClassModel;
+import de.uniks.networkparser.graph.AssociationSet;
 import de.uniks.networkparser.graph.Cardinality;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.DataType;
 import de.uniks.networkparser.graph.DataTypeSet;
-import de.uniks.networkparser.graph.util.AssociationSet;
 
 public class TestAssociation {
 

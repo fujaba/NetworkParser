@@ -24,10 +24,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 import de.uniks.networkparser.buffer.CharacterBuffer;
-import de.uniks.networkparser.graph.util.AssociationSet;
-import de.uniks.networkparser.graph.util.AttributeSet;
-import de.uniks.networkparser.graph.util.ClazzSet;
-import de.uniks.networkparser.graph.util.MethodSet;
 import de.uniks.networkparser.interfaces.Condition;
 import de.uniks.networkparser.list.SimpleSet;
 

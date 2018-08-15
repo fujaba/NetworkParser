@@ -25,11 +25,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 import de.uniks.networkparser.buffer.CharacterBuffer;
-import de.uniks.networkparser.ext.ClassModel;
 import de.uniks.networkparser.graph.Association;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.GraphEntity;
 import de.uniks.networkparser.graph.GraphMember;
+import de.uniks.networkparser.graph.GraphModel;
 import de.uniks.networkparser.graph.GraphSimpleSet;
 import de.uniks.networkparser.graph.GraphUtil;
 import de.uniks.networkparser.graph.ModifyEntry;
@@ -38,7 +38,6 @@ import de.uniks.networkparser.interfaces.LocalisationInterface;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.list.SimpleSet;
 import de.uniks.networkparser.list.SortedSet;
-import de.uniks.networkparser.parser.generator.BasicGenerator;
 
 public class TemplateResultFile extends SortedSet<TemplateResultFragment> implements SendableEntityCreator, LocalisationInterface {
 	public static final String PROPERTY_PARENT="parent";
@@ -336,7 +335,7 @@ public class TemplateResultFile extends SortedSet<TemplateResultFragment> implem
 	public static TemplateResultFile createJava(Clazz clazz) {
 		TemplateResultFile templateResult = new TemplateResultFile(clazz, true);
 		templateResult.withExtension(BasicGenerator.TYPE_JAVA);
-		templateResult.withPath((String) clazz.getClassModel().getValue(ClassModel.PROPERTY_PATH));
+		templateResult.withPath((String) clazz.getClassModel().getValue(GraphModel.PROPERTY_PATH));
 		return templateResult;
 	}
 }

@@ -64,6 +64,10 @@ public abstract class Buffer implements BufferItem {
 	}
 
 	public abstract char getChar();
+	
+	public CharacterBuffer readResource(String file) {
+		return new CharacterBuffer();
+	}
 
 	public long getLong() {
 		byte[] bytes = array(Long.SIZE / Byte.SIZE, false);

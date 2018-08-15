@@ -2,7 +2,6 @@ package de.uniks.networkparser.graph;
 
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.buffer.CharacterBuffer;
-import de.uniks.networkparser.graph.util.ModifierSet;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SimpleSet;
 

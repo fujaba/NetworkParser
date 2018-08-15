@@ -7,8 +7,8 @@ import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.DataType;
 import de.uniks.networkparser.graph.GraphList;
 import de.uniks.networkparser.graph.Method;
+import de.uniks.networkparser.graph.MethodSet;
 import de.uniks.networkparser.graph.Modifier;
-import de.uniks.networkparser.graph.util.MethodSet;
 
 public class GetMethodsTest {
 
@@ -215,5 +215,4 @@ public class GetMethodsTest {
 		MethodSet pupilMethods = pupil.getMethods();
 		Assert.assertEquals(0, pupilMethods.size());
 	}
-
 }

@@ -39,9 +39,9 @@ import java.util.zip.ZipOutputStream;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.list.SimpleKeyValueList;
-import de.uniks.networkparser.parser.excel.ExcelParser;
-import de.uniks.networkparser.parser.excel.ExcelSheet;
-import de.uniks.networkparser.parser.excel.ExcelWorkBook;
+import de.uniks.networkparser.parser.ExcelParser;
+import de.uniks.networkparser.parser.ExcelSheet;
+import de.uniks.networkparser.parser.ExcelWorkBook;
 
 public class ExcelBuffer {
 	public ExcelSheet parse(File file) {

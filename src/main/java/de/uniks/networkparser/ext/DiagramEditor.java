@@ -123,6 +123,10 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 	}
 
 	public static void main(String[] args) {
+		String classpathStr = System.getProperty("java.class.path");
+		System.out.print(classpathStr);
+		classpathStr = System.getProperty("java.class.SOURCEPATH");
+		System.out.print(classpathStr);
 		if(args != null && args.length>0 && args[0] != null) {
 			if("GIT".equalsIgnoreCase(args[0])) {
 				GitRevision revision = new GitRevision();
@@ -276,11 +280,11 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 				String response = html.toString(2);
 				writeHTTPResponse(msg, response, false);
 			} else if(path.equalsIgnoreCase("/diagram.js")) {
-				writeHTTPResponse(msg, FileBuffer.readResource("graph/diagram.js").toString(), false);
+				writeHTTPResponse(msg, new FileBuffer().readResource("graph/diagram.js").toString(), false);
 			} else if(path.equalsIgnoreCase("/diagramstyle.css")) {
-				writeHTTPResponse(msg, FileBuffer.readResource("graph/diagramstyle.css").toString(), false);
+				writeHTTPResponse(msg, new FileBuffer().readResource("graph/diagramstyle.css").toString(), false);
 			} else if(path.equalsIgnoreCase("/jspdf.min.js")) {
-				writeHTTPResponse(msg, FileBuffer.readResource("graph/jspdf.min.js").toString(), false);
+				writeHTTPResponse(msg, new FileBuffer().readResource("graph/jspdf.min.js").toString(), false);
 			}else {
 				writeHTTPResponse(msg, FILE404, true);
 			}
@@ -520,18 +524,19 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 			return result;
 		}
 		HTMLEntity html = new HTMLEntity();
+		FileBuffer resourceReader = new FileBuffer();
 		boolean loadFile = false;
 		//html.createScript("classEditor = new ClassEditor(\"board\");", html.getBody());
 		if(TYPE_EDITOR.equalsIgnoreCase(type)) {
 			loadFile = true;
-			html.withScript(FileBuffer.readResource("graph/diagram.js").toString(), html.getHeader());
+			html.withScript(resourceReader.readResource("graph/diagram.js").toString(), html.getHeader());
 			html.withHeader("dagre.min.js");
 			html.withHeader("jspdf.min.js");
 			html.withHeader("diagramstyle.css");
-			FileBuffer.writeFile("dagre.min.js", FileBuffer.readResource("graph/dagre.min.js"), FileBuffer.NONE);
-			FileBuffer.writeFile("diagram.js",FileBuffer.readResource("graph/diagram.js"), FileBuffer.NONE);
-			FileBuffer.writeFile("jspdf.min.js",FileBuffer.readResource("graph/jspdf.min.js"), FileBuffer.NONE);
-			FileBuffer.writeFile("diagramstyle.css",FileBuffer.readResource("graph/diagramstyle.css"), FileBuffer.NONE);
+			FileBuffer.writeFile("dagre.min.js", resourceReader.readResource("graph/dagre.min.js"), FileBuffer.NONE);
+			FileBuffer.writeFile("diagram.js",resourceReader.readResource("graph/diagram.js"), FileBuffer.NONE);
+			FileBuffer.writeFile("jspdf.min.js",resourceReader.readResource("graph/jspdf.min.js"), FileBuffer.NONE);
+			FileBuffer.writeFile("diagramstyle.css",resourceReader.readResource("graph/diagramstyle.css"), FileBuffer.NONE);
 		}
 		if(TYPE_EXPORT.equalsIgnoreCase(type)) {
 			loadFile = true;
@@ -539,10 +544,10 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 			html.withHeader("diagram.js");
 			html.withHeader("jspdf.min.js");
 			html.withHeader("diagramstyle.css");
-			FileBuffer.writeFile("dagre.min.js", FileBuffer.readResource("graph/dagre.min.js"), FileBuffer.NONE);
-			FileBuffer.writeFile("diagram.js",FileBuffer.readResource("graph/diagram.js"), FileBuffer.NONE);
-			FileBuffer.writeFile("jspdf.min.js",FileBuffer.readResource("graph/jspdf.min.js"), FileBuffer.NONE);
-			FileBuffer.writeFile("diagramstyle.css",FileBuffer.readResource("graph/diagramstyle.css"), FileBuffer.NONE);
+			FileBuffer.writeFile("dagre.min.js", resourceReader.readResource("graph/dagre.min.js"), FileBuffer.NONE);
+			FileBuffer.writeFile("diagram.js",resourceReader.readResource("graph/diagram.js"), FileBuffer.NONE);
+			FileBuffer.writeFile("jspdf.min.js",resourceReader.readResource("graph/jspdf.min.js"), FileBuffer.NONE);
+			FileBuffer.writeFile("diagramstyle.css",resourceReader.readResource("graph/diagramstyle.css"), FileBuffer.NONE);
 		} 
 		if(TYPE_EXPORTALL.equalsIgnoreCase(type)) {
 			// Add external Files

@@ -9,9 +9,9 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import de.uniks.networkparser.ext.io.ExcelBuffer;
-import de.uniks.networkparser.parser.excel.ExcelRow;
-import de.uniks.networkparser.parser.excel.ExcelSheet;
-import de.uniks.networkparser.parser.excel.ExcelWorkBook;
+import de.uniks.networkparser.parser.ExcelRow;
+import de.uniks.networkparser.parser.ExcelSheet;
+import de.uniks.networkparser.parser.ExcelWorkBook;
 
 public class ExcelTest {
 	@Test

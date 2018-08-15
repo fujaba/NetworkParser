@@ -176,6 +176,19 @@ public class StoryStepJUnit implements ObjectCondition {
 		FileBuffer.writeFile(this.path+BLACKBOXFILE, event.toString()+BaseItem.CRLF, FileBuffer.APPEND);
 		return true;
 	}
+	
+	public boolean recompile() {
+		if(this.packageName == null) {
+			return false;
+		}
+		SimpleController controller = SimpleController.create();
+		String[] excludes = null;
+		if(this.testClasses != null) {
+			excludes = this.testClasses.toArray(new String[testClasses.size()]);
+		}
+		controller.withPackageName(this.packageName, excludes);
+		return controller.start()>=0;
+	}
 
 	@Override
 	public boolean update(Object value) {
@@ -298,8 +311,16 @@ public class StoryStepJUnit implements ObjectCondition {
 	 * @param packageName the packageName to set
 	 * @return ThisComponent
 	 */
-	public StoryStepJUnit withPackageName(String packageName) {
+	public StoryStepJUnit withPackageName(String packageName, String... excludes) {
 		this.packageName = packageName;
+		if(this.testClasses == null) {
+			this.testClasses = new SimpleSet<String>();
+		}
+		if(excludes != null) {
+			for(String item : excludes) {
+				this.testClasses.with(item);
+			}
+		}
 		return this;
 	}
 

@@ -219,7 +219,7 @@ public class FileBuffer extends Buffer {
 		return writeFile(fileName, data, OVERRIDE);
 	}
 
-	public static final CharacterBuffer readResource(String file) {
+	public CharacterBuffer readResource(String file) {
 		InputStream is = IdMap.class.getResourceAsStream(file);
 		CharacterBuffer sb = new CharacterBuffer();
 		if (is != null) {

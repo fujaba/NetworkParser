@@ -27,13 +27,13 @@ import de.uniks.networkparser.MapEntity;
 import de.uniks.networkparser.TextEntity;
 import de.uniks.networkparser.Tokener;
 import de.uniks.networkparser.graph.Association;
+import de.uniks.networkparser.graph.AssociationSet;
 import de.uniks.networkparser.graph.Attribute;
+import de.uniks.networkparser.graph.AttributeSet;
 import de.uniks.networkparser.graph.Cardinality;
 import de.uniks.networkparser.graph.Clazz;
+import de.uniks.networkparser.graph.ClazzSet;
 import de.uniks.networkparser.graph.GraphList;
-import de.uniks.networkparser.graph.util.AssociationSet;
-import de.uniks.networkparser.graph.util.AttributeSet;
-import de.uniks.networkparser.graph.util.ClazzSet;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.json.JsonObject;
 

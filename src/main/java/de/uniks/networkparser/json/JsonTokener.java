@@ -44,7 +44,6 @@ import de.uniks.networkparser.interfaces.Grammar;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorWrapper;
-import de.uniks.networkparser.json.util.JsonObjectCreator;
 import de.uniks.networkparser.list.ObjectMapEntry;
 import de.uniks.networkparser.list.SimpleIteratorSet;
 import de.uniks.networkparser.list.SimpleKeyValueList;

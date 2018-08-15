@@ -72,6 +72,7 @@ public class SimpleController implements ObjectCondition{
 	private String javaAgent;
 	private String mainClass;
 	private String outputParameter;
+	private SimpleList<String> compilePath;
 
 	public SimpleController(Object primitiveStage) {
 		this(primitiveStage, true);
@@ -201,7 +202,48 @@ public class SimpleController implements ObjectCondition{
 				}
 			}
 		}
-		if(this.javaAgent != null || debugPort != null) {
+		// IF JAVACOMPILE
+		if(compilePath != null) {
+			ArrayList<String> items = new ArrayList<String>();
+			if (Os.isMac()) {
+				items.add(System.getProperty("java.home").replace("\\", "/") + "/bin/javac");
+			} else {
+				String item = System.getProperty("java.home").replace("\\", "/") + "/../bin/javac.exe";
+				if(new File(item).exists()) {
+					items.add("\""+item+"\"");
+				} else {
+					items.add("\"" + System.getProperty("java.home").replace("\\", "/") + "/bin/javac\"");
+				}
+			}
+//			CharacterBuffer sb=new CharacterBuffer();
+			for(String item : compilePath) {
+				items.add(item+"\\*.java");
+//				sb.with();
+			}
+//			String param = sb.trim().toString();
+//			items.add(param);
+			items.add("-d");
+			// ReflectionLoader.PROCESSBUILDERREDIRECT
+			if(this.outputParameter != null) {
+				items.add(this.outputParameter);
+			}else {
+				items.add("out");
+				new File("out").mkdir();
+			}
+			
+			try {
+				ProcessBuilder processBuilder = new ProcessBuilder(items);
+				ReflectionLoader.call(processBuilder, "redirectError", File.class, new File("compile_error.txt"));
+				ReflectionLoader.call(processBuilder, "redirectOutput", File.class, new File("compile_stdout.txt"));
+				
+				Process start = processBuilder.start();
+				return start;
+			} catch (IOException e) {
+				errorHandler.saveException(e);
+			}
+			return null;
+		}
+		if(this.javaAgent != null || debugPort != null ) {
 			ArrayList<String> items = new ArrayList<String>();
 			if (Os.isMac()) {
 				items.add(System.getProperty("java.home").replace("\\", "/") + "/bin/java");
@@ -240,7 +282,6 @@ public class SimpleController implements ObjectCondition{
 					items.add("path="+path);
 				}
 			}
-
 			if(Os.isReflectionTest()) {
 				return null;
 			}
@@ -863,5 +904,51 @@ public class SimpleController implements ObjectCondition{
 			result.with(stream.toString());
 		}
 		return result;
+	}
+
+	public void withPackageName(String packageName, String... excludes) {
+		if(compilePath == null && packageName != null) {
+			if((packageName.endsWith("/") || packageName.endsWith("\\"))==false) {
+				packageName+="/";
+			}
+			compilePath = new SimpleList<String>();
+			String root = new File(".").getAbsolutePath();
+			
+			File file = new File(packageName);
+			visitPath(file, root, excludes);
+		}
+	}
+	
+	public void visitPath(File file, String root, String... excludes) {
+		if(file == null || root == null) {
+			return;
+		}
+		boolean add=false;
+		for(File child : file.listFiles()) {
+			if(child.isDirectory()) {
+				visitPath(child, root, excludes);
+				continue;
+			}
+			if(child.getName().toLowerCase().endsWith(".java")) {
+				add = true;
+			}
+		}
+		if(add) {
+			String path = file.getPath();
+			if(path.startsWith(root)) {
+				path = path.substring(root.length()+1);
+			}
+			if(excludes != null) {
+				for(String item : excludes) {
+					if(path.startsWith(item)) {
+						add = false;
+						break;
+					}
+				}
+			}
+			if(add) {
+				compilePath.add(path);
+			}
+		}
 	}
 }

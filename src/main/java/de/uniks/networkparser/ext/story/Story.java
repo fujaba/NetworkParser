@@ -244,7 +244,7 @@ public class Story extends StoryElement implements Comparable<Story>{
 		if(path == null || name == null) {
 			return;
 		}
-		FileBuffer.writeFile(path + name, FileBuffer.readResource("graph/"+name), FileBuffer.NONE);
+		FileBuffer.writeFile(path + name, new FileBuffer().readResource("graph/"+name), FileBuffer.NONE);
 		entry.withHeader(name);
 	}
 	

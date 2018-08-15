@@ -31,8 +31,7 @@ import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.NetworkParserLog;
 import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.SimpleObject;
-import de.uniks.networkparser.ext.io.FileBuffer;
-import de.uniks.networkparser.ext.javafx.GUIEvent;
+import de.uniks.networkparser.buffer.Buffer;
 import de.uniks.networkparser.gui.controls.Control;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.ObjectCondition;
@@ -62,6 +61,8 @@ public abstract class JavaBridge implements ObjectCondition {
 	private HTMLEntity entity;
 
 	private XMLEntity debug;
+	
+	protected Buffer resourceHandler;
 
 	public JavaBridge() {
 		this(null, null, CONTENT_TYPE_INCLUDE);
@@ -119,11 +120,11 @@ public abstract class JavaBridge implements ObjectCondition {
 			entity.withHeader("style.css");
 		}
 		else {
-			
-			entity.withScript(FileBuffer.readResource("graph/diagram.js"), entity.getHeader());
-			entity.withHeaderStyle(FileBuffer.readResource("graph/material.css"));
-			entity.withHeaderStyle(FileBuffer.readResource("graph/style.css"));
-
+			if(this.resourceHandler != null) {
+				entity.withScript(this.resourceHandler.readResource("graph/diagram.js"), entity.getHeader());
+				entity.withHeaderStyle(this.resourceHandler.readResource("graph/material.css"));
+				entity.withHeaderStyle(this.resourceHandler.readResource("graph/style.css"));
+			}
 		}
 		return entity;
 	}
@@ -142,7 +143,7 @@ public abstract class JavaBridge implements ObjectCondition {
 		if (isApplyingChangeMSG) {
 			return false;
 		}
-		if(event instanceof GUIEvent) {
+		if(event instanceof SimpleEvent) {
 			return false;
 		}
 		SimpleEvent simpleEvent = (SimpleEvent) event;

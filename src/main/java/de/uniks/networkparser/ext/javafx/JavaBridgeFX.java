@@ -26,6 +26,7 @@ THE SOFTWARE.
 import java.util.List;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.ext.generic.ReflectionLoader;
+import de.uniks.networkparser.ext.io.FileBuffer;
 import de.uniks.networkparser.gui.EventTypes;
 import de.uniks.networkparser.gui.JavaBridge;
 import de.uniks.networkparser.gui.JavaViewAdapter;
@@ -46,6 +47,7 @@ public class JavaBridgeFX extends JavaBridge {
 
 	public JavaBridgeFX(IdMap map, JavaViewAdapter webView, String type) {
 		super(map, webView, type);
+		this.resourceHandler = new FileBuffer();
 	}
 
 	@Override

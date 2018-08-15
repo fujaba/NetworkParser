@@ -83,4 +83,10 @@ public class StoryTest {
 		story.dumpHTML();
 	}
 
+	@Test
+	public void testRecompile() {
+		StoryStepJUnit storyStepJUnit = new StoryStepJUnit();
+//		storyStepJUnit.withPackageName("src/main/java", "src\\main\\java\\de\\uniks\\networkparser\\ext");
+//		storyStepJUnit.recompile();
+	}
 }

@@ -12,7 +12,7 @@ public class FXMLConverter {
 
 	@Test
 	public void convert() {
-		CharacterBuffer fxml = FileBuffer.readResource("test/javafx/GroupAccount.fxml");
+		CharacterBuffer fxml = new FileBuffer().readResource("test/javafx/GroupAccount.fxml");
 		GUIConverter converter = new GUIConverter();
 		Control convert = converter.convert(fxml);
 		

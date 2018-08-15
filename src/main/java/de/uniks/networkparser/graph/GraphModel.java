@@ -3,8 +3,6 @@ package de.uniks.networkparser.graph;
 import java.util.Iterator;
 
 import de.uniks.networkparser.EntityUtil;
-import de.uniks.networkparser.graph.util.AssociationSet;
-import de.uniks.networkparser.graph.util.ClazzSet;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Condition;
 import de.uniks.networkparser.interfaces.Converter;

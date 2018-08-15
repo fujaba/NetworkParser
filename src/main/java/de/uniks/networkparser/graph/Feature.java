@@ -25,7 +25,7 @@ THE SOFTWARE.
 */
 import java.util.HashSet;
 import java.util.LinkedHashSet;
-import de.uniks.networkparser.graph.util.FeatureSet;
+
 import de.uniks.networkparser.list.SimpleSet;
 
 public enum Feature {

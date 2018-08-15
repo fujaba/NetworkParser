@@ -7,9 +7,9 @@
     <script language="Javascript">hljs.initHighlightingOnLoad();
 hljs.initLineNumbersOnLoad();</script>
     <title>testStory</title>
-    <script src="file:/C:/Arbeit/workspace_neu/NetworkParser/build/classes/java/main/de/uniks/networkparser/graph/graph.js"></script>
-    <script src="file:/C:/Arbeit/workspace_neu/NetworkParser/build/classes/java/main/de/uniks/networkparser/graph/dagre.min.js"></script>
-    <script src="file:/C:/Arbeit/workspace_neu/NetworkParser/build/classes/java/main/de/uniks/networkparser/graph/drawer.js"></script>
+    <script src="file:/C:/Arbeit/SE1/NetworkParser/bin/main/de/uniks/networkparser/graph/graph.js"></script>
+    <script src="file:/C:/Arbeit/SE1/NetworkParser/bin/main/de/uniks/networkparser/graph/dagre.min.js"></script>
+    <script src="file:/C:/Arbeit/SE1/NetworkParser/bin/main/de/uniks/networkparser/graph/drawer.js"></script>
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
   </head>
   <body>
@@ -129,6 +129,12 @@ public class StoryTest {
 
 		book.dumpIndexHTML();
 	}
+	@Test
+	public void testStorySimple() {
+		Story story = new Story();
+		story.addText("Sample");
+		story.dumpHTML();
+	}
 
 }</code>
       <div class="title">Code: <a href="../src/test/java/de/uniks/networkparser/test/StoryTest.java">Story</a></div>
@@ -143,6 +149,6 @@ public class StoryTest {
       <div class="title">Code: <a href="../src/main/java/de/uniks/networkparser/IdMap.java">cloneObject</a></div>
     </pre>
     <table/>
-    <script type="text/javascript">var json={"type":"classdiagram","id":"i.love.networkparser","nodes":[{"type":"clazz","id":"i.love.networkparser.Person"}]};
+    <script type="text/javascript">var json={"type":"classdiagram","id":"i.love.networkparser","nodes":[{"type":"class","id":"i.love.networkparser.Person"}]};
 new Graph(json).layout();</script>
   </body></html>
