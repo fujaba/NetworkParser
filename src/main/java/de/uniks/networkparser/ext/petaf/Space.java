@@ -913,7 +913,23 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 		return message.getReceiver();
 	}
 
-
+	
+	// Gennererll Update
+	public NodeProxy updateProxy(Entity msg) {
+		String string = msg.getString("KEY");
+		NodeProxy proxy = getProxy(string);
+		if(proxy == null) {
+			return null;
+		}
+		String[] updateProperties = proxy.getUpdateProperties();
+		for(String property : updateProperties) {
+			Object object = msg.getValue(property);
+			if(object != null) {
+				proxy.setValue(proxy, property, object, SendableEntityCreator.UPDATE);
+			}
+		}
+		return proxy;
+	}
 	public void clearProxies() {
 		this.proxies.clear();
 	}

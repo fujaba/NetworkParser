@@ -76,6 +76,12 @@ public class UpdateCondition implements ObjectCondition {
 		condition.tokener = tokener;
 		return condition;
 	}
+	public static UpdateCondition createAcumulateCondition(IdMap map) {
+		UpdateCondition condition = new UpdateCondition();
+		condition.tokener = map.getMapListener().getTokener();
+		condition.map = map;
+		return condition;
+	}
 	public static UpdateCondition createAcumulateCondition(Tokener tokener,Object target, SendableEntityCreator creator, String property) {
 		UpdateCondition condition = new UpdateCondition();
 		condition.tokener = tokener;

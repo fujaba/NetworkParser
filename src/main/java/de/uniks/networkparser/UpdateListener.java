@@ -528,4 +528,9 @@ public class UpdateListener implements MapListener, ObjectCondition {
 		condition.update(change(property, source, creatorClass, oldValue, newValue));
 		return true;
 	}
+
+	@Override
+	public Tokener getTokener() {
+		return factory;
+	}
 }
