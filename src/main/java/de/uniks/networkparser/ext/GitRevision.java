@@ -50,8 +50,11 @@ public class GitRevision {
 
 	private boolean full=false;
 
-	public JsonObject execute() throws IOException {
-		return execute(-1);
+	public void execute() throws IOException {
+		JsonObject json = execute(-1);
+		System.setProperty("Branchname", json.getString(BRANCHNAME));
+		System.setProperty("LastCommit", json.getString(LASTCOMMIT));
+		System.setProperty("Revisionnumber", json.getString(REVISIONNUMBER));
 	}
 
 	@SuppressWarnings("unchecked")

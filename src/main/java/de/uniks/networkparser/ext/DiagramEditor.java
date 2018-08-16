@@ -122,10 +122,6 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 	}
 
 	public static void main(String[] args) {
-		String classpathStr = System.getProperty("java.class.path");
-		System.out.print(classpathStr);
-		classpathStr = System.getProperty("java.class.SOURCEPATH");
-		System.out.print(classpathStr);
 		if(args != null && args.length>0 && args[0] != null) {
 			if("GIT".equalsIgnoreCase(args[0])) {
 				GitRevision revision = new GitRevision();

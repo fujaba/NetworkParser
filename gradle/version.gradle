@@ -77,7 +77,12 @@ task JavaGit(type:JavaExec, dependsOn: compileJava18) {
 	doLast {
 		try {
 			def slurper = new groovy.json.JsonSlurper()
-			def json = slurper.parseText(stdOutput.toString())
+			def str = stdOutput.toString();
+			def pos = str.indexOf("{");
+			if(pos>0) {
+				str = str.substring(pos);
+			}
+			def json = slurper.parseText(str)
 			
 			gitVersion.minor = json.get("minor")
 			gitVersion.revision = json.get("revisionnumber")
@@ -85,6 +90,7 @@ task JavaGit(type:JavaExec, dependsOn: compileJava18) {
 			gitVersion.buildTime = buildTime()
 			gitVersion.branch = json.get("branchname")
 		} catch(Exception e) {
+			println "ERROR"
 			println e
 
 			gitVersion.minor = getGitTag()
