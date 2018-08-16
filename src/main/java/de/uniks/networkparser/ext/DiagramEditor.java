@@ -42,7 +42,6 @@ import de.uniks.networkparser.converter.GraphConverter;
 import de.uniks.networkparser.ext.generic.JarValidator;
 import de.uniks.networkparser.ext.generic.ReflectionBlackBoxTester;
 import de.uniks.networkparser.ext.generic.ReflectionLoader;
-import de.uniks.networkparser.ext.git.GitRevision;
 import de.uniks.networkparser.ext.io.FileBuffer;
 import de.uniks.networkparser.ext.javafx.GUIEvent;
 import de.uniks.networkparser.ext.javafx.JavaAdapter;

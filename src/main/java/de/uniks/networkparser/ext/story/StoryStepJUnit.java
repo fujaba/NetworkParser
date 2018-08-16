@@ -309,6 +309,7 @@ public class StoryStepJUnit implements ObjectCondition {
 	}
 	/**
 	 * @param packageName the packageName to set
+	 * @param excludes Exclude Packages
 	 * @return ThisComponent
 	 */
 	public StoryStepJUnit withPackageName(String packageName, String... excludes) {

@@ -1,4 +1,4 @@
-package de.uniks.networkparser.ext.git;
+package de.uniks.networkparser.ext;
 
 /*
 The MIT License
@@ -49,6 +49,10 @@ public class GitRevision {
 	public static final String COMMITS="commits";
 
 	private boolean full=false;
+
+	public JsonObject execute() throws IOException {
+		return execute(-1);
+	}
 
 	@SuppressWarnings("unchecked")
 	public JsonObject execute(int maxCommit) throws IOException {
