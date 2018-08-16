@@ -111,7 +111,7 @@ public class StartData implements SendableEntityCreatorNoIndex
 
 	public static String getString(String key) {
 		if(key == null) {
-			return null;
+			return "";
 		}
 		for(StartElement item : properties) {
 			if(key.equalsIgnoreCase(item.getKey())) {
@@ -122,7 +122,7 @@ public class StartData implements SendableEntityCreatorNoIndex
 				return ""+result;
 			}
 		}
-		return null;
+		return "";
 	}
 
 	public static Integer getInteger(String key) {
