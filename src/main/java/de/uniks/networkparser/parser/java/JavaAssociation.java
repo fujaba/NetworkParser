@@ -33,7 +33,7 @@ public class JavaAssociation extends BasicGenerator {
 				"{{#template VALUE}}",
 				"{{#if {{other.isImplements}}==false}}",
 				"   public static final String PROPERTY_{{other.NAME}} = \"{{other.name}}\";","",
-
+				"{{#debug}}{{#import {{file.member.packagename}}.util.{{other.clazz.name}}Set}}",
 				"{{#ifnot {{file.member.type}}==interface}}",
 				"   {{visibility}} {{modifiers} }{{#if {{other.cardinality}}==1}}{{other.clazz.name}}{{#else}}{{other.clazz.name}}Set{{#endif}} {{other.name}} = null;","",
 				"{{#endif}}","",

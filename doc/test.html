@@ -7,9 +7,9 @@
     <script language="Javascript">hljs.initHighlightingOnLoad();
 hljs.initLineNumbersOnLoad();</script>
     <title>testStory</title>
-    <script src="file:/C:/Arbeit/SE1/NetworkParser/bin/main/de/uniks/networkparser/graph/graph.js"></script>
-    <script src="file:/C:/Arbeit/SE1/NetworkParser/bin/main/de/uniks/networkparser/graph/dagre.min.js"></script>
-    <script src="file:/C:/Arbeit/SE1/NetworkParser/bin/main/de/uniks/networkparser/graph/drawer.js"></script>
+    <script src="file:/C:/Users/zuend/IdeaProjects/NetworkParser/build/classes/java/main/de/uniks/networkparser/graph/graph.js"></script>
+    <script src="file:/C:/Users/zuend/IdeaProjects/NetworkParser/build/classes/java/main/de/uniks/networkparser/graph/dagre.min.js"></script>
+    <script src="file:/C:/Users/zuend/IdeaProjects/NetworkParser/build/classes/java/main/de/uniks/networkparser/graph/drawer.js"></script>
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
   </head>
   <body>
@@ -136,6 +136,12 @@ public class StoryTest {
 		story.dumpHTML();
 	}
 
+	@Test
+	public void testRecompile() {
+		StoryStepJUnit storyStepJUnit = new StoryStepJUnit();
+		storyStepJUnit.withPackageName("src/main/java", "src\\main\\java\\de\\uniks\\networkparser\\ext");
+//		storyStepJUnit.recompile();
+	}
 }</code>
       <div class="title">Code: <a href="../src/test/java/de/uniks/networkparser/test/StoryTest.java">Story</a></div>
     </pre>

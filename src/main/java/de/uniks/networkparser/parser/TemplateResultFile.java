@@ -256,12 +256,14 @@ public class TemplateResultFile extends SortedSet<TemplateResultFragment> implem
 			}
 			SimpleEvent event = new SimpleEvent(code, "GENERATE", null, sb);
 			for(TemplateResultFragment fragment : this) {
-				if(fragment.addToCode(event)) {
+				if( ! fragment.addToCode(event)) {
 					continue;
 				}
+
 				if(fragment.getKey() == Template.DECLARATION) {
 					continue;
 				}
+
 				if(fragment.getKey() == Template.IMPORT) {
 					// EVALUATION IMPORT
 //					TextItems
@@ -269,6 +271,7 @@ public class TemplateResultFile extends SortedSet<TemplateResultFragment> implem
 					importDecl = fragment;
 					continue;
 				}
+
 				if(fragment.getName() != null) {
 					if(SymTabEntry.TYPE_METHOD.equalsIgnoreCase(fragment.getName())) {
 						SymTabEntry symbolEntry = code.getSymbolEntry(fragment.getName(), fragment.getMember().getName());
@@ -277,14 +280,17 @@ public class TemplateResultFile extends SortedSet<TemplateResultFragment> implem
 							sb.replace(pos, pos, fragment.getValue().toString());
 						}
 					}
-				} else if(fragment.getKey() == Template.VALUE){
+				}
+				else if(fragment.getKey() == Template.VALUE){
 					SymTabEntry symbolEntry = code.getSymbolEntry("ATTRIBUTE", fragment.getMember().getName()); 
+
 					if(fragment.getMember() instanceof Association) {
 						Association assoc = (Association) fragment.getMember(); 
 						symbolEntry = code.getSymbolEntry("ATTRIBUTE", assoc.getOther().getName());
 					}
+
 					if(symbolEntry == null) {
-						// Dont Found it appen it
+						// did not find it: append it
 						int pos = code.getEndOfBody();
 						sb.replace(pos, pos, fragment.getValue().toString());
 					}
@@ -293,12 +299,13 @@ public class TemplateResultFile extends SortedSet<TemplateResultFragment> implem
 			}
 
 			if(importDecl != null) {
-//				int start = code.getStartOfImports();
-//				int end = code.getEndOfImports();
-//FIXME STEFAN				buffer.replace(start, end, importDecl.getValue().toString());
+				int start = code.getStartOfImports();
+				int end = code.getEndOfImports();
+				sb.replace(start, end, importDecl.getValue().toString() + "\n\n");
 			}
 			return sb.toString();
 		}
+
 		CharacterBuffer buffer = new CharacterBuffer();
 		for(TemplateResultFragment fragment : this) {
 			if(fragment.getKey() == Template.DECLARATION) {
@@ -311,6 +318,7 @@ public class TemplateResultFile extends SortedSet<TemplateResultFragment> implem
 			}
 			buffer.with(fragment.getValue());
 		}
+
 		return buffer.toString();
 	}
 

@@ -41,6 +41,12 @@ public class ClassModel extends GraphModel {
 		setAuthorName(System.getProperty("user.name"));
 	}
 
+
+	public void resetGenerator()
+	{
+		this.generator = new ModelGenerator().withDefaultModel(this);
+	}
+
 	/**
 	 * Constructor
 	 *
