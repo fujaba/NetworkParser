@@ -183,7 +183,7 @@ public abstract class BasicGenerator {
 			for (Association assoc : associations) {
 				for(BasicGenerator template : templateList) {
 					template.executeTemplate(templateResult, parameters, assoc);
-					if (assoc.getClazz().equals(assoc.getOtherClazz())) {
+					if (assoc.getClazz().equals(assoc.getOtherClazz()) && assoc.getName().equals(assoc.getOther().getName()) == false) {
 						template.executeTemplate(templateResult, parameters, assoc.getOther());
 					}
 				}

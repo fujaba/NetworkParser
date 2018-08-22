@@ -911,13 +911,13 @@ public class ParserEntity {
 
 	private CharSequence parseQualifiedName(SymTabEntry nextEntity) {
 		// return dotted name
-		nextToken();
+		nextRealToken();
 
 		while (currentKindEquals('.') && !lookAheadKindEquals('.') && !currentKindEquals(EOF)) {
 			skip(".", false);
 
 			// read next name
-			nextToken();
+			nextRealToken();
 		}
 		return finishParse(nextEntity);
 	}
@@ -928,7 +928,7 @@ public class ParserEntity {
 		int endPos = currentToken.endPos;
 
 		checkSearchStringFound(NAME_TOKEN + ":" + currentWord(), currentToken.startPos);
-		nextToken();
+		nextRealToken();
 
 		while (currentKindEquals('.') && !(lookAheadToken.kind == '.') && !currentKindEquals(EOF)) {
 			skip(".", false);
@@ -936,7 +936,7 @@ public class ParserEntity {
 			// read next name
 			endPos = currentToken.endPos;
 			checkSearchStringFound(NAME_TOKEN + ":" + currentWord(), currentToken.startPos);
-			nextToken();
+			nextRealToken();
 		}
 
 		return code.subString(startPos, endPos + 1);
