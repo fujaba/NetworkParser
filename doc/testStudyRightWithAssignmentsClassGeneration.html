@@ -1,29 +1,19 @@
 <html>
   <head>
-    <link rel="stylesheet" type="text/css" href="diagramstyle.css"/>
-    <script src="highlight.pack.js"></script>
-    <script src="highlightjs-line-numbers.min.js"></script>
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
     <script language="Javascript">hljs.initHighlightingOnLoad();
 hljs.initLineNumbersOnLoad();</script>
     <title>testStudyRightWithAssignmentsClassGeneration</title>
-    <script src="file:/C:/Users/zuend/IdeaProjects/NetworkParser/build/classes/java/main/de/uniks/networkparser/graph/graph.js"></script>
-    <script src="file:/C:/Users/zuend/IdeaProjects/NetworkParser/build/classes/java/main/de/uniks/networkparser/graph/dagre.min.js"></script>
-    <script src="file:/C:/Users/zuend/IdeaProjects/NetworkParser/build/classes/java/main/de/uniks/networkparser/graph/drawer.js"></script>
-    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
-    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
-    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
-    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
-    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+    <script src="dagre.min.js"></script>
   </head>
   <body>
     <h1>testStudyRightWithAssignmentsClassGeneration</h1>
     <p class="step">1. generate class University</p>
     <pre>
-      <code class="java" data-lang="java">	  ClassModel model = new ClassModel("org.sdmlib.test.examples.studyrightWithAssignments.model");
+      <code class="java" data-lang="java">				StoryStepSourceCode.CURRENTPOSITION);
+		ClassModel model = new ClassModel("org.sdmlib.test.examples.studyrightWithAssignments.model");
 
-      Clazz universityClass = model.createClazz("University")
-    		  .withAttribute("name", DataType.STRING);</code>
+		Clazz universityClass = model.createClazz("University").withAttribute("name", DataType.STRING);</code>
       <div class="title">Code: <a href="../src/test/java/de/uniks/networkparser/test/studyrightWithAssigments/StudyRightWithAssignmentsModel.java">StudyRightWithAssignmentsClassGeneration</a></div>
     </pre>
     <table/>
@@ -31,12 +21,9 @@ hljs.initLineNumbersOnLoad();</script>
 new Graph(json).layout();</script>
     <p class="step">2. generate class Student</p>
     <pre>
-      <code class="java" data-lang="java">      Clazz studentClass = model.createClazz("Student")
-            .withAttribute("name", DataType.STRING)
-            .withAttribute("id", DataType.STRING)
-            .withAttribute("assignmentPoints", DataType.INT)
-            .withAttribute("motivation", DataType.INT)
-            .withAttribute("credits", DataType.INT);</code>
+      <code class="java" data-lang="java">		Clazz studentClass = model.createClazz("Student").withAttribute("name", DataType.STRING)
+				.withAttribute("id", DataType.STRING).withAttribute("assignmentPoints", DataType.INT)
+				.withAttribute("motivation", DataType.INT).withAttribute("credits", DataType.INT);</code>
       <div class="title">Code: <a href="../src/test/java/de/uniks/networkparser/test/studyrightWithAssigments/StudyRightWithAssignmentsModel.java">StudyRightWithAssignmentsClassGeneration</a></div>
     </pre>
     <table/>
@@ -44,8 +31,8 @@ new Graph(json).layout();</script>
 new Graph(json).layout();</script>
     <p class="step">3. add University --> Student association</p>
     <pre>
-      <code class="java" data-lang="java">      universityClass.withBidirectional(studentClass, "students", Cardinality.MANY, "university", Cardinality.ONE);
-      code.withEnd(StoryStepSourceCode.CURRENTPOSITION);</code>
+      <code class="java" data-lang="java">		universityClass.withBidirectional(studentClass, "students", Cardinality.MANY, "university", Cardinality.ONE);
+		code.withEnd(StoryStepSourceCode.CURRENTPOSITION);</code>
       <div class="title">Code: <a href="../src/test/java/de/uniks/networkparser/test/studyrightWithAssigments/StudyRightWithAssignmentsModel.java">StudyRightWithAssignmentsClassGeneration</a></div>
     </pre>
     <table/>
@@ -53,22 +40,21 @@ new Graph(json).layout();</script>
 new Graph(json).layout();</script>
     <p class="step">4. add University --> Room association</p>
     <pre>
-      <code class="java" data-lang="java">      Clazz roomClass = model.createClazz("Room")
-            .withAttribute("name", DataType.STRING)
-            .withAttribute("topic", DataType.STRING)
-            .withAttribute("credits", DataType.INT);
+      <code class="java" data-lang="java">		Clazz roomClass = model.createClazz("Room").withAttribute("name", DataType.STRING)
+				.withAttribute("topic", DataType.STRING).withAttribute("credits", DataType.INT);
 
-      roomClass.withMethod("findPath", DataType.STRING, new Parameter(DataType.INT).with("motivation"));
+		roomClass.withMethod("findPath", DataType.STRING, new Parameter(DataType.INT).with("motivation"));
 
-      //Association universityToRoom =
-      universityClass.createBidirectional(roomClass, "rooms", Cardinality.MANY, "university", Cardinality.ONE).with(AssociationTypes.AGGREGATION);
+		// Association universityToRoom =
+		universityClass.createBidirectional(roomClass, "rooms", Cardinality.MANY, "university", Cardinality.ONE)
+				.with(AssociationTypes.AGGREGATION);
 
-      // Association doors =
-      roomClass.withBidirectional(roomClass, "doors", Cardinality.MANY, "doors", Cardinality.MANY);
+		// Association doors =
+		roomClass.withBidirectional(roomClass, "doors", Cardinality.MANY, "doors", Cardinality.MANY);
 
-      // Association studentsInRoom =
-      studentClass.withBidirectional(roomClass, "in", Cardinality.ONE, "students", Cardinality.MANY);
-      studentClass.withBidirectional(studentClass, "friends", Cardinality.MANY, "friends", Cardinality.MANY);
+		// Association studentsInRoom =
+		studentClass.withBidirectional(roomClass, "in", Cardinality.ONE, "students", Cardinality.MANY);
+		studentClass.withBidirectional(studentClass, "friends", Cardinality.MANY, "friends", Cardinality.MANY);
 </code>
       <div class="title">Code: <a href="../src/test/java/de/uniks/networkparser/test/studyrightWithAssigments/StudyRightWithAssignmentsModel.java">StudyRightWithAssignmentsClassGeneration</a></div>
     </pre>
@@ -77,12 +63,11 @@ new Graph(json).layout();</script>
 new Graph(json).layout();</script>
     <p class="step">5. add assignments:</p>
     <pre>
-      <code class="java" data-lang="java">      Clazz assignmentClass = model.createClazz("Assignment")
-               .withAttribute("content", DataType.STRING)
-               .withAttribute("points", DataType.INT)
-               .withBidirectional(roomClass, "room", Cardinality.ONE, "assignments", Cardinality.MANY);
+      <code class="java" data-lang="java">		Clazz assignmentClass = model.createClazz("Assignment").withAttribute("content", DataType.STRING)
+				.withAttribute("points", DataType.INT)
+				.withBidirectional(roomClass, "room", Cardinality.ONE, "assignments", Cardinality.MANY);
 
-      studentClass.withBidirectional(assignmentClass, "done", Cardinality.MANY, "students", Cardinality.MANY);</code>
+		studentClass.withBidirectional(assignmentClass, "done", Cardinality.MANY, "students", Cardinality.MANY);</code>
       <div class="title">Code: <a href="../src/test/java/de/uniks/networkparser/test/studyrightWithAssigments/StudyRightWithAssignmentsModel.java">StudyRightWithAssignmentsClassGeneration</a></div>
     </pre>
     <table/>
@@ -91,7 +76,7 @@ new Graph(json).layout();</script>
     <p class="step">6. generate class source files.</p>
     <pre>
       <code class="java" data-lang="java">//      model.generate("src/test/java"); // usually don't specify anything here, then it goes into src
-      code.withEnd(StoryStepSourceCode.CURRENTPOSITION);</code>
+		code.withEnd(StoryStepSourceCode.CURRENTPOSITION);</code>
       <div class="title">Code: <a href="../src/test/java/de/uniks/networkparser/test/studyrightWithAssigments/StudyRightWithAssignmentsModel.java">StudyRightWithAssignmentsClassGeneration</a></div>
     </pre>
     <table/>

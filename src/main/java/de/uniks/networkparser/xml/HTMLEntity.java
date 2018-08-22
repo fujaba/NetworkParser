@@ -48,6 +48,7 @@ public class HTMLEntity implements BaseItem {
 	public static final String LINK="link";
 	public static final String KEY_HREF="href";
 	public static final String KEY_SRC="src";
+	public static final String[] GRAPHRESOURCES=new String[] {"diagramstyle.css", "diagram.js", "dagre.min.js"};
 
 	private XMLEntity body = new XMLEntity().setType("body");
 	private XMLEntity header = new XMLEntity().setType("head");
@@ -318,19 +319,12 @@ public class HTMLEntity implements BaseItem {
 		if(resource == null || value == null) {
 			return this;
 		}
+		return withGraph(value, resource.toString());
+	}
+
+	public HTMLEntity withGraph(GraphModel value, String resource) {
 		String graph = value.toString(new GraphConverter());
-		// Is URL May be relative???
-		String ref = resource.toString();
-//		try {
-//			URL url = new URL("file", resource.getHost(), "");
-//			String urlRef = url.toString();
-//			if(ref.startsWith(urlRef) ) {
-//				ref = ref.substring(urlRef.length());
-//			}
-//		}catch (Exception e) {
-//		}
-		
-		return withGraph(graph,ref);
+		return withGraph(graph, resource);
 	}
 	public HTMLEntity withGraph(Entity value) {
 		URL resource = GraphList.class.getResource("");
@@ -352,7 +346,10 @@ public class HTMLEntity implements BaseItem {
 		if(path != null) {
 			// Add graph-framework
 			// Test for Add Styles
-			SimpleList<String> list=new SimpleList<String>().with("diagramstyle.css", "graph.js", "dagre.min.js", "drawer.js");
+			SimpleList<String> resources = new SimpleList<String>();
+			for(String item : GRAPHRESOURCES) {
+				resources.add(item);
+			}
 			for(int i = 0;i<this.header.sizeChildren();i++) {
 				XMLEntity item = (XMLEntity) this.header.getChild(i);
 				String url = null;
@@ -366,15 +363,40 @@ public class HTMLEntity implements BaseItem {
 					if(pos>=0) {
 						url = url.substring(pos+1);
 					}
-					list.remove(url);
+					resources.remove(url);
 				}
 			}
-			for(String item : list) {
+			for(String item : resources) {
 				withHeader(path + item);
 			}
 			withEncoding(ENCODING);
 		}
 		return this;
+	}
+	
+	public XMLEntity getHeader(String url) {
+		if(url == null) {
+			return null;
+		}
+		for(int i = 0;i<this.header.sizeChildren();i++) {
+			XMLEntity item = (XMLEntity) this.header.getChild(i);
+			String childURL = null;
+			if(LINK.equals(item.getTag())) {
+				childURL = item.getString(KEY_HREF);
+			} else if(SCRIPT.equals(item.getTag())) {
+				childURL = item.getString(KEY_SRC);
+			}
+			if(childURL != null) {
+				int pos = url.lastIndexOf('/');
+				if(pos>=0) {
+					childURL = childURL.substring(pos+1);
+				}
+				if(url.equals(childURL)) {
+					return item;
+				}
+			}
+		}
+		return null;
 	}
 
 	public HTMLEntity withNewLine() {

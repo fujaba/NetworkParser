@@ -332,18 +332,45 @@ public class ModelGenerator extends BasicGenerator {
 		return this;
 	}
 
-	public void testGeneratedCode(String type) {
+	/**
+	 * @param param	List of Params 
+	 * 	First is Type like TYPE_JAVA
+	 * 	Second rootDir 
+	 */
+	
+	public void testGeneratedCode(String... param) {
+		String type=null;
+		String rootDir = null;
 		if (this.defaultModel != null) {
+			if(param != null) {
+				if(param.length>0) {
+					if(param[0] instanceof String) {
+						if(TYPE_JAVA.equalsIgnoreCase(param[0]) ||
+							TYPE_TYPESCRIPT.equalsIgnoreCase(param[0]) ||
+							TYPE_CPP.equalsIgnoreCase(param[0])) {
+							type = param[0];
+						} else if(param.length<2) {
+							rootDir = param[0];
+						}
+					}
+				}
+				if(param.length>1) {
+					if(param[1] instanceof String) {
+						rootDir = param[1]; 
+					}
+				}
+			}
 			if(type == null) {
 				type = TYPE_JAVA;
 			}
-			String rootDir = null;
-			if(TYPE_JAVA.equalsIgnoreCase(type)) {
-				rootDir = "build/gen/java";
-			} else if(TYPE_TYPESCRIPT.equalsIgnoreCase(type)) {
-				rootDir = "build/gen/js";
-			} else if(TYPE_CPP.equalsIgnoreCase(type)) {
-				rootDir = "build/gen/cpp";
+			if(rootDir == null) {
+				if(TYPE_JAVA.equalsIgnoreCase(type)) {
+					rootDir = "build/gen/java";
+				} else if(TYPE_TYPESCRIPT.equalsIgnoreCase(type)) {
+					rootDir = "build/gen/js";
+				} else if(TYPE_CPP.equalsIgnoreCase(type)) {
+					rootDir = "build/gen/cpp";
+				}
 			}
 			if(rootDir != null) {
 				removeAllGeneratedCode(defaultModel, rootDir);

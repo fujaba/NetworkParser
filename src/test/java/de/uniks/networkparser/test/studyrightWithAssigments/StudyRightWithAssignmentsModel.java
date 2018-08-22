@@ -133,7 +133,7 @@ public class StudyRightWithAssignmentsModel {
 		// ============================================================
 		story.addText("6. generate class source files.");
 
-		// model.removeAllGeneratedCode("src/test/java");
+//		model.removeAllGeneratedCode("src/test/java");
 
 		model.setAuthorName("zuendorf");
 		code = story.addSourceCode(StudyRightWithAssignmentsModel.class, StoryStepSourceCode.CURRENTPOSITION);
@@ -141,6 +141,8 @@ public class StudyRightWithAssignmentsModel {
 		code.withEnd(StoryStepSourceCode.CURRENTPOSITION);
 
 		story.dumpHTML();
+		
+		model.getGenerator().testGeneratedCode("src/test/java");
 	}
 
 }

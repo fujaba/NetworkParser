@@ -1,6 +1,5 @@
 package de.uniks.networkparser.parser;
 
-import de.uniks.networkparser.SimpleEvent;
 /*
 The MIT License
 
@@ -254,12 +253,8 @@ public class TemplateResultFile extends SortedSet<TemplateResultFragment> implem
 					}
 				}
 			}
-			SimpleEvent event = new SimpleEvent(code, "GENERATE", null, sb);
+//			SimpleEvent event = new SimpleEvent(code, "GENERATE", null, sb);
 			for(TemplateResultFragment fragment : this) {
-				if( fragment.addToCode(event)) {
-					continue;
-				}
-
 				if(fragment.getKey() == Template.DECLARATION) {
 					continue;
 				}

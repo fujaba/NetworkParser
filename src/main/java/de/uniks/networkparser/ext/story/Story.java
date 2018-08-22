@@ -28,6 +28,7 @@ import java.lang.reflect.Method;
 
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.SimpleEvent;
+import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.converter.EntityStringConverter;
 import de.uniks.networkparser.ext.ClassModel;
 import de.uniks.networkparser.ext.io.FileBuffer;
@@ -243,12 +244,22 @@ public class Story extends StoryElement implements Comparable<Story>{
 		return FileBuffer.writeFile(path + fileName, output.toString(converter))>=0;
 	}
 
-	public static void addScript(String path, String name, HTMLEntity entry) {
+	public static boolean addScript(String path, String name, HTMLEntity entry) {
 		if(path == null || name == null) {
-			return;
+			return false;
 		}
-		FileBuffer.writeFile(path + name, new FileBuffer().readResource("graph/"+name), FileBuffer.NONE);
+		// CHECK FOR CHANGES
+		CharacterBuffer content = new FileBuffer().readResource("graph/"+name);
+		if(content == null) {
+			return false;
+		}
+		CharacterBuffer oldContent =FileBuffer.readFile(path + name);
+		if(oldContent != null && content.equals(oldContent.toString())) {
+			return true;
+		}
+		int len = FileBuffer.writeFile(path + name, content.toString(), FileBuffer.NONE);
 		entry.withHeader(name);
+		return len>0;
 	}
 	
 	public String getPath() {
