@@ -256,7 +256,7 @@ public class TemplateResultFile extends SortedSet<TemplateResultFragment> implem
 			}
 			SimpleEvent event = new SimpleEvent(code, "GENERATE", null, sb);
 			for(TemplateResultFragment fragment : this) {
-				if( ! fragment.addToCode(event)) {
+				if( fragment.addToCode(event)) {
 					continue;
 				}
 

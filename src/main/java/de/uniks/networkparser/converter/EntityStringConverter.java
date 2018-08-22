@@ -31,7 +31,9 @@ import de.uniks.networkparser.interfaces.Entity;
 public class EntityStringConverter implements Converter {
 	private int indentFactor;
 	private int indent;
+	private String relativePath;
 	public static final String EMPTY="";
+	
 
 	public EntityStringConverter() {
 	}
@@ -42,6 +44,15 @@ public class EntityStringConverter implements Converter {
 	}
 	public EntityStringConverter(int indentFactor) {
 		this.indentFactor = indentFactor;
+	}
+
+	public EntityStringConverter withPath(String path) {
+		this.relativePath = path;
+		return this;
+	}
+
+	public String getPath() {
+		return relativePath;
 	}
 
 	@Override

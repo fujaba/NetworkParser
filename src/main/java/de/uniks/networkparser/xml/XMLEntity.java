@@ -251,7 +251,10 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 		for (int i = 0; i < size; i++) {
 			Object value = getValueByIndex(i);
 			if(value != null) {
-				sb.with(" ", ""+get(i), "=", EntityUtil.quote(value.toString()));
+				sb.with(" ", ""+get(i), "=");
+//				, EntityUtil.quote(value.toString()));
+				
+				sb.with(EntityUtil.valueToString(getValueByIndex(i), false, this, converter));
 			}
 		}
 

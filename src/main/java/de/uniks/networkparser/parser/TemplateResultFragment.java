@@ -594,6 +594,6 @@ public class TemplateResultFragment implements Comparable<TemplateResultFragment
 		}
 //		SourceCode source = (SourceCode) event.getSource();
 //		CharacterBuffer sb = (CharacterBuffer) event.getNewValue();
-		return true;
+		return false;
 	}
 }

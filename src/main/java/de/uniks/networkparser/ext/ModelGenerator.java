@@ -43,6 +43,7 @@ import de.uniks.networkparser.graph.Method;
 import de.uniks.networkparser.graph.MethodSet;
 import de.uniks.networkparser.graph.Parameter;
 import de.uniks.networkparser.graph.ParameterSet;
+import de.uniks.networkparser.graph.SourceCode;
 import de.uniks.networkparser.interfaces.ParserCondition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.list.SimpleKeyValueList;
@@ -242,7 +243,23 @@ public class ModelGenerator extends BasicGenerator {
 		if(rootPath.endsWith("/") == false) {
 			rootPath += "/";
 		}
-		return FileBuffer.writeFile(rootPath + entity.getFileName(), entity.toString())>=0;
+		String newContent = entity.toString();
+		CharacterBuffer oldContent = null;
+		if(entity.isMetaModell() == false) {
+			oldContent =FileBuffer.readFile(rootPath + entity.getFileName());
+		} else {
+			SourceCode code = entity.getCode();
+			if(newContent == null) {
+				return true;
+			}
+			if(code != null) {
+				oldContent = code.getContent();
+			}
+		}
+		if(oldContent != null && newContent.equals(oldContent.toString())) {
+			return true;
+		}
+		return FileBuffer.writeFile(rootPath + entity.getFileName(), newContent)>=0;
 	}
 
 	public ParserEntity parse(String rootPath, TemplateResultFile entity) {

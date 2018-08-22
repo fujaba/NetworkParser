@@ -1,5 +1,6 @@
 package de.uniks.networkparser;
 
+import java.io.File;
 /*
 NetworkParser
 The MIT License
@@ -30,6 +31,7 @@ import java.util.Random;
 import de.uniks.networkparser.buffer.ByteBuffer;
 import de.uniks.networkparser.bytes.ByteTokener;
 import de.uniks.networkparser.converter.ByteConverterHex;
+import de.uniks.networkparser.converter.EntityStringConverter;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Converter;
 import de.uniks.networkparser.interfaces.Entity;
@@ -298,6 +300,12 @@ public class EntityUtil {
 				item.add(entity);
 			}
 			return item.toString(converter);
+		}
+		if(converter instanceof EntityStringConverter && value instanceof String && ((String)value).startsWith("file:/")) {
+			EntityStringConverter stringConverter = (EntityStringConverter) converter; 
+			String str = (String) value;
+			// NOW try relative
+			value = getRelativePath(str, new File(stringConverter.getPath()).toURI().toString(), "/");
 		}
 		if (simpleText) {
 			return value.toString();
@@ -1245,5 +1253,74 @@ public class EntityUtil {
 			randBuffer[i] = numbersAndLetters[randGen.nextInt(71)];
 		}
 		return new String(randBuffer);
+	}
+	/**
+	 * Get the relative path from one file to another, specifying the directory separator. 
+	 * If one of the provided resources does not exist, it is assumed to be a file unless it ends with '/' or
+	 * '\'.
+	 * 
+	 * @param targetPath targetPath is calculated to this file
+	 * @param basePath basePath is calculated from this file
+	 * @param separator	directory separator. The platform default is not assumed so that we can test Unix behaviour when running on Windows (for example)
+	 * @return The Realative Path
+	 */
+	public static String getRelativePath(String targetPath, String basePath, String separator) {
+		String[] base = basePath.split(separator);
+		String[] target = targetPath.split(separator);
+
+		// First get all the common elements. Store them as a string,
+		// and also count how many of them there are.
+		StringBuilder common = new StringBuilder();
+	
+		int commonIndex = 0;
+		while (commonIndex < target.length && commonIndex < base.length
+				&& target[commonIndex].equals(base[commonIndex])) {
+			common.append(target[commonIndex] + separator);
+			commonIndex++;
+		}
+		if (commonIndex == 0) {
+			// No single common path element. This most
+			// likely indicates differing drive letters, like C: and D:.
+			// These paths cannot be relativized.
+			return null;
+//			throw new PathResolutionException("No common path element found for '" + normalizedTargetPath + "' and '" + normalizedBasePath
+//	                    + "'");
+		}
+	
+		// The number of directories we have to backtrack depends on whether the base is
+		// a file or a dir
+		// For example, the relative path from
+		//
+		// /foo/bar/baz/gg/ff to /foo/bar/baz
+		//
+		// ".." if ff is a file
+		// "../.." if ff is a directory
+		//
+		// The following is a heuristic to figure out if the base refers to a file or
+		// dir. It's not perfect, because
+		// the resource referred to by this path may not actually exist, but it's the
+		// best I can do
+		boolean baseIsFile = true;
+
+		File baseResource = new File(basePath);
+
+		if (baseResource.exists()) {
+			baseIsFile = baseResource.isFile();
+
+		} else if (basePath.endsWith(separator)) {
+			baseIsFile = false;
+		}
+
+		StringBuffer relative = new StringBuffer();
+
+		if (base.length != commonIndex) {
+			int numDirsUp = baseIsFile ? base.length - commonIndex - 1 : base.length - commonIndex;
+
+			for (int i = 0; i < numDirsUp; i++) {
+				relative.append(".." + separator);
+			}
+		}
+		relative.append(targetPath.substring(common.length()));
+		return relative.toString();
 	}
 }

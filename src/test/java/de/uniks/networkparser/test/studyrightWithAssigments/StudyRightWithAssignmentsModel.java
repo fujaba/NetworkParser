@@ -19,7 +19,6 @@
    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 package de.uniks.networkparser.test.studyrightWithAssigments;
 
 import org.junit.Test;
@@ -33,125 +32,115 @@ import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.DataType;
 import de.uniks.networkparser.graph.Parameter;
 
-public class StudyRightWithAssignmentsModel
-{
+public class StudyRightWithAssignmentsModel {
 
 	/**
-	 * @see <a href='../../../../../../../../doc/StudyRightWithAssignmentsClassGeneration.html'>StudyRightWithAssignmentsClassGeneration.html</a>
+	 * @see <a href=
+	 *      '../../../../../../../../doc/StudyRightWithAssignmentsClassGeneration.html'>StudyRightWithAssignmentsClassGeneration.html</a>
 	 */
 	@Test
-	public void testStudyRightWithAssignmentsClassGeneration()
-	{
-	  /* This file will generate that necessary classes and class diagram for the
-	   * StudyRight with Assignments example in the Story Driven Modeling book
-	   */
+	public void testStudyRightWithAssignmentsClassGeneration() {
+		/*
+		 * This file will generate that necessary classes and class diagram for the
+		 * StudyRight with Assignments example in the Story Driven Modeling book
+		 */
 
-	   Story story = new Story();
+		Story story = new Story();
 
-	  //============================================================
-	  story.addText("1. generate class University");
+		// ============================================================
+		story.addText("1. generate class University");
 
-	
-	  StoryStepSourceCode code = story.addSourceCode(StudyRightWithAssignmentsModel.class, StoryStepSourceCode.CURRENTPOSITION);
-	  ClassModel model = new ClassModel("org.sdmlib.test.examples.studyrightWithAssignments.model");
+		StoryStepSourceCode code = story.addSourceCode(StudyRightWithAssignmentsModel.class,
+				StoryStepSourceCode.CURRENTPOSITION);
+		ClassModel model = new ClassModel("org.sdmlib.test.examples.studyrightWithAssignments.model");
 
-      Clazz universityClass = model.createClazz("University")
-    		  .withAttribute("name", DataType.STRING);
-      code.withEnd(StoryStepSourceCode.CURRENTPOSITION);
+		Clazz universityClass = model.createClazz("University").withAttribute("name", DataType.STRING);
+		code.withEnd(StoryStepSourceCode.CURRENTPOSITION);
 
-      story.addDiagram(model);
+		story.addDiagram(model);
 
-      //============================================================
-      story.addText("2. generate class Student");
+		// ============================================================
+		story.addText("2. generate class Student");
 
+		code = story.addSourceCode(StudyRightWithAssignmentsModel.class, StoryStepSourceCode.CURRENTPOSITION);
+		Clazz studentClass = model.createClazz("Student").withAttribute("name", DataType.STRING)
+				.withAttribute("id", DataType.STRING).withAttribute("assignmentPoints", DataType.INT)
+				.withAttribute("motivation", DataType.INT).withAttribute("credits", DataType.INT);
+		code.withEnd(StoryStepSourceCode.CURRENTPOSITION);
 
-      code = story.addSourceCode(StudyRightWithAssignmentsModel.class, StoryStepSourceCode.CURRENTPOSITION);
-      Clazz studentClass = model.createClazz("Student")
-            .withAttribute("name", DataType.STRING)
-            .withAttribute("id", DataType.STRING)
-            .withAttribute("assignmentPoints", DataType.INT)
-            .withAttribute("motivation", DataType.INT)
-            .withAttribute("credits", DataType.INT);
-      code.withEnd(StoryStepSourceCode.CURRENTPOSITION);
+		story.addDiagram(model);
 
-      story.addDiagram(model);
+		// ============================================================
+		story.addText("3. add University --> Student association");
 
+		// Association universityToStudent =
+		code = story.addSourceCode(StudyRightWithAssignmentsModel.class, StoryStepSourceCode.CURRENTPOSITION);
+		universityClass.withBidirectional(studentClass, "students", Cardinality.MANY, "university", Cardinality.ONE);
+		code.withEnd(StoryStepSourceCode.CURRENTPOSITION);
 
-      //============================================================
-      story.addText("3. add University --> Student association");
+		story.addDiagram(model);
 
-      // Association universityToStudent =
-      code = story.addSourceCode(StudyRightWithAssignmentsModel.class, StoryStepSourceCode.CURRENTPOSITION);
-      universityClass.withBidirectional(studentClass, "students", Cardinality.MANY, "university", Cardinality.ONE);
-      code.withEnd(StoryStepSourceCode.CURRENTPOSITION);
+		// ============================================================
+		story.addText("4. add University --> Room association");
 
-      story.addDiagram(model);
+		code = story.addSourceCode(StudyRightWithAssignmentsModel.class, StoryStepSourceCode.CURRENTPOSITION);
+		Clazz roomClass = model.createClazz("Room").withAttribute("name", DataType.STRING)
+				.withAttribute("topic", DataType.STRING).withAttribute("credits", DataType.INT);
 
-      //============================================================
-      story.addText("4. add University --> Room association");
+		roomClass.withMethod("findPath", DataType.STRING, new Parameter(DataType.INT).with("motivation"));
 
-      code = story.addSourceCode(StudyRightWithAssignmentsModel.class, StoryStepSourceCode.CURRENTPOSITION);
-      Clazz roomClass = model.createClazz("Room")
-            .withAttribute("name", DataType.STRING)
-            .withAttribute("topic", DataType.STRING)
-            .withAttribute("credits", DataType.INT);
+		// Association universityToRoom =
+		universityClass.createBidirectional(roomClass, "rooms", Cardinality.MANY, "university", Cardinality.ONE)
+				.with(AssociationTypes.AGGREGATION);
 
-      roomClass.withMethod("findPath", DataType.STRING, new Parameter(DataType.INT).with("motivation"));
+		// Association doors =
+		roomClass.withBidirectional(roomClass, "doors", Cardinality.MANY, "doors", Cardinality.MANY);
 
-      //Association universityToRoom =
-      universityClass.createBidirectional(roomClass, "rooms", Cardinality.MANY, "university", Cardinality.ONE).with(AssociationTypes.AGGREGATION);
+		// Association studentsInRoom =
+		studentClass.withBidirectional(roomClass, "in", Cardinality.ONE, "students", Cardinality.MANY);
+		studentClass.withBidirectional(studentClass, "friends", Cardinality.MANY, "friends", Cardinality.MANY);
 
-      // Association doors =
-      roomClass.withBidirectional(roomClass, "doors", Cardinality.MANY, "doors", Cardinality.MANY);
+		code.withEnd(StoryStepSourceCode.CURRENTPOSITION);
 
-      // Association studentsInRoom =
-      studentClass.withBidirectional(roomClass, "in", Cardinality.ONE, "students", Cardinality.MANY);
-      studentClass.withBidirectional(studentClass, "friends", Cardinality.MANY, "friends", Cardinality.MANY);
+		story.addDiagram(model);
 
-      code.withEnd(StoryStepSourceCode.CURRENTPOSITION);
+		// ============================================================
+		story.addText("5. add assignments:");
 
-      story.addDiagram(model);
+		code = story.addSourceCode(StudyRightWithAssignmentsModel.class, StoryStepSourceCode.CURRENTPOSITION);
+		Clazz assignmentClass = model.createClazz("Assignment").withAttribute("content", DataType.STRING)
+				.withAttribute("points", DataType.INT)
+				.withBidirectional(roomClass, "room", Cardinality.ONE, "assignments", Cardinality.MANY);
 
-      //============================================================
-      story.addText("5. add assignments:");
+		studentClass.withBidirectional(assignmentClass, "done", Cardinality.MANY, "students", Cardinality.MANY);
+		code.withEnd(StoryStepSourceCode.CURRENTPOSITION);
 
-      code = story.addSourceCode(StudyRightWithAssignmentsModel.class, StoryStepSourceCode.CURRENTPOSITION);
-      Clazz assignmentClass = model.createClazz("Assignment")
-               .withAttribute("content", DataType.STRING)
-               .withAttribute("points", DataType.INT)
-               .withBidirectional(roomClass, "room", Cardinality.ONE, "assignments", Cardinality.MANY);
+		story.addDiagram(model);
 
-      studentClass.withBidirectional(assignmentClass, "done", Cardinality.MANY, "students", Cardinality.MANY);
-      code.withEnd(StoryStepSourceCode.CURRENTPOSITION);
+		studentClass.withBidirectional(studentClass, "friends", Cardinality.MANY, "friends", Cardinality.MANY);
 
-      story.addDiagram(model);
+		// some more classes for model navigation tests
+		studentClass.withBidirectional(studentClass, "friends", Cardinality.MANY, "friends", Cardinality.MANY);
 
-      studentClass.withBidirectional(studentClass, "friends", Cardinality.MANY, "friends", Cardinality.MANY);
+		model.createClazz("TeachingAssistant").withSuperClazz(studentClass)
+				.withBidirectional(roomClass, "room", Cardinality.ONE, "tas", Cardinality.MANY)
+				.withAttribute("certified", DataType.BOOLEAN);
 
+		Clazz presidentClass = model.createClazz("President");
+		universityClass.createBidirectional(presidentClass, "president", Cardinality.ONE, "university", Cardinality.ONE)
+				.with(AssociationTypes.AGGREGATION);
 
-      // some more classes for model navigation tests
-      studentClass.withBidirectional(studentClass, "friends", Cardinality.MANY, "friends", Cardinality.MANY);
+		// ============================================================
+		story.addText("6. generate class source files.");
 
-      model.createClazz("TeachingAssistant")
-      .withSuperClazz(studentClass)
-      .withBidirectional(roomClass, "room", Cardinality.ONE, "tas", Cardinality.MANY)
-      .withAttribute("certified", DataType.BOOLEAN);
+		// model.removeAllGeneratedCode("src/test/java");
 
-
-      Clazz presidentClass = model.createClazz("President");
-      universityClass.createBidirectional(presidentClass, "president", Cardinality.ONE, "university", Cardinality.ONE).with(AssociationTypes.AGGREGATION);
-
-      //============================================================
-      story.addText("6. generate class source files.");
-
-      // model.removeAllGeneratedCode("src/test/java");
-
-      model.setAuthorName("zuendorf");
-      code = story.addSourceCode(StudyRightWithAssignmentsModel.class, StoryStepSourceCode.CURRENTPOSITION);
+		model.setAuthorName("zuendorf");
+		code = story.addSourceCode(StudyRightWithAssignmentsModel.class, StoryStepSourceCode.CURRENTPOSITION);
 //      model.generate("src/test/java"); // usually don't specify anything here, then it goes into src
-      code.withEnd(StoryStepSourceCode.CURRENTPOSITION);
+		code.withEnd(StoryStepSourceCode.CURRENTPOSITION);
 
-      story.dumpHTML();
-   }
+		story.dumpHTML();
+	}
 
 }

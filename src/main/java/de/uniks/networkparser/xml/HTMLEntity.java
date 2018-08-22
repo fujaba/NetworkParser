@@ -319,7 +319,18 @@ public class HTMLEntity implements BaseItem {
 			return this;
 		}
 		String graph = value.toString(new GraphConverter());
-		return withGraph(graph, resource.toString());
+		// Is URL May be relative???
+		String ref = resource.toString();
+//		try {
+//			URL url = new URL("file", resource.getHost(), "");
+//			String urlRef = url.toString();
+//			if(ref.startsWith(urlRef) ) {
+//				ref = ref.substring(urlRef.length());
+//			}
+//		}catch (Exception e) {
+//		}
+		
+		return withGraph(graph,ref);
 	}
 	public HTMLEntity withGraph(Entity value) {
 		URL resource = GraphList.class.getResource("");

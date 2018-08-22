@@ -214,7 +214,7 @@ public class FileBuffer extends Buffer {
 	public static final int writeFile(String fileName, CharSequence data) {
 		return writeFile(fileName, data, OVERRIDE);
 	}
-	
+
 	public static final int writeFile(String fileName, byte[] data) {
 		return writeFile(fileName, data, OVERRIDE);
 	}

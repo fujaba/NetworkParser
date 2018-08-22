@@ -71,7 +71,7 @@ public class StoryStepDiagram implements ObjectCondition {
 				jsonArray.add(jsonObject);
 			}
 
-	      // add icons
+			// add icons
 			SimpleKeyValueList<String, String> images = filter.getImages();
 			for(int i=0;i<images.size();i++) {
 				String id = images.getKeyByIndex(i);
