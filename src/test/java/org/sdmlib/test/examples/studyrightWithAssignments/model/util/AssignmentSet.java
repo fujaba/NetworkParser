@@ -1,12 +1,13 @@
 package org.sdmlib.test.examples.studyrightWithAssignments.model.util;
 import org.sdmlib.test.examples.studyrightWithAssignments.model.Assignment;
+import java.util.LinkedHashSet;
 import de.uniks.networkparser.list.StringList;
 import de.uniks.networkparser.list.NumberList;
 import de.uniks.networkparser.list.ObjectSet;
 import org.sdmlib.test.examples.studyrightWithAssignments.model.Room;
 import org.sdmlib.test.examples.studyrightWithAssignments.model.Student;
 
-public class AssignmentSet extends <Assignment>
+public class AssignmentSet extends LinkedHashSet<Assignment>
 {
 	private static final long serialVersionUID = 1L;
 	public static final AssignmentSet EMPTY_SET = new AssignmentSet();

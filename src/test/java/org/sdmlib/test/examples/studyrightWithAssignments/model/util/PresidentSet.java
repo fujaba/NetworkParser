@@ -1,9 +1,10 @@
 package org.sdmlib.test.examples.studyrightWithAssignments.model.util;
 import org.sdmlib.test.examples.studyrightWithAssignments.model.President;
+import java.util.LinkedHashSet;
 import de.uniks.networkparser.list.ObjectSet;
 import org.sdmlib.test.examples.studyrightWithAssignments.model.University;
 
-public class PresidentSet extends <President>
+public class PresidentSet extends LinkedHashSet<President>
 {
 	private static final long serialVersionUID = 1L;
 	public static final PresidentSet EMPTY_SET = new PresidentSet();

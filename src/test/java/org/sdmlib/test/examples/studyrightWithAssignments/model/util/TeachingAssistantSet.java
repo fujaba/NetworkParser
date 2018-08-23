@@ -1,10 +1,11 @@
 package org.sdmlib.test.examples.studyrightWithAssignments.model.util;
 import org.sdmlib.test.examples.studyrightWithAssignments.model.TeachingAssistant;
+import java.util.LinkedHashSet;
 import de.uniks.networkparser.list.BooleanList;
 import de.uniks.networkparser.list.ObjectSet;
 import org.sdmlib.test.examples.studyrightWithAssignments.model.Room;
 
-public class TeachingAssistantSet extends <TeachingAssistant>
+public class TeachingAssistantSet extends LinkedHashSet<TeachingAssistant>
 {
 	private static final long serialVersionUID = 1L;
 	public static final TeachingAssistantSet EMPTY_SET = new TeachingAssistantSet();

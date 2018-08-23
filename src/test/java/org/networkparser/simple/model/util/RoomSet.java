@@ -1,9 +1,10 @@
 package org.networkparser.simple.model.util;
 import org.networkparser.simple.model.Room;
+import de.uniks.networkparser.list.SimpleSet;
 import de.uniks.networkparser.list.ObjectSet;
 import org.networkparser.simple.model.Person;
 
-public class RoomSet extends <Room>
+public class RoomSet extends SimpleSet<Room>
 {
 	public static final RoomSet EMPTY_SET = new RoomSet().withFlag(RoomSet.READONLY);
 

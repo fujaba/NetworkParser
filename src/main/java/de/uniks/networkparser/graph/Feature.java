@@ -55,8 +55,11 @@ public class Feature implements Comparable<Feature> {
 	}
 
 	public Feature create() {
-		if(Feature.SETCLASS.getName().equals(this.getName())) {
+		if(Feature.SETCLASS.equals(this)) {
 			return newInstance(this).withClazzValue(SimpleSet.class);
+		}
+		if(Feature.CODESTYLE.equals(this)) {
+			return newInstance(this).withStringValue(CODESTYLE_STANDARD);
 		}
 		return newInstance(this);
 	}
@@ -113,15 +116,13 @@ public class Feature implements Comparable<Feature> {
 	}
 
 	public static FeatureSet getAll() {
-		FeatureSet result = new FeatureSet().with(PROPERTYCHANGESUPPORT, SERIALIZATION, SETCLASS);
-		result.add(CODESTYLE.create().withStringValue(CODESTYLE_STANDARD));
+		FeatureSet result = new FeatureSet().with(PROPERTYCHANGESUPPORT, SERIALIZATION, SETCLASS.create(), CODESTYLE.create());
 		return result;
 	}
 
 	public static FeatureSet getStandAlone() {
-		FeatureSet result = new FeatureSet().with(PROPERTYCHANGESUPPORT);
+		FeatureSet result = new FeatureSet().with(PROPERTYCHANGESUPPORT, CODESTYLE.create());
 		result.add(SETCLASS.create().withClazzValue(LinkedHashSet.class));
-		result.add(CODESTYLE.create().withStringValue(CODESTYLE_STANDARD));
 		return result;
 	}
 

@@ -1,7 +1,6 @@
 package org.sdmlib.test.examples.studyrightWithAssignments.model;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import de.uniks.networkparser.list.SimpleKeyValueList;
 import org.sdmlib.test.examples.studyrightWithAssignments.model.util.StudentSet;
 import org.sdmlib.test.examples.studyrightWithAssignments.model.University;
 import org.sdmlib.test.examples.studyrightWithAssignments.model.Room;
@@ -53,17 +52,6 @@ public class Student
          listeners.removePropertyChangeListener(propertyName, listener);
       }
       return true;
-   }
-   private SimpleKeyValueList<String, Object> dynamicValues=new SimpleKeyValueList<String, Object>();
-   public Object getDynamicValue(String key) {
-      return this.dynamicValues.getValue(key);
-   }
-   public Student withDynamicValue(String key, Object value) {
-      this.dynamicValues.put(key, value);
-      return this;
-   }
-   public Object[][] getDynamicValues() {
-      return this.dynamicValues.toTable();
    }
    public static final String PROPERTY_ASSIGNMENTPOINTS = "assignmentPoints";
 

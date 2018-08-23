@@ -1,12 +1,13 @@
 package org.sdmlib.test.examples.studyrightWithAssignments.model.util;
 import org.sdmlib.test.examples.studyrightWithAssignments.model.University;
+import java.util.LinkedHashSet;
 import de.uniks.networkparser.list.StringList;
 import de.uniks.networkparser.list.ObjectSet;
 import org.sdmlib.test.examples.studyrightWithAssignments.model.Student;
 import org.sdmlib.test.examples.studyrightWithAssignments.model.Room;
 import org.sdmlib.test.examples.studyrightWithAssignments.model.President;
 
-public class UniversitySet extends <University>
+public class UniversitySet extends LinkedHashSet<University>
 {
 	private static final long serialVersionUID = 1L;
 	public static final UniversitySet EMPTY_SET = new UniversitySet();

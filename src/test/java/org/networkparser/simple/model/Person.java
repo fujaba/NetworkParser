@@ -1,9 +1,9 @@
 package org.networkparser.simple.model;
+
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import org.networkparser.simple.model.Room;
-
 
 public class Person
 {
