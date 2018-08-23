@@ -35,7 +35,6 @@ import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.ClazzSet;
 import de.uniks.networkparser.graph.DataType;
 import de.uniks.networkparser.graph.Feature;
-import de.uniks.networkparser.graph.FeatureProperty;
 import de.uniks.networkparser.graph.FeatureSet;
 import de.uniks.networkparser.graph.GraphMember;
 import de.uniks.networkparser.graph.GraphModel;
@@ -191,7 +190,7 @@ public class ModelGenerator extends BasicGenerator {
 			template.withOwner(this);
 		}
 
-		FeatureProperty codeStyle = getFeature(Feature.CODESTYLE);
+		Feature codeStyle = getFeature(Feature.CODESTYLE);
 		ClazzSet clazzes = model.getClazzes();
 
 		for (Clazz clazz : clazzes) {
@@ -294,11 +293,11 @@ public class ModelGenerator extends BasicGenerator {
 	}
 
 	@Override
-	public FeatureProperty getFeature(Feature value, Clazz... clazzes) {
+	public Feature getFeature(Feature value, Clazz... clazzes) {
 		if (this.features != null) {
-			for (Iterator<FeatureProperty> i = this.features.iterator(); i.hasNext();) {
-				FeatureProperty item = i.next();
-				if (item.getName().equals(value)) {
+			for (Iterator<Feature> i = this.features.iterator(); i.hasNext();) {
+				Feature item = i.next();
+				if (item.equals(value)) {
 					if(clazzes == null) {
 						return item;
 					}
@@ -322,7 +321,12 @@ public class ModelGenerator extends BasicGenerator {
 		return this;
 	}
 
-	public ModelGenerator withFeature(FeatureProperty feature) {
+	public ModelGenerator withFeature(FeatureSet featureSet) {
+		this.features.clear();
+		this.features.addAll(featureSet);
+		return this;
+	}
+	public ModelGenerator withFeature(Feature feature) {
 		this.features.with(feature);
 		return this;
 	}
@@ -382,7 +386,7 @@ public class ModelGenerator extends BasicGenerator {
 	public void removeAllGeneratedCode(GraphModel model, String rootDir) {
 		// now remove class file, creator file, and modelset file for each class
 		// and the CreatorCreator
-		FeatureProperty codeStyle = getFeature(Feature.CODESTYLE);
+		Feature codeStyle = getFeature(Feature.CODESTYLE);
 		if(rootDir.endsWith("/") == false) {
 			rootDir = rootDir+"/";
 		}

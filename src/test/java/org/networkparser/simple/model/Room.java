@@ -1,11 +1,11 @@
-package org.sdmlib.test.examples.studyrightWithAssignments.model;
+package org.networkparser.simple.model;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import de.uniks.networkparser.list.SimpleKeyValueList;
-import org.sdmlib.test.examples.studyrightWithAssignments.model.University;
+import org.networkparser.simple.model.util.PersonSet;
 
 
-public class President
+public class Room
 {
    protected PropertyChangeSupport listeners = null;
 
@@ -55,7 +55,7 @@ public class President
    public Object getDynamicValue(String key) {
       return this.dynamicValues.getValue(key);
    }
-   public President withDynamicValue(String key, Object value) {
+   public Room withDynamicValue(String key, Object value) {
       this.dynamicValues.put(key, value);
       return this;
    }
@@ -63,44 +63,57 @@ public class President
       return this.dynamicValues.toTable();
    }
 
-   public static final String PROPERTY_UNIVERSITY = "university";
+   public static final String PROPERTY_PERSONS = "persons";
 
-   private University university = null;
+   private PersonSet persons = null;
 
-   public University getUniversity()
+   public PersonSet getPersons()
    {
-      return this.university;
+      return this.persons;
    }
 
-   public boolean setUniversity(University value)
+   public Room withPersons(Person... value)
    {
-      boolean changed = false;
-      if (this.university != value) {
-         University oldValue = this.university;
-         if (this.university != null) {
-            this.university = null;
-            oldValue.setPresident(null);
-         }
-         this.university = value;
-         if (value != null) {
-            value.withPresident(this);
-         }
-         firePropertyChange(PROPERTY_UNIVERSITY, oldValue, value);
-         changed = true;
+      if (value == null) {
+         return this;
       }
-      return changed;
-   }
-
-   public President withUniversity(University value)
-   {
-      this.setUniversity(value);
+      for (Person item : value) {
+         if (item != null) {
+            if (this.persons == null) {
+               this.persons = new PersonSet();
+            }
+            boolean changed = this.persons.add(item);
+            if (changed)
+            {
+               item.setRoom(null);
+               firePropertyChange(PROPERTY_PERSONS, null, item);
+            }
+         }
+      }
       return this;
    }
 
-   public University createUniversity()
+   public Room withoutPersons(Person... value)
    {
-      University value = new University();
-      withUniversity(value);
+      for (Person item : value) {
+         if (this.persons != null && item != null) {
+            if (this.persons.remove(item)) {
+               item.withRoom(null);
+            }
+         }
+      }
+      return this;
+   }
+
+   public Person createPersons()
+   {
+      Person value = new Person();
+      withPersons(value);
       return value;
    }
+   public void init()    {
+      
+    }
+
+
 }

@@ -1,10 +1,22 @@
 package org.sdmlib.test.examples.studyrightWithAssignments.model;
+import de.uniks.networkparser.list.SimpleKeyValueList;
 import org.sdmlib.test.examples.studyrightWithAssignments.model.Room;
 
 
 public class TeachingAssistant extends Student
 {
 
+   private SimpleKeyValueList<String, Object> dynamicValues=new SimpleKeyValueList<String, Object>();
+   public Object getDynamicValue(String key) {
+      return this.dynamicValues.getValue(key);
+   }
+   public TeachingAssistant withDynamicValue(String key, Object value) {
+      this.dynamicValues.put(key, value);
+      return this;
+   }
+   public Object[][] getDynamicValues() {
+      return this.dynamicValues.toTable();
+   }
    public static final String PROPERTY_CERTIFIED = "certified";
 
    private boolean certified;

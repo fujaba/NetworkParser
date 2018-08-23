@@ -29,7 +29,6 @@ import de.uniks.networkparser.graph.Attribute;
 import de.uniks.networkparser.graph.AttributeSet;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.Feature;
-import de.uniks.networkparser.graph.FeatureProperty;
 import de.uniks.networkparser.graph.FeatureSet;
 import de.uniks.networkparser.graph.GraphEntity;
 import de.uniks.networkparser.graph.GraphMember;
@@ -91,7 +90,7 @@ public abstract class BasicGenerator {
 		return template;
 	}
 
-	protected FeatureProperty getFeature(Feature value, Clazz... values) {
+	protected Feature getFeature(Feature value, Clazz... values) {
 		if(this.owner != null) {
 			return this.owner.getFeature(value, values);
 		}
@@ -99,7 +98,7 @@ public abstract class BasicGenerator {
 	}
 
 	public void executeTemplate(TemplateResultFile templateResult, LocalisationInterface parameters, GraphMember member) {
-		if(isValid(member) == false) {
+		if(isValid(member, parameters) == false) {
 			return;
 		}
 		for(Template template : templates) {
@@ -113,7 +112,7 @@ public abstract class BasicGenerator {
 		}
 	}
 
-	private boolean isValid(GraphMember member) {
+	protected boolean isValid(GraphMember member, LocalisationInterface parameters) {
 		if(member == null || getType() == null || getType().isAssignableFrom(member.getClass()) == false) {
 			return false;
 		}
@@ -150,7 +149,7 @@ public abstract class BasicGenerator {
 	}
 	
 	public TemplateResultFile executeEntity(GraphEntity model, LocalisationInterface parameters, boolean isStandard) {
-		if(isValid(model) == false) {
+		if(isValid(model,parameters) == false) {
 			return null;
 		}
 		TemplateResultFile templateResult = createResultFile(model, isStandard);
@@ -158,7 +157,7 @@ public abstract class BasicGenerator {
 	}
 	
 	public TemplateResultFile executeClazz(Clazz clazz, LocalisationInterface parameters, boolean isStandard) {
-		if(isValid(clazz) == false) {
+		if(isValid(clazz,  parameters) == false) {
 			return null;
 		}
 		TemplateResultFile templateResult = createResultFile(clazz, isStandard);

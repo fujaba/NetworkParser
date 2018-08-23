@@ -23,7 +23,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-import de.uniks.networkparser.graph.FeatureProperty;
+import de.uniks.networkparser.graph.Feature;
 import de.uniks.networkparser.interfaces.LocalisationInterface;
 import de.uniks.networkparser.interfaces.ParserCondition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
@@ -36,7 +36,7 @@ public class TemplateResultModel extends SimpleList<TemplateResultFile> implemen
 	public static final String PROPERTY_TEMPLATE="templates";
 	public static final String PROPERTY_TEXT="text";
 	public static final String PROPERTY_CHILD="child";
-	private SimpleSet<FeatureProperty> features;
+	private SimpleSet<Feature> features;
 	private SimpleKeyValueList<String, ParserCondition> customTemplate;
 	private LocalisationInterface language;
 
@@ -133,7 +133,7 @@ public class TemplateResultModel extends SimpleList<TemplateResultFile> implemen
 				}else {
 					attrName = attribute;
 				}
-				FeatureProperty feature = model.getFeature(attrName);
+				Feature feature = model.getFeature(attrName);
 				if(feature != null && pos > 0) {
 					return feature.getValue(attribute.substring(pos+1));
 				}
@@ -152,14 +152,14 @@ public class TemplateResultModel extends SimpleList<TemplateResultFile> implemen
 		return false;
 	}
 
-	public SimpleSet<FeatureProperty> getFeatures() {
+	public SimpleSet<Feature> getFeatures() {
 		return features;
 	}
-	public FeatureProperty getFeature(String name) {
+	public Feature getFeature(String name) {
 		if(features == null || name == null) {
 			return null;
 		}
-		for(FeatureProperty prop : features) {
+		for(Feature prop : features) {
 			if(name.equalsIgnoreCase(prop.getName().toString())) {
 				return prop;
 			}
@@ -167,7 +167,7 @@ public class TemplateResultModel extends SimpleList<TemplateResultFile> implemen
 		return null;
 	}
 
-	public TemplateResultModel withFeatures(SimpleSet<FeatureProperty> features) {
+	public TemplateResultModel withFeatures(SimpleSet<Feature> features) {
 		this.features = features;
 		return this;
 	}

@@ -27,7 +27,6 @@ import de.uniks.networkparser.ext.io.FileBuffer;
 import de.uniks.networkparser.graph.Annotation;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.Feature;
-import de.uniks.networkparser.graph.FeatureProperty;
 import de.uniks.networkparser.graph.GraphMember;
 import de.uniks.networkparser.graph.GraphModel;
 import de.uniks.networkparser.interfaces.BaseItem;
@@ -57,7 +56,7 @@ public class ClassModel extends GraphModel {
 		with(packageName);
 	}
 
-	public ClassModel withFeature(FeatureProperty feature) {
+	public ClassModel withFeature(Feature feature) {
 		this.generator.withFeature(feature);
 		return this;
 	}
@@ -76,7 +75,7 @@ public class ClassModel extends GraphModel {
 		return generator;
 	}
 
-	public FeatureProperty getFeature(Feature feature, Clazz... clazzes) {
+	public Feature getFeature(Feature feature, Clazz... clazzes) {
 		return this.generator.getFeature(feature, clazzes);
 	}
 

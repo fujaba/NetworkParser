@@ -1,21 +1,20 @@
 package org.sdmlib.test.examples.studyrightWithAssignments.model.util;
 import org.sdmlib.test.examples.studyrightWithAssignments.model.Assignment;
-import de.uniks.networkparser.list.SimpleSet;
 import de.uniks.networkparser.list.StringList;
 import de.uniks.networkparser.list.NumberList;
 import de.uniks.networkparser.list.ObjectSet;
 import org.sdmlib.test.examples.studyrightWithAssignments.model.Room;
 import org.sdmlib.test.examples.studyrightWithAssignments.model.Student;
 
-public class AssignmentSet extends SimpleSet<Assignment>
+public class AssignmentSet extends <Assignment>
 {
-	public static final AssignmentSet EMPTY_SET = new AssignmentSet().withFlag(AssignmentSet.READONLY);
+	private static final long serialVersionUID = 1L;
+	public static final AssignmentSet EMPTY_SET = new AssignmentSet();
 
 	public Class<?> getTypClass() {
 		return Assignment.class;
 	}
 
-	@Override
 	public AssignmentSet getNewList(boolean keyValue) {
 		return new AssignmentSet();
 	}
@@ -81,12 +80,12 @@ public class AssignmentSet extends SimpleSet<Assignment>
       }
       return this;
    }
-   public AssignmentSet getRoom()
+   public RoomSet getRoom()
    {
-      AssignmentSet result = new AssignmentSet();
+      RoomSet result = new RoomSet();
       for (Assignment obj : this)
       {
-         result.with(obj.getRoom());
+         result.add(obj.getRoom());
       }
       return result;
    }
@@ -113,12 +112,12 @@ public class AssignmentSet extends SimpleSet<Assignment>
       }
       return this;
    }
-   public AssignmentSet getStudents()
+   public StudentSet getStudents()
    {
-      AssignmentSet result = new AssignmentSet();
+      StudentSet result = new StudentSet();
       for (Assignment obj : this)
       {
-         result.with(obj.getStudents());
+         result.addAll(obj.getStudents());
       }
       return result;
    }

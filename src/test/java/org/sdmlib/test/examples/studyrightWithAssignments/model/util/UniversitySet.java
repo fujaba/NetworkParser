@@ -1,21 +1,20 @@
 package org.sdmlib.test.examples.studyrightWithAssignments.model.util;
 import org.sdmlib.test.examples.studyrightWithAssignments.model.University;
-import de.uniks.networkparser.list.SimpleSet;
 import de.uniks.networkparser.list.StringList;
 import de.uniks.networkparser.list.ObjectSet;
 import org.sdmlib.test.examples.studyrightWithAssignments.model.Student;
 import org.sdmlib.test.examples.studyrightWithAssignments.model.Room;
 import org.sdmlib.test.examples.studyrightWithAssignments.model.President;
 
-public class UniversitySet extends SimpleSet<University>
+public class UniversitySet extends <University>
 {
-	public static final UniversitySet EMPTY_SET = new UniversitySet().withFlag(UniversitySet.READONLY);
+	private static final long serialVersionUID = 1L;
+	public static final UniversitySet EMPTY_SET = new UniversitySet();
 
 	public Class<?> getTypClass() {
 		return University.class;
 	}
 
-	@Override
 	public UniversitySet getNewList(boolean keyValue) {
 		return new UniversitySet();
 	}
@@ -51,12 +50,12 @@ public class UniversitySet extends SimpleSet<University>
       }
       return this;
    }
-   public UniversitySet getStudents()
+   public StudentSet getStudents()
    {
-      UniversitySet result = new UniversitySet();
+      StudentSet result = new StudentSet();
       for (University obj : this)
       {
-         result.with(obj.getStudents());
+         result.addAll(obj.getStudents());
       }
       return result;
    }
@@ -83,12 +82,12 @@ public class UniversitySet extends SimpleSet<University>
       }
       return this;
    }
-   public UniversitySet getRooms()
+   public RoomSet getRooms()
    {
-      UniversitySet result = new UniversitySet();
+      RoomSet result = new RoomSet();
       for (University obj : this)
       {
-         result.with(obj.getRooms());
+         result.addAll(obj.getRooms());
       }
       return result;
    }
@@ -115,12 +114,12 @@ public class UniversitySet extends SimpleSet<University>
       }
       return this;
    }
-   public UniversitySet getPresident()
+   public PresidentSet getPresident()
    {
-      UniversitySet result = new UniversitySet();
+      PresidentSet result = new PresidentSet();
       for (University obj : this)
       {
-         result.with(obj.getPresident());
+         result.add(obj.getPresident());
       }
       return result;
    }

@@ -36,7 +36,6 @@ import de.uniks.networkparser.ext.generic.ReflectionLoader;
 import de.uniks.networkparser.ext.io.FileBuffer;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.Feature;
-import de.uniks.networkparser.graph.FeatureProperty;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.list.SimpleKeyValueList;
@@ -53,7 +52,7 @@ public class StoryStepJUnit implements ObjectCondition {
 	private String path = "lib/jacocoagent.jar";
 	private SimpleSet<String> testClasses;
 	private SimpleKeyValueList<String, JacocoColumn> columns = new SimpleKeyValueList<String, JacocoColumn>();
-	private SimpleList<FeatureProperty> groups=new SimpleList<FeatureProperty>();
+	private SimpleList<Feature> groups=new SimpleList<Feature>();
 	int tabwidth = 4;
 	private JacocoColumn column;
 	
@@ -62,8 +61,8 @@ public class StoryStepJUnit implements ObjectCondition {
 		this.addColumn("BBT", column);
 	}
 
-	public FeatureProperty addGroup(String label) {
-		FeatureProperty feature = new FeatureProperty(Feature.JUNIT);
+	public Feature addGroup(String label) {
+		Feature feature = Feature.JUNIT.create();
 		feature.withStringValue(label);
 
 		this.groups.add(feature);
@@ -92,7 +91,7 @@ public class StoryStepJUnit implements ObjectCondition {
 		ReflectionLoader.call(visitor, "visitInfo", List.class, info, Collection.class, content);
 
 		// Create Files
-		for(FeatureProperty group : groups) {
+		for(Feature group : groups) {
 			Object bundle = writeReports(loader, formatter, htmlFile, group);
 			ReflectionLoader.callStr(visitor,"visitBundle", 
 					"org.jacoco.core.analysis.IBundleCoverage", bundle,
@@ -117,7 +116,7 @@ public class StoryStepJUnit implements ObjectCondition {
 		return formater;
 	}
 
-	private Object writeReports(Object loader, Object formatter, File outputFile, FeatureProperty group) {
+	private Object writeReports(Object loader, Object formatter, File outputFile, Feature group) {
 		Object builder = ReflectionLoader.newInstance("org.jacoco.core.analysis.CoverageBuilder");
 		if(builder == null) {
 			return null;

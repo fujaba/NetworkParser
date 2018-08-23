@@ -1,16 +1,17 @@
-package org.sdmlib.test.examples.studyrightWithAssignments.model.util;
+package org.networkparser.simple.model.util;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
-import org.sdmlib.test.examples.studyrightWithAssignments.model.President;
-import org.sdmlib.test.examples.studyrightWithAssignments.model.University;
+import org.networkparser.simple.model.Room;
+import org.networkparser.simple.model.Person;
 import de.uniks.networkparser.IdMap;
 
 
-public class PresidentCreator implements SendableEntityCreator
+public class RoomCreator implements SendableEntityCreator
 {
 
    private final String[] properties = new String[]
    {
-      President.PROPERTY_UNIVERSITY,
+      Room.PROPERTY_PERSONS,
+      SendableEntityCreator.DYNAMIC
    };
 
    @Override
@@ -22,16 +23,16 @@ public class PresidentCreator implements SendableEntityCreator
    @Override
    public Object getSendableInstance(boolean prototyp)
    {
-      return new President();
+      return new Room();
    }
 
    @Override
    public Object getValue(Object entity, String attribute)
    {
-      if(attribute == null || entity instanceof President == false) {
+      if(attribute == null || entity instanceof Room == false) {
           return null;
       }
-      President element = (President)entity;
+      Room element = (Room)entity;
       int pos = attribute.indexOf('.');
       String attrName = attribute;
 
@@ -43,33 +44,37 @@ public class PresidentCreator implements SendableEntityCreator
          return null;
       }
 
-      if (President.PROPERTY_UNIVERSITY.equalsIgnoreCase(attrName))
+      if (Room.PROPERTY_PERSONS.equalsIgnoreCase(attrName))
       {
-         return element.getUniversity();
+         return element.getPersons();
       }
 
-      return null;
+      if(SendableEntityCreator.DYNAMIC.equalsIgnoreCase(attrName)) {
+          return element.getDynamicValues();
+      }
+      return element.getDynamicValue(attrName);
    }
 
    @Override
    public boolean setValue(Object entity, String attribute, Object value, String type)
    {
-      if(attribute == null || entity instanceof President == false) {
+      if(attribute == null || entity instanceof Room == false) {
           return false;
       }
-      President element = (President)entity;
+      Room element = (Room)entity;
       if (SendableEntityCreator.REMOVE.equals(type) && value != null)
       {
          attribute = attribute + type;
       }
 
-      if (President.PROPERTY_UNIVERSITY.equalsIgnoreCase(attribute))
+      if (Room.PROPERTY_PERSONS.equalsIgnoreCase(attribute))
       {
-         element.setUniversity((University) value);
+         element.withPersons((Person) value);
          return true;
       }
 
-      return false;
+      element.withDynamicValue(attribute, value);
+      return true;
    }
     public IdMap createMap(String session) {
  	   return CreatorCreator.createIdMap(session);

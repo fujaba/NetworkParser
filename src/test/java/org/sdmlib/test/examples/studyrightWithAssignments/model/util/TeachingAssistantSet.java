@@ -1,19 +1,18 @@
 package org.sdmlib.test.examples.studyrightWithAssignments.model.util;
 import org.sdmlib.test.examples.studyrightWithAssignments.model.TeachingAssistant;
-import de.uniks.networkparser.list.SimpleSet;
 import de.uniks.networkparser.list.BooleanList;
 import de.uniks.networkparser.list.ObjectSet;
 import org.sdmlib.test.examples.studyrightWithAssignments.model.Room;
 
-public class TeachingAssistantSet extends SimpleSet<TeachingAssistant>
+public class TeachingAssistantSet extends <TeachingAssistant>
 {
-	public static final TeachingAssistantSet EMPTY_SET = new TeachingAssistantSet().withFlag(TeachingAssistantSet.READONLY);
+	private static final long serialVersionUID = 1L;
+	public static final TeachingAssistantSet EMPTY_SET = new TeachingAssistantSet();
 
 	public Class<?> getTypClass() {
 		return TeachingAssistant.class;
 	}
 
-	@Override
 	public TeachingAssistantSet getNewList(boolean keyValue) {
 		return new TeachingAssistantSet();
 	}
@@ -49,12 +48,12 @@ public class TeachingAssistantSet extends SimpleSet<TeachingAssistant>
       }
       return this;
    }
-   public TeachingAssistantSet getRoom()
+   public RoomSet getRoom()
    {
-      TeachingAssistantSet result = new TeachingAssistantSet();
+      RoomSet result = new RoomSet();
       for (TeachingAssistant obj : this)
       {
-         result.with(obj.getRoom());
+         result.add(obj.getRoom());
       }
       return result;
    }

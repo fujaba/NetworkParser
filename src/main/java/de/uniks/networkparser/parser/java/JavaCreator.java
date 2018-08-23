@@ -27,6 +27,9 @@ THE SOFTWARE.
 import de.uniks.networkparser.graph.Association;
 import de.uniks.networkparser.graph.Attribute;
 import de.uniks.networkparser.graph.Clazz;
+import de.uniks.networkparser.graph.Feature;
+import de.uniks.networkparser.graph.GraphMember;
+import de.uniks.networkparser.interfaces.LocalisationInterface;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.parser.BasicGenerator;
 import de.uniks.networkparser.parser.Template;
@@ -177,6 +180,15 @@ public class JavaCreator extends BasicGenerator {
 	@Override
 	public Class<?> getType() {
 		return Clazz.class;
+	}
+	
+	protected boolean isValid(GraphMember member, LocalisationInterface parameters) {
+		if(super.isValid(member, parameters) == false) {
+			return false;
+		}
+		// Check for existing Feature Serialization
+		Feature features = getFeature(Feature.SERIALIZATION, member.getClazz());
+		return features != null;
 	}
 
 }

@@ -1,11 +1,11 @@
-package org.sdmlib.test.examples.studyrightWithAssignments.model;
+package org.networkparser.simple.model;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import de.uniks.networkparser.list.SimpleKeyValueList;
-import org.sdmlib.test.examples.studyrightWithAssignments.model.University;
+import org.networkparser.simple.model.Room;
 
 
-public class President
+public class Person
 {
    protected PropertyChangeSupport listeners = null;
 
@@ -55,52 +55,100 @@ public class President
    public Object getDynamicValue(String key) {
       return this.dynamicValues.getValue(key);
    }
-   public President withDynamicValue(String key, Object value) {
+   public Person withDynamicValue(String key, Object value) {
       this.dynamicValues.put(key, value);
       return this;
    }
    public Object[][] getDynamicValues() {
       return this.dynamicValues.toTable();
    }
+   public static final String PROPERTY_AGE = "age";
 
-   public static final String PROPERTY_UNIVERSITY = "university";
+   private int age;
 
-   private University university = null;
-
-   public University getUniversity()
+   public int getAge()
    {
-      return this.university;
+      return this.age;
    }
 
-   public boolean setUniversity(University value)
+   public void setAge(int value)
+   {
+      if (this.age != value)
+      {         int oldValue = this.age;
+         this.age = value;
+         firePropertyChange(PROPERTY_AGE, oldValue, value);
+      }
+   }
+
+   public Person withAge(int value)
+   {
+      setAge(value);
+      return this;
+   }
+
+   public static final String PROPERTY_NAME = "name";
+
+   private String name;
+
+   public String getName()
+   {
+      return this.name;
+   }
+
+   public void setName(String value)
+   {
+      if (this.name != value)
+      {         String oldValue = this.name;
+         this.name = value;
+         firePropertyChange(PROPERTY_NAME, oldValue, value);
+      }
+   }
+
+   public Person withName(String value)
+   {
+      setName(value);
+      return this;
+   }
+
+
+   public static final String PROPERTY_ROOM = "room";
+
+   private Room room = null;
+
+   public Room getRoom()
+   {
+      return this.room;
+   }
+
+   public boolean setRoom(Room value)
    {
       boolean changed = false;
-      if (this.university != value) {
-         University oldValue = this.university;
-         if (this.university != null) {
-            this.university = null;
-            oldValue.setPresident(null);
+      if (this.room != value) {
+         Room oldValue = this.room;
+         if (this.room != null) {
+            this.room = null;
+            oldValue.withoutPersons(this);
          }
-         this.university = value;
+         this.room = value;
          if (value != null) {
-            value.withPresident(this);
+            value.withPersons(this);
          }
-         firePropertyChange(PROPERTY_UNIVERSITY, oldValue, value);
+         firePropertyChange(PROPERTY_ROOM, oldValue, value);
          changed = true;
       }
       return changed;
    }
 
-   public President withUniversity(University value)
+   public Person withRoom(Room value)
    {
-      this.setUniversity(value);
+      this.setRoom(value);
       return this;
    }
 
-   public University createUniversity()
+   public Room createRoom()
    {
-      University value = new University();
-      withUniversity(value);
+      Room value = new Room();
+      withRoom(value);
       return value;
    }
 }

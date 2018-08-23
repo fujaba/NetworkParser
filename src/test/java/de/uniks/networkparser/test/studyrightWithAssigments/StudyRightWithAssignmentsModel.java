@@ -30,6 +30,7 @@ import de.uniks.networkparser.graph.AssociationTypes;
 import de.uniks.networkparser.graph.Cardinality;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.DataType;
+import de.uniks.networkparser.graph.Feature;
 import de.uniks.networkparser.graph.Parameter;
 
 public class StudyRightWithAssignmentsModel {
@@ -141,7 +142,7 @@ public class StudyRightWithAssignmentsModel {
 		code.withEnd(StoryStepSourceCode.CURRENTPOSITION);
 
 		story.dumpHTML();
-		
+		model.getGenerator().withFeature(Feature.getStandAlone());
 		model.getGenerator().testGeneratedCode("src/test/java");
 	}
 

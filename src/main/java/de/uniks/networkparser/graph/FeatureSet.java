@@ -2,7 +2,7 @@ package de.uniks.networkparser.graph;
 
 import de.uniks.networkparser.list.SimpleSet;
 
-public class FeatureSet extends SimpleSet<FeatureProperty>{
+public class FeatureSet extends SimpleSet<Feature>{
 	public FeatureSet with(Feature... features) {
 		if(features ==null) {
 			return this;
@@ -13,10 +13,10 @@ public class FeatureSet extends SimpleSet<FeatureProperty>{
 		return this;
 	}
 
-	public FeatureProperty getFeatureProperty(Feature name) {
-		for(FeatureProperty item : this) {
-			FeatureProperty feature = (FeatureProperty) item;
-			if(feature.getName() != name) {
+	public Feature getFeature(Feature name) {
+		for(Feature item : this) {
+			Feature feature = (Feature) item;
+			if(feature.getName().equals(name)) {
 				continue;
 			}
 			return feature;
@@ -25,7 +25,7 @@ public class FeatureSet extends SimpleSet<FeatureProperty>{
 	}
 
 	public boolean match(Feature feature, Clazz clazz) {
-		FeatureProperty property = getFeatureProperty(feature);
+		Feature property = getFeature(feature);
 		if(property != null) {
 			return property.match(clazz);
 		}

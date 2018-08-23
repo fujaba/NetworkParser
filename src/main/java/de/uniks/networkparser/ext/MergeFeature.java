@@ -24,10 +24,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 import de.uniks.networkparser.graph.Feature;
-import de.uniks.networkparser.graph.FeatureProperty;
 import de.uniks.networkparser.interfaces.SimpleEventCondition;
 
-public class MergeFeature extends FeatureProperty{
+public class MergeFeature extends Feature {
 	public static final String IGNORE="ignore";
 	public static final String OVERRIDE="override";
 	public static final String CONFLICT="conflict";
@@ -36,6 +35,11 @@ public class MergeFeature extends FeatureProperty{
 
 	protected MergeFeature(Feature name) {
 		super(name);
+	}
+	
+	@Override
+	protected Feature newInstance(Feature ref) {
+		return new MergeFeature(ref);
 	}
 
 	/**

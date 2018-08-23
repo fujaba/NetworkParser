@@ -1,6 +1,5 @@
 package org.sdmlib.test.examples.studyrightWithAssignments.model.util;
 import org.sdmlib.test.examples.studyrightWithAssignments.model.Student;
-import de.uniks.networkparser.list.SimpleSet;
 import de.uniks.networkparser.list.NumberList;
 import de.uniks.networkparser.list.StringList;
 import de.uniks.networkparser.list.ObjectSet;
@@ -8,15 +7,15 @@ import org.sdmlib.test.examples.studyrightWithAssignments.model.University;
 import org.sdmlib.test.examples.studyrightWithAssignments.model.Room;
 import org.sdmlib.test.examples.studyrightWithAssignments.model.Assignment;
 
-public class StudentSet extends SimpleSet<Student>
+public class StudentSet extends <Student>
 {
-	public static final StudentSet EMPTY_SET = new StudentSet().withFlag(StudentSet.READONLY);
+	private static final long serialVersionUID = 1L;
+	public static final StudentSet EMPTY_SET = new StudentSet();
 
 	public Class<?> getTypClass() {
 		return Student.class;
 	}
 
-	@Override
 	public StudentSet getNewList(boolean keyValue) {
 		return new StudentSet();
 	}
@@ -177,7 +176,7 @@ public class StudentSet extends SimpleSet<Student>
       StudentSet result = new StudentSet();
       for (Student obj : this)
       {
-         result.with(obj.getFriends());
+         result.addAll(obj.getFriends());
       }
       return result;
    }
@@ -204,12 +203,12 @@ public class StudentSet extends SimpleSet<Student>
       }
       return this;
    }
-   public StudentSet getUniversity()
+   public UniversitySet getUniversity()
    {
-      StudentSet result = new StudentSet();
+      UniversitySet result = new UniversitySet();
       for (Student obj : this)
       {
-         result.with(obj.getUniversity());
+         result.add(obj.getUniversity());
       }
       return result;
    }
@@ -236,12 +235,12 @@ public class StudentSet extends SimpleSet<Student>
       }
       return this;
    }
-   public StudentSet getIn()
+   public RoomSet getIn()
    {
-      StudentSet result = new StudentSet();
+      RoomSet result = new RoomSet();
       for (Student obj : this)
       {
-         result.with(obj.getIn());
+         result.add(obj.getIn());
       }
       return result;
    }
@@ -268,12 +267,12 @@ public class StudentSet extends SimpleSet<Student>
       }
       return this;
    }
-   public StudentSet getDone()
+   public AssignmentSet getDone()
    {
-      StudentSet result = new StudentSet();
+      AssignmentSet result = new AssignmentSet();
       for (Student obj : this)
       {
-         result.with(obj.getDone());
+         result.addAll(obj.getDone());
       }
       return result;
    }

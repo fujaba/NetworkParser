@@ -23,6 +23,7 @@ public class JavaSet extends BasicGenerator {
 				"{{#if {{templatemodel.features.setclass.classstring}}=="+SimpleSet.class.getName()+"}}"+
 				"	public static final {{name}}Set EMPTY_SET = new {{name}}Set().withFlag({{name}}Set.READONLY);"+
 				"{{#else}}"+
+				"	private static final long serialVersionUID = 1L;",
 				"	public static final {{name}}Set EMPTY_SET = new {{name}}Set();"+
 				"{{#endif}}"
 				,"",

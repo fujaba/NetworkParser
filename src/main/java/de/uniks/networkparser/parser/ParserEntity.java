@@ -1018,21 +1018,11 @@ public class ParserEntity {
 		}
 	}
 
-	private static final String SDMLIBFILES = "org.sdmlib.serialization.EntityFactory "
-			+ "org.sdmlib.models.pattern.PatternObject " + "org.sdmlib.models.pattern.util.PatternObjectCreator "
-			+ "org.sdmlib.models.modelsets.SDMSet " + "org.sdmlib.serialization.PropertyChangeInterface";
-
 	private void addMemberAsInterface(SymTabEntry memberName,
 			SimpleKeyValueList<String, SimpleList<SymTabEntry>> symbolTab) {
 		Clazz memberClass = findMemberClass(this.file, memberName, symbolTab);
 
 		if(memberClass == null) {
-			return;
-		}
-		// ignore helperclasses
-		boolean found = SDMLIBFILES.indexOf(memberClass.getName(false)) > 0;
-		if (found) {
-			GraphUtil.removeYou(memberClass);
 			return;
 		}
 		if (memberClass != null) {

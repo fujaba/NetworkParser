@@ -3,7 +3,6 @@ package de.uniks.networkparser.logic;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.Feature;
-import de.uniks.networkparser.graph.FeatureProperty;
 import de.uniks.networkparser.graph.FeatureSet;
 import de.uniks.networkparser.graph.GraphMember;
 import de.uniks.networkparser.interfaces.LocalisationInterface;
@@ -21,7 +20,7 @@ import de.uniks.networkparser.list.SimpleSet;
 public class FeatureCondition extends CustomCondition<GraphMember> {
 	private static final String PROPERTY_FEATURE="variable.features";
 	public static final String TAG="feature";
-	private FeatureProperty feature;
+	private Feature feature;
 
 	@Override
 	public String getKey() {
@@ -58,7 +57,7 @@ public class FeatureCondition extends CustomCondition<GraphMember> {
 
 	@Override
 	public CharSequence getValue(LocalisationInterface value) {
-		FeatureProperty feature = getFeature(value);
+		Feature feature = getFeature(value);
 		if (feature != null) {
 			SendableEntityCreator creator = (SendableEntityCreator) value;
 			Class<?> classValue = feature.getClassValue();
@@ -75,11 +74,11 @@ public class FeatureCondition extends CustomCondition<GraphMember> {
 		return null;
 	}
 
-	private FeatureProperty getFeature(Object value) {
+	private Feature getFeature(Object value) {
 		if(value instanceof SendableEntityCreator) {
 			SendableEntityCreator creator = (SendableEntityCreator) value;
 			FeatureSet features = (FeatureSet) creator.getValue(creator, PROPERTY_FEATURE);
-			return features.getFeatureProperty(this.feature.getName());
+			return features.getFeature(this.feature);
 		}
 		return null;
 	}
@@ -92,7 +91,7 @@ public class FeatureCondition extends CustomCondition<GraphMember> {
 		if(this.isExpression == false && value instanceof ObjectCondition) {
 			return ((ObjectCondition)value).update(this);
 		}
-		FeatureProperty feature = getFeature(value);
+		Feature feature = getFeature(value);
 		if(feature != null) {
 			Clazz clazz = getMember(value).getClazz();
 			return hasFeatureProperty(feature, clazz);
@@ -100,7 +99,7 @@ public class FeatureCondition extends CustomCondition<GraphMember> {
 		return false;
 	}
 
-	public boolean hasFeatureProperty(FeatureProperty property, Clazz... values) {
+	public boolean hasFeatureProperty(Feature property, Clazz... values) {
 		if(property != null) {
 			if(values == null) {
 				return true;

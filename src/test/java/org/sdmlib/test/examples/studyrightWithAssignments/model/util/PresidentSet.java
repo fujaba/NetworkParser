@@ -1,29 +1,28 @@
 package org.sdmlib.test.examples.studyrightWithAssignments.model.util;
 import org.sdmlib.test.examples.studyrightWithAssignments.model.President;
-import de.uniks.networkparser.list.SimpleSet;
 import de.uniks.networkparser.list.ObjectSet;
 import org.sdmlib.test.examples.studyrightWithAssignments.model.University;
 
-public class PresidentSet extends SimpleSet<President>
+public class PresidentSet extends <President>
 {
-	public static final PresidentSet EMPTY_SET = new PresidentSet().withFlag(PresidentSet.READONLY);
+	private static final long serialVersionUID = 1L;
+	public static final PresidentSet EMPTY_SET = new PresidentSet();
 
 	public Class<?> getTypClass() {
 		return President.class;
 	}
 
-	@Override
 	public PresidentSet getNewList(boolean keyValue) {
 		return new PresidentSet();
 	}
 
 
-   public PresidentSet getUniversity()
+   public UniversitySet getUniversity()
    {
-      PresidentSet result = new PresidentSet();
+      UniversitySet result = new UniversitySet();
       for (President obj : this)
       {
-         result.with(obj.getUniversity());
+         result.add(obj.getUniversity());
       }
       return result;
    }
