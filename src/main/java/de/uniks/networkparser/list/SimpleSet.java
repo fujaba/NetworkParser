@@ -34,6 +34,14 @@ public class SimpleSet<V> extends AbstractList<V> implements Set<V> {
 	public static final String PROPERTY="items";
 	private ObjectCondition listener;
 
+	public SimpleSet() {
+		//empty
+	}
+	public SimpleSet(Object... objects) {
+		if(objects != null && objects.length>0) {
+			init(objects);
+		}
+	}
 	@Override
 	public SimpleSet<V> getNewList(boolean keyValue) {
 		return new SimpleSet<V>();

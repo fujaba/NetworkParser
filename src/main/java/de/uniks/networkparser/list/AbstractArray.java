@@ -97,39 +97,28 @@ public abstract class AbstractArray<V> implements BaseItem {
 	int size;
 
 	/**
-	 * Init-List with Collection
+	 * Init-List with Collection or single Object
 	 *
-	 * @param list   add all new Items
+	 * @param list   add all new Items 
 	 * @param <ST>   Container Class
 	 * @return return self
 	 */
 	@SuppressWarnings("unchecked")
-	public <ST extends AbstractArray<V>> ST init(Collection<?> list) {
-		if (list instanceof AbstractArray) {
-			this.setFlag(((AbstractArray<V>) list).flag());
+	public <ST extends AbstractArray<V>> ST init(Object values) {
+		if(values == null) {
+			return (ST) this;
 		}
-		withList(list);
+		if(values instanceof Collection<?>) {
+			if (values instanceof AbstractArray) {
+				this.setFlag(((AbstractArray<?>) values).flag());
+			}
+			withList((Collection<?>) values);
+		} else {
+			with(values);
+		}
 		return (ST) this;
 	}
 
-	/**
-	 * Init-List with Size-Integer
-	 *
-	 *
-	 * @param initSize
-	 *            the new Size of the List
-	 * @param <ST>
-	 *            Container Class
-	 * @return return self
-	 */
-	@SuppressWarnings("unchecked")
-	public <ST extends AbstractArray<V>> ST init(int initSize) {
-		if (initSize < 1) {
-			return (ST) this;
-		}
-		grow(initSize);
-		return (ST) this;
-	}
 
 	/**
 	 * Init-List with Size-Integer
@@ -793,7 +782,7 @@ public abstract class AbstractArray<V> implements BaseItem {
 
 	@Override
 	public boolean add(Object... values) {
-		if (values == null) {
+		if (values == null || values.length<1) {
 			return false;
 		}
 		int newSize = size + values.length;
@@ -1054,9 +1043,32 @@ public abstract class AbstractArray<V> implements BaseItem {
 		if (c == null)
 			return true;
 		for (Object e : c)
-			if (!contains(e))
+			if (contains(e) == false)
 				return false;
 		return true;
+	}
+
+	public boolean containsAny(Object... c) {
+		if (c == null || c.length < 1)
+			return false;
+		if(c.length > 1) {
+			for (Object e : c) {
+				if (contains(e)) {
+					return true;
+				}
+			}
+		} else {
+			if(c[0] instanceof Collection<?>) {
+				Collection<?> value = (Collection<?>) c[0];
+				for (Object e : value) {
+					if (contains(e)) {
+						return true;
+					}
+				}
+			}
+			return contains(c[0]);
+		}
+		return false;
 	}
 
 	public boolean containsAll(Object... keys) {

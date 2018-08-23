@@ -123,7 +123,7 @@ public class Template implements TemplateParser {
 		int start=buffer.position(), end;
 		ObjectCondition child = null;
 		ChainCondition parent = new ChainCondition();
-
+		int startDif = 2;
 		while(buffer.isEnd() == false) {
 			if(isExpression && (buffer.getCurrentChar() == SPACE)) {
 				break;
@@ -134,11 +134,17 @@ public class Template implements TemplateParser {
 			}
 			if(character != SPLITSTART) {
 				buffer.skip();
+				startDif = 2;
 				continue;
 			}
 			character = buffer.getChar();
+			if(character =='!') {
+				startDif = 3;
+				character = buffer.getChar();
+			}
 			if(character != SPLITSTART) {
 				buffer.skip();
+				startDif = 2;
 				continue;
 			}
 			// Well done found {{
@@ -147,7 +153,7 @@ public class Template implements TemplateParser {
 			while(character==SPLITSTART) {
 				character = buffer.getChar();
 			}
-			end = buffer.position() - 2;
+			end = buffer.position() - startDif;
 			if(end-start>0) {
 				child = StringCondition.create(buffer.substring(start,end));
 				parent.with(child);
@@ -183,7 +189,12 @@ public class Template implements TemplateParser {
 				}
 				if(condition != null) {
 					condition.create(buffer, this, customTemplate);
-					parent.with(condition);
+					if(startDif==3) {
+						parent.with(Not.create(condition));
+						startDif = 2;
+					} else {
+						parent.with(condition);
+					}
 
 					// If StopWords and Expression may be And or
 					if(stopWords != null && isExpression) {
@@ -247,7 +258,12 @@ public class Template implements TemplateParser {
 						parent.with(child);
 						start=buffer.position();
 					}else {
-						parent.with(child);
+						if(startDif == 3) {
+							parent.with(Not.create(child));
+							startDif=2;
+						}else {
+							parent.with(child);
+						}
 						start=buffer.position();
 						// Move to next }
 					}
