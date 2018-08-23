@@ -1,5 +1,6 @@
 package de.uniks.networkparser.ext.story;
 
+import java.io.PrintStream;
 /*
 The MIT License
 
@@ -370,6 +371,28 @@ public class Story extends StoryElement implements Comparable<Story>{
 		StoryStepCondition step = new StoryStepCondition();
 		step.withCondition(message, actual, new Equals().withValue(expected));
 		this.addCondition(step);
+	}
+
+	public boolean showDebugInfos(BaseItem entity, int len, PrintStream stream) {
+		if(entity == null) {
+			return false;
+		}
+		return showDebugInfos(entity.toString(new EntityStringConverter(2)), len, stream);
+	}
+	public boolean showDebugInfos(String value, int len, PrintStream stream, String...messages) {
+		if (stream != null) {
+			stream.println("###############################");
+			stream.println(value);
+			stream.println("###############################");
+		}
+		String msg = null;
+		if(messages != null && messages.length>0) {
+			msg = messages[0];
+		}
+		StoryStepCondition step = new StoryStepCondition();
+		step.withCondition(msg, value.length(), new Equals().withValue(len));
+		this.addCondition(step);
+		return step.checkCondition();
 	}
 
 	public void assertTrue(String message, boolean actual) {

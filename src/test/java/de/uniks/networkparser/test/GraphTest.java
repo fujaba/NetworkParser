@@ -671,9 +671,8 @@ public class GraphTest {
 	public void testWriteSimpleHTML() {
 		HTMLEntity htmlEntity = new HTMLEntity();
 		htmlEntity.withHeader("../src/main/resources/de/uniks/networkparser/graph/diagramstyle.css");
-		htmlEntity.withHeader("../src/main/resources/de/uniks/networkparser/graph/graph.js");
+		htmlEntity.withHeader("../src/main/resources/de/uniks/networkparser/graph/diagram.js");
 		htmlEntity.withHeader("../src/main/resources/de/uniks/networkparser/graph/dagre.min.js");
-		htmlEntity.withHeader("../src/main/resources/de/uniks/networkparser/graph/drawer.js");
 
 		GraphList model = new GraphList().withType(GraphTokener.CLASS);
 		Clazz uni = model.with(new Clazz("University"));
@@ -681,7 +680,8 @@ public class GraphTest {
 		Clazz person = model.with(new Clazz("Person"));
 
 		uni.withBidirectional(person, "has", Cardinality.MANY, "studis", Cardinality.ONE);
-		showDebugInfos(htmlEntity.withGraph(model).toString(2), 891, null);
+		String result = htmlEntity.withGraph(model).toString(2);
+		showDebugInfos( result, 803, null);
 	}
 
 	@Test

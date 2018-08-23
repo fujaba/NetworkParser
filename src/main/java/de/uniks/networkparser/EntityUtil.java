@@ -31,7 +31,6 @@ import java.util.Random;
 import de.uniks.networkparser.buffer.ByteBuffer;
 import de.uniks.networkparser.bytes.ByteTokener;
 import de.uniks.networkparser.converter.ByteConverterHex;
-import de.uniks.networkparser.converter.EntityStringConverter;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Converter;
 import de.uniks.networkparser.interfaces.Entity;
@@ -301,12 +300,11 @@ public class EntityUtil {
 			}
 			return item.toString(converter);
 		}
-		if(converter instanceof EntityStringConverter && value instanceof String && ((String)value).startsWith("file:/")) {
-			EntityStringConverter stringConverter = (EntityStringConverter) converter; 
-			String str = (String) value;
-			// NOW try relative
-			value = getRelativePath(str, new File(stringConverter.getPath()).toURI().toString(), "/");
-		}
+//		if(converter.getPath() != null && value instanceof String && ((String)value).startsWith("file:/")) {
+//			String str = (String) value;
+//			// NOW try relative
+//			value = getRelativePath(str, new File(converter.getPath()).toURI().toString(), "/");
+//		}
 		if (simpleText) {
 			return value.toString();
 		}
