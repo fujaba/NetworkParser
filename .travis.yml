@@ -5,8 +5,15 @@ dist: trusty
 
 git:
   depth: 42000
+
+before_cache:
+  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
 cache:
     - bundler
+  directories:
+    - $HOME/.gradle/caches/
+    - $HOME/.gradle/wrapper/
 addons:
   coverity_scan:
     project:
