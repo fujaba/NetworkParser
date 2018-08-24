@@ -47,7 +47,7 @@ public class StoryTest {
 		// MUST BE JACOCO TO BUILD-Path MAVEN EXAMPLE: dependencies {compile "org.jacoco:jacoco:0.8.1"}
 		
 		// MSUT BE A LINK TO JACOCO AGENT
-		storyTest.withAgentPath("lib/jacocoagent.jar");
+		storyTest.withAgent("lib/jacocoagent.jar");
 		story.add(storyTest);
 		story.dumpHTML();
 	}
@@ -87,6 +87,6 @@ public class StoryTest {
 	public void testRecompile() {
 		StoryStepJUnit storyStepJUnit = new StoryStepJUnit();
 		storyStepJUnit.withPackageName("src/main/java", "src\\main\\java\\de\\uniks\\networkparser\\ext");
-//		storyStepJUnit.recompile();
+		storyStepJUnit.recompile("bin");
 	}
 }

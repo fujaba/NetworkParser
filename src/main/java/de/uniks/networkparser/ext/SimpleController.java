@@ -205,32 +205,46 @@ public class SimpleController implements ObjectCondition{
 		// IF JAVACOMPILE
 		if(compilePath != null) {
 			ArrayList<String> items = new ArrayList<String>();
+			String javacExecutor;
 			if (Os.isMac()) {
-				items.add(System.getProperty("java.home").replace("\\", "/") + "/bin/javac");
+				javacExecutor =System.getProperty("java.home").replace("\\", "/") + "/bin/javac";
 			} else {
-				String item = System.getProperty("java.home").replace("\\", "/") + "/../bin/javac.exe";
-				if(new File(item).exists()) {
-					items.add("\""+item+"\"");
-				} else {
-					items.add("\"" + System.getProperty("java.home").replace("\\", "/") + "/bin/javac\"");
+				javacExecutor = System.getProperty("java.home").replace("\\", "/") + "/../bin/javac.exe";
+				if(new File(javacExecutor).exists() == false) {
+					javacExecutor = System.getProperty("java.home").replace("\\", "/") + "/bin/javac.exe";
 				}
 			}
-//			CharacterBuffer sb=new CharacterBuffer();
-			for(String item : compilePath) {
-				items.add(item+"\\*.java");
-//				sb.with();
+			boolean gradle = false;
+			if(new File(javacExecutor).exists()) {
+				items.add("\""+javacExecutor+"\"");
+			} else if ((Os.isMac() || Os.isUnix()) && new File("gradlew").exists()) {
+				items.add("./gradlew");
+				gradle=true;
+			} else if (Os.isWindows() && new File("gradlew.bat").exists()) {
+				items.add("./gradlew.bat");
+				gradle=true;
 			}
-//			String param = sb.trim().toString();
-//			items.add(param);
-			items.add("-d");
-			// ReflectionLoader.PROCESSBUILDERREDIRECT
-			if(this.outputParameter != null) {
-				items.add(this.outputParameter);
-			}else {
-				items.add("out");
-				new File("out").mkdir();
+			if(gradle) {
+				if(this.mainClass != null) {
+					items.add(mainClass);
+				} else {
+					items.add("compileTestJava");
+				}
+				items.add("-xTest");
+			} else {
+				// Path
+				for(String item : compilePath) {
+					items.add(item+"\\*.java");
+				}
+				items.add("-d");
+				// ReflectionLoader.PROCESSBUILDERREDIRECT
+				if(this.outputParameter != null) {
+					items.add(this.outputParameter);
+				}else {
+					items.add("out");
+					new File("out").mkdir();
+				}
 			}
-			
 			try {
 				ProcessBuilder processBuilder = new ProcessBuilder(items);
 				ReflectionLoader.call(processBuilder, "redirectError", File.class, new File("compile_error.txt"));
@@ -505,6 +519,11 @@ public class SimpleController implements ObjectCondition{
 		return this;
 	}
 
+	public SimpleController withMain(String value) {
+		this.mainClass = value;
+		return this;
+	}
+	
 	public SimpleController withErrorPath(String value) {
 		this.errorHandler.withPath(value);
 		if(isEclipse == false) {

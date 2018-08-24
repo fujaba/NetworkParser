@@ -43,9 +43,7 @@ public class Feature implements Comparable<Feature> {
 	private boolean reference;
 
 	// Constructor for Reference
-	Feature(String name) {
-		this.name = name;
-		this.reference = true;
+	protected Feature(String name) {
 	}
 
 	// Real Constructor

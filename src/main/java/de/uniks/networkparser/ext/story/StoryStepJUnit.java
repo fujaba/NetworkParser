@@ -49,7 +49,7 @@ public class StoryStepJUnit implements ObjectCondition {
 	private ReflectionBlackBoxTester tester = new ReflectionBlackBoxTester();
 	private NetworkParserLog logger = new NetworkParserLog().withListener(this);
 	private String packageName = null;
-	private String path = "lib/jacocoagent.jar";
+	private String task = "lib/jacocoagent.jar";
 	private SimpleSet<String> testClasses;
 	private SimpleKeyValueList<String, JacocoColumn> columns = new SimpleKeyValueList<String, JacocoColumn>();
 	private SimpleList<Feature> groups=new SimpleList<Feature>();
@@ -162,7 +162,7 @@ public class StoryStepJUnit implements ObjectCondition {
 	}
 
 	public boolean executeBlackBoxTest(String path) {
-		this.path = path;
+		this.task = path;
 		try {
 			tester.test(packageName, logger);
 		} catch (Exception e) {
@@ -172,11 +172,11 @@ public class StoryStepJUnit implements ObjectCondition {
 	}
 
 	private boolean executeBlackBoxEvent(SimpleEvent event) {
-		FileBuffer.writeFile(this.path+BLACKBOXFILE, event.toString()+BaseItem.CRLF, FileBuffer.APPEND);
+		FileBuffer.writeFile(this.task+BLACKBOXFILE, event.toString()+BaseItem.CRLF, FileBuffer.APPEND);
 		return true;
 	}
 	
-	public boolean recompile() {
+	public boolean recompile(String... output) {
 		if(this.packageName == null) {
 			return false;
 		}
@@ -186,6 +186,9 @@ public class StoryStepJUnit implements ObjectCondition {
 			excludes = this.testClasses.toArray(new String[testClasses.size()]);
 		}
 		controller.withPackageName(this.packageName, excludes);
+		if(output != null && output.length>0) {
+			controller.withOutput(output[0]);
+		}
 		return controller.start()>=0;
 	}
 
@@ -221,7 +224,7 @@ public class StoryStepJUnit implements ObjectCondition {
 		}
 
 
-		if(new File(this.path).exists() == false) {
+		if(new File(this.task).exists() == false) {
 			return false;
 		}
 		SimpleController controller = SimpleController.create();
@@ -229,15 +232,12 @@ public class StoryStepJUnit implements ObjectCondition {
 		if(testClasses != null) {
 			list = testClasses.toArray(new String[testClasses.size()]);
 		}
-		controller.withAgent(this.path, packageName, list);
+		controller.withAgent(this.task, packageName, list);
 		controller.withErrorPath(path);
 
-//		controller.withOutput("t.txt");
 		controller.start();
 
 		// Now Add
-
-
 		// ADD RESULT TO STORY DOCUMENTATION FOR BLACKBOX AND JACOCO
 		this.writeHTML(path+"jacoco.exec", path+"jacoco", label);
 		CharacterBuffer indexFile = FileBuffer.readFile(path+"jacoco/index.html");
@@ -323,6 +323,11 @@ public class StoryStepJUnit implements ObjectCondition {
 		}
 		return this;
 	}
+	
+	public StoryStepJUnit withGradleTask(String task) {
+		this.task = task;
+		return this;
+	}
 
 	/**
 	 * @param classNames ClassNames of Tests
@@ -341,8 +346,8 @@ public class StoryStepJUnit implements ObjectCondition {
 		return this;
 	}
 
-	public StoryStepJUnit withAgentPath(String path) {
-		this.path = path;
+	public StoryStepJUnit withAgent(String path) {
+		this.task = path;
 		return this;
 	}
 
