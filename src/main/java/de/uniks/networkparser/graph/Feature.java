@@ -44,6 +44,8 @@ public class Feature implements Comparable<Feature> {
 
 	// Constructor for Reference
 	protected Feature(String name) {
+		this.name = name;
+		this.reference = true;
 	}
 
 	// Real Constructor
@@ -299,7 +301,7 @@ public class Feature implements Comparable<Feature> {
 		if (name != null) {
 			return name.toString();
 		}
-		return super.toString();
+		return "NONE:"+super.toString();
 	}
 
 	public String getStringValue() {
