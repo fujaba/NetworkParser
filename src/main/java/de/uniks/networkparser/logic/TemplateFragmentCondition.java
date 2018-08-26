@@ -53,26 +53,26 @@ import de.uniks.networkparser.parser.TemplateResultFragment;
 		return TAG;
 	}
 
-	private int getIdKey() {
-		if("PACKAGE".equalsIgnoreCase(this.id)) {
+	public static int getIdKey(String id) {
+		if("PACKAGE".equalsIgnoreCase(id)) {
 			return TemplateParser.PACKAGE;
 		}
-		if("IMPORT".equalsIgnoreCase(this.id)) {
+		if("IMPORT".equalsIgnoreCase(id)) {
 			return TemplateParser.IMPORT;
 		}
-		if("TEMPLATE".equalsIgnoreCase(this.id)) {
+		if("TEMPLATE".equalsIgnoreCase(id)) {
 			return TemplateParser.TEMPLATE;
 		}
-		if("FIELD".equalsIgnoreCase(this.id)) {
+		if("FIELD".equalsIgnoreCase(id)) {
 			return TemplateParser.FIELD;
 		}
-		if("VALUE".equalsIgnoreCase(this.id)) {
+		if("VALUE".equalsIgnoreCase(id)) {
 			return TemplateParser.VALUE;
 		}
-		if("METHOD".equalsIgnoreCase(this.id)) {
+		if("METHOD".equalsIgnoreCase(id)) {
 			return TemplateParser.METHOD;
 		}
-		if("TEMPLATEEND".equalsIgnoreCase(this.id)) {
+		if("TEMPLATEEND".equalsIgnoreCase(id)) {
 			return TemplateParser.TEMPLATEEND;
 		}
 		return TemplateParser.DECLARATION;
@@ -89,7 +89,7 @@ import de.uniks.networkparser.parser.TemplateResultFragment;
 			SendableEntityCreator creator = (SendableEntityCreator) value;
 			// VODOO
 			SendableEntityCreator newInstance = (SendableEntityCreator) creator.getValue(creator, PROPERTY_CLONE);
-			newInstance.setValue(newInstance, PROPERTY_KEY, this.getIdKey(), SendableEntityCreator.NEW);
+			newInstance.setValue(newInstance, PROPERTY_KEY, TemplateFragmentCondition.getIdKey(id), SendableEntityCreator.NEW);
 			newInstance.setValue(newInstance, PROPERTY_TEMPLATE, this.child, SendableEntityCreator.NEW);
 
 			newInstance.setValue(newInstance, PROPERTY_FILE, creator.getValue(creator, PROPERTY_FILE), SendableEntityCreator.NEW);

@@ -41,10 +41,10 @@ import de.uniks.networkparser.logic.TemplateCondition;
 import de.uniks.networkparser.logic.VariableCondition;
 
 public class Template implements TemplateParser {
-	private static final char SPLITSTART='{';
-	private static final char SPLITEND='}';
-	private static final char ENTER='=';
-	private static final char SPACE = ' ';
+	public static final char SPLITSTART='{';
+	public static final char SPLITEND='}';
+	public static final char ENTER='=';
+	public static final char SPACE = ' ';
 
 	private TemplateCondition token = new TemplateCondition();
 

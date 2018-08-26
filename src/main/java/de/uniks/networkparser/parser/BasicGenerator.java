@@ -1,5 +1,6 @@
 package de.uniks.networkparser.parser;
 
+import de.uniks.networkparser.buffer.CharacterBuffer;
 /*
 The MIT License
 
@@ -38,6 +39,7 @@ import de.uniks.networkparser.interfaces.LocalisationInterface;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
+import de.uniks.networkparser.logic.TemplateFragmentCondition;
 
 public abstract class BasicGenerator {
 	public static final String PROPERTY_FEATURE="features";
@@ -199,5 +201,20 @@ public abstract class BasicGenerator {
 			}
 		}
 		return templateResult;
+	}
+	
+	public boolean readTemplate(CharacterBuffer buffer) {
+		boolean result = false;
+		CharacterBuffer id = buffer.nextToken(false, Template.SPLITEND, Template.SPACE);
+		Template template = new Template(id.toString());
+		if(buffer.getCurrentChar() == Template.SPACE) {
+			String value = buffer.nextToken(false, Template.SPLITEND, Template.SPACE).toString();
+			int type = TemplateFragmentCondition.getIdKey(value);
+			template.withType(type);
+			result = true;
+		}
+		String strTemplate = buffer.toString();
+		template.withTemplate(strTemplate);
+		return result;
 	}
 }
