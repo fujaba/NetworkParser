@@ -33,26 +33,15 @@ public class RoomCreator implements SendableEntityCreator
           return null;
       }
       Room element = (Room)entity;
-      int pos = attribute.indexOf('.');
-      String attrName = attribute;
-
-      if (pos > 0)
-      {
-         attrName = attribute.substring(0, pos);
-      }
-      if(attrName.length()<1) {
-         return null;
-      }
-
-      if (Room.PROPERTY_PERSONS.equalsIgnoreCase(attrName))
+      if (Room.PROPERTY_PERSONS.equalsIgnoreCase(attribute))
       {
          return element.getPersons();
       }
 
-      if(SendableEntityCreator.DYNAMIC.equalsIgnoreCase(attrName)) {
+      if(SendableEntityCreator.DYNAMIC.equalsIgnoreCase(attribute)) {
           return element.getDynamicValues();
       }
-      return element.getDynamicValue(attrName);
+      return element.getDynamicValue(attribute);
    }
 
    @Override

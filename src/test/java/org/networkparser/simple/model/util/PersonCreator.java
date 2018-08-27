@@ -35,36 +35,25 @@ public class PersonCreator implements SendableEntityCreator
           return null;
       }
       Person element = (Person)entity;
-      int pos = attribute.indexOf('.');
-      String attrName = attribute;
-
-      if (pos > 0)
-      {
-         attrName = attribute.substring(0, pos);
-      }
-      if(attrName.length()<1) {
-         return null;
-      }
-
-      if (Person.PROPERTY_AGE.equalsIgnoreCase(attrName))
+      if (Person.PROPERTY_AGE.equalsIgnoreCase(attribute))
       {
          return element.getAge();
       }
 
-      if (Person.PROPERTY_NAME.equalsIgnoreCase(attrName))
+      if (Person.PROPERTY_NAME.equalsIgnoreCase(attribute))
       {
          return element.getName();
       }
 
-      if (Person.PROPERTY_ROOM.equalsIgnoreCase(attrName))
+      if (Person.PROPERTY_ROOM.equalsIgnoreCase(attribute))
       {
          return element.getRoom();
       }
 
-      if(SendableEntityCreator.DYNAMIC.equalsIgnoreCase(attrName)) {
+      if(SendableEntityCreator.DYNAMIC.equalsIgnoreCase(attribute)) {
           return element.getDynamicValues();
       }
-      return element.getDynamicValue(attrName);
+      return element.getDynamicValue(attribute);
    }
 
    @Override

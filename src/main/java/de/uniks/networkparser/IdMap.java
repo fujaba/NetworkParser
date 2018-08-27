@@ -75,7 +75,7 @@ import de.uniks.networkparser.xml.XMLTokener;
  *
  * @author Stefan Lindel
  */
-public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
+public class IdMap implements BaseItem, Iterable<SendableEntityCreator>, SendableEntityCreator {
 	/** The Constant VALUE. */
 	public static final String VALUE = "value";
 
@@ -1755,5 +1755,49 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 	public IdMap withModelExecutor(ObjectCondition modelExecutor) {
 		this.modelExecutor = modelExecutor;
 		return this;
+	}
+
+	@Override
+	public String[] getProperties() {
+		return null;
+	}
+
+	@Override
+	public Object getValue(Object entity, String attribute) {
+		SendableEntityCreator creator = getCreatorClass(entity);
+		if(creator == null || attribute == null) {
+			return null;
+		}
+		int pos = attribute.indexOf('.');
+		if (pos > 0) {
+			Object result = creator.getValue(entity, attribute.substring(0, pos));
+			if(result == null) {
+				return result;
+			}
+			return getValue(result, attribute.substring(pos+1));
+		}
+		return getValue(entity, attribute);
+	}
+
+	@Override
+	public boolean setValue(Object entity, String attribute, Object value, String type) {
+		SendableEntityCreator creator = getCreatorClass(entity);
+		if(creator == null || attribute == null) {
+			return false;
+		}
+		int pos = attribute.indexOf('.');
+		if (pos > 0) {
+			Object result = creator.getValue(entity, attribute.substring(0, pos));
+			if(result == null) {
+				return false;
+			}
+			return creator.setValue(entity, attribute.substring(pos+1), value, type);
+		}
+		return creator.setValue(entity, attribute, value, type);
+	}
+
+	@Override
+	public Object getSendableInstance(boolean prototyp) {
+		return new IdMap();
 	}
 }
