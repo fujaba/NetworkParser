@@ -33,6 +33,7 @@ import java.lang.reflect.Field;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
+import java.net.URLClassLoader;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
@@ -232,6 +233,19 @@ public class SimpleController implements ObjectCondition{
 				}
 				items.add("-xTest");
 			} else {
+
+				items.add("-classpath");
+				ClassLoader classLoader = ClassLoader.getSystemClassLoader();
+				URLClassLoader urlClassLoader = (URLClassLoader) classLoader;
+
+				StringBuilder buf = new StringBuilder();
+				for(URL url : urlClassLoader.getURLs())
+				{
+					buf.append(url.getFile()).append(File.pathSeparator);
+				}
+
+				items.add(buf.toString());
+
 				// Path
 				for(String item : compilePath) {
 					items.add(item+"\\*.java");
