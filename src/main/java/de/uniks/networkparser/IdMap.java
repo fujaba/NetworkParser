@@ -1677,7 +1677,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator>, Sendabl
 			else if (item instanceof Grammar) {
 				this.withGrammar((Grammar) item);
 			}
-			else if (item instanceof Iterable<?>) {
+			if (item instanceof Iterable<?>) {
 				Iterator<?> i = (Iterator<?>) ((Iterable<?>) item).iterator();
 				while (i.hasNext()) {
 					Object value = i.next();

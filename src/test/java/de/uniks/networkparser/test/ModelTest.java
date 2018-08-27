@@ -95,7 +95,7 @@ public class ModelTest implements ObjectCondition {
 		IdMap subMap= new IdMap();
 		Assert.assertEquals(7, countMap(subMap));
 		subMap.with(map);
-		Assert.assertEquals(8, countMap(subMap));
+		Assert.assertEquals(9, countMap(subMap));
 
 	}
 
