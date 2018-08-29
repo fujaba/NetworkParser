@@ -152,11 +152,11 @@ public class JavaCreator extends BasicGenerator {
 				"{{#else}}",
 				"      return false;",
 				"{{#endif}}",
-				"   }","",
+				"   }","","",
 				"{{#import " + IdMap.class.getName() + "}}" +
-				"    public IdMap createMap(String session) {",
-				" 	   return CreatorCreator.createIdMap(session);",
-				"    }",
+				"   public static IdMap createIdMap(String session) {",
+				"      return CreatorCreator.createIdMap(session);",
+				"   }",
 				"{{#template TEMPLATEEND}}}{{#endtemplate}}");
 
 		this.extension = "java";
