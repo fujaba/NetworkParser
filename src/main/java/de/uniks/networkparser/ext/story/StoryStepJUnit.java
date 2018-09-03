@@ -398,7 +398,7 @@ public class StoryStepJUnit implements ObjectCondition {
 			if(values != null && values.length % 2 == 0) {
 				for(int i=0;i<values.length;i+=2) {
 					if(values[i] != null && values[i] instanceof String) {
-						setting(creator, element, (String)values[i], values[i+1]);
+						setting(creator, newInstance, (String)values[i], values[i+1]);
 					}
 				}
 			}

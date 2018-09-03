@@ -238,14 +238,19 @@ public class SimpleController implements ObjectCondition{
 			} else {
 
 				items.add("-classpath");
-				ClassLoader classLoader = ClassLoader.getSystemClassLoader();
-				URLClassLoader urlClassLoader = (URLClassLoader) classLoader;
+				URLClassLoader urlClassLoader = (URLClassLoader) ClassLoader.getSystemClassLoader();
 
 				StringBuilder buf = new StringBuilder();
 				for(URL url : urlClassLoader.getURLs())
 				{
 					buf.append(url.getFile()).append(File.pathSeparator);
 				}
+//				if(ClassLoader.getSystemClassLoader() != urlClassLoader) {
+//					try {
+//						urlClassLoader.close();
+//					} catch (IOException e) {
+//					}
+//				}
 
 				items.add(buf.toString());
 
