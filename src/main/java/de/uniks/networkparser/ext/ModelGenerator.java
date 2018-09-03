@@ -81,6 +81,7 @@ public class ModelGenerator extends BasicGenerator {
 	private SimpleList<BasicGenerator> javaGeneratorTemplates = new SimpleList<BasicGenerator>().with(new JavaCreatorCreator(), new JavaClazz(), new JavaSet(), new JavaCreator());
 	private SimpleList<BasicGenerator> typeScriptTemplates = new SimpleList<BasicGenerator>().with(new TypescriptClazz());
 	private SimpleList<BasicGenerator> cppScriptTemplates = new SimpleList<BasicGenerator>().with(new CppClazz());
+	private String lastGenRoot;
 
 	public SimpleKeyValueList<String, ParserCondition> getTemplates() {
 		if (customTemplate == null) {
@@ -171,7 +172,7 @@ public class ModelGenerator extends BasicGenerator {
 
 	public SendableEntityCreator generating(String rootDir, GraphModel model, TextItems parameters,
 			SimpleList<BasicGenerator> templates, boolean writeFiles, boolean enableParser) {
-
+		this.lastGenRoot = rootDir;
 		model.fixClassModel();
 		String name = model.getName();
 		if (name == null) {
@@ -383,6 +384,10 @@ public class ModelGenerator extends BasicGenerator {
 		}
 	}
 
+	public String getLastGenRoot() {
+		return lastGenRoot;
+	}
+	
 	public void removeAllGeneratedCode(GraphModel model, String rootDir) {
 		// now remove class file, creator file, and modelset file for each class
 		// and the CreatorCreator

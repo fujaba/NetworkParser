@@ -59,6 +59,11 @@ public class UpdateCondition implements ObjectCondition {
 	UpdateCondition() {
 		
 	}
+
+	public UpdateCondition withContidion(ObjectCondition condition) {
+		this.condition = condition;
+		return this;
+	}
 	
 	public static UpdateCondition createAtomarCondition(ObjectCondition listener) {
 		UpdateCondition condition = new UpdateCondition();
@@ -67,8 +72,7 @@ public class UpdateCondition implements ObjectCondition {
 	}
 	
 	public static UpdateCondition createUpdateCondition() {
-		UpdateCondition condition = new UpdateCondition();
-		return condition;
+		return new UpdateCondition();
 	}
 
 	public static UpdateCondition createAcumulateCondition(Tokener tokener) {

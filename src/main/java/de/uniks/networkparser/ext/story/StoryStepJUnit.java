@@ -24,20 +24,27 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 import java.io.File;
+import java.net.URL;
 import java.util.Collection;
 import java.util.List;
 
+import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.NetworkParserLog;
 import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.buffer.CharacterBuffer;
+import de.uniks.networkparser.ext.ClassModel;
+import de.uniks.networkparser.ext.ModelGenerator;
 import de.uniks.networkparser.ext.SimpleController;
+import de.uniks.networkparser.ext.generic.GenericCreator;
 import de.uniks.networkparser.ext.generic.ReflectionBlackBoxTester;
 import de.uniks.networkparser.ext.generic.ReflectionLoader;
 import de.uniks.networkparser.ext.io.FileBuffer;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.Feature;
+import de.uniks.networkparser.graph.GraphModel;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.ObjectCondition;
+import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SimpleSet;
@@ -55,6 +62,8 @@ public class StoryStepJUnit implements ObjectCondition {
 	private SimpleList<Feature> groups=new SimpleList<Feature>();
 	int tabwidth = 4;
 	private JacocoColumn column;
+	private IdMap map;
+	private GraphModel model;
 	
 	public StoryStepJUnit() {
 		this.column = JacocoColumn.create();
@@ -358,5 +367,59 @@ public class StoryStepJUnit implements ObjectCondition {
 
 	public void addValueToList(String key, int no) {
 		this.column.addValueToList(key, no);
+	}
+
+	public StoryStepJUnit withUseCase(Story story, GraphModel model) {
+		story.add(this);
+		this.map = new IdMap();
+		this.model = model;
+		// Check for ReCompile
+		if(this.model != null && this.model instanceof ClassModel) {
+			ModelGenerator generator = ((ClassModel)this.model).getGenerator();
+			if(generator != null) {
+				withPackageName(generator.getLastGenRoot());
+				URL location = getClass().getProtectionDomain().getCodeSource().getLocation();
+				recompile(location.getPath().substring(1));
+			}
+		}
+		
+		for(Clazz clazz : this.model.getClazzes()) {
+			GenericCreator creator = new GenericCreator();
+			creator.withClass(clazz.getName(false));
+			map.withCreator(creator);
+		}
+		
+		return this;
+	}
+	public Object createElement(Clazz element, Object... values) {
+		SendableEntityCreator creator = map.getCreator(element.getName(false), true);
+		if(creator != null) {
+			Object newInstance = creator.getSendableInstance(false);
+			if(values != null && values.length % 2 == 0) {
+				for(int i=0;i<values.length;i+=2) {
+					if(values[i] != null && values[i] instanceof String) {
+						setting(creator, element, (String)values[i], values[i+1]);
+					}
+				}
+			}
+			return newInstance;
+		}
+		return null;
+	}
+
+	public boolean setValue(Object element, String attribute, String value) {
+		if(map != null && element != null) {
+			String name = element.getClass().getName();
+			SendableEntityCreator creator = map.getCreator(name, true);
+			return setting(creator, element, attribute, value);
+		}
+		return false;
+	}
+
+	private boolean setting(SendableEntityCreator creator, Object element, String attribute, Object value) {
+		if(creator != null) {
+			return creator.setValue(element, attribute, value, SendableEntityCreator.NEW);
+		}
+		return false;
 	}
 }

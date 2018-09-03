@@ -1252,6 +1252,29 @@ public class EntityUtil {
 		}
 		return new String(randBuffer);
 	}
+
+	public static String getPath(String path, String separator) {
+		if(path == null) {
+			return null;
+		}
+		String[] base = path.split(separator);
+		if(base.length<1) {
+			return path;
+		}
+		StringBuilder buffer=new StringBuilder();
+		for(int i=base.length - 1;i>=0;i--) {
+			if(base[i].equals("..")) {
+				i--;
+			} else {
+				if(i>0) {
+					buffer.insert(0, separator+base[i]);
+				}else {
+					buffer.insert(0, base[i]);
+				}
+			}
+		}
+		return buffer.toString();
+	}
 	/**
 	 * Get the relative path from one file to another, specifying the directory separator. 
 	 * If one of the provided resources does not exist, it is assumed to be a file unless it ends with '/' or
@@ -1281,8 +1304,6 @@ public class EntityUtil {
 			// likely indicates differing drive letters, like C: and D:.
 			// These paths cannot be relativized.
 			return null;
-//			throw new PathResolutionException("No common path element found for '" + normalizedTargetPath + "' and '" + normalizedBasePath
-//	                    + "'");
 		}
 	
 		// The number of directories we have to backtrack depends on whether the base is

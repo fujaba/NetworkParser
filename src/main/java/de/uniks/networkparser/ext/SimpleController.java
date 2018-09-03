@@ -39,6 +39,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.ext.generic.ReflectionLoader;
@@ -216,8 +217,10 @@ public class SimpleController implements ObjectCondition{
 				}
 			}
 			boolean gradle = false;
+			
 			if(new File(javacExecutor).exists()) {
-				items.add("\""+javacExecutor+"\"");
+				String path = EntityUtil.getPath(javacExecutor, "/");
+				items.add("\""+path+"\"");
 			} else if ((Os.isMac() || Os.isUnix()) && new File("gradlew").exists()) {
 				items.add("./gradlew");
 				gradle=true;

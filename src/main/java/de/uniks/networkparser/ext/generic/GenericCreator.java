@@ -55,6 +55,18 @@ public class GenericCreator implements SendableEntityCreator {
 		try {
 			this.clazz = Class.forName(value);
 		} catch (ClassNotFoundException e) {
+//			ClassLoader classLoader = this.getClass().getClassLoader();
+//			ArrayList<URL> urls = new ArrayList<URL>();
+//			try {
+//				String path = value.replace('.', '/');
+//				String file = new File("bin/"+path+".class").getAbsolutePath();
+//				urls.add(new URL("file://"+file));
+//				URLClassLoader urlClassLoader = new URLClassLoader(urls.toArray(new URL[urls.size()]), classLoader);
+//				
+//				this.clazz = urlClassLoader.loadClass(value);
+//			} catch (Exception e2) {
+//				e.printStackTrace();
+//			}
 		}
 		return this;
 	}

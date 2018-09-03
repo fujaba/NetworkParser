@@ -29,7 +29,7 @@ import de.uniks.networkparser.list.SimpleMapEntry;
 import de.uniks.networkparser.list.SimpleSet;
 
 public class GraphList extends GraphModel {
-	private String typ = GraphTokener.CLASS;
+	private String type = GraphTokener.CLASS;
 	private String style;
 	private GraphOptions options;
 
@@ -44,11 +44,11 @@ public class GraphList extends GraphModel {
 	}
 
 	public String getType() {
-		return typ;
+		return type;
 	}
 
 	public GraphList withType(String typ) {
-		this.typ = typ;
+		this.type = typ;
 		return this;
 	}
 
