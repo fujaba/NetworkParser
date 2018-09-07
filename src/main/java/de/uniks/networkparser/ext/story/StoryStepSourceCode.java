@@ -345,6 +345,12 @@ public class StoryStepSourceCode implements ObjectCondition {
 		}
 		return this;
 	}
+
+	public StoryStepSourceCode withEnd() {
+		return withEnd(0);
+	}
+
+
 	public StoryStepSourceCode withEnd(int position) {
 		if(position<-1) {
 			this.endLine =-1;

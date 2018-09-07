@@ -296,13 +296,6 @@ public class Story extends StoryElement implements Comparable<Story>{
 		return value;
 	}
 
-	public Story addText(String text) {
-		StoryStepText step = new StoryStepText();
-		step.withText(text);
-		this.add(step);
-		return this;
-	}
-
 	protected Story withBreakOnAssert(boolean value) {
 		this.breakOnAssert = value;
 		return this;
@@ -441,5 +434,26 @@ public class Story extends StoryElement implements Comparable<Story>{
 			return 0;
 		}
 		return label.compareTo(otherLabel);
+	}
+
+	public StoryStepText addText(String text) {
+		return addText(text, true, false);
+	}
+
+	public StoryStepText addText(String text, boolean isStep) {
+		return addText(text, isStep, false);
+	}
+	public StoryStepText addText(String text, boolean isStep, boolean html) {
+		StoryStepText step = new StoryStepText();
+		if(html) {
+			step.withHTMLCode(text);
+		}else {
+			step.withText(text);
+		}
+		if(isStep) {
+			step.setStep(isStep);
+		}
+		this.add(step);
+		return step;
 	}
 }

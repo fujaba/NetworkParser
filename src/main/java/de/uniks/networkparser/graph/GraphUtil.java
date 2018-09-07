@@ -55,6 +55,14 @@ public class GraphUtil {
 		return score;
 	}
 	
+	public static final boolean isGernerate(GraphMember member) {
+		return member.isGenerate;
+	}
+
+	public static final void setGernerate(GraphMember member, boolean value) {
+		member.isGenerate =value ;
+	}
+
 	public static double compareType(String sourceType, String otherType) {
 		if (EntityUtil.isNumericType(sourceType) && EntityUtil.isNumericType(otherType)) {
 			return 0;
