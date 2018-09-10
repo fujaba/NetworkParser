@@ -39,6 +39,8 @@ import de.uniks.networkparser.json.JsonArray;
 import de.uniks.networkparser.test.model.util.UniversityCreator;
 
 public class StudyRightWithAssignmentsStoryboards {
+	public boolean ENABLE;
+
 	/**
 	 *
 	 * <h3>Storyboard Yaml</h3>
@@ -200,6 +202,9 @@ public class StudyRightWithAssignmentsStoryboards {
 	 */
 	@Test
 	public void testYaml() throws IOException {
+		if(ENABLE == false) {
+			return;
+		}
 		System.out.println(" (StudyRightWithAssignmentsStoryboards.java:85)");
 
 		Story story = new Story();
@@ -667,6 +672,9 @@ public class StudyRightWithAssignmentsStoryboards {
 	 */
 	@Test
 	public void testJsonPersistency() {
+		if(ENABLE == false) {
+			return;
+		}
 		Story storyboard = new Story();
 
 		storyboard.addText("How to serialize an object model to json and how to read json into an object model");
@@ -894,6 +902,9 @@ public class StudyRightWithAssignmentsStoryboards {
 	 */
 	@Test
 	public void testStudyRightObjectModelNavigationAndQueries() {
+		if(ENABLE == false) {
+			return;
+		}
 		Story story = new Story();
 
 		story.addText("Extend the class model:", false);
