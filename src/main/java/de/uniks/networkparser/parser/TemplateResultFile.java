@@ -257,7 +257,7 @@ public class TemplateResultFile extends SortedSet<TemplateResultFragment> implem
 					if(entry == null) {
 						continue;
 					}
-					SymTabEntry symbolEntry = code.getSymbolEntry("ATTRIBUTE", entry.getName());
+//					code.getSymbolEntry("ATTRIBUTE", entry.getName());
 					TemplateResultFragment part=null;
 					for(TemplateResultFragment fragment : this) {
 						if(fragment.getKey() == Template.VALUE) {

@@ -3,14 +3,10 @@ package de.uniks.networkparser.parser;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-
-import org.junit.Assert;
-
 import java.util.SortedSet;
 import java.util.TreeSet;
 
 import de.uniks.networkparser.buffer.CharacterBuffer;
-import de.uniks.networkparser.converter.GraphConverter;
 import de.uniks.networkparser.graph.Association;
 import de.uniks.networkparser.graph.AssociationSet;
 import de.uniks.networkparser.graph.AssociationTypes;
