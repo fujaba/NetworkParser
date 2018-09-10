@@ -74,7 +74,9 @@ public class Person
    public void setAge(int value)
    {
       if (this.age != value)
-      {         int oldValue = this.age;
+      {
+    	  //XXX NOGEN
+         int oldValue = this.age;
          this.age = value;
          firePropertyChange(PROPERTY_AGE, oldValue, value);
       }

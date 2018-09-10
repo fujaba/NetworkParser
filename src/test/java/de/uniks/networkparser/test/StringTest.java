@@ -101,9 +101,8 @@ public class StringTest {
 	public void testEscapeSimpleHTML(){
 		char[] txt = new char[]{'H','a', 'l', 'l', 228};
 		String example = new String(txt);
-		EntityUtil util = new EntityUtil();
-		String encode = util.encode(example);
-		Assert.assertEquals(example, util.decode(encode));
+		String encode = EntityUtil.encode(example);
+		Assert.assertEquals(example, EntityUtil.decode(encode));
 	}
 
 	@Test

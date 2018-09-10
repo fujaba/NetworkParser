@@ -48,6 +48,7 @@ public class SymTabEntry {
 
 	public static final String PROPERTY_TYPE = "type";
 	public static final String PROPERTY_VALUE = "value";
+	public static final String NOGEN="//XXX NOGEN";
 
 	private String value;
 	private String type;
@@ -277,6 +278,13 @@ public class SymTabEntry {
 	public String getBody() {
 		return body;
 	}
+	public boolean isNoGen() {
+		if(this.body == null) {
+			return false;
+		}
+		return body.indexOf(NOGEN)>=0;
+	}
+
 
 	public SymTabEntry withDataType(String value) {
 		this.dataType = value;

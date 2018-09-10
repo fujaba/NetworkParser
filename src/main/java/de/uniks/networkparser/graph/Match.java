@@ -27,7 +27,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-public class GraphDiff extends GraphMember implements Comparable<GraphDiff>{
+public class Match extends GraphMember implements Comparable<Match>{
 	private int count;
 	private GraphMember match;
 	private GraphEntity mainFile;
@@ -35,8 +35,59 @@ public class GraphDiff extends GraphMember implements Comparable<GraphDiff>{
 	private Object newValue;
 	private String type;
 
+	protected boolean isFileMatch = false;
+	protected boolean isMetaMatch = false;
+	protected Match otherMatch;
+	protected GraphMember potentMatch = null;
+	
+	public static Match create(GraphMember owner, ObjectCondition role, String type, Object oldValue, Object newValue) {
+		Match graphDiff = new Match();
+		graphDiff.withRole(role);
+		graphDiff.with(owner);
+		graphDiff.withType(type);
+		graphDiff.withOldValue(oldValue);
+		graphDiff.withNewValue(newValue);
+		return graphDiff;
+	}
+	
+	public static Match createMatch(GraphEntity node,GraphMember model, boolean isFileMatch) {
+		Match match = new Match().withMain(node);
+		match.match = model;
+		if(isFileMatch) {
+//			match.sourceParent = model;
+			match.isFileMatch = true;
+			return match;
+		}
+//		match.parent = model;
+		return match;
+	}
 
-	public GraphDiff withMain(GraphEntity node) {
+	public static Match createPotentMatch(GraphMember oldValue, GraphMember newValue) {
+		Match match = new Match();
+		match.match = oldValue;
+		match.newValue = newValue;
+		return match;
+	}
+
+	public Match withOtherMatch(Match other) {
+		this.otherMatch = other;
+		return this;
+	}
+	
+	public GraphMember getPotentMatch() {
+		return potentMatch;
+	}
+
+	public Match withPotentMatch(GraphMember value) {
+		this.potentMatch = value;
+		return this;
+	}
+
+	public boolean isPotentMatch() {
+		return potentMatch != null;
+	}
+
+	public Match withMain(GraphEntity node) {
 		this.mainFile = node;
 		return this;
 	}
@@ -49,7 +100,7 @@ public class GraphDiff extends GraphMember implements Comparable<GraphDiff>{
 		return match;
 	}
 
-	public GraphDiff with(GraphMember value) {
+	public Match with(GraphMember value) {
 		if (this.match != value) {
 			GraphMember oldValue = this.match;
 			if (oldValue != null) {
@@ -83,7 +134,7 @@ public class GraphDiff extends GraphMember implements Comparable<GraphDiff>{
 		return false;
 	}
 	
-	public GraphDiff withOldValue(Object oldValue) {
+	public Match withOldValue(Object oldValue) {
 		setOldValue(oldValue);
 		return this;
 	}
@@ -100,12 +151,12 @@ public class GraphDiff extends GraphMember implements Comparable<GraphDiff>{
 		return false;
 	}
 	
-	public GraphDiff withNewValue(Object newValue) {
+	public Match withNewValue(Object newValue) {
 		setNewValue(newValue);
 		return this;
 	}
 	
-	public GraphDiff withType(String value) {
+	public Match withType(String value) {
 		this.type = value;
 		return this;
 	}
@@ -115,7 +166,7 @@ public class GraphDiff extends GraphMember implements Comparable<GraphDiff>{
 	}
 	
 	@Override
-	public int compareTo(GraphDiff o) {
+	public int compareTo(Match o) {
 		String action = getType();
 		if(o == null || action == null) {
 			return 1;
@@ -142,15 +193,5 @@ public class GraphDiff extends GraphMember implements Comparable<GraphDiff>{
 			return SendableEntityCreator.REMOVE;
 		}
 		return SendableEntityCreator.UPDATE;
-	}
-
-	public static GraphDiff create(GraphMember owner, ObjectCondition role, String type, Object oldValue, Object newValue) {
-		GraphDiff graphDiff = new GraphDiff();
-		graphDiff.withRole(role);
-		graphDiff.with(owner);
-		graphDiff.withType(type);
-		graphDiff.withOldValue(oldValue);
-		graphDiff.withNewValue(newValue);
-		return graphDiff;
 	}
 }

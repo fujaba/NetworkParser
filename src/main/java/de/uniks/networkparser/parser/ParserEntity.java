@@ -24,6 +24,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 import java.util.Set;
+
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.graph.Annotation;
@@ -1323,6 +1324,10 @@ public class ParserEntity {
 		}
 		String sign = signature + symTabEntry.getParams();
 		if (SKIPMETGODS.indexOf(sign) < 0) {
+			if(symTabEntry.isNoGen()) {
+				Attribute attribtue = getAttribtue(signature);
+				GraphUtil.setGenerate(attribtue, false);
+			}
 			if(isGetterSetter(signature, symTab)) {
 				return;
 			}
@@ -1441,6 +1446,15 @@ public class ParserEntity {
 		for (Method method : this.file.getMethods()) {
 			if (method.getName(false).equals(memberName))
 				return method;
+		}
+		return null;
+	}
+
+	private Attribute getAttribtue(String memberName) {
+		for (Attribute attribute : this.file.getAttributes()) {
+			if (attribute.getName().equals(memberName)) {
+				return attribute;
+			}
 		}
 		return null;
 	}

@@ -68,7 +68,7 @@ public class GraphTokener extends Tokener {
 
 		newElement.withType(getType(map));
 		Clazz main = parse(object, map, newElement, 0);
-		GraphDiff diff = newElement.getDiff();
+		Match diff = newElement.getDiff();
 		if(diff != null) {
 			diff.withMain(main);
 		}
@@ -181,7 +181,7 @@ public class GraphTokener extends Tokener {
 			Clazz item = (Clazz) i.next();
 			Clazz graphClazz = clazzes.get(item.getName(false));
 			if(graphClazz != null) {
-				GraphDiff diff = graphClazz.getDiff();
+				Match diff = graphClazz.getDiff();
 				diff.addCounter();
 			}
 		}
@@ -192,7 +192,7 @@ public class GraphTokener extends Tokener {
 			String signature = node.getName(false)+":"+item.getName();
 			Association graphEdge = edges.get(signature);
 			if(graphEdge != null) {
-				GraphDiff diff = graphEdge.getDiff();
+				Match diff = graphEdge.getDiff();
 				diff.addCounter();
 			}
 		}
@@ -334,5 +334,10 @@ public class GraphTokener extends Tokener {
 	public GraphTokener withMap(IdMap map) {
 		super.withMap(map);
 		return this;
+	}
+	
+	
+	public void diff(GraphModel oldModel, GraphModel newModel, GraphModel metaModel) {
+		
 	}
 }

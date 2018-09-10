@@ -39,12 +39,11 @@ public class HTMLTest {
 	}
 	@Test
 	public void testHTML(){
-		EntityUtil html = new EntityUtil();
 		String txt = "Stefan <Test>";
-		String encode = html.encode(txt);
+		String encode = EntityUtil.encode(txt);
 		Assert.assertEquals("Stefan &lt;Test&gt;", encode);
 
-		Assert.assertEquals(txt, html.decode(encode));
+		Assert.assertEquals(txt, EntityUtil.decode(encode));
 	}
 	@Test
 	public void testSimpleHTMLFile(){

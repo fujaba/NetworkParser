@@ -33,7 +33,7 @@ import de.uniks.networkparser.graph.ClazzSet;
 import de.uniks.networkparser.graph.DataType;
 import de.uniks.networkparser.graph.DataTypeMap;
 import de.uniks.networkparser.graph.DataTypeSet;
-import de.uniks.networkparser.graph.GraphDiff;
+import de.uniks.networkparser.graph.Match;
 import de.uniks.networkparser.graph.GraphImage;
 import de.uniks.networkparser.graph.GraphList;
 import de.uniks.networkparser.graph.GraphOptions;
@@ -801,7 +801,7 @@ public class GraphTest {
 		GraphList model = new GraphList();
 		model.createClazz("Person");
 		Assert.assertNull(model.getValue("Blub"));
-		model.add(new GraphDiff());
+		model.add(new Match());
 		model.getClazzes(new BooleanCondition().withValue(true));
 		DataTypeSet dtSet = DataTypeSet.create(DataType.STRING);
 		Assert.assertNotNull(dtSet);

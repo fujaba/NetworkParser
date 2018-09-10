@@ -32,10 +32,15 @@ import de.uniks.networkparser.xml.XMLTokener;
 
 public class ExcelCell implements SendableEntityCreatorTag, EntityList{
 	public static final String TAG="c";
-	public static final String TAG_VALUE="v";
 	public static final String PROPERTY_STYLE="s";
 	public static final String PROPERTY_TYPE="t";
 	public static final String PROPERTY_REFERENZ="r";
+	
+	public static final String CELLTYPE_EXTLST = "extLst";
+	public static final String CELLTYPE_FORMULAR = "f";
+	public static final String CELLTYPE_RICHTEXT = "is";
+	public static final String CELLTYPE_VALUE ="v";
+	
 	public static final String[] PROPERTIES={PROPERTY_STYLE, PROPERTY_TYPE, PROPERTY_REFERENZ};
 	private Pos pos;
 	private Object content;

@@ -36,7 +36,7 @@ import de.uniks.networkparser.graph.Cardinality;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.ClazzSet;
 import de.uniks.networkparser.graph.DataType;
-import de.uniks.networkparser.graph.GraphDiff;
+import de.uniks.networkparser.graph.Match;
 import de.uniks.networkparser.graph.GraphEntity;
 import de.uniks.networkparser.graph.GraphImage;
 import de.uniks.networkparser.graph.GraphLabel;
@@ -424,7 +424,7 @@ public class GraphConverter implements Converter{
 			String id = new CharacterBuffer()
 					.with(source.getName(false), ":", edge.getName(), 	"-", target.getName(false), ":",edge.getOther().getName()).toString();
 			if (!ids.contains(id)) {
-				GraphDiff diff = GraphUtil.getDifference(edge);
+				Match diff = GraphUtil.getDifference(edge);
 				if(diff != null && diff.getCount()>0) {
 					child.put(COUNTER, diff.getCount());
 				}
@@ -556,7 +556,7 @@ public class GraphConverter implements Converter{
 		if(items.size()>0){
 			item.put(METHODS, items);
 		}
-		GraphDiff diff = GraphUtil.getDifference(entity);
+		Match diff = GraphUtil.getDifference(entity);
 		if(diff != null && diff.getCount()>0) {
 			item.put(COUNTER, diff.getCount());
 		}
@@ -671,7 +671,7 @@ public class GraphConverter implements Converter{
 		}
 
 		for(int i=0;i<diffs.size();i++) {
-			GraphDiff diff = (GraphDiff) diffs.get(i);
+			Match diff = (Match) diffs.get(i);
 			GraphMember match = diff.getMatch();
 			if(match == null) {
 				continue;

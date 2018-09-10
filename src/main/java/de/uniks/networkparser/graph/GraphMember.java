@@ -297,18 +297,18 @@ public abstract class GraphMember {
 		return this;
 	}
 
-	protected GraphDiff getDiff() {
+	protected Match getDiff() {
 		if(this.children == null) {
-			GraphDiff graphDiff = new GraphDiff();
+			Match graphDiff = new Match();
 			this.withChildren(graphDiff);
 			return graphDiff;
 		}
 		for(GraphMember item : getChildren()) {
-			if(item instanceof GraphDiff) {
-				return (GraphDiff) item;
+			if(item instanceof Match) {
+				return (Match) item;
 			}
 		}
-		GraphDiff graphDiff = new GraphDiff();
+		Match graphDiff = new Match();
 		this.withChildren(graphDiff);
 		return graphDiff;
 	}

@@ -55,12 +55,14 @@ public class GraphUtil {
 		return score;
 	}
 	
-	public static final boolean isGernerate(GraphMember member) {
+	public static final boolean isGenerate(GraphMember member) {
 		return member.isGenerate;
 	}
 
-	public static final void setGernerate(GraphMember member, boolean value) {
-		member.isGenerate =value ;
+	public static final void setGenerate(GraphMember member, boolean value) {
+		if(member != null) {
+			member.isGenerate =value;
+		}
 	}
 
 	public static double compareType(String sourceType, String otherType) {
@@ -255,7 +257,7 @@ public class GraphUtil {
 		}
 		GraphSimpleSet children = item.getChildren();
 		for(GraphMember member : children) {
-			if(member instanceof GraphDiff) {
+			if(member instanceof Match) {
 				owner.add(member);
 				continue;
 			}
@@ -272,7 +274,7 @@ public class GraphUtil {
 		return item.getNodes();
 	}
 
-	public static final GraphDiff getDifference(GraphMember item) {
+	public static final Match getDifference(GraphMember item) {
 		return item.getDiff();
 	}
 
