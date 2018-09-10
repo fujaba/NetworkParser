@@ -1,5 +1,7 @@
 package de.uniks.networkparser.graph;
 
+import java.util.Collection;
+
 /*
 NetworkParser
 The MIT License
@@ -156,7 +158,12 @@ public class GraphList extends GraphModel {
 			return false;
 		}
 		for (Object item : values) {
-			if (item instanceof GraphMember) {
+			if(item instanceof Collection<?>) {
+				Collection<?> items = (Collection<?>) item;
+				for(Object i : items) {
+					add(i);
+				}
+			} else if (item instanceof GraphMember) {
 				super.withChildren((GraphMember) item);
 			}
 		}

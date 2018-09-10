@@ -84,7 +84,6 @@ public class SymTabEntry {
 		this.parent = parent;
 	}
 
-
 	public String getValue() {
 		return this.value;
 	}

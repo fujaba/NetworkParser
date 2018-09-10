@@ -2,6 +2,7 @@ package de.uniks.networkparser.graph;
 
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
+import de.uniks.networkparser.parser.GraphMatcher;
 
 /*
 NetworkParser
@@ -39,6 +40,9 @@ public class Match extends GraphMember implements Comparable<Match>{
 	protected boolean isMetaMatch = false;
 	protected Match otherMatch;
 	protected GraphMember potentMatch = null;
+	private GraphMember metamatch;
+	private GraphMember sourcematch;
+	private GraphMatcher owner;
 	
 	public static Match create(GraphMember owner, ObjectCondition role, String type, Object oldValue, Object newValue) {
 		Match graphDiff = new Match();
@@ -68,12 +72,44 @@ public class Match extends GraphMember implements Comparable<Match>{
 		match.newValue = newValue;
 		return match;
 	}
+	
+	public Match withMetdaMatch(GraphMember value) {
+		this.metamatch = value;
+		return this;
+	}
+
+	public Match withOwner(GraphMatcher owner) {
+		this.owner = owner;
+		return this;
+	}
+
+	public GraphMember getMetaMatch() {
+		return metamatch;
+	}
+	
+	public GraphMember getSourceMatch() {
+		return sourcematch;
+	}
 
 	public Match withOtherMatch(Match other) {
-		this.otherMatch = other;
+		if (this.otherMatch != other) {
+			Match oldMatch = this.otherMatch;
+			if (this.otherMatch != null) {
+				this.otherMatch = null;
+				oldMatch.withOtherMatch(null);
+			}
+			this.otherMatch = other;
+			if (other != null) {
+				other.withOtherMatch(this);
+			}
+		}
 		return this;
 	}
 	
+	public Match getOtherMatch() {
+		return otherMatch;
+	}
+
 	public GraphMember getPotentMatch() {
 		return potentMatch;
 	}
@@ -193,5 +229,30 @@ public class Match extends GraphMember implements Comparable<Match>{
 			return SendableEntityCreator.REMOVE;
 		}
 		return SendableEntityCreator.UPDATE;
+	}
+
+	public GraphMatcher getOwner() {
+		return owner;
+	}
+
+	public boolean isMetaMatch() {
+		return metamatch != null;
+	}
+
+	public boolean isOtherMatch() {
+		return otherMatch != null;
+	}
+
+	public boolean isFileMatch() {
+		return isFileMatch;
+	}
+
+	public boolean isMetaSourceMatch() {
+		return metamatch != null && sourcematch != null;
+//		return false;
+	}
+
+	public boolean isSourceMatch() {
+		return sourcematch != null;
 	}
 }

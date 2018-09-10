@@ -2,6 +2,7 @@ package de.uniks.networkparser.graph;
 
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.buffer.CharacterBuffer;
+import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SimpleSet;
 
@@ -64,7 +65,17 @@ public class GraphUtil {
 			member.isGenerate =value;
 		}
 	}
-
+	
+	public static final void setRole(GraphMember member, ObjectCondition value) {
+		if(member != null) {
+			member.withRole(value);
+		}
+	}
+	public static final void withChildren(GraphMember member, GraphMember child) {
+		if(member != null) {
+			member.withChildren(child);
+		}
+	}
 	public static double compareType(String sourceType, String otherType) {
 		if (EntityUtil.isNumericType(sourceType) && EntityUtil.isNumericType(otherType)) {
 			return 0;

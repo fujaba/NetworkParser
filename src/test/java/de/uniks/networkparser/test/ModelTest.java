@@ -31,6 +31,7 @@ import de.uniks.networkparser.test.model.SortedMsg;
 import de.uniks.networkparser.test.model.Student;
 import de.uniks.networkparser.test.model.University;
 import de.uniks.networkparser.test.model.util.AppleCreatorNoIndex;
+import de.uniks.networkparser.test.model.util.AppleSet;
 import de.uniks.networkparser.test.model.util.AppleTreeCreatorNoIndex;
 import de.uniks.networkparser.test.model.util.BarbarianCreator;
 import de.uniks.networkparser.test.model.util.ItemCreator;
@@ -256,7 +257,32 @@ public class ModelTest implements ObjectCondition {
 
 		University uni2 = SimpleParser.decodeModel(buffer, map);
 		Assert.assertNotNull(uni2);
-
 	}
-
+	
+	@Test
+	public void testSet() {
+		AppleTree tree = new AppleTree();
+		Apple empty = new Apple();
+		Apple apple = new Apple();
+		apple.withX(23).withY(42);
+		String errorMsg="";
+		try {
+			tree.getHas().add(apple);
+			errorMsg+="ADD TO EMPTY SET";
+		}catch (Exception e) {
+		}
+		tree.withHas(empty);
+		
+		try {
+			tree.getHas().add(apple);
+			errorMsg+="ADD TO SET";
+		}catch (Exception e) {
+		}
+		Assert.assertTrue(errorMsg, errorMsg.isEmpty());
+		
+		AppleSet appleSet = new AppleSet();
+		appleSet.add(empty);
+		appleSet.add(apple);
+		Assert.assertEquals(2, appleSet.size());
+	}
 }

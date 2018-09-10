@@ -11,6 +11,7 @@ import de.uniks.networkparser.graph.Cardinality;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.DataType;
 import de.uniks.networkparser.graph.Feature;
+import de.uniks.networkparser.graph.GraphUtil;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 
 public class testGen {
@@ -49,7 +50,7 @@ public class testGen {
 		ClassModel model = new ClassModel("de.uniks.networkparser.simple.modelB");
 		Clazz person = model.createClazz("Person");
 		Attribute password = person.createAttribute("password", DataType.STRING);
-		password.withRole(new ObjectCondition() {
+		GraphUtil.setRole(password, new ObjectCondition() {
 			
 			@Override
 			public boolean update(Object value) {

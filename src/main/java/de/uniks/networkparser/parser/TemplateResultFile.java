@@ -1,5 +1,6 @@
 package de.uniks.networkparser.parser;
 
+import de.uniks.networkparser.EntityUtil;
 /*
 The MIT License
 
@@ -251,6 +252,42 @@ public class TemplateResultFile extends SortedSet<TemplateResultFragment> implem
 					if(symbolEntry != null) {
 						sb.replace(symbolEntry.getStartPos(), symbolEntry.getEndPos(), "");
 					}
+				} else if(ModifyEntry.TYPE_MODIFIER.equalsIgnoreCase(modifierChild.getType())) {
+					GraphMember entry = modifierChild.getEntry();
+					if(entry == null) {
+						continue;
+					}
+					SymTabEntry symbolEntry = code.getSymbolEntry("ATTRIBUTE", entry.getName());
+					TemplateResultFragment part=null;
+					for(TemplateResultFragment fragment : this) {
+						if(fragment.getKey() == Template.VALUE) {
+							if(entry.getName().equals(fragment.getMember().getName())) {
+								part = fragment;
+								break;
+							}
+						}
+					}
+					if(part != null) {
+						String methodName = EntityUtil.upFirstChar(entry.getName());
+//						sb.replace(symbolEntry.getStartPos(), symbolEntry.getEndPos(), part.getValue().toString());
+						SymTabEntry startValue = code.getSymbolEntry("ATTRIBUTE", "PROPERTY_"+entry.getName().toUpperCase());
+//						if(oldValue != null) {
+//							sb.replace(oldValue.getStartPos(), oldValue.getEndPos(), "");
+//						}
+//						oldValue = code.getSymbolEntry("METHOD", "get"+methodName);
+//						if(oldValue != null) {
+//							sb.replace(oldValue.getStartPos(), oldValue.getEndPos(), "");
+//						}
+//						oldValue = code.getSymbolEntry("METHOD", "set"+methodName);
+//						if(oldValue != null) {
+//							sb.replace(oldValue.getStartPos(), oldValue.getEndPos(), "");
+//						}
+						SymTabEntry oldValue  = code.getSymbolEntry("METHOD", "with"+methodName);
+						if(oldValue != null && startValue != null) {
+							sb.replace(startValue.getStartPos(), oldValue.getEndPos(), part.getValue().toString());
+						}
+					}
+					
 				}
 			}
 //			SimpleEvent event = new SimpleEvent(code, "GENERATE", null, sb);

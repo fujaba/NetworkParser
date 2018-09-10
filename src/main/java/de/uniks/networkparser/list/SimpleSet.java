@@ -93,7 +93,7 @@ public class SimpleSet<V> extends AbstractList<V> implements Set<V> {
 	// ReadOnly Add all
 	@Override
 	public V set(int index, V element) {
-		if (isReadOnly()) {
+		if (isReadOnly() || isVisible() == false) {
 			throw new UnsupportedOperationException("set(" + index + ")");
 		}
 		return super.set(index, element);
@@ -101,7 +101,7 @@ public class SimpleSet<V> extends AbstractList<V> implements Set<V> {
 
 	@Override
 	public void add(int index, V element) {
-		if (isReadOnly()) {
+		if (isReadOnly() || isVisible() == false) {
 			throw new UnsupportedOperationException("add(" + index + ")");
 		}
 		super.add(index, element);
@@ -109,7 +109,7 @@ public class SimpleSet<V> extends AbstractList<V> implements Set<V> {
 
 	@Override
 	public V remove(int index) {
-		if (isReadOnly()) {
+		if (isReadOnly()|| isVisible() == false) {
 			throw new UnsupportedOperationException("remove(" + index + ")");
 		}
 		return super.remove(index);
@@ -117,7 +117,7 @@ public class SimpleSet<V> extends AbstractList<V> implements Set<V> {
 
 	@Override
 	public boolean add(V newValue) {
-		if (isReadOnly()) {
+		if (isReadOnly() || isVisible() == false) {
 			throw new UnsupportedOperationException("add()");
 		}
 		return super.add(newValue);

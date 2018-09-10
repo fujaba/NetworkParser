@@ -32,6 +32,9 @@ public class WebViewTest extends Application {
 		AnchorPane root=new AnchorPane();
 		Scene scene = new Scene(root, 600, 400);
 
+		//XXX Show Error
+
+
 		browser = new WebView();
 		WebEngine webEngine = browser.getEngine();
 		webEngine.load("http://www.google.de");
@@ -52,7 +55,8 @@ public class WebViewTest extends Application {
 				saveScreenShoot();
 			}
 		});
-
+		//HACK  NOGEN
+		System.out.println("Hallo");
 	}
 
 	private void saveScreenShoot() {

@@ -678,7 +678,20 @@ public class GraphConverter implements Converter{
 			}
 			String matchNameMatch = (String) names.getValue(match);
 			String matchNameClazz = null;
-			String type = diff.getType();
+			String type = null;
+//			String type = diff.getType();
+			if(diff.getNewValue() == null) {
+				if(diff.getOldValue() != null) {
+					type = SendableEntityCreator.REMOVE;
+				}
+			} else {
+				if(diff.getOldValue() != null) {
+					type = SendableEntityCreator.UPDATE;
+				} else {
+					type = SendableEntityCreator.NEW;
+				}
+			}
+			
 			Clazz clazz = match.getClazz();
 			if(matchNameMatch == null) {
 				// MUST BE CREATE
@@ -747,12 +760,14 @@ public class GraphConverter implements Converter{
 					}
 				} else if (match instanceof Attribute) {
 					if(Clazz.PROPERTY_TYPE.equalsIgnoreCase(diff.getType())) {
-						newValue = fragment.replacing("#IMPORT.create(\""+ newValue+"\")", DataType.class.getName());
+						if(newValue instanceof DataType == false) {
+							newValue = fragment.replacing("#IMPORT.create(\""+ newValue+"\")", DataType.class.getName());
+						}
 					}
 					if(matchNameMatch != null) {
 						fragment.withLineString(matchNameMatch+".with(\"" + newValue + "\");");
 					} else {
-						fragment.withLineString("model.getGenerator().findAttribute(\""+matchNameClazz, clazz.getName()+"\", true).with(\"" + newValue + "\");");
+						fragment.withLineString("model.getGenerator().findAttribute("+matchNameClazz+", "+clazz.getName()+"\", true).with(" + newValue + ");");
 					}
 				} else if (match instanceof Association) {
 					if(Association.PROPERTY_CARDINALITY.equalsIgnoreCase(diff.getType()) && newValue instanceof String) {

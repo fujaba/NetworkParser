@@ -45,7 +45,7 @@ public abstract class GraphMember {
 	private ObjectCondition role;
 	protected boolean isGenerate;
 
-	public GraphMember withRole(ObjectCondition condition) {
+	GraphMember withRole(ObjectCondition condition) {
 		this.role = condition;
 		return this;
 	}

@@ -26,6 +26,7 @@ import java.beans.PropertyChangeSupport;
 import java.util.LinkedHashSet;
 
 import de.uniks.networkparser.interfaces.SendableEntity;
+import de.uniks.networkparser.test.model.util.AppleSet;
 
 public class AppleTree extends Tree implements SendableEntity
 {
@@ -84,13 +85,14 @@ public class AppleTree extends Tree implements SendableEntity
 
    public static final String PROPERTY_HAS = "has";
 
-   private LinkedHashSet<Apple> has = null;
+   private AppleSet APPLE_EMPTYSET= new AppleSet().withFlag(AppleSet.READONLY);
+   private AppleSet has;
 
-   public LinkedHashSet<Apple> getHas()
+   public AppleSet getHas()
    {
 	  if (this.has == null)
 	  {
-		 return new LinkedHashSet<Apple>();
+		 return APPLE_EMPTYSET;
 	  }
 
 	  return this.has;
@@ -104,13 +106,14 @@ public class AppleTree extends Tree implements SendableEntity
 	  {
 		 if (this.has == null)
 		 {
-			this.has = new LinkedHashSet<Apple>();
+			this.has = new AppleSet();
 		 }
 
-		 changed = this.has.add (value);
+		this.has.withVisible(true);
+		changed = this.has.add (value);
+		this.has.withVisible(false);
 
-		 if (changed)
-		 {
+		if (changed) {
 			firePropertyChange(PROPERTY_HAS, null, value);
 			value.withOwner(this);
 		 }

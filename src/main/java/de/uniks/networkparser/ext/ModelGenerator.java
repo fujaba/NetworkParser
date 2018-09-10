@@ -1,5 +1,6 @@
 package de.uniks.networkparser.ext;
 
+import java.io.File;
 /*
 The MIT License
 
@@ -109,18 +110,25 @@ public class ModelGenerator extends BasicGenerator {
 		}
 	}
 
+	private String getJavaPath() {
+		if(new File("src/main/java").exists()) {
+			return "src/main/java";
+		}
+		return "src";
+	}
+	
 	public SendableEntityCreator generate(GraphMember item) {
 		if (item instanceof GraphModel == false) {
 			return null;
 		}
-		return generate("src", (GraphModel) item);
+		return generate(getJavaPath(), (GraphModel) item);
 	}
 
 	public SendableEntityCreator generate(GraphMember item, TextItems parameters) {
 		if (item instanceof GraphModel == false) {
 			return null;
 		}
-		return generateJava("src", (GraphModel) item, parameters);
+		return generateJava(getJavaPath(), (GraphModel) item, parameters);
 	}
 
 	public SendableEntityCreator generate(String rootDir, GraphModel model) {

@@ -27,8 +27,10 @@ import java.util.List;
 
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.buffer.CharacterBuffer;
+import de.uniks.networkparser.graph.GraphList;
 import de.uniks.networkparser.graph.GraphMember;
 import de.uniks.networkparser.graph.GraphModel;
+import de.uniks.networkparser.graph.GraphSimpleSet;
 import de.uniks.networkparser.interfaces.LocalisationInterface;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.ParserCondition;
@@ -567,12 +569,18 @@ public class TemplateResultFragment implements Comparable<TemplateResultFragment
 		return name;
 	}
 	
+	public static final TemplateResultFragment create(GraphSimpleSet setOfDiff, boolean useImport, boolean createModel) {
+		GraphList model=new GraphList();
+		model.add(setOfDiff);
+		return create(model, useImport, createModel);
+	}
+	
 	public static final TemplateResultFragment create(GraphModel model, boolean useImport, boolean createModel) {
 		TemplateResultFragment fragment = new TemplateResultFragment().withMember(model);
 		fragment.useImport = useImport;
 		if(createModel) {
 			String classModel="de.uniks.networkparser.ext.ClassModel";
-			if(model.getDefaultPackage().equalsIgnoreCase(model.getName()) == false) {
+			if(model.getDefaultPackage().equalsIgnoreCase(model.getName()) == false && model.getName() != null) {
 				String packageName = model.getName();
 				fragment.withLineString("#IMPORT model = new #IMPORT(\""+packageName+"\");", classModel);
 			}else {

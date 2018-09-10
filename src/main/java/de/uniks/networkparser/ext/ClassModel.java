@@ -1,5 +1,7 @@
 package de.uniks.networkparser.ext;
 
+import java.util.Collection;
+
 /*
 The MIT License
 
@@ -25,10 +27,15 @@ THE SOFTWARE.
 */
 import de.uniks.networkparser.ext.io.FileBuffer;
 import de.uniks.networkparser.graph.Annotation;
+import de.uniks.networkparser.graph.Attribute;
 import de.uniks.networkparser.graph.Clazz;
+import de.uniks.networkparser.graph.DataType;
 import de.uniks.networkparser.graph.Feature;
 import de.uniks.networkparser.graph.GraphMember;
 import de.uniks.networkparser.graph.GraphModel;
+import de.uniks.networkparser.graph.GraphUtil;
+import de.uniks.networkparser.graph.Match;
+import de.uniks.networkparser.graph.ModifyEntry;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.xml.HTMLEntity;
 
@@ -79,7 +86,7 @@ public class ClassModel extends GraphModel {
 		return this.generator.getFeature(feature, clazzes);
 	}
 
-	public String dumpHTMLString()
+	String dumpHTMLString()
 	{
 		HTMLEntity html = new HTMLEntity();
 		html.withGraph(this);
@@ -122,6 +129,30 @@ public class ClassModel extends GraphModel {
 		}
 		boolean add=true;
 		for(Object item : values) {
+			if(item instanceof Collection<?>) {
+				Collection<?> items = (Collection<?>) item;
+				for(Object i : items) {
+					add = add(i);
+				}
+				continue;
+			}
+			if(item instanceof Match) {
+				// Change
+				Match match = (Match) item;
+				GraphMember member = match.getMatch();
+				Clazz clazz = this.createClazz(member.getClazz().getName());
+				ModifyEntry modifier = ModifyEntry.createModifier(member);
+				GraphUtil.withChildren(clazz, modifier);
+
+				Object newValue = match.getNewValue();
+				if(newValue instanceof Attribute ) {
+					GraphUtil.withChildren(clazz, (GraphMember) newValue);
+				} else if(newValue instanceof DataType ) {
+					if(member instanceof Attribute) {
+						clazz.createAttribute(member.getName(), (DataType)newValue);
+					}
+				}
+			}
 			if(item instanceof Annotation) {
 				super.withAnnotation((Annotation) item);
 			} else if(item instanceof Clazz) {

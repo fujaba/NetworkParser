@@ -1,13 +1,16 @@
 package de.uniks.networkparser.parser;
 
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.SortedSet;
-import java.util.TreeSet;
 import java.util.Map.Entry;
 
+import org.junit.Assert;
+
+import java.util.SortedSet;
+import java.util.TreeSet;
+
 import de.uniks.networkparser.buffer.CharacterBuffer;
+import de.uniks.networkparser.converter.GraphConverter;
 import de.uniks.networkparser.graph.Association;
 import de.uniks.networkparser.graph.AssociationSet;
 import de.uniks.networkparser.graph.AssociationTypes;
@@ -16,17 +19,23 @@ import de.uniks.networkparser.graph.AttributeSet;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.ClazzSet;
 import de.uniks.networkparser.graph.GraphEntity;
-import de.uniks.networkparser.graph.Match;
 import de.uniks.networkparser.graph.GraphMember;
 import de.uniks.networkparser.graph.GraphModel;
+import de.uniks.networkparser.graph.GraphSimpleSet;
 import de.uniks.networkparser.graph.GraphUtil;
+import de.uniks.networkparser.graph.Match;
 import de.uniks.networkparser.graph.Method;
 import de.uniks.networkparser.graph.MethodSet;
+import de.uniks.networkparser.graph.Parameter;
+import de.uniks.networkparser.graph.ParameterSet;
 import de.uniks.networkparser.list.EntityComparator;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SimpleSet;
-import de.uniks.networkparser.list.SortedList;
+import de.uniks.networkparser.parser.differ.AddCondition;
+import de.uniks.networkparser.parser.differ.AttributeChangeCondition;
+import de.uniks.networkparser.parser.differ.MemberDiffer;
+import de.uniks.networkparser.parser.differ.RemoveCondition;
 
 public class GraphMatcher extends GraphEntity {
 	private SimpleList<Match> clazzMatches = new SimpleList<Match>();
@@ -40,36 +49,61 @@ public class GraphMatcher extends GraphEntity {
 	private GraphModel oldModel;
 	private GraphModel newModel;
 	private GraphModel metaModel;
-	private SortedList<Match> diffs = new SortedList<Match>(true);
+	private GraphSimpleSet diffs = new GraphSimpleSet();
+	
+	public GraphMatcher(GraphModel oldModel, GraphModel newModel) {
+		this.oldModel = oldModel;
+		this.newModel = newModel;
+		createMatches();
+	}
 	
 	public GraphMatcher(GraphModel oldModel, GraphModel newModel, GraphModel metaModel) {
 		this.oldModel = oldModel;
 		this.newModel = newModel;
 		this.metaModel = metaModel;
+		createMatches();
 	}
 	public boolean createMatches() {
 		matchClazzes();
-		//FIXME
+
 		ClazzSet newMatches = new ClazzSet();
-		
-//FIXME		if (metaModel != null) {
-//			for (Clazz metaClazz : metaModel.getClazzes()) {
-//				for (Match clazzMatch : matchData.getClazzMatches()) {
-//					Clazz clazz = (Clazz) clazzMatch.getParent();
-//					if (newMatches.contains(clazz)) {
-//						continue;
-//					}
-//					if (matchClazzValues(metaClazz, clazz, matchData)) {
-//						clazzMatch.withMetaMatch(true);
-//						clazzMatch.withMetaParent(metaClazz);
-//						newMatches.add(clazz);
-//					}
-//				}
-//			}
-//		}
+
+		if (metaModel != null) {
+			for (Clazz metaClazz : metaModel.getClazzes()) {
+				for (Match clazzMatch : getClazzMatches()) {
+					Clazz clazz = (Clazz) clazzMatch.getMatch();
+					if (newMatches.contains(clazz)) {
+						continue;
+					}
+					if (matchClazzValues(metaClazz, clazz)) {
+						clazzMatch.withMetdaMatch(metaClazz);
+						newMatches.add(clazz);
+					}
+				}
+			}
+		}
 		return true;
 	}
-	
+
+//	private MemberDiffer clazzDiffer = new MemberDiffer(new ClazzAddCondition(), new ClazzChangeCondition(), new ClazzRemoveCondition());
+	private MemberDiffer attributeDiffer = new MemberDiffer(new AddCondition(), new AttributeChangeCondition(), new RemoveCondition());
+//	private MemberDiffer attributeDiffer = new MemberDiffer(new AddCondition());
+//	private MemberDiffer associationDiffer = new MemberDiffer(new AssociationAddCondition(), new AssociationChangeCondition(), new AssociationRemoveCondition());
+//	private MemberDiffer methodDiffer = new MemberDiffer(new AddCondition(), new MethodChangeCondition(), new RemoveCondition());
+
+
+	public GraphSimpleSet getDiffs() {
+//		clazzDiffer.diff(matches, getClazzMatches());
+		attributeDiffer.diff(this, getAttributeMatches());
+//		associationDiffer.diff(matches, getAssociationMatches());
+//		methodDiffer.diff(matches, getMethodMatches());
+		return diffs;
+	}
+
+	private List<Match> getAttributeMatches() {
+		return attributeMatches;
+	}
+
 	public boolean matchClazzes() {
 		ClazzSet oldClazzes = oldModel.getClazzes();
 		ClazzSet newClazzes = newModel.getClazzes();
@@ -157,9 +191,11 @@ public class GraphMatcher extends GraphEntity {
 	private void prepareMatches(ClazzSet clazzes, boolean isFileMatch) {
 		for (Clazz clazz : clazzes) {
 			Match match = Match.createMatch(this, clazz, isFileMatch);
+			match.withOwner(this);
 			this.addClazzMatch(match);
 			for (Attribute attribute : clazz.getAttributes()) {
 				Match attributeMatch = Match.createMatch(this, attribute, isFileMatch);
+				attributeMatch.withOwner(this);
 				this.addAttributeMatch(attributeMatch);
 			}
 			for (Association association : clazz.getAssociations()) {
@@ -167,14 +203,17 @@ public class GraphMatcher extends GraphEntity {
 					continue;
 				}
 				Match associationMatch = Match.createMatch(this, association, isFileMatch);
+				associationMatch.withOwner(this);
 				this.addAssociationMatch(associationMatch);
 				if (association.isSelfAssoc()) {
 					Match associationOtherMatch = Match.createMatch(this, association.getOther(), isFileMatch);
+					associationOtherMatch.withOwner(this);
 					this.addAssociationMatch(associationOtherMatch);
 				}
 			}
 			for (Method method : clazz.getMethods()) {
 				Match methodMatch = Match.createMatch(this, method, isFileMatch);
+				methodMatch.withOwner(this);
 				this.addMethodMatch(methodMatch);
 			}
 		}
@@ -339,6 +378,7 @@ public class GraphMatcher extends GraphEntity {
 					newBuffer.set(newMember.getName());
 				}
 				Match potentMatch = Match.createPotentMatch(oldMember, newMember);
+				potentMatch.withOwner(this);
 				double distance = Math.abs(oldBuffer.equalsLevenshtein(newBuffer));
 				if (potentMatches.containsKey(distance)) {
 					potentMatches.get(distance).add(potentMatch);
@@ -523,6 +563,245 @@ public class GraphMatcher extends GraphEntity {
 		}
 		return null;
 	}
+	
+	
+	private boolean matchClazzValues(Clazz oldClazz, Clazz newClazz) {
+		if (oldClazz.getName().equals(newClazz.getName()) == false) {
+			return false;
+		}
+		
+		AttributeSet oldAttributes = oldClazz.getAttributes();
+		AttributeSet newAttributes = newClazz.getAttributes();
+		AttributeSet metaMatchedAttributes = new AttributeSet();
+		AttributeSet newMatchedAttributes = new AttributeSet();
+		
+		for (Attribute oldAttribute : oldAttributes) {
+			for (Attribute newAttribute : newAttributes) {
+				if (newMatchedAttributes.contains(newAttribute)) {
+					continue;
+				}
+				if (newMatchedAttributes.contains(newAttribute) == false) {
+					if (matchAttributeValues(oldAttribute, newAttribute)) {
+						metaMatchedAttributes.add(oldAttribute);
+						newMatchedAttributes.add(newAttribute);
+					}
+				}
+			}
+		}
+		
+		AssociationSet oldAssociations = oldClazz.getAssociations();
+		AssociationSet newAssociations = newClazz.getAssociations();
+		AssociationSet metaMatchedAssociations = new AssociationSet();
+		AssociationSet newMatchedAssociations = new AssociationSet();
+		
+		for (Association oldAssociation : oldAssociations) {
+			if(GraphUtil.isAssociation(oldAssociation) == false) {
+				metaMatchedAssociations.add(oldAssociation);
+			}
+		}
+		for (Association newAssociation : newAssociations) {
+			if(GraphUtil.isAssociation(newAssociation) == false) {
+				newMatchedAssociations.add(newAssociation);
+			}
+		}
+		
+		for (Association oldAssociation : oldAssociations) {
+			if (metaMatchedAssociations.contains(oldAssociation)) {
+				continue;
+			}
+			for (Association newAssociation : newAssociations) {
+				if (newMatchedAssociations.contains(newAssociation)) {
+					continue;
+				}
+				if (newMatchedAssociations.contains(newAssociation) == false) {
+					if (matchAssociationValues(oldAssociation, newAssociation)) {
+						metaMatchedAssociations.add(oldAssociation);
+						newMatchedAssociations.add(newAssociation);
+					
+						if (oldAssociation.getClazz() == oldAssociation.getOtherClazz()
+								&& newAssociation.getClazz() == newAssociation.getOtherClazz()) {
+							matchAssociationValues(oldAssociation.getOther(), newAssociation.getOther());
+						}
+					}
+				}
+			}
+		}
+		
+		MethodSet oldMethods = oldClazz.getMethods();
+		MethodSet newMethods = newClazz.getMethods();
+		MethodSet metaMatchedMethods = new MethodSet();
+		MethodSet newMatchedMethods = new MethodSet();
+		
+		for (Method oldMethod : oldMethods) {
+			for (Method newMethod : newMethods) {
+				if (newMatchedMethods.contains(newMethod)) {
+					continue;
+				}
+				if (newMatchedMethods.contains(newMethod) == false) {
+					if (matchMethodValues(oldMethod, newMethod)) {
+						metaMatchedMethods.add(oldMethod);
+						newMatchedMethods.add(newMethod);
+					}
+				}
+			}
+		}
+		
+		ClazzSet oldSuperClazzes = oldClazz.getSuperClazzes(false);
+		oldSuperClazzes.addAll(oldClazz.getInterfaces(false));
+		ClazzSet newSuperClazzes = newClazz.getSuperClazzes(false);
+		newSuperClazzes.addAll(newClazz.getInterfaces(false));
+		ClazzSet metaMatchedSuperClazzes = new ClazzSet();
+		ClazzSet newMatchedSuperClazzes = new ClazzSet();
+		
+		for (Clazz oldSuperClazz : oldSuperClazzes) {
+			for (Clazz newSuperClazz : newSuperClazzes) {
+				if (newMatchedSuperClazzes.contains(newSuperClazz)) {
+					continue;
+				}
+				if (oldSuperClazz.getName().equals(newSuperClazz.getName())) {
+					metaMatchedSuperClazzes.add(oldSuperClazz);
+					newMatchedSuperClazzes.add(newSuperClazz);
+				}
+			}
+		}
+		
+		return oldAttributes.size() == metaMatchedAttributes.size()
+				&& newAttributes.size() == newMatchedAttributes.size()
+				&& oldAssociations.size() == metaMatchedAssociations.size()
+				&& newAssociations.size() == newMatchedAssociations.size()
+				&& oldMethods.size() == metaMatchedMethods.size()
+				&& newMethods.size() == newMatchedMethods.size()
+				&& oldSuperClazzes.size() == metaMatchedSuperClazzes.size()
+				&& newSuperClazzes.size() == newMatchedSuperClazzes.size()
+				&& oldClazz.getType().equals(newClazz.getType())
+				&& oldClazz.getModifier().toString().equals(newClazz.getModifier().toString());
+	}
+
+	private boolean matchAttributeValues(Attribute oldAttribute, Attribute newAttribute) {
+		if (oldAttribute.getName().equals(newAttribute.getName()) == false) {
+			return false;
+		}
+		if (oldAttribute.getType().equals(newAttribute.getType()) == false) {
+			return false;
+		}
+		if (oldAttribute.getModifier().toString().equals(newAttribute.getModifier().toString()) == false) {
+			return false;
+		}
+		
+//FIXME		if (matchData != null) {
+//			matchData.getAttributeMatch(newAttribute)
+//			.withMetaMatch(true)
+//			.withMetaParent(oldAttribute);
+//		}
+		
+		return true;
+	}
+	
+	private boolean matchAssociationValues(Association oldAssociation, Association newAssociation) {
+		if (oldAssociation.getName().equals(newAssociation.getName()) == false) {
+			return false;
+		}
+		if (oldAssociation.getType().equals(newAssociation.getType()) == false) {
+			return false;
+		}
+		if (oldAssociation.getCardinality().equals(newAssociation.getCardinality()) == false) {
+			return false;
+		}
+		if (oldAssociation.getModifier() != null && newAssociation.getModifier() != null) {
+			if (oldAssociation.getModifier().toString().equals(newAssociation.getModifier().toString()) == false) {
+				return false;
+			}
+		} else if (oldAssociation.getModifier() != null || newAssociation.getModifier() != null) {
+			return false;
+		}
+		if (oldAssociation.getOther().getName().equals(newAssociation.getOther().getName()) == false) {
+			return false;
+		}
+		if (oldAssociation.getOther().getType().equals(newAssociation.getOther().getType()) == false) {
+			return false;
+		}
+		if (oldAssociation.getOther().getCardinality().equals(newAssociation.getOther().getCardinality()) == false) {
+			return false;
+		}
+		if (oldAssociation.getOther().getModifier() != null && newAssociation.getModifier() != null) {
+			if (oldAssociation.getOther().getModifier().toString().equals(newAssociation.getOther().getModifier().toString()) == false) {
+				return false;
+			}
+		} else if (oldAssociation.getOther().getModifier() != null || newAssociation.getOther().getModifier() != null) {
+			return false;
+		}
+		if (oldAssociation.getOtherClazz().getName().equals(newAssociation.getOtherClazz().getName()) == false) {
+			return false;
+		}
+		
+//FIXME		if (matchData != null) {
+//			matchData.getAssociationMatch(newAssociation)
+//			.withMetaMatch(true)
+//			.withMetaParent(oldAssociation);
+//		}
+
+		return true;
+	}
+	
+	private boolean matchMethodValues(Method oldMethod, Method newMethod) {
+		if (oldMethod.getName().equals(newMethod.getName()) == false) {
+			return false;
+		}
+		if (oldMethod.getModifier().toString().equals(newMethod.getModifier().toString()) == false) {
+			return false;
+		}
+		if (oldMethod.getReturnType().equals(newMethod.getReturnType()) == false) {
+			return false;
+		}
+		ParameterSet oldParameters = oldMethod.getParameters();
+		ParameterSet newParameters = newMethod.getParameters();
+		if (oldParameters.size() != newParameters.size()) {
+			return false;
+		}
+		boolean found = false;
+		for (Parameter oldParameter : oldParameters) {
+			found = false;
+			for (Parameter newParameter : newParameters) {
+				if (oldParameter.getName() != null
+						&& newParameter.getName() != null
+						&& oldParameter.getName().equals(newParameter.getName()) == false) {
+					continue;
+				}
+				if (oldParameter.getType().equals(newParameter.getType()) == false) {
+					continue;
+				}
+				if (oldParameter.getModifier() == null) {
+					if (newParameter.getModifier() != null) {
+						continue;
+					}
+				} else if (oldParameter.getModifier().toString().equals(newParameter.getModifier().toString()) == false) {
+					continue;
+				}
+				
+				found = true;
+				break;
+			}
+			if (found == false) {
+				return false;
+			}
+		}
+		if (oldMethod.getBody() == null) {
+			if(newMethod.getBody() != null) {
+				return false;
+			}
+		} else if(oldMethod.getBody().equals(newMethod.getBody()) == false) {
+//		if (oldMethod.getBody() == newMethod.getBody() && oldMethod.getBody().equals(newMethod.getBody()) == false) {
+			return false;
+		}
+		
+//FIXME		if (matchData != null) {
+//			matchData.getMethodMatch(newMethod)
+//			.withMetaMatch(true)
+//			.withMetaParent(oldMethod);
+//		}
+		
+		return true;
+	}
 
 	public void addClazzMatch(Match clazzMatch) {
 		this.clazzMatches.add(clazzMatch);
@@ -535,5 +814,32 @@ public class GraphMatcher extends GraphEntity {
 	}
 	public void addMethodMatch(Match methodMatch) {
 		this.methodMatches.add(methodMatch);
+	}
+	public List<Match> getClazzMatches() {
+		return clazzMatches;
+	}
+
+	public GraphModel getOldModel() {
+		return oldModel;
+	}
+	public GraphModel getNewModel() {
+		return newModel;
+	}
+
+	public boolean addDiff(Match diff) {
+		return this.diffs.add(diff);
+	}
+
+	public Object getMetaModel() {
+		return metaModel;
+	}
+
+	public boolean generate() {
+		createMatches();
+//		GraphSimpleSet diffs = getDiffs();
+//		GraphConverter converter = new GraphConverter();
+//		TemplateResultFragment fragment = converter.convertToAdvanced(TemplateResultFragment.create(diffs, true, true));
+//		CharacterBuffer value = fragment.getValue();
+		return true;
 	}
 }
