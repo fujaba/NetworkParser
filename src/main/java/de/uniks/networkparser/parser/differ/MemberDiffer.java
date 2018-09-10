@@ -1,15 +1,15 @@
 package de.uniks.networkparser.parser.differ;
 
-import java.util.LinkedList;
 import java.util.List;
 
 import de.uniks.networkparser.graph.Match;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
+import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.parser.GraphMatcher;
 
 public class MemberDiffer {
 
-	protected List<MatchCondition> memberConditions = new LinkedList<>();
+	protected SimpleList<MatchCondition> memberConditions = new SimpleList<MatchCondition>();
 
 	public MemberDiffer(MatchCondition... memberMatches) {
 		if (memberMatches != null) {

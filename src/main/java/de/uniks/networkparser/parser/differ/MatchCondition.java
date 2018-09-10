@@ -1,16 +1,14 @@
 package de.uniks.networkparser.parser.differ;
 
-import java.util.LinkedList;
-import java.util.List;
-
 import de.uniks.networkparser.graph.GraphModel;
 import de.uniks.networkparser.graph.Match;
 import de.uniks.networkparser.interfaces.ObjectCondition;
+import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.parser.GraphMatcher;
 
 public class MatchCondition implements ObjectCondition { 
 	protected boolean isReverse;
-	protected List<MatchCondition> changeConditions;
+	protected SimpleList<MatchCondition> changeConditions;
 
 	public MatchCondition(boolean isReverse) {
 		this.isReverse = isReverse;
@@ -18,7 +16,7 @@ public class MatchCondition implements ObjectCondition {
 
 	public MatchCondition(MatchCondition... conditions) {
 		if(conditions != null) {
-			this.changeConditions = new LinkedList<MatchCondition>();
+			this.changeConditions = new SimpleList<MatchCondition>();
 			for(MatchCondition condition : conditions) {
 				this.changeConditions.add(condition);
 			}
