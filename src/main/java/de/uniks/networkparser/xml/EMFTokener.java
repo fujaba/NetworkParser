@@ -37,7 +37,6 @@ import de.uniks.networkparser.graph.AssociationSet;
 import de.uniks.networkparser.graph.AssociationTypes;
 import de.uniks.networkparser.graph.Attribute;
 import de.uniks.networkparser.graph.AttributeSet;
-import de.uniks.networkparser.graph.Cardinality;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.ClazzSet;
 import de.uniks.networkparser.graph.DataType;
@@ -176,7 +175,7 @@ public class EMFTokener extends Tokener{
 				ecoreAssociation.withKeyValue(NAME, assoc.getOther().getName());
 				ecoreAssociation.withKeyValue(ETYPE, "#//"+assoc.getOtherClazz().getName());
 				ecoreAssociation.withKeyValue(EOpposite, "#//"+assoc.getOtherClazz().getName()+"/"+assoc.getName());
-				if(Cardinality.MANY.equals(assoc.getCardinality())) {
+				if(Association.MANY == assoc.getCardinality()) {
 					ecoreAssociation.withKeyValue(UPPERBOUND, "-1");
 				} else {
 					ecoreAssociation.withKeyValue(UPPERBOUND, "1");
@@ -349,7 +348,7 @@ public class EMFTokener extends Tokener{
 					}
 					if(value.indexOf("/", 1) > 0) {
 						// To Many
-						found.with(Cardinality.MANY);
+						found.with(Association.MANY);
 					}
 				}
 			}
@@ -668,7 +667,7 @@ public class EMFTokener extends Tokener{
 				Object upperValue = eref.getValue(UPPERBOUND);
 				if (upperValue instanceof Number) {
 					if (((Number) upperValue).intValue() != 1) {
-						tgtAssoc.with(Cardinality.MANY);
+						tgtAssoc.with(Association.MANY);
 					}
 				}
 			}
@@ -714,7 +713,7 @@ public class EMFTokener extends Tokener{
 				clazz = model.createClazz(className);
 			}
 			if(clazz != null) {
-				edge = new Association(clazz).with(Cardinality.ONE).with(roleName);
+				edge = new Association(clazz).with(Association.ONE).with(roleName);
 				GraphUtil.setAssociation(clazz, edge);
 				if(roleName != null) {
 					items.add(assocName, edge);
@@ -924,7 +923,7 @@ public class EMFTokener extends Tokener{
 		childChild = child.createChild("upperValue");
 		childChild.withKeyValue(XMI_TYPE, "uml:LiteralUnlimitedNatural");
 		childChild.withKeyValue(XMI_ID, assoc.getClazz().getId());
-		if(assoc.getCardinality()==Cardinality.ONE) {
+		if(assoc.getCardinality()==Association.ONE) {
 			childChild.withKeyValue(VALUE, "1");
 		} else {
 			childChild.withKeyValue(VALUE, "*");

@@ -7,7 +7,6 @@ import org.junit.Test;
 import de.uniks.networkparser.ext.ModelGenerator;
 import de.uniks.networkparser.graph.Association;
 import de.uniks.networkparser.graph.Attribute;
-import de.uniks.networkparser.graph.Cardinality;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.DataType;
 import de.uniks.networkparser.graph.DataTypeSet;
@@ -62,7 +61,7 @@ public class SimpleGenerator {
 		Clazz person = classModel.createClazz("Person");
 		Clazz room = classModel.createClazz("Room");
 		student.withSuperClazz(person);
-		student.withBidirectional(room, "room", Cardinality.ONE, "persons", Cardinality.MANY);
+		student.withBidirectional(room, "room", Association.ONE, "persons", Association.MANY);
 		person.withAttribute("name", DataType.STRING);
 		person.withMethod("eat", DataType.BOOLEAN);
 		ModelGenerator javaModelFactory = new ModelGenerator();

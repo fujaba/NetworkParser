@@ -112,11 +112,11 @@ public class GraphTokener extends Tokener {
 				if (value instanceof Collection<?>) {
 					for (Object containee : ((Collection<?>) value)) {
 						parsePropertyValue(object, map, list, deep, newElement,
-								property, containee, Cardinality.MANY);
+								property, containee, Association.MANY);
 					}
 				} else {
 					parsePropertyValue(object, map, list, deep, newElement,
-							property, value, Cardinality.ONE);
+							property, value, Association.ONE);
 				}
 			}
 		}
@@ -125,7 +125,7 @@ public class GraphTokener extends Tokener {
 
 	private void parsePropertyValue(Object entity, MapEntity map,
 			GraphList list, int deep, Clazz element, String property,
-			Object item, Cardinality cardinality) {
+			Object item, int cardinality) {
 		if (item == null) {
 			return;
 		}

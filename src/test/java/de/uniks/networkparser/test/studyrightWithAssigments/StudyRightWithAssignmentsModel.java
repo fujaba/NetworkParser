@@ -26,8 +26,8 @@ import org.junit.Test;
 import de.uniks.networkparser.ext.ClassModel;
 import de.uniks.networkparser.ext.story.Story;
 import de.uniks.networkparser.ext.story.StoryStepSourceCode;
+import de.uniks.networkparser.graph.Association;
 import de.uniks.networkparser.graph.AssociationTypes;
-import de.uniks.networkparser.graph.Cardinality;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.DataType;
 import de.uniks.networkparser.graph.Feature;
@@ -76,7 +76,7 @@ public class StudyRightWithAssignmentsModel {
 
 		// Association universityToStudent =
 		code = story.addSourceCode(StudyRightWithAssignmentsModel.class, StoryStepSourceCode.CURRENTPOSITION);
-		universityClass.withBidirectional(studentClass, "students", Cardinality.MANY, "university", Cardinality.ONE);
+		universityClass.withBidirectional(studentClass, "students", Association.MANY, "university", Association.ONE);
 		code.withEnd(StoryStepSourceCode.CURRENTPOSITION);
 
 		story.addDiagram(model);
@@ -91,15 +91,15 @@ public class StudyRightWithAssignmentsModel {
 		roomClass.withMethod("findPath", DataType.STRING, new Parameter(DataType.INT).with("motivation"));
 
 		// Association universityToRoom =
-		universityClass.createBidirectional(roomClass, "rooms", Cardinality.MANY, "university", Cardinality.ONE)
+		universityClass.createBidirectional(roomClass, "rooms", Association.MANY, "university", Association.ONE)
 				.with(AssociationTypes.AGGREGATION);
 
 		// Association doors =
-		roomClass.withBidirectional(roomClass, "doors", Cardinality.MANY, "doors", Cardinality.MANY);
+		roomClass.withBidirectional(roomClass, "doors", Association.MANY, "doors", Association.MANY);
 
 		// Association studentsInRoom =
-		studentClass.withBidirectional(roomClass, "in", Cardinality.ONE, "students", Cardinality.MANY);
-		studentClass.withBidirectional(studentClass, "friends", Cardinality.MANY, "friends", Cardinality.MANY);
+		studentClass.withBidirectional(roomClass, "in", Association.ONE, "students", Association.MANY);
+		studentClass.withBidirectional(studentClass, "friends", Association.MANY, "friends", Association.MANY);
 
 		code.withEnd(StoryStepSourceCode.CURRENTPOSITION);
 
@@ -111,24 +111,24 @@ public class StudyRightWithAssignmentsModel {
 		code = story.addSourceCode(StudyRightWithAssignmentsModel.class, StoryStepSourceCode.CURRENTPOSITION);
 		Clazz assignmentClass = model.createClazz("Assignment").withAttribute("content", DataType.STRING)
 				.withAttribute("points", DataType.INT)
-				.withBidirectional(roomClass, "room", Cardinality.ONE, "assignments", Cardinality.MANY);
+				.withBidirectional(roomClass, "room", Association.ONE, "assignments", Association.MANY);
 
-		studentClass.withBidirectional(assignmentClass, "done", Cardinality.MANY, "students", Cardinality.MANY);
+		studentClass.withBidirectional(assignmentClass, "done", Association.MANY, "students", Association.MANY);
 		code.withEnd(StoryStepSourceCode.CURRENTPOSITION);
 
 		story.addDiagram(model);
 
-		studentClass.withBidirectional(studentClass, "friends", Cardinality.MANY, "friends", Cardinality.MANY);
+		studentClass.withBidirectional(studentClass, "friends", Association.MANY, "friends", Association.MANY);
 
 		// some more classes for model navigation tests
-		studentClass.withBidirectional(studentClass, "friends", Cardinality.MANY, "friends", Cardinality.MANY);
+		studentClass.withBidirectional(studentClass, "friends", Association.MANY, "friends", Association.MANY);
 
 		model.createClazz("TeachingAssistant").withSuperClazz(studentClass)
-				.withBidirectional(roomClass, "room", Cardinality.ONE, "tas", Cardinality.MANY)
+				.withBidirectional(roomClass, "room", Association.ONE, "tas", Association.MANY)
 				.withAttribute("certified", DataType.BOOLEAN);
 
 		Clazz presidentClass = model.createClazz("President");
-		universityClass.createBidirectional(presidentClass, "president", Cardinality.ONE, "university", Cardinality.ONE)
+		universityClass.createBidirectional(presidentClass, "president", Association.ONE, "university", Association.ONE)
 				.with(AssociationTypes.AGGREGATION);
 
 		// ============================================================

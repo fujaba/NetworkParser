@@ -700,7 +700,7 @@ public class GraphMatcher extends GraphEntity {
 		if (oldAssociation.getType().equals(newAssociation.getType()) == false) {
 			return false;
 		}
-		if (oldAssociation.getCardinality().equals(newAssociation.getCardinality()) == false) {
+		if (oldAssociation.getCardinality() == newAssociation.getCardinality() == false) {
 			return false;
 		}
 		if (oldAssociation.getModifier() != null && newAssociation.getModifier() != null) {
@@ -716,7 +716,7 @@ public class GraphMatcher extends GraphEntity {
 		if (oldAssociation.getOther().getType().equals(newAssociation.getOther().getType()) == false) {
 			return false;
 		}
-		if (oldAssociation.getOther().getCardinality().equals(newAssociation.getOther().getCardinality()) == false) {
+		if (oldAssociation.getOther().getCardinality() == newAssociation.getOther().getCardinality() == false) {
 			return false;
 		}
 		if (oldAssociation.getOther().getModifier() != null && newAssociation.getModifier() != null) {

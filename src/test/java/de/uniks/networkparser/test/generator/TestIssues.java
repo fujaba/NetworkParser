@@ -3,7 +3,7 @@ package de.uniks.networkparser.test.generator;
 import org.junit.Test;
 
 import de.uniks.networkparser.ext.ClassModel;
-import de.uniks.networkparser.graph.Cardinality;
+import de.uniks.networkparser.graph.Association;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.DataType;
 import de.uniks.networkparser.graph.Method;
@@ -22,7 +22,7 @@ public class TestIssues {
 
 		b.withSuperClazz(a);
 		c.withSuperClazz(a);
-		b.withBidirectional(c, "c", Cardinality.ONE, "b", Cardinality.ONE);
+		b.withBidirectional(c, "c", Association.ONE, "b", Association.ONE);
 
 		model.getGenerator().testGeneratedCode("java");
 	}

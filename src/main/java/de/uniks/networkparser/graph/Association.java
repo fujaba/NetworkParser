@@ -37,7 +37,7 @@ public class Association extends GraphMember {
 	public static final String PROPERTY_TYPE = "type";
 	public static final String PROPERTY_ISEDGE="isEdge";
 	public static final String PROPERTY_ISIMPLEMENTS = "isImplements";
-	private Cardinality cardinality;
+	private int cardinality;
 	// The Complete Edge Info
 //	private GraphLabel info;
 	private Association other;
@@ -69,7 +69,7 @@ public class Association extends GraphMember {
 			return this.getOther();
 		}
 		if (PROPERTY_CARDINALITY.equals(attrName)) {
-			return this.getCardinality().getValue();
+			return this.getCardinality();
 		}
 		if (PROPERTY_CLAZZ.equals(attrName)) {
 			if (pos > 0) {
@@ -106,8 +106,8 @@ public class Association extends GraphMember {
 		return false;
 	}
 
-	public Cardinality getCardinality() {
-		if(cardinality != null) {
+	public int getCardinality() {
+		if(cardinality > 0) {
 			return cardinality;
 		}
 		if(children != null) {
@@ -117,12 +117,12 @@ public class Association extends GraphMember {
 				if(item instanceof Clazz) {
 					count++;
 					if(count>1) {
-						return Cardinality.MANY;
+						return MANY;
 					}
 				}
 			}
 		}
-		return Cardinality.ONE;
+		return ONE;
 	}
 
 	@Override
@@ -279,7 +279,7 @@ public class Association extends GraphMember {
 		return this;
 	}
 
-	public Association with(Cardinality cardinality) {
+	public Association with(int cardinality) {
 		this.cardinality = cardinality;
 		return this;
 	}

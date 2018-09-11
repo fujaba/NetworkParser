@@ -26,7 +26,7 @@ public class AssociationChangeUpdateCondition extends MatchCondition {
 		if (sourceAssociation.getType().equals(otherAssociation.getType()) == false) {
 			return false;
 		}
-		if (sourceAssociation.getOther().getCardinality().equals(otherAssociation.getOther().getCardinality())) {
+		if (sourceAssociation.getOther().getCardinality() == otherAssociation.getOther().getCardinality()) {
 			return false;
 		}
 		
@@ -51,7 +51,7 @@ public class AssociationChangeUpdateCondition extends MatchCondition {
 		if (oldAssociation.getType().equals(newAssociation.getType()) == false) {
 			return false;
 		}
-		if (oldAssociation.getOther().getCardinality().equals(newAssociation.getOther().getCardinality())) {
+		if (oldAssociation.getOther().getCardinality() == newAssociation.getOther().getCardinality()) {
 			return false;
 		}
 		

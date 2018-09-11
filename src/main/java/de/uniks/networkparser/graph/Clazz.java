@@ -195,7 +195,7 @@ public class Clazz extends GraphEntity {
 	 * @param srcCardinality		The sourcecardinality
 	 * @return The Clazz Instance
 	 */
-	public Clazz withBidirectional(Clazz tgtClass, String tgtRoleName, Cardinality tgtCardinality, String srcRoleName, Cardinality srcCardinality) {
+	public Clazz withBidirectional(Clazz tgtClass, String tgtRoleName, int tgtCardinality, String srcRoleName, int srcCardinality) {
 		// Target
 		Association assocTarget = new Association(tgtClass).with(tgtCardinality).with(tgtRoleName);
 
@@ -224,8 +224,8 @@ public class Clazz extends GraphEntity {
 	 * @param srcCardinality The sourcecardinality
 	 * @return The Association Instance
 	 */
-	public Association createBidirectional(Clazz tgtClass, String tgtRoleName, Cardinality tgtCardinality,
-			String srcRoleName, Cardinality srcCardinality) {
+	public Association createBidirectional(Clazz tgtClass, String tgtRoleName, int tgtCardinality,
+			String srcRoleName, int srcCardinality) {
 		// Target
 		Association assocTarget = new Association(tgtClass).with(tgtCardinality).with(tgtRoleName);
 
@@ -253,7 +253,7 @@ public class Clazz extends GraphEntity {
 	 * @param tgtCardinality	The Targetcardinality
 	 * @return The Clazz Instance
 	 */
-	public Clazz withUniDirectional(Clazz tgtClass, String tgtRoleName, Cardinality tgtCardinality) {
+	public Clazz withUniDirectional(Clazz tgtClass, String tgtRoleName, int tgtCardinality) {
 		// Target
 		Association assocTarget = new Association(tgtClass).with(tgtCardinality).with(AssociationTypes.UNDIRECTIONAL).with(tgtRoleName);
 
@@ -280,7 +280,7 @@ public class Clazz extends GraphEntity {
     * @param tgtCardinality   The Targetcardinality
     * @return The Association Instance
     */
-   public Association createUniDirectional(Clazz tgtClass, String tgtRoleName, Cardinality tgtCardinality) {
+   public Association createUniDirectional(Clazz tgtClass, String tgtRoleName, int tgtCardinality) {
       // Target
       Association assocTarget = new Association(tgtClass).with(tgtCardinality).with(AssociationTypes.UNDIRECTIONAL).with(tgtRoleName);
 

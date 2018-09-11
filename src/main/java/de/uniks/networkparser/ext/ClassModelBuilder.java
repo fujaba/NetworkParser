@@ -1,6 +1,5 @@
 package de.uniks.networkparser.ext;
 
-import de.uniks.networkparser.graph.Cardinality;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.DataType;
 
@@ -73,7 +72,7 @@ public class ClassModelBuilder {
 	 * @param myCardinality My Cardinality
 	 * @param clazz The Clazz can be the ClassName as String or Clazz Object or lastClazz where used
 	 */
-	public ClassModelBuilder createAssociation(String otherRoleName, Cardinality otherCardinality, Object otherClazz, String myRoleName, Cardinality myCardinality, Object... clazz) {
+	public ClassModelBuilder createAssociation(String otherRoleName, int otherCardinality, Object otherClazz, String myRoleName, int myCardinality, Object... clazz) {
 		// Validate Paramter
 		if(otherClazz == null ) {
 			return this;

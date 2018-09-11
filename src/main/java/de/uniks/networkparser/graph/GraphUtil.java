@@ -330,13 +330,13 @@ public class GraphUtil {
 					if (assocA.getClazz() == assoc.getClazz()) {
 						if (assocB.getClazz() == other.getClazz()) {
 							// May be n-m
-							assocA.with(Cardinality.MANY);
-							assocB.with(Cardinality.MANY);
+							assocA.with(Association.MANY);
+							assocB.with(Association.MANY);
 						} else {
-							assocA.with(Cardinality.MANY);
+							assocA.with(Association.MANY);
 						}
 					} else {
-						assocB.with(Cardinality.MANY);
+						assocB.with(Association.MANY);
 					}
 					break;
 				}
@@ -357,7 +357,7 @@ public class GraphUtil {
 		sb.with(':');
 		sb.with(assoc.getName());
 		sb.with("_");
-		sb.with(assoc.getCardinality().getValue());
+		sb.with(assoc.getCardinality());
 		sb.with(assoc.getSeperator());
 		assoc = assoc.getOther();
 		if (assoc != null) {
@@ -368,7 +368,7 @@ public class GraphUtil {
 			sb.with(':');
 			sb.with(assoc.getName());
 			sb.with("_");
-			sb.with(assoc.getCardinality().getValue());
+			sb.with(assoc.getCardinality());
 		}
 		return sb.toString();
 	}
@@ -432,5 +432,15 @@ public class GraphUtil {
 	public static final DataType setClazz(DataType type, Clazz value) {
 		type.value = value;
 		return type;
+	}
+	
+	public static final int createCardinality(String value) {
+		if("one".equalsIgnoreCase(value) || "1".equalsIgnoreCase(value) ) {
+			return Association.ONE;
+		}
+		if("many".equalsIgnoreCase(value) || "n".equalsIgnoreCase(value) ) {
+			return Association.MANY;
+		}
+		return 0;
 	}
 }

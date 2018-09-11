@@ -6,8 +6,8 @@ import org.junit.Test;
 import de.uniks.networkparser.ext.ClassModel;
 import de.uniks.networkparser.ext.story.Story;
 import de.uniks.networkparser.ext.story.StoryStepJUnit;
+import de.uniks.networkparser.graph.Association;
 import de.uniks.networkparser.graph.Attribute;
-import de.uniks.networkparser.graph.Cardinality;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.DataType;
 import de.uniks.networkparser.graph.Feature;
@@ -27,7 +27,7 @@ public class testGen {
 
 		room.withMethod("init", DataType.VOID);
 
-		person.withBidirectional(room, "room", Cardinality.ONE, "persons", Cardinality.MANY);
+		person.withBidirectional(room, "room", Association.ONE, "persons", Association.MANY);
 
 		model.withFeature(Feature.DYNAMICVALUES.create());
 		model.generate("src/test/java");

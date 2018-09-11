@@ -4,7 +4,7 @@ import org.junit.Test;
 
 import de.uniks.networkparser.ext.ClassModel;
 import de.uniks.networkparser.ext.ModelGenerator;
-import de.uniks.networkparser.graph.Cardinality;
+import de.uniks.networkparser.graph.Association;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.DataType;
 import de.uniks.networkparser.graph.Method;
@@ -30,7 +30,7 @@ public class TypeScriptModelTest {
 		Clazz uni = model.createClazz("University");
 		uni.withSuperClazz(building);
 
-		uni.withBidirectional(person, "stud", Cardinality.MANY, "owner", Cardinality.ONE);
+		uni.withBidirectional(person, "stud", Association.MANY, "owner", Association.ONE);
 
 		model.createClazz("Teacher");
 

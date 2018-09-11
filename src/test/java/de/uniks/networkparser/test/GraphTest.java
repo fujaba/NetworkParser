@@ -27,13 +27,11 @@ import de.uniks.networkparser.graph.AssociationSet;
 import de.uniks.networkparser.graph.AssociationTypes;
 import de.uniks.networkparser.graph.Attribute;
 import de.uniks.networkparser.graph.AttributeSet;
-import de.uniks.networkparser.graph.Cardinality;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.ClazzSet;
 import de.uniks.networkparser.graph.DataType;
 import de.uniks.networkparser.graph.DataTypeMap;
 import de.uniks.networkparser.graph.DataTypeSet;
-import de.uniks.networkparser.graph.Match;
 import de.uniks.networkparser.graph.GraphImage;
 import de.uniks.networkparser.graph.GraphList;
 import de.uniks.networkparser.graph.GraphOptions;
@@ -41,6 +39,7 @@ import de.uniks.networkparser.graph.GraphPatternMatch;
 import de.uniks.networkparser.graph.GraphSimpleSet;
 import de.uniks.networkparser.graph.GraphTokener;
 import de.uniks.networkparser.graph.GraphUtil;
+import de.uniks.networkparser.graph.Match;
 import de.uniks.networkparser.graph.Method;
 import de.uniks.networkparser.graph.MethodSet;
 import de.uniks.networkparser.graph.Modifier;
@@ -134,13 +133,13 @@ public class GraphTest {
 		creature.enableInterface();
 
 		Clazz food = model.createClazz("Food");
-		creature.withBidirectional(food, "eat", Cardinality.MANY, "meal", Cardinality.ONE);
+		creature.withBidirectional(food, "eat", Association.MANY, "meal", Association.ONE);
 
 
 		Clazz person = model.createClazz("Person").withSuperClazz(creature);
 		person.createAttribute("name", DataType.STRING);
 		person.createMethod("go");
-		person.withBidirectional(food, "has", Cardinality.MANY, "owner", Cardinality.ONE);
+		person.withBidirectional(food, "has", Association.MANY, "owner", Association.ONE);
 
 		Assert.assertEquals(2, person.getMethods().size());
 		Assert.assertEquals(2, person.getAttributes().size());
@@ -197,13 +196,13 @@ public class GraphTest {
 	public void testDupplicateAssoc() {
 		Clazz person=new Clazz("Person");
 		Clazz uni=new Clazz("Uni");
-		person.withBidirectional(uni, "owner", Cardinality.ONE, "has", Cardinality.MANY);
-		person.withBidirectional(uni, "owner", Cardinality.ONE, "has", Cardinality.MANY);
+		person.withBidirectional(uni, "owner", Association.ONE, "has", Association.MANY);
+		person.withBidirectional(uni, "owner", Association.ONE, "has", Association.MANY);
 
 		Assert.assertEquals(1, uni.getAssociations().size());
 		Assert.assertEquals(1, person.getAssociations().size());
 
-		person.withBidirectional(uni, "ownerB", Cardinality.ONE, "hasN", Cardinality.MANY);
+		person.withBidirectional(uni, "ownerB", Association.ONE, "hasN", Association.MANY);
 		Assert.assertEquals(2, uni.getAssociations().size());
 		Assert.assertEquals(2, person.getAssociations().size());
 
@@ -311,7 +310,7 @@ public class GraphTest {
 		Assert.assertEquals(student.getSuperClazzes(false).first(), person);
 		Assert.assertTrue(person.getKidClazzes(false).contains(student));
 
-		uni.withBidirectional(student, "stud", Cardinality.MANY, "owner", Cardinality.ONE);
+		uni.withBidirectional(student, "stud", Association.MANY, "owner", Association.ONE);
 	}
 
 	@Test
@@ -511,7 +510,7 @@ public class GraphTest {
 	public void testClazzTest() {
 		Clazz ludo = new Clazz("Ludo");
 		Clazz player = new Clazz("Player");
-		ludo.withBidirectional(player, "players", Cardinality.MANY, "game", Cardinality.ONE);
+		ludo.withBidirectional(player, "players", Association.MANY, "game", Association.ONE);
 		Assert.assertNotNull(ludo);
 	}
 
@@ -593,7 +592,7 @@ public class GraphTest {
 		uni.createAttribute("name", DataType.STRING);
 		uni.createMethod("init()");
 		Clazz student = list.with(new Clazz("Student"));
-		student.withUniDirectional(uni, "owner", Cardinality.ONE);
+		student.withUniDirectional(uni, "owner", Association.ONE);
 		YUMLConverter converter = new YUMLConverter();
 		Assert.assertEquals("[Student]->[University|name:String]", converter.convert(list, true));
 	}
@@ -605,7 +604,7 @@ public class GraphTest {
 		uni.createAttribute("name", DataType.STRING);
 		uni.createMethod("init()");
 		Clazz student = list.with(new Clazz("Student"));
-		student.withBidirectional(uni, "owner", Cardinality.ONE, "students", Cardinality.MANY);
+		student.withBidirectional(uni, "owner", Association.ONE, "students", Association.MANY);
 		YUMLConverter converter = new YUMLConverter();
 		Assert.assertEquals("[Student]-[University|name:String]", converter.convert(list, true));
 	}
@@ -679,7 +678,7 @@ public class GraphTest {
 		uni.createAttribute("name", DataType.STRING);
 		Clazz person = model.with(new Clazz("Person"));
 
-		uni.withBidirectional(person, "has", Cardinality.MANY, "studis", Cardinality.ONE);
+		uni.withBidirectional(person, "has", Association.MANY, "studis", Association.ONE);
 		String result = htmlEntity.withGraph(model).toString(2);
 		showDebugInfos( result, 803, null);
 	}
@@ -750,7 +749,7 @@ public class GraphTest {
 		uni.createAttribute("name", DataType.STRING);
 		uni.createMethod("init()");
 		Clazz student = list.with(new Clazz("Student"));
-		student.withUniDirectional(uni, "owner", Cardinality.ONE);
+		student.withUniDirectional(uni, "owner", Association.ONE);
 
 		String convert = list.toString(new DotConverter(true));
 
@@ -832,7 +831,7 @@ public class GraphTest {
 		Method initMethod = person.createMethod("init").with(Annotation.OVERRIDE);
 		initMethod.with(new Throws("Exception"));
 		Method toStringMethod = person.createMethod("toString", new Parameter(DataType.INT)).with(DataType.STRING);
-		person.withBidirectional(uni, "owner", Cardinality.ONE, "studs", Cardinality.MANY);
+		person.withBidirectional(uni, "owner", Association.ONE, "studs", Association.MANY);
 
 		AttributeSet attributes = person.getAttributes();
 		Assert.assertEquals(name, attributes.get(1));
@@ -905,7 +904,7 @@ public class GraphTest {
 		Clazz person = graphList.createClazz("Person");
 		person.createAttribute("name", DataType.STRING);
 
-		uni.withBidirectional(person, "has", Cardinality.MANY, "owner", Cardinality.ONE);
+		uni.withBidirectional(person, "has", Association.MANY, "owner", Association.ONE);
 
 		IdMap map=new IdMap();
 		JDLTokener tokener = new JDLTokener();

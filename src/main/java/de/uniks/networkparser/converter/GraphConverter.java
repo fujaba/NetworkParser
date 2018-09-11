@@ -32,11 +32,9 @@ import de.uniks.networkparser.graph.AssociationSet;
 import de.uniks.networkparser.graph.AssociationTypes;
 import de.uniks.networkparser.graph.Attribute;
 import de.uniks.networkparser.graph.AttributeSet;
-import de.uniks.networkparser.graph.Cardinality;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.ClazzSet;
 import de.uniks.networkparser.graph.DataType;
-import de.uniks.networkparser.graph.Match;
 import de.uniks.networkparser.graph.GraphEntity;
 import de.uniks.networkparser.graph.GraphImage;
 import de.uniks.networkparser.graph.GraphLabel;
@@ -49,6 +47,7 @@ import de.uniks.networkparser.graph.GraphPattern;
 import de.uniks.networkparser.graph.GraphSimpleSet;
 import de.uniks.networkparser.graph.GraphTokener;
 import de.uniks.networkparser.graph.GraphUtil;
+import de.uniks.networkparser.graph.Match;
 import de.uniks.networkparser.graph.Method;
 import de.uniks.networkparser.graph.MethodSet;
 import de.uniks.networkparser.graph.Modifier;
@@ -146,11 +145,11 @@ public class GraphConverter implements Converter{
 			for (int i = 0; i < props.size(); i++) {
 				Object value = props.getValueByIndex(i);
 				if (value instanceof Entity) {
-					assocOther = new Association(graphNode).with(Cardinality.ONE).with(AssociationTypes.EDGE);
+					assocOther = new Association(graphNode).with(Association.ONE).with(AssociationTypes.EDGE);
 					// Must be a Link to 1
 					Clazz newNode = parseJsonObject(root, (Entity) value);
 
-					assoc = new Association(newNode).with(Cardinality.ONE).with(props.getKeyByIndex(i)).with(AssociationTypes.ASSOCIATION);
+					assoc = new Association(newNode).with(Association.ONE).with(props.getKeyByIndex(i)).with(AssociationTypes.ASSOCIATION);
 					assoc.with(assocOther);
 
 					GraphUtil.setAssociation(newNode, assoc);
@@ -166,9 +165,9 @@ public class GraphConverter implements Converter{
 							continue;
 						}
 						if (entity instanceof Entity) {
-							assocOther = new Association(graphNode).with(Cardinality.ONE).with(AssociationTypes.EDGE);
+							assocOther = new Association(graphNode).with(Association.ONE).with(AssociationTypes.EDGE);
 							Clazz newNode = parseJsonObject(root, (Entity) entity);
-							assoc = new Association(newNode).with(Cardinality.MANY).with(props.getKeyByIndex(i)).with(AssociationTypes.ASSOCIATION);
+							assoc = new Association(newNode).with(Association.MANY).with(props.getKeyByIndex(i)).with(AssociationTypes.ASSOCIATION);
 							assoc.with(assocOther);
 
 							GraphUtil.setAssociation(newNode, assoc);
@@ -357,8 +356,8 @@ public class GraphConverter implements Converter{
 						Association from = new Association(GraphUtil.getByObject(reference, source.getString(CLAZZ), true));
 						Association to = new Association(GraphUtil.getByObject(reference, target.getString(CLAZZ), true));
 						from.with(to);
-						from.with(Cardinality.create(source.getString(CARDINALITY)));
-						to.with(Cardinality.create(target.getString(CARDINALITY)));
+						from.with(GraphUtil.createCardinality(source.getString(CARDINALITY)));
+						to.with(GraphUtil.createCardinality(target.getString(CARDINALITY)));
 						from.with(source.getString(PROPERTY));
 						to.with(target.getString(PROPERTY));
 						from.with(AssociationTypes.valueOf(source.getString(TYPE)));
@@ -366,7 +365,7 @@ public class GraphConverter implements Converter{
 					} else if(edge.getString(TYPE).equalsIgnoreCase("edge")) {
 						Clazz fromClazz = GraphUtil.getByObject(reference, source.getString(ID), true);
 						Clazz toClazz = GraphUtil.getByObject(reference, target.getString(ID), true);
-						fromClazz.withBidirectional(toClazz, target.getString("property"), Cardinality.ONE, source.getString("property"), Cardinality.ONE);
+						fromClazz.withBidirectional(toClazz, target.getString("property"), Association.ONE, source.getString("property"), Association.ONE);
 					}
 				}
 			}
@@ -771,7 +770,7 @@ public class GraphConverter implements Converter{
 					}
 				} else if (match instanceof Association) {
 					if(Association.PROPERTY_CARDINALITY.equalsIgnoreCase(diff.getType()) && newValue instanceof String) {
-						newValue = fragment.replacing(""+ newValue, Cardinality.class.getName());
+						newValue = fragment.replacing(""+ newValue);
 					}
 					if(matchNameMatch != null) {
 						fragment.withLineString(matchNameMatch+".with(\"" + newValue + "\");");
@@ -927,12 +926,12 @@ public class GraphConverter implements Converter{
 			Association assoc = (Association) member;
 			String name = (String) names.getValue(assoc.getClazz());
 			String otherName = (String)names.getValue(assoc.getOtherClazz());
-			String card = assoc.getOther().getCardinality().toString().toUpperCase();
+			String card = ""+assoc.getOther().getCardinality();
 			if(GraphUtil.isUndirectional(assoc)) {
-				fragment.withLine(name+".createUniDirectional("+otherName.toLowerCase()+", \"" + otherName + "\", #IMPORT."+card, Cardinality.class);
+				fragment.withLine(name+".createUniDirectional("+otherName.toLowerCase()+", \"" + otherName + "\"");
 			} else {
 				fragment.withLine(name+".createBidirectional(" + otherName.toLowerCase() + ", \"" + assoc.getOther().getName() + "\", #IMPORT."+card+ ", \"" + 
-						assoc.getName() + "\", #IMPORT."+assoc.getCardinality().toString().toUpperCase()+");", Cardinality.class);
+						assoc.getName() + "\"");
 			}
 		}
 		if(member instanceof Method) {

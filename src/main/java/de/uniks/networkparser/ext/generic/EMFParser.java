@@ -24,9 +24,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 import java.util.List;
+
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.ext.ClassModel;
-import de.uniks.networkparser.graph.Cardinality;
+import de.uniks.networkparser.graph.Association;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.DataType;
 import de.uniks.networkparser.graph.GraphUtil;
@@ -103,8 +104,8 @@ public class EMFParser {
 						Clazz srcSDMClass = classMap.get(srcEClass);
 						Clazz tgtSDMClass = classMap.get(tgtEClass);
 
-						Cardinality srcCard = (getUpperBound(oppositeERef) == 1 ? Cardinality.ONE : Cardinality.MANY);
-						Cardinality tgtCard = (getUpperBound(eref) == 1 ? Cardinality.ONE : Cardinality.MANY);
+						int srcCard = (getUpperBound(oppositeERef) == 1 ? Association.ONE : Association.MANY);
+						int tgtCard = (getUpperBound(eref) == 1 ? Association.ONE : Association.MANY);
 
 						srcSDMClass.withBidirectional(tgtSDMClass, getName(eref), tgtCard, getName(oppositeERef), srcCard);
 
@@ -118,7 +119,7 @@ public class EMFParser {
 						Clazz srcSDMClass = classMap.get(srcEClass);
 						Clazz tgtSDMClass = classMap.get(tgtEClass);
 
-						Cardinality tgtCard = (getUpperBound(eref) == 1 ? Cardinality.ONE : Cardinality.MANY);
+						int tgtCard = (getUpperBound(eref) == 1 ? Association.ONE : Association.MANY);
 
 						srcSDMClass.withUniDirectional(tgtSDMClass, getName(eref), tgtCard);
 

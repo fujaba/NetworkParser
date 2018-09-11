@@ -3,7 +3,7 @@
 import org.junit.Test;
 
 import de.uniks.networkparser.ext.ClassModel;
-import de.uniks.networkparser.graph.Cardinality;
+import de.uniks.networkparser.graph.Association;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.DataType;
 
@@ -44,11 +44,11 @@ public class ModelGen {
 
 		boardElement.withKidClazzes(board, swimline, workprotocol, taskPart, task);
 		
-		task.withBidirectional(taskPart, "part", Cardinality.MANY, "task", Cardinality.ONE);
-		task.withBidirectional(workprotocol, "update", Cardinality.MANY, "task", Cardinality.ONE);
-		task.withBidirectional(board, "owner", Cardinality.ONE, "task", Cardinality.MANY);
-		board.withBidirectional(swimline, "part", Cardinality.MANY, "owner", Cardinality.ONE);
-		swimline.withBidirectional(task, "children", Cardinality.MANY, "liesOn", Cardinality.ONE);
+		task.withBidirectional(taskPart, "part", Association.MANY, "task", Association.ONE);
+		task.withBidirectional(workprotocol, "update", Association.MANY, "task", Association.ONE);
+		task.withBidirectional(board, "owner", Association.ONE, "task", Association.MANY);
+		board.withBidirectional(swimline, "part", Association.MANY, "owner", Association.ONE);
+		swimline.withBidirectional(task, "children", Association.MANY, "liesOn", Association.ONE);
 
 //		model.withoutFeature(Feature.PatternObject);
 //		model.withoutFeature(Feature.ALBERTsSets);

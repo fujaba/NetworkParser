@@ -7,7 +7,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import de.uniks.networkparser.IdMap;
-import de.uniks.networkparser.graph.Cardinality;
+import de.uniks.networkparser.graph.Association;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.DataType;
 import de.uniks.networkparser.graph.GraphList;
@@ -60,7 +60,7 @@ public class EMFTest {
 		Clazz student = list.createClazz("Student");
 		student.withAttribute("semester", DataType.INT);
 		student.withAttribute("name", DataType.STRING);
-		uni.withBidirectional(student, "student", Cardinality.MANY, "university", Cardinality.ONE);
+		uni.withBidirectional(student, "student", Association.MANY, "university", Association.ONE);
 		XMLEntity item = (XMLEntity) map.encode(list, new EMFTokener());
 
 		XMLEntity root =(XMLEntity) item.getChild(0);

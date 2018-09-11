@@ -3,7 +3,7 @@ package de.uniks.networkparser.test.generator;
 import org.junit.Test;
 
 import de.uniks.networkparser.ext.ClassModelBuilder;
-import de.uniks.networkparser.graph.Cardinality;
+import de.uniks.networkparser.graph.Association;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.DataType;
 
@@ -20,7 +20,7 @@ public class TestNetworkParserLight {
 		
 		builder.createClass("University").createAttribute("name", DataType.STRING);
 		
-		builder.createAssociation("student", Cardinality.MANY, person, "studs", Cardinality.ONE);
+		builder.createAssociation("student", Association.MANY, person, "studs", Association.ONE);
 
 		
 		builder.build();

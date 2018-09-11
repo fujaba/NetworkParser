@@ -35,7 +35,6 @@ import de.uniks.networkparser.MapEntity;
 import de.uniks.networkparser.Tokener;
 import de.uniks.networkparser.graph.Association;
 import de.uniks.networkparser.graph.Attribute;
-import de.uniks.networkparser.graph.Cardinality;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.GraphList;
 import de.uniks.networkparser.interfaces.Grammar;
@@ -95,7 +94,7 @@ public class SQLTokener extends Tokener {
 	private void parseAssociations(Clazz clazz, SQLStatement sqlClass) {
 		String type = "";
 		for (Association association : clazz.getAssociations()) {
-			if (association.getCardinality() == Cardinality.MANY) {
+			if (association.getCardinality() == Association.MANY) {
 				type = TYPE_INTEGER;
 			} else {
 				type = "INTEGER[]";

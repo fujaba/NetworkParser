@@ -30,7 +30,6 @@ import de.uniks.networkparser.graph.Association;
 import de.uniks.networkparser.graph.AssociationSet;
 import de.uniks.networkparser.graph.Attribute;
 import de.uniks.networkparser.graph.AttributeSet;
-import de.uniks.networkparser.graph.Cardinality;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.ClazzSet;
 import de.uniks.networkparser.graph.GraphList;
@@ -154,13 +153,13 @@ public class JDLTokener extends Tokener{
 		if(assoc == null || assoc.getOther() == null) {
 			return null;
 		}
-		if(assoc.getCardinality()==Cardinality.ONE) {
-			if(assoc.getOther().getCardinality()==Cardinality.ONE) {
+		if(assoc.getCardinality()==Association.ONE) {
+			if(assoc.getOther().getCardinality()==Association.ONE) {
 				return "OneToOne";
 			}
 			return "OneToMany";
 		}
-		if(assoc.getOther().getCardinality()==Cardinality.ONE) {
+		if(assoc.getOther().getCardinality()==Association.ONE) {
 			return "ManyToOne";
 		}
 		return "ManyToMany";

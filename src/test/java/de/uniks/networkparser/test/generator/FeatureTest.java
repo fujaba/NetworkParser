@@ -3,7 +3,7 @@ package de.uniks.networkparser.test.generator;
 import org.junit.Test;
 
 import de.uniks.networkparser.ext.ClassModel;
-import de.uniks.networkparser.graph.Cardinality;
+import de.uniks.networkparser.graph.Association;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.DataType;
 import de.uniks.networkparser.graph.Feature;
@@ -19,7 +19,7 @@ public class FeatureTest {
 		Clazz student = model.createClazz("Student");
 		student.withAttribute("name", DataType.STRING);
 
-		uni.withBidirectional(student, "student", Cardinality.MANY, "uni", Cardinality.ONE);
+		uni.withBidirectional(student, "student", Association.MANY, "uni", Association.ONE);
 
 
 		// Remove Dependency from SDMLib

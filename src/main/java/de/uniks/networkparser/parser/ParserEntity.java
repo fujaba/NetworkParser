@@ -30,7 +30,6 @@ import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.graph.Annotation;
 import de.uniks.networkparser.graph.Association;
 import de.uniks.networkparser.graph.Attribute;
-import de.uniks.networkparser.graph.Cardinality;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.DataType;
 import de.uniks.networkparser.graph.GraphModel;
@@ -1140,10 +1139,10 @@ public class ParserEntity {
 		if (partnerClass == null)
 			return;
 
-		Cardinality card = findRoleCard(partnerTypeName, model);
+		int card = findRoleCard(partnerTypeName, model);
 
 		String setterPrefix = "set";
-		if (Cardinality.MANY.equals(card)) {
+		if (Association.MANY ==  card) {
 			setterPrefix = "with";
 		}
 
@@ -1202,36 +1201,36 @@ public class ParserEntity {
 			boolean found = false;
 
 			String srcRoleName = "";
-			Cardinality srcCardinality = Cardinality.ONE;
+			int srcCardinality = Association.ONE;
 
 			String potentialCode = "";
 
 			for (SymTabEntry qualifiedEntry : methodBodyQualifiedNames) {
 				String methodBody = this.code.getContent().toString().substring(qualifiedEntry.getStartPos(), qualifiedEntry.getEndPos());
-				if (card.equals(Cardinality.ONE) && qualifiedEntry.getValue().startsWith("set")) {
+				if (card == Association.ONE && qualifiedEntry.getValue().startsWith("set")) {
 					if (methodBody.contains("oldValue.without")) {
 						potentialCode = methodBody.substring(methodBody.indexOf("oldValue.without") + 16);
-						srcCardinality = Cardinality.MANY;
+						srcCardinality = Association.MANY;
 
 						found = true;
 						break;
 					} else if (methodBody.contains("oldValue.set")) {
 						potentialCode = methodBody.substring(methodBody.indexOf("oldValue.set") + 12);
-						srcCardinality = Cardinality.ONE;
+						srcCardinality = Association.ONE;
 
 						found = true;
 						break;
 					}
-				} else if (card.equals(Cardinality.MANY) && qualifiedEntry.getValue().startsWith("with")) {
+				} else if (card == Association.MANY && qualifiedEntry.getValue().startsWith("with")) {
 					if (methodBody.contains("item.with")) {
 						potentialCode = methodBody.substring(methodBody.indexOf("item.with") + 9);
-						srcCardinality = Cardinality.MANY;
+						srcCardinality = Association.MANY;
 
 						found = true;
 						break;
 					} else if (methodBody.contains("item.set")) {
 						potentialCode = methodBody.substring(methodBody.indexOf("item.set") + 8);
-						srcCardinality = Cardinality.ONE;
+						srcCardinality = Association.ONE;
 
 						found = true;
 						break;
@@ -1291,19 +1290,19 @@ public class ParserEntity {
 		return partnerClassName;
 	}
 
-	private Cardinality findRoleCard(String partnerTypeName, GraphModel model) {
-		Cardinality partnerCard = Cardinality.ONE;
+	private int findRoleCard(String partnerTypeName, GraphModel model) {
+		int partnerCard = Association.ONE;
 		int _openAngleBracket = partnerTypeName.indexOf("<");
 		int _closeAngleBracket = partnerTypeName.indexOf(">");
 		if (_openAngleBracket > 1 && _closeAngleBracket > _openAngleBracket) {
 			// partner to many
-			partnerCard = Cardinality.MANY;
+			partnerCard = Association.MANY;
 		} else if (partnerTypeName.endsWith("Set") && partnerTypeName.length() > 3) {
 			// it might be a ModelSet. Look if it starts with a clazz name
 			String prefix = partnerTypeName.substring(0, partnerTypeName.length() - 3);
 			for (Clazz clazz : model.getClazzes()) {
 				if (prefix.equals(EntityUtil.shortClassName(clazz.getName()))) {
-					partnerCard = Cardinality.MANY;
+					partnerCard = Association.MANY;
 					break;
 				}
 			}

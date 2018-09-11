@@ -9,7 +9,6 @@ import de.uniks.networkparser.ext.story.StoryStepSourceCode;
 import de.uniks.networkparser.graph.Annotation;
 import de.uniks.networkparser.graph.Association;
 import de.uniks.networkparser.graph.Attribute;
-import de.uniks.networkparser.graph.Cardinality;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.DataType;
 import de.uniks.networkparser.graph.DataTypeMap;
@@ -50,7 +49,6 @@ public class GenModel {
 		model = new ClassModel(packageName);
 		count += showCounting(Annotation.class, sdmLib, model);
 		count += showCounting(Association.class, sdmLib, model);
-		count += showCounting(Cardinality.class, sdmLib, model);
 		sdmLib.withGraph(model);
 
 
@@ -83,7 +81,7 @@ public class GenModel {
 				"		\r\n" + 
 				"		builder.createClass(\"University\").createAttribute(\"name\", DataType.STRING);\r\n" + 
 				"		\r\n" + 
-				"		builder.createAssociation(\"student\", Cardinality.MANY, person, \"studs\", Cardinality.ONE);\r\n" + 
+				"		builder.createAssociation(\"student\", Association.MANY, person, \"studs\", Association.ONE);\r\n" + 
 				"\r\n" + 
 				"		\r\n" + 
 				"		builder.build();");

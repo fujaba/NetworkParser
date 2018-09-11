@@ -13,7 +13,7 @@ import de.uniks.networkparser.ext.sql.SQLStatement;
 import de.uniks.networkparser.ext.sql.SQLStatementList;
 import de.uniks.networkparser.ext.sql.SQLTable;
 import de.uniks.networkparser.ext.sql.SQLTokener;
-import de.uniks.networkparser.graph.Cardinality;
+import de.uniks.networkparser.graph.Association;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.DataType;
 import de.uniks.networkparser.graph.GraphList;
@@ -42,7 +42,7 @@ public class SQLModelConverterTest {
 		student.withAttribute("lastName", DataType.STRING);
 		student.withAttribute("credits", DataType.INT);
 
-		university.withBidirectional(student, "students", Cardinality.MANY, "university", Cardinality.ONE);
+		university.withBidirectional(student, "students", Association.MANY, "university", Association.ONE);
 		File file = new File("build/sampleA.db");
 
 		if (file.exists()) {
@@ -204,7 +204,7 @@ public class SQLModelConverterTest {
 //		student.withAttribute("lastName", DataType.STRING);
 //		student.withAttribute("credits", DataType.INT);
 //
-//		university.withBidirectional(student, "students", Cardinality.MANY, "university", Cardinality.ONE);
+//		university.withBidirectional(student, "students", Association.MANY, "university", Association.ONE);
 //		model.generate("src");
 	}
 

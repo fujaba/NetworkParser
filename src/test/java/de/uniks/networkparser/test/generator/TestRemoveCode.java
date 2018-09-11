@@ -1,7 +1,7 @@
 package de.uniks.networkparser.test.generator;
 
 import de.uniks.networkparser.ext.ClassModel;
-import de.uniks.networkparser.graph.Cardinality;
+import de.uniks.networkparser.graph.Association;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.DataType;
 
@@ -77,7 +77,7 @@ public class TestRemoveCode {
 		Clazz person = model.createClazz("Person");
 		Clazz pupil = model.createClazz("Pupil");
 
-		person.withBidirectional(pupil, "pupils", Cardinality.MANY, "person", Cardinality.ONE);
+		person.withBidirectional(pupil, "pupils", Association.MANY, "person", Association.ONE);
 
 		model.generate(rootDir);
 
