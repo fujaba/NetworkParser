@@ -358,8 +358,12 @@ public class JavaDocFileVisitor implements FileVisitor<Path> {
 
 						//Go through all parameters and check the @param tag
 						for(String s : parameters) {
-
-							String parameterName = s.trim().split(" ")[1];
+							String[] param = s.trim().split(" ");
+							
+							String parameterName = null;
+							if(param.length>1) {
+								parameterName = param[1];
+							}
 
 							//Check if there is a @param tag with the current parameter name
 							if(methodDoc.split("@param " + parameterName).length == 1) {

@@ -42,14 +42,14 @@ public class ClassModelBuilder {
 		return model;
 	}
 	
-	// Methods for Clazz
 	/**
+	* Create a Attribute for a Clazz
 	* @param name name of Attribute
 	* @param type name of Attribute
 	* @param clazzes in which Clazz yout want to Create Attribtue
-	* @return this class builder, for fluent style
+	* @return this classmodel builder
 	*/
-	public ClassModelBuilder createAttribute(String name, DataType type, Clazz...clazzes) {
+	public ClassModelBuilder createAttribute(String name, DataType type, Clazz... clazzes) {
 		if(clazzes != null) {
 			for(Clazz item : clazzes) {
 				if(item == null) {
@@ -65,12 +65,14 @@ public class ClassModelBuilder {
 
 	/**
 	 *	Create a Bidirectional Association
+	 *
 	 * @param otherRoleName The RoleName of Association
 	 * @param otherCardinality The Cardinality one or many
-	 * @param otherClass The otherClazz can be the ClassName as String or Clazz Object
+	 * @param otherClazz The otherClazz can be the ClassName as String or Clazz Object
 	 * @param myRoleName My RoleName
 	 * @param myCardinality My Cardinality
 	 * @param clazz The Clazz can be the ClassName as String or Clazz Object or lastClazz where used
+	 * @return this classmodel builder
 	 */
 	public ClassModelBuilder createAssociation(String otherRoleName, int otherCardinality, Object otherClazz, String myRoleName, int myCardinality, Object... clazz) {
 		// Validate Paramter

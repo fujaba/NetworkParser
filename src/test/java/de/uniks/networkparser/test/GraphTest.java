@@ -221,7 +221,7 @@ public class GraphTest {
 		list.fixClassModel();
 
 		GraphConverter converter = new GraphConverter();
-		showDebugInfos(converter.convertToJson(list, true, false), 509, null);
+		showDebugInfos(converter.convertToJson(list, true, false), 501, null);
 	}
 
 	@Test
@@ -395,14 +395,14 @@ public class GraphTest {
 		GraphList root  = graphConverter.convertGraphList(GraphTokener.CLASS, jsonArray);
 
 		Entity converter = graphConverter.convertToJson(GraphTokener.CLASS, jsonArray, true);
-		showDebugInfos(converter, 1537, null);
+		showDebugInfos(converter, 1505, null);
 
 
 		root = graphConverter.convertGraphList(GraphTokener.CLASS, jsonArray);
 		Assert.assertEquals("[Field|color:String;kind:String]-[Player|color:String;name:String],[Field]-[Pawn|color:String],[Ludo]-[Player],[Pawn]-[Player]",
 				converterYUML.convert(root, true));
 
-		showDebugInfos(converter, 1537, null);
+		showDebugInfos(converter, 1505, null);
 	}
 
 	@Test
@@ -432,7 +432,7 @@ public class GraphTest {
 
 		// May be 8 Asssocs and write 11
 		Entity converter = graphConverter.convertToJson(GraphTokener.CLASS, jsonArray, true);
-		showDebugInfos(converter, 2191, null);
+		showDebugInfos(converter, 2143, null);
 	}
 
 	private void showDebugInfos(Entity json, int len, PrintStream stream) {
@@ -475,10 +475,10 @@ public class GraphTest {
 		JsonArray jsonArray = map.toJsonArray(root, Filter.createFull());
 		GraphConverter graphConverter = new GraphConverter();
 		Entity objectModel = graphConverter.convertToJson(GraphTokener.OBJECT, jsonArray, true);
-		showDebugInfos(objectModel, 627, null);
+		showDebugInfos(objectModel, 619, null);
 
 		Entity clazzModel = graphConverter.convertToJson(GraphTokener.CLASS, jsonArray, true);
-		showDebugInfos(clazzModel, 472, null);
+		showDebugInfos(clazzModel, 464, null);
 		Assert.assertEquals(new CharacterBuffer().withLine("{").withLine("  \"type\":\"classdiagram\",")
 				.withLine("  \"nodes\":[").withLine("    {")
 				.withLine("      \"type\":\"class\",").withLine("      \"id\":\"SortedMsg\",")
@@ -487,11 +487,11 @@ public class GraphTest {
 				.withLine("  \"edges\":[").withLine("    {").withLine("      \"type\":\"assoc\",")
 				.withLine("      \"source\":{")
 				.withLine("        \"property\":\"child\",")
-				.withLine("        \"cardinality\":\"one\",")
+				.withLine("        \"cardinality\":1,")
 				.withLine("        \"id\":\"SortedMsg\"")
 				.withLine("      },").withLine("      \"target\":{")
 				.withLine("        \"property\":\"parent\",")
-				.withLine("        \"cardinality\":\"one\",")
+				.withLine("        \"cardinality\":1,")
 				.withLine("        \"id\":\"SortedMsg\"")
 				.withLine("      }").withLine("    }").withLine("  ]").with("}").toString(), clazzModel.toString(2));
 	}
@@ -528,7 +528,7 @@ public class GraphTest {
 		GraphConverter graphConverter = new GraphConverter();
 
 		Entity converter = graphConverter.convertToJson(GraphTokener.CLASS, jsonArray, true);
-		showDebugInfos(converter, 550, null);
+		showDebugInfos(converter, 542, null);
 	}
 	@Test
 	public void testGraphPatternTest() {
@@ -680,7 +680,7 @@ public class GraphTest {
 
 		uni.withBidirectional(person, "has", Association.MANY, "studis", Association.ONE);
 		String result = htmlEntity.withGraph(model).toString(2);
-		showDebugInfos( result, 803, null);
+		showDebugInfos( result, 795, null);
 	}
 
 	@Test
