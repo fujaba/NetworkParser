@@ -1,6 +1,8 @@
 package de.uniks.networkparser.test.generator;
 
 import static de.uniks.networkparser.graph.DataType.STRING;
+
+import org.junit.Assert;
 import org.junit.Test;
 import de.uniks.networkparser.ext.ClassModel;
 import de.uniks.networkparser.graph.Association;
@@ -257,7 +259,8 @@ public class TestAssociation {
 		player.createAttribute("madness", DataType.INT);
 		player.createAttribute("actionsleft", DataType.INT);
 		AssociationSet associations = model.getAssociations();
+		Assert.assertEquals(15, associations.size());
 		
-		System.out.println(associations.size());
+//		System.out.println(associations.size());
 	}
 }

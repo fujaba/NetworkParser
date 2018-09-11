@@ -25,6 +25,8 @@ THE SOFTWARE.
 */
 import java.util.Collection;
 import java.util.Comparator;
+
+import de.uniks.networkparser.ext.generic.ReflectionBlackBoxTester;
 import de.uniks.networkparser.ext.generic.ReflectionLoader;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 
@@ -44,7 +46,9 @@ public class JacocoColumn implements JacocoColumnListener {
 		JacocoColumn jacocoColumn = new JacocoColumn();
 		Class<?> proxyClass = ReflectionLoader.getClass(COLUMRENDERER);
 		if(proxyClass == null) {
-			System.out.println("NO JACOCO FOUND ON BUILD-PATH");
+			if(ReflectionBlackBoxTester.isTester() == false) {
+				System.out.println("NO JACOCO FOUND ON BUILD-PATH");
+			}
 			return null;
 		}
 		Object item = ReflectionLoader.createProxy(jacocoColumn, proxyClass);

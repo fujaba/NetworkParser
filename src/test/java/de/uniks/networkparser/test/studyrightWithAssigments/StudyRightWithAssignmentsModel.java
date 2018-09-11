@@ -21,8 +21,6 @@
 
 package de.uniks.networkparser.test.studyrightWithAssigments;
 
-import org.junit.Test;
-
 import de.uniks.networkparser.ext.ClassModel;
 import de.uniks.networkparser.ext.story.Story;
 import de.uniks.networkparser.ext.story.StoryStepSourceCode;
@@ -39,7 +37,7 @@ public class StudyRightWithAssignmentsModel {
 	 * @see <a href=
 	 *      '../../../../../../../../doc/StudyRightWithAssignmentsClassGeneration.html'>StudyRightWithAssignmentsClassGeneration.html</a>
 	 */
-	@Test
+//	@Test
 	public void testStudyRightWithAssignmentsClassGeneration() {
 		/*
 		 * This file will generate that necessary classes and class diagram for the

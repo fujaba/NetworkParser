@@ -23,6 +23,6 @@ public class TestNetworkParserLight {
 		builder.createAssociation("student", Association.MANY, person, "studs", Association.ONE);
 
 		
-		builder.build();
+//		builder.build();
 	}
 }

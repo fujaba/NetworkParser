@@ -5,6 +5,7 @@ import org.junit.Test;
 
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.ext.ClassModel;
+import de.uniks.networkparser.ext.generic.ReflectionBlackBoxTester;
 import de.uniks.networkparser.ext.story.Story;
 import de.uniks.networkparser.ext.story.StoryBook;
 import de.uniks.networkparser.ext.story.StoryStepJUnit;
@@ -43,6 +44,7 @@ public class StoryTest {
 	public void testStoryJUnit() {
 		Story story = new Story().withName("StoryJUnit");
 		story.withPath("build/story");
+		ReflectionBlackBoxTester.setTester();
 		StoryStepJUnit storyTest = new StoryStepJUnit().withPackageName("de.uniks.networkparser.test.model");
 		// MUST BE JACOCO TO BUILD-Path MAVEN EXAMPLE: dependencies {compile "org.jacoco:jacoco:0.8.1"}
 		

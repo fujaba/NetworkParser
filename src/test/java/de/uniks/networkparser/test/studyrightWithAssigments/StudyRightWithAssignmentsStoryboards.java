@@ -434,6 +434,9 @@ public class StudyRightWithAssignmentsStoryboards {
 	 */
 	@Test
 	public void testStudyRightWithAssignmentsStoryboard() {
+		if(ENABLE == false) {
+			return;
+		}
 		Story storyboard = new Story();
 
 		// =============================================================
@@ -537,6 +540,9 @@ public class StudyRightWithAssignmentsStoryboards {
 
 	@Test
 	public void testStudyRightWithAssignmentsAggregation() {
+		if(ENABLE == false) {
+			return;
+		}
 		University university = new University().withName("StudyRight");
 
 		Student abu = university.createStudents().withId("1337").withName("Abu");
@@ -1363,6 +1369,9 @@ public class StudyRightWithAssignmentsStoryboards {
 	 */
 	@Test
 	public void testStudyRightTablesAndReports() {
+		if(ENABLE == false) {
+			return;
+		}
 		Story story = new Story();
 
 		story.addText("How to generate table reports from a model.", false);

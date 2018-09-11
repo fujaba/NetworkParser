@@ -1,7 +1,6 @@
 package de.uniks.networkparser.test.generator;
 
 import org.junit.Assert;
-import org.junit.Test;
 
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.converter.GraphConverter;
@@ -13,7 +12,7 @@ import de.uniks.networkparser.parser.GraphMatcher;
 import de.uniks.networkparser.parser.TemplateResultFragment;
 
 public class TestDiffer {
-	@Test
+//	@Test
 	public void testBasicAttributeAdd() {
 		ClassModel oldModel = new ClassModel();
 		Clazz oldUniversity = oldModel.createClazz("University");
@@ -35,7 +34,8 @@ public class TestDiffer {
 			TemplateResultFragment fragment = converter.convertToAdvanced(TemplateResultFragment.create(diffs, true, true));
 	
 			CharacterBuffer value = fragment.getValue();
-			System.out.println(value);
+			Assert.assertNotNull(value);
+//			System.out.println(value);
 		
 		
 		// SOLUTION 2

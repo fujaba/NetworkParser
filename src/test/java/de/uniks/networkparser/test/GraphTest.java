@@ -113,11 +113,8 @@ public class GraphTest {
 		student.createAttribute("uni", DataType.create(uni));
 		Entity json = converter.convertToJson(model, true, true);
 		
-		System.out.println(json);
-		
 		ClassModel modelB = (ClassModel) converter.convertFromJson(json, new ClassModel());
 		Assert.assertEquals(modelB.getClazzes().size(), 2);
-		System.out.println(modelB);
 		
 		String meta = "{\"type\":\"classdiagram\",\"id\":\"i.love.networkparser\",\"nodes\":[{\"modifiers\":\"public\",\"type\":\"class\",\"id\":\"Student\",\"attributes\":[{\"id\":\"uni\",\"modifiers\":\"private\",\"type\":\"Uni\"}]}]}";
 		ClassModel modelC = (ClassModel) converter.convertFromJson(JsonObject.create(meta), new ClassModel());
@@ -965,8 +962,8 @@ public class GraphTest {
 		GraphConverter converter = new GraphConverter();
 		TemplateResultFragment convertToMetaText = converter.convertToMetaText(model, false, false);
 		
-		System.out.println(convertToMetaText.getValue().toString());
-		
+		Assert.assertNotNull(convertToMetaText);
+//		System.out.println(convertToMetaText.getValue().toString());
 	}
 
 }

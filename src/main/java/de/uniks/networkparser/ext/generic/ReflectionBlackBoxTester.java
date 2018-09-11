@@ -207,9 +207,14 @@ public class ReflectionBlackBoxTester {
 		String property = System.getProperty("Tester");
 		return property != null && "true".equalsIgnoreCase(property);
 	}
+	public static final boolean setTester() {
+		System.setProperty("Tester", "true");
+		return true;
+	}
+	
 	
 	public void test(String packageName, NetworkParserLog logger) throws ClassNotFoundException, IOException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-		System.setProperty("Tester", "true");
+		setTester();
 		ArrayList<Class<?>> classesForPackage = getClassesForPackage(packageName);
 		errorCount = 0;
 		successCount = 0;
