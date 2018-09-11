@@ -239,6 +239,10 @@ public class StoryStepSourceCode implements ObjectCondition {
 		}
 		SimpleEvent evt = (SimpleEvent) value;
 		HTMLEntity element = (HTMLEntity) evt.getNewValue();
+		return addToHTML(element);
+	}
+	
+	public boolean addToHTML(HTMLEntity element) {
 		XMLEntity pre = element.createTag("pre", element.getBody());
 		XMLEntity code = element.createTag("code", pre);
 		if(this.endLine<1 && this.currentLine>0) {
@@ -255,7 +259,9 @@ public class StoryStepSourceCode implements ObjectCondition {
 		XMLEntity undertitle = element.createTag("div", pre);
 		String strValue;
 		String name;
-		if (this.methodName.startsWith("test")) {
+		if(this.methodName == null) {
+			name = "Code";
+		}else if (this.methodName.startsWith("test")) {
 			name = this.methodName.substring(4);
 		} else {
 			name = this.methodName;
@@ -376,6 +382,12 @@ public class StoryStepSourceCode implements ObjectCondition {
 		if(pos>0) {
 			this.methodName = this.methodSignature.substring(0, pos);
 		}
+		return this;
+	}
+
+	public StoryStepSourceCode withCode(String value) {
+		this.body = new CharacterBuffer();
+		this.body.with(value);
 		return this;
 	}
 }

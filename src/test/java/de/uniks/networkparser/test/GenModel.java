@@ -3,7 +3,9 @@ package de.uniks.networkparser.test;
 import org.junit.Test;
 
 import de.uniks.networkparser.ext.ClassModel;
+import de.uniks.networkparser.ext.ClassModelBuilder;
 import de.uniks.networkparser.ext.io.FileBuffer;
+import de.uniks.networkparser.ext.story.StoryStepSourceCode;
 import de.uniks.networkparser.graph.Annotation;
 import de.uniks.networkparser.graph.Association;
 import de.uniks.networkparser.graph.Attribute;
@@ -65,6 +67,28 @@ public class GenModel {
 
 		sdmLib.withText("API-Count: "+count);
 //		sdmLib.withGraph(model);
+		sdmLib.withPageBreak();
+		packageName = GraphUtil.getPackage(ClassModelBuilder.class);
+		model = new ClassModel(packageName);
+		showCounting(ClassModelBuilder.class, sdmLib, model);
+		sdmLib.withGraph(model);
+
+		StoryStepSourceCode step = new StoryStepSourceCode();
+		step.withCode("ClassModelBuilder builder = new ClassModelBuilder(\"de.uniks.model\");\r\n" + 
+				"		\r\n" + 
+				"\r\n" + 
+				"		Clazz person = builder.buildClass(\"Person\");\r\n" + 
+				"		builder.createAttribute(\"name\", DataType.STRING)\r\n" + 
+				"			.createAttribute(\"matrikelno\", DataType.INT);\r\n" + 
+				"		\r\n" + 
+				"		builder.createClass(\"University\").createAttribute(\"name\", DataType.STRING);\r\n" + 
+				"		\r\n" + 
+				"		builder.createAssociation(\"student\", Cardinality.MANY, person, \"studs\", Cardinality.ONE);\r\n" + 
+				"\r\n" + 
+				"		\r\n" + 
+				"		builder.build();");
+		step.addToHTML(sdmLib);
+
 		FileBuffer.writeFile("build/sdmlib.html", sdmLib.toString());
 	}
 

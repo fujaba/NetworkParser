@@ -25,6 +25,9 @@ public class JavaSet extends BasicGenerator {
 				"{{#else}}"+
 				"	private static final long serialVersionUID = 1L;",
 				"	public static final {{name}}Set EMPTY_SET = new {{name}}Set();"+
+				"	public {{name}}Set withVisible(boolean value) {",
+				"		return this;",
+				"	}",
 				"{{#endif}}"
 				,"",
 				"	public Class<?> getTypClass() {",
@@ -35,7 +38,8 @@ public class JavaSet extends BasicGenerator {
 				"{{#endif}}"+
 				"	public {{name}}Set getNewList(boolean keyValue) {",
 				"		return new {{name}}Set();",
-				"	}","","",
+				"	}",
+				"","",
 				"{{#template TEMPLATEEND}}}{{#endtemplate}}");
 
 		this.extension = "java";

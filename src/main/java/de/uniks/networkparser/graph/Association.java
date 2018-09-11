@@ -42,6 +42,9 @@ public class Association extends GraphMember {
 //	private GraphLabel info;
 	private Association other;
 	private AssociationTypes type = AssociationTypes.ASSOCIATION;
+	
+	public static final int ONE=1;
+	public static final int MANY=42;
 
 	Association() {
 	}
