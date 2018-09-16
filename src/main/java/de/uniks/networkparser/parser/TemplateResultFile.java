@@ -374,7 +374,7 @@ public class TemplateResultFile extends SortedSet<TemplateResultFragment> implem
 
 	public static TemplateResultFile createJava(Clazz clazz) {
 		TemplateResultFile templateResult = new TemplateResultFile(clazz, true);
-		templateResult.withExtension(BasicGenerator.TYPE_JAVA);
+		templateResult.withExtension(Template.TYPE_JAVA);
 		templateResult.withPath((String) clazz.getClassModel().getValue(GraphModel.PROPERTY_PATH));
 		return templateResult;
 	}

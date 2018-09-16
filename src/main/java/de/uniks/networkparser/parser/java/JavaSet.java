@@ -5,14 +5,19 @@ import de.uniks.networkparser.graph.Feature;
 import de.uniks.networkparser.graph.FeatureSet;
 import de.uniks.networkparser.interfaces.LocalisationInterface;
 import de.uniks.networkparser.list.SimpleSet;
-import de.uniks.networkparser.parser.BasicGenerator;
 import de.uniks.networkparser.parser.Template;
 import de.uniks.networkparser.parser.TemplateResultFile;
 
-public class JavaSet extends BasicGenerator {
+public class JavaSet extends Template {
 	public JavaSet() {
-
-		createTemplate("Declaration", Template.TEMPLATE,
+		this.id=TYPE_JAVA+".set";
+		this.extension = "java";
+		this.path = "util";
+		this.postfix = "Set";
+		this.fileType ="clazz";
+		this.type = TEMPLATE;
+		
+		this.withTemplate(
 				"{{#template PACKAGE}}{{#if {{packageName}}}}package {{packageName}}.util;{{#endif}}{{#endtemplate}}","",
 
 				"{{#template IMPORT}}{{#foreach {{file.headers}}}}","import {{item}};{{#endfor}}{{#endtemplate}}","",
@@ -41,14 +46,9 @@ public class JavaSet extends BasicGenerator {
 				"	}",
 				"","",
 				"{{#template TEMPLATEEND}}}{{#endtemplate}}");
-
-		this.extension = "java";
-		this.path = "util";
-		this.postfix = "Set";
-
-		this.addGenerator(new JavaSetAttribute());
-		this.addGenerator(new JavaSetAssociation());
-		this.addGenerator(new JavaSetMethod());
+		this.addTemplate(new JavaSetAttribute(), true);
+		this.addTemplate(new JavaSetAssociation(), true);
+		this.addTemplate(new JavaSetMethod(), true);
 	}
 
 	@Override
@@ -60,10 +60,5 @@ public class JavaSet extends BasicGenerator {
 			}
 		}
 		return super.executeClazz(clazz, parameters, isStandard);
-	}
-
-	@Override
-	public Class<?> getType() {
-		return Clazz.class;
 	}
 }

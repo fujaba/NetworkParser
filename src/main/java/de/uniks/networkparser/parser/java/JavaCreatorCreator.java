@@ -6,18 +6,19 @@ import de.uniks.networkparser.graph.FeatureSet;
 import de.uniks.networkparser.graph.GraphEntity;
 import de.uniks.networkparser.graph.GraphModel;
 import de.uniks.networkparser.interfaces.LocalisationInterface;
-import de.uniks.networkparser.parser.BasicGenerator;
 import de.uniks.networkparser.parser.Template;
 import de.uniks.networkparser.parser.TemplateResultFile;
 
-public class JavaCreatorCreator extends BasicGenerator {
+public class JavaCreatorCreator extends Template {
 	public JavaCreatorCreator() {
-
-		createTemplate("Declaration", Template.TEMPLATE,
+		this.extension = "java";
+		this.path = "util";
+		this.fileType ="classmodel";
+		this.id=TYPE_JAVA+".creatorcreator";
+		this.type = TEMPLATE;
+		this.withTemplate(
 				"{{#template PACKAGE}}{{#if {{packageName}}}}package {{packageName}}.util;{{#endif}}{{#endtemplate}}","",
-
 				"{{#template IMPORT}}{{#foreach {{file.headers}}}}","import {{item}};{{#endfor}}{{#endtemplate}}","",
-
 				"{{#import "+IdMap.class.getName()+"}}" +
 				"class CreatorCreator {","",
 
@@ -28,9 +29,6 @@ public class JavaCreatorCreator extends BasicGenerator {
 				"   }",
 
 				"{{#template TEMPLATEEND}}}{{#endtemplate}}");
-
-		this.extension = "java";
-		this.path = "util";
 	}
 
 	@Override
@@ -49,11 +47,6 @@ public class JavaCreatorCreator extends BasicGenerator {
 		return super.executeEntity(entity, parameters, isStandard);
 	}
 
-	@Override
-	public Class<?> getType() {
-		return GraphModel.class;
-	}
-	
 	@Override
 	public String getFileName() {
 		return "CreatorCreator";

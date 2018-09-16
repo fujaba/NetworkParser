@@ -1,13 +1,13 @@
 package de.uniks.networkparser.parser.java;
 
-import de.uniks.networkparser.graph.Association;
 import de.uniks.networkparser.list.ObjectSet;
-import de.uniks.networkparser.parser.BasicGenerator;
 import de.uniks.networkparser.parser.Template;
 
-public class JavaSetAssociation extends BasicGenerator {
+public class JavaSetAssociation extends Template{
 	public JavaSetAssociation() {
-		createTemplate("Declaration", Template.DECLARATION,
+		this.id = "association";
+		this.type = Template.DECLARATION;
+		this.withTemplate(
 				"{{#template VALUE}}",
 				"{{#if {{other.isImplements}}==false}}",
 				"{{#import {{file.member.fullName}}}}" +
@@ -61,10 +61,5 @@ public class JavaSetAssociation extends BasicGenerator {
 				"   }","",
 				"{{#endif}}",
 				"{{#endif}}{{#endtemplate}}");
-	}
-
-	@Override
-	public Class<?> getType() {
-		return Association.class;
 	}
 }

@@ -16,9 +16,24 @@ import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SimpleSet;
 import de.uniks.networkparser.list.SortedList;
 import de.uniks.networkparser.test.model.SortedMsg;
+import de.uniks.networkparser.test.model.Student;
 
 public class SimpleArrayListTest {
 
+	@Test
+	public void testDebugInfo() {
+		Object[][] intern = new Object[5][2];
+		SimpleKeyValueList<Integer, Student> map = new SimpleKeyValueList<Integer, Student>();
+		for(int i=0;i<5;i++) {
+			Student stud = new Student().withName("Student "+i);
+			intern[i] = new Object[] {i, stud};
+			map.add(i, stud);
+		}
+//		System.out.println(intern);
+//		System.out.println(map. entrySet().toArray());
+//		System.out.println(map);
+	}
+	
 	@Test
 	public void testSetElement() {
 		SimpleSet<String> set=new SimpleSet<String>();

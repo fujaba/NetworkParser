@@ -1,9 +1,9 @@
 package de.uniks.networkparser.simple.modelA;
-
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.simple.modelA.util.PersonSet;
+
 
 public class Room
 {
@@ -106,7 +106,9 @@ public class Room
             if (this.persons == null) {
                this.persons = new PersonSet();
             }
+            this.persons.withVisible(true);
             boolean changed = this.persons.add(item);
+            this.persons.withVisible(false);
             if (changed)
             {
                item.setRoom(this);

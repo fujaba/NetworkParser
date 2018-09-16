@@ -25,6 +25,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 import java.util.Iterator;
+
 import de.uniks.networkparser.TextItems;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.ext.io.FileBuffer;
@@ -56,7 +57,6 @@ import de.uniks.networkparser.logic.ImportCondition;
 import de.uniks.networkparser.logic.Not;
 import de.uniks.networkparser.logic.Or;
 import de.uniks.networkparser.logic.TemplateFragmentCondition;
-import de.uniks.networkparser.parser.BasicGenerator;
 import de.uniks.networkparser.parser.DebugCondition;
 import de.uniks.networkparser.parser.JavaListCondition;
 import de.uniks.networkparser.parser.JavaMethodBodyCondition;
@@ -72,19 +72,102 @@ import de.uniks.networkparser.parser.java.JavaCreatorCreator;
 import de.uniks.networkparser.parser.java.JavaSet;
 import de.uniks.networkparser.parser.typescript.TypescriptClazz;
 
-public class ModelGenerator extends BasicGenerator {
+public class ModelGenerator extends Template {
 	private FeatureSet features = Feature.getAll();
 	private GraphModel defaultModel;
 	public SimpleKeyValueList<String, ParserCondition> customTemplate;
 	private boolean useSDMLibParser = true;
 	private String defaultRootDir;
-
-	private SimpleList<BasicGenerator> javaGeneratorTemplates = new SimpleList<BasicGenerator>().with(new JavaCreatorCreator(), new JavaClazz(), new JavaSet(), new JavaCreator());
-	private SimpleList<BasicGenerator> typeScriptTemplates = new SimpleList<BasicGenerator>().with(new TypescriptClazz());
-	private SimpleList<BasicGenerator> cppScriptTemplates = new SimpleList<BasicGenerator>().with(new CppClazz());
+	private SimpleKeyValueList<String, Template> templates;
 	private String lastGenRoot;
 
-	public SimpleKeyValueList<String, ParserCondition> getTemplates() {
+	public SimpleList<Template> getTemplates(String filter) {
+		if (templates == null) {
+			templates = new SimpleKeyValueList<String, Template>();
+			addTemplate(new JavaCreatorCreator(), true);
+			addTemplate(new JavaClazz(), true);
+			addTemplate(new JavaSet(), true);
+			addTemplate(new JavaCreator(), true);
+			addTemplate(new TypescriptClazz(), true);
+			addTemplate(new CppClazz(), true);
+		}
+		return getTemplates(filter, children);
+	}
+	
+	private SimpleList<Template> getTemplates(String filter, SimpleList<Template> owner) {
+		if(filter == null) {
+			return this.getChildren();
+		}
+		if(filter.equals(".") || filter.isEmpty()) {
+			return owner;
+		}
+		SimpleList<Template> result = new SimpleList<Template>();
+		int pos = filter.indexOf(".");
+		if(pos<0) {
+			//java
+			SimpleList<Template> possible = new SimpleList<Template>();
+			String sub = filter+".";
+			for(Template child : owner ) {
+				String childid=child.getId(false);
+				if(filter.equals(childid)) {
+					result.add(child);
+				} else if(childid.startsWith(sub) && childid.indexOf(".", sub.length()+1)<1) {
+					possible.add(child);
+				}
+			}
+			if(result.size()<1 && possible.size()>0) {
+				result.addAll(possible);
+			}
+		} else if(pos == filter.length()-1) {
+			// java.
+			String id = filter.substring(0, pos-1);
+			for(Template child : owner ) {
+				if(id.equals(child.getId(false))) {
+					result.addAll(child.getChildren());
+				}
+			}
+		} else {
+			//java.set.attribute
+			String id = filter.substring(0, pos);
+			for(Template child : children ) {
+				String childId = child.getId(false);
+				int childPos = childId.indexOf(".");
+				if(childPos>0) {
+					if(filter.startsWith(childId)) {
+						String sub = filter.substring(childId.length());
+						// Sub must be start with poitn or empty
+						if(sub.isEmpty() || sub.startsWith(".")) {
+							result.addAll(getTemplates(sub, child.getChildren()));
+						}
+					}
+				}
+				if(id.equals(childId)) {
+					result.addAll(getTemplates(filter.substring(pos+1), child.getChildren()));
+				}
+			}
+		}
+		return result;
+	}
+
+	public boolean addTemplate(Template template, boolean addOwner) {
+		if(super.addTemplate(template, addOwner) == false) {
+			return false;
+		}
+		String id2 = template.getId(true);
+		if(id2 == null) {
+			return false;
+		}
+		templates.add(id2, template);
+		SimpleList<Template> children = template.getChildren();
+		if(children != null) {
+			for(Template child : children) {
+				addTemplate(child, false);
+			}
+		}
+		return true;
+	}
+
+	public SimpleKeyValueList<String, ParserCondition> getCondition() {
 		if (customTemplate == null) {
 			customTemplate = new SimpleKeyValueList<String, ParserCondition>();
 			addParserCondition(new FeatureCondition());
@@ -117,70 +200,34 @@ public class ModelGenerator extends BasicGenerator {
 		return "src";
 	}
 	
+	public SendableEntityCreator generate(String rootDir, GraphMember item) {
+		if (item instanceof GraphModel == false) {
+			return null;
+		}
+		return generating(rootDir, (GraphModel) item, null, null, true, true);
+	}
+
 	public SendableEntityCreator generate(GraphMember item) {
 		if (item instanceof GraphModel == false) {
 			return null;
 		}
-		return generate(getJavaPath(), (GraphModel) item);
+		return generating(null, (GraphModel) item, null, null, true, true);
 	}
 
-	public SendableEntityCreator generate(GraphMember item, TextItems parameters) {
-		if (item instanceof GraphModel == false) {
-			return null;
-		}
-		return generateJava(getJavaPath(), (GraphModel) item, parameters);
-	}
-
-	public SendableEntityCreator generate(String rootDir, GraphModel model) {
-		return generateJava(rootDir, model, null);
-	}
-
-	public SendableEntityCreator generateJava(String rootDir, GraphModel model, TextItems parameters) {
-		return generating(rootDir, model, parameters, javaGeneratorTemplates, true, true);
-	}
-
-	public SendableEntityCreator generateTypescript(String rootDir, GraphModel model) {
-		return generateTypescript(rootDir, model, null);
-	}
-
-	public SendableEntityCreator generateTypescript(String rootDir, GraphModel model, TextItems parameters) {
-		return generating(rootDir, model, parameters, typeScriptTemplates, true, true);
-	}
-
-	public TemplateResultModel getResultModel() {
-		TemplateResultModel resultModel = new TemplateResultModel();
-		resultModel.withTemplate(this.getTemplates());
-		resultModel.withFeatures(this.features);
-		return resultModel;
-	}
-
-	public SendableEntityCreator generating(String rootDir, String type, GraphModel model) {
-		if(TYPE_JAVA.equalsIgnoreCase(type)) {
-			return generating(rootDir, model, null, javaGeneratorTemplates, rootDir != null, rootDir != null);
-		}
-		if(TYPE_TYPESCRIPT.equalsIgnoreCase(type)) {
-			return generating(rootDir, model, null, typeScriptTemplates, true, false);
-		}
-		if(TYPE_CPP.equalsIgnoreCase(type)) {
-			return generating(rootDir, model, null, cppScriptTemplates, true, true);
-		}
-		return null;
-	}
-
-	private String getFileName(String path, String file) {
-		if (path == null) {
-			path = "";
-		} else if (path.endsWith("/") == false) {
-			path = path + "/";
-		}
-		path += file.replaceAll("\\.", "/") + "/";
-		return path;
-
-	}
-
-	public SendableEntityCreator generating(String rootDir, GraphModel model, TextItems parameters,
-			SimpleList<BasicGenerator> templates, boolean writeFiles, boolean enableParser) {
+	public SendableEntityCreator generating(String rootDir, GraphModel model, TextItems parameters, String type, boolean writeFiles, boolean enableParser) {
 		this.lastGenRoot = rootDir;
+		// Set DefaultValue
+		if(type == null) {
+			type = TYPE_JAVA;
+		}
+		if(rootDir == null) {
+			if(type == TYPE_JAVA) {
+				rootDir = getJavaPath();
+			} else {
+				return null;
+			}
+		}
+
 		model.fixClassModel();
 		String name = model.getName();
 		if (name == null) {
@@ -194,8 +241,9 @@ public class ModelGenerator extends BasicGenerator {
 			parameters.withDefaultLabel(false);
 		}
 		resultModel.withLanguage(parameters);
+		SimpleList<Template> templates = getTemplates(type);
 
-		for (BasicGenerator template : templates) {
+		for (Template template : templates) {
 			template.withOwner(this);
 		}
 
@@ -203,26 +251,26 @@ public class ModelGenerator extends BasicGenerator {
 		ClazzSet clazzes = model.getClazzes();
 
 		for (Clazz clazz : clazzes) {
-			for (BasicGenerator template : templates) {
+			for (Template template : templates) {
 				boolean isStandard = codeStyle.match(clazz);
 				TemplateResultFile resultFile = template.executeClazz(clazz, resultModel, isStandard);
 				if(resultFile == null) {
 					continue;
 				}
-
+//				TemplateResultFragment fragment = 
 				resultFile.withMetaModel(template.isMetaModel());
-				template.executeTemplate(resultFile, resultModel, clazz);
+				template.generate(resultModel, resultFile, clazz);
 				resultModel.add(resultFile);
 			}
 		}
 		
-		for (BasicGenerator template : templates) {
+		for (Template template : templates) {
 			TemplateResultFile resultFile = template.executeEntity(model, resultModel, true);
 			if(resultFile == null) {
 				continue;
 			}
 			resultFile.withMetaModel(template.isMetaModel());
-			template.executeTemplate(resultFile, resultModel, model);
+			template.executeTemplate(resultModel, resultFile, model);
 			resultModel.add(resultFile);
 		}
 
@@ -246,6 +294,24 @@ public class ModelGenerator extends BasicGenerator {
 		}
 		return resultModel;
 	}
+
+	public TemplateResultModel getResultModel() {
+		TemplateResultModel resultModel = new TemplateResultModel();
+		resultModel.withTemplate(this.getCondition());
+		resultModel.withFeatures(this.features);
+		return resultModel;
+	}
+
+	private String getFileName(String path, String file) {
+		if (path == null) {
+			path = "";
+		} else if (path.endsWith("/") == false) {
+			path = path + "/";
+		}
+		path += file.replaceAll("\\.", "/") + "/";
+		return path;
+	}
+
 
 	public boolean write(String rootPath, TemplateResultFile entity) {
 		if(rootPath.endsWith("/") == false) {
@@ -320,11 +386,6 @@ public class ModelGenerator extends BasicGenerator {
 		return null;
 	}
 
-	@Override
-	public Class<?> getType() {
-		return GraphModel.class;
-	}
-
 	public ModelGenerator withoutFeature(Feature feature) {
 		this.features.without(feature);
 		return this;
@@ -386,8 +447,8 @@ public class ModelGenerator extends BasicGenerator {
 				}
 			}
 			if(rootDir != null) {
-				removeAllGeneratedCode(defaultModel, rootDir);
-				generating(rootDir, type, this.defaultModel);
+				removeAllGeneratedCode(defaultModel, rootDir, type );
+				generating(rootDir, this.defaultModel, null, type, true, true);
 			}
 		}
 	}
@@ -396,7 +457,7 @@ public class ModelGenerator extends BasicGenerator {
 		return lastGenRoot;
 	}
 	
-	public void removeAllGeneratedCode(GraphModel model, String rootDir) {
+	public void removeAllGeneratedCode(GraphModel model, String rootDir, String type) {
 		// now remove class file, creator file, and modelset file for each class
 		// and the CreatorCreator
 		Feature codeStyle = getFeature(Feature.CODESTYLE);
@@ -404,9 +465,10 @@ public class ModelGenerator extends BasicGenerator {
 			rootDir = rootDir+"/";
 		}
 
+		SimpleList<Template> templates = getTemplates(type);
 		for (Clazz clazz : model.getClazzes()) {
 			boolean isStandard = codeStyle.match(clazz);
-			for(BasicGenerator generator : javaGeneratorTemplates) {
+			for(Template generator : templates) {
 				TemplateResultFile templateResult = generator.createResultFile(clazz, isStandard);
 				templateResult.withPath(model.getName().replaceAll("\\.", "/"));
 				FileBuffer.deleteFile(rootDir+templateResult.getFileName());
@@ -427,7 +489,7 @@ public class ModelGenerator extends BasicGenerator {
 
 	public TemplateResultFragment parseTemplate(Template template, GraphMember member) {
 		TemplateResultModel model = new TemplateResultModel();
-		model.withTemplate(this.getTemplates());
+		model.withTemplate(this.getCondition());
 		model.withFeatures(this.features);
 		TextItems parameters = new TextItems();
 		parameters.withDefaultLabel(false);
@@ -552,6 +614,6 @@ public class ModelGenerator extends BasicGenerator {
 
 
 	public void applyChange() {
-		this.generate(defaultRootDir, this.defaultModel);
+		generating(defaultRootDir, this.defaultModel, null, null, true, true);
 	}
 }

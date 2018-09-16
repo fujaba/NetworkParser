@@ -1,6 +1,7 @@
 package de.uniks.networkparser.test.generator;
 
 import org.junit.Assert;
+import org.junit.Test;
 
 import de.uniks.networkparser.ext.ClassModel;
 import de.uniks.networkparser.ext.story.Story;
@@ -15,7 +16,7 @@ import de.uniks.networkparser.interfaces.ObjectCondition;
 
 public class testGen {
 
-//	@Test
+	@Test
 	public void testModel() {
 		ClassModel model = new ClassModel("de.uniks.networkparser.simple.modelA");
 		Clazz person = model.createClazz("Person");

@@ -62,7 +62,17 @@ public class SimpleEntrySet<K, V> implements Set<Entry<K, V>>{
 
 	@Override
 	public Object[] toArray() {
-		return this.map.toArray();
+		// Change to DebugInfo
+		int size = this.map.size();
+		Object[] info = new Object[this.map.size()];
+		for(int i=0;i<size;i++) {
+			ObjectMapEntry mapEntry = new ObjectMapEntry();
+			mapEntry.withKey(this.map.getKeyByIndex(i));
+			mapEntry.withValue(this.map.getValueByIndex(i));
+			info[i] = mapEntry;
+		}
+		return info;
+//		return this.map.toArray();
 	}
 
 	@Override

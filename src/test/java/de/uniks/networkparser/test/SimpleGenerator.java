@@ -65,7 +65,7 @@ public class SimpleGenerator {
 		person.withAttribute("name", DataType.STRING);
 		person.withMethod("eat", DataType.BOOLEAN);
 		ModelGenerator javaModelFactory = new ModelGenerator();
-		javaModelFactory.generate("build/gen/java", classModel);
+		javaModelFactory.generating("build/gen/java", classModel, null, ModelGenerator.TYPE_JAVA, true, true);
 //		javaModelFactory.generateTypescript("build", classModel);
 	}
 
@@ -147,7 +147,7 @@ public class SimpleGenerator {
 		TemplateResultFile templateFile = new TemplateResultFile(student, true);
 		TemplateResultModel model = new TemplateResultModel();
 		ModelGenerator modelGenerator = new ModelGenerator();
-		model.withTemplate(modelGenerator.getTemplates());
+		model.withTemplate(modelGenerator.getCondition());
 
 
 		TemplateResultFragment fragment = template.generate(model, templateFile, assoc);

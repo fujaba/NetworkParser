@@ -24,7 +24,17 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 import de.uniks.networkparser.buffer.CharacterBuffer;
+import de.uniks.networkparser.graph.Association;
+import de.uniks.networkparser.graph.AssociationSet;
+import de.uniks.networkparser.graph.Attribute;
+import de.uniks.networkparser.graph.AttributeSet;
+import de.uniks.networkparser.graph.Clazz;
+import de.uniks.networkparser.graph.Feature;
+import de.uniks.networkparser.graph.FeatureSet;
+import de.uniks.networkparser.graph.GraphEntity;
 import de.uniks.networkparser.graph.GraphMember;
+import de.uniks.networkparser.graph.Method;
+import de.uniks.networkparser.graph.MethodSet;
 import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.LocalisationInterface;
 import de.uniks.networkparser.interfaces.ObjectCondition;
@@ -38,29 +48,73 @@ import de.uniks.networkparser.logic.IfCondition;
 import de.uniks.networkparser.logic.Not;
 import de.uniks.networkparser.logic.StringCondition;
 import de.uniks.networkparser.logic.TemplateCondition;
+import de.uniks.networkparser.logic.TemplateFragmentCondition;
 import de.uniks.networkparser.logic.VariableCondition;
 
 public class Template implements TemplateParser {
+	public static final String PROPERTY_FEATURE="features";
+	public static final String TYPE_JAVA="java";
+	public static final String TYPE_TYPESCRIPT="typescript";
+	public static final String TYPE_CPP="cpp";
+
 	public static final char SPLITSTART='{';
 	public static final char SPLITEND='}';
 	public static final char ENTER='=';
 	public static final char SPACE = ' ';
 
+	// Template Variables
 	private TemplateCondition token = new TemplateCondition();
+	
+	
+	protected Template owner;
 
-	private int type = -1;
-
-	public String name;
+	protected int type = -1;
 
 	private SimpleList<String> imports = new SimpleList<String>();
 
 	private SimpleList<String> variables = new SimpleList<String>();
 
+	// Configuration
+	protected String id;
+	protected String fileType;
+	protected String extension;
+	protected String path;
+	protected String postfix;
+	protected boolean metaModel;
+	protected SimpleList<Template> children;
+
 	public Template(String name) {
-		this.name = name;
+		this.id = name;
+	}
+	
+	public Template withFileType(String value) {
+		this.fileType = value;
+		return this;
 	}
 
 	public Template() {
+	}
+	
+
+	public SimpleList<Template> getTemplates(String filter) {
+		if(owner != null) {
+			return owner.getTemplates(filter);
+		}
+		return null;
+	}
+	
+	public String getId(boolean full) {
+		if(full == false) {
+			return id;
+		}
+		if(this.owner != null) {
+			String id2 = this.owner.getId(full);
+			if(this.id != null && id2 != null) {
+				return id2+"."+this.id;
+			}
+			return this.id;
+		}
+		return this.id;
 	}
 
 	public TemplateResultFragment generate(LocalisationInterface parameters, SendableEntityCreator parent, GraphMember member) {
@@ -75,7 +129,7 @@ public class Template implements TemplateParser {
 		}
 		TemplateResultFragment templateFragment = new TemplateResultFragment();
 		templateFragment.withKey(this.getType());
-		templateFragment.withName(this.getName());
+		templateFragment.withName(this.getId(false));
 		templateFragment.setParent(parent);
 		templateFragment.withVariable(parameters);
 		templateFragment.withMember(member);
@@ -412,10 +466,186 @@ public class Template implements TemplateParser {
 
 	@Override
 	public String toString() {
-		return type+": "+name;
+		return type+": "+id;
 	}
 
-	public String getName() {
-		return this.name;
+	public boolean addTemplate(Template template, boolean addOwner) {
+		if(template == null) {
+			return false;
+		}
+		if(this.children == null) {
+			this.children = new SimpleList<Template>();
+		}
+		if(addOwner) {
+			if(this.children.add(template)) {
+				template.withOwner(this);
+			}
+			return true;
+		}
+		return true;
+	}
+
+	public Template withOwner(Template template) {
+		this.owner = template;
+		return this;
+	}
+	
+	public Template getOwner() {
+		return owner;
+	}
+
+	public String getFileName() {
+		return null;
+	}
+
+	public TemplateResultFile executeEntity(GraphEntity model, LocalisationInterface parameters, boolean isStandard) {
+		if(isValid(model,parameters) == false) {
+			return null;
+		}
+		TemplateResultFile templateResult = createResultFile(model, isStandard);
+		return templateResult;
+	}
+	
+	public TemplateResultFile executeClazz(Clazz clazz, LocalisationInterface parameters, boolean isStandard) {
+		if(isValid(clazz,  parameters) == false) {
+			return null;
+		}
+		TemplateResultFile templateResult = createResultFile(clazz, isStandard);
+		if(parameters instanceof SendableEntityCreator) {
+			templateResult.setParent((SendableEntityCreator)parameters);
+		}
+
+		String id2 = getId(true);
+		SimpleList<Template> templates = getTemplates(id2+".");
+		if(children == null) {
+			return templateResult;
+		}
+		
+		// FIRST ATTRIBUTE
+		AttributeSet attributes = clazz.getAttributes();
+		for(Template template : templates) {
+			if(template.getId(true).equals(id2+".attribute")) {
+				// FOUND IT
+				for (Attribute attribute : attributes) {
+					template.executeTemplate(parameters, templateResult, attribute);
+				}
+				break;
+			}
+		}
+
+		// SECOND ASSOCITAION
+		AssociationSet associations = clazz.getAssociations();
+		for(Template template : templates) {
+			if(template.getId(true).equals(id2+".association")) {
+				// FOUND IT
+				for (Association assoc : associations) {
+					template.executeTemplate(parameters, templateResult, assoc);
+					if (assoc.getClazz().equals(assoc.getOtherClazz()) && assoc.getName().equals(assoc.getOther().getName()) == false) {
+						template.executeTemplate(parameters, templateResult, assoc.getOther());
+					}
+				}
+				break;
+			}
+		}
+
+		MethodSet methods = clazz.getMethods();
+		for(Template template : templates) {
+			if(template.getId(true).equals(id2+".method")) {
+				// FOUND IT
+				for (Method method : methods) {
+					template.executeTemplate(parameters, templateResult, method);
+				}
+				break;
+			}
+		}
+		return templateResult;
+	}
+	
+	public boolean readTemplate(CharacterBuffer buffer) {
+		boolean result = false;
+		CharacterBuffer id = buffer.nextToken(false, Template.SPLITEND, Template.SPACE);
+		Template template = new Template(id.toString());
+		if(buffer.getCurrentChar() == Template.SPACE) {
+			String value = buffer.nextToken(false, Template.SPLITEND, Template.SPACE).toString();
+			int type = TemplateFragmentCondition.getIdKey(value);
+			template.withType(type);
+			result = true;
+		}
+		String strTemplate = buffer.toString();
+		template.withTemplate(strTemplate);
+		return result;
+	}
+	
+	protected Feature getFeature(Feature value, Clazz... values) {
+		if(this.owner != null) {
+			return this.owner.getFeature(value, values);
+		}
+		return null;
+	}
+
+	public void executeTemplate(LocalisationInterface parameters, TemplateResultFile templateResult, GraphMember member) {
+		if(isValid(member, parameters) == false) {
+			return;
+		}
+		String id2 = this.getId(true);
+		SimpleList<Template> templates = getTemplates(id2+".");
+		templates.add(this);
+		for(Template template : templates) {
+			if(template == null) {
+				continue;
+			}
+			TemplateResultFragment fragment = template.generate(parameters, templateResult, member);
+			if(this.getType()==Template.DECLARATION && fragment != null) {
+				parameters.put(this.getId(false), fragment.getResult().toString());
+			}
+		}
+	}
+
+	protected boolean isValid(GraphMember member, LocalisationInterface parameters) {
+		if(member == null) {
+			return false;
+		}
+		String type = member.getClass().getSimpleName().toLowerCase();
+		if(this.fileType != null && this.fileType.equals(type) ) {
+			return true;
+		}
+		if(this.id != null && this.id.equals(type)) {
+			return true;
+		}
+		return false;
+	}
+
+	protected FeatureSet getFeatures(LocalisationInterface value) {
+		if(value instanceof TemplateResultModel) {
+			TemplateResultModel model = (TemplateResultModel) value;
+			Object features = model.getValue(model, PROPERTY_FEATURE);
+			if(features != null) {
+				return (FeatureSet) features;
+			}
+			return null;
+		}
+		return null;
+
+	}
+
+	public TemplateResultFile createResultFile(GraphEntity clazz, boolean isStandard) {
+		TemplateResultFile templateResult = new TemplateResultFile(clazz, isStandard);
+		templateResult.withExtension(this.extension);
+		String fileName = this.getFileName();
+		if(fileName != null) {
+			templateResult.withName(fileName);
+		}
+		templateResult.withPath(this.path);
+		templateResult.withPostfix(this.postfix);
+		return templateResult;
+	}
+
+	public boolean isMetaModel() {
+		return metaModel;
+	}
+
+	public SimpleList<Template> getChildren() {
+		return this.children;
+		
 	}
 }

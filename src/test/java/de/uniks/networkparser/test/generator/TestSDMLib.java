@@ -60,7 +60,7 @@ public class TestSDMLib {
 
 
 		//model.generate("src/test/java");
-		generator.generateJava("build/gen/java", model, null);
+		generator.generating("build/gen/java", model, null, ModelGenerator.TYPE_JAVA, true, true);
 
 		// Create a Person with name and age Attribute
 		// and eat and go Method
@@ -74,6 +74,6 @@ public class TestSDMLib {
 
 
 		// Remove Element from SourceCode
-		generator.generateJava("build/gen/java", model, null);
+		generator.generating("build/gen/java", model, null, ModelGenerator.TYPE_JAVA, true, true);
 	}
 }

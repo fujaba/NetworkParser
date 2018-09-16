@@ -1,35 +1,12 @@
 package de.uniks.networkparser.parser.java;
 
-/*
-The MIT License
-
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
-*/
-import de.uniks.networkparser.graph.Association;
-import de.uniks.networkparser.parser.BasicGenerator;
 import de.uniks.networkparser.parser.Template;
 
-public class JavaAssociation extends BasicGenerator {
+public class JavaAssociation extends Template {
 	public JavaAssociation() {
-		createTemplate("Declaration", Template.DECLARATION,
+		this.id = "association";
+		this.type = DECLARATION;
+		this.withTemplate(
 				"{{#template VALUE}}",
 				"{{#if {{other.isImplements}}==false}}",
 				"   public static final String PROPERTY_{{other.NAME}} = \"{{other.name}}\";","",
@@ -37,7 +14,7 @@ public class JavaAssociation extends BasicGenerator {
 				"   {{visibility}} {{modifiers} }{{#if {{other.cardinality}}==1}}{{other.clazz.name}}{{#else}}{{other.clazz.name}}Set{{#endif}} {{other.name}} = null;","",
 				"{{#endif}}","",
 
-				"{{#if {{other.cardinality}}==n}}" +
+				"{{#if {{other.cardinality}}==42}}" +
 				   "{{#import {{other.clazz.packageName}}.util.{{other.clazz.name}}Set}}",
 				"{{#else}}",
 				   "{{#import {{other.clazz.fullName}}}}",
@@ -92,7 +69,7 @@ public class JavaAssociation extends BasicGenerator {
 				"{{#endif}}",
 				"{{#endif}}",
 
-				"{{#if {{other.cardinality}}==n}}",
+				"{{#if {{other.cardinality}}==42}}",
 				"   public {{modifiers} }{{clazz.name}} with{{other.Name}}({{other.clazz.name}}... value){{#if {{file.member.type}}==interface}};","","{{#endif}}",
 				"{{#ifnot {{file.member.type}}==interface}}",
 				"   {",
@@ -125,7 +102,7 @@ public class JavaAssociation extends BasicGenerator {
 				"{{#endif}}",
 				"{{#endif}}",
 
-				"{{#if {{other.cardinality}}==n}}",
+				"{{#if {{other.cardinality}}==42}}",
 				"   public {{modifiers} }{{clazz.name}} without{{other.Name}}({{other.clazz.name}}... value){{#if {{file.member.type}}==interface}};","","{{#endif}}",
 				"{{#ifnot {{file.member.type}}==interface}}",
 				"   {",
@@ -164,10 +141,4 @@ public class JavaAssociation extends BasicGenerator {
 				"{{#endif}}{{#endtemplate}}");
 
 	}
-
-	@Override
-	public Class<?> getType() {
-		return Association.class;
-	}
-
 }

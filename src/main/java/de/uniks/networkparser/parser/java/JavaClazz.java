@@ -26,15 +26,17 @@ THE SOFTWARE.
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
-import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.list.SimpleKeyValueList;
-import de.uniks.networkparser.parser.BasicGenerator;
 import de.uniks.networkparser.parser.Template;
 
-public class JavaClazz extends BasicGenerator {
+public class JavaClazz extends Template {
 	public JavaClazz() {
-		createTemplate("Declaration", Template.TEMPLATE,
-
+		this.id=TYPE_JAVA+".clazz";
+		this.metaModel = true;
+		this.extension = "java";
+		this.fileType ="clazz";
+		this.type = TEMPLATE;
+		this.withTemplate(
 				"{{#template PACKAGE {{packagename}}}}package {{packagename}};{{#endtemplate}}","",
 
 				"{{#template IMPORT}}{{#foreach {{file.headers}}}}","import {{item}};{{#endfor}}{{#endtemplate}}","",
@@ -123,17 +125,8 @@ public class JavaClazz extends BasicGenerator {
 						"{{#ENDIF}}",
 						"{{#template TEMPLATEEND}}}{{#endtemplate}}"
 				);
-//		,
-//			 	"{{attributes}}" + "{{fields}}" + "{{methods}}"+
-		this.metaModel = true;
-		this.extension = "java";
-		this.addGenerator(new JavaAttribute());
-		this.addGenerator(new JavaAssociation());
-		this.addGenerator(new JavaMethod());
-	}
-
-	@Override
-	public Class<?> getType() {
-		return Clazz.class;
+		this.addTemplate(new JavaAttribute(), true);
+		this.addTemplate(new JavaAssociation(), true);
+		this.addTemplate(new JavaMethod(), true);
 	}
 }
