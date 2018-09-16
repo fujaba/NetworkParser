@@ -9,7 +9,7 @@ stages:
 build_job:
   stage: build
   script:
-   - ./gradlew Test jacocoTestReport coveralls artifactoryPublish uploadArchives
+   - ./gradlew Test jacocoTestReport coveralls 
 
 #cleanup_build_job:
 #  stage: cleanup_build
