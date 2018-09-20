@@ -161,11 +161,7 @@ public abstract class GraphModel extends GraphEntity implements BaseItem {
 		return false;
 	}
 
-	public GraphModel generate() {
-		return this;
-	}
-
-	public GraphModel generate(String rootDir) {
+	public GraphModel generate(String... rootDir) {
 		return this;
 	}
 

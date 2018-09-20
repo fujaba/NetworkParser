@@ -124,12 +124,12 @@ public class SuperClazzTest {
 		Assert.assertEquals(1, regularClazz.getSuperClazzes(false).size());
 		Assert.assertEquals(1, regularClazz.getInterfaces(false).size());
 
-		regularClazz.withoutSuperClazz(superClazz);
+		regularClazz.remove(superClazz);
 
 		Assert.assertEquals(0, regularClazz.getSuperClazzes(false).size());
 		Assert.assertEquals(1, regularClazz.getInterfaces(false).size());
 
-		regularClazz.withoutSuperClazz(interfaceClazz);
+		regularClazz.remove(interfaceClazz);
 
 		Assert.assertEquals(0, regularClazz.getSuperClazzes(false).size());
 		Assert.assertEquals(0, regularClazz.getInterfaces(false).size());

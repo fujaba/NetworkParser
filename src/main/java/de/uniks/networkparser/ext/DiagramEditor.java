@@ -524,7 +524,7 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 		//html.createScript("classEditor = new ClassEditor(\"board\");", html.getBody());
 		if(TYPE_EDITOR.equalsIgnoreCase(type)) {
 			loadFile = true;
-			html.withScript(resourceReader.readResource("graph/diagram.js").toString(), html.getHeader());
+			html.withScript(html.getHeader(), resourceReader.readResource("graph/diagram.js").toString());
 			html.withHeader("dagre.min.js");
 			html.withHeader("jspdf.min.js");
 			html.withHeader("diagramstyle.css");
@@ -547,10 +547,10 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 		if(TYPE_EXPORTALL.equalsIgnoreCase(type)) {
 			// Add external Files
 			loadFile = true;
-			html.withScript(readFile("graph/dagre.min.js"), html.getHeader());
-			html.withScript(readFile("graph/diagram.js"), html.getHeader());
-			html.withScript(readFile("graph/jspdf.min.js"), html.getHeader());
-			html.withScript(readFile("graph/diagramstyle.css"), html.getHeader());
+			html.withScript(html.getHeader(), readFile("graph/dagre.min.js"));
+			html.withScript(html.getHeader(), readFile("graph/diagram.js"));
+			html.withScript(html.getHeader(), readFile("graph/jspdf.min.js"));
+			html.withScript(html.getHeader(), readFile("graph/diagramstyle.css"));
 		}
 		if(loadFile) {
 			FileBuffer.writeFile("Editor.html", html.toString(), FileBuffer.NONE);
@@ -563,9 +563,9 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 			return true;
 		}
 		// Add external Files
-		html.withScript(readFile("graph/dagre.min.js"), html.getHeader());
-		html.withScript(readFile("graph/diagram.js"), html.getHeader());
-		html.withScript(readFile("graph/diagramstyle.css"), html.getHeader());
+		html.withScript(html.getHeader(), readFile("graph/dagre.min.js"));
+		html.withScript(html.getHeader(), readFile("graph/diagram.js"));
+		html.withScript(html.getHeader(), readFile("graph/diagramstyle.css"));
 		ReflectionLoader.call(webEngine, "loadContent", html.toString());
 		return true;
 	}

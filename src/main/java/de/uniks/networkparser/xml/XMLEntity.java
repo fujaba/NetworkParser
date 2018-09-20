@@ -168,17 +168,19 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 	}
 
 	/**
-	 * Method to create a new Child and add it to Children
-	 *@param tag TagName
-	 * @return XMLEntity	new Instance
+	 * Method to add a new Child to List.
+	 *
+	 * @param value			the new Child
+	 * @return XMLEntity	Instance
 	 */
-	public XMLEntity createChild(String tag) {
-		XMLEntity xmlEntity = new XMLEntity();
-		withChild(xmlEntity);
-		xmlEntity.setType(tag);
-		return xmlEntity;
+	public XMLEntity withoutChild(BaseItem value) {
+		if(this.children == null) {
+			return this;
+		}
+		this.children.remove(value);
+		return this;
 	}
-
+	
 	/**
 	 * Gets the tag.
 	 *
@@ -325,7 +327,7 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 	 * @return 		a new Instance of XMLEntity
 	 */
 	public static XMLEntity TAG(String tag) {
-		return new XMLEntity().setType(tag);
+		return new XMLEntity().withType(tag);
 	}
 
 	@Override
@@ -356,7 +358,7 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 	 * @param value	the new Tag
 	 * @return the instance XMLEntity
 	 */
-	public XMLEntity setType(String value) {
+	public XMLEntity withType(String value) {
 		this.tag = value;
 		return this;
 	}
@@ -488,6 +490,37 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 			}
 		}
 		return children;
+	}
+
+	public XMLEntity withChild(String tag, String... values) {
+		createChild(tag, values);
+		return this;
+	}
+	/**
+	 * Method to create a new Child and add it to Children
+	 * @param tag TagName
+	 * @param values Values of Child
+	 * @return XMLEntity	new Instance
+	 */
+	public XMLEntity createChild(String tag, String... values) {
+		XMLEntity child = new XMLEntity().withType(tag);
+		this.withChild(child);
+		if(values == null) {
+			return this;
+		}
+		int i=0;
+		for(;i<values.length;i+=2) {
+			if(i+1>=values.length) {
+				break;
+			}
+			String key = values[i];
+			String value = values[i+1];
+			child.add(key, value);
+		}
+		if(i<values.length) {
+			child.withValueItem(values[i]);
+		}
+		return child;
 	}
 
 	public XMLEntity withValueItem(String value) {

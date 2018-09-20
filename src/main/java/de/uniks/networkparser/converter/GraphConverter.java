@@ -184,7 +184,7 @@ public class GraphConverter implements Converter{
 								attribute = new Attribute(name, type);
 								attribute.withValue(entity.toString());
 							} else {
-								attribute.withValue(attribute.getValue() + "," + entity.toString());
+								attribute.withValue(attribute.getValue(GraphTokener.OBJECT, false) + "," + entity.toString());
 							}
 						}
 					}

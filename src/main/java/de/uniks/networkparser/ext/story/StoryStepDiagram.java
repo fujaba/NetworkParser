@@ -26,7 +26,10 @@ THE SOFTWARE.
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.converter.GraphConverter;
+import de.uniks.networkparser.graph.GraphImage;
+import de.uniks.networkparser.graph.GraphList;
 import de.uniks.networkparser.graph.GraphModel;
+import de.uniks.networkparser.graph.GraphNode;
 import de.uniks.networkparser.graph.GraphTokener;
 import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.ObjectCondition;
@@ -102,5 +105,28 @@ public class StoryStepDiagram implements ObjectCondition {
 	}
 	public void withFilter(StoryObjectFilter filter) {
 		this.filter = filter;
+	}
+	
+	public GraphModel createUseCaseDiagram() {
+		GraphList useCase = new GraphList();
+		this.model = useCase;
+		useCase.withType(GraphTokener.OBJECT);
+		return model;
+	}
+	
+	public GraphImage cretaeActor() {
+		GraphImage actor = GraphImage.createActor();
+		if(this.model != null) {
+			this.model.add(actor);
+		}
+		return actor;
+	}
+	
+	public GraphNode createElement(String value) {
+		GraphNode node = new GraphNode().with(value);
+		if(this.model != null) {
+			this.model.add(node);
+		}
+		return node;
 	}
 }

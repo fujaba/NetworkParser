@@ -72,7 +72,7 @@ public class SimpleGrammar implements Grammar {
 			}
 		}
 		if(basicProperties.contains(IdMap.CLASS)) {
-			entity.setType(className);
+			entity.withType(className);
 		}
 
 		if(id != null) {

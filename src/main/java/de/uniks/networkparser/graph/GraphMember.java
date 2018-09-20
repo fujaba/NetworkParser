@@ -50,7 +50,7 @@ public abstract class GraphMember {
 		return this;
 	}
 
-	public ObjectCondition getRole() {
+	ObjectCondition getRole() {
 		return role;
 	}
 
@@ -225,7 +225,7 @@ public abstract class GraphMember {
 			GraphMember oldValue = (GraphMember) this.parentNode;
 			if (this.parentNode != null) {
 				this.parentNode = null;
-				oldValue.without(this);
+				oldValue.remove(this);
 			}
 			this.parentNode = value;
 			if (value != null) {
@@ -265,33 +265,6 @@ public abstract class GraphMember {
 				if(list.add(value)) {
 					value.setParentNode(this);
 				}
-			}
-		}
-		return this;
-	}
-
-	public GraphMember without(GraphMember... values) {
-		if (values == null || this.children == null) {
-			return this;
-		}
-		if(this.children instanceof GraphMember) {
-			for (GraphMember value : values) {
-				if(this.children == value) {
-					this.children = null;
-					if(value instanceof Association) {
-						((Association)value).withoutParent(this);
-					} else {
-						value.setParentNode(null);
-					}
-				}
-			}
-			return this;
-		}
-		GraphSimpleSet collection = (GraphSimpleSet) this.children;
-		for (GraphMember value : values) {
-			if(value != null) {
-				collection.remove(value);
-				value.setParentNode(null);
 			}
 		}
 		return this;
@@ -403,10 +376,20 @@ public abstract class GraphMember {
 		}
 		if(this.children instanceof GraphSimpleSet) {
 			GraphSimpleSet list = (GraphSimpleSet) this.children;
+			if(member instanceof Association) {
+				((Association) member).withoutParent(this);
+			} else {
+				member.setParentNode(null);
+			}
 			return list.remove(member);
 		}
 		if(this.children == member) {
 			this.children = null;
+			if(member instanceof Association) {
+				((Association) member).withoutParent(this);
+			} else {
+				member.setParentNode(null);
+			}
 			return true;
 		}
 		return false;

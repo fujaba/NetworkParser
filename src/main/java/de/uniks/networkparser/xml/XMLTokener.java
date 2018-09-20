@@ -120,7 +120,7 @@ public class XMLTokener extends Tokener {
 			}
 			return false;
 		}
-		xmlEntity.setType(buffer.nextToken(false, Buffer.STOPCHARSXMLEND).toString());
+		xmlEntity.withType(buffer.nextToken(false, Buffer.STOPCHARSXMLEND).toString());
 		XMLEntity child;
 		while (true) {
  			c = buffer.nextClean(true);

@@ -432,10 +432,4 @@ public class Association extends GraphMember {
 		withAnnotation(value);
 		return this;
 	}
-
-	@Override
-	public Association without(GraphMember... values) {
-		super.without(values);
-		return this;
-	}
 }

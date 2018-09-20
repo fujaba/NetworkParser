@@ -663,6 +663,26 @@ public class NodeProxyTCP extends NodeProxy {
 		}
 		return readAnswer(conn);
 	}
+	public static ByteBuffer getHTTPBinary(String url) {
+		HttpURLConnection conn = getConnection(url, GET);
+		if(conn == null) {
+			return null;
+		}
+		ByteBuffer sb = new ByteBuffer();
+		try {
+			InputStream is = conn.getInputStream();
+			byte[] messageArray = new byte[BUFFER];
+			while (true) {
+				int bytesRead = is.read(messageArray, 0, BUFFER);
+				if (bytesRead <= 0)
+					break; // <======= no more data
+				sb.addBytes(messageArray, bytesRead, false);
+			}
+		}catch (Exception e) {
+		}
+		conn.disconnect();
+		return sb;
+	}
 
 	@Override
 	public String toString() {

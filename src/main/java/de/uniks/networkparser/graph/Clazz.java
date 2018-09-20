@@ -374,7 +374,7 @@ public class Clazz extends GraphEntity {
 			} else if(interfaces.size() > 0){
 				// BOTH
 				for(Clazz item : interfaces) {
-					item.without(assoc.getOther());
+					item.remove(assoc.getOther());
 				}
 				createAssociation(AssociationTypes.IMPLEMENTS, AssociationTypes.EDGE, interfaces.toArray());
 			}
@@ -385,7 +385,7 @@ public class Clazz extends GraphEntity {
 		} else if(generalizations.size() > 0){
 			// BOTH
 			for(Clazz item : interfaces) {
-				item.without(assoc.getOther());
+				item.remove(assoc.getOther());
 			}
 			createAssociation(AssociationTypes.GENERALISATION, AssociationTypes.EDGE, generalizations.toArray());
 		}
@@ -418,7 +418,7 @@ public class Clazz extends GraphEntity {
 			if(generalizations.size() > 1) {
 				// Repair only valid last generalization
 				for(int i=0;i<generalizations.size() - 1;i++) {
-					this.without(generalizations.get(i));
+					this.remove(generalizations.get(i));
 				}
 			}
 		}
@@ -772,48 +772,29 @@ public class Clazz extends GraphEntity {
 		}
 	}
 
-	public Clazz withoutKidClazz(Clazz... values) {
-		if (this.children == null || values == null) {
-			return this;
+	@Override
+	public boolean remove(GraphMember member) {
+		if (this.children == null || member == null) {
+			return false;
 		}
-		for (Clazz item : values) {
-			if (item != null) {
-				for (Association assoc : getAssociations()) {
-					if(assoc.getOther().getType() == AssociationTypes.GENERALISATION) {
-						if(assoc.contains(item, false, true)) {
-							super.without(assoc);
-							break;
+		if(member instanceof Clazz) {
+			Clazz clazz = (Clazz) member;
+			for (Association assoc : getAssociations()) {
+				if(assoc.getType() == AssociationTypes.GENERALISATION || assoc.getType() == AssociationTypes.IMPLEMENTS) {
+					if(assoc.getOther().contains(clazz, true, true)) {
+						if(assoc.getOther().getParents().size() == 1) {
+							this.remove(assoc);
+						} else {
+							assoc.getOther().withoutParent(clazz);
 						}
+						break;
 					}
 				}
 			}
 		}
-		return this;
+		return super.remove(member);
 	}
-
-	public Clazz withoutSuperClazz(Clazz... values) {
-		if (this.children == null || values == null) {
-			return this;
-		}
-		for (Clazz item : values) {
-			if (item != null) {
-				for (Association assoc : getAssociations()) {
-					if(assoc.getType() == AssociationTypes.GENERALISATION || assoc.getType() == AssociationTypes.IMPLEMENTS) {
-						if(assoc.getOther().contains(item, true, false)) {
-							if(assoc.getOther().getParents().size() == 1) {
-								this.without(assoc);
-							} else {
-								assoc.getOther().withoutParent(item);
-							}
-							break;
-						}
-					}
-				}
-			}
-		}
-		return this;
-	}
-
+	
 	protected Clazz with(Import... value) {
 		super.withChildren(value);
 		return this;
@@ -940,11 +921,5 @@ public class Clazz extends GraphEntity {
 			return attributes;
 		}
 		return super.getValue(attribute);
-	}
-
-	@Override
-	public Clazz without(GraphMember... values) {
-		super.without(values);
-		return this;
 	}
 }

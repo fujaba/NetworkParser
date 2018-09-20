@@ -275,7 +275,7 @@ public class DotConverter implements Converter {
 			for(Attribute attribute : graphClazz.getAttributes()) {
 				// add attribute line
 				if(isObjectdiagram) {
-					childBuilder.append(BaseItem.CRLF+"<tr><td align='left'>"+attribute.getName() +" = "+attribute.getValue()+"</td></tr>");
+					childBuilder.append(BaseItem.CRLF+"<tr><td align='left'>"+attribute.getName() +" = "+attribute.getValue(GraphTokener.OBJECT, false)+"</td></tr>");
 				} else {
 					childBuilder.append(BaseItem.CRLF+"<tr><td align='left'>"+attribute.getName() +" : "+attribute.getType().getName(removePackage)+"</td></tr>");
 				}
@@ -289,7 +289,7 @@ public class DotConverter implements Converter {
 			for(Method method : graphClazz.getMethods()) {
 				// add attribute line
 //					if(isObjectdiagram) {
-				childBuilder.append(BaseItem.CRLF+"<tr><td align='left'>"+method.getName(false) + "</td></tr>");
+				childBuilder.append(BaseItem.CRLF+"<tr><td align='left'>"+method.getName(false, false) + "</td></tr>");
 			}
 			if(childBuilder.length() > 0) {
 				sb.append(BaseItem.CRLF+"<tr><td><table border='0' cellborder='0' cellspacing='0'>");

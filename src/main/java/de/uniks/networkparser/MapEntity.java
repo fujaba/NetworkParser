@@ -314,7 +314,7 @@ public class MapEntity extends AbstractList<Object>{
 				if(newItem == null) {
 					newItem = child.getNewList(true);
 					if(newItem instanceof XMLEntity) {
-						((XMLEntity) newItem).setType(label);
+						((XMLEntity) newItem).withType(label);
 						entity.add(newItem);
 					} else {
 						((Entity) child).put(label, newItem);

@@ -66,15 +66,28 @@ public class GraphUtil {
 		}
 	}
 	
-	public static final void setRole(GraphMember member, ObjectCondition value) {
+	public static final boolean setRole(GraphMember member, ObjectCondition value) {
 		if(member != null) {
 			member.withRole(value);
+			return true;
 		}
+		return false;
 	}
-	public static final void withChildren(GraphMember member, GraphMember child) {
+	
+	public static final ObjectCondition getRole(GraphMember member) {
+		if(member != null) {
+			return member.getRole();
+		}
+		return null;
+	}
+
+	
+	public static final boolean setChildren(GraphMember member, GraphMember child) {
 		if(member != null) {
 			member.withChildren(child);
+			return true;
 		}
+		return false;
 	}
 	public static double compareType(String sourceType, String otherType) {
 		if (EntityUtil.isNumericType(sourceType) && EntityUtil.isNumericType(otherType)) {
@@ -297,17 +310,20 @@ public class GraphUtil {
 		if (value instanceof Attribute) {
 			Attribute attribute = (Attribute) value;
 			Annotation annotation = attribute.getAnnotation();
-			value.without(annotation);
+			value.remove(annotation);
 		}
 		if (value instanceof Association) {
 			Association assoc = (Association) value;
 			assoc.withOther(null);
-			assoc.without(assoc.getClazz());
+			assoc.remove(assoc.getClazz());
 		}
 		if (value instanceof Clazz) {
 			Clazz clazz = (Clazz) value;
 			GraphSimpleSet collection = clazz.getChildren();
-			clazz.without(collection.toArray(new GraphMember[collection.size()]));
+			GraphMember[] list = collection.toArray(new GraphMember[collection.size()]);
+			for(GraphMember item : list) {
+				clazz.remove(item);
+			}
 		}
 	}
 
@@ -427,6 +443,15 @@ public class GraphUtil {
 		}
 		return Clazz.TYPE_CLASS;
 
+	}
+
+	public static final GraphEntity setExternal(GraphEntity entity, boolean value) {
+		entity.withExternal(value);
+		return entity;
+	}
+
+	protected static final boolean isExternal(GraphEntity entity) {
+		return entity.isExternal();
 	}
 
 	public static final DataType setClazz(DataType type, Clazz value) {

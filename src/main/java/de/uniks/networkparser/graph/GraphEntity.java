@@ -123,11 +123,11 @@ public abstract class GraphEntity extends GraphMember {
 		return null;
 	}
 
-	public boolean isExternal() {
+	protected boolean isExternal() {
 		return this.external;
 	}
 
-	public GraphEntity withExternal(boolean value) {
+	protected GraphEntity withExternal(boolean value) {
 		if (this.external != value) {
 			this.external = value;
 		}
@@ -187,7 +187,7 @@ public abstract class GraphEntity extends GraphMember {
 									itemOther.with(assocOther.getCardinality());
 									GraphMember attribute = itemOther.getClazz().getChildByName(assocOther.getName(), Attribute.class);
 									if(attribute != null) {
-										itemOther.getClazz().without(attribute);
+										itemOther.getClazz().remove(attribute);
 									}
 								}
 
@@ -199,7 +199,7 @@ public abstract class GraphEntity extends GraphMember {
 
 								GraphMember attribute = item.getClazz().getChildByName(assoc.getName(), Attribute.class);
 								if(attribute != null) {
-									item.getClazz().without(attribute);
+									item.getClazz().remove(attribute);
 								}
 							}
 							break;

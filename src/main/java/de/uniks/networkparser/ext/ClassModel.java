@@ -42,17 +42,6 @@ import de.uniks.networkparser.xml.HTMLEntity;
 public class ClassModel extends GraphModel {
 	private ModelGenerator generator = new ModelGenerator().withDefaultModel(this);
 
-	public ClassModel() {
-		name = getDefaultPackage();
-		setAuthorName(System.getProperty("user.name"));
-	}
-
-
-	public void resetGenerator()
-	{
-		this.generator = new ModelGenerator().withDefaultModel(this);
-	}
-
 	/**
 	 * Constructor
 	 *
@@ -63,14 +52,29 @@ public class ClassModel extends GraphModel {
 		with(packageName);
 	}
 
+	public ClassModel() {
+		name = getDefaultPackage();
+		setAuthorName(System.getProperty("user.name"));
+	}
+
+	public void resetGenerator()
+	{
+		this.generator = new ModelGenerator().withDefaultModel(this);
+	}
+
+
 	public ClassModel withFeature(Feature feature) {
 		this.generator.withFeature(feature);
 		return this;
 	}
-
+	
 	public ClassModel withoutFeature(Feature feature) {
 		this.generator.withoutFeature(feature);
 		return this;
+	}
+	@Override
+	public boolean remove(GraphMember member) { 
+		return super.remove(member);
 	}
 
 	public ModelGenerator getGenerator(String... params) {
@@ -111,14 +115,12 @@ public class ClassModel extends GraphModel {
 	}
 
 	@Override
-	public ClassModel generate() {
-		getGenerator().generate(this);
-		return this;
-	}
-
-	@Override
-	public ClassModel generate(String rootDir) {
-		getGenerator().generate(rootDir, this);
+	public ClassModel generate(String... rootDir) {
+		String path = null;
+		if(rootDir != null && rootDir.length>0) {
+			path = rootDir[0];
+		}
+		getGenerator().generate(path, this);
 		return this;
 	}
 
@@ -142,11 +144,11 @@ public class ClassModel extends GraphModel {
 				GraphMember member = match.getMatch();
 				Clazz clazz = this.createClazz(member.getClazz().getName());
 				ModifyEntry modifier = ModifyEntry.createModifier(member);
-				GraphUtil.withChildren(clazz, modifier);
+				GraphUtil.setChildren(clazz, modifier);
 
 				Object newValue = match.getNewValue();
 				if(newValue instanceof Attribute ) {
-					GraphUtil.withChildren(clazz, (GraphMember) newValue);
+					GraphUtil.setChildren(clazz, (GraphMember) newValue);
 				} else if(newValue instanceof DataType ) {
 					if(member instanceof Attribute) {
 						clazz.createAttribute(member.getName(), (DataType)newValue);
@@ -173,18 +175,6 @@ public class ClassModel extends GraphModel {
 	@Override
 	public ClassModel with(String name) {
 		super.with(name);
-		return this;
-	}
-
-	@Override
-	public ClassModel without(GraphMember... values) {
-		super.without(values);
-		return this;
-	}
-
-	@Override
-	public ClassModel withExternal(boolean value) {
-		super.withExternal(value);
 		return this;
 	}
 

@@ -207,13 +207,6 @@ public class ModelGenerator extends Template {
 		return generating(rootDir, (GraphModel) item, null, null, true, true);
 	}
 
-	public SendableEntityCreator generate(GraphMember item) {
-		if (item instanceof GraphModel == false) {
-			return null;
-		}
-		return generating(null, (GraphModel) item, null, null, true, true);
-	}
-
 	public SendableEntityCreator generating(String rootDir, GraphModel model, TextItems parameters, String type, boolean writeFiles, boolean enableParser) {
 		this.lastGenRoot = rootDir;
 		// Set DefaultValue

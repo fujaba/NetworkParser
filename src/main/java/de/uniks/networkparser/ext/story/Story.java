@@ -232,7 +232,7 @@ public class Story extends StoryElement implements Comparable<Story>{
 
 		output.withEncoding(HTMLEntity.ENCODING);
 
-		output.withScript("hljs.initHighlightingOnLoad();" + BaseItem.CRLF + "hljs.initLineNumbersOnLoad();", output.getHeader());
+		output.withScript(output.getHeader(), "hljs.initHighlightingOnLoad();", "hljs.initLineNumbersOnLoad();");
 
 		SimpleEvent evt = new SimpleEvent(this, null, null, output);
 		for (ObjectCondition step : steps) {

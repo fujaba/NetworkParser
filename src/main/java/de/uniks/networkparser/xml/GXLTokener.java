@@ -53,9 +53,9 @@ public class GXLTokener extends Tokener {
 	@Override
 	public BaseItem encode(Object entity, MapEntity map) {
 		XMLEntity instance = new XMLEntity();
-		instance.setType(GXL);
+		instance.withType(GXL);
 		instance.withKeyValue("xmlns:xlink", "http://www.w3.org/1999/xlink");
-		XMLEntity graph = new XMLEntity().setType(GRAPH);
+		XMLEntity graph = new XMLEntity().withType(GRAPH);
 		graph.withKeyValue(IdMap.ID, "undirected-instance");
 		graph.withKeyValue(EDGEIDS, false);
 		graph.withKeyValue(EDGEMODE, "defaultdirected");
@@ -82,7 +82,7 @@ public class GXLTokener extends Tokener {
 		}
 		String id = this.map.getId(item, true);
 		XMLEntity node = this.newInstance();
-		node.setType(NODE);
+		node.withType(NODE);
 		node.withKeyValue(IdMap.ID, id);
 		root.with(node);
 		for(String property : creator.getProperties()) {
@@ -99,7 +99,7 @@ public class GXLTokener extends Tokener {
 		if(value == null) {
 			// Null Value
 			XMLEntity attribute = this.newInstance();
-			attribute.setType(ATTRIBUTE);
+			attribute.withType(ATTRIBUTE);
 			attribute.withKeyValue(NAME, property);
 			parent.with(attribute);
 			return;
@@ -108,7 +108,7 @@ public class GXLTokener extends Tokener {
 		if(childCreator != null) {
 			if( encodeChildren(value, root, childCreator, map) ) {
 				XMLEntity edge = this.newInstance();
-				edge.setType(EDGE);
+				edge.withType(EDGE);
 				edge.withKeyValue(FROM, node.get(IdMap.ID));
 				edge.withKeyValue(TO, this.map.getKey(value));
 				edge.withKeyValue(ISDIRECTED, false);
@@ -117,7 +117,7 @@ public class GXLTokener extends Tokener {
 			return;
 		}
 		XMLEntity attribute = this.newInstance();
-		attribute.setType(ATTRIBUTE);
+		attribute.withType(ATTRIBUTE);
 		attribute.withKeyValue(NAME, property);
 		parent.with(attribute);
 		if (value instanceof Collection<?>) {
@@ -127,7 +127,7 @@ public class GXLTokener extends Tokener {
 				parseValue(property, i.next(), bag, root, node, map);
 			}
 			if(bag.size()>0) {
-				bag.setType(BAG);
+				bag.withType(BAG);
 				attribute.with(bag);
 			}
 			return;
@@ -136,13 +136,13 @@ public class GXLTokener extends Tokener {
 		valueItem.withValue(value.toString());
 		attribute.with(valueItem);
 		if(value instanceof Boolean) {
-			valueItem.setType(BOOL);
+			valueItem.withType(BOOL);
 		} else if(value instanceof Integer || value instanceof Long) {
-			valueItem.setType(INT);
+			valueItem.withType(INT);
 		} else if(value instanceof Float || value instanceof Double) {
-			valueItem.setType(FLOAT);
+			valueItem.withType(FLOAT);
 		}else {
-			valueItem.setType(STRING);
+			valueItem.withType(STRING);
 		}
 	}
 

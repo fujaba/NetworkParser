@@ -87,6 +87,11 @@ public class GenModel {
 				"		builder.build();");
 		step.addToHTML(sdmLib);
 
+		sdmLib.withHeader("graph.js");
+		sdmLib.withHeader("drawer.js");
+		sdmLib.withoutHeader("diagram.js");
+		
+		
 		FileBuffer.writeFile("build/sdmlib.html", sdmLib.toString());
 	}
 

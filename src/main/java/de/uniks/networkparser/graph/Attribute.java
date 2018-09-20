@@ -102,9 +102,9 @@ public class Attribute extends Value {
 		sb.with(getName());
 		sb.with(':');
 		sb.with(getType().getName(true));
-		if(getValue()!= null) {
+		if(getValue(GraphTokener.OBJECT, false)!= null) {
 			sb.with('=');
-			sb.with(getValue());
+			sb.with(getValue(GraphTokener.OBJECT, false));
 		}
 		return sb.toString();
 	}
@@ -128,11 +128,5 @@ public class Attribute extends Value {
 			}
 		}
 		return super.equals(obj);
-	}
-
-	@Override
-	public Attribute without(GraphMember... values) {
-		super.without(values);
-		return this;
 	}
 }

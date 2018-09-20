@@ -1443,7 +1443,7 @@ public class ParserEntity {
 
 	private Method getMethod(String memberName) {
 		for (Method method : this.file.getMethods()) {
-			if (method.getName(false).equals(memberName))
+			if (method.getName(false, false).equals(memberName))
 				return method;
 		}
 		return null;

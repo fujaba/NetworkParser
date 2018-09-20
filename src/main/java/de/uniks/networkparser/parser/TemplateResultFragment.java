@@ -31,6 +31,7 @@ import de.uniks.networkparser.graph.GraphList;
 import de.uniks.networkparser.graph.GraphMember;
 import de.uniks.networkparser.graph.GraphModel;
 import de.uniks.networkparser.graph.GraphSimpleSet;
+import de.uniks.networkparser.graph.GraphUtil;
 import de.uniks.networkparser.interfaces.LocalisationInterface;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.ParserCondition;
@@ -363,7 +364,7 @@ public class TemplateResultFragment implements Comparable<TemplateResultFragment
 //		public static final String PROPERTY_EXPRESSION="expression";
 		if(FINISH_GENERATE.equalsIgnoreCase(attribute)) {
 			// NOTIFY GRAPHMEMBER
-			ObjectCondition role = element.member.getRole();
+			ObjectCondition role = GraphUtil.getRole(element.member);
 			if(role != null) {
 				role.update(value);
 			}

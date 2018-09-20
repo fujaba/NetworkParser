@@ -65,10 +65,4 @@ public class Parameter extends Value {
 		super.setParentNode(value);
 		return this;
 	}
-
-	@Override
-	public Parameter without(GraphMember... values) {
-		super.without(values);
-		return this;
-	}
 }

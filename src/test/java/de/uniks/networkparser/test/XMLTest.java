@@ -37,7 +37,7 @@ import de.uniks.networkparser.test.model.util.MyXMLEntityCreator;
 import de.uniks.networkparser.test.model.util.StringMessageCreator;
 import de.uniks.networkparser.test.model.util.UniversityCreator;
 import de.uniks.networkparser.test.model.util.XMLTestItemCreator;
-import de.uniks.networkparser.xml.PomFile;
+import de.uniks.networkparser.xml.ArtifactFile;
 import de.uniks.networkparser.xml.XMLEntity;
 import de.uniks.networkparser.xml.XMLTokener;
 
@@ -315,14 +315,14 @@ public class XMLTest {
 
 	@Test
 	public void testXMLCompare(){
-		XMLEntity xmlA = new XMLEntity().withKeyValue("id", 42).setType("p");
-		XMLEntity xmlB = new XMLEntity().withKeyValue("id", 42).setType("p");
+		XMLEntity xmlA = new XMLEntity().withKeyValue("id", 42).withType("p");
+		XMLEntity xmlB = new XMLEntity().withKeyValue("id", 42).withType("p");
 		xmlA.withKeyValue("no", 23);
 		xmlB.withKeyValue("no", 24);
-		xmlA.withChild(new XMLEntity().setType("1"));
-		xmlA.withChild(new XMLEntity().setType("2"));
-		xmlB.withChild(new XMLEntity().setType("1"));
-		xmlB.withChild(new XMLEntity().setType("3"));
+		xmlA.withChild(new XMLEntity().withType("1"));
+		xmlA.withChild(new XMLEntity().withType("2"));
+		xmlB.withChild(new XMLEntity().withType("1"));
+		xmlB.withChild(new XMLEntity().withType("3"));
 
 		Assert.assertFalse(EntityUtil.compareEntity(xmlA, xmlB));
 		Assert.assertEquals("<p no=\"23\"><1/><2/></p>", xmlA.toString());
@@ -364,14 +364,14 @@ public class XMLTest {
 	@Test
 	public void PomTest() {
 		StringBuilder sb;
-		PomFile pomFile;
+		ArtifactFile pomFile;
 		sb = new StringBuilder();
 		sb.append("<project>\r\n");
 		sb.append("  <modelVersion>4.2.0</modelVersion>\r\n");
 		sb.append("  <!--<build>-->\r\n");
 		sb.append("  <!--</build>-->\r\n");
 		sb.append("</project>\r\n");
-		pomFile = new PomFile().withValue(sb.toString());
+		pomFile = new ArtifactFile().withValue(sb.toString());
 		Assert.assertEquals("4.2.0", pomFile.getModelVersion());
 
 		sb=new StringBuilder();
@@ -400,7 +400,7 @@ public class XMLTest {
 		sb.append("   <!-- ==Apache dependencies== -->\r\n");
 	    sb.append("</project>\r\n");
 
-		pomFile = new PomFile().withValue(sb.toString());
+		pomFile = new ArtifactFile().withValue(sb.toString());
 
 		Assert.assertEquals("4.2.0", pomFile.getModelVersion());
 	}

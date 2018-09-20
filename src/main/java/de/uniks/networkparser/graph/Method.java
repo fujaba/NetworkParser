@@ -51,9 +51,7 @@ public class Method extends GraphMember {
 		super.with(name);
 		return this;
 	}
-	public String getName(boolean shortName) {
-		return getName(shortName, false);
-	}
+
 	public String getName(boolean shortName, boolean removeParameterNames) {
 		StringBuilder sb = new StringBuilder();
 
@@ -116,7 +114,6 @@ public class Method extends GraphMember {
 	}
 
 	public Method withParent(Clazz value) {
-		super.setParentNode(value);
 		return this;
 	}
 
@@ -239,9 +236,8 @@ public class Method extends GraphMember {
 	}
 
 	@Override
-	public String toString()
-	{
-	   return getName(true);
+	public String toString() {
+		return getName(true, false);
 	}
 
 	@Override
@@ -288,11 +284,5 @@ public class Method extends GraphMember {
 		   }
 		}
 		return false;
-	}
-
-	@Override
-	public Method without(GraphMember... values) {
-		super.without(values);
-		return this;
 	}
 }

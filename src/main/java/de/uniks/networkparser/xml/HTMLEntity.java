@@ -50,8 +50,8 @@ public class HTMLEntity implements BaseItem {
 	public static final String KEY_SRC="src";
 	public static final String[] GRAPHRESOURCES=new String[] {"diagramstyle.css", "diagram.js", "dagre.min.js"};
 
-	private XMLEntity body = new XMLEntity().setType("body");
-	private XMLEntity header = new XMLEntity().setType("head");
+	private XMLEntity body = new XMLEntity().withType("body");
+	private XMLEntity header = new XMLEntity().withType("head");
 
 	private Map<String, List<String>> conenctionHeader = new SimpleKeyValueList<String, List<String>>();
 	private int statusCode = 200;
@@ -74,7 +74,7 @@ public class HTMLEntity implements BaseItem {
 	}
 
 	public HTMLEntity withEncoding(String encoding) {
-		XMLEntity metaTag = new XMLEntity().setType("meta");
+		XMLEntity metaTag = new XMLEntity().withType("meta");
 		metaTag.withKeyValue("http-equiv", "Content-Type");
 		metaTag.withKeyValue("content", "text/html;charset="+encoding);
 		this.header.with(metaTag);
@@ -82,27 +82,39 @@ public class HTMLEntity implements BaseItem {
 	}
 
 	public HTMLEntity withPageBreak() {
-		XMLEntity pageBreak = new XMLEntity().setType("div").withCloseTag();
+		XMLEntity pageBreak = new XMLEntity().withType("div").withCloseTag();
 		pageBreak.put("style", "page-break-before:always");
 		this.body.withChild(pageBreak);
 		return this;
 	}
 
 	public HTMLEntity withTitle(String value) {
-		XMLEntity titleTag = new XMLEntity().setType("title").withValue(value);
+		XMLEntity titleTag = new XMLEntity().withType("title").withValue(value);
 		this.header.with(titleTag);
 		return this;
 	}
-
-	public HTMLEntity withScript(CharSequence value, XMLEntity parentNode) {
-		if(value != null) {
-			createScript(value.toString(), parentNode);
+	public HTMLEntity withScript(CharSequence... value) {
+		return withScript(null, value);
+	}
+	public HTMLEntity withScript(XMLEntity parentNode, CharSequence... values) {
+		if(values != null) {
+			CharacterBuffer content=new CharacterBuffer();;
+			if(values.length>0) {
+				content.with(values[0]);
+			}
+			for(int i=1;i<values.length;i++) {
+				if(values[i] != null) {
+					content.with(BaseItem.CRLF+values[i]);
+				}
+			}
+			
+			createScript(content.toString(), parentNode);
 		}
 		return this;
 	}
 
 	public XMLEntity createScript(String value, XMLEntity parentNode) {
-		XMLEntity node = new XMLEntity().setType(SCRIPT).withKeyValue("language", "Javascript");
+		XMLEntity node = new XMLEntity().withType(SCRIPT).withKeyValue("language", "Javascript");
 		if(value == null) {
 			return node;
 		}
@@ -125,7 +137,7 @@ public class HTMLEntity implements BaseItem {
 
 	public HTMLEntity withHeaderStyle(CharSequence value) {
 		if(value != null) {
-			XMLEntity headerChild = new XMLEntity().setType("style").withValue(value.toString());
+			XMLEntity headerChild = new XMLEntity().withType("style").withValue(value.toString());
 			this.header.with(headerChild);
 		}
 		return this;
@@ -217,15 +229,15 @@ public class HTMLEntity implements BaseItem {
 		if(pos>0) {
 			String ext = ref.substring(pos).toLowerCase();
 			if(ext.equals(".css") ) {
-				child = new XMLEntity().setType(LINK);
+				child = new XMLEntity().withType(LINK);
 				child.withKeyValue("rel", "stylesheet");
 				child.withKeyValue("type", "text/css");
 				child.withKeyValue(KEY_HREF, ref);
 			} else if(ext.equals(".js") ) {
-				child = new XMLEntity().setType(SCRIPT).withCloseTag();
+				child = new XMLEntity().withType(SCRIPT).withCloseTag();
 				child.withKeyValue(KEY_SRC, ref);
 			} else if(IMAGEFORMAT.indexOf(" "+ext+" ")>=0) {
-				child = new XMLEntity().setType("img").withCloseTag();
+				child = new XMLEntity().withType("img").withCloseTag();
 				child.withKeyValue(KEY_SRC, ref);
 			}
 		}
@@ -262,7 +274,7 @@ public class HTMLEntity implements BaseItem {
 		XMLEntity parent = null, child = null, firstChild = null;
 		for(int i=tags.length-1;i>=0;i--) {
 			child = parent;
-			parent = new XMLEntity().setType(tags[i]);
+			parent = new XMLEntity().withType(tags[i]);
 			if(child != null) {
 				parent.withChild(child);
 			} else {
@@ -306,7 +318,7 @@ public class HTMLEntity implements BaseItem {
 			}
 		}
 		if( styleElement == null) {
-			XMLEntity element = new XMLEntity().setType("style");
+			XMLEntity element = new XMLEntity().withType("style");
 			header.with(element);
 			styleElement = element;
 		}
@@ -335,7 +347,7 @@ public class HTMLEntity implements BaseItem {
 	}
 
 	public HTMLEntity withGraph(String graph, String path) {
-		XMLEntity script = new XMLEntity().setType(SCRIPT).withKeyValue("type", "text/javascript");
+		XMLEntity script = new XMLEntity().withType(SCRIPT).withKeyValue("type", "text/javascript");
 		StringBuilder sb=new StringBuilder();
 		sb.append("var json=");
 		sb.append( graph );
@@ -522,5 +534,28 @@ public class HTMLEntity implements BaseItem {
 	
 	public List<String> getConnectionHeaders(String key) {
 		return conenctionHeader.get(key);
+	}
+
+	public HTMLEntity withoutHeader(String string) {
+		if(header != null) {
+			for(int z=0;z<this.header.sizeChildren();z++) {
+				BaseItem child = this.header.getChild(z);
+				if(child instanceof XMLEntity == false) {
+					continue;
+				}
+				XMLEntity entity = (XMLEntity) child;
+				if(SCRIPT.equals(entity.getTag()) == false) {
+					continue;
+				}
+				Object key = entity.getValue(KEY_SRC);
+				if(key instanceof String && key != null) {
+					String k = (String) key;
+					if(k.endsWith(string)) {
+						this.header.withoutChild(entity);
+					}
+				}
+			}
+		}
+		return this;	
 	}
 }

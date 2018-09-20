@@ -25,6 +25,7 @@ THE SOFTWARE.
 */
 
 public class GraphImage extends GraphMember {
+	public static final String ACTOR="actor";
 	private GraphNode parentNode;
 
 	@Override
@@ -33,12 +34,12 @@ public class GraphImage extends GraphMember {
 		return this;
 	}
 
-	public GraphMember withParent(GraphNode value) {
+	public GraphImage withParent(GraphNode value) {
 		if (this.parentNode != value) {
 			GraphNode oldValue = this.parentNode;
 			if (this.parentNode != null) {
 				this.parentNode = null;
-				oldValue.without(this);
+				oldValue.remove(this);
 			}
 			this.parentNode = value;
 			if (value != null) {
@@ -51,5 +52,9 @@ public class GraphImage extends GraphMember {
 	@Override
 	public String toString() {
 		return "" + name;
+	}
+	
+	public static GraphImage createActor() {
+		return new GraphImage().with(ACTOR);
 	}
 }

@@ -193,6 +193,13 @@ public class FileBuffer extends Buffer {
 		}
 		return -1;
 	}
+	public static final int copyFile(String sourceFile, String targetfileName) {
+		if(sourceFile != null) {
+			ByteBuffer readFile = readBinaryFile(sourceFile);
+			return writeFile(targetfileName, readFile.array());
+		}
+		return -1;
+	}
 
 	public static final int writeFile(String fileName, byte[] data, byte flag) {
 		if(fileName == null || fileName.length()<1) {
@@ -214,6 +221,11 @@ public class FileBuffer extends Buffer {
 	public static final int writeFile(String fileName, CharSequence data) {
 		return writeFile(fileName, data, OVERRIDE);
 	}
+	
+	public static final int writeReourceFile(String fileName, String path) {
+		return writeFile(fileName, FileBuffer.readBinaryResource(path).array(), OVERRIDE);
+	}
+
 
 	public static final int writeFile(String fileName, byte[] data) {
 		return writeFile(fileName, data, OVERRIDE);
@@ -230,6 +242,30 @@ public class FileBuffer extends Buffer {
 					read = is.read(buffer);
 					if(read>0) {
 						sb.with(new String(buffer, 0, read, BaseItem.ENCODING));
+					}
+				} while (read>=0);
+			} catch (IOException e) {
+			} finally {
+				try {
+					is.close();
+				} catch (IOException e) {
+				}
+			}
+		}
+		return sb;
+	}
+	
+	public static ByteBuffer readBinaryResource(String file) {
+		InputStream is = IdMap.class.getResourceAsStream(file);
+		ByteBuffer sb = new ByteBuffer();
+		if(is != null){
+			final byte[] buffer = new byte[BUFFER];
+			int read;
+			try {
+				do {
+					read = is.read(buffer, 0, buffer.length);
+					if (read>0) {
+						sb.addBytes(buffer,  read, false);
 					}
 				} while (read>=0);
 			} catch (IOException e) {

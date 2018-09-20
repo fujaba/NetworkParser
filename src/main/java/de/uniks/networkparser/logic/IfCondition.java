@@ -2,6 +2,7 @@ package de.uniks.networkparser.logic;
 
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.graph.GraphMember;
+import de.uniks.networkparser.graph.GraphUtil;
 import de.uniks.networkparser.interfaces.LocalisationInterface;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.ParserCondition;
@@ -114,7 +115,7 @@ public class IfCondition implements ParserCondition, SendableEntityCreator {
 				if(evt instanceof SendableEntityCreator) {
 					GraphMember member = (GraphMember) ((SendableEntityCreator)evt).getValue(evt, TemplateResultFragment.PROPERTY_CURRENTMEMBER);
 					if(member != null) {
-						ObjectCondition oc = member.getRole();
+						ObjectCondition oc = GraphUtil.getRole(member);
 						if(oc != null) {
 							oc.update(notifyBuffer);
 						}
@@ -137,7 +138,7 @@ public class IfCondition implements ParserCondition, SendableEntityCreator {
 				if(evt instanceof SendableEntityCreator) {
 					GraphMember member = (GraphMember) ((SendableEntityCreator)evt).getValue(evt, TemplateResultFragment.PROPERTY_CURRENTMEMBER);
 					if(member != null) {
-						ObjectCondition oc = member.getRole();
+						ObjectCondition oc = GraphUtil.getRole(member);
 						if(oc != null) {
 							oc.update(notifyBuffer);
 						}

@@ -112,7 +112,7 @@ public abstract class JavaBridge implements ObjectCondition {
 	public HTMLEntity init(String type, String script) {
 		//		script = "classEditor = new ClassEditor(\"board\");";
 		HTMLEntity entity = new HTMLEntity();
-		entity.withScript(script, null);
+		entity.withScript(script);
 
 		if (CONTENT_TYPE_EXCLUDE.equals(type)) {
 			entity.withHeader("diagram.js");
@@ -121,7 +121,7 @@ public abstract class JavaBridge implements ObjectCondition {
 		}
 		else {
 			if(this.resourceHandler != null) {
-				entity.withScript(this.resourceHandler.readResource("graph/diagram.js"), entity.getHeader());
+				entity.withScript(entity.getHeader(), this.resourceHandler.readResource("graph/diagram.js"));
 				entity.withHeaderStyle(this.resourceHandler.readResource("graph/material.css"));
 				entity.withHeaderStyle(this.resourceHandler.readResource("graph/style.css"));
 			}

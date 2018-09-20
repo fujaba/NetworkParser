@@ -128,7 +128,7 @@ public class EMFTokener extends Tokener{
 		XMLEntity result = new XMLEntity();
 
 		String typetag = entity.getClass().getName().replaceAll("\\.", ":");
-		result.setType(typetag);
+		result.withType(typetag);
 
 		encodeChildren(entity, result, map);
 
@@ -202,7 +202,7 @@ public class EMFTokener extends Tokener{
 
 					parent.withChild(child);
 
-					child.setType(propertyName);
+					child.withType(propertyName);
 
 					String typetag = childValue.getClass().getName().replaceAll("\\.", ":");
 
@@ -215,7 +215,7 @@ public class EMFTokener extends Tokener{
 
 				parent.withChild(child);
 
-				child.setType(propertyName);
+				child.withType(propertyName);
 
 				String typetag = propertyValue.getClass().getName().replaceAll("\\.", ":");
 
@@ -771,7 +771,7 @@ public class EMFTokener extends Tokener{
 		if(clazz == null || root == null) {
 			return;
 		}
-		root.setType("packagedElement");
+		root.withType("packagedElement");
 		root.withKeyValue(XMI_ID, clazz.getId());
 		root.withKeyValue(NAME, clazz.getName());
 		root.withKeyValue("isAbstract", clazz.getModifier().has(Modifier.ABSTRACT));
@@ -822,9 +822,9 @@ public class EMFTokener extends Tokener{
 			return;
 		}
 		if(value instanceof Attribute) {
-			root.setType("ownedAttribute");
+			root.withType("ownedAttribute");
 		} else {
-			root.setType("ownedParameter");
+			root.withType("ownedParameter");
 		}
 		root.withKeyValue(XMI_TYPE, value.getType());
 		root.withKeyValue(XMI_ID, value.getName());
@@ -852,7 +852,7 @@ public class EMFTokener extends Tokener{
 		if(root == null || method == null) {
 			return;
 		}
-		root.setType("ownedOperation");
+		root.withType("ownedOperation");
 		root.withKeyValue(XMI_ID, method.getName());
 		root.withKeyValue(NAME, method.getName());
 		root.withKeyValue("visibility", method.getModifier());
@@ -891,7 +891,7 @@ public class EMFTokener extends Tokener{
 		if(root == null || assoc == null || assoc.getOther() == null) {
 			return;
 		}
-		root.setType("packagedElement");
+		root.withType("packagedElement");
 		root.withKeyValue(XMI_TYPE, assoc.getType());
 		root.withKeyValue(XMI_ID, assoc.getName());
 		root.withKeyValue(NAME, assoc.getName());
@@ -935,7 +935,7 @@ public class EMFTokener extends Tokener{
 			return;
 		}
 		String modelid="_modelid";
-		child.setType("eAnnotations");
+		child.withType("eAnnotations");
 		child.withKeyValue(XMI_ID, modelid);
 		child.withKeyValue("source", "Objing");
 		XMLEntity content = child.createChild("contents");

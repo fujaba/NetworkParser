@@ -141,7 +141,7 @@ public class Match extends GraphMember implements Comparable<Match>{
 			GraphMember oldValue = this.match;
 			if (oldValue != null) {
 				this.match = null;
-				oldValue.without(this);
+				oldValue.remove(this);
 			}
 			this.match = value;
 			if (value != null) {
