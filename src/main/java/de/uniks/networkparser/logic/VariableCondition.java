@@ -1,5 +1,7 @@
 package de.uniks.networkparser.logic;
 
+import java.util.Set;
+
 /*
 The MIT License
 
@@ -26,6 +28,7 @@ THE SOFTWARE.
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.graph.DataType;
+import de.uniks.networkparser.graph.GraphMember;
 import de.uniks.networkparser.interfaces.LocalisationInterface;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.ParserCondition;
@@ -63,6 +66,7 @@ public class VariableCondition implements ParserCondition{
 	//Variable = String
 	// VARIABLE = STRING
 	// vAriable = nix
+	// Variable#Function
 	public Object getValue(LocalisationInterface value) {
 		if(value instanceof SendableEntityCreator) {
 			SendableEntityCreator variables = (SendableEntityCreator) value;
@@ -94,6 +98,26 @@ public class VariableCondition implements ParserCondition{
 			}
 			if(object instanceof String) {
 				return replaceText(v, format, (String)object);
+			}
+			if(object instanceof Set<?> && format != null) {
+				// Check for Contains
+				Set<?> items = (Set<?>) object;
+				int endPos = format.indexOf(")");
+				String temp = null;
+				if(format.startsWith("contains(") && endPos>0) {
+					temp = format.substring(9, endPos);
+				}
+				if(temp != null) {
+					for(Object child :items) {
+						if(child instanceof GraphMember) {
+							GraphMember member = (GraphMember) child;
+							if(temp.equalsIgnoreCase(member.getName())){
+								return true;
+							}
+						}
+					}
+					return null;
+				}
 			}
 			if (object instanceof Boolean) {
 				return "" + object;

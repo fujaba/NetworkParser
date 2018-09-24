@@ -32,6 +32,7 @@ import de.uniks.networkparser.converter.EntityStringConverter;
 import de.uniks.networkparser.converter.GraphConverter;
 import de.uniks.networkparser.graph.GraphList;
 import de.uniks.networkparser.graph.GraphModel;
+import de.uniks.networkparser.graph.GraphUtil;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Converter;
 import de.uniks.networkparser.interfaces.Entity;
@@ -48,6 +49,8 @@ public class HTMLEntity implements BaseItem {
 	public static final String LINK="link";
 	public static final String KEY_HREF="href";
 	public static final String KEY_SRC="src";
+	public static final String GRAPH="Graph";
+	public static final String CLASSEDITOR="ClassEditor";
 	public static final String[] GRAPHRESOURCES=new String[] {"diagramstyle.css", "diagram.js", "dagre.min.js"};
 
 	private XMLEntity body = new XMLEntity().withType("body");
@@ -234,8 +237,8 @@ public class HTMLEntity implements BaseItem {
 				child.withKeyValue("type", "text/css");
 				child.withKeyValue(KEY_HREF, ref);
 			} else if(ext.equals(".js") ) {
-				child = new XMLEntity().withType(SCRIPT).withCloseTag();
-				child.withKeyValue(KEY_SRC, ref);
+				child = new XMLEntity().withType(SCRIPT);
+				child.withKeyValue(KEY_SRC, ref).withCloseTag();
 			} else if(IMAGEFORMAT.indexOf(" "+ext+" ")>=0) {
 				child = new XMLEntity().withType("img").withCloseTag();
 				child.withKeyValue(KEY_SRC, ref);
@@ -335,24 +338,28 @@ public class HTMLEntity implements BaseItem {
 	}
 
 	public HTMLEntity withGraph(GraphModel value, String resource) {
+		String graphPath = GraphUtil.getGraphPath(value);
+		if(GRAPH.equals(graphPath) == false && CLASSEDITOR.equals(graphPath)== false) {
+			graphPath = GRAPH;
+		}
 		String graph = value.toString(new GraphConverter());
-		return withGraph(graph, resource);
+		return withGraph(graph, resource, graphPath);
 	}
 	public HTMLEntity withGraph(Entity value) {
 		URL resource = GraphList.class.getResource("");
 		if(resource == null || value == null) {
 			return this;
 		}
-		return withGraph(value.toString(2), resource.toString());
+		return withGraph(value.toString(2), resource.toString(), GRAPH);
 	}
 
-	public HTMLEntity withGraph(String graph, String path) {
+	public HTMLEntity withGraph(String graph, String path, String editor) {
 		XMLEntity script = new XMLEntity().withType(SCRIPT).withKeyValue("type", "text/javascript");
 		StringBuilder sb=new StringBuilder();
 		sb.append("var json=");
 		sb.append( graph );
 		sb.append(";"+CRLF);
-		sb.append("new Graph(json).layout();");
+		sb.append("var np_"+editor +"= new "+editor+"(json).layout();");
 		script.withValue(sb.toString());
 		add(script);
 		if(path != null) {

@@ -62,7 +62,9 @@ public class Pos {
 			pos -= no*26;
 		}
 		buffer.with((char)(65+pos));
-		buffer.with(""+y);
+		if(y>0) {
+			buffer.with(""+y);
+		}
 		return buffer;
 	}
 

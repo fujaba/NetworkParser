@@ -5,12 +5,12 @@ import java.util.Iterator;
 import java.util.List;
 
 import de.uniks.networkparser.IdMap;
+import de.uniks.networkparser.ext.PatternCondition;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.list.SimpleIterator;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SimpleSet;
-import de.uniks.networkparser.logic.PatternCondition;
 
 public class Pattern implements Iterator<Object>, Iterable<Object>{
 	public static final String MODIFIER_SEARCH="search";

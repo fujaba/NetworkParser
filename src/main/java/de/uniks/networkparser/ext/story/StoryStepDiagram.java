@@ -93,7 +93,7 @@ public class StoryStepDiagram implements ObjectCondition {
 			}
 			// new diagram
 			GraphConverter graphConverter = new GraphConverter();
-			Entity objectModel = graphConverter.convertToJson(GraphTokener.OBJECT, jsonArray, true);
+			Entity objectModel = graphConverter.convertToJson(GraphTokener.OBJECTDIAGRAM, jsonArray, true);
 			element.withGraph(objectModel);
 		}
 		return true;
@@ -110,7 +110,7 @@ public class StoryStepDiagram implements ObjectCondition {
 	public GraphModel createUseCaseDiagram() {
 		GraphList useCase = new GraphList();
 		this.model = useCase;
-		useCase.withType(GraphTokener.OBJECT);
+		useCase.withType(GraphTokener.OBJECTDIAGRAM);
 		return model;
 	}
 	

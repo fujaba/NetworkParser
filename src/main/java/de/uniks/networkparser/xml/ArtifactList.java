@@ -142,7 +142,7 @@ public class ArtifactList extends SortedSet<ArtifactFile> {
 		JsonArray versions=new JsonArray();
 		json.add("versions", versions);
 		if(this.biggestRelease != null) {
-			json.add("update", this.biggestRelease.toPath()+this.biggestRelease.toFile());
+			json.add("update", this.biggestRelease.toPath()+this.biggestRelease.toFile(true));
 		}
 		for(ArtifactFile file : this) {
 			JsonObject jsonVersion = new JsonObject();

@@ -271,6 +271,10 @@ public class ExcelCell implements SendableEntityCreatorTag, EntityList{
 		}
 		return false;
 	}
+	
+	public static ExcelCell create(Object content) {
+		return new ExcelCell().withContent(content);
+	}
 
 	@Override
 	public boolean isComparator() {

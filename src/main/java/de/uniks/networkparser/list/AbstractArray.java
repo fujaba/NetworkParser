@@ -199,20 +199,12 @@ public abstract class AbstractArray<V> implements BaseItem {
 		return (flag & ALLOWEMPTYVALUE) != 0;
 	}
 
-	@SuppressWarnings("unchecked")
-	public <ST extends AbstractArray<V>> ST withAllowEmptyValue(boolean value) {
+	public BaseItem withAllowEmptyValue(boolean value) {
 		this.setFlag((byte) (this.flag | ALLOWEMPTYVALUE));
 		if (!value) {
 			this.setFlag((byte) (this.flag - ALLOWEMPTYVALUE));
 		}
-		return (ST) this;
-	}
-
-	public void setAllowEmptyValue(boolean value) {
-		this.setFlag((byte) (this.flag | ALLOWEMPTYVALUE));
-		if (!value) {
-			this.setFlag((byte) (this.flag - ALLOWEMPTYVALUE));
-		}
+		return this;
 	}
 
 	/**

@@ -21,6 +21,8 @@
 
 package de.uniks.networkparser.test.studyrightWithAssigments;
 
+import org.junit.Test;
+
 import de.uniks.networkparser.ext.ClassModel;
 import de.uniks.networkparser.ext.story.Story;
 import de.uniks.networkparser.ext.story.StoryStepSourceCode;
@@ -31,14 +33,17 @@ import de.uniks.networkparser.graph.DataType;
 import de.uniks.networkparser.graph.Feature;
 import de.uniks.networkparser.graph.Parameter;
 
-public class StudyRightWithAssignmentsModel {
-
+public class GenModel {
+	public boolean ENABLE=true;
 	/**
 	 * @see <a href=
 	 *      '../../../../../../../../doc/StudyRightWithAssignmentsClassGeneration.html'>StudyRightWithAssignmentsClassGeneration.html</a>
 	 */
-//	@Test
+	@Test
 	public void testStudyRightWithAssignmentsClassGeneration() {
+		if(ENABLE == false) {
+			return;
+		}
 		/*
 		 * This file will generate that necessary classes and class diagram for the
 		 * StudyRight with Assignments example in the Story Driven Modeling book
@@ -49,7 +54,7 @@ public class StudyRightWithAssignmentsModel {
 		// ============================================================
 		story.addText("1. generate class University");
 
-		StoryStepSourceCode code = story.addSourceCode(StudyRightWithAssignmentsModel.class,
+		StoryStepSourceCode code = story.addSourceCode(GenModel.class,
 				StoryStepSourceCode.CURRENTPOSITION);
 		ClassModel model = new ClassModel("org.sdmlib.test.examples.studyrightWithAssignments.model");
 
@@ -61,7 +66,7 @@ public class StudyRightWithAssignmentsModel {
 		// ============================================================
 		story.addText("2. generate class Student");
 
-		code = story.addSourceCode(StudyRightWithAssignmentsModel.class, StoryStepSourceCode.CURRENTPOSITION);
+		code = story.addSourceCode(GenModel.class, StoryStepSourceCode.CURRENTPOSITION);
 		Clazz studentClass = model.createClazz("Student").withAttribute("name", DataType.STRING)
 				.withAttribute("id", DataType.STRING).withAttribute("assignmentPoints", DataType.INT)
 				.withAttribute("motivation", DataType.INT).withAttribute("credits", DataType.INT);
@@ -73,7 +78,7 @@ public class StudyRightWithAssignmentsModel {
 		story.addText("3. add University --> Student association");
 
 		// Association universityToStudent =
-		code = story.addSourceCode(StudyRightWithAssignmentsModel.class, StoryStepSourceCode.CURRENTPOSITION);
+		code = story.addSourceCode(GenModel.class, StoryStepSourceCode.CURRENTPOSITION);
 		universityClass.withBidirectional(studentClass, "students", Association.MANY, "university", Association.ONE);
 		code.withEnd(StoryStepSourceCode.CURRENTPOSITION);
 
@@ -82,7 +87,7 @@ public class StudyRightWithAssignmentsModel {
 		// ============================================================
 		story.addText("4. add University --> Room association");
 
-		code = story.addSourceCode(StudyRightWithAssignmentsModel.class, StoryStepSourceCode.CURRENTPOSITION);
+		code = story.addSourceCode(GenModel.class, StoryStepSourceCode.CURRENTPOSITION);
 		Clazz roomClass = model.createClazz("Room").withAttribute("name", DataType.STRING)
 				.withAttribute("topic", DataType.STRING).withAttribute("credits", DataType.INT);
 
@@ -106,7 +111,7 @@ public class StudyRightWithAssignmentsModel {
 		// ============================================================
 		story.addText("5. add assignments:");
 
-		code = story.addSourceCode(StudyRightWithAssignmentsModel.class, StoryStepSourceCode.CURRENTPOSITION);
+		code = story.addSourceCode(GenModel.class, StoryStepSourceCode.CURRENTPOSITION);
 		Clazz assignmentClass = model.createClazz("Assignment").withAttribute("content", DataType.STRING)
 				.withAttribute("points", DataType.INT)
 				.withBidirectional(roomClass, "room", Association.ONE, "assignments", Association.MANY);
@@ -135,12 +140,12 @@ public class StudyRightWithAssignmentsModel {
 //		model.removeAllGeneratedCode("src/test/java");
 
 		model.setAuthorName("zuendorf");
-		code = story.addSourceCode(StudyRightWithAssignmentsModel.class, StoryStepSourceCode.CURRENTPOSITION);
+		code = story.addSourceCode(GenModel.class, StoryStepSourceCode.CURRENTPOSITION);
 //      model.generate("src/test/java"); // usually don't specify anything here, then it goes into src
 		code.withEnd(StoryStepSourceCode.CURRENTPOSITION);
 
 		story.dumpHTML();
-		model.getGenerator().withFeature(Feature.getStandAlone());
+//TODO TEST DUSPOTATUIONs		model.getGenerator().withFeature(Feature.getStandAlone().with(Feature.PATTERN));
 		model.getGenerator().testGeneratedCode("src/test/java");
 	}
 

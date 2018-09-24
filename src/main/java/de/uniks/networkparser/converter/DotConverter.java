@@ -224,9 +224,9 @@ public class DotConverter implements Converter {
 	}
 
 	private String getType(GraphEntity item, String type, boolean shortName) {
-		if (type.equals(GraphTokener.OBJECT)) {
+		if (type.equals(GraphTokener.OBJECTDIAGRAM)) {
 			return item.getId();
-		} else if (type.equals(GraphTokener.CLASS)) {
+		} else if (type.equals(GraphTokener.CLASSDIAGRAM)) {
 			return item.getName(shortName);
 		}
 		return "";
@@ -243,7 +243,7 @@ public class DotConverter implements Converter {
 		GraphList root = (GraphList) entity;
 		StringBuilder sb=new StringBuilder();
 		String graphType = "graph";
-		if(GraphTokener.OBJECT.equals(root.getType())) {
+		if(GraphTokener.OBJECTDIAGRAM.equals(root.getType())) {
 			sb.append(" ObjectDiagram {"+BaseItem.CRLF);
 		}else{
 			sb.append(" ClassDiagram {"+BaseItem.CRLF);
@@ -252,7 +252,7 @@ public class DotConverter implements Converter {
 		sb.append("   edge [fontsize = 10, fontname = \"Arial\"];"+BaseItem.CRLF);
 		sb.append("   compound=true;" + BaseItem.CRLF +BaseItem.CRLF);
 		boolean isObjectdiagram =false;
-		isObjectdiagram = GraphTokener.OBJECT.equals(root.getType());
+		isObjectdiagram = GraphTokener.OBJECTDIAGRAM.equals(root.getType());
 
 		for(GraphEntity node : root.getNodes()) {
 			sb.append(node.getName(false));
@@ -275,7 +275,7 @@ public class DotConverter implements Converter {
 			for(Attribute attribute : graphClazz.getAttributes()) {
 				// add attribute line
 				if(isObjectdiagram) {
-					childBuilder.append(BaseItem.CRLF+"<tr><td align='left'>"+attribute.getName() +" = "+attribute.getValue(GraphTokener.OBJECT, false)+"</td></tr>");
+					childBuilder.append(BaseItem.CRLF+"<tr><td align='left'>"+attribute.getName() +" = "+attribute.getValue(GraphTokener.OBJECTDIAGRAM, false)+"</td></tr>");
 				} else {
 					childBuilder.append(BaseItem.CRLF+"<tr><td align='left'>"+attribute.getName() +" : "+attribute.getType().getName(removePackage)+"</td></tr>");
 				}

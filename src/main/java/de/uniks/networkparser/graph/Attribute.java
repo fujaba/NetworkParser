@@ -78,8 +78,8 @@ public class Attribute extends Value {
 	}
 
 	public String getValue(String typ, boolean shortName) {
-		if (typ.equals(GraphTokener.OBJECT)) {
-			if(DataType.STRING == this.type && !this.value.startsWith("\"")){
+		if (typ.equals(GraphTokener.OBJECTDIAGRAM)) {
+			if(DataType.STRING == this.type && this.value != null && this.value.startsWith("\"") == false){
 				return "\""+ this.value + "\"";
 			}
 			return this.value;
@@ -102,9 +102,9 @@ public class Attribute extends Value {
 		sb.with(getName());
 		sb.with(':');
 		sb.with(getType().getName(true));
-		if(getValue(GraphTokener.OBJECT, false)!= null) {
+		if(getValue(GraphTokener.OBJECTDIAGRAM, false)!= null) {
 			sb.with('=');
-			sb.with(getValue(GraphTokener.OBJECT, false));
+			sb.with(getValue(GraphTokener.OBJECTDIAGRAM, false));
 		}
 		return sb.toString();
 	}

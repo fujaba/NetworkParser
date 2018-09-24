@@ -110,9 +110,9 @@ public class MavenXML {
 			if(groupPath) {
 				fileName = directory.getAbsoluteFile()+"/"+getSimpleName(artefect, classifier);
 			}else {
-				fileName = directory.getAbsoluteFile()+"/"+artefect.toFile(classifier);
+				fileName = directory.getAbsoluteFile()+"/"+artefect.toFile(groupPath, classifier);
 			}
-			FileBuffer.copyFile(artefect.getPath()+artefect.toFile(classifier), fileName);
+			FileBuffer.copyFile(artefect.getPath()+artefect.toFile(true, classifier), fileName);
 		}
 	}
 

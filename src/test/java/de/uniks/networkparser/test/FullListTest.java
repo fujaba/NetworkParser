@@ -36,6 +36,12 @@ public class FullListTest {
 		set.add(apple);
 		set.add(apple);
 		Assert.assertEquals(1, set.size());
+		
+		
+		SimpleKeyValueList<String, Integer> map = new SimpleKeyValueList<String, Integer>();
+		map.put("Hallo", 23);
+		map.put("World", 42);
+		Assert.assertEquals(2, map.size());
 	}
 
 	@Test

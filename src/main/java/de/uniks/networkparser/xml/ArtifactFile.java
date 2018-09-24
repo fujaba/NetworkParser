@@ -526,11 +526,13 @@ public class ArtifactFile implements SendableEntityCreatorTag, BaseItem, Compara
 		return this.classifier.add(value);
 	}
 
-	public String toFile(String... classifier) {
+	public String toFile(boolean groupPath, String... classifier) {
 		CharacterBuffer file = new CharacterBuffer();
 		file.with(this.artifactId);
-		file.with('-');
-		file.with(this.version);
+		if(groupPath) {
+			file.with('-');
+			file.with(this.version);
+		}
 		if(isSnapshot) {
 			file.with('-');
 			file.with(SNAPSHOT);

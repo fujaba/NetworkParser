@@ -32,12 +32,14 @@ import java.util.LinkedHashSet;
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
+import de.uniks.networkparser.list.SimpleSet;
 
 public class GenericCreator implements SendableEntityCreator {
 	private Object item;
 	private Class<?> clazz;
 	private String[] properties = null;
-	private static final LinkedHashSet<String> badProperties = new LinkedHashSet<String>();
+	private String id;
+	private static final SimpleSet<String> badProperties = new SimpleSet<String>();
 
 	public GenericCreator() {
 		badProperties.add("getClass");
@@ -49,6 +51,19 @@ public class GenericCreator implements SendableEntityCreator {
 	public GenericCreator(Object item) {
 		this();
 		withItem(item);
+	}
+	
+	public GenericCreator withId(String id) {
+		this.id = id;
+		return this;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public Object getItem() {
+		return item;
 	}
 
 	public GenericCreator withClass(String value) {

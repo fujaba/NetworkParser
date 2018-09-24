@@ -533,6 +533,36 @@ public class ReflectionLoader {
 		}
 		return null;
 	}
+	
+	public static boolean setField(String fieldName, Object item, Object value) {
+		Class<?> className = null;
+		Object itemObj = null;
+		if(item instanceof Class<?>) {
+			className = (Class<?>) item;
+		} else {
+			itemObj = item;
+			className = item.getClass();
+		}
+		Field field; 
+		try {
+			field = className.getField(fieldName);
+			field.setAccessible(true);
+			field.set(itemObj, value);
+			return true;
+		} catch (Exception e) {
+			try {
+				field = className.getDeclaredField(fieldName);
+				field.setAccessible(true);
+				field.set(itemObj, value);
+				return true;
+			} catch (Exception e2) {
+				if(logger != null) {
+					e.printStackTrace(logger);
+				}
+			}
+		}
+		return false;
+	}
 
 	public static Object call(Object item, String methodName, Object... arguments) {
 		return calling(item, methodName, true, null, arguments);

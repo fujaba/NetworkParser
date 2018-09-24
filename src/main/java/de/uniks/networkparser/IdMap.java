@@ -1163,14 +1163,12 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator>, Sendabl
 		return tokener.withMap(this).encode(object, map);
 	}
 
-
 	public GraphList toClassDiagram(Object object) {
 		GraphTokener tokener = new GraphTokener();
 		MapEntity map = new MapEntity(filter, flag, this, tokener);
 		map.withTokenerFlag(GraphTokener.FLAG_CLASS);
 		return tokener.withMap(this).encode(object, map);
 	}
-
 
 	public GraphPatternMatch getDiff(Object source, Object target, boolean ordered) {
 		byte flag = GraphTokener.FLAG_UNORDERD;
@@ -1407,7 +1405,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator>, Sendabl
 		String[] properties = filter.getProperties(creator);
 		if (properties != null) {
 			map.pushStack(className, entity, creator);
-			item.setAllowEmptyValue(filter.isFullSerialization());
+			item.withAllowEmptyValue(filter.isFullSerialization());
 			// Find ReferenceObject in Cache
 			boolean notNull = filter.isNullCheck() == false;
 			Object referenceObject = null;

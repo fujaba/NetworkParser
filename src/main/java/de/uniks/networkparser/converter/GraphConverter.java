@@ -25,7 +25,6 @@ THE SOFTWARE.
 */
 import java.util.ArrayList;
 
-import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.graph.Association;
 import de.uniks.networkparser.graph.AssociationSet;
@@ -118,17 +117,17 @@ public class GraphConverter implements Converter{
 	}
 
 	public Clazz parseJsonObject(GraphList root, Entity node) {
-		String id = node.getString(IdMap.ID);
+		String id = node.getString("id");
 		String typeId = id;
-		boolean isClassDiagram = GraphTokener.CLASS.equalsIgnoreCase(root.getType());
+		boolean isClassDiagram = GraphTokener.CLASSDIAGRAM.equalsIgnoreCase(root.getType());
 
 		if(isClassDiagram) {
-			typeId = node.getString(IdMap.CLASS);
+			typeId = node.getString(CLAZZ);
 			id = null;
 		}
 		Clazz graphNode = GraphUtil.getByObject(root, typeId, true);
 		if (graphNode == null) {
-			graphNode = new Clazz(node.getString(IdMap.CLASS));
+			graphNode = new Clazz(node.getString(CLAZZ));
 			if(id != null) {
 				GraphUtil.setId(graphNode, id);
 			}
@@ -184,7 +183,7 @@ public class GraphConverter implements Converter{
 								attribute = new Attribute(name, type);
 								attribute.withValue(entity.toString());
 							} else {
-								attribute.withValue(attribute.getValue(GraphTokener.OBJECT, false) + "," + entity.toString());
+								attribute.withValue(attribute.getValue(GraphTokener.OBJECTDIAGRAM, false) + "," + entity.toString());
 							}
 						}
 					}
@@ -216,11 +215,11 @@ public class GraphConverter implements Converter{
 	}
 
 	public Entity convertToJson(EntityList list, boolean removePackage) {
-		return convertToJson(GraphTokener.OBJECT, list, removePackage);
+		return convertToJson(GraphTokener.OBJECTDIAGRAM, list, removePackage);
 	}
 	
 	public Entity convertToJson(GraphModel root, boolean removePackage, boolean removeParameterNames) {
-		String type = GraphTokener.CLASS;
+		String type = GraphTokener.CLASSDIAGRAM;
 		String style = null;
 		GraphOptions options = null;
 		
@@ -413,7 +412,7 @@ public class GraphConverter implements Converter{
 		child.put(TYPE, edge.getOther().getType());
 		Entity sourceInfo = addInfo(edge, true);
 		Entity targetInfo = addInfo(edge.getOther(), true);
-		if (type.equals(GraphTokener.OBJECT)) {
+		if (type.equals(GraphTokener.OBJECTDIAGRAM)) {
 			sourceInfo.put(ID, source.getId() + " : " + source.getName(shortName));
 			targetInfo.put(ID, target.getId() + " : " + target.getName(shortName));
 			child.put(SOURCE, sourceInfo);
@@ -478,7 +477,7 @@ public class GraphConverter implements Converter{
 		for (GraphMember entity : children) {
 			Entity item = parseEntity(type, entity, shortName, removeParameterNames);
 			if (item != null) {
-				if (GraphTokener.CLASS.equals(type) && item.has(ID)) {
+				if (GraphTokener.CLASSDIAGRAM.equals(type) && item.has(ID)) {
 					String key = item.getString(ID);
 					if (ids.contains(key)) {
 						continue;
@@ -496,9 +495,9 @@ public class GraphConverter implements Converter{
 
 	public Entity parseEntity(String type, GraphMember entity, boolean shortName, boolean removeParameterNames) {
 		if (type == null) {
-			type = GraphTokener.OBJECT;
+			type = GraphTokener.OBJECTDIAGRAM;
 			if (entity.getName() == null) {
-				type = GraphTokener.CLASS;
+				type = GraphTokener.CLASSDIAGRAM;
 			}
 		}
 		Entity item = (Entity) factory.getNewList(true);
@@ -510,7 +509,7 @@ public class GraphConverter implements Converter{
 				item.put(MODIFIERS, clazz.getModifier());
 			}
 			item.put(TYPE, clazz.getType());
-			if (type == GraphTokener.OBJECT) {
+			if (type == GraphTokener.OBJECTDIAGRAM) {
 				item.put(ID,
 						clazz.getId() + " : " + clazz.getName(shortName));
 			} else {
@@ -575,9 +574,9 @@ public class GraphConverter implements Converter{
 			boolean shortName) {
 		EntityList result = (EntityList) factory.getNewList(false);
 		String splitter = "";
-		if (type.equals(GraphTokener.OBJECT)) {
+		if (type.equals(GraphTokener.OBJECTDIAGRAM)) {
 			splitter = "=";
-		} else if (type.equals(GraphTokener.CLASS)) {
+		} else if (type.equals(GraphTokener.CLASSDIAGRAM)) {
 			splitter = ":";
 		}
 		GraphSimpleSet children = GraphUtil.getChildren(list);
@@ -766,7 +765,7 @@ public class GraphConverter implements Converter{
 					if(matchNameMatch != null) {
 						fragment.withLineString(matchNameMatch+".with(\"" + newValue + "\");");
 					} else {
-						fragment.withLineString("model.getGenerator().findAttribute("+matchNameClazz+", "+clazz.getName()+"\", true).with(" + newValue + ");");
+						fragment.withLineString("model.getGenerator().findAttribute("+matchNameClazz+", \""+match.getName()+"\", true).with(" + newValue + ");");
 					}
 				} else if (match instanceof Association) {
 					if(Association.PROPERTY_CARDINALITY.equalsIgnoreCase(diff.getType()) && newValue instanceof String) {

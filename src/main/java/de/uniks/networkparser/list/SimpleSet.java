@@ -32,7 +32,7 @@ import de.uniks.networkparser.interfaces.ObjectCondition;
 
 public class SimpleSet<V> extends AbstractList<V> implements Set<V> {
 	public static final String PROPERTY="items";
-	private ObjectCondition listener;
+	protected ObjectCondition listener;
 
 	public SimpleSet() {
 		//empty
@@ -168,7 +168,7 @@ public class SimpleSet<V> extends AbstractList<V> implements Set<V> {
 	@Override
 	protected boolean fireProperty(String type, Object oldElement, Object newElement, Object beforeElement, int index, Object value) {
 		if(this.listener != null) {
-			this.listener.update(new SimpleEvent(type, this, PROPERTY, index, newElement, oldElement, value, beforeElement));
+			return this.listener.update(new SimpleEvent(type, this, PROPERTY, index, oldElement, newElement, value, beforeElement));
 		}
 		return super.fireProperty(type, oldElement, newElement, beforeElement, index, value);
 	}

@@ -31,7 +31,7 @@ import de.uniks.networkparser.list.SimpleMapEntry;
 import de.uniks.networkparser.list.SimpleSet;
 
 public class GraphList extends GraphModel {
-	private String type = GraphTokener.CLASS;
+	private String type = GraphTokener.CLASSDIAGRAM;
 	private String style;
 	private GraphOptions options;
 

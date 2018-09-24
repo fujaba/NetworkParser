@@ -389,13 +389,13 @@ public class GraphTest {
 
 		// May be 8 Asssocs and write 11
 		YUMLConverter converterYUML = new YUMLConverter();
-		GraphList root  = graphConverter.convertGraphList(GraphTokener.CLASS, jsonArray);
+		GraphList root  = graphConverter.convertGraphList(GraphTokener.CLASSDIAGRAM, jsonArray);
 
-		Entity converter = graphConverter.convertToJson(GraphTokener.CLASS, jsonArray, true);
+		Entity converter = graphConverter.convertToJson(GraphTokener.CLASSDIAGRAM, jsonArray, true);
 		showDebugInfos(converter, 1505, null);
 
 
-		root = graphConverter.convertGraphList(GraphTokener.CLASS, jsonArray);
+		root = graphConverter.convertGraphList(GraphTokener.CLASSDIAGRAM, jsonArray);
 		Assert.assertEquals("[Field|color:String;kind:String]-[Player|color:String;name:String],[Field]-[Pawn|color:String],[Ludo]-[Player],[Pawn]-[Player]",
 				converterYUML.convert(root, true));
 
@@ -428,7 +428,7 @@ public class GraphTest {
 		GraphConverter graphConverter = new GraphConverter();
 
 		// May be 8 Asssocs and write 11
-		Entity converter = graphConverter.convertToJson(GraphTokener.CLASS, jsonArray, true);
+		Entity converter = graphConverter.convertToJson(GraphTokener.CLASSDIAGRAM, jsonArray, true);
 		showDebugInfos(converter, 2143, null);
 	}
 
@@ -471,10 +471,10 @@ public class GraphTest {
 
 		JsonArray jsonArray = map.toJsonArray(root, Filter.createFull());
 		GraphConverter graphConverter = new GraphConverter();
-		Entity objectModel = graphConverter.convertToJson(GraphTokener.OBJECT, jsonArray, true);
+		Entity objectModel = graphConverter.convertToJson(GraphTokener.OBJECTDIAGRAM, jsonArray, true);
 		showDebugInfos(objectModel, 619, null);
 
-		Entity clazzModel = graphConverter.convertToJson(GraphTokener.CLASS, jsonArray, true);
+		Entity clazzModel = graphConverter.convertToJson(GraphTokener.CLASSDIAGRAM, jsonArray, true);
 		showDebugInfos(clazzModel, 464, null);
 		Assert.assertEquals(new CharacterBuffer().withLine("{").withLine("  \"type\":\"classdiagram\",")
 				.withLine("  \"nodes\":[").withLine("    {")
@@ -524,7 +524,7 @@ public class GraphTest {
 		JsonArray jsonArray = jsonIdMap.toJsonArray(ludo);
 		GraphConverter graphConverter = new GraphConverter();
 
-		Entity converter = graphConverter.convertToJson(GraphTokener.CLASS, jsonArray, true);
+		Entity converter = graphConverter.convertToJson(GraphTokener.CLASSDIAGRAM, jsonArray, true);
 		showDebugInfos(converter, 542, null);
 	}
 	@Test
@@ -629,7 +629,7 @@ public class GraphTest {
 		Assert.assertEquals(438, htmlEntity.toString(2).length());
 
 		DocEnvironment docEnvironment = new DocEnvironment();
-		GraphList model = new GraphList().withType(GraphTokener.CLASS);
+		GraphList model = new GraphList().withType(GraphTokener.CLASSDIAGRAM);
 
 		Clazz abstractArray = model.with(new Clazz("AbstractArray"));
 		abstractArray.createAttribute("elements", DataType.create("Object[]"));
@@ -670,7 +670,7 @@ public class GraphTest {
 		htmlEntity.withHeader("../src/main/resources/de/uniks/networkparser/graph/diagram.js");
 		htmlEntity.withHeader("../src/main/resources/de/uniks/networkparser/graph/dagre.min.js");
 
-		GraphList model = new GraphList().withType(GraphTokener.CLASS);
+		GraphList model = new GraphList().withType(GraphTokener.CLASSDIAGRAM);
 		Clazz uni = model.with(new Clazz("University"));
 		uni.createAttribute("name", DataType.STRING);
 		Clazz person = model.with(new Clazz("Person"));

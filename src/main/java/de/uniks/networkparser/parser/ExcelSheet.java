@@ -18,6 +18,8 @@ distributed on an "AS IS" basis, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, e
 See the Licence for the specific language governing permissions and limitations under the Licence.
 */
 import de.uniks.networkparser.Pos;
+import de.uniks.networkparser.buffer.CharacterBuffer;
+import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.list.SimpleList;
 
 /**
@@ -53,5 +55,77 @@ public class ExcelSheet extends SimpleList<ExcelRow>{
 			}
 		}
 		return new ExcelCell();
+	}
+
+	public ExcelRow createRow(Object parent) {
+		ExcelRow excelRow = new ExcelRow();
+		Pos pos = Pos.create(this.size(),0);
+		excelRow.withParent(parent);
+		excelRow.withName(pos.toTag().toString());
+		this.add(excelRow);
+		return excelRow;
+	}
+
+	public ExcelRow getRow(Object source) {
+		for(ExcelRow row : this) {
+			if(row.getParent()== source) {
+				return row;
+			}
+		}
+		return null;
+	}
+
+	public String toString() {
+		CharacterBuffer buffer = new CharacterBuffer();
+		int i;
+		SimpleList<SimpleList<ExcelCell>> cells = new SimpleList<SimpleList<ExcelCell>>();
+		boolean empty = false;
+		for(i=0;i<this.size();i++) {
+			ExcelRow row = this.get(i);
+			buffer.add(row.getName());
+			if(i+1<this.size()) {
+				buffer.add('\t');
+			}
+			SimpleList<ExcelCell> rowCells = row.getChildren();
+			if(cells == null) {
+				empty = true;
+			}
+			cells.add(rowCells);
+		}
+		if(empty) {
+			return buffer.toString();
+		}
+		buffer.add(BaseItem.CRLF);
+		if(cells.size()>0) {
+			int count = cells.get(0).size();
+			int rows = this.size();
+			for(int c=0;c < count;c++) {
+				for(i=0;i < rows;i++) {
+					SimpleList<ExcelCell> row = cells.get(i);
+					if(row == null || row.get(c) == null) {
+						break;
+					}
+					Object content = row.get(c).getContent();
+					if(content != null) {
+						buffer.add(content.toString());
+					}
+					if(i+1<rows) {
+						buffer.add('\t');
+					}
+				}
+				buffer.add(BaseItem.CRLF);
+			}
+		}
+		return buffer.toString();
+	}
+	
+	public int getRowIndex(ExcelRow row) {
+		int index = 0;
+		for(;index<this.size();index++) {
+			if(this.get(index) ==  row) {
+				return index;
+			}
+		}
+		return -1;
 	}
 }

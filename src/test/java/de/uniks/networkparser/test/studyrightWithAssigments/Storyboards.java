@@ -38,7 +38,7 @@ import de.uniks.networkparser.ext.story.StoryStepSourceCode;
 import de.uniks.networkparser.json.JsonArray;
 import de.uniks.networkparser.test.model.util.UniversityCreator;
 
-public class StudyRightWithAssignmentsStoryboards {
+public class Storyboards {
 	public boolean ENABLE;
 
 	/**

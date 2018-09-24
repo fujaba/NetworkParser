@@ -468,4 +468,12 @@ public class GraphUtil {
 		}
 		return 0;
 	}
+
+	public static final String getGraphPath(GraphModel value) {
+		return value.genPath;
+	}
+	
+	public static final void setGraphPath(GraphModel model, String value) {
+		model.genPath = value;
+	}
 }

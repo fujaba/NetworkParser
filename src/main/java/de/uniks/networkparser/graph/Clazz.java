@@ -29,7 +29,7 @@ import de.uniks.networkparser.list.SimpleSet;
 
 
 public class Clazz extends GraphEntity {
-	public static final String TYPE_CLASS = "class";
+	public static final String TYPE_CLASS = "clazz";
 	public static final String TYPE_ENUMERATION = "enum";
 	public static final String TYPE_INTERFACE = "interface";
 	public static final String TYPE_CREATOR = "creator";

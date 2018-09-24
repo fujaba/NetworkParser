@@ -41,9 +41,9 @@ public abstract class GraphEntity extends GraphMember {
 	}
 
 	protected String getTyp(String typ, boolean shortName) {
-		if (typ.equals(GraphTokener.OBJECT)) {
+		if (typ.equals(GraphTokener.OBJECTDIAGRAM)) {
 			return getId();
-		} else if (typ.equals(GraphTokener.CLASS)) {
+		} else if (typ.equals(GraphTokener.CLASSDIAGRAM)) {
 			return getName(shortName);
 		}
 		return "";

@@ -77,6 +77,8 @@ public class Feature implements Comparable<Feature> {
 	public static final Feature SETCLASS = new Feature("SETCLASS");
 	/* For Generate JUNIT */
 	public static final Feature JUNIT = new Feature("JUNIT");
+	/* For Generate PATTERN */
+	public static final Feature PATTERN = new Feature("PATTERN");
 
 	/* For Generate dynamic Values */
 	public static final Feature DYNAMICVALUES = new Feature("DYNAMICVALUES");
@@ -95,11 +97,11 @@ public class Feature implements Comparable<Feature> {
 	public static final Feature GENCODE = new Feature("GENCODE");
 	//EMFSTYLE,	// For Generate EMF-Style 
 	
-	public static final FeatureSet allGeneateFlags = new FeatureSet()
-			.with(PROPERTYCHANGESUPPORT, SERIALIZATION, SETCLASS, JUNIT,DYNAMICVALUES, CODESTYLE);
+	public static final FeatureSet allGenerateFlags = new FeatureSet()
+			.with(PROPERTYCHANGESUPPORT, SERIALIZATION, SETCLASS, JUNIT, PATTERN, DYNAMICVALUES, CODESTYLE);
 
 	public static Feature valueOf(String string) {
-		for(Feature feature : allGeneateFlags) {
+		for(Feature feature : allGenerateFlags) {
 			if(feature.getName().equals(string)) {
 				return feature.create();
 			}
@@ -116,7 +118,7 @@ public class Feature implements Comparable<Feature> {
 	}
 
 	public static FeatureSet getAll() {
-		FeatureSet result = new FeatureSet().with(PROPERTYCHANGESUPPORT, SERIALIZATION, SETCLASS.create(), CODESTYLE.create());
+		FeatureSet result = new FeatureSet().with(PROPERTYCHANGESUPPORT, SERIALIZATION, PATTERN, SETCLASS.create(), CODESTYLE.create());
 		return result;
 	}
 

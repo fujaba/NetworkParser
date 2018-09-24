@@ -39,6 +39,7 @@ import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.converter.GraphConverter;
+import de.uniks.networkparser.ext.generic.GenericCreator;
 import de.uniks.networkparser.ext.generic.JarValidator;
 import de.uniks.networkparser.ext.generic.ReflectionBlackBoxTester;
 import de.uniks.networkparser.ext.generic.ReflectionLoader;
@@ -50,12 +51,15 @@ import de.uniks.networkparser.ext.javafx.dialog.DialogBox;
 import de.uniks.networkparser.ext.petaf.Message;
 import de.uniks.networkparser.ext.petaf.SimpleTimerTask;
 import de.uniks.networkparser.ext.petaf.proxy.NodeProxyTCP;
+import de.uniks.networkparser.graph.GraphList;
+import de.uniks.networkparser.graph.GraphUtil;
 import de.uniks.networkparser.gui.EventTypes;
 import de.uniks.networkparser.gui.JavaViewAdapter;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.SimpleEventCondition;
 import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.list.SimpleKeyValueList;
+import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.xml.HTMLEntity;
 
 public class DiagramEditor extends JavaAdapter implements ObjectCondition {
@@ -64,24 +68,69 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 	private SimpleController controller;
 	private Object logic;
 	private SimpleEventCondition listener;
-	private JavaBridgeFX bridge;
 	private String file;
 	private final int WIDTH=900;
 	private final int HEIGHT=600;
 	private boolean autoClose=true;
 	private JSEditor jsEditor;
+	private IdMap map;
+	
+	private static SimpleList<GenericCreator> items = new SimpleList<GenericCreator>();
+	public static DiagramEditor edobs(Object item) {
+		if(item == null) {
+			return null;
+		}
+		String id =item.getClass().getName();
+		id+="."+System.identityHashCode(item);
+
+		GenericCreator itemCreator = null;
+		IdMap map = new IdMap();
+
+		for(GenericCreator creator : items) {
+			if(id.equals(creator.getId())) {
+				itemCreator = creator;
+			}
+			map.put(creator.getId(), creator.getItem(), false);
+		}
+		if(itemCreator == null) {
+			GenericCreator creator = new GenericCreator().withItem(item);
+			creator.withId(id);
+			items.add(creator);
+			map.put(creator.getId(), creator.getItem(), false);
+		}
+
+		DiagramEditor editor = new DiagramEditor();
+		editor.map = map;
+
+		HTMLEntity entity = new HTMLEntity();
+		GraphList list = map.toObjectDiagram(item);
+		GraphUtil.setGenPath(list, HTMLEntity.CLASSEDITOR);
+		entity.withGraph(list);
+		
+		System.out.println(entity);
+		
+//		editor.executeChange(value)
+		converting(editor, entity, null, false, false);
+		return editor;
+	}
 
 	public static boolean convertToPNG(HTMLEntity entity, String file, int... dimension) {
-		return converting(entity, file, true, true, dimension);
+		return converting(null, entity, file, true, true, dimension);
 	}
 	public static boolean convertToPNG(String url, String file, int...dimension) {
-		return converting(url, file, true, true, dimension);
+		return converting(null, url, file, true, true, dimension);
 	}
 	public static boolean convertToPNG(File localFile, String file, int...dimension) {
-		return converting(localFile, file, true, true, dimension);
+		return converting(null, localFile, file, true, true, dimension);
 	}
-	public static boolean converting(final Object entity, final String file, final boolean wait, final boolean autoClose, int...dimension) {
+	public static boolean converting(final DiagramEditor editor, final Object entity, final String file, final boolean wait, final boolean autoClose, int...dimension) {
 		final int width, height;
+		final DiagramEditor editorWindow;
+		if(editor == null) {
+			editorWindow = new DiagramEditor();
+		} else {
+			editorWindow = editor;
+		}
 		if(dimension != null && dimension.length>1) {
 			width = dimension[0];
 			height = dimension[1];
@@ -101,16 +150,15 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 			@Override
 			public void run() {
 				Object stage = ReflectionLoader.newInstance(ReflectionLoader.STAGE);
-				DiagramEditor editor = new DiagramEditor();
-				editor.type = DiagramEditor.TYPE_EDITOR;
+				editorWindow.type = DiagramEditor.TYPE_EDITOR;
 				if(file != null) {
-					editor.file = file;
-					editor.type = DiagramEditor.TYPE_CONTENT;
-					editor.autoClose = autoClose;
+					editorWindow.file = file;
+					editorWindow.type = DiagramEditor.TYPE_CONTENT;
+					editorWindow.autoClose = autoClose;
 				}
-				editor.creating(stage, entity, width, height);
-				editor.withIcon(IdMap.class.getResource("np.png").toString());
-				editor.show(wait);
+				editorWindow.creating(stage, entity, width, height);
+				editorWindow.withIcon(IdMap.class.getResource("np.png").toString());
+				editorWindow.show(wait);
 			}
 		};
 		if(wait) {
@@ -237,7 +285,7 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 				return;
 			}
 		}
-		if(converting(null, null, false, true) == false) {
+		if(converting(null, null, null, false, true) == false) {
 			// NO JAVAFX Found
 			NodeProxyTCP server = NodeProxyTCP.createServer(8080);
 			server.withListener(new DiagramEditor());
@@ -593,7 +641,7 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 		}
 		this.registerListener(this);
 		this.load(url);
-		JavaBridgeFX javaFX = new JavaBridgeFX(null, this, JavaBridgeFX.CONTENT_TYPE_NONE);
+		JavaBridgeFX javaFX = new JavaBridgeFX(this.map, this, JavaBridgeFX.CONTENT_TYPE_NONE);
 		if(width<0) {
 			width = WIDTH;
 		}
@@ -603,12 +651,12 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 		controller.withTitle("ClassdiagrammEditor");
 		controller.withSize(width, height);
 		controller.withErrorPath("errors");
-		this.bridge = javaFX;
+		this.owner = javaFX;
 		return this;
 	}
 
 	public void show(boolean waitFor) {
-		controller.show(bridge.getWebView(), waitFor, true);
+		controller.show(owner.getWebView(), waitFor, true);
 	}
 
 

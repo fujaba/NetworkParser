@@ -43,7 +43,7 @@ import de.uniks.networkparser.list.SimpleKeyValueList;
 
 public class GraphTokener extends Tokener {
 	/** The Constant for CLASS Diagramms. */
-	public static final String CLASS = "classdiagram";
+	public static final String CLASSDIAGRAM = "classdiagram";
 
 	public static final byte FLAG_CLASS = 0x01;
 //	public static final byte FLAG_OBJECT = 0x01;
@@ -53,13 +53,15 @@ public class GraphTokener extends Tokener {
 	public static final byte FLAG_UNORDERD = 0x00;
 
 	/** The Constant for OBJECT Diagramms. */
-	public static final String OBJECT = "objectdiagram";
+	public static final String OBJECTDIAGRAM = "objectdiagram";
+
+
 
 	private String getType(MapEntity map) {
 		if(map.isTokenerFlag(FLAG_CLASS) ){
-			return CLASS;
+			return CLASSDIAGRAM;
 		}
-		return OBJECT;
+		return OBJECTDIAGRAM;
 	}
 
 	@Override
@@ -157,7 +159,7 @@ public class GraphTokener extends Tokener {
 	}
 
 	public void highlightModel(JsonArray clazzDiagram, GraphList objectDiagram) {
-		GraphList list = new GraphConverter().convertGraphList(GraphTokener.CLASS, clazzDiagram);
+		GraphList list = new GraphConverter().convertGraphList(GraphTokener.CLASSDIAGRAM, clazzDiagram);
 		this.highlightModel(list, objectDiagram);
 	}
 	public GraphList highlightModel(GraphList clazzDiagram, GraphList objectDiagram) {

@@ -78,7 +78,7 @@ public class YUMLConverter implements Converter{
 			return;
 		}
 		if (type == null) {
-			type = GraphTokener.OBJECT;
+			type = GraphTokener.OBJECTDIAGRAM;
 		}
 		Iterator<?> iterator = association.iterator();
 		while (iterator.hasNext()) {
@@ -88,7 +88,7 @@ public class YUMLConverter implements Converter{
 			}
 			Association element = (Association) entry;
 			Association other = element.getOther();
-			if(GraphTokener.CLASS.equals(type)) {
+			if(GraphTokener.CLASSDIAGRAM.equals(type)) {
 				if ( GraphUtil.containsClazzAssociation(visited, element, other)) {
 					continue;
 				}
@@ -136,14 +136,14 @@ public class YUMLConverter implements Converter{
 			visited.add(clazzEntity);
 		}
 		if (type == null) {
-			type = GraphTokener.OBJECT;
+			type = GraphTokener.OBJECTDIAGRAM;
 			if (clazzEntity.getName(false) == null) {
-				type = GraphTokener.CLASS;
+				type = GraphTokener.CLASSDIAGRAM;
 			}
 		}
 
 		StringBuilder sb = new StringBuilder("[");
-		if (type == GraphTokener.OBJECT) {
+		if (type == GraphTokener.OBJECTDIAGRAM) {
 			sb.append(clazzEntity.getId());
 			sb.append(" : ");
 		}
@@ -163,9 +163,9 @@ public class YUMLConverter implements Converter{
 		boolean second=false;
 		if (i.hasNext()) {
 			String splitter = "";
-			if (type.equals(GraphTokener.OBJECT)) {
+			if (type.equals(GraphTokener.OBJECTDIAGRAM)) {
 				splitter = "=";
-			} else if (type.equals(GraphTokener.CLASS)) {
+			} else if (type.equals(GraphTokener.CLASSDIAGRAM)) {
 				splitter = ":";
 			}
 
