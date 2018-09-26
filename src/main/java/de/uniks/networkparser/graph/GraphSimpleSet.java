@@ -54,7 +54,8 @@ public class GraphSimpleSet extends SimpleSet<GraphMember> {
 		if(!(a instanceof GraphMember)) {
 			return a.equals(b);
 		}
-		String idA = ((GraphMember)a).getName();
+		
+		String idA = ((GraphMember)a).getFullId();
 		if(idA==null) {
 			return a.equals(b);
 		}
@@ -62,7 +63,7 @@ public class GraphSimpleSet extends SimpleSet<GraphMember> {
 		if(b instanceof String) {
 			idB = (String)b;
 		}else {
-			idB = ((GraphMember)b).getName();
+			idB = ((GraphMember)b).getFullId();
 		}
 		return idA.equalsIgnoreCase(idB);
 	}

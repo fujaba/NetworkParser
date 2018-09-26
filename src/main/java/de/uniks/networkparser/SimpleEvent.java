@@ -88,7 +88,7 @@ public final class SimpleEvent extends PropertyChangeEvent {
 	 * @param model		the Model
 	 * @param newValue	New Element
 	 * @param filter	The Filter of Getter 
-	 * @param before	Value of BeforeElement of List
+	 * @return new SimpleEvent
 	 */
 	public static SimpleEvent create(Object source, int index, Object newCollection, Object model, Object newValue, Object filter) {
 		SimpleEvent evt = new SimpleEvent(source, "createPattern", model, newValue);

@@ -125,7 +125,7 @@ public class PatternCondition implements ObjectCondition{
 				for(Object child : set) {
 					
 				}
-				ldmkfnkldjsn
+//				ldmkfnkldjsn
 				return true;
 			}else if(SimpleSet.PROPERTY.equals(event.getPropertyName())) {
 				// NOW ADD SOME ITEM

@@ -57,4 +57,9 @@ public class AssociationSet extends SimpleSet<Association> {
 		}
 		return false;
 	}
+	
+	@Override
+	public Association[] toArray() {
+		return super.toArray(new Association[size()]);
+	}
 }

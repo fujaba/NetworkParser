@@ -67,6 +67,7 @@ public interface Entity extends BaseItem{
 	/**
 	 * Activate Allow Empty Value
 	 * @param allow is Empty Value (NULL) Allow
+	 * @return The BaseItem
 	 */
 	public BaseItem withAllowEmptyValue(boolean allow);
 

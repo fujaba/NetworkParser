@@ -280,4 +280,12 @@ public abstract class GraphEntity extends GraphMember {
 		super.withChildren(modifier);
 		return this;
 	}
+	
+	@Override
+	protected String getFullId() {
+		if(this.id != null) {
+			return this.id+" : "+super.getFullId();
+		}
+		return super.getFullId();
+	}
 }

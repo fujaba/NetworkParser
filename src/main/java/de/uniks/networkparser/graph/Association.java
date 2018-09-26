@@ -369,20 +369,20 @@ public class Association extends GraphMember {
 		if (parentNode == null) {
 			sb.with("[]");
 		} else if (parentNode instanceof GraphMember) {
-			sb.with(((GraphMember) parentNode).getName());
+			sb.with(((GraphMember) parentNode).getFullId());
 		} else if (parentNode instanceof GraphSimpleSet) {
 			GraphSimpleSet collection = (GraphSimpleSet) parentNode;
 			if (collection.size() < 1) {
 				return;
 			}
 			if (collection.size() == 1) {
-				sb.with(collection.get(0).getName());
+				sb.with(collection.get(0).getFullId());
 				return;
 			}
 			sb.with("[");
-			sb.with(collection.get(0).getName());
+			sb.with(collection.get(0).getFullId());
 			for (int i = 1; i < collection.size(); i++) {
-				sb.with("," + collection.get(1).getName());
+				sb.with("," + collection.get(1).getFullId());
 			}
 			sb.with("]");
 		}
@@ -431,5 +431,10 @@ public class Association extends GraphMember {
 	public Association with(Annotation value) {
 		withAnnotation(value);
 		return this;
+	}
+	
+	@Override
+	protected String getFullId() {
+		return toString();
 	}
 }

@@ -47,6 +47,7 @@ task compileJava16(type: JavaCompile) {
 	sourceCompatibility = '1.6'
 	targetCompatibility = '1.6'
 	classpath = files('build/classes/main16')
+	options.compilerArgs << "-Xlint:-options"
 }
 task compileJava17(type: JavaCompile) {
 	source = fileTree(dir: 'src', exclude: ['**/test/**'])
@@ -54,6 +55,7 @@ task compileJava17(type: JavaCompile) {
 	sourceCompatibility = '1.7'
 	targetCompatibility = '1.7'
 	classpath = files('build/classes/main17')
+	options.compilerArgs << "-Xlint:-options"
 }
 
 jar{

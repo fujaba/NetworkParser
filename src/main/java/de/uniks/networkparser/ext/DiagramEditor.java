@@ -51,12 +51,15 @@ import de.uniks.networkparser.ext.javafx.dialog.DialogBox;
 import de.uniks.networkparser.ext.petaf.Message;
 import de.uniks.networkparser.ext.petaf.SimpleTimerTask;
 import de.uniks.networkparser.ext.petaf.proxy.NodeProxyTCP;
+import de.uniks.networkparser.graph.Association;
+import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.GraphList;
 import de.uniks.networkparser.graph.GraphUtil;
 import de.uniks.networkparser.gui.EventTypes;
 import de.uniks.networkparser.gui.JavaViewAdapter;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.ObjectCondition;
+import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.SimpleEventCondition;
 import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.list.SimpleKeyValueList;
@@ -76,38 +79,78 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 	private JSEditor jsEditor;
 	private IdMap map;
 	
-	private static SimpleList<GenericCreator> items = new SimpleList<GenericCreator>();
 	private static DiagramEditor editor;
-	public static DiagramEditor edobs(Object item) {
-		if(item == null) {
+	public static DiagramEditor edobs(Object... items) {
+		return edobs(false, items);
+	}
+	public static DiagramEditor edobs(boolean all, Object... items) {
+		if(items == null) {
 			return null;
 		}
-		String id =item.getClass().getSimpleName();
-		id+="."+System.identityHashCode(item);
-
-		GenericCreator itemCreator = null;
-		IdMap map = new IdMap();
-
-		for(GenericCreator creator : items) {
-			if(id.equals(creator.getId())) {
-				itemCreator = creator;
+		if(editor == null) {
+			editor = new DiagramEditor();
+			editor.type = TYPE_EDOBS;
+		}
+		if(editor.map == null) {
+			for(Object child : items) {
+				if(child instanceof IdMap) {
+					editor.map = (IdMap) child;
+					break;
 			}
-			map.put(creator.getId(), creator.getItem(), false);
 		}
-		if(itemCreator == null) {
-			GenericCreator creator = new GenericCreator().withItem(item);
-			creator.withId(id);
-			items.add(creator);
-			map.put(creator.getId(), creator.getItem(), false);
-			map.withCreator(creator);
+		if(editor.map == null)
+			editor.map = new IdMap();
 		}
-
-		DiagramEditor editor = new DiagramEditor();
-		editor.type = TYPE_EDOBS;
-		editor.map = map;
+		
+		for(Object child : items) {
+			if(child instanceof IdMap || child == null) {
+				continue;
+			}
+			SendableEntityCreator creator = editor.map.getCreatorClass(child);
+			if(creator == null) {
+				String id =child.getClass().getSimpleName();
+				id+="."+System.identityHashCode(child);
+				creator = new GenericCreator().withItem(child).withId(id);
+				editor.map.put(id, child, false);
+				editor.map.withCreator(creator);
+			} else if(editor.map.getId(child) == null) {
+				// Ups No ID
+				String id =child.getClass().getSimpleName();
+				id+="."+System.identityHashCode(child);
+				editor.map.put(id, child, false);
+			}
+		}
 
 		HTMLEntity entity = new HTMLEntity();
-		GraphList list = map.toObjectDiagram(item);
+		GraphList list = editor.map.toObjectDiagram(items[0]); // TRY IT
+		if(!all) {
+			SimpleList<String> ids=new SimpleList<String>();
+			for(Object item : items) {
+				String id = editor.map.getId(item);
+				ids.add(id);
+			}
+			Clazz[] array = list.getClazzes().toArray();
+			SimpleList<Clazz> foundClazz=new SimpleList<Clazz>();
+			for(Clazz clazz : array) {
+				if(ids.contains(clazz.getId()) == false) {
+					list.remove(clazz);
+					foundClazz.add(clazz);
+				}
+			}
+			Association[] assocs = list.getAssociations().toArray();
+			for(Association assoc : assocs) {
+				boolean found=false;
+				for(Clazz clazz : foundClazz) {
+					if(assoc.getClazz() == clazz || assoc.getOtherClazz() == clazz) {
+						found = true;
+						break;
+					}
+				}
+				if(found) {
+					list.remove(assoc);
+				}
+			}
+		}
 		GraphUtil.setGenPath(list, HTMLEntity.CLASSEDITOR);
 		FileBuffer resourceHandler = new FileBuffer();
 		entity.withScript(entity.getHeader(), resourceHandler.readResource("graph/diagram.js"));
@@ -121,12 +164,8 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 		sb.append(";"+BaseItem.CRLF);
 		sb.append("window['editor'] = new ClassEditor(json).layout();");
 		sb.append("window['editor'].registerListener();");
-//		script.withValue(sb.toString());
-		
 		entity.withScript(sb.toString());
 		
-//		entity.withGraph(list);
-//		System.out.println(entity);
 		String string = null;
 		try {
 			string = new File("neu.html").toURI().toURL().toString();
@@ -134,25 +173,7 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 			e.printStackTrace();
 		}
 		FileBuffer.writeFile("neu.html", entity.toString());
-//		converting(editor, entity, null, false, false);
 		converting(editor, string, null, false, false);
-		
-		Runnable runLater = new Runnable() {
-			
-			@Override
-			public void run() {
-				editor.enableDebug();
-//				WebView webView2 = (WebView) editor.webView;
-//				StringBuilder sb = new StringBuilder();
-//				sb.append("var json=");
-//				sb.append( list.toString(new GraphConverter()) );
-//				sb.append(";"+BaseItem.CRLF);
-//				sb.append("new ClassEditor(json).layout();");
-//				webView2.getEngine().executeScript(sb.toString());
-			}
-		};
-		
-		JavaAdapter.executeAndWait(runLater);
 		return editor;
 	}
 
