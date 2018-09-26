@@ -55,6 +55,7 @@ import de.uniks.networkparser.graph.GraphList;
 import de.uniks.networkparser.graph.GraphUtil;
 import de.uniks.networkparser.gui.EventTypes;
 import de.uniks.networkparser.gui.JavaViewAdapter;
+import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.SimpleEventCondition;
 import de.uniks.networkparser.json.JsonObject;
@@ -76,11 +77,12 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 	private IdMap map;
 	
 	private static SimpleList<GenericCreator> items = new SimpleList<GenericCreator>();
+	private static DiagramEditor editor;
 	public static DiagramEditor edobs(Object item) {
 		if(item == null) {
 			return null;
 		}
-		String id =item.getClass().getName();
+		String id =item.getClass().getSimpleName();
 		id+="."+System.identityHashCode(item);
 
 		GenericCreator itemCreator = null;
@@ -97,20 +99,60 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 			creator.withId(id);
 			items.add(creator);
 			map.put(creator.getId(), creator.getItem(), false);
+			map.withCreator(creator);
 		}
 
 		DiagramEditor editor = new DiagramEditor();
+		editor.type = TYPE_EDOBS;
 		editor.map = map;
 
 		HTMLEntity entity = new HTMLEntity();
 		GraphList list = map.toObjectDiagram(item);
 		GraphUtil.setGenPath(list, HTMLEntity.CLASSEDITOR);
-		entity.withGraph(list);
+		FileBuffer resourceHandler = new FileBuffer();
+		entity.withScript(entity.getHeader(), resourceHandler.readResource("graph/diagram.js"));
+		entity.withScript(entity.getHeader(), resourceHandler.readResource("graph/dagre.min.js"));
+		entity.withStyle(resourceHandler.readResource("graph/diagramstyle.css"));
+		String graph = list.toString(new GraphConverter());
 		
-		System.out.println(entity);
+		StringBuilder sb=new StringBuilder();
+		sb.append("var json=");
+		sb.append( graph );
+		sb.append(";"+BaseItem.CRLF);
+		sb.append("window['editor'] = new ClassEditor(json).layout();");
+		sb.append("window['editor'].registerListener();");
+//		script.withValue(sb.toString());
 		
-//		editor.executeChange(value)
-		converting(editor, entity, null, false, false);
+		entity.withScript(sb.toString());
+		
+//		entity.withGraph(list);
+//		System.out.println(entity);
+		String string = null;
+		try {
+			string = new File("neu.html").toURI().toURL().toString();
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		}
+		FileBuffer.writeFile("neu.html", entity.toString());
+//		converting(editor, entity, null, false, false);
+		converting(editor, string, null, false, false);
+		
+		Runnable runLater = new Runnable() {
+			
+			@Override
+			public void run() {
+				editor.enableDebug();
+//				WebView webView2 = (WebView) editor.webView;
+//				StringBuilder sb = new StringBuilder();
+//				sb.append("var json=");
+//				sb.append( list.toString(new GraphConverter()) );
+//				sb.append(";"+BaseItem.CRLF);
+//				sb.append("new ClassEditor(json).layout();");
+//				webView2.getEngine().executeScript(sb.toString());
+			}
+		};
+		
+		JavaAdapter.executeAndWait(runLater);
 		return editor;
 	}
 
@@ -128,6 +170,7 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 		final DiagramEditor editorWindow;
 		if(editor == null) {
 			editorWindow = new DiagramEditor();
+			editorWindow.type = DiagramEditor.TYPE_EDITOR;
 		} else {
 			editorWindow = editor;
 		}
@@ -150,7 +193,6 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 			@Override
 			public void run() {
 				Object stage = ReflectionLoader.newInstance(ReflectionLoader.STAGE);
-				editorWindow.type = DiagramEditor.TYPE_EDITOR;
 				if(file != null) {
 					editorWindow.file = file;
 					editorWindow.type = DiagramEditor.TYPE_CONTENT;
@@ -359,6 +401,7 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 
 	@Override
 	public boolean update(Object value) {
+		System.out.println(value);
 		if(value ==null) {
 			return false;
 		}
@@ -368,13 +411,18 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 		if(value instanceof SimpleEvent) {
 			SimpleEvent evt = (SimpleEvent) value;
 			if(JavaViewAdapter.STATE.equalsIgnoreCase(evt.getNewValue().getClass().getName())) {
+				if(evt.getNewValue().toString().equals(JavaViewAdapter.FAILED)) {
+					System.err.println(evt);
+				}
 				if(evt.getNewValue().toString().equals(JavaViewAdapter.SUCCEEDED)) {
 					Object win = super.executeScript("window", false);
-					ReflectionLoader.call(win, "setMember", String.class, "java", Object.class, this);
+					ReflectionLoader.call(win, "setMember", String.class, "JavaBridge", Object.class, this);
 					this.changed(evt);
 
-					// Load Editor
-					super.executeScript("window['editor'] = new ClassEditor(\"board\");", false);
+					if(TYPE_EDITOR.equalsIgnoreCase(type)) {
+						// Load Editor
+						super.executeScript("window['editor'] = new ClassEditor(\"board\");", false);
+					}
 				}
 				return true;
 			}

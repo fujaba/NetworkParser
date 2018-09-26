@@ -24,7 +24,6 @@ public class ExcelRow implements Iterable<ExcelCell>{
 	private SimpleList<ExcelCell> children;
 	private Object parent;
 	private String name;
-	private int count;
 
 	public ExcelRow withName(String name) {
 		this.name = name;
@@ -117,17 +116,5 @@ public class ExcelRow implements Iterable<ExcelCell>{
 			children.with(cell);
 		}
 		return this;
-	}
-
-	public int getCount() {
-		return count;
-	}
-
-	public boolean setElementCount(int value) {
-		if(value != this.count) {
-			this.count = value;
-			return true;
-		}
-		return false;
 	}
 }

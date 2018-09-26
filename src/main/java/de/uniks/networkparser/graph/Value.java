@@ -1,5 +1,7 @@
 package de.uniks.networkparser.graph;
 
+import de.uniks.networkparser.EntityUtil;
+
 /*
 NetworkParser
 The MIT License
@@ -28,6 +30,7 @@ public abstract class Value extends GraphMember {
 	public static final String PROPERTY_INITIALIZATION = "initialization";
 	public static final String PROPERTY_TYPE = "type";
 	public static final String PROPERTY_TYPECLAZZ = "typeClazz";
+	public static final String PROPERTY_NAMEGETTER = "namegetter";
 
 	protected DataType type = null;
 	protected String value = null;
@@ -64,6 +67,12 @@ public abstract class Value extends GraphMember {
 				}
 				return dataType.getClazz();
 			}
+		}
+		if(PROPERTY_NAMEGETTER.equalsIgnoreCase(attribute)) {
+			if("boolean".equals(this.type.getName(true))) {
+				return "is"+EntityUtil.upFirstChar(this.name);
+			}
+			return "get"+EntityUtil.upFirstChar(this.name);
 		}
 		return super.getValue(attribute);
 	}

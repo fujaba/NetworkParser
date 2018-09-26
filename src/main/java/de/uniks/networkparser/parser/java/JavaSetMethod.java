@@ -8,13 +8,12 @@ public class JavaSetMethod extends Template {
 		this.type = METHOD;
 		this.withTemplate(
 				"{{#foreach {{parameter}}}}" +
-				   "{{#if {{#AND}}{{item.typeClazz.type}}==class {{file.member.name}}{{#ENDAND}}}}" +
-				         "{{#import {{item.type(false)}}}}" +
-				   "{{#endif}}" +
+					"{{#if {{#AND}}{{item.typeClazz.type}}==class {{file.member.name}}{{#ENDAND}}}}" +
+						"{{#import {{item.type(false)}}}}" +
+					"{{#endif}}" +
 				"{{#endfor}}" +
-				"   {{visibility}} {{modifiers} }{{file.member.name}}Set {{name}}{{parameterName}}",
-				"   {",
-				"      return {{file.member.name}}Set.EMPTY_SET;",
-				"   }","");
+				"	{{visibility}} {{modifiers} }{{file.member.name}}Set {{name}}{{parameterName}} {",
+				"		return {{file.member.name}}Set.EMPTY_SET;",
+				"	}","");
 	}
 }

@@ -887,7 +887,12 @@ public class Clazz extends GraphEntity {
 			return buffer.toString();
 		}
 		if(PROPERTY_TYPE.equalsIgnoreCase(attribute)) {
-			return this.getType();
+			String value = this.getType();
+			if(Clazz.TYPE_CLASS.equals(value)) {
+				// SONDERFALL FOR CLAZZ
+				return "class";
+			}
+			return value;
 		}
 		if(PROPERTY_SUPERCLAZZ.equalsIgnoreCase(attribute)) {
 			ClazzSet clazzes;

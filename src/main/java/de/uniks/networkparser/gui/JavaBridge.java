@@ -122,8 +122,8 @@ public abstract class JavaBridge implements ObjectCondition {
 		else {
 			if(this.resourceHandler != null) {
 				entity.withScript(entity.getHeader(), this.resourceHandler.readResource("graph/diagram.js"));
-				entity.withHeaderStyle(this.resourceHandler.readResource("graph/material.css"));
-				entity.withHeaderStyle(this.resourceHandler.readResource("graph/style.css"));
+				entity.withStyle(this.resourceHandler.readResource("graph/material.css"));
+				entity.withStyle(this.resourceHandler.readResource("graph/style.css"));
 			}
 		}
 		return entity;

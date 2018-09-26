@@ -101,7 +101,7 @@ public class HTMLEntity implements BaseItem {
 	}
 	public HTMLEntity withScript(XMLEntity parentNode, CharSequence... values) {
 		if(values != null) {
-			CharacterBuffer content=new CharacterBuffer();;
+			CharacterBuffer content=new CharacterBuffer();
 			if(values.length>0) {
 				content.with(values[0]);
 			}
@@ -138,9 +138,15 @@ public class HTMLEntity implements BaseItem {
 		return node;
 	}
 
-	public HTMLEntity withHeaderStyle(CharSequence value) {
+	public HTMLEntity withStyle(CharSequence value) {
 		if(value != null) {
-			XMLEntity headerChild = new XMLEntity().withType("style").withValue(value.toString());
+			String style = value.toString();
+			XMLEntity headerChild;
+			if(style.endsWith(".css")) {
+				headerChild = getChild(style);
+			} else {
+				headerChild = new XMLEntity().withType("style").withValue(value.toString());
+			}
 			this.header.with(headerChild);
 		}
 		return this;
@@ -359,7 +365,7 @@ public class HTMLEntity implements BaseItem {
 		sb.append("var json=");
 		sb.append( graph );
 		sb.append(";"+CRLF);
-		sb.append("var np_"+editor +"= new "+editor+"(json).layout();");
+		sb.append("window['editor'] = new "+editor+"(json).layout();");
 		script.withValue(sb.toString());
 		add(script);
 		if(path != null) {
@@ -544,18 +550,29 @@ public class HTMLEntity implements BaseItem {
 	}
 
 	public HTMLEntity withoutHeader(String string) {
-		if(header != null) {
+		if(header != null && string != null) {
+			String ext = null;
+			int pos = string.lastIndexOf(".");
+			if(pos>0) {
+				ext = string.substring(pos).toLowerCase();
+			}
+			if(ext == null) {
+				return this;
+			}
 			for(int z=0;z<this.header.sizeChildren();z++) {
 				BaseItem child = this.header.getChild(z);
 				if(child instanceof XMLEntity == false) {
 					continue;
 				}
 				XMLEntity entity = (XMLEntity) child;
-				if(SCRIPT.equals(entity.getTag()) == false) {
-					continue;
+				Object key = null;
+				if(ext.equals(".js") && SCRIPT.equals(entity.getTag())) {
+					key = entity.getValue(KEY_SRC);
 				}
-				Object key = entity.getValue(KEY_SRC);
-				if(key instanceof String && key != null) {
+				if(ext.equals(".css") && LINK.equals(entity.getTag())) {
+					key = entity.getValue(KEY_HREF);
+				}
+				if(key != null && key instanceof String) {
 					String k = (String) key;
 					if(k.endsWith(string)) {
 						this.header.withoutChild(entity);

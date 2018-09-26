@@ -1,7 +1,6 @@
 package de.uniks.networkparser;
 
 import java.beans.PropertyChangeEvent;
-
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
@@ -80,6 +79,24 @@ public final class SimpleEvent extends PropertyChangeEvent {
 		this.beforeElement = before;
 		this.value = value;
 	}
+	
+	/**
+	 * Constructor for example Event of List
+	 * @param source	List Container
+	 * @param index		is the Index of EventEntity(List)
+	 * @param newCollection	the new Collection
+	 * @param model		the Model
+	 * @param newValue	New Element
+	 * @param filter	The Filter of Getter 
+	 * @param before	Value of BeforeElement of List
+	 */
+	public static SimpleEvent create(Object source, int index, Object newCollection, Object model, Object newValue, Object filter) {
+		SimpleEvent evt = new SimpleEvent(source, "createPattern", model, newValue);
+		evt.depth = index;
+		evt.beforeElement = newCollection;
+		evt.value = filter;
+		return evt;
+	}
 
 	public int getIndex() {
 		return depth;
@@ -123,10 +140,10 @@ public final class SimpleEvent extends PropertyChangeEvent {
 		return SendableEntityCreator.UPDATE.equals(this.type);
 	}
 
-    public SimpleEvent with(Entity entity) {
-        this.entity = entity;
-        return this;
-    }
+	public SimpleEvent with(Entity entity) {
+		this.entity = entity;
+		return this;
+	}
 
 	/** @return the beforeElement */
 	public Object getBeforeElement() {

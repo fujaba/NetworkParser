@@ -44,6 +44,7 @@ import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.xml.HTMLEntity;
 import de.uniks.networkparser.xml.XMLEntity;
+import javafx.scene.web.WebEngine;
 
 public class JavaAdapter implements JavaViewAdapter, Runnable {
 	private SimpleKeyValueList<Object, String> callBack = new SimpleKeyValueList<Object, String>();
@@ -55,6 +56,7 @@ public class JavaAdapter implements JavaViewAdapter, Runnable {
 	public static final String TYPE_EDITOR="EDITOR";
 	public static final String TYPE_EXPORTALL="EXPORTALL";
 	public static final String TYPE_CONTENT="CONTENT";
+	public static final String TYPE_EDOBS="EDOBS";
 	protected String type = TYPE_EXPORT;
 	private HTMLEntity entity;
 
@@ -66,6 +68,8 @@ public class JavaAdapter implements JavaViewAdapter, Runnable {
 	@Override
 	public boolean load(Object item) {
 		if(item instanceof String) {
+			WebEngine engine = (WebEngine) webEngine;
+			engine.load((String) item);
 			ReflectionLoader.call(webEngine, "load", item);
 			return true;
 		}
@@ -194,6 +198,7 @@ public class JavaAdapter implements JavaViewAdapter, Runnable {
 		owner.setApplyingChangeMSG(true);
 		JsonObject json = JsonObject.create(value);
 		IdMap map = owner.getMap();
+		
 		Object encode = map.decode(json);
 		if (encode == null) {
 			SimpleObject newItem = SimpleObject.create(json);
@@ -214,7 +219,7 @@ public class JavaAdapter implements JavaViewAdapter, Runnable {
 			return "";
 		}
 		FileBuffer buffer = new FileBuffer().withFile(file);
-		return buffer.toString();
+		return buffer.toString().trim();
 	}
 
 	/**
@@ -307,6 +312,7 @@ public class JavaAdapter implements JavaViewAdapter, Runnable {
 
 
 	protected void addAdapter(ObjectCondition eventListener) {
+		System.out.println("DEBUG");
 		JsonObjectLazy executeScript = (JsonObjectLazy) _execute("bridge.addAdapter(new DiagramJS.DelegateAdapter());", true);
 		if(executeScript != null) {
 			Object reference = executeScript.getReference();
@@ -391,7 +397,8 @@ public class JavaAdapter implements JavaViewAdapter, Runnable {
 	 */
 	public void enableDebug() {
 		// https://getfirebug.com/firebug-lite.js#startOpened
-		String firebugLite="http://getfirebug.com/releases/lite/1.2/firebug-lite-compressed.js";
+		//String firebugLite="http://getfirebug.com/releases/lite/1.2/firebug-lite-compressed.js";
+		String firebugLite="https://getfirebug.com/releases/lite/latest/firebug-lite.js";
 		String script = "if (!document.getElementById('FirebugLite')) {var E = document['createElementNS'] && document.documentElement.namespaceURI;E = E ? document.createElementNS(E, 'script') : document.createElement('script');E.setAttribute('id', 'FirebugLite');E.setAttribute('src', '"+firebugLite+"');E.setAttribute('FirebugLite', '4');(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(E);}";
 		String script2 = "console.log = function(message) { java.log(message); }"; // Now where ever console.log is called in your html you will get a log in Java console
 		Object result = ReflectionLoader.call(ReflectionLoader.PLATFORM, "isFxApplicationThread"); 

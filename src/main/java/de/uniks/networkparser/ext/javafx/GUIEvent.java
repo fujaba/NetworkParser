@@ -111,7 +111,7 @@ public class GUIEvent extends Event {
 			event.put(CTRKEY, ReflectionLoader.call(obj, "isControlDown"));
 			event.put(SHIFTKEY, ReflectionLoader.call(obj, "isShiftDown"));
 			if(obj != null) {
-				Object value = ReflectionLoader.callChain(obj, "getCode", "getCode");
+				Object value = ReflectionLoader.callChain(obj, false, "getCode", "getCode");
 				if(value != null) {
 					event.withCode((Integer)value);
 				}

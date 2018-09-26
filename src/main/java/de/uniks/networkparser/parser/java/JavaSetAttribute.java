@@ -10,27 +10,30 @@ public class JavaSetAttribute extends Template {
 		this.withTemplate(
 				"{{#if {{#NOT}}{{modifiers#contains(static)}}{{#ENDNOT}}}}"+
 					"{{#import {{type(false)}}}}"+
-					"	public {{#listType}} {{#if {{type}}==boolean}}is{{#else}}get{{#endif}}{{Name}}({{type}}... values) {",
+					"	public {{#listType}} {{#if {{type}}==boolean}}is{{#else}}get{{#endif}}{{Name}}({{type}}... filter) {",
 					"		{{#listType}} result = new {{#listType}}();",
 					"{{#if {{#feature PATTERN}}}}",
 					"		if(listener != null) {",
+								"{{#import "+SimpleEvent.class.getName()+"}}",
 					"			result.withListener(listener);",
-					"{{#import "+SimpleEvent.class.getName()+"}}",
-					"			listener.update(new SimpleEvent(this, \"CREATE\", null, result));",
+					"			for(int i=0;i<size();i++) {",
+					"				listener.update(SimpleEvent.create(this, i, result, get(i), get(i).{{namegetter}}(), filter));",
+					"			}",
+					"			return result;",
 					"		}",
 					"{{#endif}}",
-					"		if(values == null || values.length<1) {",
+					"		if(filter == null || filter.length<1) {",
 					"			for ({{file.member.name}} obj : this) {",
-					"				result.add(obj.{{#if {{type}}==boolean}}is{{#else}}get{{#endif}}{{Name}}());",
+					"				result.add(obj.{{namegetter}}());",
 					"			}",
 					"		} else {",
 					"			for ({{file.member.name}} obj : this) {",
-					"				{{type}} item = {{#if {{type}}==BOOLEAN}}obj.is{{Name}}(){{#else}}obj.get{{Name}}(){{#endif}};",
-					"				for(int i=0;i<values.length;i++) {",
+					"				{{type}} item = obj.{{namegetter}}();",
+					"				for(int i=0;i<filter.length;i++) {",
 										"{{#if {{#or}}{{type}}==int {{type}}==boolean{{#endor}}}}",
-					"					if (values[i] == item) {"+
+					"					if (filter[i] == item) {"+
 										"{{#else}}",
-					"					if (values[i].equals(item)) {"+
+					"					if (filter[i].equals(item)) {"+
 										"{{#endif}}",
 					"						result.add(item);",
 					"						break;",

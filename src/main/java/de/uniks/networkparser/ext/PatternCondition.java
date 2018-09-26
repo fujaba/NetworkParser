@@ -16,7 +16,7 @@ import de.uniks.networkparser.parser.ExcelRow;
 import de.uniks.networkparser.parser.ExcelSheet;
 
 public class PatternCondition implements ObjectCondition{
-	public static final String CREATE="create";
+	public static final String CREATEPATTERN="createpattern";
 	private String link;
 	private Object value;
 	private boolean duplicate;
@@ -59,13 +59,13 @@ public class PatternCondition implements ObjectCondition{
 				Set<Object> newSet = (Set<Object>) ReflectionLoader.newInstance(values[0].getClass());
 				ReflectionLoader.call(newSet, "withListener", ObjectCondition.class, this);
 				this.root = newSet;
-				update(new SimpleEvent(root, CREATE, null, root));
+				update(new SimpleEvent(root, CREATEPATTERN, null, root));
 				newSet.addAll((Collection<?>) values[0]);
 			}else {
 				SimpleSet<Object> newSet = getNewList();
 				newSet.withListener(this);
 				this.root = newSet;
-				update(new SimpleEvent(root, CREATE, null, root));
+				update(new SimpleEvent(root, CREATEPATTERN, null, root));
 
 				newSet.add(values[0]);
 			}
@@ -73,7 +73,7 @@ public class PatternCondition implements ObjectCondition{
 			SimpleSet<Object> newList = getNewList();
 			newList.withListener(this);
 			this.root = newList;
-			update(new SimpleEvent(root, CREATE, null, root));
+			update(new SimpleEvent(root, CREATEPATTERN, null, root));
 
 			for(Object item : values) {
 				if(item != null) {
@@ -98,15 +98,34 @@ public class PatternCondition implements ObjectCondition{
 	public boolean update(Object value) {
 		if(value instanceof SimpleEvent) {
 			SimpleEvent event = (SimpleEvent) value;
-			if(CREATE.equals(event.getPropertyName())) {
+			if(CREATEPATTERN.equals(event.getPropertyName())) {
+				//listener.update(new SimpleEvent(this, "createpattern", null, result));
 				Object newValue = event.getNewValue();
-				if(this.excelSheet != null) {
-					this.excelSheet.createRow(newValue);
-				}
-				if(newValue instanceof SimpleSet<?>) {
-					SimpleSet<?> set=(SimpleSet<?>) newValue;
+				Object oldValue = event.getOldValue();
+				if(oldValue != null && newValue == null) {
+					//CREATE NEW SET
+					if(oldValue instanceof SimpleSet<?> == false) {
+						return false;
+					}
+					SimpleSet<?> set=(SimpleSet<?>) oldValue;
 					set.withAllowDuplicate(this.duplicate);
+					ExcelRow row = this.excelSheet.createRow(oldValue);
 				}
+				// NOW Set is Complete
+				
+				if(this.excelSheet == null) {
+					return true;
+				}
+//				int rowCount = this.excelSheet.size();
+				if(newValue instanceof SimpleSet<?> == false) {
+					return true;
+				}
+				SimpleSet<?> set=(SimpleSet<?>) oldValue;
+				set.withAllowDuplicate(this.duplicate);
+				for(Object child : set) {
+					
+				}
+				ldmkfnkldjsn
 				return true;
 			}else if(SimpleSet.PROPERTY.equals(event.getPropertyName())) {
 				// NOW ADD SOME ITEM
@@ -120,26 +139,27 @@ public class PatternCondition implements ObjectCondition{
 				Object newValue = event.getNewValue();
 				if(source.size() == 1) {
 					// FIRST SIZE
-					if(index>0) {
-						row.setElementCount(this.excelSheet.get(index-1).size());
-					}
+//					if(index>0) {
+//						row.setElementCount(this.excelSheet.get(index-1).size());
+//					}
 					ExcelCell cell = new ExcelCell().withContent(newValue);
 					row.add(cell);
 //					// Duplicate Value
 //					for(int i=0;i<row.getCount();i++) {
 //						source.add(newValue);
 //					}
-				} else if(row.getCount() >0) {
-					// FIRST ADD
-					duplicateColumn(2, index);
-					ExcelCell cell = new ExcelCell().withContent(newValue);
-					row.add(cell);
-					
-					for(int r=1;r<index;r++) {
-						ExcelRow masterRow = this.excelSheet.get(r);
-						duplicateColumn(masterRow.getCount(), index);
-					}
 				}
+//				} else if(row.getCount() >0) {
+//					// FIRST ADD
+//					duplicateColumn(2, index);
+//					ExcelCell cell = new ExcelCell().withContent(newValue);
+//					row.add(cell);
+//					
+//					for(int r=1;r<index;r++) {
+//						ExcelRow masterRow = this.excelSheet.get(r);
+//						duplicateColumn(masterRow.getCount(), index);
+//					}
+//				}
 				return true;
 			}
 		}

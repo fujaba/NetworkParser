@@ -41,10 +41,10 @@ public class JavaClazz extends Template {
 
 				"{{#template IMPORT}}{{#foreach {{file.headers}}}}","import {{item}};{{#endfor}}{{#endtemplate}}","",
 
-				"{{visibility}} {{modifiers} }{{type}} {{name}}{{#if {{superclazz}}}} extends {{superclazz}}{{#endif}}{{#if {{implements}}}} implements {{implements}}{{#endif}}","{","",
+				"{{visibility}} {{modifiers} }{{type}} {{name}}{{#if {{superclazz}}}} extends {{superclazz}}{{#endif}}{{#if {{implements}}}} implements {{implements}}{{#endif}} {","",
 
 				"{{#if {{#AND}}{{#feature PROPERTYCHANGESUPPORT}} {!{superclazz}} {{type}}!=INTERFACE {{#NOT}}{{type}}==enum{{#ENDNOT}}{{#ENDAND}}}}"
-						+"{{#import "+PropertyChangeListener.class.getName()+"}}"+"{{#import "+PropertyChangeSupport.class.getName()+"}}"+
+						+"{{#import "+PropertyChangeListener.class.getName()+"}}{{#import "+PropertyChangeSupport.class.getName()+"}}"+
 						"	protected PropertyChangeSupport listeners = null;","",
 
 						"	public boolean firePropertyChange(String propertyName, Object oldValue, Object newValue) {",

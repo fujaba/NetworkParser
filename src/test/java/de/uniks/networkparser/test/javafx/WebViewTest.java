@@ -37,7 +37,10 @@ public class WebViewTest extends Application {
 
 		browser = new WebView();
 		WebEngine webEngine = browser.getEngine();
-		webEngine.load("http://www.google.de");
+//		webEngine.load("http://www.google.de");
+		webEngine.load("file://C:/Arbeit/workspace/NetworkParser/neu.html");
+		
+		
 
 		root.getChildren().add(browser);
 
