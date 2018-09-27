@@ -30,18 +30,16 @@ import de.uniks.networkparser.graph.Association;
 import de.uniks.networkparser.graph.AssociationTypes;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.DataType;
-import de.uniks.networkparser.graph.Feature;
 import de.uniks.networkparser.graph.Parameter;
 
 public class GenModel {
-	public boolean ENABLE=true;
 	/**
 	 * @see <a href=
 	 *      '../../../../../../../../doc/StudyRightWithAssignmentsClassGeneration.html'>StudyRightWithAssignmentsClassGeneration.html</a>
 	 */
 	@Test
 	public void testStudyRightWithAssignmentsClassGeneration() {
-		if(ENABLE == false) {
+		if(new Storyboards().ENABLE == false) {
 			return;
 		}
 		/*

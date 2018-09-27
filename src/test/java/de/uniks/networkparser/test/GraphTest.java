@@ -396,7 +396,7 @@ public class GraphTest {
 
 
 		root = graphConverter.convertGraphList(GraphTokener.CLASSDIAGRAM, jsonArray);
-		Assert.assertEquals("[Field|color:String;kind:String]-[Player|color:String;name:String],[Field]-[Pawn|color:String],[Ludo]-[Player],[Pawn]-[Player]",
+		Assert.assertEquals("[Field|color:String;kind:String]-[Pawn|color:String],[Field]-[Player|color:String;name:String],[Ludo]-[Player],[Pawn]-[Player]",
 				converterYUML.convert(root, true));
 
 		showDebugInfos(converter, 1505, null);
@@ -677,7 +677,7 @@ public class GraphTest {
 
 		uni.withBidirectional(person, "has", Association.MANY, "studis", Association.ONE);
 		String result = htmlEntity.withGraph(model).toString(2);
-		showDebugInfos( result, 795, null);
+		showDebugInfos( result, 814, null);
 	}
 
 	@Test

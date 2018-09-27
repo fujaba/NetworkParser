@@ -32,7 +32,7 @@ public class EMFTest {
 		Assert.assertEquals(9, list.getClazzes().size());
 		Clazz segment = list.getClazzes().get(0);
 		Assert.assertEquals("RailwayContainer", segment.toString());
-		Assert.assertEquals("[RailwayContainer]->[RailwayElement|id:int],[RailwayContainer]->[Semaphore|signal:Signal],[RailwayContainer]->[Route],[RailwayElement]^-[TrackElement],[RailwayElement]^-[Route],[RailwayElement]^-[Semaphore],[RailwayElement]^-[SwitchPosition|position:Position],[RailwayElement]^-[Sensor],[Route]->[SwitchPosition],[Route]->[Semaphore],[Route]->[Sensor],[Segment|length:int]-^[TrackElement],[Sensor]->[TrackElement],[Switch|currentPosition:Position]->[SwitchPosition],[Switch]-^[TrackElement],[TrackElement]<-[TrackElement]", model.toString());
+		Assert.assertEquals("[RailwayContainer]->[RailwayElement|id:int],[RailwayContainer]->[Route],[RailwayContainer]->[Semaphore|signal:Signal],[RailwayElement]^-[Route],[RailwayElement]^-[Semaphore],[RailwayElement]^-[Sensor],[RailwayElement]^-[SwitchPosition|position:Position],[RailwayElement]^-[TrackElement],[Route]->[Semaphore],[Route]->[Sensor],[Route]->[SwitchPosition],[Segment|length:int]-^[TrackElement],[Sensor]->[TrackElement],[Switch|currentPosition:Position]->[SwitchPosition],[Switch]-^[TrackElement],[TrackElement]<-[TrackElement]", model.toString());
 	}
 
 	@Test

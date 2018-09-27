@@ -24,6 +24,13 @@ public class MavenXML {
 	public static final String UPDATE = "\"update\":\"";
 	public static boolean checkForUpdate(String url) {
 		boolean updated=false;
+		if(url == null) {
+			return false;
+		}
+		String lUrl = url.toLowerCase();
+		if(lUrl.startsWith("file") ==false && lUrl.startsWith("http") == false) {
+			return false;
+		}
 		HTMLEntity http = NodeProxyTCP.getHTTP(url+"index.html");
 		String string = http.getBody().toString();
 		int pos = string.indexOf(UPDATE);

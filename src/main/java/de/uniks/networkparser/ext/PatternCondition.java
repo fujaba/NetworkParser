@@ -99,7 +99,9 @@ public class PatternCondition implements ObjectCondition{
 		if(value instanceof SimpleEvent) {
 			SimpleEvent event = (SimpleEvent) value;
 			if(CREATEPATTERN.equals(event.getPropertyName())) {
+				//TODO SimpleEvent create(Object source, int index, Object newCollection, Object model, Object newValue, Object filter) {
 				//listener.update(new SimpleEvent(this, "createpattern", null, result));
+
 				Object newValue = event.getNewValue();
 				Object oldValue = event.getOldValue();
 				if(oldValue != null && newValue == null) {

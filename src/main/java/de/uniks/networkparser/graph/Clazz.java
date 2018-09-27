@@ -29,7 +29,7 @@ import de.uniks.networkparser.list.SimpleSet;
 
 
 public class Clazz extends GraphEntity {
-	public static final String TYPE_CLASS = "clazz";
+	public static final String TYPE_CLASS = "class";
 	public static final String TYPE_ENUMERATION = "enum";
 	public static final String TYPE_INTERFACE = "interface";
 	public static final String TYPE_CREATOR = "creator";
@@ -887,12 +887,7 @@ public class Clazz extends GraphEntity {
 			return buffer.toString();
 		}
 		if(PROPERTY_TYPE.equalsIgnoreCase(attribute)) {
-			String value = this.getType();
-			if(Clazz.TYPE_CLASS.equals(value)) {
-				// SONDERFALL FOR CLAZZ
-				return "class";
-			}
-			return value;
+			return this.getType();
 		}
 		if(PROPERTY_SUPERCLAZZ.equalsIgnoreCase(attribute)) {
 			ClazzSet clazzes;

@@ -135,11 +135,20 @@ public class ArtifactFile implements SendableEntityCreatorTag, BaseItem, Compara
 
 		part = this.version.substring(start, start+this.pomNumber[i+3]);
 		start+=this.pomNumber[i+3]+1;
-		temp += EntityUtil.strZero(Integer.valueOf(part), this.pomNumber[i]);
+		try {
+			temp += EntityUtil.strZero(Integer.valueOf(part), this.pomNumber[i]);
+		}catch (Exception e) {
+		}
 		i++;
 
-		part = this.version.substring(start, start+this.pomNumber[i+3]);
-		temp += EntityUtil.strZero(Integer.valueOf(part), this.pomNumber[i]);
+		try {
+			part = this.version.substring(start, start+this.pomNumber[i+3]);
+		}catch (Exception e) {
+		}
+		try {
+			temp += EntityUtil.strZero(Integer.valueOf(part), this.pomNumber[i]);
+		}catch (Exception e) {
+		}
 		this.pomNumber[6] = Integer.valueOf(temp);
 		return change;
 	}

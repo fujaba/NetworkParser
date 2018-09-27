@@ -19,6 +19,9 @@ import de.uniks.networkparser.ext.PatternCondition;
 public class PatternObjects {
 	@Test
 	public void testStudyRightTables() {
+		if(new Storyboards().ENABLE == false) {
+			return;
+		}
 		// some objects
 		University studyRight = new University().withName("Study Right");
 		Room mathRoom = new Room().withName("wa1337").withTopic("Math").withUniversity(studyRight);
@@ -50,7 +53,7 @@ public class PatternObjects {
 		// OLD
 		RoomSet roomsOLD = studyRight.getRooms();
 		
-		DiagramEditor.edobs(studyRight);
+		DiagramEditor.edobs(studyRight, mathRoom,alice);
 		
 		AssignmentSet assignmentsOLD = roomsOLD.getAssignments();
 		double sumOLD = assignmentsOLD.getPoints().sum();

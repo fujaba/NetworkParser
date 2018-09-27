@@ -10,8 +10,8 @@ public class RoomCreator implements SendableEntityCreator
 
    private final String[] properties = new String[]
    {
-      Room.PROPERTY_NAME,
       Room.PROPERTY_PERSONS,
+      Room.PROPERTY_NAME,
       SendableEntityCreator.DYNAMIC
    };
 
@@ -34,14 +34,14 @@ public class RoomCreator implements SendableEntityCreator
           return null;
       }
       Room element = (Room)entity;
-      if (Room.PROPERTY_NAME.equalsIgnoreCase(attribute))
-      {
-         return element.getName();
-      }
-
       if (Room.PROPERTY_PERSONS.equalsIgnoreCase(attribute))
       {
          return element.getPersons();
+      }
+
+      if (Room.PROPERTY_NAME.equalsIgnoreCase(attribute))
+      {
+         return element.getName();
       }
 
       if(SendableEntityCreator.DYNAMIC.equalsIgnoreCase(attribute)) {
@@ -62,15 +62,15 @@ public class RoomCreator implements SendableEntityCreator
          attribute = attribute + type;
       }
 
-      if (Room.PROPERTY_NAME.equalsIgnoreCase(attribute))
-      {
-         element.setName((String) value);
-         return true;
-      }
-
       if (Room.PROPERTY_PERSONS.equalsIgnoreCase(attribute))
       {
          element.withPersons((Person) value);
+         return true;
+      }
+
+      if (Room.PROPERTY_NAME.equalsIgnoreCase(attribute))
+      {
+         element.setName((String) value);
          return true;
       }
 

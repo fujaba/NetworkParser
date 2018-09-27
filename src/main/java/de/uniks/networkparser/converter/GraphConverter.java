@@ -69,7 +69,8 @@ public class GraphConverter implements Converter{
 	public static final String ID = "id";
 
 	public static final String NODE = "node";
-	public static final String CLAZZ = "clazz";
+	public static final String CLASS = "class";
+//	public static final String CLAZZ = "clazz";
 	public static final String PATTERN = "pattern";
 	public static final String SUBGRAPH = "subgraph";
 
@@ -102,7 +103,6 @@ public class GraphConverter implements Converter{
 		// Parse all Object to Object-Diagram
 		for(int i=0;i<list.size();i++) {
 			Object item = list.getChild(i);
-//		for (Object item : list) {
 			if (item instanceof Entity) {
 				parseJsonObject(root, (Entity) item);
 			}
@@ -122,12 +122,12 @@ public class GraphConverter implements Converter{
 		boolean isClassDiagram = GraphTokener.CLASSDIAGRAM.equalsIgnoreCase(root.getType());
 
 		if(isClassDiagram) {
-			typeId = node.getString(CLAZZ);
+			typeId = node.getString(CLASS);
 			id = null;
 		}
 		Clazz graphNode = GraphUtil.getByObject(root, typeId, true);
 		if (graphNode == null) {
-			graphNode = new Clazz(node.getString(CLAZZ));
+			graphNode = new Clazz(node.getString(CLASS));
 			if(id != null) {
 				GraphUtil.setId(graphNode, id);
 			}
@@ -351,9 +351,9 @@ public class GraphConverter implements Converter{
 					Entity edge = (Entity) entity;
 					Entity source = (Entity) edge.getValue(SOURCE);
 					Entity target = (Entity) edge.getValue(TARGET);
-					if(source.has(CLAZZ) && target.has(CLAZZ)) {
-						Association from = new Association(GraphUtil.getByObject(reference, source.getString(CLAZZ), true));
-						Association to = new Association(GraphUtil.getByObject(reference, target.getString(CLAZZ), true));
+					if(source.has(CLASS) && target.has(CLASS)) {
+						Association from = new Association(GraphUtil.getByObject(reference, source.getString(CLASS), true));
+						Association to = new Association(GraphUtil.getByObject(reference, target.getString(CLASS), true));
 						from.with(to);
 						from.with(GraphUtil.createCardinality(source.getString(CARDINALITY)));
 						to.with(GraphUtil.createCardinality(target.getString(CARDINALITY)));
@@ -464,7 +464,7 @@ public class GraphConverter implements Converter{
 		}
 		if(full) {
 			result.put(TYPE, edge.getType().getValue());
-			result.put(CLAZZ, edge.getClazz().getName());
+			result.put(CLASS, edge.getClazz().getName());
 		}
 		return result;
 	}
@@ -510,8 +510,7 @@ public class GraphConverter implements Converter{
 			}
 			item.put(TYPE, clazz.getType());
 			if (type == GraphTokener.OBJECTDIAGRAM) {
-				item.put(ID,
-						clazz.getId() + " : " + clazz.getName(shortName));
+				item.put(ID, clazz.getId() + " : " + clazz.getName(shortName));
 			} else {
 				item.put(ID, clazz.getName(shortName));
 			}

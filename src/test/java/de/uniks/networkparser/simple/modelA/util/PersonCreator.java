@@ -10,9 +10,9 @@ public class PersonCreator implements SendableEntityCreator
 
    private final String[] properties = new String[]
    {
+      Person.PROPERTY_ROOM,
       Person.PROPERTY_AGE,
       Person.PROPERTY_NAME,
-      Person.PROPERTY_ROOM,
       SendableEntityCreator.DYNAMIC
    };
 
@@ -35,6 +35,11 @@ public class PersonCreator implements SendableEntityCreator
           return null;
       }
       Person element = (Person)entity;
+      if (Person.PROPERTY_ROOM.equalsIgnoreCase(attribute))
+      {
+         return element.getRoom();
+      }
+
       if (Person.PROPERTY_AGE.equalsIgnoreCase(attribute))
       {
          return element.getAge();
@@ -43,11 +48,6 @@ public class PersonCreator implements SendableEntityCreator
       if (Person.PROPERTY_NAME.equalsIgnoreCase(attribute))
       {
          return element.getName();
-      }
-
-      if (Person.PROPERTY_ROOM.equalsIgnoreCase(attribute))
-      {
-         return element.getRoom();
       }
 
       if(SendableEntityCreator.DYNAMIC.equalsIgnoreCase(attribute)) {
@@ -68,6 +68,12 @@ public class PersonCreator implements SendableEntityCreator
          attribute = attribute + type;
       }
 
+      if (Person.PROPERTY_ROOM.equalsIgnoreCase(attribute))
+      {
+         element.setRoom((Room) value);
+         return true;
+      }
+
       if (Person.PROPERTY_AGE.equalsIgnoreCase(attribute))
       {
          element.setAge((int) value);
@@ -77,12 +83,6 @@ public class PersonCreator implements SendableEntityCreator
       if (Person.PROPERTY_NAME.equalsIgnoreCase(attribute))
       {
          element.setName((String) value);
-         return true;
-      }
-
-      if (Person.PROPERTY_ROOM.equalsIgnoreCase(attribute))
-      {
-         element.setRoom((Room) value);
          return true;
       }
 
