@@ -47,11 +47,27 @@ public class SimpleSet<V> extends AbstractList<V> implements Set<V> {
 		return new SimpleSet<V>();
 	}
 
+	
 	@Override
 	public boolean remove(Object o) {
-		return super.removeByObject(o)>=0;
+		return removeByObject(o)>=0;
+	}
+	@Override
+	public int removeByObject(Object key) {
+		if (isReadOnly() || isVisible() == false) {
+			throw new UnsupportedOperationException("remove(" + key + ")");
+		}
+		return super.removeByObject(key);
 	}
 
+	@Override
+	public boolean retainAll(Collection<?> c) {
+		if (isReadOnly() || isVisible() == false) {
+			throw new UnsupportedOperationException("retainAll(" + c + ")");
+		}
+		return super.retainAll(c);
+	}
+	
 	@Override
 	public SimpleSet<V> clone() {
 		return getNewList(false).init(this);
@@ -105,6 +121,14 @@ public class SimpleSet<V> extends AbstractList<V> implements Set<V> {
 			throw new UnsupportedOperationException("add(" + index + ")");
 		}
 		super.add(index, element);
+	}
+	
+	@Override
+	public void clear() {
+		if (isReadOnly() || isVisible() == false) {
+			throw new UnsupportedOperationException("clear()");
+		}
+		super.clear();
 	}
 
 	@Override

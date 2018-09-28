@@ -24,6 +24,7 @@ package de.uniks.networkparser.test.studyrightWithAssigments;
 import org.junit.Test;
 
 import de.uniks.networkparser.ext.ClassModel;
+import de.uniks.networkparser.ext.Os;
 import de.uniks.networkparser.ext.story.Story;
 import de.uniks.networkparser.ext.story.StoryStepSourceCode;
 import de.uniks.networkparser.graph.Association;
@@ -39,7 +40,7 @@ public class GenModel {
 	 */
 	@Test
 	public void testStudyRightWithAssignmentsClassGeneration() {
-		if(new Storyboards().ENABLE == false) {
+		if(Os.isGenerator()== false) {
 			return;
 		}
 		/*

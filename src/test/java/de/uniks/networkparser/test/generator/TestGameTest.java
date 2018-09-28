@@ -3,13 +3,14 @@ package de.uniks.networkparser.test.generator;
 import org.junit.Test;
 
 import de.uniks.networkparser.ext.ClassModel;
+import de.uniks.networkparser.ext.Os;
 import de.uniks.networkparser.graph.Association;
 import de.uniks.networkparser.graph.Clazz;
 
 public class TestGameTest {
 	@Test
 	public void testManyToMany() {
-		if(Generator.DISABLE) {
+		if(Os.isGenerator() == false) {
 			return;
 		}
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.game");
@@ -22,7 +23,7 @@ public class TestGameTest {
 	}
 	@Test
 	public void testSuperClazz() {
-		if(Generator.DISABLE) {
+		if(Os.isGenerator() == false) {
 			return;
 		}
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.game");

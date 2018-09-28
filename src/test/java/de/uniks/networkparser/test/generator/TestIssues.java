@@ -3,6 +3,7 @@ package de.uniks.networkparser.test.generator;
 import org.junit.Test;
 
 import de.uniks.networkparser.ext.ClassModel;
+import de.uniks.networkparser.ext.Os;
 import de.uniks.networkparser.graph.Association;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.DataType;
@@ -11,7 +12,7 @@ import de.uniks.networkparser.graph.Method;
 public class TestIssues {
 	@Test
 	public void testIsuue29() {
-		if(Generator.DISABLE) {
+		if(Os.isGenerator() == false) {
 			return;
 		}
 		ClassModel model=new ClassModel("org.sdmlib.simple.model.issue29");
@@ -28,7 +29,7 @@ public class TestIssues {
 	}
 //	@Test
 	public void testIsuue30() {
-		if(Generator.DISABLE) {
+		if(Os.isGenerator() == false) {
 			return;
 		}
 		ClassModel model=new ClassModel("org.sdmlib.simple.model.issue30");
@@ -46,7 +47,7 @@ public class TestIssues {
 	}
 	@Test
 	public void testsMultiExtends() {
-		if(Generator.DISABLE) {
+		if(Os.isGenerator() == false) {
 			return;
 		}
 		ClassModel model=new ClassModel("org.sdmlib.simple.model.issue31");

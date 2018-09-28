@@ -3,6 +3,7 @@ package de.uniks.networkparser.test.generator;
 import org.junit.Test;
 
 import de.uniks.networkparser.ext.ClassModel;
+import de.uniks.networkparser.ext.Os;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.DataType;
 import de.uniks.networkparser.graph.DataTypeMap;
@@ -13,7 +14,7 @@ public class TestMethods {
 
 	@Test
 	public void testClassWithMethod() {
-		if(Generator.DISABLE) {
+		if(Os.isGenerator() == false) {
 			return;
 		}
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.methods_a");
@@ -27,7 +28,7 @@ public class TestMethods {
 
 	@Test
 	public void testClassWithVoidMethod() {
-		if(Generator.DISABLE) {
+		if(Os.isGenerator() == false) {
 			return;
 		}
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.methods_b");
@@ -41,7 +42,7 @@ public class TestMethods {
 
 	@Test
 	public void testClassWithVoidAndNamelessParameterMethod() {
-		if(Generator.DISABLE) {
+		if(Os.isGenerator() == false) {
 			return;
 		}
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.methods_c");
@@ -55,7 +56,7 @@ public class TestMethods {
 
 	@Test
 	public void testClassWithVoidAndParameterMethod() {
-		if(Generator.DISABLE) {
+		if(Os.isGenerator() == false) {
 			return;
 		}
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.methods_d");
@@ -71,7 +72,7 @@ public class TestMethods {
 
 	@Test
 	public void testClassWithVoidAndClassParameterMethod() {
-		if(Generator.DISABLE) {
+		if(Os.isGenerator() == false) {
 			return;
 		}
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.methods_e");
@@ -85,7 +86,7 @@ public class TestMethods {
 
 	@Test
 	public void testClassWithVoidAndSimpleClassParameterMethod() {
-		if(Generator.DISABLE) {
+		if(Os.isGenerator() == false) {
 			return;
 		}
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.methods_f");
@@ -102,7 +103,7 @@ public class TestMethods {
 
 	@Test
 	public void testClassWithVoidAndSetParameterMethod() {
-		if(Generator.DISABLE) {
+		if(Os.isGenerator() == false) {
 			return;
 		}
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.methods_g");
@@ -116,7 +117,7 @@ public class TestMethods {
 
 	@Test
 	public void testClassWithVoidAndMapParameterMethod() {
-		if(Generator.DISABLE) {
+		if(Os.isGenerator() == false) {
 			return;
 		}
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.methods_h");
@@ -130,7 +131,7 @@ public class TestMethods {
 
 	@Test
 	public void testClassWithVoidAndMultipleParametersMethod() {
-		if(Generator.DISABLE) {
+		if(Os.isGenerator() == false) {
 			return;
 		}
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.methods_i");
@@ -144,7 +145,7 @@ public class TestMethods {
 
 	@Test
 	public void testClassWithNonVoidMethod() {
-		if(Generator.DISABLE) {
+		if(Os.isGenerator() == false) {
 			return;
 		}
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.methods_j");
@@ -158,7 +159,7 @@ public class TestMethods {
 
 	@Test
 	public void testClassWithNonVoidAndParameterMethod() {
-		if(Generator.DISABLE) {
+		if(Os.isGenerator() == false) {
 			return;
 		}
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.methods_k");
@@ -172,7 +173,7 @@ public class TestMethods {
 
 	@Test
 	public void testClassWithMultipleMethods() {
-		if(Generator.DISABLE) {
+		if(Os.isGenerator() == false) {
 			return;
 		}
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.methods_l");
@@ -187,7 +188,7 @@ public class TestMethods {
 
 	@Test
 	public void testClassWithMethodAndBody() {
-		if(Generator.DISABLE) {
+		if(Os.isGenerator() == false) {
 			return;
 		}
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.methods_m");
@@ -202,7 +203,7 @@ public class TestMethods {
 
 	@Test
 	public void testClassWithBooleanMethod() {
-		if(Generator.DISABLE) {
+		if(Os.isGenerator() == false) {
 			return;
 		}
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.methods_n");

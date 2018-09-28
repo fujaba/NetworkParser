@@ -3,6 +3,7 @@ package de.uniks.networkparser.test.generator;
 import org.junit.Test;
 
 import de.uniks.networkparser.ext.ClassModel;
+import de.uniks.networkparser.ext.Os;
 import de.uniks.networkparser.graph.Association;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.DataType;
@@ -12,7 +13,7 @@ public class TestSuperClazzes {
 
 	@Test
 	public void testClazzAsSuperClazz() {
-		if(Generator.DISABLE) {
+		if(Os.isGenerator() == false) {
 			return;
 		}
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.superclazzes_a");
@@ -24,7 +25,7 @@ public class TestSuperClazzes {
 
 	@Test
 	public void testClazzAsKidClazz() {
-		if(Generator.DISABLE) {
+		if(Os.isGenerator() == false) {
 			return;
 		}
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.superclazzes_b");
@@ -38,7 +39,7 @@ public class TestSuperClazzes {
 
 	@Test
 	public void testClazzAsSuperClazzWithMultipleKids() {
-		if(Generator.DISABLE) {
+		if(Os.isGenerator() == false) {
 			return;
 		}
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.superclazzes_c");
@@ -51,7 +52,7 @@ public class TestSuperClazzes {
 
 	@Test
 	public void testChangeSuperClazz() {
-		if(Generator.DISABLE) {
+		if(Os.isGenerator() == false) {
 			return;
 		}
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.superclazzes_d");
@@ -67,7 +68,7 @@ public class TestSuperClazzes {
 
 	@Test
 	public void testAbstractAssociation() {
-		if(Generator.DISABLE) {
+		if(Os.isGenerator() == false) {
 			return;
 		}
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.superclazzes_e");
@@ -85,7 +86,7 @@ public class TestSuperClazzes {
 
 	@Test
 	public void testMultipleAbstractAssociation() {
-		if(Generator.DISABLE) {
+		if(Os.isGenerator() == false) {
 			return;
 		}
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.superclazzes_f");

@@ -3,16 +3,16 @@ package de.uniks.networkparser.test.generator;
 import org.junit.Test;
 
 import de.uniks.networkparser.ext.ClassModel;
+import de.uniks.networkparser.ext.Os;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.DataType;
 import de.uniks.networkparser.graph.GraphUtil;
 import de.uniks.networkparser.graph.Literal;
 
 public class TestEnumeration {
-
 	@Test
 	public void testEnumerationWithoutEntries() {
-		if(Generator.DISABLE) {
+		if(Os.isGenerator() == false) {
 			return;
 		}
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.enums_a");
@@ -26,7 +26,7 @@ public class TestEnumeration {
 
 	@Test
 	public void testEnumerationWithEntry() {
-		if(Generator.DISABLE) {
+		if(Os.isGenerator() == false) {
 			return;
 		}
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.enums_b");
@@ -42,7 +42,7 @@ public class TestEnumeration {
 
 	@Test
 	public void testEnumerationWithMultipleEntries() {
-		if(Generator.DISABLE) {
+		if(Os.isGenerator() == false) {
 			return;
 		}
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.enums_c");
@@ -55,7 +55,7 @@ public class TestEnumeration {
 	}
 	@Test
 	public void testEnumerationWithMultipleEntriesKeyValue() {
-		if(Generator.DISABLE) {
+		if(Os.isGenerator() == false) {
 			return;
 		}
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.enums_d");

@@ -377,4 +377,52 @@ public class SimpleArrayListTest {
 		Assert.assertEquals(3, map.size());
 	}
 
+	@Test
+	public void testReadOnly() {
+		SimpleSet<String> set = new SimpleSet<String>().with("Albert", "Stefan");
+		set.withFlag(SimpleSet.READONLY);
+		
+		try {
+			// Test Add
+			set.add("Karli");
+			Assert.assertEquals(2, set.size());
+			Assert.fail( "My method didn't throw when I expected it to" );
+		} catch (Exception expectedException) {}
+
+		ArrayList<String> arrayList = new ArrayList<String>();
+		arrayList.add("Karli");
+		set.addAll(arrayList);
+		Assert.assertEquals(2, set.size());
+
+		try {
+			set.remove("Stefan");
+			Assert.assertEquals(2, set.size());
+		} catch (Exception expectedException) {}
+
+		try {
+			arrayList = new ArrayList<String>();
+			arrayList.add("Stefan");
+			set.removeAll(arrayList);
+			Assert.assertEquals(2, set.size());
+		} catch (Exception expectedException) {}
+		
+		try {
+			arrayList = new ArrayList<String>();
+			arrayList.add("Stefan");
+			set.retainAll(arrayList);
+			Assert.assertEquals(2, set.size());
+		} catch (Exception expectedException) {}
+		
+//		set.removeIf(filter)
+
+		try {
+			set.clear();
+			Assert.assertEquals(2, set.size());
+			Assert.fail( "My method didn't throw when I expected it to" );
+		} catch (Exception expectedException) {}
+		//ITERATOR
+		//        public void remove() {
+//        public void set(E e) {
+//        public void add(E e) {
+	}
 }

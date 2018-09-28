@@ -45,6 +45,11 @@ var DiagramJS =
 /******/ 		}
 /******/ 	};
 /******/
+/******/ 	// define __esModule on exports
+/******/ 	__webpack_require__.r = function(exports) {
+/******/ 		Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 	};
+/******/
 /******/ 	// getDefaultExport function for compatibility with non-harmony modules
 /******/ 	__webpack_require__.n = function(module) {
 /******/ 		var getter = module && module.__esModule ?
@@ -60,582 +65,39 @@ var DiagramJS =
 /******/ 	// __webpack_public_path__
 /******/ 	__webpack_require__.p = "";
 /******/
+/******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 9);
+/******/ 	return __webpack_require__(__webpack_require__.s = "./main.ts");
 /******/ })
 /************************************************************************/
-/******/ ([
-/* 0 */
+/******/ ({
+
+/***/ "./Adapter.ts":
+/*!********************!*\
+  !*** ./Adapter.ts ***!
+  \********************/
+/*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var CSS_1 = __webpack_require__(31);
-var BaseElements_1 = __webpack_require__(1);
-var Util = (function () {
-    function Util() {
+var Adapter = (function () {
+    function Adapter() {
+        this.id = null;
     }
-    Util.getRandomInt = function (min, max) {
-        return Math.floor(Math.random() * (max - min + 1)) + min;
-    };
-    Util.createShape = function (attrs) {
-        var xmlns = attrs.xmlns || 'http://www.w3.org/2000/svg';
-        var shape = document.createElementNS(xmlns, attrs.tag);
-        for (var attr in attrs) {
-            if (attr !== 'tag') {
-                shape.setAttribute(attr, attrs[attr]);
-            }
-        }
-        return shape;
-    };
-    Util.toPascalCase = function (value) {
-        value = value.charAt(0).toUpperCase() + value.substring(1).toLowerCase();
-        return value;
-    };
-    Util.isSVG = function (tag) {
-        var i, list = ['svg', 'path', 'polygon', 'polyline', 'line', 'title', 'rect', 'filter', 'feGaussianBlur', 'feOffset', 'feBlend', 'linearGradient', 'stop', 'text', 'symbol', 'textPath', 'defs', 'fegaussianblur', 'feoffset', 'feblend', 'circle', 'ellipse', 'g'];
-        for (i = 0; i < list.length; i += 1) {
-            if (list[i] === tag) {
-                return true;
-            }
-        }
-        return false;
-    };
-    Util.create = function (node) {
-        var style, item, xmlns, key, tag, k;
-        if (document.createElementNS && (this.isSVG(node.tag) || node.xmlns)) {
-            if (node.xmlns) {
-                xmlns = node.xmlns;
-            }
-            else {
-                xmlns = 'http://www.w3.org/2000/svg';
-            }
-            if (node.tag === 'img' && xmlns) {
-                item = document.createElementNS(xmlns, 'image');
-                item.setAttribute('xmlns:xlink', 'http://www.w3.org/1999/xlink');
-                item.setAttributeNS('http://www.w3.org/1999/xlink', 'href', node.src);
-            }
-            else {
-                item = document.createElementNS(xmlns, node.tag);
-            }
-        }
-        else {
-            item = document.createElement(node.tag);
-        }
-        tag = node.tag.toLowerCase();
-        for (key in node) {
-            if (!node.hasOwnProperty(key)) {
-                continue;
-            }
-            k = key.toLowerCase();
-            if (node[key] === null) {
-                continue;
-            }
-            if (k === 'tag' || k.charAt(0) === '$' || k === '$graphModel') {
-                continue;
-            }
-            if (k.charAt(0) === '#') {
-                item[k.substring(1)] = node[key];
-                continue;
-            }
-            if (k === 'rotate') {
-                item.setAttribute('transform', 'rotate(' + node[key] + ',' + node.$graphModel.x + ',' + node.$graphModel.y + ')');
-                continue;
-            }
-            if (k === 'value') {
-                if (!node[key]) {
-                    continue;
-                }
-                if (tag !== 'input') {
-                    if (tag === 'text') {
-                        item.appendChild(document.createTextNode(node[key]));
-                    }
-                    else {
-                        item.innerHTML = node[key];
-                    }
-                }
-                else {
-                    item[key] = node[key];
-                }
-                continue;
-            }
-            if (k.indexOf('on') === 0) {
-                this.bind(item, k.substring(2), node[key]);
-                continue;
-            }
-            if (k.indexOf('-') >= 0) {
-                item.style[key] = node[key];
-            }
-            else {
-                if (k === 'style' && typeof (node[key]) === 'object') {
-                    for (style in node[key]) {
-                        if (!node[key].hasOwnProperty(style)) {
-                            continue;
-                        }
-                        if (node[key][style]) {
-                            if ('transform' === style) {
-                                item.style.transform = node[key][style];
-                                item.style.msTransform = item.style.MozTransform = item.style.WebkitTransform = item.style.OTransform = node[key][style];
-                            }
-                            else {
-                                item.style[style] = node[key][style];
-                            }
-                        }
-                    }
-                }
-                else {
-                    item.setAttribute(key, node[key]);
-                }
-            }
-        }
-        if (node.$parent) {
-            node.$parent.appendChild(item);
-        }
-        if (node.$graphModel) {
-            item.$graphModel = node.$graphModel;
-        }
-        return item;
-    };
-    Util.setSize = function (item, width, height) {
-        var value;
-        value = Util.getValue(width);
-        item.setAttribute('width', value);
-        item.style.width = Math.ceil(value);
-        value = Util.getValue(height);
-        item.setAttribute('height', value);
-        item.style.height = Math.ceil(value);
-    };
-    Util.setAttributeSize = function (item, width, height) {
-        var value;
-        value = Util.getValue(width);
-        item.setAttributeNS(null, 'width', value);
-        value = Util.getValue(height);
-        item.setAttributeNS(null, 'height', value);
-    };
-    Util.setStyleSize = function (item, width, height) {
-        var value;
-        value = Util.getValue(width);
-        item.style.width = Math.ceil(value);
-        value = Util.getValue(height);
-        item.style.height = Math.ceil(value);
-    };
-    Util.setPos = function (item, x, y) {
-        if (item.x && item.x.baseVal) {
-            item.style.left = x + 'px';
-            item.style.top = y + 'px';
-        }
-        else {
-            item.x = x;
-            item.y = y;
-        }
-    };
-    Util.getValue = function (value) {
-        return parseInt(('0' + value).replace('px', ''), 10);
-    };
-    Util.isIE = function () {
-        return navigator.userAgent.toLowerCase().indexOf('.net') > -1;
-    };
-    Util.isEdge = function () {
-        return navigator.userAgent.toLowerCase().indexOf('edge') > -1;
-    };
-    Util.isFireFox = function () {
-        return navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
-    };
-    Util.isSafari = function () {
-        var isEdge = Util.isEdge();
-        return navigator.userAgent.toLowerCase().indexOf('safari') > -1 && !isEdge;
-    };
-    Util.isOpera = function () {
-        return navigator.userAgent.toLowerCase().indexOf('opera') > -1;
-    };
-    Util.isChrome = function () {
-        var isEdge = Util.isEdge();
-        var isSafari = Util.isSafari();
-        return navigator.userAgent.toLowerCase().indexOf('chrome') > -1 && !isEdge && isSafari;
-    };
-    Util.getEventX = function (event) {
-        return (Util.isIE() || Util.isEdge()) ? event['offsetX'] : event.layerX;
-    };
-    Util.getEventY = function (event) {
-        return (Util.isIE() || Util.isEdge()) ? event['offsetY'] : event.layerY;
-    };
-    Util.getNumber = function (str) {
-        return parseInt((str || '0').replace('px', ''), 10);
-    };
-    Util.getStyle = function (styleProp) {
-        var i, style, diff, current, ref, el = document.createElement('div'), css;
-        document.body.appendChild(el);
-        css = new CSS_1.CSS(styleProp);
-        ref = new CSS_1.CSS(styleProp, el).css;
-        style = window.getComputedStyle(el, null);
-        el.className = styleProp;
-        current = new CSS_1.CSS(styleProp, el).css;
-        diff = Util.getNumber(style.getPropertyValue('border-width'));
-        for (i in current) {
-            if (!current.hasOwnProperty(i)) {
-                continue;
-            }
-            if (i === 'width' || i === 'height') {
-                if (Util.getNumber(current[i]) !== 0 && Util.getNumber(current[i]) + diff * 2 !== Util.getNumber(ref[i])) {
-                    css.add(i, current[i]);
-                }
-            }
-            else if (current[i] !== ref[i]) {
-                css.add(i, current[i]);
-            }
-        }
-        document.body.removeChild(el);
-        return css;
-    };
-    Util.sizeOf = function (item, node) {
-        var board;
-        var rect;
-        var addBoard;
-        if (!item) {
-            return undefined;
-        }
-        if (node) {
-            board = node.$owner.$view;
-            addBoard = false;
-        }
-        if (!board) {
-            addBoard = true;
-            board = Util.createShape({ tag: 'svg', id: 'root', width: 200, height: 200 });
-            document.body.appendChild(board);
-        }
-        if (board.tagName === 'svg') {
-            if (typeof item === 'string') {
-                item = Util.create({ tag: 'text', $font: true, value: item });
-                item.setAttribute('width', '5px');
-            }
-        }
-        else if (typeof item === 'string') {
-            item = document.createTextNode(item);
-        }
-        board.appendChild(item);
-        rect = item.getBoundingClientRect();
-        board.removeChild(item);
-        if (addBoard) {
-            document.body.removeChild(board);
-        }
-        return rect;
-    };
-    Util.getColor = function (style, defaultColor) {
-        if (style) {
-            if (style.toLowerCase() === 'create') {
-                return '#008000';
-            }
-            if (style.toLowerCase() === 'nac') {
-                return '#FE3E3E';
-            }
-            if (style.indexOf('#') === 0) {
-                return style;
-            }
-        }
-        if (defaultColor) {
-            return defaultColor;
-        }
-        return '#000';
-    };
-    Util.utf8$to$b64 = function (str) {
-        return window.btoa(encodeURIComponent(str));
-    };
-    Util.showSVG = function (control) {
-        var svg = Util.create({
-            tag: 'svg',
-            style: { left: control.getPos().x, top: control.getPos().y, position: 'absolute' }
-        });
-        var child = control.getSVG();
-        if (child) {
-            svg.appendChild(child);
-        }
-        Util.setSize(svg, control.getSize().x, control.getSize().y);
-        document.body.appendChild(svg);
-    };
-    Util.toJson = function (ref) {
-        var result = {};
-        return Util.copy(result, ref, false, false);
-    };
-    Util.initControl = function (parent, control, type, id, json) {
-        if (typeof control.init === 'function') {
-            control.init(parent, type, id);
-        }
-        if (typeof control.load === 'function') {
-            control.load(json);
-        }
-    };
-    Util.copy = function (ref, src, full, replace) {
-        if (src) {
-            var i = void 0;
-            for (i in src) {
-                if (!src.hasOwnProperty(i) || typeof (src[i]) === 'function') {
-                    continue;
-                }
-                if (i.charAt(0) === '$') {
-                    if (full) {
-                        ref[i] = src[i];
-                    }
-                    continue;
-                }
-                if (typeof (src[i]) === 'object') {
-                    if (replace) {
-                        ref[i] = src[i];
-                        continue;
-                    }
-                    if (!ref[i]) {
-                        if (src[i] instanceof Array) {
-                            ref[i] = [];
-                        }
-                        else {
-                            ref[i] = {};
-                        }
-                    }
-                    Util.copy(ref[i], src[i], full, false);
-                }
-                else {
-                    if (src[i] === '') {
-                        continue;
-                    }
-                    ref[i] = src[i];
-                }
-            }
-        }
-        return ref;
-    };
-    Util.xmlstringify = function (text) {
-        text = text.replace('<', '&lt;');
-        text = text.replace('>', '&gt;');
-        return text;
-    };
-    Util.toXML = function (ref, src, full, doc) {
-        var name;
-        if (!ref) {
-            name = src.constructor.name;
-            doc = document.implementation.createDocument(null, name, null);
-            ref = doc.childNodes[0];
-        }
-        if (src) {
-            var i = void 0;
-            for (i in src) {
-                if (!src.hasOwnProperty(i) || typeof (src[i]) === 'function') {
-                    continue;
-                }
-                if (i.charAt(0) === '$') {
-                    if (full) {
-                        ref[i] = src[i];
-                    }
-                    continue;
-                }
-                if (typeof (src[i]) === 'object') {
-                    if (!ref.getAttribute(i)) {
-                        if (src[i] instanceof Array) {
-                            for (var c in src[i]) {
-                                name = src[i][c].constructor.name;
-                                var child = doc.createElement(name);
-                                ref.appendChild(child);
-                                Util.toXML(child, src[i][c], full, doc);
-                            }
-                        }
-                        else {
-                            name = src[i].constructor.name;
-                            var child = doc.createElement(name);
-                            ref.appendChild(child);
-                            Util.toXML(child, src[i], full, doc);
-                        }
-                    }
-                    else {
-                        Util.toXML(ref.getAttribute(i), src[i], full, doc);
-                    }
-                }
-                else {
-                    if (src[i] === '') {
-                        continue;
-                    }
-                    ref.setAttribute(i, src[i]);
-                }
-            }
-        }
-        return ref;
-    };
-    Util.Range = function (min, max, x, y) {
-        max.x = Math.max(max.x, x);
-        max.y = Math.max(max.y, y);
-        min.x = Math.min(min.x, x);
-        min.y = Math.min(min.y, y);
-    };
-    Util.getPosition = function (m, n, entity, refCenter) {
-        var t, p = [], list, distance = [], min = 999999999, position, i, step = 15;
-        var pos = entity.getPos();
-        var size = entity.getSize();
-        list = [BaseElements_1.Point.LEFT, BaseElements_1.Point.RIGHT];
-        for (i = 0; i < 2; i += 1) {
-            t = this.getLRPosition(m, n, entity, list[i]);
-            if (t.y >= pos.y && t.y <= (pos.y + size.y + 1)) {
-                t.y += (entity['$' + list[i]] * step);
-                if (t.y > (pos.y + size.y)) {
-                    t = Util.getUDPosition(m, n, entity, BaseElements_1.Point.DOWN, step);
-                }
-                p.push(t);
-                distance.push(Math.sqrt((refCenter.x - t.x) * (refCenter.x - t.x) + (refCenter.y - t.y) * (refCenter.y - t.y)));
-            }
-        }
-        list = [BaseElements_1.Point.UP, BaseElements_1.Point.DOWN];
-        for (i = 0; i < 2; i += 1) {
-            t = Util.getUDPosition(m, n, entity, list[i]);
-            if (t.x >= pos.x && t.x <= (pos.x + size.x + 1)) {
-                t.x += (entity['$' + list[i]] * step);
-                if (t.x > (pos.x + size.x)) {
-                    t = this.getLRPosition(m, n, entity, BaseElements_1.Point.RIGHT, step);
-                }
-                p.push(t);
-                distance.push(Math.sqrt((refCenter.x - t.x) * (refCenter.x - t.x) + (refCenter.y - t.y) * (refCenter.y - t.y)));
-            }
-        }
-        for (i = 0; i < p.length; i += 1) {
-            if (distance[i] < min) {
-                min = distance[i];
-                position = p[i];
-            }
-        }
-        return position;
-    };
-    Util.getUDPosition = function (m, n, e, p, step) {
-        var pos = e.getPos();
-        var size = e.getSize();
-        var x, y = pos.y;
-        if (p === BaseElements_1.Point.DOWN) {
-            y += size.y;
-        }
-        x = (y - n) / m;
-        if (step) {
-            x += e['$' + p] * step;
-            if (x < pos.x) {
-                x = pos.x;
-            }
-            else if (x > (pos.x + size.x)) {
-                x = pos.x + size.x;
-            }
-        }
-        return new BaseElements_1.Point(x, y, p);
-    };
-    Util.getLRPosition = function (m, n, e, p, step) {
-        var pos = e.getPos();
-        var size = e.getSize();
-        var y, x = pos.x;
-        if (p === BaseElements_1.Point.RIGHT) {
-            x += size.x;
-        }
-        y = m * x + n;
-        if (step) {
-            y += e['$' + p] * step;
-            if (y < pos.y) {
-                y = pos.y;
-            }
-            else if (y > (pos.y + size.y)) {
-                y = pos.y + size.y;
-            }
-        }
-        return new BaseElements_1.Point(x, y, p);
-    };
-    Util.hasClass = function (element, cls) {
-        var className = element.getAttribute('class');
-        return className.indexOf(cls) > 0;
-    };
-    Util.addClass = function (element, cls) {
-        if (!Util.hasClass(element, cls)) {
-            var className = element.getAttribute('class');
-            element.setAttributeNS(null, 'class', className + ' ' + cls);
-        }
-    };
-    Util.removeClass = function (element, cls) {
-        if (Util.hasClass(element, cls)) {
-            var reg = new RegExp('(\\s|^)' + cls + '(\\s|$)');
-            var className = element.getAttribute('class');
-            element.setAttributeNS(null, 'class', className.replace(reg, ' ').trim());
-        }
-    };
-    Util.startsWith = function (s, searchS) {
-        if (!String.prototype.startsWith) {
-            return s.indexOf(searchS) === 0;
-        }
-        return s.startsWith(searchS);
-    };
-    Util.endsWith = function (s, searchS) {
-        if (!String.prototype.endsWith) {
-            var lastIndex = s.lastIndexOf(searchS);
-            return lastIndex !== -1 && lastIndex === (s.length - 1);
-        }
-        return s.endsWith(searchS);
-    };
-    Util.includes = function (s, searchS) {
-        if (!String.prototype.includes) {
-            var idx = s.indexOf(searchS);
-            return idx > -1;
-        }
-        return s.includes(searchS);
-    };
-    Util.isParentOfChild = function (parent, child) {
-        if (!parent || !child) {
-            return false;
-        }
-        if (Util.isIE()) {
-            var children = parent.childNodes;
-            for (var i = 0; i < children.length; i++) {
-                var childItem = children[i];
-                if (childItem === child) {
-                    return true;
-                }
-            }
-            return false;
-        }
-        return parent.contains(child);
-    };
-    Util.createCustomEvent = function (type, params) {
-        var evt;
-        if (typeof window['CustomEvent'] !== 'function') {
-            params = params || { bubbles: false, cancelable: false, detail: undefined };
-            evt = document.createEvent('CustomEvent');
-            evt.initCustomEvent(type, params.bubbles, params.cancelable, params.detail);
-            return evt;
-        }
-        evt = new CustomEvent(type);
-        return evt;
-    };
-    Util.saveToLocalStorage = function (model) {
-        if (!this.isAutoSave) {
-            return false;
-        }
-        if (Util.isLocalStorageSupported()) {
-            if (model.$isLoading) {
-                return false;
-            }
-            var jsonObj = Util.toJson(model);
-            var data = JSON.stringify(jsonObj, null, '\t');
-            localStorage.setItem('diagram', data);
-            return true;
-        }
-        return false;
-    };
-    Util.getDiagramFromLocalStorage = function () {
-        if (Util.isLocalStorageSupported()) {
-            return localStorage.getItem('diagram');
-        }
-        return undefined;
-    };
-    Util.isLocalStorageSupported = function () {
-        if (this.isEdge()) {
-            return false;
-        }
-        return localStorage !== undefined;
-    };
-    return Util;
+    return Adapter;
 }());
-exports.Util = Util;
+exports.Adapter = Adapter;
 
 
 /***/ }),
-/* 1 */
+
+/***/ "./Bridge.ts":
+/*!*******************!*\
+  !*** ./Bridge.ts ***!
+  \*******************/
+/*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -651,2091 +113,13 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var util_1 = __webpack_require__(0);
-var Control_1 = __webpack_require__(2);
-var DiagramElement = (function (_super) {
-    __extends(DiagramElement, _super);
-    function DiagramElement() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.$isDraggable = true;
-        _this.$pos = new Point();
-        _this.$size = new Point();
-        return _this;
-    }
-    DiagramElement.prototype.getPos = function () {
-        return this.$pos;
-    };
-    DiagramElement.prototype.getSize = function () {
-        return this.$size;
-    };
-    DiagramElement.prototype.getCenter = function () {
-        var pos = this.getPos();
-        var size = this.getSize();
-        return new Point(pos.x + size.x / 2, pos.y + size.y / 2);
-    };
-    DiagramElement.prototype.getCenterPosition = function (p) {
-        var pos = this.getPos();
-        var size = this.getSize();
-        var offset = this['$' + p];
-        var center = this.getCenter();
-        if (p === Point.DOWN) {
-            return new Point(Math.min(center.x + offset, center.x), pos.y + size.y, Point.DOWN);
-        }
-        if (p === Point.UP) {
-            return new Point(Math.min(center.x + offset, center.x), pos.y, Point.UP);
-        }
-        if (p === Point.LEFT) {
-            return new Point(pos.x, Math.min(center.y + offset, pos.y + size.y), Point.LEFT);
-        }
-        if (p === Point.RIGHT) {
-            return new Point(pos.x + size.x, Math.min(center.y + offset, pos.y + size.y), Point.RIGHT);
-        }
-        return new Point();
-    };
-    DiagramElement.prototype.getSVG = function () {
-        return null;
-    };
-    DiagramElement.prototype.getCanvas = function () {
-        return null;
-    };
-    DiagramElement.prototype.getEvents = function () {
-        return null;
-    };
-    DiagramElement.prototype.getAlreadyDisplayingSVG = function () {
-        return document.getElementById(this.id) || this.getSVG();
-    };
-    DiagramElement.prototype.load = function (data) {
-    };
-    DiagramElement.prototype.withPos = function (x, y) {
-        if (x && y) {
-            this.$pos = new Point(x, y);
-        }
-        else {
-            if (typeof (x) !== 'undefined' && x !== null) {
-                this.$pos.x = x;
-            }
-            if (typeof (y) !== 'undefined' && y !== null) {
-                this.$pos.y = y;
-            }
-        }
-        return this;
-    };
-    DiagramElement.prototype.withSize = function (width, height) {
-        if (width && height) {
-            this.$size = new Point(width, height);
-        }
-        else {
-            if (typeof (width) !== 'undefined') {
-                this.$size.x = width;
-            }
-            if (typeof (height) !== 'undefined') {
-                this.$size.y = height;
-            }
-        }
-        return this;
-    };
-    DiagramElement.prototype.getShowed = function () {
-        return _super.prototype.getShowed.call(this);
-    };
-    DiagramElement.prototype.createShape = function (attrs) {
-        return util_1.Util.createShape(attrs);
-    };
-    return DiagramElement;
-}(Control_1.Control));
-exports.DiagramElement = DiagramElement;
-var Point = (function () {
-    function Point(x, y, pos) {
-        this.x = 0;
-        this.y = 0;
-        this.x = Math.ceil(x || 0);
-        this.y = Math.ceil(y || 0);
-        if (pos) {
-            this['pos'] = pos;
-        }
-    }
-    Point.prototype.add = function (pos) {
-        this.x += pos.x;
-        this.y += pos.y;
-        return this;
-    };
-    Point.prototype.getPosition = function () {
-        if (!this['pos']) {
-            return '';
-        }
-        return this['pos'];
-    };
-    Point.prototype.addNum = function (x, y) {
-        this.x += x;
-        this.y += y;
-        return this;
-    };
-    Point.prototype.sum = function (pos) {
-        var sum = new Point(this.x, this.y);
-        sum.add(pos);
-        return sum;
-    };
-    Point.prototype.center = function (posA, posB) {
-        var count = 0;
-        if (posA) {
-            this.x += posA.x;
-            this.y += posA.y;
-            count++;
-        }
-        if (posB) {
-            this.x += posB.x;
-            this.y += posB.y;
-            count++;
-        }
-        if (count > 0) {
-            this.x = (this.x / count);
-            this.y = (this.y / count);
-        }
-    };
-    Point.prototype.isEmpty = function () {
-        return this.x < 1 && this.y < 1;
-    };
-    Point.prototype.size = function (posA, posB) {
-        var x1 = 0, x2 = 0, y1 = 0, y2 = 0;
-        if (posA) {
-            x1 = posA.x;
-            y1 = posA.y;
-        }
-        if (posB) {
-            x2 = posB.x;
-            y2 = posB.y;
-        }
-        if (x1 > x2) {
-            this.x = x1 - x2;
-        }
-        else {
-            this.x = x2 - x1;
-        }
-        if (y1 > y2) {
-            this.y = y1 - y2;
-        }
-        else {
-            this.y = y2 - y1;
-        }
-    };
-    Point.UP = 'UP';
-    Point.LEFT = 'LEFT';
-    Point.RIGHT = 'RIGHT';
-    Point.DOWN = 'DOWN';
-    return Point;
-}());
-exports.Point = Point;
-var Line = (function (_super) {
-    __extends(Line, _super);
-    function Line(lineType) {
-        var _this = _super.call(this) || this;
-        _this.lineType = lineType;
-        return _this;
-    }
-    Line.prototype.getTyp = function () {
-        return 'SVG';
-    };
-    Line.prototype.getPos = function () {
-        var pos = new Point();
-        pos.center(this.source, this.target);
-        return pos;
-    };
-    Line.prototype.getSize = function () {
-        var pos = new Point();
-        pos.size(this.source, this.target);
-        return pos;
-    };
-    Line.prototype.withColor = function (color) {
-        this.color = color;
-        return this;
-    };
-    Line.prototype.withSize = function (x, y) {
-        return this;
-    };
-    Line.prototype.withPath = function (path, close, angle) {
-        var i, d = 'M' + path[0].x + ' ' + path[0].y;
-        this.lineType = Line.FORMAT.PATH;
-        for (i = 1; i < path.length; i += 1) {
-            d = d + 'L ' + path[i].x + ' ' + path[i].y;
-        }
-        if (close) {
-            d = d + ' Z';
-            this.target = path[0];
-        }
-        else {
-            this.target = path[path.length - 1];
-        }
-        this.path = d;
-        if (angle instanceof Number) {
-            this.angle = angle;
-        }
-        else if (angle) {
-        }
-        return this;
-    };
-    Line.prototype.getSVG = function () {
-        if (this.lineType === 'PATH') {
-            return util_1.Util.create({
-                tag: 'path',
-                'd': this.path,
-                'fill': this.color,
-                stroke: '#000',
-                'stroke-width': '1px'
-            });
-        }
-        var line = util_1.Util.create({
-            tag: 'line',
-            'x1': this.source.x,
-            'y1': this.source.y,
-            'x2': this.target.x,
-            'y2': this.target.y,
-            'stroke': util_1.Util.getColor(this.color)
-        });
-        if (this.lineType && this.lineType.toLowerCase() === 'dotted') {
-            line.setAttribute('stroke-miterlimit', '4');
-            line.setAttribute('stroke-dasharray', '1,1');
-        }
-        return line;
-    };
-    Line.FORMAT = { SOLID: 'SOLID', DOTTED: 'DOTTED', PATH: 'PATH' };
-    return Line;
-}(DiagramElement));
-exports.Line = Line;
-
-
-/***/ }),
-/* 2 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var Data_1 = __webpack_require__(7);
-var EventListener_1 = __webpack_require__(32);
-var Control = (function () {
-    function Control() {
-        this.$viewData = this.initViewDataProperties(this.$viewData);
-    }
-    Control.prototype.initViewDataProperties = function (oldData) {
-        var data = new Data_1.default();
-        if (oldData) {
-            oldData.removeListener(this);
-            var keys = oldData.getKeys();
-            for (var i = 0; i < keys.length; i++) {
-                var attr = keys[i];
-                if (this.$view) {
-                    if (this.$view[attr] === null) {
-                        continue;
-                    }
-                    data.setValue(attr, this.$view[attr]);
-                }
-                else {
-                    data.setValue(attr, null);
-                }
-            }
-        }
-        data.addListener(this);
-        return data;
-    };
-    Control.prototype.setView = function (element) {
-        var oldElement = null;
-        if (this.$view) {
-            oldElement = this.$view;
-            if (this.$viewListener) {
-                oldElement.removeEventListener('change', this.$viewListener);
-            }
-        }
-        this.$view = element;
-        if (this.$viewListener) {
-            element.addEventListener('change', this.$viewListener);
-        }
-        this.$viewData = this.initViewDataProperties(this.$viewData);
-        return element;
-    };
-    Control.prototype.init = function (owner, property, id) {
-        if (!this.$owner) {
-            this.$owner = owner;
-        }
-        if (!this.id) {
-            this.id = id;
-        }
-        if (!this.property) {
-            this.property = this.generateID(property, id);
-        }
-        return this;
-    };
-    Control.prototype.createEventListener = function () {
-        return new EventListener_1.default();
-    };
-    Control.prototype.getRoot = function () {
-        if (this.$owner) {
-            return this.$owner.getRoot();
-        }
-        return this;
-    };
-    Control.prototype.initControl = function (data) {
-        var _this = this;
-        if (this.$view === null) {
-            return;
-        }
-        if (data.hasOwnProperty('prop')) {
-            for (var key in data.prop) {
-                var oldValue = this.$viewData.getValue(key);
-                if (this.$view) {
-                    this.updateElement(key, oldValue, data.prop[key]);
-                }
-            }
-            return;
-        }
-        var hasRem = data.hasOwnProperty('rem');
-        var removed = [];
-        if (data.hasOwnProperty('upd')) {
-            for (var key in data.upd) {
-                var oldValue = void 0;
-                var newValue = data.upd[key];
-                var entity = void 0;
-                var temp = false;
-                if (temp) {
-                    if (hasRem && data.rem.hasOwnProperty(key)) {
-                        removed.push(data.rem[key]);
-                    }
-                    continue;
-                }
-                if (hasRem && data.rem.hasOwnProperty(key)) {
-                    oldValue = data.rem[key];
-                    if (this.$model && this.$model.getValue(key) == oldValue) {
-                        entity = this.$model;
-                    }
-                    delete data.rem[key];
-                    if (entity === null) {
-                        continue;
-                    }
-                }
-                if (entity) {
-                    if (!hasRem) {
-                        if (entity === this.$model) {
-                            oldValue = this.$model.getValue(key);
-                        }
-                        else {
-                        }
-                    }
-                }
-                else {
-                    if (this.$model) {
-                        oldValue = this.$model.getValue(key);
-                        entity = this.$model;
-                    }
-                    if (oldValue === null) {
-                    }
-                }
-                if (newValue == oldValue) {
-                    continue;
-                }
-                var viewDataOldValue = this.$viewData.getValue(key);
-                if (entity == this.$viewData) {
-                    if (this.$view) {
-                        this.updateElement(key, viewDataOldValue, newValue);
-                    }
-                }
-                else {
-                    this.updateElement(key, viewDataOldValue, newValue);
-                }
-                this.getRoot().setValue(entity, key, newValue, oldValue);
-            }
-        }
-        if (hasRem) {
-            for (var key in data.rem) {
-                if (removed.hasOwnProperty(key)) {
-                    continue;
-                }
-                var oldValue = void 0;
-                this.updateElement(key, null, null);
-                if (this.$model) {
-                }
-            }
-        }
-        if (this.property) {
-            this.$view['onchange'] = (function (ev) {
-                _this.controlChanged(ev);
-            });
-        }
-    };
-    Control.prototype.getItem = function (id) {
-        return null;
-    };
-    Control.prototype.hasItem = function (id) {
-        return false;
-    };
-    Control.prototype.getItems = function () {
-        return new Object();
-    };
-    Control.prototype.setValue = function (object, attribute, newValue, oldValue) {
-        return false;
-    };
-    Control.prototype.propertyChange = function (entity, property, oldValue, newValue) {
-        if (oldValue === newValue) {
-            return;
-        }
-        if (oldValue === this.$viewData.getValue(property)) {
-            return;
-        }
-        this.$viewData.setValue(property, newValue);
-        if (this.$viewData) {
-            this.$viewData.setValue(property, newValue);
-        }
-        if (this.$model) {
-            this.$model.setValue(property, newValue);
-        }
-        this.updateElement(property, oldValue, newValue);
-    };
-    Control.prototype.controlChanged = function (ev) {
-        if (this.$view instanceof HTMLInputElement === false) {
-            return;
-        }
-        var element = this.$view;
-        if (element.checkValidity()) {
-        }
-    };
-    Control.prototype.updateElement = function (property, oldValue, newValue) {
-        if (this.$view && this.$view.hasAttribute(property)) {
-            this.$view.setAttribute(property, newValue);
-        }
-    };
-    Control.prototype.getId = function () {
-        return this.id;
-    };
-    Control.prototype.load = function (json, owner) {
-    };
-    Control.prototype.addItem = function (source, entity) {
-        if (entity) {
-            if (!this.property || entity.hasProperty(this.property)) {
-                entity.addListener(this, this.property);
-                this.$model = entity;
-            }
-        }
-    };
-    Control.prototype.appendChild = function (child) {
-        if (this.$view) {
-            this.$view.appendChild(child.$view);
-        }
-        else {
-            document.getElementsByTagName('body')[0].appendChild(child.$view);
-        }
-    };
-    Control.prototype.removeChild = function (child) {
-        if (this.$view) {
-            this.$view.removeChild(child.$view);
-        }
-        else {
-            document.getElementsByTagName('body')[0].removeChild(child.$view);
-        }
-    };
-    Control.prototype.setProperty = function (property) {
-        if (!this.property) {
-            return;
-        }
-        var objId = property.split('.')[0];
-        var object = null;
-        if (this.$owner.hasItem(objId)) {
-            object = this.$owner.getItem(objId);
-        }
-        if (this.$model) {
-            this.$model.removeListener(this, this.lastProperty);
-        }
-        this.property = property;
-        if (object) {
-            object.addListener(this, this.lastProperty);
-            this.$model = object;
-            this.updateElement(this.lastProperty, this.$viewData.getValue(this.lastProperty), object.prop[this.lastProperty]);
-        }
-    };
-    Control.prototype.registerListenerOnHTMLObject = function (eventType) {
-        return this.registerEventListener(eventType, this.$view);
-    };
-    Control.prototype.fireEvent = function (evt) {
-    };
-    Control.prototype.isClosed = function () {
-        return this['closed'];
-    };
-    Control.prototype.getShowed = function () {
-        if (this.isClosed()) {
-            return this.$owner.getShowed();
-        }
-        return this;
-    };
-    Control.prototype.getControlDataID = function () {
-        return this.id + '_data';
-    };
-    Control.prototype.generateID = function (property, id) {
-        if (property) {
-            return property;
-        }
-        if (id) {
-            return id + '.' + '_data';
-        }
-        return null;
-    };
-    Control.prototype.updateViewData = function () {
-        if (!this.$view) {
-            return;
-        }
-        var keys = this.$viewData.getKeys();
-        for (var i = 0; i < keys.length; i++) {
-            var attr = keys[i];
-            if (this.$view[attr] === null) {
-                continue;
-            }
-            this.$viewData.setValue(attr, this.$view[attr]);
-        }
-    };
-    Control.prototype.registerEventListener = function (eventType, htmlElement) {
-        if (!htmlElement) {
-            return false;
-        }
-        if (htmlElement instanceof HTMLElement === false) {
-            return false;
-        }
-        var control = this;
-        var listener = function (t) {
-            t.eventType = eventType;
-            t.id = control.id;
-            control.$owner.fireEvent(t);
-        };
-        htmlElement.addEventListener(eventType, listener);
-        return true;
-    };
-    Object.defineProperty(Control.prototype, "lastProperty", {
-        get: function () {
-            if (!this.property) {
-                return '';
-            }
-            var arr = this.property.split('.');
-            return arr[arr.length - 1];
-        },
-        enumerable: true,
-        configurable: true
-    });
-    return Control;
-}());
-exports.Control = Control;
-
-
-/***/ }),
-/* 3 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var EventBus = (function () {
-    function EventBus() {
-    }
-    EventBus.setActiveHandler = function (handler) {
-        this.$activeHandler = handler;
-    };
-    EventBus.isHandlerActiveOrFree = function (handler, notEmpty) {
-        if (notEmpty) {
-            return this.$activeHandler == handler;
-        }
-        return this.$activeHandler == handler || this.$activeHandler == '' || this.$activeHandler == undefined;
-    };
-    EventBus.isAnyHandlerActive = function () {
-        return !(this.$activeHandler === '' || this.$activeHandler == undefined);
-    };
-    EventBus.releaseActiveHandler = function () {
-        this.$activeHandler = '';
-    };
-    EventBus.getActiveHandler = function () {
-        return this.$activeHandler;
-    };
-    EventBus.register = function (control, view) {
-        var events;
-        if (typeof control['getEvents'] === 'function') {
-            events = control['getEvents']();
-        }
-        if (!events || !view) {
-            return;
-        }
-        var pos;
-        for (var _i = 0, events_1 = events; _i < events_1.length; _i++) {
-            var event_1 = events_1[_i];
-            if (EventBus.EVENTS.indexOf(event_1) < 0) {
-            }
-            pos = event_1.indexOf(':');
-            if (pos > 0) {
-                view.addEventListener(event_1.substr(pos + 1).toLowerCase(), function (evt) { EventBus.publish(control, evt); });
-            }
-            else {
-                view.addEventListener(event_1.substr(pos + 1).toLowerCase(), function (evt) { EventBus.publish(control, evt); });
-            }
-        }
-    };
-    EventBus.publish = function (element, evt) {
-        var handlers = EventBus.handlers[evt.type];
-        if (handlers) {
-            for (var _i = 0, handlers_1 = handlers; _i < handlers_1.length; _i++) {
-                var handler = handlers_1[_i];
-                handler.handle(evt, element);
-            }
-        }
-    };
-    EventBus.subscribe = function (handler) {
-        var eventTypes = [];
-        for (var _i = 1; _i < arguments.length; _i++) {
-            eventTypes[_i - 1] = arguments[_i];
-        }
-        for (var _a = 0, eventTypes_1 = eventTypes; _a < eventTypes_1.length; _a++) {
-            var event_2 = eventTypes_1[_a];
-            var handlers = EventBus.handlers[event_2];
-            if (handlers === null || handlers === undefined) {
-                handlers = [];
-                EventBus.handlers[event_2] = handlers;
-            }
-            handlers.push(handler);
-        }
-    };
-    EventBus.CREATE = 'Create';
-    EventBus.EDITOR = 'Editor';
-    EventBus.OPENPROPERTIES = 'openProperties';
-    EventBus.RELOADPROPERTIES = 'reloadProperties';
-    EventBus.ELEMENTMOUSEDOWN = 'ELEMENT:MOUSEDOWN';
-    EventBus.ELEMENTMOUSEUP = 'ELEMENT:MOUSEUP';
-    EventBus.ELEMENTMOUSELEAVE = 'ELEMENT:MOUSELEAVE';
-    EventBus.ELEMENTMOUSEMOVE = 'ELEMENT:MOUSEMOVE';
-    EventBus.ELEMENTMOUSEWHEEL = 'ELEMENT:MOUSEWHEEL';
-    EventBus.ELEMENTCLICK = 'ELEMENT:CLICK';
-    EventBus.ELEMENTDBLCLICK = 'ELEMENT:DBLCLICK';
-    EventBus.ELEMENTDRAG = 'ELEMENT:DRAG';
-    EventBus.ELEMENTDRAGOVER = 'ELEMENT:DRAGOVER';
-    EventBus.ELEMENTDROP = 'ELEMENT:DROP';
-    EventBus.ELEMENTDRAGLEAVE = 'ELEMENT:DRAGLEAVE';
-    EventBus.EVENTS = [
-        EventBus.CREATE,
-        EventBus.EDITOR,
-        EventBus.OPENPROPERTIES,
-        EventBus.RELOADPROPERTIES,
-        EventBus.ELEMENTMOUSEDOWN,
-        EventBus.ELEMENTMOUSEUP,
-        EventBus.ELEMENTMOUSELEAVE,
-        EventBus.ELEMENTMOUSEMOVE,
-        EventBus.ELEMENTMOUSEWHEEL,
-        EventBus.ELEMENTCLICK,
-        EventBus.ELEMENTDRAG,
-        EventBus.ELEMENTDBLCLICK,
-        EventBus.ELEMENTDRAGOVER,
-        EventBus.ELEMENTDROP,
-        EventBus.ELEMENTDRAGLEAVE,
-    ];
-    EventBus.handlers = {};
-    EventBus.$activeHandler = '';
-    return EventBus;
-}());
-exports.EventBus = EventBus;
-
-
-/***/ }),
-/* 4 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-function __export(m) {
-    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
-}
-Object.defineProperty(exports, "__esModule", { value: true });
-__export(__webpack_require__(11));
-__export(__webpack_require__(45));
-__export(__webpack_require__(46));
-__export(__webpack_require__(47));
-__export(__webpack_require__(25));
-__export(__webpack_require__(48));
-
-
-/***/ }),
-/* 5 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-function __export(m) {
-    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
-}
-Object.defineProperty(exports, "__esModule", { value: true });
-var AutoComplete_1 = __webpack_require__(13);
-var BR_1 = __webpack_require__(14);
-var Div_1 = __webpack_require__(15);
-var Label_1 = __webpack_require__(16);
-__export(__webpack_require__(6));
-__export(__webpack_require__(17));
-__export(__webpack_require__(20));
-__export(__webpack_require__(21));
-__export(__webpack_require__(14));
-__export(__webpack_require__(33));
-__export(__webpack_require__(15));
-__export(__webpack_require__(34));
-__export(__webpack_require__(35));
-__export(__webpack_require__(16));
-__export(__webpack_require__(37));
-__export(__webpack_require__(39));
-__export(__webpack_require__(40));
-__export(__webpack_require__(13));
-__export(__webpack_require__(18));
-__export(__webpack_require__(19));
-__export(__webpack_require__(41));
-__export(__webpack_require__(42));
-__export(__webpack_require__(10));
-new AutoComplete_1.AutoComplete();
-new BR_1.BR();
-new Div_1.Div();
-new Label_1.Label();
-
-
-/***/ }),
-/* 6 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var BaseElements_1 = __webpack_require__(1);
-var Node = (function (_super) {
-    __extends(Node, _super);
-    function Node(data) {
-        var _this = _super.call(this) || this;
-        _this.$edges = [];
-        _this.$minWidth = 150;
-        _this.$minheight = 25;
-        _this.withSize(_this.$minWidth, _this.$minheight);
-        if (data) {
-            if (data['x'] && data['y']) {
-                _this.withPos(data['x'], data['y']);
-            }
-            if (data['width'] || data['height']) {
-                _this.withSize(data['width'], data['height']);
-            }
-            if (data['label']) {
-                _this.label = data['label'];
-            }
-        }
-        return _this;
-    }
-    Node.prototype.getSVG = function () {
-        var pos = this.getPos();
-        var size = this.getSize();
-        var attr = {
-            tag: 'rect',
-            x: pos.x - size.x / 2,
-            y: pos.y - size.y / 2,
-            rx: 4,
-            ry: 4,
-            height: size.y,
-            width: size.x,
-            style: 'fill:white;stroke:black;stroke-width:2'
-        };
-        var shape = this.createShape(attr);
-        var attrText = {
-            tag: 'text',
-            x: pos.x,
-            y: pos.y,
-            'text-anchor': 'middle',
-            'alignment-baseline': 'middle',
-            'font-family': 'Verdana',
-            'font-size': '14',
-            fill: 'black'
-        };
-        var text = this.createShape(attrText);
-        text.textContent = this.id;
-        var group = this.createShape({ tag: 'g', id: this.id });
-        group.appendChild(shape);
-        group.appendChild(text);
-        return group;
-    };
-    Node.prototype.copy = function () {
-        var copy;
-        var model = this.$owner || this.getRoot();
-        if (model) {
-            var type = this.property || Node.name;
-            var newId = model.getNewId(type);
-            copy = model.createElement(type, newId, null);
-            copy.withSize(this.getSize().x, this.getSize().y);
-            copy.$owner = model;
-        }
-        else {
-            copy.id = this.id + '-copy';
-            copy.$owner = this.getRoot();
-        }
-        return copy;
-    };
-    Node.prototype.redrawEdges = function () {
-        for (var _i = 0, _a = this.$edges; _i < _a.length; _i++) {
-            var edge = _a[_i];
-            edge.redraw(this);
-        }
-    };
-    return Node;
-}(BaseElements_1.DiagramElement));
-exports.Node = Node;
-
-
-/***/ }),
-/* 7 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var Data = (function () {
-    function Data() {
-        this.prop = {};
-        this.$listener = {};
-    }
-    Data.prototype.getKeys = function () {
-        return Object.keys(this.prop);
-    };
-    Data.prototype.addProperties = function (values) {
-        if (!values) {
-            return;
-        }
-        if (values['prop']) {
-            var prop = values['prop'];
-            for (var property in prop) {
-                if (prop.hasOwnProperty(property) === false) {
-                    continue;
-                }
-                if (prop[property] !== null && '' !== prop[property]) {
-                    this.setValue(property, prop[property]);
-                }
-            }
-        }
-        else {
-            var upd = values['upd'] || {};
-            var rem = values['rem'] || {};
-            for (var property in upd) {
-                if (upd.hasOwnProperty(property) === false) {
-                    continue;
-                }
-                if (rem.hasOwnProperty(property) === false) {
-                    this.setValue(property, upd[property]);
-                }
-                else {
-                    if (this.getValue(property) === rem[property]) {
-                        this.setValue(property, upd[property]);
-                    }
-                }
-            }
-        }
-    };
-    Data.nullCheck = function (property) {
-        if (property === undefined || property == null) {
-            property = "";
-        }
-        return property;
-    };
-    Data.prototype.getListeners = function (property) {
-        property = Data.nullCheck(property);
-        return this.$listener[property];
-    };
-    Data.prototype.getValue = function (attribute) {
-        return this.prop[attribute];
-    };
-    Data.prototype.setValue = function (attribute, newValue) {
-        var oldValue = this.prop[attribute];
-        if (oldValue == newValue && newValue !== null) {
-            return;
-        }
-        this.prop[attribute] = newValue;
-        this.firePropertyChange(attribute, oldValue, newValue);
-    };
-    Data.prototype.firePropertyChange = function (attribute, oldValue, newValue) {
-        attribute = Data.nullCheck(attribute);
-        var listeners = this.getListeners(attribute);
-        if (listeners) {
-            for (var i in listeners) {
-                listeners[i].propertyChange(this, attribute, oldValue, newValue);
-            }
-        }
-        listeners = this.getListeners(null);
-        if (listeners) {
-            for (var i in listeners) {
-                listeners[i].propertyChange(this, attribute, oldValue, newValue);
-            }
-        }
-    };
-    Data.prototype.addTo = function (attribute, newValue) {
-        var add;
-        if (this.prop[attribute]) {
-            if (this.prop[attribute].contains(newValue) === false) {
-                add = true;
-            }
-        }
-        else {
-            this.prop[attribute] = [];
-            add = true;
-        }
-        if (add) {
-            this.prop[attribute].push(newValue);
-            this.firePropertyChange(attribute, null, newValue);
-        }
-        return add;
-    };
-    Data.prototype.removeFrom = function (attribute, newValue) {
-        if (!this.prop[attribute]) {
-            return true;
-        }
-        var pos = this.prop[attribute].indexOf(newValue);
-        if (pos < 0) {
-            return true;
-        }
-        this.prop[attribute].splice(pos, 1);
-        this.firePropertyChange(attribute, newValue, null);
-        return true;
-    };
-    Data.prototype.addListener = function (control, property) {
-        var listeners = this.getListeners(property);
-        if (!listeners) {
-            listeners = [];
-            this.$listener[Data.nullCheck(property)] = listeners;
-        }
-        listeners.push(control);
-    };
-    Data.prototype.removeListener = function (control, property) {
-        var listeners = this.getListeners(property);
-        if (listeners === null) {
-            return;
-        }
-        var pos = listeners.indexOf(control);
-        if (pos >= 0) {
-            listeners.splice(pos, 1);
-        }
-        if (listeners.length == 0 && Data.nullCheck(property) != "") {
-            delete this.$listener[property];
-        }
-    };
-    Data.prototype.hasProperty = function (property) {
-        return this.prop.hasOwnProperty(property);
-    };
-    Data.prototype.addFrom = function (attribute, oldData) {
-        if (oldData) {
-            this.setValue(attribute, oldData.getValue(attribute));
-        }
-        else {
-            this.setValue(attribute, null);
-        }
-    };
-    Data.prototype.removeKey = function (key) {
-        if (this.hasProperty(key)) {
-            var oldValue = this.prop[key];
-            delete this.prop[key];
-            return oldValue;
-        }
-        return null;
-    };
-    return Data;
-}());
-exports.default = Data;
-
-
-/***/ }),
-/* 8 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var edges = __webpack_require__(4);
-var edges_1 = __webpack_require__(4);
-var nodes = __webpack_require__(5);
-var layouts = __webpack_require__(49);
-var Model_1 = __webpack_require__(50);
-var Palette_1 = __webpack_require__(51);
-var PropertiesPanel = __webpack_require__(29);
-var BaseElements_1 = __webpack_require__(1);
-var util_1 = __webpack_require__(0);
-var Control_1 = __webpack_require__(2);
-var EventBus_1 = __webpack_require__(3);
-var handlers_1 = __webpack_require__(52);
-var ImportFile_1 = __webpack_require__(30);
-var Toolbar_1 = __webpack_require__(59);
-var Graph = (function (_super) {
-    __extends(Graph, _super);
-    function Graph(json, options) {
-        var _this = _super.call(this) || this;
-        _this.containerElements = ['svg', 'g'];
-        _this.relevantStyles = {
-            'rect': ['fill', 'stroke', 'stroke-width'],
-            'path': ['fill', 'stroke', 'stroke-width', 'opacity'],
-            'circle': ['fill', 'stroke', 'stroke-width'],
-            'line': ['stroke', 'stroke-width'],
-            'text': ['fill', 'font-size', 'text-anchor', 'font-family'],
-            'polygon': ['stroke', 'fill']
-        };
-        json = json || {};
-        if (json['data']) {
-            options = json['options'];
-            json = json['data'];
-            _this.id = json['id'];
-        }
-        _this.options = options || { features: { drag: true } };
-        if (json['init']) {
-            return _this;
-        }
-        if (!_this.options.origin) {
-            _this.options.origin = new BaseElements_1.Point(150, 45);
-        }
-        if (_this.options.autoSave) {
-            util_1.Util.isAutoSave = options.autoSave;
-        }
-        _this.initFactories();
-        _this.initCanvas();
-        _this.initFeatures(_this.options.features);
-        if (!_this.lookupInLocalStorage()) {
-            _this.load(json);
-        }
-        EventBus_1.EventBus.register(_this, _this.$view);
-        return _this;
-    }
-    Graph.prototype.lookupInLocalStorage = function () {
-        if (!this.options.autoSave) {
-            return false;
-        }
-        if (!util_1.Util.isLocalStorageSupported()) {
-            return false;
-        }
-        var diagram = util_1.Util.getDiagramFromLocalStorage();
-        if (diagram && diagram.length > 0) {
-            if (confirm('Restore previous session?')) {
-                var jsonData = JSON.parse(diagram);
-                this.load(jsonData);
-                return true;
-            }
-        }
-        return false;
-    };
-    Graph.prototype.fitSizeOnNodes = function () {
-        var maxWidth = 0;
-        var maxHeight = 0;
-        for (var _i = 0, _a = this.$graphModel.nodes; _i < _a.length; _i++) {
-            var node = _a[_i];
-            var nodePos = node.getPos();
-            var nodeSize = node.getSize();
-            var nodeWidestPosX = nodePos.x + nodeSize.x;
-            var nodeWidestPosY = nodePos.y + nodeSize.y;
-            if (nodeWidestPosX > maxWidth) {
-                maxWidth = nodeWidestPosX;
-            }
-            if (nodeWidestPosY > maxHeight) {
-                maxHeight = nodeWidestPosY;
-            }
-        }
-        this.root.setAttributeNS(null, 'width', '' + (maxWidth + 100));
-        this.root.setAttributeNS(null, 'height', '' + (maxHeight + 50));
-    };
-    Graph.prototype.saveAs = function (typ) {
-        typ = typ.toLowerCase();
-        var currentSize = this.getRootSize();
-        this.fitSizeOnNodes();
-        if (typ === 'svg') {
-            this.exportSvg();
-        }
-        else if (typ === 'png') {
-            this.exportPng();
-        }
-        else if (typ === 'html') {
-            this.exportHtml();
-        }
-        else if (typ === 'pdf') {
-            this.exportPdf();
-        }
-        else if (typ === 'json') {
-            this.exportJson();
-        }
-        this.root.setAttributeNS(null, 'width', '' + currentSize.width);
-        this.root.setAttributeNS(null, 'height', '' + currentSize.height);
-    };
-    Graph.prototype.save = function (typ, data, name) {
-        var a = document.createElement('a');
-        a.href = window.URL.createObjectURL(new Blob([data], { type: typ }));
-        a.download = name;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-    };
-    Graph.prototype.exportSvg = function () {
-        var wellFormatedSvgDom = this.getSvgWithStyleAttributes();
-        this.save('image/svg+xml', this.serializeXmlNode(wellFormatedSvgDom), 'class_diagram.svg');
-    };
-    Graph.prototype.exportHtml = function () {
-        var htmlFacade = '<html><head><title>DiagramJS - Classdiagram</title></head><body>$content</body></html>';
-        var wellFormatedSvgDom = this.getSvgWithStyleAttributes();
-        var svgAsXml = this.serializeXmlNode(wellFormatedSvgDom);
-        var htmlResult = htmlFacade.replace('$content', svgAsXml);
-        this.save('text/plain', htmlResult, 'class_diagram.htm');
-    };
-    Graph.prototype.exportJson = function () {
-        var typ = 'text/plain';
-        var jsonObj = util_1.Util.toJson(this.$graphModel);
-        var data = JSON.stringify(jsonObj, null, '\t');
-        this.save(typ, data, 'class_diagram.json');
-    };
-    Graph.prototype.exportPdf = function () {
-        if (!window['jsPDF']) {
-            console.log('jspdf n.a.');
-            return;
-        }
-        var typ = 'image/svg+xml';
-        var xmlNode = this.serializeXmlNode(this.getSvgWithStyleAttributes());
-        var url = window.URL.createObjectURL(new Blob([xmlNode], { type: typ }));
-        var canvas, context, a, image = new Image();
-        var size = this.getRootSize();
-        image.onload = function () {
-            canvas = document.createElement('canvas');
-            canvas.width = size.width;
-            canvas.height = size.height;
-            context = canvas.getContext('2d');
-            context.drawImage(image, 0, 0);
-            var pdf = new window['jsPDF']();
-            pdf.addImage(canvas.toDataURL('image/jpeg'), 'jpeg', 15, 40, 180, 160);
-            pdf.save('class_diagram.pdf');
-        };
-        image.src = url;
-    };
-    Graph.prototype.exportPng = function () {
-        var canvas, context, a, image = new Image();
-        var xmlNode = this.serializeXmlNode(this.getSvgWithStyleAttributes());
-        var typ = 'image/svg+xml';
-        var url = window.URL.createObjectURL(new Blob([xmlNode], { type: typ }));
-        var size = this.getRootSize();
-        image.onload = function () {
-            canvas = document.createElement('canvas');
-            canvas.width = size.width;
-            canvas.height = size.height;
-            context = canvas.getContext('2d');
-            context.drawImage(image, 0, 0);
-            a = document.createElement('a');
-            a.download = 'class_diagram.png';
-            a.href = canvas.toDataURL('image/png');
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-        };
-        image.src = url;
-    };
-    Graph.prototype.getSvgWithStyleAttributes = function () {
-        var oDOM = this.$graphModel.$view.cloneNode(true);
-        this.readElement(oDOM, this.$graphModel.$view);
-        return oDOM;
-    };
-    Graph.prototype.serializeXmlNode = function (xmlNode) {
-        if (window['XMLSerializer'] !== undefined) {
-            return (new window['XMLSerializer']()).serializeToString(xmlNode);
-        }
-        if (xmlNode.xml !== undefined) {
-            return xmlNode.xml;
-        }
-        return xmlNode.outerHTML;
-    };
-    Graph.prototype.getRootSize = function () {
-        var width;
-        var height;
-        width = +this.root.getAttribute('width');
-        height = +this.root.getAttribute('height');
-        return { width: width, height: height };
-    };
-    Graph.prototype.load = function (json, owner) {
-        this.$graphModel = new Model_1.GraphModel();
-        this.$graphModel.init(this);
-        this.$graphModel.load(json);
-    };
-    Graph.prototype.clearModel = function () {
-        this.$graphModel.removeAllElements();
-        this.clearSvgRoot();
-    };
-    Graph.prototype.init = function (owner, property, id) {
-        _super.prototype.init.call(this, owner, property, id);
-        this.layout();
-        return this;
-    };
-    Graph.prototype.propertyChange = function (entity, property, oldValue, newValue) {
-        return;
-    };
-    Graph.prototype.getNextFreePosition = function () {
-        if (!this.$graphModel) {
-            return new BaseElements_1.Point(50, 50);
-        }
-        var point = new BaseElements_1.Point(0, 50);
-        var maxX = 0;
-        var minX = 9000;
-        for (var _i = 0, _a = this.$graphModel.nodes; _i < _a.length; _i++) {
-            var node = _a[_i];
-            maxX = Math.max(maxX, node.getPos().x);
-            minX = Math.min(minX, node.getPos().x);
-        }
-        if (minX > 170) {
-            point.x = 10;
-        }
-        else {
-            point.x = maxX + 200;
-        }
-        return point;
-    };
-    Graph.prototype.addElement = function (type, dontDraw) {
-        var success = this.$graphModel.addElement(type);
-        if (success === true) {
-            this.layout(dontDraw);
-        }
-        return success;
-    };
-    Graph.prototype.addElementWithValues = function (type, optionalValues, layout, dontDraw) {
-        var element = this.$graphModel.addElementWithValues(type, optionalValues);
-        if (element && layout) {
-            this.layout(dontDraw);
-        }
-        return element;
-    };
-    Graph.prototype.layout = function (dontDraw) {
-        this.getLayout().layout(this, this.$graphModel);
-        if (dontDraw) {
-            return;
-        }
-        this.draw();
-    };
-    Graph.prototype.getEvents = function () {
-        return [EventBus_1.EventBus.ELEMENTDRAGOVER, EventBus_1.EventBus.ELEMENTDRAGLEAVE, EventBus_1.EventBus.ELEMENTDROP];
-    };
-    Graph.prototype.draw = function () {
-        this.clearSvgRoot();
-        var model = this.$graphModel;
-        var root = this.root;
-        var max = new BaseElements_1.Point();
-        if (this.options) {
-            max.x = this.options.minWidth || 0;
-            max.y = this.options.minHeight || 0;
-        }
-        for (var _i = 0, _a = model.nodes; _i < _a.length; _i++) {
-            var node = _a[_i];
-            var svg = node.getSVG();
-            EventBus_1.EventBus.register(node, svg);
-            root.appendChild(svg);
-            var temp = void 0;
-            temp = node.getPos().x + node.getSize().x;
-            if (temp > max.x) {
-                max.x = temp;
-            }
-            temp = node.getPos().y + node.getSize().y;
-            if (temp > max.y) {
-                max.y = temp;
-            }
-        }
-        util_1.Util.setAttributeSize(this.root, max.x + 60, max.y + 40);
-        for (var _b = 0, _c = model.edges; _b < _c.length; _b++) {
-            var edge = _c[_b];
-            var svg = edge.getSVG();
-            EventBus_1.EventBus.register(edge, svg);
-            root.appendChild(svg);
-        }
-    };
-    Graph.prototype.drawElement = function (element) {
-        if (!element) {
-            return;
-        }
-        var svg = element.getSVG();
-        this.root.appendChild(svg);
-        var rootSize = this.getRootSize();
-        var newWidth = element.getPos().x + element.getSize().x + 40;
-        var newHeight = element.getPos().y + element.getSize().y;
-        if (rootSize.width < newWidth) {
-            this.root.setAttributeNS(null, 'width', '' + newWidth);
-        }
-        if (rootSize.height < newHeight) {
-            this.root.setAttributeNS(null, 'height', '' + newHeight);
-        }
-        if (element instanceof edges_1.Association) {
-            var edge = element;
-            edge.redraw(edge.$sNode);
-            var srcSvg = element.$sNode.getAlreadyDisplayingSVG();
-            var targetSvg = element.$tNode.getAlreadyDisplayingSVG();
-            this.root.appendChild(srcSvg);
-            this.root.appendChild(targetSvg);
-        }
-        EventBus_1.EventBus.register(element, svg);
-    };
-    Graph.prototype.removeElement = function (element) {
-        if (!element) {
-            return;
-        }
-        var alreadyDisplayingSvg = element.getAlreadyDisplayingSVG();
-        if (util_1.Util.isParentOfChild(this.root, alreadyDisplayingSvg)) {
-            this.root.removeChild(alreadyDisplayingSvg);
-        }
-    };
-    Graph.prototype.generate = function (workspace) {
-        this.$graphModel.workspace = workspace;
-        var data, result = util_1.Util.toJson(this.$graphModel);
-        data = JSON.stringify(result, null, '\t');
-        if (window['java'] && typeof window['java'].generate === 'function') {
-            window['java'].generate(data);
-        }
-    };
-    Graph.prototype.readElement = function (parent, origData) {
-        var children = parent.childNodes;
-        var origChildDat = origData.childNodes;
-        for (var cd = 0; cd < children.length; cd++) {
-            var child = children[cd];
-            var tagName = child.tagName;
-            if (this.containerElements.indexOf(tagName) !== -1) {
-                this.readElement(child, origChildDat[cd]);
-            }
-            else if (tagName in this.relevantStyles) {
-                var styleDef = window.getComputedStyle(origChildDat[cd]);
-                var styleString = '';
-                for (var st = 0; st < this.relevantStyles[tagName].length; st++) {
-                    styleString += this.relevantStyles[tagName][st] + ':' + styleDef.getPropertyValue(this.relevantStyles[tagName][st]) + '; ';
-                }
-                child.setAttribute('style', styleString);
-            }
-        }
-    };
-    Graph.prototype.createPattern = function () {
-        var defs = util_1.Util.createShape({ tag: 'defs' });
-        var pattern = util_1.Util.createShape({
-            tag: 'pattern',
-            id: 'raster',
-            patternUnits: 'userSpaceOnUse',
-            width: 40,
-            height: 40
-        });
-        var path = 'M0 4 L0 0 L4 0 M36 0 L40 0 L40 4 M40 36 L40 40 L36 40 M4 40 L0 40 L0 36';
-        var cross = util_1.Util.createShape({
-            tag: 'path',
-            d: path,
-            stroke: '#DDD',
-            'stroke-width': 1,
-            fill: 'none'
-        });
-        var rect = util_1.Util.createShape({
-            tag: 'rect',
-            x: 0,
-            y: 0,
-            width: 40,
-            height: 40,
-            fill: 'none'
-        });
-        pattern.appendChild(rect);
-        pattern.appendChild(cross);
-        defs.appendChild(pattern);
-        return defs;
-    };
-    Graph.prototype.clearSvgRoot = function () {
-        var root = this.root;
-        this.$graphModel.$view.dispatchEvent(util_1.Util.createCustomEvent('click'));
-        while (root.firstChild) {
-            root.removeChild(root.firstChild);
-        }
-        root.appendChild(this.createPattern());
-        var fillValue = 'none';
-        if (this.options.raster) {
-            fillValue = 'url(#raster)';
-        }
-        var background = util_1.Util.createShape({
-            tag: 'rect',
-            id: 'background',
-            width: 5000,
-            height: 5000,
-            x: 0,
-            y: 0,
-            stroke: '#999',
-            'stroke-width': '1',
-            fill: fillValue
-        });
-        root.appendChild(background);
-        var inlineEdit = document.getElementById('inlineEdit');
-        if (inlineEdit && document.body.contains(inlineEdit)) {
-            document.body.removeChild(inlineEdit);
-        }
-    };
-    Graph.prototype.getLayout = function () {
-        if (this.currentlayout) {
-            return this.currentlayout;
-        }
-        var layout = this.options.layout || '';
-        if (this.layoutFactory[layout]) {
-            this.currentlayout = new this.layoutFactory[layout]();
-        }
-        else {
-            this.currentlayout = new layouts.DagreLayout();
-        }
-        return this.currentlayout;
-    };
-    Graph.prototype.initFactories = function () {
-        var noder = nodes;
-        this.nodeFactory = {};
-        for (var id in noder) {
-            if (noder.hasOwnProperty(id) === true) {
-                this.nodeFactory[id] = noder[id];
-            }
-        }
-        var edger = edges;
-        this.edgeFactory = {};
-        for (var id in edger) {
-            if (edger.hasOwnProperty(id) === true) {
-                this.edgeFactory[id] = edger[id];
-            }
-        }
-        var layouter = layouts;
-        this.layoutFactory = {};
-        for (var id in layouter) {
-            if (layouter.hasOwnProperty(id) === true) {
-                this.layoutFactory[id] = layouter[id];
-            }
-        }
-    };
-    Graph.prototype.initCanvas = function () {
-        if (this.options.canvas) {
-            this.$view = document.getElementById(this.options.canvas);
-        }
-        if (!this.$view) {
-            this.$view = document.createElement('div');
-            this.$view.setAttribute('class', 'diagram');
-            document.body.appendChild(this.$view);
-        }
-    };
-    Graph.prototype.initFeatures = function (features) {
-        if (features) {
-            if (features.newedge) {
-                EventBus_1.EventBus.subscribe(new handlers_1.NewEdge(this), 'mousedown', 'mouseup', 'mousemove', 'mouseleave');
-            }
-            if (features.import) {
-                EventBus_1.EventBus.subscribe(new ImportFile_1.ImportFile(this), 'dragover', 'dragleave', 'drop');
-            }
-            if (features.zoom) {
-                var mousewheel = 'onwheel' in document.createElement('div') ? 'wheel' : document.onmousewheel !== undefined ? 'mousewheel' : 'DOMMouseScroll';
-                EventBus_1.EventBus.subscribe(new handlers_1.Zoom(this), mousewheel);
-            }
-            if (features.drag) {
-                EventBus_1.EventBus.subscribe(new handlers_1.Drag(this), 'mousedown', 'mouseup', 'mousemove', 'mouseleave');
-            }
-            if (features.select) {
-                EventBus_1.EventBus.subscribe(new handlers_1.Select(this), 'click', 'drag');
-            }
-            if (features.palette) {
-                var palette = new Palette_1.default(this);
-            }
-            if (features.toolbar) {
-                new Toolbar_1.Toolbar(this).show();
-            }
-            if (features.properties) {
-                var dispatcher = new handlers_1.PropertiesDispatcher(this);
-                dispatcher.dispatch(PropertiesPanel.PropertiesPanel.PropertiesView.Clear);
-                EventBus_1.EventBus.subscribe(dispatcher, 'dblclick', 'click', EventBus_1.EventBus.RELOADPROPERTIES);
-            }
-            if (features.addnode) {
-                EventBus_1.EventBus.subscribe(new handlers_1.AddNode(this), 'mousedown', 'mouseup', 'mousemove', 'mouseleave');
-            }
-        }
-    };
-    return Graph;
-}(Control_1.Control));
-exports.Graph = Graph;
-
-
-/***/ }),
-/* 9 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-function __export(m) {
-    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
-}
-Object.defineProperty(exports, "__esModule", { value: true });
-var BaseElements_1 = __webpack_require__(1);
-exports.Point = BaseElements_1.Point;
-var Bridge_1 = __webpack_require__(12);
-exports.Bridge = Bridge_1.Bridge;
-exports.DelegateAdapter = Bridge_1.DelegateAdapter;
-var Graph_1 = __webpack_require__(8);
-exports.Graph = Graph_1.Graph;
-__export(__webpack_require__(5));
-__export(__webpack_require__(4));
-__export(__webpack_require__(23));
-__export(__webpack_require__(60));
-var BaseElements_2 = __webpack_require__(1);
-var Graph_2 = __webpack_require__(8);
-var ClassEditor_1 = __webpack_require__(61);
-var Bridge_2 = __webpack_require__(12);
-var util_1 = __webpack_require__(0);
-var nodes = __webpack_require__(5);
-var edges = __webpack_require__(4);
-if (!window['Point']) {
-    window['Point'] = BaseElements_2.Point;
-    window['Graph'] = Graph_2.Graph;
-    window['bridge'] = new Bridge_2.Bridge();
-    window['Util'] = util_1.Util;
-    window['Clazz'] = nodes.Clazz;
-    window['Association'] = edges.Association;
-    window['SymbolLibary'] = nodes.SymbolLibary;
-    window['ClassEditor'] = ClassEditor_1.ClassEditor;
-}
-
-
-/***/ }),
-/* 10 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var util_1 = __webpack_require__(0);
-var BaseElements_1 = __webpack_require__(1);
-var ClazzProperty = (function (_super) {
-    __extends(ClazzProperty, _super);
-    function ClazzProperty(data) {
-        var _this = _super.call(this) || this;
-        _this.modifier = '+';
-        _this.extractData(data);
-        return _this;
-    }
-    ClazzProperty.prototype.extractData = function (data) {
-        if (!data) {
-            return;
-        }
-        if (data.type) {
-            this.type = data.type;
-        }
-        if (data.name) {
-            this.name = data.name;
-        }
-        if (data.modifier) {
-            this.modifier = data.modifier;
-        }
-        if (typeof data === 'string') {
-            var dataSplitted = data.split(':');
-            if (dataSplitted && dataSplitted.length === 2) {
-                var modifierAndNameSplitted = dataSplitted[0].trim();
-                var firstChar = modifierAndNameSplitted[0];
-                if (firstChar === '+' || firstChar === '-' || firstChar === '#') {
-                    this.modifier = firstChar;
-                    this.name = modifierAndNameSplitted.substring(1, modifierAndNameSplitted.length).trim();
-                }
-                else {
-                    this.name = modifierAndNameSplitted;
-                }
-                this.name = this.name.replace(/ /g, '_');
-                this.type = dataSplitted[1].trim() || 'String';
-                if (this.type.toLowerCase() === 'string') {
-                    this.type = 'String';
-                }
-                this.type = this.type.replace(/ /g, '_');
-            }
-        }
-    };
-    ClazzProperty.prototype.update = function (data) {
-        this.extractData(data);
-        this.updateTextOfView();
-    };
-    ClazzProperty.prototype.updateModifier = function (modifier) {
-        this.modifier = modifier;
-        this.updateTextOfView();
-    };
-    ClazzProperty.prototype.updateType = function (type) {
-        this.type = type;
-        this.updateTextOfView();
-    };
-    ClazzProperty.prototype.updateName = function (name) {
-        this.name = name;
-        this.updateTextOfView();
-    };
-    ClazzProperty.prototype.updateTextOfView = function () {
-        this.$view.textContent = this.toString();
-        util_1.Util.saveToLocalStorage(this.$owner.$owner);
-    };
-    ClazzProperty.prototype.getSVG = function () {
-        var attrText = {
-            tag: 'text',
-            'text-anchor': 'start',
-            'alignment-baseline': 'middle',
-        };
-        var attrSvg = util_1.Util.createShape(attrText);
-        attrSvg.textContent = this.toString();
-        this.$view = attrSvg;
-        return attrSvg;
-    };
-    ClazzProperty.prototype.toString = function () {
-        return this.modifier + " " + this.name + " : " + this.type;
-    };
-    return ClazzProperty;
-}(BaseElements_1.DiagramElement));
-exports.default = ClazzProperty;
-
-
-/***/ }),
-/* 11 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var BaseElements_1 = __webpack_require__(1);
-var InfoText_1 = __webpack_require__(44);
-var util_1 = __webpack_require__(0);
-var EventBus_1 = __webpack_require__(3);
-var edges = __webpack_require__(4);
-var Direction;
-(function (Direction) {
-    Direction[Direction["Up"] = 0] = "Up";
-    Direction[Direction["Down"] = 1] = "Down";
-    Direction[Direction["Left"] = 2] = "Left";
-    Direction[Direction["Right"] = 3] = "Right";
-})(Direction = exports.Direction || (exports.Direction = {}));
-var Association = (function (_super) {
-    __extends(Association, _super);
-    function Association(data) {
-        var _this = _super.call(this) || this;
-        _this.$points = [];
-        _this.withData(data);
-        return _this;
-    }
-    Association.prototype.withData = function (data) {
-        if (!data) {
-            return this;
-        }
-        var srcInfo;
-        var trgInfo;
-        if (data.source && typeof data.source !== 'string') {
-            srcInfo = data.source;
-        }
-        else if (data.sourceInfo && typeof data.sourceInfo !== 'string') {
-            srcInfo = data.sourceInfo;
-        }
-        if (srcInfo) {
-            this.sourceInfo = new InfoText_1.InfoText(srcInfo);
-            this.sourceInfo.$owner = this;
-        }
-        if (data.target && typeof data.target !== 'string') {
-            trgInfo = data.target;
-        }
-        else if (data.targetInfo && typeof data.targetInfo !== 'string') {
-            trgInfo = data.targetInfo;
-        }
-        if (trgInfo) {
-            this.targetInfo = new InfoText_1.InfoText(trgInfo);
-            this.targetInfo.$owner = this;
-        }
-        return this;
-    };
-    Association.prototype.updateSrcCardinality = function (cardinality) {
-        this.sourceInfo = this.updateCardinality(this.$sNode, this.sourceInfo, cardinality);
-        this.redrawSourceInfo();
-        util_1.Util.saveToLocalStorage(this.$owner);
-    };
-    Association.prototype.updateTargetCardinality = function (cardinality) {
-        this.targetInfo = this.updateCardinality(this.$tNode, this.targetInfo, cardinality);
-        this.redrawTargetInfo();
-        util_1.Util.saveToLocalStorage(this.$owner);
-    };
-    Association.prototype.updateCardinality = function (node, infoText, cardinality) {
-        if (!infoText) {
-            infoText = new InfoText_1.InfoText({ 'cardinality': cardinality });
-            infoText.$owner = this;
-            var calcPos = this.calcInfoPosNew(infoText, node);
-            infoText.withPos(calcPos.x, calcPos.y);
-            this.$view.appendChild(infoText.getSVG());
-            return infoText;
-        }
-        infoText.cardinality = cardinality;
-        if (infoText.isEmpty()) {
-            this.$view.removeChild(infoText.$view);
-            return undefined;
-        }
-        infoText.updateCardinality(cardinality);
-        return infoText;
-    };
-    Association.prototype.updateSrcProperty = function (property) {
-        this.sourceInfo = this.updateProperty(this.$sNode, this.sourceInfo, property);
-        this.redrawSourceInfo();
-        util_1.Util.saveToLocalStorage(this.$owner);
-    };
-    Association.prototype.updateTargetProperty = function (property) {
-        this.targetInfo = this.updateProperty(this.$tNode, this.targetInfo, property);
-        this.redrawTargetInfo();
-        util_1.Util.saveToLocalStorage(this.$owner);
-    };
-    Association.prototype.updateProperty = function (node, infoText, property) {
-        if (!infoText) {
-            infoText = new InfoText_1.InfoText({ 'property': property });
-            infoText.$owner = this;
-            var calcPos = this.calcInfoPosNew(infoText, node);
-            infoText.withPos(calcPos.x, calcPos.y);
-            this.$view.appendChild(infoText.getSVG());
-            return infoText;
-        }
-        infoText.property = property;
-        if (infoText.isEmpty()) {
-            this.$view.removeChild(infoText.$view);
-            return undefined;
-        }
-        infoText.updateProperty(property);
-        return infoText;
-    };
-    Association.prototype.withItem = function (source, target) {
-        source.$edges.push(this);
-        target.$edges.push(this);
-        this.$sNode = source;
-        this.$tNode = target;
-        this.source = source.label;
-        this.target = target.label;
-        return this;
-    };
-    Association.prototype.getSVG = function () {
-        var group = util_1.Util.createShape({ tag: 'g', id: this.id, class: 'SVGEdge' });
-        var path = this.getPath();
-        var attr = {
-            tag: 'path',
-            d: path,
-            fill: 'none'
-        };
-        var pathLine = this.createShape(attr);
-        attr['style'] = 'stroke-width:20;opacity:0';
-        var extendedPathLine = util_1.Util.createShape(attr);
-        group.appendChild(extendedPathLine);
-        group.appendChild(pathLine);
-        if (this.sourceInfo) {
-            var calcPos = this.calcInfoPosNew(this.sourceInfo, this.$sNode);
-            this.sourceInfo.withPos(calcPos.x, calcPos.y);
-            group.appendChild(this.sourceInfo.getSVG());
-        }
-        if (this.targetInfo) {
-            var calcPos = this.calcInfoPosNew(this.targetInfo, this.$tNode);
-            this.targetInfo.withPos(calcPos.x, calcPos.y);
-            group.appendChild(this.targetInfo.getSVG());
-        }
-        this.$pathWideSvg = extendedPathLine;
-        this.$pathSvg = pathLine;
-        this.$view = group;
-        return group;
-    };
-    Association.prototype.getEvents = function () {
-        return [EventBus_1.EventBus.ELEMENTCLICK, EventBus_1.EventBus.ELEMENTDBLCLICK, EventBus_1.EventBus.EDITOR, EventBus_1.EventBus.OPENPROPERTIES];
-    };
-    Association.prototype.convertEdge = function (type, newId, redraw) {
-        if (!edges[type]) {
-            return this;
-        }
-        var newEdge = new edges[type]();
-        newEdge.withItem(this.$sNode, this.$tNode);
-        newEdge.id = newId;
-        newEdge.type = type;
-        newEdge.lineStyle = this.lineStyle;
-        newEdge.$owner = this.$owner;
-        if (this.sourceInfo) {
-            newEdge.sourceInfo = new InfoText_1.InfoText({ property: this.sourceInfo.property, cardinality: this.sourceInfo.cardinality });
-            newEdge.sourceInfo.$owner = newEdge;
-        }
-        if (this.targetInfo) {
-            newEdge.targetInfo = new InfoText_1.InfoText({ property: this.targetInfo.property, cardinality: this.targetInfo.cardinality });
-            newEdge.targetInfo.$owner = newEdge;
-        }
-        this.$points.forEach(function (point) {
-            newEdge.addPoint(point.x, point.y);
-        });
-        var graph = this.getRoot();
-        if (!graph) {
-            return this;
-        }
-        var idx = graph.$graphModel.edges.indexOf(this);
-        graph.$graphModel.removeElement(this.id);
-        if (idx > -1) {
-            graph.$graphModel.edges.splice(idx, 0, newEdge);
-        }
-        else {
-            graph.$graphModel.edges.push(newEdge);
-        }
-        if (!redraw) {
-            return newEdge;
-        }
-        var svgRoot;
-        if (graph) {
-            svgRoot = graph.root;
-        }
-        else {
-            svgRoot = document.getElementById('root');
-        }
-        var newEdgeSvg = newEdge.getSVG();
-        graph.removeElement(this);
-        svgRoot.appendChild(newEdgeSvg);
-        var dontDrawPath = (type !== 'Edge');
-        newEdge.redraw(newEdge.$sNode, dontDrawPath);
-        newEdge.redraw(newEdge.$tNode, dontDrawPath);
-        EventBus_1.EventBus.register(newEdge, newEdgeSvg);
-        this.sourceInfo = undefined;
-        this.targetInfo = undefined;
-        return newEdge;
-    };
-    Association.prototype.redraw = function (startNode, dontDrawPoints) {
-        if (!startNode) {
-            return;
-        }
-        var endPoint;
-        var recalcPoint;
-        var endPointIdx;
-        if (this.$sNode.id === startNode.id) {
-            recalcPoint = this.$points[0];
-            endPointIdx = 1;
-        }
-        else if (this.$tNode.id === startNode.id) {
-            recalcPoint = this.$points[this.$points.length - 1];
-            endPointIdx = this.$points.length - 2;
-        }
-        endPoint = this.$points[endPointIdx];
-        this.calcIntersection(startNode, recalcPoint, endPoint);
-        if (this.$points.length > 2 && this.$tNode.id === startNode.id && endPoint.y > (startNode.getPos().y + (startNode.getSize().y / 2))) {
-            this.$points.splice(endPointIdx, 1);
-        }
-        if (this.$tNode.id === startNode.id && this.$points.length == 2) {
-            this.calcIntersection(this.$sNode, endPoint, recalcPoint);
-        }
-        if (this.$points.length > 2 && this.$sNode.id === startNode.id && (startNode.getPos().y + (startNode.getSize().y / 2) > endPoint.y)) {
-            this.$points.splice(endPointIdx, 1);
-        }
-        if (this.$sNode.id === startNode.id && this.$points.length == 2) {
-            this.calcIntersection(this.$tNode, endPoint, recalcPoint);
-        }
-        if (!dontDrawPoints) {
-            this.redrawPointsAndInfo();
-        }
-    };
-    Association.prototype.redrawPointsAndInfo = function () {
-        var path = this.getPath();
-        this.$pathSvg.setAttributeNS(null, 'd', path);
-        this.$pathWideSvg.setAttributeNS(null, 'd', path);
-        this.redrawSourceInfo();
-        this.redrawTargetInfo();
-    };
-    Association.prototype.redrawSourceInfo = function () {
-        if (this.sourceInfo) {
-            var newPosOfSrc = this.calcInfoPosNew(this.sourceInfo, this.$sNode);
-            this.sourceInfo.redrawFromEdge(newPosOfSrc);
-        }
-    };
-    Association.prototype.redrawTargetInfo = function () {
-        if (this.targetInfo) {
-            var newPosOfTarget = this.calcInfoPosNew(this.targetInfo, this.$tNode);
-            this.targetInfo.redrawFromEdge(newPosOfTarget);
-        }
-    };
-    Association.prototype.getPath = function () {
-        if (this.$points.length == 0)
-            return '';
-        var path = 'M';
-        for (var i = 0; i < this.$points.length; i++) {
-            var point = this.$points[i];
-            if (i > 0) {
-                path += 'L';
-            }
-            path += Math.floor(point.x) + ' ' + Math.floor(point.y) + ' ';
-        }
-        return path;
-    };
-    Association.prototype.calcIntersection = function (startNode, recalcPoint, endPoint) {
-        var h = startNode.getSize().y;
-        var w = startNode.getSize().x;
-        var x1 = startNode.getPos().x + (w / 2);
-        var y1 = startNode.getPos().y + (h / 2);
-        var x2 = endPoint.x;
-        var y2 = endPoint.y;
-        var newX = recalcPoint.x;
-        var newY = recalcPoint.y;
-        if (x2 > x1) {
-            newX = x1 + (w / 2);
-        }
-        else if (x2 < x1) {
-            newX = x1 - (w / 2);
-        }
-        else {
-            newX = x1;
-        }
-        if ((x2 - x1) != 0) {
-            newY = ((y2 - y1) / (x2 - x1) * (newX - x1)) + y1;
-        }
-        else {
-            if (y1 > y2) {
-                newY = startNode.getPos().y;
-            }
-            else {
-                newY = startNode.getPos().y + h;
-            }
-        }
-        if (!((y1 - (h / 2) <= newY) && newY <= y1 + (h / 2))) {
-            if (y2 > y1) {
-                newY = y1 + (h / 2);
-            }
-            else {
-                newY = y1 - (h / 2);
-            }
-            if ((x2 - x1) != 0) {
-                var tmp = ((y2 - y1) / (x2 - x1));
-                newX = (newY + (tmp * x1) - y1) / tmp;
-            }
-            else {
-                newX = x1;
-            }
-        }
-        recalcPoint.x = Math.ceil(newX);
-        recalcPoint.y = Math.ceil(newY);
-        return null;
-    };
-    Association.prototype.calcInfoPosNew = function (infoTxt, node) {
-        if (!infoTxt || !node)
-            return null;
-        var startPoint;
-        var nextToStartPoint;
-        if (this.$sNode.id === node.id) {
-            startPoint = this.$points[0];
-            nextToStartPoint = this.$points[1];
-        }
-        else if (this.$tNode.id === node.id) {
-            startPoint = this.$points[this.$points.length - 1];
-            nextToStartPoint = this.$points[this.$points.length - 2];
-        }
-        var direction = this.getDirectionOfPointToNode(node, startPoint);
-        var x;
-        var y;
-        switch (direction) {
-            case 0:
-                if (startPoint.x >= nextToStartPoint.x) {
-                    x = startPoint.x + 5;
-                }
-                else {
-                    x = startPoint.x - (infoTxt.getSize().x);
-                }
-                y = startPoint.y + (infoTxt.getSize().y / 2);
-                break;
-            case 3:
-                if (startPoint.y >= nextToStartPoint.y) {
-                    y = startPoint.y + (infoTxt.getSize().y / 2);
-                }
-                else {
-                    y = startPoint.y - (infoTxt.getSize().y / 2) - 5;
-                }
-                x = startPoint.x - (infoTxt.getSize().x) - 5;
-                break;
-            case 2:
-                if (startPoint.y >= nextToStartPoint.y) {
-                    y = startPoint.y + (infoTxt.getSize().y / 2);
-                }
-                else {
-                    y = startPoint.y - (infoTxt.getSize().y / 2) - 5;
-                }
-                x = startPoint.x + 5;
-                break;
-            case 1:
-                if (startPoint.x >= nextToStartPoint.x) {
-                    x = startPoint.x + 5;
-                }
-                else {
-                    x = startPoint.x - (infoTxt.getSize().x);
-                }
-                y = startPoint.y - (infoTxt.getSize().y / 2) - 5;
-                break;
-            default:
-                break;
-        }
-        return new BaseElements_1.Point(x, y);
-    };
-    Association.prototype.clearPoints = function () {
-        this.$points = [];
-        this.$points = [];
-    };
-    Association.prototype.getDirectionOfPointToNode = function (node, pointNearNode) {
-        var x1 = node.getPos();
-        var x2 = new BaseElements_1.Point((x1.x + node.getSize().x), (x1.y + node.getSize().y));
-        var direction = 1;
-        if (x1.y >= pointNearNode.y) {
-            direction = 1;
-        }
-        if (x2.y <= pointNearNode.y) {
-            direction = 0;
-        }
-        if (x1.x >= pointNearNode.x) {
-            direction = 3;
-        }
-        if (x2.x <= pointNearNode.x) {
-            direction = 2;
-        }
-        return direction;
-    };
-    Association.prototype.addPoint = function (x, y) {
-        this.$points.push(new BaseElements_1.Point(x, y));
-        return this.$points;
-    };
-    return Association;
-}(BaseElements_1.DiagramElement));
-exports.Association = Association;
-
-
-/***/ }),
-/* 12 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var controls = __webpack_require__(5);
-var adapters = __webpack_require__(23);
-var Data_1 = __webpack_require__(7);
-var Control_1 = __webpack_require__(2);
-var Adapter_1 = __webpack_require__(24);
-var Graph_1 = __webpack_require__(8);
-var util_1 = __webpack_require__(0);
+var controls = __webpack_require__(/*! ./elements/nodes */ "./elements/nodes/index.ts");
+var adapters = __webpack_require__(/*! ./adapters */ "./adapters/index.ts");
+var Data_1 = __webpack_require__(/*! ./Data */ "./Data.ts");
+var Control_1 = __webpack_require__(/*! ./Control */ "./Control.ts");
+var Adapter_1 = __webpack_require__(/*! ./Adapter */ "./Adapter.ts");
+var Graph_1 = __webpack_require__(/*! ./elements/Graph */ "./elements/Graph.ts");
+var util_1 = __webpack_require__(/*! ./util */ "./util.ts");
 var Bridge = (function (_super) {
     __extends(Bridge, _super);
     function Bridge(viewRoot) {
@@ -3115,7 +499,1045 @@ exports.DelegateAdapter = DelegateAdapter;
 
 
 /***/ }),
-/* 13 */
+
+/***/ "./BridgeElement.ts":
+/*!**************************!*\
+  !*** ./BridgeElement.ts ***!
+  \**************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var BridgeElement = (function () {
+    function BridgeElement(model) {
+        this.model = model;
+        this.id = model.id;
+        BridgeElement.elementSet.push(this);
+    }
+    BridgeElement.elementSet = [];
+    return BridgeElement;
+}());
+exports.default = BridgeElement;
+
+
+/***/ }),
+
+/***/ "./CSS.ts":
+/*!****************!*\
+  !*** ./CSS.ts ***!
+  \****************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var util_1 = __webpack_require__(/*! ./util */ "./util.ts");
+var CSS = (function () {
+    function CSS(name, item) {
+        var i, value, border, prop, el;
+        this.name = name;
+        this.css = {};
+        if (!item) {
+            return;
+        }
+        el = window.getComputedStyle(item, null);
+        border = el.getPropertyValue('border');
+        for (i in el) {
+            prop = i;
+            value = el.getPropertyValue(prop);
+            if (value && value !== '') {
+                if (border) {
+                    if (prop === 'border-bottom' || prop === 'border-right' || prop === 'border-top' || prop === 'border-left') {
+                        if (value !== border) {
+                            this.css[prop] = value;
+                        }
+                    }
+                    else if (prop === 'border-color' || prop === 'border-bottom-color' || prop === 'border-right-color' || prop === 'border-top-color' || prop === 'border-left-color') {
+                        if (border.substring(border.length - value.length) !== value) {
+                            this.css[prop] = value;
+                        }
+                    }
+                    else if (prop === 'border-width') {
+                        if (border.substring(0, value.length) !== value) {
+                            this.css[prop] = value;
+                        }
+                    }
+                    else {
+                        this.css[prop] = value;
+                    }
+                }
+                else {
+                    this.css[prop] = value;
+                }
+            }
+        }
+    }
+    CSS.getStdDef = function () {
+        var child, def = util_1.Util.create({ tag: 'defs' });
+        child = util_1.Util.create({ tag: 'filter', id: 'drop-shadow' });
+        child.appendChild(util_1.Util.create({ tag: 'feGaussianBlur', 'in': 'SourceAlpha', result: 'blur-out', stdDeviation: 2 }));
+        child.appendChild(util_1.Util.create({ tag: 'feOffset', 'in': 'blur-out', dx: 2, dy: 2 }));
+        child.appendChild(util_1.Util.create({ tag: 'feBlend', 'in': 'SourceGraphic', mode: 'normal' }));
+        def.appendChild(child);
+        child = util_1.Util.create({ tag: 'linearGradient', id: 'reflect', x1: 0, x2: 0, y1: '50%', y2: 0, spreadMethod: 'reflect' });
+        child.appendChild(util_1.Util.create({ tag: 'stop', 'stop-color': '#aaa', offset: 0 }));
+        child.appendChild(util_1.Util.create({ tag: 'stop', 'stop-color': '#eee', offset: '100%' }));
+        def.appendChild(child);
+        child = util_1.Util.create({ tag: 'linearGradient', id: 'classelement', x1: 0, x2: '100%', y1: '100%', y2: 0 });
+        child.appendChild(util_1.Util.create({ tag: 'stop', 'stop-color': '#fff', offset: 0 }));
+        child.appendChild(util_1.Util.create({ tag: 'stop', 'stop-color': '#d3d3d3', offset: 1 }));
+        def.appendChild(child);
+        return def;
+    };
+    CSS.getSubstring = function (str, search, startChar, endChar, splitter) {
+        var pos, end, count = 0, array = [];
+        pos = str.indexOf(search);
+        if (pos > 0) {
+            end = str.indexOf(startChar, pos);
+            pos = end + 1;
+            if (end > 0) {
+                while (end < str.length) {
+                    if (str.charAt(end) === startChar) {
+                        count += 1;
+                    }
+                    if (str.charAt(end) === endChar) {
+                        count -= 1;
+                        if (count === 0) {
+                            if (splitter && pos !== end) {
+                                array.push(str.substring(pos, end).trim());
+                            }
+                            break;
+                        }
+                    }
+                    if (str.charAt(end) === splitter && count === 1) {
+                        array.push(str.substring(pos, end).trim());
+                        pos = end + 1;
+                    }
+                    end += 1;
+                }
+                if (splitter) {
+                    return array;
+                }
+                return str.substring(pos, end);
+            }
+            return str.substring(pos);
+        }
+        return '';
+    };
+    CSS.addStyle = function (board, styleName) {
+        var defs, style, css;
+        if (styleName.baseVal || styleName.baseVal === '') {
+            styleName = styleName.baseVal;
+        }
+        if (!styleName) {
+            return;
+        }
+        defs = CSS.getDefs(board);
+        if (defs.getElementsByTagName('style').length > 0) {
+            style = defs.getElementsByTagName('style')[0];
+        }
+        else {
+            style = util_1.Util.create({ tag: 'style' });
+            style.item = {};
+            defs.appendChild(style);
+        }
+        if (!style.item[styleName]) {
+            css = util_1.Util.getStyle(styleName);
+            style.item[styleName] = css;
+            style.innerHTML = style.innerHTML + '\n.' + styleName + css.getSVGString(board);
+        }
+    };
+    CSS.addStyles = function (board, item) {
+        if (!item) {
+            return;
+        }
+        var items, i, className = item.className;
+        if (className) {
+            if (className.baseVal || className.baseVal === '') {
+                className = className.baseVal;
+            }
+        }
+        if (className) {
+            items = className.split(' ');
+            for (i = 0; i < items.length; i += 1) {
+                CSS.addStyle(board, items[i].trim());
+            }
+        }
+        for (i = 0; i < item.childNodes.length; i += 1) {
+            this.addStyles(board, item.childNodes[i]);
+        }
+    };
+    CSS.getDefs = function (board) {
+        var defs;
+        if (board.getElementsByTagName('defs').length < 1) {
+            defs = util_1.Util.create({ tag: 'defs' });
+            board.insertBefore(defs, board.childNodes[0]);
+        }
+        else {
+            defs = board.getElementsByTagName('defs')[0];
+        }
+        return defs;
+    };
+    CSS.prototype.add = function (key, value) {
+        this.css[key] = value;
+    };
+    CSS.prototype.get = function (key) {
+        var i;
+        for (i in this.css) {
+            if (i === key) {
+                return this.css[key];
+            }
+        }
+        return null;
+    };
+    CSS.prototype.getNumber = function (key) {
+        return parseInt((this.get(key) || '0').replace('px', ''), 10);
+    };
+    CSS.prototype.getSVGString = function (board) {
+        var str, pos, style, defs, value, filter, z;
+        str = '{';
+        for (style in this.css) {
+            if (!this.css.hasOwnProperty(style)) {
+                continue;
+            }
+            if (style === 'border') {
+                pos = this.css[style].indexOf(' ');
+                str = str + 'stroke-width: ' + this.css[style].substring(0, pos) + ';';
+                pos = this.css[style].indexOf(' ', pos + 1);
+                str = str + 'stroke:' + this.css[style].substring(pos) + ';';
+            }
+            else if (style === 'background-color') {
+                str = str + 'fill: ' + this.css[style] + ';';
+            }
+            else if (style === 'background') {
+                value = CSS.getSubstring(this.css[style], 'linear-gradient', '(', ')', ',');
+                if (value.length > 0) {
+                    defs = CSS.getDefs(board);
+                    if (value[0] === '45deg') {
+                        pos = 1;
+                        filter = util_1.Util.create({
+                            tag: 'linearGradient',
+                            'id': this.name,
+                            x1: '0%',
+                            x2: '100%',
+                            y1: '100%',
+                            y2: '0%'
+                        });
+                    }
+                    else {
+                        filter = util_1.Util.create({
+                            tag: 'linearGradient',
+                            'id': this.name,
+                            x1: '0%',
+                            x2: '0%',
+                            y1: '100%',
+                            y2: '0%'
+                        });
+                        pos = 0;
+                    }
+                    defs.appendChild(filter);
+                    while (pos < value.length) {
+                        value[pos] = value[pos].trim();
+                        z = value[pos].lastIndexOf(' ');
+                        filter.appendChild(util_1.Util.create({
+                            tag: 'stop',
+                            'offset': value[pos].substring(z + 1),
+                            style: { 'stop-color': value[pos].substring(0, z) }
+                        }));
+                        pos += 1;
+                    }
+                    str = str + 'fill: url(#' + this.name + ');';
+                    continue;
+                }
+                str = str + style + ': ' + this.css[style] + ';';
+            }
+            else {
+                str = str + style + ': ' + this.css[style] + ';';
+            }
+        }
+        str = str + '}';
+        return str;
+    };
+    return CSS;
+}());
+exports.CSS = CSS;
+
+
+/***/ }),
+
+/***/ "./Control.ts":
+/*!********************!*\
+  !*** ./Control.ts ***!
+  \********************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var Data_1 = __webpack_require__(/*! ./Data */ "./Data.ts");
+var EventListener_1 = __webpack_require__(/*! ./EventListener */ "./EventListener.ts");
+var Control = (function () {
+    function Control() {
+        this.$viewData = null;
+        this.$viewData = this.initViewDataProperties(this.$viewData);
+    }
+    Control.prototype.getToolBarIcon = function () {
+        return null;
+    };
+    Control.prototype.initViewDataProperties = function (oldData) {
+        var data = new Data_1.default();
+        if (oldData) {
+            oldData.removeListener(this);
+            var keys = oldData.getKeys();
+            for (var i = 0; i < keys.length; i++) {
+                var attr = keys[i];
+                if (this.$view) {
+                    if (this.$view[attr] === null) {
+                        continue;
+                    }
+                    data.setValue(attr, this.$view[attr]);
+                }
+                else {
+                    data.setValue(attr, null);
+                }
+            }
+        }
+        data.addListener(this);
+        return data;
+    };
+    Control.prototype.setView = function (element) {
+        var oldElement = null;
+        if (this.$view) {
+            oldElement = this.$view;
+            if (this.$viewListener) {
+                oldElement.removeEventListener('change', this.$viewListener);
+            }
+        }
+        this.$view = element;
+        if (this.$viewListener) {
+            element.addEventListener('change', this.$viewListener);
+        }
+        this.$viewData = this.initViewDataProperties(this.$viewData);
+        return element;
+    };
+    Control.prototype.init = function (owner, property, id) {
+        if (!this.$owner) {
+            this.$owner = owner;
+        }
+        if (!this.id) {
+            this.id = id;
+        }
+        if (!this.property) {
+            this.property = this.generateID(property, id);
+        }
+        return this;
+    };
+    Control.prototype.createEventListener = function () {
+        return new EventListener_1.default();
+    };
+    Control.prototype.getRoot = function () {
+        if (this.$owner) {
+            return this.$owner.getRoot();
+        }
+        return this;
+    };
+    Control.prototype.getAdapter = function () {
+        return null;
+    };
+    Control.prototype.initControl = function (data) {
+        var _this = this;
+        if (this.$view === null || this.$viewData === null) {
+            return;
+        }
+        if (data.hasOwnProperty('prop')) {
+            for (var key in data.prop) {
+                var oldValue = this.$viewData.getValue(key);
+                if (this.$view) {
+                    this.updateElement(key, oldValue, data.prop[key]);
+                }
+            }
+            return;
+        }
+        var hasRem = data.hasOwnProperty('rem');
+        var removed = [];
+        if (data.hasOwnProperty('upd')) {
+            for (var key in data.upd) {
+                var oldValue = void 0;
+                var newValue = data.upd[key];
+                var entity = void 0;
+                var temp = false;
+                if (temp) {
+                    if (hasRem && data.rem.hasOwnProperty(key)) {
+                        removed.push(data.rem[key]);
+                    }
+                    continue;
+                }
+                if (hasRem && data.rem.hasOwnProperty(key)) {
+                    oldValue = data.rem[key];
+                    if (this.$model && this.$model.getValue(key) === oldValue) {
+                        entity = this.$model;
+                    }
+                    delete data.rem[key];
+                    if (entity === null) {
+                        continue;
+                    }
+                }
+                if (entity) {
+                    if (!hasRem) {
+                        if (entity === this.$model) {
+                            oldValue = this.$model.getValue(key);
+                        }
+                        else {
+                        }
+                    }
+                }
+                else {
+                    if (this.$model) {
+                        oldValue = this.$model.getValue(key);
+                        entity = this.$model;
+                    }
+                    if (oldValue === null) {
+                    }
+                }
+                if (newValue === oldValue) {
+                    continue;
+                }
+                var viewDataOldValue = this.$viewData.getValue(key);
+                if (entity === this.$viewData) {
+                    if (this.$view) {
+                        this.updateElement(key, viewDataOldValue, newValue);
+                    }
+                }
+                else {
+                    this.updateElement(key, viewDataOldValue, newValue);
+                }
+                this.getRoot().setValue(entity, key, newValue, oldValue);
+            }
+        }
+        if (hasRem) {
+            for (var key in data.rem) {
+                if (removed.hasOwnProperty(key)) {
+                    continue;
+                }
+                var oldValue = void 0;
+                this.updateElement(key, null, null);
+                if (this.$model) {
+                }
+            }
+        }
+        if (this.property) {
+            this.$view['onchange'] = (function (ev) {
+                _this.controlChanged(ev);
+            });
+        }
+    };
+    Control.prototype.getItem = function (id) {
+        return null;
+    };
+    Control.prototype.hasItem = function (id) {
+        return false;
+    };
+    Control.prototype.getItems = function () {
+        return new Object();
+    };
+    Control.prototype.setValue = function (object, attribute, newValue, oldValue) {
+        return false;
+    };
+    Control.prototype.propertyChange = function (entity, property, oldValue, newValue) {
+        if (oldValue === newValue || this.$viewData === null) {
+            return;
+        }
+        if (oldValue === this.$viewData.getValue(property)) {
+            return;
+        }
+        this.$viewData.setValue(property, newValue);
+        if (this.$viewData) {
+            this.$viewData.setValue(property, newValue);
+        }
+        if (this.$model) {
+            this.$model.setValue(property, newValue);
+        }
+        this.updateElement(property, oldValue, newValue);
+    };
+    Control.prototype.controlChanged = function (ev) {
+        if (this.$view instanceof HTMLInputElement === false) {
+            return;
+        }
+        var element = this.$view;
+        if (element.checkValidity()) {
+        }
+    };
+    Control.prototype.updateElement = function (property, oldValue, newValue) {
+        if (this.$view && this.$view.hasAttribute(property)) {
+            this.$view.setAttribute(property, newValue);
+        }
+    };
+    Control.prototype.getId = function () {
+        return this.id;
+    };
+    Control.prototype.load = function (json, owner) {
+    };
+    Control.prototype.addItem = function (source, entity) {
+        if (entity) {
+            if (!this.property || entity.hasProperty(this.property)) {
+                entity.addListener(this, this.property);
+                this.$model = entity;
+            }
+        }
+    };
+    Control.prototype.appendChild = function (child) {
+        if (this.$view) {
+            this.$view.appendChild(child.$view);
+        }
+        else {
+            document.getElementsByTagName('body')[0].appendChild(child.$view);
+        }
+    };
+    Control.prototype.removeChild = function (child) {
+        if (this.$view) {
+            this.$view.removeChild(child.$view);
+        }
+        else {
+            document.getElementsByTagName('body')[0].removeChild(child.$view);
+        }
+    };
+    Control.prototype.setProperty = function (property) {
+        if (!this.property) {
+            return;
+        }
+        var objId = property.split('.')[0];
+        var object = null;
+        if (this.$owner.hasItem(objId)) {
+            object = this.$owner.getItem(objId);
+        }
+        if (this.$model) {
+            this.$model.removeListener(this, this.lastProperty);
+        }
+        this.property = property;
+        if (object) {
+            object.addListener(this, this.lastProperty);
+            this.$model = object;
+            this.updateElement(this.lastProperty, this.$viewData.getValue(this.lastProperty), object.prop[this.lastProperty]);
+        }
+    };
+    Control.prototype.registerListenerOnHTMLObject = function (eventType) {
+        return this.registerEventListener(eventType, this.$view);
+    };
+    Control.prototype.fireEvent = function (evt) {
+    };
+    Control.prototype.isClosed = function () {
+        return this['closed'];
+    };
+    Control.prototype.getShowed = function () {
+        if (this.isClosed()) {
+            return this.$owner.getShowed();
+        }
+        return this;
+    };
+    Control.prototype.getControlDataID = function () {
+        return this.id + '_data';
+    };
+    Control.prototype.generateID = function (property, id) {
+        if (property) {
+            return property;
+        }
+        if (id) {
+            return id + '.' + '_data';
+        }
+        return null;
+    };
+    Control.prototype.updateViewData = function () {
+        if (!this.$view) {
+            return;
+        }
+        var keys = this.$viewData.getKeys();
+        for (var i = 0; i < keys.length; i++) {
+            var attr = keys[i];
+            if (this.$view[attr] === null) {
+                continue;
+            }
+            this.$viewData.setValue(attr, this.$view[attr]);
+        }
+    };
+    Control.prototype.registerEventListener = function (eventType, htmlElement) {
+        if (!htmlElement) {
+            return false;
+        }
+        if (htmlElement instanceof HTMLElement === false) {
+            return false;
+        }
+        var control = this;
+        var listener = function (t) {
+            t.eventType = eventType;
+            t.id = control.id;
+            control.$owner.fireEvent(t);
+        };
+        htmlElement.addEventListener(eventType, listener);
+        return true;
+    };
+    Object.defineProperty(Control.prototype, "lastProperty", {
+        get: function () {
+            if (!this.property) {
+                return '';
+            }
+            var arr = this.property.split('.');
+            return arr[arr.length - 1];
+        },
+        enumerable: true,
+        configurable: true
+    });
+    return Control;
+}());
+exports.Control = Control;
+
+
+/***/ }),
+
+/***/ "./Data.ts":
+/*!*****************!*\
+  !*** ./Data.ts ***!
+  \*****************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var Data = (function () {
+    function Data() {
+        this.prop = {};
+        this.$listener = {};
+    }
+    Data.nullCheck = function (property) {
+        if (property === undefined || property === null) {
+            property = '';
+        }
+        return property;
+    };
+    Data.prototype.getKeys = function () {
+        return Object.keys(this.prop);
+    };
+    Data.prototype.addProperties = function (values) {
+        if (!values) {
+            return;
+        }
+        if (values['prop']) {
+            var prop = values['prop'];
+            for (var property in prop) {
+                if (prop.hasOwnProperty(property) === false) {
+                    continue;
+                }
+                if (prop[property] !== null && '' !== prop[property]) {
+                    this.setValue(property, prop[property]);
+                }
+            }
+        }
+        else {
+            var upd = values['upd'] || {};
+            var rem = values['rem'] || {};
+            for (var property in upd) {
+                if (upd.hasOwnProperty(property) === false) {
+                    continue;
+                }
+                if (rem.hasOwnProperty(property) === false) {
+                    this.setValue(property, upd[property]);
+                }
+                else {
+                    if (this.getValue(property) === rem[property]) {
+                        this.setValue(property, upd[property]);
+                    }
+                }
+            }
+        }
+    };
+    Data.prototype.getValue = function (attribute) {
+        return this.prop[attribute];
+    };
+    Data.prototype.setValue = function (attribute, newValue) {
+        var oldValue = this.prop[attribute];
+        if (oldValue === newValue && newValue !== null) {
+            return;
+        }
+        this.prop[attribute] = newValue;
+        this.firePropertyChange(attribute, oldValue, newValue);
+    };
+    Data.prototype.addTo = function (attribute, newValue) {
+        var add;
+        if (this.prop[attribute]) {
+            if (this.prop[attribute].contains(newValue) === false) {
+                add = true;
+            }
+        }
+        else {
+            this.prop[attribute] = [];
+            add = true;
+        }
+        if (add) {
+            this.prop[attribute].push(newValue);
+            this.firePropertyChange(attribute, null, newValue);
+        }
+        return add;
+    };
+    Data.prototype.removeFrom = function (attribute, newValue) {
+        if (!this.prop[attribute]) {
+            return true;
+        }
+        var pos = this.prop[attribute].indexOf(newValue);
+        if (pos < 0) {
+            return true;
+        }
+        this.prop[attribute].splice(pos, 1);
+        this.firePropertyChange(attribute, newValue, null);
+        return true;
+    };
+    Data.prototype.addListener = function (control, property) {
+        var listeners = this.getListeners(property);
+        if (!listeners) {
+            listeners = [];
+            this.$listener[Data.nullCheck(property)] = listeners;
+        }
+        listeners.push(control);
+    };
+    Data.prototype.removeListener = function (control, property) {
+        var listeners = this.getListeners(property);
+        if (listeners === null) {
+            return;
+        }
+        var pos = listeners.indexOf(control);
+        if (pos >= 0) {
+            listeners.splice(pos, 1);
+        }
+        if (listeners.length === 0 && Data.nullCheck(property) !== '') {
+            delete this.$listener[property];
+        }
+    };
+    Data.prototype.hasProperty = function (property) {
+        return this.prop.hasOwnProperty(property);
+    };
+    Data.prototype.addFrom = function (attribute, oldData) {
+        if (oldData) {
+            this.setValue(attribute, oldData.getValue(attribute));
+        }
+        else {
+            this.setValue(attribute, null);
+        }
+    };
+    Data.prototype.removeKey = function (key) {
+        if (this.hasProperty(key)) {
+            var oldValue = this.prop[key];
+            delete this.prop[key];
+            return oldValue;
+        }
+        return null;
+    };
+    Data.prototype.getListeners = function (property) {
+        property = Data.nullCheck(property);
+        return this.$listener[property];
+    };
+    Data.prototype.firePropertyChange = function (attribute, oldValue, newValue) {
+        attribute = Data.nullCheck(attribute);
+        var listeners = this.getListeners(attribute);
+        if (listeners) {
+            for (var i in listeners) {
+                listeners[i].propertyChange(this, attribute, oldValue, newValue);
+            }
+        }
+        listeners = this.getListeners(null);
+        if (listeners) {
+            for (var i in listeners) {
+                listeners[i].propertyChange(this, attribute, oldValue, newValue);
+            }
+        }
+    };
+    return Data;
+}());
+exports.default = Data;
+
+
+/***/ }),
+
+/***/ "./EventBus.ts":
+/*!*********************!*\
+  !*** ./EventBus.ts ***!
+  \*********************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var EventBus = (function () {
+    function EventBus() {
+    }
+    EventBus.setActiveHandler = function (handler) {
+        this.$activeHandler = handler;
+    };
+    EventBus.isHandlerActiveOrFree = function (handler, notEmpty) {
+        if (notEmpty) {
+            return this.$activeHandler === handler;
+        }
+        return this.$activeHandler === handler || this.$activeHandler === '' || this.$activeHandler === undefined;
+    };
+    EventBus.isAnyHandlerActive = function () {
+        return !(this.$activeHandler === '' || this.$activeHandler === undefined);
+    };
+    EventBus.releaseActiveHandler = function () {
+        this.$activeHandler = '';
+    };
+    EventBus.getActiveHandler = function () {
+        return this.$activeHandler;
+    };
+    EventBus.register = function (control, view) {
+        var events;
+        if (typeof control['getEvents'] === 'function') {
+            events = control['getEvents']();
+        }
+        if (!events || !view) {
+            return;
+        }
+        for (var _i = 0, events_1 = events; _i < events_1.length; _i++) {
+            var event_1 = events_1[_i];
+            this.registerEvent(view, event_1, control);
+        }
+    };
+    EventBus.registerEvent = function (view, event, control) {
+        var pos = event.indexOf(':');
+        if (pos > 0) {
+            view.addEventListener(event.substr(pos + 1).toLowerCase(), function (evt) { EventBus.publish(control, evt); });
+        }
+        else {
+            view.addEventListener(event.substr(pos + 1).toLowerCase(), function (evt) { EventBus.publish(control, evt); });
+        }
+    };
+    EventBus.publish = function (element, evt) {
+        var handlers = EventBus.handlers[evt.type];
+        if (handlers) {
+            for (var _i = 0, handlers_1 = handlers; _i < handlers_1.length; _i++) {
+                var handler = handlers_1[_i];
+                handler.handle(evt, element);
+            }
+        }
+    };
+    EventBus.subscribe = function (handler) {
+        var eventTypes = [];
+        for (var _i = 1; _i < arguments.length; _i++) {
+            eventTypes[_i - 1] = arguments[_i];
+        }
+        for (var _a = 0, eventTypes_1 = eventTypes; _a < eventTypes_1.length; _a++) {
+            var event_2 = eventTypes_1[_a];
+            var handlers = EventBus.handlers[event_2];
+            if (handlers === null || handlers === undefined) {
+                handlers = [];
+                EventBus.handlers[event_2] = handlers;
+            }
+            handlers.push(handler);
+        }
+    };
+    EventBus.CREATE = 'Create';
+    EventBus.EDITOR = 'Editor';
+    EventBus.OPENPROPERTIES = 'openProperties';
+    EventBus.RELOADPROPERTIES = 'reloadProperties';
+    EventBus.ELEMENTMOUSEDOWN = 'ELEMENT:MOUSEDOWN';
+    EventBus.ELEMENTMOUSEUP = 'ELEMENT:MOUSEUP';
+    EventBus.ELEMENTMOUSELEAVE = 'ELEMENT:MOUSELEAVE';
+    EventBus.ELEMENTMOUSEMOVE = 'ELEMENT:MOUSEMOVE';
+    EventBus.ELEMENTMOUSEWHEEL = 'ELEMENT:MOUSEWHEEL';
+    EventBus.ELEMENTCLICK = 'ELEMENT:CLICK';
+    EventBus.ELEMENTDBLCLICK = 'ELEMENT:DBLCLICK';
+    EventBus.ELEMENTDRAG = 'ELEMENT:DRAG';
+    EventBus.ELEMENTDRAGOVER = 'ELEMENT:DRAGOVER';
+    EventBus.ELEMENTDROP = 'ELEMENT:DROP';
+    EventBus.ELEMENTDRAGLEAVE = 'ELEMENT:DRAGLEAVE';
+    EventBus.EVENTS = [
+        EventBus.CREATE,
+        EventBus.EDITOR,
+        EventBus.OPENPROPERTIES,
+        EventBus.RELOADPROPERTIES,
+        EventBus.ELEMENTMOUSEDOWN,
+        EventBus.ELEMENTMOUSEUP,
+        EventBus.ELEMENTMOUSELEAVE,
+        EventBus.ELEMENTMOUSEMOVE,
+        EventBus.ELEMENTMOUSEWHEEL,
+        EventBus.ELEMENTCLICK,
+        EventBus.ELEMENTDRAG,
+        EventBus.ELEMENTDBLCLICK,
+        EventBus.ELEMENTDRAGOVER,
+        EventBus.ELEMENTDROP,
+        EventBus.ELEMENTDRAGLEAVE,
+    ];
+    EventBus.handlers = {};
+    EventBus.$activeHandler = '';
+    return EventBus;
+}());
+exports.EventBus = EventBus;
+
+
+/***/ }),
+
+/***/ "./EventListener.ts":
+/*!**************************!*\
+  !*** ./EventListener.ts ***!
+  \**************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var EventListener = (function () {
+    function EventListener() {
+    }
+    Object.defineProperty(EventListener.prototype, "onUpdate", {
+        get: function () {
+            return this.$onUpdate;
+        },
+        set: function (value) {
+            this.$onUpdate = value;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    EventListener.prototype.update = function (event) {
+        this.$onUpdate(event);
+    };
+    return EventListener;
+}());
+exports.default = EventListener;
+
+
+/***/ }),
+
+/***/ "./JSEPS.ts":
+/*!******************!*\
+  !*** ./JSEPS.ts ***!
+  \******************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var JSEPS = (function () {
+    function JSEPS(options) {
+        this.max = 0;
+        this.min = 999;
+        var hasInverting = typeof (options.inverting);
+        this.inverting = (options && hasInverting !== 'undefined' ? options.inverting : true);
+        this.output = ['%!PS-Adobe-3.0 EPSF-3.0', '1 setlinewidth'];
+        this.out('/FSD {findfont exch scalefont def} bind def % In the document prolog: define');
+        this.out('/SMS {setfont moveto show} bind def % some useful procedures');
+        this.out('/MS {moveto show} bind def');
+        this.out('/F1  10  /Helvetica  FSD % At the start of the script: set up');
+        this.font = 1;
+    }
+    JSEPS.prototype.out = function (value) { this.output.push(value); };
+    JSEPS.prototype.rect = function (x, y, width, height, style) {
+        y = y + (this.inverting ? height : 0);
+        if (style && style.indexOf('fill:url(#classelement);') >= 0) {
+            this.out('gsave 0.93 0.93 0.93 setrgbcolor newpath ' + x + ' ' + this.y(y) + ' ' + width + ' ' + height + ' rectfill grestore');
+        }
+        else {
+            this.out('newpath ' + x + ' ' + this.y(y) + ' ' + width + ' ' + height + ' rectstroke');
+        }
+    };
+    JSEPS.prototype.setFillColor = function (r, g, b) { };
+    JSEPS.prototype.y = function (value) { this.max = Math.max(this.max, value); this.min = Math.min(this.min, value); return this.inverting ? '%y(' + value + ')' : value; };
+    JSEPS.prototype.getType = function () {
+        return 'application/postscript';
+    };
+    JSEPS.prototype.getData = function () {
+        var t, end, url, text, typ = 'application/postscript', a = document.createElement('a'), data = '', pos, i;
+        for (i = 0; i < this.output.length; i += 1) {
+            text = this.output[i];
+            if (this.inverting) {
+                while ((pos = text.indexOf('%y')) >= 0) {
+                    end = text.indexOf(')', pos);
+                    t = this.max - parseInt(text.substring(pos + 3, end), 10);
+                    text = text.substring(0, pos) + t + text.substring(end + 1);
+                }
+            }
+            data = data + text + '\r\n';
+        }
+        return data;
+    };
+    JSEPS.prototype.setDrawColor = function (r, g, b) { };
+    JSEPS.prototype.ellipse = function (cx, cy, rx, ry, colorMode) { };
+    JSEPS.prototype.circle = function (cx, cy, r, colorMode) { };
+    JSEPS.prototype.setTextColor = function (r, g, b) { };
+    JSEPS.prototype.text = function (x, y, text) { this.out('(' + text.replace('&lt;', '<').replace('&gt;', '>') + ') ' + x + ' ' + this.y(y) + ' F1 SMS'); };
+    JSEPS.prototype.lineto = function (x, y) { this.out(x + ' ' + this.y(y) + ' lineto'); this.out('stroke'); };
+    JSEPS.prototype.moveto = function (x, y) { this.out(x + ' ' + this.y(y) + ' moveto'); };
+    JSEPS.prototype.line = function (x1, y1, x2, y2) { this.out('newpath ' + x1 + ' ' + this.y(y1) + ' moveto ' + x2 + ' ' + this.y(y2) + ' lineto stroke'); };
+    JSEPS.prototype.setLineWidth = function (value) { this.out(value + ' setlinewidth'); };
+    JSEPS.prototype.setFont = function (value) { this.out('/F' + (this.font += 1) + ' 10 /' + value + ' FSD'); };
+    return JSEPS;
+}());
+exports.JSEPS = JSEPS;
+
+
+/***/ }),
+
+/***/ "./Palette.ts":
+/*!********************!*\
+  !*** ./Palette.ts ***!
+  \********************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var Palette = (function () {
+    function Palette(graph) {
+        var _this = this;
+        this.graph = graph;
+        var div = document.createElement('div');
+        div.className = 'palette';
+        div.id = 'palette';
+        this.root = div;
+        this.palette = div;
+        var _loop_1 = function (key) {
+            var element = graph.nodeFactory[key];
+            var control = new element();
+            var icon = control.getToolBarIcon();
+            if (icon) {
+                var button = document.createElement('button');
+                button.className = 'add' + key + 'Btn';
+                button.innerHTML = icon.outerHTML;
+                button.onclick = function (e) {
+                    var nextFreePosition = _this.graph.getNextFreePosition();
+                    var node = _this.graph.addElementWithValues(graph.nodeFactory[key], { x: nextFreePosition.x, y: nextFreePosition.y }, false);
+                    _this.graph.drawElement(node);
+                };
+                this_1.palette.appendChild(button);
+            }
+        };
+        var this_1 = this;
+        for (var key in graph.nodeFactory) {
+            _loop_1(key);
+        }
+    }
+    Palette.prototype.show = function () {
+        document.body.appendChild(this.root);
+    };
+    Palette.prototype.addButtons = function () {
+    };
+    return Palette;
+}());
+exports.default = Palette;
+
+
+/***/ }),
+
+/***/ "./PropertiesPanel.ts":
+/*!****************************!*\
+  !*** ./PropertiesPanel.ts ***!
+  \****************************/
+/*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3131,7 +1553,2988 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var Control_1 = __webpack_require__(2);
+var EventBus_1 = __webpack_require__(/*! ./EventBus */ "./EventBus.ts");
+var util_1 = __webpack_require__(/*! ./util */ "./util.ts");
+var PanelGroup = (function () {
+    function PanelGroup(graph) {
+        this.graph = graph;
+        this.clearPanel = new ClearPanel(this);
+        this.generatePanel = new GeneratePanel(this);
+    }
+    PanelGroup.prototype.handle = function (event, element) {
+        this.handleOpenProperties(event, element);
+        if (event.type === EventBus_1.EventBus.RELOADPROPERTIES
+            && this.selectedElement && element.id === this.selectedElement.id) {
+            this.handleEvent(event, element);
+        }
+        if (this.selectedElement && this.selectedElement.id === element.id) {
+            return true;
+        }
+        if (element.id === 'RootElement') {
+            this.setActivePanel(this.clearPanel);
+        }
+        if (element.id === 'GenerateProp') {
+            this.setActivePanel(this.generatePanel);
+        }
+        this.selectedElement = element;
+        return true;
+    };
+    PanelGroup.prototype.getGraph = function () {
+        return this.graph;
+    };
+    PanelGroup.prototype.canHandle = function () {
+        return EventBus_1.EventBus.isHandlerActiveOrFree(PanelGroup.name);
+    };
+    PanelGroup.prototype.setActive = function (active) {
+        if (active) {
+            EventBus_1.EventBus.setActiveHandler(PanelGroup.name);
+        }
+        else {
+            EventBus_1.EventBus.releaseActiveHandler();
+        }
+    };
+    PanelGroup.prototype.handleEvent = function (event, element) {
+    };
+    PanelGroup.prototype.show = function () {
+        var _this = this;
+        this.propertiesMasterPanel = document.createElement('div');
+        this.propertiesMasterPanel.className = 'propertiespanel-hidden';
+        this.propertiesContent = document.createElement('div');
+        this.propertiesContent.className = 'properties-hidden';
+        this.propHeaderLabel = document.createElement('div');
+        this.propHeaderLabel.style.display = 'inherit';
+        this.propHeaderLabel.style.cursor = 'pointer';
+        this.propHeaderLabel.onclick = function (e) { return _this.toogleProperties(e); };
+        this.propHeaderButton = document.createElement('button');
+        this.propHeaderButton.className = 'btnHideProp';
+        this.propHeaderButton.style.cssFloat = 'right';
+        this.propHeaderButton.onclick = function (e) { return _this.toogleProperties(e); };
+        var propertiesHeader = document.createElement('div');
+        propertiesHeader.style.display = 'inline';
+        propertiesHeader.appendChild(this.propHeaderLabel);
+        propertiesHeader.appendChild(this.propHeaderButton);
+        this.propertiesMasterPanel.appendChild(propertiesHeader);
+        this.propertiesMasterPanel.appendChild(this.propertiesContent);
+        document.body.appendChild(this.propertiesMasterPanel);
+        this.setActivePanel(this.clearPanel);
+    };
+    PanelGroup.prototype.setActivePanel = function (panel) {
+        this.selectedPanel = panel;
+        this.propHeaderLabel.innerHTML = panel.getHeaderText();
+        if (this.propertiesContent) {
+            while (this.propertiesContent.hasChildNodes()) {
+                this.propertiesContent.removeChild(this.propertiesContent.childNodes[0]);
+            }
+        }
+        panel.show();
+        panel.showFirstTab();
+        if (panel !== this.clearPanel) {
+            this.showProperties(null);
+        }
+        else {
+            this.hideProperties(null);
+        }
+    };
+    PanelGroup.prototype.getProperiesContent = function () {
+        return this.propertiesContent;
+    };
+    PanelGroup.prototype.handleOpenProperties = function (event, element) {
+        if (event.type === 'dblclick') {
+            this.showProperties(event);
+        }
+    };
+    PanelGroup.prototype.showProperties = function (evt) {
+        if (evt) {
+            evt.stopPropagation();
+        }
+        this.propHeaderButton.innerHTML = '&#8897;';
+        this.propHeaderButton.title = 'Hide properties';
+        this.propertiesMasterPanel.className = 'propertiespanel';
+        this.propertiesContent.className = 'properties';
+    };
+    PanelGroup.prototype.toogleProperties = function (evt) {
+        if (this.propHeaderButton.title === 'Show properties') {
+            this.showProperties(evt);
+        }
+        else {
+            this.hideProperties(evt);
+        }
+    };
+    PanelGroup.prototype.hideProperties = function (evt) {
+        if (evt) {
+            evt.stopPropagation();
+        }
+        this.propHeaderButton.innerHTML = '&#8896;';
+        this.propHeaderButton.title = 'Show properties';
+        this.propertiesMasterPanel.className = 'propertiespanel-hidden';
+        this.propertiesContent.className = 'properties-hidden';
+    };
+    return PanelGroup;
+}());
+exports.PanelGroup = PanelGroup;
+var Panel = (function () {
+    function Panel(group, element) {
+        this.panelItem = [];
+        this.divPropertiesPanel = document.createElement('div');
+        this.element = element;
+        this.group = group;
+        this.divPropertiesTabbedPanel = document.createElement('div');
+        this.divPropertiesTabbedPanel.className = 'tabbedpane';
+        this.divPropertiesPanel.appendChild(this.divPropertiesTabbedPanel);
+    }
+    Panel.prototype.show = function () {
+        var propertiesContent = this.group.getProperiesContent();
+        if (this.panelItem.length > 1) {
+            propertiesContent.appendChild(this.getPropertiesTabbedPanel());
+        }
+        propertiesContent.appendChild(this.getPropertiesPanel());
+    };
+    Panel.prototype.getPropertiesTabbedPanel = function () {
+        return this.divPropertiesTabbedPanel;
+    };
+    Panel.prototype.getPropertiesPanel = function () {
+        return this.divPropertiesPanel;
+    };
+    Panel.prototype.getPanel = function () {
+        return this.divPropertiesPanel;
+    };
+    Panel.prototype.getHeaderText = function () {
+        return '';
+    };
+    Panel.prototype.showFirstTab = function () {
+        if (this.panelItem.length > 0) {
+            this.openTab(this.panelItem[0]);
+        }
+    };
+    Panel.prototype.createTabElement = function (tabText, tabValue, item) {
+        var _this = this;
+        var tabElementBtn = document.createElement('button');
+        tabElementBtn.className = 'tablinks';
+        tabElementBtn.innerText = tabText;
+        tabElementBtn.value = tabValue;
+        if (item === null) {
+            item = new PanelItem(this);
+        }
+        item.withButton(tabElementBtn);
+        tabElementBtn.onclick = function () { return _this.openTab(item); };
+        this.divPropertiesTabbedPanel.appendChild(tabElementBtn);
+        this.panelItem.push(item);
+        return item;
+    };
+    Panel.prototype.openTab = function (panelItem) {
+        for (var key in this.panelItem) {
+            var child = this.panelItem[key];
+            if (child !== panelItem) {
+                child.deactive();
+            }
+        }
+        panelItem.active();
+        if (this.divPropertiesPanel) {
+            while (this.divPropertiesPanel.hasChildNodes()) {
+                this.divPropertiesPanel.removeChild(this.divPropertiesPanel.childNodes[0]);
+            }
+        }
+        if (panelItem.getContent()) {
+            this.divPropertiesPanel.appendChild(panelItem.getContent());
+        }
+    };
+    return Panel;
+}());
+exports.Panel = Panel;
+var GeneratePanel = (function (_super) {
+    __extends(GeneratePanel, _super);
+    function GeneratePanel(group) {
+        var _this = _super.call(this, group, null) || this;
+        var item = _this.createTabElement('General', 'General', null);
+        var inputGenerateWorkspace = util_1.Util.createHTML({ tag: 'input', id: 'workspace', type: 'text', placeholder: 'Type your Folder for generated code...', value: 'src/main/java', style: { marginRight: '5px', width: '260px' } });
+        item.withInput('Folder:', inputGenerateWorkspace);
+        var inputGeneratePackage = util_1.Util.createHTML({ tag: 'input', id: 'package', type: 'text', placeholder: 'Type your workspace for generated code...', value: '', style: { marginRight: '5px', width: '260px' } });
+        item.withInput('Package:', inputGeneratePackage);
+        var options = document.createElement('div');
+        options.style.textAlign = 'center';
+        options.style.margin = '3';
+        options.style.padding = '5';
+        item.withContent(document.createElement('br'));
+        item.withContent(document.createElement('br'));
+        item.withContent(options);
+        options.style.borderStyle = 'groove';
+        options.style.borderRadius = '10px';
+        var btnGenerate = document.createElement('button');
+        btnGenerate.textContent = 'Generate';
+        btnGenerate.title = 'Generate code into your workspace';
+        btnGenerate.className = 'OptionElement';
+        var that = _this;
+        btnGenerate.onclick = function () {
+            var workspace = inputGeneratePackage.value;
+            if (workspace.length === 0) {
+                alert('No workspace set.\nEnter first your workspace');
+                inputGeneratePackage.focus();
+                return;
+            }
+            that.group.getGraph().generate(workspace, inputGenerateWorkspace.value);
+        };
+        options.appendChild(btnGenerate);
+        options.appendChild(document.createElement('hr'));
+        options.appendChild(document.createElement('br'));
+        var btnAutoLayout = util_1.Util.createHTML({ tag: 'button', className: 'OptionElement', value: 'Auto Layout', style: { marginRight: '10px' }, onclick: function () {
+                that.group.getGraph().layout();
+            } });
+        options.appendChild(btnAutoLayout);
+        var btnDeleteAll = document.createElement('button');
+        btnDeleteAll.className = 'OptionElement';
+        btnDeleteAll.textContent = 'Delete All';
+        btnDeleteAll.title = 'Delete all nodes from diagram';
+        btnDeleteAll.onclick = function () {
+            var confirmDelete = confirm('All classes will be deleted!');
+            if (!confirmDelete) {
+                return;
+            }
+            that.group.getGraph().$graphModel.removeAllElements();
+        };
+        btnDeleteAll.style.marginRight = '10px';
+        options.appendChild(btnDeleteAll);
+        var exportTypes = ['Export', 'HTML', 'JSON', 'PDF', 'PNG', 'SVG'];
+        var selectExport = document.createElement('select');
+        exportTypes.forEach(function (type) {
+            if (!(!window['jsPDF'] && type === 'PDF')) {
+                var option = document.createElement('option');
+                option.value = type;
+                option.textContent = type;
+                selectExport.appendChild(option);
+            }
+        });
+        selectExport.onchange = function (evt) {
+            var selectedExportType = selectExport.options[selectExport.selectedIndex].value;
+            selectExport.selectedIndex = 0;
+            that.group.getGraph().saveAs(selectedExportType);
+        };
+        selectExport.className = 'OptionElement';
+        options.appendChild(selectExport);
+        options.appendChild(document.createElement('br'));
+        return _this;
+    }
+    GeneratePanel.prototype.getHeaderText = function () {
+        return 'Properties';
+    };
+    return GeneratePanel;
+}(Panel));
+exports.GeneratePanel = GeneratePanel;
+var ClearPanel = (function (_super) {
+    __extends(ClearPanel, _super);
+    function ClearPanel(group) {
+        return _super.call(this, group, null) || this;
+    }
+    ClearPanel.prototype.getHeaderText = function () {
+        return 'Select any element to see its properties';
+    };
+    return ClearPanel;
+}(Panel));
+exports.ClearPanel = ClearPanel;
+var PanelItem = (function () {
+    function PanelItem(panel, label) {
+        this.content = util_1.Util.create({ tag: 'div', className: 'tabContent' });
+        this.panel = panel;
+        this.label = label;
+    }
+    PanelItem.prototype.active = function () {
+        if (this.getButton()) {
+            this.getButton().className += ' active';
+        }
+    };
+    PanelItem.prototype.deactive = function () {
+        if (this.getButton()) {
+            util_1.Util.removeClass(this.getButton(), 'active');
+        }
+    };
+    PanelItem.prototype.withButton = function (button) {
+        this.button = button;
+        return this;
+    };
+    PanelItem.prototype.withContent = function (element) {
+        this.content.appendChild(element);
+        return this;
+    };
+    PanelItem.prototype.withInput = function (labelText, element) {
+        var group = util_1.Util.createHTML({ tag: 'div' });
+        var label = util_1.Util.createHTML({ tag: 'label', for: element.id, value: labelText });
+        group.appendChild(label);
+        group.appendChild(element);
+        this.content.appendChild(group);
+        return this;
+    };
+    PanelItem.prototype.getButton = function () {
+        return this.button;
+    };
+    PanelItem.prototype.getContent = function () {
+        return this.content;
+    };
+    PanelItem.prototype.getHeader = function () {
+        return this.label;
+    };
+    return PanelItem;
+}());
+exports.PanelItem = PanelItem;
+
+
+/***/ }),
+
+/***/ "./PropertyBinder.ts":
+/*!***************************!*\
+  !*** ./PropertyBinder.ts ***!
+  \***************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var PropertyBinder = (function () {
+    function PropertyBinder(data1, data2, propertyClass1, propertyClass2) {
+        this.applyingChange = false;
+        this.data1 = data1;
+        this.data2 = data2;
+        this.propertyClass1 = propertyClass1;
+        this.propertyClass2 = propertyClass2;
+    }
+    PropertyBinder.bind = function (data1, data2, property1, property2) {
+        if (!data1 || !data2 || !property1) {
+            console.error('NullValue!!');
+            return null;
+        }
+        var propertyBinder = new PropertyBinder(data1, data2, property1, property2);
+        propertyBinder.bind();
+        return propertyBinder;
+    };
+    PropertyBinder.prototype.propertyChange = function (entity, property, oldValue, newValue) {
+        if (!this.applyingChange) {
+            this.applyingChange = true;
+            if (entity === this.data1) {
+                this.data2.setValue(this.propertyClass2, newValue);
+            }
+            else if (entity === this.data2) {
+                this.data1.setValue(this.propertyClass1, newValue);
+            }
+            this.applyingChange = false;
+        }
+    };
+    PropertyBinder.prototype.bind = function () {
+        this.data1.setValue(this.propertyClass1, this.data2.getValue(this.propertyClass2));
+        this.data1.addListener(this, this.propertyClass1);
+        this.data2.addListener(this, this.propertyClass2);
+    };
+    PropertyBinder.prototype.unbind = function () {
+        this.data1.removeListener(this, this.propertyClass2);
+        this.data1.removeListener(this, this.propertyClass2);
+    };
+    return PropertyBinder;
+}());
+exports.PropertyBinder = PropertyBinder;
+
+
+/***/ }),
+
+/***/ "./RGBColor.ts":
+/*!*********************!*\
+  !*** ./RGBColor.ts ***!
+  \*********************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var RGBColor = (function () {
+    function RGBColor(value) {
+        this.ok = false;
+        if (value === 'none') {
+            return;
+        }
+        var computedColor, div = document.createElement('div');
+        div.style.backgroundColor = value;
+        document.body.appendChild(div);
+        computedColor = window.getComputedStyle(div).backgroundColor;
+        document.body.removeChild(div);
+        this.convert(computedColor);
+    }
+    RGBColor.prototype.convert = function (value) {
+        var values, regex = /rgb *\( *([0-9]{1,3}) *, *([0-9]{1,3}) *, *([0-9]{1,3}) *\)/;
+        values = regex.exec(value);
+        this.r = parseInt(values[1], 10);
+        this.g = parseInt(values[2], 10);
+        this.b = parseInt(values[3], 10);
+        this.ok = true;
+    };
+    RGBColor.prototype.toRGB = function () { return 'rgb(' + this.r + ', ' + this.g + ', ' + this.b + ')'; };
+    RGBColor.prototype.toHex = function () {
+        return '#' + (this.r + 0x10000).toString(16).substring(3).toUpperCase() + (this.g + 0x10000).toString(16).substring(3).toUpperCase() + (this.b + 0x10000).toString(16).substring(3).toUpperCase();
+    };
+    return RGBColor;
+}());
+exports.RGBColor = RGBColor;
+
+
+/***/ }),
+
+/***/ "./SVGConverter.ts":
+/*!*************************!*\
+  !*** ./SVGConverter.ts ***!
+  \*************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var RGBColor_1 = __webpack_require__(/*! ./RGBColor */ "./RGBColor.ts");
+var JSEPS_1 = __webpack_require__(/*! ./JSEPS */ "./JSEPS.ts");
+var epsSvgAttr = {
+    g: ['stroke', 'fill', 'stroke-width'],
+    line: ['x1', 'y1', 'x2', 'y2', 'stroke', 'stroke-width'],
+    rect: ['x', 'y', 'width', 'height', 'stroke', 'fill', 'stroke-width'],
+    ellipse: ['cx', 'cy', 'rx', 'ry', 'stroke', 'fill', 'stroke-width'],
+    circle: ['cx', 'cy', 'r', 'stroke', 'fill', 'stroke-width'],
+    text: ['x', 'y', 'font-size', 'font-family', 'text-anchor', 'font-weight', 'font-style', 'fill'],
+    path: ['']
+};
+var SVGConverter = (function () {
+    function SVGConverter(element, target, options) {
+        this.k = 1.0;
+        var hasScale = typeof (options.scale), hasRemoveInvalid = typeof (options.removeInvalid);
+        this.k = (options && hasScale !== 'undefined' ? options.scale : 1.0);
+        this.remove = (options && hasRemoveInvalid !== 'undefined' ? options.removeInvalid : false);
+        this.target = target;
+        this.parse(element);
+    }
+    SVGConverter.prototype.parse = function (element) {
+        var el, i, n, colorMode, hasFillColor, fillRGB, fillColor, strokeColor, strokeRGB, fontType, pdfFontSize, x, y, box, xOffset;
+        if (!element) {
+            return;
+        }
+        if (typeof element === 'string') {
+            el = document.createElement('div');
+            el.innerHTML = element;
+            element = el.childNodes[0];
+        }
+        for (i = 0; i < element.children.length; i += 1) {
+            n = element.children[i];
+            colorMode = null;
+            hasFillColor = false;
+            if ('g,line,rect,ellipse,circle,text'.indexOf(n.tagName) >= 0) {
+                fillColor = n.getAttribute('fill');
+                if (fillColor) {
+                    fillRGB = new RGBColor_1.RGBColor(fillColor);
+                    if (fillRGB.ok) {
+                        hasFillColor = true;
+                        colorMode = 'F';
+                    }
+                }
+            }
+            if ('g,line,rect,ellipse,circle'.indexOf(n.tagName) >= 0) {
+                if (hasFillColor) {
+                    this.target.setFillColor(fillRGB.r, fillRGB.g, fillRGB.b);
+                }
+                strokeColor = n.getAttribute('stroke');
+                if (n.hasAttribute('stroke-width')) {
+                    this.target.setLineWidth(this.attr(n, 'stroke-width'));
+                }
+                if (strokeColor) {
+                    strokeRGB = new RGBColor_1.RGBColor(strokeColor);
+                    if (strokeRGB.ok) {
+                        this.target.setDrawColor(strokeRGB.r, strokeRGB.g, strokeRGB.b);
+                        if (colorMode === 'F') {
+                            colorMode = 'FD';
+                        }
+                        else if (!hasFillColor) {
+                            colorMode = 'S';
+                        }
+                    }
+                    else {
+                        colorMode = null;
+                    }
+                }
+            }
+            switch (n.tagName.toLowerCase()) {
+                case 'svg':
+                case 'a':
+                case 'g':
+                    this.parse(n);
+                    break;
+                case 'line':
+                    this.target.line(this.attr(n, 'x1'), this.attr(n, 'y1'), this.attr(n, 'x2'), this.attr(n, 'y2'));
+                    break;
+                case 'rect':
+                    this.target.rect(this.attr(n, 'x'), this.attr(n, 'y'), this.attr(n, 'width'), this.attr(n, 'height'), n.getAttribute('style'));
+                    break;
+                case 'ellipse':
+                    this.target.ellipse(this.attr(n, 'cx'), this.attr(n, 'cy'), this.attr(n, 'rx'), this.attr(n, 'ry'), colorMode);
+                    break;
+                case 'circle':
+                    this.target.circle(this.attr(n, 'cx'), this.attr(n, 'cy'), this.attr(n, 'r'), colorMode);
+                    break;
+                case 'text':
+                    if (n.hasAttribute('font-family')) {
+                        switch (n.getAttribute('font-family').toLowerCase()) {
+                            case 'serif':
+                                this.target.setFont('times');
+                                break;
+                            case 'monospace':
+                                this.target.setFont('courier');
+                                break;
+                            default:
+                                n.getAttribute('font-family', 'sans-serif');
+                                this.target.setFont('Helvetica');
+                        }
+                    }
+                    if (hasFillColor) {
+                        this.target.setTextColor(fillRGB.r, fillRGB.g, fillRGB.b);
+                    }
+                    if (this.target instanceof JSEPS_1.JSEPS) {
+                        this.target.text(this.attr(n, 'x'), this.attr(n, 'y'), n.innerHTML);
+                        break;
+                    }
+                    fontType = '';
+                    if (n.hasAttribute('font-weight')) {
+                        if (n.getAttribute('font-weight') === 'bold') {
+                            fontType = 'bold';
+                        }
+                    }
+                    if (n.hasAttribute('font-style')) {
+                        if (n.getAttribute('font-style') === 'italic') {
+                            fontType += 'italic';
+                        }
+                    }
+                    this.target.setFontType(fontType);
+                    pdfFontSize = 16;
+                    if (n.hasAttribute('font-size')) {
+                        pdfFontSize = parseInt(n.getAttribute('font-size'), 10);
+                    }
+                    box = n.getBBox();
+                    x = this.attr(n, 'x');
+                    y = this.attr(n, 'y');
+                    xOffset = 0;
+                    if (n.hasAttribute('text-anchor')) {
+                        switch (n.getAttribute('text-anchor')) {
+                            case 'end':
+                                xOffset = box.width;
+                                break;
+                            case 'middle':
+                                xOffset = box.width / 2;
+                                break;
+                            case 'start':
+                                break;
+                            case 'default':
+                                n.getAttribute('text-anchor', 'start');
+                                break;
+                        }
+                        x = x - (xOffset * this.k);
+                    }
+                    this.target.setFontSize(pdfFontSize).text(x, y, n.innerHTML);
+                    break;
+                default:
+                    if (this.remove) {
+                        console.log('cant translate to target:', n);
+                        element.removeChild(n);
+                        i -= 1;
+                    }
+            }
+        }
+    };
+    SVGConverter.prototype.attr = function (node, name) {
+        return this.k * parseInt(node.getAttribute(name), 10);
+    };
+    return SVGConverter;
+}());
+exports.SVGConverter = SVGConverter;
+
+
+/***/ }),
+
+/***/ "./ScrumBoard.ts":
+/*!***********************!*\
+  !*** ./ScrumBoard.ts ***!
+  \***********************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var Control_1 = __webpack_require__(/*! ./Control */ "./Control.ts");
+var ScrumBoard = (function (_super) {
+    __extends(ScrumBoard, _super);
+    function ScrumBoard() {
+        var _this = _super.call(this) || this;
+        _this.redraw();
+        return _this;
+    }
+    ScrumBoard.prototype.redraw = function () {
+        var _this = this;
+        if (this.$board) {
+            while (this.$board.children.length > 0) {
+                this.$board.removeChild(this.$board.children[0]);
+            }
+        }
+        else {
+            this.$view = document.createElement('div');
+            this.$selected = document.createElement('div');
+            this.$board = document.createElement('div');
+            this.$view.appendChild(this.$board);
+            this.$view.appendChild(this.$selected);
+        }
+        this.$view.className = 'ScrumBoard';
+        for (var i = 0; i < ScrumBoard.cards.length; i++) {
+            var card = document.createElement('div');
+            card.className = 'ScrumCard';
+            card.innerHTML = ScrumBoard.cards[i];
+            card['pokervalue'] = ScrumBoard.cards[i];
+            card.onclick = function (e) {
+                _this.onClick(e.target);
+            };
+            this.$board.appendChild(card);
+        }
+    };
+    ScrumBoard.prototype.getSVG = function () {
+        this.redraw();
+        return this.$view;
+    };
+    ScrumBoard.prototype.onClick = function (target) {
+        var _this = this;
+        console.log(target['pokervalue']);
+        while (this.$selected.children.length > 0) {
+            this.$selected.removeChild(this.$selected.children[0]);
+        }
+        var card = document.createElement('div');
+        card.className = 'ScrumCard';
+        card['pokervalue'] = target['pokervalue'];
+        card.onclick = function (e) {
+            _this.onShow(e.target);
+        };
+        this.$selected.appendChild(card);
+        this.$board['style']['display'] = 'none';
+    };
+    ScrumBoard.prototype.onShow = function (target) {
+        target.innerHTML = target['pokervalue'];
+    };
+    ScrumBoard.cards = [0, 0.5, 1, 2, 3, 5, 8, 13, 20, 40, 100, '?', 'Coffee'];
+    return ScrumBoard;
+}(Control_1.Control));
+exports.ScrumBoard = ScrumBoard;
+
+
+/***/ }),
+
+/***/ "./Toolbar.ts":
+/*!********************!*\
+  !*** ./Toolbar.ts ***!
+  \********************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var Symbol_1 = __webpack_require__(/*! ./elements/nodes/Symbol */ "./elements/nodes/Symbol.ts");
+var EventBus_1 = __webpack_require__(/*! ./EventBus */ "./EventBus.ts");
+var Toolbar = (function () {
+    function Toolbar(graph) {
+        this.graph = graph;
+    }
+    Toolbar.prototype.show = function () {
+        if (this.mainDiv) {
+            return;
+        }
+        this.mainDiv = document.createElement('div');
+        this.mainDiv.className = 'toolbar';
+        var h1Logo = document.createElement('h1');
+        h1Logo.className = 'logo';
+        h1Logo.textContent = 'DiagramJS';
+        var node = { type: 'Hamburger', property: 'HTML', width: 24, height: 24, id: 'GenerateProp' };
+        var hamburger = Symbol_1.SymbolLibary.draw(node);
+        EventBus_1.EventBus.registerEvent(hamburger, 'click', node);
+        this.mainDiv.appendChild(hamburger);
+        this.mainDiv.appendChild(h1Logo);
+        document.body.appendChild(this.mainDiv);
+    };
+    return Toolbar;
+}());
+exports.Toolbar = Toolbar;
+
+
+/***/ }),
+
+/***/ "./UML.ts":
+/*!****************!*\
+  !*** ./UML.ts ***!
+  \****************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var Data_1 = __webpack_require__(/*! ./Data */ "./Data.ts");
+var UML;
+(function (UML) {
+    var Clazz = (function (_super) {
+        __extends(Clazz, _super);
+        function Clazz() {
+            var _this = _super.call(this) || this;
+            _this.property = 'Clazz';
+            return _this;
+        }
+        Clazz.prototype.getName = function () {
+            return this.prop[Clazz.NAME];
+        };
+        Clazz.prototype.setName = function (newValue) {
+            this.setValue(Clazz.NAME, newValue);
+        };
+        Clazz.prototype.getAttributes = function () {
+            return this.prop[Clazz.ATTRIBUTES];
+        };
+        Clazz.prototype.addToAttributes = function (newValue) {
+            this.addTo(Clazz.ATTRIBUTES, newValue);
+        };
+        Clazz.prototype.removeFromAttributes = function (newValue) {
+            this.removeFrom(Clazz.ATTRIBUTES, newValue);
+        };
+        Clazz.NAME = 'name';
+        Clazz.ATTRIBUTES = 'attributes';
+        Clazz.METHODS = 'methods';
+        return Clazz;
+    }(Data_1.default));
+    UML.Clazz = Clazz;
+    var Attribute = (function (_super) {
+        __extends(Attribute, _super);
+        function Attribute() {
+            var _this = _super.call(this) || this;
+            _this.property = 'Attribute';
+            return _this;
+        }
+        Attribute.prototype.getName = function () {
+            return this.prop[Clazz.NAME];
+        };
+        Attribute.prototype.setName = function (newValue) {
+            this.setValue(Clazz.NAME, newValue);
+        };
+        return Attribute;
+    }(Data_1.default));
+    UML.Attribute = Attribute;
+    var Methods = (function (_super) {
+        __extends(Methods, _super);
+        function Methods() {
+            return _super !== null && _super.apply(this, arguments) || this;
+        }
+        return Methods;
+    }(Data_1.default));
+    UML.Methods = Methods;
+})(UML = exports.UML || (exports.UML = {}));
+window['UML'] = UML;
+
+
+/***/ }),
+
+/***/ "./VirtualKeyBoard.ts":
+/*!****************************!*\
+  !*** ./VirtualKeyBoard.ts ***!
+  \****************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var Control_1 = __webpack_require__(/*! ./Control */ "./Control.ts");
+var VirtualKeyBoard = (function (_super) {
+    __extends(VirtualKeyBoard, _super);
+    function VirtualKeyBoard(data) {
+        var _this = _super.call(this) || this;
+        if (!data) {
+            data = _this.getDefault();
+        }
+        var board = document.createElement('div');
+        _this.$viewData = data;
+        for (var type in data) {
+            if (type === 'normal') {
+                for (var line in data[type]) {
+                    var lineBoard = document.createElement('div');
+                    lineBoard.className = 'vkLine';
+                    var _loop_1 = function (key) {
+                        var btn = document.createElement('button');
+                        var keyTag = data[type][line][key];
+                        this_1.setButtonValue(keyTag, btn, 'vkbutton');
+                        btn.ontouchend = function () { _this.action(btn); };
+                        btn.onclick = function () { _this.action(btn); };
+                        lineBoard.appendChild(btn);
+                    };
+                    var this_1 = this;
+                    for (var key in data[type][line]) {
+                        _loop_1(key);
+                    }
+                    board.appendChild(lineBoard);
+                }
+            }
+        }
+        _this.$view = board;
+        return _this;
+    }
+    VirtualKeyBoard.prototype.action = function (btn) {
+        if (btn['key'] === '{Shift}') {
+            if (btn.className === 'vkbuttonAction') {
+                var keys = this.$viewData['normal'];
+                for (var line in keys) {
+                    var lineBoard = this.$view.children[line];
+                    for (var key in keys[line]) {
+                        var btn_1 = lineBoard.children[key];
+                        var keyTag = keys[line][key];
+                        this.setButtonValue(keyTag, btn_1, 'vkbutton');
+                    }
+                }
+            }
+            else if (btn.className === 'vkbutton') {
+                var keys = this.$viewData['shift'];
+                for (var line in keys) {
+                    var lineBoard = this.$view.children[line];
+                    for (var key in keys[line]) {
+                        var btn_2 = lineBoard.children[key];
+                        var keyTag = keys[line][key];
+                        this.setButtonValue(keyTag, btn_2, 'vkbuttonAction');
+                    }
+                }
+            }
+        }
+        alert(btn);
+    };
+    VirtualKeyBoard.prototype.getDefault = function () {
+        var format = {
+            normal: [
+                ['^', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '?', '´', '{Bksp}'],
+                ['{Tab}', 'q', 'w', 'e', 'r', 't', 'z', 'u', 'i', 'o', 'p', 'ü', '+'],
+                ['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'ö', 'ä', '#', '{enter}'],
+                ['{Shift}', '<', 'y', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '-', '{Shift}'],
+                ['{Accept}', '{Alt}', '{Space}', '{Cancel}']
+            ],
+            shift: [
+                ['°', '!', '"', '§', '$', '%', '&', '/', '(', ')', '=', '?', '`', '{Bksp}'],
+                ['{Tab}', 'Q', 'W', 'E', 'R', 'T', 'Z', 'U', 'I', 'O', 'P', 'Ü', '*'],
+                ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'Ö', 'Ä', '\'', '{enter}'],
+                ['{Shift}', '>', 'Y', 'X', 'C', 'V', 'B', 'N', 'M', ';', ':', '_', '{Shift}'],
+                ['{Accept}', '{Alt}', '{Space}', '{Cancel}']
+            ]
+        };
+        return format;
+    };
+    VirtualKeyBoard.prototype.getBoard = function () {
+        return this.$view;
+    };
+    VirtualKeyBoard.prototype.setButtonValue = function (keyTag, btn, shiftClass) {
+        btn.className = 'vkbutton';
+        btn['key'] = keyTag;
+        btn['type'] = 'normal';
+        if (keyTag.substring(0, 1) === '{') {
+            if (keyTag === '{Bksp}') {
+                btn.innerHTML = 'Bksp';
+            }
+            else if (keyTag === '{Tab}') {
+                btn.innerHTML = '&#8677; Tab';
+            }
+            else if (keyTag === '{enter}') {
+                btn.innerHTML = 'enter';
+                btn.className = 'vkbuttonAction';
+            }
+            else if (keyTag === '{Shift}') {
+                btn.innerHTML = 'Shift';
+                btn.className = shiftClass;
+            }
+            else if (keyTag === '{Accept}') {
+                btn.innerHTML = 'Accept';
+                btn.className = 'vkbuttonAction';
+            }
+            else if (keyTag === '{Alt}') {
+                btn.innerHTML = 'Alt';
+            }
+            else if (keyTag === '{Space}') {
+                btn.innerHTML = '&nbsp;';
+                btn.className = 'vkbuttonSpace';
+            }
+            else if (keyTag === '{left}') {
+                btn.innerHTML = '&#8592';
+            }
+            else if (keyTag === '{right}') {
+                btn.innerHTML = '&#8594;';
+            }
+            else if (keyTag === '{up}') {
+                btn.innerHTML = '&#8593;';
+            }
+            else if (keyTag === '{down}') {
+                btn.innerHTML = '&#8595;';
+            }
+            else if (keyTag === '{Cancel}') {
+                btn.innerHTML = 'Cancel';
+                btn.className = 'vkbuttonAction';
+            }
+        }
+        else {
+            btn.innerHTML = keyTag;
+        }
+    };
+    return VirtualKeyBoard;
+}(Control_1.Control));
+exports.VirtualKeyBoard = VirtualKeyBoard;
+
+
+/***/ }),
+
+/***/ "./adapters/JavaAdapter.ts":
+/*!*********************************!*\
+  !*** ./adapters/JavaAdapter.ts ***!
+  \*********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var Adapter_1 = __webpack_require__(/*! ../Adapter */ "./Adapter.ts");
+var JavaAdapter = (function (_super) {
+    __extends(JavaAdapter, _super);
+    function JavaAdapter() {
+        var _this = _super.call(this) || this;
+        _this.id = 'JavaAdapter';
+        return _this;
+    }
+    JavaAdapter.prototype.update = function (evt) {
+        if (this.isActive()) {
+            window['JavaBridge'].executeChange(evt);
+            return true;
+        }
+        return false;
+    };
+    JavaAdapter.prototype.isActive = function () {
+        return window['JavaBridge'];
+    };
+    return JavaAdapter;
+}(Adapter_1.Adapter));
+exports.JavaAdapter = JavaAdapter;
+
+
+/***/ }),
+
+/***/ "./adapters/index.ts":
+/*!***************************!*\
+  !*** ./adapters/index.ts ***!
+  \***************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+function __export(m) {
+    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+}
+Object.defineProperty(exports, "__esModule", { value: true });
+__export(__webpack_require__(/*! ./JavaAdapter */ "./adapters/JavaAdapter.ts"));
+
+
+/***/ }),
+
+/***/ "./elements/BaseElements.ts":
+/*!**********************************!*\
+  !*** ./elements/BaseElements.ts ***!
+  \**********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var util_1 = __webpack_require__(/*! ../util */ "./util.ts");
+var Control_1 = __webpack_require__(/*! ../Control */ "./Control.ts");
+var DiagramElement = (function (_super) {
+    __extends(DiagramElement, _super);
+    function DiagramElement() {
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.$isDraggable = true;
+        _this.$labelHeight = 25;
+        _this.$labelFontSize = 14;
+        _this.$pos = new Point();
+        _this.$size = new Point();
+        return _this;
+    }
+    DiagramElement.prototype.getToolBarIcon = function () {
+        return null;
+    };
+    DiagramElement.prototype.getPos = function () {
+        return this.$pos;
+    };
+    DiagramElement.prototype.getSize = function () {
+        return this.$size;
+    };
+    DiagramElement.prototype.getCenter = function () {
+        var pos = this.getPos();
+        var size = this.getSize();
+        return new Point(pos.x + size.x / 2, pos.y + size.y / 2);
+    };
+    DiagramElement.prototype.getCenterPosition = function (p) {
+        var pos = this.getPos();
+        var size = this.getSize();
+        var offset = this['$' + p];
+        var center = this.getCenter();
+        if (p === Point.DOWN) {
+            return new Point(Math.min(center.x + offset, center.x), pos.y + size.y, Point.DOWN);
+        }
+        if (p === Point.UP) {
+            return new Point(Math.min(center.x + offset, center.x), pos.y, Point.UP);
+        }
+        if (p === Point.LEFT) {
+            return new Point(pos.x, Math.min(center.y + offset, pos.y + size.y), Point.LEFT);
+        }
+        if (p === Point.RIGHT) {
+            return new Point(pos.x + size.x, Math.min(center.y + offset, pos.y + size.y), Point.RIGHT);
+        }
+        return new Point();
+    };
+    DiagramElement.prototype.getSVG = function () {
+        return null;
+    };
+    DiagramElement.prototype.getCanvas = function () {
+        return null;
+    };
+    DiagramElement.prototype.getEvents = function () {
+        return null;
+    };
+    DiagramElement.prototype.getAlreadyDisplayingSVG = function () {
+        return document.getElementById(this.id) || this.getSVG();
+    };
+    DiagramElement.prototype.load = function (data) {
+    };
+    DiagramElement.prototype.withPos = function (x, y) {
+        if (x && y) {
+            this.$pos = new Point(x, y);
+        }
+        else {
+            if (typeof (x) !== 'undefined' && x !== null) {
+                this.$pos.x = x;
+            }
+            if (typeof (y) !== 'undefined' && y !== null) {
+                this.$pos.y = y;
+            }
+        }
+        return this;
+    };
+    DiagramElement.prototype.withSize = function (width, height) {
+        if (width && height) {
+            this.$size = new Point(width, height);
+        }
+        else {
+            if (typeof (width) !== 'undefined' && width !== null) {
+                this.$size.x = width;
+            }
+            if (typeof (height) !== 'undefined' && height !== null) {
+                this.$size.y = height;
+            }
+        }
+        return this;
+    };
+    DiagramElement.prototype.getShowed = function () {
+        return _super.prototype.getShowed.call(this);
+    };
+    DiagramElement.prototype.loadProperties = function (properties) {
+    };
+    DiagramElement.prototype.createShape = function (attrs) {
+        return util_1.Util.createShape(attrs);
+    };
+    return DiagramElement;
+}(Control_1.Control));
+exports.DiagramElement = DiagramElement;
+var Point = (function () {
+    function Point(x, y, pos) {
+        this.x = 0;
+        this.y = 0;
+        this.x = Math.ceil(x || 0);
+        this.y = Math.ceil(y || 0);
+        if (pos) {
+            this['pos'] = pos;
+        }
+    }
+    Point.prototype.add = function (pos) {
+        this.x += pos.x;
+        this.y += pos.y;
+        return this;
+    };
+    Point.prototype.getPosition = function () {
+        if (!this['pos']) {
+            return '';
+        }
+        return this['pos'];
+    };
+    Point.prototype.addNum = function (x, y) {
+        this.x += x;
+        this.y += y;
+        return this;
+    };
+    Point.prototype.sum = function (pos) {
+        var sum = new Point(this.x, this.y);
+        sum.add(pos);
+        return sum;
+    };
+    Point.prototype.center = function (posA, posB) {
+        var count = 0;
+        if (posA) {
+            this.x += posA.x;
+            this.y += posA.y;
+            count++;
+        }
+        if (posB) {
+            this.x += posB.x;
+            this.y += posB.y;
+            count++;
+        }
+        if (count > 0) {
+            this.x = (this.x / count);
+            this.y = (this.y / count);
+        }
+    };
+    Point.prototype.isEmpty = function () {
+        return this.x < 1 && this.y < 1;
+    };
+    Point.prototype.size = function (posA, posB) {
+        var x1 = 0, x2 = 0, y1 = 0, y2 = 0;
+        if (posA) {
+            x1 = posA.x;
+            y1 = posA.y;
+        }
+        if (posB) {
+            x2 = posB.x;
+            y2 = posB.y;
+        }
+        if (x1 > x2) {
+            this.x = x1 - x2;
+        }
+        else {
+            this.x = x2 - x1;
+        }
+        if (y1 > y2) {
+            this.y = y1 - y2;
+        }
+        else {
+            this.y = y2 - y1;
+        }
+    };
+    Point.UP = 'UP';
+    Point.LEFT = 'LEFT';
+    Point.RIGHT = 'RIGHT';
+    Point.DOWN = 'DOWN';
+    return Point;
+}());
+exports.Point = Point;
+var Line = (function (_super) {
+    __extends(Line, _super);
+    function Line(lineType) {
+        var _this = _super.call(this) || this;
+        _this.lineType = lineType;
+        return _this;
+    }
+    Line.prototype.getTyp = function () {
+        return 'SVG';
+    };
+    Line.prototype.getPos = function () {
+        var pos = new Point();
+        pos.center(this.source, this.target);
+        return pos;
+    };
+    Line.prototype.getSize = function () {
+        var pos = new Point();
+        pos.size(this.source, this.target);
+        return pos;
+    };
+    Line.prototype.withColor = function (color) {
+        this.color = color;
+        return this;
+    };
+    Line.prototype.withSize = function (x, y) {
+        return this;
+    };
+    Line.prototype.withPath = function (path, close, angle) {
+        var i, d = 'M' + path[0].x + ' ' + path[0].y;
+        this.lineType = Line.FORMAT.PATH;
+        for (i = 1; i < path.length; i += 1) {
+            d = d + 'L ' + path[i].x + ' ' + path[i].y;
+        }
+        if (close) {
+            d = d + ' Z';
+            this.target = path[0];
+        }
+        else {
+            this.target = path[path.length - 1];
+        }
+        this.path = d;
+        if (angle instanceof Number) {
+            this.angle = angle;
+        }
+        else if (angle) {
+        }
+        return this;
+    };
+    Line.prototype.getSVG = function () {
+        if (this.lineType === 'PATH') {
+            return util_1.Util.create({
+                tag: 'path',
+                'd': this.path,
+                'fill': this.color,
+                stroke: '#000',
+                'stroke-width': '1px'
+            });
+        }
+        var line = util_1.Util.create({
+            tag: 'line',
+            'x1': this.source.x,
+            'y1': this.source.y,
+            'x2': this.target.x,
+            'y2': this.target.y,
+            'stroke': util_1.Util.getColor(this.color)
+        });
+        if (this.lineType && this.lineType.toLowerCase() === 'dotted') {
+            line.setAttribute('stroke-miterlimit', '4');
+            line.setAttribute('stroke-dasharray', '1,1');
+        }
+        return line;
+    };
+    Line.FORMAT = { SOLID: 'SOLID', DOTTED: 'DOTTED', PATH: 'PATH' };
+    return Line;
+}(DiagramElement));
+exports.Line = Line;
+
+
+/***/ }),
+
+/***/ "./elements/ClassEditor.ts":
+/*!*********************************!*\
+  !*** ./elements/ClassEditor.ts ***!
+  \*********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var Graph_1 = __webpack_require__(/*! ./Graph */ "./elements/Graph.ts");
+var adapters_1 = __webpack_require__(/*! ../adapters */ "./adapters/index.ts");
+var ClassEditor = (function (_super) {
+    __extends(ClassEditor, _super);
+    function ClassEditor(json, options) {
+        var _this = this;
+        if (!options) {
+            options = {};
+        }
+        options.canvas = options.canvas || 'canvas';
+        options.autoSave = options.autoSave || true;
+        if (!options.features) {
+            options.features = {
+                drag: true,
+                editor: true,
+                palette: true,
+                select: true,
+                zoom: true,
+                toolbar: true,
+                import: true,
+                properties: true,
+                addnode: true,
+                newedge: true
+            };
+        }
+        _this = _super.call(this, json, options) || this;
+        return _this;
+    }
+    ClassEditor.prototype.setBoardStyle = function (value) {
+        console.log(value);
+        this.importFile.setBoardStyle(value);
+    };
+    ClassEditor.prototype.registerListener = function () {
+        this.adapter = new adapters_1.JavaAdapter();
+    };
+    ClassEditor.prototype.getAdapter = function () {
+        return this.adapter;
+    };
+    return ClassEditor;
+}(Graph_1.Graph));
+exports.ClassEditor = ClassEditor;
+
+
+/***/ }),
+
+/***/ "./elements/Graph.ts":
+/*!***************************!*\
+  !*** ./elements/Graph.ts ***!
+  \***************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var edges = __webpack_require__(/*! ./edges */ "./elements/edges/index.ts");
+var edges_1 = __webpack_require__(/*! ./edges */ "./elements/edges/index.ts");
+var nodes = __webpack_require__(/*! ./nodes */ "./elements/nodes/index.ts");
+var layouts = __webpack_require__(/*! ../layouts */ "./layouts/index.ts");
+var Model_1 = __webpack_require__(/*! ./Model */ "./elements/Model.ts");
+var BaseElements_1 = __webpack_require__(/*! ./BaseElements */ "./elements/BaseElements.ts");
+var util_1 = __webpack_require__(/*! ../util */ "./util.ts");
+var Control_1 = __webpack_require__(/*! ../Control */ "./Control.ts");
+var EventBus_1 = __webpack_require__(/*! ../EventBus */ "./EventBus.ts");
+var handlers_1 = __webpack_require__(/*! ../handlers */ "./handlers/index.ts");
+var ImportFile_1 = __webpack_require__(/*! ../handlers/ImportFile */ "./handlers/ImportFile.ts");
+var Toolbar_1 = __webpack_require__(/*! ../Toolbar */ "./Toolbar.ts");
+var JSEPS_1 = __webpack_require__(/*! ../JSEPS */ "./JSEPS.ts");
+var SVGConverter_1 = __webpack_require__(/*! ../SVGConverter */ "./SVGConverter.ts");
+var Palette_1 = __webpack_require__(/*! ../Palette */ "./Palette.ts");
+var PropertiesPanel_1 = __webpack_require__(/*! ../PropertiesPanel */ "./PropertiesPanel.ts");
+var Graph = (function (_super) {
+    __extends(Graph, _super);
+    function Graph(json, options) {
+        var _this = _super.call(this) || this;
+        _this.containerElements = ['svg', 'g'];
+        _this.relevantStyles = {
+            'rect': ['fill', 'stroke', 'stroke-width'],
+            'path': ['fill', 'stroke', 'stroke-width', 'opacity'],
+            'circle': ['fill', 'stroke', 'stroke-width'],
+            'line': ['stroke', 'stroke-width'],
+            'text': ['fill', 'font-size', 'text-anchor', 'font-family'],
+            'polygon': ['stroke', 'fill']
+        };
+        json = json || {};
+        if (json['data']) {
+            options = json['options'];
+            json = json['data'];
+            _this.id = json['id'];
+        }
+        _this.options = options || { features: { drag: true } };
+        if (json['init']) {
+            return _this;
+        }
+        if (!_this.options.origin) {
+            _this.options.origin = new BaseElements_1.Point(150, 45);
+        }
+        if (!_this.options.style) {
+            _this.options.style = 'classic';
+        }
+        if (_this.options.autoSave) {
+            util_1.Util.isAutoSave = options.autoSave;
+        }
+        _this.initFactories();
+        _this.initCanvas();
+        _this.initFeatures(_this.options.features);
+        if (!_this.lookupInLocalStorage()) {
+            _this.load(json);
+        }
+        EventBus_1.EventBus.register(_this, _this.$view);
+        return _this;
+    }
+    Graph.prototype.lookupInLocalStorage = function () {
+        if (!this.options.autoSave) {
+            return false;
+        }
+        if (!util_1.Util.isLocalStorageSupported()) {
+            return false;
+        }
+        var diagram = util_1.Util.getDiagramFromLocalStorage();
+        if (diagram && diagram.length > 0) {
+            if (confirm('Restore previous session?')) {
+                var jsonData = JSON.parse(diagram);
+                this.load(jsonData);
+                this.layout();
+                return true;
+            }
+            else {
+                util_1.Util.saveToLocalStorage(null);
+            }
+        }
+        return false;
+    };
+    Graph.prototype.fitSizeOnNodes = function () {
+        var maxWidth = 0;
+        var maxHeight = 0;
+        for (var _i = 0, _a = this.$graphModel.nodes; _i < _a.length; _i++) {
+            var node = _a[_i];
+            var nodePos = node.getPos();
+            var nodeSize = node.getSize();
+            var nodeWidestPosX = nodePos.x + nodeSize.x;
+            var nodeWidestPosY = nodePos.y + nodeSize.y;
+            if (nodeWidestPosX > maxWidth) {
+                maxWidth = nodeWidestPosX;
+            }
+            if (nodeWidestPosY > maxHeight) {
+                maxHeight = nodeWidestPosY;
+            }
+        }
+        this.root.setAttributeNS(null, 'width', '' + (maxWidth + 100));
+        this.root.setAttributeNS(null, 'height', '' + (maxHeight + 50));
+    };
+    Graph.prototype.saveAs = function (typ) {
+        typ = typ.toLowerCase();
+        var currentSize = this.getRootSize();
+        this.fitSizeOnNodes();
+        if (typ === 'svg') {
+            this.exportSvg();
+        }
+        else if (typ === 'png') {
+            this.exportPng();
+        }
+        else if (typ === 'html') {
+            this.exportHtml();
+        }
+        else if (typ === 'pdf') {
+            this.exportPdf();
+        }
+        else if (typ === 'json') {
+            this.exportJson();
+        }
+        this.root.setAttributeNS(null, 'width', '' + currentSize.width);
+        this.root.setAttributeNS(null, 'height', '' + currentSize.height);
+    };
+    Graph.prototype.save = function (type, data, name, context) {
+        if (window['java']) {
+            window['java'].export(type, data, name, context);
+            return;
+        }
+        var a = document.createElement('a');
+        a.href = window.URL.createObjectURL(new Blob([data], { type: context }));
+        a.download = name;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+    };
+    Graph.prototype.exportSvg = function () {
+        var wellFormatedSvgDom = this.getSvgWithStyleAttributes();
+        this.save('svg', this.serializeXmlNode(wellFormatedSvgDom), 'class_diagram.svg', 'image/svg+xml');
+    };
+    Graph.prototype.exportHtml = function () {
+        var htmlFacade = '<html><head><title>DiagramJS - Classdiagram</title></head><body>$content</body></html>';
+        var wellFormatedSvgDom = this.getSvgWithStyleAttributes();
+        var svgAsXml = this.serializeXmlNode(wellFormatedSvgDom);
+        var htmlResult = htmlFacade.replace('$content', svgAsXml);
+        this.save('html', htmlResult, 'class_diagram.htm', 'text/plain');
+    };
+    Graph.prototype.exportJson = function () {
+        var type = 'text/plain';
+        var jsonObj = util_1.Util.toJson(this.$graphModel);
+        var data = JSON.stringify(jsonObj, null, '\t');
+        this.save('json', data, 'class_diagram.json', type);
+    };
+    Graph.prototype.exportPdf = function () {
+        if (!window['jsPDF']) {
+            console.log('jspdf n.a.');
+            return;
+        }
+        var type = 'image/svg+xml';
+        var converter, pdf = new window['jsPDF']('l', 'px', [this.$graphModel.getSize().x, this.$graphModel.getSize().y]);
+        converter = new SVGConverter_1.SVGConverter(this.$view, pdf, { removeInvalid: false });
+        pdf.save('Download.pdf');
+    };
+    Graph.prototype.import = function (data) {
+        var rootElement = this.$graphModel.$view;
+        while (rootElement.hasChildNodes()) {
+            rootElement.removeChild(rootElement.firstChild);
+        }
+        while (this.$view.hasChildNodes()) {
+            this.$view.removeChild(this.$view.firstChild);
+        }
+        this.clearModel();
+        var jsonData = JSON.parse(data);
+        this.load(jsonData);
+        this.layout();
+    };
+    Graph.prototype.exportEPS = function () {
+        var converter, doc = new JSEPS_1.JSEPS({ inverting: true });
+        converter = new SVGConverter_1.SVGConverter(this.$view, doc, { removeInvalid: false });
+        this.save('eps', doc.getData(), 'diagram.eps', doc.getType());
+    };
+    Graph.prototype.exportPng = function () {
+        var canvas, context, a, image = new Image();
+        var xmlNode = this.serializeXmlNode(this.getSvgWithStyleAttributes());
+        var typ = 'image/svg+xml';
+        var url = window.URL.createObjectURL(new Blob([xmlNode], { type: typ }));
+        var size = this.getRootSize();
+        image.onload = function () {
+            canvas = document.createElement('canvas');
+            canvas.width = size.width;
+            canvas.height = size.height;
+            context = canvas.getContext('2d');
+            context.drawImage(image, 0, 0);
+            a = document.createElement('a');
+            a.download = 'class_diagram.png';
+            a.href = canvas.toDataURL('image/png');
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        };
+        image.src = url;
+    };
+    Graph.prototype.getSvgWithStyleAttributes = function () {
+        var oDOM = this.$graphModel.$view.cloneNode(true);
+        this.readElement(oDOM, this.$graphModel.$view);
+        return oDOM;
+    };
+    Graph.prototype.serializeXmlNode = function (xmlNode) {
+        if (window['XMLSerializer'] !== undefined) {
+            return (new window['XMLSerializer']()).serializeToString(xmlNode);
+        }
+        if (xmlNode.xml !== undefined) {
+            return xmlNode.xml;
+        }
+        return xmlNode.outerHTML;
+    };
+    Graph.prototype.getRootSize = function () {
+        var width;
+        var height;
+        width = +this.root.getAttribute('width');
+        height = +this.root.getAttribute('height');
+        return { width: width, height: height };
+    };
+    Graph.prototype.load = function (json, owner) {
+        this.$graphModel = new Model_1.GraphModel();
+        this.$graphModel.init(this);
+        this.$graphModel.load(json);
+    };
+    Graph.prototype.clearModel = function () {
+        this.$graphModel.removeAllElements();
+        this.clearSvgRoot();
+    };
+    Graph.prototype.init = function (owner, property, id) {
+        _super.prototype.init.call(this, owner, property, id);
+        this.layout();
+        return this;
+    };
+    Graph.prototype.propertyChange = function (entity, property, oldValue, newValue) {
+        return;
+    };
+    Graph.prototype.getNextFreePosition = function () {
+        if (!this.$graphModel) {
+            return new BaseElements_1.Point(50, 50);
+        }
+        var point = new BaseElements_1.Point(0, 50);
+        var maxX = 0;
+        var minX = 9000;
+        for (var _i = 0, _a = this.$graphModel.nodes; _i < _a.length; _i++) {
+            var node = _a[_i];
+            maxX = Math.max(maxX, node.getPos().x);
+            minX = Math.min(minX, node.getPos().x);
+        }
+        if (minX > 170) {
+            point.x = 10;
+        }
+        else {
+            point.x = maxX + 200;
+        }
+        return point;
+    };
+    Graph.prototype.addElement = function (type, dontDraw) {
+        var success = this.$graphModel.addElement(type);
+        if (success === true) {
+            this.layout(dontDraw);
+        }
+        return success;
+    };
+    Graph.prototype.addElementWithValues = function (type, optionalValues, layout, dontDraw) {
+        var element = this.$graphModel.addElementWithValues(type, optionalValues);
+        if (element && layout) {
+            this.layout(dontDraw);
+        }
+        return element;
+    };
+    Graph.prototype.layout = function (dontDraw) {
+        this.getLayout().layout(this, this.$graphModel);
+        if (dontDraw) {
+            return this;
+        }
+        this.draw();
+        return this;
+    };
+    Graph.prototype.getEvents = function () {
+        return [EventBus_1.EventBus.ELEMENTDRAGOVER, EventBus_1.EventBus.ELEMENTDRAGLEAVE, EventBus_1.EventBus.ELEMENTDROP];
+    };
+    Graph.prototype.draw = function () {
+        this.clearSvgRoot();
+        var model = this.$graphModel;
+        var root = this.root;
+        var max = new BaseElements_1.Point();
+        if (this.options) {
+            max.x = this.options.minWidth || 0;
+            max.y = this.options.minHeight || 0;
+        }
+        for (var _i = 0, _a = model.nodes; _i < _a.length; _i++) {
+            var node = _a[_i];
+            var svg = node.getSVG();
+            EventBus_1.EventBus.register(node, svg);
+            root.appendChild(svg);
+            var temp = void 0;
+            temp = node.getPos().x + node.getSize().x;
+            if (temp > max.x) {
+                max.x = temp;
+            }
+            temp = node.getPos().y + node.getSize().y;
+            if (temp > max.y) {
+                max.y = temp;
+            }
+        }
+        util_1.Util.setAttributeSize(this.root, max.x + 60, max.y + 40);
+        for (var _b = 0, _c = model.edges; _b < _c.length; _b++) {
+            var edge = _c[_b];
+            var svg = edge.getSVG();
+            EventBus_1.EventBus.register(edge, svg);
+            root.appendChild(svg);
+        }
+    };
+    Graph.prototype.getNode = function (id) {
+        return this.$graphModel.getNodeById(id);
+    };
+    Graph.prototype.drawElement = function (element) {
+        if (!element) {
+            return;
+        }
+        var svg = element.getSVG();
+        this.root.appendChild(svg);
+        var rootSize = this.getRootSize();
+        var newWidth = element.getPos().x + element.getSize().x + 40;
+        var newHeight = element.getPos().y + element.getSize().y;
+        if (rootSize.width < newWidth) {
+            this.root.setAttributeNS(null, 'width', '' + newWidth);
+        }
+        if (rootSize.height < newHeight) {
+            this.root.setAttributeNS(null, 'height', '' + newHeight);
+        }
+        if (element instanceof edges_1.Association) {
+            var edge = element;
+            edge.redraw(edge.$sNode);
+            var srcSvg = element.$sNode.getAlreadyDisplayingSVG();
+            var targetSvg = element.$tNode.getAlreadyDisplayingSVG();
+            this.root.appendChild(srcSvg);
+            this.root.appendChild(targetSvg);
+        }
+        EventBus_1.EventBus.register(element, svg);
+    };
+    Graph.prototype.removeElement = function (element) {
+        if (!element) {
+            return;
+        }
+        var alreadyDisplayingSvg = element.getAlreadyDisplayingSVG();
+        if (util_1.Util.isParentOfChild(this.root, alreadyDisplayingSvg)) {
+            this.root.removeChild(alreadyDisplayingSvg);
+        }
+    };
+    Graph.prototype.generate = function (packageName, path) {
+        this.$graphModel.package = packageName;
+        this.$graphModel.genPath = path;
+        var data, result = util_1.Util.toJson(this.$graphModel);
+        data = JSON.stringify(result, null, '\t');
+        if (window['java'] && typeof window['java'].generate === 'function') {
+            window['java'].generate(data);
+        }
+    };
+    Graph.prototype.readElement = function (parent, origData) {
+        var children = parent.childNodes;
+        var origChildDat = origData.childNodes;
+        for (var cd = 0; cd < children.length; cd++) {
+            var child = children[cd];
+            var tagName = child.tagName;
+            if (this.containerElements.indexOf(tagName) !== -1) {
+                this.readElement(child, origChildDat[cd]);
+            }
+            else if (tagName in this.relevantStyles) {
+                var styleDef = window.getComputedStyle(origChildDat[cd]);
+                var styleString = '';
+                for (var st = 0; st < this.relevantStyles[tagName].length; st++) {
+                    styleString += this.relevantStyles[tagName][st] + ':' + styleDef.getPropertyValue(this.relevantStyles[tagName][st]) + '; ';
+                }
+                child.setAttribute('style', styleString);
+            }
+        }
+    };
+    Graph.prototype.createPattern = function () {
+        var defs = util_1.Util.createShape({ tag: 'defs' });
+        var pattern = util_1.Util.createShape({
+            tag: 'pattern',
+            id: 'raster',
+            patternUnits: 'userSpaceOnUse',
+            width: 40,
+            height: 40
+        });
+        var path = 'M0 4 L0 0 L4 0 M36 0 L40 0 L40 4 M40 36 L40 40 L36 40 M4 40 L0 40 L0 36';
+        var cross = util_1.Util.createShape({
+            tag: 'path',
+            d: path,
+            stroke: '#DDD',
+            'stroke-width': 1,
+            fill: 'none'
+        });
+        var rect = util_1.Util.createShape({
+            tag: 'rect',
+            x: 0,
+            y: 0,
+            width: 40,
+            height: 40,
+            fill: 'none'
+        });
+        pattern.appendChild(rect);
+        pattern.appendChild(cross);
+        defs.appendChild(pattern);
+        return defs;
+    };
+    Graph.prototype.clearSvgRoot = function () {
+        var root = this.root;
+        this.$graphModel.$view.dispatchEvent(util_1.Util.createCustomEvent('click'));
+        while (root.firstChild) {
+            root.removeChild(root.firstChild);
+        }
+        root.appendChild(this.createPattern());
+        var fillValue = 'none';
+        if (this.options.raster) {
+            fillValue = 'url(#raster)';
+        }
+        var background = util_1.Util.createShape({
+            tag: 'rect',
+            id: 'background',
+            width: 5000,
+            height: 5000,
+            x: 0,
+            y: 0,
+            stroke: '#999',
+            'stroke-width': '1',
+            fill: fillValue
+        });
+        root.appendChild(background);
+        var inlineEdit = document.getElementById('inlineEdit');
+        if (inlineEdit && document.body.contains(inlineEdit)) {
+            document.body.removeChild(inlineEdit);
+        }
+    };
+    Graph.prototype.getLayout = function () {
+        if (this.currentlayout) {
+            return this.currentlayout;
+        }
+        var layout = this.options.layout || '';
+        if (this.layoutFactory[layout]) {
+            this.currentlayout = new this.layoutFactory[layout]();
+        }
+        else {
+            this.currentlayout = new layouts.DagreLayout();
+        }
+        return this.currentlayout;
+    };
+    Graph.prototype.initFactories = function () {
+        var noder = nodes;
+        this.nodeFactory = {};
+        for (var id in noder) {
+            if (noder.hasOwnProperty(id) === true) {
+                this.nodeFactory[id] = noder[id];
+            }
+        }
+        var edger = edges;
+        this.edgeFactory = {};
+        for (var id in edger) {
+            if (edger.hasOwnProperty(id) === true) {
+                this.edgeFactory[id] = edger[id];
+            }
+        }
+        var layouter = layouts;
+        this.layoutFactory = {};
+        for (var id in layouter) {
+            if (layouter.hasOwnProperty(id) === true) {
+                this.layoutFactory[id] = layouter[id];
+            }
+        }
+    };
+    Graph.prototype.initCanvas = function () {
+        if (this.options.canvas) {
+            this.$view = document.getElementById(this.options.canvas);
+        }
+        if (!this.$view) {
+            this.$view = document.createElement('div');
+            this.$view.setAttribute('class', 'diagram');
+            document.body.appendChild(this.$view);
+        }
+    };
+    Graph.prototype.initFeatures = function (features) {
+        if (features) {
+            if (features.newedge) {
+                EventBus_1.EventBus.subscribe(new handlers_1.NewEdge(this), 'mousedown', 'mouseup', 'mousemove', 'mouseleave');
+            }
+            this.importFile = new ImportFile_1.ImportFile(this);
+            if (features.import) {
+                EventBus_1.EventBus.subscribe(this.importFile, 'dragover', 'dragleave', 'drop');
+            }
+            if (features.zoom) {
+                var mousewheel = 'onwheel' in document.createElement('div') ? 'wheel' : document.onmousewheel !== undefined ? 'mousewheel' : 'DOMMouseScroll';
+                EventBus_1.EventBus.subscribe(new handlers_1.Zoom(this), mousewheel);
+            }
+            if (features.drag) {
+                EventBus_1.EventBus.subscribe(new handlers_1.Drag(this), 'mousedown', 'mouseup', 'mousemove', 'mouseleave');
+            }
+            if (features.select) {
+                EventBus_1.EventBus.subscribe(new handlers_1.Select(this), 'click', 'drag');
+            }
+            if (features.palette) {
+                new Palette_1.default(this).show();
+            }
+            if (features.toolbar) {
+                new Toolbar_1.Toolbar(this).show();
+            }
+            if (features.properties) {
+                var propertyPanel = new PropertiesPanel_1.PanelGroup(this);
+                EventBus_1.EventBus.subscribe(propertyPanel, 'dblclick', 'click', EventBus_1.EventBus.RELOADPROPERTIES);
+                propertyPanel.show();
+            }
+            if (features.addnode) {
+                EventBus_1.EventBus.subscribe(new handlers_1.AddNode(this), 'mousedown', 'mouseup', 'mousemove', 'mouseleave');
+            }
+        }
+    };
+    return Graph;
+}(Control_1.Control));
+exports.Graph = Graph;
+
+
+/***/ }),
+
+/***/ "./elements/Model.ts":
+/*!***************************!*\
+  !*** ./elements/Model.ts ***!
+  \***************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var BaseElements_1 = __webpack_require__(/*! ./BaseElements */ "./elements/BaseElements.ts");
+var edges_1 = __webpack_require__(/*! ./edges */ "./elements/edges/index.ts");
+var nodes_1 = __webpack_require__(/*! ./nodes */ "./elements/nodes/index.ts");
+var util_1 = __webpack_require__(/*! ../util */ "./util.ts");
+var EventBus_1 = __webpack_require__(/*! ../EventBus */ "./EventBus.ts");
+var GraphModel = (function (_super) {
+    __extends(GraphModel, _super);
+    function GraphModel() {
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.nodes = [];
+        _this.edges = [];
+        return _this;
+    }
+    GraphModel.prototype.load = function (data) {
+        this.$isLoading = true;
+        data = data || {};
+        this.property = data.type || data.property || 'classdiagram';
+        this.id = 'RootElement';
+        if (data.nodes) {
+            for (var _i = 0, _a = data.nodes; _i < _a.length; _i++) {
+                var node = _a[_i];
+                this.addNode(node);
+            }
+        }
+        if (data.edges) {
+            for (var _b = 0, _c = data.edges; _b < _c.length; _b++) {
+                var edge = _c[_b];
+                this.addEdge(edge);
+            }
+        }
+        this.$isLoading = false;
+    };
+    GraphModel.prototype.getNodeByPosition = function (x, y) {
+        for (var _i = 0, _a = this.nodes; _i < _a.length; _i++) {
+            var node = _a[_i];
+            var posOfNode = node.getPos();
+            var sizeOfNode = node.getSize();
+            if ((posOfNode.x <= x && (posOfNode.x + sizeOfNode.x) >= x)
+                && (posOfNode.y <= y && (posOfNode.y + sizeOfNode.y) >= y)) {
+                return node;
+            }
+        }
+        return null;
+    };
+    GraphModel.prototype.init = function (owner, property, id) {
+        _super.prototype.init.call(this, owner, property, id);
+        this.initCanvas();
+        return this;
+    };
+    GraphModel.prototype.addElement = function (type) {
+        type = util_1.Util.toPascalCase(type);
+        var id = this.getNewId(type);
+        var element = this.createElement(type, id, {});
+        if (element) {
+            util_1.Util.saveToLocalStorage(this);
+            return true;
+        }
+        return false;
+    };
+    GraphModel.prototype.addElementWithValues = function (type, optionalValues) {
+        type = util_1.Util.toPascalCase(type);
+        var id = this.getNewId(type);
+        var element = this.createElement(type, id, {});
+        if (optionalValues) {
+            if (optionalValues.hasOwnProperty('x') && optionalValues.hasOwnProperty('y')) {
+                var x = optionalValues['x'];
+                var y = optionalValues['y'];
+                element.withPos(x, y);
+            }
+        }
+        util_1.Util.saveToLocalStorage(this);
+        return element;
+    };
+    GraphModel.prototype.removeAllElements = function () {
+        var nodesLength = this.nodes.length;
+        for (var i = 0; i < nodesLength; i++) {
+            this.removeElement(this.nodes[0].id);
+        }
+        this.$view.dispatchEvent(util_1.Util.createCustomEvent('click'));
+    };
+    GraphModel.prototype.removeElement = function (id) {
+        var element = this.getDiagramElementById(id);
+        if (!element) {
+            return false;
+        }
+        this.$owner.removeElement(element);
+        if (element instanceof nodes_1.Node) {
+            var idxOfNode = this.nodes.indexOf(element);
+            if (idxOfNode > -1) {
+                this.nodes.splice(idxOfNode, 1);
+            }
+            while (element.$edges.length > 0) {
+                this.removeElement(element.$edges[0].id);
+            }
+            element.$edges = [];
+        }
+        else if (element instanceof edges_1.Association) {
+            var idxOfEdge = this.edges.indexOf(element);
+            if (idxOfEdge > -1) {
+                this.edges.splice(idxOfEdge, 1);
+            }
+            idxOfEdge = element.$sNode.$edges.indexOf(element);
+            if (idxOfEdge > -1) {
+                element.$sNode.$edges.splice(idxOfEdge, 1);
+            }
+            idxOfEdge = element.$tNode.$edges.indexOf(element);
+            if (idxOfEdge > -1) {
+                element.$tNode.$edges.splice(idxOfEdge, 1);
+            }
+        }
+        util_1.Util.saveToLocalStorage(this);
+        return true;
+    };
+    GraphModel.prototype.getSVG = function () {
+        var size = 10;
+        var path = "M" + -size + " 0 L" + +size + " 0 M0 " + -size + " L0 " + +size;
+        var attr = {
+            tag: 'path',
+            id: 'origin',
+            d: path,
+            stroke: '#999',
+            'stroke-width': '1',
+            fill: 'none'
+        };
+        var shape = this.createShape(attr);
+        var attrText = {
+            tag: 'text',
+            x: 0 - size,
+            y: 0 - size / 1.5,
+            'text-anchor': 'end',
+            'font-family': 'Verdana',
+            'font-size': '9',
+            fill: '#999'
+        };
+        var text = this.createShape(attrText);
+        text.textContent = '(0, 0)';
+        var group = this.createShape({ tag: 'g' });
+        group.appendChild(shape);
+        group.appendChild(text);
+        return group;
+    };
+    GraphModel.prototype.getEvents = function () {
+        return [EventBus_1.EventBus.ELEMENTMOUSEDOWN, EventBus_1.EventBus.ELEMENTMOUSEUP, EventBus_1.EventBus.ELEMENTMOUSELEAVE, EventBus_1.EventBus.ELEMENTMOUSEMOVE, EventBus_1.EventBus.ELEMENTMOUSEWHEEL, EventBus_1.EventBus.ELEMENTCLICK, EventBus_1.EventBus.ELEMENTDRAG];
+    };
+    GraphModel.prototype.getNewId = function (prefix) {
+        var id = (prefix ? prefix.toLowerCase() + '-' : '') + Math.floor(Math.random() * 100000);
+        return id;
+    };
+    GraphModel.prototype.getEdgeById = function (id) {
+        for (var _i = 0, _a = this.edges; _i < _a.length; _i++) {
+            var edge = _a[_i];
+            if (edge.id === id) {
+                return edge;
+            }
+        }
+        return undefined;
+    };
+    GraphModel.prototype.getDiagramElementById = function (id) {
+        return this.getNodeById(id) || this.getEdgeById(id);
+    };
+    GraphModel.prototype.addEdge = function (edge, withPosOfNodes) {
+        if (edge && edge.type) {
+            var graph = this.$owner;
+            var typeExists = false;
+            for (var edgeType in graph.edgeFactory) {
+                if (edgeType === edge.type) {
+                    typeExists = true;
+                    break;
+                }
+            }
+            if (!typeExists) {
+                edge.type = 'Association';
+            }
+        }
+        var type = edge.type || 'Association';
+        type = util_1.Util.toPascalCase(type);
+        var id = this.getNewId(type);
+        var newEdge = this.createElement(type, id, edge);
+        newEdge.type = type;
+        var source;
+        var sourceAsString = edge.source.id || edge.source;
+        if (sourceAsString) {
+            source = this.getNodeById(sourceAsString);
+            if (!source) {
+                var id_1 = edge.source;
+                if (typeof id_1 === 'object') {
+                    id_1 = id_1.id;
+                }
+                source = this.createElement('Class', this.getNewId('Class'), { name: id_1 });
+                source.init(this);
+            }
+        }
+        var target;
+        var targetAsString = edge.target.id || edge.target;
+        if (targetAsString) {
+            target = this.getNodeById(targetAsString);
+            if (!target) {
+                var id_2 = edge.target;
+                if (typeof id_2 === 'object') {
+                    id_2 = id_2.id;
+                }
+                target = this.createElement('Class', this.getNewId('Class'), { name: id_2 });
+                target.init(this);
+            }
+        }
+        newEdge.withItem(source, target);
+        if (withPosOfNodes) {
+            var srcX = source.getPos().x + (source.getSize().x / 2);
+            var srcY = source.getPos().y + (source.getSize().y / 2);
+            var targetX = target.getPos().x + (target.getSize().x / 2);
+            var targetY = target.getPos().y + (target.getSize().y / 2);
+            newEdge.addPoint(srcX, srcY);
+            newEdge.addPoint(targetX, targetY);
+        }
+        util_1.Util.saveToLocalStorage(this);
+        return newEdge;
+    };
+    GraphModel.prototype.createElement = function (type, id, data) {
+        var graph = this.$owner;
+        var element;
+        if (graph.nodeFactory[type]) {
+            element = new graph.nodeFactory[type](data);
+            util_1.Util.initControl(this, element, type, id, data);
+            this.nodes.push(element);
+        }
+        if (graph.edgeFactory[type]) {
+            element = new graph.edgeFactory[type](data);
+            util_1.Util.initControl(this, element, type, id, data);
+            this.edges.push(element);
+        }
+        return element;
+    };
+    GraphModel.prototype.getNodeById = function (id) {
+        for (var _i = 0, _a = this.nodes; _i < _a.length; _i++) {
+            var node = _a[_i];
+            if (node.id === id) {
+                return node;
+            }
+        }
+        return undefined;
+    };
+    GraphModel.prototype.initCanvas = function () {
+        var graph = this.$owner;
+        graph.canvasSize = { width: graph.$view.clientWidth, height: graph.$view.clientHeight };
+        graph.root = util_1.Util.createShape({
+            tag: 'svg',
+            id: 'root',
+            width: graph.canvasSize.width,
+            height: graph.canvasSize.height
+        });
+        this.$view = graph.root;
+        graph.$view.appendChild(graph.root);
+        var mousewheel = 'onwheel' in document.createElement('div') ? 'wheel' : document.onmousewheel !== undefined ? 'mousewheel' : 'DOMMouseScroll';
+        EventBus_1.EventBus.register(this, this.$view);
+    };
+    GraphModel.prototype.addNode = function (node) {
+        var type = node['type'] || node.property || 'Node';
+        type = util_1.Util.toPascalCase(type);
+        var id = node['id'] || node['name'] || this.getNewId(type);
+        return this.createElement(type, id, node);
+    };
+    return GraphModel;
+}(BaseElements_1.DiagramElement));
+exports.GraphModel = GraphModel;
+
+
+/***/ }),
+
+/***/ "./elements/edges/Aggregate.ts":
+/*!*************************************!*\
+  !*** ./elements/edges/Aggregate.ts ***!
+  \*************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var Association_1 = __webpack_require__(/*! ./Association */ "./elements/edges/Association.ts");
+var Aggregate = (function (_super) {
+    __extends(Aggregate, _super);
+    function Aggregate() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    Aggregate.prototype.getSVG = function () {
+        var startPoint = this.$points[0];
+        var direction = this.getDirectionOfPointToNode(this.$sNode, startPoint);
+        var path = this.calcCorrectPath(startPoint, direction);
+        var group = _super.prototype.getSVG.call(this);
+        var attr = {
+            tag: 'path',
+            d: path,
+        };
+        this.$diamond = this.createShape(attr);
+        group.appendChild(this.$diamond);
+        return group;
+    };
+    Aggregate.prototype.redraw = function (startNode, dontDrawPoints) {
+        _super.prototype.redraw.call(this, startNode, true);
+        var startPoint = this.$points[0];
+        var direction = 1;
+        if (this.$sNode.id === startNode.id || this.$points.length == 2) {
+            direction = this.getDirectionOfPointToNode(this.$sNode, startPoint);
+            var path = this.calcCorrectPath(startPoint, direction);
+            this.$diamond.setAttributeNS(null, 'd', path);
+        }
+        this.redrawPointsAndInfo();
+    };
+    Aggregate.prototype.calcCorrectPath = function (startPoint, direction) {
+        var startX = startPoint.x;
+        var startY = startPoint.y;
+        var path;
+        switch (direction) {
+            case 0:
+                path = "M" + startX + " " + startY + " L" + (startX + 6) + " " + (startY + 10) + " L" + startX + " " + (startY + 20) + " L" + (startX - 6) + " " + (startY + 10) + " Z";
+                startPoint.y = startPoint.y + 20;
+                break;
+            case 3:
+                path = "M" + startX + " " + startY + " L" + (startX - 10) + " " + (startY + 6) + " L" + (startX - 20) + " " + startY + " L" + (startX - 10) + " " + (startY - 6) + " Z";
+                startPoint.x = startPoint.x - 20;
+                break;
+            case 2:
+                path = "M" + startX + " " + startY + " L" + (startX + 10) + " " + (startY - 6) + " L" + (startX + 20) + " " + startY + " L" + (startX + 10) + " " + (startY + 6) + " Z";
+                startPoint.x = startPoint.x + 20;
+                break;
+            case 1:
+                path = "M" + startX + " " + startY + " L" + (startX - 6) + " " + (startY - 10) + " L" + startX + " " + (startY - 20) + " L" + (startX + 6) + " " + (startY - 10) + " Z";
+                startPoint.y = startPoint.y - 20;
+                break;
+            default:
+                break;
+        }
+        return path;
+    };
+    return Aggregate;
+}(Association_1.Association));
+exports.Aggregate = Aggregate;
+
+
+/***/ }),
+
+/***/ "./elements/edges/Aggregation.ts":
+/*!***************************************!*\
+  !*** ./elements/edges/Aggregation.ts ***!
+  \***************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var index_1 = __webpack_require__(/*! ./index */ "./elements/edges/index.ts");
+var Aggregation = (function (_super) {
+    __extends(Aggregation, _super);
+    function Aggregation() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    Aggregation.prototype.getSVG = function () {
+        var group = _super.prototype.getSVG.call(this);
+        this.$diamond.setAttributeNS(null, 'fill', 'white');
+        return group;
+    };
+    return Aggregation;
+}(index_1.Aggregate));
+exports.Aggregation = Aggregation;
+
+
+/***/ }),
+
+/***/ "./elements/edges/Association.ts":
+/*!***************************************!*\
+  !*** ./elements/edges/Association.ts ***!
+  \***************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var BaseElements_1 = __webpack_require__(/*! ../BaseElements */ "./elements/BaseElements.ts");
+var InfoText_1 = __webpack_require__(/*! ../nodes/InfoText */ "./elements/nodes/InfoText.ts");
+var util_1 = __webpack_require__(/*! ../../util */ "./util.ts");
+var EventBus_1 = __webpack_require__(/*! ../../EventBus */ "./EventBus.ts");
+var edges = __webpack_require__(/*! ../edges */ "./elements/edges/index.ts");
+var Direction;
+(function (Direction) {
+    Direction[Direction["Up"] = 0] = "Up";
+    Direction[Direction["Down"] = 1] = "Down";
+    Direction[Direction["Left"] = 2] = "Left";
+    Direction[Direction["Right"] = 3] = "Right";
+})(Direction = exports.Direction || (exports.Direction = {}));
+var Association = (function (_super) {
+    __extends(Association, _super);
+    function Association(data) {
+        var _this = _super.call(this) || this;
+        _this.$points = [];
+        _this.withData(data);
+        return _this;
+    }
+    Association.prototype.withData = function (data) {
+        if (!data) {
+            return this;
+        }
+        var srcInfo;
+        var trgInfo;
+        if (data.source && typeof data.source !== 'string') {
+            srcInfo = data.source;
+        }
+        else if (data.sourceInfo && typeof data.sourceInfo !== 'string') {
+            srcInfo = data.sourceInfo;
+        }
+        if (srcInfo) {
+            this.sourceInfo = new InfoText_1.InfoText(srcInfo);
+            this.sourceInfo.$owner = this;
+        }
+        if (data.target && typeof data.target !== 'string') {
+            trgInfo = data.target;
+        }
+        else if (data.targetInfo && typeof data.targetInfo !== 'string') {
+            trgInfo = data.targetInfo;
+        }
+        if (trgInfo) {
+            this.targetInfo = new InfoText_1.InfoText(trgInfo);
+            this.targetInfo.$owner = this;
+        }
+        return this;
+    };
+    Association.prototype.updateSrcCardinality = function (cardinality) {
+        this.sourceInfo = this.updateCardinality(this.$sNode, this.sourceInfo, cardinality);
+        this.redrawSourceInfo();
+        util_1.Util.saveToLocalStorage(this.$owner);
+    };
+    Association.prototype.updateTargetCardinality = function (cardinality) {
+        this.targetInfo = this.updateCardinality(this.$tNode, this.targetInfo, cardinality);
+        this.redrawTargetInfo();
+        util_1.Util.saveToLocalStorage(this.$owner);
+    };
+    Association.prototype.updateSrcProperty = function (property) {
+        this.sourceInfo = this.updateProperty(this.$sNode, this.sourceInfo, property);
+        this.redrawSourceInfo();
+        util_1.Util.saveToLocalStorage(this.$owner);
+    };
+    Association.prototype.updateTargetProperty = function (property) {
+        this.targetInfo = this.updateProperty(this.$tNode, this.targetInfo, property);
+        this.redrawTargetInfo();
+        util_1.Util.saveToLocalStorage(this.$owner);
+    };
+    Association.prototype.withItem = function (source, target) {
+        source.$edges.push(this);
+        target.$edges.push(this);
+        this.$sNode = source;
+        this.$tNode = target;
+        this.source = source.id;
+        this.target = target.id;
+        return this;
+    };
+    Association.prototype.getSVG = function () {
+        var group = util_1.Util.createShape({ tag: 'g', id: this.id, class: 'SVGEdge' });
+        var path = this.getPath();
+        var attr = {
+            tag: 'path',
+            d: path,
+            fill: 'none'
+        };
+        var pathLine = this.createShape(attr);
+        attr['style'] = 'stroke-width:20;opacity:0;width:20;height:20';
+        var extendedPathLine = util_1.Util.createShape(attr);
+        group.appendChild(extendedPathLine);
+        group.appendChild(pathLine);
+        if (this.sourceInfo) {
+            var calcPos = this.calcInfoPosNew(this.sourceInfo, this.$sNode);
+            this.sourceInfo.withPos(calcPos.x, calcPos.y);
+            group.appendChild(this.sourceInfo.getSVG());
+        }
+        if (this.targetInfo) {
+            var calcPos = this.calcInfoPosNew(this.targetInfo, this.$tNode);
+            this.targetInfo.withPos(calcPos.x, calcPos.y);
+            group.appendChild(this.targetInfo.getSVG());
+        }
+        this.$pathWideSvg = extendedPathLine;
+        this.$pathSvg = pathLine;
+        this.$view = group;
+        return group;
+    };
+    Association.prototype.getEvents = function () {
+        return [EventBus_1.EventBus.ELEMENTCLICK, EventBus_1.EventBus.ELEMENTDBLCLICK, EventBus_1.EventBus.EDITOR, EventBus_1.EventBus.OPENPROPERTIES];
+    };
+    Association.prototype.convertEdge = function (type, newId, redraw) {
+        if (!edges[type]) {
+            return this;
+        }
+        var newEdge = new edges[type]();
+        newEdge.withItem(this.$sNode, this.$tNode);
+        newEdge.id = newId;
+        newEdge.type = type;
+        newEdge.lineStyle = this.lineStyle;
+        newEdge.$owner = this.$owner;
+        if (this.sourceInfo) {
+            newEdge.sourceInfo = new InfoText_1.InfoText({ property: this.sourceInfo.property, cardinality: this.sourceInfo.cardinality });
+            newEdge.sourceInfo.$owner = newEdge;
+        }
+        if (this.targetInfo) {
+            newEdge.targetInfo = new InfoText_1.InfoText({ property: this.targetInfo.property, cardinality: this.targetInfo.cardinality });
+            newEdge.targetInfo.$owner = newEdge;
+        }
+        this.$points.forEach(function (point) {
+            newEdge.addPoint(point.x, point.y);
+        });
+        var graph = this.getRoot();
+        if (!graph) {
+            return this;
+        }
+        var idx = graph.$graphModel.edges.indexOf(this);
+        graph.$graphModel.removeElement(this.id);
+        if (idx > -1) {
+            graph.$graphModel.edges.splice(idx, 0, newEdge);
+        }
+        else {
+            graph.$graphModel.edges.push(newEdge);
+        }
+        if (!redraw) {
+            return newEdge;
+        }
+        var svgRoot;
+        if (graph) {
+            svgRoot = graph.root;
+        }
+        else {
+            svgRoot = document.getElementById('root');
+        }
+        var newEdgeSvg = newEdge.getSVG();
+        graph.removeElement(this);
+        svgRoot.appendChild(newEdgeSvg);
+        var dontDrawPath = (type !== 'Edge');
+        newEdge.redraw(newEdge.$sNode, dontDrawPath);
+        newEdge.redraw(newEdge.$tNode, dontDrawPath);
+        EventBus_1.EventBus.register(newEdge, newEdgeSvg);
+        this.sourceInfo = undefined;
+        this.targetInfo = undefined;
+        return newEdge;
+    };
+    Association.prototype.redraw = function (startNode, dontDrawPoints) {
+        if (!startNode) {
+            return;
+        }
+        var endPoint;
+        var recalcPoint;
+        var endPointIdx;
+        if (this.$sNode.id === startNode.id) {
+            recalcPoint = this.$points[0];
+            endPointIdx = 1;
+        }
+        else if (this.$tNode.id === startNode.id) {
+            recalcPoint = this.$points[this.$points.length - 1];
+            endPointIdx = this.$points.length - 2;
+        }
+        endPoint = this.$points[endPointIdx];
+        this.calcIntersection(startNode, recalcPoint, endPoint);
+        if (this.$points.length > 2 && this.$tNode.id === startNode.id && endPoint.y > (startNode.getPos().y + (startNode.getSize().y / 2))) {
+            this.$points.splice(endPointIdx, 1);
+        }
+        if (this.$tNode.id === startNode.id && this.$points.length === 2) {
+            this.calcIntersection(this.$sNode, endPoint, recalcPoint);
+        }
+        if (this.$points.length > 2 && this.$sNode.id === startNode.id && (startNode.getPos().y + (startNode.getSize().y / 2) > endPoint.y)) {
+            this.$points.splice(endPointIdx, 1);
+        }
+        if (this.$sNode.id === startNode.id && this.$points.length === 2) {
+            this.calcIntersection(this.$tNode, endPoint, recalcPoint);
+        }
+        if (!dontDrawPoints) {
+            this.redrawPointsAndInfo();
+        }
+    };
+    Association.prototype.getPath = function () {
+        if (this.$points.length === 0) {
+            return '';
+        }
+        var path = 'M';
+        for (var i = 0; i < this.$points.length; i++) {
+            var point = this.$points[i];
+            if (i > 0) {
+                path += 'L';
+            }
+            path += Math.floor(point.x) + ' ' + Math.floor(point.y) + ' ';
+        }
+        return path;
+    };
+    Association.prototype.calcInfoPosNew = function (infoTxt, node) {
+        if (!infoTxt || !node) {
+            return null;
+        }
+        var startPoint;
+        var nextToStartPoint;
+        if (this.$sNode.id === node.id) {
+            startPoint = this.$points[0];
+            nextToStartPoint = this.$points[1];
+        }
+        else if (this.$tNode.id === node.id) {
+            startPoint = this.$points[this.$points.length - 1];
+            nextToStartPoint = this.$points[this.$points.length - 2];
+        }
+        var direction = this.getDirectionOfPointToNode(node, startPoint);
+        var x;
+        var y;
+        switch (direction) {
+            case 0:
+                if (startPoint.x >= nextToStartPoint.x) {
+                    x = startPoint.x + 5;
+                }
+                else {
+                    x = startPoint.x - (infoTxt.getSize().x);
+                }
+                y = startPoint.y + (infoTxt.getSize().y / 2);
+                break;
+            case 3:
+                if (startPoint.y >= nextToStartPoint.y) {
+                    y = startPoint.y + (infoTxt.getSize().y / 2);
+                }
+                else {
+                    y = startPoint.y - (infoTxt.getSize().y / 2) - 5;
+                }
+                x = startPoint.x - (infoTxt.getSize().x) - 5;
+                break;
+            case 2:
+                if (startPoint.y >= nextToStartPoint.y) {
+                    y = startPoint.y + (infoTxt.getSize().y / 2);
+                }
+                else {
+                    y = startPoint.y - (infoTxt.getSize().y / 2) - 5;
+                }
+                x = startPoint.x + 5;
+                break;
+            case 1:
+                if (startPoint.x >= nextToStartPoint.x) {
+                    x = startPoint.x + 5;
+                }
+                else {
+                    x = startPoint.x - (infoTxt.getSize().x);
+                }
+                y = startPoint.y - (infoTxt.getSize().y / 2) - 5;
+                break;
+            default:
+                break;
+        }
+        return new BaseElements_1.Point(x, y);
+    };
+    Association.prototype.clearPoints = function () {
+        this.$points = [];
+        this.$points = [];
+    };
+    Association.prototype.addPoint = function (x, y) {
+        this.$points.push(new BaseElements_1.Point(x, y));
+        return this.$points;
+    };
+    Association.prototype.redrawPointsAndInfo = function () {
+        var path = this.getPath();
+        this.$pathSvg.setAttributeNS(null, 'd', path);
+        this.$pathWideSvg.setAttributeNS(null, 'd', path);
+        this.redrawSourceInfo();
+        this.redrawTargetInfo();
+    };
+    Association.prototype.redrawSourceInfo = function () {
+        if (this.sourceInfo) {
+            var newPosOfSrc = this.calcInfoPosNew(this.sourceInfo, this.$sNode);
+            this.sourceInfo.redrawFromEdge(newPosOfSrc);
+        }
+    };
+    Association.prototype.redrawTargetInfo = function () {
+        if (this.targetInfo) {
+            var newPosOfTarget = this.calcInfoPosNew(this.targetInfo, this.$tNode);
+            this.targetInfo.redrawFromEdge(newPosOfTarget);
+        }
+    };
+    Association.prototype.getDirectionOfPointToNode = function (node, pointNearNode) {
+        var x1 = node.getPos();
+        var x2 = new BaseElements_1.Point((x1.x + node.getSize().x), (x1.y + node.getSize().y));
+        var direction = 1;
+        if (x1.y >= pointNearNode.y) {
+            direction = 1;
+        }
+        if (x2.y <= pointNearNode.y) {
+            direction = 0;
+        }
+        if (x1.x >= pointNearNode.x) {
+            direction = 3;
+        }
+        if (x2.x <= pointNearNode.x) {
+            direction = 2;
+        }
+        return direction;
+    };
+    Association.prototype.updateCardinality = function (node, infoText, cardinality) {
+        if (!infoText) {
+            infoText = new InfoText_1.InfoText({ 'cardinality': cardinality });
+            infoText.$owner = this;
+            var calcPos = this.calcInfoPosNew(infoText, node);
+            infoText.withPos(calcPos.x, calcPos.y);
+            this.$view.appendChild(infoText.getSVG());
+            return infoText;
+        }
+        infoText.cardinality = cardinality;
+        if (infoText.isEmpty()) {
+            this.$view.removeChild(infoText.$view);
+            return undefined;
+        }
+        infoText.updateCardinality(cardinality);
+        return infoText;
+    };
+    Association.prototype.updateProperty = function (node, infoText, property) {
+        if (!infoText) {
+            infoText = new InfoText_1.InfoText({ 'property': property });
+            infoText.$owner = this;
+            var calcPos = this.calcInfoPosNew(infoText, node);
+            infoText.withPos(calcPos.x, calcPos.y);
+            this.$view.appendChild(infoText.getSVG());
+            return infoText;
+        }
+        infoText.property = property;
+        if (infoText.isEmpty()) {
+            this.$view.removeChild(infoText.$view);
+            return undefined;
+        }
+        infoText.updateProperty(property);
+        return infoText;
+    };
+    Association.prototype.calcIntersection = function (startNode, recalcPoint, endPoint) {
+        var h = startNode.getSize().y;
+        var w = startNode.getSize().x;
+        var x1 = startNode.getPos().x + (w / 2);
+        var y1 = startNode.getPos().y + (h / 2);
+        var x2 = endPoint.x;
+        var y2 = endPoint.y;
+        var newX = recalcPoint.x;
+        var newY = recalcPoint.y;
+        if (x2 > x1) {
+            newX = x1 + (w / 2);
+        }
+        else if (x2 < x1) {
+            newX = x1 - (w / 2);
+        }
+        else {
+            newX = x1;
+        }
+        if ((x2 - x1) !== 0) {
+            newY = ((y2 - y1) / (x2 - x1) * (newX - x1)) + y1;
+        }
+        else {
+            if (y1 > y2) {
+                newY = startNode.getPos().y;
+            }
+            else {
+                newY = startNode.getPos().y + h;
+            }
+        }
+        if (!((y1 - (h / 2) <= newY) && newY <= y1 + (h / 2))) {
+            if (y2 > y1) {
+                newY = y1 + (h / 2);
+            }
+            else {
+                newY = y1 - (h / 2);
+            }
+            if ((x2 - x1) !== 0) {
+                var tmp = ((y2 - y1) / (x2 - x1));
+                newX = (newY + (tmp * x1) - y1) / tmp;
+            }
+            else {
+                newX = x1;
+            }
+        }
+        recalcPoint.x = Math.ceil(newX);
+        recalcPoint.y = Math.ceil(newY);
+        return null;
+    };
+    return Association;
+}(BaseElements_1.DiagramElement));
+exports.Association = Association;
+
+
+/***/ }),
+
+/***/ "./elements/edges/Composition.ts":
+/*!***************************************!*\
+  !*** ./elements/edges/Composition.ts ***!
+  \***************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var index_1 = __webpack_require__(/*! ./index */ "./elements/edges/index.ts");
+var Composition = (function (_super) {
+    __extends(Composition, _super);
+    function Composition() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    Composition.prototype.getSVG = function () {
+        var group = _super.prototype.getSVG.call(this);
+        this.$diamond.setAttributeNS(null, 'fill', 'black');
+        return group;
+    };
+    return Composition;
+}(index_1.Aggregate));
+exports.Composition = Composition;
+
+
+/***/ }),
+
+/***/ "./elements/edges/Generalisation.ts":
+/*!******************************************!*\
+  !*** ./elements/edges/Generalisation.ts ***!
+  \******************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var Association_1 = __webpack_require__(/*! ./Association */ "./elements/edges/Association.ts");
+var Generalisation = (function (_super) {
+    __extends(Generalisation, _super);
+    function Generalisation() {
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.$TARGET_ELEMENT_HEIGHT = 12;
+        return _this;
+    }
+    Generalisation.prototype.getSVG = function () {
+        var startPoint = this.$points[0];
+        var direction = this.getDirectionOfPointToNode(this.$sNode, startPoint);
+        var path = this.calcCorrectPath(startPoint, direction);
+        var group = _super.prototype.getSVG.call(this);
+        var attr = {
+            tag: 'path',
+            d: path,
+            fill: 'white'
+        };
+        this.$targetElement = this.createShape(attr);
+        group.appendChild(this.$targetElement);
+        return group;
+    };
+    Generalisation.prototype.redraw = function (startNode, dontDrawPoints) {
+        _super.prototype.redraw.call(this, startNode, true);
+        var startPoint = this.$points[0];
+        var direction = 0;
+        if (this.$sNode.id === startNode.id || this.$points.length == 2) {
+            direction = this.getDirectionOfPointToNode(this.$sNode, startPoint);
+            var path = this.calcCorrectPath(startPoint, direction);
+            this.$targetElement.setAttributeNS(null, 'd', path);
+        }
+        this.redrawPointsAndInfo();
+    };
+    Generalisation.prototype.calcCorrectPath = function (startPoint, direction) {
+        var startX = startPoint.x;
+        var startY = startPoint.y;
+        var path;
+        switch (direction) {
+            case 0:
+                path = "M" + startX + " " + (startY + 3) + " L" + (startX + this.$TARGET_ELEMENT_HEIGHT) + " " + (startY + this.$TARGET_ELEMENT_HEIGHT) + " L" + (startX - this.$TARGET_ELEMENT_HEIGHT) + " " + (startY + this.$TARGET_ELEMENT_HEIGHT) + " Z";
+                startPoint.y = startPoint.y + 12;
+                break;
+            case 3:
+                path = "M" + (startX - 3) + " " + startY + " L" + (startX - this.$TARGET_ELEMENT_HEIGHT) + " " + (startY + this.$TARGET_ELEMENT_HEIGHT) + " L" + (startX - this.$TARGET_ELEMENT_HEIGHT) + " " + (startY - this.$TARGET_ELEMENT_HEIGHT) + " Z";
+                startPoint.x = startPoint.x - 12;
+                break;
+            case 2:
+                path = "M" + (startX + 3) + " " + startY + " L" + (startX + this.$TARGET_ELEMENT_HEIGHT) + " " + (startY - this.$TARGET_ELEMENT_HEIGHT) + " L" + (startX + this.$TARGET_ELEMENT_HEIGHT) + " " + (startY + this.$TARGET_ELEMENT_HEIGHT) + " Z";
+                startPoint.x = startPoint.x + 12;
+                break;
+            case 1:
+                path = "M" + startX + " " + (startY - 3) + " L" + (startX + this.$TARGET_ELEMENT_HEIGHT) + " " + (startY - this.$TARGET_ELEMENT_HEIGHT) + " L" + (startX - this.$TARGET_ELEMENT_HEIGHT) + " " + (startY - this.$TARGET_ELEMENT_HEIGHT) + " Z";
+                startPoint.y = startPoint.y - 12;
+                break;
+            default:
+                break;
+        }
+        return path;
+    };
+    return Generalisation;
+}(Association_1.Association));
+exports.Generalisation = Generalisation;
+
+
+/***/ }),
+
+/***/ "./elements/edges/Implements.ts":
+/*!**************************************!*\
+  !*** ./elements/edges/Implements.ts ***!
+  \**************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var Generalisation_1 = __webpack_require__(/*! ./Generalisation */ "./elements/edges/Generalisation.ts");
+var Implements = (function (_super) {
+    __extends(Implements, _super);
+    function Implements() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    Implements.prototype.getSVG = function () {
+        var group = _super.prototype.getSVG.call(this);
+        this.$pathSvg.setAttributeNS(null, 'stroke-dasharray', '3, 3');
+        return group;
+    };
+    return Implements;
+}(Generalisation_1.Generalisation));
+exports.Implements = Implements;
+
+
+/***/ }),
+
+/***/ "./elements/edges/index.ts":
+/*!*********************************!*\
+  !*** ./elements/edges/index.ts ***!
+  \*********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+function __export(m) {
+    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+}
+Object.defineProperty(exports, "__esModule", { value: true });
+__export(__webpack_require__(/*! ./Association */ "./elements/edges/Association.ts"));
+__export(__webpack_require__(/*! ./Aggregate */ "./elements/edges/Aggregate.ts"));
+__export(__webpack_require__(/*! ./Aggregation */ "./elements/edges/Aggregation.ts"));
+__export(__webpack_require__(/*! ./Composition */ "./elements/edges/Composition.ts"));
+__export(__webpack_require__(/*! ./Generalisation */ "./elements/edges/Generalisation.ts"));
+__export(__webpack_require__(/*! ./Implements */ "./elements/edges/Implements.ts"));
+
+
+/***/ }),
+
+/***/ "./elements/nodes/Attribute.ts":
+/*!*************************************!*\
+  !*** ./elements/nodes/Attribute.ts ***!
+  \*************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var ClazzProperty_1 = __webpack_require__(/*! ./ClazzProperty */ "./elements/nodes/ClazzProperty.ts");
+var Attribute = (function (_super) {
+    __extends(Attribute, _super);
+    function Attribute(data) {
+        return _super.call(this, data) || this;
+    }
+    return Attribute;
+}(ClazzProperty_1.default));
+exports.default = Attribute;
+
+
+/***/ }),
+
+/***/ "./elements/nodes/AutoComplete.ts":
+/*!****************************************!*\
+  !*** ./elements/nodes/AutoComplete.ts ***!
+  \****************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var Control_1 = __webpack_require__(/*! ../../Control */ "./Control.ts");
 var AutoComplete = (function (_super) {
     __extends(AutoComplete, _super);
     function AutoComplete() {
@@ -3247,7 +4650,12 @@ exports.AutoComplete = AutoComplete;
 
 
 /***/ }),
-/* 14 */
+
+/***/ "./elements/nodes/BR.ts":
+/*!******************************!*\
+  !*** ./elements/nodes/BR.ts ***!
+  \******************************/
+/*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3263,7 +4671,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var Control_1 = __webpack_require__(2);
+var Control_1 = __webpack_require__(/*! ../../Control */ "./Control.ts");
 var BR = (function (_super) {
     __extends(BR, _super);
     function BR() {
@@ -3288,7 +4696,12 @@ exports.BR = BR;
 
 
 /***/ }),
-/* 15 */
+
+/***/ "./elements/nodes/Button.ts":
+/*!**********************************!*\
+  !*** ./elements/nodes/Button.ts ***!
+  \**********************************/
+/*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3304,7 +4717,866 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var Control_1 = __webpack_require__(2);
+var Control_1 = __webpack_require__(/*! ../../Control */ "./Control.ts");
+var Button = (function (_super) {
+    __extends(Button, _super);
+    function Button() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    Button.prototype.load = function (json, owner) {
+        this.createControl(this.$owner, json);
+    };
+    Button.prototype.createControl = function (parent, data) {
+        if (typeof (data) === 'string') {
+            this.id = data;
+        }
+        else {
+            this.id = data['id'];
+        }
+        this.$view = document.createElement('button');
+        if (data instanceof Object) {
+            for (var attr in data) {
+                if (!data.hasOwnProperty(attr)) {
+                    continue;
+                }
+                this.$view.setAttribute(attr, data[attr]);
+            }
+        }
+        parent.appendChild(this);
+    };
+    return Button;
+}(Control_1.Control));
+exports.Button = Button;
+
+
+/***/ }),
+
+/***/ "./elements/nodes/Class.ts":
+/*!*********************************!*\
+  !*** ./elements/nodes/Class.ts ***!
+  \*********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var Node_1 = __webpack_require__(/*! ./Node */ "./elements/nodes/Node.ts");
+var EventBus_1 = __webpack_require__(/*! ../../EventBus */ "./EventBus.ts");
+var util_1 = __webpack_require__(/*! ../../util */ "./util.ts");
+var Attribute_1 = __webpack_require__(/*! ./Attribute */ "./elements/nodes/Attribute.ts");
+var Method_1 = __webpack_require__(/*! ./Method */ "./elements/nodes/Method.ts");
+var Symbol_1 = __webpack_require__(/*! ./Symbol */ "./elements/nodes/Symbol.ts");
+var StereoType_1 = __webpack_require__(/*! ./StereoType */ "./elements/nodes/StereoType.ts");
+var GraphListener_1 = __webpack_require__(/*! ../../handlers/GraphListener */ "./handlers/GraphListener.ts");
+var Class = (function (_super) {
+    __extends(Class, _super);
+    function Class(json) {
+        var _this = _super.call(this, json) || this;
+        _this.attributes = [];
+        _this.methods = [];
+        _this.$attrHeight = 25;
+        _this.$attrFontSize = 12;
+        return _this;
+    }
+    Class.prototype.load = function (json) {
+        if (!json) {
+            json = {};
+        }
+        var y = this.$labelHeight;
+        var labelObj = json.name || json.id || ('New ' + this.property);
+        var width = 150;
+        width = Math.max(width, util_1.Util.sizeOf(labelObj).width + 60);
+        if (json['attributes']) {
+            for (var _i = 0, _a = json['attributes']; _i < _a.length; _i++) {
+                var attr = _a[_i];
+                var attrObj = new Attribute_1.default(attr);
+                attrObj.$owner = this;
+                this.attributes.push(attrObj);
+                y += this.$attrHeight;
+                width = Math.max(width, util_1.Util.sizeOf(attrObj.toString()).width);
+                var listener = new GraphListener_1.GraphListener(attrObj);
+                attrObj.$data.addListener(listener);
+            }
+        }
+        if (json['stereotype']) {
+            this.stereoType = json['stereotype'];
+        }
+        if (json['methods']) {
+            for (var _b = 0, _c = json['methods']; _b < _c.length; _b++) {
+                var method = _c[_b];
+                var methodObj = new Method_1.default(method);
+                methodObj.$owner = this;
+                this.methods.push(methodObj);
+                y += this.$attrHeight;
+                width = Math.max(width, util_1.Util.sizeOf(methodObj.toString()).width);
+            }
+            y += this.$attrHeight;
+        }
+        this.withSize(width, y);
+    };
+    Class.prototype.getAttributes = function () {
+        return this.attributes;
+    };
+    Class.prototype.getMethods = function () {
+        return this.methods;
+    };
+    Class.prototype.getToolBarIcon = function () {
+        var icon = Symbol_1.SymbolLibary.draw({ type: 'Class', property: 'HTML', width: '50', height: '50', transform: 'translate(-26,-21)' });
+        return icon;
+    };
+    Class.prototype.getSVG = function () {
+        var pos = this.getPos();
+        var size = this.getSize();
+        var group = this.createShape({ tag: 'g', id: this.id, class: 'SVGClazz', transform: 'translate(0 0)' });
+        if (this.stereoType) {
+            var type = new StereoType_1.StereoType(this.stereoType, pos.x, pos.y);
+            group.appendChild(type.getSVG());
+        }
+        var options = null;
+        var style;
+        var clazzName;
+        if (this.$owner['options']) {
+            var options_1 = this.$owner['options'];
+            if (options_1) {
+                style = options_1.style;
+            }
+        }
+        if (style === 'modern') {
+            clazzName = 'ClazzHeader';
+        }
+        clazzName = 'ClazzHeader';
+        var nodeShape = this.createShape({
+            tag: 'rect',
+            x: pos.x,
+            y: pos.y,
+            height: size.y,
+            width: size.x,
+            rx: 5,
+            ry: 5,
+            fill: 'none',
+            stroke: 'black',
+            'stroke-width': 1
+        });
+        if (clazzName) {
+            nodeShape.setAttribute('className', clazzName);
+            var styleHeader = util_1.Util.getStyle('ClazzHeader');
+        }
+        var label = this.createShape({
+            tag: 'text',
+            x: pos.x + size.x / 2,
+            y: pos.y + this.$labelHeight / 2,
+            'text-anchor': 'middle',
+            'alignment-baseline': 'central',
+            'font-family': 'Verdana',
+            'font-size': this.$labelFontSize,
+            fill: 'black'
+        });
+        label.textContent = this.id;
+        this.$labelView = label;
+        group.appendChild(nodeShape);
+        group.appendChild(label);
+        if (this.attributes.length > 0) {
+            var separatorLabelAttr = this.createShape({
+                tag: 'line',
+                x1: pos.x,
+                y1: pos.y + this.$labelHeight,
+                x2: pos.x + size.x,
+                y2: pos.y + this.$labelHeight,
+                'stroke-width': 1
+            });
+            group.appendChild(separatorLabelAttr);
+            var groupOfAttributes = this.createShape({ tag: 'g', id: (this.id + 'Attributes') });
+            groupOfAttributes.setAttributeNS(null, 'class', 'SVGClazzProperty SVGClazzAttribute');
+            group.appendChild(groupOfAttributes);
+            var y_1 = pos.y + this.$labelHeight + this.$attrHeight / 2;
+            for (var _i = 0, _a = this.attributes; _i < _a.length; _i++) {
+                var attr = _a[_i];
+                var attrSvg = attr.getSVG();
+                attr.$owner = this;
+                attrSvg.setAttributeNS(null, 'x', '' + (pos.x + 10));
+                attrSvg.setAttributeNS(null, 'y', '' + y_1);
+                groupOfAttributes.appendChild(attrSvg);
+                y_1 += this.$attrHeight;
+            }
+        }
+        var height = this.attributes.length * this.$attrHeight;
+        var y = pos.y + this.$labelHeight + height + this.$attrHeight / 2;
+        if (this.methods.length > 0) {
+            var separatorAttrMethods = this.createShape({
+                tag: 'line',
+                x1: pos.x,
+                y1: pos.y + this.$labelHeight + (this.$attrHeight * this.attributes.length),
+                x2: pos.x + size.x,
+                y2: pos.y + this.$labelHeight + (this.$attrHeight * this.attributes.length),
+                'stroke-width': 1
+            });
+            group.appendChild(separatorAttrMethods);
+            var groupOfMethods = this.createShape({ tag: 'g', id: (this.id + 'Methods') });
+            groupOfMethods.setAttributeNS(null, 'class', 'SVGClazzProperty SVGClazzMethod');
+            group.appendChild(groupOfMethods);
+            y += this.$attrHeight / 2;
+            for (var _b = 0, _c = this.methods; _b < _c.length; _b++) {
+                var method = _c[_b];
+                var methodSvg = method.getSVG();
+                method.$owner = this;
+                methodSvg.setAttributeNS(null, 'x', '' + (pos.x + 10));
+                methodSvg.setAttributeNS(null, 'y', '' + y);
+                groupOfMethods.appendChild(methodSvg);
+                y += this.$attrHeight;
+            }
+        }
+        this.$view = group;
+        return group;
+    };
+    Class.prototype.copy = function () {
+        var copy;
+        copy = _super.prototype.copy.call(this);
+        copy.id = this.id + 'Copy';
+        this.attributes.forEach(function (attr) {
+            copy.attributes.push(new Attribute_1.default(attr.toString()));
+        });
+        this.methods.forEach(function (method) {
+            copy.methods.push(new Method_1.default(method.toString()));
+        });
+        copy.reCalcSize();
+        return copy;
+    };
+    Class.prototype.getEvents = function () {
+        return [EventBus_1.EventBus.ELEMENTMOUSEDOWN, EventBus_1.EventBus.ELEMENTMOUSEMOVE, EventBus_1.EventBus.ELEMENTCLICK,
+            EventBus_1.EventBus.ELEMENTDRAG, EventBus_1.EventBus.ELEMENTDBLCLICK, EventBus_1.EventBus.OPENPROPERTIES, EventBus_1.EventBus.RELOADPROPERTIES];
+    };
+    Class.prototype.addProperty = function (value, type) {
+        if (!this[type] || !value || value.length === 0) {
+            return;
+        }
+        var extractedValue;
+        if (type === 'attributes') {
+            extractedValue = new Attribute_1.default(value);
+        }
+        else if (type === 'methods') {
+            extractedValue = new Method_1.default(value);
+        }
+        for (var _i = 0, _a = this[type]; _i < _a.length; _i++) {
+            var valueOfType = _a[_i];
+            if (valueOfType.toString() === extractedValue.toString()) {
+                alert(extractedValue.toString() + ' already exists.');
+                extractedValue = undefined;
+                return;
+            }
+        }
+        this[type].push(extractedValue);
+        util_1.Util.saveToLocalStorage(this.$owner);
+        return extractedValue;
+    };
+    Class.prototype.addAttribute = function (value) {
+        return this.addProperty(value, 'attributes');
+    };
+    Class.prototype.addAttributeObj = function (attr) {
+        this.attributes.push(attr);
+        return this.getAttributes();
+    };
+    Class.prototype.addMethodObj = function (method) {
+        this.methods.push(method);
+        return this.getMethods();
+    };
+    Class.prototype.addMethod = function (value) {
+        return this.addProperty(value, 'methods');
+    };
+    Class.prototype.removeAttribute = function (attr) {
+        var idx = this.attributes.indexOf(attr);
+        this.attributes.splice(idx, 1);
+    };
+    Class.prototype.removeMethod = function (method) {
+        var idx = this.methods.indexOf(method);
+        this.methods.splice(idx, 1);
+    };
+    Class.prototype.removeProperty = function (property) {
+        if (property instanceof Attribute_1.default) {
+            this.removeAttribute(property);
+        }
+        if (property instanceof Method_1.default) {
+            this.removeMethod(property);
+        }
+        util_1.Util.saveToLocalStorage(this.$owner);
+    };
+    Class.prototype.reDraw = function (drawOnlyIfSizeChanged) {
+        var hasSizeChanged = this.hasSizeChanged();
+        if (drawOnlyIfSizeChanged) {
+            if (!hasSizeChanged[0]) {
+                return;
+            }
+        }
+        if (!this.$view) {
+            return;
+        }
+        this.$owner.$view.removeChild(this.$view);
+        var newSvg = this.getSVG();
+        this.$owner.$view.appendChild(newSvg);
+        this.$view = newSvg;
+        EventBus_1.EventBus.register(this, newSvg);
+        this.redrawEdges();
+    };
+    Class.prototype.hasSizeChanged = function () {
+        var oldSize = { width: this.getSize().x, height: this.getSize().y };
+        var newSize = this.reCalcSize();
+        if (oldSize.width === newSize.width && oldSize.height === newSize.height) {
+            return [false, newSize];
+        }
+        return [true, newSize];
+    };
+    Class.prototype.updateLabel = function (newLabel) {
+        var _this = this;
+        if (this.$labelView) {
+            this.$labelView.textContent = newLabel;
+        }
+        this.$edges.forEach(function (edge) {
+            if (_this.id === edge.$sNode.id) {
+                edge.source = newLabel;
+            }
+            else if (_this.id === edge.$tNode.id) {
+                edge.target = newLabel;
+            }
+        });
+        util_1.Util.saveToLocalStorage(this.$owner);
+        this.reDraw(true);
+    };
+    Class.prototype.updateModifier = function (modifier) {
+        this.modifier = modifier;
+        util_1.Util.saveToLocalStorage(this.$owner);
+    };
+    Class.prototype.reCalcSize = function () {
+        var newWidth = 150;
+        newWidth = Math.max(newWidth, util_1.Util.sizeOf(this.id).width + 30);
+        this.attributes.forEach(function (attrEl) {
+            var widthOfAttr;
+            if (attrEl.$view) {
+                widthOfAttr = attrEl.$view.getBoundingClientRect().width;
+            }
+            else {
+                widthOfAttr = util_1.Util.sizeOf(attrEl.toString()).width;
+            }
+            newWidth = Math.max(newWidth, widthOfAttr + 15);
+        });
+        this.methods.forEach(function (methodEl) {
+            var widthOfMethod;
+            if (methodEl.$view) {
+                widthOfMethod = methodEl.$view.getBoundingClientRect().width;
+            }
+            else {
+                widthOfMethod = util_1.Util.sizeOf(methodEl.toString()).width;
+            }
+            newWidth = Math.max(newWidth, widthOfMethod + 15);
+        });
+        this.getSize().x = newWidth;
+        this.getSize().y = this.$labelHeight + ((this.attributes.length + this.methods.length) * this.$attrHeight)
+            + this.$attrHeight;
+        var newSize = { width: newWidth, height: this.getSize().y };
+        return newSize;
+    };
+    Class.prototype.redrawEdges = function () {
+        for (var _i = 0, _a = this.$edges; _i < _a.length; _i++) {
+            var edge = _a[_i];
+            edge.redraw(this);
+        }
+    };
+    Class.prototype.getModernStyle = function () {
+        var width, height, id, size, z, item, rect, g, board, styleHeader, headerHeight, x, y;
+        board = this.getRoot()['board'];
+        styleHeader = util_1.Util.getStyle('ClazzHeader');
+        headerHeight = styleHeader.getNumber('height');
+        width = 0;
+        height = 10 + headerHeight;
+        if (this.property === 'Object' || this.getRoot()['$graphModel'].getType().toLowerCase() === 'objectdiagram') {
+            id = this.id.charAt(0).toLowerCase() + this.id.slice(1);
+            item = 'Object';
+        }
+        else {
+            id = this.id;
+            item = 'Class';
+            if (this['counter']) {
+                id += ' (' + this['counter'] + ')';
+            }
+        }
+        g = util_1.Util.create({ tag: 'g', model: this });
+        size = util_1.Util.sizeOf(id, this);
+        width = Math.max(width, size.width);
+        if (this.attributes && this.attributes.length > 0) {
+            height = height + this.attributes.length * 25;
+            for (z = 0; z < this.attributes.length; z += 1) {
+                width = Math.max(width, util_1.Util.sizeOf(this.attributes[z], this).width);
+            }
+        }
+        else {
+            height += 20;
+        }
+        if (this.methods && this.methods.length > 0) {
+            height = height + this.methods.length * 25;
+            for (z = 0; z < this.methods.length; z += 1) {
+                width = Math.max(width, util_1.Util.sizeOf(this.methods[z], this).width);
+            }
+        }
+        width += 20;
+        var pos = this.getPos();
+        y = pos.y;
+        x = pos.x;
+        rect = {
+            tag: 'rect',
+            'width': width,
+            'height': height,
+            'x': x,
+            'y': y,
+            'class': item + ' draggable',
+            'fill': 'none'
+        };
+        g.appendChild(util_1.Util.create(rect));
+        g.appendChild(util_1.Util.create({
+            tag: 'rect',
+            rx: 0,
+            'x': x,
+            'y': y,
+            height: headerHeight,
+            'width': width,
+            'class': 'ClazzHeader'
+        }));
+        item = util_1.Util.create({
+            tag: 'text',
+            $font: true,
+            'class': 'InfoText',
+            'text-anchor': 'right',
+            'x': x + width / 2 - size.width / 2,
+            'y': y + (headerHeight / 2) + (size.height / 2),
+            'width': size.width
+        });
+        if (this.property === 'Object' || this.getRoot()['$graphModel'].type.toLowerCase() === 'objectdiagram') {
+            item.setAttribute('text-decoration', 'underline');
+        }
+        item.appendChild(document.createTextNode(id));
+        g.appendChild(item);
+        g.appendChild(util_1.Util.create({
+            tag: 'line',
+            x1: x,
+            y1: y + headerHeight,
+            x2: x + width,
+            y2: y + headerHeight,
+            stroke: '#000'
+        }));
+        y += headerHeight + 20;
+        if (this.attributes) {
+            for (z = 0; z < this.attributes.length; z += 1) {
+                g.appendChild(util_1.Util.create({
+                    tag: 'text',
+                    $font: true,
+                    'text-anchor': 'left',
+                    'width': width,
+                    'x': (x + 10),
+                    'y': y,
+                    value: this.attributes[z]
+                }));
+                y += 20;
+            }
+            if (this.attributes.length > 0) {
+                y -= 10;
+            }
+        }
+        if (this.methods && this.methods.length > 0) {
+            g.appendChild(util_1.Util.create({ tag: 'line', x1: x, y1: y, x2: x + width, y2: y, stroke: '#000' }));
+            y += 20;
+            for (z = 0; z < this.methods.length; z += 1) {
+                g.appendChild(util_1.Util.create({
+                    tag: 'text',
+                    $font: true,
+                    'text-anchor': 'left',
+                    'width': width,
+                    'x': x + 10,
+                    'y': y,
+                    value: this.methods[z]
+                }));
+                y += 20;
+            }
+        }
+        return g;
+    };
+    return Class;
+}(Node_1.Node));
+exports.Class = Class;
+
+
+/***/ }),
+
+/***/ "./elements/nodes/ClazzProperty.ts":
+/*!*****************************************!*\
+  !*** ./elements/nodes/ClazzProperty.ts ***!
+  \*****************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var util_1 = __webpack_require__(/*! ../../util */ "./util.ts");
+var BaseElements_1 = __webpack_require__(/*! ../BaseElements */ "./elements/BaseElements.ts");
+var Data_1 = __webpack_require__(/*! ../../Data */ "./Data.ts");
+var ClazzProperty = (function (_super) {
+    __extends(ClazzProperty, _super);
+    function ClazzProperty(data) {
+        var _this = _super.call(this) || this;
+        _this.$data = new Data_1.default();
+        _this.$data.setValue('modifier', '+');
+        _this.$data.setValue('name', null);
+        _this.$data.setValue('type', null);
+        _this.$data.setValue('value', null);
+        _this.extractData(data);
+        return _this;
+    }
+    ClazzProperty.prototype.update = function (data) {
+        this.extractData(data);
+        this.updateTextOfView();
+    };
+    ClazzProperty.prototype.updateModifier = function (modifier) {
+        this.$data.setValue('modifier', modifier);
+        this.updateTextOfView();
+    };
+    ClazzProperty.prototype.updateType = function (type) {
+        this.$data.setValue('type', type);
+        this.updateTextOfView();
+    };
+    ClazzProperty.prototype.updateValue = function (value) {
+        this.$data.setValue('value', value);
+        this.updateTextOfView();
+    };
+    ClazzProperty.prototype.updateName = function (name) {
+        this.$data.setValue('name', name);
+        this.updateTextOfView();
+    };
+    ClazzProperty.prototype.getName = function () {
+        return this.$data.getValue('name');
+    };
+    ClazzProperty.prototype.getSVG = function () {
+        var attrText = {
+            tag: 'text',
+            'text-anchor': 'start',
+            'alignment-baseline': 'middle',
+        };
+        var attrSvg = util_1.Util.createShape(attrText);
+        attrSvg.textContent = this.toString();
+        this.$view = attrSvg;
+        return attrSvg;
+    };
+    ClazzProperty.prototype.toString = function () {
+        var value = this.$data.getValue('value');
+        var result = this.$data.getValue('modifier') + ' ';
+        result += this.$data.getValue('name') + ' : ';
+        result += this.$data.getValue('type');
+        if (value && value.length > 0) {
+            result += ' = ' + this.$data.getValue('value');
+        }
+        return result;
+    };
+    ClazzProperty.prototype.extractData = function (data) {
+        if (!data) {
+            return;
+        }
+        if (data.type) {
+            this.$data.setValue('type', data.type);
+        }
+        if (data.name) {
+            this.$data.setValue('name', data.name);
+        }
+        if (data.modifier) {
+            this.$data.setValue('modifier', data.modifier);
+        }
+        if (typeof data === 'string') {
+            var dataSplitted = data.split(':');
+            if (dataSplitted && dataSplitted.length === 2) {
+                var modifierAndNameSplitted = dataSplitted[0].trim();
+                var firstChar = modifierAndNameSplitted[0];
+                var name_1;
+                if (firstChar === '+' || firstChar === '-' || firstChar === '#') {
+                    this.$data.setValue('modifier', firstChar);
+                    name_1 = modifierAndNameSplitted.substring(1, modifierAndNameSplitted.length).trim();
+                }
+                else {
+                    name_1 = modifierAndNameSplitted;
+                }
+                name_1 = name_1.replace(/ /g, '_');
+                this.$data.setValue('name', name_1);
+                var type = dataSplitted[1].trim() || 'String';
+                if (type.toLowerCase() === 'string') {
+                    type = 'String';
+                }
+                type = type.replace(/ /g, '_');
+                this.$data.setValue('type', type);
+            }
+            else {
+                dataSplitted = data.split('=');
+                if (dataSplitted && dataSplitted.length === 2) {
+                    var modifierAndNameSplitted = dataSplitted[0].trim();
+                    var firstChar = modifierAndNameSplitted[0];
+                    var name_2;
+                    if (firstChar === '+' || firstChar === '-' || firstChar === '#') {
+                        this.$data.setValue('modifier', firstChar);
+                        name_2 = modifierAndNameSplitted.substring(1, modifierAndNameSplitted.length).trim();
+                    }
+                    else {
+                        name_2 = modifierAndNameSplitted;
+                    }
+                    name_2 = name_2.replace(/ /g, '_');
+                    this.$data.setValue('name', name_2);
+                    var value = dataSplitted[1].trim() || '""';
+                    this.$data.setValue('value', value);
+                    this.$data.setValue('type', typeof value);
+                }
+            }
+        }
+    };
+    ClazzProperty.prototype.updateTextOfView = function () {
+        this.$view.textContent = this.toString();
+        util_1.Util.saveToLocalStorage(this.$owner.$owner);
+    };
+    return ClazzProperty;
+}(BaseElements_1.DiagramElement));
+exports.default = ClazzProperty;
+
+
+/***/ }),
+
+/***/ "./elements/nodes/Dice.ts":
+/*!********************************!*\
+  !*** ./elements/nodes/Dice.ts ***!
+  \********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var Node_1 = __webpack_require__(/*! ./Node */ "./elements/nodes/Node.ts");
+var Dice = (function (_super) {
+    __extends(Dice, _super);
+    function Dice(data) {
+        var _this = _super.call(this, data) || this;
+        _this.max = 6;
+        _this.$zoom = 0.6;
+        _this.$border = 0.2;
+        _this.withSize(100, 100);
+        return _this;
+    }
+    Dice.prototype.setNumber = function (number) {
+        this.value = number;
+        this.refresh();
+    };
+    Dice.prototype.refresh = function () {
+        if (this.$view) {
+            this.reset();
+            var group = this.createPointValue();
+            if (group) {
+                this.$view.appendChild(group);
+            }
+        }
+    };
+    Dice.prototype.reset = function () {
+        if (this.$view) {
+            while (this.$view.children.length > 1) {
+                if (this.$view.children.item(this.$view.children.length - 1).tagName !== "animateTransform") {
+                    console.log(this.$view.children.item(this.$view.children.length - 1));
+                    this.$view.removeChild(this.$view.children.item(this.$view.children.length - 1));
+                }
+                else {
+                    break;
+                }
+            }
+        }
+    };
+    Dice.prototype.getSVG = function () {
+        var pos = this.getPos();
+        var size = this.getSize();
+        var dice = this.createShape({ tag: 'g' });
+        var attr = {
+            tag: 'rect',
+            x: pos.x + size.x * this.$border,
+            y: pos.y + size.y * this.$border,
+            rx: 4,
+            ry: 4,
+            height: size.y * this.$zoom,
+            width: size.x * this.$zoom,
+            style: 'fill:white;stroke:black;stroke-width:2'
+        };
+        dice.appendChild(this.createShape(attr));
+        var group = this.createPointValue();
+        if (group) {
+            dice.appendChild(group);
+        }
+        this.$view = dice;
+        return dice;
+    };
+    Dice.prototype.animationTimeout = function (newValues) {
+        if (newValues.length > 0) {
+            var newValue = newValues.shift();
+            this.setNumber(newValue);
+            var that_1 = this;
+            setTimeout(function () { that_1.animationTimeout(newValues); }, 100);
+        }
+    };
+    Dice.prototype.roll = function () {
+        this.startAnimation();
+        var values = [];
+        var i;
+        for (i = 1; i < this.max; i++) {
+            values.push(i);
+        }
+        for (i = this.max; i > 0; i--) {
+            values.push(i);
+        }
+        var that = this;
+        values.push(Math.floor(Math.random() * this.max) + 1);
+        setTimeout(function () { that.animationTimeout(values); }, 100);
+    };
+    Dice.prototype.startAnimation = function () {
+        if (this.$animation) {
+            return;
+        }
+        var center = this.getPos().x + this.getSize().x / 2;
+        var attr = {
+            tag: 'animateTransform',
+            attributeType: "xml",
+            attributeName: "transform",
+            type: "rotate",
+            dur: "1s",
+            repeatCount: "1",
+            from: "0 " + center + " " + center,
+            to: "360 " + center + " " + center
+        };
+        this.$animation = this.createShape(attr);
+        this.$view.appendChild(this.$animation);
+    };
+    Dice.prototype.stopAnimation = function () {
+        if (this.$animation) {
+            this.$view.removeChild(this.$animation);
+            this.$animation = null;
+        }
+    };
+    Dice.prototype.createPointValue = function () {
+        if (this.value == 1) {
+            return this.getCircle(2, 2);
+        }
+        else if (this.value == 2) {
+            return this.getCircle(1, 1, 3, 3);
+        }
+        else if (this.value == 3) {
+            return this.getCircle(1, 1, 2, 2, 3, 3);
+        }
+        else if (this.value == 4) {
+            return this.getCircle(1, 1, 1, 3, 3, 1, 3, 3);
+        }
+        else if (this.value == 5) {
+            return this.getCircle(1, 1, 1, 3, 2, 2, 3, 1, 3, 3);
+        }
+        else if (this.value == 6) {
+            return this.getCircle(1, 1, 1, 2, 1, 3, 3, 1, 3, 2, 3, 3);
+        }
+        else if (this.value == 7) {
+            return this.getCircle(1, 1, 1, 2, 1, 3, 2, 2, 3, 1, 3, 2, 3, 3);
+        }
+        else if (this.value == 8) {
+            return this.getCircle(1, 1, 1, 2, 1, 3, 2, 1, 2, 3, 3, 1, 3, 2, 3, 3);
+        }
+        else if (this.value == 9) {
+            return this.getCircle(1, 1, 1, 2, 1, 3, 2, 1, 2, 2, 2, 3, 3, 1, 3, 2, 3, 3);
+        }
+        return null;
+    };
+    Dice.prototype.getCircle = function () {
+        var values = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            values[_i] = arguments[_i];
+        }
+        if (values.length % 2 > 0) {
+            return null;
+        }
+        var size = this.getSize();
+        var pos = this.getPos();
+        var group = this.createShape({ tag: 'g' });
+        for (var i = 0; i < values.length; i += 2) {
+            group.appendChild(this.createCircle(values[i], values[i + 1]));
+        }
+        return group;
+    };
+    Dice.prototype.createCircle = function (x, y) {
+        var size = this.getSize();
+        var radius = size.x / 10 * this.$zoom;
+        var border = size.y * this.$border;
+        var zoom = size.y * this.$zoom;
+        var attr = {
+            tag: 'circle',
+            r: radius,
+            cx: (size.x * this.$zoom * x) / 4 + border,
+            cy: (size.y * this.$zoom * y) / 4 + border,
+            stroke: "black",
+            "stroke-width": "3",
+            fill: "red",
+            style: 'fill:black;stroke:black;stroke-width:2'
+        };
+        return this.createShape(attr);
+    };
+    return Dice;
+}(Node_1.Node));
+exports.Dice = Dice;
+
+
+/***/ }),
+
+/***/ "./elements/nodes/Div.ts":
+/*!*******************************!*\
+  !*** ./elements/nodes/Div.ts ***!
+  \*******************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var Control_1 = __webpack_require__(/*! ../../Control */ "./Control.ts");
 var Div = (function (_super) {
     __extends(Div, _super);
     function Div() {
@@ -3365,7 +5637,12 @@ exports.Div = Div;
 
 
 /***/ }),
-/* 16 */
+
+/***/ "./elements/nodes/Form.ts":
+/*!********************************!*\
+  !*** ./elements/nodes/Form.ts ***!
+  \********************************/
+/*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3381,7 +5658,594 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var Control_1 = __webpack_require__(2);
+var Control_1 = __webpack_require__(/*! ../../Control */ "./Control.ts");
+var Form = (function (_super) {
+    __extends(Form, _super);
+    function Form() {
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.children = {};
+        return _this;
+    }
+    Form.prototype.load = function (data) {
+        var id;
+        if (typeof (data) === 'string') {
+            id = data;
+        }
+        else {
+            id = data.id;
+        }
+        if (!id) {
+            return;
+        }
+        this.id = id;
+        var form = document.getElementById(id);
+        if (form instanceof HTMLFormElement) {
+            this.$view = form;
+            if (this.$view.hasAttribute('property')) {
+                this.property = this.$view.getAttribute('property');
+            }
+        }
+        else {
+            if (!form) {
+                this.$view = document.createElement('form');
+                this.$view.setAttribute('id', this.id);
+                if (data.hasOwnProperty('property')) {
+                    this.property = data['property'];
+                }
+                for (var attr in data) {
+                    if (data.hasOwnProperty(attr) === false) {
+                        continue;
+                    }
+                    if (attr === 'elements') {
+                        continue;
+                    }
+                    this.$view.setAttribute(attr, data[attr]);
+                }
+                this.$owner.appendChild(this);
+            }
+            else {
+                return;
+            }
+        }
+        var objId = this.property;
+        var hasItem = this.$owner.hasItem(objId);
+        if (hasItem) {
+            var item = this.$owner.getItem(objId);
+            item.addListener(this);
+            this.$model = item;
+        }
+        for (var _i = 0, _a = data.elements; _i < _a.length; _i++) {
+            var field = _a[_i];
+            if (field.hasOwnProperty('property')) {
+                var property = field['property'];
+                property = this.property + '.' + property;
+                field['property'] = property;
+            }
+            if (!field.hasOwnProperty('class')) {
+                field['class'] = 'input';
+            }
+            var control = this.$owner.load(field, this);
+            this.children[control.getId()] = control;
+        }
+    };
+    Form.prototype.setProperty = function (id) {
+        this.property = id;
+        var keys = Object.keys(this.children);
+        for (var k = 0; k < keys.length; k++) {
+            var key = keys[k];
+            var childControl = this.children[key];
+            if (childControl.property) {
+                childControl.setProperty(this.property + '.' + childControl.lastProperty);
+            }
+        }
+    };
+    Object.defineProperty(Form.prototype, "lastProperty", {
+        get: function () {
+            return this.property.split('.')[0];
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Form.prototype.setValue = function (object, attribute, newValue, oldValue) {
+        if (this.$owner != null) {
+            return this.getRoot().setValue(object, attribute, newValue, oldValue);
+        }
+        return _super.prototype.setValue.call(this, object, attribute, newValue, oldValue);
+    };
+    return Form;
+}(Control_1.Control));
+exports.Form = Form;
+
+
+/***/ }),
+
+/***/ "./elements/nodes/HTML.ts":
+/*!********************************!*\
+  !*** ./elements/nodes/HTML.ts ***!
+  \********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var Control_1 = __webpack_require__(/*! ../../Control */ "./Control.ts");
+var HTML = (function (_super) {
+    __extends(HTML, _super);
+    function HTML(data) {
+        var _this = _super.call(this) || this;
+        var id;
+        var tag;
+        if (typeof (data) === 'string') {
+            id = data;
+            data = {};
+        }
+        else if (data) {
+            id = data.id;
+        }
+        if (id) {
+            _this.id = id;
+            _this.$view = document.getElementById(id);
+        }
+        if (!_this.$view) {
+            if (data) {
+                tag = data['tag'] || 'div';
+            }
+            else {
+                tag = 'div';
+            }
+            _this.$view = document.createElement(tag);
+            var parent_1 = document.getElementsByTagName('body')[0];
+            parent_1.appendChild(_this.$view);
+        }
+        if (!parent) {
+            return _this;
+        }
+        _this.writeAttribute(data, _this.$view);
+        return _this;
+    }
+    HTML.prototype.writeAttribute = function (properties, entity) {
+        var lowKey;
+        if (!entity) {
+            lowKey = properties['tag'] || 'div';
+            entity = document.createElement(lowKey);
+        }
+        for (var key in properties) {
+            if (!properties.hasOwnProperty(key)) {
+                continue;
+            }
+            lowKey = key.toLowerCase();
+            if (properties[key] === null) {
+                entity.setAttribute(key, '');
+                continue;
+            }
+            if (lowKey === 'tag' || lowKey.charAt(0) === '$' || lowKey === '$graphModel' || lowKey === 'class') {
+                continue;
+            }
+            if (lowKey === 'children') {
+                if (Array.isArray(properties[key])) {
+                    for (var item in properties[key]) {
+                        if (properties[key].hasOwnProperty(item) === false) {
+                            continue;
+                        }
+                        var child = this.writeAttribute(item);
+                        if (child) {
+                            entity.appendChild(child);
+                        }
+                    }
+                }
+                else {
+                    var child = this.writeAttribute(properties[key]);
+                    if (child) {
+                        entity.appendChild(child);
+                    }
+                }
+                continue;
+            }
+            entity[key] = properties[key];
+        }
+        return entity;
+    };
+    return HTML;
+}(Control_1.Control));
+exports.HTML = HTML;
+
+
+/***/ }),
+
+/***/ "./elements/nodes/InfoText.ts":
+/*!************************************!*\
+  !*** ./elements/nodes/InfoText.ts ***!
+  \************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var BaseElements_1 = __webpack_require__(/*! ../BaseElements */ "./elements/BaseElements.ts");
+var util_1 = __webpack_require__(/*! ../../util */ "./util.ts");
+var Node_1 = __webpack_require__(/*! ./Node */ "./elements/nodes/Node.ts");
+var EventBus_1 = __webpack_require__(/*! ../../EventBus */ "./EventBus.ts");
+var InfoText = (function (_super) {
+    __extends(InfoText, _super);
+    function InfoText(info) {
+        var _this = _super.call(this, info) || this;
+        _this.cardinality = '';
+        if (typeof (info) === 'string') {
+            _this.id = info;
+        }
+        else {
+            if (info.property) {
+                _this.property = info.property;
+            }
+            if (info.cardinality) {
+                _this.cardinality = info.cardinality;
+            }
+        }
+        _this.$isDraggable = true;
+        var calcSize = _this.calcSize();
+        _this.withSize(calcSize.x, calcSize.y);
+        return _this;
+    }
+    InfoText.prototype.updateCardinality = function (cardinality) {
+        this.cardinality = cardinality;
+        var calcSize = this.calcSize();
+        this.withSize(calcSize.x, calcSize.y);
+        if (this.$rectBackground) {
+            this.$rectBackground.setAttributeNS(null, 'width', '' + calcSize.x);
+            this.$rectBackground.setAttributeNS(null, 'height', '' + calcSize.y);
+        }
+        if (!this.$view) {
+            var svg = this.getSVG();
+            this.$owner.$view.appendChild(svg);
+            return;
+        }
+        if ((cardinality.length === 0 && this.property.length > 0) || !this.$cardinalitySvg) {
+            this.$owner.$view.removeChild(this.$view);
+            this.resetAllSvgElements();
+            var svg = this.getSVG();
+            this.$owner.$view.appendChild(svg);
+            return;
+        }
+        if (this.$cardinalitySvg) {
+            this.$cardinalitySvg.textContent = cardinality;
+            if (this.$rectBackground) {
+                this.$rectBackground.setAttributeNS(null, 'width', '' + calcSize.x);
+                this.$rectBackground.setAttributeNS(null, 'height', '' + calcSize.y);
+            }
+            return;
+        }
+        if (this.property.length === 0) {
+            this.$owner.$view.removeChild(this.$view);
+            this.resetAllSvgElements();
+            return;
+        }
+    };
+    InfoText.prototype.updateProperty = function (property) {
+        this.property = property;
+        var calcSize = this.calcSize();
+        this.withSize(calcSize.x, calcSize.y);
+        if (!this.$view) {
+            var svg = this.getSVG();
+            this.$owner.$view.appendChild(svg);
+            return;
+        }
+        if ((property.length === 0 && this.cardinality.length > 0) || !this.$propertySvg) {
+            this.$owner.$view.removeChild(this.$view);
+            this.resetAllSvgElements();
+            var svg = this.getSVG();
+            this.$owner.$view.appendChild(svg);
+            return;
+        }
+        if (this.$propertySvg) {
+            this.$propertySvg.textContent = property;
+            if (this.$rectBackground) {
+                this.$rectBackground.setAttributeNS(null, 'width', '' + calcSize.x);
+                this.$rectBackground.setAttributeNS(null, 'height', '' + calcSize.y);
+            }
+            return;
+        }
+        if (this.cardinality.length === 0) {
+            this.$owner.$view.removeChild(this.$view);
+            this.resetAllSvgElements();
+        }
+    };
+    InfoText.prototype.getSVG = function () {
+        var pos = this.getPos();
+        var group = util_1.Util.create({ tag: 'g', class: 'SVGEdgeInfo', transform: 'translate(0, 0)' });
+        this.$rectBackground = util_1.Util.createShape({
+            tag: 'rect',
+            x: pos.x,
+            y: pos.y - this.$heightOfOneTextItem + 3,
+            width: this.getSize().x,
+            height: this.getSize().y,
+            fill: '#DDD',
+            'stroke-width': 0,
+            rx: '5',
+            ry: '5'
+        });
+        group.appendChild(this.$rectBackground);
+        var y = pos.y;
+        if (this.property) {
+            this.$propertySvg = util_1.Util.createShape({
+                tag: 'text',
+                x: pos.x + 3,
+                y: y,
+                'text-anchor': 'left'
+            });
+            this.$propertySvg.textContent = this.property;
+            group.appendChild(this.$propertySvg);
+            y += this.$heightOfOneTextItem;
+        }
+        if (this.cardinality) {
+            this.$cardinalitySvg = util_1.Util.createShape({
+                tag: 'text',
+                x: pos.x + 3,
+                y: y,
+                'text-anchor': 'left'
+            });
+            this.$cardinalitySvg.textContent = this.cardinality;
+            group.appendChild(this.$cardinalitySvg);
+        }
+        this.$view = group;
+        return group;
+    };
+    InfoText.prototype.isEmpty = function () {
+        var cardinalityAvailable = this.cardinality && this.cardinality.length > 0;
+        var propertyAvailable = this.property && this.property.length > 0;
+        return !propertyAvailable && !cardinalityAvailable;
+    };
+    InfoText.prototype.redrawFromEdge = function (newPos) {
+        if (!newPos) {
+            return;
+        }
+        var oldPos = this.getPos();
+        var diffPos = new BaseElements_1.Point();
+        diffPos.x = newPos.x - oldPos.x;
+        diffPos.y = newPos.y - oldPos.y;
+        var translation = this.$view.getAttributeNS(null, 'transform').slice(10, -1).split(' ');
+        var sx = parseInt(translation[0]);
+        var sy = 0;
+        if (translation.length > 1) {
+            sy = parseInt(translation[1]);
+        }
+        var newTransX = (sx + diffPos.x);
+        var newTransY = (sy + diffPos.y);
+        this.$view.setAttributeNS(null, 'transform', 'translate(' + newTransX + ' ' + newTransY + ')');
+        this.getPos().x = newPos.x;
+        this.getPos().y = newPos.y;
+    };
+    InfoText.prototype.getText = function () {
+        var infoTxt = '';
+        if (this.property) {
+            infoTxt = this.property;
+        }
+        if (this.cardinality) {
+            if (infoTxt.length > 0) {
+                infoTxt += '\n';
+            }
+            infoTxt += this.cardinality;
+        }
+        return infoTxt;
+    };
+    InfoText.prototype.getEvents = function () {
+        return [EventBus_1.EventBus.ELEMENTCLICK, EventBus_1.EventBus.ELEMENTDBLCLICK, EventBus_1.EventBus.OPENPROPERTIES];
+    };
+    InfoText.prototype.calcSize = function () {
+        var text = this.getText();
+        var items = text.split('\n');
+        var maxSize = new BaseElements_1.Point(0, 0);
+        if (text.length === 0) {
+            return maxSize;
+        }
+        for (var i = 0; i < items.length; i += 1) {
+            var sizeOfText = util_1.Util.sizeOf(items[i]);
+            maxSize.x = Math.max(maxSize.x, sizeOfText.width);
+            maxSize.y += sizeOfText.height;
+            this.$heightOfOneTextItem = sizeOfText.height;
+        }
+        return maxSize;
+    };
+    InfoText.prototype.resetAllSvgElements = function () {
+        this.$cardinalitySvg = undefined;
+        this.$view = undefined;
+        this.$propertySvg = undefined;
+    };
+    return InfoText;
+}(Node_1.Node));
+exports.InfoText = InfoText;
+
+
+/***/ }),
+
+/***/ "./elements/nodes/Input.ts":
+/*!*********************************!*\
+  !*** ./elements/nodes/Input.ts ***!
+  \*********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var Control_1 = __webpack_require__(/*! ../../Control */ "./Control.ts");
+var PropertyBinder_1 = __webpack_require__(/*! ../../PropertyBinder */ "./PropertyBinder.ts");
+var Input = (function (_super) {
+    __extends(Input, _super);
+    function Input() {
+        return _super.call(this) || this;
+    }
+    Input.prototype.initViewDataProperties = function (oldData) {
+        var data = _super.prototype.initViewDataProperties.call(this, oldData);
+        if ('checkbox' === this.type || 'radio' === this.type) {
+            data.addFrom('checked', oldData);
+        }
+        data.addFrom('value', oldData);
+        data.addFrom('type', oldData);
+        return data;
+    };
+    Input.prototype.load = function (data) {
+        var id;
+        var inputField;
+        var useData;
+        if (typeof (data) === 'string') {
+            id = data;
+            useData = true;
+        }
+        else {
+            id = data.id;
+            if (data.type) {
+                this.setType(data['type']);
+            }
+            else {
+                this.setType('text');
+            }
+            if (data.hasOwnProperty('property')) {
+                this.setProperty(data['property']);
+            }
+            useData = false;
+        }
+        if (!id) {
+            return;
+        }
+        this.id = id;
+        inputField = document.getElementById(id);
+        if (useData) {
+            if (inputField) {
+                if (inputField.hasAttribute('Property')) {
+                    this.setProperty(inputField.getAttribute('Property'));
+                }
+            }
+        }
+        if (inputField instanceof HTMLInputElement) {
+            this.setView(inputField);
+            this.type = inputField.type;
+        }
+        else {
+            if (!inputField) {
+                this.setView(document.createElement('input'));
+                this.$viewData = this.initViewDataProperties(this.$viewData);
+                if (typeof (data) !== 'string') {
+                    for (var attr in data) {
+                        if (data.hasOwnProperty(attr) === false) {
+                            continue;
+                        }
+                        this.$viewData.setValue(attr, data[attr]);
+                    }
+                }
+                else {
+                    if (this.type) {
+                        this.$view.setAttribute('type', this.type);
+                    }
+                    if (data.hasOwnProperty('class')) {
+                        this.$view.setAttribute('class', data['class']);
+                    }
+                    this.$view.setAttribute('id', this.id);
+                    this.$view.setAttribute('property', this.property);
+                }
+                if (data.value) {
+                    if (this.$model) {
+                        this.$model.setValue(this.lastProperty, data.value);
+                    }
+                }
+                if (this.$model) {
+                    PropertyBinder_1.PropertyBinder.bind(this.$viewData, this.$model, 'value', this.lastProperty);
+                }
+                this.$owner.appendChild(this);
+            }
+            else {
+                return;
+            }
+        }
+    };
+    Input.prototype.addItem = function (source, entity) {
+        if (this.property && entity) {
+            if (entity.id === this.property.split('.')[0]) {
+                this.$model = entity;
+                PropertyBinder_1.PropertyBinder.bind(this.$viewData, this.$model, 'value', this.lastProperty);
+            }
+        }
+    };
+    Input.prototype.controlChanged = function (ev) {
+        if (this.$view instanceof HTMLInputElement === false) {
+            return;
+        }
+        var element = this.$view;
+        if (element.checkValidity()) {
+            _super.prototype.controlChanged.call(this, ev);
+        }
+    };
+    Input.prototype.setType = function (type) {
+        var oldValue = this.type;
+        if (oldValue === type) {
+            return;
+        }
+        if (type === 'radio') {
+            this.$viewData.setValue('checked', null);
+        }
+        else {
+            this.$viewData.removeKey('checked');
+        }
+    };
+    return Input;
+}(Control_1.Control));
+exports.Input = Input;
+
+
+/***/ }),
+
+/***/ "./elements/nodes/Label.ts":
+/*!*********************************!*\
+  !*** ./elements/nodes/Label.ts ***!
+  \*********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var Control_1 = __webpack_require__(/*! ../../Control */ "./Control.ts");
 var Label = (function (_super) {
     __extends(Label, _super);
     function Label() {
@@ -3411,7 +6275,12 @@ exports.Label = Label;
 
 
 /***/ }),
-/* 17 */
+
+/***/ "./elements/nodes/Method.ts":
+/*!**********************************!*\
+  !*** ./elements/nodes/Method.ts ***!
+  \**********************************/
+/*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3427,356 +6296,8 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var Node_1 = __webpack_require__(6);
-var EventBus_1 = __webpack_require__(3);
-var util_1 = __webpack_require__(0);
-var Attribute_1 = __webpack_require__(18);
-var Method_1 = __webpack_require__(19);
-var Clazz = (function (_super) {
-    __extends(Clazz, _super);
-    function Clazz(json) {
-        var _this = _super.call(this, json) || this;
-        _this.attributes = [];
-        _this.methods = [];
-        _this.$labelHeight = 25;
-        _this.$labelFontSize = 14;
-        _this.$attrHeight = 25;
-        _this.$attrFontSize = 12;
-        return _this;
-    }
-    Clazz.prototype.load = function (json) {
-        if (!json) {
-            json = {};
-        }
-        var y = this.$labelHeight;
-        var labelObj = json.name || json.label || json.id || ('New ' + this.property);
-        if (typeof labelObj === 'object') {
-            if (labelObj.cardinality === 'one') {
-                this.label = '0..1';
-            }
-            else {
-                this.label = '0..*';
-            }
-        }
-        else {
-            this.label = labelObj;
-        }
-        var width = 150;
-        width = Math.max(width, util_1.Util.sizeOf(this.label).width + 30);
-        if (json['attributes']) {
-            for (var _i = 0, _a = json['attributes']; _i < _a.length; _i++) {
-                var attr = _a[_i];
-                var attrObj = new Attribute_1.default(attr);
-                attrObj.$owner = this;
-                this.attributes.push(attrObj);
-                y += this.$attrHeight;
-                width = Math.max(width, util_1.Util.sizeOf(attrObj.toString()).width);
-            }
-        }
-        if (json['methods']) {
-            for (var _b = 0, _c = json['methods']; _b < _c.length; _b++) {
-                var method = _c[_b];
-                var methodObj = new Method_1.default(method);
-                methodObj.$owner = this;
-                this.methods.push(methodObj);
-                y += this.$attrHeight;
-                width = Math.max(width, util_1.Util.sizeOf(methodObj.toString()).width);
-            }
-            y += this.$attrHeight;
-        }
-        this.withSize(width, y);
-    };
-    Clazz.prototype.getAttributes = function () {
-        return this.attributes;
-    };
-    Clazz.prototype.getMethods = function () {
-        return this.methods;
-    };
-    Clazz.prototype.getSVG = function () {
-        var pos = this.getPos();
-        var size = this.getSize();
-        var group = this.createShape({ tag: 'g', id: this.id, class: 'SVGClazz', transform: 'translate(0 0)' });
-        var nodeShape = this.createShape({
-            tag: 'rect',
-            x: pos.x,
-            y: pos.y,
-            height: size.y,
-            width: size.x,
-            rx: 5,
-            ry: 5
-        });
-        var label = this.createShape({
-            tag: 'text',
-            x: pos.x + size.x / 2,
-            y: pos.y + this.$labelHeight / 2,
-            'text-anchor': 'middle',
-            'alignment-baseline': 'central',
-            'font-family': 'Verdana',
-            'font-size': this.$labelFontSize,
-            'font-weight': 'bold',
-            fill: 'black'
-        });
-        label.textContent = this.label;
-        this.$labelView = label;
-        group.appendChild(nodeShape);
-        group.appendChild(label);
-        if (this.attributes.length > 0) {
-            var separatorLabelAttr = this.createShape({
-                tag: 'line',
-                x1: pos.x,
-                y1: pos.y + this.$labelHeight,
-                x2: pos.x + size.x,
-                y2: pos.y + this.$labelHeight,
-                'stroke-width': 1
-            });
-            group.appendChild(separatorLabelAttr);
-            var groupOfAttributes = this.createShape({ tag: 'g', id: (this.id + 'Attributes') });
-            groupOfAttributes.setAttributeNS(null, 'class', 'SVGClazzProperty SVGClazzAttribute');
-            group.appendChild(groupOfAttributes);
-            var y_1 = pos.y + this.$labelHeight + this.$attrHeight / 2;
-            for (var _i = 0, _a = this.attributes; _i < _a.length; _i++) {
-                var attr = _a[_i];
-                var attrSvg = attr.getSVG();
-                attr.$owner = this;
-                attrSvg.setAttributeNS(null, 'x', '' + (pos.x + 10));
-                attrSvg.setAttributeNS(null, 'y', '' + y_1);
-                groupOfAttributes.appendChild(attrSvg);
-                y_1 += this.$attrHeight;
-            }
-        }
-        var height = this.attributes.length * this.$attrHeight;
-        var y = pos.y + this.$labelHeight + height + this.$attrHeight / 2;
-        if (this.methods.length > 0) {
-            var separatorAttrMethods = this.createShape({
-                tag: 'line',
-                x1: pos.x,
-                y1: pos.y + this.$labelHeight + (this.$attrHeight * this.attributes.length),
-                x2: pos.x + size.x,
-                y2: pos.y + this.$labelHeight + (this.$attrHeight * this.attributes.length),
-                'stroke-width': 1
-            });
-            group.appendChild(separatorAttrMethods);
-            var groupOfMethods = this.createShape({ tag: 'g', id: (this.id + 'Methods') });
-            groupOfMethods.setAttributeNS(null, 'class', 'SVGClazzProperty SVGClazzMethod');
-            group.appendChild(groupOfMethods);
-            y += this.$attrHeight / 2;
-            for (var _b = 0, _c = this.methods; _b < _c.length; _b++) {
-                var method = _c[_b];
-                var methodSvg = method.getSVG();
-                method.$owner = this;
-                methodSvg.setAttributeNS(null, 'x', '' + (pos.x + 10));
-                methodSvg.setAttributeNS(null, 'y', '' + y);
-                groupOfMethods.appendChild(methodSvg);
-                y += this.$attrHeight;
-            }
-        }
-        this.$view = group;
-        return group;
-    };
-    Clazz.prototype.copy = function () {
-        var copy;
-        copy = _super.prototype.copy.call(this);
-        copy.label = this.label + 'Copy';
-        this.attributes.forEach(function (attr) {
-            copy.attributes.push(new Attribute_1.default(attr.toString()));
-        });
-        this.methods.forEach(function (method) {
-            copy.methods.push(new Method_1.default(method.toString()));
-        });
-        copy.reCalcSize();
-        return copy;
-    };
-    Clazz.prototype.getEvents = function () {
-        return [EventBus_1.EventBus.ELEMENTMOUSEDOWN, EventBus_1.EventBus.ELEMENTMOUSEMOVE, EventBus_1.EventBus.ELEMENTCLICK,
-            EventBus_1.EventBus.ELEMENTDRAG, EventBus_1.EventBus.ELEMENTDBLCLICK, EventBus_1.EventBus.OPENPROPERTIES, EventBus_1.EventBus.RELOADPROPERTIES];
-    };
-    Clazz.prototype.addProperty = function (value, type) {
-        if (!this[type] || !value || value.length === 0) {
-            return;
-        }
-        var extractedValue;
-        if (type === 'attributes') {
-            extractedValue = new Attribute_1.default(value);
-        }
-        else if (type === 'methods') {
-            extractedValue = new Method_1.default(value);
-        }
-        for (var _i = 0, _a = this[type]; _i < _a.length; _i++) {
-            var valueOfType = _a[_i];
-            if (valueOfType.toString() === extractedValue.toString()) {
-                alert(extractedValue.toString() + ' already exists.');
-                extractedValue = undefined;
-                return;
-            }
-        }
-        this[type].push(extractedValue);
-        util_1.Util.saveToLocalStorage(this.$owner);
-        return extractedValue;
-    };
-    Clazz.prototype.addAttribute = function (value) {
-        return this.addProperty(value, 'attributes');
-    };
-    Clazz.prototype.addAttributeObj = function (attr) {
-        this.attributes.push(attr);
-        return this.getAttributes();
-    };
-    Clazz.prototype.addMethodObj = function (method) {
-        this.methods.push(method);
-        return this.getMethods();
-    };
-    Clazz.prototype.addMethod = function (value) {
-        return this.addProperty(value, 'methods');
-    };
-    Clazz.prototype.removeAttribute = function (attr) {
-        var idx = this.attributes.indexOf(attr);
-        this.attributes.splice(idx, 1);
-    };
-    Clazz.prototype.removeMethod = function (method) {
-        var idx = this.methods.indexOf(method);
-        this.methods.splice(idx, 1);
-    };
-    Clazz.prototype.removeProperty = function (property) {
-        if (property instanceof Attribute_1.default) {
-            this.removeAttribute(property);
-        }
-        if (property instanceof Method_1.default) {
-            this.removeMethod(property);
-        }
-        util_1.Util.saveToLocalStorage(this.$owner);
-    };
-    Clazz.prototype.reDraw = function (drawOnlyIfSizeChanged) {
-        var hasSizeChanged = this.hasSizeChanged();
-        if (drawOnlyIfSizeChanged) {
-            if (!hasSizeChanged[0]) {
-                return;
-            }
-        }
-        if (!this.$view) {
-            return;
-        }
-        this.$owner.$view.removeChild(this.$view);
-        var newSvg = this.getSVG();
-        this.$owner.$view.appendChild(newSvg);
-        this.$view = newSvg;
-        EventBus_1.EventBus.register(this, newSvg);
-        this.redrawEdges();
-    };
-    Clazz.prototype.hasSizeChanged = function () {
-        var oldSize = { width: this.getSize().x, height: this.getSize().y };
-        var newSize = this.reCalcSize();
-        if (oldSize.width === newSize.width && oldSize.height === newSize.height) {
-            return [false, newSize];
-        }
-        return [true, newSize];
-    };
-    Clazz.prototype.updateLabel = function (newLabel) {
-        var _this = this;
-        this.label = newLabel;
-        if (this.$labelView) {
-            this.$labelView.textContent = newLabel;
-        }
-        this.$edges.forEach(function (edge) {
-            if (_this.id === edge.$sNode.id) {
-                edge.source = newLabel;
-            }
-            else if (_this.id === edge.$tNode.id) {
-                edge.target = newLabel;
-            }
-        });
-        util_1.Util.saveToLocalStorage(this.$owner);
-        this.reDraw(true);
-    };
-    Clazz.prototype.updateModifier = function (modifier) {
-        this.modifier = modifier;
-        util_1.Util.saveToLocalStorage(this.$owner);
-    };
-    Clazz.prototype.reCalcSize = function () {
-        var newWidth = 150;
-        newWidth = Math.max(newWidth, util_1.Util.sizeOf(this.label).width + 30);
-        this.attributes.forEach(function (attrEl) {
-            var widthOfAttr;
-            if (attrEl.$view) {
-                widthOfAttr = attrEl.$view.getBoundingClientRect().width;
-            }
-            else {
-                widthOfAttr = util_1.Util.sizeOf(attrEl.toString()).width;
-            }
-            newWidth = Math.max(newWidth, widthOfAttr + 15);
-        });
-        this.methods.forEach(function (methodEl) {
-            var widthOfMethod;
-            if (methodEl.$view) {
-                widthOfMethod = methodEl.$view.getBoundingClientRect().width;
-            }
-            else {
-                widthOfMethod = util_1.Util.sizeOf(methodEl.toString()).width;
-            }
-            newWidth = Math.max(newWidth, widthOfMethod + 15);
-        });
-        this.getSize().x = newWidth;
-        this.getSize().y = this.$labelHeight + ((this.attributes.length + this.methods.length) * this.$attrHeight)
-            + this.$attrHeight;
-        var newSize = { width: newWidth, height: this.getSize().y };
-        return newSize;
-    };
-    Clazz.prototype.redrawEdges = function () {
-        for (var _i = 0, _a = this.$edges; _i < _a.length; _i++) {
-            var edge = _a[_i];
-            edge.redraw(this);
-        }
-    };
-    return Clazz;
-}(Node_1.Node));
-exports.Clazz = Clazz;
-
-
-/***/ }),
-/* 18 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var ClazzProperty_1 = __webpack_require__(10);
-var Attribute = (function (_super) {
-    __extends(Attribute, _super);
-    function Attribute(data) {
-        return _super.call(this, data) || this;
-    }
-    return Attribute;
-}(ClazzProperty_1.default));
-exports.default = Attribute;
-
-
-/***/ }),
-/* 19 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var util_1 = __webpack_require__(0);
-var ClazzProperty_1 = __webpack_require__(10);
+var util_1 = __webpack_require__(/*! ../../util */ "./util.ts");
+var ClazzProperty_1 = __webpack_require__(/*! ./ClazzProperty */ "./elements/nodes/ClazzProperty.ts");
 var Method = (function (_super) {
     __extends(Method, _super);
     function Method(data) {
@@ -3787,13 +6308,13 @@ var Method = (function (_super) {
             return;
         }
         if (data.type) {
-            this.type = data.type;
+            this.updateType(data.type);
         }
         if (data.name) {
-            this.name = data.name;
+            this.updateType(data.name);
         }
         if (data.modifier) {
-            this.modifier = data.modifier;
+            this.updateType(data.modifier);
         }
         if (typeof data === 'string') {
             var dataSplitted = data.split(':');
@@ -3801,29 +6322,29 @@ var Method = (function (_super) {
                 var modifierAndNameSplitted = dataSplitted[0].trim();
                 var firstChar = modifierAndNameSplitted[0];
                 if (firstChar === '+' || firstChar === '-' || firstChar === '#') {
-                    this.modifier = firstChar;
-                    this.name = modifierAndNameSplitted.substring(1, modifierAndNameSplitted.length).trim();
+                    this.updateModifier(firstChar);
+                    this.updateName(modifierAndNameSplitted.substring(1, modifierAndNameSplitted.length).trim());
                 }
                 else {
-                    this.name = modifierAndNameSplitted;
+                    this.updateName(modifierAndNameSplitted);
                 }
-                this.type = dataSplitted[1].trim() || 'void';
+                this.updateType(dataSplitted[1].trim() || 'void');
             }
             else {
                 var modifierAndNameSplitted = data.trim();
                 var firstChar = modifierAndNameSplitted[0];
                 if (firstChar === '+' || firstChar === '-' || firstChar === '#') {
-                    this.modifier = firstChar;
-                    this.name = modifierAndNameSplitted.substring(1, modifierAndNameSplitted.length).trim();
+                    this.updateModifier(firstChar);
+                    this.updateName(modifierAndNameSplitted.substring(1, modifierAndNameSplitted.length).trim());
                 }
                 else {
-                    this.name = modifierAndNameSplitted;
+                    this.updateName(modifierAndNameSplitted);
                 }
-                this.type = 'void';
+                this.updateType('void');
             }
         }
-        if (!util_1.Util.includes(this.name, '(') && !util_1.Util.includes(this.name, ')')) {
-            this.name += '()';
+        if (util_1.Util.includes(this.$data.getValue('name'), '(') && !util_1.Util.includes(this.$data.getValue('name'), ')') === false) {
+            this.$data.setValue('name', this.$data.getValue('name') + '()');
         }
     };
     return Method;
@@ -3832,7 +6353,12 @@ exports.default = Method;
 
 
 /***/ }),
-/* 20 */
+
+/***/ "./elements/nodes/Node.ts":
+/*!********************************!*\
+  !*** ./elements/nodes/Node.ts ***!
+  \********************************/
+/*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3848,7 +6374,106 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var BaseElements_1 = __webpack_require__(1);
+var BaseElements_1 = __webpack_require__(/*! ../BaseElements */ "./elements/BaseElements.ts");
+var Node = (function (_super) {
+    __extends(Node, _super);
+    function Node(data) {
+        var _this = _super.call(this) || this;
+        _this.$edges = [];
+        _this.$minWidth = 150;
+        _this.$minheight = 25;
+        _this.withSize(_this.$minWidth, _this.$minheight);
+        if (data) {
+            if (data['x'] && data['y']) {
+                _this.withPos(data['x'], data['y']);
+            }
+            if (data['width'] || data['height']) {
+                _this.withSize(data['width'], data['height']);
+            }
+        }
+        return _this;
+    }
+    Node.prototype.getSVG = function () {
+        var pos = this.getPos();
+        var size = this.getSize();
+        var attr = {
+            tag: 'rect',
+            x: pos.x - size.x / 2,
+            y: pos.y - size.y / 2,
+            rx: 4,
+            ry: 4,
+            height: size.y,
+            width: size.x,
+            style: 'fill:white;stroke:black;stroke-width:2'
+        };
+        var shape = this.createShape(attr);
+        var attrText = {
+            tag: 'text',
+            x: pos.x,
+            y: pos.y,
+            'text-anchor': 'middle',
+            'alignment-baseline': 'middle',
+            'font-family': 'Verdana',
+            'font-size': '14',
+            fill: 'black'
+        };
+        var text = this.createShape(attrText);
+        text.textContent = this.id;
+        var group = this.createShape({ tag: 'g', id: this.id });
+        group.appendChild(shape);
+        group.appendChild(text);
+        return group;
+    };
+    Node.prototype.copy = function () {
+        var copy;
+        var model = this.$owner || this.getRoot();
+        if (model) {
+            var type = this.property || Node.name;
+            var newId = model.getNewId(type);
+            copy = model.createElement(type, newId, null);
+            copy.withSize(this.getSize().x, this.getSize().y);
+            copy.$owner = model;
+        }
+        else {
+            copy.id = this.id + '-copy';
+            copy.$owner = this.getRoot();
+        }
+        return copy;
+    };
+    Node.prototype.redrawEdges = function () {
+        for (var _i = 0, _a = this.$edges; _i < _a.length; _i++) {
+            var edge = _a[_i];
+            edge.redraw(this);
+        }
+    };
+    return Node;
+}(BaseElements_1.DiagramElement));
+exports.Node = Node;
+
+
+/***/ }),
+
+/***/ "./elements/nodes/SO.ts":
+/*!******************************!*\
+  !*** ./elements/nodes/SO.ts ***!
+  \******************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var BaseElements_1 = __webpack_require__(/*! ../BaseElements */ "./elements/BaseElements.ts");
 var SO = (function (_super) {
     __extends(SO, _super);
     function SO() {
@@ -3891,7 +6516,12 @@ exports.SO = SO;
 
 
 /***/ }),
-/* 21 */
+
+/***/ "./elements/nodes/StereoType.ts":
+/*!**************************************!*\
+  !*** ./elements/nodes/StereoType.ts ***!
+  \**************************************/
+/*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3907,10 +6537,70 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var Node_1 = __webpack_require__(6);
-var SO_1 = __webpack_require__(20);
-var BaseElements_1 = __webpack_require__(1);
-var util_1 = __webpack_require__(0);
+var Node_1 = __webpack_require__(/*! ./Node */ "./elements/nodes/Node.ts");
+var StereoType = (function (_super) {
+    __extends(StereoType, _super);
+    function StereoType(type, x, y) {
+        var _this = _super.call(this, '') || this;
+        _this.withPos(x, y);
+        _this.setStereoType(type);
+        return _this;
+    }
+    StereoType.prototype.getSVG = function () {
+        var pos = this.getPos();
+        var size = this.getSize();
+        var stereoType = this.createShape({
+            tag: 'text',
+            x: pos.x + size.x / 2,
+            y: pos.y - this.$labelHeight / 2,
+            'text-anchor': 'middle',
+            'alignment-baseline': 'central',
+            'font-family': 'Verdana',
+            'font-size': 10,
+            'font-weight': 'bold',
+            fill: 'black'
+        });
+        stereoType.textContent = this.stereoType;
+        this.$view = stereoType;
+        return stereoType;
+    };
+    StereoType.prototype.setStereoType = function (value) {
+        this.stereoType = '<<' + value + '>>';
+    };
+    StereoType.prototype.getStereoType = function () {
+        return this.stereoType;
+    };
+    return StereoType;
+}(Node_1.Node));
+exports.StereoType = StereoType;
+
+
+/***/ }),
+
+/***/ "./elements/nodes/Symbol.ts":
+/*!**********************************!*\
+  !*** ./elements/nodes/Symbol.ts ***!
+  \**********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var Node_1 = __webpack_require__(/*! ./Node */ "./elements/nodes/Node.ts");
+var SO_1 = __webpack_require__(/*! ./SO */ "./elements/nodes/SO.ts");
+var BaseElements_1 = __webpack_require__(/*! ../BaseElements */ "./elements/BaseElements.ts");
+var util_1 = __webpack_require__(/*! ../../util */ "./util.ts");
 var Symbol = (function (_super) {
     __extends(Symbol, _super);
     function Symbol(typ) {
@@ -3978,11 +6668,11 @@ var SymbolLibary = (function () {
         return typeof fn === 'function';
     };
     SymbolLibary.getName = function (node) {
-        if (node.property) {
-            return 'draw' + SymbolLibary.upFirstChar(node.property);
-        }
         if (node['type']) {
             return 'draw' + SymbolLibary.upFirstChar(node['type']);
+        }
+        if (node.property) {
+            return 'draw' + SymbolLibary.upFirstChar(node.property);
         }
         if (node['src']) {
             return 'draw' + SymbolLibary.upFirstChar(node['src']);
@@ -3993,10 +6683,14 @@ var SymbolLibary = (function () {
         var func, y, z, box, item, transform, i, offsetX = 0, offsetY = 0;
         var svg;
         if (node.property.toUpperCase() === 'HTML') {
-            svg = util_1.Util.create({
+            var so = {
                 tag: 'svg',
-                style: { left: group.x + node.getPos().x, top: group.y + node.getPos().y, position: 'absolute' }
-            });
+                style: { left: (group.x | 0) + node.getPos().x, top: (group.y | 0) + node.getPos().y, position: 'absolute' }
+            };
+            if (node['transform']) {
+                so['transform'] = node['transform'];
+            }
+            svg = util_1.Util.create(so);
         }
         else {
             svg = util_1.Util.create({ tag: 'g' });
@@ -4197,8 +6891,8 @@ var SymbolLibary = (function () {
             width: 50,
             height: 52,
             items: [
-                { tag: 'circle', r: 10, fill: '#ccc', cx: 8, cy: 8 },
-                { tag: 'path', d: 'M 2,3 H 13 M 2,8 H 13 M 2,13 H 13', stroke: 'black', fill: 'none' }
+                { tag: 'circle', r: 10, fill: '#ccc', cx: 12, cy: 12, 'stroke-width': 1, stroke: 'black' },
+                { tag: 'path', d: 'M 8,7 H 16 M 8,12 H 16 M 8,17 H 16', stroke: 'black', fill: 'none' }
             ]
         });
     };
@@ -4558,6 +7252,23 @@ var SymbolLibary = (function () {
             ]
         });
     };
+    SymbolLibary.drawClass = function (node) {
+        var btnX = 0, btnY = 0, btnWidth = 0, btnHeight = 0;
+        return SO_1.SO.create({
+            x: btnX,
+            y: btnY,
+            id: node['id'],
+            width: '100%',
+            height: '100%',
+            items: [
+                { tag: 'rect', width: 50, height: 40, x: 0, y: 0, 'stroke-width': 2, stroke: 'black', fill: 'none' },
+                { tag: 'rect', width: 50, height: 12, x: 0, y: 18, 'stroke-width': 1, stroke: 'black', fill: 'none' },
+                { tag: 'text', x: 27, y: 14, 'text-anchor': 'middle', 'font-size': 11, value: 'Class' },
+                { tag: 'text', x: 5, y: 24, 'font-size': 5, value: '+ field: type' },
+                { tag: 'text', x: 5, y: 36, 'font-size': 5, value: '+ method(type)' }
+            ]
+        });
+    };
     SymbolLibary.drawEdgeicon = function (node) {
         var btnX = 0, btnY = 0, btnWidth = 0, btnHeight = 0;
         return SO_1.SO.create({
@@ -4673,13 +7384,21 @@ var SymbolLibary = (function () {
         box.appendChild(item);
         return item;
     };
+    SymbolLibary.prototype.getToolBarIcon = function () {
+        return null;
+    };
     return SymbolLibary;
 }());
 exports.SymbolLibary = SymbolLibary;
 
 
 /***/ }),
-/* 22 */
+
+/***/ "./elements/nodes/Table.ts":
+/*!*********************************!*\
+  !*** ./elements/nodes/Table.ts ***!
+  \*********************************/
+/*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4695,1984 +7414,10 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var index_1 = __webpack_require__(5);
-var StereoType = (function (_super) {
-    __extends(StereoType, _super);
-    function StereoType(data) {
-        return _super.call(this, data) || this;
-    }
-    StereoType.prototype.load = function (json) {
-        _super.prototype.load.call(this, json);
-        this.withSize(this.getSize().x, (this.getSize().y + this.$labelHeight / 2));
-    };
-    StereoType.prototype.getSVG = function () {
-        var pos = this.getPos();
-        var size = this.getSize();
-        var nodeShape = this.createShape({
-            tag: 'rect',
-            x: pos.x,
-            y: pos.y,
-            height: size.y,
-            width: size.x,
-            rx: 10,
-            ry: 10
-        });
-        var stereoType = this.createShape({
-            tag: 'text',
-            x: pos.x + size.x / 2,
-            y: pos.y + this.$labelHeight / 2,
-            'text-anchor': 'middle',
-            'alignment-baseline': 'central',
-            'font-family': 'Verdana',
-            'font-size': 10,
-            'font-weight': 'bold',
-            fill: 'black'
-        });
-        stereoType.textContent = this.stereoType;
-        this.$stereoTypeView = stereoType;
-        var label = this.createShape({
-            tag: 'text',
-            x: pos.x + size.x / 2,
-            y: pos.y + this.$labelHeight,
-            'text-anchor': 'middle',
-            'alignment-baseline': 'central',
-            'font-family': 'Verdana',
-            'font-size': this.$labelFontSize,
-            'font-weight': 'bold',
-            fill: 'black'
-        });
-        label.textContent = this.label;
-        this.$labelView = label;
-        var group = this.createShape({ tag: 'g', id: this.id, class: 'SVGClazz', transform: 'translate(0 0)' });
-        group.appendChild(nodeShape);
-        group.appendChild(stereoType);
-        group.appendChild(label);
-        if (this.attributes.length > 0) {
-            var separatorLabelAttr = this.createShape({
-                tag: 'line',
-                x1: pos.x,
-                y1: pos.y + this.$labelHeight + (this.$labelHeight / 2),
-                x2: pos.x + size.x,
-                y2: pos.y + this.$labelHeight + (this.$labelHeight / 2),
-                'stroke-width': 1
-            });
-            group.appendChild(separatorLabelAttr);
-            var groupOfAttributes = this.createShape({ tag: 'g', id: (this.id + 'Attributes') });
-            groupOfAttributes.setAttributeNS(null, 'class', 'SVGClazzProperty SVGClazzAttribute');
-            group.appendChild(groupOfAttributes);
-            var y_1 = pos.y + this.$labelHeight + (this.$labelHeight / 2) + (this.$attrHeight / 2);
-            for (var _i = 0, _a = this.attributes; _i < _a.length; _i++) {
-                var attr = _a[_i];
-                var attrSvg = attr.getSVG();
-                attr.$owner = this;
-                attrSvg.setAttributeNS(null, 'x', '' + (pos.x + 10));
-                attrSvg.setAttributeNS(null, 'y', '' + y_1);
-                groupOfAttributes.appendChild(attrSvg);
-                y_1 += this.$attrHeight;
-            }
-        }
-        var height = this.attributes.length * this.$attrHeight;
-        var y = pos.y + (this.$labelHeight * 1.5) + height + this.$attrHeight / 2;
-        if (this.methods.length > 0) {
-            var separatorAttrMethods = this.createShape({
-                tag: 'line',
-                x1: pos.x,
-                y1: pos.y + (this.$labelHeight * 1.5) + (this.$attrHeight * this.attributes.length),
-                x2: pos.x + size.x,
-                y2: pos.y + (this.$labelHeight * 1.5) + (this.$attrHeight * this.attributes.length),
-                'stroke-width': 1
-            });
-            group.appendChild(separatorAttrMethods);
-            var groupOfMethods = this.createShape({ tag: 'g', id: (this.id + 'Methods') });
-            groupOfMethods.setAttributeNS(null, 'class', 'SVGClazzProperty SVGClazzMethod');
-            group.appendChild(groupOfMethods);
-            y += this.$attrHeight / 2;
-            for (var _b = 0, _c = this.methods; _b < _c.length; _b++) {
-                var method = _c[_b];
-                var methodSvg = method.getSVG();
-                method.$owner = this;
-                methodSvg.setAttributeNS(null, 'x', '' + (pos.x + 10));
-                methodSvg.setAttributeNS(null, 'y', '' + y);
-                groupOfMethods.appendChild(methodSvg);
-                y += this.$attrHeight;
-            }
-        }
-        this.$view = group;
-        return group;
-    };
-    StereoType.prototype.setStereoTyp = function (value) {
-        this.stereoType = '<<' + value + '>>';
-    };
-    StereoType.prototype.getStereoType = function () {
-        return this.stereoType;
-    };
-    return StereoType;
-}(index_1.Clazz));
-exports.StereoType = StereoType;
-
-
-/***/ }),
-/* 23 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-function __export(m) {
-    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
-}
-Object.defineProperty(exports, "__esModule", { value: true });
-__export(__webpack_require__(43));
-
-
-/***/ }),
-/* 24 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var Adapter = (function () {
-    function Adapter() {
-        this.id = null;
-    }
-    return Adapter;
-}());
-exports.Adapter = Adapter;
-
-
-/***/ }),
-/* 25 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var Association_1 = __webpack_require__(11);
-var Generalisation = (function (_super) {
-    __extends(Generalisation, _super);
-    function Generalisation() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.$TARGET_ELEMENT_HEIGHT = 12;
-        return _this;
-    }
-    Generalisation.prototype.getSVG = function () {
-        var startPoint = this.$points[0];
-        var direction = this.getDirectionOfPointToNode(this.$sNode, startPoint);
-        var path = this.calcCorrectPath(startPoint, direction);
-        var group = _super.prototype.getSVG.call(this);
-        var attr = {
-            tag: 'path',
-            d: path,
-            fill: 'white'
-        };
-        this.$targetElement = this.createShape(attr);
-        group.appendChild(this.$targetElement);
-        return group;
-    };
-    Generalisation.prototype.redraw = function (startNode, dontDrawPoints) {
-        _super.prototype.redraw.call(this, startNode, true);
-        var startPoint = this.$points[0];
-        var direction = 0;
-        if (this.$sNode.id === startNode.id || this.$points.length == 2) {
-            direction = this.getDirectionOfPointToNode(this.$sNode, startPoint);
-            var path = this.calcCorrectPath(startPoint, direction);
-            this.$targetElement.setAttributeNS(null, 'd', path);
-        }
-        this.redrawPointsAndInfo();
-    };
-    Generalisation.prototype.calcCorrectPath = function (startPoint, direction) {
-        var startX = startPoint.x;
-        var startY = startPoint.y;
-        var path;
-        switch (direction) {
-            case 0:
-                path = "M" + startX + " " + (startY + 3) + " L" + (startX + this.$TARGET_ELEMENT_HEIGHT) + " " + (startY + this.$TARGET_ELEMENT_HEIGHT) + " L" + (startX - this.$TARGET_ELEMENT_HEIGHT) + " " + (startY + this.$TARGET_ELEMENT_HEIGHT) + " Z";
-                startPoint.y = startPoint.y + 12;
-                break;
-            case 3:
-                path = "M" + (startX - 3) + " " + startY + " L" + (startX - this.$TARGET_ELEMENT_HEIGHT) + " " + (startY + this.$TARGET_ELEMENT_HEIGHT) + " L" + (startX - this.$TARGET_ELEMENT_HEIGHT) + " " + (startY - this.$TARGET_ELEMENT_HEIGHT) + " Z";
-                startPoint.x = startPoint.x - 12;
-                break;
-            case 2:
-                path = "M" + (startX + 3) + " " + startY + " L" + (startX + this.$TARGET_ELEMENT_HEIGHT) + " " + (startY - this.$TARGET_ELEMENT_HEIGHT) + " L" + (startX + this.$TARGET_ELEMENT_HEIGHT) + " " + (startY + this.$TARGET_ELEMENT_HEIGHT) + " Z";
-                startPoint.x = startPoint.x + 12;
-                break;
-            case 1:
-                path = "M" + startX + " " + (startY - 3) + " L" + (startX + this.$TARGET_ELEMENT_HEIGHT) + " " + (startY - this.$TARGET_ELEMENT_HEIGHT) + " L" + (startX - this.$TARGET_ELEMENT_HEIGHT) + " " + (startY - this.$TARGET_ELEMENT_HEIGHT) + " Z";
-                startPoint.y = startPoint.y - 12;
-                break;
-            default:
-                break;
-        }
-        return path;
-    };
-    return Generalisation;
-}(Association_1.Association));
-exports.Generalisation = Generalisation;
-
-
-/***/ }),
-/* 26 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var DagreLayout = (function () {
-    function DagreLayout() {
-    }
-    DagreLayout.prototype.layout = function (graph, node) {
-        if (!window['dagre']) {
-            return;
-        }
-        var model = graph.$graphModel;
-        var g = new window['dagre'].graphlib.Graph();
-        g.setGraph({ marginx: 100, marginy: 20 }).setDefaultEdgeLabel(function () {
-            return {};
-        });
-        for (var _i = 0, _a = model.nodes; _i < _a.length; _i++) {
-            var node_1 = _a[_i];
-            g.setNode(node_1.id, { width: node_1.getSize().x, height: node_1.getSize().y });
-        }
-        for (var _b = 0, _c = model.edges; _b < _c.length; _b++) {
-            var edge = _c[_b];
-            g.setEdge(edge.$sNode.id, edge.$tNode.id);
-        }
-        window['dagre'].layout(g);
-        g.nodes().forEach(function (nodeId) {
-            for (var _i = 0, _a = model.nodes; _i < _a.length; _i++) {
-                var node_2 = _a[_i];
-                if (node_2.id === nodeId) {
-                    node_2.withPos(g.node(nodeId).x - g.node(nodeId).width / 2, g.node(nodeId).y - g.node(nodeId).height / 2);
-                }
-            }
-        });
-        g.edges().forEach(function (e) {
-            for (var _i = 0, _a = model.edges; _i < _a.length; _i++) {
-                var edge = _a[_i];
-                if (edge.$sNode.id === e.v && edge.$tNode.id === e.w) {
-                    var size = g.edge(e).points.length;
-                    edge.clearPoints();
-                    for (var i = 0; i < size; i++) {
-                        var point = g.edge(e).points[i];
-                        edge.addPoint(point.x, point.y);
-                    }
-                }
-            }
-        });
-    };
-    return DagreLayout;
-}());
-exports.DagreLayout = DagreLayout;
-
-
-/***/ }),
-/* 27 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var util_1 = __webpack_require__(0);
-var Random = (function () {
-    function Random() {
-    }
-    Random.prototype.layout = function (graph) {
-        var model = graph.$graphModel;
-        if (model.nodes) {
-            for (var _i = 0, _a = model.nodes; _i < _a.length; _i++) {
-                var node = _a[_i];
-                var pos = node.getPos();
-                if (pos.x === 0 && pos.y === 0) {
-                    var x = util_1.Util.getRandomInt(0, graph.canvasSize.width);
-                    var y = util_1.Util.getRandomInt(0, graph.canvasSize.height);
-                    node.withPos(x, y);
-                }
-            }
-        }
-    };
-    return Random;
-}());
-exports.Random = Random;
-
-
-/***/ }),
-/* 28 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var LayoutGraphMin = (function () {
-    function LayoutGraphMin() {
-        this.nodes = {};
-        this.edges = [];
-        this.outEdges = {};
-        this.inEdges = {};
-        this.dummyNodes = [];
-        this.dummyEdges = {};
-        this.count = 0;
-        this.minRank = Number.POSITIVE_INFINITY;
-        this.maxRank = 0;
-        this.maxHeight = 0;
-        this.maxWidth = 0;
-        this.ranksep = 0;
-        this.edgesLabel = [];
-    }
-    LayoutGraphMin.prototype.nodeCount = function () {
-        return this.count;
-    };
-    LayoutGraphMin.prototype.node = function (id) {
-        return this.nodes[id];
-    };
-    LayoutGraphMin.prototype.setNode = function (id, n) {
-        if (n && !this.nodes[id]) {
-            this.nodes[id] = n;
-            this.count = this.count + 1;
-        }
-        else if (!n && this.nodes[id]) {
-            delete this.nodes[id];
-        }
-    };
-    return LayoutGraphMin;
-}());
-exports.LayoutGraphMin = LayoutGraphMin;
-var LayoutGraphNode = (function () {
-    function LayoutGraphNode(id, width, height, x, y) {
-        this.id = id;
-        this.width = width;
-        this.height = height;
-        this.x = x;
-        this.y = y;
-    }
-    return LayoutGraphNode;
-}());
-exports.LayoutGraphNode = LayoutGraphNode;
-var LayoutGraphEdge = (function () {
-    function LayoutGraphEdge() {
-    }
-    return LayoutGraphEdge;
-}());
-exports.LayoutGraphEdge = LayoutGraphEdge;
-var DagreLayoutMin = (function () {
-    function DagreLayoutMin() {
-    }
-    DagreLayoutMin.prototype.layout = function (graph, node) {
-        var g, layoutNode, nodes, newEdge, edges;
-        var i, n, x, y, sId, tId, split = DagreLayoutMin.EDGE_KEY_DELIM;
-        var e;
-        nodes = node['nodes'];
-        edges = node['edges'];
-        g = new LayoutGraphMin();
-        for (i in nodes) {
-            if (!nodes.hasOwnProperty(i) || typeof (nodes[i]) === 'function') {
-                continue;
-            }
-            n = nodes[i];
-            g.setNode(n.id, new LayoutGraphNode(n.id, n.getSize().x, n.getSize().y, n.getPos().x, n.getPos().y));
-        }
-        for (i in edges) {
-            if (!edges.hasOwnProperty(i) || typeof (edges[i]) === 'function') {
-                continue;
-            }
-            e = edges[i];
-            sId = this.getNodeId(e.$sNode);
-            tId = this.getNodeId(e.$tNode);
-            if (sId > tId) {
-                var tmp = tId;
-                tId = sId;
-                sId = tmp;
-            }
-            var idAB = sId + split + tId + split;
-            var idBA = tId + split + sId + split;
-            if (sId !== tId && g.edgesLabel.indexOf(idAB) < 0 && g.edgesLabel.indexOf(idBA) < 0) {
-                newEdge = { source: sId, target: tId, minlen: 1, weight: 1 };
-                g.edges.push(newEdge);
-                g.edgesLabel.push(idAB);
-                if (!g.inEdges[tId]) {
-                    g.inEdges[tId] = [];
-                }
-                g.inEdges[tId].push(newEdge);
-                if (!g.outEdges[sId]) {
-                    g.outEdges[sId] = [];
-                }
-                g.outEdges[sId].push(newEdge);
-            }
-        }
-        this.layouting(g);
-        for (i in nodes) {
-            if (!nodes.hasOwnProperty(i) || typeof (nodes[i]) === 'function') {
-                continue;
-            }
-            n = nodes[i];
-            layoutNode = g.node(n.id);
-            x = n.getPos().x;
-            y = n.getPos().y;
-            if (x < 1 && y < 1) {
-                n.withPos(Math.ceil(layoutNode.x), Math.ceil(layoutNode.y));
-            }
-        }
-        for (i in edges) {
-            if (!edges.hasOwnProperty(i) || typeof (edges[i]) === 'function') {
-                continue;
-            }
-            e = edges[i];
-        }
-        graph.draw();
-    };
-    DagreLayoutMin.prototype.getNodeId = function (node) {
-        if (node.$owner) {
-            return this.getNodeId(node.$owner) || node.id;
-        }
-        return node.id;
-    };
-    DagreLayoutMin.prototype.layouting = function (g) {
-        this.longestPath(g);
-        this.normalizeRanks(g);
-        this.normalizeEdge(g);
-        this.order(g);
-        g.ranksep = 25;
-        this.removeDummy(g);
-        this.position(g);
-    };
-    DagreLayoutMin.prototype.setSimpleOrder = function (g) {
-        var i, n;
-        for (i in g.nodes) {
-            n = g.nodes[i];
-            n.order = n.rank;
-        }
-    };
-    DagreLayoutMin.prototype.order = function (g) {
-        var layering = Array(g.maxRank + 1);
-        var visited = {};
-        var node, n, order, i;
-        for (i = 0; i < layering.length; i++) {
-            layering[i] = [];
-        }
-        for (n in g.nodes) {
-            if (visited[n]) {
-                continue;
-            }
-            visited[n] = true;
-            node = g.nodes[n];
-            if (node.rank !== undefined) {
-                layering[node.rank].push(n);
-            }
-        }
-        for (order in layering) {
-            for (n in layering[order]) {
-                if (layering[order].hasOwnProperty(n) === false) {
-                    continue;
-                }
-                g.nodes[layering[order][n]].order = parseInt(n);
-            }
-        }
-        for (order in layering) {
-            if (layering[order].length > 1) {
-                for (n in layering[order]) {
-                    if (layering[order].hasOwnProperty(n) === false) {
-                        continue;
-                    }
-                    var name_1 = layering[order][n];
-                    var sum = 0;
-                    var weight = 1;
-                    var edges = g.dummyEdges[name_1];
-                    if (edges) {
-                        for (i in edges) {
-                            if (edges.hasOwnProperty(i) === false) {
-                                continue;
-                            }
-                            var edge = edges[i];
-                            var nodeU = g.node(edge.target);
-                            sum = sum + (edge.weight * nodeU.order);
-                            weight = weight + edge.weight;
-                        }
-                    }
-                    g.node(name_1).barycenter = sum / weight;
-                    g.node(name_1).weight = weight;
-                }
-            }
-            else if (layering[order].length > 0) {
-                for (n in layering[order]) {
-                    var name_2 = layering[order][n];
-                    g.node(name_2).barycenter = 1;
-                    g.node(name_2).weight = 1;
-                }
-            }
-        }
-        for (order in layering) {
-            for (n in layering[order]) {
-                if (layering[order].hasOwnProperty(n) === false) {
-                    continue;
-                }
-                var node_1 = g.nodes[layering[order][n]];
-                node_1.order = parseInt(n) + node_1.barycenter * node_1.weight;
-                if (isNaN(node_1.order)) {
-                    console.log('ERROR');
-                }
-            }
-        }
-    };
-    DagreLayoutMin.prototype.removeDummy = function (g) {
-        for (var z in g.dummyNodes) {
-            var node = g.dummyNodes[z];
-            g.setNode(node.id, null);
-        }
-        g.dummyNodes = [];
-        g.dummyEdges = {};
-    };
-    DagreLayoutMin.prototype.normalizeEdge = function (g) {
-        var i = 1;
-        for (var id in g.edges) {
-            var e = g.edges[id];
-            var v = e.source;
-            var vRank = g.node(v).rank;
-            var w = e.target;
-            var wRank = g.node(w).rank;
-            var name_3 = void 0;
-            if (wRank === vRank + 1) {
-                continue;
-            }
-            var dummy = void 0;
-            for (vRank = vRank + 1; vRank < wRank; ++vRank) {
-                name_3 = '_d' + e.source + e.target + (i++);
-                var newEdge = { source: v, target: name_3, minlen: 1, weight: 1 };
-                dummy = new LayoutGraphNode(name_3, 0, 0, 0, 0);
-                dummy.edgeObj = e;
-                dummy.rank = vRank;
-                if (!g.dummyEdges[v]) {
-                    g.dummyEdges[v] = [];
-                }
-                g.dummyEdges[v].push(newEdge);
-                g.dummyNodes.push(dummy);
-                g.setNode(dummy.id, dummy);
-                v = name_3;
-            }
-        }
-    };
-    DagreLayoutMin.prototype.longestPath = function (g) {
-        var i, n, visited = [];
-        for (i in g.nodes) {
-            n = g.nodes[i];
-            visited.push(i);
-            n.rank = this.findAllPaths(g, n, 0, visited);
-            g.minRank = Math.min(g.minRank, n.rank);
-        }
-    };
-    DagreLayoutMin.prototype.findAllPaths = function (g, n, currentCost, path) {
-        var min = 0;
-        var id;
-        var z;
-        var target;
-        if (g.outEdges[n.id]) {
-            for (z = 0; z < g.outEdges[n.id].length; z++) {
-                id = g.outEdges[n.id][z].target;
-                target = g.nodes[id];
-                if (path[id]) {
-                    min = Math.min(min, target.rank);
-                }
-                else if (path.indexOf(id) < 0) {
-                    min = Math.min(min, this.findAllPaths(g, target, currentCost - 2, path));
-                }
-                else {
-                    min = currentCost;
-                }
-            }
-            return min;
-        }
-        return currentCost;
-    };
-    DagreLayoutMin.prototype.normalizeRanks = function (g) {
-        var min = g.minRank;
-        var value;
-        g.maxRank = Number.NEGATIVE_INFINITY;
-        g.maxHeight = 0;
-        g.maxWidth = 0;
-        for (var i in g.nodes) {
-            var node = g.nodes[i];
-            if (node.rank !== undefined) {
-                node.rank -= min;
-                value = Math.abs(node.rank);
-                if (value > g.maxRank) {
-                    g.maxRank = value;
-                }
-                g.maxHeight = Math.max(g.maxHeight, node.height);
-                g.maxWidth = Math.max(g.maxWidth, node.width);
-            }
-        }
-    };
-    DagreLayoutMin.prototype.position = function (g) {
-        this.positionY(g);
-        var list = this.positionX(g);
-        for (var i in list) {
-            for (var pos in list[i]) {
-                if (list[i].hasOwnProperty(pos) === false) {
-                    continue;
-                }
-                if (g.node(list[i][pos])) {
-                    g.node(list[i][pos]).x = parseInt(pos) * g.maxWidth;
-                }
-            }
-        }
-    };
-    DagreLayoutMin.prototype.positionY = function (g) {
-        var layering = this.buildLayerMatrix(g);
-        var rankSep = g.ranksep;
-        var prevY = 0;
-        for (var layer in layering) {
-            var maxHeight = g.maxHeight;
-            for (var v in layering[layer]) {
-                if (layering[layer].hasOwnProperty(v) === false) {
-                    continue;
-                }
-                var id = layering[layer][v];
-                g.nodes[id].y = prevY + maxHeight / 2;
-            }
-            prevY += maxHeight + rankSep;
-        }
-    };
-    DagreLayoutMin.prototype.buildLayerMatrix = function (g) {
-        var layering = Array(g.maxRank + 1);
-        for (var i = 0; i < layering.length; i++) {
-            layering[i] = [];
-        }
-        for (var n in g.nodes) {
-            var node = g.nodes[n];
-            if (node.rank !== undefined) {
-                layering[node.rank][node.order] = n;
-            }
-        }
-        return layering;
-    };
-    DagreLayoutMin.prototype.positionX = function (g) {
-        var layering = this.buildLayerMatrix(g);
-        return layering;
-    };
-    DagreLayoutMin.EDGE_KEY_DELIM = '\x01';
-    return DagreLayoutMin;
-}());
-exports.DagreLayoutMin = DagreLayoutMin;
-
-
-/***/ }),
-/* 29 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var edges = __webpack_require__(4);
-var PropertiesPanel;
-(function (PropertiesPanel) {
-    var PropertiesView;
-    (function (PropertiesView) {
-        PropertiesView["Clazz"] = "clazz";
-        PropertiesView["Edge"] = "edge";
-        PropertiesView["Clear"] = "clear";
-    })(PropertiesView = PropertiesPanel.PropertiesView || (PropertiesPanel.PropertiesView = {}));
-    var BlankView = (function () {
-        function BlankView(graph) {
-            this.graph = graph;
-            this.initMainPanel();
-        }
-        BlankView.prototype.show = function (panel, showTabWithValue) {
-            if (this.propertiesContent) {
-                while (this.propertiesContent.hasChildNodes()) {
-                    this.propertiesContent.removeChild(this.propertiesContent.childNodes[0]);
-                }
-            }
-            var children = panel.getPanel().childNodes;
-            while (children.length > 0) {
-                this.propertiesContent.appendChild(children[0]);
-            }
-            this.displayingPanel = panel;
-            if (showTabWithValue) {
-                panel.showTab(showTabWithValue);
-            }
-            else {
-                panel.showFirstTab();
-            }
-        };
-        BlankView.prototype.openProperties = function () {
-            this.isHidden = false;
-            document.getElementById('propertiesContent').className = 'properties';
-            document.getElementById('propertiesMasterPanel').className = 'propertiespanel';
-            var btn = document.getElementById('propClassHeaderButtonDisplay');
-            btn.innerHTML = '&#8897;';
-            btn.title = 'Hide properties';
-        };
-        BlankView.prototype.setPropertiesHeaderText = function (text) {
-            var divHeaderLabel = document.getElementById('classPropHeaderLabel');
-            if (divHeaderLabel) {
-                divHeaderLabel.innerHTML = text;
-            }
-        };
-        BlankView.prototype.getCurrentView = function () {
-            return this.displayingPanel.getPropertiesView();
-        };
-        BlankView.prototype.getCurrentPanel = function () {
-            return this.displayingPanel;
-        };
-        BlankView.prototype.initMainPanel = function () {
-            var _this = this;
-            if (document.getElementById('propertiesMasterPanel')) {
-                return;
-            }
-            this.propertiesMasterPanel = document.createElement('div');
-            this.propertiesMasterPanel.id = 'propertiesMasterPanel';
-            this.propertiesMasterPanel.className = 'propertiespanel-hidden';
-            this.propertiesContent = document.createElement('div');
-            this.propertiesContent.id = 'propertiesContent';
-            this.propertiesContent.className = 'properties-hidden';
-            var propertiesHeader = document.createElement('div');
-            propertiesHeader.id = 'propertiesHeader';
-            propertiesHeader.style.display = 'inline';
-            var propHeaderLabel = document.createElement('div');
-            propHeaderLabel.id = 'classPropHeaderLabel';
-            propHeaderLabel.innerHTML = 'Select any element to see its properties';
-            propHeaderLabel.style.display = 'inherit';
-            propHeaderLabel.style.cursor = 'pointer';
-            propHeaderLabel.onclick = function (e) { return _this.hideproperties(e); };
-            var btnPropClassHeaderDisplay = document.createElement('button');
-            btnPropClassHeaderDisplay.id = 'propClassHeaderButtonDisplay';
-            btnPropClassHeaderDisplay.title = 'Show properties';
-            btnPropClassHeaderDisplay.className = 'btnHideProp';
-            btnPropClassHeaderDisplay.innerHTML = '&#8896;';
-            btnPropClassHeaderDisplay.style.cssFloat = 'right';
-            btnPropClassHeaderDisplay.onclick = function (e) { return _this.hideproperties(e); };
-            propertiesHeader.appendChild(propHeaderLabel);
-            propertiesHeader.appendChild(btnPropClassHeaderDisplay);
-            this.propertiesMasterPanel.appendChild(propertiesHeader);
-            this.propertiesMasterPanel.appendChild(this.propertiesContent);
-            document.body.appendChild(this.propertiesMasterPanel);
-        };
-        BlankView.prototype.hideproperties = function (evt) {
-            evt.stopPropagation();
-            if (this.isHidden === false) {
-                document.getElementById('propertiesContent').className = 'properties-hidden';
-                document.getElementById('propertiesMasterPanel').className = 'propertiespanel-hidden';
-                var btn = document.getElementById('propClassHeaderButtonDisplay');
-                btn.innerHTML = '&#8896;';
-                btn.title = 'Show properties';
-            }
-            else {
-                document.getElementById('propertiesContent').className = 'properties';
-                document.getElementById('propertiesMasterPanel').className = 'propertiespanel';
-                var btn = document.getElementById('propClassHeaderButtonDisplay');
-                btn.innerHTML = '&#8897;';
-                btn.title = 'Hide properties';
-            }
-            this.isHidden = !this.isHidden;
-        };
-        return BlankView;
-    }());
-    PropertiesPanel.BlankView = BlankView;
-    var APanel = (function () {
-        function APanel() {
-            this.divPropertiesPanel = document.createElement('div');
-            this.divPropertiesTabbedPanel = document.createElement('div');
-            this.divPropertiesTabbedPanel.id = 'propertiesTabbedPanel';
-            this.divPropertiesTabbedPanel.className = 'tabbedpane';
-            this.divPropertiesPanel.appendChild(this.divPropertiesTabbedPanel);
-        }
-        APanel.prototype.getPanel = function () {
-            return this.divPropertiesPanel;
-        };
-        APanel.prototype.showFirstTab = function () {
-            var tabs = document.getElementsByClassName('tablinks');
-            if (tabs && tabs.length > 0) {
-                this.openTab(tabs[0].id);
-            }
-        };
-        APanel.prototype.showTab = function (btnValue) {
-            var tabs = document.getElementsByClassName('tablinks');
-            for (var index = 0; index < tabs.length; index++) {
-                var tab = tabs[index];
-                if (tab.value === btnValue) {
-                    this.openTab(tab.id);
-                }
-            }
-        };
-        APanel.prototype.createTabElement = function (id, tabText, tabValue) {
-            var _this = this;
-            var tabElementBtn = document.createElement('button');
-            tabElementBtn.id = id;
-            tabElementBtn.className = 'tablinks';
-            tabElementBtn.innerText = tabText;
-            tabElementBtn.value = tabValue;
-            tabElementBtn.onclick = function () { return _this.openTab(id); };
-            return tabElementBtn;
-        };
-        APanel.prototype.openTab = function (clickedId) {
-            var tabs = document.getElementsByClassName('tablinks');
-            for (var i = 0; i < tabs.length; i++) {
-                tabs[i].className = tabs[i].className.replace('active', '');
-            }
-            var tab = document.getElementById(clickedId);
-            tab.className += ' active';
-            var tabContents = document.getElementsByClassName('tabcontent');
-            for (var i = 0; i < tabContents.length; i++) {
-                tabContents[i].style.display = 'none';
-            }
-            document.getElementById(this.getPropertiesView().toString().toLowerCase() + tab.value.toString())
-                .style.display = 'block';
-        };
-        return APanel;
-    }());
-    PropertiesPanel.APanel = APanel;
-    var ClassPanel = (function (_super) {
-        __extends(ClassPanel, _super);
-        function ClassPanel() {
-            return _super.call(this) || this;
-        }
-        ClassPanel.prototype.init = function () {
-            var _this = this;
-            var typeList = ['boolean', 'byte', 'char', 'double', 'float', 'int', 'long', 'short', 'String', 'void'];
-            this.dataTypes = document.createElement('datalist');
-            this.dataTypes.id = 'dataTypes';
-            typeList.forEach(function (type) {
-                var modifierOption = document.createElement('option');
-                modifierOption.value = type;
-                modifierOption.innerHTML = type;
-                _this.dataTypes.appendChild(modifierOption);
-            });
-            this.divPropertiesPanel.appendChild(this.dataTypes);
-            this.divPropertiesTabbedPanel.appendChild(this.createTabElement('generalClassPropBtn', 'General', 'general'));
-            this.divPropertiesTabbedPanel.appendChild(this.createTabElement('attrClassPropBtn', 'Attributes', 'attribute'));
-            this.divPropertiesTabbedPanel.appendChild(this.createTabElement('methodClassPropBtn', 'Methods', 'method'));
-            this.createTabGeneralContent();
-            this.createTabAttrContent();
-            this.createTabMethodContent();
-        };
-        ClassPanel.prototype.getPropertiesView = function () {
-            return PropertiesView.Clazz;
-        };
-        ClassPanel.prototype.createTabGeneralContent = function () {
-            var div = document.createElement('div');
-            div.id = this.getPropertiesView().toString().toLowerCase() + 'general';
-            div.className = 'tabcontent';
-            var divTable = document.createElement('div');
-            divTable.className = 'divTable';
-            var divTableBody = document.createElement('div');
-            divTableBody.className = 'divTableBody';
-            var divRowClazzName = document.createElement('div');
-            divRowClazzName.className = 'divTableRow';
-            var divRowClazzNameCellText = document.createElement('div');
-            divRowClazzNameCellText.className = 'divTableCell';
-            divRowClazzNameCellText.innerHTML = 'Name:';
-            var divRowClazzNameCellInput = document.createElement('div');
-            divRowClazzNameCellInput.className = 'divTableCell';
-            var textBoxClass = document.createElement('input');
-            textBoxClass.type = 'text';
-            textBoxClass.id = 'className';
-            textBoxClass.placeholder = 'Class name';
-            textBoxClass.style.width = '100%';
-            divRowClazzNameCellInput.appendChild(textBoxClass);
-            divRowClazzName.appendChild(divRowClazzNameCellText);
-            divRowClazzName.appendChild(divRowClazzNameCellInput);
-            divTableBody.appendChild(divRowClazzName);
-            var divRowClazzModifier = document.createElement('div');
-            divRowClazzModifier.className = 'divTableRow';
-            var divRowClazzModifierCellText = document.createElement('div');
-            divRowClazzModifierCellText.className = 'divTableCell';
-            divRowClazzModifierCellText.innerHTML = 'Access modifier:';
-            var divRowClazzModifierCellInput = document.createElement('div');
-            divRowClazzModifierCellInput.className = 'divTableCell';
-            var selectClazzModifier = document.createElement('select');
-            selectClazzModifier.id = 'classModifier';
-            selectClazzModifier.style.width = '100%';
-            var modifierObj = {};
-            modifierObj['public'] = '+';
-            modifierObj['private'] = '-';
-            modifierObj['protected'] = '#';
-            modifierObj['package'] = '~';
-            for (var title in modifierObj) {
-                var modifierOption = document.createElement('option');
-                modifierOption.value = title;
-                modifierOption.innerHTML = title;
-                selectClazzModifier.appendChild(modifierOption);
-            }
-            selectClazzModifier.value = 'public';
-            divRowClazzModifierCellInput.appendChild(selectClazzModifier);
-            divRowClazzModifier.appendChild(divRowClazzModifierCellText);
-            divRowClazzModifier.appendChild(divRowClazzModifierCellInput);
-            divTableBody.appendChild(divRowClazzModifier);
-            divTable.appendChild(divTableBody);
-            div.appendChild(divTable);
-            this.divPropertiesPanel.appendChild(div);
-        };
-        ClassPanel.prototype.createTabAttrContent = function () {
-            this.createtabPropertyContent('attribute');
-        };
-        ClassPanel.prototype.createTabMethodContent = function () {
-            this.createtabPropertyContent('method');
-        };
-        ClassPanel.prototype.createtabPropertyContent = function (propertyType) {
-            var div = document.createElement('div');
-            div.id = this.getPropertiesView().toString().toLowerCase() + propertyType;
-            div.className = 'tabcontent';
-            var divEditProperty = document.createElement('div');
-            divEditProperty.id = div.id + 'Add';
-            divEditProperty.style.marginTop = '5px';
-            var selectPropertyModifier = document.createElement('select');
-            selectPropertyModifier.id = div.id + 'AddModifier';
-            var modifierObj = {};
-            modifierObj['public'] = '+';
-            modifierObj['private'] = '-';
-            modifierObj['protected'] = '#';
-            modifierObj['package'] = '~';
-            for (var title in modifierObj) {
-                var modifierOption = document.createElement('option');
-                modifierOption.value = modifierObj[title];
-                modifierOption.innerHTML = modifierObj[title];
-                modifierOption.title = title;
-                selectPropertyModifier.appendChild(modifierOption);
-            }
-            selectPropertyModifier.value = modifierObj['public'];
-            var textBoxPropertyName = document.createElement('input');
-            textBoxPropertyName.style.marginLeft = '5px';
-            textBoxPropertyName.style.marginRight = '5px';
-            textBoxPropertyName.id = div.id + 'AddName';
-            textBoxPropertyName.type = 'text';
-            textBoxPropertyName.placeholder = 'Add new ' + propertyType;
-            var selectPropertyType = document.createElement('input');
-            selectPropertyType.id = div.id + 'AddType';
-            selectPropertyType.setAttribute('list', this.dataTypes.id);
-            var btnAdd = document.createElement('button');
-            btnAdd.id = div.id + 'BtnAdd' + propertyType;
-            btnAdd.innerHTML = '+';
-            btnAdd.title = 'Add ' + propertyType;
-            btnAdd.style.marginLeft = '5px';
-            btnAdd.style.color = 'green';
-            divEditProperty.appendChild(selectPropertyModifier);
-            divEditProperty.appendChild(textBoxPropertyName);
-            divEditProperty.appendChild(selectPropertyType);
-            divEditProperty.appendChild(btnAdd);
-            div.appendChild(divEditProperty);
-            this.divPropertiesPanel.appendChild(div);
-        };
-        return ClassPanel;
-    }(APanel));
-    PropertiesPanel.ClassPanel = ClassPanel;
-    var EdgePanel = (function (_super) {
-        __extends(EdgePanel, _super);
-        function EdgePanel() {
-            return _super.call(this) || this;
-        }
-        EdgePanel.prototype.init = function () {
-            this.divPropertiesTabbedPanel.appendChild(this.createTabElement('generalEdgePropBtn', 'General', 'general'));
-            this.createTabGeneralEdgeContent();
-        };
-        EdgePanel.prototype.getPropertiesView = function () {
-            return PropertiesView.Edge;
-        };
-        EdgePanel.prototype.createTabGeneralEdgeContent = function () {
-            var cardinalityTypes = ['0..1', '1', '0..*'];
-            var dataListCardinalityTypes = document.createElement('datalist');
-            dataListCardinalityTypes.id = 'cardinalityTypesDataList';
-            cardinalityTypes.forEach(function (type) {
-                var cardinalityoption = document.createElement('option');
-                cardinalityoption.value = type;
-                cardinalityoption.innerHTML = type;
-                dataListCardinalityTypes.appendChild(cardinalityoption);
-            });
-            var div = document.createElement('div');
-            div.id = this.getPropertiesView().toString().toLowerCase() + 'general';
-            div.className = 'tabcontent';
-            var divTable = document.createElement('div');
-            divTable.className = 'divTable';
-            var divTableBody = document.createElement('div');
-            divTableBody.className = 'divTableBody';
-            var divRowEdgeType = document.createElement('div');
-            divRowEdgeType.className = 'divTableRow';
-            var divRowEdgeTypeCellText = document.createElement('div');
-            divRowEdgeTypeCellText.className = 'divTableCell';
-            divRowEdgeTypeCellText.innerHTML = 'Type:';
-            var divRowEdgeTypeCellSelect = document.createElement('div');
-            divRowEdgeTypeCellSelect.className = 'divTableCell';
-            var selectEdgeType = document.createElement('select');
-            selectEdgeType.id = 'edgeTypeSelect';
-            selectEdgeType.className = 'col2';
-            var edgeTypes = [];
-            for (var type in edges) {
-                if (type.toString() === 'Aggregate' || type.toString() === 'Direction') {
-                    continue;
-                }
-                edgeTypes.push(type);
-            }
-            edgeTypes.sort();
-            for (var _i = 0, edgeTypes_1 = edgeTypes; _i < edgeTypes_1.length; _i++) {
-                var type = edgeTypes_1[_i];
-                var selectOption = document.createElement('option');
-                selectOption.value = type;
-                selectOption.innerHTML = type;
-                selectEdgeType.appendChild(selectOption);
-            }
-            divRowEdgeTypeCellSelect.appendChild(selectEdgeType);
-            divRowEdgeType.appendChild(divRowEdgeTypeCellText);
-            divRowEdgeType.appendChild(divRowEdgeTypeCellSelect);
-            divTableBody.appendChild(divRowEdgeType);
-            var divRowEdgeLabel = document.createElement('div');
-            divRowEdgeLabel.className = 'divTableRow';
-            var divRowEdgeLabelCellText = document.createElement('div');
-            divRowEdgeLabelCellText.className = 'divTableCell';
-            divRowEdgeLabelCellText.innerHTML = 'Label:';
-            var divRowEdgeLabelCellInput = document.createElement('div');
-            divRowEdgeLabelCellInput.className = 'divTableCell';
-            var textBoxEdgeLabel = document.createElement('input');
-            textBoxEdgeLabel.type = 'text';
-            textBoxEdgeLabel.id = 'edgeLabelInput';
-            textBoxEdgeLabel.placeholder = 'Edge label';
-            textBoxEdgeLabel.className = 'col2';
-            textBoxEdgeLabel.readOnly = true;
-            divRowEdgeLabelCellInput.appendChild(textBoxEdgeLabel);
-            divRowEdgeLabel.appendChild(divRowEdgeLabelCellText);
-            divRowEdgeLabel.appendChild(divRowEdgeLabelCellInput);
-            divTableBody.appendChild(divRowEdgeLabel);
-            var divRowEdgeSrcNode = document.createElement('div');
-            divRowEdgeSrcNode.className = 'divTableRow';
-            var divRowEdgeSrcNodeCellText = document.createElement('div');
-            divRowEdgeSrcNodeCellText.className = 'divTableCell';
-            divRowEdgeSrcNodeCellText.innerHTML = 'Source:';
-            var divRowEdgeSrcNodeCellInput = document.createElement('div');
-            divRowEdgeSrcNodeCellInput.className = 'divTableCell';
-            var textBoxEdgeSrc = document.createElement('input');
-            textBoxEdgeSrc.type = 'text';
-            textBoxEdgeSrc.id = 'edgeSrcInput';
-            textBoxEdgeSrc.placeholder = 'Edge Source';
-            textBoxEdgeSrc.className = 'col2';
-            textBoxEdgeSrc.readOnly = true;
-            divRowEdgeSrcNodeCellInput.appendChild(textBoxEdgeSrc);
-            divRowEdgeSrcNode.appendChild(divRowEdgeSrcNodeCellText);
-            divRowEdgeSrcNode.appendChild(divRowEdgeSrcNodeCellInput);
-            divTableBody.appendChild(divRowEdgeSrcNode);
-            var divRowEdgeSrcNodeProperty = document.createElement('div');
-            divRowEdgeSrcNodeProperty.className = 'divTableRow';
-            var divRowEdgeSrcNodePropertyCellText = document.createElement('div');
-            divRowEdgeSrcNodePropertyCellText.className = 'divTableCell';
-            divRowEdgeSrcNodePropertyCellText.innerHTML = 'Source Property:';
-            var divRowEdgeSrcNodePropertyCellInput = document.createElement('div');
-            divRowEdgeSrcNodePropertyCellInput.className = 'divTableCell';
-            var textBoxEdgeSrcProperty = document.createElement('input');
-            textBoxEdgeSrcProperty.type = 'text';
-            textBoxEdgeSrcProperty.id = 'edgeSrcProperty';
-            textBoxEdgeSrcProperty.placeholder = 'Add source property';
-            textBoxEdgeSrcProperty.className = 'col2';
-            divRowEdgeSrcNodePropertyCellInput.appendChild(textBoxEdgeSrcProperty);
-            divRowEdgeSrcNodeProperty.appendChild(divRowEdgeSrcNodePropertyCellText);
-            divRowEdgeSrcNodeProperty.appendChild(divRowEdgeSrcNodePropertyCellInput);
-            divTableBody.appendChild(divRowEdgeSrcNodeProperty);
-            var divRowEdgeSrcNodeCardinality = document.createElement('div');
-            divRowEdgeSrcNodeCardinality.className = 'divTableRow';
-            var divRowEdgeSrcNodeCardinalityCellText = document.createElement('div');
-            divRowEdgeSrcNodeCardinalityCellText.className = 'divTableCell';
-            divRowEdgeSrcNodeCardinalityCellText.innerHTML = 'Source Cardinality:';
-            var divRowEdgeSrcNodeCardinalityCellInput = document.createElement('div');
-            divRowEdgeSrcNodeCardinalityCellInput.className = 'divTableCell';
-            var inputSrcCardinalityType = document.createElement('input');
-            inputSrcCardinalityType.id = 'inputEdgeSrcCardinality';
-            inputSrcCardinalityType.className = 'col2';
-            inputSrcCardinalityType.placeholder = 'Add source cardinality';
-            inputSrcCardinalityType.setAttribute('list', dataListCardinalityTypes.id);
-            divRowEdgeSrcNodeCardinalityCellInput.appendChild(inputSrcCardinalityType);
-            divRowEdgeSrcNodeCardinality.appendChild(divRowEdgeSrcNodeCardinalityCellText);
-            divRowEdgeSrcNodeCardinality.appendChild(divRowEdgeSrcNodeCardinalityCellInput);
-            divTableBody.appendChild(divRowEdgeSrcNodeCardinality);
-            var divRowEdgeTargetNode = document.createElement('div');
-            divRowEdgeTargetNode.className = 'divTableRow';
-            var divRowEdgeTargetNodeCellText = document.createElement('div');
-            divRowEdgeTargetNodeCellText.className = 'divTableCell';
-            divRowEdgeTargetNodeCellText.innerHTML = 'Target:';
-            var divRowEdgeTargetNodeCellInput = document.createElement('div');
-            divRowEdgeTargetNodeCellInput.className = 'divTableCell';
-            var textBoxEdgeTarget = document.createElement('input');
-            textBoxEdgeTarget.type = 'text';
-            textBoxEdgeTarget.id = 'edgeTargetInput';
-            textBoxEdgeTarget.placeholder = 'Edge Source';
-            textBoxEdgeTarget.className = 'col2';
-            textBoxEdgeTarget.readOnly = true;
-            divRowEdgeTargetNodeCellInput.appendChild(textBoxEdgeTarget);
-            divRowEdgeTargetNode.appendChild(divRowEdgeTargetNodeCellText);
-            divRowEdgeTargetNode.appendChild(divRowEdgeTargetNodeCellInput);
-            divTableBody.appendChild(divRowEdgeTargetNode);
-            var divRowEdgeTargetNodeProperty = document.createElement('div');
-            divRowEdgeTargetNodeProperty.className = 'divTableRow';
-            var divRowEdgeTargetNodePropertyCellText = document.createElement('div');
-            divRowEdgeTargetNodePropertyCellText.className = 'divTableCell';
-            divRowEdgeTargetNodePropertyCellText.innerHTML = 'Target Property:';
-            var divRowEdgeTargetNodePropertyCellInput = document.createElement('div');
-            divRowEdgeTargetNodePropertyCellInput.className = 'divTableCell';
-            var textBoxEdgeTargetProperty = document.createElement('input');
-            textBoxEdgeTargetProperty.type = 'text';
-            textBoxEdgeTargetProperty.id = 'edgeTargetProperty';
-            textBoxEdgeTargetProperty.placeholder = 'Add target property';
-            textBoxEdgeTargetProperty.className = 'col2';
-            divRowEdgeTargetNodePropertyCellInput.appendChild(textBoxEdgeTargetProperty);
-            divRowEdgeTargetNodeProperty.appendChild(divRowEdgeTargetNodePropertyCellText);
-            divRowEdgeTargetNodeProperty.appendChild(divRowEdgeTargetNodePropertyCellInput);
-            divTableBody.appendChild(divRowEdgeTargetNodeProperty);
-            var divRowEdgeTargetNodeCardinality = document.createElement('div');
-            divRowEdgeTargetNodeCardinality.className = 'divTableRow';
-            var divRowEdgeTargetNodeCardinalityCellText = document.createElement('div');
-            divRowEdgeTargetNodeCardinalityCellText.className = 'divTableCell';
-            divRowEdgeTargetNodeCardinalityCellText.innerHTML = 'Target Cardinality:';
-            var divRowEdgeTargetNodeCardinalityCellInput = document.createElement('div');
-            divRowEdgeTargetNodeCardinalityCellInput.className = 'divTableCell';
-            var inputTargetCardinalityType = document.createElement('input');
-            inputTargetCardinalityType.id = 'inputEdgeTargetCardinality';
-            inputTargetCardinalityType.className = 'col2';
-            inputTargetCardinalityType.placeholder = 'Add target cardinality';
-            inputTargetCardinalityType.setAttribute('list', dataListCardinalityTypes.id);
-            divRowEdgeTargetNodeCardinalityCellInput.appendChild(inputTargetCardinalityType);
-            divRowEdgeTargetNodeCardinality.appendChild(divRowEdgeTargetNodeCardinalityCellText);
-            divRowEdgeTargetNodeCardinality.appendChild(divRowEdgeTargetNodeCardinalityCellInput);
-            divTableBody.appendChild(divRowEdgeTargetNodeCardinality);
-            divTable.appendChild(divTableBody);
-            div.appendChild(dataListCardinalityTypes);
-            div.appendChild(divTable);
-            this.divPropertiesPanel.appendChild(div);
-        };
-        return EdgePanel;
-    }(APanel));
-    PropertiesPanel.EdgePanel = EdgePanel;
-    var ClearPanel = (function (_super) {
-        __extends(ClearPanel, _super);
-        function ClearPanel() {
-            return _super.call(this) || this;
-        }
-        ClearPanel.prototype.init = function () {
-        };
-        ClearPanel.prototype.getPropertiesView = function () {
-            return PropertiesView.Clear;
-        };
-        return ClearPanel;
-    }(APanel));
-    PropertiesPanel.ClearPanel = ClearPanel;
-})(PropertiesPanel = exports.PropertiesPanel || (exports.PropertiesPanel = {}));
-
-
-/***/ }),
-/* 30 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var EventBus_1 = __webpack_require__(3);
-var util_1 = __webpack_require__(0);
-var ImportFile = (function () {
-    function ImportFile(graph) {
-        this.graph = graph;
-    }
-    ImportFile.prototype.setActive = function (active) {
-        if (active) {
-            EventBus_1.EventBus.setActiveHandler(ImportFile.name);
-        }
-        else {
-            EventBus_1.EventBus.releaseActiveHandler();
-        }
-    };
-    ImportFile.prototype.canHandle = function () {
-        return EventBus_1.EventBus.isHandlerActiveOrFree(ImportFile.name);
-    };
-    ImportFile.prototype.handle = function (event, element) {
-        if (event instanceof DragEvent === false) {
-            return false;
-        }
-        var evt = event;
-        if (evt.type === 'dragover') {
-            this.handleDragOver(evt);
-        }
-        else if (evt.type === 'dragleave') {
-            if (this.graph.$view !== evt.target) {
-                return false;
-            }
-            this.setBoardStyle('dragleave');
-        }
-        else if (evt.type === 'drop') {
-            this.handleLoadFile(evt);
-        }
-        return true;
-    };
-    ImportFile.prototype.handleLoadFile = function (evt) {
-        evt.stopPropagation();
-        evt.preventDefault();
-        var files = evt.dataTransfer.files;
-        if (files.length > 1) {
-            evt.dataTransfer.dropEffect = 'none';
-            return;
-        }
-        var reader = new FileReader();
-        var output = [];
-        var htmlResult = '';
-        var that = this;
-        for (var i = 0, f = void 0; f = files[i]; i++) {
-            reader.onload = function (event) {
-                htmlResult = event.target['result'];
-                console.log('fileContent: ' + htmlResult);
-                var rootElement = document.getElementById('root');
-                var canvasElement = document.getElementById('canvas');
-                while (rootElement.hasChildNodes()) {
-                    rootElement.removeChild(rootElement.firstChild);
-                }
-                while (canvasElement.hasChildNodes()) {
-                    canvasElement.removeChild(canvasElement.firstChild);
-                }
-                if (that.graph) {
-                    that.graph.clearModel();
-                    var jsonData = JSON.parse(htmlResult);
-                    that.graph.load(jsonData);
-                    that.graph.layout();
-                }
-            };
-            reader.readAsText(f);
-        }
-        this.setBoardStyle('dragleave');
-    };
-    ImportFile.prototype.handleDragOver = function (evt) {
-        var error = true, n, f;
-        var files = evt.dataTransfer.files;
-        if (files && files.length > 0) {
-            for (var i = 0; i < files.length; i += 1) {
-                f = files[i];
-                if (f.type.indexOf('text') === 0) {
-                    error = false;
-                }
-                else if (f.type === '') {
-                    n = f.name.toLowerCase();
-                    if (n.indexOf('json', n.length - 4) !== -1) {
-                        error = false;
-                    }
-                }
-            }
-        }
-        else {
-            var items = evt.dataTransfer.items;
-            if (items && items.length > 0) {
-                for (var z = 0; z < items.length; z++) {
-                    if (items[z].type === '' || items[z].type === 'text/plain') {
-                        error = false;
-                    }
-                }
-            }
-            else {
-                return;
-            }
-        }
-        evt.dataTransfer.dropEffect = 'copy';
-        if (error) {
-            this.dragStyler(evt, 'Error');
-        }
-        else if (evt.ctrlKey) {
-            this.dragStyler(evt, 'Add');
-        }
-        else {
-            this.dragStyler(evt, 'Ok');
-        }
-    };
-    ImportFile.prototype.dragStyler = function (event, typ) {
-        event.stopPropagation();
-        event.preventDefault();
-        this.setBoardStyle(typ);
-    };
-    ImportFile.prototype.setBoardStyle = function (typ) {
-        var b = this.graph.$view;
-        util_1.Util.removeClass(b, 'Error');
-        util_1.Util.removeClass(b, 'Ok');
-        util_1.Util.removeClass(b, 'Add');
-        if (typ === 'dragleave') {
-            if (b['errorText']) {
-                b.removeChild(b['errorText']);
-                b['errorText'] = null;
-            }
-            return true;
-        }
-        util_1.Util.addClass(b, typ);
-        if (typ === 'Error') {
-            if (!b['errorText']) {
-                b['errorText'] = util_1.Util.create({ tag: 'div', style: 'margin-top: 30%', value: 'NO TEXTFILE' });
-                b.appendChild(b['errorText']);
-            }
-            return true;
-        }
-        return false;
-    };
-    ImportFile.prototype.handleDragLeave = function (evt) {
-        evt.stopPropagation();
-        evt.preventDefault();
-        evt.dataTransfer.dropEffect = 'link';
-        evt.target['className'] = 'diagram';
-        console.log('handDragLeave');
-    };
-    return ImportFile;
-}());
-exports.ImportFile = ImportFile;
-
-
-/***/ }),
-/* 31 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var util_1 = __webpack_require__(0);
-var CSS = (function () {
-    function CSS(name, item) {
-        var i, value, border, prop, el;
-        this.name = name;
-        this.css = {};
-        if (!item) {
-            return;
-        }
-        el = window.getComputedStyle(item, null);
-        border = el.getPropertyValue('border');
-        for (i in el) {
-            prop = i;
-            value = el.getPropertyValue(prop);
-            if (value && value !== '') {
-                if (border) {
-                    if (prop === 'border-bottom' || prop === 'border-right' || prop === 'border-top' || prop === 'border-left') {
-                        if (value !== border) {
-                            this.css[prop] = value;
-                        }
-                    }
-                    else if (prop === 'border-color' || prop === 'border-bottom-color' || prop === 'border-right-color' || prop === 'border-top-color' || prop === 'border-left-color') {
-                        if (border.substring(border.length - value.length) !== value) {
-                            this.css[prop] = value;
-                        }
-                    }
-                    else if (prop === 'border-width') {
-                        if (border.substring(0, value.length) !== value) {
-                            this.css[prop] = value;
-                        }
-                    }
-                    else {
-                        this.css[prop] = value;
-                    }
-                }
-                else {
-                    this.css[prop] = value;
-                }
-            }
-        }
-    }
-    CSS.getStdDef = function () {
-        var child, def = util_1.Util.create({ tag: 'defs' });
-        child = util_1.Util.create({ tag: 'filter', id: 'drop-shadow' });
-        child.appendChild(util_1.Util.create({ tag: 'feGaussianBlur', 'in': 'SourceAlpha', result: 'blur-out', stdDeviation: 2 }));
-        child.appendChild(util_1.Util.create({ tag: 'feOffset', 'in': 'blur-out', dx: 2, dy: 2 }));
-        child.appendChild(util_1.Util.create({ tag: 'feBlend', 'in': 'SourceGraphic', mode: 'normal' }));
-        def.appendChild(child);
-        child = util_1.Util.create({ tag: 'linearGradient', id: 'reflect', x1: 0, x2: 0, y1: '50%', y2: 0, spreadMethod: 'reflect' });
-        child.appendChild(util_1.Util.create({ tag: 'stop', 'stop-color': '#aaa', offset: 0 }));
-        child.appendChild(util_1.Util.create({ tag: 'stop', 'stop-color': '#eee', offset: '100%' }));
-        def.appendChild(child);
-        child = util_1.Util.create({ tag: 'linearGradient', id: 'classelement', x1: 0, x2: '100%', y1: '100%', y2: 0 });
-        child.appendChild(util_1.Util.create({ tag: 'stop', 'stop-color': '#fff', offset: 0 }));
-        child.appendChild(util_1.Util.create({ tag: 'stop', 'stop-color': '#d3d3d3', offset: 1 }));
-        def.appendChild(child);
-        return def;
-    };
-    CSS.getSubstring = function (str, search, startChar, endChar, splitter) {
-        var pos, end, count = 0, array = [];
-        pos = str.indexOf(search);
-        if (pos > 0) {
-            end = str.indexOf(startChar, pos);
-            pos = end + 1;
-            if (end > 0) {
-                while (end < str.length) {
-                    if (str.charAt(end) === startChar) {
-                        count += 1;
-                    }
-                    if (str.charAt(end) === endChar) {
-                        count -= 1;
-                        if (count === 0) {
-                            if (splitter && pos !== end) {
-                                array.push(str.substring(pos, end).trim());
-                            }
-                            break;
-                        }
-                    }
-                    if (str.charAt(end) === splitter && count === 1) {
-                        array.push(str.substring(pos, end).trim());
-                        pos = end + 1;
-                    }
-                    end += 1;
-                }
-                if (splitter) {
-                    return array;
-                }
-                return str.substring(pos, end);
-            }
-            return str.substring(pos);
-        }
-        return '';
-    };
-    CSS.addStyle = function (board, styleName) {
-        var defs, style, css;
-        if (styleName.baseVal || styleName.baseVal === '') {
-            styleName = styleName.baseVal;
-        }
-        if (!styleName) {
-            return;
-        }
-        defs = CSS.getDefs(board);
-        if (defs.getElementsByTagName('style').length > 0) {
-            style = defs.getElementsByTagName('style')[0];
-        }
-        else {
-            style = util_1.Util.create({ tag: 'style' });
-            style.item = {};
-            defs.appendChild(style);
-        }
-        if (!style.item[styleName]) {
-            css = util_1.Util.getStyle(styleName);
-            style.item[styleName] = css;
-            style.innerHTML = style.innerHTML + '\n.' + styleName + css.getSVGString(board);
-        }
-    };
-    CSS.addStyles = function (board, item) {
-        if (!item) {
-            return;
-        }
-        var items, i, className = item.className;
-        if (className) {
-            if (className.baseVal || className.baseVal === '') {
-                className = className.baseVal;
-            }
-        }
-        if (className) {
-            items = className.split(' ');
-            for (i = 0; i < items.length; i += 1) {
-                CSS.addStyle(board, items[i].trim());
-            }
-        }
-        for (i = 0; i < item.childNodes.length; i += 1) {
-            this.addStyles(board, item.childNodes[i]);
-        }
-    };
-    CSS.getDefs = function (board) {
-        var defs;
-        if (board.getElementsByTagName('defs').length < 1) {
-            defs = util_1.Util.create({ tag: 'defs' });
-            board.insertBefore(defs, board.childNodes[0]);
-        }
-        else {
-            defs = board.getElementsByTagName('defs')[0];
-        }
-        return defs;
-    };
-    CSS.prototype.add = function (key, value) {
-        this.css[key] = value;
-    };
-    CSS.prototype.get = function (key) {
-        var i;
-        for (i in this.css) {
-            if (i === key) {
-                return this.css[key];
-            }
-        }
-        return null;
-    };
-    CSS.prototype.getNumber = function (key) {
-        return parseInt((this.get(key) || '0').replace('px', ''), 10);
-    };
-    CSS.prototype.getSVGString = function (board) {
-        var str, pos, style, defs, value, filter, z;
-        str = '{';
-        for (style in this.css) {
-            if (!this.css.hasOwnProperty(style)) {
-                continue;
-            }
-            if (style === 'border') {
-                pos = this.css[style].indexOf(' ');
-                str = str + 'stroke-width: ' + this.css[style].substring(0, pos) + ';';
-                pos = this.css[style].indexOf(' ', pos + 1);
-                str = str + 'stroke:' + this.css[style].substring(pos) + ';';
-            }
-            else if (style === 'background-color') {
-                str = str + 'fill: ' + this.css[style] + ';';
-            }
-            else if (style === 'background') {
-                value = CSS.getSubstring(this.css[style], 'linear-gradient', '(', ')', ',');
-                if (value.length > 0) {
-                    defs = CSS.getDefs(board);
-                    if (value[0] === '45deg') {
-                        pos = 1;
-                        filter = util_1.Util.create({
-                            tag: 'linearGradient',
-                            'id': this.name,
-                            x1: '0%',
-                            x2: '100%',
-                            y1: '100%',
-                            y2: '0%'
-                        });
-                    }
-                    else {
-                        filter = util_1.Util.create({
-                            tag: 'linearGradient',
-                            'id': this.name,
-                            x1: '0%',
-                            x2: '0%',
-                            y1: '100%',
-                            y2: '0%'
-                        });
-                        pos = 0;
-                    }
-                    defs.appendChild(filter);
-                    while (pos < value.length) {
-                        value[pos] = value[pos].trim();
-                        z = value[pos].lastIndexOf(' ');
-                        filter.appendChild(util_1.Util.create({
-                            tag: 'stop',
-                            'offset': value[pos].substring(z + 1),
-                            style: { 'stop-color': value[pos].substring(0, z) }
-                        }));
-                        pos += 1;
-                    }
-                    str = str + 'fill: url(#' + this.name + ');';
-                    continue;
-                }
-                str = str + style + ': ' + this.css[style] + ';';
-            }
-            else {
-                str = str + style + ': ' + this.css[style] + ';';
-            }
-        }
-        str = str + '}';
-        return str;
-    };
-    return CSS;
-}());
-exports.CSS = CSS;
-
-
-/***/ }),
-/* 32 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var EventListener = (function () {
-    function EventListener() {
-    }
-    Object.defineProperty(EventListener.prototype, "onUpdate", {
-        get: function () {
-            return this.$onUpdate;
-        },
-        set: function (value) {
-            this.$onUpdate = value;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    EventListener.prototype.update = function (event) {
-        this.$onUpdate(event);
-    };
-    return EventListener;
-}());
-exports.default = EventListener;
-
-
-/***/ }),
-/* 33 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var Control_1 = __webpack_require__(2);
-var Button = (function (_super) {
-    __extends(Button, _super);
-    function Button() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    Button.prototype.load = function (json, owner) {
-        this.createControl(this.$owner, json);
-    };
-    Button.prototype.createControl = function (parent, data) {
-        if (typeof (data) === 'string') {
-            this.id = data;
-        }
-        else {
-            this.id = data['id'];
-        }
-        this.$view = document.createElement('button');
-        if (data instanceof Object) {
-            for (var attr in data) {
-                if (!data.hasOwnProperty(attr)) {
-                    continue;
-                }
-                this.$view.setAttribute(attr, data[attr]);
-            }
-        }
-        parent.appendChild(this);
-    };
-    return Button;
-}(Control_1.Control));
-exports.Button = Button;
-
-
-/***/ }),
-/* 34 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var Control_1 = __webpack_require__(2);
-var Form = (function (_super) {
-    __extends(Form, _super);
-    function Form() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.children = {};
-        return _this;
-    }
-    Form.prototype.load = function (data) {
-        var id;
-        if (typeof (data) === 'string') {
-            id = data;
-        }
-        else {
-            id = data.id;
-        }
-        if (!id) {
-            return;
-        }
-        this.id = id;
-        var form = document.getElementById(id);
-        if (form instanceof HTMLFormElement) {
-            this.$view = form;
-            if (this.$view.hasAttribute('property')) {
-                this.property = this.$view.getAttribute('property');
-            }
-        }
-        else {
-            if (!form) {
-                this.$view = document.createElement('form');
-                this.$view.setAttribute('id', this.id);
-                if (data.hasOwnProperty('property')) {
-                    this.property = data['property'];
-                }
-                for (var attr in data) {
-                    if (data.hasOwnProperty(attr) === false) {
-                        continue;
-                    }
-                    if (attr === 'elements') {
-                        continue;
-                    }
-                    this.$view.setAttribute(attr, data[attr]);
-                }
-                this.$owner.appendChild(this);
-            }
-            else {
-                return;
-            }
-        }
-        var objId = this.property;
-        var hasItem = this.$owner.hasItem(objId);
-        if (hasItem) {
-            var item = this.$owner.getItem(objId);
-            item.addListener(this);
-            this.$model = item;
-        }
-        for (var _i = 0, _a = data.elements; _i < _a.length; _i++) {
-            var field = _a[_i];
-            if (field.hasOwnProperty('property')) {
-                var property = field['property'];
-                property = this.property + '.' + property;
-                field['property'] = property;
-            }
-            if (!field.hasOwnProperty('class')) {
-                field['class'] = 'input';
-            }
-            var control = this.$owner.load(field, this);
-            this.children[control.getId()] = control;
-        }
-    };
-    Form.prototype.setProperty = function (id) {
-        this.property = id;
-        var keys = Object.keys(this.children);
-        for (var k = 0; k < keys.length; k++) {
-            var key = keys[k];
-            var childControl = this.children[key];
-            if (childControl.property) {
-                childControl.setProperty(this.property + '.' + childControl.lastProperty);
-            }
-        }
-    };
-    Object.defineProperty(Form.prototype, "lastProperty", {
-        get: function () {
-            return this.property.split('.')[0];
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Form.prototype.setValue = function (object, attribute, newValue, oldValue) {
-        if (this.$owner != null) {
-            return this.getRoot().setValue(object, attribute, newValue, oldValue);
-        }
-        return _super.prototype.setValue.call(this, object, attribute, newValue, oldValue);
-    };
-    return Form;
-}(Control_1.Control));
-exports.Form = Form;
-
-
-/***/ }),
-/* 35 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var Control_1 = __webpack_require__(2);
-var PropertyBinder_1 = __webpack_require__(36);
-var Input = (function (_super) {
-    __extends(Input, _super);
-    function Input() {
-        return _super.call(this) || this;
-    }
-    Input.prototype.initViewDataProperties = function (oldData) {
-        var data = _super.prototype.initViewDataProperties.call(this, oldData);
-        if ('checkbox' === this.type || 'radio' === this.type) {
-            data.addFrom('checked', oldData);
-        }
-        data.addFrom('value', oldData);
-        data.addFrom('type', oldData);
-        return data;
-    };
-    Input.prototype.load = function (data) {
-        var id;
-        var inputField;
-        var useData;
-        if (typeof (data) === 'string') {
-            id = data;
-            useData = true;
-        }
-        else {
-            id = data.id;
-            if (data.type) {
-                this.setType(data['type']);
-            }
-            else {
-                this.setType('text');
-            }
-            if (data.hasOwnProperty('property')) {
-                this.setProperty(data['property']);
-            }
-            useData = false;
-        }
-        if (!id) {
-            return;
-        }
-        this.id = id;
-        inputField = document.getElementById(id);
-        if (useData) {
-            if (inputField) {
-                if (inputField.hasAttribute('Property')) {
-                    this.setProperty(inputField.getAttribute('Property'));
-                }
-            }
-        }
-        if (inputField instanceof HTMLInputElement) {
-            this.setView(inputField);
-            this.type = inputField.type;
-        }
-        else {
-            if (!inputField) {
-                this.setView(document.createElement('input'));
-                this.$viewData = this.initViewDataProperties(this.$viewData);
-                if (typeof (data) !== 'string') {
-                    for (var attr in data) {
-                        if (data.hasOwnProperty(attr) === false) {
-                            continue;
-                        }
-                        this.$viewData.setValue(attr, data[attr]);
-                    }
-                }
-                else {
-                    if (this.type) {
-                        this.$view.setAttribute('type', this.type);
-                    }
-                    if (data.hasOwnProperty('class')) {
-                        this.$view.setAttribute('class', data['class']);
-                    }
-                    this.$view.setAttribute('id', this.id);
-                    this.$view.setAttribute('property', this.property);
-                }
-                if (data.value) {
-                    if (this.$model) {
-                        this.$model.setValue(this.lastProperty, data.value);
-                    }
-                }
-                if (this.$model) {
-                    PropertyBinder_1.PropertyBinder.bind(this.$viewData, this.$model, 'value', this.lastProperty);
-                }
-                this.$owner.appendChild(this);
-            }
-            else {
-                return;
-            }
-        }
-    };
-    Input.prototype.addItem = function (source, entity) {
-        if (this.property && entity) {
-            if (entity.id === this.property.split('.')[0]) {
-                this.$model = entity;
-                PropertyBinder_1.PropertyBinder.bind(this.$viewData, this.$model, 'value', this.lastProperty);
-            }
-        }
-    };
-    Input.prototype.controlChanged = function (ev) {
-        if (this.$view instanceof HTMLInputElement === false) {
-            return;
-        }
-        var element = this.$view;
-        if (element.checkValidity()) {
-            _super.prototype.controlChanged.call(this, ev);
-        }
-    };
-    Input.prototype.setType = function (type) {
-        var oldValue = this.type;
-        if (oldValue === type) {
-            return;
-        }
-        if (type === 'radio') {
-            this.$viewData.setValue('checked', null);
-        }
-        else {
-            this.$viewData.removeKey('checked');
-        }
-    };
-    return Input;
-}(Control_1.Control));
-exports.Input = Input;
-
-
-/***/ }),
-/* 36 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var PropertyBinder = (function () {
-    function PropertyBinder(data1, data2, propertyClass1, propertyClass2) {
-        this.applyingChange = false;
-        this.data1 = data1;
-        this.data2 = data2;
-        this.propertyClass1 = propertyClass1;
-        this.propertyClass2 = propertyClass2;
-    }
-    PropertyBinder.bind = function (data1, data2, property1, property2) {
-        if (!data1 || !data2 || !property1) {
-            console.error('NullValue!!');
-            return null;
-        }
-        var propertyBinder = new PropertyBinder(data1, data2, property1, property2);
-        propertyBinder.bind();
-        return propertyBinder;
-    };
-    PropertyBinder.prototype.propertyChange = function (entity, property, oldValue, newValue) {
-        if (!this.applyingChange) {
-            this.applyingChange = true;
-            if (entity === this.data1) {
-                this.data2.setValue(this.propertyClass2, newValue);
-            }
-            else if (entity === this.data2) {
-                this.data1.setValue(this.propertyClass1, newValue);
-            }
-            this.applyingChange = false;
-        }
-    };
-    PropertyBinder.prototype.bind = function () {
-        this.data1.setValue(this.propertyClass1, this.data2.getValue(this.propertyClass2));
-        this.data1.addListener(this, this.propertyClass1);
-        this.data2.addListener(this, this.propertyClass2);
-    };
-    PropertyBinder.prototype.unbind = function () {
-        this.data1.removeListener(this, this.propertyClass2);
-        this.data1.removeListener(this, this.propertyClass2);
-    };
-    return PropertyBinder;
-}());
-exports.PropertyBinder = PropertyBinder;
-
-
-/***/ }),
-/* 37 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var Control_1 = __webpack_require__(2);
-var BridgeElement_1 = __webpack_require__(38);
-var Data_1 = __webpack_require__(7);
-var util_1 = __webpack_require__(0);
+var Control_1 = __webpack_require__(/*! ../../Control */ "./Control.ts");
+var BridgeElement_1 = __webpack_require__(/*! ../../BridgeElement */ "./BridgeElement.ts");
+var Data_1 = __webpack_require__(/*! ../../Data */ "./Data.ts");
+var util_1 = __webpack_require__(/*! ../../util */ "./util.ts");
 var Table = (function (_super) {
     __extends(Table, _super);
     function Table() {
@@ -7418,802 +8163,12 @@ var Column = (function () {
 
 
 /***/ }),
-/* 38 */
-/***/ (function(module, exports, __webpack_require__) {
 
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var BridgeElement = (function () {
-    function BridgeElement(model) {
-        this.model = model;
-        this.id = model.id;
-        BridgeElement.elementSet.push(this);
-    }
-    BridgeElement.elementSet = [];
-    return BridgeElement;
-}());
-exports.default = BridgeElement;
-
-
-/***/ }),
-/* 39 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var Control_1 = __webpack_require__(2);
-var HTML = (function (_super) {
-    __extends(HTML, _super);
-    function HTML(data) {
-        var _this = _super.call(this) || this;
-        var id;
-        var tag;
-        if (typeof (data) === 'string') {
-            id = data;
-            data = {};
-        }
-        else {
-            id = data.id;
-        }
-        if (id) {
-            _this.id = id;
-            _this.$view = document.getElementById(id);
-        }
-        if (!_this.$view) {
-            tag = data['tag'] || 'div';
-            _this.$view = document.createElement(tag);
-            var parent_1 = document.getElementsByTagName('body')[0];
-            parent_1.appendChild(_this.$view);
-        }
-        if (!parent) {
-            return _this;
-        }
-        _this.writeAttribute(data, _this.$view);
-        return _this;
-    }
-    HTML.prototype.writeAttribute = function (properties, entity) {
-        var lowKey;
-        if (!entity) {
-            lowKey = properties['tag'] || 'div';
-            entity = document.createElement(lowKey);
-        }
-        for (var key in properties) {
-            if (!properties.hasOwnProperty(key)) {
-                continue;
-            }
-            lowKey = key.toLowerCase();
-            if (properties[key] === null) {
-                entity.setAttribute(key, '');
-                continue;
-            }
-            if (lowKey === 'tag' || lowKey.charAt(0) === '$' || lowKey === '$graphModel' || lowKey === 'class') {
-                continue;
-            }
-            if (lowKey === 'children') {
-                if (Array.isArray(properties[key])) {
-                    for (var item in properties[key]) {
-                        if (properties[key].hasOwnProperty(item) === false) {
-                            continue;
-                        }
-                        var child = this.writeAttribute(item);
-                        if (child) {
-                            entity.appendChild(child);
-                        }
-                    }
-                }
-                else {
-                    var child = this.writeAttribute(properties[key]);
-                    if (child) {
-                        entity.appendChild(child);
-                    }
-                }
-                continue;
-            }
-            entity[key] = properties[key];
-        }
-        return entity;
-    };
-    return HTML;
-}(Control_1.Control));
-exports.HTML = HTML;
-
-
-/***/ }),
-/* 40 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var Node_1 = __webpack_require__(6);
-var Dice = (function (_super) {
-    __extends(Dice, _super);
-    function Dice(data) {
-        var _this = _super.call(this, data) || this;
-        _this.max = 6;
-        _this.$zoom = 0.6;
-        _this.$border = 0.2;
-        _this.withSize(100, 100);
-        return _this;
-    }
-    Dice.prototype.setNumber = function (number) {
-        this.value = number;
-        this.refresh();
-    };
-    Dice.prototype.refresh = function () {
-        if (this.$view) {
-            this.reset();
-            var group = this.createPointValue();
-            if (group) {
-                this.$view.appendChild(group);
-            }
-        }
-    };
-    Dice.prototype.reset = function () {
-        if (this.$view) {
-            while (this.$view.children.length > 1) {
-                if (this.$view.children.item(this.$view.children.length - 1).tagName !== "animateTransform") {
-                    console.log(this.$view.children.item(this.$view.children.length - 1));
-                    this.$view.removeChild(this.$view.children.item(this.$view.children.length - 1));
-                }
-                else {
-                    break;
-                }
-            }
-        }
-    };
-    Dice.prototype.getSVG = function () {
-        var pos = this.getPos();
-        var size = this.getSize();
-        var dice = this.createShape({ tag: 'g' });
-        var attr = {
-            tag: 'rect',
-            x: pos.x + size.x * this.$border,
-            y: pos.y + size.y * this.$border,
-            rx: 4,
-            ry: 4,
-            height: size.y * this.$zoom,
-            width: size.x * this.$zoom,
-            style: 'fill:white;stroke:black;stroke-width:2'
-        };
-        dice.appendChild(this.createShape(attr));
-        var group = this.createPointValue();
-        if (group) {
-            dice.appendChild(group);
-        }
-        this.$view = dice;
-        return dice;
-    };
-    Dice.prototype.animationTimeout = function (newValues) {
-        if (newValues.length > 0) {
-            var newValue = newValues.shift();
-            this.setNumber(newValue);
-            var that_1 = this;
-            setTimeout(function () { that_1.animationTimeout(newValues); }, 100);
-        }
-    };
-    Dice.prototype.roll = function () {
-        this.startAnimation();
-        var values = [];
-        var i;
-        for (i = 1; i < this.max; i++) {
-            values.push(i);
-        }
-        for (i = this.max; i > 0; i--) {
-            values.push(i);
-        }
-        var that = this;
-        values.push(Math.floor(Math.random() * this.max) + 1);
-        setTimeout(function () { that.animationTimeout(values); }, 100);
-    };
-    Dice.prototype.startAnimation = function () {
-        if (this.$animation) {
-            return;
-        }
-        var center = this.getPos().x + this.getSize().x / 2;
-        var attr = {
-            tag: 'animateTransform',
-            attributeType: "xml",
-            attributeName: "transform",
-            type: "rotate",
-            dur: "1s",
-            repeatCount: "1",
-            from: "0 " + center + " " + center,
-            to: "360 " + center + " " + center
-        };
-        this.$animation = this.createShape(attr);
-        this.$view.appendChild(this.$animation);
-    };
-    Dice.prototype.stopAnimation = function () {
-        if (this.$animation) {
-            this.$view.removeChild(this.$animation);
-            this.$animation = null;
-        }
-    };
-    Dice.prototype.createPointValue = function () {
-        if (this.value == 1) {
-            return this.getCircle(2, 2);
-        }
-        else if (this.value == 2) {
-            return this.getCircle(1, 1, 3, 3);
-        }
-        else if (this.value == 3) {
-            return this.getCircle(1, 1, 2, 2, 3, 3);
-        }
-        else if (this.value == 4) {
-            return this.getCircle(1, 1, 1, 3, 3, 1, 3, 3);
-        }
-        else if (this.value == 5) {
-            return this.getCircle(1, 1, 1, 3, 2, 2, 3, 1, 3, 3);
-        }
-        else if (this.value == 6) {
-            return this.getCircle(1, 1, 1, 2, 1, 3, 3, 1, 3, 2, 3, 3);
-        }
-        else if (this.value == 7) {
-            return this.getCircle(1, 1, 1, 2, 1, 3, 2, 2, 3, 1, 3, 2, 3, 3);
-        }
-        else if (this.value == 8) {
-            return this.getCircle(1, 1, 1, 2, 1, 3, 2, 1, 2, 3, 3, 1, 3, 2, 3, 3);
-        }
-        else if (this.value == 9) {
-            return this.getCircle(1, 1, 1, 2, 1, 3, 2, 1, 2, 2, 2, 3, 3, 1, 3, 2, 3, 3);
-        }
-        return null;
-    };
-    Dice.prototype.getCircle = function () {
-        var values = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            values[_i] = arguments[_i];
-        }
-        if (values.length % 2 > 0) {
-            return null;
-        }
-        var size = this.getSize();
-        var pos = this.getPos();
-        var group = this.createShape({ tag: 'g' });
-        for (var i = 0; i < values.length; i += 2) {
-            group.appendChild(this.createCircle(values[i], values[i + 1]));
-        }
-        return group;
-    };
-    Dice.prototype.createCircle = function (x, y) {
-        var size = this.getSize();
-        var radius = size.x / 10 * this.$zoom;
-        var border = size.y * this.$border;
-        var zoom = size.y * this.$zoom;
-        var attr = {
-            tag: 'circle',
-            r: radius,
-            cx: (size.x * this.$zoom * x) / 4 + border,
-            cy: (size.y * this.$zoom * y) / 4 + border,
-            stroke: "black",
-            "stroke-width": "3",
-            fill: "red",
-            style: 'fill:black;stroke:black;stroke-width:2'
-        };
-        return this.createShape(attr);
-    };
-    return Dice;
-}(Node_1.Node));
-exports.Dice = Dice;
-
-
-/***/ }),
-/* 41 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var StereoType_1 = __webpack_require__(22);
-var Abstract = (function (_super) {
-    __extends(Abstract, _super);
-    function Abstract(data) {
-        var _this = _super.call(this, data) || this;
-        _this.$ABSTRACT = 'Abstract';
-        _this.$defaulEdgeType = 'Generalisation';
-        _this.setStereoTyp(_this.$ABSTRACT);
-        return _this;
-    }
-    return Abstract;
-}(StereoType_1.StereoType));
-exports.Abstract = Abstract;
-
-
-/***/ }),
-/* 42 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var StereoType_1 = __webpack_require__(22);
-var Interface = (function (_super) {
-    __extends(Interface, _super);
-    function Interface(data) {
-        var _this = _super.call(this, data) || this;
-        _this.$INTERFACE = 'Interface';
-        _this.$defaulEdgeType = 'Implements';
-        _this.setStereoTyp(_this.$INTERFACE);
-        return _this;
-    }
-    return Interface;
-}(StereoType_1.StereoType));
-exports.Interface = Interface;
-
-
-/***/ }),
-/* 43 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var Adapter_1 = __webpack_require__(24);
-var JavaAdapter = (function (_super) {
-    __extends(JavaAdapter, _super);
-    function JavaAdapter() {
-        var _this = _super.call(this) || this;
-        _this.id = 'JavaAdapter';
-        return _this;
-    }
-    JavaAdapter.prototype.update = function (evt) {
-        if (this.isActive()) {
-            window['JavaBridge'].executeChange(evt);
-            return true;
-        }
-        return false;
-    };
-    JavaAdapter.prototype.isActive = function () {
-        return window['JavaBridge'];
-    };
-    return JavaAdapter;
-}(Adapter_1.Adapter));
-exports.JavaAdapter = JavaAdapter;
-
-
-/***/ }),
-/* 44 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var BaseElements_1 = __webpack_require__(1);
-var util_1 = __webpack_require__(0);
-var Node_1 = __webpack_require__(6);
-var EventBus_1 = __webpack_require__(3);
-var InfoText = (function (_super) {
-    __extends(InfoText, _super);
-    function InfoText(info) {
-        var _this = _super.call(this, info) || this;
-        _this.cardinality = '';
-        if (typeof (info) === 'string') {
-            _this.id = info;
-        }
-        else {
-            if (info.property) {
-                _this.property = info.property;
-            }
-            if (info.cardinality) {
-                _this.cardinality = info.cardinality;
-            }
-        }
-        _this.$isDraggable = true;
-        var calcSize = _this.calcSize();
-        _this.withSize(calcSize.x, calcSize.y);
-        return _this;
-    }
-    InfoText.prototype.updateCardinality = function (cardinality) {
-        this.cardinality = cardinality;
-        var calcSize = this.calcSize();
-        this.withSize(calcSize.x, calcSize.y);
-        if (this.$rectBackground) {
-            this.$rectBackground.setAttributeNS(null, 'width', '' + calcSize.x);
-            this.$rectBackground.setAttributeNS(null, 'height', '' + calcSize.y);
-        }
-        if (!this.$view) {
-            var svg = this.getSVG();
-            this.$owner.$view.appendChild(svg);
-            return;
-        }
-        if ((cardinality.length === 0 && this.property.length > 0) || !this.$cardinalitySvg) {
-            this.$owner.$view.removeChild(this.$view);
-            this.resetAllSvgElements();
-            var svg = this.getSVG();
-            this.$owner.$view.appendChild(svg);
-            return;
-        }
-        if (this.$cardinalitySvg) {
-            this.$cardinalitySvg.textContent = cardinality;
-            if (this.$rectBackground) {
-                this.$rectBackground.setAttributeNS(null, 'width', '' + calcSize.x);
-                this.$rectBackground.setAttributeNS(null, 'height', '' + calcSize.y);
-            }
-            return;
-        }
-        if (this.property.length === 0) {
-            this.$owner.$view.removeChild(this.$view);
-            this.resetAllSvgElements();
-            return;
-        }
-    };
-    InfoText.prototype.updateProperty = function (property) {
-        this.property = property;
-        var calcSize = this.calcSize();
-        this.withSize(calcSize.x, calcSize.y);
-        if (!this.$view) {
-            var svg = this.getSVG();
-            this.$owner.$view.appendChild(svg);
-            return;
-        }
-        if ((property.length === 0 && this.cardinality.length > 0) || !this.$propertySvg) {
-            this.$owner.$view.removeChild(this.$view);
-            this.resetAllSvgElements();
-            var svg = this.getSVG();
-            this.$owner.$view.appendChild(svg);
-            return;
-        }
-        if (this.$propertySvg) {
-            this.$propertySvg.textContent = property;
-            if (this.$rectBackground) {
-                this.$rectBackground.setAttributeNS(null, 'width', '' + calcSize.x);
-                this.$rectBackground.setAttributeNS(null, 'height', '' + calcSize.y);
-            }
-            return;
-        }
-        if (this.cardinality.length === 0) {
-            this.$owner.$view.removeChild(this.$view);
-            this.resetAllSvgElements();
-        }
-    };
-    InfoText.prototype.getSVG = function () {
-        var pos = this.getPos();
-        var group = util_1.Util.create({ tag: 'g', class: 'SVGEdgeInfo', transform: 'translate(0, 0)' });
-        this.$rectBackground = util_1.Util.createShape({
-            tag: 'rect',
-            x: pos.x,
-            y: pos.y - this.$heightOfOneTextItem + 3,
-            width: this.getSize().x,
-            height: this.getSize().y,
-            fill: '#DDD',
-            'stroke-width': 0,
-            rx: '5',
-            ry: '5'
-        });
-        group.appendChild(this.$rectBackground);
-        var y = pos.y;
-        if (this.property) {
-            this.$propertySvg = util_1.Util.createShape({
-                tag: 'text',
-                x: pos.x + 3,
-                y: y,
-                'text-anchor': 'left'
-            });
-            this.$propertySvg.textContent = this.property;
-            group.appendChild(this.$propertySvg);
-            y += this.$heightOfOneTextItem;
-        }
-        if (this.cardinality) {
-            this.$cardinalitySvg = util_1.Util.createShape({
-                tag: 'text',
-                x: pos.x + 3,
-                y: y,
-                'text-anchor': 'left'
-            });
-            this.$cardinalitySvg.textContent = this.cardinality;
-            group.appendChild(this.$cardinalitySvg);
-        }
-        this.$view = group;
-        return group;
-    };
-    InfoText.prototype.isEmpty = function () {
-        var cardinalityAvailable = this.cardinality && this.cardinality.length > 0;
-        var propertyAvailable = this.property && this.property.length > 0;
-        return !propertyAvailable && !cardinalityAvailable;
-    };
-    InfoText.prototype.redrawFromEdge = function (newPos) {
-        if (!newPos) {
-            return;
-        }
-        var oldPos = this.getPos();
-        var diffPos = new BaseElements_1.Point();
-        diffPos.x = newPos.x - oldPos.x;
-        diffPos.y = newPos.y - oldPos.y;
-        var translation = this.$view.getAttributeNS(null, 'transform').slice(10, -1).split(' ');
-        var sx = parseInt(translation[0]);
-        var sy = 0;
-        if (translation.length > 1) {
-            sy = parseInt(translation[1]);
-        }
-        var newTransX = (sx + diffPos.x);
-        var newTransY = (sy + diffPos.y);
-        this.$view.setAttributeNS(null, 'transform', 'translate(' + newTransX + ' ' + newTransY + ')');
-        this.getPos().x = newPos.x;
-        this.getPos().y = newPos.y;
-    };
-    InfoText.prototype.getText = function () {
-        var infoTxt = '';
-        if (this.property) {
-            infoTxt = this.property;
-        }
-        if (this.cardinality) {
-            if (infoTxt.length > 0) {
-                infoTxt += '\n';
-            }
-            infoTxt += this.cardinality;
-        }
-        return infoTxt;
-    };
-    InfoText.prototype.getEvents = function () {
-        return [EventBus_1.EventBus.ELEMENTCLICK, EventBus_1.EventBus.ELEMENTDBLCLICK, EventBus_1.EventBus.OPENPROPERTIES];
-    };
-    InfoText.prototype.calcSize = function () {
-        var text = this.getText();
-        var items = text.split('\n');
-        var maxSize = new BaseElements_1.Point(0, 0);
-        if (text.length === 0) {
-            return maxSize;
-        }
-        for (var i = 0; i < items.length; i += 1) {
-            var sizeOfText = util_1.Util.sizeOf(items[i]);
-            maxSize.x = Math.max(maxSize.x, sizeOfText.width);
-            maxSize.y += sizeOfText.height;
-            this.$heightOfOneTextItem = sizeOfText.height;
-        }
-        return maxSize;
-    };
-    InfoText.prototype.resetAllSvgElements = function () {
-        this.$cardinalitySvg = undefined;
-        this.$view = undefined;
-        this.$propertySvg = undefined;
-    };
-    return InfoText;
-}(Node_1.Node));
-exports.InfoText = InfoText;
-
-
-/***/ }),
-/* 45 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var Association_1 = __webpack_require__(11);
-var Aggregate = (function (_super) {
-    __extends(Aggregate, _super);
-    function Aggregate() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    Aggregate.prototype.getSVG = function () {
-        var startPoint = this.$points[0];
-        var direction = this.getDirectionOfPointToNode(this.$sNode, startPoint);
-        var path = this.calcCorrectPath(startPoint, direction);
-        var group = _super.prototype.getSVG.call(this);
-        var attr = {
-            tag: 'path',
-            d: path,
-        };
-        this.$diamond = this.createShape(attr);
-        group.appendChild(this.$diamond);
-        return group;
-    };
-    Aggregate.prototype.redraw = function (startNode, dontDrawPoints) {
-        _super.prototype.redraw.call(this, startNode, true);
-        var startPoint = this.$points[0];
-        var direction = 1;
-        if (this.$sNode.id === startNode.id || this.$points.length == 2) {
-            direction = this.getDirectionOfPointToNode(this.$sNode, startPoint);
-            var path = this.calcCorrectPath(startPoint, direction);
-            this.$diamond.setAttributeNS(null, 'd', path);
-        }
-        this.redrawPointsAndInfo();
-    };
-    Aggregate.prototype.calcCorrectPath = function (startPoint, direction) {
-        var startX = startPoint.x;
-        var startY = startPoint.y;
-        var path;
-        switch (direction) {
-            case 0:
-                path = "M" + startX + " " + startY + " L" + (startX + 6) + " " + (startY + 10) + " L" + startX + " " + (startY + 20) + " L" + (startX - 6) + " " + (startY + 10) + " Z";
-                startPoint.y = startPoint.y + 20;
-                break;
-            case 3:
-                path = "M" + startX + " " + startY + " L" + (startX - 10) + " " + (startY + 6) + " L" + (startX - 20) + " " + startY + " L" + (startX - 10) + " " + (startY - 6) + " Z";
-                startPoint.x = startPoint.x - 20;
-                break;
-            case 2:
-                path = "M" + startX + " " + startY + " L" + (startX + 10) + " " + (startY - 6) + " L" + (startX + 20) + " " + startY + " L" + (startX + 10) + " " + (startY + 6) + " Z";
-                startPoint.x = startPoint.x + 20;
-                break;
-            case 1:
-                path = "M" + startX + " " + startY + " L" + (startX - 6) + " " + (startY - 10) + " L" + startX + " " + (startY - 20) + " L" + (startX + 6) + " " + (startY - 10) + " Z";
-                startPoint.y = startPoint.y - 20;
-                break;
-            default:
-                break;
-        }
-        return path;
-    };
-    return Aggregate;
-}(Association_1.Association));
-exports.Aggregate = Aggregate;
-
-
-/***/ }),
-/* 46 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var index_1 = __webpack_require__(4);
-var Aggregation = (function (_super) {
-    __extends(Aggregation, _super);
-    function Aggregation() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    Aggregation.prototype.getSVG = function () {
-        var group = _super.prototype.getSVG.call(this);
-        this.$diamond.setAttributeNS(null, 'fill', 'white');
-        return group;
-    };
-    return Aggregation;
-}(index_1.Aggregate));
-exports.Aggregation = Aggregation;
-
-
-/***/ }),
-/* 47 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var index_1 = __webpack_require__(4);
-var Composition = (function (_super) {
-    __extends(Composition, _super);
-    function Composition() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    Composition.prototype.getSVG = function () {
-        var group = _super.prototype.getSVG.call(this);
-        this.$diamond.setAttributeNS(null, 'fill', 'black');
-        return group;
-    };
-    return Composition;
-}(index_1.Aggregate));
-exports.Composition = Composition;
-
-
-/***/ }),
-/* 48 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var Generalisation_1 = __webpack_require__(25);
-var Implements = (function (_super) {
-    __extends(Implements, _super);
-    function Implements() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    Implements.prototype.getSVG = function () {
-        var group = _super.prototype.getSVG.call(this);
-        this.$pathSvg.setAttributeNS(null, 'stroke-dasharray', '3, 3');
-        return group;
-    };
-    return Implements;
-}(Generalisation_1.Generalisation));
-exports.Implements = Implements;
-
-
-/***/ }),
-/* 49 */
+/***/ "./elements/nodes/index.ts":
+/*!*********************************!*\
+  !*** ./elements/nodes/index.ts ***!
+  \*********************************/
+/*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8222,887 +8177,47 @@ function __export(m) {
     for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 }
 Object.defineProperty(exports, "__esModule", { value: true });
-__export(__webpack_require__(26));
-__export(__webpack_require__(27));
-__export(__webpack_require__(28));
-var DagreLayout_1 = __webpack_require__(26);
-var DagreLayoutMin_1 = __webpack_require__(28);
-var Random_1 = __webpack_require__(27);
-new DagreLayout_1.DagreLayout();
-new DagreLayoutMin_1.DagreLayoutMin();
-new Random_1.Random();
+var AutoComplete_1 = __webpack_require__(/*! ./AutoComplete */ "./elements/nodes/AutoComplete.ts");
+var BR_1 = __webpack_require__(/*! ./BR */ "./elements/nodes/BR.ts");
+var Div_1 = __webpack_require__(/*! ./Div */ "./elements/nodes/Div.ts");
+var Label_1 = __webpack_require__(/*! ./Label */ "./elements/nodes/Label.ts");
+__export(__webpack_require__(/*! ./Node */ "./elements/nodes/Node.ts"));
+__export(__webpack_require__(/*! ./Class */ "./elements/nodes/Class.ts"));
+__export(__webpack_require__(/*! ./SO */ "./elements/nodes/SO.ts"));
+__export(__webpack_require__(/*! ./Symbol */ "./elements/nodes/Symbol.ts"));
+__export(__webpack_require__(/*! ./BR */ "./elements/nodes/BR.ts"));
+__export(__webpack_require__(/*! ./Button */ "./elements/nodes/Button.ts"));
+__export(__webpack_require__(/*! ./Div */ "./elements/nodes/Div.ts"));
+__export(__webpack_require__(/*! ./Form */ "./elements/nodes/Form.ts"));
+__export(__webpack_require__(/*! ./Input */ "./elements/nodes/Input.ts"));
+__export(__webpack_require__(/*! ./Label */ "./elements/nodes/Label.ts"));
+__export(__webpack_require__(/*! ./Table */ "./elements/nodes/Table.ts"));
+__export(__webpack_require__(/*! ./HTML */ "./elements/nodes/HTML.ts"));
+__export(__webpack_require__(/*! ./Dice */ "./elements/nodes/Dice.ts"));
+__export(__webpack_require__(/*! ./AutoComplete */ "./elements/nodes/AutoComplete.ts"));
+__export(__webpack_require__(/*! ./Attribute */ "./elements/nodes/Attribute.ts"));
+__export(__webpack_require__(/*! ./Method */ "./elements/nodes/Method.ts"));
+__export(__webpack_require__(/*! ./ClazzProperty */ "./elements/nodes/ClazzProperty.ts"));
+new AutoComplete_1.AutoComplete();
+new BR_1.BR();
+new Div_1.Div();
+new Label_1.Label();
 
 
 /***/ }),
-/* 50 */
-/***/ (function(module, exports, __webpack_require__) {
 
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var BaseElements_1 = __webpack_require__(1);
-var edges_1 = __webpack_require__(4);
-var nodes_1 = __webpack_require__(5);
-var util_1 = __webpack_require__(0);
-var EventBus_1 = __webpack_require__(3);
-var GraphModel = (function (_super) {
-    __extends(GraphModel, _super);
-    function GraphModel() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.nodes = [];
-        _this.edges = [];
-        return _this;
-    }
-    GraphModel.prototype.load = function (data) {
-        this.$isLoading = true;
-        data = data || {};
-        this.property = data.type || data.property || 'classdiagram';
-        this.id = 'RootElement';
-        if (data.nodes) {
-            for (var _i = 0, _a = data.nodes; _i < _a.length; _i++) {
-                var node = _a[_i];
-                this.addNode(node);
-            }
-        }
-        if (data.edges) {
-            for (var _b = 0, _c = data.edges; _b < _c.length; _b++) {
-                var edge = _c[_b];
-                this.addEdge(edge);
-            }
-        }
-        this.$isLoading = false;
-    };
-    GraphModel.prototype.getNodeByPosition = function (x, y) {
-        for (var _i = 0, _a = this.nodes; _i < _a.length; _i++) {
-            var node = _a[_i];
-            var posOfNode = node.getPos();
-            var sizeOfNode = node.getSize();
-            if ((posOfNode.x <= x && (posOfNode.x + sizeOfNode.x) >= x)
-                && (posOfNode.y <= y && (posOfNode.y + sizeOfNode.y) >= y)) {
-                return node;
-            }
-        }
-        return null;
-    };
-    GraphModel.prototype.init = function (owner, property, id) {
-        _super.prototype.init.call(this, owner, property, id);
-        this.initCanvas();
-        return this;
-    };
-    GraphModel.prototype.addElement = function (type) {
-        type = util_1.Util.toPascalCase(type);
-        var id = this.getNewId(type);
-        var element = this.createElement(type, id, {});
-        if (element) {
-            util_1.Util.saveToLocalStorage(this);
-            return true;
-        }
-        return false;
-    };
-    GraphModel.prototype.addElementWithValues = function (type, optionalValues) {
-        type = util_1.Util.toPascalCase(type);
-        var id = this.getNewId(type);
-        var element = this.createElement(type, id, {});
-        if (optionalValues) {
-            if (optionalValues.hasOwnProperty('x') && optionalValues.hasOwnProperty('y')) {
-                var x = optionalValues['x'];
-                var y = optionalValues['y'];
-                element.withPos(x, y);
-            }
-        }
-        util_1.Util.saveToLocalStorage(this);
-        return element;
-    };
-    GraphModel.prototype.removeAllElements = function () {
-        var nodesLength = this.nodes.length;
-        for (var i = 0; i < nodesLength; i++) {
-            this.removeElement(this.nodes[0].id);
-        }
-        this.$view.dispatchEvent(util_1.Util.createCustomEvent('click'));
-    };
-    GraphModel.prototype.removeElement = function (id) {
-        var element = this.getDiagramElementById(id);
-        if (!element) {
-            return false;
-        }
-        this.$owner.removeElement(element);
-        if (element instanceof nodes_1.Node) {
-            var idxOfNode = this.nodes.indexOf(element);
-            if (idxOfNode > -1) {
-                this.nodes.splice(idxOfNode, 1);
-            }
-            while (element.$edges.length > 0) {
-                this.removeElement(element.$edges[0].id);
-            }
-            element.$edges = [];
-        }
-        else if (element instanceof edges_1.Association) {
-            var idxOfEdge = this.edges.indexOf(element);
-            if (idxOfEdge > -1) {
-                this.edges.splice(idxOfEdge, 1);
-            }
-            idxOfEdge = element.$sNode.$edges.indexOf(element);
-            if (idxOfEdge > -1) {
-                element.$sNode.$edges.splice(idxOfEdge, 1);
-            }
-            idxOfEdge = element.$tNode.$edges.indexOf(element);
-            if (idxOfEdge > -1) {
-                element.$tNode.$edges.splice(idxOfEdge, 1);
-            }
-        }
-        util_1.Util.saveToLocalStorage(this);
-        return true;
-    };
-    GraphModel.prototype.getSVG = function () {
-        var size = 10;
-        var path = "M" + -size + " 0 L" + +size + " 0 M0 " + -size + " L0 " + +size;
-        var attr = {
-            tag: 'path',
-            id: 'origin',
-            d: path,
-            stroke: '#999',
-            'stroke-width': '1',
-            fill: 'none'
-        };
-        var shape = this.createShape(attr);
-        var attrText = {
-            tag: 'text',
-            x: 0 - size,
-            y: 0 - size / 1.5,
-            'text-anchor': 'end',
-            'font-family': 'Verdana',
-            'font-size': '9',
-            fill: '#999'
-        };
-        var text = this.createShape(attrText);
-        text.textContent = '(0, 0)';
-        var group = this.createShape({ tag: 'g' });
-        group.appendChild(shape);
-        group.appendChild(text);
-        return group;
-    };
-    GraphModel.prototype.getEvents = function () {
-        return [EventBus_1.EventBus.ELEMENTMOUSEDOWN, EventBus_1.EventBus.ELEMENTMOUSEUP, EventBus_1.EventBus.ELEMENTMOUSELEAVE, EventBus_1.EventBus.ELEMENTMOUSEMOVE, EventBus_1.EventBus.ELEMENTMOUSEWHEEL, EventBus_1.EventBus.ELEMENTCLICK, EventBus_1.EventBus.ELEMENTDRAG];
-    };
-    GraphModel.prototype.getNewId = function (prefix) {
-        var id = (prefix ? prefix.toLowerCase() + '-' : '') + Math.floor(Math.random() * 100000);
-        return id;
-    };
-    GraphModel.prototype.getEdgeById = function (id) {
-        for (var _i = 0, _a = this.edges; _i < _a.length; _i++) {
-            var edge = _a[_i];
-            if (edge.id === id) {
-                return edge;
-            }
-        }
-        return undefined;
-    };
-    GraphModel.prototype.getDiagramElementById = function (id) {
-        return this.getNodeById(id) || this.getEdgeById(id);
-    };
-    GraphModel.prototype.addEdge = function (edge, withPosOfNodes) {
-        if (edge && edge.type) {
-            var graph = this.$owner;
-            var typeExists = false;
-            for (var edgeType in graph.edgeFactory) {
-                if (edgeType === edge.type) {
-                    typeExists = true;
-                    break;
-                }
-            }
-            if (!typeExists) {
-                edge.type = 'Association';
-            }
-        }
-        var type = edge.type || 'Association';
-        type = util_1.Util.toPascalCase(type);
-        var id = this.getNewId(type);
-        var newEdge = this.createElement(type, id, edge);
-        newEdge.type = type;
-        var source;
-        var sourceAsString = edge.source.id || edge.source;
-        if (sourceAsString) {
-            source = this.getNodeByLabel(sourceAsString);
-            if (!source) {
-                source = this.createElement('Clazz', this.getNewId('Clazz'), { name: edge.source });
-                source.init(this);
-            }
-        }
-        var target;
-        var targetAsString = edge.target.id || edge.target;
-        if (targetAsString) {
-            target = this.getNodeByLabel(targetAsString);
-            if (!target) {
-                target = this.createElement('Clazz', this.getNewId('Clazz'), { name: edge.target });
-                target.init(this);
-            }
-        }
-        newEdge.withItem(source, target);
-        if (withPosOfNodes) {
-            var srcX = source.getPos().x + (source.getSize().x / 2);
-            var srcY = source.getPos().y + (source.getSize().y / 2);
-            var targetX = target.getPos().x + (target.getSize().x / 2);
-            var targetY = target.getPos().y + (target.getSize().y / 2);
-            newEdge.addPoint(srcX, srcY);
-            newEdge.addPoint(targetX, targetY);
-        }
-        util_1.Util.saveToLocalStorage(this);
-        return newEdge;
-    };
-    GraphModel.prototype.createElement = function (type, id, data) {
-        var graph = this.$owner;
-        var element;
-        if (graph.nodeFactory[type]) {
-            element = new graph.nodeFactory[type](data);
-            util_1.Util.initControl(this, element, type, id, data);
-            this.nodes.push(element);
-        }
-        if (graph.edgeFactory[type]) {
-            element = new graph.edgeFactory[type](data);
-            util_1.Util.initControl(this, element, type, id, data);
-            this.edges.push(element);
-        }
-        return element;
-    };
-    GraphModel.prototype.initCanvas = function () {
-        var graph = this.$owner;
-        graph.canvasSize = { width: graph.$view.clientWidth, height: graph.$view.clientHeight };
-        graph.root = util_1.Util.createShape({
-            tag: 'svg',
-            id: 'root',
-            width: graph.canvasSize.width,
-            height: graph.canvasSize.height
-        });
-        this.$view = graph.root;
-        graph.$view.appendChild(graph.root);
-        var mousewheel = 'onwheel' in document.createElement('div') ? 'wheel' : document.onmousewheel !== undefined ? 'mousewheel' : 'DOMMouseScroll';
-        EventBus_1.EventBus.register(this, this.$view);
-    };
-    GraphModel.prototype.addNode = function (node) {
-        var type = node['type'] || node.property || 'Node';
-        type = util_1.Util.toPascalCase(type);
-        var id = node['id'] || node['name'] || this.getNewId(type);
-        return this.createElement(type, id, node);
-    };
-    GraphModel.prototype.getNodeById = function (id) {
-        for (var _i = 0, _a = this.nodes; _i < _a.length; _i++) {
-            var node = _a[_i];
-            if (node.id === id) {
-                return node;
-            }
-        }
-        return undefined;
-    };
-    GraphModel.prototype.getNodeByLabel = function (label) {
-        for (var _i = 0, _a = this.nodes; _i < _a.length; _i++) {
-            var node = _a[_i];
-            if (node.label === label) {
-                return node;
-            }
-        }
-        return undefined;
-    };
-    return GraphModel;
-}(BaseElements_1.DiagramElement));
-exports.GraphModel = GraphModel;
-
-
-/***/ }),
-/* 51 */
+/***/ "./handlers/AddNode.ts":
+/*!*****************************!*\
+  !*** ./handlers/AddNode.ts ***!
+  \*****************************/
+/*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var buttons = {
-    abstract: '<svg width="100%" height="100%" viewbox="0 0 550 450"><g><rect width="500" height="400" x="25" y="25" rx="5" ry="5" stroke-width="10" stroke="black" fill="none"/><rect width="500" height="125" x="25" y="180" stroke-width="7" stroke="black" fill="none"/><text x="275" y="140" text-anchor="middle" font-size="111">Abstract</text><text x="50" y="240" font-size="50">+ field: type</text><text x="50" y="360" font-size="50">+ method(type)</text></g></svg>',
-    clazz: '<svg width="100%" height="100%" viewbox="0 0 550 450"><g><rect width="500" height="400" x="25" y="25" rx="5" ry="5" stroke-width="10" stroke="black" fill="none"/><rect width="500" height="125" x="25" y="180" stroke-width="7" stroke="black" fill="none"/><text x="275" y="140" text-anchor="middle" font-size="111">Class</text><text x="50" y="240" font-size="50">+ field: type</text><text x="50" y="360" font-size="50">+ method(type)</text></g></svg>',
-    interface: '<svg width="100%" height="100%" viewbox="0 0 550 450"><g><rect width="500" height="400" x="25" y="25" rx="5" ry="5" stroke-width="10" stroke="black" fill="none"/><rect width="500" height="125" x="25" y="180" stroke-width="7" stroke="black" fill="none"/><text x="275" y="140" text-anchor="middle" font-size="111">Interface</text><text x="50" y="240" font-size="50">+ field: type</text><text x="50" y="360" font-size="50">+ method(type)</text></g></svg>',
-};
-var Palette = (function () {
-    function Palette(graph) {
-        this.graph = graph;
-        var div = document.createElement('div');
-        div.className = 'palette';
-        div.id = 'palette';
-        document.body.appendChild(div);
-        this.palette = div;
-        this.addButtons();
-    }
-    Palette.prototype.addButtons = function () {
-        var _this = this;
-        var _loop_1 = function (btn) {
-            var button = document.createElement('button');
-            button.className = 'add' + btn + 'Btn';
-            button.innerHTML = buttons[btn];
-            button.onclick = function (e) {
-                var nextFreePosition = _this.graph.getNextFreePosition();
-                var node = _this.graph.addElementWithValues(btn, { x: nextFreePosition.x, y: nextFreePosition.y }, false);
-                _this.graph.drawElement(node);
-            };
-            this_1.palette.appendChild(button);
-        };
-        var this_1 = this;
-        for (var btn in buttons) {
-            _loop_1(btn);
-        }
-    };
-    return Palette;
-}());
-exports.default = Palette;
-
-
-/***/ }),
-/* 52 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-function __export(m) {
-    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
-}
-Object.defineProperty(exports, "__esModule", { value: true });
-__export(__webpack_require__(53));
-__export(__webpack_require__(54));
-__export(__webpack_require__(55));
-__export(__webpack_require__(56));
-__export(__webpack_require__(30));
-__export(__webpack_require__(57));
-__export(__webpack_require__(58));
-
-
-/***/ }),
-/* 53 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var EventBus_1 = __webpack_require__(3);
-var BaseElements_1 = __webpack_require__(1);
-var nodes_1 = __webpack_require__(5);
-var util_1 = __webpack_require__(0);
-var Drag = (function () {
-    function Drag(graph) {
-        this.dragging = false;
-        this.reinsert = false;
-        this.mouseOffset = new BaseElements_1.Point();
-        this.graph = graph;
-    }
-    Drag.prototype.handle = function (event, element) {
-        if (!this.canHandle()) {
-            return true;
-        }
-        switch (event.type) {
-            case 'mousedown':
-                if ((!this.dragging) && (element.id !== 'RootElement')) {
-                    this.element = element;
-                    this.svgElement = element.$view;
-                    this.start(event, element);
-                    this.setActive(true);
-                }
-                break;
-            case 'mouseup':
-                if (this.dragging) {
-                    this.reset();
-                }
-                this.setActive(false);
-                break;
-            case 'mousemove':
-                if (this.dragging) {
-                    this.drag(event, element);
-                }
-                break;
-            case 'mouseleave':
-                if (this.dragging) {
-                    this.reset();
-                }
-                this.setActive(false);
-                break;
-            default:
-                break;
-        }
-        return true;
-    };
-    Drag.prototype.canHandle = function () {
-        return EventBus_1.EventBus.isHandlerActiveOrFree(Drag.name);
-    };
-    Drag.prototype.setActive = function (active) {
-        if (active) {
-            EventBus_1.EventBus.setActiveHandler(Drag.name);
-        }
-        else {
-            EventBus_1.EventBus.releaseActiveHandler();
-        }
-    };
-    Drag.prototype.reset = function () {
-        this.dragging = false;
-        this.svgElement.style.cursor = 'pointer';
-        if (util_1.Util.isChrome()) {
-            var clickEvt = util_1.Util.createCustomEvent('click');
-            this.svgElement.dispatchEvent(clickEvt);
-        }
-    };
-    Drag.prototype.start = function (evt, element) {
-        this.dragging = true;
-        this.mouseOffset.x = evt.clientX;
-        this.mouseOffset.y = evt.clientY;
-        this.reinsert = true;
-        this.svgElement.style.cursor = 'move';
-    };
-    Drag.prototype.drag = function (evt, element) {
-        if (this.reinsert) {
-            if (this.element.id !== 'RootElement') {
-                this.graph.root.appendChild(this.svgElement);
-            }
-            var dragEvent = util_1.Util.createCustomEvent('drag');
-            element.$view.dispatchEvent(dragEvent);
-        }
-        this.reinsert = false;
-        evt.stopPropagation();
-        var translation = this.svgElement.getAttributeNS(null, 'transform').slice(10, -1).split(' ');
-        var sx = parseInt(translation[0]);
-        var sy = 0;
-        if (translation.length > 1) {
-            sy = parseInt(translation[1]);
-        }
-        var transX = sx + evt.clientX - this.mouseOffset.x;
-        var transY = sy + evt.clientY - this.mouseOffset.y;
-        this.svgElement.setAttributeNS(null, 'transform', 'translate(' + transX + ' ' + transY + ')');
-        this.element.getPos().addNum(transX - sx, transY - sy);
-        if (this.element instanceof nodes_1.Node) {
-            this.element.redrawEdges();
-        }
-        this.mouseOffset.x = evt.clientX;
-        this.mouseOffset.y = evt.clientY;
-        var maxX = this.element.getPos().x + this.element.getSize().x;
-        var maxY = this.element.getPos().y + this.element.getSize().y;
-        var domRectRoot = this.graph.root.getBoundingClientRect();
-        if (!domRectRoot) {
-            return;
-        }
-        if (maxX > domRectRoot.width) {
-            this.graph.root.setAttributeNS(null, 'width', '' + maxX);
-        }
-        if (maxY > domRectRoot.height) {
-            this.graph.root.setAttributeNS(null, 'height', '' + maxY);
-        }
-    };
-    return Drag;
-}());
-exports.Drag = Drag;
-
-
-/***/ }),
-/* 54 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var nodes_1 = __webpack_require__(5);
-var edges_1 = __webpack_require__(4);
-var util_1 = __webpack_require__(0);
-var Symbol_1 = __webpack_require__(21);
-var EventBus_1 = __webpack_require__(3);
-var main_1 = __webpack_require__(9);
-var Select = (function () {
-    function Select(graph) {
-        this.padding = 5;
-        this.graph = graph;
-        this.deleteShape = Symbol_1.SymbolLibary.drawSVG({ type: 'Basket', background: true, id: 'trashcan', tooltip: 'Delete class' });
-        this.copyNodeShape = Symbol_1.SymbolLibary.drawSVG({ type: 'Copynode', background: true, id: 'copyNode', tooltip: 'Copy class' });
-        this.addEdgeShape = Symbol_1.SymbolLibary.drawSVG({ type: 'Edgeicon', background: true, id: 'addEdge', tooltip: 'Click and drag to connect this class' });
-    }
-    Select.prototype.handle = function (event, element) {
-        var _this = this;
-        var x = util_1.Util.getEventX(event);
-        var y = util_1.Util.getEventY(event);
-        event.stopPropagation();
-        if (event.type === 'drag') {
-            this.isDragged = true;
-            this.deleteShape.setAttributeNS(null, 'visibility', 'hidden');
-            this.addEdgeShape.setAttributeNS(null, 'visibility', 'hidden');
-            this.copyNodeShape.setAttributeNS(null, 'visibility', 'hidden');
-            this.resetLastSelectedElements();
-            if (element instanceof nodes_1.Node) {
-                this.lastSelectedNode = element.$view;
-            }
-            util_1.Util.addClass(this.lastSelectedNode, 'SVGClazz-selected');
-        }
-        if (event.target['id'] === 'background' || element === this.graph.$graphModel) {
-            this.resetLastSelectedElements();
-            this.deleteShape.setAttributeNS(null, 'visibility', 'hidden');
-            this.addEdgeShape.setAttributeNS(null, 'visibility', 'hidden');
-            this.copyNodeShape.setAttributeNS(null, 'visibility', 'hidden');
-            return true;
-        }
-        if (element instanceof nodes_1.Node && event.type === 'click') {
-            var e = element;
-            this.graph.root.appendChild(this.deleteShape);
-            this.graph.root.appendChild(this.addEdgeShape);
-            this.graph.root.appendChild(this.copyNodeShape);
-            this.graph.root.appendChild(element.$view);
-            this.deleteShape.setAttributeNS(null, 'visibility', 'visible');
-            this.addEdgeShape.setAttributeNS(null, 'visibility', 'visible');
-            this.copyNodeShape.setAttributeNS(null, 'visibility', 'visible');
-            var x_1 = (e.getPos().x + e.getSize().x) + 5;
-            var y_1 = e.getPos().y;
-            this.deleteShape.setAttributeNS(null, 'transform', "translate(" + x_1 + " " + (y_1 + this.padding) + ")");
-            this.deleteShape.onclick = function (e) { return _this.graph.$graphModel.removeElement(element.id); };
-            this.copyNodeShape.setAttributeNS(null, 'transform', "translate(" + x_1 + " " + (y_1 + 40 + this.padding) + ")");
-            this.copyNodeShape.onclick = function (evt) {
-                var nextFreePosition = _this.graph.getNextFreePosition();
-                var copyClass = element.copy();
-                copyClass.withPos(nextFreePosition.x, nextFreePosition.y);
-                _this.graph.drawElement(copyClass);
-            };
-            this.addEdgeShape.setAttributeNS(null, 'transform', "translate(" + x_1 + " " + (y_1 + 80 + this.padding) + ")");
-            this.addEdgeShape.onmousedown = function () {
-                EventBus_1.EventBus.setActiveHandler('NewEdge');
-                element.$view.dispatchEvent(util_1.Util.createCustomEvent('mousedown'));
-            };
-        }
-        if (element instanceof main_1.Clazz && event.type === 'click') {
-            var clazz_1 = element;
-            if (util_1.Util.isChrome()) {
-                if (this.lastSelectedNode && element.id === this.lastSelectedNode.id && !this.isDragged) {
-                    return true;
-                }
-            }
-            this.isDragged = false;
-            this.resetLastSelectedElements();
-            this.lastSelectedNode = element.$view;
-            util_1.Util.addClass(this.lastSelectedNode, 'SVGClazz-selected');
-            this.setTooltipOfShape(this.deleteShape, 'Delete class');
-            var divInlineEdit_1 = document.createElement('div');
-            divInlineEdit_1.id = 'inlineEdit';
-            divInlineEdit_1.style.position = 'absolute';
-            divInlineEdit_1.style.top = (clazz_1.getPos().y + clazz_1.getSize().y) + 52 + 'px';
-            divInlineEdit_1.style.left = clazz_1.getPos().x + 'px';
-            divInlineEdit_1.style.width = clazz_1.getSize().x + 'px';
-            divInlineEdit_1.style.zIndex = '42';
-            var inputText_1 = document.createElement('input');
-            inputText_1.type = 'text';
-            inputText_1.style.width = '100%';
-            inputText_1.placeholder = 'Add properties, edit label';
-            divInlineEdit_1.appendChild(inputText_1);
-            document.body.appendChild(divInlineEdit_1);
-            inputText_1.addEventListener('focusout', function (evt) {
-                if (util_1.Util.isChrome()) {
-                    if ((!inputText_1.value || inputText_1.value.length === 0) && (!_this.lastSelectedNode || element.id != _this.lastSelectedNode.id)) {
-                        _this.removeLastInlineEdit();
-                    }
-                    return;
-                }
-                if ((!inputText_1.value || inputText_1.value.length === 0)) {
-                    _this.removeLastInlineEdit();
-                }
-            });
-            var g = this.graph;
-            var propertyTypes_1 = ['boolean', 'byte', 'char', 'double', 'float', 'int', 'long', 'short', 'String', 'void'];
-            inputText_1.addEventListener('keydown', function (evt) {
-                var keyCode = evt.which;
-                var inputValue = inputText_1.value;
-                if (util_1.Util.endsWith(inputValue, ':') && !document.getElementById('selectPropertyType')) {
-                    var selectType_1 = document.createElement('select');
-                    selectType_1.id = 'selectPropertyType';
-                    selectType_1.style.width = '100%';
-                    for (var _i = 0, propertyTypes_2 = propertyTypes_1; _i < propertyTypes_2.length; _i++) {
-                        var type = propertyTypes_2[_i];
-                        var selectOption = document.createElement('option');
-                        selectOption.value = type;
-                        selectOption.innerHTML = type;
-                        selectType_1.appendChild(selectOption);
-                    }
-                    selectType_1.addEventListener('change', function (evt) {
-                        var inputValueSplitted = inputValue.split(':');
-                        var selectedPropertyType = selectType_1.options[selectType_1.selectedIndex].value;
-                        if (inputValueSplitted.length >= 1) {
-                            inputText_1.value = inputValueSplitted[0].trim() + ' : ' + selectedPropertyType;
-                            inputText_1.focus();
-                        }
-                    });
-                    divInlineEdit_1.appendChild(selectType_1);
-                }
-                else if (!util_1.Util.includes(inputValue, ':')) {
-                    var selectType_2 = document.getElementById('selectPropertyType');
-                    if (selectType_2) {
-                        selectType_2.remove();
-                    }
-                }
-                if (keyCode !== 13) {
-                    return;
-                }
-                if (util_1.Util.includes(inputValue, ':') && !(util_1.Util.includes(inputValue, '(') && util_1.Util.includes(inputValue, ')'))) {
-                    clazz_1.addAttribute(inputValue.trim());
-                    clazz_1.reDraw();
-                }
-                else if (util_1.Util.includes(inputValue, '(') && util_1.Util.includes(inputValue, ')')) {
-                    clazz_1.addMethod(inputValue.trim());
-                    clazz_1.reDraw();
-                }
-                else if (inputValue.trim().split(' ').length === 1 && inputValue.trim().length > 0) {
-                    clazz_1.updateLabel(inputValue.trim());
-                }
-                divInlineEdit_1.style.top = (clazz_1.getPos().y + clazz_1.getSize().y) + 52 + 'px';
-                divInlineEdit_1.style.left = clazz_1.getPos().x + 'px';
-                divInlineEdit_1.style.width = clazz_1.getSize().x + 'px';
-                inputText_1.value = '';
-                var selectType = document.getElementById('selectPropertyType');
-                if (selectType) {
-                    selectType.remove();
-                }
-            });
-            divInlineEdit_1.children[0].focus();
-            return true;
-        }
-        if (element instanceof edges_1.Association) {
-            this.graph.root.appendChild(element.$view);
-            this.graph.root.appendChild(element.$sNode.$view);
-            this.graph.root.appendChild(element.$tNode.$view);
-            this.graph.root.appendChild(this.deleteShape);
-            this.setTooltipOfShape(this.deleteShape, 'Delete edge');
-            this.deleteShape.setAttributeNS(null, 'visibility', 'visible');
-            this.addEdgeShape.setAttributeNS(null, 'visibility', 'hidden');
-            this.copyNodeShape.setAttributeNS(null, 'visibility', 'hidden');
-            this.deleteShape.setAttributeNS(null, 'transform', "translate(" + x + " " + y + ")");
-            this.deleteShape.onclick = function (e) { return _this.graph.$graphModel.removeElement(element.id); };
-            this.resetLastSelectedElements();
-            var edge = element;
-            this.lastSelectedEdge = edge.$view;
-            util_1.Util.addClass(this.lastSelectedEdge, 'SVGEdge-selected');
-        }
-        return true;
-    };
-    Select.prototype.setTooltipOfShape = function (shape, tooltip) {
-        if (!shape || !shape.hasChildNodes()) {
-            return;
-        }
-        var titleElement = shape.childNodes[0];
-        if (!titleElement || titleElement.tagName !== 'title') {
-            return;
-        }
-        titleElement.textContent = tooltip;
-    };
-    Select.prototype.resetLastSelectedElements = function () {
-        if (this.lastSelectedNode) {
-            util_1.Util.removeClass(this.lastSelectedNode, 'SVGClazz-selected');
-            this.lastSelectedNode = undefined;
-        }
-        if (this.lastSelectedEdge) {
-            util_1.Util.removeClass(this.lastSelectedEdge, 'SVGEdge-selected');
-            this.lastSelectedEdge = undefined;
-        }
-        this.removeLastInlineEdit();
-    };
-    Select.prototype.removeLastInlineEdit = function () {
-        var lastInlineEdit = document.getElementById('inlineEdit');
-        if (lastInlineEdit) {
-            document.body.removeChild(lastInlineEdit);
-        }
-    };
-    Select.prototype.canHandle = function () {
-        return EventBus_1.EventBus.isHandlerActiveOrFree(Select.name);
-    };
-    Select.prototype.setActive = function (active) {
-        if (active) {
-            EventBus_1.EventBus.setActiveHandler(Select.name);
-        }
-        else {
-            EventBus_1.EventBus.releaseActiveHandler();
-        }
-    };
-    return Select;
-}());
-exports.Select = Select;
-
-
-/***/ }),
-/* 55 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var EventBus_1 = __webpack_require__(3);
-var Zoom = (function () {
-    function Zoom(graph) {
-    }
-    Zoom.prototype.handle = function (e, element) {
-        var delta = e.deltaY || e.wheelDeltaY || -e.wheelDelta;
-        var d = 1 + (delta / 1000);
-        var values = this.graph.root.getAttribute('viewBox').split(' ');
-        var newViewBox = values[0] + " " + values[1] + " " + parseInt(values[2]) * d + " " + parseInt(values[3]) * d;
-        this.graph.root.setAttribute('viewBox', newViewBox);
-        e.preventDefault();
-        return true;
-    };
-    Zoom.prototype.canHandle = function () {
-        return EventBus_1.EventBus.isHandlerActiveOrFree(Zoom.name);
-    };
-    Zoom.prototype.setActive = function (active) {
-        if (active) {
-            EventBus_1.EventBus.setActiveHandler(Zoom.name);
-        }
-        else {
-            EventBus_1.EventBus.releaseActiveHandler();
-        }
-    };
-    return Zoom;
-}());
-exports.Zoom = Zoom;
-
-
-/***/ }),
-/* 56 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var util_1 = __webpack_require__(0);
-var EventBus_1 = __webpack_require__(3);
-var index_1 = __webpack_require__(5);
-var NewEdge = (function () {
-    function NewEdge(graph) {
-        this.graph = graph;
-    }
-    NewEdge.prototype.setActive = function (active) {
-        if (active) {
-            EventBus_1.EventBus.setActiveHandler(NewEdge.name);
-        }
-        else {
-            EventBus_1.EventBus.releaseActiveHandler();
-        }
-    };
-    NewEdge.prototype.canHandle = function () {
-        return EventBus_1.EventBus.isHandlerActiveOrFree(NewEdge.name);
-    };
-    NewEdge.prototype.handle = function (event, element) {
-        if (!(event.ctrlKey || EventBus_1.EventBus.isHandlerActiveOrFree('NewEdge', true))) {
-            this.removeLine();
-            return true;
-        }
-        switch (event.type) {
-            case 'mousedown':
-                if (element instanceof index_1.Node) {
-                    this.start(event, element);
-                    this.setActive(true);
-                }
-                break;
-            case 'mousemove':
-                this.drawEdge(event, element);
-                break;
-            case 'mouseleave':
-                this.setActive(false);
-                break;
-            case 'mouseup':
-                this.setNewEdgeToNode(event);
-                this.setActive(false);
-                break;
-            default: break;
-        }
-        return true;
-    };
-    NewEdge.prototype.drawEdge = function (evt, element) {
-        if (!this.isEdgeDrawing) {
-            return;
-        }
-        var lineToX = util_1.Util.getEventX(evt);
-        var lineToy = util_1.Util.getEventY(evt);
-        var path = "M" + this.x + " " + this.y + " L" + lineToX + " " + lineToy;
-        if (!this.svgLine) {
-            var attr = {
-                tag: 'path',
-                id: 'newEdgePath',
-                d: path,
-                class: 'SVGEdge'
-            };
-            var shape = util_1.Util.createShape(attr);
-            this.svgLine = shape;
-            this.graph.root.appendChild(shape);
-            this.graph.root.appendChild(this.sourceNode.$view);
-        }
-        else {
-            this.svgLine.setAttributeNS(null, 'd', path);
-            var targetNode = this.graph.$graphModel.getNodeByPosition(util_1.Util.getEventX(evt), util_1.Util.getEventY(evt));
-            if (targetNode) {
-                if (this.lastTargetNode && this.lastTargetNode.id !== targetNode.id) {
-                    this.lastTargetNode.$view.setAttributeNS(null, 'class', 'SVGClazz');
-                }
-                this.lastTargetNode = targetNode;
-                this.lastTargetNode.$view.setAttributeNS(null, 'class', 'SVGClazz-drawedge');
-            }
-            else if (this.lastTargetNode) {
-                this.lastTargetNode.$view.setAttributeNS(null, 'class', 'SVGClazz');
-            }
-        }
-    };
-    NewEdge.prototype.removeLine = function () {
-        this.isEdgeDrawing = false;
-        if (this.svgLine) {
-            this.graph.root.removeChild(this.svgLine);
-            this.svgLine = null;
-        }
-        if (this.lastTargetNode) {
-            this.lastTargetNode.$view.setAttributeNS(null, 'class', 'SVGClazz');
-        }
-    };
-    NewEdge.prototype.setNewEdgeToNode = function (event) {
-        var targetNode = this.graph.$graphModel
-            .getNodeByPosition(util_1.Util.getEventX(event), util_1.Util.getEventY(event));
-        if (!targetNode) {
-            this.removeLine();
-            return;
-        }
-        this.removeLine();
-        var edgeType = this.sourceNode.$defaulEdgeType || 'Association';
-        var jsonData = {
-            type: edgeType,
-            source: this.sourceNode.label,
-            target: targetNode.label
-        };
-        var newEdge = this.graph.$graphModel.addEdge(jsonData, true);
-        this.graph.drawElement(newEdge);
-    };
-    NewEdge.prototype.start = function (evt, element) {
-        if (this.isEdgeDrawing) {
-            return;
-        }
-        this.isEdgeDrawing = true;
-        this.sourceNode = element;
-        this.x = this.sourceNode.getPos().x + (this.sourceNode.getSize().x / 2);
-        this.y = this.sourceNode.getPos().y + (this.sourceNode.getSize().y / 2);
-        var lastInlineEdit = document.getElementById('inlineEdit');
-        if (lastInlineEdit) {
-            document.body.removeChild(lastInlineEdit);
-        }
-    };
-    return NewEdge;
-}());
-exports.NewEdge = NewEdge;
-
-
-/***/ }),
-/* 57 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var EventBus_1 = __webpack_require__(3);
-var util_1 = __webpack_require__(0);
+var EventBus_1 = __webpack_require__(/*! ../EventBus */ "./EventBus.ts");
+var util_1 = __webpack_require__(/*! ../util */ "./util.ts");
 var AddNode = (function () {
     function AddNode(graph) {
         this.MIN_SIZE_TO_ADD_NODE = 30;
@@ -9263,7 +8378,7 @@ var AddNode = (function () {
             return;
         }
         this.removeRect();
-        var node = this.graph.addElementWithValues('Clazz', { x: this.x, y: this.y });
+        var node = this.graph.addElementWithValues('Class', { x: this.x, y: this.y });
         this.graph.drawElement(node);
     };
     AddNode.prototype.start = function (evt, element) {
@@ -9280,483 +8395,1893 @@ exports.AddNode = AddNode;
 
 
 /***/ }),
-/* 58 */
+
+/***/ "./handlers/Drag.ts":
+/*!**************************!*\
+  !*** ./handlers/Drag.ts ***!
+  \**************************/
+/*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var EventBus_1 = __webpack_require__(3);
-var properties = __webpack_require__(29);
-var main_1 = __webpack_require__(9);
-var Clazz_1 = __webpack_require__(17);
-var PropertiesDispatcher = (function () {
-    function PropertiesDispatcher(graph) {
-        this._blankView = new properties.PropertiesPanel.BlankView(graph);
-        this._graph = graph;
+var EventBus_1 = __webpack_require__(/*! ../EventBus */ "./EventBus.ts");
+var BaseElements_1 = __webpack_require__(/*! ../elements/BaseElements */ "./elements/BaseElements.ts");
+var nodes_1 = __webpack_require__(/*! ../elements/nodes */ "./elements/nodes/index.ts");
+var util_1 = __webpack_require__(/*! ../util */ "./util.ts");
+var Drag = (function () {
+    function Drag(graph) {
+        this.dragging = false;
+        this.reinsert = false;
+        this.mouseOffset = new BaseElements_1.Point();
+        this.graph = graph;
     }
-    PropertiesDispatcher.prototype.dispatch = function (view) {
-        var createdView = this.createView(view);
-        this._blankView.show(createdView);
-    };
-    PropertiesDispatcher.prototype.getCurrentView = function () {
-        return this._blankView.getCurrentView();
-    };
-    PropertiesDispatcher.prototype.openProperties = function () {
-        this._blankView.openProperties();
-    };
-    PropertiesDispatcher.prototype.handle = function (event, element) {
-        this.handleOpenProperties(event, element);
-        if (event.type === EventBus_1.EventBus.RELOADPROPERTIES
-            && this._selectedElement && element.id === this._selectedElement.id) {
-            this.handleSelectNodeEvent(event, element);
-            this.handleSelectEdgeEvent(event, element);
-        }
-        if (this._selectedElement && this._selectedElement.id === element.id) {
+    Drag.prototype.handle = function (event, element) {
+        if (!this.canHandle()) {
             return true;
         }
-        if (element.id === 'RootElement') {
-            this.dispatch(properties.PropertiesPanel.PropertiesView.Clear);
-            this.setPropertiesHeaderText('Select any element to see its properties');
+        switch (event.type) {
+            case 'mousedown':
+                if ((!this.dragging) && (element.id !== 'RootElement')) {
+                    this.element = element;
+                    this.svgElement = element.$view;
+                    this.start(event, element);
+                    this.setActive(true);
+                }
+                break;
+            case 'mouseup':
+                if (this.dragging) {
+                    this.reset();
+                }
+                this.setActive(false);
+                break;
+            case 'mousemove':
+                if (this.dragging) {
+                    this.drag(event, element);
+                }
+                break;
+            case 'mouseleave':
+                if (this.dragging) {
+                    this.reset();
+                }
+                this.setActive(false);
+                break;
+            default:
+                break;
         }
-        this._selectedElement = element;
-        this.handleSelectNodeEvent(event, element);
-        this.handleSelectEdgeEvent(event, element);
         return true;
     };
-    PropertiesDispatcher.prototype.setPropertiesHeaderText = function (text) {
-        this._blankView.setPropertiesHeaderText(text);
+    Drag.prototype.canHandle = function () {
+        return EventBus_1.EventBus.isHandlerActiveOrFree(Drag.name);
     };
-    PropertiesDispatcher.prototype.canHandle = function () {
-        return EventBus_1.EventBus.isHandlerActiveOrFree(PropertiesDispatcher.name);
-    };
-    PropertiesDispatcher.prototype.setActive = function (active) {
+    Drag.prototype.setActive = function (active) {
         if (active) {
-            EventBus_1.EventBus.setActiveHandler(PropertiesDispatcher.name);
+            EventBus_1.EventBus.setActiveHandler(Drag.name);
         }
         else {
             EventBus_1.EventBus.releaseActiveHandler();
         }
     };
-    PropertiesDispatcher.prototype.createView = function (view) {
-        var panel;
-        if (view === properties.PropertiesPanel.PropertiesView.Clazz) {
-            panel = new properties.PropertiesPanel.ClassPanel();
-        }
-        if (view === properties.PropertiesPanel.PropertiesView.Clear) {
-            panel = new properties.PropertiesPanel.ClearPanel();
-        }
-        if (view === properties.PropertiesPanel.PropertiesView.Edge) {
-            panel = new properties.PropertiesPanel.EdgePanel();
-        }
-        panel.init();
-        return panel;
-    };
-    PropertiesDispatcher.prototype.handleOpenProperties = function (event, element) {
-        if (event.type === 'dblclick') {
-            event.stopPropagation();
-            this.openProperties();
+    Drag.prototype.reset = function () {
+        this.dragging = false;
+        this.svgElement.style.cursor = 'pointer';
+        if (util_1.Util.isChrome()) {
+            var clickEvt = util_1.Util.createCustomEvent('click');
+            this.svgElement.dispatchEvent(clickEvt);
         }
     };
-    PropertiesDispatcher.prototype.handleSelectEdgeEvent = function (event, element) {
-        if (!(element instanceof main_1.Association)) {
-            return false;
-        }
-        var edge = element;
-        this.dispatch(properties.PropertiesPanel.PropertiesView.Edge);
-        this._blankView.setPropertiesHeaderText('Properties of Edge: ' + edge.$sNode.label + '---' + edge.$tNode.label);
-        var g = this._graph;
-        var cBoxEdgeType = document.getElementById('edgeTypeSelect');
-        cBoxEdgeType.value = edge.type;
-        cBoxEdgeType.addEventListener('change', function () {
-            var selectedType = cBoxEdgeType.options[cBoxEdgeType.selectedIndex].value;
-            var newEdge = edge.convertEdge(selectedType, g.$graphModel.getNewId(selectedType), true);
-            edge = newEdge;
-        });
-        var inputTypeEdgeLabel = document.getElementById('edgeLabelInput');
-        inputTypeEdgeLabel.setAttribute('value', edge.$sNode.label + ' -> ' + edge.$tNode.label);
-        var inputTypeEdgeSrc = document.getElementById('edgeSrcInput');
-        inputTypeEdgeSrc.setAttribute('value', edge.$sNode.label);
-        var inputEdgeSrcProperty = document.getElementById('edgeSrcProperty');
-        inputEdgeSrcProperty.addEventListener('input', function (evt) {
-            edge.updateSrcProperty(inputEdgeSrcProperty.value);
-        });
-        var inputEdgeSrcCardinality = document.getElementById('inputEdgeSrcCardinality');
-        inputEdgeSrcCardinality.addEventListener('input', function (evt) {
-            edge.updateSrcCardinality(inputEdgeSrcCardinality.value);
-        });
-        if (edge.sourceInfo) {
-            inputEdgeSrcProperty.setAttribute('value', edge.sourceInfo.property);
-            inputEdgeSrcCardinality.setAttribute('value', edge.sourceInfo.cardinality);
-        }
-        var inputEdgeTargetProperty = document.getElementById('edgeTargetProperty');
-        inputEdgeTargetProperty.addEventListener('input', function (evt) {
-            edge.updateTargetProperty(inputEdgeTargetProperty.value);
-        });
-        var inputEdgeTargetCardinality = document.getElementById('inputEdgeTargetCardinality');
-        inputEdgeTargetCardinality.addEventListener('input', function (evt) {
-            edge.updateTargetCardinality(inputEdgeTargetCardinality.value);
-        });
-        if (edge.targetInfo) {
-            inputEdgeTargetProperty.setAttribute('value', edge.targetInfo.property);
-            inputEdgeTargetCardinality.setAttribute('value', edge.targetInfo.cardinality);
-        }
-        var inputTypeEdgeTarget = document.getElementById('edgeTargetInput');
-        inputTypeEdgeTarget.setAttribute('value', edge.$tNode.label);
-        return true;
+    Drag.prototype.start = function (evt, element) {
+        this.dragging = true;
+        this.mouseOffset.x = evt.clientX;
+        this.mouseOffset.y = evt.clientY;
+        this.reinsert = true;
+        this.svgElement.style.cursor = 'move';
     };
-    PropertiesDispatcher.prototype.handleSelectNodeEvent = function (event, element) {
-        if (!(element instanceof Clazz_1.Clazz)) {
-            return false;
-        }
-        var that = this;
-        var graph = this._graph;
-        var clazz = element;
-        this.dispatch(properties.PropertiesPanel.PropertiesView.Clazz);
-        this._blankView.setPropertiesHeaderText('Properties of Class: ' + clazz.label);
-        var classNameInputText = document.getElementById('className');
-        classNameInputText.setAttribute('value', clazz.label);
-        classNameInputText.addEventListener('input', function () {
-            clazz.updateLabel(classNameInputText.value);
-        });
-        var clasModifierSelect = document.getElementById('classModifier');
-        clasModifierSelect.setAttribute('value', clazz.label);
-        clasModifierSelect.addEventListener('change', function () {
-            clazz.updateModifier(clasModifierSelect.value);
-        });
-        var tabContentAttr = document.getElementById('clazzattribute');
-        var divAddAttr = document.getElementById('clazzattributeAdd');
-        while (tabContentAttr.firstChild) {
-            tabContentAttr.removeChild(tabContentAttr.firstChild);
-        }
-        var attributes = clazz.getAttributes();
-        for (var _i = 0, attributes_1 = attributes; _i < attributes_1.length; _i++) {
-            var attr = attributes_1[_i];
-            var divEditAttr = this.createDivEditProperty(clazz, attr, 'attribute', tabContentAttr);
-            tabContentAttr.appendChild(divEditAttr);
-        }
-        tabContentAttr.appendChild(divAddAttr);
-        var btnAddAttr = document.getElementById('clazzattributeBtnAddattribute');
-        btnAddAttr.addEventListener('click', function () {
-            var modifier = document.getElementById('clazzattributeAddModifier');
-            var name = document.getElementById('clazzattributeAddName');
-            var type = document.getElementById('clazzattributeAddType');
-            if (!name.value || name.value.length == 0) {
-                return;
+    Drag.prototype.drag = function (evt, element) {
+        if (this.reinsert) {
+            if (this.element.id !== 'RootElement') {
+                this.graph.root.appendChild(this.svgElement);
             }
-            var attrValue = modifier.value + " " + name.value + " : " + type.value;
-            var newAttribute = clazz.addAttribute(attrValue);
-            var divEditNewAttr = that.createDivEditProperty(clazz, newAttribute, 'attribute', tabContentAttr);
-            modifier.value = '+';
-            name.value = '';
-            type.value = '';
-            tabContentAttr.insertBefore(divEditNewAttr, divAddAttr);
-            clazz.reDraw();
-        });
-        var tabContentMethods = document.getElementById('clazzmethod');
-        var divAddMethod = document.getElementById('clazzmethodAdd');
-        while (tabContentMethods.firstChild) {
-            tabContentMethods.removeChild(tabContentMethods.firstChild);
+            var dragEvent = util_1.Util.createCustomEvent('drag');
+            element.$view.dispatchEvent(dragEvent);
         }
-        var methods = clazz.getMethods();
-        for (var _a = 0, methods_1 = methods; _a < methods_1.length; _a++) {
-            var method = methods_1[_a];
-            var divEditMethod = this.createDivEditProperty(clazz, method, 'method', tabContentMethods);
-            tabContentMethods.appendChild(divEditMethod);
+        this.reinsert = false;
+        evt.stopPropagation();
+        var translation = this.svgElement.getAttributeNS(null, 'transform').slice(10, -1).split(' ');
+        var sx = parseInt(translation[0]);
+        var sy = 0;
+        if (translation.length > 1) {
+            sy = parseInt(translation[1]);
         }
-        tabContentMethods.appendChild(divAddMethod);
-        var btnAddMethod = document.getElementById('clazzmethodBtnAddmethod');
-        btnAddMethod.addEventListener('click', function () {
-            var modifier = document.getElementById('clazzmethodAddModifier');
-            var name = document.getElementById('clazzmethodAddName');
-            var type = document.getElementById('clazzmethodAddType');
-            if (!name.value || name.value.length == 0) {
-                return;
-            }
-            var methodValue = modifier.value + " " + name.value + " : " + type.value;
-            var newMethod = clazz.addMethod(methodValue);
-            var divEditNewMethod = that.createDivEditProperty(clazz, newMethod, 'method', tabContentMethods);
-            modifier.value = '+';
-            name.value = '';
-            type.value = '';
-            tabContentMethods.insertBefore(divEditNewMethod, divAddMethod);
-            clazz.reDraw();
-        });
-        return true;
-    };
-    PropertiesDispatcher.prototype.createDivEditProperty = function (clazz, prop, propType, tabContentAttr) {
-        var divEditProp = document.createElement('div');
-        divEditProp.style.marginTop = '5px';
-        var selectPropModifier = document.createElement('select');
-        var modifierObj = {};
-        modifierObj['public'] = '+';
-        modifierObj['private'] = '-';
-        modifierObj['protected'] = '#';
-        modifierObj['package'] = '~';
-        for (var title in modifierObj) {
-            var modifierOption = document.createElement('option');
-            modifierOption.value = modifierObj[title];
-            modifierOption.innerHTML = modifierObj[title];
-            modifierOption.title = title;
-            selectPropModifier.appendChild(modifierOption);
+        var transX = sx + evt.clientX - this.mouseOffset.x;
+        var transY = sy + evt.clientY - this.mouseOffset.y;
+        this.svgElement.setAttributeNS(null, 'transform', 'translate(' + transX + ' ' + transY + ')');
+        this.element.getPos().addNum(transX - sx, transY - sy);
+        if (this.element instanceof nodes_1.Node) {
+            this.element.redrawEdges();
         }
-        selectPropModifier.value = prop.modifier;
-        selectPropModifier.addEventListener('input', function () {
-            prop.updateModifier(selectPropModifier.options[selectPropModifier.selectedIndex].value);
-        });
-        var textBoxPropName = document.createElement('input');
-        textBoxPropName.style.marginLeft = '5px';
-        textBoxPropName.style.marginRight = '5px';
-        textBoxPropName.type = 'text';
-        textBoxPropName.value = prop.name;
-        textBoxPropName.addEventListener('input', function () {
-            prop.updateName(textBoxPropName.value);
-            clazz.reDraw(true);
-        });
-        var dataListTypes = document.getElementById('dataTypes');
-        var selectPropType = document.createElement('input');
-        if (dataListTypes) {
-            selectPropType.setAttribute('list', dataListTypes.id);
-        }
-        selectPropType.value = prop.type;
-        selectPropType.addEventListener('input', function () {
-            prop.updateType(selectPropType.value);
-            clazz.reDraw(true);
-        });
-        var btnDelete = document.createElement('button');
-        btnDelete.innerHTML = 'X';
-        btnDelete.title = 'Delete ' + propType;
-        btnDelete.style.marginLeft = '5px';
-        btnDelete.style.color = 'red';
-        btnDelete.addEventListener('click', function () {
-            clazz.removeProperty(prop);
-            tabContentAttr.removeChild(divEditProp);
-            clazz.reDraw();
-        });
-        divEditProp.appendChild(selectPropModifier);
-        divEditProp.appendChild(textBoxPropName);
-        divEditProp.appendChild(selectPropType);
-        divEditProp.appendChild(btnDelete);
-        return divEditProp;
-    };
-    return PropertiesDispatcher;
-}());
-exports.PropertiesDispatcher = PropertiesDispatcher;
-
-
-/***/ }),
-/* 59 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var Toolbar = (function () {
-    function Toolbar(graph) {
-        this.graph = graph;
-    }
-    Toolbar.prototype.show = function () {
-        var _this = this;
-        if (this.mainDiv) {
+        this.mouseOffset.x = evt.clientX;
+        this.mouseOffset.y = evt.clientY;
+        var maxX = this.element.getPos().x + this.element.getSize().x;
+        var maxY = this.element.getPos().y + this.element.getSize().y;
+        var domRectRoot = this.graph.root.getBoundingClientRect();
+        if (!domRectRoot) {
             return;
         }
-        this.mainDiv = document.createElement('div');
-        this.mainDiv.className = 'toolbar';
-        var h1Logo = document.createElement('h1');
-        h1Logo.className = 'logo';
-        h1Logo.textContent = 'DiagramJS';
-        var btnAutoLayout = document.createElement('button');
-        btnAutoLayout.id = 'layoutBtn';
-        btnAutoLayout.style.marginLeft = '195px';
-        btnAutoLayout.style.marginTop = '12px';
-        btnAutoLayout.textContent = 'Auto Layout';
-        btnAutoLayout.onclick = function () {
-            _this.graph.layout();
-        };
-        this.mainDiv.appendChild(h1Logo);
-        this.mainDiv.appendChild(btnAutoLayout);
-        var btnDeleteAll = document.createElement('button');
-        btnDeleteAll.id = 'btnDeleteAll';
-        btnDeleteAll.textContent = 'Delete All';
-        btnDeleteAll.title = 'Delete all nodes from diagram';
-        btnDeleteAll.style.marginLeft = '20px';
-        btnDeleteAll.style.marginTop = '12px';
-        btnDeleteAll.onclick = function () {
-            var confirmDelete = confirm('All classes will be deleted!');
-            if (!confirmDelete) {
-                return;
-            }
-            _this.graph.$graphModel.removeAllElements();
-        };
-        this.mainDiv.appendChild(btnDeleteAll);
-        var divGenerate = document.createElement('div');
-        divGenerate.style.display = 'inline';
-        divGenerate.style.marginLeft = '20px';
-        var inputGenerateWorkspace = document.createElement('input');
-        inputGenerateWorkspace.id = 'inputWorkspace';
-        inputGenerateWorkspace.type = 'text';
-        inputGenerateWorkspace.placeholder = 'Type your workspace for generated code...';
-        inputGenerateWorkspace.style.marginRight = '5px';
-        inputGenerateWorkspace.style.width = '260px';
-        var btnGenerate = document.createElement('button');
-        btnGenerate.textContent = 'Generate';
-        btnGenerate.title = 'Generate code into your workspace';
-        btnGenerate.onclick = function () {
-            var workspace = inputGenerateWorkspace.value;
-            if (workspace.length === 0) {
-                alert('No workspace set.\nEnter first your workspace');
-                inputGenerateWorkspace.focus();
-                return;
-            }
-            _this.graph.generate(workspace);
-        };
-        divGenerate.appendChild(inputGenerateWorkspace);
-        divGenerate.appendChild(btnGenerate);
-        this.mainDiv.appendChild(divGenerate);
-        var divExport = document.createElement('div');
-        divExport.style.display = 'inline';
-        divExport.style.marginLeft = '20px';
-        var exportTypes = ['Export', 'HTML', 'JSON', 'PDF', 'PNG', 'SVG'];
-        var selectExport = document.createElement('select');
-        exportTypes.forEach(function (type) {
-            var option = document.createElement('option');
-            option.value = type;
-            option.textContent = type;
-            selectExport.appendChild(option);
-        });
-        selectExport.onchange = function (evt) {
-            var selectedExportType = selectExport.options[selectExport.selectedIndex].value;
-            selectExport.selectedIndex = 0;
-            _this.graph.saveAs(selectedExportType);
-        };
-        divExport.appendChild(selectExport);
-        this.mainDiv.appendChild(divExport);
-        document.body.appendChild(this.mainDiv);
+        if (maxX > domRectRoot.width) {
+            this.graph.root.setAttributeNS(null, 'width', '' + maxX);
+        }
+        if (maxY > domRectRoot.height) {
+            this.graph.root.setAttributeNS(null, 'height', '' + maxY);
+        }
     };
-    return Toolbar;
+    return Drag;
 }());
-exports.Toolbar = Toolbar;
+exports.Drag = Drag;
 
 
 /***/ }),
-/* 60 */
+
+/***/ "./handlers/GraphListener.ts":
+/*!***********************************!*\
+  !*** ./handlers/GraphListener.ts ***!
+  \***********************************/
+/*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
 Object.defineProperty(exports, "__esModule", { value: true });
-var Data_1 = __webpack_require__(7);
-var UML;
-(function (UML) {
-    var Clazz = (function (_super) {
-        __extends(Clazz, _super);
-        function Clazz() {
-            var _this = _super.call(this) || this;
-            _this.property = 'Clazz';
-            return _this;
+var GraphListener = (function () {
+    function GraphListener(owner) {
+        this.$owner = owner;
+    }
+    GraphListener.prototype.propertyChange = function (entity, property, oldValue, newValue) {
+        var adapter = this.$owner.getRoot().getAdapter();
+        if (adapter) {
+            var myId = this.$owner.$owner.getId();
+            if (myId && myId.length > 0) {
+                var pos = myId.indexOf(':');
+                if (pos > 0) {
+                    myId = myId.substring(0, pos).trim();
+                }
+            }
+            var myName = this.$owner.getName();
+            var remJson = {};
+            remJson[myName] = oldValue;
+            var updJson = {};
+            updJson[myName] = newValue;
+            var json = {};
+            json['id'] = myId;
+            json['rem'] = remJson;
+            json['upd'] = updJson;
+            var message = JSON.stringify(json);
+            adapter.update(message);
         }
-        Clazz.prototype.getName = function () {
-            return this.prop[Clazz.NAME];
-        };
-        Clazz.prototype.setName = function (newValue) {
-            this.setValue(Clazz.NAME, newValue);
-        };
-        Clazz.prototype.getAttributes = function () {
-            return this.prop[Clazz.ATTRIBUTES];
-        };
-        Clazz.prototype.addToAttributes = function (newValue) {
-            this.addTo(Clazz.ATTRIBUTES, newValue);
-        };
-        Clazz.prototype.removeFromAttributes = function (newValue) {
-            this.removeFrom(Clazz.ATTRIBUTES, newValue);
-        };
-        Clazz.NAME = 'name';
-        Clazz.ATTRIBUTES = 'attributes';
-        Clazz.METHODS = 'methods';
-        return Clazz;
-    }(Data_1.default));
-    UML.Clazz = Clazz;
-    var Attribute = (function (_super) {
-        __extends(Attribute, _super);
-        function Attribute() {
-            var _this = _super.call(this) || this;
-            _this.property = 'Attribute';
-            return _this;
-        }
-        Attribute.prototype.getName = function () {
-            return this.prop[Clazz.NAME];
-        };
-        Attribute.prototype.setName = function (newValue) {
-            this.setValue(Clazz.NAME, newValue);
-        };
-        return Attribute;
-    }(Data_1.default));
-    UML.Attribute = Attribute;
-    var Methods = (function (_super) {
-        __extends(Methods, _super);
-        function Methods() {
-            return _super !== null && _super.apply(this, arguments) || this;
-        }
-        return Methods;
-    }(Data_1.default));
-    UML.Methods = Methods;
-})(UML = exports.UML || (exports.UML = {}));
-window['UML'] = UML;
+    };
+    return GraphListener;
+}());
+exports.GraphListener = GraphListener;
 
 
 /***/ }),
-/* 61 */
+
+/***/ "./handlers/ImportFile.ts":
+/*!********************************!*\
+  !*** ./handlers/ImportFile.ts ***!
+  \********************************/
+/*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
 Object.defineProperty(exports, "__esModule", { value: true });
-var Graph_1 = __webpack_require__(8);
-var ClassEditor = (function (_super) {
-    __extends(ClassEditor, _super);
-    function ClassEditor(json, options) {
+var EventBus_1 = __webpack_require__(/*! ../EventBus */ "./EventBus.ts");
+var util_1 = __webpack_require__(/*! ../util */ "./util.ts");
+var ImportFile = (function () {
+    function ImportFile(graph) {
+        this.graph = graph;
+    }
+    ImportFile.prototype.setActive = function (active) {
+        if (active) {
+            EventBus_1.EventBus.setActiveHandler(ImportFile.name);
+        }
+        else {
+            EventBus_1.EventBus.releaseActiveHandler();
+        }
+    };
+    ImportFile.prototype.canHandle = function () {
+        return EventBus_1.EventBus.isHandlerActiveOrFree(ImportFile.name);
+    };
+    ImportFile.prototype.handle = function (event, element) {
+        var type = typeof event;
+        if (type !== 'DragEvent') {
+            return false;
+        }
+        var evt = event;
+        if (evt.type === 'dragover') {
+            this.handleDragOver(evt);
+        }
+        else if (evt.type === 'dragleave') {
+            if (this.graph.$view !== evt.target) {
+                return false;
+            }
+            this.setBoardStyle('dragleave');
+        }
+        else if (evt.type === 'drop') {
+            this.handleLoadFile(evt);
+        }
+        return true;
+    };
+    ImportFile.prototype.setBoardStyle = function (typ) {
+        var b = this.graph.$view;
+        util_1.Util.removeClass(b, 'Error');
+        util_1.Util.removeClass(b, 'Ok');
+        util_1.Util.removeClass(b, 'Add');
+        if (typ === 'dragleave') {
+            if (b['errorText']) {
+                b.removeChild(b['errorText']);
+                b['errorText'] = null;
+            }
+            return true;
+        }
+        util_1.Util.addClass(b, typ);
+        if (typ === 'Error') {
+            if (!b['errorText']) {
+                b['errorText'] = util_1.Util.create({ tag: 'div', style: 'margin-top: 30%', value: 'NO TEXTFILE' });
+                b.appendChild(b['errorText']);
+            }
+            return true;
+        }
+        return false;
+    };
+    ImportFile.prototype.handleLoadFile = function (evt) {
+        evt.stopPropagation();
+        evt.preventDefault();
+        var files = evt.dataTransfer.files;
+        if (files.length > 1) {
+            evt.dataTransfer.dropEffect = 'none';
+            return;
+        }
+        var reader = new FileReader();
+        var output = [];
+        var htmlResult = '';
+        var that = this;
+        for (var i = 0, f = void 0; f = files[i]; i++) {
+            reader.onload = function (event) {
+                htmlResult = event.target['result'];
+                console.log('fileContent: ' + htmlResult);
+                if (that.graph) {
+                    that.graph.import(htmlResult);
+                }
+            };
+            reader.readAsText(f);
+        }
+        this.setBoardStyle('dragleave');
+    };
+    ImportFile.prototype.handleDragOver = function (evt) {
+        var error = true, n, f;
+        var files = evt.dataTransfer.files;
+        if (files && files.length > 0) {
+            for (var i = 0; i < files.length; i += 1) {
+                f = files[i];
+                if (f.type.indexOf('text') === 0) {
+                    error = false;
+                }
+                else if (f.type === '') {
+                    n = f.name.toLowerCase();
+                    if (n.indexOf('json', n.length - 4) !== -1) {
+                        error = false;
+                    }
+                }
+            }
+        }
+        else {
+            var items = evt.dataTransfer.items;
+            if (items && items.length > 0) {
+                for (var z = 0; z < items.length; z++) {
+                    if (items[z].type === '' || items[z].type === 'text/plain') {
+                        error = false;
+                    }
+                }
+            }
+            else {
+                return;
+            }
+        }
+        evt.dataTransfer.dropEffect = 'copy';
+        if (error) {
+            this.dragStyler(evt, 'Error');
+        }
+        else if (evt.ctrlKey) {
+            this.dragStyler(evt, 'Add');
+        }
+        else {
+            this.dragStyler(evt, 'Ok');
+        }
+    };
+    ImportFile.prototype.dragStyler = function (event, typ) {
+        event.stopPropagation();
+        event.preventDefault();
+        this.setBoardStyle(typ);
+    };
+    ImportFile.prototype.handleDragLeave = function (evt) {
+        evt.stopPropagation();
+        evt.preventDefault();
+        evt.dataTransfer.dropEffect = 'link';
+        evt.target['className'] = 'diagram';
+        console.log('handDragLeave');
+    };
+    return ImportFile;
+}());
+exports.ImportFile = ImportFile;
+
+
+/***/ }),
+
+/***/ "./handlers/NewEdge.ts":
+/*!*****************************!*\
+  !*** ./handlers/NewEdge.ts ***!
+  \*****************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var util_1 = __webpack_require__(/*! ../util */ "./util.ts");
+var EventBus_1 = __webpack_require__(/*! ../EventBus */ "./EventBus.ts");
+var index_1 = __webpack_require__(/*! ../elements/nodes/index */ "./elements/nodes/index.ts");
+var NewEdge = (function () {
+    function NewEdge(graph) {
+        this.graph = graph;
+    }
+    NewEdge.prototype.setActive = function (active) {
+        if (active) {
+            EventBus_1.EventBus.setActiveHandler(NewEdge.name);
+        }
+        else {
+            EventBus_1.EventBus.releaseActiveHandler();
+        }
+    };
+    NewEdge.prototype.canHandle = function () {
+        return EventBus_1.EventBus.isHandlerActiveOrFree(NewEdge.name);
+    };
+    NewEdge.prototype.handle = function (event, element) {
+        if (!(event.ctrlKey || EventBus_1.EventBus.isHandlerActiveOrFree('NewEdge', true))) {
+            this.removeLine();
+            return true;
+        }
+        switch (event.type) {
+            case 'mousedown':
+                if (element instanceof index_1.Node) {
+                    this.start(event, element);
+                    this.setActive(true);
+                }
+                break;
+            case 'mousemove':
+                this.drawEdge(event, element);
+                break;
+            case 'mouseleave':
+                this.setActive(false);
+                break;
+            case 'mouseup':
+                this.setNewEdgeToNode(event);
+                this.setActive(false);
+                break;
+            default: break;
+        }
+        return true;
+    };
+    NewEdge.prototype.drawEdge = function (evt, element) {
+        if (!this.isEdgeDrawing) {
+            return;
+        }
+        var lineToX = util_1.Util.getEventX(evt);
+        var lineToy = util_1.Util.getEventY(evt);
+        var path = "M" + this.x + " " + this.y + " L" + lineToX + " " + lineToy;
+        if (!this.svgLine) {
+            var attr = {
+                tag: 'path',
+                id: 'newEdgePath',
+                d: path,
+                class: 'SVGEdge'
+            };
+            var shape = util_1.Util.createShape(attr);
+            this.svgLine = shape;
+            this.graph.root.appendChild(shape);
+            this.graph.root.appendChild(this.sourceNode.$view);
+        }
+        else {
+            this.svgLine.setAttributeNS(null, 'd', path);
+            var targetNode = this.graph.$graphModel.getNodeByPosition(util_1.Util.getEventX(evt), util_1.Util.getEventY(evt));
+            if (targetNode) {
+                if (this.lastTargetNode && this.lastTargetNode.id !== targetNode.id) {
+                    this.lastTargetNode.$view.setAttributeNS(null, 'class', 'SVGClazz');
+                }
+                this.lastTargetNode = targetNode;
+                this.lastTargetNode.$view.setAttributeNS(null, 'class', 'SVGClazz-drawedge');
+            }
+            else if (this.lastTargetNode) {
+                this.lastTargetNode.$view.setAttributeNS(null, 'class', 'SVGClazz');
+            }
+        }
+    };
+    NewEdge.prototype.removeLine = function () {
+        this.isEdgeDrawing = false;
+        if (this.svgLine) {
+            this.graph.root.removeChild(this.svgLine);
+            this.svgLine = null;
+        }
+        if (this.lastTargetNode) {
+            this.lastTargetNode.$view.setAttributeNS(null, 'class', 'SVGClazz');
+        }
+    };
+    NewEdge.prototype.setNewEdgeToNode = function (event) {
+        var targetNode = this.graph.$graphModel
+            .getNodeByPosition(util_1.Util.getEventX(event), util_1.Util.getEventY(event));
+        if (!targetNode) {
+            this.removeLine();
+            return;
+        }
+        this.removeLine();
+        var edgeType = this.sourceNode.$defaulEdgeType || 'Association';
+        var jsonData = {
+            type: edgeType,
+            source: this.sourceNode.id,
+            target: targetNode.id
+        };
+        var newEdge = this.graph.$graphModel.addEdge(jsonData, true);
+        this.graph.drawElement(newEdge);
+    };
+    NewEdge.prototype.start = function (evt, element) {
+        if (this.isEdgeDrawing) {
+            return;
+        }
+        this.isEdgeDrawing = true;
+        this.sourceNode = element;
+        this.x = this.sourceNode.getPos().x + (this.sourceNode.getSize().x / 2);
+        this.y = this.sourceNode.getPos().y + (this.sourceNode.getSize().y / 2);
+        var lastInlineEdit = document.getElementById('inlineEdit');
+        if (lastInlineEdit) {
+            document.body.removeChild(lastInlineEdit);
+        }
+    };
+    return NewEdge;
+}());
+exports.NewEdge = NewEdge;
+
+
+/***/ }),
+
+/***/ "./handlers/Select.ts":
+/*!****************************!*\
+  !*** ./handlers/Select.ts ***!
+  \****************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var nodes_1 = __webpack_require__(/*! ../elements/nodes */ "./elements/nodes/index.ts");
+var edges_1 = __webpack_require__(/*! ../elements/edges */ "./elements/edges/index.ts");
+var util_1 = __webpack_require__(/*! ../util */ "./util.ts");
+var Symbol_1 = __webpack_require__(/*! ../elements/nodes/Symbol */ "./elements/nodes/Symbol.ts");
+var EventBus_1 = __webpack_require__(/*! ../EventBus */ "./EventBus.ts");
+var main_1 = __webpack_require__(/*! ../main */ "./main.ts");
+var Select = (function () {
+    function Select(graph) {
+        this.padding = 5;
+        this.graph = graph;
+        this.deleteShape = Symbol_1.SymbolLibary.drawSVG({ type: 'Basket', background: true, id: 'trashcan', tooltip: 'Delete class' });
+        this.copyNodeShape = Symbol_1.SymbolLibary.drawSVG({ type: 'Copynode', background: true, id: 'copyNode', tooltip: 'Copy class' });
+        this.addEdgeShape = Symbol_1.SymbolLibary.drawSVG({ type: 'Edgeicon', background: true, id: 'addEdge', tooltip: 'Click and drag to connect this class' });
+    }
+    Select.prototype.handle = function (event, element) {
         var _this = this;
-        if (!options) {
-            options = {};
+        var x = util_1.Util.getEventX(event);
+        var y = util_1.Util.getEventY(event);
+        event.stopPropagation();
+        if (event.type === 'drag') {
+            this.isDragged = true;
+            this.deleteShape.setAttributeNS(null, 'visibility', 'hidden');
+            this.addEdgeShape.setAttributeNS(null, 'visibility', 'hidden');
+            this.copyNodeShape.setAttributeNS(null, 'visibility', 'hidden');
+            this.resetLastSelectedElements();
+            if (element instanceof nodes_1.Node) {
+                this.lastSelectedNode = element.$view;
+            }
+            util_1.Util.addClass(this.lastSelectedNode, 'SVGClazz-selected');
         }
-        options.canvas = options.canvas || 'canvas';
-        if (!options.features) {
-            options.features = {
-                drag: true,
-                editor: true,
-                palette: true,
-                select: true,
-                zoom: true
+        if (event.target['id'] === 'background' || element === this.graph.$graphModel) {
+            this.resetLastSelectedElements();
+            this.deleteShape.setAttributeNS(null, 'visibility', 'hidden');
+            this.addEdgeShape.setAttributeNS(null, 'visibility', 'hidden');
+            this.copyNodeShape.setAttributeNS(null, 'visibility', 'hidden');
+            return true;
+        }
+        if (element instanceof nodes_1.Node && event.type === 'click') {
+            var e = element;
+            this.graph.root.appendChild(this.deleteShape);
+            this.graph.root.appendChild(this.addEdgeShape);
+            this.graph.root.appendChild(this.copyNodeShape);
+            this.graph.root.appendChild(element.$view);
+            this.deleteShape.setAttributeNS(null, 'visibility', 'visible');
+            this.addEdgeShape.setAttributeNS(null, 'visibility', 'visible');
+            this.copyNodeShape.setAttributeNS(null, 'visibility', 'visible');
+            var x_1 = (e.getPos().x + e.getSize().x) + 5;
+            var y_1 = e.getPos().y;
+            this.deleteShape.setAttributeNS(null, 'transform', "translate(" + x_1 + " " + (y_1 + this.padding) + ")");
+            this.deleteShape.onclick = function (e) { return _this.graph.$graphModel.removeElement(element.id); };
+            this.copyNodeShape.setAttributeNS(null, 'transform', "translate(" + x_1 + " " + (y_1 + 40 + this.padding) + ")");
+            this.copyNodeShape.onclick = function (evt) {
+                var nextFreePosition = _this.graph.getNextFreePosition();
+                var copyClass = element.copy();
+                copyClass.withPos(nextFreePosition.x, nextFreePosition.y);
+                _this.graph.drawElement(copyClass);
+            };
+            this.addEdgeShape.setAttributeNS(null, 'transform', "translate(" + x_1 + " " + (y_1 + 80 + this.padding) + ")");
+            this.addEdgeShape.onmousedown = function () {
+                EventBus_1.EventBus.setActiveHandler('NewEdge');
+                element.$view.dispatchEvent(util_1.Util.createCustomEvent('mousedown'));
             };
         }
-        _this = _super.call(this, json, options) || this;
-        return _this;
+        if (element instanceof main_1.Class && event.type === 'click') {
+            var clazz_1 = element;
+            if (util_1.Util.isChrome()) {
+                if (this.lastSelectedNode && element.id === this.lastSelectedNode.id && !this.isDragged) {
+                    return true;
+                }
+            }
+            this.isDragged = false;
+            this.resetLastSelectedElements();
+            this.lastSelectedNode = element.$view;
+            util_1.Util.addClass(this.lastSelectedNode, 'SVGClazz-selected');
+            this.setTooltipOfShape(this.deleteShape, 'Delete class');
+            var divInlineEdit_1 = document.createElement('div');
+            divInlineEdit_1.id = 'inlineEdit';
+            divInlineEdit_1.style.position = 'absolute';
+            divInlineEdit_1.style.top = (clazz_1.getPos().y + clazz_1.getSize().y) + 52 + 'px';
+            divInlineEdit_1.style.left = clazz_1.getPos().x + 'px';
+            divInlineEdit_1.style.width = clazz_1.getSize().x + 'px';
+            divInlineEdit_1.style.zIndex = '42';
+            var inputText_1 = document.createElement('input');
+            inputText_1.type = 'text';
+            inputText_1.style.width = '100%';
+            inputText_1.placeholder = 'Add properties, edit label';
+            divInlineEdit_1.appendChild(inputText_1);
+            document.body.appendChild(divInlineEdit_1);
+            inputText_1.addEventListener('focusout', function (evt) {
+                if (util_1.Util.isChrome()) {
+                    if ((!inputText_1.value || inputText_1.value.length === 0) && (!_this.lastSelectedNode || element.id !== _this.lastSelectedNode.id)) {
+                        _this.removeLastInlineEdit();
+                    }
+                    return;
+                }
+                if ((!inputText_1.value || inputText_1.value.length === 0)) {
+                    _this.removeLastInlineEdit();
+                }
+            });
+            var g = this.graph;
+            var propertyTypes_1 = ['boolean', 'byte', 'char', 'double', 'float', 'int', 'long', 'short', 'String', 'void'];
+            inputText_1.addEventListener('keydown', function (evt) {
+                var keyCode = evt.which;
+                var inputValue = inputText_1.value;
+                if (util_1.Util.endsWith(inputValue, ':') && !document.getElementById('selectPropertyType')) {
+                    var selectType_1 = document.createElement('select');
+                    selectType_1.id = 'selectPropertyType';
+                    selectType_1.style.width = '100%';
+                    for (var _i = 0, propertyTypes_2 = propertyTypes_1; _i < propertyTypes_2.length; _i++) {
+                        var type = propertyTypes_2[_i];
+                        var selectOption = document.createElement('option');
+                        selectOption.value = type;
+                        selectOption.innerHTML = type;
+                        selectType_1.appendChild(selectOption);
+                    }
+                    selectType_1.addEventListener('change', function (evt) {
+                        var inputValueSplitted = inputValue.split(':');
+                        var selectedPropertyType = selectType_1.options[selectType_1.selectedIndex].value;
+                        if (inputValueSplitted.length >= 1) {
+                            inputText_1.value = inputValueSplitted[0].trim() + ' : ' + selectedPropertyType;
+                            inputText_1.focus();
+                        }
+                    });
+                    divInlineEdit_1.appendChild(selectType_1);
+                }
+                else if (!util_1.Util.includes(inputValue, ':')) {
+                    var selectType_2 = document.getElementById('selectPropertyType');
+                    if (selectType_2) {
+                        selectType_2.remove();
+                    }
+                }
+                if (keyCode !== 13) {
+                    return;
+                }
+                if ((util_1.Util.includes(inputValue, '(') && util_1.Util.includes(inputValue, ')')) === false) {
+                    if (util_1.Util.includes(inputValue, ':')) {
+                        clazz_1.addAttribute(inputValue.trim());
+                        clazz_1.reDraw();
+                    }
+                    else if (util_1.Util.includes(inputValue, '=')) {
+                        var attr = null;
+                        var name_1 = inputValue.substring(0, inputValue.indexOf('=')).trim();
+                        for (var _a = 0, _b = clazz_1.getAttributes(); _a < _b.length; _a++) {
+                            var child = _b[_a];
+                            if (name_1 === child.getName()) {
+                                attr = child;
+                                break;
+                            }
+                        }
+                        if (attr) {
+                            attr.updateValue(inputValue.substring(inputValue.indexOf('=') + 1).trim());
+                        }
+                        clazz_1.reDraw();
+                    }
+                }
+                else if (util_1.Util.includes(inputValue, '(') && util_1.Util.includes(inputValue, ')')) {
+                    clazz_1.addMethod(inputValue.trim());
+                    clazz_1.reDraw();
+                }
+                else if (inputValue.trim().split(' ').length === 1 && inputValue.trim().length > 0) {
+                    clazz_1.updateLabel(inputValue.trim());
+                }
+                divInlineEdit_1.style.top = (clazz_1.getPos().y + clazz_1.getSize().y) + 52 + 'px';
+                divInlineEdit_1.style.left = clazz_1.getPos().x + 'px';
+                divInlineEdit_1.style.width = clazz_1.getSize().x + 'px';
+                inputText_1.value = '';
+                var selectType = document.getElementById('selectPropertyType');
+                if (selectType) {
+                    selectType.remove();
+                }
+            });
+            divInlineEdit_1.children[0].focus();
+            return true;
+        }
+        if (element instanceof edges_1.Association) {
+            this.graph.root.appendChild(element.$view);
+            this.graph.root.appendChild(element.$sNode.$view);
+            this.graph.root.appendChild(element.$tNode.$view);
+            this.graph.root.appendChild(this.deleteShape);
+            this.setTooltipOfShape(this.deleteShape, 'Delete edge');
+            this.deleteShape.setAttributeNS(null, 'visibility', 'visible');
+            this.addEdgeShape.setAttributeNS(null, 'visibility', 'hidden');
+            this.copyNodeShape.setAttributeNS(null, 'visibility', 'hidden');
+            this.deleteShape.setAttributeNS(null, 'transform', "translate(" + x + " " + y + ")");
+            this.deleteShape.onclick = function (e) { return _this.graph.$graphModel.removeElement(element.id); };
+            this.resetLastSelectedElements();
+            var edge = element;
+            this.lastSelectedEdge = edge.$view;
+            util_1.Util.addClass(this.lastSelectedEdge, 'SVGEdge-selected');
+        }
+        return true;
+    };
+    Select.prototype.canHandle = function () {
+        return EventBus_1.EventBus.isHandlerActiveOrFree(Select.name);
+    };
+    Select.prototype.setActive = function (active) {
+        if (active) {
+            EventBus_1.EventBus.setActiveHandler(Select.name);
+        }
+        else {
+            EventBus_1.EventBus.releaseActiveHandler();
+        }
+    };
+    Select.prototype.setTooltipOfShape = function (shape, tooltip) {
+        if (!shape || !shape.hasChildNodes()) {
+            return;
+        }
+        var titleElement = shape.childNodes[0];
+        if (!titleElement || titleElement.tagName !== 'title') {
+            return;
+        }
+        titleElement.textContent = tooltip;
+    };
+    Select.prototype.resetLastSelectedElements = function () {
+        if (this.lastSelectedNode) {
+            util_1.Util.removeClass(this.lastSelectedNode, 'SVGClazz-selected');
+            this.lastSelectedNode = undefined;
+        }
+        if (this.lastSelectedEdge) {
+            util_1.Util.removeClass(this.lastSelectedEdge, 'SVGEdge-selected');
+            this.lastSelectedEdge = undefined;
+        }
+        this.removeLastInlineEdit();
+    };
+    Select.prototype.removeLastInlineEdit = function () {
+        var lastInlineEdit = document.getElementById('inlineEdit');
+        if (lastInlineEdit) {
+            document.body.removeChild(lastInlineEdit);
+        }
+    };
+    return Select;
+}());
+exports.Select = Select;
+
+
+/***/ }),
+
+/***/ "./handlers/Zoom.ts":
+/*!**************************!*\
+  !*** ./handlers/Zoom.ts ***!
+  \**************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var EventBus_1 = __webpack_require__(/*! ../EventBus */ "./EventBus.ts");
+var Zoom = (function () {
+    function Zoom(graph) {
     }
-    return ClassEditor;
-}(Graph_1.Graph));
-exports.ClassEditor = ClassEditor;
+    Zoom.prototype.handle = function (e, element) {
+        var delta = e.deltaY || e.wheelDeltaY || -e.wheelDelta;
+        var d = 1 + (delta / 1000);
+        var values = this.graph.root.getAttribute('viewBox').split(' ');
+        var newViewBox = values[0] + " " + values[1] + " " + parseInt(values[2]) * d + " " + parseInt(values[3]) * d;
+        this.graph.root.setAttribute('viewBox', newViewBox);
+        e.preventDefault();
+        return true;
+    };
+    Zoom.prototype.canHandle = function () {
+        return EventBus_1.EventBus.isHandlerActiveOrFree(Zoom.name);
+    };
+    Zoom.prototype.setActive = function (active) {
+        if (active) {
+            EventBus_1.EventBus.setActiveHandler(Zoom.name);
+        }
+        else {
+            EventBus_1.EventBus.releaseActiveHandler();
+        }
+    };
+    return Zoom;
+}());
+exports.Zoom = Zoom;
+
+
+/***/ }),
+
+/***/ "./handlers/index.ts":
+/*!***************************!*\
+  !*** ./handlers/index.ts ***!
+  \***************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+function __export(m) {
+    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+}
+Object.defineProperty(exports, "__esModule", { value: true });
+__export(__webpack_require__(/*! ./Drag */ "./handlers/Drag.ts"));
+__export(__webpack_require__(/*! ./Select */ "./handlers/Select.ts"));
+__export(__webpack_require__(/*! ./Zoom */ "./handlers/Zoom.ts"));
+__export(__webpack_require__(/*! ./NewEdge */ "./handlers/NewEdge.ts"));
+__export(__webpack_require__(/*! ./ImportFile */ "./handlers/ImportFile.ts"));
+__export(__webpack_require__(/*! ./AddNode */ "./handlers/AddNode.ts"));
+
+
+/***/ }),
+
+/***/ "./layouts/DagreLayout.ts":
+/*!********************************!*\
+  !*** ./layouts/DagreLayout.ts ***!
+  \********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var DagreLayout = (function () {
+    function DagreLayout() {
+    }
+    DagreLayout.prototype.layout = function (graph, node) {
+        if (!window['dagre']) {
+            return;
+        }
+        var model = graph.$graphModel;
+        var g = new window['dagre'].graphlib.Graph();
+        g.setGraph({ marginx: 100, marginy: 20 }).setDefaultEdgeLabel(function () {
+            return {};
+        });
+        for (var _i = 0, _a = model.nodes; _i < _a.length; _i++) {
+            var node_1 = _a[_i];
+            g.setNode(node_1.id, { width: node_1.getSize().x, height: node_1.getSize().y });
+        }
+        for (var _b = 0, _c = model.edges; _b < _c.length; _b++) {
+            var edge = _c[_b];
+            g.setEdge(edge.$sNode.id, edge.$tNode.id);
+        }
+        window['dagre'].layout(g);
+        g.nodes().forEach(function (nodeId) {
+            for (var _i = 0, _a = model.nodes; _i < _a.length; _i++) {
+                var node_2 = _a[_i];
+                if (node_2.id === nodeId) {
+                    node_2.withPos(g.node(nodeId).x - g.node(nodeId).width / 2, g.node(nodeId).y - g.node(nodeId).height / 2);
+                }
+            }
+        });
+        g.edges().forEach(function (e) {
+            for (var _i = 0, _a = model.edges; _i < _a.length; _i++) {
+                var edge = _a[_i];
+                if (edge.$sNode.id === e.v && edge.$tNode.id === e.w) {
+                    var size = g.edge(e).points.length;
+                    edge.clearPoints();
+                    for (var i = 0; i < size; i++) {
+                        var point = g.edge(e).points[i];
+                        edge.addPoint(point.x, point.y);
+                    }
+                }
+            }
+        });
+    };
+    return DagreLayout;
+}());
+exports.DagreLayout = DagreLayout;
+
+
+/***/ }),
+
+/***/ "./layouts/DagreLayoutMin.ts":
+/*!***********************************!*\
+  !*** ./layouts/DagreLayoutMin.ts ***!
+  \***********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var LayoutGraphMin = (function () {
+    function LayoutGraphMin() {
+        this.nodes = {};
+        this.edges = [];
+        this.outEdges = {};
+        this.inEdges = {};
+        this.dummyNodes = [];
+        this.dummyEdges = {};
+        this.count = 0;
+        this.minRank = Number.POSITIVE_INFINITY;
+        this.maxRank = 0;
+        this.maxHeight = 0;
+        this.maxWidth = 0;
+        this.ranksep = 0;
+        this.edgesLabel = [];
+    }
+    LayoutGraphMin.prototype.nodeCount = function () {
+        return this.count;
+    };
+    LayoutGraphMin.prototype.node = function (id) {
+        return this.nodes[id];
+    };
+    LayoutGraphMin.prototype.setNode = function (id, n) {
+        if (n && !this.nodes[id]) {
+            this.nodes[id] = n;
+            this.count = this.count + 1;
+        }
+        else if (!n && this.nodes[id]) {
+            delete this.nodes[id];
+        }
+    };
+    return LayoutGraphMin;
+}());
+exports.LayoutGraphMin = LayoutGraphMin;
+var LayoutGraphNode = (function () {
+    function LayoutGraphNode(id, width, height, x, y) {
+        this.id = id;
+        this.width = width;
+        this.height = height;
+        this.x = x;
+        this.y = y;
+    }
+    return LayoutGraphNode;
+}());
+exports.LayoutGraphNode = LayoutGraphNode;
+var LayoutGraphEdge = (function () {
+    function LayoutGraphEdge() {
+    }
+    return LayoutGraphEdge;
+}());
+exports.LayoutGraphEdge = LayoutGraphEdge;
+var DagreLayoutMin = (function () {
+    function DagreLayoutMin() {
+    }
+    DagreLayoutMin.prototype.layout = function (graph, node) {
+        var g, layoutNode, nodes, newEdge, edges;
+        var i, n, x, y, sId, tId, split = DagreLayoutMin.EDGE_KEY_DELIM;
+        var e;
+        nodes = node['nodes'];
+        edges = node['edges'];
+        g = new LayoutGraphMin();
+        for (i in nodes) {
+            if (!nodes.hasOwnProperty(i) || typeof (nodes[i]) === 'function') {
+                continue;
+            }
+            n = nodes[i];
+            g.setNode(n.id, new LayoutGraphNode(n.id, n.getSize().x, n.getSize().y, n.getPos().x, n.getPos().y));
+        }
+        for (i in edges) {
+            if (!edges.hasOwnProperty(i) || typeof (edges[i]) === 'function') {
+                continue;
+            }
+            e = edges[i];
+            sId = this.getNodeId(e.$sNode);
+            tId = this.getNodeId(e.$tNode);
+            if (sId > tId) {
+                var tmp = tId;
+                tId = sId;
+                sId = tmp;
+            }
+            var idAB = sId + split + tId + split;
+            var idBA = tId + split + sId + split;
+            if (sId !== tId && g.edgesLabel.indexOf(idAB) < 0 && g.edgesLabel.indexOf(idBA) < 0) {
+                newEdge = { source: sId, target: tId, minlen: 1, weight: 1 };
+                g.edges.push(newEdge);
+                g.edgesLabel.push(idAB);
+                if (!g.inEdges[tId]) {
+                    g.inEdges[tId] = [];
+                }
+                g.inEdges[tId].push(newEdge);
+                if (!g.outEdges[sId]) {
+                    g.outEdges[sId] = [];
+                }
+                g.outEdges[sId].push(newEdge);
+            }
+        }
+        this.layouting(g);
+        for (i in nodes) {
+            if (!nodes.hasOwnProperty(i) || typeof (nodes[i]) === 'function') {
+                continue;
+            }
+            n = nodes[i];
+            layoutNode = g.node(n.id);
+            x = n.getPos().x;
+            y = n.getPos().y;
+            if (x < 1 && y < 1) {
+                n.withPos(Math.ceil(layoutNode.x), Math.ceil(layoutNode.y));
+            }
+        }
+        for (i in edges) {
+            if (!edges.hasOwnProperty(i) || typeof (edges[i]) === 'function') {
+                continue;
+            }
+            e = edges[i];
+        }
+        graph.draw();
+    };
+    DagreLayoutMin.prototype.getNodeId = function (node) {
+        if (node.$owner) {
+            return this.getNodeId(node.$owner) || node.id;
+        }
+        return node.id;
+    };
+    DagreLayoutMin.prototype.layouting = function (g) {
+        this.longestPath(g);
+        this.normalizeRanks(g);
+        this.normalizeEdge(g);
+        this.order(g);
+        g.ranksep = 25;
+        this.removeDummy(g);
+        this.position(g);
+    };
+    DagreLayoutMin.prototype.setSimpleOrder = function (g) {
+        var i, n;
+        for (i in g.nodes) {
+            n = g.nodes[i];
+            n.order = n.rank;
+        }
+    };
+    DagreLayoutMin.prototype.order = function (g) {
+        var layering = Array(g.maxRank + 1);
+        var visited = {};
+        var node, n, order, i;
+        for (i = 0; i < layering.length; i++) {
+            layering[i] = [];
+        }
+        for (n in g.nodes) {
+            if (visited[n]) {
+                continue;
+            }
+            visited[n] = true;
+            node = g.nodes[n];
+            if (node.rank !== undefined) {
+                layering[node.rank].push(n);
+            }
+        }
+        for (order in layering) {
+            for (n in layering[order]) {
+                if (layering[order].hasOwnProperty(n) === false) {
+                    continue;
+                }
+                g.nodes[layering[order][n]].order = parseInt(n);
+            }
+        }
+        for (order in layering) {
+            if (layering[order].length > 1) {
+                for (n in layering[order]) {
+                    if (layering[order].hasOwnProperty(n) === false) {
+                        continue;
+                    }
+                    var name_1 = layering[order][n];
+                    var sum = 0;
+                    var weight = 1;
+                    var edges = g.dummyEdges[name_1];
+                    if (edges) {
+                        for (i in edges) {
+                            if (edges.hasOwnProperty(i) === false) {
+                                continue;
+                            }
+                            var edge = edges[i];
+                            var nodeU = g.node(edge.target);
+                            sum = sum + (edge.weight * nodeU.order);
+                            weight = weight + edge.weight;
+                        }
+                    }
+                    g.node(name_1).barycenter = sum / weight;
+                    g.node(name_1).weight = weight;
+                }
+            }
+            else if (layering[order].length > 0) {
+                for (n in layering[order]) {
+                    var name_2 = layering[order][n];
+                    g.node(name_2).barycenter = 1;
+                    g.node(name_2).weight = 1;
+                }
+            }
+        }
+        for (order in layering) {
+            for (n in layering[order]) {
+                if (layering[order].hasOwnProperty(n) === false) {
+                    continue;
+                }
+                var node_1 = g.nodes[layering[order][n]];
+                node_1.order = parseInt(n) + node_1.barycenter * node_1.weight;
+                if (isNaN(node_1.order)) {
+                    console.log('ERROR');
+                }
+            }
+        }
+    };
+    DagreLayoutMin.prototype.removeDummy = function (g) {
+        for (var z in g.dummyNodes) {
+            var node = g.dummyNodes[z];
+            g.setNode(node.id, null);
+        }
+        g.dummyNodes = [];
+        g.dummyEdges = {};
+    };
+    DagreLayoutMin.prototype.normalizeEdge = function (g) {
+        var i = 1;
+        for (var id in g.edges) {
+            var e = g.edges[id];
+            var v = e.source;
+            var vRank = g.node(v).rank;
+            var w = e.target;
+            var wRank = g.node(w).rank;
+            var name_3 = void 0;
+            if (wRank === vRank + 1) {
+                continue;
+            }
+            var dummy = void 0;
+            for (vRank = vRank + 1; vRank < wRank; ++vRank) {
+                name_3 = '_d' + e.source + e.target + (i++);
+                var newEdge = { source: v, target: name_3, minlen: 1, weight: 1 };
+                dummy = new LayoutGraphNode(name_3, 0, 0, 0, 0);
+                dummy.edgeObj = e;
+                dummy.rank = vRank;
+                if (!g.dummyEdges[v]) {
+                    g.dummyEdges[v] = [];
+                }
+                g.dummyEdges[v].push(newEdge);
+                g.dummyNodes.push(dummy);
+                g.setNode(dummy.id, dummy);
+                v = name_3;
+            }
+        }
+    };
+    DagreLayoutMin.prototype.longestPath = function (g) {
+        var i, n, visited = [];
+        for (i in g.nodes) {
+            n = g.nodes[i];
+            visited.push(i);
+            n.rank = this.findAllPaths(g, n, 0, visited);
+            g.minRank = Math.min(g.minRank, n.rank);
+        }
+    };
+    DagreLayoutMin.prototype.findAllPaths = function (g, n, currentCost, path) {
+        var min = 0;
+        var id;
+        var z;
+        var target;
+        if (g.outEdges[n.id]) {
+            for (z = 0; z < g.outEdges[n.id].length; z++) {
+                id = g.outEdges[n.id][z].target;
+                target = g.nodes[id];
+                if (path[id]) {
+                    min = Math.min(min, target.rank);
+                }
+                else if (path.indexOf(id) < 0) {
+                    min = Math.min(min, this.findAllPaths(g, target, currentCost - 2, path));
+                }
+                else {
+                    min = currentCost;
+                }
+            }
+            return min;
+        }
+        return currentCost;
+    };
+    DagreLayoutMin.prototype.normalizeRanks = function (g) {
+        var min = g.minRank;
+        var value;
+        g.maxRank = Number.NEGATIVE_INFINITY;
+        g.maxHeight = 0;
+        g.maxWidth = 0;
+        for (var i in g.nodes) {
+            var node = g.nodes[i];
+            if (node.rank !== undefined) {
+                node.rank -= min;
+                value = Math.abs(node.rank);
+                if (value > g.maxRank) {
+                    g.maxRank = value;
+                }
+                g.maxHeight = Math.max(g.maxHeight, node.height);
+                g.maxWidth = Math.max(g.maxWidth, node.width);
+            }
+        }
+    };
+    DagreLayoutMin.prototype.position = function (g) {
+        this.positionY(g);
+        var list = this.positionX(g);
+        for (var i in list) {
+            for (var pos in list[i]) {
+                if (list[i].hasOwnProperty(pos) === false) {
+                    continue;
+                }
+                if (g.node(list[i][pos])) {
+                    g.node(list[i][pos]).x = parseInt(pos) * g.maxWidth;
+                }
+            }
+        }
+    };
+    DagreLayoutMin.prototype.positionY = function (g) {
+        var layering = this.buildLayerMatrix(g);
+        var rankSep = g.ranksep;
+        var prevY = 0;
+        for (var layer in layering) {
+            var maxHeight = g.maxHeight;
+            for (var v in layering[layer]) {
+                if (layering[layer].hasOwnProperty(v) === false) {
+                    continue;
+                }
+                var id = layering[layer][v];
+                g.nodes[id].y = prevY + maxHeight / 2;
+            }
+            prevY += maxHeight + rankSep;
+        }
+    };
+    DagreLayoutMin.prototype.buildLayerMatrix = function (g) {
+        var layering = Array(g.maxRank + 1);
+        for (var i = 0; i < layering.length; i++) {
+            layering[i] = [];
+        }
+        for (var n in g.nodes) {
+            var node = g.nodes[n];
+            if (node.rank !== undefined) {
+                layering[node.rank][node.order] = n;
+            }
+        }
+        return layering;
+    };
+    DagreLayoutMin.prototype.positionX = function (g) {
+        var layering = this.buildLayerMatrix(g);
+        return layering;
+    };
+    DagreLayoutMin.EDGE_KEY_DELIM = '\x01';
+    return DagreLayoutMin;
+}());
+exports.DagreLayoutMin = DagreLayoutMin;
+
+
+/***/ }),
+
+/***/ "./layouts/Random.ts":
+/*!***************************!*\
+  !*** ./layouts/Random.ts ***!
+  \***************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var util_1 = __webpack_require__(/*! ../util */ "./util.ts");
+var Random = (function () {
+    function Random() {
+    }
+    Random.prototype.layout = function (graph) {
+        var model = graph.$graphModel;
+        if (model.nodes) {
+            for (var _i = 0, _a = model.nodes; _i < _a.length; _i++) {
+                var node = _a[_i];
+                var pos = node.getPos();
+                if (pos.x === 0 && pos.y === 0) {
+                    var x = util_1.Util.getRandomInt(0, graph.canvasSize.width);
+                    var y = util_1.Util.getRandomInt(0, graph.canvasSize.height);
+                    node.withPos(x, y);
+                }
+            }
+        }
+    };
+    return Random;
+}());
+exports.Random = Random;
+
+
+/***/ }),
+
+/***/ "./layouts/index.ts":
+/*!**************************!*\
+  !*** ./layouts/index.ts ***!
+  \**************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+function __export(m) {
+    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+}
+Object.defineProperty(exports, "__esModule", { value: true });
+__export(__webpack_require__(/*! ./DagreLayout */ "./layouts/DagreLayout.ts"));
+__export(__webpack_require__(/*! ./Random */ "./layouts/Random.ts"));
+__export(__webpack_require__(/*! ./DagreLayoutMin */ "./layouts/DagreLayoutMin.ts"));
+var DagreLayout_1 = __webpack_require__(/*! ./DagreLayout */ "./layouts/DagreLayout.ts");
+var DagreLayoutMin_1 = __webpack_require__(/*! ./DagreLayoutMin */ "./layouts/DagreLayoutMin.ts");
+var Random_1 = __webpack_require__(/*! ./Random */ "./layouts/Random.ts");
+new DagreLayout_1.DagreLayout();
+new DagreLayoutMin_1.DagreLayoutMin();
+new Random_1.Random();
+
+
+/***/ }),
+
+/***/ "./main.ts":
+/*!*****************!*\
+  !*** ./main.ts ***!
+  \*****************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+function __export(m) {
+    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+}
+Object.defineProperty(exports, "__esModule", { value: true });
+var VirtualKeyBoard_1 = __webpack_require__(/*! ./VirtualKeyBoard */ "./VirtualKeyBoard.ts");
+var BaseElements_1 = __webpack_require__(/*! ./elements/BaseElements */ "./elements/BaseElements.ts");
+exports.Point = BaseElements_1.Point;
+var Bridge_1 = __webpack_require__(/*! ./Bridge */ "./Bridge.ts");
+exports.Bridge = Bridge_1.Bridge;
+exports.DelegateAdapter = Bridge_1.DelegateAdapter;
+var Graph_1 = __webpack_require__(/*! ./elements/Graph */ "./elements/Graph.ts");
+exports.Graph = Graph_1.Graph;
+__export(__webpack_require__(/*! ./elements/nodes */ "./elements/nodes/index.ts"));
+__export(__webpack_require__(/*! ./elements/edges */ "./elements/edges/index.ts"));
+__export(__webpack_require__(/*! ./adapters */ "./adapters/index.ts"));
+__export(__webpack_require__(/*! ./UML */ "./UML.ts"));
+var BaseElements_2 = __webpack_require__(/*! ./elements/BaseElements */ "./elements/BaseElements.ts");
+var Graph_2 = __webpack_require__(/*! ./elements/Graph */ "./elements/Graph.ts");
+var ClassEditor_1 = __webpack_require__(/*! ./elements/ClassEditor */ "./elements/ClassEditor.ts");
+var Bridge_2 = __webpack_require__(/*! ./Bridge */ "./Bridge.ts");
+var util_1 = __webpack_require__(/*! ./util */ "./util.ts");
+var nodes = __webpack_require__(/*! ./elements/nodes */ "./elements/nodes/index.ts");
+var edges = __webpack_require__(/*! ./elements/edges */ "./elements/edges/index.ts");
+var ScrumBoard_1 = __webpack_require__(/*! ./ScrumBoard */ "./ScrumBoard.ts");
+if (!window['Point']) {
+    window['Point'] = BaseElements_2.Point;
+    window['Graph'] = Graph_2.Graph;
+    window['bridge'] = new Bridge_2.Bridge();
+    window['Util'] = util_1.Util;
+    window['Class'] = nodes.Class;
+    window['Association'] = edges.Association;
+    window['SymbolLibary'] = nodes.SymbolLibary;
+    window['ClassEditor'] = ClassEditor_1.ClassEditor;
+    window['VirtualKeyBoard'] = VirtualKeyBoard_1.VirtualKeyBoard;
+    window['ScrumBoard'] = ScrumBoard_1.ScrumBoard;
+}
+
+
+/***/ }),
+
+/***/ "./util.ts":
+/*!*****************!*\
+  !*** ./util.ts ***!
+  \*****************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var CSS_1 = __webpack_require__(/*! ./CSS */ "./CSS.ts");
+var BaseElements_1 = __webpack_require__(/*! ./elements/BaseElements */ "./elements/BaseElements.ts");
+var Util = (function () {
+    function Util() {
+    }
+    Util.getRandomInt = function (min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    };
+    Util.createShape = function (attrs) {
+        var xmlns = attrs.xmlns || 'http://www.w3.org/2000/svg';
+        var shape = document.createElementNS(xmlns, attrs.tag);
+        for (var attr in attrs) {
+            if (attr !== 'tag') {
+                shape.setAttribute(attr, attrs[attr]);
+            }
+        }
+        return shape;
+    };
+    Util.toPascalCase = function (value) {
+        value = value.charAt(0).toUpperCase() + value.substring(1).toLowerCase();
+        return value;
+    };
+    Util.isSVG = function (tag) {
+        var i, list = ['svg', 'path', 'polygon', 'polyline', 'line', 'title', 'rect', 'filter', 'feGaussianBlur', 'feOffset', 'feBlend', 'linearGradient', 'stop', 'text', 'symbol', 'textPath', 'defs', 'fegaussianblur', 'feoffset', 'feblend', 'circle', 'ellipse', 'g'];
+        for (i = 0; i < list.length; i += 1) {
+            if (list[i] === tag) {
+                return true;
+            }
+        }
+        return false;
+    };
+    Util.createHTML = function (node) {
+        return this.create(node);
+    };
+    Util.create = function (node) {
+        var style, item, xmlns, key, tag, k;
+        if (document.createElementNS && (this.isSVG(node.tag) || node.xmlns)) {
+            if (node.xmlns) {
+                xmlns = node.xmlns;
+            }
+            else {
+                xmlns = 'http://www.w3.org/2000/svg';
+            }
+            if (node.tag === 'img' && xmlns) {
+                item = document.createElementNS(xmlns, 'image');
+                item.setAttribute('xmlns:xlink', 'http://www.w3.org/1999/xlink');
+                item.setAttributeNS('http://www.w3.org/1999/xlink', 'href', node.src);
+            }
+            else {
+                item = document.createElementNS(xmlns, node.tag);
+            }
+        }
+        else {
+            item = document.createElement(node.tag);
+        }
+        tag = node.tag.toLowerCase();
+        for (key in node) {
+            if (!node.hasOwnProperty(key)) {
+                continue;
+            }
+            k = key.toLowerCase();
+            if (node[key] === null) {
+                continue;
+            }
+            if (k === 'tag' || k.charAt(0) === '$' || k === '$graphModel') {
+                continue;
+            }
+            if (k.charAt(0) === '#') {
+                item[k.substring(1)] = node[key];
+                continue;
+            }
+            if (k === 'rotate') {
+                item.setAttribute('transform', 'rotate(' + node[key] + ',' + node.$graphModel.x + ',' + node.$graphModel.y + ')');
+                continue;
+            }
+            if (k === 'value') {
+                if (!node[key]) {
+                    continue;
+                }
+                if (tag !== 'input') {
+                    if (tag === 'text') {
+                        item.appendChild(document.createTextNode(node[key]));
+                    }
+                    else {
+                        item.innerHTML = node[key];
+                    }
+                }
+                else {
+                    item[key] = node[key];
+                }
+                continue;
+            }
+            if (k.indexOf('on') === 0) {
+                this.bind(item, k.substring(2), node[key]);
+                continue;
+            }
+            if (k.indexOf('-') >= 0) {
+                item.style[key] = node[key];
+            }
+            else {
+                if (k === 'style' && typeof (node[key]) === 'object') {
+                    for (style in node[key]) {
+                        if (!node[key].hasOwnProperty(style)) {
+                            continue;
+                        }
+                        if (node[key][style]) {
+                            if ('transform' === style) {
+                                item.style.transform = node[key][style];
+                                item.style.msTransform = item.style.MozTransform = item.style.WebkitTransform = item.style.OTransform = node[key][style];
+                            }
+                            else {
+                                item.style[style] = node[key][style];
+                            }
+                        }
+                    }
+                }
+                else {
+                    item.setAttribute(key, node[key]);
+                }
+            }
+        }
+        if (node.$parent) {
+            node.$parent.appendChild(item);
+        }
+        if (node.$graphModel) {
+            item.$graphModel = node.$graphModel;
+        }
+        return item;
+    };
+    Util.setSize = function (item, width, height) {
+        var value;
+        value = Util.getValue(width);
+        item.setAttribute('width', value);
+        item.style.width = Math.ceil(value);
+        value = Util.getValue(height);
+        item.setAttribute('height', value);
+        item.style.height = Math.ceil(value);
+    };
+    Util.setAttributeSize = function (item, width, height) {
+        var value;
+        value = Util.getValue(width);
+        item.setAttributeNS(null, 'width', value);
+        value = Util.getValue(height);
+        item.setAttributeNS(null, 'height', value);
+    };
+    Util.setStyleSize = function (item, width, height) {
+        var value;
+        value = Util.getValue(width);
+        item.style.width = Math.ceil(value);
+        value = Util.getValue(height);
+        item.style.height = Math.ceil(value);
+    };
+    Util.setPos = function (item, x, y) {
+        if (item.x && item.x.baseVal) {
+            item.style.left = x + 'px';
+            item.style.top = y + 'px';
+        }
+        else {
+            item.x = x;
+            item.y = y;
+        }
+    };
+    Util.getValue = function (value) {
+        return parseInt(('0' + value).replace('px', ''), 10);
+    };
+    Util.isIE = function () {
+        return navigator.userAgent.toLowerCase().indexOf('.net') > -1;
+    };
+    Util.isEdge = function () {
+        return navigator.userAgent.toLowerCase().indexOf('edge') > -1;
+    };
+    Util.isFireFox = function () {
+        return navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
+    };
+    Util.isSafari = function () {
+        var isEdge = Util.isEdge();
+        return navigator.userAgent.toLowerCase().indexOf('safari') > -1 && !isEdge;
+    };
+    Util.isOpera = function () {
+        return navigator.userAgent.toLowerCase().indexOf('opera') > -1;
+    };
+    Util.isChrome = function () {
+        var isEdge = Util.isEdge();
+        var isSafari = Util.isSafari();
+        return navigator.userAgent.toLowerCase().indexOf('chrome') > -1 && !isEdge && isSafari;
+    };
+    Util.getEventX = function (event) {
+        return (Util.isIE() || Util.isEdge()) ? event['offsetX'] : event.layerX;
+    };
+    Util.getEventY = function (event) {
+        return (Util.isIE() || Util.isEdge()) ? event['offsetY'] : event.layerY;
+    };
+    Util.getNumber = function (str) {
+        return parseInt((str || '0').replace('px', ''), 10);
+    };
+    Util.getStyle = function (styleProp) {
+        var i, style, diff, current, ref, el = document.createElement('div'), css;
+        document.body.appendChild(el);
+        css = new CSS_1.CSS(styleProp);
+        ref = new CSS_1.CSS(styleProp, el).css;
+        style = window.getComputedStyle(el, null);
+        el.className = styleProp;
+        current = new CSS_1.CSS(styleProp, el).css;
+        diff = Util.getNumber(style.getPropertyValue('border-width'));
+        for (i in current) {
+            if (!current.hasOwnProperty(i)) {
+                continue;
+            }
+            if (i === 'width' || i === 'height') {
+                if (Util.getNumber(current[i]) !== 0 && Util.getNumber(current[i]) + diff * 2 !== Util.getNumber(ref[i])) {
+                    css.add(i, current[i]);
+                }
+            }
+            else if (current[i] !== ref[i]) {
+                css.add(i, current[i]);
+            }
+        }
+        document.body.removeChild(el);
+        return css;
+    };
+    Util.sizeOf = function (item, node) {
+        var board;
+        var rect;
+        var addBoard;
+        if (!item) {
+            return undefined;
+        }
+        if (node) {
+            board = node.$owner.$view;
+            addBoard = false;
+        }
+        if (!board) {
+            addBoard = true;
+            board = Util.createShape({ tag: 'svg', id: 'root', width: 200, height: 200 });
+            document.body.appendChild(board);
+        }
+        if (board.tagName === 'svg') {
+            if (typeof item === 'string') {
+                item = Util.create({ tag: 'text', $font: true, value: item });
+                item.setAttribute('width', '5px');
+            }
+        }
+        else if (typeof item === 'string') {
+            item = document.createTextNode(item);
+        }
+        board.appendChild(item);
+        rect = item.getBoundingClientRect();
+        board.removeChild(item);
+        if (addBoard) {
+            document.body.removeChild(board);
+        }
+        return rect;
+    };
+    Util.getColor = function (style, defaultColor) {
+        if (style) {
+            if (style.toLowerCase() === 'create') {
+                return '#008000';
+            }
+            if (style.toLowerCase() === 'nac') {
+                return '#FE3E3E';
+            }
+            if (style.indexOf('#') === 0) {
+                return style;
+            }
+        }
+        if (defaultColor) {
+            return defaultColor;
+        }
+        return '#000';
+    };
+    Util.utf8$to$b64 = function (str) {
+        return window.btoa(encodeURIComponent(str));
+    };
+    Util.showSVG = function (control) {
+        var svg = Util.create({
+            tag: 'svg',
+            style: { left: control.getPos().x, top: control.getPos().y, position: 'absolute' }
+        });
+        var child = control.getSVG();
+        if (child) {
+            svg.appendChild(child);
+        }
+        Util.setSize(svg, control.getSize().x, control.getSize().y);
+        document.body.appendChild(svg);
+    };
+    Util.toJson = function (ref) {
+        var result = {};
+        return Util.copy(result, ref, false, false);
+    };
+    Util.initControl = function (parent, control, type, id, json) {
+        if (typeof control.init === 'function') {
+            control.init(parent, type, id);
+        }
+        if (typeof control.load === 'function') {
+            control.load(json);
+        }
+    };
+    Util.copy = function (ref, src, full, replace) {
+        if (src) {
+            var i = void 0;
+            for (i in src) {
+                if (!src.hasOwnProperty(i) || typeof (src[i]) === 'function') {
+                    continue;
+                }
+                if (i.charAt(0) === '$') {
+                    if (full) {
+                        ref[i] = src[i];
+                    }
+                    continue;
+                }
+                if (typeof (src[i]) === 'object') {
+                    if (replace) {
+                        ref[i] = src[i];
+                        continue;
+                    }
+                    if (!ref[i]) {
+                        if (src[i] instanceof Array) {
+                            ref[i] = [];
+                        }
+                        else {
+                            ref[i] = {};
+                        }
+                    }
+                    Util.copy(ref[i], src[i], full, false);
+                }
+                else {
+                    if (src[i] === '') {
+                        continue;
+                    }
+                    ref[i] = src[i];
+                }
+            }
+        }
+        return ref;
+    };
+    Util.xmlstringify = function (text) {
+        text = text.replace('<', '&lt;');
+        text = text.replace('>', '&gt;');
+        return text;
+    };
+    Util.toXML = function (ref, src, full, doc) {
+        var name;
+        if (!ref) {
+            name = src.constructor.name;
+            doc = document.implementation.createDocument(null, name, null);
+            ref = doc.childNodes[0];
+        }
+        if (src) {
+            var i = void 0;
+            for (i in src) {
+                if (!src.hasOwnProperty(i) || typeof (src[i]) === 'function') {
+                    continue;
+                }
+                if (i.charAt(0) === '$') {
+                    if (full) {
+                        ref[i] = src[i];
+                    }
+                    continue;
+                }
+                if (typeof (src[i]) === 'object') {
+                    if (!ref.getAttribute(i)) {
+                        if (src[i] instanceof Array) {
+                            for (var c in src[i]) {
+                                name = src[i][c].constructor.name;
+                                var child = doc.createElement(name);
+                                ref.appendChild(child);
+                                Util.toXML(child, src[i][c], full, doc);
+                            }
+                        }
+                        else {
+                            name = src[i].constructor.name;
+                            var child = doc.createElement(name);
+                            ref.appendChild(child);
+                            Util.toXML(child, src[i], full, doc);
+                        }
+                    }
+                    else {
+                        Util.toXML(ref.getAttribute(i), src[i], full, doc);
+                    }
+                }
+                else {
+                    if (src[i] === '') {
+                        continue;
+                    }
+                    ref.setAttribute(i, src[i]);
+                }
+            }
+        }
+        return ref;
+    };
+    Util.Range = function (min, max, x, y) {
+        max.x = Math.max(max.x, x);
+        max.y = Math.max(max.y, y);
+        min.x = Math.min(min.x, x);
+        min.y = Math.min(min.y, y);
+    };
+    Util.getPosition = function (m, n, entity, refCenter) {
+        var t, p = [], list, distance = [], min = 999999999, position, i, step = 15;
+        var pos = entity.getPos();
+        var size = entity.getSize();
+        list = [BaseElements_1.Point.LEFT, BaseElements_1.Point.RIGHT];
+        for (i = 0; i < 2; i += 1) {
+            t = this.getLRPosition(m, n, entity, list[i]);
+            if (t.y >= pos.y && t.y <= (pos.y + size.y + 1)) {
+                t.y += (entity['$' + list[i]] * step);
+                if (t.y > (pos.y + size.y)) {
+                    t = Util.getUDPosition(m, n, entity, BaseElements_1.Point.DOWN, step);
+                }
+                p.push(t);
+                distance.push(Math.sqrt((refCenter.x - t.x) * (refCenter.x - t.x) + (refCenter.y - t.y) * (refCenter.y - t.y)));
+            }
+        }
+        list = [BaseElements_1.Point.UP, BaseElements_1.Point.DOWN];
+        for (i = 0; i < 2; i += 1) {
+            t = Util.getUDPosition(m, n, entity, list[i]);
+            if (t.x >= pos.x && t.x <= (pos.x + size.x + 1)) {
+                t.x += (entity['$' + list[i]] * step);
+                if (t.x > (pos.x + size.x)) {
+                    t = this.getLRPosition(m, n, entity, BaseElements_1.Point.RIGHT, step);
+                }
+                p.push(t);
+                distance.push(Math.sqrt((refCenter.x - t.x) * (refCenter.x - t.x) + (refCenter.y - t.y) * (refCenter.y - t.y)));
+            }
+        }
+        for (i = 0; i < p.length; i += 1) {
+            if (distance[i] < min) {
+                min = distance[i];
+                position = p[i];
+            }
+        }
+        return position;
+    };
+    Util.getUDPosition = function (m, n, e, p, step) {
+        var pos = e.getPos();
+        var size = e.getSize();
+        var x, y = pos.y;
+        if (p === BaseElements_1.Point.DOWN) {
+            y += size.y;
+        }
+        x = (y - n) / m;
+        if (step) {
+            x += e['$' + p] * step;
+            if (x < pos.x) {
+                x = pos.x;
+            }
+            else if (x > (pos.x + size.x)) {
+                x = pos.x + size.x;
+            }
+        }
+        return new BaseElements_1.Point(x, y, p);
+    };
+    Util.getLRPosition = function (m, n, e, p, step) {
+        var pos = e.getPos();
+        var size = e.getSize();
+        var y, x = pos.x;
+        if (p === BaseElements_1.Point.RIGHT) {
+            x += size.x;
+        }
+        y = m * x + n;
+        if (step) {
+            y += e['$' + p] * step;
+            if (y < pos.y) {
+                y = pos.y;
+            }
+            else if (y > (pos.y + size.y)) {
+                y = pos.y + size.y;
+            }
+        }
+        return new BaseElements_1.Point(x, y, p);
+    };
+    Util.hasClass = function (element, cls) {
+        var className = element.getAttribute('class');
+        return className.indexOf(cls) > 0;
+    };
+    Util.addClass = function (element, cls) {
+        if (!Util.hasClass(element, cls)) {
+            var className = element.getAttribute('class');
+            element.setAttributeNS(null, 'class', className + ' ' + cls);
+        }
+    };
+    Util.removeClass = function (element, cls) {
+        if (Util.hasClass(element, cls)) {
+            var reg = new RegExp('(\\s|^)' + cls + '(\\s|$)');
+            var className = element.getAttribute('class');
+            element.setAttributeNS(null, 'class', className.replace(reg, ' ').trim());
+        }
+    };
+    Util.startsWith = function (s, searchS) {
+        if (!String.prototype.startsWith) {
+            return s.indexOf(searchS) === 0;
+        }
+        return s.startsWith(searchS);
+    };
+    Util.endsWith = function (s, searchS) {
+        if (!String.prototype.endsWith) {
+            var lastIndex = s.lastIndexOf(searchS);
+            return lastIndex !== -1 && lastIndex === (s.length - 1);
+        }
+        return s.endsWith(searchS);
+    };
+    Util.includes = function (s, searchS) {
+        if (!String.prototype.includes) {
+            var idx = s.indexOf(searchS);
+            return idx > -1;
+        }
+        return s.includes(searchS);
+    };
+    Util.isParentOfChild = function (parent, child) {
+        if (!parent || !child) {
+            return false;
+        }
+        if (Util.isIE()) {
+            var children = parent.childNodes;
+            var found = false;
+            for (var i = 0; i < children.length; i++) {
+                var childItem = children[i];
+                if (childItem === child) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        return parent.contains(child);
+    };
+    Util.createCustomEvent = function (type, params) {
+        var evt;
+        if (typeof window['CustomEvent'] !== 'function') {
+            params = params || { bubbles: false, cancelable: false, detail: undefined };
+            evt = document.createEvent('CustomEvent');
+            evt.initCustomEvent(type, params.bubbles, params.cancelable, params.detail);
+            return evt;
+        }
+        evt = new CustomEvent(type);
+        return evt;
+    };
+    Util.saveToLocalStorage = function (model) {
+        if (!this.isAutoSave) {
+            return false;
+        }
+        if (Util.isLocalStorageSupported()) {
+            if (model) {
+                if (model.$isLoading) {
+                    return false;
+                }
+                var jsonObj = Util.toJson(model);
+                var data = JSON.stringify(jsonObj, null, '\t');
+                localStorage.setItem('diagram', data);
+            }
+            else {
+                localStorage.removeItem('diagram');
+            }
+            return true;
+        }
+        return false;
+    };
+    Util.getDiagramFromLocalStorage = function () {
+        if (Util.isLocalStorageSupported()) {
+            return localStorage.getItem('diagram');
+        }
+        return undefined;
+    };
+    Util.isLocalStorageSupported = function () {
+        if (this.isEdge()) {
+            return false;
+        }
+        return localStorage !== undefined;
+    };
+    return Util;
+}());
+exports.Util = Util;
 
 
 /***/ })
-/******/ ]);
+
+/******/ });
 //# sourceMappingURL=diagram.js.map
