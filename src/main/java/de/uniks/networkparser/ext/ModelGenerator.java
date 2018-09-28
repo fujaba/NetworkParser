@@ -67,9 +67,8 @@ import de.uniks.networkparser.parser.TemplateResultFragment;
 import de.uniks.networkparser.parser.TemplateResultModel;
 import de.uniks.networkparser.parser.cpp.CppClazz;
 import de.uniks.networkparser.parser.java.JavaClazz;
-import de.uniks.networkparser.parser.java.JavaCreator;
-import de.uniks.networkparser.parser.java.JavaCreatorCreator;
-import de.uniks.networkparser.parser.java.JavaSet;
+import de.uniks.networkparser.parser.java.JavaSetCreator;
+import de.uniks.networkparser.parser.java.JavaSetCreatorCreator;
 import de.uniks.networkparser.parser.typescript.TypescriptClazz;
 
 public class ModelGenerator extends Template {
@@ -84,10 +83,11 @@ public class ModelGenerator extends Template {
 	public SimpleList<Template> getTemplates(String filter) {
 		if (templates == null) {
 			templates = new SimpleKeyValueList<String, Template>();
-			addTemplate(new JavaCreatorCreator(), true);
+//			addTemplate(new JavaCreatorCreator(), true);
+			addTemplate(new JavaSetCreatorCreator(), true);
 			addTemplate(new JavaClazz(), true);
-			addTemplate(new JavaSet(), true);
-			addTemplate(new JavaCreator(), true);
+			addTemplate(new JavaSetCreator(), true);
+//			addTemplate(new JavaCreator(), true);
 			addTemplate(new TypescriptClazz(), true);
 			addTemplate(new CppClazz(), true);
 		}

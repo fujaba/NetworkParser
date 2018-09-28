@@ -15,7 +15,6 @@ import org.sdmlib.test.examples.studyrightWithAssignments.model.util.UniversityS
 
 import de.uniks.networkparser.ext.DiagramEditor;
 import de.uniks.networkparser.ext.Os;
-import de.uniks.networkparser.ext.PatternCondition;
 
 public class PatternObjects {
 	@Test
