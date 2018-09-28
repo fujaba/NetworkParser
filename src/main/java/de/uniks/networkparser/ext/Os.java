@@ -60,7 +60,15 @@ public class Os {
 	}
 	
 	public static final boolean isJavaFX() {
-		return ReflectionLoader.PLATFORM != null;
+		if(ReflectionLoader.PLATFORM == null || ReflectionLoader.PANE == null) {
+			return false;
+		}
+		try {
+			ReflectionLoader.newInstance(ReflectionLoader.PANE);
+		}catch (Throwable e) {
+			return false;
+		}
+		return true;
 	}
 
 	public static final boolean isGenerator() {
