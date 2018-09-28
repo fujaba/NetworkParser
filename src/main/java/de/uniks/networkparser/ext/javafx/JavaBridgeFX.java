@@ -25,6 +25,7 @@ THE SOFTWARE.
 */
 import java.util.List;
 import de.uniks.networkparser.IdMap;
+import de.uniks.networkparser.ext.Os;
 import de.uniks.networkparser.ext.generic.ReflectionLoader;
 import de.uniks.networkparser.ext.io.FileBuffer;
 import de.uniks.networkparser.gui.EventTypes;
@@ -128,6 +129,9 @@ public class JavaBridgeFX extends JavaBridge {
 	}
 
 	private static Object convertButton(Button button, boolean clearStyle) {
+		if(button == null || Os.isJavaFX() == false) {
+			return null;
+		}
 		String value = button.getValue();
 		Object javaFXBtn = ReflectionLoader.newInstance(ReflectionLoader.BUTTON, value);
 		List<ObjectCondition> events = button.getEvents(EventTypes.CLICK);

@@ -31,6 +31,7 @@ import de.uniks.networkparser.NetworkParserLog;
 import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.SimpleObject;
 import de.uniks.networkparser.ext.JSEditor;
+import de.uniks.networkparser.ext.Os;
 import de.uniks.networkparser.ext.generic.ReflectionLoader;
 import de.uniks.networkparser.ext.io.FileBuffer;
 import de.uniks.networkparser.gui.BridgeCommand;
@@ -290,7 +291,7 @@ public class JavaAdapter implements JavaViewAdapter, Runnable {
 	@Override
 	public Object getWebView() {
 		if(webView == null) {
-			if(ReflectionLoader.WEBVIEW != null) {
+			if(ReflectionLoader.WEBVIEW != null && Os.isJavaFX()) {
 				Object result = ReflectionLoader.call(ReflectionLoader.PLATFORM, "isFxApplicationThread"); 
 				if(Boolean.TRUE.equals(result)){
 					this.webView = ReflectionLoader.newInstance(ReflectionLoader.WEBVIEW);

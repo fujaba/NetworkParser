@@ -206,6 +206,9 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 		if(launcherClass == null) {
 			return false;
 		}
+		if(Os.isJavaFX() == false) {
+			return false;
+		}
 		ReflectionLoader.call(launcherClass, "startToolkit");
 		if(entity != null && file != null) {
 			ReflectionLoader.call(ReflectionLoader.PLATFORM, "setImplicitExit", boolean.class, false);
