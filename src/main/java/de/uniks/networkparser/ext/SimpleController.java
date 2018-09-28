@@ -361,6 +361,9 @@ public class SimpleController implements ObjectCondition{
 	@SuppressWarnings("unchecked")
 	public SimpleKeyValueList<String, String> getParameterMap() {
 		SimpleKeyValueList<String, String> map = new SimpleKeyValueList<String, String>();
+		if(Os.isJUnitTest()) {
+			return map;
+		}
 		List<String> raw = (List<String>) ReflectionLoader.callChain(getApplication(), "getParameters", "getRaw");
 		if(raw != null) {
 			for (String item : raw) {
