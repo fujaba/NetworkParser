@@ -24,6 +24,8 @@ public class RoomSet extends SimpleSet<Room> implements SendableEntityCreator {
 		Room.PROPERTY_TOPIC,
 	};
 
+	public static final RoomSet EMPTY_SET = new RoomSet().withFlag(RoomSet.READONLY);
+
 	@Override
 	public String[] getProperties() {
 		return properties;
@@ -61,15 +63,15 @@ public class RoomSet extends SimpleSet<Room> implements SendableEntityCreator {
 		}
 
 		if (Room.PROPERTY_CREDITS.equalsIgnoreCase(attribute)) {
-		return element.getCredits();
+			return element.getCredits();
 		}
 
 		if (Room.PROPERTY_NAME.equalsIgnoreCase(attribute)) {
-		return element.getName();
+			return element.getName();
 		}
 
 		if (Room.PROPERTY_TOPIC.equalsIgnoreCase(attribute)) {
-		return element.getTopic();
+			return element.getTopic();
 		}
 
 		return null;
@@ -111,18 +113,15 @@ public class RoomSet extends SimpleSet<Room> implements SendableEntityCreator {
 		}
 
 		if (Room.PROPERTY_CREDITS.equalsIgnoreCase(attribute)) {
-			element.setCredits((int) value);
-			return true;
+			return element.setCredits((int) value);
 		}
 
 		if (Room.PROPERTY_NAME.equalsIgnoreCase(attribute)) {
-			element.setName((String) value);
-			return true;
+			return element.setName((String) value);
 		}
 
 		if (Room.PROPERTY_TOPIC.equalsIgnoreCase(attribute)) {
-			element.setTopic((String) value);
-			return true;
+			return element.setTopic((String) value);
 		}
 
 		return false;
@@ -130,8 +129,7 @@ public class RoomSet extends SimpleSet<Room> implements SendableEntityCreator {
 
 	public static IdMap createIdMap(String session) {
 		return CreatorCreator.createIdMap(session);
-	}	public static final RoomSet EMPTY_SET = new RoomSet().withFlag(RoomSet.READONLY);
-
+	}
 	public Class<?> getTypClass() {
 		return Room.class;
 	}
@@ -146,8 +144,9 @@ public class RoomSet extends SimpleSet<Room> implements SendableEntityCreator {
 		NumberList result = new NumberList();
 		if(listener != null) {
 			result.withListener(listener);
-			for(int i=0;i<size();i++) {
-				listener.update(SimpleEvent.create(this, i, result, get(i), get(i).getCredits(), filter));
+			Room[] children = this.toArray(new Room[size()]);
+			for(int i=0;i<children.length;i++) {
+				listener.update(SimpleEvent.create(this, i, result, children[i], children[i].getCredits(), filter));
 			}
 			return result;
 		}
@@ -188,8 +187,9 @@ public class RoomSet extends SimpleSet<Room> implements SendableEntityCreator {
 		StringList result = new StringList();
 		if(listener != null) {
 			result.withListener(listener);
-			for(int i=0;i<size();i++) {
-				listener.update(SimpleEvent.create(this, i, result, get(i), get(i).getName(), filter));
+			Room[] children = this.toArray(new Room[size()]);
+			for(int i=0;i<children.length;i++) {
+				listener.update(SimpleEvent.create(this, i, result, children[i], children[i].getName(), filter));
 			}
 			return result;
 		}
@@ -230,8 +230,9 @@ public class RoomSet extends SimpleSet<Room> implements SendableEntityCreator {
 		StringList result = new StringList();
 		if(listener != null) {
 			result.withListener(listener);
-			for(int i=0;i<size();i++) {
-				listener.update(SimpleEvent.create(this, i, result, get(i), get(i).getTopic(), filter));
+			Room[] children = this.toArray(new Room[size()]);
+			for(int i=0;i<children.length;i++) {
+				listener.update(SimpleEvent.create(this, i, result, children[i], children[i].getTopic(), filter));
 			}
 			return result;
 		}
@@ -272,8 +273,9 @@ public class RoomSet extends SimpleSet<Room> implements SendableEntityCreator {
 		AssignmentSet result = new AssignmentSet();
 		if(listener != null) {
 			result.withListener(listener);
-			for(int i=0;i<size();i++) {
-				listener.update(SimpleEvent.create(this, i, result, get(i), get(i).getAssignments(), filter));
+			Room[] children = this.toArray(new Room[size()]);
+			for(int i=0;i<children.length;i++) {
+				listener.update(SimpleEvent.create(this, i, result, children[i], children[i].getAssignments(), filter));
 			}
 			return result;
 		}
@@ -308,8 +310,9 @@ public class RoomSet extends SimpleSet<Room> implements SendableEntityCreator {
 		RoomSet result = new RoomSet();
 		if(listener != null) {
 			result.withListener(listener);
-			for(int i=0;i<size();i++) {
-				listener.update(SimpleEvent.create(this, i, result, get(i), get(i).getDoors(), filter));
+			Room[] children = this.toArray(new Room[size()]);
+			for(int i=0;i<children.length;i++) {
+				listener.update(SimpleEvent.create(this, i, result, children[i], children[i].getDoors(), filter));
 			}
 			return result;
 		}
@@ -344,8 +347,9 @@ public class RoomSet extends SimpleSet<Room> implements SendableEntityCreator {
 		StudentSet result = new StudentSet();
 		if(listener != null) {
 			result.withListener(listener);
-			for(int i=0;i<size();i++) {
-				listener.update(SimpleEvent.create(this, i, result, get(i), get(i).getStudents(), filter));
+			Room[] children = this.toArray(new Room[size()]);
+			for(int i=0;i<children.length;i++) {
+				listener.update(SimpleEvent.create(this, i, result, children[i], children[i].getStudents(), filter));
 			}
 			return result;
 		}
@@ -380,8 +384,9 @@ public class RoomSet extends SimpleSet<Room> implements SendableEntityCreator {
 		TeachingAssistantSet result = new TeachingAssistantSet();
 		if(listener != null) {
 			result.withListener(listener);
-			for(int i=0;i<size();i++) {
-				listener.update(SimpleEvent.create(this, i, result, get(i), get(i).getTas(), filter));
+			Room[] children = this.toArray(new Room[size()]);
+			for(int i=0;i<children.length;i++) {
+				listener.update(SimpleEvent.create(this, i, result, children[i], children[i].getTas(), filter));
 			}
 			return result;
 		}
@@ -416,8 +421,9 @@ public class RoomSet extends SimpleSet<Room> implements SendableEntityCreator {
 		UniversitySet result = new UniversitySet();
 		if(listener != null) {
 			result.withListener(listener);
-			for(int i=0;i<size();i++) {
-				listener.update(SimpleEvent.create(this, i, result, get(i), get(i).getUniversity(), filter));
+			Room[] children = this.toArray(new Room[size()]);
+			for(int i=0;i<children.length;i++) {
+				listener.update(SimpleEvent.create(this, i, result, children[i], children[i].getUniversity(), filter));
 			}
 			return result;
 		}

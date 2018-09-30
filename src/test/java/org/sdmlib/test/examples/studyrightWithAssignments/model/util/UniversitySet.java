@@ -18,6 +18,8 @@ public class UniversitySet extends SimpleSet<University> implements SendableEnti
 		University.PROPERTY_NAME,
 	};
 
+	public static final UniversitySet EMPTY_SET = new UniversitySet().withFlag(UniversitySet.READONLY);
+
 	@Override
 	public String[] getProperties() {
 		return properties;
@@ -47,7 +49,7 @@ public class UniversitySet extends SimpleSet<University> implements SendableEnti
 		}
 
 		if (University.PROPERTY_NAME.equalsIgnoreCase(attribute)) {
-		return element.getName();
+			return element.getName();
 		}
 
 		return null;
@@ -79,8 +81,7 @@ public class UniversitySet extends SimpleSet<University> implements SendableEnti
 		}
 
 		if (University.PROPERTY_NAME.equalsIgnoreCase(attribute)) {
-			element.setName((String) value);
-			return true;
+			return element.setName((String) value);
 		}
 
 		return false;
@@ -88,8 +89,7 @@ public class UniversitySet extends SimpleSet<University> implements SendableEnti
 
 	public static IdMap createIdMap(String session) {
 		return CreatorCreator.createIdMap(session);
-	}	public static final UniversitySet EMPTY_SET = new UniversitySet().withFlag(UniversitySet.READONLY);
-
+	}
 	public Class<?> getTypClass() {
 		return University.class;
 	}
@@ -104,8 +104,9 @@ public class UniversitySet extends SimpleSet<University> implements SendableEnti
 		StringList result = new StringList();
 		if(listener != null) {
 			result.withListener(listener);
-			for(int i=0;i<size();i++) {
-				listener.update(SimpleEvent.create(this, i, result, get(i), get(i).getName(), filter));
+			University[] children = this.toArray(new University[size()]);
+			for(int i=0;i<children.length;i++) {
+				listener.update(SimpleEvent.create(this, i, result, children[i], children[i].getName(), filter));
 			}
 			return result;
 		}
@@ -146,8 +147,9 @@ public class UniversitySet extends SimpleSet<University> implements SendableEnti
 		PresidentSet result = new PresidentSet();
 		if(listener != null) {
 			result.withListener(listener);
-			for(int i=0;i<size();i++) {
-				listener.update(SimpleEvent.create(this, i, result, get(i), get(i).getPresident(), filter));
+			University[] children = this.toArray(new University[size()]);
+			for(int i=0;i<children.length;i++) {
+				listener.update(SimpleEvent.create(this, i, result, children[i], children[i].getPresident(), filter));
 			}
 			return result;
 		}
@@ -182,8 +184,9 @@ public class UniversitySet extends SimpleSet<University> implements SendableEnti
 		RoomSet result = new RoomSet();
 		if(listener != null) {
 			result.withListener(listener);
-			for(int i=0;i<size();i++) {
-				listener.update(SimpleEvent.create(this, i, result, get(i), get(i).getRooms(), filter));
+			University[] children = this.toArray(new University[size()]);
+			for(int i=0;i<children.length;i++) {
+				listener.update(SimpleEvent.create(this, i, result, children[i], children[i].getRooms(), filter));
 			}
 			return result;
 		}
@@ -218,8 +221,9 @@ public class UniversitySet extends SimpleSet<University> implements SendableEnti
 		StudentSet result = new StudentSet();
 		if(listener != null) {
 			result.withListener(listener);
-			for(int i=0;i<size();i++) {
-				listener.update(SimpleEvent.create(this, i, result, get(i), get(i).getStudents(), filter));
+			University[] children = this.toArray(new University[size()]);
+			for(int i=0;i<children.length;i++) {
+				listener.update(SimpleEvent.create(this, i, result, children[i], children[i].getStudents(), filter));
 			}
 			return result;
 		}

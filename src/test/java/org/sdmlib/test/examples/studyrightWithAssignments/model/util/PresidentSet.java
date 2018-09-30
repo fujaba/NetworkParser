@@ -12,6 +12,8 @@ public class PresidentSet extends SimpleSet<President> implements SendableEntity
 		President.PROPERTY_UNIVERSITY,
 	};
 
+	public static final PresidentSet EMPTY_SET = new PresidentSet().withFlag(PresidentSet.READONLY);
+
 	@Override
 	public String[] getProperties() {
 		return properties;
@@ -55,8 +57,7 @@ public class PresidentSet extends SimpleSet<President> implements SendableEntity
 
 	public static IdMap createIdMap(String session) {
 		return CreatorCreator.createIdMap(session);
-	}	public static final PresidentSet EMPTY_SET = new PresidentSet().withFlag(PresidentSet.READONLY);
-
+	}
 	public Class<?> getTypClass() {
 		return President.class;
 	}
@@ -71,8 +72,9 @@ public class PresidentSet extends SimpleSet<President> implements SendableEntity
 		UniversitySet result = new UniversitySet();
 		if(listener != null) {
 			result.withListener(listener);
-			for(int i=0;i<size();i++) {
-				listener.update(SimpleEvent.create(this, i, result, get(i), get(i).getUniversity(), filter));
+			President[] children = this.toArray(new President[size()]);
+			for(int i=0;i<children.length;i++) {
+				listener.update(SimpleEvent.create(this, i, result, children[i], children[i].getUniversity(), filter));
 			}
 			return result;
 		}

@@ -12,12 +12,14 @@ public class TeachingAssistant extends Student {
 		return this.certified;
 	}
 
-	public void setCertified(boolean value) {
+	public boolean setCertified(boolean value) {
 		if (this.certified != value) {
 			boolean oldValue = this.certified;
 			this.certified = value;
 			firePropertyChange(PROPERTY_CERTIFIED, oldValue, value);
+			return true;
 		}
+		return false;
 	}
 
 	public TeachingAssistant withCertified(boolean value) {

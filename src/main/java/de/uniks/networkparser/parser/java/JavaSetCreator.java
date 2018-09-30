@@ -46,6 +46,24 @@ public class JavaSetCreator extends Template {
 				"	SendableEntityCreator.DYNAMIC",
 			"{{#endif}}",
 			"	};","",
+			"{{#if {{templatemodel.features.setclass.classstring}}=="+SimpleSet.class.getName()+"}}",
+			"	public static final {{name}}Set EMPTY_SET = new {{name}}Set().withFlag({{name}}Set.READONLY);"+
+			"{{#else}}",
+			"	private static final long serialVersionUID = 1L;",
+			"	public static final {{name}}Set EMPTY_SET = new {{name}}Set();",
+			"{{#if {{#feature PATTERN}}}}",
+				"	protected ObjectCondition listener;","",
+				"{{#import "+ObjectCondition.class.getName()+"}}"+
+				"	public {{name}}Set withListener(ObjectCondition listener) {",
+				"		this.listener = listener;", 
+				"		return this;",
+				"	}","",
+			"{{#endif}}",
+			"	public {{name}}Set withVisible(boolean value) {",
+			"		return this;",
+			"	}",
+			"{{#endif}}"
+			,"",
 
 			"	@Override",
 			"	public String[] getProperties() {",
@@ -71,7 +89,7 @@ public class JavaSetCreator extends Template {
 			"{{#foreach child}}",
 				"{{#if {{item.className}}==" + Attribute.class.getName() + "}}",
 			"		if ({{name}}.PROPERTY_{{item.NAME}}.equalsIgnoreCase(attribute)) {",
-			"		return element.{{#if {{item.type}}==boolean}}is{{#else}}get{{#endif}}{{item.Name}}();",
+			"			return element.{{#if {{item.type}}==boolean}}is{{#else}}get{{#endif}}{{item.Name}}();",
 			"		}","",
 				"{{#endif}}",
 				"{{#if {{#and}}{{item.className}}==" + Association.class.getName() + " {{item.other.isImplements}}==false{{#endand}}}}",
@@ -105,8 +123,7 @@ public class JavaSetCreator extends Template {
 				"{{#ifnot {{item.modifiers#contains(static)}}}}",
 					"		if ({{name}}.PROPERTY_{{item.NAME}}.equalsIgnoreCase(attribute)) {",
 					"{{#import {{item.type(false)}}}}",
-					"			element.set{{item.Name}}(({{item.type.name}}) value);",
-					"			return true;",
+					"			return element.set{{item.Name}}(({{item.type.name}}) value);",
 					"		}","",
 				"{{#endif}}",
 			"{{#endif}}",
@@ -132,24 +149,6 @@ public class JavaSetCreator extends Template {
 			"	}",
 
 
-				"{{#if {{templatemodel.features.setclass.classstring}}=="+SimpleSet.class.getName()+"}}"+
-				"	public static final {{name}}Set EMPTY_SET = new {{name}}Set().withFlag({{name}}Set.READONLY);"+
-				"{{#else}}"+
-				"	private static final long serialVersionUID = 1L;",
-				"	public static final {{name}}Set EMPTY_SET = new {{name}}Set();",
-				"{{#if {{#feature PATTERN}}}}",
-					"	protected ObjectCondition listener;","",
-					"{{#import "+ObjectCondition.class.getName()+"}}"+
-					"	public {{name}}Set withListener(ObjectCondition listener) {",
-					"		this.listener = listener;", 
-					"		return this;",
-					"	}","",
-				"{{#endif}}",
-				"	public {{name}}Set withVisible(boolean value) {",
-				"		return this;",
-				"	}",
-				"{{#endif}}"
-				,"",
 				"	public Class<?> getTypClass() {",
 				"		return {{name}}.class;",
 				"	}","","",

@@ -59,12 +59,14 @@ public class University {
 		return this.name;
 	}
 
-	public void setName(String value) {
+	public boolean setName(String value) {
 		if (this.name != value) {
 			String oldValue = this.name;
 			this.name = value;
 			firePropertyChange(PROPERTY_NAME, oldValue, value);
+			return true;
 		}
+		return false;
 	}
 
 	public University withName(String value) {

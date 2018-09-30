@@ -13,8 +13,8 @@ import org.sdmlib.test.examples.studyrightWithAssignments.model.util.AssignmentS
 import org.sdmlib.test.examples.studyrightWithAssignments.model.util.RoomSet;
 import org.sdmlib.test.examples.studyrightWithAssignments.model.util.UniversitySet;
 
-import de.uniks.networkparser.ext.DiagramEditor;
 import de.uniks.networkparser.ext.Os;
+import de.uniks.networkparser.ext.PatternCondition;
 
 public class PatternObjects {
 	@Test
@@ -53,7 +53,7 @@ public class PatternObjects {
 		// OLD
 		RoomSet roomsOLD = studyRight.getRooms();
 		
-		DiagramEditor.edobs(studyRight, mathRoom,alice);
+//		DiagramEditor.edobs(studyRight, mathRoom,alice);
 		
 		AssignmentSet assignmentsOLD = roomsOLD.getAssignments();
 		double sumOLD = assignmentsOLD.getPoints().sum();
@@ -66,17 +66,17 @@ public class PatternObjects {
 //		RoomSet rooms = (RoomSet) patternCondition.getRoot();
 		UniversitySet set=new UniversitySet();
 		set.add(studyRight);
-/*		
+
 		PatternCondition patternCondition = PatternCondition.createPatternPair(set);
 		set = (UniversitySet) patternCondition.getRoot();
-		
+
 		RoomSet rooms = set.getRooms();
 
 		AssignmentSet assignments = rooms.getAssignments();
 		double sum = assignments.getPoints().sum();
 		assertThat(rooms.size(), equalTo(4));
 		assertThat(assignments.size(), equalTo(4));
-		assertThat(sum, equalTo(89));
-*/
+		assertThat(sum, equalTo(89.0));
+//*/
 	}
 }

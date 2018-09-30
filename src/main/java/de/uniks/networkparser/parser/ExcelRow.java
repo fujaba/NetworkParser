@@ -1,6 +1,7 @@
 package de.uniks.networkparser.parser;
 import java.util.Iterator;
 
+import de.uniks.networkparser.list.AbstractList;
 /*
 NetworkParser
 Copyright (c) 2011 - 2016, Stefan Lindel
@@ -24,7 +25,7 @@ public class ExcelRow implements Iterable<ExcelCell>{
 	private SimpleList<ExcelCell> children;
 	private Object parent;
 	private String name;
-
+	private int len;
 	public ExcelRow withName(String name) {
 		this.name = name;
 		return this;
@@ -91,6 +92,16 @@ public class ExcelRow implements Iterable<ExcelCell>{
 		}
 		boolean result=true;
 		for(ExcelCell item : values) {
+			if(item == null) {
+				continue;
+			}
+			Object content = item.getContent();
+			if(content != null) {
+				int temp = content.toString().length();
+				if(temp>this.len) {
+					this.len = temp;
+				}
+			}
 			result = children.add(item) && result;
 		}
 		return true;
@@ -105,16 +116,35 @@ public class ExcelRow implements Iterable<ExcelCell>{
 	}
 
 	public ExcelRow with(ExcelCell... values) {
-		if(values == null) {
-			return this;
-		}
-		if(children == null) {
-			children = new SimpleList<ExcelCell>();
-		}
-
-		for(ExcelCell cell: values) {
-			children.with(cell);
-		}
+		add(values);
 		return this;
 	}
+
+	public ExcelCell remove(int i) {
+		ExcelCell result =  this.children.remove(i);
+		if(this.parent != null) {
+			if(parent instanceof AbstractList<?>) {
+				AbstractList<?> collection = (AbstractList<?>) parent;
+				collection.remove(i);
+			}
+		}
+		return result;
+	}
+	
+	public ExcelCell copy(int pos) {
+		Object content = this.get(pos).getContent();
+		ExcelCell cell = new ExcelCell().withContent(content);
+		this.children.add(pos+1, cell);
+		if(this.parent != null) {
+			if(parent instanceof AbstractList<?>) {
+				AbstractList<?> collection = (AbstractList<?>) parent;
+				collection.add(pos, content);
+			}
+		}
+		return cell;
+	}
+	public int getContentLength() {
+		return len;
+	}
+
 }

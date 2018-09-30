@@ -54,12 +54,14 @@ public class Assignment {
 		return this.content;
 	}
 
-	public void setContent(String value) {
+	public boolean setContent(String value) {
 		if (this.content != value) {
 			String oldValue = this.content;
 			this.content = value;
 			firePropertyChange(PROPERTY_CONTENT, oldValue, value);
+			return true;
 		}
+		return false;
 	}
 
 	public Assignment withContent(String value) {
@@ -75,12 +77,14 @@ public class Assignment {
 		return this.points;
 	}
 
-	public void setPoints(int value) {
+	public boolean setPoints(int value) {
 		if (this.points != value) {
 			int oldValue = this.points;
 			this.points = value;
 			firePropertyChange(PROPERTY_POINTS, oldValue, value);
+			return true;
 		}
+		return false;
 	}
 
 	public Assignment withPoints(int value) {

@@ -1,6 +1,5 @@
 package de.uniks.networkparser.ext;
 
-import java.util.Collection;
 import java.util.Set;
 
 import de.uniks.networkparser.IdMap;
@@ -9,6 +8,7 @@ import de.uniks.networkparser.ext.generic.ReflectionLoader;
 import de.uniks.networkparser.graph.Pattern;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
+import de.uniks.networkparser.list.AbstractList;
 import de.uniks.networkparser.list.SimpleIterator;
 import de.uniks.networkparser.list.SimpleSet;
 import de.uniks.networkparser.parser.ExcelCell;
@@ -59,27 +59,30 @@ public class PatternCondition implements ObjectCondition{
 				Set<Object> newSet = (Set<Object>) ReflectionLoader.newInstance(values[0].getClass());
 				ReflectionLoader.call(newSet, "withListener", ObjectCondition.class, this);
 				this.root = newSet;
-				update(new SimpleEvent(root, CREATEPATTERN, null, root));
-				newSet.addAll((Collection<?>) values[0]);
+
+				SimpleEvent evt = SimpleEvent.create(this, 0, newSet, newSet, values[0], null);
+				update(evt);
+//				newSet.addAll((Collection<?>) values[0]);
 			}else {
 				SimpleSet<Object> newSet = getNewList();
 				newSet.withListener(this);
 				this.root = newSet;
-				update(new SimpleEvent(root, CREATEPATTERN, null, root));
-
-				newSet.add(values[0]);
+				SimpleEvent evt = SimpleEvent.create(this, 0, newSet, newSet, values[0], null);
+				update(evt);
+//				newSet.add(values[0]);
 			}
 		} else {
-			SimpleSet<Object> newList = getNewList();
-			newList.withListener(this);
-			this.root = newList;
+			SimpleSet<Object> newSet = getNewList();
+			newSet.withListener(this);
+			this.root = newSet;
 			update(new SimpleEvent(root, CREATEPATTERN, null, root));
-
-			for(Object item : values) {
-				if(item != null) {
-					newList.add(item);
-				}
-			}
+			SimpleEvent evt = SimpleEvent.create(this, 0, newSet, newSet, values[0], null);
+			update(evt);
+//			for(Object item : values) {
+//				if(item != null) {
+//					newList.add(item);
+//				}
+//			}
 		}
 		if(root != null ) {
 			if(root instanceof SimpleSet<?>) {
@@ -99,69 +102,78 @@ public class PatternCondition implements ObjectCondition{
 		if(value instanceof SimpleEvent) {
 			SimpleEvent event = (SimpleEvent) value;
 			if(CREATEPATTERN.equals(event.getPropertyName())) {
-				//TODO SimpleEvent create(Object source, int index, Object newCollection, Object model, Object newValue, Object filter) {
-				//listener.update(new SimpleEvent(this, "createpattern", null, result));
-
-				Object newValue = event.getNewValue();
-				Object oldValue = event.getOldValue();
-				if(oldValue != null && newValue == null) {
-					//CREATE NEW SET
-					if(oldValue instanceof SimpleSet<?> == false) {
-						return false;
+				int index = event.getDepth();
+//				Set<?> source= (Set<?>) event.getSource();
+				AbstractList<?> newCollection = (AbstractList<?>) event.getBeforeElement();
+//				Object container = event.getOldValue();
+				Object child = event.getNewValue();
+				Object[] filter = null;
+				if(event.getModelValue() != null) {
+					Class<?> filterClass = event.getModelValue().getClass();
+					if(filterClass.equals(int[].class)) {
+						int[] rowFilter = (int[]) event.getModelValue();
+						filter = new Object[rowFilter.length];
+						for(int i=0;i<rowFilter.length;i++) {
+							filter[i] = Integer.valueOf(rowFilter[i]);
+						}
+					} else if(filterClass.equals(double[].class)) {
+						double[] rowFilter = (double[]) event.getModelValue();
+						filter = new Object[rowFilter.length];
+						for(int i=0;i<rowFilter.length;i++) {
+							filter[i] = Double.valueOf(rowFilter[i]);
+						}
+					} else {
+						filter = (Object[]) event.getModelValue();
 					}
-					SimpleSet<?> set=(SimpleSet<?>) oldValue;
-					set.withAllowDuplicate(this.duplicate);
-					ExcelRow row = this.excelSheet.createRow(oldValue);
 				}
-				// NOW Set is Complete
+				// For First Element set Dupplicate
+				if(index == 0) {
+					newCollection.withAllowDuplicate(this.duplicate);
+//					ExcelRow row = 
+					this.excelSheet.createRow(newCollection);
+				}
+				Set<Object> childCollection;
+				if(child instanceof Set<?>) {
+					childCollection = (Set<Object>) child;
+				} else {
+					SimpleSet<Object> items = new SimpleSet<Object>();
+					items.add(child);
+					childCollection = items;
+				}
 				
-				if(this.excelSheet == null) {
-					return true;
+				SimpleSet<String> filters = null;
+				if(filter != null && filter.length > 0) {
+					filters = new SimpleSet<String>();
+					filters.with(filter);
 				}
-//				int rowCount = this.excelSheet.size();
-				if(newValue instanceof SimpleSet<?> == false) {
-					return true;
+
+				if(childCollection.isEmpty()) {
+					// EMPTY VALUE CLEAR ITEMS FROM LIST
+					// Index is the Index of LastRow
+					for(int i=this.excelSheet.size() - 2;i>=0;i--) {
+						this.excelSheet.get(i).remove(i);
+					}
+				} else {
+					ExcelRow last = this.excelSheet.getLast();
+					// SO SET or COPY COLUMN
+					boolean first = true;
+					Object[] children = childCollection.toArray(new Object[childCollection.size()]);
+					for(Object item : children) {
+						if(filters == null || filters.contains(item)) {
+							if(first) {
+								//ONLY ST AS NEW EXCELCELL
+								first = false;
+							} else {
+								for(int i=this.excelSheet.size() - 2;i>=0;i--) {
+									this.excelSheet.get(i).copy(index);
+								}
+							}
+							ExcelCell cell = new ExcelCell().withContent(item);
+							newCollection.add(item);
+							last.add(cell);
+						}
+					}
 				}
-				SimpleSet<?> set=(SimpleSet<?>) oldValue;
-				set.withAllowDuplicate(this.duplicate);
-				for(Object child : set) {
-					
-				}
-//				ldmkfnkldjsn
-				return true;
-			}else if(SimpleSet.PROPERTY.equals(event.getPropertyName())) {
-				// NOW ADD SOME ITEM
-				Collection<Object> source = (Collection<Object>) event.getSource();
-				ExcelRow row = this.excelSheet.getRow(source);
-				if(row == null ) {
-					System.out.println("ss");
-				}
-				this.excelSheet.toString();
-				int index = this.excelSheet.getRowIndex(row);
-				Object newValue = event.getNewValue();
-				if(source.size() == 1) {
-					// FIRST SIZE
-//					if(index>0) {
-//						row.setElementCount(this.excelSheet.get(index-1).size());
-//					}
-					ExcelCell cell = new ExcelCell().withContent(newValue);
-					row.add(cell);
-//					// Duplicate Value
-//					for(int i=0;i<row.getCount();i++) {
-//						source.add(newValue);
-//					}
-				}
-//				} else if(row.getCount() >0) {
-//					// FIRST ADD
-//					duplicateColumn(2, index);
-//					ExcelCell cell = new ExcelCell().withContent(newValue);
-//					row.add(cell);
-//					
-//					for(int r=1;r<index;r++) {
-//						ExcelRow masterRow = this.excelSheet.get(r);
-//						duplicateColumn(masterRow.getCount(), index);
-//					}
-//				}
 				return true;
 			}
 		}
@@ -206,18 +218,16 @@ public class PatternCondition implements ObjectCondition{
 		return false;
 	}
 	
-	private void duplicateColumn(int count, int max) {
-		for(int i=1;i<count;i++) {
-			for(int r=0;r<max;r++) {
-				ExcelRow excelRow = this.excelSheet.get(r);
-				ExcelCell firstCell = excelRow.get(0);
-				ExcelCell cell = ExcelCell.create(firstCell.getContent());
-				excelRow.add(cell);
-			}
-		}
-		
-		
-	}
+//FIXME	private void duplicateColumn(int count, int max) {
+//		for(int i=1;i<count;i++) {
+//			for(int r=0;r<max;r++) {
+//				ExcelRow excelRow = this.excelSheet.get(r);
+//				ExcelCell firstCell = excelRow.get(0);
+//				ExcelCell cell = ExcelCell.create(firstCell.getContent());
+//				excelRow.add(cell);
+//			}
+//		}
+//	}
 	
 	public static final PatternCondition create(String linkName) {
 		PatternCondition pattern = new PatternCondition();
@@ -233,6 +243,14 @@ public class PatternCondition implements ObjectCondition{
 		return value;
 	}
 
+	@Override
+	public String toString() {
+		if(this.excelSheet != null) {
+			return excelSheet.toString();
+		}
+		return super.toString();
+	}
+	
 	public static final PatternCondition createPatternPair(Object... root) {
 		return new PatternCondition().withDuplicate(true).withRoot(root);
 	}

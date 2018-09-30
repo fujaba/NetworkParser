@@ -60,12 +60,14 @@ public class Student {
 		return this.assignmentPoints;
 	}
 
-	public void setAssignmentPoints(int value) {
+	public boolean setAssignmentPoints(int value) {
 		if (this.assignmentPoints != value) {
 			int oldValue = this.assignmentPoints;
 			this.assignmentPoints = value;
 			firePropertyChange(PROPERTY_ASSIGNMENTPOINTS, oldValue, value);
+			return true;
 		}
+		return false;
 	}
 
 	public Student withAssignmentPoints(int value) {
@@ -81,12 +83,14 @@ public class Student {
 		return this.credits;
 	}
 
-	public void setCredits(int value) {
+	public boolean setCredits(int value) {
 		if (this.credits != value) {
 			int oldValue = this.credits;
 			this.credits = value;
 			firePropertyChange(PROPERTY_CREDITS, oldValue, value);
+			return true;
 		}
+		return false;
 	}
 
 	public Student withCredits(int value) {
@@ -102,12 +106,14 @@ public class Student {
 		return this.id;
 	}
 
-	public void setId(String value) {
+	public boolean setId(String value) {
 		if (this.id != value) {
 			String oldValue = this.id;
 			this.id = value;
 			firePropertyChange(PROPERTY_ID, oldValue, value);
+			return true;
 		}
+		return false;
 	}
 
 	public Student withId(String value) {
@@ -123,12 +129,14 @@ public class Student {
 		return this.motivation;
 	}
 
-	public void setMotivation(int value) {
+	public boolean setMotivation(int value) {
 		if (this.motivation != value) {
 			int oldValue = this.motivation;
 			this.motivation = value;
 			firePropertyChange(PROPERTY_MOTIVATION, oldValue, value);
+			return true;
 		}
+		return false;
 	}
 
 	public Student withMotivation(int value) {
@@ -144,12 +152,14 @@ public class Student {
 		return this.name;
 	}
 
-	public void setName(String value) {
+	public boolean setName(String value) {
 		if (this.name != value) {
 			String oldValue = this.name;
 			this.name = value;
 			firePropertyChange(PROPERTY_NAME, oldValue, value);
+			return true;
 		}
+		return false;
 	}
 
 	public Student withName(String value) {

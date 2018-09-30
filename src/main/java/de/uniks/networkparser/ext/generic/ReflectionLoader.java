@@ -410,6 +410,9 @@ public class ReflectionLoader {
 	}
 	
 	public static Object newInstance(Class<?> instance, Object... arguments) {
+		return newInstance(instance, true, arguments);
+	}
+	public static Object newInstance(Class<?> instance, boolean showError, Object... arguments) {
 		try {
 			if(arguments == null) {
 				Constructor<?> constructor = instance.getConstructor();
@@ -450,7 +453,7 @@ public class ReflectionLoader {
 			Constructor<?> constructor = instance.getDeclaredConstructor(methodArguments);
 			return constructor.newInstance(methodArgumentsValues);
 		} catch (Exception e) {
-			if(logger != null) {
+			if(logger != null && showError) {
 				e.printStackTrace(logger);
 			}
 		}

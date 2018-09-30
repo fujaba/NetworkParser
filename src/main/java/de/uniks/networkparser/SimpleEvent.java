@@ -91,7 +91,7 @@ public final class SimpleEvent extends PropertyChangeEvent {
 	 * @return new SimpleEvent
 	 */
 	public static SimpleEvent create(Object source, int index, Object newCollection, Object model, Object newValue, Object filter) {
-		SimpleEvent evt = new SimpleEvent(source, "createPattern", model, newValue);
+		SimpleEvent evt = new SimpleEvent(source, "createpattern", model, newValue);
 		evt.depth = index;
 		evt.beforeElement = newCollection;
 		evt.value = filter;

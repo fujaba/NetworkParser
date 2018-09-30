@@ -14,6 +14,8 @@ public class TeachingAssistantSet extends SimpleSet<TeachingAssistant> implement
 		TeachingAssistant.PROPERTY_CERTIFIED,
 	};
 
+	public static final TeachingAssistantSet EMPTY_SET = new TeachingAssistantSet().withFlag(TeachingAssistantSet.READONLY);
+
 	@Override
 	public String[] getProperties() {
 		return properties;
@@ -35,7 +37,7 @@ public class TeachingAssistantSet extends SimpleSet<TeachingAssistant> implement
 		}
 
 		if (TeachingAssistant.PROPERTY_CERTIFIED.equalsIgnoreCase(attribute)) {
-		return element.isCertified();
+			return element.isCertified();
 		}
 
 		return null;
@@ -57,8 +59,7 @@ public class TeachingAssistantSet extends SimpleSet<TeachingAssistant> implement
 		}
 
 		if (TeachingAssistant.PROPERTY_CERTIFIED.equalsIgnoreCase(attribute)) {
-			element.setCertified((boolean) value);
-			return true;
+			return element.setCertified((boolean) value);
 		}
 
 		return false;
@@ -66,8 +67,7 @@ public class TeachingAssistantSet extends SimpleSet<TeachingAssistant> implement
 
 	public static IdMap createIdMap(String session) {
 		return CreatorCreator.createIdMap(session);
-	}	public static final TeachingAssistantSet EMPTY_SET = new TeachingAssistantSet().withFlag(TeachingAssistantSet.READONLY);
-
+	}
 	public Class<?> getTypClass() {
 		return TeachingAssistant.class;
 	}
@@ -82,8 +82,9 @@ public class TeachingAssistantSet extends SimpleSet<TeachingAssistant> implement
 		BooleanList result = new BooleanList();
 		if(listener != null) {
 			result.withListener(listener);
-			for(int i=0;i<size();i++) {
-				listener.update(SimpleEvent.create(this, i, result, get(i), get(i).isCertified(), filter));
+			TeachingAssistant[] children = this.toArray(new TeachingAssistant[size()]);
+			for(int i=0;i<children.length;i++) {
+				listener.update(SimpleEvent.create(this, i, result, children[i], children[i].isCertified(), filter));
 			}
 			return result;
 		}
@@ -114,8 +115,9 @@ public class TeachingAssistantSet extends SimpleSet<TeachingAssistant> implement
 		RoomSet result = new RoomSet();
 		if(listener != null) {
 			result.withListener(listener);
-			for(int i=0;i<size();i++) {
-				listener.update(SimpleEvent.create(this, i, result, get(i), get(i).getRoom(), filter));
+			TeachingAssistant[] children = this.toArray(new TeachingAssistant[size()]);
+			for(int i=0;i<children.length;i++) {
+				listener.update(SimpleEvent.create(this, i, result, children[i], children[i].getRoom(), filter));
 			}
 			return result;
 		}

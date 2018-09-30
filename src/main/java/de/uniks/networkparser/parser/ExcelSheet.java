@@ -82,9 +82,14 @@ public class ExcelSheet extends SimpleList<ExcelRow>{
 		boolean empty = false;
 		for(i=0;i<this.size();i++) {
 			ExcelRow row = this.get(i);
-			buffer.add(row.getName());
+			String name = row.getName();
+			buffer.add(name);
 			if(i+1<this.size()) {
-				buffer.add('\t');
+				int l = name.length();
+				while(l <= row.getContentLength()) {
+					buffer.add(' ');
+					l++;
+				}
 			}
 			SimpleList<ExcelCell> rowCells = row.getChildren();
 			if(cells == null) {
@@ -110,7 +115,7 @@ public class ExcelSheet extends SimpleList<ExcelRow>{
 						buffer.add(content.toString());
 					}
 					if(i+1<rows) {
-						buffer.add('\t');
+						buffer.add(' ');
 					}
 				}
 				buffer.add(BaseItem.CRLF);
@@ -127,5 +132,12 @@ public class ExcelSheet extends SimpleList<ExcelRow>{
 			}
 		}
 		return -1;
+	}
+
+	public ExcelRow getLast() {
+		if(size()==0) {
+			return null;
+		}
+		return get(this.size() - 1);
 	}
 }

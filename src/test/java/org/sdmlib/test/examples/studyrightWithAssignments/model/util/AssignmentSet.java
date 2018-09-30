@@ -18,6 +18,8 @@ public class AssignmentSet extends SimpleSet<Assignment> implements SendableEnti
 		Assignment.PROPERTY_POINTS,
 	};
 
+	public static final AssignmentSet EMPTY_SET = new AssignmentSet().withFlag(AssignmentSet.READONLY);
+
 	@Override
 	public String[] getProperties() {
 		return properties;
@@ -43,11 +45,11 @@ public class AssignmentSet extends SimpleSet<Assignment> implements SendableEnti
 		}
 
 		if (Assignment.PROPERTY_CONTENT.equalsIgnoreCase(attribute)) {
-		return element.getContent();
+			return element.getContent();
 		}
 
 		if (Assignment.PROPERTY_POINTS.equalsIgnoreCase(attribute)) {
-		return element.getPoints();
+			return element.getPoints();
 		}
 
 		return null;
@@ -74,13 +76,11 @@ public class AssignmentSet extends SimpleSet<Assignment> implements SendableEnti
 		}
 
 		if (Assignment.PROPERTY_CONTENT.equalsIgnoreCase(attribute)) {
-			element.setContent((String) value);
-			return true;
+			return element.setContent((String) value);
 		}
 
 		if (Assignment.PROPERTY_POINTS.equalsIgnoreCase(attribute)) {
-			element.setPoints((int) value);
-			return true;
+			return element.setPoints((int) value);
 		}
 
 		return false;
@@ -88,8 +88,7 @@ public class AssignmentSet extends SimpleSet<Assignment> implements SendableEnti
 
 	public static IdMap createIdMap(String session) {
 		return CreatorCreator.createIdMap(session);
-	}	public static final AssignmentSet EMPTY_SET = new AssignmentSet().withFlag(AssignmentSet.READONLY);
-
+	}
 	public Class<?> getTypClass() {
 		return Assignment.class;
 	}
@@ -104,8 +103,9 @@ public class AssignmentSet extends SimpleSet<Assignment> implements SendableEnti
 		StringList result = new StringList();
 		if(listener != null) {
 			result.withListener(listener);
-			for(int i=0;i<size();i++) {
-				listener.update(SimpleEvent.create(this, i, result, get(i), get(i).getContent(), filter));
+			Assignment[] children = this.toArray(new Assignment[size()]);
+			for(int i=0;i<children.length;i++) {
+				listener.update(SimpleEvent.create(this, i, result, children[i], children[i].getContent(), filter));
 			}
 			return result;
 		}
@@ -146,8 +146,9 @@ public class AssignmentSet extends SimpleSet<Assignment> implements SendableEnti
 		NumberList result = new NumberList();
 		if(listener != null) {
 			result.withListener(listener);
-			for(int i=0;i<size();i++) {
-				listener.update(SimpleEvent.create(this, i, result, get(i), get(i).getPoints(), filter));
+			Assignment[] children = this.toArray(new Assignment[size()]);
+			for(int i=0;i<children.length;i++) {
+				listener.update(SimpleEvent.create(this, i, result, children[i], children[i].getPoints(), filter));
 			}
 			return result;
 		}
@@ -188,8 +189,9 @@ public class AssignmentSet extends SimpleSet<Assignment> implements SendableEnti
 		RoomSet result = new RoomSet();
 		if(listener != null) {
 			result.withListener(listener);
-			for(int i=0;i<size();i++) {
-				listener.update(SimpleEvent.create(this, i, result, get(i), get(i).getRoom(), filter));
+			Assignment[] children = this.toArray(new Assignment[size()]);
+			for(int i=0;i<children.length;i++) {
+				listener.update(SimpleEvent.create(this, i, result, children[i], children[i].getRoom(), filter));
 			}
 			return result;
 		}
@@ -224,8 +226,9 @@ public class AssignmentSet extends SimpleSet<Assignment> implements SendableEnti
 		StudentSet result = new StudentSet();
 		if(listener != null) {
 			result.withListener(listener);
-			for(int i=0;i<size();i++) {
-				listener.update(SimpleEvent.create(this, i, result, get(i), get(i).getStudents(), filter));
+			Assignment[] children = this.toArray(new Assignment[size()]);
+			for(int i=0;i<children.length;i++) {
+				listener.update(SimpleEvent.create(this, i, result, children[i], children[i].getStudents(), filter));
 			}
 			return result;
 		}

@@ -61,12 +61,14 @@ public class Room {
 		return this.credits;
 	}
 
-	public void setCredits(int value) {
+	public boolean setCredits(int value) {
 		if (this.credits != value) {
 			int oldValue = this.credits;
 			this.credits = value;
 			firePropertyChange(PROPERTY_CREDITS, oldValue, value);
+			return true;
 		}
+		return false;
 	}
 
 	public Room withCredits(int value) {
@@ -82,12 +84,14 @@ public class Room {
 		return this.name;
 	}
 
-	public void setName(String value) {
+	public boolean setName(String value) {
 		if (this.name != value) {
 			String oldValue = this.name;
 			this.name = value;
 			firePropertyChange(PROPERTY_NAME, oldValue, value);
+			return true;
 		}
+		return false;
 	}
 
 	public Room withName(String value) {
@@ -103,12 +107,14 @@ public class Room {
 		return this.topic;
 	}
 
-	public void setTopic(String value) {
+	public boolean setTopic(String value) {
 		if (this.topic != value) {
 			String oldValue = this.topic;
 			this.topic = value;
 			firePropertyChange(PROPERTY_TOPIC, oldValue, value);
+			return true;
 		}
+		return false;
 	}
 
 	public Room withTopic(String value) {

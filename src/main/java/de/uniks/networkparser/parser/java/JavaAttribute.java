@@ -26,7 +26,7 @@ public class JavaAttribute extends Template {
 				"	}","",
 				"{{#endif}}","",
 				"{{#if {{#NOT}}{{modifiers#contains(static)}}{{#ENDNOT}}}}"+
-					"	public {{modifiers} }void set{{Name}}({{type}} value){{#if {{file.member.type}}==interface}};","","{{#endif}}",
+					"	public {{modifiers} }boolean set{{Name}}({{type}} value){{#if {{file.member.type}}==interface}};","","{{#endif}}",
 					"{{#ifnot {{file.member.type}}==interface}} {",
 					"		if ({{this}}.{{name}} != value) {",
 					"{{#if {{#AND}}{{#feature PROPERTYCHANGESUPPORT}} {{file.member.type}}==!enum{{#ENDAND}}}}",
@@ -36,7 +36,9 @@ public class JavaAttribute extends Template {
 					"{{#else}}",
 					"			{{this}}.{{name}} = value;",
 					"{{#endif}}",
+					"			return true;",
 					"		}",
+					"		return false;",
 					"	}","",
 					"{{#endif}}",
 					"	public {{modifiers} }{{file.member}} with{{Name}}({{type}} value){{#if {{file.member.type}}==interface}};","","{{#endif}}",

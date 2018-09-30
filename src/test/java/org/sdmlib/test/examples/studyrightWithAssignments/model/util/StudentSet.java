@@ -24,6 +24,8 @@ public class StudentSet extends SimpleSet<Student> implements SendableEntityCrea
 		Student.PROPERTY_NAME,
 	};
 
+	public static final StudentSet EMPTY_SET = new StudentSet().withFlag(StudentSet.READONLY);
+
 	@Override
 	public String[] getProperties() {
 		return properties;
@@ -57,23 +59,23 @@ public class StudentSet extends SimpleSet<Student> implements SendableEntityCrea
 		}
 
 		if (Student.PROPERTY_ASSIGNMENTPOINTS.equalsIgnoreCase(attribute)) {
-		return element.getAssignmentPoints();
+			return element.getAssignmentPoints();
 		}
 
 		if (Student.PROPERTY_CREDITS.equalsIgnoreCase(attribute)) {
-		return element.getCredits();
+			return element.getCredits();
 		}
 
 		if (Student.PROPERTY_ID.equalsIgnoreCase(attribute)) {
-		return element.getId();
+			return element.getId();
 		}
 
 		if (Student.PROPERTY_MOTIVATION.equalsIgnoreCase(attribute)) {
-		return element.getMotivation();
+			return element.getMotivation();
 		}
 
 		if (Student.PROPERTY_NAME.equalsIgnoreCase(attribute)) {
-		return element.getName();
+			return element.getName();
 		}
 
 		return null;
@@ -110,28 +112,23 @@ public class StudentSet extends SimpleSet<Student> implements SendableEntityCrea
 		}
 
 		if (Student.PROPERTY_ASSIGNMENTPOINTS.equalsIgnoreCase(attribute)) {
-			element.setAssignmentPoints((int) value);
-			return true;
+			return element.setAssignmentPoints((int) value);
 		}
 
 		if (Student.PROPERTY_CREDITS.equalsIgnoreCase(attribute)) {
-			element.setCredits((int) value);
-			return true;
+			return element.setCredits((int) value);
 		}
 
 		if (Student.PROPERTY_ID.equalsIgnoreCase(attribute)) {
-			element.setId((String) value);
-			return true;
+			return element.setId((String) value);
 		}
 
 		if (Student.PROPERTY_MOTIVATION.equalsIgnoreCase(attribute)) {
-			element.setMotivation((int) value);
-			return true;
+			return element.setMotivation((int) value);
 		}
 
 		if (Student.PROPERTY_NAME.equalsIgnoreCase(attribute)) {
-			element.setName((String) value);
-			return true;
+			return element.setName((String) value);
 		}
 
 		return false;
@@ -139,8 +136,7 @@ public class StudentSet extends SimpleSet<Student> implements SendableEntityCrea
 
 	public static IdMap createIdMap(String session) {
 		return CreatorCreator.createIdMap(session);
-	}	public static final StudentSet EMPTY_SET = new StudentSet().withFlag(StudentSet.READONLY);
-
+	}
 	public Class<?> getTypClass() {
 		return Student.class;
 	}
@@ -155,8 +151,9 @@ public class StudentSet extends SimpleSet<Student> implements SendableEntityCrea
 		NumberList result = new NumberList();
 		if(listener != null) {
 			result.withListener(listener);
-			for(int i=0;i<size();i++) {
-				listener.update(SimpleEvent.create(this, i, result, get(i), get(i).getAssignmentPoints(), filter));
+			Student[] children = this.toArray(new Student[size()]);
+			for(int i=0;i<children.length;i++) {
+				listener.update(SimpleEvent.create(this, i, result, children[i], children[i].getAssignmentPoints(), filter));
 			}
 			return result;
 		}
@@ -197,8 +194,9 @@ public class StudentSet extends SimpleSet<Student> implements SendableEntityCrea
 		NumberList result = new NumberList();
 		if(listener != null) {
 			result.withListener(listener);
-			for(int i=0;i<size();i++) {
-				listener.update(SimpleEvent.create(this, i, result, get(i), get(i).getCredits(), filter));
+			Student[] children = this.toArray(new Student[size()]);
+			for(int i=0;i<children.length;i++) {
+				listener.update(SimpleEvent.create(this, i, result, children[i], children[i].getCredits(), filter));
 			}
 			return result;
 		}
@@ -239,8 +237,9 @@ public class StudentSet extends SimpleSet<Student> implements SendableEntityCrea
 		StringList result = new StringList();
 		if(listener != null) {
 			result.withListener(listener);
-			for(int i=0;i<size();i++) {
-				listener.update(SimpleEvent.create(this, i, result, get(i), get(i).getId(), filter));
+			Student[] children = this.toArray(new Student[size()]);
+			for(int i=0;i<children.length;i++) {
+				listener.update(SimpleEvent.create(this, i, result, children[i], children[i].getId(), filter));
 			}
 			return result;
 		}
@@ -281,8 +280,9 @@ public class StudentSet extends SimpleSet<Student> implements SendableEntityCrea
 		NumberList result = new NumberList();
 		if(listener != null) {
 			result.withListener(listener);
-			for(int i=0;i<size();i++) {
-				listener.update(SimpleEvent.create(this, i, result, get(i), get(i).getMotivation(), filter));
+			Student[] children = this.toArray(new Student[size()]);
+			for(int i=0;i<children.length;i++) {
+				listener.update(SimpleEvent.create(this, i, result, children[i], children[i].getMotivation(), filter));
 			}
 			return result;
 		}
@@ -323,8 +323,9 @@ public class StudentSet extends SimpleSet<Student> implements SendableEntityCrea
 		StringList result = new StringList();
 		if(listener != null) {
 			result.withListener(listener);
-			for(int i=0;i<size();i++) {
-				listener.update(SimpleEvent.create(this, i, result, get(i), get(i).getName(), filter));
+			Student[] children = this.toArray(new Student[size()]);
+			for(int i=0;i<children.length;i++) {
+				listener.update(SimpleEvent.create(this, i, result, children[i], children[i].getName(), filter));
 			}
 			return result;
 		}
@@ -365,8 +366,9 @@ public class StudentSet extends SimpleSet<Student> implements SendableEntityCrea
 		AssignmentSet result = new AssignmentSet();
 		if(listener != null) {
 			result.withListener(listener);
-			for(int i=0;i<size();i++) {
-				listener.update(SimpleEvent.create(this, i, result, get(i), get(i).getDone(), filter));
+			Student[] children = this.toArray(new Student[size()]);
+			for(int i=0;i<children.length;i++) {
+				listener.update(SimpleEvent.create(this, i, result, children[i], children[i].getDone(), filter));
 			}
 			return result;
 		}
@@ -401,8 +403,9 @@ public class StudentSet extends SimpleSet<Student> implements SendableEntityCrea
 		RoomSet result = new RoomSet();
 		if(listener != null) {
 			result.withListener(listener);
-			for(int i=0;i<size();i++) {
-				listener.update(SimpleEvent.create(this, i, result, get(i), get(i).getIn(), filter));
+			Student[] children = this.toArray(new Student[size()]);
+			for(int i=0;i<children.length;i++) {
+				listener.update(SimpleEvent.create(this, i, result, children[i], children[i].getIn(), filter));
 			}
 			return result;
 		}
@@ -437,8 +440,9 @@ public class StudentSet extends SimpleSet<Student> implements SendableEntityCrea
 		StudentSet result = new StudentSet();
 		if(listener != null) {
 			result.withListener(listener);
-			for(int i=0;i<size();i++) {
-				listener.update(SimpleEvent.create(this, i, result, get(i), get(i).getFriends(), filter));
+			Student[] children = this.toArray(new Student[size()]);
+			for(int i=0;i<children.length;i++) {
+				listener.update(SimpleEvent.create(this, i, result, children[i], children[i].getFriends(), filter));
 			}
 			return result;
 		}
@@ -473,8 +477,9 @@ public class StudentSet extends SimpleSet<Student> implements SendableEntityCrea
 		UniversitySet result = new UniversitySet();
 		if(listener != null) {
 			result.withListener(listener);
-			for(int i=0;i<size();i++) {
-				listener.update(SimpleEvent.create(this, i, result, get(i), get(i).getUniversity(), filter));
+			Student[] children = this.toArray(new Student[size()]);
+			for(int i=0;i<children.length;i++) {
+				listener.update(SimpleEvent.create(this, i, result, children[i], children[i].getUniversity(), filter));
 			}
 			return result;
 		}
