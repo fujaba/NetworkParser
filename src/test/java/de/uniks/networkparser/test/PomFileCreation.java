@@ -5,9 +5,24 @@ import org.junit.Test;
 
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.ext.Manifest;
+import de.uniks.networkparser.logic.VersionCondition;
 import de.uniks.networkparser.xml.ArtifactFile;
 
 public class PomFileCreation {
+	@Test
+	public void NPMTest() {
+		VersionCondition first = new VersionCondition().withVersion("1.0.0");
+		VersionCondition second = new VersionCondition().withVersion("2.0.0");
+		int retval = first.compareTo(second);
+		if(retval > 0) {
+			System.out.println("d1 is greater than d2");
+		} else if(retval < 0) {
+			System.out.println("d1 is less than d2");
+		} else {
+			System.out.println("d1 is equal to d2");
+		}
+	}
+	
 	@Test
 	public void testPom(){
 		ArtifactFile pom=new ArtifactFile();

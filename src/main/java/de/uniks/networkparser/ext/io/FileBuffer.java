@@ -31,6 +31,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.nio.charset.Charset;
 
 import de.uniks.networkparser.IdMap;
@@ -52,7 +53,6 @@ public class FileBuffer extends Buffer {
 	public static byte NONE=0;
 	public static byte APPEND=1;
 	public static byte OVERRIDE=2;
-
 	public FileBuffer withFile(String fileName) {
 		if(fileName != null) {
 			withFile(new File(fileName));
@@ -196,6 +196,10 @@ public class FileBuffer extends Buffer {
 	public static final int copyFile(String sourceFile, String targetfileName) {
 		if(sourceFile != null) {
 			ByteBuffer readFile = readBinaryFile(sourceFile);
+			if(readFile == null) {
+				System.err.println(sourceFile + " not found");
+				return -1;
+			}
 			return writeFile(targetfileName, readFile.array());
 		}
 		return -1;
@@ -425,7 +429,7 @@ public class FileBuffer extends Buffer {
 		return -1;
 	}
 	public int write(byte flag, byte... data) {
-		if(this.file == null) {
+		if(this.file == null || data == null) {
 			return -1;
 		}
 		try {
@@ -451,5 +455,63 @@ public class FileBuffer extends Buffer {
 
 	public boolean newline() {
 		return this.write(APPEND, BaseItem.CRLF)>0;
+	}
+	
+	public static long skip(InputStream input, long numToSkip) throws IOException {
+		long available = numToSkip;
+		while (numToSkip > 0) {
+			final long skipped = input.skip(numToSkip);
+			if (skipped == 0) {
+				break;
+			}
+			numToSkip -= skipped;
+		}
+		byte[] byteSkip=new byte[BUFFER];
+		while (numToSkip > 0) {
+			final int read = readFully(input, byteSkip, 0, (int) Math.min(numToSkip, BUFFER));
+			if (read < 1) {
+				break;
+			}
+			numToSkip -= read;
+		}
+		return available - numToSkip;
+	}
+	
+	public static int readFully(final InputStream input, final byte[] b) {
+		return readFully(input, b, 0, b.length);
+	}
+
+	public static long copy(final InputStream input, final OutputStream output) {
+		final byte[] buffer = new byte[BUFFER];
+		int n = 0;
+		long count=0;
+		try {
+			while (-1 != (n = input.read(buffer))) {
+				output.write(buffer, 0, n);
+				count += n;
+			}
+		}catch (Exception e) {
+			return -1;
+		}
+		return count;
+	}
+
+	public static int readFully(final InputStream input, final byte[] b, final int offset, final int len) {
+		if (len < 0 || offset < 0 || len + offset > b.length) {
+			return -1;
+		}
+		int count = 0, x = 0;
+		try {
+			while (count != len) {
+				x = input.read(b, offset + count, len - count);
+				if (x == -1) {
+					break;
+				}
+				count += x;
+			}
+		} catch (Exception e) {
+			return -1;
+		}
+		return count;
 	}
 }

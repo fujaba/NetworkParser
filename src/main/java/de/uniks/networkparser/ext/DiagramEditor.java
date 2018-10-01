@@ -253,6 +253,11 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 				}
 				return;
 			}
+			if("NPM".equalsIgnoreCase(args[0])) {
+				new NPMDownloader().load();
+				return;
+			}
+
 			if("JARVALIDATOR".equalsIgnoreCase(args[0])) {
 				JarValidator validator = new JarValidator();
 				validator.withPath("build/libs");
