@@ -110,7 +110,7 @@ import java.util.Map;
  * </pre>
  *
  * <p>
- * The C structure for a xstar (Jörg Schilling star) Tar Entry's header is:
+ * The C structure for a xstar (Joerg Schilling star) Tar Entry's header is:
  * 
  * <pre>
  * struct star_header {
@@ -390,7 +390,7 @@ public class TarArchiveEntry {
 	 * @throws IllegalArgumentException if any of the numeric fields have an invalid
 	 *                                  format
 	 */
-	public TarArchiveEntry(final byte[] headerBuf) {
+	public TarArchiveEntry(byte[] headerBuf) {
 		this(false);
 		parseTarHeader(headerBuf);
 	}
@@ -405,7 +405,7 @@ public class TarArchiveEntry {
 	 *                                  format
 	 * @throws IOException              on error
 	 */
-	public TarArchiveEntry(final byte[] headerBuf, final NioZipEncoding encoding) throws IOException {
+	public TarArchiveEntry(byte[] headerBuf, final NioZipEncoding encoding) throws IOException {
 		this(false);
 		parseTarHeader(headerBuf, encoding);
 	}
@@ -417,7 +417,7 @@ public class TarArchiveEntry {
 	 * @param it Entry to be checked for equality.
 	 * @return True if the entries are equal.
 	 */
-	public boolean equals(final TarArchiveEntry it) {
+	public boolean equals(TarArchiveEntry it) {
 		return it != null && getName().equals(it.getName());
 	}
 
@@ -429,7 +429,7 @@ public class TarArchiveEntry {
 	 * @return True if the entries are equal.
 	 */
 	@Override
-	public boolean equals(final Object it) {
+	public boolean equals(Object it) {
 		if (it == null || getClass() != it.getClass()) {
 			return false;
 		}
@@ -453,7 +453,7 @@ public class TarArchiveEntry {
 	 * @param desc Entry to be checked as a descendent of this.
 	 * @return True if entry is a descendant of this.
 	 */
-	public boolean isDescendent(final TarArchiveEntry desc) {
+	public boolean isDescendent(TarArchiveEntry desc) {
 		return desc.getName().startsWith(getName());
 	}
 
@@ -475,7 +475,7 @@ public class TarArchiveEntry {
 	 *
 	 * @param name This entry's new name.
 	 */
-	public void setName(final String name) {
+	public void setName(String name) {
 		this.name = normalizeFileName(name, this.preserveAbsolutePath);
 	}
 
@@ -484,7 +484,7 @@ public class TarArchiveEntry {
 	 *
 	 * @param mode the mode for this entry
 	 */
-	public void setMode(final int mode) {
+	public void setMode(int mode) {
 		this.mode = mode;
 	}
 
@@ -504,7 +504,7 @@ public class TarArchiveEntry {
 	 *
 	 * @since 1.1
 	 */
-	public void setLinkName(final String link) {
+	public void setLinkName(String link) {
 		this.linkName = link;
 	}
 
@@ -525,7 +525,7 @@ public class TarArchiveEntry {
 	 *
 	 * @param userId This entry's new user id.
 	 */
-	public void setUserId(final int userId) {
+	public void setUserId(int userId) {
 		setUserId((long) userId);
 	}
 
@@ -545,7 +545,7 @@ public class TarArchiveEntry {
 	 * @param userId This entry's new user id.
 	 * @since 1.10
 	 */
-	public void setUserId(final long userId) {
+	public void setUserId(long userId) {
 		this.userId = userId;
 	}
 
@@ -566,7 +566,7 @@ public class TarArchiveEntry {
 	 *
 	 * @param groupId This entry's new group id.
 	 */
-	public void setGroupId(final int groupId) {
+	public void setGroupId(int groupId) {
 		setGroupId((long) groupId);
 	}
 
@@ -586,7 +586,7 @@ public class TarArchiveEntry {
 	 * @since 1.10
 	 * @param groupId This entry's new group id.
 	 */
-	public void setGroupId(final long groupId) {
+	public void setGroupId(long groupId) {
 		this.groupId = groupId;
 	}
 
@@ -604,7 +604,7 @@ public class TarArchiveEntry {
 	 *
 	 * @param userName This entry's new user name.
 	 */
-	public void setUserName(final String userName) {
+	public void setUserName(String userName) {
 		this.userName = userName;
 	}
 
@@ -622,7 +622,7 @@ public class TarArchiveEntry {
 	 *
 	 * @param groupName This entry's new group name.
 	 */
-	public void setGroupName(final String groupName) {
+	public void setGroupName(String groupName) {
 		this.groupName = groupName;
 	}
 
@@ -632,7 +632,7 @@ public class TarArchiveEntry {
 	 * @param userId  This entry's new user id.
 	 * @param groupId This entry's new group id.
 	 */
-	public void setIds(final int userId, final int groupId) {
+	public void setIds(int userId, int groupId) {
 		setUserId(userId);
 		setGroupId(groupId);
 	}
@@ -643,7 +643,7 @@ public class TarArchiveEntry {
 	 * @param userName  This entry's new user name.
 	 * @param groupName This entry's new group name.
 	 */
-	public void setNames(final String userName, final String groupName) {
+	public void setNames(String userName, String groupName) {
 		setUserName(userName);
 		setGroupName(groupName);
 	}
@@ -654,7 +654,7 @@ public class TarArchiveEntry {
 	 *
 	 * @param time This entry's new modification time.
 	 */
-	public void setModTime(final long time) {
+	public void setModTime(long time) {
 		modTime = time / MILLIS_PER_SECOND;
 	}
 
@@ -663,7 +663,7 @@ public class TarArchiveEntry {
 	 *
 	 * @param time This entry's new modification time.
 	 */
-	public void setModTime(final Date time) {
+	public void setModTime(Date time) {
 		modTime = time.getTime() / MILLIS_PER_SECOND;
 	}
 
@@ -729,7 +729,7 @@ public class TarArchiveEntry {
 	 * @param size This entry's new file size.
 	 * @throws IllegalArgumentException if the size is &lt; 0.
 	 */
-	public void setSize(final long size) {
+	public void setSize(long size) {
 		if (size < 0) {
 			throw new IllegalArgumentException("Size is out of range: " + size);
 		}
@@ -753,7 +753,7 @@ public class TarArchiveEntry {
 	 * @throws IllegalArgumentException if the devNo is &lt; 0.
 	 * @since 1.4
 	 */
-	public void setDevMajor(final int devNo) {
+	public void setDevMajor(int devNo) {
 		if (devNo < 0) {
 			throw new IllegalArgumentException("Major device number is out of " + "range: " + devNo);
 		}
@@ -777,7 +777,7 @@ public class TarArchiveEntry {
 	 * @throws IllegalArgumentException if the devNo is &lt; 0.
 	 * @since 1.4
 	 */
-	public void setDevMinor(final int devNo) {
+	public void setDevMinor(int devNo) {
 		if (devNo < 0) {
 			throw new IllegalArgumentException("Minor device number is out of " + "range: " + devNo);
 		}
@@ -863,10 +863,8 @@ public class TarArchiveEntry {
 	/**
 	 * Check if this is a Pax header.
 	 *
-	 * @return {@code true} if this is a Pax header.
-	 *
-	 * @since 1.1
-	 *
+	 * @return if this is a Pax header.
+
 	 */
 	public boolean isPaxHeader() {
 		return linkFlag == TarUtils.LF_PAX_EXTENDED_HEADER_LC || linkFlag == TarUtils.LF_PAX_EXTENDED_HEADER_UC;
@@ -875,9 +873,7 @@ public class TarArchiveEntry {
 	/**
 	 * Check if this is a Pax header.
 	 *
-	 * @return {@code true} if this is a Pax header.
-	 *
-	 * @since 1.1
+	 * @return if this is a Pax header.
 	 */
 	public boolean isGlobalPaxHeader() {
 		return linkFlag == TarUtils.LF_PAX_GLOBAL_EXTENDED_HEADER;
@@ -1026,7 +1022,7 @@ public class TarArchiveEntry {
 	 * @since 1.15
 	 */
 	void updateEntryFromPaxHeaders(Map<String, String> headers) {
-		for (final Map.Entry<String, String> ent : headers.entrySet()) {
+		for (Map.Entry<String, String> ent : headers.entrySet()) {
 			final String key = ent.getKey();
 			final String val = ent.getValue();
 			processPaxHeader(key, val, headers);
@@ -1037,9 +1033,8 @@ public class TarArchiveEntry {
 	 * process one pax header, using the entries extraPaxHeaders map as source for
 	 * extra headers used when handling entries for sparse files.
 	 * 
-	 * @param key
-	 * @param val
-	 * @since 1.15
+	 * @param key The Header key
+	 * @param val The Header value
 	 */
 	private void processPaxHeader(String key, String val) {
 		processPaxHeader(key, val, extraPaxHeaders);
@@ -1151,7 +1146,7 @@ public class TarArchiveEntry {
 	 *
 	 * @param outbuf The tar entry header buffer to fill in.
 	 */
-	public void writeEntryHeader(final byte[] outbuf) {
+	public void writeEntryHeader(byte[] outbuf) {
 		try {
 			writeEntryHeader(outbuf, TarUtils.DEFAULT_ENCODING, false);
 		} catch (final IOException ex) {
@@ -1175,7 +1170,7 @@ public class TarArchiveEntry {
 	 * @since 1.4
 	 * @throws IOException on error
 	 */
-	public void writeEntryHeader(final byte[] outbuf, final NioZipEncoding encoding, final boolean starMode)
+	public void writeEntryHeader(byte[] outbuf, NioZipEncoding encoding, boolean starMode)
 			throws IOException {
 		int offset = 0;
 
@@ -1210,7 +1205,7 @@ public class TarArchiveEntry {
 		TarUtils.formatCheckSumOctalBytes(chk, outbuf, csOffset, TarUtils.CHKSUMLEN);
 	}
 
-	private int writeEntryHeaderField(final long value, final byte[] outbuf, final int offset, final int length,
+	private int writeEntryHeaderField(long value, byte[] outbuf, final int offset, final int length,
 			final boolean starMode) {
 		if (!starMode && (value < 0 || value >= 1L << 3 * (length - 1))) {
 			// value doesn't fit into field when written as octal
@@ -1228,7 +1223,7 @@ public class TarArchiveEntry {
 	 * @throws IllegalArgumentException if any of the numeric fields have an invalid
 	 *                                  format
 	 */
-	public void parseTarHeader(final byte[] header) {
+	public void parseTarHeader(byte[] header) {
 		try {
 			parseTarHeader(header, TarUtils.DEFAULT_ENCODING);
 		} catch (final IOException ex) {
@@ -1251,11 +1246,11 @@ public class TarArchiveEntry {
 	 *                                  format
 	 * @throws IOException              on error
 	 */
-	public void parseTarHeader(final byte[] header, final NioZipEncoding encoding) throws IOException {
+	public void parseTarHeader(byte[] header, NioZipEncoding encoding) throws IOException {
 		parseTarHeader(header, encoding, false);
 	}
 
-	private void parseTarHeader(final byte[] header, final NioZipEncoding encoding, final boolean oldStyle)
+	private void parseTarHeader(byte[] header, NioZipEncoding encoding, boolean oldStyle)
 			throws IOException {
 		int offset = 0;
 
@@ -1339,8 +1334,11 @@ public class TarArchiveEntry {
 	/**
 	 * Strips Windows' drive letter as well as any leading slashes, turns path
 	 * separators into forward slahes.
+	 * @param fileName FileName
+	 * @param preserveAbsolutePath	if absolutePath
+	 * @return the new FileName
 	 */
-	private static String normalizeFileName(String fileName, final boolean preserveAbsolutePath) {
+	private static String normalizeFileName(String fileName, boolean preserveAbsolutePath) {
 		if (!preserveAbsolutePath) {
 			final String osname = System.getProperty("os.name").toLowerCase(Locale.ENGLISH);
 
@@ -1384,7 +1382,7 @@ public class TarArchiveEntry {
 	 * @param header The tar entry header buffer to evaluate the format for.
 	 * @return format type
 	 */
-	private int evaluateType(final byte[] header) {
+	private int evaluateType(byte[] header) {
 		if (TarUtils.matchAsciiBuffer(TarUtils.MAGIC_GNU, header, TarUtils.MAGIC_OFFSET, TarUtils.MAGICLEN)) {
 			return TarUtils.FORMAT_OLDGNU;
 		}

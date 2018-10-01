@@ -42,7 +42,7 @@ public class TarUtils {
 	public static final int FORMAT_OLDGNU = 2;
 	/** Pure Posix format. */
 	public static final int FORMAT_POSIX = 3;
-	/** xstar format used by Jörg Schilling's star. */
+	/** xstar format used by Joerg Schilling's star. */
 	public static final int FORMAT_XSTAR = 4;
 	/** Offset inside the header for the xstar magic bytes. */
 	public static final int XSTAR_MAGIC_OFFSET = 508;
@@ -214,7 +214,7 @@ public class TarUtils {
 	 * @throws IllegalArgumentException if the trailing space/NUL is missing or if a
 	 *                                  invalid byte is detected.
 	 */
-	public static long parseOctal(final byte[] buffer, final int offset, final int length) {
+	public static long parseOctal(byte[] buffer, int offset, int length) {
 		long result = 0;
 		int end = offset + length;
 		int start = offset;
@@ -275,7 +275,7 @@ public class TarUtils {
 	 *                                  of a signed long 64-bit integer.
 	 * @since 1.4
 	 */
-	public static long parseOctalOrBinary(final byte[] buffer, final int offset, final int length) {
+	public static long parseOctalOrBinary(byte[] buffer, int offset, int length) {
 
 		if ((buffer[offset] & 0x80) == 0) {
 			return parseOctal(buffer, offset, length);
@@ -287,8 +287,7 @@ public class TarUtils {
 		return parseBinaryBigInteger(buffer, offset, length, negative);
 	}
 
-	private static long parseBinaryLong(final byte[] buffer, final int offset, final int length,
-			final boolean negative) {
+	private static long parseBinaryLong(byte[] buffer, int offset, int length, boolean negative) {
 		if (length >= 9) {
 			throw new IllegalArgumentException("At offset " + offset + ", " + length + " byte binary number"
 					+ " exceeds maximum signed long" + " value");
@@ -305,8 +304,7 @@ public class TarUtils {
 		return negative ? -val : val;
 	}
 
-	private static long parseBinaryBigInteger(final byte[] buffer, final int offset, final int length,
-			final boolean negative) {
+	private static long parseBinaryBigInteger(byte[] buffer, int offset, int length, boolean negative) {
 		final byte[] remainder = new byte[length - 1];
 		System.arraycopy(buffer, offset + 1, remainder, 0, length - 1);
 		BigInteger val = new BigInteger(remainder);
@@ -330,13 +328,12 @@ public class TarUtils {
 	 * @return The boolean value of the bytes.
 	 * @throws IllegalArgumentException if an invalid byte is detected.
 	 */
-	public static boolean parseBoolean(final byte[] buffer, final int offset) {
+	public static boolean parseBoolean(byte[] buffer, int offset) {
 		return buffer[offset] == 1;
 	}
 
 	// Helper method to generate the exception message
-	private static String exceptionMessage(final byte[] buffer, final int offset, final int length, final int current,
-			final byte currentByte) {
+	private static String exceptionMessage(byte[] buffer, int offset, int length, int current, byte currentByte) {
 		// default charset is good enough for an exception message,
 		//
 		// the alternative was to modify parseOctal and
@@ -360,7 +357,7 @@ public class TarUtils {
 	 * @param length The maximum number of bytes to parse.
 	 * @return The entry name.
 	 */
-	public static String parseName(final byte[] buffer, final int offset, final int length) {
+	public static String parseName(byte[] buffer, int offset, int length) {
 		try {
 			return parseName(buffer, offset, length, DEFAULT_ENCODING);
 		} catch (final IOException ex) {
@@ -385,8 +382,7 @@ public class TarUtils {
 	 * @return The entry name.
 	 * @throws IOException on error
 	 */
-	public static String parseName(final byte[] buffer, final int offset, final int length,
-			final NioZipEncoding encoding) throws IOException {
+	public static String parseName(byte[] buffer, int offset, int length, NioZipEncoding encoding) throws IOException {
 
 		int len = 0;
 		for (int i = offset; len < length && buffer[i] != 0; i++) {
@@ -412,17 +408,8 @@ public class TarUtils {
 	 * @param length The maximum number of header bytes to copy.
 	 * @return The updated offset, i.e. offset + length
 	 */
-	public static int formatNameBytes(final String name, final byte[] buf, final int offset, final int length) {
-		try {
-			return formatNameBytes(name, buf, offset, length, DEFAULT_ENCODING);
-		} catch (final IOException ex) {
-			try {
-				return formatNameBytes(name, buf, offset, length, FALLBACK_ENCODING);
-			} catch (final IOException ex2) {
-				// impossible
-				throw new RuntimeException(ex2); // NOSONAR
-			}
-		}
+	public static int formatNameBytes(String name, byte[] buf, int offset, int length) {
+		return formatNameBytes(name, buf, offset, length, DEFAULT_ENCODING);
 	}
 
 	/**
@@ -440,8 +427,7 @@ public class TarUtils {
 	 * @return The updated offset, i.e. offset + length
 	 * @throws IOException on error
 	 */
-	public static int formatNameBytes(final String name, final byte[] buf, final int offset, final int length,
-			final NioZipEncoding encoding) throws IOException {
+	public static int formatNameBytes(String name, byte[] buf, int offset, int length, NioZipEncoding encoding) {
 		int len = name.length();
 		ByteBuffer b = encoding.encode(name);
 		while (b.limit() > length && len > 0) {
@@ -467,8 +453,7 @@ public class TarUtils {
 	 * @param length length of buffer to fill
 	 * @throws IllegalArgumentException if the value will not fit in the buffer
 	 */
-	public static void formatUnsignedOctalString(final long value, final byte[] buffer, final int offset,
-			final int length) {
+	public static void formatUnsignedOctalString(long value, byte[] buffer, int offset, int length) {
 		int remaining = length;
 		remaining--;
 		if (value == 0) {
@@ -506,7 +491,7 @@ public class TarUtils {
 	 * @throws IllegalArgumentException if the value (and trailer) will not fit in
 	 *                                  the buffer
 	 */
-	public static int formatOctalBytes(final long value, final byte[] buf, final int offset, final int length) {
+	public static int formatOctalBytes(long value, byte[] buf, int offset, int length) {
 
 		int idx = length - 2; // For space and trailing null
 		formatUnsignedOctalString(value, buf, offset, idx);
@@ -531,7 +516,7 @@ public class TarUtils {
 	 * @throws IllegalArgumentException if the value (and trailer) will not fit in
 	 *                                  the buffer
 	 */
-	public static int formatLongOctalBytes(final long value, final byte[] buf, final int offset, final int length) {
+	public static int formatLongOctalBytes(long value, byte[] buf, int offset, int length) {
 
 		final int idx = length - 1; // For space
 
@@ -557,8 +542,7 @@ public class TarUtils {
 	 *                                  the buffer.
 	 * @since 1.4
 	 */
-	public static int formatLongOctalOrBinaryBytes(final long value, final byte[] buf, final int offset,
-			final int length) {
+	public static int formatLongOctalOrBinaryBytes(long value, byte[] buf, int offset, int length) {
 
 		// Check whether we are dealing with UID/GID or SIZE field
 		final long maxAsOctalChar = length == UIDLEN ? MAXID : MAXSIZE;
@@ -578,8 +562,7 @@ public class TarUtils {
 		return offset + length;
 	}
 
-	private static void formatLongBinary(final long value, final byte[] buf, final int offset, final int length,
-			final boolean negative) {
+	private static void formatLongBinary(long value, byte[] buf, int offset, int length, boolean negative) {
 		final int bits = (length - 1) * 8;
 		final long max = 1L << bits;
 		long val = Math.abs(value); // Long.MIN_VALUE stays Long.MIN_VALUE
@@ -597,8 +580,7 @@ public class TarUtils {
 		}
 	}
 
-	private static void formatBigIntegerBinary(final long value, final byte[] buf, final int offset, final int length,
-			final boolean negative) {
+	private static void formatBigIntegerBinary(long value, byte[] buf, int offset, int length, boolean negative) {
 		final BigInteger val = BigInteger.valueOf(value);
 		final byte[] b = val.toByteArray();
 		final int len = b.length;
@@ -628,7 +610,7 @@ public class TarUtils {
 	 * @throws IllegalArgumentException if the value (and trailer) will not fit in
 	 *                                  the buffer
 	 */
-	public static int formatCheckSumOctalBytes(final long value, final byte[] buf, final int offset, final int length) {
+	public static int formatCheckSumOctalBytes(long value, byte[] buf, int offset, int length) {
 
 		int idx = length - 2; // for NUL and space
 		formatUnsignedOctalString(value, buf, offset, idx);
@@ -645,7 +627,7 @@ public class TarUtils {
 	 * @param buf The tar entry's header buffer.
 	 * @return The computed checksum.
 	 */
-	public static long computeCheckSum(final byte[] buf) {
+	public static long computeCheckSum(byte[] buf) {
 		long sum = 0;
 
 		for (final byte element : buf) {
@@ -679,7 +661,7 @@ public class TarUtils {
 	 *      "https://issues.apache.org/jira/browse/COMPRESS-191">COMPRESS-191</a>
 	 * @since 1.5
 	 */
-	public static boolean verifyCheckSum(final byte[] header) {
+	public static boolean verifyCheckSum(byte[] header) {
 		final long storedSum = parseOctal(header, CHKSUM_OFFSET, CHKSUMLEN);
 		long unsignedSum = 0;
 		long signedSum = 0;
@@ -702,10 +684,9 @@ public class TarUtils {
 	 * @param buffer   the buffer
 	 * @param offset   offset to read from
 	 * @param length   length of the buffer
-	 * @return {@code true} if buffer is the same as the expected string
+	 * @return if buffer is the same as the expected string
 	 */
-	public static boolean matchAsciiBuffer(final String expected, final byte[] buffer, final int offset,
-			final int length) {
+	public static boolean matchAsciiBuffer(String expected, byte[] buffer, int offset, int length) {
 		byte[] buffer1;
 		try {
 			buffer1 = expected.getBytes(Charset.forName("US-ASCII"));
@@ -726,11 +707,11 @@ public class TarUtils {
 	 * @param offset2             second offset
 	 * @param length2             second length
 	 * @param ignoreTrailingNulls whether to ignore trailing nulls
-	 * @return {@code true} if buffer1 and buffer2 have same contents, having regard
-	 *         to trailing nulls
+	 * @return if buffer1 and buffer2 have same contents, having regard to trailing
+	 *         nulls
 	 */
-	public static boolean isEqual(final byte[] buffer1, final int offset1, final int length1, final byte[] buffer2,
-			final int offset2, final int length2, final boolean ignoreTrailingNulls) {
+	public static boolean isEqual(byte[] buffer1, int offset1, int length1, byte[] buffer2, int offset2, int length2,
+			boolean ignoreTrailingNulls) {
 		final int minLen = length1 < length2 ? length1 : length2;
 		for (int i = 0; i < minLen; i++) {
 			if (buffer1[offset1 + i] != buffer2[offset2 + i]) {
@@ -766,7 +747,7 @@ public class TarUtils {
 	 * @param size The number of characters to check (not the size of the array)
 	 * @return true if the first N bytes are zero
 	 */
-	public static boolean isArrayZero(final byte[] a, final int size) {
+	public static boolean isArrayZero(byte[] a, int size) {
 		for (int i = 0; i < size; i++) {
 			if (a[i] != 0) {
 				return false;
@@ -774,7 +755,6 @@ public class TarUtils {
 		}
 		return true;
 	}
-	
 
 	public static ByteBuffer growBufferBy(ByteBuffer buffer, int increment) {
 		buffer.limit(buffer.position());
@@ -785,7 +765,7 @@ public class TarUtils {
 		on.put(buffer);
 		return on;
 	}
-	
+
 	/**
 	 * Instantiates a zip encoding. An NIO based character set encoder/decoder will
 	 * be returned. As a special case, if the character set is UTF-8, the nio
@@ -800,7 +780,7 @@ public class TarUtils {
 	 *             platform's default encoding.
 	 * @return A zip encoding for the given encoding name.
 	 */
-	public static NioZipEncoding getZipEncoding(final String name) {
+	public static NioZipEncoding getZipEncoding(String name) {
 		Charset cs = Charset.defaultCharset();
 		if (name != null) {
 			try {
@@ -811,13 +791,13 @@ public class TarUtils {
 		boolean useReplacement = isUTF8(cs.name());
 		return new NioZipEncoding(cs, useReplacement);
 	}
-	
+
 	/**
 	 * Returns whether a given encoding is UTF-8. If the given name is null, then
 	 * check the platform's default encoding.
 	 *
-	 * @param charsetName If the given name is null, then check the platform's
-	 *                    default encoding.
+	 * @param charsetName If the given name is null, then check the platform's default encoding.
+	 * @return isUTF8
 	 */
 	static boolean isUTF8(String charsetName) {
 		if (charsetName == null) {

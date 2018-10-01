@@ -16,11 +16,6 @@
  *
  */
 
-/*
- * This package is based on the work done by Timothy Gerard Endres
- * (time@ice.com) to whom the Ant project is very grateful for his great code.
- */
-
 package de.uniks.networkparser.ext.tar;
 
 import java.io.ByteArrayOutputStream;
@@ -36,13 +31,6 @@ import java.util.zip.GZIPInputStream;
 
 import de.uniks.networkparser.ext.io.FileBuffer;
 
-/**
- * The TarInputStream reads a UNIX tar archive as an InputStream. methods are
- * provided to position at each successive entry in the archive, and the read
- * each entry as a normal input stream using read().
- * 
- * @NotThreadSafe
- */
 public class TarArchiveInputStream extends InputStream {
 	private final byte[] single = new byte[1];
 	private static final int BYTE_MASK = 0xFF;
@@ -404,7 +392,7 @@ public class TarArchiveInputStream extends InputStream {
 	 * @param record The record data to check.
 	 * @return true if the record data is an End of Archive
 	 */
-	protected boolean isEOFRecord(final byte[] record) {
+	protected boolean isEOFRecord(byte[] record) {
 		return record == null || TarUtils.isArrayZero(record, recordSize);
 	}
 
@@ -549,7 +537,7 @@ public class TarArchiveInputStream extends InputStream {
 	 * @throws IOException on error
 	 */
 	@Override
-	public int read(final byte[] buf, final int offset, int numToRead) throws IOException {
+	public int read(byte[] buf, final int offset, int numToRead) throws IOException {
 		int totalRead = 0;
 
 		if (isAtEOF() || isDirectory() || entryOffset >= entrySize) {
@@ -580,11 +568,10 @@ public class TarArchiveInputStream extends InputStream {
 	/**
 	 * Whether this class is able to read the given entry.
 	 *
-	 * <p>
-	 * May return false if the current entry is a sparse file.
-	 * </p>
+	 * @param ae The TarArchiveEntry
+	 * @return success
 	 */
-	public boolean canReadEntryData(final TarArchiveEntry ae) {
+	public boolean canReadEntryData(TarArchiveEntry ae) {
 		if (ae instanceof TarArchiveEntry) {
 			final TarArchiveEntry te = (TarArchiveEntry) ae;
 			return !te.isSparse();
@@ -633,7 +620,7 @@ public class TarArchiveInputStream extends InputStream {
 	 * @param length    the number of bytes to check
 	 * @return true, if this stream is a tar archive stream, false otherwise
 	 */
-	public static boolean matches(final byte[] signature, final int length) {
+	public static boolean matches(byte[] signature, int length) {
 		if (length < TarUtils.VERSION_OFFSET + TarUtils.VERSIONLEN) {
 			return false;
 		}
@@ -662,7 +649,7 @@ public class TarArchiveInputStream extends InputStream {
 	 *
 	 * @param read the number of bytes read
 	 */
-	protected void count(final int read) {
+	protected void count(int read) {
 		count((long) read);
 	}
 
@@ -672,7 +659,7 @@ public class TarArchiveInputStream extends InputStream {
 	 * @param pushedBack the number of bytes pushed back.
 	 * @since 1.1
 	 */
-	protected void pushedBackBytes(final long pushedBack) {
+	protected void pushedBackBytes(long pushedBack) {
 		bytesRead -= pushedBack;
 	}
 
@@ -683,7 +670,7 @@ public class TarArchiveInputStream extends InputStream {
 	 * @param read the number of bytes read
 	 * @since 1.1
 	 */
-	protected void count(final long read) {
+	protected void count(long read) {
 		if (read != -1) {
 			bytesRead = bytesRead + read;
 		}
