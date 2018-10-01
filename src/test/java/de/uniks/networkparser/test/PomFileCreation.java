@@ -15,11 +15,11 @@ public class PomFileCreation {
 		VersionCondition second = new VersionCondition().withVersion("2.0.0");
 		int retval = first.compareTo(second);
 		if(retval > 0) {
-			System.out.println("d1 is greater than d2");
+//			System.out.println("d1 is greater than d2");
 		} else if(retval < 0) {
-			System.out.println("d1 is less than d2");
+//			System.out.println("d1 is less than d2");
 		} else {
-			System.out.println("d1 is equal to d2");
+//			System.out.println("d1 is equal to d2");
 		}
 	}
 	

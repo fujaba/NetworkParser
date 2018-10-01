@@ -49,9 +49,15 @@ public class NPMDownloader {
 		return true;
 	}
 	
-	public void decompress(String file) {
+	public boolean decompress(String file) {
+		if(file == null) {
+			return false;
+		}
 		try {
 			TarArchiveInputStream tis = TarArchiveInputStream.create(file+".tgz");
+			if(tis == null) {
+				return false;
+			}
 			TarArchiveEntry tarEntry = null;
 			while ((tarEntry = tis.getNextTarEntry()) != null) {
 				String outputName;
@@ -78,6 +84,6 @@ public class NPMDownloader {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		return true;
 	}
-
 }

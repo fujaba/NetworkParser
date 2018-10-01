@@ -393,17 +393,15 @@ public class ReflectionLoader {
 	
 	public static final Set<Thread> closeThreads(Set<Thread> oldThreads) {
 		Set<Thread> newThreads = Thread.getAllStackTraces().keySet();
-		if(oldThreads != null) {
-			try {
-				if(oldThreads.size() != newThreads.size()) {
-					for(Thread newThread : newThreads) {
-						if(oldThreads.contains(newThread)) {
-							continue;
-						}
-						newThread.interrupt();
-					}
+		if(oldThreads != null && oldThreads.size() != newThreads.size()) {
+			for(Thread newThread : newThreads) {
+				if(oldThreads.contains(newThread)) {
+					continue;
 				}
-			}catch(Exception e) {
+				try {
+					newThread.interrupt();
+				}catch(Throwable e) {
+				}
 			}
 		}
 		return newThreads;

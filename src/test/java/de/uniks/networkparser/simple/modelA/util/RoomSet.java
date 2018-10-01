@@ -15,6 +15,8 @@ public class RoomSet extends SimpleSet<Room> implements SendableEntityCreator {
 	SendableEntityCreator.DYNAMIC
 	};
 
+	public static final RoomSet EMPTY_SET = new RoomSet().withFlag(RoomSet.READONLY);
+
 	@Override
 	public String[] getProperties() {
 		return properties;
@@ -36,7 +38,7 @@ public class RoomSet extends SimpleSet<Room> implements SendableEntityCreator {
 		}
 
 		if (Room.PROPERTY_NAME.equalsIgnoreCase(attribute)) {
-		return element.getName();
+			return element.getName();
 		}
 
 		if(SendableEntityCreator.DYNAMIC.equalsIgnoreCase(attribute)) {
@@ -61,8 +63,7 @@ public class RoomSet extends SimpleSet<Room> implements SendableEntityCreator {
 		}
 
 		if (Room.PROPERTY_NAME.equalsIgnoreCase(attribute)) {
-			element.setName((String) value);
-			return true;
+			return element.setName((String) value);
 		}
 
 		element.withDynamicValue(attribute, value);
@@ -71,8 +72,7 @@ public class RoomSet extends SimpleSet<Room> implements SendableEntityCreator {
 
 	public static IdMap createIdMap(String session) {
 		return CreatorCreator.createIdMap(session);
-	}	public static final RoomSet EMPTY_SET = new RoomSet().withFlag(RoomSet.READONLY);
-
+	}
 	public Class<?> getTypClass() {
 		return Room.class;
 	}
@@ -87,8 +87,9 @@ public class RoomSet extends SimpleSet<Room> implements SendableEntityCreator {
 		StringList result = new StringList();
 		if(listener != null) {
 			result.withListener(listener);
-			for(int i=0;i<size();i++) {
-				listener.update(SimpleEvent.create(this, i, result, get(i), get(i).getName(), filter));
+			Room[] children = this.toArray(new Room[size()]);
+			for(int i=0;i<children.length;i++) {
+				listener.update(SimpleEvent.create(this, i, result, children[i], children[i].getName(), filter));
 			}
 			return result;
 		}
@@ -129,8 +130,9 @@ public class RoomSet extends SimpleSet<Room> implements SendableEntityCreator {
 		PersonSet result = new PersonSet();
 		if(listener != null) {
 			result.withListener(listener);
-			for(int i=0;i<size();i++) {
-				listener.update(SimpleEvent.create(this, i, result, get(i), get(i).getPersons(), filter));
+			Room[] children = this.toArray(new Room[size()]);
+			for(int i=0;i<children.length;i++) {
+				listener.update(SimpleEvent.create(this, i, result, children[i], children[i].getPersons(), filter));
 			}
 			return result;
 		}

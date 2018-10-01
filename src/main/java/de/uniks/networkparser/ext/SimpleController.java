@@ -238,6 +238,9 @@ public class SimpleController implements ObjectCondition{
 			} else {
 
 				items.add("-classpath");
+				if(ClassLoader.getSystemClassLoader() instanceof URLClassLoader == false) {
+					return null;
+				}
 				URLClassLoader urlClassLoader = (URLClassLoader) ClassLoader.getSystemClassLoader();
 
 				StringBuilder buf = new StringBuilder();
@@ -479,10 +482,12 @@ public class SimpleController implements ObjectCondition{
 
 	public int start() {
 		Process p = this.init();
+		if(p == null) {
+			return -1;
+		}
 		try {
 			return p.waitFor();
 		} catch (InterruptedException e) {
-			e.printStackTrace();
 		}
 		return -1;
 	}

@@ -33,7 +33,14 @@ public class testGen {
 		model.generate("src/test/java");
 		
 		Story story=new Story();
-		StoryStepJUnit junit=new StoryStepJUnit().withUseCase(story, model);
+		StoryStepJUnit junit;
+		try {
+			junit=new StoryStepJUnit();
+			junit.withUseCase(story, model);
+		}catch (Exception e) {
+			e.printStackTrace();
+			throw e;
+		}
 		
 		Object mathRoom = junit.createElement(room);
 

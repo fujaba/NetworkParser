@@ -17,6 +17,8 @@ public class PersonSet extends SimpleSet<Person> implements SendableEntityCreato
 	SendableEntityCreator.DYNAMIC
 	};
 
+	public static final PersonSet EMPTY_SET = new PersonSet().withFlag(PersonSet.READONLY);
+
 	@Override
 	public String[] getProperties() {
 		return properties;
@@ -38,11 +40,11 @@ public class PersonSet extends SimpleSet<Person> implements SendableEntityCreato
 		}
 
 		if (Person.PROPERTY_AGE.equalsIgnoreCase(attribute)) {
-		return element.getAge();
+			return element.getAge();
 		}
 
 		if (Person.PROPERTY_NAME.equalsIgnoreCase(attribute)) {
-		return element.getName();
+			return element.getName();
 		}
 
 		if(SendableEntityCreator.DYNAMIC.equalsIgnoreCase(attribute)) {
@@ -67,13 +69,11 @@ public class PersonSet extends SimpleSet<Person> implements SendableEntityCreato
 		}
 
 		if (Person.PROPERTY_AGE.equalsIgnoreCase(attribute)) {
-			element.setAge((int) value);
-			return true;
+			return element.setAge((int) value);
 		}
 
 		if (Person.PROPERTY_NAME.equalsIgnoreCase(attribute)) {
-			element.setName((String) value);
-			return true;
+			return element.setName((String) value);
 		}
 
 		element.withDynamicValue(attribute, value);
@@ -82,8 +82,7 @@ public class PersonSet extends SimpleSet<Person> implements SendableEntityCreato
 
 	public static IdMap createIdMap(String session) {
 		return CreatorCreator.createIdMap(session);
-	}	public static final PersonSet EMPTY_SET = new PersonSet().withFlag(PersonSet.READONLY);
-
+	}
 	public Class<?> getTypClass() {
 		return Person.class;
 	}
@@ -98,8 +97,9 @@ public class PersonSet extends SimpleSet<Person> implements SendableEntityCreato
 		NumberList result = new NumberList();
 		if(listener != null) {
 			result.withListener(listener);
-			for(int i=0;i<size();i++) {
-				listener.update(SimpleEvent.create(this, i, result, get(i), get(i).getAge(), filter));
+			Person[] children = this.toArray(new Person[size()]);
+			for(int i=0;i<children.length;i++) {
+				listener.update(SimpleEvent.create(this, i, result, children[i], children[i].getAge(), filter));
 			}
 			return result;
 		}
@@ -140,8 +140,9 @@ public class PersonSet extends SimpleSet<Person> implements SendableEntityCreato
 		StringList result = new StringList();
 		if(listener != null) {
 			result.withListener(listener);
-			for(int i=0;i<size();i++) {
-				listener.update(SimpleEvent.create(this, i, result, get(i), get(i).getName(), filter));
+			Person[] children = this.toArray(new Person[size()]);
+			for(int i=0;i<children.length;i++) {
+				listener.update(SimpleEvent.create(this, i, result, children[i], children[i].getName(), filter));
 			}
 			return result;
 		}
@@ -182,8 +183,9 @@ public class PersonSet extends SimpleSet<Person> implements SendableEntityCreato
 		RoomSet result = new RoomSet();
 		if(listener != null) {
 			result.withListener(listener);
-			for(int i=0;i<size();i++) {
-				listener.update(SimpleEvent.create(this, i, result, get(i), get(i).getRoom(), filter));
+			Person[] children = this.toArray(new Person[size()]);
+			for(int i=0;i<children.length;i++) {
+				listener.update(SimpleEvent.create(this, i, result, children[i], children[i].getRoom(), filter));
 			}
 			return result;
 		}
