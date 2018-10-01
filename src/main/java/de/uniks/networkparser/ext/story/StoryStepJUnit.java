@@ -394,13 +394,17 @@ public class StoryStepJUnit implements ObjectCondition {
 	public Object createElement(Clazz element, Object... values) {
 		SendableEntityCreator creator = map.getCreator(element.getName(false), true);
 		if(creator != null) {
-			Object newInstance = creator.getSendableInstance(false);
-			if(values != null && values.length % 2 == 0) {
-				for(int i=0;i<values.length;i+=2) {
-					if(values[i] != null && values[i] instanceof String) {
-						setting(creator, newInstance, (String)values[i], values[i+1]);
+			Object newInstance =null;
+			try {
+				newInstance = creator.getSendableInstance(false);
+				if(values != null && values.length % 2 == 0) {
+					for(int i=0;i<values.length;i+=2) {
+						if(values[i] != null && values[i] instanceof String) {
+							setting(creator, newInstance, (String)values[i], values[i+1]);
+						}
 					}
 				}
+			} catch (Exception e) {
 			}
 			return newInstance;
 		}

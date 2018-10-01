@@ -36,6 +36,7 @@ public class testGen {
 		StoryStepJUnit junit=new StoryStepJUnit().withUseCase(story, model);
 		
 		Object mathRoom = junit.createElement(room);
+
 		junit.setValue(mathRoom, "name", "MathRoom");
 		
 		Object infRoom = junit.createElement(room, "name", "InfRoom");
