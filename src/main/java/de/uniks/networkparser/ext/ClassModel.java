@@ -90,18 +90,10 @@ public class ClassModel extends GraphModel {
 		return this.generator.getFeature(feature, clazzes);
 	}
 
-	String dumpHTMLString()
-	{
-		HTMLEntity html = new HTMLEntity();
-		html.withGraph(this);
-		String htmlText = html.toString();
-
-		return htmlText;
-	}
+	
 
 	@Override
-	public boolean dumpHTML(String diagramName) {
-		String htmlText = dumpHTMLString();
+	public HTMLEntity dumpHTML(String diagramName, boolean... write) {
 		if(diagramName == null || diagramName.length() < 1) {
 			diagramName = this.getName();
 		}
@@ -109,9 +101,17 @@ public class ClassModel extends GraphModel {
 			diagramName = "Model";
 		}
 		if(diagramName.length() < 1) {
-			return false;
+			return null;
 		}
-		return FileBuffer.writeFile("doc/"+diagramName+".html", htmlText)>=0;
+		HTMLEntity entity = super.dumpHTML(diagramName, write);
+		if(write == null || write.length<1 || write[0]==false) {
+			return entity;
+		}
+		String htmlText = entity.toString();
+		if(FileBuffer.writeFile("doc/"+diagramName+".html", htmlText)>=0) {
+			return entity;
+		}
+		return null;
 	}
 
 	@Override

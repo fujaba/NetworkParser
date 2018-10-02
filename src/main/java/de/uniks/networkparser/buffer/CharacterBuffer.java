@@ -296,7 +296,7 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
 		if(this.position<this.length) {
 			this.position++;
 		}
-		if (this.position+this.start == this.buffer.length) {
+		if (this.position+this.start == this.buffer.length || this.position+this.start == this.length) {
 			return 0;
 		}
 		char c = this.buffer[this.position + this.start];
@@ -1034,7 +1034,7 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
 		if(length<1) {
 			return "";
 		}
-		return new String(buffer, start, length);
+ 		return new String(buffer, start, length);
 	}
 
 	public boolean equals(CharSequence other) {

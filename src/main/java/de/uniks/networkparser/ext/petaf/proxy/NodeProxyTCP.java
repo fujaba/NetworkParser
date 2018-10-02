@@ -576,20 +576,25 @@ public class NodeProxyTCP extends NodeProxy {
 	}
 
 	private static HTMLEntity readAnswer(HttpURLConnection conn) {
-		HTMLEntity rootItem=new HTMLEntity();
+		return readAnswer(conn, null);
+	}
+	private static HTMLEntity readAnswer(HttpURLConnection conn, HTMLEntity root) {
+		if(root == null) {
+			root = new HTMLEntity();
+		}
 		if(conn == null) {
-			return rootItem;
+			return root;
 		}
 		try {
-			rootItem.withStatus(conn.getResponseCode(), conn.getResponseMessage());
+			root.withStatus(conn.getResponseCode(), conn.getResponseMessage());
 			String uri = conn.getURL().toString();
 			String path = conn.getURL().getPath();
 			if(uri.length()> path.length()) {
 				uri = uri.substring(0, uri.length() - path.length());
 			}
-			rootItem.withConnectionHeader("remote", uri);
+			root.withConnectionHeader("remote", uri);
 			
-			rootItem.withConnectionHeader(conn.getHeaderFields());
+			root.withConnectionHeader(conn.getHeaderFields());
 
 			InputStream is = conn.getInputStream();
 			CharacterBuffer sb = new CharacterBuffer();
@@ -600,7 +605,12 @@ public class NodeProxyTCP extends NodeProxy {
 					break; // <======= no more data
 				sb.add(new String(messageArray, 0, bytesRead, Charset.forName("UTF-8")));
 			}
-			rootItem.with(sb);
+			long time = System.currentTimeMillis();
+			root.with(sb);
+			long oldTime = System.currentTimeMillis();
+			System.out.println(root);
+			System.out.println("ZEIT: "+(oldTime - time));
+			System.out.println("");
 		}catch (IOException e) {
 			InputStream is = conn.getErrorStream();
 			byte[] messageArray = new byte[BUFFER];
@@ -612,7 +622,7 @@ public class NodeProxyTCP extends NodeProxy {
 						break; // <======= no more data
 					sb.add(new String(messageArray, 0, bytesRead, Charset.forName("UTF-8")));
 				}
-				rootItem.with(sb);
+				root.with(sb);
 			}catch (Exception e2) {
 			}
 //			e.printStackTrace();
@@ -620,7 +630,7 @@ public class NodeProxyTCP extends NodeProxy {
 		
 
 		conn.disconnect();
-		return rootItem;
+		return root;
 	}
 	
 	public static String convertPath(String url, int port, String path) {
@@ -656,12 +666,16 @@ public class NodeProxyTCP extends NodeProxy {
 		return getHTTP(url);
 	}
 	
-	public static HTMLEntity getHTTP(String url) {
+	public static HTMLEntity getHTTP(String url, HTMLEntity... root) {
 		HttpURLConnection conn = getConnection(url, GET);
 		if(conn == null) {
 			return null;
 		}
-		return readAnswer(conn);
+		HTMLEntity rootItem = null;
+		if(root != null && root.length>0) {
+			rootItem = root[0];
+		}
+		return readAnswer(conn, rootItem);
 	}
 	public static ByteBuffer getHTTPBinary(String url) {
 		HttpURLConnection conn = getConnection(url, GET);

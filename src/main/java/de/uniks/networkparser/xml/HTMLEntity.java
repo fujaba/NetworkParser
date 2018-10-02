@@ -59,7 +59,14 @@ public class HTMLEntity implements BaseItem {
 	private Map<String, List<String>> conenctionHeader = new SimpleKeyValueList<String, List<String>>();
 	private int statusCode = 200;
 	private String statusMessage;
+	private boolean plainBody;
 
+	public HTMLEntity withPlain(boolean plain) {
+		this.plainBody = plain;
+		return this;
+	}
+
+	
 	@Override
 	public String toString() {
 		return parseItem(new EntityStringConverter());
@@ -198,7 +205,27 @@ public class HTMLEntity implements BaseItem {
 				if(item instanceof XMLEntity) {
 					this.body.withChild((XMLEntity) item);
 				} else if(item instanceof CharacterBuffer) {
-					this.body.withValue(item.toString());
+					// try to Merge
+					CharacterBuffer buffer = (CharacterBuffer) item;
+					XMLTokener tokener = new XMLTokener();
+					tokener.skipHeader(buffer);
+					if(buffer.startsWith("<html", buffer.position(), false)) {
+						buffer.skipTo('>', false);
+						buffer.skip();
+						buffer.nextClean(true);
+					}
+					if(buffer.startsWith("<head", buffer.position(), false)) {
+						int end = buffer.indexOf("</head>");
+						int length = buffer.length();
+						buffer.withLength(end);
+						this.header.withValue(tokener, buffer);
+						buffer.withLength(length);
+						buffer.skipTo('>', false);
+						buffer.skip();
+						buffer.nextClean(true);
+					}
+					// SO PARSE BODY
+					this.body.withValue(tokener, buffer);
 				}
 			}
 		}

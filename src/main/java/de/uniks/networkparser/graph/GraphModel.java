@@ -29,6 +29,7 @@ express or implied.
 See the Licence for the specific language governing
 permissions and limitations under the Licence.
 */
+import de.uniks.networkparser.xml.HTMLEntity;
 
 public abstract class GraphModel extends GraphEntity implements BaseItem {
 	public static final String DEFAULTPACKAGE = "i.love.networkparser";
@@ -165,8 +166,10 @@ public abstract class GraphModel extends GraphEntity implements BaseItem {
 		return this;
 	}
 
-	public boolean dumpHTML(String diagramName){
-		return false;
+	public HTMLEntity dumpHTML(String diagramName, boolean... write) {
+		HTMLEntity html = new HTMLEntity();
+		html.withGraph(this);
+		return html;
 	}
 
 	public boolean fixClassModel() {

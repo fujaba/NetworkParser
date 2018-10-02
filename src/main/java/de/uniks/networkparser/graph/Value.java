@@ -81,4 +81,8 @@ public abstract class Value extends GraphMember {
 		this.value = value;
 		return this;
 	}
+	
+	public String getValue() {
+		return value;
+	}
 }

@@ -1,6 +1,5 @@
 package de.uniks.networkparser.test.generator;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import de.uniks.networkparser.ext.ClassModel;

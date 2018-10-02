@@ -450,7 +450,7 @@ public class GraphUtil {
 		return entity;
 	}
 
-	protected static final boolean isExternal(GraphEntity entity) {
+	public static final boolean isExternal(GraphEntity entity) {
 		return entity.isExternal();
 	}
 
@@ -475,5 +475,18 @@ public class GraphUtil {
 	
 	public static final void setGraphPath(GraphModel model, String value) {
 		model.genPath = value;
+	}
+
+	public static final void without(GraphMember model, GraphMember child) {
+		if(model != null) {
+			model.withChildren(child);
+		}
+	}
+	
+	public static final String getCardinaltiy(int value) {
+		if(value == Association.ONE) {
+			return "ONE";
+		}
+		return "MANY";
 	}
 }
