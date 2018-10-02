@@ -7,8 +7,6 @@ import java.io.InputStream;
 import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
 
-import org.junit.Test;
-
 import de.uniks.networkparser.buffer.ByteBuffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.ext.io.FileBuffer;
@@ -18,7 +16,7 @@ import de.uniks.networkparser.xml.XMLContainer;
 import de.uniks.networkparser.xml.XMLEntity;
 
 public class Gradle {
-	@Test
+//	@Test
 	public void testMain() {
 		Gradle gradle = new Gradle();
 		gradle.initProject("np.jar", "Test");
