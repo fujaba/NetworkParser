@@ -49,7 +49,7 @@ public class Gradle {
 	}
 
 	public void writeProjectPath(String path, String name) {
-		if(path == null || name == null) {
+		if(Os.isReflectionTest() || path == null || name == null) {
 			return;
 		}
 		XMLContainer container=new XMLContainer().withStandardPrefix();
@@ -78,7 +78,7 @@ public class Gradle {
 	}
 	
 	public void writeGradle(String path) {
-		if(path == null) {
+		if(Os.isReflectionTest() || path == null) {
 			return;
 		}
 		CharacterBuffer sb = new CharacterBuffer();
@@ -100,9 +100,6 @@ public class Gradle {
 		ByteBuffer binary = NodeProxyTCP.getHTTPBinary("https://services.gradle.org"+ref);
 		
 		FileBuffer.writeFile(path+"gradle.zip", binary.array());
-		
-		
-		
 	}
 	
 	public void extractGradleFiles(String path) {
@@ -111,7 +108,11 @@ public class Gradle {
 		}
 		JarFile jarFile = null;
 		try {
-			jarFile = new JarFile(path+"gradle.zip");
+			File file = new File(path+"gradle.zip");
+			if(file.exists() == false) {
+				return;
+			}
+			jarFile = new JarFile(file);
 			ZipEntry entry = jarFile.getEntry("gradlew");
 			InputStream inputStream = jarFile.getInputStream(entry);
 			byte[] buffer = new byte[inputStream.available()];

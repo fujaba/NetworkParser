@@ -91,12 +91,21 @@ public class ByteConverterHex extends ByteConverter {
 	
 	public static char fromHex(CharSequence value, int pos, int len) {
 		byte[] bytes = decoding(value, pos, len);
-		if(len == 4) {
+		if(bytes == null) {
+			return 0;
+		}
+		if(len == 4 && bytes.length>3) {
 			return (char) ((HEXVAL.indexOf(bytes[0]) << 24)
 					+ (HEXVAL.indexOf(bytes[1]) << 16)
 					+ (HEXVAL.indexOf(bytes[2]) << 8) + HEXVAL.indexOf(bytes[3]));
 		}
-		return (char) ((HEXVAL.indexOf(bytes[1]) << 16) + (HEXVAL.indexOf(bytes[2]) << 8) + HEXVAL.indexOf(bytes[3]));
+		if(bytes.length>2) {
+			return (char) ((HEXVAL.indexOf(bytes[0]) << 16) + (HEXVAL.indexOf(bytes[1]) << 8) + HEXVAL.indexOf(bytes[2]));
+		}
+		if(bytes.length>1) {
+			return (char) ((HEXVAL.indexOf(bytes[0]) << 8) + HEXVAL.indexOf(bytes[1]));
+		}
+		return (char) HEXVAL.indexOf(bytes[0]);
 	}
 
 	public static String CONTROLCHARACTER = "abtnvfr";
