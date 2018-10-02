@@ -254,7 +254,7 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 				return;
 			}
 			if("NPM".equalsIgnoreCase(args[0])) {
-				new NPMDownloader().load();
+				new Gradle().loadNPM();
 				return;
 			}
 

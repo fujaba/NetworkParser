@@ -24,10 +24,6 @@ import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
-/**
- * This class provides static utility methods to work with byte streams.
- *
- */
 public class TarUtils {
 //CONST
 	/** Default record size */
