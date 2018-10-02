@@ -27,9 +27,7 @@ import java.nio.charset.StandardCharsets;
 /**
  * This class provides static utility methods to work with byte streams.
  *
- * @Immutable
  */
-// CheckStyle:HideUtilityClassConstructorCheck OFF (bc)
 public class TarUtils {
 //CONST
 	/** Default record size */
@@ -423,9 +421,7 @@ public class TarUtils {
 	 * @param offset   The starting offset into the buffer
 	 * @param length   The maximum number of header bytes to copy.
 	 * @param encoding name of the encoding to use for file names
-	 * @since 1.4
 	 * @return The updated offset, i.e. offset + length
-	 * @throws IOException on error
 	 */
 	public static int formatNameBytes(String name, byte[] buf, int offset, int length, NioZipEncoding encoding) {
 		int len = name.length();

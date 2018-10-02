@@ -140,8 +140,6 @@ import java.util.Map;
  * which is identical to new-style POSIX up to the first 130 bytes of the
  * prefix.
  * </p>
- *
- * @NotThreadSafe
  */
 
 public class TarArchiveEntry {
