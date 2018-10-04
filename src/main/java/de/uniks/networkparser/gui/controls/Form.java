@@ -69,8 +69,9 @@ public class Form extends Control {
 		addElement(elements);
 		return this;
 	}
+
 	public boolean addElement(Control... elements) {
-		if(elements == null) {
+		if (elements == null) {
 			return false;
 		}
 		boolean changed = false;
@@ -78,7 +79,7 @@ public class Form extends Control {
 			this.elements = new SimpleList<Control>();
 		}
 		for (Control control : elements) {
-			if(this.elements.add(control)) {
+			if (this.elements.add(control)) {
 				changed = true;
 				firePropertyChange(PROPERTY_ELEMENTS, null, control);
 			}
@@ -90,8 +91,7 @@ public class Form extends Control {
 	public Object getValue(String key) {
 		if (METHOD.equals(key)) {
 			return this.getMethod();
-		}
-		else if (PROPERTY_ELEMENTS.equals(key)) {
+		} else if (PROPERTY_ELEMENTS.equals(key)) {
 			return this.getElements();
 		}
 		return super.getValue(key);
@@ -100,22 +100,22 @@ public class Form extends Control {
 	@Override
 	public boolean setValue(String key, Object value) {
 		if (METHOD.equals(key)) {
-			return this.setMethod(""+value);
-		}
-		else if (PROPERTY_ELEMENTS.equals(key)) {
-			if(value instanceof Control) {
-				return this.addElement((Control)value);
-			} else if(value instanceof Control[]) {
-				return this.addElement((Control[])value);
-			} else if(value instanceof Collection<?>) {
-				Collection<?> list = (Collection<?>)value;
+			return this.setMethod("" + value);
+		} else if (PROPERTY_ELEMENTS.equals(key)) {
+			if (value instanceof Control) {
+				return this.addElement((Control) value);
+			} else if (value instanceof Control[]) {
+				return this.addElement((Control[]) value);
+			} else if (value instanceof Collection<?>) {
+				Collection<?> list = (Collection<?>) value;
 				Control[] array = ((Collection<?>) value).toArray(new Control[list.size()]);
 				return this.addElement(array);
 			}
 		}
 		return super.setValue(key, value);
 	}
-	public Form withDataBinding(IdMap map, Object entity, boolean addCommandBtn){
+
+	public Form withDataBinding(IdMap map, Object entity, boolean addCommandBtn) {
 //		this.map = map;
 //		this.item = entity;
 //		textClazz = (TextItems) map.getCreator(TextItems.class.getName(), true);

@@ -11,7 +11,7 @@ import de.uniks.networkparser.xml.XMLEntity;
 public class StoryBook extends SendableItem implements SendableEntityCreator {
 	public static final String PROPERTY_STORIES = "stories";
 	public static final String PROPERTY_PART = "part";
-	public static final String[] properties = new String[]{PROPERTY_PART, PROPERTY_STORIES};
+	public static final String[] properties = new String[] { PROPERTY_PART, PROPERTY_STORIES };
 
 	private ModelSet<Line> part = null;
 	private String outputFile;
@@ -20,9 +20,9 @@ public class StoryBook extends SendableItem implements SendableEntityCreator {
 	public boolean dumpIndexHTML() {
 		return dumpIndexHTML("");
 	}
-	
+
 	public boolean dumpIndexHTML(String subDir) {
-		if(this.outputFile == null) {
+		if (this.outputFile == null) {
 			return false;
 		}
 		HTMLEntity output = new HTMLEntity();
@@ -32,25 +32,25 @@ public class StoryBook extends SendableItem implements SendableEntityCreator {
 		frameset.createChild("frame").withKeyValue("src", "refs.html").withKeyValue("name", "Index");
 //		XMLEntity mainFrame = 
 		frameset.createChild("frame").withKeyValue("name", "Main");
-		frameset.createChild("noframes").withValue("<body><p><a href='refs.html'>Index</a> <a href='refs.html'>Main</a></p></body>");
+		frameset.createChild("noframes")
+				.withValue("<body><p><a href='refs.html'>Index</a> <a href='refs.html'>Main</a></p></body>");
 		output.with(frameset);
-
 
 		HTMLEntity refHtml = new HTMLEntity();
 		refHtml.withHeader("../src/main/resources/de/uniks/networkparser/graph/diagramstyle.css");
 		refHtml.withEncoding(HTMLEntity.ENCODING);
 		int pos = this.outputFile.lastIndexOf('/');
 		String fileName = "";
-		if(pos>0) {
-			fileName = subDir+this.outputFile.substring(0, pos) + "/";
+		if (pos > 0) {
+			fileName = subDir + this.outputFile.substring(0, pos) + "/";
 		}
 
-		for(StoryElement subStory : children) {
+		for (StoryElement subStory : children) {
 			XMLEntity link = refHtml.createTag("A", refHtml.getBody());
 			link.add("href", subStory.getOutputFile());
 			link.withValueItem(subStory.getLabel());
 		}
-		return FileBuffer.writeFile(fileName+"index.html", output.toString())>=0;
+		return FileBuffer.writeFile(fileName + "index.html", output.toString()) >= 0;
 	}
 
 	public StoryBook withTask(Task... value) {
@@ -76,13 +76,13 @@ public class StoryBook extends SendableItem implements SendableEntityCreator {
 		}
 		return this;
 	}
-	
+
 	public Task createTask(String description) {
 		Task value = new Task().withDescription(description);
 		withTask(value);
 		return value;
 	}
-	
+
 	public StoryBook withStory(Story... value) {
 		if (value == null) {
 			return this;
@@ -171,22 +171,26 @@ public class StoryBook extends SendableItem implements SendableEntityCreator {
 		// TODO Auto-generated method stub
 		return false;
 	}
-	
+
 	public HTMLEntity createKanbanBoard() {
 		HTMLEntity element = new HTMLEntity();
 		XMLEntity parent = element.getBody();
-		for(Line child : this.part) {
+		for (Line child : this.part) {
 			XMLEntity swimLine = element.createTag("div", parent);
 			XMLEntity header = element.createTag("div", swimLine).with("style", "width:100px");
-			XMLEntity button = element.createTag("button", header).with("style", "width:15px;height:15px;margin:0;padding:0;border: none;");
+			XMLEntity button = element.createTag("button", header).with("style",
+					"width:15px;height:15px;margin:0;padding:0;border: none;");
 			button.withValue("-");
 			XMLEntity tag = element.createTag("div", header).with("style", "margin-left:5px;float:right;");
 			tag.withValue(child.getCaption());
 
-			for(Task task : child.getChildren()) {
-				XMLEntity taskContent = element.createTag("div", swimLine).with("style", "width:100px;height: 200px;background-color:#ccc;");
-				XMLEntity taskBody = element.createTag("div", taskContent).with("style", "width:100px;height: 200px;background-color:#ccc;");
-				element.createTable(taskBody, "border:1px solid black", "background-color:#f00;width:10px", "", "", task.getName());
+			for (Task task : child.getChildren()) {
+				XMLEntity taskContent = element.createTag("div", swimLine).with("style",
+						"width:100px;height: 200px;background-color:#ccc;");
+				XMLEntity taskBody = element.createTag("div", taskContent).with("style",
+						"width:100px;height: 200px;background-color:#ccc;");
+				element.createTable(taskBody, "border:1px solid black", "background-color:#f00;width:10px", "", "",
+						task.getName());
 			}
 		}
 		return element;

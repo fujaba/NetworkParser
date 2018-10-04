@@ -35,9 +35,10 @@ import de.uniks.networkparser.interfaces.SendableEntity;
 public abstract class AbstractModelController implements PropertyChangeListener {
 	@SuppressWarnings("unchecked")
 	public <ST extends AbstractModelController> ST init(Object model, Object gui) {
-		if(model != null && gui != null) {
+		if (model != null && gui != null) {
 			try {
-				Method method = this.getClass().getMethod("initPropertyChange"+model.getClass().getSimpleName(), model.getClass(), ReflectionLoader.NODE);
+				Method method = this.getClass().getMethod("initPropertyChange" + model.getClass().getSimpleName(),
+						model.getClass(), ReflectionLoader.NODE);
 				method.invoke(this, model, gui);
 			} catch (ReflectiveOperationException e) {
 				this.initPropertyChange(model, gui);
@@ -55,26 +56,31 @@ public abstract class AbstractModelController implements PropertyChangeListener 
 	public boolean addListener(Object item, String property) {
 		return addListener(item, property, this);
 	}
+
 	public boolean addListener(Object item, String property, PropertyChangeListener listener) {
-		if(item==null) {
+		if (item == null) {
 			return false;
 		}
-		GenericCreator creator=new GenericCreator(item);
-		if(property!=null) {
+		GenericCreator creator = new GenericCreator(item);
+		if (property != null) {
 			if (item instanceof SendableEntity) {
 				((SendableEntity) item).addPropertyChangeListener(property, listener);
-				listener.propertyChange(new PropertyChangeEvent(item, property, null, creator.getValue(item, property)));
+				listener.propertyChange(
+						new PropertyChangeEvent(item, property, null, creator.getValue(item, property)));
 				return true;
 			}
-			if(item instanceof PropertyChangeSupport){
+			if (item instanceof PropertyChangeSupport) {
 				((PropertyChangeSupport) item).addPropertyChangeListener(property, listener);
-				listener.propertyChange(new PropertyChangeEvent(item, property, null, creator.getValue(item, property)));
+				listener.propertyChange(
+						new PropertyChangeEvent(item, property, null, creator.getValue(item, property)));
 				return true;
 			}
 			try {
-				Method method = item.getClass().getMethod("addPropertyChangeListener", String.class, java.beans.PropertyChangeListener.class );
+				Method method = item.getClass().getMethod("addPropertyChangeListener", String.class,
+						java.beans.PropertyChangeListener.class);
 				method.invoke(item, property, listener);
-				listener.propertyChange(new PropertyChangeEvent(item, property, null, creator.getValue(item, property)));
+				listener.propertyChange(
+						new PropertyChangeEvent(item, property, null, creator.getValue(item, property)));
 				return true;
 			} catch (ReflectiveOperationException e) {
 			}
@@ -82,18 +88,20 @@ public abstract class AbstractModelController implements PropertyChangeListener 
 		try {
 			Method method = item.getClass().getMethod("getPropertyChangeSupport");
 			PropertyChangeSupport pc = (PropertyChangeSupport) method.invoke(item);
-			if(property == null) {
+			if (property == null) {
 				pc.addPropertyChangeListener(listener);
 				listener.propertyChange(new PropertyChangeEvent(item, property, null, null));
-			}else {
+			} else {
 				pc.addPropertyChangeListener(property, listener);
-				listener.propertyChange(new PropertyChangeEvent(item, property, null, creator.getValue(item, property)));
+				listener.propertyChange(
+						new PropertyChangeEvent(item, property, null, creator.getValue(item, property)));
 			}
 			return true;
 		} catch (ReflectiveOperationException e) {
 		}
 		try {
-			Method method = item.getClass().getMethod("addPropertyChangeListener", java.beans.PropertyChangeListener.class );
+			Method method = item.getClass().getMethod("addPropertyChangeListener",
+					java.beans.PropertyChangeListener.class);
 			method.invoke(item, listener);
 			listener.propertyChange(new PropertyChangeEvent(item, property, null, creator.getValue(item, property)));
 			return true;

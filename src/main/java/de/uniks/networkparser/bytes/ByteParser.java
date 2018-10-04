@@ -38,15 +38,13 @@ public class ByteParser {
 		for (BitEntity entity : bitProperties) {
 			Object element = getEntity(buffer, entity, values);
 			if (element != null) {
-				creator.setValue(newInstance, entity.getPropertyName(),
-						element, SendableEntityCreator.NEW);
+				creator.setValue(newInstance, entity.getPropertyName(), element, SendableEntityCreator.NEW);
 			}
 		}
 		return newInstance;
 	}
 
-	public Object getEntity(ByteBuffer buffer, BitEntity entry,
-			SimpleKeyValueList<String, Object> values) {
+	public Object getEntity(ByteBuffer buffer, BitEntity entry, SimpleKeyValueList<String, Object> values) {
 		if (entry.size() < 1) {
 			// Reference or Value
 			if (entry.isType(BitEntity.BIT_REFERENCE)) {
@@ -54,8 +52,7 @@ public class ByteParser {
 				if (values.containsKey(propertyName)) {
 					return values.getValue(propertyName);
 				}
-			} else if (entry.isType(BitEntity.BIT_BYTE, BitEntity.BIT_NUMBER,
-					BitEntity.BIT_STRING)) {
+			} else if (entry.isType(BitEntity.BIT_BYTE, BitEntity.BIT_NUMBER, BitEntity.BIT_STRING)) {
 				// Value
 				return entry.getPropertyName();
 			}
@@ -78,8 +75,7 @@ public class ByteParser {
 
 			bit = new BitEntity().with(bitValue.size());
 			bit.with(bitValue.getProperty(), bitValue.getType());
-			int length = Integer.parseInt(""
-					+ getEntity(buffer,bit, values));
+			int length = Integer.parseInt("" + getEntity(buffer, bit, values));
 			int noOfByte = length / 8;
 			if (length % 8 > 0) {
 				noOfByte++;
@@ -110,8 +106,7 @@ public class ByteParser {
 					else {
 						// Bits vertauschen
 						for (int z = sourceBit; z > 0; z--) {
-							number += sourceBits
-									& (0x1 << sourceBit) << (sourceBit - z);
+							number += sourceBits & (0x1 << sourceBit) << (sourceBit - z);
 						}
 					}
 				} else {
@@ -121,8 +116,7 @@ public class ByteParser {
 					else {
 						// Bits vertauschen
 						for (int z = sourceBit; z > 0; z--) {
-							number += sourceBits
-									& (0x1 << sourceBit) << (sourceBit - z);
+							number += sourceBits & (0x1 << sourceBit) << (sourceBit - z);
 						}
 					}
 				}
@@ -168,10 +162,8 @@ public class ByteParser {
 			length = resultsLength.get(i);
 			while (length > 0) {
 				byte theByte = source.getByte();
-				int sourceBit = (length < 8 - resultPos) ? length
-						: 8 - resultPos;
-				number = (number << (sourceBit))
-						+ (theByte & (0xff >> (8 - sourceBit)));
+				int sourceBit = (length < 8 - resultPos) ? length : 8 - resultPos;
+				number = (number << (sourceBit)) + (theByte & (0xff >> (8 - sourceBit)));
 				theByte = (byte) (theByte >> (sourceBit));
 				resultPos += sourceBit;
 				length -= sourceBit;

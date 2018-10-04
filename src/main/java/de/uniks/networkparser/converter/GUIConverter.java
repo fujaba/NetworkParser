@@ -15,7 +15,7 @@ import de.uniks.networkparser.xml.XMLEntity;
 
 public class GUIConverter implements Converter {
 	private SimpleKeyValueList<String, Control> factory;
-	
+
 	public GUIConverter() {
 		factory = new SimpleKeyValueList<String, Control>();
 		factory.add("textArea", new TextField());
@@ -25,25 +25,24 @@ public class GUIConverter implements Converter {
 		factory.add("button", new Button());
 	}
 
-	
 	@Override
 	public String encode(BaseItem entity) {
-		if(entity instanceof Entity) {
+		if (entity instanceof Entity) {
 			return convert((Entity) entity).toString();
 		}
 		return null;
 	}
-	
+
 	public Control convert(String value) {
 		return convert(new XMLEntity().withValue(value));
 	}
-	
+
 	public Control convert(Buffer value) {
 		return convert(new XMLEntity().withValue(value));
 	}
 
 	public Control convert(Entity value) {
-		if(value instanceof XMLEntity) {
+		if (value instanceof XMLEntity) {
 			Group group = new Group();
 			group.addElement(parsingXMLEntity((XMLEntity) value));
 			return group;
@@ -53,25 +52,25 @@ public class GUIConverter implements Converter {
 
 	public Control parsingXMLEntity(XMLEntity element) {
 		String tag = null;
-		if(element != null) {
+		if (element != null) {
 			tag = element.getTag();
 		}
-		if(tag == null) {
+		if (tag == null) {
 			return null;
 		}
-		
+
 		Control factory = this.factory.get(tag.toLowerCase());
-		if(factory != null) {
+		if (factory != null) {
 			Control child = factory.newInstance();
 			XMLEntity children = (XMLEntity) element.getElementBy(XMLEntity.PROPERTY_TAG, "children");
-			if(children != null) {
+			if (children != null) {
 				boolean add = false;
-				for(int i=0;i<children.sizeChildren();i++) {
-					if(child.setValue(Control.PROPERTY_ELEMENTS, parsingXMLEntity((XMLEntity)children.getChild(i)))) {
-						add=true;
+				for (int i = 0; i < children.sizeChildren(); i++) {
+					if (child.setValue(Control.PROPERTY_ELEMENTS, parsingXMLEntity((XMLEntity) children.getChild(i)))) {
+						add = true;
 					}
 				}
-				if(add) {
+				if (add) {
 					return child;
 				}
 				return null;

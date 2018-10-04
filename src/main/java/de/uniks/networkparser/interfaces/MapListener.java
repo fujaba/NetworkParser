@@ -32,9 +32,14 @@ import de.uniks.networkparser.list.SimpleList;
 
 public interface MapListener extends PropertyChangeListener {
 	public Object execute(Entity updateMessage, Filter filter);
+
 	public MapListener withFilter(Filter filter);
+
 	public Filter getFilter();
+
 	public boolean suspendNotification(UpdateCondition... accumulates);
+
 	public SimpleList<UpdateCondition> resetNotification();
+
 	public Tokener getTokener();
 }

@@ -46,8 +46,8 @@ public class TableComponent extends Control {
 
 	protected SendableEntityCreator sourceCreator;
 
-
-	//bridge.load({class:"table", property:"talk", columns:[{id:'room'}, {id:'day'}, {id:'talk'},  {id:'state'}], searchColumns:["day", "talk"]});
+	// bridge.load({class:"table", property:"talk", columns:[{id:'room'},
+	// {id:'day'}, {id:'talk'}, {id:'state'}], searchColumns:["day", "talk"]});
 
 	public TableComponent() {
 		super();
@@ -57,7 +57,6 @@ public class TableComponent extends Control {
 		addBaseElements(PROPERTY_SEARCHCOLUMNS);
 	}
 
-
 	public boolean createFromCreator(SendableEntityCreator creator) {
 		return false;
 	}
@@ -66,13 +65,14 @@ public class TableComponent extends Control {
 		addColumn(columns);
 		return this;
 	}
+
 	public boolean addColumn(Column... columns) {
 		if (columns == null) {
 			return false;
 		}
 		boolean changed = false;
 		for (Column c : columns) {
-			if(this.columns.add(c)) {
+			if (this.columns.add(c)) {
 				changed = true;
 				firePropertyChange(PROPERTY_COLUMNS, null, c);
 			}
@@ -86,39 +86,36 @@ public class TableComponent extends Control {
 		}
 		boolean changed = false;
 		for (String c : elements) {
-			if(this.searchColumn.add(c)) {
+			if (this.searchColumn.add(c)) {
 				changed = true;
 				firePropertyChange(PROPERTY_SEARCHCOLUMNS, null, c);
 			}
 		}
 		return changed;
 	}
-	//	showScrollbar(TableViewFX)
-	//	withSearchProperties(String...)
-	//	removeItem(Object)
-	//	withList(Object, String)
-	//	getColumn(Column)
-	//	getProperty()
-	//	propertyChange(PropertyChangeEvent)
-	//	getColumnIterator()
-	//	getCreator(Object)
-	//	getElement(int)
-	//	getItems()
-	//	getColumns()
-	//	changed(ObservableValue<? extends Number>, Number, Number)
-	//	getFieldFactory()
-	//	withCounterColumn(Column)
-	//	getSelection()
-	//	saveColumns()
-	//	loadColumns(JsonArray, boolean)
-	//	addItemsFromPropertyChange(SendableEntity, String, String)
-
+	// showScrollbar(TableViewFX)
+	// withSearchProperties(String...)
+	// removeItem(Object)
+	// withList(Object, String)
+	// getColumn(Column)
+	// getProperty()
+	// propertyChange(PropertyChangeEvent)
+	// getColumnIterator()
+	// getCreator(Object)
+	// getElement(int)
+	// getItems()
+	// getColumns()
+	// changed(ObservableValue<? extends Number>, Number, Number)
+	// getFieldFactory()
+	// withCounterColumn(Column)
+	// getSelection()
+	// saveColumns()
+	// loadColumns(JsonArray, boolean)
+	// addItemsFromPropertyChange(SendableEntity, String, String)
 
 	public TableComponent withMap(IdMap map) {
 		return this;
 	}
-
-
 
 	public TableComponent withSearchProperties(String... elements) {
 		addSearchProperties(elements);
@@ -132,6 +129,7 @@ public class TableComponent extends Control {
 	public TableComponent withList(Collection<Object> tableList) {
 		return this;
 	}
+
 	public TableComponent withList(Object... items) {
 		addList(items);
 		return this;
@@ -143,14 +141,13 @@ public class TableComponent extends Control {
 		}
 		boolean changed = false;
 		for (Object c : elements) {
-			if(this.items.add(c)) {
+			if (this.items.add(c)) {
 				changed = true;
 				firePropertyChange(PROPERTY_ELEMENTS, null, c);
 			}
 		}
 		return changed;
 	}
-
 
 	public SimpleList<String> getSearchColumn() {
 		return searchColumn;
@@ -160,53 +157,49 @@ public class TableComponent extends Control {
 		return property;
 	}
 
-
 	@Override
 	public Object getValue(String key) {
 		if (PROPERTY_COLUMNS.equals(key)) {
 			return this.columns;
-		}
-		else if (PROPERTY_ELEMENTS.equals(key)) {
+		} else if (PROPERTY_ELEMENTS.equals(key)) {
 			return this.items;
-		}
-		else if (PROPERTY_SEARCHCOLUMNS.equals(key)) {
+		} else if (PROPERTY_SEARCHCOLUMNS.equals(key)) {
 			return this.searchColumn;
 		}
 		return super.getValue(key);
 	}
-
 
 	@Override
 	public boolean setValue(String key, Object value) {
 		if (PROPERTY_COLUMNS.equals(key)) {
 //			if(value instanceof Control) {
 //				return this.addColumn((Control)value);
-			if(value instanceof Column[]) {
-				return this.addColumn((Column[])value);
-			} else if(value instanceof Collection<?>) {
-				Collection<?> list = (Collection<?>)value;
+			if (value instanceof Column[]) {
+				return this.addColumn((Column[]) value);
+			} else if (value instanceof Collection<?>) {
+				Collection<?> list = (Collection<?>) value;
 				Column[] array = ((Collection<?>) value).toArray(new Column[list.size()]);
 				return this.addColumn(array);
 			}
 			return false;
 		}
 		if (PROPERTY_ELEMENTS.equals(key)) {
-			if(value instanceof Object[]) {
-				return this.addList((Object[])value);
-			} else if(value instanceof Collection<?>) {
-				Collection<?> list = (Collection<?>)value;
+			if (value instanceof Object[]) {
+				return this.addList((Object[]) value);
+			} else if (value instanceof Collection<?>) {
+				Collection<?> list = (Collection<?>) value;
 				Object[] array = ((Collection<?>) value).toArray(new Object[list.size()]);
 				return this.addList(array);
 			}
 			return this.addList(value);
 		}
 		if (PROPERTY_SEARCHCOLUMNS.equals(key)) {
-			if(value instanceof String) {
-				return this.addSearchProperties((String)value);
-			} else if(value instanceof String[]) {
-				return this.addSearchProperties((String[])value);
-			} else if(value instanceof Collection<?>) {
-				Collection<?> list = (Collection<?>)value;
+			if (value instanceof String) {
+				return this.addSearchProperties((String) value);
+			} else if (value instanceof String[]) {
+				return this.addSearchProperties((String[]) value);
+			} else if (value instanceof Collection<?>) {
+				Collection<?> list = (Collection<?>) value;
 				String[] array = ((Collection<?>) value).toArray(new String[list.size()]);
 				return this.addSearchProperties(array);
 			}
@@ -214,7 +207,7 @@ public class TableComponent extends Control {
 		}
 		return super.setValue(key, value);
 	}
-	
+
 	@Override
 	public TableComponent newInstance() {
 		return new TableComponent();

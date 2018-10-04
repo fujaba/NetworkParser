@@ -25,8 +25,8 @@ THE SOFTWARE.
 */
 import de.uniks.networkparser.list.SimpleList;
 
-public class Literal extends GraphMember{
-	public static final String PROPERTY_VALUE="value";
+public class Literal extends GraphMember {
+	public static final String PROPERTY_VALUE = "value";
 	private SimpleList<Object> values;
 
 	public Literal(String name) {
@@ -38,13 +38,14 @@ public class Literal extends GraphMember{
 		super.with(name);
 		return this;
 	}
+
 	public Literal withValue(Object... values) {
-		if(values == null) {
+		if (values == null) {
 			return this;
 		}
-		for(Object value : values) {
-			if(value != null) {
-				if(this.values == null) {
+		for (Object value : values) {
+			if (value != null) {
+				if (this.values == null) {
 					this.values = new SimpleList<Object>();
 				}
 				this.values.add(value);
@@ -56,14 +57,14 @@ public class Literal extends GraphMember{
 	public Object getValue(String attribute) {
 		int pos = attribute.indexOf('.');
 		String attrName;
-		if(pos>0) {
+		if (pos > 0) {
 			attrName = attribute.substring(0, pos);
-		}else {
+		} else {
 			attrName = attribute;
 		}
-		if(PROPERTY_VALUE.equalsIgnoreCase(attrName)) {
+		if (PROPERTY_VALUE.equalsIgnoreCase(attrName)) {
 			if (pos > 0) {
-				if(this.values == null) {
+				if (this.values == null) {
 					return 0;
 				}
 				return this.values.getValue(attribute.substring(pos + 1));

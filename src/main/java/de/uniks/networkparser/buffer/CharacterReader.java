@@ -24,7 +24,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-public class CharacterReader extends CharacterBuffer{
+public class CharacterReader extends CharacterBuffer {
 	/** The line. */
 	protected int line;
 
@@ -44,7 +44,7 @@ public class CharacterReader extends CharacterBuffer{
 	}
 
 	public boolean back() {
-		if(super.back()) {
+		if (super.back()) {
 			this.character -= 1;
 			return true;
 		}
@@ -65,14 +65,14 @@ public class CharacterReader extends CharacterBuffer{
 
 	@Override
 	public CharacterBuffer nextString(CharacterBuffer sc, boolean allowQuote, boolean nextStep, char... quotes) {
-		if(quotes ==null) {
+		if (quotes == null) {
 			return sc;
 		}
 
-		boolean found=false;
-		for(char quote : quotes) {
+		boolean found = false;
+		for (char quote : quotes) {
 			if ('"' == quote) {
-				found=true;
+				found = true;
 				if (getCurrentChar() == quote) {
 					isString = true;
 				} else {
@@ -85,7 +85,7 @@ public class CharacterReader extends CharacterBuffer{
 			for (;;) {
 				int len = sc.length();
 				super.nextString(sc, allowQuote, nextStep, quotes);
-				if (sc.length()>len && !sc.endsWith("\"", false)) {
+				if (sc.length() > len && !sc.endsWith("\"", false)) {
 					sc.with(',');
 				} else {
 					break;

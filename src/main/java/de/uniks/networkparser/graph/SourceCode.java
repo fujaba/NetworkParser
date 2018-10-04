@@ -29,9 +29,9 @@ import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.parser.SymTabEntry;
 
 public class SourceCode extends GraphMember {
-	public static final String NAME="SourceCode";
+	public static final String NAME = "SourceCode";
 	private CharacterBuffer content;
-	private SimpleKeyValueList<String, SimpleList<SymTabEntry>> keys=new SimpleKeyValueList<String, SimpleList<SymTabEntry>>();
+	private SimpleKeyValueList<String, SimpleList<SymTabEntry>> keys = new SimpleKeyValueList<String, SimpleList<SymTabEntry>>();
 	private boolean fileBodyHasChanged = false;
 	private String fileName;
 	private int size;
@@ -49,7 +49,6 @@ public class SourceCode extends GraphMember {
 		this.name = NAME;
 	}
 
-
 	public SourceCode withFileName(String name) {
 		this.fileName = name;
 		return this;
@@ -62,6 +61,7 @@ public class SourceCode extends GraphMember {
 	public CharacterBuffer getContent() {
 		return content;
 	}
+
 	public SourceCode withContent(CharacterBuffer content) {
 		this.content = content;
 		this.size = content.length();
@@ -74,7 +74,7 @@ public class SourceCode extends GraphMember {
 
 	public SimpleList<SymTabEntry> getSymbolEntries(String type) {
 		SimpleList<SymTabEntry> list = keys.get(type);
-		if(list == null) {
+		if (list == null) {
 			list = new SimpleList<SymTabEntry>();
 			keys.add(type, list);
 		}
@@ -82,13 +82,13 @@ public class SourceCode extends GraphMember {
 	}
 
 	public SymTabEntry getSymbolEntry(String type, String name) {
-		if(name == null || type == null) {
+		if (name == null || type == null) {
 			return null;
 		}
 		SimpleList<SymTabEntry> list = keys.get(type.toLowerCase());
-		if(list != null) {
-			for(SymTabEntry entry : list) {
-				if(name.equals(entry.getValue())) {
+		if (list != null) {
+			for (SymTabEntry entry : list) {
+				if (name.equals(entry.getValue())) {
 					return entry;
 				}
 			}
@@ -102,17 +102,18 @@ public class SourceCode extends GraphMember {
 
 	/**
 	 * Set the Parent of Element
-	 * @param parent  Set The Parent Element
+	 * 
+	 * @param parent Set The Parent Element
 	 * @return The Instance
 	 */
 	public GraphMember with(Clazz parent) {
 		this.parentNode = parent;
-		//REMOVE OLD SOURCE CODE
+		// REMOVE OLD SOURCE CODE
 		GraphSimpleSet children = new GraphSimpleSet();
 		children.withList(parent.getChildren());
-		for(GraphMember item : children) {
-			if(item instanceof SourceCode) {
-				if(item != this) {
+		for (GraphMember item : children) {
+			if (item instanceof SourceCode) {
+				if (item != this) {
 					parent.remove(item);
 				}
 			}
@@ -124,6 +125,7 @@ public class SourceCode extends GraphMember {
 	public boolean isFileBodyHasChanged() {
 		return fileBodyHasChanged;
 	}
+
 	public void setFileBodyHasChanged(boolean fileBodyHasChanged) {
 		this.fileBodyHasChanged = fileBodyHasChanged;
 	}
@@ -131,27 +133,34 @@ public class SourceCode extends GraphMember {
 	public CharSequence subString(int start, int end) {
 		return content.subSequence(start, end);
 	}
+
 	public int getEndOfClassName() {
 		return endOfClassName;
 	}
+
 	public SourceCode withEndOfClassName(int value) {
 		this.endOfClassName = value;
 		return this;
 	}
+
 	public int getEndOfExtendsClause() {
 		return endOfExtendsClause;
 	}
+
 	public SourceCode withEndOfExtendsClause(int value) {
 		this.endOfExtendsClause = value;
 		return this;
 	}
+
 	public int getEndOfImports() {
 		return endOfImports;
 	}
+
 	public SourceCode withEndOfImports(int value) {
 		this.endOfImports = value;
 		return this;
 	}
+
 	public SourceCode withEndOfImplementsClause(int value) {
 		this.endOfImplementsClause = value;
 		return this;
@@ -160,6 +169,7 @@ public class SourceCode extends GraphMember {
 	public int getEndOfImplementsClause() {
 		return endOfImplementsClause;
 	}
+
 	public SourceCode withStartBody(int value) {
 		this.bodyStart = value;
 		return this;
@@ -168,6 +178,7 @@ public class SourceCode extends GraphMember {
 	public int getBodyStart() {
 		return bodyStart;
 	}
+
 	public SourceCode withEndOfAttributeInitialization(int value) {
 		this.endOfAttributeInitialization = value;
 		return this;

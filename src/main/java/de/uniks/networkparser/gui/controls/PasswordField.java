@@ -34,7 +34,7 @@ public class PasswordField extends Input<String> {
 		super();
 		this.type = PASSWORD;
 	}
-	
+
 	@Override
 	public PasswordField newInstance() {
 		return new PasswordField();

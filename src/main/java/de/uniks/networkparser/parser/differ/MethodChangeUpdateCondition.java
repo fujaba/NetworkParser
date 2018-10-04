@@ -9,7 +9,7 @@ import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.parser.GraphMatcher;
 
 public class MethodChangeUpdateCondition extends MatchCondition {
-	
+
 	public MethodChangeUpdateCondition() {
 		super(true);
 	}
@@ -23,9 +23,9 @@ public class MethodChangeUpdateCondition extends MatchCondition {
 	protected boolean calculateFileDiffs(GraphModel model, GraphMatcher matches, Match match) {
 		Method oldMethod = (Method) match.getMatch();
 		Method newMethod = (Method) match.getOtherMatch().getMatch();
-		
+
 		boolean withMeta = matches.getMetaModel() != null;
-		
+
 		ParameterSet oldParameters = new ParameterSet();
 		ParameterSet newParameters = new ParameterSet();
 		for (Parameter oldParameter : oldMethod.getParameters()) {
@@ -78,7 +78,7 @@ public class MethodChangeUpdateCondition extends MatchCondition {
 		}
 		return true;
 	}
-	
+
 	@Override
 	protected boolean checkModelCondition(GraphMatcher matches, Match match) {
 		return true;
@@ -97,7 +97,8 @@ public class MethodChangeUpdateCondition extends MatchCondition {
 					continue;
 				}
 				if (oldParameter.getName().equals(newParameter.getName()) == false) {
-					if (matches.getMetaModel() == null || (match.isMetaMatch() == false && match.isMetaSourceMatch() == false)) {
+					if (matches.getMetaModel() == null
+							|| (match.isMetaMatch() == false && match.isMetaSourceMatch() == false)) {
 						oldParameters.add(oldParameter);
 						break;
 					}

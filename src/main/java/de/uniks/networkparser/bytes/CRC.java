@@ -29,7 +29,7 @@ public class CRC extends Checksum {
 	// 1 0000 0111
 	// 0111 0000 1
 	public static final int CRC8 = 0x107;
-	 // 1000000000000101
+	// 1000000000000101
 	public static final int CRC16 = 0x8005;
 
 	public static final int CRC32 = 0xedb88320;
@@ -48,16 +48,16 @@ public class CRC extends Checksum {
 
 	public CRC withCRC(int bitMask) {
 		this.order = bitMask;
-		if(order == 0){
+		if (order == 0) {
 			// Default os CCITT16
 			order = 16;
 			crc_table = null;
 //			crc_table = getGenTable(true, CCITT16);
-		} else if(order == 8) {
+		} else if (order == 8) {
 			crc_table = getGenTable(false, CRC8);
-		} else if(order == 16) {
+		} else if (order == 16) {
 			crc_table = getGenTable(true, CRC16);
-		} else if(order == 32) {
+		} else if (order == 32) {
 			crc_table = getGenTable(false, CRC32);
 		} else {
 			crc_table = null;
@@ -69,18 +69,18 @@ public class CRC extends Checksum {
 	/**
 	 * Update the CRC value with a byte data.
 	 *
-	 * @param data		The byte data
+	 * @param data The byte data
 	 */
 	@Override // 8
 	public boolean update(int data) {
-		if(order == 0) {
+		if (order == 0) {
 			return false;
 		}
 		super.update(data);
-		if(order == 8) {
+		if (order == 8) {
 			value = crc_table[((int) value ^ (byte) data) & 0xFF];
-		} else if(order == 16) {
-			if(crc_table == null) {
+		} else if (order == 16) {
+			if (crc_table == null) {
 				for (int i = 0; i < 8; i++) {
 					boolean bit = ((data >> (7 - i) & 1) == 1);
 					boolean c15 = ((value >> 15 & 1) == 1);
@@ -92,7 +92,7 @@ public class CRC extends Checksum {
 			} else {
 				value = (value >>> 8) ^ crc_table[((int) value ^ data) & 0xff];
 			}
-		} else if(order == 32) {
+		} else if (order == 32) {
 			int c = (int) ~value;
 			c = crc_table[(c ^ data) & 0xff] ^ (c >>> 8);
 			value = ~c;
@@ -108,18 +108,18 @@ public class CRC extends Checksum {
 	/**
 	 * Make the table for a fast CRC.
 	 *
-	 *	@param isReflect is Reflects the lower bits of the value provided
-	 *	@param polynom the generator polynom
-	 *	@return the GenTable
-	 * */
+	 * @param isReflect is Reflects the lower bits of the value provided
+	 * @param polynom   the generator polynom
+	 * @return the GenTable
+	 */
 	public int[] getGenTable(boolean isReflect, int polynom) {
 		int[] result = new int[256];
-		if(polynom==CRC32) {
+		if (polynom == CRC32) {
 			for (int n = 0; n < 256; n++) {
 				int c = n;
 				for (int k = 8; --k >= 0;) {
 					if ((c & 1) != 0)
-						c =  CRC32 ^ (c >>> 1);
+						c = CRC32 ^ (c >>> 1);
 					else
 						c = c >>> 1;
 				}

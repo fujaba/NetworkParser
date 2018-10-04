@@ -29,14 +29,14 @@ public class Sum extends Checksum {
 	private int order;
 
 	public Sum enableBSD() {
-		order=16;
+		order = 16;
 		bsd = true;
 		return this;
 	}
 
 	public Sum withOrder(int order) {
 		this.bsd = false;
-		if(order == 8 || order == 16 || order == 24 || order == 32) {
+		if (order == 8 || order == 16 || order == 24 || order == 32) {
 			this.order = order;
 		} else {
 			this.order = 0;
@@ -47,7 +47,7 @@ public class Sum extends Checksum {
 	@Override
 	public boolean update(int data) {
 		super.update(data);
-		if(bsd) {
+		if (bsd) {
 			value = (value >> 1) + ((value & 1) << 15);
 			value += data & 0xFF;
 			value &= 0xffff;

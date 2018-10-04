@@ -26,17 +26,14 @@ THE SOFTWARE.
 
 public class ObjectSet extends SimpleSet<Object> {
 
-	public NumberList numberList()
-	{
-	   NumberList result = new NumberList();
-	
-	   for ( Object obj : this)
-	   {
-	      if (obj instanceof Number)
-	      {
-	         result.add((Number) obj);
-	      }
-	   }
-	   return result;
+	public NumberList numberList() {
+		NumberList result = new NumberList();
+
+		for (Object obj : this) {
+			if (obj instanceof Number) {
+				result.add((Number) obj);
+			}
+		}
+		return result;
 	}
 }

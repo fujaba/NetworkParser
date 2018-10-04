@@ -31,15 +31,14 @@ import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Converter;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
+
 /**
  * SimpleEntity is a Simple KeyValue - Object.
  *
  * @author Stefan Lindel
  *
- * @param <K>
- *			Key-Element
- * @param <V>
- *			Value Element
+ * @param <K> Key-Element
+ * @param <V> Value Element
  */
 public class SimpleEntity<K, V> implements BaseItem, Entry<K, V>,
 
@@ -49,8 +48,7 @@ public class SimpleEntity<K, V> implements BaseItem, Entry<K, V>,
 	/** Constant for VALUE. */
 	public static final String PROPERTY_VALUE = "value";
 	/** Propertys for Values. */
-	private final String[] properties = new String[] {PROPERTY_KEY,
-			PROPERTY_VALUE };
+	private final String[] properties = new String[] { PROPERTY_KEY, PROPERTY_VALUE };
 	/** The Variable of Key. */
 	private K key;
 	/** The Variable of Value. */
@@ -78,14 +76,12 @@ public class SimpleEntity<K, V> implements BaseItem, Entry<K, V>,
 	/**
 	 * add the Values of the map to AbstractKeyValueEntry&lt;K, V&gt;
 	 *
-	 * @param collection
-	 *			a map of key-values
+	 * @param collection a map of key-values
 	 * @return Itself
 	 */
 	public SimpleEntity<K, V> with(Map<Object, Object> collection) {
 		if (collection != null) {
-			Iterator<Entry<Object, Object>> i = collection.entrySet()
-					.iterator();
+			Iterator<Entry<Object, Object>> i = collection.entrySet().iterator();
 			while (i.hasNext()) {
 				Entry<Object, Object> e = i.next();
 				Object value = e.getValue();
@@ -146,8 +142,7 @@ public class SimpleEntity<K, V> implements BaseItem, Entry<K, V>,
 
 	@Override
 	public int hashCode() {
-		return ((key == null) ? 0 : key.hashCode())
-				^ ((value == null) ? 0 : value.hashCode());
+		return ((key == null) ? 0 : key.hashCode()) ^ ((value == null) ? 0 : value.hashCode());
 	}
 
 	@Override
@@ -186,8 +181,7 @@ public class SimpleEntity<K, V> implements BaseItem, Entry<K, V>,
 	}
 
 	@Override
-	public boolean setValue(Object entity, String attribute, Object value,
-			String type) {
+	public boolean setValue(Object entity, String attribute, Object value, String type) {
 		if (entity instanceof SimpleEntity) {
 			SimpleEntity<?, ?> entry = (SimpleEntity<?, ?>) entity;
 			if (PROPERTY_KEY.equalsIgnoreCase(attribute)) {
@@ -200,7 +194,7 @@ public class SimpleEntity<K, V> implements BaseItem, Entry<K, V>,
 						map = new SimpleKeyValueList<String, Object>();
 					}
 					SimpleKeyValueList<?, ?> mapValue = (SimpleKeyValueList<?, ?>) map;
-					mapValue.withKeyValue(((Entry<?,?>) value).getKey(), ((Entry<?,?>) value).getValue());
+					mapValue.withKeyValue(((Entry<?, ?>) value).getKey(), ((Entry<?, ?>) value).getValue());
 					entry.withValueItem(map);
 				} else {
 					entry.withValueItem(value);
@@ -218,10 +212,10 @@ public class SimpleEntity<K, V> implements BaseItem, Entry<K, V>,
 
 	@Override
 	public boolean add(Object... values) {
-		if(values == null) {
+		if (values == null) {
 			return false;
 		}
-		if(values.length==2) {
+		if (values.length == 2) {
 			withKeyItem(values[0]);
 			withValueItem(values[1]);
 		}
@@ -234,10 +228,10 @@ public class SimpleEntity<K, V> implements BaseItem, Entry<K, V>,
 	}
 
 	public Object getValue(Object key) {
-		if(PROPERTY_KEY.equals(key)) {
+		if (PROPERTY_KEY.equals(key)) {
 			return this.key;
 		}
-		if(PROPERTY_VALUE.equals(key)) {
+		if (PROPERTY_VALUE.equals(key)) {
 			return value;
 		}
 		return null;
@@ -245,7 +239,7 @@ public class SimpleEntity<K, V> implements BaseItem, Entry<K, V>,
 
 	@Override
 	public String toString(Converter converter) {
-		if(converter == null) {
+		if (converter == null) {
 			return null;
 		}
 		return converter.encode(this);
@@ -253,7 +247,7 @@ public class SimpleEntity<K, V> implements BaseItem, Entry<K, V>,
 
 	@Override
 	public int size() {
-		if(key != null) {
+		if (key != null) {
 			return 1;
 		}
 		return 0;

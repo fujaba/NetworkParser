@@ -27,7 +27,7 @@ public class AssociationChangeAddCondition extends MatchCondition {
 		matches.addDiff(add);
 		return true;
 	}
-	
+
 	@Override
 	protected boolean checkModelCondition(GraphMatcher matches, Match match) {
 		return true;

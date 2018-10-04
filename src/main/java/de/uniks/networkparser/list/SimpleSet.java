@@ -31,27 +31,29 @@ import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 
 public class SimpleSet<V> extends AbstractList<V> implements Set<V> {
-	public static final String PROPERTY="items";
+	public static final String PROPERTY = "items";
 	protected ObjectCondition listener;
 
 	public SimpleSet() {
-		//empty
+		// empty
 	}
+
 	public SimpleSet(Object... objects) {
-		if(objects != null && objects.length>0) {
+		if (objects != null && objects.length > 0) {
 			init(objects);
 		}
 	}
+
 	@Override
 	public SimpleSet<V> getNewList(boolean keyValue) {
 		return new SimpleSet<V>();
 	}
 
-	
 	@Override
 	public boolean remove(Object o) {
-		return removeByObject(o)>=0;
+		return removeByObject(o) >= 0;
 	}
+
 	@Override
 	public int removeByObject(Object key) {
 		if (isReadOnly() || isVisible() == false) {
@@ -67,11 +69,12 @@ public class SimpleSet<V> extends AbstractList<V> implements Set<V> {
 		}
 		return super.retainAll(c);
 	}
-	
+
 	@Override
 	public SimpleSet<V> clone() {
 		return getNewList(false).init(this);
 	}
+
 	@SuppressWarnings("unchecked")
 	public SimpleSet<V> subList(int fromIndex, int toIndex) {
 		return (SimpleSet<V>) super.subList(fromIndex, toIndex);
@@ -94,6 +97,7 @@ public class SimpleSet<V> extends AbstractList<V> implements Set<V> {
 		CharacterBuffer buffer = new CharacterBuffer();
 		return toBuffer(buffer, separator).toString();
 	}
+
 	CharacterBuffer toBuffer(CharacterBuffer buffer, String separator) {
 		int len = this.size();
 		for (V elem : this) {
@@ -122,7 +126,7 @@ public class SimpleSet<V> extends AbstractList<V> implements Set<V> {
 		}
 		super.add(index, element);
 	}
-	
+
 	@Override
 	public void clear() {
 		if (isReadOnly() || isVisible() == false) {
@@ -133,7 +137,7 @@ public class SimpleSet<V> extends AbstractList<V> implements Set<V> {
 
 	@Override
 	public V remove(int index) {
-		if (isReadOnly()|| isVisible() == false) {
+		if (isReadOnly() || isVisible() == false) {
 			throw new UnsupportedOperationException("remove(" + index + ")");
 		}
 		return super.remove(index);
@@ -163,14 +167,14 @@ public class SimpleSet<V> extends AbstractList<V> implements Set<V> {
 		return result;
 	}
 
-	 public <ST extends AbstractList<?>> ST instanceOf(ST target) {
-		for(Object obj : this) {
-			if(obj != null && obj.getClass()==target.getTypClass()) {
+	public <ST extends AbstractList<?>> ST instanceOf(ST target) {
+		for (Object obj : this) {
+			if (obj != null && obj.getClass() == target.getTypClass()) {
 				target.with(obj);
 			}
 		}
 		return target;
-	 }
+	}
 
 	@SuppressWarnings("unchecked")
 	public <ST extends SimpleSet<V>> ST minus(Object other) {
@@ -190,9 +194,11 @@ public class SimpleSet<V> extends AbstractList<V> implements Set<V> {
 	}
 
 	@Override
-	protected boolean fireProperty(String type, Object oldElement, Object newElement, Object beforeElement, int index, Object value) {
-		if(this.listener != null) {
-			return this.listener.update(new SimpleEvent(type, this, PROPERTY, index, oldElement, newElement, value, beforeElement));
+	protected boolean fireProperty(String type, Object oldElement, Object newElement, Object beforeElement, int index,
+			Object value) {
+		if (this.listener != null) {
+			return this.listener
+					.update(new SimpleEvent(type, this, PROPERTY, index, oldElement, newElement, value, beforeElement));
 		}
 		return super.fireProperty(type, oldElement, newElement, beforeElement, index, value);
 	}

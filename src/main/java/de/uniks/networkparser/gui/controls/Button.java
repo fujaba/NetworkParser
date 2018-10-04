@@ -46,10 +46,12 @@ public class Button extends Input<String> {
 	public String getActionType() {
 		return actionType;
 	}
+
 	public Button withActionType(String graphicType) {
 		this.actionType = graphicType;
 		return this;
 	}
+
 	public Button withActionType(String graphicType, ObjectCondition conditon) {
 		this.actionType = graphicType;
 		this.addClickListener(conditon);
@@ -60,7 +62,7 @@ public class Button extends Input<String> {
 		super.setValue(value);
 		return this;
 	}
-	
+
 	@Override
 	public Button newInstance() {
 		return new Button();

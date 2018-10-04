@@ -31,8 +31,8 @@ import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SortedSet;
 
 public class InfoMessage extends ReceivingTimerTask {
-	public static final String PROPERTY_PROXIES="proxies";
-	public static final String PROPERTY_LASTID="history_id";
+	public static final String PROPERTY_PROXIES = "proxies";
+	public static final String PROPERTY_LASTID = "history_id";
 
 	public InfoMessage() {
 		InfoMessage.props.add(PROPERTY_PROXIES, PROPERTY_LASTID);
@@ -46,25 +46,25 @@ public class InfoMessage extends ReceivingTimerTask {
 
 	@Override
 	public Object getValue(Object entity, String attribute) {
-		if(attribute == null || entity instanceof AcceptMessage == false ) {
+		if (attribute == null || entity instanceof AcceptMessage == false) {
 			return null;
 		}
 		AcceptMessage message = (AcceptMessage) entity;
 		Space space = message.getSpace();
-		if(space != null) {
-			if(PROPERTY_PROXIES.equalsIgnoreCase(attribute)) {
+		if (space != null) {
+			if (PROPERTY_PROXIES.equalsIgnoreCase(attribute)) {
 				SimpleList<NodeProxy> candidates = new SimpleList<NodeProxy>();
 				SortedSet<NodeProxy> nodeProxies = space.getNodeProxies();
-				for(NodeProxy proxy : nodeProxies) {
-					if(proxy.isSendable()) {
+				for (NodeProxy proxy : nodeProxies) {
+					if (proxy.isSendable()) {
 						candidates.add(proxy);
 					}
 				}
 				return candidates;
 			}
-			if(PROPERTY_LASTID.equalsIgnoreCase(attribute)) {
+			if (PROPERTY_LASTID.equalsIgnoreCase(attribute)) {
 				ModelChange lastModelChange = space.getHistory().getLastModelChange();
-				if(lastModelChange != null) {
+				if (lastModelChange != null) {
 					return lastModelChange.getKey();
 				}
 			}

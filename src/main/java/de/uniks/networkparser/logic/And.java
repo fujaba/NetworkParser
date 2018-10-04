@@ -30,13 +30,13 @@ import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.TemplateParser;
 
 public class And extends ListCondition {
-	public static final String TAG="and";
+	public static final String TAG = "and";
 
 	/**
 	 * Static Method for instance a new Instance of And Object.
 	 *
-	 * @param conditions	All Conditions.
-	 * @return 			The new Instance
+	 * @param conditions All Conditions.
+	 * @return The new Instance
 	 */
 	public static And create(ObjectCondition... conditions) {
 		return new And().with(conditions);
@@ -47,6 +47,7 @@ public class And extends ListCondition {
 		super.with(values);
 		return this;
 	}
+
 	@Override
 	public And with(PropertyChangeListener... values) {
 		super.with(values);

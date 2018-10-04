@@ -93,8 +93,9 @@ public class ParserEntity {
 	public Clazz parse(CharacterBuffer sequence) {
 		return parse(sequence, new Clazz(""), "");
 	}
+
 	public Clazz parse(CharacterBuffer sequence, Clazz file, String fileName) {
-		if(sequence == null || sequence.length()<1) {
+		if (sequence == null || sequence.length() < 1) {
 			return file;
 		}
 		this.file = file;
@@ -126,7 +127,7 @@ public class ParserEntity {
 		code.withEndOfImports(currentToken.startPos);
 
 		// TODO need to remove this call, as is may skip public modifier of class
-		//nextToken();
+		// nextToken();
 
 		parseClassDecl();
 		return this.file;
@@ -162,7 +163,7 @@ public class ParserEntity {
 
 	public boolean skip(char character, boolean skipCRLF) {
 		if (currentKindEquals(character)) {
-			if(skipCRLF) {
+			if (skipCRLF) {
 				nextRealToken();
 				return true;
 			}
@@ -176,7 +177,7 @@ public class ParserEntity {
 
 	public boolean skip(String string, boolean skipCRLF, CharacterBuffer body) {
 		if (currentTokenEquals(string)) {
-			if(skipCRLF) {
+			if (skipCRLF) {
 				body.add(currentToken.originalText);
 				nextToken();
 				while (currentToken.kind == NEW_LINE) {
@@ -193,10 +194,10 @@ public class ParserEntity {
 		}
 		return false;
 	}
-	
+
 	public boolean skip(String string, boolean skipCRLF) {
 		if (currentTokenEquals(string)) {
-			if(skipCRLF) {
+			if (skipCRLF) {
 				nextRealToken();
 				return true;
 			}
@@ -442,7 +443,7 @@ public class ParserEntity {
 	private void parsePackageDecl() {
 		// skip package
 		SymTabEntry nextEntity = startNextSymTab(SymTabEntry.TYPE_PACKAGE);
-	    nextToken();
+		nextToken();
 		parseQualifiedName(nextEntity);
 		addCurrentCharacter(';', nextEntity);
 		addNewLine(nextEntity);
@@ -645,7 +646,7 @@ public class ParserEntity {
 		if (currentKindEquals('}')) {
 			code.withEndBody(currentToken.startPos);
 			checkSearchStringFound(CLASS_END, currentToken.startPos);
-		} else if(previousToken.kind == '}') {
+		} else if (previousToken.kind == '}') {
 			code.withEndBody(previousToken.startPos);
 		}
 
@@ -983,7 +984,7 @@ public class ParserEntity {
 	}
 
 	public void addMemberToModel() {
-		if(code == null) {
+		if (code == null) {
 			return;
 		}
 		SimpleKeyValueList<String, SimpleList<SymTabEntry>> symbolTab = code.getSymbolTab();
@@ -1022,7 +1023,7 @@ public class ParserEntity {
 			SimpleKeyValueList<String, SimpleList<SymTabEntry>> symbolTab) {
 		Clazz memberClass = findMemberClass(this.file, memberName, symbolTab);
 
-		if(memberClass == null) {
+		if (memberClass == null) {
 			return;
 		}
 		if (memberClass != null) {
@@ -1126,7 +1127,7 @@ public class ParserEntity {
 		}
 		String memberName = symTabEntry.getValue();
 		String partnerTypeName = symTabEntry.getDataType();
-		//String partnerTypeName = symTabEntry.getType();
+		// String partnerTypeName = symTabEntry.getType();
 
 		String partnerClassName = findPartnerClassName(partnerTypeName);
 		Clazz partnerClass = null;
@@ -1142,14 +1143,16 @@ public class ParserEntity {
 		int card = findRoleCard(partnerTypeName, model);
 
 		String setterPrefix = "set";
-		if (Association.MANY ==  card) {
+		if (Association.MANY == card) {
 			setterPrefix = "with";
 		}
 
 		String name = EntityUtil.upFirstChar(memberName);
 
-		/*SymTabEntry addToSymTabEntry = symbolTab
-				.get(SymTabEntry.TYPE_METHOD + ":" + setterPrefix + name + "(" + partnerClassName + ")").first();*/
+		/*
+		 * SymTabEntry addToSymTabEntry = symbolTab .get(SymTabEntry.TYPE_METHOD + ":" +
+		 * setterPrefix + name + "(" + partnerClassName + ")").first();
+		 */
 
 		SymTabEntry addToSymTabEntry = null;
 
@@ -1206,7 +1209,8 @@ public class ParserEntity {
 			String potentialCode = "";
 
 			for (SymTabEntry qualifiedEntry : methodBodyQualifiedNames) {
-				String methodBody = this.code.getContent().toString().substring(qualifiedEntry.getStartPos(), qualifiedEntry.getEndPos());
+				String methodBody = this.code.getContent().toString().substring(qualifiedEntry.getStartPos(),
+						qualifiedEntry.getEndPos());
 				if (card == Association.ONE && qualifiedEntry.getValue().startsWith("set")) {
 					if (methodBody.contains("oldValue.without")) {
 						potentialCode = methodBody.substring(methodBody.indexOf("oldValue.without") + 16);
@@ -1261,9 +1265,11 @@ public class ParserEntity {
 					String partnerFile = partnerCode.getContent().toString();
 
 					if (partnerFile.contains("PROPERTY_" + srcRoleName.toUpperCase() + " = ")) {
-						String potentialName = partnerFile.substring(partnerFile.indexOf("PROPERTY_" + srcRoleName.toUpperCase()));
+						String potentialName = partnerFile
+								.substring(partnerFile.indexOf("PROPERTY_" + srcRoleName.toUpperCase()));
 						potentialName = potentialName.substring(0, potentialName.indexOf(";"));
-						srcRoleName = potentialName.substring(potentialName.indexOf("\"") + 1, potentialName.lastIndexOf("\""));
+						srcRoleName = potentialName.substring(potentialName.indexOf("\"") + 1,
+								potentialName.lastIndexOf("\""));
 					}
 
 					this.file.withBidirectional(partnerClass, memberName, card, srcRoleName, srcCardinality);
@@ -1318,33 +1324,33 @@ public class ParserEntity {
 		String signature = symTabEntry.getValue();
 
 		// filter internal generated methods
-		if(SymTabEntry.TYPE_METHOD.equals(fullSignature) == false) {
+		if (SymTabEntry.TYPE_METHOD.equals(fullSignature) == false) {
 			return;
 		}
 		String sign = signature + symTabEntry.getParams();
 		if (SKIPMETGODS.indexOf(sign) < 0) {
-			if(symTabEntry.isNoGen()) {
+			if (symTabEntry.isNoGen()) {
 				Attribute attribtue = getAttribtue(signature);
 				GraphUtil.setGenerate(attribtue, false);
 			}
-			if(isGetterSetter(signature, symTab)) {
+			if (isGetterSetter(signature, symTab)) {
 				return;
 			}
-			if(isAssoc(signature, symTab)) {
+			if (isAssoc(signature, symTab)) {
 				return;
 			}
 			Method method = getMethod(signature);
-			if(method != null) {
+			if (method != null) {
 				// Replace Body
-				method.withBody(this.code.subString(symTabEntry.getBodyStartPos(), symTabEntry.getEndPos() + 1).toString());
+				method.withBody(
+						this.code.subString(symTabEntry.getBodyStartPos(), symTabEntry.getEndPos() + 1).toString());
 				return;
 			}
-			
+
 			String paramsStr = symTabEntry.getParams();
 			String[] params = paramsStr.substring(1, paramsStr.length() - 1).split(",");
 
-			method = new Method(signature)
-					.with(DataType.create(symTabEntry.getDataType()));
+			method = new Method(signature).with(DataType.create(symTabEntry.getDataType()));
 			for (String param : params) {
 				if (param != null && param.length() > 0) {
 					method.with(new Parameter(DataType.create(param)));
@@ -1365,23 +1371,23 @@ public class ParserEntity {
 
 	private Method getMethod(Method search) {
 		MethodSet methods = this.file.getMethods();
-		for(Method method : methods) {
-			if(method.toString().equals(search.toString())) {
+		for (Method method : methods) {
+			if (method.toString().equals(search.toString())) {
 				return method;
-			} else  if(search.getName().equals(method.getName())) {
-				if(search.getReturnType().equals(method.getReturnType())) {
+			} else if (search.getName().equals(method.getName())) {
+				if (search.getReturnType().equals(method.getReturnType())) {
 					// Check all Parameter
 					ParameterSet searchParam = search.getParameters();
 					ParameterSet param = method.getParameters();
-					if(searchParam.size() == param.size()) {
-						boolean found=true;
-						for(int i=0;i<param.size();i++) {
-							if(param.get(i).getType().equals(searchParam.get(i).getType()) == false) {
-								found=false;
+					if (searchParam.size() == param.size()) {
+						boolean found = true;
+						for (int i = 0; i < param.size(); i++) {
+							if (param.get(i).getType().equals(searchParam.get(i).getType()) == false) {
+								found = false;
 								break;
 							}
 						}
-						if(found) {
+						if (found) {
 							return method;
 						}
 					}
@@ -1415,7 +1421,7 @@ public class ParserEntity {
 		}
 		return false;
 	}
-	
+
 	private boolean isAssoc(String methodName, SimpleKeyValueList<String, SimpleList<SymTabEntry>> symTab) {
 		// method starts with: with set get ...
 		if (methodName.startsWith("with") || methodName.startsWith("set") || methodName.startsWith("get")
@@ -1463,7 +1469,7 @@ public class ParserEntity {
 	}
 
 	public SymTabEntry getSymbolEntry(String type, String name) {
-		if(this.code != null) {
+		if (this.code != null) {
 			return this.code.getSymbolEntry(type, name);
 		}
 		return null;

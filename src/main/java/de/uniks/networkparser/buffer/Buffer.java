@@ -1,6 +1,5 @@
 package de.uniks.networkparser.buffer;
 
-
 /*
 NetworkParser
 The MIT License
@@ -37,7 +36,7 @@ public abstract class Buffer implements BufferItem {
 	public final static String STOPCHARSXML = ",]}/\\\"[{;=# ";
 	public final static char[] STOPCHARSXMLEND = new char[] { '"', ',', ']', '}', '/', '\\', '"', '[', '{', ';', '=',
 			'#', '>', '\r', '\n', ' ' };
-	public final static char ENDLINE='\n';
+	public final static char ENDLINE = '\n';
 
 	/** The index. */
 	protected int position;
@@ -55,16 +54,12 @@ public abstract class Buffer implements BufferItem {
 
 	public int getUnsignedInt() {
 		byte[] bytes = array(Integer.SIZE / Byte.SIZE, false);
-		return (int) (
-					((bytes[0] & 0xff) << 24) + 
-					((bytes[1] & 0xff)<< 16) + 
-					((bytes[2] & 0xff)<< 8) + 
-					(bytes[3] & 0xff)
-					);
+		return (int) (((bytes[0] & 0xff) << 24) + ((bytes[1] & 0xff) << 16) + ((bytes[2] & 0xff) << 8)
+				+ (bytes[3] & 0xff));
 	}
 
 	public abstract char getChar();
-	
+
 	public CharacterBuffer readResource(String file) {
 		return new CharacterBuffer();
 	}
@@ -212,8 +207,8 @@ public abstract class Buffer implements BufferItem {
 
 	public CharacterBuffer nextString() {
 		nextClean(true);
-		boolean isQuote = getCurrentChar()==QUOTES;
-		if(isQuote) {
+		boolean isQuote = getCurrentChar() == QUOTES;
+		if (isQuote) {
 			this.skipChar(QUOTES);
 			CharacterBuffer result = nextString(QUOTES);
 			this.skipChar(QUOTES);
@@ -522,7 +517,7 @@ public abstract class Buffer implements BufferItem {
 	}
 
 	public void printError(String msg) {
-		if(msg != null && msg.length() > 0) {
+		if (msg != null && msg.length() > 0) {
 			System.err.println(msg);
 		}
 	}

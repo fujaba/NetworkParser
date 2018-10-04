@@ -61,7 +61,7 @@ public class ModelHistory implements ObjectCondition {
 	}
 
 	// {"session":"42","class":"ChangeMessage","id":"da39a3ee5e6b4b0d3255bfef95601890afd80709","received":[...],"prevChange":"da39a3ee5e6b4b0d3255bfef95601890afd80709",
-	//      "changeid":"S810276874033685","property":"name","new":"Alex","changeclass":"de.uniks.networkparser.test.model.Student"}
+	// "changeid":"S810276874033685","property":"name","new":"Alex","changeclass":"de.uniks.networkparser.test.model.Student"}
 
 	public boolean refactoringHistory() {
 		SortedSet<NodeProxy> nodes = getSpace().getNodeProxies();
@@ -71,34 +71,34 @@ public class ModelHistory implements ObjectCondition {
 			keys.add(key);
 		}
 		// Now refacotring
-		SimpleKeyValueList<String, ModelChange> changes=new SimpleKeyValueList<String, ModelChange>();
-		SimpleKeyValueList<String, String> deletedChanges=new SimpleKeyValueList<String, String>();
+		SimpleKeyValueList<String, ModelChange> changes = new SimpleKeyValueList<String, ModelChange>();
+		SimpleKeyValueList<String, String> deletedChanges = new SimpleKeyValueList<String, String>();
 		String value;
 		int pos, i = checkMergeInitModel();
-		for(;i<history.size();i++) {
+		for (; i < history.size(); i++) {
 			ModelChange change = history.get(i);
 
 			BaseItem changeMsg = change.getChange();
-			if(changeMsg instanceof Entity == false) {
+			if (changeMsg instanceof Entity == false) {
 				break;
 			}
 			Entity changeEntity = (Entity) changeMsg;
 			setNewPrevId(changeEntity, deletedChanges);
 
 			value = change.getKey();
-			if(keys.contains(value)) {
+			if (keys.contains(value)) {
 				// Some Node know only this change
 				break;
 			}
 
 			value = changeEntity.getString(ChangeMessage.PROPERTY_ID);
-			if("ChangeMessage".equals(changeEntity.getString(IdMap.CLASS)) == false) {
+			if ("ChangeMessage".equals(changeEntity.getString(IdMap.CLASS)) == false) {
 				// May be another Message ignore it
 				continue;
 			}
 
 			pos = changes.indexOf(value);
-			if(pos < 0) {
+			if (pos < 0) {
 				// First changes
 				changes.put(value, change);
 				continue;
@@ -106,7 +106,7 @@ public class ModelHistory implements ObjectCondition {
 
 			EntityList changeChanges;
 			Entity changeListEntity = (Entity) changes.getValueByIndex(pos).getChange();
-			if(changeListEntity.has(PROPERTY_CHANGES)) {
+			if (changeListEntity.has(PROPERTY_CHANGES)) {
 				changeChanges = (EntityList) changeListEntity.getValue(PROPERTY_CHANGES);
 			} else {
 				// Create List
@@ -132,13 +132,13 @@ public class ModelHistory implements ObjectCondition {
 			// Add Current Change to List or Merge
 			Entity changeChange = null;
 			value = changeEntity.getString(ChangeMessage.PROPERTY_PROPERTY);
-			for(int c=0; c < changeChanges.sizeChildren(); c++) {
+			for (int c = 0; c < changeChanges.sizeChildren(); c++) {
 				Entity child = (Entity) changeChanges.getChild(c);
-				if(value.equals(child.getString(ChangeMessage.PROPERTY_PROPERTY))) {
+				if (value.equals(child.getString(ChangeMessage.PROPERTY_PROPERTY))) {
 					changeChange = child;
 				}
 			}
-			if(changeChange == null) {
+			if (changeChange == null) {
 				changeChange = (Entity) changeChanges.getNewList(true);
 				changeChanges.add(changeChange);
 				changeChange.put(ChangeMessage.PROPERTY_PROPERTY, value);
@@ -159,10 +159,10 @@ public class ModelHistory implements ObjectCondition {
 		}
 
 		// Change Rest of Items PREV-ID to new One
-		while(i<history.size()) {
+		while (i < history.size()) {
 			ModelChange change = history.get(i);
 			BaseItem changeMsg = change.getChange();
-			if(changeMsg instanceof Entity) {
+			if (changeMsg instanceof Entity) {
 				Entity changeEntity = (Entity) changeMsg;
 				setNewPrevId(changeEntity, deletedChanges);
 			}
@@ -179,16 +179,15 @@ public class ModelHistory implements ObjectCondition {
 	private void setNewPrevId(Entity changeEntity, SimpleKeyValueList<String, String> deletedChanges) {
 		// Check IF PREV-ID IS DELETED
 		String value = changeEntity.getString(ChangeMessage.PROPERTY_PREVIOUSCHANGE);
-		if(value != null) {
+		if (value != null) {
 			int pos = deletedChanges.indexOf(value);
-			if(pos>=0) {
+			if (pos >= 0) {
 				// Found deleted item
 				changeEntity.put(ChangeMessage.PROPERTY_PREVIOUSCHANGE, deletedChanges.getValueByIndex(pos));
 			}
 		}
 
 	}
-
 
 	protected boolean isToManyField(SendableEntityCreator createrClass, String fieldName) {
 		Object prototype = prototypeCache.get(createrClass);
@@ -221,7 +220,7 @@ public class ModelHistory implements ObjectCondition {
 		// {
 		// key=lower.getFullKey();
 		// }
-		if(last == null) {
+		if (last == null) {
 			return null;
 		}
 		return last.getKey();
@@ -366,17 +365,19 @@ public class ModelHistory implements ObjectCondition {
 		this.space = space;
 		return this;
 	}
-	public void addFirstHistory(ModelChange change){
+
+	public void addFirstHistory(ModelChange change) {
 		history.add(change);
 	}
 
 	public ModelChange createChange(int key, BaseItem receiver, Entity value) {
 		ModelChange modelChange = new ModelChange();
-		modelChange.withKey(""+key);
+		modelChange.withKey("" + key);
 		modelChange.withChange(value);
 		modelChange.withReceiver(receiver);
 		return modelChange;
 	}
+
 	public ModelChange createChange(Entity value) {
 		ModelChange modelChange = new ModelChange();
 		modelChange.withChange(value);
@@ -389,7 +390,7 @@ public class ModelHistory implements ObjectCondition {
 		return createChange(key, receiverObj, value);
 	}
 
-	public ModelChange ceiling(ModelChange element, boolean sameElement)	{
+	public ModelChange ceiling(ModelChange element, boolean sameElement) {
 		return this.history.ceiling(element, sameElement);
 	}
 
@@ -398,37 +399,34 @@ public class ModelHistory implements ObjectCondition {
 	}
 
 	public boolean checkMessage(Entity change) {
-        // ups, the sender of this message has a previous change, I do not know about
-        // well, it might stem from before my alldata message.
+		// ups, the sender of this message has a previous change, I do not know about
+		// well, it might stem from before my alldata message.
 		Object value = change.getValue(Message.PROPERTY_PREVIOUSCHANGE);
-		int previousMsgNo = Integer.parseInt(""+value);
+		int previousMsgNo = Integer.parseInt("" + value);
 
 //		String previousChangeFullKey = (String) change.get();
-        if (previousMsgNo > getAllDataMsgNo() && previousMsgNo > 1)
-        {
+		if (previousMsgNo > getAllDataMsgNo() && previousMsgNo > 1) {
 //           String format = String.format("%%0%dd", 20);
 //           Integer history = Integer.valueOf(""+change.getValue(NodeProxy.PROPERTY_HISTORY));
 //           Object name = change.getValue(NodeProxy.PROPERTY_NAME);
 //           String currentMsgFullKey = String.format(format, history+"!"+change.getString(NodeProxy.PROPERTY_NAME));
 
-           return false;
-        }
-        return true;
+			return false;
+		}
+		return true;
 	}
 
-
-	public long getNewMsgNo()
-	{
-		if(this.space != null) {
+	public long getNewMsgNo() {
+		if (this.space != null) {
 			NodeProxy myNode = this.space.getMyNode();
-			if(myNode != null) {
+			if (myNode != null) {
 				return myNode.getNewMsgNo();
 			}
 		}
 		return 0;
 	}
 
-	//TODO OLD METHOD WITH NUMERIC-CHANGES
+	// TODO OLD METHOD WITH NUMERIC-CHANGES
 	public long getAllDataMsgNo() {
 		return allDataMsgNo;
 	}
@@ -437,6 +435,7 @@ public class ModelHistory implements ObjectCondition {
 		this.allDataMsgNo = allDataMsgNo;
 		return this;
 	}
+
 	public void addPostponedChanges(String key, JsonObject msg) {
 		postponedChanges.put(key, msg);
 	}
@@ -489,7 +488,7 @@ public class ModelHistory implements ObjectCondition {
 	// public List<ModelChange> getHistoriesById(long id){
 	// ArrayList<ModelChange> ids=new ArrayList<ModelChange>();
 	// ModelChange change=history.higher(new ModelChange(id));
-	// while(change!=null){
+	// while(change != null){
 	// ids.add(change);
 	// change=history.higher(change);
 	// }
@@ -514,9 +513,7 @@ public class ModelHistory implements ObjectCondition {
 	// this.world = world;
 	// this.myProxy = myProxy;
 	// }
-	
-	
-	
+
 	// LOCAL HISTORY
 	public static final ModelHistory createLocalHistory(IdMap map) {
 		ModelHistory history = new ModelHistory();
@@ -525,12 +522,12 @@ public class ModelHistory implements ObjectCondition {
 		space.withMap(map);
 		history.withSpace(space);
 		map.with(history);
-		
+
 		history.init();
-		
+
 		return history;
 	}
-	
+
 	public ModelHistory init() {
 		// read stopStep from file
 //		String fileName = "doc/history.json";
@@ -580,7 +577,6 @@ public class ModelHistory implements ObjectCondition {
 		currentStep = history.size();
 		return true;
 	}
-	
 
 	public ModelHistory back(long steps) {
 		for (long l = 0; l < steps; l++) {
@@ -595,7 +591,7 @@ public class ModelHistory implements ObjectCondition {
 		}
 		return this;
 	}
-	
+
 	public ModelHistory forward() {
 		if (currentStep >= history.size()) {
 			// already at start
@@ -612,6 +608,7 @@ public class ModelHistory implements ObjectCondition {
 
 		return this;
 	}
+
 	public ModelHistory back() {
 		if (currentStep <= 0) {
 			// already at start
@@ -622,7 +619,7 @@ public class ModelHistory implements ObjectCondition {
 
 		// undo step by swapping rem and upd
 		BaseItem jo = step.getChange();
-		if(jo instanceof Entity == false) {
+		if (jo instanceof Entity == false) {
 			return this;
 		}
 		Entity entity = (Entity) jo;
@@ -651,13 +648,14 @@ public class ModelHistory implements ObjectCondition {
 		if (remove != null) {
 			undo.put(SendableEntityCreator.UPDATE, remove);
 		}
-			
+
 		this.withReading(true);
 		space.getMap().decode(undo);
 		this.withReading(false);
 		currentStep--;
 		return this;
 	}
+
 	public ModelHistory back(Object target) {
 		while (true) {
 			back();
@@ -668,20 +666,20 @@ public class ModelHistory implements ObjectCondition {
 			// does current step operate on target?
 			ModelChange step = history.get((int) (currentStep - 1));
 			BaseItem jo = step.getChange();
-			if(jo instanceof Entity == false) {
+			if (jo instanceof Entity == false) {
 				return this;
 			}
 			Entity change = (Entity) jo;
 			String id = change.getString(IdMap.ID);
 
-			Object obj =space.getMap().getObject(id);
+			Object obj = space.getMap().getObject(id);
 
 			if (obj == target) {
 				return this;
 			}
 		}
 	}
-	
+
 	public ModelHistory back(Object target, String property) {
 		while (true) {
 			back();
@@ -693,12 +691,12 @@ public class ModelHistory implements ObjectCondition {
 			// does current step operate on target?
 			ModelChange step = history.get((int) (currentStep - 1));
 			BaseItem jo = step.getChange();
-			if(jo instanceof Entity == false) {
+			if (jo instanceof Entity == false) {
 				return this;
 			}
 			Entity change = (Entity) jo;
 			String id = change.getString(IdMap.ID);
-			Object obj =space.getMap().getObject(id);
+			Object obj = space.getMap().getObject(id);
 
 			if (obj == target) {
 				Object update = change.getValue(SendableEntityCreator.UPDATE);

@@ -7,11 +7,12 @@ import java.util.NoSuchElementException;
 
 /**
  * An optimized version of AbstractList.ListItr
+ * 
  * @author Stefan Lindel
  */
 public class SimpleIterator<E> implements ListIterator<E> {
-	private int cursor;		// index of next element to return
-	private int lastRet;	// index of last element returned; -1 if no such
+	private int cursor; // index of next element to return
+	private int lastRet; // index of last element returned; -1 if no such
 	private AbstractArray<E> list;
 	private int checkPointer = -1;
 
@@ -21,11 +22,11 @@ public class SimpleIterator<E> implements ListIterator<E> {
 
 	@SuppressWarnings("unchecked")
 	public SimpleIterator(Object collection) {
-		if(collection instanceof AbstractArray<?>) {
+		if (collection instanceof AbstractArray<?>) {
 			this.list = (AbstractArray<E>) collection;
 		} else if (collection instanceof List<?>) {
 			this.list = new SimpleList<E>();
-			this.list.withList((List<?>)collection);
+			this.list.withList((List<?>) collection);
 		}
 		this.cursor = 0;
 		this.lastRet = -1;
@@ -77,12 +78,12 @@ public class SimpleIterator<E> implements ListIterator<E> {
 		try {
 			int size = list.size();
 			int pos = list.hasKey(e);
-			if(pos>=0) {
+			if (pos >= 0) {
 				list.grow(size + 1);
 				list.addKey(cursor, e, size + 1);
 				cursor++;
 				lastRet = -1;
-				if(this.checkPointer>=0) {
+				if (this.checkPointer >= 0) {
 					this.checkPointer = list.size();
 				}
 			}
@@ -93,7 +94,7 @@ public class SimpleIterator<E> implements ListIterator<E> {
 
 	@Override
 	public boolean hasNext() {
-		return cursor<list.size;
+		return cursor < list.size;
 	}
 
 	@Override
@@ -101,7 +102,7 @@ public class SimpleIterator<E> implements ListIterator<E> {
 		if (cursor >= list.size()) {
 			throw new ConcurrentModificationException();
 		}
-		if(this.checkPointer >= 0 && this.checkPointer != list.size()) {
+		if (this.checkPointer >= 0 && this.checkPointer != list.size()) {
 			throw new ConcurrentModificationException();
 		}
 		lastRet = cursor;
@@ -117,7 +118,7 @@ public class SimpleIterator<E> implements ListIterator<E> {
 			list.removeByIndex(lastRet, AbstractArray.SMALL_KEY, list.index);
 			cursor = lastRet;
 			lastRet = -1;
-			if(this.checkPointer>=0) {
+			if (this.checkPointer >= 0) {
 				this.checkPointer = list.size();
 			}
 		} catch (IndexOutOfBoundsException ex) {
@@ -126,7 +127,7 @@ public class SimpleIterator<E> implements ListIterator<E> {
 	}
 
 	@SuppressWarnings("unchecked")
-	public SimpleIterator<E> with(AbstractArray<?> newList)	{
+	public SimpleIterator<E> with(AbstractArray<?> newList) {
 		this.cursor = 0;
 		this.lastRet = -1;
 		this.list = (AbstractArray<E>) newList;
@@ -138,7 +139,7 @@ public class SimpleIterator<E> implements ListIterator<E> {
 	}
 
 	public SimpleIterator<E> withCheckPointer(boolean checkPointer) {
-		if(checkPointer) {
+		if (checkPointer) {
 			this.checkPointer = this.list.size();
 		} else {
 			this.checkPointer = -1;
@@ -147,7 +148,7 @@ public class SimpleIterator<E> implements ListIterator<E> {
 	}
 
 	public E current() {
-		if(lastRet >=0) {
+		if (lastRet >= 0) {
 			return (E) list.get(lastRet);
 		}
 		return null;

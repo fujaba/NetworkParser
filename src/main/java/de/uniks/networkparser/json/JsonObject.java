@@ -32,6 +32,7 @@ import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.list.AbstractList;
 import de.uniks.networkparser.list.SimpleKeyValueList;
+
 /**
  * A JsonObject is an unordered collection of name/value pairs. Its external
  * form is a string wrapped in curly braces with colons between the names and
@@ -62,9 +63,9 @@ import de.uniks.networkparser.list.SimpleKeyValueList;
  * </pre>
  *
  *
-
+ * 
  * produces the string <code>{"JSON": "Hello, World"}</code>.
-	* <p>
+ * <p>
  * The texts produced by the <code>toString</code> methods strictly conform to
  * the JSON syntax rules. The constructors are more forgiving in the texts they
  * will accept:
@@ -76,8 +77,8 @@ import de.uniks.networkparser.list.SimpleKeyValueList;
  * <li>Strings do not need to be quoted at all if they do not begin with a quote
  * or single quote, and if they do not contain leading or trailing spaces, and
  * if they do not contain any of these characters:
- * <code>{} [ ] / \ : , = ; #</code> and if they do not look like numbers and
- * if they are not the reserved words <code>true</code>, <code>false</code>, or
+ * <code>{} [ ] / \ : , = ; #</code> and if they do not look like numbers and if
+ * they are not the reserved words <code>true</code>, <code>false</code>, or
  * <code>null</code>.</li>
  * <li>Keys can be followed by <code>=</code> or <code>=&gt;</code> as well as
  * by <code>:</code>.</li>
@@ -89,8 +90,9 @@ import de.uniks.networkparser.list.SimpleKeyValueList;
  * @version 2011-11-24
  */
 public class JsonObject extends SimpleKeyValueList<String, Object> implements Entity {
-	public final static char START='{';
-	public final static char END='}';
+	public final static char START = '{';
+	public final static char END = '}';
+
 	public JsonObject() {
 		this.withAllowDuplicate(false);
 	}
@@ -98,8 +100,9 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements En
 	/**
 	 * Get the JsonArray value associated with a key.
 	 *
-	 * @param key	A key string.
-	 * @return A JsonArray which is the value. if the key is not found or if the value is not a JsonArray.
+	 * @param key A key string.
+	 * @return A JsonArray which is the value. if the key is not found or if the
+	 *         value is not a JsonArray.
 	 */
 	public JsonArray getJsonArray(String key) {
 		Object object = this.get(key);
@@ -107,12 +110,12 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements En
 			return (JsonArray) object;
 		}
 		JsonArray returnValue = new JsonArray();
-		if(object != null) {
-			if(object instanceof String) {
+		if (object != null) {
+			if (object instanceof String) {
 				try {
-					returnValue.withValue((String)object);
+					returnValue.withValue((String) object);
 					return returnValue;
-				}catch (Exception e) {
+				} catch (Exception e) {
 				}
 			}
 			returnValue.add(object);
@@ -123,32 +126,32 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements En
 	/**
 	 * Get the JsonObject value associated with a key.
 	 *
-	 * @param key	A key string.
-	 * @return 		A JsonObject which is the value.
-	 * @throws RuntimeException	if the key is not found or if the value is not a JsonObject.
+	 * @param key A key string.
+	 * @return A JsonObject which is the value.
+	 * @throws RuntimeException if the key is not found or if the value is not a
+	 *                          JsonObject.
 	 */
 	public JsonObject getJsonObject(String key) {
 		Object object = this.get(key);
 		if (object instanceof JsonObject) {
 			return (JsonObject) object;
-		} else if(object instanceof String) {
-			return new JsonObject().withValue(""+object);
+		} else if (object instanceof String) {
+			return new JsonObject().withValue("" + object);
 		}
-		throw new RuntimeException("JsonObject[" + EntityUtil.quote(key)
-				+ "] is not a JsonObject.");
+		throw new RuntimeException("JsonObject[" + EntityUtil.quote(key) + "] is not a JsonObject.");
 	}
 
 	/**
-	 * Make a JSON text of this JsonObject. For compactness, no whitespace is
-	 * added. If this would not result in a syntactically correct JSON text,
-	 * then null will be returned instead.
+	 * Make a JSON text of this JsonObject. For compactness, no whitespace is added.
+	 * If this would not result in a syntactically correct JSON text, then null will
+	 * be returned instead.
 	 * <p>
 	 * Warning: This method assumes that the data structure is acyclical.
 	 *
-	 * @return a printable, displayable, portable, transmittable representation
-	 *		 of the object, beginning with <code>{</code>&nbsp;<small>(left
-	 *		 brace)</small> and ending with <code>}</code>&nbsp;<small>(right
-	 *		 brace)</small>.
+	 * @return a printable, displayable, portable, transmittable representation of
+	 *         the object, beginning with <code>{</code>&nbsp;<small>(left
+	 *         brace)</small> and ending with <code>}</code>&nbsp;<small>(right
+	 *         brace)</small>.
 	 */
 	@Override
 	public String toString() {
@@ -160,16 +163,17 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements En
 	 * <p>
 	 * Warning: This method assumes that the data structure is acyclical.
 	 *
-	 * @param indentFactor	The number of spaces to add to each level of indentation.
-	 * @return a printable, displayable, portable, transmittable representation
-	 *		 of the object, beginning with <code>{</code>&nbsp;<small>(left
-	 *		 brace)</small> and ending with <code>}</code>&nbsp;<small>(right
-	 *		 brace)</small>.
+	 * @param indentFactor The number of spaces to add to each level of indentation.
+	 * @return a printable, displayable, portable, transmittable representation of
+	 *         the object, beginning with <code>{</code>&nbsp;<small>(left
+	 *         brace)</small> and ending with <code>}</code>&nbsp;<small>(right
+	 *         brace)</small>.
 	 */
 	@Override
 	public String toString(int indentFactor) {
 		return parseItem(new EntityStringConverter(indentFactor));
 	}
+
 	protected String parseItem(EntityStringConverter converter) {
 		int length = this.size();
 		if (length == 0) {
@@ -182,7 +186,7 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements En
 		converter.add();
 		StringBuilder sb = new StringBuilder();
 		sb.append(START);
-		if(length>1) {
+		if (length > 1) {
 			sb.append(converter.getPrefix());
 		}
 		sb.append(EntityUtil.quote(get(0)));
@@ -196,7 +200,7 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements En
 			sb.append(EntityUtil.valueToString(getValueByIndex(i), false, this, converter));
 		}
 		converter.minus();
-		if(length>1) {
+		if (length > 1) {
 			sb.append(converter.getPrefix());
 		}
 		sb.append(END);
@@ -206,16 +210,16 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements En
 	/**
 	 * Set the value to Tokener or pairs of values
 	 *
-	 * @param values	a simple String of Value or pairs of key-values
+	 * @param values a simple String of Value or pairs of key-values
 	 * @return Itself
 	 */
 	public JsonObject withValue(String... values) {
-		if(values == null || values.length == 1 && values[0]== null) {
+		if (values == null || values.length == 1 && values[0] == null) {
 			return this;
 		}
 		if (values.length % 2 == 0) {
 			for (int z = 0; z < values.length; z += 2) {
-				if(values[z + 1]!= null) {
+				if (values[z + 1] != null) {
 					// Only add value != null
 					put(values[z], values[z + 1]);
 				}
@@ -234,7 +238,7 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements En
 	/**
 	 * Set the value to Tokener or pairs of values
 	 *
-	 * @param values	a simple String of Value or pairs of key-values
+	 * @param values a simple String of Value or pairs of key-values
 	 * @return Itself
 	 */
 	public JsonObject withValue(Buffer values) {
@@ -242,12 +246,10 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements En
 		return this;
 	}
 
-
-
 	/**
 	 * Tokener to init the JsonObject
 	 *
-	 * @param entity	entity to add values with the tokener
+	 * @param entity entity to add values with the tokener
 	 * @return Itself
 	 */
 	public JsonObject withEntity(SimpleKeyValueList<?, ?> entity) {
@@ -260,7 +262,7 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements En
 	 */
 	@Override
 	public BaseItem getNewList(boolean keyValue) {
-		if(keyValue) {
+		if (keyValue) {
 			return new JsonObject();
 		}
 		return new JsonArray();
@@ -277,28 +279,28 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements En
 	}
 
 	/**
-	 * Accumulate values under a key. It is similar to the put method except
-	 * that if there is already an object stored under the key then a EntityList
-	 * is stored under the key to hold all of the accumulated values. If there
-	 * is already a EntityList, then the new value is appended to it. In
-	 * contrast, the put method replaces the previous value.
+	 * Accumulate values under a key. It is similar to the put method except that if
+	 * there is already an object stored under the key then a EntityList is stored
+	 * under the key to hold all of the accumulated values. If there is already a
+	 * EntityList, then the new value is appended to it. In contrast, the put method
+	 * replaces the previous value.
 	 *
-	 * If only one value is accumulated that is not a EntityList, then the
-	 * result will be the same as using put. But if multiple values are
-	 * accumulated, then the result will be like append.
+	 * If only one value is accumulated that is not a EntityList, then the result
+	 * will be the same as using put. But if multiple values are accumulated, then
+	 * the result will be like append.
 	 *
-	 * @param key	A key string.
-	 * @param value	An object to be accumulated under the key.
+	 * @param key   A key string.
+	 * @param value An object to be accumulated under the key.
 	 * @return this.
 	 */
 	public JsonObject addToList(String key, Object value) {
 		Object object = this.get(key);
 		if (object == null) {
-			if(value instanceof AbstractList) {
-				BaseItem newList =getNewList(true);
+			if (value instanceof AbstractList) {
+				BaseItem newList = getNewList(true);
 				newList.add(value);
 				this.put(key, newList);
-			}else {
+			} else {
 				this.put(key, value);
 			}
 		} else if (object instanceof AbstractList) {
@@ -312,7 +314,7 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements En
 	}
 
 	public JsonObject withKeyValue(String key, Object value) {
-		if(value != null) {
+		if (value != null) {
 			// Only add value != null
 			int index = indexOf(key);
 			if (index >= 0) {
@@ -335,14 +337,14 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements En
 
 	@Override
 	public Entity getElementBy(String key, String value) {
-		if(value == null || this.size() < 1) {
+		if (value == null || this.size() < 1) {
 			return null;
 		}
 		Object item = this.get(value);
 		JsonObject child;
-		if(item instanceof JsonObject) {
+		if (item instanceof JsonObject) {
 			child = (JsonObject) item;
-		}else {
+		} else {
 			child = new JsonObject();
 			this.put(value, child);
 		}

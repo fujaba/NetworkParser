@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Enumeration;
+import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
 
@@ -15,52 +17,54 @@ import de.uniks.networkparser.ext.tar.TarArchiveEntry;
 import de.uniks.networkparser.ext.tar.TarArchiveInputStream;
 import de.uniks.networkparser.json.JsonArray;
 import de.uniks.networkparser.json.JsonObject;
+import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.xml.HTMLEntity;
 import de.uniks.networkparser.xml.XMLContainer;
 import de.uniks.networkparser.xml.XMLEntity;
 
 public class Gradle {
-	private boolean download=true;
+	private boolean download = true;
 
-	//	@Test
+//	@Test
 	public void testMain() {
 		Gradle gradle = new Gradle();
 		gradle.initProject("np.jar", "Test");
 	}
 
 	public boolean initProject(String jarFile, String projectName) {
-		if(Os.isReflectionTest() || jarFile == null) {
+		if (Os.isReflectionTest() || jarFile == null) {
 			return false;
 		}
 		File file = new File(".");
 		String path = "";
-		if(projectName == null) {
+		if (projectName == null) {
 			projectName = file.getParentFile().getName();
 		} else {
-			path = projectName+"/";
+			path = projectName + "/";
 			new File(projectName).mkdirs();
 		}
 
 		writeProjectPath(path, projectName);
 		writeGradle(path);
 		extractGradleFiles(path);
-		
+
 		return true;
 	}
 
 	public void writeProjectPath(String path, String name) {
-		if(Os.isReflectionTest() || path == null || name == null) {
+		if (Os.isReflectionTest() || path == null || name == null) {
 			return;
 		}
-		XMLContainer container=new XMLContainer().withStandardPrefix();
+		XMLContainer container = new XMLContainer().withStandardPrefix();
 		XMLEntity classpath = container.createChild("classpath");
 		classpath.createChild("classpathentry", "kind", "src", "path", "src/main/java");
 		classpath.createChild("classpathentry", "kind", "con", "path", "org.eclipse.jdt.launching.JRE_CONTAINER");
-		classpath.createChild("classpathentry", "kind", "con", "path", "org.eclipse.buildship.core.gradleclasspathcontainer");
-		classpath.createChild("classpathentry", "kind", "output","path","bin");
-		FileBuffer.writeFile(path+".classpath", container.toString(2));
-		
-		container=new XMLContainer().withStandardPrefix();
+		classpath.createChild("classpathentry", "kind", "con", "path",
+				"org.eclipse.buildship.core.gradleclasspathcontainer");
+		classpath.createChild("classpathentry", "kind", "output", "path", "bin");
+		FileBuffer.writeFile(path + ".classpath", container.toString(2));
+
+		container = new XMLContainer().withStandardPrefix();
 		XMLEntity projectDescription = container.createChild("projectDescription");
 		projectDescription.createChild("name", name);
 		projectDescription.createChild("comment");
@@ -71,15 +75,19 @@ public class Gradle {
 		buildCommand.createChild("arguments", "");
 		XMLEntity natures = projectDescription.createChild("natures");
 		natures.createChild("nature", "org.eclipse.jdt.core.javanature");
-		FileBuffer.writeFile(path+".project", container.toString(2));
-		
-		new File(path+"src/main/java").mkdirs();
-		new File(path+"bin").mkdirs();
+		FileBuffer.writeFile(path + ".project", container.toString(2));
+
+		new File(path + "src/main/java").mkdirs();
+		new File(path + "bin").mkdirs();
 	}
-	
-	public void writeGradle(String path) {
-		if(Os.isReflectionTest() || path == null) {
-			return;
+
+	public boolean writeGradle(String path) {
+		if (Os.isReflectionTest() || path == null) {
+			return false;
+		}
+		File file = new File(path + "gradle.zip");
+		if (file.exists()) {
+			return true;
 		}
 		CharacterBuffer sb = new CharacterBuffer();
 		sb.withLine("**/build");
@@ -89,52 +97,66 @@ public class Gradle {
 		sb.withLine("**/.gradle");
 		sb.withLine("*.*~");
 		sb.withLine("gradle.properties");
-		FileBuffer.writeFile(path+".gitignore", sb.toString());
-		
+		FileBuffer.writeFile(path + ".gitignore", sb.toString());
+
 		HTMLEntity http = NodeProxyTCP.getHTTP("https://services.gradle.org/distributions/");
 		String body = http.getBody().toString();
 		int pos = body.indexOf("-src.zip");
-		int start = body.lastIndexOf('"', pos);
+		int start = body.lastIndexOf('"', pos) + 1;
 		int end = body.indexOf('"', pos);
 		String ref = body.substring(start, end);
-		ByteBuffer binary = NodeProxyTCP.getHTTPBinary("https://services.gradle.org"+ref);
-		
-		FileBuffer.writeFile(path+"gradle.zip", binary.array());
+		ByteBuffer binary = NodeProxyTCP.getHTTPBinary("https://services.gradle.org" + ref);
+
+		FileBuffer.writeFile(path + "gradle.zip", binary.array());
+		return true;
 	}
-	
+
 	public void extractGradleFiles(String path) {
-		if(path == null) {
+		if (path == null) {
 			return;
 		}
 		JarFile jarFile = null;
+		File file = new File(path + "gradle.zip");
+		if (file.exists() == false) {
+			return;
+		}
+		SimpleKeyValueList<String, String> extractFiles = new SimpleKeyValueList<String, String>()
+				.withKeyValue("gradlew", "").withKeyValue("gradlew.bat", "")
+				.withKeyValue("gradle-wrapper.jar", "gradle/wrapper")
+				.withKeyValue("gradle-wrapper.properties", "gradle/wrapper");
+
 		try {
-			File file = new File(path+"gradle.zip");
-			if(file.exists() == false) {
-				return;
-			}
 			jarFile = new JarFile(file);
+			Enumeration<JarEntry> entries = jarFile.entries();
+			while (entries.hasMoreElements()) {
+				JarEntry entry = entries.nextElement();
+//			for (Iterator it = map.keySet().iterator(); it.hasNext();) {
+//			      String entryName = (String) it.next();
+//			for(JarEntry entry : jarFile.entries()) {
+////				if(entry.)
+			}
 			ZipEntry entry = jarFile.getEntry("gradlew");
 			InputStream inputStream = jarFile.getInputStream(entry);
 			byte[] buffer = new byte[inputStream.available()];
 			inputStream.read(buffer);
-			
-			File targetFile = new File(path+"gradlew");
+
+			File targetFile = new File(path + "gradlew");
 			FileOutputStream outStream = new FileOutputStream(targetFile);
 			outStream.write(buffer);
 			outStream.close();
-			
+
 			entry = jarFile.getEntry("gradlew.bat");
 			inputStream = jarFile.getInputStream(entry);
 			buffer = new byte[inputStream.available()];
 			inputStream.read(buffer);
-			
-			targetFile = new File(path+"gradlew.bat");
+
+			targetFile = new File(path + "gradlew.bat");
 			outStream = new FileOutputStream(targetFile);
 			outStream.write(buffer);
 			outStream.close();
-		}catch (Exception e) {
-		}finally {
-			if(jarFile != null) {
+		} catch (Exception e) {
+		} finally {
+			if (jarFile != null) {
 				try {
 					jarFile.close();
 				} catch (IOException e) {
@@ -144,35 +166,35 @@ public class Gradle {
 	}
 
 	public boolean loadNPM() {
-		if(Os.isReflectionTest()) {
+		if (Os.isReflectionTest()) {
 			return true;
 		}
 		JsonObject packageJson = new JsonObject();
 		CharacterBuffer buffer = FileBuffer.readFile("package.json");
 		packageJson.withValue(buffer);
-		if(download) {
+		if (download) {
 			JsonObject dependencies = packageJson.getJsonObject("dependencies");
-			for(int i=0;i<dependencies.size();i++) {
+			for (int i = 0; i < dependencies.size(); i++) {
 				String lib = dependencies.getKeyByIndex(i);
-				HTMLEntity answer = NodeProxyTCP.getHTTP("https://registry.npmjs.org/"+lib+"/latest");
+				HTMLEntity answer = NodeProxyTCP.getHTTP("https://registry.npmjs.org/" + lib + "/latest");
 				JsonObject npmVersion = new JsonObject().withValue(answer.getBody().getValue());
-				FileBuffer.writeFile("node_modules/"+lib+".json", npmVersion.toString(2));
+				FileBuffer.writeFile("node_modules/" + lib + ".json", npmVersion.toString(2));
 				JsonObject dist = npmVersion.getJsonObject("dist");
-				if(dist != null) {
+				if (dist != null) {
 					String url = dist.getString("tarball");
 					ByteBuffer httpBinary = NodeProxyTCP.getHTTPBinary(url);
-					FileBuffer.writeFile("node_modules/"+lib+".tgz", httpBinary.array());
-					decompress("node_modules/"+lib);
+					FileBuffer.writeFile("node_modules/" + lib + ".tgz", httpBinary.array());
+					decompress("node_modules/" + lib);
 				}
 			}
 		}
 		JsonObject copyJob = packageJson.getJsonObject("//");
-		if(copyJob != null) {
-			for(int i=0;i<copyJob.size();i++) {
+		if (copyJob != null) {
+			for (int i = 0; i < copyJob.size(); i++) {
 				String key = copyJob.getKeyByIndex(i);
 				JsonArray job = copyJob.getJsonArray(key);
-				for(int j=0;j<job.size();j+=2) {
-					FileBuffer.copyFile(job.getString(j), job.getString(j+1));
+				for (int j = 0; j < job.size(); j += 2) {
+					FileBuffer.copyFile(job.getString(j), job.getString(j + 1));
 				}
 			}
 		}
@@ -180,29 +202,29 @@ public class Gradle {
 	}
 
 	public boolean decompress(String file) {
-		if(Os.isReflectionTest()) {
+		if (Os.isReflectionTest()) {
 			return true;
 		}
-		if(file == null) {
+		if (file == null) {
 			return false;
 		}
 		try {
-			TarArchiveInputStream tis = TarArchiveInputStream.create(file+".tgz");
-			if(tis == null) {
+			TarArchiveInputStream tis = TarArchiveInputStream.create(file + ".tgz");
+			if (tis == null) {
 				return false;
 			}
 			TarArchiveEntry tarEntry = null;
 			while ((tarEntry = tis.getNextTarEntry()) != null) {
 				String outputName;
-				if(tarEntry.getName().startsWith("package/")) {
-					outputName = file +"/"+ tarEntry.getName().substring(8);
+				if (tarEntry.getName().startsWith("package/")) {
+					outputName = file + "/" + tarEntry.getName().substring(8);
 				} else {
-					outputName = "node_modules/"+tarEntry.getName();
+					outputName = "node_modules/" + tarEntry.getName();
 				}
 				File outputFile = new File(outputName);
-				if(tarEntry.isDirectory()){
+				if (tarEntry.isDirectory()) {
 //					System.out.println("outputFile Directory ---- "+ outputFile.getAbsolutePath());
-					if(!outputFile.exists()){
+					if (!outputFile.exists()) {
 						outputFile.mkdirs();
 					}
 				} else {

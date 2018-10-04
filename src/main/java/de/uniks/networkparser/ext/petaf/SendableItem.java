@@ -34,9 +34,7 @@ public abstract class SendableItem implements SendableEntity {
 	/** The update listener. */
 	protected ObjectCondition updateListener;
 
-
-	public boolean addPropertyChangeListener(String propertyName,
-			PropertyChangeListener listener) {
+	public boolean addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
 		getPropertyChangeSupport().addPropertyChangeListener(propertyName, listener);
 		return true;
 	}
@@ -45,16 +43,18 @@ public abstract class SendableItem implements SendableEntity {
 		getPropertyChangeSupport().addPropertyChangeListener(listener);
 		return true;
 	}
+
 	public boolean removePropertyChangeListener(PropertyChangeListener listener) {
 		if (listeners != null) {
-	   		listeners.removePropertyChangeListener(listener);
-	   	}
+			listeners.removePropertyChangeListener(listener);
+		}
 		return true;
 	}
+
 	public boolean removePropertyChangeListener(String property, PropertyChangeListener listener) {
 		if (listeners != null) {
-	   		listeners.removePropertyChangeListener(property, listener);
-	   	}
+			listeners.removePropertyChangeListener(property, listener);
+		}
 		return true;
 	}
 
@@ -79,23 +79,23 @@ public abstract class SendableItem implements SendableEntity {
 		if (changed == false) {
 			return false;
 		}
-		if(listeners != null) {
+		if (listeners != null) {
 			listeners.firePropertyChange(property, oldValue, newValue);
 		}
-		if(updateListener != null) {
+		if (updateListener != null) {
 			updateListener.update(new SimpleEvent(this, property, oldValue, newValue));
 		}
 		return true;
 	}
 
 	public boolean firePropertyChange(String propertyName, int oldValue, int newValue) {
-		if (oldValue == newValue ) {
+		if (oldValue == newValue) {
 			return false;
 		}
-		if(listeners != null) {
+		if (listeners != null) {
 			listeners.firePropertyChange(propertyName, oldValue, newValue);
 		}
-		if(updateListener != null) {
+		if (updateListener != null) {
 			updateListener.update(new SimpleEvent(this, propertyName, oldValue, newValue));
 		}
 		return true;

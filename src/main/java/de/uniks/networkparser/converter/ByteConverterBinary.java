@@ -33,14 +33,13 @@ public class ByteConverterBinary extends ByteConverter {
 	}
 
 	public static String toString(int value) {
-		return toString((byte)value);
+		return toString((byte) value);
 	}
 
 	/**
 	 * To Binary string.
 	 *
-	 * @param values
-	 *			the bytes
+	 * @param values the bytes
 	 * @return the string
 	 */
 	@Override
@@ -48,7 +47,7 @@ public class ByteConverterBinary extends ByteConverter {
 		StringBuilder sb = new StringBuilder();
 		for (int z = 0; z < values.length(); z++) {
 			int number = values.byteAt(z);
-			char[] bits = new char[] {'0', '0', '0', '0', '0', '0', '0', '0' };
+			char[] bits = new char[] { '0', '0', '0', '0', '0', '0', '0', '0' };
 			int i = 7;
 			if (number < 0) {
 				number += 256;
@@ -66,8 +65,7 @@ public class ByteConverterBinary extends ByteConverter {
 	/**
 	 * To byte string.
 	 *
-	 * @param value
-	 *			the hex string
+	 * @param value the hex string
 	 * @return the byte[]
 	 */
 	@Override

@@ -24,6 +24,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 import java.util.ArrayList;
+
 /**
  * @author Stefan The XSD Entity
  */
@@ -73,7 +74,7 @@ public class XSDEntity extends XMLEntity {
 	/**
 	 * Set a Sequence Validator
 	 *
-	 * @param values	Set the Sequence.
+	 * @param values Set the Sequence.
 	 */
 	public void setSequence(ArrayList<XSDEntity> values) {
 		this.sequence = values;
@@ -87,7 +88,7 @@ public class XSDEntity extends XMLEntity {
 	/**
 	 * Set a List of Attributes
 	 *
-	 * @param values	Set All Attributes.
+	 * @param values Set All Attributes.
 	 */
 	public void setAttribute(ArrayList<String> values) {
 		this.attribute = values;
@@ -101,7 +102,7 @@ public class XSDEntity extends XMLEntity {
 	/**
 	 * Set the Mimimum for XSD Entity
 	 *
-	 * @param value		The Minimum of Elements.
+	 * @param value The Minimum of Elements.
 	 */
 	public void setMinOccurs(String value) {
 		this.minOccurs = value;
@@ -115,7 +116,7 @@ public class XSDEntity extends XMLEntity {
 	/**
 	 * Set the Maximum of Occurs
 	 *
-	 * @param value		the Maximum of Elements.
+	 * @param value the Maximum of Elements.
 	 */
 	public void setMaxOccurs(String value) {
 		this.maxOccurs = value;

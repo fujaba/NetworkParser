@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package de.uniks.networkparser.ext.io;
+
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateParsingException;
 import java.security.cert.X509Certificate;
@@ -26,36 +27,45 @@ import java.util.regex.Pattern;
 import javax.net.ssl.X509TrustManager;
 
 /**
- * Trust manager that checks all certificates presented by the server. This class
- * is used during TLS negotiation. It is possible to disable/enable some or all checkings
- * by configuring the {@link ConnectionConfiguration}. The truststore file that contains
- * knows and trusted CA root certificates can also be configure in {@link ConnectionConfiguration}.
+ * Trust manager that checks all certificates presented by the server. This
+ * class is used during TLS negotiation. It is possible to disable/enable some
+ * or all checkings by configuring the {@link ConnectionConfiguration}. The
+ * truststore file that contains knows and trusted CA root certificates can also
+ * be configure in {@link ConnectionConfiguration}.
+ * 
  * @author Gaston Dombiak
  */
 class ServerTrustManager implements X509TrustManager {
 
 	private static Pattern cnPattern = Pattern.compile("(?i)(cn=)([^,]*)");
+
 	/**
 	 * Holds the domain of the remote server we are trying to connect
+	 * 
 	 * @return a X509Certificate Certifacte
 	 */
 	public X509Certificate[] getAcceptedIssuers() {
 		return new X509Certificate[0];
 	}
+
 	public void checkClientTrusted(X509Certificate[] arg0, String arg1) throws CertificateException {
 	}
 
 	public void checkServerTrusted(X509Certificate[] x509Certificates, String arg1) throws CertificateException {
 	}
+
 	/**
-	 * Returns the identity of the remote server as defined in the specified certificate. The
-	 * identity is defined in the subjectDN of the certificate and it can also be defined in
-	 * the subjectAltName extension of type "xmpp". When the extension is being used then the
-	 * identity defined in the extension in going to be returned. Otherwise, the value stored in
-	 * the subjectDN is returned.
+	 * Returns the identity of the remote server as defined in the specified
+	 * certificate. The identity is defined in the subjectDN of the certificate and
+	 * it can also be defined in the subjectAltName extension of type "xmpp". When
+	 * the extension is being used then the identity defined in the extension in
+	 * going to be returned. Otherwise, the value stored in the subjectDN is
+	 * returned.
 	 *
-	 * @param x509Certificate the certificate the holds the identity of the remote server.
-	 * @return the identity of the remote server as defined in the specified certificate.
+	 * @param x509Certificate the certificate the holds the identity of the remote
+	 *                        server.
+	 * @return the identity of the remote server as defined in the specified
+	 *         certificate.
 	 */
 	public static List<String> getPeerIdentity(X509Certificate x509Certificate) {
 		// Look the identity in the subjectAltName extension if available
@@ -74,13 +84,15 @@ class ServerTrustManager implements X509TrustManager {
 	}
 
 	/**
-	 * Returns the JID representation of an XMPP entity contained as a SubjectAltName extension
-	 * in the certificate. If none was found then return <tt>null</tt>.
+	 * Returns the JID representation of an XMPP entity contained as a
+	 * SubjectAltName extension in the certificate. If none was found then return
+	 * <tt>null</tt>.
 	 *
 	 * @param certificate the certificate presented by the remote entity.
-	 * @return the JID representation of an XMPP entity contained as a SubjectAltName extension
-	 *         in the certificate. If none was found then return <tt>null</tt>.
-	**/
+	 * @return the JID representation of an XMPP entity contained as a
+	 *         SubjectAltName extension in the certificate. If none was found then
+	 *         return <tt>null</tt>.
+	 **/
 	private static List<String> getSubjectAlternativeNames(X509Certificate certificate) {
 		List<String> identities = new ArrayList<String>();
 		try {

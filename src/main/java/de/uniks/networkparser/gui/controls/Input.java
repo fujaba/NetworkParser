@@ -59,10 +59,10 @@ public class Input<T> extends Control {
 	public boolean setValue(String key, Object value) {
 		key = key.trim();
 		if (VALUE.equalsIgnoreCase(key)) {
-			return this.setValue((T)value);
+			return this.setValue((T) value);
 		}
 		if (TYPE.equals(key)) {
-			return this.setType(""+value);
+			return this.setType("" + value);
 		}
 		return super.setValue(key, value);
 	}
@@ -85,7 +85,7 @@ public class Input<T> extends Control {
 	}
 
 	/**
-	 * @param value	 the value to set
+	 * @param value the value to set
 	 * @return success
 	 */
 	public boolean setValue(T value) {

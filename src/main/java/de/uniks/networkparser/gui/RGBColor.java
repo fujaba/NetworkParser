@@ -26,17 +26,17 @@ THE SOFTWARE.
 import de.uniks.networkparser.buffer.CharacterBuffer;
 
 public class RGBColor {
-	public static final RGBColor WHITE       = new RGBColor().withValue(255, 255, 255);
-    public static final RGBColor TANSPARENT  = new RGBColor().withValue(0, 0, 0);
-    public static final RGBColor BLACK       = new RGBColor().withValue(0, 0, 0);
-    public static final RGBColor RED         = new RGBColor().withValue(255, 0, 0);
-    public static final RGBColor GREEN       = new RGBColor().withValue(0, 255, 0);
-    public static final RGBColor BLUE        = new RGBColor().withValue(0, 0, 255);
-    public static final RGBColor PURPLE 	 = new RGBColor().withValue(127.5f, 0, 127.5f);
-    public static final RGBColor YELLOW 	 = new RGBColor().withValue(255, 255, 0);
-    public static final RGBColor ORANGE 	 = new RGBColor().withValue(255, 127.5f, 0);
+	public static final RGBColor WHITE = new RGBColor().withValue(255, 255, 255);
+	public static final RGBColor TANSPARENT = new RGBColor().withValue(0, 0, 0);
+	public static final RGBColor BLACK = new RGBColor().withValue(0, 0, 0);
+	public static final RGBColor RED = new RGBColor().withValue(255, 0, 0);
+	public static final RGBColor GREEN = new RGBColor().withValue(0, 255, 0);
+	public static final RGBColor BLUE = new RGBColor().withValue(0, 0, 255);
+	public static final RGBColor PURPLE = new RGBColor().withValue(127.5f, 0, 127.5f);
+	public static final RGBColor YELLOW = new RGBColor().withValue(255, 255, 0);
+	public static final RGBColor ORANGE = new RGBColor().withValue(255, 127.5f, 0);
 
-    private int argb;
+	private int argb;
 	private float red;
 	private float green;
 	private float blue;
@@ -45,7 +45,7 @@ public class RGBColor {
 	private float yellow;
 
 	public RGBColor withValue(float red, float green, float blue) {
-		int a=1;
+		int a = 1;
 		int ia = (int) (255.0 * a);
 		int ir = (int) (255.0 * red * a);
 		int ig = (int) (255.0 * green * a);
@@ -60,12 +60,12 @@ public class RGBColor {
 
 	public static RGBColor create(String value) {
 		RGBColor color = new RGBColor();
-		if(value == null) {
+		if (value == null) {
 			return color;
 		}
-		int red = Integer.valueOf( value.substring( 0, 2 ), 16 );
-		int green = Integer.valueOf( value.substring( 2, 4 ), 16 );
-		int blue = Integer.valueOf( value.substring( 4, 6 ), 16 );
+		int red = Integer.valueOf(value.substring(0, 2), 16);
+		int green = Integer.valueOf(value.substring(2, 4), 16);
+		int blue = Integer.valueOf(value.substring(4, 6), 16);
 		color.withValue(red, green, blue);
 		return color;
 	}
@@ -131,38 +131,39 @@ public class RGBColor {
 	}
 
 	private int min(int a, int b) {
-	        return (a <= b) ? a : b;
+		return (a <= b) ? a : b;
 	}
 
 	public RGBColor add(RGBColor second) {
 		RGBColor color = new RGBColor();
-		float newRed = ((float)(getRed()+second.getRed())) / 2;
-		float newGreen = ((float)(getGreen()+second.getGreen())) / 2;
-		float newBlue = ((float)(getBlue()+second.getBlue())) / 2;
+		float newRed = ((float) (getRed() + second.getRed())) / 2;
+		float newGreen = ((float) (getGreen() + second.getGreen())) / 2;
+		float newBlue = ((float) (getBlue() + second.getBlue())) / 2;
 		color.withValue(newRed, newGreen, newBlue);
 		return color;
 	}
+
 	private void calcCMYK() {
-		int black = min(min(255 - (int)red, 255 - (int)green), 255 - (int)blue);
-		if (black!=255) {
-			this.cyan    = (255-red-black)/(255-black);
-			this.magenta = (255-green-black)/(255-black);
-			this.yellow  = (255-blue-black)/(255-black);
+		int black = min(min(255 - (int) red, 255 - (int) green), 255 - (int) blue);
+		if (black != 255) {
+			this.cyan = (255 - red - black) / (255 - black);
+			this.magenta = (255 - green - black) / (255 - black);
+			this.yellow = (255 - blue - black) / (255 - black);
 		} else {
-			this.cyan = 255 - (int)red;
-			this.magenta = 255 - (int)green;
-			this.yellow = 255 - (int)blue;
+			this.cyan = 255 - (int) red;
+			this.magenta = 255 - (int) green;
+			this.yellow = 255 - (int) blue;
 		}
 	}
 
 	public RGBColor minus(RGBColor second) {
 		RGBColor color = new RGBColor();
-		if(getRed()==second.getRed() && getGreen()==second.getGreen() && getBlue() == second.getBlue()) {
+		if (getRed() == second.getRed() && getGreen() == second.getGreen() && getBlue() == second.getBlue()) {
 			return color;
 		}
-		color.withRed(getRed()*2 - second.getRed() );
-		color.withGreen(getGreen()*2 - second.getGreen() );
-		color.withBlue(getBlue() * 2 - second.getBlue() );
+		color.withRed(getRed() * 2 - second.getRed());
+		color.withGreen(getGreen() * 2 - second.getGreen());
+		color.withBlue(getBlue() * 2 - second.getBlue());
 		return color;
 	}
 
@@ -193,49 +194,51 @@ public class RGBColor {
 
 	@Override
 	public boolean equals(Object other) {
-		if(other == null || other instanceof RGBColor == false) {
+		if (other == null || other instanceof RGBColor == false) {
 			return false;
 		}
-		if(other.hashCode() == this.hashCode()) {
+		if (other.hashCode() == this.hashCode()) {
 			return true;
 		}
 		RGBColor otherColor = (RGBColor) other;
-		if(otherColor.getRed()!=getRed()) {
+		if (otherColor.getRed() != getRed()) {
 			return false;
 		}
-		if(otherColor.getGreen()!=getGreen()) {
+		if (otherColor.getGreen() != getGreen()) {
 			return false;
 		}
-		if(otherColor.getBlue()!=getBlue()) {
+		if (otherColor.getBlue() != getBlue()) {
 			return false;
 		}
 		return true;
-	 }
+	}
+
 	@Override
 	public int hashCode() {
 		return super.hashCode();
 	}
 
 	public String toString() {
-		CharacterBuffer buffer=new CharacterBuffer().withBufferLength(7);
+		CharacterBuffer buffer = new CharacterBuffer().withBufferLength(7);
 		buffer.with("#");
-		addHex((int)red, buffer);
-		addHex((int)green, buffer);
-		addHex((int)blue, buffer);
+		addHex((int) red, buffer);
+		addHex((int) green, buffer);
+		addHex((int) blue, buffer);
 		return buffer.toString();
 	}
+
 	private void addHex(int value, CharacterBuffer buffer) {
-		int t = (int) (value/16);
-		int rest = value - t*16;
-		if(t>9) {
-			buffer.with((char)(65+t-10));
-		}else {
-			buffer.with((char)(48+t));
+		int t = (int) (value / 16);
+		int rest = value - t * 16;
+		if (t > 9) {
+			buffer.with((char) (65 + t - 10));
+		} else {
+			buffer.with((char) (48 + t));
 		}
-		if(rest>9) {
-			buffer.with((char)(65+rest-10));
-		}else {
-			buffer.with((char)(48+rest));
+		if (rest > 9) {
+			buffer.with((char) (65 + rest - 10));
+		} else {
+			buffer.with((char) (48 + rest));
 		}
 	}
 }

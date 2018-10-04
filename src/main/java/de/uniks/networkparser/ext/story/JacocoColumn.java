@@ -37,16 +37,15 @@ public class JacocoColumn implements JacocoColumnListener {
 	private static final String SOURCEFILE = "SOURCEFILE";
 	private static final String METHOD = "METHOD";
 	private Object proxy;
-	private static String EMPTY="";
-	private SimpleKeyValueList<String, Integer> value=new SimpleKeyValueList<String, Integer>();
-	private SimpleKeyValueList<Object, String> classes=new SimpleKeyValueList<Object, String>();
-
+	private static String EMPTY = "";
+	private SimpleKeyValueList<String, Integer> value = new SimpleKeyValueList<String, Integer>();
+	private SimpleKeyValueList<Object, String> classes = new SimpleKeyValueList<Object, String>();
 
 	public static JacocoColumn create() {
 		JacocoColumn jacocoColumn = new JacocoColumn();
 		Class<?> proxyClass = ReflectionLoader.getClass(COLUMRENDERER);
-		if(proxyClass == null) {
-			if(ReflectionBlackBoxTester.isTester() == false) {
+		if (proxyClass == null) {
+			if (ReflectionBlackBoxTester.isTester() == false) {
 				System.out.println("NO JACOCO FOUND ON BUILD-PATH");
 			}
 			return null;
@@ -55,7 +54,7 @@ public class JacocoColumn implements JacocoColumnListener {
 
 		jacocoColumn.withProxy(item);
 //		com.sun.proxy.$Proxy4
-			return jacocoColumn;
+		return jacocoColumn;
 	}
 
 	private JacocoColumn withProxy(Object item) {
@@ -69,7 +68,7 @@ public class JacocoColumn implements JacocoColumnListener {
 
 	public String getType(Object element) {
 		Object call = ReflectionLoader.calling(element, "getElementType", false, null);
-		if(call != null) {
+		if (call != null) {
 			return call.toString();
 		}
 		return EMPTY;
@@ -77,7 +76,7 @@ public class JacocoColumn implements JacocoColumnListener {
 
 	public String getName(Object element) {
 		Object call = ReflectionLoader.calling(element, "getName", false, null);
-		if(call instanceof String) {
+		if (call instanceof String) {
 			return (String) call;
 		}
 		return EMPTY;
@@ -86,13 +85,13 @@ public class JacocoColumn implements JacocoColumnListener {
 	// init(List<? extends ITableItem> items, ICoverageNode total) {
 	public boolean init(Object items, Object total) {
 		String type = getType(total);
-		if(PACKAGE.equalsIgnoreCase(type)) {
+		if (PACKAGE.equalsIgnoreCase(type)) {
 			Collection<?> classes = (Collection<?>) ReflectionLoader.call(total, "getClasses");
 
-			for(Object item : classes) {
+			for (Object item : classes) {
 				String name = getName(item);
 				Collection<?> methods = (Collection<?>) ReflectionLoader.call(item, "getMethods");
-				for(Object method : methods) {
+				for (Object method : methods) {
 					this.classes.add(method, name);
 				}
 			}
@@ -100,14 +99,15 @@ public class JacocoColumn implements JacocoColumnListener {
 		return true;
 	}
 
-	// footer(HTMLElement td, ICoverageNode total, Resources resources, ReportOutputFolder base) throws IOException
-	public void footer(Object td, Object total, Object resources, Object base){
+	// footer(HTMLElement td, ICoverageNode total, Resources resources,
+	// ReportOutputFolder base) throws IOException
+	public void footer(Object td, Object total, Object resources, Object base) {
 		String search = getSearch(total);
 
 		Integer no = (Integer) value.getValue(search);
-		if(no != null) {
-			setText(td, ""+no);
-		}else {
+		if (no != null) {
+			setText(td, "" + no);
+		} else {
 			setText(td, "0");
 		}
 	}
@@ -118,27 +118,27 @@ public class JacocoColumn implements JacocoColumnListener {
 
 	private String getSearch(Object node) {
 		String search = getName(node);
-		if(BUNDLE.equalsIgnoreCase(getType(node))) {
+		if (BUNDLE.equalsIgnoreCase(getType(node))) {
 			search = "";
 		}
 		int pos = search.indexOf("(");
-		if(pos > 0) {
+		if (pos > 0) {
 			search = search.substring(0, pos);
 		}
 		pos = search.indexOf("$");
-		if(pos > 0) {
+		if (pos > 0) {
 			search = search.substring(0, pos);
 		}
 		return search;
 	}
 
 	public void addValueToList(String key, int no) {
-		String fullClass = key.substring(0,  key.indexOf(":"));
+		String fullClass = key.substring(0, key.indexOf(":"));
 
 		// Calculate all Sums
 		addToPos("", no);
 		int pos = fullClass.lastIndexOf(".");
-		if(pos>0) {
+		if (pos > 0) {
 			addToPos(fullClass.substring(0, pos), no);
 		}
 		addToPos(fullClass, no);
@@ -148,8 +148,8 @@ public class JacocoColumn implements JacocoColumnListener {
 
 	private void addToPos(String key, int no) {
 		int pos = value.indexOf(key);
-		if(pos>0) {
-			Integer oldValue  = value.getValueByIndex(pos);
+		if (pos > 0) {
+			Integer oldValue = value.getValueByIndex(pos);
 			value.put(key, oldValue + no);
 			return;
 		}
@@ -161,18 +161,18 @@ public class JacocoColumn implements JacocoColumnListener {
 		Object node = ReflectionLoader.calling(item, "getNode", false, null);
 		String type = getType(node);
 		String search;
-		if(SOURCEFILE.equalsIgnoreCase(type)) {
+		if (SOURCEFILE.equalsIgnoreCase(type)) {
 			String name = getName(node);
 			int pos = name.lastIndexOf(".");
 			search = name.substring(0, pos);
 			Object value = this.value.getValue(search);
-			if(value != null) {
-				setText(td, ""+value);
+			if (value != null) {
+				setText(td, "" + value);
 			}
 			return;
 		}
 
-		if(METHOD.equalsIgnoreCase(type)) {
+		if (METHOD.equalsIgnoreCase(type)) {
 			// Its Methods
 			String className = classes.get(node);
 
@@ -180,12 +180,12 @@ public class JacocoColumn implements JacocoColumnListener {
 //			int firstLine = methodNode.getFirstLine();
 			Integer firstLine = (Integer) ReflectionLoader.call(node, "getFirstLine");
 			String name = getName(node);
-			if(name.indexOf("(")>0) {
+			if (name.indexOf("(") > 0) {
 				name = name.substring(0, name.indexOf("("));
 			}
-			search = className+":"+name+":"+firstLine;
+			search = className + ":" + name + ":" + firstLine;
 			Object value = this.value.getValue(search);
-			if(value instanceof Integer) {
+			if (value instanceof Integer) {
 				Integer no = (Integer) value;
 				setText(td, no.toString());
 			}
@@ -194,8 +194,8 @@ public class JacocoColumn implements JacocoColumnListener {
 
 		search = getSearch(node);
 		Object value = this.value.getValue(search);
-		if(value != null) {
-			setText(td, ""+value);
+		if (value != null) {
+			setText(td, "" + value);
 		}
 	}
 
@@ -203,7 +203,7 @@ public class JacocoColumn implements JacocoColumnListener {
 		return new Comparator<Object>() {
 
 			@Override
-			//compare(ITableItem o1, ITableItem o2)
+			// compare(ITableItem o1, ITableItem o2)
 			public int compare(Object o1, Object o2) {
 //				o1.getNode().get
 				return 1;

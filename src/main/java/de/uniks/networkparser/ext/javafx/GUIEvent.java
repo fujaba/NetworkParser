@@ -34,7 +34,6 @@ public class GUIEvent extends Event {
 	// The jsObject for BackupPurposes
 	private ObjectCondition listerner;
 
-
 	public GUIEvent withListener(ObjectCondition value) {
 		this.listerner = value;
 		return this;
@@ -42,37 +41,38 @@ public class GUIEvent extends Event {
 
 	public void handle(Object event) {
 //		System.out.println("handle: "+ event);
-		if(this.listerner != null) {
+		if (this.listerner != null) {
 			this.listerner.update(event);
 		}
 	}
+
 	public void invalidated(Object event) {
-		if(this.listerner != null) {
+		if (this.listerner != null) {
 			this.listerner.update(event);
 		}
 	}
 
 	public void actionPerformed(Object e) {
-		if(this.listerner != null) {
+		if (this.listerner != null) {
 			this.listerner.update(e);
 		}
 	}
 
 	public void changed(Object observable, Object oldValue, Object newValue) {
-		if(this.listerner != null) {
-			this.listerner.update(new SimpleEvent(observable, "State", oldValue,newValue));
+		if (this.listerner != null) {
+			this.listerner.update(new SimpleEvent(observable, "State", oldValue, newValue));
 		}
 	}
 
 	private static Object getMember(Object obj, String value) {
-		if(obj == null || obj.getClass().getName().startsWith("javafx") == false) {
+		if (obj == null || obj.getClass().getName().startsWith("javafx") == false) {
 			return null;
 		}
 		return ReflectionLoader.call(obj, "getMember", String.class, value);
 	}
 
 	public boolean isSubEventName(String name) {
-		if(name == null || this.event == null) {
+		if (name == null || this.event == null) {
 			return false;
 		}
 		String subName = this.event.getClass().getName();
@@ -80,16 +80,16 @@ public class GUIEvent extends Event {
 	}
 
 	public ObjectCondition match(Object other) {
-		if(other == null) {
+		if (other == null) {
 			return null;
 		}
-		if(other instanceof ObjectCondition) {
+		if (other instanceof ObjectCondition) {
 			return (ObjectCondition) other;
 		}
-		if(other instanceof GUIEvent) {
+		if (other instanceof GUIEvent) {
 			GUIEvent otherEvt = (GUIEvent) other;
-			if(this.eventType==EventTypes.KEYPRESS && otherEvt.getEventType() == EventTypes.KEYPRESS) {
-				if(this.getCode() == otherEvt.getCode()) {
+			if (this.eventType == EventTypes.KEYPRESS && otherEvt.getEventType() == EventTypes.KEYPRESS) {
+				if (this.getCode() == otherEvt.getCode()) {
 					return otherEvt.getListener();
 				}
 			}
@@ -100,74 +100,74 @@ public class GUIEvent extends Event {
 	public static GUIEvent create(Object obj) {
 //			boolean isEvent = (boolean) obj.eval("this instanceof Event");
 		GUIEvent event = new GUIEvent();
-		if(obj == null) {
+		if (obj == null) {
 			return event;
 		}
 		String name = obj.getClass().getName();
-		if("javafx.scene.input.KeyEvent".equals(name)) {
+		if ("javafx.scene.input.KeyEvent".equals(name)) {
 			// KeyEvent
 			event.setValue(EVENT_TYPE, EventTypes.KEYPRESS);
 			event.put(ALTKEY, ReflectionLoader.call(obj, "isAltDown"));
 			event.put(CTRKEY, ReflectionLoader.call(obj, "isControlDown"));
 			event.put(SHIFTKEY, ReflectionLoader.call(obj, "isShiftDown"));
-			if(obj != null) {
+			if (obj != null) {
 				Object value = ReflectionLoader.callChain(obj, false, "getCode", "getCode");
-				if(value != null) {
-					event.withCode((Integer)value);
+				if (value != null) {
+					event.withCode((Integer) value);
 				}
-				
+
 				event.setValue(CURRENT_TARGET, ReflectionLoader.call(obj, "getTarget"));
 				event.setValue(EVENT, obj);
 			}
 			return event;
 		}
-		if("javafx.stage.WindowEvent".equals(name)) {
+		if ("javafx.stage.WindowEvent".equals(name)) {
 			event.setValue(EVENT_TYPE, EventTypes.WINDOWEVENT);
 			event.setValue(CURRENT_TARGET, ReflectionLoader.call(obj, "getTarget"));
 
-			String type = ""+ReflectionLoader.call(obj, "getEventType");
+			String type = "" + ReflectionLoader.call(obj, "getEventType");
 			event.active = "WINDOW_CLOSE_REQUEST".equals(type) == false;
 			event.setValue(EVENT, obj);
 			return event;
 		}
 		event.setValue(EVENT, obj);
-		if("java.awt.event.ActionEvent".equals(name)) {
+		if ("java.awt.event.ActionEvent".equals(name)) {
 			// KeyEvent
 			event.setValue(EVENT_TYPE, EventTypes.CLICK);
 			Long longValue = (Long) ReflectionLoader.call(obj, "getWhen");
 			event.setValue(TIME_STAMP, longValue.intValue());
 			event.setValue(CURRENT_TARGET, ReflectionLoader.call(obj, "getSource"));
-			event.setValue(ID, ""+ReflectionLoader.callChain(obj, "getSource", "getLabel"));
+			event.setValue(ID, "" + ReflectionLoader.callChain(obj, "getSource", "getLabel"));
 			return event;
 		}
 		Object value;
-		if(name.startsWith("javafx") == false) {
+		if (name.startsWith("javafx") == false) {
 			return event;
 		}
 		value = getMember(obj, TIME_STAMP);
-		if(value != null) {
-			if(value instanceof Double) {
-				event.timeStamp = ((Double)value).intValue();
-			} else if(value instanceof Integer) {
-				event.timeStamp = (Integer)value;
+		if (value != null) {
+			if (value instanceof Double) {
+				event.timeStamp = ((Double) value).intValue();
+			} else if (value instanceof Integer) {
+				event.timeStamp = (Integer) value;
 			}
 		}
 		value = getMember(obj, ID);
-		if(value != null) {
-			event.id = ""+value;
+		if (value != null) {
+			event.id = "" + value;
 		}
 		value = getMember(obj, EVENT_TYPE);
-		if(value != null) {
-			String eventName = ""+value;
+		if (value != null) {
+			String eventName = "" + value;
 			event.eventType = EventTypes.valueOf(eventName.toUpperCase());
 		}
 
 		value = getMember(obj, TYPE);
-		if(value != null) {
-			event.put(TYPE, ""+value);
+		if (value != null) {
+			event.put(TYPE, "" + value);
 		}
 		value = getMember(obj, CURRENT_TARGET);
-		if(value != null) {
+		if (value != null) {
 			event.currentTarget = new JsonObjectLazy(value);
 		}
 		return event;
@@ -184,9 +184,9 @@ public class GUIEvent extends Event {
 
 	public int getCode() {
 		Object object = this.get(CODE);
-		if(object == null) {
+		if (object == null) {
 			return 0;
 		}
-		return (Integer)object;
+		return (Integer) object;
 	}
 }

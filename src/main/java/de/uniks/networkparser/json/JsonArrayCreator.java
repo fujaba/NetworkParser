@@ -26,9 +26,9 @@ THE SOFTWARE.
 */
 import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
 
-public class JsonArrayCreator implements SendableEntityCreator,	SendableEntityCreatorNoIndex {
+public class JsonArrayCreator implements SendableEntityCreator, SendableEntityCreatorNoIndex {
 	private final static String VALUE = "VALUE";
-	private final String[] properties = new String[] {VALUE};
+	private final String[] properties = new String[] { VALUE };
 
 	@Override
 	public String[] getProperties() {
@@ -46,9 +46,8 @@ public class JsonArrayCreator implements SendableEntityCreator,	SendableEntityCr
 	}
 
 	@Override
-	public boolean setValue(Object entity, String attribute, Object value,
-			String type) {
-		if(SendableEntityCreator.REMOVE_YOU.equalsIgnoreCase(type)) {
+	public boolean setValue(Object entity, String attribute, Object value, String type) {
+		if (SendableEntityCreator.REMOVE_YOU.equalsIgnoreCase(type)) {
 			return false;
 		}
 		((JsonArray) entity).withValue((String) value);

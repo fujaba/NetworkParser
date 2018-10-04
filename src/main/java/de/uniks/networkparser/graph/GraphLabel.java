@@ -25,7 +25,7 @@ THE SOFTWARE.
 */
 
 public class GraphLabel extends GraphMember {
-	public final static GraphLabel CREATE=new GraphLabel().withStyle("create");
+	public final static GraphLabel CREATE = new GraphLabel().withStyle("create");
 	private String style;
 
 	@Override

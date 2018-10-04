@@ -28,7 +28,7 @@ import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
 
 public class JsonObjectCreator implements SendableEntityCreator, SendableEntityCreatorNoIndex {
 	private final static String VALUE = "VALUE";
-	private final String[] properties = new String[] {VALUE};
+	private final String[] properties = new String[] { VALUE };
 
 	@Override
 	public String[] getProperties() {
@@ -45,22 +45,21 @@ public class JsonObjectCreator implements SendableEntityCreator, SendableEntityC
 		if (VALUE.equalsIgnoreCase(attribute)) {
 			return entity.toString();
 		}
-		if(entity==null) {
+		if (entity == null) {
 			return null;
 		}
 		return ((JsonObject) entity).getValue(attribute);
 	}
 
 	@Override
-	public boolean setValue(Object entity, String attribute, Object value,
-			String type) {
-		if(SendableEntityCreator.REMOVE_YOU.equalsIgnoreCase(type)) {
+	public boolean setValue(Object entity, String attribute, Object value, String type) {
+		if (SendableEntityCreator.REMOVE_YOU.equalsIgnoreCase(type)) {
 			return false;
 		}
 		JsonObject json = (JsonObject) entity;
-		if(VALUE.equals(attribute)) {
-			json.withValue((String)value);
-		}else {
+		if (VALUE.equals(attribute)) {
+			json.withValue((String) value);
+		} else {
 			json.withKeyValue(attribute, value);
 		}
 		return true;

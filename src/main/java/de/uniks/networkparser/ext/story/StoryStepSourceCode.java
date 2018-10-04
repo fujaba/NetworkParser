@@ -34,8 +34,8 @@ import de.uniks.networkparser.xml.HTMLEntity;
 import de.uniks.networkparser.xml.XMLEntity;
 
 public class StoryStepSourceCode implements ObjectCondition {
-	public static final int FULL=-1;
-	public static final int CURRENTPOSITION =0;
+	public static final int FULL = -1;
+	public static final int CURRENTPOSITION = 0;
 	public static final String FORMAT_JAVA = "java";
 	public static final String FORMAT_XML = "xml";
 	public static final String FORMAT_JSON = "json";
@@ -60,36 +60,36 @@ public class StoryStepSourceCode implements ObjectCondition {
 	}
 
 	private String getLineFromThrowable() {
-		if(this.packageName == null) {
+		if (this.packageName == null) {
 			return null;
 		}
 		StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
 		String search;
-		if(this.fileName != null) {
-			search = this.packageName+"."+this.fileName;
-			
-		}else {
+		if (this.fileName != null) {
+			search = this.packageName + "." + this.fileName;
+
+		} else {
 			search = this.packageName;
 		}
-		int equalsPos= -1;
-		int startPos=-1;
+		int equalsPos = -1;
+		int startPos = -1;
 		StackTraceElement ste;
-		for(int i=0;i<stackTrace.length;i++) {
+		for (int i = 0; i < stackTrace.length; i++) {
 			ste = stackTrace[i];
 			String name = ste.getClassName();
-			if(name.equals(search)) {
+			if (name.equals(search)) {
 				equalsPos = i;
 				break;
-			} else if(startPos<0 && name.startsWith(search)) {
+			} else if (startPos < 0 && name.startsWith(search)) {
 				startPos = i;
 			}
 		}
-		if(equalsPos<0 && startPos>=0) {
+		if (equalsPos < 0 && startPos >= 0) {
 			equalsPos = startPos;
 		}
-		if(equalsPos>=0) {
+		if (equalsPos >= 0) {
 			// Steps
-			if(stepOverPackageName>0 && equalsPos+stepOverPackageName<stackTrace.length) {
+			if (stepOverPackageName > 0 && equalsPos + stepOverPackageName < stackTrace.length) {
 				ste = stackTrace[equalsPos + stepOverPackageName];
 			} else {
 				ste = stackTrace[equalsPos];
@@ -100,7 +100,7 @@ public class StoryStepSourceCode implements ObjectCondition {
 				String full = ste.getClassName();
 				int pos = full.lastIndexOf('.');
 				if (pos > 0) {
-					this.fileName = full.substring(pos+1);
+					this.fileName = full.substring(pos + 1);
 					this.packageName = full.substring(0, pos);
 				}
 
@@ -113,7 +113,7 @@ public class StoryStepSourceCode implements ObjectCondition {
 			String name = ste.getClassName();
 			return name + ".java:" + ste.getLineNumber();
 		}
-		//Argh not found
+		// Argh not found
 		return "";
 	}
 
@@ -146,12 +146,11 @@ public class StoryStepSourceCode implements ObjectCondition {
 		return line;
 	}
 
-
 	boolean checkEnd(int linePos, CharacterBuffer line, FileBuffer fileBuffer) {
-		if(endLine<0 && FORMAT_JAVA.equals(format)) {
+		if (endLine < 0 && FORMAT_JAVA.equals(format)) {
 			// End of Method
-			return linePos>=this.endLine && line.equalsText('}');
-		} else if(endLine>0) {
+			return linePos >= this.endLine && line.equalsText('}');
+		} else if (endLine > 0) {
 			return (linePos > this.endLine);
 		}
 		return fileBuffer.isEnd();
@@ -163,11 +162,11 @@ public class StoryStepSourceCode implements ObjectCondition {
 		CharacterBuffer indexText = new CharacterBuffer();
 
 		CharacterBuffer line = new CharacterBuffer();
-		if(this.methodSignature != null) {
+		if (this.methodSignature != null) {
 			startLine = -1;
 			endLine = -1;
 		}
-		if(startLine == -1) {
+		if (startLine == -1) {
 			this.format = FORMAT_JAVA;
 		} else {
 			// First Line
@@ -184,25 +183,25 @@ public class StoryStepSourceCode implements ObjectCondition {
 			}
 		}
 		int linePos = 1;
-		if(FORMAT_JAVA.equals(this.format) && startLine == -1) {
-			String search=this.methodName+"(";
-			if(this.methodSignature != null) {
+		if (FORMAT_JAVA.equals(this.format) && startLine == -1) {
+			String search = this.methodName + "(";
+			if (this.methodSignature != null) {
 				search = this.methodSignature;
 			}
 			int start = this.currentLine;
 			while (line != null && linePos <= start) {
 				line = fileBuffer.readLine();
-				if(line.indexOf(search)>0) {
+				if (line.indexOf(search) > 0) {
 					this.startLine = linePos;
 					break;
 				}
 				linePos++;
-				if(fileBuffer.isEnd()) {
+				if (fileBuffer.isEnd()) {
 					break;
 				}
 			}
 		}
-		if(startLine == 0) {
+		if (startLine == 0) {
 			line = fileBuffer.readLine();
 		}
 		while (line != null && linePos < this.startLine) {
@@ -214,7 +213,7 @@ public class StoryStepSourceCode implements ObjectCondition {
 			indexText.with(formatString(line));
 			line = analyseLine(fileBuffer.readLine());
 			linePos++;
-			if(checkEnd(linePos, line, fileBuffer)) {
+			if (checkEnd(linePos, line, fileBuffer)) {
 				indexText.with(BaseItem.CRLF).with(line);
 				break;
 			}
@@ -225,7 +224,7 @@ public class StoryStepSourceCode implements ObjectCondition {
 	}
 
 	String formatString(CharacterBuffer buffer) {
-		if(FORMAT_JAVA.equals(format)) {
+		if (FORMAT_JAVA.equals(format)) {
 			String string = buffer.toString();
 			return string.replaceAll("<", "&lt;");
 		}
@@ -234,22 +233,22 @@ public class StoryStepSourceCode implements ObjectCondition {
 
 	@Override
 	public boolean update(Object value) {
-		if(value instanceof SimpleEvent == false) {
+		if (value instanceof SimpleEvent == false) {
 			return false;
 		}
 		SimpleEvent evt = (SimpleEvent) value;
 		HTMLEntity element = (HTMLEntity) evt.getNewValue();
 		return addToHTML(element);
 	}
-	
+
 	public boolean addToHTML(HTMLEntity element) {
 		XMLEntity pre = element.createTag("pre", element.getBody());
 		XMLEntity code = element.createTag("code", pre);
-		if(this.endLine<1 && this.currentLine>0) {
+		if (this.endLine < 1 && this.currentLine > 0) {
 			// Body is Empty add the full method
 			readFile();
 		}
-		if(this.body == null) {
+		if (this.body == null) {
 			return false;
 		}
 		code.withValueItem(this.body.toString());
@@ -259,9 +258,9 @@ public class StoryStepSourceCode implements ObjectCondition {
 		XMLEntity undertitle = element.createTag("div", pre);
 		String strValue;
 		String name;
-		if(this.methodName == null) {
+		if (this.methodName == null) {
 			name = "Code";
-		}else if (this.methodName.startsWith("test")) {
+		} else if (this.methodName.startsWith("test")) {
 			name = this.methodName.substring(4);
 		} else {
 			name = this.methodName;
@@ -305,13 +304,12 @@ public class StoryStepSourceCode implements ObjectCondition {
 		return true;
 	}
 
-
 	public StoryStepSourceCode withCode(Class<?> packageName, int stepOver) {
 		String packagePath = packageName.getName();
 		String fileName = null;
 		int pos = packagePath.lastIndexOf('.');
 		if (pos > 0) {
-			fileName = packagePath.substring(pos+1);
+			fileName = packagePath.substring(pos + 1);
 			packagePath = packagePath.substring(0, pos);
 		}
 		this.packageName = packagePath;
@@ -320,6 +318,7 @@ public class StoryStepSourceCode implements ObjectCondition {
 		getLineFromThrowable();
 		return this;
 	}
+
 	public StoryStepSourceCode withCode(Class<?> packageName) {
 		withCode(packageName, 0);
 		return this;
@@ -328,7 +327,7 @@ public class StoryStepSourceCode implements ObjectCondition {
 	public StoryStepSourceCode withCode(String path, Class<?> packageName) {
 		String fileName = packageName.getTypeName();
 
-		this.contentFile = path+"/"+ fileName.replace('.', '/')+".java";
+		this.contentFile = path + "/" + fileName.replace('.', '/') + ".java";
 		this.currentLine = Integer.MAX_VALUE;
 		return this;
 	}
@@ -344,9 +343,9 @@ public class StoryStepSourceCode implements ObjectCondition {
 	}
 
 	public StoryStepSourceCode withStart(int position) {
-		if(position<-1) {
-			this.startLine =-1;
-		}else {
+		if (position < -1) {
+			this.startLine = -1;
+		} else {
 			this.startLine = position;
 		}
 		return this;
@@ -356,12 +355,11 @@ public class StoryStepSourceCode implements ObjectCondition {
 		return withEnd(0);
 	}
 
-
 	public StoryStepSourceCode withEnd(int position) {
-		if(position<-1) {
-			this.endLine =-1;
-		}else {
-			if(position == 0 && startLine == 0 && this.currentLine > 0) {
+		if (position < -1) {
+			this.endLine = -1;
+		} else {
+			if (position == 0 && startLine == 0 && this.currentLine > 0) {
 				this.startLine = this.currentLine + 1;
 				getLineFromThrowable();
 				readFile();
@@ -379,7 +377,7 @@ public class StoryStepSourceCode implements ObjectCondition {
 	public StoryStepSourceCode withMethodSignature(String value) {
 		this.methodSignature = value;
 		int pos = this.methodSignature.indexOf("(");
-		if(pos>0) {
+		if (pos > 0) {
 			this.methodName = this.methodSignature.substring(0, pos);
 		}
 		return this;

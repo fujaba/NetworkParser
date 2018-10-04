@@ -30,14 +30,15 @@ permissions and limitations under the Licence.
 */
 
 /**
- * Condition for Listener for changes in Element (Datamodel) in IdMap
- * Or AtomarCondition with PropertyChange
+ * Condition for Listener for changes in Element (Datamodel) in IdMap Or
+ * AtomarCondition with PropertyChange
+ * 
  * @author Stefan Lindel
  */
 public class UpdateCondition implements ObjectCondition {
 	private Object owner;
-	private ObjectCondition condition;	// FOR ATOM OR TRANSACTION
-	
+	private ObjectCondition condition; // FOR ATOM OR TRANSACTION
+
 	// FOR ACCUMULATE
 	private Tokener tokener;
 	private Entity change;
@@ -47,30 +48,30 @@ public class UpdateCondition implements ObjectCondition {
 
 	// Target or StartClass
 	private SendableEntityCreator creator;
-	private String property;	// May be class<?> or Object
+	private String property; // May be class<?> or Object
 	private ObjectCondition startCondition;
-	
+
 	private ObjectCondition endCondition;
 	private String endProperty; // May be class<?> or Object
 	private Object endClass;
 	private SimpleSet<SimpleEvent> changes;
 	private SendableEntityCreator endCreator;
-	
+
 	UpdateCondition() {
-		
+
 	}
 
 	public UpdateCondition withContidion(ObjectCondition condition) {
 		this.condition = condition;
 		return this;
 	}
-	
+
 	public static UpdateCondition createAtomarCondition(ObjectCondition listener) {
 		UpdateCondition condition = new UpdateCondition();
 		condition.condition = listener;
 		return condition;
 	}
-	
+
 	public static UpdateCondition createUpdateCondition() {
 		return new UpdateCondition();
 	}
@@ -80,13 +81,16 @@ public class UpdateCondition implements ObjectCondition {
 		condition.tokener = tokener;
 		return condition;
 	}
+
 	public static UpdateCondition createAcumulateCondition(IdMap map) {
 		UpdateCondition condition = new UpdateCondition();
 		condition.tokener = map.getMapListener().getTokener();
 		condition.map = map;
 		return condition;
 	}
-	public static UpdateCondition createAcumulateCondition(Tokener tokener,Object target, SendableEntityCreator creator, String property) {
+
+	public static UpdateCondition createAcumulateCondition(Tokener tokener, Object target,
+			SendableEntityCreator creator, String property) {
 		UpdateCondition condition = new UpdateCondition();
 		condition.tokener = tokener;
 		condition.owner = target;
@@ -112,7 +116,7 @@ public class UpdateCondition implements ObjectCondition {
 	public boolean isAccumulate() {
 		return tokener != null;
 	}
-	
+
 	public boolean isChangeListener() {
 		return condition == null;
 	}
@@ -120,7 +124,7 @@ public class UpdateCondition implements ObjectCondition {
 	public UpdateCondition withStart(String property, Object startClass) {
 		this.owner = startClass;
 		this.property = property;
-		if(startClass instanceof Class<?> == false) {
+		if (startClass instanceof Class<?> == false) {
 			this.creator = map.getCreatorClass(startClass);
 		}
 		return this;
@@ -134,7 +138,7 @@ public class UpdateCondition implements ObjectCondition {
 	public UpdateCondition withEnd(String property, Object endClass) {
 		this.endClass = endClass;
 		this.endProperty = property;
-		if(endClass instanceof Class<?> == false) {
+		if (endClass instanceof Class<?> == false) {
 			endCreator = map.getCreatorClass(endClass);
 		}
 		return this;
@@ -147,24 +151,24 @@ public class UpdateCondition implements ObjectCondition {
 
 	@Override
 	public boolean update(Object evt) {
-		if(isAtomar()) {
-			if(evt instanceof PropertyChangeEvent ) {
+		if (isAtomar()) {
+			if (evt instanceof PropertyChangeEvent) {
 				return condition.update(evt);
 			}
 			return false;
 		}
 		// MUST BE A SIMPLEEVENT
-		if(evt instanceof SimpleEvent == false) {
+		if (evt instanceof SimpleEvent == false) {
 			return false;
 		}
-		
-		SimpleEvent event = (SimpleEvent)evt;
-		if(isChangeListener()) {
-			if(creator != null && property != null) {
-				if(event.getNewValue() != null) {
+
+		SimpleEvent event = (SimpleEvent) evt;
+		if (isChangeListener()) {
+			if (creator != null && property != null) {
+				if (event.getNewValue() != null) {
 					// CREATE ONE
 					creator.setValue(event.getNewValue(), property, owner, SendableEntityCreator.NEW);
-				}else {
+				} else {
 					creator.setValue(event.getOldValue(), property, owner, SendableEntityCreator.REMOVE);
 				}
 				return false;
@@ -172,50 +176,50 @@ public class UpdateCondition implements ObjectCondition {
 			IdMap map = (IdMap) event.getSource();
 			return map.getKey(event.getModelValue()) == null && map.getKey(event.getNewValue()) == null;
 		}
-		if(isTransaction()) {
-			if(startCondition != null && startCondition.update(evt) == false) {
+		if (isTransaction()) {
+			if (startCondition != null && startCondition.update(evt) == false) {
 				return false;
 			}
-			Object source = event.getSource(); 
-			if(source == null) {
+			Object source = event.getSource();
+			if (source == null) {
 				return false;
 			}
-			// 
-			if(changes == null && property != null && property.equalsIgnoreCase(event.getPropertyName())) {
+			//
+			if (changes == null && property != null && property.equalsIgnoreCase(event.getPropertyName())) {
 				// Search for Start Transaction
-				if(owner instanceof Class<?>) {
-					if(source.getClass() == owner) {
+				if (owner instanceof Class<?>) {
+					if (source.getClass() == owner) {
 						this.changes = new SimpleSet<SimpleEvent>();
 						return true;
 					}
-				} else if(owner != null && creator != null) {
+				} else if (owner != null && creator != null) {
 					SendableEntityCreator creator = map.getCreatorClass(source);
-					if(creator != null && creator == this.creator) {
+					if (creator != null && creator == this.creator) {
 						this.changes = new SimpleSet<SimpleEvent>();
 						return true;
 					}
 				}
 			}
-			if(this.changes != null) {
+			if (this.changes != null) {
 				this.changes.add(event);
 				// Check for End
-				if(endCondition != null && endCondition.update(evt) == false) {
+				if (endCondition != null && endCondition.update(evt) == false) {
 					return true;
 				}
-				if(endProperty != null && endProperty.equalsIgnoreCase(event.getPropertyName())) {
+				if (endProperty != null && endProperty.equalsIgnoreCase(event.getPropertyName())) {
 					// Search for Start Transaction
-					if(endClass instanceof Class<?>) {
-						if(source.getClass() == endClass) {
-							if(this.condition != null) {
+					if (endClass instanceof Class<?>) {
+						if (source.getClass() == endClass) {
+							if (this.condition != null) {
 								return this.condition.update(this.changes);
 							}
 							this.changes = null;
 							return true;
 						}
-					} else if(endClass != null && endCreator != null) {
+					} else if (endClass != null && endCreator != null) {
 						SendableEntityCreator creator = map.getCreatorClass(source);
-						if(creator != null && creator == endCreator) {
-							if(this.condition != null) {
+						if (creator != null && creator == endCreator) {
+							if (this.condition != null) {
 								return this.condition.update(this.changes);
 							}
 							this.changes = null;
@@ -235,8 +239,7 @@ public class UpdateCondition implements ObjectCondition {
 		Object oldValue = creator.getValue(source, property);
 		Object newValue = creator.getValue(source, property);
 
-		if ((oldValue == null && newValue == null)
-				|| (oldValue != null && oldValue.equals(newValue))) {
+		if ((oldValue == null && newValue == null) || (oldValue != null && oldValue.equals(newValue))) {
 			return false;
 		}
 
@@ -294,12 +297,11 @@ public class UpdateCondition implements ObjectCondition {
 		return this;
 	}
 
-
 	public UpdateCondition withTarget(Object value) {
 		this.owner = value;
-		if(value != null && map != null) {
+		if (value != null && map != null) {
 			this.creator = map.getCreatorClass(owner);
-			if(this.creator!= null) {
+			if (this.creator != null) {
 				this.defaultItem = creator.getSendableInstance(true);
 			}
 		}
@@ -313,41 +315,42 @@ public class UpdateCondition implements ObjectCondition {
 		return this;
 	}
 
-
-	private void addChange(UpdateListener listener, Object source, SendableEntityCreator creator, String property, Object oldValue, Object newValue) {
-		if(this.change == null) {
+	private void addChange(UpdateListener listener, Object source, SendableEntityCreator creator, String property,
+			Object oldValue, Object newValue) {
+		if (this.change == null) {
 			this.change = listener.change(property, source, creator, oldValue, newValue);
 		} else {
 			listener.change(property, creator, change, oldValue, newValue);
 		}
 	}
 
-	public boolean changeAttribute(UpdateListener listener, Object source, SendableEntityCreator creator, String property, Object oldValue, Object newValue) {
-		if(this.owner == null) {
+	public boolean changeAttribute(UpdateListener listener, Object source, SendableEntityCreator creator,
+			String property, Object oldValue, Object newValue) {
+		if (this.owner == null) {
 			addChange(listener, source, creator, property, oldValue, newValue);
 			return true;
-		} else if(this.property == null ) {
+		} else if (this.property == null) {
 			addChange(listener, source, creator, property, oldValue, newValue);
 			return true;
-		} else if(this.property.equals(property)) {
+		} else if (this.property.equals(property)) {
 			addChange(listener, source, creator, property, oldValue, newValue);
 			return true;
 		}
 		return false;
 	}
 
-
 	public boolean changeAttribute(Object newValue, String property) {
 		return changeAttribute(owner, newValue, property, creator, defaultItem);
 	}
-	private boolean changeAttribute(Object target, Object newValue, String property, SendableEntityCreator creator, Object defaultItem) {
-		if(creator == null) {
+
+	private boolean changeAttribute(Object target, Object newValue, String property, SendableEntityCreator creator,
+			Object defaultItem) {
+		if (creator == null) {
 			return false;
 		}
 		Object oldValue = creator.getValue(target, property);
 
-		if ((oldValue == null && newValue == null)
-				|| (oldValue != null && oldValue.equals(newValue))) {
+		if ((oldValue == null && newValue == null) || (oldValue != null && oldValue.equals(newValue))) {
 			return false;
 		}
 

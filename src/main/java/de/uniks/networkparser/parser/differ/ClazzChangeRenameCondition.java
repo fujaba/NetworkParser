@@ -15,10 +15,10 @@ public class ClazzChangeRenameCondition extends MatchCondition {
 	protected boolean checkCondition(GraphMatcher matches, Match match) {
 		Clazz sourceClazz = (Clazz) match.getMatch();
 		Clazz otherClazz = (Clazz) match.getSourceMatch();
-		
+
 		return sourceClazz.getName().equals(otherClazz.getName()) == false;
 	}
-	
+
 	@Override
 	protected boolean checkFileCondition(GraphMatcher matches, Match match) {
 		return checkCondition(matches, match);
@@ -32,7 +32,7 @@ public class ClazzChangeRenameCondition extends MatchCondition {
 		matches.addDiff(rename);
 		return true;
 	}
-	
+
 	@Override
 	protected boolean checkModelCondition(GraphMatcher matches, Match match) {
 		return checkCondition(matches, match);

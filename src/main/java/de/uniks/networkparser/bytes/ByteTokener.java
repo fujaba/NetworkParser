@@ -44,6 +44,7 @@ import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorTag;
 import de.uniks.networkparser.list.ObjectMapEntry;
 import de.uniks.networkparser.list.SimpleKeyValueList;
+
 /**
  * The Class ByteIdMap.
  */
@@ -152,11 +153,9 @@ public class ByteTokener extends Tokener {
 			int id = map.getIndexOfClazz(clazzName);
 			if (id > 0) {
 				if (id <= Byte.MAX_VALUE) {
-					msg.add(new ByteEntity().withValue(DATATYPE_CLAZZTYPE,
-							(byte) id));
+					msg.add(new ByteEntity().withValue(DATATYPE_CLAZZTYPE, (byte) id));
 				} else {
-					msg.add(new ByteEntity().withValue(
-							DATATYPE_CLAZZTYPELONG, (byte) id));
+					msg.add(new ByteEntity().withValue(DATATYPE_CLAZZTYPELONG, (byte) id));
 				}
 				return true;
 			}
@@ -164,18 +163,14 @@ public class ByteTokener extends Tokener {
 			if (pos > 0) {
 				String lastClazz = map.getLastClazz();
 				if (lastClazz != null && lastClazz.lastIndexOf(".") == pos)
-					if (clazzName.substring(0, pos).equals(
-							lastClazz.substring(0, pos))) {
-						byte[] bytes = clazzName.substring(pos + 1)
-								.getBytes(getCharset());
-						msg.add(new ByteEntity().withValue(
-								DATATYPE_CLAZZPACKAGE, bytes));
+					if (clazzName.substring(0, pos).equals(lastClazz.substring(0, pos))) {
+						byte[] bytes = clazzName.substring(pos + 1).getBytes(getCharset());
+						msg.add(new ByteEntity().withValue(DATATYPE_CLAZZPACKAGE, bytes));
 						return true;
 					}
 			}
 			byte[] bytes = clazzName.getBytes(getCharset());
-			msg.add(new ByteEntity().withValue(DATATYPE_CLAZZNAME,
-					bytes));
+			msg.add(new ByteEntity().withValue(DATATYPE_CLAZZNAME, bytes));
 			return true;
 		} catch (Exception e) {
 		}
@@ -201,7 +196,7 @@ public class ByteTokener extends Tokener {
 
 		if (creator instanceof SendableEntityCreatorTag) {
 			String tag = ((SendableEntityCreatorTag) creator).getTag();
-			if(tag != null) {
+			if (tag != null) {
 				byte cId = tag.getBytes(Charset.forName(BaseItem.ENCODING))[0];
 				msg.add(new ByteEntity().withValue(ByteTokener.DATATYPE_CLAZZID, cId));
 			}
@@ -245,8 +240,7 @@ public class ByteTokener extends Tokener {
 			// Map, List, Assocs
 			if (value instanceof Collection<?>) {
 				Collection<?> list = (Collection<?>) value;
-				ByteList byteList = new ByteList()
-						.withType(ByteTokener.DATATYPE_LIST);
+				ByteList byteList = new ByteList().withType(ByteTokener.DATATYPE_LIST);
 				for (Object childValue : list) {
 					ByteItem child = encodeValue(childValue, filter);
 					if (child != null) {
@@ -256,15 +250,13 @@ public class ByteTokener extends Tokener {
 				return byteList;
 			}
 			if (value instanceof Map<?, ?>) {
-				ByteList byteList = new ByteList()
-						.withType(ByteTokener.DATATYPE_MAP);
+				ByteList byteList = new ByteList().withType(ByteTokener.DATATYPE_MAP);
 				Map<?, ?> map = (Map<?, ?>) value;
 				ByteItem child;
 
 				for (Iterator<?> i = map.entrySet().iterator(); i.hasNext();) {
 					java.util.Map.Entry<?, ?> entity = (java.util.Map.Entry<?, ?>) i.next();
-					ByteList item = new ByteList()
-							.withType(ByteTokener.DATATYPE_CHECK);
+					ByteList item = new ByteList().withType(ByteTokener.DATATYPE_CHECK);
 
 					child = encodeValue(entity.getKey(), filter);
 					if (child != null) {
@@ -288,15 +280,15 @@ public class ByteTokener extends Tokener {
 	/**
 	 * Decode.
 	 *
-	 * @param buffer			the in buffer
-	 * @param eventCreater		the Creator as Factory
-	 * @param map 				the MapEntry for decoding-runtime values
-	 * @return 					the object
+	 * @param buffer       the in buffer
+	 * @param eventCreater the Creator as Factory
+	 * @param map          the MapEntry for decoding-runtime values
+	 * @return the object
 	 */
 	public Object decodeClazz(Buffer buffer, SendableEntityCreator eventCreater, MapEntity map) {
 		if (eventCreater == null) {
-			ByteMessage  e = new ByteMessage();
-			if(buffer != null)
+			ByteMessage e = new ByteMessage();
+			if (buffer != null)
 				e.withValue(buffer.array(-1, true));
 			return e;
 		}
@@ -313,12 +305,10 @@ public class ByteTokener extends Tokener {
 						List<?> list = (List<?>) value;
 						for (Iterator<?> i = list.iterator(); i.hasNext();) {
 							Object item = i.next();
-							eventCreater.setValue(entity, property, item,
-									SendableEntityCreator.NEW);
+							eventCreater.setValue(entity, property, item, SendableEntityCreator.NEW);
 						}
 					} else {
-						eventCreater.setValue(entity, property, value,
-								SendableEntityCreator.NEW);
+						eventCreater.setValue(entity, property, value, SendableEntityCreator.NEW);
 					}
 				}
 			}
@@ -327,14 +317,14 @@ public class ByteTokener extends Tokener {
 	}
 
 	public Object decodeValue(ByteEntity entity, MapEntity map) {
-		if(entity == null){
+		if (entity == null) {
 			return null;
 		}
 		byte type = entity.getType();
 		ByteBuffer buffer = new ByteBuffer();
 		Object value = entity.getValue(ByteEntity.VALUE);
-		if(value!=null) {
-			buffer.with((byte[])value);
+		if (value != null) {
+			buffer.with((byte[]) value);
 		}
 		return decodeValue(type, buffer, buffer.length(), map);
 	}
@@ -343,8 +333,8 @@ public class ByteTokener extends Tokener {
 	 * Gets the decode object.
 	 *
 	 * @param current The CurrentChar (Type of value)
-	 * @param buffer the Buffer for decoding
-	 * @param map decoding Runtime values
+	 * @param buffer  the Buffer for decoding
+	 * @param map     decoding Runtime values
 	 * @return the decode object
 	 */
 	public Object decodeValue(byte current, Buffer buffer, MapEntity map) {
@@ -360,10 +350,11 @@ public class ByteTokener extends Tokener {
 
 	/**
 	 * Gets the decode object.
-	 * @param type The CurrentChar (Type of value)
+	 * 
+	 * @param type   The CurrentChar (Type of value)
 	 * @param buffer the byteBuffer
-	 * @param end EndIndex
-	 * @param map decoding Runtimevalue
+	 * @param end    EndIndex
+	 * @param map    decoding Runtimevalue
 	 * @return the decode object
 	 */
 	public Object decodeValue(byte type, Buffer buffer, int end, MapEntity map) {
@@ -431,15 +422,15 @@ public class ByteTokener extends Tokener {
 			type = buffer.getByte();
 			String id;
 			try {
-				id = new String(new byte[]{type}, BaseItem.ENCODING);
+				id = new String(new byte[] { type }, BaseItem.ENCODING);
 			} catch (UnsupportedEncodingException e) {
 				id = "";
 			}
 			SendableEntityCreator eventCreater = getCreator(id, true, null);
-			if(eventCreater == null) {
+			if (eventCreater == null) {
 				SimpleKeyValueList<String, SendableEntityCreator> creators = getMap().getCreators();
-				for(int i=0;i<creators.size();i++) {
-					if(creators.getKeyByIndex(i).startsWith(id)) {
+				for (int i = 0; i < creators.size(); i++) {
+					if (creators.getKeyByIndex(i).startsWith(id)) {
 						eventCreater = creators.getValueByIndex(i);
 						break;
 					}
@@ -497,8 +488,7 @@ public class ByteTokener extends Tokener {
 					if (subValues != null && subValues instanceof List<?>) {
 						List<?> list = (List<?>) subValues;
 						if (list.size() == 2) {
-							values.add(new ObjectMapEntry().with(list.get(0),
-									list.get(1)));
+							values.add(new ObjectMapEntry().with(list.get(0), list.get(1)));
 						}
 					} else {
 						break;
@@ -525,13 +515,14 @@ public class ByteTokener extends Tokener {
 		super.withMap(map);
 		return this;
 	}
-	
+
 	public static final byte[] intToByte(int value) {
-		byte[] result=new byte[4];
+		byte[] result = new byte[4];
 		result[0] = (byte) (value >>> 24);
 		result[1] = (byte) (value >>> 16);
 		result[2] = (byte) (value >>> 8);
-		result[3] = (byte) (value & 0xff);;
+		result[3] = (byte) (value & 0xff);
+		;
 		return result;
 	}
 }

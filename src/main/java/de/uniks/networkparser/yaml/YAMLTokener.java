@@ -36,78 +36,78 @@ import de.uniks.networkparser.list.SimpleList;
 public class YAMLTokener extends Tokener {
 	public final static char DASH = '-';
 	public final static String STOPCHARS = "=# ";
-	public static final char RETURN='\n';
+	public static final char RETURN = '\n';
 	private SimpleKeyValueList<Object, SimpleKeyValueList<String, SimpleList<String>>> refs;
 
 	@Override
 	public EntityList parseToEntity(EntityList entity, Buffer buffer) {
-		parseLine(0, entity,buffer);
+		parseLine(0, entity, buffer);
 		return entity;
 	}
 
 	protected int parseLine(int deep, EntityList owner, Buffer buffer) {
 		char c = buffer.getCurrentChar();
 		int newDeep = 0;
-		boolean read=false;
+		boolean read = false;
 		BaseItem item = null;
 		do {
-			if(read) {
+			if (read) {
 				c = buffer.getChar();
 			}
-			read=true;
-			if(c == BufferItem.SPACE) {
+			read = true;
+			if (c == BufferItem.SPACE) {
 				newDeep++;
 				continue;
 			}
-			if(newDeep<deep) {
+			if (newDeep < deep) {
 				return newDeep;
 			}
-			if(c == '\r') {
+			if (c == '\r') {
 				c = buffer.getChar();
 			}
-			if(c == '\n') {
+			if (c == '\n') {
 				// Next Line
 				parseLine(newDeep, owner, buffer);
-				c=0;
+				c = 0;
 				continue;
 			}
 			// Parsing the CurrentLine
 
 			CharacterBuffer subBuffer = null;
 			switch (c) {
-				case 0:
-					break;
-				case ENTER:
-					break;
-				case '-':
-					c = buffer.getChar();
-					// Must be a Space
-					if(c == BufferItem.SPACE) {
-						// Collection
-						if(deep <= newDeep) {
-							// Add to Current List
-							item = owner.getNewList(false);
+			case 0:
+				break;
+			case ENTER:
+				break;
+			case '-':
+				c = buffer.getChar();
+				// Must be a Space
+				if (c == BufferItem.SPACE) {
+					// Collection
+					if (deep <= newDeep) {
+						// Add to Current List
+						item = owner.getNewList(false);
 
-						} else {
-							item = owner.getNewList(true);
-						}
+					} else {
+						item = owner.getNewList(true);
 					}
-					// Must be a String so its default
+				}
+				// Must be a String so its default
 //					break;
-				default:
-					if(subBuffer == null) {
-						subBuffer = new CharacterBuffer();
-					}
-					subBuffer.with(c);
-					break;
+			default:
+				if (subBuffer == null) {
+					subBuffer = new CharacterBuffer();
+				}
+				subBuffer.with(c);
+				break;
 			}
-		}while(c!=0);
-		if(buffer != null && owner != null) {
-			if(item == null) {
+		} while (c != 0);
+		if (buffer != null && owner != null) {
+			if (item == null) {
 				item = owner.getNewList(false);
 			}
-			if( item instanceof YamlItem) {
-				((YamlItem)item).withKey(buffer.toString());
+			if (item instanceof YamlItem) {
+				((YamlItem) item).withKey(buffer.toString());
 			}
 			owner.add(item);
 		}
@@ -136,26 +136,26 @@ public class YAMLTokener extends Tokener {
 			if (key.endsWith(":", true)) {
 				// usual
 				Object returnValue = parseUsualObjectAttrs(key, buffer);
-				if(root == null) {
+				if (root == null) {
 					root = returnValue;
 				}
 				continue;
 			}
-			parseObjectTableAttrs(key,buffer);
+			parseObjectTableAttrs(key, buffer);
 		}
 
 		// CHECK IF REF NOT EMPTY
-		if(refs.size()>0) {
-			for(int o=0;o<refs.size();o++) {
+		if (refs.size() > 0) {
+			for (int o = 0; o < refs.size(); o++) {
 				Object entity = refs.getKeyByIndex(o);
 				SendableEntityCreator creator = map.getCreatorClass(entity);
 				SimpleKeyValueList<String, SimpleList<String>> entityRefs = refs.getValueByIndex(o);
-				for(int r=0;r<entityRefs.size();r++) {
+				for (int r = 0; r < entityRefs.size(); r++) {
 					String attribute = entityRefs.getKeyByIndex(r);
 					SimpleList<String> valueRefs = entityRefs.getValueByIndex(r);
-					for(String ref : valueRefs) {
+					for (String ref : valueRefs) {
 						Object value = map.getObject(ref);
-						if(value != null) {
+						if (value != null) {
 							creator.setValue(entity, attribute, value, SendableEntityCreator.NEW);
 						}
 					}
@@ -167,7 +167,7 @@ public class YAMLTokener extends Tokener {
 
 	private void parseObjectTableAttrs(CharacterBuffer currentToken, Buffer buffer) {
 		// skip column names
-		if(currentToken == null || map == null) {
+		if (currentToken == null || map == null) {
 			return;
 		}
 		String className = currentToken.toString();
@@ -180,7 +180,7 @@ public class YAMLTokener extends Tokener {
 		while (currentToken.length() > 0 && currentToken.endsWith(":", true)) {
 			colNameList.add(currentToken.rtrim(COLON).toString());
 			buffer.skipChar(BufferItem.SPACE);
-			if(buffer.getCurrentChar()==RETURN) {
+			if (buffer.getCurrentChar() == RETURN) {
 				currentToken = buffer.nextString();
 				break;
 			}
@@ -192,14 +192,15 @@ public class YAMLTokener extends Tokener {
 			currentToken = buffer.nextString();
 
 			Object obj = map.getObject(objectId);
-			if(obj == null) {
+			if (obj == null) {
 				obj = creator.getSendableInstance(false);
 				map.put(objectId, obj, false);
 			}
 
 			// column values
 			int colNum = 0;
-			while (currentToken.length() > 0 && !currentToken.endsWith(":", true) && currentToken.equals("-") == false) {
+			while (currentToken.length() > 0 && !currentToken.endsWith(":", true)
+					&& currentToken.equals("-") == false) {
 				String attrName = colNameList.get(colNum);
 
 				if (currentToken.startsWith("[")) {
@@ -233,7 +234,7 @@ public class YAMLTokener extends Tokener {
 	}
 
 	private Object parseUsualObjectAttrs(CharacterBuffer currentToken, Buffer buffer) {
-		if(buffer == null || currentToken == null || map == null) {
+		if (buffer == null || currentToken == null || map == null) {
 			return null;
 		}
 		String objectId = currentToken.trimEnd(1).toString();
@@ -243,7 +244,7 @@ public class YAMLTokener extends Tokener {
 		SendableEntityCreator creator = map.getCreator(className, false);
 
 		Object obj = map.getObject(objectId);
-		if(obj == null) {
+		if (obj == null) {
 			obj = creator.getSendableInstance(false);
 			map.put(objectId, obj, false);
 		}
@@ -258,15 +259,15 @@ public class YAMLTokener extends Tokener {
 				setValue(creator, obj, attrName, attrValue);
 				currentToken = buffer.nextString();
 			}
-			if(currentToken.equals("-")) {
+			if (currentToken.equals("-")) {
 				buffer.withLookAHead('-');
 			}
 		}
 		return obj;
 	}
 
-	private boolean setValue(SendableEntityCreator creator, Object obj, String attrName, String attrValue)  {
-		if(map == null) {
+	private boolean setValue(SendableEntityCreator creator, Object obj, String attrName, String attrValue) {
+		if (map == null) {
 			return false;
 		}
 		Object targetObj = map.getObject(attrValue);
@@ -280,9 +281,9 @@ public class YAMLTokener extends Tokener {
 		}
 		SimpleKeyValueList<String, SimpleList<String>> values = refs.get(obj);
 		try {
-			if(values != null) {
+			if (values != null) {
 				SimpleList<String> valueNames = values.get(attrName);
-				if(valueNames != null) {
+				if (valueNames != null) {
 					valueNames.add(attrValue);
 					return true;
 				}
@@ -295,7 +296,7 @@ public class YAMLTokener extends Tokener {
 				refs.put(obj, values);
 			}
 			SimpleList<String> valueNames = values.get(attrName);
-			if(valueNames != null) {
+			if (valueNames != null) {
 				valueNames.add(attrValue);
 			} else {
 				valueNames = new SimpleList<String>();

@@ -45,48 +45,46 @@ public class StoryStepDiagram implements ObjectCondition {
 
 	@Override
 	public boolean update(Object value) {
-		if(value instanceof SimpleEvent == false) {
+		if (value instanceof SimpleEvent == false) {
 			return false;
 		}
 		SimpleEvent evt = (SimpleEvent) value;
 		HTMLEntity element = (HTMLEntity) evt.getNewValue();
 		Story story = (Story) evt.getSource();
 
-		if(this.model != null) {
-			for(String item : HTMLEntity.GRAPHRESOURCES) {
-				if(element.getHeader(item) == null) {
+		if (this.model != null) {
+			for (String item : HTMLEntity.GRAPHRESOURCES) {
+				if (element.getHeader(item) == null) {
 					// DEFAULT TO EXTRACT TO DOC-FOLDER
 					Story.addScript(story.getPath(), item, element);
 				}
 			}
 			element.withGraph(this.model, null);
-		}else if(filter!= null){
+		} else if (filter != null) {
 			// Objectdiagramm
 			IdMap map = story.getMap();
 			// Save all Names
 			SimpleKeyValueList<Object, String> ids = filter.getIds();
-			for(int i=0;i<ids.size();i++) {
+			for (int i = 0; i < ids.size(); i++) {
 				Object obj = ids.getKeyByIndex(i);
 				String name = ids.getValueByIndex(i);
 				map.put(name, obj, false);
 			}
-			 JsonArray jsonArray = new JsonArray();
-			
+			JsonArray jsonArray = new JsonArray();
 
 			SimpleList<Object> elements = filter.getElements();
 			// Add All Elements to JsonArray
-			for(Object object : elements) {
+			for (Object object : elements) {
 				JsonObject jsonObject = map.toJsonObject(object, filter);
 				jsonArray.add(jsonObject);
 			}
 
 			// add icons
 			SimpleKeyValueList<String, String> images = filter.getImages();
-			for(int i=0;i<images.size();i++) {
+			for (int i = 0; i < images.size(); i++) {
 				String id = images.getKeyByIndex(i);
 				JsonObject jsonObject = jsonArray.get(id);
-				if (jsonObject != null)
-				{
+				if (jsonObject != null) {
 					String image = images.getValueByIndex(i);
 					jsonObject.put("head", new JsonObject().withKeyValue("src", image));
 				}
@@ -103,28 +101,29 @@ public class StoryStepDiagram implements ObjectCondition {
 		this.model = model;
 		return this;
 	}
+
 	public void withFilter(StoryObjectFilter filter) {
 		this.filter = filter;
 	}
-	
+
 	public GraphModel createUseCaseDiagram() {
 		GraphList useCase = new GraphList();
 		this.model = useCase;
 		useCase.withType(GraphTokener.OBJECTDIAGRAM);
 		return model;
 	}
-	
+
 	public GraphImage cretaeActor() {
 		GraphImage actor = GraphImage.createActor();
-		if(this.model != null) {
+		if (this.model != null) {
 			this.model.add(actor);
 		}
 		return actor;
 	}
-	
+
 	public GraphNode createElement(String value) {
 		GraphNode node = new GraphNode().with(value);
-		if(this.model != null) {
+		if (this.model != null) {
 			this.model.add(node);
 		}
 		return node;

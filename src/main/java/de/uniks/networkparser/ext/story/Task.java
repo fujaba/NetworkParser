@@ -210,7 +210,7 @@ public class Task extends SendableItem {
 	public Task withoutPart(PartTask... value) {
 		for (PartTask item : value) {
 			if (this.part != null && item != null) {
-				this.part.remove((Object)item);
+				this.part.remove((Object) item);
 			}
 		}
 		return this;

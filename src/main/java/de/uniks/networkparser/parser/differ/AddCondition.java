@@ -24,30 +24,31 @@ public class AddCondition extends MatchCondition {
 	protected boolean calculateFileDiffs(GraphModel model, GraphMatcher matches, Match match) {
 		GraphMember member = match.getMatch();
 		Clazz clazz = member.getClazz();
-		if(member instanceof Clazz) {
-			Match addToCode = Match.create(model, this, GraphModel.PROPERTY_CLAZZ,  null, clazz);
+		if (member instanceof Clazz) {
+			Match addToCode = Match.create(model, this, GraphModel.PROPERTY_CLAZZ, null, clazz);
 
 			matches.addDiff(addToCode);
-			
+
 			for (String modifier : clazz.getModifier().toString().split(" ")) {
 				if (modifier.equals("public") == false) {
 					Match addModifierInCode = Match.create(clazz, this, Clazz.PROPERTY_MODIFIERS, null, modifier);
 					matches.addDiff(addModifierInCode);
 				}
 			}
-			
+
 			if (clazz.getType().equals(Clazz.TYPE_INTERFACE)) {
-				Match updateTypeInCode = Match.create(clazz, this, Clazz.PROPERTY_TYPE, Clazz.TYPE_CLASS, Clazz.TYPE_INTERFACE);
+				Match updateTypeInCode = Match.create(clazz, this, Clazz.PROPERTY_TYPE, Clazz.TYPE_CLASS,
+						Clazz.TYPE_INTERFACE);
 				matches.addDiff(updateTypeInCode);
 			}
 			return true;
 		}
 
 		Match clazzMatch = matches.getClazzMatch(clazz);
-		if(member instanceof Association) {
+		if (member instanceof Association) {
 			Clazz destination = clazz;
 			Match otherMatch = matches.getClazzMatch(clazz);
-			if(otherMatch.isMetaMatch()) {
+			if (otherMatch.isMetaMatch()) {
 				destination = (Clazz) otherMatch.getMetaMatch();
 			}
 
@@ -55,7 +56,7 @@ public class AddCondition extends MatchCondition {
 			matches.addDiff(addToCode);
 			return true;
 		}
-		if(clazzMatch.isMetaMatch()) {
+		if (clazzMatch.isMetaMatch()) {
 			Clazz destination = (Clazz) clazzMatch.getMetaMatch();
 
 			Match addToCode = Match.create(destination, this, GraphMember.PROPERTY_CHILD, null, member);
@@ -63,9 +64,10 @@ public class AddCondition extends MatchCondition {
 		}
 		return true;
 	}
+
 	@Override
 	protected boolean checkModelCondition(GraphMatcher matches, Match match) {
-		if(match.getMatch() instanceof Association)  {
+		if (match.getMatch() instanceof Association) {
 			return checkCondition(matches, match);
 		}
 		return true;
@@ -75,41 +77,42 @@ public class AddCondition extends MatchCondition {
 	protected boolean calculateModelDiffs(GraphModel model, GraphMatcher matches, Match match) {
 		GraphMember member = match.getMatch();
 		Clazz clazz = member.getClazz();
-		if(member instanceof Clazz) {
+		if (member instanceof Clazz) {
 			Match add = Match.create(model, this, GraphModel.PROPERTY_CLAZZ, null, clazz);
 			matches.addDiff(add);
-			
+
 			for (String modifier : clazz.getModifier().toString().split(" ")) {
 				if (modifier.equals("public") == false) {
 					Match addModifier = Match.create(clazz, this, Clazz.PROPERTY_MODIFIERS, null, modifier);
 					matches.addDiff(addModifier);
 				}
 			}
-			
+
 			if (clazz.getType().equals(Clazz.TYPE_INTERFACE)) {
-				Match updateType = Match.create(clazz, this, Clazz.PROPERTY_TYPE, Clazz.TYPE_CLASS, Clazz.TYPE_INTERFACE);
+				Match updateType = Match.create(clazz, this, Clazz.PROPERTY_TYPE, Clazz.TYPE_CLASS,
+						Clazz.TYPE_INTERFACE);
 				matches.addDiff(updateType);
 			}
 			return true;
 		}
-	
-		if(member instanceof Association) {
+
+		if (member instanceof Association) {
 			Clazz destination = clazz;
 			Match otherMatch = matches.getClazzMatch(clazz);
-			if(otherMatch.isMetaMatch()) {
+			if (otherMatch.isMetaMatch()) {
 				destination = (Clazz) otherMatch.getMetaMatch();
 			}
 			if (otherMatch != null) {
 				destination = (Clazz) otherMatch.getMatch();
 			}
-			
+
 			Match add = Match.create(destination, this, Clazz.PROPERTY_ASSOCIATION, null, member);
 			matches.addDiff(add);
 			return true;
 		}
 
 		Match clazzMatch = matches.getClazzMatch(clazz).getOtherMatch();
-		if(clazzMatch != null) {
+		if (clazzMatch != null) {
 //		if(clazzMatch.isMetaMatch()) {
 			Clazz destination = (Clazz) clazzMatch.getMatch();
 
@@ -121,9 +124,9 @@ public class AddCondition extends MatchCondition {
 
 	protected boolean checkCondition(GraphMatcher matches, Match match) {
 		GraphMember member = match.getMatch();
-		if(member instanceof Association) {
+		if (member instanceof Association) {
 			Association association = (Association) match.getMatch();
-			
+
 			if (((association.getType().equals(AssociationTypes.EDGE)
 					&& association.getOther().getType().equals(AssociationTypes.UNDIRECTIONAL))
 					|| (association.getType().equals(AssociationTypes.ASSOCIATION)
@@ -139,5 +142,4 @@ public class AddCondition extends MatchCondition {
 		return SendableEntityCreator.NEW;
 	}
 
-	
 }

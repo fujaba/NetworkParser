@@ -29,13 +29,12 @@ public class ByteConverterString extends ByteConverter {
 	/**
 	 * To simple string.
 	 *
-	 * @param values
-	 *			the bytes
+	 * @param values the bytes
 	 * @return the string
 	 */
 	@Override
 	public String toString(BufferedBuffer values) {
-		if(values == null) {
+		if (values == null) {
 			return null;
 		}
 		StringBuilder returnValue = new StringBuilder(values.length());
@@ -48,13 +47,12 @@ public class ByteConverterString extends ByteConverter {
 	/**
 	 * To byte string.
 	 *
-	 * @param value
-	 *			the hex string
+	 * @param value the hex string
 	 * @return the byte[]
 	 */
 	@Override
 	public byte[] decode(CharSequence value) {
-		if(value == null) {
+		if (value == null) {
 			return null;
 		}
 		byte[] out = new byte[value.length()];

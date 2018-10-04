@@ -24,12 +24,12 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-public class TokenBuffer extends CharacterBuffer{
-	//	private boolean isString = true;
+public class TokenBuffer extends CharacterBuffer {
+	// private boolean isString = true;
 	private int startToken = -1;
 
 	public CharSequence getToken(CharSequence defaultText) {
-		if(this.startToken < 0) {
+		if (this.startToken < 0) {
 			nextClean(false);
 			return defaultText;
 		}

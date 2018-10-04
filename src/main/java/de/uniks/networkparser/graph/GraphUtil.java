@@ -55,40 +55,40 @@ public class GraphUtil {
 		score += Math.abs(source.length() - other.length());
 		return score;
 	}
-	
+
 	public static final boolean isGenerate(GraphMember member) {
 		return member.isGenerate;
 	}
 
 	public static final void setGenerate(GraphMember member, boolean value) {
-		if(member != null) {
-			member.isGenerate =value;
+		if (member != null) {
+			member.isGenerate = value;
 		}
 	}
-	
+
 	public static final boolean setRole(GraphMember member, ObjectCondition value) {
-		if(member != null) {
+		if (member != null) {
 			member.withRole(value);
 			return true;
 		}
 		return false;
 	}
-	
+
 	public static final ObjectCondition getRole(GraphMember member) {
-		if(member != null) {
+		if (member != null) {
 			return member.getRole();
 		}
 		return null;
 	}
 
-	
 	public static final boolean setChildren(GraphMember member, GraphMember child) {
-		if(member != null) {
+		if (member != null) {
 			member.withChildren(child);
 			return true;
 		}
 		return false;
 	}
+
 	public static double compareType(String sourceType, String otherType) {
 		if (EntityUtil.isNumericType(sourceType) && EntityUtil.isNumericType(otherType)) {
 			return 0;
@@ -101,8 +101,7 @@ public class GraphUtil {
 		}
 		return -1;
 	}
-	
-	
+
 	public static final String getPackage(Class<?> classObj) {
 		if (classObj != null) {
 			return getPackage(classObj.getName());
@@ -222,15 +221,16 @@ public class GraphUtil {
 		return (assoc.getOtherType() == AssociationTypes.ASSOCIATION
 				|| assoc.getOtherType() == AssociationTypes.UNDIRECTIONAL) && assoc.getType() == AssociationTypes.EDGE;
 	}
-	
+
 	public static final boolean isAssociation(Association assoc) {
-		if(assoc == null || assoc.getOther() == null) {
+		if (assoc == null || assoc.getOther() == null) {
 			return false;
 		}
-		if(isUndirectional(assoc)) {
+		if (isUndirectional(assoc)) {
 			return true;
 		}
-		return (assoc.getType() == AssociationTypes.ASSOCIATION && assoc.getOther().getType() == AssociationTypes.ASSOCIATION);
+		return (assoc.getType() == AssociationTypes.ASSOCIATION
+				&& assoc.getOther().getType() == AssociationTypes.ASSOCIATION);
 	}
 
 	public static final boolean isInterfaceAssociation(Association assoc) {
@@ -251,15 +251,14 @@ public class GraphUtil {
 		ModifierSet set = new ModifierSet();
 		Modifier modifier = member.getModifier();
 		set.add(modifier);
-		for(GraphMember child : modifier.getChildren()) {
-			if(child instanceof Modifier) {
+		for (GraphMember child : modifier.getChildren()) {
+			if (child instanceof Modifier) {
 				set.add(child);
 			}
 		}
 		return set;
 	}
 
-	
 	public static final SimpleSet<Association> getOtherAssociations(Clazz clazz) {
 		SimpleSet<Association> collection = new SimpleSet<Association>();
 		for (Association assoc : clazz.getAssociations()) {
@@ -271,17 +270,17 @@ public class GraphUtil {
 	public static final GraphSimpleSet getChildren(GraphMember item) {
 		return item.getChildren();
 	}
-	
+
 	public static final GraphSimpleSet getGraphDiff(GraphSimpleSet owner, GraphMember item) {
-		if(item == null) {
+		if (item == null) {
 			return owner;
 		}
-		if(owner == null) {
+		if (owner == null) {
 			owner = new GraphSimpleSet();
 		}
 		GraphSimpleSet children = item.getChildren();
-		for(GraphMember member : children) {
-			if(member instanceof Match) {
+		for (GraphMember member : children) {
+			if (member instanceof Match) {
 				owner.add(member);
 				continue;
 			}
@@ -321,7 +320,7 @@ public class GraphUtil {
 			Clazz clazz = (Clazz) value;
 			GraphSimpleSet collection = clazz.getChildren();
 			GraphMember[] list = collection.toArray(new GraphMember[collection.size()]);
-			for(GraphMember item : list) {
+			for (GraphMember item : list) {
 				clazz.remove(item);
 			}
 		}
@@ -420,25 +419,25 @@ public class GraphUtil {
 		}
 		return null;
 	}
-	
+
 	public static final String createType(String value) {
-		if(value == null) {
+		if (value == null) {
 			return Clazz.TYPE_CLASS;
 		}
 		String trim = value.trim().toLowerCase();
-		if(trim.equals(Clazz.TYPE_ENUMERATION)) {
+		if (trim.equals(Clazz.TYPE_ENUMERATION)) {
 			return Clazz.TYPE_ENUMERATION;
 		}
-		if(trim.equals(Clazz.TYPE_INTERFACE)) {
+		if (trim.equals(Clazz.TYPE_INTERFACE)) {
 			return Clazz.TYPE_INTERFACE;
 		}
-		if(trim.equals(Clazz.TYPE_CREATOR)) {
+		if (trim.equals(Clazz.TYPE_CREATOR)) {
 			return Clazz.TYPE_CREATOR;
 		}
-		if(trim.equals(Clazz.TYPE_SET)) {
+		if (trim.equals(Clazz.TYPE_SET)) {
 			return Clazz.TYPE_SET;
 		}
-		if(trim.equals(Clazz.TYPE_PATTERNOBJECT)) {
+		if (trim.equals(Clazz.TYPE_PATTERNOBJECT)) {
 			return Clazz.TYPE_PATTERNOBJECT;
 		}
 		return Clazz.TYPE_CLASS;
@@ -458,12 +457,12 @@ public class GraphUtil {
 		type.value = value;
 		return type;
 	}
-	
+
 	public static final int createCardinality(String value) {
-		if("one".equalsIgnoreCase(value) || "1".equalsIgnoreCase(value) ) {
+		if ("one".equalsIgnoreCase(value) || "1".equalsIgnoreCase(value)) {
 			return Association.ONE;
 		}
-		if("many".equalsIgnoreCase(value) || "n".equalsIgnoreCase(value) ) {
+		if ("many".equalsIgnoreCase(value) || "n".equalsIgnoreCase(value)) {
 			return Association.MANY;
 		}
 		return 0;
@@ -472,19 +471,19 @@ public class GraphUtil {
 	public static final String getGraphPath(GraphModel value) {
 		return value.genPath;
 	}
-	
+
 	public static final void setGraphPath(GraphModel model, String value) {
 		model.genPath = value;
 	}
 
 	public static final void without(GraphMember model, GraphMember child) {
-		if(model != null) {
+		if (model != null) {
 			model.withChildren(child);
 		}
 	}
-	
+
 	public static final String getCardinaltiy(int value) {
-		if(value == Association.ONE) {
+		if (value == Association.ONE) {
 			return "ONE";
 		}
 		return "MANY";

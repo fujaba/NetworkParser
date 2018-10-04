@@ -21,20 +21,25 @@ import de.uniks.networkparser.converter.ByteConverterString;
  * This is the <b>slow, obvious code</b> version, written to follow the
  * algorithm specification as closely and clearly as possible. It's code was
  * originally derived from the illustrative Rijndael Java implementation
- * submitted to the AES process, and sourced from the <a
- * href="http://www.esat.kuleuven.ac.be/~rijmen/rijndael/rijndael.zip"> Rijndael
- * sample Java code</a>, but has been extensively adapted by Lawrie Brown to
- * suit the illustrative requirements of the crypto calc applets he has written
- * for his Cryptography courses at ADFA. The code has been tested using the AES
- * triples published in FIPS-197 App C.
+ * submitted to the AES process, and sourced from the
+ * <a href="http://www.esat.kuleuven.ac.be/~rijmen/rijndael/rijndael.zip">
+ * Rijndael sample Java code</a>, but has been extensively adapted by Lawrie
+ * Brown to suit the illustrative requirements of the crypto calc applets he has
+ * written for his Cryptography courses at ADFA. The code has been tested using
+ * the AES triples published in FIPS-197 App C.
  *
  * @author Joan Daemen, Vincent Rijmen, Lawrie Brown, Feb 2005 Improved by
- *		 Olivier Ligny, Aug 2012
+ *         Olivier Ligny, Aug 2012
  * @see <a href="http://www.unsw.adfa.edu.au/~lpb/">Lawrie Brown</a>
  * @see <a href="http://csrc.nist.gov/encryption/aes/">AES home page</a>
- * @see <a href="http://csrc.nist.gov/publications/fips/fips197/fips-197.pdf">FIPS-197 Standard</a>
- * @see <a href="http://www.esat.kuleuven.ac.be/~rijmen/rijndael/">Rijndael Home Page</a>
- * @see <a href="http://www.esat.kuleuven.ac.be/~rijmen/rijndael/rijndael.zip">Rijndael example Java code</a>
+ * @see <a href=
+ *      "http://csrc.nist.gov/publications/fips/fips197/fips-197.pdf">FIPS-197
+ *      Standard</a>
+ * @see <a href="http://www.esat.kuleuven.ac.be/~rijmen/rijndael/">Rijndael Home
+ *      Page</a>
+ * @see <a href=
+ *      "http://www.esat.kuleuven.ac.be/~rijmen/rijndael/rijndael.zip">Rijndael
+ *      example Java code</a>
  */
 
 public class AES {
@@ -57,25 +62,18 @@ public class AES {
 	 * See FIPS-197 section 5.1.1 or Stallings section 5.2. Note that hex values
 	 * have been converted to decimal for easy table specification in Java.
 	 */
-	static final byte[] S = {99, 124, 119, 123, -14, 107, 111, -59, 48, 1,
-			103, 43, -2, -41, -85, 118, -54, -126, -55, 125, -6, 89, 71, -16,
-			-83, -44, -94, -81, -100, -92, 114, -64, -73, -3, -109, 38, 54, 63,
-			-9, -52, 52, -91, -27, -15, 113, -40, 49, 21, 4, -57, 35, -61, 24,
-			-106, 5, -102, 7, 18, -128, -30, -21, 39, -78, 117, 9, -125, 44,
-			26, 27, 110, 90, -96, 82, 59, -42, -77, 41, -29, 47, -124, 83, -47,
-			0, -19, 32, -4, -79, 91, 106, -53, -66, 57, 74, 76, 88, -49, -48,
-			-17, -86, -5, 67, 77, 51, -123, 69, -7, 2, 127, 80, 60, -97, -88,
-			81, -93, 64, -113, -110, -99, 56, -11, -68, -74, -38, 33, 16, -1,
-			-13, -46, -51, 12, 19, -20, 95, -105, 68, 23, -60, -89, 126, 61,
-			100, 93, 25, 115, 96, -127, 79, -36, 34, 42, -112, -120, 70, -18,
-			-72, 20, -34, 94, 11, -37, -32, 50, 58, 10, 73, 6, 36, 92, -62,
-			-45, -84, 98, -111, -107, -28, 121, -25, -56, 55, 109, -115, -43,
-			78, -87, 108, 86, -12, -22, 101, 122, -82, 8, -70, 120, 37, 46, 28,
-			-90, -76, -58, -24, -35, 116, 31, 75, -67, -117, -118, 112, 62,
-			-75, 102, 72, 3, -10, 14, 97, 53, 87, -71, -122, -63, 29, -98, -31,
-			-8, -104, 17, 105, -39, -114, -108, -101, 30, -121, -23, -50, 85,
-			40, -33, -116, -95, -119, 13, -65, -26, 66, 104, 65, -103, 45, 15,
-			-80, 84, -69, 22 };
+	static final byte[] S = { 99, 124, 119, 123, -14, 107, 111, -59, 48, 1, 103, 43, -2, -41, -85, 118, -54, -126, -55,
+			125, -6, 89, 71, -16, -83, -44, -94, -81, -100, -92, 114, -64, -73, -3, -109, 38, 54, 63, -9, -52, 52, -91,
+			-27, -15, 113, -40, 49, 21, 4, -57, 35, -61, 24, -106, 5, -102, 7, 18, -128, -30, -21, 39, -78, 117, 9,
+			-125, 44, 26, 27, 110, 90, -96, 82, 59, -42, -77, 41, -29, 47, -124, 83, -47, 0, -19, 32, -4, -79, 91, 106,
+			-53, -66, 57, 74, 76, 88, -49, -48, -17, -86, -5, 67, 77, 51, -123, 69, -7, 2, 127, 80, 60, -97, -88, 81,
+			-93, 64, -113, -110, -99, 56, -11, -68, -74, -38, 33, 16, -1, -13, -46, -51, 12, 19, -20, 95, -105, 68, 23,
+			-60, -89, 126, 61, 100, 93, 25, 115, 96, -127, 79, -36, 34, 42, -112, -120, 70, -18, -72, 20, -34, 94, 11,
+			-37, -32, 50, 58, 10, 73, 6, 36, 92, -62, -45, -84, 98, -111, -107, -28, 121, -25, -56, 55, 109, -115, -43,
+			78, -87, 108, 86, -12, -22, 101, 122, -82, 8, -70, 120, 37, 46, 28, -90, -76, -58, -24, -35, 116, 31, 75,
+			-67, -117, -118, 112, 62, -75, 102, 72, 3, -10, 14, 97, 53, 87, -71, -122, -63, 29, -98, -31, -8, -104, 17,
+			105, -39, -114, -108, -101, 30, -121, -23, -50, 85, 40, -33, -116, -95, -119, 13, -65, -26, 66, 104, 65,
+			-103, 45, 15, -80, 84, -69, 22 };
 
 	/**
 	 * AES decryption S-box.
@@ -83,36 +81,28 @@ public class AES {
 	 * See FIPS-197 section 5.1.1 or Stallings section 5.2. Note that hex values
 	 * have been converted to decimal for easy table specification in Java.
 	 */
-	static final byte[] Si = {82, 9, 106, -43, 48, 54, -91, 56, -65, 64, -93,
-			-98, -127, -13, -41, -5, 124, -29, 57, -126, -101, 47, -1, -121,
-			52, -114, 67, 68, -60, -34, -23, -53, 84, 123, -108, 50, -90, -62,
-			35, 61, -18, 76, -107, 11, 66, -6, -61, 78, 8, 46, -95, 102, 40,
-			-39, 36, -78, 118, 91, -94, 73, 109, -117, -47, 37, 114, -8, -10,
-			100, -122, 104, -104, 22, -44, -92, 92, -52, 93, 101, -74, -110,
-			108, 112, 72, 80, -3, -19, -71, -38, 94, 21, 70, 87, -89, -115,
-			-99, -124, -112, -40, -85, 0, -116, -68, -45, 10, -9, -28, 88, 5,
-			-72, -77, 69, 6, -48, 44, 30, -113, -54, 63, 15, 2, -63, -81, -67,
-			3, 1, 19, -118, 107, 58, -111, 17, 65, 79, 103, -36, -22, -105,
-			-14, -49, -50, -16, -76, -26, 115, -106, -84, 116, 34, -25, -83,
-			53, -123, -30, -7, 55, -24, 28, 117, -33, 110, 71, -15, 26, 113,
-			29, 41, -59, -119, 111, -73, 98, 14, -86, 24, -66, 27, -4, 86, 62,
-			75, -58, -46, 121, 32, -102, -37, -64, -2, 120, -51, 90, -12, 31,
-			-35, -88, 51, -120, 7, -57, 49, -79, 18, 16, 89, 39, -128, -20, 95,
-			96, 81, 127, -87, 25, -75, 74, 13, 45, -27, 122, -97, -109, -55,
-			-100, -17, -96, -32, 59, 77, -82, 42, -11, -80, -56, -21, -69, 60,
-			-125, 83, -103, 97, 23, 43, 4, 126, -70, 119, -42, 38, -31, 105,
-			20, 99, 85, 33, 12, 125 };
+	static final byte[] Si = { 82, 9, 106, -43, 48, 54, -91, 56, -65, 64, -93, -98, -127, -13, -41, -5, 124, -29, 57,
+			-126, -101, 47, -1, -121, 52, -114, 67, 68, -60, -34, -23, -53, 84, 123, -108, 50, -90, -62, 35, 61, -18,
+			76, -107, 11, 66, -6, -61, 78, 8, 46, -95, 102, 40, -39, 36, -78, 118, 91, -94, 73, 109, -117, -47, 37, 114,
+			-8, -10, 100, -122, 104, -104, 22, -44, -92, 92, -52, 93, 101, -74, -110, 108, 112, 72, 80, -3, -19, -71,
+			-38, 94, 21, 70, 87, -89, -115, -99, -124, -112, -40, -85, 0, -116, -68, -45, 10, -9, -28, 88, 5, -72, -77,
+			69, 6, -48, 44, 30, -113, -54, 63, 15, 2, -63, -81, -67, 3, 1, 19, -118, 107, 58, -111, 17, 65, 79, 103,
+			-36, -22, -105, -14, -49, -50, -16, -76, -26, 115, -106, -84, 116, 34, -25, -83, 53, -123, -30, -7, 55, -24,
+			28, 117, -33, 110, 71, -15, 26, 113, 29, 41, -59, -119, 111, -73, 98, 14, -86, 24, -66, 27, -4, 86, 62, 75,
+			-58, -46, 121, 32, -102, -37, -64, -2, 120, -51, 90, -12, 31, -35, -88, 51, -120, 7, -57, 49, -79, 18, 16,
+			89, 39, -128, -20, 95, 96, 81, 127, -87, 25, -75, 74, 13, 45, -27, 122, -97, -109, -55, -100, -17, -96, -32,
+			59, 77, -82, 42, -11, -80, -56, -21, -69, 60, -125, 83, -103, 97, 23, 43, 4, 126, -70, 119, -42, 38, -31,
+			105, 20, 99, 85, 33, 12, 125 };
 
 	/**
 	 * AES key schedule round constant table.
 	 * <p>
 	 * See FIPS-197 section 5.1.1 or Stallings section 5.2. Note that hex values
-	 * have been converted to decimal for easy table specification in Java, and
-	 * that indexes start at 1, hence initial 0 entry.
+	 * have been converted to decimal for easy table specification in Java, and that
+	 * indexes start at 1, hence initial 0 entry.
 	 */
-	static final byte[] rcon = {0, 1, 2, 4, 8, 16, 32, 64, -128, 27, 54, 108,
-			-40, -85, 77, -102, 47, 94, -68, 99, -58, -105, 53, 106, -44, -77,
-			125, -6, -17, -59, -111 };
+	static final byte[] rcon = { 0, 1, 2, 4, 8, 16, 32, 64, -128, 27, 54, 108, -40, -85, 77, -102, 47, 94, -68, 99, -58,
+			-105, 53, 106, -44, -77, 125, -6, -17, -59, -111 };
 
 	/** Internal AES constants and variables. */
 	public static final int COL_SIZE = 4, // depth of each column in AES state
@@ -122,7 +112,7 @@ public class AES {
 			ROOT = 0x11B; // generator polynomial used in GF(2^8)
 
 	/** define ShiftRows transformation as shift amount for each row in state. */
-	static final int[] row_shift = {0, 1, 2, 3 };
+	static final int[] row_shift = { 0, 1, 2, 3 };
 
 	/* alog table for field GF(2^m) used to speed up multiplications. */
 	static final int[] alog = new int[256];
@@ -153,8 +143,8 @@ public class AES {
 	/**
 	 * return number of rounds for a given AES key size.
 	 *
-	 * @param keySize		size of the user key material in bytes.
-	 * @return 				number of rounds for a given AES key size.
+	 * @param keySize size of the user key material in bytes.
+	 * @return number of rounds for a given AES key size.
 	 */
 	public static int getRounds(int keySize) {
 		switch (keySize) {
@@ -172,23 +162,22 @@ public class AES {
 	 *
 	 * Using pre-computed log and alog tables for speed.
 	 *
-	 * @param a		first value to multiply
-	 * @param b		second value to multiply
-	 * @return 		product of a * b module its generator polynomial
+	 * @param a first value to multiply
+	 * @param b second value to multiply
+	 * @return product of a * b module its generator polynomial
 	 */
 	private int mul(int a, int b) {
-		return (a != 0 && b != 0) ? alog[(log[a & 0xFF] + log[b & 0xFF]) % 255]
-				: 0;
+		return (a != 0 && b != 0) ? alog[(log[a & 0xFF] + log[b & 0xFF]) % 255] : 0;
 	}
 
 	public CharacterBuffer encode(BufferedBuffer plain) {
 		CharacterBuffer result = new CharacterBuffer().withBufferLength(plain.length());
 		byte[] partByte;
-		for (int p = 0; p < plain.length(); p+=16) {
+		for (int p = 0; p < plain.length(); p += 16) {
 			partByte = encodeBlock(plain);
-			if(partByte != null) {
-				for(int pos =0;pos < BLOCK_SIZE; pos++) {
-					result.with((char)partByte[pos]);
+			if (partByte != null) {
+				for (int pos = 0; pos < BLOCK_SIZE; pos++) {
+					result.with((char) partByte[pos]);
 				}
 			}
 		}
@@ -198,18 +187,18 @@ public class AES {
 	public CharacterBuffer encode(String data) {
 		CharacterBuffer string = new CharacterBuffer().with(data);
 		int rest = ((int) data.length() / 32) * 32;
-		if(rest < data.length()) {
+		if (rest < data.length()) {
 			rest = 32 - data.length() + rest;
 			string.withRepeat(" ", rest);
 		}
 		CharacterBuffer result = new CharacterBuffer().withBufferLength(string.length());
 		byte[] partByte;
 		ByteBuffer buffer = new ByteBuffer().with(string.array(string.length(), true));
-		for (int p = 0; p < string.length(); p+=16) {
+		for (int p = 0; p < string.length(); p += 16) {
 			buffer.withPosition(p);
 			partByte = encodeBlock(buffer);
-			for(int pos =0;pos < BLOCK_SIZE; pos++) {
-				result.with((char)partByte[pos]);
+			for (int pos = 0; pos < BLOCK_SIZE; pos++) {
+				result.with((char) partByte[pos]);
 			}
 		}
 		return result;
@@ -219,12 +208,12 @@ public class AES {
 	 * AES encrypt 128-bit plaintext using key previously set.
 	 *
 	 * <p>
-	 * Follows cipher specification given in FIPS-197 section 5.1 See pseudo
-	 * code in Fig 5, and details in this section.
+	 * Follows cipher specification given in FIPS-197 section 5.1 See pseudo code in
+	 * Fig 5, and details in this section.
 	 *
-	 * @param plain		the 128-bit plaintext value to encrypt.
-	 * @param from		fromIndex of Array
-	 * @return 			the encrypted 128-bit ciphertext value.
+	 * @param plain the 128-bit plaintext value to encrypt.
+	 * @param from  fromIndex of Array
+	 * @return the encrypted 128-bit ciphertext value.
 	 */
 	private byte[] encodeBlock(BufferedBuffer plain) {
 		byte[] Ker; // encrypt keys for current round
@@ -242,11 +231,11 @@ public class AES {
 	 * AES encrypt 128-bit plaintext using key previously set.
 	 *
 	 * <p>
-	 * Follows cipher specification given in FIPS-197 section 5.1 See pseudo
-	 * code in Fig 5, and details in this section.
+	 * Follows cipher specification given in FIPS-197 section 5.1 See pseudo code in
+	 * Fig 5, and details in this section.
 	 *
-	 * @param plain		the 128-bit plaintext value to encrypt.
-	 * @return 			the encrypted 128-bit ciphertext value.
+	 * @param plain the 128-bit plaintext value to encrypt.
+	 * @return the encrypted 128-bit ciphertext value.
 	 */
 	public byte[] encodeBlock(byte[] plain) {
 		// check for bad arguments
@@ -285,10 +274,8 @@ public class AES {
 				i = col * COL_SIZE; // start index for this col
 				ta[i] = (byte) (mul(2, plain[i]) ^ mul(3, plain[i + 1]) ^ plain[i + 2] ^ plain[i + 3]);
 				ta[i + 1] = (byte) (plain[i] ^ mul(2, plain[i + 1]) ^ mul(3, plain[i + 2]) ^ plain[i + 3]);
-				ta[i + 2] = (byte) (plain[i] ^ plain[i + 1] ^ mul(2, plain[i + 2]) ^ mul(3,
-						plain[i + 3]));
-				ta[i + 3] = (byte) (mul(3, plain[i]) ^ plain[i + 1] ^ plain[i + 2] ^ mul(2,
-						plain[i + 3]));
+				ta[i + 2] = (byte) (plain[i] ^ plain[i + 1] ^ mul(2, plain[i + 2]) ^ mul(3, plain[i + 3]));
+				ta[i + 3] = (byte) (mul(3, plain[i]) ^ plain[i + 1] ^ plain[i + 2] ^ mul(2, plain[i + 3]));
 			}
 
 			// AddRoundKey(state) into a
@@ -321,17 +308,17 @@ public class AES {
 	public CharacterBuffer decode(CharSequence data) {
 		CharacterBuffer string = new CharacterBuffer().with(data);
 		int rest = ((int) data.length() / 32) * 32;
-		if(rest < data.length()) {
+		if (rest < data.length()) {
 			rest = 32 - data.length() + rest;
 			string.withRepeat(" ", rest);
 		}
 		CharacterBuffer result = new CharacterBuffer().withBufferLength(string.length());
 		byte[] partByte;
-		for (int p = 0; p < string.length(); p+=16) {
+		for (int p = 0; p < string.length(); p += 16) {
 			partByte = decodeBlock(string.toCharArray(), p);
-			if(partByte != null) {
-				for(int pos =0;pos < BLOCK_SIZE; pos++) {
-					result.with((char)partByte[pos]);
+			if (partByte != null) {
+				for (int pos = 0; pos < BLOCK_SIZE; pos++) {
+					result.with((char) partByte[pos]);
 				}
 			}
 		}
@@ -346,21 +333,21 @@ public class AES {
 	 * AES encrypt 128-bit plaintext using key previously set.
 	 *
 	 * <p>
-	 * Follows cipher specification given in FIPS-197 section 5.1 See pseudo
-	 * code in Fig 5, and details in this section.
+	 * Follows cipher specification given in FIPS-197 section 5.1 See pseudo code in
+	 * Fig 5, and details in this section.
 	 *
-	 * @param plain		the 128-bit plaintext value to encrypt.
-	 * @param from		fromIndex of Array
-	 * @return 			the encrypted 128-bit ciphertext value.
+	 * @param plain the 128-bit plaintext value to encrypt.
+	 * @param from  fromIndex of Array
+	 * @return the encrypted 128-bit ciphertext value.
 	 */
 	public byte[] decodeBlock(char[] plain, int from) {
-		byte[]		 // copy ciphertext bytes into state and do initial AddRoundKey(state)
+		byte[] // copy ciphertext bytes into state and do initial AddRoundKey(state)
 		Kdr = Kd[0];
 
 		byte[] a = new byte[BLOCK_SIZE];
 		int i;
 		for (i = 0; i < BLOCK_SIZE; i++) {
-			a[i] = (byte) (plain[i +from] ^ Kdr[i]);
+			a[i] = (byte) (plain[i + from] ^ Kdr[i]);
 		}
 		return decodeBlock(a);
 	}
@@ -369,11 +356,11 @@ public class AES {
 	 * AES decrypt 128-bit ciphertext using key previously set.
 	 *
 	 * <p>
-	 * Follows cipher specification given in FIPS-197 section 5.3 See pseudo
-	 * code in Fig 5, and details in this section.
+	 * Follows cipher specification given in FIPS-197 section 5.3 See pseudo code in
+	 * Fig 5, and details in this section.
 	 *
-	 * @param cipher	the 128-bit ciphertext value to decrypt.
-	 * @return 			the decrypted 128-bit plaintext value.
+	 * @param cipher the 128-bit ciphertext value to decrypt.
+	 * @return the decrypted 128-bit plaintext value.
 	 */
 	public byte[] decodeBlock(byte[] cipher) {
 		// check for bad arguments
@@ -413,14 +400,14 @@ public class AES {
 			// see FIPS-197 section 5.3.3
 			for (col = 0; col < NUM_COLS; col++) {
 				i = col * COL_SIZE; // start index for this col
-				cipher[i] = (byte) (mul(0x0e, ta[i]) ^ mul(0x0b, ta[i + 1])
-						^ mul(0x0d, ta[i + 2]) ^ mul(0x09, ta[i + 3]));
-				cipher[i + 1] = (byte) (mul(0x09, ta[i]) ^ mul(0x0e, ta[i + 1])
-						^ mul(0x0b, ta[i + 2]) ^ mul(0x0d, ta[i + 3]));
-				cipher[i + 2] = (byte) (mul(0x0d, ta[i]) ^ mul(0x09, ta[i + 1])
-						^ mul(0x0e, ta[i + 2]) ^ mul(0x0b, ta[i + 3]));
-				cipher[i + 3] = (byte) (mul(0x0b, ta[i]) ^ mul(0x0d, ta[i + 1])
-						^ mul(0x09, ta[i + 2]) ^ mul(0x0e, ta[i + 3]));
+				cipher[i] = (byte) (mul(0x0e, ta[i]) ^ mul(0x0b, ta[i + 1]) ^ mul(0x0d, ta[i + 2])
+						^ mul(0x09, ta[i + 3]));
+				cipher[i + 1] = (byte) (mul(0x09, ta[i]) ^ mul(0x0e, ta[i + 1]) ^ mul(0x0b, ta[i + 2])
+						^ mul(0x0d, ta[i + 3]));
+				cipher[i + 2] = (byte) (mul(0x0d, ta[i]) ^ mul(0x09, ta[i + 1]) ^ mul(0x0e, ta[i + 2])
+						^ mul(0x0b, ta[i + 3]));
+				cipher[i + 3] = (byte) (mul(0x0b, ta[i]) ^ mul(0x0d, ta[i + 1]) ^ mul(0x09, ta[i + 2])
+						^ mul(0x0e, ta[i + 3]));
 			}
 		}
 
@@ -459,7 +446,7 @@ public class AES {
 	 * Session keys will be saved in Ke and Kd instance variables, along with
 	 * numRounds being the number of rounds for this sized key.
 	 *
-	 * @param key		The 128/192/256-bit AES key to use.
+	 * @param key The 128/192/256-bit AES key to use.
 	 * @return success
 	 */
 	public AES withKey(byte[] key) throws IllegalArgumentException {
@@ -470,19 +457,19 @@ public class AES {
 		if (key.length == 16 || key.length == 24 || key.length == 32) {
 			// ok is valid
 			Klen = key.length;
-		} else if(key.length>32) {
+		} else if (key.length > 32) {
 			Klen = 32;
 		} else {
-			if(key.length>24) {
+			if (key.length > 24) {
 				Klen = 32;
-			} else if(key.length>16) {
+			} else if (key.length > 16) {
 				Klen = 24;
 			} else {
 				Klen = 16;
 			}
 			byte[] old = key;
 			key = new byte[Klen];
-			for(i=0;i<old.length;i++) {
+			for (i = 0; i < old.length; i++) {
 				key[i] = old[i];
 			}
 		}

@@ -24,8 +24,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 import java.util.Date;
+
 /**
  * The Class DateCreator.
+ * 
  * @author Stefan Lindel
  */
 
@@ -56,8 +58,7 @@ public class DateCreator implements SendableEntityCreatorNoIndex {
 
 	/* Setter for java.util.Date */
 	@Override
-	public boolean setValue(Object entity, String attribute, Object value,
-			String typ) {
+	public boolean setValue(Object entity, String attribute, Object value, String typ) {
 		if (VALUE.equals(attribute)) {
 			((Date) entity).setTime((Long) value);
 			return true;

@@ -39,24 +39,29 @@ public class BitValue implements ByteItem {
 	private int orientation = 1;
 
 	public BitValue(int start, int size) {
-		this.start = (byte)start;
-		this.size = (byte)size;
+		this.start = (byte) start;
+		this.size = (byte) size;
 	}
+
 	public BitValue(byte start, byte len) {
 		this.start = start;
 		this.size = len;
 	}
+
 	public byte getStart() {
 		return start;
 	}
+
 	public BitValue withStart(byte start) {
 		this.start = start;
 		return this;
 	}
+
 	public BitValue withSize(byte len) {
 		this.size = len;
 		return this;
 	}
+
 	public BitValue withOrientation(int value) {
 		this.orientation = value;
 		return this;
@@ -65,41 +70,50 @@ public class BitValue implements ByteItem {
 	public int getOrientation() {
 		return orientation;
 	}
+
 	public String getProperty() {
 		return property;
 	}
+
 	public BitValue withLenProperty(byte lenType, String property) {
 		this.type = lenType;
 		this.property = property;
 		return this;
 	}
+
 	@Override
 	public int size() {
 		return size;
 	}
+
 	@Override
 	public byte getType() {
 		return type;
 	}
+
 	@Override
 	public boolean isEmpty() {
-		return size<1;
+		return size < 1;
 	}
+
 	@Override
 	public int calcLength(boolean isDynamic, boolean isLast) {
 		return size;
 	}
+
 	@Override
 	public BaseItem getNewList(boolean keyValue) {
 		return new ByteList();
 	}
+
 	@Override
 	public String toString(Converter converter) {
-		if(converter instanceof ByteConverter) {
-			return toString((ByteConverter)converter, false);
+		if (converter instanceof ByteConverter) {
+			return toString((ByteConverter) converter, false);
 		}
 		return toString(null, false);
 	}
+
 	@Override
 	public String toString(ByteConverter converter, boolean isDynamic) {
 		if (converter == null) {
@@ -107,10 +121,12 @@ public class BitValue implements ByteItem {
 		}
 		return converter.toString(this.getBytes(isDynamic));
 	}
+
 	@Override
 	public ByteBuffer getBytes(boolean isDynamic) {
 		return null;
 	}
+
 	@Override
 	public void writeBytes(ByteBuffer buffer, boolean isDynamic, boolean lastEntity, boolean isPrimitive) {
 	}

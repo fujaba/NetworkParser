@@ -34,15 +34,17 @@ public class StringCondition implements ParserCondition {
 
 	@Override
 	public boolean update(Object value) {
-		if(value instanceof ObjectCondition) {
-			return ((ObjectCondition)value).update(this);
+		if (value instanceof ObjectCondition) {
+			return ((ObjectCondition) value).update(this);
 		}
 		return this.value != null;
 	}
+
 	public StringCondition withValue(CharSequence value) {
 		this.value = value;
 		return this;
 	}
+
 	public CharSequence getValue(LocalisationInterface variables) {
 		return value;
 	}
@@ -58,7 +60,7 @@ public class StringCondition implements ParserCondition {
 
 	@Override
 	public boolean isExpression() {
-		if(value == null) {
+		if (value == null) {
 			return false;
 		}
 		CharacterBuffer item = CharacterBuffer.create(value);
@@ -72,7 +74,7 @@ public class StringCondition implements ParserCondition {
 
 	@Override
 	public String toString() {
-		if(value == null) {
+		if (value == null) {
 			return "";
 		}
 		return value.toString();

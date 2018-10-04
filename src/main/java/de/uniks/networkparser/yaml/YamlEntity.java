@@ -41,7 +41,6 @@ public class YamlEntity extends SortedList<Object> implements EntityList {
 		return super.size();
 	}
 
-
 	@Override
 	public YamlEntity withValue(Buffer values) {
 		new YAMLTokener().parseToEntity(this, values);
@@ -50,7 +49,7 @@ public class YamlEntity extends SortedList<Object> implements EntityList {
 
 	@Override
 	public BaseItem getNewList(boolean keyValue) {
-		if(keyValue) {
+		if (keyValue) {
 			return new YamlEntity();
 		}
 		return new YamlItem();

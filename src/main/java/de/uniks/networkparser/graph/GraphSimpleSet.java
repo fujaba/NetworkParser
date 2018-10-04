@@ -29,41 +29,42 @@ import de.uniks.networkparser.list.SimpleSet;
 
 public class GraphSimpleSet extends SimpleSet<GraphMember> {
 
-	private static Comparator<Object> comparator=new Comparator<Object>(){
-        @Override
-        public int compare(Object o1, Object o2) {
-        	if(o1 instanceof GraphMember == false || o2 instanceof GraphMember == false ){
-        		return 0;
-        	}
-        	String id1 = ((GraphMember) o1).getFullId();
-        	String id2 = ((GraphMember) o2).getFullId();
-        	if(id1 == id2) {
-        		return 0;
-        	}
-        	if(id1 == null) {
-        		return 1;
-        	}
-        	if(id2 == null) {
-        		return -1;
-        	}
-           return id1.compareTo(id2);
-        }
-    };
+	private static Comparator<Object> comparator = new Comparator<Object>() {
+		@Override
+		public int compare(Object o1, Object o2) {
+			if (o1 instanceof GraphMember == false || o2 instanceof GraphMember == false) {
+				return 0;
+			}
+			String id1 = ((GraphMember) o1).getFullId();
+			String id2 = ((GraphMember) o2).getFullId();
+			if (id1 == id2) {
+				return 0;
+			}
+			if (id1 == null) {
+				return 1;
+			}
+			if (id2 == null) {
+				return -1;
+			}
+			return id1.compareTo(id2);
+		}
+	};
+
 	@Override
 	protected boolean checkValue(Object a, Object b) {
-		if(!(a instanceof GraphMember)) {
+		if (!(a instanceof GraphMember)) {
 			return a.equals(b);
 		}
-		
-		String idA = ((GraphMember)a).getFullId();
-		if(idA==null) {
+
+		String idA = ((GraphMember) a).getFullId();
+		if (idA == null) {
 			return a.equals(b);
 		}
 		String idB;
-		if(b instanceof String) {
-			idB = (String)b;
-		}else {
-			idB = ((GraphMember)b).getFullId();
+		if (b instanceof String) {
+			idB = (String) b;
+		} else {
+			idB = ((GraphMember) b).getFullId();
 		}
 		return idA.equalsIgnoreCase(idB);
 	}

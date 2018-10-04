@@ -32,8 +32,7 @@ THE SOFTWARE.
 
 public enum SortingDirection {
 	/**
-	 * The Sortdirection Options. ASC from small to BIG and DESC from BIG to
-	 * small
+	 * The Sortdirection Options. ASC from small to BIG and DESC from BIG to small
 	 */
 	ASC(1), DESC(-1);
 
@@ -41,8 +40,7 @@ public enum SortingDirection {
 	private int direction;
 
 	/**
-	 * @param value
-	 *			The new Sortdirection
+	 * @param value The new Sortdirection
 	 */
 	SortingDirection(int value) {
 		this.setDirection(value);
@@ -56,7 +54,7 @@ public enum SortingDirection {
 	/**
 	 * Set the new Direction.
 	 *
-	 * @param value	The new Sortdirection
+	 * @param value The new Sortdirection
 	 */
 	public void setDirection(int value) {
 		this.direction = value;

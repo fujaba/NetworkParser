@@ -71,23 +71,23 @@ public class DataType {
 	}
 
 	public static DataType create(Object typ) {
-		if(typ instanceof DataType) {
-			return (DataType)typ;
+		if (typ instanceof DataType) {
+			return (DataType) typ;
 		}
-		if(typ instanceof Clazz) {
-			return new DataType((Clazz)typ);
+		if (typ instanceof Clazz) {
+			return new DataType((Clazz) typ);
 		}
-		if(typ instanceof String) {
-			return new DataType((String)typ);
+		if (typ instanceof String) {
+			return new DataType((String) typ);
 		}
-		if(typ instanceof Class<?>) {
-			return new DataType(new Clazz((Class<?>)typ));
+		if (typ instanceof Class<?>) {
+			return new DataType(new Clazz((Class<?>) typ));
 		}
 		return null;
 	}
 
 	public DataType withExternal(boolean external) {
-		if(this.value != null) {
+		if (this.value != null) {
 			this.value.withExternal(external);
 		}
 		return this;
@@ -112,21 +112,21 @@ public class DataType {
 		return super.hashCode();
 	}
 
-	
 	public String toString(boolean ref) {
 		String internName = this.getInternName(false, true);
 		if ("void char byte int long float double String boolean Object".indexOf(internName) >= 0) {
-			if(ref) {
-				return DataType.class.getSimpleName()+"." + internName.toUpperCase();
+			if (ref) {
+				return DataType.class.getSimpleName() + "." + internName.toUpperCase();
 			}
-			return DataType.class.getName()+"." + internName.toUpperCase();
+			return DataType.class.getName() + "." + internName.toUpperCase();
 		} else {
-			if(ref) {
-				return DataType.class.getSimpleName()+ ".create(\"" + internName + "\")";
+			if (ref) {
+				return DataType.class.getSimpleName() + ".create(\"" + internName + "\")";
 			}
-			return DataType.class.getName()+".create(\"" + internName + "\")";
+			return DataType.class.getName() + ".create(\"" + internName + "\")";
 		}
 	}
+
 	@Override
 	public String toString() {
 		String internName = this.getInternName(false, true);

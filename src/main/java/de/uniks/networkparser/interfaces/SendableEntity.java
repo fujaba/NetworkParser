@@ -24,6 +24,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 import java.beans.PropertyChangeListener;
+
 /**
  * The Interface SendableEntity. Add this Interface to your Modellentity to
  * activate the propertyChange Notification
@@ -33,16 +34,15 @@ public interface SendableEntity {
 	/**
 	 * Adds the property change listener.
 	 *
-	 * @param propertyName	the property name
-	 * @param listener		the listener
+	 * @param propertyName the property name
+	 * @param listener     the listener
 	 * @return boolean if add the PropertyChangeListener
 	 */
-	public boolean addPropertyChangeListener(String propertyName,
-			PropertyChangeListener listener);
+	public boolean addPropertyChangeListener(String propertyName, PropertyChangeListener listener);
 
 	public boolean addPropertyChangeListener(PropertyChangeListener listener);
 
 	public boolean removePropertyChangeListener(PropertyChangeListener listener);
 
-    public boolean removePropertyChangeListener(String propertyName, PropertyChangeListener listener);
+	public boolean removePropertyChangeListener(String propertyName, PropertyChangeListener listener);
 }

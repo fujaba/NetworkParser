@@ -17,7 +17,7 @@ public class MethodChangeUpdateTypeCondition extends MatchCondition {
 		Method oldMethod = (Method) match.getMatch();
 //		Method newMethod = (Method) match.getSourceParent();
 		Method newMethod = (Method) match.getOtherMatch().getMatch();
-		
+
 		if (matches.getMetaModel() == null) {
 			return false;
 		}
@@ -27,7 +27,7 @@ public class MethodChangeUpdateTypeCondition extends MatchCondition {
 		if (oldMethod.getReturnType().equals(newMethod.getReturnType())) {
 			return false;
 		}
-		
+
 		return true;
 	}
 
@@ -36,11 +36,12 @@ public class MethodChangeUpdateTypeCondition extends MatchCondition {
 		Method oldMethod = (Method) match.getMatch();
 		Method newMethod = (Method) match.getOtherMatch().getMatch();
 
-		Match updateInCode = Match.create(newMethod, this, Method.PROPERTY_RETURNTYPE, newMethod.getReturnType(), oldMethod.getReturnType());
+		Match updateInCode = Match.create(newMethod, this, Method.PROPERTY_RETURNTYPE, newMethod.getReturnType(),
+				oldMethod.getReturnType());
 		matches.addDiff(updateInCode);
 		return true;
 	}
-	
+
 	@Override
 	protected boolean checkModelCondition(GraphMatcher matches, Match match) {
 		Method oldMethod = (Method) match.getOtherMatch().getMatch();
@@ -53,7 +54,8 @@ public class MethodChangeUpdateTypeCondition extends MatchCondition {
 	protected boolean calculateModelDiffs(GraphModel model, GraphMatcher matches, Match match) {
 		Method oldMethod = (Method) match.getOtherMatch().getMatch();
 		Method newMethod = (Method) match.getMatch();
-		Match update = Match.create(oldMethod, this, Method.PROPERTY_RETURNTYPE, oldMethod.getReturnType(), newMethod.getReturnType());
+		Match update = Match.create(oldMethod, this, Method.PROPERTY_RETURNTYPE, oldMethod.getReturnType(),
+				newMethod.getReturnType());
 
 		matches.addDiff(update);
 		return true;

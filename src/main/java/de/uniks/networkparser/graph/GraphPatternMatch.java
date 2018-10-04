@@ -29,6 +29,7 @@ import java.util.Set;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.list.SimpleSet;
+
 /**
  * GraphCreate Clazz for Condition.
  *
@@ -50,15 +51,16 @@ public class GraphPatternMatch implements ObjectCondition, SendableEntityCreator
 		return true;
 	}
 
-	/** @return The Item to Create
+	/**
+	 * @return The Item to Create
 	 */
 	public Object getItem() {
 		return item;
 	}
 
 	/**
-	 * @param value		for new Condition
-	 * @return 			Not Instance
+	 * @param value for new Condition
+	 * @return Not Instance
 	 */
 	public GraphPatternMatch withItem(Object value) {
 		this.item = value;
@@ -66,16 +68,16 @@ public class GraphPatternMatch implements ObjectCondition, SendableEntityCreator
 	}
 
 	/**
-	 * @param value		for new Condition
-	 * @return 			Not Instance
+	 * @param value for new Condition
+	 * @return Not Instance
 	 */
 	public GraphPatternMatch with(ObjectCondition... value) {
-		if(value == null) {
+		if (value == null) {
 			return this;
 		}
-		for(ObjectCondition listener : value) {
-			if(listener != null) {
-				if(this.matches == null) {
+		for (ObjectCondition listener : value) {
+			if (listener != null) {
+				if (this.matches == null) {
 					this.matches = new SimpleSet<ObjectCondition>();
 				}
 				this.matches.add(listener);
@@ -89,8 +91,8 @@ public class GraphPatternMatch implements ObjectCondition, SendableEntityCreator
 	}
 
 	/**
-	 * @param value		for Property
-	 * @return 			GraphPatternMatch Instance
+	 * @param value for Property
+	 * @return GraphPatternMatch Instance
 	 */
 	public GraphPatternMatch withProperty(String value) {
 		this.property = value;
@@ -104,7 +106,7 @@ public class GraphPatternMatch implements ObjectCondition, SendableEntityCreator
 
 	@Override
 	public String[] getProperties() {
-		return new String[] {ITEM, PROPERTY, MATCHES};
+		return new String[] { ITEM, PROPERTY, MATCHES };
 	}
 
 	@Override
@@ -133,15 +135,15 @@ public class GraphPatternMatch implements ObjectCondition, SendableEntityCreator
 			return true;
 		}
 		if (MATCHES.equalsIgnoreCase(attribute)) {
-			if(value instanceof ObjectCondition) {
-				((GraphPatternMatch) entity).with((ObjectCondition)value);
+			if (value instanceof ObjectCondition) {
+				((GraphPatternMatch) entity).with((ObjectCondition) value);
 			} else {
-				((GraphPatternMatch) entity).with((ObjectCondition[])value);
+				((GraphPatternMatch) entity).with((ObjectCondition[]) value);
 			}
 			return true;
 		}
 		if (PROPERTY.equalsIgnoreCase(attribute)) {
-			((GraphPatternMatch) entity).withProperty(""+value);
+			((GraphPatternMatch) entity).withProperty("" + value);
 			return true;
 		}
 		return false;
@@ -152,13 +154,13 @@ public class GraphPatternMatch implements ObjectCondition, SendableEntityCreator
 	}
 
 	public int size() {
-		if(this.matches == null) {
+		if (this.matches == null) {
 			return 0;
 		}
-		int size=0;
-		for(Iterator<ObjectCondition> i = this.matches.iterator();i.hasNext();) {
+		int size = 0;
+		for (Iterator<ObjectCondition> i = this.matches.iterator(); i.hasNext();) {
 			ObjectCondition child = i.next();
-			if(child instanceof GraphPatternMatch) {
+			if (child instanceof GraphPatternMatch) {
 				size += ((GraphPatternMatch) child).size();
 			} else {
 				size++;

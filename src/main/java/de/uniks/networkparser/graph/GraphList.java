@@ -39,6 +39,7 @@ public class GraphList extends GraphModel {
 	public String toString() {
 		return toString(new YUMLConverter());
 	}
+
 	public String toString(boolean removePackage) {
 		YUMLConverter converter = new YUMLConverter();
 		converter.defaultShowPackage = removePackage;
@@ -158,9 +159,9 @@ public class GraphList extends GraphModel {
 			return false;
 		}
 		for (Object item : values) {
-			if(item instanceof Collection<?>) {
+			if (item instanceof Collection<?>) {
 				Collection<?> items = (Collection<?>) item;
-				for(Object i : items) {
+				for (Object i : items) {
 					add(i);
 				}
 			} else if (item instanceof GraphMember) {

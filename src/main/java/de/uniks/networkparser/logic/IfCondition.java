@@ -32,6 +32,7 @@ THE SOFTWARE.
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.TemplateParser;
 import de.uniks.networkparser.parser.TemplateResultFragment;
+
 /**
  * @author Stefan Lindel IfCondition Clazz
  */
@@ -46,7 +47,7 @@ public class IfCondition implements ParserCondition, SendableEntityCreator {
 	/** Constant for False Case. */
 	public static final String FALSECONDITION = "falsecondition";
 
-	private String tag=TAG;
+	private String tag = TAG;
 
 	/** Variable for Expression. */
 	private ObjectCondition expression;
@@ -54,12 +55,12 @@ public class IfCondition implements ParserCondition, SendableEntityCreator {
 	private ObjectCondition trueCondition;
 	/** Variable for False Case. */
 	private ObjectCondition falseCondition;
-	
+
 	private CharacterBuffer notifyBuffer = null;
 
 	/**
-	 * @param value		Set the new Expression
-	 * @return 			IfCondition Instance
+	 * @param value Set the new Expression
+	 * @return IfCondition Instance
 	 */
 	public IfCondition withExpression(ObjectCondition value) {
 		this.expression = value;
@@ -72,8 +73,8 @@ public class IfCondition implements ParserCondition, SendableEntityCreator {
 	}
 
 	/**
-	 * @param condition		Set The True Case
-	 * @return 				InstanceOf Instance
+	 * @param condition Set The True Case
+	 * @return InstanceOf Instance
 	 */
 	public IfCondition withTrue(ObjectCondition condition) {
 		this.trueCondition = condition;
@@ -86,8 +87,8 @@ public class IfCondition implements ParserCondition, SendableEntityCreator {
 	}
 
 	/**
-	 * @param condition		Set the False Case
-	 * @return 				IfCondition Instance
+	 * @param condition Set the False Case
+	 * @return IfCondition Instance
 	 */
 	public IfCondition withFalse(ObjectCondition condition) {
 		this.falseCondition = condition;
@@ -98,25 +99,26 @@ public class IfCondition implements ParserCondition, SendableEntityCreator {
 	public ObjectCondition getFalse() {
 		return falseCondition;
 	}
-	
+
 	@Override
 	public boolean update(Object evt) {
 		if (expression != null && expression.update(evt)) {
 			if (trueCondition != null) {
-				if(this.notifyBuffer == null || evt instanceof LocalisationInterface == false) {
+				if (this.notifyBuffer == null || evt instanceof LocalisationInterface == false) {
 					return trueCondition.update(evt);
 				}
-				LocalisationInterface li = (LocalisationInterface)evt;
+				LocalisationInterface li = (LocalisationInterface) evt;
 				li.put(NOTIFY, this);
 				notifyBuffer.clear();
 				boolean success = trueCondition.update(evt);
 				li.put(NOTIFY, null);
 				// NOTIFY
-				if(evt instanceof SendableEntityCreator) {
-					GraphMember member = (GraphMember) ((SendableEntityCreator)evt).getValue(evt, TemplateResultFragment.PROPERTY_CURRENTMEMBER);
-					if(member != null) {
+				if (evt instanceof SendableEntityCreator) {
+					GraphMember member = (GraphMember) ((SendableEntityCreator) evt).getValue(evt,
+							TemplateResultFragment.PROPERTY_CURRENTMEMBER);
+					if (member != null) {
 						ObjectCondition oc = GraphUtil.getRole(member);
-						if(oc != null) {
+						if (oc != null) {
 							oc.update(notifyBuffer);
 						}
 					}
@@ -126,20 +128,21 @@ public class IfCondition implements ParserCondition, SendableEntityCreator {
 			return true;
 		} else {
 			if (falseCondition != null) {
-				if(this.notifyBuffer == null || evt instanceof LocalisationInterface == false) {
+				if (this.notifyBuffer == null || evt instanceof LocalisationInterface == false) {
 					return falseCondition.update(evt);
 				}
-				LocalisationInterface li = (LocalisationInterface)evt;
+				LocalisationInterface li = (LocalisationInterface) evt;
 				li.put(NOTIFY, this);
 				notifyBuffer.clear();
 				boolean success = trueCondition.update(evt);
 				li.put(NOTIFY, null);
 				// NOTIFY
-				if(evt instanceof SendableEntityCreator) {
-					GraphMember member = (GraphMember) ((SendableEntityCreator)evt).getValue(evt, TemplateResultFragment.PROPERTY_CURRENTMEMBER);
-					if(member != null) {
+				if (evt instanceof SendableEntityCreator) {
+					GraphMember member = (GraphMember) ((SendableEntityCreator) evt).getValue(evt,
+							TemplateResultFragment.PROPERTY_CURRENTMEMBER);
+					if (member != null) {
 						ObjectCondition oc = GraphUtil.getRole(member);
-						if(oc != null) {
+						if (oc != null) {
 							oc.update(notifyBuffer);
 						}
 					}
@@ -152,7 +155,7 @@ public class IfCondition implements ParserCondition, SendableEntityCreator {
 
 	@Override
 	public String[] getProperties() {
-		return new String[] {EXPRESSION, TRUECONDITION, FALSECONDITION };
+		return new String[] { EXPRESSION, TRUECONDITION, FALSECONDITION };
 	}
 
 	@Override
@@ -175,9 +178,8 @@ public class IfCondition implements ParserCondition, SendableEntityCreator {
 	}
 
 	@Override
-	public boolean setValue(Object entity, String attribute, Object value,
-			String type) {
-		if(ParserCondition.NOTIFY.equalsIgnoreCase(attribute)) {
+	public boolean setValue(Object entity, String attribute, Object value, String type) {
+		if (ParserCondition.NOTIFY.equalsIgnoreCase(attribute)) {
 //			this.member = (GraphMember) entity;
 			notifyBuffer.withObjects(value);
 			return true;
@@ -222,13 +224,13 @@ public class IfCondition implements ParserCondition, SendableEntityCreator {
 		buffer.skip();
 		ObjectCondition expression = parser.parsing(buffer, customTemplate, true, true);
 
-		if(this.tag.equalsIgnoreCase("ifnot")) {
+		if (this.tag.equalsIgnoreCase("ifnot")) {
 			this.withExpression(Not.create(expression));
 		} else {
 			this.withExpression(expression);
 		}
 		// CHECK ##
-		if(buffer.checkValues('#', '#')) {
+		if (buffer.checkValues('#', '#')) {
 			this.notifyBuffer = new CharacterBuffer();
 			buffer.skip(2);
 		}
@@ -240,7 +242,7 @@ public class IfCondition implements ParserCondition, SendableEntityCreator {
 
 		// ELSE OR ENDIF
 		CharacterBuffer tokenPart = buffer.nextToken(false, SPLITEND);
-		if("else".equalsIgnoreCase(tokenPart.toString())) {
+		if ("else".equalsIgnoreCase(tokenPart.toString())) {
 			buffer.skipChar(SPLITEND);
 			buffer.skipChar(SPLITEND);
 			this.withFalse(parser.parsing(buffer, customTemplate, false, true, "endif"));
@@ -257,6 +259,6 @@ public class IfCondition implements ParserCondition, SendableEntityCreator {
 
 	@Override
 	public String toString() {
-		return "{{IF "+expression+"}}"+trueCondition+"{{#else}}"+falseCondition+"{{#ENDIF}}";
+		return "{{IF " + expression + "}}" + trueCondition + "{{#else}}" + falseCondition + "{{#ENDIF}}";
 	}
 }

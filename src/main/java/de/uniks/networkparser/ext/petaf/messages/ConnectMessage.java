@@ -5,10 +5,11 @@ import de.uniks.networkparser.ext.petaf.ReceivingTimerTask;
 
 /**
  * Sending Connection Link with all Input Proxies and Filter
+ * 
  * @author Stefan Lindel
  */
 public class ConnectMessage extends ReceivingTimerTask {
-	public static final String PROPERTY_TYPE="connect";
+	public static final String PROPERTY_TYPE = "connect";
 
 	public static ConnectMessage create() {
 		ConnectMessage msg = new ConnectMessage();
@@ -23,14 +24,14 @@ public class ConnectMessage extends ReceivingTimerTask {
 
 	@Override
 	public boolean runTask() throws Exception {
-		if(super.runTask() ) {
+		if (super.runTask()) {
 			return true;
 		}
 
 		AcceptMessage acceptTaskSend = AcceptMessage.create();
 		NodeProxy sender = this.getReceiver();
-		if(sender != null) {
-			if(sender.sendMessage(acceptTaskSend)) {
+		if (sender != null) {
+			if (sender.sendMessage(acceptTaskSend)) {
 				this.getReceiver().withOnline(true);
 			}
 		}

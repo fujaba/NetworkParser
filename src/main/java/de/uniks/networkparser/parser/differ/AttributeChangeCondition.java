@@ -19,7 +19,7 @@ public class AttributeChangeCondition extends MatchCondition {
 	protected boolean calculateDiffs(GraphMatcher matches, Match match) {
 		Attribute sourceAttribute = (Attribute) match.getMatch();
 		Attribute otherAttribute = (Attribute) match.getOtherMatch().getMatch();
-		
+
 		if (addChange(matches, match, sourceAttribute, otherAttribute)) {
 			MemberDiffer.executeCondition(SendableEntityCreator.NEW, changeConditions, match);
 		} else {
@@ -34,7 +34,7 @@ public class AttributeChangeCondition extends MatchCondition {
 		if (matches.getMetaModel() != null && (match.isMetaSourceMatch() || match.isMetaMatch())) {
 			return false;
 		}
-		if(otherAttribute == null) { 
+		if (otherAttribute == null) {
 			return false;
 		}
 		if (sourceAttribute.getName().equals(otherAttribute.getName())) {
@@ -42,7 +42,7 @@ public class AttributeChangeCondition extends MatchCondition {
 				return false;
 			}
 		}
-		
+
 		return true;
 	}
 

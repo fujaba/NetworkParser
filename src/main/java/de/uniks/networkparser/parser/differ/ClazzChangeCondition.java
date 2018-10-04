@@ -20,7 +20,7 @@ public class ClazzChangeCondition extends MatchCondition {
 	protected boolean calculateDiffs(GraphMatcher matches, Match match) {
 		Clazz sourceClazz = (Clazz) match.getMatch();
 		Clazz otherClazz = (Clazz) match.getSourceMatch();
-		
+
 		if (addChange(matches, match, sourceClazz, otherClazz)) {
 			MemberDiffer.executeCondition(SendableEntityCreator.NEW, changeConditions, match);
 		} else {
@@ -29,7 +29,7 @@ public class ClazzChangeCondition extends MatchCondition {
 		}
 		return true;
 	}
-	
+
 	private boolean addChange(GraphMatcher matches, Match match, Clazz sourceClazz, Clazz otherClazz) {
 		if (matches.getMetaModel() != null && (match.isMetaMatch() || match.isMetaSourceMatch())) {
 			return false;
@@ -37,7 +37,7 @@ public class ClazzChangeCondition extends MatchCondition {
 		if (sourceClazz.getName().equals(otherClazz.getName())) {
 			return false;
 		}
-		
+
 		return true;
 	}
 
@@ -45,5 +45,5 @@ public class ClazzChangeCondition extends MatchCondition {
 	public String getAction() {
 		return SendableEntityCreator.UPDATE;
 	}
-	
+
 }

@@ -35,19 +35,19 @@ import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.json.JsonObject;
 
 public class EMFJsonGrammar extends SimpleGrammar {
-	public static final String SRC="@src";
-	public static final String PROP="@prop";
-	public static final String NV ="@nv";
+	public static final String SRC = "@src";
+	public static final String PROP = "@prop";
+	public static final String NV = "@nv";
 
 	@Override
 	public BaseItem getProperties(Entity item, MapEntity map, boolean isId) {
-		JsonObject props= new JsonObject();
-		if(item != null && item.has(PROP)){
+		JsonObject props = new JsonObject();
+		if (item != null && item.has(PROP)) {
 			String key = item.getString(PROP);
 			String value = item.getString(NV);
 			SendableEntityCreator creator = getCreator(Grammar.READ, null, map, value);
 
-			if(creator!=null){
+			if (creator != null) {
 				props.put(key, new JsonObject().withValue(SRC, value));
 			} else {
 				props.put(key, value);
@@ -59,33 +59,33 @@ public class EMFJsonGrammar extends SimpleGrammar {
 
 	@Override
 	public SendableEntityCreator getCreator(String type, Object item, MapEntity entity, String className) {
-		if(Grammar.READ.equals(type) && item instanceof Entity) {
-			SendableEntityCreator result = getCreator(type, null, entity, ((Entity)item).getString(SRC));
-			if(result!=null){
+		if (Grammar.READ.equals(type) && item instanceof Entity) {
+			SendableEntityCreator result = getCreator(type, null, entity, ((Entity) item).getString(SRC));
+			if (result != null) {
 				return result;
 			}
 			return super.getCreator(type, item, entity, className);
 		}
-		if(className == null) {
+		if (className == null) {
 			return null;
 		}
-		int pos=className.indexOf("@");
-		String clazz=null;
-		if(pos>0){
-			clazz=className.substring(0, pos);
-		}else {
+		int pos = className.indexOf("@");
+		String clazz = null;
+		if (pos > 0) {
+			clazz = className.substring(0, pos);
+		} else {
 			pos = className.lastIndexOf(".");
-			if(pos>0) {
-				clazz=className.substring(0, pos);
+			if (pos > 0) {
+				clazz = className.substring(0, pos);
 			}
 		}
-		if(clazz != null) {
+		if (clazz != null) {
 			IdMap map = entity.getMap();
-			for (Iterator<SendableEntityCreator> i = map.iterator();i.hasNext();){
+			for (Iterator<SendableEntityCreator> i = map.iterator(); i.hasNext();) {
 				SendableEntityCreator creator = i.next();
 				Object sendableInstance = creator.getSendableInstance(true);
 				String refClazzName = sendableInstance.getClass().getName();
-				if(refClazzName.endsWith("." +clazz)){
+				if (refClazzName.endsWith("." + clazz)) {
 					return creator;
 				}
 			}
@@ -95,7 +95,7 @@ public class EMFJsonGrammar extends SimpleGrammar {
 
 	@Override
 	public String getId(Object obj, IdMap map) {
-		if(obj == null) {
+		if (obj == null) {
 			return null;
 		}
 		String name = obj.getClass().getName();
@@ -108,7 +108,7 @@ public class EMFJsonGrammar extends SimpleGrammar {
 
 	@Override
 	public String getValue(Entity item, String property) {
-		if(item == null) {
+		if (item == null) {
 			return null;
 		}
 		if (IdMap.ID.equals(property)) {
@@ -119,10 +119,10 @@ public class EMFJsonGrammar extends SimpleGrammar {
 
 	@Override
 	public boolean hasValue(Entity json, String property) {
-		if(property == null) {
+		if (property == null) {
 			return false;
 		}
-		if(property.equals(IdMap.ID)){
+		if (property.equals(IdMap.ID)) {
 			property = SRC;
 		}
 		return super.hasValue(json, property);
@@ -130,7 +130,7 @@ public class EMFJsonGrammar extends SimpleGrammar {
 
 	@Override
 	public Entity writeBasicValue(Entity entity, String className, String id, String type, IdMap map) {
-		if(id != null && entity != null) {
+		if (id != null && entity != null) {
 			entity.put(SRC, id);
 		}
 		return entity;

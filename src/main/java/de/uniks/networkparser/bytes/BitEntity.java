@@ -44,7 +44,7 @@ public class BitEntity extends SimpleList<BitValue> implements ByteItem {
 	public static final String PROPERTY_ORIENTATION = "orientation";
 
 	public BitEntity with(String property, byte type) {
-		if(type != 0) {
+		if (type != 0) {
 			this.property = property;
 			this.type = type;
 		}
@@ -100,7 +100,7 @@ public class BitEntity extends SimpleList<BitValue> implements ByteItem {
 	 * Generic Getter for Attributes
 	 */
 	public Object get(String attrName) {
-		if(attrName==null) {
+		if (attrName == null) {
 			return null;
 		}
 		int pos = attrName.indexOf(".");
@@ -123,8 +123,7 @@ public class BitEntity extends SimpleList<BitValue> implements ByteItem {
 	}
 
 	@Override
-	public void writeBytes(ByteBuffer buffer, boolean isDynamic,
-			boolean last, boolean isPrimitive) {
+	public void writeBytes(ByteBuffer buffer, boolean isDynamic, boolean last, boolean isPrimitive) {
 	}
 
 	@Override
@@ -149,7 +148,7 @@ public class BitEntity extends SimpleList<BitValue> implements ByteItem {
 
 	@Override
 	public boolean add(Object... values) {
-		if(values==null){
+		if (values == null) {
 			return false;
 		}
 		for (Object value : values) {
@@ -170,7 +169,7 @@ public class BitEntity extends SimpleList<BitValue> implements ByteItem {
 	}
 
 	public BitEntity withType(byte value) {
-		if(value != 0) {
+		if (value != 0) {
 			this.type = value;
 		}
 		return this;

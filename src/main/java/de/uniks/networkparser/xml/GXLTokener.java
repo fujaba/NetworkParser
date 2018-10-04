@@ -1,4 +1,5 @@
 package de.uniks.networkparser.xml;
+
 import java.util.Collection;
 import java.util.Iterator;
 
@@ -61,10 +62,10 @@ public class GXLTokener extends Tokener {
 		graph.withKeyValue(EDGEMODE, "defaultdirected");
 		graph.withKeyValue(HYPERGRAPH, false);
 		instance.with(graph);
-		if(entity != null) {
+		if (entity != null) {
 			String className = entity.getClass().getName();
 			Grammar grammar = map.getGrammar();
-			if(grammar != null ) {
+			if (grammar != null) {
 				SendableEntityCreator creator = grammar.getCreator(SendableEntityCreator.NEW, entity, map, className);
 				encodeChildren(entity, graph, creator, map);
 			}
@@ -73,11 +74,11 @@ public class GXLTokener extends Tokener {
 	}
 
 	private boolean encodeChildren(Object item, XMLEntity root, SendableEntityCreator creator, MapEntity map) {
-		if(map == null || map.contains(item)) {
+		if (map == null || map.contains(item)) {
 			return false;
 		}
 		map.with(item);
-		if(creator == null) {
+		if (creator == null) {
 			return false;
 		}
 		String id = this.map.getId(item, true);
@@ -85,18 +86,19 @@ public class GXLTokener extends Tokener {
 		node.withType(NODE);
 		node.withKeyValue(IdMap.ID, id);
 		root.with(node);
-		for(String property : creator.getProperties()) {
+		for (String property : creator.getProperties()) {
 			Object value = creator.getValue(item, property);
 			parseValue(property, value, node, root, node, map);
 		}
 		return true;
 	}
 
-	private void parseValue(String property, Object value, XMLEntity parent, XMLEntity root, XMLEntity node, MapEntity map) {
-		if(parent == null || this.map == null) {
+	private void parseValue(String property, Object value, XMLEntity parent, XMLEntity root, XMLEntity node,
+			MapEntity map) {
+		if (parent == null || this.map == null) {
 			return;
 		}
-		if(value == null) {
+		if (value == null) {
 			// Null Value
 			XMLEntity attribute = this.newInstance();
 			attribute.withType(ATTRIBUTE);
@@ -105,8 +107,8 @@ public class GXLTokener extends Tokener {
 			return;
 		}
 		SendableEntityCreator childCreator = this.map.getCreator(value.getClass().getName(), true, null);
-		if(childCreator != null) {
-			if( encodeChildren(value, root, childCreator, map) ) {
+		if (childCreator != null) {
+			if (encodeChildren(value, root, childCreator, map)) {
 				XMLEntity edge = this.newInstance();
 				edge.withType(EDGE);
 				edge.withKeyValue(FROM, node.get(IdMap.ID));
@@ -123,10 +125,10 @@ public class GXLTokener extends Tokener {
 		if (value instanceof Collection<?>) {
 			Collection<?> children = (Collection<?>) value;
 			XMLEntity bag = this.newInstance();
-			for(Iterator<?> i = children.iterator();i.hasNext();) {
+			for (Iterator<?> i = children.iterator(); i.hasNext();) {
 				parseValue(property, i.next(), bag, root, node, map);
 			}
-			if(bag.size()>0) {
+			if (bag.size() > 0) {
 				bag.withType(BAG);
 				attribute.with(bag);
 			}
@@ -135,13 +137,13 @@ public class GXLTokener extends Tokener {
 		XMLEntity valueItem = this.newInstance();
 		valueItem.withValue(value.toString());
 		attribute.with(valueItem);
-		if(value instanceof Boolean) {
+		if (value instanceof Boolean) {
 			valueItem.withType(BOOL);
-		} else if(value instanceof Integer || value instanceof Long) {
+		} else if (value instanceof Integer || value instanceof Long) {
 			valueItem.withType(INT);
-		} else if(value instanceof Float || value instanceof Double) {
+		} else if (value instanceof Float || value instanceof Double) {
 			valueItem.withType(FLOAT);
-		}else {
+		} else {
 			valueItem.withType(STRING);
 		}
 	}

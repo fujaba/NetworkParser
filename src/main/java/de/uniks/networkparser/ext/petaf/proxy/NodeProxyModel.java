@@ -39,14 +39,14 @@ public class NodeProxyModel extends NodeProxy {
 
 	@Override
 	public String getKey() {
-		if(space == null) {
+		if (space == null) {
 			return null;
 		}
 		return getId();
 	}
 
 	public String getId() {
-		if(this.id != null) {
+		if (this.id != null) {
 			return this.id;
 		}
 		this.id = this.space.getKey(root);
@@ -71,6 +71,7 @@ public class NodeProxyModel extends NodeProxy {
 	public boolean isSendable() {
 		return false;
 	}
+
 	@Override
 	public Object getSendableInstance(boolean reference) {
 		return new NodeProxyModel(null);
@@ -93,7 +94,7 @@ public class NodeProxyModel extends NodeProxy {
 
 	public NodeProxyModel setNextModel(NodeProxyModel model) {
 		this.nextModel = model;
-		if(model == null) {
+		if (model == null) {
 			return this;
 		}
 		model.setNextModel(null);

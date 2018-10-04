@@ -29,16 +29,16 @@ import java.io.InputStream;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 
-public class Manifest extends SimpleKeyValueList<String, String>{
-	public static char SPLITTER=':';
-	public static char[] CRLF=new char[]{'\r', '\n'};
-	public static final String VERSION="Implementation-Version";
-	public static final String TITLE="Specification-Title";
-	public static final String BUILD="Built-Time";
-	public static final String HASH="Hash";
-	public static final String LICENCE="Licence";
-	public static final String HOMEPAGE="Homepage";
-	public static final String COVERAGE="Coverage";
+public class Manifest extends SimpleKeyValueList<String, String> {
+	public static char SPLITTER = ':';
+	public static char[] CRLF = new char[] { '\r', '\n' };
+	public static final String VERSION = "Implementation-Version";
+	public static final String TITLE = "Specification-Title";
+	public static final String BUILD = "Built-Time";
+	public static final String HASH = "Hash";
+	public static final String LICENCE = "Licence";
+	public static final String HOMEPAGE = "Homepage";
+	public static final String COVERAGE = "Coverage";
 	private boolean empty = true;
 
 	public static Manifest create() {
@@ -52,7 +52,7 @@ public class Manifest extends SimpleKeyValueList<String, String>{
 			value = new String(bytes, 0, read);
 		} catch (IOException e) {
 		} finally {
-			if(resources != null) {
+			if (resources != null) {
 				try {
 					resources.close();
 				} catch (IOException e) {
@@ -64,14 +64,14 @@ public class Manifest extends SimpleKeyValueList<String, String>{
 
 	public static void printVersion() {
 		Manifest manifest = create();
-		if(manifest.isEmptyManifest() == false) {
-			System.out.println("Title: "+manifest.getString(TITLE));
-			System.out.println("Version: "+manifest.getString(VERSION));
-			System.out.println("Time: "+manifest.getString(BUILD));
-			System.out.println("Hash: "+manifest.getString(HASH));
-			System.out.println("Licence: "+manifest.getString(LICENCE));
-			System.out.println("Homepage: "+manifest.getString(HOMEPAGE));
-			System.out.println("Coverage: "+manifest.getString(COVERAGE));
+		if (manifest.isEmptyManifest() == false) {
+			System.out.println("Title: " + manifest.getString(TITLE));
+			System.out.println("Version: " + manifest.getString(VERSION));
+			System.out.println("Time: " + manifest.getString(BUILD));
+			System.out.println("Hash: " + manifest.getString(HASH));
+			System.out.println("Licence: " + manifest.getString(LICENCE));
+			System.out.println("Homepage: " + manifest.getString(HOMEPAGE));
+			System.out.println("Coverage: " + manifest.getString(COVERAGE));
 		}
 	}
 
@@ -79,15 +79,15 @@ public class Manifest extends SimpleKeyValueList<String, String>{
 		Manifest manifest = new Manifest();
 		CharacterBuffer tokener = new CharacterBuffer().with(value);
 //		Tokener tokener=new Tokener().withBuffer(value);
-		while(tokener.isEnd() == false) {
+		while (tokener.isEnd() == false) {
 			CharacterBuffer section = tokener.nextToken(true, SPLITTER);
 			CharacterBuffer sectionheader = tokener.nextToken(false, CRLF);
-			boolean isCoverage= section.toString().equals(COVERAGE);
+			boolean isCoverage = section.toString().equals(COVERAGE);
 			tokener.skip();
-			while(tokener.getCurrentChar()==' ' || tokener.getCurrentChar() == '\t') {
-				//continue line
+			while (tokener.getCurrentChar() == ' ' || tokener.getCurrentChar() == '\t') {
+				// continue line
 				CharacterBuffer newLine = tokener.nextToken(true, CRLF);
-				if(isCoverage) {
+				if (isCoverage) {
 					sectionheader.trim().with(newLine);
 				} else {
 					sectionheader.with(newLine);

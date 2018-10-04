@@ -1,4 +1,5 @@
 package de.uniks.networkparser.parser;
+
 /*
 NetworkParser
 Copyright (c) 2011 - 2016, Stefan Lindel
@@ -18,8 +19,8 @@ See the Licence for the specific language governing permissions and limitations 
 */
 import de.uniks.networkparser.list.SimpleList;
 
-public class ExcelWorkBook extends SimpleList<ExcelSheet>{
-	public static final String PROPERTY_AUTHOR="author";
+public class ExcelWorkBook extends SimpleList<ExcelSheet> {
+	public static final String PROPERTY_AUTHOR = "author";
 	private String author;
 
 	public String getAuthor() {

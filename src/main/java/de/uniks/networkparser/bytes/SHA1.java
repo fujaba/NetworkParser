@@ -193,10 +193,10 @@ public class SHA1 extends Checksum {
 			perform();
 		}
 		/*
-		 * Now currentPos is a multiple of 4 and we can do the remaining padding
-		 * much more efficiently, furthermore we are sure that currentPos <= 56.
+		 * Now currentPos is a multiple of 4 and we can do the remaining padding much
+		 * more efficiently, furthermore we are sure that currentPos <= 56.
 		 */
-		for (int i = currentPos >> 2; i < 14; i++){
+		for (int i = currentPos >> 2; i < 14; i++) {
 			w[i] = 0;
 		}
 		w[14] = (int) (currentLen >> 32);

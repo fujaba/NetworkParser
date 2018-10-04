@@ -27,6 +27,7 @@ import de.uniks.networkparser.buffer.CharacterBuffer;
 
 /**
  * Class for List of Numbers
+ * 
  * @author Stefan Lindel NumberList for List of Numbers (Integer Double etc.)
  *
  */
@@ -64,13 +65,12 @@ public class NumberList extends SimpleList<Number> {
 		return min;
 	}
 
-
 	public double middle() {
 		double middleValue = 0;
 		for (Number x : this) {
 			middleValue += x.doubleValue();
 		}
-		if(this.size()>0) {
+		if (this.size() > 0) {
 			middleValue = middleValue / this.size();
 		}
 		return middleValue;

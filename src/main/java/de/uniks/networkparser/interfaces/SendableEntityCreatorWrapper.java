@@ -24,7 +24,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-public abstract class SendableEntityCreatorWrapper implements SendableEntityCreator, SendableEntityCreatorNoIndex{
+public abstract class SendableEntityCreatorWrapper implements SendableEntityCreator, SendableEntityCreatorNoIndex {
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value, String type) {
 		return false;

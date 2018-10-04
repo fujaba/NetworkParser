@@ -1,4 +1,5 @@
 package de.uniks.networkparser.bytes;
+
 /*
 NetworkParser
 The MIT License
@@ -36,9 +37,9 @@ public class RSAKey {
 	public static final String BEGINPRIVATEKEY = "-----BEGIN PRIVATE RSA KEY-----\n";
 	public static final String ENDPRIVATEKEY = "-----END PRIVATE RSA KEY-----";
 
-	public static final Byte RSABYTE=48;
+	public static final Byte RSABYTE = 48;
 	public static final int SAFESIZE = 1024;
-	public static final String TAG="RSA";
+	public static final String TAG = "RSA";
 	// public
 	private BigInteger e;
 	// private
@@ -74,9 +75,10 @@ public class RSAKey {
 
 	/**
 	 * Sets the public exponent.
+	 * 
 	 * @param value The the Public Exponent
 	 * @return ThisComponent
-	*/
+	 */
 
 	public RSAKey withPubExp(BigInteger value) {
 		e = weedOut(value);
@@ -85,9 +87,10 @@ public class RSAKey {
 
 	/**
 	 * Sets the public exponent.
+	 * 
 	 * @param value The the Public Exponent
 	 * @return ThisComponent
-	 * */
+	 */
 	public RSAKey withPubExp(int value) {
 		BigInteger newValue = BigInteger.valueOf(value);
 		e = weedOut(newValue);
@@ -96,6 +99,7 @@ public class RSAKey {
 
 	/**
 	 * Performs the classical RSA computation.
+	 * 
 	 * @param message Encrypt a Message
 	 * @return Encoded Message
 	 */
@@ -107,10 +111,11 @@ public class RSAKey {
 	}
 
 	/**
-	 *  Performs the classical RSA computation.
-	 *  @param value Enscript the Value
-	 *  @return the enscripted Message
-	 * */
+	 * Performs the classical RSA computation.
+	 * 
+	 * @param value Enscript the Value
+	 * @return the enscripted Message
+	 */
 	public StringBuilder encrypt(String value) {
 		return encrypt(value, value.length());
 	}
@@ -121,17 +126,18 @@ public class RSAKey {
 
 	/**
 	 * Performs the classical RSA computation.
+	 * 
 	 * @param message Message to descrypt
 	 * @return the descrypted Message
-	**/
+	 **/
 	public StringBuilder decrypt(BigInteger message) {
 		BigInteger text = message.modPow(getPrivateKey(), getModulus());
 		BigInteger divider = BigInteger.valueOf(1000);
 		int bitCount = text.bitCount();
-		StringBuilder sb=new StringBuilder(bitCount);
-		while(bitCount>=0) {
+		StringBuilder sb = new StringBuilder(bitCount);
+		while (bitCount >= 0) {
 			BigInteger character = text.remainder(divider);
-			sb.setCharAt(bitCount, (char)character.intValue());
+			sb.setCharAt(bitCount, (char) character.intValue());
 			text = text.divide(divider);
 			bitCount--;
 		}
@@ -141,7 +147,7 @@ public class RSAKey {
 	public Entity sign(Entity value) {
 		String string = value.toString();
 		StringBuilder hashCode = encrypt(string, string.length());
-		//CHECK FOR HASHCODE ONLY
+		// CHECK FOR HASHCODE ONLY
 		value.put(TAG, hashCode);
 		return null;
 	}
@@ -190,9 +196,10 @@ public class RSAKey {
 
 	/**
 	 * Weeds out bad inputs.
+	 * 
 	 * @param value The Value for Check
 	 * @return the checked Value
-	 * */
+	 */
 	private final BigInteger weedOut(BigInteger value) {
 		if (!isNull(value) && isPositive(value)) {
 			return value;
@@ -203,27 +210,32 @@ public class RSAKey {
 
 	/**
 	 * Returns true when the argument is greater than zero.
+	 * 
 	 * @param number Number for Check
 	 * @return if number is Positive
-	 * */
+	 */
 	private final boolean isPositive(BigInteger number) {
 		return (number.compareTo(BigInteger.ZERO) > 0);
 	}
 
 	/**
 	 * Returns true when the argument is null.
+	 * 
 	 * @param value Value for Check
 	 * @return if Value is Null
-	 * */
+	 */
 	private final boolean isNull(Object value) {
 		return (value == null);
 	}
-	public static RSAKey generateKey(int p, int q, int max){
+
+	public static RSAKey generateKey(int p, int q, int max) {
 		return generateKey(BigInteger.valueOf(p), BigInteger.valueOf(q), max);
 	}
+
 	public static RSAKey generateKey() {
 		return generateKey(SAFESIZE);
 	}
+
 	public static RSAKey generateKey(int max) {
 		return generateKey(BigInteger.ZERO, BigInteger.ZERO, max);
 	}
@@ -252,6 +264,7 @@ public class RSAKey {
 
 	/**
 	 * Computes the LCM of the primes.
+	 * 
 	 * @param p first prime
 	 * @param q second prime
 	 * @return Phi
@@ -262,10 +275,11 @@ public class RSAKey {
 
 	/**
 	 * Computes the least common multiple.
+	 * 
 	 * @param a first value
 	 * @param b second value
 	 * @return the multiply of a,b
-	 * */
+	 */
 	private static BigInteger lcm(BigInteger a, BigInteger b) {
 		return (a.multiply(b).divide(a.gcd(b)));
 	}
@@ -278,16 +292,16 @@ public class RSAKey {
 
 	@Override
 	public String toString() {
-		CharacterBuffer sb=new CharacterBuffer();
-		if(e != null) {
-			sb.with(BEGINPUBLICKEY+BaseItem.CRLF);
-			sb.with(getPublicStream().toString()+BaseItem.CRLF);
-			sb.with(ENDPUBLICKEY+BaseItem.CRLF);
+		CharacterBuffer sb = new CharacterBuffer();
+		if (e != null) {
+			sb.with(BEGINPUBLICKEY + BaseItem.CRLF);
+			sb.with(getPublicStream().toString() + BaseItem.CRLF);
+			sb.with(ENDPUBLICKEY + BaseItem.CRLF);
 		}
-		if(d != null) {
-			sb.with(BEGINPRIVATEKEY+BaseItem.CRLF);
-			sb.with(getPrivateStream().toString()+BaseItem.CRLF);
-			sb.with(ENDPRIVATEKEY+BaseItem.CRLF);
+		if (d != null) {
+			sb.with(BEGINPRIVATEKEY + BaseItem.CRLF);
+			sb.with(getPrivateStream().toString() + BaseItem.CRLF);
+			sb.with(ENDPRIVATEKEY + BaseItem.CRLF);
 		}
 		return sb.toString();
 	}
@@ -295,6 +309,7 @@ public class RSAKey {
 	public DERBuffer getPublicStream() {
 		return getStream(e);
 	}
+
 	public DERBuffer getPrivateStream() {
 		return getStream(d);
 	}
@@ -302,12 +317,13 @@ public class RSAKey {
 	public DERBuffer getStream(BigInteger key) {
 		DERBuffer bitString = new DERBuffer();
 
-		bitString.addGroup(RSABYTE, new Object[]{N, key});
+		bitString.addGroup(RSABYTE, new Object[] { N, key });
 		DERBuffer derBuffer = new DERBuffer();
-		derBuffer.addGroup(RSABYTE, new Object[]{
-				RSABYTE, new Object[]{DERBuffer.OBJECTID, new Byte[]{42, -122, 72, -122, -9, 13, 1, 1, 1}, DERBuffer.NULL},
-				DERBuffer.BITSTRING, bitString.toBytes()});
-		// 48 l:92[48 l:13 [ 6 l:9 [42, -122, 72, -122, -9, 13, 1, 1, 1],5 l:0] 3 l:75[n,e]]
+		derBuffer.addGroup(RSABYTE, new Object[] { RSABYTE,
+				new Object[] { DERBuffer.OBJECTID, new Byte[] { 42, -122, 72, -122, -9, 13, 1, 1, 1 }, DERBuffer.NULL },
+				DERBuffer.BITSTRING, bitString.toBytes() });
+		// 48 l:92[48 l:13 [ 6 l:9 [42, -122, 72, -122, -9, 13, 1, 1, 1],5 l:0] 3
+		// l:75[n,e]]
 		return derBuffer;
 	}
 }

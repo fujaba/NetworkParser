@@ -25,12 +25,13 @@ THE SOFTWARE.
 */
 /**
  * The Class BaseEntity.
+ * 
  * @author Stefan Lindel
  */
 
 public interface BaseItem {
 	/** Standard Encoding */
-	public static final String ENCODING="utf-8";
+	public static final String ENCODING = "utf-8";
 
 	public static final String CRLF = "\r\n";
 
@@ -39,6 +40,7 @@ public interface BaseItem {
 
 	/**
 	 * Convert Element to String
+	 * 
 	 * @return the Item as String
 	 */
 	@Override
@@ -46,14 +48,16 @@ public interface BaseItem {
 
 	/**
 	 * Convert Element to String
-	 * @param converter	Converter for Format
+	 * 
+	 * @param converter Converter for Format
 	 * @return the Item as String with converter
 	 */
 	public String toString(Converter converter);
 
-	/** Add Elements to List or KeyValue
-	 * if param Modulo 2 the Params can be Key,Value
-	 * or add all Values  to List
+	/**
+	 * Add Elements to List or KeyValue if param Modulo 2 the Params can be
+	 * Key,Value or add all Values to List
+	 * 
 	 * @param values Items to Add to List
 	 * @return this Component
 	 */
@@ -61,7 +65,9 @@ public interface BaseItem {
 
 	public BaseItem getNewList(boolean keyValue);
 
-	/** Get the Size of Elements
+	/**
+	 * Get the Size of Elements
+	 * 
 	 * @return the size
 	 */
 	public int size();

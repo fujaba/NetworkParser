@@ -24,6 +24,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 import java.util.ArrayList;
+
 //import org.xml.sax.ErrorHandler;
 //import org.xml.sax.SAXException;
 //import org.xml.sax.SAXParseException;
@@ -32,8 +33,8 @@ import java.util.ArrayList;
  */
 
 public class XsdValidationLoggingErrorHandler {
-	//implements ErrorHandler {
-	//TODO VALIDATOR
+	// implements ErrorHandler {
+	// TODO VALIDATOR
 	/** Variable of Document valid. */
 	private boolean isValid = true;
 	/** Variable of all Warnings. */
@@ -64,6 +65,7 @@ public class XsdValidationLoggingErrorHandler {
 
 	/**
 	 * Switch for Valid Document
+	 * 
 	 * @return is Document is Valid.
 	 */
 	public boolean isValid() {
@@ -72,6 +74,7 @@ public class XsdValidationLoggingErrorHandler {
 
 	/**
 	 * Get all Errors
+	 * 
 	 * @return All Errors.
 	 */
 	public ArrayList<String> getErrors() {
@@ -80,6 +83,7 @@ public class XsdValidationLoggingErrorHandler {
 
 	/**
 	 * Get all Errors as Text
+	 * 
 	 * @return the ErrorText.
 	 */
 	public String getErrorText() {
@@ -93,6 +97,7 @@ public class XsdValidationLoggingErrorHandler {
 
 	/**
 	 * Get all Warnings
+	 * 
 	 * @return List of Warnings.
 	 */
 	public ArrayList<String> getWarnings() {

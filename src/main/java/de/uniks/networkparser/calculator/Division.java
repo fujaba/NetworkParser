@@ -32,12 +32,12 @@ public class Division implements Operator {
 
 	@Override
 	public double calculate(Double... values) {
-		if(values == null) {
+		if (values == null) {
 			return 0;
 		}
 		double result = values[0];
-		for(int i=1; i<values.length;i++) {
-			if(values[i] != 0) {
+		for (int i = 1; i < values.length; i++) {
+			if (values[i] != 0) {
 				result /= values[i];
 			}
 		}

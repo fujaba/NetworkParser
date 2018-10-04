@@ -28,14 +28,14 @@ import de.uniks.networkparser.converter.ByteConverter;
 
 public interface ByteItem extends BaseItem {
 	/**
-	 * @param converter		ByteConverter for Format
-	 * @param isDynamic		ByteStream for minimize output
-	 * @return 				the ByteItem as String
+	 * @param converter ByteConverter for Format
+	 * @param isDynamic ByteStream for minimize output
+	 * @return the ByteItem as String
 	 */
 	public String toString(ByteConverter converter, boolean isDynamic);
 
 	/**
-	 * @param isDynamic		ByteStream for minimize output
+	 * @param isDynamic ByteStream for minimize output
 	 * @return ByteStream
 	 */
 	public ByteBuffer getBytes(boolean isDynamic);
@@ -43,17 +43,16 @@ public interface ByteItem extends BaseItem {
 	/**
 	 * Write the Entity to the buffer
 	 *
-	 * @param buffer		for writing
-	 * @param isDynamic		dynamic switsch
-	 * @param lastEntity	is the entity is the last of a list
-	 * @param isPrimitive	need the entity no datatyp
+	 * @param buffer      for writing
+	 * @param isDynamic   dynamic switsch
+	 * @param lastEntity  is the entity is the last of a list
+	 * @param isPrimitive need the entity no datatyp
 	 */
-	public void writeBytes(ByteBuffer buffer, boolean isDynamic,
-			boolean lastEntity, boolean isPrimitive);
+	public void writeBytes(ByteBuffer buffer, boolean isDynamic, boolean lastEntity, boolean isPrimitive);
 
 	/**
-	 * @param isDynamic	ByteStream for minimize output
-	 * @param isLast	is the Element is the Last of Group
+	 * @param isDynamic ByteStream for minimize output
+	 * @param isLast    is the Element is the Last of Group
 	 * @return the Size of Bytes
 	 */
 	public int calcLength(boolean isDynamic, boolean isLast);
@@ -65,6 +64,7 @@ public interface ByteItem extends BaseItem {
 
 	/**
 	 * Size of Item
+	 * 
 	 * @return the Size of the Item
 	 */
 	public int size();

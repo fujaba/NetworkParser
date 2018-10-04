@@ -36,8 +36,7 @@ public abstract class Value extends GraphMember {
 	protected String value = null;
 
 	public Value with(DataType value) {
-		if ((this.type == null && value != null)
-				|| (this.type != null && this.type != value)) {
+		if ((this.type == null && value != null) || (this.type != null && this.type != value)) {
 			this.type = value;
 		}
 		return this;
@@ -51,28 +50,28 @@ public abstract class Value extends GraphMember {
 	public Object getValue(String attribute) {
 		int pos = attribute.indexOf('.');
 		String attrName;
-		if(pos>0) {
+		if (pos > 0) {
 			attrName = attribute.substring(0, pos);
-		}else {
+		} else {
 			attrName = attribute;
 		}
-		if(PROPERTY_TYPE.equalsIgnoreCase(attrName)) {
+		if (PROPERTY_TYPE.equalsIgnoreCase(attrName)) {
 			return this.getType();
 		}
-		if(PROPERTY_TYPECLAZZ.equalsIgnoreCase(attrName)) {
+		if (PROPERTY_TYPECLAZZ.equalsIgnoreCase(attrName)) {
 			DataType dataType = this.getType();
-			if(dataType != null) {
+			if (dataType != null) {
 				if (pos > 0) {
 					return dataType.getClazz().getValue(attribute.substring(pos + 1));
 				}
 				return dataType.getClazz();
 			}
 		}
-		if(PROPERTY_NAMEGETTER.equalsIgnoreCase(attribute)) {
-			if("boolean".equals(this.type.getName(true))) {
-				return "is"+EntityUtil.upFirstChar(this.name);
+		if (PROPERTY_NAMEGETTER.equalsIgnoreCase(attribute)) {
+			if ("boolean".equals(this.type.getName(true))) {
+				return "is" + EntityUtil.upFirstChar(this.name);
 			}
-			return "get"+EntityUtil.upFirstChar(this.name);
+			return "get" + EntityUtil.upFirstChar(this.name);
 		}
 		return super.getValue(attribute);
 	}
@@ -81,7 +80,7 @@ public abstract class Value extends GraphMember {
 		this.value = value;
 		return this;
 	}
-	
+
 	public String getValue() {
 		return value;
 	}

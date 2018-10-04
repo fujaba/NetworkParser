@@ -30,6 +30,7 @@ import de.uniks.networkparser.buffer.Buffer;
 public interface EntityList extends BaseItem {
 	/**
 	 * Return a Element from list
+	 * 
 	 * @param index index of Element
 	 * @return a Element
 	 */
@@ -40,11 +41,11 @@ public interface EntityList extends BaseItem {
 	 * <p>
 	 * Warning: This method assumes that the data structure is acyclical.
 	 *
-	 * @param indentFactor	The number of spaces to add to each level of indentation.
-	 * @return a printable, displayable, portable, transmittable representation
-	 *		 of the object, beginning with <code>{</code>&nbsp;<small>(left
-	 *		 brace)</small> and ending with <code>}</code>&nbsp;<small>(right
-	 *		 brace)</small>.
+	 * @param indentFactor The number of spaces to add to each level of indentation.
+	 * @return a printable, displayable, portable, transmittable representation of
+	 *         the object, beginning with <code>{</code>&nbsp;<small>(left
+	 *         brace)</small> and ending with <code>}</code>&nbsp;<small>(right
+	 *         brace)</small>.
 	 */
 	public String toString(int indentFactor);
 

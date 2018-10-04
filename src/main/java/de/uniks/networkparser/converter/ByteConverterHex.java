@@ -29,22 +29,24 @@ import de.uniks.networkparser.buffer.CharacterBuffer;
 
 public class ByteConverterHex extends ByteConverter {
 	private static final String HEXVAL = "0123456789ABCDEF";
+
 	/**
 	 * To hex string.
 	 *
-	 * @param values
-	 *			the bytes
+	 * @param values the bytes
 	 * @return the string
 	 */
 	@Override
 	public String toString(BufferedBuffer values) {
 		return toString(values, 0);
 	}
+
 	public String toString(BufferedBuffer values, int space) {
-		if(values == null) {
+		if (values == null) {
 			return null;
 		}
-		CharacterBuffer returnValue = new CharacterBuffer().withBufferLength(values.length() << 1 + values.length() * space);
+		CharacterBuffer returnValue = new CharacterBuffer()
+				.withBufferLength(values.length() << 1 + values.length() * space);
 		String step = EntityUtil.repeat(' ', space);
 		for (int i = 0; i < values.length(); i++) {
 			int value = values.byteAt(i);
@@ -61,13 +63,12 @@ public class ByteConverterHex extends ByteConverter {
 	/**
 	 * To byte string.
 	 *
-	 * @param value
-	 *			the hex string
+	 * @param value the hex string
 	 * @return the byte[]
 	 */
 	@Override
 	public byte[] decode(CharSequence value) {
-		if(value == null) {
+		if (value == null) {
 			return null;
 		}
 		return decoding(value, 0, value.length());
@@ -88,21 +89,21 @@ public class ByteConverterHex extends ByteConverter {
 		}
 		return out;
 	}
-	
+
 	public static char fromHex(CharSequence value, int pos, int len) {
 		byte[] bytes = decoding(value, pos, len);
-		if(bytes == null) {
+		if (bytes == null) {
 			return 0;
 		}
-		if(len == 4 && bytes.length>3) {
-			return (char) ((HEXVAL.indexOf(bytes[0]) << 24)
-					+ (HEXVAL.indexOf(bytes[1]) << 16)
+		if (len == 4 && bytes.length > 3) {
+			return (char) ((HEXVAL.indexOf(bytes[0]) << 24) + (HEXVAL.indexOf(bytes[1]) << 16)
 					+ (HEXVAL.indexOf(bytes[2]) << 8) + HEXVAL.indexOf(bytes[3]));
 		}
-		if(bytes.length>2) {
-			return (char) ((HEXVAL.indexOf(bytes[0]) << 16) + (HEXVAL.indexOf(bytes[1]) << 8) + HEXVAL.indexOf(bytes[2]));
+		if (bytes.length > 2) {
+			return (char) ((HEXVAL.indexOf(bytes[0]) << 16) + (HEXVAL.indexOf(bytes[1]) << 8)
+					+ HEXVAL.indexOf(bytes[2]));
 		}
-		if(bytes.length>1) {
+		if (bytes.length > 1) {
 			return (char) ((HEXVAL.indexOf(bytes[0]) << 8) + HEXVAL.indexOf(bytes[1]));
 		}
 		return (char) HEXVAL.indexOf(bytes[0]);
@@ -118,7 +119,7 @@ public class ByteConverterHex extends ByteConverter {
 		char c;
 		int i = 0;
 		int len = value.length();
-		if(value.charAt(0)=='\"'){
+		if (value.charAt(0) == '\"') {
 			i++;
 			len--;
 		}
@@ -131,17 +132,17 @@ public class ByteConverterHex extends ByteConverter {
 				}
 				c = value.charAt(++i);
 				int pos = CONTROLCHARACTER.indexOf(c);
-				if(pos>=0) {
-					sb.append(pos+7);
-				} else if(c == '\"') {
+				if (pos >= 0) {
+					sb.append(pos + 7);
+				} else if (c == '\"') {
 					sb.append('\"');
-				} else if(c == 0x39) {
+				} else if (c == 0x39) {
 					sb.append(0x39);
-				} else if(c == 'u') {
-					sb.append(fromHex(value, i, i+4));
-					i+=4;
-				} else if(c == 'o') {
-					sb.append(fromHex(value, i, i+3));
+				} else if (c == 'u') {
+					sb.append(fromHex(value, i, i + 4));
+					i += 4;
+				} else if (c == 'o') {
+					sb.append(fromHex(value, i, i + 3));
 				} else {
 					sb.append(c);
 				}

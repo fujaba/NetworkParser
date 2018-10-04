@@ -49,15 +49,15 @@ public class Token {
 	public String toString() {
 		return kind + " " + name();
 	}
-	
+
 	public Token addText(char value) {
-		if(Character.isWhitespace(value) == false) {
+		if (Character.isWhitespace(value) == false) {
 			text.with(value);
 		}
 		originalText.with(value);
 		return this;
 	}
-	
+
 	public void clear() {
 		this.text.clear();
 		this.originalText.clear();

@@ -48,7 +48,7 @@ public class SymTabEntry {
 
 	public static final String PROPERTY_TYPE = "type";
 	public static final String PROPERTY_VALUE = "value";
-	public static final String NOGEN="//XXX NOGEN";
+	public static final String NOGEN = "//XXX NOGEN";
 
 	private String value;
 	private String type;
@@ -70,7 +70,7 @@ public class SymTabEntry {
 
 	private int annotationsEndPos;
 	private int bodyStartPos;
-	private String dataType; 	// DataType of Attribute or ReturnType of Method
+	private String dataType; // DataType of Attribute or ReturnType of Method
 	private String params; // Parameter of Methods
 	private SourceCode parent;
 	private String body;
@@ -89,8 +89,7 @@ public class SymTabEntry {
 	}
 
 	public boolean setValue(String value) {
-		if((this.value == null && value != null) ||
-			(this.value != null && this.value.equals(value) == false)) {
+		if ((this.value == null && value != null) || (this.value != null && this.value.equals(value) == false)) {
 			this.value = value;
 			return true;
 		}
@@ -98,8 +97,8 @@ public class SymTabEntry {
 	}
 
 	public void add(CharSequence string) {
-		if(this.value == null) {
-			this.value = ""+string;
+		if (this.value == null) {
+			this.value = "" + string;
 		} else {
 			this.value += string;
 		}
@@ -115,8 +114,7 @@ public class SymTabEntry {
 	}
 
 	public boolean setType(String value) {
-		if((this.type == null && value != null) ||
-			(this.type != null && this.type.equals(value) == false)) {
+		if ((this.type == null && value != null) || (this.type != null && this.type.equals(value) == false)) {
 			this.type = value;
 			return true;
 		}
@@ -146,6 +144,7 @@ public class SymTabEntry {
 		}
 		return changed;
 	}
+
 	public boolean setPrev(SymTabEntry value) {
 		boolean changed = false;
 
@@ -166,14 +165,14 @@ public class SymTabEntry {
 	}
 
 	public String toString() {
-		StringBuilder sb= new StringBuilder();
+		StringBuilder sb = new StringBuilder();
 		toString(sb);
 		return sb.toString();
 	}
 
 	public void toString(StringBuilder sb) {
 		sb.append(this.value);
-		if(this.next != null) {
+		if (this.next != null) {
 			this.next.toString(sb);
 		}
 	}
@@ -226,7 +225,7 @@ public class SymTabEntry {
 	}
 
 	public SymTabEntry withModifiers(String modifiers) {
-		this.modifiers= modifiers;
+		this.modifiers = modifiers;
 		return this;
 	}
 
@@ -238,6 +237,7 @@ public class SymTabEntry {
 		this.throwsTags = throwsTags;
 		return this;
 	}
+
 	public String getThrowsTags() {
 		return throwsTags;
 	}
@@ -268,22 +268,22 @@ public class SymTabEntry {
 	public int getBodyStartPos() {
 		return bodyStartPos;
 	}
-	
+
 	public SymTabEntry withBody(String value) {
 		this.body = value;
 		return this;
 	}
-	
+
 	public String getBody() {
 		return body;
 	}
+
 	public boolean isNoGen() {
-		if(this.body == null) {
+		if (this.body == null) {
 			return false;
 		}
-		return body.indexOf(NOGEN)>=0;
+		return body.indexOf(NOGEN) >= 0;
 	}
-
 
 	public SymTabEntry withDataType(String value) {
 		this.dataType = value;
@@ -304,6 +304,6 @@ public class SymTabEntry {
 	}
 
 	public void writeBody(String value) {
-		this.parent.replaceAll(this.bodyStartPos+1, value);
+		this.parent.replaceAll(this.bodyStartPos + 1, value);
 	}
 }

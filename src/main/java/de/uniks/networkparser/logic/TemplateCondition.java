@@ -31,7 +31,7 @@ public class TemplateCondition implements ObjectCondition {
 
 	@Override
 	public boolean update(Object value) {
-		if(condition == null) {
+		if (condition == null) {
 			return true;
 		}
 		return condition.update(value);

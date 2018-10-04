@@ -32,4 +32,3 @@ public class Throws extends GraphMember {
 		return this;
 	}
 }
-

@@ -30,8 +30,7 @@ public class StoryUtil {
 		throw (T) exception;
 	}
 
-	public static void throwException(Throwable exception)
-	{
+	public static void throwException(Throwable exception) {
 		StoryUtil.<RuntimeException>throwException(exception, null);
 	}
 

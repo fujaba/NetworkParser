@@ -29,11 +29,11 @@ import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.list.SimpleSet;
 
 public abstract class GraphMember {
-	public static final String PROPERTY_NAME="name";
+	public static final String PROPERTY_NAME = "name";
 	public static final String PROPERTY_CLASSNAME = "className";
-	public static final String PROPERTY_PARENT="parent";
-	public static final String PROPERTY_CHILD="child";
-	public static final String PROPERTY_LITERAL="literal";
+	public static final String PROPERTY_PARENT = "parent";
+	public static final String PROPERTY_CHILD = "child";
+	public static final String PROPERTY_LITERAL = "literal";
 	public static final String PROPERTY_VISIBILITY = "visibility";
 	public static final String PROPERTY_MODIFIERS = "modifiers";
 	public static final String PROPERTY_THIS = "this";
@@ -55,32 +55,32 @@ public abstract class GraphMember {
 	}
 
 	public Object getValue(String attribute) {
-		if(PROPERTY_PATH.equalsIgnoreCase(attribute)) {
+		if (PROPERTY_PATH.equalsIgnoreCase(attribute)) {
 			return getName().replaceAll("\\.", "/");
 		}
-		if(PROPERTY_VISIBILITY.equalsIgnoreCase(attribute)) {
+		if (PROPERTY_VISIBILITY.equalsIgnoreCase(attribute)) {
 			Modifier modifier = this.getModifier();
 			if (modifier == null) {
 				return Modifier.PRIVATE.getName();
 			}
 			return modifier.getName();
 		}
-		if(PROPERTY_MODIFIERS.equalsIgnoreCase(attribute)) {
+		if (PROPERTY_MODIFIERS.equalsIgnoreCase(attribute)) {
 			CharacterBuffer buffer = new CharacterBuffer();
 			Modifier modifier = this.getModifier();
-			if(modifier != null) {
+			if (modifier != null) {
 				modifier = modifier.getModifier();
-				while(modifier != null) {
+				while (modifier != null) {
 					buffer.with(modifier.getName());
 					modifier = modifier.getModifier();
-					if(modifier != null) {
+					if (modifier != null) {
 						buffer.with(' ');
 					}
 				}
 			}
 			return buffer.toString();
 		}
-		if(PROPERTY_NAME.equalsIgnoreCase(attribute)) {
+		if (PROPERTY_NAME.equalsIgnoreCase(attribute)) {
 			return this.name;
 		}
 		if (PROPERTY_CLASSNAME.equalsIgnoreCase(attribute)) {
@@ -88,12 +88,12 @@ public abstract class GraphMember {
 		}
 		int pos = attribute.indexOf('.');
 		String attrName;
-		if(pos>0) {
+		if (pos > 0) {
 			attrName = attribute.substring(0, pos);
-		}else {
+		} else {
 			attrName = attribute;
 		}
-		if(PROPERTY_PARENT.equalsIgnoreCase(attrName)) {
+		if (PROPERTY_PARENT.equalsIgnoreCase(attrName)) {
 			if (pos > 0) {
 				if (parentNode instanceof GraphMember) {
 					GraphMember item = (GraphMember) this.getParent();
@@ -103,18 +103,18 @@ public abstract class GraphMember {
 			}
 			return this.parentNode;
 		}
-		if(PROPERTY_CHILD.equalsIgnoreCase(attrName)) {
+		if (PROPERTY_CHILD.equalsIgnoreCase(attrName)) {
 			if (pos > 0) {
 				GraphSimpleSet item = this.getChildren();
 				return item.getValue(attribute.substring(pos + 1));
 			}
 			return this.children;
 		}
-		if(PROPERTY_LITERAL.equalsIgnoreCase(attrName)) {
+		if (PROPERTY_LITERAL.equalsIgnoreCase(attrName)) {
 			GraphSimpleSet items = this.getChildren();
 			GraphSimpleSet literals = new GraphSimpleSet();
-			for(GraphMember child : items) {
-				if(child instanceof Literal) {
+			for (GraphMember child : items) {
+				if (child instanceof Literal) {
 					literals.add(child);
 				}
 			}
@@ -123,10 +123,10 @@ public abstract class GraphMember {
 			}
 			return literals;
 		}
-		if(PROPERTY_THIS.equalsIgnoreCase(attrName)) {
+		if (PROPERTY_THIS.equalsIgnoreCase(attrName)) {
 			// Check if Static or not
 			Modifier modifier = this.getModifier();
-			if(modifier != null && modifier.has(Modifier.STATIC)) {
+			if (modifier != null && modifier.has(Modifier.STATIC)) {
 				return getValue(PROPERTY_PARENT);
 			}
 			return PROPERTY_THIS;
@@ -136,13 +136,13 @@ public abstract class GraphMember {
 
 	@SuppressWarnings("unchecked")
 	protected boolean check(GraphMember element, Condition<?>... filters) {
-		if(filters == null) {
+		if (filters == null) {
 			return element != null;
 		}
-		boolean result=true;
-		for(Condition<?> item : filters) {
+		boolean result = true;
+		for (Condition<?> item : filters) {
 			Condition<Object> filter = (Condition<Object>) item;
-			if(filter != null && result) {
+			if (filter != null && result) {
 				result = filter.update(element);
 			}
 		}
@@ -150,13 +150,13 @@ public abstract class GraphMember {
 	}
 
 	public Clazz getClazz() {
-		if(this instanceof Clazz) {
+		if (this instanceof Clazz) {
 			return (Clazz) this;
 		}
-		if(parentNode instanceof Clazz) {
+		if (parentNode instanceof Clazz) {
 			return (Clazz) parentNode;
 		}
-		if(parentNode instanceof GraphMember) {
+		if (parentNode instanceof GraphMember) {
 			return ((GraphMember) parentNode).getClazz();
 		}
 		return null;
@@ -166,16 +166,17 @@ public abstract class GraphMember {
 	protected String getFullId() {
 		return name;
 	}
+
 	// PACKAGE VISIBILITY
 	protected GraphSimpleSet getChildren() {
-		if(this.children instanceof GraphSimpleSet) {
-			return (GraphSimpleSet)this.children;
+		if (this.children instanceof GraphSimpleSet) {
+			return (GraphSimpleSet) this.children;
 		}
 		GraphSimpleSet collection = new GraphSimpleSet();
-		if(this.children == null) {
+		if (this.children == null) {
 			return collection;
 		}
-		if(this.children instanceof GraphMember) {
+		if (this.children instanceof GraphMember) {
 			collection.with(this.children);
 		}
 		return collection;
@@ -183,18 +184,18 @@ public abstract class GraphMember {
 
 	protected SimpleSet<GraphEntity> getNodes() {
 		SimpleSet<GraphEntity> collection = new SimpleSet<GraphEntity>();
-		if(this.children == null) {
+		if (this.children == null) {
 			return collection;
 		}
-		if(this.children instanceof GraphEntity) {
-			collection.add((GraphEntity)this.children);
+		if (this.children instanceof GraphEntity) {
+			collection.add((GraphEntity) this.children);
 			return collection;
 		}
-		if(this.children instanceof GraphSimpleSet) {
+		if (this.children instanceof GraphSimpleSet) {
 			GraphSimpleSet list = (GraphSimpleSet) this.children;
-			for(GraphMember item : list) {
-				if(item instanceof GraphEntity) {
-					collection.add((GraphEntity)item);
+			for (GraphMember item : list) {
+				if (item instanceof GraphEntity) {
+					collection.add((GraphEntity) item);
 				}
 			}
 		}
@@ -203,7 +204,8 @@ public abstract class GraphMember {
 
 	/**
 	 * Set the name of Element
-	 * @param name  The Name of Element
+	 * 
+	 * @param name The Name of Element
 	 * @return The Instance
 	 */
 	public GraphMember with(String name) {
@@ -212,8 +214,7 @@ public abstract class GraphMember {
 	}
 
 	protected boolean setName(String value) {
-		if((value != null && value.equals(this.name) == false)
-				|| (value==null && this.name != null)) {
+		if ((value != null && value.equals(this.name) == false) || (value == null && this.name != null)) {
 			this.name = value;
 			return true;
 		}
@@ -245,24 +246,24 @@ public abstract class GraphMember {
 		if (values == null || (values.length == 1 && (this.children == values[0]))) {
 			return this;
 		}
-		if(this.children == null) {
-			if(values.length==1){
+		if (this.children == null) {
+			if (values.length == 1) {
 				this.children = values[0];
-				((GraphMember)values[0]).setParentNode(this);
+				((GraphMember) values[0]).setParentNode(this);
 				return this;
 			}
 		}
 		GraphSimpleSet list;
-		if( this.children instanceof GraphSimpleSet) {
+		if (this.children instanceof GraphSimpleSet) {
 			list = (GraphSimpleSet) this.children;
-		}else {
+		} else {
 			list = new GraphSimpleSet();
 			list.with((GraphMember) this.children);
 			this.children = list;
 		}
 		for (GraphMember value : values) {
-			if(value != null ) {
-				if(list.add(value)) {
+			if (value != null) {
+				if (list.add(value)) {
 					value.setParentNode(this);
 				}
 			}
@@ -271,13 +272,13 @@ public abstract class GraphMember {
 	}
 
 	protected Match getDiff() {
-		if(this.children == null) {
+		if (this.children == null) {
 			Match graphDiff = new Match();
 			this.withChildren(graphDiff);
 			return graphDiff;
 		}
-		for(GraphMember item : getChildren()) {
-			if(item instanceof Match) {
+		for (GraphMember item : getChildren()) {
+			if (item instanceof Match) {
 				return (Match) item;
 			}
 		}
@@ -292,19 +293,19 @@ public abstract class GraphMember {
 
 	protected GraphMember withAnnotation(Annotation value) {
 		// Remove Old GraphAnnotation
-		if(this.children != null) {
-			if(this.children instanceof GraphMember) {
-				if(this.children instanceof Annotation) {
-					((Annotation)this.children).setParentNode(null);
+		if (this.children != null) {
+			if (this.children instanceof GraphMember) {
+				if (this.children instanceof Annotation) {
+					((Annotation) this.children).setParentNode(null);
 					this.children = null;
 				}
 			}
-			if(this.children instanceof GraphSimpleSet) {
+			if (this.children instanceof GraphSimpleSet) {
 				GraphSimpleSet collection = (GraphSimpleSet) this.children;
-				for(int i=collection.size();i>=0;i--) {
-					if(collection.get(i) instanceof Annotation) {
+				for (int i = collection.size(); i >= 0; i--) {
+					if (collection.get(i) instanceof Annotation) {
 						GraphMember oldValue = collection.remove(i);
-						if(oldValue != null) {
+						if (oldValue != null) {
 							oldValue.setParentNode(null);
 						}
 					}
@@ -316,15 +317,15 @@ public abstract class GraphMember {
 	}
 
 	protected Annotation getAnnotation() {
-		if(this.children == null) {
+		if (this.children == null) {
 			return null;
 		}
 		if (this.children instanceof Annotation) {
-			return (Annotation)this.children;
-		} else if(this.children instanceof GraphSimpleSet) {
+			return (Annotation) this.children;
+		} else if (this.children instanceof GraphSimpleSet) {
 			GraphSimpleSet collection = (GraphSimpleSet) this.children;
-			for(GraphMember item : collection) {
-				if(item instanceof Annotation) {
+			for (GraphMember item : collection) {
+				if (item instanceof Annotation) {
 					return (Annotation) item;
 				}
 			}
@@ -333,30 +334,31 @@ public abstract class GraphMember {
 	}
 
 	public Modifier getModifier() {
-		if(this.children == null) {
+		if (this.children == null) {
 			return null;
 		}
 		if (this.children instanceof Modifier) {
-			return (Modifier)this.children;
-		} else if(this.children instanceof GraphSimpleSet) {
+			return (Modifier) this.children;
+		} else if (this.children instanceof GraphSimpleSet) {
 			GraphSimpleSet collection = (GraphSimpleSet) this.children;
-			for(GraphMember item : collection) {
-				if(item instanceof Modifier) {
+			for (GraphMember item : collection) {
+				if (item instanceof Modifier) {
 					return (Modifier) item;
 				}
 			}
 		}
 		return null;
 	}
+
 	protected GraphMember withModifier(Modifier... values) {
-		if(values == null) {
+		if (values == null) {
 			return this;
 		}
 		Modifier rootModifier = getModifier();
-		if(rootModifier == null && this instanceof Modifier) {
-			rootModifier = (Modifier)this;
+		if (rootModifier == null && this instanceof Modifier) {
+			rootModifier = (Modifier) this;
 		}
-		if(rootModifier == null) {
+		if (rootModifier == null) {
 			return this;
 		}
 		for (Modifier item : values) {
@@ -371,21 +373,21 @@ public abstract class GraphMember {
 	}
 
 	public boolean remove(GraphMember member) {
-		if(member == null) {
+		if (member == null) {
 			return true;
 		}
-		if(this.children instanceof GraphSimpleSet) {
+		if (this.children instanceof GraphSimpleSet) {
 			GraphSimpleSet list = (GraphSimpleSet) this.children;
-			if(member instanceof Association) {
+			if (member instanceof Association) {
 				((Association) member).withoutParent(this);
 			} else {
 				member.setParentNode(null);
 			}
 			return list.remove(member);
 		}
-		if(this.children == member) {
+		if (this.children == member) {
 			this.children = null;
-			if(member instanceof Association) {
+			if (member instanceof Association) {
 				((Association) member).withoutParent(this);
 			} else {
 				member.setParentNode(null);

@@ -25,7 +25,10 @@ THE SOFTWARE.
 */
 
 public interface CellEditorElement {
-	public enum APPLYACTION{SAVE,TAB, ENTER, FOCUS};
+	public enum APPLYACTION {
+		SAVE, TAB, ENTER, FOCUS
+	};
+
 	public CellEditorElement withColumn(Column column);
 
 	public void cancel();

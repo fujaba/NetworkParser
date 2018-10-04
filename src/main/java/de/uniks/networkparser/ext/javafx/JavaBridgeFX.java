@@ -59,52 +59,53 @@ public class JavaBridgeFX extends JavaBridge {
 	@SuppressWarnings("unchecked")
 	public static void addChildren(Object element, int pos, Object... childrenValues) {
 		Object children = ReflectionLoader.calling(element, "getChildren", false, null);
-		if(children == null) {
+		if (children == null) {
 			children = ReflectionLoader.call(element, "getItems");
 		}
-		if(children != null && children instanceof List<?>) {
+		if (children != null && children instanceof List<?>) {
 			List<Object> childrenList = (List<Object>) children;
-			for(Object item : childrenValues) {
-				if(pos<0) {
+			for (Object item : childrenValues) {
+				if (pos < 0) {
 					childrenList.add(item);
-				}else {
+				} else {
 					childrenList.add(pos++, item);
 				}
 			}
 		}
 	}
+
 	public static void removeChildren(Object element, Object... childrenValues) {
 		Object children = ReflectionLoader.calling(element, "getChildren", false, null);
-		if(children == null) {
+		if (children == null) {
 			children = ReflectionLoader.call(element, "getItems");
 		}
-		if(children != null && children instanceof List<?>) {
+		if (children != null && children instanceof List<?>) {
 			List<?> childrenList = (List<?>) children;
-			for(Object item : childrenValues) {
+			for (Object item : childrenValues) {
 				childrenList.remove(item);
 			}
 		}
 	}
 
 	@SuppressWarnings("unchecked")
-	public static void setStyle(Object element, boolean clear, String...stylesValues) {
+	public static void setStyle(Object element, boolean clear, String... stylesValues) {
 		Object styles = ReflectionLoader.call(element, "getStyleClass");
-		if(styles != null && styles instanceof List<?>) {
+		if (styles != null && styles instanceof List<?>) {
 			List<String> styleList = (List<String>) styles;
-			if(clear) {
+			if (clear) {
 				styleList.clear();
 			}
-			for(String item : stylesValues) {
+			for (String item : stylesValues) {
 				styleList.add(item);
 			}
 		}
 	}
 
-	public static void removeStyle(Object element, String...stylesValues) {
+	public static void removeStyle(Object element, String... stylesValues) {
 		Object styles = ReflectionLoader.call(element, "getStyleClass");
-		if(styles != null && styles instanceof List<?>) {
+		if (styles != null && styles instanceof List<?>) {
 			List<?> styleList = (List<?>) styles;
-			for(String item : stylesValues) {
+			for (String item : stylesValues) {
 				styleList.remove(item);
 			}
 
@@ -119,26 +120,28 @@ public class JavaBridgeFX extends JavaBridge {
 	}
 
 	public static Object convert(Control item, boolean clearStyle) {
-		if(item instanceof Button) {
+		if (item instanceof Button) {
 			return convertButton((Button) item, clearStyle);
 		}
-		if(item instanceof Label) {
+		if (item instanceof Label) {
 			return convertLabel((Label) item, clearStyle);
 		}
 		return null;
 	}
 
 	private static Object convertButton(Button button, boolean clearStyle) {
-		if(button == null || Os.isJavaFX() == false) {
+		if (button == null || Os.isJavaFX() == false) {
 			return null;
 		}
 		String value = button.getValue();
-		Object javaFXBtn = ReflectionLoader.newInstance(ReflectionLoader.BUTTON, value);
+		Object javaFXBtn = ReflectionLoader.newInstance(false, ReflectionLoader.BUTTON, value);
+		if (javaFXBtn == null) {
+			return null;
+		}
 		List<ObjectCondition> events = button.getEvents(EventTypes.CLICK);
 		ChainCondition condition = new ChainCondition();
 		condition.with(events);
 		condition.withStaticEvent(button);
-
 
 		GUIEvent javaFXEvent = new GUIEvent();
 		javaFXEvent.withListener(condition);
@@ -148,26 +151,27 @@ public class JavaBridgeFX extends JavaBridge {
 
 		ReflectionLoader.call(javaFXBtn, "setFocusTraversable", boolean.class, false);
 
-		setStyle(javaFXBtn, clearStyle, "window-button", "window-"+button.getActionType()+"-button");
+		setStyle(javaFXBtn, clearStyle, "window-button", "window-" + button.getActionType() + "-button");
 
-		if(value == null) {
+		if (value == null) {
 			Object stackPane = ReflectionLoader.newInstance(ReflectionLoader.STACKPANE);
 			setStyle(stackPane, true, "graphic");
 
 			ReflectionLoader.call(javaFXBtn, "setGraphic", ReflectionLoader.NODE, stackPane);
 			ReflectionLoader.call(javaFXBtn, "setMinSize", double.class, 17, double.class, 17);
-			ReflectionLoader.call(javaFXBtn, "setPrefSize", double.class,  17, double.class, 17);
+			ReflectionLoader.call(javaFXBtn, "setPrefSize", double.class, 17, double.class, 17);
 		}
 		return javaFXBtn;
 	}
 
 	private static Object convertLabel(Label label, boolean clearStyle) {
 		Object javaFXLabel;
-		if(Label.SPACER.equalsIgnoreCase(label.getType())) {
+		if (Label.SPACER.equalsIgnoreCase(label.getType())) {
 			javaFXLabel = ReflectionLoader.newInstance(ReflectionLoader.REGION);
-			Object prio = ReflectionLoader.getField("ALWAYS", ReflectionLoader.PRIORITY) ;
-			ReflectionLoader.call(ReflectionLoader.HBOX, "setHgrow", ReflectionLoader.NODE, javaFXLabel, ReflectionLoader.PRIORITY, prio);
-		} else if(Label.TITLE.equalsIgnoreCase(label.getType())) {
+			Object prio = ReflectionLoader.getField("ALWAYS", ReflectionLoader.PRIORITY);
+			ReflectionLoader.call(ReflectionLoader.HBOX, "setHgrow", ReflectionLoader.NODE, javaFXLabel,
+					ReflectionLoader.PRIORITY, prio);
+		} else if (Label.TITLE.equalsIgnoreCase(label.getType())) {
 			javaFXLabel = ReflectionLoader.newInstance(ReflectionLoader.LABEL, label.getValue());
 			ReflectionLoader.call(javaFXLabel, "setMaxHeight", double.class, Double.MAX_VALUE);
 			setStyle(javaFXLabel, false, "window-title");

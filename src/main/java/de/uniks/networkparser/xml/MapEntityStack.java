@@ -35,7 +35,7 @@ public class MapEntityStack {
 
 	private SimpleList<String> tags = new SimpleList<String>();
 
-	private SimpleKeyValueList<String, SimpleSet<String>> childProperties= new SimpleKeyValueList<String, SimpleSet<String>>();
+	private SimpleKeyValueList<String, SimpleSet<String>> childProperties = new SimpleKeyValueList<String, SimpleSet<String>>();
 
 	/** Variable of AllowQuote. */
 //	private boolean isAllowQuote;
@@ -64,11 +64,12 @@ public class MapEntityStack {
 
 	/**
 	 * Get the previous Element
+	 * 
 	 * @return The Stack Element - offset
 	 */
 	public Object getPrevItem() {
 		int pos = this.stack.size() - 2;
-		if(pos < 0) {
+		if (pos < 0) {
 			return null;
 		}
 		return this.stack.get(pos);
@@ -76,30 +77,31 @@ public class MapEntityStack {
 
 	/**
 	 * Add a new Reference Object to Stack.
-	 * @param tag	The new Tag
-	 * @param item 	new Reference Object
+	 * 
+	 * @param tag     The new Tag
+	 * @param item    new Reference Object
 	 * @param creator The Creator for the Item
 	 * @return XMLTokener Instance
 	 */
 	public MapEntityStack withStack(String tag, Object item, SendableEntityCreator creator) {
-		if(creator == null) {
+		if (creator == null) {
 			return this;
 		}
 		stack.add(item, creator);
 		tags.add(tag);
 		String[] properties = creator.getProperties();
-		for(String property : properties) {
+		for (String property : properties) {
 			int lastPos = property.lastIndexOf(IdMap.ENTITYSPLITTER);
-			if(lastPos >= 0) {
+			if (lastPos >= 0) {
 				String prop;
-				if(lastPos == property.length() - 1) {
+				if (lastPos == property.length() - 1) {
 					// Value of XML Entity like uni.
 					prop = ".";
 				} else {
 					prop = property.substring(lastPos + 1);
 				}
 				int pos = childProperties.indexOf(prop);
-				if(pos>=0) {
+				if (pos >= 0) {
 					childProperties.getValueByIndex(pos).add(property);
 				} else {
 					SimpleSet<String> child = new SimpleSet<String>();
@@ -122,10 +124,10 @@ public class MapEntityStack {
 
 	public void setValue(String key, String value) {
 		SimpleSet<String> set = childProperties.get(key);
-		if(set != null) {
-			for(String ChildKey : set) {
+		if (set != null) {
+			for (String ChildKey : set) {
 				int pos = getEntityPos(ChildKey);
-				if(pos >= 0 ) {
+				if (pos >= 0) {
 					Object entity = stack.getKeyByIndex(pos);
 					SendableEntityCreator creator = stack.getValueByIndex(pos);
 					creator.setValue(entity, ChildKey, value, SendableEntityCreator.NEW);
@@ -135,16 +137,16 @@ public class MapEntityStack {
 	}
 
 	private int getEntityPos(String entity) {
-		if(entity == null) {
+		if (entity == null) {
 			return -1;
 		}
-		int start=entity.lastIndexOf(IdMap.ENTITYSPLITTER);
+		int start = entity.lastIndexOf(IdMap.ENTITYSPLITTER);
 		int pos = this.tags.size() - 1;
-		for(int end=start-1;end>=0;end --) {
-			if(entity.charAt(end) ==IdMap.ENTITYSPLITTER) {
-				String item = entity.substring(end+1, start);
+		for (int end = start - 1; end >= 0; end--) {
+			if (entity.charAt(end) == IdMap.ENTITYSPLITTER) {
+				String item = entity.substring(end + 1, start);
 				String tag = tags.get(pos);
-				if(tag == null || tag.equals(item) == false) {
+				if (tag == null || tag.equals(item) == false) {
 					return -1;
 				}
 				start = end;
@@ -155,7 +157,7 @@ public class MapEntityStack {
 	}
 
 	public String getCurrentTag() {
-		if(this.tags.size() >0 ){
+		if (this.tags.size() > 0) {
 			return this.tags.get(this.tags.size() - 1);
 		}
 		return null;

@@ -45,7 +45,7 @@ public class ClassModel extends GraphModel {
 	/**
 	 * Constructor
 	 *
-	 * @param packageName  PackageName of ClassModel
+	 * @param packageName PackageName of ClassModel
 	 */
 	public ClassModel(String packageName) {
 		this();
@@ -57,29 +57,28 @@ public class ClassModel extends GraphModel {
 		setAuthorName(System.getProperty("user.name"));
 	}
 
-	public void resetGenerator()
-	{
+	public void resetGenerator() {
 		this.generator = new ModelGenerator().withDefaultModel(this);
 	}
-
 
 	public ClassModel withFeature(Feature feature) {
 		this.generator.withFeature(feature);
 		return this;
 	}
-	
+
 	public ClassModel withoutFeature(Feature feature) {
 		this.generator.withoutFeature(feature);
 		return this;
 	}
+
 	@Override
-	public boolean remove(GraphMember member) { 
+	public boolean remove(GraphMember member) {
 		return super.remove(member);
 	}
 
 	public ModelGenerator getGenerator(String... params) {
-		if(params != null) {
-			if(params.length==1 && params[0] != null) {
+		if (params != null) {
+			if (params.length == 1 && params[0] != null) {
 				this.generator.withRootDir(params[0]);
 			}
 		}
@@ -90,25 +89,23 @@ public class ClassModel extends GraphModel {
 		return this.generator.getFeature(feature, clazzes);
 	}
 
-	
-
 	@Override
 	public HTMLEntity dumpHTML(String diagramName, boolean... write) {
-		if(diagramName == null || diagramName.length() < 1) {
+		if (diagramName == null || diagramName.length() < 1) {
 			diagramName = this.getName();
 		}
-		if(diagramName == null) {
+		if (diagramName == null) {
 			diagramName = "Model";
 		}
-		if(diagramName.length() < 1) {
+		if (diagramName.length() < 1) {
 			return null;
 		}
 		HTMLEntity entity = super.dumpHTML(diagramName, write);
-		if(write == null || write.length<1 || write[0]==false) {
+		if (write == null || write.length < 1 || write[0] == false) {
 			return entity;
 		}
 		String htmlText = entity.toString();
-		if(FileBuffer.writeFile("doc/"+diagramName+".html", htmlText)>=0) {
+		if (FileBuffer.writeFile("doc/" + diagramName + ".html", htmlText) >= 0) {
 			return entity;
 		}
 		return null;
@@ -117,7 +114,7 @@ public class ClassModel extends GraphModel {
 	@Override
 	public ClassModel generate(String... rootDir) {
 		String path = null;
-		if(rootDir != null && rootDir.length>0) {
+		if (rootDir != null && rootDir.length > 0) {
 			path = rootDir[0];
 		}
 		getGenerator().generate(path, this);
@@ -126,19 +123,19 @@ public class ClassModel extends GraphModel {
 
 	@Override
 	public boolean add(Object... values) {
-		if(values == null) {
+		if (values == null) {
 			return true;
 		}
-		boolean add=true;
-		for(Object item : values) {
-			if(item instanceof Collection<?>) {
+		boolean add = true;
+		for (Object item : values) {
+			if (item instanceof Collection<?>) {
 				Collection<?> items = (Collection<?>) item;
-				for(Object i : items) {
+				for (Object i : items) {
 					add = add(i);
 				}
 				continue;
 			}
-			if(item instanceof Match) {
+			if (item instanceof Match) {
 				// Change
 				Match match = (Match) item;
 				GraphMember member = match.getMatch();
@@ -147,17 +144,17 @@ public class ClassModel extends GraphModel {
 				GraphUtil.setChildren(clazz, modifier);
 
 				Object newValue = match.getNewValue();
-				if(newValue instanceof Attribute ) {
+				if (newValue instanceof Attribute) {
 					GraphUtil.setChildren(clazz, (GraphMember) newValue);
-				} else if(newValue instanceof DataType ) {
-					if(member instanceof Attribute) {
-						clazz.createAttribute(member.getName(), (DataType)newValue);
+				} else if (newValue instanceof DataType) {
+					if (member instanceof Attribute) {
+						clazz.createAttribute(member.getName(), (DataType) newValue);
 					}
 				}
 			}
-			if(item instanceof Annotation) {
+			if (item instanceof Annotation) {
 				super.withAnnotation((Annotation) item);
-			} else if(item instanceof Clazz) {
+			} else if (item instanceof Clazz) {
 				Clazz clazz = (Clazz) item;
 				clazz.setClassModel(this);
 			} else {
@@ -171,6 +168,7 @@ public class ClassModel extends GraphModel {
 	public BaseItem getNewList(boolean keyValue) {
 		return new ClassModel();
 	}
+
 	// Override some Method because change ReturnValue
 	@Override
 	public ClassModel with(String name) {

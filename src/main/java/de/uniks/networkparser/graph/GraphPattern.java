@@ -26,6 +26,7 @@ THE SOFTWARE.
 
 public class GraphPattern extends GraphEntity {
 	private String bounds;
+
 	// GETTER AND SETTER
 	public GraphPattern with(String id) {
 		super.with(id);

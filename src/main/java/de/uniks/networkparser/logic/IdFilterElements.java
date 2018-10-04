@@ -34,15 +34,16 @@ public class IdFilterElements extends SimpleSet<Object> implements ObjectConditi
 	public IdFilterElements(ObjectCondition condition) {
 		this.condition = condition;
 	}
+
 	public IdFilterElements(Class<?> clazzConditon) {
 		this.condition = InstanceOf.create(clazzConditon);
 	}
 
 	@Override
 	public boolean update(Object evt) {
-		if(condition!=null) {
-			if(condition.update(evt)) {
-				return add(((PropertyChangeEvent)evt).getNewValue());
+		if (condition != null) {
+			if (condition.update(evt)) {
+				return add(((PropertyChangeEvent) evt).getNewValue());
 			}
 		}
 		return false;

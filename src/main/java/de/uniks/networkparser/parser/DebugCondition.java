@@ -6,13 +6,12 @@ import de.uniks.networkparser.interfaces.ParserCondition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.TemplateParser;
 
-
 /**
- * @author Stefan
- *	Add Condition
+ * @author Stefan Add Condition
  */
 public class DebugCondition implements ParserCondition, SendableEntityCreator {
-	public static final String KEY="debug";
+	public static final String KEY = "debug";
+
 	@Override
 	public boolean update(Object value) {
 		return true;
@@ -27,7 +26,6 @@ public class DebugCondition implements ParserCondition, SendableEntityCreator {
 		buffer.skip();
 	}
 
-
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value, String type) {
 		return true;
@@ -37,7 +35,6 @@ public class DebugCondition implements ParserCondition, SendableEntityCreator {
 	public Object getValue(LocalisationInterface variables) {
 		return null;
 	}
-
 
 	@Override
 	public String getKey() {

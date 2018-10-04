@@ -53,19 +53,19 @@ public class ByteConverterHTTP extends ByteConverter {
 	/**
 	 * Decode http.
 	 *
-	 * @param values
-	 *			the bytes
+	 * @param values the bytes
 	 * @return the object
 	 */
 	@Override
 	public byte[] decode(CharSequence values) {
-		if(values instanceof String) {
-			return decode(((String)values).getBytes(Charset.forName(BaseItem.ENCODING)));
+		if (values instanceof String) {
+			return decode(((String) values).getBytes(Charset.forName(BaseItem.ENCODING)));
 		}
 		return null;
 	}
+
 	public byte[] decode(byte[] values) {
-		if(values == null) {
+		if (values == null) {
 			return null;
 		}
 		int len = values.length;

@@ -26,7 +26,7 @@ THE SOFTWARE.
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.list.SimpleList;
 
-public class XMLContainer extends XMLEntity{
+public class XMLContainer extends XMLEntity {
 	private SimpleList<String> prefix = new SimpleList<String>();
 
 	public XMLContainer withPrefix(String value) {
@@ -41,8 +41,8 @@ public class XMLContainer extends XMLEntity{
 
 	@Override
 	public String toString() {
-		StringBuilder sb=new StringBuilder();
-		for(String item : prefix) {
+		StringBuilder sb = new StringBuilder();
+		for (String item : prefix) {
 			sb.append(item);
 			sb.append(BaseItem.CRLF);
 		}
@@ -52,8 +52,8 @@ public class XMLContainer extends XMLEntity{
 
 	@Override
 	public String toString(int indentFactor) {
-		StringBuilder sb=new StringBuilder();
-		for(String item : prefix) {
+		StringBuilder sb = new StringBuilder();
+		for (String item : prefix) {
 			sb.append(item);
 			sb.append(BaseItem.CRLF);
 		}

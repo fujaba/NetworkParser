@@ -38,7 +38,7 @@ import de.uniks.networkparser.interfaces.BufferItem;
 import de.uniks.networkparser.interfaces.Converter;
 
 // graph : [ strict ] (graph | digraph) [ ID ] '{' stmt_list '}'
-	// stmt_list : [ stmt [ ';' ] [ stmt_list ] ]
+// stmt_list : [ stmt [ ';' ] [ stmt_list ] ]
 // stmt : node_stmt
 // | edge_stmt
 // | attr_stmt
@@ -57,6 +57,7 @@ import de.uniks.networkparser.interfaces.Converter;
 // compass_pt : (n | ne | e | se | s | sw | w | nw | c | _)
 public class DotConverter implements Converter {
 	private boolean removePackage;
+
 	public DotConverter() {
 
 	}
@@ -66,9 +67,9 @@ public class DotConverter implements Converter {
 	}
 
 	public GraphList decode(Object item) {
-		if(item instanceof CharacterBuffer) {
-			return decodeGraph((CharacterBuffer)item);
-		}else if(item != null) {
+		if (item instanceof CharacterBuffer) {
+			return decodeGraph((CharacterBuffer) item);
+		} else if (item != null) {
 			CharacterBuffer buffer = new CharacterBuffer();
 			buffer.with(item.toString());
 			return decodeGraph(buffer);
@@ -78,9 +79,9 @@ public class DotConverter implements Converter {
 
 	GraphList decodeGraph(BufferItem value) {
 		char c = value.nextClean(true);
-		StringBuilder sb=new StringBuilder();
+		StringBuilder sb = new StringBuilder();
 //			boolean isQuote = true;
-		boolean useStrict=false;
+		boolean useStrict = false;
 		GraphList graph = new GraphList();
 		do {
 			c = value.getChar();
@@ -88,7 +89,7 @@ public class DotConverter implements Converter {
 			case 0:
 				break;
 			case ' ':
-				if(useStrict == false && "strict".equals(sb.toString())) {
+				if (useStrict == false && "strict".equals(sb.toString())) {
 					sb = new StringBuilder();
 					useStrict = true;
 				}
@@ -97,16 +98,16 @@ public class DotConverter implements Converter {
 			case '{':
 			case '\n':
 				value.getChar();
-				if(c == '[') {
+				if (c == '[') {
 					decodeAttributes(graph, value);
 				}
 				decodeEdge(graph, value);
-				c =0;
+				c = 0;
 				break;
 			default:
 				sb.append(c);
 			}
-		}while(c != 0);
+		} while (c != 0);
 		return graph;
 	}
 
@@ -117,19 +118,19 @@ public class DotConverter implements Converter {
 			graph.withNode(node);
 
 			// and Second Node
-			if(value.getCurrentChar() == '-') {
+			if (value.getCurrentChar() == '-') {
 				// May Be Edge
 				Association edge = new Association(node);
 				char c = value.getChar();
-				if(c == '-') {
+				if (c == '-') {
 					// Bidiassoc
-				} else if(c == '>') {
+				} else if (c == '>') {
 					edge.with(AssociationTypes.UNDIRECTIONAL);
 				}
 				value.getChar();
 
 				GraphEntity otherNode = decodeNode(graph, value);
-				if(otherNode != null) {
+				if (otherNode != null) {
 					Association otherEdge = new Association(otherNode);
 					otherEdge.with(otherNode);
 					graph.withNode(otherNode);
@@ -137,13 +138,13 @@ public class DotConverter implements Converter {
 				}
 			}
 			endChar = value.getCurrentChar();
-		} while(endChar != 0 && endChar != '}');
+		} while (endChar != 0 && endChar != '}');
 		value.skip();
 	}
 
 	GraphEntity decodeNode(GraphList graph, BufferItem value) {
 		char c = value.nextClean(true);
-		StringBuilder sb=new StringBuilder();
+		StringBuilder sb = new StringBuilder();
 		sb.append(c);
 //			boolean isQuote = true;
 		GraphEntity node = null;
@@ -158,13 +159,13 @@ public class DotConverter implements Converter {
 			case '\n':
 				String id = sb.toString().trim();
 				node = graph.getNode(id);
-				if(node == null) {
+				if (node == null) {
 					node = new Clazz(id);
 				}
-				if(c == '[') {
+				if (c == '[') {
 					decodeAttributes(node, value);
 				}
-				if(c == '\n') {
+				if (c == '\n') {
 					value.skip();
 				}
 				value.nextClean(true);
@@ -173,7 +174,7 @@ public class DotConverter implements Converter {
 			default:
 				sb.append(c);
 			}
-		}while(c != 0);
+		} while (c != 0);
 		return node;
 	}
 
@@ -183,25 +184,25 @@ public class DotConverter implements Converter {
 		char c;
 		do {
 			String key = decodeValue(value);
-			if(key != null && value.getCurrentChar()=='=') {
+			if (key != null && value.getCurrentChar() == '=') {
 				value.skip();
 				String valueStr = decodeValue(value);
-				if(node instanceof Clazz) {
-					Attribute attribute = ((Clazz)node).createAttribute(key, DataType.STRING);
+				if (node instanceof Clazz) {
+					Attribute attribute = ((Clazz) node).createAttribute(key, DataType.STRING);
 					attribute.withValue(valueStr);
 				}
 			}
 			c = value.getCurrentChar();
-			if(c != ']') {
+			if (c != ']') {
 				c = value.getChar();
 			}
-		}while(c != ']');
+		} while (c != ']');
 		value.skip();
 	}
 
 	String decodeValue(BufferItem value) {
 		char c = value.nextClean(true);
-		StringBuilder sb=new StringBuilder();
+		StringBuilder sb = new StringBuilder();
 		sb.append(c);
 		do {
 			c = value.getChar();
@@ -219,7 +220,7 @@ public class DotConverter implements Converter {
 			default:
 				sb.append(c);
 			}
-		}while(c != 0);
+		} while (c != 0);
 		return sb.toString();
 	}
 
@@ -236,85 +237,90 @@ public class DotConverter implements Converter {
 	public String encode(BaseItem entity) {
 		return encode(entity, removePackage);
 	}
+
 	public String encode(BaseItem entity, boolean removePackage) {
-		if(entity instanceof GraphList == false) {
+		if (entity instanceof GraphList == false) {
 			return "";
 		}
 		GraphList root = (GraphList) entity;
-		StringBuilder sb=new StringBuilder();
+		StringBuilder sb = new StringBuilder();
 		String graphType = "graph";
-		if(GraphTokener.OBJECTDIAGRAM.equals(root.getType())) {
-			sb.append(" ObjectDiagram {"+BaseItem.CRLF);
-		}else{
-			sb.append(" ClassDiagram {"+BaseItem.CRLF);
+		if (GraphTokener.OBJECTDIAGRAM.equals(root.getType())) {
+			sb.append(" ObjectDiagram {" + BaseItem.CRLF);
+		} else {
+			sb.append(" ClassDiagram {" + BaseItem.CRLF);
 		}
-		sb.append("   node [shape = none, fontsize = 10, fontname = \"Arial\"];"+BaseItem.CRLF);
-		sb.append("   edge [fontsize = 10, fontname = \"Arial\"];"+BaseItem.CRLF);
-		sb.append("   compound=true;" + BaseItem.CRLF +BaseItem.CRLF);
-		boolean isObjectdiagram =false;
+		sb.append("   node [shape = none, fontsize = 10, fontname = \"Arial\"];" + BaseItem.CRLF);
+		sb.append("   edge [fontsize = 10, fontname = \"Arial\"];" + BaseItem.CRLF);
+		sb.append("   compound=true;" + BaseItem.CRLF + BaseItem.CRLF);
+		boolean isObjectdiagram = false;
 		isObjectdiagram = GraphTokener.OBJECTDIAGRAM.equals(root.getType());
 
-		for(GraphEntity node : root.getNodes()) {
+		for (GraphEntity node : root.getNodes()) {
 			sb.append(node.getName(false));
 			sb.append("[label=<<table border='0' cellborder='1' cellspacing='0'><tr><td><b>");
-			if(isObjectdiagram) {
+			if (isObjectdiagram) {
 				sb.append("<u>");
 			}
-			sb.append(node.getName(false)+" : "+getType(node, root.getType(), removePackage));
-			if(isObjectdiagram) {
+			sb.append(node.getName(false) + " : " + getType(node, root.getType(), removePackage));
+			if (isObjectdiagram) {
 				sb.append("</u>");
 			}
 			sb.append("</b></td></tr>");
-			if(node instanceof Clazz == false) {
-				sb.append("</table>>];"+BaseItem.CRLF);
+			if (node instanceof Clazz == false) {
+				sb.append("</table>>];" + BaseItem.CRLF);
 				continue;
 			}
 			Clazz graphClazz = (Clazz) node;
 
 			StringBuilder childBuilder = new StringBuilder();
-			for(Attribute attribute : graphClazz.getAttributes()) {
+			for (Attribute attribute : graphClazz.getAttributes()) {
 				// add attribute line
-				if(isObjectdiagram) {
-					childBuilder.append(BaseItem.CRLF+"<tr><td align='left'>"+attribute.getName() +" = "+attribute.getValue(GraphTokener.OBJECTDIAGRAM, false)+"</td></tr>");
+				if (isObjectdiagram) {
+					childBuilder.append(BaseItem.CRLF + "<tr><td align='left'>" + attribute.getName() + " = "
+							+ attribute.getValue(GraphTokener.OBJECTDIAGRAM, false) + "</td></tr>");
 				} else {
-					childBuilder.append(BaseItem.CRLF+"<tr><td align='left'>"+attribute.getName() +" : "+attribute.getType().getName(removePackage)+"</td></tr>");
+					childBuilder.append(BaseItem.CRLF + "<tr><td align='left'>" + attribute.getName() + " : "
+							+ attribute.getType().getName(removePackage) + "</td></tr>");
 				}
 			}
-			if(childBuilder.length() > 0) {
-				sb.append(BaseItem.CRLF+"<tr><td><table border='0' cellborder='0' cellspacing='0'>");
+			if (childBuilder.length() > 0) {
+				sb.append(BaseItem.CRLF + "<tr><td><table border='0' cellborder='0' cellspacing='0'>");
 				sb.append(childBuilder.toString());
-				sb.append(BaseItem.CRLF+"</table></td></tr>");
+				sb.append(BaseItem.CRLF + "</table></td></tr>");
 			}
 			childBuilder = new StringBuilder();
-			for(Method method : graphClazz.getMethods()) {
+			for (Method method : graphClazz.getMethods()) {
 				// add attribute line
 //					if(isObjectdiagram) {
-				childBuilder.append(BaseItem.CRLF+"<tr><td align='left'>"+method.getName(false, false) + "</td></tr>");
+				childBuilder
+						.append(BaseItem.CRLF + "<tr><td align='left'>" + method.getName(false, false) + "</td></tr>");
 			}
-			if(childBuilder.length() > 0) {
-				sb.append(BaseItem.CRLF+"<tr><td><table border='0' cellborder='0' cellspacing='0'>");
+			if (childBuilder.length() > 0) {
+				sb.append(BaseItem.CRLF + "<tr><td><table border='0' cellborder='0' cellspacing='0'>");
 				sb.append(childBuilder.toString());
-				sb.append(BaseItem.CRLF+"</table></td></tr>");
+				sb.append(BaseItem.CRLF + "</table></td></tr>");
 			}
-			sb.append("</table>>];"+BaseItem.CRLF);
+			sb.append("</table>>];" + BaseItem.CRLF);
 		}
 
 		root.initSubLinks();
 //			// now generate edges from edgeMap
-		for(Association edge : root.getAssociations()) {
+		for (Association edge : root.getAssociations()) {
 			Association otherEdge = edge.getOther();
-			if(otherEdge.getType() != AssociationTypes.EDGE) {
+			if (otherEdge.getType() != AssociationTypes.EDGE) {
 				// It is bidiAssoc
 				sb.append(edge.getClazz().getName(false) + " -- " + otherEdge.getClazz().getName(false));
-				sb.append("[headlabel = \""+edge.getName()+"\" taillabel = \""+otherEdge.getName()+"\"];"+BaseItem.CRLF);
+				sb.append("[headlabel = \"" + edge.getName() + "\" taillabel = \"" + otherEdge.getName() + "\"];"
+						+ BaseItem.CRLF);
 			} else {
 				sb.append(edge.getClazz().getName(false) + " -> " + otherEdge.getClazz().getName(false));
 				graphType = "digraph";
-				sb.append("[taillabel = \""+edge.getName()+"\"];"+BaseItem.CRLF);
+				sb.append("[taillabel = \"" + edge.getName() + "\"];" + BaseItem.CRLF);
 			}
 
 		}
 		sb.append("}");
-		return graphType+sb.toString();
+		return graphType + sb.toString();
 	}
 }

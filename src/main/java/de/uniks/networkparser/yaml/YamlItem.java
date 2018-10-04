@@ -26,7 +26,7 @@ THE SOFTWARE.
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Converter;
 
-public class YamlItem implements BaseItem{
+public class YamlItem implements BaseItem {
 	private Object key;
 	private Object value;
 	private String comment;

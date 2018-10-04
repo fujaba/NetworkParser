@@ -31,18 +31,18 @@ public class Pos {
 
 	public static Pos valueOf(String tag) {
 		Pos pos = new Pos();
-		if(tag== null || tag.length() < 1) {
+		if (tag == null || tag.length() < 1) {
 			return pos;
 		}
-		int rowPos=1;
-		if(tag.charAt(0)>=65 && tag.charAt(0) <= 90) {
-			pos.x = tag.charAt(0)-65;
+		int rowPos = 1;
+		if (tag.charAt(0) >= 65 && tag.charAt(0) <= 90) {
+			pos.x = tag.charAt(0) - 65;
 		}
-		if(tag.charAt(1)>=65 && tag.charAt(1) <= 90) {
-			pos.x = pos.x*26+tag.charAt(0)-65;
-			rowPos=2;
+		if (tag.charAt(1) >= 65 && tag.charAt(1) <= 90) {
+			pos.x = pos.x * 26 + tag.charAt(0) - 65;
+			rowPos = 2;
 		}
-		if(rowPos<tag.length()) {
+		if (rowPos < tag.length()) {
 			pos.y = Integer.valueOf(tag.substring(rowPos));
 		}
 		return pos;
@@ -54,16 +54,16 @@ public class Pos {
 	}
 
 	public CharacterBuffer toTag() {
-		CharacterBuffer buffer=new CharacterBuffer();
-		int pos=x;
-		while(pos>26) {
-			int no = pos/26;
-			buffer.with((char)(65+no));
-			pos -= no*26;
+		CharacterBuffer buffer = new CharacterBuffer();
+		int pos = x;
+		while (pos > 26) {
+			int no = pos / 26;
+			buffer.with((char) (65 + no));
+			pos -= no * 26;
 		}
-		buffer.with((char)(65+pos));
-		if(y>0) {
-			buffer.with(""+y);
+		buffer.with((char) (65 + pos));
+		if (y > 0) {
+			buffer.with("" + y);
 		}
 		return buffer;
 	}

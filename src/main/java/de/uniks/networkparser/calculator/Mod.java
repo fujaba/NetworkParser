@@ -32,7 +32,7 @@ public class Mod implements Operator {
 
 	@Override
 	public double calculate(Double... values) {
-		if(values == null) {
+		if (values == null) {
 			return 0;
 		}
 		return values[0] % values[1];

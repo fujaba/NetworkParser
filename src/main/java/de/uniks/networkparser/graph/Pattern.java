@@ -12,29 +12,29 @@ import de.uniks.networkparser.list.SimpleIterator;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SimpleSet;
 
-public class Pattern implements Iterator<Object>, Iterable<Object>{
-	public static final String MODIFIER_SEARCH="search";
-	public static final String MODIFIER_CHANGE="change";
-	public static final String MODIFIER_ADD="add";
-	public static final String MODIFIER_REMOVE="remove";
+public class Pattern implements Iterator<Object>, Iterable<Object> {
+	public static final String MODIFIER_SEARCH = "search";
+	public static final String MODIFIER_CHANGE = "change";
+	public static final String MODIFIER_ADD = "add";
+	public static final String MODIFIER_REMOVE = "remove";
 	private Object match;
 	private String modifier = MODIFIER_SEARCH;
 
 	private SimpleSet<Pattern> children;
 	private Pattern parent;
-	private SimpleSet<Object> candidates=null;
+	private SimpleSet<Object> candidates = null;
 	private ObjectCondition condition;
 	private IdMap map;
 	private SimpleIterator<Object> iterator;
 	private SimpleSet<Pattern> chain;
 
 	public Pattern getRoot() {
-		if(this.getParent() != null) {
+		if (this.getParent() != null) {
 			return this.getParent().getRoot();
 		}
 		return this;
 	}
-	
+
 	public IdMap getMap() {
 		return getRoot().map;
 	}
@@ -43,18 +43,19 @@ public class Pattern implements Iterator<Object>, Iterable<Object>{
 		this();
 		this.match = match;
 		this.map = map;
-		if(candidates == null) {
+		if (candidates == null) {
 			candidates = new SimpleSet<Object>();
 		}
 		this.candidates.add(match);
 	}
-	
+
 	public Pattern() {
 		this.chain = new SimpleSet<Pattern>();
 		this.chain.add(this);
 	}
+
 	public Pattern(Pattern parent, ObjectCondition condition) {
-		if(parent != null) {
+		if (parent != null) {
 			this.parent = parent;
 			parent.addToChain(this);
 		}
@@ -64,19 +65,19 @@ public class Pattern implements Iterator<Object>, Iterable<Object>{
 	public Pattern has(String property) {
 		return has(PatternCondition.create(property));
 	}
-	
+
 	public Pattern has(ObjectCondition condition) {
 		Pattern root = getRoot();
-		if(root != this && this.condition == null) {
+		if (root != this && this.condition == null) {
 			this.condition = condition;
 			return this;
 		}
 		Pattern subPattern = new Pattern(this, condition);
-		if(children == null) {
+		if (children == null) {
 			children = new SimpleSet<Pattern>();
 		}
 		this.children.add(subPattern);
-		if(MODIFIER_SEARCH.equals(this.modifier)) {
+		if (MODIFIER_SEARCH.equals(this.modifier)) {
 			subPattern.find();
 		}
 		return subPattern;
@@ -92,14 +93,14 @@ public class Pattern implements Iterator<Object>, Iterable<Object>{
 
 	@SuppressWarnings("unchecked")
 	public <ST extends List<Object>> ST allMatches() {
-		if(this.match == null) {
+		if (this.match == null) {
 			find();
 		}
-		if(match == null) {
+		if (match == null) {
 			return (ST) new SimpleList<Object>();
 		}
 		SimpleList<? extends Object> result = createListOfType(match.getClass());
-		while(find()) {
+		while (find()) {
 			result.add(this.match);
 		}
 		return (ST) result;
@@ -117,7 +118,7 @@ public class Pattern implements Iterator<Object>, Iterable<Object>{
 	public boolean find() {
 		SimpleSet<Pattern> chain = getChain();
 		Pattern last = chain.last();
-		if(last == this ) {
+		if (last == this) {
 			return finding(true);
 		}
 		return last.finding(true);
@@ -131,7 +132,7 @@ public class Pattern implements Iterator<Object>, Iterable<Object>{
 	public boolean hasNext() {
 		SimpleSet<Pattern> chain = getChain();
 		Pattern last = chain.last();
-		if(last == this ) {
+		if (last == this) {
 			return finding(false);
 		}
 		return last.finding(false);
@@ -139,37 +140,37 @@ public class Pattern implements Iterator<Object>, Iterable<Object>{
 
 	private boolean finding(boolean save) {
 		// Backwards
-		if(condition == null || condition.update(this) == false) {
+		if (condition == null || condition.update(this) == false) {
 			// Not found
-			if(parent == null) {
+			if (parent == null) {
 				return false;
 			}
 			boolean finding = parent.finding(save);
-			if(save) {
+			if (save) {
 				this.candidates = null;
 				this.match = null;
 				this.iterator = null;
-				if(condition != null) {
+				if (condition != null) {
 					condition.update(this);
 				}
 			}
 
-			if(finding == false) {
+			if (finding == false) {
 				return this.match != null;
 			}
-			if(children != null) {
-				for(Pattern child : children) {
+			if (children != null) {
+				for (Pattern child : children) {
 					finding = child.find();
-					if(finding == false) {
+					if (finding == false) {
 						break;
 					}
 				}
-				if(finding == false) {
+				if (finding == false) {
 					return false;
 				}
 			}
 		}
-		if(save) {
+		if (save) {
 			this.match = iterator.current();
 			applyPattern();
 		}
@@ -178,7 +179,7 @@ public class Pattern implements Iterator<Object>, Iterable<Object>{
 
 	@Override
 	public Object next() {
-		if(find()) {
+		if (find()) {
 			return getMatch();
 		}
 		return null;
@@ -198,19 +199,19 @@ public class Pattern implements Iterator<Object>, Iterable<Object>{
 	}
 
 	public Pattern withCandidates(Object newValue) {
-		if(this.candidates == null) {
+		if (this.candidates == null) {
 			this.candidates = new SimpleSet<Object>();
 			this.iterator = (SimpleIterator<Object>) this.candidates.iterator();
 			this.iterator.withCheckPointer(false);
 		}
-		if(newValue instanceof Collection<?>) {
+		if (newValue instanceof Collection<?>) {
 			this.candidates.withList((Collection<?>) newValue);
 		} else {
 			this.candidates.with(newValue);
 		}
 		return this;
 	}
-	
+
 	public SimpleIterator<Object> getIterator() {
 		return iterator;
 	}
@@ -219,9 +220,9 @@ public class Pattern implements Iterator<Object>, Iterable<Object>{
 		this.match = candidate;
 		return this;
 	}
-	
+
 	public boolean applyPattern() {
-		if(MODIFIER_SEARCH.equals(this.modifier)) {
+		if (MODIFIER_SEARCH.equals(this.modifier)) {
 			return true;
 		}
 		// Go throw all Matches
@@ -229,51 +230,52 @@ public class Pattern implements Iterator<Object>, Iterable<Object>{
 
 		// FROM LAST TO FIRST
 //		for(int i=chain.size() - 1;i>=0;i--) {
-		for(int i=0;i< chain.size();i++) {
+		for (int i = 0; i < chain.size(); i++) {
 			Pattern pattern = chain.get(i);
 			pattern.appling();
 		}
 		return true;
 	}
-	
+
 	public boolean appling() {
-		if(condition instanceof PatternCondition == false) {
+		if (condition instanceof PatternCondition == false) {
 			return false;
 		}
 		PatternCondition patternCondition = (PatternCondition) condition;
-		if(MODIFIER_ADD.equals(this.modifier)) {
-			if(this.match == null) {
+		if (MODIFIER_ADD.equals(this.modifier)) {
+			if (this.match == null) {
 				return false;
 			}
 			Object value = patternCondition.getValue();
-			String clazzName = ""+value;
+			String clazzName = "" + value;
 			SendableEntityCreator creatorClass = getMap().getCreator(clazzName, true);
-			if(creatorClass != null) {
+			if (creatorClass != null) {
 				this.match = creatorClass.getSendableInstance(false);
-				if(this.parent != null) {
+				if (this.parent != null) {
 					this.parent.setValue(patternCondition.getLinkName(), this.match);
 				}
 			}
 			return true;
 		}
-		if(MODIFIER_CHANGE.equals(this.modifier)) {
-			if(this.parent != null) {
+		if (MODIFIER_CHANGE.equals(this.modifier)) {
+			if (this.parent != null) {
 				this.parent.setValue(patternCondition.getLinkName(), patternCondition.getValue());
 			}
 			return true;
 		}
-		if(MODIFIER_REMOVE.equals(this.modifier)) {
+		if (MODIFIER_REMOVE.equals(this.modifier)) {
 			SendableEntityCreator creatorClass = getMap().getCreatorClass(this.match);
-			if(creatorClass instanceof SendableEntityCreator){
-				((SendableEntityCreator) creatorClass).setValue(this.match, null, null, SendableEntityCreator.REMOVE_YOU);
+			if (creatorClass instanceof SendableEntityCreator) {
+				((SendableEntityCreator) creatorClass).setValue(this.match, null, null,
+						SendableEntityCreator.REMOVE_YOU);
 			}
 			return true;
 		}
 		return false;
 	}
-	
+
 	public boolean setValue(String property, Object value) {
-		if(this.match != null) {
+		if (this.match != null) {
 			SendableEntityCreator creatorClass = getMap().getCreatorClass(this.match);
 			creatorClass.setValue(this.match, property, value, SendableEntityCreator.NEW);
 		}

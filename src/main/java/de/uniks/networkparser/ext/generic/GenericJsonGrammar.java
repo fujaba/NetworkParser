@@ -32,22 +32,22 @@ import de.uniks.networkparser.interfaces.SendableEntityCreator;
 public class GenericJsonGrammar extends SimpleGrammar {
 	@Override
 	public SendableEntityCreator getSuperCreator(IdMap map, boolean searchForSuperCreator, Object modelItem) {
-		if(modelItem == null && !searchForSuperCreator) {
+		if (modelItem == null && !searchForSuperCreator) {
 			return null;
 		}
 		Class<?> search;
-		if(modelItem instanceof Class<?>) {
+		if (modelItem instanceof Class<?>) {
 			search = (Class<?>) modelItem;
-		}else if(modelItem != null) {
+		} else if (modelItem != null) {
 			search = modelItem.getClass();
 		} else {
 			return null;
 		}
-		for(Iterator<SendableEntityCreator> i =map.iterator();i.hasNext();){
+		for (Iterator<SendableEntityCreator> i = map.iterator(); i.hasNext();) {
 			SendableEntityCreator item = i.next();
 			Object prototype = item.getSendableInstance(true);
-			if(prototype instanceof Class<?>) {
-				if(((Class<?>)prototype).isAssignableFrom(search)){
+			if (prototype instanceof Class<?>) {
+				if (((Class<?>) prototype).isAssignableFrom(search)) {
 					return item;
 				}
 			}
@@ -58,7 +58,7 @@ public class GenericJsonGrammar extends SimpleGrammar {
 	@Override
 	public Object getNewEntity(SendableEntityCreator creator, String className, boolean prototype) {
 		Object entity = creator.getSendableInstance(prototype);
-		if(entity instanceof Class<?> == false || className == null){
+		if (entity instanceof Class<?> == false || className == null) {
 			return entity;
 		}
 		return ReflectionLoader.newInstance(className);

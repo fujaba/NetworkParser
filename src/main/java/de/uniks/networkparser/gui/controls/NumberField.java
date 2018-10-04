@@ -36,7 +36,7 @@ public class NumberField extends Input<Integer> {
 		// set the default value to 0
 //		this.setValue("defaultValue", 0);
 	}
-	
+
 	@Override
 	public NumberField newInstance() {
 		return new NumberField();

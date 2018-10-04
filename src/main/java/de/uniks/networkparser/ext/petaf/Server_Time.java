@@ -32,33 +32,32 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.channels.DatagramChannel;
 import java.util.Date;
+
 import de.uniks.networkparser.ext.petaf.proxy.NodeProxyServer;
 import de.uniks.networkparser.interfaces.Server;
 
-public class Server_Time extends Thread implements Server{
-	protected boolean run=true;
+public class Server_Time extends Thread implements Server {
+	protected boolean run = true;
 	private int port = 37;
 	private NodeProxyServer proxy;
 	private DatagramChannel channel;
 
-	public Server_Time(NodeProxyServer proxy, boolean asyn)
-	{
+	public Server_Time(NodeProxyServer proxy, boolean asyn) {
 		this.proxy = proxy;
-		if(init() && asyn){
+		if (init() && asyn) {
 			start();
 		}
 	}
 
-	public Server_Time(boolean asyn)
-	{
-		if(init() && asyn){
+	public Server_Time(boolean asyn) {
+		if (init() && asyn) {
 			start();
 		}
 	}
 
-	public boolean close(){
-		this.run=false;
-		if(channel!=null){
+	public boolean close() {
+		this.run = false;
+		if (channel != null) {
 			try {
 				channel.close();
 			} catch (IOException e) {
@@ -74,22 +73,18 @@ public class Server_Time extends Thread implements Server{
 	}
 
 	@Override
-	public void run()
-	{
+	public void run() {
 		runServer();
 	}
 
-	public void runServer()
-	{
-		Thread.currentThread().setName(this.port+" time server");
+	public void runServer() {
+		Thread.currentThread().setName(this.port + " time server");
 		ByteBuffer in = ByteBuffer.allocate(8192);
 		ByteBuffer out = ByteBuffer.allocate(8);
 		out.order(ByteOrder.BIG_ENDIAN);
-	
-		while (!isInterrupted()&&this.run)
-		{
-			try
-			{
+
+		while (!isInterrupted() && this.run) {
+			try {
 				in.clear();
 				SocketAddress client = channel.receive(in);
 				out.clear();
@@ -99,8 +94,7 @@ public class Server_Time extends Thread implements Server{
 				// skip over the first four bytes to make this an unsigned int
 				out.position(4);
 				channel.send(out, client);
-			}
-			catch (IOException e) {
+			} catch (IOException e) {
 
 			}
 		}
@@ -111,17 +105,16 @@ public class Server_Time extends Thread implements Server{
 		return this;
 	}
 
-	private boolean init()
-	{
-		boolean success=true;
+	private boolean init() {
+		boolean success = true;
 		try {
-			if(proxy !=  null && NodeProxy.isInput(proxy.getType())) {
+			if (proxy != null && NodeProxy.isInput(proxy.getType())) {
 				this.port = proxy.getPort();
 			}
 			SocketAddress address = new InetSocketAddress(this.port);
-		    channel = DatagramChannel.open();
-		    DatagramSocket socket = channel.socket();
-		    socket.bind(address);
+			channel = DatagramChannel.open();
+			DatagramSocket socket = channel.socket();
+			socket.bind(address);
 		} catch (SocketException e) {
 			success = false;
 		} catch (IOException e) {
@@ -129,7 +122,7 @@ public class Server_Time extends Thread implements Server{
 		}
 		return success;
 	}
-	
+
 	private static long getTime() {
 		long differenceBetweenEpochs = 2208988800L;
 		Date now = new Date();

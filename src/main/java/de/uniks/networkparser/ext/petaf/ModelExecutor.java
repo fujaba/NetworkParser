@@ -41,7 +41,7 @@ public class ModelExecutor extends SimpleEventCondition {
 		final IdMap map = (IdMap) event.getSource();
 		final JsonObject change = (JsonObject) event.getEntity();
 		MapListener mapListener = map.getMapListener();
-		if(mapListener instanceof UpdateListener) {
+		if (mapListener instanceof UpdateListener) {
 			UpdateListener listener = (UpdateListener) mapListener;
 			Object result = listener.execute(change, map.getFilter());
 			if (result != null) {
@@ -53,11 +53,10 @@ public class ModelExecutor extends SimpleEventCondition {
 		return jsonTokener.decoding(change, mapEntry, false);
 	}
 
-
 	@Override
 	public boolean update(final SimpleEvent event) {
 		Object thread = ReflectionLoader.callChain(ReflectionLoader.TOOLKITFX, "getFxUserThread", "getFxUserThread");
-		if(thread == null) {
+		if (thread == null) {
 			Object result = this.execute(event);
 			event.withModelValue(result);
 			return result != null;

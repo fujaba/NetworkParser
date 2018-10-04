@@ -65,7 +65,8 @@ public class DataTypeMap extends DataType {
 		if (this.value == null) {
 			return null;
 		}
-		return this.value.getName(shortName) + "<" + genericKey.getInternName(shortName, false) + "," + genericValue.getInternName(shortName, false) + ">";
+		return this.value.getName(shortName) + "<" + genericKey.getInternName(shortName, false) + ","
+				+ genericValue.getInternName(shortName, false) + ">";
 	}
 
 	@Override
@@ -73,35 +74,37 @@ public class DataTypeMap extends DataType {
 		if (this.value == null) {
 			return null;
 		}
-		return this.value.getName(shortName) + "<" + genericKey.getInternName(shortName, primitivAllow) + "," + genericValue.getInternName(shortName, primitivAllow) + ">";
+		return this.value.getName(shortName) + "<" + genericKey.getInternName(shortName, primitivAllow) + ","
+				+ genericValue.getInternName(shortName, primitivAllow) + ">";
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		if(super.equals(obj) == false) {
+		if (super.equals(obj) == false) {
 			return false;
 		}
-		if(obj instanceof DataTypeMap == false) {
+		if (obj instanceof DataTypeMap == false) {
 			return false;
 		}
-		if(obj.hashCode() == this.hashCode()) {
+		if (obj.hashCode() == this.hashCode()) {
 			return true;
 		}
 		DataTypeMap otherDTM = (DataTypeMap) obj;
-		if(this.genericKey == null) {
-			if(otherDTM.getGenericKey() != null) {
+		if (this.genericKey == null) {
+			if (otherDTM.getGenericKey() != null) {
 				return false;
 			}
 		} else {
-			if(otherDTM.getGenericKey().equals(this.genericKey) == false) {
+			if (otherDTM.getGenericKey().equals(this.genericKey) == false) {
 				return false;
 			}
 		}
-		if(this.genericValue == null) {
+		if (this.genericValue == null) {
 			return otherDTM.getGenericValue() == null;
 		}
 		return otherDTM.getGenericValue().equals(this.genericValue);
 	}
+
 	@Override
 	public int hashCode() {
 		return super.hashCode();

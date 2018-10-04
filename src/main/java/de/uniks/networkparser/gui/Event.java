@@ -63,7 +63,7 @@ public class Event extends JsonObject implements SendableEntityCreator {
 	protected Object event;
 	protected String id;
 	protected boolean active = true;
-	static protected String[] properties = {CURRENT_TARGET, TIME_STAMP, EVENT_TYPE, ID};
+	static protected String[] properties = { CURRENT_TARGET, TIME_STAMP, EVENT_TYPE, ID };
 
 	public Object getCurrentTarget() {
 		return currentTarget;
@@ -84,45 +84,43 @@ public class Event extends JsonObject implements SendableEntityCreator {
 			return null;
 		}
 		Event e = (Event) entity;
-		if(TIME_STAMP.equals(attribute)) {
+		if (TIME_STAMP.equals(attribute)) {
 			return e.getTimeStamp();
 		}
-		if(CURRENT_TARGET.equals(attribute)) {
+		if (CURRENT_TARGET.equals(attribute)) {
 			return e.getCurrentTarget();
 		}
 		return e.get(attribute);
 	}
-
 
 	public boolean setValue(String attribute, Object value) {
 		return setValue(this, attribute, value, SendableEntityCreator.NEW);
 	}
 
 	@Override
-	public boolean setValue(Object entity, String attribute, Object value,
-			String type) {
+	public boolean setValue(Object entity, String attribute, Object value, String type) {
 		if (!(entity instanceof Event)) {
 			return false;
 		}
 		Event e = (Event) entity;
-		if(TIME_STAMP.equals(attribute)) {
-			e.timeStamp = Integer.valueOf(""+value);
+		if (TIME_STAMP.equals(attribute)) {
+			e.timeStamp = Integer.valueOf("" + value);
 			return true;
 		}
-		if(EVENT_TYPE.equals(attribute)) {
+		if (EVENT_TYPE.equals(attribute)) {
 			e.eventType = (EventTypes) value;
 			return true;
 		}
-		if(CURRENT_TARGET.equals(attribute)) {
+		if (CURRENT_TARGET.equals(attribute)) {
 			e.currentTarget = value;
 			return true;
 		}
-		if(EVENT.equals(attribute)) {
+		if (EVENT.equals(attribute)) {
 			e.event = value;
 			return true;
 		}
-		if(ID.equals(attribute)) {
-			this.id = ""+value;
+		if (ID.equals(attribute)) {
+			this.id = "" + value;
 			return true;
 		}
 		return e.add(attribute, value);

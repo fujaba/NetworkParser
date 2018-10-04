@@ -26,8 +26,8 @@ THE SOFTWARE.
 import de.uniks.networkparser.IdMap;
 
 public class AutoCompletionList extends Control {
-	private boolean caseSensitive=false;
-	private boolean sort=false;
+	private boolean caseSensitive = false;
+	private boolean sort = false;
 
 	// ANHAND EINER IDMAP
 	private IdMap map;
@@ -36,7 +36,7 @@ public class AutoCompletionList extends Control {
 	// COLLECTION with PROPERTY example: PersonSet or SimpleValue like Strings
 //	private Set<?> items;
 
-	//NUR JAVASCRIPT
+	// NUR JAVASCRIPT
 //	private TreeSet<String> result;
 //	private String oldSearch;
 
@@ -55,7 +55,7 @@ public class AutoCompletionList extends Control {
 	}
 
 	public AutoCompletionList withCaseSensitive(boolean value) {
-		this.caseSensitive =  value;
+		this.caseSensitive = value;
 		return this;
 	}
 
@@ -63,9 +63,8 @@ public class AutoCompletionList extends Control {
 		return caseSensitive;
 	}
 
-
 	public AutoCompletionList withSorted(boolean value) {
-		this.sort =  value;
+		this.sort = value;
 		return this;
 	}
 
@@ -77,7 +76,6 @@ public class AutoCompletionList extends Control {
 	public AutoCompletionList newInstance() {
 		return new AutoCompletionList();
 	}
-
 
 //
 //	public Set<String> items(String text) {

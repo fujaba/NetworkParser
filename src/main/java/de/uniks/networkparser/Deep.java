@@ -25,6 +25,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
+
 /**
  * DeepCondition.
  *
@@ -38,8 +39,8 @@ public class Deep implements SendableEntityCreator, ObjectCondition {
 	private int depth;
 
 	/**
-	 * @param value		The new Value
-	 * @return 			Deep Instance
+	 * @param value The new Value
+	 * @return Deep Instance
 	 */
 	public Deep withDepth(int value) {
 		this.depth = value;
@@ -53,8 +54,8 @@ public class Deep implements SendableEntityCreator, ObjectCondition {
 
 	@Override
 	public boolean update(Object evt) {
-		if(evt instanceof SimpleEvent) {
-			return ((SimpleEvent)evt).getDepth() <= this.depth;
+		if (evt instanceof SimpleEvent) {
+			return ((SimpleEvent) evt).getDepth() <= this.depth;
 		}
 		return false;
 	}
@@ -62,8 +63,8 @@ public class Deep implements SendableEntityCreator, ObjectCondition {
 	/**
 	 * Create a new DeepFilter and return a new Instance
 	 *
-	 * @param value		Value of depth
-	 * @return 			a new depth Instance
+	 * @param value Value of depth
+	 * @return a new depth Instance
 	 */
 	public static Deep create(int value) {
 		return new Deep().withDepth(value);
@@ -71,7 +72,7 @@ public class Deep implements SendableEntityCreator, ObjectCondition {
 
 	@Override
 	public String[] getProperties() {
-		return new String[] {DEPTH };
+		return new String[] { DEPTH };
 	}
 
 	@Override
@@ -88,8 +89,7 @@ public class Deep implements SendableEntityCreator, ObjectCondition {
 	}
 
 	@Override
-	public boolean setValue(Object entity, String attribute, Object value,
-			String type) {
+	public boolean setValue(Object entity, String attribute, Object value, String type) {
 		if (DEPTH.equalsIgnoreCase(attribute)) {
 			((Deep) entity).withDepth(Integer.parseInt("" + value));
 			return true;

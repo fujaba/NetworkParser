@@ -25,10 +25,10 @@ THE SOFTWARE.
 */
 import de.uniks.networkparser.SimpleEvent;
 
-public abstract class SimpleEventCondition implements ObjectCondition{
+public abstract class SimpleEventCondition implements ObjectCondition {
 	@Override
 	public boolean update(Object value) {
-		if(value instanceof SimpleEvent == false) {
+		if (value instanceof SimpleEvent == false) {
 			return false;
 		}
 		return update((SimpleEvent) value);

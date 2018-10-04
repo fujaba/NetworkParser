@@ -16,7 +16,7 @@ public class ClazzChangeUpdateTypeCondition extends MatchCondition {
 	protected boolean checkFileCondition(GraphMatcher matches, Match match) {
 		Clazz oldClazz = (Clazz) match.getMatch();
 		Clazz newClazz = (Clazz) match.getSourceMatch();
-		
+
 		if (matches.getMetaModel() == null) {
 			return false;
 		}
@@ -26,7 +26,7 @@ public class ClazzChangeUpdateTypeCondition extends MatchCondition {
 		if (oldClazz.getType().equals(newClazz.getType())) {
 			return false;
 		}
-		
+
 		return true;
 	}
 
@@ -34,20 +34,21 @@ public class ClazzChangeUpdateTypeCondition extends MatchCondition {
 	protected boolean calculateFileDiffs(GraphModel model, GraphMatcher matches, Match match) {
 		Clazz oldClazz = (Clazz) match.getMatch();
 		Clazz newClazz = (Clazz) match.getSourceMatch();
-		Match updateTypeInCode = Match.create(newClazz, this, Clazz.PROPERTY_TYPE, newClazz.getType(), oldClazz.getType());
+		Match updateTypeInCode = Match.create(newClazz, this, Clazz.PROPERTY_TYPE, newClazz.getType(),
+				oldClazz.getType());
 		matches.addDiff(updateTypeInCode);
 		return true;
 	}
-	
+
 	@Override
 	protected boolean checkModelCondition(GraphMatcher matches, Match match) {
 		Clazz oldClazz = (Clazz) match.getOtherMatch().getMatch();
 		Clazz newClazz = (Clazz) match.getMatch();
-		
+
 		if (oldClazz.getType().equals(newClazz.getType())) {
 			return false;
 		}
-		
+
 		return true;
 	}
 

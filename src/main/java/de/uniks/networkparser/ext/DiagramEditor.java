@@ -26,7 +26,6 @@ THE SOFTWARE.
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.lang.Thread.UncaughtExceptionHandler;
 import java.net.MalformedURLException;
 import java.net.Socket;
 import java.net.URI;
@@ -67,86 +66,88 @@ import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.xml.HTMLEntity;
 
 public class DiagramEditor extends JavaAdapter implements ObjectCondition {
-	private static final String FILE404="<!DOCTYPE HTML PUBLIC \"-//IETF//DTD HTML 2.0//EN\">\r\n<html><head><title>404 Not Found</title></head><body><h1>Not Found</h1><p>The requested URL was not found on this server.</p></body></html>";
-	private static final String METHOD_GENERATE="generating";
+	private static final String FILE404 = "<!DOCTYPE HTML PUBLIC \"-//IETF//DTD HTML 2.0//EN\">\r\n<html><head><title>404 Not Found</title></head><body><h1>Not Found</h1><p>The requested URL was not found on this server.</p></body></html>";
+	private static final String METHOD_GENERATE = "generating";
 	private SimpleController controller;
 	private Object logic;
 	private SimpleEventCondition listener;
-	private String file;
-	private final int WIDTH=900;
-	private final int HEIGHT=600;
-	private boolean autoClose=true;
+	protected String file;
+	private final int WIDTH = 900;
+	private final int HEIGHT = 600;
+	protected boolean autoClose = true;
 	private JSEditor jsEditor;
 	private IdMap map;
-	
+
 	private static DiagramEditor editor;
+
 	public static DiagramEditor edobs(Object... items) {
 		return edobs(false, items);
 	}
+
 	public static DiagramEditor edobs(boolean all, Object... items) {
-		if(items == null) {
+		if (items == null) {
 			return null;
 		}
-		if(editor == null) {
+		if (editor == null) {
 			editor = new DiagramEditor();
 			editor.type = TYPE_EDOBS;
 		}
-		if(editor.map == null) {
-			for(Object child : items) {
-				if(child instanceof IdMap) {
+		if (editor.map == null) {
+			for (Object child : items) {
+				if (child instanceof IdMap) {
 					editor.map = (IdMap) child;
 					break;
+				}
 			}
+			if (editor.map == null)
+				editor.map = new IdMap();
 		}
-		if(editor.map == null)
-			editor.map = new IdMap();
-		}
-		
-		for(Object child : items) {
-			if(child instanceof IdMap || child == null) {
+
+		for (Object child : items) {
+			if (child instanceof IdMap || child == null) {
 				continue;
 			}
 			SendableEntityCreator creator = editor.map.getCreatorClass(child);
-			if(creator == null) {
-				String id =child.getClass().getSimpleName();
-				id+="."+System.identityHashCode(child);
+			if (creator == null) {
+				String id = child.getClass().getSimpleName();
+				id += "." + System.identityHashCode(child);
 				creator = new GenericCreator().withItem(child).withId(id);
 				editor.map.put(id, child, false);
 				editor.map.withCreator(creator);
-			} else if(editor.map.getId(child) == null) {
+			} else if (editor.map.getId(child) == null) {
 				// Ups No ID
-				String id =child.getClass().getSimpleName();
-				id+="."+System.identityHashCode(child);
+				String id = child.getClass().getSimpleName();
+				id += "." + System.identityHashCode(child);
 				editor.map.put(id, child, false);
 			}
 		}
 
 		HTMLEntity entity = new HTMLEntity();
 		GraphList list = editor.map.toObjectDiagram(items[0]); // TRY IT
-		if(!all) {
-			SimpleList<String> ids=new SimpleList<String>();
-			for(Object item : items) {
+		if (!all) {
+			SimpleList<String> ids = new SimpleList<String>();
+			for (Object item : items) {
 				String id = editor.map.getId(item);
 				ids.add(id);
 			}
 			Clazz[] array = list.getClazzes().toArray();
-			SimpleList<Clazz> foundClazz=new SimpleList<Clazz>();
-			for(Clazz clazz : array) {
-				if(ids.contains(clazz.getId()) == false) {
+			SimpleList<Clazz> foundClazz = new SimpleList<Clazz>();
+			for (Clazz clazz : array) {
+				if (ids.contains(clazz.getId()) == false) {
 					list.remove(clazz);
 					foundClazz.add(clazz);
 				}
 			}
 			Association[] assocs = list.getAssociations().toArray();
-			for(Association assoc : assocs) {
-				boolean found=false;
-				for(Clazz clazz : foundClazz) {
-					if(assoc.getClazz() == clazz || assoc.getOtherClazz() == clazz) {
+			for (Association assoc : assocs) {
+				boolean found = false;
+				for (Clazz clazz : foundClazz) {
+					if (assoc.getClazz() == clazz || assoc.getOtherClazz() == clazz) {
 						found = true;
 						break;
 					}
 				}
-				if(found) {
+				if (found) {
 					list.remove(assoc);
 				}
 			}
@@ -157,15 +158,15 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 		entity.withScript(entity.getHeader(), resourceHandler.readResource("graph/dagre.min.js"));
 		entity.withStyle(resourceHandler.readResource("graph/diagramstyle.css"));
 		String graph = list.toString(new GraphConverter());
-		
-		StringBuilder sb=new StringBuilder();
+
+		StringBuilder sb = new StringBuilder();
 		sb.append("var json=");
-		sb.append( graph );
-		sb.append(";"+BaseItem.CRLF);
+		sb.append(graph);
+		sb.append(";" + BaseItem.CRLF);
 		sb.append("window['editor'] = new ClassEditor(json).layout();");
 		sb.append("window['editor'].registerListener();");
 		entity.withScript(sb.toString());
-		
+
 		String string = null;
 		try {
 			string = new File("neu.html").toURI().toURL().toString();
@@ -180,22 +181,26 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 	public static boolean convertToPNG(HTMLEntity entity, String file, int... dimension) {
 		return converting(null, entity, file, true, true, dimension);
 	}
-	public static boolean convertToPNG(String url, String file, int...dimension) {
+
+	public static boolean convertToPNG(String url, String file, int... dimension) {
 		return converting(null, url, file, true, true, dimension);
 	}
-	public static boolean convertToPNG(File localFile, String file, int...dimension) {
+
+	public static boolean convertToPNG(File localFile, String file, int... dimension) {
 		return converting(null, localFile, file, true, true, dimension);
 	}
-	public static boolean converting(final DiagramEditor editor, final Object entity, final String file, final boolean wait, final boolean autoClose, int...dimension) {
+
+	public static boolean converting(final DiagramEditor editor, final Object entity, final String file,
+			final boolean wait, final boolean autoClose, int... dimension) {
 		final int width, height;
 		final DiagramEditor editorWindow;
-		if(editor == null) {
+		if (editor == null) {
 			editorWindow = new DiagramEditor();
 			editorWindow.type = DiagramEditor.TYPE_EDITOR;
 		} else {
 			editorWindow = editor;
 		}
-		if(dimension != null && dimension.length>1) {
+		if (dimension != null && dimension.length > 1) {
 			width = dimension[0];
 			height = dimension[1];
 		} else {
@@ -203,31 +208,23 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 			height = -1;
 		}
 		final Class<?> launcherClass = ReflectionLoader.getClass("com.sun.javafx.application.LauncherImpl");
-		if(launcherClass == null) {
+		if (launcherClass == null) {
 			return false;
 		}
-		if(Os.isJavaFX() == false) {
+		if (Os.isJavaFX() == false) {
 			return false;
 		}
 		ReflectionLoader.call(launcherClass, "startToolkit");
-		if(entity != null && file != null) {
+		if (entity != null && file != null) {
 			ReflectionLoader.call(ReflectionLoader.PLATFORM, "setImplicitExit", boolean.class, false);
 		}
-		Runnable runnable = new Runnable() {
-			@Override
-			public void run() {
-				Object stage = ReflectionLoader.newInstance(ReflectionLoader.STAGE);
-				if(file != null) {
-					editorWindow.file = file;
-					editorWindow.type = DiagramEditor.TYPE_CONTENT;
-					editorWindow.autoClose = autoClose;
-				}
-				editorWindow.creating(stage, entity, width, height);
-				editorWindow.withIcon(IdMap.class.getResource("np.png").toString());
-				editorWindow.show(wait);
-			}
-		};
-		if(wait) {
+		if (file != null) {
+			editorWindow.file = file;
+			editor.type = DiagramEditor.TYPE_CONTENT;
+			editor.autoClose = autoClose;
+		}
+		Runnable runnable = DiagramEditorTask.createOpen(editorWindow, wait, entity, width, height);
+		if (wait) {
 			JavaAdapter.executeAndWait(runnable);
 		} else {
 			JavaAdapter.execute(runnable);
@@ -236,137 +233,130 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 	}
 
 	public static void main(String[] args) {
-		if(args != null && args.length>0 && args[0] != null) {
-			if("GIT".equalsIgnoreCase(args[0])) {
+		if (args != null && args.length > 0 && args[0] != null) {
+			if ("GIT".equalsIgnoreCase(args[0])) {
 				GitRevision revision = new GitRevision();
 				try {
 					int commit = -1;
-					if(args.length>1) {
+					if (args.length > 1) {
 						try {
 							commit = Integer.valueOf(args[1]);
-						}catch (Exception e) {
+						} catch (Exception e) {
 						}
 					}
 					System.out.println(revision.execute(commit));
-				}catch (Exception e) {
+				} catch (Exception e) {
 					e.printStackTrace();
 				}
 				return;
 			}
-			if("NPM".equalsIgnoreCase(args[0])) {
+			if ("NPM".equalsIgnoreCase(args[0])) {
 				new Gradle().loadNPM();
 				return;
 			}
 
-			if("JARVALIDATOR".equalsIgnoreCase(args[0])) {
+			if ("JARVALIDATOR".equalsIgnoreCase(args[0])) {
 				JarValidator validator = new JarValidator();
 				validator.withPath("build/libs");
-				int timeOut=-1;
-				for(String item : args) {
-					if(item == null) {
+				int timeOut = -1;
+				for (String item : args) {
+					if (item == null) {
 						continue;
 					}
 					item = item.toLowerCase();
-					if(item.startsWith("coverage=")) {
+					if (item.startsWith("coverage=")) {
 						String param = item.substring(9);
 						try {
 							Integer no = Integer.valueOf(param);
 							validator.withMinCoverage(no);
-						}catch (Exception e) {
+						} catch (Exception e) {
 						}
-					} else if(item.startsWith("path=")) {
+					} else if (item.startsWith("path=")) {
 						String param = item.substring(5);
 						validator.withPath(param);
-					} else if(item.startsWith("root=")) {
+					} else if (item.startsWith("root=")) {
 						String param = item.substring(5);
 						validator.withRootPath(param);
-					} else if(item.startsWith("time=")) {
+					} else if (item.startsWith("time=")) {
 						String param = item.substring(5);
 						try {
-							timeOut = Integer.valueOf(param)*1000;
-						}catch (Exception e) {
+							timeOut = Integer.valueOf(param) * 1000;
+						} catch (Exception e) {
 						}
-					} else if(item.startsWith("fatjar")) {
+					} else if (item.startsWith("fatjar")) {
 						validator.isAnalyseJar = true;
-					} else if(item.startsWith("licence")) {
+					} else if (item.startsWith("licence")) {
 						validator.isLicence = true;
-					} else if(item.startsWith("noerror")) {
+					} else if (item.startsWith("noerror")) {
 						validator.isError = false;
-					} else if(item.startsWith("nowarning")) {
+					} else if (item.startsWith("nowarning")) {
 						validator.isWarning = false;
-					} else if(item.startsWith("noinstance=")) {
-						//Filter for Instance of SubPackage
+					} else if (item.startsWith("noinstance=")) {
+						// Filter for Instance of SubPackage
 						validator.instancePackage = item.substring(11);
-					} else if(item.startsWith("noinstance")) {
+					} else if (item.startsWith("noinstance")) {
 						validator.isInstance = false;
 					}
 				}
 				// ADD TIME OUT
 				Timer timer = null;
-				if(timeOut>0) {
-					System.out.println("FOUND TIMEOUT= "+timeOut);
+				if (timeOut > 0) {
+					System.out.println("FOUND TIMEOUT= " + timeOut);
 					timer = new Timer();
 					SimpleTimerTask task = new SimpleTimerTask(Thread.currentThread());
-					task.withTask(new Runnable() {
-						
-						@Override
-						public void run() {
-							System.err.println("TIMEOUT EXIT");
-							System.exit(1);
-						}
-					});
+					task.withTask(DiagramEditorTask.createExit(1, "TIMEOUT EXIT"));
 					timer.schedule(task, timeOut);
 				}
-				int exit=0;
-				System.out.println("CHECK CC = "+validator.isValidate + " ("+validator.getMinCoverage()+")");
-				if(validator.isValidate) {
+				int exit = 0;
+				System.out.println("CHECK CC = " + validator.isValidate + " (" + validator.getMinCoverage() + ")");
+				if (validator.isValidate) {
 					validator.validate();
 					int result = validator.analyseReport();
-					if(result != 0) {
-						System.err.println("CodeCoverage not enough ("+ result+")");
+					if (result != 0) {
+						System.err.println("CodeCoverage not enough (" + result + ")");
 						exit = -1;
 					}
 				}
-				if(validator.isAnalyseJar) {
+				if (validator.isAnalyseJar) {
 					// Check for Licence
-					if(validator.isError) {
+					if (validator.isError) {
 						int subExit = validator.searchFiles(System.err);
-						if(subExit < 0) {
+						if (subExit < 0) {
 							exit = subExit;
 							System.err.println("FatJar Error");
 						}
-						if(validator.isValidate && subExit == 0 && validator.isExistFullJar() == false) {
+						if (validator.isValidate && subExit == 0 && validator.isExistFullJar() == false) {
 							System.err.println("No FatJar found");
 							exit = -1;
 						}
-					}else {
+					} else {
 						validator.searchFiles(System.err);
 					}
 				}
-				if(timer != null) {
+				if (timer != null) {
 					timer.cancel();
 				}
-				if(exit < 0) {
+				if (exit < 0) {
 					System.exit(exit);
 				}
 				return;
 			}
-			if(args[0].toLowerCase().startsWith("test=")) {
+			if (args[0].toLowerCase().startsWith("test=")) {
 				ReflectionBlackBoxTester.mainTester(args);
 				return;
 			}
 		}
-		if(converting(null, null, null, false, true) == false) {
+		if (converting(null, null, null, false, true) == false) {
 			// NO JAVAFX Found
 			NodeProxyTCP server = NodeProxyTCP.createServer(8080);
 			server.withListener(new DiagramEditor());
-			if(server.start()) {
-				System.out.println("LISTEN ON: "+server.getKey());
-				if(ReflectionLoader.DESKTOP != null) {
+			if (server.start()) {
+				System.out.println("LISTEN ON: " + server.getKey());
+				if (ReflectionLoader.DESKTOP != null) {
 					Object desktop = ReflectionLoader.call(ReflectionLoader.DESKTOP, "getDesktop");
-					if(desktop != null) {
+					if (desktop != null) {
 						try {
-							ReflectionLoader.call(desktop, "browse", URI.class, new URI("http://"+server.getKey()));
+							ReflectionLoader.call(desktop, "browse", URI.class, new URI("http://" + server.getKey()));
 						} catch (URISyntaxException e) {
 						}
 					}
@@ -376,16 +366,16 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 	}
 
 	public boolean executeWebServer(Message msg) {
-		String  request = msg.getMessage().toString();
-		if(request.startsWith("GET")) {
+		String request = msg.getMessage().toString();
+		if (request.startsWith("GET")) {
 			CharacterBuffer path = new CharacterBuffer();
-			for(int i=4;i<request.length();i++) {
-				if(request.charAt(i) == ' ') {
+			for (int i = 4; i < request.length(); i++) {
+				if (request.charAt(i) == ' ') {
 					break;
 				}
 				path.with(request.charAt(i));
 			}
-			if(path.equals("/")) {
+			if (path.equals("/")) {
 				HTMLEntity html = new HTMLEntity();
 				html.createScript("classEditor = new ClassEditor(\"board\");", html.getBody());
 				html.withHeader("diagram.js");
@@ -393,13 +383,13 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 				html.withHeader("diagramstyle.css");
 				String response = html.toString(2);
 				writeHTTPResponse(msg, response, false);
-			} else if(path.equalsIgnoreCase("/diagram.js")) {
+			} else if (path.equalsIgnoreCase("/diagram.js")) {
 				writeHTTPResponse(msg, new FileBuffer().readResource("graph/diagram.js").toString(), false);
-			} else if(path.equalsIgnoreCase("/diagramstyle.css")) {
+			} else if (path.equalsIgnoreCase("/diagramstyle.css")) {
 				writeHTTPResponse(msg, new FileBuffer().readResource("graph/diagramstyle.css").toString(), false);
-			} else if(path.equalsIgnoreCase("/jspdf.min.js")) {
+			} else if (path.equalsIgnoreCase("/jspdf.min.js")) {
 				writeHTTPResponse(msg, new FileBuffer().readResource("graph/jspdf.min.js").toString(), false);
-			}else {
+			} else {
 				writeHTTPResponse(msg, FILE404, true);
 			}
 		}
@@ -407,15 +397,15 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 	}
 
 	private void writeHTTPResponse(Message message, String response, boolean error) {
-		if(error) {
+		if (error) {
 			message.write("HTTP/1.1 404 Not Found\n");
-		}else {
+		} else {
 			message.write("HTTP/1.1 200 OK\n");
 		}
-		message.write("Date: "+new DateTimeEntity().toGMTString()+"\n");
+		message.write("Date: " + new DateTimeEntity().toGMTString() + "\n");
 		message.write("Server: Java\n");
-		message.write("Last-Modified: "+new DateTimeEntity().toGMTString()+"\n");
-		message.write("Content-Length: "+response.length()+"\n");
+		message.write("Last-Modified: " + new DateTimeEntity().toGMTString() + "\n");
+		message.write("Content-Length: " + response.length() + "\n");
 		message.write("Connection: Closed\n");
 		message.write("Content-Type: text/html\n\n");
 		message.write(response);
@@ -427,28 +417,27 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 		}
 	}
 
-
 	@Override
 	public boolean update(Object value) {
 		System.out.println(value);
-		if(value ==null) {
+		if (value == null) {
 			return false;
 		}
-		if(value instanceof Message) {
+		if (value instanceof Message) {
 			return executeWebServer((Message) value);
 		}
-		if(value instanceof SimpleEvent) {
+		if (value instanceof SimpleEvent) {
 			SimpleEvent evt = (SimpleEvent) value;
-			if(JavaViewAdapter.STATE.equalsIgnoreCase(evt.getNewValue().getClass().getName())) {
-				if(evt.getNewValue().toString().equals(JavaViewAdapter.FAILED)) {
+			if (JavaViewAdapter.STATE.equalsIgnoreCase(evt.getNewValue().getClass().getName())) {
+				if (evt.getNewValue().toString().equals(JavaViewAdapter.FAILED)) {
 					System.err.println(evt);
 				}
-				if(evt.getNewValue().toString().equals(JavaViewAdapter.SUCCEEDED)) {
+				if (evt.getNewValue().toString().equals(JavaViewAdapter.SUCCEEDED)) {
 					Object win = super.executeScript("window", false);
 					ReflectionLoader.call(win, "setMember", String.class, "JavaBridge", Object.class, this);
 					this.changed(evt);
 
-					if(TYPE_EDITOR.equalsIgnoreCase(type)) {
+					if (TYPE_EDITOR.equalsIgnoreCase(type)) {
 						// Load Editor
 						super.executeScript("window['editor'] = new ClassEditor(\"board\");", false);
 					}
@@ -457,36 +446,36 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 			}
 		}
 		String name = (String) ReflectionLoader.callChain(value, "getEventType", "toString");
-		if(JavaViewAdapter.DRAGOVER.equalsIgnoreCase(name)) {
+		if (JavaViewAdapter.DRAGOVER.equalsIgnoreCase(name)) {
 			return onDragOver(value);
 		}
-		if(JavaViewAdapter.DRAGDROPPED.equalsIgnoreCase(name)) {
+		if (JavaViewAdapter.DRAGDROPPED.equalsIgnoreCase(name)) {
 			return onDragDropped(value);
 		}
-		if(JavaViewAdapter.ERROR.equalsIgnoreCase(name)) {
+		if (JavaViewAdapter.ERROR.equalsIgnoreCase(name)) {
 			return onError(value);
 		}
-		if(JavaViewAdapter.DRAGEXITED.equalsIgnoreCase(name)) {
+		if (JavaViewAdapter.DRAGEXITED.equalsIgnoreCase(name)) {
 //			return onDragDropped(value);
 			return onDragExited(value);
 		}
-		if(value instanceof GUIEvent) {
+		if (value instanceof GUIEvent) {
 			GUIEvent evt = (GUIEvent) value;
 			EventTypes evtName = evt.getEventType();
-			if(EventTypes.KEYPRESS == evtName) {
-				if(evt.getCode() == 123) {
+			if (EventTypes.KEYPRESS == evtName) {
+				if (evt.getCode() == 123) {
 					enableDebug();
 				}
 			}
 		}
-		
+
 		return false;
 	}
-	
+
 	public JSEditor getJSEditor() {
-		if(this.jsEditor == null) {
+		if (this.jsEditor == null) {
 			Object JSwin = super.executeScript("window", false);
-			Object result  = ReflectionLoader.call(JSwin, "getMember", String.class, "editor");
+			Object result = ReflectionLoader.call(JSwin, "getMember", String.class, "editor");
 			jsEditor = new JSEditor(result);
 		}
 		return jsEditor;
@@ -498,21 +487,21 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 
 	public boolean save(Object value) {
 		JsonObject model;
-		if(value instanceof JsonObject) {
+		if (value instanceof JsonObject) {
 			model = (JsonObject) value;
-		}else {
+		} else {
 			model = new JsonObject().withValue((String) value);
 		}
 		String name = model.getString("package");
 		if (name == null || name.length() < 1) {
 			name = "model";
-			if(model.size()<1) {
+			if (model.size() < 1) {
 				return false;
 			}
 		}
 		DateTimeEntity entity = new DateTimeEntity();
 		name = name + "_" + entity.toString("yyyyMMdd_HHmmss") + ".json";
-		return FileBuffer.writeFile(name, model.toString())>=0;
+		return FileBuffer.writeFile(name, model.toString()) >= 0;
 	}
 
 	public void log(String value) {
@@ -521,11 +510,7 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 
 	public String generate(String value) {
 		try {
-			Thread.currentThread().setUncaughtExceptionHandler(new UncaughtExceptionHandler() {
-				public void uncaughtException(Thread t, Throwable e) {
-					DiagramEditor.this.saveException(e);
-				}
-			});
+			Thread.currentThread().setUncaughtExceptionHandler(DiagramEditorTask.createException(this));
 			this.generating(new JsonObject().withValue(value));
 		} catch (Exception e) {
 			this.saveException(e);
@@ -534,22 +519,22 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 	}
 
 	public boolean generating(JsonObject model) {
-		if(this.listener != null) {
-			SimpleEvent event = new SimpleEvent(model, METHOD_GENERATE, null,null);
+		if (this.listener != null) {
+			SimpleEvent event = new SimpleEvent(model, METHOD_GENERATE, null, null);
 			event.with(model);
-			if(this.update(event)) {
+			if (this.update(event)) {
 				return true;
 			}
 		}
-		if(this.logic != null) {
+		if (this.logic != null) {
 			Object result = ReflectionLoader.call(this.logic, METHOD_GENERATE, JsonObject.class, model);
-			if(result instanceof Boolean) {
+			if (result instanceof Boolean) {
 				return (Boolean) result;
 			}
 		}
 		GraphConverter converter = new GraphConverter();
 		ClassModel modelGen = (ClassModel) converter.convertFromJson(model, new ClassModel());
-		if(modelGen == null) {
+		if (modelGen == null) {
 //		if (model.has(GraphConverter.NODES) == false) {
 			System.err.println("no Nodes");
 			System.out.println("no Nodes");
@@ -561,46 +546,47 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 
 	protected boolean onDragOver(Object event) {
 		List<File> files = getFiles(event);
-		if(files != null) {
-			boolean error=true;
-			for(File file:files){
-				 String name = file.getName().toLowerCase();
-				if(name.indexOf("json", name.length() - 4) >= 0) {
+		if (files != null) {
+			boolean error = true;
+			for (File file : files) {
+				String name = file.getName().toLowerCase();
+				if (name.indexOf("json", name.length() - 4) >= 0) {
 					error = false;
 				}
 			}
-			if(!error) {
+			if (!error) {
 				Object mode = ReflectionLoader.getField("COPY", ReflectionLoader.TRANSFERMODE);
 				ReflectionLoader.call(event, "acceptTransferModes", ReflectionLoader.TRANSFERMODE, mode);
 				getJSEditor().setBoardStyle("OK");
-			}else {
+			} else {
 				Object mode = ReflectionLoader.getField("NONE", ReflectionLoader.TRANSFERMODE);
 				ReflectionLoader.call(event, "acceptTransferModes", ReflectionLoader.TRANSFERMODE, mode);
 				getJSEditor().setBoardStyle("Error");
 			}
 		}
-		ReflectionLoader.call(event,"consume");
+		ReflectionLoader.call(event, "consume");
 		return true;
 	}
+
 	protected boolean onDragDropped(Object event) {
 		List<File> files = getFiles(event);
-		if(files != null) {
-			for(File file : files){
+		if (files != null) {
+			for (File file : files) {
 				StringBuilder sb = new StringBuilder();
 				byte buf[] = new byte[1024];
 				int read;
 				FileInputStream is = null;
 				try {
-					is=new FileInputStream(file);
+					is = new FileInputStream(file);
 					do {
 						read = is.read(buf, 0, buf.length);
-						if (read>0) {
+						if (read > 0) {
 							sb.append(new String(buf, 0, read, "UTF-8"));
 						}
-					} while (read>=0);
+					} while (read >= 0);
 				} catch (IOException e) {
-				}finally {
-					if(is != null) {
+				} finally {
+					if (is != null) {
 						try {
 							is.close();
 						} catch (IOException e) {
@@ -630,7 +616,7 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 	@SuppressWarnings("unchecked")
 	protected List<File> getFiles(Object event) {
 		Object db = ReflectionLoader.call(event, "getDragboard");
-		if((Boolean) ReflectionLoader.call(db, "hasFiles")) {
+		if ((Boolean) ReflectionLoader.call(db, "hasFiles")) {
 			List<File> files = (List<File>) ReflectionLoader.call(db, "getFiles");
 			return files;
 		}
@@ -640,36 +626,39 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 	// NULL Default
 	public boolean load(Object item) {
 		boolean result = super.load(item);
-		if(result) {
+		if (result) {
 			return result;
 		}
 		HTMLEntity html = new HTMLEntity();
 		FileBuffer resourceReader = new FileBuffer();
 		boolean loadFile = false;
-		//html.createScript("classEditor = new ClassEditor(\"board\");", html.getBody());
-		if(TYPE_EDITOR.equalsIgnoreCase(type)) {
+		// html.createScript("classEditor = new ClassEditor(\"board\");",
+		// html.getBody());
+		if (TYPE_EDITOR.equalsIgnoreCase(type)) {
 			loadFile = true;
 			html.withScript(html.getHeader(), resourceReader.readResource("graph/diagram.js").toString());
 			html.withHeader("dagre.min.js");
 			html.withHeader("jspdf.min.js");
 			html.withHeader("diagramstyle.css");
 			FileBuffer.writeFile("dagre.min.js", resourceReader.readResource("graph/dagre.min.js"), FileBuffer.NONE);
-			FileBuffer.writeFile("diagram.js",resourceReader.readResource("graph/diagram.js"), FileBuffer.NONE);
-			FileBuffer.writeFile("jspdf.min.js",resourceReader.readResource("graph/jspdf.min.js"), FileBuffer.NONE);
-			FileBuffer.writeFile("diagramstyle.css",resourceReader.readResource("graph/diagramstyle.css"), FileBuffer.NONE);
+			FileBuffer.writeFile("diagram.js", resourceReader.readResource("graph/diagram.js"), FileBuffer.NONE);
+			FileBuffer.writeFile("jspdf.min.js", resourceReader.readResource("graph/jspdf.min.js"), FileBuffer.NONE);
+			FileBuffer.writeFile("diagramstyle.css", resourceReader.readResource("graph/diagramstyle.css"),
+					FileBuffer.NONE);
 		}
-		if(TYPE_EXPORT.equalsIgnoreCase(type)) {
+		if (TYPE_EXPORT.equalsIgnoreCase(type)) {
 			loadFile = true;
 			html.withHeader("dagre.min.js");
 			html.withHeader("diagram.js");
 			html.withHeader("jspdf.min.js");
 			html.withHeader("diagramstyle.css");
 			FileBuffer.writeFile("dagre.min.js", resourceReader.readResource("graph/dagre.min.js"), FileBuffer.NONE);
-			FileBuffer.writeFile("diagram.js",resourceReader.readResource("graph/diagram.js"), FileBuffer.NONE);
-			FileBuffer.writeFile("jspdf.min.js",resourceReader.readResource("graph/jspdf.min.js"), FileBuffer.NONE);
-			FileBuffer.writeFile("diagramstyle.css",resourceReader.readResource("graph/diagramstyle.css"), FileBuffer.NONE);
-		} 
-		if(TYPE_EXPORTALL.equalsIgnoreCase(type)) {
+			FileBuffer.writeFile("diagram.js", resourceReader.readResource("graph/diagram.js"), FileBuffer.NONE);
+			FileBuffer.writeFile("jspdf.min.js", resourceReader.readResource("graph/jspdf.min.js"), FileBuffer.NONE);
+			FileBuffer.writeFile("diagramstyle.css", resourceReader.readResource("graph/diagramstyle.css"),
+					FileBuffer.NONE);
+		}
+		if (TYPE_EXPORTALL.equalsIgnoreCase(type)) {
 			// Add external Files
 			loadFile = true;
 			html.withScript(html.getHeader(), readFile("graph/dagre.min.js"));
@@ -677,7 +666,7 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 			html.withScript(html.getHeader(), readFile("graph/jspdf.min.js"));
 			html.withScript(html.getHeader(), readFile("graph/diagramstyle.css"));
 		}
-		if(loadFile) {
+		if (loadFile) {
 			FileBuffer.writeFile("Editor.html", html.toString(), FileBuffer.NONE);
 			try {
 				String string = new File("Editor.html").toURI().toURL().toString();
@@ -700,29 +689,30 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 		editor.creating(stage, url, -1, -1);
 		return editor;
 	}
-	private DiagramEditor creating(Object stage, Object url, int width, int height) {
-		if(stage == null) {
+
+	protected DiagramEditor creating(Object stage, Object url, int width, int height) {
+		if (stage == null) {
 			return this;
 		}
-		if(this.controller == null) {
+		if (this.controller == null) {
 			SimpleController controller = new SimpleController(stage);
 			this.controller = controller;
 			this.controller.withListener(this);
 		}
 		SimpleKeyValueList<String, String> parameterMap = controller.getParameterMap();
 
-		if(parameterMap != null) {
-			if(parameterMap.contains(TYPE_EXPORTALL)) {
+		if (parameterMap != null) {
+			if (parameterMap.contains(TYPE_EXPORTALL)) {
 				this.type = TYPE_EXPORTALL;
 			}
 		}
 		this.registerListener(this);
 		this.load(url);
 		JavaBridgeFX javaFX = new JavaBridgeFX(this.map, this, JavaBridgeFX.CONTENT_TYPE_NONE);
-		if(width<0) {
+		if (width < 0) {
 			width = WIDTH;
 		}
-		if(height<0) {
+		if (height < 0) {
 			height = HEIGHT;
 		}
 		controller.withTitle("ClassdiagrammEditor");
@@ -736,10 +726,9 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 		controller.show(owner.getWebView(), waitFor, true);
 	}
 
-
 	public DiagramEditor withListener(Object item) {
 		this.logic = item;
-		if(item instanceof SimpleEventCondition) {
+		if (item instanceof SimpleEventCondition) {
 			this.listener = (SimpleEventCondition) logic;
 		}
 		return this;
@@ -756,73 +745,72 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 	public SimpleController getController() {
 		return controller;
 	}
-	
+
 	@Override
 	public boolean changed(SimpleEvent evt) {
-		if(TYPE_CONTENT.equalsIgnoreCase(type) == false) {
+		if (TYPE_CONTENT.equalsIgnoreCase(type) == false) {
 			super.changed(evt);
 			return true;
 		}
-		if(SUCCEEDED.equals(""+evt.getNewValue())) {
+		if (SUCCEEDED.equals("" + evt.getNewValue())) {
 			// TEST
-			JavaAdapter.execute(new Runnable() {
-				@Override
-				public void run() {
-					screendump(null);
-				}
-			});
+			JavaAdapter.execute(DiagramEditorTask.createScreenDump(this));
 			return true;
 		}
 		return true;
 	}
-	
+
 	public void screendump(String nameExtension) {
 		Object snapshotParametersClass = ReflectionLoader.getClass("javafx.scene.SnapshotParameters");
 		Object writableImageClass = ReflectionLoader.getClass("javafx.scene.image.WritableImage");
-		Object image = ReflectionLoader.call(webView, "snapshot", snapshotParametersClass, null, writableImageClass, null);
+		Object image = ReflectionLoader.call(webView, "snapshot", snapshotParametersClass, null, writableImageClass,
+				null);
 
 		Class<?> swingUtil = ReflectionLoader.getClass("javafx.embed.swing.SwingFXUtils");
 		Object bufferedImageClass = ReflectionLoader.getClass("java.awt.image.BufferedImage");
-		Object bufferedImage = ReflectionLoader.call(swingUtil, "fromFXImage", ReflectionLoader.IMAGE, image, bufferedImageClass, null);
-		
+		Object bufferedImage = ReflectionLoader.call(swingUtil, "fromFXImage", ReflectionLoader.IMAGE, image,
+				bufferedImageClass, null);
+
 		String fileName = this.file;
-		if(nameExtension != null) {
+		if (nameExtension != null) {
 			int pos = fileName.indexOf(".");
-			if(pos<1) {
+			if (pos < 1) {
 				fileName = fileName + nameExtension;
-			}else {
-				fileName = fileName.substring(0, pos)+"-"+nameExtension+fileName.substring(pos);
+			} else {
+				fileName = fileName.substring(0, pos) + "-" + nameExtension + fileName.substring(pos);
 			}
 		}
-		ReflectionLoader.call(ReflectionLoader.IMAGEIO, "write", ReflectionLoader.RENDEREDIMAGE, bufferedImage, String.class, "png", File.class, new File(fileName));
-		if(autoClose) {
+		ReflectionLoader.call(ReflectionLoader.IMAGEIO, "write", ReflectionLoader.RENDEREDIMAGE, bufferedImage,
+				String.class, "png", File.class, new File(fileName));
+		if (autoClose) {
 			controller.close();
 		}
 	}
-	
+
 	public void export(String type, Object value, String name, String context) {
-		String typeName = "files"; 
-		if("PNG".equalsIgnoreCase(type)) {
+		String typeName = "files";
+		if ("PNG".equalsIgnoreCase(type)) {
 			typeName = "Portable Network Graphics";
-		} else if("SVG".equalsIgnoreCase(type)) {
+		} else if ("SVG".equalsIgnoreCase(type)) {
 			typeName = "Scalable Vector Graphics";
-		} else if("JSON".equalsIgnoreCase(type)) {
+		} else if ("JSON".equalsIgnoreCase(type)) {
 			typeName = "JavaScript Object Notation";
-		} else if("HTML".equalsIgnoreCase(type)) {
+		} else if ("HTML".equalsIgnoreCase(type)) {
 			typeName = "Hypertext Markup Language";
-		} else if("PDF".equalsIgnoreCase(type)) {
+		} else if ("PDF".equalsIgnoreCase(type)) {
 			typeName = "Portable Document Format";
 		}
-		String file = DialogBox.showFileSaveChooser("Export Diagramm", name, typeName, type, this.controller.getStage());
-		if(file != null) {
-			if(value instanceof String) {
+		String file = DialogBox.showFileSaveChooser("Export Diagramm", name, typeName, type,
+				this.controller.getStage());
+		if (file != null) {
+			if (value instanceof String) {
 				FileBuffer.writeFile(file, ((String) value).getBytes());
 			}
 		}
 	}
 
 	public void close() {
-		if(controller != null) {
+		if (controller != null) {
 			controller.close();
 		}
 	}

@@ -11,7 +11,7 @@ public class AssociationSet extends SimpleSet<Association> {
 
 	public ClazzSet getClazzes() {
 		ClazzSet collection = new ClazzSet();
-		for(Association item : this) {
+		for (Association item : this) {
 			collection.add(item.getClazz());
 		}
 		return collection;
@@ -19,7 +19,7 @@ public class AssociationSet extends SimpleSet<Association> {
 
 	public AssociationSet getOther() {
 		AssociationSet collection = new AssociationSet();
-		for(Association item : this) {
+		for (Association item : this) {
 			collection.add(item.getOther());
 		}
 		return collection;
@@ -27,7 +27,7 @@ public class AssociationSet extends SimpleSet<Association> {
 
 	public ClazzSet getOtherClazz() {
 		ClazzSet collection = new ClazzSet();
-		for(Association item : this) {
+		for (Association item : this) {
 			collection.add(item.getOtherClazz());
 		}
 		return collection;
@@ -35,8 +35,8 @@ public class AssociationSet extends SimpleSet<Association> {
 
 	@Override
 	public boolean add(Association newValue) {
-		if(newValue.getOther() != null) {
-			if(indexOf(newValue.getOther()) >= 0) {
+		if (newValue.getOther() != null) {
+			if (indexOf(newValue.getOther()) >= 0) {
 				return false;
 			}
 		}
@@ -49,15 +49,15 @@ public class AssociationSet extends SimpleSet<Association> {
 
 	@Override
 	public boolean contains(Object o) {
-		if(super.contains(o)) {
+		if (super.contains(o)) {
 			return true;
 		}
-		if(o instanceof Association) {
+		if (o instanceof Association) {
 			return super.contains(((Association) o).getOther());
 		}
 		return false;
 	}
-	
+
 	@Override
 	public Association[] toArray() {
 		return super.toArray(new Association[size()]);

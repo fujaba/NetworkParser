@@ -39,7 +39,7 @@ public class StringInputStream extends InputStream {
 
 	@Override
 	public int read() throws IOException {
-		if(pos<mBuf.length()) {
+		if (pos < mBuf.length()) {
 			return mBuf.charAt(pos++);
 		}
 		return 0;
@@ -48,6 +48,7 @@ public class StringInputStream extends InputStream {
 	public void with(String value) {
 		this.mBuf.with(value);
 	}
+
 	public void with(byte[] value) {
 		this.mBuf.with(value);
 	}

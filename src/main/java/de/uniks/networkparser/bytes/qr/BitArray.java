@@ -44,12 +44,12 @@ final class BitArray implements Cloneable {
 	}
 
 	BitArray(byte[] bytes) {
-		if(bytes == null) {
+		if (bytes == null) {
 			return;
 		}
 		size = bytes.length;
 		this.bits = new int[size];
-		for(int i=0;i<size;i++) {
+		for (int i = 0; i < size; i++) {
 			this.bits[i] = bytes[i];
 		}
 	}
@@ -77,7 +77,7 @@ final class BitArray implements Cloneable {
 	}
 
 	/**
-	 * @param i		bit to get
+	 * @param i bit to get
 	 * @return true iff bit i is set
 	 */
 	public boolean get(int i) {
@@ -87,7 +87,7 @@ final class BitArray implements Cloneable {
 	/**
 	 * Sets bit i.
 	 *
-	 * @param i		bit to set
+	 * @param i bit to set
 	 */
 	public void set(int i) {
 		bits[i / 32] |= 1 << (i & 0x1F);
@@ -96,8 +96,10 @@ final class BitArray implements Cloneable {
 	/**
 	 * Sets a block of 32 bits, starting at bit i.
 	 *
-	 * @param i			first bit to set
-	 * @param newBits	the new value of the next 32 bits. Note again that the least-significant bit corresponds to bit i, the next-least-significant to i+1, and so on.
+	 * @param i       first bit to set
+	 * @param newBits the new value of the next 32 bits. Note again that the
+	 *                least-significant bit corresponds to bit i, the
+	 *                next-least-significant to i+1, and so on.
 	 */
 	void setBulk(int i, int newBits) {
 		bits[i / 32] = newBits;
@@ -124,8 +126,8 @@ final class BitArray implements Cloneable {
 	 * most-significant to least-significant. For example, appending 6 bits from
 	 * 0x000001E will append the bits 0, 1, 1, 1, 1, 0 in that order.
 	 *
-	 * @param value		{@code int} containing bits to append
-	 * @param numBits	bits from value to append
+	 * @param value   {@code int} containing bits to append
+	 * @param numBits bits from value to append
 	 */
 	void appendBits(int value, int numBits) {
 		if (numBits < 0 || numBits > 32) {
@@ -158,11 +160,12 @@ final class BitArray implements Cloneable {
 
 	/**
 	 *
-	 * @param bitOffset		first bit to start writing
-	 * @param array			array to write into. Bytes are written most-significant byte first. This is the opposite of the internal representation,
-	 *						which is exposed by {@link #getBitArray()}
-	 * @param offset		position in array to start writing
-	 * @param numBytes		how many bytes to write
+	 * @param bitOffset first bit to start writing
+	 * @param array     array to write into. Bytes are written most-significant byte
+	 *                  first. This is the opposite of the internal representation,
+	 *                  which is exposed by {@link #getBitArray()}
+	 * @param offset    position in array to start writing
+	 * @param numBytes  how many bytes to write
 	 */
 	void toBytes(int bitOffset, byte[] array, int offset, int numBytes) {
 		for (int i = 0; i < numBytes; i++) {
@@ -178,7 +181,8 @@ final class BitArray implements Cloneable {
 	}
 
 	/**
-	 * @return underlying array of ints. The first element holds the first 32 bits, and the least significant bit is bit 0.
+	 * @return underlying array of ints. The first element holds the first 32 bits,
+	 *         and the least significant bit is bit 0.
 	 */
 	int[] getBitArray() {
 		return bits;
@@ -261,10 +265,13 @@ final class BitArray implements Cloneable {
 	int available() {
 		return 8 * (bits.length - byteOffset) - bitOffset;
 	}
+
 	/**
 	 * @param numBits number of bits to read
-	 * @return int representing the bits read. The bits will appear as the least-significant bits of the int
-	 * @throws IllegalArgumentException if numBits isn't in [1,32] or more than is available
+	 * @return int representing the bits read. The bits will appear as the
+	 *         least-significant bits of the int
+	 * @throws IllegalArgumentException if numBits isn't in [1,32] or more than is
+	 *                                  available
 	 */
 	int readBits(int numBits) {
 		if (numBits < 1 || numBits > 32 || numBits > available()) {
@@ -286,10 +293,10 @@ final class BitArray implements Cloneable {
 				bitOffset = 0;
 				byteOffset++;
 			}
-			}
+		}
 
-			// Next read whole bytes
-			if (numBits > 0) {
+		// Next read whole bytes
+		if (numBits > 0) {
 			while (numBits >= 8) {
 				result = (result << 8) | (bits[byteOffset] & 0xFF);
 				byteOffset++;

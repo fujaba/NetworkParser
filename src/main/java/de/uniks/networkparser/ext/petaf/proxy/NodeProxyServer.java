@@ -51,9 +51,8 @@ public class NodeProxyServer extends NodeProxy {
 		return this;
 	}
 
-
 	public DatagramPacket executeBroadCast(boolean async) {
-		if(async) {
+		if (async) {
 			this.server = new Server_UPD(this, true);
 		} else {
 			Server_UPD server = new Server_UPD(this, false);
@@ -67,10 +66,12 @@ public class NodeProxyServer extends NodeProxy {
 		this.bufferSize = answerSize;
 		return this;
 	}
+
 	public NodeProxyServer withPort(int value) {
 		this.port = value;
 		return this;
 	}
+
 	public NodeProxyServer withSpace(Space value) {
 		this.space = value;
 		return this;
@@ -83,7 +84,7 @@ public class NodeProxyServer extends NodeProxy {
 
 	@Override
 	public String getKey() {
-		return "udp:"+port;
+		return "udp:" + port;
 	}
 
 	@Override
@@ -93,7 +94,7 @@ public class NodeProxyServer extends NodeProxy {
 
 	@Override
 	public boolean close() {
-		if(server != null) {
+		if (server != null) {
 			return this.server.close();
 		}
 		return true;
@@ -102,6 +103,7 @@ public class NodeProxyServer extends NodeProxy {
 	public int getPort() {
 		return port;
 	}
+
 	public int getBufferSize() {
 		return bufferSize;
 	}
@@ -109,22 +111,22 @@ public class NodeProxyServer extends NodeProxy {
 	@Override
 	protected boolean initProxy() {
 		// May be Server or Client
-		if(NodeProxy.isInput(this.type)) {
-			if(Server.TCP.equals(this.serverType)) {
+		if (NodeProxy.isInput(this.type)) {
+			if (Server.TCP.equals(this.serverType)) {
 
-			} else if(Server.TIME.equals(this.serverType)) {
-		    } else if(Server.REST.equals(this.serverType)) {
-		    	Space space = this.getSpace();
-		    	if(space!=null) {
-		    		IdMap map = space.getMap();
-		    		NodeProxyModel model = space.getModel();
-		    		Object root = model.getModel();
-		    		this.server = new RESTServiceTask(port, map, root);
-		    	}
-		    } else {
-		    	//} else if(Server.BROADCAST) {
-		    	this.server = new Server_UPD(this, true);
-		    }
+			} else if (Server.TIME.equals(this.serverType)) {
+			} else if (Server.REST.equals(this.serverType)) {
+				Space space = this.getSpace();
+				if (space != null) {
+					IdMap map = space.getMap();
+					NodeProxyModel model = space.getModel();
+					Object root = model.getModel();
+					this.server = new RESTServiceTask(port, map, root);
+				}
+			} else {
+				// } else if(Server.BROADCAST) {
+				this.server = new Server_UPD(this, true);
+			}
 		}
 		return true;
 	}

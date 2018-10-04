@@ -26,7 +26,7 @@ THE SOFTWARE.
 import java.io.Serializable;
 import java.util.Comparator;
 
-public class SQLStatementComparator implements Comparator<Object>, Serializable{
+public class SQLStatementComparator implements Comparator<Object>, Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Override
@@ -36,7 +36,7 @@ public class SQLStatementComparator implements Comparator<Object>, Serializable{
 		SQLCommand c1 = s1.getCommand();
 		SQLCommand c2 = s2.getCommand();
 		int executeDiff = c1.getExecutePriority() - c2.getExecutePriority();
-		if(executeDiff != 0) {
+		if (executeDiff != 0) {
 			return executeDiff;
 		}
 		return s1.getTable().compareTo(s2.getTable());

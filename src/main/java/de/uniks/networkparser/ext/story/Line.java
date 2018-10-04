@@ -48,7 +48,7 @@ public class Line extends SendableItem {
 		setColor(value);
 		return this;
 	}
-	
+
 	public static final String PROPERTY_CHILDREN = "children";
 
 	private ModelSet<Task> children = null;

@@ -31,6 +31,8 @@ public interface Server {
 	public static final String REST = "REST";
 
 	public boolean close();
+
 	public void run();
+
 	public boolean isRun();
 }

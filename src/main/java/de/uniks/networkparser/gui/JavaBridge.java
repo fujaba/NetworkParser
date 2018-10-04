@@ -61,7 +61,7 @@ public abstract class JavaBridge implements ObjectCondition {
 	private HTMLEntity entity;
 
 	private XMLEntity debug;
-	
+
 	protected Buffer resourceHandler;
 
 	public JavaBridge() {
@@ -69,32 +69,31 @@ public abstract class JavaBridge implements ObjectCondition {
 	}
 
 	public JavaBridge withDebug(boolean value) {
-		if(value) {
+		if (value) {
 			this.debug = entity.createScript("", null);
-		}else {
+		} else {
 			this.debug = null;
 		}
 		return this;
 	}
-
 
 	public JavaBridge(IdMap map, JavaViewAdapter webView, String type) {
 		if (map == null) {
 			map = new IdMap();
 		}
 		this.map = map;
-		if(map!= null) {
+		if (map != null) {
 			map.add(this);
 		}
 
 		this.webView = webView;
-		if(webView != null) {
+		if (webView != null) {
 			this.webView.withOwner(this);
 
 		}
-		if(type.equals(CONTENT_TYPE_NONE) == false) {
+		if (type.equals(CONTENT_TYPE_NONE) == false) {
 			entity = init(type, "var bridge = new DiagramJS.Bridge();");
-			if(webView != null) {
+			if (webView != null) {
 				this.webView.load(entity);
 			}
 		}
@@ -110,7 +109,7 @@ public abstract class JavaBridge implements ObjectCondition {
 	}
 
 	public HTMLEntity init(String type, String script) {
-		//		script = "classEditor = new ClassEditor(\"board\");";
+		// script = "classEditor = new ClassEditor(\"board\");";
 		HTMLEntity entity = new HTMLEntity();
 		entity.withScript(script);
 
@@ -118,9 +117,8 @@ public abstract class JavaBridge implements ObjectCondition {
 			entity.withHeader("diagram.js");
 			entity.withHeader("material.css");
 			entity.withHeader("style.css");
-		}
-		else {
-			if(this.resourceHandler != null) {
+		} else {
+			if (this.resourceHandler != null) {
 				entity.withScript(entity.getHeader(), this.resourceHandler.readResource("graph/diagram.js"));
 				entity.withStyle(this.resourceHandler.readResource("graph/material.css"));
 				entity.withStyle(this.resourceHandler.readResource("graph/style.css"));
@@ -129,21 +127,19 @@ public abstract class JavaBridge implements ObjectCondition {
 		return entity;
 	}
 
-
 	protected String readFile(String file) {
-		if(this.webView != null) {
+		if (this.webView != null) {
 			return this.webView.readFile(file);
 		}
 		return null;
 	}
-
 
 	@Override
 	public boolean update(Object event) {
 		if (isApplyingChangeMSG) {
 			return false;
 		}
-		if(event instanceof SimpleEvent) {
+		if (event instanceof SimpleEvent) {
 			return false;
 		}
 		SimpleEvent simpleEvent = (SimpleEvent) event;
@@ -152,7 +148,7 @@ public abstract class JavaBridge implements ObjectCondition {
 		}
 		JsonObject jsonObject = (JsonObject) simpleEvent.getEntity();
 
-		if(jsonObject == null){
+		if (jsonObject == null) {
 			return false;
 		}
 
@@ -167,7 +163,6 @@ public abstract class JavaBridge implements ObjectCondition {
 	public void enableFirebug() {
 		this.webView.enableDebug();
 	}
-
 
 	public IdMap getMap() {
 		return this.map;
@@ -210,7 +205,6 @@ public abstract class JavaBridge implements ObjectCondition {
 		return id;
 	}
 
-
 	protected Map<String, Control> getControls() {
 		if (this.controls == null) {
 			this.controls = new SimpleKeyValueList<String, Control>();
@@ -218,16 +212,15 @@ public abstract class JavaBridge implements ObjectCondition {
 		return this.controls;
 	}
 
-
 	public Object executeScript(String script) {
-		if(script == null) {
+		if (script == null) {
 			return null;
 		}
-		if(debug != null) {
+		if (debug != null) {
 			String value = debug.getValue();
-			if(value.length()>0) {
-				value = value+BaseItem.CRLF+script;
-			}else {
+			if (value.length() > 0) {
+				value = value + BaseItem.CRLF + script;
+			} else {
 				value = script;
 			}
 			debug.withValueItem(value);
@@ -235,19 +228,16 @@ public abstract class JavaBridge implements ObjectCondition {
 		return this.webView.executeScript(script);
 	}
 
-
 	public void addEventListener(Control c, EventTypes eventType, ObjectCondition eventListener) {
-		if(c.getEvents(eventType) == null){
+		if (c.getEvents(eventType) == null) {
 			executeScript(BridgeCommand.register(eventType, c.getId()));
 		}
 		c.addEventListener(eventType, eventListener);
 	}
 
-
 	public void fireEvent(JsonObject event) {
 		this.map.decode(event);
 	}
-
 
 	public void fireEvent(Event event) {
 		Control control = getControls().get(event.getId());
@@ -261,33 +251,27 @@ public abstract class JavaBridge implements ObjectCondition {
 		}
 	}
 
-
 	public void fireControlChange(Control control, String property, Object value) {
 		executeScript(BridgeCommand.load("{id:\"" + control.getId() + "\", " + property + ":\"" + value + "\"}"));
 	}
-
 
 	public boolean setApplyingChangeMSG(boolean value) {
 		this.isApplyingChangeMSG = value;
 		return this.isApplyingChangeMSG;
 	}
 
-
 	public JavaViewAdapter getViewAdapter() {
 		return webView;
 	}
-
 
 	public Object getWebView() {
 		return webView.getWebView();
 	}
 
-
 	public JavaBridge withWebView(JavaViewAdapter webView) {
 		this.webView = webView;
 		return this;
 	}
-
 
 	public void logScript(String msg, int level, Object owner, String method) {
 		if (logger != null) {
@@ -296,44 +280,45 @@ public abstract class JavaBridge implements ObjectCondition {
 	}
 
 	public void load(String url) {
-		if(this.webView != null) {
+		if (this.webView != null) {
 			this.webView.load(entity);
 		}
 	}
 
 	/**
-	 * Register a Listener on the Control, that invokes a function, that has the given name, on the given object.
+	 * Register a Listener on the Control, that invokes a function, that has the
+	 * given name, on the given object.
 	 *
-	 * @param c the control
-	 * @param type the eventType
+	 * @param c          the control
+	 * @param type       the eventType
 	 * @param methodName the name of the function that is invoked
-	 * @param object the object on which the method is invoked
+	 * @param object     the object on which the method is invoked
 	 */
 	public void addListener(Control c, EventTypes type, String methodName, Object object) {
 	}
-	//	addClickListener(String, DynamicEventCallback)
-	//	addDoubleClickListener(String, DynamicEventCallback)
-	//	addMouseUpListener(String, DynamicEventCallback)
-	//	addMouseDownListener(String, DynamicEventCallback)
-	//	addMouseEnterListener(String, DynamicEventCallback)
-	//	addMouseLeaveListener(String, DynamicEventCallback)
-	//	addMouseMoveListener(String, DynamicEventCallback)
-	//	addKeyPressListener(String, DynamicEventCallback)
-	//	addKeyDownListener(String, DynamicEventCallback)
-	//	addKeyUpListener(String, DynamicEventCallback)
-	//	addResizeListener(DynamicEventCallback)
-	//	addDragStartListener(String, DynamicEventCallback)
-	//	addDragOverListener(String, DynamicEventCallback)
-	//	addDropListener(String, DynamicEventCallback)
-	//	addChangeListener(String, DynamicEventCallback)
-	//	createDragDrop(String, String...)
-	//	createModelBinding(String, SendableEntity, String)
-	//	createTableColumn(String, SendableEntityCreator, String)
-	//	setTableItems(String, SendableEntity, String, SendableEntityCreator)
-	//	setTableItems(String, String, String, SendableEntityCreator)
-	//	setValueToUIElement(String, Object)
-	//	getStringValueFromUIElement(String)
-	//	getNumberValueFromUIElement(String)
-	//	getSelectedTableItem(String)
+	// addClickListener(String, DynamicEventCallback)
+	// addDoubleClickListener(String, DynamicEventCallback)
+	// addMouseUpListener(String, DynamicEventCallback)
+	// addMouseDownListener(String, DynamicEventCallback)
+	// addMouseEnterListener(String, DynamicEventCallback)
+	// addMouseLeaveListener(String, DynamicEventCallback)
+	// addMouseMoveListener(String, DynamicEventCallback)
+	// addKeyPressListener(String, DynamicEventCallback)
+	// addKeyDownListener(String, DynamicEventCallback)
+	// addKeyUpListener(String, DynamicEventCallback)
+	// addResizeListener(DynamicEventCallback)
+	// addDragStartListener(String, DynamicEventCallback)
+	// addDragOverListener(String, DynamicEventCallback)
+	// addDropListener(String, DynamicEventCallback)
+	// addChangeListener(String, DynamicEventCallback)
+	// createDragDrop(String, String...)
+	// createModelBinding(String, SendableEntity, String)
+	// createTableColumn(String, SendableEntityCreator, String)
+	// setTableItems(String, SendableEntity, String, SendableEntityCreator)
+	// setTableItems(String, String, String, SendableEntityCreator)
+	// setValueToUIElement(String, Object)
+	// getStringValueFromUIElement(String)
+	// getNumberValueFromUIElement(String)
+	// getSelectedTableItem(String)
 
 }

@@ -13,11 +13,11 @@ public class MemberDiffer {
 
 	public MemberDiffer(MatchCondition... memberMatches) {
 		if (memberMatches != null) {
-			for(MatchCondition condition : memberMatches) {
+			for (MatchCondition condition : memberMatches) {
 				this.memberConditions.add(condition);
 			}
 		}
-		
+
 	}
 
 	public void diff(GraphMatcher matches, List<Match> memberMatches) {
@@ -33,12 +33,13 @@ public class MemberDiffer {
 			}
 		}
 	}
+
 	public static void executeCondition(String action, List<MatchCondition> memberConditions, Match match) {
 		if (memberConditions != null && action != null) {
-			for(int i=0;i<memberConditions.size();i++) {
+			for (int i = 0; i < memberConditions.size(); i++) {
 				MatchCondition condition = memberConditions.get(i);
-				if(condition != null && action.equals(condition.getAction())) {
-					if(condition.update(match)) {
+				if (condition != null && action.equals(condition.getAction())) {
+					if (condition.update(match)) {
 						break;
 					}
 				}

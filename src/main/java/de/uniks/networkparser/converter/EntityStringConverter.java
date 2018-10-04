@@ -32,8 +32,7 @@ public class EntityStringConverter implements Converter {
 	private int indentFactor;
 	private int indent;
 	private String relativePath;
-	public static final String EMPTY="";
-	
+	public static final String EMPTY = "";
 
 	public EntityStringConverter() {
 	}
@@ -42,6 +41,7 @@ public class EntityStringConverter implements Converter {
 		this.indentFactor = indentFactor;
 		this.indent = indent;
 	}
+
 	public EntityStringConverter(int indentFactor) {
 		this.indentFactor = indentFactor;
 	}
@@ -57,7 +57,7 @@ public class EntityStringConverter implements Converter {
 
 	@Override
 	public String encode(BaseItem entity) {
-		if(entity instanceof Entity) {
+		if (entity instanceof Entity) {
 			return ((Entity) entity).toString(getIndentFactor());
 		}
 		return ((BaseItem) entity).toString(this);
@@ -78,28 +78,29 @@ public class EntityStringConverter implements Converter {
 		}
 		return new String(buf);
 	}
+
 	public String getPrefixFirst() {
-		if(indent < 1) {
+		if (indent < 1) {
 			return EMPTY;
 		}
 		char[] buf = new char[indent + 2];
 		buf[0] = '\r';
 		buf[1] = '\n';
 		for (int i = 0; i < indent; i++) {
-			buf[i+2] = IdMap.SPACE;
+			buf[i + 2] = IdMap.SPACE;
 		}
 		return new String(buf);
 	}
 
 	public String getPrefix() {
-		if(indent + indentFactor == 0) {
+		if (indent + indentFactor == 0) {
 			return EMPTY;
 		}
 		char[] buf = new char[indent + 2];
 		buf[0] = '\r';
 		buf[1] = '\n';
 		for (int i = 0; i < indent; i++) {
-			buf[i+2] = IdMap.SPACE;
+			buf[i + 2] = IdMap.SPACE;
 		}
 		return new String(buf);
 	}
@@ -107,6 +108,7 @@ public class EntityStringConverter implements Converter {
 	public void add() {
 		this.indent = this.indent + this.indentFactor;
 	}
+
 	public void minus() {
 		this.indent = this.indent - this.indentFactor;
 	}

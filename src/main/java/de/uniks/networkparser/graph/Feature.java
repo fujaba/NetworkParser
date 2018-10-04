@@ -30,9 +30,9 @@ import de.uniks.networkparser.list.SimpleSet;
 
 public class Feature implements Comparable<Feature> {
 	public static final Clazz ALL = new Clazz("*");
-	public static final String NAME="name";
-	public static final String CLASSVALUE="classValue";
-	public static final String CLASSSTRING="classString";
+	public static final String NAME = "name";
+	public static final String CLASSVALUE = "classValue";
+	public static final String CLASSSTRING = "classString";
 
 	private SimpleList<Clazz> includeClazz = new SimpleList<Clazz>();
 	private SimpleList<Clazz> excludeClazz = new SimpleList<Clazz>();
@@ -55,20 +55,19 @@ public class Feature implements Comparable<Feature> {
 	}
 
 	public Feature create() {
-		if(Feature.SETCLASS.equals(this)) {
+		if (Feature.SETCLASS.equals(this)) {
 			return newInstance(this).withClazzValue(SimpleSet.class);
 		}
-		if(Feature.CODESTYLE.equals(this)) {
+		if (Feature.CODESTYLE.equals(this)) {
 			return newInstance(this).withStringValue(CODESTYLE_STANDARD);
 		}
 		return newInstance(this);
 	}
-	
+
 	protected Feature newInstance(Feature ref) {
 		return new Feature(ref);
 	}
 
-	
 	/* For Generate PropertyChange */
 	public static final Feature PROPERTYCHANGESUPPORT = new Feature("PROPERTYCHANGESUPPORT");
 	/* For Generate Creator */
@@ -83,32 +82,31 @@ public class Feature implements Comparable<Feature> {
 	/* For Generate dynamic Values */
 	public static final Feature DYNAMICVALUES = new Feature("DYNAMICVALUES");
 
-	/* For Generator CODESTYLE STANDARD OR DIVIDED*/
+	/* For Generator CODESTYLE STANDARD OR DIVIDED */
 	public static final Feature CODESTYLE = new Feature("CODESTYLE");
 
 	public static final Feature DIFFERENCE_BEHAVIOUR = new Feature("DIFFERENCE_BEHAVIOUR");
-	
+
 	public static final Feature METADATA = new Feature("METADATA");
 
 	public static final Feature DOCUMENTATION = new Feature("DOCUMENTATION");
-	
+
 	public static final Feature SOURCECODE = new Feature("SOURCECODE");
 
 	public static final Feature GENCODE = new Feature("GENCODE");
-	//EMFSTYLE,	// For Generate EMF-Style 
-	
-	public static final FeatureSet allGenerateFlags = new FeatureSet()
-			.with(PROPERTYCHANGESUPPORT, SERIALIZATION, SETCLASS, JUNIT, PATTERN, DYNAMICVALUES, CODESTYLE);
+	// EMFSTYLE, // For Generate EMF-Style
+
+	public static final FeatureSet allGenerateFlags = new FeatureSet().with(PROPERTYCHANGESUPPORT, SERIALIZATION,
+			SETCLASS, JUNIT, PATTERN, DYNAMICVALUES, CODESTYLE);
 
 	public static Feature valueOf(String string) {
-		for(Feature feature : allGenerateFlags) {
-			if(feature.getName().equals(string)) {
+		for (Feature feature : allGenerateFlags) {
+			if (feature.getName().equals(string)) {
 				return feature.create();
 			}
 		}
 		return null;
 	}
-
 
 	public static final String CODESTYLE_STANDARD = "standard";
 	public static final String CODESTYLE_DIVIDED = "divided";
@@ -118,7 +116,8 @@ public class Feature implements Comparable<Feature> {
 	}
 
 	public static FeatureSet getAll() {
-		FeatureSet result = new FeatureSet().with(PROPERTYCHANGESUPPORT, SERIALIZATION, PATTERN, SETCLASS.create(), CODESTYLE.create());
+		FeatureSet result = new FeatureSet().with(PROPERTYCHANGESUPPORT, SERIALIZATION, PATTERN, SETCLASS.create(),
+				CODESTYLE.create());
 		return result;
 	}
 
@@ -128,9 +127,8 @@ public class Feature implements Comparable<Feature> {
 		return result;
 	}
 
-
 	public Feature withIncludeClazz(String... value) {
-		if(this.reference) {
+		if (this.reference) {
 			return null;
 		}
 		if (value == null) {
@@ -146,7 +144,7 @@ public class Feature implements Comparable<Feature> {
 	}
 
 	public Feature withExcludeClazz(String... value) {
-		if(this.reference) {
+		if (this.reference) {
 			return null;
 		}
 		if (value == null) {
@@ -165,7 +163,7 @@ public class Feature implements Comparable<Feature> {
 	}
 
 	public Feature withExcludeClazz(Clazz... value) {
-		if(this.reference) {
+		if (this.reference) {
 			return null;
 		}
 		if (value == null) {
@@ -184,14 +182,14 @@ public class Feature implements Comparable<Feature> {
 	}
 
 	public boolean match(Clazz... clazzes) {
-		if(clazzes == null) {
+		if (clazzes == null) {
 			return true;
 		}
-		for(Clazz clazz : clazzes) {
-			if(clazz == null) {
+		for (Clazz clazz : clazzes) {
+			if (clazz == null) {
 				return true;
 			}
-			if(match(clazz.getName(false)) == false) {
+			if (match(clazz.getName(false)) == false) {
 				return false;
 			}
 		}
@@ -201,7 +199,7 @@ public class Feature implements Comparable<Feature> {
 	public boolean match(String clazzName) {
 		// if Clazz is positive
 		boolean result = false;
-		if(this.classValue != null) {
+		if (this.classValue != null) {
 			return this.classValue.getName().equals(clazzName);
 		}
 		for (Clazz item : includeClazz) {
@@ -241,7 +239,7 @@ public class Feature implements Comparable<Feature> {
 	}
 
 	public Feature withClazzValue(Class<?> value) {
-		if(this.reference) {
+		if (this.reference) {
 			return null;
 		}
 		this.classValue = value;
@@ -249,7 +247,7 @@ public class Feature implements Comparable<Feature> {
 	}
 
 	public Feature withPath(String... value) {
-		if(this.reference) {
+		if (this.reference) {
 			return null;
 		}
 		if (value == null) {
@@ -286,7 +284,7 @@ public class Feature implements Comparable<Feature> {
 		}
 		return super.hashCode();
 	}
-	
+
 	@Override
 	public boolean equals(Object obj) {
 		if (obj instanceof String) {
@@ -303,7 +301,7 @@ public class Feature implements Comparable<Feature> {
 		if (name != null) {
 			return name.toString();
 		}
-		return "NONE:"+super.toString();
+		return "NONE:" + super.toString();
 	}
 
 	public String getStringValue() {
@@ -311,7 +309,7 @@ public class Feature implements Comparable<Feature> {
 	}
 
 	public Feature withStringValue(String value) {
-		if(this.reference) {
+		if (this.reference) {
 			return null;
 		}
 		this.value = value;
@@ -319,14 +317,14 @@ public class Feature implements Comparable<Feature> {
 	}
 
 	public Object getValue(String value) {
-		if(NAME.equalsIgnoreCase(value)) {
+		if (NAME.equalsIgnoreCase(value)) {
 			return name;
 		}
-		if(CLASSVALUE.equalsIgnoreCase(value)) {
+		if (CLASSVALUE.equalsIgnoreCase(value)) {
 			return classValue;
 		}
-		if(CLASSSTRING.equalsIgnoreCase(value)) {
-			if(classValue!= null) {
+		if (CLASSSTRING.equalsIgnoreCase(value)) {
+			if (classValue != null) {
 				return classValue.getName();
 			}
 			return "";

@@ -35,53 +35,55 @@ import de.uniks.networkparser.list.SimpleList;
 
 public class Tokener {
 	public static final String PROPS = "prop";
-	public static final char ENTER='=';
-	public static final char COLON=':';
+	public static final char ENTER = '=';
+	public static final char COLON = ':';
 
 	protected IdMap map;
 
 	// Methods for Map
 	public SendableEntityCreator getCreatorClass(Object reference) {
-		if(map == null) {
+		if (map == null) {
 			return null;
 		}
 		return map.getCreatorClass(reference);
 	}
 
-	public SendableEntityCreator getCreator(String className, boolean fullName, SimpleList<SendableEntityCreator> creators) {
-		if(map == null) {
+	public SendableEntityCreator getCreator(String className, boolean fullName,
+			SimpleList<SendableEntityCreator> creators) {
+		if (map == null) {
 			return null;
 		}
 		return map.getCreator(className, fullName, null);
 	}
 
 	public String getKey(Object reference) {
-		if(map == null) {
+		if (map == null) {
 			return null;
 		}
 		return map.getKey(reference);
 	}
 
 	public String getId(Object reference) {
-		if(map == null) {
+		if (map == null) {
 			return null;
 		}
 		return map.getId(reference, true);
 	}
 
 	public Object getObject(String key) {
-		if(map == null) {
+		if (map == null) {
 			return null;
 		}
 		return map.getObject(key);
 	}
 
 	public boolean notify(PropertyChangeEvent evt) {
-		if(map == null) {
+		if (map == null) {
 			return false;
 		}
 		return this.map.notify(evt);
 	}
+
 	public Tokener withMap(IdMap map) {
 		this.map = map;
 		return this;
@@ -92,25 +94,29 @@ public class Tokener {
 	}
 
 	public boolean isError(Object owner, String method, String type, Object entity) {
-		if(map == null) {
+		if (map == null) {
 			return true;
 		}
-		//, String className
+		// , String className
 		return map.isError(owner, method, type, entity, null);
 	}
 
-	public boolean parseToEntity(Entity entity, Buffer buffer) {return true;}
+	public boolean parseToEntity(Entity entity, Buffer buffer) {
+		return true;
+	}
 
-	public EntityList parseToEntity(EntityList entity, Buffer buffer) {return entity;}
+	public EntityList parseToEntity(EntityList entity, Buffer buffer) {
+		return entity;
+	}
 
 	public BaseItem encode(Object entity, MapEntity map) {
 		IdMap idMap = this.map;
-		if(this.map == null) {
-			if(map == null ) {
+		if (this.map == null) {
+			if (map == null) {
 				return null;
 			}
 			idMap = map.getMap();
-			if(idMap == null) {
+			if (idMap == null) {
 				return null;
 			}
 		}
@@ -118,35 +124,36 @@ public class Tokener {
 	}
 
 	public Object nextValue(Buffer buffer, BaseItem creator, boolean allowQuote, boolean allowDuppleMark, char c) {
-		if(buffer != null) {
+		if (buffer != null) {
 			return buffer.nextValue(creator, allowQuote, allowDuppleMark, c);
 		}
 		return null;
 	}
 
 	public CharacterBuffer nextString(Buffer buffer, char... quotes) {
-		if(buffer != null) {
+		if (buffer != null) {
 			return buffer.nextString(quotes);
 		}
 		return null;
 	}
-	
+
 	public CharacterBuffer nextString(Buffer buffer) {
-		if(buffer != null) {
+		if (buffer != null) {
 			return buffer.nextString();
 		}
 		return null;
 	}
 
-	public CharacterBuffer nextString(Buffer buffer, CharacterBuffer sc, boolean allowCRLF, boolean nextStep, char... quotes) {
-		if(buffer != null) {
+	public CharacterBuffer nextString(Buffer buffer, CharacterBuffer sc, boolean allowCRLF, boolean nextStep,
+			char... quotes) {
+		if (buffer != null) {
 			return buffer.nextString(sc, allowCRLF, nextStep, quotes);
 		}
 		return null;
 	}
 
 	public CharacterBuffer nextToken(Buffer buffer, boolean current, char... stopWords) {
-		if(buffer != null) {
+		if (buffer != null) {
 			return buffer.nextToken(current, stopWords);
 		}
 		return null;

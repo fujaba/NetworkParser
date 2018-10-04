@@ -24,10 +24,11 @@ import de.uniks.networkparser.list.SimpleList;
 
 /**
  * Metamodell for Excel-Sheet
+ * 
  * @author Stefan Lindel
  */
-public class ExcelSheet extends SimpleList<ExcelRow>{
-	public static final String PROPERTY_NAME="name";
+public class ExcelSheet extends SimpleList<ExcelRow> {
+	public static final String PROPERTY_NAME = "name";
 	private String name;
 
 	public String getName() {
@@ -48,9 +49,9 @@ public class ExcelSheet extends SimpleList<ExcelRow>{
 	}
 
 	public ExcelCell getItem(Pos pos) {
-		for(int i=0;i<this.size();i++) {
+		for (int i = 0; i < this.size(); i++) {
 			ExcelRow row = this.get(i);
-			if(row != null && row.getRowPos()==pos.y) {
+			if (row != null && row.getRowPos() == pos.y) {
 				return row.getItem(pos.x);
 			}
 		}
@@ -59,7 +60,7 @@ public class ExcelSheet extends SimpleList<ExcelRow>{
 
 	public ExcelRow createRow(Object parent) {
 		ExcelRow excelRow = new ExcelRow();
-		Pos pos = Pos.create(this.size(),0);
+		Pos pos = Pos.create(this.size(), 0);
 		excelRow.withParent(parent);
 		excelRow.withName(pos.toTag().toString());
 		this.add(excelRow);
@@ -67,8 +68,8 @@ public class ExcelSheet extends SimpleList<ExcelRow>{
 	}
 
 	public ExcelRow getRow(Object source) {
-		for(ExcelRow row : this) {
-			if(row.getParent()== source) {
+		for (ExcelRow row : this) {
+			if (row.getParent() == source) {
 				return row;
 			}
 		}
@@ -80,41 +81,41 @@ public class ExcelSheet extends SimpleList<ExcelRow>{
 		int i;
 		SimpleList<SimpleList<ExcelCell>> cells = new SimpleList<SimpleList<ExcelCell>>();
 		boolean empty = false;
-		for(i=0;i<this.size();i++) {
+		for (i = 0; i < this.size(); i++) {
 			ExcelRow row = this.get(i);
 			String name = row.getName();
 			buffer.add(name);
-			if(i+1<this.size()) {
+			if (i + 1 < this.size()) {
 				int l = name.length();
-				while(l <= row.getContentLength()) {
+				while (l <= row.getContentLength()) {
 					buffer.add(' ');
 					l++;
 				}
 			}
 			SimpleList<ExcelCell> rowCells = row.getChildren();
-			if(cells == null) {
+			if (cells == null) {
 				empty = true;
 			}
 			cells.add(rowCells);
 		}
-		if(empty) {
+		if (empty) {
 			return buffer.toString();
 		}
 		buffer.add(BaseItem.CRLF);
-		if(cells.size()>0) {
+		if (cells.size() > 0) {
 			int count = cells.get(0).size();
 			int rows = this.size();
-			for(int c=0;c < count;c++) {
-				for(i=0;i < rows;i++) {
+			for (int c = 0; c < count; c++) {
+				for (i = 0; i < rows; i++) {
 					SimpleList<ExcelCell> row = cells.get(i);
-					if(row == null || row.get(c) == null) {
+					if (row == null || row.get(c) == null) {
 						break;
 					}
 					Object content = row.get(c).getContent();
-					if(content != null) {
+					if (content != null) {
 						buffer.add(content.toString());
 					}
-					if(i+1<rows) {
+					if (i + 1 < rows) {
 						buffer.add(' ');
 					}
 				}
@@ -123,11 +124,11 @@ public class ExcelSheet extends SimpleList<ExcelRow>{
 		}
 		return buffer.toString();
 	}
-	
+
 	public int getRowIndex(ExcelRow row) {
 		int index = 0;
-		for(;index<this.size();index++) {
-			if(this.get(index) ==  row) {
+		for (; index < this.size(); index++) {
+			if (this.get(index) == row) {
 				return index;
 			}
 		}
@@ -135,7 +136,7 @@ public class ExcelSheet extends SimpleList<ExcelRow>{
 	}
 
 	public ExcelRow getLast() {
-		if(size()==0) {
+		if (size() == 0) {
 			return null;
 		}
 		return get(this.size() - 1);

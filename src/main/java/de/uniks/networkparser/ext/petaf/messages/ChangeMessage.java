@@ -56,6 +56,7 @@ public class ChangeMessage extends ReceivingTimerTask {
 		this.entity = value;
 		return this;
 	}
+
 	public ChangeMessage withFilter(Filter filter) {
 		this.filter = filter;
 		return this;
@@ -78,8 +79,8 @@ public class ChangeMessage extends ReceivingTimerTask {
 
 	@Override
 	public BaseItem getMessage() {
-		if(msg == null && space != null) {
-			if(property == null) {
+		if (msg == null && space != null) {
+			if (property == null) {
 				msg = space.encode(entity, filter);
 			}
 		}
@@ -92,14 +93,14 @@ public class ChangeMessage extends ReceivingTimerTask {
 
 	@Override
 	public boolean runTask() throws Exception {
-		if(this.id == null || this.space == null) {
+		if (this.id == null || this.space == null) {
 			return false;
 		}
 		IdMap map = this.space.getMap();
 		Object element = map.getObject(this.id);
 		SendableEntityCreator creator = null;
-		if(element == null) {
-			if(this.entity instanceof String) {
+		if (element == null) {
+			if (this.entity instanceof String) {
 				String className = (String) this.entity;
 				creator = map.getCreator(className, true);
 				element = creator.getSendableInstance(true);
@@ -109,10 +110,10 @@ public class ChangeMessage extends ReceivingTimerTask {
 		} else {
 			creator = map.getCreatorClass(element);
 		}
-		if(element != null && creator != null) {
+		if (element != null && creator != null) {
 			Object currentValue = creator.getValue(element, this.property);
-			if((currentValue == null && this.oldValue == null) ||
-					(currentValue != null && currentValue.equals(this.oldValue))) {
+			if ((currentValue == null && this.oldValue == null)
+					|| (currentValue != null && currentValue.equals(this.oldValue))) {
 				UpdateCondition changeMessage = UpdateCondition.createUpdateCondition();
 				changeMessage.withAcumulateTarget(element, creator, this.property);
 				space.suspendNotification(changeMessage);
@@ -125,28 +126,28 @@ public class ChangeMessage extends ReceivingTimerTask {
 
 	@Override
 	public Object getValue(Object entity, String attribute) {
-		if(attribute == null || entity instanceof ChangeMessage == false ) {
+		if (attribute == null || entity instanceof ChangeMessage == false) {
 			return false;
 		}
 		ChangeMessage message = (ChangeMessage) entity;
-		if(PROPERTY_OLD.equalsIgnoreCase(attribute)) {
+		if (PROPERTY_OLD.equalsIgnoreCase(attribute)) {
 			return message.oldValue;
 		}
-		if(PROPERTY_NEW.equalsIgnoreCase(attribute)) {
+		if (PROPERTY_NEW.equalsIgnoreCase(attribute)) {
 			return message.newValue;
 		}
-		if(PROPERTY_PROPERTY.equalsIgnoreCase(attribute)) {
+		if (PROPERTY_PROPERTY.equalsIgnoreCase(attribute)) {
 			return message.property;
 		}
-		if(PROPERTY_CHANGECLASS.equalsIgnoreCase(attribute)) {
-			if(message.entity == null) {
+		if (PROPERTY_CHANGECLASS.equalsIgnoreCase(attribute)) {
+			if (message.entity == null) {
 				return null;
 			}
 			return message.entity.getClass().getName();
 		}
-		if(entity != null && PROPERTY_ID.equalsIgnoreCase(attribute)) {
+		if (entity != null && PROPERTY_ID.equalsIgnoreCase(attribute)) {
 			Space space = message.getSpace();
-			if(space != null) {
+			if (space != null) {
 				return space.getId(message.entity);
 			}
 		}
@@ -155,27 +156,27 @@ public class ChangeMessage extends ReceivingTimerTask {
 
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value, String type) {
-		if(attribute == null || entity instanceof ChangeMessage == false ) {
+		if (attribute == null || entity instanceof ChangeMessage == false) {
 			return false;
 		}
 		ChangeMessage message = (ChangeMessage) entity;
-		if(PROPERTY_OLD.equalsIgnoreCase(attribute)) {
+		if (PROPERTY_OLD.equalsIgnoreCase(attribute)) {
 			message.oldValue = value;
 			return true;
 		}
-		if(PROPERTY_NEW.equalsIgnoreCase(attribute)) {
+		if (PROPERTY_NEW.equalsIgnoreCase(attribute)) {
 			message.newValue = value;
 			return true;
 		}
-		if(PROPERTY_PROPERTY.equalsIgnoreCase(attribute)) {
+		if (PROPERTY_PROPERTY.equalsIgnoreCase(attribute)) {
 			message.property = (String) value;
 			return true;
 		}
-		if(PROPERTY_ID.equalsIgnoreCase(attribute)) {
+		if (PROPERTY_ID.equalsIgnoreCase(attribute)) {
 			message.id = (String) value;
 			return true;
 		}
-		if(PROPERTY_CHANGECLASS.equalsIgnoreCase(attribute)) {
+		if (PROPERTY_CHANGECLASS.equalsIgnoreCase(attribute)) {
 			message.entity = (String) value;
 			return true;
 		}
@@ -183,7 +184,7 @@ public class ChangeMessage extends ReceivingTimerTask {
 	}
 
 	protected void initialize(NodeProxyModel modell) {
-		if(modell == null) {
+		if (modell == null) {
 			return;
 		}
 		if (this.space == null) {

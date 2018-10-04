@@ -39,7 +39,7 @@ import de.uniks.networkparser.gui.controls.Label;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.list.SimpleSet;
 
-public class DialogBox implements ObjectCondition{
+public class DialogBox implements ObjectCondition {
 	protected static final int HEADER_HEIGHT = 28;
 	protected static final URL DIALOGS_CSS_URL = DialogBox.class.getResource("dialogs.css");
 	boolean alwaysOnTop;
@@ -51,7 +51,8 @@ public class DialogBox implements ObjectCondition{
 	private double mouseDragDeltaY;
 	private double mouseDragDeltaX;
 
-	protected static final Object ACTIVE_PSEUDO_CLASS = ReflectionLoader.call(ReflectionLoader.PSEUDOCLASS, "getPseudoClass", "active");
+	protected static final Object ACTIVE_PSEUDO_CLASS = ReflectionLoader.call(ReflectionLoader.PSEUDOCLASS,
+			"getPseudoClass", "active");
 	protected Object dialogTitleBar;
 
 	private Object root;
@@ -62,14 +63,11 @@ public class DialogBox implements ObjectCondition{
 	private Object owner;
 	private Label titleElement = new Label().withType(Label.TITLE);
 
-
-	//Inline Show
+	// Inline Show
 	private boolean isInline;
 
 	private boolean iconified;
 	private Object center;
-
-
 
 	public DialogBox() {
 		titleElements.add(titleElement);
@@ -80,19 +78,20 @@ public class DialogBox implements ObjectCondition{
 	}
 
 	public DialogBox withTitle(String value) {
-		if(value != null) {
+		if (value != null) {
 			titleElement.setValue(value);
 		}
 		return this;
 	}
-	public Button show(Object owner){
-		if(titleElement.length() < 1 ) {
+
+	public Button show(Object owner) {
+		if (titleElement.length() < 1) {
 			Object title = ReflectionLoader.call(owner, "getTitle");
-			if(title != null) {
+			if (title != null) {
 				titleElement.setValue((String) title);
 			}
 		}
-		if(isInline) {
+		if (isInline) {
 			return showIntern(owner);
 		}
 		return showExtern(owner);
@@ -113,9 +112,8 @@ public class DialogBox implements ObjectCondition{
 
 		DialogPane myPane = new DialogPane(this, originalParent);
 
-
-
-		ReflectionLoader.call(root, "pseudoClassStateChanged", ReflectionLoader.PSEUDOCLASS, ACTIVE_PSEUDO_CLASS, boolean.class, true);
+		ReflectionLoader.call(root, "pseudoClassStateChanged", ReflectionLoader.PSEUDOCLASS, ACTIVE_PSEUDO_CLASS,
+				boolean.class, true);
 
 		// add to originalParent
 		ReflectionLoader.call(scene, "setRoot", ReflectionLoader.PARENT, myPane.getPane());
@@ -123,9 +121,11 @@ public class DialogBox implements ObjectCondition{
 		ReflectionLoader.call(root, "setVisible", boolean.class, true);
 		if (originalParent != null) {
 			JavaBridgeFX.addChildren(myPane.getPane(), 0, originalParent);
-			Map<Object,Object> properties = (Map<Object, Object>) ReflectionLoader.call(originalParent, "getProperties");
+			Map<Object, Object> properties = (Map<Object, Object>) ReflectionLoader.call(originalParent,
+					"getProperties");
 
-			Map<Object, Object> dialogProperties = (Map<Object, Object>) ReflectionLoader.call(myPane.getPane(), "getProperties");
+			Map<Object, Object> dialogProperties = (Map<Object, Object>) ReflectionLoader.call(myPane.getPane(),
+					"getProperties");
 			dialogProperties.putAll(properties);
 		}
 		ReflectionLoader.call(root, "requestFocus");
@@ -135,14 +135,14 @@ public class DialogBox implements ObjectCondition{
 	}
 
 	public void hide(Button value) {
-		if(this.action == null) {
+		if (this.action == null) {
 			this.setAction(value);
 		}
 	}
 
 	public void setAction(Button value) {
 		this.action = value;
-		if(isInline) {
+		if (isInline) {
 			// hide the dialog
 			ReflectionLoader.call(root, "setVisible", boolean.class, false);
 			// reset the scene root
@@ -166,7 +166,7 @@ public class DialogBox implements ObjectCondition{
 	}
 
 	public void maximize() {
-		if(isInline) {
+		if (isInline) {
 //			if(originalParent instanceof Node) {
 //			root.setPrefWidth(originalParent.getWidth());
 		}
@@ -198,7 +198,7 @@ public class DialogBox implements ObjectCondition{
 	private Button showExtern(Object owner) {
 		Object toolKit = ReflectionLoader.call(ReflectionLoader.TOOLKITFX, "getToolkit");
 		Object isFX = ReflectionLoader.call(toolKit, "isFxUserThread");
-		if(isFX!=null && (Boolean)isFX) {
+		if (isFX != null && (Boolean) isFX) {
 			new DialogStage(this, owner).run();
 			return action;
 		}
@@ -223,10 +223,10 @@ public class DialogBox implements ObjectCondition{
 
 	@SuppressWarnings("unchecked")
 	void configScene() {
-		if(stage == null) {
+		if (stage == null) {
 			return;
 		}
- 		Object scene = ReflectionLoader.call(stage, "getScene");
+		Object scene = ReflectionLoader.call(stage, "getScene");
 		String dialogsCssUrl = DIALOGS_CSS_URL.toExternalForm();
 		if (scene == null && owner != null) {
 			scene = ReflectionLoader.call(owner, "getScene");
@@ -234,7 +234,7 @@ public class DialogBox implements ObjectCondition{
 		if (scene != null) {
 			// install CSS
 			Object styleSheet = ReflectionLoader.call(scene, "getStylesheets");
-			if(styleSheet instanceof List<?>) {
+			if (styleSheet instanceof List<?>) {
 				List<String> list = (List<String>) styleSheet;
 				if (list.contains(dialogsCssUrl) == false) {
 					list.add(dialogsCssUrl);
@@ -251,7 +251,8 @@ public class DialogBox implements ObjectCondition{
 			@Override
 			public boolean update(Object value) {
 				boolean active = (Boolean) value;
-				 ReflectionLoader.call(root, "pseudoClassStateChanged", ReflectionLoader.PSEUDOCLASS, ACTIVE_PSEUDO_CLASS, boolean.class, active);
+				ReflectionLoader.call(root, "pseudoClassStateChanged", ReflectionLoader.PSEUDOCLASS,
+						ACTIVE_PSEUDO_CLASS, boolean.class, active);
 				return true;
 			}
 		};
@@ -265,7 +266,7 @@ public class DialogBox implements ObjectCondition{
 		ReflectionLoader.call(dialogTitleBar, "setPrefHeight", double.class, HEADER_HEIGHT);
 		ReflectionLoader.call(dialogTitleBar, "setMinHeight", double.class, HEADER_HEIGHT);
 		ReflectionLoader.call(dialogTitleBar, "setMaxHeight", double.class, HEADER_HEIGHT);
-		for(Control element : titleElements) {
+		for (Control element : titleElements) {
 			Object guiElement = JavaBridgeFX.convert(element, true);
 			JavaBridgeFX.addChildren(dialogTitleBar, -1, guiElement);
 		}
@@ -273,13 +274,13 @@ public class DialogBox implements ObjectCondition{
 		condition = new ObjectCondition() {
 			@Override
 			public boolean update(Object event) {
-				if(event == null ) {
+				if (event == null) {
 					return false;
 				}
-				if(event.getClass().getName().startsWith("javafx") == false) {
+				if (event.getClass().getName().startsWith("javafx") == false) {
 					return false;
 				}
-				mouseDragDeltaX = (Double) ReflectionLoader.call(event,"getSceneX");
+				mouseDragDeltaX = (Double) ReflectionLoader.call(event, "getSceneX");
 				mouseDragDeltaY = (Double) ReflectionLoader.call(event, "getSceneY");
 
 				return true;
@@ -287,25 +288,24 @@ public class DialogBox implements ObjectCondition{
 		};
 		JavaBridgeFX.addListener(dialogTitleBar, "setOnMousePressed", ReflectionLoader.EVENTHANDLER, condition);
 
-
 		condition = new ObjectCondition() {
 			@Override
 			public boolean update(Object event) {
-				if(event == null ) {
+				if (event == null) {
 					return false;
 				}
-				if(event.getClass().getName().startsWith("javafx") == false) {
+				if (event.getClass().getName().startsWith("javafx") == false) {
 					return false;
 				}
 				double eventX = (Double) ReflectionLoader.call(event, "getScreenX") - mouseDragDeltaX;
 				double eventY = (Double) ReflectionLoader.call(event, "getScreenY") - mouseDragDeltaY;
 
-				if(isInline) {
+				if (isInline) {
 					double x = (Double) ReflectionLoader.call(root, "getLayoutX");
 					double y = (Double) ReflectionLoader.call(root, "getLayoutY");
 					ReflectionLoader.call(root, "setLayoutX", double.class, x + eventX);
 					ReflectionLoader.call(root, "setLayoutY", double.class, y + eventY);
-				}else{
+				} else {
 					ReflectionLoader.call(stage, "setX", double.class, eventX);
 					ReflectionLoader.call(stage, "setY", double.class, eventY);
 				}
@@ -317,10 +317,10 @@ public class DialogBox implements ObjectCondition{
 
 		ReflectionLoader.call(root, "setTop", ReflectionLoader.NODE, dialogTitleBar);
 		ReflectionLoader.call(root, "setCenter", ReflectionLoader.NODE, center);
-		if(this.actionElements.size() > 0) {
+		if (this.actionElements.size() > 0) {
 			Object actionToolbar = ReflectionLoader.newInstance(ReflectionLoader.HBOX);
 			JavaBridgeFX.setStyle(actionToolbar, false, "window-action");
-			for(Control item : this.actionElements) {
+			for (Control item : this.actionElements) {
 				Object guiElement = JavaBridgeFX.convert(item, false);
 //				item.withOwner(this);
 				JavaBridgeFX.addChildren(actionToolbar, -1, guiElement);
@@ -337,11 +337,11 @@ public class DialogBox implements ObjectCondition{
 	}
 
 	public DialogBox withTitleButton(int index, Control... value) {
-		if(value==null){
+		if (value == null) {
 			return this;
 		}
-		ArrayList<Control> items=new ArrayList<Control>();
-		for(Control item : value) {
+		ArrayList<Control> items = new ArrayList<Control>();
+		for (Control item : value) {
 			items.add(item);
 		}
 		this.titleElements.addAll(index, items);
@@ -350,21 +350,21 @@ public class DialogBox implements ObjectCondition{
 	}
 
 	public DialogBox withTitleButton(Control... value) {
-		if(value==null){
+		if (value == null) {
 			return this;
 		}
-		for(Control item : value) {
+		for (Control item : value) {
 			this.titleElements.add(item);
 		}
 		return this;
 	}
 
 	public DialogBox withActionButton(int index, Control... value) {
-		if(value==null){
+		if (value == null) {
 			return this;
 		}
-		ArrayList<Control> items=new ArrayList<Control>();
-		for(Control item : value) {
+		ArrayList<Control> items = new ArrayList<Control>();
+		for (Control item : value) {
 			items.add(item);
 		}
 		this.actionElements.addAll(index, items);
@@ -373,10 +373,10 @@ public class DialogBox implements ObjectCondition{
 	}
 
 	public DialogBox withActionButton(Control... value) {
-		if(value==null){
+		if (value == null) {
 			return this;
 		}
-		for(Control item : value) {
+		for (Control item : value) {
 			this.actionElements.add(item);
 		}
 		return this;
@@ -393,12 +393,12 @@ public class DialogBox implements ObjectCondition{
 	}
 
 	public DialogBox withCenterText(String image, String value) {
-		if(value == null) {
+		if (value == null) {
 			return this;
 		}
-		Object box =ReflectionLoader.newInstance(ReflectionLoader.HBOX);
+		Object box = ReflectionLoader.newInstance(ReflectionLoader.HBOX);
 		URL resource = DialogBox.class.getResource(image);
-		if(resource == null) {
+		if (resource == null) {
 			return this;
 		}
 		Object imageView = ReflectionLoader.newInstance(ReflectionLoader.IMAGEVIEW, String.class, resource.toString());
@@ -419,32 +419,30 @@ public class DialogBox implements ObjectCondition{
 
 	public static Button showInfo(Object parent, String title, String text, boolean inLine) {
 		DialogBox dialogBox = new DialogBox().withTitle(title).withCenterInfo(text).withInline(inLine);
-		return dialogBox
-			.withActionButton(new Button().withActionType(Button.CLOSE, dialogBox).withValue("OK"))
-			.show(parent);
+		return dialogBox.withActionButton(new Button().withActionType(Button.CLOSE, dialogBox).withValue("OK"))
+				.show(parent);
 	}
 
 	public static Button showInfo(String title, String text) {
 		DialogBox dialogBox = new DialogBox().withTitle(title).withCenterInfo(text);
-		return dialogBox
-			.withActionButton(new Button().withValue("OK").withActionType(Button.CLOSE, dialogBox))
-			.show(null);
+		return dialogBox.withActionButton(new Button().withValue("OK").withActionType(Button.CLOSE, dialogBox))
+				.show(null);
 	}
 
 	public static Button showQuestion(Object parent, String title, String text) {
 		DialogBox dialogBox = new DialogBox().withTitle(title).withCenterInfo(text);
-		return dialogBox
-			.withActionButton(new Button().withValue("Yes").withActionType(Button.CLOSE, dialogBox), new Button().withValue("No").withActionType(Button.CLOSE, dialogBox))
-			.show(parent);
+		return dialogBox.withActionButton(new Button().withValue("Yes").withActionType(Button.CLOSE, dialogBox),
+				new Button().withValue("No").withActionType(Button.CLOSE, dialogBox)).show(parent);
 	}
+
 	public static boolean showQuestionCheck(Object parent, String title, String text, String... check) {
 		Button action = showQuestion(parent, title, text);
-		if(action==null) {
+		if (action == null) {
 			return false;
 		}
-		for(String item : check){
-			if(item != null) {
-				if(item.equalsIgnoreCase(action.getValue())){
+		for (String item : check) {
+			if (item != null) {
+				if (item.equalsIgnoreCase(action.getValue())) {
 					return true;
 				}
 			}
@@ -458,17 +456,17 @@ public class DialogBox implements ObjectCondition{
 
 	@Override
 	public boolean update(Object value) {
-		if(value instanceof Button == false) {
+		if (value instanceof Button == false) {
 			return false;
 		}
 		Button btn = (Button) value;
-		if(Button.CLOSE.equalsIgnoreCase(btn.getActionType())) {
+		if (Button.CLOSE.equalsIgnoreCase(btn.getActionType())) {
 			this.hide(btn);
 		}
-		if(Button.MINIMIZE.equalsIgnoreCase(btn.getActionType())) {
+		if (Button.MINIMIZE.equalsIgnoreCase(btn.getActionType())) {
 			this.minimize();
 		}
-		if(Button.MAXIMIZE.equalsIgnoreCase(btn.getActionType())) {
+		if (Button.MAXIMIZE.equalsIgnoreCase(btn.getActionType())) {
 			this.maximize();
 		}
 		return true;
@@ -477,6 +475,7 @@ public class DialogBox implements ObjectCondition{
 	public double prefWidth(double value) {
 		return (Double) ReflectionLoader.call(root, "prefWidth", double.class, -1);
 	}
+
 	public double prefHeight(double value) {
 		return (Double) ReflectionLoader.call(root, "prefHeight", double.class, -1);
 	}
@@ -496,65 +495,71 @@ public class DialogBox implements ObjectCondition{
 	public Object getScene() {
 		return ReflectionLoader.call(stage, "getScene");
 	}
-	
 
-	public static String showFileSaveChooser(String caption, String defaultValue, String typeName, String typeExtension, Object... parent) {
+	public static String showFileSaveChooser(String caption, String defaultValue, String typeName, String typeExtension,
+			Object... parent) {
 		return showFileChooser("save", caption, defaultValue, typeName, typeExtension, parent);
 	}
+
 	@SuppressWarnings("unchecked")
-	public static String showFileChooser(String art, String caption, String defaultValue, String typeName, String extensions, Object... parent) {
+	public static String showFileChooser(String art, String caption, String defaultValue, String typeName,
+			String extensions, Object... parent) {
 		Object parentObj = null;
-		if(parent != null && parent.length>0) {
+		if (parent != null && parent.length > 0) {
 			parentObj = parent[0];
 		}
-		if(typeName != null) {
-			typeName += " (*."+extensions+")";
+		if (typeName != null) {
+			typeName += " (*." + extensions + ")";
 		}
 		File result;
-		if(ReflectionLoader.FILECHOOSERFX != null) {
+		if (ReflectionLoader.FILECHOOSERFX != null) {
 			// try JavaFX Dialog
 			Object fileChooser = ReflectionLoader.newInstance(ReflectionLoader.FILECHOOSERFX);
 			ReflectionLoader.call(fileChooser, "setTitle", caption);
 			ReflectionLoader.call(fileChooser, "setInitialFileName", defaultValue);
-			if(typeName != null) {
+			if (typeName != null) {
 				Class<?> filterClass = ReflectionLoader.getClass("javafx.stage.FileChooser$ExtensionFilter");
-				Object filter = ReflectionLoader.newInstance(filterClass, String.class, typeName, String[].class, new String[] {"*."+extensions});
+				Object filter = ReflectionLoader.newInstance(filterClass, String.class, typeName, String[].class,
+						new String[] { "*." + extensions });
 				List<Object> list = (List<Object>) ReflectionLoader.call(fileChooser, "getExtensionFilters");
 				list.add(filter);
 			}
 			Class<?> windowClass = ReflectionLoader.getClass("javafx.stage.Window");
-			
-			if("save".equals(art)) {
+
+			if ("save".equals(art)) {
 				result = (File) ReflectionLoader.call(fileChooser, "showSaveDialog", windowClass, parentObj);
-			}else {
+			} else {
 				result = (File) ReflectionLoader.call(fileChooser, "showOpenDialog", windowClass, parentObj);
 			}
-			if(result != null) {
+			if (result != null) {
 				return result.getAbsolutePath();
-			}	
+			}
 		} else {
 			// SWING???
 			ReflectionLoader.logger = new PrintStream(System.out);
-			if(parentObj == null || ReflectionLoader.JFRAME.isAssignableFrom(parentObj.getClass()) == false) {
+			if (parentObj == null || ReflectionLoader.JFRAME.isAssignableFrom(parentObj.getClass()) == false) {
 				parentObj = ReflectionLoader.newInstance(ReflectionLoader.JFRAME);
 			}
 			Object fileChooser = ReflectionLoader.newInstance(ReflectionLoader.JFILECHOOSER);
 			ReflectionLoader.call(fileChooser, "setDialogTitle", caption);
 			int userSelection = -1;
-			if(defaultValue != null) {
+			if (defaultValue != null) {
 				ReflectionLoader.call(fileChooser, "setSelectedFile", new File(defaultValue));
 			}
-			if(typeName != null) {
+			if (typeName != null) {
 				Class<?> filterClass = ReflectionLoader.getClass("javax.swing.filechooser.FileNameExtensionFilter");
 				Class<?> fileFilter = ReflectionLoader.getClass("javax.swing.filechooser.FileFilter");
-				Object filter = ReflectionLoader.newInstance(filterClass, String.class, typeName, String[].class, new String[] {extensions});
+				Object filter = ReflectionLoader.newInstance(filterClass, String.class, typeName, String[].class,
+						new String[] { extensions });
 				ReflectionLoader.call(fileChooser, "setFileFilter", fileFilter, filter);
 			}
 			Class<?> componentClass = ReflectionLoader.getClass("java.awt.Component");
-			if("save".equals(art)) {
-				userSelection = (Integer) ReflectionLoader.call(fileChooser, "showSaveDialog", componentClass, parentObj);
-			}else {
-				userSelection = (Integer) ReflectionLoader.call(fileChooser, "showOpenDialog", componentClass, parentObj);
+			if ("save".equals(art)) {
+				userSelection = (Integer) ReflectionLoader.call(fileChooser, "showSaveDialog", componentClass,
+						parentObj);
+			} else {
+				userSelection = (Integer) ReflectionLoader.call(fileChooser, "showOpenDialog", componentClass,
+						parentObj);
 			}
 			if (userSelection == 0) {
 				File fileToSave = (File) ReflectionLoader.call(fileChooser, "getSelectedFile");

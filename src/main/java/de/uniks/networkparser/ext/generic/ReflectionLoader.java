@@ -131,7 +131,7 @@ public class ReflectionLoader {
 
 //	public static final Class<?> JUNIT = getClass("org.junit.Assert");
 
-	//EMF
+	// EMF
 	public static final Class<?> EATTRIBUTE;
 	public static final Class<?> ECLASS;
 	public static final Class<?> ECLASSIFIER;
@@ -144,10 +144,10 @@ public class ReflectionLoader {
 	}
 
 	static {
-		//JAVAFX
+		// JAVAFX
 		CHANGELISTENER = getClass("javafx.beans.value.ChangeListener");
 
-		if(CHANGELISTENER != null) {
+		if (CHANGELISTENER != null) {
 			NODE = getClass("javafx.scene.Node");
 			OBSERVABLEVALUE = getClass("javafx.beans.value.ObservableValue");
 			INVALIDATIONLISTENER = getClass("javafx.beans.InvalidationListener");
@@ -174,7 +174,7 @@ public class ReflectionLoader {
 			TOOLBAR = getClass("javafx.scene.control.ToolBar");
 			BUTTON = getClass("javafx.scene.control.Button");
 			EVENTHANDLER = getClass("javafx.event.EventHandler");
-			STACKPANE  = getClass("javafx.scene.layout.StackPane");
+			STACKPANE = getClass("javafx.scene.layout.StackPane");
 			REGION = getClass("javafx.scene.layout.Region");
 			HBOX = getClass("javafx.scene.layout.HBox");
 			VBOX = getClass("javafx.scene.layout.VBox");
@@ -185,7 +185,7 @@ public class ReflectionLoader {
 			PLATFORM = getClass("javafx.application.Platform");
 			STAGE = getClass("javafx.stage.Stage");
 			STAGESTYLE = getClass("javafx.stage.StageStyle");
-			MODALITY =getClass("javafx.stage.Modality");
+			MODALITY = getClass("javafx.stage.Modality");
 			SCENE = getClass("javafx.scene.Scene");
 			SCREEN = getClass("javafx.stage.Screen");
 			IMAGEVIEW = getClass("javafx.scene.image.ImageView");
@@ -249,9 +249,9 @@ public class ReflectionLoader {
 	}
 
 	static {
-		//AWT
+		// AWT
 		TOOLKIT = getClass("java.awt.Toolkit");
-		if(TOOLKIT != null) {
+		if (TOOLKIT != null) {
 			SYSTEMTRAY = getClass("java.awt.SystemTray");
 			RECTANGLE = getClass("java.awt.Rectangle");
 			ROBOT = getClass("java.awt.Robot");
@@ -287,9 +287,9 @@ public class ReflectionLoader {
 	}
 
 	static {
-		//GIT
+		// GIT
 		GIT = getClass("org.eclipse.jgit.api.Git");
-		if(GIT != null) {
+		if (GIT != null) {
 			REVWALK = getClass("org.eclipse.jgit.revwalk.RevWalk");
 			FILEMODE = getClass("org.eclipse.jgit.lib.FileMode");
 			FILEREPOSITORYBUILDER = getClass("org.eclipse.jgit.storage.file.FileRepositoryBuilder");
@@ -317,9 +317,9 @@ public class ReflectionLoader {
 	}
 
 	static {
-		//EMF
+		// EMF
 		EPACKAGE = getClass("org.eclipse.emf.ecore.EPackage");
-		if(EPACKAGE != null) {
+		if (EPACKAGE != null) {
 			ECLASS = getClass("org.eclipse.emf.ecore.EClass");
 			EATTRIBUTE = getClass("org.eclipse.emf.ecore.EAttribute");
 			ECLASSIFIER = getClass("org.eclipse.emf.ecore.EClassifier");
@@ -333,6 +333,7 @@ public class ReflectionLoader {
 			EOBJECT = null;
 		}
 	}
+
 	public static Object newInstance(String className, Object... arguments) {
 		try {
 			Class<?> clazz = Class.forName(className);
@@ -341,12 +342,13 @@ public class ReflectionLoader {
 		}
 		return null;
 	}
+
 	public static Object newInstanceStr(String className, Object... arguments) {
 		try {
 			Class<?> clazz = Class.forName(className);
-			if(arguments != null && arguments.length % 2 == 0) {
-				for(int i=0;i<arguments.length;i +=2) {
-					if(arguments[i] instanceof String) {
+			if (arguments != null && arguments.length % 2 == 0) {
+				for (int i = 0; i < arguments.length; i += 2) {
+					if (arguments[i] instanceof String) {
 						arguments[i] = Class.forName((String) arguments[i]);
 					}
 				}
@@ -356,31 +358,32 @@ public class ReflectionLoader {
 		}
 		return null;
 	}
-	
+
 	public static Object newInstanceSimple(Class<?> instance, String... ignoreCreateMethods) {
-		if(ignoreCreateMethods != null) {
-			for(Method method : instance.getMethods()) {
+		if (ignoreCreateMethods != null) {
+			for (Method method : instance.getMethods()) {
 				String methodName = method.getName();
-				for(String m : ignoreCreateMethods) {
-					if(methodName.equalsIgnoreCase(m)) {
+				for (String m : ignoreCreateMethods) {
+					if (methodName.equalsIgnoreCase(m)) {
 						return null;
 					}
 				}
 			}
 		}
 		Constructor<?>[] constructors = instance.getDeclaredConstructors();
-		if(constructors == null || constructors.length<1) {
+		if (constructors == null || constructors.length < 1) {
 			return ReflectionLoader.newInstance(instance);
 		} else {
-			for(Constructor<?> con : constructors) {
+			for (Constructor<?> con : constructors) {
 				try {
-					if(Modifier.isPublic(con.getModifiers()) == false) {
+					if (Modifier.isPublic(con.getModifiers()) == false) {
 						con.setAccessible(true);
 //						continue;
 					}
-					Object[] values = ReflectionBlackBoxTester.getParameters(con, con.getParameterTypes(), ReflectionBlackBoxTester.TYPE_NULLVALUE, null);
+					Object[] values = ReflectionBlackBoxTester.getParameters(con, con.getParameterTypes(),
+							ReflectionBlackBoxTester.TYPE_NULLVALUE, null);
 					Object newInstance = con.newInstance(values);
-					if(newInstance != null) {
+					if (newInstance != null) {
 						return newInstance;
 					}
 					break;
@@ -390,46 +393,47 @@ public class ReflectionLoader {
 		}
 		return null;
 	}
-	
+
 	public static final Set<Thread> closeThreads(Set<Thread> oldThreads) {
 		Set<Thread> newThreads = Thread.getAllStackTraces().keySet();
-		if(oldThreads != null && oldThreads.size() != newThreads.size()) {
-			for(Thread newThread : newThreads) {
-				if(oldThreads.contains(newThread)) {
+		if (oldThreads != null && oldThreads.size() != newThreads.size()) {
+			for (Thread newThread : newThreads) {
+				if (oldThreads.contains(newThread)) {
 					continue;
 				}
 				try {
 					newThread.interrupt();
-				}catch(Throwable e) {
+				} catch (Throwable e) {
 				}
 			}
 		}
 		return newThreads;
 	}
-	
+
 	public static Object newInstance(Class<?> instance, Object... arguments) {
-		return newInstance(instance, true, arguments);
+		return newInstance(true, instance, arguments);
 	}
-	public static Object newInstance(Class<?> instance, boolean showError, Object... arguments) {
+
+	public static Object newInstance(boolean showError, Class<?> instance, Object... arguments) {
 		try {
-			if(arguments == null) {
+			if (arguments == null) {
 				Constructor<?> constructor = instance.getConstructor();
 				return constructor.newInstance();
 			}
-			int len=0;
+			int len = 0;
 			int count = arguments.length;
 			Class<?>[] methodArguments = null;
 			Object[] methodArgumentsValues = null;
-			if(arguments.length %2 == 1 || checkValue(arguments)) {
-				if(arguments.length == 1 && arguments[0] == null) {
-					count =0;
-				}else {
-					methodArguments=new Class[arguments.length];
-					methodArgumentsValues=new Object[arguments.length];
-					for(int i=0;i<arguments.length;i++) {
-						if(arguments[i] != null) {
+			if (arguments.length % 2 == 1 || checkValue(arguments)) {
+				if (arguments.length == 1 && arguments[0] == null) {
+					count = 0;
+				} else {
+					methodArguments = new Class[arguments.length];
+					methodArgumentsValues = new Object[arguments.length];
+					for (int i = 0; i < arguments.length; i++) {
+						if (arguments[i] != null) {
 							methodArguments[i] = (Class<?>) arguments[i].getClass();
-						}else {
+						} else {
 							methodArguments[i] = Object.class;
 						}
 						methodArgumentsValues[i] = arguments[i];
@@ -438,20 +442,20 @@ public class ReflectionLoader {
 			} else {
 				len = arguments.length / 2;
 			}
-			if(methodArguments == null) {
-				methodArguments=new Class[len];
-				methodArgumentsValues=new Object[len];
-				int pos=0;
-				for(int i=0;i<count;i+=2) {
+			if (methodArguments == null) {
+				methodArguments = new Class[len];
+				methodArgumentsValues = new Object[len];
+				int pos = 0;
+				for (int i = 0; i < count; i += 2) {
 					methodArguments[pos] = (Class<?>) arguments[i];
-					methodArgumentsValues[pos] = arguments[i+1];
+					methodArgumentsValues[pos] = arguments[i + 1];
 					pos++;
 				}
 			}
 			Constructor<?> constructor = instance.getDeclaredConstructor(methodArguments);
 			return constructor.newInstance(methodArgumentsValues);
 		} catch (Exception e) {
-			if(logger != null && showError) {
+			if (logger != null && showError) {
 				e.printStackTrace(logger);
 			}
 		}
@@ -462,46 +466,48 @@ public class ReflectionLoader {
 		try {
 			return Class.forName(name, false, ReflectionLoader.class.getClassLoader());
 		} catch (Throwable e) {
-			if(logger != null) {
+			if (logger != null) {
 				e.printStackTrace(logger);
 			}
 		}
 		return null;
 	}
 
-	public static Object createProxy(Object proxy, Class<?>... proxys){
-		return java.lang.reflect.Proxy.newProxyInstance(ReflectionLoader.class.getClassLoader(),
-				proxys, new ReflectionInterfaceProxy(proxy));
+	public static Object createProxy(Object proxy, Class<?>... proxys) {
+		return java.lang.reflect.Proxy.newProxyInstance(ReflectionLoader.class.getClassLoader(), proxys,
+				new ReflectionInterfaceProxy(proxy));
 	}
+
 	public static Object callChain(Object item, String... methodNames) {
 		return callChain(item, true, methodNames);
 	}
 
 	public static Object callChain(Object item, boolean notify, String... methodNames) {
-		if(methodNames == null) {
+		if (methodNames == null) {
 			return item;
 		}
 		Object callObj = item;
-		for(String method : methodNames) {
+		for (String method : methodNames) {
 			callObj = calling(callObj, method, notify, null);
 		}
 		return callObj;
 	}
+
 	public static boolean isAccessMethod(Object item, String methodName) {
-		if(item == null || methodName == null) {
+		if (item == null || methodName == null) {
 			return false;
 		}
 		Method method = null;
 		try {
 			method = item.getClass().getMethod(methodName);
-		}catch (Exception e) {
+		} catch (Exception e) {
 			try {
 				method = item.getClass().getDeclaredMethod(methodName);
-			}catch (Exception e2) {
+			} catch (Exception e2) {
 				method = null;
 			}
 		}
-		if(method == null) {
+		if (method == null) {
 			return false;
 		}
 		return isAccess(method, item);
@@ -510,7 +516,7 @@ public class ReflectionLoader {
 	public static Object getField(String fieldName, Object item) {
 		Class<?> className = null;
 		Object itemObj = null;
-		if(item instanceof Class<?>) {
+		if (item instanceof Class<?>) {
 			className = (Class<?>) item;
 		} else {
 			itemObj = item;
@@ -527,24 +533,24 @@ public class ReflectionLoader {
 				field.setAccessible(true);
 				return field.get(itemObj);
 			} catch (Exception e2) {
-				if(logger != null) {
+				if (logger != null) {
 					e.printStackTrace(logger);
 				}
 			}
 		}
 		return null;
 	}
-	
+
 	public static boolean setField(String fieldName, Object item, Object value) {
 		Class<?> className = null;
 		Object itemObj = null;
-		if(item instanceof Class<?>) {
+		if (item instanceof Class<?>) {
 			className = (Class<?>) item;
 		} else {
 			itemObj = item;
 			className = item.getClass();
 		}
-		Field field; 
+		Field field;
 		try {
 			field = className.getField(fieldName);
 			field.setAccessible(true);
@@ -557,7 +563,7 @@ public class ReflectionLoader {
 				field.set(itemObj, value);
 				return true;
 			} catch (Exception e2) {
-				if(logger != null) {
+				if (logger != null) {
 					e.printStackTrace(logger);
 				}
 			}
@@ -571,9 +577,9 @@ public class ReflectionLoader {
 
 	public static Object callStr(Object item, String methodName, Object... arguments) {
 		try {
-			if(arguments != null && arguments.length % 2 == 0) {
-				for(int i=0;i<arguments.length;i +=2) {
-					if(arguments[i] instanceof String) {
+			if (arguments != null && arguments.length % 2 == 0) {
+				for (int i = 0; i < arguments.length; i += 2) {
+					if (arguments[i] instanceof String) {
 						arguments[i] = Class.forName((String) arguments[i]);
 					}
 				}
@@ -584,32 +590,31 @@ public class ReflectionLoader {
 		return calling(item, methodName, true, null, arguments);
 	}
 
-
 	@SuppressWarnings("unchecked")
 	public static List<Object> callList(Object item, String methodName, Object... arguments) {
 		Object returnValue = calling(item, methodName, true, null, arguments);
-		if(returnValue == null || returnValue instanceof List<?> == false) {
+		if (returnValue == null || returnValue instanceof List<?> == false) {
 			return new SimpleList<Object>();
 		}
-		return (List<Object>)returnValue;
+		return (List<Object>) returnValue;
 	}
 
-
-	public static Object calling(Object item, String methodName, boolean notify, Object notifyObject, Object... arguments) {
-		if(methodName == null || item == null) {
+	public static Object calling(Object item, String methodName, boolean notify, Object notifyObject,
+			Object... arguments) {
+		if (methodName == null || item == null) {
 			return null;
 		}
-		int len=0;
+		int len = 0;
 		Class<?>[] methodArguments = null;
 		Object[] methodArgumentsValues = null;
-		if(arguments != null) {
-			if(arguments.length %2 == 1 || checkValue(arguments)) {
-				methodArguments=new Class[arguments.length];
-				methodArgumentsValues=new Object[arguments.length];
-				for(int i=0;i<arguments.length;i++) {
-					if(arguments[i] != null) {
+		if (arguments != null) {
+			if (arguments.length % 2 == 1 || checkValue(arguments)) {
+				methodArguments = new Class[arguments.length];
+				methodArgumentsValues = new Object[arguments.length];
+				for (int i = 0; i < arguments.length; i++) {
+					if (arguments[i] != null) {
 						methodArguments[i] = (Class<?>) arguments[i].getClass();
-					}else {
+					} else {
 						methodArguments[i] = Object.class;
 					}
 					methodArgumentsValues[i] = arguments[i];
@@ -618,98 +623,99 @@ public class ReflectionLoader {
 				len = arguments.length / 2;
 			}
 		}
-		if(methodArguments == null) {
-			methodArguments=new Class[len];
-			methodArgumentsValues=new Object[len];
-			int pos=0;
-			for(int i=0;i<arguments.length;i+=2) {
+		if (methodArguments == null) {
+			methodArguments = new Class[len];
+			methodArgumentsValues = new Object[len];
+			int pos = 0;
+			for (int i = 0; i < arguments.length; i += 2) {
 				methodArguments[pos] = (Class<?>) arguments[i];
-				methodArgumentsValues[pos] = arguments[i+1];
+				methodArgumentsValues[pos] = arguments[i + 1];
 				pos++;
 			}
 		}
 		Method method = null;
 		try {
-			boolean staticCall =false;
-			if(item instanceof Type == false) {
+			boolean staticCall = false;
+			if (item instanceof Type == false) {
 				staticCall = item instanceof Class<?>;
 			}
 			Class<?> itemClass;
-			if(staticCall) {
+			if (staticCall) {
 				itemClass = ((Class<?>) item);
-			}else {
+			} else {
 				itemClass = item.getClass();
 			}
 			try {
 				try {
 					method = itemClass.getMethod(methodName, methodArguments);
-				}catch (Exception e) {
+				} catch (Exception e) {
 					method = itemClass.getDeclaredMethod(methodName, methodArguments);
 				}
-			}catch (Exception e) {
-				if(staticCall == false && item instanceof Class<?>) {
+			} catch (Exception e) {
+				if (staticCall == false && item instanceof Class<?>) {
 					itemClass = ((Class<?>) item);
 					staticCall = true;
 					try {
 						method = itemClass.getMethod(methodName, methodArguments);
-					}catch (Exception e2) {
+					} catch (Exception e2) {
 						method = itemClass.getDeclaredMethod(methodName, methodArguments);
 					}
 				}
-				if(method == null) {
+				if (method == null) {
 					// next Try Last may be an ...
-					if(methodArguments.length>0) {
+					if (methodArguments.length > 0) {
 						Class<?> simpleType = methodArguments[methodArguments.length - 1];
-						methodArguments[methodArguments.length - 1] = ReflectionLoader.getClass("[L"+simpleType.getName()+";");
-						if(methodArguments[methodArguments.length - 1] != null) {
+						methodArguments[methodArguments.length - 1] = ReflectionLoader
+								.getClass("[L" + simpleType.getName() + ";");
+						if (methodArguments[methodArguments.length - 1] != null) {
 							Object newValue = Array.newInstance(simpleType, 1);
 							Array.set(newValue, 0, methodArgumentsValues[methodArgumentsValues.length - 1]);
 							methodArgumentsValues[methodArgumentsValues.length - 1] = newValue;
-							if(methodName != null && methodName.length()>0) {
+							if (methodName != null && methodName.length() > 0) {
 								method = itemClass.getMethod(methodName, methodArguments);
 							}
 						}
 					}
-					if(method == null) {
-						for(int i=0;i<methodArguments.length;i++) {
+					if (method == null) {
+						for (int i = 0; i < methodArguments.length; i++) {
 							methodArguments[i] = Object.class;
 						}
-						if(methodName != null && methodName.length()>0) {
+						if (methodName != null && methodName.length() > 0) {
 							method = itemClass.getMethod(methodName, methodArguments);
 						}
 					}
-					if(method == null) {
-						if(methodName != null && methodName.length()>0) {
+					if (method == null) {
+						if (methodName != null && methodName.length() > 0) {
 							method = itemClass.getMethod(methodName, new Class[0]);
 						}
 					}
 				}
 			}
-			if(method != null) {
+			if (method != null) {
 				boolean isPublic = Modifier.isPublic(method.getModifiers());
 //				boolean isFinal = Modifier.isFinal(method.getModifiers());
-				if(staticCall && isPublic) {
+				if (staticCall && isPublic) {
 					return method.invoke(null, methodArgumentsValues);
 				}
 //				if(isAccess(method, item) == false || isPublic == false || (isPublic && isFinal)) {
-					method.setAccessible(true);
+				method.setAccessible(true);
 //				}
 				return method.invoke(item, methodArgumentsValues);
 			}
 		} catch (Exception e) {
-			if(logger != null && notify) {
+			if (logger != null && notify) {
 				errorCount++;
 				e.printStackTrace(logger);
-			} else if(notifyObject instanceof ObjectCondition){
+			} else if (notifyObject instanceof ObjectCondition) {
 				errorCount++;
 				((ObjectCondition) notifyObject).update(e);
-			} else if(notifyObject instanceof ErrorHandler){
+			} else if (notifyObject instanceof ErrorHandler) {
 				errorCount++;
 				ErrorHandler handler = (ErrorHandler) notifyObject;
 				handler.saveException(e);
-			} else if(notify && Os.isEclipseAndNoReflection()) {
+			} else if (notify && Os.isEclipseAndNoReflection()) {
 				errorCount++;
-				System.err.println("ErrorCount: "+errorCount+" ("+method+")");
+				System.err.println("ErrorCount: " + errorCount + " (" + method + ")");
 				e.printStackTrace();
 			}
 		}
@@ -717,12 +723,12 @@ public class ReflectionLoader {
 	}
 
 	private static boolean checkValue(Object[] arguments) {
-		for(int i=0;i<arguments.length;i+=2) {
-			if(arguments[i] instanceof Class<?> == false) {
+		for (int i = 0; i < arguments.length; i += 2) {
+			if (arguments[i] instanceof Class<?> == false) {
 				return true;
 			}
-			if(arguments[i+1] != null) {
-				if(arguments[i+1].getClass().isAssignableFrom((Class<?>)arguments[i]) == false) {
+			if (arguments[i + 1] != null) {
+				if (arguments[i + 1].getClass().isAssignableFrom((Class<?>) arguments[i]) == false) {
 					return false;
 				}
 			}
@@ -737,9 +743,10 @@ public class ReflectionLoader {
 	}
 
 	private static final URLClassLoader sysloader = initDriver();
+
 	public static Connection loadSQLDriver(String driver, String database) {
-		int pos=0;
-		if(driver == null || (pos = driver.lastIndexOf(':')) < 0) {
+		int pos = 0;
+		if (driver == null || (pos = driver.lastIndexOf(':')) < 0) {
 			return null;
 		}
 		return loadSQLDriver(driver.substring(0, pos), driver.substring(pos + 1), database);
@@ -747,22 +754,23 @@ public class ReflectionLoader {
 
 	public static Connection loadSQLDriver(String driver, String host, String database) {
 		try {
-			if("jdbc:sqlite".equalsIgnoreCase(driver)) {
+			if ("jdbc:sqlite".equalsIgnoreCase(driver)) {
 				File f = new File(host);
 				URL url = new URL("file:///" + f.getAbsolutePath());
 
-				Method method = URLClassLoader.class.getDeclaredMethod("addURL", new Class[] {URL.class});
+				Method method = URLClassLoader.class.getDeclaredMethod("addURL", new Class[] { URL.class });
 				method.setAccessible(true);
 
 				method.invoke(sysloader, url);
 
 				Thread.currentThread().setContextClassLoader(sysloader);
 
-				Method getConnection = DriverManager.class.getDeclaredMethod("getConnection", String.class, Properties.class,
-						Class.class);
+				Method getConnection = DriverManager.class.getDeclaredMethod("getConnection", String.class,
+						Properties.class, Class.class);
 				getConnection.setAccessible(true);
 
-				Object manager = getConnection.invoke(DriverManager.class, driver+":"+database, new Properties(), null);
+				Object manager = getConnection.invoke(DriverManager.class, driver + ":" + database, new Properties(),
+						null);
 				return (Connection) manager;
 			}
 		} catch (Exception e) {
@@ -770,11 +778,11 @@ public class ReflectionLoader {
 		}
 		return null;
 	}
-	
+
 	public static boolean isAccess(Member member, Object entity) {
 		try {
 			Method method = member.getClass().getMethod("canAccess", Object.class);
-			if(method != null) {
+			if (method != null) {
 //				field.canAccess(entity)
 				return (Boolean) method.invoke(member, entity);
 			}
@@ -782,7 +790,7 @@ public class ReflectionLoader {
 		}
 		try {
 			Method method = member.getClass().getMethod("isAccessible");
-			if(method != null) {
+			if (method != null) {
 				return (Boolean) method.invoke(member, entity);
 			}
 		} catch (Exception e) {

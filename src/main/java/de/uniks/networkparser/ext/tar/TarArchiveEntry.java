@@ -862,7 +862,7 @@ public class TarArchiveEntry {
 	 * Check if this is a Pax header.
 	 *
 	 * @return if this is a Pax header.
-
+	 * 
 	 */
 	public boolean isPaxHeader() {
 		return linkFlag == TarUtils.LF_PAX_EXTENDED_HEADER_LC || linkFlag == TarUtils.LF_PAX_EXTENDED_HEADER_UC;
@@ -1048,55 +1048,55 @@ public class TarArchiveEntry {
 	 * @return success
 	 */
 	private boolean processPaxHeader(String key, String val, Map<String, String> headers) {
-		if("path".equals(key)) {
+		if ("path".equals(key)) {
 			setName(val);
 			return true;
 		}
-		if("linkpath".equals(key)) {
+		if ("linkpath".equals(key)) {
 			setLinkName(val);
 			return true;
 		}
-		if("gid".equals(key)) {
+		if ("gid".equals(key)) {
 			setGroupId(Long.parseLong(val));
 			return true;
 		}
-		if("gname".equals(key)) {
+		if ("gname".equals(key)) {
 			setGroupName(val);
 			return true;
 		}
-		if("uid".equals(key)) {
+		if ("uid".equals(key)) {
 			setUserId(Long.parseLong(val));
 			return true;
 		}
-		if("uname".equals(key)) {
+		if ("uname".equals(key)) {
 			setUserName(val);
 			return true;
 		}
-		if("size".equals(key)) {
+		if ("size".equals(key)) {
 			setSize(Long.parseLong(val));
 			return true;
 		}
-		if("mtime".equals(key)) {
+		if ("mtime".equals(key)) {
 			setModTime((long) (Double.parseDouble(val) * 1000));
 			return true;
 		}
-		if("SCHILY.devminor".equals(key)) {
+		if ("SCHILY.devminor".equals(key)) {
 			setDevMinor(Integer.parseInt(val));
 			return true;
 		}
-		if("SCHILY.devmajor".equals(key)) {
+		if ("SCHILY.devmajor".equals(key)) {
 			setDevMajor(Integer.parseInt(val));
 			return true;
 		}
-		if("GNU.sparse.size".equals(key)) {
+		if ("GNU.sparse.size".equals(key)) {
 			fillGNUSparse0xData(headers);
 			return true;
 		}
-		if("GNU.sparse.realsize".equals(key)) {
+		if ("GNU.sparse.realsize".equals(key)) {
 			fillGNUSparse1xData(headers);
 			return true;
 		}
-		if("SCHILY.filetype".equals(key)) {
+		if ("SCHILY.filetype".equals(key)) {
 			if ("sparse".equals(val)) {
 				fillStarSparseData(headers);
 			}
@@ -1168,8 +1168,7 @@ public class TarArchiveEntry {
 	 * @since 1.4
 	 * @throws IOException on error
 	 */
-	public void writeEntryHeader(byte[] outbuf, NioZipEncoding encoding, boolean starMode)
-			throws IOException {
+	public void writeEntryHeader(byte[] outbuf, NioZipEncoding encoding, boolean starMode) throws IOException {
 		int offset = 0;
 
 		offset = TarUtils.formatNameBytes(name, outbuf, offset, TarUtils.NAMELEN, encoding);
@@ -1248,8 +1247,7 @@ public class TarArchiveEntry {
 		parseTarHeader(header, encoding, false);
 	}
 
-	private void parseTarHeader(byte[] header, NioZipEncoding encoding, boolean oldStyle)
-			throws IOException {
+	private void parseTarHeader(byte[] header, NioZipEncoding encoding, boolean oldStyle) throws IOException {
 		int offset = 0;
 
 		name = oldStyle ? TarUtils.parseName(header, offset, TarUtils.NAMELEN)
@@ -1332,8 +1330,9 @@ public class TarArchiveEntry {
 	/**
 	 * Strips Windows' drive letter as well as any leading slashes, turns path
 	 * separators into forward slahes.
-	 * @param fileName FileName
-	 * @param preserveAbsolutePath	if absolutePath
+	 * 
+	 * @param fileName             FileName
+	 * @param preserveAbsolutePath if absolutePath
 	 * @return the new FileName
 	 */
 	private static String normalizeFileName(String fileName, boolean preserveAbsolutePath) {
@@ -1385,7 +1384,8 @@ public class TarArchiveEntry {
 			return TarUtils.FORMAT_OLDGNU;
 		}
 		if (TarUtils.matchAsciiBuffer(TarUtils.MAGIC_POSIX, header, TarUtils.MAGIC_OFFSET, TarUtils.MAGICLEN)) {
-			if (TarUtils.matchAsciiBuffer(TarUtils.MAGIC_XSTAR, header, TarUtils.XSTAR_MAGIC_OFFSET, TarUtils.XSTAR_MAGIC_LEN)) {
+			if (TarUtils.matchAsciiBuffer(TarUtils.MAGIC_XSTAR, header, TarUtils.XSTAR_MAGIC_OFFSET,
+					TarUtils.XSTAR_MAGIC_LEN)) {
 				return TarUtils.FORMAT_XSTAR;
 			}
 			return TarUtils.FORMAT_POSIX;

@@ -17,12 +17,12 @@ public class ClazzChangeUpdateCondition extends MatchCondition {
 	protected boolean checkFileCondition(GraphMatcher matches, Match match) {
 		return true;
 	}
-	
+
 	@Override
 	protected boolean calculateFileDiffs(GraphModel model, GraphMatcher matches, Match match) {
 		Clazz oldClazz = (Clazz) match.getMatch();
 		Clazz newClazz = (Clazz) match.getOtherMatch().getMatch();
-		
+
 		ClazzSet oldSuperClazzes = new ClazzSet();
 		ClazzSet newSuperClazzes = new ClazzSet();
 		ClazzSet oldInheritance = oldClazz.getSuperClazzes(false);
@@ -50,7 +50,7 @@ public class ClazzChangeUpdateCondition extends MatchCondition {
 						continue;
 					}
 				}
-				
+
 				oldSuperClazzes.add(oldSuperClazz);
 				newSuperClazzes.add(newSuperClazz);
 				break;
@@ -63,7 +63,7 @@ public class ClazzChangeUpdateCondition extends MatchCondition {
 			if (determineAddableSuperclazz(matches, match, oldSuperClazz)) {
 				continue;
 			}
-			
+
 			oldSuperClazzes.add(oldSuperClazz);
 		}
 		for (Clazz newSuperClazz : newInheritance) {
@@ -73,10 +73,10 @@ public class ClazzChangeUpdateCondition extends MatchCondition {
 			if (determineNonRemovableSuperClazz(matches, match, newSuperClazz) == false) {
 				continue;
 			}
-			
+
 			newSuperClazzes.add(newSuperClazz);
 		}
-		
+
 		for (Clazz oldSuperClazz : oldInheritance) {
 			if (oldSuperClazzes.contains(oldSuperClazz)) {
 				continue;
@@ -85,7 +85,7 @@ public class ClazzChangeUpdateCondition extends MatchCondition {
 
 			matches.addDiff(update);
 		}
-		if (matches.getMetaModel() != null) {	
+		if (matches.getMetaModel() != null) {
 			for (Clazz newSuperClazz : newInheritance) {
 				if (newSuperClazzes.contains(newSuperClazz)) {
 					continue;
@@ -106,9 +106,9 @@ public class ClazzChangeUpdateCondition extends MatchCondition {
 	protected boolean calculateModelDiffs(GraphModel model, GraphMatcher matches, Match match) {
 		Clazz oldClazz = (Clazz) match.getOtherMatch().getMatch();
 		Clazz newClazz = (Clazz) match.getMatch();
-		
+
 		boolean withMeta = matches.getMetaModel() != null;
-		
+
 		ClazzSet oldSuperClazzes = new ClazzSet();
 		ClazzSet newSuperClazzes = new ClazzSet();
 		ClazzSet oldInheritance = oldClazz.getSuperClazzes(false);
@@ -148,7 +148,7 @@ public class ClazzChangeUpdateCondition extends MatchCondition {
 			if (determineNonRemovableSuperClazz(matches, match, oldSuperClazz) == false) {
 				continue;
 			}
-			
+
 			oldSuperClazzes.add(oldSuperClazz);
 		}
 		for (Clazz newSuperClazz : newInheritance) {
@@ -158,10 +158,10 @@ public class ClazzChangeUpdateCondition extends MatchCondition {
 			if (determineAddableSuperclazz(matches, match, newSuperClazz)) {
 				continue;
 			}
-			
+
 			newSuperClazzes.add(newSuperClazz);
 		}
-		
+
 		for (Clazz oldSuperClazz : oldInheritance) {
 			if (oldSuperClazzes.contains(oldSuperClazz)) {
 				continue;
@@ -186,20 +186,20 @@ public class ClazzChangeUpdateCondition extends MatchCondition {
 		}
 		return true;
 	}
-	
+
 	private boolean determineAddableSuperclazz(GraphMatcher matches, Match match, Clazz superClazz) {
 		Match superMatch = matches.getClazzMatch(superClazz);
-		
+
 		if (superMatch.isMetaMatch() == false) {
 			return true;
 		}
 		if (superMatch.isMetaMatch()) {
 			return true;
 		}
-		
+
 		return false;
 	}
-	
+
 	private boolean determineNonRemovableSuperClazz(GraphMatcher matches, Match match, Clazz superClazz) {
 		if (matches.getMetaModel() == null) {
 			return true;

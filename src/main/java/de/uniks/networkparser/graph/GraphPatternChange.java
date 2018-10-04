@@ -25,6 +25,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
+
 /**
  * GraphCreate Clazz for Condition.
  *
@@ -52,8 +53,8 @@ public class GraphPatternChange implements ObjectCondition, SendableEntityCreato
 	}
 
 	/**
-	 * @param value		for The OldValue
-	 * @return 			GraphPatternChange Instance
+	 * @param value for The OldValue
+	 * @return GraphPatternChange Instance
 	 */
 	public GraphPatternChange withOldValue(Object value) {
 		this.oldValue = value;
@@ -66,8 +67,8 @@ public class GraphPatternChange implements ObjectCondition, SendableEntityCreato
 	}
 
 	/**
-	 * @param value		for Property
-	 * @return 			GraphPatternChange Instance
+	 * @param value for Property
+	 * @return GraphPatternChange Instance
 	 */
 	public GraphPatternChange withProperty(String value) {
 		this.property = value;
@@ -80,8 +81,8 @@ public class GraphPatternChange implements ObjectCondition, SendableEntityCreato
 	}
 
 	/**
-	 * @param value		for new Condition
-	 * @return 			GraphPatternChange Instance
+	 * @param value for new Condition
+	 * @return GraphPatternChange Instance
 	 */
 	public GraphPatternChange withNewValue(Object value) {
 		this.newValue = value;
@@ -90,7 +91,7 @@ public class GraphPatternChange implements ObjectCondition, SendableEntityCreato
 
 	@Override
 	public String[] getProperties() {
-		return new String[] {PROPERTY, OLD, NEW};
+		return new String[] { PROPERTY, OLD, NEW };
 	}
 
 	@Override
@@ -115,7 +116,7 @@ public class GraphPatternChange implements ObjectCondition, SendableEntityCreato
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value, String type) {
 		if (PROPERTY.equalsIgnoreCase(attribute)) {
-			((GraphPatternChange) entity).withProperty(""+value);
+			((GraphPatternChange) entity).withProperty("" + value);
 			return true;
 		}
 		if (OLD.equalsIgnoreCase(attribute)) {
@@ -132,20 +133,23 @@ public class GraphPatternChange implements ObjectCondition, SendableEntityCreato
 	public static GraphPatternChange createCreate(Object newValue) {
 		return new GraphPatternChange().withNewValue(newValue);
 	}
+
 	public static GraphPatternChange createCreate(String property, Object newValue) {
 		return new GraphPatternChange().withProperty(property).withNewValue(newValue);
 	}
 
-	public static GraphPatternChange createChange(Object oldValue,Object newValue) {
+	public static GraphPatternChange createChange(Object oldValue, Object newValue) {
 		return new GraphPatternChange().withOldValue(oldValue).withNewValue(newValue);
 	}
-	public static GraphPatternChange createChange(String property, Object oldValue,Object newValue) {
+
+	public static GraphPatternChange createChange(String property, Object oldValue, Object newValue) {
 		return new GraphPatternChange().withProperty(property).withOldValue(oldValue).withNewValue(newValue);
 	}
 
 	public static GraphPatternChange createDelete(Object oldValue) {
 		return new GraphPatternChange().withOldValue(oldValue);
 	}
+
 	public static GraphPatternChange createDelete(String property, Object oldValue) {
 		return new GraphPatternChange().withProperty(property).withOldValue(oldValue);
 	}

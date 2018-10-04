@@ -30,14 +30,14 @@ import de.uniks.networkparser.interfaces.ObjectCondition;
 public class SimpleObjectFilter implements ObjectCondition {
 	@Override
 	public boolean update(Object value) {
-		if(value instanceof SimpleEvent == false) {
+		if (value instanceof SimpleEvent == false) {
 			return false;
 		}
 		SimpleEvent event = (SimpleEvent) value;
-		if(event.getDepth()>1) {
+		if (event.getDepth() > 1) {
 			return false;
 		}
-		if(event.getNewValue() == null) {
+		if (event.getNewValue() == null) {
 			return false;
 		}
 		String type = event.getNewValue().getClass().getSimpleName();

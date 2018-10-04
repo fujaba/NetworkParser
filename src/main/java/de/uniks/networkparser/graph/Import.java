@@ -28,9 +28,11 @@ public class Import extends GraphMember {
 	public static Import create(Clazz value) {
 		return new Import().withChildren(value);
 	}
+
 	public static Import create(String value) {
 		return new Import().withChildren(new Clazz(value));
 	}
+
 	public static Import create(Class<?> type) {
 		return new Import().withChildren(new Clazz(type));
 	}
@@ -45,8 +47,9 @@ public class Import extends GraphMember {
 		super.withChildren(values);
 		return this;
 	}
+
 	public Clazz getClazz() {
-		if(this.children!= null && this.children instanceof Clazz) {
+		if (this.children != null && this.children instanceof Clazz) {
 			return (Clazz) this.children;
 		}
 		return null;

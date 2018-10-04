@@ -24,10 +24,10 @@ public class ChangeAddCondition extends MatchCondition {
 		GraphMember oldMatch = match.getMatch();
 		GraphMember newMatch = match.getSourceMatch();
 		Clazz newClazz = newMatch.getClazz();
-		if(oldMatch instanceof Clazz) {
+		if (oldMatch instanceof Clazz) {
 			Match addToCode = Match.create(model, this, GraphModel.PROPERTY_CLAZZ, null, oldMatch);
 			matches.addDiff(addToCode);
-			
+
 			for (String modifier : oldMatch.getModifier().toString().split(" ")) {
 				if (modifier.equals("public") == false) {
 					Match addModifierInCode = Match.create(oldMatch, this, Clazz.PROPERTY_MODIFIERS, null, modifier);
@@ -36,13 +36,14 @@ public class ChangeAddCondition extends MatchCondition {
 			}
 			Clazz oldClazz = (Clazz) oldMatch;
 			if (oldClazz.getType().equals(Clazz.TYPE_CLASS) == false) {
-				Match updateType = Match.create(oldMatch, this, Clazz.PROPERTY_TYPE, newClazz.getType(), oldClazz.getType());
+				Match updateType = Match.create(oldMatch, this, Clazz.PROPERTY_TYPE, newClazz.getType(),
+						oldClazz.getType());
 				matches.addDiff(updateType);
 			}
 			return true;
 		}
 		Match clazzMatch = matches.getClazzMatch(newClazz);
-		
+
 		if (clazzMatch.isOtherMatch() == false
 				|| GraphUtil.compareName(newClazz.getName(), clazzMatch.getSourceMatch().getName()) >= 1) {
 			newClazz = oldMatch.getClazz();
@@ -60,13 +61,13 @@ public class ChangeAddCondition extends MatchCondition {
 	@Override
 	protected boolean calculateModelDiffs(GraphModel model, GraphMatcher matches, Match match) {
 //		GraphMember oldAttribute = match.getSourceMatch();
-		GraphMember oldMatch  = match.getOtherMatch().getMatch();
+		GraphMember oldMatch = match.getOtherMatch().getMatch();
 		GraphMember newMatch = match.getMatch();
-		Clazz oldClazz = oldMatch .getClazz();
-		if(oldMatch instanceof Clazz) {
+		Clazz oldClazz = oldMatch.getClazz();
+		if (oldMatch instanceof Clazz) {
 			Match add = Match.create(model, this, GraphModel.PROPERTY_CLAZZ, null, newMatch);
 			matches.addDiff(add);
-			
+
 			for (String modifier : newMatch.getModifier().toString().split(" ")) {
 				if (modifier.equals("public") == false) {
 					Match addModifier = Match.create(newMatch, this, Clazz.PROPERTY_MODIFIERS, null, modifier);
@@ -75,14 +76,15 @@ public class ChangeAddCondition extends MatchCondition {
 			}
 			Clazz newClazz = (Clazz) newMatch;
 			if (newClazz.getType().equals(Clazz.TYPE_CLASS) == false) {
-				Match updateType = Match.create(newMatch, this, Clazz.PROPERTY_MODIFIERS, oldClazz.getType(), newClazz.getType());
+				Match updateType = Match.create(newMatch, this, Clazz.PROPERTY_MODIFIERS, oldClazz.getType(),
+						newClazz.getType());
 				matches.addDiff(updateType);
 			}
 			return true;
 		}
 
 		Match clazzMatch = matches.getClazzMatch(oldClazz);
-		
+
 		if (clazzMatch.isOtherMatch() == false
 				|| GraphUtil.compareName(oldClazz.getName(), clazzMatch.getSourceMatch().getName()) >= 1) {
 			oldClazz = newMatch.getClazz();

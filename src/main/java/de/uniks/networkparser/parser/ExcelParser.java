@@ -60,12 +60,12 @@ public class ExcelParser {
 		XMLTokener tokener = new XMLTokener().withMap(map);
 		tokener.withDefaultFactory(new XMLEntityCreator());
 		CharacterBuffer buffer = null;
-		if(sheetFile instanceof CharacterBuffer) {
+		if (sheetFile instanceof CharacterBuffer) {
 			buffer = (CharacterBuffer) sheetFile;
 		} else {
 			buffer = new CharacterBuffer().with(sheetFile.toString());
 		}
-		
+
 		XMLEntity sheet = (XMLEntity) map.decode(tokener, buffer, map.getFilter());
 		XMLEntity sharedStrings = null;
 		if (stringFile != null) {
@@ -73,12 +73,12 @@ public class ExcelParser {
 		}
 
 		if (sheet != null) {
-			EntityList mergeCells = sheet.getElementsBy(XMLEntity.PROPERTY_TAG,  "mergeCells");
+			EntityList mergeCells = sheet.getElementsBy(XMLEntity.PROPERTY_TAG, "mergeCells");
 			// <mergeCells count="1"><mergeCell ref="A2:A3"/></mergeCells>
 			if (mergeCells != null) {
-				for(int i=0;i<mergeCells.sizeChildren();i++) {
+				for (int i = 0; i < mergeCells.sizeChildren(); i++) {
 					BaseItem mergeCell = mergeCells.getChild(i);
-					if(mergeCell == null) {
+					if (mergeCell == null) {
 						continue;
 					}
 					SimpleList<Pos> excelRange = EntityUtil.getExcelRange(((Entity) mergeCell).getString(REF));
@@ -90,56 +90,56 @@ public class ExcelParser {
 					}
 				}
 			}
-			EntityList sheetData = sheet.getElementsBy(XMLEntity.PROPERTY_TAG,  "sheetData");
+			EntityList sheetData = sheet.getElementsBy(XMLEntity.PROPERTY_TAG, "sheetData");
 			if (sheetData != null) {
 //				if (rows != null && rows instanceof XMLEntity) {
-					for(int i=0;i<sheetData.sizeChildren();i++) {
-						BaseItem child = sheetData.getChild(i);
-						if (child == null || child instanceof XMLEntity == false ) {
+				for (int i = 0; i < sheetData.sizeChildren(); i++) {
+					BaseItem child = sheetData.getChild(i);
+					if (child == null || child instanceof XMLEntity == false) {
+						continue;
+					}
+					XMLEntity row = (XMLEntity) child;
+					if (ROW.equalsIgnoreCase(row.getTag()) == false) {
+						continue;
+					}
+					ExcelRow dataRow = new ExcelRow();
+					// <c r="A1" t="s"><v>2</v></c>
+					for (int c = 0; c < row.size(); c++) {
+						BaseItem item = row.getChild(c);
+						if (item == null || item instanceof ExcelCell == false) {
 							continue;
 						}
-						XMLEntity row = (XMLEntity) child;
-						if(ROW.equalsIgnoreCase(row.getTag()) == false) {
+						ExcelCell cell = (ExcelCell) item;
+						if (CELL.equalsIgnoreCase(cell.getTag()) == false) {
 							continue;
 						}
-						ExcelRow dataRow = new ExcelRow();
-						// <c r="A1" t="s"><v>2</v></c>
-						for(int c=0;c<row.size();c++) {
-							BaseItem item = row.getChild(c);
-							if (item == null || item instanceof ExcelCell == false) {
-								continue;
-							}
-							ExcelCell cell = (ExcelCell) item;
-							if (CELL.equalsIgnoreCase(cell.getTag()) == false) {
-								continue;
-							}
-							ExcelCell excelCell = (ExcelCell) cell;
-							if (CELL_TYPE_REFERENCE.equalsIgnoreCase(excelCell.getType())) {
-								// <v>2</v>
-								EntityList element = cell.getChild(0);
-								if(element != null) {
-									String ref = ((XMLEntity)element).getValue();
-									if (sharedStrings != null) {
-										XMLEntity refString = (XMLEntity) sharedStrings.getChild(Integer.valueOf(ref));
-										String text = ((XMLEntity)refString.getChild(0)).getValue();
-										excelCell.setContent(text);
-									}
-								}
-							} else if (excelCell.sizeChildren()<1) {
-								String pos = mergeCellPos.get(excelCell.getReferenz().toString());
-								if (pos != null && cells.contains(pos)) {
-									ExcelCell firstCell = cells.get(pos);
-									excelCell.setReferenceCell(firstCell);
+						ExcelCell excelCell = (ExcelCell) cell;
+						if (CELL_TYPE_REFERENCE.equalsIgnoreCase(excelCell.getType())) {
+							// <v>2</v>
+							EntityList element = cell.getChild(0);
+							if (element != null) {
+								String ref = ((XMLEntity) element).getValue();
+								if (sharedStrings != null) {
+									XMLEntity refString = (XMLEntity) sharedStrings.getChild(Integer.valueOf(ref));
+									String text = ((XMLEntity) refString.getChild(0)).getValue();
+									excelCell.setContent(text);
 								}
 							}
-							cells.add(excelCell.getReferenz().toString(), excelCell);
-							dataRow.add(excelCell);
+						} else if (excelCell.sizeChildren() < 1) {
+							String pos = mergeCellPos.get(excelCell.getReferenz().toString());
+							if (pos != null && cells.contains(pos)) {
+								ExcelCell firstCell = cells.get(pos);
+								excelCell.setReferenceCell(firstCell);
+							}
 						}
-						if(dataRow.size() > 0 ) {
-							data.add(dataRow);
-						}
+						cells.add(excelCell.getReferenz().toString(), excelCell);
+						dataRow.add(excelCell);
+					}
+					if (dataRow.size() > 0) {
+						data.add(dataRow);
 					}
 				}
+			}
 //			}
 		}
 		return data;
@@ -202,7 +202,8 @@ public class ExcelParser {
 
 	private String getHeaderWorkbook(ExcelWorkBook content, int id) {
 		CharacterBuffer data = new CharacterBuffer().with(HEADER);
-		data.with("<workbook xmlns=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\" xmlns:mc=\"http://schemas.openxmlformats.org/markup-compatibility/2006\">\r\n    <sheets>\r\n");
+		data.with(
+				"<workbook xmlns=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\" xmlns:mc=\"http://schemas.openxmlformats.org/markup-compatibility/2006\">\r\n    <sheets>\r\n");
 		for (int i = 0; i < content.size(); i++) {
 			ExcelSheet sheet = content.get(i);
 			if (sheet == null) {
@@ -210,7 +211,7 @@ public class ExcelParser {
 			}
 			data.with("        <sheet name=\"");
 			if (sheet.getName() == null) {
-				data.with("Table" + (i+1));
+				data.with("Table" + (i + 1));
 			} else {
 				data.with(sheet.getName());
 			}
@@ -224,7 +225,8 @@ public class ExcelParser {
 	private String getSheet(ExcelSheet sheet, int id) {
 		int rowPos;
 		CharacterBuffer data = new CharacterBuffer().with(HEADER);
-		data.with("<worksheet xmlns=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\" xmlns:mc=\"http://schemas.openxmlformats.org/markup-compatibility/2006\">\r\n");
+		data.with(
+				"<worksheet xmlns=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\" xmlns:mc=\"http://schemas.openxmlformats.org/markup-compatibility/2006\">\r\n");
 		data.with("<sheetData>\r\n");
 		for (rowPos = 0; rowPos <= sheet.size(); rowPos++) {
 			ExcelRow row = sheet.get(rowPos);

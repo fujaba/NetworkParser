@@ -32,7 +32,7 @@ import de.uniks.networkparser.ext.sql.SQLStatement;
 import de.uniks.networkparser.ext.sql.SQLStatementList;
 import de.uniks.networkparser.ext.sql.SQLTokener;
 
-public class NodeProxySQL extends NodeProxy{
+public class NodeProxySQL extends NodeProxy {
 	public static final String PROPERTY_DATABASE = "database";
 	public static final String PROPERTY_DRIVER = "driver";
 
@@ -48,7 +48,7 @@ public class NodeProxySQL extends NodeProxy{
 
 	@Override
 	public Object getValue(Object element, String attrName) {
-		if(element instanceof NodeProxySQL) {
+		if (element instanceof NodeProxySQL) {
 			NodeProxySQL nodeProxy = (NodeProxySQL) element;
 			if (PROPERTY_DATABASE.equals(attrName)) {
 				return nodeProxy.getDataBase();
@@ -85,7 +85,7 @@ public class NodeProxySQL extends NodeProxy{
 
 	@Override
 	public boolean setValue(Object element, String attrName, Object value, String type) {
-		if(element instanceof NodeProxyMessages) {
+		if (element instanceof NodeProxyMessages) {
 			NodeProxySQL nodeProxy = (NodeProxySQL) element;
 			if (PROPERTY_DATABASE.equals(attrName)) {
 				nodeProxy.withDatabase((String) value);
@@ -111,7 +111,7 @@ public class NodeProxySQL extends NodeProxy{
 
 	@Override
 	public boolean close() {
-		if(this.tokener != null) {
+		if (this.tokener != null) {
 			return this.tokener.close();
 		}
 		return true;
@@ -134,17 +134,17 @@ public class NodeProxySQL extends NodeProxy{
 	}
 
 	public void initTokener(Connection con) {
-		if(this.tokener == null) {
+		if (this.tokener == null) {
 			String[] split = driver.split(":");
-			if(split.length>2) {
+			if (split.length > 2) {
 				this.tokener = new SQLTokener(SQLStatement.connect(split[0], split[1], split[2]));
 				this.database = split[2];
 			}
 		}
-		if(con != null) {
+		if (con != null) {
 			this.tokener.withConnection(con);
 		} else {
-			if(this.tokener.getConnection() == null) {
+			if (this.tokener.getConnection() == null) {
 				Connection connection = ReflectionLoader.loadSQLDriver(driver, this.database);
 				this.tokener.withConnection(connection);
 			}
@@ -156,12 +156,12 @@ public class NodeProxySQL extends NodeProxy{
 		if (super.sending(msg)) {
 			return true;
 		}
-		if(driver == null) {
+		if (driver == null) {
 			return false;
 		}
 		initTokener(null);
 		SQLStatementList statements = null;
-		if(msg instanceof ChangeMessage) {
+		if (msg instanceof ChangeMessage) {
 			ChangeMessage cm = (ChangeMessage) msg;
 			Object entity = cm.getEntity();
 			String property = cm.getProperty();
@@ -169,7 +169,7 @@ public class NodeProxySQL extends NodeProxy{
 			String id = cm.getId();
 			statements = tokener.update(entity, id, property, newValue);
 		}
-		if(statements != null) {
+		if (statements != null) {
 			tokener.executeStatements(statements);
 		}
 		return super.sending(msg);

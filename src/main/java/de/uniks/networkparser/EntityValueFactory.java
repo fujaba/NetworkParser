@@ -30,8 +30,7 @@ public class EntityValueFactory {
 		return getCellValue(value, null, null);
 	}
 
-	public Object getCellValue(Object value, SendableEntityCreator creator,
-			String property) {
+	public Object getCellValue(Object value, SendableEntityCreator creator, String property) {
 		if (creator != null && property != null) {
 			return creator.getValue(value, property);
 		}

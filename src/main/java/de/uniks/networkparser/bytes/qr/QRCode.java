@@ -18,6 +18,7 @@ package de.uniks.networkparser.bytes.qr;
 
 /**
  * QRClass for representation of QR Code
+ * 
  * @author satorux@google.com (Satoru Takabayashi) - creator
  * @author dswitkin@google.com (Daniel Switkin) - ported from C++
  */

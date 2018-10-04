@@ -36,13 +36,15 @@ import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.list.SimpleSet;
 
 public class ModelListenerProperty implements ModelListenerInterface {
-	public enum PROPERTYTYPE{STRING, COLOR, BOOLEAN, INTEGER, LONG, FLOAT, DOUBLE, OBJECT};
+	public enum PROPERTYTYPE {
+		STRING, COLOR, BOOLEAN, INTEGER, LONG, FLOAT, DOUBLE, OBJECT
+	};
 
 	protected Object item;
 	protected String property;
 	protected SendableEntityCreator creator;
-	private SimpleSet<Object> listeners=new SimpleSet<Object>();
-	private SimpleSet<Object> invalidationListeners=new SimpleSet<Object>();
+	private SimpleSet<Object> listeners = new SimpleSet<Object>();
+	private SimpleSet<Object> invalidationListeners = new SimpleSet<Object>();
 	protected Object observable = null;
 	protected Condition<SimpleEvent> callBack;
 	protected PROPERTYTYPE type;
@@ -52,19 +54,20 @@ public class ModelListenerProperty implements ModelListenerInterface {
 		this.property = property;
 		this.item = item;
 		this.type = type;
-		if(item == null) {
+		if (item == null) {
 			return;
 		}
 		if (item instanceof SendableEntity) {
 			((SendableEntity) item).addPropertyChangeListener(property, this);
 			return;
 		}
-		if(item instanceof PropertyChangeSupport){
+		if (item instanceof PropertyChangeSupport) {
 			((PropertyChangeSupport) item).addPropertyChangeListener(property, this);
 			return;
 		}
 		try {
-			Method method = item.getClass().getMethod("addPropertyChangeListener", String.class, java.beans.PropertyChangeListener.class );
+			Method method = item.getClass().getMethod("addPropertyChangeListener", String.class,
+					java.beans.PropertyChangeListener.class);
 			method.invoke(item, property, this);
 			return;
 		} catch (ReflectiveOperationException e) {
@@ -78,7 +81,8 @@ public class ModelListenerProperty implements ModelListenerInterface {
 		} catch (ReflectiveOperationException e) {
 		}
 		try {
-			Method method = item.getClass().getMethod("addPropertyChangeListener", java.beans.PropertyChangeListener.class );
+			Method method = item.getClass().getMethod("addPropertyChangeListener",
+					java.beans.PropertyChangeListener.class);
 			method.invoke(item, this);
 		} catch (ReflectiveOperationException e) {
 		}
@@ -89,7 +93,7 @@ public class ModelListenerProperty implements ModelListenerInterface {
 	}
 
 	public boolean setBean(Object value) {
-		if(value != this.item) {
+		if (value != this.item) {
 			this.item = value;
 			return true;
 		}
@@ -101,26 +105,26 @@ public class ModelListenerProperty implements ModelListenerInterface {
 	}
 
 	public void addListener(Object listener) {
-		if(ReflectionLoader.CHANGELISTENER != null) {
-			if(ReflectionLoader.CHANGELISTENER.isAssignableFrom(listener.getClass())) {
+		if (ReflectionLoader.CHANGELISTENER != null) {
+			if (ReflectionLoader.CHANGELISTENER.isAssignableFrom(listener.getClass())) {
 				listeners.add(listener);
 			}
 		}
-		if(ReflectionLoader.INVALIDATIONLISTENER != null) {
-			if(ReflectionLoader.INVALIDATIONLISTENER.isAssignableFrom(listener.getClass())) {
+		if (ReflectionLoader.INVALIDATIONLISTENER != null) {
+			if (ReflectionLoader.INVALIDATIONLISTENER.isAssignableFrom(listener.getClass())) {
 				invalidationListeners.add(listener);
 			}
 		}
 	}
 
 	public void removeListener(Object listener) {
-		if(ReflectionLoader.CHANGELISTENER != null) {
-			if(ReflectionLoader.CHANGELISTENER.isAssignableFrom(listener.getClass())) {
+		if (ReflectionLoader.CHANGELISTENER != null) {
+			if (ReflectionLoader.CHANGELISTENER.isAssignableFrom(listener.getClass())) {
 				listeners.remove(listener);
 			}
 		}
-		if(ReflectionLoader.INVALIDATIONLISTENER != null) {
-			if(ReflectionLoader.INVALIDATIONLISTENER.isAssignableFrom(listener.getClass())) {
+		if (ReflectionLoader.INVALIDATIONLISTENER != null) {
+			if (ReflectionLoader.INVALIDATIONLISTENER.isAssignableFrom(listener.getClass())) {
 				invalidationListeners.remove(listener);
 			}
 		}
@@ -138,11 +142,12 @@ public class ModelListenerProperty implements ModelListenerInterface {
 	}
 
 	public void bindBidirectional(Object other) {
-		ReflectionLoader.call("bindBidirectional", null, ReflectionLoader.PROPERTY, this,ReflectionLoader.PROPERTY, other);
+		ReflectionLoader.call("bindBidirectional", null, ReflectionLoader.PROPERTY, this, ReflectionLoader.PROPERTY,
+				other);
 	}
 
 	public boolean isBound() {
-		 return observable != null;
+		return observable != null;
 	}
 
 	public void unbind() {
@@ -153,36 +158,38 @@ public class ModelListenerProperty implements ModelListenerInterface {
 	}
 
 	public void unbindBidirectional(Object other) {
-		ReflectionLoader.call("unbindBidirectional", null, ReflectionLoader.PROPERTY, this, ReflectionLoader.PROPERTY, other);
+		ReflectionLoader.call("unbindBidirectional", null, ReflectionLoader.PROPERTY, this, ReflectionLoader.PROPERTY,
+				other);
 	}
 
-	public Object getItemValue(){
+	public Object getItemValue() {
 		Object value = creator.getValue(item, property);
-		if(value instanceof Collection<?>){
-			return ((Collection<?>)value).size();
+		if (value instanceof Collection<?>) {
+			return ((Collection<?>) value).size();
 		}
 		return value;
 	}
 
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
-		for(Object listener: listeners) {
+		for (Object listener : listeners) {
 			Object event = ReflectionLoader.newInstance(ReflectionLoader.SIMPLEOBJECTPROPERTY);
 			Object oldValue = parseValue(evt.getOldValue());
 			Object newValue = parseValue(evt.getNewValue());
-			ReflectionLoader.call(listener, "changed", ReflectionLoader.OBSERVABLEVALUE, event, Object.class, oldValue, Object.class, newValue);
+			ReflectionLoader.call(listener, "changed", ReflectionLoader.OBSERVABLEVALUE, event, Object.class, oldValue,
+					Object.class, newValue);
 		}
-		for(Object listener : invalidationListeners) {
+		for (Object listener : invalidationListeners) {
 			ReflectionLoader.call(listener, "invalidated", ReflectionLoader.INVALIDATIONLISTENER, this);
 		}
 		executeCallBack();
 	}
 
 	public void executeCallBack() {
-		if(callBack != null) {
+		if (callBack != null) {
 			SimpleEvent event = new SimpleEvent(this.item, this.property, null, getItemValue());
-			if(callBack.update(event)) {
-				ReflectionLoader.call(observable, "set", String.class, ""+event.getModelValue());
+			if (callBack.update(event)) {
+				ReflectionLoader.call(observable, "set", String.class, "" + event.getModelValue());
 			}
 		}
 	}
@@ -199,57 +206,58 @@ public class ModelListenerProperty implements ModelListenerInterface {
 		return getItemValue();
 	}
 
-	public Object parseValue(Object value){
-		if(this.type == PROPERTYTYPE.COLOR) {
-			if(value != null && ReflectionLoader.COLOR.isAssignableFrom(value.getClass())) {
+	public Object parseValue(Object value) {
+		if (this.type == PROPERTYTYPE.COLOR) {
+			if (value != null && ReflectionLoader.COLOR.isAssignableFrom(value.getClass())) {
 				return value;
 			}
-			if(value instanceof String) {
+			if (value instanceof String) {
 				return ReflectionLoader.call(PROPERTYTYPE.COLOR, "web", String.class, value);
 			}
 			return ReflectionLoader.call(PROPERTYTYPE.COLOR, "web", String.class, "#FFFFFF");
 		}
-		if(this.type == PROPERTYTYPE.STRING) {
-			return ""+value;
+		if (this.type == PROPERTYTYPE.STRING) {
+			return "" + value;
 		}
-		if(this.type == PROPERTYTYPE.BOOLEAN) {
-			if(value instanceof Boolean){
+		if (this.type == PROPERTYTYPE.BOOLEAN) {
+			if (value instanceof Boolean) {
 				return value;
 			}
-			return Boolean.valueOf(""+value);
+			return Boolean.valueOf("" + value);
 		}
-		if(this.type == PROPERTYTYPE.INTEGER) {
-			if(value instanceof Integer){
+		if (this.type == PROPERTYTYPE.INTEGER) {
+			if (value instanceof Integer) {
 				return value;
 			}
-			return Integer.valueOf(""+value);
+			return Integer.valueOf("" + value);
 		}
-		if(this.type == PROPERTYTYPE.LONG) {
-			if(value instanceof Long){
+		if (this.type == PROPERTYTYPE.LONG) {
+			if (value instanceof Long) {
 				return value;
 			}
-			return Long.valueOf(""+value);
+			return Long.valueOf("" + value);
 		}
-		if(this.type == PROPERTYTYPE.FLOAT) {
-			if(value instanceof Float){
+		if (this.type == PROPERTYTYPE.FLOAT) {
+			if (value instanceof Float) {
 				return value;
 			}
-			return Float.valueOf(""+value);
+			return Float.valueOf("" + value);
 		}
-		if(this.type == PROPERTYTYPE.DOUBLE) {
-			if(value instanceof Double){
+		if (this.type == PROPERTYTYPE.DOUBLE) {
+			if (value instanceof Double) {
 				return value;
 			}
-			return Double.valueOf(""+value);
+			return Double.valueOf("" + value);
 		}
-		if(value instanceof Number){
+		if (value instanceof Number) {
 			return value;
 		}
 		return value;
 	}
 
 	public Object getProxy() {
-		return ReflectionLoader.createProxy(this, new Class[]{ModelListenerInterface.class, ReflectionLoader.PROPERTY});
+		return ReflectionLoader.createProxy(this,
+				new Class[] { ModelListenerInterface.class, ReflectionLoader.PROPERTY });
 	}
 
 	public void setValue(Object value) {
@@ -279,4 +287,3 @@ public class ModelListenerProperty implements ModelListenerInterface {
 //	}
 
 }
-

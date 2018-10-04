@@ -2,14 +2,14 @@ package de.uniks.networkparser.graph;
 
 import de.uniks.networkparser.list.SimpleSet;
 
-public class AttributeSet extends SimpleSet<Attribute>{
+public class AttributeSet extends SimpleSet<Attribute> {
 	public AttributeSet() {
 		this.withType(Attribute.class);
 	}
 
 	public ClazzSet getClazzes() {
 		ClazzSet collection = new ClazzSet();
-		for(Attribute item : this) {
+		for (Attribute item : this) {
 			collection.add(item.getClazz());
 		}
 		return collection;
@@ -17,7 +17,7 @@ public class AttributeSet extends SimpleSet<Attribute>{
 
 	public AnnotationSet getAnnotations() {
 		AnnotationSet collection = new AnnotationSet();
-		for(Attribute item : this) {
+		for (Attribute item : this) {
 			collection.add(item.getAnnotation());
 		}
 		return collection;
@@ -25,7 +25,7 @@ public class AttributeSet extends SimpleSet<Attribute>{
 
 	public ModifierSet getModifiers() {
 		ModifierSet collection = new ModifierSet();
-		for(Attribute item : this) {
+		for (Attribute item : this) {
 			collection.add(item.getModifier());
 		}
 		return collection;
@@ -33,7 +33,7 @@ public class AttributeSet extends SimpleSet<Attribute>{
 
 	public DateTypeSet getDataTypes() {
 		DateTypeSet collection = new DateTypeSet();
-		for(Attribute item : this) {
+		for (Attribute item : this) {
 			collection.add(item.getType());
 		}
 		return collection;

@@ -46,7 +46,7 @@ public class Attribute extends Value {
 	@Override
 	public Modifier getModifier() {
 		Modifier modifier = super.getModifier();
-		if(modifier == null) {
+		if (modifier == null) {
 			modifier = new Modifier(Modifier.PRIVATE.getName());
 			super.withChildren(modifier);
 		}
@@ -79,8 +79,8 @@ public class Attribute extends Value {
 
 	public String getValue(String typ, boolean shortName) {
 		if (typ.equals(GraphTokener.OBJECTDIAGRAM)) {
-			if(DataType.STRING == this.type && this.value != null && this.value.startsWith("\"") == false){
-				return "\""+ this.value + "\"";
+			if (DataType.STRING == this.type && this.value != null && this.value.startsWith("\"") == false) {
+				return "\"" + this.value + "\"";
 			}
 			return this.value;
 		}
@@ -102,7 +102,7 @@ public class Attribute extends Value {
 		sb.with(getName());
 		sb.with(':');
 		sb.with(getType().getName(true));
-		if(getValue(GraphTokener.OBJECTDIAGRAM, false)!= null) {
+		if (getValue(GraphTokener.OBJECTDIAGRAM, false) != null) {
 			sb.with('=');
 			sb.with(getValue(GraphTokener.OBJECTDIAGRAM, false));
 		}
@@ -111,19 +111,19 @@ public class Attribute extends Value {
 
 	@Override
 	public boolean equals(Object obj) {
-		if(obj instanceof Attribute) {
+		if (obj instanceof Attribute) {
 			Attribute other = (Attribute) obj;
 			String myName = this.getName();
-			if(myName == null){
+			if (myName == null) {
 				return other.getName() == null;
-			} else if(myName.equalsIgnoreCase(other.getName())){
+			} else if (myName.equalsIgnoreCase(other.getName())) {
 				return true;
 			}
-		} else if(obj instanceof Association) {
+		} else if (obj instanceof Association) {
 			Association assoc = (Association) obj;
 			String myName = this.getName();
-			if(myName == null){
-			} else if(myName.equalsIgnoreCase(assoc.getOther().getName())){
+			if (myName == null) {
+			} else if (myName.equalsIgnoreCase(assoc.getOther().getName())) {
 				return true;
 			}
 		}

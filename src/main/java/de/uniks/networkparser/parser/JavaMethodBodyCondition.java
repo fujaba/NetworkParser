@@ -31,7 +31,7 @@ import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.logic.CustomCondition;
 
 public class JavaMethodBodyCondition extends CustomCondition<Method> {
-	public static final String TAG="methodbody";
+	public static final String TAG = "methodbody";
 
 	@Override
 	public String getKey() {
@@ -54,13 +54,13 @@ public class JavaMethodBodyCondition extends CustomCondition<Method> {
 		} else {
 			result = method.getBody();
 		}
-		
+
 		// Check for {}
 		String trim = result.trim();
-		if(trim.startsWith("{") && trim.endsWith("}")) {
+		if (trim.startsWith("{") && trim.endsWith("}")) {
 			// Its Ok full body
 			return result;
 		}
-		return "    {"+BaseItem.CRLF+"      "+result+BaseItem.CRLF+"    }"+BaseItem.CRLF;
+		return "    {" + BaseItem.CRLF + "      " + result + BaseItem.CRLF + "    }" + BaseItem.CRLF;
 	}
 }

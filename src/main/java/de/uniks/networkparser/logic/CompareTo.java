@@ -73,7 +73,7 @@ public class CompareTo implements ObjectCondition, SendableEntityCreator {
 
 	@Override
 	public String[] getProperties() {
-		return new String[] {COMPARE, VALUE };
+		return new String[] { COMPARE, VALUE };
 	}
 
 	@Override
@@ -94,8 +94,7 @@ public class CompareTo implements ObjectCondition, SendableEntityCreator {
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public boolean setValue(Object entity, String attribute, Object value,
-			String type) {
+	public boolean setValue(Object entity, String attribute, Object value, String type) {
 		if (COMPARE.equalsIgnoreCase(attribute)) {
 			((CompareTo) entity).withCompare(Integer.parseInt("" + value));
 			return true;

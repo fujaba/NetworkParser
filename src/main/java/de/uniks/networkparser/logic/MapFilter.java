@@ -33,12 +33,12 @@ public class MapFilter implements ObjectCondition {
 
 	@Override
 	public boolean update(Object value) {
-		if(value instanceof SimpleEvent == false) {
+		if (value instanceof SimpleEvent == false) {
 			return false;
 		}
-		SimpleEvent event=(SimpleEvent) value;
+		SimpleEvent event = (SimpleEvent) value;
 		Object item = event.getModelValue();
-		if(map.containsKey(item)) {
+		if (map.containsKey(item)) {
 			return false;
 		}
 		map.put(item, event.getEntity());

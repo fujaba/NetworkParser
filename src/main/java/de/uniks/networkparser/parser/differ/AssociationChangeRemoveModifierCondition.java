@@ -16,7 +16,7 @@ public class AssociationChangeRemoveModifierCondition extends MatchCondition {
 	protected boolean checkCondition(GraphMatcher matches, Match match) {
 		Association sourceAssociation = (Association) match.getMatch();
 		Association otherAssociation = (Association) match.getOtherMatch().getMatch();
-		
+
 		if (checkAssociationModifiers(sourceAssociation, otherAssociation)) {
 			return false;
 		}
@@ -26,10 +26,10 @@ public class AssociationChangeRemoveModifierCondition extends MatchCondition {
 		if (match.isMetaMatch() == false && match.isSourceMatch() == false) {
 			return false;
 		}
-		
+
 		return true;
 	}
-	
+
 	@Override
 	protected boolean checkFileCondition(GraphMatcher matches, Match match) {
 		return checkCondition(matches, match);
@@ -39,7 +39,7 @@ public class AssociationChangeRemoveModifierCondition extends MatchCondition {
 	protected boolean calculateFileDiffs(GraphModel model, GraphMatcher matches, Match match) {
 		Association oldAssociation = (Association) match.getMatch();
 		Association newAssociation = (Association) match.getOtherMatch().getMatch();
-		
+
 		for (String modifier : oldAssociation.getModifier().toString().split(" ")) {
 			if (newAssociation.getModifier().toString().contains(modifier) == false) {
 				Match addModifier = Match.create(newAssociation, this, Association.PROPERTY_MODIFIERS, modifier, null);
@@ -48,7 +48,7 @@ public class AssociationChangeRemoveModifierCondition extends MatchCondition {
 		}
 		return true;
 	}
-	
+
 	@Override
 	protected boolean checkModelCondition(GraphMatcher matches, Match match) {
 		return checkCondition(matches, match);
@@ -58,7 +58,7 @@ public class AssociationChangeRemoveModifierCondition extends MatchCondition {
 	protected boolean calculateModelDiffs(GraphModel model, GraphMatcher matches, Match match) {
 		Association oldAssociation = (Association) match.getOtherMatch().getMatch();
 		Association newAssociation = (Association) match.getMatch();
-		
+
 		for (String modifier : oldAssociation.getModifier().toString().split(" ")) {
 			if (newAssociation.getModifier().toString().contains(modifier) == false) {
 				Match addModifier = Match.create(oldAssociation, this, Association.PROPERTY_MODIFIERS, modifier, null);
@@ -67,11 +67,11 @@ public class AssociationChangeRemoveModifierCondition extends MatchCondition {
 		}
 		return true;
 	}
-	
+
 	private boolean checkAssociationModifiers(Association oldAssociation, Association newAssociation) {
 		Modifier oldModifier = oldAssociation.getModifier();
 		Modifier newModifier = newAssociation.getModifier();
-		
+
 		if (oldModifier == null && newModifier == null) {
 			return true;
 		} else if (oldModifier == null || newModifier == null) {

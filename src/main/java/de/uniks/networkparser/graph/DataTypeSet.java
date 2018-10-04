@@ -61,9 +61,10 @@ public class DataTypeSet extends DataType {
 	public static DataTypeSet create(Object genericType) {
 		return new DataTypeSet().withGeneric(DataType.create(genericType));
 	}
+
 	public static DataTypeSet create(Clazz container, Object genericType) {
 		DataTypeSet list = new DataTypeSet().withGeneric(DataType.create(genericType));
-		if(container != null) {
+		if (container != null) {
 			list.value = container;
 		}
 		return list;
@@ -71,19 +72,19 @@ public class DataTypeSet extends DataType {
 
 	@Override
 	public boolean equals(Object obj) {
-		if(super.equals(obj) == false) {
+		if (super.equals(obj) == false) {
 			return false;
 		}
-		if(obj instanceof DataTypeSet == false) {
+		if (obj instanceof DataTypeSet == false) {
 			return false;
 		}
-		if(obj.hashCode() == this.hashCode()) {
+		if (obj.hashCode() == this.hashCode()) {
 			return true;
 		}
-		if(this.generic == null) {
-			return ((DataTypeSet)obj).getGeneric() == null;
+		if (this.generic == null) {
+			return ((DataTypeSet) obj).getGeneric() == null;
 		}
-		return ((DataTypeSet)obj).getGeneric().equals(this.generic);
+		return ((DataTypeSet) obj).getGeneric().equals(this.generic);
 	}
 
 	@Override

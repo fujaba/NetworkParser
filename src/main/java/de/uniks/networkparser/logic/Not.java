@@ -29,6 +29,7 @@ THE SOFTWARE.
 */
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.TemplateParser;
+
 /**
  * Not Clazz for neg. Condition.
  *
@@ -36,7 +37,7 @@ import de.uniks.networkparser.interfaces.TemplateParser;
  */
 
 public class Not implements ParserCondition, SendableEntityCreator {
-	public static final String TAG="not";
+	public static final String TAG = "not";
 	/** Constant for ITEM. */
 	public static final String ITEM = "item";
 	/** Varibale for Condition. */
@@ -44,7 +45,7 @@ public class Not implements ParserCondition, SendableEntityCreator {
 
 	@Override
 	public boolean update(Object evt) {
-		if(item != null) {
+		if (item != null) {
 			return !item.update(evt);
 		}
 		return false;
@@ -58,8 +59,8 @@ public class Not implements ParserCondition, SendableEntityCreator {
 	}
 
 	/**
-	 * @param value		for new Condition
-	 * @return 			Not Instance
+	 * @param value for new Condition
+	 * @return Not Instance
 	 */
 	public Not with(ObjectCondition value) {
 		this.item = value;
@@ -85,10 +86,9 @@ public class Not implements ParserCondition, SendableEntityCreator {
 	}
 
 	@Override
-	public boolean setValue(Object entity, String attribute, Object value,
-			String type) {
+	public boolean setValue(Object entity, String attribute, Object value, String type) {
 		if (ITEM.equalsIgnoreCase(attribute)) {
-			if(value instanceof ObjectCondition) {
+			if (value instanceof ObjectCondition) {
 				((Not) entity).with((ObjectCondition) value);
 			}
 		}
@@ -98,8 +98,8 @@ public class Not implements ParserCondition, SendableEntityCreator {
 	/**
 	 * Static Method for instance a new Instance of Not Object.
 	 *
-	 * @param condition	Condition to negate
-	 * @return 			The new Instance
+	 * @param condition Condition to negate
+	 * @return The new Instance
 	 */
 	public static Not create(ObjectCondition condition) {
 		return new Not().with(condition);
@@ -107,8 +107,8 @@ public class Not implements ParserCondition, SendableEntityCreator {
 
 	@Override
 	public String toString() {
-		if(this.item != null) {
-			return "!"+this.item.toString();
+		if (this.item != null) {
+			return "!" + this.item.toString();
 		}
 		return "!";
 	}

@@ -24,10 +24,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-public class ModifyEntry extends GraphMember{
-	public static final String TYPE_DELETE="delete";
-	public static final String TYPE_MODIFIER="modifier";
+public class ModifyEntry extends GraphMember {
+	public static final String TYPE_DELETE = "delete";
+	public static final String TYPE_MODIFIER = "modifier";
 	private String type;
+
 	public ModifyEntry withEntry(GraphMember child) {
 		super.withChildren(child);
 		return this;
@@ -48,6 +49,7 @@ public class ModifyEntry extends GraphMember{
 		result.withEntry(child);
 		return result;
 	}
+
 	public static ModifyEntry createModifier(GraphMember child) {
 		ModifyEntry result = new ModifyEntry();
 		result.withModifier(TYPE_MODIFIER);
@@ -56,11 +58,11 @@ public class ModifyEntry extends GraphMember{
 	}
 
 	public GraphMember getEntry() {
-		if(children == null) {
+		if (children == null) {
 			return null;
 		}
-		if(this.children instanceof GraphSimpleSet) {
-			GraphSimpleSet set = (GraphSimpleSet)this.children;
+		if (this.children instanceof GraphSimpleSet) {
+			GraphSimpleSet set = (GraphSimpleSet) this.children;
 			return set.first();
 		}
 		return (GraphMember) children;

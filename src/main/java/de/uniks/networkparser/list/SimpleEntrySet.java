@@ -29,7 +29,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-public class SimpleEntrySet<K, V> implements Set<Entry<K, V>>{
+public class SimpleEntrySet<K, V> implements Set<Entry<K, V>> {
 	private SimpleKeyValueList<K, V> map;
 
 	public SimpleEntrySet(SimpleKeyValueList<K, V> value) {
@@ -57,7 +57,7 @@ public class SimpleEntrySet<K, V> implements Set<Entry<K, V>>{
 
 	@Override
 	public Iterator<Entry<K, V>> iterator() {
-		return new SimpleIteratorSet<K,V>(map);
+		return new SimpleIteratorSet<K, V>(map);
 	}
 
 	@Override
@@ -65,7 +65,7 @@ public class SimpleEntrySet<K, V> implements Set<Entry<K, V>>{
 		// Change to DebugInfo
 		int size = this.map.size();
 		Object[] info = new Object[this.map.size()];
-		for(int i=0;i<size;i++) {
+		for (int i = 0; i < size; i++) {
 			ObjectMapEntry mapEntry = new ObjectMapEntry();
 			mapEntry.withKey(this.map.getKeyByIndex(i));
 			mapEntry.withValue(this.map.getValueByIndex(i));
@@ -87,7 +87,7 @@ public class SimpleEntrySet<K, V> implements Set<Entry<K, V>>{
 
 	@Override
 	public boolean remove(Object o) {
-		return this.map.removeByObject(o)>=0;
+		return this.map.removeByObject(o) >= 0;
 	}
 
 	@Override
@@ -97,8 +97,8 @@ public class SimpleEntrySet<K, V> implements Set<Entry<K, V>>{
 
 	@Override
 	public boolean addAll(Collection<? extends Entry<K, V>> collection) {
-		boolean result=true;
-		for(Entry<K, V> item : collection) {
+		boolean result = true;
+		for (Entry<K, V> item : collection) {
 			result = result && this.map.add(item.getKey(), item.getValue());
 		}
 		return result;

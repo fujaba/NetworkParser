@@ -40,12 +40,15 @@ public class DateTimeField extends Input<String> {
 		super();
 		this.type = type;
 	}
+
 	public static DateTimeField createDateField() {
 		return new DateTimeField();
 	}
+
 	public static DateTimeField createTimeField() {
 		return new DateTimeField(TIME);
 	}
+
 	@Override
 	public DateTimeField newInstance() {
 		return new DateTimeField();

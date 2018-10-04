@@ -78,8 +78,7 @@ public class RegCalculator {
 
 		ArrayList<String> parts = new ArrayList<String>();
 		int pos;
-		if (tokener.getCurrentChar() == '('
-				&& tokener.charAt(tokener.length() - 1) == ')') {
+		if (tokener.getCurrentChar() == '(' && tokener.charAt(tokener.length() - 1) == ')') {
 			pos = tokener.position();
 			String value = tokener.getStringPart('(', ')');
 			if (value != null && tokener.position() == tokener.length()) {
@@ -105,15 +104,13 @@ public class RegCalculator {
 			}
 
 			if ((pos = BACKETSOPEN.indexOf(current)) >= 0) {
-				String value = tokener.getStringPart(BACKETSOPEN.charAt(pos),
-						BACKETSCLOSE.charAt(pos));
+				String value = tokener.getStringPart(BACKETSOPEN.charAt(pos), BACKETSCLOSE.charAt(pos));
 				if (value != null) {
 					if (defaultMulti) {
 						parts.add("*");
 					}
 					if (pos > 0) {
-						parts.add("(" + value.substring(1, value.length() - 1)
-								+ ")");
+						parts.add("(" + value.substring(1, value.length() - 1) + ")");
 					} else {
 						parts.add(value);
 					}
@@ -155,8 +152,8 @@ public class RegCalculator {
 			}
 			current = null;
 		}
-		if(parts.size()<1) {
-			parts.add(""+current);
+		if (parts.size() < 1) {
+			parts.add("" + current);
 		}
 
 		// Parsing Funciton & Parsing (
@@ -170,19 +167,16 @@ public class RegCalculator {
 					if (operator != null && operator.getPriority() == LINE) {
 						if (z > 1) {
 							// Exist Pre Pre
-							Operator preOperator = operators.get(parts
-									.get(z - 2));
+							Operator preOperator = operators.get(parts.get(z - 2));
 							if (preOperator == null) {
 								z--;
 								continue;
 							}
 						}
 						if (operator.getTag().equals("-")) {
-							parts.set(z - 1, ""
-									+ (Double.valueOf(parts.get(z)) * -1));
+							parts.set(z - 1, "" + (Double.valueOf(parts.get(z)) * -1));
 						} else {
-							parts.set(z - 1, ""
-									+ (Double.valueOf(parts.get(z))));
+							parts.set(z - 1, "" + (Double.valueOf(parts.get(z))));
 						}
 						parts.remove(z);
 						z--;
@@ -194,10 +188,8 @@ public class RegCalculator {
 			}
 			if (pos > 0) {
 				// Function
-				Operator operator = operators.get(parts.get(z).substring(0,
-						parts.get(z).indexOf("(")));
-				Double[] values = calculateFields(parts.get(z).substring(
-						pos + 1, parts.get(z).length() - 1));
+				Operator operator = operators.get(parts.get(z).substring(0, parts.get(z).indexOf("(")));
+				Double[] values = calculateFields(parts.get(z).substring(pos + 1, parts.get(z).length() - 1));
 				if (operator != null && values.length >= operator.getValues()) {
 					parts.set(z, "" + operator.calculate(values));
 				}
@@ -210,12 +202,8 @@ public class RegCalculator {
 			for (int i = 0; i < parts.size(); i++) {
 				Operator operator = operators.get(parts.get(i));
 				if (operator != null && operator.getPriority() == prio) {
-					parts.set(
-							i - 1,
-							""
-									+ operator.calculate(new Double[] {
-											Double.valueOf(parts.get(i - 1)),
-											Double.valueOf(parts.get(i + 1)) }));
+					parts.set(i - 1, "" + operator.calculate(
+							new Double[] { Double.valueOf(parts.get(i - 1)), Double.valueOf(parts.get(i + 1)) }));
 					parts.remove(i);
 					parts.remove(i);
 					i = i - 1;
@@ -230,8 +218,7 @@ public class RegCalculator {
 		return result;
 	}
 
-	private boolean addOperator(String value, CharacterBuffer tokener,
-			ArrayList<String> parts) {
+	private boolean addOperator(String value, CharacterBuffer tokener, ArrayList<String> parts) {
 		if (constants.containsKey(value)) {
 			// Its constants
 			return parts.add("" + constants.get(value));

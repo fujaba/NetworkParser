@@ -35,43 +35,49 @@ public class StartElement {
 	public String getLabel() {
 		return label;
 	}
+
 	/**
 	 * @param label the label to set
-	 * @return  ThisComponent
+	 * @return ThisComponent
 	 */
 	public StartElement withLabel(String label) {
 		this.label = label;
 		return this;
 	}
+
 	/** @return the description */
 	public String getDescription() {
 		return description;
 	}
+
 	/**
 	 * @param description the description to set
-	 * @return  ThisComponent
+	 * @return ThisComponent
 	 */
 	public StartElement withDescription(String description) {
 		this.description = description;
 		return this;
 	}
+
 	/** @return the values */
 	public Object getDefaultValues() {
 		return defaultValue;
 	}
 
 	/**
-	 *  @param values the values to set
+	 * @param values the values to set
 	 * @return ThisComponent
-	 * */
+	 */
 	public StartElement withDefaultValues(Object values) {
 		this.defaultValue = values;
 		return this;
 	}
+
 	/** @return the key */
 	public String getKey() {
 		return key;
 	}
+
 	/**
 	 * @param key the key to set
 	 * @return ThisComponent
@@ -80,10 +86,12 @@ public class StartElement {
 		this.key = key;
 		return this;
 	}
-	/** @return the value  */
+
+	/** @return the value */
 	public Object getValue() {
 		return value;
 	}
+
 	/**
 	 * @param value the value to set
 	 * @return ThisComponent

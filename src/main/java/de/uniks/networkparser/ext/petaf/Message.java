@@ -35,32 +35,27 @@ import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
 import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.list.SimpleSet;
 
-public class Message implements SendableEntityCreator, SendableEntityCreatorNoIndex{
-	public static final String PROPERTY_HISTORYID="id";
-	public static final String PROPERTY_PREVIOUSCHANGE="prevChange";
-	public static final String PROPERTY_MSG="msg";
-	public static final String PROPERTY_RECEIVED="received";
-	public static final String PROPERTY_PARENT="parent";
-	public static final String PROPERTY_TYPE="type";
-	public static final int TIMEOUTDEFAULT=0;
-	protected final static PropertyList props=PropertyList.create(
-			PROPERTY_TYPE,
-			PROPERTY_HISTORYID,
-			PROPERTY_MSG,
-			PROPERTY_RECEIVED,
-			PROPERTY_PREVIOUSCHANGE
-	);
+public class Message implements SendableEntityCreator, SendableEntityCreatorNoIndex {
+	public static final String PROPERTY_HISTORYID = "id";
+	public static final String PROPERTY_PREVIOUSCHANGE = "prevChange";
+	public static final String PROPERTY_MSG = "msg";
+	public static final String PROPERTY_RECEIVED = "received";
+	public static final String PROPERTY_PARENT = "parent";
+	public static final String PROPERTY_TYPE = "type";
+	public static final int TIMEOUTDEFAULT = 0;
+	protected final static PropertyList props = PropertyList.create(PROPERTY_TYPE, PROPERTY_HISTORYID, PROPERTY_MSG,
+			PROPERTY_RECEIVED, PROPERTY_PREVIOUSCHANGE);
 	protected String historyId;
 	protected Object received;
 	protected String prevChange;
 	protected BaseItem msg;
 	protected int timeOut;
-	protected boolean sendAnyHow=false;
+	protected boolean sendAnyHow = false;
 	protected String type;
 	protected Object session;
 
-	public String getMessageId(Space space, NodeProxy proxy){
-		if(this.historyId == null ){
+	public String getMessageId(Space space, NodeProxy proxy) {
+		if (this.historyId == null) {
 			this.historyId = SHA1.value(getBlob()).toString();
 		}
 		return historyId;
@@ -73,24 +68,24 @@ public class Message implements SendableEntityCreator, SendableEntityCreatorNoIn
 
 	public String getType() {
 		// Inkluisive FallBack
-		if(type != null) {
+		if (type != null) {
 			return type;
 		}
 		return this.getClass().getName();
 	}
 
-	public Message withHistoryId(String id){
+	public Message withHistoryId(String id) {
 		this.historyId = id;
 		return this;
 	}
 
 	@SuppressWarnings("unchecked")
 	public SimpleSet<NodeProxy> getReceived() {
-		if(received instanceof SimpleSet<?>) {
+		if (received instanceof SimpleSet<?>) {
 			return (SimpleSet<NodeProxy>) received;
 		}
-		SimpleSet<NodeProxy> result=new SimpleSet<NodeProxy>();
-		if(received != null) {
+		SimpleSet<NodeProxy> result = new SimpleSet<NodeProxy>();
+		if (received != null) {
 			result.add(received);
 		}
 		return result;
@@ -98,12 +93,12 @@ public class Message implements SendableEntityCreator, SendableEntityCreatorNoIn
 
 	@SuppressWarnings("unchecked")
 	public <ST extends Message> ST withAddToReceived(NodeProxy value) {
-		if(this.received == null) {
+		if (this.received == null) {
 			this.received = value;
 			return (ST) this;
 		}
 		SimpleSet<?> list;
-		if(this.received instanceof NodeProxy) {
+		if (this.received instanceof NodeProxy) {
 			list = new SimpleSet<NodeProxy>();
 			list.with(this.received);
 			this.received = list;
@@ -115,7 +110,7 @@ public class Message implements SendableEntityCreator, SendableEntityCreatorNoIn
 	}
 
 	public CharacterBuffer getBlob() {
-		CharacterBuffer list=new CharacterBuffer();
+		CharacterBuffer list = new CharacterBuffer();
 		list.withObjects(getPrevChange(), getMessage(), getReceiver());
 		return list;
 	}
@@ -128,7 +123,7 @@ public class Message implements SendableEntityCreator, SendableEntityCreatorNoIn
 		return true;
 	}
 
-	public Message withMessage(BaseItem value){
+	public Message withMessage(BaseItem value) {
 		this.msg = value;
 		return this;
 	}
@@ -136,6 +131,7 @@ public class Message implements SendableEntityCreator, SendableEntityCreatorNoIn
 	public String getPrevChange() {
 		return prevChange;
 	}
+
 	public Message withPrevChange(String prevChange) {
 		this.prevChange = prevChange;
 		return this;
@@ -145,7 +141,7 @@ public class Message implements SendableEntityCreator, SendableEntityCreatorNoIn
 		return getReceived().first();
 	}
 
-	public BaseItem getMessage(){
+	public BaseItem getMessage() {
 		return msg;
 	}
 
@@ -181,7 +177,7 @@ public class Message implements SendableEntityCreator, SendableEntityCreatorNoIn
 	@Override
 	public String toString() {
 		BaseItem message = getMessage();
-		if(message != null) {
+		if (message != null) {
 			return message.toString();
 		}
 		return super.toString();
@@ -189,24 +185,23 @@ public class Message implements SendableEntityCreator, SendableEntityCreatorNoIn
 
 	public boolean write(String answer) {
 		OutputStream stream = getOutputStream();
-		if(stream == null) {
+		if (stream == null) {
 			return false;
 		}
 		try {
 			stream.write(answer.getBytes());
 			stream.flush();
-		}catch (Exception e) {
+		} catch (Exception e) {
 			return false;
 		}
 		return true;
 	}
 
 	public OutputStream getOutputStream() {
-		if(this.session instanceof Socket) {
+		if (this.session instanceof Socket) {
 			try {
-				return ((Socket)session).getOutputStream();
-			}
-			catch (Exception e) {
+				return ((Socket) session).getOutputStream();
+			} catch (Exception e) {
 			}
 		}
 		return null;
@@ -229,56 +224,55 @@ public class Message implements SendableEntityCreator, SendableEntityCreatorNoIn
 
 	@Override
 	public Object getValue(Object entity, String attribute) {
-		if(attribute == null || entity instanceof Message == false) {
+		if (attribute == null || entity instanceof Message == false) {
 			return null;
 		}
 		Message msg = (Message) entity;
-		if(PROPERTY_HISTORYID.equalsIgnoreCase(attribute)){
+		if (PROPERTY_HISTORYID.equalsIgnoreCase(attribute)) {
 			return msg.historyId;
 		}
-		if(PROPERTY_PREVIOUSCHANGE.equalsIgnoreCase(attribute)){
+		if (PROPERTY_PREVIOUSCHANGE.equalsIgnoreCase(attribute)) {
 			return msg.getPrevChange();
 		}
-		if(PROPERTY_MSG.equalsIgnoreCase(attribute)){
+		if (PROPERTY_MSG.equalsIgnoreCase(attribute)) {
 			return msg.getMessage();
 		}
-		if(PROPERTY_RECEIVED.equalsIgnoreCase(attribute)){
+		if (PROPERTY_RECEIVED.equalsIgnoreCase(attribute)) {
 			return msg.getReceived();
 		}
-		if(PROPERTY_TYPE.equalsIgnoreCase(attribute)) {
+		if (PROPERTY_TYPE.equalsIgnoreCase(attribute)) {
 			return msg.getType();
 		}
 		return null;
 	}
 
 	@Override
-	public boolean setValue(Object entity, String attribute, Object value,
-			String type) {
-		if(attribute == null || entity instanceof Message == false) {
+	public boolean setValue(Object entity, String attribute, Object value, String type) {
+		if (attribute == null || entity instanceof Message == false) {
 			return false;
 		}
 		Message msg = (Message) entity;
-		if(PROPERTY_HISTORYID.equalsIgnoreCase(attribute)){
-			msg.withHistoryId((String)value);
+		if (PROPERTY_HISTORYID.equalsIgnoreCase(attribute)) {
+			msg.withHistoryId((String) value);
 		}
-		if(PROPERTY_PREVIOUSCHANGE.equalsIgnoreCase(attribute)){
+		if (PROPERTY_PREVIOUSCHANGE.equalsIgnoreCase(attribute)) {
 			msg.withPrevChange((String) value);
 			return true;
 		}
-		if(PROPERTY_MSG.equalsIgnoreCase(attribute)){
-			if(value instanceof JsonObject) {
+		if (PROPERTY_MSG.equalsIgnoreCase(attribute)) {
+			if (value instanceof JsonObject) {
 				msg.withMessage((JsonObject) value);
 			}
 			return true;
 		}
-		if(PROPERTY_RECEIVED.equalsIgnoreCase(attribute)){
-			if(value instanceof NodeProxy) {
+		if (PROPERTY_RECEIVED.equalsIgnoreCase(attribute)) {
+			if (value instanceof NodeProxy) {
 				msg.withAddToReceived((NodeProxy) value);
 			}
 			return true;
 		}
-		if(PROPERTY_TYPE.equalsIgnoreCase(attribute)) {
-			msg.withType((String)value);
+		if (PROPERTY_TYPE.equalsIgnoreCase(attribute)) {
+			msg.withType((String) value);
 			return true;
 		}
 		return false;

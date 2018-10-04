@@ -34,8 +34,8 @@ public class LogItem extends SendableItem implements SendableEntityCreator {
 	public static final String PROPERTY_CURRENTTIME = "currenttime";
 	public static final String PROPERTY_THREADNAME = "threadName";
 	public static final String PROPERTY_MESSAGE = "message";
-	private final String[] properties = new String[] { LogItem.PROPERTY_CURRENTTIME, LogItem.PROPERTY_TIMESTAMP, LogItem.PROPERTY_THREADNAME,
-			LogItem.PROPERTY_TYPE, LogItem.PROPERTY_MESSAGE, };
+	private final String[] properties = new String[] { LogItem.PROPERTY_CURRENTTIME, LogItem.PROPERTY_TIMESTAMP,
+			LogItem.PROPERTY_THREADNAME, LogItem.PROPERTY_TYPE, LogItem.PROPERTY_MESSAGE, };
 
 	private static final long STARTTIME = System.currentTimeMillis();
 
@@ -162,7 +162,7 @@ public class LogItem extends SendableItem implements SendableEntityCreator {
 		if (PROPERTY_MESSAGE.equalsIgnoreCase(attribute)) {
 			return item.getMessage();
 		}
-		if(PROPERTY_CURRENTTIME.equalsIgnoreCase(attribute)) {
+		if (PROPERTY_CURRENTTIME.equalsIgnoreCase(attribute)) {
 			return item.getCurrentDate();
 		}
 		return null;

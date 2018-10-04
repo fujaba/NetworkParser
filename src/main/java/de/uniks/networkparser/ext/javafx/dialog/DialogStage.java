@@ -39,6 +39,7 @@ public class DialogStage implements Runnable {
 		centerOnScreen();
 		ReflectionLoader.call(stage, "showAndWait");
 	}
+
 	public void show() {
 		ReflectionLoader.call(stage, "show");
 	}

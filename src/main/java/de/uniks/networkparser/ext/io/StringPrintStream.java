@@ -28,7 +28,7 @@ import java.io.PrintStream;
 import de.uniks.networkparser.ext.ErrorHandler;
 import de.uniks.networkparser.interfaces.BaseItem;
 
-public class StringPrintStream extends PrintStream{
+public class StringPrintStream extends PrintStream {
 	private ErrorHandler handler;
 	private boolean error;
 
@@ -41,10 +41,10 @@ public class StringPrintStream extends PrintStream{
 		this.handler = handler;
 		this.error = error;
 	}
+
 	public StringPrintStream(OutputStream out) {
 		super(out);
 	}
-
 
 	public StringPrintStream withListener(ErrorHandler value) {
 		this.handler = value;
@@ -52,29 +52,32 @@ public class StringPrintStream extends PrintStream{
 	}
 
 	public void print(Object value) {
-		if(handler != null && value != null) {
+		if (handler != null && value != null) {
 			handler.writeOutput(value.toString(), error);
 		}
 	}
+
 	public void print(String value) {
-		if(handler != null) {
+		if (handler != null) {
 			handler.writeOutput(value, error);
 		}
 	}
 
 	public void println() {
-		if(handler != null) {
+		if (handler != null) {
 			handler.writeOutput(BaseItem.CRLF, error);
 		}
 	}
+
 	public void println(String value) {
-		if(handler != null) {
+		if (handler != null) {
 			handler.writeOutput(value, error);
 			handler.writeOutput(BaseItem.CRLF, error);
 		}
 	}
+
 	public void println(Object value) {
-		if(handler != null && value != null) {
+		if (handler != null && value != null) {
 			handler.writeOutput(value.toString(), error);
 			handler.writeOutput(BaseItem.CRLF, error);
 		}

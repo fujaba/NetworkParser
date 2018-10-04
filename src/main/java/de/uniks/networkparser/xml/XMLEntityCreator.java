@@ -1,4 +1,5 @@
 package de.uniks.networkparser.xml;
+
 /*
 NetworkParser
 The MIT License
@@ -32,8 +33,7 @@ public class XMLEntityCreator implements SendableEntityCreatorTag {
 	private String nameSpace = "";
 
 	/** The properties. */
-	private final String[] properties = new String[] {XMLEntity.PROPERTY_TAG,
-			XMLEntity.PROPERTY_VALUE };
+	private final String[] properties = new String[] { XMLEntity.PROPERTY_TAG, XMLEntity.PROPERTY_VALUE };
 
 	@Override
 	public String[] getProperties() {
@@ -43,8 +43,8 @@ public class XMLEntityCreator implements SendableEntityCreatorTag {
 	/**
 	 * Set a Namespace for XSD Element
 	 *
-	 * @param namespace		the NameSpace for XSD-Element
-	 * @return 				Itself
+	 * @param namespace the NameSpace for XSD-Element
+	 * @return Itself
 	 */
 	public XMLEntityCreator withNameSpace(String namespace) {
 		this.nameSpace = namespace;
@@ -68,22 +68,21 @@ public class XMLEntityCreator implements SendableEntityCreatorTag {
 	}
 
 	@Override
-	public boolean setValue(Object entity, String attribute, Object value,
-			String type) {
+	public boolean setValue(Object entity, String attribute, Object value, String type) {
 		if (XMLEntity.PROPERTY_TAG.equalsIgnoreCase(attribute)) {
 			((XMLEntity) entity).withType("" + value);
 			return true;
 		}
 		if (XMLEntity.PROPERTY_VALUE.equalsIgnoreCase(attribute)) {
-			String newValue = ""+value;
-			if(newValue.length()>0) {
+			String newValue = "" + value;
+			if (newValue.length() > 0) {
 				((XMLEntity) entity).withValueItem(newValue);
 			}
 			return true;
 		}
-		if(XMLTokener.CHILDREN.equals(type) && value instanceof EntityList){
-			((XMLEntity) entity).withChild((EntityList)value);
-		}else if(attribute != null && attribute.isEmpty() == false) {
+		if (XMLTokener.CHILDREN.equals(type) && value instanceof EntityList) {
+			((XMLEntity) entity).withChild((EntityList) value);
+		} else if (attribute != null && attribute.isEmpty() == false) {
 			((XMLEntity) entity).add(attribute, value);
 		}
 		return true;
@@ -91,7 +90,7 @@ public class XMLEntityCreator implements SendableEntityCreatorTag {
 
 	@Override
 	public String getTag() {
-		if(nameSpace != null) {
+		if (nameSpace != null) {
 			return nameSpace + ":element";
 		}
 		return null;

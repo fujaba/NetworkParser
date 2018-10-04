@@ -41,11 +41,11 @@ public class Method extends GraphMember {
 
 	@Override
 	public Method with(String name) {
-		if(name == null) {
+		if (name == null) {
 			return this;
 		}
 		int pos = name.indexOf("(");
-		if(pos>0) {
+		if (pos > 0) {
 			name = name.substring(0, pos);
 		}
 		super.with(name);
@@ -56,13 +56,13 @@ public class Method extends GraphMember {
 		StringBuilder sb = new StringBuilder();
 
 		sb.append(super.getName());
-		if(children != null) {
+		if (children != null) {
 			sb.append(getParameterString(shortName, removeParameterNames));
-		}else {
+		} else {
 			sb.append("()");
 		}
-		if(returnType!=null && returnType.equals(DataType.VOID) == false){
-			sb.append(" "+returnType.getName(shortName));
+		if (returnType != null && returnType.equals(DataType.VOID) == false) {
+			sb.append(" " + returnType.getName(shortName));
 		}
 		return sb.toString();
 	}
@@ -93,7 +93,7 @@ public class Method extends GraphMember {
 	@Override
 	public Modifier getModifier() {
 		Modifier modifier = super.getModifier();
-		if(modifier == null) {
+		if (modifier == null) {
 			modifier = new Modifier(Modifier.PUBLIC.getName());
 			super.withChildren(modifier);
 		}
@@ -117,21 +117,21 @@ public class Method extends GraphMember {
 		return this;
 	}
 
-	CharacterBuffer getParameterString(boolean shortName, boolean removeParameterNames){
-		CharacterBuffer sb=new CharacterBuffer().with("(");
+	CharacterBuffer getParameterString(boolean shortName, boolean removeParameterNames) {
+		CharacterBuffer sb = new CharacterBuffer().with("(");
 		GraphSimpleSet collection = this.getChildren();
-		for(int i=0;i<collection.size();i++) {
-			if((collection.get(i) instanceof Parameter)==false) {
+		for (int i = 0; i < collection.size(); i++) {
+			if ((collection.get(i) instanceof Parameter) == false) {
 				continue;
 			}
 			Parameter param = (Parameter) collection.get(i);
-			if(sb.length() > 1) {
+			if (sb.length() > 1) {
 				sb.with(", ");
 			}
-			if(param.getName() == null || removeParameterNames) {
-				sb.with(param.getType().getName(shortName)+ " p"+i);
-			}else{
-				sb.with(param.getType().getName(shortName)+" "+collection.get(i).getName());
+			if (param.getName() == null || removeParameterNames) {
+				sb.with(param.getType().getName(shortName) + " p" + i);
+			} else {
+				sb.with(param.getType().getName(shortName) + " " + collection.get(i).getName());
 			}
 		}
 		sb.with(")");
@@ -152,12 +152,12 @@ public class Method extends GraphMember {
 		if (children == null) {
 			return collection;
 		}
-		if( children instanceof Throws) {
+		if (children instanceof Throws) {
 			collection.add((Throws) children);
-		}else if (children instanceof GraphSimpleSet) {
+		} else if (children instanceof GraphSimpleSet) {
 			GraphSimpleSet items = (GraphSimpleSet) children;
 			for (GraphMember child : items) {
-				if (child instanceof Throws)  {
+				if (child instanceof Throws) {
 					collection.add((Throws) child);
 				}
 			}
@@ -165,29 +165,31 @@ public class Method extends GraphMember {
 		return collection;
 	}
 
-	/** get All Parameter
+	/**
+	 * get All Parameter
+	 * 
 	 * @param filters Can Filter the List of Parameter
 	 * @return all Parameter of a Method
 	 *
-	 *<pre>
+	 *         <pre>
 	 * Method  --------------------- Parameter
 	 * one                          many
-	 *</pre>
+	 *         </pre>
 	 */
 	public ParameterSet getParameters(Condition<?>... filters) {
 		ParameterSet collection = new ParameterSet();
 		if (children == null) {
 			return collection;
 		}
-		if( children instanceof Parameter) {
-			if(check((Parameter)this.children, filters)) {
-				collection.add((Parameter)this.children);
+		if (children instanceof Parameter) {
+			if (check((Parameter) this.children, filters)) {
+				collection.add((Parameter) this.children);
 			}
-		}else if (children instanceof GraphSimpleSet) {
+		} else if (children instanceof GraphSimpleSet) {
 			GraphSimpleSet items = (GraphSimpleSet) children;
 			for (GraphMember item : items) {
-				if(item instanceof Parameter && check(item, filters) ) {
-					collection.add((Parameter)item);
+				if (item instanceof Parameter && check(item, filters)) {
+					collection.add((Parameter) item);
 				}
 			}
 		}
@@ -219,13 +221,13 @@ public class Method extends GraphMember {
 	}
 
 	public Method with(Annotation value) {
-		if(this.children != null) {
+		if (this.children != null) {
 			if (this.children instanceof Annotation) {
 				this.children = null;
-			} else if(this.children instanceof GraphSimpleSet) {
+			} else if (this.children instanceof GraphSimpleSet) {
 				GraphSimpleSet collection = (GraphSimpleSet) this.children;
-				for(int i=collection.size();i>=0;i--) {
-					if(collection.get(i) instanceof Annotation) {
+				for (int i = collection.size(); i >= 0; i--) {
+					if (collection.get(i) instanceof Annotation) {
 						collection.remove(i);
 					}
 				}
@@ -242,46 +244,43 @@ public class Method extends GraphMember {
 
 	@Override
 	public Object getValue(String attribute) {
-		if(PROPERTY_RETURNTYPE.equalsIgnoreCase(attribute)) {
+		if (PROPERTY_RETURNTYPE.equalsIgnoreCase(attribute)) {
 			return this.getReturnType();
 		}
-		if(PROPERTY_PARAMETER.equalsIgnoreCase(attribute)) {
+		if (PROPERTY_PARAMETER.equalsIgnoreCase(attribute)) {
 			return this.getParameters();
 		}
 		if (PROPERTY_PARAMETERNAME.equalsIgnoreCase(attribute)) {
 			return this.getParameterString(true, false);
 		}
-		if(PROPERTY_ANNOTATIONS.equalsIgnoreCase(attribute)) {
+		if (PROPERTY_ANNOTATIONS.equalsIgnoreCase(attribute)) {
 			return this.getAnnotation();
 		}
-		if(PROPERTY_NODE.equalsIgnoreCase(attribute)) {
+		if (PROPERTY_NODE.equalsIgnoreCase(attribute)) {
 			return this.getNodes();
 		}
-		if(PROPERTY_BODY.equalsIgnoreCase(attribute)) {
+		if (PROPERTY_BODY.equalsIgnoreCase(attribute)) {
 			return this.getBody();
 		}
 		return super.getValue(attribute);
 	}
 
-
 	public boolean isValidReturn() {
-		if(getReturnType() == null || DataType.VOID.equals(getReturnType())) {
+		if (getReturnType() == null || DataType.VOID.equals(getReturnType())) {
 			return true;
 		}
-		if(this.body == null) {
+		if (this.body == null) {
 			return false;
 		}
 		String[] lines = this.body.split("\n");
-		if(lines.length<1) {
+		if (lines.length < 1) {
 			return false;
 		}
 
-		for (String l : lines)
-		{
-		   if (l.trim().startsWith("return"))
-		   {
-		      return true;
-		   }
+		for (String l : lines) {
+			if (l.trim().startsWith("return")) {
+				return true;
+			}
 		}
 		return false;
 	}

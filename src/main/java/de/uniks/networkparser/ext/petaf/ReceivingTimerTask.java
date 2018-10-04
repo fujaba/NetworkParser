@@ -30,8 +30,7 @@ public abstract class ReceivingTimerTask extends Message implements Runnable {
 	protected Runnable task;
 	protected Space space;
 
-
-	public ReceivingTimerTask withSpace(Space space){
+	public ReceivingTimerTask withSpace(Space space) {
 		handler.addListener(space);
 		this.space = space;
 		return this;
@@ -39,9 +38,9 @@ public abstract class ReceivingTimerTask extends Message implements Runnable {
 
 	@Override
 	public void run() {
-		try{
+		try {
 			runTask();
-		}catch(Exception e){
+		} catch (Exception e) {
 			handler.saveException(e, false);
 		}
 	}
@@ -51,7 +50,7 @@ public abstract class ReceivingTimerTask extends Message implements Runnable {
 	}
 
 	public boolean runTask() throws Exception {
-		if(this.task != null) {
+		if (this.task != null) {
 			task.run();
 			return true;
 		}

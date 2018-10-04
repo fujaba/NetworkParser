@@ -49,7 +49,7 @@ public class ByteList extends SimpleList<ByteItem> implements ByteItem {
 
 	@Override
 	public BaseItem getNewList(boolean keyValue) {
-		if(keyValue) {
+		if (keyValue) {
 			return new ByteEntity();
 		}
 		return new ByteList();
@@ -63,14 +63,13 @@ public class ByteList extends SimpleList<ByteItem> implements ByteItem {
 	/**
 	 * Convert the bytes to a String
 	 *
-	 * @param converter
-	 *			Grammar
+	 * @param converter Grammar
 	 * @return converted bytes as String
 	 */
 	@Override
 	public String toString(Converter converter) {
-		if(converter instanceof ByteConverter) {
-			return toString((ByteConverter)converter, false);
+		if (converter instanceof ByteConverter) {
+			return toString((ByteConverter) converter, false);
 		}
 		return toString(null, false);
 	}
@@ -78,10 +77,8 @@ public class ByteList extends SimpleList<ByteItem> implements ByteItem {
 	/**
 	 * Convert the bytes to a String
 	 *
-	 * @param converter
-	 *			Grammar
-	 * @param dynamic
-	 *			if byte is dynamic
+	 * @param converter Grammar
+	 * @param dynamic   if byte is dynamic
 	 * @return converted bytes as String
 	 */
 	@Override
@@ -102,8 +99,7 @@ public class ByteList extends SimpleList<ByteItem> implements ByteItem {
 	}
 
 	@Override
-	public void writeBytes(ByteBuffer buffer, boolean isDynamic,
-			boolean last, boolean isPrimitive) {
+	public void writeBytes(ByteBuffer buffer, boolean isDynamic, boolean last, boolean isPrimitive) {
 		// Override for each ByteList
 		isPrimitive = isPrimitive(isDynamic);
 		int size = calcChildren(isDynamic, last);
@@ -116,8 +112,7 @@ public class ByteList extends SimpleList<ByteItem> implements ByteItem {
 		EntityUtil.writeByteHeader(buffer, type, size);
 
 		for (int i = 0; i < size(); i++) {
-			((ByteItem) get(i)).writeBytes(buffer, isDynamic,
-					i == size() - 1, isPrimitive);
+			((ByteItem) get(i)).writeBytes(buffer, isDynamic, i == size() - 1, isPrimitive);
 		}
 	}
 
@@ -143,8 +138,7 @@ public class ByteList extends SimpleList<ByteItem> implements ByteItem {
 		int nullerBytes = 0;
 		if (this.get(size - 1) instanceof ByteEntity) {
 			// HEADER + VALUE
-			isPrimitive = isPrimitive
-					&& this.get(0).getType() == ByteTokener.DATATYPE_CLAZZTYPE;
+			isPrimitive = isPrimitive && this.get(0).getType() == ByteTokener.DATATYPE_CLAZZTYPE;
 			if (this.get(size - 1).getType() == ByteTokener.DATATYPE_NULL) {
 				nullerBytes++;
 			}
@@ -166,8 +160,7 @@ public class ByteList extends SimpleList<ByteItem> implements ByteItem {
 			// Only for ByteList with value dynamic and values with cant be
 			// short
 			// add one for ClazzSTEAM Byte as first Byte
-			length = length - size + ByteEntity.TYPEBYTE + ByteEntity.TYPEBYTE
-					+ nullerBytes;
+			length = length - size + ByteEntity.TYPEBYTE + ByteEntity.TYPEBYTE + nullerBytes;
 		}
 		return length;
 	}
@@ -200,15 +193,14 @@ public class ByteList extends SimpleList<ByteItem> implements ByteItem {
 	}
 
 	public ByteList withType(Byte value) {
-		if(value != null)
+		if (value != null)
 			this.type = value;
 		return this;
 	}
 
 	public SimpleList<ByteItem> withValue(String value) {
 		ByteConverterString converter = new ByteConverterString();
-		this.add(((ByteEntity)getNewList(true)).withValue(ByteTokener.DATATYPE_FIXED,
-				converter.decode(value)));
+		this.add(((ByteEntity) getNewList(true)).withValue(ByteTokener.DATATYPE_FIXED, converter.decode(value)));
 		return this;
 	}
 

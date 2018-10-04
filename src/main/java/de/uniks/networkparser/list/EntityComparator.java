@@ -28,13 +28,13 @@ import java.util.Comparator;
 import de.uniks.networkparser.EntityValueFactory;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
+
 /**
  * Compare Value for GUI.
  *
  * @author Stefan Lindel
  *
- * @param <V>
- *			Generic Parameter for all Types
+ * @param <V> Generic Parameter for all Types
  */
 public class EntityComparator<V> implements Comparator<V> {
 	/** Constant of IDMAP. */
@@ -62,8 +62,8 @@ public class EntityComparator<V> implements Comparator<V> {
 	/**
 	 * Set a GUI TableList.
 	 *
-	 * @param value		The new TbaleList
-	 * @return 			EntityComparator Instance
+	 * @param value The new TbaleList
+	 * @return EntityComparator Instance
 	 */
 	public EntityComparator<V> withTableList(SimpleList<Object> value) {
 		this.owner = value;
@@ -79,12 +79,12 @@ public class EntityComparator<V> implements Comparator<V> {
 	/**
 	 * Compare Values
 	 *
-	 * @param o1	object for compare
-	 * @param o2	object for compare
-	 * @return 		compare result
+	 * @param o1 object for compare
+	 * @param o2 object for compare
+	 * @return compare result
 	 */
 	public int compareValue(Object o1, Object o2) {
-		if(VALUES.equals(column)) {
+		if (VALUES.equals(column)) {
 			return checkValues(o1, o2);
 		}
 		if (map != null) {
@@ -112,9 +112,9 @@ public class EntityComparator<V> implements Comparator<V> {
 	/**
 	 * Compare values of v1 and v2.
 	 *
-	 * @param v1	value for compare
-	 * @param v2	value for compare
-	 * @return 		compare Result
+	 * @param v1 value for compare
+	 * @param v2 value for compare
+	 * @return compare Result
 	 */
 	@SuppressWarnings("unchecked")
 	private int checkValues(Object v1, Object v2) {
@@ -171,9 +171,9 @@ public class EntityComparator<V> implements Comparator<V> {
 			}
 			return 1;
 		}
-		if(v1 instanceof Comparable<?>) {
-			if(v2 instanceof Comparable<?>) {
-				return ((Comparable<Object>)v2).compareTo(v1);
+		if (v1 instanceof Comparable<?>) {
+			if (v2 instanceof Comparable<?>) {
+				return ((Comparable<Object>) v2).compareTo(v1);
 			}
 		}
 		return 1;
@@ -182,9 +182,9 @@ public class EntityComparator<V> implements Comparator<V> {
 	/**
 	 * Compare o1 and o2.
 	 *
-	 * @param o1	object for compare
-	 * @param o2	object for compare
-	 * @return 		Int value < 0 o1 is smaller 0 o1 == o2 o1 is the same 1 o2 is bigger
+	 * @param o1 object for compare
+	 * @param o2 object for compare
+	 * @return Int value < 0 o1 is smaller 0 o1 == o2 o1 is the same 1 o2 is bigger
 	 */
 	private int checkIntern(Object o1, Object o2) {
 		// SAME OBJECT MUST BE 0
@@ -226,8 +226,8 @@ public class EntityComparator<V> implements Comparator<V> {
 	/**
 	 * Set a new Direction.
 	 *
-	 * @param value		Direction for set
-	 * @return 			EntityComparator Instance
+	 * @param value Direction for set
+	 * @return EntityComparator Instance
 	 */
 	public EntityComparator<V> withDirection(SortingDirection value) {
 		this.direction = value;
@@ -240,8 +240,8 @@ public class EntityComparator<V> implements Comparator<V> {
 	}
 
 	/**
-	 * @param value		The new Column for checking
-	 * @return 			EntityComparator Instance
+	 * @param value The new Column for checking
+	 * @return EntityComparator Instance
 	 */
 	public EntityComparator<V> withColumn(String value) {
 		this.column = value;
@@ -251,8 +251,8 @@ public class EntityComparator<V> implements Comparator<V> {
 	/**
 	 * Set a new IdMap for comunicate between GUI and Model.
 	 *
-	 * @param value		The IdMap
-	 * @return 			EntityComparator Instance
+	 * @param value The IdMap
+	 * @return EntityComparator Instance
 	 */
 	public EntityComparator<V> withMap(IdMap value) {
 		this.map = value;
@@ -276,8 +276,8 @@ public class EntityComparator<V> implements Comparator<V> {
 	/**
 	 * The new Creator for Cells.
 	 *
-	 * @param value		The cellCreator
-	 * @return 			EntityComparator Instance
+	 * @param value The cellCreator
+	 * @return EntityComparator Instance
 	 */
 	public EntityComparator<V> withCellCreator(EntityValueFactory value) {
 		this.cellCreator = value;
@@ -291,7 +291,8 @@ public class EntityComparator<V> implements Comparator<V> {
 	}
 
 	public static EntityComparator<Object> createComparator() {
-		EntityComparator<Object> cpr = new EntityComparator<Object>().withColumn(EntityComparator.VALUES).withDirection(SortingDirection.ASC);
+		EntityComparator<Object> cpr = new EntityComparator<Object>().withColumn(EntityComparator.VALUES)
+				.withDirection(SortingDirection.ASC);
 		return cpr;
 	}
 }

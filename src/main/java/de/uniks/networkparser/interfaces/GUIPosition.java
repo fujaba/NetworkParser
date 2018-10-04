@@ -25,9 +25,8 @@ THE SOFTWARE.
 */
 
 public enum GUIPosition {
-	CENTER("Center"), EAST("East"), NORTH("North"), NORTHWEST("NorthWest"), NORTHEAST(
-			"NorthEast"), SOUTH("South"), SOUTHWEST("SouthWest"), SOUTHEAST(
-			"SouthEast"), WEST("West"), ALL("All");
+	CENTER("Center"), EAST("East"), NORTH("North"), NORTHWEST("NorthWest"), NORTHEAST("NorthEast"), SOUTH("South"),
+	SOUTHWEST("SouthWest"), SOUTHEAST("SouthEast"), WEST("West"), ALL("All");
 	private String value;
 
 	GUIPosition(String value) {

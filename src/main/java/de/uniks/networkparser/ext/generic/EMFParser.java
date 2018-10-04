@@ -44,11 +44,12 @@ public class EMFParser {
 
 	public static final void addAttributes(EMFParser eclass, Clazz sdmClass) {
 		List<Object> callList = getEAttributes(eclass);
-		for(Object item : callList) {
+		for (Object item : callList) {
 			if (item != null) {
 				String name = getName(item);
 				EMFParser eClassifier = new EMFParser(ReflectionLoader.call(item, "getEType"));
-				sdmClass.withAttribute(name, DataType.create(EntityUtil.shortClassName(getInstanceClassName(eClassifier))));
+				sdmClass.withAttribute(name,
+						DataType.create(EntityUtil.shortClassName(getInstanceClassName(eClassifier))));
 			}
 		}
 	}
@@ -107,7 +108,8 @@ public class EMFParser {
 						int srcCard = (getUpperBound(oppositeERef) == 1 ? Association.ONE : Association.MANY);
 						int tgtCard = (getUpperBound(eref) == 1 ? Association.ONE : Association.MANY);
 
-						srcSDMClass.withBidirectional(tgtSDMClass, getName(eref), tgtCard, getName(oppositeERef), srcCard);
+						srcSDMClass.withBidirectional(tgtSDMClass, getName(eref), tgtCard, getName(oppositeERef),
+								srcCard);
 
 						doneERefs.add(eref);
 						doneERefs.add(oppositeERef);
@@ -131,24 +133,23 @@ public class EMFParser {
 		return model;
 	}
 
-	//REFACTORING
+	// REFACTORING
 	public static final List<Object> getEAttributes(Object eref) {
-		if(eref instanceof EMFParser) {
-			return getEAttributes(((EMFParser)eref).getValue());
+		if (eref instanceof EMFParser) {
+			return getEAttributes(((EMFParser) eref).getValue());
 		}
-		if(isEMF(eref) == false) {
+		if (isEMF(eref) == false) {
 			return null;
 		}
 		List<Object> callList = ReflectionLoader.callList(eref, "getEAttributes");
 		return callList;
 	}
 
-
 	public static final List<Object> getEReferences(Object eref) {
-		if(eref instanceof EMFParser) {
-			return getEReferences(((EMFParser)eref).getValue());
+		if (eref instanceof EMFParser) {
+			return getEReferences(((EMFParser) eref).getValue());
 		}
-		if(isEMF(eref) == false) {
+		if (isEMF(eref) == false) {
 			return null;
 		}
 		List<Object> callList = ReflectionLoader.callList(eref, "getEReferences");
@@ -156,16 +157,16 @@ public class EMFParser {
 	}
 
 	public static final SimpleList<EMFParser> getESuperTypes(Object eref) {
-		if(eref instanceof EMFParser) {
-			return getESuperTypes(((EMFParser)eref).getValue());
+		if (eref instanceof EMFParser) {
+			return getESuperTypes(((EMFParser) eref).getValue());
 		}
-		SimpleList<EMFParser> list=new SimpleList<EMFParser>();
-		if(isEMF(eref) == false) {
+		SimpleList<EMFParser> list = new SimpleList<EMFParser>();
+		if (isEMF(eref) == false) {
 			return list;
 		}
 		List<Object> callList = ReflectionLoader.callList(eref, "getESuperTypes");
-		for(Object item : callList) {
-			if(item != null) {
+		for (Object item : callList) {
+			if (item != null) {
 				list.add(new EMFParser(item));
 			}
 		}
@@ -173,16 +174,16 @@ public class EMFParser {
 	}
 
 	public static final List<EMFParser> getEClasses(Object eref) {
-		if(eref instanceof EMFParser) {
-			return getEClasses(((EMFParser)eref).getValue());
+		if (eref instanceof EMFParser) {
+			return getEClasses(((EMFParser) eref).getValue());
 		}
 		SimpleList<EMFParser> items = new SimpleList<EMFParser>();
-		if(isEMF(eref) == false) {
+		if (isEMF(eref) == false) {
 			return items;
 		}
 		List<Object> callList = ReflectionLoader.callList(eref, "getEClassifiers");
-		for(Object item : callList) {
-			if(item != null && ReflectionLoader.ECLASS.isAssignableFrom(item.getClass())) {
+		for (Object item : callList) {
+			if (item != null && ReflectionLoader.ECLASS.isAssignableFrom(item.getClass())) {
 				items.add(new EMFParser(item));
 			}
 		}
@@ -190,74 +191,75 @@ public class EMFParser {
 	}
 
 	public static final String getInstanceClassName(Object eref) {
-		if(eref instanceof EMFParser) {
-			return getInstanceClassName(((EMFParser)eref).getValue());
+		if (eref instanceof EMFParser) {
+			return getInstanceClassName(((EMFParser) eref).getValue());
 		}
-		if(isEMF(eref) == false) {
+		if (isEMF(eref) == false) {
 			return "";
 		}
-		return ""+ReflectionLoader.call(eref, "getInstanceClassName");
+		return "" + ReflectionLoader.call(eref, "getInstanceClassName");
 	}
 
 	public static final EMFParser getEType(Object eref) {
-		if(eref instanceof EMFParser) {
-			return getEType(((EMFParser)eref).getValue());
+		if (eref instanceof EMFParser) {
+			return getEType(((EMFParser) eref).getValue());
 		}
-		if(isEMF(eref) == false) {
+		if (isEMF(eref) == false) {
 			return null;
 		}
 		return new EMFParser(ReflectionLoader.call(eref, "getEType"));
 	}
 
 	public static final Integer getUpperBound(Object eref) {
-		if(eref instanceof EMFParser) {
-			return getUpperBound(((EMFParser)eref).getValue());
+		if (eref instanceof EMFParser) {
+			return getUpperBound(((EMFParser) eref).getValue());
 		}
-		if(isEMF(eref) == false) {
+		if (isEMF(eref) == false) {
 			return -1;
 		}
 		Object call = ReflectionLoader.call(eref, "getUpperBound");
-		if(call instanceof Integer) {
-			return (Integer)call;
+		if (call instanceof Integer) {
+			return (Integer) call;
 		}
 		return -1;
 
 	}
 
 	public static final String getName(Object eref) {
-		if(eref instanceof EMFParser) {
-			return getName(((EMFParser)eref).getValue());
+		if (eref instanceof EMFParser) {
+			return getName(((EMFParser) eref).getValue());
 		}
-		if(isEMF(eref) == false) {
+		if (isEMF(eref) == false) {
 			return "";
 		}
 		return "" + ReflectionLoader.call(eref, "getName");
 	}
-	
+
 	public static final boolean isEMF(Object eref) {
-		if(ReflectionLoader.EOBJECT == null || eref == null) {
+		if (ReflectionLoader.EOBJECT == null || eref == null) {
 			return false;
 		}
-		if(ReflectionLoader.EOBJECT.isAssignableFrom(eref.getClass()) == false) {
+		if (ReflectionLoader.EOBJECT.isAssignableFrom(eref.getClass()) == false) {
 			return false;
 		}
 		return true;
 	}
+
 	public static final Object getEOpposite(Object eref) {
-		if(eref instanceof EMFParser) {
-			return getEOpposite(((EMFParser)eref).getValue());
+		if (eref instanceof EMFParser) {
+			return getEOpposite(((EMFParser) eref).getValue());
 		}
-		if(isEMF(eref) == false) {
+		if (isEMF(eref) == false) {
 			return "";
 		}
 		return ReflectionLoader.call(eref, "getEOpposite");
 	}
 
 	public boolean equals(Object obj) {
-		if(super.equals(obj)) {
+		if (super.equals(obj)) {
 			return true;
 		}
-		if(obj instanceof EMFParser == false) {
+		if (obj instanceof EMFParser == false) {
 			return false;
 		}
 		EMFParser other = (EMFParser) obj;

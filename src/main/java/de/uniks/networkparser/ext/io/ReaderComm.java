@@ -42,14 +42,15 @@ public class ReaderComm implements Runnable {
 			running = true;
 		}
 	}
-	
+
 	public ReaderComm withSession(MessageSession session) {
 		this.session = session;
 		return this;
 	}
 
 	/**
-	 * Stops the Receiver's thread.  This call will block.
+	 * Stops the Receiver's thread. This call will block.
+	 * 
 	 * @return boolean for success
 	 */
 	public boolean stop() {
@@ -64,38 +65,41 @@ public class ReaderComm implements Runnable {
 	public void run() {
 		Thread recThread = Thread.currentThread();
 		recThread.setName(threadName);
-		if(session == null) {
+		if (session == null) {
 			return;
 		}
 		while (running && (session.isClose() == false)) {
 			try {
 				Object response = session.getServerResponse(broker);
-				
+
 				// Answer
-				if(condition != null) {
-					if(response instanceof RabbitMessage) {
+				if (condition != null) {
+					if (response instanceof RabbitMessage) {
 						RabbitMessage msg = (RabbitMessage) response;
 						String text = msg.getText();
-						if(text != null) {
-							this.condition.update(new SimpleEvent(this, channel, null, text).withType(NodeProxyBroker.EVENT_MESSAGE));
+						if (text != null) {
+							this.condition.update(
+									new SimpleEvent(this, channel, null, text).withType(NodeProxyBroker.EVENT_MESSAGE));
 						}
-					} else if(response instanceof MQTTMessage) {
+					} else if (response instanceof MQTTMessage) {
 						MQTTMessage msg = (MQTTMessage) response;
 						String text = msg.getText();
-						if(text != null) {
+						if (text != null) {
 							String myChannel = channel;
-							if(msg.getNames() != null && msg.getNames().length>0) {
+							if (msg.getNames() != null && msg.getNames().length > 0) {
 								myChannel = msg.getNames()[0];
 							}
-							
-							this.condition.update(new SimpleEvent(this, myChannel, null, text).withType(NodeProxyBroker.EVENT_MESSAGE));
+
+							this.condition.update(new SimpleEvent(this, myChannel, null, text)
+									.withType(NodeProxyBroker.EVENT_MESSAGE));
 						}
 //						this.condition.update(new SimpleEvent(this, channel, null, response));
 					}
 				}
-			}catch (Exception e) {
-			
-			}}
+			} catch (Exception e) {
+
+			}
+		}
 	}
 
 	public ReaderComm withCondition(ObjectCondition condition) {

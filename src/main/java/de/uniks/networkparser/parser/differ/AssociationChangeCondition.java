@@ -15,7 +15,7 @@ public class AssociationChangeCondition extends MatchCondition {
 		changeConditions.add(new AssociationChangeUpdateTypeCondition());
 		changeConditions.add(new AssociationChangeUpdateCondition());
 	}
-	
+
 	@Override
 	protected boolean checkCondition(GraphMatcher matches, Match match) {
 		Association association = (Association) match.getMatch();
@@ -26,7 +26,7 @@ public class AssociationChangeCondition extends MatchCondition {
 				return false;
 			}
 		}
-		
+
 		return true;
 	}
 
@@ -34,7 +34,7 @@ public class AssociationChangeCondition extends MatchCondition {
 	protected boolean calculateDiffs(GraphMatcher matches, Match match) {
 		Association sourceAssociation = (Association) match.getMatch();
 		Association otherAssociation = (Association) match.getOtherMatch().getMatch();
-		
+
 		if (addChange(matches, match, sourceAssociation, otherAssociation)) {
 			MemberDiffer.executeCondition(SendableEntityCreator.NEW, changeConditions, match);
 		} else {
@@ -48,7 +48,8 @@ public class AssociationChangeCondition extends MatchCondition {
 		return true;
 	}
 
-	private boolean addChange(GraphMatcher matches, Match match, Association sourceAssociation, Association otherAssociation) {
+	private boolean addChange(GraphMatcher matches, Match match, Association sourceAssociation,
+			Association otherAssociation) {
 		if (matches.getMetaModel() != null && (match.isSourceMatch() || match.isMetaMatch())) {
 			return false;
 		}
@@ -59,18 +60,19 @@ public class AssociationChangeCondition extends MatchCondition {
 		return true;
 	}
 
-	private boolean updateType(GraphMatcher matches, Match match, Association sourceAssociation, Association otherAssociation) {
+	private boolean updateType(GraphMatcher matches, Match match, Association sourceAssociation,
+			Association otherAssociation) {
 		return sourceAssociation.getOtherClazz().getName().equals(otherAssociation.getOtherClazz().getName()) == false
 				|| sourceAssociation.getClazz().getName().equals(otherAssociation.getClazz().getName()) == false
 				|| sourceAssociation.getType().equals(otherAssociation.getType()) == false;
 	}
-	
+
 	private boolean checkSimiliarNames(Association sourceAssociation, Association otherAssociation) {
 		if (sourceAssociation.getType().equals(AssociationTypes.UNDIRECTIONAL)
 				|| otherAssociation.getType().equals(AssociationTypes.UNDIRECTIONAL)) {
 			return sourceAssociation.getName().equals(otherAssociation.getName());
-		} 
-		
+		}
+
 		return sourceAssociation.getOther().getName().equals(otherAssociation.getOther().getName());
 	}
 

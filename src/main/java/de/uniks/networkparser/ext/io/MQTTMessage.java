@@ -49,7 +49,7 @@ public class MQTTMessage {
 	protected boolean duplicate = false;
 
 	// Sub Variable
-	public static final String KEY_CONNACK    = "Con";
+	public static final String KEY_CONNACK = "Con";
 	public static final String KEY_DISCONNECT = "Disc";
 	public static final String KEY_PING = "Ping";
 	public static final String KEY_CONNECT = "Con";
@@ -61,7 +61,7 @@ public class MQTTMessage {
 	protected int[] data;
 	protected String[] names;
 	protected int keepAliveInterval;
-	
+
 	// Message Data
 	private int messageQOS = 1;
 	private byte[] messagePayload;
@@ -73,67 +73,67 @@ public class MQTTMessage {
 	}
 
 	public ByteBuffer getHeader() {
-		byte first = (byte)(((getType() & 0x0f) << 4) ^ (getMessageInfo() & 0x0f));
+		byte first = (byte) (((getType() & 0x0f) << 4) ^ (getMessageInfo() & 0x0f));
 		byte[] varHeader = getVariableHeader();
 		int remLen = varHeader.length + getPayload().length;
-		ByteBuffer buffer=new ByteBuffer();
+		ByteBuffer buffer = new ByteBuffer();
 
 		buffer.insert(first, true);
 
 		int numBytes = 0;
 		// Encode the remaining length fields in the four bytes
 		do {
-			byte digit = (byte)(remLen % 128);
+			byte digit = (byte) (remLen % 128);
 			remLen = remLen / 128;
 			if (remLen > 0) {
 				digit |= 0x80;
 			}
 			buffer.insert(digit, false);
 			numBytes++;
-		} while ( (remLen > 0) && (numBytes<4) );
-		
+		} while ((remLen > 0) && (numBytes < 4));
+
 		buffer.insert(varHeader, false);
 		return buffer;
 	}
-	
+
 	protected void encodeUTF8(ByteBuffer buffer, String stringToEncode) {
 		try {
 			byte[] encodedString = stringToEncode.getBytes("UTF-8");
-			buffer.insert((short)encodedString.length, false);
+			buffer.insert((short) encodedString.length, false);
 			buffer.insert(encodedString, false);
-		}catch (Exception e) {
+		} catch (Exception e) {
 		}
 	}
-	
+
 	/** @return the type of the message. */
 	public byte getType() {
 		return type;
 	}
 
 	protected byte[] getVariableHeader() {
-		if(type == MESSAGE_TYPE_PUBACK) {
-			ByteBuffer buffer=new ByteBuffer();
+		if (type == MESSAGE_TYPE_PUBACK) {
+			ByteBuffer buffer = new ByteBuffer();
 			short id = (short) msgId;
 			buffer.insert(id, false);
 			return buffer.array();
 		}
 
-		if(type == MESSAGE_TYPE_SUBSCRIBE || type == MESSAGE_TYPE_UNSUBSCRIBE || type == MESSAGE_TYPE_PUBLISH || type == MESSAGE_TYPE_CONNECT) {
-			ByteBuffer buffer=new ByteBuffer();
-			if(type == MESSAGE_TYPE_PUBLISH) {
+		if (type == MESSAGE_TYPE_SUBSCRIBE || type == MESSAGE_TYPE_UNSUBSCRIBE || type == MESSAGE_TYPE_PUBLISH
+				|| type == MESSAGE_TYPE_CONNECT) {
+			ByteBuffer buffer = new ByteBuffer();
+			if (type == MESSAGE_TYPE_PUBLISH) {
 				encodeUTF8(buffer, names[0]);
 				if (messageQOS > 0) {
 					short id = (short) msgId;
 					buffer.insert(id, false);
 				}
-			} else if(type == MESSAGE_TYPE_CONNECT) {
+			} else if (type == MESSAGE_TYPE_CONNECT) {
 				if (code == 3) {
 					encodeUTF8(buffer, "MQIsdp");
-				}
-				else if (code == 4) {
+				} else if (code == 4) {
 					encodeUTF8(buffer, "MQTT");
 				}
-				buffer.insert((byte)code, false);
+				buffer.insert((byte) code, false);
 				byte connectFlags = 0;
 				if (session) {
 					connectFlags |= 0x02;
@@ -145,7 +145,7 @@ public class MQTTMessage {
 						connectFlags |= 0x40;
 					}
 				}
-				buffer.insert((byte)connectFlags, false);
+				buffer.insert((byte) connectFlags, false);
 				short id = (short) keepAliveInterval;
 				buffer.insert(id, false);
 			} else {
@@ -157,26 +157,27 @@ public class MQTTMessage {
 		// Not needed, as the client never encodes a CONNACK
 		return new byte[0];
 	}
-	
+
 	/**
 	 * Sub-classes should override this method to supply the payload bytes.
+	 * 
 	 * @return The payload byte array
 	 */
 	public byte[] getPayload() {
-		if(type == MESSAGE_TYPE_SUBSCRIBE || type == MESSAGE_TYPE_UNSUBSCRIBE || type == MESSAGE_TYPE_CONNECT) {
+		if (type == MESSAGE_TYPE_SUBSCRIBE || type == MESSAGE_TYPE_UNSUBSCRIBE || type == MESSAGE_TYPE_CONNECT) {
 			ByteBuffer buffer = new ByteBuffer();
-			if(type == MESSAGE_TYPE_SUBSCRIBE) {
-				for (int i=0; i<names.length; i++) {
+			if (type == MESSAGE_TYPE_SUBSCRIBE) {
+				for (int i = 0; i < names.length; i++) {
 					encodeUTF8(buffer, names[i]);
-					buffer.addBytes((byte)data[i], 1, false);
+					buffer.addBytes((byte) data[i], 1, false);
 				}
 			}
-			if(type == MESSAGE_TYPE_UNSUBSCRIBE) {
-				for (int i=0; i<names.length; i++) {
+			if (type == MESSAGE_TYPE_UNSUBSCRIBE) {
+				for (int i = 0; i < names.length; i++) {
 					encodeUTF8(buffer, names[i]);
 				}
 			}
-			if(type == MESSAGE_TYPE_CONNECT) {
+			if (type == MESSAGE_TYPE_CONNECT) {
 				encodeUTF8(buffer, names[0]);
 				if (names[1] != null) {
 					encodeUTF8(buffer, names[1]);
@@ -187,27 +188,28 @@ public class MQTTMessage {
 			}
 			return buffer.array();
 		}
-		if(type == MESSAGE_TYPE_PUBLISH) {
+		if (type == MESSAGE_TYPE_PUBLISH) {
 			return messagePayload;
 		}
 		return new byte[0];
 	}
 
 	/**
-	 * Sub-classes should override this to encode the message info.
-	 * Only the least-significant four bits will be used.
+	 * Sub-classes should override this to encode the message info. Only the
+	 * least-significant four bits will be used.
+	 * 
 	 * @return The Message information byte
 	 */
 	protected byte getMessageInfo() {
-		if(type == MESSAGE_TYPE_SUBSCRIBE || type == MESSAGE_TYPE_UNSUBSCRIBE) {
+		if (type == MESSAGE_TYPE_SUBSCRIBE || type == MESSAGE_TYPE_UNSUBSCRIBE) {
 			return (byte) (2 | (duplicate ? 8 : 0));
 		}
-		if(type == MESSAGE_TYPE_PUBLISH) {
+		if (type == MESSAGE_TYPE_PUBLISH) {
 			byte info = (byte) (messageQOS << 1);
 			if (messageRetained) {
 				info |= 0x01;
 			}
-			if (duplicate ) {
+			if (duplicate) {
 				info |= 0x08;
 			}
 
@@ -215,11 +217,11 @@ public class MQTTMessage {
 		}
 		return 0;
 	}
-	
+
 	public static MQTTMessage create(byte type) {
 		return create(type, (byte) 0, null);
 	}
-	
+
 	/**
 	 * Decodes a UTF-8 string
 	 *
@@ -232,20 +234,19 @@ public class MQTTMessage {
 		byte[] encodedString = input.getBytes(new byte[encodedLength]);
 		return new String(encodedString);
 	}
-	
+
 	public MQTTMessage withNames(String... names) {
 		this.names = names;
 		this.code = names.length;
 		return this;
 	}
-	
 
 	public static MQTTMessage create(byte type, byte info, byte[] variableHeader) {
 		MQTTMessage message = new MQTTMessage().withType(type);
-		if(type == MESSAGE_TYPE_DISCONNECT) {
+		if (type == MESSAGE_TYPE_DISCONNECT) {
 			return message;
 		}
-		if(type == MESSAGE_TYPE_PUBLISH) {
+		if (type == MESSAGE_TYPE_PUBLISH) {
 //			message.message = msg;
 			message.messageQOS = ((info >> 1) & 0x03);
 			if ((info & 0x01) == 0x01) {
@@ -254,54 +255,54 @@ public class MQTTMessage {
 			if ((info & 0x08) == 0x08) {
 				message.duplicate = true;
 			}
-			if(variableHeader == null) {
+			if (variableHeader == null) {
 				return message;
 			}
-			ByteBuffer buffer=new ByteBuffer().with(variableHeader);
+			ByteBuffer buffer = new ByteBuffer().with(variableHeader);
 			buffer.flip(true);
 
 			message.names = new String[] { message.decodeUTF8(buffer) };
 			if (message.messageQOS > 0) {
 				message.msgId = buffer.getShort();
 			}
-			message.messagePayload = buffer.getBytes(new byte[variableHeader.length-buffer.position() - 1]);
+			message.messagePayload = buffer.getBytes(new byte[variableHeader.length - buffer.position() - 1]);
 		}
-		if(variableHeader == null) {
+		if (variableHeader == null) {
 			return message;
 		}
-		//		MqttWireMessage.MESSAGE_TYPE_CONNACK
-		ByteBuffer buffer=new ByteBuffer().with(variableHeader);
-		if(type == MESSAGE_TYPE_CONNECT) {
+		// MqttWireMessage.MESSAGE_TYPE_CONNACK
+		ByteBuffer buffer = new ByteBuffer().with(variableHeader);
+		if (type == MESSAGE_TYPE_CONNECT) {
 			// NEW
 			String[] values = new String[3];
 			message.names = values;
-	//		String protocol_name =
+			// String protocol_name =
 			message.decodeUTF8(buffer);
-	//		int protocol_version =
+			// int protocol_version =
 			buffer.getByte();
-	//		byte connect_flags =
+			// byte connect_flags =
 			buffer.getByte();
 			message.keepAliveInterval = buffer.getShort();
 			values[0] = message.decodeUTF8(buffer);
-			
+
 		}
-		if(type == MESSAGE_TYPE_CONNACK) {
+		if (type == MESSAGE_TYPE_CONNACK) {
 			message.session = (buffer.getByte() & 0x01) == 0x01;
 			message.code = buffer.getByte();
 		}
-		if(type == MESSAGE_TYPE_PUBACK) {
+		if (type == MESSAGE_TYPE_PUBACK) {
 			message.msgId = buffer.getShort();
 		}
-	
-		if(type == MESSAGE_TYPE_SUBACK) {
+
+		if (type == MESSAGE_TYPE_SUBACK) {
 			message.msgId = buffer.getShort();
 			int index = 0;
-			message.data = new int[variableHeader.length-2];
-			for(int i=0;i<message.data.length;i++) {
+			message.data = new int[variableHeader.length - 2];
+			for (int i = 0; i < message.data.length; i++) {
 				message.data[index] = buffer.getByte();
 			}
 		}
-		if(type == MESSAGE_TYPE_SUBSCRIBE) {
+		if (type == MESSAGE_TYPE_SUBSCRIBE) {
 			message.msgId = buffer.getShort();
 			message.code = 0;
 			message.names = new String[10];
@@ -316,7 +317,7 @@ public class MQTTMessage {
 				}
 			}
 		}
-		if(type == MESSAGE_TYPE_UNSUBSCRIBE) {
+		if (type == MESSAGE_TYPE_UNSUBSCRIBE) {
 			message.msgId = buffer.getShort();
 			message.code = 0;
 			message.names = new String[10];
@@ -334,12 +335,13 @@ public class MQTTMessage {
 
 	/**
 	 * Decodes an MQTT Multi-Byte Integer from the given stream.
+	 * 
 	 * @param in the input stream
 	 * @return long Value of Read
 	 * @throws IOException if an exception occurs when reading the input stream
 	 */
 	protected static int readMBI(DataInputStream in) throws IOException {
-		if(in == null) {
+		if (in == null) {
 			return -1;
 		}
 		byte digit;
@@ -354,23 +356,23 @@ public class MQTTMessage {
 
 		return msgLength;
 	}
-	
+
 	protected static void encodeMBI(ByteBuffer buffer, long number) {
 		int numBytes = 0;
 		long no = number;
 		do {
-			byte digit = (byte)(no % 128);
+			byte digit = (byte) (no % 128);
 			no = no / 128;
 			if (no > 0) {
 				digit |= 0x80;
 			}
 			buffer.insert(digit, false);
 			numBytes++;
-		} while ( (no > 0) && (numBytes<4) );
+		} while ((no > 0) && (numBytes < 4));
 	}
 
 	public static MQTTMessage readFrom(DataInputStream in) {
-		if(in == null) {
+		if (in == null) {
 			return null;
 		}
 		MQTTMessage message = null;
@@ -378,8 +380,7 @@ public class MQTTMessage {
 			// read header
 			byte first = in.readByte();
 			byte type = (byte) ((first >>> 4) & 0x0F);
-			if ((type < MESSAGE_TYPE_CONNECT) ||
-					(type > MESSAGE_TYPE_DISCONNECT)) {
+			if ((type < MESSAGE_TYPE_CONNECT) || (type > MESSAGE_TYPE_DISCONNECT)) {
 				// Invalid MQTT message type...
 				return null;
 			}
@@ -396,7 +397,7 @@ public class MQTTMessage {
 //				int count;
 				try {
 //					count = 
-					in.read(packet,0, remLen);
+					in.read(packet, 0, remLen);
 				} catch (SocketTimeoutException e) {
 					// remember the packet read so far
 				}
@@ -404,15 +405,10 @@ public class MQTTMessage {
 				remLen = -1;
 
 				byte info = (byte) (first &= 0x0f);
-				if(type == MESSAGE_TYPE_CONNACK ||
-						type == MESSAGE_TYPE_DISCONNECT ||
-						type == MESSAGE_TYPE_PUBACK ||
-						type == MESSAGE_TYPE_SUBACK ||
-						type == MESSAGE_TYPE_PINGREQ ||
-						type == MESSAGE_TYPE_SUBSCRIBE ||
-						type == MESSAGE_TYPE_UNSUBSCRIBE ||
-						type == MESSAGE_TYPE_CONNECT ||
-						type == MESSAGE_TYPE_PUBLISH) {
+				if (type == MESSAGE_TYPE_CONNACK || type == MESSAGE_TYPE_DISCONNECT || type == MESSAGE_TYPE_PUBACK
+						|| type == MESSAGE_TYPE_SUBACK || type == MESSAGE_TYPE_PINGREQ || type == MESSAGE_TYPE_SUBSCRIBE
+						|| type == MESSAGE_TYPE_UNSUBSCRIBE || type == MESSAGE_TYPE_CONNECT
+						|| type == MESSAGE_TYPE_PUBLISH) {
 					return MQTTMessage.create(type, info, packet);
 				}
 			}
@@ -423,7 +419,6 @@ public class MQTTMessage {
 
 		return message;
 	}
-	
 
 	public MQTTMessage withCode(int value) {
 		this.code = value;
@@ -435,12 +430,11 @@ public class MQTTMessage {
 		return this;
 	}
 
-
 	public MQTTMessage withKeepAliveInterval(int value) {
 		this.keepAliveInterval = value;
 		return this;
 	}
-	
+
 	public MQTTMessage withSession(boolean value) {
 		this.session = value;
 		return this;
@@ -462,21 +456,22 @@ public class MQTTMessage {
 	 * @return whether or not this message needs to include a message ID.
 	 */
 	public boolean isMessageIdRequired() {
-		if(type == MESSAGE_TYPE_CONNECT) {
+		if (type == MESSAGE_TYPE_CONNECT) {
 			return false;
 		}
-		if(type == MESSAGE_TYPE_CONNACK) {
+		if (type == MESSAGE_TYPE_CONNACK) {
 			return false;
 		}
-		if(type == MESSAGE_TYPE_DISCONNECT) {
+		if (type == MESSAGE_TYPE_DISCONNECT) {
 			return false;
 		}
-		if(type == MESSAGE_TYPE_PINGREQ) {
+		if (type == MESSAGE_TYPE_PINGREQ) {
 			return false;
 		}
 		// FOR MQTTPUBLISH
 		return true;
 	}
+
 	/**
 	 * @return the MQTT message ID.
 	 */
@@ -494,7 +489,7 @@ public class MQTTMessage {
 	}
 
 	public String getText() {
-		if(type == MESSAGE_TYPE_PUBLISH) {
+		if (type == MESSAGE_TYPE_PUBLISH) {
 			return new String(this.messagePayload);
 		}
 		return null;

@@ -31,11 +31,12 @@ import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SimpleSet;
 
-public class TemplateResultModel extends SimpleList<TemplateResultFile> implements SendableEntityCreator, LocalisationInterface{
-	public static final String PROPERTY_FEATURE="features";
-	public static final String PROPERTY_TEMPLATE="templates";
-	public static final String PROPERTY_TEXT="text";
-	public static final String PROPERTY_CHILD="child";
+public class TemplateResultModel extends SimpleList<TemplateResultFile>
+		implements SendableEntityCreator, LocalisationInterface {
+	public static final String PROPERTY_FEATURE = "features";
+	public static final String PROPERTY_TEMPLATE = "templates";
+	public static final String PROPERTY_TEXT = "text";
+	public static final String PROPERTY_CHILD = "child";
 	private SimpleSet<Feature> features;
 	private SimpleKeyValueList<String, ParserCondition> customTemplate;
 	private LocalisationInterface language;
@@ -46,14 +47,14 @@ public class TemplateResultModel extends SimpleList<TemplateResultFile> implemen
 	}
 
 	public TemplateResultModel withTemplate(ParserCondition... templates) {
-		if(templates == null) {
+		if (templates == null) {
 			return this;
 		}
-		if(customTemplate == null) {
+		if (customTemplate == null) {
 			customTemplate = new SimpleKeyValueList<String, ParserCondition>();
 		}
-		for(ParserCondition template : templates) {
-			if(template != null) {
+		for (ParserCondition template : templates) {
+			if (template != null) {
 				customTemplate.add(template.getKey(), template);
 			}
 		}
@@ -71,11 +72,11 @@ public class TemplateResultModel extends SimpleList<TemplateResultFile> implemen
 
 	@Override
 	public String getText(CharSequence label, Object model, Object gui) {
-		if(this.language != null) {
+		if (this.language != null) {
 			return this.language.getText(label, model, gui);
 		}
 		Object value = this.getValue(label);
-		if(value != null) {
+		if (value != null) {
 			return value.toString();
 		}
 		return null;
@@ -83,14 +84,14 @@ public class TemplateResultModel extends SimpleList<TemplateResultFile> implemen
 
 	@Override
 	public String put(String label, Object object) {
-		if(this.language != null) {
+		if (this.language != null) {
 			return this.language.put(label, object);
 		}
 		return null;
 	}
 
 	public ParserCondition getTemplate(String tag) {
-		if(customTemplate == null) {
+		if (customTemplate == null) {
 			return null;
 		}
 		return customTemplate.get(tag.toLowerCase());
@@ -100,7 +101,6 @@ public class TemplateResultModel extends SimpleList<TemplateResultFile> implemen
 		return language;
 	}
 
-
 	@Override
 	public Object getSendableInstance(boolean prototyp) {
 		return new TemplateResultModel();
@@ -108,34 +108,34 @@ public class TemplateResultModel extends SimpleList<TemplateResultFile> implemen
 
 	@Override
 	public String[] getProperties() {
-		return new String[] {PROPERTY_TEMPLATE, PROPERTY_TEXT};
+		return new String[] { PROPERTY_TEMPLATE, PROPERTY_TEXT };
 	}
 
 	@Override
 	public Object getValue(Object entity, String attribute) {
-		if(entity instanceof TemplateResultModel == false) {
+		if (entity instanceof TemplateResultModel == false) {
 			return null;
 		}
 		TemplateResultModel model = (TemplateResultModel) entity;
 		int pos = attribute.indexOf('.');
 		String attrName;
-		if(pos>0) {
+		if (pos > 0) {
 			attrName = attribute.substring(0, pos);
-		}else {
+		} else {
 			attrName = attribute;
 		}
-		if(PROPERTY_FEATURE.equalsIgnoreCase(attrName)) {
-			if(pos>0) {
-				attribute = attribute.substring(pos+1);
+		if (PROPERTY_FEATURE.equalsIgnoreCase(attrName)) {
+			if (pos > 0) {
+				attribute = attribute.substring(pos + 1);
 				pos = attribute.indexOf('.');
-				if(pos>0) {
+				if (pos > 0) {
 					attrName = attribute.substring(0, pos);
-				}else {
+				} else {
 					attrName = attribute;
 				}
 				Feature feature = model.getFeature(attrName);
-				if(feature != null && pos > 0) {
-					return feature.getValue(attribute.substring(pos+1));
+				if (feature != null && pos > 0) {
+					return feature.getValue(attribute.substring(pos + 1));
 				}
 				return feature;
 			}
@@ -146,8 +146,8 @@ public class TemplateResultModel extends SimpleList<TemplateResultFile> implemen
 
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value, String type) {
-		if(value instanceof TemplateResultFile) {
-			return super.add((TemplateResultFile)value);
+		if (value instanceof TemplateResultFile) {
+			return super.add((TemplateResultFile) value);
 		}
 		return false;
 	}
@@ -155,12 +155,13 @@ public class TemplateResultModel extends SimpleList<TemplateResultFile> implemen
 	public SimpleSet<Feature> getFeatures() {
 		return features;
 	}
+
 	public Feature getFeature(String name) {
-		if(features == null || name == null) {
+		if (features == null || name == null) {
 			return null;
 		}
-		for(Feature prop : features) {
-			if(name.equalsIgnoreCase(prop.getName().toString())) {
+		for (Feature prop : features) {
+			if (name.equalsIgnoreCase(prop.getName().toString())) {
 				return prop;
 			}
 		}

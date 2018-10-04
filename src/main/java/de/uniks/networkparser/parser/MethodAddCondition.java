@@ -34,6 +34,7 @@ import de.uniks.networkparser.interfaces.TemplateParser;
 public class MethodAddCondition implements ParserCondition, SendableEntityCreator {
 	public static final String PROPERTY_CHILD = "child";
 	protected ObjectCondition child;
+
 	@Override
 	public boolean update(Object value) {
 		// TODO Auto-generated method stub

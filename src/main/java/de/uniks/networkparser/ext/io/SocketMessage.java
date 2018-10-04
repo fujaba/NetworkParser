@@ -37,14 +37,14 @@ import de.uniks.networkparser.xml.HTMLEntity;
 import de.uniks.networkparser.xml.XMLEntity;
 
 public class SocketMessage implements BaseItem {
-	public static final String PROPERTY_FROM="From: ";
-	public static final String PROPERTY_TO="To";
-	public static final String PROPERTY_DATE="Date: ";
-	public static final String PROPERTY_ID="Message-Id: ";
-	public static final String PROPERTY_MIME="MIME-Version: ";
-	public static final String PROPERTY_SUBJECT="Subject: ";
-	public static final String PROPERTY_BOUNDARY="boundary=";
-	public static final String PROPERTY_CONTENTTYPE="Content-Type: ";
+	public static final String PROPERTY_FROM = "From: ";
+	public static final String PROPERTY_TO = "To";
+	public static final String PROPERTY_DATE = "Date: ";
+	public static final String PROPERTY_ID = "Message-Id: ";
+	public static final String PROPERTY_MIME = "MIME-Version: ";
+	public static final String PROPERTY_SUBJECT = "Subject: ";
+	public static final String PROPERTY_BOUNDARY = "boundary=";
+	public static final String PROPERTY_CONTENTTYPE = "Content-Type: ";
 	public static final String CONTENT_TYPE_MULTIPART = "multipart/mixed;";
 	public static final String CONTENT_TYPE_HTML = "text/html; charset=utf-8;";
 	public static final String CONTENT_TYPE_PLAIN = "text/plain; charset=utf-8;";
@@ -53,10 +53,10 @@ public class SocketMessage implements BaseItem {
 	private String subject;
 	private SimpleList<BaseItem> message = new SimpleList<BaseItem>();
 	private String id;
-	private String mimeVersion="1.0";
+	private String mimeVersion = "1.0";
 	private DateTimeEntity date;
 	private String from;
-	private SimpleList<String> to=new SimpleList<String>();
+	private SimpleList<String> to = new SimpleList<String>();
 	private SimpleKeyValueList<String, Buffer> attachment = new SimpleKeyValueList<String, Buffer>();
 	private String boundary;
 
@@ -65,58 +65,58 @@ public class SocketMessage implements BaseItem {
 	}
 
 	public String getContentType() {
-		if(isMultiPart()) {
+		if (isMultiPart()) {
 			return CONTENT_TYPE_MULTIPART;
 		}
 		BaseItem item = null;
-		if(this.message.size()>0 ) {
+		if (this.message.size() > 0) {
 			item = this.message.get(0);
 		}
 		return getContentType(item);
 	}
 
 	public String getContentType(BaseItem element) {
-		if(element instanceof HTMLEntity) {
+		if (element instanceof HTMLEntity) {
 			return CONTENT_TYPE_HTML;
 		}
 		return CONTENT_TYPE_PLAIN;
 	}
 
 	public String getHeader(String key) {
-		if(PROPERTY_FROM.equalsIgnoreCase(key)) {
+		if (PROPERTY_FROM.equalsIgnoreCase(key)) {
 			return PROPERTY_FROM + from;
 		}
-		if(PROPERTY_TO.equalsIgnoreCase(key)) {
-			CharacterBuffer values=new CharacterBuffer();
+		if (PROPERTY_TO.equalsIgnoreCase(key)) {
+			CharacterBuffer values = new CharacterBuffer();
 			values.with(PROPERTY_TO).with(": ");
-			for(int i=0;i<to.size();i++) {
-				if(i>0) {
+			for (int i = 0; i < to.size(); i++) {
+				if (i > 0) {
 					values.with(";");
 				}
 				values.with(to.get(i));
 			}
 			return values.toString();
 		}
-		if(PROPERTY_MIME.equalsIgnoreCase(key)) {
-			return PROPERTY_MIME+mimeVersion;
+		if (PROPERTY_MIME.equalsIgnoreCase(key)) {
+			return PROPERTY_MIME + mimeVersion;
 		}
 
-		if(PROPERTY_DATE.equalsIgnoreCase(key)) {
-			if(this.date == null) {
+		if (PROPERTY_DATE.equalsIgnoreCase(key)) {
+			if (this.date == null) {
 				this.date = new DateTimeEntity();
 			}
-			return PROPERTY_DATE+this.date.toString("ddd, d mmm yyyy HH:MM:SS Z (z)");
+			return PROPERTY_DATE + this.date.toString("ddd, d mmm yyyy HH:MM:SS Z (z)");
 		}
-		if(PROPERTY_ID.equalsIgnoreCase(key)) {
-			return PROPERTY_ID+id;
+		if (PROPERTY_ID.equalsIgnoreCase(key)) {
+			return PROPERTY_ID + id;
 		}
-		if(PROPERTY_SUBJECT.equalsIgnoreCase(key)) {
-			return PROPERTY_SUBJECT+this.subject;
+		if (PROPERTY_SUBJECT.equalsIgnoreCase(key)) {
+			return PROPERTY_SUBJECT + this.subject;
 		}
-		if(PROPERTY_CONTENTTYPE.equalsIgnoreCase(key)) {
-			return PROPERTY_CONTENTTYPE+this.getContentType();
+		if (PROPERTY_CONTENTTYPE.equalsIgnoreCase(key)) {
+			return PROPERTY_CONTENTTYPE + this.getContentType();
 		}
-		if(PROPERTY_BOUNDARY.equalsIgnoreCase(key)) {
+		if (PROPERTY_BOUNDARY.equalsIgnoreCase(key)) {
 			return PROPERTY_BOUNDARY + "\"" + generateBoundaryValue() + "\"";
 		}
 
@@ -124,21 +124,22 @@ public class SocketMessage implements BaseItem {
 	}
 
 	public String getHeaderFrom(String defaultFrom) {
-		if(from == null) {
+		if (from == null) {
 			this.from = defaultFrom;
 		}
 		return "MAIL FROM:" + normalizeAddress(from);
 	}
+
 	public SimpleList<String> getHeaderTo() {
-		SimpleList<String> toList=new SimpleList<String>();
-		for(int i=0;i<to.size();i++) {
-			toList.add("RCPT TO:"+normalizeAddress(to.get(i)));
+		SimpleList<String> toList = new SimpleList<String>();
+		for (int i = 0; i < to.size(); i++) {
+			toList.add("RCPT TO:" + normalizeAddress(to.get(i)));
 		}
 		return toList;
 	}
 
 	public String generateMessageId(String localHost) {
-		if(this.id != null) {
+		if (this.id != null) {
 			return this.id;
 		}
 		int at = localHost.lastIndexOf('@');
@@ -148,29 +149,29 @@ public class SocketMessage implements BaseItem {
 		CharacterBuffer s = new CharacterBuffer();
 
 		// Unique string is <hashcode>.<id>.<currentTime><suffix>
-		String id=  MessageSession.nextID();
+		String id = MessageSession.nextID();
 		s.with(s.hashCode()).with('.').with(id).with('.').with(System.currentTimeMillis()).with(localHost);
 		this.id = s.toString();
 		return this.id;
 	}
 
 	public XMLEntity toXML(String type) {
-		XMLEntity messageXML=XMLEntity.TAG("message");
-		if(type ==MessageSession.TYPE_FCM) {
+		XMLEntity messageXML = XMLEntity.TAG("message");
+		if (type == MessageSession.TYPE_FCM) {
 			messageXML.add("id", "");
 			XMLEntity gcm = messageXML.createChild("gcm");
 			gcm.add("xmlns", "google:mobile:data");
 
 			JsonObject container = new JsonObject();
 			gcm.add(container);
-			if(this.to.size()>0) {
+			if (this.to.size() > 0) {
 				container.put("to", this.to.first());
 			}
 			container.put("message_id", MessageSession.nextID());
 
 			JsonObject data = new JsonObject();
 			container.put("data", data);
-			if(this.message.size() > 0) {
+			if (this.message.size() > 0) {
 				data.put("message", this.message.first());
 			}
 
@@ -178,7 +179,7 @@ public class SocketMessage implements BaseItem {
 //		      "delay_while_idle": true/false,
 //		      "delivery_receipt_requested": true/false
 		}
-		if(type ==MessageSession.TYPE_XMPP) {
+		if (type == MessageSession.TYPE_XMPP) {
 			messageXML.add("id", MessageSession.nextID());
 			messageXML.add("to", to);
 			messageXML.createChild("body").withValueItem(message.toString());
@@ -186,23 +187,24 @@ public class SocketMessage implements BaseItem {
 		return messageXML;
 	}
 
-    /**
-     * Get a unique value for use in a multipart boundary string.
-     *
-     * This implementation generates it by concatenating a global
-     * part number, a newly created object's <code>hashCode()</code>,
-     * and the current time (in milliseconds).
-     * @return Boundary String
-     */
-    public String generateBoundaryValue() {
-    	if(this.boundary != null) {
-    		return this.boundary;
-    	}
-    	CharacterBuffer s = new CharacterBuffer();
+	/**
+	 * Get a unique value for use in a multipart boundary string.
+	 *
+	 * This implementation generates it by concatenating a global part number, a
+	 * newly created object's <code>hashCode()</code>, and the current time (in
+	 * milliseconds).
+	 * 
+	 * @return Boundary String
+	 */
+	public String generateBoundaryValue() {
+		if (this.boundary != null) {
+			return this.boundary;
+		}
+		CharacterBuffer s = new CharacterBuffer();
 		long hash = s.hashCode();
 
 		// Unique string is ----=_Part_<part>_<hashcode>.<currentTime>
-		String id=  MessageSession.nextID();
+		String id = MessageSession.nextID();
 
 		s.with("_Part_").with(id).with('_').with(hash).with('.').with(System.currentTimeMillis());
 		this.boundary = s.toString();
@@ -215,10 +217,10 @@ public class SocketMessage implements BaseItem {
 	}
 
 	public SocketMessage withRecipient(String... toAdresses) {
-		if(toAdresses == null) {
+		if (toAdresses == null) {
 			return this;
 		}
-		for(int i=0;i<toAdresses.length;i++) {
+		for (int i = 0; i < toAdresses.length; i++) {
 			this.to.add(toAdresses[i]);
 		}
 		return this;
@@ -226,13 +228,13 @@ public class SocketMessage implements BaseItem {
 
 	private String normalizeAddress(String value) {
 		String returnValue = value.trim();
-		if(returnValue.startsWith("<") == false) {
-			if(returnValue.endsWith(">")) {
+		if (returnValue.startsWith("<") == false) {
+			if (returnValue.endsWith(">")) {
 				return "<" + returnValue;
 			}
 			return "<" + returnValue + ">";
 		}
-		if(returnValue.endsWith(">")) {
+		if (returnValue.endsWith(">")) {
 			return returnValue;
 		}
 		return returnValue + ">";
@@ -253,6 +255,7 @@ public class SocketMessage implements BaseItem {
 		this.message.add(item);
 		return this;
 	}
+
 	public SocketMessage withHTMLMessage(String value) {
 		BaseItem item = new HTMLEntity().withBody(value);
 		this.message.add(item);
@@ -262,12 +265,13 @@ public class SocketMessage implements BaseItem {
 	public SimpleList<BaseItem> getMessages() {
 		return this.message;
 	}
+
 	public SimpleKeyValueList<String, Buffer> getAttachments() {
 		return this.attachment;
 	}
 
 	public boolean isMultiPart() {
-		return this.message.size()>1 || this.attachment.size()>0;
+		return this.message.size() > 1 || this.attachment.size() > 0;
 	}
 
 	public void removeToAdress(int pos) {
@@ -291,10 +295,10 @@ public class SocketMessage implements BaseItem {
 
 	@Override
 	public String toString(Converter converter) {
-		if(converter instanceof EntityStringConverter) {
+		if (converter instanceof EntityStringConverter) {
 			return toString();
 		}
-		if(converter == null) {
+		if (converter == null) {
 			return null;
 		}
 		return converter.encode(this);
@@ -302,9 +306,9 @@ public class SocketMessage implements BaseItem {
 
 	@Override
 	public boolean add(Object... values) {
-		if(values != null) {
-			for(Object item : values) {
-				if(item instanceof String && item != null) {
+		if (values != null) {
+			for (Object item : values) {
+				if (item instanceof String && item != null) {
 					this.withRecipient((String) item);
 				}
 			}
@@ -312,7 +316,7 @@ public class SocketMessage implements BaseItem {
 		return true;
 	}
 
-	public static SocketMessage create(String message,String... toAdresses) {
+	public static SocketMessage create(String message, String... toAdresses) {
 		SocketMessage socketMessage = new SocketMessage(toAdresses);
 		socketMessage.withMessage(message);
 		return socketMessage;

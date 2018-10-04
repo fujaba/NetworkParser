@@ -33,15 +33,15 @@ public class StoryStepImage implements ObjectCondition {
 
 	@Override
 	public boolean update(Object value) {
-		if(value instanceof SimpleEvent == false) {
+		if (value instanceof SimpleEvent == false) {
 			return false;
 		}
 		SimpleEvent evt = (SimpleEvent) value;
 		HTMLEntity element = (HTMLEntity) evt.getNewValue();
-		if(this.file != null) {
+		if (this.file != null) {
 			XMLEntity image = element.createTag("img", element.getBody());
 			image.put("src", file);
-			//			int counter = story.getCounter();
+			// int counter = story.getCounter();
 //			XMLEntity textItem = element.createBodyTag("p");
 //			textItem.add("class", "step");
 //			String textValue = "";

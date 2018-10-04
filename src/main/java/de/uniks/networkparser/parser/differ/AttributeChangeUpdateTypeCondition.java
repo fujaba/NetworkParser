@@ -10,20 +10,20 @@ public class AttributeChangeUpdateTypeCondition extends MatchCondition {
 	public AttributeChangeUpdateTypeCondition() {
 		super(true);
 	}
-	
+
 	@Override
 	protected boolean checkFileCondition(GraphMatcher matches, Match match) {
 		Attribute oldAttribute = (Attribute) match.getMatch();
 //		Attribute newAttribute = (Attribute) match.getSourceMatch();
 		Attribute newAttribute = (Attribute) match.getOtherMatch().getMatch();
-		
+
 		if (match.isMetaMatch() == false && match.isSourceMatch() == false) {
 			return false;
 		}
 		if (oldAttribute.getType().equals(newAttribute.getType())) {
 			return false;
 		}
-		
+
 		return true;
 	}
 
@@ -31,17 +31,18 @@ public class AttributeChangeUpdateTypeCondition extends MatchCondition {
 	protected boolean calculateFileDiffs(GraphModel model, GraphMatcher matches, Match match) {
 		Attribute oldAttribute = (Attribute) match.getMatch();
 		Attribute newAttribute = (Attribute) match.getOtherMatch().getMatch();
-		
-		Match rename = Match.create(newAttribute, this, Attribute.PROPERTY_TYPE, newAttribute.getType(), oldAttribute.getType());
+
+		Match rename = Match.create(newAttribute, this, Attribute.PROPERTY_TYPE, newAttribute.getType(),
+				oldAttribute.getType());
 		matches.addDiff(rename);
 		return true;
 	}
-	
+
 	@Override
 	protected boolean checkModelCondition(GraphMatcher matches, Match match) {
 		Attribute oldAttribute = (Attribute) match.getOtherMatch().getMatch();
 		Attribute newAttribute = (Attribute) match.getMatch();
-		if(oldAttribute == null || newAttribute == null) {
+		if (oldAttribute == null || newAttribute == null) {
 			return false;
 		}
 		return oldAttribute.getType().equals(newAttribute.getType()) == false;
@@ -52,7 +53,8 @@ public class AttributeChangeUpdateTypeCondition extends MatchCondition {
 		Attribute oldAttribute = (Attribute) match.getOtherMatch().getMatch();
 		Attribute newAttribute = (Attribute) match.getMatch();
 
-		Match update = Match.create(oldAttribute, this, Attribute.PROPERTY_TYPE, oldAttribute.getType(), newAttribute.getType());
+		Match update = Match.create(oldAttribute, this, Attribute.PROPERTY_TYPE, oldAttribute.getType(),
+				newAttribute.getType());
 		matches.addDiff(update);
 		return true;
 	}

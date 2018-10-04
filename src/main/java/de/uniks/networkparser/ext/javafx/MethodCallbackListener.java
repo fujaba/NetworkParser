@@ -29,10 +29,12 @@ import de.uniks.networkparser.interfaces.ObjectCondition;
 public class MethodCallbackListener implements ObjectCondition {
 	private Object element;
 	private String methodName;
-	public MethodCallbackListener (Object element, String methodName) {
+
+	public MethodCallbackListener(Object element, String methodName) {
 		this.element = element;
 		this.methodName = methodName;
 	}
+
 	@Override
 	public boolean update(Object value) {
 		ReflectionLoader.call(element, this.methodName, value);

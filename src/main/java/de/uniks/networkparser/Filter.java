@@ -34,23 +34,18 @@ public class Filter {
 	/** The Constant COLLISION. */
 	public static final String COLLISION = "collision";
 
-
 	protected ObjectCondition idFilter;
 	protected ObjectCondition convertable; // Or Notification for Decode
 	protected ObjectCondition property;
 
 	// Entweder eines der unteren Formate
-	protected static final byte FORMAT_NULL=1;
-	protected static final byte FORMAT_FULL=2;
-	protected static final byte FORMAT_TYPESAVE=3;
-	protected static final byte FORMAT_SHORTCLASS=4;
+	protected static final byte FORMAT_NULL = 1;
+	protected static final byte FORMAT_FULL = 2;
+	protected static final byte FORMAT_TYPESAVE = 3;
+	protected static final byte FORMAT_SHORTCLASS = 4;
 
 	/**
-	 * Format
-	 * 0= REFERENCE
-	 * 1 = NULL-Check
-	 * 2 = FULL
-	 * 3 = TYPESAVE
+	 * Format 0= REFERENCE 1 = NULL-Check 2 = FULL 3 = TYPESAVE
 	 */
 	private byte format; // FORMAT:
 
@@ -66,25 +61,25 @@ public class Filter {
 	/**
 	 * Filter for encoding ID of Element
 	 *
-	 * @param entity Entity for Show Id
+	 * @param entity    Entity for Show Id
 	 * @param className ClassName
-	 * @param map The IdMap
+	 * @param map       The IdMap
 	 * @return boolean if encoding ID
 	 */
 	public boolean isId(Object entity, String className, IdMap map) {
 		if (idFilter != null) {
 			return idFilter.update(new SimpleEvent(SendableEntityCreator.NEW, null, map, className, null, entity));
-		}else {
+		} else {
 			SendableEntityCreator creator = map.getCreator(className, true, null);
-			if(creator!=null) {
+			if (creator != null) {
 				return !(creator instanceof SendableEntityCreatorNoIndex);
 			}
 		}
 		return true;
 	}
 
-	public boolean isSimpleFormat(Object entity, SendableEntityCreator creator, String className, IdMap map){
-		if(this.isSimpleFormat()) {
+	public boolean isSimpleFormat(Object entity, SendableEntityCreator creator, String className, IdMap map) {
+		if (this.isSimpleFormat()) {
 			return true;
 		}
 		if (creator instanceof SendableEntityCreatorNoIndex || isId(entity, className, map) == false) {
@@ -95,18 +90,19 @@ public class Filter {
 
 	/**
 	 * Serialization the Full object inclusive null value
+	 * 
 	 * @return boolean for serialization the full object
 	 */
 	public boolean isFullSerialization() {
-		return (format % FORMAT_SHORTCLASS)>=FORMAT_FULL;
+		return (format % FORMAT_SHORTCLASS) >= FORMAT_FULL;
 	}
 
 	public boolean isTypSave() {
-		return (format % FORMAT_SHORTCLASS)>=FORMAT_TYPESAVE;
+		return (format % FORMAT_SHORTCLASS) >= FORMAT_TYPESAVE;
 	}
 
 	public boolean isNullCheck() {
-		return (format % FORMAT_SHORTCLASS)>=FORMAT_NULL;
+		return (format % FORMAT_SHORTCLASS) >= FORMAT_NULL;
 	}
 
 	public boolean isShortClass() {
@@ -115,6 +111,7 @@ public class Filter {
 
 	/**
 	 * Serialization the Full object inclusive null value
+	 * 
 	 * @param format for serialization the full object
 	 * @return self instance
 	 */
@@ -136,15 +133,12 @@ public class Filter {
 	/**
 	 * Convert the Entity
 	 *
-	 * @param entity The Entity
+	 * @param entity   The Entity
 	 * @param property The Property to Convert
-	 * @param value The childValue
-	 * @param map IdMap
-	 * @param deep Deep
-	 * @return Number for Convert
-	 * 			1 for Convert
-	 * 			0 for Reference
-	 * 			-1 for not Convert
+	 * @param value    The childValue
+	 * @param map      IdMap
+	 * @param deep     Deep
+	 * @return Number for Convert 1 for Convert 0 for Reference -1 for not Convert
 	 *
 	 */
 	public int convert(Object entity, String property, Object value, IdMap map, int deep) {
@@ -152,17 +146,17 @@ public class Filter {
 			return 1;
 		}
 		SimpleEvent event = new SimpleEvent(this.strategy, map, property, deep, null, entity, value, null);
-		if(this.property != null && this.property.update(event) == false) {
+		if (this.property != null && this.property.update(event) == false) {
 			return -1;
 		}
-		if(this.convertable != null && this.convertable.update(event) == false) {
+		if (this.convertable != null && this.convertable.update(event) == false) {
 			return 0;
 		}
 		return 1;
 	}
 
 	public boolean isConvertable(SimpleEvent event) {
-		return this.convertable == null || this.convertable.update(event) ;
+		return this.convertable == null || this.convertable.update(event);
 	}
 
 	public ObjectCondition getPropertyRegard() {
@@ -178,8 +172,10 @@ public class Filter {
 	public static Filter regard(ObjectCondition convertable) {
 		return new Filter().withPropertyRegard(convertable);
 	}
+
 	/**
-	 * Create a new Filter for Converting Filter (Encoding Object or set only the Id)
+	 * Create a new Filter for Converting Filter (Encoding Object or set only the
+	 * Id)
 	 *
 	 * @param convertable Condition
 	 * @return a new Filter for Filter with Convertable Items
@@ -194,6 +190,7 @@ public class Filter {
 
 	/**
 	 * Strategy for setting property value in model
+	 * 
 	 * @return String type of set Value
 	 */
 	public String getStrategy() {
@@ -218,9 +215,9 @@ public class Filter {
 		this.strategy = SendableEntityCreator.NEW;
 	}
 
-
 	/**
 	 * Full Serialization
+	 * 
 	 * @return a Filter for Full Serialization
 	 */
 	public static Filter createFull() {
@@ -229,6 +226,7 @@ public class Filter {
 
 	/**
 	 * Full Serialization
+	 * 
 	 * @return a Filter for Full Serialization
 	 */
 	public static Filter createChange() {
@@ -237,6 +235,7 @@ public class Filter {
 
 	/**
 	 * Simple Serialization
+	 * 
 	 * @return a Filter for Simple Serialization
 	 */
 	public static Filter createSimple() {
@@ -245,6 +244,7 @@ public class Filter {
 
 	/**
 	 * Null Check Serialization
+	 * 
 	 * @return a Filter for Null-Check Serialization
 	 */
 	public static Filter createNull() {
@@ -253,6 +253,7 @@ public class Filter {
 
 	/**
 	 * TypeSave Serialization
+	 * 
 	 * @return a Filter for TypeSave Serialization
 	 */
 	public static Filter createTypSave() {

@@ -21,7 +21,7 @@ public class RemoveCondition extends MatchCondition {
 			return false;
 		}
 		GraphMember member = match.getMatch();
-		if(member instanceof Association) {
+		if (member instanceof Association) {
 			return checkConditionAssociation(matches, match, (Association) member);
 		}
 		if (match.isMetaMatch() == false) {
@@ -33,7 +33,7 @@ public class RemoveCondition extends MatchCondition {
 
 		return true;
 	}
-	
+
 	protected boolean checkConditionAssociation(GraphMatcher matches, Match match, Association association) {
 		if (association.getClazz() == association.getOtherClazz()) {
 			if (((association.getType().equals(AssociationTypes.UNDIRECTIONAL)
@@ -64,7 +64,9 @@ public class RemoveCondition extends MatchCondition {
 				}
 			} else if (association.getType().equals(AssociationTypes.EDGE)) {
 				Association otherAssociation = (Association) match.getSourceMatch();
-				if (Double.compare(GraphUtil.compareName(association.getOther().getName(), otherAssociation.getOther().getName()), 3) == -1) {
+				if (Double.compare(
+						GraphUtil.compareName(association.getOther().getName(), otherAssociation.getOther().getName()),
+						3) == -1) {
 					return false;
 				}
 			}
@@ -72,10 +74,9 @@ public class RemoveCondition extends MatchCondition {
 //				return false;
 //			}
 		}
-		
+
 		return true;
 	}
-
 
 	@Override
 	protected boolean checkFileCondition(GraphMatcher matches, Match match) {
@@ -86,25 +87,27 @@ public class RemoveCondition extends MatchCondition {
 	protected boolean calculateFileDiffs(GraphModel model, GraphMatcher matches, Match match) {
 		GraphMember member = match.getMatch();
 		Match remove;
-		if(member instanceof Association) {
+		if (member instanceof Association) {
 			Association association = (Association) member;
-			
+
 			if (association.getClazz() == association.getOtherClazz()) {
-				remove = Match.create(association.getOther().getClazz(), this, Clazz.PROPERTY_ASSOCIATION, association.getOther(), null);
+				remove = Match.create(association.getOther().getClazz(), this, Clazz.PROPERTY_ASSOCIATION,
+						association.getOther(), null);
 			} else {
 				remove = Match.create(association.getClazz(), this, Clazz.PROPERTY_ASSOCIATION, association, null);
 
 				if ((association.getType().equals(AssociationTypes.EDGE)
 						&& association.getOther().getType().equals(AssociationTypes.UNDIRECTIONAL))) {
 					matches.addDiff(remove);
-					remove = Match.create(association.getOtherClazz(), this, Clazz.PROPERTY_ASSOCIATION, association.getOther(), null);
+					remove = Match.create(association.getOtherClazz(), this, Clazz.PROPERTY_ASSOCIATION,
+							association.getOther(), null);
 				}
 			}
 			matches.addDiff(remove);
 			return true;
 		}
-		if(member instanceof Clazz) {
-			remove = Match.create(((Clazz)member).getClassModel(), this, GraphModel.PROPERTY_CLAZZ, member, null);
+		if (member instanceof Clazz) {
+			remove = Match.create(((Clazz) member).getClassModel(), this, GraphModel.PROPERTY_CLAZZ, member, null);
 		} else {
 			remove = Match.create(member.getClazz(), this, Clazz.PROPERTY_CHILD, member, null);
 		}
@@ -121,31 +124,33 @@ public class RemoveCondition extends MatchCondition {
 	protected boolean calculateModelDiffs(GraphModel model, GraphMatcher matches, Match match) {
 		GraphMember member = match.getMatch();
 		Match remove;
-		if(member instanceof Association) {
+		if (member instanceof Association) {
 			Association association = (Association) member;
 			if (association.getClazz() == association.getOtherClazz()) {
-				remove = Match.create(association.getOtherClazz(), this, Clazz.PROPERTY_ASSOCIATION, association.getOther(), null);
+				remove = Match.create(association.getOtherClazz(), this, Clazz.PROPERTY_ASSOCIATION,
+						association.getOther(), null);
 			} else {
 				remove = Match.create(association.getClazz(), this, Clazz.PROPERTY_ASSOCIATION, association, null);
 
 				if ((association.getType().equals(AssociationTypes.EDGE)
 						&& association.getOther().getType().equals(AssociationTypes.UNDIRECTIONAL))) {
 					matches.addDiff(remove);
-					remove = Match.create(association.getOtherClazz(), this, Clazz.PROPERTY_ASSOCIATION, association.getOther(), null);
+					remove = Match.create(association.getOtherClazz(), this, Clazz.PROPERTY_ASSOCIATION,
+							association.getOther(), null);
 				}
 			}
 			matches.addDiff(remove);
 			return true;
 		}
-		if(member instanceof Clazz) {
-			remove = Match.create(((Clazz)member).getClassModel(), this, GraphModel.PROPERTY_CLAZZ, member, null);
+		if (member instanceof Clazz) {
+			remove = Match.create(((Clazz) member).getClassModel(), this, GraphModel.PROPERTY_CLAZZ, member, null);
 		} else {
 			remove = Match.create(member.getClazz(), this, Clazz.PROPERTY_CHILD, member, null);
 		}
 		matches.addDiff(remove);
 		return true;
 	}
-	
+
 	@Override
 	public String getAction() {
 		return SendableEntityCreator.REMOVE;

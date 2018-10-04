@@ -39,22 +39,22 @@ public class GetModel implements Supplier<Object> {
 
 	@Override
 	public Object get() {
-		try{
+		try {
 			IdMap map = this.owner.getMap();
-			if(this.entity instanceof String) {
+			if (this.entity instanceof String) {
 				Object element = map.getObject((String) this.entity);
-				if(this.property != null) {
+				if (this.property != null) {
 					SendableEntityCreator creator = map.getCreatorClass(entity);
 					return creator.getValue(element, property);
 				}
 				return element;
 			}
-			if(map == null) {
+			if (map == null) {
 				return null;
 			}
 			SendableEntityCreator creator = map.getCreatorClass(entity);
 			return creator.getValue(entity, property);
-		}catch(Exception e){
+		} catch (Exception e) {
 			this.owner.getErrorHandler().saveException(e, false);
 		}
 		return false;

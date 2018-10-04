@@ -15,10 +15,10 @@ public class AssociationChangeRenameCondition extends MatchCondition {
 	protected boolean checkCondition(GraphMatcher matches, Match match) {
 		Association sourceAssociation = (Association) match.getMatch();
 		Association otherAssociation = (Association) match.getOtherMatch().getMatch();
-		
+
 		return sourceAssociation.getOther().getName().equals(otherAssociation.getOther().getName()) == false;
 	}
-	
+
 	@Override
 	protected boolean checkFileCondition(GraphMatcher matches, Match match) {
 		return checkCondition(matches, match);
@@ -28,11 +28,12 @@ public class AssociationChangeRenameCondition extends MatchCondition {
 	protected boolean calculateFileDiffs(GraphModel model, GraphMatcher matches, Match match) {
 		Association oldAssociation = (Association) match.getMatch();
 		Association newAssociation = (Association) match.getOtherMatch().getMatch();
-		Match rename = Match.create(newAssociation.getOther(), this, Association.PROPERTY_NAME, newAssociation.getOther().getName(), oldAssociation.getOther().getName());
+		Match rename = Match.create(newAssociation.getOther(), this, Association.PROPERTY_NAME,
+				newAssociation.getOther().getName(), oldAssociation.getOther().getName());
 		matches.addDiff(rename);
 		return true;
 	}
-	
+
 	@Override
 	protected boolean checkModelCondition(GraphMatcher matches, Match match) {
 		return checkCondition(matches, match);
@@ -42,8 +43,9 @@ public class AssociationChangeRenameCondition extends MatchCondition {
 	protected boolean calculateModelDiffs(GraphModel model, GraphMatcher matches, Match match) {
 		Association oldAssociation = (Association) match.getOtherMatch().getMatch();
 		Association newAssociation = (Association) match.getMatch();
-		
-		Match rename = Match.create(oldAssociation.getOther(), this, Association.PROPERTY_NAME, oldAssociation.getOther().getName(), newAssociation.getOther().getName());
+
+		Match rename = Match.create(oldAssociation.getOther(), this, Association.PROPERTY_NAME,
+				oldAssociation.getOther().getName(), newAssociation.getOther().getName());
 		matches.addDiff(rename);
 		return true;
 	}

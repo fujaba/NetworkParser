@@ -39,28 +39,29 @@ public abstract class GraphModel extends GraphEntity implements BaseItem {
 
 	/**
 	 * get All GraphClazz
+	 * 
 	 * @param filters Can Filter the List of Clazzes
 	 * @return all GraphClazz of a GraphModel
 	 *
-	 *		 <pre>
+	 *         <pre>
 	 *			  one					   many
 	 * GraphModel ----------------------------------- GraphClazz
 	 *			  parent				   clazz
-	 *		 </pre>
+	 *         </pre>
 	 */
 	public ClazzSet getClazzes(Condition<?>... filters) {
 		ClazzSet collection = new ClazzSet();
 		if (children == null) {
 			return collection;
 		}
-		if(children instanceof Clazz) {
-			collection.add((Clazz)children);
+		if (children instanceof Clazz) {
+			collection.add((Clazz) children);
 		}
-		if(children instanceof GraphSimpleSet) {
-			GraphSimpleSet items = (GraphSimpleSet)children;
+		if (children instanceof GraphSimpleSet) {
+			GraphSimpleSet items = (GraphSimpleSet) children;
 			for (GraphMember child : items) {
-				if (child instanceof Clazz)  {
-					if(check(child, filters) ) {
+				if (child instanceof Clazz) {
+					if (check(child, filters)) {
 						collection.add((Clazz) child);
 					}
 				}
@@ -71,24 +72,23 @@ public abstract class GraphModel extends GraphEntity implements BaseItem {
 
 	@Override
 	public Object getValue(String attribute) {
-		if(PROPERTY_CLAZZ.equalsIgnoreCase(attribute)) {
+		if (PROPERTY_CLAZZ.equalsIgnoreCase(attribute)) {
 			return getClazzes();
 		}
-		if(PROPERTY_PACKAGENAME.equalsIgnoreCase(attribute)) {
+		if (PROPERTY_PACKAGENAME.equalsIgnoreCase(attribute)) {
 			return this.getName(false);
 		}
 		return super.getValue(attribute);
 	}
 
 	protected boolean clearAddOnClazzes() {
-		if(this.children == null) {
+		if (this.children == null) {
 			return true;
 		}
-		if(this.children instanceof GraphSimpleSet == false) {
-			if(this.children instanceof Clazz) {
+		if (this.children instanceof GraphSimpleSet == false) {
+			if (this.children instanceof Clazz) {
 				Clazz clazz = (Clazz) this.children;
-				if(Clazz.TYPE_CREATOR.equals(clazz.getType())
-						|| Clazz.TYPE_PATTERNOBJECT.equals(clazz.getType())
+				if (Clazz.TYPE_CREATOR.equals(clazz.getType()) || Clazz.TYPE_PATTERNOBJECT.equals(clazz.getType())
 						|| Clazz.TYPE_SET.equals(clazz.getType())) {
 					clazz.setParentNode(null);
 					this.children = null;
@@ -99,12 +99,11 @@ public abstract class GraphModel extends GraphEntity implements BaseItem {
 
 		GraphSimpleSet list = (GraphSimpleSet) this.children;
 		Iterator<GraphMember> i = list.iterator();
-		while(i.hasNext()) {
+		while (i.hasNext()) {
 			GraphMember member = i.next();
-			if(member instanceof Clazz) {
+			if (member instanceof Clazz) {
 				Clazz clazz = (Clazz) member;
-				if(Clazz.TYPE_CREATOR.equals(clazz.getType())
-						|| Clazz.TYPE_PATTERNOBJECT.equals(clazz.getType())
+				if (Clazz.TYPE_CREATOR.equals(clazz.getType()) || Clazz.TYPE_PATTERNOBJECT.equals(clazz.getType())
 						|| Clazz.TYPE_SET.equals(clazz.getType())) {
 					clazz.setParentNode(null);
 					list.remove(member);
@@ -114,20 +113,20 @@ public abstract class GraphModel extends GraphEntity implements BaseItem {
 		return true;
 	}
 
-
 	public Clazz createClazz(String name) {
-		if (name == null || children == null || (children instanceof Clazz && name.equals(((Clazz)children).getName()))) {
+		if (name == null || children == null
+				|| (children instanceof Clazz && name.equals(((Clazz) children).getName()))) {
 			Clazz clazz = new Clazz(name);
 			clazz.setClassModel(this);
 			return clazz;
 		}
 		// So its List
-		if(children instanceof GraphSimpleSet) {
-			GraphSimpleSet items = (GraphSimpleSet)children;
+		if (children instanceof GraphSimpleSet) {
+			GraphSimpleSet items = (GraphSimpleSet) children;
 			for (GraphMember child : items) {
-				if (child instanceof Clazz)  {
-					Clazz clazz=(Clazz) child;
-					if(name.equals(clazz.getName())) {
+				if (child instanceof Clazz) {
+					Clazz clazz = (Clazz) child;
+					if (name.equals(clazz.getName())) {
 						return clazz;
 					}
 				}
@@ -150,12 +149,13 @@ public abstract class GraphModel extends GraphEntity implements BaseItem {
 
 	/**
 	 * Set the Default Author
+	 * 
 	 * @param value The Authorname
 	 * @return State for change the Autorname
 	 */
 	public boolean setAuthorName(String value) {
-		if((value != null && value.equals(this.defaultAuthorName) == false)
-				|| (value==null && this.defaultAuthorName != null)) {
+		if ((value != null && value.equals(this.defaultAuthorName) == false)
+				|| (value == null && this.defaultAuthorName != null)) {
 			this.defaultAuthorName = value;
 			return true;
 		}
@@ -178,23 +178,23 @@ public abstract class GraphModel extends GraphEntity implements BaseItem {
 		String packageName = null;
 		for (Clazz item : classes) {
 			String className = item.getName();
-			if(className != null && className.indexOf('.')>0) {
-				if(packageName == null) {
+			if (className != null && className.indexOf('.') > 0) {
+				if (packageName == null) {
 					packageName = className.substring(0, className.lastIndexOf("."));
-				}else if(className.startsWith(packageName) == false) {
+				} else if (className.startsWith(packageName) == false) {
 					packageName = "";
 				}
 			}
 			fixClassModel(item, visited);
 		}
 		// CHECK PACKAGE
-		if(getDefaultPackage().equals(this.name) && packageName != null && packageName.length()>0) {
+		if (getDefaultPackage().equals(this.name) && packageName != null && packageName.length() > 0) {
 			// Its valid all Clazz has the same PackageName
 			this.name = packageName;
 			packageName += ".";
 			for (Clazz item : classes) {
 				String className = item.getName();
-				if(className != null && className.startsWith(packageName)) {
+				if (className != null && className.startsWith(packageName)) {
 					item.setName(className.substring(packageName.length()));
 				}
 			}
@@ -253,13 +253,13 @@ public abstract class GraphModel extends GraphEntity implements BaseItem {
 		}
 
 		// FIX Attribute and Methods
-		for(Attribute attribute : item.getAttributes()) {
+		for (Attribute attribute : item.getAttributes()) {
 			fixDataType(attribute.getType());
 		}
 
-		for(Method method: item.getMethods()) {
+		for (Method method : item.getMethods()) {
 			fixDataType(method.getReturnType());
-			for(Parameter param : method.getParameters()) {
+			for (Parameter param : method.getParameters()) {
 				fixDataType(param.getType());
 			}
 		}
@@ -267,26 +267,26 @@ public abstract class GraphModel extends GraphEntity implements BaseItem {
 
 	private void fixDataType(DataType dataType) {
 		Clazz clazz = dataType.getClazz();
-		if(clazz.isExternal() == false && EntityUtil.isPrimitiveType(clazz.getName()) == false)  {
+		if (clazz.isExternal() == false && EntityUtil.isPrimitiveType(clazz.getName()) == false) {
 			GraphMember byObject = this.getByObject(clazz.getName(), true);
-			if(byObject == null) {
+			if (byObject == null) {
 				this.add(clazz);
-			} else if(byObject instanceof Clazz){
-				GraphUtil.setClazz(dataType, (Clazz)byObject);
+			} else if (byObject instanceof Clazz) {
+				GraphUtil.setClazz(dataType, (Clazz) byObject);
 			}
 		}
 	}
 
 	protected GraphModel with(GraphModel model) {
-		if(model == null) {
+		if (model == null) {
 			return this;
 		}
 		GraphSimpleSet allChildren = model.getChildren();
-		for(GraphMember child :allChildren) {
+		for (GraphMember child : allChildren) {
 			withChildren(child);
 		}
 		// Add Properties
-		if(this.defaultAuthorName == null) {
+		if (this.defaultAuthorName == null) {
 			this.defaultAuthorName = model.getAuthorName();
 		}
 		return this;
@@ -300,11 +300,11 @@ public abstract class GraphModel extends GraphEntity implements BaseItem {
 	}
 
 	public int size() {
-		if(this.children == null) {
+		if (this.children == null) {
 			return 0;
 		}
-		if(this.children instanceof GraphSimpleSet) {
-			return ((GraphSimpleSet)this.children).size();
+		if (this.children instanceof GraphSimpleSet) {
+			return ((GraphSimpleSet) this.children).size();
 		}
 		return 1;
 	}

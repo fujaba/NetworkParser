@@ -8,13 +8,9 @@ import de.uniks.networkparser.parser.GraphMatcher;
 public class MethodChangeCondition extends MatchCondition {
 
 	public MethodChangeCondition() {
-		super(	new ChangeRenameCondition(), 
-				new ChangeAddCondition(), 
-				new ChangeAddModifierCondition(),
-				new ChangeRemoveModifierCondition(),
-				new MethodChangeUpdateTypeCondition(),
-				new MethodChangeUpdateCondition(),
-				new MethodChangeUpdateBodyCondition());
+		super(new ChangeRenameCondition(), new ChangeAddCondition(), new ChangeAddModifierCondition(),
+				new ChangeRemoveModifierCondition(), new MethodChangeUpdateTypeCondition(),
+				new MethodChangeUpdateCondition(), new MethodChangeUpdateBodyCondition());
 	}
 
 	@Override
@@ -51,5 +47,5 @@ public class MethodChangeCondition extends MatchCondition {
 	public String getAction() {
 		return SendableEntityCreator.UPDATE;
 	}
-	
+
 }

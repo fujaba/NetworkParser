@@ -49,29 +49,29 @@ public class ExcelBuffer {
 		ZipFile zipEntry = null;
 		try {
 			CharacterBuffer sharedStrings = null, sheetData = null;
-			zipEntry=new ZipFile(file);
+			zipEntry = new ZipFile(file);
 			InputStream inputStream;
 			ZipEntry entry = zipEntry.getEntry("xl/sharedStrings.xml");
-			if(entry != null) {
+			if (entry != null) {
 				inputStream = zipEntry.getInputStream(entry);
 				sharedStrings = readContext(inputStream);
 				inputStream.close();
 			}
 			entry = zipEntry.getEntry("xl/worksheets/sheet1.xml");
-			if(entry != null) {
+			if (entry != null) {
 				inputStream = zipEntry.getInputStream(entry);
 				sheetData = readContext(inputStream);
 				inputStream.close();
 			}
 			zipEntry.close();
 			zipEntry = null;
-			if(sheetData == null) {
+			if (sheetData == null) {
 				sheetData = new CharacterBuffer();
 			}
 			data = new ExcelParser().parseSheet(sharedStrings, sheetData);
 		} catch (IOException e) {
 		} finally {
-			if(zipEntry != null) {
+			if (zipEntry != null) {
 				try {
 					zipEntry.close();
 				} catch (IOException e) {
@@ -96,15 +96,16 @@ public class ExcelBuffer {
 		}
 		return out;
 	}
+
 	public boolean encode(File file, ExcelWorkBook workbook) {
-		boolean result=false;
+		boolean result = false;
 		ZipOutputStream zos = null;
 		try {
 			FileOutputStream fos = new FileOutputStream(file);
 			zos = new ZipOutputStream(fos);
 			ExcelParser excelParser = new ExcelParser();
 			SimpleKeyValueList<String, String> content = excelParser.createExcelContent(workbook);
-			for(Iterator<Entry<String, String>> iterator = content.entrySet().iterator();iterator.hasNext();){
+			for (Iterator<Entry<String, String>> iterator = content.entrySet().iterator(); iterator.hasNext();) {
 				Entry<String, String> entry = iterator.next();
 				ZipEntry zipEntry = new ZipEntry(entry.getKey());
 				zos.putNextEntry(zipEntry);
@@ -117,7 +118,7 @@ public class ExcelBuffer {
 		} catch (FileNotFoundException e) {
 		} catch (IOException e) {
 		} finally {
-			if(zos != null) {
+			if (zos != null) {
 				try {
 					zos.close();
 				} catch (IOException e) {
@@ -127,7 +128,8 @@ public class ExcelBuffer {
 		return result;
 	}
 
-	public void addToZipFile(String fileName, String content, ZipOutputStream zos) throws FileNotFoundException, IOException {
+	public void addToZipFile(String fileName, String content, ZipOutputStream zos)
+			throws FileNotFoundException, IOException {
 		ZipEntry zipEntry = new ZipEntry(fileName);
 		zos.putNextEntry(zipEntry);
 		byte[] bytes = content.getBytes(BaseItem.ENCODING);

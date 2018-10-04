@@ -788,7 +788,8 @@ public class TarUtils {
 	 * Returns whether a given encoding is UTF-8. If the given name is null, then
 	 * check the platform's default encoding.
 	 *
-	 * @param charsetName If the given name is null, then check the platform's default encoding.
+	 * @param charsetName If the given name is null, then check the platform's
+	 *                    default encoding.
 	 * @return isUTF8
 	 */
 	static boolean isUTF8(String charsetName) {

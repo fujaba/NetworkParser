@@ -69,11 +69,12 @@ class NioZipEncoding {
 
 	/**
 	 * Check for encoding Stream
+	 * 
 	 * @param name Name of Encoding
 	 * @return if Buffer can encode
 	 */
 	public boolean canEncode(String name) {
-		if(this.charset == null) {
+		if (this.charset == null) {
 			return true;
 		}
 		final CharsetEncoder enc = newEncoder();
@@ -83,11 +84,12 @@ class NioZipEncoding {
 
 	/**
 	 * Encode Stream
+	 * 
 	 * @param name of Encoding
 	 * @return ByteBuffer
 	 */
 	public ByteBuffer encode(String name) {
-		if(this.charset == null) {
+		if (this.charset == null) {
 			final int length = name.length();
 			final byte[] buf = new byte[length];
 
@@ -146,11 +148,12 @@ class NioZipEncoding {
 
 	/**
 	 * Decode Stream
+	 * 
 	 * @param data for Decoding
 	 * @return decoded String
 	 */
 	public String decode(byte[] data) throws IOException {
-		if(this.charset == null) {
+		if (this.charset == null) {
 			final int length = data.length;
 			final StringBuilder result = new StringBuilder(length);
 

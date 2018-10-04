@@ -22,7 +22,7 @@ public class AssociationChangeUpdateTypeCondition extends MatchCondition {
 		if (match.isMetaMatch() == false && match.isMetaSourceMatch() == false) {
 			return false;
 		}
-		
+
 		return true;
 	}
 
@@ -30,12 +30,13 @@ public class AssociationChangeUpdateTypeCondition extends MatchCondition {
 	protected boolean calculateFileDiffs(GraphModel model, GraphMatcher matches, Match match) {
 		Association oldAssociation = (Association) match.getMatch();
 		Association newAssociation = (Association) match.getSourceMatch();
-		
+
 		if ((oldAssociation.getType().equals(AssociationTypes.EDGE)
 				&& oldAssociation.getOther().getType().equals(AssociationTypes.UNDIRECTIONAL))
 				|| oldAssociation.getType().equals(newAssociation.getType()) == false
 				|| oldAssociation.getOther().getType().equals(newAssociation.getOther().getType()) == false) {
-			Match remove = Match.create(newAssociation.getClazz(), this, Clazz.PROPERTY_ASSOCIATION, newAssociation, null);
+			Match remove = Match.create(newAssociation.getClazz(), this, Clazz.PROPERTY_ASSOCIATION, newAssociation,
+					null);
 
 			matches.addDiff(remove);
 
@@ -43,7 +44,8 @@ public class AssociationChangeUpdateTypeCondition extends MatchCondition {
 					|| (oldAssociation.getClazz().getName().equals(newAssociation.getClazz().getName())
 							&& oldAssociation.getType().equals(AssociationTypes.EDGE))) {
 //				GraphDiff removeOther = GraphDiff.create(newAssociation.getOtherClazz(), SendableEntityCreator.UPDATE, this, newAssociation.getOther(), null);
-				Match removeOther = Match.create(newAssociation.getOtherClazz(), this, Clazz.PROPERTY_ASSOCIATION, newAssociation.getOther(), null);
+				Match removeOther = Match.create(newAssociation.getOtherClazz(), this, Clazz.PROPERTY_ASSOCIATION,
+						newAssociation.getOther(), null);
 
 				matches.addDiff(removeOther);
 			}
@@ -63,7 +65,7 @@ public class AssociationChangeUpdateTypeCondition extends MatchCondition {
 	protected boolean calculateModelDiffs(GraphModel model, GraphMatcher matches, Match match) {
 		Association oldAssociation = (Association) match.getOtherMatch().getMatch();
 		Association newAssociation = (Association) match.getMatch();
-		
+
 		if ((oldAssociation.getType().equals(AssociationTypes.EDGE)
 				&& oldAssociation.getOther().getType().equals(AssociationTypes.UNDIRECTIONAL))
 				|| (oldAssociation.getType().equals(AssociationTypes.ASSOCIATION)
@@ -81,14 +83,16 @@ public class AssociationChangeUpdateTypeCondition extends MatchCondition {
 					}
 				}
 				if (removeAssoc) {
-					Match remove = Match.create(oldAssociation.getClazz(), this, Clazz.PROPERTY_ASSOCIATION, oldAssociation, null);
+					Match remove = Match.create(oldAssociation.getClazz(), this, Clazz.PROPERTY_ASSOCIATION,
+							oldAssociation, null);
 					matches.addDiff(remove);
 
 					if (oldAssociation.getClazz().getName() != newAssociation.getClazz().getName()
 							|| (oldAssociation.getClazz().getName().equals(newAssociation.getClazz().getName())
 									&& (oldAssociation.getType().equals(AssociationTypes.EDGE)
 											|| newAssociation.getType().equals(AssociationTypes.EDGE)))) {
-						Match removeOther = Match.create(oldAssociation.getOtherClazz(), this, Clazz.PROPERTY_ASSOCIATION, oldAssociation.getOther(), null);
+						Match removeOther = Match.create(oldAssociation.getOtherClazz(), this,
+								Clazz.PROPERTY_ASSOCIATION, oldAssociation.getOther(), null);
 
 						matches.addDiff(removeOther);
 					}

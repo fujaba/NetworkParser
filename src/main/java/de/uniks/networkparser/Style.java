@@ -30,7 +30,7 @@ import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
 
 public class Style implements Cloneable, SendableEntityCreatorNoIndex {
 	/** The Constant PROPERTY_NAME for Name of Style */
-	public static final String PROPERTY_NAME="name";
+	public static final String PROPERTY_NAME = "name";
 	private String name;
 
 	/** The Constant PROPERTY_BOLD for Bold Attribute */
@@ -159,9 +159,8 @@ public class Style implements Cloneable, SendableEntityCreatorNoIndex {
 	}
 
 	public Style clone(Style prototyp) {
-		return prototyp.withFontFamily(fontfamily).withFontSize(fontsize)
-				.withForground(forground).withBackground(background)
-				.withBold(bold).withItalic(italic).withAlignment(alignment)
+		return prototyp.withFontFamily(fontfamily).withFontSize(fontsize).withForground(forground)
+				.withBackground(background).withBold(bold).withItalic(italic).withAlignment(alignment)
 				.withUnderline(underline).withWidth(width).withHeight(height);
 	}
 
@@ -226,8 +225,7 @@ public class Style implements Cloneable, SendableEntityCreatorNoIndex {
 		GUILine border = this.borders.get(position);
 		if (width != null) {
 			if (border == null) {
-				this.borders.put(position, new GUILine().withColor(color)
-						.withWidth(width));
+				this.borders.put(position, new GUILine().withColor(color).withWidth(width));
 				this.propertyChange(PROPERTY_BORDER, null, this.borders);
 			} else {
 				if (!border.isCustomLine()) {
@@ -261,15 +259,15 @@ public class Style implements Cloneable, SendableEntityCreatorNoIndex {
 
 	@Override
 	public String[] getProperties() {
-		return new String[]{
-				PROPERTY_NAME, PROPERTY_FONTFAMILY, PROPERTY_FONTSIZE, PROPERTY_FORGROUND, PROPERTY_BACKGROUND, PROPERTY_BOLD, PROPERTY_ITALIC, PROPERTY_UNDERLINE, PROPERTY_ALIGNMENT, PROPERTY_WIDTH, PROPERTY_HEIGHT
-		};
+		return new String[] { PROPERTY_NAME, PROPERTY_FONTFAMILY, PROPERTY_FONTSIZE, PROPERTY_FORGROUND,
+				PROPERTY_BACKGROUND, PROPERTY_BOLD, PROPERTY_ITALIC, PROPERTY_UNDERLINE, PROPERTY_ALIGNMENT,
+				PROPERTY_WIDTH, PROPERTY_HEIGHT };
 	}
 
 	@Override
 	public Object getValue(Object entity, String attrName) {
 		String attribute;
-		if(attrName == null || entity instanceof Style == false) {
+		if (attrName == null || entity instanceof Style == false) {
 			return false;
 		}
 		Style style = (Style) entity;
@@ -316,9 +314,8 @@ public class Style implements Cloneable, SendableEntityCreatorNoIndex {
 	}
 
 	@Override
-	public boolean setValue(Object entity, String attribute, Object value,
-			String type) {
-		if(entity instanceof Style == false) {
+	public boolean setValue(Object entity, String attribute, Object value, String type) {
+		if (entity instanceof Style == false) {
 			return false;
 		}
 		Style style = (Style) entity;
@@ -335,7 +332,7 @@ public class Style implements Cloneable, SendableEntityCreatorNoIndex {
 			return true;
 		}
 		if (PROPERTY_FONTSIZE.equalsIgnoreCase(attribute)) {
-			if(value != null) {
+			if (value != null) {
 				style.withFontSize(value.toString());
 			}
 			return true;
@@ -365,7 +362,7 @@ public class Style implements Cloneable, SendableEntityCreatorNoIndex {
 			return true;
 		}
 		if (PROPERTY_NAME.equalsIgnoreCase(attribute)) {
-			style.withName(""+value);
+			style.withName("" + value);
 			return true;
 		}
 		return false;
@@ -379,6 +376,7 @@ public class Style implements Cloneable, SendableEntityCreatorNoIndex {
 	public String getName() {
 		return name;
 	}
+
 	public Style withName(String name) {
 		this.name = name;
 		return this;

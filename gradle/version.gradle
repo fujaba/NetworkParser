@@ -8,7 +8,7 @@ configurations {
 	gitVersion{}
 }
 dependencies {
-    gitVersion "org.eclipse.jgit:org.eclipse.jgit:[4,)"
+	gitVersion "org.eclipse.jgit:org.eclipse.jgit:[4,)"
 	gitVersion "org.slf4j:slf4j-simple:1.6.1"
 }
 
@@ -59,7 +59,7 @@ task compileJava18(type: JavaCompile) {
 	classpath = files('build/classes/main18')
 }
 
-task JavaGit(type:JavaExec, dependsOn: compileJava18) {
+task JavaGit(type:JavaExec) {
 	doFirst {
 		try {
 			compileJava18.execute()
@@ -122,13 +122,12 @@ task version() {
 		}
 	}
 }
+gradle.projectsEvaluated {
+	JavaGit.mustRunAfter compileJava
+}
+
 ext {
 	gitVersion = new GITVersion(major: ext.majorNumber)
-	try {
-		tasks.JavaGit.execute()
-	} catch(e){
-	}
-	
 }
 version = gitVersion
 

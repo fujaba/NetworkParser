@@ -173,8 +173,8 @@ artifacts {
 	archives buildCoreJar16, buildCoreJar17, buildCoreJar18, buildCoreJar19, buildSourceJar, buildSourceJar18, buildMinCoreJar, buildJavadoc
 }
 
-task wrapper(type: Wrapper) {
-		gradleVersion = '4.7-rc-1'
+wrapper {
+	gradleVersion = '4.10.2'
 }
 jacoco.toolVersion = "0.8.+"
 

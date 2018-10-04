@@ -35,18 +35,17 @@ public class DialogPane implements Runnable {
 	private Object pane;
 	private double initWidth;
 	private double initHeight;
-	private int initCount=1;
-
+	private int initCount = 1;
 
 	public DialogPane(DialogBox owner, Object parent) {
 		this.owner = owner;
 		this.parent = parent;
 
 		this.pane = ReflectionLoader.newInstance(ReflectionLoader.PANE);
-		if (owner!= null) {
+		if (owner != null) {
 			this.initHeight = this.owner.prefWidth(-1);
-			this.initWidth  = this.owner.prefHeight(-1);
-			if(owner.isModel() == false) {
+			this.initWidth = this.owner.prefHeight(-1);
+			if (owner.isModel() == false) {
 				opaqueLayer = ReflectionLoader.newInstance(ReflectionLoader.REGION);
 				JavaBridgeFX.setStyle(opaqueLayer, false, "lightweight-dialog-background");
 				JavaBridgeFX.addChildren(pane, 0, opaqueLayer);
@@ -63,15 +62,15 @@ public class DialogPane implements Runnable {
 	protected void layoutChildren() {
 		double dialogWidth = this.owner.prefWidth(-1);
 		double dialogHeight = this.owner.prefHeight(-1);
-		if(this.initCount>999) {
+		if (this.initCount > 999) {
 			this.initCount = -1;
 		}
-		if(dialogHeight == this.initHeight && dialogWidth == this.initWidth) {
-			if(this.initCount>0) {
+		if (dialogHeight == this.initHeight && dialogWidth == this.initWidth) {
+			if (this.initCount > 0) {
 				this.initCount++;
 				JavaAdapter.execute(this);
 			}
-		} else if(this.initCount > 0){
+		} else if (this.initCount > 0) {
 			this.initCount = -1;
 		}
 
@@ -81,26 +80,27 @@ public class DialogPane implements Runnable {
 		final double x = 0;
 		final double y = 0;
 		if (parent != null) {
-			ReflectionLoader.call(parent, "resizeRelocate", double.class, x, double.class, y, double.class, w, double.class, h);
+			ReflectionLoader.call(parent, "resizeRelocate", double.class, x, double.class, y, double.class, w,
+					double.class, h);
 		}
 
 		if (opaqueLayer != null) {
-			ReflectionLoader.call(opaqueLayer, "resizeRelocate", double.class, x, double.class, y, double.class, w, double.class, h);
+			ReflectionLoader.call(opaqueLayer, "resizeRelocate", double.class, x, double.class, y, double.class, w,
+					double.class, h);
 		}
 		Object root = owner.getRoot();
-
 
 		ReflectionLoader.call(root, "resize", double.class, (int) (dialogWidth), double.class, (int) (dialogHeight));
 
 		// hacky, but we only want to position the dialog the first time
 		// it is laid out - after that the only way it should move is if
 		// the user moves it.
-		if(this.initCount == -1) {
+		if (this.initCount == -1) {
 			this.initCount = -2;
 			double dialogX = (Double) ReflectionLoader.call(root, "getLayoutX");
 			dialogX = dialogX == 0.0 ? w / 2.0 - dialogWidth / 2.0 : dialogX;
 
-			double dialogY = (Double) ReflectionLoader.call(root,"getLayoutY");
+			double dialogY = (Double) ReflectionLoader.call(root, "getLayoutY");
 			dialogY = dialogY == 0.0 ? h / 2.0 - dialogHeight / 2.0 : dialogY;
 
 			ReflectionLoader.call(root, "relocate", double.class, (int) (dialogX), double.class, (int) (dialogY));

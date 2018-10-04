@@ -32,32 +32,33 @@ import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorTag;
 import de.uniks.networkparser.list.SimpleList;
 
-public class ArtifactFile implements SendableEntityCreatorTag, BaseItem, Comparable<ArtifactFile>{
+public class ArtifactFile implements SendableEntityCreatorTag, BaseItem, Comparable<ArtifactFile> {
 	public static final String PROPERTY_MODELVERSION = "modelVersion?";
 	public static final String PROPERTY_GROUPID = "groupId?";
-	public static final String PROPERTY_ARTIFACTID ="artifactId?";
-	public static final String PROPERTY_VERSION ="version?";
-	public static final String PROPERTY_SCOPE ="scope?";
-	public static final String PROPERTY_DEPENDENCIES ="dependencies";
-	public static final String PROPERTY_DEPENDENCY ="dependency";
-	public static final String PROPERTY_CLASSIFIER ="classifier";
+	public static final String PROPERTY_ARTIFACTID = "artifactId?";
+	public static final String PROPERTY_VERSION = "version?";
+	public static final String PROPERTY_SCOPE = "scope?";
+	public static final String PROPERTY_DEPENDENCIES = "dependencies";
+	public static final String PROPERTY_DEPENDENCY = "dependency";
+	public static final String PROPERTY_CLASSIFIER = "classifier";
 
-	private static final String TAG="project";
+	private static final String TAG = "project";
 	private String modelVersion;
 	private String groupId;
 	private String artifactId;
 	private String version;
 	private String scope;
-	private String tag=TAG;
+	private String tag = TAG;
 	private String time;
 	private SimpleList<ArtifactFile> dependencies = new SimpleList<ArtifactFile>();
 
-	public static final String SNAPSHOT="SNAPSHOT";
+	public static final String SNAPSHOT = "SNAPSHOT";
 	private boolean isSnapshot;
 	private SimpleList<String> classifier = new SimpleList<String>();
 	private String index;
 	private String fileName;
-	private int pomNumber[] = new int[] {1,1,1,1,1,1,0};// First 3 Number are Max next 3 Number are Current // Number of Six is Index
+	private int pomNumber[] = new int[] { 1, 1, 1, 1, 1, 1, 0 };// First 3 Number are Max next 3 Number are Current //
+																// Number of Six is Index
 
 	public ArtifactFile withModelVersion(String value) {
 		this.modelVersion = value;
@@ -88,74 +89,78 @@ public class ArtifactFile implements SendableEntityCreatorTag, BaseItem, Compara
 
 	public ArtifactFile withVersion(String value) {
 		this.version = value;
-		if(value != null) {
-			int start=0;
-			int pos=0;
-			for(int i=0;i<value.length();i++) {
-				if(value.charAt(i)=='.') {
-					if(i-start>this.pomNumber[pos]) {
-						this.pomNumber[pos] = i-start;
-						this.pomNumber[pos+3] = this.pomNumber[pos];
+		if (value != null) {
+			int start = 0;
+			int pos = 0;
+			for (int i = 0; i < value.length(); i++) {
+				if (value.charAt(i) == '.') {
+					if (i - start > this.pomNumber[pos]) {
+						this.pomNumber[pos] = i - start;
+						this.pomNumber[pos + 3] = this.pomNumber[pos];
 					}
-					start=i+1;
+					start = i + 1;
 					pos++;
 				}
 			}
-			if(value.length()-start>this.pomNumber[pos]) {
-				this.pomNumber[pos] = value.length()-start;
-				this.pomNumber[pos+3] = this.pomNumber[pos];
+			if (value.length() - start > this.pomNumber[pos]) {
+				this.pomNumber[pos] = value.length() - start;
+				this.pomNumber[pos + 3] = this.pomNumber[pos];
 			}
 			calculatePomNumber();
 		}
 		return this;
 	}
-	
+
 	public boolean calculatePomNumber(int... newSize) {
 		int i;
 		boolean change = false;
-		if(newSize != null) {
-			for(i=0;i<newSize.length;i++) {
-				if(i==3) {
+		if (newSize != null) {
+			for (i = 0; i < newSize.length; i++) {
+				if (i == 3) {
 					break;
 				}
-				if(this.pomNumber[i]<newSize[i]) {
-					this.pomNumber[i]=newSize[i];
-				} else if(newSize[i]<this.pomNumber[i]) {
-					change=true;
+				if (this.pomNumber[i] < newSize[i]) {
+					this.pomNumber[i] = newSize[i];
+				} else if (newSize[i] < this.pomNumber[i]) {
+					change = true;
 				}
 			}
 		}
-		int start=0;
-		String part, temp="";
-		i=0;
-		part = this.version.substring(start, start+this.pomNumber[i+3]);
-		start+=this.pomNumber[i+3]+1;
+		int start = 0;
+		String part, temp = "";
+		i = 0;
+		part = this.version.substring(start, start + this.pomNumber[i + 3]);
+		start += this.pomNumber[i + 3] + 1;
 		temp += EntityUtil.strZero(Integer.valueOf(part), this.pomNumber[i]);
 		i++;
 
-		part = this.version.substring(start, start+this.pomNumber[i+3]);
-		start+=this.pomNumber[i+3]+1;
-		try {
-			temp += EntityUtil.strZero(Integer.valueOf(part), this.pomNumber[i]);
-		}catch (Exception e) {
+		if (start + this.pomNumber[i + 3] < this.version.length()) {
+			part = this.version.substring(start, start + this.pomNumber[i + 3]);
+			start += this.pomNumber[i + 3] + 1;
+			try {
+				temp += EntityUtil.strZero(Integer.valueOf(part), this.pomNumber[i]);
+			} catch (Exception e) {
+			}
+			i++;
 		}
-		i++;
-
-		try {
-			part = this.version.substring(start, start+this.pomNumber[i+3]);
-		}catch (Exception e) {
+		if (start + this.pomNumber[i + 3] < this.version.length()) {
+			try {
+				part = this.version.substring(start, start + this.pomNumber[i + 3]);
+			} catch (Exception e) {
+			}
+			try {
+				temp += EntityUtil.strZero(Integer.valueOf(part), this.pomNumber[i]);
+			} catch (Exception e) {
+			}
+			this.pomNumber[6] = Integer.valueOf(temp);
 		}
-		try {
-			temp += EntityUtil.strZero(Integer.valueOf(part), this.pomNumber[i]);
-		}catch (Exception e) {
-		}
-		this.pomNumber[6] = Integer.valueOf(temp);
 		return change;
 	}
 
 	public int[] getPomNumber() {
 		return pomNumber;
 	}
+
 	public int getPomMax() {
 		return pomNumber[6];
 	}
@@ -184,22 +189,22 @@ public class ArtifactFile implements SendableEntityCreatorTag, BaseItem, Compara
 	}
 
 	public ArtifactFile withDependency(ArtifactFile value) {
-		if(value == null) {
+		if (value == null) {
 			return this;
 		}
 		value.withTag("dependency");
-		this.dependencies.add( value );
+		this.dependencies.add(value);
 		return this;
 	}
 
 	@Override
 	public boolean add(Object... values) {
-		if(values==null || values.length % 2 == 1) {
+		if (values == null || values.length % 2 == 1) {
 			return false;
 		}
-		for(int i=0;i<values.length;i+=2) {
-			if(values[i] instanceof String) {
-				setValue(this, (String)values[i], values[i+1], NEW);
+		for (int i = 0; i < values.length; i += 2) {
+			if (values[i] instanceof String) {
+				setValue(this, (String) values[i], values[i + 1], NEW);
 			}
 		}
 		return true;
@@ -215,16 +220,16 @@ public class ArtifactFile implements SendableEntityCreatorTag, BaseItem, Compara
 	}
 
 	private void addChildren(StringBuilder sb, String spaces) {
-		if(sb == null) {
+		if (sb == null) {
 			return;
 		}
-		for(String property : getProperties()) {
+		for (String property : getProperties()) {
 			Object value = getValue(this, property);
-			if(value!=null){
+			if (value != null) {
 				sb.append(spaces);
-				sb.append("<" + property.substring(0, property.length() - 1)+">");
+				sb.append("<" + property.substring(0, property.length() - 1) + ">");
 				sb.append(value);
-				sb.append("</"+property.substring(0, property.length() - 1)+">");
+				sb.append("</" + property.substring(0, property.length() - 1) + ">");
 			}
 		}
 	}
@@ -240,35 +245,37 @@ public class ArtifactFile implements SendableEntityCreatorTag, BaseItem, Compara
 		String spacesChild = "";
 		String spaces = "";
 		if (indentFactor > 0) {
-			spacesChild = "\r\n" + EntityUtil.repeat(' ', indent+indentFactor);
+			spacesChild = "\r\n" + EntityUtil.repeat(' ', indent + indentFactor);
 		}
 		spaces = EntityUtil.repeat(' ', indent);
 		StringBuilder sb = new StringBuilder(spaces);
-		if(tag==TAG) {
-			sb.append("<"+tag+" xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\" xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">");
+		if (tag == TAG) {
+			sb.append("<" + tag
+					+ " xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\" xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">");
 		} else {
-			sb.append("<"+tag+">");
+			sb.append("<" + tag + ">");
 		}
 		addChildren(sb, spacesChild);
 
-		if(dependencies.size() >0) {
-			sb.append(spacesChild+"<dependencies>");
-			for(ArtifactFile item : dependencies) {
-				sb.append("\r\n" +item.toString(indentFactor, indent+indentFactor+indentFactor));
+		if (dependencies.size() > 0) {
+			sb.append(spacesChild + "<dependencies>");
+			for (ArtifactFile item : dependencies) {
+				sb.append("\r\n" + item.toString(indentFactor, indent + indentFactor + indentFactor));
 			}
-			sb.append(spacesChild+"</dependencies>");
+			sb.append(spacesChild + "</dependencies>");
 		}
 		if (indentFactor > 0) {
 			sb.append("\r\n");
 		}
-		sb.append(spaces+"</"+tag+">");
+		sb.append(spaces + "</" + tag + ">");
 
 		return sb.toString();
 	}
 
 	public Object getValue(Object key) {
-		return getValue(this, ""+key);
+		return getValue(this, "" + key);
 	}
+
 	@Override
 	public BaseItem getNewList(boolean keyValue) {
 		return new ArtifactFile();
@@ -281,49 +288,50 @@ public class ArtifactFile implements SendableEntityCreatorTag, BaseItem, Compara
 
 	@Override
 	public String[] getProperties() {
-		return new String[]{PROPERTY_MODELVERSION, PROPERTY_GROUPID, PROPERTY_ARTIFACTID, PROPERTY_VERSION, PROPERTY_SCOPE, PROPERTY_DEPENDENCIES};
+		return new String[] { PROPERTY_MODELVERSION, PROPERTY_GROUPID, PROPERTY_ARTIFACTID, PROPERTY_VERSION,
+				PROPERTY_SCOPE, PROPERTY_DEPENDENCIES };
 	}
 
 	@Override
 	public Object getValue(Object entity, String attribute) {
-		if(PROPERTY_MODELVERSION.equals(attribute)){
-			return ((ArtifactFile)entity).getModelVersion();
+		if (PROPERTY_MODELVERSION.equals(attribute)) {
+			return ((ArtifactFile) entity).getModelVersion();
 		}
-		if(PROPERTY_GROUPID.equals(attribute)){
-			return ((ArtifactFile)entity).getGroupId();
+		if (PROPERTY_GROUPID.equals(attribute)) {
+			return ((ArtifactFile) entity).getGroupId();
 		}
-		if(PROPERTY_ARTIFACTID.equals(attribute)){
-			return ((ArtifactFile)entity).getArtifactId();
+		if (PROPERTY_ARTIFACTID.equals(attribute)) {
+			return ((ArtifactFile) entity).getArtifactId();
 		}
-		if(PROPERTY_VERSION.equals(attribute)){
-			return ((ArtifactFile)entity).getVersion();
+		if (PROPERTY_VERSION.equals(attribute)) {
+			return ((ArtifactFile) entity).getVersion();
 		}
-		if(PROPERTY_SCOPE.equals(attribute)){
-			return ((ArtifactFile)entity).getScope();
+		if (PROPERTY_SCOPE.equals(attribute)) {
+			return ((ArtifactFile) entity).getScope();
 		}
 		return null;
 	}
 
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value, String type) {
-		if(PROPERTY_MODELVERSION.equals(attribute)){
-			((ArtifactFile)entity).withModelVersion(""+value);
+		if (PROPERTY_MODELVERSION.equals(attribute)) {
+			((ArtifactFile) entity).withModelVersion("" + value);
 			return true;
 		}
-		if(PROPERTY_GROUPID.equals(attribute)){
-			((ArtifactFile)entity).withGroupId(""+value);
+		if (PROPERTY_GROUPID.equals(attribute)) {
+			((ArtifactFile) entity).withGroupId("" + value);
 			return true;
 		}
-		if(PROPERTY_ARTIFACTID.equals(attribute)){
-			((ArtifactFile)entity).withArtifactId(""+value);
+		if (PROPERTY_ARTIFACTID.equals(attribute)) {
+			((ArtifactFile) entity).withArtifactId("" + value);
 			return true;
 		}
-		if(PROPERTY_VERSION.equals(attribute)){
-			((ArtifactFile)entity).withVersion(""+value);
+		if (PROPERTY_VERSION.equals(attribute)) {
+			((ArtifactFile) entity).withVersion("" + value);
 			return true;
 		}
-		if(PROPERTY_SCOPE.equals(attribute)){
-			((ArtifactFile)entity).withScope(""+value);
+		if (PROPERTY_SCOPE.equals(attribute)) {
+			((ArtifactFile) entity).withScope("" + value);
 			return true;
 		}
 		return false;
@@ -331,32 +339,32 @@ public class ArtifactFile implements SendableEntityCreatorTag, BaseItem, Compara
 
 	@Override
 	public String toString(Converter converter) {
-		if(converter instanceof EntityStringConverter) {
-			EntityStringConverter item = (EntityStringConverter)converter;
+		if (converter instanceof EntityStringConverter) {
+			EntityStringConverter item = (EntityStringConverter) converter;
 			return toString(item.getIndentFactor(), item.getIndent());
 		}
-		if(converter == null) {
+		if (converter == null) {
 			return null;
 		}
 		return converter.encode(this);
 	}
 
 	private Object getChild(XMLEntity xmlEntity, String value) {
-		if(value == null || xmlEntity == null) {
+		if (value == null || xmlEntity == null) {
 			return null;
 		}
 
-		boolean isValue=false;
+		boolean isValue = false;
 		String property;
-		if(value.endsWith("?")) {
+		if (value.endsWith("?")) {
 			property = value.substring(0, value.length() - 1);
-			isValue=true;
+			isValue = true;
 		} else {
 			property = value;
 		}
 		Entity child = xmlEntity.getElementBy(XMLEntity.PROPERTY_TAG, property);
-		if(child != null) {
-			if(isValue) {
+		if (child != null) {
+			if (isValue) {
 				String newValue = ((XMLEntity) child).getValue();
 				setValue(this, value, newValue, NEW);
 				return newValue;
@@ -370,15 +378,16 @@ public class ArtifactFile implements SendableEntityCreatorTag, BaseItem, Compara
 		XMLEntity xmlEntity = new XMLEntity().withValue(value);
 		return withValue(xmlEntity);
 	}
+
 	public ArtifactFile withValue(XMLEntity xmlEntity) {
-		for(String property : getProperties()) {
+		for (String property : getProperties()) {
 			Object child = getChild(xmlEntity, property);
-			if(PROPERTY_DEPENDENCIES.equals(property) && child != null) {
+			if (PROPERTY_DEPENDENCIES.equals(property) && child != null) {
 				// Parse Dependency
 				XMLEntity children = (XMLEntity) child;
-				for(int i=0;i<children.size();i++) {
+				for (int i = 0; i < children.size(); i++) {
 					BaseItem dependency = children.getChild(i);
-					ArtifactFile pomDependency = new ArtifactFile().withValue((XMLEntity)dependency);
+					ArtifactFile pomDependency = new ArtifactFile().withValue((XMLEntity) dependency);
 					this.dependencies.add(pomDependency);
 				}
 			}
@@ -393,11 +402,11 @@ public class ArtifactFile implements SendableEntityCreatorTag, BaseItem, Compara
 	public SimpleList<ArtifactFile> getDependencies() {
 		return dependencies;
 	}
-	
+
 	public boolean isValid() {
-		boolean valid=true;
-		for(ArtifactFile dep : dependencies) {
-			if(dep.getVersion().indexOf("+")>0) {
+		boolean valid = true;
+		for (ArtifactFile dep : dependencies) {
+			if (dep.getVersion().indexOf("+") > 0) {
 				valid = false;
 			}
 		}
@@ -406,16 +415,16 @@ public class ArtifactFile implements SendableEntityCreatorTag, BaseItem, Compara
 
 	@Override
 	public int compareTo(ArtifactFile o) {
-		if(o == null) {
+		if (o == null) {
 			return 1;
 		}
-		String[] version1 = getVersion().replace(".","#").split("#");
-		String[] version2 = o.getVersion().replace(".","#").split("#");
+		String[] version1 = getVersion().replace(".", "#").split("#");
+		String[] version2 = o.getVersion().replace(".", "#").split("#");
 		int compare;
-		for(int i=0;i<version1.length;i++) {
-			if(i<version2.length) {
+		for (int i = 0; i < version1.length; i++) {
+			if (i < version2.length) {
 				compare = version1[i].compareTo(version2[i]);
-				if(compare!=0) {
+				if (compare != 0) {
 					return compare;
 				}
 			}
@@ -426,12 +435,12 @@ public class ArtifactFile implements SendableEntityCreatorTag, BaseItem, Compara
 	}
 
 	public String getClassifier() {
-		if(this.classifier.size()<0) {
+		if (this.classifier.size() < 0) {
 			return "";
 		}
 		return this.classifier.first();
 	}
-	
+
 	/**
 	 * @return the isSnapshot
 	 */
@@ -448,56 +457,56 @@ public class ArtifactFile implements SendableEntityCreatorTag, BaseItem, Compara
 		ArtifactFile artifactFile = new ArtifactFile();
 		int len;
 		artifactFile.fileName = fileName;
-		String defaultClassifier="jar";
+		String defaultClassifier = "jar";
 		fileName = fileName.replace('\\', '/');
-		if(fileName.indexOf("/")>0) {
-			//YEAH FILENAME
+		if (fileName.indexOf("/") > 0) {
+			// YEAH FILENAME
 			int last = fileName.lastIndexOf('.');
 			int path = fileName.lastIndexOf('/');
-			if(path<0) {
-				path =0;
+			if (path < 0) {
+				path = 0;
 			}
-			if(last<0) {
-				last = fileName.length()-1;
+			if (last < 0) {
+				last = fileName.length() - 1;
 			}
-			defaultClassifier =  fileName.substring(last+1);
-			if(defaultClassifier.equalsIgnoreCase("asc")) {
+			defaultClassifier = fileName.substring(last + 1);
+			if (defaultClassifier.equalsIgnoreCase("asc")) {
 				return null;
 			}
-			//REMOVE EXTENSION
-			fileName = fileName.substring(path+1, last);
-			
+			// REMOVE EXTENSION
+			fileName = fileName.substring(path + 1, last);
+
 		}
 		// Find ArtifactId
 		len = fileName.indexOf("-");
-		if(len>0) {
+		if (len > 0) {
 			artifactFile.artifactId = fileName.substring(0, len);
-			fileName = fileName.substring(len+1);
+			fileName = fileName.substring(len + 1);
 		}
 		len = fileName.indexOf("-");
-		if(len>0) {
+		if (len > 0) {
 			artifactFile.withVersion(fileName.substring(0, len));
-			fileName = fileName.substring(len+1);
+			fileName = fileName.substring(len + 1);
 		} else {
 			// MUST BE RELASE AND NO CLASSIFIER
 			artifactFile.withVersion(fileName);
 			fileName = defaultClassifier;
 		}
-		if(fileName.startsWith(SNAPSHOT)){
+		if (fileName.startsWith(SNAPSHOT)) {
 			artifactFile.isSnapshot = true;
-			if(fileName.length() == SNAPSHOT.length()) {
+			if (fileName.length() == SNAPSHOT.length()) {
 				fileName = defaultClassifier;
-			}else {
-				fileName = fileName.substring(SNAPSHOT.length()+1);
+			} else {
+				fileName = fileName.substring(SNAPSHOT.length() + 1);
 			}
 		}
 		// REST IS CLASSIFIER
 		artifactFile.classifier.add(fileName);
 		artifactFile.time = time;
-		
+
 		artifactFile.groupId = groupId;
 		artifactFile.index = artifactFile.version + artifactFile.artifactId;
-		
+
 		return artifactFile;
 	}
 
@@ -512,14 +521,14 @@ public class ArtifactFile implements SendableEntityCreatorTag, BaseItem, Compara
 
 	public String toPath() {
 		CharacterBuffer path = new CharacterBuffer();
-		if(groupId != null) {
+		if (groupId != null) {
 			path.with(groupId.replace(".", "/"));
 			path.with('/');
 		}
 		path.with(this.artifactId);
 		path.with('/');
 		path.with(this.version);
-		if(isSnapshot) {
+		if (isSnapshot) {
 			path.with('-');
 			path.with(SNAPSHOT);
 		}
@@ -538,25 +547,25 @@ public class ArtifactFile implements SendableEntityCreatorTag, BaseItem, Compara
 	public String toFile(boolean groupPath, String... classifier) {
 		CharacterBuffer file = new CharacterBuffer();
 		file.with(this.artifactId);
-		if(groupPath) {
+		if (groupPath) {
 			file.with('-');
 			file.with(this.version);
 		}
-		if(isSnapshot) {
+		if (isSnapshot) {
 			file.with('-');
 			file.with(SNAPSHOT);
 		}
 		String myClassifier;
-		if(classifier != null && classifier.length==1 && classifier[0] != null) {
+		if (classifier != null && classifier.length == 1 && classifier[0] != null) {
 			myClassifier = classifier[0];
-		}else {
+		} else {
 			myClassifier = this.getClassifier();
 		}
-		if("jar".equals(myClassifier)) {
+		if ("jar".equals(myClassifier)) {
 			file.with(".jar");
-		}else if("pom".equals(myClassifier)) {
+		} else if ("pom".equals(myClassifier)) {
 			file.with(".pom");
-		}else {
+		} else {
 			file.with('-');
 			file.with(myClassifier);
 			file.with(".jar");
@@ -565,38 +574,39 @@ public class ArtifactFile implements SendableEntityCreatorTag, BaseItem, Compara
 	}
 
 	public String getBuildNumber() {
-		if(this.version== null) {
+		if (this.version == null) {
 			return "0";
 		}
 		int pos = version.lastIndexOf(".");
-		if(pos<0 || version.lastIndexOf(".", pos-1) < 0) {
+		if (pos < 0 || version.lastIndexOf(".", pos - 1) < 0) {
 			return "0";
 		}
-		return version.substring(pos+1);
+		return version.substring(pos + 1);
 	}
 
 	public String getExtension() {
-		if(fileName != null) {
+		if (fileName != null) {
 			int pos = fileName.lastIndexOf(".");
-			if(pos>0) {
-				return fileName.substring(pos+1);
+			if (pos > 0) {
+				return fileName.substring(pos + 1);
 			}
 		}
 		return "jar";
 	}
 
 	public String getTime(String defaultTime) {
-		if(time != null) {
+		if (time != null) {
 			return time;
 		}
 		return defaultTime;
 	}
+
 	public String getPath() {
-		if(fileName != null) {
+		if (fileName != null) {
 			fileName = fileName.replace('\\', '/');
 			int pos = fileName.lastIndexOf('/');
-			if(pos>0) {
-				return fileName.substring(0, pos+1);
+			if (pos > 0) {
+				return fileName.substring(0, pos + 1);
 			}
 		}
 		return "";

@@ -31,7 +31,7 @@ import de.uniks.networkparser.xml.XMLEntity;
 
 public class StoryStepText implements ObjectCondition {
 	private String value;
-	private String tag="p";
+	private String tag = "p";
 	private boolean isStep = true;
 
 	public StoryStepText withText(String text) {
@@ -39,27 +39,27 @@ public class StoryStepText implements ObjectCondition {
 		return this;
 	}
 
-	public  StoryStepText withHTMLCode(String text) {
+	public StoryStepText withHTMLCode(String text) {
 		this.value = EntityUtil.encode(text);
 		this.tag = "pre";
 		return this;
 	}
-	
+
 	@Override
 	public boolean update(Object value) {
-		if(value instanceof SimpleEvent == false) {
+		if (value instanceof SimpleEvent == false) {
 			return false;
 		}
 		SimpleEvent evt = (SimpleEvent) value;
 		HTMLEntity element = (HTMLEntity) evt.getNewValue();
 		Story story = (Story) evt.getSource();
-		if(this.value != null && isStep) {
+		if (this.value != null && isStep) {
 			int counter = story.getCounter();
 			XMLEntity textItem = element.createTag(tag, element.getBody());
 			textItem.add("class", "step");
 			String textValue = "";
-			if(counter>=0) {
-				textValue = "Step "+ counter+": ";
+			if (counter >= 0) {
+				textValue = "Step " + counter + ": ";
 			}
 			textValue += this.value;
 
@@ -73,7 +73,7 @@ public class StoryStepText implements ObjectCondition {
 	}
 
 	public boolean setStep(boolean value) {
-		if(this.isStep != value) {
+		if (this.isStep != value) {
 			this.isStep = value;
 			return true;
 		}

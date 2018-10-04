@@ -65,7 +65,7 @@ public class NodeProxyFileSystem extends NodeProxy {
 	}
 
 	public NodeProxyFileSystem(String fileName) {
-		if(fileName != null) {
+		if (fileName != null) {
 			this.fileName = fileName;
 			withOnline(true);
 		}
@@ -96,7 +96,7 @@ public class NodeProxyFileSystem extends NodeProxy {
 //			// dont't update
 //			return result;
 //		}
-		if(this.space == null) {
+		if (this.space == null) {
 			return false;
 		}
 		try {
@@ -108,14 +108,14 @@ public class NodeProxyFileSystem extends NodeProxy {
 				NodeProxyModel model = getSpace().getModel();
 				Object modell = model.getModel();
 				BaseItem value = this.space.encode(modell, null);
-				if(value == null) {
+				if (value == null) {
 					return false;
 				}
 				String data = value.toString();
 				len = data.length();
 				file.write(FileBuffer.OVERRIDE, data);
 			} else if (msg != null) {
-				String data = this.space.convertMessage(msg)+BaseItem.CRLF;
+				String data = this.space.convertMessage(msg) + BaseItem.CRLF;
 				len = data.length();
 				file.write(FileBuffer.APPEND, data);
 			}
@@ -132,7 +132,7 @@ public class NodeProxyFileSystem extends NodeProxy {
 		if (this.space != null && readBaseFile != null) {
 			IdMap map = space.getMap();
 			if (map != null) {
-				if(this.isFullModell()) {
+				if (this.isFullModell()) {
 					this.space.withInit(false);
 					Object model = map.decode(readBaseFile, root, null);
 					this.space.withInit(true);
@@ -141,19 +141,19 @@ public class NodeProxyFileSystem extends NodeProxy {
 					return readBaseFile;
 				}
 				// Maybe ChangeMessages
-				if(readBaseFile instanceof EntityList){
+				if (readBaseFile instanceof EntityList) {
 					try {
 						EntityList list = (EntityList) readBaseFile;
-						for(int i=0;i<list.sizeChildren();i++) {
+						for (int i = 0; i < list.sizeChildren(); i++) {
 							BaseItem singleMessage = list.getChild(i);
 							Object message = map.decode(singleMessage);
-							if(message instanceof ChangeMessage) {
+							if (message instanceof ChangeMessage) {
 								ChangeMessage changeMsg = (ChangeMessage) message;
-								if(map.getObject(changeMsg.getId()) == null) {
+								if (map.getObject(changeMsg.getId()) == null) {
 									// Try to Use old Root
 									Object entity = changeMsg.getEntity();
-									if(entity != null) {
-										if(entity instanceof String || entity.getClass().equals(root.getClass())) {
+									if (entity != null) {
+										if (entity instanceof String || entity.getClass().equals(root.getClass())) {
 											map.put(changeMsg.getId(), root, false);
 										} else {
 											map.put(changeMsg.getId(), changeMsg.getEntity(), false);

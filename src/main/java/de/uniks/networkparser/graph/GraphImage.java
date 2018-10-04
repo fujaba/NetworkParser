@@ -25,7 +25,7 @@ THE SOFTWARE.
 */
 
 public class GraphImage extends GraphMember {
-	public static final String ACTOR="actor";
+	public static final String ACTOR = "actor";
 	private GraphNode parentNode;
 
 	@Override
@@ -53,7 +53,7 @@ public class GraphImage extends GraphMember {
 	public String toString() {
 		return "" + name;
 	}
-	
+
 	public static GraphImage createActor() {
 		return new GraphImage().with(ACTOR);
 	}

@@ -32,8 +32,8 @@ import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.StringList;
 import de.uniks.networkparser.logic.CustomCondition;
 
-public class JavaListCondition extends CustomCondition<Attribute>{
-	public static final String TAG="listType";
+public class JavaListCondition extends CustomCondition<Attribute> {
+	public static final String TAG = "listType";
 
 	@Override
 	public String getKey() {
@@ -50,7 +50,8 @@ public class JavaListCondition extends CustomCondition<Attribute>{
 		String attributeType = member.getType().getName(true);
 		if (attributeType.equals("boolean")) {
 			return addImport(creator, BooleanList.class);
-		} else if (" long Long short Short int Integer byte Byte float Float double Double ".indexOf(" " + attributeType + " ") >= 0) {
+		} else if (" long Long short Short int Integer byte Byte float Float double Double "
+				.indexOf(" " + attributeType + " ") >= 0) {
 			return addImport(creator, NumberList.class);
 		} else if (attributeType.equals("String")) {
 			return addImport(creator, StringList.class);

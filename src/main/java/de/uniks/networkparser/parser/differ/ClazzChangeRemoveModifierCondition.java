@@ -12,11 +12,10 @@ public class ClazzChangeRemoveModifierCondition extends MatchCondition {
 		super(true);
 	}
 
-
 	protected boolean checkCondition(GraphMatcher matches, Match match) {
 		Clazz sourceClazz = (Clazz) match.getMatch();
 		Clazz otherClazz = (Clazz) match.getSourceMatch();
-		
+
 		if (matches.getMetaModel() == null) {
 			return false;
 		}
@@ -26,11 +25,10 @@ public class ClazzChangeRemoveModifierCondition extends MatchCondition {
 		if (sourceClazz.getModifier().toString().equals(otherClazz.getModifier().toString())) {
 			return false;
 		}
-		
+
 		return true;
 	}
-	
-	
+
 	@Override
 	protected boolean checkFileCondition(GraphMatcher matches, Match match) {
 		return checkCondition(matches, match);
@@ -70,10 +68,9 @@ public class ClazzChangeRemoveModifierCondition extends MatchCondition {
 		return true;
 	}
 
-
 	@Override
 	public String getAction() {
 		return SendableEntityCreator.REMOVE;
 	}
-	
+
 }

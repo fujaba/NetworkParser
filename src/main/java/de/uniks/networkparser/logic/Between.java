@@ -31,7 +31,7 @@ import de.uniks.networkparser.interfaces.SendableEntityCreator;
 public class Between implements ObjectCondition, SendableEntityCreator {
 	public static final String FROM = "from";
 	public static final String TO = "to";
-	public static final String BORDER="border";
+	public static final String BORDER = "border";
 
 	private Double fromValue;
 	private Double toValue;
@@ -63,48 +63,48 @@ public class Between implements ObjectCondition, SendableEntityCreator {
 
 	@Override
 	public boolean update(Object evt) {
-		if(evt instanceof PropertyChangeEvent == false) {
+		if (evt instanceof PropertyChangeEvent == false) {
 			return false;
 		}
 		PropertyChangeEvent event = (PropertyChangeEvent) evt;
 		Object newValue = event.getNewValue();
 		boolean result = true;
-		if(border) {
+		if (border) {
 			if (newValue instanceof Double) {
 				Double newNumber = ((Double) newValue);
-				if(fromValue != null) {
+				if (fromValue != null) {
 					result = newNumber >= fromValue;
 				}
-				if(toValue != null) {
+				if (toValue != null) {
 					result = result && newNumber <= toValue;
 				}
 				return result;
-			}else if (newValue instanceof Integer) {
+			} else if (newValue instanceof Integer) {
 				Integer newNumber = ((Integer) newValue);
-				if(fromValue != null) {
+				if (fromValue != null) {
 					result = newNumber >= fromValue;
 				}
-				if(toValue != null) {
+				if (toValue != null) {
 					result = result && newNumber <= toValue;
 				}
 				return result;
 			}
-		}else {
+		} else {
 			if (newValue instanceof Double) {
 				Double newNumber = ((Double) newValue);
-				if(fromValue != null) {
+				if (fromValue != null) {
 					result = newNumber > fromValue;
 				}
-				if(toValue != null) {
+				if (toValue != null) {
 					result = result && newNumber < toValue;
 				}
 				return result;
-			}else if (newValue instanceof Integer) {
+			} else if (newValue instanceof Integer) {
 				Integer newNumber = ((Integer) newValue);
-				if(fromValue != null) {
+				if (fromValue != null) {
 					result = newNumber > fromValue;
 				}
-				if(toValue != null) {
+				if (toValue != null) {
 					result = result && newNumber < toValue;
 				}
 				return result;
@@ -115,7 +115,7 @@ public class Between implements ObjectCondition, SendableEntityCreator {
 
 	@Override
 	public String[] getProperties() {
-		return new String[] {FROM, TO };
+		return new String[] { FROM, TO };
 	}
 
 	@Override
@@ -135,20 +135,19 @@ public class Between implements ObjectCondition, SendableEntityCreator {
 	}
 
 	@Override
-	public boolean setValue(Object entity, String attribute, Object value,
-			String type) {
+	public boolean setValue(Object entity, String attribute, Object value, String type) {
 		if (FROM.equalsIgnoreCase(attribute)) {
-			if(value instanceof  Double) {
+			if (value instanceof Double) {
 				((Between) entity).withFrom((Double) value);
-			} else if(value instanceof Integer) {
+			} else if (value instanceof Integer) {
 				((Between) entity).withFrom((Integer) value);
 			}
 			return true;
 		}
 		if (TO.equalsIgnoreCase(attribute)) {
-			if(value instanceof  Double) {
+			if (value instanceof Double) {
 				((Between) entity).withTo((Double) value);
-			} else if(value instanceof Integer) {
+			} else if (value instanceof Integer) {
 				((Between) entity).withTo((Integer) value);
 			}
 			return true;

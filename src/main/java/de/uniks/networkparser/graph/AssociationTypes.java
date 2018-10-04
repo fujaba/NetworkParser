@@ -24,26 +24,20 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-
-
 /**
- * Associations types
- * Edge           - Edge           : normal Edge
- * Association    - Association    : Bidirectional Association
- * Association    - Edge           : Undirectional but search for back Assoc
- * Undirectional  - Edge           : Undirectional Association
- * Aggregation    - Undirectional  : Undirectional Aggregation
- * Aggregation    - Edge           : Aggregation
- * Composition    - Edge           : Composition
- * Generalisation - Edge           : Generalisation
- * Implements     - Edge           : Implements
- * Dependency     - Edge           : Dependency
+ * Associations types Edge - Edge : normal Edge Association - Association :
+ * Bidirectional Association Association - Edge : Undirectional but search for
+ * back Assoc Undirectional - Edge : Undirectional Association Aggregation -
+ * Undirectional : Undirectional Aggregation Aggregation - Edge : Aggregation
+ * Composition - Edge : Composition Generalisation - Edge : Generalisation
+ * Implements - Edge : Implements Dependency - Edge : Dependency
  *
  * @author Stefan
  *
  */
 public enum AssociationTypes {
-	ASSOCIATION("assoc"), EDGE("edge"), GENERALISATION("generalisation"), IMPLEMENTS("implements"), UNDIRECTIONAL("unidirectional"), AGGREGATION("aggregation"), COMPOSITION("Composition"), DEPENDENCY("Dependency");
+	ASSOCIATION("assoc"), EDGE("edge"), GENERALISATION("generalisation"), IMPLEMENTS("implements"),
+	UNDIRECTIONAL("unidirectional"), AGGREGATION("aggregation"), COMPOSITION("Composition"), DEPENDENCY("Dependency");
 
 	private AssociationTypes(String value) {
 		this.value = value;
@@ -54,43 +48,37 @@ public enum AssociationTypes {
 	}
 
 	public static boolean isEdge(AssociationTypes value) {
-		if(value == null) {
+		if (value == null) {
 			return false;
 		}
-		return (value.equals(ASSOCIATION) ||
-				value.equals(EDGE) ||
-				value.equals(UNDIRECTIONAL) ||
-				value.equals(AGGREGATION) ||
-				value.equals(COMPOSITION)
-				);
+		return (value.equals(ASSOCIATION) || value.equals(EDGE) || value.equals(UNDIRECTIONAL)
+				|| value.equals(AGGREGATION) || value.equals(COMPOSITION));
 	}
-	
+
 	public boolean IsSame(Object value) {
-		if(value instanceof AssociationTypes) {
+		if (value instanceof AssociationTypes) {
 			return this == value;
 		}
-		if(value instanceof String && this.getValue() != null) {
-			return this.getValue().equals(value); 
+		if (value instanceof String && this.getValue() != null) {
+			return this.getValue().equals(value);
 		}
 		return false;
 	}
-	
+
 	public static Object isImplements(AssociationTypes value) {
-		if(value == null) {
+		if (value == null) {
 			return false;
 		}
-		return (value.equals(GENERALISATION) ||
-				value.equals(IMPLEMENTS) ||
-				value.equals(EDGE)
-				);
-		}
+		return (value.equals(GENERALISATION) || value.equals(IMPLEMENTS) || value.equals(EDGE));
+	}
+
 	private String value;
 
 	@Override
 	public String toString() {
 		return this.value;
 	}
-	
+
 	public static AssociationTypes create(String value) {
 		return AssociationTypes.valueOf(value);
 	}

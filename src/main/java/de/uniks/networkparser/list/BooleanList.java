@@ -25,8 +25,7 @@ THE SOFTWARE.
 */
 
 public class BooleanList extends SimpleList<Boolean> {
-	public boolean and()
-	{
+	public boolean and() {
 		for (Boolean value : this) {
 			if (!value) {
 				return false;

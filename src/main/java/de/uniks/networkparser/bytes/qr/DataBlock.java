@@ -37,16 +37,16 @@ final class DataBlock {
 
 	/**
 	 * <p>
-	 * When QR Codes use multiple data blocks, they are actually interleaved.
-	 * That is, the first byte of data block 1 to n is written, then the second
-	 * bytes, and so on. This method will separate the data into original
-	 * blocks.
+	 * When QR Codes use multiple data blocks, they are actually interleaved. That
+	 * is, the first byte of data block 1 to n is written, then the second bytes,
+	 * and so on. This method will separate the data into original blocks.
 	 * </p>
 	 *
-	 * @param rawCodewords		bytes as read directly from the QR Code
-	 * @param version			version of the QR Code
-	 * @param ecLevel			error-correction level of the QR Code
-	 * @return DataBlocks containing original bytes, "de-interleaved" from representation in the QR Code
+	 * @param rawCodewords bytes as read directly from the QR Code
+	 * @param version      version of the QR Code
+	 * @param ecLevel      error-correction level of the QR Code
+	 * @return DataBlocks containing original bytes, "de-interleaved" from
+	 *         representation in the QR Code
 	 */
 	static DataBlock[] getDataBlocks(byte[] rawCodewords, Version version, ErrorCorrectionLevel ecLevel) {
 
@@ -58,7 +58,7 @@ final class DataBlock {
 		// and
 		// error correction level
 		Version.ECB ecBlock = version.getECBlocksForLevel(ecLevel);
-		if(ecBlock == null) {
+		if (ecBlock == null) {
 			return null;
 		}
 		// First count the total number of data blocks

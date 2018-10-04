@@ -53,14 +53,14 @@ public abstract class BufferedBuffer extends Buffer implements BaseItem {
 
 	@Override
 	public boolean isEnd() {
-		if(position()-start+1 < 0) {
+		if (position() - start + 1 < 0) {
 			return true;
 		}
-		return position()-start+1 >= length();
+		return position() - start + 1 >= length();
 	}
 
 	public boolean isEndCharacter() {
-		if(position()-start+1 >= length()) {
+		if (position() - start + 1 >= length()) {
 			return true;
 		}
 		return nextClean(true) == 0;
@@ -77,6 +77,7 @@ public abstract class BufferedBuffer extends Buffer implements BaseItem {
 
 	/**
 	 * Get the Current Character
+	 * 
 	 * @return The currentChar
 	 */
 	public char getCurrentChar() {
@@ -85,15 +86,16 @@ public abstract class BufferedBuffer extends Buffer implements BaseItem {
 
 	/**
 	 * Substring of Buffer
-	 * @param start		startindex for parsing
-	 * @param endPosition	the endPosition of Substring
-	 * @return 			the Substring
+	 * 
+	 * @param start       startindex for parsing
+	 * @param endPosition the endPosition of Substring
+	 * @return the Substring
 	 */
 	public abstract CharacterBuffer subSequence(int start, int endPosition);
 
 	@Override
 	public BufferedBuffer withLookAHead(CharSequence lookahead) {
-		if(lookahead == null) {
+		if (lookahead == null) {
 			return this;
 		}
 		this.withPosition(this.position() - lookahead.length() + 1);
@@ -102,7 +104,7 @@ public abstract class BufferedBuffer extends Buffer implements BaseItem {
 
 	@Override
 	public BufferedBuffer withLookAHead(char lookahead) {
-		if(lookahead < 0) {
+		if (lookahead < 0) {
 			return this;
 		}
 		this.withPosition(this.position() - 1);
@@ -111,7 +113,7 @@ public abstract class BufferedBuffer extends Buffer implements BaseItem {
 
 	@Override
 	protected CharacterBuffer parseString(CharacterBuffer sc, boolean allowQuote, boolean nextStep, char... quotes) {
-		if(quotes== null) {
+		if (quotes == null) {
 			sc.with(getCurrentChar());
 			return sc;
 		}
@@ -119,12 +121,12 @@ public abstract class BufferedBuffer extends Buffer implements BaseItem {
 		char c;
 //		boolean isQuote = false;
 		char b = getCurrentChar();
-		int i, quoteLen=quotes.length;
+		int i, quoteLen = quotes.length;
 		do {
 			c = getChar();
 			switch (c) {
 			case 0:
-				c=0;
+				c = 0;
 				break;
 			case '\n':
 			case '\r':
@@ -144,9 +146,9 @@ public abstract class BufferedBuffer extends Buffer implements BaseItem {
 				}
 			}
 			b = c;
-			for(i=0;i<quoteLen;i++) {
+			for (i = 0; i < quoteLen; i++) {
 				if (c == quotes[i]) {
-					c=0;
+					c = 0;
 					break;
 				}
 			}
@@ -163,9 +165,9 @@ public abstract class BufferedBuffer extends Buffer implements BaseItem {
 	/**
 	 * Get the next n characters.
 	 *
-	 * @param n		The number of characters to take.
-	 * @return 		A string of n characters. Substring bounds error if there are not
-	 *		 		n characters remaining in the source string.
+	 * @param n The number of characters to take.
+	 * @return A string of n characters. Substring bounds error if there are not n
+	 *         characters remaining in the source string.
 	 */
 	public String getNextString(int n) {
 		int pos = 0;
@@ -173,8 +175,7 @@ public abstract class BufferedBuffer extends Buffer implements BaseItem {
 			n = n * -1;
 			char[] chars = new char[n];
 			while (pos < n) {
-				chars[pos] = this.charAt(this.position()
-						- (n - pos++));
+				chars[pos] = this.charAt(this.position() - (n - pos++));
 			}
 			return new String(chars);
 		} else if (n == -1) {
@@ -195,11 +196,11 @@ public abstract class BufferedBuffer extends Buffer implements BaseItem {
 	@Override
 	protected CharacterBuffer nextValue(char c, boolean allowDuppleMark) {
 		int start = position();
-		if(allowDuppleMark) {
+		if (allowDuppleMark) {
 			while (c >= ' ' && STOPCHARSXML.indexOf(c) < 0) {
 				c = getChar();
 			}
-		}else {
+		} else {
 			while (c >= ' ' && STOPCHARSJSON.indexOf(c) < 0) {
 				c = getChar();
 			}
@@ -210,30 +211,33 @@ public abstract class BufferedBuffer extends Buffer implements BaseItem {
 
 	public String nextString(int count) {
 		int start = position();
-		CharacterBuffer sb = subSequence(start, start+count).trim();
+		CharacterBuffer sb = subSequence(start, start + count).trim();
 		return sb.toString();
 	}
 
 	/**
-	 * @param positions		first is start Position, second is Endposition
+	 * @param positions first is start Position, second is Endposition
 	 *
-	 *						Absolut fix Start and End start&gt;0 StartPosition end&gt;Start EndPosition
+	 *                  Absolut fix Start and End start&gt;0 StartPosition
+	 *                  end&gt;Start EndPosition
 	 *
-	 *						Absolut from fix Position Start&gt;0 Position end NULL To End end -1 To this.index
+	 *                  Absolut from fix Position Start&gt;0 Position end NULL To
+	 *                  End end -1 To this.index
 	 *
-							Relativ from indexPosition Start Position from this.index + (-Start) End = 0 current Position
+	 *                  Relativ from indexPosition Start Position from this.index +
+	 *                  (-Start) End = 0 current Position
 	 *
 	 * @return substring from buffer
 	 */
 	public String substring(int... positions) {
-		if(positions == null || positions.length<1) {
-			positions = new int[] {-1};
+		if (positions == null || positions.length < 1) {
+			positions = new int[] { -1 };
 		}
 		int start = positions[0], end = -1;
 		if (positions.length < 2) {
 			// END IS END OF BUFFER (Exclude)
 			end = length();
-			if(start==-1) {
+			if (start == -1) {
 				start = this.position();
 			}
 		} else {
@@ -258,36 +262,36 @@ public abstract class BufferedBuffer extends Buffer implements BaseItem {
 		}
 		return subSequence(start, end).toString();
 	}
-	
+
 	public byte[] toBytes(boolean... all) {
 		byte[] result;
-		int i=start;
-		if(all != null && all.length>0 && all[0]) {
-			result=new byte[length];
+		int i = start;
+		if (all != null && all.length > 0 && all[0]) {
+			result = new byte[length];
 		} else {
-			result=new byte[length - position];
+			result = new byte[length - position];
 			i = position;
 		}
 
-		for(; i< result.length;i++) {
+		for (; i < result.length; i++) {
 			result[i] = byteAt(i);
 		}
 		return result;
 	}
-	
+
 	public String toArrayString(boolean... addString) {
-		CharacterBuffer sb=new CharacterBuffer();
+		CharacterBuffer sb = new CharacterBuffer();
 		sb.with('[');
-		
+
 		byte[] byteArray = this.toBytes();
-		if(byteArray != null && byteArray.length > 0 ) {
-			sb.with(""+byteArray[0]);
-			for(int i=1;i<this.length;i++) {
-				sb.with(","+byteArray[i]);
+		if (byteArray != null && byteArray.length > 0) {
+			sb.with("" + byteArray[0]);
+			for (int i = 1; i < this.length; i++) {
+				sb.with("," + byteArray[i]);
 			}
 		}
 		sb.with(']');
-		if(addString != null && addString.length>0 && addString[0]) {
+		if (addString != null && addString.length > 0 && addString[0]) {
 			sb.with(' ').with('(').with(new String(byteArray)).with(')');
 		}
 		return sb.toString();
@@ -302,6 +306,6 @@ public abstract class BufferedBuffer extends Buffer implements BaseItem {
 	public abstract BufferedBuffer with(char[] buffer, int i, int readed);
 
 	public abstract BufferedBuffer with(CharSequence... items);
-	
+
 	public abstract BufferedBuffer getNewList(boolean list);
 }

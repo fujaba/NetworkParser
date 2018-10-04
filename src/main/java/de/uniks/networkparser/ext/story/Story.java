@@ -41,83 +41,80 @@ import de.uniks.networkparser.logic.Equals;
 import de.uniks.networkparser.logic.Not;
 import de.uniks.networkparser.xml.HTMLEntity;
 
-public class Story extends StoryElement implements Comparable<Story>{
+public class Story extends StoryElement implements Comparable<Story> {
 	private String outputFile;
 	private String label;
 	private SimpleList<ObjectCondition> steps = new SimpleList<ObjectCondition>();
-	private int counter=-1;
-	private boolean breakOnAssert=true;
+	private int counter = -1;
+	private boolean breakOnAssert = true;
 	private IdMap map;
-	private String path="doc/";
+	private String path = "doc/";
 
 	// COUNTER
 	// ADDTABLE
-	//ADDBARCHART
-	//ADDLINECHART
-	//ADDOBJECTDIAGRAMM
-	//ADDPATTERN
-	//ADDSVG
+	// ADDBARCHART
+	// ADDLINECHART
+	// ADDOBJECTDIAGRAMM
+	// ADDPATTERN
+	// ADDSVG
 
 	public Story() {
 		this.add(new StoryStepTitle());
 	}
-
 
 	public void add(ObjectCondition step) {
 		this.steps.add(step);
 	}
 
 	public Story withPath(String value) {
-		if(value == null) {
+		if (value == null) {
 			this.path = "";
 			return this;
 		}
-		if(value.endsWith("/") || value.endsWith("\\") ) {
+		if (value.endsWith("/") || value.endsWith("\\")) {
 			this.path = value;
-		}else {
+		} else {
 			this.path = value + "/";
 		}
 		return this;
 	}
 
-	 public String getLabel() {
-		 if(this.label == null && this.outputFile != null) {
-			 int pos = this.outputFile.lastIndexOf('/');
-			 int temp = this.outputFile.lastIndexOf('\\');
-			 if(temp>pos) {
-				 pos =temp;
-			 }
-			 if(pos >= 0) {
-				 this.label = this.outputFile.substring(pos + 1);
-			 }
-		 }
-		 return this.label;
-	 }
-	
-	 public Story withLabel(String value) {
-		 this.label = value;
-		 return this;
-	 }
-	
+	public String getLabel() {
+		if (this.label == null && this.outputFile != null) {
+			int pos = this.outputFile.lastIndexOf('/');
+			int temp = this.outputFile.lastIndexOf('\\');
+			if (temp > pos) {
+				pos = temp;
+			}
+			if (pos >= 0) {
+				this.label = this.outputFile.substring(pos + 1);
+			}
+		}
+		return this.label;
+	}
+
+	public Story withLabel(String value) {
+		this.label = value;
+		return this;
+	}
+
 	/**
 	 * Add JavaCode to Story board
 	 *
 	 * @param className ClassName of SourceCOde
-	 * @param position Position of Code StartPosition, Endposition
-	 * 			if positon == null Full Method
-	 * 			StartPosition == -1 // Start at Method
-	 * 			EndPosition == -1 End of Method
-	 * 	 		EndPosition == 0 End of File
+	 * @param position  Position of Code StartPosition, Endposition if positon ==
+	 *                  null Full Method StartPosition == -1 // Start at Method
+	 *                  EndPosition == -1 End of Method EndPosition == 0 End of File
 	 * @return the SourceCodeStep
 	 */
 	public StoryStepSourceCode addSourceCode(Class<?> className, int... position) {
 		StoryStepSourceCode step = new StoryStepSourceCode();
-		if(position != null) {
-			if(position.length>0) {
+		if (position != null) {
+			if (position.length > 0) {
 				int start = position[0];
 				step.withStart(start);
 			}
-			if(position.length>1) {
+			if (position.length > 1) {
 				int start = position[1];
 				step.withEnd(start);
 			}
@@ -126,25 +123,23 @@ public class Story extends StoryElement implements Comparable<Story>{
 		addSourceCodeStep(step);
 		return step;
 	}
-	
+
 	/**
 	 * Add JavaCode to Story board
 	 *
-	 * @param position Position of Code StartPosition, Endposition
-	 * 			if positon == null Full Method
-	 * 			StartPosition == -1 // Start at Method
-	 * 			EndPosition == -1 End of Method
-	 * 	 		EndPosition == 0 End of File
+	 * @param position Position of Code StartPosition, Endposition if positon ==
+	 *                 null Full Method StartPosition == -1 // Start at Method
+	 *                 EndPosition == -1 End of Method EndPosition == 0 End of File
 	 * @return the SourceCodeStep
 	 */
 	public StoryStepSourceCode addSourceCode(int... position) {
 		StoryStepSourceCode step = new StoryStepSourceCode();
-		if(position != null) {
-			if(position.length>0) {
+		if (position != null) {
+			if (position.length > 0) {
 				int start = position[0];
 				step.withStart(start);
 			}
-			if(position.length>1) {
+			if (position.length > 1) {
 				int start = position[1];
 				step.withEnd(start);
 			}
@@ -153,7 +148,7 @@ public class Story extends StoryElement implements Comparable<Story>{
 		addSourceCodeStep(step);
 		return step;
 	}
-	
+
 	public StoryStepSourceCode addSourceCode(String rootDir, Class<?> className, String methodSignature) {
 		StoryStepSourceCode step = new StoryStepSourceCode();
 		step.withMethodSignature(methodSignature);
@@ -164,17 +159,18 @@ public class Story extends StoryElement implements Comparable<Story>{
 
 	private void addSourceCodeStep(StoryStepSourceCode step) {
 		this.add(step);
-		if(this.outputFile == null) {
+		if (this.outputFile == null) {
 			this.withName(step.getMethodName());
 		}
 		ObjectCondition firstStep = this.steps.first();
-		if(firstStep instanceof StoryStepTitle) {
+		if (firstStep instanceof StoryStepTitle) {
 			StoryStepTitle titleStep = (StoryStepTitle) firstStep;
-			if(titleStep.getTitle() == null) {
+			if (titleStep.getTitle() == null) {
 				titleStep.setTitle(step.getMethodName());
 			}
 		}
 	}
+
 	public StoryStepDiagram addDiagram(ClassModel model) {
 		StoryStepDiagram step = new StoryStepDiagram();
 		step.withModel(model);
@@ -190,12 +186,12 @@ public class Story extends StoryElement implements Comparable<Story>{
 	}
 
 	public Story withName(String name) {
-		if(name == null || name.length() <1) {
+		if (name == null || name.length() < 1) {
 			return this;
 		}
-		if(name.toLowerCase().endsWith(".html")) {
+		if (name.toLowerCase().endsWith(".html")) {
 			this.outputFile = name;
-		}else {
+		} else {
 			this.outputFile = name + ".html";
 		}
 		return this;
@@ -208,19 +204,20 @@ public class Story extends StoryElement implements Comparable<Story>{
 	public boolean dumpHTML() {
 		return writeToFile(this.outputFile);
 	}
+
 	public boolean dumpHTML(String fileName) {
 		return writeToFile(fileName);
 	}
 
 	protected boolean writeToFile(String fileName) {
 		if (fileName == null || fileName.length() < 1) {
-			if(steps.size()<1) {
+			if (steps.size() < 1) {
 				return false;
 			}
 			// get FileName from Stack
 			StoryStepSourceCode step = new StoryStepSourceCode().withCode(this.getClass(), 2);
 			fileName = step.getFileName();
-			if(fileName == null || fileName.length()<1) {
+			if (fileName == null || fileName.length() < 1) {
 				return false;
 			}
 		}
@@ -236,47 +233,47 @@ public class Story extends StoryElement implements Comparable<Story>{
 
 		SimpleEvent evt = new SimpleEvent(this, null, null, output);
 		for (ObjectCondition step : steps) {
-			if(step.update(evt) == false) {
+			if (step.update(evt) == false) {
 				return false;
 			}
 		}
 		EntityStringConverter converter = new EntityStringConverter(2);
 		converter.withPath(path);
-		return FileBuffer.writeFile(path + fileName, output.toString(converter))>=0;
+		return FileBuffer.writeFile(path + fileName, output.toString(converter)) >= 0;
 	}
 
 	public static boolean addScript(String path, String name, HTMLEntity entry) {
-		if(path == null || name == null) {
+		if (path == null || name == null) {
 			return false;
 		}
 		// CHECK FOR CHANGES
-		CharacterBuffer content = new FileBuffer().readResource("graph/"+name);
-		if(content == null) {
+		CharacterBuffer content = new FileBuffer().readResource("graph/" + name);
+		if (content == null) {
 			return false;
 		}
-		CharacterBuffer oldContent =FileBuffer.readFile(path + name);
-		if(oldContent != null && content.equals(oldContent.toString())) {
+		CharacterBuffer oldContent = FileBuffer.readFile(path + name);
+		if (oldContent != null && content.equals(oldContent.toString())) {
 			return true;
 		}
 		int len = FileBuffer.writeFile(path + name, content.toString(), FileBuffer.NONE);
 		entry.withHeader(name);
-		return len>0;
+		return len > 0;
 	}
-	
+
 	public String getPath() {
 		return path;
 	}
 
 	public boolean addDescription(String key, String value) {
 		StoryStepSourceCode source = null;
-		for(int i=this.steps.size() - 1;i>=0;i--) {
+		for (int i = this.steps.size() - 1; i >= 0; i--) {
 			ObjectCondition step = this.steps.get(i);
-			if(step instanceof StoryStepSourceCode) {
-				source =(StoryStepSourceCode) step;
+			if (step instanceof StoryStepSourceCode) {
+				source = (StoryStepSourceCode) step;
 				break;
 			}
 		}
-		if(source != null) {
+		if (source != null) {
 			source.addDescription(key, value);
 			return true;
 		}
@@ -289,8 +286,8 @@ public class Story extends StoryElement implements Comparable<Story>{
 	}
 
 	public int getCounter() {
-		int value=this.counter;
-		if(value >=0) {
+		int value = this.counter;
+		if (value >= 0) {
 			this.counter = this.counter + 1;
 		}
 		return value;
@@ -307,7 +304,7 @@ public class Story extends StoryElement implements Comparable<Story>{
 	}
 
 	public IdMap getMap() {
-		if(map == null) {
+		if (map == null) {
 			map = new IdMap();
 		}
 		return map;
@@ -315,7 +312,7 @@ public class Story extends StoryElement implements Comparable<Story>{
 
 	public void finish() {
 		for (ObjectCondition step : steps) {
-			if(step instanceof StoryStepSourceCode) {
+			if (step instanceof StoryStepSourceCode) {
 				StoryStepSourceCode sourceCode = (StoryStepSourceCode) step;
 				sourceCode.finish();
 			}
@@ -324,17 +321,17 @@ public class Story extends StoryElement implements Comparable<Story>{
 
 	private void addCondition(StoryStepCondition step) {
 		this.add(step);
-		if(step.checkCondition() == false && breakOnAssert) {
+		if (step.checkCondition() == false && breakOnAssert) {
 			this.dumpHTML();
 			Method assertClass = null;
 			try {
 				assertClass = Class.forName("org.junit.Assert").getMethod("assertTrue", String.class, boolean.class);
-				if(assertClass != null) {
+				if (assertClass != null) {
 					assertClass.invoke(null, "FAILED: " + step.getMessage(), false);
 				}
 			} catch (ReflectiveOperationException e) {
-				if(e instanceof InvocationTargetException) {
-					Throwable targetException = ((InvocationTargetException)e).getTargetException();
+				if (e instanceof InvocationTargetException) {
+					Throwable targetException = ((InvocationTargetException) e).getTargetException();
 					StoryUtil.throwException(targetException);
 				}
 			}
@@ -367,19 +364,20 @@ public class Story extends StoryElement implements Comparable<Story>{
 	}
 
 	public boolean showDebugInfos(BaseItem entity, int len, PrintStream stream) {
-		if(entity == null) {
+		if (entity == null) {
 			return false;
 		}
 		return showDebugInfos(entity.toString(new EntityStringConverter(2)), len, stream);
 	}
-	public boolean showDebugInfos(String value, int len, PrintStream stream, String...messages) {
+
+	public boolean showDebugInfos(String value, int len, PrintStream stream, String... messages) {
 		if (stream != null) {
 			stream.println("###############################");
 			stream.println(value);
 			stream.println("###############################");
 		}
 		String msg = null;
-		if(messages != null && messages.length>0) {
+		if (messages != null && messages.length > 0) {
 			msg = messages[0];
 		}
 		StoryStepCondition step = new StoryStepCondition();
@@ -416,7 +414,6 @@ public class Story extends StoryElement implements Comparable<Story>{
 		return outputFile;
 	}
 
-
 //	o1.compareTo( o2 ) < 0 o1 < o2
 //	o1.compareTo( o2 ) == 0 o1 == o2
 //	o1.compareTo( o2 ) > 0 o1 > o2
@@ -424,11 +421,11 @@ public class Story extends StoryElement implements Comparable<Story>{
 	public int compareTo(Story story) {
 		String label = this.getLabel();
 		String otherLabel = null;
-		if(story != null ) {
+		if (story != null) {
 			otherLabel = story.getLabel();
 		}
-		if(label == null) {
-			if(otherLabel != null) {
+		if (label == null) {
+			if (otherLabel != null) {
 				return -1;
 			}
 			return 0;
@@ -443,14 +440,15 @@ public class Story extends StoryElement implements Comparable<Story>{
 	public StoryStepText addText(String text, boolean isStep) {
 		return addText(text, isStep, false);
 	}
+
 	public StoryStepText addText(String text, boolean isStep, boolean html) {
 		StoryStepText step = new StoryStepText();
-		if(html) {
+		if (html) {
 			step.withHTMLCode(text);
-		}else {
+		} else {
 			step.withText(text);
 		}
-		if(isStep) {
+		if (isStep) {
 			step.setStep(isStep);
 		}
 		this.add(step);

@@ -18,7 +18,7 @@ public class ChangeAddModifierCondition extends MatchCondition {
 		GraphMember otherAttribute = match.getSourceMatch();
 		return sourceAttribute.getModifier().toString().equals(otherAttribute.getModifier().toString()) == false;
 	}
-	
+
 	@Override
 	protected boolean checkFileCondition(GraphMatcher matches, Match match) {
 		return checkCondition(matches, match);
@@ -29,7 +29,7 @@ public class ChangeAddModifierCondition extends MatchCondition {
 		GraphMember oldAttribute = match.getMatch();
 		GraphMember newAttribute = match.getSourceMatch();
 //		Attribute newAttribute = (Attribute) match.getOtherMatch().getParent();
-		
+
 		for (String modifier : oldAttribute.getModifier().toString().split(" ")) {
 			if (newAttribute.getModifier().toString().contains(modifier) == false) {
 				Match addModifier = Match.create(oldAttribute, this, Attribute.PROPERTY_MODIFIERS, null, modifier);
@@ -38,7 +38,7 @@ public class ChangeAddModifierCondition extends MatchCondition {
 		}
 		return true;
 	}
-	
+
 	@Override
 	protected boolean checkModelCondition(GraphMatcher matches, Match match) {
 		return checkCondition(matches, match);

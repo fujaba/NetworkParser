@@ -28,9 +28,18 @@ import de.uniks.networkparser.json.JsonObject;
 
 public class GraphOptions {
 	// Options
-	public enum TYP{HTML, CANVAS, SVG, PDF};
-	public enum RANK{LR, TB};
-	public enum LINETYP{CENTER, SQUARE};
+	public enum TYP {
+		HTML, CANVAS, SVG, PDF
+	};
+
+	public enum RANK {
+		LR, TB
+	};
+
+	public enum LINETYP {
+		CENTER, SQUARE
+	};
+
 	private TYP display;
 	private LINETYP lineTyp;
 	private Boolean raster;
@@ -46,7 +55,7 @@ public class GraphOptions {
 	private Boolean rotateText;
 	private ArrayList<TYP> buttons;
 
-	public JsonObject getJson(){
+	public JsonObject getJson() {
 		JsonObject result = new JsonObject();
 
 		result.withKeyValue("display", display);
@@ -61,7 +70,7 @@ public class GraphOptions {
 		result.withKeyValue("propertyinfo", propertyInfo);
 		result.withKeyValue("rotatetext", rotateText);
 		result.withKeyValue("linetyp", lineTyp);
-		if(buttons != null){
+		if (buttons != null) {
 			result.withKeyValue("buttons", new JsonArray().with(buttons));
 		}
 		return result;
@@ -153,13 +162,13 @@ public class GraphOptions {
 	}
 
 	public GraphOptions withButton(TYP... values) {
-		if(values == null) {
+		if (values == null) {
 			return this;
 		}
-		if(this.buttons == null) {
+		if (this.buttons == null) {
 			this.buttons = new ArrayList<GraphOptions.TYP>();
 		}
-		for(TYP item : values) {
+		for (TYP item : values) {
 			this.buttons.add(item);
 		}
 		return this;

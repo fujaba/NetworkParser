@@ -6,7 +6,7 @@ import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.parser.GraphMatcher;
 
-public class MatchCondition implements ObjectCondition { 
+public class MatchCondition implements ObjectCondition {
 	protected boolean isReverse;
 	protected SimpleList<MatchCondition> changeConditions;
 
@@ -15,9 +15,9 @@ public class MatchCondition implements ObjectCondition {
 	}
 
 	public MatchCondition(MatchCondition... conditions) {
-		if(conditions != null) {
+		if (conditions != null) {
 			this.changeConditions = new SimpleList<MatchCondition>();
-			for(MatchCondition condition : conditions) {
+			for (MatchCondition condition : conditions) {
 				this.changeConditions.add(condition);
 			}
 		}
@@ -25,7 +25,7 @@ public class MatchCondition implements ObjectCondition {
 
 	protected boolean executeMatch(Match match, boolean isModelCheck) {
 		GraphMatcher matchData = match.getOwner();
-		if(isModelCheck) {
+		if (isModelCheck) {
 			if (checkModelCondition(matchData, match) == false) {
 				return false;
 			}
@@ -49,14 +49,14 @@ public class MatchCondition implements ObjectCondition {
 		return false;
 	}
 
-	protected boolean calculateModelDiffs(GraphModel model, GraphMatcher matches, Match match)  {
+	protected boolean calculateModelDiffs(GraphModel model, GraphMatcher matches, Match match) {
 		return false;
 	}
-	
+
 	public String getAction() {
 		return null;
 	}
-	
+
 	// For Groups
 	protected boolean checkCondition(GraphMatcher matches, Match match) {
 		return true;
@@ -68,13 +68,13 @@ public class MatchCondition implements ObjectCondition {
 
 	@Override
 	public boolean update(Object value) {
-		if(value instanceof Match == false) {
+		if (value instanceof Match == false) {
 			return false;
 		}
 		Match match = (Match) value;
-		if(changeConditions != null) {
+		if (changeConditions != null) {
 			GraphMatcher matches = match.getOwner();
-			
+
 			if (checkCondition(matches, match) == false) {
 				return false;
 			}

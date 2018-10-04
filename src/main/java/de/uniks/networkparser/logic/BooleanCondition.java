@@ -47,8 +47,8 @@ public class BooleanCondition implements ObjectCondition, SendableEntityCreator 
 	/**
 	 * Static Method for instance a new Instance of BooleanCondition Object.
 	 *
-	 * @param value		Value
-	 * @return 			The new Instance
+	 * @param value Value
+	 * @return The new Instance
 	 */
 	public static BooleanCondition create(boolean value) {
 		return new BooleanCondition().withValue(value);
@@ -73,8 +73,7 @@ public class BooleanCondition implements ObjectCondition, SendableEntityCreator 
 	}
 
 	@Override
-	public boolean setValue(Object entity, String attribute, Object value,
-			String type) {
+	public boolean setValue(Object entity, String attribute, Object value, String type) {
 		if (VALUE.equalsIgnoreCase(attribute)) {
 			((BooleanCondition) entity).withValue((Boolean) value);
 			return true;

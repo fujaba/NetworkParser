@@ -16,7 +16,7 @@ public class ChangeRemoveModifierCondition extends MatchCondition {
 	protected boolean checkCondition(GraphMatcher matches, Match match) {
 		GraphMember sourceAttribute = match.getMatch();
 		GraphMember otherAttribute = match.getSourceMatch();
-		
+
 		if (matches.getMetaModel() == null) {
 			return false;
 		}
@@ -26,10 +26,10 @@ public class ChangeRemoveModifierCondition extends MatchCondition {
 		if (sourceAttribute.getModifier().toString().equals(otherAttribute.getModifier().toString())) {
 			return false;
 		}
-		
+
 		return true;
 	}
-	
+
 	@Override
 	protected boolean checkFileCondition(GraphMatcher matches, Match match) {
 		return checkCondition(matches, match);
@@ -39,7 +39,7 @@ public class ChangeRemoveModifierCondition extends MatchCondition {
 	protected boolean calculateFileDiffs(GraphModel model, GraphMatcher matches, Match match) {
 		GraphMember oldAttribute = match.getMatch();
 		GraphMember newAttribute = match.getSourceMatch();
-		
+
 		for (String modifier : newAttribute.getModifier().toString().split(" ")) {
 			if (oldAttribute.getModifier().toString().contains(modifier) == false) {
 				Match addModifier = Match.create(oldAttribute, this, Attribute.PROPERTY_MODIFIERS, modifier, null);
@@ -49,7 +49,7 @@ public class ChangeRemoveModifierCondition extends MatchCondition {
 		}
 		return true;
 	}
-	
+
 	@Override
 	protected boolean checkModelCondition(GraphMatcher matches, Match match) {
 		return checkCondition(matches, match);
@@ -59,10 +59,10 @@ public class ChangeRemoveModifierCondition extends MatchCondition {
 	protected boolean calculateModelDiffs(GraphModel model, GraphMatcher matches, Match match) {
 		GraphMember oldAttribute = match.getSourceMatch();
 		GraphMember newAttribute = match.getMatch();
-		
+
 		for (String modifier : oldAttribute.getModifier().toString().split(" ")) {
 			if (newAttribute.getModifier().toString().contains(modifier) == false) {
-				Match addModifier = Match.create(oldAttribute, this,  Attribute.PROPERTY_MODIFIERS, modifier, null);
+				Match addModifier = Match.create(oldAttribute, this, Attribute.PROPERTY_MODIFIERS, modifier, null);
 				matches.addDiff(addModifier);
 			}
 		}

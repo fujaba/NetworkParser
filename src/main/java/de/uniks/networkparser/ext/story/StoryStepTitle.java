@@ -37,12 +37,12 @@ public class StoryStepTitle implements ObjectCondition {
 
 	@Override
 	public boolean update(Object value) {
-		if(value instanceof SimpleEvent == false) {
+		if (value instanceof SimpleEvent == false) {
 			return false;
 		}
 		SimpleEvent evt = (SimpleEvent) value;
 		HTMLEntity element = (HTMLEntity) evt.getNewValue();
-		if(this.title != null) {
+		if (this.title != null) {
 			element.withTitle(this.title);
 			XMLEntity headerLine = element.createTag("h1", element.getBody());
 			headerLine.withValue(this.title);

@@ -31,11 +31,11 @@ import de.uniks.networkparser.ext.generic.ReflectionLoader;
 import de.uniks.networkparser.list.SimpleList;
 
 public class Os {
-	public static final String WINDOWS="windows";
-	public static final String MAC="mac";
-	public static final String UNIX="unix";
-	public static final String ANDROID="android";
-	public static final String UNKNOWN="unknown";
+	public static final String WINDOWS = "windows";
+	public static final String MAC = "mac";
+	public static final String UNIX = "unix";
+	public static final String ANDROID = "android";
+	public static final String UNKNOWN = "unknown";
 
 	public static final boolean isWindows() {
 		String os = System.getProperty("os.name").toLowerCase();
@@ -58,21 +58,21 @@ public class Os {
 	public static final boolean isReflectionTest() {
 		return System.getProperty("Tester") != null;
 	}
-	
+
 	public static final boolean isJavaFX() {
-		if(ReflectionLoader.PLATFORM == null || ReflectionLoader.PANE == null) {
+		if (ReflectionLoader.PLATFORM == null || ReflectionLoader.PANE == null) {
 			return false;
 		}
 		try {
 			ReflectionLoader.newInstance(ReflectionLoader.PANE);
-		}catch (Throwable e) {
+		} catch (Throwable e) {
 			return false;
 		}
 		return true;
 	}
 
 	public static final boolean isGenerator() {
-		SimpleList<String> allowUser=new SimpleList<String>().with("Stefan");
+		SimpleList<String> allowUser = new SimpleList<String>().with("Stefan");
 		return isEclipse() && allowUser.contains(System.getProperty("user.name")) && isJUnitTest();
 	}
 
@@ -93,16 +93,16 @@ public class Os {
 		return ("android".equals(javafxPlatform) || "dalvik".equals(vmName));
 	}
 
-	public static boolean isEclipseAndNoReflection(){
-		if(isReflectionTest()) {
+	public static boolean isEclipseAndNoReflection() {
+		if (isReflectionTest()) {
 			return false;
 		}
 		return isEclipse();
 	}
 
-	public static final boolean isEclipse(){
-		String fileName=Os.getFilename().toLowerCase();
-		if(!fileName.endsWith(".jar")){
+	public static final boolean isEclipse() {
+		String fileName = Os.getFilename().toLowerCase();
+		if (!fileName.endsWith(".jar")) {
 			// Eclipse
 			return true;
 		}
@@ -125,26 +125,30 @@ public class Os {
 	}
 
 	public static final String getCurrentPlatform() {
-		if ( Os.isWindows() ) return WINDOWS;
-		if ( Os.isMac() )	 return MAC;
-		if ( Os.isUnix() )	return UNIX;
-		if ( Os.isAndroid() )	return ANDROID;
+		if (Os.isWindows())
+			return WINDOWS;
+		if (Os.isMac())
+			return MAC;
+		if (Os.isUnix())
+			return UNIX;
+		if (Os.isAndroid())
+			return ANDROID;
 		return UNKNOWN;
 	}
 
 	public static final String getFilename() {
-		File jar = new File(Os.class.getProtectionDomain().getCodeSource().getLocation()
-				.getPath());
+		File jar = new File(Os.class.getProtectionDomain().getCodeSource().getLocation().getPath());
 		return jar.getAbsoluteFile().getName();
 	}
 
-	public static final boolean isUTF8(){
-		return ("UTF-8".equals(System.getProperty("file.encoding"))||"UTF8".equals(System.getProperty("file.encoding")));
+	public static final boolean isUTF8() {
+		return ("UTF-8".equals(System.getProperty("file.encoding"))
+				|| "UTF8".equals(System.getProperty("file.encoding")));
 	}
 
 	public static final boolean isNotFirstThread(String[] args) {
-		for(String item : args){
-			if("-XstartOnFirstThread".equalsIgnoreCase(item)){
+		for (String item : args) {
+			if ("-XstartOnFirstThread".equalsIgnoreCase(item)) {
 				return true;
 			}
 		}
@@ -153,8 +157,8 @@ public class Os {
 
 	public static final boolean checkSystemTray() {
 		Object value = ReflectionLoader.call(ReflectionLoader.SYSTEMTRAY, "isSupported");
-		if(value != null) {
-			return (Boolean)value;
+		if (value != null) {
+			return (Boolean) value;
 		}
 		return false;
 	}

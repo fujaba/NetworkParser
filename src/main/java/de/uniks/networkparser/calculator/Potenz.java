@@ -32,7 +32,7 @@ public class Potenz implements Operator {
 
 	@Override
 	public double calculate(Double... values) {
-		if(values == null) {
+		if (values == null) {
 			return 0;
 		}
 		double result = values[0];

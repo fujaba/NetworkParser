@@ -15,10 +15,10 @@ public class ClazzChangeAddModifierCondition extends MatchCondition {
 	protected boolean checkCondition(GraphMatcher matches, Match match) {
 		Clazz sourceClazz = (Clazz) match.getMatch();
 		Clazz otherClazz = (Clazz) match.getSourceMatch();
-		
+
 		return sourceClazz.getModifier().toString().equals(otherClazz.getModifier().toString()) == false;
 	}
-	
+
 	@Override
 	protected boolean checkFileCondition(GraphMatcher matches, Match match) {
 		return checkCondition(matches, match);
@@ -28,7 +28,7 @@ public class ClazzChangeAddModifierCondition extends MatchCondition {
 	protected boolean calculateFileDiffs(GraphModel model, GraphMatcher matches, Match match) {
 		Clazz oldClazz = (Clazz) match.getMatch();
 		Clazz newClazz = (Clazz) match.getSourceMatch();
-		
+
 		for (String modifier : oldClazz.getModifier().toString().split(" ")) {
 			if (newClazz.getModifier().toString().contains(modifier) == false) {
 				Match addInFile = Match.create(newClazz, this, Clazz.PROPERTY_MODIFIERS, null, modifier);
@@ -37,7 +37,7 @@ public class ClazzChangeAddModifierCondition extends MatchCondition {
 		}
 		return true;
 	}
-	
+
 	@Override
 	protected boolean checkModelCondition(GraphMatcher matches, Match match) {
 		return checkCondition(matches, match);

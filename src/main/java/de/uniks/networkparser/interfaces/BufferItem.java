@@ -27,8 +27,9 @@ import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.list.SimpleList;
 
 public interface BufferItem {
-	public static final char SPACE=' ';
-	public static final char QUOTES ='"';
+	public static final char SPACE = ' ';
+	public static final char QUOTES = '"';
+
 	/** @return the length of the buffer */
 	public int length();
 
@@ -43,9 +44,8 @@ public interface BufferItem {
 	/**
 	 * Return a new Array of Elements
 	 *
-	 * @param len len of next values
-	 * -1 remaining length
-	 * -2 all size (Only for BufferedBuffer)
+	 * @param len     len of next values -1 remaining length -2 all size (Only for
+	 *                BufferedBuffer)
 	 * @param current Add Current Byte to Array
 	 *
 	 * @return The Buffer as byte Array
@@ -73,19 +73,23 @@ public interface BufferItem {
 
 	/**
 	 * Is the Buffer is on End
+	 * 
 	 * @return boolean for is Position of Buffer on End
 	 */
 	public boolean isEnd();
 
 	/**
 	 * Add lookAHead to Buffer
-	 * @param lookahead The String for look A Head String. For Simple Buffer change position back to the length of String or Save the String.
+	 * 
+	 * @param lookahead The String for look A Head String. For Simple Buffer change
+	 *                  position back to the length of String or Save the String.
 	 * @return Self Instance
 	 */
 	public BufferItem withLookAHead(CharSequence lookahead);
 
 	/**
 	 * Add lookAHead to Buffer
+	 * 
 	 * @param lookahead The next Character
 	 * @return Self Instance
 	 */
@@ -93,6 +97,7 @@ public interface BufferItem {
 
 	/**
 	 * Get the next String
+	 * 
 	 * @param len is the Length of the new String
 	 * @return the next StringPart
 	 */
@@ -100,16 +105,18 @@ public interface BufferItem {
 
 	/**
 	 * Get the next char in the string, skipping whitespace.
-	 * @param currentValid	is the current char also a valid character
+	 * 
+	 * @param currentValid is the current char also a valid character
 	 *
-	 * @return 				A character, or 0 if there are no more characters.
+	 * @return A character, or 0 if there are no more characters.
 	 */
 	public char nextClean(boolean currentValid);
 
 	/**
 	 * Return the characters up to the next close quote character. Backslash
-	 * processing is done. The formal JSON format does not allow strings in
-	 * single quotes, but an implementation is allowed to accept them.
+	 * processing is done. The formal JSON format does not allow strings in single
+	 * quotes, but an implementation is allowed to accept them.
+	 * 
 	 * @param quotes for End
 	 * @return the StringContainer with the new Value
 	 */
@@ -117,31 +124,32 @@ public interface BufferItem {
 
 	/**
 	 * Return the characters up to the next close quote character. Remove QUOTES
+	 * 
 	 * @return the StringContainer with the new Value
 	 */
 	public CharacterBuffer nextString();
 
-
 	/**
 	 * Return the characters up to the next close quote character. Backslash
-	 * processing is done. The formal JSON format does not allow strings in
-	 * single quotes, but an implementation is allowed to accept them.
+	 * processing is done. The formal JSON format does not allow strings in single
+	 * quotes, but an implementation is allowed to accept them.
 	 *
-	 * @param sc StringContainer for manage Chars
-	 * @param allowQuote	is allow Quote in Stream
-	 * @param nextStep		must i step next after find Text
-	 * @param quotes		The quoting character, either <code>"</code>
-	 *						&nbsp;<small>(double quote)</small> or <code>'</code>
-	 *						&nbsp;<small>(single quote)</small>.
+	 * @param sc         StringContainer for manage Chars
+	 * @param allowQuote is allow Quote in Stream
+	 * @param nextStep   must i step next after find Text
+	 * @param quotes     The quoting character, either <code>"</code>
+	 *                   &nbsp;<small>(double quote)</small> or <code>'</code>
+	 *                   &nbsp;<small>(single quote)</small>.
 	 * @return the StringContainer with the new Value
 	 */
 	public CharacterBuffer nextString(CharacterBuffer sc, boolean allowQuote, boolean nextStep, char... quotes);
 
 	/**
 	 * Get the NextVlaue
-	 * @param creator Creator for creating Child Item
-	 * @param allowQuote Is it allow Quote in NextValue
-	 * @param c CurrentChar
+	 * 
+	 * @param creator         Creator for creating Child Item
+	 * @param allowQuote      Is it allow Quote in NextValue
+	 * @param c               CurrentChar
 	 * @param allowDuppleMark Is allow DuppleMarks
 	 * @return The NextValue
 	 */
@@ -149,7 +157,8 @@ public interface BufferItem {
 
 	/**
 	 * Get the next Token
-	 * @param current switch for add the current Character
+	 * 
+	 * @param current   switch for add the current Character
 	 * @param stopWords may be at Simple Space
 	 * @return The next Token
 	 */
@@ -158,29 +167,30 @@ public interface BufferItem {
 	/**
 	 * Skip.
 	 *
-	 * @param search		the The String of searchelements
-	 * @param order			the if the order of search element importent
-	 * @param notEscape		Boolean if escaping the text
-	 * @return 				true, if successful
+	 * @param search    the The String of searchelements
+	 * @param order     the if the order of search element importent
+	 * @param notEscape Boolean if escaping the text
+	 * @return true, if successful
 	 */
 	public boolean skipTo(String search, boolean order, boolean notEscape);
 
 	/**
 	 * Skip.
 	 *
-	 * @param search	the The String of searchelements
-	 * @param notEscape	Boolean if escaping the text
-	 * @return 			true, if successful
+	 * @param search    the The String of searchelements
+	 * @param notEscape Boolean if escaping the text
+	 * @return true, if successful
 	 */
 	public boolean skipTo(char search, boolean notEscape);
 
 	/**
 	 * Skip number of chars
 	 *
-	 * @param pos		the pos
-	 * @return 			true, if successful
+	 * @param pos the pos
+	 * @return true, if successful
 	 */
 	public boolean skip(int pos);
+
 	/**
 	 * Skip
 	 *
@@ -191,8 +201,8 @@ public interface BufferItem {
 	/**
 	 * Check values of the Current Char
 	 *
-	 * @param items		the items
-	 * @return 			true, if successful
+	 * @param items the items
+	 * @return true, if successful
 	 */
 	public boolean checkValues(char... items);
 
@@ -205,6 +215,7 @@ public interface BufferItem {
 
 	/**
 	 * Split Strings
+	 * 
 	 * @param value The String value
 	 * @param split boolean for Spliting
 	 * @return a List of String Parts
@@ -213,6 +224,7 @@ public interface BufferItem {
 
 	/**
 	 * Skip The quotes if the CurrentChar is it
+	 * 
 	 * @param quotes Quotes to Skip
 	 * @return the Current Char
 	 */

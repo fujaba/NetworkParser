@@ -49,19 +49,19 @@ public class ClazzSet extends SimpleSet<Clazz> {
 	}
 
 	public String toString(String splitter) {
-		if(size() == 0) {
+		if (size() == 0) {
 			return null;
 		}
 		CharacterBuffer buffer = new CharacterBuffer();
-		for(Clazz clazz : this) {
-			if(buffer.length()>0) {
+		for (Clazz clazz : this) {
+			if (buffer.length() > 0) {
 				buffer.with(splitter);
 			}
 			buffer.with(clazz.getName());
 		}
 		return buffer.toString();
 	}
-	
+
 	@Override
 	public Clazz[] toArray() {
 		return super.toArray(new Clazz[size()]);
