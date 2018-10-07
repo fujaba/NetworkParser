@@ -2,6 +2,7 @@ package org.sdmlib.test.examples.studyrightWithAssignments.model;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import org.sdmlib.test.examples.studyrightWithAssignments.model.util.AssignmentSet;
+import java.util.Collection;
 import org.sdmlib.test.examples.studyrightWithAssignments.model.Room;
 import org.sdmlib.test.examples.studyrightWithAssignments.model.util.StudentSet;
 import org.sdmlib.test.examples.studyrightWithAssignments.model.University;
@@ -179,23 +180,43 @@ public class Student {
 		return this.done;
 	}
 
-	public Student withDone(Assignment... values) {
+	public boolean setDone(Assignment... values) {
 		if (values == null) {
-			return this;
+			return true;
+		}
+		boolean result=true;
+		if (this.done == null) {
+			this.done = new AssignmentSet();
 		}
 		for (Assignment item : values) {
 			if (item == null) {
 				continue;
 			}
-			if (this.done == null) {
-				this.done = new AssignmentSet();
-			}
 			this.done.withVisible(true);
 			boolean changed = this.done.add(item);
 			this.done.withVisible(false);
+			result = result & changed;
 			if (changed) {
-				item.withStudents(this);
+				item.setStudents(this);
 				firePropertyChange(PROPERTY_DONE, null, item);
+			}
+		}
+		return result;
+	}
+
+	public Student withDone(Object... values) {
+		if (values == null) {
+			return this;
+		}
+		for (Object item : values) {
+			if (item == null) {
+				continue;
+			}
+			if (item instanceof Collection<?>) {
+				Collection<?> collection = (Collection<?>) item;
+				setDone(collection.toArray(new Assignment[collection.size()]));
+			} else {
+				setDone((Assignment) item);
 			}
 		}
 		return this;
@@ -268,23 +289,43 @@ public class Student {
 		return this.friends;
 	}
 
-	public Student withFriends(Student... values) {
+	public boolean setFriends(Student... values) {
 		if (values == null) {
-			return this;
+			return true;
+		}
+		boolean result=true;
+		if (this.friends == null) {
+			this.friends = new StudentSet();
 		}
 		for (Student item : values) {
 			if (item == null) {
 				continue;
 			}
-			if (this.friends == null) {
-				this.friends = new StudentSet();
-			}
 			this.friends.withVisible(true);
 			boolean changed = this.friends.add(item);
 			this.friends.withVisible(false);
+			result = result & changed;
 			if (changed) {
-				item.withFriends(this);
+				item.setFriends(this);
 				firePropertyChange(PROPERTY_FRIENDS, null, item);
+			}
+		}
+		return result;
+	}
+
+	public Student withFriends(Object... values) {
+		if (values == null) {
+			return this;
+		}
+		for (Object item : values) {
+			if (item == null) {
+				continue;
+			}
+			if (item instanceof Collection<?>) {
+				Collection<?> collection = (Collection<?>) item;
+				setFriends(collection.toArray(new Student[collection.size()]));
+			} else {
+				setFriends((Student) item);
 			}
 		}
 		return this;

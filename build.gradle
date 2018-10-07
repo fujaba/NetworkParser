@@ -1,14 +1,28 @@
 // clean --refresh-dependencies build
 // -PReleaseBuild 
-apply plugin: 'java'
-apply plugin: 'maven'
 
 // MAJOR VERSION - Manually set
 //----------------------
+group = "de.uniks"
 ext{
 	majorNumber = 4
 }
 //----------------------
+
+
+apply plugin: 'java'
+apply plugin: 'maven'
+
+apply from: 'gradle/tasks.gradle'
+apply plugin: 'jacoco'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+
+apply plugin: 'checkstyle'
+//apply plugin: "com.github.spotbugs"
+apply plugin: "com.github.kt3k.coveralls"
+apply from: 'gradle/mavencentral.gradle'
+//apply from: 'gradle/artifactory.gradle'
 
 repositories {
 	jcenter()
@@ -17,6 +31,24 @@ repositories {
 		url "https://repo.eclipse.org/content/groups/releases/"
 	}
 }
+
+buildscript {
+	repositories {
+		maven {
+			url "https://plugins.gradle.org/m2/"
+		}
+	}
+	dependencies {
+		classpath "org.kt3k.gradle.plugin:coveralls-gradle-plugin:[2,)"
+		classpath "com.moowork.gradle:gradle-node-plugin:[1,)"
+		//classpath "gradle.plugin.com.github.spotbugs:spotbugs-gradle-plugin:[1,)"
+	}
+}
+
+//tasks.withType(com.github.spotbugs.SpotBugsTask) {
+//  reports.html.enabled true
+//	reports.xml.enabled false
+//}
 
 test {
 	// enable TestNG support (default is JUnit)
@@ -39,19 +71,6 @@ test {
 		destination new File("${buildDir}/reports/")
 	}
 }
-buildscript {
-	repositories {
-		maven {
-			url "https://plugins.gradle.org/m2/"
-		}
-	}
-	dependencies {
-		classpath "org.kt3k.gradle.plugin:coveralls-gradle-plugin:[2,)"
-		classpath "com.moowork.gradle:gradle-node-plugin:[1,)"
-	}
-}
-
-
 
 def execute(String... args) {
 	if(args.length == 1) {
@@ -129,19 +148,7 @@ def delete(File file) {
 	file.delete();
 }
 
-apply from: 'gradle/tasks.gradle'
-apply plugin: 'jacoco'
-apply plugin: 'eclipse'
-apply plugin: 'idea'
 
-//buildscript {
-//	repositories {
-//			maven {url "https://plugins.gradle.org/m2/"}
-//	}
-//	dependencies {
-//		classpath "gradle.plugin.com.github.spotbugs:spotbugs-gradle-plugin:1.6.1"
-//		}
-//	}
 
 if(JavaVersion.current() != JavaVersion.VERSION_1_8){
 	println "JavaVersion: " + JavaVersion.current() + " (1.9)"
@@ -154,13 +161,6 @@ if(JavaVersion.current() != JavaVersion.VERSION_1_8){
 	targetCompatibility = 1.8
 //	apply plugin: 'findbugs'
 }
-
-apply plugin: 'checkstyle'
-apply plugin: "com.github.kt3k.coveralls"
-apply from: 'gradle/mavencentral.gradle'
-//apply from: 'gradle/artifactory.gradle'
-
-group = "de.uniks"
 
 idea {
 	project {
@@ -217,7 +217,8 @@ defaultTasks 'test', 'jacocoTestReport', 'buildJavadoc'
 tasks.withType(Checkstyle) {
 	configFile = new File("src/test/resources/de/uniks/networkparser/test/sun_checks.xml")
 	reports {
-		xml.enabled false
+		xml.enabled true
+		xml.destination = new File("build/checkStyle.xml")
 		html.enabled true
 		html.destination = new File("build/checkStyle.html")
 	}

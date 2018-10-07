@@ -14,6 +14,13 @@ public class DebugCondition implements ParserCondition, SendableEntityCreator {
 
 	@Override
 	public boolean update(Object value) {
+		if(value instanceof TemplateResultFragment) {
+			exeuteTemplate((TemplateResultFragment) value);
+		}
+		return true;
+	}
+	
+	public boolean exeuteTemplate(TemplateResultFragment fragment) {
 		return true;
 	}
 

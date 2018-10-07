@@ -36,12 +36,24 @@ public class JavaSet extends Template {
 				"{{#import " + ObjectCondition.class.getName() + "}}"
 						+ "	public {{name}}Set withListener(ObjectCondition listener) {",
 				"		this.listener = listener;", "		return this;", "	}", "", "{{#endif}}",
-				"	public {{name}}Set withVisible(boolean value) {", "		return this;", "	}", "{{#endif}}", "",
-				"	public Class<?> getTypClass() {", "		return {{name}}.class;", "	}", "", "",
+				"	public {{name}}Set withVisible(boolean value) {",
+				"		return this;", "	}",
+				"{{#endif}}",
+				"",
+				"	public Class<?> getTypClass() {",
+				"		return {{name}}.class;",
+				"	}",
+				"",
+				"",
 				"{{#if {{templatemodel.features.setclass.classstring}}==" + SimpleSet.class.getName() + "}}"
-						+ "	@Override",
-				"", "{{#endif}}" + "	public {{name}}Set getNewList(boolean keyValue) {",
-				"		return new {{name}}Set();", "	}", "", "", "{{#template TEMPLATEEND}}}{{#endtemplate}}");
+					+ "	@Override","",
+				"{{#endif}}" +
+				"	public {{name}}Set getNewList(boolean keyValue) {",
+				"		return new {{name}}Set();",
+				"	}",
+				"", 
+				"",
+				"{{#template TEMPLATEEND}}}{{#endtemplate}}");
 		this.addTemplate(new JavaSetAttribute(), true);
 		this.addTemplate(new JavaSetAssociation(), true);
 		this.addTemplate(new JavaSetMethod(), true);

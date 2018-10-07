@@ -1,31 +1,49 @@
 package de.uniks.networkparser.parser.java;
 
+import java.util.Collection;
+
 import de.uniks.networkparser.parser.Template;
 
 public class JavaAssociation extends Template {
 	public JavaAssociation() {
 		this.id = "association";
 		this.type = DECLARATION;
-		this.withTemplate("{{#template VALUE}}", "{{#if {{other.isImplements}}==false}}",
-				"	public static final String PROPERTY_{{other.NAME}} = \"{{other.name}}\";", "",
+		this.withTemplate("{{#template VALUE}}",
+				"{{#if {{other.isImplements}}==false}}",
+				"	public static final String PROPERTY_{{other.NAME}} = \"{{other.name}}\";",
+				"",
 				"{{#ifnot {{file.member.type}}==interface}}",
 				"	{{visibility}} {{modifiers} }"
-						+ "{{#if {{other.cardinality}}==1}}" + "{{other.clazz.name}} {{other.name}} = null;"
-						+ "{{#else}}" + "{{other.clazz.name}}Set {{other.name}} = null;",
-				"{{#endif}}", "", "{{#endif}}", "",
+					+ "{{#if {{other.cardinality}}==1}}"
+						+ "{{other.clazz.name}} {{other.name}} = null;"
+					+ "{{#else}}"
+						+ "{{other.clazz.name}}Set {{other.name}} = null;",
+					"{{#endif}}",
+					"",
+				"{{#endif}}",
+				"",
 
 				"{{#if {{other.cardinality}}==42}}"
 						+ "{{#import {{other.clazz.packageName}}.util.{{other.clazz.name}}Set}}",
-				"{{#else}}", "{{#import {{other.clazz.fullName}}}}",
+				"{{#else}}",
+					"{{#import {{other.clazz.fullName}}}}",
 				"{{#endif}}"
-						+ "	public {{modifiers} }{{#if {{other.cardinality}}==1}}{{other.clazz.name}}{{#else}}{{other.clazz.name}}Set{{#endif}} get{{other.Name}}(){{#if {{file.member.type}}==interface}};",
+					+ "	public {{modifiers} }{{#if {{other.cardinality}}==1}}{{other.clazz.name}}{{#else}}{{other.clazz.name}}Set{{#endif}} get{{other.Name}}(){{#if {{file.member.type}}==interface}};",
 				"", "{{#endif}}", "{{#ifnot {{file.member.type}}==interface}} {", "{{#if {{other.cardinality}}==42}}",
-				"		if(this.{{other.name}} == null) {", "			return {{other.clazz.name}}Set.EMPTY_SET;",
-				"		}", "{{#endif}}", "		return this.{{other.name}};", "	}", "", "{{#endif}}",
+				"		if(this.{{other.name}} == null) {",
+				"			return {{other.clazz.name}}Set.EMPTY_SET;",
+				"		}",
+				"{{#endif}}",
+				"		return this.{{other.name}};",
+				"	}",
+				"",
+				"{{#endif}}",
 
 				"{{#if {{other.cardinality}}==1}}",
-				"	public {{modifiers} }boolean set{{other.Name}}({{other.clazz.name}} value){{#if {{file.member.type}}==interface}};",
-				"", "{{#endif}}", "{{#ifnot {{file.member.type}}==interface}} {",
+				"	public {{modifiers} }boolean set{{other.Name}}({{other.clazz.name}} value){{#if {{file.member.type}}==interface}};","",
+				"{{#endif}}",
+				
+				"{{#ifnot {{file.member.type}}==interface}} {",
 				"		if (this.{{other.name}} == value) {", "			return false;", "		}",
 				"		{{other.clazz.name}} oldValue = this.{{other.name}};", "{{#if {{type}}==assoc}}",
 				"		if (this.{{other.name}} != null) {", "			this.{{other.name}} = null;",
@@ -40,21 +58,61 @@ public class JavaAssociation extends Template {
 				"{{#if {{other.cardinality}}==1}}",
 				"	public {{modifiers} }{{clazz.name}} with{{other.Name}}({{other.clazz.name}} value){{#if {{file.member.type}}==interface}};",
 				"", "{{#endif}}", "{{#ifnot {{file.member.type}}==interface}} {", "		this.set{{other.Name}}(value);",
-				"		return this;", "	}", "", "{{#endif}}", "{{#else}}",
+				"		return this;", "	}", "", "{{#endif}}",
+
+				"{{#else}}",
 // ASSOCITAION TO MANY
-				"	public {{modifiers} }{{clazz.name}} with{{other.Name}}({{other.clazz.name}}... values){{#if {{file.member.type}}==interface}};",
-				"", "{{#endif}}", "{{#ifnot {{file.member.type}}==interface}} {", "		if (values == null) {",
-				"			return this;", "		}", "		for ({{other.clazz.name}} item : values) {",
-				"			if (item == null) {", "				continue;", "			}",
-				"			if (this.{{other.name}} == null) {",
-				"				this.{{other.name}} = new {{other.clazz.name}}Set();", "			}",
+				//MANY HAS BOOLEAN SET(TYPE...) AND WITH(Object...)
+				"	public {{modifiers} }boolean set{{other.Name}}({{other.clazz.name}}... values){{#if {{file.member.type}}==interface}};","","{{#endif}}",
+				"{{#ifnot {{file.member.type}}==interface}} {",
+				"		if (values == null) {",
+				"			return true;",
+				"		}",
+				"		boolean result=true;",
+				"		if (this.{{other.name}} == null) {",
+				"			this.{{other.name}} = new {{other.clazz.name}}Set();",
+				"		}",
+				"		for ({{other.clazz.name}} item : values) {",
+				"			if (item == null) {",
+				"				continue;",
+				"			}",
 				"			this.{{other.name}}.withVisible(true);",
 				"			boolean changed = this.{{other.name}}.add(item);",
-				"			this.{{other.name}}.withVisible(false);", "			if (changed) {",
-				"{{#if {{type}}==assoc}}" + "{{#if {{cardinality}}==1}}", "				item.set{{Name}}(this);",
-				"{{#else}}", "				item.with{{Name}}(this);", "{{#endif}}", "{{#endif}}",
-				"				firePropertyChange(PROPERTY_{{other.NAME}}, null, item);", "			}", "		}",
-				"		return this;", "	}", "", "{{#endif}}",
+				"			this.{{other.name}}.withVisible(false);",
+				"			result = result & changed;",
+				"			if (changed) {",
+							"{{#debug}}{{#if {{type}}==assoc}}",
+				"				item.set{{Name}}(this);",
+							"{{#endif}}",
+				"				firePropertyChange(PROPERTY_{{other.NAME}}, null, item);",
+				"			}",
+				"		}",
+				"		return result;",
+				"	}",
+				"{{#endif}}",
+				"",
+				
+				"	public {{modifiers} }{{clazz.name}} with{{other.Name}}(Object... values){{#if {{file.member.type}}==interface}};","","{{#endif}}",
+				"{{#ifnot {{file.member.type}}==interface}} {",
+				"		if (values == null) {",
+				"			return this;",
+				"		}",
+				"		for (Object item : values) {",
+				"			if (item == null) {",
+				"				continue;",
+				"			}",
+				"			if (item instanceof Collection<?>) {{{#import "+Collection.class.getName()+"}}",
+				"				Collection<?> collection = (Collection<?>) item;",
+				"				set{{other.Name}}(collection.toArray(new {{other.clazz.name}}[collection.size()]));",
+				"			} else {",
+				"				set{{other.Name}}(({{other.clazz.name}}) item);",
+				"			}",
+				"		}",
+				"		return this;",
+				"	}",
+				"",
+				"{{#endif}}",
+// MULTI WITH							
 
 				"	public {{modifiers} }{{clazz.name}} without{{other.Name}}({{other.clazz.name}}... value){{#if {{file.member.type}}==interface}};",
 				"", "{{#endif}}", "{{#ifnot {{file.member.type}}==interface}} {",
@@ -70,7 +128,11 @@ public class JavaAssociation extends Template {
 				"	public {{modifiers} }{{other.clazz.name}} create{{other.Name}}(){{#if {{file.member.type}}==interface}};",
 				"", "{{#endif}}", "{{#ifnot {{file.member.type}}==interface}} {",
 				"		{{other.clazz.name}} value = new {{other.clazz.name}}();", "		with{{other.Name}}(value);",
-				"		return value;", "	}", "", "{{#endif}}", "{{#endif}}", "{{#endif}}",
+				"		return value;", "	}",
+				"",
+				"{{#endif}}",
+				"{{#endif}}",
+				"{{#endif}}",
 				"{{#endif}}{{#endtemplate}}");
 	}
 }

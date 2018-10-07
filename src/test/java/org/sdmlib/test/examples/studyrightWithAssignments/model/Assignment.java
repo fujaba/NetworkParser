@@ -3,6 +3,7 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import org.sdmlib.test.examples.studyrightWithAssignments.model.Room;
 import org.sdmlib.test.examples.studyrightWithAssignments.model.util.StudentSet;
+import java.util.Collection;
 
 
 public class Assignment {
@@ -140,23 +141,43 @@ public class Assignment {
 		return this.students;
 	}
 
-	public Assignment withStudents(Student... values) {
+	public boolean setStudents(Student... values) {
 		if (values == null) {
-			return this;
+			return true;
+		}
+		boolean result=true;
+		if (this.students == null) {
+			this.students = new StudentSet();
 		}
 		for (Student item : values) {
 			if (item == null) {
 				continue;
 			}
-			if (this.students == null) {
-				this.students = new StudentSet();
-			}
 			this.students.withVisible(true);
 			boolean changed = this.students.add(item);
 			this.students.withVisible(false);
+			result = result & changed;
 			if (changed) {
-				item.withDone(this);
+				item.setDone(this);
 				firePropertyChange(PROPERTY_STUDENTS, null, item);
+			}
+		}
+		return result;
+	}
+
+	public Assignment withStudents(Object... values) {
+		if (values == null) {
+			return this;
+		}
+		for (Object item : values) {
+			if (item == null) {
+				continue;
+			}
+			if (item instanceof Collection<?>) {
+				Collection<?> collection = (Collection<?>) item;
+				setStudents(collection.toArray(new Student[collection.size()]));
+			} else {
+				setStudents((Student) item);
 			}
 		}
 		return this;

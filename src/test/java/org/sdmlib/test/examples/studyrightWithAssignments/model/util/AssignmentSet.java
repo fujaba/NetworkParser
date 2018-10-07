@@ -172,7 +172,7 @@ public class AssignmentSet extends SimpleSet<Assignment> implements SendableEnti
 	public AssignmentSet filterPoints(int minValue, int maxValue) {
 		AssignmentSet result = new AssignmentSet();
 		for(Assignment obj : this) {
-			if (minValue <= obj.getPoints() && maxValue >= obj.getPoints()) {
+			if (	minValue <= obj.getPoints() && maxValue >= obj.getPoints()) {
 				result.add(obj);
 			}
 		}

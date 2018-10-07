@@ -3,6 +3,7 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import org.sdmlib.test.examples.studyrightWithAssignments.model.President;
 import org.sdmlib.test.examples.studyrightWithAssignments.model.util.RoomSet;
+import java.util.Collection;
 import org.sdmlib.test.examples.studyrightWithAssignments.model.util.StudentSet;
 
 
@@ -115,22 +116,43 @@ public class University {
 		return this.rooms;
 	}
 
-	public University withRooms(Room... values) {
+	public boolean setRooms(Room... values) {
 		if (values == null) {
-			return this;
+			return true;
+		}
+		boolean result=true;
+		if (this.rooms == null) {
+			this.rooms = new RoomSet();
 		}
 		for (Room item : values) {
 			if (item == null) {
 				continue;
 			}
-			if (this.rooms == null) {
-				this.rooms = new RoomSet();
-			}
 			this.rooms.withVisible(true);
 			boolean changed = this.rooms.add(item);
 			this.rooms.withVisible(false);
+			result = result & changed;
 			if (changed) {
+				item.setUniversity(this);
 				firePropertyChange(PROPERTY_ROOMS, null, item);
+			}
+		}
+		return result;
+	}
+
+	public University withRooms(Object... values) {
+		if (values == null) {
+			return this;
+		}
+		for (Object item : values) {
+			if (item == null) {
+				continue;
+			}
+			if (item instanceof Collection<?>) {
+				Collection<?> collection = (Collection<?>) item;
+				setRooms(collection.toArray(new Room[collection.size()]));
+			} else {
+				setRooms((Room) item);
 			}
 		}
 		return this;
@@ -142,7 +164,9 @@ public class University {
 		}
 		for (Room item : value) {
 			if (item != null) {
-				this.rooms.remove(item);
+				if (this.rooms.remove(item)) {
+					item.withUniversity(null);
+				}
 			}
 		}
 		return this;
@@ -165,23 +189,43 @@ public class University {
 		return this.students;
 	}
 
-	public University withStudents(Student... values) {
+	public boolean setStudents(Student... values) {
 		if (values == null) {
-			return this;
+			return true;
+		}
+		boolean result=true;
+		if (this.students == null) {
+			this.students = new StudentSet();
 		}
 		for (Student item : values) {
 			if (item == null) {
 				continue;
 			}
-			if (this.students == null) {
-				this.students = new StudentSet();
-			}
 			this.students.withVisible(true);
 			boolean changed = this.students.add(item);
 			this.students.withVisible(false);
+			result = result & changed;
 			if (changed) {
 				item.setUniversity(this);
 				firePropertyChange(PROPERTY_STUDENTS, null, item);
+			}
+		}
+		return result;
+	}
+
+	public University withStudents(Object... values) {
+		if (values == null) {
+			return this;
+		}
+		for (Object item : values) {
+			if (item == null) {
+				continue;
+			}
+			if (item instanceof Collection<?>) {
+				Collection<?> collection = (Collection<?>) item;
+				setStudents(collection.toArray(new Student[collection.size()]));
+			} else {
+				setStudents((Student) item);
 			}
 		}
 		return this;

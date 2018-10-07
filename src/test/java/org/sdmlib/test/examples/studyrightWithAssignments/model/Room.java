@@ -2,6 +2,7 @@ package org.sdmlib.test.examples.studyrightWithAssignments.model;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import org.sdmlib.test.examples.studyrightWithAssignments.model.util.AssignmentSet;
+import java.util.Collection;
 import org.sdmlib.test.examples.studyrightWithAssignments.model.util.RoomSet;
 import org.sdmlib.test.examples.studyrightWithAssignments.model.util.StudentSet;
 import org.sdmlib.test.examples.studyrightWithAssignments.model.util.TeachingAssistantSet;
@@ -134,23 +135,43 @@ public class Room {
 		return this.assignments;
 	}
 
-	public Room withAssignments(Assignment... values) {
+	public boolean setAssignments(Assignment... values) {
 		if (values == null) {
-			return this;
+			return true;
+		}
+		boolean result=true;
+		if (this.assignments == null) {
+			this.assignments = new AssignmentSet();
 		}
 		for (Assignment item : values) {
 			if (item == null) {
 				continue;
 			}
-			if (this.assignments == null) {
-				this.assignments = new AssignmentSet();
-			}
 			this.assignments.withVisible(true);
 			boolean changed = this.assignments.add(item);
 			this.assignments.withVisible(false);
+			result = result & changed;
 			if (changed) {
 				item.setRoom(this);
 				firePropertyChange(PROPERTY_ASSIGNMENTS, null, item);
+			}
+		}
+		return result;
+	}
+
+	public Room withAssignments(Object... values) {
+		if (values == null) {
+			return this;
+		}
+		for (Object item : values) {
+			if (item == null) {
+				continue;
+			}
+			if (item instanceof Collection<?>) {
+				Collection<?> collection = (Collection<?>) item;
+				setAssignments(collection.toArray(new Assignment[collection.size()]));
+			} else {
+				setAssignments((Assignment) item);
 			}
 		}
 		return this;
@@ -187,23 +208,43 @@ public class Room {
 		return this.doors;
 	}
 
-	public Room withDoors(Room... values) {
+	public boolean setDoors(Room... values) {
 		if (values == null) {
-			return this;
+			return true;
+		}
+		boolean result=true;
+		if (this.doors == null) {
+			this.doors = new RoomSet();
 		}
 		for (Room item : values) {
 			if (item == null) {
 				continue;
 			}
-			if (this.doors == null) {
-				this.doors = new RoomSet();
-			}
 			this.doors.withVisible(true);
 			boolean changed = this.doors.add(item);
 			this.doors.withVisible(false);
+			result = result & changed;
 			if (changed) {
-				item.withDoors(this);
+				item.setDoors(this);
 				firePropertyChange(PROPERTY_DOORS, null, item);
+			}
+		}
+		return result;
+	}
+
+	public Room withDoors(Object... values) {
+		if (values == null) {
+			return this;
+		}
+		for (Object item : values) {
+			if (item == null) {
+				continue;
+			}
+			if (item instanceof Collection<?>) {
+				Collection<?> collection = (Collection<?>) item;
+				setDoors(collection.toArray(new Room[collection.size()]));
+			} else {
+				setDoors((Room) item);
 			}
 		}
 		return this;
@@ -240,23 +281,43 @@ public class Room {
 		return this.students;
 	}
 
-	public Room withStudents(Student... values) {
+	public boolean setStudents(Student... values) {
 		if (values == null) {
-			return this;
+			return true;
+		}
+		boolean result=true;
+		if (this.students == null) {
+			this.students = new StudentSet();
 		}
 		for (Student item : values) {
 			if (item == null) {
 				continue;
 			}
-			if (this.students == null) {
-				this.students = new StudentSet();
-			}
 			this.students.withVisible(true);
 			boolean changed = this.students.add(item);
 			this.students.withVisible(false);
+			result = result & changed;
 			if (changed) {
 				item.setIn(this);
 				firePropertyChange(PROPERTY_STUDENTS, null, item);
+			}
+		}
+		return result;
+	}
+
+	public Room withStudents(Object... values) {
+		if (values == null) {
+			return this;
+		}
+		for (Object item : values) {
+			if (item == null) {
+				continue;
+			}
+			if (item instanceof Collection<?>) {
+				Collection<?> collection = (Collection<?>) item;
+				setStudents(collection.toArray(new Student[collection.size()]));
+			} else {
+				setStudents((Student) item);
 			}
 		}
 		return this;
@@ -293,23 +354,43 @@ public class Room {
 		return this.tas;
 	}
 
-	public Room withTas(TeachingAssistant... values) {
+	public boolean setTas(TeachingAssistant... values) {
 		if (values == null) {
-			return this;
+			return true;
+		}
+		boolean result=true;
+		if (this.tas == null) {
+			this.tas = new TeachingAssistantSet();
 		}
 		for (TeachingAssistant item : values) {
 			if (item == null) {
 				continue;
 			}
-			if (this.tas == null) {
-				this.tas = new TeachingAssistantSet();
-			}
 			this.tas.withVisible(true);
 			boolean changed = this.tas.add(item);
 			this.tas.withVisible(false);
+			result = result & changed;
 			if (changed) {
 				item.setRoom(this);
 				firePropertyChange(PROPERTY_TAS, null, item);
+			}
+		}
+		return result;
+	}
+
+	public Room withTas(Object... values) {
+		if (values == null) {
+			return this;
+		}
+		for (Object item : values) {
+			if (item == null) {
+				continue;
+			}
+			if (item instanceof Collection<?>) {
+				Collection<?> collection = (Collection<?>) item;
+				setTas(collection.toArray(new TeachingAssistant[collection.size()]));
+			} else {
+				setTas((TeachingAssistant) item);
 			}
 		}
 		return this;

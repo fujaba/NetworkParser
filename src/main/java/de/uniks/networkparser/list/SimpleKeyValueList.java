@@ -130,7 +130,11 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 						}
 					}
 				} else {
-					((SimpleKeyValueList<K, ?>) child).setValueItem((K) keyString.substring(end + 1), value);
+					if(child instanceof Map<?,?>) {
+						((SimpleKeyValueList<K, ?>) child).setValueItem((K) keyString.substring(end + 1), value);
+					}else {
+						put((K) keyString.substring(0, len), (V) value);
+					}
 				}
 			}
 		} else {

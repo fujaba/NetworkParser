@@ -93,8 +93,8 @@ public class GenModel {
 		roomClass.withMethod("findPath", DataType.STRING, new Parameter(DataType.INT).with("motivation"));
 
 		// Association universityToRoom =
-		universityClass.createBidirectional(roomClass, "rooms", Association.MANY, "university", Association.ONE)
-				.with(AssociationTypes.AGGREGATION);
+		universityClass.createBidirectional(roomClass, "rooms", Association.MANY, "university", Association.ONE);
+//				.with(AssociationTypes.AGGREGATION);
 
 		// Association doors =
 		roomClass.withBidirectional(roomClass, "doors", Association.MANY, "doors", Association.MANY);

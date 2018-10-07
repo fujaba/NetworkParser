@@ -170,7 +170,7 @@ public class RoomSet extends SimpleSet<Room> implements SendableEntityCreator {
 	public RoomSet filterCredits(int minValue, int maxValue) {
 		RoomSet result = new RoomSet();
 		for(Room obj : this) {
-			if (minValue <= obj.getCredits() && maxValue >= obj.getCredits()) {
+			if (	minValue <= obj.getCredits() && maxValue >= obj.getCredits()) {
 				result.add(obj);
 			}
 		}

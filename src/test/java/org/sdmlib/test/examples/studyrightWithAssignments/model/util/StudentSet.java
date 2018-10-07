@@ -177,7 +177,7 @@ public class StudentSet extends SimpleSet<Student> implements SendableEntityCrea
 	public StudentSet filterAssignmentPoints(int minValue, int maxValue) {
 		StudentSet result = new StudentSet();
 		for(Student obj : this) {
-			if (minValue <= obj.getAssignmentPoints() && maxValue >= obj.getAssignmentPoints()) {
+			if (	minValue <= obj.getAssignmentPoints() && maxValue >= obj.getAssignmentPoints()) {
 				result.add(obj);
 			}
 		}
@@ -220,7 +220,7 @@ public class StudentSet extends SimpleSet<Student> implements SendableEntityCrea
 	public StudentSet filterCredits(int minValue, int maxValue) {
 		StudentSet result = new StudentSet();
 		for(Student obj : this) {
-			if (minValue <= obj.getCredits() && maxValue >= obj.getCredits()) {
+			if (	minValue <= obj.getCredits() && maxValue >= obj.getCredits()) {
 				result.add(obj);
 			}
 		}
@@ -306,7 +306,7 @@ public class StudentSet extends SimpleSet<Student> implements SendableEntityCrea
 	public StudentSet filterMotivation(int minValue, int maxValue) {
 		StudentSet result = new StudentSet();
 		for(Student obj : this) {
-			if (minValue <= obj.getMotivation() && maxValue >= obj.getMotivation()) {
+			if (	minValue <= obj.getMotivation() && maxValue >= obj.getMotivation()) {
 				result.add(obj);
 			}
 		}
