@@ -9,6 +9,7 @@ import de.uniks.networkparser.interfaces.ParserCondition;
 import de.uniks.networkparser.interfaces.TemplateParser;
 
 /**
+ * For loop for Condition
  * @author Stefan FeatureCondition for ModelFilter
  *
  *         Format {{#import value}}

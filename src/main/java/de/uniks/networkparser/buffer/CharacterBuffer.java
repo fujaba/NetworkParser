@@ -27,6 +27,7 @@ THE SOFTWARE.
 */
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Converter;
+import de.uniks.networkparser.list.SimpleList;
 
 /**
  * Buffer of String for alternative for StringBuffer.
@@ -1299,5 +1300,27 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
 			buffer.with(this.buffer, start, end - start);
 		}
 		return buffer;
+	}
+	
+	/**
+	 * Split Strings
+	 * 
+	 * @param split Strng for Spliting
+	 * @return a List of String Parts
+	 */
+	public SimpleList<String> splitStrings(char split) {
+		SimpleList<String> result = new SimpleList<String>();
+		int s=start;
+		int i=start;
+		for(;i<size();i++) {
+			if(buffer[i]==split) {
+				result.add(new String(buffer, s, i));
+				s=i+1;
+			}
+		}
+		if(s<i) {
+			result.add(new String(buffer, s, i));
+		}
+		return result;
 	}
 }

@@ -6,10 +6,12 @@ import org.junit.Test;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.ext.ClassModel;
 import de.uniks.networkparser.ext.generic.ReflectionBlackBoxTester;
+import de.uniks.networkparser.ext.story.Cucumber;
 import de.uniks.networkparser.ext.story.Story;
 import de.uniks.networkparser.ext.story.StoryBook;
 import de.uniks.networkparser.ext.story.StoryStepJUnit;
 import de.uniks.networkparser.ext.story.StoryUtil;
+import de.uniks.networkparser.graph.GraphList;
 
 public class StoryTest {
 	@Test
@@ -91,4 +93,24 @@ public class StoryTest {
 		storyStepJUnit.withPackageName("src/main/java", "src\\main\\java\\de\\uniks\\networkparser\\ext");
 //		storyStepJUnit.recompile("bin");
 	}
+	
+	@Test
+	public void testCucumber() {
+		Cucumber scenario = Cucumber.createScenario("defining the start player");
+		
+		scenario.Definition("Karli is a Player");
+		
+		
+		scenario.Given("Alice and Bob and Karli play ludo");
+		scenario.Given("the players has tokens on startingArea");
+//		scenario.Given("Alice has dice with value 5");
+		scenario.When("Bob has dice with 1");
+		scenario.Then("Alice is currentplayer from ludo");
+		scenario.analyse();
+		
+		GraphList model = scenario.getModel();
+		System.out.println(model);
+		
+	}
+	
 }

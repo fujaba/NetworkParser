@@ -441,7 +441,22 @@ public class GraphUtil {
 			return Clazz.TYPE_PATTERNOBJECT;
 		}
 		return Clazz.TYPE_CLASS;
-
+	}
+	
+	public static final Clazz createClazzById(GraphModel model, String id) {
+		if(model == null || id == null) {
+			return null;
+		}
+		ClazzSet clazzes = model.getClazzes();
+		for(Clazz item : clazzes) {
+			if(id.equals(item.getId())) {
+				return item;
+			}
+		}
+		Clazz clazz = new Clazz();
+		clazz.setId(id);
+		model.add(clazz);
+		return clazz;
 	}
 
 	public static final GraphEntity setExternal(GraphEntity entity, boolean value) {
@@ -476,7 +491,7 @@ public class GraphUtil {
 		model.genPath = value;
 	}
 
-	public static final void without(GraphMember model, GraphMember child) {
+	public static final void remove(GraphMember model, GraphMember child) {
 		if (model != null) {
 			model.withChildren(child);
 		}

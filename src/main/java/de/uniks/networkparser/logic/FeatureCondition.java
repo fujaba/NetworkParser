@@ -12,6 +12,7 @@ import de.uniks.networkparser.interfaces.TemplateParser;
 import de.uniks.networkparser.list.SimpleSet;
 
 /**
+ * FeatureCondition for a Global Feature like Set, or PropertyChange
  * @author Stefan FeatureCondition for ModelFilter
  *
  *         Format {{#feature SETCLASS=SimpleSet}}

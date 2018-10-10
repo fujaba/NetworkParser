@@ -2,7 +2,6 @@ package de.uniks.networkparser.test;
 
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -14,7 +13,8 @@ import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.buffer.CharacterReader;
 import de.uniks.networkparser.converter.ByteConverterHex;
 import de.uniks.networkparser.interfaces.BaseItem;
-import de.uniks.networkparser.list.SimpleList;
+import de.uniks.networkparser.logic.Or;
+import de.uniks.networkparser.logic.StringCondition;
 
 public class StringTest {
 	@Test
@@ -173,20 +173,8 @@ public class StringTest {
 	@Test
 	public void testSearchText(){
 		CharacterBuffer stringTokener = new CharacterBuffer().with("-Harmonie -Illusion -\"E1 E2\"");
-		SimpleList<String> stringList = stringTokener.getStringList();
-		ArrayList<String> searchList= new ArrayList<String>();
-		for (int i=0;i<stringList.size();i++){
-			if(stringList.get(i).endsWith("-") && i<stringList.size()-1){
-				String temp=stringList.get(i);
-				temp=temp.substring(0, temp.length()-1);
-				searchList.addAll(stringTokener.splitStrings(temp.trim(), true));
-				searchList.add("-" +stringList.get(++i).trim());
-			} else {
-				searchList.addAll(stringTokener.splitStrings(stringList.get(i), true));
-			}
-		}
-		String[] lastSearchCriteriaItems = searchList.toArray(new String[searchList.size()]);
-		Assert.assertEquals(3, lastSearchCriteriaItems.length);
+		Or condition = (Or) StringCondition.createSearchLogic(stringTokener);
+		Assert.assertEquals(3, condition.size());
 	}
 
 	@Test

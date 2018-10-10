@@ -884,6 +884,9 @@ public class Clazz extends GraphEntity {
 
 	@Override
 	public String toString() {
+		if(this.id != null) {
+			return this.id+":"+this.getName();
+		}
 		return getName();
 	}
 

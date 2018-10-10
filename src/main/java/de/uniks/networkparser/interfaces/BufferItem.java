@@ -214,15 +214,6 @@ public interface BufferItem {
 	public SimpleList<String> getStringList();
 
 	/**
-	 * Split Strings
-	 * 
-	 * @param value The String value
-	 * @param split boolean for Spliting
-	 * @return a List of String Parts
-	 */
-	public SimpleList<String> splitStrings(String value, boolean split);
-
-	/**
 	 * Skip The quotes if the CurrentChar is it
 	 * 
 	 * @param quotes Quotes to Skip

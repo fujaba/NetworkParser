@@ -5,7 +5,7 @@ import de.uniks.networkparser.interfaces.Condition;
 public abstract class GraphEntity extends GraphMember {
 	public static final String PROPERTY_PACKAGENAME = "packageName";
 	private boolean external;
-	private String id;
+	protected String id;
 
 	public String getName(boolean shortName) {
 		if (this.name == null) {

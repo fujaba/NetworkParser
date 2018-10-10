@@ -7,7 +7,10 @@ import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.TemplateParser;
 
 /**
- * @author Stefan Add Condition
+ * DebugCondition for Debug Templates 
+ * create is parsing
+ * exeuteTemplate is Execute Template
+ * @author Stefan DebugCondition
  */
 public class DebugCondition implements ParserCondition, SendableEntityCreator {
 	public static final String KEY = "debug";

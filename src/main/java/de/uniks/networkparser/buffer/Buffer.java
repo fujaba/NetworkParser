@@ -480,20 +480,6 @@ public abstract class Buffer implements BufferItem {
 	}
 
 	@Override
-	public SimpleList<String> splitStrings(String value, boolean split) {
-		SimpleList<String> result = new SimpleList<String>();
-		if (value.startsWith("\"") && value.endsWith("\"")) {
-			result.add(value.substring(1, value.length() - 1));
-			return result;
-		}
-		String[] values = value.split(" ");
-		for (String item : values) {
-			result.add(item);
-		}
-		return result;
-	}
-
-	@Override
 	public char skipChar(char... quotes) {
 		char c = getCurrentChar();
 		if (quotes == null) {

@@ -1,5 +1,6 @@
 package de.uniks.networkparser.logic;
 
+import de.uniks.networkparser.buffer.Buffer;
 /*
 The MIT License
 
@@ -28,6 +29,7 @@ import de.uniks.networkparser.interfaces.LocalisationInterface;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.ParserCondition;
 import de.uniks.networkparser.interfaces.TemplateParser;
+import de.uniks.networkparser.list.SimpleList;
 
 public class StringCondition implements ParserCondition {
 	private CharSequence value;
@@ -38,6 +40,47 @@ public class StringCondition implements ParserCondition {
 			return ((ObjectCondition) value).update(this);
 		}
 		return this.value != null;
+	}
+
+	public static final ObjectCondition createLogic(String sequence) {
+		if(sequence.startsWith("-")) {
+			return new Not().with(new StringCondition().withValue(sequence.substring(1)));
+		}
+		return new StringCondition().withValue(sequence);
+	}
+	public static final ObjectCondition createSearchLogic(CharacterBuffer sequence) {
+		SimpleList<String> stringList = new SimpleList<String>();
+		int start=0;
+		for(int i=0;i<sequence.length();i++) {
+			if(sequence.charAt(i)==' ') {
+				stringList.add(sequence.substring(start, i));
+				start=i+1;
+				continue;
+			}
+			if(sequence.charAt(i)=='"' || sequence.charAt(i)=='\'') {
+				i++;
+				while(i<sequence.length()) {
+					if(sequence.charAt(i)=='"' || sequence.charAt(i)=='\'') {
+						i++;
+						break;
+					}
+					i++;
+				}
+				stringList.add(sequence.substring(start, i));
+				start=i+1;
+			}
+		}
+		if(stringList.size()<1) {
+			return null;
+		}
+		if(stringList.size()<2) {
+			return createLogic(stringList.first());
+		}
+		Or or=new Or();
+		for (int i=0;i<stringList.size();i++){
+			or.add(createLogic(stringList.get(i)));
+		}
+		return or;
 	}
 
 	public StringCondition withValue(CharSequence value) {

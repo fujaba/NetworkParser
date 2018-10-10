@@ -10,6 +10,7 @@ import de.uniks.networkparser.list.ConditionSet;
 import de.uniks.networkparser.list.SimpleList;
 
 /**
+ * For Template for Import a Class 
  * @author Stefan FeatureCondition for ModelFilter
  *
  *         Format {{#import value}}

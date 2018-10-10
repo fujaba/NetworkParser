@@ -36,6 +36,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 /**
+ * A Entity for Map
+ * 
  * @author Stefan MapEntity for IdMap
  */
 public class MapEntity extends AbstractList<Object> {
