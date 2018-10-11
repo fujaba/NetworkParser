@@ -187,36 +187,55 @@ public class CucumberStdRule implements ObjectCondition {
 					continue;
 				}
 				if(z<1) {
-					types[z]=Cucumber.V;
+					types[z]=Cucumber.N;
 					continue;
 				}
-				if(types[z-1] == Cucumber.A) {
+				if(types[z-1] == Cucumber.K) {
 					types[z] = Cucumber.T;
 					continue;
 				}
+				if(types[z-1] == Cucumber.A) {
+					try {
+						Double.parseDouble(token[z]);
+						types[z] = Cucumber.T;
+					} catch (NumberFormatException e) {
+						types[z] = Cucumber.K;
+					}
+					continue;
+				}
 
-				if(types[z-1] == Cucumber.V) {
-					types[z] = Cucumber.N;
-				} else {
+				if(types[z-1] == Cucumber.N) {
 					types[z] = Cucumber.V;
+				} else {
+					types[z] = Cucumber.N;
 				}
 			}
 			for(z=0;z<token.length;z++) {
 				if(types[z]==Cucumber.N) {
 					getClazz(token[z]);
-				} else if(types[z]==Cucumber.T && types[z-2] ==Cucumber.N) {
-					Clazz clazz = getClazz(token[z-2]);
+				} else if(types[z]==Cucumber.T && (types[z-2] == Cucumber.N || types[z-1] == Cucumber.K && types[z-3] == Cucumber.N)) {
+					Clazz clazz;
+					if(types[z-1] == Cucumber.K) {
+						clazz = getClazz(token[z-3]);
+					} else {
+						clazz = getClazz(token[z-2]);
+					}
+					DataType type = DataType.STRING;
+					String name="value";
 					try {
 						Double.parseDouble(token[z]);
-						clazz.withAttribute(token[z], DataType.DOUBLE);
+						type = DataType.DOUBLE;
 						try {
 							Integer.parseInt(token[z]);
+							type = DataType.INT;
 						}catch (Exception e) {
-							clazz.withAttribute(token[z], DataType.INT);
 						}
 					} catch (NumberFormatException e) {
-						clazz.withAttribute(token[z], DataType.STRING);
 					}
+					if(types[z-1] == Cucumber.K) {
+						name = token[z-1];
+					}
+					clazz.createAttribute(name, type).withValue(token[z]);
 				} else if(types[z]==Cucumber.V) {
 					int source = Association.ONE;
 					int target = Association.ONE;

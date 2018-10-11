@@ -53,10 +53,12 @@ import de.uniks.networkparser.ext.petaf.proxy.NodeProxyTCP;
 import de.uniks.networkparser.graph.Association;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.GraphList;
+import de.uniks.networkparser.graph.GraphModel;
 import de.uniks.networkparser.graph.GraphUtil;
 import de.uniks.networkparser.gui.EventTypes;
 import de.uniks.networkparser.gui.JavaViewAdapter;
 import de.uniks.networkparser.interfaces.BaseItem;
+import de.uniks.networkparser.interfaces.Converter;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.SimpleEventCondition;
@@ -65,7 +67,7 @@ import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.xml.HTMLEntity;
 
-public class DiagramEditor extends JavaAdapter implements ObjectCondition {
+public class DiagramEditor extends JavaAdapter implements ObjectCondition, Converter {
 	private static final String FILE404 = "<!DOCTYPE HTML PUBLIC \"-//IETF//DTD HTML 2.0//EN\">\r\n<html><head><title>404 Not Found</title></head><body><h1>Not Found</h1><p>The requested URL was not found on this server.</p></body></html>";
 	private static final String METHOD_GENERATE = "generating";
 	private SimpleController controller;
@@ -220,8 +222,8 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 		}
 		if (file != null) {
 			editorWindow.file = file;
-			editor.type = DiagramEditor.TYPE_CONTENT;
-			editor.autoClose = autoClose;
+			editorWindow.type = DiagramEditor.TYPE_CONTENT;
+			editorWindow.autoClose = autoClose;
 		}
 		Runnable runnable = DiagramEditorTask.createOpen(editorWindow, wait, entity, width, height);
 		if (wait) {
@@ -813,5 +815,36 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition {
 		if (controller != null) {
 			controller.close();
 		}
+	}
+
+	/** 
+	 * Method for Save Model to Image
+	 * @param entity is the Model
+	 * @return converted String
+	 */
+	@Override
+	public String encode(BaseItem entity) {
+		if(entity instanceof GraphModel == false) {
+			return null;
+		}
+		GraphModel model = (GraphModel) entity;
+		HTMLEntity element = new HTMLEntity().withGraph(model);
+		String fileName = this.file;
+		if(fileName == null) {
+			fileName = model.getName();
+			if(fileName == null) {
+				fileName = "diagram";
+			}
+			fileName += ".png";
+		}
+		convertToPNG(element, fileName);
+		return fileName;
+	}
+	public static final DiagramEditor dump(String... values) {
+		DiagramEditor editor = new DiagramEditor();
+		if(values != null && values.length>0) {
+			editor.file = values[0];
+		}
+		return editor;
 	}
 }

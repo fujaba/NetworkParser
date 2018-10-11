@@ -97,19 +97,22 @@ public class StoryTest {
 	@Test
 	public void testCucumber() {
 		Cucumber scenario = Cucumber.createScenario("defining the start player");
-		
+
 		scenario.Definition("Karli is a Player");
+		scenario.Definition("Seb is a Player");
+		scenario.Definition("dice is a Dice");
 		
 		
-		scenario.Given("Alice and Bob and Karli play ludo");
-		scenario.Given("the players has tokens on startingArea");
-//		scenario.Given("Alice has dice with value 5");
+//		scenario.Given("Alice and Seb play ludo");
+//		scenario.Given("the players has tokens on startingArea");
+		scenario.Given("Alice has dice with value 5");
 		scenario.When("Bob has dice with 1");
 		scenario.Then("Alice is currentplayer from ludo");
 		scenario.analyse();
 		
 		GraphList model = scenario.getModel();
 		System.out.println(model);
+//		System.out.println(model.toString(DiagramEditor.dump()));
 		
 	}
 	

@@ -18,8 +18,10 @@ public class Cucumber {
 	static final char N='n';		// Nomen
 	static final char U='&';		// And 
 	static final char V='v';		// Verb
-	static final char A='a';		// Attribute
+
 	static final char I='i';		// Ignore
+	static final char A='a';		// Attribute
+	static final char K='k';		// AttributeName
 	static final char T='0';		// AttributeValue
 	static final char E='=';		// Definition is
 
@@ -45,7 +47,7 @@ public class Cucumber {
 			typeDictionary.add("alert", "Player");
 			typeDictionary.add("stefan", "Player");
 			typeDictionary.add("ludo", "Game");
-			typeDictionary.add("startingArea ", "Place");
+			typeDictionary.add("startingArea", "Place");
 			
 			typeDictionary.add("token", "Stone");
 			typeDictionary.add("startarea", "Place");
@@ -53,7 +55,7 @@ public class Cucumber {
 		}
 		for(int i=0;i<values.length-1;i+=2) {
 			if(values[i] != null) {
-				typeDictionary.add(values[i].toLowerCase(), values[i+1]);
+				typeDictionary.add(values[i].toLowerCase().trim(), values[i+1].trim());
 			}
 		}
 		return this;
@@ -72,7 +74,7 @@ public class Cucumber {
 		}
 		for(int i=0;i<values.length-1;i+=2) {
 			if(values[i] != null) {
-				dictionary.add(values[i].toLowerCase(), values[i+1]);
+				dictionary.add(values[i].toLowerCase().trim(), values[i+1].trim());
 			}
 		}
 		return this;
@@ -286,7 +288,7 @@ public class Cucumber {
 
 	public String getTypeDictionary(String key) {
 		if(key != null) {
-			return typeDictionary.get(key.toLowerCase());
+			return typeDictionary.get(key.toLowerCase().trim());
 		}
 		return null;
 	}
@@ -301,6 +303,7 @@ public class Cucumber {
 			return id;
 		}
 		boolean removeS=true;
+		id = id.trim();
 		for(int i=0;i<dictionary.size();i++) {
 			if(id.equalsIgnoreCase(dictionary.getKeyByIndex(i))) {
 				String temp = dictionary.getValueByIndex(i);
