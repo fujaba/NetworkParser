@@ -24,6 +24,7 @@ public class Cucumber {
 	static final char K='k';		// AttributeName
 	static final char T='0';		// AttributeValue
 	static final char E='=';		// Definition is
+	private Cucumber parent;
 
 	private SimpleKeyValueList<String, Boolean> given=new SimpleKeyValueList<String, Boolean>();
 	private SimpleKeyValueList<String, Boolean> when=new SimpleKeyValueList<String, Boolean>();
@@ -139,7 +140,18 @@ public class Cucumber {
 		cucumber.addTypeDicitonary();
 		return cucumber;
 	}
-	
+
+	public Cucumber createNextScenario(String title) {
+		Cucumber cucumber = new Cucumber().withTitle(title);
+		cucumber.withParent(this);
+		cucumber.addRule(new CucumberStdRule());
+		return cucumber;
+	}
+
+	private Cucumber withParent(Cucumber cucumber) {
+		this.parent = cucumber;
+		return this;
+	}
 	public static Cucumber createFromFile(String file) {
 		CharacterBuffer readFile = FileBuffer.readFile(file);
 		SimpleList<String> lines = readFile.splitStrings('\n');
@@ -287,10 +299,14 @@ public class Cucumber {
 	}
 
 	public String getTypeDictionary(String key) {
-		if(key != null) {
-			return typeDictionary.get(key.toLowerCase().trim());
+		if(key == null) {
+			return null;
 		}
-		return null;
+		String result = typeDictionary.get(key.toLowerCase().trim());
+		if(result == null && parent != null) {
+			return parent.getTypeDictionary(key);
+		}
+		return result;
 	}
 
 	public Cucumber withModel(GraphList model) {
@@ -301,6 +317,9 @@ public class Cucumber {
 	public String getDictionary(String id) {
 		if(id == null) {
 			return id;
+		}
+		if(this.parent != null) {
+			id = parent.getDictionary(id);
 		}
 		boolean removeS=true;
 		id = id.trim();
@@ -329,6 +348,10 @@ public class Cucumber {
 	}
 
 	public Character getTokenType(String value) {
-		return tokens.get(value);
+		Character test = tokens.get(value);
+		if(test == null && parent != null) {
+			return parent.getTokenType(value);
+		}
+		return test;
 	}
 }
