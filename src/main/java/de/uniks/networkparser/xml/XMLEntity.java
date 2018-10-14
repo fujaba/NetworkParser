@@ -246,9 +246,10 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 			return null;
 		}
 		CharacterBuffer sb = new CharacterBuffer().with(converter.getPrefixFirst());
-		if (this.getTag() != null) {
+		String tag = this.getTag();
+		if (tag != null) {
 			sb.with(START);
-			sb.with(this.getTag());
+			sb.with(tag);
 		}
 
 		int size = size();
@@ -275,8 +276,9 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 		if (sb == null) {
 			return;
 		}
+		String tag = this.getTag();
 		if (this.children != null && this.children.size() > 0 && converter != null) {
-			if (this.getTag() != null) {
+			if (tag != null) {
 				sb.with(END);
 			}
 			converter.add();
@@ -285,21 +287,25 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 			}
 			converter.minus();
 			sb.with(converter.getPrefix());
-			if (this.getTag() != null) {
-				sb.with("</", getTag());
-				sb.with(END);
+			if (tag != null) {
+				if("<!--".equals(tag)) {
+					sb.with("--!>");
+				} else {
+					sb.with("</", tag);
+					sb.with(END);
+				}
 			}
 		} else if (this.valueItem != null) {
-			if (this.getTag() != null) {
+			if (tag != null) {
 				sb.with(END);
 			}
 			sb.with(this.valueItem);
-			if (this.getTag() != null) {
-				sb.with("</", getTag());
+			if (tag != null) {
+				sb.with("</", tag);
 				sb.with(END);
 			}
 		} else {
-			if (this.getTag() != null) {
+			if (tag != null) {
 				sb.with("/>");
 			}
 		}
@@ -532,6 +538,16 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 
 	public XMLEntity withValueItem(String value) {
 		this.valueItem = value;
+		return this;
+	}
+	public XMLEntity addComment(String comment) {
+		XMLEntity newComment=new XMLEntity();
+		newComment.withType("<!--");
+		if(comment == null) {
+			return this;
+		}
+		newComment.withValueItem(comment);
+		this.add(newComment);
 		return this;
 	}
 }
