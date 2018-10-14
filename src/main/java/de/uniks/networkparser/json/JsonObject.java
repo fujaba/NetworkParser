@@ -356,4 +356,18 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements En
 		this.add(Entity.CLASS, type);
 		return this;
 	}
+	
+	public JsonObject addComment(String comment) {
+		if(comment == null) {
+			return this;
+		}
+//		int multiLine = comment.indexOf('\n');
+//		if(multiLine>0) {
+//			
+//		}
+		this.withAllowDuplicate(true);
+		this.withAllowEmptyValue(true);
+		this.add(null, comment);
+		return this;
+	}
 }

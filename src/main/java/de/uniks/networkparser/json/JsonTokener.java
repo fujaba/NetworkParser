@@ -180,6 +180,15 @@ public class JsonTokener extends Tokener {
 			}
 			c = buffer.nextClean(true);
 			if (c != COLON && c != ENTER) {
+				if(entity.size()>0) {
+					// HJSON OLD ADD TO VALUE
+					String oldKey = entity.getKeyByIndex(entity.size() - 1);
+					String valueOld = entity.getValueByIndex(entity.size() - 1).toString();
+					valueOld +=" "+ key+" "+nextValue(buffer, entity, isQuote, false, stop);
+
+					entity.put(oldKey, valueOld);
+					continue;
+				}
 				if (isError(this, "parseToEntity", NetworkParserLog.ERROR_TYP_PARSING, entity)) {
 					throw new RuntimeException("Expected a ':' after a key [" + buffer.getString(30).toString() + "]");
 				}
