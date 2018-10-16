@@ -697,8 +697,7 @@ public class EMFTokener extends Tokener {
 		return model;
 	}
 
-	private Association getOrCreate(SimpleKeyValueList<String, Association> items, GraphList model, String className,
-			String roleName) {
+	private Association getOrCreate(SimpleKeyValueList<String, Association> items, GraphList model, String className, String roleName) {
 		if (items == null) {
 			return null;
 		}
@@ -708,7 +707,9 @@ public class EMFTokener extends Tokener {
 				className = className.substring(pos + 1);
 			}
 		}
-		roleName = EntityUtil.toValidJavaId(roleName);
+		if(roleName != null) {
+			roleName = EntityUtil.toValidJavaId(roleName);
+		}
 		String assocName = className + ":" + roleName;
 		Association edge = (Association) items.getValue(assocName);
 		if (edge == null) {
