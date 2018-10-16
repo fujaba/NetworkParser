@@ -669,7 +669,44 @@ public class EntityUtil {
 	private static final String numericTypes = " long Long short Short int Integer byte Byte float Float double Double ";
 	private static final String types = "         long    Long    short   Short   int     Integer byte    Byte    float   Float   double  Double  boolean Boolean char    Char ";
 	private static final String javaLang = "java.lang.";
-	private static final String modifier = " public protected private static abstract final native synchronized transient volatile strictfp ";
+	private static final String modifier = " public protected private static abstract final native synchronized transient volatile strictfp default ";
+	public static final String javaKeyWords = " assert break case catch class const continue do else enum extends finally for goto if implements import instanceof interface native new package return super switch this throw throws try while true false null ";
+
+	public static boolean isValidJavaId(String myRoleName) {
+		if(myRoleName == null || isModifier(myRoleName)) {
+			return false;
+		}
+		if (myRoleName.endsWith(".") || myRoleName.startsWith(".")) {
+			return false;
+		}
+		if (myRoleName.indexOf(' ') >= 0) {
+			return false;
+		}
+		if (myRoleName.indexOf('.') >= 0) {
+			for (String s : myRoleName.split("\\.")) {
+				if(isValidJavaId(s) == false) {
+					return false;
+				}
+			}
+			return true;
+		}
+		if(isPrimitiveType(myRoleName)) {
+			return false;
+		}
+		if (javaKeyWords.indexOf(" " + myRoleName + " ") >= 0 ) {
+			return false;
+		}
+		return true;
+	}
+
+	public static final String toValidJavaId(String tag) {
+		if (isValidJavaId(tag) == false) {
+			tag = "_" + tag;
+		}
+		return tag;
+	}
+
+	
 
 	public static final boolean isModifier(String type) {
 		if (type == null) {
@@ -732,19 +769,10 @@ public class EntityUtil {
 		return transferMap.getValueByIndex(pos);
 	}
 
-	public static final String javaKeyWords = " abstract assert boolean break byte case catch char class const continue default do double else enum extends final finally float for if goto implements import instanceof int interface long native new package private protected public return short static strictfp super switch synchronized this throw throws transient try void volatile while ";
 	private static final SimpleKeyValueList<String, String> transferMap = new SimpleKeyValueList<String, String>()
 			.withKeyValueString(
 					"long:Long,int:Integer,char:Character,boolean:Boolean,byte:Byte,float:Float,double:Double",
 					String.class);
-
-	public static final String toValidJavaId(String tag) {
-		if (javaKeyWords.indexOf(" " + tag + " ") >= 0) {
-			tag = "_" + tag;
-		}
-
-		return tag;
-	}
 
 	public static final String getId(String name) {
 		if (name.lastIndexOf("/") >= 0) {

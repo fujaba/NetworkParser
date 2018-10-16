@@ -1,6 +1,5 @@
 package de.uniks.networkparser.logic;
 
-import de.uniks.networkparser.buffer.Buffer;
 /*
 The MIT License
 

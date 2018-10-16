@@ -61,7 +61,18 @@ public class ClazzSet extends SimpleSet<Clazz> {
 		}
 		return buffer.toString();
 	}
-
+	
+	@Override
+	public boolean contains(Object o) {
+		if(o instanceof String && o != null) {
+			for(Clazz item : this) {
+				if (o.equals(item.getId())) {
+					return true;
+				}
+			}
+		}
+		return super.contains(o);
+	}
 	@Override
 	public Clazz[] toArray() {
 		return super.toArray(new Clazz[size()]);

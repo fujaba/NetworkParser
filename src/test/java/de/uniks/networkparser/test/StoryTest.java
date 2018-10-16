@@ -103,8 +103,8 @@ public class StoryTest {
 		scenario.Definition("dice is a Dice");
 		
 		
-//		scenario.Given("Alice and Seb play ludo");
-//		scenario.Given("the players has tokens on startingArea");
+		scenario.Given("Alice and Seb play ludo");
+		scenario.Given("the players has tokens on startingArea");
 		scenario.Given("Alice has dice with value 5");
 		scenario.When("Bob has dice with 1");
 		scenario.Then("Alice is currentplayer from ludo");

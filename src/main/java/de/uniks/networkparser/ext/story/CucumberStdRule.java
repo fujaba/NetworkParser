@@ -2,17 +2,17 @@ package de.uniks.networkparser.ext.story;
 
 import de.uniks.networkparser.graph.Association;
 import de.uniks.networkparser.graph.Clazz;
+import de.uniks.networkparser.graph.ClazzSet;
 import de.uniks.networkparser.graph.DataType;
 import de.uniks.networkparser.graph.GraphList;
 import de.uniks.networkparser.graph.GraphTokener;
 import de.uniks.networkparser.graph.GraphUtil;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.list.SimpleKeyValueList;
-import de.uniks.networkparser.list.SimpleList;
 
 public class CucumberStdRule implements ObjectCondition {
 	private Cucumber cucumber;
-	private SimpleKeyValueList<String, SimpleList<Clazz>> assocs=new SimpleKeyValueList<String, SimpleList<Clazz>>();
+	private SimpleKeyValueList<String, ClazzSet> assocs=new SimpleKeyValueList<String, ClazzSet>();
 	private GraphList model = new GraphList().withType(GraphTokener.OBJECTDIAGRAM);
 
 	@Override
@@ -144,25 +144,33 @@ public class CucumberStdRule implements ObjectCondition {
 						}
 					}
 					if(found >= 0) {
-						SimpleList<Clazz> elements = assocs.getValueByIndex(found);
-						String[] newToken=new String[token.length+(elements.size() + elements.size()-1) - 1];
-						for(n=0;n<z;n++) {
-							newToken[n]=token[n];
-						}
-						int temp=z;
-						for(n=0;n<elements.size();n++) {
-							newToken[n+temp]=elements.get(n).getId();
-							if(n<elements.size()-1) {
-								temp++;
-								newToken[n+temp]="and";
+						ClazzSet elements = assocs.getValueByIndex(found);
+						boolean transform=true;
+						if(z>0) {
+							if(elements.contains((Object) token[z-1])) {
+								transform=false;
 							}
 						}
-						n=n+temp;
-						temp = z+1;
-						while(temp<token.length) {
-							newToken[n++] = token[temp++];
+						if(transform) {
+							String[] newToken=new String[token.length+(elements.size() + elements.size()-1) - 1];
+							for(n=0;n<z;n++) {
+								newToken[n]=token[n];
+							}
+							int temp=z;
+							for(n=0;n<elements.size();n++) {
+								newToken[n+temp]=elements.get(n).getId();
+								if(n<elements.size()-1) {
+									temp++;
+									newToken[n+temp]="and";
+								}
+							}
+							n=n+temp;
+							temp = z+1;
+							while(temp<token.length) {
+								newToken[n++] = token[temp++];
+							}
+							token = newToken;
 						}
-						token = newToken;
 					}
 				}
 			}
@@ -283,11 +291,11 @@ public class CucumberStdRule implements ObjectCondition {
 		if(source==Association.MANY && assocName.endsWith("s")) {
 			assocName = assocName.substring(0, assocName.length()-1);
 		}
-		SimpleList<Clazz> sub = assocs.get(assocName);
+		ClazzSet sub = assocs.get(assocName);
 		if(sub != null) {
 			return sub.add(sourceClazz);
 		}
-		sub = new SimpleList<Clazz>().with(sourceClazz);
+		sub = new ClazzSet().with(sourceClazz);
 		return assocs.add(assocName, sub);
 	}
 	
