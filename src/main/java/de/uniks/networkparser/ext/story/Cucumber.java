@@ -7,6 +7,7 @@ import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
+import de.uniks.networkparser.parser.Token;
 
 public class Cucumber {
 	public static final String TYPE_SCENARIO="scenario";
@@ -14,16 +15,7 @@ public class Cucumber {
 	public static final String TYPE_WHEN="when";
 	public static final String TYPE_THEN="then";
 	public static final String TYPE_DEFINITION="definition";
-	static final char UNKNOWN='?';	// Unknown
-	static final char N='n';		// Nomen
-	static final char U='&';		// And 
-	static final char V='v';		// Verb
-
-	static final char I='i';		// Ignore
-	static final char A='a';		// Attribute
-	static final char K='k';		// AttributeName
-	static final char T='0';		// AttributeValue
-	static final char E='=';		// Definition is
+	
 	private Cucumber parent;
 
 	private SimpleKeyValueList<String, Boolean> given=new SimpleKeyValueList<String, Boolean>();
@@ -131,10 +123,10 @@ public class Cucumber {
 	public static Cucumber createScenario(String title) {
 		Cucumber cucumber = new Cucumber().withTitle(title);
 		cucumber.addRule(new CucumberStdRule());
-		cucumber.addTokenRule("with", A);
-		cucumber.addTokenRule("the", I);
-		cucumber.addTokenRule("a", I);
-		cucumber.addTokenRule("is", E);
+		cucumber.addTokenRule("with", Token.ATTR);
+		cucumber.addTokenRule("the", Token.IGNORE);
+		cucumber.addTokenRule("a", Token.IGNORE);
+		cucumber.addTokenRule("is", Token.DEFINITION);
 		
 		cucumber.addDicitonary();
 		cucumber.addTypeDicitonary();

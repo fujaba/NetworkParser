@@ -1,5 +1,6 @@
 package de.uniks.networkparser.parser;
 
+import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.interfaces.LocalisationInterface;
 import de.uniks.networkparser.interfaces.ParserCondition;
@@ -14,11 +15,31 @@ import de.uniks.networkparser.interfaces.TemplateParser;
  */
 public class DebugCondition implements ParserCondition, SendableEntityCreator {
 	public static final String KEY = "debug";
+	private int line=-1;
+	
+	public DebugCondition withLine(int value) {
+		this.line = value;
+		return this;
+	}
 
 	@Override
 	public boolean update(Object value) {
 		if(value instanceof TemplateResultFragment) {
 			exeuteTemplate((TemplateResultFragment) value);
+		}
+		if(value instanceof SimpleEvent) {
+			SimpleEvent evt = (SimpleEvent) value;
+			if(evt.getSource() instanceof ParserEntity) {
+				if(ParserEntity.DEBUG.equals(evt.getType()) && line>=0) {
+					if(line==evt.getIndex()) {
+						System.out.println("DEBUG");
+					}
+				}else if(ParserEntity.ERROR.equals(evt.getType())) {
+					String errorMessage = ""+evt.getNewValue();
+					System.err.println(errorMessage);
+					throw new RuntimeException("parse error");
+				}
+			}
 		}
 		return true;
 	}

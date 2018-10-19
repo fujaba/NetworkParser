@@ -9,6 +9,8 @@ import de.uniks.networkparser.graph.GraphTokener;
 import de.uniks.networkparser.graph.GraphUtil;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.list.SimpleKeyValueList;
+import de.uniks.networkparser.list.SimpleSet;
+import de.uniks.networkparser.parser.Token;
 
 public class CucumberStdRule implements ObjectCondition {
 	private Cucumber cucumber;
@@ -35,9 +37,34 @@ public class CucumberStdRule implements ObjectCondition {
 		return true;
 	}
 	
+	private SimpleSet<Token> splitText(String values) {
+		Token token = new Token().addKind(Token.UNKNOWN);
+		SimpleSet<Token> result=new SimpleSet<Token>();
+		for(int i=0;i<values.length();i++) {
+			char c = values.charAt(i);
+			if(c == ' ') {
+				result.add(token);
+				token = new Token().addKind(Token.UNKNOWN);
+				continue;
+			}
+			if(c == '.') {
+				if(token.length()>0) {
+					result.add(token);
+				}
+				result.add(new Token().addText('.').addKind(Token.POINT));
+				token = new Token().addKind(Token.UNKNOWN);
+				continue;
+			}
+			token.addText(c);
+		}
+		result.add(token);
+		return result;
+	}
+	
 	private boolean analyseDefinition(SimpleKeyValueList<String, Boolean > values) {
 		for(int i=0;i<values.size();i++) {
 			String string = values.getKeyByIndex(i);
+			//FIXME
 			String[] token = string.split(" ");
 			char[] types= new char[token.length];
 			int z;
@@ -45,24 +72,24 @@ public class CucumberStdRule implements ObjectCondition {
 			int andPos = 0;
 			for(z=0;z<token.length;z++) {
 				if(types[z]==0) {
-					types[z]=Cucumber.UNKNOWN;
+					types[z]=Token.UNKNOWN;
 				}
 				Character type = cucumber.getTokenType(token[z]);
 				if(type != null) {
 					types[z] = type;
-					if(type==Cucumber.E) {
+					if(type==Token.DEFINITION) {
 						isPos = z;
 					}
 					continue;
 				}
 				if(token[z].equalsIgnoreCase("and")) {
 					andPos = z;
-					types[z]=Cucumber.U;
-					types[z-1]=Cucumber.N;
-					types[z+1]=Cucumber.N;
+					types[z]=Token.AND;
+					types[z-1]=Token.NOMEN;
+					types[z+1]=Token.NOMEN;
 					continue;
 				}
-				types[z]=Cucumber.N;
+				types[z]=Token.NOMEN;
 			}
 			if(isPos>0) {
 				int target = -1;
@@ -70,13 +97,13 @@ public class CucumberStdRule implements ObjectCondition {
 					// A Single Definition
 					int source = 0;
 					for(z=isPos;z<token.length;z++) {
-						if(types[z] == Cucumber.N) {
+						if(types[z] == Token.NOMEN) {
 							target=z;
 							break;
 						}
 					}
 					for(z=0;z<isPos;z++) {
-						if(types[z] == Cucumber.N) {
+						if(types[z] == Token.NOMEN) {
 							source=z;
 							break;
 						}
@@ -88,14 +115,14 @@ public class CucumberStdRule implements ObjectCondition {
 					if(andPos>isPos) {
 						// Target is Source and Source
 						for(z=0;z<isPos;z++) {
-							if(types[z] == Cucumber.N) {
+							if(types[z] == Token.NOMEN) {
 								target=z;
 								break;
 							}
 						}
 						if(target>=0) {
 							for(z=isPos;z<token.length;z++) {
-								if(types[z] == Cucumber.N) {
+								if(types[z] == Token.NOMEN) {
 									cucumber.addTypeDicitonary(token[z], token[target]);
 									break;
 								}
@@ -103,14 +130,14 @@ public class CucumberStdRule implements ObjectCondition {
 						}
 					} else {
 						for(z=isPos;z<token.length;z++) {
-							if(types[z] == Cucumber.N) {
+							if(types[z] == Token.NOMEN) {
 								target=z;
 								break;
 							}
 						}
 						if(target>=0) {
 							for(z=0;z<isPos;z++) {
-								if(types[z] == Cucumber.N) {
+								if(types[z] == Token.NOMEN) {
 									cucumber.addTypeDicitonary(token[z], token[target]);
 									break;
 								}
@@ -126,7 +153,9 @@ public class CucumberStdRule implements ObjectCondition {
 
 	private boolean analyseTokens(SimpleKeyValueList<String, Boolean > values) {
 		int z;
+		//FIXME
 		for(int i=0;i<values.size();i++) {
+//			splitText();
 			String string = values.getKeyByIndex(i);
 			String[] token = string.split(" ");
 			// Test for replace Link Names
@@ -177,7 +206,7 @@ public class CucumberStdRule implements ObjectCondition {
 			char[] types= new char[token.length];
 			for(z=0;z<token.length;z++) {
 				if(types[z]==0) {
-					types[z]=Cucumber.UNKNOWN;
+					types[z]=Token.UNKNOWN;
 				}
 				Character type = cucumber.getTokenType(token[z]);
 				if(type != null) {
@@ -185,45 +214,45 @@ public class CucumberStdRule implements ObjectCondition {
 					continue;
 				}
 				if(token[z].equalsIgnoreCase("and")) {
-					types[z]=Cucumber.U;
-					types[z-1]=Cucumber.N;
-					types[z+1]=Cucumber.N;
+					types[z]=Token.AND;
+					types[z-1]=Token.NOMEN;
+					types[z+1]=Token.NOMEN;
 				}
 			}
 			for(z=0;z<token.length;z++) {
-				if(types[z] != Cucumber.UNKNOWN) {
+				if(types[z] != Token.UNKNOWN) {
 					continue;
 				}
 				if(z<1) {
-					types[z]=Cucumber.N;
+					types[z]=Token.NOMEN;
 					continue;
 				}
-				if(types[z-1] == Cucumber.K) {
-					types[z] = Cucumber.T;
+				if(types[z-1] == Token.ATTRNAME) {
+					types[z] = Token.ATTRVALUE;
 					continue;
 				}
-				if(types[z-1] == Cucumber.A) {
+				if(types[z-1] == Token.ATTR) {
 					try {
 						Double.parseDouble(token[z]);
-						types[z] = Cucumber.T;
+						types[z] = Token.ATTRVALUE;
 					} catch (NumberFormatException e) {
-						types[z] = Cucumber.K;
+						types[z] = Token.ATTRNAME;
 					}
 					continue;
 				}
 
-				if(types[z-1] == Cucumber.N) {
-					types[z] = Cucumber.V;
+				if(types[z-1] == Token.NOMEN) {
+					types[z] = Token.VERB;
 				} else {
-					types[z] = Cucumber.N;
+					types[z] = Token.NOMEN;
 				}
 			}
 			for(z=0;z<token.length;z++) {
-				if(types[z]==Cucumber.N) {
+				if(types[z]==Token.NOMEN) {
 					getClazz(token[z]);
-				} else if(types[z]==Cucumber.T && (types[z-2] == Cucumber.N || types[z-1] == Cucumber.K && types[z-3] == Cucumber.N)) {
+				} else if(types[z]==Token.ATTRNAME && (types[z-2] == Token.NOMEN || types[z-1] == Token.ATTRNAME && types[z-3] == Token.NOMEN)) {
 					Clazz clazz;
-					if(types[z-1] == Cucumber.K) {
+					if(types[z-1] == Token.ATTRNAME) {
 						clazz = getClazz(token[z-3]);
 					} else {
 						clazz = getClazz(token[z-2]);
@@ -240,20 +269,20 @@ public class CucumberStdRule implements ObjectCondition {
 						}
 					} catch (NumberFormatException e) {
 					}
-					if(types[z-1] == Cucumber.K) {
+					if(types[z-1] == Token.ATTRNAME) {
 						name = token[z-1];
 					}
 					clazz.createAttribute(name, type).withValue(token[z]);
-				} else if(types[z]==Cucumber.V) {
+				} else if(types[z]==Token.VERB) {
 					int source = Association.ONE;
 					int target = Association.ONE;
-					if(z>1 && types[z-2]==Cucumber.U) {
+					if(z>1 && types[z-2]==Token.AND) {
 						if(token[z].endsWith("s") && token[z].equals("has") == false) {
 							token[z] = token[z].substring(0, token[z].length() - 1);
 						}
 						source = Association.MANY;
 					}
-					if(z+2<types.length && types[z+2]==Cucumber.U) {
+					if(z+2<types.length && types[z+2]==Token.AND) {
 						target = Association.MANY;
 					}
 					int s=z-1;
@@ -265,13 +294,13 @@ public class CucumberStdRule implements ObjectCondition {
 								Clazz targetClazz = getClazz(token[t]);
 								sourceClazz.withUniDirectional(targetClazz, getLinkName(token[z]), target);
 								addToAssoc(source, sourceClazz, token[z]);
-								if(t+1<types.length && types[t+1]==Cucumber.U) {
+								if(t+1<types.length && types[t+1]==Token.AND) {
 									t+=2;
 								}else {
 									break;
 								}	
 							}while(t<=types.length);
-							if(s > 0 && types[s-1]==Cucumber.U) {
+							if(s > 0 && types[s-1]==Token.AND) {
 								s-=2;
 							}else {
 								break;

@@ -27,7 +27,6 @@ import java.util.Arrays;
  * @author Sean Owen
  */
 final class BitArray implements Cloneable {
-
 	private int[] bits;
 	private int size;
 	private int byteOffset;
@@ -313,5 +312,4 @@ final class BitArray implements Cloneable {
 		}
 		return result;
 	}
-
 }

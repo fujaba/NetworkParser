@@ -34,14 +34,17 @@ import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.net.URLDecoder;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
 import de.uniks.networkparser.ext.ErrorHandler;
 import de.uniks.networkparser.ext.Os;
+import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.list.SimpleList;
 
@@ -797,4 +800,63 @@ public class ReflectionLoader {
 		}
 		return true;
 	}
+	
+	/**
+	 * Attempts to list all the classes in the specified package as determined by
+	 * the context class loader
+	 *
+	 * @param pckgname the package name to search
+	 * @return a list of classes that exist within that package
+	 */
+	public static SimpleList<Class<?>> getClassesForPackage(String pckgname) {
+		SimpleList<Class<?>> classes = new SimpleList<Class<?>>();
+		try {
+			ClassLoader cld = Thread.currentThread().getContextClassLoader();
+			if (cld == null) {
+				return classes;
+			}
+			Enumeration<URL> resources = cld.getResources(pckgname.replace('.', '/'));
+			for (URL url = null; resources.hasMoreElements() && ((url = resources.nextElement()) != null);) {
+				checkDirectory(new File(URLDecoder.decode(url.getPath(), BaseItem.ENCODING)), pckgname, classes);
+			}
+			if (classes.size() == 0) {
+				Class<?> forName = Class.forName(pckgname);
+				if (forName != null) {
+					classes.add(forName);
+				}
+			}
+		}catch (Throwable e) {
+		}
+		return classes;
+	}
+	
+	private static void checkDirectory(File directory, String pckgname, SimpleList<Class<?>> classes)
+			throws ClassNotFoundException {
+		File tmpDirectory;
+
+		if (directory.exists() && directory.isDirectory()) {
+			String[] files = directory.list();
+			if (files == null) {
+				return;
+			}
+			for (String file : files) {
+				if (file.endsWith(".class")) {
+					try {
+//						output(pckgname + '.' + file.substring(0, file.length() - 6), null, Net);
+						String className = pckgname;
+						if (className.length() > 0) {
+							className += ".";
+						}
+						className += file.substring(0, file.length() - 6);
+						classes.add(Class.forName(className));
+					} catch (Exception e) {
+						// do nothing. this class hasn't been found by the loader, and we don't care.
+					}
+				} else if ((tmpDirectory = new File(directory, file)).isDirectory() && !file.equalsIgnoreCase("test")) {
+					checkDirectory(tmpDirectory, pckgname + "." + file, classes);
+				}
+			}
+		}
+	}
+
 }

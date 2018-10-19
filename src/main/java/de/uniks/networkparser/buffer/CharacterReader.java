@@ -82,7 +82,7 @@ public class CharacterReader extends CharacterBuffer {
 		}
 		if (found == false && getCurrentChar() == '"') {
 			isString = true;
-			for (;;) {
+			while(isEnd() == false) {
 				int len = sc.length();
 				super.nextString(sc, allowQuote, nextStep, quotes);
 				if (sc.length() > len && !sc.endsWith("\"", false)) {
@@ -101,5 +101,4 @@ public class CharacterReader extends CharacterBuffer {
 		super.with(items);
 		return this;
 	}
-
 }

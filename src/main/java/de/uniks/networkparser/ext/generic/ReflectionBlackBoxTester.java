@@ -32,11 +32,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.net.URL;
-import java.net.URLDecoder;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.Set;
 import java.util.Timer;
 
@@ -48,10 +45,10 @@ import de.uniks.networkparser.ext.javafx.dialog.DialogBox;
 import de.uniks.networkparser.ext.petaf.SimpleTimerTask;
 import de.uniks.networkparser.ext.story.Story;
 import de.uniks.networkparser.ext.story.StoryStepJUnit;
-import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.list.SimpleKeyValueList;
+import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SimpleSet;
 
 public class ReflectionBlackBoxTester {
@@ -216,7 +213,7 @@ public class ReflectionBlackBoxTester {
 	public void test(String packageName, NetworkParserLog logger) throws ClassNotFoundException, IOException,
 			InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		setTester();
-		ArrayList<Class<?>> classesForPackage = getClassesForPackage(packageName);
+		SimpleList<Class<?>> classesForPackage = ReflectionLoader.getClassesForPackage(packageName);
 		errorCount = 0;
 		successCount = 0;
 		this.packageName = packageName;
@@ -727,61 +724,5 @@ public class ReflectionBlackBoxTester {
 		return "";
 	}
 
-	private void checkDirectory(File directory, String pckgname, ArrayList<Class<?>> classes)
-			throws ClassNotFoundException {
-		File tmpDirectory;
-
-		if (directory.exists() && directory.isDirectory()) {
-			String[] files = directory.list();
-			if (files == null) {
-				return;
-			}
-			for (String file : files) {
-				if (file.endsWith(".class")) {
-					try {
-//						output(pckgname + '.' + file.substring(0, file.length() - 6), null, Net);
-						String className = pckgname;
-						if (className.length() > 0) {
-							className += ".";
-						}
-						className += file.substring(0, file.length() - 6);
-						classes.add(Class.forName(className));
-					} catch (Exception e) {
-						// do nothing. this class hasn't been found by the loader, and we don't care.
-					}
-				} else if ((tmpDirectory = new File(directory, file)).isDirectory() && !file.equalsIgnoreCase("test")) {
-					checkDirectory(tmpDirectory, pckgname + "." + file, classes);
-				}
-			}
-		}
-	}
-
-	/**
-	 * Attempts to list all the classes in the specified package as determined by
-	 * the context class loader
-	 *
-	 * @param pckgname the package name to search
-	 * @return a list of classes that exist within that package
-	 * @throws ClassNotFoundException if something went wrong
-	 * @throws IOException            if something went wrong to read
-	 */
-	public ArrayList<Class<?>> getClassesForPackage(String pckgname) throws ClassNotFoundException, IOException {
-		ArrayList<Class<?>> classes = new ArrayList<Class<?>>();
-		ClassLoader cld = Thread.currentThread().getContextClassLoader();
-		if (cld == null) {
-			return classes;
-		}
-		Enumeration<URL> resources = cld.getResources(pckgname.replace('.', '/'));
-		for (URL url = null; resources.hasMoreElements() && ((url = resources.nextElement()) != null);) {
-			checkDirectory(new File(URLDecoder.decode(url.getPath(), BaseItem.ENCODING)), pckgname, classes);
-		}
-		if (classes.size() == 0) {
-			Class<?> forName = Class.forName(pckgname);
-			if (forName != null) {
-				classes.add(forName);
-			}
-		}
-		return classes;
-	}
-
+	
 }

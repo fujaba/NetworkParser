@@ -43,6 +43,7 @@ public class SymTabEntry {
 	public static final String TYPE_PACKAGE = "package";
 	public static final String TYPE_COMMENT = "comment";
 	public static final String TYPE_JAVADOC = "javadoc";
+	public static final String TYPE_BLOCK = "block";
 
 	public static final String TYPE_CONSTRUCTOR = "constructor";
 
@@ -60,8 +61,8 @@ public class SymTabEntry {
 	private int startPos;
 	private int endPos;
 	private int annotationsStartPos;
-	private int preCommentStartPos;
-	private int preCommentEndPos;
+//	private int preCommentStartPos;
+//	private int preCommentEndPos;
 	private String modifiers;
 	private String throwsTags;
 	private String annotations;
@@ -208,20 +209,6 @@ public class SymTabEntry {
 
 	public int getAnnotationsStartPos() {
 		return annotationsStartPos;
-	}
-
-	public SymTabEntry withPreComment(int start, int end) {
-		this.preCommentStartPos = start;
-		this.preCommentEndPos = end;
-		return this;
-	}
-
-	public int getPreCommentStartPos() {
-		return preCommentStartPos;
-	}
-
-	public int getPreCommentEndPos() {
-		return preCommentEndPos;
 	}
 
 	public SymTabEntry withModifiers(String modifiers) {

@@ -115,6 +115,11 @@ public final class SimpleEvent extends PropertyChangeEvent {
 	public int getDepth() {
 		return depth;
 	}
+	
+	public SimpleEvent withValue(int value) {
+		this.depth = value;
+		return this;
+	}
 
 	public Entity getEntity() {
 		return entity;

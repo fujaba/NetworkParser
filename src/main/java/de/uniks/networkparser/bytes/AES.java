@@ -44,9 +44,9 @@ import de.uniks.networkparser.converter.ByteConverterString;
 
 public class AES {
 	/** AES constants and variables. */
-	public static final int ROUNDS = 14, // AES has 10-14 rounds
-			BLOCK_SIZE = 16, // AES uses 128-bit (16 byte) key
-			KEY_LENGTH = 32; // AES uses 128/192/256-bit (16/24/32 byte) key
+	public static final int ROUNDS = 14; // AES has 10-14 rounds
+	public static final int BLOCK_SIZE = 16; // AES uses 128-bit (16 byte) key
+	public static final int KEY_LENGTH = 32; // AES uses 128/192/256-bit (16/24/32 byte) key
 
 	// Define key attributes for current AES instance
 	/** number of rounds used given AES key set on this instance. */
@@ -105,11 +105,9 @@ public class AES {
 			-105, 53, 106, -44, -77, 125, -6, -17, -59, -111 };
 
 	/** Internal AES constants and variables. */
-	public static final int COL_SIZE = 4, // depth of each column in AES state
-											// variable
-			NUM_COLS = BLOCK_SIZE / COL_SIZE, // number of columns in AES state
-												// variable
-			ROOT = 0x11B; // generator polynomial used in GF(2^8)
+	public static final int COL_SIZE = 4; // depth of each column in AES state variable
+	public static final int NUM_COLS = BLOCK_SIZE / COL_SIZE; // number of columns in AES state variable
+	public static final int ROOT = 0x11B; // generator polynomial used in GF(2^8)
 
 	/** define ShiftRows transformation as shift amount for each row in state. */
 	static final int[] row_shift = { 0, 1, 2, 3 };
@@ -134,8 +132,9 @@ public class AES {
 				j ^= ROOT;
 			alog[i] = j;
 		}
-		for (i = 1; i < 255; i++)
+		for (i = 1; i < 255; i++) {
 			log[alog[i]] = i;
+		}
 	}
 
 	private ByteConverterString converter = new ByteConverterString();
@@ -239,8 +238,9 @@ public class AES {
 	 */
 	public byte[] encodeBlock(byte[] plain) {
 		// check for bad arguments
-		if (plain == null || plain.length != BLOCK_SIZE)
+		if (plain == null || plain.length != BLOCK_SIZE) {
 			return null;
+		}
 
 		// define working variables
 		byte[] ta = new byte[BLOCK_SIZE]; // AES temp state variable
@@ -279,8 +279,9 @@ public class AES {
 			}
 
 			// AddRoundKey(state) into a
-			for (i = 0; i < BLOCK_SIZE; i++)
+			for (i = 0; i < BLOCK_SIZE; i++) {
 				plain[i] = (byte) (ta[i] ^ Ker[i]);
+			}
 		}
 
 		// last round is special - only has SubBytes, ShiftRows and AddRoundKey
@@ -300,8 +301,9 @@ public class AES {
 		}
 
 		// AddRoundKey(state) into a
-		for (i = 0; i < BLOCK_SIZE; i++)
+		for (i = 0; i < BLOCK_SIZE; i++) {
 			plain[i] = (byte) (ta[i] ^ Ker[i]);
+		}
 		return plain;
 	}
 
