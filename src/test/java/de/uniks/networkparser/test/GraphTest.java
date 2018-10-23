@@ -748,7 +748,7 @@ public class GraphTest {
 		Clazz student = list.with(new Clazz("Student"));
 		student.withUniDirectional(uni, "owner", Association.ONE);
 
-		String convert = list.toString(new DotConverter(true));
+		String convert = list.toString(new DotConverter().withRemovePackage(true));
 
 		new File("build").mkdir();
 		FileWriter fstream = new FileWriter("build/dotFile.dot");

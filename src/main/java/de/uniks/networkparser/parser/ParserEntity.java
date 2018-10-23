@@ -78,6 +78,7 @@ public class ParserEntity {
 
 	public SymTabEntry symTabEntry;
 	private SourceCode code;
+	public boolean isValid = true;
 
 	/* FIXME REMOVE */
 	public char currentChar;
@@ -122,9 +123,7 @@ public class ParserEntity {
 		parseComment();
 
 		skipNewLine();
-////FIXME		if (currentTokenEquals(SymTabEntry.TYPE_PACKAGE) == false) {
-//			nextToken();
-//		}
+
 		if (currentTokenEquals(SymTabEntry.TYPE_PACKAGE)) {
 			parsePackageDecl();
 		}
@@ -134,7 +133,7 @@ public class ParserEntity {
 
 		code.withStartImports(currentToken.startPos);
 		skipNewLine();
-		// TODO need this to ensure parser is working when no imports are present
+
 		while (currentTokenEquals(SymTabEntry.TYPE_IMPORT)) {
 			parseImport();
 			parseComment();
@@ -142,8 +141,10 @@ public class ParserEntity {
 		}
 		code.withEndOfImports(currentToken.startPos);
 
-		parseComment();
-		skipNewLine();
+		while(parseComment()) {
+			skipNewLine();
+		}
+		
 
 		parseClassDecl();
 		return this.file;
@@ -182,6 +183,10 @@ public class ParserEntity {
 	public boolean currentTokenEquals(String word) {
 		return stringEquals(currentWord(), word);
 	}
+	public boolean currentTokenEquals(char word) {
+		return (currentToken.text.length()==1 && currentToken.text.charAt(0) == word);
+//		return stringEquals(currentWord(), word);
+	}
 
 	public static boolean stringEquals(String s1, String s2) {
 		return s1 == null ? s2 == null : s1.equals(s2);
@@ -201,22 +206,28 @@ public class ParserEntity {
 		return false;
 	}
 
-	public boolean skip(String string, boolean skipCRLF, CharacterBuffer body) {
+	public boolean skip(char string, boolean skipCRLF, CharacterBuffer body) {
 		if (currentTokenEquals(string)) {
 			if (skipCRLF) {
-				body.add(currentToken.originalText);
+				if(body != null) {
+					body.add(currentToken.originalText);
+				}
 				nextToken();
 				while (currentToken.kind == Token.NEWLINE) {
-					body.add(currentToken.originalText);
+					if(body != null) {
+						body.add(currentToken.originalText);
+					}
 					nextToken();
 				}
 				return true;
 			}
-			body.add(currentToken.originalText);
+			if(body != null) {
+				body.add(currentToken.originalText);
+			}
 			nextToken();
 			return true;
 		} else {
-			error(string);
+			error(""+string);
 		}
 		return false;
 	}
@@ -721,7 +732,11 @@ public class ParserEntity {
 	private void parseClassBody() {
 		// { classBodyDecl* }
 		skip('{', true);
+		boolean isDebug = this.update instanceof DebugCondition;
 		while (!currentKindEquals(Token.EOF) && !currentKindEquals('}')) {
+			if(isDebug) {
+				System.out.println("Parsing: "+getCurrentLine());
+			}
 			parseMemberDecl();
 		}
 
@@ -797,20 +812,23 @@ public class ParserEntity {
 				skipTo('{');
 			}
 			code.withStartBody(currentToken.startPos);
-			parseBlock(new CharacterBuffer());
+			CharacterBuffer block = new CharacterBuffer();
+			skip('{', true, block);
+			parseBlock(block, '}');
 
 			SymTabEntry nextEntity = startNextSymTab(SymTabEntry.TYPE_CONSTRUCTOR, file.getName() + params);
 			nextEntity.withPosition(startPos, previousToken.startPos);
 //			nextEntity.withComment(c)
 //FIXME			nextEntity.withPreComment(preCommentStartPos, preCommentEndPos);
+			nextEntity.withValue(block.toString());
 			nextEntity.withAnnotationsStart(annotationsStartPos);
 
 			nextEntity.withBodyStartPos(code.getBodyStart());
 			nextEntity.withModifiers(modifiers);
 		} else if(currentKindEquals('{')){
 			CharacterBuffer block = new CharacterBuffer();
-			skip("{", true, block);
-			parseBlock(block);
+			skip('{', true, block);
+			parseBlock(block, '}');
 			SymTabEntry nextEntity = startNextSymTab(SymTabEntry.TYPE_BLOCK, "");
 			nextEntity.withPosition(startPos, previousToken.startPos);
 			nextEntity.withModifiers(modifiers);
@@ -827,7 +845,6 @@ public class ParserEntity {
 				skip("=", true);
 
 				CharacterBuffer expression = parseExpression(null);
-				
 
 				code.withEndOfAttributeInitialization(previousToken.startPos);
 
@@ -869,8 +886,8 @@ public class ParserEntity {
 
 				CharacterBuffer body = new CharacterBuffer();
 				if (currentKindEquals('{')) {
-					skip("{", true, body);
-					parseBlock(body);
+					skip('{', true, body);
+					parseBlock(body, '}');
 				} else {
 					if (currentKindEquals(';')) {
 						skip(';', true);
@@ -911,55 +928,55 @@ public class ParserEntity {
 		}
 	}
 
-	private CharacterBuffer parseBlock(CharacterBuffer body) {
+	private CharacterBuffer parseBlock(CharacterBuffer body, char stopChar) {
 		if(body == null) {
 			body = new CharacterBuffer();
 		}
 		char prevprevTokenKind;
-		if(currentKindEquals('\'')) {
-			while (currentKindEquals(Token.EOF) == false) {
-				body.add(currentToken.originalText);
-				prevprevTokenKind=previousToken.kind;
-				nextToken();
-				if(currentKindEquals('\'')) {
-					if(previousTokenKindEquals('\\') == false || prevprevTokenKind =='\\') {
-						break;
-					}
-				}
-			}
-			skip("'", true, body);
-			return body;
-		}
-		if(currentKindEquals('"')) {
-			while (currentKindEquals(Token.EOF) == false) {
-				body.add(currentToken.originalText);
-				prevprevTokenKind=previousToken.kind;
-				nextToken();
-				if(currentKindEquals('"')) {
-					if(previousTokenKindEquals('\\') == false || prevprevTokenKind =='\\') {
-						break;
-					}
-				}
-			}
-			skip("\"", true, body);
-			return body;
-		}
 		// { stat ... }
-		while (currentKindEquals(Token.EOF) == false && currentKindEquals('}') == false) {
+		boolean comment = currentKindEquals(Token.COMMENT) || currentKindEquals(Token.LONG_COMMENT_START);
+		while (currentKindEquals(Token.EOF) == false && currentKindEquals(stopChar) == false) {
+			if (comment == false) {
+				char search=0;
+				if(currentKindEquals('\'')) {
+					search='\'';
+				}
+				if(currentKindEquals('"')) {
+					search='\"';
+				}
+				if(search != 0) {
+					while (currentKindEquals(Token.EOF) == false) {
+						body.add(currentToken.originalText);
+						prevprevTokenKind=previousToken.kind;
+						nextToken();
+						if(currentKindEquals(search)) {
+							if(previousTokenKindEquals('\\') == false || prevprevTokenKind =='\\') {
+								break;
+							}
+						}
+					}
+					skip(search, true, body);
+					continue;
+				}
+			}
 			if (currentKindEquals('{')) {
-				skip("{", true, body);
-				parseBlock(body);
-			} else if (currentKindEquals('\'')) {
-				parseBlock(body);
-			} else if (currentKindEquals('"')) {
-				parseBlock(body);
+				skip('{', true, body);
+				parseBlock(body, '}');
+			} else if (currentKindEquals('(')) {
+				skip('(', true, body);
+				parseBlock(body, ')');
 			} else {
 				body.add(currentToken.originalText);
 				nextToken();
+				if(comment) {
+					comment = currentKindEquals(Token.NEWLINE)== false;
+				} else {
+					comment = currentKindEquals(Token.COMMENT) || currentKindEquals(Token.LONG_COMMENT_START);
+				}
 			}
 		}
 
-		skip("}", true, body);
+		skip(stopChar, true, body);
 		return body;
 	}
 
@@ -1052,7 +1069,6 @@ public class ParserEntity {
 		if(buffer==null) {
 			buffer = new CharacterBuffer();
 		}
-		buffer.add(currentToken.originalText);
 		if(currentKindEquals('\'')) {
 			while (currentKindEquals(Token.EOF) == false && currentKindEquals(';') == false) {
 				while (currentKindEquals(Token.EOF) == false && currentKindEquals('\'') == false) {
@@ -1087,10 +1103,13 @@ public class ParserEntity {
 				parseExpression(buffer);
 			}
 			if (currentKindEquals('{')) {
-				CharacterBuffer body = new CharacterBuffer();
-				skip("{", true, body);
-				parseBlock(body);
+				skip('{', true, null);
+				parseBlock(buffer, '}');
+			} else if (currentKindEquals('(')) {
+				skip('(', true, buffer);
+				parseBlock(buffer, ')');
 			} else {
+				buffer.add(currentToken.originalText);
 				nextToken();
 			}
 		}
@@ -1602,5 +1621,15 @@ public class ParserEntity {
 			return this.code.getSymbolEntry(type, name);
 		}
 		return null;
+	}
+	public SimpleList<SymTabEntry> getSymbolEntries(String type) {
+		if (this.code != null) {
+			return this.code.getSymbolEntries(type);
+		}
+		return null;
+	}
+
+	public Clazz getClazz() {
+		return this.file;
 	}
 }

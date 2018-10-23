@@ -16,7 +16,7 @@
  *
  */
 
-package de.uniks.networkparser.ext.tar;
+package de.uniks.networkparser.ext.io;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -28,8 +28,6 @@ import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.zip.GZIPInputStream;
-
-import de.uniks.networkparser.ext.io.FileBuffer;
 
 public class TarArchiveInputStream extends InputStream {
 	private final byte[] single = new byte[1];

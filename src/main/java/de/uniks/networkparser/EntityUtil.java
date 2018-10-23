@@ -55,7 +55,7 @@ public class EntityUtil {
 	 * @param d a double.
 	 * @return a String.
 	 */
-	public final String doubleToString(double d) {
+	public static final String doubleToString(double d) {
 		if (Double.isInfinite(d) || Double.isNaN(d)) {
 			return "null";
 		}
@@ -979,14 +979,6 @@ public class EntityUtil {
 			bytes[i] = (byte) string.charAt(i);
 		}
 		return bytes;
-	}
-
-	public static final ByteBuffer getBuffer(int len) {
-		if (len < 1) {
-			return null;
-		}
-		ByteBuffer message = ByteBuffer.allocate(len);
-		return message;
 	}
 
 	public static final boolean isPrimitive(byte type) {

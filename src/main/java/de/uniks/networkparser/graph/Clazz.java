@@ -383,7 +383,6 @@ public class Clazz extends GraphEntity {
 		// CHECK FOR WRONG TYPE
 		if (AssociationTypes.GENERALISATION.equals(assoc.getType())) {
 			if (generalizations.size() < 1) {
-				// && interfaces.size() > 0) {
 				assoc.with(AssociationTypes.IMPLEMENTS);
 			} else if (interfaces.size() > 0) {
 				// BOTH

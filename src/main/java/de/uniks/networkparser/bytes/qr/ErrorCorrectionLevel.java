@@ -26,7 +26,7 @@ package de.uniks.networkparser.bytes.qr;
  */
 public final class ErrorCorrectionLevel {
 
-	// No, we can't use an enum here. J2ME doesn't support it.
+	// No, we can not use an enum here. J2ME does not support it.
 
 	/**
 	 * L = ~7% correction

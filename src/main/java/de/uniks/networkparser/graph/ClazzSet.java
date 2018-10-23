@@ -73,6 +73,19 @@ public class ClazzSet extends SimpleSet<Clazz> {
 		}
 		return super.contains(o);
 	}
+
+	public Clazz getClazz(String id) {
+		if(id == null) {
+			return null;
+		}
+		for(Clazz item : this) {
+			if (id.equals(item.getName())) {
+				return item;
+			}
+		}
+		return null;
+	}
+
 	@Override
 	public Clazz[] toArray() {
 		return super.toArray(new Clazz[size()]);

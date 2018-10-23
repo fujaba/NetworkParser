@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package de.uniks.networkparser.ext.tar;
+package de.uniks.networkparser.ext.io;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;

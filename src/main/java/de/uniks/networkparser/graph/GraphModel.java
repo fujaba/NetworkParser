@@ -3,6 +3,7 @@ package de.uniks.networkparser.graph;
 import java.util.Iterator;
 
 import de.uniks.networkparser.EntityUtil;
+import de.uniks.networkparser.converter.YUMLConverter;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Condition;
 import de.uniks.networkparser.interfaces.Converter;
@@ -290,6 +291,11 @@ public abstract class GraphModel extends GraphEntity implements BaseItem {
 			this.defaultAuthorName = model.getAuthorName();
 		}
 		return this;
+	}
+
+	@Override
+	public String toString() {
+		return toString(new YUMLConverter());
 	}
 
 	public String toString(Converter converter) {

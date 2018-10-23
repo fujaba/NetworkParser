@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package de.uniks.networkparser.ext.tar;
+package de.uniks.networkparser.ext.io;
 
 import java.io.File;
 import java.io.IOException;
@@ -27,8 +27,8 @@ import java.util.Locale;
 import java.util.Map;
 
 /**
- * This class represents an entry in a Tar archive. It consists of the entry's
- * header, as well as the entry's File. Entries can be instantiated in one of
+ * This class represents an entry in a Tar archive. It consists of the entry is
+ * header, as well as the entry is File. Entries can be instantiated in one of
  * three ways, depending on how they are to be used.
  * <p>
  * TarEntries that are created from the header bytes read from an archive are
@@ -39,7 +39,7 @@ import java.util.Map;
  * <p>
  * TarEntries that are created from Files that are to be written into an archive
  * are instantiated with the TarEntry( File ) constructor. These entries have
- * their header filled in using the File's information. They also keep a
+ * their header filled in using the File is information. They also keep a
  * reference to the File for convenience when writing entries.
  * <p>
  * Finally, TarEntries can be constructed from nothing but a name. This allows
@@ -49,7 +49,7 @@ import java.util.Map;
  * fields are set to defaults and the File is set to null.
  *
  * <p>
- * The C structure for a Tar Entry's header is:
+ * The C structure for a Tar Entry is header is:
  * 
  * <pre>
  * struct header {
@@ -83,7 +83,7 @@ import java.util.Map;
  * </pre>
  *
  * <p>
- * The C structure for a old GNU Tar Entry's header is:
+ * The C structure for a old GNU Tar Entry is header is:
  * 
  * <pre>
  * struct oldgnu_header {
@@ -110,7 +110,7 @@ import java.util.Map;
  * </pre>
  *
  * <p>
- * The C structure for a xstar (Joerg Schilling star) Tar Entry's header is:
+ * The C structure for a xstar (Joerg Schilling star) Tar Entry is header is:
  * 
  * <pre>
  * struct star_header {
@@ -145,57 +145,57 @@ import java.util.Map;
 public class TarArchiveEntry {
 	private static final TarArchiveEntry[] EMPTY_TAR_ARCHIVE_ENTRIES = new TarArchiveEntry[0];
 
-	/** The entry's name. */
+	/** The entry is name. */
 	private String name = "";
 
 	/** Whether to allow leading slashes or drive names inside the name */
 	private final boolean preserveAbsolutePath;
 
-	/** The entry's permission mode. */
+	/** The entry is permission mode. */
 	private int mode;
 
-	/** The entry's user id. */
+	/** The entry is user id. */
 	private long userId = 0;
 
-	/** The entry's group id. */
+	/** The entry is group id. */
 	private long groupId = 0;
 
-	/** The entry's size. */
+	/** The entry is size. */
 	private long size = 0;
 
-	/** The entry's modification time. */
+	/** The entry is modification time. */
 	private long modTime;
 
 	/** If the header checksum is reasonably correct. */
 	private boolean checkSumOK;
 
-	/** The entry's link flag. */
+	/** The entry is link flag. */
 	private byte linkFlag;
 
-	/** The entry's link name. */
+	/** The entry is link name. */
 	private String linkName = "";
 
-	/** The entry's magic tag. */
+	/** The entry is magic tag. */
 	private String magic = TarUtils.MAGIC_POSIX;
 	/** The version of the format */
 	private String version = TarUtils.VERSION_POSIX;
 
-	/** The entry's user name. */
+	/** The entry is user name. */
 	private String userName;
 
-	/** The entry's group name. */
+	/** The entry is group name. */
 	private String groupName = "";
 
-	/** The entry's major device number. */
+	/** The entry is major device number. */
 	private int devMajor = 0;
 
-	/** The entry's minor device number. */
+	/** The entry is minor device number. */
 	private int devMinor = 0;
 
 	/** If an extension sparse header follows. */
 	private boolean isExtended;
 
-	/** The entry's real size in case of a sparse file. */
+	/** The entry is real size in case of a sparse file. */
 	private long realSize;
 
 	/** is this entry a GNU sparse entry using one of the PAX formats? */
@@ -204,13 +204,13 @@ public class TarArchiveEntry {
 	/** is this entry a star sparse entry using the PAX header? */
 	private boolean starSparse;
 
-	/** The entry's file reference */
+	/** The entry is file reference */
 	private final File file;
 
 	/** Extra, user supplied pax headers */
 	private final Map<String, String> extraPaxHeaders = new HashMap<String, String>();
 
-	/** Maximum length of a user's name in the tar file */
+	/** Maximum length of a user is name in the tar file */
 	public static final int MAX_NAMELEN = 31;
 
 	/** Default permissions bits for directories */
@@ -239,10 +239,10 @@ public class TarArchiveEntry {
 
 	/**
 	 * Construct an entry with only a name. This allows the programmer to construct
-	 * the entry's header "by hand". File is set to null.
+	 * the entry is header "by hand". File is set to null.
 	 *
 	 * <p>
-	 * The entry's name will be the value of the {@code name} argument with all file
+	 * The entry is name will be the value of the {@code name} argument with all file
 	 * separators replaced by forward slashes and leading slashes as well as Windows
 	 * drive letters stripped.
 	 * </p>
@@ -255,10 +255,10 @@ public class TarArchiveEntry {
 
 	/**
 	 * Construct an entry with only a name. This allows the programmer to construct
-	 * the entry's header "by hand". File is set to null.
+	 * the entry is header "by hand". File is set to null.
 	 *
 	 * <p>
-	 * The entry's name will be the value of the {@code name} argument with all file
+	 * The entry is name will be the value of the {@code name} argument with all file
 	 * separators replaced by forward slashes. Leading slashes and Windows drive
 	 * letters are stripped if {@code preserveAbsolutePath} is {@code false}.
 	 * </p>
@@ -286,7 +286,7 @@ public class TarArchiveEntry {
 	 * Construct an entry with a name and a link flag.
 	 *
 	 * <p>
-	 * The entry's name will be the value of the {@code name} argument with all file
+	 * The entry is name will be the value of the {@code name} argument with all file
 	 * separators replaced by forward slashes and leading slashes as well as Windows
 	 * drive letters stripped.
 	 * </p>
@@ -302,7 +302,7 @@ public class TarArchiveEntry {
 	 * Construct an entry with a name and a link flag.
 	 *
 	 * <p>
-	 * The entry's name will be the value of the {@code name} argument with all file
+	 * The entry is name will be the value of the {@code name} argument with all file
 	 * separators replaced by forward slashes. Leading slashes and Windows drive
 	 * letters are stripped if {@code preserveAbsolutePath} is {@code false}.
 	 * </p>
@@ -329,7 +329,7 @@ public class TarArchiveEntry {
 	 * normalized file path.
 	 *
 	 * <p>
-	 * The entry's name will be the value of the {@code file}'s path with all file
+	 * The entry is name will be the value of the {@code file} is path with all file
 	 * separators replaced by forward slashes and leading slashes as well as Windows
 	 * drive letters stripped. The name will end in a slash if the {@code file}
 	 * represents a directory.
@@ -346,7 +346,7 @@ public class TarArchiveEntry {
 	 * constructed from information from the file.
 	 *
 	 * <p>
-	 * The entry's name will be the value of the {@code fileName} argument with all
+	 * The entry is name will be the value of the {@code fileName} argument with all
 	 * file separators replaced by forward slashes and leading slashes as well as
 	 * Windows drive letters stripped. The name will end in a slash if the
 	 * {@code file} represents a directory.
@@ -382,7 +382,7 @@ public class TarArchiveEntry {
 	}
 
 	/**
-	 * Construct an entry from an archive's header bytes. File is set to null.
+	 * Construct an entry from an archive is header bytes. File is set to null.
 	 *
 	 * @param headerBuf The header bytes from a tar archive entry.
 	 * @throws IllegalArgumentException if any of the numeric fields have an invalid
@@ -394,7 +394,7 @@ public class TarArchiveEntry {
 	}
 
 	/**
-	 * Construct an entry from an archive's header bytes. File is set to null.
+	 * Construct an entry from an archive is header bytes. File is set to null.
 	 *
 	 * @param headerBuf The header bytes from a tar archive entry.
 	 * @param encoding  encoding to use for file names
@@ -446,7 +446,7 @@ public class TarArchiveEntry {
 
 	/**
 	 * Determine if the given entry is a descendant of this entry. Descendancy is
-	 * determined by the name of the descendant starting with this entry's name.
+	 * determined by the name of the descendant starting with this entry is name.
 	 *
 	 * @param desc Entry to be checked as a descendent of this.
 	 * @return True if entry is a descendant of this.
@@ -456,22 +456,22 @@ public class TarArchiveEntry {
 	}
 
 	/**
-	 * Get this entry's name.
+	 * Get this entry is name.
 	 *
 	 * <p>
 	 * This method returns the raw name as it is stored inside of the archive.
 	 * </p>
 	 *
-	 * @return This entry's name.
+	 * @return This entry is name.
 	 */
 	public String getName() {
 		return name;
 	}
 
 	/**
-	 * Set this entry's name.
+	 * Set this entry is name.
 	 *
-	 * @param name This entry's new name.
+	 * @param name This entry is new name.
 	 */
 	public void setName(String name) {
 		this.name = normalizeFileName(name, this.preserveAbsolutePath);
@@ -487,16 +487,16 @@ public class TarArchiveEntry {
 	}
 
 	/**
-	 * Get this entry's link name.
+	 * Get this entry is link name.
 	 *
-	 * @return This entry's link name.
+	 * @return This entry is link name.
 	 */
 	public String getLinkName() {
 		return linkName;
 	}
 
 	/**
-	 * Set this entry's link name.
+	 * Set this entry is link name.
 	 *
 	 * @param link the link name to use.
 	 *
@@ -507,9 +507,9 @@ public class TarArchiveEntry {
 	}
 
 	/**
-	 * Get this entry's user id.
+	 * Get this entry is user id.
 	 *
-	 * @return This entry's user id.
+	 * @return This entry is user id.
 	 * @deprecated use #getLongUserId instead as user ids can be bigger than
 	 *             {@link Integer#MAX_VALUE}
 	 */
@@ -519,18 +519,18 @@ public class TarArchiveEntry {
 	}
 
 	/**
-	 * Set this entry's user id.
+	 * Set this entry is user id.
 	 *
-	 * @param userId This entry's new user id.
+	 * @param userId This entry is new user id.
 	 */
 	public void setUserId(int userId) {
 		setUserId((long) userId);
 	}
 
 	/**
-	 * Get this entry's user id.
+	 * Get this entry is user id.
 	 *
-	 * @return This entry's user id.
+	 * @return This entry is user id.
 	 * @since 1.10
 	 */
 	public long getLongUserId() {
@@ -538,9 +538,9 @@ public class TarArchiveEntry {
 	}
 
 	/**
-	 * Set this entry's user id.
+	 * Set this entry is user id.
 	 *
-	 * @param userId This entry's new user id.
+	 * @param userId This entry is new user id.
 	 * @since 1.10
 	 */
 	public void setUserId(long userId) {
@@ -548,9 +548,9 @@ public class TarArchiveEntry {
 	}
 
 	/**
-	 * Get this entry's group id.
+	 * Get this entry is group id.
 	 *
-	 * @return This entry's group id.
+	 * @return This entry is group id.
 	 * @deprecated use #getLongGroupId instead as group ids can be bigger than
 	 *             {@link Integer#MAX_VALUE}
 	 */
@@ -560,75 +560,75 @@ public class TarArchiveEntry {
 	}
 
 	/**
-	 * Set this entry's group id.
+	 * Set this entry is group id.
 	 *
-	 * @param groupId This entry's new group id.
+	 * @param groupId This entry is new group id.
 	 */
 	public void setGroupId(int groupId) {
 		setGroupId((long) groupId);
 	}
 
 	/**
-	 * Get this entry's group id.
+	 * Get this entry is group id.
 	 *
 	 * @since 1.10
-	 * @return This entry's group id.
+	 * @return This entry is group id.
 	 */
 	public long getLongGroupId() {
 		return groupId;
 	}
 
 	/**
-	 * Set this entry's group id.
+	 * Set this entry is group id.
 	 *
 	 * @since 1.10
-	 * @param groupId This entry's new group id.
+	 * @param groupId This entry is new group id.
 	 */
 	public void setGroupId(long groupId) {
 		this.groupId = groupId;
 	}
 
 	/**
-	 * Get this entry's user name.
+	 * Get this entry is user name.
 	 *
-	 * @return This entry's user name.
+	 * @return This entry is user name.
 	 */
 	public String getUserName() {
 		return userName;
 	}
 
 	/**
-	 * Set this entry's user name.
+	 * Set this entry is user name.
 	 *
-	 * @param userName This entry's new user name.
+	 * @param userName This entry is new user name.
 	 */
 	public void setUserName(String userName) {
 		this.userName = userName;
 	}
 
 	/**
-	 * Get this entry's group name.
+	 * Get this entry is group name.
 	 *
-	 * @return This entry's group name.
+	 * @return This entry is group name.
 	 */
 	public String getGroupName() {
 		return groupName;
 	}
 
 	/**
-	 * Set this entry's group name.
+	 * Set this entry is group name.
 	 *
-	 * @param groupName This entry's new group name.
+	 * @param groupName This entry is new group name.
 	 */
 	public void setGroupName(String groupName) {
 		this.groupName = groupName;
 	}
 
 	/**
-	 * Convenience method to set this entry's group and user ids.
+	 * Convenience method to set this entry is group and user ids.
 	 *
-	 * @param userId  This entry's new user id.
-	 * @param groupId This entry's new group id.
+	 * @param userId  This entry is new user id.
+	 * @param groupId This entry is new group id.
 	 */
 	public void setIds(int userId, int groupId) {
 		setUserId(userId);
@@ -636,10 +636,10 @@ public class TarArchiveEntry {
 	}
 
 	/**
-	 * Convenience method to set this entry's group and user names.
+	 * Convenience method to set this entry is group and user names.
 	 *
-	 * @param userName  This entry's new user name.
-	 * @param groupName This entry's new group name.
+	 * @param userName  This entry is new user name.
+	 * @param groupName This entry is new group name.
 	 */
 	public void setNames(String userName, String groupName) {
 		setUserName(userName);
@@ -647,28 +647,28 @@ public class TarArchiveEntry {
 	}
 
 	/**
-	 * Set this entry's modification time. The parameter passed to this method is in
+	 * Set this entry is modification time. The parameter passed to this method is in
 	 * "Java time".
 	 *
-	 * @param time This entry's new modification time.
+	 * @param time This entry is new modification time.
 	 */
 	public void setModTime(long time) {
 		modTime = time / MILLIS_PER_SECOND;
 	}
 
 	/**
-	 * Set this entry's modification time.
+	 * Set this entry is modification time.
 	 *
-	 * @param time This entry's new modification time.
+	 * @param time This entry is new modification time.
 	 */
 	public void setModTime(Date time) {
 		modTime = time.getTime() / MILLIS_PER_SECOND;
 	}
 
 	/**
-	 * Set this entry's modification time.
+	 * Set this entry is modification time.
 	 *
-	 * @return time This entry's new modification time.
+	 * @return time This entry is new modification time.
 	 */
 	public Date getModTime() {
 		return new Date(modTime * MILLIS_PER_SECOND);
@@ -679,7 +679,7 @@ public class TarArchiveEntry {
 	}
 
 	/**
-	 * Get this entry's checksum status.
+	 * Get this entry is checksum status.
 	 *
 	 * @return if the header checksum is reasonably correct
 	 * @see TarUtils#verifyCheckSum(byte[])
@@ -690,41 +690,41 @@ public class TarArchiveEntry {
 	}
 
 	/**
-	 * Get this entry's file.
+	 * Get this entry is file.
 	 *
 	 * <p>
 	 * This method is only useful for entries created from a {@code
 	 * File} but not for entries read from an archive.
 	 * </p>
 	 *
-	 * @return This entry's file.
+	 * @return This entry is file.
 	 */
 	public File getFile() {
 		return file;
 	}
 
 	/**
-	 * Get this entry's mode.
+	 * Get this entry is mode.
 	 *
-	 * @return This entry's mode.
+	 * @return This entry is mode.
 	 */
 	public int getMode() {
 		return mode;
 	}
 
 	/**
-	 * Get this entry's file size.
+	 * Get this entry is file size.
 	 *
-	 * @return This entry's file size.
+	 * @return This entry is file size.
 	 */
 	public long getSize() {
 		return size;
 	}
 
 	/**
-	 * Set this entry's file size.
+	 * Set this entry is file size.
 	 *
-	 * @param size This entry's new file size.
+	 * @param size This entry is new file size.
 	 * @throws IllegalArgumentException if the size is &lt; 0.
 	 */
 	public void setSize(long size) {
@@ -735,9 +735,9 @@ public class TarArchiveEntry {
 	}
 
 	/**
-	 * Get this entry's major device number.
+	 * Get this entry is major device number.
 	 *
-	 * @return This entry's major device number.
+	 * @return This entry is major device number.
 	 * @since 1.4
 	 */
 	public int getDevMajor() {
@@ -745,9 +745,9 @@ public class TarArchiveEntry {
 	}
 
 	/**
-	 * Set this entry's major device number.
+	 * Set this entry is major device number.
 	 *
-	 * @param devNo This entry's major device number.
+	 * @param devNo This entry is major device number.
 	 * @throws IllegalArgumentException if the devNo is &lt; 0.
 	 * @since 1.4
 	 */
@@ -759,9 +759,9 @@ public class TarArchiveEntry {
 	}
 
 	/**
-	 * Get this entry's minor device number.
+	 * Get this entry is minor device number.
 	 *
-	 * @return This entry's minor device number.
+	 * @return This entry is minor device number.
 	 * @since 1.4
 	 */
 	public int getDevMinor() {
@@ -769,9 +769,9 @@ public class TarArchiveEntry {
 	}
 
 	/**
-	 * Set this entry's minor device number.
+	 * Set this entry is minor device number.
 	 *
-	 * @param devNo This entry's minor device number.
+	 * @param devNo This entry is minor device number.
 	 * @throws IllegalArgumentException if the devNo is &lt; 0.
 	 * @since 1.4
 	 */
@@ -793,9 +793,9 @@ public class TarArchiveEntry {
 	}
 
 	/**
-	 * Get this entry's real file size in case of a sparse file.
+	 * Get this entry is real file size in case of a sparse file.
 	 *
-	 * @return This entry's real file size.
+	 * @return This entry is real file size.
 	 */
 	public long getRealSize() {
 		return realSize;
@@ -1108,14 +1108,14 @@ public class TarArchiveEntry {
 
 	/**
 	 * If this entry represents a file, and the file is a directory, return an array
-	 * of TarEntries for this entry's children.
+	 * of TarEntries for this entry is children.
 	 *
 	 * <p>
 	 * This method is only useful for entries created from a {@code
 	 * File} but not for entries read from an archive.
 	 * </p>
 	 *
-	 * @return An array of TarEntry's for this entry's children.
+	 * @return An array of Tarentry is for this entry is children.
 	 */
 	public TarArchiveEntry[] getDirectoryEntries() {
 		if (file == null || !file.isDirectory()) {
@@ -1136,7 +1136,7 @@ public class TarArchiveEntry {
 	}
 
 	/**
-	 * Write an entry's header information to a header buffer.
+	 * Write an entry is header information to a header buffer.
 	 *
 	 * <p>
 	 * This method does not use the star/GNU tar/BSD tar extensions.
@@ -1158,12 +1158,12 @@ public class TarArchiveEntry {
 	}
 
 	/**
-	 * Write an entry's header information to a header buffer.
+	 * Write an entry is header information to a header buffer.
 	 *
 	 * @param outbuf   The tar entry header buffer to fill in.
 	 * @param encoding encoding to use when writing the file name.
 	 * @param starMode whether to use the star/GNU tar/BSD tar extension for numeric
-	 *                 fields if their value doesn't fit in the maximum size of
+	 *                 fields if their value does not fit in the maximum size of
 	 *                 standard tar archives
 	 * @since 1.4
 	 * @throws IOException on error
@@ -1205,7 +1205,7 @@ public class TarArchiveEntry {
 	private int writeEntryHeaderField(long value, byte[] outbuf, final int offset, final int length,
 			final boolean starMode) {
 		if (!starMode && (value < 0 || value >= 1L << 3 * (length - 1))) {
-			// value doesn't fit into field when written as octal
+			// value does not fit into field when written as octal
 			// number, will be written to PAX header or causes an
 			// error
 			return TarUtils.formatLongOctalBytes(0, outbuf, offset, length);
@@ -1214,7 +1214,7 @@ public class TarArchiveEntry {
 	}
 
 	/**
-	 * Parse an entry's header information from a header buffer.
+	 * Parse an entry is header information from a header buffer.
 	 *
 	 * @param header The tar entry header buffer to get information from.
 	 * @throws IllegalArgumentException if any of the numeric fields have an invalid
@@ -1234,7 +1234,7 @@ public class TarArchiveEntry {
 	}
 
 	/**
-	 * Parse an entry's header information from a header buffer.
+	 * Parse an entry is header information from a header buffer.
 	 *
 	 * @param header   The tar entry header buffer to get information from.
 	 * @param encoding encoding to use for file names
@@ -1328,7 +1328,7 @@ public class TarArchiveEntry {
 	}
 
 	/**
-	 * Strips Windows' drive letter as well as any leading slashes, turns path
+	 * Strips Windows drive letter as well as any leading slashes, turns path
 	 * separators into forward slahes.
 	 * 
 	 * @param fileName             FileName
@@ -1342,7 +1342,7 @@ public class TarArchiveEntry {
 			if (osname != null) {
 
 				// Strip off drive letters!
-				// REVIEW Would a better check be "(File.separator == '\')"?
+				// REVIEW Would a better check be "(File.separator == \\)"?
 
 				if (osname.startsWith("windows")) {
 					if (fileName.length() > 2) {
@@ -1366,7 +1366,7 @@ public class TarArchiveEntry {
 
 		// No absolute pathnames
 		// Windows (and Posix?) paths can start with "\\NetworkDrive\",
-		// so we loop on starting /'s.
+		// so we loop on starting / s.
 		while (!preserveAbsolutePath && fileName.startsWith("/")) {
 			fileName = fileName.substring(1);
 		}
@@ -1374,7 +1374,7 @@ public class TarArchiveEntry {
 	}
 
 	/**
-	 * Evaluate an entry's header format from a header buffer.
+	 * Evaluate an entry is header format from a header buffer.
 	 *
 	 * @param header The tar entry header buffer to evaluate the format for.
 	 * @return format type

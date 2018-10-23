@@ -407,6 +407,9 @@ public class ByteBuffer extends BufferedBuffer {
 	}
 
 	public static ByteBuffer allocate(int len) {
+		if (len < 1) {
+			return null;
+		}
 		ByteBuffer bytesBuffer = new ByteBuffer();
 		bytesBuffer.withBufferLength(len);
 		return bytesBuffer;

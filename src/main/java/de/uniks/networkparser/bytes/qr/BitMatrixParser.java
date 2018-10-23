@@ -41,7 +41,7 @@ final class BitMatrixParser {
 	 * Reads format information from one of its two locations within the QR Code.
 	 * </p>
 	 *
-	 * @return {@link FormatInformation} encapsulating the QR Code's format info
+	 * @return {@link FormatInformation} encapsulating the QR Code is format info
 	 */
 	FormatInformation readFormatInformation() {
 		if (parsedFormatInfo != null) {
@@ -85,7 +85,7 @@ final class BitMatrixParser {
 	 * Reads version information from one of its two locations within the QR Code.
 	 * </p>
 	 *
-	 * @return {@link Version} encapsulating the QR Code's version the valid
+	 * @return {@link Version} encapsulating the QR Code is version the valid
 	 *         encoding of version information
 	 */
 	Version readVersion() {
@@ -178,7 +178,7 @@ final class BitMatrixParser {
 						if (bitMatrix.get(j - col, i)) {
 							currentByte |= 1;
 						}
-						// If we've made a whole byte, save it off
+						// If we have made a whole byte, save it off
 						if (bitsRead == 8) {
 							result[resultOffset++] = (byte) currentByte;
 							bitsRead = 0;

@@ -92,7 +92,7 @@ public class ByteList extends SimpleList<ByteItem> implements ByteItem {
 	@Override
 	public ByteBuffer getBytes(boolean isDynamic) {
 		int len = calcLength(isDynamic, true);
-		ByteBuffer buffer = EntityUtil.getBuffer(len);
+		ByteBuffer buffer = ByteBuffer.allocate(len);
 		writeBytes(buffer, isDynamic, true, isPrimitive(isDynamic));
 		buffer.flip(true);
 		return buffer;

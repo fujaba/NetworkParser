@@ -222,7 +222,7 @@ public class ByteEntity implements ByteItem {
 	@Override
 	public ByteBuffer getBytes(boolean isDynamic) {
 		int len = calcLength(isDynamic, true);
-		ByteBuffer buffer = EntityUtil.getBuffer(len);
+		ByteBuffer buffer = ByteBuffer.allocate(len);
 		writeBytes(buffer, isDynamic, true, false);
 		buffer.flip(true);
 		return buffer;

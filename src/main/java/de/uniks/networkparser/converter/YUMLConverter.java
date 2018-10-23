@@ -31,6 +31,7 @@ import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.GraphEntity;
 import de.uniks.networkparser.graph.GraphList;
 import de.uniks.networkparser.graph.GraphMember;
+import de.uniks.networkparser.graph.GraphModel;
 import de.uniks.networkparser.graph.GraphSimpleSet;
 import de.uniks.networkparser.graph.GraphTokener;
 import de.uniks.networkparser.graph.GraphUtil;
@@ -44,13 +45,18 @@ public class YUMLConverter implements Converter {
 	public static final String URL = "http://yuml.me/diagram/class/";
 	public boolean defaultShowPackage;
 
-	public String convert(GraphList root, boolean removePackage) {
-		String type = root.getType();
+	public String convert(GraphModel root, boolean removePackage) {
+		String type = GraphTokener.CLASSDIAGRAM;
+		if(root instanceof GraphList) {
+			type = ((GraphList) root).getType();
+		}
 		GraphSimpleSet collection = GraphUtil.getChildren(root);
 		if (collection.size() > 0) {
 			StringBuilder sb = new StringBuilder();
 			SimpleList<GraphMember> visitedObj = new SimpleList<GraphMember>();
-			root.initSubLinks();
+			if(root instanceof GraphList) {
+				((GraphList) root).initSubLinks();
+			}
 			for (GraphMember item : collection) {
 				parse(type, item, sb, visitedObj, removePackage);
 			}
@@ -196,8 +202,8 @@ public class YUMLConverter implements Converter {
 
 	@Override
 	public String encode(BaseItem entity) {
-		if (entity instanceof GraphList) {
-			return convert((GraphList) entity, defaultShowPackage);
+		if (entity instanceof GraphModel) {
+			return convert((GraphModel) entity, defaultShowPackage);
 		}
 		return null;
 	}

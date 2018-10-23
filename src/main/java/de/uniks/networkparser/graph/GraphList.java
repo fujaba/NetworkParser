@@ -35,11 +35,6 @@ public class GraphList extends GraphModel {
 	private String style;
 	private GraphOptions options;
 
-	@Override
-	public String toString() {
-		return toString(new YUMLConverter());
-	}
-
 	public String toString(boolean removePackage) {
 		YUMLConverter converter = new YUMLConverter();
 		converter.defaultShowPackage = removePackage;
