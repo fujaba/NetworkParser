@@ -7,6 +7,7 @@ import de.uniks.networkparser.ext.io.FileBuffer;
 import de.uniks.networkparser.graph.Association;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.ClazzSet;
+import de.uniks.networkparser.graph.GraphMetric;
 import de.uniks.networkparser.graph.Method;
 import de.uniks.networkparser.graph.MethodSet;
 import de.uniks.networkparser.graph.Modifier;
@@ -206,5 +207,108 @@ public class FileClassModel extends ClassModel {
 
 	public SimpleSet<ParserEntity> getErros() {
 		return error;
+	}
+	
+	
+	public int analyseMcCabe(Object item) {
+		String methodBody = null;
+		Method owner = null;
+		if(item instanceof Method) {
+			owner = (Method) item;
+			methodBody = owner.getBody();
+			methodBody = methodBody.toLowerCase();
+			methodBody = methodBody.replace("\n", "");
+			methodBody = methodBody.replaceAll("\t", "");
+			methodBody = methodBody.replaceAll(" ", "");
+			methodBody = methodBody.replace('<', '(');
+			methodBody = methodBody.replace('>', ')');
+		}else if(item instanceof String) {
+			methodBody = (String)item;
+		}
+		int mcCabe = 1;
+		if(methodBody != null) {
+			mcCabe += check(methodBody, "if(");
+			mcCabe += check(methodBody, "do{");
+			mcCabe += check(methodBody, "while(");
+			mcCabe += check(methodBody, "&&");
+			if(owner != null) {
+				GraphMetric metric = GraphMetric.create(owner);
+				metric.withMcCabe(mcCabe);
+			}
+		}
+		return mcCabe;
+	}
+
+	private int check(String body, String search) {
+		int mcCabe=0;
+		int index=0;
+		while(index>=0) {
+			index = body.indexOf(search, index);
+			if (index == -1) {
+				break;
+			}
+			if (checkQuotes(body, index)) {
+				mcCabe++;
+				index += 1;
+			} else {
+				index += 1;
+			}
+		}
+		return mcCabe;
+	}
+
+	public boolean checkQuotes(String allText, int index) {
+		int quote = 0;
+		for (int i = 0; i < index; i++) {
+			char nextChar = allText.charAt(i);
+			if (nextChar == '\"')
+				quote++;
+		}
+
+		if (quote % 2 == 0) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	public GraphMetric analyseLoC(Object item) {
+		String methodBody = null;
+		Method owner = null;
+		if(item instanceof Method) {
+			owner = (Method) item;
+			methodBody = owner.getBody();
+		}else if(item instanceof String) {
+			methodBody = (String) item;
+		}
+		GraphMetric metric = GraphMetric.create(owner);
+		if(methodBody == null) {
+			return metric;
+		}
+		int emptyLine = 0, commentCount = 0, methodheader = 0,annotation = 0, linesOfCode = 0;
+		String[] lines = methodBody.split("\n");
+		for (String line : lines) {
+			String simple = line.trim();
+			if (simple.length() < 1) {
+				emptyLine++;
+				continue;
+			}
+			if (simple.indexOf("/*") >= 0 || simple.indexOf("*/") >= 0 || simple.indexOf("//") >= 0
+					|| simple.startsWith("*")) {
+				commentCount++;
+				continue;
+			}
+			if ("{}".indexOf(simple) >= 0) {
+				methodheader++;
+				continue;
+			}
+			if (simple.startsWith("@")) {
+				annotation++;
+				continue;
+			}
+			linesOfCode++;
+		}
+		metric.withLoc(emptyLine, commentCount, methodheader, annotation, linesOfCode);
+		return metric;
 	}
 }

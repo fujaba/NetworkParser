@@ -460,7 +460,7 @@ public class ParserEntity {
 
 	public SymTabEntry startNextSymTab(String type, String name) {
 		SymTabEntry nextEntity = startNextSymTab(type);
-		nextEntity.withValue(name);
+		nextEntity.withName(name);
 		return nextEntity;
 	}
 
@@ -1275,7 +1275,7 @@ public class ParserEntity {
 		// include arrays
 		type = type.replace("[]", "");
 
-		String attrName = symTabEntry.getValue();
+		String attrName = symTabEntry.getName();
 		if (EntityUtil.isPrimitiveType(type)) {
 			if (!classContainsAttribut(attrName, symTabEntry.getType())) {
 				this.getClazz().withAttribute(attrName, DataType.create(symTabEntry.getDataType()));
@@ -1300,7 +1300,7 @@ public class ParserEntity {
 		if (model == null) {
 			return;
 		}
-		String memberName = symTabEntry.getValue();
+		String memberName = symTabEntry.getName();
 		String partnerTypeName = symTabEntry.getDataType();
 		// String partnerTypeName = symTabEntry.getType();
 
@@ -1332,7 +1332,7 @@ public class ParserEntity {
 		SymTabEntry addToSymTabEntry = null;
 
 		for (SymTabEntry entry : symbolTab.get(SymTabEntry.TYPE_METHOD)) {
-			String methodName = entry.getValue() + entry.getParams();
+			String methodName = entry.getName() + entry.getParams();
 			if (methodName.equals(setterPrefix + name + "(" + partnerClassName + ")")
 					|| methodName.equals(setterPrefix + name + "(" + partnerClassName + "...)")) {
 				addToSymTabEntry = entry;
@@ -1358,7 +1358,7 @@ public class ParserEntity {
 
 		boolean done = false;
 		for (SymTabEntry qualifiedEntry : methodBodyQualifiedNames) {
-			String qualifiedName = qualifiedEntry.getValue();
+			String qualifiedName = qualifiedEntry.getName();
 			if (qualifiedName.startsWith("value.set")) {
 
 				// handleAssoc(memberName, card, partnerClassName, partnerClass,
@@ -1386,7 +1386,7 @@ public class ParserEntity {
 			for (SymTabEntry qualifiedEntry : methodBodyQualifiedNames) {
 				String methodBody = this.code.getContent().toString().substring(qualifiedEntry.getStartPos(),
 						qualifiedEntry.getEndPos());
-				if (card == Association.ONE && qualifiedEntry.getValue().startsWith("set")) {
+				if (card == Association.ONE && qualifiedEntry.getName().startsWith("set")) {
 					if (methodBody.contains("oldValue.without")) {
 						potentialCode = methodBody.substring(methodBody.indexOf("oldValue.without") + 16);
 						srcCardinality = Association.MANY;
@@ -1400,7 +1400,7 @@ public class ParserEntity {
 						found = true;
 						break;
 					}
-				} else if (card == Association.MANY && qualifiedEntry.getValue().startsWith("with")) {
+				} else if (card == Association.MANY && qualifiedEntry.getName().startsWith("with")) {
 					if (methodBody.contains("item.with")) {
 						potentialCode = methodBody.substring(methodBody.indexOf("item.with") + 9);
 						srcCardinality = Association.MANY;
@@ -1496,7 +1496,7 @@ public class ParserEntity {
 	private void addMemberAsMethod(SymTabEntry symTabEntry,
 			SimpleKeyValueList<String, SimpleList<SymTabEntry>> symTab) {
 		String fullSignature = symTabEntry.getType();
-		String signature = symTabEntry.getValue();
+		String signature = symTabEntry.getName();
 
 		// filter internal generated methods
 		if (SymTabEntry.TYPE_METHOD.equals(fullSignature) == false) {
@@ -1587,8 +1587,7 @@ public class ParserEntity {
 
 			// is class attribute
 			for (SymTabEntry entry : attributes) {
-				String attrName = entry.getValue();
-//				String signName = entry.getValue();
+				String attrName = entry.getName();
 				if (methodName.toLowerCase().endsWith(attrName.toLowerCase())) {
 					return true;
 				}
@@ -1612,8 +1611,7 @@ public class ParserEntity {
 
 			// is class attribute
 			for (SymTabEntry entry : assoc) {
-				String attrName = entry.getValue();
-//				String signName = entry.getValue();
+				String attrName = entry.getName();
 				if (methodName.toLowerCase().endsWith(attrName.toLowerCase())) {
 					return true;
 				}

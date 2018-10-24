@@ -232,7 +232,7 @@ public class TemplateResultFile extends SortedSet<TemplateResultFragment>
 		// TODO DONT ADD CORRECTLY ADD
 		// ADD CODE
 		// Check for Existing
-		if (code != null && isMetaModell()) {
+		if (code != null && code.size()>0 && isMetaModell()) {
 			CharacterBuffer sb = new CharacterBuffer();
 			sb.with(code.getContent().toString());
 //			buffer = code.getContent();

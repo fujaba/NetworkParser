@@ -59,6 +59,9 @@ public class SourceCode extends GraphMember {
 	}
 
 	public CharacterBuffer getContent() {
+		if(content == null) {
+			this.content = new CharacterBuffer();
+		}
 		return content;
 	}
 
@@ -88,7 +91,7 @@ public class SourceCode extends GraphMember {
 		SimpleList<SymTabEntry> list = keys.get(type.toLowerCase());
 		if (list != null) {
 			for (SymTabEntry entry : list) {
-				if (name.equals(entry.getValue())) {
+				if (name.equals(entry.getName())) {
 					return entry;
 				}
 			}
@@ -195,7 +198,7 @@ public class SourceCode extends GraphMember {
 
 	@Override
 	public String toString() {
-		return content.toString();
+		return getContent().toString();
 	}
 
 	public SourceCode withEndBody(int value) {

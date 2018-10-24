@@ -123,7 +123,7 @@ public class PersonSet extends SimpleSet<Person> implements SendableEntityCreato
 	public PersonSet filterAge(int minValue, int maxValue) {
 		PersonSet result = new PersonSet();
 		for(Person obj : this) {
-			if (minValue <= obj.getAge() && maxValue >= obj.getAge()) {
+			if (	minValue <= obj.getAge() && maxValue >= obj.getAge()) {
 				result.add(obj);
 			}
 		}

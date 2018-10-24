@@ -1,5 +1,6 @@
 package de.uniks.networkparser.simple.modelA;
 
+
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import de.uniks.networkparser.list.SimpleKeyValueList;

@@ -2,6 +2,7 @@ package de.uniks.networkparser.parser;
 
 import java.util.ArrayList;
 
+import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.graph.SourceCode;
 
 /*
@@ -76,6 +77,8 @@ public class SymTabEntry {
 	private SourceCode parent;
 	private String body;
 
+	private String name;
+
 	public SymTabEntry withParent(SourceCode parent) {
 		this.parent = parent;
 		return this;
@@ -107,6 +110,11 @@ public class SymTabEntry {
 
 	public SymTabEntry withValue(String value) {
 		setValue(value);
+		return this;
+	}
+	
+	public SymTabEntry withName(String value) {
+		this.name = value;
 		return this;
 	}
 
@@ -166,13 +174,13 @@ public class SymTabEntry {
 	}
 
 	public String toString() {
-		StringBuilder sb = new StringBuilder();
+		CharacterBuffer sb = new CharacterBuffer();
 		toString(sb);
 		return sb.toString();
 	}
 
-	public void toString(StringBuilder sb) {
-		sb.append(this.value);
+	public void toString(CharacterBuffer sb) {
+		sb.with(this.name);
 		if (this.next != null) {
 			this.next.toString(sb);
 		}
@@ -292,5 +300,9 @@ public class SymTabEntry {
 
 	public void writeBody(String value) {
 		this.parent.replaceAll(this.bodyStartPos + 1, value);
+	}
+
+	public String getName() {
+		return name;
 	}
 }

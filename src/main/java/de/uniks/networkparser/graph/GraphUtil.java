@@ -81,7 +81,7 @@ public class GraphUtil {
 		return null;
 	}
 
-	public static final boolean setChildren(GraphMember member, GraphMember child) {
+	public static final boolean withChildren(GraphMember member, GraphMember child) {
 		if (member != null) {
 			member.withChildren(child);
 			return true;
