@@ -24,6 +24,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 import de.uniks.networkparser.buffer.CharacterBuffer;
+import de.uniks.networkparser.graph.GraphMember;
 import de.uniks.networkparser.interfaces.LocalisationInterface;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.ParserCondition;
@@ -31,10 +32,36 @@ import de.uniks.networkparser.interfaces.TemplateParser;
 import de.uniks.networkparser.list.SimpleList;
 
 public class StringCondition implements ParserCondition {
+	public static final String EQUALS="equals";
+	public static final String EQUALSIGNORECASE="equalsignoreCase";
+	public static final String CONTAINS="contains";
+
+	private String attribute;
+	private String type;
 	private CharSequence value;
 
 	@Override
 	public boolean update(Object value) {
+		if(type != null) {
+			Object itemValue = null;
+			if (value instanceof GraphMember) {
+				itemValue = ((GraphMember) value).getValue(attribute);
+			}
+//			}else if(itemValue instanceof String) {
+			if (value == null) {
+				return itemValue == null;
+			}
+			if (itemValue instanceof String) {
+				if (this.type == EQUALS) {
+					return itemValue.equals(value);
+				} else if (this.type == EQUALSIGNORECASE) {
+					return ((String) itemValue).equalsIgnoreCase(""+value);
+				} else if (this.type == CONTAINS) {
+					return ((String) itemValue).contains(""+value);
+				}
+			}
+			return false;
+		}
 		if (value instanceof ObjectCondition) {
 			return ((ObjectCondition) value).update(this);
 		}
@@ -116,6 +143,10 @@ public class StringCondition implements ParserCondition {
 
 	@Override
 	public String toString() {
+		if(attribute != null) {
+			return attribute;
+			
+		}
 		if (value == null) {
 			return "";
 		}
@@ -125,5 +156,32 @@ public class StringCondition implements ParserCondition {
 	@Override
 	public StringCondition getSendableInstance(boolean prototyp) {
 		return new StringCondition();
+	}
+
+	public StringCondition withFilter(String attribute, String value, String type) {
+		this.value = value;
+		this.attribute = attribute;
+		this.type = type;
+		return this;
+	}
+
+	public static StringCondition createEquals(String attribute, String value) {
+		return new StringCondition().withFilter(attribute, value, EQUALS);
+	}
+
+	public static StringCondition createEqualsIgnoreCase(String attribute, String value) {
+		return new StringCondition().withFilter(attribute, value, EQUALSIGNORECASE);
+	}
+
+	public static StringCondition createContains(String attribute, String value) {
+		return new StringCondition().withFilter(attribute, value, CONTAINS);
+	}
+
+	public StringCondition clone(String otherValue) {
+		return new StringCondition().withFilter(attribute, otherValue, this.type);
+	}
+	
+	public static ObjectCondition Not(ObjectCondition condition) {
+		return Not.create(condition);
 	}
 }

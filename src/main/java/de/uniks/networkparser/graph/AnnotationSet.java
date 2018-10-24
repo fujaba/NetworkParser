@@ -1,6 +1,7 @@
 package de.uniks.networkparser.graph;
 
 import de.uniks.networkparser.list.SimpleSet;
+import de.uniks.networkparser.logic.StringCondition;
 
 public class AnnotationSet extends SimpleSet<Annotation> {
 	public MethodSet getMethods() {
@@ -28,6 +29,6 @@ public class AnnotationSet extends SimpleSet<Annotation> {
 	}
 
 	public AnnotationSet hasName(String otherValue) {
-		return filter(Annotation.NAME.equals(otherValue));
+		return filter(StringCondition.createEquals(Annotation.PROPERTY_NAME, otherValue));
 	}
 }

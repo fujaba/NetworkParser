@@ -1,6 +1,7 @@
 package de.uniks.networkparser.graph;
 
 import de.uniks.networkparser.list.SimpleSet;
+import de.uniks.networkparser.logic.StringCondition;
 
 public class MethodSet extends SimpleSet<Method> {
 	public MethodSet() {
@@ -39,8 +40,8 @@ public class MethodSet extends SimpleSet<Method> {
 		return collection;
 	}
 
-	public DateTypeSet getReturnTypes() {
-		DateTypeSet collection = new DateTypeSet();
+	public SimpleSet<DataType> getReturnTypes() {
+		SimpleSet<DataType> collection = new SimpleSet<DataType>();
 		for (Method item : this) {
 			collection.add(item.getReturnType());
 		}
@@ -48,6 +49,6 @@ public class MethodSet extends SimpleSet<Method> {
 	}
 
 	public MethodSet hasName(String otherValue) {
-		return filter(Method.NAME.equals(otherValue));
+		return filter(StringCondition.createEquals(Method.PROPERTY_NAME, otherValue));
 	}
 }

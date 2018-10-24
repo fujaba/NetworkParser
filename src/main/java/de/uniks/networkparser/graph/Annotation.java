@@ -32,8 +32,6 @@ permissions and limitations under the Licence.
  *
  */
 public class Annotation extends GraphMember {
-	public static final StringFilter<Annotation> NAME = new StringFilter<Annotation>(GraphMember.PROPERTY_NAME);
-
 	// ==========================================================================
 	public static final Annotation DEPRECATED = new Annotation("Deprecated");
 

@@ -12,6 +12,7 @@ import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.UpdateCondition;
 import de.uniks.networkparser.buffer.CharacterBuffer;
+import de.uniks.networkparser.ext.FileClassModel;
 import de.uniks.networkparser.ext.generic.GenericCreator;
 import de.uniks.networkparser.ext.generic.SimpleParser;
 import de.uniks.networkparser.ext.io.FileBuffer;
@@ -284,5 +285,17 @@ public class ModelTest implements ObjectCondition {
 		appleSet.add(empty);
 		appleSet.add(apple);
 		Assert.assertEquals(2, appleSet.size());
+	}
+	
+	@Test
+	public void testTest() {
+		FileClassModel model = new FileClassModel("de.uniks.networkparser");
+//		model.readFiles("src/main/java/");
+//		model.createParserEntity(new File("src/main/java/de/uniks/networkparser/ext/io/TarArchiveEntry.java"), new DebugCondition());
+
+		model.analyseBounds(null);
+		if(model.getErros().size()>0) {
+			System.out.println("ERROR: "+model.getErros().size());
+		}
 	}
 }

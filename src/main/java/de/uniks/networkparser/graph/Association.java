@@ -27,8 +27,6 @@ import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.list.SimpleSet;
 
 public class Association extends GraphMember {
-	public static final StringFilter<Association> NAME = new StringFilter<Association>(GraphMember.PROPERTY_NAME);
-
 	public static final String PROPERTY_NODE = "node";
 	public static final String PROPERTY_CARDINALITY = "cardinality";
 	public static final String PROPERTY_PROPERTY = "property";

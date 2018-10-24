@@ -55,6 +55,7 @@ import de.uniks.networkparser.json.JsonArray;
 import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.logic.BooleanCondition;
+import de.uniks.networkparser.logic.StringCondition;
 import de.uniks.networkparser.parser.TemplateResultFragment;
 import de.uniks.networkparser.test.model.Apple;
 import de.uniks.networkparser.test.model.AppleTree;
@@ -327,7 +328,7 @@ public class GraphTest {
 			}
 		}
 
-		AttributeSet filterAttributesA = clazz.getAttributes().filter(Attribute.NAME.equals("name"));
+		AttributeSet filterAttributesA = clazz.getAttributes().filter(StringCondition.createEquals(Attribute.PROPERTY_NAME, "name"));
 		for (Attribute attribute : filterAttributesA) {
 			if (output != null) {
 				output.println("Equals: " + attribute.getName());
@@ -341,7 +342,7 @@ public class GraphTest {
 			}
 		}
 
-		AttributeSet filterAttributesC = clazz.getAttributes().filter(Attribute.NAME.not("name"))
+		AttributeSet filterAttributesC = clazz.getAttributes().filter(StringCondition.Not(StringCondition.createEquals(Attribute.PROPERTY_NAME, "name")))
 				.filter(new Condition<Attribute>() {
 					@Override
 					public boolean update(Attribute value) {

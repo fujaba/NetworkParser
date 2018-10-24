@@ -1,6 +1,7 @@
 package de.uniks.networkparser.parser;
 
 import de.uniks.networkparser.graph.Method;
+import de.uniks.networkparser.interfaces.ObjectCondition;
 
 /*
 The MIT License
@@ -26,7 +27,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-public class McCabe {
+public class McCabe implements ObjectCondition {
 	private int mcCabe = 1;
 
 	public void finish(Method item) {
@@ -117,5 +118,14 @@ public class McCabe {
 
 	public int getMcCabe() {
 		return mcCabe;
+	}
+
+	@Override
+	public boolean update(Object value) {
+		if(value instanceof String) {
+			evaluate((String) value);
+			return true;
+		}
+		return false;
 	}
 }

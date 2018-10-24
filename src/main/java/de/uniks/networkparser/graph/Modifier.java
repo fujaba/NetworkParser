@@ -32,8 +32,6 @@ THE SOFTWARE.
  */
 
 public class Modifier extends GraphMember {
-	public static final StringFilter<Modifier> NAME = new StringFilter<Modifier>(GraphMember.PROPERTY_NAME);
-
 	public static final Modifier PUBLIC = new Modifier("public");
 	public static final Modifier PACKAGE = new Modifier("");
 	public static final Modifier PROTECTED = new Modifier("protected");

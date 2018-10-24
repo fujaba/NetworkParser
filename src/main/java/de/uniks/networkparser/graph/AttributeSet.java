@@ -1,6 +1,7 @@
 package de.uniks.networkparser.graph;
 
 import de.uniks.networkparser.list.SimpleSet;
+import de.uniks.networkparser.logic.StringCondition;
 
 public class AttributeSet extends SimpleSet<Attribute> {
 	public AttributeSet() {
@@ -31,8 +32,8 @@ public class AttributeSet extends SimpleSet<Attribute> {
 		return collection;
 	}
 
-	public DateTypeSet getDataTypes() {
-		DateTypeSet collection = new DateTypeSet();
+	public SimpleSet<DataType> getDataTypes() {
+		SimpleSet<DataType> collection = new SimpleSet<DataType>();
 		for (Attribute item : this) {
 			collection.add(item.getType());
 		}
@@ -40,7 +41,7 @@ public class AttributeSet extends SimpleSet<Attribute> {
 	}
 
 	public AttributeSet hasName(String otherValue) {
-		return filter(Attribute.NAME.equals(otherValue));
+		return filter(StringCondition.createEquals(Attribute.PROPERTY_NAME, otherValue));
 	}
 
 	@Override

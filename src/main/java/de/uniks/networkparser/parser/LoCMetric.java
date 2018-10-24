@@ -2,6 +2,7 @@ package de.uniks.networkparser.parser;
 
 import de.uniks.networkparser.graph.Method;
 import de.uniks.networkparser.interfaces.BaseItem;
+import de.uniks.networkparser.interfaces.ObjectCondition;
 
 /*
 The MIT License
@@ -27,7 +28,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-public class LoCMetric {
+public class LoCMetric implements ObjectCondition {
 	private int linesOfCode = 0;
 	private int commentCount = 0;
 	private int methodheader = 0;
@@ -86,5 +87,14 @@ public class LoCMetric {
 
 	public int getFullLines() {
 		return (linesOfCode + commentCount + methodheader + emptyLine + annotation);
+	}
+
+	@Override
+	public boolean update(Object value) {
+		if(value instanceof Method) {
+			finish((Method) value);
+			return true;
+		}
+		return false;
 	}
 }

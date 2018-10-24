@@ -343,7 +343,8 @@ public class ModelGenerator extends Template {
 		if (content != null) {
 			ParserEntity parser = new ParserEntity();
 			try {
-				parser.parse(content, (Clazz) entity.getMember(), fileName);
+				parser.withFile(fileName, (Clazz) entity.getMember());
+				parser.parse(content);
 				return parser;
 			} catch (Exception e) {
 				e.printStackTrace();

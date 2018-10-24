@@ -24,8 +24,6 @@ THE SOFTWARE.
 */
 
 public class Parameter extends Value {
-	public static final StringFilter<Parameter> NAME = new StringFilter<Parameter>(GraphMember.PROPERTY_NAME);
-
 	Parameter() {
 
 	}

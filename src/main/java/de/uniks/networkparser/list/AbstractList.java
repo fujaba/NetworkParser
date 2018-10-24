@@ -188,7 +188,7 @@ public abstract class AbstractList<V> extends AbstractArray<V> implements Iterab
 	}
 
 	@SuppressWarnings("unchecked")
-	public <ST extends AbstractList<V>> ST filter(Condition<V> newValue) {
+	public <ST extends AbstractList<V>> ST filter(Condition<?> newValue) {
 		ST filterList = (ST) getNewList(false);
 		filterItems(filterList, newValue);
 		return filterList;

@@ -71,14 +71,12 @@ public class ParserEntity {
 	public static final String DEBUG="DEBUG";
 
 	private ObjectCondition update;
-	private Clazz file;
 	public Token lookAheadToken = new Token();
 	public Token previousToken = new Token();
 	public Token currentToken = new Token();
 
 	public SymTabEntry symTabEntry;
 	private SourceCode code;
-	public boolean isValid = true;
 
 	/* FIXME REMOVE */
 	public char currentChar;
@@ -87,7 +85,6 @@ public class ParserEntity {
 	public int lookAheadIndex = -1;
 	public int parsePos;
 
-
 	public ParserEntity withCondition(ObjectCondition update) {
 		if(update != null) {
 			this.update = update;
@@ -95,23 +92,53 @@ public class ParserEntity {
 		return this;
 	}
 	
+	public ParserEntity withFile(String fileName) {
+		this.code = new SourceCode();
+		this.code.withFileName(fileName);
+		if(fileName.indexOf('.')>0) {
+			fileName = fileName.substring(fileName.lastIndexOf('.')+1);
+		}
+		Clazz clazz = new Clazz(fileName);
+		this.code.with(clazz);
+		return this;
+	}
+
+	public ParserEntity withFile(String fileName, Clazz clazz) {
+		this.code = new SourceCode();
+		this.code.withFileName(fileName);
+		this.code.with(clazz);
+		return this;
+	}
+
+	public String getFileName() {
+		if(code != null) {
+			return code.getFileName();
+		}
+		return null;
+	}
+	
+	public Clazz getClazz() {
+		if(code != null) {
+			return this.code.getClazz();
+		}
+		return null;
+	}
+
 	public static Clazz create(CharacterBuffer content) {
 		ParserEntity parser = new ParserEntity();
 		return parser.parse(content);
 	}
 
 	public Clazz parse(CharacterBuffer sequence) {
-		return parse(sequence, new Clazz(""), "");
-	}
-
-	public Clazz parse(CharacterBuffer sequence, Clazz file, String fileName) {
-		if (sequence == null || sequence.length() < 1) {
-			return file;
+		if(this.code == null) {
+			// FIX IT
+			this.code = new SourceCode();
+			this.code.with(new Clazz(""));
 		}
-		this.file = file;
-		this.code = new SourceCode().withContent(sequence);
-		this.code.withFileName(fileName);
-		this.code.with(this.file);
+		if (sequence == null || sequence.length() < 1 || this.code == null) {
+			return getClazz();
+		}
+		this.code.withContent(sequence);
 
 		nextChar();
 		nextChar();
@@ -147,7 +174,7 @@ public class ParserEntity {
 		
 
 		parseClassDecl();
-		return this.file;
+		return getClazz();
 	}
 
 	public String currentWord() {
@@ -578,7 +605,7 @@ public class ParserEntity {
 		skipNewLine();
 		return result;
 	}
-
+	
 	private void parseClassDecl() {
 //FIXME		int preCommentStartPos = currentToken.preCommentStartPos;
 //		int preCommentEndPos = currentToken.preCommentEndPos;
@@ -591,19 +618,19 @@ public class ParserEntity {
 			if (annotation != "") {
 				nextEntity = startNextSymTab(SymTabEntry.TYPE_ANNOTATION, annotation.substring(1));
 				nextEntity.withPosition(startPosAnnotations, endPosAnnotation);
-				this.file.with(Annotation.create(annotation));
+				getClazz().with(Annotation.create(annotation));
 			}
 		}
 
 		// modifiers class name classbody
 		int startPosClazz = currentToken.startPos;
-		file.with(Modifier.create(parseModifiers()));
+		getClazz().with(Modifier.create(parseModifiers()));
 
 		// class or interface or enum
 		String classTyp = parseClassType();
 		String className = currentWord();
-		file.with(className);
-		GraphUtil.setClazzType(file, GraphUtil.createType(classTyp));
+		this.code.getClazz().with(className);
+		GraphUtil.setClazzType(getClazz(), GraphUtil.createType(classTyp));
 		code.withEndOfClassName(currentToken.endPos);
 
 		nextEntity = startNextSymTab(classTyp, className);
@@ -801,9 +828,9 @@ public class ParserEntity {
 			// modifiers = parseModifiers();
 		}
 
-		if (currentTokenEquals(file.getName()) && lookAheadToken.kind == '(') {
+		if (currentTokenEquals(getClazz().getName()) && lookAheadToken.kind == '(') {
 			// constructor
-			skip(file.getName(), true);
+			skip(getClazz().getName(), true);
 
 			String params = parseFormalParamList();
 
@@ -816,7 +843,7 @@ public class ParserEntity {
 			skip('{', true, block);
 			parseBlock(block, '}');
 
-			SymTabEntry nextEntity = startNextSymTab(SymTabEntry.TYPE_CONSTRUCTOR, file.getName() + params);
+			SymTabEntry nextEntity = startNextSymTab(SymTabEntry.TYPE_CONSTRUCTOR, getClazz().getName() + params);
 			nextEntity.withPosition(startPos, previousToken.startPos);
 //			nextEntity.withComment(c)
 //FIXME			nextEntity.withPreComment(preCommentStartPos, preCommentEndPos);
@@ -905,7 +932,7 @@ public class ParserEntity {
 //FIXME				nextEntity.withPreComment(preCommentStartPos, preCommentEndPos);
 				nextEntity.withAnnotationsStart(annotationsStartPos);
 
-			} else if (ENUM.equals(file.getName())) {
+			} else if (ENUM.equals(getClazz().getName())) {
 				if (",".equalsIgnoreCase(memberName) || ";".equalsIgnoreCase(memberName)
 						|| !";".equals(type) && currentKindEquals(Token.EOF)) {
 					// String enumSignature = SDMLibParser.ENUMVALUE + ":" + type;
@@ -1152,7 +1179,7 @@ public class ParserEntity {
 				}
 			} else if (key.startsWith(SymTabEntry.TYPE_EXTENDS)) {
 				// add super classes
-				if (GraphUtil.isInterface(this.file)) {
+				if (GraphUtil.isInterface(this.getClazz())) {
 					for (SymTabEntry entry : entities) {
 						addMemberAsInterface(entry, symbolTab);
 					}
@@ -1169,19 +1196,19 @@ public class ParserEntity {
 
 	private void addMemberAsInterface(SymTabEntry memberName,
 			SimpleKeyValueList<String, SimpleList<SymTabEntry>> symbolTab) {
-		Clazz memberClass = findMemberClass(this.file, memberName, symbolTab);
+		Clazz memberClass = findMemberClass(this.getClazz(), memberName, symbolTab);
 
 		if (memberClass == null) {
 			return;
 		}
 		if (memberClass != null) {
 			// memberClass.withInterface(true);
-			this.file.withSuperClazz(memberClass);
+			this.getClazz().withSuperClazz(memberClass);
 		}
 	}
 
 	private Clazz findClassInModel(String name) {
-		GraphModel model = this.file.getClassModel();
+		GraphModel model = this.getClazz().getClassModel();
 		if (model == null) {
 			return null;
 		}
@@ -1209,7 +1236,7 @@ public class ParserEntity {
 				if (modelClass != null) {
 					return modelClass;
 				} else {
-					GraphModel model = this.file.getClassModel();
+					GraphModel model = this.getClazz().getClassModel();
 					if (model == null) {
 						return null;
 					}
@@ -1251,7 +1278,7 @@ public class ParserEntity {
 		String attrName = symTabEntry.getValue();
 		if (EntityUtil.isPrimitiveType(type)) {
 			if (!classContainsAttribut(attrName, symTabEntry.getType())) {
-				this.file.withAttribute(attrName, DataType.create(symTabEntry.getDataType()));
+				this.getClazz().withAttribute(attrName, DataType.create(symTabEntry.getDataType()));
 			}
 		} else {
 			// handle complex attributes
@@ -1260,7 +1287,7 @@ public class ParserEntity {
 	}
 
 	private boolean classContainsAttribut(String attrName, String type) {
-		for (Attribute attr : this.file.getAttributes()) {
+		for (Attribute attr : this.getClazz().getAttributes()) {
 			if (attrName.equals(attr.getName()) && type.equals(attr.getType()))
 				return true;
 		}
@@ -1269,7 +1296,7 @@ public class ParserEntity {
 
 	private void handleComplexAttr(String attrName, SymTabEntry symTabEntry,
 			SimpleKeyValueList<String, SimpleList<SymTabEntry>> symbolTab) {
-		GraphModel model = this.file.getClassModel();
+		GraphModel model = this.getClazz().getClassModel();
 		if (model == null) {
 			return;
 		}
@@ -1320,7 +1347,7 @@ public class ParserEntity {
 
 		// type is unknown
 		if (addToSymTabEntry == null) {
-			this.file.withAttribute(memberName, DataType.create(partnerTypeName));
+			this.getClazz().withAttribute(memberName, DataType.create(partnerTypeName));
 			return;
 		}
 
@@ -1393,7 +1420,7 @@ public class ParserEntity {
 			if (found) {
 				boolean foundAssoc = false;
 
-				for (Association association : this.file.getAssociations()) {
+				for (Association association : this.getClazz().getAssociations()) {
 					if (association.getName().equals(memberName)) {
 						continue;
 					}
@@ -1420,10 +1447,10 @@ public class ParserEntity {
 								potentialName.lastIndexOf("\""));
 					}
 
-					this.file.withBidirectional(partnerClass, memberName, card, srcRoleName, srcCardinality);
+					this.getClazz().withBidirectional(partnerClass, memberName, card, srcRoleName, srcCardinality);
 				}
 			} else {
-				this.file.withUniDirectional(partnerClass, memberName, card);
+				this.getClazz().withUniDirectional(partnerClass, memberName, card);
 			}
 		}
 	}
@@ -1507,7 +1534,7 @@ public class ParserEntity {
 
 			method = getMethod(method);
 
-			method.withParent(this.file);
+			method.withParent(this.getClazz());
 
 			if (!symTabEntry.getAnnotations().isEmpty()) {
 				method.with(new Annotation(symTabEntry.getAnnotations()));
@@ -1518,7 +1545,7 @@ public class ParserEntity {
 	}
 
 	private Method getMethod(Method search) {
-		MethodSet methods = this.file.getMethods();
+		MethodSet methods = this.getClazz().getMethods();
 		for (Method method : methods) {
 			if (method.toString().equals(search.toString())) {
 				return method;
@@ -1596,7 +1623,7 @@ public class ParserEntity {
 	}
 
 	private Method getMethod(String memberName) {
-		for (Method method : this.file.getMethods()) {
+		for (Method method : getClazz().getMethods()) {
 			if (method.getName(false, false).equals(memberName))
 				return method;
 		}
@@ -1604,7 +1631,7 @@ public class ParserEntity {
 	}
 
 	private Attribute getAttribtue(String memberName) {
-		for (Attribute attribute : this.file.getAttributes()) {
+		for (Attribute attribute : getClazz().getAttributes()) {
 			if (attribute.getName().equals(memberName)) {
 				return attribute;
 			}
@@ -1627,9 +1654,5 @@ public class ParserEntity {
 			return this.code.getSymbolEntries(type);
 		}
 		return null;
-	}
-
-	public Clazz getClazz() {
-		return this.file;
 	}
 }

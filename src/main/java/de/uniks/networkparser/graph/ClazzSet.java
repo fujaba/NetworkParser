@@ -2,6 +2,7 @@ package de.uniks.networkparser.graph;
 
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.list.SimpleSet;
+import de.uniks.networkparser.logic.StringCondition;
 
 public class ClazzSet extends SimpleSet<Clazz> {
 	public AttributeSet getAttributes() {
@@ -45,7 +46,7 @@ public class ClazzSet extends SimpleSet<Clazz> {
 	}
 
 	public ClazzSet hasName(String otherValue) {
-		return filter(Clazz.NAME.equals(otherValue));
+		return filter(StringCondition.createEquals(Clazz.PROPERTY_NAME, otherValue));
 	}
 
 	public String toString(String splitter) {

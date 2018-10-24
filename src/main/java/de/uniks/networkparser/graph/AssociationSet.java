@@ -1,6 +1,7 @@
 package de.uniks.networkparser.graph;
 
 import de.uniks.networkparser.list.SimpleSet;
+import de.uniks.networkparser.logic.StringCondition;
 
 public class AssociationSet extends SimpleSet<Association> {
 	public static final AssociationSet EMPTY_SET = new AssociationSet();
@@ -44,7 +45,7 @@ public class AssociationSet extends SimpleSet<Association> {
 	}
 
 	public AssociationSet hasName(String otherValue) {
-		return filter(Association.NAME.equals(otherValue));
+		return filter(StringCondition.createEquals(Association.PROPERTY_NAME, otherValue));
 	}
 
 	@Override

@@ -27,8 +27,6 @@ THE SOFTWARE.
 */
 
 public class Attribute extends Value {
-	public static final StringFilter<Attribute> NAME = new StringFilter<Attribute>(GraphMember.PROPERTY_NAME);
-
 	Attribute() {
 	}
 

@@ -1,6 +1,7 @@
 package de.uniks.networkparser.graph;
 
 import de.uniks.networkparser.list.SimpleSet;
+import de.uniks.networkparser.logic.StringCondition;
 
 public class ModifierSet extends SimpleSet<Modifier> {
 	public MethodSet getMethods() {
@@ -28,6 +29,6 @@ public class ModifierSet extends SimpleSet<Modifier> {
 	}
 
 	public ModifierSet hasName(String otherValue) {
-		return filter(Modifier.NAME.equals(otherValue));
+		return filter(StringCondition.createEquals(Modifier.PROPERTY_NAME, otherValue));
 	}
 }
