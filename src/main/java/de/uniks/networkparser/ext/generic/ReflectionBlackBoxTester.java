@@ -40,6 +40,8 @@ import java.util.Timer;
 import de.uniks.networkparser.NetworkParserLog;
 import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.ext.ErrorHandler;
+import de.uniks.networkparser.ext.FileClassModel;
+import de.uniks.networkparser.ext.Gradle;
 import de.uniks.networkparser.ext.SimpleController;
 import de.uniks.networkparser.ext.javafx.dialog.DialogBox;
 import de.uniks.networkparser.ext.petaf.SimpleTimerTask;
@@ -135,6 +137,8 @@ public class ReflectionBlackBoxTester {
 
 		withIgnoreClazzes(ReflectionBlackBoxTester.class, "main");
 
+		withIgnoreClazzes(Gradle.class);
+		withIgnoreClazzes(FileClassModel.class);
 		// Add for Files
 		withIgnoreClazzes(Story.class, "dumpHTML", "writeFile");
 		withIgnoreClazzes(ErrorHandler.class);

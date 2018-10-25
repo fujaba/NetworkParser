@@ -213,7 +213,7 @@ public class EntityUtil {
 
 		int i;
 		int len = string.length();
-		CharacterBuffer sb = new CharacterBuffer().withLength(len + 4);
+		CharacterBuffer sb = new CharacterBuffer().withBufferLength(len + 4);
 //		char b = 0, c;
 		char c;
 		String hhhh;

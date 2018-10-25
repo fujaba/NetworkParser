@@ -312,6 +312,6 @@ public class ModelTest implements ObjectCondition {
 
 		CodeCityConverter converter = new CodeCityConverter();
 		String encode = converter.encode(model);
-		FileBuffer.writeFile("build/NetworkParser.msw", encode);
+		FileBuffer.writeFile("build/NetworkParser.mse", encode);
 	}
 }
