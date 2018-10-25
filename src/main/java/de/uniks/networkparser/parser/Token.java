@@ -44,7 +44,7 @@ public class Token {
 	public static final char EOF = Character.MIN_VALUE;
 	public static final char LONG_COMMENT_START = 'C';
 	public static final char LONG_COMMENT_END = 'c';
-	public static final char COMMENT = '/';
+	public static final char COMMENT = 'L';
 	public static final char NEWLINE = '\n';
 
 	public char kind;

@@ -113,6 +113,7 @@ public class Method extends GraphMember {
 	}
 
 	public Method withParent(Clazz value) {
+		setParentNode(value);
 		return this;
 	}
 

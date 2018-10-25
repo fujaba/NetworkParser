@@ -43,6 +43,8 @@ public class SourceCode extends GraphMember {
 	private int bodyStart;
 	private int endOfAttributeInitialization;
 	private int endOfBody;
+	private long endofBodyLine;
+	private long bodyStartLine;
 
 	public SourceCode() {
 		super();
@@ -173,12 +175,17 @@ public class SourceCode extends GraphMember {
 		return endOfImplementsClause;
 	}
 
-	public SourceCode withStartBody(int value) {
+	public SourceCode withStartBody(int value, long line) {
 		this.bodyStart = value;
+		this.bodyStartLine = line;
 		return this;
 	}
+	
+	public long getBodyStartLine() {
+		return bodyStartLine;
+	}
 
-	public int getBodyStart() {
+	public int getStartBody() {
 		return bodyStart;
 	}
 
@@ -201,13 +208,18 @@ public class SourceCode extends GraphMember {
 		return getContent().toString();
 	}
 
-	public SourceCode withEndBody(int value) {
+	public SourceCode withEndBody(int value, long line) {
 		this.endOfBody = value;
+		this.endofBodyLine = line;
 		return this;
 	}
 
 	public int getEndOfBody() {
 		return endOfBody;
+	}
+
+	public long getEndofBodyLine() {
+		return endofBodyLine;
 	}
 
 	public SourceCode withStartImports(int value) {

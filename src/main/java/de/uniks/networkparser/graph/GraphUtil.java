@@ -195,6 +195,14 @@ public class GraphUtil {
 		}
 		return (clazz.getModifier().has(Modifier.ABSTRACT) || Clazz.TYPE_INTERFACE.equals(clazz.getType()));
 	}
+	
+
+	public static boolean isAbstract(Clazz clazz) {
+		if (clazz == null) {
+			return false;
+		}
+		return clazz.getModifier().has(Modifier.ABSTRACT);
+	}
 
 	public static final boolean isInterface(Clazz clazz) {
 		if (clazz == null) {
@@ -265,6 +273,21 @@ public class GraphUtil {
 			collection.add(assoc.getOther());
 		}
 		return collection;
+	}
+
+	public static final Modifier getVisible(GraphMember member) {
+		Modifier modifier = member.getModifier();
+		if(modifier.equals(Modifier.PACKAGE) || modifier.equals(Modifier.PRIVATE) || modifier.equals(Modifier.PUBLIC)|| modifier.equals(Modifier.PROTECTED)) {
+			return modifier;
+		}
+		for (GraphMember child : modifier.getChildren()) {
+			if (child instanceof Modifier) {
+				if(child.equals(Modifier.PACKAGE) || child.equals(Modifier.PRIVATE) || child.equals(Modifier.PUBLIC)|| child.equals(Modifier.PROTECTED)) {
+					return modifier;
+				}
+			}
+		}
+		return Modifier.PACKAGE;
 	}
 
 	public static final GraphSimpleSet getChildren(GraphMember item) {
@@ -503,4 +526,5 @@ public class GraphUtil {
 		}
 		return "MANY";
 	}
+
 }

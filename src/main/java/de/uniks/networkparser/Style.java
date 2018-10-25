@@ -25,6 +25,7 @@ THE SOFTWARE.
 */
 import java.util.HashMap;
 
+import de.uniks.networkparser.gui.controls.GUILine;
 import de.uniks.networkparser.interfaces.GUIPosition;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
 

@@ -37,7 +37,7 @@ public class CucumberStdRule implements ObjectCondition {
 		return true;
 	}
 	
-	private SimpleSet<Token> splitText(String values) {
+	protected SimpleSet<Token> splitText(String values) {
 		Token token = new Token().addKind(Token.UNKNOWN);
 		SimpleSet<Token> result=new SimpleSet<Token>();
 		for(int i=0;i<values.length();i++) {

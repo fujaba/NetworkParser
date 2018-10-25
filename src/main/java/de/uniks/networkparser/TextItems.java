@@ -32,6 +32,41 @@ public class TextItems extends SimpleKeyValueList<String, String> implements Sen
 	public static final String PROPERTY_VALUE = "value";
 	private LocalisationInterface customLanguage = null;
 	private boolean defaultLabel = true;
+	public static final TextItems DEFAULT=new TextItems()
+			// Month
+			.with("JANUARY", "January")
+			.with("FEBRUARY", "February")
+			.with("MARCH", "March")
+			.with("APRIL", "April")
+			.with("MAY", "May")
+			.with("JUNE", "June")
+			.with("JULY", "July")
+			.with("AUGUST", "August")
+			.with("SEPTEMBER", "September")
+			.with("OCTOBER", "October")
+			.with("NOVEMBER", "November")
+			.with("DECEMBER", "December")
+			// Weekday
+			.with("SUNDAY", "Sunday")
+			.with("MONDAY", "Monday")
+			.with("TUESDAY", "Tuesday")
+			.with("WEDNESDAY", "Wednesday")
+			.with("THURSDAY", "Thursday")
+			.with("FRIDAY", "Friday")
+			.with("SATURDAY", "Saturday")
+			// ANY
+			.with("LOAD", "Load")
+			.with("SAVE", "Save")
+			.with("SAVEAS", "Save As")
+			.with("RELOAD", "Reload")
+			.with("SEARCH", "Search")
+			.with("COLUMNS", "Columns")
+			.with("CUT", "Cut")
+			.with("RELOAD", "Reload")
+			.with("COPY", "Copy")
+			.with("PASTE", "Paste")
+			.with("SELECTALL", "Select all")
+			.with("TEXTSTATUSLINE", "Pos: %POS% / %LEN%  Line: %LINE% / %LINECOUNT%  ");
 
 	@Override
 	public Object getValue(Object entity, String attribute) {

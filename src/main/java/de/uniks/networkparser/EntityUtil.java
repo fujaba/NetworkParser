@@ -213,30 +213,30 @@ public class EntityUtil {
 
 		int i;
 		int len = string.length();
-		StringBuilder sb = new StringBuilder(len + 4);
+		CharacterBuffer sb = new CharacterBuffer().withLength(len + 4);
 //		char b = 0, c;
 		char c;
 		String hhhh;
-		sb.append('"');
+		sb.with('"');
 		for (i = 0; i < len; i += 1) {
 			c = string.charAt(i);
 			if (c == '\\') {
-				sb.append("\\\\");
+				sb.with('\\').with('\\');
 				continue;
 			}
 			if (c == '"') {
-				sb.append("\\\"");
+				sb.with('\\').with('\"');
 				continue;
 			}
 			if (c < ' ' || (c >= '\u0080' && c < '\u00a0') || (c >= '\u2000' && c < '\u2100')) {
 				hhhh = "000" + Integer.toHexString(c);
-				sb.append("\\u" + hhhh.substring(hhhh.length() - 4));
+				sb.with("\\u" + hhhh.substring(hhhh.length() - 4));
 			} else {
-				sb.append(c);
+				sb.with(c);
 			}
 //			b = c;
 		}
-		sb.append('"');
+		sb.with('"');
 		return sb.toString();
 	}
 

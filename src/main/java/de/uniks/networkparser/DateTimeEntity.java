@@ -27,6 +27,9 @@ import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 
 public class DateTimeEntity {
+	
+	
+	
 	public static final String W3CDTF_FORMAT = "yyyy-MM-dd'T'HH:mm:ssZ";
 	private boolean dirty;
 	private Long time;
@@ -35,15 +38,15 @@ public class DateTimeEntity {
 	private TextItems items;
 
 	/** Month of the Year Default is German */
-	public String[] monthOfYear = new String[] { DefaultTextItems.JANUARY, DefaultTextItems.FEBRUARY,
-			DefaultTextItems.MARCH, DefaultTextItems.APRIL, DefaultTextItems.MAY, DefaultTextItems.JUNE,
-			DefaultTextItems.JULY, DefaultTextItems.AUGUST, DefaultTextItems.SEPTEMBER, DefaultTextItems.OCTOBER,
-			DefaultTextItems.NOVEMBER, DefaultTextItems.DECEMBER };
+	public String[] monthOfYear = new String[] { TextItems.DEFAULT.get("JANUARY"), TextItems.DEFAULT.get("FEBRUARY"),
+			TextItems.DEFAULT.get("MARCH"), TextItems.DEFAULT.get("APRIL"), TextItems.DEFAULT.get("MAY"), TextItems.DEFAULT.get("JUNE"),
+			TextItems.DEFAULT.get("JULY"), TextItems.DEFAULT.get("AUGUST"), TextItems.DEFAULT.get("SEPTEMBER"), TextItems.DEFAULT.get("OCTOBER"),
+			TextItems.DEFAULT.get("NOVEMBER"), TextItems.DEFAULT.get("DECEMBER") };
 
 	/** Days of the week */
-	public String[] weekDays = new String[] { DefaultTextItems.SUNDAY, DefaultTextItems.MONDAY,
-			DefaultTextItems.TUESDAY, DefaultTextItems.WEDNESDAY, DefaultTextItems.THURSDAY, DefaultTextItems.FRIDAY,
-			DefaultTextItems.SATURDAY };
+	public String[] weekDays = new String[] { TextItems.DEFAULT.get("SUNDAY"), TextItems.DEFAULT.get("MONDAY"),
+			TextItems.DEFAULT.get("TUESDAY"), TextItems.DEFAULT.get("WEDNESDAY"), TextItems.DEFAULT.get("THURSDAY"), TextItems.DEFAULT.get("FRIDAY"),
+			TextItems.DEFAULT.get("SATURDAY")};
 	private boolean isInitConstants = false;
 
 	static final int MONTH_LENGTH[] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 }; // 0-based

@@ -26,7 +26,6 @@ THE SOFTWARE.
 import java.util.Comparator;
 
 import de.uniks.networkparser.DateTimeEntity;
-import de.uniks.networkparser.EntityValueFactory;
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.Style;
 import de.uniks.networkparser.interfaces.GUIPosition;
@@ -214,9 +213,9 @@ public class Column implements SendableEntityCreatorNoIndex {
 		return this;
 	}
 
-	public EntityValueFactory getCellValueCreator() {
-		return new EntityValueFactory();
-	}
+//	public EntityValueFactory getCellValueCreator() {
+//		return new EntityValueFactory();
+//	}
 
 	public boolean isVisible() {
 		return isVisible;

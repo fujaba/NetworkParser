@@ -79,6 +79,10 @@ public class SymTabEntry {
 
 	private String name;
 
+	private long startLine;
+
+	private long endLine;
+
 	public SymTabEntry withParent(SourceCode parent) {
 		this.parent = parent;
 		return this;
@@ -101,10 +105,10 @@ public class SymTabEntry {
 	}
 
 	public void add(CharSequence string) {
-		if (this.value == null) {
-			this.value = "" + string;
+		if (this.name == null) {
+			this.name = "" + string;
 		} else {
-			this.value += string;
+			this.name += string;
 		}
 	}
 
@@ -112,7 +116,11 @@ public class SymTabEntry {
 		setValue(value);
 		return this;
 	}
-	
+	public SymTabEntry withName(CharacterBuffer value) {
+		this.name = value.toString();
+		return this;
+	}
+
 	public SymTabEntry withName(String value) {
 		this.name = value;
 		return this;
@@ -186,9 +194,11 @@ public class SymTabEntry {
 		}
 	}
 
-	public SymTabEntry withPosition(int start, int end) {
+	public SymTabEntry withPosition(int start, int end, long startLine, long endLine) {
 		this.startPos = start;
 		this.endPos = end;
+		this.startLine = startLine;
+		this.endLine = endLine;
 		return this;
 	}
 
@@ -198,6 +208,14 @@ public class SymTabEntry {
 
 	public int getEndPos() {
 		return endPos;
+	}
+	
+	public long getStartLine() {
+		return startLine;
+	}
+	
+	public long getEndLine() {
+		return endLine;
 	}
 
 	public SymTabEntry withAnnotations(int start, int end) {

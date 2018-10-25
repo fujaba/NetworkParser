@@ -8,6 +8,7 @@ import de.uniks.networkparser.graph.Association;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.ClazzSet;
 import de.uniks.networkparser.graph.GraphMetric;
+import de.uniks.networkparser.graph.GraphModel;
 import de.uniks.networkparser.graph.Method;
 import de.uniks.networkparser.graph.MethodSet;
 import de.uniks.networkparser.graph.Modifier;
@@ -38,8 +39,13 @@ public class FileClassModel extends ClassModel {
 		if (conditions != null && conditions.length > 0) {
 			condition = conditions[0];
 		}
-		String pkgName = this.getName().replace('.', '/');
-		getFiles(new File(path + pkgName), condition);
+		String name=this.getName();
+		String pkgName = name.replace('.', '/');
+		String parent="";
+		if(name.indexOf('.')>0) {
+			parent = name.substring(0, name.lastIndexOf('.')+1);
+		}
+		getFiles(new File(path + pkgName), condition, parent);
 		for (ParserEntity item : list) {
 			analyse(item);
 		}
@@ -49,10 +55,14 @@ public class FileClassModel extends ClassModel {
 		return true;
 	}
 
+	public SimpleKeyValueList<String, SimpleList<ParserEntity>> getPackageList() {
+		return packageList;
+	}
+
 	public static ParserEntity createParserEntity(File file, ObjectCondition condition) {
 		return new ParserEntity().withFile(file.getAbsolutePath()).withCondition(condition);
 	}
-	
+
 	public ParserEntity analyse(ParserEntity entity) {
 		CharacterBuffer content = FileBuffer.readFile(entity.getFileName());
 		try {
@@ -61,6 +71,17 @@ public class FileClassModel extends ClassModel {
 			this.error.add(entity);
 		}
 		return entity;
+	}
+	
+	public ClassModel analyseSymTabEntry(ClassModel model) {
+		if(model == null) {
+			model = this;
+		}
+		for (ParserEntity element : list) {
+			element.addMemberToModel();
+			this.add(element.getClazz());
+		}
+		return model;
 	}
 
 	public ClassModel analyseBounds(ClassModel model) {
@@ -76,8 +97,8 @@ public class FileClassModel extends ClassModel {
 			SimpleList<SymTabEntry> imports = element.getSymbolEntries(SymTabEntry.TYPE_IMPORT);
 			SimpleList<String> assoc = new SimpleList<String>();
 			for (SymTabEntry item : imports) {
-				if (item.getValue().startsWith(search)) {
-					String ref = item.getValue().substring(7);
+				if (item.getName().startsWith(search)) {
+					String ref = item.getName().substring(7);
 					ref = ref.substring(ref.lastIndexOf('.') + 1);
 					if (ref.equals("//") == false) {
 						assoc.add(ref);
@@ -144,7 +165,7 @@ public class FileClassModel extends ClassModel {
 		return model;
 	}
 
-	private void getFiles(File directory, ObjectCondition condition) {
+	private void getFiles(File directory, ObjectCondition condition, String parent) {
 		if (directory.exists() && directory.isDirectory()) {
 			File[] items = directory.listFiles();
 			if (items == null) {
@@ -157,11 +178,11 @@ public class FileClassModel extends ClassModel {
 					list.add(element);
 					packageEntity.add(element);
 				} else if (file.getName().equalsIgnoreCase("test") == false && file.isDirectory()) {
-					getFiles(file, condition);
+					getFiles(file, condition, parent+directory.getName()+".");
 				}
 			}
 			if (packageEntity.size() > 0) {
-				packageList.put(directory.getName(), packageEntity);
+				packageList.put(parent+directory.getName(), packageEntity);
 			}
 		}
 	}
@@ -275,6 +296,24 @@ public class FileClassModel extends ClassModel {
 	public GraphMetric analyseLoC(Object item) {
 		String methodBody = null;
 		Method owner = null;
+		if(item instanceof GraphModel) {
+			GraphModel model = (GraphModel) item;
+			GraphMetric modelMetric = GraphMetric.create(model);
+			ClazzSet clazzes = model.getClazzes();
+			for(Clazz clazz : clazzes) {
+				if(clazz.getName().equals("CharacterReader")) {
+					System.out.println("DEBUG");
+				}
+				GraphMetric clazzMetric = GraphMetric.create(clazz);
+				MethodSet methods = clazz.getMethods();
+				for(Method m : methods) {
+					GraphMetric methodMetric = analyseLoC(m);
+					clazzMetric.merge(methodMetric);
+				}
+				modelMetric.merge(clazzMetric);
+			}
+			return modelMetric;
+		}
 		if(item instanceof Method) {
 			owner = (Method) item;
 			methodBody = owner.getBody();
@@ -310,5 +349,20 @@ public class FileClassModel extends ClassModel {
 		}
 		metric.withLoc(emptyLine, commentCount, methodheader, annotation, linesOfCode);
 		return metric;
+	}
+
+	public ParserEntity readFile(String fileName, ObjectCondition condition) {
+		File file = new File(fileName);
+		if (file.getName().endsWith(".java")) {
+			ParserEntity element = createParserEntity(file, condition);
+			SimpleList<ParserEntity> packageEntity = new SimpleList<ParserEntity>();
+			list.add(element);
+			packageEntity.add(element);
+			if (packageEntity.size() > 0) {
+				packageList.put(file.getParent(), packageEntity);
+			}
+			return analyse(element);
+		}
+		return null;
 	}
 }

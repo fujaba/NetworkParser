@@ -74,4 +74,16 @@ public class GraphMetric extends GraphMember {
 		return "Line of File:" + getFullLines() + " - Lines of Code:" + linesOfCode;
 	}
 
+	public GraphMetric merge(GraphMetric otherMetric) {
+		if(otherMetric == null) {
+			return this;
+		}
+		this.emptyLine += otherMetric.getEmptyLine();
+		this.commentCount += otherMetric.getCommentCount();
+		this.methodheader += otherMetric.getMethodheader();
+		this.annotation += otherMetric.getAnnotationLines();
+		this.linesOfCode += otherMetric.getLinesOfCode();
+		return this;
+	}
+
 }
