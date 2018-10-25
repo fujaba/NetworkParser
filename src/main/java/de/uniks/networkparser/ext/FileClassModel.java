@@ -34,7 +34,6 @@ public class FileClassModel extends ClassModel {
 	}
 
 	public boolean readFiles(String path, ObjectCondition... conditions) {
-		long currentTimeMillis = System.currentTimeMillis();
 		ObjectCondition condition = null;
 		if (conditions != null && conditions.length > 0) {
 			condition = conditions[0];
@@ -49,9 +48,6 @@ public class FileClassModel extends ClassModel {
 		for (ParserEntity item : list) {
 			analyse(item);
 		}
-
-		System.out.println(System.currentTimeMillis() - currentTimeMillis);
-		//		System.out.println(error+" / "+files.size());
 		return true;
 	}
 
@@ -301,9 +297,6 @@ public class FileClassModel extends ClassModel {
 			GraphMetric modelMetric = GraphMetric.create(model);
 			ClazzSet clazzes = model.getClazzes();
 			for(Clazz clazz : clazzes) {
-				if(clazz.getName().equals("CharacterReader")) {
-					System.out.println("DEBUG");
-				}
 				GraphMetric clazzMetric = GraphMetric.create(clazz);
 				MethodSet methods = clazz.getMethods();
 				for(Method m : methods) {

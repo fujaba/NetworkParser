@@ -1,7 +1,7 @@
 package de.uniks.networkparser.test.javafx;
 
-import de.uniks.networkparser.GUILine;
 import de.uniks.networkparser.Style;
+import de.uniks.networkparser.gui.controls.GUILine;
 import de.uniks.networkparser.interfaces.GUIPosition;
 import javafx.application.Application;
 import javafx.scene.Scene;

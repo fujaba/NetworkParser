@@ -12,6 +12,7 @@ import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.UpdateCondition;
 import de.uniks.networkparser.buffer.CharacterBuffer;
+import de.uniks.networkparser.converter.CodeCityConverter;
 import de.uniks.networkparser.ext.FileClassModel;
 import de.uniks.networkparser.ext.generic.GenericCreator;
 import de.uniks.networkparser.ext.generic.SimpleParser;
@@ -290,12 +291,27 @@ public class ModelTest implements ObjectCondition {
 	@Test
 	public void testTest() {
 		FileClassModel model = new FileClassModel("de.uniks.networkparser");
-//		model.readFiles("src/main/java/");
+		model.readFiles("src/main/java/");
 //		model.createParserEntity(new File("src/main/java/de/uniks/networkparser/ext/io/TarArchiveEntry.java"), new DebugCondition());
 
 		model.analyseBounds(null);
 		if(model.getErros().size()>0) {
 			System.out.println("ERROR: "+model.getErros().size());
 		}
+	}
+	
+	@Test
+	public void testMSE() {
+		FileClassModel model = new FileClassModel("de.uniks.networkparser");
+		model.readFiles("src/main/java/");
+		
+		model.analyseSymTabEntry(null);
+		model.analyseLoC(model);
+		model.analyseBounds(null);
+//		model.createParserEntity(new File("src/main/java/de/uniks/networkparser/ext/io/TarArchiveEntry.java"), new DebugCondition());
+
+		CodeCityConverter converter = new CodeCityConverter();
+		String encode = converter.encode(model);
+		FileBuffer.writeFile("build/NetworkParser.msw", encode);
 	}
 }
