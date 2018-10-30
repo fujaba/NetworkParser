@@ -37,6 +37,9 @@ public class ArtifactList extends SortedSet<ArtifactFile> {
 					if (value.isSnapshot() != child.isSnapshot()) {
 						continue;
 					}
+					if(value.getArtifactId() == null) {
+						continue;
+					}
 					if (value.getArtifactId().equals(child.getArtifactId()) == false) {
 						continue;
 					}

@@ -306,6 +306,7 @@ public class DateTimeEntity {
 	 *
 	 * @param field dateTimeField
 	 * @param value value of changes
+	 * @return success
 	 */
 	public boolean set(String field, long value) {
 		if (field != null) {
