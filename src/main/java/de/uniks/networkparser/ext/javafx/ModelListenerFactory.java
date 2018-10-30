@@ -1,9 +1,9 @@
-package de.uniks.networkparser.ext.javafx.controller;
+package de.uniks.networkparser.ext.javafx;
 
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.ext.generic.GenericCreator;
 import de.uniks.networkparser.ext.generic.ReflectionLoader;
-import de.uniks.networkparser.ext.javafx.controller.ModelListenerProperty.PROPERTYTYPE;
+import de.uniks.networkparser.ext.javafx.ModelListenerProperty.PROPERTYTYPE;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 /*
 NetworkParser

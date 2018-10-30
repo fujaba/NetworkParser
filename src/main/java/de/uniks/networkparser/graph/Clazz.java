@@ -240,6 +240,11 @@ public class Clazz extends GraphEntity {
 		return assocSource;
 	}
 
+	public Clazz withAssoc(Clazz tgtClass, String tgtRoleName, int tgtCardinality, String srcRoleName,
+			int srcCardinality) {
+		createBidirectional(tgtClass, tgtRoleName, tgtCardinality, srcRoleName, srcCardinality);
+		return this;
+	}
 	/**
 	 * ********************************************************************
 	 * 

@@ -1,4 +1,4 @@
-package de.uniks.networkparser.ext.javafx.dialog;
+package de.uniks.networkparser.ext.javafx;
 
 import java.io.File;
 import java.io.PrintStream;
@@ -31,8 +31,6 @@ import java.util.List;
 import java.util.Map;
 
 import de.uniks.networkparser.ext.generic.ReflectionLoader;
-import de.uniks.networkparser.ext.javafx.JavaAdapter;
-import de.uniks.networkparser.ext.javafx.JavaBridgeFX;
 import de.uniks.networkparser.gui.controls.Button;
 import de.uniks.networkparser.gui.controls.Control;
 import de.uniks.networkparser.gui.controls.Label;
@@ -247,18 +245,8 @@ public class DialogBox implements ObjectCondition {
 		root = ReflectionLoader.newInstance(ReflectionLoader.BORDERPANE);
 		JavaBridgeFX.setStyle(root, false, "dialog", "decorated-root");
 
-		ObjectCondition condition = new ObjectCondition() {
-			@Override
-			public boolean update(Object value) {
-				boolean active = (Boolean) value;
-				ReflectionLoader.call(root, "pseudoClassStateChanged", ReflectionLoader.PSEUDOCLASS,
-						ACTIVE_PSEUDO_CLASS, boolean.class, active);
-				return true;
-			}
-		};
-
 		Object property = ReflectionLoader.call(stage, "focusedProperty");
-		JavaBridgeFX.addListener(property, "addListener", ReflectionLoader.CHANGELISTENER, condition);
+		JavaBridgeFX.addListener(property, "addListener", ReflectionLoader.CHANGELISTENER, this);
 
 		// --- titlebar (only used for cross-platform look)
 		dialogTitleBar = ReflectionLoader.newInstance(ReflectionLoader.TOOLBAR);
@@ -271,49 +259,9 @@ public class DialogBox implements ObjectCondition {
 			JavaBridgeFX.addChildren(dialogTitleBar, -1, guiElement);
 		}
 
-		condition = new ObjectCondition() {
-			@Override
-			public boolean update(Object event) {
-				if (event == null) {
-					return false;
-				}
-				if (event.getClass().getName().startsWith("javafx") == false) {
-					return false;
-				}
-				mouseDragDeltaX = (Double) ReflectionLoader.call(event, "getSceneX");
-				mouseDragDeltaY = (Double) ReflectionLoader.call(event, "getSceneY");
+		JavaBridgeFX.addListener(dialogTitleBar, "setOnMousePressed", ReflectionLoader.EVENTHANDLER, this);
 
-				return true;
-			}
-		};
-		JavaBridgeFX.addListener(dialogTitleBar, "setOnMousePressed", ReflectionLoader.EVENTHANDLER, condition);
-
-		condition = new ObjectCondition() {
-			@Override
-			public boolean update(Object event) {
-				if (event == null) {
-					return false;
-				}
-				if (event.getClass().getName().startsWith("javafx") == false) {
-					return false;
-				}
-				double eventX = (Double) ReflectionLoader.call(event, "getScreenX") - mouseDragDeltaX;
-				double eventY = (Double) ReflectionLoader.call(event, "getScreenY") - mouseDragDeltaY;
-
-				if (isInline) {
-					double x = (Double) ReflectionLoader.call(root, "getLayoutX");
-					double y = (Double) ReflectionLoader.call(root, "getLayoutY");
-					ReflectionLoader.call(root, "setLayoutX", double.class, x + eventX);
-					ReflectionLoader.call(root, "setLayoutY", double.class, y + eventY);
-				} else {
-					ReflectionLoader.call(stage, "setX", double.class, eventX);
-					ReflectionLoader.call(stage, "setY", double.class, eventY);
-				}
-
-				return true;
-			}
-		};
-		JavaBridgeFX.addListener(dialogTitleBar, "setOnMouseDragged", ReflectionLoader.EVENTHANDLER, condition);
+		JavaBridgeFX.addListener(dialogTitleBar, "setOnMouseDragged", ReflectionLoader.EVENTHANDLER, this);
 
 		ReflectionLoader.call(root, "setTop", ReflectionLoader.NODE, dialogTitleBar);
 		ReflectionLoader.call(root, "setCenter", ReflectionLoader.NODE, center);
@@ -455,11 +403,46 @@ public class DialogBox implements ObjectCondition {
 	}
 
 	@Override
-	public boolean update(Object value) {
-		if (value instanceof Button == false) {
+	public boolean update(Object event) {
+		if (event == null) {
 			return false;
 		}
-		Button btn = (Button) value;
+		if (event.getClass().getName().startsWith("javafx")) {
+			double x = (Double) ReflectionLoader.call(event, "getSceneX");
+			double y  = (Double) ReflectionLoader.call(event, "getSceneY");
+			String name = (String) ReflectionLoader.call(event, "getEventType", "getName");
+			if(name == null || name.startsWith("MOUSE-DRAG") == false) {
+				mouseDragDeltaX = x;
+				mouseDragDeltaY = y;
+			} else {
+				double eventX = x - mouseDragDeltaX;
+				double eventY = y - mouseDragDeltaY;
+				if (isInline) {
+					double xNew = (Double) ReflectionLoader.call(root, "getLayoutX");
+					double yNew = (Double) ReflectionLoader.call(root, "getLayoutY");
+					ReflectionLoader.call(root, "setLayoutX", double.class, xNew + eventX);
+					ReflectionLoader.call(root, "setLayoutY", double.class, yNew + eventY);
+				} else {
+					ReflectionLoader.call(stage, "setX", double.class, eventX);
+					ReflectionLoader.call(stage, "setY", double.class, eventY);
+				}
+
+				return true;
+			}
+			return true;
+		}
+
+		if(event instanceof Boolean) {
+			boolean active = (Boolean) event;
+			ReflectionLoader.call(root, "pseudoClassStateChanged", ReflectionLoader.PSEUDOCLASS,
+					ACTIVE_PSEUDO_CLASS, boolean.class, active);
+			return true;
+		}
+
+		if (event instanceof Button == false) {
+			return false;
+		}
+		Button btn = (Button) event;
 		if (Button.CLOSE.equalsIgnoreCase(btn.getActionType())) {
 			this.hide(btn);
 		}

@@ -38,6 +38,7 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.ResourceBundle;
 
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.IdMap;
@@ -52,15 +53,22 @@ import de.uniks.networkparser.gui.JavaBridge;
 import de.uniks.networkparser.gui.JavaViewAdapter;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.ObjectCondition;
+import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
+import javafx.fxml.FXMLLoader;
+import javafx.fxml.JavaFXBuilderFactory;
+import javafx.scene.Parent;
 
 public class SimpleController implements ObjectCondition, UncaughtExceptionHandler, Runnable {
 	public static final String SEPARATOR = "------";
 	public static final String USER = "USER";
 	public static final String USERNAME = "USERNAME";
 	public static final String CLOSE = "close";
+	public static final String SHOWING = "SHOWING";
+	public static final String CREATING = "CREATING";
 	private Object stage;
+	private Object rootScene;
 	private JavaBridge bridge;
 	private boolean firstShow = true;
 	protected String icon;
@@ -75,7 +83,11 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 	private String mainClass;
 	private String outputParameter;
 	private SimpleList<String> compilePath;
-
+	private Object controller;
+	private Object[] runParams;
+	private String runAction;
+	private SimpleKeyValueList<Object, SendableEntityCreator> mapping;
+	
 	public SimpleController(Object primitiveStage) {
 		this(primitiveStage, true);
 	}
@@ -125,8 +137,7 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 
 	private Object getApplication() {
 		Field params;
-		Object result = ReflectionLoader.call(ReflectionLoader.PLATFORM, "isFxApplicationThread");
-		if (Boolean.TRUE.equals(result) == false) {
+		if (Os.isFXThread() == false) {
 			return null;
 		}
 		try {
@@ -410,6 +421,15 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 	}
 
 	public void show(Object root, boolean wait, boolean newStage) {
+		if(Os.isFXThread() == false) {
+			this.runParams = new Object[] {root, wait, newStage};
+			this.runAction=SHOWING;
+			JavaAdapter.executeAndWait(this);
+			return;
+		}
+		showing(root, wait, newStage);
+	}
+	private void showing(Object root, boolean wait, boolean newStage) {
 		Object oldStage = null;
 		if (newStage) {
 			oldStage = this.stage;
@@ -417,11 +437,18 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 			refreshIcon();
 		}
 		this.firstShow = false;
-
+		if(stage == null) {
+			return;
+		}
 		Object scene;
+		if(root == null) {
+//				&& this.rootScene != null) {
+			root = rootScene;
+		}
 		if (ReflectionLoader.SCENE == null || root == null) {
 			return;
 		}
+		
 		if (ReflectionLoader.SCENE.isAssignableFrom(root.getClass())) {
 			scene = root;
 		} else if (root instanceof JavaBridge) {
@@ -449,6 +476,9 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 
 	public void show(Object root) {
 		show(root, false, firstShow == false);
+	}
+	public void show() {
+		show(null, false, firstShow == false);
 	}
 
 	public Object getCurrentScene() {
@@ -790,6 +820,26 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 		return new SimpleController(null);
 	}
 
+	public static SimpleController createFX() {
+		SimpleController controller = new SimpleController(null);
+		controller.runLater(controller, ReflectionLoader.PANE, ReflectionLoader.SCENE);
+		return controller;
+	}
+	
+	public static boolean startFX() {
+		final Class<?> launcherClass = ReflectionLoader.getClass("com.sun.javafx.application.LauncherImpl");
+		if (launcherClass == null) {
+			return false;
+		}
+		if (Os.isJavaFX() == false) {
+			return false;
+		}
+		ReflectionLoader.call(launcherClass, "startToolkit");
+		return true;
+
+	}
+
+	
 	public void hide() {
 		if (this.stage != null) {
 			ReflectionLoader.call(this.stage, "hide");
@@ -832,6 +882,79 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 			JavaAdapter.execute(controller);
 		}
 		return controller;
+	}
+
+	public SimpleController withFXML(String fxmlFile, Class<?>... fromClass) {
+		Class<?> path = null;
+		if(fromClass != null && fromClass.length>0) {
+			path = fromClass[0]; 
+		}
+		if(path == null) {
+			path =SimpleController.class; 
+		}
+		
+		create(path.getResource(fxmlFile), null);
+		
+		// NOW MAPPING
+		if(mapping != null) {
+			for(int i=0;i<mapping.size();i++) {
+				Object key = mapping.getKeyByIndex(i);
+				SendableEntityCreator creator = mapping.getValueByIndex(i);
+				if(key instanceof String) {
+					Parent n = (Parent) this.rootScene;
+					Object pane = n.lookup("#"+key);
+//					Object pane = this.rootScene.getElementById(key);
+					Object controller = creator.getSendableInstance(false);
+					creator.setValue(controller, "gui", pane, SendableEntityCreator.NEW);
+//					this.controller.getElementById("#s"+p+"_1"));
+				}
+			}
+		}
+		return this;
+	}
+
+	public Object create(URL location, ResourceBundle resources) {
+		FXMLLoader fxmlLoader;
+		if (location == null) {
+			System.out.println("FXML not found");
+			return null;
+		}
+		if (resources != null) {
+			fxmlLoader = new FXMLLoader(location, resources,
+					new JavaFXBuilderFactory());
+		} else {
+			fxmlLoader = new FXMLLoader(location);
+		}
+		try {
+			this.rootScene = fxmlLoader.load(location.openStream());
+			if(this.stage != null) {
+				ReflectionLoader.call(stage, "setScene", ReflectionLoader.SCENE, this.rootScene);
+			}
+
+		} catch (IOException e) {
+			System.err.println("FXML Load Error:" + e.getMessage());
+			System.err.println("FXML Load Error:" + e.getCause());
+			return null;
+		}
+		this.withController(fxmlLoader.getController());
+		return rootScene;
+	}
+
+	
+
+	private SimpleController withController(Object value) {
+		this.controller = value;
+		return this;
+	}
+
+	public Object getController() {
+		return controller;
+	}
+
+	public void runLater(Runnable runnable, Object... values) {
+		runParams = values;
+		runAction = CREATING;
+		JavaAdapter.executeAndWait(runnable);
 	}
 
 	public SimpleController withBridge(JavaBridge value) {
@@ -1001,9 +1124,41 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 
 	@Override
 	public void run() {
+		boolean showBridge=true;
+		if(this.runParams != null && this.runParams.length>0) {
+			if(CREATING.equalsIgnoreCase(runAction)) {
+				Class<?> object = (Class<?>) this.runParams[0];
+				Object pane = null;
+				if(ReflectionLoader.PANE.isAssignableFrom(object)) {
+					pane = ReflectionLoader.newInstance(object);
+					object = (Class<?>) this.runParams[1];
+				}
+				if(ReflectionLoader.SCENE.isAssignableFrom(object)) {
+					this.rootScene = ReflectionLoader.newInstance(object, ReflectionLoader.PARENT, pane);
+				}
+				if(ReflectionLoader.STAGE.isAssignableFrom(object)) {
+					this.stage = ReflectionLoader.newInstance(object);
+					return;
+				}
+				return;
+			}else if(SHOWING.equalsIgnoreCase(runAction)) {
+				this.showing(this.runParams[0], (Boolean)this.runParams[1], (Boolean)this.runParams[2]);
+			}
+		}
 		Object stage = ReflectionLoader.newInstance(ReflectionLoader.STAGE);
 		this.withStage(stage);
 		this.withIcon(IdMap.class.getResource("np.png").toString());
-		this.show(this.getBridge());
+		if(showBridge) {
+			this.show(this.getBridge());
+		}
+	}
+
+	public SimpleController withMap(SendableEntityCreator controller, String key) {
+		if(mapping == null) {
+			mapping = new SimpleKeyValueList<Object, SendableEntityCreator>();
+		}
+		this.mapping.put(key, controller);
+		return this;
+		
 	}
 }

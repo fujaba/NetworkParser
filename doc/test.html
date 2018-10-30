@@ -1,9 +1,11 @@
 <html>
   <head>
+    <script src="highlightjs-line-numbers.min.js"></script>
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
     <script language="Javascript">hljs.initHighlightingOnLoad();
 hljs.initLineNumbersOnLoad();</script>
     <title>testStory</title>
+    <script src="diagram.js"></script>
     <script src="dagre.min.js"></script>
   </head>
   <body>
@@ -51,12 +53,17 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import de.uniks.networkparser.IdMap;
+import de.uniks.networkparser.converter.GraphConverter;
 import de.uniks.networkparser.ext.ClassModel;
 import de.uniks.networkparser.ext.generic.ReflectionBlackBoxTester;
+import de.uniks.networkparser.ext.io.FileBuffer;
+import de.uniks.networkparser.ext.story.Cucumber;
 import de.uniks.networkparser.ext.story.Story;
 import de.uniks.networkparser.ext.story.StoryBook;
 import de.uniks.networkparser.ext.story.StoryStepJUnit;
 import de.uniks.networkparser.ext.story.StoryUtil;
+import de.uniks.networkparser.graph.GraphList;
+import de.uniks.networkparser.xml.HTMLEntity;
 
 public class StoryTest {
 	@Test
@@ -138,6 +145,33 @@ public class StoryTest {
 		storyStepJUnit.withPackageName("src/main/java", "src\\main\\java\\de\\uniks\\networkparser\\ext");
 //		storyStepJUnit.recompile("bin");
 	}
+
+	@Test
+	public void testCucumber() {
+		Cucumber scenario = Cucumber.createScenario("defining the start player");
+
+		scenario.Definition("Karli is a Player");
+		scenario.Definition("Seb is a Player");
+		scenario.Definition("dice is a Dice");
+
+
+		scenario.Given("Alice and Seb play ludo");
+		scenario.Given("the players has tokens on startingArea");
+		scenario.Given("Alice has dice with value 5");
+		scenario.When("Bob has dice with 1");
+		scenario.Then("Alice is currentplayer from ludo");
+		scenario.analyse();
+
+		GraphList model = scenario.getModel();
+		HTMLEntity file = new HTMLEntity();
+		file.withGraph(model);
+
+		FileBuffer.writeFile("build/cucumber.html", file.toString())
+//		System.out.println(model.toString(new GraphConverter()));
+//		System.out.println(model.toString(DiagramEditor.dump()));
+
+	}
+
 }</code>
       <div class="title">Code: <a href="../src/test/java/de/uniks/networkparser/test/StoryTest.java">Story</a></div>
     </pre>
@@ -145,12 +179,12 @@ public class StoryTest {
     <pre>
       <code class="java" data-lang="java">	public Object cloneObject(Object reference, Object filter) {
 		MapEntity map = null;
-		if(filter == null) {
+		if (filter == null) {
 			map = new MapEntity(this);
 		} else if (filter instanceof Filter) {</code>
       <div class="title">Code: <a href="../src/main/java/de/uniks/networkparser/IdMap.java">cloneObject</a></div>
     </pre>
     <table/>
     <script type="text/javascript">var json={"type":"classdiagram","id":"i.love.networkparser","nodes":[{"type":"class","id":"i.love.networkparser.Person"}]};
-new Graph(json).layout();</script>
+window['editor'] = new Graph(json).layout();</script>
   </body></html>

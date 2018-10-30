@@ -12,6 +12,7 @@ import de.uniks.networkparser.ext.story.StoryBook;
 import de.uniks.networkparser.ext.story.StoryStepJUnit;
 import de.uniks.networkparser.ext.story.StoryUtil;
 import de.uniks.networkparser.graph.GraphList;
+import de.uniks.networkparser.xml.HTMLEntity;
 
 public class StoryTest {
 	@Test
@@ -111,7 +112,11 @@ public class StoryTest {
 		scenario.analyse();
 		
 		GraphList model = scenario.getModel();
-		System.out.println(model);
+		HTMLEntity file = new HTMLEntity();
+		file.withGraph(model);
+		
+//		FileBuffer.writeFile("build/cucumber.html", file.toString());
+//		System.out.println(model.toString(new GraphConverter()));
 //		System.out.println(model.toString(DiagramEditor.dump()));
 		
 	}

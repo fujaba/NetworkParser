@@ -237,7 +237,7 @@ public class JavaAdapter implements JavaViewAdapter, Runnable {
 			// Must be cached
 			this.queue.add(script);
 		}
-		if (isFXThread() == false) {
+		if (Os.isFXThread() == false) {
 			JavaAdapter.execute(new JSEditor(this).withScript(script));
 			return null;
 		}
@@ -289,17 +289,11 @@ public class JavaAdapter implements JavaViewAdapter, Runnable {
 		return result;
 	}
 
-	public boolean isFXThread() {
-		Object result = ReflectionLoader.call(ReflectionLoader.PLATFORM, "isFxApplicationThread");
-		return Boolean.TRUE.equals(result);
-	}
-
 	@Override
 	public Object getWebView() {
 		if (webView == null) {
 			if (ReflectionLoader.WEBVIEW != null && Os.isJavaFX()) {
-				Object result = ReflectionLoader.call(ReflectionLoader.PLATFORM, "isFxApplicationThread");
-				if (Boolean.TRUE.equals(result)) {
+				if (Os.isFXThread()) {
 					this.webView = ReflectionLoader.newInstance(ReflectionLoader.WEBVIEW);
 					this.webEngine = ReflectionLoader.call(this.webView, "getEngine");
 					ReflectionLoader.call(this.webView, "setMaxSize", double.class, Double.MAX_VALUE, double.class,
@@ -378,7 +372,7 @@ public class JavaAdapter implements JavaViewAdapter, Runnable {
 		if (runnable == null) {
 			return;
 		}
-		if ((Boolean) ReflectionLoader.call(ReflectionLoader.PLATFORM, "isFxApplicationThread")) {
+		if(Os.isFXThread()) {
 			runnable.run();
 			return;
 		}
@@ -415,8 +409,8 @@ public class JavaAdapter implements JavaViewAdapter, Runnable {
 		String script2 = "console.log = function(message) { java.log(message); }"; // Now where ever console.log is
 																					// called in your html you will get
 																					// a log in Java console
-		Object result = ReflectionLoader.call(ReflectionLoader.PLATFORM, "isFxApplicationThread");
-		if (this.webEngine == null || Boolean.TRUE.equals(result) == false) {
+		boolean isFX = Os.isFXThread();
+		if (this.webEngine == null || isFX == false) {
 			JSEditor editor = new JSEditor(this).withScript(script);
 			JavaAdapter.execute(editor);
 

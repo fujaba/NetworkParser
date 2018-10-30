@@ -47,6 +47,12 @@ public class EntityUtil {
 	public static final String CLASS = "class";
 	public static final String NON_FILE_CHARSSIMPLE = "[\\\\/\\:\\;\\*\\?\"<>\\|!&', \u001F\u0084\u0093\u0094\u0096\u2013\u201E\u201C\u03B1 ]";
 	public static final String emfTypes = " EOBJECT EBIG_DECIMAL EBOOLEAN EBYTE EBYTE_ARRAY ECHAR EDATE EDOUBLE EFLOAT EINT EINTEGER ELONG EMAP ERESOURCE ESHORT ESTRING ";
+	/**
+	 * Pseudo-random number generator object for use with randomString(). The Random
+	 * class is not considered to be cryptographically secure, so only use these
+	 * random Strings for low to medium security applications.
+	 */
+	private static Random randGen;
 
 	/**
 	 * Produce a string from a double. The string "null" will be returned if the
@@ -1229,13 +1235,6 @@ public class EntityUtil {
 	}
 
 	/**
-	 * Pseudo-random number generator object for use with randomString(). The Random
-	 * class is not considered to be cryptographically secure, so only use these
-	 * random Strings for low to medium security applications.
-	 */
-	private static Random randGen = new Random();
-
-	/**
 	 * Array of numbers and letters of mixed case. Numbers appear in the list twice
 	 * so that there is a more equal chance that a number will be picked. We can use
 	 * the array to get a random number or letter by picking a random array index.
@@ -1263,10 +1262,37 @@ public class EntityUtil {
 		}
 		// Create a char buffer to put random letters and numbers in.
 		char[] randBuffer = new char[length];
+		if(EntityUtil.randGen == null) {
+			EntityUtil.randGen = new Random();
+		}
 		for (int i = 0; i < randBuffer.length; i++) {
 			randBuffer[i] = numbersAndLetters[randGen.nextInt(71)];
 		}
 		return new String(randBuffer);
+	}
+
+	/**
+	 * Returns a pseudo-random number between min and max, inclusive.
+	 * The difference between min and max can be at most
+	 * <code>Integer.MAX_VALUE - 1</code>.
+	 *
+	 * @param min Minimum value
+	 * @param max Maximum value. Must be greater than min.
+	 * @return Integer between min and max, inclusive.
+	 * @see java.util.Random#nextInt(int)
+	 */
+	public static int randInt(int min, int max) {
+		// NOTE: Usually this should be a field rather than a method
+		// variable so that it is not re-seeded every call.
+		if(EntityUtil.randGen == null) {
+			EntityUtil.randGen = new Random();
+		}
+
+		// nextInt is normally exclusive of the top value,
+		// so add 1 to make it inclusive
+		int randomNum = EntityUtil.randGen.nextInt((max - min) + 1) + min;
+
+		return randomNum;
 	}
 
 	public static String getPath(String path, String separator) {

@@ -43,7 +43,7 @@ import de.uniks.networkparser.ext.ErrorHandler;
 import de.uniks.networkparser.ext.FileClassModel;
 import de.uniks.networkparser.ext.Gradle;
 import de.uniks.networkparser.ext.SimpleController;
-import de.uniks.networkparser.ext.javafx.dialog.DialogBox;
+import de.uniks.networkparser.ext.javafx.DialogBox;
 import de.uniks.networkparser.ext.petaf.SimpleTimerTask;
 import de.uniks.networkparser.ext.story.Story;
 import de.uniks.networkparser.ext.story.StoryStepJUnit;

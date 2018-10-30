@@ -1,4 +1,4 @@
-package de.uniks.networkparser.ext.javafx.dialog;
+package de.uniks.networkparser.ext.javafx;
 
 /*
 The MIT License
@@ -24,8 +24,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 import de.uniks.networkparser.ext.generic.ReflectionLoader;
-import de.uniks.networkparser.ext.javafx.JavaAdapter;
-import de.uniks.networkparser.ext.javafx.JavaBridgeFX;
 
 public class DialogPane implements Runnable {
 	private Object opaqueLayer;

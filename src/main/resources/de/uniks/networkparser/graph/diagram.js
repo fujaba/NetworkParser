@@ -37,17 +37,32 @@ var DiagramJS =
 /******/ 	// define getter function for harmony exports
 /******/ 	__webpack_require__.d = function(exports, name, getter) {
 /******/ 		if(!__webpack_require__.o(exports, name)) {
-/******/ 			Object.defineProperty(exports, name, {
-/******/ 				configurable: false,
-/******/ 				enumerable: true,
-/******/ 				get: getter
-/******/ 			});
+/******/ 			Object.defineProperty(exports, name, { enumerable: true, get: getter });
 /******/ 		}
 /******/ 	};
 /******/
 /******/ 	// define __esModule on exports
 /******/ 	__webpack_require__.r = function(exports) {
+/******/ 		if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 			Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 		}
 /******/ 		Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 	};
+/******/
+/******/ 	// create a fake namespace object
+/******/ 	// mode & 1: value is a module id, require it
+/******/ 	// mode & 2: merge all properties of value into the ns
+/******/ 	// mode & 4: return value when already ns object
+/******/ 	// mode & 8|1: behave like require
+/******/ 	__webpack_require__.t = function(value, mode) {
+/******/ 		if(mode & 1) value = __webpack_require__(value);
+/******/ 		if(mode & 8) return value;
+/******/ 		if((mode & 4) && typeof value === 'object' && value && value.__esModule) return value;
+/******/ 		var ns = Object.create(null);
+/******/ 		__webpack_require__.r(ns);
+/******/ 		Object.defineProperty(ns, 'default', { enumerable: true, value: value });
+/******/ 		if(mode & 2 && typeof value != 'string') for(var key in value) __webpack_require__.d(ns, key, function(key) { return value[key]; }.bind(null, key));
+/******/ 		return ns;
 /******/ 	};
 /******/
 /******/ 	// getDefaultExport function for compatibility with non-harmony modules
@@ -118,7 +133,7 @@ var adapters = __webpack_require__(/*! ./adapters */ "./adapters/index.ts");
 var Data_1 = __webpack_require__(/*! ./Data */ "./Data.ts");
 var Control_1 = __webpack_require__(/*! ./Control */ "./Control.ts");
 var Adapter_1 = __webpack_require__(/*! ./Adapter */ "./Adapter.ts");
-var Graph_1 = __webpack_require__(/*! ./elements/Graph */ "./elements/Graph.ts");
+var elements_1 = __webpack_require__(/*! ./elements */ "./elements/index.ts");
 var util_1 = __webpack_require__(/*! ./util */ "./util.ts");
 var Bridge = (function (_super) {
     __extends(Bridge, _super);
@@ -150,7 +165,7 @@ var Bridge = (function (_super) {
         for (i = 0; i < keys.length; i++) {
             _this.addControl(controls[keys[i]]);
         }
-        _this.addControl(Graph_1.Graph);
+        _this.addControl(elements_1.Graph);
         var that = _this;
         window.addEventListener('load', function () {
             var updateOnlineStatus = function updateOnlineStatus() {
@@ -4481,6 +4496,28 @@ __export(__webpack_require__(/*! ./Implements */ "./elements/edges/Implements.ts
 
 /***/ }),
 
+/***/ "./elements/index.ts":
+/*!***************************!*\
+  !*** ./elements/index.ts ***!
+  \***************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+function __export(m) {
+    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+}
+Object.defineProperty(exports, "__esModule", { value: true });
+__export(__webpack_require__(/*! ./edges */ "./elements/edges/index.ts"));
+__export(__webpack_require__(/*! ./nodes */ "./elements/nodes/index.ts"));
+__export(__webpack_require__(/*! ./BaseElements */ "./elements/BaseElements.ts"));
+__export(__webpack_require__(/*! ./Graph */ "./elements/Graph.ts"));
+__export(__webpack_require__(/*! ./Model */ "./elements/Model.ts"));
+
+
+/***/ }),
+
 /***/ "./elements/nodes/Attribute.ts":
 /*!*************************************!*\
   !*** ./elements/nodes/Attribute.ts ***!
@@ -5272,6 +5309,12 @@ var ClazzProperty = (function (_super) {
     ClazzProperty.prototype.getName = function () {
         return this.$data.getValue('name');
     };
+    ClazzProperty.prototype.getModifier = function () {
+        return this.$data.getValue('modifier');
+    };
+    ClazzProperty.prototype.getType = function () {
+        return this.$data.getValue('type');
+    };
     ClazzProperty.prototype.getSVG = function () {
         var attrText = {
             tag: 'text',
@@ -5351,8 +5394,12 @@ var ClazzProperty = (function (_super) {
         }
     };
     ClazzProperty.prototype.updateTextOfView = function () {
-        this.$view.textContent = this.toString();
-        util_1.Util.saveToLocalStorage(this.$owner.$owner);
+        if (this.$view) {
+            this.$view.textContent = this.toString();
+        }
+        if (this.$owner) {
+            util_1.Util.saveToLocalStorage(this.$owner.$owner);
+        }
     };
     return ClazzProperty;
 }(BaseElements_1.DiagramElement));
@@ -6445,6 +6492,19 @@ var Node = (function (_super) {
             var edge = _a[_i];
             edge.redraw(this);
         }
+    };
+    Node.prototype.reDraw = function (drawOnlyIfSizeChanged) {
+    };
+    Node.prototype.addAttribute = function (value) {
+        return null;
+    };
+    Node.prototype.getAttributes = function () {
+        return null;
+    };
+    Node.prototype.addMethod = function (value) {
+        return null;
+    };
+    Node.prototype.updateLabel = function (newLabel) {
     };
     return Node;
 }(BaseElements_1.DiagramElement));
@@ -8870,7 +8930,6 @@ var edges_1 = __webpack_require__(/*! ../elements/edges */ "./elements/edges/ind
 var util_1 = __webpack_require__(/*! ../util */ "./util.ts");
 var Symbol_1 = __webpack_require__(/*! ../elements/nodes/Symbol */ "./elements/nodes/Symbol.ts");
 var EventBus_1 = __webpack_require__(/*! ../EventBus */ "./EventBus.ts");
-var main_1 = __webpack_require__(/*! ../main */ "./main.ts");
 var Select = (function () {
     function Select(graph) {
         this.padding = 5;
@@ -8918,7 +8977,7 @@ var Select = (function () {
             this.copyNodeShape.setAttributeNS(null, 'transform', "translate(" + x_1 + " " + (y_1 + 40 + this.padding) + ")");
             this.copyNodeShape.onclick = function (evt) {
                 var nextFreePosition = _this.graph.getNextFreePosition();
-                var copyClass = element.copy();
+                var copyClass = (element).copy();
                 copyClass.withPos(nextFreePosition.x, nextFreePosition.y);
                 _this.graph.drawElement(copyClass);
             };
@@ -8928,7 +8987,7 @@ var Select = (function () {
                 element.$view.dispatchEvent(util_1.Util.createCustomEvent('mousedown'));
             };
         }
-        if (element instanceof main_1.Class && event.type === 'click') {
+        if (element instanceof nodes_1.Node && event.type === 'click') {
             var clazz_1 = element;
             if (util_1.Util.isChrome()) {
                 if (this.lastSelectedNode && element.id === this.lastSelectedNode.id && !this.isDragged) {

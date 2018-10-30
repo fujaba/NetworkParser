@@ -1,8 +1,8 @@
 package de.uniks.networkparser.test.javafx;
 
 import de.uniks.networkparser.ext.generic.ReflectionLoader;
-import de.uniks.networkparser.ext.javafx.dialog.DialogBox;
-import de.uniks.networkparser.ext.javafx.dialog.DialogPane;
+import de.uniks.networkparser.ext.javafx.DialogBox;
+import de.uniks.networkparser.ext.javafx.DialogPane;
 import javafx.application.Application;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;

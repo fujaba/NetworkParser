@@ -346,6 +346,14 @@ public class ReflectionLoader {
 		return null;
 	}
 
+	public static Object newArray(Class<?> arrayClass, Object... values) {
+		Object items = Array.newInstance(arrayClass, values.length);
+		for(int i=0;i<values.length;i++) {
+			Array.set(items, i, values[i]);
+		}
+		return items;
+	}
+
 	public static Object newInstanceStr(String className, Object... arguments) {
 		try {
 			Class<?> clazz = Class.forName(className);
@@ -483,6 +491,40 @@ public class ReflectionLoader {
 
 	public static Object callChain(Object item, String... methodNames) {
 		return callChain(item, true, methodNames);
+	}
+	
+	public static Object callChainExt(Object item, Object... methodNames) {
+		if(methodNames== null) {
+			return null;
+		}
+		int i=0;
+		for(;i<methodNames.length;i++) {
+			if(methodNames[i] instanceof Class<?>) {
+				break;
+			}
+		}
+		if(i != methodNames.length) {
+			if(i-2<0) {
+				return null;
+			}
+			i -=2;
+		}
+		String[] newMethods=new String[i];
+		for(int m=0;m<i;m++) {
+			newMethods[m]= (String) methodNames[m];
+		}
+		if(i == methodNames.length) {
+			return callChain(item, newMethods);
+		}
+		Object result = callChain(item, newMethods);
+		if(result != null) {
+			Object[] newParams=new Object[methodNames.length - i];
+			for(int m=i;m<methodNames.length;m++) {
+				newParams[m-i]= methodNames[m];
+			}
+			return call(result, (String)methodNames[i], newParams);
+		}
+		return null;
 	}
 
 	public static Object callChain(Object item, boolean notify, String... methodNames) {

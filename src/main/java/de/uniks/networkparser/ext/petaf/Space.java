@@ -92,6 +92,13 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 		this.map = map;
 		return this;
 	}
+	
+	public Space withModel(IdMap map, Object root) {
+		this.withMap(map);
+		this.withModelRoot(this.createModel(root));
+		return this;
+	}
+	
 
 	public String getName() {
 		return name;

@@ -103,7 +103,7 @@ public class ReflectionTest {
 		result = ReflectionLoader.newInstanceSimple(de.uniks.networkparser.bytes.qr.Version.class);
 		Assert.assertNotNull(result);
 		
-		result = ReflectionLoader.newInstanceSimple(de.uniks.networkparser.ext.javafx.controller.ModelListenerProperty.class);
+		result = ReflectionLoader.newInstanceSimple(de.uniks.networkparser.ext.javafx.ModelListenerProperty.class);
 		Assert.assertNotNull(result);
 
 //		result = ReflectionLoader.newInstanceSimple(de.uniks.networkparser.ext.javafx.DiagramController.class);

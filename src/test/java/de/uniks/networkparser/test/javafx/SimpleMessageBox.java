@@ -1,7 +1,7 @@
 package de.uniks.networkparser.test.javafx;
 
 import de.uniks.networkparser.ext.SimpleController;
-import de.uniks.networkparser.ext.javafx.dialog.DialogBox;
+import de.uniks.networkparser.ext.javafx.DialogBox;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;

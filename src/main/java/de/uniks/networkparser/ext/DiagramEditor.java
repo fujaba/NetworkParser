@@ -43,10 +43,10 @@ import de.uniks.networkparser.ext.generic.JarValidator;
 import de.uniks.networkparser.ext.generic.ReflectionBlackBoxTester;
 import de.uniks.networkparser.ext.generic.ReflectionLoader;
 import de.uniks.networkparser.ext.io.FileBuffer;
+import de.uniks.networkparser.ext.javafx.DialogBox;
 import de.uniks.networkparser.ext.javafx.GUIEvent;
 import de.uniks.networkparser.ext.javafx.JavaAdapter;
 import de.uniks.networkparser.ext.javafx.JavaBridgeFX;
-import de.uniks.networkparser.ext.javafx.dialog.DialogBox;
 import de.uniks.networkparser.ext.petaf.Message;
 import de.uniks.networkparser.ext.petaf.SimpleTimerTask;
 import de.uniks.networkparser.ext.petaf.proxy.NodeProxyTCP;
@@ -209,14 +209,9 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 			width = -1;
 			height = -1;
 		}
-		final Class<?> launcherClass = ReflectionLoader.getClass("com.sun.javafx.application.LauncherImpl");
-		if (launcherClass == null) {
+		if(SimpleController.startFX() == false) {
 			return false;
 		}
-		if (Os.isJavaFX() == false) {
-			return false;
-		}
-		ReflectionLoader.call(launcherClass, "startToolkit");
 		if (entity != null && file != null) {
 			ReflectionLoader.call(ReflectionLoader.PLATFORM, "setImplicitExit", boolean.class, false);
 		}

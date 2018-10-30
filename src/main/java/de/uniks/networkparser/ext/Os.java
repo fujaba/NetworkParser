@@ -162,4 +162,12 @@ public class Os {
 		}
 		return false;
 	}
+	
+	public static final boolean isFXThread() {
+		Object result = ReflectionLoader.call(ReflectionLoader.PLATFORM, "isFxApplicationThread");
+		if (Boolean.TRUE.equals(result) ) {
+			return true;
+		}
+		return false;
+	}
 }

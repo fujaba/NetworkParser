@@ -5,7 +5,6 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.simple.modelA.util.PersonSet;
-import java.util.Collection;
 
 public class Room {
 	protected PropertyChangeSupport listeners = null;
