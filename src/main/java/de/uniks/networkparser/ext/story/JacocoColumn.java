@@ -30,7 +30,7 @@ import de.uniks.networkparser.ext.generic.ReflectionBlackBoxTester;
 import de.uniks.networkparser.ext.generic.ReflectionLoader;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 
-public class JacocoColumn implements JacocoColumnListener {
+public class JacocoColumn implements JacocoColumnListener, Comparator<Object> {
 	private static final String COLUMRENDERER = "org.jacoco.report.internal.html.table.IColumnRenderer";
 	private static final String PACKAGE = "PACKAGE";
 	private static final String BUNDLE = "BUNDLE";
@@ -200,15 +200,12 @@ public class JacocoColumn implements JacocoColumnListener {
 	}
 
 	public Comparator<Object> getComparator() {
-		return new Comparator<Object>() {
+		return this;
+	}
 
-			@Override
-			// compare(ITableItem o1, ITableItem o2)
-			public int compare(Object o1, Object o2) {
-//				o1.getNode().get
-				return 1;
-			}
-
-		};
+	@Override
+	public int compare(Object o1, Object o2) {
+//		o1.getNode().get
+		return 1;
 	}
 }

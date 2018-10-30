@@ -33,13 +33,14 @@ import java.util.List;
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.ext.generic.GenericCreator;
 import de.uniks.networkparser.ext.generic.ReflectionLoader;
+import de.uniks.networkparser.ext.petaf.SendableItem;
 import de.uniks.networkparser.gui.Dice;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.SendableEntity;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.list.SimpleList;
 
-public class PointPaneController implements PropertyChangeListener, SendableEntity, SendableEntityCreator, ObjectCondition { 
+public class PointPaneController extends SendableItem implements PropertyChangeListener, SendableEntityCreator, ObjectCondition { 
 //extends Pane 
 	public static final String PROPERTY_GUI="gui";
 	public static final String PROPERTY_CLICK="click";
@@ -48,7 +49,6 @@ public class PointPaneController implements PropertyChangeListener, SendableEnti
 	private Object pane;
 	private SimpleList<Object> children = new SimpleList<Object>();
 	private String color="BLACK";
-	private PropertyChangeSupport listeners;
 	private int number;
 	private Object timeline = ReflectionLoader.newInstance("javafx.animation.Timeline");
 	private int max=6;
@@ -67,7 +67,8 @@ public class PointPaneController implements PropertyChangeListener, SendableEnti
 
 		model.addPropertyChangeListener(Dice.PROPERTY_VALUE, this);
 	}
-	
+
+	//FIXME CHANGE
 	public PointPaneController init(Object model, Object gui) {
 		if (model != null && gui != null) {
 			try {
@@ -285,57 +286,11 @@ public class PointPaneController implements PropertyChangeListener, SendableEnti
 		return pane;
 	}
 
-	public boolean firePropertyChange(String propertyName, Object oldValue, Object newValue) {
-		if (listeners != null) {
-			listeners.firePropertyChange(propertyName, oldValue, newValue);
-			return true;
-		}
-		return false;
-	}
-	
-	@Override
-	public boolean addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
-		if (listeners == null) {
-	   		listeners = new PropertyChangeSupport(this);
-	   	}
-		listeners.addPropertyChangeListener(propertyName, listener);
-		return true;
-	}
-
-	@Override
-	public boolean addPropertyChangeListener(PropertyChangeListener listener) {
-		if (listeners == null) {
-	   		listeners = new PropertyChangeSupport(this);
-	   	}
-		listeners.addPropertyChangeListener(listener);
-		return true;
-	}
-
-	@Override
-	public boolean removePropertyChangeListener(PropertyChangeListener listener) {
-		if (listeners == null) {
-	   		return true;
-	   	}
-		listeners.removePropertyChangeListener(listener);
-		return true;
-	}
-
-	@Override
-	public boolean removePropertyChangeListener(String propertyName, PropertyChangeListener listener) {
-		if (listeners == null) {
-	   		return true;
-	   	}
-		listeners.removePropertyChangeListener(propertyName, listener);
-		return true;
-	}
-	
-	
 	//AbstractModelController
-
 	public boolean addListener(Object item, String property) {
 		return addListener(item, property, this);
 	}
-
+//FIXME R
 	public boolean addListener(Object item, String property, PropertyChangeListener listener) {
 		if (item == null) {
 			return false;

@@ -33,31 +33,14 @@ import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.EntityList;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 
-public class NodeProxyFileSystem extends NodeProxy {
+public class NodeProxyFileSystem extends NodeProxy implements ObjectCondition {
 	private String fileName;
 	private FileWatcher nodeProxyFileWatcher;
 	private boolean fullModell;
+	
 
 	public void enableGitFilter() {
-		this.withFilter(new ObjectCondition() {
-			@Override
-			public boolean update(Object value) {
-				// Filter if it should be written on disk
-//				if (value instanceof ChangeMessage) {
-//					SimpleList<NodeProxy> receiver = ((ChangeMessage) value).getReceived();
-//					if (receiver != null && receiver.contains(this) ) {
-//						// already saved to disk
-//						System.out.println("Already saved");
-//						return false;
-//					}
-//				}else {
-//					System.out.println("No Change");
-//				}
-				// eigener change?
-
-				return true;
-			}
-		});
+		this.withFilter(this);
 	}
 
 	NodeProxyFileSystem() {
@@ -209,5 +192,22 @@ public class NodeProxyFileSystem extends NodeProxy {
 	@Override
 	public Object getSendableInstance(boolean reference) {
 		return new NodeProxyFileSystem(null);
+	}
+
+	@Override
+	public boolean update(Object value) {
+		// Filter if it should be written on disk
+//				if (value instanceof ChangeMessage) {
+//					SimpleList<NodeProxy> receiver = ((ChangeMessage) value).getReceived();
+//					if (receiver != null && receiver.contains(this) ) {
+//						// already saved to disk
+//						System.out.println("Already saved");
+//						return false;
+//					}
+//				}else {
+//					System.out.println("No Change");
+//				}
+				// eigener change?
+		return true;
 	}
 }

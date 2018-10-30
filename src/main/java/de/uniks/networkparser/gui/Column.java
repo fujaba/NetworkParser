@@ -32,7 +32,7 @@ import de.uniks.networkparser.interfaces.GUIPosition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
 
-public class Column implements SendableEntityCreatorNoIndex {
+public class Column implements SendableEntityCreatorNoIndex, CellHandler {
 	public static final int AUTOWIDTH = -1;
 
 	public static final String PROPERTY_ID = "id";
@@ -303,12 +303,7 @@ public class Column implements SendableEntityCreatorNoIndex {
 
 	public CellHandler getListener() {
 		if (handler == null) {
-			handler = new CellHandler() {
-				@Override
-				public boolean onAction(Object entity, SendableEntityCreator creator, double x, double y) {
-					return isEditable;
-				}
-			};
+			handler = this;
 		}
 		return handler;
 	}
@@ -497,5 +492,10 @@ public class Column implements SendableEntityCreatorNoIndex {
 	public Column withListener(CellHandler eventHandler) {
 		this.handler = eventHandler;
 		return this;
+	}
+
+	@Override
+	public boolean onAction(Object entity, SendableEntityCreator creator, double x, double y) {
+		return isEditable;
 	}
 }

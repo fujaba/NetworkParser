@@ -27,14 +27,11 @@ import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 
 public class DateTimeEntity {
-	
-	
-	
 	public static final String W3CDTF_FORMAT = "yyyy-MM-dd'T'HH:mm:ssZ";
 	private boolean dirty;
 	private Long time;
 	private Byte timeZone = 1;
-	private SimpleKeyValueList<DateField, Long> fields = new SimpleKeyValueList<DateField, Long>();
+	private SimpleKeyValueList<String, Long> fields = new SimpleKeyValueList<String, Long>();
 	private TextItems items;
 
 	/** Month of the Year Default is German */
@@ -49,7 +46,7 @@ public class DateTimeEntity {
 			TextItems.DEFAULT.get("SATURDAY")};
 	private boolean isInitConstants = false;
 
-	static final int MONTH_LENGTH[] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 }; // 0-based
+	private static final int MONTH_LENGTH[] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 }; // 0-based
 
 	public static final int ONE_SECOND = 1000;
 	public static final int ONE_MINUTE = 60 * ONE_SECOND;
@@ -58,6 +55,27 @@ public class DateTimeEntity {
 	public static final long ONE_WEEK = 7 * ONE_DAY;
 	public static final long ONE_YEAR = ONE_DAY * 365;
 	public static final long ONE_YEAR_LY = ONE_DAY * 366;
+	
+	public static final String MILLISECOND="MILLISECOND";
+	public static final String MILLISECONDS="MILLISECONDS";
+	public static final String MILLISECONDSREAL="MILLISECONDSREAL";
+	public static final String WINTERTIME="WINTERTIME";
+	public static final String SUMMERTIME="SUMMERTIME";
+	public static final String MILLISECOND_OF_DAY = "MILLISECOND_OF_DAY";
+	public static final String MILLISECOND_OF_YEAR = "MILLISECOND_OF_YEAR";
+	public static final String SECOND_OF_MINUTE = "SECOND_OF_MINUTE";
+	public static final String MINUTE_OF_HOUR = "MINUTE_OF_HOUR";
+	public static final String HOUR_OF_DAY = "HOUR_OF_DAY";
+	public static final String AMPM = "AMPM";
+	public static final String TIMEZONE = "TIMEZONE";
+	public static final String DAY_OF_WEEK = "DAY_OF_WEEK";
+	public static final String DAY_OF_MONTH = "DAY_OF_MONTH";
+	public static final String DAY_OF_YEAR = "DAY_OF_YEAR";
+	public static final String WEEK_OF_MONTH = "WEEK_OF_MONTH";
+	public static final String WEEK_OF_YEAR = "WEEK_OF_YEAR";
+	public static final String MONTH = "MONTH";
+	public static final String YEAR = "YEAR";
+	
 
 	/**
 	 * The normalized year of the gregorianCutover in Gregorian, with 0 representing
@@ -154,9 +172,9 @@ public class DateTimeEntity {
 
 		long daymillis = time % ONE_DAY;
 		if (daymillis > ONE_DAY / 2) {
-			this.fields.put(DateField.AMPM, 1L);
+			this.fields.put(AMPM, 1L);
 		} else {
-			this.fields.put(DateField.AMPM, 0L);
+			this.fields.put(AMPM, 0L);
 		}
 		long hour = daymillis / ONE_HOUR;
 
@@ -176,28 +194,28 @@ public class DateTimeEntity {
 				}
 			}
 		}
-		this.fields.put(DateField.MILLISECOND_OF_DAY, daymillis);
-		this.fields.put(DateField.HOUR_OF_DAY, hour);
-		this.fields.put(DateField.MINUTE_OF_HOUR, (daymillis % ONE_HOUR) / ONE_MINUTE);
-		this.fields.put(DateField.SECOND_OF_MINUTE, (daymillis % ONE_MINUTE) / ONE_SECOND);
+		this.fields.put(MILLISECOND_OF_DAY, daymillis);
+		this.fields.put(HOUR_OF_DAY, hour);
+		this.fields.put(MINUTE_OF_HOUR, (daymillis % ONE_HOUR) / ONE_MINUTE);
+		this.fields.put(SECOND_OF_MINUTE, (daymillis % ONE_MINUTE) / ONE_SECOND);
 
-		this.fields.put(DateField.MILLISECOND_OF_YEAR, yearMillis);
+		this.fields.put(MILLISECOND_OF_YEAR, yearMillis);
 
 		long dayOfYear = yearMillis / ONE_DAY;
-		this.fields.put(DateField.DAY_OF_YEAR, dayOfYear);
-		this.fields.put(DateField.YEAR, (long) year);
-		this.fields.put(DateField.MONTH, (long) month);
-		this.fields.put(DateField.DAY_OF_MONTH, (long) day);
+		this.fields.put(DAY_OF_YEAR, dayOfYear);
+		this.fields.put(YEAR, (long) year);
+		this.fields.put(MONTH, (long) month);
+		this.fields.put(DAY_OF_MONTH, (long) day);
 
-		this.fields.put(DateField.DAY_OF_WEEK, dayOfWeek);
+		this.fields.put(DAY_OF_WEEK, dayOfWeek);
 		long week = dayOfYear / 7;
 		if (dayOfYear % 7 > 0) {
 			week++;
 		}
 //		week += 1;
-		this.fields.put(DateField.WEEK_OF_YEAR, week);
-		this.fields.put(DateField.WEEK_OF_MONTH, week - ((dayOfYear - day) / 7));
-		this.fields.put(DateField.MILLISECONDSREAL, time);
+		this.fields.put(WEEK_OF_YEAR, week);
+		this.fields.put(WEEK_OF_MONTH, week - ((dayOfYear - day) / 7));
+		this.fields.put(MILLISECONDSREAL, time);
 
 		return false;
 	}
@@ -205,8 +223,8 @@ public class DateTimeEntity {
 	public void calculate() {
 		if (this.dirty) {
 			Long time = getTimeWithTimeZone();
-			this.fields.put(DateField.MILLISECONDS, time);
-			this.fields.put(DateField.MILLISECOND, time % ONE_SECOND);
+			this.fields.put(MILLISECONDS, time);
+			this.fields.put(MILLISECOND, time % ONE_SECOND);
 
 			if (internCalculate(time, true)) {
 				time += ONE_HOUR;
@@ -217,7 +235,7 @@ public class DateTimeEntity {
 		}
 	}
 
-	public long get(DateField field) {
+	public long get(String field) {
 		if (time == null) {
 			time = System.currentTimeMillis();
 			this.dirty = true;
@@ -274,16 +292,13 @@ public class DateTimeEntity {
 		return dirty;
 	}
 
-	public void add(DateField field, int value) {
+	public boolean add(String field, int value) {
 		Long oldValue = get(field);
-
-		if (oldValue != null) {
-			set(field, oldValue + value);
-		}
+		return set(field, oldValue + value);
 	}
 
-	public void set(DateField field, int value) {
-		set(field, (long) value);
+	public boolean set(String field, int value) {
+		return set(field, (long) value);
 	}
 
 	/**
@@ -292,24 +307,22 @@ public class DateTimeEntity {
 	 * @param field dateTimeField
 	 * @param value value of changes
 	 */
-	public void set(DateField field, long value) {
+	public boolean set(String field, long value) {
 		if (field != null) {
 			long oldValue = getValueInMillisecond(field);
-			switch (field) {
-			case MONTH:
-				oldValue = getValueInMillisecond(DateField.MILLISECOND_OF_YEAR);
+			if(field.equals(MONTH)) {
+				oldValue = getValueInMillisecond(MILLISECOND_OF_YEAR);
 				fields.put(field, value);
-				addTime(getValueInMillisecond(DateField.MILLISECOND_OF_YEAR) - oldValue);
-				break;
-			case TIMEZONE:
+				addTime(getValueInMillisecond(MILLISECOND_OF_YEAR) - oldValue);
+			} else if(field.equals(TIMEZONE)) {
 				withTimezone((byte) value);
-				break;
-			default:
+			} else {
 				fields.put(field, value);
 				addTime(getValueInMillisecond(field) - oldValue);
-				break;
 			}
+			return true;
 		}
+		return false;
 	}
 
 	/**
@@ -450,26 +463,26 @@ public class DateTimeEntity {
 				// System.out.println(count++
 				// + ": #" +sub+ "# -- " +tokener.isString());
 				// Time
-				sub = sub.replace("HZ", EntityUtil.strZero(get(DateField.HOUR_OF_DAY) - getTimezone(), 2));
-				sub = sub.replace("HH", EntityUtil.strZero(get(DateField.HOUR_OF_DAY), 2));
-				sub = sub.replace("H", String.valueOf(get(DateField.HOUR_OF_DAY)));
-				sub = sub.replace("MM", EntityUtil.strZero(get(DateField.MINUTE_OF_HOUR), 2));
-				sub = sub.replace("M", String.valueOf(get(DateField.MINUTE_OF_HOUR)));
-				sub = sub.replace("SS", EntityUtil.strZero(get(DateField.SECOND_OF_MINUTE), 2));
-				sub = sub.replace("S", String.valueOf(get(DateField.SECOND_OF_MINUTE)));
+				sub = sub.replace("HZ", EntityUtil.strZero(get(HOUR_OF_DAY) - getTimezone(), 2));
+				sub = sub.replace("HH", EntityUtil.strZero(get(HOUR_OF_DAY), 2));
+				sub = sub.replace("H", String.valueOf(get(HOUR_OF_DAY)));
+				sub = sub.replace("MM", EntityUtil.strZero(get(MINUTE_OF_HOUR), 2));
+				sub = sub.replace("M", String.valueOf(get(MINUTE_OF_HOUR)));
+				sub = sub.replace("SS", EntityUtil.strZero(get(SECOND_OF_MINUTE), 2));
+				sub = sub.replace("S", String.valueOf(get(SECOND_OF_MINUTE)));
 				// Date
-				sub = sub.replace("dddd", this.weekDays[(int) get(DateField.DAY_OF_WEEK)]);
-				sub = sub.replace("ddd", this.weekDays[(int) get(DateField.DAY_OF_WEEK)].substring(0, 3));
-				sub = sub.replace("dd", EntityUtil.strZero(get(DateField.DAY_OF_MONTH), 2));
-				sub = sub.replace("d", String.valueOf(get(DateField.DAY_OF_MONTH)));
-				sub = sub.replace("mmmm", this.monthOfYear[(int) get(DateField.MONTH) - 1]);
-				sub = sub.replace("mmm", this.monthOfYear[(int) get(DateField.MONTH) - 1].substring(0, 3));
-				sub = sub.replace("mm", EntityUtil.strZero(get(DateField.MONTH), 2));
-				sub = sub.replace("m", String.valueOf(get(DateField.MONTH)));
-				sub = sub.replace("yyyy", String.valueOf(get(DateField.YEAR)));
-				sub = sub.replace("yyy", String.valueOf(get(DateField.YEAR)));
-				sub = sub.replace("yy", EntityUtil.strZero(get(DateField.YEAR), 2, 2));
-				sub = sub.replace("y", EntityUtil.strZero(get(DateField.YEAR), 1, 2));
+				sub = sub.replace("dddd", this.weekDays[(int) get(DAY_OF_WEEK)]);
+				sub = sub.replace("ddd", this.weekDays[(int) get(DAY_OF_WEEK)].substring(0, 3));
+				sub = sub.replace("dd", EntityUtil.strZero(get(DAY_OF_MONTH), 2));
+				sub = sub.replace("d", String.valueOf(get(DAY_OF_MONTH)));
+				sub = sub.replace("mmmm", this.monthOfYear[(int) get(MONTH) - 1]);
+				sub = sub.replace("mmm", this.monthOfYear[(int) get(MONTH) - 1].substring(0, 3));
+				sub = sub.replace("mm", EntityUtil.strZero(get(MONTH), 2));
+				sub = sub.replace("m", String.valueOf(get(MONTH)));
+				sub = sub.replace("yyyy", String.valueOf(get(YEAR)));
+				sub = sub.replace("yyy", String.valueOf(get(YEAR)));
+				sub = sub.replace("yy", EntityUtil.strZero(get(YEAR), 2, 2));
+				sub = sub.replace("y", EntityUtil.strZero(get(YEAR), 1, 2));
 				if (this.timeZone > 0) {
 					sub = sub.replace("Z", "+" + EntityUtil.strZero(this.timeZone, 2, 2) + "00");
 				} else if (this.timeZone < 0) {
@@ -477,9 +490,7 @@ public class DateTimeEntity {
 				} else {
 					sub = sub.replace("Z", "0000");
 				}
-
 				sub = sub.replace("z", "CEST");
-
 			}
 			sb.with(sub);
 			if (dateFormat.getCurrentChar() == '\"') {
@@ -496,8 +507,8 @@ public class DateTimeEntity {
 		if (this.isDirty()) {
 			this.calculate();
 		}
-		return this.get(DateField.DAY_OF_MONTH) + "." + this.fields.get(DateField.MONTH) + "."
-				+ this.fields.get(DateField.YEAR);
+		return this.get(DAY_OF_MONTH) + "." + this.fields.get(MONTH) + "."
+				+ this.fields.get(YEAR);
 	}
 
 	public String toGMTString() {
@@ -513,7 +524,7 @@ public class DateTimeEntity {
 	 * @return Itself
 	 */
 	public DateTimeEntity withYear(int value) {
-		set(DateField.YEAR, value);
+		set(YEAR, value);
 		return this;
 	}
 
@@ -524,27 +535,27 @@ public class DateTimeEntity {
 	 * @return Itself
 	 */
 	public DateTimeEntity withMonth(int value) {
-		set(DateField.MONTH, value);
+		set(MONTH, value);
 		return this;
 	}
 
 	public DateTimeEntity withDate(int value) {
-		set(DateField.DAY_OF_MONTH, value);
+		set(DAY_OF_MONTH, value);
 		return this;
 	}
 
 	public DateTimeEntity withHour(int value) {
-		set(DateField.HOUR_OF_DAY, value);
+		set(HOUR_OF_DAY, value);
 		return this;
 	}
 
 	public DateTimeEntity withMinute(int value) {
-		set(DateField.MINUTE_OF_HOUR, value);
+		set(MINUTE_OF_HOUR, value);
 		return this;
 	}
 
 	public DateTimeEntity withSecond(int value) {
-		set(DateField.SECOND_OF_MINUTE, value);
+		set(SECOND_OF_MINUTE, value);
 		return this;
 	}
 
@@ -566,25 +577,25 @@ public class DateTimeEntity {
 	 * @param field The Field for get
 	 * @return the Value As Milliseconds
 	 */
-	public long getValueInMillisecond(DateField field) {
+	public long getValueInMillisecond(String field) {
 		long value = fields.get(field);
-		if (field == DateField.MILLISECOND || field == DateField.MILLISECONDS || field == DateField.MILLISECOND_OF_YEAR
-				|| field == DateField.MILLISECOND_OF_DAY || field == DateField.MILLISECONDSREAL) {
+		if (field.equals(MILLISECOND) || field.equals(MILLISECONDS) || field.equals(MILLISECOND_OF_YEAR)
+				|| field.equals(MILLISECOND_OF_DAY) || field.equals(MILLISECONDSREAL)) {
 			return value;
-		} else if (field == DateField.SECOND_OF_MINUTE) {
+		} else if (field.equals(SECOND_OF_MINUTE)) {
 			return value * DateTimeEntity.ONE_SECOND;
-		} else if (field == DateField.MINUTE_OF_HOUR) {
+		} else if (field.equals(MINUTE_OF_HOUR)) {
 			return value * DateTimeEntity.ONE_MINUTE;
-		} else if (field == DateField.HOUR_OF_DAY) {
+		} else if (field.equals(HOUR_OF_DAY)) {
 			return value * DateTimeEntity.ONE_HOUR;
-		} else if (field == DateField.DAY_OF_WEEK || field == DateField.DAY_OF_MONTH
-				|| field == DateField.DAY_OF_YEAR) {
+		} else if (field.equals(DAY_OF_WEEK) || field.equals(DAY_OF_MONTH)
+				|| field.equals(DAY_OF_YEAR)) {
 			return value * DateTimeEntity.ONE_DAY;
-		} else if (field == DateField.AMPM) {
+		} else if (field.equals(AMPM)) {
 			return value * (DateTimeEntity.ONE_DAY / 2);
-		} else if (field == DateField.WEEK_OF_MONTH || field == DateField.WEEK_OF_YEAR) {
+		} else if (field.equals(WEEK_OF_MONTH) || field.equals(WEEK_OF_YEAR)) {
 			return value * DateTimeEntity.ONE_WEEK;
-		} else if (field == DateField.YEAR) {
+		} else if (field.equals(YEAR)) {
 			int year = Integer.parseInt("" + value);
 			int schaltjahre = ((year - 1) - 1968) / 4 - ((year - 1) - 1900) / 100 + ((year - 1) - 1600) / 400;
 			return (year - schaltjahre) * DateTimeEntity.ONE_YEAR + (schaltjahre * DateTimeEntity.ONE_YEAR_LY);

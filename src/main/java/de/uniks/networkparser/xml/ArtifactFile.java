@@ -129,30 +129,33 @@ public class ArtifactFile implements SendableEntityCreatorTag, BaseItem, Compara
 		int start = 0;
 		String part, temp = "";
 		i = 0;
-		part = this.version.substring(start, start + this.pomNumber[i + 3]);
-		start += this.pomNumber[i + 3] + 1;
-		temp += EntityUtil.strZero(Integer.valueOf(part), this.pomNumber[i]);
-		i++;
-
-		if (start + this.pomNumber[i + 3] < this.version.length()) {
+		try {
 			part = this.version.substring(start, start + this.pomNumber[i + 3]);
 			start += this.pomNumber[i + 3] + 1;
-			try {
-				temp += EntityUtil.strZero(Integer.valueOf(part), this.pomNumber[i]);
-			} catch (Exception e) {
-			}
+			temp += EntityUtil.strZero(Integer.valueOf(part), this.pomNumber[i]);
 			i++;
-		}
-		if (start + this.pomNumber[i + 3] < this.version.length()) {
-			try {
+	
+			if (start + this.pomNumber[i + 3] < this.version.length()) {
 				part = this.version.substring(start, start + this.pomNumber[i + 3]);
-			} catch (Exception e) {
+				start += this.pomNumber[i + 3] + 1;
+				try {
+					temp += EntityUtil.strZero(Integer.valueOf(part), this.pomNumber[i]);
+				} catch (Exception e) {
+				}
+				i++;
 			}
-			try {
-				temp += EntityUtil.strZero(Integer.valueOf(part), this.pomNumber[i]);
-			} catch (Exception e) {
+			if (start + this.pomNumber[i + 3] < this.version.length()) {
+				try {
+					part = this.version.substring(start, start + this.pomNumber[i + 3]);
+				} catch (Exception e) {
+				}
+				try {
+					temp += EntityUtil.strZero(Integer.valueOf(part), this.pomNumber[i]);
+				} catch (Exception e) {
+				}
+				this.pomNumber[6] = Integer.valueOf(temp);
 			}
-			this.pomNumber[6] = Integer.valueOf(temp);
+		}catch (Exception e) {
 		}
 		return change;
 	}
