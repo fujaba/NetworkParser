@@ -27,7 +27,6 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.lang.reflect.Array;
-import java.lang.reflect.Method;
 import java.util.List;
 
 import de.uniks.networkparser.EntityUtil;
@@ -66,25 +65,6 @@ public class PointPaneController extends SendableItem implements PropertyChangeL
 		this.eventProxy = ReflectionLoader.createProxy(eventListener, ReflectionLoader.EVENTHANDLER);
 
 		model.addPropertyChangeListener(Dice.PROPERTY_VALUE, this);
-	}
-
-	//FIXME CHANGE
-	public PointPaneController init(Object model, Object gui) {
-		if (model != null && gui != null) {
-			try {
-				Method method = this.getClass().getMethod("initPropertyChange" + model.getClass().getSimpleName(),
-						model.getClass(), ReflectionLoader.NODE);
-				method.invoke(this, model, gui);
-			} catch (ReflectiveOperationException e) {
-				this.initPropertyChange(model, gui);
-			} catch (SecurityException e) {
-				this.initPropertyChange(model, gui);
-			} catch (IllegalArgumentException e) {
-				this.initPropertyChange(model, gui);
-			}
-		}
-//		EventHandler<ActionEvent>,EventHandler<MouseEvent>
-		return this;
 	}
 
 	public void setStyle(String value) {
@@ -296,6 +276,7 @@ public class PointPaneController extends SendableItem implements PropertyChangeL
 			return false;
 		}
 		GenericCreator creator = new GenericCreator(item);
+		Object result;
 		if (property != null) {
 			if (item instanceof SendableEntity) {
 				((SendableEntity) item).addPropertyChangeListener(property, listener);
@@ -309,37 +290,30 @@ public class PointPaneController extends SendableItem implements PropertyChangeL
 						new PropertyChangeEvent(item, property, null, creator.getValue(item, property)));
 				return true;
 			}
-			try {
-				Method method = item.getClass().getMethod("addPropertyChangeListener", String.class,
-						java.beans.PropertyChangeListener.class);
-				method.invoke(item, property, listener);
-				listener.propertyChange(
-						new PropertyChangeEvent(item, property, null, creator.getValue(item, property)));
+			result =ReflectionLoader.calling(item, "addPropertyChangeListener", false, Boolean.TRUE, 
+					String.class, property, java.beans.PropertyChangeListener.class, listener);
+			if(result != null) {
+				listener.propertyChange(new PropertyChangeEvent(item, property, null, creator.getValue(item, property)));
 				return true;
-			} catch (ReflectiveOperationException e) {
 			}
 		}
-		try {
-			Method method = item.getClass().getMethod("getPropertyChangeSupport");
-			PropertyChangeSupport pc = (PropertyChangeSupport) method.invoke(item);
+		result = ReflectionLoader.calling(item, "getPropertyChangeSupport", false, Boolean.TRUE);
+		if(result instanceof PropertyChangeSupport) {
+			PropertyChangeSupport pcs = (PropertyChangeSupport) result;
 			if (property == null) {
-				pc.addPropertyChangeListener(listener);
+				pcs.addPropertyChangeListener(listener);
 				listener.propertyChange(new PropertyChangeEvent(item, property, null, null));
 			} else {
-				pc.addPropertyChangeListener(property, listener);
-				listener.propertyChange(
-						new PropertyChangeEvent(item, property, null, creator.getValue(item, property)));
+				pcs.addPropertyChangeListener(property, listener);
+				listener.propertyChange(new PropertyChangeEvent(item, property, null, creator.getValue(item, property)));
 			}
 			return true;
-		} catch (ReflectiveOperationException e) {
 		}
-		try {
-			Method method = item.getClass().getMethod("addPropertyChangeListener",
-					java.beans.PropertyChangeListener.class);
-			method.invoke(item, listener);
+		result =ReflectionLoader.calling(item, "addPropertyChangeListener", false, Boolean.TRUE, 
+				java.beans.PropertyChangeListener.class, listener);
+		if(result != null) {
 			listener.propertyChange(new PropertyChangeEvent(item, property, null, creator.getValue(item, property)));
 			return true;
-		} catch (ReflectiveOperationException e) {
 		}
 		return false;
 	}

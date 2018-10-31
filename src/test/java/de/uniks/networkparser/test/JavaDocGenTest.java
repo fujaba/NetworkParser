@@ -1,21 +1,25 @@
 package de.uniks.networkparser.test;
 
-import java.io.File;
-import java.util.ArrayList;
-
 import org.junit.Assert;
 import org.junit.Test;
 
-import de.uniks.networkparser.test.javadoc.JavaDocValidator;
+import de.uniks.networkparser.ext.FileClassModel;
+import de.uniks.networkparser.list.SimpleList;
 
 public class JavaDocGenTest {
 	public static final String PREFIX="src.main.java.";
 	@Test(timeout=180000)
 	public void testGenJavaDoc() {
 //		long time = System.currentTimeMillis();
-		JavaDocValidator javaDoc=new JavaDocValidator();
-		ArrayList<String> validateFileTree = javaDoc.validateFileTree(new File("src/main/java"), true, false);
-		Assert.assertEquals(0, validateFileTree.size());
+		FileClassModel model = new FileClassModel("de.uniks.networkparser");
+		model.readFiles("src/main/java/");
+
+		SimpleList<String> errors = model.analyseJavaDoc(false);
+//		ArrayList<String> validateFileTree = javaDoc.validateFileTree(new File("src/main/java"), true, false);
+		for(String item : errors) {
+			System.out.println(item);
+		}
+		Assert.assertEquals(0, errors.size());
 //		System.out.println("Time: " +(System.currentTimeMillis()- time));
 
 

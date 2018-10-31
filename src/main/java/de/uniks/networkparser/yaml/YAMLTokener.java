@@ -129,7 +129,8 @@ public class YAMLTokener extends Tokener {
 		while (buffer.isEnd() == false) {
 			if (DASH != buffer.getCurrentChar()) {
 				buffer.printError("'-' expected");
-				continue;
+				break;
+//				continue;
 			}
 			buffer.skipChar(DASH);
 			CharacterBuffer key = buffer.nextString();

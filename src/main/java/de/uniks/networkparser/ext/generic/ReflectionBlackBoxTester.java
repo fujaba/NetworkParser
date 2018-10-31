@@ -56,6 +56,7 @@ import de.uniks.networkparser.list.SimpleSet;
 public class ReflectionBlackBoxTester {
 	public static final String TYPE_NULLVALUE = "null";
 	public static final String TYPE_MINVALUE = "min";
+	public static final String TYPE_MIDDLEVALUE = "middle";
 	public static final String TYPE_MAXVALUE = "max";
 	public static final String TYPE_RANDOMVALUE = "random";
 	public static final String TYPE_CUSTOMVALUE = "custom";
@@ -65,7 +66,7 @@ public class ReflectionBlackBoxTester {
 	public static final String DEFAULTMETHODS = "";
 
 	private SimpleSet<String> tests = new SimpleSet<String>().with(TYPE_NULLVALUE, TYPE_MINVALUE, TYPE_RANDOMVALUE,
-			TYPE_CUSTOMVALUE);
+			TYPE_CUSTOMVALUE, TYPE_MIDDLEVALUE);
 	private SimpleKeyValueList<String, SimpleSet<String>> ignoreMethods;
 //	private SimpleSet<String> ignoreClazz=new SimpleSet<String>().with("de.uniks.networkparser.NetworkParserLog");
 	private int errorCount;
@@ -372,6 +373,19 @@ public class ReflectionBlackBoxTester {
 					saveException(e, clazz, m, call);
 				}
 			}
+			if (tests.contains(TYPE_MIDDLEVALUE)) {
+				try {
+					call = getParameters(m, parameterTypes, TYPE_MIDDLEVALUE, this);
+//					output(clazz.getName()+"-call: "+m.getName(), logger, NetworkParserLog.LOGLEVEL_ERROR);
+
+					m.invoke(obj, call);
+					successCount++;
+				} catch (Exception e) {
+					saveException(e, clazz, m, call);
+				}
+			}
+			
+			
 		}
 		for (Field f : clazz.getDeclaredFields()) {
 			try {
@@ -485,6 +499,11 @@ public class ReflectionBlackBoxTester {
 				objects[i] = getRandomValue(parameters[i]);
 			}
 		}
+		if (TYPE_MIDDLEVALUE.equals(type)) {
+			for (int i = 0; i < length; i++) {
+				objects[i] = getMiddleValue(parameters[i]);
+			}
+		}
 		if (TYPE_CUSTOMVALUE.equals(type)) {
 			return getCustomValue(m, parameters, owner);
 		}
@@ -529,9 +548,8 @@ public class ReflectionBlackBoxTester {
 			if (equalsClass(clazz, double.class, Double.class)) {
 				return 0.0d;
 			}
-			if (equalsClass(clazz, String.class, CharSequence.class)) {
-				return null;
-			}
+		} else if (equalsClass(clazz, String.class, CharSequence.class)) {
+			return null;
 		}
 		return null;
 	}
@@ -562,9 +580,8 @@ public class ReflectionBlackBoxTester {
 			if (equalsClass(clazz, double.class, Double.class)) {
 				return Double.MIN_VALUE;
 			}
-			if (equalsClass(clazz, String.class, CharSequence.class)) {
-				return "";
-			}
+		} else if (equalsClass(clazz, String.class, CharSequence.class)) {
+			return "";
 		}
 		return null;
 	}
@@ -615,9 +632,8 @@ public class ReflectionBlackBoxTester {
 			if (equalsClass(clazz, boolean.class, Boolean.class)) {
 				return true;
 			}
-			if (equalsClass(clazz, String.class, CharSequence.class)) {
-				return "Albert";
-			}
+		} else if (equalsClass(clazz, String.class, CharSequence.class)) {
+			return "Albert";
 		} else if (equalsClass(clazz, Class.class)) {
 			return Object.class;
 		} else if (equalsClass(clazz, Object.class)) {
@@ -702,6 +718,38 @@ public class ReflectionBlackBoxTester {
 			if (equalsClass(clazz, double.class, Double.class)) {
 				return Double.MAX_VALUE;
 			}
+		}
+		return null;
+	}
+	
+	private static Object getMiddleValue(Class<?> clazz) {
+		if (clazz.isPrimitive()) {
+			if (equalsClass(clazz, boolean.class, Boolean.class)) {
+				return true;
+			}
+			if (equalsClass(clazz, byte.class, Byte.class)) {
+				return Byte.MAX_VALUE;
+			}
+			if (equalsClass(clazz, int.class, Integer.class)) {
+				return 1000;
+			}
+			if (equalsClass(clazz, short.class, Short.class)) {
+				return (short)1000;
+			}
+			if (equalsClass(clazz, long.class, Long.class)) {
+				return (long)1000;
+			}
+			if (equalsClass(clazz, char.class, Character.class)) {
+				return Character.MAX_VALUE;
+			}
+			if (equalsClass(clazz, float.class, Float.class)) {
+				return (float) 1000;
+			}
+			if (equalsClass(clazz, double.class, Double.class)) {
+				return (double) 1000;
+			}
+		} else if (equalsClass(clazz, String.class, CharSequence.class)) {
+			return "Minions ipsum potatoooo hahaha poopayee tatata bala tu hahaha wiiiii butt po kass para tú. Aaaaaah poulet tikka masala chasy tulaliloo pepete.";
 		}
 		return null;
 	}

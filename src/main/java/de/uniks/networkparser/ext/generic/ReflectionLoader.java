@@ -745,6 +745,13 @@ public class ReflectionLoader {
 //				if(isAccess(method, item) == false || isPublic == false || (isPublic && isFinal)) {
 				method.setAccessible(true);
 //				}
+				if(notifyObject instanceof Boolean) {
+					Object invoke = method.invoke(item, methodArgumentsValues);
+					if(invoke != null) {
+						return invoke;
+					}
+					return notifyObject;
+				}
 				return method.invoke(item, methodArgumentsValues);
 			}
 		} catch (Exception e) {
