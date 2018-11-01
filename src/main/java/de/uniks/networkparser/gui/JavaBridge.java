@@ -40,7 +40,7 @@ import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.xml.HTMLEntity;
 import de.uniks.networkparser.xml.XMLEntity;
 
-public abstract class JavaBridge implements ObjectCondition {
+public class JavaBridge implements ObjectCondition {
 	public static String CONTENT_TYPE_INCLUDE = "INCLUDE";
 
 	public static String CONTENT_TYPE_EXCLUDE = "EXCLUDE";
@@ -224,6 +224,9 @@ public abstract class JavaBridge implements ObjectCondition {
 				value = script;
 			}
 			debug.withValueItem(value);
+		}
+		if(this.webView == null) {
+			return null;
 		}
 		return this.webView.executeScript(script);
 	}

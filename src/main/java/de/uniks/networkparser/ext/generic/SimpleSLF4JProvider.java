@@ -26,8 +26,9 @@ THE SOFTWARE.
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.Map;
+
 import de.uniks.networkparser.NetworkParserLog;
-import de.uniks.networkparser.ext.io.OutputCondition;
+import de.uniks.networkparser.ext.io.StringPrintStream;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 
@@ -125,7 +126,7 @@ public class SimpleSLF4JProvider implements InvocationHandler {
 
 	public NetworkParserLog getLogger() {
 		if (this.logger == null) {
-			this.logger = new NetworkParserLog().withListener(new OutputCondition());
+			this.logger = new NetworkParserLog().withListener(new StringPrintStream());
 		}
 		return logger;
 	}

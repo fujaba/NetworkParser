@@ -389,7 +389,6 @@ public class ReflectionLoader {
 				try {
 					if (Modifier.isPublic(con.getModifiers()) == false) {
 						con.setAccessible(true);
-//						continue;
 					}
 					Object[] values = ReflectionBlackBoxTester.getParameters(con, con.getParameterTypes(),
 							ReflectionBlackBoxTester.TYPE_NULLVALUE, null);

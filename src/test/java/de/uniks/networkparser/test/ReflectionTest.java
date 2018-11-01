@@ -8,13 +8,15 @@ import org.junit.Test;
 
 import de.uniks.networkparser.NetworkParserLog;
 import de.uniks.networkparser.SimpleEvent;
+import de.uniks.networkparser.ext.SimpleController;
 import de.uniks.networkparser.ext.generic.ReflectionBlackBoxTester;
 import de.uniks.networkparser.ext.generic.ReflectionLoader;
-import de.uniks.networkparser.ext.io.OutputCondition;
+import de.uniks.networkparser.ext.io.StringPrintStream;
+import de.uniks.networkparser.gui.JavaBridge;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 
 public class ReflectionTest {
-	public OutputCondition output = new OutputCondition();
+	public StringPrintStream output = new StringPrintStream();
 
 	@Test
 	public void testReflection() throws ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, IOException {
@@ -74,6 +76,22 @@ public class ReflectionTest {
 		NetworkParserLog logger=new NetworkParserLog();
 		tester.test("de.uniks.networkparser.ext.DiagramEditor", logger);
 //		System.out.println(""+System.currentTimeMillis()+" FINISH:"+Thread.activeCount());
+	}
+
+	
+	@Test
+	public void testSimpleController() throws Exception {
+		ReflectionBlackBoxTester tester = new ReflectionBlackBoxTester();
+		tester.withLogger(new NetworkParserLog().withListener(new StringPrintStream()));
+//		tester.testClass(new SimpleController(), SimpleController.class, tester.getMethods(SimpleController.class.getName()));
+		tester.testClass(new SimpleController(), SimpleController.class, tester.getMethods(""));
+	}
+	
+	@Test
+	public void testJavaBridge() throws Exception {
+		ReflectionBlackBoxTester tester = new ReflectionBlackBoxTester();
+		tester.withLogger(new NetworkParserLog().withListener(new StringPrintStream()));
+		tester.testClass(new JavaBridge(), JavaBridge.class, tester.getMethods(""));
 	}
 
 	@Test

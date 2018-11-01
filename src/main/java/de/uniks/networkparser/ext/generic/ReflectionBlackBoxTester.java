@@ -134,8 +134,6 @@ public class ReflectionBlackBoxTester {
 	public ReflectionBlackBoxTester() {
 		ignoreMethods = new SimpleKeyValueList<String, SimpleSet<String>>();
 
-		withIgnoreClazzes(ReflectionBlackBoxTester.class, "main");
-
 		withIgnoreClazzes(Gradle.class);
 		withIgnoreClazzes(FileClassModel.class);
 		// Add for Files
@@ -148,22 +146,6 @@ public class ReflectionBlackBoxTester {
 //		withIgnoreClazzes(SimpleController.class, "create", "init");
 //		withIgnoreClazzes(SimpleController.class);
 		withIgnoreClazzes(JarValidator.class);
-
-		// TEST
-//		withIgnoreClazzes(Server_UPD.class);
-//		withIgnoreClazzes(Server_Time.class);
-//		withIgnoreClazzes(Space.class);
-//		withIgnoreClazzes(NodeProxyServer.class);
-//		withIgnoreClazzes(NodeProxyTCP.class, "initProxy", "postHTTP", "getHTTP", "getConnection");
-//		withIgnoreClazzes(DiagramEditor.class);
-//		withIgnoreClazzes(NodeProxyMessages.class);
-//		withIgnoreClazzes(NodeProxyBroker.class);
-//		withIgnoreClazzes(MQTTMessage.class);
-//		withIgnoreClazzes(RabbitMessage.class);
-//		withIgnoreClazzes(MessageSession.class);
-//		withIgnoreClazzes(JavaAdapter.class);
-//		withIgnoreClazzes(JavaBridgeFX.class);
-//		withIgnoreClazzes(TimerExecutor.class);
 	}
 
 	public ReflectionBlackBoxTester withIgnoreClazzes(Class<?> metaClass, String... methods) {
@@ -223,14 +205,15 @@ public class ReflectionBlackBoxTester {
 		long start = System.currentTimeMillis();
 		Set<Thread> oldThreads = ReflectionLoader.closeThreads(null);
 		Timer timer = new Timer();
+		SimpleSet<String> defaultMethods = this.ignoreMethods.get(DEFAULTMETHODS);
 
 		for (Class<?> clazz : classesForPackage) {
-			SimpleSet<String> methods = this.ignoreMethods.get(clazz.getName());
-			if (methods != null && methods.size() < 1) {
-//				System.out.println("Ignore:"+clazz.getName());
+			if (Modifier.isAbstract(clazz.getModifiers())) {
 				continue;
 			}
-			if (Modifier.isAbstract(clazz.getModifiers())) {
+			SimpleSet<String> methods = getMethods(clazz.getName());
+			if (methods != null && methods.size() < 1) {
+//				System.out.println("Ignore:"+clazz.getName());
 				continue;
 			}
 			SimpleTimerTask task = new SimpleTimerTask(Thread.currentThread());
@@ -238,12 +221,13 @@ public class ReflectionBlackBoxTester {
 			Object obj = ReflectionLoader.newInstanceSimple(clazz, IGNOREMETHOD);
 			if (obj != null) {
 				// Show For Ignore DefaultMethods
-				SimpleSet<String> defaultMethods = this.ignoreMethods.get(DEFAULTMETHODS);
+				
 				if (defaultMethods != null) {
-					if (methods == null) {
-						methods = new SimpleSet<String>();
+					if (methods != null) {
+						methods.withList(defaultMethods);
+					}else {
+						methods = defaultMethods;
 					}
-					methods.withList(defaultMethods);
 				}
 				testClass(obj, clazz, methods);
 			}
@@ -264,16 +248,22 @@ public class ReflectionBlackBoxTester {
 				+ Thread.activeCount(), logger, NetworkParserLog.LOGLEVEL_INFO, null);
 
 	}
+	
+	public SimpleSet<String> getMethods(String className) {
+		return this.ignoreMethods.get(className);
+	}
 
 	public void testClass(Object obj, Class<?> clazz, SimpleSet<String> ignoreMethods) {
 		boolean reg = false;
 		if (obj == null) {
 			return;
 		}
-		for (String m : ignoreMethods) {
-			if (m != null && m.endsWith("*")) {
-				reg = true;
-				break;
+		if(ignoreMethods != null) {
+			for (String m : ignoreMethods) {
+				if (m != null && m.endsWith("*")) {
+					reg = true;
+					break;
+				}
 			}
 		}
 		Field propertyChangeListener = null;
@@ -312,77 +302,41 @@ public class ReflectionBlackBoxTester {
 			// mit Null as Parameter
 //			System.out.println(System.currentTimeMillis()+" TEST:"+clazz.getName()+":"+m.getName());
 			Class<?>[] parameterTypes = m.getParameterTypes();
-			if (tests.contains(TYPE_NULLVALUE)) {
-				try {
-					call = getParameters(m, parameterTypes, TYPE_NULLVALUE, this);
 
+			for(String type : tests) {
+				try {
+					call = getParameters(m, parameterTypes, type, this);
 					m.invoke(obj, call);
 					successCount++;
 				} catch (Exception e) {
 					saveException(e, clazz, m, call);
 				}
-				// specialcase
-				if (propertyChangeListener != null && "addPropertyChangeListener".equals(m.getName())) {
-					// So try again
-					try {
-						propertyChangeListener.set(obj, null);
-					} catch (Exception e) {
-						e.printStackTrace();
+				if(TYPE_NULLVALUE.equals(type)) {
+					// specialcase
+					if("update".equals(m.getName())) {
+						// So try again
+						try {
+							m.invoke(obj, new SimpleEvent(this, "TESTER", null, null));
+						} catch (Exception e) {
+							saveException(e, clazz, m, call);
+						}
 					}
+					if (propertyChangeListener != null && "addPropertyChangeListener".equals(m.getName())) {
+						// So try again
+						try {
+							propertyChangeListener.set(obj, null);
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
 
-					try {
-						m.invoke(obj, call);
-						successCount++;
-					} catch (Exception e) {
+						try {
+							m.invoke(obj, call);
+							successCount++;
+						} catch (Exception e) {
+						}
 					}
 				}
 			}
-			// mit MINVALUE as Parameter
-			if (tests.contains(TYPE_MINVALUE)) {
-				try {
-					call = getParameters(m, parameterTypes, TYPE_MINVALUE, this);
-					m.invoke(obj, call);
-					successCount++;
-				} catch (Exception e) {
-					saveException(e, clazz, m, call);
-				}
-			}
-			// mit MAXVALUE as Parameter
-			if (tests.contains(TYPE_MAXVALUE)) {
-				try {
-					call = getParameters(m, parameterTypes, TYPE_MAXVALUE, this);
-					m.invoke(obj, call);
-					successCount++;
-				} catch (Exception e) {
-					saveException(e, clazz, m, call);
-				}
-			}
-
-			// mit RANDOMVALUE as Parameter
-			if (tests.contains(TYPE_RANDOMVALUE)) {
-				try {
-					call = getParameters(m, parameterTypes, TYPE_RANDOMVALUE, this);
-//					output(clazz.getName()+"-call: "+m.getName(), logger, NetworkParserLog.LOGLEVEL_ERROR);
-
-					m.invoke(obj, call);
-					successCount++;
-				} catch (Exception e) {
-					saveException(e, clazz, m, call);
-				}
-			}
-			if (tests.contains(TYPE_MIDDLEVALUE)) {
-				try {
-					call = getParameters(m, parameterTypes, TYPE_MIDDLEVALUE, this);
-//					output(clazz.getName()+"-call: "+m.getName(), logger, NetworkParserLog.LOGLEVEL_ERROR);
-
-					m.invoke(obj, call);
-					successCount++;
-				} catch (Exception e) {
-					saveException(e, clazz, m, call);
-				}
-			}
-			
-			
 		}
 		for (Field f : clazz.getDeclaredFields()) {
 			try {
@@ -764,14 +718,19 @@ public class ReflectionBlackBoxTester {
 
 	private String getLineFromThrowable(String packageName, Throwable e, String clazzName) {
 		StackTraceElement[] stackTrace = e.getStackTrace();
-		for (StackTraceElement ste : stackTrace) {
-			String name = ste.getClassName();
-			if (name.startsWith(packageName) && !name.startsWith(packageName + ".test")) {
-				return name + ".java:" + ste.getLineNumber();
+		if(packageName != null) {
+			for (StackTraceElement ste : stackTrace) {
+				String name = ste.getClassName();
+				if(name.startsWith(packageName) && !name.startsWith(packageName + ".test")) {
+					return name + ".java:" + ste.getLineNumber();
+				}
 			}
 		}
 		return "";
 	}
-
 	
+	public ReflectionBlackBoxTester withLogger(NetworkParserLog logger) {
+		this.logger = logger;
+		return this;
+	}
 }

@@ -85,7 +85,9 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 	private Object[] runParams;
 	private String runAction;
 	private SimpleKeyValueList<Object, SendableEntityCreator> mapping;
-	
+
+	public SimpleController() {
+	}
 	public SimpleController(Object primitiveStage) {
 		this(primitiveStage, true);
 	}
@@ -997,12 +999,6 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 					commands.add("-c");
 				}
 			}
-
-//			for(String item : values) {
-//				if(item != null) {
-//					param.add(item);
-//				}
-//			}
 			Process p;
 			// So now add executeCommand to String
 			if (found == false) {

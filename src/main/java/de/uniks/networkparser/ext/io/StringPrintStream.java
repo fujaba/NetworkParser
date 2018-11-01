@@ -25,10 +25,14 @@ THE SOFTWARE.
 */
 import java.io.OutputStream;
 import java.io.PrintStream;
+
+import de.uniks.networkparser.NetworkParserLog;
+import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.ext.ErrorHandler;
 import de.uniks.networkparser.interfaces.BaseItem;
+import de.uniks.networkparser.interfaces.ObjectCondition;
 
-public class StringPrintStream extends PrintStream {
+public class StringPrintStream extends PrintStream implements ObjectCondition {
 	private ErrorHandler handler;
 	private boolean error;
 
@@ -81,6 +85,25 @@ public class StringPrintStream extends PrintStream {
 			handler.writeOutput(value.toString(), error);
 			handler.writeOutput(BaseItem.CRLF, error);
 		}
+	}
+
+	@Override
+	public boolean update(Object value) {
+		if (value instanceof SimpleEvent == false) {
+			return false;
+		}
+		SimpleEvent event = (SimpleEvent) value;
+		if (event.getNewValue() != null) {
+			String msg = "" + event.getNewValue();
+			if (msg.length() > 0) {
+				if (NetworkParserLog.ERROR.equals(event.getType())) {
+					System.err.println(event.getType() + ": " + event.getNewValue());
+				} else {
+					System.out.println(event.getType() + ": " + event.getNewValue());
+				}
+			}
+		}
+		return false;
 	}
 //	java.io.PrintStream.printf(String, Object...)
 //	java.io.PrintStream.printf(Locale, String, Object...)
