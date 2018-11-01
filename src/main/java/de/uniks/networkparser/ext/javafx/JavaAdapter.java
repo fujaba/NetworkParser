@@ -45,7 +45,6 @@ import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.xml.HTMLEntity;
 import de.uniks.networkparser.xml.XMLEntity;
-import javafx.scene.web.WebEngine;
 
 public class JavaAdapter implements JavaViewAdapter, Runnable {
 	private SimpleKeyValueList<Object, String> callBack = new SimpleKeyValueList<Object, String>();
@@ -69,8 +68,6 @@ public class JavaAdapter implements JavaViewAdapter, Runnable {
 	@Override
 	public boolean load(Object item) {
 		if (item instanceof String) {
-			WebEngine engine = (WebEngine) webEngine;
-			engine.load((String) item);
 			ReflectionLoader.call(webEngine, "load", item);
 			return true;
 		}

@@ -26,6 +26,7 @@ THE SOFTWARE.
 */
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.lang.Thread.UncaughtExceptionHandler;
@@ -56,9 +57,6 @@ import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
-import javafx.fxml.FXMLLoader;
-import javafx.fxml.JavaFXBuilderFactory;
-import javafx.scene.Parent;
 
 public class SimpleController implements ObjectCondition, UncaughtExceptionHandler, Runnable {
 	public static final String SEPARATOR = "------";
@@ -901,12 +899,11 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 				Object key = mapping.getKeyByIndex(i);
 				SendableEntityCreator creator = mapping.getValueByIndex(i);
 				if(key instanceof String) {
-					Parent n = (Parent) this.rootScene;
-					Object pane = n.lookup("#"+key);
-//					Object pane = this.rootScene.getElementById(key);
-					Object controller = creator.getSendableInstance(false);
-					creator.setValue(controller, "gui", pane, SendableEntityCreator.NEW);
-//					this.controller.getElementById("#s"+p+"_1"));
+					Object pane = ReflectionLoader.call(this.rootScene, "lookup", "#"+key);
+					if(pane != null) {
+						Object controller = creator.getSendableInstance(false);
+						creator.setValue(controller, "gui", pane, SendableEntityCreator.NEW);
+					}
 				}
 			}
 		}
@@ -914,29 +911,29 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 	}
 
 	public Object create(URL location, ResourceBundle resources) {
-		FXMLLoader fxmlLoader;
+		Object fxmlLoader;
 		if (location == null) {
 			System.out.println("FXML not found");
 			return null;
 		}
 		if (resources != null) {
-			fxmlLoader = new FXMLLoader(location, resources,
-					new JavaFXBuilderFactory());
+			Object builder = ReflectionLoader.newInstance("javafx.fxml.JavaFXBuilderFactory");
+			Class<?> builderClass = ReflectionLoader.getClass("javafx.util.BuilderFactory");
+			fxmlLoader = ReflectionLoader.newInstance("javafx.fxml.FXMLLoader", java.net.URL.class, location,
+					java.util.ResourceBundle.class, resources,
+					builderClass, builder);
 		} else {
-			fxmlLoader = new FXMLLoader(location);
+			fxmlLoader = ReflectionLoader.newInstance("javafx.fxml.FXMLLoader", java.net.URL.class, location);
+		}
+		if(ReflectionLoader.logger == null) {
+			ReflectionLoader.logger = new PrintStream(System.err);
 		}
 		try {
-			this.rootScene = fxmlLoader.load(location.openStream());
-			if(this.stage != null) {
-				ReflectionLoader.call(stage, "setScene", ReflectionLoader.SCENE, this.rootScene);
-			}
-
+			this.rootScene = ReflectionLoader.call(fxmlLoader, "load", InputStream.class, location.openStream());
 		} catch (IOException e) {
-			System.err.println("FXML Load Error:" + e.getMessage());
-			System.err.println("FXML Load Error:" + e.getCause());
-			return null;
+			e.printStackTrace();
 		}
-		this.withController(fxmlLoader.getController());
+		this.withController(ReflectionLoader.call(fxmlLoader, "getController"));
 		return rootScene;
 	}
 
