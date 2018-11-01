@@ -156,7 +156,7 @@ public class NodeProxyTCP extends NodeProxy {
 		return super.setValue(element, attrName, value, type);
 	}
 
-	public Message readFromInputStream(Socket socket) throws IOException {
+	public Message executeInputStream(Socket socket) throws IOException {
 		ByteBuffer buffer = new ByteBuffer();
 
 		byte[] messageArray = new byte[BUFFER];
@@ -246,7 +246,7 @@ public class NodeProxyTCP extends NodeProxy {
 				}
 				os.flush();
 				if (allowAnswer) {
-					readFromInputStream(requestSocket);
+					executeInputStream(requestSocket);
 				}
 				setSendTime(buffer.length);
 				requestSocket.close();

@@ -162,6 +162,9 @@ public class Os {
 	}
 
 	public static final boolean checkSystemTray() {
+		if(isReflectionTest()) {
+			return false;
+		}
 		Object value = ReflectionLoader.call(ReflectionLoader.SYSTEMTRAY, "isSupported");
 		if (value != null) {
 			return (Boolean) value;

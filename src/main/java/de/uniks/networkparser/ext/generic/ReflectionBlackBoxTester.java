@@ -141,7 +141,7 @@ public class ReflectionBlackBoxTester {
 		withIgnoreClazzes(ErrorHandler.class);
 		withIgnoreClazzes(StoryStepJUnit.class, "update");
 		ignoreMethods.add(DEFAULTMETHODS,
-				new SimpleSet<String>().with("show*", "run", "execute*", "checkSystemTray", "main"));
+				new SimpleSet<String>().with("show*", "run", "start", "execute*", "consume", "subscribe", "main"));
 		// Add for new Threads
 //		withIgnoreClazzes(SimpleController.class, "create", "init");
 //		withIgnoreClazzes(SimpleController.class);
@@ -611,7 +611,8 @@ public class ReflectionBlackBoxTester {
 				if (Throwable.class == clazz) {
 					return null;
 				}
-				return clazz.getConstructor().newInstance();
+				return ReflectionLoader.newInstanceSimple(clazz);
+//				return clazz.getConstructor().newInstance();
 			} catch (Throwable e) {
 				try {
 					Constructor<?>[] declaredConstructors = clazz.getDeclaredConstructors();

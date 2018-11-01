@@ -200,7 +200,7 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 	 * @param port Port number 0 is for Search free Port
 	 * @return NodeProxy The created Server
 	 */
-	public NodeProxy createServer(int port) {
+	public NodeProxy startServer(int port) {
 		NodeProxy newProxy = getNewProxy();
 		newProxy.withType(NodeProxy.TYPE_INOUT);
 		newProxy.setValue(newProxy, NodeProxyTCP.PROPERTY_PORT, port, SendableEntityCreator.NEW);

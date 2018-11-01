@@ -38,7 +38,7 @@ public class MessageRequest implements Runnable {
 
 	public void run() {
 		try {
-			proxy.readFromInputStream(requestSocket);
+			proxy.executeInputStream(requestSocket);
 		} catch (Exception e) {
 			Space space = proxy.getSpace();
 			if (space != null) {

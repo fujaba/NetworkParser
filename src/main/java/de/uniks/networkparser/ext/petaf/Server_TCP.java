@@ -94,6 +94,9 @@ public class Server_TCP extends Thread implements Server {
 	}
 
 	private boolean init() {
+		if(proxy == null || proxy.getPort()<1) {
+			return false;
+		}
 		try {
 			serverSocket = new ServerSocket(proxy.getPort(), 10, null);
 			return true;

@@ -213,7 +213,7 @@ public class NodeProxyBroker extends NodeProxy {
 //		short channelNo = Short.valueOf(topics.get(topic));
 
 		this.callBack = condition;
-		startConsume(topic, callBack);
+		executeConsume(topic, callBack);
 
 //		RabbitMessage message = RabbitMessage.createConsume(channelNo, topic, "", false, false, false, false, null);
 //		System.out.println(session.sending(this, message, true));
@@ -234,7 +234,7 @@ public class NodeProxyBroker extends NodeProxy {
 				if (session.sending(this, message, true) == null) {
 					return false;
 				}
-				startConsume(topic, callBack);
+				executeConsume(topic, callBack);
 				message = RabbitMessage.createConsume(channel, topic, "", false, true, false, false, null);
 				session.sending(this, message, false);
 				return true;
@@ -245,7 +245,7 @@ public class NodeProxyBroker extends NodeProxy {
 				register.withNames(topic).withQOS(1);
 				session.sending(this, register, false);
 
-				startConsume(topic, callBack);
+				executeConsume(topic, callBack);
 
 				return true;
 			}
@@ -254,9 +254,9 @@ public class NodeProxyBroker extends NodeProxy {
 		return false;
 	}
 
-	private boolean startConsume(String queue, ObjectCondition condition) {
+	private boolean executeConsume(String queue, ObjectCondition condition) {
 
-		if (this.space == null) {
+		if (this.space == null && queue != null) {
 			// Make a now Thread
 			executorService = Executors.newScheduledThreadPool(1);
 			this.readerComm = new ReaderComm();

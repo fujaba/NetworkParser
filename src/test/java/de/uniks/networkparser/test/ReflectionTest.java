@@ -8,7 +8,6 @@ import org.junit.Test;
 
 import de.uniks.networkparser.NetworkParserLog;
 import de.uniks.networkparser.SimpleEvent;
-import de.uniks.networkparser.ext.SimpleController;
 import de.uniks.networkparser.ext.generic.ReflectionBlackBoxTester;
 import de.uniks.networkparser.ext.generic.ReflectionLoader;
 import de.uniks.networkparser.ext.io.StringPrintStream;
@@ -78,15 +77,6 @@ public class ReflectionTest {
 //		System.out.println(""+System.currentTimeMillis()+" FINISH:"+Thread.activeCount());
 	}
 
-	
-	@Test
-	public void testSimpleController() throws Exception {
-		ReflectionBlackBoxTester tester = new ReflectionBlackBoxTester();
-		tester.withLogger(new NetworkParserLog().withListener(new StringPrintStream()));
-//		tester.testClass(new SimpleController(), SimpleController.class, tester.getMethods(SimpleController.class.getName()));
-		tester.testClass(new SimpleController(), SimpleController.class, tester.getMethods(""));
-	}
-	
 	@Test
 	public void testJavaBridge() throws Exception {
 		ReflectionBlackBoxTester tester = new ReflectionBlackBoxTester();

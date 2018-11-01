@@ -44,7 +44,7 @@ public class PetaFTest {
 	public void testMessage() {
 		ConnectMessage connectMsg = ConnectMessage.create();
 		Space space=new Space();
-		space.createServer(5000);
+		space.startServer(5000);
 		space.sendMessage(connectMsg, false);
 		Assert.assertNotNull(space.convertMessage(connectMsg));
 
