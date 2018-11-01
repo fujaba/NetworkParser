@@ -166,6 +166,9 @@ public class JavaBridgeFX extends JavaBridge {
 
 	private static Object convertLabel(Label label, boolean clearStyle) {
 		Object javaFXLabel;
+		if(Os.isReflectionTest()) {
+			return null;
+		}
 		if (Label.SPACER.equalsIgnoreCase(label.getType())) {
 			javaFXLabel = ReflectionLoader.newInstance(ReflectionLoader.REGION);
 			Object prio = ReflectionLoader.getField("ALWAYS", ReflectionLoader.PRIORITY);

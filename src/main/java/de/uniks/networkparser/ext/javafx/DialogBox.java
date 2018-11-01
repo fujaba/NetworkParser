@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import de.uniks.networkparser.ext.Os;
 import de.uniks.networkparser.ext.generic.ReflectionLoader;
 import de.uniks.networkparser.gui.controls.Button;
 import de.uniks.networkparser.gui.controls.Control;
@@ -241,7 +242,10 @@ public class DialogBox implements ObjectCondition {
 		}
 	}
 
-	public void createContent() {
+	public DialogBox createContent() {
+		if(Os.isReflectionTest()) {
+			return this;
+		}
 		root = ReflectionLoader.newInstance(ReflectionLoader.BORDERPANE);
 		JavaBridgeFX.setStyle(root, false, "dialog", "decorated-root");
 
@@ -277,6 +281,7 @@ public class DialogBox implements ObjectCondition {
 			ReflectionLoader.call(actionToolbar, "setAlignment", ReflectionLoader.POS, pos);
 			ReflectionLoader.call(root, "setBottom", ReflectionLoader.NODE, actionToolbar);
 		}
+		return this;
 	}
 
 	public DialogBox withCenter(Object node) {
@@ -342,6 +347,9 @@ public class DialogBox implements ObjectCondition {
 
 	public DialogBox withCenterText(String image, String value) {
 		if (value == null) {
+			return this;
+		}
+		if(Os.isReflectionTest()) {
 			return this;
 		}
 		Object box = ReflectionLoader.newInstance(ReflectionLoader.HBOX);

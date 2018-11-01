@@ -573,7 +573,7 @@ public class NodeProxyTCP extends NodeProxy {
 				conn.setRequestMethod(GET);
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			return null;
 		}
 		return conn;
 	}

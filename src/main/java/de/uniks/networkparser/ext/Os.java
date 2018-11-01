@@ -63,8 +63,14 @@ public class Os {
 		if (ReflectionLoader.PLATFORM == null || ReflectionLoader.PANE == null) {
 			return false;
 		}
+		if(isReflectionTest()) {
+			return false;
+		}
 		try {
-			ReflectionLoader.newInstance(ReflectionLoader.PANE);
+			Object item = ReflectionLoader.newInstance(ReflectionLoader.PANE);
+			if(item == null) {
+				return false;
+			}
 		} catch (Throwable e) {
 			return false;
 		}
@@ -164,6 +170,9 @@ public class Os {
 	}
 	
 	public static final boolean isFXThread() {
+		if(isReflectionTest()) {
+			return false;
+		}
 		Object result = ReflectionLoader.call(ReflectionLoader.PLATFORM, "isFxApplicationThread");
 		if (Boolean.TRUE.equals(result) ) {
 			return true;

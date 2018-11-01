@@ -230,7 +230,11 @@ public class MessageSession {
 		if (this.serverSocket != null && factory instanceof SSLSocketFactory) {
 			socket = ((SSLSocketFactory) factory).createSocket(this.serverSocket, host, port, true);
 		} else {
-			socket = factory.createSocket(host, port);
+			try {
+				socket = factory.createSocket(host, port);
+			}catch (Exception e) {
+				return false;
+			}
 		}
 		socket.setSoTimeout(SOCKET_READ_TIMEOUT);
 		in = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));
@@ -437,6 +441,9 @@ public class MessageSession {
 		try {
 			if (serverSocket == null) {
 				initSockets(host, port);
+				if(this.serverSocket == null) {
+					return false;
+				}
 
 				MQTTMessage connect = MQTTMessage.create(MQTTMessage.MESSAGE_TYPE_CONNECT);
 				connect.withNames(clientId, sender, password);
@@ -470,6 +477,9 @@ public class MessageSession {
 			if (serverSocket == null) {
 				initSockets(host, port);
 				sendStart();
+				if(serverSocket == null) {
+					return false;
+				}
 
 				this.diInput = new DataInputStream(this.serverSocket.getInputStream());
 				RabbitMessage message = RabbitMessage.createStartOK(sender, password);
@@ -637,10 +647,10 @@ public class MessageSession {
 	}
 
 	public boolean write(Object... values) {
+		if (values == null || out == null) {
+			return false;
+		}
 		try {
-			if (values == null) {
-				return true;
-			}
 			CharacterBuffer sb = new CharacterBuffer();
 			for (Object value : values) {
 				if (value instanceof byte[]) {

@@ -42,8 +42,6 @@ import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.ext.ErrorHandler;
 import de.uniks.networkparser.ext.FileClassModel;
 import de.uniks.networkparser.ext.Gradle;
-import de.uniks.networkparser.ext.SimpleController;
-import de.uniks.networkparser.ext.javafx.DialogBox;
 import de.uniks.networkparser.ext.petaf.SimpleTimerTask;
 import de.uniks.networkparser.ext.story.Story;
 import de.uniks.networkparser.ext.story.StoryStepJUnit;
@@ -148,8 +146,7 @@ public class ReflectionBlackBoxTester {
 				new SimpleSet<String>().with("show*", "run", "execute*", "checkSystemTray", "main"));
 		// Add for new Threads
 //		withIgnoreClazzes(SimpleController.class, "create", "init");
-		withIgnoreClazzes(SimpleController.class);
-		withIgnoreClazzes(DialogBox.class, "createContent");
+//		withIgnoreClazzes(SimpleController.class);
 		withIgnoreClazzes(JarValidator.class);
 
 		// TEST

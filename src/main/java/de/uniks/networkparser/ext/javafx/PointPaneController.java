@@ -30,6 +30,7 @@ import java.lang.reflect.Array;
 import java.util.List;
 
 import de.uniks.networkparser.EntityUtil;
+import de.uniks.networkparser.ext.Os;
 import de.uniks.networkparser.ext.generic.GenericCreator;
 import de.uniks.networkparser.ext.generic.ReflectionLoader;
 import de.uniks.networkparser.ext.petaf.SendableItem;
@@ -49,7 +50,7 @@ public class PointPaneController extends SendableItem implements PropertyChangeL
 	private SimpleList<Object> children = new SimpleList<Object>();
 	private String color="BLACK";
 	private int number;
-	private Object timeline = ReflectionLoader.newInstance("javafx.animation.Timeline");
+	private Object timeline;
 	private int max=6;
 	private String style;
 	private GUIEvent eventListener;
@@ -59,6 +60,17 @@ public class PointPaneController extends SendableItem implements PropertyChangeL
 	private Class<?> circleClass=ReflectionLoader.getClass("javafx.scene.shape.Circle");
 	private Class<?> mouseEventClass =ReflectionLoader.getClass("javafx.scene.input.MouseEvent");
 	private Class<?> actionEventClass =ReflectionLoader.getClass("javafx.event.ActionEvent");
+
+	public Object getTimeLine() {
+		if(this.timeline != null) {
+			return this.timeline; 
+		}
+		if(Os.isReflectionTest()) {
+			return null;
+		}
+		this.timeline =ReflectionLoader.newInstance("javafx.animation.Timeline");
+		return this.timeline;
+	}
 	
 	public PointPaneController() {
 		this.eventListener = new GUIEvent().withListener(this);
@@ -83,7 +95,7 @@ public class PointPaneController extends SendableItem implements PropertyChangeL
 			this.pane = value;
 			ReflectionLoader.call(this.pane, "setOnMouseClicked", ReflectionLoader.EVENTHANDLER, this.eventProxy);
 		}
-		ReflectionLoader.call(this.timeline, "setOnFinished", ReflectionLoader.EVENTHANDLER, this.eventProxy);
+		ReflectionLoader.call(getTimeLine(), "setOnFinished", ReflectionLoader.EVENTHANDLER, this.eventProxy);
 		return true;
 	}
 
@@ -92,7 +104,7 @@ public class PointPaneController extends SendableItem implements PropertyChangeL
 	}
 
 	public PointPaneController withValue(int number) {
-		String value = ""+ReflectionLoader.call(timeline, "getStatus");
+		String value = ""+ReflectionLoader.call(getTimeLine(), "getStatus");
 		if(STOPPED.equals(value)) {
 			showNumber(number);
 			fireEvent(number);
@@ -153,12 +165,12 @@ public class PointPaneController extends SendableItem implements PropertyChangeL
 		animations.add(animation);
 
 		// Run Animation
-		String value = ""+ReflectionLoader.call(timeline, "getStatus");
+		String value = ""+ReflectionLoader.call(getTimeLine(), "getStatus");
 		if(STOPPED.equals(value)) {
-			List<Object> frameList = (List<Object>) ReflectionLoader.call(timeline, "getKeyFrames");
+			List<Object> frameList = (List<Object>) ReflectionLoader.call(getTimeLine(), "getKeyFrames");
 			frameList.clear();
 			frameList.addAll(animations);
-			ReflectionLoader.call(timeline, "playFromStart");
+			ReflectionLoader.call(getTimeLine(), "playFromStart");
 		}
 		return this;
 	}
@@ -349,8 +361,7 @@ public class PointPaneController extends SendableItem implements PropertyChangeL
 	@Override
 	public boolean update(Object value) {
 		if(mouseEventClass.isAssignableFrom(value.getClass())) {
-			PointPaneController that = PointPaneController.this;
-			String status = ""+ReflectionLoader.call(that.timeline, "getStatus");
+			String status = ""+ReflectionLoader.call(this.getTimeLine(), "getStatus");
 			if(STOPPED.equals(status)) {
 				int point = EntityUtil.randInt(1, 6);
 				showAnimation(point);
