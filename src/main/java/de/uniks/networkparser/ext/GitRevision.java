@@ -80,7 +80,6 @@ public class GitRevision {
 
 			Object repoBuilder = ReflectionLoader.call(builder, "setWorkTree", File.class, file);
 			repository = ReflectionLoader.callChain(repoBuilder, "readEnvironment", "findGitDir", "build");
-			System.out.println(repository);
 			// scan environment GIT_* variables
 			// scan up the file system tree
 
@@ -333,10 +332,10 @@ public class GitRevision {
 //				String customComment = source.getCustomComment();
 //				if(customComment.length()>0){
 //					 customItems.put(customComment, source.getFileName());
-////					 System.out.println("Thirdparty-Source (" +source.getFileName()+":1)");
+////					 SSystem.out..println("Thirdparty-Source (" +source.getFileName()+":1)");
 //					 String relativ = source.getFileName().substring(new File("src\\main\\java").getAbsolutePath().length() + 1);
 //					 int pos = relativ.lastIndexOf("\\");
-//					 System.out.println("Thirdparty-Source "+relativ.replaceAll("\\\\", ".")+"("+relativ.substring(pos+1)+":1)");
+//					 SSystem.out..println("Thirdparty-Source "+relativ.replaceAll("\\\\", ".")+"("+relativ.substring(pos+1)+":1)");
 //					 thirdparty++;
 //					 continue;
 //				 }
@@ -345,7 +344,7 @@ public class GitRevision {
 //					continue;
 //				}
 //				if(source.changeComment(commentFile.getComment())){
-//					System.out.println(source.getFileName());
+//					SSystem.out..println(source.getFileName());
 //					change++;
 //
 //					source.write();

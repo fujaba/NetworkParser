@@ -21,6 +21,10 @@ public final class SimpleEvent extends PropertyChangeEvent {
 	private String type;
 	private Object beforeElement;
 
+	public SimpleEvent() {
+		super("", "", null, null);
+	}
+
 	/**
 	 * Constructor for example Filter Regard or Convertable
 	 * 

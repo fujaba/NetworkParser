@@ -1,5 +1,6 @@
 package de.uniks.networkparser.converter;
 
+import de.uniks.networkparser.NetworkParserLog;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.ext.FileClassModel;
 import de.uniks.networkparser.graph.Attribute;
@@ -20,6 +21,7 @@ import de.uniks.networkparser.parser.ParserEntity;
 import de.uniks.networkparser.parser.SymTabEntry;
 
 public class CodeCityConverter implements Converter {
+	private NetworkParserLog logger;
 /*Root := Document ?
 	   Document := OPEN ElementNode \* CLOSE
 			   ElementNode := OPEN NAME Serial ? AttributeNode \* CLOSE
@@ -93,12 +95,10 @@ public class CodeCityConverter implements Converter {
 		buffer.withLine("\t(startLine "+code.getBodyStartLine()+")");
 		buffer.withLine("\t(endLine "+code.getEndofBodyLine()+")");
 		GraphMetric metric = getMetric(clazz);
-		if(metric == null)
-			System.out.println(clazz.getName()+": "+metric);
+		if(metric == null && logger != null) {
+			logger.error(this, "addElement", "Clazz has no Metric: "+clazz.getName()+": "+metric);
+		}
 		if(metric != null) {
-			if(clazzId==1162) {
-				System.out.println("DEBUG2");
-			}
 			buffer.withLine("\t(WLOC "+metric.getLinesOfCode()+")");
 			buffer.withLine("\t(WNOCmts "+metric.getCommentCount()+")");
 		}

@@ -13,9 +13,11 @@ import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import de.uniks.networkparser.NetworkParserLog;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.ext.SimpleController;
 import de.uniks.networkparser.ext.io.FileBuffer;
+import de.uniks.networkparser.ext.io.StringPrintStream;
 import de.uniks.networkparser.ext.petaf.SimpleTimerTask;
 import de.uniks.networkparser.ext.petaf.proxy.NodeProxyTCP;
 import de.uniks.networkparser.interfaces.BaseItem;
@@ -52,6 +54,7 @@ public class JarValidator {
 	public boolean isInstance = true;
 	public boolean isValidate = false;
 	public String instancePackage;
+	private NetworkParserLog logger = new NetworkParserLog().withListener(new StringPrintStream());
 
 	public JarValidator withMinCoverage(int value) {
 		this.minCoverage = value;
@@ -69,7 +72,7 @@ public class JarValidator {
 		int pos = executeProcess.indexOf("##" + search + "##");
 		TreeSet<String> packages = new TreeSet<String>();
 		if (pos > 0) {
-			System.out.println("FOUND DEPENDENCY:" + search);
+			logger.print(this, "FOUND DEPENDENCY:" + search);
 			int end = executeProcess.indexOf("##" + search + "END##", pos);
 			if (end > 0) {
 				CharacterBuffer subSequence = executeProcess.subSequence(pos + search.length() + 4, end);
@@ -130,10 +133,10 @@ public class JarValidator {
 		String value = command.toString() + BaseItem.CRLF + executeProcess.toString();
 		FileBuffer.writeFile(rootPath + "test.out", value);
 		if (executeProcess.length() > 0) {
-			System.out.println("CHECK DEPENDENCY: " + new File(rootPath + "test.gradle").exists());
+			logger.print(this, "CHECK DEPENDENCY: " + new File(rootPath + "test.gradle").exists());
 		} else {
-			System.out.println("ERROR DEPENDENCY: " + new File(rootPath + "test.gradle").exists());
-			System.out.println(executeProcess.toString());
+			logger.print(this, "ERROR DEPENDENCY: " + new File(rootPath + "test.gradle").exists());
+			logger.print(this, executeProcess.toString());
 		}
 		ArrayList<String> packages = this.mergePacking(getDependency(executeProcess, "SRCDEPENDENCY"));
 		ArrayList<String> testPackages = this.mergePacking(getDependency(executeProcess, "TESTDEPENDENCY"));
@@ -231,10 +234,10 @@ public class JarValidator {
 		FileBuffer.writeFile(rootPath + "jacoco.out", value);
 
 		if (executeProcess.length() > 0) {
-			System.out.println("CHECK TEST: " + new File(rootPath + "jacoco.gradle").exists());
+			logger.print(this, "CHECK TEST: " + new File(rootPath + "jacoco.gradle").exists());
 		} else {
-			System.out.println("ERROR TEST: " + new File(rootPath + "jacoco.gradle").exists());
-			System.out.println(executeProcess.toString());
+			logger.print(this, "ERROR TEST: " + new File(rootPath + "jacoco.gradle").exists());
+			logger.print(this, executeProcess.toString());
 		}
 	}
 
@@ -252,7 +255,7 @@ public class JarValidator {
 				cc = cc.replaceAll("%", "");
 				cc = cc.replace((char) 160, ' ');
 				cc = cc.trim();
-				System.out.println("Found CC: " + cc);
+				logger.print(this, "Found CC: " + cc);
 				int no = Integer.valueOf(cc);
 				if (no >= this.minCoverage) {
 					return 0;
@@ -260,7 +263,7 @@ public class JarValidator {
 				return no;
 			}
 		} else {
-			System.out.println("File not found:" + this.file);
+			logger.print(this, "File not found:" + this.file);
 		}
 		return -1;
 	}
@@ -348,14 +351,11 @@ public class JarValidator {
 							}
 						}
 						if (isLicence) {
-							System.out.println("Classes: " + this.classes + "/" + this.count);
+							logger.print(this, "Classes: " + this.classes + "/" + this.count);
 							SimpleKeyValueList<String, JsonObject> projects = mergePackages();
 							for (int i = 0; i < projects.size(); i++) {
 								if (output != null) {
 									output.print(projects.getKeyByIndex(i));
-									if ("org.sdmlib".equalsIgnoreCase(projects.getKeyByIndex(i))) {
-										System.out.println("JJ");
-									}
 								}
 								JsonObject elements = projects.getValueByIndex(i);
 								JsonObject last = (JsonObject) elements.getJsonArray("docs").first();
@@ -537,8 +537,7 @@ public class JarValidator {
 					SimpleTimerTask task = new SimpleTimerTask(Thread.currentThread());
 					timer.schedule(task, 2000);
 
-					Object newInstance = ReflectionLoader.newInstanceSimple(wantedClass,
-							ReflectionBlackBoxTester.IGNOREMETHOD);
+					Object newInstance = ReflectionLoader.newInstanceSimple(wantedClass);
 					task.withSimpleExit(null);
 					if (newInstance == null) {
 						errors.add(name);

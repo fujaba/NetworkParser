@@ -118,7 +118,7 @@ public class NodeProxySQL extends NodeProxy {
 	}
 
 	@Override
-	protected boolean initProxy() {
+	protected boolean startProxy() {
 		withType(NodeProxy.TYPE_INOUT);
 		return true;
 	}

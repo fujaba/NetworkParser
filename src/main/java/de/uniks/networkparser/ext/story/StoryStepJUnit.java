@@ -141,8 +141,7 @@ public class StoryStepJUnit implements ObjectCondition {
 			try {
 				ReflectionLoader.call(analyzer, "analyzeAll", File.class, classfiles);
 			} catch (Exception e) {
-//				e.printStackTrace();
-				System.out.println("ERROR");
+				logger.error(this, "writeReports", "ERROR", e);
 			}
 		}
 		return ReflectionLoader.call(builder, "getBundle", group.getStringValue());

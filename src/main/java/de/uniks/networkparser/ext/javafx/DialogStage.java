@@ -30,6 +30,9 @@ public class DialogStage implements Runnable {
 	private Object stage;
 	private Object owner;
 
+	public DialogStage() {
+	}
+
 	public DialogStage(DialogBox parent, Object owner) {
 		this.parent = parent;
 		this.owner = owner;

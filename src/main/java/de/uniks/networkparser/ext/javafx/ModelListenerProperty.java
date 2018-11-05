@@ -49,6 +49,9 @@ public class ModelListenerProperty implements ModelListenerInterface {
 	protected Condition<SimpleEvent> callBack;
 	protected PROPERTYTYPE type;
 
+	public ModelListenerProperty() {
+	}
+
 	public ModelListenerProperty(SendableEntityCreator creator, Object item, String property, PROPERTYTYPE type) {
 		this.creator = creator;
 		this.property = property;

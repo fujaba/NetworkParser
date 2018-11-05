@@ -461,9 +461,6 @@ public class DateTimeEntity {
 			sub = tokener.nextString(dateFormat, new CharacterBuffer(), false, false, '"').toString();
 			// FIXME Change String to StringContainter
 			if (sub.length() > 0 && !isString) {
-				// System.out.println(count++
-				// + ": #" +sub+ "# -- " +tokener.isString());
-				// Time
 				sub = sub.replace("HZ", EntityUtil.strZero(get(HOUR_OF_DAY) - getTimezone(), 2));
 				sub = sub.replace("HH", EntityUtil.strZero(get(HOUR_OF_DAY), 2));
 				sub = sub.replace("H", String.valueOf(get(HOUR_OF_DAY)));

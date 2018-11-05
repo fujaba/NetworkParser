@@ -7,6 +7,9 @@ public class JSEditor implements Runnable {
 	private String executeScript;
 	private Object editor;
 
+	public JSEditor() {
+	}
+
 	public JSEditor(Object jsEditor) {
 		this.editor = jsEditor;
 	}

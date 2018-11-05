@@ -361,7 +361,7 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 			oldValue.removeProxy(this);
 		}
 		this.space = value;
-		initProxy();
+		startProxy();
 		if (null != value) {
 			value.with(this);
 		}
@@ -382,7 +382,7 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 		return space;
 	}
 
-	protected abstract boolean initProxy();
+	protected abstract boolean startProxy();
 
 	public NodeProxy next() {
 		return this.nextNode;

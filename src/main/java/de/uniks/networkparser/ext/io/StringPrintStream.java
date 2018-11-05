@@ -93,13 +93,14 @@ public class StringPrintStream extends PrintStream implements ObjectCondition {
 			return false;
 		}
 		SimpleEvent event = (SimpleEvent) value;
-		if (event.getNewValue() != null) {
-			String msg = "" + event.getNewValue();
+		Object newValue = event.getNewValue();
+		if (newValue != null) {
+			String msg = "" + newValue;
 			if (msg.length() > 0) {
 				if (NetworkParserLog.ERROR.equals(event.getType())) {
-					System.err.println(event.getType() + ": " + event.getNewValue());
+					System.err.println(event.getType() + ": " + msg);
 				} else {
-					System.out.println(event.getType() + ": " + event.getNewValue());
+					System.out.println(event.getType() + ": " + msg);
 				}
 			}
 		}

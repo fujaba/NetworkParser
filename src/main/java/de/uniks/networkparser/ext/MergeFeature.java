@@ -33,6 +33,9 @@ public class MergeFeature extends Feature {
 	public static final String CUSTOM = "custom";
 	private SimpleEventCondition condition;
 
+	public MergeFeature() {
+		super("");
+	}
 	protected MergeFeature(Feature name) {
 		super(name);
 	}

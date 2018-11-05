@@ -426,6 +426,9 @@ public class ReflectionLoader {
 
 	public static Object newInstance(boolean showError, Class<?> instance, Object... arguments) {
 		try {
+			if(instance.isInterface()) {
+				return null;
+			}
 			if (arguments == null) {
 				Constructor<?> constructor = instance.getConstructor();
 				return constructor.newInstance();
@@ -479,6 +482,13 @@ public class ReflectionLoader {
 			if (logger != null) {
 				e.printStackTrace(logger);
 			}
+		}
+		return null;
+	}
+	public static Class<?> getSimpleClass(String name) {
+		try {
+			return Class.forName(name, false, ReflectionLoader.class.getClassLoader());
+		} catch (Throwable e) {
 		}
 		return null;
 	}

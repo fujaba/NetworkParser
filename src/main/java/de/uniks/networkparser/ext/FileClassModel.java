@@ -486,7 +486,7 @@ public class FileClassModel extends ClassModel {
 				ParserEntity parserEntity = parserEntities.get(p);
 				CharacterBuffer content = parserEntity.getCode().getContent();
 				Clazz clazz = parserEntity.getClazz();
-//				System.out.print("Start:" + clazz.getAssociations().size() + " ->");
+//				SSystem.out..print("Start:" + clazz.getAssociations().size() + " ->");
 				for (int e = 0; e < parserEntities.size(); e++) {
 					if (e == p) {
 						continue;
@@ -498,24 +498,24 @@ public class FileClassModel extends ClassModel {
 					}
 //				if(content.indexOf("new "+targetName+"(")>0) {
 //					clazz.createBidirectional(targetClazz, "use", Association.ONE, "use", Association.ONE);
-////					System.out.println(clazzName+"--"+targetName);
+////					SSystem.out..println(clazzName+"--"+targetName);
 //				}else if(content.indexOf("("+targetName)>0) {
 //					clazz.createBidirectional(targetClazz, "use", Association.ONE, "use", Association.ONE);
-////					System.out.println(clazzName+"--"+targetName);
+////					SSystem.out..println(clazzName+"--"+targetName);
 //				}else if(content.indexOf(" "+targetName)>0) {
 //					clazz.createBidirectional(targetClazz, "use", Association.ONE, "use", Association.ONE);
-////					System.out.println(clazzName+"--"+targetName);
+////					SSystem.out..println(clazzName+"--"+targetName);
 //				}else if(content.indexOf("\t"+targetName+" ")>0) {
 //					clazz.createBidirectional(targetClazz, "use", Association.ONE, "use", Association.ONE);
-////					System.out.println(clazzName+"--"+targetName);
+////					SSystem.out..println(clazzName+"--"+targetName);
 //				}
 				}
-//				System.out.println(clazz.getAssociations().size());
+//				SSystem.out..println(clazz.getAssociations().size());
 			}
 		}
 //		String string = model.toString(new DotConverter().withShowAssocInfo(false).withShowNodeInfo(false));
 //		FileBuffer.writeFile("model.data", string.getBytes());
-//		System.out.println(string);
+//		SSystem.out..println(string);
 		return model;
 	}
 

@@ -21,12 +21,15 @@ package de.uniks.networkparser.bytes.qr;
  * 
  * @author Sean Owen
  */
-final class BitMatrixParser {
-	private final BitMatrix bitMatrix;
+public final class BitMatrixParser {
+	private BitMatrix bitMatrix;
 	private Version parsedVersion;
 	private FormatInformation parsedFormatInfo;
 	private boolean mirror;
 
+	public BitMatrixParser() {
+		
+	}
 	/** @param bitMatrix {@link BitMatrix} to parse */
 	BitMatrixParser(BitMatrix bitMatrix) {
 		int dimension = bitMatrix.getHeight();

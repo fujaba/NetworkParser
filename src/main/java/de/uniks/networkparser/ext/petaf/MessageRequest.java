@@ -31,6 +31,11 @@ public class MessageRequest implements Runnable {
 	private final Socket requestSocket;
 	private final NodeProxyTCP proxy;
 
+	public MessageRequest() {
+		this.requestSocket = null;
+		this.proxy = null;
+	}
+
 	public MessageRequest(NodeProxyTCP proxy, Socket requestSocket) {
 		this.requestSocket = requestSocket;
 		this.proxy = proxy;

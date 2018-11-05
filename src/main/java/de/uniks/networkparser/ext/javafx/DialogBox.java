@@ -527,6 +527,7 @@ public class DialogBox implements ObjectCondition {
 			}
 		} else {
 			// SWING???
+//			new NetworkParserLog();
 			ReflectionLoader.logger = new PrintStream(System.out);
 			if (parentObj == null || ReflectionLoader.JFRAME.isAssignableFrom(parentObj.getClass()) == false) {
 				parentObj = ReflectionLoader.newInstance(ReflectionLoader.JFRAME);

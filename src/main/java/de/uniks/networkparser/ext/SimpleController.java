@@ -43,6 +43,7 @@ import java.util.ResourceBundle;
 
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.IdMap;
+import de.uniks.networkparser.NetworkParserLog;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.ext.generic.ReflectionLoader;
 import de.uniks.networkparser.ext.io.StringOutputStream;
@@ -85,6 +86,7 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 	private Object[] runParams;
 	private String runAction;
 	private SimpleKeyValueList<Object, SendableEntityCreator> mapping;
+	private NetworkParserLog logger=new NetworkParserLog();
 
 	public SimpleController() {
 	}
@@ -206,7 +208,7 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 					outputFile = "output.txt";
 				}
 			} else if (key.equalsIgnoreCase("-?")) {
-				System.out.println(getCommandHelp());
+				logger.debug(this, "init", getCommandHelp());
 				Runtime.getRuntime().exit(1);
 			} else if (key.startsWith("-")) {
 				if (value != null) {
@@ -434,7 +436,7 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 		if (newStage) {
 			oldStage = this.stage;
 			withStage(ReflectionLoader.newInstance(ReflectionLoader.STAGE));
-			refreshIcon();
+			showIcon();
 		}
 		this.firstShow = false;
 		if(stage == null) {
@@ -611,6 +613,9 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 	}
 
 	public SimpleController withIcon(String value, Class<?> relative) {
+		if(Os.isReflectionTest()) {
+			return this;
+		}
 		if (relative != null) {
 			URL resource = relative.getResource(value);
 			if (resource != null) {
@@ -622,7 +627,7 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 			return this;
 		}
 		if (this.stage != null) {
-			refreshIcon();
+			showIcon();
 		}
 		if (this.trayIcon != null) {
 			URL iconURL = null;
@@ -643,7 +648,7 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 		return this;
 	}
 
-	private void refreshIcon() {
+	private void showIcon() {
 		Object image;
 		if (this.icon.startsWith("file") || this.icon.startsWith("jar")) {
 			image = ReflectionLoader.newInstance(ReflectionLoader.IMAGE, this.icon);
@@ -821,6 +826,9 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 	}
 
 	public static SimpleController createFX() {
+		if(Os.isReflectionTest()) {
+			return null;
+		}
 		SimpleController controller = new SimpleController(null);
 		controller.runLater(controller, ReflectionLoader.PANE, ReflectionLoader.SCENE);
 		return controller;
@@ -892,7 +900,9 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 		if(path == null) {
 			path =SimpleController.class; 
 		}
-		
+		if(Os.isReflectionTest()) {
+			return this;
+		}
 		create(path.getResource(fxmlFile), null);
 		
 		// NOW MAPPING
@@ -915,7 +925,7 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 	public Object create(URL location, ResourceBundle resources) {
 		Object fxmlLoader;
 		if (location == null) {
-			System.out.println("FXML not found");
+			System.err.println("FXML not found");
 			return null;
 		}
 		if (resources != null) {
@@ -991,7 +1001,7 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 					}
 					// Check if File Exist
 					found = new File(values[0]).exists();
-					System.out.println("FOUND EXECUTE: " + found);
+//					SSystem.out..println("FOUND EXECUTE: " + found);
 				}
 				if (found == false) {
 					commands = new ArrayList<String>();

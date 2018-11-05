@@ -261,7 +261,7 @@ public class NodeProxyTCP extends NodeProxy {
 	}
 
 	public boolean start() {
-		return initProxy();
+		return startProxy();
 	}
 
 	@Override
@@ -274,7 +274,7 @@ public class NodeProxyTCP extends NodeProxy {
 	}
 
 	@Override
-	protected boolean initProxy() {
+	protected boolean startProxy() {
 		boolean isInput = NodeProxy.isInput(getType());
 		if (url == null && getType() == null || isInput) {
 			if (serverSocket != null) {

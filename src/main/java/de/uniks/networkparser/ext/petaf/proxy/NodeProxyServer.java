@@ -109,7 +109,7 @@ public class NodeProxyServer extends NodeProxy {
 	}
 
 	@Override
-	protected boolean initProxy() {
+	protected boolean startProxy() {
 		// May be Server or Client
 		if (NodeProxy.isInput(this.type)) {
 			if (Server.TCP.equals(this.serverType)) {

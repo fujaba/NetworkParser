@@ -26,6 +26,7 @@ THE SOFTWARE.
 import java.util.Set;
 
 import de.uniks.networkparser.EntityUtil;
+import de.uniks.networkparser.NetworkParserLog;
 import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.graph.Annotation;
@@ -68,7 +69,6 @@ public class ParserEntity {
 	public static final String ENUMVALUE = "enumvalue";
 	
 	public static final String ERROR="ERROR";
-	public static final String DEBUG="DEBUG";
 
 	private ObjectCondition update;
 	public Token lookAheadToken = new Token();
@@ -85,6 +85,7 @@ public class ParserEntity {
 	public int lookAheadIndex = -1;
 	public int parsePos;
 	public long line=1;
+	private NetworkParserLog logger;
 
 	public ParserEntity withCondition(ObjectCondition update) {
 		if(update != null) {
@@ -293,7 +294,9 @@ public class ParserEntity {
 			event.withType(ERROR);
 			return this.update.update(event);
 		}
-		System.err.println(buffer.toString());
+		if(logger != null) {
+			logger.error(this, "parse error", buffer.toString());
+		}
 		throw new RuntimeException("parse error");
 	}
 
@@ -441,9 +444,9 @@ public class ParserEntity {
 			lookAheadChar = code.getContent().charAt(lookAheadIndex);
 		}
 		if(this.update != null) {
-			SimpleEvent event = new SimpleEvent(this, DEBUG, currentToken, lookAheadToken);
+			SimpleEvent event = new SimpleEvent(this, NetworkParserLog.DEBUG, currentToken, lookAheadToken);
 			event.withValue(index);
-			event.withType(DEBUG);
+			event.withType(NetworkParserLog.DEBUG);
 			this.update.update(event);
 		}
 	}
@@ -779,7 +782,9 @@ public class ParserEntity {
 
 		while (!currentKindEquals(Token.EOF) && !currentKindEquals('}')) {
 			if(isDebug) {
-				System.out.println("Parsing: "+getCurrentLine());
+				if(logger != null) {
+					logger.debug(this, "parsing", "Parsing: "+getCurrentLine());
+				}
 			}
 			parseMemberDecl();
 		}
@@ -1685,5 +1690,10 @@ public class ParserEntity {
 			return this.code.getSymbolEntries(type);
 		}
 		return null;
+	}
+
+	public ParserEntity withLogger(NetworkParserLog value) {
+		this.logger = value;
+		return this;
 	}
 }

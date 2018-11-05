@@ -63,7 +63,7 @@ public class NodeProxyModel extends NodeProxy {
 	}
 
 	@Override
-	protected boolean initProxy() {
+	protected boolean startProxy() {
 		return true;
 	}
 

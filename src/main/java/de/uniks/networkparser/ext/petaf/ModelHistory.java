@@ -259,7 +259,9 @@ public class ModelHistory implements ObjectCondition {
 			Entity valueJsonObject = getElement(value);
 
 			if (historyJsonObject.has(IdMap.ID) == false) {
-				System.out.println("ERROR");
+				if(space != null) {
+					space.error(this, "addHistory", "ERROR");
+				}
 			}
 			String historyJsonId = historyJsonObject.getString(IdMap.ID);
 			String valueJsonId = valueJsonObject.getString(IdMap.ID);

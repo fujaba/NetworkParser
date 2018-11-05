@@ -26,6 +26,7 @@ THE SOFTWARE.
 */
 import java.util.Iterator;
 
+import de.uniks.networkparser.NetworkParserLog;
 import de.uniks.networkparser.TextItems;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.ext.io.FileBuffer;
@@ -79,6 +80,7 @@ public class ModelGenerator extends Template {
 	private String defaultRootDir;
 	private SimpleKeyValueList<String, Template> templates;
 	private String lastGenRoot;
+	private NetworkParserLog logger;
 
 	public SimpleList<Template> getTemplates(String filter) {
 		if (templates == null) {
@@ -342,13 +344,16 @@ public class ModelGenerator extends Template {
 		// check existing file for possible changes
 		if (content != null) {
 			ParserEntity parser = new ParserEntity();
+			parser.withLogger(logger);
 			try {
 				parser.withFile(fileName, (Clazz) entity.getMember());
 				parser.parse(content);
 				return parser;
 			} catch (Exception e) {
 				e.printStackTrace();
-				System.err.println("Cant parse File:" + fileName);
+				if(logger !=null) {
+					logger.error(this, "parse2", "Cant parse File:" + fileName, e);
+				}
 			}
 		}
 		return null;

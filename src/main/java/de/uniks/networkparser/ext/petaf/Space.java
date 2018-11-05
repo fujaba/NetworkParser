@@ -543,8 +543,24 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 		return null;
 	}
 
-	public void addMessage(Object owner, LogItem logItem) {
-		this.log.print(owner, logItem);
+	public boolean addMessage(Object owner, LogItem logItem) {
+		if(this.log != null) {
+			return this.log.print(owner, logItem);
+		}
+		return false;
+	}
+	
+	public boolean error(Object owner, String method, Object message, Object... params) {
+		if(this.log != null) {
+			this.log.error(owner, method, message, params);
+		}
+		return false;
+	}
+	public boolean debug(Object owner, String method, Object message) {
+		if(this.log != null) {
+			this.log.debug(owner, method, message);
+		}
+		return false;
 	}
 
 	protected void calculateSendProxy(Message msg, NodeProxy receiver, SimpleSet<NodeProxy> sendProxies) {

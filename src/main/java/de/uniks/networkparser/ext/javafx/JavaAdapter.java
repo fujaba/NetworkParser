@@ -59,6 +59,9 @@ public class JavaAdapter implements JavaViewAdapter, Runnable {
 	public static final String TYPE_EDOBS = "EDOBS";
 	protected String type = TYPE_EXPORT;
 	private HTMLEntity entity;
+	private CountDownLatch doneLatch;
+	private Runnable newTask;
+	private NetworkParserLog logger;
 
 	public JavaAdapter withOwner(JavaBridge owner) {
 		this.owner = owner;
@@ -74,7 +77,9 @@ public class JavaAdapter implements JavaViewAdapter, Runnable {
 		if (item instanceof File) {
 			File file = ((File) item);
 			if (file.exists() == false) {
-				System.out.println("FILE NOT FOUND");
+				if(logger != null) {
+					logger.error(this, "load", "FILE NOT FOUND");
+				}
 			}
 			ReflectionLoader.call(webEngine, "load", file.toURI().toString());
 			return true;
@@ -133,6 +138,15 @@ public class JavaAdapter implements JavaViewAdapter, Runnable {
 
 	@Override
 	public void run() {
+		if(doneLatch != null && newTask != null) {
+			try {
+				Runnable task = newTask;
+				newTask = null;
+				task.run();
+			} finally {
+				doneLatch.countDown();
+			}
+		}
 		registerListener(this);
 		// Load Real Content
 		ReflectionLoader.call(this.webEngine, "loadContent", String.class, entity.toString());
@@ -188,7 +202,9 @@ public class JavaAdapter implements JavaViewAdapter, Runnable {
 
 	public void showAlert(String value) {
 		if (value != null && value.length() > 0) {
-			System.err.println(value);
+			if(logger != null) {
+				logger.error(this, "showAlert", value);
+			}
 		}
 	}
 
@@ -310,7 +326,6 @@ public class JavaAdapter implements JavaViewAdapter, Runnable {
 	}
 
 	protected void addAdapter(ObjectCondition eventListener) {
-		System.out.println("DEBUG");
 		JsonObjectLazy executeScript = (JsonObjectLazy) _execute("bridge.addAdapter(new DiagramJS.DelegateAdapter());",
 				true);
 		if (executeScript != null) {
@@ -365,31 +380,25 @@ public class JavaAdapter implements JavaViewAdapter, Runnable {
 		ReflectionLoader.call(ReflectionLoader.PLATFORMIMPL, "startup", Runnable.class, runnable);
 	}
 
-	public static void executeAndWait(final Runnable runnable) {
+	public static JavaAdapter executeAndWait(final Runnable runnable) {
 		if (runnable == null) {
-			return;
+			return null;
 		}
 		if(Os.isFXThread()) {
 			runnable.run();
-			return;
+			return null;
 		}
-		final CountDownLatch doneLatch = new CountDownLatch(1);
-		Runnable task = new Runnable() {
-
-			@Override
-			public void run() {
-				try {
-					runnable.run();
-				} finally {
-					doneLatch.countDown();
-				}
-			}
-		};
+		JavaAdapter task = new JavaAdapter();
+		task.doneLatch = new CountDownLatch(1);
+		task.newTask = runnable;
+		//FIXME
 		execute(task);
 		try {
-			doneLatch.await();
+			task.doneLatch.await();
 		} catch (InterruptedException e) {
 		}
+		task.doneLatch = null;
+		return task;
 	}
 
 	/**

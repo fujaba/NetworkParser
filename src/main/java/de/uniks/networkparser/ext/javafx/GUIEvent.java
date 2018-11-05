@@ -40,7 +40,7 @@ public class GUIEvent extends Event {
 	}
 
 	public void handle(Object event) {
-//		System.out.println("handle: "+ event);
+//		SSystem.out..println("handle: "+ event);
 		if (this.listerner != null) {
 			this.listerner.update(event);
 		}

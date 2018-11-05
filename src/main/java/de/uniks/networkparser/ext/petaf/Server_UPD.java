@@ -109,7 +109,7 @@ public class Server_UPD extends Thread implements Server {
 				socket.receive(receivePacket);
 
 				// String sentence = new String(receivePacket.getData());
-				// System.out.println("RECEIVED: " + sentence);
+				// SSystem.out..println("RECEIVED: " + sentence);
 				InetAddress IPAddress = receivePacket.getAddress();
 				int port = receivePacket.getPort();
 				Entity answer = proxy.getSpace().getReplicationInfo();

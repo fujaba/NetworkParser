@@ -3,6 +3,7 @@ package de.uniks.networkparser.ext;
 import java.lang.Thread.UncaughtExceptionHandler;
 
 import de.uniks.networkparser.IdMap;
+import de.uniks.networkparser.NetworkParserLog;
 import de.uniks.networkparser.ext.generic.ReflectionLoader;
 
 public class DiagramEditorTask implements Runnable, UncaughtExceptionHandler {
@@ -64,7 +65,10 @@ public class DiagramEditorTask implements Runnable, UncaughtExceptionHandler {
 		}
 		if (TYPE_EXIT.equals(this.type)) {
 			if (this.msg != null) {
-				System.out.println(this.msg);
+				NetworkParserLog logger = editor.getLogger();
+				if(logger != null) {
+					logger.debug(this, "run", this.msg);
+				}
 			}
 			System.exit(this.value);
 		}

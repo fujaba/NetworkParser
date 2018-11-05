@@ -39,6 +39,8 @@ public enum SortingDirection {
 	/** The Variable of Direction. */
 	private int direction;
 
+	SortingDirection() {
+	}
 	/**
 	 * @param value The new Sortdirection
 	 */

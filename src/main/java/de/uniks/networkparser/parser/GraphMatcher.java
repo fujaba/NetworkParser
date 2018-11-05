@@ -47,6 +47,9 @@ public class GraphMatcher extends GraphEntity {
 	private GraphModel metaModel;
 	private GraphSimpleSet diffs = new GraphSimpleSet();
 
+	public GraphMatcher() {
+	}
+
 	public GraphMatcher(GraphModel oldModel, GraphModel newModel) {
 		this.oldModel = oldModel;
 		this.newModel = newModel;

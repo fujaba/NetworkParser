@@ -188,7 +188,7 @@ public class MavenXML {
 		FileOutputStream os = new FileOutputStream(output);
 		os.write(sb.toString().getBytes());
 		os.close();
-//        	System.out.println("Digest(in hex format):: " + hexString.toString());
+//        	SSystem.out..println("Digest(in hex format):: " + hexString.toString());
 	}
 
 	private String getSimpleName(ArtifactFile artifact, String classifier) {

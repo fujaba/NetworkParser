@@ -423,8 +423,8 @@ public class Column implements SendableEntityCreatorNoIndex, CellHandler {
 				} else {
 					that.withStyle((Style) value);
 				}
-			} else {
-				System.out.println("FIXME");
+//			} else {
+//				SSystem.out..println("FIXME");
 			}
 			return true;
 		}

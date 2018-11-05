@@ -42,6 +42,7 @@ import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.ext.ErrorHandler;
 import de.uniks.networkparser.ext.FileClassModel;
 import de.uniks.networkparser.ext.Gradle;
+import de.uniks.networkparser.ext.petaf.ModelThread;
 import de.uniks.networkparser.ext.petaf.SimpleTimerTask;
 import de.uniks.networkparser.ext.story.Story;
 import de.uniks.networkparser.ext.story.StoryStepJUnit;
@@ -60,7 +61,7 @@ public class ReflectionBlackBoxTester {
 	public static final String TYPE_CUSTOMVALUE = "custom";
 	public static final String BLACKBOXTESTER = "backboxtest";
 	public static final String INSTANCE = "instance";
-	public static final String IGNOREMETHOD = "run";
+//	public static final String IGNOREMETHOD = "run";
 	public static final String DEFAULTMETHODS = "";
 
 	private SimpleSet<String> tests = new SimpleSet<String>().with(TYPE_NULLVALUE, TYPE_MINVALUE, TYPE_RANDOMVALUE,
@@ -70,10 +71,10 @@ public class ReflectionBlackBoxTester {
 	private int errorCount;
 	private int successCount;
 	private String packageName;
-	private NetworkParserLog logger;
+	private NetworkParserLog logger = new NetworkParserLog();
 	private ObjectCondition custom;
 
-	public static void mainTester(String[] args) {
+	public void mainTester(String[] args) {
 		Object junitCore = ReflectionLoader.newInstanceStr("org.junit.runner.JUnitCore");
 		SimpleSet<Class<?>> testClasses = new SimpleSet<Class<?>>();
 		String blackBoxPackage = null;
@@ -118,8 +119,7 @@ public class ReflectionBlackBoxTester {
 				try {
 					method.invoke(junitCore, new Object[] { list });
 				} catch (Exception e) {
-					System.out.println("error: " + e.getMessage());
-					e.printStackTrace(System.out);
+					logger.error(ReflectionBlackBoxTester.class, "mainTester", "error: " + e.getMessage(), e);
 				}
 			}
 			// Now Check if BaclkBoxTester activ
@@ -140,8 +140,10 @@ public class ReflectionBlackBoxTester {
 		withIgnoreClazzes(Story.class, "dumpHTML", "writeFile");
 		withIgnoreClazzes(ErrorHandler.class);
 		withIgnoreClazzes(StoryStepJUnit.class, "update");
+		withIgnoreClazzes(ModelThread.class);
+		
 		ignoreMethods.add(DEFAULTMETHODS,
-				new SimpleSet<String>().with("show*", "run", "start", "execute*", "consume", "subscribe", "main"));
+				new SimpleSet<String>().with("show*", "run", "start*", "execute*", "consume", "subscribe", "main"));
 		// Add for new Threads
 //		withIgnoreClazzes(SimpleController.class, "create", "init");
 //		withIgnoreClazzes(SimpleController.class);
@@ -211,14 +213,21 @@ public class ReflectionBlackBoxTester {
 			if (Modifier.isAbstract(clazz.getModifiers())) {
 				continue;
 			}
+
 			SimpleSet<String> methods = getMethods(clazz.getName());
 			if (methods != null && methods.size() < 1) {
-//				System.out.println("Ignore:"+clazz.getName());
+//				SSystem.out..println("Ignore:"+clazz.getName());
 				continue;
 			}
 			SimpleTimerTask task = new SimpleTimerTask(Thread.currentThread());
 			timer.schedule(task, 2000);
-			Object obj = ReflectionLoader.newInstanceSimple(clazz, IGNOREMETHOD);
+			Object obj = ReflectionLoader.newInstanceSimple(clazz);
+			if(obj == null && clazz.isEnum()) {
+				continue;
+			}
+			if(obj == null) {
+				obj = ReflectionLoader.newInstanceSimple(clazz);
+			}
 			if (obj != null) {
 				// Show For Ignore DefaultMethods
 				
@@ -230,6 +239,9 @@ public class ReflectionBlackBoxTester {
 					}
 				}
 				testClass(obj, clazz, methods);
+			} else {
+				logger.debug(this, "test", "ERROR: DONT INSTANCE: "+clazz.getName());
+				output(clazz, "dont instance of " + clazz.getName() , logger, NetworkParserLog.LOGLEVEL_ERROR, null);
 			}
 			task.withSimpleExit(null);
 		}
@@ -255,6 +267,7 @@ public class ReflectionBlackBoxTester {
 
 	public void testClass(Object obj, Class<?> clazz, SimpleSet<String> ignoreMethods) {
 		boolean reg = false;
+		Set<Thread> oldThreads = Thread.getAllStackTraces().keySet();
 		if (obj == null) {
 			return;
 		}
@@ -272,6 +285,7 @@ public class ReflectionBlackBoxTester {
 			propertyChangeListener.setAccessible(true);
 		} catch (Exception e) {
 		}
+		// ss
 		for (Method m : clazz.getDeclaredMethods()) {
 			if (m.getDeclaringClass().isInterface()) {
 				continue;
@@ -300,7 +314,7 @@ public class ReflectionBlackBoxTester {
 			Object[] call = null;
 			m.setAccessible(true);
 			// mit Null as Parameter
-//			System.out.println(System.currentTimeMillis()+" TEST:"+clazz.getName()+":"+m.getName());
+//			SSystem.out..println(System.currentTimeMillis()+" TEST:"+clazz.getName()+":"+m.getName());
 			Class<?>[] parameterTypes = m.getParameterTypes();
 
 			for(String type : tests) {
@@ -337,6 +351,12 @@ public class ReflectionBlackBoxTester {
 					}
 				}
 			}
+			Set<Thread> newThreads = Thread.getAllStackTraces().keySet();
+			if(newThreads.size()>oldThreads.size()) {
+				// OPEN THREAD UPS
+				//FIXME
+				logger.debug(this, "test", "ERROR:"+clazz.getName()+":"+m.getName());
+			}
 		}
 		for (Field f : clazz.getDeclaredFields()) {
 			try {
@@ -366,7 +386,12 @@ public class ReflectionBlackBoxTester {
 				output(this, "Dont kill: " + obj, logger, NetworkParserLog.LOGLEVEL_WARNING, e2);
 			}
 		}
-
+		Set<Thread> newThreads = Thread.getAllStackTraces().keySet();
+		if(newThreads.size()>oldThreads.size()) {
+			// OPEN THREAD UPS
+			//FIXME
+			logger.debug(this, "test", "ERROR:"+clazz.getName());
+		}
 	}
 
 	public ReflectionBlackBoxTester withTest(String value) {

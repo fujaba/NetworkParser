@@ -29,11 +29,14 @@ package de.uniks.networkparser.bytes.qr;
  *
  * @author Sean Owen
  */
-final class GenericGFPoly {
+public final class GenericGFPoly {
 
-	private final GenericGF field;
-	private final int[] coefficients;
+	private GenericGF field;
+	private int[] coefficients;
 
+	public GenericGFPoly() {
+		
+	}
 	/**
 	 * @param field        the {@link GenericGF} instance representing the field to
 	 *                     use to perform computations

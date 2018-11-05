@@ -35,6 +35,7 @@ import java.util.Timer;
 
 import de.uniks.networkparser.DateTimeEntity;
 import de.uniks.networkparser.IdMap;
+import de.uniks.networkparser.NetworkParserLog;
 import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.converter.GraphConverter;
@@ -43,6 +44,7 @@ import de.uniks.networkparser.ext.generic.JarValidator;
 import de.uniks.networkparser.ext.generic.ReflectionBlackBoxTester;
 import de.uniks.networkparser.ext.generic.ReflectionLoader;
 import de.uniks.networkparser.ext.io.FileBuffer;
+import de.uniks.networkparser.ext.io.StringPrintStream;
 import de.uniks.networkparser.ext.javafx.DialogBox;
 import de.uniks.networkparser.ext.javafx.GUIEvent;
 import de.uniks.networkparser.ext.javafx.JavaAdapter;
@@ -79,11 +81,16 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 	protected boolean autoClose = true;
 	private JSEditor jsEditor;
 	private IdMap map;
+	private NetworkParserLog logger = new NetworkParserLog().withListener(new StringPrintStream());
 
 	private static DiagramEditor editor;
 
 	public static DiagramEditor edobs(Object... items) {
 		return edobs(false, items);
+	}
+	
+	public NetworkParserLog getLogger() {
+		return logger;
 	}
 
 	public static DiagramEditor edobs(boolean all, Object... items) {
@@ -230,6 +237,7 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 	}
 
 	public static void main(String[] args) {
+		NetworkParserLog logger = new NetworkParserLog().withListener(new StringPrintStream());
 		if (args != null && args.length > 0 && args[0] != null) {
 			if ("GIT".equalsIgnoreCase(args[0])) {
 				GitRevision revision = new GitRevision();
@@ -241,7 +249,8 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 						} catch (Exception e) {
 						}
 					}
-					System.out.println(revision.execute(commit));
+					
+					logger.debug(DiagramEditor.class, "main", revision.execute(commit));
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -298,19 +307,20 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 				// ADD TIME OUT
 				Timer timer = null;
 				if (timeOut > 0) {
-					System.out.println("FOUND TIMEOUT= " + timeOut);
+					logger.debug(null, "main", "FOUND TIMEOUT= " + timeOut);
 					timer = new Timer();
 					SimpleTimerTask task = new SimpleTimerTask(Thread.currentThread());
 					task.withTask(DiagramEditorTask.createExit(1, "TIMEOUT EXIT"));
 					timer.schedule(task, timeOut);
 				}
 				int exit = 0;
-				System.out.println("CHECK CC = " + validator.isValidate + " (" + validator.getMinCoverage() + ")");
+				logger.debug(null, "main", "CHECK CC = " + validator.isValidate + " (" + validator.getMinCoverage() + ")");
 				if (validator.isValidate) {
 					validator.validate();
 					int result = validator.analyseReport();
 					if (result != 0) {
-						System.err.println("CodeCoverage not enough (" + result + ")");
+						
+						logger.error(null, "main", "CodeCoverage not enough (" + result + ")");
 						exit = -1;
 					}
 				}
@@ -320,10 +330,10 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 						int subExit = validator.searchFiles(System.err);
 						if (subExit < 0) {
 							exit = subExit;
-							System.err.println("FatJar Error");
+							logger.error(null, "main", "FatJar Error");
 						}
 						if (validator.isValidate && subExit == 0 && validator.isExistFullJar() == false) {
-							System.err.println("No FatJar found");
+							logger.error(null, "main", "No FatJar found");
 							exit = -1;
 						}
 					} else {
@@ -339,7 +349,9 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 				return;
 			}
 			if (args[0].toLowerCase().startsWith("test=")) {
-				ReflectionBlackBoxTester.mainTester(args);
+				ReflectionBlackBoxTester tester = new ReflectionBlackBoxTester();
+				tester.withLogger(logger);
+				tester.mainTester(args);
 				return;
 			}
 		}
@@ -348,7 +360,7 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 			NodeProxyTCP server = NodeProxyTCP.createServer(8080);
 			server.withListener(new DiagramEditor());
 			if (server.start()) {
-				System.out.println("LISTEN ON: " + server.getKey());
+				logger.debug(DiagramEditor.class, "main", "LISTEN ON: " + server.getKey());
 				if (ReflectionLoader.DESKTOP != null) {
 					Object desktop = ReflectionLoader.call(ReflectionLoader.DESKTOP, "getDesktop");
 					if (desktop != null) {
@@ -416,7 +428,6 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 
 	@Override
 	public boolean update(Object value) {
-		System.out.println(value);
 		if (value == null) {
 			return false;
 		}
@@ -427,7 +438,7 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 			SimpleEvent evt = (SimpleEvent) value;
 			if (JavaViewAdapter.STATE.equalsIgnoreCase(evt.getNewValue().getClass().getName())) {
 				if (evt.getNewValue().toString().equals(JavaViewAdapter.FAILED)) {
-					System.err.println(evt);
+					logger.error(this, "update", evt);
 				}
 				if (evt.getNewValue().toString().equals(JavaViewAdapter.SUCCEEDED)) {
 					Object win = super.executeScript("window", false);
@@ -533,8 +544,7 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 		ClassModel modelGen = (ClassModel) converter.convertFromJson(model, new ClassModel());
 		if (modelGen == null) {
 //		if (model.has(GraphConverter.NODES) == false) {
-			System.err.println("no Nodes");
-			System.out.println("no Nodes");
+			logger.error(null, "main", "no Nodes");
 			return false;
 		}
 		modelGen.generate("src/main/java");
@@ -606,7 +616,7 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 	}
 
 	protected boolean onError(Object event) {
-		System.err.println(ReflectionLoader.call(event, "getMessage"));
+		logger.error(null, "onError", ReflectionLoader.call(event, "getMessage"));
 		return true;
 	}
 

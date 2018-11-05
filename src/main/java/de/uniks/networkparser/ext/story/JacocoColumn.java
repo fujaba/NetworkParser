@@ -43,7 +43,7 @@ public class JacocoColumn implements JacocoColumnListener, Comparator<Object> {
 
 	public static JacocoColumn create() {
 		JacocoColumn jacocoColumn = new JacocoColumn();
-		Class<?> proxyClass = ReflectionLoader.getClass(COLUMRENDERER);
+		Class<?> proxyClass = ReflectionLoader.getSimpleClass(COLUMRENDERER);
 		if (proxyClass == null) {
 			if (ReflectionBlackBoxTester.isTester() == false) {
 				System.out.println("NO JACOCO FOUND ON BUILD-PATH");

@@ -65,13 +65,17 @@ public class Manifest extends SimpleKeyValueList<String, String> {
 	public static void printVersion() {
 		Manifest manifest = create();
 		if (manifest.isEmptyManifest() == false) {
-			System.out.println("Title: " + manifest.getString(TITLE));
-			System.out.println("Version: " + manifest.getString(VERSION));
-			System.out.println("Time: " + manifest.getString(BUILD));
-			System.out.println("Hash: " + manifest.getString(HASH));
-			System.out.println("Licence: " + manifest.getString(LICENCE));
-			System.out.println("Homepage: " + manifest.getString(HOMEPAGE));
-			System.out.println("Coverage: " + manifest.getString(COVERAGE));
+			CharacterBuffer sb=new CharacterBuffer();
+			sb.withLine("Title: " + manifest.getString(TITLE));
+			sb.withLine("Version: " + manifest.getString(VERSION));
+			sb.withLine("Time: " + manifest.getString(BUILD));
+			sb.withLine("Hash: " + manifest.getString(HASH));
+			sb.withLine("Licence: " + manifest.getString(LICENCE));
+			sb.withLine("Homepage: " + manifest.getString(HOMEPAGE));
+			sb.withLine("Coverage: " + manifest.getString(COVERAGE));
+			
+			System.out.println(sb.toString());
+
 		}
 	}
 

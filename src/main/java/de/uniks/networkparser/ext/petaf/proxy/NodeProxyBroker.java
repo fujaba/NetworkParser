@@ -168,7 +168,7 @@ public class NodeProxyBroker extends NodeProxy {
 	}
 
 	@Override
-	protected boolean initProxy() {
+	protected boolean startProxy() {
 		try {
 			return this.connect();
 		} catch (Exception e) {
@@ -216,7 +216,7 @@ public class NodeProxyBroker extends NodeProxy {
 		executeConsume(topic, callBack);
 
 //		RabbitMessage message = RabbitMessage.createConsume(channelNo, topic, "", false, false, false, false, null);
-//		System.out.println(session.sending(this, message, true));
+//		SSystem.out..println(session.sending(this, message, true));
 		return true;
 	}
 

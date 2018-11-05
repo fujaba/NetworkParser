@@ -35,6 +35,8 @@ public class DialogPane implements Runnable {
 	private double initHeight;
 	private int initCount = 1;
 
+	public DialogPane() {
+	}
 	public DialogPane(DialogBox owner, Object parent) {
 		this.owner = owner;
 		this.parent = parent;

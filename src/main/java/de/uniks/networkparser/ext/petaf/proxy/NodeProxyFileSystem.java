@@ -178,7 +178,7 @@ public class NodeProxyFileSystem extends NodeProxy implements ObjectCondition {
 	}
 
 	@Override
-	protected boolean initProxy() {
+	protected boolean startProxy() {
 		withType(NodeProxy.TYPE_INOUT);
 		nodeProxyFileWatcher = new FileWatcher().init(this, this.fileName);
 		return true;
@@ -201,11 +201,11 @@ public class NodeProxyFileSystem extends NodeProxy implements ObjectCondition {
 //					SimpleList<NodeProxy> receiver = ((ChangeMessage) value).getReceived();
 //					if (receiver != null && receiver.contains(this) ) {
 //						// already saved to disk
-//						System.out.println("Already saved");
+//						SSystem.out..println("Already saved");
 //						return false;
 //					}
 //				}else {
-//					System.out.println("No Change");
+//					SSystem.out..println("No Change");
 //				}
 				// eigener change?
 		return true;

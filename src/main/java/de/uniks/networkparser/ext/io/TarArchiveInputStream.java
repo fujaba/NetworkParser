@@ -29,6 +29,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.zip.GZIPInputStream;
 
+import de.uniks.networkparser.NetworkParserLog;
+
 public class TarArchiveInputStream extends InputStream {
 	private final byte[] single = new byte[1];
 	private static final int BYTE_MASK = 0xFF;
@@ -65,6 +67,8 @@ public class TarArchiveInputStream extends InputStream {
 
 	// the global PAX header
 	private Map<String, String> globalPaxHeaders = new HashMap<String, String>();
+	
+	private NetworkParserLog logger;
 
 	/**
 	 * Method to decompress a gzip file
@@ -299,7 +303,9 @@ public class TarArchiveInputStream extends InputStream {
 		}
 
 		if (currEntry.isOldGNUSparse()) { // Process sparse files
-			System.out.println("ERROR readOldGNUSparse");
+			if(logger != null) {
+				logger.error(this, "getNextTarEntry", "ERROR readOldGNUSparse");
+			}
 //			readOldGNUSparse();
 		}
 

@@ -75,7 +75,7 @@ public class NodeProxyLocal extends NodeProxy {
 	}
 
 	@Override
-	protected boolean initProxy() {
+	protected boolean startProxy() {
 		this.type = NodeProxy.TYPE_OUT;
 		return true;
 	}
