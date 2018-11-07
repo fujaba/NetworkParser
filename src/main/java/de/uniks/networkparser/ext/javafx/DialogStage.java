@@ -49,7 +49,7 @@ public class DialogStage implements Runnable {
 
 	@Override
 	public void run() {
-		Object transparent = ReflectionLoader.getField("TRANSPARENT", ReflectionLoader.STAGESTYLE);
+		Object transparent = ReflectionLoader.getField(ReflectionLoader.STAGESTYLE, "TRANSPARENT");
 		this.stage = ReflectionLoader.newInstance(ReflectionLoader.STAGE, ReflectionLoader.STAGESTYLE, transparent);
 		// Stage newStage = new Stage(StageStyle.TRANSPARENT) {
 		parent.setStage(this.stage);
@@ -57,18 +57,18 @@ public class DialogStage implements Runnable {
 		Object modality;
 		if (parent.modal) {
 			if (owner != null) {
-				modality = ReflectionLoader.getField("WINDOW_MODAL", ReflectionLoader.MODALITY);
+				modality = ReflectionLoader.getField(ReflectionLoader.MODALITY, "WINDOW_MODAL");
 			} else {
-				modality = ReflectionLoader.getField("APPLICATION_MODAL", ReflectionLoader.MODALITY);
+				modality = ReflectionLoader.getField(ReflectionLoader.MODALITY, "APPLICATION_MODAL");
 			}
 		} else {
-			modality = ReflectionLoader.getField("NONE", ReflectionLoader.MODALITY);
+			modality = ReflectionLoader.getField(ReflectionLoader.MODALITY, "NONE");
 		}
 		ReflectionLoader.call(this.stage, "initModality", ReflectionLoader.MODALITY, modality);
 
 		parent.createContent();
 		Object scene = ReflectionLoader.newInstance(ReflectionLoader.SCENE, ReflectionLoader.PARENT, parent.getRoot());
-		Object color = ReflectionLoader.getField("TRANSPARENT", ReflectionLoader.COLOR);
+		Object color = ReflectionLoader.getField(ReflectionLoader.COLOR, "TRANSPARENT");
 		ReflectionLoader.call(scene, "setFill", ReflectionLoader.PAINT, color);
 		ReflectionLoader.call(this.stage, "setScene", scene);
 		parent.configScene();

@@ -277,7 +277,7 @@ public class DialogBox implements ObjectCondition {
 //				item.withOwner(this);
 				JavaBridgeFX.addChildren(actionToolbar, -1, guiElement);
 			}
-			Object pos = ReflectionLoader.getField("TOP_RIGHT", ReflectionLoader.POS);
+			Object pos = ReflectionLoader.getField(ReflectionLoader.POS, "TOP_RIGHT");
 			ReflectionLoader.call(actionToolbar, "setAlignment", ReflectionLoader.POS, pos);
 			ReflectionLoader.call(root, "setBottom", ReflectionLoader.NODE, actionToolbar);
 		}
@@ -363,7 +363,7 @@ public class DialogBox implements ObjectCondition {
 		JavaBridgeFX.setStyle(text, false, "labelText");
 
 		Object vBox = ReflectionLoader.newInstance(ReflectionLoader.VBOX);
-		Object pos = ReflectionLoader.getField("CENTER", ReflectionLoader.POS);
+		Object pos = ReflectionLoader.getField(ReflectionLoader.POS, "CENTER");
 		ReflectionLoader.call(vBox, "setAlignment", ReflectionLoader.POS, pos);
 		JavaBridgeFX.addChildren(vBox, -1, text);
 

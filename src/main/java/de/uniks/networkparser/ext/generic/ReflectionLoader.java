@@ -567,7 +567,7 @@ public class ReflectionLoader {
 		return isAccess(method, item);
 	}
 
-	public static Object getField(String fieldName, Object item) {
+	public static Object getField(Object item, String... fieldNames) {
 		Class<?> className = null;
 		Object itemObj = null;
 		if (item instanceof Class<?>) {
@@ -577,22 +577,36 @@ public class ReflectionLoader {
 			className = item.getClass();
 		}
 		Field field;
-		try {
-			field = className.getField(fieldName);
-			field.setAccessible(true);
-			return field.get(itemObj);
-		} catch (Exception e) {
+		if(fieldNames == null) {
+			return null;
+		}
+		Object result = null;
+		for (int i=0;i<fieldNames.length;i++) {
 			try {
-				field = className.getDeclaredField(fieldName);
+				field = className.getField(fieldNames[i]);
 				field.setAccessible(true);
-				return field.get(itemObj);
-			} catch (Exception e2) {
-				if (logger != null) {
-					e.printStackTrace(logger);
+				result = field.get(itemObj);
+				if(result == null || i == fieldNames.length - 1) {
+					return result;
+				}
+				className = result.getClass();
+			} catch (Exception e) {
+				try {
+					field = className.getDeclaredField(fieldNames[i]);
+					field.setAccessible(true);
+					result = field.get(itemObj);
+					if(result == null || i == fieldNames.length - 1) {
+						return result;
+					}
+					className = result.getClass();
+				} catch (Exception e2) {
+					if (logger != null) {
+						e.printStackTrace(logger);
+					}
 				}
 			}
 		}
-		return null;
+		return result;
 	}
 
 	public static boolean setField(String fieldName, Object item, Object value) {

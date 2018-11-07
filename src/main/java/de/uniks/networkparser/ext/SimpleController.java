@@ -349,7 +349,7 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 					if (outputFile.equalsIgnoreCase("inherit")) {
 						processBuilder.redirectErrorStream(true);
 						ReflectionLoader.call(processBuilder, "redirectOutput", ReflectionLoader.PROCESSBUILDERREDIRECT,
-								ReflectionLoader.getField("INHERIT", ReflectionLoader.PROCESSBUILDERREDIRECT));
+								ReflectionLoader.getField(ReflectionLoader.PROCESSBUILDERREDIRECT, "INHERIT"));
 					} else {
 						int pos = outputFile.lastIndexOf(".");
 						if (pos > 0) {

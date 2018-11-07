@@ -275,7 +275,7 @@ public class GitRevision {
 					}
 					if (diffs != null) {
 						JsonArray files = new JsonArray();
-						Object refmode = ReflectionLoader.getField("MISSING", ReflectionLoader.FILEMODE);
+						Object refmode = ReflectionLoader.getField(ReflectionLoader.FILEMODE, "MISSING");
 						for (Object entry : diffs) {
 							Object mode = ReflectionLoader.call(entry, "getNewMode");
 							String value = (String) ReflectionLoader.call(entry, "getNewPath");

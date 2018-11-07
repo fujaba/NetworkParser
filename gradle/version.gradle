@@ -51,21 +51,7 @@ class GITVersion {
 	}
 }
 
-task compileJava18(type: JavaCompile) {
-	source = fileTree(dir: 'src', exclude: ['**/test/**'])
-	destinationDir = file('build/classes/main18')
-	sourceCompatibility = '1.8'
-	targetCompatibility = '1.8'
-	classpath = files('build/classes/main18')
-}
-
 task JavaGit(type:JavaExec) {
-	doFirst {
-		try {
-			compileJava18.execute()
-		}catch(Exception e) {
-		}
-	}
 	errorOutput = System.err
 	main = "de.uniks.networkparser.ext.DiagramEditor"
 	args 'GIT', '3'
@@ -107,8 +93,8 @@ task JavaGit(type:JavaExec) {
 	}
 }
 
-task version() {
-	doFirst{
+task versions() {
+	doFirst {
 		JavaGit.execute()
 	}
 	group "Git"
@@ -122,14 +108,10 @@ task version() {
 		}
 	}
 }
-gradle.projectsEvaluated {
-	JavaGit.mustRunAfter compileJava
-}
 
 ext {
 	gitVersion = new GITVersion(major: ext.majorNumber)
 }
-version = gitVersion
 
 def buildTime() {
 	//def df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'") //you can change it
@@ -200,3 +182,17 @@ def getWorkingBranch() {
 	println "Git-Branch: " + branch
 	branch
 }
+task compileJava18(type: JavaCompile) {
+	source = fileTree(dir: 'src', exclude: ['**/test/**'])
+	destinationDir = file('build/classes/main18')
+	sourceCompatibility = '1.8'
+	targetCompatibility = '1.8'
+	classpath = files('build/classes/main18')
+	doLast {
+		versions.execute()
+	}
+}
+
+compileJava.dependsOn compileJava18
+
+version = gitVersion

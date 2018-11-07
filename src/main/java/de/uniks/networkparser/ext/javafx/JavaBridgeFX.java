@@ -171,7 +171,7 @@ public class JavaBridgeFX extends JavaBridge {
 		}
 		if (Label.SPACER.equalsIgnoreCase(label.getType())) {
 			javaFXLabel = ReflectionLoader.newInstance(ReflectionLoader.REGION);
-			Object prio = ReflectionLoader.getField("ALWAYS", ReflectionLoader.PRIORITY);
+			Object prio = ReflectionLoader.getField(ReflectionLoader.PRIORITY, "ALWAYS");
 			ReflectionLoader.call(ReflectionLoader.HBOX, "setHgrow", ReflectionLoader.NODE, javaFXLabel,
 					ReflectionLoader.PRIORITY, prio);
 		} else if (Label.TITLE.equalsIgnoreCase(label.getType())) {

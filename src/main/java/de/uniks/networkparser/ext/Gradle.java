@@ -5,12 +5,17 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Enumeration;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
 
 import de.uniks.networkparser.buffer.ByteBuffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
+import de.uniks.networkparser.ext.generic.ReflectionLoader;
 import de.uniks.networkparser.ext.io.FileBuffer;
 import de.uniks.networkparser.ext.io.TarArchiveEntry;
 import de.uniks.networkparser.ext.io.TarArchiveInputStream;
@@ -18,6 +23,7 @@ import de.uniks.networkparser.ext.petaf.proxy.NodeProxyTCP;
 import de.uniks.networkparser.json.JsonArray;
 import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.list.SimpleKeyValueList;
+import de.uniks.networkparser.list.SimpleSet;
 import de.uniks.networkparser.xml.HTMLEntity;
 import de.uniks.networkparser.xml.XMLContainer;
 import de.uniks.networkparser.xml.XMLEntity;
@@ -79,6 +85,112 @@ public class Gradle {
 
 		new File(path + "src/main/java").mkdirs();
 		new File(path + "bin").mkdirs();
+	}
+
+	public static boolean print(Object item, String fileName) {
+		if (item == null) {
+			return false;
+		}
+		try {
+			if (item.getClass().getName().equals("org.gradle.execution.taskgraph.DefaultTaskExecutionGraph") == false) {
+				return false;
+			}
+			// Access private variables of tasks graph
+			Object tep = ReflectionLoader.getField(item, "taskExecutionPlan");
+
+			// Execution starts on these tasks
+			Set<?> entryTasks = (Set<?>) ReflectionLoader.getField(tep, "entryTasks");
+
+			// Already processed edges
+			SimpleSet<String> edges = new SimpleSet<String>();
+			// Create output buffer
+			CharacterBuffer dotGraph = new CharacterBuffer();
+			dotGraph.with("digraph compile { ");
+			dotGraph.with("colorscheme=spectral11;");
+			dotGraph.with("rankdir=TB;");
+			dotGraph.with("splines=spline;");
+			dotGraph.withLine("color=10;");
+			// Generate graph for each input
+			for (Object et : entryTasks) {
+				printGraph(dotGraph, et, edges);
+			}
+
+//            // Entry tasks nodes have the same priority
+//            dotGraph.append("{ rank=same; ")
+//            entryTasks.each { et -> dotGraph.append('"').append(et.task.path).append("\" ") }
+//            dotGraph.append("}").append(ls)
+			// Finalize graph
+			dotGraph.withLine("}");
+
+			// Save graph
+			if (fileName != null) {
+				FileBuffer.writeFile(fileName, dotGraph.toString());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			// TODO: handle exception
+		}
+		return false;
+	}
+
+	private static String getTaskName(Object ti) {
+		String name = ""+ReflectionLoader.getField(ti, "task", "path");
+		if(name.startsWith("task '")) {
+			return name.substring(6, name.length() - 1);
+		}
+		return name;
+	}
+//	public StringBuilder printGraph(VisTegPluginExtension vistegExt, StringBuilder sb, String ls, TaskInfo entry, Set<Integer> edges) {
+	public static void printGraph(CharacterBuffer buffer, Object entry, Set<String> edges) {
+		LinkedList<Object> q = new LinkedList<Object>();
+		q.add(entry);
+		HashSet<String> seen = new HashSet<String>();
+		while (q.isEmpty() == false) {
+			Object ti = q.remove();
+//		Object tproject = ReflectionLoader.callChain(ti, "task", "project");
+			String tname = getTaskName(ti);
+			if (seen.contains(tname)) {
+				continue;
+			}
+			seen.add(tname);
+			// org.gradle.execution.taskgraph.LocalTaskInfo
+			Object items = ReflectionLoader.call(ti, "getAllSuccessors");
+//		System.out.println(tname+": "+items+items.getClass());
+
+			if (items != null && items instanceof Iterable<?>) {
+				Iterable<?> i = (Iterable<?>) items;
+				Iterator<?> iterator = i.iterator();
+				SimpleSet<Object> itemsSet = new SimpleSet<Object>();
+				while (iterator.hasNext()) {
+					Object item = iterator.next();
+					String sname = getTaskName(item);
+					if (edges.add(tname+":"+sname)) {
+						// Generate edge between two nodes
+						buffer.withLine("\"" + tname + "\" -> \"" + sname + "\";");
+					}
+					itemsSet.add(item);
+				}
+				q.addAll(itemsSet);
+			}
+			
+			
+			buffer.with("\""+tname+"\"");
+			buffer.with(" [");
+			buffer.with("shape=\"");
+			Object field = ReflectionLoader.call(ti, "getDependencyPredecessors");
+			if(field != null  && ((Set<?>)field).isEmpty()) {
+				buffer.with("hexagon");
+			}else {
+				field = ReflectionLoader.call(ti, "getDependencySuccessors");
+				if(field != null  && ((Set<?>)field).isEmpty()) {
+					buffer.with("doubleoctagon");
+				} else {
+					buffer.with("box");
+				}
+			}
+			buffer.with("\"]");
+	        buffer.withLine(";");
+		}
 	}
 
 	public boolean writeGradle(String path) {

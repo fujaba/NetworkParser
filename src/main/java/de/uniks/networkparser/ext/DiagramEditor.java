@@ -562,11 +562,11 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 				}
 			}
 			if (!error) {
-				Object mode = ReflectionLoader.getField("COPY", ReflectionLoader.TRANSFERMODE);
+				Object mode = ReflectionLoader.getField(ReflectionLoader.TRANSFERMODE, "COPY");
 				ReflectionLoader.call(event, "acceptTransferModes", ReflectionLoader.TRANSFERMODE, mode);
 				getJSEditor().setBoardStyle("OK");
 			} else {
-				Object mode = ReflectionLoader.getField("NONE", ReflectionLoader.TRANSFERMODE);
+				Object mode = ReflectionLoader.getField(ReflectionLoader.TRANSFERMODE, "NONE");
 				ReflectionLoader.call(event, "acceptTransferModes", ReflectionLoader.TRANSFERMODE, mode);
 				getJSEditor().setBoardStyle("Error");
 			}

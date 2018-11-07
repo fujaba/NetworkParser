@@ -162,7 +162,7 @@ public class ErrorHandler implements Thread.UncaughtExceptionHandler {
 		}
 		Object runTime = ReflectionLoader.call(ReflectionLoader.MANAGEMENTFACTORY, "getRuntimeMXBean");
 		if (runTime != null) {
-			Object returnValue = ReflectionLoader.getField("vmStartupTime", runTime);
+			Object returnValue = ReflectionLoader.getField(runTime, "vmStartupTime");
 			if (returnValue instanceof Long) {
 				item.withTime((Long) returnValue);
 			}
@@ -180,7 +180,7 @@ public class ErrorHandler implements Thread.UncaughtExceptionHandler {
 		if (runTime == null) {
 			return pid;
 		}
-		Object jvm = ReflectionLoader.getField("jvm", runTime);
+		Object jvm = ReflectionLoader.getField(runTime, "jvm");
 		if (jvm != null) {
 			Object returnValue = ReflectionLoader.call(jvm, "getProcessId");
 			if (returnValue instanceof Integer) {
