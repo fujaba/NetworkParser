@@ -280,7 +280,7 @@ public class ModelGenerator extends Template {
 					}
 					ParserEntity parser = parse(rootDir, file);
 					if (parser != null) {
-						parser.addMemberToModel();
+						parser.addMemberToModel(false);
 					}
 				}
 			}

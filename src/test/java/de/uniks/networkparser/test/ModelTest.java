@@ -23,6 +23,7 @@ import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.logic.WhiteListCondition;
+import de.uniks.networkparser.parser.DebugCondition;
 import de.uniks.networkparser.test.model.Apple;
 import de.uniks.networkparser.test.model.AppleTree;
 import de.uniks.networkparser.test.model.Barbarian;
@@ -313,5 +314,20 @@ public class ModelTest implements ObjectCondition {
 		CodeCityConverter converter = new CodeCityConverter();
 		String encode = converter.encode(model);
 		FileBuffer.writeFile("build/NetworkParser.mse", encode);
+	}
+	
+	@Test
+	public void testMSEIdMap() {
+		FileClassModel model = new FileClassModel("de.uniks.networkparser");
+		model.readFile("src/main/java/de/uniks/networkparser/IdMap.java", new DebugCondition());
+		
+		model.analyseSymTabEntry(null);
+		model.analyseLoC(model);
+		model.analyseBounds(null);
+//		model.createParserEntity(new File("src/main/java/de/uniks/networkparser/ext/io/TarArchiveEntry.java"), new DebugCondition());
+
+		CodeCityConverter converter = new CodeCityConverter();
+		String encode = converter.encode(model);
+		FileBuffer.writeFile("build/NetworkParser-IdMap.mse", encode);
 	}
 }

@@ -432,8 +432,8 @@ public class FileClassModel extends ClassModel {
 			model = this;
 		}
 		for (ParserEntity element : list) {
-			element.addMemberToModel();
 			this.add(element.getClazz());
+			element.addMemberToModel(false);
 		}
 		return model;
 	}

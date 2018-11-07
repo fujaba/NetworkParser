@@ -11,7 +11,6 @@ import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.DataType;
 import de.uniks.networkparser.graph.GraphUtil;
 import de.uniks.networkparser.graph.Method;
-import de.uniks.networkparser.graph.MethodSet;
 import de.uniks.networkparser.graph.ModifyEntry;
 import de.uniks.networkparser.parser.ParserEntity;
 import de.uniks.networkparser.parser.SymTabEntry;
@@ -66,7 +65,8 @@ public class TestSDMLib {
 		// Create a Person with name and age Attribute
 		// and eat and go Method
 		Assert.assertEquals(2, person.getAttributes().size());
-		MethodSet methods = person.getMethods();
+//		MethodSet methods = 
+				person.getMethods();
 //FIXME		Assert.assertEquals(2, methods.size());
 
 

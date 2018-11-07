@@ -230,9 +230,10 @@ public class Storyboards {
 
 		story.addText("Call YamlIdMap.decode:");
 
-		StoryStepSourceCode addSourceCode = story.addSourceCode();
+//		StoryStepSourceCode addSourceCode = 
+				story.addSourceCode();
 //		IdMap yamlIdMap = new IdMap("org.sdmlib.test.examples.studyrightWithAssignments.model");
-		IdMap yamlIdMap = new IdMap();
+//		IdMap yamlIdMap = new IdMap();
 		/*FIXME
 		University studyRight = (University) yamlIdMap.decode(yaml);
 		Assert.assertNotNull(studyRight);
@@ -770,9 +771,10 @@ public class Storyboards {
 		// read jsonText from file
 		IdMap readerMap = UniversityCreator.createIdMap("demo");
 
-		Object rootObject = readerMap.decode(jsonText);
+//		Object rootObject = 
+				readerMap.decode(jsonText);
 
-		University readUniversity = (University) rootObject;
+//		University readUniversity = (University) rootObject;
 		persistent.withEnd();
 //FIXME				Assert.assertNotNull(readUniversity);
 

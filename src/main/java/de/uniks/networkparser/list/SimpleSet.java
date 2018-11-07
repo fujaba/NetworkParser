@@ -34,10 +34,6 @@ public class SimpleSet<V> extends AbstractList<V> implements Set<V> {
 	public static final String PROPERTY = "items";
 	protected ObjectCondition listener;
 
-	public SimpleSet() {
-		// empty
-	}
-
 	public SimpleSet(Object... objects) {
 		if (objects != null && objects.length > 0) {
 			init(objects);

@@ -173,8 +173,10 @@ public class CodeCityConverter implements Converter {
 		SymTabEntry symbolEntry = code.getSymbolEntry(SymTabEntry.TYPE_METHOD, method.getName());
 		buffer.withLine("(FAMIX.Method (id: "+methodId+")");
 		buffer.withLine("\t(fileName 'FILE:"+code.getFileName()+"')");
-		buffer.withLine("\t(startLine "+symbolEntry.getStartLine()+")");
-		buffer.withLine("\t(endLine "+symbolEntry.getEndLine()+")");
+		if(symbolEntry != null) {
+			buffer.withLine("\t(startLine "+symbolEntry.getStartLine()+")");
+			buffer.withLine("\t(endLine "+symbolEntry.getEndLine()+")");
+		}
 		buffer.withLine("\t(name '"+method.getName()+"')");
 		buffer.withLine("\t(belongsTo (idref: "+list.get(method.getClazz())+"))");
 		buffer.withLine("\t(accessControlQualifier "+GraphUtil.getVisible(method)+")");

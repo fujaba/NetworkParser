@@ -63,4 +63,16 @@ public class Parameter extends Value {
 		super.setParentNode(value);
 		return this;
 	}
+	public static Parameter create(Object param) {
+		if(param instanceof DataType) {
+			return new Parameter((DataType)param);
+		}
+		if(param instanceof Clazz) {
+			return new Parameter((Clazz)param);
+		}
+		if(param instanceof String) {
+			return new Parameter(DataType.create((String)param));
+		}
+		return null;
+	}
 }

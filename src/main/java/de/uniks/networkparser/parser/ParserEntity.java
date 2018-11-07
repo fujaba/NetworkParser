@@ -685,6 +685,11 @@ public class ParserEntity {
 
 				// skip interface name
 				nextToken();
+				if (currentKindEquals('<')) {
+//					CharacterBuffer characterBuffer = new CharacterBuffer();
+//					parseGenericTypeDefPart(typeString);
+					parseGenericTypeSpec();
+				}
 
 				if (currentKindEquals(',')) {
 					nextToken();
@@ -705,7 +710,7 @@ public class ParserEntity {
 	}
 
 	private String parseTypeRef() {
-		StringBuilder typeString = new StringBuilder();
+		CharacterBuffer typeString = new CharacterBuffer();
 
 		// (void | qualifiedName) <T1, T2> [] ...
 		String typeName = VOID;
@@ -716,14 +721,14 @@ public class ParserEntity {
 			typeName = parseQualifiedName().toString();
 		}
 
-		typeString.append(typeName);
+		typeString.with(typeName);
 
 		if (currentKindEquals('<')) {
 			parseGenericTypeDefPart(typeString);
 		}
 
 		while(currentKindEquals('[')) {
-			typeString.append("[]");
+			typeString.with("[]");
 			skip("[", true);
 			while ("]".equals(currentWord()) == false && currentKindEquals(Token.EOF) == false) {
 				nextToken();
@@ -732,45 +737,45 @@ public class ParserEntity {
 		}
 
 		if (currentKindEquals('.')) {
-			typeString.append("...");
+			typeString.with("...");
 			skip(".", false);
 			skip(".", false);
 			skip(".", true);
 		}
 
 		if ("extends".equals(lookAheadToken.text.toString())) {
-			typeString.append(currentToken.text);
+			typeString.with(currentToken.text);
 			nextToken();
-			typeString.append(currentToken.text);
+			typeString.with(currentToken.text);
 			nextToken();
-			typeString.append(currentToken.text);
+			typeString.with(currentToken.text);
 			nextToken();
-			typeString.append(currentToken.text);
+			typeString.with(currentToken.text);
 
 		}
 		if ("@".equals(typeString.toString())) {
-			typeString.append(currentToken.text);
+			typeString.with(currentToken.text);
 		}
 		// phew
 		return typeString.toString();
 	}
 
-	private void parseGenericTypeDefPart(StringBuilder typeString) {
+	private void parseGenericTypeDefPart(CharacterBuffer typeString) {
 		// <T, T, ...>
 		skip("<", false);
-		typeString.append('<');
+		typeString.with('<');
 
 		while (!currentKindEquals('>') && !currentKindEquals(Token.EOF)) {
 			if (currentKindEquals('<')) {
 				parseGenericTypeDefPart(typeString);
 			} else {
-				typeString.append(currentWord());
+				typeString.with(currentWord());
 				nextToken();
 			}
 		}
 
 		// should be a < now
-		typeString.append(">");
+		typeString.with(">");
 		skip(">", true);
 	}
 
@@ -1196,7 +1201,7 @@ public class ParserEntity {
 		return classType;
 	}
 
-	public void addMemberToModel() {
+	public void addMemberToModel(boolean addStaticAttribute) {
 		if (code == null) {
 			return;
 		}
@@ -1213,7 +1218,7 @@ public class ParserEntity {
 				// add new attributes
 				for (SymTabEntry entry : entities) {
 					addMemberAsMethod(entry, symbolTab);
-					addMemberAsAttribut(entry, symbolTab);
+					addMemberAsAttribut(entry, symbolTab, addStaticAttribute);
 				}
 			} else if (key.startsWith(SymTabEntry.TYPE_EXTENDS)) {
 				// add super classes
@@ -1301,11 +1306,12 @@ public class ParserEntity {
 	}
 
 	private void addMemberAsAttribut(SymTabEntry symTabEntry,
-			SimpleKeyValueList<String, SimpleList<SymTabEntry>> symbolTab) {
+			SimpleKeyValueList<String, SimpleList<SymTabEntry>> symbolTab, boolean addStaticAttribute) {
 		// filter public static final constances
 		String modifiers = symTabEntry.getModifiers();
-		if ((modifiers.indexOf("public") >= 0 || modifiers.indexOf("private") >= 0) && modifiers.indexOf("static") >= 0
-				&& modifiers.indexOf("final") >= 0) {
+		if (addStaticAttribute == false && 
+				((modifiers.indexOf("public") >= 0 || modifiers.indexOf("private") >= 0) 
+				&& modifiers.indexOf("static") >= 0 && modifiers.indexOf("final") >= 0)) {
 			// ignore
 			return;
 		}
@@ -1320,7 +1326,10 @@ public class ParserEntity {
 			}
 		} else {
 			// handle complex attributes
-			handleComplexAttr(attrName, symTabEntry, symbolTab);
+			if(handleComplexAttr(attrName, symTabEntry, symbolTab) == false) {
+				// Not Found so simple Attribute
+				this.getClazz().withAttribute(attrName, DataType.create(symTabEntry.getDataType()));
+			}
 		}
 	}
 
@@ -1332,11 +1341,11 @@ public class ParserEntity {
 		return false;
 	}
 
-	private void handleComplexAttr(String attrName, SymTabEntry symTabEntry,
+	private boolean handleComplexAttr(String attrName, SymTabEntry symTabEntry,
 			SimpleKeyValueList<String, SimpleList<SymTabEntry>> symbolTab) {
 		GraphModel model = this.getClazz().getClassModel();
 		if (model == null) {
-			return;
+			return false;
 		}
 		String memberName = symTabEntry.getName();
 		String partnerTypeName = symTabEntry.getDataType();
@@ -1351,7 +1360,7 @@ public class ParserEntity {
 			}
 		}
 		if (partnerClass == null)
-			return;
+			return false;
 
 		int card = findRoleCard(partnerTypeName, model);
 
@@ -1379,14 +1388,17 @@ public class ParserEntity {
 		}
 
 		if (addToSymTabEntry == null && "with".equals(setterPrefix)) {
-			addToSymTabEntry = symbolTab
-					.get(SymTabEntry.TYPE_METHOD + ":" + "with" + name + "(" + partnerClassName + "...)").first();
+			SimpleList<SymTabEntry> simpleList = symbolTab.get(SymTabEntry.TYPE_METHOD + ":" + "with" + name + "(" + partnerClassName + "...)");
+			if(simpleList == null) {
+				return false;
+			}
+			addToSymTabEntry = simpleList.first();
 		}
 
 		// type is unknown
 		if (addToSymTabEntry == null) {
 			this.getClazz().withAttribute(memberName, DataType.create(partnerTypeName));
-			return;
+			return false;
 		}
 
 		SimpleList<SymTabEntry> methodBodyQualifiedNames = symbolTab.get(SymTabEntry.TYPE_METHOD);
@@ -1491,6 +1503,7 @@ public class ParserEntity {
 				this.getClazz().withUniDirectional(partnerClass, memberName, card);
 			}
 		}
+		return true;
 	}
 
 	public String findPartnerClassName(String partnerTypeName) {
