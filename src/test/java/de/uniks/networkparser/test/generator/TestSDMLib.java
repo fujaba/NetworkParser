@@ -48,7 +48,7 @@ public class TestSDMLib {
 		ParserEntity parser = generator.parse("build/gen/java", templateResult);
 		SymTabEntry entry = parser.getSymbolEntry(SymTabEntry.TYPE_METHOD, "eat");
 		if(entry != null) {
-			entry.writeBody("\r\n\t\tSystem.out.println(\"I am eating\");");
+			entry.writeBody("System.out.println(\"I am eating\");");
 			generator.write("build/gen/java", templateResult);
 		}
 
@@ -64,7 +64,7 @@ public class TestSDMLib {
 
 		// Create a Person with name and age Attribute
 		// and eat and go Method
-		Assert.assertEquals(2, person.getAttributes().size());
+		Assert.assertEquals(3, person.getAttributes().size());
 //		MethodSet methods = 
 				person.getMethods();
 //FIXME		Assert.assertEquals(2, methods.size());

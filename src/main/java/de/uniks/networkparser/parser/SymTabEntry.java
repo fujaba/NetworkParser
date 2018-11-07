@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.graph.SourceCode;
+import de.uniks.networkparser.interfaces.BaseItem;
 
 /*
 NetworkParser
@@ -318,6 +319,7 @@ public class SymTabEntry {
 
 	public void writeBody(String value) {
 		this.parent.replaceAll(this.bodyStartPos + 1, value);
+		this.body = "{"+BaseItem.CRLF + "\t"+ value + BaseItem.CRLF + "}";
 	}
 
 	public String getName() {

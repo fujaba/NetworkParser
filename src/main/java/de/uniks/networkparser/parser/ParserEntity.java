@@ -950,8 +950,8 @@ public class ParserEntity {
 				CharacterBuffer body = new CharacterBuffer();
 				int startBodyPos=currentToken.startPos;
 				if (currentKindEquals('{')) {
+					startBodyPos = currentToken.startPos + 1;
 					skip('{', true, body);
-					startBodyPos = currentToken.startPos;
 					parseBlock(body, '}');
 				} else {
 					if (currentKindEquals(';')) {

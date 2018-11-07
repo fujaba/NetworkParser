@@ -169,6 +169,9 @@ public class JavaBridge implements ObjectCondition {
 	}
 
 	public String put(SimpleObject so) {
+		if(so == null || map == null) {
+			return null;
+		}
 		map.getMapListener().suspendNotification();
 		JsonObject jsonObject = map.toJsonObject(so);
 		map.getMapListener().resetNotification();
