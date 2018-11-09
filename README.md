@@ -67,6 +67,30 @@ Maven artifacts are available at:
 - https://oss.sonatype.org/content/repositories/snapshots/com/github/fujaba/NetworkParser/ - snaphots repository
 
 # Usage
+Simple Example with ClassModelBuilder for build a small class model:
+```
+ClassModelBuilder mb = new ClassModelBuilder("de.uniks.studyright");
+Clazz uni = mb.buildClass("University").withAttribute("name", DataType.STRING);
+Clazz student = mb.buildClass("Student").withAttribute("matNo", DataType.INT);
+
+uni.withAssoc(student, "students", Association.MANY, "uni", Association.ONE);
+Clazz room = mb.buildClass("Room")
+    .withAttribute("roomNo", DataType.STRING);
+uni.withAssoc(room, "rooms", Association.MANY, "uni", Association.ONE);
+ClassModel model = mb.build();
+```
+Simple Example with Old ClassModel for build a small class model:
+```
+ClassModel model = new ClassModel("de.uniks.studyright");
+Clazz uni = model.createClazz("University").withAttribute("name", DataType.STRING);
+Clazz student = model.createClazz("Student").withAttribute("matNo", DataType.INT);
+        
+uni.withAssoc(student, "students", Association.MANY, "uni", Association.ONE);
+Clazz room = model.createClazz("Room").withAttribute("roomNo", DataType.STRING);
+uni.withAssoc(room, "rooms", Association.MANY, "uni", Association.ONE);
+model.generate();
+```
+
 Here are a simple Usage of IdMap for serialization and deserialization
 {{md  '..src/test/java/de/uniks/networkparser/test/SimpleUsage.java[tag=serialization]'}} 
 
