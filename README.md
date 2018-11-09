@@ -92,9 +92,11 @@ model.generate();
 ```
 
 ![simple class diagram](doc/SimpleClassDiagram.png)
-%Here are a simple Usage of IdMap for serialization and deserialization
-%{{md  '..src/test/java/de/uniks/networkparser/test/SimpleUsage.java[tag=serialization]'}} 
 
+<!---
+Here are a simple Usage of IdMap for serialization and deserialization
+{{md  '..src/test/java/de/uniks/networkparser/test/SimpleUsage.java[tag=serialization]'}} 
+-->
 
 - [serialization](example.adoc "simple Serialization")
 
