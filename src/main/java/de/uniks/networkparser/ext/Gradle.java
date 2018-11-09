@@ -15,11 +15,13 @@ import java.util.zip.ZipEntry;
 
 import de.uniks.networkparser.buffer.ByteBuffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
+import de.uniks.networkparser.ext.generic.ReflectionBlackBoxTester;
 import de.uniks.networkparser.ext.generic.ReflectionLoader;
 import de.uniks.networkparser.ext.io.FileBuffer;
 import de.uniks.networkparser.ext.io.TarArchiveEntry;
 import de.uniks.networkparser.ext.io.TarArchiveInputStream;
 import de.uniks.networkparser.ext.petaf.proxy.NodeProxyTCP;
+import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.json.JsonArray;
 import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.list.SimpleKeyValueList;
@@ -28,8 +30,11 @@ import de.uniks.networkparser.xml.HTMLEntity;
 import de.uniks.networkparser.xml.XMLContainer;
 import de.uniks.networkparser.xml.XMLEntity;
 
-public class Gradle {
+public class Gradle implements ObjectCondition{
 	private boolean download = true;
+	public static final String REFLECTIONTEST="test";
+	public static final String GIT="git";
+	public static final String GRADLE="gradle";
 
 //	@Test
 	public void testMain() {
@@ -86,8 +91,21 @@ public class Gradle {
 		new File(path + "src/main/java").mkdirs();
 		new File(path + "bin").mkdirs();
 	}
+	
+	public static Object getType(String type) {
+		if(REFLECTIONTEST.equals(type)) {
+			return new ReflectionBlackBoxTester();
+		}
+		if(GIT.equals(type)) {
+			return new GitRevision();
+		}
+		if(GRADLE.equals(type)) {
+			return new Gradle();
+		}
+		return null;
+	}
 
-	public static boolean print(Object item, String fileName) {
+	public boolean execute(Object item, String... fileName) {
 		if (item == null) {
 			return false;
 		}
@@ -97,7 +115,13 @@ public class Gradle {
 			}
 			// Access private variables of tasks graph
 			Object tep = ReflectionLoader.getField(item, "taskExecutionPlan");
-
+			if(tep == null) {
+				tep = ReflectionLoader.getField(item, "executionPlan");
+			}
+			if(tep == null) {
+				System.out.println("tep");
+				return false;
+			}
 			// Execution starts on these tasks
 			Set<?> entryTasks = (Set<?>) ReflectionLoader.getField(tep, "entryTasks");
 
@@ -123,14 +147,14 @@ public class Gradle {
 			dotGraph.withLine("}");
 
 			// Save graph
-			if (fileName != null) {
-				FileBuffer.writeFile(fileName, dotGraph.toString());
+			if (fileName != null && fileName.length > 0) {
+				FileBuffer.writeFile(fileName[0], dotGraph.toString());
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			// TODO: handle exception
 		}
-		return false;
+		return true;
 	}
 
 	private static String getTaskName(Object ti) {
@@ -216,6 +240,9 @@ public class Gradle {
 		int pos = body.indexOf("-src.zip");
 		int start = body.lastIndexOf('"', pos) + 1;
 		int end = body.indexOf('"', pos);
+		if(start < 1 || end < 1) {
+			return false;
+		}
 		String ref = body.substring(start, end);
 		ByteBuffer binary = NodeProxyTCP.getHTTPBinary("https://services.gradle.org" + ref);
 
@@ -352,6 +379,12 @@ public class Gradle {
 			e.printStackTrace();
 		}
 		return true;
+	}
+
+	@Override
+	public boolean update(Object value) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

@@ -49,12 +49,14 @@ public class GitRevision {
 	public static final String COMMITS = "commits";
 
 	private boolean full = false;
+	private int max = -1;
 
-	public void execute() throws IOException {
-		JsonObject json = execute(-1);
+	public JsonObject execute() throws IOException {
+		JsonObject json = execute(max);
 		System.setProperty("Branchname", json.getString(BRANCHNAME));
 		System.setProperty("LastCommit", json.getString(LASTCOMMIT));
 		System.setProperty("Revisionnumber", json.getString(REVISIONNUMBER));
+		return json;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -141,6 +143,11 @@ public class GitRevision {
 		info.put(REVISIONNUMBER, count);
 		info.put(COMMITS, map);
 		return info;
+	}
+	
+	public GitRevision withMaxCommit(int value) {
+		this.max = value;
+		return this;
 	}
 
 	public boolean setFull(boolean full) {

@@ -6,6 +6,7 @@ import de.uniks.networkparser.graph.DataType;
 public class ClassModelBuilder {
 	private ClassModel model;
 	private Clazz lastClazz;
+	public static final String NOGEN="NOGEN";
 
 	/**
 	 * Builds a classmodel builder for the given packageName
@@ -35,6 +36,9 @@ public class ClassModelBuilder {
 				model.setAuthorName(params[1]);
 			}
 			if (params.length > 0) {
+				if (NOGEN.equals(params[0])) {
+					return model;
+				}
 				model.generate(params[0]);
 			} else {
 				model.generate();

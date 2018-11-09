@@ -51,7 +51,13 @@ public class ArtifactFile implements SendableEntityCreatorTag, BaseItem, Compara
 	private String tag = TAG;
 	private String time;
 	private SimpleList<ArtifactFile> dependencies = new SimpleList<ArtifactFile>();
-
+	
+	public String hash = "";
+	public String coverage = "";
+	//SCOPE public String branch = "";
+	public String prefix = "";
+	public boolean latest;
+	
 	public static final String SNAPSHOT = "SNAPSHOT";
 	private boolean isSnapshot;
 	private SimpleList<String> classifier = new SimpleList<String>();
@@ -59,6 +65,34 @@ public class ArtifactFile implements SendableEntityCreatorTag, BaseItem, Compara
 	private String fileName;
 	private int pomNumber[] = new int[] { 1, 1, 1, 1, 1, 1, 0 };// First 3 Number are Max next 3 Number are Current //
 																// Number of Six is Index
+	
+	public String toGITString() {
+		if (System.getenv().get("BUILD_NUMBER") != null) {
+			try {
+				pomNumber[5] = Integer.valueOf(System.getenv().get("BUILD_NUMBER")); 
+			}catch (Exception e) {
+			}
+		}
+		if(latest) {
+			return "";
+		} else if(isRelease() == false && !isMaster()) {
+			return pomNumber[3]+"."+pomNumber[4]+"."+pomNumber[5]+"-SNAPSHOT";
+		}
+		return pomNumber[3]+"."+pomNumber[4]+"."+pomNumber[5];
+	}
+	
+	public boolean isMaster() {
+		if(scope == null) {
+			return false;
+		}
+		return scope.contains("master");
+	}
+	public boolean isRelease() {
+		if(scope == null) {
+			return false;
+		}
+		return scope.contains("release");
+	}
 
 	public ArtifactFile withModelVersion(String value) {
 		this.modelVersion = value;

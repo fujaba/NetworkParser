@@ -1,6 +1,5 @@
 import java.text.SimpleDateFormat
 
-
 repositories {
 	mavenCentral()
 }
@@ -10,6 +9,24 @@ configurations {
 dependencies {
 	gitVersion "org.eclipse.jgit:org.eclipse.jgit:[4,)"
 	gitVersion "org.slf4j:slf4j-simple:1.6.1"
+}
+
+def callGradle(type) {
+	def urls=[]
+
+	files(configurations.gitVersion).each {urls.add(it.toURL())}
+	sourceSets.main.runtimeClasspath.files.each {urls.add(it.toURL())}
+	sourceSets.main.output.files.each {urls.add(it.toURL())}
+	files('build/classes/main18').each {urls.add(it.toURL())}
+	try {
+		ClassLoader cl = new URLClassLoader(urls.toArray(new URL[urls.size()]))
+		Class<?> myClass = cl.loadClass("de.uniks.networkparser.ext.Gradle");
+		def method = myClass.getMethod("getType", String.class)
+		def gradle = method.invoke(myClass, type)
+		return gradle
+	}catch(Exception e) {
+		//e.printStackTrace()
+	}
 }
 
 // Define a method using a closure as the method body
@@ -51,67 +68,40 @@ class GITVersion {
 	}
 }
 
-task JavaGit(type:JavaExec) {
-	errorOutput = System.err
-	main = "de.uniks.networkparser.ext.DiagramEditor"
-	args 'GIT', '3'
-	classpath = (sourceSets.main.compileClasspath + sourceSets.main.output + files('build/classes/main18') + files(configurations.gitVersion))
-	//.filter({it.name.indexOf("jgit")>=0})))
-
-	ByteArrayOutputStream stdOutput = new ByteArrayOutputStream()
-	standardOutput = stdOutput
-	doLast {
-		try {
-			def slurper = new groovy.json.JsonSlurper()
-			def str = stdOutput.toString();
-			def pos = str.indexOf("{");
-			if(pos>0) {
-				str = str.substring(pos);
-			}
-			def json = slurper.parseText(str)
-			
-			gitVersion.minor = json.get("minor")
-			gitVersion.revision = json.get("revisionnumber")
-			gitVersion.hash = json.get("lastcommit")
-			gitVersion.buildTime = buildTime()
-			gitVersion.branch = json.get("branchname")
-		} catch(Exception e) {
-			println "ERROR"
-			println e
-
-			gitVersion.minor = getGitTag()
-			gitVersion.revision = revisionNumber()
-			gitVersion.hash = getGitLastCommit()
-			gitVersion.buildTime = buildTime()
-			if (project.hasProperty("branch")) {
-				gitVersion.branch = project.get("branch")
-			} else {
-				gitVersion.branch = getWorkingBranch()
-			}
-			gitVersion.latest = getGitLastCommit() != null
-		}
-	}
-}
-
-task versions() {
-	doFirst {
-		JavaGit.execute()
-	}
-	group "Git"
-	description "Show Final Version of Repository"
-	doLast {
-		if(gitVersion != null) {
-			println "Revisionnumber: "	+ gitVersion.revision
-			println "Branchname: " 		+ gitVersion.branch
-			println "LastCommit: "		+ gitVersion.hash
-			println "GitTag: "			+ gitVersion.minor
-		}
-	}
-}
-
 ext {
 	gitVersion = new GITVersion(major: ext.majorNumber)
 }
+project.gradle.taskGraph.whenReady{
+	try {
+		def gradle = callGradle("git")
+		def json = gradle.execute(3)
+		gitVersion.minor = json.get("minor")
+		gitVersion.revision = json.get("revisionnumber")
+		gitVersion.hash = json.get("lastcommit")
+		gitVersion.buildTime = buildTime()
+		gitVersion.branch = json.get("branchname")
+	} catch(Exception e) {
+		println "ERROR"
+//		println e
+		gitVersion.minor = getGitTag()
+		gitVersion.revision = revisionNumber()
+		gitVersion.hash = getGitLastCommit()
+		gitVersion.buildTime = buildTime()
+		if (project.hasProperty("branch")) {
+			gitVersion.branch = project.get("branch")
+		} else {
+			gitVersion.branch = getWorkingBranch()
+		}
+		gitVersion.latest = getGitLastCommit() != null
+	}
+	if(gitVersion != null) {
+		println "Revisionnumber: "	+ gitVersion.revision
+		println "Branchname: " 		+ gitVersion.branch
+		println "LastCommit: "		+ gitVersion.hash
+		println "GitTag: "			+ gitVersion.minor	
+	}
+}
+
 
 def buildTime() {
 	//def df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'") //you can change it
@@ -188,11 +178,10 @@ task compileJava18(type: JavaCompile) {
 	sourceCompatibility = '1.8'
 	targetCompatibility = '1.8'
 	classpath = files('build/classes/main18')
-	doLast {
-		versions.execute()
-	}
 }
 
-compileJava.dependsOn compileJava18
-
 version = gitVersion
+
+project.gradle.taskGraph.whenReady { g -> 
+	callGradle("gradle").execute(g, "build/Tasks.dot")
+}

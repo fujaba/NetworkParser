@@ -42,6 +42,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
+import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.ext.ErrorHandler;
 import de.uniks.networkparser.ext.Os;
 import de.uniks.networkparser.interfaces.BaseItem;
@@ -643,6 +644,37 @@ public class ReflectionLoader {
 		return calling(item, methodName, true, null, arguments);
 	}
 
+	public static CharacterBuffer printAPI(Object item) {
+		CharacterBuffer sb = new CharacterBuffer();
+		if(item == null) {
+			return sb;
+		}
+		try {
+//			for (Class<?> c = scanner.getClass(); c != null; c = c.getSuperclass()) {
+			Class<?> c = item.getClass();
+			Field[] fields = c.getFields();
+			sb.withLine(c.getName());
+			for (Field field : fields) {
+				sb.withLine("\t" + Modifier.toString(field.getModifiers())+ " " + field.getName());
+			}
+			Method[] methods = item.getClass().getMethods();
+			for (Method method : methods) {
+				sb.with("\t" + Modifier.toString(method.getModifiers())+ " " + method.getName()+"(");
+				for(int i=0;i<method.getParameterTypes().length;i++) {
+					if(i>0) {
+						sb.with(", "+method.getParameterTypes()[i].getName());
+					}else {
+						sb.with(method.getParameterTypes()[i].getName());
+					}
+				}
+	          sb.withLine(") : " + method.getReturnType().getName());
+	      }
+//			    }    
+		}catch (Exception e) {
+		}
+		return sb;
+	}
+	
 	public static Object callStr(Object item, String methodName, Object... arguments) {
 		try {
 			if (arguments != null && arguments.length % 2 == 0) {

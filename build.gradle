@@ -72,21 +72,6 @@ test {
 	}
 }
 
-project.gradle.taskGraph.whenReady { g -> 
-	def urls=[]
-	sourceSets.main.runtimeClasspath.files.each {
-		urls.add(it.toURL())
-	}
-	try {
-		ClassLoader cl = new URLClassLoader(urls.toArray(new URL[urls.size()]))
-		Class<?> myClass = cl.loadClass("de.uniks.networkparser.ext.Gradle");
-		def method = myClass.getMethod("print", Object.class, String.class)
-		method.invoke(myClass, g, "build/Tasks.dot")
-	}catch(Exception e) {
-		//e.printStackTrace()
-	}
-}
-
 def execute(String... args) {
 	if(args.length == 1) {
 		args = args[0].split(" ")
@@ -185,7 +170,7 @@ idea {
 }
 
 artifacts { 
-	archives buildCoreJar16, buildCoreJar17, buildCoreJar18, buildCoreJar19, buildSourceJar, buildSourceJar18, buildMinCoreJar, buildJavadoc
+	archives buildCoreJar16, buildCoreJar17, buildCoreJar18, buildCoreJar19, buildSourceJar, buildSourceJar18, buildMinCoreJar, buildJavadoc, buildGitJar
 }
 
 wrapper {
@@ -227,7 +212,7 @@ if (project.hasProperty('branch')) {
 
 test.finalizedBy jacocoTestReport
 
-defaultTasks 'test', 'jacocoTestReport', 'buildJavadoc'
+defaultTasks 'test', 'jacocoTestReport', 'buildJavadoc', 'buildGitJar'
 
 tasks.withType(Checkstyle) {
 	configFile = new File("src/test/resources/de/uniks/networkparser/test/sun_checks.xml")

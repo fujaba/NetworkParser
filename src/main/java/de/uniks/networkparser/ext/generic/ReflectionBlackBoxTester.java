@@ -195,8 +195,19 @@ public class ReflectionBlackBoxTester {
 		System.setProperty("Tester", "true");
 		return true;
 	}
+	
+	public boolean execute(String... path) {
+		try {
+			if(path != null && path.length>0) {
+				this.packageName = path[0];
+			}
+			return test(packageName, null);
+		} catch (Exception e) {
+		}
+		return false;
+	}
 
-	public void test(String packageName, NetworkParserLog logger) throws ClassNotFoundException, IOException,
+	public boolean test(String packageName, NetworkParserLog logger) throws ClassNotFoundException, IOException,
 			InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		setTester();
 		SimpleList<Class<?>> classesForPackage = ReflectionLoader.getClassesForPackage(packageName);
@@ -258,7 +269,7 @@ public class ReflectionBlackBoxTester {
 				NetworkParserLog.LOGLEVEL_INFO, null);
 		output(this, "Time: " + (System.currentTimeMillis() - start) + "ms - Thread: " + oldThreads.size() + " -> "
 				+ Thread.activeCount(), logger, NetworkParserLog.LOGLEVEL_INFO, null);
-
+		return true;
 	}
 	
 	public SimpleSet<String> getMethods(String className) {
@@ -580,6 +591,11 @@ public class ReflectionBlackBoxTester {
 
 	public ObjectCondition getCustom() {
 		return custom;
+	}
+	
+	public ReflectionBlackBoxTester withCustom(ObjectCondition condition) {
+		this.custom = condition;
+		return this;
 	}
 
 	private static Object getRandomValue(Class<?> clazz) {
