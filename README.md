@@ -91,8 +91,9 @@ uni.withAssoc(room, "rooms", Association.MANY, "uni", Association.ONE);
 model.generate();
 ```
 
-Here are a simple Usage of IdMap for serialization and deserialization
-{{md  '..src/test/java/de/uniks/networkparser/test/SimpleUsage.java[tag=serialization]'}} 
+![simple class diagram](doc/SimpleClassDiagram.png)
+%Here are a simple Usage of IdMap for serialization and deserialization
+%{{md  '..src/test/java/de/uniks/networkparser/test/SimpleUsage.java[tag=serialization]'}} 
 
 
 - [serialization](example.adoc "simple Serialization")
