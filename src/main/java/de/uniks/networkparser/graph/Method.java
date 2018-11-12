@@ -56,7 +56,7 @@ public class Method extends GraphMember {
 
 		sb.append(super.getName());
 		if (children != null) {
-			sb.append(getParameterString(shortName, removeParameterNames));
+			sb.append(getParameterString(shortName, removeParameterNames, true));
 		} else {
 			sb.append("()");
 		}
@@ -117,7 +117,7 @@ public class Method extends GraphMember {
 		return this;
 	}
 
-	CharacterBuffer getParameterString(boolean shortName, boolean removeParameterNames) {
+	CharacterBuffer getParameterString(boolean shortName, boolean removeParameterNames, boolean optimizeArray) {
 		CharacterBuffer sb = new CharacterBuffer().with("(");
 		GraphSimpleSet collection = this.getChildren();
 		for (int i = 0; i < collection.size(); i++) {
@@ -128,10 +128,20 @@ public class Method extends GraphMember {
 			if (sb.length() > 1) {
 				sb.with(", ");
 			}
+			sb.with(param.getType().getName(shortName));
+			if(param.isArray()) {
+				if(optimizeArray && i==collection.size()-1) {
+					// Check for array at least
+					sb.with("...");
+				}else {
+					sb.with("[]");
+				}
+			}
+			
 			if (param.getName() == null || removeParameterNames) {
-				sb.with(param.getType().getName(shortName) + " p" + i);
+				sb.with(" p" + i);
 			} else {
-				sb.with(param.getType().getName(shortName) + " " + collection.get(i).getName());
+				sb.with(" " + collection.get(i).getName());
 			}
 		}
 		sb.with(")");
@@ -251,7 +261,7 @@ public class Method extends GraphMember {
 			return this.getParameters();
 		}
 		if (PROPERTY_PARAMETERNAME.equalsIgnoreCase(attribute)) {
-			return this.getParameterString(true, false);
+			return this.getParameterString(true, false, true);
 		}
 		if (PROPERTY_ANNOTATIONS.equalsIgnoreCase(attribute)) {
 			return this.getAnnotation();

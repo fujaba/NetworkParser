@@ -543,11 +543,13 @@ public class Clazz extends GraphEntity {
 		AssociationSet associations = getAssociations();
 		for (Clazz item : values) {
 			if (item != null) {
-				for (Association assoc : associations) {
-					if (assoc.getType() == direction && assoc.getOtherType() == backDirection) {
-						if (assoc.contains(item, true, false) == false) {
-							assoc.getOther().setParentNode(item);
-							return true;
+				if(AssociationTypes.GENERALISATION.equals(backDirection) == false && AssociationTypes.GENERALISATION.equals(direction) == false) {
+					for (Association assoc : associations) {
+						if (assoc.getType() == direction && assoc.getOtherType() == backDirection) {
+							if (assoc.contains(item, true, false) == false) {
+								assoc.getOther().setParentNode(item);
+								return true;
+							}
 						}
 					}
 				}

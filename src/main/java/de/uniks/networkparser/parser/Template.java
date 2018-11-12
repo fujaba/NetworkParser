@@ -80,6 +80,7 @@ public class Template implements TemplateParser {
 	protected String path;
 	protected String postfix;
 	protected boolean metaModel;
+	protected boolean includeSuperValues;
 	protected SimpleList<Template> children;
 
 	public Template(String name) {
@@ -516,13 +517,21 @@ public class Template implements TemplateParser {
 		if (parameters instanceof SendableEntityCreator) {
 			templateResult.setParent((SendableEntityCreator) parameters);
 		}
-
-		String id2 = getId(true);
-		SimpleList<Template> templates = getTemplates(id2 + ".");
 		if (children == null) {
 			return templateResult;
 		}
 
+		String id2 = getId(true);
+		SimpleList<Template> templates = getTemplates(id2 + ".");
+		executeChildren(clazz, parameters, templates, id2, templateResult);
+		if(includeSuperValues) {
+			for(Clazz superClazz : clazz.getSuperClazzes(true)) {
+				executeChildren(superClazz, parameters, templates, id2, templateResult);
+			}
+		}
+		return templateResult;
+	}
+	protected void executeChildren(Clazz clazz, LocalisationInterface parameters, SimpleList<Template> templates, String id2, TemplateResultFile templateResult) {
 		// FIRST ATTRIBUTE
 		AttributeSet attributes = clazz.getAttributes();
 		for (Template template : templates) {
@@ -561,7 +570,6 @@ public class Template implements TemplateParser {
 				break;
 			}
 		}
-		return templateResult;
 	}
 
 	public boolean readTemplate(CharacterBuffer buffer) {

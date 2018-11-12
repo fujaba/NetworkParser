@@ -252,7 +252,7 @@ public class GraphUtil {
 	}
 
 	public static final CharacterBuffer getMethodParameters(Method method, boolean shortName) {
-		return method.getParameterString(shortName, false);
+		return method.getParameterString(shortName, false, true);
 	}
 
 	public static final ModifierSet getModifier(GraphMember member) {

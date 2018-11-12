@@ -657,14 +657,14 @@ public abstract class AbstractArray<V> implements BaseItem {
 		return pos;
 	}
 
-	public Class<?> getTypClass() {
-		return type;
-	}
-
 	@SuppressWarnings("unchecked")
 	public <ST extends AbstractArray<V>> ST withType(Class<?> type) {
 		this.type = type;
 		return (ST) this;
+	}
+	
+	public Class<?> getTypClass() {
+		return type;
 	}
 
 	/**
@@ -678,15 +678,8 @@ public abstract class AbstractArray<V> implements BaseItem {
 	final int addKey(int pos, Object element, int size) {
 		Object[] keys;
 		// declare the class instance
-		if (this.type != null) {
-			if (this.type.isAssignableFrom(element.getClass()) == false) {
-				return -1;
-			}
-		} else if (getTypClass() != null) {
-			this.type = getTypClass();
-			if (this.type.isAssignableFrom(element.getClass()) == false) {
-				return -1;
-			}
+		if (this.type != null && this.type.isAssignableFrom(element.getClass()) == false) {
+			return -1;
 		}
 
 		if (isComplex(size)) {

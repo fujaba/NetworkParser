@@ -1,5 +1,7 @@
 package de.uniks.networkparser.graph;
 
+import java.util.Collection;
+
 import de.uniks.networkparser.buffer.CharacterBuffer;
 /*
 NetworkParser
@@ -33,6 +35,7 @@ public abstract class GraphMember {
 	public static final String PROPERTY_CLASSNAME = "className";
 	public static final String PROPERTY_PARENT = "parent";
 	public static final String PROPERTY_CHILD = "child";
+	public static final String PROPERTY_CHILDTRANSITIVE = "childtransitive"; 
 	public static final String PROPERTY_LITERAL = "literal";
 	public static final String PROPERTY_VISIBILITY = "visibility";
 	public static final String PROPERTY_MODIFIERS = "modifiers";
@@ -110,6 +113,30 @@ public abstract class GraphMember {
 			}
 			return this.children;
 		}
+		if (PROPERTY_CHILDTRANSITIVE.equalsIgnoreCase(attrName)) {
+			GraphSimpleSet children = new GraphSimpleSet();
+			GraphSimpleSet items = this.getChildren();
+			for(GraphMember item : items) {
+				if(item instanceof Association) {
+					Association assoc = (Association) item;
+					if(assoc.getType()==AssociationTypes.GENERALISATION) {
+						// Add all SuperAttributes
+						children.withList((Collection<?>) assoc.getOtherClazz().getValue(PROPERTY_CHILDTRANSITIVE));
+					} else if(assoc.getOtherType()==AssociationTypes.GENERALISATION) {
+						//IGNORE
+					} else {
+						children.add(item);
+					}
+				}else {
+					children.add(item);
+				}
+			}
+			if (pos > 0) {
+				return children.getValue(attribute.substring(pos + 1));
+			}
+			return children;
+		}
+		
 		if (PROPERTY_LITERAL.equalsIgnoreCase(attrName)) {
 			GraphSimpleSet items = this.getChildren();
 			GraphSimpleSet literals = new GraphSimpleSet();

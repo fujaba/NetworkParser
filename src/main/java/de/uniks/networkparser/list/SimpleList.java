@@ -71,8 +71,7 @@ public class SimpleList<V> extends AbstractList<V> implements List<V> {
 	protected boolean fireProperty(String type, Object oldElement, Object newElement, Object beforeElement, int index,
 			Object value) {
 		if (this.listener != null) {
-			this.listener
-					.update(new SimpleEvent(type, this, PROPERTY, index, newElement, oldElement, value, beforeElement));
+			this.listener.update(new SimpleEvent(type, this, PROPERTY, index, newElement, oldElement, value, beforeElement));
 		}
 		return super.fireProperty(type, oldElement, newElement, beforeElement, index, value);
 	}

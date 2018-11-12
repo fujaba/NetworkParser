@@ -254,4 +254,8 @@ public class PatternCondition implements ObjectCondition {
 	public static final PatternCondition createPatternPair(Object... root) {
 		return new PatternCondition().withDuplicate(true).withRoot(root);
 	}
+
+	public static boolean setValue(SimpleSet<?> patternObejct, String property, Object value, Object condition) {
+		return false;
+	}
 }

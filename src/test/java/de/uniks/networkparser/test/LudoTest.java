@@ -5,7 +5,14 @@ import static de.uniks.networkparser.graph.Association.ONE;
 
 import org.junit.Test;
 
+import de.uniks.ludo.model.Field;
+import de.uniks.ludo.model.Home;
+import de.uniks.ludo.model.Start;
+import de.uniks.ludo.model.util.HomeSet;
+import de.uniks.ludo.model.util.PlayerSet;
+import de.uniks.ludo.model.util.StartSet;
 import de.uniks.networkparser.ext.ClassModel;
+import de.uniks.networkparser.ext.PatternCondition;
 import de.uniks.networkparser.ext.io.FileBuffer;
 import de.uniks.networkparser.ext.story.Cucumber;
 import de.uniks.networkparser.graph.Clazz;
@@ -17,9 +24,11 @@ import de.uniks.networkparser.xml.HTMLEntity;
 public class LudoTest {
 	@Test
 	public void ludoTest () {
-		step1();
+//		step1();
 
 		step2();
+//		stepErrorGeneralization();
+//		stepError();
 	}
 
 	public void step1() {
@@ -43,6 +52,32 @@ public class LudoTest {
 		file.withGraph(model);
 	}
 	
+	public void stepErrorGeneralization() {
+		// Step 2
+		ClassModel model = new ClassModel("de.uniks.ludo.model");
+		Clazz fieldClass = model.createClazz("Field");
+		fieldClass.withAssoc(fieldClass, "next", ONE, "prev", ONE);
+
+		Clazz homeClass = model.createClazz("Home");
+		fieldClass.withKidClazzes(homeClass);
+		model.generate("src/test/java");
+	}
+	
+	public void stepError() {
+		// Step 2
+		ClassModel model = new ClassModel("de.uniks.ludo.model");
+
+		Clazz ludoClass = model.createClazz("Ludo");
+		ludoClass.createMethod("init", Parameter.create("Player..."));
+		Clazz playerClass = model.createClazz("Player")
+				.withAttribute("color", DataType.STRING)
+				.withAttribute("name", DataType.STRING);
+
+		playerClass.createBidirectional(ludoClass, "currentGame", ONE, "currentPlayer", ONE);
+
+		model.generate("src/test/java");
+	}
+	
 	public void step2() {
 		// Step 2
 		ClassModel model = new ClassModel("de.uniks.ludo.model");
@@ -54,7 +89,7 @@ public class LudoTest {
 		Clazz lastFieldClass = model.createClazz("LastField");
 
 		Clazz ludoClass = model.createClazz("Ludo");
-		ludoClass.createMethod("init", new Parameter(DataType.create("Player...")));
+		ludoClass.createMethod("init", Parameter.create("Player..."));
 		ludoClass.createBidirectional(diceClass, "dice", ONE, "game", ONE);
 		ludoClass.createBidirectional(fieldClass, "field", MANY, "game", ONE);
 		Clazz meepleClass = model.createClazz("Meeple");
@@ -91,10 +126,58 @@ public class LudoTest {
 		HTMLEntity dumpHTML = model.dumpHTML("model", false);
 		
 		FileBuffer.writeFile("build/model.html", dumpHTML.toString());
+		
+		model.generate("src/test/java");
 	}
 	
 	public void step3() {
 //		Space space=new Space();
 //		space.withModel(map, ludo);
+	}
+	
+	public boolean stepLogic() {
+//		public boolean moveOut( Home currentHome ) {
+//		Home home = new Home();
+//		PatternCondition pattern = PatternCondition.createPatternPair(home);
+//		HomeSet homePO = (HomeSet) pattern.getRoot();
+//		PlayerSet playerPO = homePO.getPlayer();
+//		StartSet startPO = playerPO.getStart();
+//		PatternCondition.setValue(startPO, Start.PROPERTY_MEEPLE, home.getMeeple(), startPO.getMeeple().size() == 0);
+		
+//		public boolean moveMeeple( Field currentField )
+//		Field currentField=new Field();
+//		   int pips = getGame().getDie().getNumber();
+//		   if(pips<1 || currentField.getMeeple()==null || currentField.getMeeple().getPlayer()!=getGame().getCurrentPlayer()){
+//			   return false;
+//		   }
+//		   Field target=currentField;
+//		   for(;pips>0;pips--){
+//			   if(target==null){
+//				   return false;
+//			   }
+//			   target = target.getNext();
+//		   }
+//		   if(target.getMeeple()==null){
+//			   currentField.getMeeple().setField(target);
+//			   return true;
+//		   }else if(target.getMeeple().getPlayer() != this)
+//		   {
+//			   //throw out
+//				Meeple opponentMeeple = target.getMeeple();
+//				for(Home homeField : opponentMeeple.getPlayer().getHome())
+//				{
+//				   if (homeField.getMeeple() == null) {
+//					   homeField.setMeeple(opponentMeeple);
+//					   break;
+//				   }
+//				 }
+//				 currentField.getMeeple().setField(target);
+//				 return true;
+//		   }
+//		   return false;
+//		}
+		
+		
+		return true;
 	}
 }

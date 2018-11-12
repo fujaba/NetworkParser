@@ -179,6 +179,8 @@ public class ModelTest implements ObjectCondition {
 		IdMap map=new IdMap();
 		map.with(new UniversityCreator());
 		map.with(new StudentCreator());
+		
+		
 	}
 
 	@Test

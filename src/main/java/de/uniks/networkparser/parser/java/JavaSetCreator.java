@@ -22,6 +22,7 @@ public class JavaSetCreator extends Template {
 		this.postfix = "Set";
 		this.fileType = "clazz";
 		this.type = TEMPLATE;
+		this.includeSuperValues = true;
 
 		this.withTemplate(
 				"{{#template PACKAGE}}{{#if {{packageName}}}}package {{packageName}}.util;{{#endif}}{{#endtemplate}}",
@@ -34,7 +35,7 @@ public class JavaSetCreator extends Template {
 						+ "}}<{{name}}> implements SendableEntityCreator {",
 				"",
 // SendableCreator
-				"	private final String[] properties = new String[] {", "{{#foreach child}}",
+				"	private final String[] properties = new String[] {", "{{#foreach childtransitive}}",
 				"{{#if {{item.className}}==" + Attribute.class.getName() + "}}",
 				"		{{name}}.PROPERTY_{{item.NAME}},", "{{#endif}}",
 				"{{#if {{#and}}{{item.className}}==" + Association.class.getName()
@@ -61,7 +62,7 @@ public class JavaSetCreator extends Template {
 
 				"	@Override", "	public Object getValue(Object entity, String attribute) {",
 				"		if(attribute == null || entity instanceof {{name}} == false) {", "			return null;",
-				"		}", "		{{name}} element = ({{name}})entity;", "{{#foreach child}}",
+				"		}", "		{{name}} element = ({{name}})entity;", "{{#foreach childtransitive}}",
 				"{{#if {{item.className}}==" + Attribute.class.getName() + "}}",
 				"		if ({{name}}.PROPERTY_{{item.NAME}}.equalsIgnoreCase(attribute)) {",
 				"			return element.{{#if {{item.type}}==boolean}}is{{#else}}get{{#endif}}{{item.Name}}();",
@@ -83,7 +84,7 @@ public class JavaSetCreator extends Template {
 				"		if (SendableEntityCreator.REMOVE.equals(type) && value != null) {",
 				"			attribute = attribute + type;", "		}", "",
 
-				"{{#foreach child}}", "{{#if {{item.className}}==" + Attribute.class.getName() + "}}",
+				"{{#foreach childtransitive}}", "{{#if {{item.className}}==" + Attribute.class.getName() + "}}",
 				"{{#ifnot {{item.modifiers#contains(static)}}}}",
 				"		if ({{name}}.PROPERTY_{{item.NAME}}.equalsIgnoreCase(attribute)) {",
 				"{{#import {{item.type(false)}}}}",
