@@ -41,30 +41,28 @@ public abstract class AbstractArray<V> implements BaseItem {
 	/** Is The List is Visible for Tree Editors */
 	public static final byte VISIBLE = 0x04;
 	/** Is Key is String and is Allow Casesensitive */
-
 	public static final byte CASESENSITIVE = 0x08;
 	/** Is List is ReadOnly */
 	public static final byte READONLY = 0x10;
+
 	/** Is The List has Key,Value */
 	public static final byte MAP = 0x20;
 	/** Is List is Key,Value and Value, Key */
 	public static final byte BIDI = 0x40;
+
 	public static final Integer REMOVED = -1;
 
-	static final byte MINSIZE = 4;
-	static final int MAXDELETED = 42;
 	static final int MINHASHINGSIZE = 420; // Minimum (SIZE_BIG: 5)
-	static final float MINUSEDLIST = 0.2f;
+	static final int MINUSEDLIST = 5; // 20 % 
 	static final float MAXUSEDLIST = 0.7f;
 
-	static final int SMALL_KEY = 0;
-	static final int BIG_KEY = 1;
-	static final int DELETED = 2;
-	static final int SMALL_VALUE = 3;
-	static final int BIG_VALUE = 4;
-	static final int SIZE_BIG = 6;
+	static final byte SMALL_KEY = 0;
+	static final byte BIG_KEY = 1;
+	static final byte DELETED = 2;
+	static final byte SMALL_VALUE = 3;
+	static final byte BIG_VALUE = 4;
+	static final byte SIZE_BIG = 6;
 
-	private Class<?> type;
 	/**
 	 * Start index of Elements-Array
 	 */
@@ -384,7 +382,7 @@ public abstract class AbstractArray<V> implements BaseItem {
 			if ((flag & MAP) != 0) {
 				// MAP
 				boolean change = false;
-				if (minCapacity < ((Object[]) elements[SMALL_KEY]).length * MINUSEDLIST) {
+				if (minCapacity < ((Object[]) elements[SMALL_KEY]).length / MINUSEDLIST) {
 					resizeSmall(newSize, SMALL_KEY);
 					resizeSmall(newSize, SMALL_VALUE);
 					this.index = 0;
@@ -398,12 +396,12 @@ public abstract class AbstractArray<V> implements BaseItem {
 					}
 				}
 				return change;
-			} else if (minCapacity < ((Object[]) elements[SMALL_KEY]).length * MINUSEDLIST) {
+			} else if (minCapacity < ((Object[]) elements[SMALL_KEY]).length / MINUSEDLIST) {
 				// Change Simple Complexlist to SimpleList
 				elements = (Object[]) elements[SMALL_KEY];
 				return true;
 			}
-		} else if (minCapacity < elements.length * MINUSEDLIST) {
+		} else if (minCapacity < elements.length / MINUSEDLIST) {
 			resizeSmall(newSize);
 			this.index = 0;
 			return true;
@@ -435,7 +433,9 @@ public abstract class AbstractArray<V> implements BaseItem {
 			if ((flag & MAP) != 0) {
 				elements[SMALL_VALUE] = new Object[old.length];
 			}
-			return;
+			if(minCapacity < old.length ) {
+				return;
+			}
 		}
 
 		// Array has wrong size
@@ -657,16 +657,6 @@ public abstract class AbstractArray<V> implements BaseItem {
 		return pos;
 	}
 
-	@SuppressWarnings("unchecked")
-	public <ST extends AbstractArray<V>> ST withType(Class<?> type) {
-		this.type = type;
-		return (ST) this;
-	}
-	
-	public Class<?> getTypClass() {
-		return type;
-	}
-
 	/**
 	 * Add a Key to internal List and Array if nesessary Method to manipulate Array
 	 *
@@ -675,12 +665,8 @@ public abstract class AbstractArray<V> implements BaseItem {
 	 * @param size    the newSize of the List
 	 * @return if value is added
 	 */
-	final int addKey(int pos, Object element, int size) {
+	protected int addKey(int pos, Object element, int size) {
 		Object[] keys;
-		// declare the class instance
-		if (this.type != null && this.type.isAssignableFrom(element.getClass()) == false) {
-			return -1;
-		}
 
 		if (isComplex(size)) {
 			keys = (Object[]) elements[SMALL_KEY];

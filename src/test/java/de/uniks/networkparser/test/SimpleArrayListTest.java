@@ -15,6 +15,7 @@ import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SimpleSet;
 import de.uniks.networkparser.list.SortedList;
+import de.uniks.networkparser.list.SpeedList;
 import de.uniks.networkparser.test.model.SortedMsg;
 import de.uniks.networkparser.test.model.Student;
 
@@ -60,6 +61,12 @@ public class SimpleArrayListTest {
 		Assert.assertEquals(23, list.get(2).getNumber());
 		Assert.assertEquals(42, list.get(3).getNumber());
 		Assert.assertEquals(80, list.get(4).getNumber());
+	}
+	
+	@Test
+	public void testEMPTYLIST() {
+		SpeedList<Integer> list = new SpeedList<Integer>();
+		System.out.println(list.toString());
 	}
 
 	@Test

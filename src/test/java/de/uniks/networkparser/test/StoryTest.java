@@ -39,7 +39,6 @@ public class StoryTest {
 
 		story.addDiagram(model);
 
-
 		story.dumpHTML();
 	}
 	
@@ -118,7 +117,23 @@ public class StoryTest {
 //		FileBuffer.writeFile("build/cucumber.html", file.toString());
 //		System.out.println(model.toString(new GraphConverter()));
 //		System.out.println(model.toString(DiagramEditor.dump()));
+	}
+	
+	@Test
+	public void testSimple() {
+		ClassModel ludoModel = new ClassModel();
+		Story story = new Story().withLabel("playing Ludo");
+		story.addText("This is the Ludo Model", true);
+		story.addDiagram(ludoModel);
+		story.addText("next Step is Testing", true);
 		
+//		story.add(new StoryStepJUnit());
+		story.addText("Result is Fine");
+		
+		story.addSourceCode(1, 14);
+		story.addText("Moockup", true);
+		story.addImage("doc/gui_mockup.png");
+		story.dumpHTML();
 	}
 	
 }

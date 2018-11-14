@@ -10,6 +10,7 @@ import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.ext.story.Story;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.json.JsonObject;
+import de.uniks.networkparser.list.SpeedList;
 import de.uniks.networkparser.test.model.House;
 import de.uniks.networkparser.test.model.Student;
 import de.uniks.networkparser.test.model.University;
@@ -47,6 +48,8 @@ public class SimpleUsage {
 		story.addDescription("4", string);
 
 		story.dumpHTML();
+		
+		
 		// end::serialization[]
 	}
 
@@ -81,5 +84,21 @@ public class SimpleUsage {
 		Student albert = new Student().withName("Albert");
 		uni.withStudents(albert);
 		// end::PropertyChange[]
+	}
+	
+	@Test
+	public void testSpeedList() {
+		SpeedList<Integer> list=new SpeedList<Integer>();
+		int i=1;
+		while(i<=1000) {
+			list.add(i);
+			i++;
+		}
+		list.pack();
+		while(i<=1000000) {
+			list.add(i); 
+			i++;
+		}
+		
 	}
 }

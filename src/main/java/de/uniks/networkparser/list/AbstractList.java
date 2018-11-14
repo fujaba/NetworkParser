@@ -39,6 +39,26 @@ import de.uniks.networkparser.interfaces.Condition;
  */
 
 public abstract class AbstractList<V> extends AbstractArray<V> implements Iterable<V>, Cloneable {
+	private Class<?> type;
+	
+	@SuppressWarnings("unchecked")
+	public <ST extends AbstractList<V>> ST withType(Class<?> type) {
+		this.type = type;
+		return (ST) this;
+	}
+	
+	public Class<?> getTypClass() {
+		return type;
+	}
+	
+	@Override
+	protected int addKey(int pos, Object element, int size) {
+		if (this.type != null && this.type.isAssignableFrom(element.getClass()) == false) {
+			return -1;
+		}
+		return super.addKey(pos, element, size);
+	}
+	
 	/**
 	 * <p>
 	 * This implementation iterates over the specified collection, and adds each
@@ -217,10 +237,5 @@ public abstract class AbstractList<V> extends AbstractArray<V> implements Iterab
 			}
 		}
 		return true;
-	}
-
-	@Override
-	public int hashCode() {
-		return super.hashCode();
 	}
 }

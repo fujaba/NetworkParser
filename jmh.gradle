@@ -1,0 +1,76 @@
+apply plugin: 'java-library'
+
+repositories {
+    jcenter()
+    maven {
+      url "https://plugins.gradle.org/m2/"
+    }
+	mavenCentral()
+	maven {
+		url "https://repo.eclipse.org/content/groups/releases/"
+	}
+	maven {
+      url "https://maven2.pavlab.msl.ubc.ca/"
+    }
+}
+
+buildscript {
+  repositories {
+    jcenter()
+    maven {
+      url "https://plugins.gradle.org/m2/"
+    }
+  }
+  dependencies {
+    classpath "me.champeau.gradle:jmh-gradle-plugin:0.4.7"
+  }
+}
+
+
+dependencies {
+//MEMORY
+	compile  "classmexer:classmexer:0.03"
+
+	// COLLECTION
+	
+	compile group: 'org.magicwerk', name: 'brownies-collections', version: '0.9.13'
+//	compile "org.magicwerk:brownies-collections:[0.9,)"
+	//compile "de.uniks:NetworkParser:[4,)"
+	compile files("lib/NetworkParser-4.7.1346-SNAPSHOT-git.jar")
+	compile group: 'org.eclipse.emf', name: 'org.eclipse.emf.ecore', version: '2.15.0'
+	compile group: 'org.eclipse.emf', name: 'org.eclipse.emf.common', version: '2.15.0'
+
+//	compile files("lib/org.eclipse.emf.ecore_2.15.0.v20180722-1159.jar")
+//	compile files("lib/org.eclipse.emf.common_2.11.0.v20150512-0501.jar")
+	
+	// SPEED
+	compile "org.openjdk.jmh:jmh-generator-annprocess:1.21"
+	compile "org.openjdk.jmh:jmh-core:1.21"
+	compile "junit:junit:[4,)"
+    compile "me.champeau.gradle:jmh-gradle-plugin:0.4.7"
+	compile 'org.openjdk.jmh:jmh-core:0.9'
+    compile 'org.openjdk.jmh:jmh-generator-annprocess:0.9'
+}
+// net.sourceforge.sizeof
+
+apply plugin: "me.champeau.gradle.jmh"
+
+jmh {
+	resultFormat = 'CSV' 
+	humanOutputFile = project.file("${project.buildDir}/reports/jmh/human.txt") // human-readable output 
+//	threads = 8 // Number of worker threads to run with.
+   //batchSize = 3
+   iterations = 5
+   warmupBatchSize = 5
+   fork=2
+}
+def classMesserJar = ""
+sourceSets.main.compileClasspath.filter({it.name.indexOf("classmexer")>=0}).each{
+	classMesserJar = it}
+
+task classmexer(type:JavaExec) {
+	errorOutput = System.err
+	main = "de.uniks.networkparser.test.ClassMexer"
+	jvmArgs "-javaagent:"+classMesserJar
+	classpath = (sourceSets.jmh.compileClasspath + sourceSets.jmh.output)
+}
