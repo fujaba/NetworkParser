@@ -58,6 +58,24 @@ Project Managment
 
 # Getting Started
 
+# Gradle
+
+<pre>
+<!-- insert_code_fragment: gradle.repositories -->
+repositories {
+    mavenCentral()
+    maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
+}
+<!-- end_code_fragment: -->
+</pre>
+<pre>
+<!-- insert_code_fragment: gradle.dependencies -->
+dependencies {
+	compile group: "de.uniks", name: "NetworkParser", version: "latest.integration", classifier:"sources18", changing: true
+}
+<!-- end_code_fragment: -->
+</pre>
+
 ## Installation
 $ git clone https://github.com/fujaba/NetworkParser.git
 
