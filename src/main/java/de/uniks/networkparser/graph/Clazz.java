@@ -44,6 +44,9 @@ public class Clazz extends GraphEntity {
 	public static final String PROPERTY_ATTRIBUTE = "attribute";
 	public static final String PROPERTY_ASSOCIATION = "association";
 	public static final String PROPERTY_METHOD = "method";
+	public static final int ONE = 1;
+	public static final int MANY = 42;
+
 
 	private String type = TYPE_CLASS;
 

@@ -41,6 +41,9 @@ import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.xml.HTMLEntity;
 
 public class ClassModel extends GraphModel {
+	public static final int ONE = 1;
+	public static final int MANY = 42;
+
 	private ModelGenerator generator = new ModelGenerator().withDefaultModel(this);
 
 	/**

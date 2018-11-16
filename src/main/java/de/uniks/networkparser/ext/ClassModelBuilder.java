@@ -7,6 +7,9 @@ public class ClassModelBuilder {
 	private ClassModel model;
 	private Clazz lastClazz;
 	public static final String NOGEN="NOGEN";
+	public static final int ONE = 1;
+	public static final int MANY = 42;
+
 
 	/**
 	 * Builds a classmodel builder for the given packageName
