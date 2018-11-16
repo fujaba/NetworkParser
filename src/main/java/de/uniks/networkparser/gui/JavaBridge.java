@@ -69,7 +69,7 @@ public class JavaBridge implements ObjectCondition {
 	}
 
 	public JavaBridge withDebug(boolean value) {
-		if (value) {
+		if (value && entity != null) {
 			this.debug = entity.createScript("", null);
 		} else {
 			this.debug = null;
@@ -128,7 +128,7 @@ public class JavaBridge implements ObjectCondition {
 	}
 
 	protected String readFile(String file) {
-		if (this.webView != null) {
+		if (this.webView != null && file != null) {
 			return this.webView.readFile(file);
 		}
 		return null;
@@ -249,7 +249,10 @@ public class JavaBridge implements ObjectCondition {
 		}
 	}
 
-	public void fireEvent(Event event) {
+	public boolean fireEvent(Event event) {
+		if(event == null) {
+			return false;
+		}
 		Control control = getControls().get(event.getId());
 		if (control != null) {
 			List<ObjectCondition> events = control.getEvents(event.getEventType());
@@ -259,6 +262,7 @@ public class JavaBridge implements ObjectCondition {
 				}
 			}
 		}
+		return true;
 	}
 
 	public void fireControlChange(Control control, String property, Object value) {
@@ -275,7 +279,10 @@ public class JavaBridge implements ObjectCondition {
 	}
 
 	public Object getWebView() {
-		return webView.getWebView();
+		if(webView != null) {
+			return webView.getWebView();
+		}
+		return null;
 	}
 
 	public JavaBridge withWebView(JavaViewAdapter webView) {
