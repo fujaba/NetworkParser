@@ -161,7 +161,9 @@ public class JavaBridge implements ObjectCondition {
 	 * Enables Firebug Lite for debugging a webEngine.
 	 */
 	public void enableFirebug() {
-		this.webView.enableDebug();
+		if(this.webView != null) {
+			this.webView.enableDebug();
+		}
 	}
 
 	public IdMap getMap() {
@@ -242,7 +244,9 @@ public class JavaBridge implements ObjectCondition {
 	}
 
 	public void fireEvent(JsonObject event) {
-		this.map.decode(event);
+		if(this.map != null) {
+			this.map.decode(event);
+		}
 	}
 
 	public void fireEvent(Event event) {
