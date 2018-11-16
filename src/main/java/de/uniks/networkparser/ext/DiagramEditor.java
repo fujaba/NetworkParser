@@ -52,6 +52,7 @@ import de.uniks.networkparser.ext.javafx.JavaBridgeFX;
 import de.uniks.networkparser.ext.petaf.Message;
 import de.uniks.networkparser.ext.petaf.SimpleTimerTask;
 import de.uniks.networkparser.ext.petaf.proxy.NodeProxyTCP;
+import de.uniks.networkparser.ext.story.Story;
 import de.uniks.networkparser.graph.Association;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.GraphList;
@@ -82,6 +83,7 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 	private JSEditor jsEditor;
 	private IdMap map;
 	private NetworkParserLog logger = new NetworkParserLog().withListener(new StringPrintStream());
+	private static final String EDITOR="Editor.html";
 
 	private static DiagramEditor editor;
 
@@ -648,16 +650,12 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 			loadFile = true;
             includeFiles=true;
 		}
-		Class<?> listClass = GraphList.class;
-		for(String resource : HTMLEntity.GRAPHRESOURCES) {
-			CharacterBuffer content = new FileBuffer().readResource(listClass.getResourceAsStream(resource));
-			html.addResources(includeFiles, resource, content.toString());
-		}
+		Story.addResource(html, EDITOR, includeFiles);
 		
         if (loadFile) {
-			FileBuffer.writeFile("Editor.html", html.toString(), FileBuffer.NONE);
+			FileBuffer.writeFile(EDITOR, html.toString(), FileBuffer.NONE);
 			try {
-				String string = new File("Editor.html").toURI().toURL().toString();
+				String string = new File(EDITOR).toURI().toURL().toString();
 				ReflectionLoader.call(webEngine, "load", string);
 				return true;
 			} catch (MalformedURLException e) {

@@ -108,6 +108,7 @@ task buildGitJar(type: Jar, dependsOn: compileJava18) {
 	//sourceSets.main.output, sourceSets.main.allJava,
 	group "Jar"; from {
 			files(fileTree(dir: 'build/classes/main18'), fileTree(dir: 'src/main/resources'), file("gradle/version.gradle"),
+			sourceSets.main.allJava,
 			configurations.gitVersion.filter({it.name.startsWith("org.eclipse.jgit") || it.name.startsWith("slf4j-api")}).collect({it.isDirectory() ? it : zipTree(it)}))
 		}; classifier = 'git'
 	exclude '**/test/**'
