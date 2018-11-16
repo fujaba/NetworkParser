@@ -238,7 +238,9 @@ public class FileBuffer extends Buffer {
 	}
 
 	public CharacterBuffer readResource(String file) {
-		InputStream is = IdMap.class.getResourceAsStream(file);
+		return readResource(IdMap.class.getResourceAsStream(file));
+	}
+	public CharacterBuffer readResource(InputStream is ) {
 		CharacterBuffer sb = new CharacterBuffer();
 		if (is != null) {
 			final byte[] buffer = new byte[BUFFER];

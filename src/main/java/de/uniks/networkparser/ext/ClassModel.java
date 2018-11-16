@@ -2,6 +2,7 @@ package de.uniks.networkparser.ext;
 
 import java.util.Collection;
 
+import de.uniks.networkparser.buffer.CharacterBuffer;
 /*
 The MIT License
 
@@ -31,6 +32,7 @@ import de.uniks.networkparser.graph.Attribute;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.DataType;
 import de.uniks.networkparser.graph.Feature;
+import de.uniks.networkparser.graph.GraphList;
 import de.uniks.networkparser.graph.GraphMember;
 import de.uniks.networkparser.graph.GraphModel;
 import de.uniks.networkparser.graph.GraphUtil;
@@ -101,6 +103,11 @@ public class ClassModel extends GraphModel {
 			return null;
 		}
 		HTMLEntity entity = super.dumpHTML(diagramName, write);
+		Class<?> listClass = GraphList.class;
+		for(String item : HTMLEntity.GRAPHRESOURCES) {
+			CharacterBuffer content = new FileBuffer().readResource(listClass.getResourceAsStream(item));
+			entity.addResources(false, item, content.toString());
+		}
 		if (write == null || write.length < 1 || write[0] == false) {
 			return entity;
 		}

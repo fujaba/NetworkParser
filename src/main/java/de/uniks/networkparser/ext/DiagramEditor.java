@@ -637,43 +637,24 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 			return result;
 		}
 		HTMLEntity html = new HTMLEntity();
-		FileBuffer resourceReader = new FileBuffer();
 		boolean loadFile = false;
+		boolean includeFiles = false;
 		// html.createScript("classEditor = new ClassEditor(\"board\");",
 		// html.getBody());
-		if (TYPE_EDITOR.equalsIgnoreCase(type)) {
-			loadFile = true;
-			html.withScript(html.getHeader(), resourceReader.readResource("graph/diagram.js").toString());
-			html.withHeader("dagre.min.js");
-			html.withHeader("jspdf.min.js");
-			html.withHeader("diagramstyle.css");
-			FileBuffer.writeFile("dagre.min.js", resourceReader.readResource("graph/dagre.min.js"), FileBuffer.NONE);
-			FileBuffer.writeFile("diagram.js", resourceReader.readResource("graph/diagram.js"), FileBuffer.NONE);
-			FileBuffer.writeFile("jspdf.min.js", resourceReader.readResource("graph/jspdf.min.js"), FileBuffer.NONE);
-			FileBuffer.writeFile("diagramstyle.css", resourceReader.readResource("graph/diagramstyle.css"),
-					FileBuffer.NONE);
-		}
-		if (TYPE_EXPORT.equalsIgnoreCase(type)) {
-			loadFile = true;
-			html.withHeader("dagre.min.js");
-			html.withHeader("diagram.js");
-			html.withHeader("jspdf.min.js");
-			html.withHeader("diagramstyle.css");
-			FileBuffer.writeFile("dagre.min.js", resourceReader.readResource("graph/dagre.min.js"), FileBuffer.NONE);
-			FileBuffer.writeFile("diagram.js", resourceReader.readResource("graph/diagram.js"), FileBuffer.NONE);
-			FileBuffer.writeFile("jspdf.min.js", resourceReader.readResource("graph/jspdf.min.js"), FileBuffer.NONE);
-			FileBuffer.writeFile("diagramstyle.css", resourceReader.readResource("graph/diagramstyle.css"),
-					FileBuffer.NONE);
+		if (TYPE_EDITOR.equalsIgnoreCase(type) || TYPE_EXPORT.equalsIgnoreCase(type)) {
+            loadFile = true;
 		}
 		if (TYPE_EXPORTALL.equalsIgnoreCase(type)) {
-			// Add external Files
 			loadFile = true;
-			html.withScript(html.getHeader(), readFile("graph/dagre.min.js"));
-			html.withScript(html.getHeader(), readFile("graph/diagram.js"));
-			html.withScript(html.getHeader(), readFile("graph/jspdf.min.js"));
-			html.withScript(html.getHeader(), readFile("graph/diagramstyle.css"));
+            includeFiles=true;
 		}
-		if (loadFile) {
+		Class<?> listClass = GraphList.class;
+		for(String resource : HTMLEntity.GRAPHRESOURCES) {
+			CharacterBuffer content = new FileBuffer().readResource(listClass.getResourceAsStream(resource));
+			html.addResources(includeFiles, resource, content.toString());
+		}
+		
+        if (loadFile) {
 			FileBuffer.writeFile("Editor.html", html.toString(), FileBuffer.NONE);
 			try {
 				String string = new File("Editor.html").toURI().toURL().toString();
@@ -684,9 +665,6 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 			return true;
 		}
 		// Add external Files
-		html.withScript(html.getHeader(), readFile("graph/dagre.min.js"));
-		html.withScript(html.getHeader(), readFile("graph/diagram.js"));
-		html.withScript(html.getHeader(), readFile("graph/diagramstyle.css"));
 		ReflectionLoader.call(webEngine, "loadContent", html.toString());
 		return true;
 	}

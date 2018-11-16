@@ -92,6 +92,38 @@ public class GenModel {
 		sdmLib.withoutHeader("diagram.js");
 		
 		
+		sdmLib.withText("NetworkParser MetaModel");
+		
+		
+		ClassModel modelMeta=new ClassModel();
+		Clazz classModel = modelMeta.createClazz("ClassModel");
+		Clazz clazz = modelMeta.createClazz("Clazz").withAttribute("name", DataType.STRING);
+		classModel.withAttribute("name", DataType.STRING);
+		classModel.withAssoc(clazz, "children", Association.MANY, "parent", Association.ONE);
+
+		Clazz attribute= modelMeta.createClazz("Attribute").withAttribute("name", DataType.STRING);
+		Clazz datatype = modelMeta.createClazz("DataType");
+		Clazz method = modelMeta.createClazz("Method").withAttribute("name", DataType.STRING);
+		Clazz parameter = modelMeta.createClazz("Parameter").withAttribute("name", DataType.STRING);
+		
+		Clazz association = modelMeta.createClazz("Association").withAttribute("name", DataType.STRING);
+		
+		clazz.withBidirectional(attribute, "children", Association.MANY, "parent", Association.ONE);
+		clazz.withBidirectional(method, "children", Association.MANY, "parent", Association.ONE);
+		clazz.withBidirectional(association, "children", Association.MANY, "parent", Association.ONE);
+		
+		association.withBidirectional(association, "other", Association.ONE, "other", Association.ONE);
+		
+		method.withBidirectional(parameter, "children", Association.MANY, "parent", Association.ONE);
+		
+		datatype.withBidirectional(parameter, "parent", Association.ONE, "childre", Association.MANY);
+		datatype.withBidirectional(attribute, "parent", Association.ONE, "childre", Association.MANY);
+		datatype.withBidirectional(method, "parent", Association.ONE, "childre", Association.MANY);
+		datatype.withUniDirectional(clazz, "clazz", Association.ONE);
+		
+		sdmLib.withGraph(modelMeta);
+		
+		
 		FileBuffer.writeFile("build/sdmlib.html", sdmLib.toString());
 	}
 

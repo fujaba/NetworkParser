@@ -52,7 +52,7 @@ public class HTMLEntity implements BaseItem {
 	public static final String KEY_SRC = "src";
 	public static final String GRAPH = "Graph";
 	public static final String CLASSEDITOR = "ClassEditor";
-	public static final String[] GRAPHRESOURCES = new String[] { "diagramstyle.css", "diagram.js", "dagre.min.js" };
+	public static final String[] GRAPHRESOURCES = new String[] { "diagramstyle.css", "diagram.js", "dagre.min.js", "jspdf.min.js"};
 
 	private XMLEntity body = new XMLEntity().withType("body");
 	private XMLEntity header = new XMLEntity().withType("head");
@@ -379,11 +379,20 @@ public class HTMLEntity implements BaseItem {
 	}
 
 	public HTMLEntity withGraph(GraphModel value) {
-		URL resource = GraphList.class.getResource("");
-		if (resource == null || value == null) {
-			return this;
+        URL resource = GraphList.class.getResource("");
+        if (resource == null || value == null) {
+            return this;
+        }
+        return withGraph(value, resource.toString());
+	}
+	
+	public HTMLEntity addResources(boolean importFiles, String name, String content) {
+		if(importFiles) {
+			this.withScript(this.getHeader(), content);
+		} else {
+			this.withHeader(name);
 		}
-		return withGraph(value, resource.toString());
+		return this;
 	}
 
 	public HTMLEntity withGraph(GraphModel value, String resource) {

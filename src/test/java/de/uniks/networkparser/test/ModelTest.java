@@ -13,10 +13,15 @@ import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.UpdateCondition;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.converter.CodeCityConverter;
+import de.uniks.networkparser.ext.ClassModel;
+import de.uniks.networkparser.ext.ClassModelBuilder;
 import de.uniks.networkparser.ext.FileClassModel;
 import de.uniks.networkparser.ext.generic.GenericCreator;
 import de.uniks.networkparser.ext.generic.SimpleParser;
 import de.uniks.networkparser.ext.io.FileBuffer;
+import de.uniks.networkparser.graph.Association;
+import de.uniks.networkparser.graph.Clazz;
+import de.uniks.networkparser.graph.DataType;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.json.JsonObject;
@@ -331,5 +336,37 @@ public class ModelTest implements ObjectCondition {
 		CodeCityConverter converter = new CodeCityConverter();
 		String encode = converter.encode(model);
 		FileBuffer.writeFile("build/NetworkParser-IdMap.mse", encode);
+	}
+	
+	@Test
+	public void testProgMeth() {
+//		ClassModel model = new ClassModel ("de.uniks.model");
+//		Clazz person = model.createClazz("Person");
+//		person.withAttribute("name", DataType.STRING)
+//				.createAttribute("matrikelno", DataType.INT);
+//		Clazz uni = model.createClazz("University").withAttribute("name", DataType.STRING);
+//		uni.createBidirectional(person, "students", Association.MANY, "studs", Association.ONE);
+////		model.generate("gen");
+//		
+//		ClassModelBuilder builder = new ClassModelBuilder("de.uniks.model");
+//		Clazz student = builder.buildClass("Student");
+//		builder.createAttribute("name", DataType.STRING)
+//				.createAttribute("matrikelno", DataType.INT);
+//		builder.createClass("University").createAttribute("name", DataType.STRING);
+//		builder.createAssociation("student", Association.MANY, student, "studs", Association.ONE);
+////		builder.build();
+
+		ClassModelBuilder builder = new ClassModelBuilder("de.uniks.model");
+		Clazz student = builder.buildClass("Student");
+		builder.createAttribute("name", DataType.STRING)
+			.createAttribute("matrikelno", DataType.INT);
+		builder.createClass("University").createAttribute("name", DataType.STRING);
+		builder.createAssociation("student",Association.MANY,student,"studs", Association.ONE);
+		ClassModel model = builder.getModel();
+		model.dumpHTML("test.html", true);
+//		builder.build("gen");
+
+		
+		
 	}
 }
