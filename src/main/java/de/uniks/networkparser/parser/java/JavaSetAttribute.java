@@ -29,7 +29,7 @@ public class JavaSetAttribute extends Template {
 				"			for ({{file.member.name}} obj : this) {",
 				"				{{type}} item = obj.{{namegetter}}();",
 				"				for(int i=0;i<filter.length;i++) {",
-				"{{#if {{#or}}{{type}}==int {{type}}==boolean{{#endor}}}}",
+				"{{#if {{#or}}{{type}}==int {{type}}==boolean {{type}}==double {{type}}==float{{#endor}}}}",
 				"					if (filter[i] == item) {"
 				+ "{{#else}}",
 				"					if (filter[i].equals(item)) {"

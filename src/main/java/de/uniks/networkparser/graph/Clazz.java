@@ -364,13 +364,23 @@ public class Clazz extends GraphEntity {
 			// Wrong way try another round
 			assoc = assoc.getOther();
 		}
+		Association otherAssoc = assoc.getOther();
 		if (AssociationTypes.IMPLEMENTS.equals(assoc.getType()) == false
 				&& AssociationTypes.GENERALISATION.equals(assoc.getType()) == false) {
+			// Check Cardinality
+			if(assoc.getClazz() == otherAssoc.getClazz() && assoc.getName() != null && assoc.getName().equals(otherAssoc.getName())) {
+				if(assoc.getCardinality() != otherAssoc.getCardinality()) {
+					// Self assoc with same RoleName but other Cardinality
+					System.out.println("ERROR: "+assoc.toString());
+					return false;
+				}
+			}
+			
 			// Ignore
 			return true;
 		}
 		// REPAIR CLAZZES
-		GraphSimpleSet items = assoc.getOther().getParents();
+		GraphSimpleSet items = otherAssoc.getParents();
 		ClazzSet interfaces = new ClazzSet();
 		ClazzSet generalizations = new ClazzSet();
 		for (GraphMember child : items) {
@@ -391,7 +401,7 @@ public class Clazz extends GraphEntity {
 			} else if (interfaces.size() > 0) {
 				// BOTH
 				for (Clazz item : interfaces) {
-					item.remove(assoc.getOther());
+					item.remove(otherAssoc);
 				}
 				createAssociation(AssociationTypes.IMPLEMENTS, AssociationTypes.EDGE, interfaces.toArray());
 			}
@@ -402,7 +412,7 @@ public class Clazz extends GraphEntity {
 		} else if (generalizations.size() > 0) {
 			// BOTH
 			for (Clazz item : interfaces) {
-				item.remove(assoc.getOther());
+				item.remove(otherAssoc);
 			}
 			createAssociation(AssociationTypes.GENERALISATION, AssociationTypes.EDGE, generalizations.toArray());
 		}

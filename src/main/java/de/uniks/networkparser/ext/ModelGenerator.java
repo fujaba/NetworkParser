@@ -224,7 +224,10 @@ public class ModelGenerator extends Template {
 			}
 		}
 
-		model.fixClassModel();
+		if(model.fixClassModel() == false) {
+			System.out.println("Reparing of Model failed");
+			return null;
+		}
 		String name = model.getName();
 		if (name == null) {
 			name = "i.love.sdmlib";

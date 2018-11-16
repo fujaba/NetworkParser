@@ -43,7 +43,8 @@ public class LiveRiskTest {
         player.withAssoc(unit, "units", Association.MANY, "player", Association.ONE);
         player.withAssoc(plattform, "platforms", Association.MANY, "player", Association.ONE);
         
-        ClassModel model = mb.build(ClassModelBuilder.NOGEN);
+//        ClassModel model = mb.build(ClassModelBuilder.NOGEN);
+        ClassModel model = mb.build("gen");
         System.out.println(model.toString());
 	}
 }

@@ -26,7 +26,9 @@ public class ClassModelBuilder {
 		lastClazz = model.createClazz(className);
 		return this;
 	}
-
+	public ClassModel getModel() {
+		return model;
+	}
 	public ClassModel build(String... params) {
 		if (params == null) {
 			model.generate();

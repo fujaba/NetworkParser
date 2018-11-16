@@ -186,7 +186,9 @@ public abstract class GraphModel extends GraphEntity implements BaseItem {
 					packageName = "";
 				}
 			}
-			fixClassModel(item, visited);
+			if(fixClassModel(item, visited) == false) {
+				return false;
+			}
 		}
 		// CHECK PACKAGE
 		if (getDefaultPackage().equals(this.name) && packageName != null && packageName.length() > 0) {
@@ -208,11 +210,13 @@ public abstract class GraphModel extends GraphEntity implements BaseItem {
 		return DEFAULTPACKAGE;
 	}
 
-	private void fixClassModel(Clazz item, SimpleSet<Clazz> visited) {
+	private boolean fixClassModel(Clazz item, SimpleSet<Clazz> visited) {
 		// Run over Interfaces, SuperClazzes, KidClazzes, Associations
 		AssociationSet assocs = item.getAssociations();
 		for (Association role : assocs) {
-			item.repairAssociation(role);
+			if(item.repairAssociation(role) == false) {
+				return false;
+			}
 			Clazz clazz = role.getOtherClazz();
 			if (clazz.getClassModel() == null) {
 				clazz.setClassModel(this);
@@ -264,6 +268,7 @@ public abstract class GraphModel extends GraphEntity implements BaseItem {
 				fixDataType(param.getType());
 			}
 		}
+		return true;
 	}
 
 	private void fixDataType(DataType dataType) {
