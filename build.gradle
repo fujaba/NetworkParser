@@ -73,16 +73,20 @@ test {
 }
 
 def execute(String... args) {
-	if(args.length == 1) {
-		args = args[0].split(" ")
-	}
-	ByteArrayOutputStream stdOutput = new ByteArrayOutputStream()
+	try {
+		if(args.length == 1) {
+			args = args[0].split(" ")
+		}
+		ByteArrayOutputStream stdOutput = new ByteArrayOutputStream()
 
-	exec{
-		commandLine args
-		standardOutput = stdOutput
+		exec{
+			commandLine args
+			standardOutput = stdOutput
+		}
+		return stdOutput.toString()
+	}catch(Exception e) {
 	}
-	stdOutput.toString()
+	return "";
 }
 
 
