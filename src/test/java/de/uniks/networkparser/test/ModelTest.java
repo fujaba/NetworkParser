@@ -365,8 +365,14 @@ public class ModelTest implements ObjectCondition {
 		ClassModel model = builder.getModel();
 		model.dumpHTML("test.html", true);
 //		builder.build("gen");
-
+	}
+	@Test
+	public void testgen() {
+		ClassModel model = new ClassModel("me.uniks");
+		Clazz uni = model.createClazz("Uni");
+		Clazz student = model.createClazz("Student");
+		uni.withAssoc(student, "students", 5, "studs", 1);
 		
-		
+//		model.generate("src/test/java");
 	}
 }

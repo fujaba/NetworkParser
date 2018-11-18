@@ -23,13 +23,13 @@ public class JavaAssociation extends Template {
 				"{{#endif}}",
 				"",
 
-				"{{#if {{other.cardinality}}==42}}"
-						+ "{{#import {{other.clazz.packageName}}.util.{{other.clazz.name}}Set}}",
-				"{{#else}}",
-					"{{#import {{other.clazz.fullName}}}}",
+				"{{#if {{other.cardinality}}==1}}"
+						+"{{#import {{other.clazz.fullName}}}}",
+				"{{#else}}"
+					+ "{{#import {{other.clazz.packageName}}.util.{{other.clazz.name}}Set}}",
 				"{{#endif}}"
 					+ "	public {{modifiers} }{{#if {{other.cardinality}}==1}}{{other.clazz.name}}{{#else}}{{other.clazz.name}}Set{{#endif}} get{{other.Name}}(){{#if {{file.member.type}}==interface}};",
-				"", "{{#endif}}", "{{#ifnot {{file.member.type}}==interface}} {", "{{#if {{other.cardinality}}==42}}",
+				"", "{{#endif}}", "{{#ifnot {{file.member.type}}==interface}} {", "{{#ifnot {{other.cardinality}}==1}}",
 				"		if(this.{{other.name}} == null) {",
 				"			return {{other.clazz.name}}Set.EMPTY_SET;",
 				"		}",
