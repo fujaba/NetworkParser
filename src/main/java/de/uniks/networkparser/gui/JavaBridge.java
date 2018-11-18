@@ -139,7 +139,7 @@ public class JavaBridge implements ObjectCondition {
 		if (isApplyingChangeMSG) {
 			return false;
 		}
-		if (event instanceof SimpleEvent) {
+		if (event == null || event instanceof SimpleEvent) {
 			return false;
 		}
 		SimpleEvent simpleEvent = (SimpleEvent) event;
@@ -179,7 +179,7 @@ public class JavaBridge implements ObjectCondition {
 		map.getMapListener().resetNotification();
 		Object result = executeScript(BridgeCommand.load(jsonObject));
 		String id = null;
-		if (result instanceof JsonObject) {
+		if (result != null && result instanceof JsonObject) {
 			JsonObject json = (JsonObject) result;
 			id = json.getString("id");
 			so.setId(id);
@@ -236,11 +236,14 @@ public class JavaBridge implements ObjectCondition {
 		return this.webView.executeScript(script);
 	}
 
-	public void addEventListener(Control c, EventTypes eventType, ObjectCondition eventListener) {
+	public boolean addEventListener(Control c, EventTypes eventType, ObjectCondition eventListener) {
+		if(c == null) {
+			return false;
+		}
 		if (c.getEvents(eventType) == null) {
 			executeScript(BridgeCommand.register(eventType, c.getId()));
 		}
-		c.addEventListener(eventType, eventListener);
+		return c.addEventListener(eventType, eventListener);
 	}
 
 	public void fireEvent(JsonObject event) {
