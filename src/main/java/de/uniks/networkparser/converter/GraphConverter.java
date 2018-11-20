@@ -364,8 +364,8 @@ public class GraphConverter implements Converter {
 						to.with(GraphUtil.createCardinality(target.getString(CARDINALITY)));
 						from.with(source.getString(PROPERTY));
 						to.with(target.getString(PROPERTY));
-						from.with(AssociationTypes.valueOf(source.getString(TYPE)));
-						to.with(AssociationTypes.valueOf(target.getString(TYPE)));
+						from.with(AssociationTypes.create(source.getString(TYPE)));
+						to.with(AssociationTypes.create(target.getString(TYPE)));
 					} else if (edge.getString(TYPE).equalsIgnoreCase("edge")) {
 						Clazz fromClazz = GraphUtil.getByObject(reference, source.getString(ID), true);
 						Clazz toClazz = GraphUtil.getByObject(reference, target.getString(ID), true);

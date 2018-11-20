@@ -326,11 +326,13 @@ public class JavaAdapter implements JavaViewAdapter, Runnable {
 	}
 
 	protected void addAdapter(ObjectCondition eventListener) {
-		JsonObjectLazy executeScript = (JsonObjectLazy) _execute("bridge.addAdapter(new DiagramJS.DelegateAdapter());",
-				true);
-		if (executeScript != null) {
-			Object reference = executeScript.getReference();
-			ReflectionLoader.calling(reference, "setAdapter", false, null, Object.class, eventListener);
+		if(TYPE_EDITOR.equals(type) == false) {
+			JsonObjectLazy executeScript = (JsonObjectLazy) _execute("bridge.addAdapter(new DiagramJS.DelegateAdapter());",
+					true);
+			if (executeScript != null) {
+				Object reference = executeScript.getReference();
+				ReflectionLoader.calling(reference, "setAdapter", false, null, Object.class, eventListener);
+			}
 		}
 	}
 

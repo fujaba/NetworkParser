@@ -770,8 +770,7 @@ public class GraphTest {
 	@Test
 	public void testCoverage() {
 		Assert.assertFalse(AssociationTypes.isEdge(null));
-		Assert.assertEquals(AssociationTypes.ASSOCIATION, AssociationTypes.valueOf("ASSOCIATION"));
-		Assert.assertEquals(8, AssociationTypes.values().length);
+		Assert.assertEquals(AssociationTypes.ASSOCIATION, AssociationTypes.create("ASSOCIATION"));
 
 		Assert.assertEquals(GraphOptions.TYP.HTML, GraphOptions.TYP.valueOf("HTML"));
 		Assert.assertEquals(4, GraphOptions.TYP.values().length);

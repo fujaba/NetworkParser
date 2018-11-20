@@ -2,6 +2,7 @@ package de.uniks.networkparser.ext;
 
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.DataType;
+import de.uniks.networkparser.graph.Feature;
 
 public class ClassModelBuilder {
 	private ClassModel model;
@@ -114,6 +115,16 @@ public class ClassModelBuilder {
 		}
 		// Now Create Assoc
 		my.createBidirectional(other, otherRoleName, otherCardinality, myRoleName, myCardinality);
+		return this;
+	}
+	
+	public ClassModelBuilder setModelSet(Class<?> type) {
+		if( model!= null && type != null) {
+			Feature feature = model.getFeature(Feature.SETCLASS);
+			if(feature != null) {
+				feature.withClazzValue(type);
+			}
+		}
 		return this;
 	}
 }

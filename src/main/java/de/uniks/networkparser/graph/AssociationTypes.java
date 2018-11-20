@@ -35,9 +35,16 @@ THE SOFTWARE.
  * @author Stefan
  *
  */
-public enum AssociationTypes {
-	ASSOCIATION("assoc"), EDGE("edge"), GENERALISATION("generalisation"), IMPLEMENTS("implements"),
-	UNDIRECTIONAL("unidirectional"), AGGREGATION("aggregation"), COMPOSITION("Composition"), DEPENDENCY("Dependency");
+public class AssociationTypes {
+	private boolean assocPlural = false;
+	public static final AssociationTypes ASSOCIATION = new AssociationTypes("assoc");
+	public static final AssociationTypes EDGE = new AssociationTypes("edge");
+	public static final AssociationTypes GENERALISATION = new AssociationTypes("generalisation");
+	public static final AssociationTypes IMPLEMENTS = new AssociationTypes("implements");
+	public static final AssociationTypes UNDIRECTIONAL = new AssociationTypes("unidirectional");
+	public static final AssociationTypes AGGREGATION = new AssociationTypes("aggregation");
+	public static final AssociationTypes COMPOSITION = new AssociationTypes("Composition");
+	public static final AssociationTypes DEPENDENCY = new AssociationTypes("Dependency");
 
 	private AssociationTypes(String value) {
 		this.value = value;
@@ -78,8 +85,43 @@ public enum AssociationTypes {
 	public String toString() {
 		return this.value;
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if(obj == null) {
+			return false;
+		}
+		if(obj instanceof String) {
+			return obj.equals(this.getValue());
+		}
+		return super.equals(obj);
+	}
 
 	public static AssociationTypes create(String value) {
-		return AssociationTypes.valueOf(value);
+		if(ASSOCIATION.equals(value)) {
+			return ASSOCIATION;
+		}
+		if(EDGE.equals(value)) {
+			return EDGE;
+		}
+		if(GENERALISATION.equals(value)) {
+			return GENERALISATION;
+		}
+		if(IMPLEMENTS.equals(value)) {
+			return IMPLEMENTS;
+		}
+		if(UNDIRECTIONAL.equals(value)) {
+			return UNDIRECTIONAL;
+		}
+		if(AGGREGATION.equals(value)) {
+			return AGGREGATION;
+		}
+		if(COMPOSITION.equals(value)) {
+			return COMPOSITION;
+		}
+		if(DEPENDENCY.equals(value)) {
+			return DEPENDENCY;
+		}
+		return null;
 	}
 }

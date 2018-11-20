@@ -20,6 +20,24 @@ def callGradle(type, Object... params) {
 		}
 	}
 }
+
+def execute(String... args) {
+	try {
+		if(args.length == 1) {
+			args = args[0].split(" ")
+		}
+		ByteArrayOutputStream stdOutput = new ByteArrayOutputStream()
+
+		exec{
+			commandLine args
+			standardOutput = stdOutput
+		}
+		return stdOutput.toString()
+	}catch(Exception e) {
+	}
+	return "";
+}
+
 def getGradle(type) {
 	def urls=[]
 

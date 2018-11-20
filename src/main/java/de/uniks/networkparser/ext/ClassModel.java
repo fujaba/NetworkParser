@@ -106,6 +106,10 @@ public class ClassModel extends GraphModel {
 		}
 		HTMLEntity entity = super.dumpHTML(diagramName, write);
 		
+		if(diagramName.indexOf('/')<0) {
+			diagramName = "doc/" + diagramName;
+		}
+		
 		diagramName = Story.addResource(entity, diagramName, false);
 		
 		if (write == null || write.length < 1 || write[0] == false) {

@@ -13,6 +13,7 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
 
+import de.uniks.networkparser.DateTimeEntity;
 import de.uniks.networkparser.buffer.ByteBuffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.ext.generic.ReflectionBlackBoxTester;
@@ -21,6 +22,7 @@ import de.uniks.networkparser.ext.io.FileBuffer;
 import de.uniks.networkparser.ext.io.TarArchiveEntry;
 import de.uniks.networkparser.ext.io.TarArchiveInputStream;
 import de.uniks.networkparser.ext.petaf.proxy.NodeProxyTCP;
+import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.json.JsonArray;
 import de.uniks.networkparser.json.JsonObject;
@@ -36,13 +38,13 @@ public class Gradle implements ObjectCondition{
 	public static final String GIT="git";
 	public static final String GRADLE="gradle";
 
-//	@Test
-	public void testMain() {
+	public static void main(String[] args) {
 		Gradle gradle = new Gradle();
-		gradle.initProject("np.jar", "Test");
+		gradle.addAtrifact(null, "Test", "MIT");
+//		gradle.initProject("np.jar", "Test", "MIT");
 	}
 
-	public boolean initProject(String jarFile, String projectName) {
+	public boolean initProject(String jarFile, String projectName, String licence) {
 		if (Os.isReflectionTest() || jarFile == null) {
 			return false;
 		}
@@ -56,7 +58,7 @@ public class Gradle implements ObjectCondition{
 		}
 
 		writeProjectPath(path, projectName);
-		writeGradle(path);
+		writeGradle(path, projectName, licence);
 		extractGradleFiles(path);
 
 		return true;
@@ -152,7 +154,6 @@ public class Gradle implements ObjectCondition{
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			// TODO: handle exception
 		}
 		return true;
 	}
@@ -164,14 +165,12 @@ public class Gradle implements ObjectCondition{
 		}
 		return name;
 	}
-//	public StringBuilder printGraph(VisTegPluginExtension vistegExt, StringBuilder sb, String ls, TaskInfo entry, Set<Integer> edges) {
 	public static void printGraph(CharacterBuffer buffer, Object entry, Set<String> edges) {
 		LinkedList<Object> q = new LinkedList<Object>();
 		q.add(entry);
 		HashSet<String> seen = new HashSet<String>();
 		while (q.isEmpty() == false) {
 			Object ti = q.remove();
-//		Object tproject = ReflectionLoader.callChain(ti, "task", "project");
 			String tname = getTaskName(ti);
 			if (seen.contains(tname)) {
 				continue;
@@ -179,7 +178,6 @@ public class Gradle implements ObjectCondition{
 			seen.add(tname);
 			// org.gradle.execution.taskgraph.LocalTaskInfo
 			Object items = ReflectionLoader.call(ti, "getAllSuccessors");
-//		System.out.println(tname+": "+items+items.getClass());
 
 			if (items != null && items instanceof Iterable<?>) {
 				Iterable<?> i = (Iterable<?>) items;
@@ -196,8 +194,6 @@ public class Gradle implements ObjectCondition{
 				}
 				q.addAll(itemsSet);
 			}
-			
-			
 			buffer.with("\""+tname+"\"");
 			buffer.with(" [");
 			buffer.with("shape=\"");
@@ -217,7 +213,7 @@ public class Gradle implements ObjectCondition{
 		}
 	}
 
-	public boolean writeGradle(String path) {
+	public boolean writeGradle(String path, String projectName, String licence) {
 		if (Os.isReflectionTest() || path == null) {
 			return false;
 		}
@@ -247,6 +243,26 @@ public class Gradle implements ObjectCondition{
 		ByteBuffer binary = NodeProxyTCP.getHTTPBinary("https://services.gradle.org" + ref);
 
 		FileBuffer.writeFile(path + "gradle.zip", binary.array());
+		
+		// NOW WRITE build.gradle
+		
+		CharacterBuffer buildGradle = new CharacterBuffer();
+		buildGradle.withLine("repositories {");
+		buildGradle.withLine("	  jcenter()");
+		buildGradle.withLine("	  maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }");
+		buildGradle.withLine("}");
+
+		buildGradle.withLine("");
+		buildGradle.withLine("dependencies {");
+		buildGradle.withLine("	// Use JUnit test framework");
+		buildGradle.withLine("	testImplementation 'junit:junit:4.12'");
+		buildGradle.withLine("	compile group:\"de.uniks\",name: \"NetworkParser\", version: \"latest.integration\",classifier:\"sources18\",changing: true");
+		    	//compile group: "de.uniks", name: "NetworkParser", version: "latest.integration", classifier:"sources18", changing: true
+//		    	compile files("NetworkParser-4.7.1351-SNAPSHOT-git.jar")
+		buildGradle.withLine("}");
+		
+		addAtrifact(buildGradle, projectName, licence);
+		
 		return true;
 	}
 
@@ -387,4 +403,102 @@ public class Gradle implements ObjectCondition{
 		return false;
 	}
 
+	
+	public static String getUserEMail() {
+		CharacterBuffer userEMail = SimpleController.executeProcess("git config --global user.email");
+		if(userEMail != null && userEMail.startsWith("ERROR") == false) {
+			return userEMail.trim().toString();
+		}
+		return "";
+	}
+		
+	public static String getUserName() {
+		CharacterBuffer userName = SimpleController.executeProcess("git config --global user.name");
+		if(userName != null && userName.startsWith("ERROR") == false) {
+			return userName.trim().toString();
+		}
+		return System.getProperty("user.name");
+	}
+	
+	public CharacterBuffer addAtrifact(CharacterBuffer sb, String projectName, String licence) {
+		if(sb == null) {
+			sb = new CharacterBuffer();
+		}
+		if(projectName == null) {
+			return sb;
+		}
+		sb.withLine("ext{");
+		sb.withLine("	sharedManifest = manifest {");
+		sb.withLine("		attributes");
+		sb.withLine("		'Specification-Version': gitVersion.major+\".\"+gitVersion.minor+\".\"+gitVersion.revision,");
+		sb.withLine("		'Implementation-Title': '"+projectName+"',");
+		sb.withLine("		'Specification-Title': '"+projectName+"',");
+		sb.withLine("		'Built-Time': gitVersion.buildTime,");
+		sb.withLine("		'Created-By': gitVersion.major+\".\"+gitVersion.minor+\".\"+gitVersion.revision+\" \"+System.properties['user.name'],");
+		sb.withLine("		'Build': (System.getenv(\"BUILD_NUMBER\") ?: \"IDE\"),");
+		sb.withLine("		'Built-By': \"${System.properties['user.name']}\",");
+		sb.withLine("		'Location': \"${System.properties['user.language']}\",");
+		sb.withLine("		'Version': gitVersion.revision,");
+		sb.withLine("		'Author': '"+getUserName()+"',");
+		sb.withLine("		'Implementation-Version': gitVersion.major+\".\"+gitVersion.minor+\".\"+gitVersion.revision,");
+		sb.withLine("		'GIT-Revision': gitVersion.revision,");
+		sb.withLine("		'Hash': gitVersion.hash,");
+		sb.withLine("		'Java-Version': JavaVersion.current(),");
+		sb.withLine("		'Bundle-Description': '"+projectName+"',");
+		sb.withLine("		'Coverage': gitVersion.coverage,");
+		if(licence != null) {
+			sb.withLine("		'Licence': '"+licence+"',"); 
+		}
+		sb.withLine("		'Bundle-ClassPath': '.'");
+		sb.withLine("		}");
+		sb.withLine("	}");
+		
+		
+		HTMLEntity response = NodeProxyTCP.getHTTP("https://opensource.org/licenses/"+licence, new HTMLEntity());
+		if(response != null) {
+			XMLEntity body = response.getBody();
+			Entity content = body.getElementBy("CLASS", "content");
+			if(content == null && body.getValue() != null) {
+				String items = body.getValue();
+				int pos = items.indexOf("<div class=\"field-items\">");
+				if(pos>0) {
+					content = new XMLEntity().withValue(body.getValue().substring(pos));
+//					body = body.getElementBy("CLASS", "content");
+				}
+			}
+			if(content != null && content instanceof XMLEntity) {
+				CharacterBuffer text = getLicenceText((XMLEntity) content, new CharacterBuffer(), projectName);
+				if(text != null && text.length()>0) {
+					FileBuffer.writeFile("licence.txt", text.toString());
+				}
+			}
+		}
+		
+		/*	'Licence': 'MIT and Apache License 2.0',
+					'Homepage': 'https://github.com/fujaba/Networkparser',
+					'scm': 'git@github.com/fujaba/Networkparser.git',
+
+					'Main-Class': 'de.uniks.networkparser.ext.DiagramEditor',
+					*/
+		return sb;
+	}
+	
+	public static CharacterBuffer getLicenceText(XMLEntity entity, CharacterBuffer buffer, String projectName) {
+		if(entity.sizeChildren()>0) {
+			for(int c=0;c<entity.sizeChildren();c++) {
+				getLicenceText((XMLEntity) entity.getChild(c), buffer, projectName);
+			}
+		} else {
+			if("p".equals(entity.getTag()) && entity.size() <1) {
+				String value = entity.getValue();
+				value = value.replace("<COPYRIGHT HOLDER>", projectName);
+				value = value.replace("&lt;COPYRIGHT HOLDER&gt;", projectName);
+				
+				value = value.replace("<YEAR>", ""+new DateTimeEntity().get(DateTimeEntity.YEAR));
+				value = value.replace("&lt;YEAR&gt;", ""+new DateTimeEntity().get(DateTimeEntity.YEAR));
+				buffer.withLine(value);
+			}
+		}
+		return buffer;
+	}
 }

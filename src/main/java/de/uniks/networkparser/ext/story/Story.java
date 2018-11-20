@@ -53,22 +53,22 @@ public class Story extends StoryElement implements Comparable<Story> {
 
 	public static String addResource(HTMLEntity entity, String name, boolean include) {
 		name = name.replace('\\', '/');
-		if(name.indexOf('/')<0) {
-			name = "doc/" + name;
-		}
-		
 		if(name.toLowerCase().endsWith(".html") == false) {
 			name  += ".html";
 		}
 		String path ="";
-		path = name.substring(0, name.lastIndexOf("/"));
+		if(name.indexOf('/')<0) {
+			path = "doc/";
+		}else {
+			path = name.substring(0, name.lastIndexOf("/"))+"/";
+		}
 		Class<?> listClass = GraphList.class;
 		for(String item : HTMLEntity.GRAPHRESOURCES) {
 			String content = new FileBuffer().readResource(listClass.getResourceAsStream(item)).toString();
-			entity.addResources(include, item, content);
+			entity.addResources(include, path+item, content);
 			if (include == false) {
 				if(path.length()>0) {
-					FileBuffer.writeFile(path + "/" + item, content);
+					FileBuffer.writeFile(path + item, content);
 				}else {
 					FileBuffer.writeFile(item, content);
 				}

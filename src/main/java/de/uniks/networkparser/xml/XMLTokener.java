@@ -152,7 +152,13 @@ public class XMLTokener extends Tokener {
 					buffer.skipTo(XMLEntity.END, false);
 					break;
 				} else if (nextChar == '!') {
-					buffer.skipTo("-->", true, true);
+					nextChar = buffer.getChar();
+					if('[' ==nextChar) {
+						// MIGHT BE <![CDATA[
+						buffer.skipTo("!]]>", true, true);
+					} else {
+						buffer.skipTo("-->", true, true);
+					}
 					buffer.skip();
 				} else {
 					buffer.withLookAHead(c);
