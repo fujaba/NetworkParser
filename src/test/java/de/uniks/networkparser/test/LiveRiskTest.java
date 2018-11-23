@@ -2,7 +2,6 @@ package de.uniks.networkparser.test;
 
 import org.junit.Test;
 
-import de.uniks.networkparser.ext.ClassModel;
 import de.uniks.networkparser.ext.ClassModelBuilder;
 import de.uniks.networkparser.graph.Association;
 import de.uniks.networkparser.graph.Clazz;

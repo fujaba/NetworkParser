@@ -33,6 +33,52 @@ permissions and limitations under the Licence.
  * @author Stefan Lindel
  */
 public class GraphUtil {
+	private static SimpleList<String> noneDictionary=new SimpleList<String>().with("aircraft","carp","deer", "salmon", "sheep", "trout");
+	private static SimpleList<String> oesDictionary=new SimpleList<String>().with("hero", "potato", "torpedo");
+	
+	
+	public static String getPlural(String singular) {
+		// Zischlaut
+		if(singular == null || singular.length()<1) {
+			return null;
+		}
+		if(noneDictionary.contains(singular)) {
+			return singular;
+		}
+		if(singular.endsWith("ch") || singular.endsWith("s") || singular.endsWith("sh") || singular.endsWith("x") || singular.endsWith("z") ) {
+			return singular+"es";
+		}
+		// y Konsonant
+		if(singular.endsWith("y")) {
+			return singular.subSequence(0, singular.length()-1)+"ies";
+		}
+		// -f/-fe wird zu -ves im Plural
+		if(singular.endsWith("f") || singular.endsWith("fe") ) {
+			return singular.subSequence(0, singular.length()-1)+"ves";
+		}
+		// -o wird zu -oes im Plural
+		if(singular.endsWith("o") ) {
+			if(oesDictionary.contains(singular)) {
+				return singular+"es";
+			}
+			return singular+"s";
+		}
+		return singular+"s";
+	}
+	
+	public static boolean isPlural(String plural) {
+		if(noneDictionary.contains(plural)) {
+			return true;
+		}
+		if(plural == null || plural.length()<1) {
+			return false;
+		}
+		if(plural.endsWith("s") == false) {
+			return false;
+		}
+		return true;
+	}
+
 	public static double compareName(String source, String other) {
 		int counter = 0;
 		int caseDiff = 0;

@@ -36,15 +36,14 @@ THE SOFTWARE.
  *
  */
 public class AssociationTypes {
-	private boolean assocPlural = false;
 	public static final AssociationTypes ASSOCIATION = new AssociationTypes("assoc");
 	public static final AssociationTypes EDGE = new AssociationTypes("edge");
 	public static final AssociationTypes GENERALISATION = new AssociationTypes("generalisation");
 	public static final AssociationTypes IMPLEMENTS = new AssociationTypes("implements");
 	public static final AssociationTypes UNDIRECTIONAL = new AssociationTypes("unidirectional");
 	public static final AssociationTypes AGGREGATION = new AssociationTypes("aggregation");
-	public static final AssociationTypes COMPOSITION = new AssociationTypes("Composition");
-	public static final AssociationTypes DEPENDENCY = new AssociationTypes("Dependency");
+	public static final AssociationTypes COMPOSITION = new AssociationTypes("composition");
+	public static final AssociationTypes DEPENDENCY = new AssociationTypes("dependency");
 
 	private AssociationTypes(String value) {
 		this.value = value;
@@ -92,13 +91,16 @@ public class AssociationTypes {
 			return false;
 		}
 		if(obj instanceof String) {
-			return obj.equals(this.getValue());
+			return ((String) obj).equalsIgnoreCase(this.getValue());
 		}
 		return super.equals(obj);
 	}
 
 	public static AssociationTypes create(String value) {
 		if(ASSOCIATION.equals(value)) {
+			return ASSOCIATION;
+		}
+		if("association".equalsIgnoreCase(value)) {
 			return ASSOCIATION;
 		}
 		if(EDGE.equals(value)) {

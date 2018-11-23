@@ -232,6 +232,9 @@ public class Clazz extends GraphEntity {
 	public Association createBidirectional(Clazz tgtClass, String tgtRoleName, int tgtCardinality, String srcRoleName,
 			int srcCardinality) {
 		// Target
+		if(tgtCardinality<1 || srcCardinality < 1) {
+			return null;
+		}
 		Association assocTarget = new Association(tgtClass).with(tgtCardinality).with(tgtRoleName);
 
 		// Source
@@ -248,6 +251,66 @@ public class Clazz extends GraphEntity {
 		createBidirectional(tgtClass, tgtRoleName, tgtCardinality, srcRoleName, srcCardinality);
 		return this;
 	}
+	
+	/**
+	 * @param tgtClass The Target Class
+	 * @param cardinality The Cardinality default is [1,1], May Be [[1,1],[1,42],[42,1],[42,42],[1,0], [42,0]]
+	 * @return ThisComponent
+	 */
+	public Clazz withAssoc(Clazz tgtClass, int... cardinality) {
+		if(tgtClass == null || tgtClass.getName() == null) {
+			return this;
+		}
+		int tgtCardinality = 1;
+		int srcCardinality = 1;
+		if(cardinality != null && cardinality.length>0) {
+			if(cardinality[0]>0) {
+				tgtCardinality = cardinality[0]; 
+			}
+			if(cardinality.length > 1 && cardinality[1]>=0) {
+				srcCardinality = cardinality[1];
+			}
+		}
+		String srcRoleName = null, tgtRoleName = tgtClass.getName();
+		
+		// Now Check dupplicate Naming
+		for(Association assoc : getAssociations()) {
+			if(tgtRoleName.equals(assoc.getName())) {
+				return this;
+			}
+		}
+		if(srcCardinality > 0) {
+			srcRoleName = this.getName();
+			for(Association assoc : tgtClass.getAssociations()) {
+				if(srcRoleName.equals(assoc.getName())) {
+					return this;
+				}
+			}
+		}
+		// Set MANY Name
+		if(tgtCardinality>1) {
+			tgtRoleName = GraphUtil.getPlural(tgtRoleName);
+		}
+		if(srcCardinality>1) {
+			srcRoleName = GraphUtil.getPlural(srcRoleName);
+		}
+		
+		// So SourceRoleName and TargetRoleName is Set now create Asssoc
+		Association assocTarget = new Association(tgtClass).with(tgtCardinality).with(tgtRoleName);
+		// Source
+		Association assocSource = new Association(this).with(assocTarget);
+		
+		if(srcCardinality >0) {
+			assocSource.with(srcCardinality).with(srcRoleName);
+		} else {
+			assocTarget.with(AssociationTypes.UNDIRECTIONAL);
+			assocSource.with(AssociationTypes.EDGE);
+		}
+		tgtClass.with(assocTarget);
+		this.with(assocSource);
+		return this;
+	}
+	
 	/**
 	 * ********************************************************************
 	 * 
@@ -295,6 +358,9 @@ public class Clazz extends GraphEntity {
 	 */
 	public Association createUniDirectional(Clazz tgtClass, String tgtRoleName, int tgtCardinality) {
 		// Target
+		if(tgtCardinality<1) {
+			return null;
+		}
 		Association assocTarget = new Association(tgtClass).with(tgtCardinality).with(AssociationTypes.UNDIRECTIONAL)
 				.with(tgtRoleName);
 

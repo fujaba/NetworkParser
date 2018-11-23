@@ -5,14 +5,7 @@ import static de.uniks.networkparser.graph.Association.ONE;
 
 import org.junit.Test;
 
-import de.uniks.ludo.model.Field;
-import de.uniks.ludo.model.Home;
-import de.uniks.ludo.model.Start;
-import de.uniks.ludo.model.util.HomeSet;
-import de.uniks.ludo.model.util.PlayerSet;
-import de.uniks.ludo.model.util.StartSet;
 import de.uniks.networkparser.ext.ClassModel;
-import de.uniks.networkparser.ext.PatternCondition;
 import de.uniks.networkparser.ext.io.FileBuffer;
 import de.uniks.networkparser.ext.story.Cucumber;
 import de.uniks.networkparser.graph.Clazz;

@@ -375,4 +375,13 @@ public class ModelTest implements ObjectCondition {
 		
 //		model.generate("src/test/java");
 	}
+	
+	@Test
+	public void testSimpleGen() {
+		ClassModel model = new ClassModel("me.uniks");
+		Clazz uni = model.createClazz("Uni");
+		Clazz student = model.createClazz("Student");
+		uni.withAssoc(student, 42);
+		model.generate("src/test/java");
+	}
 }
