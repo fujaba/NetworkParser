@@ -8,7 +8,9 @@ import java.util.ListIterator;
 import de.uniks.networkparser.interfaces.BaseItem;
 
 public class SpeedList<V> extends AbstractArray<V> implements List<V>, Iterable<V> {
-
+	public SpeedList() {
+		withFlag(SimpleList.ALLOWDUPLICATE);
+	}
 	@Override
 	public BaseItem getNewList(boolean keyValue) {
 		return new SpeedList<V>();
@@ -20,12 +22,28 @@ public class SpeedList<V> extends AbstractArray<V> implements List<V>, Iterable<
 
 	@Override
 	public boolean add(V e) {
-		return super.add(e);
+		return this.add((Object) e);
 	}
 
 	@Override
 	public boolean remove(Object o) {
 		return super.removeByObject(o) >= 0;
+	}
+	
+	@Override
+	public boolean add(Object... values) {
+		if (values == null || values.length < 1) {
+			return false;
+		}
+		int newSize = size + values.length;
+		grow(newSize);
+		for (Object value : values) {
+			if (value == null) {
+				continue;
+			}
+			this.addKey(this.size, value, newSize);
+		}
+		return size>newSize-values.length;
 	}
 
 	@Override
@@ -34,9 +52,11 @@ public class SpeedList<V> extends AbstractArray<V> implements List<V>, Iterable<
 			return false;
 		}
 		boolean modified = false;
-		for (V e : c)
-			if (add(e))
+		for (V e : c) {
+			if (add(e)) {
 				modified = true;
+			}
+		}
 		return modified;
 	}
 
