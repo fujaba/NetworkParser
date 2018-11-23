@@ -1,5 +1,6 @@
 package de.uniks.networkparser.test;
 
+import java.util.Iterator;
 import java.util.concurrent.TimeUnit;
 
 import org.openjdk.jmh.annotations.Benchmark;
@@ -56,6 +57,19 @@ public class CollectionTest_Small extends TestCase {
 		for(int i=0;i<10;i++) {
 			collection.remove(count);
 			count +=itemTen;
+		}
+	}
+	
+	/*
+	 * This is what you do with JMH.
+	 */
+	@Benchmark
+	@Warmup(iterations = 5, time = 1)
+	@Measurement(iterations = 5, time = 1)
+	@BenchmarkMode(Mode.AverageTime)
+	public void Iterator() {
+		for(Iterator<Integer> iterator = collection.iterator();iterator.hasNext();) {
+			iterator.next();
 		}
 	}
 }

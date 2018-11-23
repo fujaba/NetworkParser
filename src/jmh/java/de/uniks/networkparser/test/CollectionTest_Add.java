@@ -44,7 +44,7 @@ public class CollectionTest_Add extends TestCase {
 	@Warmup(iterations = 5, time = 1)
 	@Measurement(iterations = 5, time = 1)
 	@BenchmarkMode(Mode.AverageTime)
-	@OutputTimeUnit(TimeUnit.SECONDS)
+	@OutputTimeUnit(TimeUnit.MILLISECONDS)
 	@Parameters()
 	public void AddBig() {
 		for(int i=0;i<SIZE_BIG;i++) {
