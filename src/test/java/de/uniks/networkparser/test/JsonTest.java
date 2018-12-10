@@ -933,7 +933,6 @@ public class JsonTest {
 		person.setBalance(42);
 		map.getMapListener().resetNotification();
 
-//		System.out.println(updateAccumulate.getChange());
 		Assert.assertEquals("{\"class\":\"de.uniks.networkparser.test.model.Person\",\"id\":\"P1\",\"upd\":{\"name\":\"Albert\",\"balance\":42},\"rem\":{\"balance\":0}}", updateAccumulate.getChange().toString());
 	}
 	

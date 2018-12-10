@@ -174,7 +174,6 @@ public class JsonModellTest implements ObjectCondition {
 		map.with(new PersonCreator());
 		map.with(new GroupAccountCreator());
 		String jsonArray = map.toJsonArray(account.getPersons(), Filter.regard(InstanceOf.create(Person.class, Person.PROPERTY_PARENT))).toString(2);
-//		System.out.println(jsonArray);
 		Assert.assertEquals(229, jsonArray.length());
 		Assert.assertEquals("[\r\n"+
 				"  {\r\n"+
@@ -346,7 +345,6 @@ public class JsonModellTest implements ObjectCondition {
 			@Override
 			public boolean update(Object value) {
 				Assert.assertEquals(output[i++], value.toString());
-//				System.out.println(value);
 				return false;
 			}
 		});

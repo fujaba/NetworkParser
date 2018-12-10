@@ -20,10 +20,6 @@ public class JavaDocGenTest {
 			System.out.println(item);
 		}
 		Assert.assertEquals(0, errors.size());
-//		System.out.println("Time: " +(System.currentTimeMillis()- time));
-
-
-
 //		try{
 //			time = System.currentTimeMillis();
 //			ProcessBuilder pb = new ProcessBuilder("javadoc","-notree", "-noindex", "-nonavbar", "-quiet", "-subpackages", "de.uniks.networkparser", "-sourcepath", "src/main/java", "-d", "build/testJavadoc");

@@ -167,7 +167,6 @@ public class SampleController {
 						blub.setValue("value",
 								Integer.valueOf("" + blub.getValue("value"))
 										+ 1);
-						System.out.println("Blub: " + blub.getValue());
 						return false;
 					}
 				});

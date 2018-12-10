@@ -66,7 +66,7 @@ public class SimpleArrayListTest {
 	@Test
 	public void testEMPTYLIST() {
 		SpeedList<Integer> list = new SpeedList<Integer>();
-		System.out.println(list.toString());
+		Assert.assertNotNull(list.toString());
 	}
 
 	@Test

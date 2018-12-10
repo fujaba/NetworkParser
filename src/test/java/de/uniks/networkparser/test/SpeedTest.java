@@ -12,7 +12,6 @@ public class SpeedTest {
 	@Test
 	public void testSpeed() {
 		for(int i=0;i<10;i++) {
-			System.out.println("STEP "+i);
 			testing(new SpeedList<Integer>());
 			testing(new SimpleList<Integer>());
 			
@@ -23,6 +22,5 @@ public class SpeedTest {
 		for(int i=0;i<SIZE_SMALL;i++) {
 			collection.add(collection.size());
 		}
-		System.out.println(System.currentTimeMillis() - start);
 	}
 }
