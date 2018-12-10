@@ -39,6 +39,10 @@ public class StringEntity implements BaseItem {
 		this.value = value;
 		return this;
 	}
+	
+	public String getValue() {
+		return value;
+	}
 
 	@Override
 	public String toString(Converter converter) {

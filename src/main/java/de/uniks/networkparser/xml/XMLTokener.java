@@ -25,6 +25,7 @@ THE SOFTWARE.
 */
 import java.util.ArrayList;
 
+import de.uniks.networkparser.EntityCreator;
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.MapEntity;
@@ -475,7 +476,7 @@ public class XMLTokener extends Tokener {
 		if (defaultCreator instanceof SendableEntityCreatorTag) {
 			creator = (SendableEntityCreatorTag) defaultCreator;
 		} else {
-			creator = new XMLEntityCreator();
+			creator = EntityCreator.createXML();
 		}
 		if (filter.size() < 1) {
 			addToStack(creator, tokener, tag, valueItem, map);

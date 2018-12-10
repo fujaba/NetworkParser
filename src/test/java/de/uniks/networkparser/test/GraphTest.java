@@ -12,6 +12,7 @@ import java.util.Date;
 import org.junit.Assert;
 import org.junit.Test;
 
+import de.uniks.networkparser.DateTimeEntity;
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.SimpleObject;
@@ -48,7 +49,6 @@ import de.uniks.networkparser.graph.Parameter;
 import de.uniks.networkparser.graph.Throws;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Condition;
-import de.uniks.networkparser.interfaces.DateCreator;
 import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.EntityList;
 import de.uniks.networkparser.json.JsonArray;
@@ -407,7 +407,7 @@ public class GraphTest {
 	public void testLudoStoryboard() {
 		IdMap jsonIdMap = new IdMap();
 		jsonIdMap.withTimeStamp(1);
-		jsonIdMap.with(new DateCreator()).with(new DiceCreator()).with(new FieldCreator()).with(new LudoCreator())
+		jsonIdMap.with(new DateTimeEntity()).with(new DiceCreator()).with(new FieldCreator()).with(new LudoCreator())
 				.with(new PawnCreator()).with(new PlayerCreator());
 
 		// create a simple ludo storyboard

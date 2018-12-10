@@ -10,6 +10,7 @@ import de.uniks.networkparser.Deep;
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.SimpleEvent;
+import de.uniks.networkparser.SimpleGrammar;
 import de.uniks.networkparser.UpdateCondition;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.converter.CodeCityConverter;
@@ -24,6 +25,7 @@ import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.DataType;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
+import de.uniks.networkparser.interfaces.SimpleEventCondition;
 import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
@@ -382,6 +384,26 @@ public class ModelTest implements ObjectCondition {
 		Clazz uni = model.createClazz("Uni");
 		Clazz student = model.createClazz("Student");
 		uni.withAssoc(student, 42);
-		model.generate("src/test/java");
+//		model.generate("src/test/java");
+	}
+	
+	@Test
+	public void testJsonIdMap(){
+		IdMap map= new IdMap();
+		map.withGrammar(new SimpleGrammar().withFlatFormat(true));
+		map.with(new PersonCreator());
+		map.withListener(new SimpleEventCondition() {
+			@Override
+			public boolean update(SimpleEvent event) {
+				System.out.println(event.getEntity());
+				return false;
+			}
+		});
+		Person alice = new Person();
+		alice.withName("Alice");
+		System.out.println(map.toJsonObject(alice));
+		
+		alice.setBalance(42);
+		
 	}
 }

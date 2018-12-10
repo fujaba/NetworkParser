@@ -1,7 +1,6 @@
 package de.uniks.networkparser.test.studyrightWithAssigments;
 
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertThat;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -57,9 +56,9 @@ public class PatternObjects {
 		
 		AssignmentSet assignmentsOLD = roomsOLD.getAssignments();
 		double sumOLD = assignmentsOLD.getPoints().sum();
-		assertThat(roomsOLD.size(), equalTo(3));
-		assertThat(assignmentsOLD.size(), equalTo(4));
-		assertThat(sumOLD, equalTo(89.0));
+		Assert.assertEquals(roomsOLD.size(), equalTo(3));
+		Assert.assertEquals(assignmentsOLD.size(), equalTo(4));
+		Assert.assertEquals(sumOLD, equalTo(89.0));
 
 		// some tables
 //		PatternCondition patternCondition = PatternCondition.createPatternPair(new studyRight.getRooms());
@@ -74,9 +73,9 @@ public class PatternObjects {
 
 		AssignmentSet assignments = rooms.getAssignments();
 		double sum = assignments.getPoints().sum();
-		assertThat(rooms.size(), equalTo(4));
-		assertThat(assignments.size(), equalTo(4));
-		assertThat(sum, equalTo(89.0));
+		Assert.assertEquals(rooms.size(), equalTo(4));
+		Assert.assertEquals(assignments.size(), equalTo(4));
+		Assert.assertEquals(sum, equalTo(89.0));
 //*/
 	}
 }

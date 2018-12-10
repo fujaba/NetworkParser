@@ -18,6 +18,7 @@ distributed on an "AS IS" basis, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, e
 See the Licence for the specific language governing permissions and limitations under the Licence.
 */
 import de.uniks.networkparser.DateTimeEntity;
+import de.uniks.networkparser.EntityCreator;
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.Pos;
@@ -28,7 +29,6 @@ import de.uniks.networkparser.interfaces.EntityList;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.xml.XMLEntity;
-import de.uniks.networkparser.xml.XMLEntityCreator;
 import de.uniks.networkparser.xml.XMLTokener;
 
 public class ExcelParser {
@@ -58,7 +58,7 @@ public class ExcelParser {
 		IdMap map = new IdMap();
 		map.add(new ExcelCell());
 		XMLTokener tokener = new XMLTokener().withMap(map);
-		tokener.withDefaultFactory(new XMLEntityCreator());
+		tokener.withDefaultFactory(EntityCreator.createXML());
 		CharacterBuffer buffer = null;
 		if (sheetFile instanceof CharacterBuffer) {
 			buffer = (CharacterBuffer) sheetFile;

@@ -190,7 +190,7 @@ public class MapEntity extends AbstractList<Object> {
 
 	public CharacterBuffer getPrefixProperties(SendableEntityCreator creator, Object entity, String className) {
 		CharacterBuffer result = new CharacterBuffer();
-		if (this.isSimpleFormat()) {
+		if (this.isSimpleFormat() || grammar.isFlatFormat()) {
 			return result;
 		}
 		boolean isComplex = filter.isSimpleFormat(entity, creator, className, map);

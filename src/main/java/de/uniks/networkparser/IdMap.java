@@ -42,7 +42,6 @@ import de.uniks.networkparser.graph.GraphTokener;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.ByteItem;
 import de.uniks.networkparser.interfaces.Converter;
-import de.uniks.networkparser.interfaces.DateCreator;
 import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.EntityList;
 import de.uniks.networkparser.interfaces.Grammar;
@@ -54,9 +53,7 @@ import de.uniks.networkparser.interfaces.SendableEntityCreatorIndexId;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorTag;
 import de.uniks.networkparser.json.JsonArray;
-import de.uniks.networkparser.json.JsonArrayCreator;
 import de.uniks.networkparser.json.JsonObject;
-import de.uniks.networkparser.json.JsonObjectCreator;
 import de.uniks.networkparser.json.JsonTokener;
 import de.uniks.networkparser.list.EntityComparator;
 import de.uniks.networkparser.list.ObjectMapEntry;
@@ -67,7 +64,6 @@ import de.uniks.networkparser.logic.MapFilter;
 import de.uniks.networkparser.xml.EMFTokener;
 import de.uniks.networkparser.xml.MapEntityStack;
 import de.uniks.networkparser.xml.XMLEntity;
-import de.uniks.networkparser.xml.XMLEntityCreator;
 import de.uniks.networkparser.xml.XMLTokener;
 
 /**
@@ -152,11 +148,11 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator>, Sendabl
 	 */
 	public IdMap() {
 		this.add(new TextItems());
-		this.add(new DateCreator());
-		this.add(new JsonObjectCreator());
-		this.add(new JsonArrayCreator());
+		this.add(new DateTimeEntity());
+		this.add(EntityCreator.createJson(false));
+		this.add(EntityCreator.createJson(true));
 		this.add(new ObjectMapEntry());
-		this.add(new XMLEntityCreator());
+		this.add(EntityCreator.createXML());
 	}
 
 	/**
@@ -375,7 +371,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator>, Sendabl
 	 * @param id           the unique ID of the Object
 	 * @param item         the object
 	 * @param notification notification IdMap Listener
-	 * @return the nebooelan for Add
+	 * @return the boolean for Add
 	 */
 	public boolean put(String id, Object item, boolean notification) {
 		if (this.keyValue.add(id, item) == false) {

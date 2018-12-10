@@ -53,6 +53,10 @@ public class MapEntityStack {
 		return this.stack.size();
 	}
 
+	public SimpleList<String> getTags() {
+		return tags;
+	}
+	
 	/**
 	 * Get the current Element
 	 *

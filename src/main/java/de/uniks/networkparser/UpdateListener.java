@@ -193,52 +193,67 @@ public class UpdateListener implements MapListener, ObjectCondition {
 		SendableEntityCreator creatorClass;
 		Object child = null;
 		Entity entity;
+		Grammar grammar = this.map.getGrammar();
 		if (oldValue != null) {
+			String key = property;
 			creatorClass = this.map.getCreatorClass(oldValue);
-			child = change.getValue(SendableEntityCreator.REMOVE);
-			if (child instanceof Entity) {
-				entity = (Entity) child;
+			if(grammar.isFlatFormat()) {
+				//NEW VERSION
+				key = IdMap.ENTITYSPLITTER+SendableEntityCreator.REMOVE+IdMap.ENTITYSPLITTER+property;
+				entity = change;
 			} else {
-				entity = factory.newInstance();
-				change.put(SendableEntityCreator.REMOVE, entity);
+				child = change.getValue(SendableEntityCreator.REMOVE);
+				if (child instanceof Entity) {
+					entity = (Entity) child;
+				} else {
+					entity = factory.newInstance();
+					change.put(SendableEntityCreator.REMOVE, entity);
+				}
 			}
-
+			
 			if (creatorClass != null) {
 				String oldId = this.map.getId(oldValue, true);
 				if (oldId != null) {
 					Entity childItem = factory.newInstance();
 					childItem.put(IdMap.ID, oldId);
-					entity.put(property, childItem);
+					entity.put(key, childItem);
 				}
 			} else {
-				entity.put(property, oldValue);
+				entity.put(key, oldValue);
 			}
 		}
 
 		if (newValue != null) {
+			String key = property;
 			creatorClass = this.map.getCreatorClass(newValue);
-			child = change.getValue(SendableEntityCreator.UPDATE);
-			if (child instanceof Entity) {
-				entity = (Entity) child;
+			if(grammar.isFlatFormat()) {
+				//NEW VERSION
+				key = IdMap.ENTITYSPLITTER+SendableEntityCreator.UPDATE+IdMap.ENTITYSPLITTER+property;
+				entity = change;
 			} else {
-				entity = factory.newInstance();
-				change.put(SendableEntityCreator.UPDATE, entity);
+				child = change.getValue(SendableEntityCreator.UPDATE);
+				if (child instanceof Entity) {
+					entity = (Entity) child;
+				} else {
+					entity = factory.newInstance();
+					change.put(SendableEntityCreator.UPDATE, entity);
+				}
 			}
 
 			if (creatorClass != null) {
-				String key = this.map.getKey(newValue);
-				if (key != null) {
+				String keys = this.map.getKey(newValue);
+				if (keys != null) {
 					Entity item = factory.newInstance();
 					item.put(IdMap.CLASS, newValue.getClass().getName());
-					item.put(IdMap.ID, key);
-					entity.put(property, item);
+					item.put(IdMap.ID, keys);
+					entity.put(key, item);
 				} else {
 					Entity item = (Entity) this.map.encode(newValue, this.factory, this.updateFilter);
-					entity.put(property, item);
+					entity.put(key, item);
 				}
 			} else {
 				// plain attribute
-				entity.put(property, newValue);
+				entity.put(key, newValue);
 			}
 		}
 		return true;

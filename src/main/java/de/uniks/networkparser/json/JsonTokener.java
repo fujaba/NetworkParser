@@ -27,6 +27,7 @@ THE SOFTWARE.
 import java.util.Map;
 import java.util.Map.Entry;
 
+import de.uniks.networkparser.EntityCreator;
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
@@ -322,7 +323,7 @@ public class JsonTokener extends Tokener {
 			if (typeInfo instanceof SendableEntityCreatorWrapper) {
 				String[] properties = typeInfo.getProperties();
 				if (properties != null) {
-					JsonObjectCreator jsonCreator = new JsonObjectCreator();
+					EntityCreator jsonCreator = EntityCreator.createJson(true);
 					JsonObject valueMap = new JsonObject();
 					for (String property : properties) {
 						Object value = jsonObject.get(property);

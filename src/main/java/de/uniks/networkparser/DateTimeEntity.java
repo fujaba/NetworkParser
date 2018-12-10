@@ -1,5 +1,7 @@
 package de.uniks.networkparser;
 
+import java.util.Date;
+
 /*
 The MIT License
 
@@ -24,9 +26,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 import de.uniks.networkparser.buffer.CharacterBuffer;
+import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 
-public class DateTimeEntity {
+public class DateTimeEntity implements SendableEntityCreatorNoIndex {
 	public static final String W3CDTF_FORMAT = "yyyy-MM-dd'T'HH:mm:ssZ";
 	private boolean dirty;
 	private Long time;
@@ -599,5 +602,39 @@ public class DateTimeEntity {
 			return (year - schaltjahre) * DateTimeEntity.ONE_YEAR + (schaltjahre * DateTimeEntity.ONE_YEAR_LY);
 		}
 		return 0;
+	}
+	
+	/** The Constant VALUE. */
+	public static final String VALUE = "value";
+
+	/* return the Properties */
+	@Override
+	public String[] getProperties() {
+		return new String[] { VALUE };
+	}
+
+	/* Create new Instance of Date */
+	@Override
+	public Object getSendableInstance(boolean reference) {
+		return new Date();
+	}
+
+	/* Getter for java.util.Date */
+	@Override
+	public Object getValue(Object entity, String attribute) {
+		if (VALUE.equals(attribute)) {
+			return Long.valueOf(((Date) entity).getTime());
+		}
+		return null;
+	}
+
+	/* Setter for java.util.Date */
+	@Override
+	public boolean setValue(Object entity, String attribute, Object value, String typ) {
+		if (VALUE.equals(attribute)) {
+			((Date) entity).setTime((Long) value);
+			return true;
+		}
+		return false;
 	}
 }

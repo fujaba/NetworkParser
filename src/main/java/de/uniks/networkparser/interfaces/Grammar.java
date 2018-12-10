@@ -61,6 +61,8 @@ public interface Grammar {
 	public String getValue(Entity item, String property);
 
 	public boolean hasValue(Entity item, String property);
+	
+	public boolean isFlatFormat();
 
 	/**
 	 * Get a new Instance of Element from the Creator

@@ -26,15 +26,27 @@ THE SOFTWARE.
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.Grammar;
+import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.json.JsonTokener;
 import de.uniks.networkparser.list.SimpleList;
 
 public class SimpleGrammar implements Grammar {
+	private boolean flatFormat=false;
+	private ObjectCondition condition;
 	private SimpleList<String> basicProperties = new SimpleList<String>().with(IdMap.ID, IdMap.CLASS, IdMap.SESSION,
 			IdMap.TIMESTAMP);
 
+	public SimpleGrammar withFlatFormat(boolean value) {
+		this.flatFormat = value;
+		return this;
+	}
+	
+	public boolean isFlatFormat() {
+		return flatFormat;
+	}
+	
 	@Override
 	public BaseItem getProperties(Entity item, MapEntity map, boolean isId) {
 		if (isId) {
@@ -55,6 +67,13 @@ public class SimpleGrammar implements Grammar {
 
 	@Override
 	public String getId(Object obj, IdMap map) {
+		if(condition != null) {
+			// PLeas set Type for new Id
+			SimpleEvent evt=new SimpleEvent(map, "id", null, obj);
+			if(condition.update(evt)) {
+				return evt.getType();
+			}
+		}
 		return null;
 	}
 
@@ -62,6 +81,37 @@ public class SimpleGrammar implements Grammar {
 	public Entity writeBasicValue(Entity entity, String className, String id, String type, IdMap map) {
 		if (entity == null || map == null) {
 			return null;
+		}
+		if(this.flatFormat) {
+			if (type != null && SendableEntityCreator.UPDATE.equalsIgnoreCase(type) == false) {
+				entity.put("."+IdMap.TYPE, type);
+			}
+			if (basicProperties.contains(IdMap.SESSION)) {
+				String session = map.getSession();
+				if (session != null) {
+					entity.put("."+IdMap.SESSION, session);
+				}
+			}
+			if (basicProperties.contains(IdMap.CLASS)) {
+				entity.put("."+IdMap.CLASS, className);
+			}
+			if (id != null) {
+				if (basicProperties.contains(IdMap.ID)) {
+					entity.put("."+IdMap.ID, id);
+				}
+				if (basicProperties.contains(IdMap.TIMESTAMP)) {
+					if (map.getTimeStamp() == 0) {
+						String ts = null;
+						if (id.length() > 0) {
+							ts = id.substring(1);
+						}
+						if (EntityUtil.isNumeric(ts)) {
+							entity.put("."+IdMap.TIMESTAMP, ts);
+						}
+					}
+				}
+			}
+			return entity;
 		}
 		if (type != null && SendableEntityCreator.UPDATE.equalsIgnoreCase(type) == false) {
 			entity.put(IdMap.TYPE, type);

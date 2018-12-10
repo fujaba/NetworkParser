@@ -81,6 +81,8 @@ public class EMFTokener extends Tokener {
 	public static final String XMI_ID = "xmi:id";
 	public static final String NAME = "name";
 	public static final String VALUE = "value";
+	public SimpleKeyValueList<Object, String> path=new SimpleKeyValueList<Object, String>();
+	
 
 	/**
 	 * Skip the Current Entity to &gt;.
@@ -119,18 +121,21 @@ public class EMFTokener extends Tokener {
 		return "";
 	}
 
-	public XMLEntity encode(Object entity, MapEntity map) {
+	public BaseItem encode(Object entity, MapEntity map) {
 		if (entity == null || map == null) {
 			return null;
 		}
 		if (entity instanceof GraphList) {
 			return encodeClassModel((GraphList) entity, map);
 		}
+		
 		XMLEntity result = new XMLEntity();
-
 		String typetag = entity.getClass().getName().replaceAll("\\.", ":");
 		result.withType(typetag);
-
+		
+		path.add(entity, "/"+typetag);
+		
+		// ROOT
 		encodeChildren(entity, result, map);
 
 		return result;
@@ -192,39 +197,51 @@ public class EMFTokener extends Tokener {
 		if (creatorClass == null) {
 			return;
 		}
-
+		String rootPath = path.get(entity);
 		for (String propertyName : creatorClass.getProperties()) {
 			Object propertyValue = creatorClass.getValue(entity, propertyName);
-
 			if (EntityUtil.isPrimitiveType(EntityUtil.shortClassName(propertyValue.getClass().getName()))) {
 				parent.put(propertyName, propertyValue);
-			} else if (propertyValue instanceof Collection<?>) {
+				continue;
+			}
+			// Komplex
+			if (propertyValue instanceof Collection<?>) {
+				int count=0;
+				CharacterBuffer referenceChild = new CharacterBuffer(); 
 				for (Object childValue : (Collection<?>) propertyValue) {
+					if(path.contains(childValue)) {
+						// Reference
+						if(referenceChild.size()>0) {
+							referenceChild.add(' ');
+						}
+						referenceChild.add(path.get(childValue));
+						continue;
+					}
 					XMLEntity child = new XMLEntity();
-
 					parent.withChild(child);
-
 					child.withType(propertyName);
-
+					
 					String typetag = childValue.getClass().getName().replaceAll("\\.", ":");
-
 					child.put(XSI_TYPE, typetag);
-
+					path.put(childValue, rootPath+"/"+propertyName+"."+count);
 					encodeChildren(childValue, child, map);
 				}
-			} else {
-				XMLEntity child = new XMLEntity();
-
-				parent.withChild(child);
-
-				child.withType(propertyName);
-
-				String typetag = propertyValue.getClass().getName().replaceAll("\\.", ":");
-
-				child.put(XSI_TYPE, typetag);
-
-				encodeChildren(propertyValue, child, map);
+				if(referenceChild != null && referenceChild.size()>0) {
+					parent.add(propertyName, referenceChild.toString());
+				}
+				continue;
 			}
+			if(path.contains(propertyValue)) {
+				parent.add(propertyName, path.get(propertyValue));
+				continue;
+			}
+			XMLEntity child = new XMLEntity();
+			parent.withChild(child);
+			child.withType(propertyName);
+			String typetag = propertyValue.getClass().getName().replaceAll("\\.", ":");
+			child.put(XSI_TYPE, typetag);
+			path.put(propertyValue, rootPath+"/"+propertyName);
+			encodeChildren(propertyValue, child, map);
 		}
 	}
 
