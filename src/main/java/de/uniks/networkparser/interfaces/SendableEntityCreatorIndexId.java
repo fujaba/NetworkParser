@@ -24,6 +24,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-/** Creator for Create ID in Creator */
+/** 
+ * Creator for Create ID in Creator 
+ * 
+ * @author Stefan Lindel
+ */
 public interface SendableEntityCreatorIndexId extends SendableEntityCreator {
 }
