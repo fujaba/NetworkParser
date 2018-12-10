@@ -1,6 +1,7 @@
 package de.uniks.networkparser;
 
 import de.uniks.networkparser.interfaces.BaseItem;
+import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.EntityList;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 /*
@@ -92,6 +93,9 @@ public class EntityCreator implements SendableEntityCreator, SendableEntityCreat
 			if (XMLEntity.PROPERTY_VALUE.equalsIgnoreCase(attribute)) {
 				return item.getValue();
 			}
+		}
+		if(entity instanceof Entity) {
+			return ((Entity) entity).getValue(attribute);
 		}
 		return entity.toString();
 	}
