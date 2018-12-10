@@ -30,6 +30,7 @@ THE SOFTWARE.
 import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorTag;
 import de.uniks.networkparser.json.JsonArray;
+import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.xml.XMLEntity;
 import de.uniks.networkparser.xml.XMLTokener;
 
@@ -131,6 +132,14 @@ public class EntityCreator implements SendableEntityCreator, SendableEntityCreat
 			JsonArray item = (JsonArray) entity;
 			item.withValue((String) value);
 			return true;
+		}
+		if(entity instanceof JsonObject) {
+			JsonObject json = (JsonObject) entity;
+	        if (VALUE.equals(attribute)) {
+	        	json.withValue((String) value);
+	        } else {
+	            json.withKeyValue(attribute, value);
+	        }
 		}
 		return false;
 	}
