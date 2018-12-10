@@ -43,7 +43,7 @@ public class ReflectionTest {
 		tester.test("de.uniks.networkparser.test.model.TestClass", logger);
 //		System.out.println(""+System.currentTimeMillis()+" FINISH:"+Thread.activeCount());
 	}
-
+	
 	@Test
 	public void testSQLTOKENER() throws Exception {
 //		System.out.println(Thread.activeCount());

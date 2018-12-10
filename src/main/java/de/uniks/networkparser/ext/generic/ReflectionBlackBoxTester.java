@@ -320,7 +320,7 @@ public class ReflectionBlackBoxTester {
 					continue;
 				}
 			}
-			output(this, clazz.getName() + ":" + m.getName(), logger, NetworkParserLog.LOGLEVEL_ERROR, null);
+//			output(this, clazz.getName() + ":" + m.getName(), logger, NetworkParserLog.LOGLEVEL_ERROR, null);
 
 			Object[] call = null;
 			m.setAccessible(true);
@@ -331,8 +331,10 @@ public class ReflectionBlackBoxTester {
 			for(String type : tests) {
 				try {
 					call = getParameters(m, parameterTypes, type, this);
-					m.invoke(obj, call);
-					successCount++;
+					if(call != null) {
+						m.invoke(obj, call);
+						successCount++;
+					}
 				} catch (Exception e) {
 					saveException(e, clazz, m, call);
 				}
@@ -412,6 +414,14 @@ public class ReflectionBlackBoxTester {
 	}
 
 	private void saveException(Exception e, Class<?> clazz, Method m, Object[] call) {
+//		String namepackage=packageName;
+//		if(namepackage == null) {
+//			String name = clazz.getName();
+//			int pos = name.lastIndexOf(".");
+//			if(pos>0) {
+//				namepackage = name.substring(0, pos);
+//			}
+//		}
 		String line = getLine(packageName, e, clazz.getSimpleName());
 		if (line.length() < 1) {
 			line = clazz.getName() + ".java:1";
@@ -425,7 +435,15 @@ public class ReflectionBlackBoxTester {
 			shortName = line.substring(0, line.lastIndexOf(":") - 4) + m.getName() + "(" + split[split.length - 2] + "."
 					+ split[split.length - 1] + ")";
 		}
-		output(m, "at " + clazz.getName() + ": " + e.getCause() + " " + shortName + " : ", logger,
+		String causes = "";
+		if(e.getCause()!= null) {
+			causes = ": "+e.getCause();
+		}else if(e instanceof InvocationTargetException) {
+			causes = ": "+((InvocationTargetException)e).getTargetException().getCause();
+		}else if(e.getMessage() != null){
+			causes = ": "+e.getMessage();
+		}
+		output(m, "at " + clazz.getName() +  causes + " " + shortName + " : ", logger,
 				NetworkParserLog.LOGLEVEL_ERROR, e);
 		errorCount++;
 	}
@@ -628,8 +646,6 @@ public class ReflectionBlackBoxTester {
 			return "Albert";
 		} else if (equalsClass(clazz, Class.class)) {
 			return Object.class;
-		} else if (equalsClass(clazz, Object.class)) {
-			return "Albert";
 		} else if (equalsClass(clazz, Field.class, Method.class)) {
 			return null;
 		} else if (equalsClass(clazz, X509Certificate.class)) {
@@ -644,6 +660,8 @@ public class ReflectionBlackBoxTester {
 				dims[i] = i + 1;
 			}
 			return Array.newInstance(arrayClazz, dims);
+		} else if (equalsClass(clazz, Object.class)) {
+			return ReflectionLoader.newInstance(clazz);
 		} else {
 			try {
 				if (ReflectionLoader.STAGE == clazz) {

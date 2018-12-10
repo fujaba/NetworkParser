@@ -139,7 +139,7 @@ public class JavaBridge implements ObjectCondition {
 		if (isApplyingChangeMSG) {
 			return false;
 		}
-		if (event == null || event instanceof SimpleEvent) {
+		if (event == null || event instanceof SimpleEvent == false) {
 			return false;
 		}
 		SimpleEvent simpleEvent = (SimpleEvent) event;
@@ -268,8 +268,12 @@ public class JavaBridge implements ObjectCondition {
 		return true;
 	}
 
-	public void fireControlChange(Control control, String property, Object value) {
+	public boolean fireControlChange(Control control, String property, Object value) {
+		if(control == null) {
+			return false;
+		}
 		executeScript(BridgeCommand.load("{id:\"" + control.getId() + "\", " + property + ":\"" + value + "\"}"));
+		return true;
 	}
 
 	public boolean setApplyingChangeMSG(boolean value) {
