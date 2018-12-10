@@ -98,7 +98,7 @@ public class EntityCreator implements SendableEntityCreator, SendableEntityCreat
 	
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value, String type) {
-		if (SendableEntityCreator.REMOVE_YOU.equalsIgnoreCase(type) || entity == null || entity instanceof JsonArray == false) {
+		if (SendableEntityCreator.REMOVE_YOU.equalsIgnoreCase(type) || entity == null) {
 			return false;
 		}
 		if(entity instanceof XMLEntity) {
@@ -123,9 +123,12 @@ public class EntityCreator implements SendableEntityCreator, SendableEntityCreat
 			}
 			return true;
 		}
-		JsonArray item = (JsonArray) entity;
-		item.withValue((String) value);
-		return true;
+		if(entity instanceof JsonArray) {
+			JsonArray item = (JsonArray) entity;
+			item.withValue((String) value);
+			return true;
+		}
+		return false;
 	}
 	
 	@Override
