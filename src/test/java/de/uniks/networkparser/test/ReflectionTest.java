@@ -21,7 +21,7 @@ public class ReflectionTest {
 	public void testReflection() throws ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, IOException {
 		ReflectionBlackBoxTester tester = new ReflectionBlackBoxTester();
 		NetworkParserLog logger=new NetworkParserLog();
-//		logger.withFlag(NetworkParserLog.LOGLEVEL_ALL).withListener(output);
+		logger.withFlag(NetworkParserLog.LOGLEVEL_ALL).withListener(output);
 		tester.test("de.uniks.networkparser", logger);
 	}
 
@@ -30,8 +30,8 @@ public class ReflectionTest {
 //		System.out.println(Thread.activeCount());
 		ReflectionBlackBoxTester tester = new ReflectionBlackBoxTester();
 		NetworkParserLog logger=new NetworkParserLog();
-//				.withFlag(NetworkParserLog.LOGLEVEL_ALL);
-//		.withLogLevel(NetworkParserLog.LOGLEVEL_INFO);
+		
+		logger.withFlag(NetworkParserLog.LOGLEVEL_ALL).withListener(output);
 		tester.test("de.uniks.networkparser.bytes.qr.Version", logger);
 //		System.out.println(""+System.currentTimeMillis()+" FINISH:"+Thread.activeCount());
 	}
