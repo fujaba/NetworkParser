@@ -1114,20 +1114,20 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 			String root = new File(".").getAbsolutePath();
 
 			File file = new File(packageName);
-			visitPath(file, root, excludes);
+			visitPath(file, root, 0, 10, excludes);
 		}
 		return this;
 	}
 
-	public void visitPath(File file, String root, String... excludes) {
+	public void visitPath(File file, String root, int deep, int maxDeep, String... excludes) {
 		System.out.println(file);
-		if (file == null || root == null) {
+		if (file == null || root == null || deep>maxDeep) {
 			return;
 		}
 		boolean add = false;
 		for (File child : file.listFiles()) {
 			if (child.isDirectory()) {
-				visitPath(child, root, excludes);
+				visitPath(child, root, deep+1, maxDeep, excludes);
 				continue;
 			}
 			if (child.getName().toLowerCase().endsWith(".java")) {
