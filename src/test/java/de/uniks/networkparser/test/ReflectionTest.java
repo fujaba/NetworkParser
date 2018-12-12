@@ -21,7 +21,7 @@ public class ReflectionTest {
 	public void testReflection() throws ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, IOException {
 		ReflectionBlackBoxTester tester = new ReflectionBlackBoxTester();
 		NetworkParserLog logger=new NetworkParserLog();
-		logger.withFlag(NetworkParserLog.LOGLEVEL_ALL).withListener(output);
+//		logger.withFlag(NetworkParserLog.LOGLEVEL_ALL).withListener(output);
 		tester.test("de.uniks.networkparser", logger);
 	}
 

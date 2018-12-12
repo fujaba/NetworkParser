@@ -582,7 +582,7 @@ public class DateTimeEntity implements SendableEntityCreatorNoIndex {
 	 * @return the Value As Milliseconds
 	 */
 	public long getValueInMillisecond(String field) {
-		if(fields == null) {
+		if(fields == null || field == null) {
 			return 0;
 		}
 		long value = fields.get(field);

@@ -43,6 +43,7 @@ import de.uniks.networkparser.ext.ErrorHandler;
 import de.uniks.networkparser.ext.FileClassModel;
 import de.uniks.networkparser.ext.Gradle;
 import de.uniks.networkparser.ext.Os;
+import de.uniks.networkparser.ext.SimpleController;
 import de.uniks.networkparser.ext.petaf.ModelThread;
 import de.uniks.networkparser.ext.petaf.SimpleTimerTask;
 import de.uniks.networkparser.ext.story.Story;
@@ -143,10 +144,9 @@ public class ReflectionBlackBoxTester {
 		withIgnoreClazzes(StoryStepJUnit.class, "update");
 		withIgnoreClazzes(ModelThread.class);
 		
-		ignoreMethods.add(DEFAULTMETHODS,
-				new SimpleSet<String>().with("show*", "run*", "start*", "execute*", "consume", "subscribe", "main"));
+		ignoreMethods.add(DEFAULTMETHODS, new SimpleSet<String>().with("show*", "run*", "start*", "execute*", "consume", "subscribe", "main"));
 		// Add for new Threads
-//		withIgnoreClazzes(SimpleController.class, "create", "init");
+		withIgnoreClazzes(SimpleController.class, "create", "init");
 //		withIgnoreClazzes(SimpleController.class);
 		withIgnoreClazzes(JarValidator.class);
 	}
