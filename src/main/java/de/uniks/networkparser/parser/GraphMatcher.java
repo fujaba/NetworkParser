@@ -105,6 +105,9 @@ public class GraphMatcher extends GraphEntity {
 	}
 
 	public boolean matchClazzes() {
+		if(oldModel == null || newModel == null) {
+			return oldModel == newModel;
+		}
 		ClazzSet oldClazzes = oldModel.getClazzes();
 		ClazzSet newClazzes = newModel.getClazzes();
 
@@ -501,6 +504,9 @@ public class GraphMatcher extends GraphEntity {
 	}
 
 	private boolean matchMethods(Clazz oldClazz, Clazz newClazz) {
+		if(oldClazz == null || newClazz == null) {
+			return oldClazz == newClazz;
+		}
 		MethodSet oldMethods = oldClazz.getMethods();
 		MethodSet newMethods = newClazz.getMethods();
 
