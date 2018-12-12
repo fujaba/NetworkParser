@@ -371,10 +371,10 @@ public class StoryStepJUnit implements ObjectCondition {
 	}
 
 	public StoryStepJUnit withUseCase(Story story, GraphModel model) {
+		this.map = new IdMap();
+		this.model = model;
 		if(this.column != null) {
 			story.add(this);
-			this.map = new IdMap();
-			this.model = model;
 			// Check for ReCompile
 			if (this.model != null && this.model instanceof ClassModel) {
 				ModelGenerator generator = ((ClassModel) this.model).getGenerator();
