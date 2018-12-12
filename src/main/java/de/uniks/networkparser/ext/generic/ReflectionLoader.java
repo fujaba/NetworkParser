@@ -810,7 +810,10 @@ public class ReflectionLoader {
 				return method.invoke(item, methodArgumentsValues);
 			}
 		} catch (Exception e) {
-			if (logger != null && notify) {
+			if(notify == false) {
+				return null;
+			}
+			if (logger != null) {
 				errorCount++;
 				e.printStackTrace(logger);
 			} else if (notifyObject instanceof ObjectCondition) {
@@ -820,7 +823,7 @@ public class ReflectionLoader {
 				errorCount++;
 				ErrorHandler handler = (ErrorHandler) notifyObject;
 				handler.saveException(e);
-			} else if (notify && Os.isEclipseAndNoReflection()) {
+			} else if (Os.isEclipseAndNoReflection()) {
 				errorCount++;
 				System.err.println("ErrorCount: " + errorCount + " (" + method + ")");
 				e.printStackTrace();

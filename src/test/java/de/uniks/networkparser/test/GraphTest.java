@@ -678,7 +678,8 @@ public class GraphTest {
 
 		uni.withBidirectional(person, "has", Association.MANY, "studis", Association.ONE);
 		String result = htmlEntity.withGraph(model).toString(2);
-		showDebugInfos( result, 934, null);
+		Assert.assertNotNull(result);
+//		showDebugInfos( result, 934, null);
 	}
 
 	@Test
