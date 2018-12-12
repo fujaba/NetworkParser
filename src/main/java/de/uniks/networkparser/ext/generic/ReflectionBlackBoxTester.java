@@ -189,11 +189,15 @@ public class ReflectionBlackBoxTester {
 
 	public static final boolean isTester() {
 		String property = System.getProperty("Tester");
-		return property != null && "true".equalsIgnoreCase(property);
+		return property != null;
+//		&& "true".equalsIgnoreCase(property);
 	}
 
 	public static final boolean setTester() {
-		System.setProperty("Tester", "true");
+		String property = System.getProperty("Tester");
+		if(property == null || property.length() < 1) { 
+			System.setProperty("Tester", "true");
+		}
 		return true;
 	}
 	
