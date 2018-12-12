@@ -127,6 +127,9 @@ public class StoryStepSourceCode implements ObjectCondition {
 	}
 
 	private CharacterBuffer analyseLine(CharacterBuffer line) {
+		if(line == null) {
+			return null;
+		}
 		line = line.rtrim();
 		int pos = line.indexOf("//");
 		if (pos >= 0) {
@@ -153,12 +156,18 @@ public class StoryStepSourceCode implements ObjectCondition {
 		} else if (endLine > 0) {
 			return (linePos > this.endLine);
 		}
+		if(fileBuffer == null) {
+			return true;
+		}
 		return fileBuffer.isEnd();
 	}
 
-	public void readFile() {
+	public boolean readFile() {
 		FileBuffer fileBuffer = new FileBuffer();
 		fileBuffer.withFile(contentFile);
+		if(fileBuffer.exists() == false) {
+			return false;
+		}
 		CharacterBuffer indexText = new CharacterBuffer();
 
 		CharacterBuffer line = new CharacterBuffer();
@@ -221,6 +230,7 @@ public class StoryStepSourceCode implements ObjectCondition {
 		}
 		fileBuffer.close();
 		this.body = indexText;
+		return true;
 	}
 
 	String formatString(CharacterBuffer buffer) {
@@ -388,9 +398,11 @@ public class StoryStepSourceCode implements ObjectCondition {
 
 	public StoryStepSourceCode withMethodSignature(String value) {
 		this.methodSignature = value;
-		int pos = this.methodSignature.indexOf("(");
-		if (pos > 0) {
-			this.methodName = this.methodSignature.substring(0, pos);
+		if(value != null) {
+			int pos = this.methodSignature.indexOf("(");
+			if (pos > 0) {
+				this.methodName = this.methodSignature.substring(0, pos);
+			}
 		}
 		return this;
 	}

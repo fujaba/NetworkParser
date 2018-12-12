@@ -36,6 +36,17 @@ public class ReflectionTest {
 		tester.test("de.uniks.networkparser.bytes.qr.Version", logger);
 //		System.out.println(""+System.currentTimeMillis()+" FINISH:"+Thread.activeCount());
 	}
+	
+	@Test
+	public void testReflectionStoryStepSourceCode() throws Exception {
+//		System.out.println(Thread.activeCount());
+		ReflectionBlackBoxTester tester = new ReflectionBlackBoxTester();
+		NetworkParserLog logger=new NetworkParserLog();
+		logger.withFlag(NetworkParserLog.LOGLEVEL_ALL).withListener(output);
+		tester.test("de.uniks.networkparser.ext.story.StoryStepSourceCode", logger);
+//		System.out.println(""+System.currentTimeMillis()+" FINISH:"+Thread.activeCount());
+	}
+	
 	@Test
 	public void testDataType() throws Exception {
 //		System.out.println(Thread.activeCount());
