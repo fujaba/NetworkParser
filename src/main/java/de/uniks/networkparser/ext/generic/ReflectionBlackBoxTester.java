@@ -144,7 +144,7 @@ public class ReflectionBlackBoxTester {
 		withIgnoreClazzes(ModelThread.class);
 		
 		ignoreMethods.add(DEFAULTMETHODS,
-				new SimpleSet<String>().with("show*", "run", "start*", "execute*", "consume", "subscribe", "main"));
+				new SimpleSet<String>().with("show*", "run*", "start*", "execute*", "consume", "subscribe", "main"));
 		// Add for new Threads
 //		withIgnoreClazzes(SimpleController.class, "create", "init");
 //		withIgnoreClazzes(SimpleController.class);
