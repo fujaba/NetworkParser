@@ -10,7 +10,7 @@ build_job:
   stage: build
   script:
 #   - ./gradlew Test jacocoTestReport coveralls --stacktrace
-    - ./gradlew Test --stacktrace
+    - ./gradlew Test --stacktrace -PTester=gitlab
 
 #cleanup_build_job:
 #  stage: cleanup_build

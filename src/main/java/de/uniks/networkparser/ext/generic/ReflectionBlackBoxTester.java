@@ -760,7 +760,7 @@ public class ReflectionBlackBoxTester {
 				return (double) 1000;
 			}
 		} else if (equalsClass(clazz, String.class, CharSequence.class)) {
-			return "Minions ipsum potatoooo hahaha poopayee tatata bala tu hahaha wiiiii butt po kass para tú. Aaaaaah poulet tikka masala chasy tulaliloo pepete.";
+			return "Minions ipsum potatoooo hahaha poopayee tatata bala tu hahaha wiiiii butt po kass para tu. Aaaaaah poulet tikka masala chasy tulaliloo pepete.";
 		}
 		return null;
 	}
