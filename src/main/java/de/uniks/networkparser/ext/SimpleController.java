@@ -1120,7 +1120,6 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 	}
 
 	public void visitPath(File file, String root, int deep, int maxDeep, String... excludes) {
-		System.out.println(file);
 		if (file == null || root == null || deep>maxDeep) {
 			return;
 		}
