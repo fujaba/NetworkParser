@@ -166,6 +166,9 @@ public class DateTimeEntity implements SendableEntityCreatorNoIndex {
 			while (temp > 0) {
 				temp -= MONTH_LENGTH[month++] * ONE_DAY;
 			}
+			if(MONTH_LENGTH.length<month) {
+				return false;
+			}
 			day = (temp + MONTH_LENGTH[month - 1] * ONE_DAY) / ONE_DAY;
 			if (day == 0) {
 				temp += MONTH_LENGTH[--month] * ONE_DAY;
@@ -579,6 +582,9 @@ public class DateTimeEntity implements SendableEntityCreatorNoIndex {
 	 * @return the Value As Milliseconds
 	 */
 	public long getValueInMillisecond(String field) {
+		if(fields == null) {
+			return 0;
+		}
 		long value = fields.get(field);
 		if (field.equals(MILLISECOND) || field.equals(MILLISECONDS) || field.equals(MILLISECOND_OF_YEAR)
 				|| field.equals(MILLISECOND_OF_DAY) || field.equals(MILLISECONDSREAL)) {

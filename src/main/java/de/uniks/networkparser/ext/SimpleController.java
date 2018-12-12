@@ -123,7 +123,7 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 			}
 			return ReflectionLoader.calling(element, "createContent", false, this);
 		} catch (Exception e) {
-			errorHandler.saveException(e);
+//			errorHandler.saveException(e);
 		}
 		return null;
 	}
@@ -1120,12 +1120,15 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 	}
 
 	public void visitPath(File file, String root, int deep, int maxDeep, String... excludes) {
-		System.out.println(file);
 		if (file == null || root == null || deep>maxDeep) {
 			return;
 		}
 		boolean add = false;
-		for (File child : file.listFiles()) {
+		File[] listFiles = file.listFiles();
+		if(listFiles == null) {
+			return;
+		}
+		for (File child : listFiles) {
 			if (child.isDirectory()) {
 				visitPath(child, root, deep+1, maxDeep, excludes);
 				continue;
@@ -1189,11 +1192,16 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 		}
 	}
 
+	
+	public ModelListenerProperty withMap(String key, Object... modelMapping) {
+		ModelListenerProperty propertyPrototype = new ModelListenerProperty();
+		withMap(propertyPrototype, key, modelMapping);
+		return propertyPrototype;
+	}
 	/**
 	 * @param controller
 	 * @param key Key of GUI
-	 * 
-	 * @return ThisdComponent
+	 * @return ThisComponent
 	 */
 	public SimpleController withMap(SendableEntityCreator controller, String key, Object... modelMapping) {
 		if(controller == null || key == null) {

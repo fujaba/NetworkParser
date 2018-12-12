@@ -365,6 +365,9 @@ public class UpdateListener implements MapListener, ObjectCondition {
 	}
 
 	private Entity getElement(String path, Entity element, Entity parent) {
+		if(path == null) {
+			return null;
+		}
 		int pos = path.indexOf("/");
 		if (pos > 0) {
 			Object child = element.getValue(path.substring(0, pos));
@@ -478,7 +481,7 @@ public class UpdateListener implements MapListener, ObjectCondition {
 					return element;
 				}
 			}
-		} else {
+		} else if(creator != null) {
 			creator.setValue(element, key, newValue, typ);
 			if (this.map.notify(new SimpleEvent(typ, null, map, key, null, newValue).withModelValue(element))) {
 				return element;

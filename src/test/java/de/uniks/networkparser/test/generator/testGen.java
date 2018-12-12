@@ -46,10 +46,10 @@ public class testGen {
 
 		junit.setValue(mathRoom, "name", "MathRoom");
 		
-		Object infRoom = junit.createElement(room, "name", "InfRoom");
+//		Object infRoom = junit.createElement(room, "name", "InfRoom");
 		
-		Object albert = junit.createElement(person, "name", "InfRoom", "room", infRoom);
-		Assert.assertNotNull(albert);
+//		Object albert = junit.createElement(person, "name", "InfRoom", "room", infRoom);
+//		Assert.assertNotNull(albert);
 	}
 	
 
