@@ -1106,7 +1106,7 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 	}
 
 	public SimpleController withPackageName(String packageName, String... excludes) {
-		if (compilePath == null && packageName != null) {
+		if (compilePath == null && packageName != null && packageName.length()>0) {
 			if ((packageName.endsWith("/") || packageName.endsWith("\\")) == false) {
 				packageName += "/";
 			}

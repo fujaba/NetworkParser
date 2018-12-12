@@ -79,7 +79,7 @@ public class EMFJsonGrammar extends SimpleGrammar {
 				clazz = className.substring(0, pos);
 			}
 		}
-		if (clazz != null) {
+		if (clazz != null && entity != null) {
 			IdMap map = entity.getMap();
 			for (Iterator<SendableEntityCreator> i = map.iterator(); i.hasNext();) {
 				SendableEntityCreator creator = i.next();

@@ -201,9 +201,7 @@ def getWorkingBranch() {
 			branch = branch + " "+value
 		}
 	}
-	branch = branch.trim()
-	println "Git-Branch: " + branch
-	branch
+	branch.trim()
 }
 task compileJava18(type: JavaCompile) {
 	source = fileTree(dir: 'src', exclude: ['**/test/**'])

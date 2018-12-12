@@ -224,6 +224,9 @@ public class StoryStepSourceCode implements ObjectCondition {
 	}
 
 	String formatString(CharacterBuffer buffer) {
+		if(buffer == null) {
+			return "";
+		}
 		if (FORMAT_JAVA.equals(format)) {
 			String string = buffer.toString();
 			return string.replaceAll("<", "&lt;");

@@ -96,6 +96,9 @@ public class EMFTokener extends Tokener {
 	}
 
 	public String skipHeader(Buffer buffer) {
+		if(buffer == null) {
+			return "";
+		}
 		boolean skip = false;
 		CharacterBuffer tag;
 		do {
@@ -894,7 +897,7 @@ public class EMFTokener extends Tokener {
 		}
 		// return type
 		DataType returnType = method.getReturnType();
-		if (method.getReturnType().equals(DataType.VOID) == false) {
+		if (returnType  != null && returnType.equals(DataType.VOID) == false) {
 			XMLEntity returnChild = root.createChild("ownedParameter");
 			returnChild.withKeyValue(XMI_ID, method.getReturnType().toString());
 			returnChild.withKeyValue("direction", "return");
