@@ -50,6 +50,9 @@ public class TextEntity implements EntityList {
 	}
 
 	private String parseItem(EntityStringConverter converter) {
+		if(converter == null) {
+			return null;
+		}
 		CharacterBuffer sb = new CharacterBuffer().with(converter.getPrefixFirst());
 		sb.with(this.tag);
 		if (this.children != null) {

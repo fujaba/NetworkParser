@@ -455,8 +455,13 @@ public class ArtifactFile implements SendableEntityCreatorTag, BaseItem, Compara
 		if (o == null) {
 			return 1;
 		}
-		String[] version1 = getVersion().replace(".", "#").split("#");
-		String[] version2 = o.getVersion().replace(".", "#").split("#");
+		String v = getVersion();
+		String v2 = o.getVersion();
+		if(v==null || v2 == null) {
+			return 1;
+		}
+		String[] version1 = v.replace(".", "#").split("#");
+		String[] version2 = v2.replace(".", "#").split("#");
 		int compare;
 		for (int i = 0; i < version1.length; i++) {
 			if (i < version2.length) {

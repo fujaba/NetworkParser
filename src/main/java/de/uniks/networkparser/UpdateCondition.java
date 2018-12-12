@@ -126,7 +126,7 @@ public class UpdateCondition implements ObjectCondition {
 	public UpdateCondition withStart(String property, Object startClass) {
 		this.owner = startClass;
 		this.property = property;
-		if (startClass instanceof Class<?> == false) {
+		if (startClass instanceof Class<?> == false && map == null) {
 			this.creator = map.getCreatorClass(startClass);
 		}
 		return this;
@@ -140,7 +140,7 @@ public class UpdateCondition implements ObjectCondition {
 	public UpdateCondition withEnd(String property, Object endClass) {
 		this.endClass = endClass;
 		this.endProperty = property;
-		if (endClass instanceof Class<?> == false) {
+		if (endClass instanceof Class<?> == false && map == null) {
 			endCreator = map.getCreatorClass(endClass);
 		}
 		return this;
@@ -160,7 +160,7 @@ public class UpdateCondition implements ObjectCondition {
 			return false;
 		}
 		// MUST BE A SIMPLEEVENT
-		if (evt instanceof SimpleEvent == false) {
+		if (evt == null || evt instanceof SimpleEvent == false) {
 			return false;
 		}
 
@@ -175,8 +175,12 @@ public class UpdateCondition implements ObjectCondition {
 				}
 				return false;
 			}
-			IdMap map = (IdMap) event.getSource();
-			return map.getKey(event.getModelValue()) == null && map.getKey(event.getNewValue()) == null;
+			Object source = event.getSource();
+			if(source instanceof IdMap) {
+				IdMap map = (IdMap) source;
+				return map.getKey(event.getModelValue()) == null && map.getKey(event.getNewValue()) == null;
+			}
+			return false;
 		}
 		if (isTransaction()) {
 			if (startCondition != null && startCondition.update(evt) == false) {
@@ -236,6 +240,9 @@ public class UpdateCondition implements ObjectCondition {
 	}
 
 	public boolean changeItem(Object source, Object target, String property) {
+		if(map == null) {
+			return false;
+		}
 		SendableEntityCreator creator = map.getCreatorClass(source);
 		Object defaultItem = creator.getSendableInstance(true);
 		Object oldValue = creator.getValue(source, property);
