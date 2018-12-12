@@ -84,7 +84,9 @@ public class UpdateCondition implements ObjectCondition {
 
 	public static UpdateCondition createAcumulateCondition(IdMap map) {
 		UpdateCondition condition = new UpdateCondition();
-		condition.tokener = map.getMapListener().getTokener();
+		if(map != null) {
+			condition.tokener = map.getMapListener().getTokener();
+		}
 		condition.map = map;
 		return condition;
 	}
@@ -317,6 +319,9 @@ public class UpdateCondition implements ObjectCondition {
 
 	private void addChange(UpdateListener listener, Object source, SendableEntityCreator creator, String property,
 			Object oldValue, Object newValue) {
+		if(listener == null) {
+			return;
+		}
 		if (this.change == null) {
 			this.change = listener.change(property, source, creator, oldValue, newValue);
 		} else {

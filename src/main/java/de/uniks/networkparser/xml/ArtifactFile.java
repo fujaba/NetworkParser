@@ -492,6 +492,9 @@ public class ArtifactFile implements SendableEntityCreatorTag, BaseItem, Compara
 //	public static final ArtifactFile createContext(String version, String artifactId) {
 	public static final ArtifactFile createContext(String fileName, String groupId, String time) {
 		ArtifactFile artifactFile = new ArtifactFile();
+		if(fileName == null) {
+			return artifactFile;
+		}
 		int len;
 		artifactFile.fileName = fileName;
 		String defaultClassifier = "jar";

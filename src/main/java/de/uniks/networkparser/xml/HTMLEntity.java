@@ -400,8 +400,11 @@ public class HTMLEntity implements BaseItem {
 		if (GRAPH.equals(graphPath) == false && CLASSEDITOR.equals(graphPath) == false) {
 			graphPath = GRAPH;
 		}
-		String graph = value.toString(new GraphConverter());
-		return withGraph(graph, resource, graphPath);
+		if(value != null) {
+			String graph = value.toString(new GraphConverter());
+			return withGraph(graph, resource, graphPath);
+		}
+		return this;
 	}
 
 	public HTMLEntity withGraph(Entity value) {

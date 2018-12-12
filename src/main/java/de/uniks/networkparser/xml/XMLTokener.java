@@ -100,6 +100,9 @@ public class XMLTokener extends Tokener {
 	@Override
 	public boolean parseToEntity(Entity entity, Buffer buffer) {
 		skipHeader(buffer);
+		if(buffer == null) {
+			return false;
+		}
 		char c = buffer.getCurrentChar();
 		if (c != XMLEntity.START) {
 			c = buffer.nextClean(false);
