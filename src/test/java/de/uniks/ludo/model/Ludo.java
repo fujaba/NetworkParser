@@ -303,9 +303,30 @@ public class Ludo {
 		withWinner(value);
 		return value;
 	}
-   public void init(Player... p1)    {
-      
-    }
 
-
+	public void init(Player... players) {
+		this.setPlayers(players);
+		// Create the 4 tokens for each player and the home/target/start fields
+		Field firstLastField = null;
+		Field normalField = null;
+		for (Player p : this.getPlayers()) {
+			Field field = null;
+			for (int i = 1; i <= 4; i++) {
+				if (this.players.contains(p)) {
+					p.createHome().withGame(this).withMeeple(p.createMeeple());
+				}
+				field = p.createTarget().withGame(this).withPrev(field);
+			}
+//			field= this.createFieldsLastField().withTarget((TargetField) field).withPreviousField(normalField);
+//			field = p.createField().withTarget((Target) field).withPreviousField(normalField);
+			if (firstLastField == null) {
+				firstLastField = field;
+			}
+			normalField = p.createStart().withPrev(field);
+			for (int i = 1; i <= 8; i++) {
+				normalField = this.createField().withPrev(normalField);
+			}
+		}
+		firstLastField.withPrev(normalField);
+	}
 }

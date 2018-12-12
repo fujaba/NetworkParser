@@ -47,15 +47,15 @@ public interface ModelListenerInterface extends PropertyChangeListener {
 
 	public void executeCallBack();
 
-	public void bind(Object value);
+	public boolean bind(Object value);
 
 	public void unbind();
 
 	public boolean isBound();
 
-	public void bindBidirectional(Object value);
+	public boolean bindBidirectional(Object value);
 
-	public void unbindBidirectional(Object value);
+	public boolean unbindBidirectional(Object value);
 
 	public ModelListenerInterface withCallBack(Condition<SimpleEvent> listener);
 

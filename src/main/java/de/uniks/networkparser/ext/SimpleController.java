@@ -44,12 +44,14 @@ import java.util.ResourceBundle;
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.NetworkParserLog;
+import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.ext.generic.ReflectionLoader;
 import de.uniks.networkparser.ext.io.StringOutputStream;
 import de.uniks.networkparser.ext.io.StringPrintStream;
 import de.uniks.networkparser.ext.javafx.GUIEvent;
 import de.uniks.networkparser.ext.javafx.JavaAdapter;
+import de.uniks.networkparser.ext.javafx.ModelListenerProperty;
 import de.uniks.networkparser.ext.petaf.proxy.NodeProxyTCP;
 import de.uniks.networkparser.gui.JavaBridge;
 import de.uniks.networkparser.gui.JavaViewAdapter;
@@ -86,6 +88,8 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 	private Object[] runParams;
 	private String runAction;
 	private SimpleKeyValueList<Object, SendableEntityCreator> mapping;
+	private SimpleList<SendableEntityCreator> controllers;
+	private IdMap map;
 	private NetworkParserLog logger=new NetworkParserLog();
 
 	public SimpleController() {
@@ -910,13 +914,40 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 			for(int i=0;i<mapping.size();i++) {
 				Object key = mapping.getKeyByIndex(i);
 				SendableEntityCreator creator = mapping.getValueByIndex(i);
+				Object controller = null;
+				if(controllers == null) {
+					controllers = new SimpleList<SendableEntityCreator>();
+				}
 				if(key instanceof String) {
 					Object pane = ReflectionLoader.call(this.rootScene, "lookup", "#"+key);
 					if(pane != null) {
-						Object controller = creator.getSendableInstance(false);
-						creator.setValue(controller, "gui", pane, SendableEntityCreator.NEW);
+						if(controllers.contains(creator)) {
+							controller = creator.getSendableInstance(false);
+						}else {
+							controller = creator;
+						}
+						creator.setValue(controller, ModelListenerProperty.PROPERTY_GUI, pane, SendableEntityCreator.NEW);
+					}
+				} else if(key instanceof SimpleEvent) {
+					SimpleEvent event = (SimpleEvent) key;
+					Object pane = ReflectionLoader.call(this.rootScene, "lookup", "#"+event.getPropertyName());
+					if(pane != null) {
+						if(controllers.contains(creator)) {
+							controller = creator.getSendableInstance(false);
+						}else {
+							controller = creator;
+						}
+						if(map != null) {
+							SendableEntityCreator creatorClass = map.getCreatorClass(event.getSource());
+							creator.setValue(controller, ModelListenerProperty.PROPERTY_CREATOR, creatorClass, SendableEntityCreator.NEW);
+						}
+						creator.setValue(controller, ModelListenerProperty.PROPERTY_PROPERTY, event.getNewValue(), SendableEntityCreator.NEW);
+						creator.setValue(controller, ModelListenerProperty.PROPERTY_MODEL, event.getSource(), SendableEntityCreator.NEW);
+						// NOW SET BIDIRECTIONAL
+						creator.setValue(controller, ModelListenerProperty.PROPERTY_GUI, pane, SendableEntityCreator.NEW);
 					}
 				}
+				controllers.add(controller);
 			}
 		}
 		return this;
@@ -1156,12 +1187,40 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 		}
 	}
 
-	public SimpleController withMap(SendableEntityCreator controller, String key) {
+	/**
+	 * @param controller
+	 * @param key Key of GUI
+	 * 
+	 * @return ThisdComponent
+	 */
+	public SimpleController withMap(SendableEntityCreator controller, String key, Object... modelMapping) {
+		if(controller == null || key == null) {
+			return this;
+		}
 		if(mapping == null) {
 			mapping = new SimpleKeyValueList<Object, SendableEntityCreator>();
 		}
-		this.mapping.put(key, controller);
+		Object mapKey=key;
+		if(modelMapping != null && modelMapping.length>0) {
+			if(modelMapping[0] != null) {
+				String property = null;
+				if(modelMapping.length>1 && modelMapping[1] instanceof String) {
+					property =  (String) modelMapping[1];
+				}
+				SimpleEvent event = new SimpleEvent(modelMapping[0], key, null, property);
+				mapKey = event;
+			}
+		}
+		this.mapping.put(mapKey, controller);
 		return this;
-		
+	}
+	
+	public SimpleList<SendableEntityCreator> getControllers() {
+		return controllers;
+	}
+	
+	public SimpleController withMap(IdMap map) {
+		this.map = map;
+		return this;
 	}
 }

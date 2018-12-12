@@ -30,33 +30,44 @@ import java.util.Collection;
 
 import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.ext.generic.ReflectionLoader;
+import de.uniks.networkparser.graph.DataType;
 import de.uniks.networkparser.interfaces.Condition;
+import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.SendableEntity;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
+import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleSet;
 
-public class ModelListenerProperty implements ModelListenerInterface {
-	public enum PROPERTYTYPE {
-		STRING, COLOR, BOOLEAN, INTEGER, LONG, FLOAT, DOUBLE, OBJECT
-	};
+public class ModelListenerProperty implements ModelListenerInterface, SendableEntityCreator {
+	public static final String PROPERTY_MODEL = "model";
+	public static final String PROPERTY_PROPERTY = "property";
+	public static final String PROPERTY_GUI = "gui";
+	public static final String PROPERTY_CREATOR = "creator";
 
-	protected Object item;
+	protected Object model;
+	protected Object gui;
 	protected String property;
 	protected SendableEntityCreator creator;
+	private SimpleKeyValueList<Object, ObjectCondition> events;
 	private SimpleSet<Object> listeners = new SimpleSet<Object>();
 	private SimpleSet<Object> invalidationListeners = new SimpleSet<Object>();
 	protected Object observable = null;
 	protected Condition<SimpleEvent> callBack;
-	protected PROPERTYTYPE type;
+	protected DataType type;
+	private Object guiProperty;
+	private Object proxy;
 
 	public ModelListenerProperty() {
 	}
 
-	public ModelListenerProperty(SendableEntityCreator creator, Object item, String property, PROPERTYTYPE type) {
+	public ModelListenerProperty(SendableEntityCreator creator, Object item, String property, DataType type) {
 		this.creator = creator;
 		this.property = property;
-		this.item = item;
+		this.model = item;
 		this.type = type;
+		addPropertyChange(item);
+	}
+	public void addPropertyChange(Object item) {
 		if (item == null) {
 			return;
 		}
@@ -92,12 +103,12 @@ public class ModelListenerProperty implements ModelListenerInterface {
 	}
 
 	public Object getBean() {
-		return item;
+		return model;
 	}
 
 	public boolean setBean(Object value) {
-		if (value != this.item) {
-			this.item = value;
+		if (value != this.model) {
+			this.model = value;
 			return true;
 		}
 		return false;
@@ -133,20 +144,27 @@ public class ModelListenerProperty implements ModelListenerInterface {
 		}
 	}
 
-	public void bind(Object newObservable) {
+	public boolean bind(Object newObservable) {
 		if (newObservable == null) {
-			throw new NullPointerException("Cannot bind to null");
+//			throw new NullPointerException("Cannot bind to null");
+			return false;
 		}
+		this.guiProperty = newObservable;
 		if (!newObservable.equals(observable)) {
 			unbind();
 			observable = newObservable;
 			ReflectionLoader.call(observable, "addListener", ReflectionLoader.INVALIDATIONLISTENER, this);
 		}
+		return true;
 	}
 
-	public void bindBidirectional(Object other) {
-		ReflectionLoader.call("bindBidirectional", null, ReflectionLoader.PROPERTY, this, ReflectionLoader.PROPERTY,
-				other);
+	public boolean bindBidirectional(Object other) {
+		if(other == null) {
+			return false;
+		}
+		ReflectionLoader.call(other, "bindBidirectional", ReflectionLoader.PROPERTY, this.getProxy());
+		this.guiProperty = other;
+		return true;
 	}
 
 	public boolean isBound() {
@@ -157,20 +175,39 @@ public class ModelListenerProperty implements ModelListenerInterface {
 		if (observable != null) {
 			ReflectionLoader.call(observable, "removeListener", ReflectionLoader.OBSERVABLEVALUE, this);
 			observable = null;
+			this.gui = null;
+			this.guiProperty = null;
 		}
 	}
 
-	public void unbindBidirectional(Object other) {
-		ReflectionLoader.call("unbindBidirectional", null, ReflectionLoader.PROPERTY, this, ReflectionLoader.PROPERTY,
-				other);
+	public boolean unbindBidirectional(Object other) {
+		ReflectionLoader.call( other, "unbindBidirectional", ReflectionLoader.PROPERTY, this.getProxy());
+		this.gui = null;
+		this.guiProperty = null;
+		return true;
 	}
 
 	public Object getItemValue() {
-		Object value = creator.getValue(item, property);
+		if(creator == null) {
+			return null;
+		}
+		Object value = creator.getValue(model, property);
 		if (value instanceof Collection<?>) {
 			return ((Collection<?>) value).size();
 		}
 		return value;
+	}
+	
+	public Object getModell() {
+		return this.model;
+	}
+	
+	public Object getGui() {
+		return this.gui;
+	}
+	
+	public Object getGuiProperty() {
+		return this.guiProperty;
 	}
 
 	@Override
@@ -190,7 +227,7 @@ public class ModelListenerProperty implements ModelListenerInterface {
 
 	public void executeCallBack() {
 		if (callBack != null) {
-			SimpleEvent event = new SimpleEvent(this.item, this.property, null, getItemValue());
+			SimpleEvent event = new SimpleEvent(this.model, this.property, null, getItemValue());
 			if (callBack.update(event)) {
 				ReflectionLoader.call(observable, "set", String.class, "" + event.getModelValue());
 			}
@@ -208,45 +245,45 @@ public class ModelListenerProperty implements ModelListenerInterface {
 	public Object getValue() {
 		return getItemValue();
 	}
-
+	
 	public Object parseValue(Object value) {
-		if (this.type == PROPERTYTYPE.COLOR) {
+		if (this.type == DataType.COLOR) {
 			if (value != null && ReflectionLoader.COLOR.isAssignableFrom(value.getClass())) {
 				return value;
 			}
 			if (value instanceof String) {
-				return ReflectionLoader.call(PROPERTYTYPE.COLOR, "web", String.class, value);
+				return ReflectionLoader.call(DataType.COLOR, "web", String.class, value);
 			}
-			return ReflectionLoader.call(PROPERTYTYPE.COLOR, "web", String.class, "#FFFFFF");
+			return ReflectionLoader.call(DataType.COLOR, "web", String.class, "#FFFFFF");
 		}
-		if (this.type == PROPERTYTYPE.STRING) {
+		if (this.type == DataType.STRING) {
 			return "" + value;
 		}
-		if (this.type == PROPERTYTYPE.BOOLEAN) {
+		if (this.type == DataType.BOOLEAN) {
 			if (value instanceof Boolean) {
 				return value;
 			}
 			return Boolean.valueOf("" + value);
 		}
-		if (this.type == PROPERTYTYPE.INTEGER) {
+		if (this.type == DataType.INT) {
 			if (value instanceof Integer) {
 				return value;
 			}
 			return Integer.valueOf("" + value);
 		}
-		if (this.type == PROPERTYTYPE.LONG) {
+		if (this.type == DataType.LONG) {
 			if (value instanceof Long) {
 				return value;
 			}
 			return Long.valueOf("" + value);
 		}
-		if (this.type == PROPERTYTYPE.FLOAT) {
+		if (this.type == DataType.FLOAT) {
 			if (value instanceof Float) {
 				return value;
 			}
 			return Float.valueOf("" + value);
 		}
-		if (this.type == PROPERTYTYPE.DOUBLE) {
+		if (this.type == DataType.DOUBLE) {
 			if (value instanceof Double) {
 				return value;
 			}
@@ -259,14 +296,104 @@ public class ModelListenerProperty implements ModelListenerInterface {
 	}
 
 	public Object getProxy() {
-		return ReflectionLoader.createProxy(this,
-				new Class[] { ModelListenerInterface.class, ReflectionLoader.PROPERTY });
+		if(this.proxy == null) {
+			this.proxy =  ReflectionLoader.createProxy(this, new Class[] { ModelListenerInterface.class, ReflectionLoader.PROPERTY });
+		}
+		return this.proxy;
 	}
 
 	public void setValue(Object value) {
-//		if()
-		creator.setValue(item, property, value, SendableEntityCreator.NEW);
+		if(creator != null) {
+			creator.setValue(model, property, value, SendableEntityCreator.NEW);
+		}
 	}
+
+	@Override
+	public Object getSendableInstance(boolean prototyp) {
+		return new ModelListenerProperty();
+	}
+
+	@Override
+	public String[] getProperties() {
+		return new String[] {PROPERTY_MODEL, PROPERTY_CREATOR, PROPERTY_PROPERTY, PROPERTY_GUI};
+	}
+
+	@Override
+	public boolean setValue(Object entity, String attribute, Object value, String type) {
+		if(entity instanceof ModelListenerProperty == false) {
+			return false;
+		}
+		ModelListenerProperty property = (ModelListenerProperty) entity;
+		if(PROPERTY_MODEL.equalsIgnoreCase(attribute)) {
+			property.model = value;
+			property.addPropertyChange(value);
+			return true;
+		}
+		if(PROPERTY_PROPERTY.equalsIgnoreCase(attribute)) {
+			property.property = (String) value;
+			return true;
+		}
+		if(PROPERTY_CREATOR.equalsIgnoreCase(attribute)) {
+			property.creator = (SendableEntityCreator) value;
+			return true;
+		}
+		if(PROPERTY_GUI.equalsIgnoreCase(attribute)) {
+			Object guiProp= ModelListenerFactory.getProperty(value);
+			if(guiProp == null) {
+				return false;
+			}
+			property.gui = value;
+			property.bindBidirectional(guiProp);
+			if(this.events != null && value != null) {
+				for(int i=0;i<this.events.size();i++) {
+					Object eventType = this.events.getKeyByIndex(i);
+					ObjectCondition condition = this.events.getValueByIndex(i);
+					GUIEvent event = new GUIEvent();
+					event.withListener(condition);
+					
+					Object proxy = ReflectionLoader.createProxy(event, ReflectionLoader.EVENTHANDLER);
+					Class<?> eventTypeClass = ReflectionLoader.getClass("javafx.event.EventType");
+					ReflectionLoader.call(value, "addEventHandler", eventTypeClass, eventType, ReflectionLoader.EVENTHANDLER, proxy);
+				}
+			}
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean registerEvent(Object eventtype, ObjectCondition conditions) {
+		if(eventtype != null && conditions != null) {
+			if(this.events == null) {
+				this.events =new SimpleKeyValueList<Object, ObjectCondition>();
+			}
+			this.events.add(eventtype, conditions);
+			return true;
+		}
+		return false;
+	}
+	
+	@Override
+	public Object getValue(Object entity, String attribute) {
+		if(entity instanceof ModelListenerProperty == false || attribute == null) {
+			return null;
+		}
+		ModelListenerProperty prop = (ModelListenerProperty) entity;
+		if(PROPERTY_MODEL.equalsIgnoreCase(attribute)) {
+			return prop.getModell();
+		}
+		if(PROPERTY_PROPERTY.equalsIgnoreCase(attribute)) {
+			return prop.getProperties();
+		}
+		if(PROPERTY_CREATOR.equalsIgnoreCase(attribute)) {
+			return prop.creator;
+		}
+		if(PROPERTY_GUI.equalsIgnoreCase(attribute)) {
+			return prop.getGui();
+		}
+		return null;
+	}
+
+	
 
 //FIXME	@Override
 //	public void setValue(Object value) {

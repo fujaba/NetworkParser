@@ -3,7 +3,7 @@ package de.uniks.networkparser.ext.javafx;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.ext.generic.GenericCreator;
 import de.uniks.networkparser.ext.generic.ReflectionLoader;
-import de.uniks.networkparser.ext.javafx.ModelListenerProperty.PROPERTYTYPE;
+import de.uniks.networkparser.graph.DataType;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 /*
 NetworkParser
@@ -55,49 +55,74 @@ public class ModelListenerFactory {
 		// Check for Controls
 		if (ReflectionLoader.PROPERTY.isAssignableFrom(node.getClass())) {
 			if (ReflectionLoader.STRINGPROPERTY.isAssignableFrom(node.getClass())) {
-				return createProperty(PROPERTYTYPE.STRING, node, creator, item, field);
+				return createProperty(DataType.STRING, node, creator, item, field);
 			}
 			if (ReflectionLoader.BOOLEANPROPERTY.isAssignableFrom(node.getClass())) {
-				return createProperty(PROPERTYTYPE.BOOLEAN, node, creator, item, field);
+				return createProperty(DataType.BOOLEAN, node, creator, item, field);
 			}
 			if (ReflectionLoader.INTEGERPROPERTY.isAssignableFrom(node.getClass())) {
-				return createProperty(PROPERTYTYPE.INTEGER, node, creator, item, field);
+				return createProperty(DataType.INT, node, creator, item, field);
 			}
 			if (ReflectionLoader.DOUBLEPROPERTY.isAssignableFrom(node.getClass())) {
-				return createProperty(PROPERTYTYPE.DOUBLE, node, creator, item, field);
+				return createProperty(DataType.DOUBLE, node, creator, item, field);
 			}
-			return createProperty(PROPERTYTYPE.OBJECT, node, creator, item, field);
+			return createProperty(DataType.OBJECT, node, creator, item, field);
 		}
 		if (ReflectionLoader.COLORPICKER.isAssignableFrom(node.getClass())) {
 			property = ReflectionLoader.call(node, "valueProperty");
-			return createProperty(PROPERTYTYPE.COLOR, property, creator, item, field);
+			return createProperty(DataType.COLOR, property, creator, item, field);
 		}
 		if (ReflectionLoader.TEXTFIELD.isAssignableFrom(node.getClass())) {
 			property = ReflectionLoader.call(node, "textProperty");
-			return createProperty(PROPERTYTYPE.STRING, property, creator, item, field);
+			return createProperty(DataType.STRING, property, creator, item, field);
 		}
 		if (ReflectionLoader.COMBOBOX.isAssignableFrom(node.getClass())) {
 			property = ReflectionLoader.call(node, "valueProperty");
-			return createProperty(PROPERTYTYPE.STRING, property, creator, item, field);
+			return createProperty(DataType.STRING, property, creator, item, field);
 		}
 		if (ReflectionLoader.LABEL.isAssignableFrom(node.getClass())) {
 			property = ReflectionLoader.call(node, "textProperty");
-			return createProperty(PROPERTYTYPE.STRING, property, creator, item, field);
+			return createProperty(DataType.STRING, property, creator, item, field);
 		}
 		if (ReflectionLoader.CHECKBOX.isAssignableFrom(node.getClass())) {
 			property = ReflectionLoader.call(node, "selectedProperty");
-			return createProperty(PROPERTYTYPE.BOOLEAN, property, creator, item, field);
+			return createProperty(DataType.BOOLEAN, property, creator, item, field);
 		}
 		if (ReflectionLoader.RADIOBUTTON.isAssignableFrom(node.getClass())) {
 			property = ReflectionLoader.call(node, "selectedProperty");
-			return createProperty(PROPERTYTYPE.BOOLEAN, property, creator, item, field);
+			return createProperty(DataType.BOOLEAN, property, creator, item, field);
+		}
+		return null;
+	}
+	
+	public static Object getProperty(Object node) {
+		if (ReflectionLoader.PROPERTY.isAssignableFrom(node.getClass())) {
+			return node;
+		}
+		if (ReflectionLoader.COLORPICKER.isAssignableFrom(node.getClass())) {
+			return ReflectionLoader.call(node, "valueProperty");
+		}
+		if (ReflectionLoader.TEXTFIELD.isAssignableFrom(node.getClass())) {
+			return ReflectionLoader.call(node, "textProperty");
+		}
+		if (ReflectionLoader.COMBOBOX.isAssignableFrom(node.getClass())) {
+			return ReflectionLoader.call(node, "valueProperty");
+		}
+		if (ReflectionLoader.LABEL.isAssignableFrom(node.getClass())) {
+			return ReflectionLoader.call(node, "textProperty");
+		}
+		if (ReflectionLoader.CHECKBOX.isAssignableFrom(node.getClass())) {
+			return ReflectionLoader.call(node, "selectedProperty");
+		}
+		if (ReflectionLoader.RADIOBUTTON.isAssignableFrom(node.getClass())) {
+			return ReflectionLoader.call(node, "selectedProperty");
 		}
 		return null;
 	}
 
-	private static ModelListenerProperty createProperty(PROPERTYTYPE typ, Object property,
+	private static ModelListenerProperty createProperty(DataType typ, Object property,
 			SendableEntityCreator creator, Object item, String field) {
-		ModelListenerProperty listener = new ModelListenerProperty(creator, item, field, PROPERTYTYPE.STRING);
+		ModelListenerProperty listener = new ModelListenerProperty(creator, item, field, DataType.STRING);
 		Object proxy = listener.getProxy();
 		if (ReflectionLoader.PROPERTY == null || property == null
 				|| ReflectionLoader.PROPERTY.isAssignableFrom(property.getClass()) == false) {

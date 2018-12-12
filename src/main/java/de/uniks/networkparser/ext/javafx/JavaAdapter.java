@@ -149,7 +149,9 @@ public class JavaAdapter implements JavaViewAdapter, Runnable {
 		}
 		registerListener(this);
 		// Load Real Content
-		ReflectionLoader.call(this.webEngine, "loadContent", String.class, entity.toString());
+		if(this.webEngine != null && entity != null) {
+			ReflectionLoader.call(this.webEngine, "loadContent", String.class, entity.toString());
+		}
 	}
 
 	public boolean registerListener(ObjectCondition listener) {

@@ -126,19 +126,21 @@
             <RowConstraints />
          </rowConstraints>
 		</GridPane>
-		<Label id="p1_1" layoutX="16.0" layoutY="157.0" prefHeight="48.0" prefWidth="246.0" text="Alice" underline="true">
+		<Label id="p1" layoutX="16.0" layoutY="157.0" prefHeight="48.0" prefWidth="246.0" text="Alice" underline="true">
          <font>
             <Font name="Arial" size="36.0" />
          </font></Label>
-		<Label id="p3_1" layoutX="430.0" layoutY="157.0" prefHeight="48.0" prefWidth="246.0" text="">
+         <TextField id="p1_textfield" visible="false" layoutX="16.0" layoutY="157.0" prefHeight="48.0" prefWidth="206.0" text="" />
+         
+		<Label id="p3" layoutX="430.0" layoutY="157.0" prefHeight="48.0" prefWidth="246.0" text="">
          <font>
             <Font name="Arial" size="36.0" />
          </font></Label>
-		<Label id="p2_1" layoutX="430.0" layoutY="482.0" prefHeight="48.0" prefWidth="246.0" text="Bob">
+		<Label id="p2" layoutX="430.0" layoutY="482.0" prefHeight="48.0" prefWidth="246.0" text="Bob">
          <font>
             <Font size="36.0" />
          </font></Label>
-		<Label id="p4_1" layoutX="16.0" layoutY="482.0" prefHeight="48.0" prefWidth="246.0" text="">
+		<Label id="p4" layoutX="16.0" layoutY="482.0" prefHeight="48.0" prefWidth="246.0" text="">
          <font>
             <Font name="Arial" size="36.0" />
          </font></Label>
