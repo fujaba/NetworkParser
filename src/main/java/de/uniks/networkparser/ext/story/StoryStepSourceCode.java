@@ -233,7 +233,7 @@ public class StoryStepSourceCode implements ObjectCondition {
 
 	@Override
 	public boolean update(Object value) {
-		if (value instanceof SimpleEvent == false) {
+		if (value == null || value instanceof SimpleEvent == false) {
 			return false;
 		}
 		SimpleEvent evt = (SimpleEvent) value;
@@ -242,6 +242,9 @@ public class StoryStepSourceCode implements ObjectCondition {
 	}
 
 	public boolean addToHTML(HTMLEntity element) {
+		if(element == null) {
+			return false;
+		}
 		XMLEntity pre = element.createTag("pre", element.getBody());
 		XMLEntity code = element.createTag("code", pre);
 		if (this.endLine < 1 && this.currentLine > 0) {
@@ -305,6 +308,9 @@ public class StoryStepSourceCode implements ObjectCondition {
 	}
 
 	public StoryStepSourceCode withCode(Class<?> packageName, int stepOver) {
+		if(packageName == null) {
+			return this;
+		}
 		String packagePath = packageName.getName();
 		String fileName = null;
 		int pos = packagePath.lastIndexOf('.');
@@ -325,6 +331,9 @@ public class StoryStepSourceCode implements ObjectCondition {
 	}
 
 	public StoryStepSourceCode withCode(String path, Class<?> packageName) {
+		if(packageName == null) {
+			return this;
+		}
 		String fileName = packageName.getTypeName();
 
 		this.contentFile = path + "/" + fileName.replace('.', '/') + ".java";

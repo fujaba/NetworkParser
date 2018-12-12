@@ -110,7 +110,7 @@ def gitversion() {
 		gitVersion.branch = json.get("branchname")
 		gitVersion.error = false
 	} catch(Exception e) {
-		println "ERROR"
+		println "ERROR GIT"
 		gitVersion.minor = getGitTag()
 		gitVersion.error = true
 		gitVersion.revision = revisionNumber()
@@ -123,7 +123,7 @@ def gitversion() {
 		}
 		gitVersion.latest = getGitLastCommit() != null
 	}
-	if(gitVersion != null) {
+	if(gitVersion != null && gitVersion.revision>0) {
 		println "Revisionnumber: "	+ gitVersion.revision
 		println "Branchname: " 		+ gitVersion.branch
 		println "LastCommit: "		+ gitVersion.hash

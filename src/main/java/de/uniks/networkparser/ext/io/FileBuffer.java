@@ -93,6 +93,9 @@ public class FileBuffer extends Buffer {
 	@Override
 	public char getChar() {
 		char value = 0;
+		if(this.reader == null) {
+			return value;
+		}
 		if (lookAHead.length() > 0) {
 			value = lookAHead.charAt(0);
 			if (lookAHead.length() == 1) {
