@@ -41,11 +41,11 @@ import de.uniks.networkparser.list.SimpleSet;
 public class ModelListenerProperty implements ModelListenerInterface, SendableEntityCreator {
 	public static final String PROPERTY_MODEL = "model";
 	public static final String PROPERTY_PROPERTY = "property";
-	public static final String PROPERTY_GUI = "gui";
+	public static final String PROPERTY_VIEW = "view";
 	public static final String PROPERTY_CREATOR = "creator";
 
 	protected Object model;
-	protected Object gui;
+	protected Object view;
 	protected String property;
 	protected SendableEntityCreator creator;
 	private SimpleKeyValueList<Object, ObjectCondition> events;
@@ -54,7 +54,7 @@ public class ModelListenerProperty implements ModelListenerInterface, SendableEn
 	protected Object observable = null;
 	protected Condition<SimpleEvent> callBack;
 	protected DataType type;
-	private Object guiProperty;
+	private Object viewProperty;
 	private Object proxy;
 
 	public ModelListenerProperty() {
@@ -149,7 +149,7 @@ public class ModelListenerProperty implements ModelListenerInterface, SendableEn
 //			throw new NullPointerException("Cannot bind to null");
 			return false;
 		}
-		this.guiProperty = newObservable;
+		this.viewProperty = newObservable;
 		if (!newObservable.equals(observable)) {
 			unbind();
 			observable = newObservable;
@@ -163,7 +163,7 @@ public class ModelListenerProperty implements ModelListenerInterface, SendableEn
 			return false;
 		}
 		ReflectionLoader.call(other, "bindBidirectional", ReflectionLoader.PROPERTY, this.getProxy());
-		this.guiProperty = other;
+		this.viewProperty = other;
 		return true;
 	}
 
@@ -175,15 +175,15 @@ public class ModelListenerProperty implements ModelListenerInterface, SendableEn
 		if (observable != null) {
 			ReflectionLoader.call(observable, "removeListener", ReflectionLoader.OBSERVABLEVALUE, this);
 			observable = null;
-			this.gui = null;
-			this.guiProperty = null;
+			this.view = null;
+			this.viewProperty = null;
 		}
 	}
 
 	public boolean unbindBidirectional(Object other) {
 		ReflectionLoader.call( other, "unbindBidirectional", ReflectionLoader.PROPERTY, this.getProxy());
-		this.gui = null;
-		this.guiProperty = null;
+		this.view = null;
+		this.viewProperty = null;
 		return true;
 	}
 
@@ -202,12 +202,12 @@ public class ModelListenerProperty implements ModelListenerInterface, SendableEn
 		return this.model;
 	}
 	
-	public Object getGui() {
-		return this.gui;
+	public Object getView() {
+		return this.view;
 	}
 	
-	public Object getGuiProperty() {
-		return this.guiProperty;
+	public Object getViewProperty() {
+		return this.viewProperty;
 	}
 
 	@Override
@@ -315,7 +315,7 @@ public class ModelListenerProperty implements ModelListenerInterface, SendableEn
 
 	@Override
 	public String[] getProperties() {
-		return new String[] {PROPERTY_MODEL, PROPERTY_CREATOR, PROPERTY_PROPERTY, PROPERTY_GUI};
+		return new String[] {PROPERTY_MODEL, PROPERTY_CREATOR, PROPERTY_PROPERTY, PROPERTY_VIEW};
 	}
 
 	@Override
@@ -337,12 +337,12 @@ public class ModelListenerProperty implements ModelListenerInterface, SendableEn
 			property.creator = (SendableEntityCreator) value;
 			return true;
 		}
-		if(PROPERTY_GUI.equalsIgnoreCase(attribute)) {
+		if(PROPERTY_VIEW.equalsIgnoreCase(attribute)) {
 			Object guiProp= ModelListenerFactory.getProperty(value);
 			if(guiProp == null) {
 				return false;
 			}
-			property.gui = value;
+			property.view = value;
 			property.bindBidirectional(guiProp);
 			if(this.events != null && value != null) {
 				for(int i=0;i<this.events.size();i++) {
@@ -387,8 +387,8 @@ public class ModelListenerProperty implements ModelListenerInterface, SendableEn
 		if(PROPERTY_CREATOR.equalsIgnoreCase(attribute)) {
 			return prop.creator;
 		}
-		if(PROPERTY_GUI.equalsIgnoreCase(attribute)) {
-			return prop.getGui();
+		if(PROPERTY_VIEW.equalsIgnoreCase(attribute)) {
+			return prop.getView();
 		}
 		return null;
 	}

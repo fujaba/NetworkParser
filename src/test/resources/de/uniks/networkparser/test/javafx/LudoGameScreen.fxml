@@ -140,6 +140,7 @@
          <font>
             <Font size="36.0" />
          </font></Label>
+         <TextField id="p2_textfield" visible="false" layoutX="430.0" layoutY="482.0" prefHeight="48.0" prefWidth="206.0" text="" />
 		<Label id="p4" layoutX="16.0" layoutY="482.0" prefHeight="48.0" prefWidth="246.0" text="">
          <font>
             <Font name="Arial" size="36.0" />

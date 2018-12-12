@@ -42,6 +42,7 @@ import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.ext.ErrorHandler;
 import de.uniks.networkparser.ext.FileClassModel;
 import de.uniks.networkparser.ext.Gradle;
+import de.uniks.networkparser.ext.Os;
 import de.uniks.networkparser.ext.petaf.ModelThread;
 import de.uniks.networkparser.ext.petaf.SimpleTimerTask;
 import de.uniks.networkparser.ext.story.Story;
@@ -262,7 +263,9 @@ public class ReflectionBlackBoxTester {
 			timer = null;
 		}
 
-		ReflectionLoader.closeThreads(oldThreads);
+		if("gitlab".equalsIgnoreCase(Os.getTester()) == false) {
+			ReflectionLoader.closeThreads(oldThreads);
+		}
 
 		// Write out all Results
 		output(this, "Errors: " + errorCount + "/" + (errorCount + successCount), logger,

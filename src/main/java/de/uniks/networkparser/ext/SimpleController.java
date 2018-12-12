@@ -926,7 +926,7 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 						}else {
 							controller = creator;
 						}
-						creator.setValue(controller, ModelListenerProperty.PROPERTY_GUI, pane, SendableEntityCreator.NEW);
+						creator.setValue(controller, ModelListenerProperty.PROPERTY_VIEW, pane, SendableEntityCreator.NEW);
 					}
 				} else if(key instanceof SimpleEvent) {
 					SimpleEvent event = (SimpleEvent) key;
@@ -944,7 +944,7 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 						creator.setValue(controller, ModelListenerProperty.PROPERTY_PROPERTY, event.getNewValue(), SendableEntityCreator.NEW);
 						creator.setValue(controller, ModelListenerProperty.PROPERTY_MODEL, event.getSource(), SendableEntityCreator.NEW);
 						// NOW SET BIDIRECTIONAL
-						creator.setValue(controller, ModelListenerProperty.PROPERTY_GUI, pane, SendableEntityCreator.NEW);
+						creator.setValue(controller, ModelListenerProperty.PROPERTY_VIEW, pane, SendableEntityCreator.NEW);
 					}
 				}
 				controllers.add(controller);

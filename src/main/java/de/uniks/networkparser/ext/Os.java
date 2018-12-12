@@ -58,6 +58,10 @@ public class Os {
 	public static final boolean isReflectionTest() {
 		return System.getProperty("Tester") != null;
 	}
+	public static String getTester() {
+		return System.getProperty("Tester");
+	}
+
 
 	public static final boolean isJavaFX() {
 		if (ReflectionLoader.PLATFORM == null || ReflectionLoader.PANE == null) {

@@ -67,7 +67,9 @@ public class StoryStepJUnit implements ObjectCondition {
 
 	public StoryStepJUnit() {
 		this.column = JacocoColumn.create();
-		this.addColumn("BBT", column);
+		if(this.column != null) {
+			this.addColumn("BBT", column);
+		}
 	}
 
 	public Feature addGroup(String label) {
@@ -369,23 +371,25 @@ public class StoryStepJUnit implements ObjectCondition {
 	}
 
 	public StoryStepJUnit withUseCase(Story story, GraphModel model) {
-		story.add(this);
-		this.map = new IdMap();
-		this.model = model;
-		// Check for ReCompile
-		if (this.model != null && this.model instanceof ClassModel) {
-			ModelGenerator generator = ((ClassModel) this.model).getGenerator();
-			if (generator != null) {
-				withPackageName(generator.getLastGenRoot());
-				URL location = getClass().getProtectionDomain().getCodeSource().getLocation();
-				recompile(location.getPath().substring(1));
+		if(this.column != null) {
+			story.add(this);
+			this.map = new IdMap();
+			this.model = model;
+			// Check for ReCompile
+			if (this.model != null && this.model instanceof ClassModel) {
+				ModelGenerator generator = ((ClassModel) this.model).getGenerator();
+				if (generator != null) {
+					withPackageName(generator.getLastGenRoot());
+					URL location = getClass().getProtectionDomain().getCodeSource().getLocation();
+					recompile(location.getPath().substring(1));
+				}
 			}
-		}
-
-		for (Clazz clazz : this.model.getClazzes()) {
-			GenericCreator creator = new GenericCreator();
-			creator.withClass(clazz.getName(false));
-			map.withCreator(creator);
+	
+			for (Clazz clazz : this.model.getClazzes()) {
+				GenericCreator creator = new GenericCreator();
+				creator.withClass(clazz.getName(false));
+				map.withCreator(creator);
+			}
 		}
 
 		return this;

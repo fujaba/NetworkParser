@@ -29,7 +29,6 @@ public class LudoTest {
 		
 		ModelListenerProperty controllerFactory = new ModelListenerProperty();
 		controllerFactory.registerEvent(MouseEvent.MOUSE_CLICKED, new ObjectCondition() {
-			
 			@Override
 			public boolean update(Object event) {
 				MouseEvent evt = (MouseEvent) event;
@@ -46,8 +45,8 @@ public class LudoTest {
 			}
 		});
 		
-		ModelListenerProperty playerNameFactory = new ModelListenerProperty();
-		playerNameFactory.registerEvent(KeyEvent.KEY_PRESSED, new ObjectCondition() {
+		ModelListenerProperty playerNameControllerFactory = new ModelListenerProperty();
+		playerNameControllerFactory.registerEvent(KeyEvent.KEY_PRESSED, new ObjectCondition() {
 			@Override
 			public boolean update(Object value) {
 				KeyEvent evt = (KeyEvent) value;
@@ -65,7 +64,7 @@ public class LudoTest {
 		for(int p=1;p<=players.size();p++) {
 			Player player = players.get(p-1);
 			controller.withMap(controllerFactory, "p"+p, player, Player.PROPERTY_NAME);
-			controller.withMap(playerNameFactory, "p"+p+"_textfield", player, Player.PROPERTY_NAME);
+			controller.withMap(playerNameControllerFactory, "p"+p+"_textfield", player, Player.PROPERTY_NAME);
 //			HomeSet homes = player.getHome();
 //			for(int h=1;h<=homes.size();h++) {
 //				controller.withMap(new FieldController(), "h"+p+"_"+h, homes.get(h-1));
@@ -78,6 +77,9 @@ public class LudoTest {
 		}
 		// AND MERGING
 		controller.withFXML("LudoGameScreen.fxml", LudoTest.class);
+		
+		
+		controllerFactory.setValue("Albert2");
 		
 		controller.show();
 	}
