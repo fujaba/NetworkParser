@@ -1,5 +1,5 @@
 #image: java:8
-image: openjdk:8-jdk
+image: cogniteev/oracle-java
 before_script:
 - chmod +x gradlew
 stages:

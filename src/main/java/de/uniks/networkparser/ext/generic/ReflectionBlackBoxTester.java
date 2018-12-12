@@ -210,6 +210,7 @@ public class ReflectionBlackBoxTester {
 
 	public boolean test(String packageName, NetworkParserLog logger) throws ClassNotFoundException, IOException,
 			InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		String tester = Os.getTester();
 		setTester();
 		SimpleList<Class<?>> classesForPackage = ReflectionLoader.getClassesForPackage(packageName);
 		errorCount = 0;
@@ -263,7 +264,7 @@ public class ReflectionBlackBoxTester {
 			timer = null;
 		}
 
-		if("gitlab".equalsIgnoreCase(Os.getTester()) == false) {
+		if("gitlab".equalsIgnoreCase(tester) == false) {
 			ReflectionLoader.closeThreads(oldThreads);
 		}
 
