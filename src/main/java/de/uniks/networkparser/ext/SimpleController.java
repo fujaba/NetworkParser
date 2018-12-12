@@ -1105,7 +1105,7 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 		return result;
 	}
 
-	public void withPackageName(String packageName, String... excludes) {
+	public SimpleController withPackageName(String packageName, String... excludes) {
 		if (compilePath == null && packageName != null) {
 			if ((packageName.endsWith("/") || packageName.endsWith("\\")) == false) {
 				packageName += "/";
@@ -1116,9 +1116,11 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 			File file = new File(packageName);
 			visitPath(file, root, excludes);
 		}
+		return this;
 	}
 
 	public void visitPath(File file, String root, String... excludes) {
+		System.out.println(file);
 		if (file == null || root == null) {
 			return;
 		}

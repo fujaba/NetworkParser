@@ -352,10 +352,13 @@ public class ErrorHandler implements Thread.UncaughtExceptionHandler {
 		return new DateTimeEntity().toString("yyyymmdd_HHMMSS_");
 	}
 
-	public void saveException(Throwable e, Object stage, boolean throwException) {
+	public boolean saveException(Throwable e, Object stage, boolean throwException) {
 		// Generate Error.txt
+		if(e == null) {
+			return false;
+		}
 		String prefixName = getPrefix();
-		saveErrorFile(prefixName, "error.txt", this.path, e);
+		boolean success = saveErrorFile(prefixName, "error.txt", this.path, e);
 		saveScreenShoot(prefixName, "Full.jpg", this.path, stage);
 		if (list.size() > 0) {
 			SimpleEvent event = new SimpleEvent(this, prefixName, null, e);
@@ -371,6 +374,7 @@ public class ErrorHandler implements Thread.UncaughtExceptionHandler {
 			throw new RuntimeException(e);
 //			}
 		}
+		return success;
 	}
 
 	public Object getStage() {
