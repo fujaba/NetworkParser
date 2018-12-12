@@ -529,11 +529,17 @@ public class GraphUtil {
 	}
 
 	public static final GraphEntity setExternal(GraphEntity entity, boolean value) {
+		if(entity == null) {
+			return null;
+		}
 		entity.withExternal(value);
 		return entity;
 	}
 
 	public static final boolean isExternal(GraphEntity entity) {
+		if(entity == null) {
+			return false;
+		}
 		return entity.isExternal();
 	}
 
@@ -553,10 +559,16 @@ public class GraphUtil {
 	}
 
 	public static final String getGraphPath(GraphModel value) {
+		if(value == null) {
+			return null;
+		}
 		return value.genPath;
 	}
 
 	public static final void setGraphPath(GraphModel model, String value) {
+		if(model == null) {
+			return;
+		}
 		model.genPath = value;
 	}
 

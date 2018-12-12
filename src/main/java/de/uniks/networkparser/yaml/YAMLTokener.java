@@ -46,6 +46,9 @@ public class YAMLTokener extends Tokener {
 	}
 
 	protected int parseLine(int deep, EntityList owner, Buffer buffer) {
+		if(buffer == null) {
+			return 0;
+		}
 		char c = buffer.getCurrentChar();
 		int newDeep = 0;
 		boolean read = false;

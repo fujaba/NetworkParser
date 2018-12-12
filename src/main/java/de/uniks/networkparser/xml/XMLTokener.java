@@ -207,6 +207,9 @@ public class XMLTokener extends Tokener {
 	 * @param buffer Buffer for Values
 	 */
 	protected void skipEntity(Buffer buffer) {
+		if(buffer == null) {
+			return;
+		}
 		buffer.skipTo('>', false);
 		// Skip >
 		buffer.nextClean(false);
@@ -215,6 +218,9 @@ public class XMLTokener extends Tokener {
 	public String skipHeader(Buffer buffer) {
 		boolean skip = false;
 		CharacterBuffer tag;
+		if(buffer == null) {
+			return null;
+		}
 		do {
 			tag = buffer.getString(2);
 			if (tag == null) {
@@ -411,7 +417,7 @@ public class XMLTokener extends Tokener {
 	 */
 	public CharacterBuffer parseEntity(XMLTokener tokener, Buffer buffer, MapEntity map) {
 		CharacterBuffer valueItem = new CharacterBuffer();
-		if (tokener == null) {
+		if (tokener == null || buffer == null) {
 			return valueItem;
 		}
 		CharacterBuffer tag;

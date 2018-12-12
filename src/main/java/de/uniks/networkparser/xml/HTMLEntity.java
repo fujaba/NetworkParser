@@ -579,6 +579,9 @@ public class HTMLEntity implements BaseItem {
 	}
 
 	public HTMLEntity withConnectionHeader(Map<String, List<String>> headerFields) {
+		if(headerFields == null) {
+			return null;
+		}
 		for (Iterator<String> i = headerFields.keySet().iterator(); i.hasNext();) {
 			String key = i.next();
 			this.conenctionHeader.put(key, headerFields.get(key));

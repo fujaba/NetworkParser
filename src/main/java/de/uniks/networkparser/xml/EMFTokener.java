@@ -83,13 +83,15 @@ public class EMFTokener extends Tokener {
 	public static final String VALUE = "value";
 	public SimpleKeyValueList<Object, String> path=new SimpleKeyValueList<Object, String>();
 	
-
 	/**
 	 * Skip the Current Entity to &gt;.
 	 * 
 	 * @param buffer Buffer for Values
 	 */
 	protected void skipEntity(Buffer buffer) {
+		if(buffer == null) {
+			return;
+		}
 		buffer.skipTo('>', false);
 		// Skip >
 		buffer.nextClean(false);
