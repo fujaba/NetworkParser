@@ -126,7 +126,7 @@ public class UpdateCondition implements ObjectCondition {
 	public UpdateCondition withStart(String property, Object startClass) {
 		this.owner = startClass;
 		this.property = property;
-		if (startClass instanceof Class<?> == false && map == null) {
+		if (startClass instanceof Class<?> == false && map != null) {
 			this.creator = map.getCreatorClass(startClass);
 		}
 		return this;
@@ -140,7 +140,7 @@ public class UpdateCondition implements ObjectCondition {
 	public UpdateCondition withEnd(String property, Object endClass) {
 		this.endClass = endClass;
 		this.endProperty = property;
-		if (endClass instanceof Class<?> == false && map == null) {
+		if (endClass instanceof Class<?> == false && map != null) {
 			endCreator = map.getCreatorClass(endClass);
 		}
 		return this;
