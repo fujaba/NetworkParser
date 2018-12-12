@@ -286,7 +286,9 @@ public class EntityComparator<V> implements Comparator<V> {
 
 	/** @return Change SortDiraction */
 	public SortingDirection changeDirection() {
-		this.direction = direction.changeDirection();
+		if(direction != null) {
+			this.direction = direction.changeDirection();
+		}
 		return direction;
 	}
 

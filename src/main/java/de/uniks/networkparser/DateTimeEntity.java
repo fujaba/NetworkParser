@@ -365,9 +365,11 @@ public class DateTimeEntity implements SendableEntityCreatorNoIndex {
 	 * @return Itself
 	 */
 	public DateTimeEntity withValue(String date) {
-		this.withYear(Integer.parseInt(date.substring(6, 9)));
-		this.withMonth(Integer.parseInt(date.substring(3, 4)));
-		this.withDate(Integer.parseInt(date.substring(0, 1)));
+		if(date != null) { 
+			this.withYear(Integer.parseInt(date.substring(6, 9)));
+			this.withMonth(Integer.parseInt(date.substring(3, 4)));
+			this.withDate(Integer.parseInt(date.substring(0, 1)));
+		}
 		return this;
 	}
 
@@ -378,7 +380,9 @@ public class DateTimeEntity implements SendableEntityCreatorNoIndex {
 	 * @return Itself
 	 */
 	public DateTimeEntity withValue(java.util.Date date) {
-		withValue(date.getTime());
+		if(date != null) {
+			withValue(date.getTime());
+		}
 		return this;
 	}
 
