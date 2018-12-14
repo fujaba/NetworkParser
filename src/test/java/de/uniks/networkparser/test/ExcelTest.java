@@ -4,11 +4,17 @@ import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.net.URL;
 
 import org.junit.Assert;
 import org.junit.Test;
 
+import de.uniks.networkparser.EntityCreator;
+import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.ext.io.ExcelBuffer;
+import de.uniks.networkparser.ext.io.FileBuffer;
+import de.uniks.networkparser.list.SimpleList;
+import de.uniks.networkparser.parser.ExcelParser;
 import de.uniks.networkparser.parser.ExcelRow;
 import de.uniks.networkparser.parser.ExcelSheet;
 import de.uniks.networkparser.parser.ExcelWorkBook;
@@ -41,5 +47,15 @@ public class ExcelTest {
 			new File("build").mkdir();
 			buffer.encode(new File(output), workBook);
 		}
+	}
+	
+	@Test
+	public void testCSV() {
+		URL resource = ExcelTest.class.getResource("zisterne.csv");
+		
+		CharacterBuffer readFile = FileBuffer.readFile(resource.getFile());
+		ExcelParser excelParser = new ExcelParser();
+		SimpleList<Object> readCSV = excelParser.readCSV(readFile, EntityCreator.createJson(true));
+		Assert.assertEquals(3, readCSV.size());
 	}
 }

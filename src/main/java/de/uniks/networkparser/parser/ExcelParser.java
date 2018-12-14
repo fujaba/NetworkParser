@@ -22,10 +22,12 @@ import de.uniks.networkparser.EntityCreator;
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.Pos;
+import de.uniks.networkparser.buffer.Buffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.EntityList;
+import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.xml.XMLEntity;
@@ -161,6 +163,48 @@ public class ExcelParser {
 			}
 			result.with(BaseItem.CRLF);
 		}
+		return result;
+	}
+	
+	public SimpleList<Object> readCSV(Buffer data, SendableEntityCreator creator) {
+ 		SimpleList<Object> result = new SimpleList<Object>();
+		if(data== null || creator == null) {
+			return result;
+		}
+		SimpleList<String> header = new SimpleList<String>();
+		CharacterBuffer line = data.readLine();
+		if(line == null || line.length() < 1) {
+			return result;
+		}
+		int start=0;
+		for(int i=0;i<line.length();i++) {
+			if(line.charAt(i) == SEMICOLON) {
+				header.add(line.substring(start, i));
+				start=i+1;
+			}
+		}
+		do {
+			line = data.readLine();
+			int column=0;
+			start=0;
+			//Parsing data
+			Object item = creator.getSendableInstance(false);
+			for(int i=0;i<line.length();i++) {
+				if(line.charAt(i) == SEMICOLON) {
+					String value = line.substring(start, i);
+					creator.setValue(item, header.get(column), value, SendableEntityCreator.NEW);
+					column++;
+					if(column>header.size()) {
+						break;
+					}
+					start=i+1;
+				}
+			}
+			result.add(item);
+			if(data.isEnd()) {
+				break;
+			}
+		}while(line != null);
 		return result;
 	}
 
