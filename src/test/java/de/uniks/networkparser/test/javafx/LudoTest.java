@@ -6,7 +6,7 @@ import de.uniks.ludo.model.util.LudoSet;
 import de.uniks.ludo.model.util.PlayerSet;
 import de.uniks.networkparser.ext.SimpleController;
 import de.uniks.networkparser.ext.javafx.ModelListenerProperty;
-import de.uniks.networkparser.ext.javafx.PointPaneController;
+import de.uniks.networkparser.ext.javafx.DiceController;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -21,7 +21,7 @@ public class LudoTest {
 		controller.withMap(LudoSet.createIdMap("42"));
 		
 		// DICE CONTROLLER
-		controller.withMap(new PointPaneController(), "dice");
+		controller.withMap(new DiceController(), "dice");
 		
 		Ludo game = new Ludo();
 		game.init(new Player().withName("Albert"), new Player().withName("Stefan"));

@@ -5,9 +5,14 @@ import static de.uniks.networkparser.graph.Association.ONE;
 
 import org.junit.Test;
 
+import de.uniks.ludo.model.Ludo;
+import de.uniks.ludo.model.util.LudoSet;
+import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.ext.ClassModel;
 import de.uniks.networkparser.ext.io.FileBuffer;
+import de.uniks.networkparser.ext.petaf.Space;
 import de.uniks.networkparser.ext.story.Cucumber;
+import de.uniks.networkparser.ext.story.StoryStepJUnit;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.DataType;
 import de.uniks.networkparser.graph.GraphList;
@@ -123,9 +128,26 @@ public class LudoTest {
 		model.generate("src/test/java");
 	}
 	
+	
+	@Test
+	public void testReflection() {
+		StoryStepJUnit story = new StoryStepJUnit();
+		story.withPackageName("de.uniks.ludo.model");
+		story.executeBlackBoxTest("src/test/java/");
+	}
+	
+	public void testPersistierung() {
+		Ludo game = new Ludo();
+		IdMap map = LudoSet.createIdMap("42");
+		map.toJsonObject(game);
+	}
+	
 	public void step3() {
-//		Space space=new Space();
-//		space.withModel(map, ludo);
+		Ludo game = new Ludo();
+		
+		IdMap map = LudoSet.createIdMap("42");
+		Space space=new Space();
+		space.withModel(map, game);
 	}
 	
 	public boolean stepLogic() {

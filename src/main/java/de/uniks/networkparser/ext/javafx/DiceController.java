@@ -40,9 +40,8 @@ import de.uniks.networkparser.interfaces.SendableEntity;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.list.SimpleList;
 
-public class PointPaneController extends SendableItem implements PropertyChangeListener, SendableEntityCreator, ObjectCondition { 
+public class DiceController extends SendableItem implements PropertyChangeListener, SendableEntityCreator, ObjectCondition { 
 //extends Pane 
-	public static final String PROPERTY_GUI="gui";
 	public static final String PROPERTY_CLICK="click";
 	public static final String PROPERTY_VALUE="value";
 	public static final String STOPPED="STOPPED";
@@ -72,7 +71,7 @@ public class PointPaneController extends SendableItem implements PropertyChangeL
 		return this.timeline;
 	}
 	
-	public PointPaneController() {
+	public DiceController() {
 		this.eventListener = new GUIEvent().withListener(this);
 		this.eventProxy = ReflectionLoader.createProxy(eventListener, ReflectionLoader.EVENTHANDLER);
 
@@ -103,7 +102,7 @@ public class PointPaneController extends SendableItem implements PropertyChangeL
 		showAnimation(EntityUtil.randInt(1, this.max));
 	}
 
-	public PointPaneController withValue(int number) {
+	public DiceController withValue(int number) {
 		String value = ""+ReflectionLoader.call(getTimeLine(), "getStatus");
 		if(STOPPED.equals(value)) {
 			showNumber(number);
@@ -112,7 +111,7 @@ public class PointPaneController extends SendableItem implements PropertyChangeL
 		return this;
 	}
 	@SuppressWarnings("unchecked")
-	public PointPaneController showAnimation(int number) {
+	public DiceController showAnimation(int number) {
 		Double tX = (Double) ReflectionLoader.call(pane, "getTranslateX");
 		Double tY = (Double) ReflectionLoader.call(pane, "getTranslateY");
 		Double height = (Double) ReflectionLoader.call(pane, "getHeight");
@@ -254,7 +253,7 @@ public class PointPaneController extends SendableItem implements PropertyChangeL
 		return color;
 	}
 
-	public PointPaneController withColor(String color) {
+	public DiceController withColor(String color) {
 		this.color = color;
 		return this;
 	}
@@ -342,11 +341,11 @@ public class PointPaneController extends SendableItem implements PropertyChangeL
 
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value, String type) {
-		if(entity instanceof PointPaneController == false) {
+		if(entity instanceof DiceController == false) {
 			return false;
 		}
-		PointPaneController controller = (PointPaneController) entity;
-		if(PROPERTY_GUI.equalsIgnoreCase(attribute)) {
+		DiceController controller = (DiceController) entity;
+		if(ModelListenerProperty.PROPERTY_VIEW.equalsIgnoreCase(attribute)) {
 			controller.init(value);
 			return true;
 		}
@@ -355,7 +354,7 @@ public class PointPaneController extends SendableItem implements PropertyChangeL
 
 	@Override
 	public Object getSendableInstance(boolean prototyp) {
-		return new PointPaneController();
+		return new DiceController();
 	}
 
 	@Override
