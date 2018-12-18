@@ -117,7 +117,7 @@ public abstract class GraphModel extends GraphEntity implements BaseItem {
 	public Clazz createClazz(String name) {
 		if (name == null || children == null
 				|| (children instanceof Clazz && name.equals(((Clazz) children).getName()))) {
-			Clazz clazz = new Clazz(name);
+			Clazz clazz = createInstance(name);
 			clazz.setClassModel(this);
 			return clazz;
 		}
@@ -133,9 +133,13 @@ public abstract class GraphModel extends GraphEntity implements BaseItem {
 				}
 			}
 		}
-		Clazz clazz = new Clazz(name);
+		Clazz clazz = createInstance(name);
 		clazz.setClassModel(this);
 		return clazz;
+	}
+	
+	protected Clazz createInstance(String name) {
+		return new Clazz(name);
 	}
 
 	@Override

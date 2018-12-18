@@ -31,9 +31,9 @@ import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.converter.EntityStringConverter;
-import de.uniks.networkparser.ext.ClassModel;
 import de.uniks.networkparser.ext.io.FileBuffer;
 import de.uniks.networkparser.graph.GraphList;
+import de.uniks.networkparser.graph.GraphModel;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.list.SimpleList;
@@ -198,7 +198,7 @@ public class Story extends StoryElement implements Comparable<Story> {
 		}
 	}
 
-	public StoryStepDiagram addDiagram(ClassModel model) {
+	public StoryStepDiagram addDiagram(GraphModel model) {
 		StoryStepDiagram step = new StoryStepDiagram();
 		step.withModel(model);
 		this.add(step);
@@ -249,14 +249,7 @@ public class Story extends StoryElement implements Comparable<Story> {
 			}
 		}
 		HTMLEntity output = new HTMLEntity();
-		addScript(path, "diagramstyle.css", output);
-
-		addScript(path, "highlight.pack.js", output);
-		addScript(path, "highlightjs-line-numbers.min.js", output);
-
 		output.withEncoding(HTMLEntity.ENCODING);
-
-		output.withScript(output.getHeader(), "hljs.initHighlightingOnLoad();", "hljs.initLineNumbersOnLoad();");
 
 		SimpleEvent evt = new SimpleEvent(this, null, null, output);
 		for (ObjectCondition step : steps) {
@@ -278,12 +271,12 @@ public class Story extends StoryElement implements Comparable<Story> {
 		if (content == null) {
 			return false;
 		}
+		entry.withHeader(name);
 		CharacterBuffer oldContent = FileBuffer.readFile(path + name);
 		if (oldContent != null && content.equals(oldContent.toString())) {
 			return true;
 		}
 		int len = FileBuffer.writeFile(path + name, content.toString(), FileBuffer.NONE);
-		entry.withHeader(name);
 		return len > 0;
 	}
 
@@ -463,6 +456,11 @@ public class Story extends StoryElement implements Comparable<Story> {
 	public StoryStepText addText(String text) {
 		return addText(text, true, false);
 	}
+	
+	public StoryStepText addStep(String text) {
+		return addText(text, true, false);
+	}
+
 
 	public StoryStepText addText(String text, boolean isStep) {
 		return addText(text, isStep, false);

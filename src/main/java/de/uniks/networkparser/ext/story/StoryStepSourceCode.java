@@ -251,13 +251,27 @@ public class StoryStepSourceCode implements ObjectCondition {
 		}
 		SimpleEvent evt = (SimpleEvent) value;
 		HTMLEntity element = (HTMLEntity) evt.getNewValue();
-		return addToHTML(element);
+		Story story = (Story) evt.getSource();
+		return addToHTML(story, element);
 	}
 
 	public boolean addToHTML(HTMLEntity element) {
-		if(element == null) {
+		return addToHTML(null, element);
+	}
+	public boolean addToHTML(Story story, HTMLEntity element) {
+		if(element == null || element.getBody() == null) {
 			return false;
 		}
+		if(story != null) {
+			for (String item : HTMLEntity.CODEESOURCES) {
+				if (element.getHeader(item) == null) {
+					// DEFAULT TO EXTRACT TO DOC-FOLDER
+					Story.addScript(story.getPath(), item, element);
+				}
+			}
+			element.withScript(element.getHeader(), "hljs.initHighlightingOnLoad();", "hljs.initLineNumbersOnLoad();");
+		}
+		
 		XMLEntity pre = element.createTag("pre", element.getBody());
 		XMLEntity code = element.createTag("code", pre);
 		if (this.endLine < 1 && this.currentLine > 0) {

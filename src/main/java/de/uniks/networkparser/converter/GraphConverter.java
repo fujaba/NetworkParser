@@ -51,6 +51,7 @@ import de.uniks.networkparser.graph.Method;
 import de.uniks.networkparser.graph.MethodSet;
 import de.uniks.networkparser.graph.Modifier;
 import de.uniks.networkparser.graph.ModifierSet;
+import de.uniks.networkparser.graph.ObjectModel;
 import de.uniks.networkparser.graph.Parameter;
 import de.uniks.networkparser.graph.ParameterSet;
 import de.uniks.networkparser.interfaces.BaseItem;
@@ -229,6 +230,12 @@ public class GraphConverter implements Converter {
 			type = graphList.getType();
 			style = graphList.getStyle();
 			options = graphList.getOptions();
+		}
+		if (root instanceof ObjectModel) {
+//			ObjectModel graphList = (ObjectModel) root;
+			type = GraphTokener.OBJECTDIAGRAM;
+//			style = graphList.getStyle();
+//			options = graphList.getOptions();
 		}
 		Entity jsonRoot = (Entity) factory.getNewList(true);
 		jsonRoot.put(TYPE, type);

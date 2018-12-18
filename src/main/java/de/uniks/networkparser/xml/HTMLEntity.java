@@ -53,6 +53,7 @@ public class HTMLEntity implements BaseItem {
 	public static final String GRAPH = "Graph";
 	public static final String CLASSEDITOR = "ClassEditor";
 	public static final String[] GRAPHRESOURCES = new String[] { "diagramstyle.css", "diagram.js", "dagre.min.js", "jspdf.min.js"};
+	public static final String[] CODEESOURCES = new String[] { "highlight.pack.js", "highlightjs-line-numbers.min.js"};
 
 	private XMLEntity body = new XMLEntity().withType("body");
 	private XMLEntity header = new XMLEntity().withType("head");

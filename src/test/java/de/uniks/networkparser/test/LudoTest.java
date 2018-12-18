@@ -12,10 +12,13 @@ import de.uniks.networkparser.ext.ClassModel;
 import de.uniks.networkparser.ext.io.FileBuffer;
 import de.uniks.networkparser.ext.petaf.Space;
 import de.uniks.networkparser.ext.story.Cucumber;
+import de.uniks.networkparser.ext.story.Story;
 import de.uniks.networkparser.ext.story.StoryStepJUnit;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.DataType;
 import de.uniks.networkparser.graph.GraphList;
+import de.uniks.networkparser.graph.ObjectInstance;
+import de.uniks.networkparser.graph.ObjectModel;
 import de.uniks.networkparser.graph.Parameter;
 import de.uniks.networkparser.xml.HTMLEntity;
 
@@ -59,6 +62,40 @@ public class LudoTest {
 		Clazz homeClass = model.createClazz("Home");
 		fieldClass.withKidClazzes(homeClass);
 		model.generate("src/test/java");
+	}
+	
+	@Test
+	public void testStory() {
+		Story story = new Story();
+		story.withName("Play his/her first token");
+		
+		ObjectModel model = new ObjectModel();
+		ObjectInstance alice = model.createObject("alice", "Player");
+		ObjectInstance bob = model.createObject("bob", "Player");
+		ObjectInstance t1 = model.createObject("t1", "Token");
+		ObjectInstance f8 = model.createObject("f8", "Field");
+		ObjectInstance game = model.createObject("game", "Ludo");
+		
+		ObjectInstance die = model.createObject("die", "Die");
+		ObjectInstance t6 = model.createObject("t6", "Token");
+		ObjectInstance f5 = model.createObject("f5", "Field");
+		
+		alice.withLink(t1);
+		t1.withLink(f8);
+		alice.withLink(game);
+		bob.withLink(game);
+		die.withLink(game);
+		bob.withLink(t6);
+		t6.withLink(f5);
+		
+		story.addDiagram(model);
+		story.addStep("She moves her token t3 to her start field.");
+//		Add Code for Move Meeple
+		
+		//story.addCode();
+//		story.addDiagram(endSituationModel);
+
+		story.dumpHTML("ludo.html");
 	}
 	
 	public void stepError() {
@@ -196,3 +233,5 @@ public class LudoTest {
 		return true;
 	}
 }
+
+

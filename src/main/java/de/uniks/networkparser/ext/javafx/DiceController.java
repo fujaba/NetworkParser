@@ -277,11 +277,10 @@ public class DiceController extends SendableItem implements PropertyChangeListen
 		return pane;
 	}
 
-	//AbstractModelController
 	public boolean addListener(Object item, String property) {
 		return addListener(item, property, this);
 	}
-//FIXME R
+
 	public boolean addListener(Object item, String property, PropertyChangeListener listener) {
 		if (item == null) {
 			return false;
