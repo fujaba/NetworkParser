@@ -189,6 +189,11 @@ public class TemplateResultFragment
 		}
 		return this.header.add(value);
 	}
+	
+	public TemplateResultFragment withHeader(String value) {
+		addHeader(value);
+		return this;
+	}
 
 	public boolean removeHeader(String value) {
 		if (this.header == null) {

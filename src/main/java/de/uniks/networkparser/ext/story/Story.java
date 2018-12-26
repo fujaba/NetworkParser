@@ -364,6 +364,12 @@ public class Story extends StoryElement implements Comparable<Story> {
 		step.withCondition(message, actual, new Equals().withValue(expected, delta));
 		this.addCondition(step);
 	}
+	
+	public void assertFail(String message) {
+		StoryStepCondition step = new StoryStepCondition();
+		step.withCondition(message, true, new BooleanCondition());
+		this.addCondition(step);
+	}
 
 	public void assertEquals(String message, int expected, int actual) {
 		StoryStepCondition step = new StoryStepCondition();

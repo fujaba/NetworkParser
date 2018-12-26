@@ -430,4 +430,33 @@ public class StoryStepJUnit implements ObjectCondition {
 		}
 		return false;
 	}
+	
+	
+	public Object createListener() {
+		Class<?> class1 = ReflectionLoader.getClass("junit.framework.TestListener");
+		if(class1 != null) {
+			return ReflectionLoader.createProxy(this, class1);
+		}
+		return null;
+	}
+	// TestListener
+
+	//Test test, Throwable e
+	public void addError(Object test, Throwable e) {
+//		System.out.println("ERROR");
+	}
+
+	//Test test, AssertionFailedError e
+	public void addFailure(Object test, Object e) {
+//		System.out.println("FAILURE");
+	}
+	//Test test
+	public void endTest(Object test) {
+//		System.out.println("END");
+	}
+	
+	//Test test
+	public void startTest(Object test) {
+//				System.out.println("START");
+	}
 }

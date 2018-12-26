@@ -25,7 +25,9 @@ THE SOFTWARE.
 */
 import java.util.ArrayList;
 
+import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.buffer.CharacterBuffer;
+import de.uniks.networkparser.ext.story.Story;
 import de.uniks.networkparser.graph.Association;
 import de.uniks.networkparser.graph.AssociationSet;
 import de.uniks.networkparser.graph.AssociationTypes;
@@ -109,7 +111,7 @@ public class GraphConverter implements Converter {
 		}
 		return root;
 	}
-
+	
 	public Entity convertToJson(String type, EntityList list, boolean removePackage) {
 		GraphList root = convertGraphList(type, list);
 		return convertToJson(root, removePackage, false);
@@ -216,6 +218,27 @@ public class GraphConverter implements Converter {
 		return graphNode;
 	}
 
+	public TemplateResultFragment convertToTestCode(GraphModel model, boolean createModel) {
+		TemplateResultFragment code =  new TemplateResultFragment();
+		
+		code.withHeader(Story.class.getName());
+		code.withLine("Story story = new Story();");
+		ClazzSet clazzes = model.getClazzes();
+		for(Clazz clazz : clazzes) {
+			if(createModel) {
+				code.withLine(clazz.getName()+" "+clazz.getId() + " = new "+clazz.getName()+"();");
+			}
+			code.withLine("story.assertNotNull(\"Object '"+clazz.getId()+"' NULL\", "+clazz.getId()+");");
+			for(Attribute attribute : clazz.getAttributes()) {
+				if(createModel) {
+					code.withLine(clazz.getId() + ".set"+EntityUtil.upFirstChar(attribute.getName())+"("+attribute.getValue()+");");
+				}
+				code.withLine("story.assertEquals(\"Attribute "+attribute.getName()+" wrong value\", "+attribute.getValue()+", "+clazz.getId()+".get"+EntityUtil.upFirstChar(attribute.getName())+"());");
+			}
+		}
+		return code;
+	}
+	
 	public Entity convertToJson(EntityList list, boolean removePackage) {
 		return convertToJson(GraphTokener.OBJECTDIAGRAM, list, removePackage);
 	}
@@ -1062,4 +1085,6 @@ public class GraphConverter implements Converter {
 		}
 		return modifierSet;
 	}
+	
+	
 }
