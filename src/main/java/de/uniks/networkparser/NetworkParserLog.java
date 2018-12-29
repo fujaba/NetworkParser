@@ -88,7 +88,7 @@ public class NetworkParserLog extends Handler {
 	public static final String LOG = "LOG";
 
 	private byte flag = LOGLEVEL_ERROR + LOGLEVEL_INFO; // ERROR + INFO
-	private ObjectCondition condition;
+	protected ObjectCondition condition;
 
 	/**
 	 * Log a message with debug log level.
@@ -104,7 +104,29 @@ public class NetworkParserLog extends Handler {
 		}
 		return false;
 	}
-
+	
+	public boolean log(String type, Object... args) {
+		if(type == null || condition == null || args == null) {
+			return false;
+		}
+		if(args.length==1) {
+			return condition.update(new SimpleEvent(this, null, null, args[0]).withType(type));
+		}
+		Object source = args[0];
+		if(source == null) {
+			return false;
+		}
+		if(args.length==2) {
+			return condition.update(new SimpleEvent(source, null, null, args[1]).withType(type));
+		}
+		
+		Object[] items= new Object[args.length -1];
+		for(int i=1;i<args.length;i++) {
+			items[i-1] = args[i];
+		}
+		return condition.update(new SimpleEvent(source, null, null, items).withType(type));
+	}
+	
 	public boolean print(Object owner, Object item) {
 		if (condition != null) {
 			return condition.update(new SimpleEvent(owner, null, null, item).withType(LOG));
@@ -262,5 +284,12 @@ public class NetworkParserLog extends Handler {
 
 	public boolean isLevel(byte logLevel) {
 		return (flag & logLevel) != 0;
+	}
+
+	public String getRequesteApiVersion() {
+		return "1.8.99";
+	}
+
+	public void initialize() {
 	}
 }

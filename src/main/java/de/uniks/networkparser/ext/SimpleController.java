@@ -1199,8 +1199,9 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 		return propertyPrototype;
 	}
 	/**
-	 * @param controller
+	 * @param controller Creator for Controller
 	 * @param key Key of GUI
+	 * @param modelMapping Mapping for Mapping GUI
 	 * @return ThisComponent
 	 */
 	public SimpleController withMap(SendableEntityCreator controller, String key, Object... modelMapping) {
