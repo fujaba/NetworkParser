@@ -765,6 +765,24 @@ public abstract class AbstractArray<V> implements BaseItem {
 		}
 		return changed;
 	}
+	
+	@SuppressWarnings("unchecked")
+	public boolean rawAdd(V... values) {
+		if (values == null || values.length < 1) {
+			return false;
+		}
+		int newSize = size + values.length;
+		grow(newSize);
+		boolean changed = false;
+		for (Object value : values) {
+			if (value == null) {
+				continue;
+			}
+			this.addKey(this.size, value, newSize);
+			changed = true;
+		}
+		return changed;
+	}
 
 	@SuppressWarnings("unchecked")
 	public <ST extends AbstractArray<V>> ST without(Object... values) {

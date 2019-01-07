@@ -76,6 +76,15 @@ public class JavaAssociation extends Template {
 				"			if (item == null) {",
 				"				continue;",
 				"			}",
+				"{{#if {{cardinality}}==1}}", // IT IS MANY TO ONE SPECIAL CASE !!!
+				
+//				if(item.setGame(this)) {
+//					result = result & this.field.rawAdd(item);
+//					firePropertyChange(PROPERTY_FIELD, null, item);
+
+				
+				
+				
 				"			this.{{other.name}}.withVisible(true);",
 				"			boolean changed = this.{{other.name}}.add(item);",
 				"			this.{{other.name}}.withVisible(false);",

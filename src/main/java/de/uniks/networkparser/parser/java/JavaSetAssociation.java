@@ -7,13 +7,16 @@ public class JavaSetAssociation extends Template {
 	public JavaSetAssociation() {
 		this.id = "association";
 		this.type = Template.DECLARATION;
-		this.withTemplate("{{#template VALUE}}", "{{#if {{other.isImplements}}==false}}",
-				"{{#import {{file.member.fullName}}}}"
-						+ "	public {{other.clazz.name}}Set get{{other.Name}}({{other.clazz.name}}... filter) {",
-				"		{{other.clazz.name}}Set result = new {{other.clazz.name}}Set();",
-				"{{#if {{#feature PATTERN}}}}", "		if(listener != null) {",
-				"{{#import " + SimpleEvent.class.getName() + "}}", "			result.withListener(listener);",
-				"			{{file.member.name}}[] children = this.toArray(new {{file.member.name}}[size()]);",
+		this.withTemplate("{{#template VALUE}}",
+				"{{#if {{other.isImplements}}==false}}",
+					"{{#import {{file.member.fullName}}}}"
+					+ "	public {{other.clazz.name}}Set get{{other.Name}}({{other.clazz.name}}... filter) {",
+					"		{{other.clazz.name}}Set result = new {{other.clazz.name}}Set();",
+						"{{#if {{#feature PATTERN}}}}",
+						"		if(listener != null) {",
+							"{{#import " + SimpleEvent.class.getName() + "}}",
+							"			result.withListener(listener);",
+							"			{{file.member.name}}[] children = this.toArray(new {{file.member.name}}[size()]);",
 				"			for(int i=0;i<children.length;i++) {",
 				"				listener.update(SimpleEvent.create(this, i, result, children[i], children[i].get{{other.Name}}(), filter));",
 				"			}", "			return result;", "		}", "{{#endif}}",

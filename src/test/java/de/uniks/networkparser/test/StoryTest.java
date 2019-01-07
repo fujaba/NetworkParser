@@ -4,8 +4,11 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import de.uniks.networkparser.IdMap;
+import de.uniks.networkparser.converter.GraphConverter;
 import de.uniks.networkparser.ext.ClassModel;
+import de.uniks.networkparser.ext.DiagramEditor;
 import de.uniks.networkparser.ext.generic.ReflectionBlackBoxTester;
+import de.uniks.networkparser.ext.io.FileBuffer;
 import de.uniks.networkparser.ext.story.Cucumber;
 import de.uniks.networkparser.ext.story.Story;
 import de.uniks.networkparser.ext.story.StoryBook;
@@ -104,7 +107,7 @@ public class StoryTest {
 		
 		
 		scenario.Given("Alice and Seb play ludo");
-		scenario.Given("the players has tokens on startingArea");
+//		scenario.Given("the players has tokens on startingArea");
 		scenario.Given("Alice has dice with value 5");
 		scenario.When("Bob has dice with 1");
 		scenario.Then("Alice is currentplayer from ludo");
@@ -114,9 +117,9 @@ public class StoryTest {
 		HTMLEntity file = new HTMLEntity();
 		file.withGraph(model);
 		
-//		FileBuffer.writeFile("build/cucumber.html", file.toString());
-//		System.out.println(model.toString(new GraphConverter()));
-//		System.out.println(model.toString(DiagramEditor.dump()));
+		FileBuffer.writeFile("build/cucumber.html", file.toString());
+		System.out.println(model.toString(new GraphConverter()));
+		System.out.println(model.toString(DiagramEditor.dump()));
 	}
 	
 	@Test

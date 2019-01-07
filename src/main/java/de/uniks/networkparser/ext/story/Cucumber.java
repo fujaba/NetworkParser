@@ -11,6 +11,7 @@ import de.uniks.networkparser.parser.Token;
 
 public class Cucumber {
 	public static final String TYPE_SCENARIO="scenario";
+	public static final String TYPE_TITLE="title";
 	public static final String TYPE_GIVEN="given";
 	public static final String TYPE_WHEN="when";
 	public static final String TYPE_THEN="then";
