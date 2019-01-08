@@ -3,6 +3,7 @@ package de.uniks.networkparser.test;
 import java.util.Iterator;
 import java.util.concurrent.TimeUnit;
 
+import org.magicwerk.brownies.collections.primitive.IntObjGapList;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Level;
@@ -25,22 +26,31 @@ public class CollectionTest_Big extends TestCase {
 	
 	@Setup(Level.Iteration)
 	public void setup() {
-		collection = factory.getInstance(collectionName, SIZE_BIG);
+		collection = factory.getInstance(collectionName);
+		factory.setNewValue(collection, array);
+	}
+	
+	@Setup(Level.Trial)
+	public void setupBefore() {
+		array=factory.getArray(SIZE_BIG);
 	}
 
 	/*
 	 * This is what you do with JMH.
 	 */
 	@Benchmark
-	@Warmup(iterations = 5, time = 1)
-	@Measurement(iterations = 5, time = 1)
+	@Warmup(iterations = 1, time = 1)
+	@Measurement(iterations = 1, time = 1)
 	@BenchmarkMode(Mode.AverageTime)
 	public void ContainsBig() {
-		int itemTen = collection.size() / 10;
-		int count =0 ;
-		for(int i=0;i<10;i++) {
-			collection.contains(count);
-			count +=itemTen;
+		if(collection instanceof IntObjGapList) {
+			for(int i=0;i<array.length;i++) {
+				collection.contains(i);
+			}
+		} else {
+			for(int i=0;i<array.length;i++) {
+				collection.contains(array[i]);
+			}
 		}
 	}
 	
@@ -48,15 +58,18 @@ public class CollectionTest_Big extends TestCase {
 	 * This is what you do with JMH.
 	 */
 	@Benchmark
-	@Warmup(iterations = 5, time = 1)
-	@Measurement(iterations = 5, time = 1)
+	@Warmup(iterations = 1, time = 1)
+	@Measurement(iterations = 1, time = 1)
 	@BenchmarkMode(Mode.AverageTime)
 	public void RemoveBig() {
-		int itemTen = collection.size() / 10;
-		int count =0 ;
-		for(int i=0;i<10;i++) {
-			collection.remove(count);
-			count +=itemTen;
+		if(collection instanceof IntObjGapList) {
+			for(int i=0;i<array.length;i++) {
+				collection.remove(i);
+			}
+		} else {
+			for(int i=0;i<array.length;i++) {
+				collection.remove(array[i]);
+			}
 		}
 	}
 	
@@ -65,11 +78,11 @@ public class CollectionTest_Big extends TestCase {
 	 * This is what you do with JMH.
 	 */
 	@Benchmark
-	@Warmup(iterations = 5, time = 1)
-	@Measurement(iterations = 5, time = 1)
+	@Warmup(iterations = 1, time = 1)
+	@Measurement(iterations = 1, time = 1)
 	@BenchmarkMode(Mode.AverageTime)
 	public void Iterator() {
-		for(Iterator<Integer> iterator = collection.iterator();iterator.hasNext();) {
+		for(Iterator<?> iterator = collection.iterator();iterator.hasNext();) {
 			iterator.next();
 		}
 	}

@@ -18,7 +18,7 @@ import de.uniks.networkparser.list.SimpleSet;
 import de.uniks.networkparser.list.SpeedList;
 
 public class CollectionsFactory {
-	private ArrayList<Collection<Integer>> collections=new ArrayList<Collection<Integer>>();
+	private ArrayList<Collection<?>> collections=new ArrayList<Collection<?>>();
 	
 	public static void main(String[] args) {
 		CollectionsFactory collection = new CollectionsFactory();
@@ -26,42 +26,38 @@ public class CollectionsFactory {
 	}
 	
 	public CollectionsFactory() {
-		collections.add(new ArrayList<Integer>());
-		collections.add(new ArrayDeque<Integer>());
-		collections.add(new LinkedList<Integer>());
+		collections.add(new ArrayList<Object>());
+		collections.add(new ArrayDeque<Object>());
+		collections.add(new LinkedList<Object>());
 		
-		collections.add(new GapList<Integer>());
-		collections.add(new BigList<Integer>());
+		collections.add(new GapList<Object>());
+		collections.add(new BigList<Object>());
 		collections.add(new IntObjGapList());
 		
-		collections.add(new SimpleList<Integer>());
-		collections.add(new SpeedList<Integer>());
+		collections.add(new SimpleList<Object>());
+		collections.add(new SpeedList<Object>());
 		
-		collections.add(new BasicEList<Integer>());
+		collections.add(new BasicEList<EInt>());
 		
 		collections.add(new EObjectResolvingInteger());
 
-		collections.add(new HashSet<Integer>());
-		collections.add(new LinkedHashSet<Integer>());
-		collections.add(new TreeSet<Integer>());
-		collections.add(new SimpleSet<Integer>());
+		collections.add(new HashSet<Object>());
+		collections.add(new LinkedHashSet<Object>());
+		collections.add(new TreeSet<Object>());
+		collections.add(new SimpleSet<Object>());
 	}
-//	private void setup(int value) {
-//		for(int i=0;i<value;i++) {
-////			list.add(list.size());
-//		}
-//	}
-	public Collection<Integer> getInstance(int count) {
+
+	public Collection<?> getInstance(int count) {
 		if(count>=0 && count<=collections.size()) {
-			Collection<Integer> collection = collections.get(count);
+			Collection<?> collection = collections.get(count);
 			collection.clear();
 			return collection;
 		}
 		return null;
 	}
-	public Collection<Integer> getInstance(String name) {
+	public Collection<?> getInstance(String name) {
 		for(int i=0;i<collections.size();i++) {
-			Collection<Integer> collection = collections.get(i);
+			Collection<?> collection = collections.get(i);
 			if(collection.getClass().getSimpleName().equals(name)) {
 				collection.clear();
 				return collection;
@@ -71,18 +67,36 @@ public class CollectionsFactory {
 	}
 	
 	
-	public Collection<Integer> getInstance(String name, int size) {
+	public Collection<?> getInstance(String name, int size) {
 		for(int i=0;i<collections.size();i++) {
-			Collection<Integer> collection = collections.get(i);
+			Collection<?> collection = collections.get(i);
 			if(collection.getClass().getSimpleName().equals(name)) {
 				collection.clear();
+				if(collection instanceof IntObjGapList) {
+					IntObjGapList iObjCollection = (IntObjGapList)collection;
+					
+					for(int c=0;c<size;c++) {
+						iObjCollection.add(collection.size());
+					}
+					return iObjCollection;
+				}
+				@SuppressWarnings("unchecked")
+				Collection<Object> eList = (Collection<Object>)collection;
 				for(int c=0;c<size;c++) {
-					collection.add(collection.size());
+					eList.add(new EInt(collection.size()));
 				}
 				return collection;
 			}
 		}
 		return null;
+	}
+	
+	public EInt[] getArray(int size) {
+		EInt[] array = new EInt[size];
+		for(int c=0;c<size;c++) {
+			array[c] = new EInt(c);
+		}
+		return array;
 	}
 	
 	
@@ -111,8 +125,24 @@ public class CollectionsFactory {
 		return sb.toString();
 	}
 
-	public ArrayList<Collection<Integer>> getCollections() {
+	public ArrayList<Collection<?>> getCollections() {
 		return collections;
+	}
+
+	public void setNewValue(Collection<?> collection, EInt[] array) {
+		collection.clear();
+		if(collection instanceof IntObjGapList) {
+			IntObjGapList iObjCollection = (IntObjGapList)collection;
+			for(int c=0;c<array.length;c++) {
+				iObjCollection.add(c);
+			}
+			return;
+		}
+		@SuppressWarnings("unchecked")
+		Collection<Object> eList = (Collection<Object>)collection;
+		for(int i=0;i<array.length;i++) {
+			eList.add(array[i]);
+		}
 	}
 }
  

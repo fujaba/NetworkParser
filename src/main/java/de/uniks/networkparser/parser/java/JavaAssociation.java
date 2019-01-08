@@ -77,14 +77,11 @@ public class JavaAssociation extends Template {
 				"				continue;",
 				"			}",
 				"{{#if {{cardinality}}==1}}", // IT IS MANY TO ONE SPECIAL CASE !!!
-				
-//				if(item.setGame(this)) {
-//					result = result & this.field.rawAdd(item);
-//					firePropertyChange(PROPERTY_FIELD, null, item);
-
-				
-				
-				
+				"			if(item.set{{Name}}(this)) {",
+				"				result = result & this.{{other.name}}.rawAdd(item);",
+				"				firePropertyChange(PROPERTY_{{other.NAME}}, null, item);",
+				"			}",
+				"{{#else}}",
 				"			this.{{other.name}}.withVisible(true);",
 				"			boolean changed = this.{{other.name}}.add(item);",
 				"			this.{{other.name}}.withVisible(false);",
@@ -95,6 +92,7 @@ public class JavaAssociation extends Template {
 							"{{#endif}}",
 				"				firePropertyChange(PROPERTY_{{other.NAME}}, null, item);",
 				"			}",
+				"{{#endif}}",
 				"		}",
 				"		return result;",
 				"	}",

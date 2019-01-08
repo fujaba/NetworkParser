@@ -17,7 +17,9 @@ public abstract class TestCase {
 //	@Param({VALUES})
 //	@Param({"java.util.ArrayList","java.util.ArrayDeque","java.util.LinkedList","org.magicwerk.brownies.collections.GapList","org.magicwerk.brownies.collections.BigList","org.magicwerk.brownies.collections.primitive.IntObjGapList","de.uniks.networkparser.list.SimpleList","de.uniks.networkparser.list.SpeedList","org.eclipse.emf.common.util.BasicEList","org.eclipse.emf.ecore.util.EObjectResolvingEList","java.util.HashSet","java.util.LinkedHashSet","java.util.TreeSet","de.uniks.networkparser.list.SimpleSet"})
 
-	protected Collection<Integer> collection;
+	protected Collection<?> collection;
+	
+	protected EInt[] array;
 
 //	public abstract void test();
 

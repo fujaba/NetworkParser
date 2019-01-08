@@ -1,5 +1,5 @@
 apply plugin: 'java-library'
-
+// gradlew -b jmh.gradle jmh -XX:MaxPermSize=2g -Xms2g -Xmx2g
 repositories {
     jcenter()
     maven {
@@ -33,6 +33,8 @@ dependencies {
 
 	// COLLECTION
 	
+	// COLLECTION
+	
 	compile group: 'org.magicwerk', name: 'brownies-collections', version: '0.9.13'
 //	compile "org.magicwerk:brownies-collections:[0.9,)"
 	//compile "de.uniks:NetworkParser:[4,)"
@@ -63,7 +65,9 @@ jmh {
    iterations = 5
    warmupBatchSize = 5
    fork=2
+   //jvmArgs "-Xmx1g", "-Xmx1g", "-Xmx8g"
 }
+
 def classMesserJar = ""
 sourceSets.main.compileClasspath.filter({it.name.indexOf("classmexer")>=0}).each{
 	classMesserJar = it}

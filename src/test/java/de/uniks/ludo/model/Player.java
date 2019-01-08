@@ -125,12 +125,8 @@ public class Player {
 			if (item == null) {
 				continue;
 			}
-			this.home.withVisible(true);
-			boolean changed = this.home.add(item);
-			this.home.withVisible(false);
-			result = result & changed;
-			if (changed) {
-				item.setPlayer(this);
+			if(item.setPlayer(this)) {
+				result = result & this.home.rawAdd(item);
 				firePropertyChange(PROPERTY_HOME, null, item);
 			}
 		}
@@ -306,12 +302,8 @@ public class Player {
 			if (item == null) {
 				continue;
 			}
-			this.meeple.withVisible(true);
-			boolean changed = this.meeple.add(item);
-			this.meeple.withVisible(false);
-			result = result & changed;
-			if (changed) {
-				item.setPlayer(this);
+			if(item.setPlayer(this)) {
+				result = result & this.meeple.rawAdd(item);
 				firePropertyChange(PROPERTY_MEEPLE, null, item);
 			}
 		}
@@ -487,12 +479,8 @@ public class Player {
 			if (item == null) {
 				continue;
 			}
-			this.target.withVisible(true);
-			boolean changed = this.target.add(item);
-			this.target.withVisible(false);
-			result = result & changed;
-			if (changed) {
-				item.setPlayer(this);
+			if(item.setPlayer(this)) {
+				result = result & this.target.rawAdd(item);
 				firePropertyChange(PROPERTY_TARGET, null, item);
 			}
 		}
