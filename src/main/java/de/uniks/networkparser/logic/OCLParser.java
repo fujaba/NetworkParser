@@ -9,6 +9,7 @@ import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
 public class OCLParser implements ObjectCondition {
 //	context Meeting inv: self.end > self.start
+	public static final String INV="inv:";
 	private IdMap map;
 	private SendableEntityCreator creator;
 	private ObjectCondition inv;
@@ -31,14 +32,54 @@ public class OCLParser implements ObjectCondition {
 		parser.withCreator(className);
 		
 		CharacterBuffer item = buffer.nextString();
-		if(item.startsWith("self")) {
-			MapCondition condition = new MapCondition().withMap(map).withCreator(parser.getCreator());
-//			self.floor
-			
+		if(INV.equalsIgnoreCase(item.toString()) == false) {
+			return parser;
 		}
-		
-		
+		parser.withInv(parser.parsingElement(buffer));
 		return parser;
+	}
+	
+	public OCLParser withInv(ObjectCondition parsingElement) {
+		this.inv = parsingElement;
+		return this;
+	}
+
+	private ObjectCondition parsingElement(CharacterBuffer buffer) {
+		if(buffer == null) {
+			return null;
+		}
+		CharacterBuffer item = buffer.nextString();
+		ObjectCondition con = null;
+		if(item.startsWith("self.")) {
+			MapCondition condition = new MapCondition().withMap(map).withCreator(getCreator());
+			String property = item.substring(5);
+			condition.withProperty(property);
+			
+			item = buffer.nextString();
+			
+			
+			Equals sub = new Equals();
+			sub.withLeft(condition);
+			if(item.equals("==")) {
+				sub.withPosition(Equals.POS_EQUALS);
+				item = buffer.nextString();
+				sub.withRight(StringCondition.create(item));
+				con = sub;
+			} else if(item.equals(">")) {
+				sub.withPosition(Equals.POS_LOWER);
+				item = buffer.nextString();
+				sub.withRight(StringCondition.create(item));
+				con = sub;
+			} else if(item.equals("<")) {
+				sub.withPosition(Equals.POS_GREATER);
+				item = buffer.nextString();
+				sub.withRight(StringCondition.create(item));
+				con = sub;
+			} else {
+				con = condition;
+			}
+		}
+		return con;
 	}
 
 	private SendableEntityCreator getCreator() {

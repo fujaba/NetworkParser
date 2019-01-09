@@ -49,5 +49,22 @@ public class MapCondition implements ObjectCondition {
 		}
 		return false;
 	}
+	
+	public Object getValue(SimpleEvent evt) {
+		if(evt == null) {
+			return null;
+		}
+		Object source = evt.getSource();
+		if(creator != null) {
+			
+		}else if(map != null) {
+			creator = map.getCreatorClass(source);
+		}
+		if(creator == null) {
+			return false;
+		}
+		Object itemValue = creator.getValue(source, property);
+		return itemValue;
+	}
 
 }

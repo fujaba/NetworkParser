@@ -4,6 +4,7 @@ import java.beans.PropertyChangeEvent;
 import java.util.Set;
 
 import de.uniks.networkparser.EntityUtil;
+import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.buffer.BufferedBuffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.graph.AssociationTypes;
@@ -45,27 +46,41 @@ public class Equals implements ParserCondition, SendableEntityCreator {
 	 * Variable of Position. Position of the Byte or -1 for currentPosition
 	 */
 	private int position = -1;
+	public static final int POS_GREATER = 1;
+	public static final int POS_LOWER = -1;
+	public static final int POS_EQUALS = 0;
 
 	private Object getValue(ObjectCondition condition, Object evt) {
-		LocalisationInterface li = (LocalisationInterface) evt;
-		if (condition instanceof ParserCondition) {
-			return ((ParserCondition) condition).getValue(li);
-		} else if (condition instanceof ChainCondition) {
-			ChainCondition chainCondition = (ChainCondition) condition;
-			Set<ObjectCondition> templates = chainCondition.getList();
-			CharacterBuffer buffer = new CharacterBuffer();
-			for (ObjectCondition item : templates) {
-				if (item instanceof VariableCondition) {
-					VariableCondition vc = (VariableCondition) item;
-					Object result = vc.getValue(li);
-					if (result != null) {
-						buffer.with(result.toString());
+		if(evt instanceof LocalisationInterface) {
+			LocalisationInterface li = (LocalisationInterface) evt;
+			if (condition instanceof ParserCondition) {
+				return ((ParserCondition) condition).getValue(li);
+			} else if (condition instanceof ChainCondition) {
+				ChainCondition chainCondition = (ChainCondition) condition;
+				Set<ObjectCondition> templates = chainCondition.getList();
+				CharacterBuffer buffer = new CharacterBuffer();
+				for (ObjectCondition item : templates) {
+					if (item instanceof VariableCondition) {
+						VariableCondition vc = (VariableCondition) item;
+						Object result = vc.getValue(li);
+						if (result != null) {
+							buffer.with(result.toString());
+						}
+					} else {
+						buffer.with(item.toString());
 					}
-				} else {
-					buffer.with(item.toString());
 				}
+				return buffer.toString();
 			}
-			return buffer.toString();
+		} else if(evt instanceof SimpleEvent) {
+			if(condition instanceof MapCondition) {
+				return ((MapCondition) condition).getValue((SimpleEvent)evt);
+			} else if(condition instanceof ParserCondition) {
+				ParserCondition con = (ParserCondition) condition;
+				return con.getValue(null);
+			}
+			Object newValue = ((SimpleEvent) evt).getNewValue();
+			return newValue;
 		}
 		return null;
 	}
@@ -75,7 +90,7 @@ public class Equals implements ParserCondition, SendableEntityCreator {
 		if (evt == null) {
 			return value == null;
 		}
-		if (evt instanceof LocalisationInterface && this.left != null && this.right != null) {
+		if ((evt instanceof LocalisationInterface || evt instanceof SimpleEvent ) && this.left != null && this.right != null) {
 
 			Object leftValue = getValue(this.left, evt);
 			Object rightValue = getValue(this.right, evt);
@@ -202,10 +217,17 @@ public class Equals implements ParserCondition, SendableEntityCreator {
 
 	@Override
 	public String toString() {
-		if (left != null && right != null) {
-			return "" + left.toString() + "==" + right.toString();
+		String equals="==";
+		if(position<0) {
+			equals = "<";
+		} else if(position>0) {
+			equals = ">";
 		}
-		return "==" + value + " ";
+		if (left != null && right != null) {
+			
+			return "" + left.toString() + equals + right.toString();
+		}
+		return equals + value + " ";
 	}
 
 	@Override
