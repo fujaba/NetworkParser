@@ -51,10 +51,10 @@ public class SpeedList<V> extends AbstractArray<V> implements List<V>, Iterable<
 	public boolean add(V e) {
 		if(size<MINHASHINGSIZE-10) {
 			if(elements == null) {
-				elements = new Object[120];
+				elements = new Object[42];
 			} else if(size>=elements.length) {
-				System.out.println("COPY:"+size+"/"+elements.length);
-				int newSize = size + size /2 + 5+2;
+//				System.out.println("COPY:"+size+"/"+elements.length);
+				int newSize = size + size + 5;
 				elements = arrayCopy(elements, newSize);
 				this.index = 0;
 			}
