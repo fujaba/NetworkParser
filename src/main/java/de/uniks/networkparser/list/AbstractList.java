@@ -215,7 +215,7 @@ public abstract class AbstractList<V> extends AbstractArray<V> implements Iterab
 	}
 
 	public Iterator<V> iterator() {
-		return new SimpleIterator<V>(this).withCheckPointer(true);
+		return new SimpleIterator<V>(this, true);
 	}
 
 	public Iterator<V> iterator(boolean checkPointer) {

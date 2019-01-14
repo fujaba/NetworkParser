@@ -41,7 +41,7 @@ gradle.projectsEvaluated {
 }
 
 task compileJava16(type: JavaCompile) {
-	source = fileTree(dir: 'src', exclude: ['**/test/**'])
+	source = fileTree(dir: 'src', exclude: ['**/test/**', 'jmh/**', 'gitsrc/**'])
 	destinationDir = file('build/classes/main16')
 	sourceCompatibility = '1.6'
 	targetCompatibility = '1.6'
@@ -49,7 +49,7 @@ task compileJava16(type: JavaCompile) {
 	options.compilerArgs << "-Xlint:-options"
 }
 task compileJava17(type: JavaCompile) {
-	source = fileTree(dir: 'src', exclude: ['**/test/**'])
+	source = fileTree(dir: 'src', exclude: ['**/test/**', 'jmh/**', 'gitsrc/**'])
 	destinationDir = file('build/classes/main17')
 	sourceCompatibility = '1.7'
 	targetCompatibility = '1.7'

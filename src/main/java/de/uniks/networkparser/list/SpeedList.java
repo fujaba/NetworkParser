@@ -17,19 +17,59 @@ public class SpeedList<V> extends AbstractArray<V> implements List<V>, Iterable<
 	}
 
 	public Iterator<V> iterator() {
-		return new SimpleIterator<V>(this).withCheckPointer(true);
+		return new Iterator<V>() {
+			private int cursor;
+			@Override
+			public boolean hasNext() {
+				return cursor < size;
+			}
+			@SuppressWarnings("unchecked")
+			@Override
+			public V next() {
+				if(size < MINHASHINGSIZE) {
+					return (V) elements[cursor++];
+				}
+				return (V) ((Object[]) elements[0])[cursor++];
+			}
+		};
 	}
 
 	@Override
+	public boolean contains(Object o) {
+		if(size<MINHASHINGSIZE) {
+			for(int pos=0;pos<this.size;pos++) {
+				if (o == elements[pos++]) {
+					return true;
+				}
+			}
+			return false;
+		}
+		return getPosition(o, 0, false) >= 0;
+	}
+	
+	@Override
 	public boolean add(V e) {
-		return this.add((Object) e);
+		if(size<MINHASHINGSIZE-10) {
+			if(elements == null) {
+				elements = new Object[120];
+			} else if(size>=elements.length) {
+				System.out.println("COPY:"+size+"/"+elements.length);
+				int newSize = size + size /2 + 5+2;
+				elements = arrayCopy(elements, newSize);
+				this.index = 0;
+			}
+			elements[size] = e;
+			this.size++;
+			return true;
+		}
+		return super.add(e);
 	}
 
 	@Override
 	public boolean remove(Object o) {
 		return super.removeByObject(o) >= 0;
 	}
-	
+
 	@Override
 	public boolean add(Object... values) {
 		if (values == null || values.length < 1) {
@@ -117,5 +157,11 @@ public class SpeedList<V> extends AbstractArray<V> implements List<V>, Iterable<
 	public SimpleList<V> subList(int fromIndex, int toIndex) {
 		return (SimpleList<V>) super.subList(fromIndex, toIndex);
 	}
-
+	
+	@Override
+	public void clear() {
+		this.elements = null;
+		this.size = 0;
+		this.index = 0;
+	}
 }

@@ -19,6 +19,16 @@ public class SimpleIterator<E> implements ListIterator<E> {
 	public SimpleIterator(AbstractArray<E> list) {
 		this.with(list, 0);
 	}
+	
+	public SimpleIterator(AbstractArray<E> list, boolean checkPointer) {
+		this.cursor = 0;
+		this.lastRet = -1;
+		this.list = list;
+		if (checkPointer) {
+			this.checkPointer = this.list.size();
+		}
+	}
+
 
 	@SuppressWarnings("unchecked")
 	public SimpleIterator(Object collection) {
@@ -97,17 +107,25 @@ public class SimpleIterator<E> implements ListIterator<E> {
 		return cursor < list.size;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public E next() {
-		if (cursor >= list.size()) {
+		int size = list.size();
+		if (cursor >= size) {
 			throw new ConcurrentModificationException();
 		}
-		if (this.checkPointer >= 0 && this.checkPointer != list.size()) {
+		if (this.checkPointer >= 0 && this.checkPointer != size) {
 			throw new ConcurrentModificationException();
 		}
 		lastRet = cursor;
 		cursor = cursor + 1;
-		return (E) list.get(lastRet);
+		Object[] elements;
+		if(list.isComplex(size)) {
+			 elements = (Object[]) list.elements[0];
+		}else {
+			elements = list.elements;
+		}
+		return (E) elements[lastRet];
 	}
 
 	@Override

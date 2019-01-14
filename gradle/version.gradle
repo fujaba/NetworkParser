@@ -204,7 +204,7 @@ def getWorkingBranch() {
 	branch.trim()
 }
 task compileJava18(type: JavaCompile) {
-	source = fileTree(dir: 'src', exclude: ['**/test/**'])
+	source = fileTree(dir: 'src', exclude: ['**/test/**', 'jmh/**', 'gitsrc/**'])
 	destinationDir = file('build/classes/main18')
 	sourceCompatibility = '1.8'
 	targetCompatibility = '1.8'

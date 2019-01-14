@@ -90,7 +90,7 @@ public abstract class AbstractArray<V> implements BaseItem {
 	 * + Index&gt;, DeleteItem&lt;Index-Sorted&gt;, SimpleValue&lt;V&gt;,
 	 * BigList&lt;V + Index&gt; for BIDIMAP ]
 	 */
-	Object[] elements; // non-private to simplify nested class access
+	public Object[] elements; // non-private to simplify nested class access
 
 	/** The size of the ArrayList (the number of elements it contains). */
 	int size;
@@ -409,21 +409,21 @@ public abstract class AbstractArray<V> implements BaseItem {
 		return false;
 	}
 
-	void grow(int minCapacity) {
+	int grow(int minCapacity) {
 		int arrayFlag = getArrayFlag(minCapacity);
 		if (elements == null) {
 			// Init List
 			int newSize = minCapacity + minCapacity / 2 + 5;
 			if (arrayFlag == 1) {
 				elements = new Object[newSize];
-				return;
+				return newSize; 
 			}
 			elements = new Object[arrayFlag];
 			elements[SMALL_KEY] = new Object[newSize];
 			if ((flag & MAP) != 0) {
 				elements[SMALL_VALUE] = new Object[newSize];
 			}
-			return;
+			return arrayFlag;
 		}
 		if (arrayFlag > 1 && arrayFlag != elements.length) {
 			// Change Single to BigList
@@ -434,7 +434,7 @@ public abstract class AbstractArray<V> implements BaseItem {
 				elements[SMALL_VALUE] = new Object[old.length];
 			}
 			if(minCapacity < old.length ) {
-				return;
+				return arrayFlag;
 			}
 		}
 
@@ -448,26 +448,26 @@ public abstract class AbstractArray<V> implements BaseItem {
 				}
 			}
 			if (minCapacity >= MINHASHINGSIZE) {
-				boolean size = false;
 				if (elements[BIG_KEY] != null && minCapacity >= ((Object[]) elements[BIG_KEY]).length * MAXUSEDLIST) {
 					resizeBig(newSize * 2, BIG_KEY);
-					size = true;
+					elements[DELETED] = null;
+					return newSize * 2;
 				}
 				if ((flag & BIDI) != 0 && elements[BIG_VALUE] != null
 						&& minCapacity >= ((Object[]) elements[BIG_VALUE]).length * MAXUSEDLIST) {
 					resizeBig(newSize * 2, BIG_VALUE);
-					size = true;
-				}
-				if (size) {
 					elements[DELETED] = null;
+					return newSize * 2;
 				}
 			}
 		} else if (size < MINHASHINGSIZE) {
 			if (minCapacity > elements.length) {
 				int newSize = minCapacity + minCapacity / 2 + 5;
 				resizeSmall(newSize);
+				return newSize;
 			}
 		}
+		return minCapacity;
 	}
 
 	void resizeBig(int minCapacity, int index) {
