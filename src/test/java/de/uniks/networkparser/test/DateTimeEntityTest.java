@@ -17,8 +17,9 @@ public class DateTimeEntityTest {
 	public void testDateComplete(){
 		DateTimeEntity date = new DateTimeEntity();
 		GregorianCalendar reference = new GregorianCalendar();
-		reference.set(GregorianCalendar.MONTH, 2);
-		reference.set(GregorianCalendar.DAY_OF_MONTH, 31);
+		reference.set(GregorianCalendar.MONTH, 1);
+		reference.set(GregorianCalendar.DAY_OF_MONTH, 5);
+		reference.set(GregorianCalendar.YEAR, 2018);
 		DateFormat df = DateFormat.getDateInstance( DateFormat.FULL );
 		printToStream(df, reference, null);
 		long timeInMillis = reference.getTimeInMillis();

@@ -45,7 +45,7 @@ public class Equals implements ParserCondition, SendableEntityCreator {
 	/**
 	 * Variable of Position. Position of the Byte or -1 for currentPosition
 	 */
-	private int position = -1;
+	private int position = 0;
 	public static final int POS_GREATER = 1;
 	public static final int POS_LOWER = -1;
 	public static final int POS_EQUALS = 0;
