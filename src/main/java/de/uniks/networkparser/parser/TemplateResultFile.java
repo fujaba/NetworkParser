@@ -191,7 +191,9 @@ public class TemplateResultFile extends SortedSet<TemplateResultFragment>
 		if (PROPERTY_HEADERS.equalsIgnoreCase(attrName)) {
 			SimpleSet<String> headers = new SimpleSet<String>();
 			for (TemplateResultFragment child : this) {
-				headers.addAll(child.getHeaders());
+				if(child != null) {
+					headers.addAll(child.getHeaders());
+				}
 			}
 			return headers;
 		}

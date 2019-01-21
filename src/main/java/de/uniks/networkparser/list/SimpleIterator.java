@@ -24,7 +24,7 @@ public class SimpleIterator<E> implements ListIterator<E> {
 		this.cursor = 0;
 		this.lastRet = -1;
 		this.list = list;
-		if (checkPointer) {
+		if(list != null && checkPointer) {
 			this.checkPointer = this.list.size();
 		}
 	}
@@ -119,13 +119,16 @@ public class SimpleIterator<E> implements ListIterator<E> {
 		}
 		lastRet = cursor;
 		cursor = cursor + 1;
-		Object[] elements;
-		if(list.isComplex(size)) {
-			 elements = (Object[]) list.elements[0];
-		}else {
-			elements = list.elements;
+		if(list.index==0) {
+			Object[] elements;
+			if(list.isComplex(size)) {
+				 elements = (Object[]) list.elements[0];
+			}else {
+				elements = list.elements;
+			}
+			return (E) elements[lastRet];	
 		}
-		return (E) elements[lastRet];
+		return (E) list.get(lastRet);
 	}
 
 	@Override
