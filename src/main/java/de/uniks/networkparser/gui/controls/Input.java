@@ -1,5 +1,7 @@
 package de.uniks.networkparser.gui.controls;
 
+import de.uniks.networkparser.SimpleObject;
+
 /*
 The MIT License
 
@@ -34,6 +36,10 @@ public class Input<T> extends Control {
 //	protected SimpleGUI $view;
 	protected T value;
 	protected String type;
+	
+	public Input<T>  withElement(SimpleObject blub) {
+		return this;
+	}
 
 	public Input() {
 		super();
