@@ -131,6 +131,19 @@ public class UpdateCondition implements ObjectCondition {
 		}
 		return this;
 	}
+	
+	public UpdateCondition withStart(Object startClass) {
+		this.owner = startClass;
+		if (startClass instanceof Class<?> == false && map != null) {
+			this.creator = map.getCreatorClass(startClass);
+		}
+		return this;
+	}
+	
+	public UpdateCondition withEnd(String property) {
+		this.endProperty = property;
+		return this;
+	}
 
 	public UpdateCondition withStartConition(ObjectCondition condition) {
 		this.startCondition = condition;

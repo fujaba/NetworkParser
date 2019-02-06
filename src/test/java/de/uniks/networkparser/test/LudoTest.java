@@ -11,6 +11,7 @@ import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.ext.ClassModel;
 import de.uniks.networkparser.ext.io.FileBuffer;
 import de.uniks.networkparser.ext.petaf.Space;
+import de.uniks.networkparser.ext.petaf.proxy.NodeProxyTCP;
 import de.uniks.networkparser.ext.story.Cucumber;
 import de.uniks.networkparser.ext.story.Story;
 import de.uniks.networkparser.ext.story.StoryStepJUnit;
@@ -185,6 +186,7 @@ public class LudoTest {
 		IdMap map = LudoSet.createIdMap("42");
 		Space space=new Space();
 		space.withModel(map, game);
+		space.with(NodeProxyTCP.createServer(4242), NodeProxyTCP.search(4242));
 	}
 	
 	public boolean stepLogic() {

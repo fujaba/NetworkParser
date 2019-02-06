@@ -76,11 +76,6 @@ public class SimpleSet<V> extends AbstractList<V> implements Set<V> {
 		return (SimpleSet<V>) super.subList(fromIndex, toIndex);
 	}
 
-	@Override
-	public boolean addAll(int index, Collection<? extends V> values) {
-		return super.addAll(index, values);
-	}
-
 	// Add Methods from SDMLib
 	@Override
 	public String toString() {

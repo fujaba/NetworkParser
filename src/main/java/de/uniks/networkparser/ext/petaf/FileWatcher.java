@@ -1,5 +1,20 @@
 package de.uniks.networkparser.ext.petaf;
 
+import static java.nio.file.StandardWatchEventKinds.ENTRY_CREATE;
+import static java.nio.file.StandardWatchEventKinds.ENTRY_DELETE;
+import static java.nio.file.StandardWatchEventKinds.ENTRY_MODIFY;
+import static java.nio.file.StandardWatchEventKinds.OVERFLOW;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
+import java.nio.file.WatchEvent;
+import java.nio.file.WatchKey;
+import java.nio.file.WatchService;
+
+import de.uniks.networkparser.buffer.CharacterBuffer;
+import de.uniks.networkparser.ext.io.FileBuffer;
 /*
 The MIT License
 
@@ -25,18 +40,93 @@ THE SOFTWARE.
 */
 import de.uniks.networkparser.ext.petaf.proxy.NodeProxyFileSystem;
 
-public class FileWatcher {
+public class FileWatcher implements Runnable {
 	protected NodeProxy proxy;
 	protected String fileName;
-
+	private boolean runTask=true;
+	private WatchService watcher;
+	private long lastChange=-1;
+	private Space space;
+	
 	public FileWatcher init(NodeProxyFileSystem owner, String fileName) {
 		this.proxy = owner;
 		this.fileName = fileName;
+		
 		return this;
 	}
-
-	public void close() {
-
+	
+	public void run() {
+		if(space ==null) {
+			return;
+		}
+		while(this.runTask) {
+	        if(watcher != null) {
+	        	searchNIO();
+	        }else {
+	        	File file = new File(this.fileName);
+	        	long last = file.lastModified();
+	        	if(this.lastChange<1) {
+	        		this.lastChange = last;
+	        	} else {
+	        		if(last != lastChange) {
+	        			this.lastChange = last;
+	       	            System.out.println("New (version of) file " + fileName + " detected");
+	       	            CharacterBuffer buffer = FileBuffer.readFile(fileName);
+	       	            space.getMap().decode(buffer);
+	        		}
+	        	}
+	        }
+		}
+	}
+	
+	private boolean searchNIO() {
+		WatchKey watchKey = null;
+		try {
+			watchKey = watcher.take();
+		} catch (InterruptedException e) {
+		}
+		if(watchKey == null) {
+			return true;
+		}
+        for (WatchEvent<?> event : watchKey.pollEvents()) {
+        	WatchEvent.Kind<?> kind = event.kind();
+            if (kind == OVERFLOW) {
+            	continue;
+            }
+	        if (kind == ENTRY_CREATE) {
+	        	// if its a new json file, read it
+	            Path filepath = (Path) event.context();
+	            System.out.println("New (version of) file " + filepath.toFile() + " detected");
+	            CharacterBuffer buffer = FileBuffer.readFile(filepath.toFile());
+	            space.getMap().decode(buffer);
+	        }
+	        if (kind == ENTRY_MODIFY) {
+	        	// do I have a buf for this one, then read
+                 Path filepath = (Path) event.context();
+                 CharacterBuffer buffer = FileBuffer.readFile(filepath.toFile());
+		            space.getMap().decode(buffer);
+	        }
+	        if (kind == ENTRY_DELETE) {
+	        	continue;
+            }
+        }
+        return true;
 	}
 
+	public boolean initNIOFileWatcher() {
+         try {
+			watcher = FileSystems.getDefault().newWatchService();
+			File file=new File(this.fileName);
+			Path dirPath = file.toPath();
+			dirPath.register(watcher, ENTRY_CREATE, ENTRY_DELETE, ENTRY_MODIFY);
+		} catch (IOException e) {
+			e.printStackTrace();
+			return false;
+		}
+        return true;
+	}
+	
+	public void close() {
+		this.runTask=false;
+	}
 }

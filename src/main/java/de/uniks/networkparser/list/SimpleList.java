@@ -36,7 +36,6 @@ public class SimpleList<V> extends AbstractList<V> implements List<V> {
 	public SimpleList() {
 		withFlag(SimpleList.ALLOWDUPLICATE);
 	}
-
 	@Override
 	public BaseItem getNewList(boolean keyValue) {
 		return new SimpleList<V>();
@@ -51,7 +50,6 @@ public class SimpleList<V> extends AbstractList<V> implements List<V> {
 	public boolean remove(Object o) {
 		return super.removeByObject(o) >= 0;
 	}
-
 	@Override
 	public boolean add(V e) {
 		return super.add(e);

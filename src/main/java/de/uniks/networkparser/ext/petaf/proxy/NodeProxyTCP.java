@@ -718,4 +718,10 @@ public class NodeProxyTCP extends NodeProxy {
 		return false;
 	}
 
+	public static NodeProxy search(int port) {
+		//Create BroadCast and search in Local Network
+		
+		return null;
+	}
+
 }

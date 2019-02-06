@@ -156,6 +156,25 @@ public class ModelTest implements ObjectCondition {
 		uni.withStudents(new Student().withFirstName("Stefan"));
 		Assert.assertEquals(5, events.size());
 	}
+	
+	@Test
+	public void testTransaction() {
+		University uni = new University();
+		IdMap map=new IdMap();
+		map.with(new UniversityCreator(), new StudentCreator());
+		UpdateCondition filter = UpdateCondition.createTransaction(map);
+		map.withListener(filter);
+		filter.withStart(Student.class);
+		filter.withEnd(Student.PROPERTY_LASTNAME);
+		
+		map.toJsonObject(uni);
+
+		Student student = new Student();
+		uni.addToStudents(new Student());
+		student.withFirstName("Albert");
+		student.withLastName("Zuendorf");
+
+	}
 
 	@Test
 	public void testGeneric() {
