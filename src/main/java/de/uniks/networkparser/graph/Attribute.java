@@ -40,7 +40,7 @@ public class Attribute extends Value {
 		super.withValue(value);
 		return this;
 	}
-
+	
 	@Override
 	public Modifier getModifier() {
 		Modifier modifier = super.getModifier();

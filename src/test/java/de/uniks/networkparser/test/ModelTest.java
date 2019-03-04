@@ -2,9 +2,12 @@ package de.uniks.networkparser.test;
 
 import java.util.Iterator;
 import java.util.Map.Entry;
+import java.util.stream.Stream;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.sdmlib.test.examples.studyrightWithAssignments.model.Room;
+import org.sdmlib.test.examples.studyrightWithAssignments.model.util.StudentSet;
 
 import de.uniks.networkparser.Deep;
 import de.uniks.networkparser.Filter;
@@ -20,6 +23,7 @@ import de.uniks.networkparser.ext.FileClassModel;
 import de.uniks.networkparser.ext.generic.GenericCreator;
 import de.uniks.networkparser.ext.generic.SimpleParser;
 import de.uniks.networkparser.ext.io.FileBuffer;
+import de.uniks.networkparser.ext.io.StringPrintStream;
 import de.uniks.networkparser.graph.Association;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.DataType;
@@ -164,13 +168,14 @@ public class ModelTest implements ObjectCondition {
 		map.with(new UniversityCreator(), new StudentCreator());
 		UpdateCondition filter = UpdateCondition.createTransaction(map);
 		map.withListener(filter);
+		filter.withContidion(new StringPrintStream());
 		filter.withStart(Student.class);
 		filter.withEnd(Student.PROPERTY_LASTNAME);
 		
 		map.toJsonObject(uni);
 
 		Student student = new Student();
-		uni.addToStudents(new Student());
+		uni.addToStudents(student);
 		student.withFirstName("Albert");
 		student.withLastName("Zuendorf");
 
@@ -423,6 +428,38 @@ public class ModelTest implements ObjectCondition {
 		System.out.println(map.toJsonObject(alice));
 		
 		alice.setBalance(42);
+	}
+	
+	@Test
+	public void testChaining() {
+		org.sdmlib.test.examples.studyrightWithAssignments.model.University uni = new org.sdmlib.test.examples.studyrightWithAssignments.model.University();
+		Room math = new Room();
+		org.sdmlib.test.examples.studyrightWithAssignments.model.Student alice = new org.sdmlib.test.examples.studyrightWithAssignments.model.Student();
+		alice.setName("Alice");
+		
+		org.sdmlib.test.examples.studyrightWithAssignments.model.Student bob = new org.sdmlib.test.examples.studyrightWithAssignments.model.Student();
+		bob.setName("Bob");
+		
+		math.setStudents(alice, bob);
+		uni.setRooms(math);
+		
+//		uni.getRooms().getStudents().setCredits(42);
+		System.out.println(alice.getCredits());
+		System.out.println(bob.getCredits());
+		
+		uni.getRooms().stream().map(p -> p.getStudents())
+				.forEach(s->s.forEach(st->st.setCredits(42)));
+		
+		System.out.println(alice.getCredits());
+		System.out.println(bob.getCredits());
+//				.map(s->s.get(index))
+//				.allMatch(s->s.get)
+//				.map(s->s.e)
+//				.allMatch(s->s.get)
+//		for(StudentSet item : map) {
+//			item.
+//		}
+//				.allMatch(s -> s.setCredits(42));
 		
 	}
 }

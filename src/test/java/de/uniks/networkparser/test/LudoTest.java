@@ -35,16 +35,15 @@ public class LudoTest {
 
 	public void step1() {
 		//Step 1
+//		Cucumber.createFromFile(file)
 		Cucumber scenario = Cucumber.createScenario("defining the start player");
-	
-		scenario.Definition("Karli is a Player");
-		scenario.Definition("Seb is a Player");
+		scenario.Definition("Alice is a Player");
+		scenario.Definition("Bob is a Player");
 		scenario.Definition("dice is a Dice");
+		scenario.Definition("ludo is a Game");
+			
 		
-		
-		scenario.Given("Alice and Seb play ludo");
-		scenario.Given("the players has tokens on startingArea");
-		scenario.Given("Alice has dice with value 5");
+		scenario.Given("Alice and Seb play ludo. Alice has dice with value 5");
 		scenario.When("Bob has dice with 1");
 		scenario.Then("Alice is currentplayer from ludo");
 		scenario.analyse();

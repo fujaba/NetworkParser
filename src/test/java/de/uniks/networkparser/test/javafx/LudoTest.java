@@ -80,7 +80,9 @@ public class LudoTest {
 		
 		
 		controllerFactory.setValue("Albert2");
-		
+		if(args != null && args.length>0) {
+			controller.withTitle("Player: "+args[0]);
+		}
 		controller.show();
 	}
 }

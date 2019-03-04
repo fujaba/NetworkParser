@@ -7,8 +7,6 @@
  */
 package de.uniks.networkparser.test.model;
 
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
 import de.uniks.networkparser.interfaces.SendableEntity;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleSet;
@@ -97,47 +95,6 @@ public class Student extends Person implements SendableEntity{
 		 */
 		this.setUniversity(null);
 		this.setIn(null);
-	}
-
-	protected PropertyChangeSupport listeners = null;
-	
-	public boolean firePropertyChange(String propertyName, Object oldValue, Object newValue) {
-		if (listeners != null) {
-			listeners.firePropertyChange(propertyName, oldValue, newValue);
-			return true;
-		}
-		return false;
-	}
-
-	public boolean addPropertyChangeListener(PropertyChangeListener listener) {
-		if (listeners == null) {
-			listeners = new PropertyChangeSupport(this);
-		}
-		listeners.addPropertyChangeListener(listener);
-		return true;
-	}
-
-	public boolean addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
-		if (listeners == null) {
-			listeners = new PropertyChangeSupport(this);
-		}
-		listeners.addPropertyChangeListener(propertyName, listener);
-		return true;
-	}
-
-	public boolean removePropertyChangeListener(PropertyChangeListener listener) {
-		if (listeners != null) {
-			listeners.removePropertyChangeListener(listener);
-		}
-		return true;
-	}
-
-	public boolean removePropertyChangeListener(String property,
-			PropertyChangeListener listener) {
-		if (listeners != null) {
-			listeners.removePropertyChangeListener(property, listener);
-		}
-		return true;
 	}
 
 	public Student withName(String newValue) {

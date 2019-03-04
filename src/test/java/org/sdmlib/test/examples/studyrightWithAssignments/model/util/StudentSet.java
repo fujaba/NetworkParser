@@ -227,6 +227,10 @@ public class StudentSet extends SimpleSet<Student> implements SendableEntityCrea
 		return result;
 	}
 
+	public StudentSet setCredits(int value) {
+		withCredits(value);
+		return this;
+	}
 	public StudentSet withCredits(int value) {
 		for (Student obj : this) {
 			obj.setCredits(value);

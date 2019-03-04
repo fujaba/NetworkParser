@@ -12,10 +12,7 @@ public class OCLTest {
 	@Test
 	public void testOCL() {
 		String item = "context house inv: self.floor > 0";
-		IdMap map = new IdMap();
-		map.withCreator(new HouseCreator());
-		
-		
+		IdMap map = new IdMap().withCreator(new HouseCreator());
 		OCLParser parser = OCLParser.create(item, map);
 		House house = new House();
 		System.out.println(parser.update(house));

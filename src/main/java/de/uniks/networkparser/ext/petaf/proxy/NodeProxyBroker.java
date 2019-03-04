@@ -68,7 +68,7 @@ public class NodeProxyBroker extends NodeProxy {
 	public NodeProxyBroker(String serverURI) {
 		this(serverURI, null);
 	}
-
+	
 	public NodeProxyBroker withAuth(String sender, String password) {
 		this.sender = sender;
 		this.password = password;

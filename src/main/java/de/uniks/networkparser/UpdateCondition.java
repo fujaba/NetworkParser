@@ -108,7 +108,7 @@ public class UpdateCondition implements ObjectCondition {
 	}
 
 	public boolean isAtomar() {
-		return condition != null;
+		return isTransaction() == false && condition != null;
 	}
 
 	public boolean isTransaction() {
@@ -134,8 +134,13 @@ public class UpdateCondition implements ObjectCondition {
 	
 	public UpdateCondition withStart(Object startClass) {
 		this.owner = startClass;
-		if (startClass instanceof Class<?> == false && map != null) {
-			this.creator = map.getCreatorClass(startClass);
+		if(map != null) {
+			if (startClass instanceof Class<?> ) { 
+				Class<?> subClass = (Class<?>) startClass;
+				this.creator = map.getCreator(subClass.getName(), true);
+			}else {
+				this.creator = map.getCreatorClass(startClass);
+			}
 		}
 		return this;
 	}
@@ -153,8 +158,13 @@ public class UpdateCondition implements ObjectCondition {
 	public UpdateCondition withEnd(String property, Object endClass) {
 		this.endClass = endClass;
 		this.endProperty = property;
-		if (endClass instanceof Class<?> == false && map != null) {
-			endCreator = map.getCreatorClass(endClass);
+		if(map != null) {
+			if (endClass instanceof Class<?> ) { 
+				Class<?> subClass = (Class<?>) endClass;
+				this.creator = map.getCreator(subClass.getName(), true);
+			}else {
+				this.creator = map.getCreatorClass(endClass);
+			}
 		}
 		return this;
 	}
@@ -211,14 +221,20 @@ public class UpdateCondition implements ObjectCondition {
 						this.changes = new SimpleSet<SimpleEvent>();
 						return true;
 					}
-				} else if (owner != null && creator != null) {
-					SendableEntityCreator creator = map.getCreatorClass(source);
-					if (creator != null && creator == this.creator) {
-						this.changes = new SimpleSet<SimpleEvent>();
-						return true;
-					}
+				}
+			} else if (owner != null && creator != null) {
+				SendableEntityCreator creator = map.getCreatorClass(source);
+				if (creator != null && creator == this.creator) {
+					this.changes = new SimpleSet<SimpleEvent>();
+					return true;
+				}
+				creator = map.getCreatorClass(event.getNewValue());
+				if (creator != null && creator == this.creator) {
+					this.changes = new SimpleSet<SimpleEvent>();
+					return true;
 				}
 			}
+			
 			if (this.changes != null) {
 				this.changes.add(event);
 				// Check for End
@@ -244,12 +260,71 @@ public class UpdateCondition implements ObjectCondition {
 							this.changes = null;
 							return true;
 						}
+					} else if (creator != null && owner != null) {
+						SendableEntityCreator creator = map.getCreatorClass(event.getModelValue());
+						if (creator != null && this.creator == creator) {
+							if (this.condition != null) {
+								
+								SimpleEvent eventTransaction = new SimpleEvent(this, "transaction", null, mergeChanges()); 
+								return this.condition.update(eventTransaction);
+							}
+							this.changes = null;
+							return true;
+						}
+						
 					}
 				}
 			}
 			return true;
 		}
 		return false;
+	}
+	
+	public Object mergeChanges() {
+		if(this.changes== null) {
+			return null;
+		}
+		Entity mergeChange = null;
+		Entity mergeUpdate = null;
+		
+		for(Object change : this.changes) {
+			if(change instanceof SimpleEvent == false) {
+				continue;
+			}
+			SimpleEvent evt = (SimpleEvent) change;
+			Entity entity = evt.getEntity();
+			if(mergeChange == null) {
+				mergeChange = (Entity) entity.getNewList(true);
+				// Copy first One
+				for(int i = 0;i<entity.size();i++) {
+					String key = entity.getKeyByIndex(i);
+					Object value = entity.getValueByIndex(i);
+					mergeChange.put(key, value);
+					if(SendableEntityCreator.UPDATE.equals(key)) {
+						mergeUpdate = (Entity) value;
+					}
+				}
+//				entity.getString(ICl)
+			}else {
+				for(int i = 0;i<entity.size();i++) {
+					String key = entity.getKeyByIndex(i);
+					if(SendableEntityCreator.UPDATE.equals(key)) {
+						Object value = entity.getValueByIndex(i);
+						if(value instanceof Entity) {
+							Entity valueEntity = (Entity) value;
+							for(int c = 0;c<valueEntity.size();c++) {
+								String valueKey = valueEntity.getKeyByIndex(c);
+								Object valueValue = valueEntity.getValueByIndex(c);
+								if(mergeUpdate != null) {
+									mergeUpdate.put(valueKey, valueValue);
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		return mergeChange;
 	}
 
 	public boolean changeItem(Object source, Object target, String property) {

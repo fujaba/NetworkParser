@@ -72,6 +72,12 @@ public class PetaFTest {
 		Assert.assertTrue(server.start());
 		server.start();
 		server.close();
+		
+//		Space space=new Space();
+//		space.with(NodeProxyLocal.create(e -> {
+//			System.out.println(e);
+//			return true;
+//		}));
 //		Thread.sleep(5000);
 	}
 

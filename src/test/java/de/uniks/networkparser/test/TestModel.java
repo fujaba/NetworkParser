@@ -15,16 +15,16 @@ public class TestModel {
 	public void testModel() {
 		ObjectModel model = new ObjectModel();
 		ObjectInstance alice = model.createObject("alice", "Person");
-		alice.createAttribute("name", DataType.STRING);
+		alice.createAttribute("name", DataType.STRING).withValue("Alice");
 		ObjectInstance uni = model.createObject("uni", "University");
-		uni.createAttribute("name", DataType.STRING);
+		uni.createAttribute("name", DataType.STRING).withValue("Uni Kassel");
 		
 		uni.withBidirectional(alice, "student", Association.MANY, "owner", Association.ONE);
 		
 		
 		GraphConverter converter = new GraphConverter();
 		TemplateResultFragment convertToTestCode = converter.convertToTestCode(model, true);
-		System.out.println(convertToTestCode.toString());
+		System.out.println(convertToTestCode.getValue());
 	}
 	
     public static void main(String args[]) {

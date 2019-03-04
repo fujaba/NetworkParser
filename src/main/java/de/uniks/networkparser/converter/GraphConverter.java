@@ -231,7 +231,11 @@ public class GraphConverter implements Converter {
 			code.withLine("story.assertNotNull(\"Object '"+clazz.getId()+"' NULL\", "+clazz.getId()+");");
 			for(Attribute attribute : clazz.getAttributes()) {
 				if(createModel) {
-					code.withLine(clazz.getId() + ".set"+EntityUtil.upFirstChar(attribute.getName())+"("+attribute.getValue()+");");
+					if(attribute.getType().equals(DataType.STRING)) {
+						code.withLine(clazz.getId() + ".set"+EntityUtil.upFirstChar(attribute.getName())+"(\""+attribute.getValue()+"\");");
+					} else {
+						code.withLine(clazz.getId() + ".set"+EntityUtil.upFirstChar(attribute.getName())+"("+attribute.getValue()+");");
+					}
 				}
 				code.withLine("story.assertEquals(\"Attribute "+attribute.getName()+" wrong value\", "+attribute.getValue()+", "+clazz.getId()+".get"+EntityUtil.upFirstChar(attribute.getName())+"());");
 			}
