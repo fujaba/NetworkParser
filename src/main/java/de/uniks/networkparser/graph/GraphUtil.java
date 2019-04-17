@@ -35,7 +35,7 @@ permissions and limitations under the Licence.
 public class GraphUtil {
 	private static SimpleList<String> noneDictionary=new SimpleList<String>().with("aircraft","carp","deer", "salmon", "sheep", "trout");
 	private static SimpleList<String> oesDictionary=new SimpleList<String>().with("hero", "potato", "torpedo");
-	
+//	private static SimpleKeyValueList<String, String> fixedDictionary=new SimpleKeyValueList<String, String>().with("person", "people");	
 	
 	public static String getPlural(String singular) {
 		// Zischlaut

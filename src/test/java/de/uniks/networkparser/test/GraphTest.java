@@ -441,7 +441,7 @@ public class GraphTest {
 		}
 		Assert.assertEquals(len, json.toString(2).length());
 	}
-	private void showDebugInfos(String value, int len, PrintStream stream) {
+	protected void showDebugInfos(String value, int len, PrintStream stream) {
 		if (stream != null) {
 			stream.println("###############################");
 			stream.println(value);

@@ -2,12 +2,10 @@ package de.uniks.networkparser.test;
 
 import java.util.Iterator;
 import java.util.Map.Entry;
-import java.util.stream.Stream;
 
 import org.junit.Assert;
 import org.junit.Test;
 import org.sdmlib.test.examples.studyrightWithAssignments.model.Room;
-import org.sdmlib.test.examples.studyrightWithAssignments.model.util.StudentSet;
 
 import de.uniks.networkparser.Deep;
 import de.uniks.networkparser.Filter;

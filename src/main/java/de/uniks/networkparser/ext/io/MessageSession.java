@@ -150,7 +150,7 @@ public class MessageSession {
 			bytes[i + userBytes.length + userBytes.length + 2] = passwordBytes[i];
 		}
 		ByteConverter64 converter = new ByteConverter64();
-		CharacterBuffer staticString = converter.toStaticString(bytes);
+		CharacterBuffer staticString = converter.toStaticString(bytes, true);
 		return staticString.toString();
 	}
 

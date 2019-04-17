@@ -18,7 +18,7 @@ public class SpeedTest {
 		}
 	}
 	public void testing(Collection<Integer> collection) {
-		long start = System.currentTimeMillis();
+//		long start = System.currentTimeMillis();
 		for(int i=0;i<SIZE_SMALL;i++) {
 			collection.add(collection.size());
 		}

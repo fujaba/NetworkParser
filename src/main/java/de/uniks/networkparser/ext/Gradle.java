@@ -275,7 +275,8 @@ public class Gradle implements ObjectCondition{
 		if (file.exists() == false) {
 			return;
 		}
-		SimpleKeyValueList<String, String> extractFiles = new SimpleKeyValueList<String, String>()
+//		SimpleKeyValueList<String, String> extractFiles = 
+				new SimpleKeyValueList<String, String>()
 				.withKeyValue("gradlew", "").withKeyValue("gradlew.bat", "")
 				.withKeyValue("gradle-wrapper.jar", "gradle/wrapper")
 				.withKeyValue("gradle-wrapper.properties", "gradle/wrapper");
@@ -284,7 +285,7 @@ public class Gradle implements ObjectCondition{
 			jarFile = new JarFile(file);
 			Enumeration<JarEntry> entries = jarFile.entries();
 			while (entries.hasMoreElements()) {
-				JarEntry entry = entries.nextElement();
+//				JarEntry entry = entries.nextElement();
 //			for (Iterator it = map.keySet().iterator(); it.hasNext();) {
 //			      String entryName = (String) it.next();
 //			for(JarEntry entry : jarFile.entries()) {

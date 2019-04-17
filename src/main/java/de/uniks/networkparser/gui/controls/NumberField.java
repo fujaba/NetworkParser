@@ -1,7 +1,5 @@
 package de.uniks.networkparser.gui.controls;
 
-import de.uniks.networkparser.SimpleObject;
-
 /*
 The MIT License
 

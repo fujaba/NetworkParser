@@ -63,18 +63,33 @@ public class ByteConverter64 extends ByteConverter {
 	 * but not to encode the entire content of a MIME part.
 	 *
 	 * @param values the byte array
+	 * @param finishToken finish TOken with =
 	 * @return the encoded byte array
 	 **/
 	public CharacterBuffer toStaticString(CharSequence values) {
+		return toStaticString(values, true);
+	}
+
+	
+	/**
+	 * Base64 encode a byte array. No line breaks are inserted. This method is
+	 * suitable for short strings, such as those in the IMAP AUTHENTICATE protocol,
+	 * but not to encode the entire content of a MIME part.
+	 *
+	 * @param values the byte array
+	 * @param finishToken finish TOken with =
+	 * @return the encoded byte array
+	 **/
+	public CharacterBuffer toStaticString(CharSequence values, boolean finishToken) {
 		if (values.length() == 0) {
 			return new CharacterBuffer();
 		}
 		if (values instanceof CharacterBuffer) {
-			return encode((CharacterBuffer) values, 0, values.length());
+			return encode((CharacterBuffer) values, 0, values.length(), finishToken);
 		}
 		CharacterBuffer buffer = new CharacterBuffer();
 		buffer.withObjects(values);
-		return encode(buffer, 0, buffer.length());
+		return encode(buffer, 0, buffer.length(), finishToken);
 	}
 
 	/**
@@ -83,14 +98,15 @@ public class ByteConverter64 extends ByteConverter {
 	 * but not to encode the entire content of a MIME part.
 	 *
 	 * @param values the byte array
+ 	 * @param finishToken finish TOken with =
 	 * @return the encoded byte array
 	 */
-	public CharacterBuffer toStaticString(byte[] values) {
+	public CharacterBuffer toStaticString(byte[] values, boolean finishToken) {
 		if (values.length == 0) {
 			return new CharacterBuffer();
 		}
 		ByteBuffer buffer = new ByteBuffer().with(values);
-		return encode(buffer, 0, buffer.length());
+		return encode(buffer, 0, buffer.length(), finishToken);
 	}
 
 	/**
@@ -102,6 +118,18 @@ public class ByteConverter64 extends ByteConverter {
 	public static CharacterBuffer toBase64String(CharSequence values) {
 		ByteConverter64 converter = new ByteConverter64();
 		return converter.toStaticString(values);
+	}
+
+	/**
+	 * Convert a simpleString to Base64
+	 * 
+	 * @param values Input String
+	 * @param finishToken boolean for Finish Token
+	 * @return a Base64 String
+	 */
+	public static CharacterBuffer toBase64String(CharSequence values, boolean finishToken) {
+		ByteConverter64 converter = new ByteConverter64();
+		return converter.toStaticString(values, finishToken);
 	}
 
 	/**
@@ -135,10 +163,20 @@ public class ByteConverter64 extends ByteConverter {
 	 * @param buffer Buffer for encoding
 	 * @param off    offset of String
 	 * @param size   size of String
+	 * @param finishToken finish String with =
 	 * @return encoded String
 	 */
-	private CharacterBuffer encode(BufferedBuffer buffer, int off, int size) {
-		byte[] outbuf = new byte[getStaticSize(size)];
+	private CharacterBuffer encode(BufferedBuffer buffer, int off, int size, boolean finishToken) {
+		int len = getStaticSize(size);
+		if(finishToken == false) {
+			if(size%3==1) {
+				len -= 2;	
+			}else if(size%3 == 2) {
+				len-=1;
+			}
+		}
+		
+		byte[] outbuf = new byte[len];
 
 		int inpos, outpos;
 		int val;
@@ -160,8 +198,10 @@ public class ByteConverter64 extends ByteConverter {
 		if (size == 1) {
 			val = buffer.charAt(inpos++) & 0xff;
 			val <<= 4;
-			outbuf[outpos + 3] = (byte) '='; // pad character;
-			outbuf[outpos + 2] = (byte) '='; // pad character;
+			if(finishToken) {
+				outbuf[outpos + 3] = (byte) '='; // pad character;
+				outbuf[outpos + 2] = (byte) '='; // pad character;
+			}
 			outbuf[outpos + 1] = (byte) pem_array[val & 0x3f];
 			val >>= 6;
 			outbuf[outpos + 0] = (byte) pem_array[val & 0x3f];
@@ -170,7 +210,9 @@ public class ByteConverter64 extends ByteConverter {
 			val <<= 8;
 			val |= buffer.charAt(inpos++) & 0xff;
 			val <<= 2;
-			outbuf[outpos + 3] = (byte) '='; // pad character;
+			if(finishToken) {
+				outbuf[outpos + 3] = (byte) '='; // pad character;
+			}
 			outbuf[outpos + 2] = (byte) pem_array[val & 0x3f];
 			val >>= 6;
 			outbuf[outpos + 1] = (byte) pem_array[val & 0x3f];
