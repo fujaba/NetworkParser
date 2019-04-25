@@ -85,6 +85,9 @@ public class FileWatcher implements Runnable {
 	
 	private boolean searchNIO() {
 		WatchKey watchKey = null;
+		if(Os.isReflectionTest()) {
+			return false;
+		}
 		try {
 			watchKey = watcher.take();
 		} catch (InterruptedException e) {
