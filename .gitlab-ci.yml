@@ -1,7 +1,5 @@
 #image: java:8
-#image: https://store.docker.com/images/oracle-serverjre-8
-#image: java:8-jre
-image: stefanlindel/gitjava8jre
+image: cogniteev/oracle-java
 before_script:
 - chmod +x gradlew
 stages:
