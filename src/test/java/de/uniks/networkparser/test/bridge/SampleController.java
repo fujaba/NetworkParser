@@ -140,11 +140,11 @@ public class SampleController {
 		 * NumberField.this.setValue(key, value); } return false; } });
 		 */
 
-		javafx.scene.control.Button button = new javafx.scene.control.Button();
-		button.setOnAction(evt -> {
-			numberField
-					.setValue(Math.toIntExact(Math.round(Math.random() * 100)));
-		});
+//		javafx.scene.control.Button button = new javafx.scene.control.Button();
+//		button.setOnAction(evt -> {
+//			numberField
+//					.setValue(Math.toIntExact(Math.round(Math.random() * 100)));
+//		});
 //		buttonBar.getButtons().add(button);
 	}
 
