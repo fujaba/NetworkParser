@@ -314,12 +314,16 @@ public class HTMLEntity implements BaseItem {
 	 * Create a new Tag as Child of Parent
 	 *
 	 * @param tag        the new Tag
-	 * @param parentNode May be a child of Body or Body or head
+	 * @param parentNode Optional May be a child of Body or Body or head
 	 * @return the created XMLEntity Item
 	 */
-	public XMLEntity createTag(String tag, XMLEntity parentNode) {
-		if (parentNode == null) {
-			parentNode = this.body;
+	public XMLEntity createTag(String tag, XMLEntity... parentNode) {
+		XMLEntity parentElement = null;
+		if(parentNode != null && parentNode.length>0) {
+			parentElement = parentNode[0];
+		}
+		if (parentElement == null) {
+			parentElement = this.body;
 		}
 		if (tag == null) {
 			return null;
@@ -335,8 +339,15 @@ public class HTMLEntity implements BaseItem {
 				firstChild = parent;
 			}
 		}
-		parentNode.withChild(parent);
+		parentElement.withChild(parent);
 		return firstChild;
+	}
+	public XMLEntity createTag(String tag, String innerHTML, XMLEntity... parentNode) {
+		XMLEntity element = createTag(tag, parentNode);
+		if(element != null) {
+			element.withValueItem(innerHTML);
+		}
+		return element;
 	}
 
 	public XMLEntity createTable(XMLEntity parentNode, String... labels) {

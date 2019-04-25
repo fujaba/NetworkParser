@@ -14,6 +14,7 @@ import java.nio.file.WatchKey;
 import java.nio.file.WatchService;
 
 import de.uniks.networkparser.buffer.CharacterBuffer;
+import de.uniks.networkparser.ext.Os;
 import de.uniks.networkparser.ext.io.FileBuffer;
 /*
 The MIT License
@@ -57,6 +58,9 @@ public class FileWatcher implements Runnable {
 	
 	public void run() {
 		if(space ==null) {
+			return;
+		}
+		if(Os.isReflectionTest()) {
 			return;
 		}
 		while(this.runTask) {

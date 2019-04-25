@@ -1,41 +1,17 @@
 package de.uniks.networkparser.ext;
 
-/*
-The MIT License
-
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
-*/
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.net.ServerSocket;
-import java.net.Socket;
 import java.util.Collection;
 import java.util.Iterator;
+
 import de.uniks.networkparser.Deep;
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.buffer.CharacterBuffer;
+import de.uniks.networkparser.ext.petaf.HTTPRequest;
+import de.uniks.networkparser.ext.petaf.LoginService;
 import de.uniks.networkparser.ext.petaf.proxy.NodeProxyTCP;
 import de.uniks.networkparser.interfaces.Condition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
@@ -47,11 +23,9 @@ import de.uniks.networkparser.xml.XMLEntity;
 
 public class RESTServiceTask implements Runnable, Server {
 	private int port;
-	public static final String ERROR404 = "HTTP 404";
-	public static final String OK = "HTTP 200";
+//	public static final String PERMISSION_DENIED = "HTTP 403";
 	public static final String PROPERTY_ERROR = "error";
 	public static final String PROPERTY_ALLOW = "allow";
-	public static final String LENGTH = "Content-Length:";
 	private ServerSocket serverSocket;
 	private IdMap map;
 	private Object root;
@@ -60,6 +34,7 @@ public class RESTServiceTask implements Runnable, Server {
 
 	private Condition<Exception> errorListener;
 	private Condition<SimpleEvent> allowListener;
+	private Condition<SimpleEvent> loginController;
 	public static final String JSON = "/json";
 	public static final String XML = "/xml";
 
@@ -90,56 +65,29 @@ public class RESTServiceTask implements Runnable, Server {
 				return;
 			}
 			serverSocket = new ServerSocket(this.port);
-			CharacterBuffer buffer = new CharacterBuffer();
 			while (serverSocket != null) {
-				try {
-					Socket clientSocket = serverSocket.accept();
+				HTTPRequest clientSocket = HTTPRequest.create(serverSocket.accept());
+				clientSocket.withExceptionListener(this.errorListener);
 
-					buffer.clear();
-
-					InputStreamReader isr = new InputStreamReader(clientSocket.getInputStream());
-					BufferedReader br = new BufferedReader(isr);
-					int c;
-					while ((c = br.read()) != -1) {
-						if (c == ' ') {
-							break;
-						}
-						buffer.with((char) c);
+				clientSocket.readType();
+				clientSocket.readPath();
+				
+				SimpleEvent event = new SimpleEvent(clientSocket, clientSocket.getPath(), null, null);
+				if (allowListener != null) {
+					if (allowListener.update(event) == false) {
+						clientSocket.write(HTTPRequest.HTTP_PERMISSION_DENIED);
+						clientSocket.close();
+						continue;
 					}
-					String type = buffer.toString();
-					buffer.clear();
-					while ((c = br.read()) != -1) {
-						if (c == ' ') {
-							break;
-						}
-						buffer.with((char) c);
-					}
-					if (buffer.charAt(0) == '/') {
-						buffer.withStartPosition(1);
-					}
-					PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
-					SimpleEvent event = new SimpleEvent(clientSocket, buffer.toString(), br, out);
-					event.withType(type);
-
-					if (allowListener != null) {
-						if (allowListener.update(event) == false) {
-							out.write("HTTP 403");
-							out.close();
-							clientSocket.close();
-							continue;
-						}
-					}
-					String result = this.executeRequest(event);
-					out.write(result);
-					out.close();
-					clientSocket.close();
-				} catch (Exception e) {
-					if (errorListener != null) {
-						errorListener.update(e);
-					} else {
-						e.printStackTrace();
+				}else if(loginController !=  null) {
+					if (loginController.update(event) == false) {
+						clientSocket.close();
+						continue;
 					}
 				}
+				String result = this.executeRequest(event);
+				clientSocket.write(result);
+				clientSocket.close();
 			}
 		} catch (Exception e) {
 			if (errorListener != null) {
@@ -322,7 +270,7 @@ public class RESTServiceTask implements Runnable, Server {
 				return jsonObject.toString();
 			}
 		}
-		return ERROR404;
+		return HTTPRequest.HTTP__NOTFOUND;
 	}
 
 	// DELETE
@@ -336,9 +284,9 @@ public class RESTServiceTask implements Runnable, Server {
 		Object element = getElement(request, path, listID, false);
 		if (element != null) {
 			map.removeObj(element, true);
-			return OK;
+			return HTTPRequest.HTTP_OK;
 		}
-		return ERROR404;
+		return HTTPRequest.HTTP__NOTFOUND;
 	}
 
 	// POST
@@ -347,94 +295,46 @@ public class RESTServiceTask implements Runnable, Server {
 	// 409 (Conflict) if resource already exists..
 	private String postExecute(SimpleEvent socketRequest) {
 		if (socketRequest == null) {
-			return ERROR404;
+			return HTTPRequest.HTTP__NOTFOUND;
 		}
-		try {
-			Object source = socketRequest.getSource();
-			if (source instanceof Socket == false) {
-				return ERROR404;
-			}
-			BufferedReader br = (BufferedReader) socketRequest.getOldValue();
-			String propertyName = socketRequest.getPropertyName();
-
-			CharacterBuffer path = new CharacterBuffer();
-			CharacterBuffer listID = new CharacterBuffer();
-			CharacterBuffer request = new CharacterBuffer().with(socketRequest.getPropertyName());
-			Object element = getElement(request, path, listID, true);
-
-			// First item SWITCH
-			CharacterBuffer buffer = new CharacterBuffer();
-			int c = br.read();
-			int pos = 0;
-			boolean found = false;
-
-			while ((c = br.read()) != -1) {
-				if (c == LENGTH.charAt(pos)) {
-					pos++;
-					if (pos == LENGTH.length()) {
-						found = true;
-						break;
-					}
-				} else {
-					pos = 0;
-				}
-				buffer.with((char) c);
-			}
-			int length = 0;
-			if (found) {
-				while ((c = br.read()) != -1) {
-					if (c == ' ') {
-						continue;
-					}
-					if (c >= '0' && c <= '9') {
-						length = length * 10 + c - '0';
-					} else {
-						break;
-					}
-				}
-				char[] item = new char[length];
-				while ((c = br.read()) != -1) {
-					if (c != 13 && c != 10 && c != ' ') {
-						break;
-					}
-
-				}
-				item[0] = (char) c;
-				br.read(item, 1, item.length - 1);
-				CharacterBuffer entry = new CharacterBuffer();
-				entry.with(item, 0, item.length);
-
-				if (entry.charAt(0) == JsonObject.START || entry.charAt(0) == XMLEntity.START) {
-					// JsonObject or XMLEntity
-					Object child = map.decode(entry);
-					SendableEntityCreator creator = map.getCreatorClass(element);
-					if (creator != null) {
-						creator.setValue(element, propertyName, child, SendableEntityCreator.NEW);
-					}
-					return OK;
-				} else {
-					// PLAIN KEY VALUE
-					SimpleKeyValueList<String, String> child = new SimpleKeyValueList<String, String>()
-							.withKeyValueString(entry.toString(), String.class);
-					String className = child.getString(IdMap.CLASS);
-					SendableEntityCreator childCreator = map.getCreator(className, false);
-					Object childValue = childCreator.getSendableInstance(false);
-					for (int i = 0; i < child.size(); i++) {
-						String key = child.getKeyByIndex(i);
-						if (IdMap.CLASS.equalsIgnoreCase(key)) {
-							continue;
-						}
-						childCreator.setValue(childValue, child.getKeyByIndex(i), child.getValueByIndex(i),
-								SendableEntityCreator.NEW);
-					}
-					creator.setValue(element, propertyName, childValue, SendableEntityCreator.NEW);
-					return OK;
-				}
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
+		Object source = socketRequest.getSource();
+		if (source instanceof HTTPRequest == false) {
+			return HTTPRequest.HTTP__NOTFOUND;
 		}
-		return ERROR404;
+		HTTPRequest request = (HTTPRequest) source;
+
+		CharacterBuffer path = new CharacterBuffer();
+		CharacterBuffer listID = new CharacterBuffer();
+		CharacterBuffer pathValue = new CharacterBuffer().with(request.getPath());
+		Object element = getElement(pathValue, path, listID, true);
+
+		// First item SWITCH
+		String body = request.getContent();
+		if (body.charAt(0) == JsonObject.START || body.charAt(0) == XMLEntity.START) {
+			// JsonObject or XMLEntity
+			Object child = map.decode(body);
+			SendableEntityCreator creator = map.getCreatorClass(element);
+			if (creator != null) {
+				creator.setValue(element, pathValue.toString(), child, SendableEntityCreator.NEW);
+			}
+			return HTTPRequest.HTTP_OK;
+		}
+		// PLAIN KEY VALUE
+		SimpleKeyValueList<String, String> child = new SimpleKeyValueList<String, String>()
+				.withKeyValueString(body, String.class);
+		String className = child.getString(IdMap.CLASS);
+		SendableEntityCreator childCreator = map.getCreator(className, false);
+		Object childValue = childCreator.getSendableInstance(false);
+		for (int i = 0; i < child.size(); i++) {
+			String key = child.getKeyByIndex(i);
+			if (IdMap.CLASS.equalsIgnoreCase(key)) {
+				continue;
+			}
+			childCreator.setValue(childValue, child.getKeyByIndex(i), child.getValueByIndex(i),
+					SendableEntityCreator.NEW);
+		}
+		creator.setValue(element,  pathValue.toString(), childValue, SendableEntityCreator.NEW);
+		return HTTPRequest.HTTP_OK;
 	}
 
 	// PUT
@@ -442,7 +342,7 @@ public class RESTServiceTask implements Runnable, Server {
 	// 200 (OK) or 204 (No Content)
 	// 404 (Not Found), if ID not found or invalid.
 	private String putExecute(SimpleEvent socketRequest) {
-		return ERROR404;
+		return HTTPRequest.HTTP__NOTFOUND;
 	}
 
 	// PATCH Update/Modify
@@ -450,7 +350,7 @@ public class RESTServiceTask implements Runnable, Server {
 	// 200 (OK) or 204 (No Content).
 	// 404 (Not Found), if ID not found or invalid.
 	private String patchExecute(SimpleEvent socketRequest) {
-		return ERROR404;
+		return HTTPRequest.HTTP__NOTFOUND;
 	}
 
 	public void stop() {
@@ -465,5 +365,10 @@ public class RESTServiceTask implements Runnable, Server {
 				}
 			}
 		}
+	}
+
+	public RESTServiceTask withLoginService(LoginService loginService) {
+		this.loginController = loginService;
+		return this;
 	}
 }
