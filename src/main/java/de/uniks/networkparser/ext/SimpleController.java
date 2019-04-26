@@ -1032,7 +1032,6 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 					}
 					// Check if File Exist
 					found = new File(values[0]).exists();
-//					SSystem.out..println("FOUND EXECUTE: " + found);
 				}
 				if (found == false) {
 					commands = new ArrayList<String>();

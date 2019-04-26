@@ -19,8 +19,6 @@ public class JavaParserTest {
 //		CompilationUnit compilationUnit = JavaParser.parse("class A { }");
 //		CompilationUnit compilationUnit = JavaParser.parse(context);
 //		Optional<ClassOrInterfaceDeclaration> classA = compilationUnit.getClassByName("A");
-//		System.out.println(classA);
-//		classA.
 
 //		JavaParser parser = new JavaParser();
 //		SymTabEntry parse = parser.parse(context);

@@ -60,7 +60,6 @@ public class ModelGen {
 //	      StackTraceElement element = stackTrace[0];
 //	      String callMethodName = element.getMethodName();
 //	      String className = element.getClassName();
-//	      System.out.println(className+":"+callMethodName);
 	}
 	
 }

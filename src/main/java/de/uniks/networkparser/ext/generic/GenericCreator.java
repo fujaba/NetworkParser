@@ -164,7 +164,6 @@ public class GenericCreator implements SendableEntityCreator {
 			Object invoke = field.get(entity);
 			return invoke;
 		} catch (ReflectiveOperationException e) {
-//			SSystem.out..println(e);
 		}
 		return null;
 	}
@@ -235,7 +234,6 @@ public class GenericCreator implements SendableEntityCreator {
 			field.set(entity, value);
 			return true;
 		} catch (ReflectiveOperationException e) {
-//			SSystem.out..println(e);
 		}
 		return false;
 	}

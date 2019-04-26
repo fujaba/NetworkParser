@@ -29,7 +29,7 @@ public class RabbitTest {
 		proxy.withCallback(new ObjectCondition() {
 			@Override
 			public boolean update(Object value) {
-				System.out.println("RECEIVED: "+value);
+				Assert.assertNotNull(value);
 				return false;
 			}
 		});

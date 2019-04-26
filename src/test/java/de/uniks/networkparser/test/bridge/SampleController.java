@@ -120,8 +120,6 @@ public class SampleController {
 //					@Override
 //					public boolean update(Object value) {
 //						// blub.setValue("value", numberField.getValue());
-//						System.out.println(
-//								"NumberField:" + numberField.getValue());
 //						return true;
 //					}
 //				});
@@ -195,7 +193,6 @@ public class SampleController {
 		IdMap map = javaBridge.getMap();
 		Object object = map.getObject("number");
 		Assert.assertNotNull(object);
-		// System.out.println(object);
 	}
 
 	public void add(SimpleEvent event) {

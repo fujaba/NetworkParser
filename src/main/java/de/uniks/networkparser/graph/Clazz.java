@@ -440,7 +440,6 @@ public class Clazz extends GraphEntity {
 			if(assoc.getClazz() == otherAssoc.getClazz() && assoc.getName() != null && assoc.getName().equals(otherAssoc.getName())) {
 				if(assoc.getCardinality() != otherAssoc.getCardinality()) {
 					// Self assoc with same RoleName but other Cardinality
-					System.out.println("ERROR: "+assoc.toString());
 					return false;
 				}
 			}

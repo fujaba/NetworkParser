@@ -33,9 +33,6 @@ public class HTMLTest {
 //		Assert.assertEquals(sb.toString(), html.toString());
 
 //		HTMLEntity answer = SocketUtil.getHTTP("http://www.google.de");
-//		System.out.println(answer);
-//
-//		System.out.println(html);
 	}
 	@Test
 	public void testHTML(){

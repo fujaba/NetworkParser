@@ -958,8 +958,7 @@ public class JsonTest {
 		Clazz uni = model.createClazz( "Uni" ) ;
 		Clazz student = model.createClazz( "Student" );
 		uni.withAssoc (student , 42 ) ;
-		
-		System.out.println(new DotConverter().encode(model));
+		Assert.assertNotNull(new DotConverter().encode(model));
 	}
 	
 //	@Test

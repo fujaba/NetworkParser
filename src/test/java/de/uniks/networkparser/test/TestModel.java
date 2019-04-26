@@ -24,7 +24,7 @@ public class TestModel {
 		
 		GraphConverter converter = new GraphConverter();
 		TemplateResultFragment convertToTestCode = converter.convertToTestCode(model, true);
-		System.out.println(convertToTestCode.getValue());
+//		System.out.println(convertToTestCode.getValue());
 	}
 	
     public static void main(String args[]) {

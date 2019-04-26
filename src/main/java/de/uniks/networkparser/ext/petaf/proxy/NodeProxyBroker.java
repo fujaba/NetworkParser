@@ -216,7 +216,7 @@ public class NodeProxyBroker extends NodeProxy {
 		executeConsume(topic, callBack);
 
 //		RabbitMessage message = RabbitMessage.createConsume(channelNo, topic, "", false, false, false, false, null);
-//		SSystem.out..println(session.sending(this, message, true));
+//		System.out.println(session.sending(this, message, true));
 		return true;
 	}
 

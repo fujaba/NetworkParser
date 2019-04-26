@@ -174,7 +174,7 @@ public class MavenXML {
 			sb.append(Integer.toString((mdbytes[i] & 0xff) + 0x100, 16).substring(1));
 		}
 
-		System.out.println("Digest(in hex format):: " + sb.toString());
+//		System.out.println("Digest(in hex format):: " + sb.toString());
 		// convert the byte to hex format method 2
 		// StringBuffer hexString = new StringBuffer();
 //        	for (int i=0;i<mdbytes.length;i++) {
@@ -188,7 +188,6 @@ public class MavenXML {
 		FileOutputStream os = new FileOutputStream(output);
 		os.write(sb.toString().getBytes());
 		os.close();
-//        	SSystem.out..println("Digest(in hex format):: " + hexString.toString());
 	}
 
 	private String getSimpleName(ArtifactFile artifact, String classifier) {

@@ -32,7 +32,6 @@ public class DiffChanger {
 		slave.getJsonArray("trainers").add(createTrainerClass("Stefan", "black"));
 		TextDiff diffs=new TextDiff();
 		Assert.assertFalse(EntityUtil.compareEntity(master, slave, diffs, null));
-//		System.out.println(diffs);
 	}
 	@Test
 	public void compareJsonWithModel() {
@@ -100,7 +99,6 @@ public class DiffChanger {
 	"}");
 	TextDiff diff = new TextDiff();
 	if(!EntityUtil.compareEntity(master, slave, diff, null)) {
-//		System.out.println(diff);
 		return;
 	}
 	Assert.fail();

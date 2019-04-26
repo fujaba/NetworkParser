@@ -328,7 +328,7 @@ public class ModelTest implements ObjectCondition {
 
 		model.analyseBounds(null);
 		if(model.getErros().size()>0) {
-			System.out.println("ERROR: "+model.getErros().size());
+//			System.out.println("ERROR: "+model.getErros().size());
 		}
 	}
 	
@@ -417,14 +417,12 @@ public class ModelTest implements ObjectCondition {
 		map.withListener(new SimpleEventCondition() {
 			@Override
 			public boolean update(SimpleEvent event) {
-				System.out.println(event.getEntity());
+				Assert.assertNotNull(event.getEntity());
 				return false;
 			}
 		});
 		Person alice = new Person();
 		alice.withName("Alice");
-		System.out.println(map.toJsonObject(alice));
-		
 		alice.setBalance(42);
 	}
 	
@@ -441,23 +439,7 @@ public class ModelTest implements ObjectCondition {
 		math.setStudents(alice, bob);
 		uni.setRooms(math);
 		
-//		uni.getRooms().getStudents().setCredits(42);
-		System.out.println(alice.getCredits());
-		System.out.println(bob.getCredits());
-		
 		uni.getRooms().stream().map(p -> p.getStudents())
 				.forEach(s->s.forEach(st->st.setCredits(42)));
-		
-		System.out.println(alice.getCredits());
-		System.out.println(bob.getCredits());
-//				.map(s->s.get(index))
-//				.allMatch(s->s.get)
-//				.map(s->s.e)
-//				.allMatch(s->s.get)
-//		for(StudentSet item : map) {
-//			item.
-//		}
-//				.allMatch(s -> s.setCredits(42));
-		
 	}
 }

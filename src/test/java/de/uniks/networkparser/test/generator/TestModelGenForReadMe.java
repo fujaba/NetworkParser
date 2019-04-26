@@ -27,8 +27,7 @@ public class TestModelGenForReadMe {
 		uni.withAssoc(room, "rooms", Association.MANY, "uni", Association.ONE);
 		ClassModel model = mb.build(ClassModelBuilder.NOGEN);
 		
-		System.out.println(model.toString());
-		
+		Assert.assertNotNull(model.toString());
 //		HTMLEntity entity=new HTMLEntity();
 //		entity.withText("CLassBuilder");
 //		entity.withGraph(model);

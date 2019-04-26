@@ -121,7 +121,6 @@ public class Gradle implements ObjectCondition{
 				tep = ReflectionLoader.getField(item, "executionPlan");
 			}
 			if(tep == null) {
-				System.out.println("tep");
 				return false;
 			}
 			// Execution starts on these tasks

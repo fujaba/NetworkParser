@@ -108,8 +108,6 @@ public class Server_UPD extends Thread implements Server {
 				DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
 				socket.receive(receivePacket);
 
-				// String sentence = new String(receivePacket.getData());
-				// SSystem.out..println("RECEIVED: " + sentence);
 				InetAddress IPAddress = receivePacket.getAddress();
 				int port = receivePacket.getPort();
 				Entity answer = proxy.getSpace().getReplicationInfo();

@@ -30,9 +30,6 @@ public class SimpleArrayListTest {
 			intern[i] = new Object[] {i, stud};
 			map.add(i, stud);
 		}
-//		System.out.println(intern);
-//		System.out.println(map. entrySet().toArray());
-//		System.out.println(map);
 	}
 	
 	@Test

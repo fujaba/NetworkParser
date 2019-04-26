@@ -28,37 +28,29 @@ public class ReflectionTest {
 
 	@Test
 	public void testReflectionVersion() throws Exception {
-//		System.out.println(Thread.activeCount());
 		ReflectionBlackBoxTester tester = new ReflectionBlackBoxTester();
 		NetworkParserLog logger=new NetworkParserLog();
 		
-//		logger.withFlag(NetworkParserLog.LOGLEVEL_ALL).withListener(output);
 		tester.test("de.uniks.networkparser.bytes.qr.Version", logger);
-//		System.out.println(""+System.currentTimeMillis()+" FINISH:"+Thread.activeCount());
 	}
 	
 	@Test
 	public void testReflectionStoryStepSourceCode() throws Exception {
-//		System.out.println(Thread.activeCount());
 		ReflectionBlackBoxTester tester = new ReflectionBlackBoxTester();
 		NetworkParserLog logger=new NetworkParserLog();
 		logger.withFlag(NetworkParserLog.LOGLEVEL_ALL).withListener(output);
 		tester.test("de.uniks.networkparser.ext.story.StoryStepSourceCode", logger);
-//		System.out.println(""+System.currentTimeMillis()+" FINISH:"+Thread.activeCount());
 	}
 	
 	@Test
 	public void testDataType() throws Exception {
-//		System.out.println(Thread.activeCount());
 		ReflectionBlackBoxTester tester = new ReflectionBlackBoxTester();
 		NetworkParserLog logger=new NetworkParserLog();
 		tester.test("de.uniks.networkparser.test.model.TestClass", logger);
-//		System.out.println(""+System.currentTimeMillis()+" FINISH:"+Thread.activeCount());
 	}
 	
 	@Test
 	public void testSQLTOKENER() throws Exception {
-//		System.out.println(Thread.activeCount());
 		ReflectionBlackBoxTester tester = new ReflectionBlackBoxTester();
 		NetworkParserLog logger=new NetworkParserLog();
 		logger.withListener(new ObjectCondition() {
@@ -77,16 +69,13 @@ public class ReflectionTest {
 			}
 		});
 		tester.test("de.uniks.networkparser.ext.sql.SQLTokener", logger);
-//		System.out.println(""+System.currentTimeMillis()+" FINISH:"+Thread.activeCount());
 	}
 
 	@Test
 	public void testDiagramEditor() throws Exception {
-//		System.out.println(Thread.activeCount());
 		ReflectionBlackBoxTester tester = new ReflectionBlackBoxTester();
 		NetworkParserLog logger=new NetworkParserLog();
 		tester.test("de.uniks.networkparser.ext.DiagramEditor", logger);
-//		System.out.println(""+System.currentTimeMillis()+" FINISH:"+Thread.activeCount());
 	}
 
 	@Test
@@ -98,7 +87,6 @@ public class ReflectionTest {
 
 	@Test
 	public void testSMTPSession() throws Exception {
-//		System.out.println(Thread.activeCount());
 		ReflectionBlackBoxTester tester = new ReflectionBlackBoxTester();
 		NetworkParserLog logger=new NetworkParserLog()
 				.withListener(new ObjectCondition() {
@@ -107,14 +95,11 @@ public class ReflectionTest {
 			public boolean update(Object value) {
 				SimpleEvent event = (SimpleEvent) value;
 				Assert.assertNotNull(event);
-//				System.out.println(event.getNewValue());
-				// TODO Auto-generated method stub
 				return false;
 			}
 		});
 //				.withFlag(NetworkParserLog.LOGLEVEL_ALL);
 		tester.test("de.uniks.networkparser.ext.io.MessageSession", logger);
-//		System.out.println(""+System.currentTimeMillis()+" FINISH:"+Thread.activeCount());
 	}
 	
 	@Test

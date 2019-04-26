@@ -76,10 +76,8 @@ public class SimpleUsage {
 			}
 		});
 
-//		System.out.println("Start:");
 		JsonObject json = map.toJsonObject(uni);
 		Assert.assertNotNull(json);
-//		System.out.println("Update:");
 
 		Student albert = new Student().withName("Albert");
 		uni.withStudents(albert);

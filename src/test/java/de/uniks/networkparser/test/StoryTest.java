@@ -4,9 +4,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import de.uniks.networkparser.IdMap;
-import de.uniks.networkparser.converter.GraphConverter;
 import de.uniks.networkparser.ext.ClassModel;
-import de.uniks.networkparser.ext.DiagramEditor;
 import de.uniks.networkparser.ext.generic.ReflectionBlackBoxTester;
 import de.uniks.networkparser.ext.io.FileBuffer;
 import de.uniks.networkparser.ext.story.Cucumber;
@@ -118,8 +116,8 @@ public class StoryTest {
 		file.withGraph(model);
 		
 		FileBuffer.writeFile("build/cucumber.html", file.toString());
-		System.out.println(model.toString(new GraphConverter()));
-		System.out.println(model.toString(DiagramEditor.dump()));
+//		System.out.println(model.toString(new GraphConverter()));
+//		System.out.println(model.toString(DiagramEditor.dump()));
 	}
 	
 	@Test

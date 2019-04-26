@@ -44,6 +44,5 @@ public class LiveRiskTest {
         
 //        ClassModel model = mb.build(ClassModelBuilder.NOGEN);
 //        ClassModel model = mb.build("gen");
-//        System.out.println(model.toString());
 	}
 }

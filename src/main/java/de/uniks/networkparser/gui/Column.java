@@ -424,7 +424,7 @@ public class Column implements SendableEntityCreatorNoIndex, CellHandler {
 					that.withStyle((Style) value);
 				}
 //			} else {
-//				SSystem.out..println("FIXME");
+//				System.out.println("FIXME");
 			}
 			return true;
 		}

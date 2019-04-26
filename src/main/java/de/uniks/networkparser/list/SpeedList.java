@@ -53,7 +53,6 @@ public class SpeedList<V> extends AbstractArray<V> implements List<V>, Iterable<
 			if(elements == null) {
 				elements = new Object[42];
 			} else if(size>=elements.length) {
-//				System.out.println("COPY:"+size+"/"+elements.length);
 				int newSize = size + size + 5;
 				elements = arrayCopy(elements, newSize);
 				this.index = 0;

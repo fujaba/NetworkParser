@@ -192,9 +192,6 @@ public class TestAssociation {
 		board.createBidirectional(room, "rooms", Association.MANY, "board", Association.ONE);
 
 		room.createBidirectional(character, "characters", Association.MANY, "room", Association.ONE);
-
-//		System.out.println(model.getAssociations().size());
-
 	}
 	
 	@Test
@@ -260,7 +257,5 @@ public class TestAssociation {
 		player.createAttribute("actionsleft", DataType.INT);
 		AssociationSet associations = model.getAssociations();
 		Assert.assertEquals(15, associations.size());
-		
-//		System.out.println(associations.size());
 	}
 }

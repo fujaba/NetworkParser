@@ -36,8 +36,6 @@ public class TestDiffer {
 	
 			CharacterBuffer value = fragment.getValue();
 			Assert.assertNotNull(value);
-//			System.out.println(value);
-		
 		
 		// SOLUTION 2
 			ClassModel gen = new ClassModel();

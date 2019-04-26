@@ -62,12 +62,10 @@ public class testGen {
 			@Override
 			public boolean update(Object value) {
 //				TemplateResultFragment fragment = (TemplateResultFragment) value;
-//				System.out.println(fragment.getResult());
 				return false;
 			}
 		});
 //		SendableEntityCreator generateJava = model.getGenerator().generating(null, ModelGenerator.TYPE_JAVA, model);
 		model.generate("src/test/java");
-//		System.out.println(generateJava);
 	}
 }

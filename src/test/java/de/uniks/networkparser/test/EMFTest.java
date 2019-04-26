@@ -92,7 +92,6 @@ public class EMFTest {
 		Assert.assertNotNull(map);
 		Object decode = map.decode(xmi);
 		Assert.assertNotNull(decode);
-//		System.out.println(decode);
 	}
 
 }

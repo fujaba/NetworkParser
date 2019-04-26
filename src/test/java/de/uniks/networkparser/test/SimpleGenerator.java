@@ -151,7 +151,6 @@ public class SimpleGenerator {
 
 
 		TemplateResultFragment fragment = template.generate(model, templateFile, assoc);
-//		System.out.println(generate);
 
 		Assert.assertEquals("de.uniks.test.model.UniSet", fragment.getHeaders().first());
 	}
