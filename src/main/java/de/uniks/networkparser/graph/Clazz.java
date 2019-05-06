@@ -443,7 +443,22 @@ public class Clazz extends GraphEntity {
 					return false;
 				}
 			}
-			
+			// Check for duplicate
+//			System.out.println(assoc.getName()+ "-"+otherAssoc.getName());
+			AssociationSet associations = otherAssoc.getClazz().getAssociations();
+			for(Association checkAssoc : associations) {
+				if(checkAssoc == otherAssoc) {
+					continue;
+				}
+				if(checkAssoc.getName() != null && checkAssoc.getName().equalsIgnoreCase(otherAssoc.getName())) {
+					// Create UnDirectional Association
+					checkAssoc.getOther().with(AssociationTypes.EDGE);
+					checkAssoc.with(AssociationTypes.UNDIRECTIONAL);
+					assoc.with(AssociationTypes.EDGE);
+					otherAssoc.with(AssociationTypes.UNDIRECTIONAL);
+					break;
+				}
+			}
 			// Ignore
 			return true;
 		}

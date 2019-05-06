@@ -1,11 +1,10 @@
-package de.uniks.networkparser.ext.petaf;
+package de.uniks.networkparser.ext.http;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.list.SimpleKeyValueList;
-import de.uniks.networkparser.list.SimpleList;
  
 public class User implements SendableEntityCreator {
 	public static final String PROPERTY_NAME = "name";

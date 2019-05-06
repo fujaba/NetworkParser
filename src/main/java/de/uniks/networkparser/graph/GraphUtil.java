@@ -3,6 +3,7 @@ package de.uniks.networkparser.graph;
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.interfaces.ObjectCondition;
+import de.uniks.networkparser.interfaces.TemplateItem;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SimpleSet;
 
@@ -120,9 +121,9 @@ public class GraphUtil {
 		return false;
 	}
 
-	public static final ObjectCondition getRole(GraphMember member) {
-		if (member != null) {
-			return member.getRole();
+	public static final ObjectCondition getRole(TemplateItem member) {
+		if (member != null && member instanceof GraphMember) {
+			return ((GraphMember)member).getRole();
 		}
 		return null;
 	}
@@ -336,8 +337,11 @@ public class GraphUtil {
 		return Modifier.PACKAGE;
 	}
 
-	public static final GraphSimpleSet getChildren(GraphMember item) {
-		return item.getChildren();
+	public static final GraphSimpleSet getChildren(TemplateItem item) {
+		if(item instanceof GraphMember) {
+			return ((GraphMember)item).getChildren();
+		}
+		return null;
 	}
 
 	public static final GraphSimpleSet getGraphDiff(GraphSimpleSet owner, GraphMember item) {

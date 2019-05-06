@@ -1,4 +1,4 @@
-package de.uniks.networkparser.ext.petaf;
+package de.uniks.networkparser.ext.http;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -32,10 +32,14 @@ public class HTTPRequest {
 	private Socket socket;
 	private String http_Type;
 	private String path;
-	private SimpleList<String> headers=new SimpleList<String>();
+	private SimpleList<String> headers = new SimpleList<String>();
 	private String content;
 	private String contentType;
-	
+	private boolean writeHeader;
+	private boolean writeBody;
+	private SimpleList<String> pathParts;
+	private SimpleList<String> pathParameter;
+
 	public void executeExeption(Exception e) {
 		if (errorListener != null) {
 			errorListener.update(e);
@@ -44,26 +48,27 @@ public class HTTPRequest {
 		}
 
 	}
+
 	private HTTPRequest(Socket socket) {
 		this.socket = socket;
 	}
-	
+
 	public BufferedReader getInput() {
-		if(socket != null && this.inputStream == null) {
+		if (socket != null && this.inputStream == null) {
 			try {
-				this.inputStream = new BufferedReader (new InputStreamReader(socket.getInputStream()));
+				this.inputStream = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 			} catch (IOException e) {
 				executeExeption(e);
 			}
 		}
 		return inputStream;
 	}
-	
+
 	public String readType() {
-		this.http_Type= readTo(' ');
+		this.http_Type = readTo(' ');
 		return http_Type;
 	}
-	
+
 	public String readTo(char splitStr) {
 		int c;
 		CharacterBuffer buffer = new CharacterBuffer();
@@ -79,9 +84,9 @@ public class HTTPRequest {
 		}
 		return buffer.toString();
 	}
-	
+
 	public PrintWriter getOutput() {
-		if(this.socket != null && this.outputStream == null) {
+		if (this.socket != null && this.outputStream == null) {
 			try {
 				this.outputStream = new PrintWriter(socket.getOutputStream(), true);
 			} catch (IOException e) {
@@ -90,12 +95,12 @@ public class HTTPRequest {
 		}
 		return outputStream;
 	}
-	
+
 	public boolean close() {
-		if(outputStream != null) {
+		if (outputStream != null) {
 			outputStream.close();
 		}
-		if(this.socket != null) {
+		if (this.socket != null) {
 			try {
 				this.socket.close();
 			} catch (IOException e) {
@@ -114,13 +119,20 @@ public class HTTPRequest {
 		int c;
 		CharacterBuffer buffer = new CharacterBuffer();
 		BufferedReader input = getInput();
-		if(input != null) {
+		this.pathParts = new SimpleList<String>();
+		this.pathParameter = new SimpleList<String>();
+		if (input != null) {
+			int startPos=0;
 			try {
 				while ((c = input.read()) != -1) {
 					if (c == ' ') {
 						break;
 					}
 					buffer.with((char) c);
+					//TODO NEW SPLITT
+					if(c == '/') {
+						// ss
+					}
 				}
 			} catch (IOException e) {
 				executeExeption(e);
@@ -131,28 +143,28 @@ public class HTTPRequest {
 		}
 		this.path = buffer.toString();
 	}
-	
+
 	public String getHttp_Type() {
 		return http_Type;
 	}
+
 	public String getPath() {
 		return path;
 	}
-
-	public boolean write(String value) {
-		PrintWriter output = getOutput();
-		if(output != null) {
-			output.write(value);
-			return true;
-		}
-		return false;
+	
+	public HTTPRequest withPath(String value) {
+		this.path = value;
+		return this;
 	}
+
 	public boolean write(HTMLEntity entity) {
 		String content = entity.toString();
 		PrintWriter output = getOutput();
-		if(output != null) {
+		if (output != null) {
+			this.writeHeader = true;
+			this.writeBody = true;
 			output.println(HTTP_OK);
-			output.println(HTTP_CONTENT+" "+HTTP_CONTENT_HTML+";"+HTTP_CHARSET+";");
+			output.println(HTTP_CONTENT + " " + HTTP_CONTENT_HTML + ";" + HTTP_CHARSET + ";");
 			output.println(HTTP_LENGTH + content.length());
 			output.write(BaseItem.CRLF);
 			output.print(content);
@@ -161,33 +173,76 @@ public class HTTPRequest {
 		}
 		return false;
 	}
-	
+
+	public boolean writeHeader(String... header) {
+		PrintWriter output = getOutput();
+		if (output != null) {
+			if (this.writeHeader == false) {
+				output.println(HTTP_OK);
+				output.println(HTTP_CONTENT + " " + HTTP_CONTENT_HTML + ";" + HTTP_CHARSET + ";");
+				this.writeHeader = true;
+			}
+			if (header != null) {
+				for (String item : header) {
+					if (item != null) {
+						output.println(item);
+					}
+				}
+			}
+		}
+		return true;
+	}
+
+	public boolean writeBody(String... body) {
+		PrintWriter output = getOutput();
+		if (output != null) {
+			if (this.writeHeader == false) {
+				this.writeHeader();
+			}
+			if (body != null) {
+				int len = 0;
+				for (String item : body) {
+					len += item.length() + 2;
+				}
+				output.println(HTTP_LENGTH + len);
+				output.write(BaseItem.CRLF);
+				for (String item : body) {
+					output.println(item);
+				}
+				output.flush();
+				this.writeHeader = true;
+			}
+			return true;
+		}
+		return false;
+	}
+
 	public boolean readHeader() {
 		BufferedReader input = getInput();
-		if(input == null) {
+		if (input == null) {
 			return false;
 		}
 		int c, pos = 0;
 		boolean isEnd = false;
-		CharacterBuffer buffer= new CharacterBuffer();
+		CharacterBuffer buffer = new CharacterBuffer();
 		int length = 0;
 		try {
 			while ((c = input.read()) != -1) {
-				if(c==10 && buffer.size()<1) {
+				if (c == 10 && buffer.size() < 1) {
 					continue;
 				}
 				if (c == HTTP_LENGTH.charAt(pos)) {
 					pos++;
 					if (pos == HTTP_LENGTH.length()) {
-						length= 1;
+						length = 1;
 						break;
 					}
 				} else {
 					pos = 0;
 				}
-				if(c == 13) {
+				if (c == 13) {
 					String value = buffer.toString();
-					if(value.length()<1) {
+					if (value.length() < 1) {
 						isEnd = true;
 						break;
 					}
@@ -197,7 +252,7 @@ public class HTTPRequest {
 					buffer.with((char) c);
 				}
 			}
-			if(length < 1) {
+			if (length < 1) {
 				this.withHeader(buffer.toString());
 			} else {
 				length = 0;
@@ -211,19 +266,19 @@ public class HTTPRequest {
 						break;
 					}
 				}
-				this.withHeader(HTTP_LENGTH+" " + length);
-				if(c == 13) {
+				this.withHeader(HTTP_LENGTH + " " + length);
+				if (c == 13) {
 					c = input.read();
 				}
 			}
-			if(isEnd == false) {
+			if (isEnd == false) {
 				String line;
 				do {
 					line = input.readLine();
 					this.withHeader(line);
-				}while(line != null && line.trim().length()>0);
+				} while (line != null && line.trim().length() > 0);
 			}
-			if(length>0)  {
+			if (length > 0) {
 				char[] item = new char[length];
 				while ((c = input.read()) != -1) {
 					if (c != 13 && c != 10 && c != ' ') {
@@ -242,51 +297,77 @@ public class HTTPRequest {
 		return true;
 	}
 	
+	public boolean isWriteBody() {
+		return writeBody;
+	}
+	
+	public boolean isWriteHeader() {
+		return writeHeader;
+	}
+
 	public SimpleKeyValueList<String, String> parseForm() {
 		SimpleKeyValueList<String, String> value = new SimpleKeyValueList<String, String>();
-		if(HTTP_CONTENT_FORM.equals(this.contentType) && this.content != null) {
-			CharacterBuffer buffer=new CharacterBuffer();
+		if (HTTP_CONTENT_FORM.equals(this.contentType) && this.content != null) {
+			CharacterBuffer buffer = new CharacterBuffer();
 			char c;
 			String key = null;
-			for(int i=0;i<this.content.length();i++) {
-				c= this.content.charAt(i);
-				if(c == '=') {
-					key=buffer.toString();
+			for (int i = 0; i < this.content.length(); i++) {
+				c = this.content.charAt(i);
+				if (c == '=') {
+					key = buffer.toString();
 					buffer.clear();
 					continue;
 				}
-				if(c == '&') {
+				if (c == '&') {
 					value.add(key, buffer.toString());
 					buffer.clear();
 					continue;
 				}
 				buffer.with(c);
 			}
-			if(buffer.length()>0) {
+			if (buffer.length() > 0) {
 				value.add(key, buffer.toString());
 			}
 		}
 		return value;
 	}
-	
+
 	public HTTPRequest withHeader(String value) {
-		if(value != null) {
-			value  = value.trim();
-			if(value.length()>0) {
-				if(value.startsWith(HTTP_CONTENT)) {
-					this.contentType = value.substring(HTTP_CONTENT.length()+1);
+		if (value != null) {
+			value = value.trim();
+			if (value.length() > 0) {
+				if (value.startsWith(HTTP_CONTENT)) {
+					this.contentType = value.substring(HTTP_CONTENT.length() + 1);
 				}
 				this.headers.add(value);
 			}
 		}
 		return this;
 	}
-	
+
 	public String getContent() {
 		return content;
 	}
+
 	public HTTPRequest withExceptionListener(Condition<Exception> value) {
 		this.errorListener = value;
 		return this;
+	}
+
+	public boolean writeCookie(String key, String value, int expriration) {
+		PrintWriter output = getOutput();
+		if(output != null) {
+			output.println("Set-Cookie: "+key+"="+value+"; Max-Age="+expriration);
+			return true;
+		}
+		return false;
+	}
+
+	public SimpleList<String> getPathParts() {
+		return this.pathParts;
+	}
+	
+	public SimpleList<String> getPathParameter() {
+		return pathParameter;
 	}
 }

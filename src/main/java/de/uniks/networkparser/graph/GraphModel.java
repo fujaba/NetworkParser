@@ -183,11 +183,18 @@ public abstract class GraphModel extends GraphEntity implements BaseItem {
 		String packageName = null;
 		for (Clazz item : classes) {
 			String className = item.getName();
-			if (className != null && className.indexOf('.') > 0) {
-				if (packageName == null) {
-					packageName = className.substring(0, className.lastIndexOf("."));
-				} else if (className.startsWith(packageName) == false) {
-					packageName = "";
+			// Check for First is UpperCase
+			if (className != null) {
+				if(className.indexOf('.') > 0) {
+					if (packageName == null) {
+						packageName = className.substring(0, className.lastIndexOf("."));
+					} else if (className.startsWith(packageName) == false) {
+						packageName = "";
+					}
+				}
+				int no = className.charAt(0);
+				if(no<'A'|| no>'Z') {
+					item.setName(EntityUtil.upFirstChar(className));
 				}
 			}
 			if(fixClassModel(item, visited) == false) {

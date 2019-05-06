@@ -27,7 +27,6 @@ THE SOFTWARE.
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.graph.Association;
 import de.uniks.networkparser.graph.Clazz;
-import de.uniks.networkparser.graph.GraphEntity;
 import de.uniks.networkparser.graph.GraphMember;
 import de.uniks.networkparser.graph.GraphModel;
 import de.uniks.networkparser.graph.GraphSimpleSet;
@@ -36,6 +35,7 @@ import de.uniks.networkparser.graph.ModifyEntry;
 import de.uniks.networkparser.graph.SourceCode;
 import de.uniks.networkparser.interfaces.LocalisationInterface;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
+import de.uniks.networkparser.interfaces.TemplateItem;
 import de.uniks.networkparser.list.SimpleSet;
 import de.uniks.networkparser.list.SortedSet;
 
@@ -52,20 +52,20 @@ public class TemplateResultFile extends SortedSet<TemplateResultFragment>
 	private String extension;
 	private String path;
 	private SendableEntityCreator parent;
-	private GraphEntity member;
+	private TemplateItem member;
 	private boolean metaModell;
 
 	TemplateResultFile() {
 		super(true);
 	}
 
-	public TemplateResultFile(GraphEntity clazz, boolean comparator) {
+	public TemplateResultFile(TemplateItem clazz, boolean comparator) {
 		super(comparator);
 		this.withName(clazz);
 		this.withMember(clazz);
 	}
 
-	public TemplateResultFile(GraphEntity clazz, String name, boolean comparator) {
+	public TemplateResultFile(TemplateItem clazz, String name, boolean comparator) {
 		super(comparator);
 		this.withName(name);
 		this.withMember(clazz);
@@ -93,8 +93,10 @@ public class TemplateResultFile extends SortedSet<TemplateResultFragment>
 		return this;
 	}
 
-	public TemplateResultFile withName(GraphEntity clazz) {
-		this.name = clazz.getName().replace(".", "/");
+	public TemplateResultFile withName(TemplateItem clazz) {
+		if(clazz.getName() != null) {
+			this.name = clazz.getName().replace(".", "/");
+		}
 		return this;
 	}
 
@@ -182,7 +184,7 @@ public class TemplateResultFile extends SortedSet<TemplateResultFragment>
 			return element.getParent();
 		}
 		if (PROPERTY_MEMBER.equalsIgnoreCase(attrName)) {
-			GraphEntity member = element.getMember();
+			TemplateItem member = element.getMember();
 			if (pos > 0) {
 				return member.getValue(attribute.substring(pos + 1));
 			}
@@ -359,11 +361,11 @@ public class TemplateResultFile extends SortedSet<TemplateResultFragment>
 		return buffer.toString();
 	}
 
-	public GraphEntity getMember() {
+	public TemplateItem getMember() {
 		return member;
 	}
 
-	public TemplateResultFile withMember(GraphEntity member) {
+	public TemplateResultFile withMember(TemplateItem member) {
 		this.member = member;
 		return this;
 	}

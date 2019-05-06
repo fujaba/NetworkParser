@@ -27,15 +27,18 @@ import java.util.List;
 
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.buffer.CharacterBuffer;
+import de.uniks.networkparser.graph.Annotation;
 import de.uniks.networkparser.graph.GraphList;
 import de.uniks.networkparser.graph.GraphMember;
 import de.uniks.networkparser.graph.GraphModel;
 import de.uniks.networkparser.graph.GraphSimpleSet;
 import de.uniks.networkparser.graph.GraphUtil;
+import de.uniks.networkparser.graph.Import;
 import de.uniks.networkparser.interfaces.LocalisationInterface;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.ParserCondition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
+import de.uniks.networkparser.interfaces.TemplateItem;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SimpleSet;
 
@@ -61,7 +64,7 @@ public class TemplateResultFragment
 
 	private LocalisationInterface variables;
 	private SimpleSet<String> header = null;
-	private GraphMember member;
+	private TemplateItem member;
 	private boolean expression = true;
 	private boolean useImport;
 	private SendableEntityCreator parent;
@@ -159,16 +162,16 @@ public class TemplateResultFragment
 		return value;
 	}
 
-	public TemplateResultFragment withMember(GraphMember member) {
+	public TemplateResultFragment withMember(TemplateItem member) {
 		this.member = member;
 		return this;
 	}
 
-	public GraphMember getMember() {
+	public TemplateItem getMember() {
 		return member;
 	}
 
-	public GraphMember getCurrentMember() {
+	public TemplateItem getCurrentMember() {
 		if (this.stack != null) {
 			Object item = this.stack.last();
 			if (item instanceof GraphMember) {
@@ -269,7 +272,7 @@ public class TemplateResultFragment
 		}
 		if (PROPERTY_MEMBER.equalsIgnoreCase(attrName)) {
 			if (pos > 0) {
-				GraphMember item = element.getMember();
+				TemplateItem item = element.getMember();
 				return item.getValue(attribute.substring(pos + 1));
 			}
 			return element.getMember();
@@ -336,6 +339,17 @@ public class TemplateResultFragment
 		if (this.member != null) {
 			Object value = this.member.getValue(attribute);
 			if (value != null) {
+				if(value instanceof Annotation) {
+					GraphSimpleSet children = GraphUtil.getChildren((Annotation)value);
+					if(children != null) {
+						for(Object item : children) {
+							if(item instanceof Import) {
+								this.withHeader(((Import) item).getClazz().getName());
+							}
+						}
+					}
+					return "@"+value.toString();
+				}
 				return value;
 			}
 		}

@@ -3,9 +3,9 @@ package de.uniks.networkparser.parser.java;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.graph.Feature;
 import de.uniks.networkparser.graph.FeatureSet;
-import de.uniks.networkparser.graph.GraphEntity;
 import de.uniks.networkparser.graph.GraphModel;
 import de.uniks.networkparser.interfaces.LocalisationInterface;
+import de.uniks.networkparser.interfaces.TemplateItem;
 import de.uniks.networkparser.parser.Template;
 import de.uniks.networkparser.parser.TemplateResultFile;
 
@@ -27,7 +27,7 @@ public class JavaSetCreatorCreator extends Template {
 	}
 
 	@Override
-	public TemplateResultFile executeEntity(GraphEntity entity, LocalisationInterface parameters, boolean isStandard) {
+	public TemplateResultFile executeEntity(TemplateItem entity, LocalisationInterface parameters, boolean isStandard) {
 		FeatureSet features = getFeatures(parameters);
 		if (features != null) {
 			if (features.match(Feature.SERIALIZATION, null) == false) {

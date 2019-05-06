@@ -10,8 +10,8 @@ import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.buffer.CharacterBuffer;
-import de.uniks.networkparser.ext.petaf.HTTPRequest;
-import de.uniks.networkparser.ext.petaf.LoginService;
+import de.uniks.networkparser.ext.http.HTTPRequest;
+import de.uniks.networkparser.ext.http.LoginService;
 import de.uniks.networkparser.ext.petaf.proxy.NodeProxyTCP;
 import de.uniks.networkparser.interfaces.Condition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
@@ -19,6 +19,7 @@ import de.uniks.networkparser.interfaces.Server;
 import de.uniks.networkparser.json.JsonArray;
 import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.list.SimpleKeyValueList;
+import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.xml.XMLEntity;
 
 public class RESTServiceTask implements Runnable, Server {
@@ -37,7 +38,8 @@ public class RESTServiceTask implements Runnable, Server {
 	private Condition<SimpleEvent> loginController;
 	public static final String JSON = "/json";
 	public static final String XML = "/xml";
-
+	private SimpleKeyValueList<String, Condition<HTTPRequest>> routing;
+	
 	public RESTServiceTask(int port, IdMap map, Object root) {
 		super();
 		this.port = port;
@@ -72,10 +74,22 @@ public class RESTServiceTask implements Runnable, Server {
 				clientSocket.readType();
 				clientSocket.readPath();
 				
+				if(routing != null && routing.size()>0) {
+					// Parsing Path
+					String path = clientSocket.getPath();
+					SimpleList<String> paths = clientSocket.getPathParts();
+					// *
+					if(path.indexOf("/")<1) {
+						this.routing.getValueByIndex(0).update(clientSocket);
+						clientSocket.close();
+						continue;
+					}
+				}
+				
 				SimpleEvent event = new SimpleEvent(clientSocket, clientSocket.getPath(), null, null);
 				if (allowListener != null) {
 					if (allowListener.update(event) == false) {
-						clientSocket.write(HTTPRequest.HTTP_PERMISSION_DENIED);
+						clientSocket.writeHeader(HTTPRequest.HTTP_PERMISSION_DENIED);
 						clientSocket.close();
 						continue;
 					}
@@ -86,7 +100,7 @@ public class RESTServiceTask implements Runnable, Server {
 					}
 				}
 				String result = this.executeRequest(event);
-				clientSocket.write(result);
+				clientSocket.writeBody(result);
 				clientSocket.close();
 			}
 		} catch (Exception e) {
@@ -369,6 +383,14 @@ public class RESTServiceTask implements Runnable, Server {
 
 	public RESTServiceTask withLoginService(LoginService loginService) {
 		this.loginController = loginService;
+		return this;
+	}
+
+	public RESTServiceTask withRooting(String string, Condition<HTTPRequest> webContent) {
+		if(this.routing == null) {
+			this.routing = new SimpleKeyValueList<String, Condition<HTTPRequest>>();
+		}
+		this.routing.add(string, webContent);
 		return this;
 	}
 }

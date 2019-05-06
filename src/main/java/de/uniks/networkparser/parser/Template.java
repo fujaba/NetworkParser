@@ -31,7 +31,6 @@ import de.uniks.networkparser.graph.AttributeSet;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.Feature;
 import de.uniks.networkparser.graph.FeatureSet;
-import de.uniks.networkparser.graph.GraphEntity;
 import de.uniks.networkparser.graph.GraphMember;
 import de.uniks.networkparser.graph.Method;
 import de.uniks.networkparser.graph.MethodSet;
@@ -40,6 +39,7 @@ import de.uniks.networkparser.interfaces.LocalisationInterface;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.ParserCondition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
+import de.uniks.networkparser.interfaces.TemplateItem;
 import de.uniks.networkparser.interfaces.TemplateParser;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.logic.ChainCondition;
@@ -64,6 +64,8 @@ public class Template implements TemplateParser {
 
 	// Template Variables
 	private TemplateCondition token = new TemplateCondition();
+	
+	protected boolean isValid;
 
 	protected Template owner;
 
@@ -117,7 +119,7 @@ public class Template implements TemplateParser {
 	}
 
 	public TemplateResultFragment generate(LocalisationInterface parameters, SendableEntityCreator parent,
-			GraphMember member) {
+			TemplateItem member) {
 		if (this.token.getCondition() instanceof StringCondition) {
 			this.token.withCondition(this.parsing((StringCondition) this.token.getCondition(), parameters, false));
 		}
@@ -501,7 +503,7 @@ public class Template implements TemplateParser {
 		return null;
 	}
 
-	public TemplateResultFile executeEntity(GraphEntity model, LocalisationInterface parameters, boolean isStandard) {
+	public TemplateResultFile executeEntity(TemplateItem model, LocalisationInterface parameters, boolean isStandard) {
 		if (isValid(model, parameters) == false) {
 			return null;
 		}
@@ -575,15 +577,15 @@ public class Template implements TemplateParser {
 	public boolean readTemplate(CharacterBuffer buffer) {
 		boolean result = false;
 		CharacterBuffer id = buffer.nextToken(false, Template.SPLITEND, Template.SPACE);
-		Template template = new Template(id.toString());
+		this.id =  id.toString();
 		if (buffer.getCurrentChar() == Template.SPACE) {
 			String value = buffer.nextToken(false, Template.SPLITEND, Template.SPACE).toString();
 			int type = TemplateFragmentCondition.getIdKey(value);
-			template.withType(type);
+			this.withType(type);
 			result = true;
 		}
 		String strTemplate = buffer.toString();
-		template.withTemplate(strTemplate);
+		withTemplate(strTemplate);
 		return result;
 	}
 
@@ -613,9 +615,12 @@ public class Template implements TemplateParser {
 		}
 	}
 
-	protected boolean isValid(GraphMember member, LocalisationInterface parameters) {
+	protected boolean isValid(TemplateItem member, LocalisationInterface parameters) {
 		if (member == null) {
 			return false;
+		}
+		if(isValid) {
+			return true;
 		}
 		String type = member.getClass().getSimpleName().toLowerCase();
 		if (this.fileType != null && this.fileType.equals(type)) {
@@ -640,7 +645,7 @@ public class Template implements TemplateParser {
 
 	}
 
-	public TemplateResultFile createResultFile(GraphEntity clazz, boolean isStandard) {
+	public TemplateResultFile createResultFile(TemplateItem clazz, boolean isStandard) {
 		TemplateResultFile templateResult = new TemplateResultFile(clazz, isStandard);
 		templateResult.withExtension(this.extension);
 		String fileName = this.getFileName();

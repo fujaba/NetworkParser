@@ -46,22 +46,11 @@ import de.uniks.networkparser.graph.MethodSet;
 import de.uniks.networkparser.graph.Parameter;
 import de.uniks.networkparser.graph.ParameterSet;
 import de.uniks.networkparser.graph.SourceCode;
-import de.uniks.networkparser.interfaces.ParserCondition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
-import de.uniks.networkparser.logic.And;
-import de.uniks.networkparser.logic.FeatureCondition;
-import de.uniks.networkparser.logic.ForeachCondition;
-import de.uniks.networkparser.logic.IfCondition;
-import de.uniks.networkparser.logic.ImportCondition;
-import de.uniks.networkparser.logic.Not;
-import de.uniks.networkparser.logic.Or;
-import de.uniks.networkparser.logic.TemplateFragmentCondition;
-import de.uniks.networkparser.parser.DebugCondition;
-import de.uniks.networkparser.parser.JavaListCondition;
-import de.uniks.networkparser.parser.JavaMethodBodyCondition;
 import de.uniks.networkparser.parser.ParserEntity;
+import de.uniks.networkparser.parser.SimpleGenerator;
 import de.uniks.networkparser.parser.Template;
 import de.uniks.networkparser.parser.TemplateResultFile;
 import de.uniks.networkparser.parser.TemplateResultFragment;
@@ -72,10 +61,9 @@ import de.uniks.networkparser.parser.java.JavaSetCreator;
 import de.uniks.networkparser.parser.java.JavaSetCreatorCreator;
 import de.uniks.networkparser.parser.typescript.TypescriptClazz;
 
-public class ModelGenerator extends Template {
+public class ModelGenerator extends SimpleGenerator {
 	private FeatureSet features = Feature.getAll();
 	private GraphModel defaultModel;
-	public SimpleKeyValueList<String, ParserCondition> customTemplate;
 	private boolean useSDMLibParser = true;
 	private String defaultRootDir;
 	private SimpleKeyValueList<String, Template> templates;
@@ -167,32 +155,6 @@ public class ModelGenerator extends Template {
 			}
 		}
 		return true;
-	}
-
-	public SimpleKeyValueList<String, ParserCondition> getCondition() {
-		if (customTemplate == null) {
-			customTemplate = new SimpleKeyValueList<String, ParserCondition>();
-			addParserCondition(new FeatureCondition());
-			addParserCondition(new ImportCondition());
-			addParserCondition(new ForeachCondition());
-			addParserCondition(new TemplateFragmentCondition());
-			addParserCondition(new IfCondition());
-			addParserCondition(new IfCondition().withKey(IfCondition.IFNOT));
-			addParserCondition(new JavaMethodBodyCondition());
-			addParserCondition(new JavaListCondition());
-			addParserCondition(new And());
-			addParserCondition(new Or());
-			addParserCondition(new DebugCondition());
-			addParserCondition(new Not());
-		}
-		return customTemplate;
-	}
-
-	protected void addParserCondition(ParserCondition condition) {
-		String key = condition.getKey();
-		if (key != null) {
-			customTemplate.add(key.toLowerCase(), condition);
-		}
 	}
 
 	private String getJavaPath() {

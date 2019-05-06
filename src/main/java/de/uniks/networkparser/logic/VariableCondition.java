@@ -27,6 +27,7 @@ THE SOFTWARE.
 */
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.buffer.CharacterBuffer;
+import de.uniks.networkparser.graph.Annotation;
 import de.uniks.networkparser.graph.DataType;
 import de.uniks.networkparser.graph.GraphMember;
 import de.uniks.networkparser.interfaces.LocalisationInterface;
@@ -83,10 +84,11 @@ public class VariableCondition implements ParserCondition {
 				v = key;
 			}
 			pos = v.indexOf("(");
+			String param=null;
 			if (pos > 0) {
-				String temp = v.substring(pos + 1, v.length() - 1);
+				param = v.substring(pos + 1, v.length() - 1);
 				v = key.substring(0, pos);
-				shortName = Boolean.valueOf(temp);
+				shortName = Boolean.valueOf(param);
 			}
 			Object object = variables.getValue(variables, v);
 
@@ -95,6 +97,13 @@ public class VariableCondition implements ParserCondition {
 			}
 			if (object instanceof DataType) {
 				object = ((DataType) object).getName(shortName);
+			}
+			if (object instanceof Annotation) {
+				// Check for Scope
+				Annotation anno = (Annotation) object;
+				if(param!= null && param.equalsIgnoreCase(anno.getScope())== false) {
+					object = "";
+				}
 			}
 			if (object instanceof String) {
 				return replaceText(v, format, (String) object);

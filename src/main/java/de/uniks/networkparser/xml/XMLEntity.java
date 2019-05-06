@@ -54,10 +54,10 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 	public static final char END = '>';
 
 	/** The tag. */
-	private String tag;
+	protected String tag;
 
 	/** The value. */
-	private String valueItem;
+	protected String valueItem;
 
 	/** Simple Constructor. */
 	public XMLEntity() {

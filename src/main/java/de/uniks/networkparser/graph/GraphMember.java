@@ -28,9 +28,11 @@ THE SOFTWARE.
 */
 import de.uniks.networkparser.interfaces.Condition;
 import de.uniks.networkparser.interfaces.ObjectCondition;
+import de.uniks.networkparser.interfaces.TemplateItem;
+import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SimpleSet;
 
-public abstract class GraphMember {
+public abstract class GraphMember  implements TemplateItem {
 	public static final String PROPERTY_NAME = "name";
 	public static final String PROPERTY_CLASSNAME = "className";
 	public static final String PROPERTY_PARENT = "parent";
@@ -41,6 +43,7 @@ public abstract class GraphMember {
 	public static final String PROPERTY_MODIFIERS = "modifiers";
 	public static final String PROPERTY_THIS = "this";
 	public static final String PROPERTY_PATH = "path";
+	public static final String PROPERTY_ANNOTATION = "annotation";
 
 	protected String name;
 	protected Object children;
@@ -58,6 +61,9 @@ public abstract class GraphMember {
 	}
 
 	public Object getValue(String attribute) {
+		if(attribute == null)   {
+			return null;
+		}
 		if (PROPERTY_PATH.equalsIgnoreCase(attribute)) {
 			return getName().replaceAll("\\.", "/");
 		}
@@ -158,6 +164,13 @@ public abstract class GraphMember {
 			}
 			return PROPERTY_THIS;
 		}
+		if(PROPERTY_ANNOTATION.equalsIgnoreCase(attrName)) {
+			Annotation annotation = getAnnotation();
+			if(annotation != null) {
+				return annotation;
+			}
+			return "";
+		}
 		return null;
 	}
 
@@ -205,6 +218,9 @@ public abstract class GraphMember {
 		}
 		if (this.children instanceof GraphMember) {
 			collection.with(this.children);
+		}else if(children instanceof SimpleList<?>){
+			SimpleList<?> list = (SimpleList<?>) children;
+			collection.withList(list);
 		}
 		return collection;
 	}

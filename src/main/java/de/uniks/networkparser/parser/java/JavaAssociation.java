@@ -13,6 +13,7 @@ public class JavaAssociation extends Template {
 				"	public static final String PROPERTY_{{other.NAME}} = \"{{other.name}}\";",
 				"",
 				"{{#ifnot {{file.member.type}}==interface}}",
+				"   {{annotation}}",
 				"	{{visibility}} {{modifiers} }"
 					+ "{{#if {{other.cardinality}}==1}}"
 						+ "{{other.clazz.name}} {{other.name}} = null;"
@@ -22,13 +23,16 @@ public class JavaAssociation extends Template {
 					"",
 				"{{#endif}}",
 				"",
-
+				
 				"{{#if {{other.cardinality}}==1}}"
 						+"{{#import {{other.clazz.fullName}}}}",
 				"{{#else}}"
 					+ "{{#import {{other.clazz.packageName}}.util.{{other.clazz.name}}Set}}",
 				"{{#endif}}"
-					+ "	public {{modifiers} }{{#if {{other.cardinality}}==1}}{{other.clazz.name}}{{#else}}{{other.clazz.name}}Set{{#endif}} get{{other.Name}}(){{#if {{file.member.type}}==interface}};",
+//Getter
+
+				+"   {{annotation(getter)}}",
+				"	public {{modifiers} }{{#if {{other.cardinality}}==1}}{{other.clazz.name}}{{#else}}{{other.clazz.name}}Set{{#endif}} get{{other.Name}}(){{#if {{file.member.type}}==interface}};",
 				"", "{{#endif}}", "{{#ifnot {{file.member.type}}==interface}} {", "{{#ifnot {{other.cardinality}}==1}}",
 				"		if(this.{{other.name}} == null) {",
 				"			return {{other.clazz.name}}Set.EMPTY_SET;",
@@ -39,27 +43,45 @@ public class JavaAssociation extends Template {
 				"",
 				"{{#endif}}",
 
+// ASSOCIATION ZU 1 Setter (Set and With)
 				"{{#if {{other.cardinality}}==1}}",
-				"	public {{modifiers} }boolean set{{other.Name}}({{other.clazz.name}} value){{#if {{file.member.type}}==interface}};","",
-				"{{#endif}}",
-				
-				"{{#ifnot {{file.member.type}}==interface}} {",
-				"		if (this.{{other.name}} == value) {", "			return false;", "		}",
-				"		{{other.clazz.name}} oldValue = this.{{other.name}};", "{{#if {{type}}==assoc}}",
-				"		if (this.{{other.name}} != null) {", "			this.{{other.name}} = null;",
-				"{{#if {{cardinality}}==1}}", "			oldValue.set{{Name}}(null);", "{{#else}}",
-				"			oldValue.without{{Name}}(this);", "{{#endif}}", "		}", "{{#endif}}",
-				"		this.{{other.name}} = value;", "{{#if {{type}}==assoc}}", "		if (value != null) {",
-				"			value.with{{Name}}(this);", "		}", "{{#endif}}",
-				"{{#if {{#feature PROPERTYCHANGESUPPORT}}}}",
-				"		firePropertyChange(PROPERTY_{{other.NAME}}, oldValue, value);", "{{#endif}}",
-				"		return true;", "	}", "", "{{#endif}}", "{{#endif}}",
-// ASSOCIATION ZU 1
-				"{{#if {{other.cardinality}}==1}}",
-				"	public {{modifiers} }{{clazz.name}} with{{other.Name}}({{other.clazz.name}} value){{#if {{file.member.type}}==interface}};",
-				"", "{{#endif}}", "{{#ifnot {{file.member.type}}==interface}} {", "		this.set{{other.Name}}(value);",
-				"		return this;", "	}", "", "{{#endif}}",
-
+					"	public {{modifiers} }boolean set{{other.Name}}({{other.clazz.name}} value){{#if {{file.member.type}}==interface}};","","{{#endif}}",
+					
+					"{{#ifnot {{file.member.type}}==interface}} {",
+					"		if (this.{{other.name}} == value) {",
+					"			return false;",
+					"		}",
+					"		{{other.clazz.name}} oldValue = this.{{other.name}};",
+						"{{#if {{type}}==assoc}}",
+						"		if (this.{{other.name}} != null) {",
+						"			this.{{other.name}} = null;",
+							"{{#if {{cardinality}}==1}}",
+						"			oldValue.set{{Name}}(null);",
+							"{{#else}}",
+						"			oldValue.without{{Name}}(this);",
+							"{{#endif}}",
+						"		}",
+						"{{#endif}}",
+						"		this.{{other.name}} = value;",
+						"{{#if {{type}}==assoc}}",
+						"		if (value != null) {",
+						"			value.with{{Name}}(this);",
+						"		}",
+						"{{#endif}}",
+						"{{#if {{#feature PROPERTYCHANGESUPPORT}}}}",
+						"		firePropertyChange(PROPERTY_{{other.NAME}}, oldValue, value);",
+						"{{#endif}}",
+					"		return true;",
+					"	}",
+					"",
+					"{{#endif}}",
+					"	public {{modifiers} }{{clazz.name}} with{{other.Name}}({{other.clazz.name}} value){{#if {{file.member.type}}==interface}};", "", "{{#endif}}", 
+						"{{#ifnot {{file.member.type}}==interface}} {",
+							"		this.set{{other.Name}}(value);",
+							"		return this;",
+							"	}", 
+							"", 
+						"{{#endif}}",
 				"{{#else}}",
 // ASSOCITAION TO MANY
 				//MANY HAS BOOLEAN SET(TYPE...) AND WITH(Object...)
@@ -76,7 +98,7 @@ public class JavaAssociation extends Template {
 				"			if (item == null) {",
 				"				continue;",
 				"			}",
-				"{{#if {{cardinality}}==1}}", // IT IS MANY TO ONE SPECIAL CASE !!!
+				"{{#if {{cardinality}}==1 {{type}}==assoc}}", // IT IS MANY TO ONE SPECIAL CASE !!!
 				"			if(item.set{{Name}}(this)) {",
 				"				result = result & this.{{other.name}}.rawAdd(item);",
 				"				firePropertyChange(PROPERTY_{{other.NAME}}, null, item);",
@@ -87,7 +109,7 @@ public class JavaAssociation extends Template {
 				"			this.{{other.name}}.withVisible(false);",
 				"			result = result & changed;",
 				"			if (changed) {",
-							"{{#debug}}{{#if {{type}}==assoc}}",
+							"{{#if {{type}}==assoc}}",
 				"				item.set{{Name}}(this);",
 							"{{#endif}}",
 				"				firePropertyChange(PROPERTY_{{other.NAME}}, null, item);",

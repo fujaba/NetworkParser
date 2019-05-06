@@ -2,7 +2,7 @@ package de.uniks.networkparser.test;
 
 import org.junit.Test;
 
-import de.uniks.networkparser.ext.petaf.JsonToken;
+import de.uniks.networkparser.ext.http.JsonToken;
 
 public class SHATest {
 

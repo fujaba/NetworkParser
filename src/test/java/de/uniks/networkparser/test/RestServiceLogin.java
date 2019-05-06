@@ -2,9 +2,9 @@ package de.uniks.networkparser.test;
 
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.ext.RESTServiceTask;
-import de.uniks.networkparser.ext.petaf.JsonToken;
-import de.uniks.networkparser.ext.petaf.LoginService;
-import de.uniks.networkparser.ext.petaf.User;
+import de.uniks.networkparser.ext.http.JsonToken;
+import de.uniks.networkparser.ext.http.LoginService;
+import de.uniks.networkparser.ext.http.User;
 import de.uniks.networkparser.test.model.University;
 import de.uniks.networkparser.test.model.util.RoomCreator;
 import de.uniks.networkparser.test.model.util.StudentCreator;
@@ -24,9 +24,11 @@ public class RestServiceLogin {
 
 		University uni = new University().withName("Uni Kassel");
 		RESTServiceTask service = new RESTServiceTask(8080, map, uni);
+		
 		LoginService loginService = new LoginService().withUser(new User().with("admin", "12346"));
+		loginService.withWriteCookie(true);
 		JsonToken token = new JsonToken();
-		token.withSecret("Top Secret");
+		token.withSecret("Top Secret").withExpiration(JsonToken.EXPIRATION_DAY);
 //		.withAlgorytm(JsonToken.HS256)
 		loginService.withJsonToken(token);
 		service.withLoginService(loginService);

@@ -807,6 +807,11 @@ public class EntityUtil {
 		if (name == null || name.length() < 1) {
 			return name;
 		}
+		// SpeedUp Change only if nessessary
+		int no = (int)name.charAt(0);
+		if(no>='A' && no<='Z') {
+			return name;
+		}
 		return name.substring(0, 1).toUpperCase() + name.substring(1);
 	}
 

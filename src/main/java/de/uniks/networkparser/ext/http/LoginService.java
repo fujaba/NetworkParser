@@ -1,6 +1,4 @@
-package de.uniks.networkparser.ext.petaf;
-
-import java.net.Socket;
+package de.uniks.networkparser.ext.http;
 
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.SimpleEvent;
@@ -13,6 +11,7 @@ import de.uniks.networkparser.xml.XMLEntity;
 public class LoginService implements Condition<SimpleEvent> {
 	private SimpleList<User> users;
 	private JsonToken tokener;
+	private boolean writeCookie;
 
 	public HTMLEntity getLogin() {
 		HTMLEntity entity = new HTMLEntity();
@@ -24,12 +23,6 @@ public class LoginService implements Condition<SimpleEvent> {
 		formTag.createChild("input", "name", "password", "type", "password");
 		formTag.createChild("input", "type", "submit", "value", "Login");
 		return entity;
-	}
-
-	public void writeCookie(Socket socket, String token) {
-//		writer.println("HTTP/1.0 200 Ok");
-//		writer.println("Set-Cookie key=value Max-Age=8640");
-//		writer.println("Content-Type text/html");
 	}
 
 	@Override
@@ -56,7 +49,16 @@ public class LoginService implements Condition<SimpleEvent> {
 			String token = HTTPRequest.BEARER+" "+generator.getToken();
 			user.addToken(HTTPRequest.HTTP_AUTHENTIFICATION, token);
 			user.addToken(HTTPRequest.HTTP_REFRESH, refreshToken);
-			request.write("Login ok");
+			request.writeHeader(HTTPRequest.HTTP_AUTHENTIFICATION, token, HTTPRequest.HTTP_REFRESH, refreshToken);
+			if(writeCookie) {
+				int expiration = 0;
+				if(generator.getExpiration()!= null) {
+					expiration = Integer.valueOf(""+generator.getExpiration());
+				}
+				request.writeCookie(HTTPRequest.HTTP_AUTHENTIFICATION, token, expiration);
+				request.writeCookie(HTTPRequest.HTTP_REFRESH, refreshToken, expiration);
+			}
+			request.writeBody("Login ok");
 		} else {
 			HTMLEntity login = this.getLogin();
 			request.write(login);
@@ -112,5 +114,14 @@ public class LoginService implements Condition<SimpleEvent> {
 			
 		}
 		return null;
+	}
+
+	public boolean isWriteCookie() {
+		return writeCookie;
+	}
+
+	public LoginService withWriteCookie(boolean writeCookie) {
+		this.writeCookie = writeCookie;
+		return this;
 	}
 }

@@ -49,7 +49,7 @@ public class JavaSetAttribute extends Template {
 				"		for({{file.member.name}} obj : this) {",
 				"			if ({{#if {{type}}==STRING}}minValue.compareTo(obj.get{{Name}}()) <= 0 && maxValue.compareTo(obj.get{{Name}}()) >= 0"
 						+"{{#else}}"
-						+"{{#if {{#debug}}{{type}}==OBJECT}}"
+						+"{{#if {{type}}==OBJECT}}"
 						+"	minValue.hashCode() <= obj.get{{Name}}().hashCode() && maxValue.hashCode() >= obj.get{{Name}}().hashCode()"
 						+"{{#else}}"
 						+"	minValue <= obj.get{{Name}}() && maxValue >= obj.get{{Name}}()"

@@ -15,6 +15,7 @@ import de.uniks.networkparser.graph.MethodSet;
 import de.uniks.networkparser.graph.SourceCode;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Converter;
+import de.uniks.networkparser.interfaces.TemplateItem;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.parser.ParserEntity;
@@ -155,7 +156,7 @@ public class CodeCityConverter implements Converter {
 		
 		return index;
 	}
-	private GraphMetric getMetric(GraphMember member) {
+	private GraphMetric getMetric(TemplateItem member) {
 		GraphSimpleSet children = GraphUtil.getChildren(member);
 		for(GraphMember item : children) {
 			if(item instanceof GraphMetric) {

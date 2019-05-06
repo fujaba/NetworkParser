@@ -1,4 +1,4 @@
-package de.uniks.networkparser.ext.petaf;
+package de.uniks.networkparser.ext.http;
 
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.bytes.HMAC;
@@ -58,7 +58,7 @@ public class JsonToken {
 		return this;
 	}
 
-	public JsonToken withExpiration(long time) {
+	public JsonToken withExpiration(Long time) {
 		this.expiration = time;
 		return this;
 	}
@@ -110,7 +110,7 @@ public class JsonToken {
 		return tokener;
 	}
 
-	private long getExpiration() {
+	public Long getExpiration() {
 		return this.expiration;
 	}
 
