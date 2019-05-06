@@ -23,7 +23,7 @@ package de.uniks.networkparser.ext;
 
 import de.uniks.networkparser.DateTimeEntity;
 import de.uniks.networkparser.NetworkParserLog;
-import de.uniks.networkparser.ext.petaf.SendableItem;
+import de.uniks.networkparser.SendableItem;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
 public class LogItem extends SendableItem implements SendableEntityCreator {

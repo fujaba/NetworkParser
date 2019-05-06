@@ -76,7 +76,13 @@ public class Annotation extends GraphMember {
 		this.name = key;
 		this.keyValue= true;
 		SimpleList<Annotation> list = new SimpleList<Annotation>();
-		list.add(new Annotation("\""+value+"\""));
+		if(value != null && value.length()>0) {
+			if(value.indexOf('"')<1 && value.charAt(0)!= '{') {
+				list.add(new Annotation("\""+value+"\""));
+			}else {
+				list.add(new Annotation(value));
+			}
+		}
 		this.children = list;
 		return this;
 	}
@@ -231,24 +237,26 @@ public class Annotation extends GraphMember {
 		if (children == null) {
 			return sb.toString();
 		}
-		SimpleList<?> list = (SimpleList<?>) children;
-		if (keyValue && list.size() == 1) {
-			sb.append("=");
-			sb.append(list.first().toString());
-			return sb.toString();
-		}
-		sb.append("(");
-		if (list.size() > 0) {
-			sb.append(list.first());
-		}
-		for (int i = 1; i < list.size(); i++) {
-			Object child = list.get(i);
-			if(child instanceof Import == false) {
-				sb.append(",");
-				sb.append(list.get(i));
+		if(children instanceof SimpleList<?>) {
+			SimpleList<?> list = (SimpleList<?>) children;
+			if (keyValue && list.size() == 1) {
+				sb.append("=");
+				sb.append(list.first().toString());
+				return sb.toString();
 			}
+			sb.append("(");
+			if (list.size() > 0) {
+				sb.append(list.first());
+			}
+			for (int i = 1; i < list.size(); i++) {
+				Object child = list.get(i);
+				if(child instanceof Import == false) {
+					sb.append(",");
+					sb.append(list.get(i));
+				}
+			}
+			sb.append(")");
 		}
-		sb.append(")");
 		return sb.toString();
 	}
 

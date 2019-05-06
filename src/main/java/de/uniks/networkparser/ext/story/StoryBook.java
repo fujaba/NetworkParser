@@ -1,7 +1,7 @@
 package de.uniks.networkparser.ext.story;
 
+import de.uniks.networkparser.SendableItem;
 import de.uniks.networkparser.ext.io.FileBuffer;
-import de.uniks.networkparser.ext.petaf.SendableItem;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.list.ModelSet;
 import de.uniks.networkparser.list.SortedSet;

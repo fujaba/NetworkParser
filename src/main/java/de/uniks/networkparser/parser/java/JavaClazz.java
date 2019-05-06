@@ -38,8 +38,9 @@ public class JavaClazz extends Template {
 		this.type = TEMPLATE;
 		this.withTemplate("{{#template PACKAGE {{packagename}}}}package {{packagename}};{{#endtemplate}}", "",
 
-				"{{#template IMPORT}}{{#foreach {{file.headers}}}}", "import {{item}};{{#endfor}}{{#endtemplate}}", "",
+				"{{#template IMPORT}}{{#foreach {{file.headers}}}}", "import {{item}};{{#endfor}}{{#endtemplate}}", ""
 
+				+"{{annotation}}",
 				"{{visibility}} {{modifiers} }{{type}} {{name}}{{#if {{superclazz}}}} extends {{superclazz}}{{#endif}}{{#if {{implements}}}} implements {{implements}}{{#endif}} {",
 				"",
 

@@ -1,5 +1,6 @@
 package de.uniks.networkparser.ext.petaf;
 
+import de.uniks.networkparser.SendableItem;
 /*
 The MIT License
 

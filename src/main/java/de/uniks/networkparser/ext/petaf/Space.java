@@ -5,6 +5,7 @@ import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.MapEntity;
 import de.uniks.networkparser.NetworkParserLog;
+import de.uniks.networkparser.SendableItem;
 import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.Tokener;
 import de.uniks.networkparser.UpdateCondition;

@@ -177,7 +177,11 @@ public class JsonTokener extends Tokener {
 				key = keyValue.toString();
 				break;
 			default:
-				key = nextValue(buffer, entity, isQuote, false, stop).toString();
+				Object parse = nextValue(buffer, entity, isQuote, false, stop);
+				if(parse == null) {
+					return true;
+				}
+				key = parse.toString();
 			}
 			c = buffer.nextClean(true);
 			if (c != COLON && c != ENTER) {

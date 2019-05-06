@@ -25,10 +25,9 @@ THE SOFTWARE.
 */
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.interfaces.LocalisationInterface;
-import de.uniks.networkparser.interfaces.ParserCondition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
+import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.list.SimpleKeyValueList;
-import de.uniks.networkparser.parser.TemplateResultModel;
 
 public class TextItems extends SimpleKeyValueList<String, String> implements SendableEntityCreator, LocalisationInterface {
 	public static final String PROPERTY_VALUE = "value";
@@ -121,7 +120,7 @@ public class TextItems extends SimpleKeyValueList<String, String> implements Sen
 		return label.toString();
 	}
 
-	private String getLabelValue(CharSequence label) {
+	public String getLabelValue(CharSequence label) {
 		if (containsKey(label)) {
 			return get(label);
 		}
@@ -163,5 +162,39 @@ public class TextItems extends SimpleKeyValueList<String, String> implements Sen
 	public TextItems withDefaultLabel(boolean value) {
 		this.defaultLabel = value;
 		return this;
+	}
+
+	public static TextItems create(JsonObject value, boolean ignoreCase) {
+		TextItems textItems = new TextItems();
+		if(value != null) {
+			textItems.parseJsonObject(value, null, ignoreCase);
+		}
+		return textItems;
+	}
+	
+	private boolean parseJsonObject(JsonObject item, String parent, boolean ignoreCase) {
+		if(item == null) {
+			return false;
+		}
+		for(int i=0;i <item.size(); i++) {
+			String key = item.getKeyByIndex(i);
+			String fullKey;
+			if(parent != null) {
+				fullKey = parent+":"+key;
+			}else {
+				fullKey = key;
+			}
+			Object value = item.getValueByIndex(i);
+			if(value instanceof JsonObject) {
+				parseJsonObject((JsonObject) value, fullKey, ignoreCase);
+			}else if(value instanceof String) {
+				if(ignoreCase) {
+					this.put(fullKey.toLowerCase(), value);
+				}else {
+					this.put(fullKey, value);
+				}
+			}
+		}
+		return true;
 	}
 }

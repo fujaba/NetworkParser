@@ -1,7 +1,5 @@
 package de.uniks.networkparser;
 
-import java.beans.PropertyChangeEvent;
-import java.util.ArrayList;
 /*
 NetworkParser
 Copyright (c) 2011 - 2016, Stefan Lindel
@@ -23,11 +21,13 @@ express or implied.
 See the Licence for the specific language governing
 permissions and limitations under the Licence.
 */
+import java.beans.PropertyChangeEvent;
 import java.util.Collection;
 import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Map.Entry;
 
 import de.uniks.networkparser.buffer.Buffer;
@@ -60,6 +60,7 @@ import de.uniks.networkparser.list.ObjectMapEntry;
 import de.uniks.networkparser.list.SimpleIterator;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
+import de.uniks.networkparser.list.SimpleSet;
 import de.uniks.networkparser.logic.MapFilter;
 import de.uniks.networkparser.xml.EMFTokener;
 import de.uniks.networkparser.xml.MapEntityStack;
@@ -666,7 +667,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator>, Sendabl
 	 */
 	public JsonObject garbageCollection(Object root) {
 		JsonObject initField = this.toJsonObject(root);
-		ArrayList<String> classCounts = new ArrayList<String>();
+		SimpleList<String> classCounts = new SimpleList<String>();
 		SimpleKeyValueList<String, Object> gc = new SimpleKeyValueList<String, Object>();
 		countMessage(initField, classCounts, gc);
 		// Remove all others
@@ -685,7 +686,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator>, Sendabl
 	 * @param classCounts List of ClassCounts
 	 * @param gc          GarbageCollege list
 	 */
-	private void countMessage(Object message, ArrayList<String> classCounts, SimpleKeyValueList<String, Object> gc) {
+	private void countMessage(Object message, SimpleList<String> classCounts, SimpleKeyValueList<String, Object> gc) {
 		if (message instanceof List<?>) {
 			for (Iterator<?> i = ((List<?>) message).iterator(); i.hasNext();) {
 				Object obj = i.next();
@@ -1730,5 +1731,46 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator>, Sendabl
 	@Override
 	public Object getSendableInstance(boolean prototyp) {
 		return new IdMap();
+	}
+	
+	public boolean addI18N(Object root, TextItems i18n) {
+		return addI18N(root, i18n, new SimpleSet<Object>(), null);
+	}
+	private boolean addI18N(Object root, TextItems i18n, SimpleSet<Object> items, String key) {
+		if(items == null || items.add(root) == false) {
+			return false;
+		}
+		SendableEntityCreator creator = this.getCreatorClass(root);
+		if(creator == null) {
+			return false;
+		}
+		String[] properties = creator.getProperties();
+		
+		for(String property : properties) {
+			String fullKey;
+			if(key == null  ) {
+				fullKey = property;
+			} else {
+				fullKey =key+":"+property;
+			}
+			Object value = creator.getValue(root, property);
+			if(value == null) {
+				// Check if Is Text
+				String text = i18n.getLabelValue(fullKey.toLowerCase());
+				if(text != null) {
+					creator.setValue(root, property, text, NEW);
+				}
+				continue;
+			}
+			if(value instanceof Set<?>) {
+				Set<?> collection = (Set<?>) value;
+				for(Object item : collection) {
+					addI18N(item, i18n, items, fullKey);
+				}
+			} else {
+				addI18N(value, i18n, items, fullKey);
+			}
+		}
+		return true;
 	}
 }

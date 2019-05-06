@@ -1,5 +1,6 @@
 package de.uniks.networkparser.graph;
 
+import de.uniks.networkparser.EntityUtil;
 /*
 The MIT License
 
@@ -427,7 +428,10 @@ public class Clazz extends GraphEntity {
 		return collection;
 	}
 
-	protected boolean repairAssociation(Association assoc) {
+	protected boolean repairAssociation(Association assoc, boolean renameName) {
+		if(assoc == null) {
+			return false;
+		}
 		if (AssociationTypes.IMPLEMENTS.equals(assoc.getType()) == false
 				&& AssociationTypes.GENERALISATION.equals(assoc.getType()) == false) {
 			// Wrong way try another round
@@ -443,8 +447,15 @@ public class Clazz extends GraphEntity {
 					return false;
 				}
 			}
+			//Check Name
+			if(renameName) {
+				String name2 = assoc.getName();
+				char no = name2.charAt(0);
+				if(no<'a' || no>'z') {
+					assoc.setName(EntityUtil.downFirstChar(name2));
+				}
+			}
 			// Check for duplicate
-//			System.out.println(assoc.getName()+ "-"+otherAssoc.getName());
 			AssociationSet associations = otherAssoc.getClazz().getAssociations();
 			for(Association checkAssoc : associations) {
 				if(checkAssoc == otherAssoc) {
@@ -508,7 +519,7 @@ public class Clazz extends GraphEntity {
 		}
 		if (this.children instanceof Association) {
 			// Is is easy only one Assoc
-			repairAssociation((Association) this.children);
+			repairAssociation((Association) this.children, true);
 		} else if (children instanceof GraphSimpleSet) {
 			GraphSimpleSet list = (GraphSimpleSet) this.children;
 			int size = list.size();
@@ -518,7 +529,7 @@ public class Clazz extends GraphEntity {
 				GraphMember item = list.get(i);
 				if (item instanceof Association) {
 					Association assoc = (Association) item;
-					repairAssociation(assoc);
+					repairAssociation(assoc, true);
 					if (AssociationTypes.GENERALISATION.equals(assoc.getType())) {
 						generalizations.add(assoc);
 					}

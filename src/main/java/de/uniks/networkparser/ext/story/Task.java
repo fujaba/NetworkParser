@@ -1,6 +1,6 @@
 package de.uniks.networkparser.ext.story;
 
-import de.uniks.networkparser.ext.petaf.SendableItem;
+import de.uniks.networkparser.SendableItem;
 import de.uniks.networkparser.list.ModelSet;
 
 public class Task extends SendableItem {

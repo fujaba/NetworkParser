@@ -21,7 +21,7 @@
 
 package de.uniks.networkparser.test.model.ferryman;
 
-import de.uniks.networkparser.ext.petaf.SendableItem;
+import de.uniks.networkparser.SendableItem;
 import de.uniks.networkparser.test.model.util.BankSet;
 
 /**

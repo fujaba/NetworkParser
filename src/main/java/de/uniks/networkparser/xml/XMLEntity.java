@@ -194,6 +194,11 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 		}
 		return this.tag;
 	}
+	
+	public XMLEntity clearChildren() {
+		this.children = null;
+		return this;
+	}
 
 	/**
 	 * Gets the value.

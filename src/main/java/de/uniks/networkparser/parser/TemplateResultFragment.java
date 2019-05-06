@@ -339,17 +339,6 @@ public class TemplateResultFragment
 		if (this.member != null) {
 			Object value = this.member.getValue(attribute);
 			if (value != null) {
-				if(value instanceof Annotation) {
-					GraphSimpleSet children = GraphUtil.getChildren((Annotation)value);
-					if(children != null) {
-						for(Object item : children) {
-							if(item instanceof Import) {
-								this.withHeader(((Import) item).getClazz().getName());
-							}
-						}
-					}
-					return "@"+value.toString();
-				}
 				return value;
 			}
 		}

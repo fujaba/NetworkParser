@@ -30,10 +30,10 @@ import java.lang.reflect.Array;
 import java.util.List;
 
 import de.uniks.networkparser.EntityUtil;
+import de.uniks.networkparser.SendableItem;
 import de.uniks.networkparser.ext.Os;
 import de.uniks.networkparser.ext.generic.GenericCreator;
 import de.uniks.networkparser.ext.generic.ReflectionLoader;
-import de.uniks.networkparser.ext.petaf.SendableItem;
 import de.uniks.networkparser.gui.Dice;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.SendableEntity;

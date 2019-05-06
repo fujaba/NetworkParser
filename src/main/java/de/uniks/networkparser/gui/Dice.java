@@ -1,6 +1,6 @@
 package de.uniks.networkparser.gui;
 
-import de.uniks.networkparser.ext.petaf.SendableItem;
+import de.uniks.networkparser.SendableItem;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
 public class Dice extends SendableItem implements SendableEntityCreator {

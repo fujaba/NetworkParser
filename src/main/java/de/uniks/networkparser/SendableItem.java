@@ -1,4 +1,4 @@
-package de.uniks.networkparser.ext.petaf;
+package de.uniks.networkparser;
 
 /*
 The MIT License
@@ -25,7 +25,7 @@ THE SOFTWARE.
 */
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import de.uniks.networkparser.SimpleEvent;
+
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.SendableEntity;
 

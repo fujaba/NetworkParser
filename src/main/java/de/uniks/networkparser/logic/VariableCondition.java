@@ -30,6 +30,9 @@ import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.graph.Annotation;
 import de.uniks.networkparser.graph.DataType;
 import de.uniks.networkparser.graph.GraphMember;
+import de.uniks.networkparser.graph.GraphSimpleSet;
+import de.uniks.networkparser.graph.GraphUtil;
+import de.uniks.networkparser.graph.Import;
 import de.uniks.networkparser.interfaces.LocalisationInterface;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.ParserCondition;
@@ -101,8 +104,20 @@ public class VariableCondition implements ParserCondition {
 			if (object instanceof Annotation) {
 				// Check for Scope
 				Annotation anno = (Annotation) object;
-				if(param!= null && param.equalsIgnoreCase(anno.getScope())== false) {
+				if(param == null && anno.getScope() != null) {
 					object = "";
+				} else if(param!= null && param.equalsIgnoreCase(anno.getScope())== false) {
+					object = "";
+				}else {
+					GraphSimpleSet children = GraphUtil.getChildren(anno);
+					if(children != null) {
+						for(Object item : children) {
+							if(item instanceof Import) {
+								variables.setValue(variables, "headers", ((Import) item).getClazz().getName(), "new");
+							}
+						}
+					}
+					object = "@"+anno.toString();
 				}
 			}
 			if (object instanceof String) {

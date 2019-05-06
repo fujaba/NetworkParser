@@ -37,6 +37,7 @@ public abstract class GraphModel extends GraphEntity implements BaseItem {
 	public static final String PROPERTY_CLAZZ = "clazz";
 	private String defaultAuthorName;
 	protected String genPath;
+	private boolean renameAttributes=true;
 
 	/**
 	 * get All GraphClazz
@@ -192,9 +193,25 @@ public abstract class GraphModel extends GraphEntity implements BaseItem {
 						packageName = "";
 					}
 				}
-				int no = className.charAt(0);
-				if(no<'A'|| no>'Z') {
-					item.setName(EntityUtil.upFirstChar(className));
+				if(renameAttributes) {
+					int no = className.charAt(0);
+					if(no<'A'|| no>'Z') {
+						item.setName(EntityUtil.upFirstChar(className));
+					}
+					// Attributes
+					AttributeSet attributes = item.getAttributes();
+					for(Attribute attribute : attributes) {
+						String name = attribute.getName();
+						no = name.charAt(0);
+						if(no<'a'|| no>'z') {
+							if(name.equals(name.toUpperCase())) {
+								attribute.setName(name.toLowerCase());
+							} else {
+								attribute.setName(EntityUtil.downFirstChar(name));
+							}
+						}
+						
+					}
 				}
 			}
 			if(fixClassModel(item, visited) == false) {
@@ -216,7 +233,7 @@ public abstract class GraphModel extends GraphEntity implements BaseItem {
 
 		return true;
 	}
-
+	
 	public String getDefaultPackage() {
 		return DEFAULTPACKAGE;
 	}
@@ -225,7 +242,7 @@ public abstract class GraphModel extends GraphEntity implements BaseItem {
 		// Run over Interfaces, SuperClazzes, KidClazzes, Associations
 		AssociationSet assocs = item.getAssociations();
 		for (Association role : assocs) {
-			if(item.repairAssociation(role) == false) {
+			if(item.repairAssociation(role, this.renameAttributes) == false) {
 				return false;
 			}
 			Clazz clazz = role.getOtherClazz();

@@ -243,7 +243,8 @@ public class FileBuffer extends Buffer {
 	public CharacterBuffer readResource(String file) {
 		return readResource(IdMap.class.getResourceAsStream(file));
 	}
-	public CharacterBuffer readResource(InputStream is ) {
+	
+	public static CharacterBuffer readResource(InputStream is ) {
 		CharacterBuffer sb = new CharacterBuffer();
 		if (is != null) {
 			final byte[] buffer = new byte[BUFFER];
@@ -349,9 +350,22 @@ public class FileBuffer extends Buffer {
 		return readBaseFile(configFile, null);
 	}
 
+	public static BaseItem readBaseFileResource(String file, Class<?> referenceClass) {
+		if(referenceClass == null || file == null) {
+			return null;
+		}
+		InputStream stream = referenceClass.getResourceAsStream(file);
+		CharacterBuffer buffer = readResource(stream);
+		return  parsingBuffer(buffer, null);
+		
+	}
+		
 	public static BaseItem readBaseFile(String configFile, BaseItem container) {
 		// load it
 		CharacterBuffer buffer = FileBuffer.readFile(configFile);
+		return parsingBuffer(buffer, container);
+	}
+	private static BaseItem parsingBuffer(CharacterBuffer buffer, BaseItem container) {
 		if (buffer != null && buffer.length() > 0) {
 			if (buffer.charAt(0) == '{') {
 				JsonObject result;
