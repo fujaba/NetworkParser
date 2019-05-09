@@ -54,16 +54,43 @@ public class JsonTokener extends Tokener {
 	/** The Constant JSON_PROPS. */
 	public final static String STOPCHARS = ",]}/\\\"[{;=# ";
 	public static final char COMMENT = '#';
-
+	private boolean simpleFormat;
+	/**
+	 * Cross compiling
+	 * @param parent   the parent Element
+	 * @param newValue the newValue
+	 * @param simpleFormat Transofrm in SimpleFormat
+	 * @return Itself
+	 */
 	@Override
-	public boolean parseToEntity(EntityList entityList, Buffer buffer) {
+	public BaseItem parseToEntity(BaseItem parent, Object newValue) {
+		if(newValue == null ) {
+			return null;
+		}
+		if(newValue instanceof SimpleKeyValueList<?, ?>) {
+			return parsingEntityXML((JsonObject) parent, (SimpleKeyValueList<?, ?>)newValue);
+		}
+		if(newValue instanceof Buffer ==  false) {
+			return null;
+		}
+		Buffer buffer = (Buffer) newValue;
+		if(parent instanceof Entity) {
+			return parsingEntity((Entity) parent, buffer);
+		}else if(parent instanceof EntityList) {
+			return parsingEntity((EntityList)parent, buffer);
+		}
+		return null;
+	}
+	
+	private EntityList parsingEntity(EntityList entityList, Buffer buffer) {
+		//FIXME REMOVE
 		char c = buffer.nextClean(true);
 		if (c != JsonArray.START) {
 			if (isError(this, "parseToEntity", NetworkParserLog.ERROR_TYP_PARSING, entityList)) {
 				throw new RuntimeException(
 						"A JSONArray text must start with '['. It is " + c + "(" + buffer.getString(20) + ")");
 			}
-			return false;
+			return null;
 		}
 		if ((buffer.nextClean(false)) != JsonArray.END) {
 			for (;;) {
@@ -76,27 +103,26 @@ public class JsonTokener extends Tokener {
 				case ';':
 				case ',':
 					if (buffer.nextClean(false) == JsonArray.END) {
-						return true;
+						return entityList;
 					}
 					break;
 				case JsonArray.END:
 					buffer.skip();
-					return true;
+					return entityList;
 				default:
 					if (isError(this, "parseToEntity", NetworkParserLog.ERROR_TYP_PARSING, entityList)) {
 						throw new RuntimeException("Expected a ',' or ']' not '" + buffer.getCurrentChar() + "'");
 					}
-					return false;
+					return null;
 				}
 			}
 		}
 		buffer.skip();
-		return true;
+		return entityList;
 	}
 	
 
-	@Override
-	public boolean parseToEntity(Entity entity, Buffer buffer) {
+	private Entity parsingEntity(Entity entity, Buffer buffer) {
 		String key;
 		if (buffer.nextClean(true) != JsonObject.START) {
 			if (isError(this, "parseToEntity", NetworkParserLog.ERROR_TYP_PARSING, entity)) {
@@ -114,7 +140,7 @@ public class JsonTokener extends Tokener {
 				if (isError(this, "parseToEntity", NetworkParserLog.ERROR_TYP_PARSING, entity)) {
 					throw new RuntimeException("A JsonObject text must end with '}'");
 				}
-				return false;
+				return null;
 			case '\\':
 				// unquote
 				buffer.skip();
@@ -135,20 +161,20 @@ public class JsonTokener extends Tokener {
 				}
 			case JsonObject.END:
 				buffer.skip();
-				return true;
+				return entity;
 			case ',':
 				buffer.skip();
 				Object keyValue = nextValue(buffer, entity, isQuote, false, stop);
 				if (keyValue == null) {
 					// No Key Found Must be an empty statement
-					return true;
+					return entity;
 				}
 				key = keyValue.toString();
 				break;
 			default:
 				Object parse = nextValue(buffer, entity, isQuote, false, stop);
 				if(parse == null) {
-					return true;
+					return entity;
 				}
 				key = parse.toString();
 			}
@@ -166,23 +192,15 @@ public class JsonTokener extends Tokener {
 				if (isError(this, "parseToEntity", NetworkParserLog.ERROR_TYP_PARSING, entity)) {
 					throw new RuntimeException("Expected a ':' after a key [" + buffer.getString(30).toString() + "]");
 				}
-				return false;
+				return null;
 			}
 			buffer.getChar();
 			entity.put(key, nextValue(buffer, entity, isQuote, false, stop));
 		} while (c != 0);
-		return true;
+		return entity;
 	}
 	
-	/**
-	 * Cross compiling
-	 * 
-	 * @param parent   the parent Element
-	 * @param newValue the newValue
-	 * @param simpleFormat Transofrm in SimpleFormat
-	 * @return Itself
-	 */
-	public boolean parseToEntity(JsonObject parent, SimpleKeyValueList<?, ?> newValue, boolean simpleFormat) {
+	private BaseItem parsingEntityXML(JsonObject parent, SimpleKeyValueList<?, ?> newValue) {
 		if (newValue instanceof XMLEntity) {
 			XMLEntity xmlEntity = (XMLEntity) newValue;
 			parent.put(IdMap.CLASS, xmlEntity.getTag());
@@ -205,9 +223,9 @@ public class JsonTokener extends Tokener {
 				parseEntityProp(props, xml, xml.getTag());
 			}
 			parent.put(PROPS, props);
-			return true;
+			return parent;
 		}
-		return false;
+		return null;
 	}
 
 	@Override
@@ -515,5 +533,10 @@ public class JsonTokener extends Tokener {
 		child.put(IdMap.CLASS, className);
 		child.put(IdMap.ID, id);
 		return child;
+	}
+
+	public JsonTokener withSimpleFormat(boolean value) {
+		this.simpleFormat = value;
+		return this;
 	}
 }

@@ -101,11 +101,7 @@ public class Tokener {
 		return map.isError(owner, method, type, entity, null);
 	}
 
-	public boolean parseToEntity(Entity entity, Buffer buffer) {
-		return true;
-	}
-
-	public EntityList parseToEntity(EntityList entity, Buffer buffer) {
+	public BaseItem parseToEntity(BaseItem entity, Object buffer) {
 		return entity;
 	}
 

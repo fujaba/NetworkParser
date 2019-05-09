@@ -103,7 +103,7 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 				}
 				return this;
 			}
-			tokener.parseToEntity((Entity) this, buffer);
+			tokener.parseToEntity(this, buffer);
 		}
 		return this;
 	}

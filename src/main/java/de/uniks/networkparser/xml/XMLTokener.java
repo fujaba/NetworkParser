@@ -98,11 +98,12 @@ public class XMLTokener extends Tokener {
 	}
 
 	@Override
-	public boolean parseToEntity(Entity entity, Buffer buffer) {
-		skipHeader(buffer);
-		if(buffer == null) {
-			return false;
+	public BaseItem parseToEntity(BaseItem entity, Object source) {
+		if(source == null || source instanceof Buffer == false) {
+			return null;
 		}
+		Buffer buffer = (Buffer) source;
+		skipHeader(buffer);
 		char c = buffer.getCurrentChar();
 		if (c != XMLEntity.START) {
 			c = buffer.nextClean(false);
@@ -111,7 +112,7 @@ public class XMLTokener extends Tokener {
 			if (isError(this, "parseToEntity", NetworkParserLog.ERROR_TYP_PARSING, entity)) {
 				throw new RuntimeException("Parse only XMLEntity");
 			}
-			return false;
+			return null;
 		}
 		XMLEntity xmlEntity = (XMLEntity) entity;
 		if (c != XMLEntity.START) {
@@ -119,7 +120,7 @@ public class XMLTokener extends Tokener {
 			if (isError(this, "parseToEntity", NetworkParserLog.ERROR_TYP_PARSING, entity)) {
 				throw new RuntimeException("A XML text must begin with '<'");
 			}
-			return false;
+			return null;
 		}
 		xmlEntity.withType(buffer.nextToken(false, Buffer.STOPCHARSXMLEND).toString());
 		XMLEntity child;
@@ -130,7 +131,7 @@ public class XMLTokener extends Tokener {
 			} else if (c == XMLEntity.END) {
 				c = buffer.nextClean(false);
 				if (c == 0) {
-					return true;
+					return entity;
 				}
 				if (c != XMLEntity.START) {
 					CharacterBuffer item = new CharacterBuffer();
@@ -168,7 +169,7 @@ public class XMLTokener extends Tokener {
 					buffer.withLookAHead(c);
 					if (buffer.getCurrentChar() == '<') {
 						child = (XMLEntity) xmlEntity.getNewList(true);
-						if (parseToEntity((Entity) child, buffer)) {
+						if (parseToEntity(child, buffer) != null) {
 							xmlEntity.with(child);
 							buffer.skip();
 						}
@@ -184,7 +185,7 @@ public class XMLTokener extends Tokener {
 					// Normal key Value
 					Object value = nextValue(buffer, xmlEntity, false, true, c);
 					if (value == null) {
-						return false;
+						return null;
 					}
 					String key = value.toString();
 					if (key.length() > 0) {
@@ -201,7 +202,7 @@ public class XMLTokener extends Tokener {
 				}
 			}
 		}
-		return true;
+		return entity;
 	}
 
 	/**

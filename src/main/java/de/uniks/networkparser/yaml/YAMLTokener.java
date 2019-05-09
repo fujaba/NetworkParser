@@ -40,9 +40,13 @@ public class YAMLTokener extends Tokener {
 	private SimpleKeyValueList<Object, SimpleKeyValueList<String, SimpleList<String>>> refs;
 
 	@Override
-	public EntityList parseToEntity(EntityList entity, Buffer buffer) {
-		parseLine(0, entity, buffer);
-		return entity;
+	public EntityList parseToEntity(BaseItem entity, Object buffer) {
+		if(buffer != null && buffer instanceof Buffer && entity instanceof EntityList ) {
+			EntityList list = (EntityList) entity;
+			parseLine(0, list, (Buffer) buffer);
+			return list;
+		}
+		return null;
 	}
 
 	protected int parseLine(int deep, EntityList owner, Buffer buffer) {
