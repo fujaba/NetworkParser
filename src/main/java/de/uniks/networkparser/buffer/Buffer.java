@@ -500,6 +500,25 @@ public abstract class Buffer implements BufferItem {
 		} while (c != 0);
 		return c;
 	}
+	
+	public boolean skipIf(boolean allowSpace, char... quotes) {
+		char c = getCurrentChar();
+		if (quotes == null) {
+			return true;
+		}
+		for (int i = 0; i < quotes.length; i++) {
+			if (quotes[i] != c) {
+				if(allowSpace && c == ' ') {
+					c = getChar();
+					i--;
+					continue;
+				}
+				return false;
+			}
+			c = getChar();
+		}
+		return true;
+	}
 
 	public void printError(String msg) {
 		if (msg != null && msg.length() > 0) {

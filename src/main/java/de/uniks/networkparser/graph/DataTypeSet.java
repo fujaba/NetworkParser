@@ -97,5 +97,14 @@ public class DataTypeSet extends DataType {
 		super.withExternal(external);
 		return this;
 	}
-
+		
+	public String getValue(String value) {
+		if(PROPERTY_NAME.equals(value)) {
+			return getGeneric().getName(true);
+		}
+		if(PROPERTY_CATEGORIE.equals(value)) {
+			return "SET";
+		}
+		return null;
+	}
 }

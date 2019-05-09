@@ -367,7 +367,8 @@ public class FileBuffer extends Buffer {
 	}
 	private static BaseItem parsingBuffer(CharacterBuffer buffer, BaseItem container) {
 		if (buffer != null && buffer.length() > 0) {
-			if (buffer.charAt(0) == '{') {
+			char startCharacter = buffer.nextClean(true);
+			if (startCharacter == '{') {
 				JsonObject result;
 				if (container instanceof JsonObject) {
 					result = (JsonObject) container;
@@ -388,7 +389,7 @@ public class FileBuffer extends Buffer {
 				}
 				return array;
 			}
-			if (buffer.charAt(0) == '[') {
+			if (startCharacter == '[') {
 				JsonArray result;
 				if (container instanceof JsonArray) {
 					result = (JsonArray) container;
@@ -397,7 +398,7 @@ public class FileBuffer extends Buffer {
 				}
 				return result.withValue(buffer);
 			}
-			if (buffer.charAt(0) == '<') {
+			if (startCharacter == '<') {
 				XMLEntity result;
 				if (container instanceof XMLEntity) {
 					result = (XMLEntity) container;

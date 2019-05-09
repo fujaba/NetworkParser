@@ -30,7 +30,6 @@ public class JavaAssociation extends Template {
 					+ "{{#import {{other.clazz.packageName}}.util.{{other.clazz.name}}Set}}",
 				"{{#endif}}"
 //Getter
-
 				+"   {{annotation(getter)}}",
 				"	public {{modifiers} }{{#if {{other.cardinality}}==1}}{{other.clazz.name}}{{#else}}{{other.clazz.name}}Set{{#endif}} get{{other.Name}}(){{#if {{file.member.type}}==interface}};",
 				"", "{{#endif}}", "{{#ifnot {{file.member.type}}==interface}} {", "{{#ifnot {{other.cardinality}}==1}}",

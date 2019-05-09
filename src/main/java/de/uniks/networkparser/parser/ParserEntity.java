@@ -1486,7 +1486,9 @@ public class ParserEntity {
 					srcRoleName = potentialCode.substring(0, potentialCode.indexOf("(")).toLowerCase();
 
 					SourceCode partnerCode = (SourceCode) partnerClass.getChildByName("SourceCode", SourceCode.class);
-
+					if(partnerCode == null) {
+						return false;
+					}
 					String partnerFile = partnerCode.getContent().toString();
 
 					if (partnerFile.contains("PROPERTY_" + srcRoleName.toUpperCase() + " = ")) {

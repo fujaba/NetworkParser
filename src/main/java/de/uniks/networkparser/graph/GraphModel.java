@@ -35,6 +35,7 @@ import de.uniks.networkparser.xml.HTMLEntity;
 public abstract class GraphModel extends GraphEntity implements BaseItem {
 	public static final String DEFAULTPACKAGE = "i.love.networkparser";
 	public static final String PROPERTY_CLAZZ = "clazz";
+	public static final String PROPERTY_GENERATEDCLAZZ = "generatedclazz";
 	private String defaultAuthorName;
 	protected String genPath;
 	private boolean renameAttributes=true;
@@ -76,6 +77,24 @@ public abstract class GraphModel extends GraphEntity implements BaseItem {
 	public Object getValue(String attribute) {
 		if (PROPERTY_CLAZZ.equalsIgnoreCase(attribute)) {
 			return getClazzes();
+		}
+		if (PROPERTY_GENERATEDCLAZZ.equalsIgnoreCase(attribute)) {
+			ClazzSet collection = new ClazzSet();
+			if (children == null) {
+				return collection;
+			}
+			if (children instanceof Clazz && GraphUtil.isExternal((Clazz) children) == false) {
+				collection.add(children);
+			}
+			if (children instanceof GraphSimpleSet) {
+				GraphSimpleSet items = (GraphSimpleSet) children;
+				for (GraphMember child : items) {
+					if (child instanceof Clazz && GraphUtil.isExternal((Clazz) child) == false) {
+						collection.add((Clazz) child);
+					}
+				}
+			}
+			return collection;
 		}
 		if (PROPERTY_PACKAGENAME.equalsIgnoreCase(attribute)) {
 			return this.getName(false);
@@ -210,7 +229,6 @@ public abstract class GraphModel extends GraphEntity implements BaseItem {
 								attribute.setName(EntityUtil.downFirstChar(name));
 							}
 						}
-						
 					}
 				}
 			}

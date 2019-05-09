@@ -64,7 +64,7 @@ public class Story extends StoryElement implements Comparable<Story> {
 		}
 		Class<?> listClass = GraphList.class;
 		for(String item : HTMLEntity.GRAPHRESOURCES) {
-			String content = new FileBuffer().readResource(listClass.getResourceAsStream(item)).toString();
+			String content = FileBuffer.readResource(listClass.getResourceAsStream(item)).toString();
 			entity.addResources(include, path+item, content);
 			if (include == false) {
 				if(path.length()>0) {

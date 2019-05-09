@@ -28,6 +28,13 @@ THE SOFTWARE.
 import de.uniks.networkparser.list.SimpleSet;
 
 public class GraphSimpleSet extends SimpleSet<GraphMember> implements Comparator<Object> {
+	private boolean comparator = true;
+	public static GraphSimpleSet create(boolean comparator) {
+		GraphSimpleSet set = new GraphSimpleSet();
+		set.comparator = comparator;
+		return set;
+	}
+	
 	@Override
 	protected boolean checkValue(Object a, Object b) {
 		if (!(a instanceof GraphMember)) {
@@ -54,7 +61,7 @@ public class GraphSimpleSet extends SimpleSet<GraphMember> implements Comparator
 
 	@Override
 	public boolean isComparator() {
-		return true;
+		return comparator;
 	}
 	
 	public int compare(Object o1, Object o2) {

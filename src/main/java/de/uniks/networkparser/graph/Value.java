@@ -29,6 +29,7 @@ THE SOFTWARE.
 public abstract class Value extends GraphMember {
 	public static final String PROPERTY_INITIALIZATION = "initialization";
 	public static final String PROPERTY_TYPE = "type";
+	public static final String PROPERTY_TYPECAT= "typecat";
 	public static final String PROPERTY_TYPECLAZZ = "typeClazz";
 	public static final String PROPERTY_NAMEGETTER = "namegetter";
 
@@ -56,7 +57,11 @@ public abstract class Value extends GraphMember {
 			attrName = attribute;
 		}
 		if (PROPERTY_TYPE.equalsIgnoreCase(attrName)) {
-			return this.getType();
+			DataType type = this.getType();
+			if(type != null && pos > 0) {
+				return type.getValue(attribute.substring(pos + 1));
+			}
+			return type;
 		}
 		if (PROPERTY_TYPECLAZZ.equalsIgnoreCase(attrName)) {
 			DataType dataType = this.getType();
@@ -65,6 +70,12 @@ public abstract class Value extends GraphMember {
 					return dataType.getClazz().getValue(attribute.substring(pos + 1));
 				}
 				return dataType.getClazz();
+			}
+		}
+		if (PROPERTY_TYPECAT.equalsIgnoreCase(attrName)) {
+			DataType dataType = this.getType();
+			if (dataType != null) {
+				return dataType.getValue("cat");
 			}
 		}
 		if (PROPERTY_NAMEGETTER.equalsIgnoreCase(attribute)) {

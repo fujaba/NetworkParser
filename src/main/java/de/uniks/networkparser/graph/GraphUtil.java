@@ -589,4 +589,12 @@ public class GraphUtil {
 		return "MANY";
 	}
 
+	public static boolean setChildren(GraphMember graphMember, GraphSimpleSet childrenSet) {
+		if(graphMember != null && graphMember.children != childrenSet) {
+			graphMember.children = childrenSet;
+			return true;
+		}
+		return false;
+	}
+
 }

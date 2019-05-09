@@ -11,27 +11,48 @@ public class JavaAttribute extends Template {
 				// {{visibility}} {{modifiers} }{{type} }{{name}}{{#if default}} =
 				// {{default}}{{#endif}}{{#endtemplate}}"
 				"{{#ifnot {{file.member.type}}==interface}}",
+				"	{{annotation}}",
 				"	{{visibility}} {{modifiers} }{{type} }{{name}}{{#if {{value}}}} = {{value}}{{#endif}};",
 				"",
 				"{{#endif}}",
 				"",
 				"{{#import {{type(false)}}}}" 
-				+ "{{#foreach {{parent.parent.child}}}}"
+			+	"{{#foreach {{parent.parent.child}}}}"
 					+ "{{#if {{#and}}{{item.type}}==class {{item.name}}=={{type}}{{#endand}}}}"
 						+ "{{#ifnot {{item.name}}=={{file.member.name}}}}" 
 							+ "{{#import {{item.fullName}}}}"
 						+ "{{#endif}}" 
 					+ "{{#endif}}"
-				+ "{{#endfor}}"
+			+	"{{#endfor}}"
 					
 //Getter
-				+"   {{annotation(getter)}}",
-				"	public {{modifiers} }{{type}} {{#if {{type}}==boolean}}is{{#else}}get{{#endif}}{{Name}}(){{#if {{file.member.type}}==interface}};",
-				"", "{{#endif}}", "{{#ifnot {{file.member.type}}==interface}} {", "		return {{this}}.{{name}};",
+			+	"	{{annotation(getter)}}",
+				"	public {{modifiers} }{{type}} {{#if {{type}}==boolean ? is : get}}{{Name}}(){{#if {{file.member.type}}==interface}};",
+				"", 
+					"{{#endif}}",
+					"{{#ifnot {{file.member.type}}==interface}} {",
+					"		return {{this}}.{{name}};",
+					"	}",
+					"",
+					"{{#endif}}",
+				"",
+				// ADD TO
+				"{{#debug}}{{#if {{typecat}}==SET}}",
+				"	public boolean add{{Name}}({{type.name}}... values) {",
+				"		if(values == null  || values.length < 1) {",
+				"			return false;",
+				"		}",
+				"		if(this.{{name}} == null) {",
+				"			this.{{name}} = new {{type}}();",
+				"		}",
+				"		for(int i=0;i<values.length;i++) {",
+				"			this.{{name}}.add(values[i]);",
+				"		}",
+				"		return true;",
 				"	}",
 				"",
 				"{{#endif}}",
-				"",
+
 				"{{#if {{#NOT}}{{modifiers#contains(static)}}{{#ENDNOT}}}}"
 					+ "	public {{modifiers} }boolean set{{Name}}({{type}} value){{#if {{file.member.type}}==interface}};",
 				"", "{{#endif}}",

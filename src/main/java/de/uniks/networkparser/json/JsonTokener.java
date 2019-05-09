@@ -56,14 +56,14 @@ public class JsonTokener extends Tokener {
 	public static final char COMMENT = '#';
 
 	@Override
-	public EntityList parseToEntity(EntityList entityList, Buffer buffer) {
+	public boolean parseToEntity(EntityList entityList, Buffer buffer) {
 		char c = buffer.nextClean(true);
 		if (c != JsonArray.START) {
 			if (isError(this, "parseToEntity", NetworkParserLog.ERROR_TYP_PARSING, entityList)) {
 				throw new RuntimeException(
 						"A JSONArray text must start with '['. It is " + c + "(" + buffer.getString(20) + ")");
 			}
-			return entityList;
+			return false;
 		}
 		if ((buffer.nextClean(false)) != JsonArray.END) {
 			for (;;) {
@@ -76,55 +76,24 @@ public class JsonTokener extends Tokener {
 				case ';':
 				case ',':
 					if (buffer.nextClean(false) == JsonArray.END) {
-						return entityList;
+						return true;
 					}
 					break;
 				case JsonArray.END:
 					buffer.skip();
-					return entityList;
+					return true;
 				default:
 					if (isError(this, "parseToEntity", NetworkParserLog.ERROR_TYP_PARSING, entityList)) {
 						throw new RuntimeException("Expected a ',' or ']' not '" + buffer.getCurrentChar() + "'");
 					}
-					return entityList;
+					return false;
 				}
 			}
 		}
 		buffer.skip();
-		return entityList;
+		return true;
 	}
-
-	@Override
-	public Object nextValue(Buffer buffer, BaseItem creator, boolean allowQuote, boolean allowDuppleMarks,
-			char stopChar) {
-		stopChar = buffer.nextClean(true);
-
-		switch (stopChar) {
-		case BufferItem.QUOTES:
-			buffer.skip();
-			return EntityUtil.unQuote(nextString(buffer, new CharacterBuffer(), true, true, stopChar));
-		case '\\':
-			// Must be unquote
-			buffer.skip();
-			buffer.skip();
-			return nextString(buffer, new CharacterBuffer(), allowQuote, true, BufferItem.QUOTES);
-		case JsonObject.START:
-			BaseItem element = creator.getNewList(true);
-			if (element instanceof Entity) {
-				this.parseToEntity((Entity) element, buffer);
-			}
-			return element;
-		case JsonArray.START:
-			BaseItem item = creator.getNewList(false);
-			if (item instanceof EntityList) {
-				this.parseToEntity((EntityList) item, buffer);
-			}
-			return item;
-		default:
-			break;
-		}
-		return super.nextValue(buffer, creator, allowQuote, allowDuppleMarks, stopChar);
-	}
+	
 
 	@Override
 	public boolean parseToEntity(Entity entity, Buffer buffer) {
@@ -204,6 +173,75 @@ public class JsonTokener extends Tokener {
 		} while (c != 0);
 		return true;
 	}
+	
+	/**
+	 * Cross compiling
+	 * 
+	 * @param parent   the parent Element
+	 * @param newValue the newValue
+	 * @param simpleFormat Transofrm in SimpleFormat
+	 * @return Itself
+	 */
+	public boolean parseToEntity(JsonObject parent, SimpleKeyValueList<?, ?> newValue, boolean simpleFormat) {
+		if (newValue instanceof XMLEntity) {
+			XMLEntity xmlEntity = (XMLEntity) newValue;
+			parent.put(IdMap.CLASS, xmlEntity.getTag());
+			JsonObject props = new JsonObject();
+			if (xmlEntity.getValue() != null && xmlEntity.getValue().length() > 0) {
+				parent.put(IdMap.VALUE, xmlEntity.getValue());
+			}
+
+			int i;
+			for (i = 0; i < xmlEntity.size(); i++) {
+				parseEntityProp(props, xmlEntity.getValueByIndex(i), xmlEntity.getKeyByIndex(i));
+			}
+
+			for (i = 0; i < xmlEntity.size(); i++) {
+				BaseItem child = xmlEntity.getChild(i);
+				if (child instanceof XMLEntity == false) {
+					continue;
+				}
+				XMLEntity xml = (XMLEntity) child;
+				parseEntityProp(props, xml, xml.getTag());
+			}
+			parent.put(PROPS, props);
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public Object nextValue(Buffer buffer, BaseItem creator, boolean allowQuote, boolean allowDuppleMarks,
+			char stopChar) {
+		stopChar = buffer.nextClean(true);
+
+		switch (stopChar) {
+		case BufferItem.QUOTES:
+			buffer.skip();
+			return EntityUtil.unQuote(nextString(buffer, new CharacterBuffer(), true, true, stopChar));
+		case '\\':
+			// Must be unquote
+			buffer.skip();
+			buffer.skip();
+			return nextString(buffer, new CharacterBuffer(), allowQuote, true, BufferItem.QUOTES);
+		case JsonObject.START:
+			BaseItem element = creator.getNewList(true);
+			if (element instanceof Entity) {
+				this.parseToEntity((Entity) element, buffer);
+			}
+			return element;
+		case JsonArray.START:
+			BaseItem item = creator.getNewList(false);
+			if (item instanceof EntityList) {
+				this.parseToEntity((EntityList) item, buffer);
+			}
+			return item;
+		default:
+			break;
+		}
+		return super.nextValue(buffer, creator, allowQuote, allowDuppleMarks, stopChar);
+	}
+
 
 	public JsonObject parseEntity(JsonObject parent, SimpleKeyValueList<?, ?> newValue) {
 		if (newValue instanceof XMLEntity) {
@@ -218,40 +256,6 @@ public class JsonTokener extends Tokener {
 			for (i = 0; i < xmlEntity.size(); i++) {
 				parseEntityProp(props, xmlEntity.getValueByIndex(i), xmlEntity.getKeyByIndex(i));
 			}
-			for (i = 0; i < xmlEntity.size(); i++) {
-				BaseItem child = xmlEntity.getChild(i);
-				if (child instanceof XMLEntity == false) {
-					continue;
-				}
-				XMLEntity xml = (XMLEntity) child;
-				parseEntityProp(props, xml, xml.getTag());
-			}
-			parent.put(PROPS, props);
-		}
-		return parent;
-	}
-
-	/**
-	 * Cross compiling
-	 * 
-	 * @param parent   the parent Element
-	 * @param newValue the newValue
-	 * @return Itself
-	 */
-	public JsonObject parseToEntity(JsonObject parent, SimpleKeyValueList<?, ?> newValue) {
-		if (newValue instanceof XMLEntity) {
-			XMLEntity xmlEntity = (XMLEntity) newValue;
-			parent.put(IdMap.CLASS, xmlEntity.getTag());
-			JsonObject props = new JsonObject();
-			if (xmlEntity.getValue() != null && xmlEntity.getValue().length() > 0) {
-				parent.put(IdMap.VALUE, xmlEntity.getValue());
-			}
-
-			int i;
-			for (i = 0; i < xmlEntity.size(); i++) {
-				parseEntityProp(props, xmlEntity.getValueByIndex(i), xmlEntity.getKeyByIndex(i));
-			}
-
 			for (i = 0; i < xmlEntity.size(); i++) {
 				BaseItem child = xmlEntity.getChild(i);
 				if (child instanceof XMLEntity == false) {

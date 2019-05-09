@@ -33,6 +33,7 @@ import de.uniks.networkparser.graph.GraphMember;
 import de.uniks.networkparser.graph.GraphSimpleSet;
 import de.uniks.networkparser.graph.GraphUtil;
 import de.uniks.networkparser.graph.Import;
+import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.LocalisationInterface;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.ParserCondition;
@@ -104,21 +105,16 @@ public class VariableCondition implements ParserCondition {
 			if (object instanceof Annotation) {
 				// Check for Scope
 				Annotation anno = (Annotation) object;
-				if(param == null && anno.getScope() != null) {
-					object = "";
-				} else if(param!= null && param.equalsIgnoreCase(anno.getScope())== false) {
-					object = "";
-				}else {
-					GraphSimpleSet children = GraphUtil.getChildren(anno);
-					if(children != null) {
-						for(Object item : children) {
-							if(item instanceof Import) {
-								variables.setValue(variables, "headers", ((Import) item).getClazz().getName(), "new");
-							}
-						}
+				CharacterBuffer buffer = new CharacterBuffer();
+				addAnnotation(anno, buffer, param, variables);
+				while(anno.hasNext()) {
+					anno = anno.next();
+					if(buffer.length()>0) {
+						buffer.with(BaseItem.CRLF);
 					}
-					object = "@"+anno.toString();
+					addAnnotation(anno, buffer, param, variables);
 				}
+				return buffer.toString();
 			}
 			if (object instanceof String) {
 				return replaceText(v, format, (String) object);
@@ -155,6 +151,27 @@ public class VariableCondition implements ParserCondition {
 			return null;
 		}
 		return null;
+	}
+	
+	public void addAnnotation(Annotation anno, CharacterBuffer buffer, String param, SendableEntityCreator variables) {
+		if(anno == null || buffer == null) {
+			return;
+		}
+		if(param == null && anno.getScope() != null) {
+			return;
+		}
+		if(param!= null && param.equalsIgnoreCase(anno.getScope())== false) {
+			return;
+		}
+		GraphSimpleSet children = GraphUtil.getChildren(anno);
+		if(children != null) {
+			for(Object item : children) {
+				if(item instanceof Import) {
+					variables.setValue(variables, "headers", ((Import) item).getClazz().getName(), "new");
+				}
+			}
+		}
+		buffer.with('@').with(anno.toString());
 	}
 
 	public String replaceText(String name, String format, String value) {

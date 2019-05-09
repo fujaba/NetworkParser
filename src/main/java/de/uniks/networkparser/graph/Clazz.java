@@ -450,15 +450,21 @@ public class Clazz extends GraphEntity {
 			//Check Name
 			if(renameName) {
 				String name2 = assoc.getName();
-				char no = name2.charAt(0);
-				if(no<'a' || no>'z') {
-					assoc.setName(EntityUtil.downFirstChar(name2));
+				if(name2 != null && name2.length()>0) {
+					if(name2.equals(name2.toUpperCase())) {
+						assoc.setName(name2.toLowerCase());
+					}else {
+						char no = name2.charAt(0);
+						if(no<'a' || no>'z') {
+							assoc.setName(EntityUtil.downFirstChar(name2));
+						}
+					}
 				}
 			}
 			// Check for duplicate
 			AssociationSet associations = otherAssoc.getClazz().getAssociations();
 			for(Association checkAssoc : associations) {
-				if(checkAssoc == otherAssoc) {
+				if(checkAssoc == otherAssoc || checkAssoc.getType() == AssociationTypes.GENERALISATION) {
 					continue;
 				}
 				if(checkAssoc.getName() != null && checkAssoc.getName().equalsIgnoreCase(otherAssoc.getName())) {

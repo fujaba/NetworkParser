@@ -7,8 +7,13 @@ public class JavaSetAttribute extends Template {
 	public JavaSetAttribute() {
 		this.id = "attribute";
 		this.type = VALUE;
-		this.withTemplate("{{#if {{#NOT}}{{modifiers#contains(static)}}{{#ENDNOT}}}}" + "{{#import {{type(false)}}}}"
-				+ "	public {{#listType}} {{#if {{type}}==boolean}}is{{#else}}get{{#endif}}{{Name}}({{type}}... filter) {",
+		this.withTemplate(
+				"{{#if {{#NOT}}{{modifiers#contains(static)}}{{#ENDNOT}}}}" +
+					"{{#import {{type(false)}}}}"
+
+// SWITCH FOR LIST SO NO PARAMETER
+				+ "	public {{#listType}} {{#if {{type}}==boolean}}is{{#else}}get{{#endif}}{{Name}}({{#if {{typecat}}!=SET ? {{type}}... filter}}) {"
+				+"",
 				"		{{#listType}} result = new {{#listType}}();",
 				"{{#if {{#feature PATTERN}}}}",
 				"		if(listener != null) {",
@@ -16,11 +21,16 @@ public class JavaSetAttribute extends Template {
 				"			result.withListener(listener);",
 				"			{{file.member.name}}[] children = this.toArray(new {{file.member.name}}[size()]);",
 				"			for(int i=0;i<children.length;i++) {",
-				"				listener.update(SimpleEvent.create(this, i, result, children[i], children[i].{{namegetter}}(), filter));",
+				"				listener.update(SimpleEvent.create(this, i, result, children[i], children[i].{{namegetter}}(), {{#if {{typecat}}!=SET ? filter : null}}));",
 				"			}",
 				"			return result;",
 				"		}",
 				"{{#endif}}",
+				"{{#if {{typecat}}==SET}}",
+				"		for ({{file.member.name}} obj : this) {",
+				"			result.add(obj.{{namegetter}}());",
+				"		}",
+				"{{#else}}",
 				"		if(filter == null || filter.length<1) {",
 				"			for ({{file.member.name}} obj : this) {",
 				"				result.add(obj.{{namegetter}}());",
@@ -40,10 +50,11 @@ public class JavaSetAttribute extends Template {
 				"				}",
 				"			}",
 				"		}",
+				"{{#endif}}",
 				"		return result;",
 				"	}",
 				"",
-				"{{#if {{#NOT}}{{type}}==BOOLEAN{{#ENDNOT}}}}"
+				"{{#if {{type}}!=BOOLEAN {{typecat}}!=SET}}"
 						+ "	public {{file.member.name}}Set filter{{Name}}({{type}} minValue, {{type}} maxValue) {",
 				"		{{file.member.name}}Set result = new {{file.member.name}}Set();",
 				"		for({{file.member.name}} obj : this) {",
@@ -61,18 +72,7 @@ public class JavaSetAttribute extends Template {
 				"	}",
 				"",
 				"",
-				"{{#endif}}{{#if {{type}}==VALUETYPE}}"
-						+ "	public {{SetName}} filter{{Value}}({{type}} lower, {{type}} upper) {",
-				"		{{SetName}} result = new {{SetName}}();",
-				"		for ({{name}} obj : this) {",
-				"			if (lower{{#if {{type}}==PRIMITIVE}} <= obj.get{{Name}}(){{#else}}.compareTo(obj.get{{Name}})) <= 0{{#endif}} && upper{{#if {{member.type}}==PRIMITIVE}} >= obj.get{{Name}}(){{#else}}.compareTo(obj.get{{Name}})) >= 0{{#endif}}) {",
-				"				result.add(obj);",
-				"			}",
-				"		}", "		return result;",
-				"	}",
-				"",
-				"",
-				"{{#endif}}" +
+				"{{#endif}}"+
 				"	public {{file.member.name}}Set with{{Name}}({{type}} value) {",
 				"		for ({{file.member.name}} obj : this) {",
 				"			obj.set{{Name}}(value);",

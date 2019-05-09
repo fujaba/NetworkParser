@@ -222,17 +222,27 @@ public class IfCondition implements ParserCondition, SendableEntityCreator {
 		// {{#if {{#feature}}}}
 //		if(tokenPart.equalsIgnoreCase("ifnot") || tokenPart.equalsIgnoreCase("if")) {
 		buffer.skip();
-		ObjectCondition expression = parser.parsing(buffer, customTemplate, true, true);
+		ObjectCondition expression = parser.parsing(buffer, customTemplate, true, true, "?");
 
 		if (this.tag.equalsIgnoreCase("ifnot")) {
 			this.withExpression(Not.create(expression));
 		} else {
 			this.withExpression(expression);
 		}
+		if (buffer.skipIf(true, '?')) {
+			// Short IF
+			this.withTrue(parser.parsing(buffer, customTemplate, false, true, ":", "}"));
+			if (buffer.skipIf(true, ':')) {
+				this.withFalse(parser.parsing(buffer, customTemplate, false, true, "}"));
+			}
+			buffer.skipChar(SPLITEND);
+			buffer.skipChar(SPLITEND);
+			return;
+		}
 		// CHECK ##
-		if (buffer.checkValues('#', '#')) {
+		if (buffer.skipIf(false, '#', '#')) {
 			this.notifyBuffer = new CharacterBuffer();
-			buffer.skip(2);
+//			buffer.skip(2);
 		}
 		buffer.skipChar(SPLITEND);
 		buffer.skipChar(SPLITEND);

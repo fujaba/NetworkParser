@@ -41,6 +41,7 @@ import de.uniks.networkparser.graph.Feature;
 import de.uniks.networkparser.graph.FeatureSet;
 import de.uniks.networkparser.graph.GraphMember;
 import de.uniks.networkparser.graph.GraphModel;
+import de.uniks.networkparser.graph.GraphUtil;
 import de.uniks.networkparser.graph.Method;
 import de.uniks.networkparser.graph.MethodSet;
 import de.uniks.networkparser.graph.Parameter;
@@ -57,8 +58,8 @@ import de.uniks.networkparser.parser.TemplateResultFragment;
 import de.uniks.networkparser.parser.TemplateResultModel;
 import de.uniks.networkparser.parser.cpp.CppClazz;
 import de.uniks.networkparser.parser.java.JavaClazz;
+import de.uniks.networkparser.parser.java.JavaCreatorCreator;
 import de.uniks.networkparser.parser.java.JavaSetCreator;
-import de.uniks.networkparser.parser.java.JavaSetCreatorCreator;
 import de.uniks.networkparser.parser.typescript.TypescriptClazz;
 
 public class ModelGenerator extends SimpleGenerator {
@@ -74,7 +75,7 @@ public class ModelGenerator extends SimpleGenerator {
 		if (templates == null) {
 			templates = new SimpleKeyValueList<String, Template>();
 //			addTemplate(new JavaCreatorCreator(), true);
-			addTemplate(new JavaSetCreatorCreator(), true);
+			addTemplate(new JavaCreatorCreator("Set"), true);
 			addTemplate(new JavaClazz(), true);
 			addTemplate(new JavaSetCreator(), true);
 //			addTemplate(new JavaCreator(), true);
@@ -212,6 +213,9 @@ public class ModelGenerator extends SimpleGenerator {
 		ClazzSet clazzes = model.getClazzes();
 
 		for (Clazz clazz : clazzes) {
+			if(clazz == null || GraphUtil.isExternal(clazz)) {
+				continue;
+			}
 			for (Template template : templates) {
 				boolean isStandard = codeStyle.match(clazz);
 				TemplateResultFile resultFile = template.executeClazz(clazz, resultModel, isStandard);

@@ -193,4 +193,10 @@ public class SimpleSet<V> extends AbstractList<V> implements Set<V> {
 		}
 		return super.fireProperty(type, oldElement, newElement, beforeElement, index, value);
 	}
+
+	@Override
+	public SimpleSet<V> withList(Collection<?> values) {
+		super.withList(values);
+		return this;
+	}
 }

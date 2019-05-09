@@ -42,10 +42,15 @@ import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.TemplateItem;
 import de.uniks.networkparser.interfaces.TemplateParser;
 import de.uniks.networkparser.list.SimpleList;
+import de.uniks.networkparser.logic.And;
 import de.uniks.networkparser.logic.ChainCondition;
 import de.uniks.networkparser.logic.Equals;
+import de.uniks.networkparser.logic.FeatureCondition;
+import de.uniks.networkparser.logic.ForeachCondition;
 import de.uniks.networkparser.logic.IfCondition;
+import de.uniks.networkparser.logic.ImportCondition;
 import de.uniks.networkparser.logic.Not;
+import de.uniks.networkparser.logic.Or;
 import de.uniks.networkparser.logic.StringCondition;
 import de.uniks.networkparser.logic.TemplateCondition;
 import de.uniks.networkparser.logic.TemplateFragmentCondition;
@@ -120,14 +125,15 @@ public class Template implements TemplateParser {
 
 	public TemplateResultFragment generate(LocalisationInterface parameters, SendableEntityCreator parent,
 			TemplateItem member) {
-		if (this.token.getCondition() instanceof StringCondition) {
-			this.token.withCondition(this.parsing((StringCondition) this.token.getCondition(), parameters, false));
+		ObjectCondition condition = this.token.getCondition();
+		if (condition instanceof StringCondition) {
+			this.token.withCondition(this.parsing((StringCondition) condition, parameters, false));
 		}
-		ObjectCondition template = this.token.getTemplate();
-		if (template instanceof StringCondition) {
+		condition = this.token.getTemplate();
+		if (condition instanceof StringCondition) {
 			this.token.withTemplate(null);
-			ObjectCondition newTemplate = this.parsing((StringCondition) template, parameters, true);
-			this.token.withTemplate(newTemplate);
+			condition = this.parsing((StringCondition) condition, parameters, true);
+			this.token.withTemplate(condition);
 		}
 		TemplateResultFragment templateFragment = new TemplateResultFragment();
 		templateFragment.withKey(this.getType());
@@ -177,21 +183,82 @@ public class Template implements TemplateParser {
 		return parsing(template, customTemplate, false, true);
 	}
 
+	public ObjectCondition parsing(LocalisationInterface... customTemplates) {
+		LocalisationInterface customTemplate = null;
+		if(customTemplates == null || customTemplates.length<1 || customTemplates[0] == null) {
+			TemplateResultModel result = new TemplateResultModel();
+			SimpleList<ParserCondition> templateCondition = getTemplateCondition();
+			if(templateCondition != null) {
+				for(ParserCondition condition : templateCondition) {
+					result.withTemplate(condition);
+				}
+			}
+			customTemplate = result;
+		}
+
+		ObjectCondition condition = this.token.getCondition();
+		if (condition instanceof StringCondition) {
+			this.token.withCondition(this.parsing((StringCondition) condition, customTemplate, false));
+		}
+		
+		condition = this.token.getTemplate();
+		if (condition instanceof StringCondition) {
+			this.token.withTemplate(null);
+			condition = this.parsing((StringCondition) condition, customTemplate, true);
+			this.token.withTemplate(condition);
+		}
+		return condition;
+	}
+	
 	public ObjectCondition parsing(CharacterBuffer buffer, LocalisationInterface customTemplate, boolean isExpression,
 			boolean allowSpace, String... stopWords) {
 		int start = buffer.position(), end;
 		ObjectCondition child = null;
 		ChainCondition parent = new ChainCondition();
-		int startDif = 2;
+		int startDif;
+		boolean isQuote = false;
+		String stopCharacter = null;
+		
+		if(stopWords != null && stopWords.length >0) {
+			char[] values = new char[stopWords.length];
+			startDif = 0;
+			for (String stopword : stopWords) {
+				if(stopword != null) {
+					if(stopword.length() != 1) {
+						values = null;
+						break;
+					}
+					values[startDif++] = stopword.charAt(0);
+				}else {
+					values[startDif++] = 0;
+				}
+			}
+			if(values != null) {
+				stopCharacter = new String(values);
+			}
+			
+		}
+		startDif = 2;
+		
 		while (buffer.isEnd() == false) {
-			if (isExpression && (buffer.getCurrentChar() == SPACE)) {
+			if (isExpression && buffer.getCurrentChar() == SPACE) {
+				break;
+			}else if(stopCharacter != null && isQuote == false && stopCharacter.indexOf(buffer.getCurrentChar())>=0) {
 				break;
 			}
+			
 			char character = buffer.nextClean(true);
-			if (isExpression && (character == SPLITEND)) {
+			if (isExpression && character == SPLITEND) {
 				break;
+			}else if(isQuote == false && stopCharacter != null) {
+				if(stopCharacter.indexOf(character)>=0) {
+					break;
+				}
 			}
 			if (character != SPLITSTART) {
+				if(character == '"') {
+					isQuote = !isQuote;
+				}
 				buffer.skip();
 				startDif = 2;
 				continue;
@@ -438,6 +505,12 @@ public class Template implements TemplateParser {
 		return this;
 	}
 
+	public static final Template create(String... templateValues) {
+		Template template = new Template();
+		template.withTemplate(templateValues);
+		return template;
+	}
+	
 	protected void setValue(CharSequence value) {
 		this.token.withTemplate(new StringCondition().withValue(value));
 	}
@@ -664,5 +737,22 @@ public class Template implements TemplateParser {
 	public SimpleList<Template> getChildren() {
 		return this.children;
 
+	}
+	
+	public static SimpleList<ParserCondition> getTemplateCondition() {
+		SimpleList<ParserCondition> customTemplates = new SimpleList<ParserCondition>();
+		customTemplates.add(new FeatureCondition());
+		customTemplates.add(new ImportCondition());
+		customTemplates.add(new ForeachCondition());
+		customTemplates.add(new TemplateFragmentCondition());
+		customTemplates.add(new IfCondition());
+		customTemplates.add(new IfCondition().withKey(IfCondition.IFNOT));
+		customTemplates.add(new JavaMethodBodyCondition());
+		customTemplates.add(new JavaListCondition());
+		customTemplates.add(new And());
+		customTemplates.add(new Or());
+		customTemplates.add(new DebugCondition());
+		customTemplates.add(new Not());
+		return customTemplates;
 	}
 }

@@ -25,20 +25,20 @@ public class DebugCondition implements ParserCondition, SendableEntityCreator {
 	}
 
 	@Override
-	public boolean update(Object value) {
-		if(value instanceof TemplateResultFragment) {
-			exeuteTemplate((TemplateResultFragment) value);
+	public boolean update(Object evt) {
+		if(evt instanceof TemplateResultFragment) {
+			exeuteTemplate((TemplateResultFragment) evt);
 		}
-		if(value instanceof SimpleEvent) {
-			SimpleEvent evt = (SimpleEvent) value;
-			if(evt.getSource() instanceof ParserEntity) {
-				if(NetworkParserLog.DEBUG.equals(evt.getType()) && line>=0) {
-					logger.debug(this, "update", evt.getNewValue());
-					if(line==evt.getIndex()) {
+		if(evt instanceof SimpleEvent) {
+			SimpleEvent simpleEvt = (SimpleEvent) evt;
+			if(simpleEvt.getSource() instanceof ParserEntity) {
+				if(NetworkParserLog.DEBUG.equals(simpleEvt.getType()) && line>=0) {
+					logger.debug(this, "update", simpleEvt.getNewValue());
+					if(line==simpleEvt.getIndex()) {
 						logger.debug(this, "update", "DEBUG");
 					}
-				}else if(ParserEntity.ERROR.equals(evt.getType())) {
-					logger.error(this, "update", evt.getNewValue());
+				}else if(ParserEntity.ERROR.equals(simpleEvt.getType())) {
+					logger.error(this, "update", simpleEvt.getNewValue());
 					throw new RuntimeException("parse error");
 				}
 			}

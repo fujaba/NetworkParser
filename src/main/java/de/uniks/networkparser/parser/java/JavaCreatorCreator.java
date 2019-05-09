@@ -10,12 +10,16 @@ import de.uniks.networkparser.parser.Template;
 import de.uniks.networkparser.parser.TemplateResultFile;
 
 public class JavaCreatorCreator extends Template {
-	public JavaCreatorCreator() {
+	public JavaCreatorCreator(String createorPrefix) {
 		this.extension = "java";
 		this.path = "util";
 		this.fileType = "classmodel";
 		this.id = TYPE_JAVA + ".creatorcreator";
 		this.type = TEMPLATE;
+		if(createorPrefix == null) {
+			// Creator or Set
+			createorPrefix = "Creator";
+		}
 		this.withTemplate(
 				"{{#template PACKAGE}}{{#if {{packageName}}}}package {{packageName}}.util;{{#endif}}{{#endtemplate}}",
 				"", "{{#template IMPORT}}{{#foreach {{file.headers}}}}", "import {{item}};{{#endfor}}{{#endtemplate}}",
@@ -23,7 +27,7 @@ public class JavaCreatorCreator extends Template {
 
 				"   public static final IdMap createIdMap(String session) {",
 				"        IdMap map = new IdMap().withSession(session);", "",
-				"{{#foreach {{clazz}}}}        map.withCreator(new {{item}}Creator());\r\n{{#endfor}}",
+				"{{#foreach {{generatedclazz}}}}        map.withCreator(new {{item}}"+createorPrefix+"());\r\n{{#endfor}}",
 				"        return map;", "   }",
 
 				"{{#template TEMPLATEEND}}}{{#endtemplate}}");

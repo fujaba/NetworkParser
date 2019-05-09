@@ -253,7 +253,7 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements En
 	 * @return Itself
 	 */
 	public JsonObject withEntity(SimpleKeyValueList<?, ?> entity) {
-		new JsonTokener().parseToEntity(this, entity);
+		new JsonTokener().parseToEntity(this, entity, false);
 		return this;
 	}
 

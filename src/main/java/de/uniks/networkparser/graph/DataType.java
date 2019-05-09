@@ -40,6 +40,8 @@ public class DataType {
 	public static final DataType CONSTRUCTOR = new DataType("");
 
 	protected Clazz value;
+	protected static final String PROPERTY_NAME="name";
+	protected static final String PROPERTY_CATEGORIE="cat";
 
 	DataType(String value) {
 		this.value = new Clazz().with(value);
@@ -136,5 +138,18 @@ public class DataType {
 		} else {
 			return "DataType.create(\"" + internName + "\")";
 		}
+	}
+	
+	public String getValue(String value) {
+		if(PROPERTY_NAME.equals(value)) {
+			return getClazz().getName(true);
+		}
+		if(PROPERTY_CATEGORIE.equals(value)) {
+			if(EntityUtil.isPrimitiveType(getInternName(false, true))) {
+				return "PRIMITIVE";
+			}
+			return "OBJECT";			
+		}
+		return null;
 	}
 }

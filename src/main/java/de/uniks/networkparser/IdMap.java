@@ -27,7 +27,6 @@ import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
 
 import de.uniks.networkparser.buffer.Buffer;
@@ -1733,10 +1732,10 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator>, Sendabl
 		return new IdMap();
 	}
 	
-	public boolean addI18N(Object root, TextItems i18n) {
-		return addI18N(root, i18n, new SimpleSet<Object>(), null);
+	public boolean addI18N(Object root, TextItems i18n, boolean autoCreate) {
+		return addI18N(root, i18n, new SimpleSet<Object>(), autoCreate, null);
 	}
-	private boolean addI18N(Object root, TextItems i18n, SimpleSet<Object> items, String key) {
+	private boolean addI18N(Object root, TextItems i18n, SimpleSet<Object> items, boolean autoCreate, String key) {
 		if(items == null || items.add(root) == false) {
 			return false;
 		}
@@ -1749,26 +1748,44 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator>, Sendabl
 		for(String property : properties) {
 			String fullKey;
 			if(key == null  ) {
-				fullKey = property;
+				fullKey = property.toLowerCase();
 			} else {
-				fullKey =key+":"+property;
+				fullKey =key+":"+property.toLowerCase();
 			}
 			Object value = creator.getValue(root, property);
+
+			if(autoCreate && ( value == null || (value instanceof Collection<?> && ((Collection<?>)value).size()<1) ) ){
+				// Check for Creating
+				//"autocreate": "true",
+				if(value instanceof SendableEntityCreator) {
+					// SIMPLE CASE
+					if("doktyp:zusatzangaben".equals(fullKey)) {
+						System.out.println("DEBUG");
+					}
+					Object creating = i18n.getLabelValue(fullKey+":autocreate");
+					if(creating instanceof Boolean && (boolean)creating) {
+						Object newValue = ((SendableEntityCreator) value).getSendableInstance(false);
+						creator.setValue(root, property, newValue, SendableEntityCreator.NEW);
+						value = newValue;
+					}
+				}
+			}
+			
 			if(value == null) {
 				// Check if Is Text
-				String text = i18n.getLabelValue(fullKey.toLowerCase());
+				Object text = i18n.getLabelValue(fullKey);
 				if(text != null) {
 					creator.setValue(root, property, text, NEW);
 				}
 				continue;
 			}
-			if(value instanceof Set<?>) {
-				Set<?> collection = (Set<?>) value;
+			if (value instanceof Collection<?>) {
+				Collection<?> collection = (Collection<?>) value;
 				for(Object item : collection) {
-					addI18N(item, i18n, items, fullKey);
+					addI18N(item, i18n, items, autoCreate, fullKey);
 				}
 			} else {
-				addI18N(value, i18n, items, fullKey);
+				addI18N(value, i18n, items, autoCreate, fullKey);
 			}
 		}
 		return true;

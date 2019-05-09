@@ -1,5 +1,7 @@
 package de.uniks.networkparser;
 
+import java.util.List;
+
 /*
 The MIT License
 
@@ -28,8 +30,9 @@ import de.uniks.networkparser.interfaces.LocalisationInterface;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.list.SimpleKeyValueList;
+import de.uniks.networkparser.list.SimpleList;
 
-public class TextItems extends SimpleKeyValueList<String, String> implements SendableEntityCreator, LocalisationInterface {
+public class TextItems extends SimpleKeyValueList<String, Object> implements SendableEntityCreator, LocalisationInterface {
 	public static final String PROPERTY_VALUE = "value";
 	private LocalisationInterface customLanguage = null;
 	private boolean defaultLabel = true;
@@ -75,6 +78,15 @@ public class TextItems extends SimpleKeyValueList<String, String> implements Sen
 	}
 
 	@Override
+	public String get(Object key) {
+		Object object = super.get(key);
+		if(object != null && object instanceof String) {
+			return (String) object;
+		}
+		return null;
+	}
+	
+	@Override
 	public boolean setValue(Object entity, String attribute, Object value, String type) {
 		if (entity instanceof TextItems == false) {
 			return false;
@@ -105,12 +117,12 @@ public class TextItems extends SimpleKeyValueList<String, String> implements Sen
 				return text;
 			}
 		}
-		text = getLabelValue(label + "." + System.getProperty("java.class.version", ""));
+		text = getLabelString(label + "." + System.getProperty("java.class.version", ""));
 		if (text != null) {
 			return text;
 
 		}
-		text = getLabelValue(label);
+		text = getLabelString(label);
 		if (text != null) {
 			return text;
 		}
@@ -120,13 +132,24 @@ public class TextItems extends SimpleKeyValueList<String, String> implements Sen
 		return label.toString();
 	}
 
-	public String getLabelValue(CharSequence label) {
+	public String getLabelString(CharSequence label) {
 		if (containsKey(label)) {
-			return get(label);
+			Object value = get(label);
+			if(value instanceof String) {
+				return (String) value;
+			}
 		}
 		return null;
 	}
 
+	public Object getLabelValue(CharSequence label) {
+		if (containsKey(label)) {
+			return super.get(label);
+		}
+		return null;
+	}
+
+	
 	@Override
 	public String[] getProperties() {
 		return new String[] { PROPERTY_VALUE };
@@ -148,6 +171,11 @@ public class TextItems extends SimpleKeyValueList<String, String> implements Sen
 		}
 		if (object == null) {
 			return null;
+		}
+		 // Add String
+		if(object instanceof List<?>) {
+			// Additional List of same Key
+			
 		}
 		if (this.add(label, object)) {
 			return object.toString();
@@ -187,7 +215,24 @@ public class TextItems extends SimpleKeyValueList<String, String> implements Sen
 			Object value = item.getValueByIndex(i);
 			if(value instanceof JsonObject) {
 				parseJsonObject((JsonObject) value, fullKey, ignoreCase);
+			}else if(value instanceof List<?>) {
+				List<?> list = (List<?>) value;
+				SimpleList<String> newValue = new SimpleList<String>();
+				for(Object child : list) {
+					if(child instanceof String) {
+						newValue.add(child);
+					}
+				}
+				if(newValue.size()>0) {
+					this.put(fullKey.toLowerCase(), newValue);
+				}
 			}else if(value instanceof String) {
+				if(ignoreCase) {
+					this.put(fullKey.toLowerCase(), value);
+				}else {
+					this.put(fullKey, value);
+				}
+			}else if(value instanceof Boolean) {
 				if(ignoreCase) {
 					this.put(fullKey.toLowerCase(), value);
 				}else {

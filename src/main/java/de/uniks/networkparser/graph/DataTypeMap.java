@@ -115,4 +115,14 @@ public class DataTypeMap extends DataType {
 		super.withExternal(external);
 		return this;
 	}
+	
+	public String getValue(String value) {
+		if(PROPERTY_NAME.equals(value)) {
+			return getGenericKey().getName(true);
+		}
+		if(PROPERTY_CATEGORIE.equals(value)) {
+			return "MAP";
+		}
+		return null;
+	}
 }
