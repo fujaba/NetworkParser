@@ -1752,9 +1752,35 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator>, Sendabl
 	}
 
 	public boolean addI18N(Object root, TextItems i18n, boolean autoCreate) {
-		return addI18N(root, i18n, new SimpleSet<Object>(), autoCreate, null);
+		return addI18N(root, i18n, new SimpleSet<Object>(), autoCreate, null, null);
 	}
-	private boolean addI18N(Object root, TextItems i18n, SimpleSet<Object> items, boolean autoCreate, String key) {
+	
+	/*
+	 * Check for Creating Rekursiv
+	 */
+	private boolean checkforCreating(Object element ) {
+		if(element == null) {
+			return false;
+		}
+		if(element instanceof Entity) {
+			Entity entity = (Entity) element;
+			Object entitryValue = entity.getValue("autocreate");
+			if(entitryValue != null && entitryValue instanceof Boolean) {
+				return (Boolean)entitryValue;
+			}
+		}
+		if(element instanceof List<?>) {
+			List<?> collection = (List<?>) element;
+			for(Object item : collection) {
+				if(checkforCreating(item)) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	
+	private boolean addI18N(Object root, TextItems i18n, SimpleSet<Object> items, boolean autoCreate, String key, List<?> subElements) {
 		if(items == null || items.add(root) == false) {
 			return false;
 		}
@@ -1772,13 +1798,26 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator>, Sendabl
 				fullKey =key+":"+property.toLowerCase();
 			}
 			Object value = creator.getValue(root, property);
-
+			if("doktyp:eo_ea_hinweis:eo_ea_hinweise".equals(fullKey)) {
+				System.out.println(fullKey);
+			}
+			Object element;
 			if(autoCreate && ( value == null || (value instanceof Collection<?> && ((Collection<?>)value).size()<1) ) ){
 				// Check for Creating
 				if(value instanceof SendableEntityCreator) {
 					// SIMPLE CASE
-					Object creating = i18n.getLabelValue(fullKey+":autocreate");
-					if(creating instanceof Boolean && (boolean)creating) {
+					element = i18n.getLabelValue(fullKey+":autocreate");
+					boolean creating;
+					if(element instanceof Boolean) {
+						creating = (Boolean)element;
+					} else {
+						element = i18n.getLabelValue(fullKey);
+						if(element instanceof List<?>) {
+							subElements = (List<?>) element;
+						}
+						creating = checkforCreating(element); 
+					}
+					if(creating) {
 						Object newValue = ((SendableEntityCreator) value).getSendableInstance(false);
 						creator.setValue(root, property, newValue, SendableEntityCreator.NEW);
 						value = newValue;
@@ -1791,16 +1830,34 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator>, Sendabl
 				Object text = i18n.getLabelValue(fullKey);
 				if(text != null) {
 					creator.setValue(root, property, text, NEW);
+					continue;
 				}
-				continue;
+				// IF SubElements set May be in Collection
+				if(subElements != null) {
+					for(Object item : subElements) {
+						if(item instanceof Entity) {
+							Entity subElement = (Entity)item;
+							for(int i=0;i<subElement.size();i++) {
+								String keyByIndex = subElement.getKeyByIndex(i);
+								if(property.equalsIgnoreCase(keyByIndex)) {
+									Object newText  = subElement.getValueByIndex(i);
+									if(newText != null) {
+										creator.setValue(root, property, newText, NEW);
+									}
+									break;
+								}
+							}
+						}
+					}
+				}
 			}
 			if (value instanceof Collection<?>) {
 				Collection<?> collection = (Collection<?>) value;
 				for(Object item : collection) {
-					addI18N(item, i18n, items, autoCreate, fullKey);
+					addI18N(item, i18n, items, autoCreate, fullKey, subElements);
 				}
 			} else {
-				addI18N(value, i18n, items, autoCreate, fullKey);
+				addI18N(value, i18n, items, autoCreate, fullKey, subElements);
 			}
 		}
 		return true;

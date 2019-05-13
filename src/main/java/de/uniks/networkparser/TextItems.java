@@ -26,6 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 import de.uniks.networkparser.buffer.CharacterBuffer;
+import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.LocalisationInterface;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.json.JsonObject;
@@ -192,7 +193,7 @@ public class TextItems extends SimpleKeyValueList<String, Object> implements Sen
 		return this;
 	}
 
-	public static TextItems create(JsonObject value, boolean ignoreCase) {
+	public static TextItems create(Entity value, boolean ignoreCase) {
 		TextItems textItems = new TextItems();
 		if(value != null) {
 			textItems.parseJsonObject(value, null, ignoreCase);
@@ -200,7 +201,7 @@ public class TextItems extends SimpleKeyValueList<String, Object> implements Sen
 		return textItems;
 	}
 	
-	private boolean parseJsonObject(JsonObject item, String parent, boolean ignoreCase) {
+	private boolean parseJsonObject(Entity item, String parent, boolean ignoreCase) {
 		if(item == null) {
 			return false;
 		}
@@ -213,14 +214,16 @@ public class TextItems extends SimpleKeyValueList<String, Object> implements Sen
 				fullKey = key;
 			}
 			Object value = item.getValueByIndex(i);
-			if(value instanceof JsonObject) {
-				parseJsonObject((JsonObject) value, fullKey, ignoreCase);
+			if(value instanceof Entity) {
+				parseJsonObject((Entity) value, fullKey, ignoreCase);
 			}else if(value instanceof List<?>) {
 				List<?> list = (List<?>) value;
-				SimpleList<String> newValue = new SimpleList<String>();
+				SimpleList<Object> newValue = new SimpleList<Object>();
 				for(Object child : list) {
 					if(child instanceof String) {
 						newValue.add(child);
+					}else if(child instanceof JsonObject) {
+						newValue.add(child);	
 					}
 				}
 				if(newValue.size()>0) {
