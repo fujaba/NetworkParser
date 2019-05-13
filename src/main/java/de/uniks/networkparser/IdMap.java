@@ -1755,8 +1755,10 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator>, Sendabl
 		return addI18N(root, i18n, new SimpleSet<Object>(), autoCreate, null, null);
 	}
 	
-	/*
+	/**
 	 * Check for Creating Rekursiv
+	 * @param element the new Element
+	 * @return success for autocreate
 	 */
 	private boolean checkforCreating(Object element ) {
 		if(element == null) {

@@ -186,6 +186,9 @@ public class TextDiff {
 
 	private TextDiff splitValue(Entity item, char type) {
 		TextDiff diff = new TextDiff();
+		if(item == null) {
+			return diff;
+		}
 		for (int i = 0; i < item.size(); i++) {
 			String key = item.getKeyByIndex(i);
 			Object value = item.getValue(key);
@@ -221,6 +224,9 @@ public class TextDiff {
 
 	private TextDiff splitValue(List<?> item, char type) {
 		TextDiff diff = new TextDiff();
+		if(item == null) {
+			return diff;
+		}
 		for (int i = 0; i < item.size(); i++) {
 			Object value = item.get(i);
 			if (value instanceof Entity) {

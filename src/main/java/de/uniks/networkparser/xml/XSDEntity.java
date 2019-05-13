@@ -515,6 +515,9 @@ public class XSDEntity extends XMLEntity implements SendableEntityCreator {
 
 	private void cleanUpTypes(String prefix, SimpleKeyValueList<String, String> simpleReplaceType, XMLEntity parent) {
 		String elementType = prefix + XSD_ELEMENT_TYPE;
+		if(parent == null) {
+			return;
+		}
 		for (int i = 0; i < parent.sizeChildren(); i++) {
 			XMLEntity child = (XMLEntity) parent.getChild(i);
 			if (elementType.equalsIgnoreCase(child.getTag())) {

@@ -14,6 +14,9 @@ public class ChangeRemoveModifierCondition extends MatchCondition {
 	}
 
 	protected boolean checkCondition(GraphMatcher matches, Match match) {
+		if(match == null || matches == null) {
+			return false;
+		}
 		GraphMember sourceAttribute = match.getMatch();
 		GraphMember otherAttribute = match.getSourceMatch();
 
@@ -37,6 +40,9 @@ public class ChangeRemoveModifierCondition extends MatchCondition {
 
 	@Override
 	protected boolean calculateFileDiffs(GraphModel model, GraphMatcher matches, Match match) {
+		if(match == null || matches == null) {
+			return false;
+		}
 		GraphMember oldAttribute = match.getMatch();
 		GraphMember newAttribute = match.getSourceMatch();
 
@@ -57,6 +63,9 @@ public class ChangeRemoveModifierCondition extends MatchCondition {
 
 	@Override
 	protected boolean calculateModelDiffs(GraphModel model, GraphMatcher matches, Match match) {
+		if(match == null || matches == null) {
+			return false;
+		}
 		GraphMember oldAttribute = match.getSourceMatch();
 		GraphMember newAttribute = match.getMatch();
 

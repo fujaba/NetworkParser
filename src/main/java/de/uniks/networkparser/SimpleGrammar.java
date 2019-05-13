@@ -49,6 +49,9 @@ public class SimpleGrammar implements Grammar {
 	
 	@Override
 	public BaseItem getProperties(Entity item, MapEntity map, boolean isId) {
+		if(item == null) {
+			return null;
+		}
 		if (isId) {
 			if (item.has(JsonTokener.PROPS)) {
 				return ((JsonObject) item).getJsonObject(JsonTokener.PROPS);
@@ -202,11 +205,17 @@ public class SimpleGrammar implements Grammar {
 
 	@Override
 	public Object getNewEntity(SendableEntityCreator creator, String className, boolean prototype) {
+		if(creator == null) {
+			return null;
+		}
 		return creator.getSendableInstance(prototype);
 	}
 
 	@Override
 	public String getValue(Entity item, String property) {
+		if(item == null) {
+			return null;
+		}
 		return item.getString(property);
 	}
 

@@ -17,6 +17,9 @@ public class AttributeChangeCondition extends MatchCondition {
 
 	@Override
 	protected boolean calculateDiffs(GraphMatcher matches, Match match) {
+		if(match == null || matches == null) {
+			return false;
+		}
 		Attribute sourceAttribute = (Attribute) match.getMatch();
 		Attribute otherAttribute = (Attribute) match.getOtherMatch().getMatch();
 
@@ -30,6 +33,9 @@ public class AttributeChangeCondition extends MatchCondition {
 	}
 
 	private boolean addChange(GraphMatcher matches, Match match, Attribute sourceAttribute, Attribute otherAttribute) {
+		if(match == null || matches == null) {
+			return false;
+		}
 //		if (matches.getMetaModel() != null && (match.getOtherMatch().isMetaMatch() || match.isMetaMatch())) {
 		if (matches.getMetaModel() != null && (match.isMetaSourceMatch() || match.isMetaMatch())) {
 			return false;

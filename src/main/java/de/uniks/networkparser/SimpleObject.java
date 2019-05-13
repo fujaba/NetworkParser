@@ -99,6 +99,9 @@ public class SimpleObject implements SendableEntityCreatorIndexId, SendableEntit
 	}
 
 	public boolean setValue(String key, Object value) {
+		if(key == null) {
+			return false;
+		}
 		key = key.trim();
 		boolean checked = false;
 		Object oldValue = null;
@@ -157,7 +160,9 @@ public class SimpleObject implements SendableEntityCreatorIndexId, SendableEntit
 		SimpleObject result = new SimpleObject();
 		if (values != null) {
 			for (SimpleEntity<String, Object> item : values) {
-				result.setValue(item.getKey(), item.getValue());
+				if(item != null) {
+					result.setValue(item.getKey(), item.getValue());
+				}
 			}
 		}
 		return result;
@@ -180,6 +185,9 @@ public class SimpleObject implements SendableEntityCreatorIndexId, SendableEntit
 
 	public static SimpleObject create(JsonObject json) {
 		SimpleObject result = new SimpleObject();
+		if(json == null) {
+			return result;
+		}
 
 		result.setId(json.getString(IdMap.ID));
 		Object className = json.get(IdMap.CLASS);

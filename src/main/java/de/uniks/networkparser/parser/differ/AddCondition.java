@@ -22,7 +22,13 @@ public class AddCondition extends MatchCondition {
 
 	@Override
 	protected boolean calculateFileDiffs(GraphModel model, GraphMatcher matches, Match match) {
+		if(match == null || matches == null) {
+			return false;
+		}
 		GraphMember member = match.getMatch();
+		if(member == null) {
+			return false;
+		}
 		Clazz clazz = member.getClazz();
 		if (member instanceof Clazz) {
 			Match addToCode = Match.create(model, this, GraphModel.PROPERTY_CLAZZ, null, clazz);
@@ -67,6 +73,9 @@ public class AddCondition extends MatchCondition {
 
 	@Override
 	protected boolean checkModelCondition(GraphMatcher matches, Match match) {
+		if(match == null || matches == null) {
+			return false;
+		}
 		if (match.getMatch() instanceof Association) {
 			return checkCondition(matches, match);
 		}
@@ -75,6 +84,9 @@ public class AddCondition extends MatchCondition {
 
 	@Override
 	protected boolean calculateModelDiffs(GraphModel model, GraphMatcher matches, Match match) {
+		if(match == null || matches == null) {
+			return false;
+		}
 		GraphMember member = match.getMatch();
 		Clazz clazz = member.getClazz();
 		if (member instanceof Clazz) {
@@ -123,6 +135,9 @@ public class AddCondition extends MatchCondition {
 	}
 
 	protected boolean checkCondition(GraphMatcher matches, Match match) {
+		if(match == null || matches == null) {
+			return false;
+		}
 		GraphMember member = match.getMatch();
 		if (member instanceof Association) {
 			Association association = (Association) match.getMatch();

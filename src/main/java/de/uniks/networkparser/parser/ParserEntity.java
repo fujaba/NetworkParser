@@ -1598,7 +1598,11 @@ public class ParserEntity {
 	}
 
 	private Method getMethod(Method search) {
-		MethodSet methods = this.getClazz().getMethods();
+		Clazz clazz = this.getClazz();
+		if(clazz == null) {
+			return search;
+		}
+		MethodSet methods = clazz.getMethods();
 		for (Method method : methods) {
 			if (method.toString().equals(search.toString())) {
 				return method;

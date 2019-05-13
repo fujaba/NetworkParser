@@ -13,6 +13,9 @@ public class AssociationChangeRenameCondition extends MatchCondition {
 	}
 
 	protected boolean checkCondition(GraphMatcher matches, Match match) {
+		if(match == null || matches == null || match.getOtherMatch() == null) {
+			return false;
+		}
 		Association sourceAssociation = (Association) match.getMatch();
 		Association otherAssociation = (Association) match.getOtherMatch().getMatch();
 
@@ -26,6 +29,9 @@ public class AssociationChangeRenameCondition extends MatchCondition {
 
 	@Override
 	protected boolean calculateFileDiffs(GraphModel model, GraphMatcher matches, Match match) {
+		if(match == null || matches == null) {
+			return false;
+		}
 		Association oldAssociation = (Association) match.getMatch();
 		Association newAssociation = (Association) match.getOtherMatch().getMatch();
 		Match rename = Match.create(newAssociation.getOther(), this, Association.PROPERTY_NAME,
@@ -41,6 +47,9 @@ public class AssociationChangeRenameCondition extends MatchCondition {
 
 	@Override
 	protected boolean calculateModelDiffs(GraphModel model, GraphMatcher matches, Match match) {
+		if(match == null || matches == null || match.getOtherMatch() == null) {
+			return false;
+		}
 		Association oldAssociation = (Association) match.getOtherMatch().getMatch();
 		Association newAssociation = (Association) match.getMatch();
 

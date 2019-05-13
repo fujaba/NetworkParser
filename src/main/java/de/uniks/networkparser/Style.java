@@ -160,6 +160,9 @@ public class Style implements Cloneable, SendableEntityCreatorNoIndex {
 	}
 
 	public Style clone(Style prototyp) {
+		if(prototyp == null) {
+			return null;
+		}
 		return prototyp.withFontFamily(fontfamily).withFontSize(fontsize).withForground(forground)
 				.withBackground(background).withBold(bold).withItalic(italic).withAlignment(alignment)
 				.withUnderline(underline).withWidth(width).withHeight(height);

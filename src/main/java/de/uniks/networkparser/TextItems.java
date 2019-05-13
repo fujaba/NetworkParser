@@ -75,7 +75,10 @@ public class TextItems extends SimpleKeyValueList<String, Object> implements Sen
 
 	@Override
 	public Object getValue(Object entity, String attribute) {
-		return ((TextItems) entity).get(attribute);
+		if(entity instanceof TextItems) {
+			return ((TextItems) entity).get(attribute);
+		}
+		return null;
 	}
 
 	@Override
@@ -98,6 +101,9 @@ public class TextItems extends SimpleKeyValueList<String, Object> implements Sen
 
 	@Override
 	public String getText(CharSequence label, Object model, Object gui) {
+		if(label == null) {
+			return null;
+		}
 		String text = null;
 		if (containsKey(label) == false) {
 			CharacterBuffer buffer = new CharacterBuffer();

@@ -14,6 +14,9 @@ public class AssociationChangeUpdateCondition extends MatchCondition {
 
 	@Override
 	protected boolean checkFileCondition(GraphMatcher matches, Match match) {
+		if(match == null || matches == null) {
+			return false;
+		}
 		Association sourceAssociation = (Association) match.getMatch();
 		Association otherAssociation = (Association) match.getSourceMatch();
 
@@ -35,6 +38,9 @@ public class AssociationChangeUpdateCondition extends MatchCondition {
 
 	@Override
 	protected boolean calculateFileDiffs(GraphModel model, GraphMatcher matches, Match match) {
+		if(match == null || matches == null || match.getOtherMatch() == null) {
+			return false;
+		}
 		Association oldAssociation = (Association) match.getMatch();
 		Association newAssociation = (Association) match.getOtherMatch().getMatch();
 
@@ -46,6 +52,9 @@ public class AssociationChangeUpdateCondition extends MatchCondition {
 
 	@Override
 	protected boolean checkModelCondition(GraphMatcher matches, Match match) {
+		if(match == null || matches == null) {
+			return false;
+		}
 		Association oldAssociation = (Association) match.getOtherMatch().getMatch();
 		Association newAssociation = (Association) match.getMatch();
 
@@ -61,6 +70,9 @@ public class AssociationChangeUpdateCondition extends MatchCondition {
 
 	@Override
 	protected boolean calculateModelDiffs(GraphModel model, GraphMatcher matches, Match match) {
+		if(match == null || matches == null) {
+			return false;
+		}
 		Association oldAssociation = (Association) match.getOtherMatch().getMatch();
 		Association newAssociation = (Association) match.getMatch();
 

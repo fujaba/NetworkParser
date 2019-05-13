@@ -86,6 +86,7 @@ public class NetworkParserLog extends Handler {
 	public static final String ERROR = "ERROR";
 	public static final String FATAL = "FATAL";
 	public static final String LOG = "LOG";
+	private int errorCount;
 
 	private byte flag = LOGLEVEL_ERROR + LOGLEVEL_INFO; // ERROR + INFO
 	protected ObjectCondition condition;
@@ -198,12 +199,17 @@ public class NetworkParserLog extends Handler {
 	 */
 	public boolean error(Object owner, String method, Object message, Object... params) {
 		if ((flag & LOGLEVEL_ERROR) != 0) {
+			this.errorCount++;
 			if (condition != null) {
 				return condition
 						.update(new SimpleEvent(owner, method, null, message).withModelValue(params).withType(ERROR));
 			}
 		}
 		return false;
+	}
+	
+	public int getErrorCount() {
+		return errorCount;
 	}
 
 	public boolean log(Object owner, String method, String msg, int level, Object... params) {
@@ -232,10 +238,12 @@ public class NetworkParserLog extends Handler {
 		// <li>FINEST (lowest value)
 		if (global != null && global != this) {
 			global.publish(record);
-			;
 			return;
 		}
-		String level = record.getLevel().toString();
+		if(record == null) {
+			return;
+		}
+		String level = ""+record.getLevel();
 		if ("SEVERE".equals(level)) {
 			this.error(record.getSourceClassName(), record.getSourceMethodName(), record.getMessage());
 		}

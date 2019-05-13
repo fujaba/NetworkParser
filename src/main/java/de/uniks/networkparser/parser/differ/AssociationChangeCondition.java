@@ -18,6 +18,9 @@ public class AssociationChangeCondition extends MatchCondition {
 
 	@Override
 	protected boolean checkCondition(GraphMatcher matches, Match match) {
+		if(match == null || matches == null) {
+			return false;
+		}
 		Association association = (Association) match.getMatch();
 
 		if (association.getType().equals(AssociationTypes.UNDIRECTIONAL)
@@ -32,6 +35,9 @@ public class AssociationChangeCondition extends MatchCondition {
 
 	@Override
 	protected boolean calculateDiffs(GraphMatcher matches, Match match) {
+		if(match == null || matches == null) {
+			return false;
+		}
 		Association sourceAssociation = (Association) match.getMatch();
 		Association otherAssociation = (Association) match.getOtherMatch().getMatch();
 
@@ -50,6 +56,9 @@ public class AssociationChangeCondition extends MatchCondition {
 
 	private boolean addChange(GraphMatcher matches, Match match, Association sourceAssociation,
 			Association otherAssociation) {
+		if(match == null || matches == null) {
+			return false;
+		}
 		if (matches.getMetaModel() != null && (match.isSourceMatch() || match.isMetaMatch())) {
 			return false;
 		}
@@ -62,12 +71,18 @@ public class AssociationChangeCondition extends MatchCondition {
 
 	private boolean updateType(GraphMatcher matches, Match match, Association sourceAssociation,
 			Association otherAssociation) {
+		if(match == null || matches == null) {
+			return false;
+		}
 		return sourceAssociation.getOtherClazz().getName().equals(otherAssociation.getOtherClazz().getName()) == false
 				|| sourceAssociation.getClazz().getName().equals(otherAssociation.getClazz().getName()) == false
 				|| sourceAssociation.getType().equals(otherAssociation.getType()) == false;
 	}
 
 	private boolean checkSimiliarNames(Association sourceAssociation, Association otherAssociation) {
+		if(sourceAssociation == null || otherAssociation == null || sourceAssociation.getType() == null) {
+			return false;
+		}
 		if (sourceAssociation.getType().equals(AssociationTypes.UNDIRECTIONAL)
 				|| otherAssociation.getType().equals(AssociationTypes.UNDIRECTIONAL)) {
 			return sourceAssociation.getName().equals(otherAssociation.getName());

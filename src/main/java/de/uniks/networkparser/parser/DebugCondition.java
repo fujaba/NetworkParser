@@ -54,6 +54,9 @@ public class DebugCondition implements ParserCondition, SendableEntityCreator {
 	public void create(CharacterBuffer buffer, TemplateParser parser, LocalisationInterface customTemplate) {
 //		 CREATE FIELD
 		// SKIP TO END
+		if(buffer == null) {
+			return;
+		}
 		buffer.skipTo(SPLITEND, false);
 		buffer.skip();
 		buffer.skip();

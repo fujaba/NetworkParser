@@ -75,6 +75,9 @@ public class StringCondition implements ParserCondition {
 		return new StringCondition().withValue(sequence);
 	}
 	public static final ObjectCondition createSearchLogic(CharacterBuffer sequence) {
+		if(sequence == null) {
+			return null;
+		}
 		SimpleList<String> stringList = new SimpleList<String>();
 		int start=0;
 		for(int i=0;i<sequence.length();i++) {

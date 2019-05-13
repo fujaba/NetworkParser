@@ -13,6 +13,9 @@ public class AttributeChangeUpdateTypeCondition extends MatchCondition {
 
 	@Override
 	protected boolean checkFileCondition(GraphMatcher matches, Match match) {
+		if(match == null || matches == null) {
+			return false;
+		}
 		Attribute oldAttribute = (Attribute) match.getMatch();
 //		Attribute newAttribute = (Attribute) match.getSourceMatch();
 		Attribute newAttribute = (Attribute) match.getOtherMatch().getMatch();
@@ -29,6 +32,9 @@ public class AttributeChangeUpdateTypeCondition extends MatchCondition {
 
 	@Override
 	protected boolean calculateFileDiffs(GraphModel model, GraphMatcher matches, Match match) {
+		if(match == null || matches == null || match.getOtherMatch() == null) {
+			return false;
+		}
 		Attribute oldAttribute = (Attribute) match.getMatch();
 		Attribute newAttribute = (Attribute) match.getOtherMatch().getMatch();
 
@@ -40,6 +46,9 @@ public class AttributeChangeUpdateTypeCondition extends MatchCondition {
 
 	@Override
 	protected boolean checkModelCondition(GraphMatcher matches, Match match) {
+		if(match == null || matches == null) {
+			return false;
+		}
 		Attribute oldAttribute = (Attribute) match.getOtherMatch().getMatch();
 		Attribute newAttribute = (Attribute) match.getMatch();
 		if (oldAttribute == null || newAttribute == null) {
@@ -50,6 +59,9 @@ public class AttributeChangeUpdateTypeCondition extends MatchCondition {
 
 	@Override
 	protected boolean calculateModelDiffs(GraphModel model, GraphMatcher matches, Match match) {
+		if(match == null || matches == null || match.getOtherMatch() == null) {
+			return false;
+		}
 		Attribute oldAttribute = (Attribute) match.getOtherMatch().getMatch();
 		Attribute newAttribute = (Attribute) match.getMatch();
 

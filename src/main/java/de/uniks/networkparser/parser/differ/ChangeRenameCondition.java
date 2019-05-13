@@ -14,6 +14,9 @@ public class ChangeRenameCondition extends MatchCondition {
 	}
 
 	protected boolean checkCondition(GraphMatcher matches, Match match) {
+		if(match == null || matches == null) {
+			return false;
+		}
 		GraphMember sourceAttribute = match.getMatch();
 		GraphMember otherAttribute = match.getSourceMatch();
 		if (otherAttribute == null) {
@@ -29,6 +32,9 @@ public class ChangeRenameCondition extends MatchCondition {
 
 	@Override
 	protected boolean calculateFileDiffs(GraphModel model, GraphMatcher matches, Match match) {
+		if(match == null || matches == null) {
+			return false;
+		}
 		GraphMember oldAttribute = match.getMatch();
 		GraphMember newAttribute = match.getSourceMatch();
 
@@ -45,6 +51,9 @@ public class ChangeRenameCondition extends MatchCondition {
 
 	@Override
 	protected boolean calculateModelDiffs(GraphModel model, GraphMatcher matches, Match match) {
+		if(match == null || matches == null) {
+			return false;
+		}
 		GraphMember oldAttribute = match.getSourceMatch();
 		GraphMember newAttribute = match.getMatch();
 		Match rename = Match.create(oldAttribute, this, Attribute.PROPERTY_NAME, oldAttribute.getName(),

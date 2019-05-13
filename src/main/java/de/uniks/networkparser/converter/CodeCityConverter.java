@@ -167,6 +167,9 @@ public class CodeCityConverter implements Converter {
 	}
 	
 	private int addElement(CharacterBuffer buffer, ParserEntity entity, Method method, int index, SimpleKeyValueList<GraphMember, Integer> list) {
+		if(entity == null) {
+			return 0;
+		}
 		int methodId=index++;
 		SourceCode code = entity.getCode();
 		list.add(method, methodId);
