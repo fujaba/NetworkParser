@@ -200,9 +200,80 @@ public class JsonTokener extends Tokener {
 		return entity;
 	}
 	
+	private BaseItem parsingSimpleEntityXML(JsonObject parent, XMLEntity newValue) {
+		// <TAG PARAM>CHILDREN</TAG>
+		
+		// Parsing all Parameter
+		int i=0;
+		for(; i< newValue.size();i++) {
+			String key = newValue.getKeyByIndex(i);
+			Object value = newValue.getValueByIndex(i);
+			parent.put(key, value);
+		}
+
+		if(i==0 &&newValue.sizeChildren() == 1) {
+			XMLEntity child = (XMLEntity) newValue.getChild(0);
+			if(child.sizeChildren() > 0) {
+				// PARSING
+				JsonObject childItem = (JsonObject) newInstance();
+				parsingSimpleEntityXML(childItem, child);
+				parent.put(child.getTag(), childItem);
+				
+			}else {
+				parent.put(child.getTag(), child.getValue());
+			}
+			return parent;
+		}
+		
+		// Parsing children
+		SimpleKeyValueList<String, Integer> childrenCount = new SimpleKeyValueList<String, Integer>();
+		for(i=0;i<newValue.sizeChildren();i++) {
+			XMLEntity child = (XMLEntity) newValue.getChild(i);
+			childrenCount.increment(child.getTag());
+		}
+		SimpleKeyValueList<String, JsonArray> childrenArray = new SimpleKeyValueList<String, JsonArray>();
+		for(i=0;i<newValue.sizeChildren();i++) {
+			JsonObject item = (JsonObject) newInstance();
+			BaseItem child = newValue.getChild(i);
+			if(child instanceof XMLEntity) {
+				XMLEntity xml = (XMLEntity) child;
+				String tag = xml.getTag();
+				if(childrenCount.get(tag) == 1) {
+					parsingSimpleEntityXML(item, xml);
+					if(item.size()>0) {
+						parent.put(tag, item);
+					}else if(xml.getValue() != null){
+						// Ifgnore check for ValueItem
+						String value = xml.getValue().trim();
+						if(value.length()>0) {
+							parent.put(tag, value);
+						}
+					}
+				}else {
+					JsonArray children = childrenArray.get(tag);
+					if(children == null) {
+						children = (JsonArray) newInstanceList();
+						childrenArray.put(tag, children);
+					}
+					parsingSimpleEntityXML(item, xml);
+					children.add(item);
+				}
+			}
+		}
+		for(i=0;i<childrenArray.size();i++) {
+			parent.put(childrenArray.getKeyByIndex(i), childrenArray.getValueByIndex(i));
+		}
+		return parent;
+	}
+	
 	private BaseItem parsingEntityXML(JsonObject parent, SimpleKeyValueList<?, ?> newValue) {
 		if (newValue instanceof XMLEntity) {
 			XMLEntity xmlEntity = (XMLEntity) newValue;
+			
+			if(simpleFormat) {
+				return parsingSimpleEntityXML(parent, xmlEntity);
+			}
+			
 			parent.put(IdMap.CLASS, xmlEntity.getTag());
 			JsonObject props = new JsonObject();
 			if (xmlEntity.getValue() != null && xmlEntity.getValue().length() > 0) {
@@ -312,6 +383,48 @@ public class JsonTokener extends Tokener {
 		}
 	}
 
+	public Object decodingSimple(JsonObject jsonObject, Object target, SendableEntityCreator creator) {
+		if(jsonObject == null || target == null || creator == null) {
+			return null;
+		}
+		String[] properties = creator.getProperties();
+		jsonObject.withCaseSensitive(false);
+		for(String property : properties) {
+			Object value = jsonObject.get(property);
+			
+			// Switch for SimpleSet
+			if(value instanceof JsonObject) {
+				// To 1 Assoc
+				 SendableEntityCreator subCreator = map.getCreator(property, false, false, null);
+				 if(subCreator != null) {
+					 Object subTarget = subCreator.getSendableInstance(false);
+					 if(decodingSimple((JsonObject)value, subTarget, subCreator) != null) {
+						 creator.setValue(target, property, subTarget, IdMap.NEW);
+					 }
+				 }
+			} else if(value instanceof JsonArray) {
+				// To Many
+				 SendableEntityCreator subCreator = map.getCreator(property, false, false, null);
+				 if(subCreator != null) {
+					JsonArray jsonArray = (JsonArray) value;
+					for(Object item : jsonArray) {
+						if(item instanceof JsonObject) {
+							 Object subTarget = subCreator.getSendableInstance(false);
+							 if(decodingSimple((JsonObject)item, subTarget, subCreator) != null) {
+								 creator.setValue(target, property, subTarget, IdMap.NEW);
+							 }
+						}
+					}
+				 }
+			}else if(value != null) {
+				// Simple Value
+				creator.setValue(target, property, value, IdMap.NEW);
+			}
+		}
+		return target;
+	}
+	
+	
 	/**
 	 * Read json.
 	 *

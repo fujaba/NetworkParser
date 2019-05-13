@@ -53,7 +53,7 @@ public class Tokener {
 		if (map == null) {
 			return null;
 		}
-		return map.getCreator(className, fullName, null);
+		return map.getCreator(className, fullName, true, null);
 	}
 
 	public String getKey(Object reference) {

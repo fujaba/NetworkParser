@@ -262,6 +262,13 @@ public abstract class BufferedBuffer extends Buffer implements BaseItem {
 		}
 		return subSequence(start, end).toString();
 	}
+	
+	public String next(int... positions) {
+		if(positions == null || positions.length != 1) {
+			return substring(positions);
+		}
+		return subSequence(position(), position()+positions[0]).toString();
+	}
 
 	public byte[] toBytes(boolean... all) {
 		byte[] result;

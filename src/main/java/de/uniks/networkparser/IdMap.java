@@ -165,7 +165,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator>, Sendabl
 		if (reference == null) {
 			return null;
 		}
-		SendableEntityCreator creator = getCreator(reference.getClass().getName(), true, null);
+		SendableEntityCreator creator = getCreator(reference.getClass().getName(), true, true, null);
 		if (creator == null && reference instanceof SendableEntityCreator) {
 			return (SendableEntityCreator) reference;
 		}
@@ -173,7 +173,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator>, Sendabl
 	}
 
 	public SendableEntityCreator getCreator(String clazz, boolean fullName) {
-		return getCreator(clazz, fullName, null);
+		return getCreator(clazz, fullName, true, null);
 	}
 
 	/**
@@ -182,16 +182,20 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator>, Sendabl
 	 * @param clazz    Clazzname for search
 	 * @param fullName if the clazzName is the Fullname for search
 	 * @param creators candidates creator list for result
+	 * @param caseSensitive ignore Case
 	 * @return return a Creator class for a clazz name
 	 */
-	public SendableEntityCreator getCreator(String clazz, boolean fullName,
+	public SendableEntityCreator getCreator(String clazz, boolean fullName, boolean caseSensitive,
 			SimpleList<SendableEntityCreator> creators) {
+		if (clazz == null || clazz.length() < 1) {
+			return null;
+		}
 		Object creator = this.creators.getValue(clazz);
 		if (creator != null || fullName) {
 			return (SendableEntityCreator) creator;
 		}
-		if (clazz == null || clazz.length() < 1) {
-			return null;
+		if(caseSensitive == false) {
+			clazz = clazz.toLowerCase();
 		}
 		String endTag;
 		if (clazz.lastIndexOf(ENTITYSPLITTER) >= 0) {
@@ -205,6 +209,9 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator>, Sendabl
 		}
 		for (int i = 0; i < this.creators.size(); i++) {
 			String key = this.creators.getKeyByIndex(i);
+			if(caseSensitive == false) {
+				key = key.toLowerCase();
+			}
 			if (key.endsWith(endTag)) {
 				return this.creators.getValueByIndex(i);
 			}
@@ -955,6 +962,9 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator>, Sendabl
 	}
 
 	private Object decodingJsonObject(JsonObject jsonObject, MapEntity map) {
+		if(jsonObject == null  || map == null) {
+			return null;
+		}
 		// SWITCH FOR JAVAFX THREAD
 		if (this.modelExecutor != null) {
 			SimpleEvent event = new SimpleEvent(this, null, map, jsonTokener);
@@ -968,6 +978,15 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator>, Sendabl
 			Object result = listener.execute(jsonObject, filter);
 			if (result != null) {
 				return result;
+			}
+		}
+		if( map.getFilter().isSimpleFormat()) {
+			// Validate SimpleFormat
+			if (jsonObject.has(IdMap.ID) == false && jsonObject.has(IdMap.CLASS) == false) {
+				// It is a SimpleFormat
+				Object target = map.getTarget();
+				SendableEntityCreator creator = this.getCreatorClass(target);
+				return jsonTokener.decodingSimple(jsonObject, target, creator);
 			}
 		}
 		return jsonTokener.decoding(jsonObject, map, false);
@@ -1731,7 +1750,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator>, Sendabl
 	public Object getSendableInstance(boolean prototyp) {
 		return new IdMap();
 	}
-	
+
 	public boolean addI18N(Object root, TextItems i18n, boolean autoCreate) {
 		return addI18N(root, i18n, new SimpleSet<Object>(), autoCreate, null);
 	}
@@ -1756,12 +1775,8 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator>, Sendabl
 
 			if(autoCreate && ( value == null || (value instanceof Collection<?> && ((Collection<?>)value).size()<1) ) ){
 				// Check for Creating
-				//"autocreate": "true",
 				if(value instanceof SendableEntityCreator) {
 					// SIMPLE CASE
-					if("doktyp:zusatzangaben".equals(fullKey)) {
-						System.out.println("DEBUG");
-					}
 					Object creating = i18n.getLabelValue(fullKey+":autocreate");
 					if(creating instanceof Boolean && (boolean)creating) {
 						Object newValue = ((SendableEntityCreator) value).getSendableInstance(false);

@@ -49,6 +49,7 @@ public class XSDEntity extends XMLEntity implements SendableEntityCreator {
 	public static final String XSD_STRING_TYPE = ":string";
 	public static final String XSD_SEQUENCE_TYPE = ":sequence";
 	public static final String XSD_ATTRIBUTE_TYPE = ":attribute";
+	public static final String XSD_UNBOUNDED = "unbounded";
 	/** Constant of Choice. */
 	public static final String PROPERTY_CHOICE = "choice";
 	/** Constant of Sequence. */
@@ -58,7 +59,7 @@ public class XSDEntity extends XMLEntity implements SendableEntityCreator {
 	/** Constant of Minimum Elements. */
 	public static final String PROPERTY_MINOCCURS = "minOccurs";
 	/** Constant of Maximum Elements. */
-	public static final String PROPERTY_MAXOCCURS = "minOccurs";
+	public static final String PROPERTY_MAXOCCURS = "maxOccurs";
 	private static final String PROEPRTY_CHILDREN = "children";
 
 	/** Elements of Choice. */
@@ -123,7 +124,7 @@ public class XSDEntity extends XMLEntity implements SendableEntityCreator {
 	 * Set the Mimimum for XSD Entity
 	 *
 	 * @param value The Minimum of Elements.
-	 * @return
+	 * @return success for Set new Value
 	 */
 	public boolean setMinOccurs(String value) {
 		if (value != this.minOccurs) {
@@ -142,7 +143,7 @@ public class XSDEntity extends XMLEntity implements SendableEntityCreator {
 	 * Set the Maximum of Occurs
 	 *
 	 * @param value the Maximum of Elements.
-	 * @return
+	 * @return success for Set new Value
 	 */
 	public boolean setMaxOccurs(String value) {
 		if (value != maxOccurs) {
@@ -195,6 +196,28 @@ public class XSDEntity extends XMLEntity implements SendableEntityCreator {
 		}
 //				, PROPERTY_VALUE, PROEPRTY_CHILDREN
 		return false;
+	}
+	
+	@Override
+	public Object put(String key, Object value) {
+		//Override Standard for Custom Keys ;)
+		if (PROPERTY_CHOICE.equalsIgnoreCase(key)) {
+			addToChoice((XSDEntity) value);
+//			return value;
+		}
+		if (PROPERTY_SEQUENCE.equalsIgnoreCase(key)) {
+			addToSequence((XSDEntity) value);
+//			return value;
+		}
+		if (PROPERTY_MINOCCURS.equalsIgnoreCase(key)) {
+			setMinOccurs((String) value);
+//			return value;
+		}
+		if (PROPERTY_MAXOCCURS.equalsIgnoreCase(key)) {
+			setMaxOccurs((String) value);
+//			return value;
+		}
+		return super.put(key, value);
 	}
 
 	public boolean setTag(String value) {
@@ -257,7 +280,6 @@ public class XSDEntity extends XMLEntity implements SendableEntityCreator {
 					Clazz childClass = new Clazz(child.getString("name"));
 					// Add GraphSimpleSet without Comparator
 					GraphUtil.setChildren(childClass, GraphSimpleSet.create(false));
-					
 //					Clazz childClass = model.createClazz(child.getString("name"));
 					if(rootElement == null) {
 						model.add(childClass);
@@ -304,20 +326,23 @@ public class XSDEntity extends XMLEntity implements SendableEntityCreator {
 		}
 		//createContainerAssoc(delayname, assoc, childchildClass);
 		for(int c=0;c<typeClassEntity.sizeChildren();c++) {
-			XMLEntity child = (XMLEntity) typeClassEntity.getChild(c);
+			XSDEntity child = (XSDEntity) typeClassEntity.getChild(c);
 			if(sequenzType.equalsIgnoreCase(child.getTag())) {
 				// Now Check for Container
+				// typeClassEntity
 				if(child.sizeChildren() == 1) {
 					// It is a Containern Set
-					XMLEntity first = (XMLEntity) child.getChild(0);
+					XSDEntity first = (XSDEntity) child.getChild(0);
+
 					String containerType = first.getString("type");
-					if(stringType.equalsIgnoreCase(containerType)) {
-						String containerName = first.getString("name");
-						Attribute containerAttribtute = parent.createAttribute(containerName, DataTypeSet.create(DataType.STRING));
-						this.callBack(containerAttribtute, true, clazz.getName(), containerName);
-						return containerName;
+					if(XSD_UNBOUNDED.equalsIgnoreCase(first.getMaxOccurs()) == false) {
+						System.out.println("IGNORE: "+first.getString("name") +" "+containerType);
+					} else if(stringType.equalsIgnoreCase(containerType)  ) {
+							String containerName = first.getString("name");
+							Attribute containerAttribtute = parent.createAttribute(containerName, DataTypeSet.create(DataType.STRING));
+							this.callBack(containerAttribtute, true, clazz.getName(), containerName);
+							return containerName;
 					}
-//					System.out.println(clazz.getName()+"->"+containerName+":"+containerType);
 				}
 				SimpleList<String> orderKey=new SimpleList<String>();
 				for(int s=0;s<child.sizeChildren();s++) {

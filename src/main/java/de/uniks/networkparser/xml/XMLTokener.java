@@ -160,7 +160,14 @@ public class XMLTokener extends Tokener {
 					nextChar = buffer.getChar();
 					if('[' ==nextChar) {
 						// MIGHT BE <![CDATA[
-						buffer.skipTo("!]]>", true, true);
+						int start = buffer.position();
+						buffer.skipTo("]]>", true, true);
+						int end = buffer.position();
+						if(end !=  start) {
+							start+= 7; // CDATA[
+							end -=2;
+							xmlEntity.withValueItem(buffer.substring(start, end).toString());
+						}
 					} else {
 						buffer.skipTo("-->", true, true);
 					}
@@ -458,7 +465,7 @@ public class XMLTokener extends Tokener {
 		IdMap idMap = getMap();
 		SendableEntityCreator item = null;
 		if (idMap != null) {
-			item = idMap.getCreator(tag.toString(), false, null);
+			item = idMap.getCreator(tag.toString(), false, true, null);
 		}
 		if (item != null && item instanceof SendableEntityCreatorTag) {
 			addToStack((SendableEntityCreatorTag) item, tokener, tag, valueItem, map);
@@ -510,7 +517,7 @@ public class XMLTokener extends Tokener {
 					}
 				}
 				tag = tokener.nextToken(buffer, false, TOKEN);
-				item = idMap.getCreator(tag.toString(), false, null);
+				item = idMap.getCreator(tag.toString(), false, true, null);
 				if (item instanceof SendableEntityCreatorTag) {
 					creator = (SendableEntityCreatorTag) item;
 				} else {

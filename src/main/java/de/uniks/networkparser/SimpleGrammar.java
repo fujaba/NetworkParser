@@ -159,7 +159,7 @@ public class SimpleGrammar implements Grammar {
 			if (className == null) {
 				className = item.getClass().getName();
 			}
-			SendableEntityCreator creator = map.getCreator(className, true, null);
+			SendableEntityCreator creator = map.getCreator(className, true, true, null);
 
 			if (creator != null) {
 				return creator;
@@ -176,7 +176,7 @@ public class SimpleGrammar implements Grammar {
 			}
 			className = (String) name;
 		}
-		SendableEntityCreator creator = map.getCreator(className, false, null);
+		SendableEntityCreator creator = map.getCreator(className, false, true, null);
 		if (creator != null) {
 			return creator;
 		}

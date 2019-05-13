@@ -272,7 +272,7 @@ public class GenericCreator implements SendableEntityCreator {
 	}
 
 	public static GenericCreator create(IdMap map, Class<?> instance) {
-		SendableEntityCreator creator = map.getCreator(instance.getName(), true, null);
+		SendableEntityCreator creator = map.getCreator(instance.getName(), true, true, null);
 		if (creator != null) {
 			return (GenericCreator) creator;
 		}

@@ -70,7 +70,7 @@ public class Filter {
 		if (idFilter != null) {
 			return idFilter.update(new SimpleEvent(SendableEntityCreator.NEW, null, map, className, null, entity));
 		} else {
-			SendableEntityCreator creator = map.getCreator(className, true, null);
+			SendableEntityCreator creator = map.getCreator(className, true, true, null);
 			if (creator != null) {
 				return !(creator instanceof SendableEntityCreatorNoIndex);
 			}

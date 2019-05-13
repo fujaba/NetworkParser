@@ -290,7 +290,7 @@ public class UpdateListener implements MapListener, ObjectCondition {
 			String masterObjClassName = (String) updateMessage.getValue(IdMap.CLASS);
 			if (masterObjClassName != null) {
 				// cool, lets make it
-				SendableEntityCreator creator = this.map.getCreator(masterObjClassName, true, null);
+				SendableEntityCreator creator = this.map.getCreator(masterObjClassName, true, true, null);
 				masterObj = creator.getSendableInstance(false);
 			}
 			if (masterObj == null) {

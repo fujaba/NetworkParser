@@ -84,6 +84,10 @@ public abstract class Buffer implements BufferItem {
 	public String substring(int... values) {
 		return "";
 	}
+	
+	public String next(int... positions) {
+		return "";
+	}
 
 	public double getDouble() {
 		long asLong = getLong();

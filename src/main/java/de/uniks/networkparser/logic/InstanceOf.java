@@ -190,7 +190,7 @@ public class InstanceOf implements ObjectCondition, SendableEntityCreator {
 					SimpleEvent se = (SimpleEvent) evt;
 					IdMap map = (IdMap) se.getSource();
 					String className = newValue.getClass().getName();
-					if (map.getCreator(className, false, null) != null) {
+					if (map.getCreator(className, false, true, null) != null) {
 						return false;
 					}
 				}

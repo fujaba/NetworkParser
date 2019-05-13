@@ -106,7 +106,7 @@ public class GXLTokener extends Tokener {
 			parent.with(attribute);
 			return;
 		}
-		SendableEntityCreator childCreator = this.map.getCreator(value.getClass().getName(), true, null);
+		SendableEntityCreator childCreator = this.map.getCreator(value.getClass().getName(), true, true, null);
 		if (childCreator != null) {
 			if (encodeChildren(value, root, childCreator, map)) {
 				XMLEntity edge = this.newInstance();
