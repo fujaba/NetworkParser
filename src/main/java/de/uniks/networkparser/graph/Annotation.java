@@ -131,6 +131,9 @@ public class Annotation extends GraphMember {
 	}
 
 	public Annotation decode(BufferItem tokener, char endTag, Annotation parent) {
+		if(tokener == null) {
+			return null;
+		}
 		char item = tokener.getCurrentChar();
 		CharacterBuffer token = new CharacterBuffer();
 		boolean charCount = false;

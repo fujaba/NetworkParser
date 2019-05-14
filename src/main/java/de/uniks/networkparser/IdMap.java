@@ -361,6 +361,9 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator>, Sendabl
 	}
 
 	public String createId(Object obj, boolean notification) {
+		if(obj == null) {
+			return null;
+		}
 		String key;
 		if (timeStamp != 0) {
 			key = "" + obj.getClass().getSimpleName().charAt(0) + (this.timeStamp++);
@@ -488,7 +491,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator>, Sendabl
 	}
 
 	private Object getCloneByEntity(Object reference, MapEntity map) {
-		if (map.contains(reference)) {
+		if (map == null || map.contains(reference)) {
 			return null;
 		}
 		SendableEntityCreator creator = getCreatorClass(reference);
@@ -920,6 +923,9 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator>, Sendabl
 	 */
 
 	private Object decodingXMLEntity(XMLTokener tokener, Buffer buffer, MapEntity map) {
+		if(buffer == null || map == null) {
+			return null;
+		}
 		if (buffer.skipTo(XMLEntity.START, false)) {
 			map.withStack(new MapEntityStack());
 			// FIRST TAG
@@ -938,6 +944,9 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator>, Sendabl
 	 * @return the object
 	 */
 	private Object decodingJsonArray(JsonArray jsonArray, MapEntity map) {
+		if(jsonArray == null || map == null) {
+			return null;
+		}
 		Object result = null;
 		SimpleList<?> list = null;
 		int len = jsonArray.size() - 1;
@@ -1160,6 +1169,9 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator>, Sendabl
 	 * @return the json array
 	 */
 	protected EntityList encodeList(Object object, MapEntity map) {
+		if(map == null || object == null) {
+			return null;
+		}
 		EntityList target = (EntityList) map.getTarget();
 		SimpleList<String> ignoreIds = new SimpleList<String>();
 		if (object instanceof Collection<?>) {
@@ -1501,8 +1513,11 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator>, Sendabl
 		return item;
 	}
 
-	private void parseValue(String property, Object value, String className, SendableEntityCreator valueCreater,
+	private boolean parseValue(String property, Object value, String className, SendableEntityCreator valueCreater,
 			MapEntity map, BaseItem parent) {
+		if(map == null) {
+			return false;
+		}
 		Object writeValue = null;
 		Grammar grammar = map.getGrammar();
 		if (value instanceof Collection<?> && valueCreater == null) {
@@ -1543,7 +1558,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator>, Sendabl
 			if (subValues != null && subValues.sizeChildren() > 0) {
 				writeValue = subValues;
 			} else {
-				return;
+				return false;
 			}
 		} else if (value instanceof Map<?, ?> && valueCreater == null) {
 			// Maps
@@ -1584,6 +1599,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator>, Sendabl
 				((Entity) parent).put(property, tokener.transformValue(writeValue, parent));
 			}
 		}
+		return true;
 	}
 
 	public MapListener getMapListener() {

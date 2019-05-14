@@ -137,6 +137,9 @@ public class GraphList extends GraphModel {
 	}
 
 	public Association getEdge(GraphEntity node, String property) {
+		if(property == null || node== null) {
+			return null;
+		}
 		for (Association edge : getAssociations()) {
 			Association oEdge = edge.getOther();
 			if (edge.getClazz() == node && property.equals(oEdge.getName())) {

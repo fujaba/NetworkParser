@@ -27,7 +27,9 @@ THE SOFTWARE.
 public class StoryUtil {
 	@SuppressWarnings("unchecked")
 	private static <T extends Throwable> void throwException(Throwable exception, Object dummy) throws T {
-		throw (T) exception;
+		if(exception != null) {
+			throw (T) exception;
+		}
 	}
 
 	public static void throwException(Throwable exception) {

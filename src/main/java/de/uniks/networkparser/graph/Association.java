@@ -279,7 +279,9 @@ public class Association extends GraphMember {
 			this.other.withOther(null);
 		}
 		this.other = value;
-		getOther().with(this);
+		if(value != null) {
+			this.other.with(this);
+		}
 		return this;
 	}
 

@@ -101,6 +101,9 @@ public class GraphConverter implements Converter {
 
 	public GraphList convertGraphList(String type, EntityList list) {
 		GraphList root = new GraphList().withType(type);
+		if(list == null) {
+			return root;
+		}
 
 		// Parse all Object to Object-Diagram
 		for (int i = 0; i < list.size(); i++) {

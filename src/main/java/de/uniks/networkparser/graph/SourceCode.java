@@ -69,7 +69,11 @@ public class SourceCode extends GraphMember {
 
 	public SourceCode withContent(CharacterBuffer content) {
 		this.content = content;
-		this.size = content.length();
+		if(content != null) {
+			this.size = content.length();
+		}else {
+			this.size = 0;
+		}
 		return this;
 	}
 

@@ -44,15 +44,12 @@ public class DataTypeSet extends DataType {
 
 	@Override
 	public String getName(boolean shortName) {
-		if (this.value == null) {
-			return null;
-		}
-		return this.value.getName(shortName) + "<" + generic.getInternName(shortName, false) + ">";
+		return getInternName(shortName, false);
 	}
 
 	@Override
 	protected String getInternName(boolean shortName, boolean primitivAllow) {
-		if (this.value == null) {
+		if (this.value == null || generic == null) {
 			return null;
 		}
 		return this.value.getName(shortName) + "<" + generic.getInternName(shortName, primitivAllow) + ">";

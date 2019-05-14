@@ -61,7 +61,7 @@ public class Modifier extends GraphMember {
 	}
 
 	public static Modifier create(Modifier... values) {
-		if (values == null || values.length < 1) {
+		if (values == null || values.length < 1 || values[0] == null) {
 			return null;
 		}
 		Modifier mod = new Modifier(values[0].getName());
@@ -70,6 +70,9 @@ public class Modifier extends GraphMember {
 	}
 
 	public boolean has(Modifier other) {
+		if(this.getName() == null || other == null) {
+			return false;
+		}
 		if (this.getName().equals(other.getName())) {
 			return true;
 		}

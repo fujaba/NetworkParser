@@ -109,14 +109,17 @@ public class TileMap implements SendableEntityCreatorTag {
 	public Pos getSpritePos(int ebene, int pos) {
 		Pos result = new Pos();
 		TileObject tileObject = this.images.get(ebene);
-		int columns = tileObject.width / this.tileheight;
+		int columns = 1;
+		if(this.tileheight>0) {
+			columns = tileObject.width / this.tileheight;
+		}
 		result.y = pos / columns;
 		result.x = pos - (result.y * columns) - 1;
 		return result;
 	}
 
 	public int getBackground(int sprite) {
-		if (sprite < 0 || sprite >= background.length) {
+		if (sprite < 0 || background == null || sprite >= background.length) {
 			return 0;
 		}
 		return background[sprite];
@@ -130,7 +133,9 @@ public class TileMap implements SendableEntityCreatorTag {
 	 */
 	public Pos getPos(int sprite) {
 		Pos pos = new Pos();
-		pos.y = sprite / this.width;
+		if(width>0) {
+			pos.y = sprite / this.width;
+		}
 		pos.x = sprite - (pos.y * this.width);
 		return pos;
 	}

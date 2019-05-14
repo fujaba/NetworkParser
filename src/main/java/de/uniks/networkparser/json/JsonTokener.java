@@ -34,6 +34,7 @@ import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.MapEntity;
 import de.uniks.networkparser.NetworkParserLog;
 import de.uniks.networkparser.SimpleEvent;
+import de.uniks.networkparser.SimpleException;
 import de.uniks.networkparser.Tokener;
 import de.uniks.networkparser.buffer.Buffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
@@ -55,11 +56,11 @@ public class JsonTokener extends Tokener {
 	public final static String STOPCHARS = ",]}/\\\"[{;=# ";
 	public static final char COMMENT = '#';
 	private boolean simpleFormat;
+
 	/**
 	 * Cross compiling
 	 * @param parent   the parent Element
 	 * @param newValue the newValue
-	 * @param simpleFormat Transofrm in SimpleFormat
 	 * @return Itself
 	 */
 	@Override
@@ -84,10 +85,13 @@ public class JsonTokener extends Tokener {
 	
 	private EntityList parsingEntity(EntityList entityList, Buffer buffer) {
 		//FIXME REMOVE
+		if(buffer == null) {
+			return null;
+		}
 		char c = buffer.nextClean(true);
 		if (c != JsonArray.START) {
 			if (isError(this, "parseToEntity", NetworkParserLog.ERROR_TYP_PARSING, entityList)) {
-				throw new RuntimeException(
+				throw new SimpleException(
 						"A JSONArray text must start with '['. It is " + c + "(" + buffer.getString(20) + ")");
 			}
 			return null;
@@ -129,7 +133,7 @@ public class JsonTokener extends Tokener {
 		String key;
 		if (buffer.nextClean(true) != JsonObject.START) {
 			if (isError(this, "parseToEntity", NetworkParserLog.ERROR_TYP_PARSING, entity)) {
-				throw new RuntimeException("A JsonObject text must begin with '{' \n" + buffer);
+				throw new SimpleException("A JsonObject text must begin with '{' \n" + buffer);
 			}
 		}
 		buffer.skip();
@@ -141,7 +145,7 @@ public class JsonTokener extends Tokener {
 			switch (c) {
 			case 0:
 				if (isError(this, "parseToEntity", NetworkParserLog.ERROR_TYP_PARSING, entity)) {
-					throw new RuntimeException("A JsonObject text must end with '}'");
+					throw new SimpleException("A JsonObject text must end with '}'");
 				}
 				return null;
 			case '\\':
@@ -205,6 +209,9 @@ public class JsonTokener extends Tokener {
 	
 	private BaseItem parsingSimpleEntityXML(JsonObject parent, XMLEntity newValue) {
 		// <TAG PARAM>CHILDREN</TAG>
+		if(newValue == null) {
+			return null;
+		}
 		
 		// Parsing all Parameter
 		int i=0;
@@ -510,6 +517,9 @@ public class JsonTokener extends Tokener {
 	 */
 	private Object decoding(Object target, JsonObject jsonObject, MapEntity map) {
 		// JSONArray jsonArray;
+		if(map == null) {
+			return null;
+		}
 		Grammar grammar = map.getGrammar();
 		boolean isId = map.isId(target);
 		if (isId) {

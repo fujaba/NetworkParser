@@ -128,6 +128,7 @@ public class GraphTokener extends Tokener {
 		}
 		map.pushStack(entity.getClass().getName(), entity, null);
 		Filter filter = map.getFilter();
+		if(filter == null) {return;}
 		if (filter.convert(entity, property, item, map.getMap(), map.getDeep()) < 1) {
 			map.popStack();
 			return;
@@ -159,6 +160,9 @@ public class GraphTokener extends Tokener {
 	}
 
 	public GraphList highlightModel(GraphList clazzDiagram, GraphList objectDiagram) {
+		if(clazzDiagram == null || objectDiagram == null) {
+			return clazzDiagram;
+		}
 		HashMap<String, Association> edges = new HashMap<String, Association>();
 		HashMap<String, Clazz> clazzes = new HashMap<String, Clazz>();
 
@@ -198,7 +202,7 @@ public class GraphTokener extends Tokener {
 	}
 
 	public GraphPatternMatch diffModel(Object master, Object slave, MapEntity map) {
-		if (map.add(master) == false) {
+		if (map == null || map.add(master) == false) {
 			return null;
 		}
 		GraphPatternMatch result = new GraphPatternMatch();

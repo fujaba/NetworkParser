@@ -63,10 +63,13 @@ public class RGBColor {
 		if (value == null) {
 			return color;
 		}
-		int red = Integer.valueOf(value.substring(0, 2), 16);
-		int green = Integer.valueOf(value.substring(2, 4), 16);
-		int blue = Integer.valueOf(value.substring(4, 6), 16);
-		color.withValue(red, green, blue);
+		try {
+			int red = Integer.valueOf(value.substring(0, 2), 16);
+			int green = Integer.valueOf(value.substring(2, 4), 16);
+			int blue = Integer.valueOf(value.substring(4, 6), 16);
+			color.withValue(red, green, blue);
+		}catch (Exception e) {
+		}
 		return color;
 	}
 

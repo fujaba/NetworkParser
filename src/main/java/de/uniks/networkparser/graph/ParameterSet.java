@@ -23,4 +23,9 @@ public class ParameterSet extends SimpleSet<Parameter> {
 	public ParameterSet hasName(String otherValue) {
 		return filter(StringCondition.createEquals(Parameter.PROPERTY_NAME, otherValue));
 	}
+	
+	@Override
+	public SimpleSet<Parameter> getNewList(boolean keyValue) {
+		return new ParameterSet();
+	}
 }

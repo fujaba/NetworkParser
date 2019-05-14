@@ -209,7 +209,9 @@ public class Clazz extends GraphEntity {
 		Association assocSource = new Association(this).with(srcCardinality).with(srcRoleName);
 		assocSource.with(assocTarget);
 
-		tgtClass.with(assocTarget);
+		if(tgtClass != null) {
+			tgtClass.with(assocTarget);
+		}
 		this.with(assocSource);
 		return this;
 	}
@@ -233,7 +235,7 @@ public class Clazz extends GraphEntity {
 	public Association createBidirectional(Clazz tgtClass, String tgtRoleName, int tgtCardinality, String srcRoleName,
 			int srcCardinality) {
 		// Target
-		if(tgtCardinality<1 || srcCardinality < 1) {
+		if(tgtCardinality<1 || srcCardinality < 1 || tgtClass == null) {
 			return null;
 		}
 		Association assocTarget = new Association(tgtClass).with(tgtCardinality).with(tgtRoleName);
@@ -367,8 +369,9 @@ public class Clazz extends GraphEntity {
 
 		// Source
 		Association assocSource = new Association(this).with(AssociationTypes.EDGE).with(assocTarget);
-
-		tgtClass.with(assocTarget);
+		if(tgtClass != null) {
+			tgtClass.with(assocTarget);
+		}
 		this.with(assocSource);
 		return assocSource;
 	}
@@ -429,7 +432,7 @@ public class Clazz extends GraphEntity {
 	}
 
 	protected boolean repairAssociation(Association assoc, boolean renameName) {
-		if(assoc == null) {
+		if(assoc == null || assoc.getOther() == null) {
 			return false;
 		}
 		if (AssociationTypes.IMPLEMENTS.equals(assoc.getType()) == false
@@ -850,7 +853,7 @@ public class Clazz extends GraphEntity {
 	 */
 	protected void parseSuperElements(ClazzSet superClasses, SimpleSet<?> existsElements, SimpleSet<?> newExistElements,
 			SimpleSet<?> newElements, Condition<?>... filters) {
-		if (this.children == null) {
+		if (this.children == null || existsElements == null) {
 			return;
 		}
 		boolean isInterface = TYPE_INTERFACE.equals(getType());
@@ -1007,6 +1010,9 @@ public class Clazz extends GraphEntity {
 
 	@Override
 	public Object getValue(String attribute) {
+		if(attribute == null) {
+			return null;
+		}
 		if (PROPERTY_PACKAGENAME.equalsIgnoreCase(attribute)) {
 			String fullName = this.getName(false);
 			if (fullName == null) {

@@ -101,6 +101,9 @@ public class ParserEntity {
 	public ParserEntity withFile(String fileName) {
 		this.code = new SourceCode();
 		this.code.withFileName(fileName);
+		if(fileName == null) {
+			return this;
+		}
 		if(fileName.indexOf('.')>0) {
 			fileName = fileName.substring(fileName.lastIndexOf('.')+1);
 		}
@@ -1336,8 +1339,10 @@ public class ParserEntity {
 			return;
 		}
 		String type = symTabEntry.getDataType();
-		// include arrays
-		type = type.replace("[]", "");
+		if(type != null) {
+			// include arrays
+			type = type.replace("[]", "");
+		}
 
 		String attrName = symTabEntry.getName();
 		if (EntityUtil.isPrimitiveType(type)) {

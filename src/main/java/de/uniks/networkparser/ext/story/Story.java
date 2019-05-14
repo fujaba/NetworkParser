@@ -339,7 +339,10 @@ public class Story extends StoryElement implements Comparable<Story> {
 		}
 	}
 
-	private void addCondition(StoryStepCondition step) {
+	private boolean addCondition(StoryStepCondition step) {
+		if(step == null) {
+			return false;
+		}
 		this.add(step);
 		if (step.checkCondition() == false && breakOnAssert) {
 			this.dumpHTML();
@@ -357,6 +360,7 @@ public class Story extends StoryElement implements Comparable<Story> {
 			}
 			throw new RuntimeException(step.getMessage());
 		}
+		return true;
 	}
 
 	public void assertEquals(String message, double expected, double actual, double delta) {

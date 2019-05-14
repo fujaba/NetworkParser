@@ -82,7 +82,10 @@ public class Attribute extends Value {
 			}
 			return this.value;
 		}
-		return getType().getName(shortName);
+		if(this.type!= null) {
+			return this.type.getName(shortName);
+		}
+		return null;
 	}
 
 	public Annotation getAnnotation() {
@@ -99,7 +102,9 @@ public class Attribute extends Value {
 		CharacterBuffer sb = new CharacterBuffer();
 		sb.with(getName());
 		sb.with(':');
-		sb.with(getType().getName(true));
+		if(this.type!= null) {
+			sb.with(this.type.getName(true));
+		}
 		if (getValue(GraphTokener.OBJECTDIAGRAM, false) != null) {
 			sb.with('=');
 			sb.with(getValue(GraphTokener.OBJECTDIAGRAM, false));

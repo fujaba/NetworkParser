@@ -8,7 +8,9 @@ public class FeatureSet extends SimpleSet<Feature> {
 			return this;
 		}
 		for (Feature feature : features) {
-			this.add(feature.create());
+			if(feature != null) {
+				this.add(feature.create());
+			}
 		}
 		return this;
 	}

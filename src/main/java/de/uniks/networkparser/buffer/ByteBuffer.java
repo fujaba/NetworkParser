@@ -431,7 +431,11 @@ public class ByteBuffer extends BufferedBuffer {
 	public ByteBuffer with(byte[] array) {
 		this.buffer = array;
 		this.position = 0;
-		this.length = array.length;
+		if(array != null) {
+			this.length = array.length;
+		}else {
+			this.length = 0;
+		}
 		return this;
 	}
 

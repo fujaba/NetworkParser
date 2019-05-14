@@ -136,6 +136,9 @@ public class DataType {
 	@Override
 	public String toString() {
 		String internName = this.getInternName(false, true);
+		if(internName == null) {
+			return "DataType.VOID";
+		}
 		if ("void char byte int long float double String boolean Object".indexOf(internName) >= 0) {
 			return "DataType." + internName.toUpperCase();
 		} else {

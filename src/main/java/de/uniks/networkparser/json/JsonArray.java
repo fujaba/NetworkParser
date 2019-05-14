@@ -27,6 +27,7 @@ import java.util.Iterator;
 
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.IdMap;
+import de.uniks.networkparser.SimpleException;
 import de.uniks.networkparser.buffer.Buffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.converter.EntityStringConverter;
@@ -128,7 +129,7 @@ public class JsonArray extends SortedList<Object> implements EntityList {
 		} else if (object instanceof String) {
 			return new JsonObject().withValue("" + object);
 		}
-		throw new RuntimeException("JSONArray[" + index + "] is not a JSONObject.");
+		throw new SimpleException("JSONArray[" + index + "] is not a JSONObject.");
 	}
 
 	/**
@@ -252,6 +253,9 @@ public class JsonArray extends SortedList<Object> implements EntityList {
 	 * @return Itself
 	 */
 	public JsonArray withValue(BaseItem... values) {
+		if(values == null) {
+			return this;
+		}
 		for (int i = 0; i < values.length; i++) {
 			add(EntityUtil.wrap(values[i], this));
 		}

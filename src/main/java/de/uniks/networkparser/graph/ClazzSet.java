@@ -48,6 +48,11 @@ public class ClazzSet extends SimpleSet<Clazz> {
 	public ClazzSet hasName(String otherValue) {
 		return filter(StringCondition.createEquals(Clazz.PROPERTY_NAME, otherValue));
 	}
+	
+	@Override
+	public SimpleSet<Clazz> getNewList(boolean keyValue) {
+		return new ClazzSet();
+	}
 
 	public String toString(String splitter) {
 		if (size() == 0) {

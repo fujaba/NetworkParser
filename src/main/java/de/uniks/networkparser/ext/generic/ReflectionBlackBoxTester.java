@@ -39,6 +39,7 @@ import java.util.Timer;
 
 import de.uniks.networkparser.NetworkParserLog;
 import de.uniks.networkparser.SimpleEvent;
+import de.uniks.networkparser.SimpleException;
 import de.uniks.networkparser.ext.ErrorHandler;
 import de.uniks.networkparser.ext.FileClassModel;
 import de.uniks.networkparser.ext.Gradle;
@@ -72,6 +73,7 @@ public class ReflectionBlackBoxTester {
 //	private SimpleSet<String> ignoreClazz=new SimpleSet<String>().with("de.uniks.networkparser.NetworkParserLog");
 	private int errorCount;
 	private boolean ignoreClassError;
+	private boolean ignoreSimpleException;
 	private int successCount;
 	private String packageName;
 	private NetworkParserLog logger = new NetworkParserLog();
@@ -446,17 +448,25 @@ public class ReflectionBlackBoxTester {
 			}
 		}
 		String causes = "";
+		Throwable exception = e;
 		if(e.getCause()!= null) {
 			causes = ": "+e.getCause();
+			if(e instanceof InvocationTargetException) {
+				exception = ((InvocationTargetException)e).getTargetException();
+			}
 		}else if(e instanceof InvocationTargetException) {
-			causes = ": "+((InvocationTargetException)e).getTargetException().getCause();
+			exception = ((InvocationTargetException)e).getTargetException();
+			causes = ": "+exception.getCause();
 		}else if(e.getMessage() != null){
 			causes = ": "+e.getMessage();
 		}
 		if(ignoreClassError == false || pos != 1) {
-			output(m, "at " + clazz.getName() +  causes + " " + shortName, logger,
-					NetworkParserLog.LOGLEVEL_ERROR, e);
-			errorCount++;
+			// Check for Exception
+			if(ignoreSimpleException == false || exception == null || exception instanceof SimpleException == false) {
+				output(m, "at " + clazz.getName() +  causes + " " + shortName, logger,
+						NetworkParserLog.LOGLEVEL_ERROR, e);
+				errorCount++;
+			}
 		}
 	}
 
@@ -820,4 +830,9 @@ public class ReflectionBlackBoxTester {
 		this.ignoreClassError = value;
 		return this;
 	}
+	public ReflectionBlackBoxTester withDisableSimpleException(boolean value) {
+		this.ignoreSimpleException = value;
+		return this;
+	}
 }
+

@@ -24,6 +24,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 import de.uniks.networkparser.EntityUtil;
+import de.uniks.networkparser.SimpleException;
 import de.uniks.networkparser.Tokener;
 import de.uniks.networkparser.buffer.Buffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
@@ -138,7 +139,7 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements En
 		} else if (object instanceof String) {
 			return new JsonObject().withValue("" + object);
 		}
-		throw new RuntimeException("JsonObject[" + EntityUtil.quote(key) + "] is not a JsonObject.");
+		throw new SimpleException("JsonObject[" + EntityUtil.quote(key) + "] is not a JsonObject.");
 	}
 
 	/**

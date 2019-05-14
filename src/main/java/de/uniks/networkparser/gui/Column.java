@@ -386,6 +386,9 @@ public class Column implements SendableEntityCreatorNoIndex, CellHandler {
 
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value, String type) {
+		if(entity instanceof Column == false || attribute == null) {
+			return false;
+		}
 		Column that = (Column) entity;
 
 		if (attribute.equalsIgnoreCase(PROPERTY_ATTRIBUTE)) {

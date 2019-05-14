@@ -109,6 +109,9 @@ public class SimpleIterator<E> implements ListIterator<E> {
 	@SuppressWarnings("unchecked")
 	@Override
 	public E next() {
+		if(list == null) {
+			return null;
+		}
 		int size = list.size();
 		if (cursor >= size) {
 			throw new ConcurrentModificationException();
@@ -159,7 +162,7 @@ public class SimpleIterator<E> implements ListIterator<E> {
 	}
 
 	public SimpleIterator<E> withCheckPointer(boolean checkPointer) {
-		if (checkPointer) {
+		if (checkPointer && this.list != null) {
 			this.checkPointer = this.list.size();
 		} else {
 			this.checkPointer = -1;

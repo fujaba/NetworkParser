@@ -83,8 +83,12 @@ public class Pattern implements Iterator<Object>, Iterable<Object> {
 		return subPattern;
 	}
 
-	private void addToChain(Pattern value) {
-		getChain().add(value);
+	private boolean addToChain(Pattern value) {
+		SimpleSet<Pattern> myChain = getChain();
+		if(myChain != null) {
+			return myChain.add(value);
+		}
+		return false;
 	}
 
 	public static <T> SimpleList<T> createListOfType(Class<T> type) {
@@ -117,6 +121,9 @@ public class Pattern implements Iterator<Object>, Iterable<Object> {
 
 	public boolean find() {
 		SimpleSet<Pattern> chain = getChain();
+		if(chain == null) {
+			return false;
+		}
 		Pattern last = chain.last();
 		if (last == this) {
 			return finding(true);
@@ -131,6 +138,9 @@ public class Pattern implements Iterator<Object>, Iterable<Object> {
 	@Override
 	public boolean hasNext() {
 		SimpleSet<Pattern> chain = getChain();
+		if(chain == null) {
+			return false;
+		}
 		Pattern last = chain.last();
 		if (last == this) {
 			return finding(false);

@@ -37,7 +37,7 @@ public class GraphSimpleSet extends SimpleSet<GraphMember> implements Comparator
 	
 	@Override
 	protected boolean checkValue(Object a, Object b) {
-		if (!(a instanceof GraphMember)) {
+		if (a instanceof GraphMember == false) {
 			return a.equals(b);
 		}
 

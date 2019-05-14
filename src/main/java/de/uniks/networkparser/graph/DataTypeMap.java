@@ -62,16 +62,12 @@ public class DataTypeMap extends DataType {
 
 	@Override
 	public String getName(boolean shortName) {
-		if (this.value == null) {
-			return null;
-		}
-		return this.value.getName(shortName) + "<" + genericKey.getInternName(shortName, false) + ","
-				+ genericValue.getInternName(shortName, false) + ">";
+		return getInternName(shortName, false);
 	}
 
 	@Override
 	protected String getInternName(boolean shortName, boolean primitivAllow) {
-		if (this.value == null) {
+		if (this.value == null || genericKey == null || genericValue == null) {
 			return null;
 		}
 		return this.value.getName(shortName) + "<" + genericKey.getInternName(shortName, primitivAllow) + ","

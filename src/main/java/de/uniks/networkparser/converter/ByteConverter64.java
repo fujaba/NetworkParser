@@ -63,7 +63,6 @@ public class ByteConverter64 extends ByteConverter {
 	 * but not to encode the entire content of a MIME part.
 	 *
 	 * @param values the byte array
-	 * @param finishToken finish TOken with =
 	 * @return the encoded byte array
 	 **/
 	public CharacterBuffer toStaticString(CharSequence values) {

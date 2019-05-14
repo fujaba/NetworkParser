@@ -68,10 +68,12 @@ public class StoryBook extends SendableItem implements SendableEntityCreator {
 		return this;
 	}
 
-	public StoryBook withoutTask(Task... value) {
-		for (Task item : value) {
-			if (item != null) {
-				this.children.remove((Object) item);
+	public StoryBook withoutTask(Task... values) {
+		if(values != null) {
+			for (Task item : values) {
+				if (item != null) {
+					this.children.remove((Object) item);
+				}
 			}
 		}
 		return this;
@@ -135,10 +137,12 @@ public class StoryBook extends SendableItem implements SendableEntityCreator {
 		return this;
 	}
 
-	public StoryBook withoutPart(Line... value) {
-		for (Line item : value) {
-			if (this.part != null && item != null) {
-				this.part.remove(item);
+	public StoryBook withoutPart(Line... values) {
+		if(values != null) {
+			for (Line item : values) {
+				if (this.part != null && item != null) {
+					this.part.remove(item);
+				}
 			}
 		}
 		return this;

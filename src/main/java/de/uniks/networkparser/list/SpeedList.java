@@ -153,8 +153,8 @@ public class SpeedList<V> extends AbstractArray<V> implements List<V>, Iterable<
 	}
 
 	@SuppressWarnings("unchecked")
-	public SimpleList<V> subList(int fromIndex, int toIndex) {
-		return (SimpleList<V>) super.subList(fromIndex, toIndex);
+	public SpeedList<V> subList(int fromIndex, int toIndex) {
+		return (SpeedList<V>) super.subList(fromIndex, toIndex);
 	}
 	
 	@Override

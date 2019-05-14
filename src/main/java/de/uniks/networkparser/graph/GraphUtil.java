@@ -81,6 +81,9 @@ public class GraphUtil {
 	}
 
 	public static double compareName(String source, String other) {
+		if(source == null || other == null) {
+			return 0;
+		}
 		int counter = 0;
 		int caseDiff = 0;
 		double score = 0;
@@ -104,13 +107,18 @@ public class GraphUtil {
 	}
 
 	public static final boolean isGenerate(GraphMember member) {
+		if(member == null) {
+			return false;
+		}
 		return member.isGenerate;
 	}
 
-	public static final void setGenerate(GraphMember member, boolean value) {
+	public static final boolean setGenerate(GraphMember member, boolean value) {
 		if (member != null) {
 			member.isGenerate = value;
+			return true;
 		}
+		return false;
 	}
 
 	public static final boolean setRole(GraphMember member, ObjectCondition value) {
@@ -137,6 +145,9 @@ public class GraphUtil {
 	}
 
 	public static double compareType(String sourceType, String otherType) {
+		if(sourceType == null || otherType == null) {
+			return 1;
+		}
 		if (EntityUtil.isNumericType(sourceType) && EntityUtil.isNumericType(otherType)) {
 			return 0;
 		}
@@ -168,19 +179,24 @@ public class GraphUtil {
 	}
 
 	public static final Clazz getByObject(GraphEntity item, String clazz, boolean fullName) {
-		if (clazz == null) {
+		if (clazz == null || item == null) {
 			return null;
 		}
 		return (Clazz) item.getByObject(clazz, fullName);
 	}
 
 	public static final GraphModel setGenPath(GraphModel model, String path) {
-		model.genPath = path;
+		if(model != null) {
+			model.genPath = path;
+		}
 		return model;
 	}
 
 	public static final String getGenPath(GraphModel model) {
-		return model.genPath;
+		if(model != null) {
+			return model.genPath;
+		}
+		return "";
 	}
 
 	public static final SimpleSet<Annotation> getAnnotations(GraphMember item) {
@@ -208,32 +224,59 @@ public class GraphUtil {
 		return collection;
 	}
 
-	public static final void setAssociation(GraphEntity entry, Association assoc) {
-		entry.with(assoc);
+	public static final boolean setAssociation(GraphEntity entry, Association assoc) {
+		if(entry != null) {
+			entry.with(assoc);
+			return true;
+		}
+		return false;
 	}
 
-	public static final void setGraphImage(Clazz clazz, GraphImage... images) {
-		clazz.with(images);
+	public static final boolean setGraphImage(Clazz clazz, GraphImage... images) {
+		if(clazz != null) {
+			clazz.with(images);
+			return true;
+		}
+		return false;
 	}
 
-	public static final void setLiteral(Clazz clazz, Literal... literals) {
-		clazz.with(literals);
+	public static final boolean setLiteral(Clazz clazz, Literal... literals) {
+		if(clazz != null) {
+			clazz.with(literals);
+			return true;
+		}
+		return false;
 	}
 
-	public static final void setModifierEntry(Clazz clazz, ModifyEntry modifier) {
-		clazz.with(modifier);
+	public static final boolean setModifierEntry(Clazz clazz, ModifyEntry modifier) {
+		if(clazz != null) {
+			clazz.with(modifier);
+			return true;
+		}
+		return false;
 	}
 
-	public static final void setClazzType(Clazz clazz, String clazzType) {
-		clazz.withType(clazzType);
+	public static final boolean setClazzType(Clazz clazz, String clazzType) {
+		if(clazz != null) {
+			clazz.withType(clazzType);
+			return true;
+		}
+		return false;
 	}
 
-	public static final void setImport(Clazz clazz, Import... importClazzes) {
-		clazz.with(importClazzes);
+	public static final boolean setImport(Clazz clazz, Import... importClazzes) {
+		if(clazz != null) {
+			clazz.with(importClazzes);
+			return true;
+		}
+		return false;
 	}
 
 	public static boolean setId(GraphEntity graphEntity, String id) {
-		return graphEntity.setId(id);
+		if(graphEntity != null) {
+			return graphEntity.setId(id);
+		}
+		return false;
 	}
 
 	public static final boolean isWithNoObjects(Clazz clazz) {
@@ -299,11 +342,17 @@ public class GraphUtil {
 	}
 
 	public static final CharacterBuffer getMethodParameters(Method method, boolean shortName) {
+		if(method == null) {
+			return null;
+		}
 		return method.getParameterString(shortName, false, true);
 	}
 
 	public static final ModifierSet getModifier(GraphMember member) {
 		ModifierSet set = new ModifierSet();
+		if(member == null) {
+			return set;
+		}
 		Modifier modifier = member.getModifier();
 		set.add(modifier);
 		for (GraphMember child : modifier.getChildren()) {
@@ -316,6 +365,9 @@ public class GraphUtil {
 
 	public static final SimpleSet<Association> getOtherAssociations(Clazz clazz) {
 		SimpleSet<Association> collection = new SimpleSet<Association>();
+		if(clazz == null) {
+			return collection;
+		}
 		for (Association assoc : clazz.getAssociations()) {
 			collection.add(assoc.getOther());
 		}
@@ -323,6 +375,9 @@ public class GraphUtil {
 	}
 
 	public static final Modifier getVisible(GraphMember member) {
+		if(member == null) {
+			return Modifier.PACKAGE;
+		}
 		Modifier modifier = member.getModifier();
 		if(modifier.equals(Modifier.PACKAGE) || modifier.equals(Modifier.PRIVATE) || modifier.equals(Modifier.PUBLIC)|| modifier.equals(Modifier.PROTECTED)) {
 			return modifier;
@@ -363,31 +418,40 @@ public class GraphUtil {
 	}
 
 	public static final String getSeperator(Association item) {
-		return item.getSeperator();
+		if(item != null) {
+			return item.getSeperator();
+		}
+		return "";
 	}
 
 	public static final SimpleSet<GraphEntity> getNodes(GraphMember item) {
-		return item.getNodes();
+		if(item != null) {
+			return item.getNodes();
+		}
+		return null;
 	}
 
 	public static final Match getDifference(GraphMember item) {
-		return item.getDiff();
+		if(item != null) {
+			return item.getDiff();
+		}
+		return null;
 	}
 
-	public static final void removeYou(GraphMember value) {
+	public static final boolean removeYou(GraphMember value) {
 		if (value == null) {
-			return;
+			return true;
 		}
 		value.setParentNode(null);
 		if (value instanceof Attribute) {
 			Attribute attribute = (Attribute) value;
 			Annotation annotation = attribute.getAnnotation();
-			value.remove(annotation);
+			return value.remove(annotation);
 		}
 		if (value instanceof Association) {
 			Association assoc = (Association) value;
 			assoc.withOther(null);
-			assoc.remove(assoc.getClazz());
+			return assoc.remove(assoc.getClazz());
 		}
 		if (value instanceof Clazz) {
 			Clazz clazz = (Clazz) value;
@@ -396,7 +460,9 @@ public class GraphUtil {
 			for (GraphMember item : list) {
 				clazz.remove(item);
 			}
+			return true;
 		}
+		return false;
 	}
 
 	public static final boolean containsClazzAssociation(SimpleList<GraphMember> visited, Association assoc,
@@ -478,6 +544,9 @@ public class GraphUtil {
 	}
 
 	public static final Clazz getParentClazz(GraphMember member) {
+		if(member == null ) {
+			return null;
+		}
 		if (member instanceof Clazz) {
 			return (Clazz) member;
 		}
@@ -563,17 +632,18 @@ public class GraphUtil {
 	}
 
 	public static final String getGraphPath(GraphModel value) {
-		if(value == null) {
-			return null;
+		if(value != null) {
+			return value.genPath;
 		}
-		return value.genPath;
+		return null;
 	}
 
-	public static final void setGraphPath(GraphModel model, String value) {
-		if(model == null) {
-			return;
+	public static final boolean setGraphPath(GraphModel model, String value) {
+		if(model != null) {
+			model.genPath = value;
+			return true;
 		}
-		model.genPath = value;
+		return false;
 	}
 
 	public static final void remove(GraphMember model, GraphMember child) {
@@ -596,5 +666,4 @@ public class GraphUtil {
 		}
 		return false;
 	}
-
 }
