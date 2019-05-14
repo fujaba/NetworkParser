@@ -140,6 +140,9 @@ public class JsonArray extends SortedList<Object> implements EntityList {
 	 *                          is not a JSONObject
 	 */
 	public String getString(int index) {
+		if(index <0 || index > size()) {
+			return "";
+		}
 		Object object = get(index);
 		if (object instanceof String) {
 			return (String) object;

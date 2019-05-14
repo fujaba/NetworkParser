@@ -176,7 +176,7 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements En
 
 	protected String parseItem(EntityStringConverter converter) {
 		int length = this.size();
-		if (length == 0) {
+		if (length == 0 || converter == null) {
 			return "{}";
 		}
 

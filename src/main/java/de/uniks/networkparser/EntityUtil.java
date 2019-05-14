@@ -638,6 +638,9 @@ public class EntityUtil {
 	protected static final Object compareValue(String key, Object valueA, Object valueB, TextDiff diffList,
 			BaseItem sameElement) {
 		BaseItem sameObject = null;
+		if(diffList == null) {
+			return null;
+		}
 		if (valueA instanceof Entity && valueB instanceof Entity) {
 			Entity entityA = (Entity) valueA;
 			if (sameElement != null) {

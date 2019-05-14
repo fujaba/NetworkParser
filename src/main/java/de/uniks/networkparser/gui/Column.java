@@ -342,6 +342,9 @@ public class Column implements SendableEntityCreatorNoIndex, CellHandler {
 
 	@Override
 	public Object getValue(Object entity, String attribute) {
+		if(entity instanceof Column == false || attribute == null) {
+			return null;
+		}
 		String attrName;
 		int pos = attribute.indexOf(".");
 		if (pos > 0) {

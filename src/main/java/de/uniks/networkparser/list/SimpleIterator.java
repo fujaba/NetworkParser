@@ -85,20 +85,19 @@ public class SimpleIterator<E> implements ListIterator<E> {
 	}
 
 	public void add(E e) {
-		try {
-			int size = list.size();
-			int pos = list.hasKey(e);
-			if (pos >= 0) {
-				list.grow(size + 1);
-				list.addKey(cursor, e, size + 1);
-				cursor++;
-				lastRet = -1;
-				if (this.checkPointer >= 0) {
-					this.checkPointer = list.size();
-				}
+		if(list == null) {
+			return; 
+		}
+		int size = list.size();
+		int pos = list.hasKey(e);
+		if (pos >= 0) {
+			list.grow(size + 1);
+			list.addKey(cursor, e, size + 1);
+			cursor++;
+			lastRet = -1;
+			if (this.checkPointer >= 0) {
+				this.checkPointer = list.size();
 			}
-		} catch (IndexOutOfBoundsException ex) {
-			throw new ConcurrentModificationException();
 		}
 	}
 

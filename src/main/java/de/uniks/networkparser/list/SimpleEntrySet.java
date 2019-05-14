@@ -71,6 +71,9 @@ public class SimpleEntrySet<K, V> implements Set<Entry<K, V>> {
 
 	@Override
 	public Object[] toArray() {
+		if(map == null) {
+			return null;
+		}
 		// Change to DebugInfo
 		int size = this.map.size();
 		Object[] info = new Object[this.map.size()];
@@ -130,16 +133,25 @@ public class SimpleEntrySet<K, V> implements Set<Entry<K, V>> {
 
 	@Override
 	public boolean retainAll(Collection<?> collection) {
+		if(map == null) {
+			return true;
+		}
 		return this.map.retainAll(collection);
 	}
 
 	@Override
 	public boolean removeAll(Collection<?> collection) {
+		if(map == null) {
+			return false;
+		}
 		return this.map.removeAll(collection);
 	}
 
 	@Override
 	public void clear() {
+		if(map == null) {
+			return;
+		}
 		this.map.clear();
 	}
 }

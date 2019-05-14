@@ -305,6 +305,9 @@ public class JsonTokener extends Tokener {
 	@Override
 	public Object nextValue(Buffer buffer, BaseItem creator, boolean allowQuote, boolean allowDuppleMarks,
 			char stopChar) {
+		if(buffer == null) {
+			return null;
+		}
 		stopChar = buffer.nextClean(true);
 
 		switch (stopChar) {
@@ -437,6 +440,9 @@ public class JsonTokener extends Tokener {
 	 * @return the object
 	 */
 	public Object decoding(JsonObject jsonObject, MapEntity map, boolean kid) {
+		if( map == null) {
+			return null;
+		}
 		if (jsonObject == null) {
 			return map.getTarget();
 		}
@@ -570,7 +576,10 @@ public class JsonTokener extends Tokener {
 	private void parseValue(Object target, String property, Object value, SendableEntityCreator creator,
 			MapEntity map) {
 		// FIXME IF STATGEGY IS UPDATE SET NEW VALUE
-		if (value == null || map == null || map.isStrategyNew() == false) {
+		if( map == null ) {
+			return;
+		}
+		if (value == null && map.isStrategyNew() == false) {
 			return;
 		}
 		Filter filter = map.getFilter();

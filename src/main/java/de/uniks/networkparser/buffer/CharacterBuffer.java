@@ -147,6 +147,9 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
 
 	public boolean replace(int start, int end, String replace) {
 		int pos = 0;
+		if(replace == null) {
+			return false;
+		}
 		int diff = replace.length() - (end - start);
 		char[] oldChar = null;
 		int oldStart = 0;

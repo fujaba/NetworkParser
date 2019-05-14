@@ -724,7 +724,7 @@ public class GraphMatcher extends GraphEntity {
 	}
 
 	private boolean matchAssociationValues(Association oldAssociation, Association newAssociation) {
-		if(oldAssociation == null) {
+		if(oldAssociation == null || newAssociation == null) {
 			return false;
 		}
 		if (oldAssociation.getName().equals(newAssociation.getName()) == false) {

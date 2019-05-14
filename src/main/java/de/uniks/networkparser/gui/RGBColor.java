@@ -136,6 +136,8 @@ public class RGBColor {
 
 	public RGBColor add(RGBColor second) {
 		RGBColor color = new RGBColor();
+		if(second == null) {return color;}
+		
 		float newRed = ((float) (getRed() + second.getRed())) / 2;
 		float newGreen = ((float) (getGreen() + second.getGreen())) / 2;
 		float newBlue = ((float) (getBlue() + second.getBlue())) / 2;
@@ -158,6 +160,7 @@ public class RGBColor {
 
 	public RGBColor minus(RGBColor second) {
 		RGBColor color = new RGBColor();
+		if(second == null) {return color;}
 		if (getRed() == second.getRed() && getGreen() == second.getGreen() && getBlue() == second.getBlue()) {
 			return color;
 		}
@@ -227,7 +230,10 @@ public class RGBColor {
 		return buffer.toString();
 	}
 
-	private void addHex(int value, CharacterBuffer buffer) {
+	private boolean addHex(int value, CharacterBuffer buffer) {
+		if(buffer == null) {
+			return false;
+		}
 		int t = (int) (value / 16);
 		int rest = value - t * 16;
 		if (t > 9) {
@@ -240,5 +246,6 @@ public class RGBColor {
 		} else {
 			buffer.with((char) (48 + rest));
 		}
+		return true;
 	}
 }
