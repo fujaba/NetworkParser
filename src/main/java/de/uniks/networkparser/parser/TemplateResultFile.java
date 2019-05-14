@@ -94,7 +94,7 @@ public class TemplateResultFile extends SortedSet<TemplateResultFragment>
 	}
 
 	public TemplateResultFile withName(TemplateItem clazz) {
-		if(clazz.getName() != null) {
+		if(clazz != null && clazz.getName() != null) {
 			this.name = clazz.getName().replace(".", "/");
 		}
 		return this;
@@ -382,7 +382,9 @@ public class TemplateResultFile extends SortedSet<TemplateResultFragment>
 	public static TemplateResultFile createJava(Clazz clazz) {
 		TemplateResultFile templateResult = new TemplateResultFile(clazz, true);
 		templateResult.withExtension(Template.TYPE_JAVA);
-		templateResult.withPath((String) clazz.getClassModel().getValue(GraphModel.PROPERTY_PATH));
+		if(clazz != null && clazz.getClassModel() != null) {
+			templateResult.withPath((String) clazz.getClassModel().getValue(GraphModel.PROPERTY_PATH));
+		}
 		return templateResult;
 	}
 }

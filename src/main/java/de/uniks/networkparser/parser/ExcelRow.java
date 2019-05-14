@@ -134,6 +134,10 @@ public class ExcelRow implements Iterable<ExcelCell> {
 	}
 
 	public ExcelCell copy(int pos) {
+		ExcelCell excelCell = this.get(pos);
+		if(excelCell == null) {
+			return null;
+		}
 		Object content = this.get(pos).getContent();
 		ExcelCell cell = new ExcelCell().withContent(content);
 		this.children.add(pos + 1, cell);

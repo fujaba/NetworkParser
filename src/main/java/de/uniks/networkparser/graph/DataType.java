@@ -1,5 +1,7 @@
 package de.uniks.networkparser.graph;
 
+import java.util.Date;
+
 /*
 NetworkParser
 The MIT License
@@ -38,6 +40,7 @@ public class DataType {
 	public static final DataType BYTE = new DataType("byte");
 	public static final DataType COLOR = new DataType("color");
 	public static final DataType CONSTRUCTOR = new DataType("");
+	public static final DataType DATE = DataType.create(Date.class).withExternal(true);
 
 	protected Clazz value;
 	protected static final String PROPERTY_NAME="name";

@@ -29,6 +29,9 @@ public class FeatureCondition extends CustomCondition<GraphMember> {
 
 	@Override
 	public void create(CharacterBuffer buffer, TemplateParser parser, LocalisationInterface customTemplate) {
+		if(buffer == null) {
+			return;
+		}
 		CharacterBuffer temp = buffer.nextToken(false, SPLITEND, ENTER);
 		this.feature = Feature.valueOf(temp.toString()).create();
 		temp = buffer.nextToken(false, SPLITEND);

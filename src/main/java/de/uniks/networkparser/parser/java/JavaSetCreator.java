@@ -25,14 +25,23 @@ public class JavaSetCreator extends Template {
 		this.includeSuperValues = true;
 
 		this.withTemplate(
-				"{{#template PACKAGE}}{{#if {{packageName}}}}package {{packageName}}.util;{{#endif}}{{#endtemplate}}",
+				"{{#template PACKAGE}}{{#if {{packageName}} ?package {{packageName}}.util;}}{{#endtemplate}}",
 				"",
 
-				"{{#template IMPORT}}{{#foreach {{file.headers}}}}", "import {{item}};{{#endfor}}{{#endtemplate}}", "",
-
-				"{{#import " + SendableEntityCreator.class.getName() + "}}" + "{{#import {{fullName}}}}"
-						+ "{{visibility}} class {{name}}Set extends {{#feature SETCLASS=" + SimpleSet.class.getName()
-						+ "}}<{{name}}> implements SendableEntityCreator {",
+				"{{#template IMPORT}}"
+						+"{{#foreach {{file.headers}}}}", 
+							"import {{item}};"
+						+"{{#endfor}}"
+				+"{{#endtemplate}}", 
+				"{{#import {{fullName}}}}",
+				 "{{visibility}} class {{name}}Set extends {{#feature SETCLASS=" + SimpleSet.class.getName()+ "}}<{{name}}> "+
+				"{{#if {{#feature SERIALIZATION}}}}" +
+					 "{{#import " + SendableEntityCreator.class.getName() + "}}",
+						"implements SendableEntityCreator {"+
+				"{{#else}}"
+					+" {",
+					"	public static final String REMOVE = \"rem\";",
+				"{{#endif}}"+ 
 				"",
 // SendableCreator
 				"	private final String[] properties = new String[] {",
@@ -71,13 +80,13 @@ public class JavaSetCreator extends Template {
 				"{{#endif}}",
 				"",
 
-				"	@Override",
+				"{{#if {{templatemodel.features.setclass.classstring}}==" + SimpleSet.class.getName() + " ?	@Override}}",
 				"	public String[] getProperties() {",
 				"		return properties;",
 				"	}",
 				"",
 
-				"	@Override",
+				"{{#if {{templatemodel.features.setclass.classstring}}==" + SimpleSet.class.getName() + " ?	@Override}}",
 				"	public Object getSendableInstance(boolean prototyp) {",
 				"{{#if {{#AND}}{{type}}==class {{#NOT}}{{modifiers#contains(abstract)}}{{#ENDNOT}}{{#ENDAND}}}}",
 				"		return new {{name}}();",
@@ -87,7 +96,7 @@ public class JavaSetCreator extends Template {
 				"	}",
 				"",
 
-				"	@Override",
+				"{{#if {{templatemodel.features.setclass.classstring}}==" + SimpleSet.class.getName() + " ?	@Override}}",
 				"	public Object getValue(Object entity, String attribute) {",
 				"		if(attribute == null || entity instanceof {{name}} == false) {",
 				"			return null;",
@@ -118,13 +127,13 @@ public class JavaSetCreator extends Template {
 				"{{#endif}}",
 				"	}", "",
 
-				"	@Override",
+				"{{#if {{templatemodel.features.setclass.classstring}}==" + SimpleSet.class.getName() + " ?	@Override}}",
 				"	public boolean setValue(Object entity, String attribute, Object value, String type) {",
 				"		if(attribute == null || entity instanceof {{name}} == false) {",
 				"			return false;",
 				"		}",
 				"		{{name}} element = ({{name}})entity;",
-				"		if (SendableEntityCreator.REMOVE.equals(type) && value != null) {",
+				"		if (REMOVE.equals(type) && value != null) {",
 				"			attribute = attribute + type;",
 				"		}", "",
 				"{{#foreach childtransitive}}",
@@ -165,19 +174,21 @@ public class JavaSetCreator extends Template {
 				"		return false;", "{{#endif}}",
 				"	}",
 				"",
-				"",
+				"{{#if {{#feature SERIALIZATION}}}}",
 				"{{#import " + IdMap.class.getName() + "}}" + "	public static IdMap createIdMap(String session) {",
-				"		return CreatorCreator.createIdMap(session);", "	}",
+				"		return CreatorCreator.createIdMap(session);",
+				"	}",
+				"{{#endif}}"+
 
 				"	public Class<?> getTypClass() {",
 				"		return {{name}}.class;", "	}",
 				"",
 				"",
-				"{{#if {{templatemodel.features.setclass.classstring}}==" + SimpleSet.class.getName() + "}}"
-						+ "	@Override",
-						"",
-				"{{#endif}}" + "	public {{name}}Set getNewList(boolean keyValue) {",
-				"		return new {{name}}Set();", "	}",
+				"",
+				"{{#if {{templatemodel.features.setclass.classstring}}==" + SimpleSet.class.getName() + " ?	@Override}}",
+				"	public {{name}}Set getNewList(boolean keyValue) {",
+				"		return new {{name}}Set();",
+				"	}",
 				"",
 				"",
 				"{{#template TEMPLATEEND}}}{{#endtemplate}}");

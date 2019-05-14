@@ -479,30 +479,37 @@ public class ParserEntity {
 	public CharSequence finishParse(SymTabEntry nextEntity) {
 		int endPos = getCurrentEnd();
 		CharSequence sequence = code.subString(this.parsePos, endPos);
-		nextEntity.add(sequence);
+		if(nextEntity != null) {
+			nextEntity.add(sequence);
+		}
 		return sequence;
 	}
 
 	public void addCurrentCharacter(char checkCharacter, SymTabEntry nextEntity) {
-		if (currentKindEquals(checkCharacter)) {
+		if (currentKindEquals(checkCharacter) && nextEntity != null) {
 			nextEntity.add(this.currentToken.text.toString());
 			nextToken();
 		}
 	}
 
 	public void addNewLine(SymTabEntry nextEntity) {
-		if (currentKindEquals(Token.NEWLINE)) {
+		if (currentKindEquals(Token.NEWLINE) && nextEntity != null) {
 			nextEntity.add(this.currentToken.text.toString());
 			nextToken();
 		}
 	}
 
 	public void addCurrentToken(SymTabEntry nextEntity) {
-		nextEntity.add(this.currentToken.text.toString());
+		if(nextEntity != null) {
+			nextEntity.add(this.currentToken.text.toString());
+		}
 	}
 
 	private long getLineIndexOf(int startPos, CharSequence fileBody) {
 		long count = 1;
+		if(fileBody == null) {
+			return count;
+		}
 		CharSequence substring = fileBody.subSequence(0, startPos);
 		for (int index = 0; index < substring.length() - 1; ++index) {
 			final char firstChar = substring.charAt(index);
@@ -642,6 +649,9 @@ public class ParserEntity {
 
 		// modifiers class name classbody
 		int startPosClazz = currentToken.startPos;
+		if (this.getClazz() == null) {
+			return;
+		}
 		getClazz().with(Modifier.create(parseModifiers()));
 
 		// class or interface or enum
@@ -1251,6 +1261,9 @@ public class ParserEntity {
 	}
 
 	private Clazz findClassInModel(String name) {
+		if(this.getClazz() == null) {
+			return null;
+		}
 		GraphModel model = this.getClazz().getClassModel();
 		if (model == null) {
 			return null;
@@ -1269,6 +1282,9 @@ public class ParserEntity {
 			SimpleKeyValueList<String, SimpleList<SymTabEntry>> symbolTab) {
 //FIXME		String[] split = memberName.split(":");
 //		String signature = split[1];
+		if(memberName == null) {
+			return null;
+		}
 		String signature = memberName.getName();
 
 		for (String key : symbolTab.keySet()) {
@@ -1299,15 +1315,19 @@ public class ParserEntity {
 		}
 
 		String name = clazz.getName(false);
-		int lastIndex = name.lastIndexOf('.');
-		name = name.substring(0, lastIndex + 1) + signature;
-
+		if(name != null) {
+			int lastIndex = name.lastIndexOf('.');
+			name = name.substring(0, lastIndex + 1) + signature;
+		}
 		return findClassInModel(name);
 	}
 
 	private void addMemberAsAttribut(SymTabEntry symTabEntry,
 			SimpleKeyValueList<String, SimpleList<SymTabEntry>> symbolTab, boolean addStaticAttribute) {
 		// filter public static final constances
+		if(symTabEntry == null) {
+			return;
+		}
 		String modifiers = symTabEntry.getModifiers();
 		if (addStaticAttribute == false && 
 				((modifiers.indexOf("public") >= 0 || modifiers.indexOf("private") >= 0) 
@@ -1334,6 +1354,9 @@ public class ParserEntity {
 	}
 
 	private boolean classContainsAttribut(String attrName, String type) {
+		if(this.getClazz() == null) {
+			return false;
+		}
 		for (Attribute attr : this.getClazz().getAttributes()) {
 			if (attrName.equals(attr.getName()) && type.equals(attr.getType()))
 				return true;
@@ -1510,6 +1533,9 @@ public class ParserEntity {
 
 	public String findPartnerClassName(String partnerTypeName) {
 		String partnerClassName;
+		if(partnerTypeName == null) {
+			return null;
+		}
 		int openAngleBracket = partnerTypeName.indexOf("<");
 		int closeAngleBracket = partnerTypeName.indexOf(">");
 
@@ -1526,6 +1552,9 @@ public class ParserEntity {
 
 	private int findRoleCard(String partnerTypeName, GraphModel model) {
 		int partnerCard = Association.ONE;
+		if(partnerTypeName == null) {
+			return partnerCard;
+		}
 		int _openAngleBracket = partnerTypeName.indexOf("<");
 		int _closeAngleBracket = partnerTypeName.indexOf(">");
 		if (_openAngleBracket > 1 && _closeAngleBracket > _openAngleBracket) {
@@ -1548,6 +1577,9 @@ public class ParserEntity {
 
 	private void addMemberAsMethod(SymTabEntry symTabEntry,
 			SimpleKeyValueList<String, SimpleList<SymTabEntry>> symTab) {
+		if(symTabEntry == null) {
+			return;
+		}
 		String fullSignature = symTabEntry.getType();
 		String signature = symTabEntry.getName();
 
@@ -1631,6 +1663,9 @@ public class ParserEntity {
 
 	private boolean isGetterSetter(String methodName, SimpleKeyValueList<String, SimpleList<SymTabEntry>> symTab) {
 		// method starts with: with set get ...
+		if(methodName == null) {
+			return false;
+		}
 		if (methodName.startsWith("with") || methodName.startsWith("set") || methodName.startsWith("get")
 				|| methodName.startsWith("add") || methodName.startsWith("remove") || methodName.startsWith("create")) {
 
@@ -1655,6 +1690,9 @@ public class ParserEntity {
 
 	private boolean isAssoc(String methodName, SimpleKeyValueList<String, SimpleList<SymTabEntry>> symTab) {
 		// method starts with: with set get ...
+		if(methodName == null) {
+			return false;
+		}
 		if (methodName.startsWith("with") || methodName.startsWith("set") || methodName.startsWith("get")
 				|| methodName.startsWith("add") || methodName.startsWith("remove") || methodName.startsWith("create")) {
 
@@ -1686,7 +1724,11 @@ public class ParserEntity {
 	}
 
 	private Attribute getAttribtue(String memberName) {
-		for (Attribute attribute : getClazz().getAttributes()) {
+		Clazz clazz = getClazz();
+		if(clazz == null) {
+			return null;
+		}
+		for (Attribute attribute : clazz.getAttributes()) {
 			if (attribute.getName().equals(memberName)) {
 				return attribute;
 			}

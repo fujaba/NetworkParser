@@ -37,7 +37,7 @@ public class JavaAttribute extends Template {
 					"{{#endif}}",
 				"",
 				// ADD TO
-				"{{#debug}}{{#if {{typecat}}==SET}}",
+				"{{#if {{typecat}}==SET}}",
 				"	public boolean add{{Name}}({{type.name}}... values) {",
 				"		if(values == null  || values.length < 1) {",
 				"			return false;",

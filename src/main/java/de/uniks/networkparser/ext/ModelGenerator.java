@@ -63,7 +63,7 @@ import de.uniks.networkparser.parser.java.JavaSetCreator;
 import de.uniks.networkparser.parser.typescript.TypescriptClazz;
 
 public class ModelGenerator extends SimpleGenerator {
-	private FeatureSet features = Feature.getAll();
+	private FeatureSet features = Feature.createAll();
 	private GraphModel defaultModel;
 	private boolean useSDMLibParser = true;
 	private String defaultRootDir;
@@ -366,7 +366,7 @@ public class ModelGenerator extends SimpleGenerator {
 		return this;
 	}
 
-	public ModelGenerator withFeature(Feature feature) {
+	public ModelGenerator withFeature(Feature... feature) {
 		this.features.with(feature);
 		return this;
 	}

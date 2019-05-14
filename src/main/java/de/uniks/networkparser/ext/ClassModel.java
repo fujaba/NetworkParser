@@ -32,6 +32,7 @@ import de.uniks.networkparser.graph.Attribute;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.DataType;
 import de.uniks.networkparser.graph.Feature;
+import de.uniks.networkparser.graph.FeatureSet;
 import de.uniks.networkparser.graph.GraphMember;
 import de.uniks.networkparser.graph.GraphModel;
 import de.uniks.networkparser.graph.GraphUtil;
@@ -65,7 +66,12 @@ public class ClassModel extends GraphModel {
 		this.generator = new ModelGenerator().withDefaultModel(this);
 	}
 
-	public ClassModel withFeature(Feature feature) {
+	public ClassModel withFeature(Feature... feature) {
+		this.generator.withFeature(feature);
+		return this;
+	}
+	
+	public ClassModel withFeature(FeatureSet feature) {
 		this.generator.withFeature(feature);
 		return this;
 	}

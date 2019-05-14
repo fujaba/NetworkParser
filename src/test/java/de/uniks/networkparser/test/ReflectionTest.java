@@ -24,8 +24,12 @@ public class ReflectionTest {
 //		logger.withFlag(NetworkParserLog.LOGLEVEL_ALL).withListener(output);
 		logger.withFlag(NetworkParserLog.LOGLEVEL_ERROR).withListener(output);
 		logger.withoutFlag(NetworkParserLog.LOGLEVEL_INFO);
+		tester.withDisableClassError(true);
+
 		tester.test("de.uniks.networkparser", logger);
-		System.out.println("Errors: "+logger.getErrorCount());
+		
+		
+		tester.printResult(NetworkParserLog.LOGLEVEL_ERROR);
 	}
 
 	@Test

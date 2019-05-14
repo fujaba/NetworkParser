@@ -42,16 +42,25 @@ public class SimpleEntrySet<K, V> implements Set<Entry<K, V>> {
 
 	@Override
 	public int size() {
+		if(map == null) {
+			return 0;
+		}
 		return this.map.size();
 	}
 
 	@Override
 	public boolean isEmpty() {
+		if(map == null) {
+			return true;
+		}
 		return this.map.isEmpty();
 	}
 
 	@Override
 	public boolean contains(Object o) {
+		if(map == null) {
+			return false;
+		}
 		return this.map.contains(o);
 	}
 
@@ -77,27 +86,42 @@ public class SimpleEntrySet<K, V> implements Set<Entry<K, V>> {
 
 	@Override
 	public <T> T[] toArray(T[] a) {
+		if(map == null) {
+			return null;
+		}
 		return this.map.toArray(a);
 	}
 
 	@Override
 	public boolean add(Entry<K, V> e) {
+		if(map == null) {
+			return false;
+		}
 		return this.map.add(e.getKey(), e.getValue());
 	}
 
 	@Override
 	public boolean remove(Object o) {
+		if(map == null) {
+			return false;
+		}
 		return this.map.removeByObject(o) >= 0;
 	}
 
 	@Override
 	public boolean containsAll(Collection<?> c) {
+		if(map == null) {
+			return false;
+		}
 		return this.map.containsAll(c);
 	}
 
 	@Override
 	public boolean addAll(Collection<? extends Entry<K, V>> collection) {
 		boolean result = true;
+		if(collection == null) {
+			return result;
+		}
 		for (Entry<K, V> item : collection) {
 			result = result && this.map.add(item.getKey(), item.getValue());
 		}

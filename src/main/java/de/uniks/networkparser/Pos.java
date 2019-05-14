@@ -43,7 +43,10 @@ public class Pos {
 			rowPos = 2;
 		}
 		if (rowPos < tag.length()) {
-			pos.y = Integer.valueOf(tag.substring(rowPos));
+			try {
+				pos.y = Integer.valueOf(tag.substring(rowPos));
+			}catch (Exception e) {
+			}
 		}
 		return pos;
 	}

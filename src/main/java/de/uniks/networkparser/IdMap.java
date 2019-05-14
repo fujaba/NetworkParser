@@ -1293,7 +1293,13 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator>, Sendabl
 	}
 
 	protected Entity encode(Object entity, String className, MapEntity map, BaseItem parentNode) {
+		if(map == null) {
+			return null;
+		}
 		Grammar grammar = map.getGrammar();
+		if(grammar == null) {
+			return null;
+		}
 		SendableEntityCreator creator = grammar.getCreator(Grammar.WRITE, entity, map, className);
 		if (creator == null) {
 			return null;

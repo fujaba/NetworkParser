@@ -114,6 +114,9 @@ public class SourceCode extends GraphMember {
 	public GraphMember with(Clazz parent) {
 		this.parentNode = parent;
 		// REMOVE OLD SOURCE CODE
+		if(parent == null) {
+			return this;
+		}
 		GraphSimpleSet children = new GraphSimpleSet();
 		children.withList(parent.getChildren());
 		for (GraphMember item : children) {
@@ -136,6 +139,9 @@ public class SourceCode extends GraphMember {
 	}
 
 	public CharSequence subString(int start, int end) {
+		if(content == null) {
+			return null;
+		}
 		return content.subSequence(start, end);
 	}
 

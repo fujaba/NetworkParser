@@ -221,7 +221,13 @@ public class SimpleGrammar implements Grammar {
 
 	@Override
 	public BaseItem encode(Object entity, MapEntity map) {
-		return map.getTokener().encode(entity, map);
+		if(map != null) {
+			Tokener tokener = map.getTokener();
+			if(tokener != null) {
+				return map.getTokener().encode(entity, map);
+			}
+		}
+		return null;
 	}
 
 	public SimpleGrammar withBasicFeature(String... values) {

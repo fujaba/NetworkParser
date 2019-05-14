@@ -91,7 +91,7 @@ public class TemplateResultModel extends SimpleList<TemplateResultFile>
 	}
 
 	public ParserCondition getTemplate(String tag) {
-		if (customTemplate == null) {
+		if (customTemplate == null || tag == null) {
 			return null;
 		}
 		return customTemplate.get(tag.toLowerCase());

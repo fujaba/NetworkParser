@@ -241,7 +241,9 @@ public class GraphMatcher extends GraphEntity {
 	}
 
 	private void linkMemberMatches(Match oldMatch, Match newMatch) {
-		oldMatch.withOtherMatch(newMatch);
+		if(oldMatch != null) {
+			oldMatch.withOtherMatch(newMatch);
+		}
 		// COPY ALL TO NEW
 //		newMatch.withMetaParent(oldMatch.getMetaParent());
 //		newMatch.withParent(oldMatch.getParent());
@@ -296,6 +298,9 @@ public class GraphMatcher extends GraphEntity {
 //	
 //	
 	private boolean matchAttributes(Clazz oldClazz, Clazz newClazz) {
+		if(oldClazz == null || newClazz == null) {
+			return false;
+		}
 		AttributeSet oldAttributes = oldClazz.getAttributes();
 		AttributeSet newAttributes = newClazz.getAttributes();
 
@@ -696,6 +701,9 @@ public class GraphMatcher extends GraphEntity {
 	}
 
 	private boolean matchAttributeValues(Attribute oldAttribute, Attribute newAttribute) {
+		if(oldAttribute == null || newAttribute == null) {
+			return false;
+		}
 		if (oldAttribute.getName().equals(newAttribute.getName()) == false) {
 			return false;
 		}
@@ -716,6 +724,9 @@ public class GraphMatcher extends GraphEntity {
 	}
 
 	private boolean matchAssociationValues(Association oldAssociation, Association newAssociation) {
+		if(oldAssociation == null) {
+			return false;
+		}
 		if (oldAssociation.getName().equals(newAssociation.getName()) == false) {
 			return false;
 		}

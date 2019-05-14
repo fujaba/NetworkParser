@@ -71,10 +71,13 @@ public class ReflectionBlackBoxTester {
 	private SimpleKeyValueList<String, SimpleSet<String>> ignoreMethods;
 //	private SimpleSet<String> ignoreClazz=new SimpleSet<String>().with("de.uniks.networkparser.NetworkParserLog");
 	private int errorCount;
+	private boolean ignoreClassError;
 	private int successCount;
 	private String packageName;
 	private NetworkParserLog logger = new NetworkParserLog();
 	private ObjectCondition custom;
+	private long startTime;
+	private int oldThreadCount;
 
 	public void mainTester(String[] args) {
 		Object junitCore = ReflectionLoader.newInstanceStr("org.junit.runner.JUnitCore");
@@ -221,8 +224,9 @@ public class ReflectionBlackBoxTester {
 		successCount = 0;
 		this.packageName = packageName;
 		this.logger = logger;
-		long start = System.currentTimeMillis();
+		this.startTime = System.currentTimeMillis();
 		Set<Thread> oldThreads = ReflectionLoader.closeThreads(null);
+		this.oldThreadCount = oldThreads.size();
 		Timer timer = new Timer();
 		SimpleSet<String> defaultMethods = this.ignoreMethods.get(DEFAULTMETHODS);
 
@@ -271,12 +275,7 @@ public class ReflectionBlackBoxTester {
 		if("gitlab".equalsIgnoreCase(tester) == false) {
 			ReflectionLoader.closeThreads(oldThreads);
 		}
-
-		// Write out all Results
-		output(this, "Errors: " + errorCount + "/" + (errorCount + successCount), logger,
-				NetworkParserLog.LOGLEVEL_INFO, null);
-		output(this, "Time: " + (System.currentTimeMillis() - start) + "ms - Thread: " + oldThreads.size() + " -> "
-				+ Thread.activeCount(), logger, NetworkParserLog.LOGLEVEL_INFO, null);
+		printResult(NetworkParserLog.LOGLEVEL_INFO);
 		return true;
 	}
 	
@@ -431,17 +430,20 @@ public class ReflectionBlackBoxTester {
 //			}
 //		}
 		String line = getLine(packageName, e, clazz.getSimpleName());
+		int pos = 1;
+		String shortName = "";
 		if (line.length() < 1) {
 			line = clazz.getName() + ".java:1";
-		}
-//		String error = "("+line+") : "+clazz.getName()+":"+getSignature(m) +" "+ e.getCause()+":"+getParamtoString(call)+"\n");
-//		output(error.toString(), logger, NetworkParserLog.LOGLEVEL_ERROR);
-
-		String shortName = "";
-		if (line.lastIndexOf(".") > 0) {
-			String[] split = line.split("\\.");
-			shortName = line.substring(0, line.lastIndexOf(":") - 4) + m.getName() + "(" + split[split.length - 2] + "."
-					+ split[split.length - 1] + ")";
+		} else {
+			if (line.lastIndexOf(".") > 0) {
+				String[] split = line.split("\\.");
+				shortName = line.substring(0, line.lastIndexOf(":") - 4) + m.getName() + "(" + split[split.length - 2] + "."
+						+ split[split.length - 1] + ")";
+				String value = split[split.length - 1];
+				if(value.indexOf(":")>0) {
+					pos = Integer.valueOf(value.substring(value.indexOf(":")+1));
+				}
+			}
 		}
 		String causes = "";
 		if(e.getCause()!= null) {
@@ -451,9 +453,11 @@ public class ReflectionBlackBoxTester {
 		}else if(e.getMessage() != null){
 			causes = ": "+e.getMessage();
 		}
-		output(m, "at " + clazz.getName() +  causes + " " + shortName + " : ", logger,
-				NetworkParserLog.LOGLEVEL_ERROR, e);
-		errorCount++;
+		if(ignoreClassError == false || pos != 1) {
+			output(m, "at " + clazz.getName() +  causes + " " + shortName, logger,
+					NetworkParserLog.LOGLEVEL_ERROR, e);
+			errorCount++;
+		}
 	}
 
 	public String getParamtoString(Object[] params) {
@@ -479,6 +483,16 @@ public class ReflectionBlackBoxTester {
 		return sb.toString();
 	}
 
+	public void printResult(int loglevel) {
+		// Write out all Results
+		output(this, "Errors: " + errorCount + "/" + (errorCount + successCount), logger, loglevel, null);
+		if(startTime>0 && oldThreadCount>0) {
+			output(this, "Time: " + (System.currentTimeMillis() - startTime) + "ms - Thread: " + oldThreadCount + " -> "
+					+ Thread.activeCount(), logger, loglevel, null);
+		}
+
+	}
+	
 	public void output(Object owner, String message, NetworkParserLog logger, int logLevel, Exception e) {
 		if (logger != null) {
 			logger.log(owner, "output", message, logLevel, e);
@@ -799,6 +813,11 @@ public class ReflectionBlackBoxTester {
 	
 	public ReflectionBlackBoxTester withLogger(NetworkParserLog logger) {
 		this.logger = logger;
+		return this;
+	}
+
+	public ReflectionBlackBoxTester withDisableClassError(boolean value) {
+		this.ignoreClassError = value;
 		return this;
 	}
 }

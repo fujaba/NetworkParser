@@ -123,6 +123,9 @@ public class JsonTokener extends Tokener {
 	
 
 	private Entity parsingEntity(Entity entity, Buffer buffer) {
+		if(buffer == null || entity == null) {
+			return entity;
+		}
 		String key;
 		if (buffer.nextClean(true) != JsonObject.START) {
 			if (isError(this, "parseToEntity", NetworkParserLog.ERROR_TYP_PARSING, entity)) {
@@ -567,7 +570,7 @@ public class JsonTokener extends Tokener {
 	private void parseValue(Object target, String property, Object value, SendableEntityCreator creator,
 			MapEntity map) {
 		// FIXME IF STATGEGY IS UPDATE SET NEW VALUE
-		if (value == null && map.isStrategyNew() == false) {
+		if (value == null || map == null || map.isStrategyNew() == false) {
 			return;
 		}
 		Filter filter = map.getFilter();

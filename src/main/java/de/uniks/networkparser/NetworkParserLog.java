@@ -86,7 +86,6 @@ public class NetworkParserLog extends Handler {
 	public static final String ERROR = "ERROR";
 	public static final String FATAL = "FATAL";
 	public static final String LOG = "LOG";
-	private int errorCount;
 
 	private byte flag = LOGLEVEL_ERROR + LOGLEVEL_INFO; // ERROR + INFO
 	protected ObjectCondition condition;
@@ -199,7 +198,6 @@ public class NetworkParserLog extends Handler {
 	 */
 	public boolean error(Object owner, String method, Object message, Object... params) {
 		if ((flag & LOGLEVEL_ERROR) != 0) {
-			this.errorCount++;
 			if (condition != null) {
 				return condition
 						.update(new SimpleEvent(owner, method, null, message).withModelValue(params).withType(ERROR));
@@ -208,10 +206,6 @@ public class NetworkParserLog extends Handler {
 		return false;
 	}
 	
-	public int getErrorCount() {
-		return errorCount;
-	}
-
 	public boolean log(Object owner, String method, String msg, int level, Object... params) {
 		if (level == LOGLEVEL_ERROR) {
 			return this.error(owner, method, msg, params);

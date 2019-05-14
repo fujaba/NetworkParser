@@ -104,6 +104,9 @@ public class MapEntity extends AbstractList<Object> {
 		if (result) {
 			return result;
 		}
+		if(filter == null) {
+			return false;
+		}
 		return filter.isSimpleFormat();
 	}
 
@@ -208,6 +211,9 @@ public class MapEntity extends AbstractList<Object> {
 
 	// Method for Filter
 	public String getId(Object entity, String className) {
+		if(filter == null) {
+			return null;
+		}
 		if (filter.isId(entity, className, map) == false) {
 			this.with(entity);
 		} else {
@@ -303,6 +309,9 @@ public class MapEntity extends AbstractList<Object> {
 
 	public Entity convertProperty(CharacterBuffer property, BaseItem parent) {
 		BaseItem child = parent;
+		if(property == null) {
+			return null;
+		}
 		while (property.charAt(0) == IdMap.ENTITYSPLITTER) {
 			if (property.length() == 1) {
 				break;
@@ -370,13 +379,16 @@ public class MapEntity extends AbstractList<Object> {
 	}
 
 	public Tokener getTokener() {
-		if (tokener == null) {
+		if (tokener == null && map != null) {
 			tokener = map.jsonTokener;
 		}
 		return this.tokener;
 	}
 
 	public boolean isStrategyNew() {
+		if(this.filter == null) {
+			return true;
+		}
 		return SendableEntityCreator.NEW.equalsIgnoreCase(this.filter.getStrategy());
 	}
 }

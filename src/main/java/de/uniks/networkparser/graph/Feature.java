@@ -111,17 +111,17 @@ public class Feature implements Comparable<Feature> {
 	public static final String CODESTYLE_STANDARD = "standard";
 	public static final String CODESTYLE_DIVIDED = "divided";
 
-	public static final FeatureSet getNone() {
+	public static final FeatureSet createNone() {
 		return new FeatureSet();
 	}
 
-	public static FeatureSet getAll() {
+	public static FeatureSet createAll() {
 		FeatureSet result = new FeatureSet().with(PROPERTYCHANGESUPPORT, SERIALIZATION, PATTERN, SETCLASS.create(),
 				CODESTYLE.create());
 		return result;
 	}
 
-	public static FeatureSet getStandAlone() {
+	public static FeatureSet createStandAlone() {
 		FeatureSet result = new FeatureSet().with(PROPERTYCHANGESUPPORT, CODESTYLE.create());
 		result.add(SETCLASS.create().withClazzValue(LinkedHashSet.class));
 		return result;

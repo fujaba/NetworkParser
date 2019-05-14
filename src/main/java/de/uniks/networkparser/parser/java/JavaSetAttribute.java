@@ -11,11 +11,12 @@ public class JavaSetAttribute extends Template {
 				"{{#if {{#NOT}}{{modifiers#contains(static)}}{{#ENDNOT}}}}" +
 					"{{#import {{type(false)}}}}"
 
+					
+				+"{{#if {{#feature PATTERN}}}}"
 // SWITCH FOR LIST SO NO PARAMETER
-				+ "	public {{#listType}} {{#if {{type}}==boolean}}is{{#else}}get{{#endif}}{{Name}}({{#if {{typecat}}!=SET ? {{type}}... filter}}) {"
+				+ "	public {{#listType}} {{#if {{type}}==boolean ? is : get}}{{Name}}({{#if {{typecat}}!=SET ? {{type}}... filter}}) {"
 				+"",
 				"		{{#listType}} result = new {{#listType}}();",
-				"{{#if {{#feature PATTERN}}}}",
 				"		if(listener != null) {",
 				"{{#import " + SimpleEvent.class.getName() + "}}",
 				"			result.withListener(listener);",
@@ -25,7 +26,6 @@ public class JavaSetAttribute extends Template {
 				"			}",
 				"			return result;",
 				"		}",
-				"{{#endif}}",
 				"{{#if {{typecat}}==SET}}",
 				"		for ({{file.member.name}} obj : this) {",
 				"			result.add(obj.{{namegetter}}());",
@@ -53,17 +53,18 @@ public class JavaSetAttribute extends Template {
 				"{{#endif}}",
 				"		return result;",
 				"	}",
+				"{{#endif}}",
 				"",
-				"{{#if {{type}}!=BOOLEAN {{typecat}}!=SET}}"
+				"{{#if {{type}}!=BOOLEAN {{typecat}}!=SET {{type(false)}}!=java.util.Date}}"
 						+ "	public {{file.member.name}}Set filter{{Name}}({{type}} minValue, {{type}} maxValue) {",
 				"		{{file.member.name}}Set result = new {{file.member.name}}Set();",
 				"		for({{file.member.name}} obj : this) {",
 				"			if ({{#if {{type}}==STRING}}minValue.compareTo(obj.get{{Name}}()) <= 0 && maxValue.compareTo(obj.get{{Name}}()) >= 0"
 						+"{{#else}}"
 						+"{{#if {{type}}==OBJECT}}"
-						+"	minValue.hashCode() <= obj.get{{Name}}().hashCode() && maxValue.hashCode() >= obj.get{{Name}}().hashCode()"
+						+"minValue.hashCode() <= obj.get{{Name}}().hashCode() && maxValue.hashCode() >= obj.get{{Name}}().hashCode()"
 						+"{{#else}}"
-						+"	minValue <= obj.get{{Name}}() && maxValue >= obj.get{{Name}}()"
+						+"minValue <= obj.get{{Name}}() && maxValue >= obj.get{{Name}}()"
 						+"{{#endif}}{{#endif}}) {",
 				"				result.add(obj);",
 				"			}",

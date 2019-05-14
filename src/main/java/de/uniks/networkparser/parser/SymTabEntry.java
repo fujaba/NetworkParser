@@ -118,7 +118,9 @@ public class SymTabEntry {
 		return this;
 	}
 	public SymTabEntry withName(CharacterBuffer value) {
-		this.name = value.toString();
+		if(value != null) {
+			this.name = value.toString();
+		}
 		return this;
 	}
 
@@ -188,11 +190,15 @@ public class SymTabEntry {
 		return sb.toString();
 	}
 
-	public void toString(CharacterBuffer sb) {
+	public boolean toString(CharacterBuffer sb) {
+		if(sb == null) {
+			return false;
+		}
 		sb.with(this.name);
 		if (this.next != null) {
 			this.next.toString(sb);
 		}
+		return true;
 	}
 
 	public SymTabEntry withPosition(int start, int end, long startLine, long endLine) {
@@ -318,8 +324,10 @@ public class SymTabEntry {
 	}
 
 	public void writeBody(String value) {
-		this.parent.replaceAll(this.bodyStartPos + 1, value);
-		this.body = "{"+BaseItem.CRLF + "\t"+ value + BaseItem.CRLF + "}";
+		if(this.parent != null) {
+			this.parent.replaceAll(this.bodyStartPos + 1, value);
+			this.body = "{"+BaseItem.CRLF + "\t"+ value + BaseItem.CRLF + "}";
+		}
 	}
 
 	public String getName() {

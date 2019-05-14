@@ -46,6 +46,9 @@ public class JavaMethodBodyCondition extends CustomCondition<Method> {
 	@Override
 	public Object getValue(SendableEntityCreator creator, Method method) {
 		String result = "";
+		if (method == null ) {
+			return result;
+		}
 		if (method.getBody() == null) {
 			String defaultValue = EntityUtil.getDefaultValue(method.getReturnType().getName(false));
 			if (defaultValue.equals("void") == false) {

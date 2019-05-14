@@ -78,6 +78,9 @@ public class TemplateResultFragment
 
 	@Override
 	public int compareTo(TemplateResultFragment other) {
+		if(other == null) {
+			return 1;
+		}
 		if (other.getKey() == key) {
 			if (other.getValue().equals(value)) {
 				return 0;
@@ -109,6 +112,15 @@ public class TemplateResultFragment
 
 	public CharacterBuffer getValue() {
 		return value;
+	}
+	
+	public CharacterBuffer cloneValue(CharacterBuffer newValue) {
+		CharacterBuffer oldValue = value;
+		if(oldValue == null) {
+			oldValue = new CharacterBuffer();
+		}
+		this.value = newValue;
+		return oldValue;
 	}
 
 	public void setValue(CharacterBuffer value) {
@@ -401,7 +413,9 @@ public class TemplateResultFragment
 					}
 					String itemType = (String) item;
 					if (EntityUtil.isPrimitiveType(itemType)) {
-						continue;
+						if(EntityUtil.isDate(itemType) == false) {
+							continue;
+						}
 					}
 					while (itemType.endsWith(".")) {
 						itemType = itemType.substring(0, itemType.length() - 1);
@@ -515,35 +529,42 @@ public class TemplateResultFragment
 
 	public TemplateResultFragment withLineString(String value, String... importClass) {
 		String result = replacing(value, importClass);
-		this.value.withLine(result);
+		if(this.value != null) {
+			this.value.withLine(result);
+		}
+		return this;
+	}
+	public TemplateResultFragment append(String value) {
+		if(this.value == null) {
+			this.value = new CharacterBuffer();
+		}
+		this.value.with(value);
 		return this;
 	}
 
 	public String replacing(String value, String... importClass) {
-		if (importClass != null) {
-			if (importClass.length < 1 || importClass[0] == null) {
-				return value;
+		if (importClass == null || importClass.length < 1 || importClass[0] == null) {
+			if(value != null) {
+				return value.replaceAll("#IMPORT", "");
 			}
-			if (useImport) {
-				for (int a = importClass.length - 1; a >= 0; a--) {
-					if (importClass[a] != null) {
-						value = value.replaceAll("#IMPORT" + (char) (65 + a),
-								EntityUtil.shortClassName(importClass[a]));
-						this.addHeader("import " + importClass[a] + ";");
-					}
-				}
-				value = value.replaceAll("#IMPORT", EntityUtil.shortClassName(importClass[0]));
-			} else {
-				for (int a = importClass.length - 1; a >= 0; a--) {
-					if (importClass[a] != null) {
-						value = value.replaceAll("#IMPORT" + (char) (65 + a), importClass[a]);
-					}
-				}
-				value = value.replaceAll("#IMPORT", importClass[0]);
-			}
-			return value;
+			return null;
 		}
-		return value.replaceAll("#IMPORT", "");
+		if (useImport) {
+			for (int a = importClass.length - 1; a >= 0; a--) {
+				if (importClass[a] != null) {
+					value = value.replaceAll("#IMPORT" + (char) (65 + a),
+							EntityUtil.shortClassName(importClass[a]));
+					this.addHeader("import " + importClass[a] + ";");
+				}
+			}
+			return value.replaceAll("#IMPORT", EntityUtil.shortClassName(importClass[0]));
+		}
+		for (int a = importClass.length - 1; a >= 0; a--) {
+			if (importClass[a] != null) {
+				value = value.replaceAll("#IMPORT" + (char) (65 + a), importClass[a]);
+			}
+		}
+		return value.replaceAll("#IMPORT", importClass[0]);
 	}
 
 	public TemplateResultFragment withLine(String value, Class<?>... importClass) {
@@ -559,13 +580,19 @@ public class TemplateResultFragment
 			}
 		}
 		String result = replacing(value, imports);
-		this.value.withLine(result);
+		if(this.value != null) {
+			this.value.withLine(result);
+		}
 		return this;
 	}
 
 	public void update() {
-		this.value.clear();
-		this.template.update(this);
+		if(value != null) {
+			this.value.clear();
+		}
+		if(template != null) {
+			this.template.update(this);
+		}
 	}
 
 	public TemplateResultFragment withName(String name) {
@@ -587,7 +614,7 @@ public class TemplateResultFragment
 	public static final TemplateResultFragment create(GraphModel model, boolean useImport, boolean createModel) {
 		TemplateResultFragment fragment = new TemplateResultFragment().withMember(model);
 		fragment.useImport = useImport;
-		if (createModel) {
+		if (createModel && model != null) {
 			String classModel = "de.uniks.networkparser.ext.ClassModel";
 			if (model.getDefaultPackage().equalsIgnoreCase(model.getName()) == false && model.getName() != null) {
 				String packageName = model.getName();

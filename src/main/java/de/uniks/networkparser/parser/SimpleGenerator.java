@@ -43,8 +43,10 @@ public class SimpleGenerator extends Template {
 		resultModel.withTemplate(this.getCondition());
 		
 		TemplateResultFile executeEntity = executeEntity(model, parameters, true);
-		resultModel.add(executeEntity);
-		executeEntity.add(generate(resultModel, creator, model));
+		if(executeEntity != null) {
+			resultModel.add(executeEntity);
+			executeEntity.add(generate(resultModel, creator, model));
+		}
 		return resultModel;
 	}
 }

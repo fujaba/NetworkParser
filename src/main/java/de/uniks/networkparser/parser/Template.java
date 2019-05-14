@@ -26,8 +26,6 @@ THE SOFTWARE.
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.graph.Association;
 import de.uniks.networkparser.graph.AssociationSet;
-import de.uniks.networkparser.graph.Attribute;
-import de.uniks.networkparser.graph.AttributeSet;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.Feature;
 import de.uniks.networkparser.graph.FeatureSet;
@@ -147,6 +145,9 @@ public class Template implements TemplateParser {
 		}
 		templateFragment.withExpression(false);
 		ObjectCondition templateCondition = this.token.getTemplate();
+		if(templateCondition == null) {
+			return null;
+		}
 		// Execute Template
 		templateCondition.update(templateFragment);
 
@@ -169,7 +170,9 @@ public class Template implements TemplateParser {
 		// {{Type} } <=> {{Type}}{{#if Type}} {{#end}}
 		// Define Type=int
 		// {{{Type}}} <=> {int}
-
+		if(tokenTemplate == null) {
+			return null;
+		}
 		CharacterBuffer template = null;
 		CharSequence value2 = tokenTemplate.getValue(null);
 		if (value2 instanceof CharacterBuffer) {
@@ -183,19 +186,22 @@ public class Template implements TemplateParser {
 		return parsing(template, customTemplate, false, true);
 	}
 
-	public ObjectCondition parsing(LocalisationInterface... customTemplates) {
-		LocalisationInterface customTemplate = null;
-		if(customTemplates == null || customTemplates.length<1 || customTemplates[0] == null) {
-			TemplateResultModel result = new TemplateResultModel();
-			SimpleList<ParserCondition> templateCondition = getTemplateCondition();
-			if(templateCondition != null) {
-				for(ParserCondition condition : templateCondition) {
-					result.withTemplate(condition);
-				}
+	
+	public ObjectCondition parsing(ParserCondition... customTemplates) {
+		TemplateResultModel result = new TemplateResultModel();
+		SimpleList<ParserCondition> templateCondition = getTemplateCondition();
+		if(templateCondition != null) {
+			for(ParserCondition condition : templateCondition) {
+				result.withTemplate(condition);
 			}
-			customTemplate = result;
 		}
-
+		LocalisationInterface customTemplate = result;
+		if(customTemplates != null) {
+			for(ParserCondition condition : customTemplates) {
+				result.withTemplate(condition);
+			}
+			result.withTemplate(customTemplates);
+		}
 		ObjectCondition condition = this.token.getCondition();
 		if (condition instanceof StringCondition) {
 			this.token.withCondition(this.parsing((StringCondition) condition, customTemplate, false));
@@ -212,6 +218,9 @@ public class Template implements TemplateParser {
 	
 	public ObjectCondition parsing(CharacterBuffer buffer, LocalisationInterface customTemplate, boolean isExpression,
 			boolean allowSpace, String... stopWords) {
+		if(buffer == null) {
+			return null;
+		}
 		int start = buffer.position(), end;
 		ObjectCondition child = null;
 		ChainCondition parent = new ChainCondition();
@@ -479,7 +488,9 @@ public class Template implements TemplateParser {
 
 	private VariableCondition createVariable(CharSequence value, boolean expression) {
 		VariableCondition condition = VariableCondition.create(value, expression);
-		this.variables.add(value.toString());
+		if(value != null) {
+			this.variables.add(value.toString());
+		}
 		return condition;
 	}
 
@@ -575,6 +586,26 @@ public class Template implements TemplateParser {
 	public String getFileName() {
 		return null;
 	}
+	
+	public TemplateResultFragment executeEntity(ObjectCondition condition, LocalisationInterface parameters) {
+		this.isValid = true;
+		
+		TemplateResultFragment templateFragment = new TemplateResultFragment();
+		templateFragment.withKey(this.getType());
+		templateFragment.withName(this.getId(false));
+		templateFragment.withVariable(parameters);
+
+		if (this.token.update(templateFragment) == false) {
+			return null;
+		}
+		templateFragment.withExpression(false);
+		ObjectCondition templateCondition = this.token.getTemplate();
+		// Execute Template
+		templateCondition.update(templateFragment);
+		templateFragment.setValue(templateCondition, TemplateResultFragment.FINISH_GENERATE, templateCondition,
+				SendableEntityCreator.NEW);
+		return templateFragment;
+	}
 
 	public TemplateResultFile executeEntity(TemplateItem model, LocalisationInterface parameters, boolean isStandard) {
 		if (isValid(model, parameters) == false) {
@@ -608,16 +639,7 @@ public class Template implements TemplateParser {
 	}
 	protected void executeChildren(Clazz clazz, LocalisationInterface parameters, SimpleList<Template> templates, String id2, TemplateResultFile templateResult) {
 		// FIRST ATTRIBUTE
-		AttributeSet attributes = clazz.getAttributes();
-		for (Template template : templates) {
-			if (template.getId(true).equals(id2 + ".attribute")) {
-				// FOUND IT
-				for (Attribute attribute : attributes) {
-					template.executeTemplate(parameters, templateResult, attribute);
-				}
-				break;
-			}
-		}
+		 
 
 		// SECOND ASSOCITAION
 		AssociationSet associations = clazz.getAssociations();
@@ -649,6 +671,9 @@ public class Template implements TemplateParser {
 
 	public boolean readTemplate(CharacterBuffer buffer) {
 		boolean result = false;
+		if(buffer == null) {
+			return false;
+		}
 		CharacterBuffer id = buffer.nextToken(false, Template.SPLITEND, Template.SPACE);
 		this.id =  id.toString();
 		if (buffer.getCurrentChar() == Template.SPACE) {
