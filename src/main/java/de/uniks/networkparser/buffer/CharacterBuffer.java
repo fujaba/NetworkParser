@@ -889,11 +889,11 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
 		if (other == null) {
 			return true;
 		}
-		if(start>length || start<0) {
+		if(start>length || start<0 || buffer == null) {
 			return false;
 		}
 		int pos = start;
-		if(length>buffer.length) {
+		if(length()>buffer.length) {
 			length = buffer.length;
 		}
 		int l = 0;
@@ -1026,32 +1026,25 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
 		return len == 0;
 	}
 
-	public boolean withRepeat(String string, int rest) {
-		if(string == null) {
-			return false;
-		}
+	public void withRepeat(String string, int rest) {
 		int newCapacity = this.length + rest * string.length();
 		if (this.buffer == null) {
 			this.buffer = new char[newCapacity];
 			start = 0;
 			length = 0;
 		} else {
-			if (newCapacity > buffer.length && (this.start+length) <= newCapacity) {
+			if (newCapacity > buffer.length) {
 				char[] copy = new char[newCapacity];
-				if(length>0 && this.start >0) {
-					System.arraycopy(buffer, this.start, copy, 0, length);
-				}
+				System.arraycopy(buffer, this.start, copy, 0, length);
 				buffer = copy;
 				this.start = 0;
 			}
 		}
-		validateValue();
 		for (int i = 0; i < rest; i++) {
 			for (int c = 0; c < string.length(); c++) {
 				this.buffer[length++] = string.charAt(c);
 			}
 		}
-		return true;
 	}
 
 	/**

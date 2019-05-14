@@ -68,10 +68,12 @@ final class BitArray implements Cloneable {
 	}
 
 	private void ensureCapacity(int size) {
-		if (size > bits.length * 32) {
-			int[] newBits = makeArray(size);
-			System.arraycopy(bits, 0, newBits, 0, bits.length);
-			this.bits = newBits;
+		if(bits != null) {
+			if (size > bits.length * 32) {
+				int[] newBits = makeArray(size);
+				System.arraycopy(bits, 0, newBits, 0, bits.length);
+				this.bits = newBits;
+			}
 		}
 	}
 
@@ -195,6 +197,9 @@ final class BitArray implements Cloneable {
 	 * Reverses all bits in the array.
 	 */
 	void reverse() {
+		if(bits == null) {
+			return;
+		}
 		int[] newBits = new int[bits.length];
 		// reverse all int's first
 		int len = (size - 1) / 32;
@@ -269,6 +274,9 @@ final class BitArray implements Cloneable {
 	 * @return number of bits that can be read successfully
 	 */
 	int available() {
+		if(bits == null) {
+			return 0;
+		}
 		return 8 * (bits.length - byteOffset) - bitOffset;
 	}
 
