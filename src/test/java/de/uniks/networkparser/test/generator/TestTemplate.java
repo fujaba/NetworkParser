@@ -5,10 +5,7 @@ import org.junit.Test;
 
 import de.uniks.networkparser.ext.FunctionCondition;
 import de.uniks.networkparser.interfaces.ObjectCondition;
-import de.uniks.networkparser.interfaces.ParserCondition;
-import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.parser.Template;
-import de.uniks.networkparser.parser.TemplateResultFile;
 import de.uniks.networkparser.parser.TemplateResultFragment;
 
 public class TestTemplate {
