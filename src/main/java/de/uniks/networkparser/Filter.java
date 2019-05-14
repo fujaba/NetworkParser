@@ -69,7 +69,7 @@ public class Filter {
 	public boolean isId(Object entity, String className, IdMap map) {
 		if (idFilter != null) {
 			return idFilter.update(new SimpleEvent(SendableEntityCreator.NEW, null, map, className, null, entity));
-		} else {
+		} else if(map != null) {
 			SendableEntityCreator creator = map.getCreator(className, true, true, null);
 			if (creator != null) {
 				return !(creator instanceof SendableEntityCreatorNoIndex);
@@ -185,6 +185,9 @@ public class Filter {
 	}
 
 	public String[] getProperties(SendableEntityCreator creator) {
+		if (creator == null) {
+			return new String[0];
+		}
 		return creator.getProperties();
 	}
 

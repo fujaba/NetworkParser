@@ -80,7 +80,7 @@ final class BitArray implements Cloneable {
 	 * @return true iff bit i is set
 	 */
 	public boolean get(int i) {
-		return (bits[i / 32] & (1 << (i & 0x1F))) != 0;
+		return bits != null && (bits[i / 32] & (1 << (i & 0x1F))) != 0;
 	}
 
 	/**
@@ -89,7 +89,9 @@ final class BitArray implements Cloneable {
 	 * @param i bit to set
 	 */
 	public void set(int i) {
-		bits[i / 32] |= 1 << (i & 0x1F);
+		if(bits != null) {
+			bits[i / 32] |= 1 << (i & 0x1F);
+		}
 	}
 
 	/**
@@ -106,9 +108,11 @@ final class BitArray implements Cloneable {
 
 	/** Clears all bits (sets to false). */
 	public void clear() {
-		int max = bits.length;
-		for (int i = 0; i < max; i++) {
-			bits[i] = 0;
+		if(bits!= null) {
+			int max = bits.length;
+			for (int i = 0; i < max; i++) {
+				bits[i] = 0;
+			}
 		}
 	}
 
@@ -255,7 +259,10 @@ final class BitArray implements Cloneable {
 
 	@Override
 	public BitArray clone() {
-		return new BitArray(bits.clone(), size);
+		if(bits != null) {
+			return new BitArray(bits.clone(), size);
+		}
+		return null;
 	}
 
 	/**

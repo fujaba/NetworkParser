@@ -9,6 +9,9 @@ public class HMAC {
 	private int[] ostate;
 
 	public HMAC(String key) {
+		if(key == null) {
+			return;
+		}
 		byte[] keyBytes = key.getBytes();
 		byte[] pad = new byte[this.inner.blockSize];
 		if (keyBytes.length > this.inner.blockSize) {
@@ -50,8 +53,10 @@ public class HMAC {
 
 	// Cleans HMAC state.
 	public void clean() {
-		for (int i = 0; i < this.istate.length; i++) {
-			this.ostate[i] = this.istate[i] = 0;
+		if(this.istate != null) {
+			for (int i = 0; i < this.istate.length; i++) {
+				this.ostate[i] = this.istate[i] = 0;
+			}
 		}
 		this.inner.clean();
 		this.outer.clean();
@@ -59,11 +64,16 @@ public class HMAC {
 
 	// Updates state with provided data.
 	public HMAC update(String data) {
-		return update(data.getBytes());
+		if(data != null) {
+			update(data.getBytes());
+		}
+		return this;
 	}
 	
 	public HMAC update(byte[] data) {
-		this.inner.update(data, data.length);
+		if(data != null) {
+			this.inner.update(data, data.length);
+		}
 		return this;
 	}
 

@@ -170,13 +170,16 @@ public class AES {
 	}
 
 	public CharacterBuffer encode(BufferedBuffer plain) {
-		CharacterBuffer result = new CharacterBuffer().withBufferLength(plain.length());
-		byte[] partByte;
-		for (int p = 0; p < plain.length(); p += 16) {
-			partByte = encodeBlock(plain);
-			if (partByte != null) {
-				for (int pos = 0; pos < BLOCK_SIZE; pos++) {
-					result.with((char) partByte[pos]);
+		CharacterBuffer result = new CharacterBuffer();
+		if(plain != null) {
+			result.withBufferLength(plain.length());
+			byte[] partByte;
+			for (int p = 0; p < plain.length(); p += 16) {
+				partByte = encodeBlock(plain);
+				if (partByte != null) {
+					for (int pos = 0; pos < BLOCK_SIZE; pos++) {
+						result.with((char) partByte[pos]);
+					}
 				}
 			}
 		}
@@ -185,8 +188,8 @@ public class AES {
 
 	public CharacterBuffer encode(String data) {
 		CharacterBuffer string = new CharacterBuffer().with(data);
-		int rest = ((int) data.length() / 32) * 32;
-		if (rest < data.length()) {
+		int rest = ((int) string.length() / 32) * 32;
+		if (rest < string.length()) {
 			rest = 32 - data.length() + rest;
 			string.withRepeat(" ", rest);
 		}
@@ -196,8 +199,10 @@ public class AES {
 		for (int p = 0; p < string.length(); p += 16) {
 			buffer.withPosition(p);
 			partByte = encodeBlock(buffer);
-			for (int pos = 0; pos < BLOCK_SIZE; pos++) {
-				result.with((char) partByte[pos]);
+			if(partByte != null) {
+				for (int pos = 0; pos < BLOCK_SIZE; pos++) {
+					result.with((char) partByte[pos]);
+				}
 			}
 		}
 		return result;
@@ -215,9 +220,15 @@ public class AES {
 	 * @return the encrypted 128-bit ciphertext value.
 	 */
 	private byte[] encodeBlock(BufferedBuffer plain) {
+		if(plain == null) {
+			return null;
+		}
 		byte[] Ker; // encrypt keys for current round
 		byte[] a = new byte[BLOCK_SIZE];
 		int i;
+		if(Ke == null) {
+			return null;
+		}
 		Ker = Ke[0];
 		int from = plain.position();
 		for (i = 0; i < BLOCK_SIZE; i++) {
@@ -309,8 +320,8 @@ public class AES {
 
 	public CharacterBuffer decode(CharSequence data) {
 		CharacterBuffer string = new CharacterBuffer().with(data);
-		int rest = ((int) data.length() / 32) * 32;
-		if (rest < data.length()) {
+		int rest = ((int) string.length() / 32) * 32;
+		if (rest < string.length()) {
 			rest = 32 - data.length() + rest;
 			string.withRepeat(" ", rest);
 		}
@@ -343,8 +354,11 @@ public class AES {
 	 * @return the encrypted 128-bit ciphertext value.
 	 */
 	public byte[] decodeBlock(char[] plain, int from) {
-		byte[] // copy ciphertext bytes into state and do initial AddRoundKey(state)
-		Kdr = Kd[0];
+		// copy ciphertext bytes into state and do initial AddRoundKey(state)
+		if(Kd == null || plain == null || from> plain.length) {
+			return null;
+		}
+		byte[] Kdr = Kd[0];
 
 		byte[] a = new byte[BLOCK_SIZE];
 		int i;
@@ -453,6 +467,9 @@ public class AES {
 	 */
 	public AES withKey(byte[] key) throws IllegalArgumentException {
 		// assorted internal constants
+		if(key == null) {
+			return this;
+		}
 		final int BC = BLOCK_SIZE / 4;
 		int Klen;
 		int i, j, r;

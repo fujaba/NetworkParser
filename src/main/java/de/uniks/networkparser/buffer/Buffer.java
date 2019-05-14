@@ -106,10 +106,12 @@ public abstract class Buffer implements BufferItem {
 		byte[] result = new byte[len];
 		int start = 0;
 		if (current) {
-			if (len > 0 && position < 0) {
-				position = 0;
+			if (len > 0) {
+				if(position < 0) {
+					position = 0;
+				}
+				result[0] = (byte) getCurrentChar();
 			}
-			result[0] = (byte) getCurrentChar();
 			start = 1;
 		}
 		for (int i = start; i < len; i++) {
@@ -391,6 +393,9 @@ public abstract class Buffer implements BufferItem {
 
 	@Override
 	public boolean skipTo(String search, boolean order, boolean notEscape) {
+		if(position()<0) {
+			return false;
+		}
 		char[] character = search.toCharArray();
 		int z = 0;
 		int strLen = character.length;

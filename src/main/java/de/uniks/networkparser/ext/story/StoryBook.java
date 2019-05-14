@@ -100,8 +100,11 @@ public class StoryBook extends SendableItem implements SendableEntityCreator {
 		return this;
 	}
 
-	public StoryBook withoutStory(Story... value) {
-		for (Story item : value) {
+	public StoryBook withoutStory(Story... values) {
+		if(values == null) {
+			return this;
+		}
+		for (Story item : values) {
 			if (item != null) {
 				this.children.remove((Object) item);
 			}
@@ -178,6 +181,9 @@ public class StoryBook extends SendableItem implements SendableEntityCreator {
 
 	public HTMLEntity createKanbanBoard() {
 		HTMLEntity element = new HTMLEntity();
+		if(part == null) {
+			return element;
+		}
 		XMLEntity parent = element.getBody();
 		for (Line child : this.part) {
 			XMLEntity swimLine = element.createTag("div", parent);

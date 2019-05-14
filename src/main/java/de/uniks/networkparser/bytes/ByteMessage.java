@@ -120,7 +120,9 @@ public class ByteMessage implements SendableEntityCreatorTag {
 	 * @return Itself
 	 */
 	public ByteMessage withValue(String value) {
-		this.value = value.getBytes();
+		if(value != null) {
+			this.value = value.getBytes();
+		}
 		return this;
 	}
 

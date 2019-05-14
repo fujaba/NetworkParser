@@ -76,17 +76,21 @@ public class DERBuffer extends ByteBuffer {
 	public final static byte BMPSTRING = 0x1E;
 
 	public void add(BigInteger paramBigInteger) {
-		byte[] arrayOfByte = paramBigInteger.toByteArray();
-		add(arrayOfByte);
-		addBigIntegerLength(arrayOfByte.length);
-		add(INTEGER);
+		if(paramBigInteger != null) {
+			byte[] arrayOfByte = paramBigInteger.toByteArray();
+			add(arrayOfByte);
+			addBigIntegerLength(arrayOfByte.length);
+			add(INTEGER);
+		}
 	}
 
 	public void addBitString(String string) {
-		byte[] bytes = string.getBytes();
-		add(bytes);
-		addLength(bytes.length);
-		add(BITSTRING);
+		if(string != null) {
+			byte[] bytes = string.getBytes();
+			add(bytes);
+			addLength(bytes.length);
+			add(BITSTRING);
+		}
 	}
 
 	public void addBigIntegerLength(int length) {

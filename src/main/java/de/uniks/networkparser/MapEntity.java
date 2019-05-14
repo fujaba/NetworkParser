@@ -58,7 +58,9 @@ public class MapEntity extends AbstractList<Object> {
 		}
 		this.mapFlag = flag;
 		this.map = map;
-		this.grammar = map.getGrammar();
+		if(map != null) {
+			this.grammar = map.getGrammar();
+		}
 		this.tokener = tokener;
 	}
 

@@ -466,6 +466,10 @@ public class ReflectionBlackBoxTester {
 				output(m, "at " + clazz.getName() +  causes + " " + shortName, logger,
 						NetworkParserLog.LOGLEVEL_ERROR, e);
 				errorCount++;
+				
+//				if(errorCount>500) {
+//					Assert.fail();
+//				}
 			}
 		}
 	}
@@ -568,7 +572,7 @@ public class ReflectionBlackBoxTester {
 				return (byte) 0;
 			}
 			if (equalsClass(clazz, short.class, Short.class)) {
-				return 0;
+				return (short)0;
 			}
 			if (equalsClass(clazz, int.class, Integer.class)) {
 				return 0;
@@ -651,13 +655,13 @@ public class ReflectionBlackBoxTester {
 	private static Object getRandomValue(Class<?> clazz) {
 		if (clazz.isPrimitive()) {
 			if (equalsClass(clazz, byte.class, Byte.class)) {
-				return 0x50;
+				return (byte)0x50;
 			}
 			if (equalsClass(clazz, int.class, Integer.class)) {
 				return 42;
 			}
 			if (equalsClass(clazz, short.class, Short.class)) {
-				return 2;
+				return (short)2;
 			}
 			if (equalsClass(clazz, long.class, Long.class)) {
 				return 3;

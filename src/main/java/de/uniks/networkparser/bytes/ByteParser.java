@@ -32,6 +32,9 @@ import de.uniks.networkparser.list.SimpleKeyValueList;
 
 public class ByteParser {
 	public Object decode(ByteBuffer buffer, BitEntityCreator creator) {
+		if(creator == null) {
+			return null;
+		}
 		SimpleKeyValueList<String, Object> values = new SimpleKeyValueList<String, Object>();
 		BitEntity[] bitProperties = creator.getBitProperties();
 		Object newInstance = creator.getSendableInstance(false);
@@ -45,6 +48,9 @@ public class ByteParser {
 	}
 
 	public Object getEntity(ByteBuffer buffer, BitEntity entry, SimpleKeyValueList<String, Object> values) {
+		if(entry == null) {
+			return null;
+		}
 		if (entry.size() < 1) {
 			// Reference or Value
 			if (entry.isType(BitEntity.BIT_REFERENCE)) {

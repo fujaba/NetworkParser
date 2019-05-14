@@ -186,11 +186,13 @@ public class SHA2 {
 			this.finished = true;
 		}
 
-		for (int i = 0; i < 8; i++) {
-			out[i * 4 + 0] = (byte) ((this.state[i] >>> 24) & 0xff);
-			out[i * 4 + 1] = (byte) ((this.state[i] >>> 16) & 0xff);
-			out[i * 4 + 2] = (byte) ((this.state[i] >>> 8) & 0xff);
-			out[i * 4 + 3] = (byte) ((this.state[i] >>> 0) & 0xff);
+		if(out != null && out.length>=31) {
+			for (int i = 0; i < 8; i++) {
+				out[i * 4 + 0] = (byte) ((this.state[i] >>> 24) & 0xff);
+				out[i * 4 + 1] = (byte) ((this.state[i] >>> 16) & 0xff);
+				out[i * 4 + 2] = (byte) ((this.state[i] >>> 8) & 0xff);
+				out[i * 4 + 3] = (byte) ((this.state[i] >>> 0) & 0xff);
+			}
 		}
 
 		return this;
@@ -212,8 +214,10 @@ public class SHA2 {
 
 	// Internal function for use in HMAC for optimization.
 	public void _restoreState(int[] from, int bytesHashed) {
-		for (int i = 0; i < this.state.length; i++) {
-			this.state[i] = from[i];
+		if(from != null) {
+			for (int i = 0; i < this.state.length; i++) {
+				this.state[i] = from[i];
+			}
 		}
 		this.bytesHashed = bytesHashed;
 		this.finished = false;

@@ -149,6 +149,9 @@ public class ByteTokener extends Tokener {
 	}
 
 	private boolean addClazzType(ByteList msg, String clazzName, MapEntity map) {
+		if(map == null || clazzName == null) {
+			return false;
+		}
 		try {
 			int id = map.getIndexOfClazz(clazzName);
 			if (id > 0) {
@@ -345,6 +348,9 @@ public class ByteTokener extends Tokener {
 	}
 
 	Object decodeValue(Buffer buffer, int end, MapEntity map) {
+		if(buffer == null) {
+			return null;
+		}
 		return decodeValue(buffer.getByte(), buffer, end, map);
 	}
 

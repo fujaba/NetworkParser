@@ -167,6 +167,8 @@ public class StringContainer implements CharSequence {
 	public CharSequence split(int start) {
 		if (value instanceof CharacterBuffer) {
 			((CharacterBuffer) value).trimStart(start);
+		} else if(value == null) {
+			value = new CharacterBuffer();
 		} else {
 			value = new CharacterBuffer().with(value, start, value.length());
 		}
@@ -193,6 +195,9 @@ public class StringContainer implements CharSequence {
 	 */
 	@Override
 	public char charAt(int index) {
+		if(value == null) {
+			return 0;
+		}
 		return value.charAt(index);
 	}
 
@@ -208,6 +213,9 @@ public class StringContainer implements CharSequence {
 	 *         method.
 	 */
 	public boolean endsWith(String suffix) {
+		if(value == null) {
+			return false;
+		}
 		return startsWith(suffix, value.length() - suffix.length());
 	}
 
