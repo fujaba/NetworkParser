@@ -135,6 +135,7 @@ public final class BitMatrix implements Cloneable {
 	 */
 	public boolean get(int x, int y) {
 		int offset = y * rowSize + (x / 32);
+		if(bits == null) {return false;}
 		return ((bits[offset] >>> (x & 0x1f)) & 1) != 0;
 	}
 
@@ -148,12 +149,16 @@ public final class BitMatrix implements Cloneable {
 	 */
 	public void set(int x, int y) {
 		int offset = y * rowSize + (x / 32);
-		bits[offset] |= 1 << (x & 0x1f);
+		if(bits != null) {
+			bits[offset] |= 1 << (x & 0x1f);
+		}
 	}
 
 	public void unset(int x, int y) {
 		int offset = y * rowSize + (x / 32);
-		bits[offset] &= ~(1 << (x & 0x1f));
+		if(bits != null) {
+			bits[offset] &= ~(1 << (x & 0x1f));
+		}
 	}
 
 	/**
@@ -166,11 +171,14 @@ public final class BitMatrix implements Cloneable {
 	 */
 	public void flip(int x, int y) {
 		int offset = y * rowSize + (x / 32);
-		bits[offset] ^= 1 << (x & 0x1f);
+		if(bits != null) {
+			bits[offset] ^= 1 << (x & 0x1f);
+		}
 	}
 
 	/** Clears all bits (sets to false). */
 	public void clear() {
+		if(bits == null) {return;}
 		int max = bits.length;
 		for (int i = 0; i < max; i++) {
 			bits[i] = 0;
@@ -234,7 +242,9 @@ public final class BitMatrix implements Cloneable {
 	 * @param row {@link BitArray} to copy from
 	 */
 	public void setRow(int y, BitArray row) {
-		System.arraycopy(row.getBitArray(), 0, bits, y * rowSize, rowSize);
+		if(row != null && bits != null) {
+			System.arraycopy(row.getBitArray(), 0, bits, y * rowSize, rowSize);
+		}
 	}
 
 	/**
@@ -316,6 +326,9 @@ public final class BitMatrix implements Cloneable {
 	 */
 	public int[] getTopLeftOnBit() {
 		int bitsOffset = 0;
+		if(bits == null) {
+			return null;
+		}
 		while (bitsOffset < bits.length && bits[bitsOffset] == 0) {
 			bitsOffset++;
 		}
@@ -335,6 +348,9 @@ public final class BitMatrix implements Cloneable {
 	}
 
 	public int[] getBottomRightOnBit() {
+		if(bits == null) {
+			return null;
+		}
 		int bitsOffset = bits.length - 1;
 		while (bitsOffset >= 0 && bits[bitsOffset] == 0) {
 			bitsOffset--;
@@ -420,6 +436,9 @@ public final class BitMatrix implements Cloneable {
 
 	@Override
 	public BitMatrix clone() {
+		if(bits == null) {
+			return null;
+		}
 		return new BitMatrix(width, height, rowSize, bits.clone());
 	}
 }

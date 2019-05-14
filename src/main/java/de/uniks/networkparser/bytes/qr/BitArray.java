@@ -105,7 +105,9 @@ final class BitArray implements Cloneable {
 	 *                next-least-significant to i+1, and so on.
 	 */
 	void setBulk(int i, int newBits) {
-		bits[i / 32] = newBits;
+		if(bits != null) {
+			bits[i / 32] = newBits;
+		}
 	}
 
 	/** Clears all bits (sets to false). */
@@ -120,7 +122,7 @@ final class BitArray implements Cloneable {
 
 	void appendBit(boolean bit) {
 		ensureCapacity(size + 1);
-		if (bit) {
+		if (bit && bits != null) {
 			bits[size / 32] |= 1 << (size & 0x1F);
 		}
 		size++;
@@ -133,26 +135,34 @@ final class BitArray implements Cloneable {
 	 *
 	 * @param value   {@code int} containing bits to append
 	 * @param numBits bits from value to append
+	 * @return 
 	 */
-	void appendBits(int value, int numBits) {
+	boolean appendBits(int value, int numBits) {
 		if (numBits < 0 || numBits > 32) {
-			throw new IllegalArgumentException("Num bits must be between 0 and 32");
+//			throw new IllegalArgumentException("Num bits must be between 0 and 32");
+			return false;
 		}
 		ensureCapacity(size + numBits);
 		for (int numBitsLeft = numBits; numBitsLeft > 0; numBitsLeft--) {
 			appendBit(((value >> (numBitsLeft - 1)) & 0x01) == 1);
 		}
+		return true;
 	}
 
 	void appendBitArray(BitArray other) {
-		int otherSize = other.size;
-		ensureCapacity(size + otherSize);
-		for (int i = 0; i < otherSize; i++) {
-			appendBit(other.get(i));
+		if(other != null) {
+			int otherSize = other.size;
+			ensureCapacity(size + otherSize);
+			for (int i = 0; i < otherSize; i++) {
+				appendBit(other.get(i));
+			}
 		}
 	}
 
 	void xor(BitArray other) {
+		if(bits == null || other == null) {
+			return;
+		}
 		if (bits.length != other.bits.length) {
 			throw new IllegalArgumentException("Sizes don't match");
 		}
@@ -173,15 +183,17 @@ final class BitArray implements Cloneable {
 	 * @param numBytes  how many bytes to write
 	 */
 	void toBytes(int bitOffset, byte[] array, int offset, int numBytes) {
-		for (int i = 0; i < numBytes; i++) {
-			int theByte = 0;
-			for (int j = 0; j < 8; j++) {
-				if (get(bitOffset)) {
-					theByte |= 1 << (7 - j);
+		if(array != null && array.length>=offset+numBytes) {
+			for (int i = 0; i < numBytes; i++) {
+				int theByte = 0;
+				for (int j = 0; j < 8; j++) {
+					if (get(bitOffset)) {
+						theByte |= 1 << (7 - j);
+					}
+					bitOffset++;
 				}
-				bitOffset++;
+				array[offset + i] = (byte) theByte;
 			}
-			array[offset + i] = (byte) theByte;
 		}
 	}
 
@@ -233,6 +245,7 @@ final class BitArray implements Cloneable {
 	}
 
 	private static int[] makeArray(int size) {
+		if(size<1) {return new int[0];}
 		return new int[(size + 31) / 32];
 	}
 
@@ -284,12 +297,10 @@ final class BitArray implements Cloneable {
 	 * @param numBits number of bits to read
 	 * @return int representing the bits read. The bits will appear as the
 	 *         least-significant bits of the int
-	 * @throws IllegalArgumentException if numBits is not in [1,32] or more than is
-	 *                                  available
 	 */
 	int readBits(int numBits) {
 		if (numBits < 1 || numBits > 32 || numBits > available()) {
-			throw new IllegalArgumentException(String.valueOf(numBits));
+			return Integer.MIN_VALUE;
 		}
 
 		int result = 0;

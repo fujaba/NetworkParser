@@ -47,7 +47,7 @@ public final class BitMatrixParser {
 	 * @return {@link FormatInformation} encapsulating the QR Code is format info
 	 */
 	FormatInformation readFormatInformation() {
-		if (parsedFormatInfo != null) {
+		if (parsedFormatInfo != null || bitMatrix== null) {
 			return parsedFormatInfo;
 		}
 
@@ -92,7 +92,7 @@ public final class BitMatrixParser {
 	 *         encoding of version information
 	 */
 	Version readVersion() {
-		if (parsedVersion != null) {
+		if (parsedVersion != null || bitMatrix == null) {
 			return parsedVersion;
 		}
 		int dimension = bitMatrix.getHeight();
@@ -133,6 +133,9 @@ public final class BitMatrixParser {
 	}
 
 	private int copyBit(int i, int j, int versionBits) {
+		if(bitMatrix == null) {
+			return 0;
+		}
 		boolean bit = mirror ? bitMatrix.get(j, i) : bitMatrix.get(i, j);
 		return bit ? (versionBits << 1) | 0x1 : versionBits << 1;
 	}
@@ -147,6 +150,9 @@ public final class BitMatrixParser {
 	 * @return bytes encoded within the QR Code
 	 */
 	byte[] readCodewords() {
+		if(bitMatrix == null) {
+			return null;
+		}
 		FormatInformation formatInfo = readFormatInformation();
 		Version version = readVersion();
 
@@ -306,11 +312,13 @@ public final class BitMatrixParser {
 
 	/** Mirror the bit matrix in order to attempt a second reading. */
 	void mirror() {
-		for (int x = 0; x < bitMatrix.getWidth(); x++) {
-			for (int y = x + 1; y < bitMatrix.getHeight(); y++) {
-				if (bitMatrix.get(x, y) != bitMatrix.get(y, x)) {
-					bitMatrix.flip(y, x);
-					bitMatrix.flip(x, y);
+		if(bitMatrix != null) {
+			for (int x = 0; x < bitMatrix.getWidth(); x++) {
+				for (int y = x + 1; y < bitMatrix.getHeight(); y++) {
+					if (bitMatrix.get(x, y) != bitMatrix.get(y, x)) {
+						bitMatrix.flip(y, x);
+						bitMatrix.flip(x, y);
+					}
 				}
 			}
 		}
