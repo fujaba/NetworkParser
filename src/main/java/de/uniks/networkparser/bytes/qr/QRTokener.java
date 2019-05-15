@@ -1205,14 +1205,12 @@ public class QRTokener {
 	// Make bit vector of version information. On success, store the result in
 	// "bits" and return true.
 	// See 8.10 of JISX0510:2004 (p.45) for details.
-	static void makeVersionInfoBits(Version version, BitArray bits) {
+	static boolean makeVersionInfoBits(Version version, BitArray bits) {
 		bits.appendBits(version.getVersionNumber(), 6);
 		int bchCode = calculateBCHCode(version.getVersionNumber(), VERSION_INFO_POLY);
 		bits.appendBits(bchCode, 12);
 
-		if (bits.getSize() != 18) { // Just in case.
-			throw new RuntimeException("should not happen but we got: " + bits.getSize());
-		}
+		return (bits.getSize() == 18); // Just in case.
 	}
 
 	// Embed "dataBits" using "getMaskPattern". On success, modify the matrix
@@ -1220,7 +1218,7 @@ public class QRTokener {
 	// For debugging purposes, it skips masking process if "getMaskPattern" is
 	// -1.
 	// See 8.7 of JISX0510:2004 (p.38) for how to embed data bits.
-	private static void embedDataBits(BitArray dataBits, int maskPattern, ByteMatrix matrix) throws RuntimeException {
+	private static boolean embedDataBits(BitArray dataBits, int maskPattern, ByteMatrix matrix) {
 		int bitIndex = 0;
 		int direction = -1;
 		// Start from the right bottom cell.
@@ -1262,9 +1260,8 @@ public class QRTokener {
 			x -= 2; // Move to the left.
 		}
 		// All bits should be consumed.
-		if (bitIndex != dataBits.getSize()) {
-			throw new RuntimeException("Not all bits consumed: " + bitIndex + '/' + dataBits.getSize());
-		}
+		return bitIndex == dataBits.getSize();
+//			throw new RuntimeException("Not all bits consumed: " + bitIndex + '/' + dataBits.getSize());
 	}
 
 	/**
@@ -1308,7 +1305,7 @@ public class QRTokener {
 			intermediate = ((temp % 3) + ((y + x) & 0x1)) & 0x1;
 			break;
 		default:
-			throw new IllegalArgumentException("Invalid mask pattern: " + maskPattern);
+			return false;
 		}
 		return intermediate == 0;
 	}
@@ -1321,19 +1318,20 @@ public class QRTokener {
 		}
 	}
 
-	private static void embedHorizontalSeparationPattern(int xStart, int yStart, ByteMatrix matrix) {
+	private static boolean embedHorizontalSeparationPattern(int xStart, int yStart, ByteMatrix matrix) {
 		for (int x = 0; x < 8; ++x) {
 			if (matrix.get(xStart + x, yStart) != -1) {
-				throw new RuntimeException();
+				return false;
 			}
 			matrix.set(xStart + x, yStart, 0);
 		}
+		return true;
 	}
 
 
 	// Embed position detection patterns and surrounding vertical/horizontal
 	// separators.
-	private static void embedPositionDetectionPatternsAndSeparators(ByteMatrix matrix) throws RuntimeException {
+	private static void embedPositionDetectionPatternsAndSeparators(ByteMatrix matrix) {
 		// Embed three big squares at corners.
 		int pdpWidth = POSITION_DETECTION_PATTERN[0].length;
 		// Left top corner.
@@ -1362,13 +1360,14 @@ public class QRTokener {
 		embedVerticalSeparationPattern(vspSize, matrix.getHeight() - vspSize, matrix);
 	}
 	
-	private static void embedVerticalSeparationPattern(int xStart, int yStart, ByteMatrix matrix) {
+	private static boolean embedVerticalSeparationPattern(int xStart, int yStart, ByteMatrix matrix) {
 		for (int y = 0; y < 7; ++y) {
 			if (matrix.get(xStart, yStart + y) != -1) {
-				throw new RuntimeException();
+				return false;
 			}
 			matrix.set(xStart, yStart + y, 0);
 		}
+		return true;
 	}
 
 }

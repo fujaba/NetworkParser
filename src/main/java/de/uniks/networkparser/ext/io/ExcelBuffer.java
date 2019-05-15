@@ -128,12 +128,16 @@ public class ExcelBuffer {
 		return result;
 	}
 
-	public void addToZipFile(String fileName, String content, ZipOutputStream zos)
-			throws FileNotFoundException, IOException {
+	public boolean addToZipFile(String fileName, String content, ZipOutputStream zos) {
 		ZipEntry zipEntry = new ZipEntry(fileName);
-		zos.putNextEntry(zipEntry);
-		byte[] bytes = content.getBytes(BaseItem.ENCODING);
-		zos.write(bytes, 0, bytes.length);
-		zos.closeEntry();
+		try {
+			zos.putNextEntry(zipEntry);
+			byte[] bytes = content.getBytes(BaseItem.ENCODING);
+			zos.write(bytes, 0, bytes.length);
+			zos.closeEntry();
+		}catch (Exception e) {
+			return false;
+		}
+		return true;
 	}
 }

@@ -51,13 +51,13 @@ public final class ReedSolomon {
 		return cachedGenerators.get(degree);
 	}
 
-	public void encode(int[] toEncode, int ecBytes) {
+	public boolean encode(int[] toEncode, int ecBytes) {
 		if (ecBytes == 0) {
-			throw new IllegalArgumentException("No error correction bytes");
+			return false;
 		}
 		int dataBytes = toEncode.length - ecBytes;
 		if (dataBytes <= 0) {
-			throw new IllegalArgumentException("No data bytes provided");
+			return false;
 		}
 		GenericGFPoly generator = buildGenerator(ecBytes);
 		int[] infoCoefficients = new int[dataBytes];
@@ -71,6 +71,7 @@ public final class ReedSolomon {
 			toEncode[dataBytes + i] = 0;
 		}
 		System.arraycopy(coefficients, 0, toEncode, dataBytes + numZeroCoefficients, coefficients.length);
+		return true;
 	}
 
 	/**
@@ -83,7 +84,7 @@ public final class ReedSolomon {
 	 * @param received data and error-correction codewords
 	 * @param twoS     number of error-correction codewords available
 	 */
-	public void decode(int[] received, int twoS) {
+	public boolean decode(int[] received, int twoS) {
 		GenericGFPoly poly = new GenericGFPoly(field, received);
 		int[] syndromeCoefficients = new int[twoS];
 		boolean noError = true;
@@ -95,7 +96,7 @@ public final class ReedSolomon {
 			}
 		}
 		if (noError) {
-			return;
+			return false;
 		}
 		GenericGFPoly syndrome = new GenericGFPoly(field, syndromeCoefficients);
 		GenericGFPoly[] sigmaOmega = runEuclideanAlgorithm(field.buildMonomial(twoS, 1), syndrome, twoS);
@@ -106,10 +107,11 @@ public final class ReedSolomon {
 		for (int i = 0; i < errorLocations.length; i++) {
 			int position = received.length - 1 - field.log(errorLocations[i]);
 			if (position < 0) {
-				throw new RuntimeException("ReedSolomonException: Bad error location");
+				return false;
 			}
 			received[position] = GenericGF.addOrSubtract(received[position], errorMagnitudes[i]);
 		}
+		return true;
 	}
 
 	private GenericGFPoly[] runEuclideanAlgorithm(GenericGFPoly a, GenericGFPoly b, int R) {
@@ -135,7 +137,7 @@ public final class ReedSolomon {
 			// Divide rLastLast by rLast, with quotient in q and remainder in r
 			if (rLast.isZero()) {
 				// Oops, Euclidean algorithm already terminated?
-				throw new RuntimeException("ReedSolomonException: r_{i-1} was zero");
+				return null;
 			}
 			r = rLastLast;
 			GenericGFPoly q = field.getZero();
@@ -151,13 +153,13 @@ public final class ReedSolomon {
 			t = q.multiply(tLast).addOrSubtract(tLastLast);
 
 			if (r.getDegree() >= rLast.getDegree()) {
-				throw new IllegalStateException("Division algorithm failed to reduce polynomial?");
+				return null;
 			}
 		}
 
 		int sigmaTildeAtZero = t.getCoefficient(0);
 		if (sigmaTildeAtZero == 0) {
-			throw new RuntimeException("ReedSolomonException: sigmaTilde(0) was zero");
+			return null;
 		}
 
 		int inverse = field.inverse(sigmaTildeAtZero);
@@ -181,7 +183,7 @@ public final class ReedSolomon {
 			}
 		}
 		if (e != numErrors) {
-			throw new RuntimeException("ReedSolomonException: Error locator degree does not match number of roots");
+			return null;
 		}
 		return result;
 	}

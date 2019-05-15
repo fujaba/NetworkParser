@@ -127,22 +127,17 @@ public final class Version {
 	 *
 	 * @param dimension dimension in modules
 	 * @return Version for a QR Code of that dimension
-	 * @throws RuntimeException if dimension is not 1 mod 4
 	 */
 	public static Version getProvisionalVersionForDimension(int dimension) {
 		if (dimension % 4 != 1) {
-			throw new RuntimeException("FormatException");
+			return null;
 		}
-		try {
-			return getVersionForNumber((dimension - 17) >> 2);
-		} catch (IllegalArgumentException iae) {
-			throw new RuntimeException("FormatException");
-		}
+		return getVersionForNumber((dimension - 17) >> 2);
 	}
 
 	public static Version getVersionForNumber(int versionNumber) {
 		if (versionNumber < 1 || versionNumber > 40) {
-			throw new IllegalArgumentException();
+			return null;
 		}
 		if (VERSIONS == null) {
 			/**

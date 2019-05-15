@@ -465,7 +465,7 @@ public class AES {
 	 * @param key The 128/192/256-bit AES key to use.
 	 * @return success
 	 */
-	public AES withKey(byte[] key) throws IllegalArgumentException {
+	public AES withKey(byte[] key) {
 		// assorted internal constants
 		if(key == null) {
 			return this;
