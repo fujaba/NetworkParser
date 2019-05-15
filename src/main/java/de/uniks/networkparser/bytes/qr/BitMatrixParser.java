@@ -33,10 +33,9 @@ public final class BitMatrixParser {
 	/** @param bitMatrix {@link BitMatrix} to parse */
 	BitMatrixParser(BitMatrix bitMatrix) {
 		int dimension = bitMatrix.getHeight();
-		if (dimension < 21 || (dimension & 0x03) != 1) {
-			throw new RuntimeException("FormatException");
+		if (dimension >= 21 && (dimension & 0x03) == 1) {
+			this.bitMatrix = bitMatrix;
 		}
-		this.bitMatrix = bitMatrix;
 	}
 
 	/**
@@ -77,10 +76,7 @@ public final class BitMatrixParser {
 		}
 
 		parsedFormatInfo = FormatInformation.decodeFormatInformation(formatInfoBits1, formatInfoBits2);
-		if (parsedFormatInfo != null) {
-			return parsedFormatInfo;
-		}
-		throw new RuntimeException("FormatException");
+		return parsedFormatInfo;
 	}
 
 	/**
@@ -129,7 +125,7 @@ public final class BitMatrixParser {
 			parsedVersion = theParsedVersion;
 			return theParsedVersion;
 		}
-		throw new RuntimeException("FormatException");
+		return null;
 	}
 
 	private int copyBit(int i, int j, int versionBits) {
@@ -199,7 +195,7 @@ public final class BitMatrixParser {
 			readingUp ^= true; // readingUp = !readingUp; // switch directions
 		}
 		if (resultOffset != version.getTotalCodewords()) {
-			throw new RuntimeException("FormatException");
+			return null;
 		}
 		return result;
 	}

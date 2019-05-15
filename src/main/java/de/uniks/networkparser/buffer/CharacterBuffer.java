@@ -96,11 +96,6 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
 	 * @param start the start index, inclusive.
 	 * @param end   the end index, exclusive.
 	 * @return the specified subsequence.
-	 *
-	 * @throws IndexOutOfBoundsException if {@code start} or {@code end} are
-	 *                                   negative, if {@code end} is greater than
-	 *                                   {@code length()}, or if {@code start} is
-	 *                                   greater than {@code end}
 	 */
 	@Override
 	public CharacterBuffer subSequence(int start, int end) {

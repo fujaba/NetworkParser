@@ -26,6 +26,8 @@ THE SOFTWARE.
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.graph.Association;
 import de.uniks.networkparser.graph.AssociationSet;
+import de.uniks.networkparser.graph.Attribute;
+import de.uniks.networkparser.graph.AttributeSet;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.Feature;
 import de.uniks.networkparser.graph.FeatureSet;
@@ -639,7 +641,16 @@ public class Template implements TemplateParser {
 	}
 	protected void executeChildren(Clazz clazz, LocalisationInterface parameters, SimpleList<Template> templates, String id2, TemplateResultFile templateResult) {
 		// FIRST ATTRIBUTE
-		 
+        AttributeSet attributes = clazz.getAttributes();
+        for (Template template : templates) {
+            if (template.getId(true).equals(id2 + ".attribute")) {
+                // FOUND IT
+                for (Attribute attribute : attributes) {
+                    template.executeTemplate(parameters, templateResult, attribute);
+                }
+                break;
+            }
+        }
 
 		// SECOND ASSOCITAION
 		AssociationSet associations = clazz.getAssociations();

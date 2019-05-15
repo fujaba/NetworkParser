@@ -51,9 +51,8 @@ public class QRTokener {
 	 *
 	 * @param image booleans representing white/black QR Code modules
 	 * @return text and bytes encoded within the QR Code
-	 * @throws Exception if something wrong
 	 */
-	public DecoderResult decode(boolean[][] image) throws Exception {
+	public DecoderResult decode(boolean[][] image) {
 		int dimension = image.length;
 		BitMatrix bits = new BitMatrix(dimension);
 		for (int i = 0; i < dimension; i++) {
@@ -74,9 +73,8 @@ public class QRTokener {
 	 *
 	 * @param bytes bytes representing white/black QR Code modules
 	 * @return text and bytes encoded within the QR Code
-	 * @throws Exception if something wrong
 	 */
-	public DecoderResult decode(byte[][] bytes) throws Exception {
+	public DecoderResult decode(byte[][] bytes) {
 		int dimension = bytes.length;
 		BitMatrix bits = new BitMatrix(dimension);
 		for (int i = 0; i < dimension; i++) {
@@ -97,18 +95,14 @@ public class QRTokener {
 	 *
 	 * @param bits booleans representing white/black QR Code modules
 	 * @return text and bytes encoded within the QR Code
-	 * @throws Exception if the QR Code cannot be decoded or if error correction
-	 *                   fails
 	 */
-	public DecoderResult decode(BitMatrix bits) throws Exception {
+	public DecoderResult decode(BitMatrix bits) {
 		// Construct a parser and read version, error-correction level
 		BitMatrixParser parser = new BitMatrixParser(bits);
-		Exception exception = null;
 		DecoderResult result = null;
 		try {
 			return decode(parser);
 		} catch (RuntimeException e) {
-			exception = e;
 		}
 
 		try {
@@ -125,7 +119,6 @@ public class QRTokener {
 
 			// Preemptively read the format information.
 			parser.readFormatInformation();
-
 			/*
 			 * Since we're here, this means we have successfully detected some kind of
 			 * version and format information when mirrored. This is a good sign, that the
@@ -139,15 +132,12 @@ public class QRTokener {
 			// result.setOther(new QRCodeDecoderMetaData(true));
 		} catch (Exception e) {
 			// Throw the exception from the original reading
-			if (exception != null) {
-				throw exception;
-			}
-			// throw e;
+			return null;
 		}
 		return result;
 	}
 
-	private DecoderResult decode(BitMatrixParser parser) throws Exception {
+	private DecoderResult decode(BitMatrixParser parser) {
 		Version version = parser.readVersion();
 		ErrorCorrectionLevel ecLevel = parser.readFormatInformation().getErrorCorrectionLevel();
 
@@ -190,9 +180,9 @@ public class QRTokener {
 	 *
 	 * @param codewordBytes    data and error correction codewords
 	 * @param numDataCodewords number of codewords that are data bytes
-	 * @throws ChecksumException if error correction fails
+	 * @return success
 	 */
-	private void correctErrors(byte[] codewordBytes, int numDataCodewords) {
+	private boolean correctErrors(byte[] codewordBytes, int numDataCodewords) {
 		int numCodewords = codewordBytes.length;
 		// First read into an array of ints
 		int[] codewordsInts = new int[numCodewords];
@@ -203,7 +193,7 @@ public class QRTokener {
 		try {
 			rsDecoder.decode(codewordsInts, numECCodewords);
 		} catch (Exception ignored) {
-			throw new RuntimeException("ChecksumInstance");
+			return false; //"ChecksumInstance"
 		}
 		// Copy back into array of bytes -- only need to worry about the bytes
 		// that were data
@@ -211,7 +201,9 @@ public class QRTokener {
 		for (int i = 0; i < numDataCodewords; i++) {
 			codewordBytes[i] = (byte) codewordsInts[i];
 		}
+		return true;
 	}
+
 	// ENCODER
 
 	// The mask penalty calculation is complicated. See Table 21 of
@@ -382,7 +374,7 @@ public class QRTokener {
 	}
 
 	private static int chooseMaskPattern(BitArray bits, ErrorCorrectionLevel ecLevel, Version version,
-			ByteMatrix matrix) throws RuntimeException {
+			ByteMatrix matrix) {
 
 		int minPenalty = Integer.MAX_VALUE; // Lower penalty is better.
 		int bestMaskPattern = -1;
@@ -416,7 +408,7 @@ public class QRTokener {
 				}
 			}
 		}
-		throw new RuntimeException("Data too big");
+		return null;
 	}
 
 	/**
@@ -424,11 +416,12 @@ public class QRTokener {
 	 * 
 	 * @param numDataBytes count of Data Bytes
 	 * @param bits         result Bits
+	 * @return success
 	 */
-	static void terminateBits(int numDataBytes, BitArray bits) {
+	static boolean terminateBits(int numDataBytes, BitArray bits) {
 		int capacity = numDataBytes * 8;
 		if (bits.getSize() > capacity) {
-			throw new RuntimeException("data bits cannot fit in the QR Code" + bits.getSize() + " > " + capacity);
+			return false; // "data bits cannot fit in the QR Code" + bits.getSize() + " > " + capacity
 		}
 		for (int i = 0; i < 4 && bits.getSize() < capacity; ++i) {
 			bits.appendBit(false);
@@ -448,9 +441,7 @@ public class QRTokener {
 		for (int i = 0; i < numPaddingBytes; ++i) {
 			bits.appendBits((i & 0x01) == 0 ? 0xEC : 0x11, 8);
 		}
-		if (bits.getSize() != capacity) {
-			throw new RuntimeException("Bits size does not equal capacity");
-		}
+		return (bits.getSize() == capacity);
 	}
 
 	/**
@@ -464,11 +455,12 @@ public class QRTokener {
 	 * @param blockID             position of Block
 	 * @param numDataBytesInBlock List of Data in Block
 	 * @param numECBytesInBlock   Error position in Block
+	 * @return 
 	 */
-	static void getNumDataBytesAndNumECBytesForBlockID(int numTotalBytes, int numDataBytes, int numRSBlocks,
-			int blockID, int[] numDataBytesInBlock, int[] numECBytesInBlock) throws RuntimeException {
+	static boolean getNumDataBytesAndNumECBytesForBlockID(int numTotalBytes, int numDataBytes, int numRSBlocks,
+			int blockID, int[] numDataBytesInBlock, int[] numECBytesInBlock) {
 		if (blockID >= numRSBlocks) {
-			throw new RuntimeException("Block ID too large");
+			return false;  // "Block ID too large";
 		}
 		// numRsBlocksInGroup2 = 196 % 5 = 1
 		int numRsBlocksInGroup2 = numTotalBytes % numRSBlocks;
@@ -489,16 +481,16 @@ public class QRTokener {
 		// Sanity checks.
 		// 26 = 26
 		if (numEcBytesInGroup1 != numEcBytesInGroup2) {
-			throw new RuntimeException("EC bytes mismatch");
+			return false; 	//  "EC bytes mismatch"
 		}
 		// 5 = 4 + 1.
 		if (numRSBlocks != numRsBlocksInGroup1 + numRsBlocksInGroup2) {
-			throw new RuntimeException("RS blocks mismatch");
+			return false; // "RS blocks mismatch";
 		}
 		// 196 = (13 + 26) * 4 + (14 + 26) * 1
 		if (numTotalBytes != ((numDataBytesInGroup1 + numEcBytesInGroup1) * numRsBlocksInGroup1)
 				+ ((numDataBytesInGroup2 + numEcBytesInGroup2) * numRsBlocksInGroup2)) {
-			throw new RuntimeException("Total bytes mismatch");
+			return false; // "Total bytes mismatch";
 		}
 
 		if (blockID < numRsBlocksInGroup1) {
@@ -508,6 +500,7 @@ public class QRTokener {
 			numDataBytesInBlock[0] = numDataBytesInGroup2;
 			numECBytesInBlock[0] = numEcBytesInGroup2;
 		}
+		return true;
 	}
 
 	/**
@@ -521,12 +514,11 @@ public class QRTokener {
 	 * @param numRSBlocks   count of Block
 	 * @return result BitArray
 	 */
-	static BitArray interleaveWithECBytes(BitArray bits, int numTotalBytes, int numDataBytes, int numRSBlocks)
-			throws RuntimeException {
+	static BitArray interleaveWithECBytes(BitArray bits, int numTotalBytes, int numDataBytes, int numRSBlocks) {
 
 		// "bits" must have "getNumDataBytes" bytes of data.
 		if (bits.getSizeInBytes() != numDataBytes) {
-			throw new RuntimeException("Number of bits and data bytes does not match");
+			return null;
 		}
 
 		// Step 1. Divide data bytes into blocks and generate error correction
@@ -561,7 +553,7 @@ public class QRTokener {
 			dataBytesOffset += numDataBytesInBlock[0];
 		}
 		if (numDataBytes != dataBytesOffset) {
-			throw new RuntimeException("Data bytes does not match offset");
+			return null;
 		}
 
 		BitArray result = new BitArray();
@@ -585,8 +577,7 @@ public class QRTokener {
 			}
 		}
 		if (numTotalBytes != result.getSizeInBytes()) { // Should be same.
-			throw new RuntimeException(
-					"Interleaving error: " + numTotalBytes + " and " + result.getSizeInBytes() + " differ.");
+			return null;
 		}
 
 		return result;
@@ -625,14 +616,15 @@ public class QRTokener {
 	 * @param mode       Mode of encoding
 	 * @param bits       target Bits
 	 *
-	 *                   throws RuntimeException {
+	 * @return success
 	 */
-	static void appendLengthInfo(int numLetters, Version version, Mode mode, BitArray bits) throws RuntimeException {
+	static boolean appendLengthInfo(int numLetters, Version version, Mode mode, BitArray bits) {
 		int numBits = mode.getCharacterCountBits(version);
 		if (numLetters >= (1 << numBits)) {
-			throw new RuntimeException(numLetters + " is bigger than " + ((1 << numBits) - 1));
+			return false;
 		}
 		bits.appendBits(numLetters, numBits);
+		return true;
 	}
 
 	/**
@@ -643,23 +635,25 @@ public class QRTokener {
 	 * @param mode     Mode of Content example: Text or Binary
 	 * @param bits     Result Bits
 	 * @param encoding Encoding String
-	 * @throws RuntimeException if wrong Mode
+	 * @return success
 	 */
-	static void appendBytes(String content, Mode mode, BitArray bits, String encoding) throws RuntimeException {
+	static boolean appendBytes(String content, Mode mode, BitArray bits, String encoding) {
 		if (mode == Mode.NUMERIC) {
-			appendNumericBytes(content, bits);
-		} else if (mode == Mode.ALPHANUMERIC) {
-			appendAlphanumericBytes(content, bits);
-		} else if (mode == Mode.BYTE) {
-			append8BitBytes(content, bits, encoding);
-		} else if (mode == Mode.KANJI) {
-			appendKanjiBytes(content, bits);
-		} else {
-			throw new RuntimeException("Invalid mode: " + mode);
+			return appendNumericBytes(content, bits);
 		}
+		if (mode == Mode.ALPHANUMERIC) {
+			return appendAlphanumericBytes(content, bits);
+		}
+		if (mode == Mode.BYTE) {
+			return append8BitBytes(content, bits, encoding);
+		}
+		if (mode == Mode.KANJI) {
+			return appendKanjiBytes(content, bits);
+		}
+		return false;
 	}
 
-	static void appendNumericBytes(CharSequence content, BitArray bits) {
+	static boolean appendNumericBytes(CharSequence content, BitArray bits) {
 		int length = content.length();
 		int i = 0;
 		while (i < length) {
@@ -681,20 +675,21 @@ public class QRTokener {
 				i++;
 			}
 		}
+		return true;
 	}
 
-	static void appendAlphanumericBytes(CharSequence content, BitArray bits) throws RuntimeException {
+	static boolean appendAlphanumericBytes(CharSequence content, BitArray bits) {
 		int length = content.length();
 		int i = 0;
 		while (i < length) {
 			int code1 = getAlphanumericCode(content.charAt(i));
 			if (code1 == -1) {
-				throw new RuntimeException();
+				return false;
 			}
 			if (i + 1 < length) {
 				int code2 = getAlphanumericCode(content.charAt(i + 1));
 				if (code2 == -1) {
-					throw new RuntimeException();
+					return false;
 				}
 				// Encode two alphanumeric letters in 11 bits.
 				bits.appendBits(code1 * 45 + code2, 11);
@@ -705,30 +700,32 @@ public class QRTokener {
 				i++;
 			}
 		}
+		return true;
 	}
 
-	static void append8BitBytes(String content, BitArray bits, String encoding) throws RuntimeException {
+	static boolean append8BitBytes(String content, BitArray bits, String encoding) {
 		byte[] bytes = null;
 		try {
 			if (encoding != null && encoding.length() > 0) {
 				bytes = content.getBytes(encoding);
 			}
 		} catch (UnsupportedEncodingException uee) {
-			throw new RuntimeException(uee);
+			return false;
 		}
 		if (bytes != null) {
 			for (byte b : bytes) {
 				bits.appendBits(b, 8);
 			}
 		}
+		return true;
 	}
 
-	static void appendKanjiBytes(String content, BitArray bits) throws RuntimeException {
+	static boolean appendKanjiBytes(String content, BitArray bits) {
 		byte[] bytes;
 		try {
 			bytes = content.getBytes("Shift_JIS");
 		} catch (UnsupportedEncodingException uee) {
-			throw new RuntimeException(uee);
+			return false;
 		}
 		int length = bytes.length;
 		for (int i = 0; i < length; i += 2) {
@@ -742,11 +739,12 @@ public class QRTokener {
 				subtracted = code - 0xc140;
 			}
 			if (subtracted == -1) {
-				throw new RuntimeException("Invalid byte sequence");
+				return false;
 			}
 			int encoded = ((subtracted >> 8) * 0xc0) + (subtracted & 0xff);
 			bits.appendBits(encoded, 13);
 		}
+		return true;
 	}
 
 	//MaskUtil
@@ -983,7 +981,7 @@ public class QRTokener {
 	// - Timing patterns
 	// - Dark dot at the left bottom corner
 	// - Position adjustment patterns, if need be
-	private static void embedBasicPatterns(Version version, ByteMatrix matrix) throws RuntimeException {
+	private static void embedBasicPatterns(Version version, ByteMatrix matrix) {
 		// Let's get started with embedding big squares at corners.
 		embedPositionDetectionPatternsAndSeparators(matrix);
 		// Then, embed the dark dot at the left bottom corner.
@@ -1013,11 +1011,12 @@ public class QRTokener {
 	}
 
 	// Embed the lonely dark dot at left bottom corner. JISX0510:2004 (p.46)
-	private static void embedDarkDotAtLeftBottomCorner(ByteMatrix matrix) {
+	private static boolean embedDarkDotAtLeftBottomCorner(ByteMatrix matrix) {
 		if (matrix.get(8, matrix.getHeight() - 8) == 0) {
-			throw new RuntimeException();
+			return false;
 		}
 		matrix.set(8, matrix.getHeight() - 8, 1);
+		return true;
 	}
 
 	// Embed position adjustment patterns if need be.
@@ -1063,8 +1062,7 @@ public class QRTokener {
 
 
 	// Embed type information. On success, modify the matrix.
-	private static void embedTypeInfo(ErrorCorrectionLevel ecLevel, int maskPattern, ByteMatrix matrix)
-			throws RuntimeException {
+	private static void embedTypeInfo(ErrorCorrectionLevel ecLevel, int maskPattern, ByteMatrix matrix) {
 		BitArray typeInfoBits = new BitArray();
 		makeTypeInfoBits(ecLevel, maskPattern, typeInfoBits);
 
@@ -1098,9 +1096,9 @@ public class QRTokener {
 	// "bits" and return true.
 	// Encode error correction level and mask pattern. See 8.9 of
 	// JISX0510:2004 (p.45) for details.
-	static void makeTypeInfoBits(ErrorCorrectionLevel ecLevel, int maskPattern, BitArray bits) {
+	static boolean makeTypeInfoBits(ErrorCorrectionLevel ecLevel, int maskPattern, BitArray bits) {
 		if (!QRCode.isValidMaskPattern(maskPattern)) {
-			throw new RuntimeException("Invalid mask pattern");
+			return false;
 		}
 		int typeInfo = (ecLevel.getBits() << 3) | maskPattern;
 		bits.appendBits(typeInfo, 5);
@@ -1112,9 +1110,7 @@ public class QRTokener {
 		maskBits.appendBits(TYPE_INFO_MASK_PATTERN, 15);
 		bits.xor(maskBits);
 
-		if (bits.getSize() != 15) { // Just in case.
-			throw new RuntimeException("should not happen but we got: " + bits.getSize());
-		}
+		return (bits.getSize() == 15); // Just in case.
 	}
 
 	// Calculate BCH (Bose-Chaudhuri-Hocquenghem) code for "value" using
@@ -1146,7 +1142,7 @@ public class QRTokener {
 	// operations. We don't care if cofficients are positive or negative.
 	static int calculateBCHCode(int value, int poly) {
 		if (poly == 0) {
-			throw new IllegalArgumentException("0 polynomial");
+			return -1;
 		}
 		// If poly is "1 1111 0010 0101" (version info poly), msbSetInPoly is
 		// 13. We'll subtract 1
@@ -1180,7 +1176,7 @@ public class QRTokener {
 	// Embed version information if need be. On success, modify the matrix and
 	// return true.
 	// See 8.10 of JISX0510:2004 (p.47) for how to embed version information.
-	private static void maybeEmbedVersionInfo(Version version, ByteMatrix matrix) throws RuntimeException {
+	private static void maybeEmbedVersionInfo(Version version, ByteMatrix matrix) {
 		if (version.getVersionNumber() < 7) { // Version info is necessary if
 												// version >= 7.
 			return; // Don't need version info.
@@ -1261,7 +1257,6 @@ public class QRTokener {
 		}
 		// All bits should be consumed.
 		return bitIndex == dataBits.getSize();
-//			throw new RuntimeException("Not all bits consumed: " + bitIndex + '/' + dataBits.getSize());
 	}
 
 	/**

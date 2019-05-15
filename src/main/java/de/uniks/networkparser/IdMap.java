@@ -1774,7 +1774,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator>, Sendabl
 	}
 
 	public boolean addI18N(Object root, TextItems i18n, boolean autoCreate) {
-		return addI18N(root, i18n, new SimpleSet<Object>(), autoCreate, null, null);
+		return addI18N(root, i18n, new SimpleSet<Object>(), autoCreate, true, null, null);
 	}
 	
 	/**
@@ -1804,7 +1804,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator>, Sendabl
 		return false;
 	}
 	
-	private boolean addI18N(Object root, TextItems i18n, SimpleSet<Object> items, boolean autoCreate, String key, List<?> subElements) {
+	private boolean addI18N(Object root, TextItems i18n, SimpleSet<Object> items, boolean autoCreate, boolean replaceEmptyString, String key, List<?> subElements) {
 		if(items == null || items.add(root) == false) {
 			return false;
 		}
@@ -1822,9 +1822,6 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator>, Sendabl
 				fullKey =key+":"+property.toLowerCase();
 			}
 			Object value = creator.getValue(root, property);
-			if("doktyp:eo_ea_hinweis:eo_ea_hinweise".equals(fullKey)) {
-				System.out.println(fullKey);
-			}
 			Object element;
 			if(autoCreate && ( value == null || (value instanceof Collection<?> && ((Collection<?>)value).size()<1) ) ){
 				// Check for Creating
@@ -1849,7 +1846,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator>, Sendabl
 				}
 			}
 			
-			if(value == null) {
+			if(value == null || (replaceEmptyString && (""+value).equals(""))) {
 				// Check if Is Text
 				Object text = i18n.getLabelValue(fullKey);
 				if(text != null) {
@@ -1878,10 +1875,10 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator>, Sendabl
 			if (value instanceof Collection<?>) {
 				Collection<?> collection = (Collection<?>) value;
 				for(Object item : collection) {
-					addI18N(item, i18n, items, autoCreate, fullKey, subElements);
+					addI18N(item, i18n, items, autoCreate, replaceEmptyString, fullKey, subElements);
 				}
 			} else {
-				addI18N(value, i18n, items, autoCreate, fullKey, subElements);
+				addI18N(value, i18n, items, autoCreate, replaceEmptyString, fullKey, subElements);
 			}
 		}
 		return true;

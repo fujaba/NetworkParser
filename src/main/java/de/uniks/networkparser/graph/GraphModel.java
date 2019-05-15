@@ -221,6 +221,10 @@ public abstract class GraphModel extends GraphEntity implements BaseItem {
 					AttributeSet attributes = item.getAttributes();
 					for(Attribute attribute : attributes) {
 						String name = attribute.getName();
+						if(name == null || name.length()<1) {
+							item.remove(attribute);
+							continue;
+						}
 						no = name.charAt(0);
 						if(no<'a'|| no>'z') {
 							if(name.equals(name.toUpperCase())) {

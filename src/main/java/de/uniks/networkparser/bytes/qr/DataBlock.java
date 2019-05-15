@@ -53,7 +53,7 @@ final class DataBlock {
 			return null;
 		}
 		if (rawCodewords.length != version.getTotalCodewords()) {
-			throw new IllegalArgumentException();
+			return null;
 		}
 
 		// Figure out the number and size of data blocks used by this version

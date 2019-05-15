@@ -32,6 +32,7 @@ public abstract class Value extends GraphMember {
 	public static final String PROPERTY_TYPECAT= "typecat";
 	public static final String PROPERTY_TYPECLAZZ = "typeClazz";
 	public static final String PROPERTY_NAMEGETTER = "namegetter";
+	public static final String PROPERTY_VALUE = "value";
 
 	protected DataType type = null;
 	protected String value = null;
@@ -83,6 +84,10 @@ public abstract class Value extends GraphMember {
 				return "is" + EntityUtil.upFirstChar(this.name);
 			}
 			return "get" + EntityUtil.upFirstChar(this.name);
+		}
+		if (PROPERTY_VALUE.equalsIgnoreCase(attribute)) {
+			return this.value;
+			
 		}
 		return super.getValue(attribute);
 	}

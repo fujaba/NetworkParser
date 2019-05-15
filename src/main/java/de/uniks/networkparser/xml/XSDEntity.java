@@ -340,19 +340,24 @@ public class XSDEntity extends XMLEntity implements SendableEntityCreator {
 					} else if(stringType.equalsIgnoreCase(containerType)  ) {
 							String containerName = first.getString("name");
 							Attribute containerAttribtute = parent.createAttribute(containerName, DataTypeSet.create(DataType.STRING));
+							
 							this.callBack(containerAttribtute, true, clazz.getName(), containerName);
 							return containerName;
 					}
 				}
 				SimpleList<String> orderKey=new SimpleList<String>();
 				for(int s=0;s<child.sizeChildren();s++) {
-					XMLEntity element = (XMLEntity) child.getChild(s);
+					XSDEntity element = (XSDEntity) child.getChild(s);
 					String name = element.getString("name");
 					String type = element.getString("type");
 					if(stringType.equalsIgnoreCase(type)) {
 						orderKey.add(changeName(name));
-//						orderKey.add(name);
 						Attribute attr = clazz.createAttribute(name, DataType.STRING);
+						if("0".equals(element.getMinOccurs()) == false) {
+							// ITS NESSESSARY
+							attr.withValue("\"\"");
+							System.out.println("MUST BE INIT: "+clazz.getName()+":"+name);
+						}
 						callBack(attr, true);
 					} else {
 						// New Class Found
@@ -363,10 +368,8 @@ public class XSDEntity extends XMLEntity implements SendableEntityCreator {
 							if(result != null) {
 								if(result.length()>0) {
 									orderKey.add(result);
-//									orderKey.add(result);
 								}else {
 									orderKey.add(changeName(name));
-//									orderKey.add(name);
 									model.add(subClazz);
 									this.callBack(subClazz, false, name);
 									Association assoc = clazz.createBidirectional(subClazz, name, Association.MANY, name+"Parent", Association.ONE);
@@ -390,96 +393,7 @@ public class XSDEntity extends XMLEntity implements SendableEntityCreator {
 		}
 		return "";
 	}
-//	protected ClassModel parsingFullStructure(String prefix, ClassModel model, SimpleKeyValueList<Clazz, String> classTypes, SimpleKeyValueList<String, XMLEntity> typesValues ) {
-//		String sequenzType = prefix+XSD_SEQUENCE_TYPE;
-//		String stringType = prefix+XSD_STRING_TYPE;
-//		for(int i=0;i<classTypes.size();i++) {
-//			Clazz clazz = classTypes.get(i);
-//			String type = classTypes.getValueByIndex(i);
-//			XMLEntity typeClassEntity = typesValues.get(type);
-//			if(typeClassEntity == null) {
-//				continue;
-//			}
-//			for(int c=0;c<typeClassEntity.sizeChildren();c++) {
-//				XMLEntity child = (XMLEntity) typeClassEntity.getChild(c);
-//				if(sequenzType.equalsIgnoreCase(child.getTag())) {
-//					SimpleList<String> orderKey=new SimpleList<String>();
-//					for(int s=0;s<child.sizeChildren();s++) {
-//						XMLEntity element = (XMLEntity) child.getChild(s);
-//						orderKey.add(element.getString("name"));
-//						if(stringType.equalsIgnoreCase(element.getString("type"))) {
-//							Attribute attr = clazz.createAttribute(element.getString("name"), DataType.STRING);
-//							callBack(attr, true);
-//						} else {
-//							// New Class Found
-//							Clazz key = classTypes.getKey(element.getString("type"));
-//							if(key != null) {
-//								String name = element.getString("name");
-//								model.add(key);
-//								this.callBack(key, false);
-//								Association assoc = clazz.createBidirectional(key, name, Association.MANY, name+"Parent", Association.ONE);
-//								this.callBack(assoc, false);
-//							}else {
-//								System.err.println(child.getString("type")+" not parsing");
-//							}
-//							
-//						}
-//					}
-////					this.createClazzOrder(clazz, orderKey);
-//				}else if((prefix+":attribute").equalsIgnoreCase(child.getTag())) {
-//					if(stringType.equalsIgnoreCase(child.getString("type"))) {
-//						Attribute attr = clazz.createAttribute(child.getString("name"), DataType.STRING);
-//						this.callBack(attr, false);
-//					}else {
-//						System.err.println(child.getString("name")+" not parsing");
-//					}
-//				}
-//			}
-//		}
-//		// Combinate Classes
-//		if(classTypes.size()>0) {
-//			Clazz clazz = classTypes.get(0);
-//			this.mergeContainer(model, clazz, new SimpleList<Clazz>());
-//		}
-//		return model;
-//	}
-//
-//	private boolean mergeContainer(ClassModel model, Clazz clazz, SimpleList<Clazz> mergingClazzes) {
-//		if(clazz == null || mergingClazzes == null) {
-//			return false;
-//		}
-//		mergingClazzes.add(clazz);
-//		AssociationSet associations = clazz.getAssociations();
-//		for(Association assoc : associations) {
-//			Clazz childClass = assoc.getOtherClazz();
-//			if(mergingClazzes.contains(childClass) == false) {
-//				mergeContainer(model, childClass, mergingClazzes);
-//			}
-//			
-//			Clazz childchildClass = null; 
-//			AssociationSet childAssocs = childClass.getAssociations();
-//			String delayname="";
-//			if(childClass.getAttributes().size() == 0 && childAssocs.size() == 2) {
-//				if(childAssocs.size() == 1) {
-//					System.err.println("ERROR: "+childClass.getName()+"->"+clazz.getName());
-//				}
-//				delayname = "."+childClass.getName();
-//				if( childAssocs.get(0).getOtherClazz() == clazz) {
-//					childchildClass = childAssocs.get(1).getOtherClazz();
-//				}else if(childAssocs.get(1).getOtherClazz() == clazz){
-//					childchildClass = childAssocs.get(0).getOtherClazz();
-//				}
-//			}
-//			if(childchildClass != null) {
-//				assoc.with(childchildClass);
-//				model.remove(childClass);
-//				createContainerAssoc(delayname, assoc, childchildClass);
-////				GraphUtil.withChildren(assoc, new ConstName().with(delayname+childchildClass.getName()));
-//			}
-//		}
-//		return true;
-//	}
-//	
+
 	public boolean cleanUp(String prefix) {
 		if (prefix == null) {
 			return false;
