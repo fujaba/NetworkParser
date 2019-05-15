@@ -49,7 +49,7 @@ public abstract class ReceivingTimerTask extends Message implements Runnable {
 		return space;
 	}
 
-	public boolean runTask() throws Exception {
+	public boolean runTask() {
 		if (this.task != null) {
 			task.run();
 			return true;

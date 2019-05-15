@@ -479,14 +479,18 @@ public class FileBuffer extends Buffer {
 		return this.write(APPEND, BaseItem.CRLF) > 0;
 	}
 
-	public static long skip(InputStream input, long numToSkip) throws IOException {
+	public static long skip(InputStream input, long numToSkip)  {
 		long available = numToSkip;
-		while (numToSkip > 0) {
-			final long skipped = input.skip(numToSkip);
-			if (skipped == 0) {
-				break;
+		try {
+			while (numToSkip > 0) {
+				long skipped = input.skip(numToSkip);
+				if (skipped == 0) {
+					break;
+				}
+				numToSkip -= skipped;
 			}
-			numToSkip -= skipped;
+		} catch (IOException e) {
+			return -1;
 		}
 		byte[] byteSkip = new byte[BUFFER];
 		while (numToSkip > 0) {

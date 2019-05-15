@@ -92,7 +92,7 @@ public class ChangeMessage extends ReceivingTimerTask {
 	}
 
 	@Override
-	public boolean runTask() throws Exception {
+	public boolean runTask() {
 		if (this.id == null || this.space == null) {
 			return false;
 		}

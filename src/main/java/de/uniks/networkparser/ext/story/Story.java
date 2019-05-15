@@ -29,6 +29,7 @@ import java.lang.reflect.Method;
 
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.SimpleEvent;
+import de.uniks.networkparser.SimpleException;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.converter.EntityStringConverter;
 import de.uniks.networkparser.ext.io.FileBuffer;
@@ -358,7 +359,7 @@ public class Story extends StoryElement implements Comparable<Story> {
 					StoryUtil.throwException(targetException);
 				}
 			}
-			throw new RuntimeException(step.getMessage());
+			throw new SimpleException(step.getMessage(), this);
 		}
 		return true;
 	}

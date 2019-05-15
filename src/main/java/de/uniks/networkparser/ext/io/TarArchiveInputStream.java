@@ -30,6 +30,7 @@ import java.util.Map;
 import java.util.zip.GZIPInputStream;
 
 import de.uniks.networkparser.NetworkParserLog;
+import de.uniks.networkparser.SimpleException;
 
 public class TarArchiveInputStream extends InputStream {
 	private final byte[] single = new byte[1];
@@ -538,10 +539,9 @@ public class TarArchiveInputStream extends InputStream {
 	 * @param offset    The offset at which to place bytes read.
 	 * @param numToRead The number of bytes to read.
 	 * @return The number of bytes read, or -1 at EOF.
-	 * @throws IOException on error
 	 */
 	@Override
-	public int read(byte[] buf, final int offset, int numToRead) throws IOException {
+	public int read(byte[] buf, final int offset, int numToRead) {
 		int totalRead = 0;
 
 		if (isAtEOF() || isDirectory() || entryOffset >= entrySize) {
@@ -549,23 +549,26 @@ public class TarArchiveInputStream extends InputStream {
 		}
 
 		if (currEntry == null) {
-			throw new IllegalStateException("No current tar entry");
+			return -1;
+//			throw new SimpleException("No current tar entry");
 		}
 
-		numToRead = Math.min(numToRead, available());
-
-		totalRead = is.read(buf, offset, numToRead);
+		try {
+			numToRead = Math.min(numToRead, available());
+			totalRead = is.read(buf, offset, numToRead);
+		} catch (IOException e) {
+			return -1;
+		}
 
 		if (totalRead == -1) {
 			if (numToRead > 0) {
-				throw new IOException("Truncated TAR archive");
+				return -1;
 			}
 			setAtEOF(true);
 		} else {
 			count(totalRead);
 			entryOffset += totalRead;
 		}
-
 		return totalRead;
 	}
 
@@ -609,7 +612,7 @@ public class TarArchiveInputStream extends InputStream {
 	 * consume the remaining bytes under the assumption that the tool creating this
 	 * archive has padded the last block.
 	 */
-	private void consumeRemainderOfLastBlock() throws IOException {
+	private void consumeRemainderOfLastBlock() {
 		final long bytesReadOfLastBlock = getBytesRead() % blockSize;
 		if (bytesReadOfLastBlock > 0) {
 			final long skipped = FileBuffer.skip(is, blockSize - bytesReadOfLastBlock);
@@ -699,10 +702,9 @@ public class TarArchiveInputStream extends InputStream {
 	 * overridden; may be overridden otherwise.
 	 *
 	 * @return the byte read, or -1 if end of input is reached
-	 * @throws IOException if an I/O error has occurred
 	 */
 	@Override
-	public int read() throws IOException {
+	public int read() {
 		final int num = read(single, 0, 1);
 		return num == -1 ? -1 : single[0] & BYTE_MASK;
 	}

@@ -34,6 +34,7 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 import de.uniks.networkparser.DateTimeEntity;
 import de.uniks.networkparser.SimpleEvent;
+import de.uniks.networkparser.SimpleException;
 import de.uniks.networkparser.ext.generic.ReflectionLoader;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.list.SimpleList;
@@ -370,9 +371,7 @@ public class ErrorHandler implements Thread.UncaughtExceptionHandler {
 		}
 		if (Os.isEclipse()) {
 			e.printStackTrace();
-//			if(throwException) {
-			throw new RuntimeException(e);
-//			}
+			throw new SimpleException(e);
 		}
 		return success;
 	}

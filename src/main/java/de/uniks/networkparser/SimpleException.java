@@ -13,6 +13,10 @@ public class SimpleException extends RuntimeException{
 		this.source = source;
 	}
 	
+	public SimpleException(Throwable e) {
+		super(e);
+	}
+
 	public Object getSource() {
 		return source;
 	}

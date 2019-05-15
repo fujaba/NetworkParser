@@ -127,7 +127,7 @@ public class AcceptMessage extends ReceivingTimerTask {
 	}
 
 	@Override
-	public boolean runTask() throws Exception {
+	public boolean runTask() {
 		if (super.runTask()) {
 			return true;
 		}

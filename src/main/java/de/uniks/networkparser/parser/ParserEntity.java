@@ -28,6 +28,7 @@ import java.util.Set;
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.NetworkParserLog;
 import de.uniks.networkparser.SimpleEvent;
+import de.uniks.networkparser.SimpleException;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.graph.Annotation;
 import de.uniks.networkparser.graph.Association;
@@ -300,7 +301,7 @@ public class ParserEntity {
 		if(logger != null) {
 			logger.error(this, "parse error", buffer.toString());
 		}
-		throw new SimpleException("parse error");
+		throw new SimpleException("parse error", this);
 	}
 
 	public void nextRealToken() {
