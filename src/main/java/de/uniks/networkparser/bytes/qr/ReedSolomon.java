@@ -83,6 +83,7 @@ public final class ReedSolomon {
 	 *
 	 * @param received data and error-correction codewords
 	 * @param twoS     number of error-correction codewords available
+	 * @return success of decoding
 	 */
 	public boolean decode(int[] received, int twoS) {
 		GenericGFPoly poly = new GenericGFPoly(field, received);
