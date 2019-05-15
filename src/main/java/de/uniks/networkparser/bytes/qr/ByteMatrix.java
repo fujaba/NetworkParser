@@ -42,7 +42,10 @@ public final class ByteMatrix {
 	}
 
 	public byte get(int x, int y) {
-		return bytes[y][x];
+		if(y>=0 && x>=0 && bytes.length>y && bytes[y].length>x) {
+			return bytes[y][x];
+		}
+		return 0;
 	}
 
 	/**
@@ -53,16 +56,28 @@ public final class ByteMatrix {
 		return bytes;
 	}
 
-	public void set(int x, int y, byte value) {
-		bytes[y][x] = value;
+	public boolean set(int x, int y, byte value) {
+		if(y>=0 && x>=0 && bytes.length>y && bytes[y].length>x) {
+			bytes[y][x] = value;
+			return true;
+		}
+		return false;
 	}
 
-	public void set(int x, int y, int value) {
-		bytes[y][x] = (byte) value;
+	public boolean set(int x, int y, int value) {
+		if(y>=0 && x>=0 && bytes.length>y && bytes[y].length>x) {
+			bytes[y][x] = (byte)value;
+			return true;
+		}
+		return false;
 	}
 
-	public void set(int x, int y, boolean value) {
-		bytes[y][x] = (byte) (value ? 1 : 0);
+	public boolean set(int x, int y, boolean value) {
+		if(y>=0 && x>=0 && bytes.length>y && bytes[y].length>x) {
+			bytes[y][x] = (byte) (value ? 1 : 0);
+			return true;
+		}
+		return false;
 	}
 
 	public void clear(byte value) {

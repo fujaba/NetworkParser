@@ -39,7 +39,7 @@ public class DebugCondition implements ParserCondition, SendableEntityCreator {
 					}
 				}else if(ParserEntity.ERROR.equals(simpleEvt.getType())) {
 					logger.error(this, "update", simpleEvt.getNewValue());
-					throw new RuntimeException("parse error");
+					throw new SimpleException("parse error");
 				}
 			}
 		}

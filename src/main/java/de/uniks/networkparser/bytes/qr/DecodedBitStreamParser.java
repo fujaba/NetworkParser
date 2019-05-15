@@ -139,6 +139,9 @@ final class DecodedBitStreamParser {
 	 */
 	private static void decodeHanziSegment(BitArray bits, StringBuilder result, int count) throws Exception {
 		// Don't crash trying to read more bits than we have available.
+		if(bits == null) {
+			return;
+		}
 		if (count * 13 > bits.available()) {
 			throw new RuntimeException("FormatException");
 		}
@@ -210,6 +213,9 @@ final class DecodedBitStreamParser {
 	private static void decodeByteSegment(BitArray bits, StringBuilder result, int count,
 			Collection<byte[]> byteSegments) throws Exception {
 		// Don't crash trying to read more bits than we have available.
+		if(bits == null) {
+			return;
+		}
 		if (8 * count > bits.available()) {
 			throw new RuntimeException("FormatException");
 		}
@@ -232,6 +238,9 @@ final class DecodedBitStreamParser {
 	private static void decodeAlphanumericSegment(BitArray bits, StringBuilder result, int count, boolean fc1InEffect)
 			throws Exception {
 		// Read two characters at a time
+		if(bits == null) {
+			return;
+		}
 		int start = result.length();
 		while (count > 1) {
 			if (bits.available() < 11) {

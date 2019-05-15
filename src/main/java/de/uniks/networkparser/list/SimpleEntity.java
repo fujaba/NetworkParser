@@ -103,7 +103,7 @@ public class SimpleEntity<K, V> implements BaseItem, Entry<K, V>,
 		if (key instanceof String) {
 			return "" + key;
 		}
-		throw new RuntimeException("Key is not a String <" + key + ">");
+		return null;
 	}
 
 	@Override

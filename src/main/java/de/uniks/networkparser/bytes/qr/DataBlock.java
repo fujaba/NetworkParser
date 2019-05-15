@@ -49,7 +49,9 @@ final class DataBlock {
 	 *         representation in the QR Code
 	 */
 	static DataBlock[] getDataBlocks(byte[] rawCodewords, Version version, ErrorCorrectionLevel ecLevel) {
-
+		if(rawCodewords == null || version == null) {
+			return null;
+		}
 		if (rawCodewords.length != version.getTotalCodewords()) {
 			throw new IllegalArgumentException();
 		}

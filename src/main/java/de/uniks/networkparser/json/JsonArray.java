@@ -27,7 +27,6 @@ import java.util.Iterator;
 
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.IdMap;
-import de.uniks.networkparser.SimpleException;
 import de.uniks.networkparser.buffer.Buffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.converter.EntityStringConverter;
@@ -119,8 +118,6 @@ public class JsonArray extends SortedList<Object> implements EntityList {
 	 *
 	 * @param index subscript
 	 * @return A JSONObject value.
-	 * @throws RuntimeException If there is no value for the index or if the value
-	 *                          is not a JSONObject
 	 */
 	public JsonObject getJSONObject(int index) {
 		Object object = get(index);
@@ -129,7 +126,7 @@ public class JsonArray extends SortedList<Object> implements EntityList {
 		} else if (object instanceof String) {
 			return new JsonObject().withValue("" + object);
 		}
-		throw new SimpleException("JSONArray[" + index + "] is not a JSONObject.");
+		return null;
 	}
 
 	/**
@@ -137,8 +134,6 @@ public class JsonArray extends SortedList<Object> implements EntityList {
 	 *
 	 * @param index subscript
 	 * @return A JSONObject value.
-	 * @throws RuntimeException If there is no value for the index or if the value
-	 *                          is not a JSONObject
 	 */
 	public String getString(int index) {
 		if(index <0 || index > size()) {
@@ -148,7 +143,7 @@ public class JsonArray extends SortedList<Object> implements EntityList {
 		if (object instanceof String) {
 			return (String) object;
 		}
-		throw new RuntimeException("JSONArray[" + index + "] is not a String.");
+		return null;
 	}
 
 	/**

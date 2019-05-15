@@ -30,6 +30,7 @@ import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.MapEntity;
 import de.uniks.networkparser.NetworkParserLog;
+import de.uniks.networkparser.SimpleException;
 import de.uniks.networkparser.Tokener;
 import de.uniks.networkparser.buffer.Buffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
@@ -110,7 +111,7 @@ public class XMLTokener extends Tokener {
 		}
 		if (entity instanceof XMLEntity == false) {
 			if (isError(this, "parseToEntity", NetworkParserLog.ERROR_TYP_PARSING, entity)) {
-				throw new RuntimeException("Parse only XMLEntity");
+				throw new SimpleException("Parse only XMLEntity");
 			}
 			return null;
 		}
@@ -118,7 +119,7 @@ public class XMLTokener extends Tokener {
 		if (c != XMLEntity.START) {
 //			xmlEntity.withValue(this.buffer);
 			if (isError(this, "parseToEntity", NetworkParserLog.ERROR_TYP_PARSING, entity)) {
-				throw new RuntimeException("A XML text must begin with '<'");
+				throw new SimpleException("A XML text must begin with '<'");
 			}
 			return null;
 		}

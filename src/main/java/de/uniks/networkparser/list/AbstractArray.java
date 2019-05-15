@@ -1393,10 +1393,6 @@ public abstract class AbstractArray<V> implements BaseItem {
 	 *          allocated for this purpose.
 	 * @param   <T> the ContainerClass
 	 * @return an array containing the elements of the list
-	 * @throws ArrayStoreException  if the runtime type of the specified array is
-	 *                              not a supertype of the runtime type of every
-	 *                              element in this list
-	 * @throws NullPointerException if the specified array is null
 	 */
 	public <T> T[] toArray(T[] a) {
 		if (a == null)

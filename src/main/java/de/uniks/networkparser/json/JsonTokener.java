@@ -92,7 +92,7 @@ public class JsonTokener extends Tokener {
 		if (c != JsonArray.START) {
 			if (isError(this, "parseToEntity", NetworkParserLog.ERROR_TYP_PARSING, entityList)) {
 				throw new SimpleException(
-						"A JSONArray text must start with '['. It is " + c + "(" + buffer.getString(20) + ")");
+						"A JSONArray text must start with '['. It is " + c + "(" + buffer.getString(20) + ")", this);
 			}
 			return null;
 		}
@@ -115,7 +115,7 @@ public class JsonTokener extends Tokener {
 					return entityList;
 				default:
 					if (isError(this, "parseToEntity", NetworkParserLog.ERROR_TYP_PARSING, entityList)) {
-						throw new RuntimeException("Expected a ',' or ']' not '" + buffer.getCurrentChar() + "'");
+						throw new SimpleException("Expected a ',' or ']' not '" + buffer.getCurrentChar() + "'", this);
 					}
 					return null;
 				}
@@ -133,7 +133,7 @@ public class JsonTokener extends Tokener {
 		String key;
 		if (buffer.nextClean(true) != JsonObject.START) {
 			if (isError(this, "parseToEntity", NetworkParserLog.ERROR_TYP_PARSING, entity)) {
-				throw new SimpleException("A JsonObject text must begin with '{' \n" + buffer);
+				throw new SimpleException("A JsonObject text must begin with '{' \n" + buffer, this);
 			}
 		}
 		buffer.skip();
@@ -145,7 +145,7 @@ public class JsonTokener extends Tokener {
 			switch (c) {
 			case 0:
 				if (isError(this, "parseToEntity", NetworkParserLog.ERROR_TYP_PARSING, entity)) {
-					throw new SimpleException("A JsonObject text must end with '}'");
+					throw new SimpleException("A JsonObject text must end with '}'", this);
 				}
 				return null;
 			case '\\':
@@ -197,7 +197,7 @@ public class JsonTokener extends Tokener {
 					continue;
 				}
 				if (isError(this, "parseToEntity", NetworkParserLog.ERROR_TYP_PARSING, entity)) {
-					throw new RuntimeException("Expected a ':' after a key [" + buffer.getString(30).toString() + "]");
+					throw new SimpleException("Expected a ':' after a key [" + buffer.getString(30).toString() + "]", this);
 				}
 				return null;
 			}

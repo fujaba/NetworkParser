@@ -119,11 +119,10 @@ public class EntityUtil {
 	 *
 	 * @param number A Number
 	 * @return A String.
-	 * @throws IllegalArgumentException If n is a non-finite number.
 	 */
-	public static final String valueToString(Number number) throws IllegalArgumentException {
+	public static final String valueToString(Number number) {
 		if (number == null) {
-			throw new IllegalArgumentException("Null pointer");
+			return "";
 		}
 		// Shave off trailing zeros and decimal point, if possible.
 

@@ -30,6 +30,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import de.uniks.networkparser.SimpleException;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 
@@ -175,10 +176,10 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 	 * @param key The Value
 	 * @return The truth.
 	 *
-	 * @throws RuntimeException If there is no value for the index or if the value
+	 * @throws SimpleException If there is no value for the index or if the value
 	 *                          is not convertible to boolean.
 	 */
-	public boolean getBoolean(K key) throws RuntimeException {
+	public boolean getBoolean(K key) throws SimpleException {
 		Object value = get(key);
 
 		if (Boolean.FALSE.equals(value) || (value instanceof String && "false".equalsIgnoreCase((String) value))) {
@@ -186,7 +187,7 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 		} else if (Boolean.TRUE.equals(value) || (value instanceof String && "true".equalsIgnoreCase((String) value))) {
 			return true;
 		}
-		throw new RuntimeException("SimpleKeyValueList is not a boolean.");
+		throw new SimpleException("SimpleKeyValueList is not a boolean.", this);
 	}
 
 	/**
@@ -194,16 +195,32 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 	 *
 	 * @param key the Value
 	 * @return the value.
-	 * @throws RuntimeException If the key is not found or if the value cannot be
+	 * @throws SimpleException If the key is not found or if the value cannot be
 	 *                          converted to a number.
 	 */
-	public double getDouble(K key) throws RuntimeException {
+	public double getDouble(K key) throws SimpleException {
 		Object object = get(key);
 		try {
 			return object instanceof Number ? ((Number) object).doubleValue() : Double.parseDouble((String) object);
 		} catch (Exception e) {
-			throw new RuntimeException("SimpleKeyValueList is not a number.");
+			throw new SimpleException("SimpleKeyValueList is not a number.", this);
 		}
+	}
+	
+	/**
+	 * Get the double value associated with an index.
+	 *
+	 * @param key the Value
+	 * @param defaultValue DefaultValue
+	 * @return the value.
+	 */
+	public double getDouble(K key, double defaultValue) {
+		Object object = get(key);
+		try {
+			return object instanceof Number ? ((Number) object).doubleValue() : Double.parseDouble((String) object);
+		} catch (Exception e) {
+		}
+		return defaultValue;
 	}
 
 	/**
@@ -211,17 +228,15 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 	 *
 	 * @param key The Value
 	 * @return The value.
-	 * @throws RuntimeException If the key is not found or if the value is not a
+	 * @throws SimpleException If the key is not found or if the value is not a
 	 *                          number.
 	 */
-	public int getInt(K key) throws RuntimeException {
+	public int getInt(K key) throws SimpleException {
 		Object object = get(key);
 		try {
 			return object instanceof Number ? ((Number) object).intValue() : Integer.parseInt((String) object);
 		} catch (Exception e) {
-			RuntimeException exception = new RuntimeException("SimpleKeyValueList is not a number.");
-			exception.addSuppressed(new RuntimeException(this.toString()));
-			throw exception;
+			throw new SimpleException("SimpleKeyValueList is not a number.", this);
 		}
 	}
 
@@ -239,15 +254,15 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 	 *
 	 * @param key The Value
 	 * @return The value.
-	 * @throws RuntimeException If the key is not found or if the value cannot be
+	 * @throws SimpleException If the key is not found or if the value cannot be
 	 *                          converted to a number.
 	 */
-	public long getLong(K key) throws RuntimeException {
+	public long getLong(K key) throws SimpleException {
 		Object object = get(key);
 		try {
 			return object instanceof Number ? ((Number) object).longValue() : Long.parseLong((String) object);
 		} catch (Exception e) {
-			throw new RuntimeException("SimpleKeyValueList is not a number.");
+			throw new SimpleException("SimpleKeyValueList is not a number.", this);
 		}
 	}
 
@@ -256,9 +271,8 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 	 *
 	 * @param key The Value
 	 * @return A string value.
-	 * @throws RuntimeException If there is no value for the index.
 	 */
-	public String getString(K key) throws RuntimeException {
+	public String getString(K key) {
 		Object object = get(key);
 		if (object == null) {
 			return "";
@@ -273,8 +287,6 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 	 * @param defaultValue The defaultValue
 	 *
 	 * @return A string value.
-	 *
-	 * @throws RuntimeException If there is no value for the index.
 	 */
 	public String getString(K key, String defaultValue) {
 		if (key == null) {

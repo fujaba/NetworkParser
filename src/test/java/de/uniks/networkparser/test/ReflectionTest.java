@@ -45,7 +45,9 @@ public class ReflectionTest {
 	public void testReflectionStoryStepSourceCode() throws Exception {
 		ReflectionBlackBoxTester tester = new ReflectionBlackBoxTester();
 		NetworkParserLog logger=new NetworkParserLog();
-		logger.withFlag(NetworkParserLog.LOGLEVEL_ALL).withListener(output);
+		logger.withFlag(NetworkParserLog.LOGLEVEL_ERROR).withListener(output);
+		logger.withoutFlag(NetworkParserLog.LOGLEVEL_INFO);
+
 		tester.test("de.uniks.networkparser.ext.story.StoryStepSourceCode", logger);
 	}
 	
@@ -88,7 +90,9 @@ public class ReflectionTest {
 	@Test
 	public void testJavaBridge() throws Exception {
 		ReflectionBlackBoxTester tester = new ReflectionBlackBoxTester();
-		tester.withLogger(new NetworkParserLog().withListener(new StringPrintStream()));
+		NetworkParserLog logger = new NetworkParserLog().withListener(new StringPrintStream());
+		logger.withoutFlag(NetworkParserLog.LOGLEVEL_INFO);
+		tester.withLogger(logger);
 		tester.testClass(new JavaBridge(), JavaBridge.class, tester.getMethods(""));
 	}
 

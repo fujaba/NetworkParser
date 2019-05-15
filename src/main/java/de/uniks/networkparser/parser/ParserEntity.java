@@ -300,7 +300,7 @@ public class ParserEntity {
 		if(logger != null) {
 			logger.error(this, "parse error", buffer.toString());
 		}
-		throw new RuntimeException("parse error");
+		throw new SimpleException("parse error");
 	}
 
 	public void nextRealToken() {

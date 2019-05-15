@@ -250,6 +250,9 @@ public class StoryStepSourceCode implements ObjectCondition {
 			return false;
 		}
 		SimpleEvent evt = (SimpleEvent) value;
+		if(evt.getNewValue() instanceof HTMLEntity == false || evt.getSource() instanceof Story == false) {
+			return false;
+		}
 		HTMLEntity element = (HTMLEntity) evt.getNewValue();
 		Story story = (Story) evt.getSource();
 		return addToHTML(story, element);

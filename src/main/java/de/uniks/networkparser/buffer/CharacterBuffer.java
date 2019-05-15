@@ -1040,7 +1040,7 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
 		} else {
 			if (newCapacity > buffer.length) {
 				char[] copy = new char[newCapacity];
-				if(length>0) {
+				if(length>0 && (start+length) <= buffer.length) {
 					System.arraycopy(buffer, this.start, copy, 0, length);
 				}
 				buffer = copy;

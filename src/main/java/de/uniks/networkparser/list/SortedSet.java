@@ -110,10 +110,6 @@ public class SortedSet<V> extends SimpleSet<V> {
 	 * vice-versa. The returned map supports all optional map operations that this
 	 * map supports.
 	 *
-	 * <p>
-	 * The returned map will throw an {@code IllegalArgumentException} on an attempt
-	 * to insert a key outside its range.
-	 *
 	 * @param toElement high endpoint of the keys in the returned map
 	 * @param inclusive {@code true} if the high endpoint is to be included in the
 	 *                  returned view
