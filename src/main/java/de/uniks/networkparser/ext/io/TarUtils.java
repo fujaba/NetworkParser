@@ -18,7 +18,6 @@
  */
 package de.uniks.networkparser.ext.io;
 
-import java.io.IOException;
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
@@ -370,11 +369,7 @@ public class TarUtils {
 		if (len > 0) {
 			final byte[] b = new byte[len];
 			System.arraycopy(buffer, offset, b, 0, len);
-			try {
-				return encoding.decode(b);
-			} catch (IOException e) {
-				return null;
-			}
+			return encoding.decode(b);
 		}
 		return "";
 	}

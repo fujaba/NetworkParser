@@ -24,8 +24,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 import java.io.DataInputStream;
-import java.io.IOException;
 import java.net.SocketTimeoutException;
+
 import de.uniks.networkparser.buffer.ByteBuffer;
 
 public class MQTTMessage {
@@ -338,9 +338,8 @@ public class MQTTMessage {
 	 * 
 	 * @param in the input stream
 	 * @return long Value of Read
-	 * @throws IOException if an exception occurs when reading the input stream
 	 */
-	protected static int readMBI(DataInputStream in) throws IOException {
+	protected static int readMBI(DataInputStream in) {
 		if (in == null) {
 			return -1;
 		}
@@ -348,11 +347,15 @@ public class MQTTMessage {
 		int msgLength = 0;
 		int multiplier = 1;
 
-		do {
-			digit = in.readByte();
-			msgLength += ((digit & 0x7F) * multiplier);
-			multiplier *= 128;
-		} while ((digit & 0x80) != 0);
+		try {
+			do {
+				digit = in.readByte();
+				msgLength += ((digit & 0x7F) * multiplier);
+				multiplier *= 128;
+			} while ((digit & 0x80) != 0);
+		}catch (Exception e) {
+			return -1;
+		}
 
 		return msgLength;
 	}

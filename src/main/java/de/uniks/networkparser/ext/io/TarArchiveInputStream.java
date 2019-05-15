@@ -30,7 +30,6 @@ import java.util.Map;
 import java.util.zip.GZIPInputStream;
 
 import de.uniks.networkparser.NetworkParserLog;
-import de.uniks.networkparser.SimpleException;
 
 public class TarArchiveInputStream extends InputStream {
 	private final byte[] single = new byte[1];
@@ -138,12 +137,13 @@ public class TarArchiveInputStream extends InputStream {
 
 	/**
 	 * Closes this stream. Calls the TarBuffer's close() method.
-	 * 
-	 * @throws IOException on error
 	 */
 	@Override
-	public void close() throws IOException {
-		is.close();
+	public void close() {
+		try {
+			is.close();
+		}catch (Exception e) {
+		}
 	}
 
 	/**
@@ -164,10 +164,9 @@ public class TarArchiveInputStream extends InputStream {
 	 * left in the current entry in the archive.
 	 *
 	 * @return The number of available bytes for the current entry.
-	 * @throws IOException for signature
 	 */
 	@Override
-	public int available() throws IOException {
+	public int available() {
 		if (isDirectory()) {
 			return 0;
 		}
@@ -189,10 +188,9 @@ public class TarArchiveInputStream extends InputStream {
 	 *
 	 * @param n the number of bytes to be skipped.
 	 * @return the actual number of bytes skipped.
-	 * @throws IOException if some other I/O error occurs.
 	 */
 	@Override
-	public long skip(final long n) throws IOException {
+	public long skip(final long n) {
 		if (n <= 0 || isDirectory()) {
 			return 0;
 		}
@@ -239,9 +237,8 @@ public class TarArchiveInputStream extends InputStream {
 	 * has been reached.
 	 *
 	 * @return The next TarEntry in the archive, or null.
-	 * @throws IOException on error
 	 */
-	public TarArchiveEntry getNextTarEntry() throws IOException {
+	public TarArchiveEntry getNextTarEntry() {
 		if (isAtEOF()) {
 			return null;
 		}
@@ -254,18 +251,18 @@ public class TarArchiveInputStream extends InputStream {
 			skipRecordPadding();
 		}
 
-		final byte[] headerBuf = getRecord();
-
-		if (headerBuf == null) {
-			/* hit EOF */
-			currEntry = null;
-			return null;
-		}
 
 		try {
+			final byte[] headerBuf = getRecord();
+			if (headerBuf == null) {
+				/* hit EOF */
+				currEntry = null;
+				return null;
+			}
 			currEntry = new TarArchiveEntry(headerBuf, zipEncoding);
-		} catch (final IllegalArgumentException e) {
-			throw new IOException("Error detected parsing the header", e);
+		} catch (Exception e) {
+			return null;
+//			throw new IOException("Error detected parsing the header", e);
 		}
 
 		entryOffset = 0;
@@ -279,7 +276,11 @@ public class TarArchiveInputStream extends InputStream {
 				// entry
 				return null;
 			}
-			currEntry.setLinkName(zipEncoding.decode(longLinkData));
+			try {
+				currEntry.setLinkName(zipEncoding.decode(longLinkData));
+			}catch (Exception e) {
+				return null;
+			}
 		}
 
 		if (currEntry.isGNULongNameEntry()) {
@@ -290,7 +291,11 @@ public class TarArchiveInputStream extends InputStream {
 				// entry
 				return null;
 			}
-			currEntry.setName(zipEncoding.decode(longNameData));
+			try {
+				currEntry.setName(zipEncoding.decode(longNameData));
+			}catch (Exception e) {
+				return null;
+			}
 		}
 
 		if (currEntry.isGlobalPaxHeader()) { // Process Global Pax headers
@@ -323,7 +328,7 @@ public class TarArchiveInputStream extends InputStream {
 	 * The last record block should be written at the full size, so skip any
 	 * additional space used to fill a record after an entry
 	 */
-	private void skipRecordPadding() throws IOException {
+	private void skipRecordPadding() {
 		if (!isDirectory() && this.entrySize > 0 && this.entrySize % this.recordSize != 0) {
 			final long numRecords = (this.entrySize / this.recordSize) + 1;
 			final long padding = (numRecords * this.recordSize) - this.entrySize;
@@ -336,14 +341,17 @@ public class TarArchiveInputStream extends InputStream {
 	 * Get the next entry in this tar archive as longname data.
 	 *
 	 * @return The next entry in the archive as longname data, or null.
-	 * @throws IOException on error
 	 */
-	protected byte[] getLongNameData() throws IOException {
+	protected byte[] getLongNameData() {
 		// read in the name
 		final ByteArrayOutputStream longName = new ByteArrayOutputStream();
 		int length = 0;
-		while ((length = read(smallBuf)) >= 0) {
-			longName.write(smallBuf, 0, length);
+		try {
+			while ((length = read(smallBuf)) >= 0) {
+				longName.write(smallBuf, 0, length);
+			}
+		}catch (Exception e) {
+			return null;
 		}
 		getNextEntry();
 		if (currEntry == null) {
@@ -377,9 +385,8 @@ public class TarArchiveInputStream extends InputStream {
 	 * </p>
 	 *
 	 * @return The next header in the archive, or null.
-	 * @throws IOException on error
 	 */
-	private byte[] getRecord() throws IOException {
+	private byte[] getRecord() {
 		byte[] headerBuf = readRecord();
 		setAtEOF(isEOFRecord(headerBuf));
 		if (isAtEOF() && headerBuf != null) {
@@ -405,9 +412,8 @@ public class TarArchiveInputStream extends InputStream {
 	 * Read a record from the input stream and return the data.
 	 *
 	 * @return The record data or null if EOF has been hit.
-	 * @throws IOException on error
 	 */
-	protected byte[] readRecord() throws IOException {
+	protected byte[] readRecord() {
 
 		final byte[] record = new byte[recordSize];
 
@@ -420,12 +426,12 @@ public class TarArchiveInputStream extends InputStream {
 		return record;
 	}
 
-	private void readGlobalPaxHeaders() throws IOException {
+	private void readGlobalPaxHeaders() {
 		globalPaxHeaders = parsePaxHeaders(this);
 		getNextEntry(); // Get the actual file entry
 	}
 
-	private void paxHeaders() throws IOException {
+	private void paxHeaders() {
 		final Map<String, String> headers = parsePaxHeaders(this);
 		getNextEntry(); // Get the actual file entry
 		applyPaxHeadersToCurrentEntry(headers);
@@ -434,52 +440,57 @@ public class TarArchiveInputStream extends InputStream {
 	// NOTE, using a Map here makes it impossible to ever support GNU
 	// sparse files using the PAX Format 0.0, see
 	// https://www.gnu.org/software/tar/manual/html_section/tar_92.html#SEC188
-	Map<String, String> parsePaxHeaders(final InputStream i) throws IOException {
+	Map<String, String> parsePaxHeaders(final InputStream i) {
 		final Map<String, String> headers = new HashMap<String, String>(globalPaxHeaders);
 		// Format is "length keyword=value\n";
-		while (true) { // get length
-			int ch;
+		int ch = 0;
+		do {
 			int len = 0;
 			int read = 0;
-			while ((ch = i.read()) != -1) {
-				read++;
-				if (ch == '\n') { // blank line in header
-					break;
-				} else if (ch == ' ') { // End of length string
-					// Get keyword
-					final ByteArrayOutputStream coll = new ByteArrayOutputStream();
-					while ((ch = i.read()) != -1) {
-						read++;
-						if (ch == '=') { // end of keyword
-							final String keyword = coll.toString("UTF_8");
-							// Get rest of entry
-							final int restLen = len - read;
-							if (restLen == 1) { // only NL
-								headers.remove(keyword);
-							} else {
-								final byte[] rest = new byte[restLen];
-								final int got = FileBuffer.readFully(i, rest);
-								if (got != restLen) {
-									throw new IOException("Failed to read " + "Paxheader. Expected " + restLen
-											+ " bytes, read " + got);
+			try {
+				while ((ch = i.read()) != -1) {
+					read++;
+					if (ch == '\n') { // blank line in header
+						break;
+					} else if (ch == ' ') { // End of length string
+						// Get keyword
+						final ByteArrayOutputStream coll = new ByteArrayOutputStream();
+						while ((ch = i.read()) != -1) {
+							read++;
+							if (ch == '=') { // end of keyword
+								final String keyword = coll.toString("UTF_8");
+								// Get rest of entry
+								final int restLen = len - read;
+								if (restLen == 1) { // only NL
+									headers.remove(keyword);
+								} else {
+									final byte[] rest = new byte[restLen];
+									final int got = FileBuffer.readFully(i, rest);
+									if (got != restLen) {
+										return null; 
+//										throw new IOException("Failed to read " + "Paxheader. Expected " + restLen
+//												+ " bytes, read " + got);
+									}
+									// Drop trailing NL
+									final String value = new String(rest, 0, restLen - 1, Charset.forName("UTF_8"));
+									headers.put(keyword, value);
 								}
-								// Drop trailing NL
-								final String value = new String(rest, 0, restLen - 1, Charset.forName("UTF_8"));
-								headers.put(keyword, value);
+								break;
 							}
-							break;
+							coll.write((byte) ch);
 						}
-						coll.write((byte) ch);
+						break; // Processed single header
 					}
-					break; // Processed single header
+					len *= 10;
+					len += ch - '0';
 				}
-				len *= 10;
-				len += ch - '0';
+			}catch (Exception e) {
+				return null;
 			}
 			if (ch == -1) { // EOF
 				break;
 			}
-		}
+		}while(ch != -1);
 		return headers;
 	}
 
@@ -496,9 +507,8 @@ public class TarArchiveInputStream extends InputStream {
 	 * Returns the next Archive Entry in this Stream.
 	 *
 	 * @return the next entry, or {@code null} if there are no more entries
-	 * @throws IOException if the next entry could not be read
 	 */
-	public TarArchiveEntry getNextEntry() throws IOException {
+	public TarArchiveEntry getNextEntry() {
 		return getNextTarEntry();
 	}
 
@@ -511,9 +521,10 @@ public class TarArchiveInputStream extends InputStream {
 	 * non-conforming implementation likely won't fill full blocks consisting of -
 	 * by default - ten records either so we probably have already read beyond the
 	 * archive anyway.
+	 * @return Success
 	 * </p>
 	 */
-	private void tryToConsumeSecondEOFRecord() throws IOException {
+	private boolean tryToConsumeSecondEOFRecord() {
 		boolean shouldReset = true;
 		final boolean marked = is.markSupported();
 		if (marked) {
@@ -524,9 +535,15 @@ public class TarArchiveInputStream extends InputStream {
 		} finally {
 			if (shouldReset && marked) {
 				pushedBackBytes(recordSize);
-				is.reset();
+				try {
+					
+					is.reset();
+				}catch (Exception e) {
+					return false;
+				}
 			}
 		}
+		return true;
 	}
 
 	/**

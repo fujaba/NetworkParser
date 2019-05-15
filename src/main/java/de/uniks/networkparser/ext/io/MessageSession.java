@@ -388,14 +388,9 @@ public class MessageSession {
 		if (answer == false) {
 			return message;
 		}
-		try {
-			RabbitMessage response = RabbitMessage.readFrom(diInput);
-			response.analysePayLoad(broker);
-			return response;
-		} catch (IOException e) {
-			broker.executeException(e);
-		}
-		return null;
+		RabbitMessage response = RabbitMessage.readFrom(diInput);
+		response.analysePayLoad(broker);
+		return response;
 	}
 
 	public MQTTMessage sending(NodeProxyBroker broker, MQTTMessage message, boolean answer) {
@@ -744,18 +739,15 @@ public class MessageSession {
 
 	public Object getServerResponse(NodeProxyBroker broker) {
 		if (diInput != null) {
-			try {
-				if (TYPE_AMQ.equals(broker.getFormat())) {
-					RabbitMessage response = RabbitMessage.readFrom(diInput);
-					response.analysePayLoad(broker);
-					return response;
-				}
-				if (TYPE_MQTT.equals(broker.getFormat())) {
-					MQTTMessage resonse = MQTTMessage.readFrom(diInput);
+			if (TYPE_AMQ.equals(broker.getFormat())) {
+				RabbitMessage response = RabbitMessage.readFrom(diInput);
+				response.analysePayLoad(broker);
+				return response;
+			}
+			if (TYPE_MQTT.equals(broker.getFormat())) {
+				MQTTMessage resonse = MQTTMessage.readFrom(diInput);
 
-					return resonse;
-				}
-			} catch (IOException e) {
+				return resonse;
 			}
 			return null;
 		}

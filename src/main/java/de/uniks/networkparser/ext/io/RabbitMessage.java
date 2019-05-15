@@ -24,7 +24,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 import java.io.DataInputStream;
-import java.io.IOException;
 import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -32,6 +31,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.buffer.ByteBuffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
@@ -401,20 +401,26 @@ public class RabbitMessage {
 	 * @param is DataInputStrem for reading
 	 *
 	 * @return a new RabbitMessage if we read a frame successfully, otherwise null
-	 * @throws IOException Error on InputStream
 	 */
-	public static RabbitMessage readFrom(DataInputStream is) throws IOException {
+	public static RabbitMessage readFrom(DataInputStream is) {
 
-		byte type = (byte) is.readUnsignedByte();
-		if (type == 'A') {
-			return null;
+		byte frameEndMarker = 0;
+		byte type = 0;
+		short channel = 0;
+		byte[] payload = null;
+		try {
+			type = (byte) is.readUnsignedByte();
+			if (type == 'A') {
+				return null;
+			}
+			channel = (short) is.readUnsignedShort();
+			int payloadSize = is.readInt();
+			payload = new byte[payloadSize];
+			is.readFully(payload);
+			frameEndMarker = (byte) is.readUnsignedByte();
+		}catch (Exception e) {
+			// TODO: handle exception
 		}
-		short channel = (short) is.readUnsignedShort();
-		int payloadSize = is.readInt();
-		byte[] payload = new byte[payloadSize];
-		is.readFully(payload);
-
-		byte frameEndMarker = (byte) is.readUnsignedByte();
 		if (frameEndMarker != RabbitMessage.FRAME_END) {
 			return null;
 		}

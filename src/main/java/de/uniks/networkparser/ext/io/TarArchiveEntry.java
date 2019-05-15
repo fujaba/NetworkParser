@@ -19,12 +19,13 @@
 package de.uniks.networkparser.ext.io;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+
+import de.uniks.networkparser.SimpleException;
 
 /**
  * This class represents an entry in a Tar archive. It consists of the entry is
@@ -385,8 +386,6 @@ public class TarArchiveEntry {
 	 * Construct an entry from an archive is header bytes. File is set to null.
 	 *
 	 * @param headerBuf The header bytes from a tar archive entry.
-	 * @throws IllegalArgumentException if any of the numeric fields have an invalid
-	 *                                  format
 	 */
 	public TarArchiveEntry(byte[] headerBuf) {
 		this(false);
@@ -398,12 +397,8 @@ public class TarArchiveEntry {
 	 *
 	 * @param headerBuf The header bytes from a tar archive entry.
 	 * @param encoding  encoding to use for file names
-	 * @since 1.4
-	 * @throws IllegalArgumentException if any of the numeric fields have an invalid
-	 *                                  format
-	 * @throws IOException              on error
 	 */
-	public TarArchiveEntry(byte[] headerBuf, final NioZipEncoding encoding) throws IOException {
+	public TarArchiveEntry(byte[] headerBuf, final NioZipEncoding encoding) {
 		this(false);
 		parseTarHeader(headerBuf, encoding);
 	}
@@ -725,13 +720,11 @@ public class TarArchiveEntry {
 	 * Set this entry is file size.
 	 *
 	 * @param size This entry is new file size.
-	 * @throws IllegalArgumentException if the size is &lt; 0.
 	 */
 	public void setSize(long size) {
-		if (size < 0) {
-			throw new IllegalArgumentException("Size is out of range: " + size);
+		if (size >= 0) {
+			this.size = size;
 		}
-		this.size = size;
 	}
 
 	/**
@@ -748,14 +741,11 @@ public class TarArchiveEntry {
 	 * Set this entry is major device number.
 	 *
 	 * @param devNo This entry is major device number.
-	 * @throws IllegalArgumentException if the devNo is &lt; 0.
-	 * @since 1.4
 	 */
 	public void setDevMajor(int devNo) {
-		if (devNo < 0) {
-			throw new IllegalArgumentException("Major device number is out of " + "range: " + devNo);
+		if (devNo >= 0) {
+			this.devMajor = devNo;
 		}
-		this.devMajor = devNo;
 	}
 
 	/**
@@ -772,14 +762,11 @@ public class TarArchiveEntry {
 	 * Set this entry is minor device number.
 	 *
 	 * @param devNo This entry is minor device number.
-	 * @throws IllegalArgumentException if the devNo is &lt; 0.
-	 * @since 1.4
 	 */
 	public void setDevMinor(int devNo) {
-		if (devNo < 0) {
-			throw new IllegalArgumentException("Minor device number is out of " + "range: " + devNo);
+		if (devNo >= 0) {
+			this.devMinor = devNo;
 		}
-		this.devMinor = devNo;
 	}
 
 	/**
@@ -1145,16 +1132,16 @@ public class TarArchiveEntry {
 	 * @param outbuf The tar entry header buffer to fill in.
 	 */
 	public void writeEntryHeader(byte[] outbuf) {
-		try {
-			writeEntryHeader(outbuf, TarUtils.DEFAULT_ENCODING, false);
-		} catch (final IOException ex) {
-			try {
-				writeEntryHeader(outbuf, TarUtils.FALLBACK_ENCODING, false);
-			} catch (final IOException ex2) {
-				// impossible
-				throw new RuntimeException(ex2); // NOSONAR
-			}
-		}
+//		try {
+		writeEntryHeader(outbuf, TarUtils.DEFAULT_ENCODING, false);
+//		} catch (final IOException ex) {
+//			try {
+//				writeEntryHeader(outbuf, TarUtils.FALLBACK_ENCODING, false);
+//			} catch (final IOException ex2) {
+//				// impossible
+//				throw new RuntimeException(ex2); // NOSONAR
+//			}
+//		}
 	}
 
 	/**
@@ -1165,10 +1152,8 @@ public class TarArchiveEntry {
 	 * @param starMode whether to use the star/GNU tar/BSD tar extension for numeric
 	 *                 fields if their value does not fit in the maximum size of
 	 *                 standard tar archives
-	 * @since 1.4
-	 * @throws IOException on error
 	 */
-	public void writeEntryHeader(byte[] outbuf, NioZipEncoding encoding, boolean starMode) throws IOException {
+	public void writeEntryHeader(byte[] outbuf, NioZipEncoding encoding, boolean starMode) {
 		int offset = 0;
 
 		offset = TarUtils.formatNameBytes(name, outbuf, offset, TarUtils.NAMELEN, encoding);
@@ -1217,19 +1202,12 @@ public class TarArchiveEntry {
 	 * Parse an entry is header information from a header buffer.
 	 *
 	 * @param header The tar entry header buffer to get information from.
-	 * @throws IllegalArgumentException if any of the numeric fields have an invalid
-	 *                                  format
 	 */
 	public void parseTarHeader(byte[] header) {
 		try {
 			parseTarHeader(header, TarUtils.DEFAULT_ENCODING);
-		} catch (final IOException ex) {
-			try {
-				parseTarHeader(header, TarUtils.DEFAULT_ENCODING, true);
-			} catch (final IOException ex2) {
-				// not really possible
-				throw new RuntimeException(ex2); // NOSONAR
-			}
+		} catch (final SimpleException ex) {
+			parseTarHeader(header, TarUtils.DEFAULT_ENCODING, true);
 		}
 	}
 
@@ -1238,20 +1216,19 @@ public class TarArchiveEntry {
 	 *
 	 * @param header   The tar entry header buffer to get information from.
 	 * @param encoding encoding to use for file names
-	 * @since 1.4
-	 * @throws IllegalArgumentException if any of the numeric fields have an invalid
-	 *                                  format
-	 * @throws IOException              on error
 	 */
-	public void parseTarHeader(byte[] header, NioZipEncoding encoding) throws IOException {
+	public void parseTarHeader(byte[] header, NioZipEncoding encoding) {
 		parseTarHeader(header, encoding, false);
 	}
 
-	private void parseTarHeader(byte[] header, NioZipEncoding encoding, boolean oldStyle) throws IOException {
+	private boolean parseTarHeader(byte[] header, NioZipEncoding encoding, boolean oldStyle) {
 		int offset = 0;
 
 		name = oldStyle ? TarUtils.parseName(header, offset, TarUtils.NAMELEN)
 				: TarUtils.parseName(header, offset, TarUtils.NAMELEN, encoding);
+		if(name == null) {
+			return false;
+		}
 		offset += TarUtils.NAMELEN;
 		mode = (int) TarUtils.parseOctalOrBinary(header, offset, TarUtils.MODELEN);
 		offset += TarUtils.MODELEN;
@@ -1268,16 +1245,28 @@ public class TarArchiveEntry {
 		linkFlag = header[offset++];
 		linkName = oldStyle ? TarUtils.parseName(header, offset, TarUtils.NAMELEN)
 				: TarUtils.parseName(header, offset, TarUtils.NAMELEN, encoding);
+		if(linkName == null) {
+			return false;
+		}
 		offset += TarUtils.NAMELEN;
 		magic = TarUtils.parseName(header, offset, TarUtils.MAGICLEN);
+		if(magic == null) {
+			return false;
+		}
 		offset += TarUtils.MAGICLEN;
 		version = TarUtils.parseName(header, offset, TarUtils.VERSIONLEN);
 		offset += TarUtils.VERSIONLEN;
 		userName = oldStyle ? TarUtils.parseName(header, offset, TarUtils.UNAMELEN)
 				: TarUtils.parseName(header, offset, TarUtils.UNAMELEN, encoding);
+		if(userName == null) {
+			return false;
+		}
 		offset += TarUtils.UNAMELEN;
 		groupName = oldStyle ? TarUtils.parseName(header, offset, TarUtils.GNAMELEN)
 				: TarUtils.parseName(header, offset, TarUtils.GNAMELEN, encoding);
+		if(groupName == null) {
+			return false;
+		}
 		offset += TarUtils.GNAMELEN;
 		if (linkFlag == TarUtils.LF_CHR || linkFlag == TarUtils.LF_BLK) {
 			devMajor = (int) TarUtils.parseOctalOrBinary(header, offset, TarUtils.DEVLEN);
@@ -1325,6 +1314,7 @@ public class TarArchiveEntry {
 			}
 		}
 		}
+		return true;
 	}
 
 	/**

@@ -19,7 +19,6 @@
 
 package de.uniks.networkparser.ext.io;
 
-import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
@@ -152,7 +151,7 @@ class NioZipEncoding {
 	 * @param data for Decoding
 	 * @return decoded String
 	 */
-	public String decode(byte[] data) throws IOException {
+	public String decode(byte[] data) {
 		if (this.charset == null) {
 			final int length = data.length;
 			final StringBuilder result = new StringBuilder(length);
@@ -165,7 +164,11 @@ class NioZipEncoding {
 			}
 			return result.toString();
 		}
-		return newDecoder().decode(ByteBuffer.wrap(data)).toString();
+		try {
+			return newDecoder().decode(ByteBuffer.wrap(data)).toString();
+		}catch (Exception e) {
+		}
+		return null;
 	}
 
 	private static ByteBuffer encodeFully(CharsetEncoder enc, CharBuffer cb, ByteBuffer out) {
