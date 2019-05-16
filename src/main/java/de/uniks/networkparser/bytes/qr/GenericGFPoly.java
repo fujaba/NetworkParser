@@ -80,6 +80,9 @@ public final class GenericGFPoly {
 	 * @return degree of this polynomial
 	 */
 	int getDegree() {
+		if(coefficients == null) {
+			return 0;
+		}
 		return coefficients.length - 1;
 	}
 
@@ -94,6 +97,9 @@ public final class GenericGFPoly {
 	 * @return coefficient of x^degree term in this polynomial
 	 */
 	int getCoefficient(int degree) {
+		if(coefficients == null) {
+			return 0;
+		}
 		return coefficients[coefficients.length - 1 - degree];
 	}
 
@@ -204,11 +210,11 @@ public final class GenericGFPoly {
 	}
 
 	GenericGFPoly[] divide(GenericGFPoly other) {
-		if (!field.equals(other.field)) {
-			throw new IllegalArgumentException("GenericGFPolys do not have same GenericGF field");
+		if (field == null || field.equals(other.field) == false) {
+			return null;
 		}
 		if (other.isZero()) {
-			throw new IllegalArgumentException("Divide by 0");
+			return null;
 		}
 
 		GenericGFPoly quotient = field.getZero();

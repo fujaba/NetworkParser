@@ -352,7 +352,15 @@ public class ReflectionBlackBoxTester {
 					if("update".equals(m.getName())) {
 						// So try again
 						try {
-							m.invoke(obj, new SimpleEvent(this, "TESTER", null, null));
+							Class<?>[] types = m.getParameterTypes();
+							if(types.length == 1) {
+								if(types[0] != int.class 
+										&& types[0] != byte[].class
+										&& types[0] != String.class
+										) {
+									m.invoke(obj, new SimpleEvent(this, "TESTER", null, null));
+								}
+							}
 						} catch (Exception e) {
 							saveException(e, clazz, m, call);
 						}

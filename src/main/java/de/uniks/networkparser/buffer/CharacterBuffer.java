@@ -142,7 +142,7 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
 
 	public boolean replace(int start, int end, String replace) {
 		int pos = 0;
-		if(replace == null || buffer == null) {
+		if(replace == null || buffer == null || start> end || start>buffer.length) {
 			return false;
 		}
 		int diff = replace.length() - (end - start);
@@ -176,8 +176,10 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
 			if (diff > 0) {
 				if (oldChar == null) {
 					oldLen = (this.length + this.start) - start;
-					oldChar = new char[oldLen];
-					System.arraycopy(buffer, start, oldChar, 0, oldLen);
+					if(oldLen>0) {
+						oldChar = new char[oldLen];
+						System.arraycopy(buffer, start, oldChar, 0, oldLen);
+					}
 				}
 				int no = 0;
 				while (no < diff) {
@@ -636,13 +638,15 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
 			this.buffer[--start] = item;
 			return this;
 		}
-		char[] oldValue = this.buffer;
-		this.buffer = new char[buffer.length + 1];
-		this.buffer[0] = item;
-		this.position = 0;
-		this.validateValue();
-		System.arraycopy(oldValue, start, this.buffer, 1, length);
-		this.length++;
+		if(buffer != null) {
+			char[] oldValue = this.buffer;
+			this.buffer = new char[buffer.length + 1];
+			this.buffer[0] = item;
+			this.position = 0;
+			this.validateValue();
+			System.arraycopy(oldValue, start, this.buffer, 1, length);
+			this.length++;
+		}
 		return this;
 	}
 
@@ -1413,5 +1417,17 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
 	public int length() {
 		validateValue();
 		return super.length();
+	}
+
+	public boolean append(CharSequence value) {
+		return this.add(value);
+	}
+
+	public boolean setCharAt(int pos, char character) {
+		if(pos<0 || pos>buffer.length) {
+			return false;
+		}
+		buffer[pos] = character;
+		return true;
 	}
 }

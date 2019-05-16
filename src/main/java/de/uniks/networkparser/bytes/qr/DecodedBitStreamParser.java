@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.interfaces.BaseItem;
 
 /**
@@ -54,7 +55,7 @@ final class DecodedBitStreamParser {
 
 	static DecoderResult decode(byte[] bytes, Version version, ErrorCorrectionLevel ecLevel) {
 		BitArray bits = new BitArray(bytes);
-		StringBuilder result = new StringBuilder(50);
+		CharacterBuffer result = new CharacterBuffer().withLength(50);
 		List<byte[]> byteSegments = new ArrayList<byte[]>(1);
 		int symbolSequence = -1;
 		int parityData = -1;
@@ -139,8 +140,9 @@ final class DecodedBitStreamParser {
 	 * @param bits   result bits
 	 * @param result result String
 	 * @param count  count of value
+	 * @return success
 	 */
-	private static boolean decodeHanziSegment(BitArray bits, StringBuilder result, int count) {
+	private static boolean decodeHanziSegment(BitArray bits, CharacterBuffer result, int count) {
 		// Don't crash trying to read more bits than we have available.
 		if (bits == null || count * 13 > bits.available()) {
 			return false;
@@ -176,9 +178,9 @@ final class DecodedBitStreamParser {
 		return true;
 	}
 
-	private static boolean decodeKanjiSegment(BitArray bits, StringBuilder result, int count) {
+	private static boolean decodeKanjiSegment(BitArray bits, CharacterBuffer result, int count) {
 		// Don't crash trying to read more bits than we have available.
-		if (count * 13 > bits.available()) {
+		if (bits == null || count * 13 > bits.available()) {
 			return false;
 		}
 
@@ -212,7 +214,7 @@ final class DecodedBitStreamParser {
 		return true;
 	}
 
-	private static boolean decodeByteSegment(BitArray bits, StringBuilder result, int count,
+	private static boolean decodeByteSegment(BitArray bits, CharacterBuffer result, int count,
 			Collection<byte[]> byteSegments) {
 		// Don't crash trying to read more bits than we have available.
 		if (bits == null) {
@@ -231,100 +233,131 @@ final class DecodedBitStreamParser {
 		return true;
 	}
 
-	private static char toAlphaNumericChar(int value) throws Exception {
-		if (value >= ALPHANUMERIC_CHARS.length) {
-			throw new RuntimeException("FormatException");
+	private static char toAlphaNumericChar(int value) {
+		if (value<0 || value >= ALPHANUMERIC_CHARS.length) {
+			return (char)-1;
 		}
 		return ALPHANUMERIC_CHARS[value];
 	}
 
-	private static boolean decodeAlphanumericSegment(BitArray bits, StringBuilder result, int count,
+	private static boolean decodeAlphanumericSegment(BitArray bits, CharacterBuffer result, int count,
 			boolean fc1InEffect) {
 		// Read two characters at a time
 		if (bits == null) {
 			return false;
 		}
 		int start = result.length();
-		try {
-			while (count > 1) {
-				if (bits.available() < 11) {
-					return false;
-				}
-				int nextTwoCharsBits = bits.readBits(11);
-				result.append(toAlphaNumericChar(nextTwoCharsBits / 45));
-				result.append(toAlphaNumericChar(nextTwoCharsBits % 45));
-				count -= 2;
+		char character;
+		while (count > 1) {
+			if (bits.available() < 11) {
+				return false;
 			}
-			if (count == 1) {
-				// special case: one character left
-				if (bits.available() < 6) {
-					return false;
-				}
-				result.append(toAlphaNumericChar(bits.readBits(6)));
+			int nextTwoCharsBits = bits.readBits(11);
+			character = toAlphaNumericChar(nextTwoCharsBits / 45);
+			if(character<0) {
+				return false;
 			}
-			// See section 6.4.8.1, 6.4.8.2
-			if (fc1InEffect) {
-				// We need to massage the result a bit if in an FNC1 mode:
-				for (int i = start; i < result.length(); i++) {
-					if (result.charAt(i) == '%') {
-						if (i < result.length() - 1 && result.charAt(i + 1) == '%') {
-							// %% is rendered as %
-							result.deleteCharAt(i + 1);
-						} else {
-							// In alpha mode, % should be converted to FNC1
-							// separator 0x1D
-							result.setCharAt(i, (char) 0x1D);
-						}
+			result.with(character);
+			character = toAlphaNumericChar(nextTwoCharsBits % 45);
+			if(character<0) {
+				return false;
+			}
+			count -= 2;
+		}
+		if (count == 1) {
+			// special case: one character left
+			if (bits.available() < 6) {
+				return false;
+			}
+			character = toAlphaNumericChar(bits.readBits(6));
+			if(character<0) {
+				return false;
+			}
+		}
+		// See section 6.4.8.1, 6.4.8.2
+		if (fc1InEffect) {
+			// We need to massage the result a bit if in an FNC1 mode:
+			for (int i = start; i < result.length(); i++) {
+				if (result.charAt(i) == '%') {
+					if (i < result.length() - 1 && result.charAt(i + 1) == '%') {
+						// %% is rendered as %
+						result.remove(i + 1);
+					} else {
+						// In alpha mode, % should be converted to FNC1
+						// separator 0x1D
+						result.setCharAt(i, (char) 0x1D);
 					}
 				}
 			}
-		} catch (Exception e) {
-			return false;
 		}
 		return true;
 	}
 
-	private static boolean decodeNumericSegment(BitArray bits, StringBuilder result, int count) {
+	private static boolean decodeNumericSegment(BitArray bits, CharacterBuffer result, int count) {
 		// Read three digits at a time
-		try {
-			while (count >= 3) {
-				// Each 10 bits encodes three digits
-				if (bits.available() < 10) {
-					return false;
-				}
-				int threeDigitsBits = bits.readBits(10);
-				if (threeDigitsBits >= 1000) {
-					return false;
-				}
-				result.append(toAlphaNumericChar(threeDigitsBits / 100));
-				result.append(toAlphaNumericChar((threeDigitsBits / 10) % 10));
-				result.append(toAlphaNumericChar(threeDigitsBits % 10));
-				count -= 3;
-			}
-			if (count == 2) {
-				// Two digits left over to read, encoded in 7 bits
-				if (bits.available() < 7) {
-					return false;
-				}
-				int twoDigitsBits = bits.readBits(7);
-				if (twoDigitsBits >= 100) {
-					return false;
-				}
-				result.append(toAlphaNumericChar(twoDigitsBits / 10));
-				result.append(toAlphaNumericChar(twoDigitsBits % 10));
-			} else if (count == 1) {
-				// One digit left over to read
-				if (bits.available() < 4) {
-					return false;
-				}
-				int digitBits = bits.readBits(4);
-				if (digitBits >= 10) {
-					return false;
-				}
-				result.append(toAlphaNumericChar(digitBits));
-			}
-		} catch (Exception e) {
+		if(bits == null || result == null) {
 			return false;
+		}
+		char character;  
+		while (count >= 3) {
+			// Each 10 bits encodes three digits
+			if (bits.available() < 10) {
+				return false;
+			}
+			int threeDigitsBits = bits.readBits(10);
+			if (threeDigitsBits >= 1000) {
+				return false;
+			}
+			character = toAlphaNumericChar(threeDigitsBits / 100);
+			if(character<0) {
+				return false;
+			}
+			result.with(character);
+			character = toAlphaNumericChar((threeDigitsBits / 10) % 10);
+			if(character<0) {
+				return false;
+			}
+			result.with(character);
+			character = toAlphaNumericChar(threeDigitsBits % 10);
+			if(character<0) {
+				return false;
+			}
+			result.with(character);
+			count -= 3;
+		}
+		if (count == 2) {
+			// Two digits left over to read, encoded in 7 bits
+			if (bits.available() < 7) {
+				return false;
+			}
+			int twoDigitsBits = bits.readBits(7);
+			if (twoDigitsBits >= 100) {
+				return false;
+			}
+			character = toAlphaNumericChar(twoDigitsBits / 10);
+			if(character<0) {
+				return false;
+			}
+			result.with(character);
+			character = toAlphaNumericChar(twoDigitsBits % 10);
+			if(character<0) {
+				return false;
+			}
+			result.with(character);
+		} else if (count == 1) {
+			// One digit left over to read
+			if (bits.available() < 4) {
+				return false;
+			}
+			int digitBits = bits.readBits(4);
+			if (digitBits >= 10) {
+				return false;
+			}
+			character = toAlphaNumericChar(digitBits);
+			if(character<0) {
+				return false;
+			}
+			result.with(character);
 		}
 		return true;
 	}

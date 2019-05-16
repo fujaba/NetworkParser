@@ -52,13 +52,16 @@ public final class BitMatrix implements Cloneable {
 	}
 
 	public BitMatrix(int width, int height) {
-		if (width < 1 || height < 1) {
-			throw new IllegalArgumentException("Both dimensions must be greater than 0");
-		}
 		this.width = width;
 		this.height = height;
-		this.rowSize = (width + 31) / 32;
-		bits = new int[rowSize * height];
+		if (width >= 1 && height >= 1) {
+//			throw new IllegalArgumentException("Both dimensions must be greater than 0");
+			this.rowSize = (width + 31) / 32;
+			bits = new int[rowSize * height];
+		}else {
+			this.rowSize = 0;
+			this.bits = null;
+		}
 	}
 
 	private BitMatrix(int width, int height, int rowSize, int[] bits) {
@@ -70,7 +73,7 @@ public final class BitMatrix implements Cloneable {
 
 	public static BitMatrix parse(String stringRepresentation, String setString, String unsetString) {
 		if (stringRepresentation == null) {
-			throw new IllegalArgumentException();
+			return null;
 		}
 
 		boolean[] bits = new boolean[stringRepresentation.length()];
@@ -194,18 +197,19 @@ public final class BitMatrix implements Cloneable {
 	 * @param top    The vertical position to begin at (inclusive)
 	 * @param width  The width of the region
 	 * @param height The height of the region
+	 * @return errorText
 	 */
-	public void setRegion(int left, int top, int width, int height) {
+	public String setRegion(int left, int top, int width, int height) {
 		if (top < 0 || left < 0) {
-			throw new IllegalArgumentException("Left and top must be nonnegative");
+			return ("Left and top must be nonnegative");
 		}
 		if (height < 1 || width < 1) {
-			throw new IllegalArgumentException("Height and width must be at least 1");
+			return  ("Height and width must be at least 1");
 		}
 		int right = left + width;
 		int bottom = top + height;
 		if (bottom > this.height || right > this.width) {
-			throw new IllegalArgumentException("The region must fit inside the matrix");
+			return ("The region must fit inside the matrix");
 		}
 		for (int y = top; y < bottom; y++) {
 			int offset = y * rowSize;
@@ -213,6 +217,7 @@ public final class BitMatrix implements Cloneable {
 				bits[offset + (x / 32)] |= 1 << (x & 0x1f);
 			}
 		}
+		return null;
 	}
 
 	/**

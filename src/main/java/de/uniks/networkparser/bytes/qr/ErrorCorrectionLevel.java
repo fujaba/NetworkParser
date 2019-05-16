@@ -82,7 +82,7 @@ public final class ErrorCorrectionLevel {
 	 */
 	public static ErrorCorrectionLevel forBits(int bits) {
 		if (bits < 0 || bits >= FOR_BITS.length) {
-			throw new IllegalArgumentException();
+			return null;
 		}
 		return FOR_BITS[bits];
 	}
