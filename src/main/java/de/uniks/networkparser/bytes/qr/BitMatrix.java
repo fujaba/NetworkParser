@@ -18,6 +18,8 @@ package de.uniks.networkparser.bytes.qr;
 
 import java.util.Arrays;
 
+import de.uniks.networkparser.buffer.CharacterBuffer;
+
 /**
  * <p>
  * Represents a 2D matrix of bits. In function arguments below, and throughout
@@ -420,7 +422,7 @@ public final class BitMatrix implements Cloneable {
 	/** @return string representation using "X" for set and " " for unset bits */
 	@Override
 	public String toString() {
-		return toString("X ", "  ");
+		return toString('#', ' ');
 	}
 
 	/**
@@ -428,13 +430,13 @@ public final class BitMatrix implements Cloneable {
 	 * @param unsetString representation of an unset bit
 	 * @return string representation of entire matrix utilizing given strings
 	 */
-	public String toString(String setString, String unsetString) {
-		StringBuilder result = new StringBuilder(height * (width + 1));
+	public String toString(char setString, char unsetString) {
+		CharacterBuffer result = new CharacterBuffer().withLength(height * (width + 1));
 		for (int y = 0; y < height; y++) {
 			for (int x = 0; x < width; x++) {
-				result.append(get(x, y) ? setString : unsetString);
+				result.with(get(x, y) ? setString : unsetString);
 			}
-			result.append("\n");
+			result.with('\n');
 		}
 		return result.toString();
 	}
