@@ -55,7 +55,7 @@ final class DecodedBitStreamParser {
 
 	static DecoderResult decode(byte[] bytes, Version version, ErrorCorrectionLevel ecLevel) {
 		BitArray bits = new BitArray(bytes);
-		CharacterBuffer result = new CharacterBuffer().withLength(50);
+		CharacterBuffer result = new CharacterBuffer().withBufferLength(50);
 		List<byte[]> byteSegments = new ArrayList<byte[]>(1);
 		int symbolSequence = -1;
 		int parityData = -1;

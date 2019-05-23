@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.ext.io.FileBuffer;
 import de.uniks.networkparser.graph.Association;
@@ -20,6 +21,7 @@ import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SimpleSet;
 import de.uniks.networkparser.parser.ParserEntity;
+import de.uniks.networkparser.parser.SimpleReverseEngineering;
 import de.uniks.networkparser.parser.SymTabEntry;
 
 //String string = model.toString(new DotConverter().withShowAssocInfo(false).withShowSimpleNodeInfo(true));
@@ -34,7 +36,7 @@ public class FileClassModel extends ClassModel {
 	private SimpleSet<ParserEntity> list = new SimpleSet<ParserEntity>();
 	private SimpleKeyValueList<String, SimpleList<ParserEntity>> packageList = new SimpleKeyValueList<String, SimpleList<ParserEntity>>();
 	private boolean parseFile=true;
-
+	private ObjectCondition reverseEngineering;
 	public FileClassModel(String packageName) {
 		with(packageName);
 	}
@@ -57,6 +59,14 @@ public class FileClassModel extends ClassModel {
 		if (name.indexOf('.') > 0) {
 			parent = name.substring(0, name.lastIndexOf('.') + 1);
 		}
+		if(path != null) {
+			if((path.endsWith("/") || path.endsWith("\\")) == false) {
+				path +="/";
+			}
+		}else {
+			path = "";
+		}
+		
 		getFiles(new File(path + pkgName), condition, parent);
 		if(parseFile) {
 			for (ParserEntity item : list) {
@@ -65,6 +75,12 @@ public class FileClassModel extends ClassModel {
 		}
 		return true;
 	}
+	
+	public boolean finishReverseEngineering() {
+		SimpleEvent event = new SimpleEvent(this, "reverseengineering", null, this.list);
+		return getReverseEngineering().update(event);
+	}
+	
 	
 	public SimpleList<String> analyseJavaDoc(boolean fullCheck) {
 		SimpleList<String> errors=new SimpleList<String>();
@@ -708,5 +724,25 @@ public class FileClassModel extends ClassModel {
 			return analyse(element);
 		}
 		return null;
+	}
+
+	public ObjectCondition getReverseEngineering() {
+		if(reverseEngineering == null) {
+			reverseEngineering  = new SimpleReverseEngineering();
+		}
+		return reverseEngineering;
+	}
+
+	public FileClassModel withReverseEngineering(ObjectCondition reverseEngineering) {
+		this.reverseEngineering = reverseEngineering;
+		return this;
+	}
+	
+	@Override
+	public Object getValue(String attribute) {
+		if(PROPERTY_FILETYPE.equalsIgnoreCase(attribute)) {
+			return getClass().getSuperclass().getSimpleName().toLowerCase();
+		}
+		return super.getValue(attribute);
 	}
 }

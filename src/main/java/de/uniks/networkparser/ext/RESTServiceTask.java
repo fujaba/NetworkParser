@@ -38,7 +38,7 @@ public class RESTServiceTask implements Runnable, Server {
 	private Condition<SimpleEvent> loginController;
 	public static final String JSON = "/json";
 	public static final String XML = "/xml";
-	private SimpleKeyValueList<String, Condition<HTTPRequest>> routing;
+	private SimpleKeyValueList<HTTPRequest, Condition<HTTPRequest>> routing;
 	
 	public RESTServiceTask(int port, IdMap map, Object root) {
 		super();
@@ -78,8 +78,10 @@ public class RESTServiceTask implements Runnable, Server {
 					// Parsing Path
 					String path = clientSocket.getPath();
 					SimpleList<String> paths = clientSocket.getPathParts();
+					
 					// *
 					if(path.indexOf("/")<1) {
+						//FIXME "*".equalsIgnoreCase(this.routing.getKeyByIndex(0));
 						this.routing.getValueByIndex(0).update(clientSocket);
 						clientSocket.close();
 						continue;
@@ -388,9 +390,11 @@ public class RESTServiceTask implements Runnable, Server {
 
 	public RESTServiceTask withRooting(String string, Condition<HTTPRequest> webContent) {
 		if(this.routing == null) {
-			this.routing = new SimpleKeyValueList<String, Condition<HTTPRequest>>();
+			this.routing = new SimpleKeyValueList<HTTPRequest, Condition<HTTPRequest>>();
 		}
-		this.routing.add(string, webContent);
+		
+		HTTPRequest routing = HTTPRequest.createRouting(string);
+		this.routing.add(routing, webContent);
 		return this;
 	}
 }

@@ -44,6 +44,7 @@ public abstract class GraphMember  implements TemplateItem {
 	public static final String PROPERTY_THIS = "this";
 	public static final String PROPERTY_PATH = "path";
 	public static final String PROPERTY_ANNOTATION = "annotation";
+	public static final String PROPERTY_FILETYPE = "filetype";
 
 	protected String name;
 	protected Object children;
@@ -170,6 +171,9 @@ public abstract class GraphMember  implements TemplateItem {
 				return annotation;
 			}
 			return "";
+		}
+		if(PROPERTY_FILETYPE.equalsIgnoreCase(attrName)) {
+			return getClass().getSimpleName().toLowerCase();
 		}
 		return null;
 	}

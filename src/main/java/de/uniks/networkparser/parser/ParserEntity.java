@@ -50,24 +50,11 @@ import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SimpleSet;
 
 public class ParserEntity {
-	public static final String VOID = "void";
-
-	public static final String CLASS = "class";
-
-	public static final String INTERFACE = "interface";
-
-	public static final String ENUM = "enum";
-
-	public static final String IMPLEMENTS = "implements";
-	public static final String EXTENDS = "extends";
-
 	public static final String NAME_TOKEN = "nameToken";
 
 	public static final String CLASS_BODY = "classBody";
 
 	public static final String CLASS_END = "classEnd";
-
-	public static final String ENUMVALUE = "enumvalue";
 	
 	public static final String ERROR="ERROR";
 
@@ -676,10 +663,10 @@ public class ParserEntity {
 		parseGenericTypeSpec();
 
 		// extends
-		if (EXTENDS.equalsIgnoreCase(currentWord())) {
-			skip(EXTENDS, true);
+		if (SymTabEntry.TYPE_EXTENDS.equalsIgnoreCase(currentWord())) {
+			skip(SymTabEntry.TYPE_EXTENDS, true);
 
-			nextEntity = startNextSymTab(EXTENDS, currentWord());
+			nextEntity = startNextSymTab(SymTabEntry.TYPE_EXTENDS, currentWord());
 
 			nextEntity.withPosition(currentToken.startPos, currentToken.endPos, getLine(), getLine());
 
@@ -690,11 +677,11 @@ public class ParserEntity {
 		}
 
 		// implements
-		if (IMPLEMENTS.equals(currentWord())) {
-			skip(IMPLEMENTS, true);
+		if (SymTabEntry.TYPE_IMPLEMENTS.equals(currentWord())) {
+			skip(SymTabEntry.TYPE_IMPLEMENTS, true);
 
 			while (!currentKindEquals(Token.EOF) && !currentKindEquals('{')) {
-				nextEntity = startNextSymTab(IMPLEMENTS, currentWord());
+				nextEntity = startNextSymTab(SymTabEntry.TYPE_IMPLEMENTS, currentWord());
 				nextEntity.withPosition(currentToken.startPos, currentToken.endPos, getLine(), getLine());
 
 				// skip interface name
@@ -727,8 +714,8 @@ public class ParserEntity {
 		CharacterBuffer typeString = new CharacterBuffer();
 
 		// (void | qualifiedName) <T1, T2> [] ...
-		String typeName = VOID;
-		if (currentTokenEquals(VOID)) {
+		String typeName = SymTabEntry.TYPE_VOID;
+		if (currentTokenEquals(SymTabEntry.TYPE_VOID)) {
 			// skip void
 			nextToken();
 		} else {
@@ -860,7 +847,7 @@ public class ParserEntity {
 			}
 		}
 
-		if (currentTokenEquals(CLASS) || currentTokenEquals(INTERFACE)) {
+		if (currentTokenEquals(SymTabEntry.TYPE_CLASS) || currentTokenEquals(SymTabEntry.TYPE_INTERFACE)) {
 			while (!currentTokenEquals("{") && currentKindEquals(Token.EOF) == false) {
 				nextToken();
 			}
@@ -868,9 +855,9 @@ public class ParserEntity {
 
 			return;
 			// modifiers = parseModifiers();
-		} else if (currentTokenEquals(ENUM)) {
+		} else if (currentTokenEquals(SymTabEntry.TYPE_ENUM)) {
 			// skip enum name { entry, ... }
-			skip(ENUM, true);
+			skip(SymTabEntry.TYPE_ENUM, true);
 			nextToken(); // name
 			skipBody();
 			return;
@@ -986,15 +973,17 @@ public class ParserEntity {
 //FIXME				nextEntity.withPreComment(preCommentStartPos, preCommentEndPos);
 				nextEntity.withAnnotationsStart(annotationsStartPos);
 
-			} else if (ENUM.equals(getClazz().getName())) {
+			} else if (SymTabEntry.TYPE_ENUM.equals(getClazz().getType())) {
 				if (",".equalsIgnoreCase(memberName) || ";".equalsIgnoreCase(memberName)
-						|| !";".equals(type) && currentKindEquals(Token.EOF)) {
+						|| ";".equals(type) == false && currentKindEquals(Token.EOF)) {
 					// String enumSignature = SDMLibParser.ENUMVALUE + ":" + type;
-					SymTabEntry nextEntity = startNextSymTab(SymTabEntry.TYPE_ENUMVALUE, type);
-					nextEntity.withPosition(startPos, previousToken.startPos, startLine, getLine());
-					nextEntity.withModifiers(modifiers).withBodyStartPos(code.getStartBody());
-//FIXME					nextEntity.withPreComment(preCommentStartPos, preCommentEndPos);
-					nextEntity.withAnnotationsStart(annotationsStartPos);
+					if("}".equals(type) == false ) {
+						SymTabEntry nextEntity = startNextSymTab(SymTabEntry.TYPE_ENUMVALUE, type);
+						nextEntity.withPosition(startPos, previousToken.startPos, startLine, getLine());
+						nextEntity.withModifiers(modifiers).withBodyStartPos(code.getStartBody());
+	//FIXME					nextEntity.withPreComment(preCommentStartPos, preCommentEndPos);
+						nextEntity.withAnnotationsStart(annotationsStartPos);
+					}
 				} else {
 					// String enumSignature = SDMLibParser.ENUMVALUE + ":" + type;
 					SymTabEntry nextEntity = startNextSymTab(SymTabEntry.TYPE_ENUMVALUE, type);
@@ -1202,12 +1191,12 @@ public class ParserEntity {
 
 	private String parseClassType() {
 		String classType = "";
-		if (CLASS.equals(currentWord())) {
+		if (SymTabEntry.TYPE_CLASS.equals(currentWord())) {
 			classType = "class";
-		} else if (INTERFACE.equals(currentWord())) {
-			classType = INTERFACE;
-		} else if (ENUM.equals(currentWord())) {
-			classType = ENUM;
+		} else if (SymTabEntry.TYPE_INTERFACE.equals(currentWord())) {
+			classType = SymTabEntry.TYPE_INTERFACE;
+		} else if (SymTabEntry.TYPE_ENUM.equals(currentWord())) {
+			classType = SymTabEntry.TYPE_ENUM;
 		}
 		if (classType.isEmpty() == false) {
 			skip(classType, true);

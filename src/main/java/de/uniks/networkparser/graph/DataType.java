@@ -100,7 +100,10 @@ public class DataType {
 	}
 
 	public boolean equals(Object obj) {
-		if (!(obj instanceof DataType)) {
+		if(obj instanceof String) {
+			return ((String) obj).equalsIgnoreCase(this.getName(false));
+		}
+		if (obj instanceof DataType == false) {
 			return false;
 		}
 		if (obj.hashCode() == this.hashCode()) {

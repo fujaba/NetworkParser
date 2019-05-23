@@ -30,7 +30,7 @@ public class TestSDMLib {
 		Method eatMethod = person.createMethod("eat");
 
 		// Generate and override SourceCode
-		generator.testGeneratedCode("java");
+		generator.removeAndGenerate("java");
 
 		Assert.assertEquals(1, person.getAttributes().size());
 		Assert.assertEquals(1, person.getMethods().size());

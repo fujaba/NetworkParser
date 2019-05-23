@@ -139,9 +139,9 @@ public class VariableCondition implements ParserCondition {
 					return null;
 				}
 			}
-			if (object instanceof Boolean) {
-				return "" + object;
-			}
+//			if (object instanceof Boolean) {
+//				return "" + object;
+//			}
 			return object;
 		}
 		if (value != null && this.value != null) {

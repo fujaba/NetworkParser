@@ -1,17 +1,17 @@
 package de.uniks.networkparser.ext;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Set;
-import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 import de.uniks.networkparser.DateTimeEntity;
 import de.uniks.networkparser.buffer.ByteBuffer;
@@ -33,34 +33,69 @@ import de.uniks.networkparser.xml.XMLContainer;
 import de.uniks.networkparser.xml.XMLEntity;
 
 public class Gradle implements ObjectCondition{
+	private static final String GRADLE_PROPERTIES="gradle-wrapper.properties";
 	private boolean download = true;
 	public static final String REFLECTIONTEST="test";
 	public static final String GIT="git";
 	public static final String GRADLE="gradle";
+	private String path;
 
-	public static void main(String[] args) {
-		Gradle gradle = new Gradle();
-		gradle.addAtrifact(null, "Test", "MIT");
-//		gradle.initProject("np.jar", "Test", "MIT");
+
+	public Gradle withPath(String value) {
+		this.path = value;
+		return this;
 	}
-
+	
 	public boolean initProject(String jarFile, String projectName, String licence) {
 		if (Os.isReflectionTest() || jarFile == null) {
 			return false;
 		}
-		File file = new File(".");
-		String path = "";
+		File file;
+		String localPath;
+		if(path == null) {
+			file = new File(".");
+			localPath = "";
+		} else {
+			file = new File(path);
+			localPath = path;
+			if((path.endsWith("/") || path.endsWith("\\")) == false){
+				localPath+="/";
+			}
+		}
+		if(file.exists() == false) {
+			return false;
+		}
+		String jarPath="";
 		if (projectName == null) {
 			projectName = file.getParentFile().getName();
 		} else {
-			path = projectName + "/";
-			new File(projectName).mkdirs();
+			jarPath = localPath;
+			localPath += projectName + "/";
+			new File(localPath).mkdirs();
 		}
+		JarFile jar;
+		try {
+			jar = new JarFile(jarPath + jarFile);
+			ZipEntry entry = jar.getEntry("version.gradle");
+			if(entry != null) {
+				InputStream zis = jar.getInputStream(entry);
+				byte[] buffer = new byte[1024];
+				File targetFile = new File(localPath + "version.gradle");
+				FileOutputStream fos = new FileOutputStream(targetFile);
+				int len;
+				while ((len = zis.read(buffer)) > 0) {
+					fos.write(buffer, 0, len);
+				}
+				fos.close();
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+//		private extractFromJarFile(String )
 
-		writeProjectPath(path, projectName);
-		writeGradle(path, projectName, licence);
-		extractGradleFiles(path);
-
+		writeProjectPath(localPath, projectName);
+		writeGradle(localPath, projectName, licence);
+		extractGradleFiles(localPath);
 		return true;
 	}
 
@@ -216,52 +251,68 @@ public class Gradle implements ObjectCondition{
 		if (Os.isReflectionTest() || path == null) {
 			return false;
 		}
-		File file = new File(path + "gradle.zip");
-		if (file.exists()) {
-			return true;
+		
+		File file = new File(path + ".gitignore");
+		if(file.exists() == false) {
+			CharacterBuffer sb = new CharacterBuffer();
+			sb.withLine("**/build");
+			sb.withLine("**/bin");
+			sb.withLine("**/gen");
+			sb.withLine("**/.settings");
+			sb.withLine("**/.gradle");
+			sb.withLine("gradle.zip");
+			sb.withLine("*.*~");
+			sb.withLine("gradle.properties");
+			FileBuffer.writeFile(path + ".gitignore", sb.toString());
 		}
-		CharacterBuffer sb = new CharacterBuffer();
-		sb.withLine("**/build");
-		sb.withLine("**/bin");
-		sb.withLine("**/gen");
-		sb.withLine("**/.settings");
-		sb.withLine("**/.gradle");
-		sb.withLine("*.*~");
-		sb.withLine("gradle.properties");
-		FileBuffer.writeFile(path + ".gitignore", sb.toString());
-
-		HTMLEntity http = NodeProxyTCP.getHTTP("https://services.gradle.org/distributions/");
-		String body = http.getBody().toString();
-		int pos = body.indexOf("-src.zip");
-		int start = body.lastIndexOf('"', pos) + 1;
-		int end = body.indexOf('"', pos);
-		if(start < 1 || end < 1) {
-			return false;
+		
+		file = new File(path + "gradle.zip");
+		if (file.exists() == false) {
+			HTMLEntity http = NodeProxyTCP.getHTTP("https://services.gradle.org/distributions/");
+			String body = http.getBody().toString();
+			int pos = body.indexOf("-src.zip");
+			int start = body.lastIndexOf('"', pos) + 1;
+			int end = body.indexOf('"', pos);
+			if(start < 1 || end < 1) {
+				return false;
+			}
+			String ref = body.substring(start, end);
+			ByteBuffer binary = NodeProxyTCP.getHTTPBinary("https://services.gradle.org" + ref);
+	
+			FileBuffer.writeFile(path + "gradle.zip", binary.array());
 		}
-		String ref = body.substring(start, end);
-		ByteBuffer binary = NodeProxyTCP.getHTTPBinary("https://services.gradle.org" + ref);
-
-		FileBuffer.writeFile(path + "gradle.zip", binary.array());
 		
 		// NOW WRITE build.gradle
-		
-		CharacterBuffer buildGradle = new CharacterBuffer();
-		buildGradle.withLine("repositories {");
-		buildGradle.withLine("	  jcenter()");
-		buildGradle.withLine("	  maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }");
-		buildGradle.withLine("}");
+		file = new File(path+"build.gradle");
+		if(file.exists() == false) {
+			CharacterBuffer buildGradle = new CharacterBuffer();
+			
+			
+			buildGradle.withLine("// MAJOR VERSION - Manually set");
+			buildGradle.withLine("//----------------------");
+			buildGradle.withLine("ext.majorNumber = 0");
+			buildGradle.withLine("//----------------------");
+			buildGradle.withLine("");
+			buildGradle.withLine("apply plugin: 'java'");
+			buildGradle.withLine("apply plugin: 'maven'");
+			buildGradle.withLine("apply from: 'version.gradle'");
 
-		buildGradle.withLine("");
-		buildGradle.withLine("dependencies {");
-		buildGradle.withLine("	// Use JUnit test framework");
-		buildGradle.withLine("	testImplementation 'junit:junit:4.12'");
-		buildGradle.withLine("	compile group:\"de.uniks\",name: \"NetworkParser\", version: \"latest.integration\",classifier:\"sources18\",changing: true");
-		    	//compile group: "de.uniks", name: "NetworkParser", version: "latest.integration", classifier:"sources18", changing: true
+			buildGradle.withLine("repositories {");
+			buildGradle.withLine("	  jcenter()");
+			buildGradle.withLine("	  maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }");
+			buildGradle.withLine("}");
+	
+			buildGradle.withLine("");
+			buildGradle.withLine("dependencies {");
+			buildGradle.withLine("	// Use JUnit test framework");
+			buildGradle.withLine("	testImplementation 'junit:junit:4.12'");
+			buildGradle.withLine("	compile group:\"de.uniks\",name: \"NetworkParser\", version: \"latest.integration\",classifier:\"sources18\",changing: true");
+//compile group: "de.uniks", name: "NetworkParser", version: "latest.integration", classifier:"sources18", changing: true
 //		    	compile files("NetworkParser-4.7.1351-SNAPSHOT-git.jar")
-		buildGradle.withLine("}");
-		
-		addAtrifact(buildGradle, projectName, licence);
-		
+			buildGradle.withLine("}");
+			addAtrifact(buildGradle, path, projectName, licence);
+			FileBuffer.writeFile(path+"build.gradle", buildGradle.toString());
+		}
 		return true;
 	}
 
@@ -269,51 +320,78 @@ public class Gradle implements ObjectCondition{
 		if (path == null) {
 			return;
 		}
-		JarFile jarFile = null;
 		File file = new File(path + "gradle.zip");
 		if (file.exists() == false) {
 			return;
 		}
-//		SimpleKeyValueList<String, String> extractFiles = 
-				new SimpleKeyValueList<String, String>()
-				.withKeyValue("gradlew", "").withKeyValue("gradlew.bat", "")
-				.withKeyValue("gradle-wrapper.jar", "gradle/wrapper")
-				.withKeyValue("gradle-wrapper.properties", "gradle/wrapper");
-
+		SimpleKeyValueList<String, String> extractFiles = 
+		new SimpleKeyValueList<String, String>()
+		.withKeyValue("gradlew", "").withKeyValue("gradlew.bat", "")
+		.withKeyValue("gradle-wrapper.jar", "gradle/wrapper/")
+		.withKeyValue(GRADLE_PROPERTIES, "gradle/wrapper/");
+		ZipInputStream zis = null;
 		try {
-			jarFile = new JarFile(file);
-			Enumeration<JarEntry> entries = jarFile.entries();
-			while (entries.hasMoreElements()) {
-//				JarEntry entry = entries.nextElement();
-//			for (Iterator it = map.keySet().iterator(); it.hasNext();) {
-//			      String entryName = (String) it.next();
-//			for(JarEntry entry : jarFile.entries()) {
-////				if(entry.)
-			}
-			ZipEntry entry = jarFile.getEntry("gradlew");
-			InputStream inputStream = jarFile.getInputStream(entry);
-			byte[] buffer = new byte[inputStream.available()];
-			inputStream.read(buffer);
-
-			File targetFile = new File(path + "gradlew");
-			FileOutputStream outStream = new FileOutputStream(targetFile);
-			outStream.write(buffer);
-			outStream.close();
-
-			entry = jarFile.getEntry("gradlew.bat");
-			inputStream = jarFile.getInputStream(entry);
-			buffer = new byte[inputStream.available()];
-			inputStream.read(buffer);
-
-			targetFile = new File(path + "gradlew.bat");
-			outStream = new FileOutputStream(targetFile);
-			outStream.write(buffer);
-			outStream.close();
+			FileInputStream fis = new FileInputStream(file);
+			zis = new ZipInputStream(fis);
+			ZipEntry ze = zis.getNextEntry();
+			byte[] buffer = new byte[1024];
+	        while(ze != null){
+				for(int i=0;i<extractFiles.size();i++) {
+					String key = extractFiles.getKeyByIndex(i);
+					String fileName = ze.getName();
+					if(fileName == null) {
+						continue;
+					}
+					int pos = fileName.lastIndexOf("/");
+					if(pos>0) {
+						fileName = fileName.substring(pos+1);
+					}
+					if(fileName.equalsIgnoreCase(key)) {
+						int len;
+						File targetFile = new File(path + extractFiles.getValueByIndex(i)+fileName);
+						targetFile.getParentFile().mkdirs();
+						if(GRADLE_PROPERTIES.equalsIgnoreCase(fileName)) {
+							CharacterBuffer sb=new CharacterBuffer();
+							while ((len = zis.read(buffer)) > 0) {
+								sb.with(buffer, 0, len);
+							}
+							int start = sb.indexOf("distributionUrl");
+							if(start>0) {
+								int end = sb.indexOf('\n', start);
+								if(end>0) {
+									String line =sb.substring(start, end);
+									if(line.indexOf("-snapshots")>=0) {
+										line = line.replace("-snapshots", "");
+										int endPos = line.indexOf("-bin.zip");
+										int startPos = line.lastIndexOf("-", endPos-1);
+										line = line.substring(0, startPos)+line.substring(endPos);
+										sb.replace(start, end, line);
+									}
+								}
+							}
+							FileBuffer.writeFile(path + extractFiles.getValueByIndex(i)+fileName, sb);
+						}else {
+							FileOutputStream fos = new FileOutputStream(targetFile);
+							while ((len = zis.read(buffer)) > 0) {
+								fos.write(buffer, 0, len);
+							}
+							fos.close();
+						}
+						
+						extractFiles.removePos(i);
+						break;
+					}
+				}
+				if(extractFiles.size()<1) {
+					break;
+				}
+				ze = zis.getNextEntry();
+	        }
 		} catch (Exception e) {
 		} finally {
-			if (jarFile != null) {
+			if (zis != null) {
 				try {
-					jarFile.close();
+					zis.close();
 				} catch (IOException e) {
 				}
 			}
@@ -420,17 +498,15 @@ public class Gradle implements ObjectCondition{
 		return System.getProperty("user.name");
 	}
 	
-	public CharacterBuffer addAtrifact(CharacterBuffer sb, String projectName, String licence) {
+	public CharacterBuffer addAtrifact(CharacterBuffer sb, String path, String projectName, String licence) {
 		if(sb == null) {
 			sb = new CharacterBuffer();
 		}
 		if(projectName == null) {
 			return sb;
 		}
-		sb.withLine("ext{");
-		sb.withLine("	sharedManifest = manifest {");
-		sb.withLine("		attributes");
-		sb.withLine("		'Specification-Version': gitVersion.major+\".\"+gitVersion.minor+\".\"+gitVersion.revision,");
+		sb.withLine("ext.sharedManifest = manifest {");
+		sb.withLine("		attributes 'Specification-Version': gitVersion.major+\".\"+gitVersion.minor+\".\"+gitVersion.revision,");
 		sb.withLine("		'Implementation-Title': '"+projectName+"',");
 		sb.withLine("		'Specification-Title': '"+projectName+"',");
 		sb.withLine("		'Built-Time': gitVersion.buildTime,");
@@ -450,8 +526,7 @@ public class Gradle implements ObjectCondition{
 			sb.withLine("		'Licence': '"+licence+"',"); 
 		}
 		sb.withLine("		'Bundle-ClassPath': '.'");
-		sb.withLine("		}");
-		sb.withLine("	}");
+		sb.withLine("}");
 		
 		
 		HTMLEntity response = NodeProxyTCP.getHTTP("https://opensource.org/licenses/"+licence, new HTMLEntity());
@@ -469,7 +544,7 @@ public class Gradle implements ObjectCondition{
 			if(content != null && content instanceof XMLEntity) {
 				CharacterBuffer text = getLicenceText((XMLEntity) content, new CharacterBuffer(), projectName);
 				if(text != null && text.length()>0) {
-					FileBuffer.writeFile("licence.txt", text.toString());
+					FileBuffer.writeFile(path+"licence.txt", text.toString());
 				}
 			}
 		}

@@ -119,7 +119,6 @@ public abstract class BufferedBuffer extends Buffer implements BaseItem {
 		}
 		int startpos = this.position();
 		char c;
-//		boolean isQuote = false;
 		char b = getCurrentChar();
 		int i, quoteLen = quotes.length;
 		do {

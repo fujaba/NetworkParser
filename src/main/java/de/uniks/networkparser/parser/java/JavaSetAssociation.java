@@ -8,7 +8,7 @@ public class JavaSetAssociation extends Template {
 		this.id = "association";
 		this.type = Template.DECLARATION;
 		this.withTemplate("{{#template VALUE}}",
-				"{{#if {{other.isImplements}}==false}}",
+				"{{#if {{other.isGenerate}}}}",
 					"{{#import {{file.member.fullName}}}}"
 					+ "	public {{other.clazz.name}}Set get{{other.Name}}({{other.clazz.name}}... filter) {",
 					"		{{other.clazz.name}}Set result = new {{other.clazz.name}}Set();",
@@ -19,11 +19,18 @@ public class JavaSetAssociation extends Template {
 							"			{{file.member.name}}[] children = this.toArray(new {{file.member.name}}[size()]);",
 				"			for(int i=0;i<children.length;i++) {",
 				"				listener.update(SimpleEvent.create(this, i, result, children[i], children[i].get{{other.Name}}(), filter));",
-				"			}", "			return result;", "		}", "{{#endif}}",
-				"		if(filter == null || filter.length<1) {", "			for ({{file.member.name}} obj : this) {",
-				"{{#if {{other.cardinality}}==1}}", "				result.add(obj.get{{other.Name}}());", "{{#else}}",
-				"				result.addAll(obj.get{{other.Name}}());", "{{#endif}}", "			}",
-				"			return result;", "		}", "		for ({{file.member.name}} obj : this) {",
+				"			}", "			return result;",
+				"		}",
+				"{{#endif}}",
+				"		if(filter == null || filter.length<1) {",
+				"			for ({{file.member.name}} obj : this) {",
+				"{{#if {{other.cardinality}}==1}}",
+				"				result.add(obj.get{{other.Name}}());", "{{#else}}",
+				"				result.addAll(obj.get{{other.Name}}());",
+				"{{#endif}}", "			}",
+				"			return result;",
+				"		}",
+				"		for ({{file.member.name}} obj : this) {",
 				// TO ONE CARDINALITY
 				"{{#if {{other.cardinality}}==1}}", "			{{other.clazz.name}} item = obj.get{{other.Name}}();",
 				"			if(item != null) {", "				for(int i=0;i<filter.length;i++) {",

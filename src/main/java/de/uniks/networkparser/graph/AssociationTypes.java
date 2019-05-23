@@ -25,12 +25,14 @@ THE SOFTWARE.
 */
 
 /**
- * Associations types Edge - Edge : normal Edge Association - Association :
- * Bidirectional Association Association - Edge : Undirectional but search for
- * back Assoc Undirectional - Edge : Undirectional Association Aggregation -
- * Undirectional : Undirectional Aggregation Aggregation - Edge : Aggregation
- * Composition - Edge : Composition Generalisation - Edge : Generalisation
- * Implements - Edge : Implements Dependency - Edge : Dependency
+ * Associations types Edge - Edge : normal Edge 
+ * Association             - Association : Bidirectional 
+ * Association Association - Edge : Undirectional but search for back Assoc 
+ * Undirectional           - Edge : Undirectional Association
+ * Aggregation             - Undirectional : Undirectional Aggregation
+ * Aggregation             - Edge : Aggregation 
+ * Composition             - Edge : Composition Generalisation - Edge : Generalisation
+ * Implements              - Edge : Implements Dependency - Edge : Dependency
  *
  * @author Stefan
  *
@@ -71,13 +73,13 @@ public class AssociationTypes {
 		return false;
 	}
 
-	public static Object isImplements(AssociationTypes value) {
+	public static boolean isImplements(AssociationTypes value) {
 		if (value == null) {
 			return false;
 		}
-		return (value.equals(GENERALISATION) || value.equals(IMPLEMENTS) || value.equals(EDGE));
+		return (value.equals(GENERALISATION) || value.equals(IMPLEMENTS) || value.equals(EDGE) );
 	}
-
+	
 	private String value;
 
 	@Override

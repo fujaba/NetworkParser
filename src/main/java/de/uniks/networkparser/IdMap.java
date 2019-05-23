@@ -1401,7 +1401,6 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator>, Sendabl
 			int pos = prop.length();
 			Tokener tokener = map.getTokener();
 			for (int i = 0; i < properties.length; i++) {
-//			for (String property : properties) {
 				String property = properties[i];
 				Object value = creator.getValue(entity, property);
 				if (property == SendableEntityCreator.DYNAMIC) {
@@ -1773,10 +1772,6 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator>, Sendabl
 		return new IdMap();
 	}
 
-	public boolean addI18N(Object root, TextItems i18n, boolean autoCreate) {
-		return addI18N(root, i18n, new SimpleSet<Object>(), autoCreate, true, null, null);
-	}
-	
 	/**
 	 * Check for Creating Rekursiv
 	 * @param element the new Element
@@ -1803,9 +1798,11 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator>, Sendabl
 		}
 		return false;
 	}
-	
-	private boolean addI18N(Object root, TextItems i18n, SimpleSet<Object> items, boolean autoCreate, boolean replaceEmptyString, String key, List<?> subElements) {
-		if(items == null || items.add(root) == false) {
+	public boolean addI18N(Object root, TextItems i18n) {
+		return addI18N(root, i18n, new SimpleSet<Object>(), null, null);
+	}	
+	private boolean addI18N(Object root, TextItems i18n, SimpleSet<Object> items, String key, List<?> subElements) {
+		if(items == null || i18n == null || items.add(root) == false ) {
 			return false;
 		}
 		SendableEntityCreator creator = this.getCreatorClass(root);
@@ -1823,7 +1820,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator>, Sendabl
 			}
 			Object value = creator.getValue(root, property);
 			Object element;
-			if(autoCreate && ( value == null || (value instanceof Collection<?> && ((Collection<?>)value).size()<1) ) ){
+			if(i18n.isAutoCreate() && ( value == null || (value instanceof Collection<?> && ((Collection<?>)value).size()<1) ) ){
 				// Check for Creating
 				if(value instanceof SendableEntityCreator) {
 					// SIMPLE CASE
@@ -1846,7 +1843,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator>, Sendabl
 				}
 			}
 			
-			if(value == null || (replaceEmptyString && (""+value).equals(""))) {
+			if(value == null || (i18n.isReplaceEmptyString() && (""+value).equals(""))) {
 				// Check if Is Text
 				Object text = i18n.getLabelValue(fullKey);
 				if(text != null) {
@@ -1863,6 +1860,11 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator>, Sendabl
 								if(property.equalsIgnoreCase(keyByIndex)) {
 									Object newText  = subElement.getValueByIndex(i);
 									if(newText != null) {
+										// Replace Template if Exist
+										if(i18n.isTemplateReplace() && newText instanceof String) {
+											// Replace TextTemplate
+											
+										}
 										creator.setValue(root, property, newText, NEW);
 									}
 									break;
@@ -1875,10 +1877,10 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator>, Sendabl
 			if (value instanceof Collection<?>) {
 				Collection<?> collection = (Collection<?>) value;
 				for(Object item : collection) {
-					addI18N(item, i18n, items, autoCreate, replaceEmptyString, fullKey, subElements);
+					addI18N(item, i18n, items, fullKey, subElements);
 				}
 			} else {
-				addI18N(value, i18n, items, autoCreate, replaceEmptyString, fullKey, subElements);
+				addI18N(value, i18n, items, fullKey, subElements);
 			}
 		}
 		return true;

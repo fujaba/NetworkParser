@@ -151,7 +151,16 @@ public class TemplateResultFragment
 			ParserCondition tc = (ParserCondition) value;
 			if (this.expression || tc.isExpression()) {
 				Object object = tc.getValue(this);
-				return object != null && !object.equals("");
+				if(object == null ) {
+					return false;
+				}
+				if(object instanceof Boolean) {
+					return (Boolean)object;
+				}
+				if(object instanceof String) {
+					return !object.equals("");
+				}
+				return false;
 			} else {
 				// Check Stack
 				Object result = tc.getValue(this);
@@ -378,8 +387,7 @@ public class TemplateResultFragment
 			return false;
 		}
 		TemplateResultFragment element = (TemplateResultFragment) entity;
-//		public static final String PROPERTY_HEADERS="headers";
-//		public static final String PROPERTY_EXPRESSION="expression";
+
 		if (FINISH_GENERATE.equalsIgnoreCase(attribute)) {
 			// NOTIFY GRAPHMEMBER
 			ObjectCondition role = GraphUtil.getRole(element.member);

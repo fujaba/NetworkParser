@@ -19,7 +19,7 @@ public class TestAssociation {
 		Clazz person = model.createClazz("Person");
 		Clazz room = model.createClazz("Room");
 		person.withUniDirectional(room, "room", Association.ONE);
-		model.getGenerator().testGeneratedCode("java");
+		model.getGenerator().removeAndGenerate("java");
 //		model.generate("src/test/java");
 
 	}
@@ -32,7 +32,7 @@ public class TestAssociation {
 
 		person.withUniDirectional(room, "room", Association.ONE);
 		room.withUniDirectional(person, "persons", Association.MANY);
-		model.getGenerator().testGeneratedCode("java");
+		model.getGenerator().removeAndGenerate("java");
 //		model.generate("src/test/java");
 	}
 
@@ -46,7 +46,7 @@ public class TestAssociation {
 		person.withUniDirectional(person, "prevPerson", Association.ONE);
 		person.withUniDirectional(person, "nextPerson", Association.ONE);
 
-		model.getGenerator().testGeneratedCode("java");
+		model.getGenerator().removeAndGenerate("java");
 //		model.generate("src/test/java");
 	}
 
@@ -57,7 +57,7 @@ public class TestAssociation {
 		Clazz room = model.createClazz("Room");
 
 		person.withBidirectional(room, "room", Association.ONE, "person", Association.ONE);
-		model.getGenerator().testGeneratedCode("java");
+		model.getGenerator().removeAndGenerate("java");
 //		model.generate("src/test/java");
 
 	}
@@ -69,7 +69,7 @@ public class TestAssociation {
 		Clazz room = model.createClazz("Room");
 
 		room.withBidirectional(person, "persons", Association.MANY, "room", Association.ONE);
-		model.getGenerator().testGeneratedCode("java");
+		model.getGenerator().removeAndGenerate("java");
 //		model.generate("src/test/java");
 
 	}
@@ -81,7 +81,7 @@ public class TestAssociation {
 		Clazz room = model.createClazz("Room");
 
 		person.withBidirectional(room, "room", Association.ONE, "persons", Association.MANY);
-		model.getGenerator().testGeneratedCode("java");
+		model.getGenerator().removeAndGenerate("java");
 //		model.generate("src/test/java");
 
 	}
@@ -95,7 +95,7 @@ public class TestAssociation {
 		person.withBidirectional(room, "room", Association.ONE, "person", Association.ONE);
 		person.withBidirectional(teacher, "teacher", Association.ONE, "person", Association.ONE);
 		room.withBidirectional(teacher, "teacher", Association.ONE, "room", Association.ONE);
-		model.getGenerator().testGeneratedCode("java");
+		model.getGenerator().removeAndGenerate("java");
 //		model.generate("src/test/java");
 
 	}
@@ -110,7 +110,7 @@ public class TestAssociation {
 		person.withBidirectional(room, "rooms", Association.MANY, "person", Association.ONE);
 		person.withBidirectional(teacher, "teachers", Association.MANY, "person", Association.ONE);
 		room.withBidirectional(teacher, "teachers", Association.MANY, "room", Association.ONE);
-		model.getGenerator().testGeneratedCode("java");
+		model.getGenerator().removeAndGenerate("java");
 //		model.generate("src/test/java");
 
 	}
@@ -125,7 +125,7 @@ public class TestAssociation {
 		person.withBidirectional(room, "room", Association.ONE, "persons", Association.MANY);
 		person.withBidirectional(teacher, "teacher", Association.ONE, "persons", Association.MANY);
 		room.withBidirectional(teacher, "teacher", Association.ONE, "rooms", Association.MANY);
-		model.getGenerator().testGeneratedCode("java");
+		model.getGenerator().removeAndGenerate("java");
 //		model.generate("src/test/java");
 
 	}
@@ -138,7 +138,7 @@ public class TestAssociation {
 
 		person.withUniDirectional(room, "rooms", Association.MANY);
 		person.withBidirectional(room, "room", Association.ONE, "persons", Association.MANY);
-		model.getGenerator().testGeneratedCode("java");
+		model.getGenerator().removeAndGenerate("java");
 //		model.generate("src/test/java");
 	}
 
@@ -153,7 +153,7 @@ public class TestAssociation {
 	    Clazz task = model.createClazz("Task").withAttribute("name", STRING);
 	    task.withBidirectional(task, "subTasks", Association.MANY, "parentTasks", Association.MANY);
 
-		model.getGenerator().testGeneratedCode("java");
+		model.getGenerator().removeAndGenerate("java");
 //		model.generate("src/test/java");
 	}
 	@Test
@@ -169,7 +169,7 @@ public class TestAssociation {
 		student.withBidirectional(uni, "studs", Association.ONE, "students", Association.MANY);
 
 
-		model.getGenerator().testGeneratedCode("java");
+		model.getGenerator().removeAndGenerate("java");
 //		model.generate("src/test/java");
 	}
 	

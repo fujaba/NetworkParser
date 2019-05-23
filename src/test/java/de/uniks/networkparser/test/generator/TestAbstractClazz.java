@@ -23,7 +23,7 @@ public class TestAbstractClazz {
 		Clazz student = model.createClazz("Student");
 		student.withSuperClazz(person);
 
-		model.getGenerator().testGeneratedCode("java");
+		model.getGenerator().removeAndGenerate("java");
 	}
 
 	@Test
@@ -42,7 +42,7 @@ public class TestAbstractClazz {
 		Clazz student = model.createClazz("Student");
 		student.withSuperClazz(person);
 
-		model.getGenerator().testGeneratedCode("java");
+		model.getGenerator().removeAndGenerate("java");
 	}
 
 	@Test
@@ -60,7 +60,7 @@ public class TestAbstractClazz {
 		// associations
 		game.withBidirectional(ground, "grounds", Association.MANY, "game", Association.ONE);
 
-		model.getGenerator().testGeneratedCode("java");
+		model.getGenerator().removeAndGenerate("java");
 	}
 }
 

@@ -467,7 +467,7 @@ public class Clazz extends GraphEntity {
 			// Check for duplicate
 			AssociationSet associations = otherAssoc.getClazz().getAssociations();
 			for(Association checkAssoc : associations) {
-				if(checkAssoc == otherAssoc || checkAssoc.getType() == AssociationTypes.GENERALISATION) {
+				if(checkAssoc == otherAssoc || checkAssoc.getType() == AssociationTypes.GENERALISATION || checkAssoc.getOtherType() == AssociationTypes.GENERALISATION) {
 					continue;
 				}
 				if(checkAssoc.getName() != null && checkAssoc.getName().equalsIgnoreCase(otherAssoc.getName())) {
@@ -671,7 +671,6 @@ public class Clazz extends GraphEntity {
 				childAssoc.with(superAssoc);
 				this.with(childAssoc);
 				item.with(superAssoc);
-				associations = getAssociations();
 			}
 		}
 		return true;

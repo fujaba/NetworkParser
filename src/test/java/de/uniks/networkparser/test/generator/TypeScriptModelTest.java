@@ -34,7 +34,7 @@ public class TypeScriptModelTest {
 
 		model.createClazz("Teacher");
 
-		model.getGenerator().testGeneratedCode(ModelGenerator.TYPE_TYPESCRIPT);
+		model.getGenerator().removeAndGenerate(ModelGenerator.TYPE_TYPESCRIPT);
 	}
 
 }

@@ -219,9 +219,9 @@ public class Equals implements ParserCondition, SendableEntityCreator {
 	public String toString() {
 		String equals="==";
 		if(position<0) {
-			equals = "<";
-		} else if(position>0) {
 			equals = ">";
+		} else if(position>0) {
+			equals = "<";
 		}
 		if (left != null && right != null) {
 			

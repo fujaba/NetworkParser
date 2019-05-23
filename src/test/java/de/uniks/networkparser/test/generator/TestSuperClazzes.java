@@ -19,7 +19,7 @@ public class TestSuperClazzes {
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.superclazzes_a");
 		Clazz person = model.createClazz("Person");
 		model.createClazz("Pupil").withSuperClazz(person);
-		model.getGenerator().testGeneratedCode("java");
+		model.getGenerator().removeAndGenerate("java");
 //		model.generate("src/test/java");
 	}
 
@@ -33,7 +33,7 @@ public class TestSuperClazzes {
 		Clazz pupil = model.createClazz("Pupil");
 
 		person.withKidClazzes(pupil);
-		model.getGenerator().testGeneratedCode("java");
+		model.getGenerator().removeAndGenerate("java");
 //		model.generate("src/test/java");
 	}
 
@@ -46,7 +46,7 @@ public class TestSuperClazzes {
 		Clazz person = model.createClazz("Person");
 		model.createClazz("Pupil").withSuperClazz(person);
 		model.createClazz("Teacher").withSuperClazz(person);
-		model.getGenerator().testGeneratedCode("java");
+		model.getGenerator().removeAndGenerate("java");
 //		model.generate("src/test/java");
 	}
 
@@ -62,7 +62,7 @@ public class TestSuperClazzes {
 
 		pupil.withSuperClazz(person);
 
-		model.getGenerator().testGeneratedCode("java");
+		model.getGenerator().removeAndGenerate("java");
 //		model.generate("src/test/java");
 	}
 
@@ -81,7 +81,7 @@ public class TestSuperClazzes {
 
 		teacher.withBidirectional(person, "person", Association.ONE, "teacher", Association.ONE);
 
-		model.getGenerator().testGeneratedCode("java");
+		model.getGenerator().removeAndGenerate("java");
 	}
 
 	@Test
@@ -100,7 +100,7 @@ public class TestSuperClazzes {
 
 		teacher.withBidirectional(person, "person", Association.ONE, "teacher", Association.ONE);
 
-		model.getGenerator().testGeneratedCode("java");
+		model.getGenerator().removeAndGenerate("java");
 	}
 
 //FIXME Wrong call of RemoveYou

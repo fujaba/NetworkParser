@@ -145,7 +145,7 @@ public class GenModel {
 
 		story.dumpHTML();
 //TODO TEST DUSPOTATUIONs		model.getGenerator().withFeature(Feature.getStandAlone().with(Feature.PATTERN));
-		model.getGenerator().testGeneratedCode("src/test/java");
+		model.getGenerator().removeAndGenerate("src/test/java");
 	}
 
 }

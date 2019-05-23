@@ -238,32 +238,65 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 		return true;
 	}
 
+	
+	
 	public static void main(String[] args) {
 		NetworkParserLog logger = new NetworkParserLog().withListener(new StringPrintStream());
 		if (args != null && args.length > 0 && args[0] != null) {
-			if ("GIT".equalsIgnoreCase(args[0])) {
+			if (GitRevision.MAINTAG.equalsIgnoreCase(args[0])) {
 				GitRevision revision = new GitRevision();
 				try {
-					int commit = -1;
+					int commit = 1;
 					if (args.length > 1) {
 						try {
 							commit = Integer.valueOf(args[1]);
 						} catch (Exception e) {
 						}
 					}
-					
 					logger.debug(DiagramEditor.class, "main", revision.execute(commit));
 				} catch (Exception e) {
 					e.printStackTrace();
+					System.exit(-1);
 				}
 				return;
 			}
 			if ("NPM".equalsIgnoreCase(args[0])) {
-				new Gradle().loadNPM();
+				if(new Gradle().loadNPM() == false) {
+					System.exit(-1);
+				}
 				return;
 			}
-
-			if ("JARVALIDATOR".equalsIgnoreCase(args[0])) {
+			if("INIT".equalsIgnoreCase(args[0])) {
+				String filename = Os.getFilename();
+				if(filename == null) {
+					System.exit(1);
+				}
+				if(filename.toLowerCase().endsWith(".jar") == false) {
+					System.exit(2);
+				}
+				Gradle gradle = new Gradle();
+				String projectName = null;
+				if(args.length >1 && args[1]!= null) {
+					projectName = args[1];
+				}else {
+					System.exit(3);
+				}
+				String licence = "MIT";
+				if(args.length >2 && args[2]!= null && args[2].length() < 10) {
+					licence =args[2];
+				}
+				boolean success = gradle.initProject(filename, projectName, licence);
+				if(success == false) {
+					System.exit(-1);
+				}
+				return;
+//				public static void main(String[] args) {
+//					Gradle gradle = new Gradle();
+//					gradle.addAtrifact(null, "Test", "MIT");
+////					
+//				}
+			}
+			if (JarValidator.MAINTAG.equalsIgnoreCase(args[0])) {
 				JarValidator validator = new JarValidator();
 				validator.withPath("build/libs");
 				int timeOut = -1;
@@ -354,7 +387,6 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 				ReflectionBlackBoxTester tester = new ReflectionBlackBoxTester();
 				tester.withLogger(logger);
 				tester.mainTester(args);
-				return;
 			}
 		}
 		if (converting(null, null, null, false, true) == false) {

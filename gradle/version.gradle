@@ -59,9 +59,9 @@ def getGradle(type) {
 // Define a method using a closure as the method body
 class GITVersion {
 	// MAJOR VERSION - Manually set
-	int major = -1
-	int minor = -1
-	int revision = -1
+	int major = 0
+	int minor = 0
+	int revision = 1
 	String buildTime = ""
 	String hash = ""
 	String coverage = ""
@@ -76,11 +76,15 @@ class GITVersion {
 		}
 		if(latest) {
 			""
-		} else if(isRelease() == false && !isMaster()) {
-			"$major.$minor.$revision${'-SNAPSHOT'}"
 		} else {
-			"$major.$minor.$revision"
+			getVersion()
 		}
+	}
+	String getVersion() {
+		if(isRelease() == false && !isMaster()) {
+			return "$major.$minor.$revision${'-SNAPSHOT'}"
+		}
+		"$major.$minor.$revision"
 	}
 	boolean isMaster() {
 		if(branch == null) {
@@ -109,6 +113,7 @@ def gitversion() {
 		gitVersion.buildTime = buildTime()
 		gitVersion.branch = json.get("branchname")
 		gitVersion.error = false
+		println json
 	} catch(Exception e) {
 		println "ERROR GIT"
 		gitVersion.minor = getGitTag()
@@ -127,10 +132,13 @@ def gitversion() {
 		println "Revisionnumber: "	+ gitVersion.revision
 		println "Branchname: " 		+ gitVersion.branch
 		println "LastCommit: "		+ gitVersion.hash
-		println "GitTag: "			+ gitVersion.minor	
+		println "GitTag: "			+ gitVersion.minor
+		println "JarVersion: "		+ gitVersion.getVersion()
 	}
 }
-
+task gitversion() {
+	println "Show Version:"
+}
 project.gradle.taskGraph.whenReady{
 	gitversion()
 }
@@ -179,7 +187,7 @@ def revisionNumber() {
 		count = count + 1
 	}
 	if( count == 0) {
-		count = -1
+		count = 1
 	}
 	count
 }

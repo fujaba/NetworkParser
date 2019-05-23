@@ -112,7 +112,7 @@ public class Os {
 
 	public static final boolean isEclipse() {
 		String fileName = Os.getFilename().toLowerCase();
-		if (!fileName.endsWith(".jar")) {
+		if (fileName.endsWith(".jar") == false) {
 			// Eclipse
 			return true;
 		}

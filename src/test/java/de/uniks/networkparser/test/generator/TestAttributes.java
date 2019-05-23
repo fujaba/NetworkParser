@@ -15,7 +15,7 @@ public class TestAttributes {
 	public void testClassWithoutAttributes() {
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.attribute_a");
 		model.createClazz("Person");
-		model.getGenerator().testGeneratedCode("java");
+		model.getGenerator().removeAndGenerate("java");
 	}
 
 	@Test
@@ -25,7 +25,7 @@ public class TestAttributes {
 
 
 		person.createAttribute("name", DataType.STRING);
-		model.getGenerator().testGeneratedCode("java");
+		model.getGenerator().removeAndGenerate("java");
 	}
 
 	@Test
@@ -34,7 +34,7 @@ public class TestAttributes {
 		Clazz person = model.createClazz("Person");
 		person.createAttribute("name", DataType.STRING);
 		person.withAttribute("age", DataType.INT);
-		model.getGenerator().testGeneratedCode("java");
+		model.getGenerator().removeAndGenerate("java");
 	}
 
 	@Test
@@ -42,7 +42,7 @@ public class TestAttributes {
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.attribute_d");
 		Clazz person = model.createClazz("Person");
 		person.withAttribute("names", DataTypeSet.create(DataType.STRING));
-		model.getGenerator().testGeneratedCode("java");
+		model.getGenerator().removeAndGenerate("java");
 	}
 
 	@Test
@@ -50,7 +50,7 @@ public class TestAttributes {
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.attribute_e");
 		Clazz person = model.createClazz("Person");
 		person.withAttribute("ages", DataTypeSet.create(DataType.INT));
-		model.getGenerator().testGeneratedCode("java");
+		model.getGenerator().removeAndGenerate("java");
 	}
 
 	@Test
@@ -59,7 +59,7 @@ public class TestAttributes {
 		Clazz person = model.createClazz("Person");
 		person.createAttribute("names", DataTypeSet.create(DataType.STRING));
 		person.withAttribute("ages", DataTypeSet.create(DataType.INT));
-		model.getGenerator().testGeneratedCode("java");
+		model.getGenerator().removeAndGenerate("java");
 	}
 
 	@Test
@@ -67,7 +67,7 @@ public class TestAttributes {
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.attribute_g");
 		Clazz person = model.createClazz("Person");
 		person.createAttribute("namesSet", DataTypeSet.create(DataTypeSet.create(DataType.STRING)));
-		model.getGenerator().testGeneratedCode("java");
+		model.getGenerator().removeAndGenerate("java");
 	}
 	// FIXME Parser generiert withCreator(...) anstelle von with(...)
 	// (temporaer behoben)
@@ -77,7 +77,7 @@ public class TestAttributes {
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.attribute_h");
 		Clazz person = model.createClazz("Person");
 		person.createAttribute("names", DataTypeMap.create(DataType.STRING, DataType.STRING));
-		model.getGenerator().testGeneratedCode("java");
+		model.getGenerator().removeAndGenerate("java");
 	}
 
 	@Test
@@ -85,7 +85,7 @@ public class TestAttributes {
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.attribute_i");
 		Clazz person = model.createClazz("Person");
 		person.createAttribute("namesMap", DataTypeMap.create(DataType.STRING, DataTypeMap.create(DataType.STRING, DataType.STRING)));
-		model.getGenerator().testGeneratedCode("java");
+		model.getGenerator().removeAndGenerate("java");
 	}
 
 	@Test
@@ -93,7 +93,7 @@ public class TestAttributes {
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.attribute_j");
 		Clazz person = model.createClazz("Person");
 		person.createAttribute("namesList", DataTypeSet.create(DataTypeMap.create(DataType.STRING, DataType.STRING)));
-		model.getGenerator().testGeneratedCode("java");
+		model.getGenerator().removeAndGenerate("java");
 	}
 
 	@Test
@@ -101,7 +101,7 @@ public class TestAttributes {
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.attribute_k");
 		Clazz person = model.createClazz("Person");
 		person.createAttribute("names", DataTypeMap.create(DataType.STRING, DataTypeSet.create(DataType.STRING)));
-		model.getGenerator().testGeneratedCode("java");
+		model.getGenerator().removeAndGenerate("java");
 	}
 
 	// FIXME withCreator(...) anstelle von with(...) in CreatorCreator
@@ -112,7 +112,7 @@ public class TestAttributes {
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.attribute_l");
 		Clazz person = model.createClazz("Person");
 		person.withAttribute("personalName", DataType.STRING).with(Modifier.PRIVATE);
-		model.getGenerator().testGeneratedCode("java");
+		model.getGenerator().removeAndGenerate("java");
 	}
 
 	// FIXME public Modifier verhindert die Generierung von gettern und settern
@@ -122,7 +122,7 @@ public class TestAttributes {
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.attribute_m");
 		Clazz person = model.createClazz("Person");
 		person.withAttribute("personalName", DataType.STRING).with(Modifier.PUBLIC);
-		model.getGenerator().testGeneratedCode("java");
+		model.getGenerator().removeAndGenerate("java");
 	}
 
 	@Test
@@ -130,7 +130,7 @@ public class TestAttributes {
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.attribute_n");
 		Clazz person = model.createClazz("Person");
 		person.withAttribute("personalName", DataType.STRING).with(Modifier.STATIC);
-		model.getGenerator().testGeneratedCode("java");
+		model.getGenerator().removeAndGenerate("java");
 	}
 
 	@Test
@@ -138,6 +138,6 @@ public class TestAttributes {
 		ClassModel model = new ClassModel("org.sdmlib.simple.model.attribute_o");
 		Clazz person = model.createClazz("Person");
 		person.withAttribute("personalName", DataType.STRING).with(Modifier.PROTECTED);
-		model.getGenerator().testGeneratedCode("java");
+		model.getGenerator().removeAndGenerate("java");
 	}
 }

@@ -31,9 +31,13 @@ THE SOFTWARE.
 */
 
 public class SymTabEntry {
+	public static final String TYPE_VOID = "void";
+	
 	public static final String TYPE_IMPORT = "import";
 
+	public static final String TYPE_INTERFACE = "interface";
 	public static final String TYPE_CLASS = "class";
+	public static final String TYPE_ENUM = "enum";
 
 	public static final String TYPE_EXTENDS = "extends";
 	public static final String TYPE_IMPLEMENTS = "implements";

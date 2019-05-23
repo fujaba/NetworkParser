@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.io.Reader;
+import java.io.StringReader;
 import java.net.Socket;
 
 import de.uniks.networkparser.buffer.CharacterBuffer;
@@ -46,9 +48,10 @@ public class HTTPRequest {
 		} else {
 			e.printStackTrace();
 		}
-
 	}
-
+	HTTPRequest() {
+	}
+	
 	private HTTPRequest(Socket socket) {
 		this.socket = socket;
 	}
@@ -114,41 +117,94 @@ public class HTTPRequest {
 	public static HTTPRequest create(Socket socket) {
 		return new HTTPRequest(socket);
 	}
+	public static HTTPRequest createRouting(String value) {
+		HTTPRequest httpRequest = new HTTPRequest();
+		StringReader stringReader = new StringReader(value);
+		httpRequest.parsingPath(stringReader, "*");
+		return httpRequest;
+	}
 
 	public void readPath() {
-		int c;
-		CharacterBuffer buffer = new CharacterBuffer();
 		BufferedReader input = getInput();
+		parsingPath(input, null);
+	}
+	private boolean parsingPath(Reader input, String defaultValue) {
 		this.pathParts = new SimpleList<String>();
 		this.pathParameter = new SimpleList<String>();
-		if (input != null) {
-			int startPos=0;
-			try {
-				while ((c = input.read()) != -1) {
-					if (c == ' ') {
-						break;
-					}
-					buffer.with((char) c);
-					//TODO NEW SPLITT
-					if(c == '/') {
-						// ss
-					}
+		if(defaultValue == null) {
+			defaultValue = "";
+		}
+		if (input == null) {
+			this.path = defaultValue;
+			return false;
+		}
+		CharacterBuffer buffer = new CharacterBuffer();
+		int c;
+		//bub/bla
+		//*
+		//bub/:id
+		//blub?id=1&name=bla
+		CharacterBuffer part =new CharacterBuffer();
+		boolean isVariable = false;
+		try {
+			while ((c = input.read()) != -1) {
+				if (c == ' ') {
+					break;
 				}
-			} catch (IOException e) {
-				executeExeption(e);
+				buffer.with((char) c);
+				// Check for Paramter
+				if(c == ':' && part.length() == 0) {
+					isVariable=true;
+				}
+				if(c == '?' && isVariable == false) {
+					isVariable = true;
+				}
+				if(c == '&' && isVariable) {
+					part.withStartPosition(1);
+					this.pathParameter.add(part.toString());
+					part.clear();
+					continue;
+				}
+				if(c == '/') {
+					// Split for /
+					if(isVariable) {
+						if(part.startsWith(":")) {
+							part.withStartPosition(1);
+							this.pathParameter.add(part.toString());
+							part.clear();
+							continue;
+						}
+					}else {
+						this.pathParts.add(part.toString());
+					}
+					part.clear();
+					continue;
+				}
+				part.with(c);
 			}
-			if (buffer.charAt(0) == '/') {
-				buffer.withStartPosition(1);
+			if(part.length()>0) {
+				if(isVariable) {
+					part.withStartPosition(1);
+					this.pathParameter.add(part.toString());
+				}else {
+					this.pathParts.add(part.toString());
+				}
 			}
+		} catch (IOException e) {
+			executeExeption(e);
+		}
+		if (buffer.charAt(0) == '/') {
+			buffer.withStartPosition(1);
 		}
 		this.path = buffer.toString();
+		return true;
 	}
 
 	public String getHttp_Type() {
 		return http_Type;
 	}
 
-	public String getPath() {
+	public String getPath() { 
 		return path;
 	}
 	

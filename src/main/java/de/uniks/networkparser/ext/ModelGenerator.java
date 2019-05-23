@@ -74,11 +74,9 @@ public class ModelGenerator extends SimpleGenerator {
 	public SimpleList<Template> getTemplates(String filter) {
 		if (templates == null) {
 			templates = new SimpleKeyValueList<String, Template>();
-//			addTemplate(new JavaCreatorCreator(), true);
 			addTemplate(new JavaCreatorCreator("Set"), true);
 			addTemplate(new JavaClazz(), true);
 			addTemplate(new JavaSetCreator(), true);
-//			addTemplate(new JavaCreator(), true);
 			addTemplate(new TypescriptClazz(), true);
 			addTemplate(new CppClazz(), true);
 		}
@@ -222,7 +220,6 @@ public class ModelGenerator extends SimpleGenerator {
 				if (resultFile == null) {
 					continue;
 				}
-//				TemplateResultFragment fragment = 
 				resultFile.withMetaModel(template.isMetaModel());
 				template.generate(resultModel, resultFile, clazz);
 				resultModel.add(resultFile);
@@ -380,7 +377,7 @@ public class ModelGenerator extends SimpleGenerator {
 	 * @param param List of Params First is Type like TYPE_JAVA Second rootDir
 	 */
 
-	public void testGeneratedCode(String... param) {
+	public void removeAndGenerate(String... param) {
 		String type = null;
 		String rootDir = null;
 		if (this.defaultModel != null) {
@@ -414,7 +411,7 @@ public class ModelGenerator extends SimpleGenerator {
 				}
 			}
 			if (rootDir != null) {
-				removeAllGeneratedCode(defaultModel, rootDir, type);
+				remove(defaultModel, rootDir, type);
 				generating(rootDir, this.defaultModel, null, type, true, true);
 			}
 		}
@@ -424,7 +421,7 @@ public class ModelGenerator extends SimpleGenerator {
 		return lastGenRoot;
 	}
 
-	public void removeAllGeneratedCode(GraphModel model, String rootDir, String type) {
+	public void remove(GraphModel model, String rootDir, String type) {
 		// now remove class file, creator file, and modelset file for each class
 		// and the CreatorCreator
 		Feature codeStyle = getFeature(Feature.CODESTYLE);

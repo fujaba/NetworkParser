@@ -25,7 +25,7 @@ public class TestIssues {
 		c.withSuperClazz(a);
 		b.withBidirectional(c, "c", Association.ONE, "b", Association.ONE);
 
-		model.getGenerator().testGeneratedCode("java");
+		model.getGenerator().removeAndGenerate("java");
 	}
 //	@Test
 	public void testIsuue30() {
@@ -43,7 +43,7 @@ public class TestIssues {
 		Method method = a.createMethod("checkEnd");
 		method.with(DataType.BOOLEAN).withBody("");
 
-		model.getGenerator().testGeneratedCode("java");
+		model.getGenerator().removeAndGenerate("java");
 	}
 	@Test
 	public void testsMultiExtends() {
@@ -57,7 +57,7 @@ public class TestIssues {
 
 		a.withSuperClazz(b);
 		a.withSuperClazz(c);
-		model.getGenerator().testGeneratedCode("java");
+		model.getGenerator().removeAndGenerate("java");
 
 	}
 

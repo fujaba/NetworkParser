@@ -9,7 +9,7 @@ public class JavaAssociation extends Template {
 		this.id = "association";
 		this.type = DECLARATION;
 		this.withTemplate("{{#template VALUE}}",
-				"{{#if {{other.isImplements}}==false}}",
+			"{{#if {{other.isGenerate}}}}",
 				"	public static final String PROPERTY_{{other.NAME}} = \"{{other.name}}\";",
 				"",
 				"{{#ifnot {{file.member.type}}==interface}}",
@@ -161,6 +161,6 @@ public class JavaAssociation extends Template {
 				"{{#endif}}",
 				"{{#endif}}",
 				"{{#endif}}",
-				"{{#endif}}{{#endtemplate}}");
+			"{{#endif}}{{#endtemplate}}");
 	}
 }

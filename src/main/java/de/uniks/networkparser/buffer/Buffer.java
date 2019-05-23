@@ -117,7 +117,6 @@ public abstract class Buffer implements BufferItem {
 		for (int i = start; i < len; i++) {
 			result[i] = getByte();
 		}
-		// }
 		return result;
 	}
 

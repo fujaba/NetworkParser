@@ -1285,11 +1285,13 @@ public abstract class AbstractArray<V> implements BaseItem {
 			id = -1;
 		}
 
-		Object child;
-		if ((flag & MAP) == 0) {
-			child = getByIndex(SMALL_KEY, id + this.index, size);
-		} else {
-			child = getByIndex(SMALL_VALUE, indexOf(keyString.substring(0, len)) + this.index, size);
+		Object child = null;
+		if(id>=0) {
+			if ((flag & MAP) == 0) {
+				child = getByIndex(SMALL_KEY, id + this.index, size);
+			} else {
+				child = getByIndex(SMALL_VALUE, indexOf(keyString.substring(0, len)) + this.index, size);
+			}
 		}
 
 		if (child == null) {

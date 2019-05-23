@@ -35,6 +35,7 @@ public class JarValidator {
 	private String file = "build/jacoco/html/index.html";
 	public static final String JARFILE = ".jar";
 	public static final String CLASSFILESUFFIX = ".class";
+	public static final String MAINTAG = "JARVALIDATOR";
 	private ArrayList<String> warnings = new ArrayList<String>();
 	private TreeSet<String> warningsPackages = new TreeSet<String>();
 	private ArrayList<String> errors = new ArrayList<String>();

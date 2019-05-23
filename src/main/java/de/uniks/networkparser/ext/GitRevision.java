@@ -39,6 +39,7 @@ import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 
 public class GitRevision {
+	public static final String MAINTAG="GIT";
 	public static final String MAYOR = "mayor";
 	public static final String MINOR = "minor";
 	public static final String HASH = "hash";
@@ -50,7 +51,13 @@ public class GitRevision {
 
 	private boolean full = false;
 	private int max = -1;
+	private String path;
 
+	public GitRevision withPath(String path) {
+		this.path = path;
+		return this;
+	}
+	
 	public JsonObject execute() throws IOException {
 		JsonObject json = execute(max);
 		System.setProperty("Branchname", json.getString(BRANCHNAME));
@@ -60,13 +67,28 @@ public class GitRevision {
 	}
 
 	@SuppressWarnings("unchecked")
-	public JsonObject execute(int maxCommit) throws IOException {
+	public JsonObject execute(int maxCommit) {
 		if (ReflectionLoader.FILEREPOSITORYBUILDER == null) {
 			return null;
 		}
-		File file = new File("");
-		if (new File(".git/config").exists()) {
-			file = new File(".git");
+		
+		File file = null;
+		String localPath = path;
+		if(localPath == null) {
+			localPath ="";
+		}else if((localPath.endsWith("/") || localPath.endsWith("\\") )== false) {
+			localPath += "/";
+		}
+		File projectFile = null;
+		if (new File(localPath+".git/config").exists()) {
+			file = new File(localPath+".git");
+			projectFile = new File(localPath);
+		}else if (new File(localPath+"config").exists()) {
+			file = new File(localPath);
+			projectFile = file.getParentFile();
+		}
+		if(file == null) {
+			return null;
 		}
 		Object builder = ReflectionLoader.newInstance(ReflectionLoader.FILEREPOSITORYBUILDER);
 		Object repository = null;
@@ -79,16 +101,20 @@ public class GitRevision {
 
 		int count = 0;
 		try {
-
-			Object repoBuilder = ReflectionLoader.call(builder, "setWorkTree", File.class, file);
-			repository = ReflectionLoader.callChain(repoBuilder, "readEnvironment", "findGitDir", "build");
+			ReflectionLoader.call(builder, "setWorkTree", File.class, file);
+			if(projectFile != null && "".equals(projectFile.getName())== false) {
+				ReflectionLoader.call(builder, "setGitDir", File.class, projectFile);
+			}
+			repository = ReflectionLoader.callChain(builder, "readEnvironment", "findGitDir", "build");
 			// scan environment GIT_* variables
 			// scan up the file system tree
 
 			calcGitTag(repository, info);
 			allRefs = (Map<String, ?>) ReflectionLoader.call(repository, "getAllRefs");
-
-			headID = ReflectionLoader.call(repository, "resolve", String.class, "HEAD");
+			try {
+				headID = ReflectionLoader.call(repository, "resolve", String.class, "HEAD");
+			}catch (Exception e) {
+			}
 			if (headID != null) {
 				id = (String) ReflectionLoader.call(headID, "name");
 			}
@@ -140,7 +166,11 @@ public class GitRevision {
 
 		info.put(BRANCHNAME, branchesTag);
 		info.put(LASTCOMMIT, id);
-		info.put(REVISIONNUMBER, count);
+		if(count == 0) {
+			info.put(REVISIONNUMBER, 1);
+		}else {
+			info.put(REVISIONNUMBER, count);
+		}
 		info.put(COMMITS, map);
 		return info;
 	}
@@ -168,12 +198,12 @@ public class GitRevision {
 			return -1;
 		}
 		int minor = -1;
-		int mayor = -1;
+		int mayor = 0;
 		String tag = null;
 		String tagHash = "";
 		@SuppressWarnings("unchecked")
 		Map<String, Object> tags = (Map<String, Object>) ReflectionLoader.call(repository, "getTags");
-		int versionNumber = 0;
+		int versionNumber = 1;
 		for (Iterator<Entry<String, Object>> i = tags.entrySet().iterator(); i.hasNext();) {
 			Entry<String, Object> entry = i.next();
 			try {
@@ -224,7 +254,12 @@ public class GitRevision {
 			}
 		}
 		info.put(MAYOR, mayor);
-		info.put(MINOR, minor);
+		System.out.println(minor);
+		if(minor <0) {
+			info.put(MINOR, 0);	
+		}else {
+			info.put(MINOR, minor);
+		}
 		info.put(HASH, tagHash);
 		info.put(TAG, tag);
 		return minor;
@@ -360,5 +395,37 @@ public class GitRevision {
 //				}
 			}
 		}
+	}
+
+	public boolean init(String remoteURL) {
+		if(ReflectionLoader.GIT ==null) {
+			return false;
+		}
+		String localPath = path;
+		if(localPath == null) {
+			localPath ="";
+		}else if((localPath.endsWith("/") || localPath.endsWith("\\") )== false) {
+			localPath += "/";
+		}
+		File dir = new File(localPath);
+		File gitDir = new File(localPath+".git/");
+		gitDir.mkdirs();
+		try {
+			
+			Object initGIT = ReflectionLoader.call(ReflectionLoader.GIT, "init");
+			ReflectionLoader.call(initGIT, "setDirectory", dir);
+			ReflectionLoader.call(initGIT, "setGitDir", gitDir);
+			Object git = ReflectionLoader.call(initGIT, "call");
+			if(remoteURL != null) {
+				Object config = ReflectionLoader.callChain(git, "getRepository", "getConfig");
+				ReflectionLoader.call(config, "setString", "remote", "origin", "url", remoteURL);
+				ReflectionLoader.call(config, "save"); 
+			}
+			ReflectionLoader.call(git, "close");
+		} catch (Exception e) {
+			return false;
+		}
+		return true;
+
 	}
 }

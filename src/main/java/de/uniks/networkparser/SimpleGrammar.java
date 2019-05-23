@@ -150,7 +150,6 @@ public class SimpleGrammar implements Grammar {
 
 	@Override
 	public SendableEntityCreator getCreator(String type, Object item, MapEntity entity, String className) {
-//			IdMap map, boolean searchForSuperCreator, String className) {
 		if (item == null) {
 			return null;
 		}

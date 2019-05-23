@@ -22,14 +22,19 @@ public class JavaCreatorCreator extends Template {
 		}
 		this.withTemplate(
 				"{{#template PACKAGE}}{{#if {{packageName}}}}package {{packageName}}.util;{{#endif}}{{#endtemplate}}",
-				"", "{{#template IMPORT}}{{#foreach {{file.headers}}}}", "import {{item}};{{#endfor}}{{#endtemplate}}",
-				"", "{{#import " + IdMap.class.getName() + "}}" + "class CreatorCreator {", "",
-
+				"", "{{#template IMPORT}}{{#foreach {{file.headers}}}}",
+					"import {{item}};{{#endfor}}{{#endtemplate}}",
+				"",
+				"{{#import " + IdMap.class.getName() + "}}" + "class CreatorCreator {",
+				"",
 				"   public static final IdMap createIdMap(String session) {",
-				"        IdMap map = new IdMap().withSession(session);", "",
-				"{{#foreach {{generatedclazz}}}}        map.withCreator(new {{item}}"+createorPrefix+"());\r\n{{#endfor}}",
-				"        return map;", "   }",
-
+				"        IdMap map = new IdMap().withSession(session);",
+				"",
+					"{{#foreach {{generatedclazz}}}}",
+					"	map.withCreator(new {{item}}"+createorPrefix+"());",
+					"{{#endfor}}",
+				"        return map;",
+				"   }",
 				"{{#template TEMPLATEEND}}}{{#endtemplate}}");
 	}
 

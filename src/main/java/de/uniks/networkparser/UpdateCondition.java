@@ -304,7 +304,6 @@ public class UpdateCondition implements ObjectCondition {
 						mergeUpdate = (Entity) value;
 					}
 				}
-//				entity.getString(ICl)
 			}else {
 				for(int i = 0;i<entity.size();i++) {
 					String key = entity.getKeyByIndex(i);

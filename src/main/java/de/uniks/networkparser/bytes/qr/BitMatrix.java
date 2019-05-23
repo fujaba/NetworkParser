@@ -431,7 +431,7 @@ public final class BitMatrix implements Cloneable {
 	 * @return string representation of entire matrix utilizing given strings
 	 */
 	public String toString(char setString, char unsetString) {
-		CharacterBuffer result = new CharacterBuffer().withLength(height * (width + 1));
+		CharacterBuffer result = new CharacterBuffer().withBufferLength(height * (width + 1));
 		for (int y = 0; y < height; y++) {
 			for (int x = 0; x < width; x++) {
 				result.with(get(x, y) ? setString : unsetString);

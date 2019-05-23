@@ -37,6 +37,9 @@ public class TextItems extends SimpleKeyValueList<String, Object> implements Sen
 	public static final String PROPERTY_VALUE = "value";
 	private LocalisationInterface customLanguage = null;
 	private boolean defaultLabel = true;
+	private boolean autoCreate = true;
+	private boolean templateReplace =  true;
+	private boolean replaceEmptyString = true; 
 	public static final TextItems DEFAULT=new TextItems()
 			// Month
 			.with("JANUARY", "January")
@@ -250,5 +253,32 @@ public class TextItems extends SimpleKeyValueList<String, Object> implements Sen
 			}
 		}
 		return true;
+	}
+
+	public boolean isAutoCreate() {
+		return autoCreate;
+	}
+
+	public TextItems withAutoCreate(boolean autoCreate) {
+		this.autoCreate = autoCreate;
+		return this;
+	}
+
+	public boolean isTemplateReplace() {
+		return templateReplace;
+	}
+
+	public TextItems withTemplateReplace(boolean templateReplace) {
+		this.templateReplace = templateReplace;
+		return this;
+	}
+
+	public boolean isReplaceEmptyString() {
+		return replaceEmptyString;
+	}
+
+	public TextItems withReplaceEmptyString(boolean replaceEmptyString) {
+		this.replaceEmptyString = replaceEmptyString;
+		return this;
 	}
 }

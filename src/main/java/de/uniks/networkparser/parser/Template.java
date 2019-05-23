@@ -153,7 +153,6 @@ public class Template implements TemplateParser {
 		// Execute Template
 		templateCondition.update(templateFragment);
 
-//		templateFragment.withValue(parser.getResult());
 		templateFragment.setValue(templateCondition, TemplateResultFragment.FINISH_GENERATE, templateCondition,
 				SendableEntityCreator.NEW);
 
@@ -731,9 +730,21 @@ public class Template implements TemplateParser {
 		if(isValid) {
 			return true;
 		}
+		
+		
 		String type = member.getClass().getSimpleName().toLowerCase();
-		if (this.fileType != null && this.fileType.equals(type)) {
-			return true;
+		if (this.fileType != null ) {
+			if(this.fileType.equals(type)) {
+				return true;
+			}
+			// Try to get Custom FileType
+			Object value = member.getValue(GraphMember.PROPERTY_FILETYPE);
+			if(type instanceof String) {
+				type = (String) value;
+			}
+			if(this.fileType.equals(value)) {
+				return true;
+			}
 		}
 		if (this.id != null && this.id.equals(type)) {
 			return true;

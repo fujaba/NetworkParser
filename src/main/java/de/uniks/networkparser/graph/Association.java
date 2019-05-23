@@ -34,10 +34,10 @@ public class Association extends GraphMember {
 	public static final String PROPERTY_CLAZZ = "clazz";
 	public static final String PROPERTY_TYPE = "type";
 	public static final String PROPERTY_ISEDGE = "isEdge";
+	public static final String PROPERTY_ISGENERATE = "isGenerate";
 	public static final String PROPERTY_ISIMPLEMENTS = "isImplements";
 	private int cardinality;
 	// The Complete Edge Info
-//	private GraphLabel info;
 	private Association other;
 	private AssociationTypes type = AssociationTypes.ASSOCIATION;
 
@@ -85,6 +85,17 @@ public class Association extends GraphMember {
 		}
 		if (PROPERTY_ISIMPLEMENTS.equalsIgnoreCase(attrName)) {
 			return AssociationTypes.isImplements(getType());
+		}
+		if(PROPERTY_ISGENERATE.equalsIgnoreCase(attrName)) {
+			if(AssociationTypes.isEdge(getType()) ) {
+				return getType() != AssociationTypes.EDGE;
+					// Case GENERATION AND IMPLEMENTATION
+//					return (value.equals(GENERALISATION) || value.equals(IMPLEMENTS) || value.equals(EDGE) );
+//					return AssociationTypes.isImplements(other.getType());
+//				}
+//				return true;
+			}
+			return false;
 		}
 
 		return super.getValue(attribute);

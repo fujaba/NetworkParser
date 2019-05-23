@@ -21,12 +21,14 @@ public class StringInputStream extends InputStream {
 		return 0;
 	}
 
-	public void with(String value) {
+	public StringInputStream with(String value) {
 		this.mBuf.with(value);
+		return this;
 	}
 
-	public void with(byte[] value) {
+	public StringInputStream with(byte[] value) {
 		this.mBuf.with(value);
+		return this;
 	}
 
 	public static StringInputStream create(StringOutputStream stream) {

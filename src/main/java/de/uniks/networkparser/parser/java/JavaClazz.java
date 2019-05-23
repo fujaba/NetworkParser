@@ -75,9 +75,15 @@ public class JavaClazz extends Template {
 				"		return true;", "	}", "" + "{{#endif}}" +
 
 						"{{#if {{type}}==enum}}",
-				"{{#FOREACH {{literal}}},}" + "{{item.name}}" + "{{#IF {{item.value.size}}==>0}}("
-						+ "{{#FOREACH {{item.value}}}}" + "{{#IF {{itemPos}}==>0}},{{#ENDIF}}" + "{{item}}"
-						+ "{{#ENDFOR}}" + "){{#ENDIF}}" + "{{#ENDFOR}}" + "{{#IF {{literal.size}}==>0}};{{#ENDIF}}",
+				"{{#FOREACH {{literal}}},}" + "{{item.name}}" + 
+						"{{#IF {{item.value.size}}==>0}}("
+							+ "{{#FOREACH {{item.value}}}}" + 
+								"{{#IF {{itemPos}}==>0}},{{#ENDIF}}" + 
+								"{{item}}"
+						+ "{{#ENDFOR}}" 
+						+ "){{#ENDIF}}" 
+				+ "{{#ENDFOR}}" + 
+						"{{#IF {{literal.size}}==>0}};{{#ENDIF}}",
 				"{{name}}(" + "{{#FOREACH {{attribute}}}}" + "{{item.type}} {{item.name}}" + "{{#ENDFOR}}" + "){" + "}"
 						+ "{{#ENDIF}}",
 				"{{#if {{attribute#contains(name)}}}}", "	@Override", "	public String toString() {",
@@ -85,7 +91,8 @@ public class JavaClazz extends Template {
 				"{{#if {{#feature DYNAMICVALUES}}}}" + "{{#import " + SimpleKeyValueList.class.getName() + "}}",
 				"	private SimpleKeyValueList<String, Object> dynamicValues=new SimpleKeyValueList<String, Object>();",
 				"	public Object getDynamicValue(String key) {", "		return this.dynamicValues.getValue(key);",
-				"	}", "	public {{name}} withDynamicValue(String key, Object value) {",
+				"	}",
+				"	public {{name}} withDynamicValue(String key, Object value) {",
 				"		this.dynamicValues.put(key, value);", "		return this;", "	}",
 				"	public Object[][] getDynamicValues() {", "		return this.dynamicValues.toTable();", "	}",
 				"{{#ENDIF}}", "{{#template TEMPLATEEND}}}{{#endtemplate}}");

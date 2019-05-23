@@ -110,6 +110,8 @@ public class ReflectionLoader {
 	public static final Class<?> FILEMODE;
 	public static final Class<?> REPOSITORY;
 	public static final Class<?> ANYOBJECTID;
+	public static final Class<?> STOREDCONFIG;
+	
 
 	public static final Class<?> RECTANGLE;
 	public static final Class<?> ROBOT;
@@ -300,6 +302,7 @@ public class ReflectionLoader {
 			CANONICALTREEPARSER = getClass("org.eclipse.jgit.treewalk.CanonicalTreeParser");
 			REPOSITORY = getClass("org.eclipse.jgit.lib.Repository");
 			ANYOBJECTID = getClass("org.eclipse.jgit.lib.AnyObjectId");
+			STOREDCONFIG = getClass("org.eclipse.jgit.lib.StoredConfig");
 //			DIFFENTRY = getClass("org.eclipse.jgit.diff.DiffEntry");
 //			OBJECTID = getClass("org.eclipse.jgit.lib.ObjectId");
 //			OBJECTREADER = getClass("org.eclipse.jgit.lib.ObjectReader");
@@ -312,6 +315,7 @@ public class ReflectionLoader {
 			CANONICALTREEPARSER = null;
 			REPOSITORY = null;
 			ANYOBJECTID = null;
+			STOREDCONFIG = null;
 //			DIFFENTRY = null;
 //			OBJECTID = null;
 //			OBJECTREADER = null;
