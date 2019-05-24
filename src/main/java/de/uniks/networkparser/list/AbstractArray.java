@@ -1286,19 +1286,18 @@ public abstract class AbstractArray<V> implements BaseItem {
 		}
 
 		Object child = null;
-		if(id>=0) {
-			if ((flag & MAP) == 0) {
+		if ((flag & MAP) == 0) {
+			if(id>=0) {
 				child = getByIndex(SMALL_KEY, id + this.index, size);
-			} else {
-				child = getByIndex(SMALL_VALUE, indexOf(keyString.substring(0, len)) + this.index, size);
 			}
+		} else {
+			child = getByIndex(SMALL_VALUE, indexOf(keyString.substring(0, len)) + this.index, size);
 		}
 
 		if (child == null) {
 			if ("size".equalsIgnoreCase(keyString)) {
 				return this.size();
 			}
-			return null;
 		}
 		if (end == 0) {
 			if (id >= 0 || id == -2) {
