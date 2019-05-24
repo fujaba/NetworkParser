@@ -45,57 +45,83 @@ public class JavaClazz extends Template {
 				"",
 
 				"{{#if {{#AND}}{{#feature PROPERTYCHANGESUPPORT}} {!{superclazz}} {{type}}!=INTERFACE {{#NOT}}{{type}}==enum{{#ENDNOT}}{{#ENDAND}}}}"
-						+ "{{#import " + PropertyChangeListener.class.getName() + "}}{{#import "
-						+ PropertyChangeSupport.class.getName() + "}}"
+						+ "{{#import " + PropertyChangeListener.class.getName() + "}}"
+						+ "{{#import "	+ PropertyChangeSupport.class.getName() + "}}"
 						+ "	protected PropertyChangeSupport listeners = null;",
 				"",
 
 				"	public boolean firePropertyChange(String propertyName, Object oldValue, Object newValue) {",
 				"		if (listeners != null) {",
-				"			listeners.firePropertyChange(propertyName, oldValue, newValue);", "			return true;",
-				"		}", "		return false;", "	}", "",
+				"			listeners.firePropertyChange(propertyName, oldValue, newValue);",
+				"			return true;",
+				"		}",
+				"		return false;",
+				"	}",
+				"",
 
 				"	public boolean addPropertyChangeListener(PropertyChangeListener listener) {",
-				"		if (listeners == null) {", "			listeners = new PropertyChangeSupport(this);",
+				"		if (listeners == null) {",
+				"			listeners = new PropertyChangeSupport(this);",
 				"		}", "		listeners.addPropertyChangeListener(listener);", "		return true;", "	}", "",
 
 				"	public boolean addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {",
-				"		if (listeners == null) {", "			listeners = new PropertyChangeSupport(this);",
-				"		}", "		listeners.addPropertyChangeListener(propertyName, listener);",
-				"		return true;", "	}", "",
+				"		if (listeners == null) {",
+				"			listeners = new PropertyChangeSupport(this);",
+				"		}",
+				"		listeners.addPropertyChangeListener(propertyName, listener);",
+				"		return true;",
+				"	}",
+				"",
 
 				"	public boolean removePropertyChangeListener(PropertyChangeListener listener) {",
-				"		if (listeners != null) {", "			listeners.removePropertyChangeListener(listener);",
-				"		}", "		listeners.removePropertyChangeListener(listener);", "		return true;", "	}",
+				"		if (listeners != null) {",
+				"			listeners.removePropertyChangeListener(listener);",
+				"		}",
+				"		listeners.removePropertyChangeListener(listener);",
+				"		return true;",
+				"	}",
 				"",
 
 				"	public boolean removePropertyChangeListener(String propertyName,PropertyChangeListener listener) {",
 				"		if (listeners != null) {",
 				"			listeners.removePropertyChangeListener(propertyName, listener);", "		}",
-				"		return true;", "	}", "" + "{{#endif}}" +
+				"		return true;",
+				"	}",
+				"{{#endif}}" +
 
-						"{{#if {{type}}==enum}}",
-				"{{#FOREACH {{literal}}},}" + "{{item.name}}" + 
-						"{{#IF {{item.value.size}}==>0}}("
-							+ "{{#FOREACH {{item.value}}}}" + 
-								"{{#IF {{itemPos}}==>0}},{{#ENDIF}}" + 
-								"{{item}}"
-						+ "{{#ENDFOR}}" 
-						+ "){{#ENDIF}}" 
-				+ "{{#ENDFOR}}" + 
-						"{{#IF {{literal.size}}==>0}};{{#ENDIF}}",
-				"{{name}}(" + "{{#FOREACH {{attribute}}}}" + "{{item.type}} {{item.name}}" + "{{#ENDFOR}}" + "){" + "}"
-						+ "{{#ENDIF}}",
-				"{{#if {{attribute#contains(name)}}}}", "	@Override", "	public String toString() {",
-				"		return this.getName();", "	}", "{{#endif}}",
+				"{{#if {{type}}==enum}}",
+					"{{#FOREACH {{literal}}},}" + "{{item.name}}" + 
+							"{{#IF {{item.value.size}}==>0}}("
+								+ "{{#FOREACH {{item.value}}}}" + 
+									"{{#IF {{itemPos}}==>0}},{{#ENDIF}}" + 
+									"{{item}}"
+							+ "{{#ENDFOR}}" 
+							+ "){{#ENDIF}}" 
+					+ "{{#ENDFOR}}" + 
+					"{{#IF {{literal.size}}==>0}};{{#ENDIF}}",
+					"{{#IF {{attribute.size}}==>0}}"
+							+ "{{name}}(" + "{{#FOREACH {{attribute}}}}" + "{{item.type}} {{item.name}}" + "{{#ENDFOR}}" + "){}"+
+					"{{#endif}}"
+				+ "{{#ENDIF}}",
+				"{{#if {{attribute#contains(name)}}}}",
+				"	@Override",
+				"	public String toString() {",
+				"		return this.getName();",
+				"	}",
+				"{{#endif}}",
 				"{{#if {{#feature DYNAMICVALUES}}}}" + "{{#import " + SimpleKeyValueList.class.getName() + "}}",
 				"	private SimpleKeyValueList<String, Object> dynamicValues=new SimpleKeyValueList<String, Object>();",
-				"	public Object getDynamicValue(String key) {", "		return this.dynamicValues.getValue(key);",
+				"	public Object getDynamicValue(String key) {",
+				"		return this.dynamicValues.getValue(key);",
 				"	}",
 				"	public {{name}} withDynamicValue(String key, Object value) {",
-				"		this.dynamicValues.put(key, value);", "		return this;", "	}",
-				"	public Object[][] getDynamicValues() {", "		return this.dynamicValues.toTable();", "	}",
-				"{{#ENDIF}}", "{{#template TEMPLATEEND}}}{{#endtemplate}}");
+				"		this.dynamicValues.put(key, value);",
+				"		return this;", "	}",
+				"	public Object[][] getDynamicValues() {",
+				"		return this.dynamicValues.toTable();",
+				"	}",
+				"{{#ENDIF}}",
+				"{{#template TEMPLATEEND}}}{{#endtemplate}}");
 		this.addTemplate(new JavaAttribute(), true);
 		this.addTemplate(new JavaAssociation(), true);
 		this.addTemplate(new JavaMethod(), true);

@@ -88,7 +88,8 @@ public class Association extends GraphMember {
 		}
 		if(PROPERTY_ISGENERATE.equalsIgnoreCase(attrName)) {
 			if(AssociationTypes.isEdge(getType()) ) {
-				return getType() != AssociationTypes.EDGE;
+				boolean generate =  getType() != AssociationTypes.EDGE;
+				return generate;
 					// Case GENERATION AND IMPLEMENTATION
 //					return (value.equals(GENERALISATION) || value.equals(IMPLEMENTS) || value.equals(EDGE) );
 //					return AssociationTypes.isImplements(other.getType());

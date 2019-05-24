@@ -28,6 +28,7 @@ THE SOFTWARE.
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.LocalisationInterface;
+import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.list.SimpleKeyValueList;
@@ -36,6 +37,7 @@ import de.uniks.networkparser.list.SimpleList;
 public class TextItems extends SimpleKeyValueList<String, Object> implements SendableEntityCreator, LocalisationInterface {
 	public static final String PROPERTY_VALUE = "value";
 	private LocalisationInterface customLanguage = null;
+	private ObjectCondition listener = null;
 	private boolean defaultLabel = true;
 	private boolean autoCreate = true;
 	private boolean templateReplace =  true;
@@ -90,6 +92,19 @@ public class TextItems extends SimpleKeyValueList<String, Object> implements Sen
 		if(object != null && object instanceof String) {
 			return (String) object;
 		}
+		if(key instanceof String) {
+			String newKey = ((String) key).replace(".", ":");
+			object = super.get(newKey);
+			if(object != null && object instanceof String) {
+				return (String) object;
+			}
+		}
+		// Not Found Check if Notification Listener
+		if(listener != null) {
+			SimpleEvent simpleEvent = new SimpleEvent(this, ""+key, null, "Key not found: "+key).withType("ERROR");
+			listener.update(simpleEvent);
+		}
+		
 		return null;
 	}
 	
@@ -279,6 +294,11 @@ public class TextItems extends SimpleKeyValueList<String, Object> implements Sen
 
 	public TextItems withReplaceEmptyString(boolean replaceEmptyString) {
 		this.replaceEmptyString = replaceEmptyString;
+		return this;
+	}
+
+	public TextItems withListener(ObjectCondition value) {
+		this.listener = value;
 		return this;
 	}
 }

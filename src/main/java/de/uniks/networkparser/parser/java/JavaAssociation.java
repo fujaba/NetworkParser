@@ -152,13 +152,12 @@ public class JavaAssociation extends Template {
 				"				this.{{other.name}}.remove(item);", "{{#endif}}", "			}", "		}",
 				"		return this;", "	}", "", "{{#endif}}", "{{#endif}}",
 
-				"{{#ifnot {{other.clazz.type}}==interface}}", "{{#ifnot {{other.clazz.modifiers#contains(abstract)}}}}",
+				"{{#ifnot {{#or}}{{other.clazz.type}}==interface {{other.clazz.modifiers#contains(abstract)}} {{other.clazz.type}}==enum{{#endor}}}}",
 				"	public {{modifiers} }{{other.clazz.name}} create{{other.Name}}(){{#if {{file.member.type}}==interface}};",
 				"", "{{#endif}}", "{{#ifnot {{file.member.type}}==interface}} {",
 				"		{{other.clazz.name}} value = new {{other.clazz.name}}();", "		with{{other.Name}}(value);",
 				"		return value;", "	}",
 				"",
-				"{{#endif}}",
 				"{{#endif}}",
 				"{{#endif}}",
 			"{{#endif}}{{#endtemplate}}");

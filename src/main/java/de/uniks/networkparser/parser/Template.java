@@ -497,23 +497,28 @@ public class Template implements TemplateParser {
 
 	public Template withTemplate(String... template) {
 		CharacterBuffer sb = new CharacterBuffer();
-		if (template == null) {
+		if (template == null || template.length<1) {
 			setValue(sb);
-		} else if (template.length == 1) {
-			sb.with(template[0], Entity.CRLF);
-			setValue(sb);
-		} else {
-			sb.with(template[0]);
-			for (int i = 1; i < template.length; i++) {
-				if (template[i].startsWith("{{#")) {
-					sb.with(template[i]);
-				} else {
-					sb.with(Entity.CRLF + template[i]);
-				}
-			}
-			sb.with(Entity.CRLF);
-			setValue(sb);
+			return this;
 		}
+		String value = template[0];
+		if(value == null) {
+			sb.with("");
+		} else {
+			sb.with(value);
+		}
+		for (int i = 1; i < template.length; i++) {
+			value = template[i];
+			if(value == null) {
+				sb.with("");
+			}else if (value.startsWith("{{#")) {
+				sb.with(value);
+			} else {
+				sb.with(Entity.CRLF + value);
+			}
+		}
+		sb.with(Entity.CRLF);
+		setValue(sb);
 		return this;
 	}
 
@@ -641,40 +646,45 @@ public class Template implements TemplateParser {
 	protected void executeChildren(Clazz clazz, LocalisationInterface parameters, SimpleList<Template> templates, String id2, TemplateResultFile templateResult) {
 		// FIRST ATTRIBUTE
         AttributeSet attributes = clazz.getAttributes();
-        for (Template template : templates) {
-            if (template.getId(true).equals(id2 + ".attribute")) {
-                // FOUND IT
-                for (Attribute attribute : attributes) {
-                    template.executeTemplate(parameters, templateResult, attribute);
-                }
-                break;
-            }
+        if(attributes.size()>0) {
+		    for (Template template : templates) {
+		        if (template.getId(true).equals(id2 + ".attribute")) {
+		            // FOUND IT
+		            for (Attribute attribute : attributes) {
+		                template.executeTemplate(parameters, templateResult, attribute);
+		            }
+		            break;
+		        }
+		    }
         }
 
 		// SECOND ASSOCITAION
 		AssociationSet associations = clazz.getAssociations();
-		for (Template template : templates) {
-			if (template.getId(true).equals(id2 + ".association")) {
-				// FOUND IT
-				for (Association assoc : associations) {
-					template.executeTemplate(parameters, templateResult, assoc);
-					if (assoc.getClazz().equals(assoc.getOtherClazz())
-							&& assoc.getName().equals(assoc.getOther().getName()) == false) {
-						template.executeTemplate(parameters, templateResult, assoc.getOther());
+		if(associations.size() >0) {
+			for (Template template : templates) {
+				if (template.getId(true).equals(id2 + ".association")) {
+					// FOUND IT
+					for (Association assoc : associations) {
+						template.executeTemplate(parameters, templateResult, assoc);
+						if (assoc.getClazz().equals(assoc.getOtherClazz())
+								&& assoc.getName().equals(assoc.getOther().getName()) == false) {
+							template.executeTemplate(parameters, templateResult, assoc.getOther());
+						}
 					}
+					break;
 				}
-				break;
 			}
 		}
-
 		MethodSet methods = clazz.getMethods();
-		for (Template template : templates) {
-			if (template.getId(true).equals(id2 + ".method")) {
-				// FOUND IT
-				for (Method method : methods) {
-					template.executeTemplate(parameters, templateResult, method);
+		if(methods.size()>0) {
+			for (Template template : templates) {
+				if (template.getId(true).equals(id2 + ".method")) {
+					// FOUND IT
+					for (Method method : methods) {
+						template.executeTemplate(parameters, templateResult, method);
+					}
+					break;
 				}
-				break;
 			}
 		}
 	}
@@ -730,7 +740,6 @@ public class Template implements TemplateParser {
 		if(isValid) {
 			return true;
 		}
-		
 		
 		String type = member.getClass().getSimpleName().toLowerCase();
 		if (this.fileType != null ) {

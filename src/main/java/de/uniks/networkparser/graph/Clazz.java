@@ -470,7 +470,8 @@ public class Clazz extends GraphEntity {
 				if(checkAssoc == otherAssoc || checkAssoc.getType() == AssociationTypes.GENERALISATION || checkAssoc.getOtherType() == AssociationTypes.GENERALISATION) {
 					continue;
 				}
-				if(checkAssoc.getName() != null && checkAssoc.getName().equalsIgnoreCase(otherAssoc.getName())) {
+				if(checkAssoc.getName() != null && checkAssoc.getName().equalsIgnoreCase(otherAssoc.getName())
+						&& checkAssoc.getOther().getName() == null) {
 					// Create UnDirectional Association
 					checkAssoc.getOther().with(AssociationTypes.EDGE);
 					checkAssoc.with(AssociationTypes.UNDIRECTIONAL);
