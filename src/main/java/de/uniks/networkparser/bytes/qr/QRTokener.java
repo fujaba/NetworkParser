@@ -455,7 +455,7 @@ public class QRTokener {
 	 * @param blockID             position of Block
 	 * @param numDataBytesInBlock List of Data in Block
 	 * @param numECBytesInBlock   Error position in Block
-	 * @return 
+	 * @return success
 	 */
 	static boolean getNumDataBytesAndNumECBytesForBlockID(int numTotalBytes, int numDataBytes, int numRSBlocks,
 			int blockID, int[] numDataBytesInBlock, int[] numECBytesInBlock) {

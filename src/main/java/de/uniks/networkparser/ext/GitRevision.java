@@ -25,6 +25,7 @@ THE SOFTWARE.
 */
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -417,6 +418,7 @@ public class GitRevision {
 			ReflectionLoader.call(initGIT, "setGitDir", gitDir);
 			Object git = ReflectionLoader.call(initGIT, "call");
 			if(remoteURL != null) {
+				new URL(remoteURL);
 				Object config = ReflectionLoader.callChain(git, "getRepository", "getConfig");
 				ReflectionLoader.call(config, "setString", "remote", "origin", "url", remoteURL);
 				ReflectionLoader.call(config, "save"); 

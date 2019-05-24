@@ -11,9 +11,9 @@ public class Disputation {
 //		gradle.withPath("C:\\Arbeit\\workspace\\demo");
 //		gradle.initProject("NetworkParser-4.7.1448-SNAPSHOT-git.jar", "LudoProject", "MIT");
 
-		GitRevision git = new GitRevision();
-		git.withPath("C:\\Arbeit\\workspace\\demo\\LudoProject");
-		git.init("https://github.com/StefanLindel/LudoProject.git");
+//		GitRevision git = new GitRevision();
+//		git.withPath("C:\\Arbeit\\workspace\\demo\\LudoProject");
+//		git.init("https://github.com/StefanLindel/LudoProject.git");
 //		gradle.loadNPM();
 		
 	}
