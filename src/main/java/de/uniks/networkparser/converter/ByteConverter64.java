@@ -262,7 +262,7 @@ public class ByteConverter64 extends ByteConverter {
 			result = new byte[bytes.length * 3 / 4 - bytes.length + i];
 		}
 		int pos = 0;
-		for (i = 0; i < bytes.length - 7; i += 4) {
+		for (i = 0; i < bytes.length - 3; i += 4) {
 			int n = pem_convert_array[(bytes[i + 3] & 0xFF)];
 			int m = pem_convert_array[(bytes[i + 2] & 0xFF)];
 			int k = pem_convert_array[(bytes[i + 1] & 0xFF)];
@@ -271,20 +271,10 @@ public class ByteConverter64 extends ByteConverter {
 			result[pos++] = (byte) (k << 4 & 0xF0 | m >>> 2 & 0xF);
 			result[pos++] = (byte) (m << 6 & 0xC0 | n & 0x3F);
 		}
-		int n = pem_convert_array[(bytes[i + 3] & 0xFF)];
-		int m = pem_convert_array[(bytes[i + 2] & 0xFF)];
-		int k = pem_convert_array[(bytes[i + 1] & 0xFF)];
-		int j = pem_convert_array[(bytes[i + 0] & 0xFF)];
-		result[pos++] = (byte) (j << 2 & 0xFC | k >>> 4 & 0x3);
 		if (pos < result.length) {
-			result[pos++] = (byte) (k << 4 & 0xF0 | m >>> 2 & 0xF);
-			if (pos < result.length) {
-				result[pos++] = (byte) (m << 6 & 0xC0 | n & 0x3F);
-				if (pos < result.length) {
-					j = pem_convert_array[(bytes[i + 4] & 0xFF)];
-					result[pos++] = (byte) (31<< 2 & 0xFC | k >>> 4 & 0x3);
-				}
-			}
+			int j = pem_convert_array[(bytes[i] & 0xFF)];
+			int k = pem_convert_array[(bytes[i+1] & 0xFF)];
+			result[pos++] = (byte) (j<< 2 & 0xFC | k >>> 4 & 0x3);
 		}
 		return result;
 	}
