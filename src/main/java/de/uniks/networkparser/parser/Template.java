@@ -594,12 +594,26 @@ public class Template implements TemplateParser {
 	}
 	
 	public TemplateResultFragment executeEntity(ObjectCondition condition, LocalisationInterface parameters) {
+		return executingEntity(condition, parameters);
+	}
+	public TemplateResultFragment executeSimpleEntity(ObjectCondition condition, TemplateItem parameters) {
+		return executingEntity(condition, parameters);
+	}
+		
+	private TemplateResultFragment executingEntity(ObjectCondition condition, Object parameters) {
 		this.isValid = true;
 		
 		TemplateResultFragment templateFragment = new TemplateResultFragment();
 		templateFragment.withKey(this.getType());
 		templateFragment.withName(this.getId(false));
-		templateFragment.withVariable(parameters);
+		if(parameters != null) {
+			if(parameters instanceof LocalisationInterface) {
+				templateFragment.withVariable((LocalisationInterface) parameters);
+			}
+			if(parameters instanceof TemplateItem) {
+				templateFragment.withMember((TemplateItem) parameters);
+			}
+		}
 
 		if (this.token.update(templateFragment) == false) {
 			return null;

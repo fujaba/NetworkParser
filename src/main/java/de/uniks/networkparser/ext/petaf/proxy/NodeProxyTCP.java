@@ -59,6 +59,7 @@ public class NodeProxyTCP extends NodeProxy {
 
 	public static final String PROPERTY_URL = "url";
 	public static final String PROPERTY_PORT = "port";
+	public static final String USERAGENT = "User-Agent";
 
 	public static final String BODY_PLAIN = "plain";
 	public static final String HEADER_PLAIN = "plainHeader";
@@ -673,6 +674,20 @@ public class NodeProxyTCP extends NodeProxy {
 		if (root != null && root.length > 0) {
 			rootItem = root[0];
 		}
+		return readAnswer(conn, rootItem);
+	}
+	
+	public static HTMLEntity getSimpleHTTP(String url, String... headers) {
+		HttpURLConnection conn = getConnection(url, GET);
+		if(headers != null && headers.length %2 == 0) {
+			for(int i=0;i<headers.length;i+=2) {
+				conn.setRequestProperty(headers[i], headers[i+1]);
+			}
+		}
+		if (conn == null) {
+			return null;
+		}
+		HTMLEntity rootItem = null;
 		return readAnswer(conn, rootItem);
 	}
 

@@ -58,13 +58,18 @@ public class LoginService implements Condition<SimpleEvent> {
 				request.writeCookie(HTTPRequest.HTTP_AUTHENTIFICATION, token, expiration);
 				request.writeCookie(HTTPRequest.HTTP_REFRESH, refreshToken, expiration);
 			}
-			request.writeBody("Login ok");
-		} else {
-			HTMLEntity login = this.getLogin();
-			request.write(login);
-			return false;
+			request.withBufferRespone("Login ok");
+			return true;
 		}
-		return true;
+		String authString = request.getHeader(HTTPRequest.HTTP_AUTHENTIFICATION);
+		if(authString != null) {
+			//FIXME CEHCK IF VALID
+//			sadk
+		}
+	
+		HTMLEntity login = this.getLogin();
+		request.write(login);
+		return false;
 	}
 
 	public LoginService withUser(User user) {

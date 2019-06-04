@@ -280,6 +280,10 @@ public class ByteConverter64 extends ByteConverter {
 			result[pos++] = (byte) (k << 4 & 0xF0 | m >>> 2 & 0xF);
 			if (pos < result.length) {
 				result[pos++] = (byte) (m << 6 & 0xC0 | n & 0x3F);
+				if (pos < result.length) {
+					j = pem_convert_array[(bytes[i + 4] & 0xFF)];
+					result[pos++] = (byte) (31<< 2 & 0xFC | k >>> 4 & 0x3);
+				}
 			}
 		}
 		return result;

@@ -368,4 +368,28 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements En
 		this.add(null, comment);
 		return this;
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if(obj instanceof JsonObject) {
+			JsonObject other = (JsonObject) obj;
+			if(this.size() != other.size()) {
+				return false;
+			}
+			for(int i=0;i<this.size();i++) {
+				if(this.getKeyByIndex(i).equals(other.getKeyByIndex(i))== false) {
+					return false;
+				}
+				Object value = this.getValueByIndex(i);
+				Object otherValue = other.getValueByIndex(i);
+				if(value == null && otherValue !=null) {
+					return false;
+				}else if(value != null && value.equals(otherValue) == false) {
+					return false;
+				}
+			}
+			return true;
+		}
+		return super.equals(obj);
+	}
 }

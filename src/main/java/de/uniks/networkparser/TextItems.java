@@ -42,6 +42,7 @@ public class TextItems extends SimpleKeyValueList<String, Object> implements Sen
 	private boolean autoCreate = true;
 	private boolean templateReplace =  true;
 	private boolean replaceEmptyString = true; 
+
 	public static final TextItems DEFAULT=new TextItems()
 			// Month
 			.with("JANUARY", "January")
@@ -88,23 +89,27 @@ public class TextItems extends SimpleKeyValueList<String, Object> implements Sen
 
 	@Override
 	public String get(Object key) {
-		Object object = super.get(key);
+		if(key == null || key instanceof String == false) {
+			return null;
+		}
+		String k = (String) key;
+		if(isCaseSensitive() == false) {
+			 k = k.toLowerCase();
+		}
+		Object object = super.get(k);
 		if(object != null && object instanceof String) {
 			return (String) object;
 		}
-		if(key instanceof String) {
-			String newKey = ((String) key).replace(".", ":");
-			object = super.get(newKey);
-			if(object != null && object instanceof String) {
-				return (String) object;
-			}
+		String newKey = k.replace(".", ":");
+		object = super.get(newKey);
+		if(object != null && object instanceof String) {
+			return (String) object;
 		}
 		// Not Found Check if Notification Listener
 		if(listener != null) {
 			SimpleEvent simpleEvent = new SimpleEvent(this, ""+key, null, "Key not found: "+key).withType("ERROR");
 			listener.update(simpleEvent);
 		}
-		
 		return null;
 	}
 	

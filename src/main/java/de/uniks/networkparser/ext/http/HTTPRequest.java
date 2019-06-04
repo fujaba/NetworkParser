@@ -15,7 +15,7 @@ import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.xml.HTMLEntity;
 
-public class HTTPRequest {
+public class HTTPRequest  implements Comparable<HTTPRequest> {
 	public static final String HTTP__NOTFOUND = "HTTP 404";
 	public static final String HTTP_OK = "HTTP/1.1 200 OK";
 	public static final String HTTP_PERMISSION_DENIED = "HTTP 403";
@@ -27,21 +27,33 @@ public class HTTPRequest {
 	public static final String HTTP_CONTENT_FORM = "application/x-www-form-urlencoded";
 	public static final String HTTP_LENGTH = "Content-Length:";
 	public static final String BEARER = "Bearer";
+	public static final Character STATIC='S';
+	public static final Character VARIABLE='V';
 
 	private BufferedReader inputStream;
 	private PrintWriter outputStream;
 	private Condition<Exception> errorListener;
+	private Condition<HTTPRequest> updateCondition;
 	private Socket socket;
-	private String http_Type;
 	private String path;
 	private SimpleList<String> headers = new SimpleList<String>();
 	private String content;
+
+	private String http_Type; // GET OR POST
 	private String contentType;
+	
 	private boolean writeHeader;
 	private boolean writeBody;
-	private SimpleList<String> pathParts;
-	private SimpleList<String> pathParameter;
+	private SimpleList<String> partParameter;
+	private SimpleList<String> partPath;
+	private SimpleList<String> fullPath;
+	private SimpleList<Character> pathType;
+	private CharacterBuffer bufferResponse;
 
+	private SimpleKeyValueList<String, String> matchVariables = new SimpleKeyValueList<String, String>();
+	private boolean matchValid=true;
+	private int matchOfRequestPath;
+	
 	public void executeExeption(Exception e) {
 		if (errorListener != null) {
 			errorListener.update(e);
@@ -100,6 +112,9 @@ public class HTTPRequest {
 	}
 
 	public boolean close() {
+		if(this.writeBody == false && this.bufferResponse != null) {
+			writeBody(this.bufferResponse.toString());
+		}
 		if (outputStream != null) {
 			outputStream.close();
 		}
@@ -129,8 +144,10 @@ public class HTTPRequest {
 		parsingPath(input, null);
 	}
 	private boolean parsingPath(Reader input, String defaultValue) {
-		this.pathParts = new SimpleList<String>();
-		this.pathParameter = new SimpleList<String>();
+		this.partPath = new SimpleList<String>();
+		this.partParameter = new SimpleList<String>();
+		this.pathType = new SimpleList<Character>();
+		this.fullPath = new SimpleList<String>();
 		if(defaultValue == null) {
 			defaultValue = "";
 		}
@@ -147,6 +164,7 @@ public class HTTPRequest {
 		CharacterBuffer part =new CharacterBuffer();
 		boolean isVariable = false;
 		try {
+			boolean isFirst = true;
 			while ((c = input.read()) != -1) {
 				if (c == ' ') {
 					break;
@@ -161,33 +179,59 @@ public class HTTPRequest {
 				}
 				if(c == '&' && isVariable) {
 					part.withStartPosition(1);
-					this.pathParameter.add(part.toString());
+					String value = part.toString();
+					this.fullPath.add(value);
+					this.partParameter.add(value);
+					this.pathType.add(VARIABLE);
 					part.clear();
 					continue;
 				}
-				if(c == '/') {
+				if(c == '/' && isFirst == false) {
 					// Split for /
 					if(isVariable) {
 						if(part.startsWith(":")) {
 							part.withStartPosition(1);
-							this.pathParameter.add(part.toString());
+							String value = part.toString();
+							this.fullPath.add(value);
+							this.partParameter.add(part.toString());
+							this.pathType.add(VARIABLE);
 							part.clear();
 							continue;
 						}
 					}else {
-						this.pathParts.add(part.toString());
+						String value = part.toString();
+						this.fullPath.add(value);
+						if("*".equals(value)) {
+							this.partParameter.add(value);
+							this.pathType.add(VARIABLE);
+						}else {
+							this.partPath.add(value);
+							this.pathType.add(STATIC);
+						}
 					}
 					part.clear();
 					continue;
 				}
-				part.with(c);
+				part.with((char)c);
+				isFirst = false;
 			}
 			if(part.length()>0) {
 				if(isVariable) {
 					part.withStartPosition(1);
-					this.pathParameter.add(part.toString());
+					String value = part.toString();
+					this.fullPath.add(value);
+					this.partParameter.add(value);
+					this.pathType.add(VARIABLE);
 				}else {
-					this.pathParts.add(part.toString());
+					String value = part.toString();
+					this.fullPath.add(value);
+					if("*".equals(value)) {
+						this.partParameter.add(part.toString());
+						this.pathType.add(VARIABLE);
+					}else {
+						this.partPath.add(value);
+						this.pathType.add(STATIC);
+					}
 				}
 			}
 		} catch (IOException e) {
@@ -401,6 +445,18 @@ public class HTTPRequest {
 		return this;
 	}
 
+	public String getHeader(String filter) {
+		if(filter == null) {
+			return null;
+		}
+		for(String item : headers) {
+			if(item != null && item.startsWith(filter)) {
+				return item;
+			}
+		}
+		return null;
+	}
+	
 	public String getContent() {
 		return content;
 	}
@@ -420,10 +476,101 @@ public class HTTPRequest {
 	}
 
 	public SimpleList<String> getPathParts() {
-		return this.pathParts;
+		return this.partPath;
 	}
 	
 	public SimpleList<String> getPathParameter() {
-		return pathParameter;
+		return this.partParameter;
+	}
+	
+	public SimpleList<Character> getPathType() {
+		return pathType;
+	}
+
+	public int getMatchOfRequestPath() {
+		return matchOfRequestPath;
+	}
+
+	public boolean isValid() {
+		return matchValid;
+	}
+	
+	@Override
+	public int compareTo(HTTPRequest o) {
+		if(o == null) {
+			return 1;
+		}
+		if(isValid() && o.isValid() == false) {
+			return 1;
+		}
+		if(isValid() == false && o.isValid()) {
+			return -1;
+		}
+		if(o.getMatchOfRequestPath()<this.matchOfRequestPath) {
+			return 1;
+		}
+		if(this.matchOfRequestPath>o.getMatchOfRequestPath()) {
+			return -1;
+		}
+		return 0;
+	}
+	
+	public HTTPRequest withBufferRespone(String... values) {
+		if(bufferResponse == null) {
+			bufferResponse = new CharacterBuffer();
+		}
+		if(values != null) {
+			for(String item : values) {
+				if(item != null) {
+					bufferResponse.append(item);
+				}
+			} 
+		}
+		return this;
+	}
+	
+	public boolean match(HTTPRequest routing) {
+		this.matchOfRequestPath = 0;
+		this.matchValid = false;
+		this.matchVariables.clear();
+
+		if(routing == null) {
+			return false;
+		}
+		SimpleList<String> paths = routing.getFullPath();
+		for(matchOfRequestPath = 0;matchOfRequestPath<this.pathType.size();matchOfRequestPath++) {
+			Character type = this.pathType.get(matchOfRequestPath);
+			String currentPathpart = this.fullPath.get(getMatchOfRequestPath());
+			if(HTTPRequest.STATIC.equals(type)) {
+				if(paths.size()<matchOfRequestPath ) {
+					break;
+				}
+				// Must be the Same
+				if(currentPathpart.equalsIgnoreCase(paths.get(matchOfRequestPath)) == false) {
+					break;
+				}
+			}else if(HTTPRequest.VARIABLE.equals(type)) {
+				//NEW ONE
+				this.matchVariables.put(paths.get(matchOfRequestPath), currentPathpart);
+			}
+		}
+		matchValid = matchOfRequestPath == paths.size();
+		return true;
+	}
+	
+	public HTTPRequest withUpdateCondition(Condition<HTTPRequest> condition) {
+		this.updateCondition = condition;
+		return this;
+	}
+	
+	public boolean update(HTTPRequest value) {
+		if(updateCondition != null) {
+			return updateCondition.update(value);
+		}
+		return false;
+	}
+	
+	public SimpleList<String> getFullPath() {
+		return fullPath;
 	}
 }

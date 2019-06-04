@@ -2,8 +2,6 @@ package de.uniks.networkparser.test;
 
 import org.junit.Test;
 
-import de.uniks.networkparser.ext.GitRevision;
-
 public class Disputation {
 	@Test
 	public void testDisputation() {

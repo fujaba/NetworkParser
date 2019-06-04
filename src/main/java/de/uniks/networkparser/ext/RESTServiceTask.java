@@ -20,17 +20,18 @@ import de.uniks.networkparser.json.JsonArray;
 import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
+import de.uniks.networkparser.list.SortedList;
 import de.uniks.networkparser.xml.XMLEntity;
 
 public class RESTServiceTask implements Runnable, Server {
 	private int port;
-//	public static final String PERMISSION_DENIED = "HTTP 403";
 	public static final String PROPERTY_ERROR = "error";
 	public static final String PROPERTY_ALLOW = "allow";
 	private ServerSocket serverSocket;
 	private IdMap map;
 	private Object root;
 	private SendableEntityCreator creator;
+	private boolean routingExists;
 	private Filter filter = Filter.regard(Deep.create(1));
 
 	private Condition<Exception> errorListener;
@@ -38,7 +39,7 @@ public class RESTServiceTask implements Runnable, Server {
 	private Condition<SimpleEvent> loginController;
 	public static final String JSON = "/json";
 	public static final String XML = "/xml";
-	private SimpleKeyValueList<HTTPRequest, Condition<HTTPRequest>> routing;
+	private SimpleList<HTTPRequest> routing;
 	
 	public RESTServiceTask(int port, IdMap map, Object root) {
 		super();
@@ -74,20 +75,37 @@ public class RESTServiceTask implements Runnable, Server {
 				clientSocket.readType();
 				clientSocket.readPath();
 				
+				System.out.println(clientSocket.getHttp_Type()+": "+clientSocket.getPath());
+
+				HTTPRequest match = null;
+				
+				
 				if(routing != null && routing.size()>0) {
 					// Parsing Path
+					HTTPRequest defaultMatch = null;
 					String path = clientSocket.getPath();
-					SimpleList<String> paths = clientSocket.getPathParts();
-					
-					// *
-					if(path.indexOf("/")<1) {
-						//FIXME "*".equalsIgnoreCase(this.routing.getKeyByIndex(0));
-						this.routing.getValueByIndex(0).update(clientSocket);
-						clientSocket.close();
-						continue;
+
+					SortedList<HTTPRequest> matches =new SortedList<HTTPRequest>(true);
+					for(int i=0;i<routing.size();i++) {
+						HTTPRequest key = routing.get(i);
+						if("*".equals(key.getPath())) {
+							defaultMatch = key;
+						}
+						if(clientSocket.match(key)) {
+							matches.add(key);
+						}
+					}
+					if(matches.size() > 0) {
+						HTTPRequest first = matches.first();
+						// *
+						if( (routingExists && first.isValid()) || routingExists== false) {
+							match = first;
+						} else if(path.indexOf("/")<1) {
+							match = defaultMatch;
+						}
 					}
 				}
-				
+				// SO NEW MATCHES
 				SimpleEvent event = new SimpleEvent(clientSocket, clientSocket.getPath(), null, null);
 				if (allowListener != null) {
 					if (allowListener.update(event) == false) {
@@ -95,11 +113,18 @@ public class RESTServiceTask implements Runnable, Server {
 						clientSocket.close();
 						continue;
 					}
-				}else if(loginController !=  null) {
+				} else if(loginController !=  null) {
 					if (loginController.update(event) == false) {
 						clientSocket.close();
 						continue;
 					}
+				}
+				// So Valid and Execute Match or default
+				// CHECK FOR NEXT VALID OR BEST
+				if(match != null) {
+					match.update(clientSocket);
+					clientSocket.close();
+					continue;
 				}
 				String result = this.executeRequest(event);
 				clientSocket.writeBody(result);
@@ -390,11 +415,12 @@ public class RESTServiceTask implements Runnable, Server {
 
 	public RESTServiceTask withRooting(String string, Condition<HTTPRequest> webContent) {
 		if(this.routing == null) {
-			this.routing = new SimpleKeyValueList<HTTPRequest, Condition<HTTPRequest>>();
+			this.routing = new SimpleList<HTTPRequest>();
 		}
 		
 		HTTPRequest routing = HTTPRequest.createRouting(string);
-		this.routing.add(routing, webContent);
+		routing.withUpdateCondition(webContent);
+		this.routing.add(routing);
 		return this;
 	}
 }
