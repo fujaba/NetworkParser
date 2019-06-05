@@ -39,6 +39,9 @@ public final class ReedSolomon {
 	}
 
 	private GenericGFPoly buildGenerator(int degree) {
+		if(degree<0 || field == null) {
+			return null;
+		}
 		if (degree >= cachedGenerators.size()) {
 			GenericGFPoly lastGenerator = cachedGenerators.get(cachedGenerators.size() - 1);
 			for (int d = cachedGenerators.size(); d <= degree; d++) {
@@ -52,7 +55,7 @@ public final class ReedSolomon {
 	}
 
 	public boolean encode(int[] toEncode, int ecBytes) {
-		if (ecBytes == 0) {
+		if (ecBytes == 0 || toEncode == null) {
 			return false;
 		}
 		int dataBytes = toEncode.length - ecBytes;
@@ -86,6 +89,9 @@ public final class ReedSolomon {
 	 * @return success of decoding
 	 */
 	public boolean decode(int[] received, int twoS) {
+		if(field == null || received == null) {
+			return false;
+		}
 		GenericGFPoly poly = new GenericGFPoly(field, received);
 		int[] syndromeCoefficients = new int[twoS];
 		boolean noError = true;
@@ -171,6 +177,9 @@ public final class ReedSolomon {
 
 	private int[] findErrorLocations(GenericGFPoly errorLocator) {
 		// This is a direct application of Chien's search
+		if(errorLocator == null || field == null) {
+			return null;
+		}
 		int numErrors = errorLocator.getDegree();
 		if (numErrors == 1) { // shortcut
 			return new int[] { errorLocator.getCoefficient(1) };
@@ -191,7 +200,10 @@ public final class ReedSolomon {
 
 	private int[] findErrorMagnitudes(GenericGFPoly errorEvaluator, int[] errorLocations) {
 		// This is directly applying Forney's Formula
-		int s = errorLocations.length;
+		if(errorLocations == null || field == null) {
+			return null;
+		}
+ 		int s = errorLocations.length;
 		int[] result = new int[s];
 		for (int i = 0; i < s; i++) {
 			int xiInverse = field.inverse(errorLocations[i]);

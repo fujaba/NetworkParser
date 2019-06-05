@@ -116,11 +116,14 @@ public class RSAKey {
 	 * @param value Enscript the Value
 	 * @return the enscripted Message
 	 */
-	public StringBuilder encrypt(String value) {
+	public CharacterBuffer encrypt(String value) {
+		if(value ==null) {
+			return null;
+		}
 		return encrypt(value, value.length());
 	}
 
-	public StringBuilder decrypt(String message) {
+	public CharacterBuffer decrypt(String message) {
 		return decrypt(new BigInteger(message));
 	}
 
@@ -130,11 +133,11 @@ public class RSAKey {
 	 * @param message Message to descrypt
 	 * @return the descrypted Message
 	 **/
-	public StringBuilder decrypt(BigInteger message) {
+	public CharacterBuffer decrypt(BigInteger message) {
 		BigInteger text = message.modPow(getPrivateKey(), getModulus());
 		BigInteger divider = BigInteger.valueOf(1000);
 		int bitCount = text.bitCount();
-		StringBuilder sb = new StringBuilder(bitCount);
+		CharacterBuffer sb = new CharacterBuffer().withBufferLength(bitCount);
 		while (bitCount >= 0) {
 			BigInteger character = text.remainder(divider);
 			sb.setCharAt(bitCount, (char) character.intValue());
@@ -146,20 +149,20 @@ public class RSAKey {
 
 	public Entity sign(Entity value) {
 		String string = value.toString();
-		StringBuilder hashCode = encrypt(string, string.length());
+		CharacterBuffer hashCode = encrypt(string, string.length());
 		// CHECK FOR HASHCODE ONLY
 		value.put(TAG, hashCode);
 		return null;
 	}
 
-	public StringBuilder encrypt(String value, int group) {
-		StringBuilder sb = new StringBuilder();
-		StringBuilder item = new StringBuilder();
+	public CharacterBuffer encrypt(String value, int group) {
+		CharacterBuffer sb = new CharacterBuffer();
+		CharacterBuffer item = new CharacterBuffer();
 
 		int c = 0;
 		for (int i = 0; i < value.length(); i++) {
 			if (c == 0) {
-				item = new StringBuilder();
+				item = new CharacterBuffer();
 			}
 			char character = value.charAt(i);
 			if (character < 10) {
@@ -167,12 +170,12 @@ public class RSAKey {
 			} else if (character < 100) {
 				item.append("0" + (int) character);
 			} else {
-				item.append((int) character);
+				item.with(((int) character));
 			}
 			c++;
 			if (c == group) {
 				sb.append(encoding(item.toString()));
-				item = new StringBuilder();
+				item = new CharacterBuffer();
 				c = 0;
 			}
 		}
@@ -183,6 +186,9 @@ public class RSAKey {
 	}
 
 	private String encoding(String value) {
+		if(value == null) {
+			return null;
+		}
 		BigInteger encrypt = encrypt(new BigInteger(value));
 		String string = encrypt.toString();
 		int rest = string.length() % 3;

@@ -3,10 +3,7 @@ package de.uniks.networkparser.test;
 import org.junit.Assert;
 import org.junit.Test;
 
-import de.uniks.networkparser.buffer.CharacterBuffer;
-import de.uniks.networkparser.converter.ByteConverter64;
 import de.uniks.networkparser.ext.http.JsonToken;
-import de.uniks.networkparser.json.JsonObject;
 
 public class SHATest {
 

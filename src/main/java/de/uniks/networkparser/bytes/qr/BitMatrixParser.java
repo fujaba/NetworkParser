@@ -32,9 +32,11 @@ public final class BitMatrixParser {
 	}
 	/** @param bitMatrix {@link BitMatrix} to parse */
 	BitMatrixParser(BitMatrix bitMatrix) {
-		int dimension = bitMatrix.getHeight();
-		if (dimension >= 21 && (dimension & 0x03) == 1) {
-			this.bitMatrix = bitMatrix;
+		if(bitMatrix != null) {
+			int dimension = bitMatrix.getHeight();
+			if (dimension >= 21 && (dimension & 0x03) == 1) {
+				this.bitMatrix = bitMatrix;
+			}
 		}
 	}
 

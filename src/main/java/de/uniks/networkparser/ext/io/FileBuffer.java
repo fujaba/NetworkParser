@@ -214,6 +214,12 @@ public class FileBuffer extends Buffer {
 		if (fileName == null || fileName.length() < 1) {
 			return -1;
 		}
+        if(data == null || data.length<1 || (data.length==1 && data[0]==0)) {
+            return -1;
+        }
+        if(flag<0 || flag>APPEND) {
+        	return -1;
+        }
 		FileBuffer buffer = new FileBuffer();
 		buffer.withFile(fileName);
 		if (buffer.exists()) {
@@ -452,6 +458,9 @@ public class FileBuffer extends Buffer {
 
 	public int write(byte flag, byte... data) {
 		if (this.file == null || data == null) {
+			return -1;
+		}
+		if(data.length==1 && data[0]==0) {
 			return -1;
 		}
 		try {

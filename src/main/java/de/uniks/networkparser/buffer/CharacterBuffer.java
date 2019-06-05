@@ -658,7 +658,7 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
 	 * @return CharacterBuffer Instance
 	 */
 	public CharacterBuffer withStart(CharSequence item, boolean newLine) {
-		if (item == null) {
+		if (item == null || start<0) {
 			return this;
 		}
 		int len = item.length();

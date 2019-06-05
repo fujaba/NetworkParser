@@ -105,6 +105,9 @@ public final class Version {
 	}
 
 	public ECB getECBlocksForLevel(ErrorCorrectionLevel ecLevel) {
+		if(ecLevel == null) {
+			return null;
+		}
 		if (ecLevel.ordinal() == 0) {
 			return ecBlocks1;
 		}
@@ -254,6 +257,9 @@ public final class Version {
 	 * See ISO 18004:2006 Annex E
 	 */
 	BitMatrix buildFunctionPattern() {
+		if(alignmentPatternCenters == null) {
+			return null;
+		}
 		int dimension = getDimensionForVersion();
 		BitMatrix bitMatrix = new BitMatrix(dimension);
 

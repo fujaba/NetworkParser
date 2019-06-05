@@ -67,7 +67,7 @@ public class CheckSumTest {
 //	      PublicKey generatePublic2 = kf.generatePublic(spec);
 
 		key = RSAKey.generateKey(1024);
-		StringBuilder textEncrypt = key.encrypt("Hallo");
+		CharacterBuffer textEncrypt = key.encrypt("Hallo");
 		Assert.assertNotNull(textEncrypt);
 
 //FIXME		RSAKey descriptKey = RSAKey.getDecryptKey(1024, key.getPrivateKey());

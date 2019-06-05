@@ -341,6 +341,7 @@ public class ReflectionBlackBoxTester {
 				try {
 					call = getParameters(m, parameterTypes, type, this);
 					if(call != null) {
+						logger.info(this, "CALL", obj.getClass().getName()+": "+m.getName());
 						m.invoke(obj, call);
 						successCount++;
 					}
@@ -696,6 +697,9 @@ public class ReflectionBlackBoxTester {
 			return null;
 		} else if (equalsClass(clazz, File.class)) {
 			return new File("");
+		} else if (clazz==byte[][].class) {
+			// byte[][]
+			return new byte[][]{new byte[]{1,2}};
 		} else if (clazz.isArray()) {
 			Class<?> arrayClazz = clazz.getComponentType();
 			int nrDims = 1 + clazz.getName().lastIndexOf('[');

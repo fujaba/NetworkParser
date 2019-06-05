@@ -43,14 +43,10 @@ public final class GenericGFPoly {
 	 * @param coefficients coefficients as ints representing elements of GF(size),
 	 *                     arranged from most significant (highest-power term)
 	 *                     coefficient to least significant
-	 * @throws IllegalArgumentException if argument is null or empty, or if leading
-	 *                                  coefficient is 0 and this is not a constant
-	 *                                  polynomial (that is, it is not the monomial
-	 *                                  "0")
 	 */
 	GenericGFPoly(GenericGF field, int[] coefficients) {
-		if (coefficients.length == 0) {
-			throw new IllegalArgumentException();
+		if (coefficients == null || coefficients.length == 0) {
+			return;
 		}
 		this.field = field;
 		int coefficientsLength = coefficients.length;
@@ -90,7 +86,7 @@ public final class GenericGFPoly {
 	 * @return true iff this polynomial is the monomial "0"
 	 */
 	boolean isZero() {
-		return coefficients[0] == 0;
+		return coefficients != null && coefficients[0] == 0;
 	}
 
 	/**
@@ -107,7 +103,7 @@ public final class GenericGFPoly {
 	 * @return evaluation of this polynomial at a given point
 	 */
 	int evaluateAt(int a) {
-		if (a == 0) {
+		if (a == 0 || coefficients == null) {
 			// Just return the x^0 coefficient
 			return getCoefficient(0);
 		}
@@ -128,8 +124,8 @@ public final class GenericGFPoly {
 	}
 
 	GenericGFPoly addOrSubtract(GenericGFPoly other) {
-		if (!field.equals(other.field)) {
-			throw new IllegalArgumentException("GenericGFPolys do not have same GenericGF field");
+		if (field == null || field.equals(other.field) == false) {
+			return null;
 		}
 		if (isZero()) {
 			return other;
@@ -159,8 +155,8 @@ public final class GenericGFPoly {
 	}
 
 	GenericGFPoly multiply(GenericGFPoly other) {
-		if (!field.equals(other.field)) {
-			throw new IllegalArgumentException("GenericGFPolys do not have same GenericGF field");
+		if (field == null || field.equals(other.field) == false) {
+			return null;
 		}
 		if (isZero() || other.isZero()) {
 			return field.getZero();
@@ -180,6 +176,9 @@ public final class GenericGFPoly {
 	}
 
 	GenericGFPoly multiply(int scalar) {
+		if(field == null) {
+			return this;
+		}
 		if (scalar == 0) {
 			return field.getZero();
 		}
@@ -195,8 +194,8 @@ public final class GenericGFPoly {
 	}
 
 	GenericGFPoly multiplyByMonomial(int degree, int coefficient) {
-		if (degree < 0) {
-			throw new IllegalArgumentException();
+		if (degree < 0 || field == null) {
+			return null;
 		}
 		if (coefficient == 0) {
 			return field.getZero();

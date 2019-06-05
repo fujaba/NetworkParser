@@ -82,9 +82,8 @@ public final class Mode {
 			// 0xD is defined in GBT 18284-2000, may not be supported in foreign
 			// country
 			return HANZI;
-		default:
-			throw new IllegalArgumentException();
 		}
+		return null;
 	}
 
 	/**
@@ -93,8 +92,8 @@ public final class Mode {
 	 *         encode the count of characters that will follow encoded in this Mode
 	 */
 	public int getCharacterCountBits(Version version) {
-		if (characterCountBitsForVersions == null) {
-			throw new IllegalArgumentException("Character count doesn't apply to this mode");
+		if (version == null || characterCountBitsForVersions == null) {
+			return -1;
 		}
 		int number = version.getVersionNumber();
 		int offset;
