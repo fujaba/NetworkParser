@@ -65,7 +65,7 @@ public class ByteConverterHTTP extends ByteConverter {
 	}
 
 	public byte[] decode(byte[] values) {
-		if (values == null) {
+		if (values == null || values.length<1) {
 			return null;
 		}
 		int len = values.length;

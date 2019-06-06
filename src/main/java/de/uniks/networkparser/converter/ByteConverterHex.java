@@ -75,6 +75,9 @@ public class ByteConverterHex extends ByteConverter {
 	}
 
 	public static byte[] decoding(CharSequence value, int pos, int len) {
+		if(value == null || len< value.length()) {
+			return null;
+		}
 		byte[] out = new byte[len / 2];
 
 		int n = len;
@@ -92,7 +95,7 @@ public class ByteConverterHex extends ByteConverter {
 
 	public static char fromHex(CharSequence value, int pos, int len) {
 		byte[] bytes = decoding(value, pos, len);
-		if (bytes == null) {
+		if (bytes == null || bytes.length<1) {
 			return 0;
 		}
 		if (len == 4 && bytes.length > 3) {

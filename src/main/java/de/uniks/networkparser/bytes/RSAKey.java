@@ -104,7 +104,11 @@ public class RSAKey {
 	 * @return Encoded Message
 	 */
 	public BigInteger encrypt(BigInteger message) {
-		if (message.divide(getModulus()).intValue() > 0) {
+		BigInteger modulus = getModulus();
+		if(modulus == null) {
+			return null;
+		}
+		if (message.divide(modulus).intValue() > 0) {
 			System.out.println("WARNUNG MODULUS MUST BIGGER (HASH-VALUE)");
 		}
 		return message.modPow(getPublicKey(), getModulus());
@@ -124,7 +128,13 @@ public class RSAKey {
 	}
 
 	public CharacterBuffer decrypt(String message) {
-		return decrypt(new BigInteger(message));
+		if(message != null) {
+			try {
+				return decrypt(new BigInteger(message));
+			}catch (Exception e) {
+			}
+		}
+		return null;
 	}
 
 	/**
@@ -134,7 +144,15 @@ public class RSAKey {
 	 * @return the descrypted Message
 	 **/
 	public CharacterBuffer decrypt(BigInteger message) {
-		BigInteger text = message.modPow(getPrivateKey(), getModulus());
+		if(message == null) {
+			return null;
+		}
+		BigInteger privateKey = getPrivateKey();
+		BigInteger modulus = getModulus();
+		if(privateKey == null || modulus == null) {
+			return null;
+		}
+		BigInteger text = message.modPow(privateKey, modulus);
 		BigInteger divider = BigInteger.valueOf(1000);
 		int bitCount = text.bitCount();
 		CharacterBuffer sb = new CharacterBuffer().withBufferLength(bitCount);
@@ -148,14 +166,20 @@ public class RSAKey {
 	}
 
 	public Entity sign(Entity value) {
-		String string = value.toString();
-		CharacterBuffer hashCode = encrypt(string, string.length());
-		// CHECK FOR HASHCODE ONLY
-		value.put(TAG, hashCode);
+		if(value != null) {
+			String string = value.toString();
+			CharacterBuffer hashCode = encrypt(string, string.length());
+			// CHECK FOR HASHCODE ONLY
+			value.put(TAG, hashCode);
+			return value;
+		}
 		return null;
 	}
 
 	public CharacterBuffer encrypt(String value, int group) {
+		if(value == null) {
+			return null;
+		}
 		CharacterBuffer sb = new CharacterBuffer();
 		CharacterBuffer item = new CharacterBuffer();
 
@@ -189,7 +213,15 @@ public class RSAKey {
 		if(value == null) {
 			return null;
 		}
-		BigInteger encrypt = encrypt(new BigInteger(value));
+		BigInteger encrypt;
+		try {
+			encrypt = encrypt(new BigInteger(value));
+		}catch (Exception e) {
+			return null;
+		}
+		if(encrypt == null) {
+			return null;
+		}
 		String string = encrypt.toString();
 		int rest = string.length() % 3;
 		if (rest == 1) {
@@ -221,7 +253,7 @@ public class RSAKey {
 	 * @return if number is Positive
 	 */
 	private final boolean isPositive(BigInteger number) {
-		return (number.compareTo(BigInteger.ZERO) > 0);
+		return number != null && (number.compareTo(BigInteger.ZERO) > 0);
 	}
 
 	/**
@@ -247,10 +279,17 @@ public class RSAKey {
 	}
 
 	public static RSAKey generateKey(BigInteger p, BigInteger q, int max) {
+		if(p == null || q == null) {
+			return null;
+		}
 		Random rand = new Random();
 		if (p.longValue() < 1) {
-			p = BigInteger.probablePrime(75 * max / 100, rand);
-			q = BigInteger.probablePrime(25 * max / 100, rand);
+			try {
+				p = BigInteger.probablePrime(75 * max / 100, rand);
+				q = BigInteger.probablePrime(25 * max / 100, rand);
+			}catch (Exception e) {
+				return null;
+			}
 		}
 		RSAKey key = new RSAKey(p.multiply(q));
 		// n is the modulus for the public key and the private keys
@@ -276,6 +315,9 @@ public class RSAKey {
 	 * @return Phi
 	 */
 	private static BigInteger computePhi(BigInteger p, BigInteger q) {
+		if(p == null || q == null) {
+			return null;
+		}
 		return lcm(p.subtract(BigInteger.ONE), q.subtract(BigInteger.ONE));
 	}
 
@@ -287,7 +329,14 @@ public class RSAKey {
 	 * @return the multiply of a,b
 	 */
 	private static BigInteger lcm(BigInteger a, BigInteger b) {
-		return (a.multiply(b).divide(a.gcd(b)));
+		if(a == null || b == null) {
+			return null;
+		}
+		try {
+			return (a.multiply(b).divide(a.gcd(b)));
+		}catch (Exception e) {
+		}
+		return null;
 	}
 
 	public static RSAKey getDecryptKey(BigInteger n, BigInteger privateKey) {

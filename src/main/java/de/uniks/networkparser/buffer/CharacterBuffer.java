@@ -510,7 +510,7 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
 	 * @return the new CharacterBuffer
 	 */
 	public CharacterBuffer with(CharSequence values, int start, int end) {
-		if (values == null) {
+		if (values == null || (buffer != null && start>buffer.length)) {
 			return this;
 		}
 		if (this.buffer == null) {
@@ -530,8 +530,10 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
 					newCapacity =0;
 				}
 				char[] copy = new char[newCapacity];
-				System.arraycopy(buffer, this.start, copy, 0, length);
-				buffer = copy;
+				if(this.start<newCapacity) {
+					System.arraycopy(buffer, this.start, copy, 0, length);
+					buffer = copy;
+				}
 				this.start = 0;
 			}
 			int len = values.length();
@@ -644,7 +646,7 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
 			this.buffer[0] = item;
 			this.position = 0;
 			this.validateValue();
-			System.arraycopy(oldValue, start, this.buffer, 1, length);
+			System.arraycopy(oldValue, start, this.buffer, 1, length-1);
 			this.length++;
 		}
 		return this;

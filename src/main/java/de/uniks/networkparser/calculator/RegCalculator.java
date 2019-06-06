@@ -25,6 +25,7 @@ THE SOFTWARE.
 */
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import de.uniks.networkparser.buffer.CharacterBuffer;
@@ -55,7 +56,9 @@ public class RegCalculator {
 	}
 
 	public RegCalculator withOperator(Operator value) {
-		this.operators.put(value.getTag(), value);
+		if(value !=null) {
+			this.operators.put(value.getTag(), value);
+		}
 		return this;
 	}
 
@@ -213,14 +216,20 @@ public class RegCalculator {
 
 		Double[] result = new Double[parts.size()];
 		for (int i = 0; i < parts.size(); i++) {
-			result[i] = Double.valueOf(parts.get(i));
+			try {
+				result[i] = Double.valueOf(parts.get(i));
+			}catch (Exception e) {
+			}
 		}
 		return result;
 	}
 
-	private boolean addOperator(String value, CharacterBuffer tokener, ArrayList<String> parts) {
+	private boolean addOperator(String value, CharacterBuffer tokener, List<String> parts) {
 		if (constants.containsKey(value)) {
 			// Its constants
+			if(parts == null) {
+				return false;
+			}
 			return parts.add("" + constants.get(value));
 		} else if (operators.containsKey(value)) {
 			if (operators.get(value).getPriority() == FUNCTION) {

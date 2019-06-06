@@ -121,6 +121,9 @@ public class GraphConverter implements Converter {
 	}
 
 	public Clazz parseJsonObject(GraphList root, Entity node) {
+		if(root == null || node == null) {
+			return null;
+		}
 		String id = node.getString("id");
 		String typeId = id;
 		boolean isClassDiagram = GraphTokener.CLASSDIAGRAM.equalsIgnoreCase(root.getType());
@@ -223,6 +226,9 @@ public class GraphConverter implements Converter {
 
 	public TemplateResultFragment convertToTestCode(GraphModel model, boolean createModel) {
 		TemplateResultFragment code =  new TemplateResultFragment();
+		if(model == null) {
+			return code;
+		}
 		
 		code.withHeader(Story.class.getName());
 		code.withLine("Story story = new Story();");
@@ -251,6 +257,9 @@ public class GraphConverter implements Converter {
 	}
 
 	public Entity convertToJson(GraphModel root, boolean removePackage, boolean removeParameterNames) {
+		if(root == null) {
+			return null;
+		}
 		String type = GraphTokener.CLASSDIAGRAM;
 		String style = null;
 		GraphOptions options = null;
@@ -289,7 +298,7 @@ public class GraphConverter implements Converter {
 	}
 
 	public GraphModel convertFromJson(Entity model, GraphModel reference) {
-		if (model.has(NODES) == false) {
+		if (model == null || model.has(NODES) == false) {
 			return null;
 		}
 		EntityList nodes = (EntityList) model.getValue(NODES);
@@ -418,6 +427,9 @@ public class GraphConverter implements Converter {
 
 	private EntityList parseEdges(String type, SimpleSet<Association> edges, boolean shortName) {
 		EntityList result = (EntityList) factory.getNewList(false);
+		if(edges == null) {
+			return result;
+		}
 		ArrayList<String> ids = new ArrayList<String>();
 
 		for (Association edge : edges) {
@@ -502,6 +514,9 @@ public class GraphConverter implements Converter {
 
 	private Entity addInfo(Association edge, boolean cardinality) {
 		Entity result = (Entity) factory.getNewList(true);
+		if(edge == null) {
+			return result;
+		}
 		result.put(PROPERTY, edge.getName());
 		if (cardinality) {
 			result.put(CARDINALITY, edge.getCardinality());
@@ -517,6 +532,9 @@ public class GraphConverter implements Converter {
 		EntityList result = (EntityList) factory.getNewList(false);
 		ArrayList<String> ids = new ArrayList<String>();
 		GraphSimpleSet children = GraphUtil.getChildren(nodes);
+		if(children == null) {
+			return null;
+		}
 		for (GraphMember entity : children) {
 			Entity item = parseEntity(type, entity, shortName, removeParameterNames);
 			if (item != null) {
@@ -605,9 +623,11 @@ public class GraphConverter implements Converter {
 
 	public GraphImage getNodeHeader(GraphEntity entity) {
 		GraphSimpleSet children = GraphUtil.getChildren(entity);
-		for (GraphMember member : children) {
-			if (member instanceof GraphImage) {
-				return (GraphImage) member;
+		if(children != null) {
+			for (GraphMember member : children) {
+				if (member instanceof GraphImage) {
+					return (GraphImage) member;
+				}
 			}
 		}
 		return null;
@@ -616,12 +636,15 @@ public class GraphConverter implements Converter {
 	private EntityList parseAttributes(String type, GraphEntity list, boolean shortName) {
 		EntityList result = (EntityList) factory.getNewList(false);
 		String splitter = "";
-		if (type.equals(GraphTokener.OBJECTDIAGRAM)) {
+		if (GraphTokener.OBJECTDIAGRAM.equals(type)) {
 			splitter = "=";
-		} else if (type.equals(GraphTokener.CLASSDIAGRAM)) {
+		} else if (GraphTokener.CLASSDIAGRAM.equals(type)) {
 			splitter = ":";
 		}
 		GraphSimpleSet children = GraphUtil.getChildren(list);
+		if(children == null) {
+			return result;
+		}
 		for (GraphMember item : children) {
 			if (!(item instanceof Attribute)) {
 				continue;
@@ -647,6 +670,9 @@ public class GraphConverter implements Converter {
 	private EntityList parseMethods(GraphEntity list, boolean shortName, boolean removeParameterNames) {
 		EntityList result = (EntityList) factory.getNewList(false);
 		GraphSimpleSet children = GraphUtil.getChildren(list);
+		if(children == null) {
+			return result;
+		}
 		for (GraphMember item : children) {
 			if (item instanceof Method == false) {
 				continue;
@@ -703,7 +729,7 @@ public class GraphConverter implements Converter {
 		}
 		GraphModel model = (GraphModel) fragment.getMember();
 		GraphSimpleSet diffs = GraphUtil.getGraphDiff(null, model);
-		if (diffs.size() < 0) {
+		if (diffs == null || diffs.size() < 0) {
 			return fragment;
 		}
 		SimpleKeyValueList<GraphMember, String> names = new SimpleKeyValueList<GraphMember, String>();
@@ -913,7 +939,7 @@ public class GraphConverter implements Converter {
 
 	public TemplateResultFragment convertToMetaText(GraphModel model, boolean full, boolean useImport) {
 		TemplateResultFragment fragment = TemplateResultFragment.create(model, useImport, true);
-		if (full == false) {
+		if (full == false || model == null) {
 			return convertToAdvanced(fragment);
 		}
 		AssociationSet associations = new AssociationSet();
@@ -1057,6 +1083,9 @@ public class GraphConverter implements Converter {
 	}
 
 	private String getFreeName(SimpleKeyValueList<GraphMember, String> names, GraphMember member) {
+		if(names == null || member == null) {
+			return null;
+		}
 		String value = member.getName().toLowerCase();
 		if (names.containsValue(value) == false) {
 			names.add(member, value);

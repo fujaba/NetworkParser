@@ -82,7 +82,13 @@ public class CodeCityConverter implements Converter {
 	}
 
 	private int addElement(CharacterBuffer buffer, ParserEntity entity, int packageId, int index, SimpleKeyValueList<GraphMember, Integer> list) {
+		if(buffer == null || entity == null || list == null) {
+			return -1;
+		}
 		Clazz clazz = entity.getClazz();
+		if(clazz == null) {
+			return -1;
+		}
 		int clazzId=index++;
 		list.add(clazz, clazzId);
 		SourceCode code = entity.getCode();
@@ -143,7 +149,11 @@ public class CodeCityConverter implements Converter {
 		return index;
 	}
 	private int addElement(CharacterBuffer buffer, ParserEntity entity, Attribute attribute, int index, SimpleKeyValueList<GraphMember, Integer> list) {
+		if(buffer == null || entity == null || list == null) {
+			return -1;
+		}
 		int attriuteId=index++;
+		
 		list.add(attribute, attriuteId);
 		
 		buffer.withLine("(FAMIX.Attribute (id: "+attriuteId+")");
@@ -158,20 +168,25 @@ public class CodeCityConverter implements Converter {
 	}
 	private GraphMetric getMetric(TemplateItem member) {
 		GraphSimpleSet children = GraphUtil.getChildren(member);
-		for(GraphMember item : children) {
-			if(item instanceof GraphMetric) {
-				return (GraphMetric) item;
+		if(children != null) {
+			for(GraphMember item : children) {
+				if(item instanceof GraphMetric) {
+					return (GraphMetric) item;
+				}
 			}
 		}
 		return null;
 	}
 	
 	private int addElement(CharacterBuffer buffer, ParserEntity entity, Method method, int index, SimpleKeyValueList<GraphMember, Integer> list) {
-		if(entity == null) {
+		if(entity == null || buffer == null) {
 			return 0;
 		}
 		int methodId=index++;
 		SourceCode code = entity.getCode();
+		if(code == null) {
+			return 0;
+		}
 		list.add(method, methodId);
 		GraphMetric metric = getMetric(method);
 		SymTabEntry symbolEntry = code.getSymbolEntry(SymTabEntry.TYPE_METHOD, method.getName());

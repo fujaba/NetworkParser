@@ -38,6 +38,9 @@ public class ByteConverter64 extends ByteConverter {
 	// ENCODE
 	@Override
 	public String toString(BufferedBuffer values) {
+		if(values == null) {
+			return null;
+		}
 		int i, j, k;
 		CharacterBuffer buffer = new CharacterBuffer();
 		values.back();
@@ -80,7 +83,7 @@ public class ByteConverter64 extends ByteConverter {
 	 * @return the encoded byte array
 	 **/
 	public CharacterBuffer toStaticString(CharSequence values, boolean finishToken) {
-		if (values.length() == 0) {
+		if (values == null || values.length() == 0) {
 			return new CharacterBuffer();
 		}
 		if (values instanceof CharacterBuffer) {
@@ -101,7 +104,7 @@ public class ByteConverter64 extends ByteConverter {
 	 * @return the encoded byte array
 	 */
 	public CharacterBuffer toStaticString(byte[] values, boolean finishToken) {
-		if (values.length == 0) {
+		if (values == null || values.length == 0) {
 			return new CharacterBuffer();
 		}
 		ByteBuffer buffer = new ByteBuffer().with(values);
@@ -166,6 +169,9 @@ public class ByteConverter64 extends ByteConverter {
 	 * @return encoded String
 	 */
 	private CharacterBuffer encode(BufferedBuffer buffer, int off, int size, boolean finishToken) {
+		if(buffer == null || size>buffer.size()) {
+			return null;
+		}
 		int len = getStaticSize(size);
 		if(finishToken == false) {
 			if(size%3==1) {
@@ -239,10 +245,13 @@ public class ByteConverter64 extends ByteConverter {
 		if (value == null || value instanceof String == false) {
 			return new byte[0];
 		}
+		byte[] bytes = ((String) value).getBytes();
+		if(bytes.length<1) {
+			return bytes;
+		}
 		if (pem_convert_array == null) {
 			initPEMArray();
 		}
-		byte[] bytes = ((String) value).getBytes();
 		int i;
 		byte[] result = null;
 		for (i = bytes.length - 1; i >= bytes.length - 3; i--) {

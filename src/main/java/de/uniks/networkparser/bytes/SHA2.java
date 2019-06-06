@@ -15,6 +15,9 @@ public class SHA2 {
 			0xa4506ceb, 0xbef9a3f7, 0xc67178f2 };
 
 	public int hashBlocks(int[] w, int[] v, byte[] p, int pos, int len) {
+		if(w == null || v == null || p == null) {
+			return -1;
+		}
 		int a, b, c, d, e, f, g, h, u, i, j, t1, t2;
 		while (len >= 64) {
 			a = v[0];
@@ -131,12 +134,12 @@ public class SHA2 {
 	// Throws error when trying to update already finalized hash:
 	// instance must be reset to use it again.
 	public SHA2 update(byte[] data, int dataLength) {
-		if (this.finished) {
-			throw new Error("SHA256: can't update because hash was finished.");
+		if (this.finished || data == null || dataLength>data.length) {
+			return null;
 		}
 		int dataPos = 0;
 		this.bytesHashed += dataLength;
-		if (this.bufferLength > 0) {
+		if (this.bufferLength > 0 && this.bufferLength<this.buffer.length) {
 			while (this.bufferLength < 64 && dataLength > 0) {
 				this.buffer[this.bufferLength++] = data[dataPos++];
 				dataLength--;
@@ -207,14 +210,16 @@ public class SHA2 {
 
 	// Internal function for use in HMAC for optimization.
 	public void _saveState(int[] out) {
-		for (int i = 0; i < this.state.length; i++) {
-			out[i] = this.state[i];
+		if(out != null && out.length>=this.state.length) {
+			for (int i = 0; i < this.state.length; i++) {
+				out[i] = this.state[i];
+			}
 		}
 	}
 
 	// Internal function for use in HMAC for optimization.
 	public void _restoreState(int[] from, int bytesHashed) {
-		if(from != null) {
+		if(from != null && from.length>=this.state.length) {
 			for (int i = 0; i < this.state.length; i++) {
 				this.state[i] = from[i];
 			}

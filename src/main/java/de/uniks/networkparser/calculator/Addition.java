@@ -35,9 +35,16 @@ public class Addition implements Operator {
 		if (values == null) {
 			return 0;
 		}
-		double result = values[0];
+		Double value = values[0];
+		double result = 0;
+		if(value != null) {
+			result = value;
+		}
 		for (int i = 1; i < values.length; i++) {
-			result += values[i];
+			value = values[i];
+			if(value != null) {
+				result += value;
+			}
 		}
 		return result;
 	}

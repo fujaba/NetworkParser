@@ -39,16 +39,25 @@ public class ByteConverterAES extends ByteConverter {
 	}
 
 	public CharacterBuffer toString(String values) {
-		return aes.encode(values);
+		if(this.aes != null) {
+			return aes.encode(values);
+		}
+		return null;
 	}
 
 	@Override
 	public String toString(BufferedBuffer values) {
-		return this.aes.encode(values).toString();
+		if(this.aes != null) {
+			return aes.encode(values).toString();
+		}
+		return null;
 	}
 
 	@Override
 	public byte[] decode(CharSequence value) {
-		return aes.decodeString(value);
+		if(this.aes != null) {
+			return aes.decodeString(value);
+		}
+		return null;
 	}
 }

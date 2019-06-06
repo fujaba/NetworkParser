@@ -40,6 +40,9 @@ public class RegExParser {
 	}
 
 	private static Boolean match(String str, String pattern) {
+		if(pattern == null || str == null) {
+			return false;
+		}
 		if (pattern.length() == 2 && pattern.charAt(1) == '*') {
 			return true;
 		} else if (str.isEmpty() || pattern.isEmpty()) {

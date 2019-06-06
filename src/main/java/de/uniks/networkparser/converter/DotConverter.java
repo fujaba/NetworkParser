@@ -94,6 +94,9 @@ public class DotConverter implements Converter {
 	}
 
 	GraphList decodeGraph(BufferItem value) {
+		if(value == null) {
+			return null;
+		}
 		char c = value.nextClean(true);
 		StringBuilder sb = new StringBuilder();
 //			boolean isQuote = true;
@@ -128,6 +131,9 @@ public class DotConverter implements Converter {
 	}
 
 	void decodeEdge(GraphList graph, BufferItem value) {
+		if(graph == null || value == null) {
+			return;
+		}
 		char endChar;
 		do {
 			GraphEntity node = decodeNode(graph, value);
@@ -159,6 +165,9 @@ public class DotConverter implements Converter {
 	}
 
 	GraphEntity decodeNode(GraphList graph, BufferItem value) {
+		if(graph == null || value == null) {
+			return null;
+		}
 		char c = value.nextClean(true);
 		StringBuilder sb = new StringBuilder();
 		sb.append(c);
@@ -196,6 +205,9 @@ public class DotConverter implements Converter {
 
 //		ID '=' ID [ (';' | ',') ]
 	void decodeAttributes(GraphEntity node, BufferItem value) {
+		if(node == null || value == null) {
+			return;
+		}
 		value.skipTo('[', false);
 		char c;
 		do {
@@ -217,6 +229,9 @@ public class DotConverter implements Converter {
 	}
 
 	String decodeValue(BufferItem value) {
+		if(value == null) {
+			return null;
+		}
 		char c = value.nextClean(true);
 		StringBuilder sb = new StringBuilder();
 		sb.append(c);
@@ -241,9 +256,9 @@ public class DotConverter implements Converter {
 	}
 
 	private String getType(GraphEntity item, String type, boolean shortName) {
-		if (type.equals(GraphTokener.OBJECTDIAGRAM)) {
+		if (GraphTokener.OBJECTDIAGRAM.equals(type)) {
 			return item.getId();
-		} else if (type.equals(GraphTokener.CLASSDIAGRAM)) {
+		} else if (GraphTokener.CLASSDIAGRAM.equals(type)) {
 			return item.getName(shortName);
 		}
 		return "";

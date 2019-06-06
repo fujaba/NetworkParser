@@ -60,7 +60,10 @@ public class EntityStringConverter implements Converter {
 		if (entity instanceof Entity) {
 			return ((Entity) entity).toString(getIndentFactor());
 		}
-		return ((BaseItem) entity).toString(this);
+		if(entity != null) {
+			return ((BaseItem) entity).toString(this);
+		}
+		return null;
 	}
 
 	public int getIndentFactor() {

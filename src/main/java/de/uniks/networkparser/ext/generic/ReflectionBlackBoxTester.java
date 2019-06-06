@@ -358,6 +358,7 @@ public class ReflectionBlackBoxTester {
 								if(types[0] != int.class 
 										&& types[0] != byte[].class
 										&& types[0] != String.class
+										&& types[0] != byte.class
 										) {
 									m.invoke(obj, new SimpleEvent(this, "TESTER", null, null));
 								}

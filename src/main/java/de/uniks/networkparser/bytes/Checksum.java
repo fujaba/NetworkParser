@@ -75,20 +75,26 @@ public abstract class Checksum {
 	 * @param bytes  the byte array to update the checksum with
 	 * @param offset the start offset of the data
 	 * @param length the number of bytes to use for the update
+	 * @return success
 	 */
-	public void update(byte[] bytes, int offset, int length) {
+	public boolean update(byte[] bytes, int offset, int length) {
 		for (int i = offset; i < length + offset; i++) {
 			update(bytes[i]);
 		}
+		return true;
 	}
 
 	/**
 	 * Updates the current checksum with the specified array of bytes.
 	 *
 	 * @param bytes bytearray of items
+	 * @return success
 	 */
-	public void update(byte[] bytes) {
-		update(bytes, 0, bytes.length);
+	public boolean update(byte[] bytes) {
+		if(bytes != null) {
+			return update(bytes, 0, bytes.length);
+		}
+		return false;
 	}
 
 	/**

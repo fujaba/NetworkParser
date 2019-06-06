@@ -35,9 +35,14 @@ public class Subtract implements Operator {
 		if (values == null) {
 			return 0;
 		}
-		double result = values[0];
+		double result = 0;
+		if(values[0] != null) {
+			result = values[0];
+		}
 		for (int i = 1; i < values.length; i++) {
-			result -= values[i];
+			if(values[i] != null) {
+				result -= values[i];
+			}
 		}
 		return result;
 	}

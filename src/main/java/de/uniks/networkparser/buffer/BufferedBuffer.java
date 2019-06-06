@@ -275,6 +275,9 @@ public abstract class BufferedBuffer extends Buffer implements BaseItem {
 		if (all != null && all.length > 0 && all[0]) {
 			result = new byte[length];
 		} else {
+			if(length - position<0) {
+				return null;
+			}
 			result = new byte[length - position];
 			i = position;
 		}

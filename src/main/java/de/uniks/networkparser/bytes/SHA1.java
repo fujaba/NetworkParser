@@ -59,7 +59,10 @@ public class SHA1 extends Checksum {
 	}
 
 	@Override
-	public void update(byte[] bytes, int offset, int length) {
+	public boolean update(byte[] bytes, int offset, int length) {
+		if(bytes== null || bytes.length<offset) {
+			return false;
+		}
 		if (length >= 4) {
 			int idx = currentPos >> 2;
 
@@ -149,6 +152,7 @@ public class SHA1 extends Checksum {
 			}
 			length--;
 		}
+		return true;
 	}
 
 	@Override
@@ -167,6 +171,9 @@ public class SHA1 extends Checksum {
 	}
 
 	private void putInt(byte[] b, int pos, int val) {
+		if(b== null || pos>b.length-3) {
+			return;
+		}
 		b[pos] = (byte) (val >> 24);
 		b[pos + 1] = (byte) (val >> 16);
 		b[pos + 2] = (byte) (val >> 8);
@@ -291,6 +298,9 @@ public class SHA1 extends Checksum {
 	}
 
 	public static CharacterBuffer convertToHex(byte[] data) {
+		if(data == null) {
+			return null;
+		}
 		CharacterBuffer buf = new CharacterBuffer();
 		for (int i = 0; i < data.length; i++) {
 			int halfbyte = (data[i] >>> 4) & 0x0F;
