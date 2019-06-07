@@ -390,6 +390,24 @@ public class ReflectionLoader {
 		if (constructors == null || constructors.length < 1) {
 			return ReflectionLoader.newInstance(instance);
 		} else {
+			Constructor<?> emptyConstructor = null;
+			for (Constructor<?> con : constructors) {
+				if (Modifier.isPublic(con.getModifiers())) {
+					if(con.getParameterTypes().length == 0) {
+						emptyConstructor = con;
+						break;
+					}
+				}
+			}
+			if(emptyConstructor != null) {
+				try {
+					Object newInstance = emptyConstructor.newInstance();
+					if (newInstance != null) {
+						return newInstance;
+					}
+				}catch (Exception e) {
+				}
+			}
 			for (Constructor<?> con : constructors) {
 				try {
 					if (Modifier.isPublic(con.getModifiers()) == false) {

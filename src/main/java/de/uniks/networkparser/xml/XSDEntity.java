@@ -61,6 +61,8 @@ public class XSDEntity extends XMLEntity implements SendableEntityCreator {
 	/** Constant of Maximum Elements. */
 	public static final String PROPERTY_MAXOCCURS = "maxOccurs";
 	private static final String PROEPRTY_CHILDREN = "children";
+	
+	protected Clazz container;
 
 	/** Elements of Choice. */
 	private ArrayList<XSDEntity> choice;
@@ -295,7 +297,6 @@ public class XSDEntity extends XMLEntity implements SendableEntityCreator {
 		// Now Analyse Types
 		model.with(prefix);
 		parsingRootStructure(model, rootElement, classTypes, typesValues, null);
-//		parsingFullStructure(prefix, model, classTypes, typesValues);
 		return model;
 	}
 	
@@ -339,7 +340,13 @@ public class XSDEntity extends XMLEntity implements SendableEntityCreator {
 						System.out.println("IGNORE: "+first.getString("name") +" "+containerType);
 					} else if(stringType.equalsIgnoreCase(containerType)  ) {
 							String containerName = first.getString("name");
-							Attribute containerAttribtute = parent.createAttribute(containerName, DataTypeSet.create(DataType.STRING));
+							DataType type;
+							if(container != null) {
+								type = DataTypeSet.create(this.container, DataType.STRING);
+							}else {
+								type = DataTypeSet.create(DataType.STRING);
+							}
+							Attribute containerAttribtute = parent.createAttribute(containerName, type);
 							
 							this.callBack(containerAttribtute, true, clazz.getName(), containerName);
 							return containerName;

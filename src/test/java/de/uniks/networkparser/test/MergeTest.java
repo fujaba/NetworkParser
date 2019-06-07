@@ -3,6 +3,7 @@ package de.uniks.networkparser.test;
 import org.junit.Test;
 
 import de.uniks.networkparser.SimpleEvent;
+import de.uniks.networkparser.SimpleException;
 import de.uniks.networkparser.ext.ClassModel;
 import de.uniks.networkparser.ext.MergeFeature;
 import de.uniks.networkparser.graph.Clazz;
@@ -63,9 +64,17 @@ public class MergeTest {
 	@Test
 	public void testMergeDiffV3() {
 		// NEW ONE
+		
+//		dd
 		ClassModel model = new ClassModel(); //.withFeature(feature);
 		model.createClazz("de.uniks.model.Person").createAttribute("first", de.uniks.networkparser.graph.DataType.STRING);
 //		model.createClazz("de.uniks.model.Person").remove()
-		model.generate("build/src/test/java");
+		try {
+			model.generate("build/src/test/java");
+		}catch(SimpleException e) {
+			System.out.println("22");
+		}catch(Exception e) {
+			System.out.println("22");
+		}
 	}
 }

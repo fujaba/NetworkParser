@@ -217,7 +217,7 @@ public class FileBuffer extends Buffer {
         if(data == null || data.length<1 || (data.length==1 && data[0]==0)) {
             return -1;
         }
-        if(flag<0 || flag>APPEND) {
+        if(flag<0 || flag>OVERRIDE) {
         	return -1;
         }
 		FileBuffer buffer = new FileBuffer();

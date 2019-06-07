@@ -51,6 +51,9 @@ public class YUMLConverter implements Converter {
 			type = ((GraphList) root).getType();
 		}
 		GraphSimpleSet collection = GraphUtil.getChildren(root);
+		if(collection == null) {
+			return null;
+		}
 		if (collection.size() > 0) {
 			StringBuilder sb = new StringBuilder();
 			SimpleList<GraphMember> visitedObj = new SimpleList<GraphMember>();
@@ -72,8 +75,11 @@ public class YUMLConverter implements Converter {
 		}
 	}
 
-	public void parse(String type, GraphEntity item, StringBuilder sb, SimpleList<GraphMember> visited,
+	public boolean parse(String type, GraphEntity item, StringBuilder sb, SimpleList<GraphMember> visited,
 			boolean shortName) {
+		if(item == null) {
+			return false;
+		}
 		SimpleSet<Association> association = item.getAssociations();
 		if (association.size() == 0) {
 			if (visited.contains(item) == false) {
@@ -82,7 +88,7 @@ public class YUMLConverter implements Converter {
 				}
 				sb.append(parseEntity(item, visited, type, shortName));
 			}
-			return;
+			return true;
 		}
 		if (type == null) {
 			type = GraphTokener.OBJECTDIAGRAM;
@@ -124,6 +130,7 @@ public class YUMLConverter implements Converter {
 				sb.append(parseEntity(target, visited, type, shortName));
 			}
 		}
+		return true;
 	}
 
 	// ##################################### Entity
@@ -162,8 +169,11 @@ public class YUMLConverter implements Converter {
 
 	public String parseEntityValues(GraphEntity entity, String type, boolean shortName) {
 		StringBuilder sb = new StringBuilder();
-
-		Iterator<GraphMember> i = GraphUtil.getChildren(entity).iterator();
+		GraphSimpleSet children = GraphUtil.getChildren(entity);
+		if(children == null){
+			return null;
+		}
+		Iterator<GraphMember> i = children.iterator();
 		boolean second = false;
 		if (i.hasNext()) {
 			String splitter = "";

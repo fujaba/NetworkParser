@@ -1,5 +1,7 @@
 package de.uniks.networkparser.parser.java;
 
+import java.util.HashMap;
+
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.graph.Association;
 import de.uniks.networkparser.graph.Attribute;
@@ -152,7 +154,8 @@ public class JavaSetCreator extends Template {
 								" 			{{item.type}} newValue = new {{item.type}}().withList((Collection<?>) value);\r\n" + 
 								"			return element.set{{item.Name}}(newValue);",
 								"{{#else}}",
-								"			return element.set{{item.Name}}(({{item.type.name}}) value);",
+											"{{#debug}}",
+									"			return element.set{{item.Name}}(({{item.type.objectname}}) value);",
 								"{{#endif}}",
 								"		}",
 								"",
@@ -178,7 +181,24 @@ public class JavaSetCreator extends Template {
 				"{{#import " + IdMap.class.getName() + "}}" + "	public static IdMap createIdMap(String session) {",
 				"		return CreatorCreator.createIdMap(session);",
 				"	}",
-				"{{#endif}}"+
+				"{{#else}}",
+				"	private static HashMap<String, Class<?>> modelList;{{#import "+HashMap.class.getName()+"}}",
+				"	public static Class<?> getModelType(String property) {",
+				"		if(modelList == null) {",	
+							"{{#foreach childtransitive}}",
+							"{{#if {{item.className}}==" + Attribute.class.getName() + "}}",
+							"           modelList.put({{name}}.PROPERTY_{{item.NAME}}, {{item.type}}.class);",
+							"{{#endif}}",
+
+								"{{#if {{#and}}{{item.className}}==" + Association.class.getName() + " {{item.other.isGenerate}}{{#endand}}}}",
+								"{{#import {{item.other.clazz.fullName}}}}",
+				"           modelList.put({{name}}.PROPERTY_{{item.other.NAME}}, {{item.other.clazz.name}}.class);",
+								"{{#endif}}",
+							"{{#endfor}}",	
+					"       }",
+					"		return modelList.get(property);",	
+				"   }",
+				"{{#endif}}",
 
 				"	public Class<?> getTypClass() {",
 				"		return {{name}}.class;", "	}",

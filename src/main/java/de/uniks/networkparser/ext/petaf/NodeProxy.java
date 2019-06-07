@@ -236,6 +236,13 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 	public String getHistory() {
 		return history;
 	}
+	public Integer getHistoryNo() {
+		try {
+			return Integer.valueOf(history);			
+		}catch (Exception e) {
+		}
+		return null;
+	}
 
 	public NodeProxy withHistory(String value) {
 		String oldValue = this.history;

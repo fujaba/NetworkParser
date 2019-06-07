@@ -10,15 +10,15 @@ import de.uniks.networkparser.parser.Template;
 import de.uniks.networkparser.parser.TemplateResultFile;
 
 public class JavaCreatorCreator extends Template {
-	public JavaCreatorCreator(String createorPrefix) {
+	public JavaCreatorCreator(String creatorPrefix) {
 		this.extension = "java";
 		this.path = "util";
 		this.fileType = "classmodel";
 		this.id = TYPE_JAVA + ".creatorcreator";
 		this.type = TEMPLATE;
-		if(createorPrefix == null) {
+		if(creatorPrefix == null) {
 			// Creator or Set
-			createorPrefix = "Creator";
+			creatorPrefix = "Creator";
 		}
 		this.withTemplate(
 				"{{#template PACKAGE}}{{#if {{packageName}}}}package {{packageName}}.util;{{#endif}}{{#endtemplate}}",
@@ -31,7 +31,7 @@ public class JavaCreatorCreator extends Template {
 				"        IdMap map = new IdMap().withSession(session);",
 				"",
 					"{{#foreach {{generatedclazz}}}}",
-					"	map.withCreator(new {{item}}"+createorPrefix+"());",
+					"	map.withCreator(new {{item}}"+creatorPrefix+"());",
 					"{{#endfor}}",
 				"        return map;",
 				"   }",

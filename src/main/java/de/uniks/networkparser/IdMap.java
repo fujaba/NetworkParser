@@ -1818,6 +1818,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator>, Sendabl
 			} else {
 				fullKey =key+":"+property.toLowerCase();
 			}
+
 			Object value = creator.getValue(root, property);
 			Object element;
 			if(i18n.isAutoCreate() && ( value == null || (value instanceof Collection<?> && ((Collection<?>)value).size()<1) ) ){

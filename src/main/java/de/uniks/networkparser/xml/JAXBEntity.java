@@ -11,6 +11,16 @@ import de.uniks.networkparser.graph.GraphMember;
 public class JAXBEntity extends XSDEntity{
 	private Clazz superClazz = new Clazz(SendableItem.class).withExternal(true);
 	
+	public JAXBEntity withSuperClazz(Clazz clazz) {
+		this.superClazz = clazz;
+		return this;
+	}
+
+	public JAXBEntity withContainerClazz(Clazz clazz) {
+		this.container = clazz;
+		return this;
+	}
+
 	@Override
 	protected boolean callBack(GraphMember member, boolean value, String... params) {
 		if(member instanceof Clazz) {

@@ -464,9 +464,15 @@ public class GraphConverter implements Converter {
 	private Entity parseEdge(String type, Clazz source, Clazz target, Association edge, boolean shortName,
 			ArrayList<String> ids) {
 		Entity child = (Entity) factory.getNewList(true);
-		child.put(TYPE, edge.getOther().getType());
+		if(ids == null || edge == null || type == null || source == null || target == null) {
+			return child;
+		}
+		Association other = edge.getOther();
+		if(other != null) {
+			child.put(TYPE, other.getType());
+		}
 		Entity sourceInfo = addInfo(edge, true);
-		Entity targetInfo = addInfo(edge.getOther(), true);
+		Entity targetInfo = addInfo(other, true);
 		if (type.equals(GraphTokener.OBJECTDIAGRAM)) {
 			sourceInfo.put(ID, source.getId() + " : " + source.getName(shortName));
 			targetInfo.put(ID, target.getId() + " : " + target.getName(shortName));
@@ -474,8 +480,12 @@ public class GraphConverter implements Converter {
 			child.put(TARGET, targetInfo);
 			return child;
 		} else {
-			String id = new CharacterBuffer().with(source.getName(false), ":", edge.getName(), "-",
-					target.getName(false), ":", edge.getOther().getName()).toString();
+			String otherName =""; 
+			if(other != null) {
+				otherName = other.getName();
+			}
+			String id  = new CharacterBuffer().with(source.getName(false), ":", edge.getName(), "-",target.getName(false), ":", otherName).toString();
+			
 			if (!ids.contains(id)) {
 				Match diff = GraphUtil.getDifference(edge);
 				if (diff != null && diff.getCount() > 0) {
@@ -495,6 +505,9 @@ public class GraphConverter implements Converter {
 	private Entity parseEdge(String type, GraphPattern source, GraphPattern target, Association edge, boolean shortName,
 			ArrayList<String> ids) {
 		Entity child = (Entity) factory.getNewList(true);
+		if(edge == null) {
+			return child;
+		}
 		child.put(TYPE, edge.getType());
 		Entity sourceInfo = addInfo(edge, false);
 		Entity targetInfo = addInfo(edge.getOther(), false);
@@ -523,7 +536,10 @@ public class GraphConverter implements Converter {
 		}
 		if (full) {
 			result.put(TYPE, edge.getType().getValue());
-			result.put(CLASS, edge.getClazz().getName());
+			Clazz clazz = edge.getClazz();
+			if(clazz != null) {
+				result.put(CLASS, edge.getClazz().getName());
+			}
 		}
 		return result;
 	}
@@ -557,7 +573,7 @@ public class GraphConverter implements Converter {
 	public Entity parseEntity(String type, GraphMember entity, boolean shortName, boolean removeParameterNames) {
 		if (type == null) {
 			type = GraphTokener.OBJECTDIAGRAM;
-			if (entity.getName() == null) {
+			if (entity == null || entity.getName() == null) {
 				type = GraphTokener.CLASSDIAGRAM;
 			}
 		}

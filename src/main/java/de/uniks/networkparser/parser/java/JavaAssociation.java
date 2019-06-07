@@ -2,6 +2,7 @@ package de.uniks.networkparser.parser.java;
 
 import java.util.Collection;
 
+import de.uniks.networkparser.list.SimpleSet;
 import de.uniks.networkparser.parser.Template;
 
 public class JavaAssociation extends Template {
@@ -97,7 +98,7 @@ public class JavaAssociation extends Template {
 				"			if (item == null) {",
 				"				continue;",
 				"			}",
-				"{{#if {{cardinality}}==1 {{type}}==assoc}}", // IT IS MANY TO ONE SPECIAL CASE !!!
+				"{{#if {{cardinality}}==1 {{type}}==assoc {{templatemodel.features.setclass.classstring}}==" + SimpleSet.class.getName()+"  }}", // IT IS MANY TO ONE SPECIAL CASE !!!
 				"			if(item.set{{Name}}(this)) {",
 				"				result = result & this.{{other.name}}.rawAdd(item);",
 				"				firePropertyChange(PROPERTY_{{other.NAME}}, null, item);",

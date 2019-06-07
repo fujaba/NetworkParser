@@ -486,11 +486,37 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 	 * 
 	 * @param proxies    List of Proxies
 	 * @param msg        Message to Send
+	 * @return success sending
+	 */
+	public boolean sendMessage(Message msg, NodeProxy... proxies) {
+		return sendMessage(msg, false, proxies);
+	}
+	
+	/**
+	 * Method for Sending
+	 * 
+	 * @param proxies    List of Proxies
+	 * @param msg        Message to Send
 	 * @param sendAnyhow Sending Message for every NodeProxy
 	 * @return success sending
 	 */
 	public boolean sendMessage(Message msg, boolean sendAnyhow, NodeProxy... proxies) {
-		if (proxies == null) {
+		if(msg == null) {
+			return false;
+		}
+		if(msg.sending(this)) {
+			return true;
+		}
+		SortedSet<NodeProxy> target;
+		if(proxies == null && (sendAnyhow || msg.isSendAnyHow())) {
+			target = this.proxies;
+		} else {
+			target = new SortedSet<NodeProxy>(true);
+			for(NodeProxy proxy : proxies) {
+				target.with(proxy);
+			}
+		}
+		if(target == null || target.size()<1) {
 			return false;
 		}
 		// find my Proxy with Key
@@ -504,7 +530,7 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 		addInfo(msg, myProxy, sendAnyhow);
 
 		boolean sended = true;
-		for (NodeProxy proxy : proxies) {
+		for (NodeProxy proxy : target) {
 			if (proxy == null) {
 				continue;
 			}

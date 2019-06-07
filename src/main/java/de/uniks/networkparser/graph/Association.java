@@ -248,7 +248,7 @@ public class Association extends GraphMember {
 	}
 
 	public GraphLabel getInfo() {
-		if (children == null && this.other.getChildren() == null) {
+		if (children == null || this.other== null || this.other.getChildren() == null) {
 			return null;
 		}
 		for (GraphMember child : getChildren()) {

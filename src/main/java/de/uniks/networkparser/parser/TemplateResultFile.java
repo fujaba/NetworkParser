@@ -230,7 +230,10 @@ public class TemplateResultFile extends SortedSet<TemplateResultFragment>
 		SourceCode code = getCode();
 		if (this.size() < 1) {
 			if (code != null) {
-				return code.toString();
+				String codeString = code.toString();
+				if(codeString != null && codeString.length()>0) {
+					return code.toString();
+				}
 			}
 		}
 		// TODO DONT ADD CORRECTLY ADD

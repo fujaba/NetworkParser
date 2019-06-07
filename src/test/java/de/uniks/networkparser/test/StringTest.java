@@ -34,6 +34,14 @@ public class StringTest {
 	}
 
 	@Test
+	public void testObjectType() {
+		System.out.println(EntityUtil.getObjectType("byte"));
+		System.out.println(EntityUtil.getObjectType("int"));
+		System.out.println(EntityUtil.getObjectType("Integer"));
+		System.out.println(EntityUtil.getObjectType("Room"));
+	}
+	
+	@Test
 	public void testUmlaute() {
 		String uml = "\u00fcbung";
 //		System.out.println(uml);

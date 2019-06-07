@@ -53,6 +53,16 @@ public class Message implements SendableEntityCreator, SendableEntityCreatorNoIn
 	protected boolean sendAnyHow = false;
 	protected String type;
 	protected Object session;
+	protected Space space;
+
+	public Message withSpace(Space space) {
+		this.space = space;
+		return this;
+	}
+	
+	public Space getSpace() {
+		return space;
+	}
 
 	public String getMessageId(Space space, NodeProxy proxy) {
 		if (this.historyId == null) {
@@ -280,5 +290,9 @@ public class Message implements SendableEntityCreator, SendableEntityCreatorNoIn
 
 	public Object getSession() {
 		return session;
+	}
+	
+	public boolean sending(Space space) {
+		return false;
 	}
 }

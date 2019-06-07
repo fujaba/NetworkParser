@@ -578,4 +578,10 @@ public class ModelGenerator extends SimpleGenerator {
 	public void applyChange() {
 		generating(defaultRootDir, this.defaultModel, null, null, true, true);
 	}
+	
+	public ModelGenerator withLogger(NetworkParserLog logger) {
+//		yy
+		this.logger = logger;
+		return this;
+	}
 }

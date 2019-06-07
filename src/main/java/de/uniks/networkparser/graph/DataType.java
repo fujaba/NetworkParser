@@ -44,6 +44,7 @@ public class DataType {
 
 	protected Clazz value;
 	protected static final String PROPERTY_NAME="name";
+	protected static final String PROPERTY_OBJECTNAME="objectname";
 	protected static final String PROPERTY_CATEGORIE="cat";
 
 	DataType(String value) {
@@ -158,6 +159,10 @@ public class DataType {
 				return "PRIMITIVE";
 			}
 			return "OBJECT";			
+		}
+		if(PROPERTY_OBJECTNAME.equals(value)) {
+			String name = getClazz().getName(true);
+			return EntityUtil.getObjectType(name);
 		}
 		return null;
 	}

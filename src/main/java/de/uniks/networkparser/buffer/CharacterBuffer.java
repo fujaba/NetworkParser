@@ -646,8 +646,10 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
 			this.buffer[0] = item;
 			this.position = 0;
 			this.validateValue();
-			System.arraycopy(oldValue, start, this.buffer, 1, length-1);
-			this.length++;
+			if(length>0) {
+				System.arraycopy(oldValue, start, this.buffer, 1, length-1);
+				this.length++;
+			}
 		}
 		return this;
 	}

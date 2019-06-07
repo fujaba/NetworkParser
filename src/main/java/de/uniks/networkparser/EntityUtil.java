@@ -738,6 +738,17 @@ public class EntityUtil {
 		
 		return numericTypes.indexOf(type) >= 0 || primitiveTypes.indexOf(type) >= 0;
 	}
+	
+	public static final String getObjectType(String type) {
+		int pos = types.indexOf(" " + type + " ") / 8;
+		if (pos % 2 == 1 && pos>0) {
+			int posNew = (pos+1)*8;
+			
+			String newType = types.substring(posNew+1, posNew+8).trim();
+			return newType;
+		}
+		return type;
+	}
 
 	public static final boolean isDate(String type) {
 		return primitiveTypes.indexOf(" " + type + " ") == 0;
@@ -874,6 +885,9 @@ public class EntityUtil {
 	 * @return formatted string
 	 */
 	public static String decode(String str) {
+		if(str == null) {
+			return null;
+		}
 		StringBuilder buf = new StringBuilder();
 
 		for (int i = 0; i < str.length(); ++i) {
@@ -939,6 +953,9 @@ public class EntityUtil {
 	}
 
 	public static final byte[] clone(byte[] entity) {
+		if(entity == null) {
+			return null;
+		}
 		byte[] result = new byte[entity.length];
 		for (int i = 0; i < entity.length; i++) {
 			result[i] = entity[i];
@@ -1003,6 +1020,9 @@ public class EntityUtil {
 	 * @return the ByteArray
 	 */
 	public static final byte[] getBytes(CharSequence string) {
+		if(string == null) {
+			return null;
+		}
 		int size = string.length();
 		byte[] bytes = new byte[size];
 		for (int i = 0; i < size; i++) {
