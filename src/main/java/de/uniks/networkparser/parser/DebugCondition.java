@@ -5,9 +5,13 @@ import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.SimpleException;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.interfaces.LocalisationInterface;
+import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.ParserCondition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.TemplateParser;
+import de.uniks.networkparser.logic.Equals;
+import de.uniks.networkparser.logic.Not;
+import de.uniks.networkparser.logic.VariableCondition;
 
 /**
  * DebugCondition for Debug Templates 
@@ -18,7 +22,8 @@ import de.uniks.networkparser.interfaces.TemplateParser;
 public class DebugCondition implements ParserCondition, SendableEntityCreator {
 	public static final String KEY = "debug";
 	private int line=-1;
-	private NetworkParserLog logger=new NetworkParserLog(); 
+	private NetworkParserLog logger=new NetworkParserLog();
+	private ObjectCondition condition;
 	
 	public DebugCondition withLine(int value) {
 		this.line = value;
@@ -27,6 +32,16 @@ public class DebugCondition implements ParserCondition, SendableEntityCreator {
 
 	@Override
 	public boolean update(Object evt) {
+		if (condition != null) {
+			if(condition.update(evt)) {
+				Object newValue = null;
+				if(evt instanceof SimpleEvent) {
+					SimpleEvent simpleEvt = (SimpleEvent) evt;
+					newValue = simpleEvt.getNewValue();
+				}
+				logger.debug(this, "update", newValue);
+			}
+		}
 		if(evt instanceof TemplateResultFragment) {
 			exeuteTemplate((TemplateResultFragment) evt);
 		}
@@ -54,10 +69,33 @@ public class DebugCondition implements ParserCondition, SendableEntityCreator {
 	@Override
 	public void create(CharacterBuffer buffer, TemplateParser parser, LocalisationInterface customTemplate) {
 //		 CREATE FIELD
-		// SKIP TO END
 		if(buffer == null) {
 			return;
 		}
+		// Skip Word
+		// IF CONDITION
+		CharacterBuffer tokenPart = buffer.nextToken(false, SPLITEND, ENTER, '!');
+		if(tokenPart.length()>0) {
+			char currentChar = buffer.getCurrentChar();
+			VariableCondition left = VariableCondition.create(tokenPart, true);
+			if(currentChar == '!' || currentChar == ENTER) {
+				char nextChar = buffer.getChar();
+				if (nextChar == ENTER) {
+					Equals equalsExpression = new Equals();
+					equalsExpression.withLeft(left);
+					equalsExpression.create(buffer, parser, customTemplate);
+					if(currentChar == '!') {
+						condition = new Not().with(equalsExpression);
+					}else {
+						condition = equalsExpression;
+					}
+				}
+			}else {
+				condition = left;
+			}
+		}
+
+		// SKIP TO END
 		buffer.skipTo(SPLITEND, false);
 		buffer.skip();
 		buffer.skip();

@@ -342,5 +342,32 @@ public class Equals implements ParserCondition, SendableEntityCreator {
 
 	@Override
 	public void create(CharacterBuffer buffer, TemplateParser parser, LocalisationInterface customTemplate) {
+		// CHECK IF CURRENT =
+		
+		// MAY BE A EQUALS
+		buffer.skip();
+		// Check Next Value May be Bigger or lesser or Equals
+		char currentChar = buffer.getCurrentChar();
+		if (currentChar == '>') {
+			this.withPosition(-1);
+			buffer.skip();
+		} else if (currentChar == '<') {
+			this.withPosition(1);
+			buffer.skip();
+ 		} else if (currentChar == '!') {
+ 			this.withPosition(0);
+			buffer.skip();
+		} else {
+			this.withPosition(0);
+		}
+//		child = parsing(buffer, customTemplate, true, allowSpace, stopWords);
+		ObjectCondition child = parser.parsing(buffer, customTemplate, true, true);
+
+		if (currentChar == '!') {
+			child = new Not().with(child);
+			this.withRight(child);
+		}else {
+			this.withRight(child);
+		}
 	}
 }

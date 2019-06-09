@@ -3,6 +3,8 @@ package de.uniks.networkparser.test.generator;
 import org.junit.Assert;
 import org.junit.Test;
 
+import de.uniks.networkparser.buffer.CharacterBuffer;
+import de.uniks.networkparser.ext.ClassModel;
 import de.uniks.networkparser.ext.FunctionCondition;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.parser.Template;
@@ -23,6 +25,26 @@ public class TestTemplate {
 		TemplateResultFragment entity = template.executeSimpleEntity(condition, variables);
 		System.out.println(entity.getValue());
 		Assert.assertNotNull(condition);
+	}
+	
+	@Test
+	public void testDebugCondition() {
+		CharacterBuffer buffer=new CharacterBuffer();
+		
+		
+		ClassModel model= new ClassModel();
+		model.createClazz("uni");
+		model.createClazz("room");
+		
+		buffer.withLine("{{#foreach {{clazz}}}}");
+		buffer.withLine("{{#debug}}");
+		buffer.withLine("{{#debug item.name==room}}");
+		buffer.withLine("{{#endfor}}");
+		
+		Template template = Template.create(buffer.toString());
+		ObjectCondition condition = template.parsing(new FunctionCondition());
+		TemplateResultFragment entity = template.executeSimpleEntity(condition, model);
+		System.out.println();
 	}
 	
 	@Test

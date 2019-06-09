@@ -356,36 +356,13 @@ public class Template implements TemplateParser {
 						// CHECK NEXT TOKEN
 						char nextChar = buffer.getChar();
 						if (nextChar == ENTER) {
-							// MAY BE A EQUALS
-							buffer.skip();
-							// Check Next Value May be Bigger or lesser or Equals
 							Equals equalsExpression = new Equals();
-							char currentChar = buffer.getCurrentChar();
-							if (currentChar == '>') {
-								equalsExpression.withPosition(-1);
-								buffer.skip();
-							} else if (currentChar == '<') {
-								equalsExpression.withPosition(1);
-								buffer.skip();
-							} else if (currentChar == '!') {
-								equalsExpression.withPosition(0);
-								buffer.skip();
-								if (firstChar == currentChar) {
-									firstChar = 0;
-								} else {
-									firstChar = currentChar;
-								}
-							} else {
-								equalsExpression.withPosition(0);
-							}
+							equalsExpression.create(buffer, this, customTemplate);
 							equalsExpression.withLeft(child);
-							child = parsing(buffer, customTemplate, true, allowSpace, stopWords);
-							equalsExpression.withRight(child);
-
-							if (firstChar == '!') {
+							if(firstChar == '!') {
 								child = new Not().with(equalsExpression);
-							} else {
-								child = equalsExpression;
+							}else {
+								child = equalsExpression; 
 							}
 						} else {
 							// MAY BE ANOTHER CHAR
@@ -461,10 +438,6 @@ public class Template implements TemplateParser {
 					VariableCondition.create(token, isExpression);
 				} else {
 					child = VariableCondition.create(token, false);
-//					if(buffer.getCurrentChar()==SPLITEND) {
-//						buffer.skip();
-//						buffer.skip();
-//					}
 				}
 			} else {
 				child = StringCondition.create(token);
