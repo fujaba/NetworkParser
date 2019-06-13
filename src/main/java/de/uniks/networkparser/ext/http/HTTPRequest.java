@@ -88,11 +88,14 @@ public class HTTPRequest  implements Comparable<HTTPRequest> {
 		int c;
 		CharacterBuffer buffer = new CharacterBuffer();
 		try {
-			while ((c = getInput().read()) != -1) {
-				if (c == ' ') {
-					break;
+			BufferedReader input = getInput();
+			if(input != null) {
+				while ((c = getInput().read()) != -1) {
+					if (c == ' ') {
+						break;
+					}
+					buffer.with((char) c);
 				}
-				buffer.with((char) c);
 			}
 		} catch (IOException e) {
 			executeExeption(e);
@@ -134,8 +137,10 @@ public class HTTPRequest  implements Comparable<HTTPRequest> {
 	}
 	public static HTTPRequest createRouting(String value) {
 		HTTPRequest httpRequest = new HTTPRequest();
-		StringReader stringReader = new StringReader(value);
-		httpRequest.parsingPath(stringReader, "*");
+		if(value != null) {
+			StringReader stringReader = new StringReader(value);
+			httpRequest.parsingPath(stringReader, "*");
+		}
 		return httpRequest;
 	}
 
@@ -258,6 +263,9 @@ public class HTTPRequest  implements Comparable<HTTPRequest> {
 	}
 
 	public boolean write(HTMLEntity entity) {
+		if(entity == null) {
+			return false;
+		}
 		String content = entity.toString();
 		PrintWriter output = getOutput();
 		if (output != null) {
@@ -534,7 +542,7 @@ public class HTTPRequest  implements Comparable<HTTPRequest> {
 		this.matchValid = false;
 		this.matchVariables.clear();
 
-		if(routing == null) {
+		if(routing == null || pathType == null) {
 			return false;
 		}
 		SimpleList<String> paths = routing.getFullPath();

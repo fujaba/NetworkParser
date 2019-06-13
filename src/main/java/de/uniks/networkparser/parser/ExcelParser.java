@@ -299,6 +299,7 @@ public class ExcelParser {
 		data.with("</Relationships>");
 		return data.toString();
 	}
+	
 
 	private String getHeader(ExcelWorkBook content) {
 		if (content.getAuthor() == null) {
@@ -315,5 +316,12 @@ public class ExcelParser {
 		data.with("<dcterms:modified xsi:type=\"dcterms:W3CDTF\">", string, "</dcterms:modified>");
 		data.with("</cp:coreProperties>");
 		return data.toString();
-	};
+	}
+	
+	
+	// Parse WorkBook to Model
+	public boolean parseModel() {
+		
+		return false;
+	}
 }

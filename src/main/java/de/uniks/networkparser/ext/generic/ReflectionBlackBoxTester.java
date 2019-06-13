@@ -45,6 +45,7 @@ import de.uniks.networkparser.ext.FileClassModel;
 import de.uniks.networkparser.ext.Gradle;
 import de.uniks.networkparser.ext.Os;
 import de.uniks.networkparser.ext.SimpleController;
+import de.uniks.networkparser.ext.http.HTTPRequest;
 import de.uniks.networkparser.ext.petaf.ModelThread;
 import de.uniks.networkparser.ext.petaf.SimpleTimerTask;
 import de.uniks.networkparser.ext.story.Story;
@@ -373,6 +374,7 @@ public class ReflectionBlackBoxTester {
 										&& types[0] != byte[].class
 										&& types[0] != String.class
 										&& types[0] != byte.class
+										&& types[0] != HTTPRequest.class
 										) {
 									m.invoke(obj, new SimpleEvent(this, "TESTER", null, null));
 								}

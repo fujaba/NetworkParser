@@ -94,6 +94,9 @@ public class JsonToken {
 	}
 	public String getCheckSum() {
 		String token = getToken();
+		if(token == null) {
+			return null;
+		}
 		int pos = token.lastIndexOf('.');
 		if(pos>0) {
 			return token.substring(pos+1);
@@ -144,6 +147,9 @@ public class JsonToken {
 	}
 
 	public boolean validate(String token) {
+		if(token == null) {
+			return false;
+		}
 		String header;
 		String payLoad;
 		String checkSum;

@@ -35,8 +35,8 @@ public class User implements SendableEntityCreator {
 	public boolean addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
 		if (listeners == null) {
 			listeners = new PropertyChangeSupport(this);
+			listeners.addPropertyChangeListener(propertyName, listener);
 		}
-		listeners.addPropertyChangeListener(propertyName, listener);
 		return true;
 	}
 
@@ -44,7 +44,6 @@ public class User implements SendableEntityCreator {
 		if (listeners != null) {
 			listeners.removePropertyChangeListener(listener);
 		}
-		listeners.removePropertyChangeListener(listener);
 		return true;
 	}
 

@@ -45,6 +45,9 @@ import de.uniks.networkparser.parser.ExcelWorkBook;
 
 public class ExcelBuffer {
 	public ExcelSheet parse(File file) {
+		if(file == null) {
+			return null;
+		}
 		ExcelSheet data = null;
 		ZipFile zipEntry = null;
 		try {
@@ -82,6 +85,9 @@ public class ExcelBuffer {
 	}
 
 	private CharacterBuffer readContext(InputStream is) {
+		if(is == null) {
+			return null;
+		}
 		final char[] buffer = new char[1024];
 		CharacterBuffer out = new CharacterBuffer();
 		try {
@@ -100,6 +106,9 @@ public class ExcelBuffer {
 	public boolean encode(File file, ExcelWorkBook workbook) {
 		boolean result = false;
 		ZipOutputStream zos = null;
+		if(workbook == null || file == null) {
+			return false;
+		}
 		try {
 			FileOutputStream fos = new FileOutputStream(file);
 			zos = new ZipOutputStream(fos);
@@ -129,6 +138,9 @@ public class ExcelBuffer {
 	}
 
 	public boolean addToZipFile(String fileName, String content, ZipOutputStream zos) {
+		if(fileName == null || zos == null ||  fileName.length()<1) {
+			return false;
+		}
 		ZipEntry zipEntry = new ZipEntry(fileName);
 		try {
 			zos.putNextEntry(zipEntry);
