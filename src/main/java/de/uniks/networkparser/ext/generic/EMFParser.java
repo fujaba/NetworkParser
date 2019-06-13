@@ -44,12 +44,14 @@ public class EMFParser {
 
 	public static final void addAttributes(EMFParser eclass, Clazz sdmClass) {
 		List<Object> callList = getEAttributes(eclass);
-		for (Object item : callList) {
-			if (item != null) {
-				String name = getName(item);
-				EMFParser eClassifier = new EMFParser(ReflectionLoader.call(item, "getEType"));
-				sdmClass.withAttribute(name,
-						DataType.create(EntityUtil.shortClassName(getInstanceClassName(eClassifier))));
+		if(callList != null) {
+			for (Object item : callList) {
+				if (item != null) {
+					String name = getName(item);
+					EMFParser eClassifier = new EMFParser(ReflectionLoader.call(item, "getEType"));
+					sdmClass.withAttribute(name,
+							DataType.create(EntityUtil.shortClassName(getInstanceClassName(eClassifier))));
+				}
 			}
 		}
 	}
@@ -57,7 +59,7 @@ public class EMFParser {
 	public static final ClassModel getClassModelFromEPackage(Object epackage, String packageName, boolean withImpl) {
 		// get class model from epackage
 		ClassModel model = new ClassModel(packageName);
-		if (epackage == null) {
+		if (epackage == null || ReflectionLoader.EPACKAGE == null) {
 			return model;
 		}
 		if (ReflectionLoader.EPACKAGE.isAssignableFrom(epackage.getClass()) == false) {

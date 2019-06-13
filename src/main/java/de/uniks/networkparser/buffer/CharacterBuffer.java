@@ -56,7 +56,7 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
 	 */
 	@Override
 	public char charAt(int index) {
-		if ((index < 0) || (index >= length) || start < 0) {
+		if ((index < 0) || (index >= length) || buffer == null || start < 0 || index>=buffer.length) {
 			return 0;
 		}
 		index += start;

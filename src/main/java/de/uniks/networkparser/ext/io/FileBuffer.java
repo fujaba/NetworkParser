@@ -298,6 +298,9 @@ public class FileBuffer extends Buffer {
 	}
 
 	public static final CharacterBuffer readFile(String file) {
+		if(file == null) {
+			return null;
+		}
 		return readFile(new File(file));
 	}
 

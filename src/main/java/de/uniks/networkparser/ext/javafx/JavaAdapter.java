@@ -194,10 +194,12 @@ public class JavaAdapter implements JavaViewAdapter, Runnable {
 	}
 
 	public boolean changed(SimpleEvent event) {
-		if (SUCCEEDED.equals("" + event.getNewValue())) {
-			// FINISH
-			this.loadFinish();
-			return true;
+		if(event != null) {
+			if (SUCCEEDED.equals("" + event.getNewValue())) {
+				// FINISH
+				this.loadFinish();
+				return true;
+			}
 		}
 		return false;
 	}
@@ -267,7 +269,9 @@ public class JavaAdapter implements JavaViewAdapter, Runnable {
 	 * @return return value from Javascript
 	 */
 	public Object executeScript(String script, boolean convert) {
-		this.owner.logScript(script, NetworkParserLog.LOGLEVEL_INFO, this, "executeScript");
+		if(this.owner != null) {
+			this.owner.logScript(script, NetworkParserLog.LOGLEVEL_INFO, this, "executeScript");
+		}
 		if (this.queue != null) {
 			// Must be cached
 			this.queue.add(script);

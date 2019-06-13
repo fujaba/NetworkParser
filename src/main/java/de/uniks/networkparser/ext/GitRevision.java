@@ -351,6 +351,9 @@ public class GitRevision {
 
 	private void createdComment(String sourcePath, CharacterBuffer licence,
 			SimpleKeyValueList<String, Integer> values) {
+		if(sourcePath == null) {
+			return;
+		}
 		File path = new File(sourcePath);
 
 		File[] listFiles = path.listFiles();

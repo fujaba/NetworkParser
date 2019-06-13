@@ -57,6 +57,9 @@ public class GenericJsonGrammar extends SimpleGrammar {
 
 	@Override
 	public Object getNewEntity(SendableEntityCreator creator, String className, boolean prototype) {
+		if(creator == null) {
+			return null;
+		}
 		Object entity = creator.getSendableInstance(prototype);
 		if (entity instanceof Class<?> == false || className == null) {
 			return entity;
@@ -67,7 +70,9 @@ public class GenericJsonGrammar extends SimpleGrammar {
 	@Override
 	protected Class<?> getClassForName(String className) {
 		try {
-			return Class.forName(className);
+			if(className != null) {
+				return Class.forName(className);
+			}
 		} catch (ClassNotFoundException e) {
 		}
 		return null;

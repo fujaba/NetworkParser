@@ -273,7 +273,7 @@ public class Feature implements Comparable<Feature> {
 
 	@Override
 	public int compareTo(Feature o) {
-		if (this.name == null || o == null) {
+		if (this.name == null || o == null || o.getName() == null) {
 			return 1;
 		}
 		return this.name.compareTo(o.getName());

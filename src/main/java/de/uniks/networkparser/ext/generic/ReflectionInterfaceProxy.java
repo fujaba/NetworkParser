@@ -35,6 +35,9 @@ public class ReflectionInterfaceProxy implements InvocationHandler {
 
 	@Override
 	public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+		if(proxy == null || method == null) {
+			return null;
+		}
 		Class<?>[] newTypes = convertTypes(method.getParameterTypes());
 		Method proxyMethod = null;
 		try {
@@ -51,8 +54,14 @@ public class ReflectionInterfaceProxy implements InvocationHandler {
 	}
 
 	private Class<?>[] convertTypes(Class<?>[] types) {
+		if(types == null) {
+			return null;
+		}
 		Class<?>[] newTypes = new Class<?>[types.length];
 		for (int i = 0; i < newTypes.length; i++) {
+			if(types[i] == null) {
+				continue;
+			}
 			if (types[i].getName().indexOf("javafx.") >= 0) {
 				newTypes[i] = Object.class;
 			} else if (types[i].getName().indexOf("java.awt.event.") >= 0) {
@@ -65,6 +74,9 @@ public class ReflectionInterfaceProxy implements InvocationHandler {
 	}
 
 	private Class<?>[] convertTypesObject(Class<?>[] types) {
+		if(types== null) {
+			return null;
+		}
 		Class<?>[] newTypes = new Class<?>[types.length];
 		for (int i = 0; i < newTypes.length; i++) {
 			newTypes[i] = Object.class;

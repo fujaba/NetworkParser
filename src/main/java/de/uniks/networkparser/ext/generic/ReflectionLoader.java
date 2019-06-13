@@ -32,6 +32,7 @@ import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.net.URLDecoder;
@@ -343,6 +344,9 @@ public class ReflectionLoader {
 	}
 
 	public static Object newInstance(String className, Object... arguments) {
+		if(className == null) {
+			return null;
+		}
 		try {
 			Class<?> clazz = Class.forName(className);
 			return newInstance(clazz, arguments);
@@ -352,6 +356,9 @@ public class ReflectionLoader {
 	}
 
 	public static Object newArray(Class<?> arrayClass, Object... values) {
+		if(arrayClass == null || values == null) {
+			return null;
+		}
 		Object items = Array.newInstance(arrayClass, values.length);
 		for(int i=0;i<values.length;i++) {
 			Array.set(items, i, values[i]);
@@ -360,6 +367,9 @@ public class ReflectionLoader {
 	}
 
 	public static Object newInstanceStr(String className, Object... arguments) {
+		if(className == null) {
+			return null;
+		}
 		try {
 			Class<?> clazz = Class.forName(className);
 			if (arguments != null && arguments.length % 2 == 0) {
@@ -376,6 +386,9 @@ public class ReflectionLoader {
 	}
 
 	public static Object newInstanceSimple(Class<?> instance, String... ignoreCreateMethods) {
+		if(instance ==null) {
+			return null;
+		}
 		if (ignoreCreateMethods != null) {
 			for (Method method : instance.getMethods()) {
 				String methodName = method.getName();
@@ -387,6 +400,12 @@ public class ReflectionLoader {
 			}
 		}
 		Constructor<?>[] constructors = instance.getDeclaredConstructors();
+		if(instance == java.net.URL.class) {
+			try {
+				return new URL("http://www.github.com");
+			} catch (MalformedURLException e) {
+			}
+		}
 		if (constructors == null || constructors.length < 1) {
 			return ReflectionLoader.newInstance(instance);
 		} else {
@@ -448,10 +467,13 @@ public class ReflectionLoader {
 	}
 
 	public static Object newInstance(boolean showError, Class<?> instance, Object... arguments) {
+		if(instance == null) {
+			return null;
+		}
+		if(instance.isInterface()) {
+			return null;
+		}
 		try {
-			if(instance.isInterface()) {
-				return null;
-			}
 			if (arguments == null) {
 				Constructor<?> constructor = instance.getConstructor();
 				return constructor.newInstance();
@@ -500,6 +522,9 @@ public class ReflectionLoader {
 
 	public static Class<?> getClass(String name) {
 		try {
+			if(name == null) {
+				return null;
+			}
 			return Class.forName(name, false, ReflectionLoader.class.getClassLoader());
 		} catch (Throwable e) {
 			if (logger != null) {
@@ -509,6 +534,9 @@ public class ReflectionLoader {
 		return null;
 	}
 	public static Class<?> getSimpleClass(String name) {
+		if(name == null) {
+			return null;
+		}
 		try {
 			return Class.forName(name, false, ReflectionLoader.class.getClassLoader());
 		} catch (Throwable e) {
@@ -517,6 +545,9 @@ public class ReflectionLoader {
 	}
 
 	public static Object createProxy(Object proxy, Class<?>... proxys) {
+		if(proxy == null || proxys == null || proxys.length<1 || proxys[0]== null) {
+			return null;
+		}
 		return java.lang.reflect.Proxy.newProxyInstance(ReflectionLoader.class.getClassLoader(), proxys,
 				new ReflectionInterfaceProxy(proxy));
 	}
@@ -591,6 +622,9 @@ public class ReflectionLoader {
 	}
 
 	public static Object getField(Object item, String... fieldNames) {
+		if(item == null) {
+			return null;
+		}
 		Class<?> className = null;
 		Object itemObj = null;
 		if (item instanceof Class<?>) {
@@ -605,6 +639,9 @@ public class ReflectionLoader {
 		}
 		Object result = null;
 		for (int i=0;i<fieldNames.length;i++) {
+			if(fieldNames[i] == null) {
+				continue;
+			}
 			try {
 				field = className.getField(fieldNames[i]);
 				field.setAccessible(true);
@@ -633,6 +670,9 @@ public class ReflectionLoader {
 	}
 
 	public static boolean setField(String fieldName, Object item, Object value) {
+		if(item == null) {
+			return false;
+		}
 		Class<?> className = null;
 		Object itemObj = null;
 		if (item instanceof Class<?>) {
@@ -855,6 +895,9 @@ public class ReflectionLoader {
 	}
 
 	private static boolean checkValue(Object[] arguments) {
+		if(arguments == null) {
+			return false;
+		}
 		for (int i = 0; i < arguments.length; i += 2) {
 			if (arguments[i] instanceof Class<?> == false) {
 				return true;
@@ -912,6 +955,9 @@ public class ReflectionLoader {
 	}
 
 	public static boolean isAccess(Member member, Object entity) {
+		if(member == null) {
+			return false;
+		}
 		try {
 			Method method = member.getClass().getMethod("canAccess", Object.class);
 			if (method != null) {
@@ -938,6 +984,9 @@ public class ReflectionLoader {
 	 * @return a list of classes that exist within that package
 	 */
 	public static SimpleList<Class<?>> getClassesForPackage(String pckgname) {
+		if(pckgname == null) {
+			return null;
+		}
 		SimpleList<Class<?>> classes = new SimpleList<Class<?>>();
 		try {
 			ClassLoader cld = Thread.currentThread().getContextClassLoader();
@@ -962,8 +1011,7 @@ public class ReflectionLoader {
 	private static void checkDirectory(File directory, String pckgname, SimpleList<Class<?>> classes)
 			throws ClassNotFoundException {
 		File tmpDirectory;
-
-		if (directory.exists() && directory.isDirectory()) {
+		if (directory != null && directory.exists() && directory.isDirectory()) {
 			String[] files = directory.list();
 			if (files == null) {
 				return;

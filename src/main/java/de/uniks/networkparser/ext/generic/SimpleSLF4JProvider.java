@@ -44,7 +44,9 @@ public class SimpleSLF4JProvider implements InvocationHandler {
 
 	@Override
 	public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-
+		if(method == null) {
+			return null;
+		}
 		// IMarkerFactory
 		String m = method.getName();
 		if ("getMarker".equals(m)) {
@@ -183,9 +185,10 @@ public class SimpleSLF4JProvider implements InvocationHandler {
 		proxies[1] = ReflectionLoader.getClass("org.slf4j.IMarkerFactory");
 		proxies[2] = ReflectionLoader.getClass("org.slf4j.spi.MDCAdapter");
 		proxies[3] = ReflectionLoader.getClass("org.slf4j.Logger");
-
-		this.proxy = java.lang.reflect.Proxy.newProxyInstance(SimpleSLF4JProvider.class.getClassLoader(), proxies,
-				this);
+		if(proxies[0] != null) {
+			this.proxy = java.lang.reflect.Proxy.newProxyInstance(SimpleSLF4JProvider.class.getClassLoader(), proxies,
+					this);
+		}
 	}
 
 	// LOGGER

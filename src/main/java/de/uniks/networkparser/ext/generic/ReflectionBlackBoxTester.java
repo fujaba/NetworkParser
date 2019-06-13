@@ -86,8 +86,11 @@ public class ReflectionBlackBoxTester {
 		SimpleSet<Class<?>> testClasses = new SimpleSet<Class<?>>();
 		String blackBoxPackage = null;
 		String path = "doc/";
-		if (junitCore != null) {
+		if (junitCore != null && args != null) {
 			for (String param : args) {
+				if(param== null) {
+					continue;
+				}
 				if (param.startsWith("test=")) {
 					param = param.substring(5);
 					String[] clazzes = param.split(",");
@@ -157,6 +160,9 @@ public class ReflectionBlackBoxTester {
 	}
 
 	public ReflectionBlackBoxTester withIgnoreClazzes(Class<?> metaClass, String... methods) {
+		if(metaClass == null) {
+			return this;
+		}
 		String className = metaClass.getName();
 		if (methods == null || methods.length < 1) {
 			return withIgnoreClazzes(className);
@@ -172,6 +178,9 @@ public class ReflectionBlackBoxTester {
 			return this;
 		}
 		for (String item : values) {
+			if(item == null) {
+				continue;
+			}
 			int pos = item.indexOf(":");
 			if (pos < 0) {
 				if (this.ignoreMethods.contains(item) == false) {
@@ -222,6 +231,9 @@ public class ReflectionBlackBoxTester {
 		String tester = Os.getTester();
 		setTester();
 		SimpleList<Class<?>> classesForPackage = ReflectionLoader.getClassesForPackage(packageName);
+		if(classesForPackage == null) {
+			return false;
+		}
 		errorCount = 0;
 		successCount = 0;
 		this.packageName = packageName;
@@ -341,7 +353,9 @@ public class ReflectionBlackBoxTester {
 				try {
 					call = getParameters(m, parameterTypes, type, this);
 					if(call != null) {
-						logger.info(this, "CALL", obj.getClass().getName()+": "+m.getName());
+						if(logger != null) {
+							logger.info(this, "CALL", obj.getClass().getName()+": "+m.getName());
+						}
 						m.invoke(obj, call);
 						successCount++;
 					}
@@ -433,14 +447,9 @@ public class ReflectionBlackBoxTester {
 	}
 
 	private void saveException(Exception e, Class<?> clazz, Method m, Object[] call) {
-//		String namepackage=packageName;
-//		if(namepackage == null) {
-//			String name = clazz.getName();
-//			int pos = name.lastIndexOf(".");
-//			if(pos>0) {
-//				namepackage = name.substring(0, pos);
-//			}
-//		}
+		if(clazz == null) {
+			return;
+		}
 		String line = getLine(packageName, e, clazz.getSimpleName());
 		int pos = 1;
 		String shortName = "";
@@ -524,6 +533,9 @@ public class ReflectionBlackBoxTester {
 	}
 
 	public static Object[] getParameters(Executable m, Class<?>[] parameters, String type, Object owner) {
+		if(parameters == null) {
+			return new Object[0];
+		}
 		int length = parameters.length;
 		Object[] objects = new Object[length];
 		if (TYPE_NULLVALUE.equals(type)) {
@@ -562,11 +574,11 @@ public class ReflectionBlackBoxTester {
 	}
 
 	private static boolean equalsClass(Class<?> clazz, Class<?>... checkClasses) {
-		if (checkClasses == null) {
+		if (checkClasses == null || clazz == null) {
 			return true;
 		}
 		for (Class<?> check : checkClasses) {
-			if (clazz.getName().equals(check.getName())) {
+			if (check != null && clazz.getName().equals(check.getName())) {
 				return true;
 			}
 		}
@@ -574,7 +586,7 @@ public class ReflectionBlackBoxTester {
 	}
 
 	private static Object getNullValue(Class<?> clazz) {
-		if (clazz.isPrimitive()) {
+		if (clazz != null && clazz.isPrimitive()) {
 			if (equalsClass(clazz, boolean.class, Boolean.class)) {
 				return false;
 			}
@@ -606,7 +618,7 @@ public class ReflectionBlackBoxTester {
 	}
 
 	private static Object getMinValue(Class<?> clazz) {
-		if (clazz.isPrimitive()) {
+		if (clazz != null && clazz.isPrimitive()) {
 			if (equalsClass(clazz, boolean.class, Boolean.class)) {
 				return false;
 			}
@@ -663,7 +675,7 @@ public class ReflectionBlackBoxTester {
 	}
 
 	private static Object getRandomValue(Class<?> clazz) {
-		if (clazz.isPrimitive()) {
+		if (clazz != null && clazz.isPrimitive()) {
 			if (equalsClass(clazz, byte.class, Byte.class)) {
 				return (byte)0x50;
 			}
@@ -753,7 +765,7 @@ public class ReflectionBlackBoxTester {
 	}
 
 	private static Object getMaxValue(Class<?> clazz) {
-		if (clazz.isPrimitive()) {
+		if (clazz != null && clazz.isPrimitive()) {
 			if (equalsClass(clazz, boolean.class, Boolean.class)) {
 				return false;
 			}
@@ -783,7 +795,7 @@ public class ReflectionBlackBoxTester {
 	}
 	
 	private static Object getMiddleValue(Class<?> clazz) {
-		if (clazz.isPrimitive()) {
+		if (clazz != null && clazz.isPrimitive()) {
 			if (equalsClass(clazz, boolean.class, Boolean.class)) {
 				return true;
 			}
@@ -815,6 +827,9 @@ public class ReflectionBlackBoxTester {
 	}
 
 	private String getLine(String packageName, Exception e, String clazzName) {
+		if(e == null) {
+			return null;
+		}
 		Throwable cause = e.getCause();
 		if (cause != null) {
 			String line = getLineFromThrowable(packageName, cause, clazzName);
@@ -826,6 +841,9 @@ public class ReflectionBlackBoxTester {
 	}
 
 	private String getLineFromThrowable(String packageName, Throwable e, String clazzName) {
+		if(e== null) {
+			return "";
+		}
 		StackTraceElement[] stackTrace = e.getStackTrace();
 		if(packageName != null) {
 			for (StackTraceElement ste : stackTrace) {

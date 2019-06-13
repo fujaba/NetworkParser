@@ -439,7 +439,10 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 		return true;
 	}
 
-	private void writeHTTPResponse(Message message, String response, boolean error) {
+	private boolean writeHTTPResponse(Message message, String response, boolean error) {
+		if(message == null) {
+			return false;
+		}
 		if (error) {
 			message.write("HTTP/1.1 404 Not Found\n");
 		} else {
@@ -454,10 +457,13 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 		message.write(response);
 		Socket session = (Socket) message.getSession();
 		try {
-			session.close();
+			if(session != null) {
+				session.close();
+			}
+			return true;
 		} catch (IOException e) {
-			e.printStackTrace();
 		}
+		return false;
 	}
 
 	@Override
@@ -470,21 +476,24 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 		}
 		if (value instanceof SimpleEvent) {
 			SimpleEvent evt = (SimpleEvent) value;
-			if (JavaViewAdapter.STATE.equalsIgnoreCase(evt.getNewValue().getClass().getName())) {
-				if (evt.getNewValue().toString().equals(JavaViewAdapter.FAILED)) {
-					logger.error(this, "update", evt);
-				}
-				if (evt.getNewValue().toString().equals(JavaViewAdapter.SUCCEEDED)) {
-					Object win = super.executeScript("window", false);
-					ReflectionLoader.call(win, "setMember", String.class, "JavaBridge", Object.class, this);
-					this.changed(evt);
-
-					if (TYPE_EDITOR.equalsIgnoreCase(type)) {
-						// Load Editor
-						super.executeScript("window['editor'] = new ClassEditor(\"board\");", false);
+			Object newValue = evt.getNewValue();
+			if(newValue != null) {
+				if (JavaViewAdapter.STATE.equalsIgnoreCase(newValue.getClass().getName())) {
+					if (newValue.toString().equals(JavaViewAdapter.FAILED)) {
+						logger.error(this, "update", evt);
 					}
+					if (newValue.toString().equals(JavaViewAdapter.SUCCEEDED)) {
+						Object win = super.executeScript("window", false);
+						ReflectionLoader.call(win, "setMember", String.class, "JavaBridge", Object.class, this);
+						this.changed(evt);
+	
+						if (TYPE_EDITOR.equalsIgnoreCase(type)) {
+							// Load Editor
+							super.executeScript("window['editor'] = new ClassEditor(\"board\");", false);
+						}
+					}
+					return true;
 				}
-				return true;
 			}
 		}
 		String name = (String) ReflectionLoader.callChain(value, "getEventType", "toString");
@@ -532,7 +541,7 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 		if (value instanceof JsonObject) {
 			model = (JsonObject) value;
 		} else {
-			model = new JsonObject().withValue((String) value);
+			model = new JsonObject().withValue(""+value);
 		}
 		String name = model.getString("package");
 		if (name == null || name.length() < 1) {
@@ -547,7 +556,9 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 	}
 
 	public void log(String value) {
-		this.owner.logScript(value, 0, this, null);
+		if(this.owner != null) {
+			this.owner.logScript(value, 0, this, null);
+		}
 	}
 
 	public String generate(String value) {
@@ -578,7 +589,7 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 		ClassModel modelGen = (ClassModel) converter.convertFromJson(model, new ClassModel());
 		if (modelGen == null) {
 //		if (model.has(GraphConverter.NODES) == false) {
-			logger.error(null, "main", "no Nodes");
+			logger.error(this, "main", "no Nodes");
 			return false;
 		}
 		modelGen.generate("src/main/java");
@@ -650,16 +661,18 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 	}
 
 	protected boolean onError(Object event) {
-		logger.error(null, "onError", ReflectionLoader.call(event, "getMessage"));
+		logger.error(this, "onError", ReflectionLoader.call(event, "getMessage"));
 		return true;
 	}
 
 	@SuppressWarnings("unchecked")
 	protected List<File> getFiles(Object event) {
 		Object db = ReflectionLoader.call(event, "getDragboard");
-		if ((Boolean) ReflectionLoader.call(db, "hasFiles")) {
-			List<File> files = (List<File>) ReflectionLoader.call(db, "getFiles");
-			return files;
+		if(db != null) {
+			if ((Boolean) ReflectionLoader.call(db, "hasFiles")) {
+				List<File> files = (List<File>) ReflectionLoader.call(db, "getFiles");
+				return files;
+			}
 		}
 		return null;
 	}
@@ -750,7 +763,9 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 	}
 
 	public DiagramEditor withIcon(String icon) {
-		controller.withIcon(icon);
+		if(controller != null) {
+			controller.withIcon(icon);
+		}
 		return this;
 	}
 
@@ -780,7 +795,9 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 		Object writableImageClass = ReflectionLoader.getClass("javafx.scene.image.WritableImage");
 		Object image = ReflectionLoader.call(webView, "snapshot", snapshotParametersClass, null, writableImageClass,
 				null);
-
+		if(image == null) {
+			return;
+		}
 		Class<?> swingUtil = ReflectionLoader.getClass("javafx.embed.swing.SwingFXUtils");
 		Object bufferedImageClass = ReflectionLoader.getClass("java.awt.image.BufferedImage");
 		Object bufferedImage = ReflectionLoader.call(swingUtil, "fromFXImage", ReflectionLoader.IMAGE, image,
@@ -803,6 +820,9 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 	}
 
 	public void export(String type, Object value, String name, String context) {
+		if(this.controller == null) {
+			return;
+		}
 		String typeName = "files";
 		if ("PNG".equalsIgnoreCase(type)) {
 			typeName = "Portable Network Graphics";

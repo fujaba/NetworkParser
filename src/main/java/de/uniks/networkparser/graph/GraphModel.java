@@ -204,7 +204,7 @@ public abstract class GraphModel extends GraphEntity implements BaseItem {
 		for (Clazz item : classes) {
 			String className = item.getName();
 			// Check for First is UpperCase
-			if (className != null) {
+			if (className != null && className.length()>0) {
 				if(className.indexOf('.') > 0) {
 					if (packageName == null) {
 						packageName = className.substring(0, className.lastIndexOf("."));

@@ -434,6 +434,9 @@ public class EntityUtil {
 		if (max > 0 && max < length) {
 			length = max;
 		}
+		if(value == null) {
+			return null;
+		}
 		StringBuilder sb = new StringBuilder();
 		if (length > value.length()) {
 			sb.ensureCapacity(length);
@@ -448,6 +451,9 @@ public class EntityUtil {
 	}
 
 	public static final String getValidChars(String source, int maxLen) {
+		if(source == null) {
+			return null;
+		}
 		int i = source.length() - 1;
 		StringBuilder sb = new StringBuilder();
 		if (i > 0) {
@@ -491,10 +497,12 @@ public class EntityUtil {
 			return "void";
 		} else if ("boolean".equalsIgnoreCase(datatype)) {
 			return "false";
-		} else if (datatype.endsWith("[]")) {
-			return datatype.substring(0, datatype.length() - 2);
-		} else if (datatype.endsWith("...")) {
-			return datatype.substring(0, datatype.length() - 3);
+		} else if(datatype != null) {
+			if (datatype.endsWith("[]")) {
+				return datatype.substring(0, datatype.length() - 2);
+			} else if (datatype.endsWith("...")) {
+				return datatype.substring(0, datatype.length() - 3);
+			}
 		}
 		return "null";
 	}
@@ -670,7 +678,7 @@ public class EntityUtil {
 	}
 
 	public static final boolean isEMFType(String tag) {
-		return emfTypes.indexOf(" " + tag.toUpperCase() + " ") >= 0;
+		return emfTypes.indexOf(" " + (""+tag).toUpperCase() + " ") >= 0;
 	}
 
 	private static final String primitiveTypes = " java.util.Date void String char Char boolean Boolean byte Byte Object ";
@@ -799,6 +807,9 @@ public class EntityUtil {
 					String.class);
 
 	public static final String getId(String name) {
+		if(name == null) {
+			return "";
+		}
 		if (name.lastIndexOf("/") >= 0) {
 			return name.substring(name.lastIndexOf("/") + 1);
 		}
@@ -927,6 +938,9 @@ public class EntityUtil {
 	}
 
 	public static final void writeByteHeader(ByteBuffer buffer, byte type, int valueLength) {
+		if(buffer == null) {
+			return;
+		}
 		if (valueLength > 0) {
 			// Save Type
 			if (type != 0) {
@@ -947,7 +961,7 @@ public class EntityUtil {
 					}
 				}
 			}
-		} else if (buffer != null) {
+		} else {
 			buffer.put(ByteTokener.DATATYPE_NULL);
 		}
 	}
@@ -1194,9 +1208,12 @@ public class EntityUtil {
 		if (strs == null) {
 			return cs == null;
 		}
+		if(cs ==null) {
+			return strs == null;
+		}
 
 		for (int i = 0; i < strs.length; i++) {
-			if (strs[i].equals(cs)) {
+			if (cs.equals(strs[i]) == false) {
 				return true;
 			}
 		}
@@ -1268,7 +1285,7 @@ public class EntityUtil {
 	private static final char[] toCharArray(CharSequence cs) {
 		if (cs instanceof String) {
 			return ((String) cs).toCharArray();
-		} else {
+		} else if(cs != null){
 			int sz = cs.length();
 			char[] array = new char[cs.length()];
 			for (int i = 0; i < sz; i++) {
@@ -1276,6 +1293,7 @@ public class EntityUtil {
 			}
 			return array;
 		}
+		return new char[0];
 	}
 
 	/**
@@ -1375,6 +1393,9 @@ public class EntityUtil {
 	 * @return The Realative Path
 	 */
 	public static String getRelativePath(String targetPath, String basePath, String separator) {
+		if(targetPath == null || basePath == null) {
+			return null;
+		}
 		String[] base = basePath.split(separator);
 		String[] target = targetPath.split(separator);
 
@@ -1434,6 +1455,9 @@ public class EntityUtil {
 
 	public static final CharacterBuffer replaceAll(String text, Object... args) {
 		CharacterBuffer value = new CharacterBuffer().with(text);
+		if(args == null || args[0] == null) {
+			return value;
+		}
 		int pos = -1 - args[0].toString().length();
 		String placeholder;
 		// args are pairs of placeholder, replacement

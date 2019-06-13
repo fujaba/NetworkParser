@@ -68,20 +68,10 @@ public class GenericCreator implements SendableEntityCreator {
 
 	public GenericCreator withClass(String value) {
 		try {
-			this.clazz = Class.forName(value);
+			if(value != null) {
+				this.clazz = Class.forName(value);
+			}
 		} catch (ClassNotFoundException e) {
-//			ClassLoader classLoader = this.getClass().getClassLoader();
-//			ArrayList<URL> urls = new ArrayList<URL>();
-//			try {
-//				String path = value.replace('.', '/');
-//				String file = new File("bin/"+path+".class").getAbsolutePath();
-//				urls.add(new URL("file://"+file));
-//				URLClassLoader urlClassLoader = new URLClassLoader(urls.toArray(new URL[urls.size()]), classLoader);
-//				
-//				this.clazz = urlClassLoader.loadClass(value);
-//			} catch (Exception e2) {
-//				e.printStackTrace();
-//			}
 		}
 		return this;
 	}
@@ -137,7 +127,7 @@ public class GenericCreator implements SendableEntityCreator {
 
 	@Override
 	public Object getValue(Object entity, String attribute) {
-		if (entity == null) {
+		if (entity == null || this.clazz == null) {
 			return null;
 		}
 		try {
@@ -206,7 +196,7 @@ public class GenericCreator implements SendableEntityCreator {
 
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value, String type) {
-		if (entity == null) {
+		if (entity == null || this.clazz == null) {
 			return false;
 		}
 		if (setNewValue(entity, "set" + this.getMethodName(attribute), value)) {
@@ -240,7 +230,9 @@ public class GenericCreator implements SendableEntityCreator {
 
 	protected Class<?> getClassForName(String className) {
 		try {
-			return Class.forName(className);
+			if(className != null) {
+				return Class.forName(className);
+			}
 		} catch (ClassNotFoundException e) {
 		}
 		return null;
@@ -248,7 +240,7 @@ public class GenericCreator implements SendableEntityCreator {
 
 	String getValidMethod(String methodName) {
 		String name = null;
-		if (badProperties.contains(methodName) == false) {
+		if (methodName != null && badProperties.contains(methodName) == false) {
 			if (methodName.startsWith("get")) {
 				name = methodName.substring(3);
 			} else if (methodName.startsWith("is")) {
@@ -272,6 +264,9 @@ public class GenericCreator implements SendableEntityCreator {
 	}
 
 	public static GenericCreator create(IdMap map, Class<?> instance) {
+		if(map == null || instance == null) {
+			return null;
+		}
 		SendableEntityCreator creator = map.getCreator(instance.getName(), true, true, null);
 		if (creator != null) {
 			return (GenericCreator) creator;

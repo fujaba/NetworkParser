@@ -48,6 +48,9 @@ public class FunctionCondition implements ParserCondition {
 	}
 
 	public boolean exeuteTemplate(TemplateResultFragment fragment) {
+		if(fragment == null || this.value == null) {
+			return false;
+		}
 		CharacterBuffer original = fragment.cloneValue(new CharacterBuffer());
 		
 		this.value.update(fragment);
@@ -115,7 +118,7 @@ public class FunctionCondition implements ParserCondition {
 	@Override
 	public void create(CharacterBuffer buffer, TemplateParser parser, LocalisationInterface customTemplate) {
 		// Parsing
-		if (buffer == null) {
+		if (buffer == null || parser == null ) {
 			return;
 		}
 		buffer.skip();

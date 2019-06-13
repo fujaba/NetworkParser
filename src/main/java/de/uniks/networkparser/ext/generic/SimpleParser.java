@@ -131,6 +131,9 @@ public class SimpleParser {
 	}
 
 	public static <T> T decodeModel(Buffer buffer, IdMap map) {
+		if(buffer == null || map == null) {
+			return null;
+		}
 		char firstChar = buffer.nextClean(true);
 		Tokener tokener = null;
 		char endTag = 0;
@@ -166,6 +169,9 @@ public class SimpleParser {
 
 	public static <T> T decodeModel(Buffer buffer, IdMap map, Tokener tokener, char endTag) {
 		Object result = decodingModel(buffer, map, tokener, endTag);
+		if(result== null) {
+			return null;
+		}
 		try {
 			@SuppressWarnings("unchecked")
 			Class<? extends T> targetClass = (Class<? extends T>) result.getClass();
@@ -176,12 +182,10 @@ public class SimpleParser {
 	}
 
 	private static Object decodingModel(Buffer buffer, IdMap map, Tokener tokener, char endTag) {
-//		MapEntity mapEntry = new MapEntity(map);
-//		JsonTokener tokener = new JsonTokener();
-//		University uni2 = (University) tokener.decoding(json, mapEntry, false);
-//		Assert.assertNotNull(uni2);
+		if(buffer == null) {
+			return null;
+		}
 		String className = null;
-//		tokener.withBuffer(buffer);
 
 		String key = buffer.nextString().toString();
 		Object result = null;
