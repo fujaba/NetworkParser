@@ -4,6 +4,7 @@ import de.uniks.networkparser.interfaces.Condition;
 
 public abstract class GraphEntity extends GraphMember {
 	public static final String PROPERTY_PACKAGENAME = "packageName";
+	public static final String PROPERTY_EXTERNAL="external";
 	private boolean external;
 	protected String id;
 
@@ -295,6 +296,16 @@ public abstract class GraphEntity extends GraphMember {
 		return this;
 	}
 
+	public Object getValue(String attribute) {
+		if(attribute == null) {
+			return null;
+		}
+		if (PROPERTY_EXTERNAL.equalsIgnoreCase(attribute)) {
+			return isExternal();
+		}
+		return super.getValue(attribute);
+	}
+	
 	@Override
 	protected String getFullId() {
 		if (this.id != null) {

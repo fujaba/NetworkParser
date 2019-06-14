@@ -733,6 +733,9 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
 	 * @return the new CharacterBuffer
 	 */
 	public CharacterBuffer set(char value) {
+		if(buffer == null) {
+			return this;
+		}
 		this.start = 0;
 		this.length = 1;
 		if (this.buffer.length < 1) {

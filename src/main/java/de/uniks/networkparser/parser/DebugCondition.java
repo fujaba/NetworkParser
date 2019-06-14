@@ -93,11 +93,9 @@ public class DebugCondition implements ParserCondition, SendableEntityCreator {
 			}else {
 				condition = left;
 			}
+			buffer.skip();
 		}
-
 		// SKIP TO END
-		buffer.skipTo(SPLITEND, false);
-		buffer.skip();
 		buffer.skip();
 	}
 

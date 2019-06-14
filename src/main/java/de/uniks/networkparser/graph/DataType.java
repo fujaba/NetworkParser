@@ -46,7 +46,9 @@ public class DataType {
 	protected static final String PROPERTY_NAME="name";
 	protected static final String PROPERTY_OBJECTNAME="objectname";
 	protected static final String PROPERTY_CATEGORIE="cat";
-
+	protected static final String PROPERTY_CLAZZ="clazz";
+	public static final String PROPERTY_CONTAINER="container";
+	
 	DataType(String value) {
 		this.value = new Clazz().with(value);
 	}
@@ -150,8 +152,14 @@ public class DataType {
 		}
 	}
 	
-	public String getValue(String value) {
-		if(PROPERTY_NAME.equals(value)) {
+	public Object getValue(String value) {
+		if(PROPERTY_CLAZZ.equals(value)) {
+			return getClazz();
+		}
+		if(Clazz.PROPERTY_EXTERNAL.equals(value)) {
+			return getClazz().isExternal();
+		}
+		if(PROPERTY_NAME.equals(value) || PROPERTY_CONTAINER.equals(value)) {
 			return getClazz().getName(true);
 		}
 		if(PROPERTY_CATEGORIE.equals(value)) {

@@ -403,7 +403,9 @@ public class RabbitMessage {
 	 * @return a new RabbitMessage if we read a frame successfully, otherwise null
 	 */
 	public static RabbitMessage readFrom(DataInputStream is) {
-
+		if(is == null) {
+			return null;
+		}
 		byte frameEndMarker = 0;
 		byte type = 0;
 		short channel = 0;

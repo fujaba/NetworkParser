@@ -176,6 +176,9 @@ public class MessageSession {
 	}
 
 	public MessageSession withHost(String url) {
+		if (url == null) {
+			return this;
+		}
 		int pos = url.lastIndexOf(":");
 		if (pos > 0) {
 			String port = url.substring(pos + 1);
@@ -204,12 +207,18 @@ public class MessageSession {
 	 */
 	public boolean close() {
 		try {
-			in.close();
-			out.close();
-			serverSocket.close();
-			serverSocket = null;
+			if (in != null) {
+				in.close();
+			}
 			in = null;
+			if (out != null) {
+				out.close();
+			}
 			out = null;
+			if (serverSocket != null) {
+				serverSocket.close();
+			}
+			serverSocket = null;
 		} catch (Exception ex) {
 			// Ignore the exception. Probably the socket is not open.
 			return false;
@@ -232,7 +241,7 @@ public class MessageSession {
 		} else {
 			try {
 				socket = factory.createSocket(host, port);
-			}catch (Exception e) {
+			} catch (Exception e) {
 				return false;
 			}
 		}
@@ -261,6 +270,9 @@ public class MessageSession {
 			XMLEntity answer = new XMLEntity().withValue(response);
 			this.id = answer.getString("id");
 			XMLEntity features = (XMLEntity) answer.getElementBy(XMLEntity.PROPERTY_TAG, "stream:features");
+			if (features == null) {
+				return false;
+			}
 			for (int i = 0; i < features.sizeChildren(); i++) {
 				XMLEntity child = (XMLEntity) features.getChild(i);
 				this.supportedFeature.add(child.getTag().toUpperCase());
@@ -313,6 +325,9 @@ public class MessageSession {
 
 			answer = new XMLEntity().withValue(response);
 			XMLEntity features = (XMLEntity) answer.getElementBy(XMLEntity.PROPERTY_TAG, "mechanisms");
+			if (features == null) {
+				return false;
+			}
 			for (int i = 0; i < features.sizeChildren(); i++) {
 				XMLEntity child = (XMLEntity) features.getChild(i);
 				this.supportedFeature.add(child.getValue().toUpperCase());
@@ -389,12 +404,16 @@ public class MessageSession {
 			return message;
 		}
 		RabbitMessage response = RabbitMessage.readFrom(diInput);
-		response.analysePayLoad(broker);
+		if(response != null) {
+			response.analysePayLoad(broker);
+		}
 		return response;
 	}
 
 	public MQTTMessage sending(NodeProxyBroker broker, MQTTMessage message, boolean answer) {
-
+		if (broker == null || message == null || out == null) {
+			return null;
+		}
 		if (message.isMessageIdRequired() && (message.getMessageId() == 0)) {
 			if (message.getType() == MQTTMessage.MESSAGE_TYPE_PUBLISH && (message.getMessageQOS() != 0)) {
 				message.withMessageId(broker.getNextMessageId());
@@ -436,7 +455,7 @@ public class MessageSession {
 		try {
 			if (serverSocket == null) {
 				initSockets(host, port);
-				if(this.serverSocket == null) {
+				if (this.serverSocket == null) {
 					return false;
 				}
 
@@ -472,7 +491,7 @@ public class MessageSession {
 			if (serverSocket == null) {
 				initSockets(host, port);
 				sendStart();
-				if(serverSocket == null) {
+				if (serverSocket == null) {
 					return false;
 				}
 
@@ -595,9 +614,14 @@ public class MessageSession {
 	 * Sends given command and waits for a response from server.
 	 *
 	 * @param cmd bytes for sending
+	 * @return success
 	 */
-	protected void sendValues(char... cmd) {
+	protected boolean sendValues(char... cmd) {
+		if(cmd == null || out == null) {
+			return false;
+		}
 		try {
+			
 			this.lastSended = new String(cmd);
 			out.write(new String(cmd).getBytes());
 			if (BaseItem.CRLF.equals(new String(cmd)) == false) {
@@ -605,29 +629,36 @@ public class MessageSession {
 			}
 			out.flush();
 		} catch (IOException e) {
-			e.printStackTrace();
+			return false;
 		}
+		return true;
 	}
 
 	/**
 	 * Sends given command and waits for a response from server.
 	 *
 	 * @param cmd bytes for sending
+	 * @return success
 	 */
-	protected void sendValues(String cmd) {
-		if (cmd != null) {
-			try {
-				out.write(cmd.getBytes());
-				out.write(BaseItem.CRLF.getBytes());
-				out.flush();
-				this.lastSended = cmd;
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+	protected boolean sendValues(String cmd) {
+		if (cmd == null || out == null) {
+			return false;
 		}
+		try {
+			out.write(cmd.getBytes());
+			out.write(BaseItem.CRLF.getBytes());
+			out.flush();
+			this.lastSended = cmd;
+		} catch (IOException e) {
+			return false;
+		}
+		return true;
 	}
 
 	public boolean write(byte... values) {
+		if (out == null) {
+			return false;
+		}
 		try {
 			if (values == null) {
 				return true;
@@ -865,6 +896,9 @@ public class MessageSession {
 	 * @return success
 	 */
 	public boolean sending(SocketMessage message) {
+		if(message == null) {
+			return false;
+		}
 		if (TYPE_XMPP.equals(this.type) || TYPE_FCM.equals(this.type)) {
 			XMLEntity xml = message.toXML(type);
 			return sendCommand(xml.toString()) != null;

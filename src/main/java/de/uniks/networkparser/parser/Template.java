@@ -69,7 +69,7 @@ public class Template implements TemplateParser {
 
 	// Template Variables
 	private TemplateCondition token = new TemplateCondition();
-	
+
 	protected boolean isValid;
 
 	protected Template owner;
@@ -147,7 +147,7 @@ public class Template implements TemplateParser {
 		}
 		templateFragment.withExpression(false);
 		ObjectCondition templateCondition = this.token.getTemplate();
-		if(templateCondition == null) {
+		if (templateCondition == null) {
 			return null;
 		}
 		// Execute Template
@@ -171,7 +171,7 @@ public class Template implements TemplateParser {
 		// {{Type} } <=> {{Type}}{{#if Type}} {{#end}}
 		// Define Type=int
 		// {{{Type}}} <=> {int}
-		if(tokenTemplate == null) {
+		if (tokenTemplate == null) {
 			return null;
 		}
 		CharacterBuffer template = null;
@@ -187,18 +187,17 @@ public class Template implements TemplateParser {
 		return parsing(template, customTemplate, false, true);
 	}
 
-	
 	public ObjectCondition parsing(ParserCondition... customTemplates) {
 		TemplateResultModel result = new TemplateResultModel();
 		SimpleList<ParserCondition> templateCondition = getTemplateCondition();
-		if(templateCondition != null) {
-			for(ParserCondition condition : templateCondition) {
+		if (templateCondition != null) {
+			for (ParserCondition condition : templateCondition) {
 				result.withTemplate(condition);
 			}
 		}
 		LocalisationInterface customTemplate = result;
-		if(customTemplates != null) {
-			for(ParserCondition condition : customTemplates) {
+		if (customTemplates != null) {
+			for (ParserCondition condition : customTemplates) {
 				result.withTemplate(condition);
 			}
 			result.withTemplate(customTemplates);
@@ -207,7 +206,7 @@ public class Template implements TemplateParser {
 		if (condition instanceof StringCondition) {
 			this.token.withCondition(this.parsing((StringCondition) condition, customTemplate, false));
 		}
-		
+
 		condition = this.token.getTemplate();
 		if (condition instanceof StringCondition) {
 			this.token.withTemplate(null);
@@ -216,10 +215,10 @@ public class Template implements TemplateParser {
 		}
 		return condition;
 	}
-	
+
 	public ObjectCondition parsing(CharacterBuffer buffer, LocalisationInterface customTemplate, boolean isExpression,
 			boolean allowSpace, String... stopWords) {
-		if(buffer == null) {
+		if (buffer == null) {
 			return null;
 		}
 		int start = buffer.position(), end;
@@ -228,45 +227,46 @@ public class Template implements TemplateParser {
 		int startDif;
 		boolean isQuote = false;
 		String stopCharacter = null;
-		
-		if(stopWords != null && stopWords.length >0) {
+
+		if (stopWords != null && stopWords.length > 0) {
 			char[] values = new char[stopWords.length];
 			startDif = 0;
 			for (String stopword : stopWords) {
-				if(stopword != null) {
-					if(stopword.length() != 1) {
+				if (stopword != null) {
+					if (stopword.length() != 1) {
 						values = null;
 						break;
 					}
 					values[startDif++] = stopword.charAt(0);
-				}else {
+				} else {
 					values[startDif++] = 0;
 				}
 			}
-			if(values != null) {
+			if (values != null) {
 				stopCharacter = new String(values);
 			}
-			
+
 		}
 		startDif = 2;
-		
+
 		while (buffer.isEnd() == false) {
 			if (isExpression && buffer.getCurrentChar() == SPACE) {
 				break;
-			}else if(stopCharacter != null && isQuote == false && stopCharacter.indexOf(buffer.getCurrentChar())>=0) {
+			} else if (stopCharacter != null && isQuote == false
+					&& stopCharacter.indexOf(buffer.getCurrentChar()) >= 0) {
 				break;
 			}
-			
+
 			char character = buffer.nextClean(true);
 			if (isExpression && character == SPLITEND) {
 				break;
-			}else if(isQuote == false && stopCharacter != null) {
-				if(stopCharacter.indexOf(character)>=0) {
+			} else if (isQuote == false && stopCharacter != null) {
+				if (stopCharacter.indexOf(character) >= 0) {
 					break;
 				}
 			}
 			if (character != SPLITSTART) {
-				if(character == '"') {
+				if (character == '"') {
 					isQuote = !isQuote;
 				}
 				buffer.skip();
@@ -359,10 +359,10 @@ public class Template implements TemplateParser {
 							Equals equalsExpression = new Equals();
 							equalsExpression.create(buffer, this, customTemplate);
 							equalsExpression.withLeft(child);
-							if(firstChar == '!') {
+							if (firstChar == '!') {
 								child = new Not().with(equalsExpression);
-							}else {
-								child = equalsExpression; 
+							} else {
+								child = equalsExpression;
 							}
 						} else {
 							// MAY BE ANOTHER CHAR
@@ -437,7 +437,9 @@ public class Template implements TemplateParser {
 				if (buffer.charAt(start) == SPLITSTART) {
 					VariableCondition.create(token, isExpression);
 				} else {
-					child = VariableCondition.create(token, false);
+					VariableCondition variableCondition = VariableCondition.create(token, isExpression);
+					variableCondition.withDefaultStringValue(true);
+					child = variableCondition;
 				}
 			} else {
 				child = StringCondition.create(token);
@@ -462,7 +464,7 @@ public class Template implements TemplateParser {
 
 	private VariableCondition createVariable(CharSequence value, boolean expression) {
 		VariableCondition condition = VariableCondition.create(value, expression);
-		if(value != null) {
+		if (value != null) {
 			this.variables.add(value.toString());
 		}
 		return condition;
@@ -470,21 +472,21 @@ public class Template implements TemplateParser {
 
 	public Template withTemplate(String... template) {
 		CharacterBuffer sb = new CharacterBuffer();
-		if (template == null || template.length<1) {
+		if (template == null || template.length < 1) {
 			setValue(sb);
 			return this;
 		}
 		String value = template[0];
-		if(value == null) {
+		if (value == null) {
 			sb.with("");
 		} else {
 			sb.with(value);
 		}
 		for (int i = 1; i < template.length; i++) {
 			value = template[i];
-			if(value == null) {
+			if (value == null) {
 				sb.with("");
-			}else if (value.startsWith("{{#")) {
+			} else if (value.startsWith("{{#")) {
 				sb.with(value);
 			} else {
 				sb.with(Entity.CRLF + value);
@@ -500,7 +502,7 @@ public class Template implements TemplateParser {
 		template.withTemplate(templateValues);
 		return template;
 	}
-	
+
 	protected void setValue(CharSequence value) {
 		this.token.withTemplate(new StringCondition().withValue(value));
 	}
@@ -565,25 +567,26 @@ public class Template implements TemplateParser {
 	public String getFileName() {
 		return null;
 	}
-	
+
 	public TemplateResultFragment executeEntity(ObjectCondition condition, LocalisationInterface parameters) {
 		return executingEntity(condition, parameters);
 	}
+
 	public TemplateResultFragment executeSimpleEntity(ObjectCondition condition, TemplateItem parameters) {
 		return executingEntity(condition, parameters);
 	}
-		
+
 	private TemplateResultFragment executingEntity(ObjectCondition condition, Object parameters) {
 		this.isValid = true;
-		
+
 		TemplateResultFragment templateFragment = new TemplateResultFragment();
 		templateFragment.withKey(this.getType());
 		templateFragment.withName(this.getId(false));
-		if(parameters != null) {
-			if(parameters instanceof LocalisationInterface) {
+		if (parameters != null) {
+			if (parameters instanceof LocalisationInterface) {
 				templateFragment.withVariable((LocalisationInterface) parameters);
 			}
-			if(parameters instanceof TemplateItem) {
+			if (parameters instanceof TemplateItem) {
 				templateFragment.withMember((TemplateItem) parameters);
 			}
 		}
@@ -623,31 +626,33 @@ public class Template implements TemplateParser {
 		String id2 = getId(true);
 		SimpleList<Template> templates = getTemplates(id2 + ".");
 		executeChildren(clazz, parameters, templates, id2, templateResult);
-		if(includeSuperValues) {
-			for(Clazz superClazz : clazz.getSuperClazzes(true)) {
+		if (includeSuperValues) {
+			for (Clazz superClazz : clazz.getSuperClazzes(true)) {
 				executeChildren(superClazz, parameters, templates, id2, templateResult);
 			}
 		}
 		return templateResult;
 	}
-	protected void executeChildren(Clazz clazz, LocalisationInterface parameters, SimpleList<Template> templates, String id2, TemplateResultFile templateResult) {
+
+	protected void executeChildren(Clazz clazz, LocalisationInterface parameters, SimpleList<Template> templates,
+			String id2, TemplateResultFile templateResult) {
 		// FIRST ATTRIBUTE
-        AttributeSet attributes = clazz.getAttributes();
-        if(attributes.size()>0) {
-		    for (Template template : templates) {
-		        if (template.getId(true).equals(id2 + ".attribute")) {
-		            // FOUND IT
-		            for (Attribute attribute : attributes) {
-		                template.executeTemplate(parameters, templateResult, attribute);
-		            }
-		            break;
-		        }
-		    }
-        }
+		AttributeSet attributes = clazz.getAttributes();
+		if (attributes.size() > 0) {
+			for (Template template : templates) {
+				if (template.getId(true).equals(id2 + ".attribute")) {
+					// FOUND IT
+					for (Attribute attribute : attributes) {
+						template.executeTemplate(parameters, templateResult, attribute);
+					}
+					break;
+				}
+			}
+		}
 
 		// SECOND ASSOCITAION
 		AssociationSet associations = clazz.getAssociations();
-		if(associations.size() >0) {
+		if (associations.size() > 0) {
 			for (Template template : templates) {
 				if (template.getId(true).equals(id2 + ".association")) {
 					// FOUND IT
@@ -663,7 +668,7 @@ public class Template implements TemplateParser {
 			}
 		}
 		MethodSet methods = clazz.getMethods();
-		if(methods.size()>0) {
+		if (methods.size() > 0) {
 			for (Template template : templates) {
 				if (template.getId(true).equals(id2 + ".method")) {
 					// FOUND IT
@@ -678,11 +683,11 @@ public class Template implements TemplateParser {
 
 	public boolean readTemplate(CharacterBuffer buffer) {
 		boolean result = false;
-		if(buffer == null) {
+		if (buffer == null) {
 			return false;
 		}
 		CharacterBuffer id = buffer.nextToken(false, Template.SPLITEND, Template.SPACE);
-		this.id =  id.toString();
+		this.id = id.toString();
 		if (buffer.getCurrentChar() == Template.SPACE) {
 			String value = buffer.nextToken(false, Template.SPLITEND, Template.SPACE).toString();
 			int type = TemplateFragmentCondition.getIdKey(value);
@@ -724,21 +729,21 @@ public class Template implements TemplateParser {
 		if (member == null) {
 			return false;
 		}
-		if(isValid) {
+		if (isValid) {
 			return true;
 		}
-		
+
 		String type = member.getClass().getSimpleName().toLowerCase();
-		if (this.fileType != null ) {
-			if(this.fileType.equals(type)) {
+		if (this.fileType != null) {
+			if (this.fileType.equals(type)) {
 				return true;
 			}
 			// Try to get Custom FileType
 			Object value = member.getValue(GraphMember.PROPERTY_FILETYPE);
-			if(type instanceof String) {
+			if (type instanceof String) {
 				type = (String) value;
 			}
-			if(this.fileType.equals(value)) {
+			if (this.fileType.equals(value)) {
 				return true;
 			}
 		}
@@ -781,7 +786,7 @@ public class Template implements TemplateParser {
 		return this.children;
 
 	}
-	
+
 	public static SimpleList<ParserCondition> getTemplateCondition() {
 		SimpleList<ParserCondition> customTemplates = new SimpleList<ParserCondition>();
 		customTemplates.add(new FeatureCondition());

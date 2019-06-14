@@ -43,6 +43,7 @@ import de.uniks.networkparser.interfaces.TemplateParser;
 public class VariableCondition implements ParserCondition {
 	private CharSequence value;
 	private boolean expression;
+	private boolean defaultStringValue;
 
 	@Override
 	public boolean update(Object value) {
@@ -96,7 +97,7 @@ public class VariableCondition implements ParserCondition {
 			}
 			Object object = variables.getValue(variables, v);
 
-			if (object == null && this.expression == false) {
+			if (object == null && (this.expression == false || defaultStringValue)) {
 				return key;
 			}
 			if (object instanceof DataType) {
@@ -269,5 +270,10 @@ public class VariableCondition implements ParserCondition {
 	@Override
 	public VariableCondition getSendableInstance(boolean prototyp) {
 		return new VariableCondition();
+	}
+
+	public VariableCondition withDefaultStringValue(boolean value) {
+		this.defaultStringValue = value;
+		return this;
 	}
 }

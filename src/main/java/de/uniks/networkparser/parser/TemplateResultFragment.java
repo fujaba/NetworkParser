@@ -149,27 +149,26 @@ public class TemplateResultFragment
 		}
 		if (value instanceof ParserCondition) {
 			ParserCondition tc = (ParserCondition) value;
+			
+			Object result = tc.getValue(this);
 			if (this.expression || tc.isExpression()) {
-				Object object = tc.getValue(this);
-				if(object == null ) {
+				if(result == null ) {
 					return false;
 				}
-				if(object instanceof Boolean) {
-					return (Boolean)object;
+				if(result instanceof Boolean) {
+					return (Boolean)result;
 				}
-				if(object instanceof String) {
-					return !object.equals("");
+				if(result instanceof String) {
+					return !result.equals("");
 				}
 				return false;
 			} else {
 				// Check Stack
-				Object result = tc.getValue(this);
 				this.value.withObjects(result);
 				if (this.stack != null) {
 					Object last = this.stack.last();
 					if (last instanceof SendableEntityCreator) {
-						((SendableEntityCreator) last).setValue(member, ParserCondition.NOTIFY, result,
-								SendableEntityCreator.NEW);
+						((SendableEntityCreator) last).setValue(member, ParserCondition.NOTIFY, result, SendableEntityCreator.NEW);
 					}
 				}
 			}

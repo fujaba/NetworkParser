@@ -42,6 +42,5 @@ public interface TemplateParser {
 
 	public static final int TEMPLATEEND = Integer.MAX_VALUE;
 
-	public ObjectCondition parsing(CharacterBuffer template, LocalisationInterface customTemplate, boolean isExpression,
-			boolean allowSpace, String... stopWords);
+	public ObjectCondition parsing(CharacterBuffer template, LocalisationInterface customTemplate, boolean isExpression, boolean allowSpace, String... stopWords);
 }

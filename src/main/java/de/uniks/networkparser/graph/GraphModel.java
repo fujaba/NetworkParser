@@ -322,6 +322,9 @@ public abstract class GraphModel extends GraphEntity implements BaseItem {
 	}
 
 	private void fixDataType(DataType dataType) {
+		if(dataType == null) {
+			return;
+		}
 		Clazz clazz = dataType.getClazz();
 		if (clazz.isExternal() == false && EntityUtil.isPrimitiveType(clazz.getName()) == false) {
 			GraphMember byObject = this.getByObject(clazz.getName(), true);

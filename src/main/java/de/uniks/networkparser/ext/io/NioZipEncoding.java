@@ -88,6 +88,9 @@ class NioZipEncoding {
 	 * @return ByteBuffer
 	 */
 	public ByteBuffer encode(String name) {
+		if(name == null) {
+			return null;
+		}
 		if (this.charset == null) {
 			final int length = name.length();
 			final byte[] buf = new byte[length];
@@ -152,7 +155,10 @@ class NioZipEncoding {
 	 * @return decoded String
 	 */
 	public String decode(byte[] data) {
-		if (this.charset == null) {
+		if(data == null) {
+			return null;
+		}
+		if (this.charset == null ) {
 			final int length = data.length;
 			final StringBuilder result = new StringBuilder(length);
 
@@ -173,6 +179,9 @@ class NioZipEncoding {
 
 	private static ByteBuffer encodeFully(CharsetEncoder enc, CharBuffer cb, ByteBuffer out) {
 		ByteBuffer o = out;
+		if(cb == null) {
+			return o;
+		}
 		while (cb.hasRemaining()) {
 			CoderResult result = enc.encode(cb, o, false);
 			if (result.isOverflow()) {
@@ -184,6 +193,9 @@ class NioZipEncoding {
 	}
 
 	private static CharBuffer encodeSurrogate(CharBuffer cb, char c) {
+		if(cb== null) {
+			return null;
+		}
 		cb.position(0).limit(6);
 		cb.put('%');
 		cb.put('U');
@@ -197,6 +209,9 @@ class NioZipEncoding {
 	}
 
 	private CharsetEncoder newEncoder() {
+		if(charset == null) {
+			return null;
+		}
 		if (useReplacement) {
 			return charset.newEncoder().onMalformedInput(CodingErrorAction.REPLACE)
 					.onUnmappableCharacter(CodingErrorAction.REPLACE).replaceWith(REPLACEMENT_BYTES);
@@ -207,6 +222,9 @@ class NioZipEncoding {
 	}
 
 	private CharsetDecoder newDecoder() {
+		if(charset == null) {
+			return null;
+		}
 		if (!useReplacement) {
 			return this.charset.newDecoder().onMalformedInput(CodingErrorAction.REPORT)
 					.onUnmappableCharacter(CodingErrorAction.REPORT);
@@ -230,6 +248,9 @@ class NioZipEncoding {
 	 * @return estimated size in bytes.
 	 */
 	private static int estimateInitialBufferSize(CharsetEncoder enc, int charChount) {
+		if(enc== null) {
+			return -1;
+		}
 		float first = enc.maxBytesPerChar();
 		float rest = (charChount - 1) * enc.averageBytesPerChar();
 		return (int) Math.ceil(first + rest);

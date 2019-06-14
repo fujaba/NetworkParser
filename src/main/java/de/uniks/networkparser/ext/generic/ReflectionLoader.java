@@ -42,6 +42,9 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
+import java.util.zip.ZipOutputStream;
+
+import com.sun.xml.internal.messaging.saaj.util.ByteOutputStream;
 
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.ext.ErrorHandler;
@@ -405,6 +408,9 @@ public class ReflectionLoader {
 				return new URL("http://www.github.com");
 			} catch (MalformedURLException e) {
 			}
+		}
+		if(instance == ZipOutputStream.class) {
+			return new ZipOutputStream(new ByteOutputStream());
 		}
 		if (constructors == null || constructors.length < 1) {
 			return ReflectionLoader.newInstance(instance);

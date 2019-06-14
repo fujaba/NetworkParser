@@ -63,6 +63,9 @@ public class FileBuffer extends Buffer {
 
 	public FileBuffer withFile(File file, int cache) {
 		this.file = file;
+		if (file == null) {
+			return this;
+		}
 		this.length = (int) this.file.length();
 		try {
 			FileInputStream fis = new FileInputStream(this.file);
@@ -93,7 +96,7 @@ public class FileBuffer extends Buffer {
 	@Override
 	public char getChar() {
 		char value = 0;
-		if(this.reader == null) {
+		if (this.reader == null) {
 			return value;
 		}
 		if (lookAHead.length() > 0) {
@@ -148,7 +151,11 @@ public class FileBuffer extends Buffer {
 	@Override
 	public FileBuffer withLookAHead(CharSequence lookahead) {
 		this.lookAHead.set(lookahead);
-		this.currentChar = lookahead.charAt(0);
+		if (lookahead == null || lookahead.length()<1) {
+			this.currentChar = 0;
+		} else {
+			this.currentChar = lookahead.charAt(0);
+		}
 		this.lookAHead.trimStart(1);
 		this.position -= this.lookAHead.length();
 		return this;
@@ -214,12 +221,12 @@ public class FileBuffer extends Buffer {
 		if (fileName == null || fileName.length() < 1) {
 			return -1;
 		}
-        if(data == null || data.length<1 || (data.length==1 && data[0]==0)) {
-            return -1;
-        }
-        if(flag<0 || flag>OVERRIDE) {
-        	return -1;
-        }
+		if (data == null || data.length < 1 || (data.length == 1 && data[0] == 0)) {
+			return -1;
+		}
+		if (flag < 0 || flag > OVERRIDE) {
+			return -1;
+		}
 		FileBuffer buffer = new FileBuffer();
 		buffer.withFile(fileName);
 		if (buffer.exists()) {
@@ -239,6 +246,9 @@ public class FileBuffer extends Buffer {
 	}
 
 	public static final int writeReourceFile(String fileName, String path) {
+		if(path == null) {
+			return -1;
+		}
 		return writeFile(fileName, FileBuffer.readBinaryResource(path).array(), OVERRIDE);
 	}
 
@@ -247,10 +257,13 @@ public class FileBuffer extends Buffer {
 	}
 
 	public CharacterBuffer readResource(String file) {
+		if (file == null) {
+			return null;
+		}
 		return readResource(IdMap.class.getResourceAsStream(file));
 	}
-	
-	public static CharacterBuffer readResource(InputStream is ) {
+
+	public static CharacterBuffer readResource(InputStream is) {
 		CharacterBuffer sb = new CharacterBuffer();
 		if (is != null) {
 			final byte[] buffer = new byte[BUFFER];
@@ -274,6 +287,9 @@ public class FileBuffer extends Buffer {
 	}
 
 	public static ByteBuffer readBinaryResource(String file) {
+		if(file == null) {
+			return null;
+		}
 		InputStream is = IdMap.class.getResourceAsStream(file);
 		ByteBuffer sb = new ByteBuffer();
 		if (is != null) {
@@ -298,7 +314,7 @@ public class FileBuffer extends Buffer {
 	}
 
 	public static final CharacterBuffer readFile(String file) {
-		if(file == null) {
+		if (file == null) {
 			return null;
 		}
 		return readFile(new File(file));
@@ -306,6 +322,9 @@ public class FileBuffer extends Buffer {
 
 	public static final CharacterBuffer readFile(File file) {
 		CharacterBuffer sb = new CharacterBuffer();
+		if (file == null) {
+			return sb;
+		}
 		if (file.exists()) {
 			final byte[] buffer = new byte[BUFFER];
 			int read;
@@ -330,6 +349,9 @@ public class FileBuffer extends Buffer {
 	}
 
 	public static final ByteBuffer readBinaryFile(String file) {
+		if (file == null) {
+			return null;
+		}
 		File content = new File(file);
 		ByteBuffer sb = new ByteBuffer();
 		if (content.exists()) {
@@ -360,20 +382,21 @@ public class FileBuffer extends Buffer {
 	}
 
 	public static BaseItem readBaseFileResource(String file, Class<?> referenceClass) {
-		if(referenceClass == null || file == null) {
+		if (referenceClass == null || file == null) {
 			return null;
 		}
 		InputStream stream = referenceClass.getResourceAsStream(file);
 		CharacterBuffer buffer = readResource(stream);
-		return  parsingBuffer(buffer, null);
-		
+		return parsingBuffer(buffer, null);
+
 	}
-		
+
 	public static BaseItem readBaseFile(String configFile, BaseItem container) {
 		// load it
 		CharacterBuffer buffer = FileBuffer.readFile(configFile);
 		return parsingBuffer(buffer, container);
 	}
+
 	private static BaseItem parsingBuffer(CharacterBuffer buffer, BaseItem container) {
 		if (buffer != null && buffer.length() > 0) {
 			char startCharacter = buffer.nextClean(true);
@@ -421,6 +444,9 @@ public class FileBuffer extends Buffer {
 	}
 
 	public static final boolean deleteFile(String fileName) {
+		if(fileName == null) {
+			return false;
+		}
 		File file;
 		file = new File(fileName);
 
@@ -463,7 +489,7 @@ public class FileBuffer extends Buffer {
 		if (this.file == null || data == null) {
 			return -1;
 		}
-		if(data.length==1 && data[0]==0) {
+		if (data.length == 1 && data[0] == 0) {
 			return -1;
 		}
 		try {
@@ -491,7 +517,10 @@ public class FileBuffer extends Buffer {
 		return this.write(APPEND, BaseItem.CRLF) > 0;
 	}
 
-	public static long skip(InputStream input, long numToSkip)  {
+	public static long skip(InputStream input, long numToSkip) {
+		if (input == null) {
+			return -1;
+		}
 		long available = numToSkip;
 		try {
 			while (numToSkip > 0) {
@@ -516,10 +545,16 @@ public class FileBuffer extends Buffer {
 	}
 
 	public static int readFully(final InputStream input, final byte[] b) {
+		if (b == null) {
+			return -1;
+		}
 		return readFully(input, b, 0, b.length);
 	}
 
 	public static long copy(final InputStream input, final OutputStream output) {
+		if (input == null || output == null) {
+			return -1;
+		}
 		final byte[] buffer = new byte[BUFFER];
 		int n = 0;
 		long count = 0;
@@ -535,7 +570,7 @@ public class FileBuffer extends Buffer {
 	}
 
 	public static int readFully(final InputStream input, final byte[] b, final int offset, final int len) {
-		if (len < 0 || offset < 0 || len + offset > b.length) {
+		if (b == null || input == null || len < 0 || offset < 0 || len + offset > b.length) {
 			return -1;
 		}
 		int count = 0, x = 0;

@@ -122,7 +122,7 @@ public class FunctionCondition implements ParserCondition {
 			return;
 		}
 		buffer.skip();
-		value = parser.parsing(buffer, customTemplate, false, true, "}");
+		value = parser.parsing(buffer, customTemplate, false, true,  "}");
 
 		buffer.skipTo(SPLITEND, false);
 		buffer.skip();

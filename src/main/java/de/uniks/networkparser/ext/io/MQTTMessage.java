@@ -97,6 +97,9 @@ public class MQTTMessage {
 	}
 
 	protected void encodeUTF8(ByteBuffer buffer, String stringToEncode) {
+		if(stringToEncode == null || buffer == null) {
+			return;
+		}
 		try {
 			byte[] encodedString = stringToEncode.getBytes("UTF-8");
 			buffer.insert((short) encodedString.length, false);
@@ -229,6 +232,9 @@ public class MQTTMessage {
 	 * @return a decoded String from the DataInputStream
 	 */
 	protected String decodeUTF8(ByteBuffer input) {
+		if(input == null) {
+			return null;
+		}
 		int encodedLength;
 		encodedLength = input.getShort();
 		byte[] encodedString = input.getBytes(new byte[encodedLength]);
@@ -237,7 +243,9 @@ public class MQTTMessage {
 
 	public MQTTMessage withNames(String... names) {
 		this.names = names;
-		this.code = names.length;
+		if(names != null) {
+			this.code = names.length;
+		}
 		return this;
 	}
 
@@ -361,6 +369,9 @@ public class MQTTMessage {
 	}
 
 	protected static void encodeMBI(ByteBuffer buffer, long number) {
+		if(buffer == null) {
+			return;
+		}
 		int numBytes = 0;
 		long no = number;
 		do {
@@ -380,6 +391,9 @@ public class MQTTMessage {
 		}
 		MQTTMessage message = null;
 		try {
+			if(in.available()<1) {
+				return null;
+			}
 			// read header
 			byte first = in.readByte();
 			byte type = (byte) ((first >>> 4) & 0x0F);
@@ -450,7 +464,11 @@ public class MQTTMessage {
 	}
 
 	public MQTTMessage createMessage(String content) {
-		this.messagePayload = content.getBytes();
+		if(content != null) {
+			this.messagePayload = content.getBytes();
+		}else {
+			this.messagePayload = new byte[0];
+		}
 		this.messageQOS = 1;
 		return this;
 	}
