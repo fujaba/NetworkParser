@@ -274,13 +274,12 @@ public class TarArchiveEntry {
 		this(preserveAbsolutePath);
 
 		name = normalizeFileName(name, preserveAbsolutePath);
-		final boolean isDir = name.endsWith("/");
-
-		this.name = name;
-		this.mode = isDir ? DEFAULT_DIR_MODE : DEFAULT_FILE_MODE;
-		this.linkFlag = isDir ? TarUtils.LF_DIR : TarUtils.LF_NORMAL;
+		if(name != null) {
+			final boolean isDir = name.endsWith("/");
+			this.mode = isDir ? DEFAULT_DIR_MODE : DEFAULT_FILE_MODE;
+			this.linkFlag = isDir ? TarUtils.LF_DIR : TarUtils.LF_NORMAL;
+		}
 		this.modTime = new Date().getTime() / MILLIS_PER_SECOND;
-		this.userName = "";
 	}
 
 	/**
@@ -447,7 +446,18 @@ public class TarArchiveEntry {
 	 * @return True if entry is a descendant of this.
 	 */
 	public boolean isDescendent(TarArchiveEntry desc) {
-		return desc.getName().startsWith(getName());
+		if(desc == null) {
+			return false;
+		}
+		String name = desc.getName();
+		if(name == null) {
+			return false;
+		}
+		String name2 = getName();
+		if(name2 == null) {
+			return false;
+		}
+		return name.startsWith(name2);
 	}
 
 	/**
@@ -657,7 +667,9 @@ public class TarArchiveEntry {
 	 * @param time This entry is new modification time.
 	 */
 	public void setModTime(Date time) {
-		modTime = time.getTime() / MILLIS_PER_SECOND;
+		if(time != null) {
+			modTime = time.getTime() / MILLIS_PER_SECOND;
+		}
 	}
 
 	/**
@@ -1007,6 +1019,9 @@ public class TarArchiveEntry {
 	 * @since 1.15
 	 */
 	void updateEntryFromPaxHeaders(Map<String, String> headers) {
+		if(headers == null) {
+			return;
+		}
 		for (Map.Entry<String, String> ent : headers.entrySet()) {
 			final String key = ent.getKey();
 			final String val = ent.getValue();
@@ -1335,7 +1350,7 @@ public class TarArchiveEntry {
 				// REVIEW Would a better check be "(File.separator == \\)"?
 
 				if (osname.startsWith("windows")) {
-					if (fileName.length() > 2) {
+					if (fileName != null && fileName.length() > 2) {
 						final char ch1 = fileName.charAt(0);
 						final char ch2 = fileName.charAt(1);
 
@@ -1352,13 +1367,15 @@ public class TarArchiveEntry {
 			}
 		}
 
-		fileName = fileName.replace(File.separatorChar, '/');
-
-		// No absolute pathnames
-		// Windows (and Posix?) paths can start with "\\NetworkDrive\",
-		// so we loop on starting / s.
-		while (!preserveAbsolutePath && fileName.startsWith("/")) {
-			fileName = fileName.substring(1);
+		if(fileName != null) {
+			fileName = fileName.replace(File.separatorChar, '/');
+		
+			// No absolute pathnames
+			// Windows (and Posix?) paths can start with "\\NetworkDrive\",
+			// so we loop on starting / s.
+			while (!preserveAbsolutePath && fileName.startsWith("/")) {
+				fileName = fileName.substring(1);
+			}
 		}
 		return fileName;
 	}
@@ -1385,6 +1402,9 @@ public class TarArchiveEntry {
 
 	void fillGNUSparse0xData(final Map<String, String> headers) {
 		paxGNUSparse = true;
+		if(headers == null) {
+			return;
+		}
 		realSize = Integer.parseInt(headers.get("GNU.sparse.size"));
 		if (headers.containsKey("GNU.sparse.name")) {
 			// version 0.1
@@ -1394,13 +1414,15 @@ public class TarArchiveEntry {
 
 	void fillGNUSparse1xData(final Map<String, String> headers) {
 		paxGNUSparse = true;
-		realSize = Integer.parseInt(headers.get("GNU.sparse.realsize"));
-		name = headers.get("GNU.sparse.name");
+		if(headers != null) {
+			realSize = Integer.parseInt(headers.get("GNU.sparse.realsize"));
+			name = headers.get("GNU.sparse.name");
+		}
 	}
 
 	void fillStarSparseData(final Map<String, String> headers) {
 		starSparse = true;
-		if (headers.containsKey("SCHILY.realsize")) {
+		if (headers != null && headers.containsKey("SCHILY.realsize")) {
 			realSize = Long.parseLong(headers.get("SCHILY.realsize"));
 		}
 	}

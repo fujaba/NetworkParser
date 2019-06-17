@@ -264,6 +264,9 @@ class NioZipEncoding {
 	 * @return estimated size in bytes.
 	 */
 	private static int estimateIncrementalEncodingSize(CharsetEncoder enc, int charCount) {
+		if(enc== null) {
+			return -1;
+		}
 		return (int) Math.ceil(charCount * enc.averageBytesPerChar());
 	}
 

@@ -226,6 +226,9 @@ public class DialogBox implements ObjectCondition {
 			return;
 		}
 		Object scene = ReflectionLoader.call(stage, "getScene");
+		if(DIALOGS_CSS_URL == null) {
+			return;
+		}
 		String dialogsCssUrl = DIALOGS_CSS_URL.toExternalForm();
 		if (scene == null && owner != null) {
 			scene = ReflectionLoader.call(owner, "getScene");

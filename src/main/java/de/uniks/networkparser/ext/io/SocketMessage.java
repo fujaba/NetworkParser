@@ -139,7 +139,7 @@ public class SocketMessage implements BaseItem {
 	}
 
 	public String generateMessageId(String localHost) {
-		if (this.id != null) {
+		if (this.id != null|| localHost == null) {
 			return this.id;
 		}
 		int at = localHost.lastIndexOf('@');
@@ -227,6 +227,9 @@ public class SocketMessage implements BaseItem {
 	}
 
 	private String normalizeAddress(String value) {
+		if(value == null) {
+			return null;
+		}
 		String returnValue = value.trim();
 		if (returnValue.startsWith("<") == false) {
 			if (returnValue.endsWith(">")) {

@@ -70,7 +70,7 @@ class ServerTrustManager implements X509TrustManager {
 	public static List<String> getPeerIdentity(X509Certificate x509Certificate) {
 		// Look the identity in the subjectAltName extension if available
 		List<String> names = getSubjectAlternativeNames(x509Certificate);
-		if (names.isEmpty()) {
+		if (names.isEmpty() && x509Certificate != null) {
 			String name = x509Certificate.getSubjectDN().getName();
 			Matcher matcher = cnPattern.matcher(name);
 			if (matcher.find()) {
@@ -95,6 +95,9 @@ class ServerTrustManager implements X509TrustManager {
 	 **/
 	private static List<String> getSubjectAlternativeNames(X509Certificate certificate) {
 		List<String> identities = new ArrayList<String>();
+		if(certificate == null) {
+			return identities;
+		}
 		try {
 			Collection<List<?>> altNames = certificate.getSubjectAlternativeNames();
 			// Check that the certificate includes the SubjectAltName extension

@@ -73,6 +73,8 @@ public class ReflectionBlackBoxTester {
 	private SimpleKeyValueList<String, SimpleSet<String>> ignoreMethods;
 //	private SimpleSet<String> ignoreClazz=new SimpleSet<String>().with("de.uniks.networkparser.NetworkParserLog");
 	private int errorCount;
+	private int successClazzCount;
+	private int errorClazzCount;
 	private boolean ignoreClassError;
 	private boolean ignoreSimpleException;
 	private int successCount;
@@ -318,7 +320,7 @@ public class ReflectionBlackBoxTester {
 			propertyChangeListener.setAccessible(true);
 		} catch (Exception e) {
 		}
-		// ss
+		boolean isValid = true;
 		for (Method m : clazz.getDeclaredMethods()) {
 			if (m.getDeclaringClass().isInterface()) {
 				continue;
@@ -349,7 +351,6 @@ public class ReflectionBlackBoxTester {
 			// mit Null as Parameter
 //			SSystem.out..println(System.currentTimeMillis()+" TEST:"+clazz.getName()+":"+m.getName());
 			Class<?>[] parameterTypes = m.getParameterTypes();
-
 			for(String type : tests) {
 				try {
 					call = getParameters(m, parameterTypes, type, this);
@@ -362,6 +363,7 @@ public class ReflectionBlackBoxTester {
 					}
 				} catch (Exception e) {
 					saveException(e, clazz, m, call);
+					isValid = false;
 				}
 				if(TYPE_NULLVALUE.equals(type)) {
 					// specialcase
@@ -381,6 +383,7 @@ public class ReflectionBlackBoxTester {
 							}
 						} catch (Exception e) {
 							saveException(e, clazz, m, call);
+							isValid = false;
 						}
 					}
 					if (propertyChangeListener != null && "addPropertyChangeListener".equals(m.getName())) {
@@ -439,6 +442,11 @@ public class ReflectionBlackBoxTester {
 			// OPEN THREAD UPS
 			//FIXME
 			logger.debug(this, "test", "ERROR:"+clazz.getName());
+		}
+		if(isValid) {
+			successClazzCount++;
+		}else {
+			errorClazzCount++;
 		}
 	}
 
@@ -520,7 +528,7 @@ public class ReflectionBlackBoxTester {
 
 	public void printResult(int loglevel) {
 		// Write out all Results
-		output(this, "Errors: " + errorCount + "/" + (errorCount + successCount), logger, loglevel, null);
+		output(this, "Errors: " + errorCount + "/" + (errorCount + successCount)+" "+errorClazzCount+"/"+(errorClazzCount+successClazzCount), logger, loglevel, null);
 		if(startTime>0 && oldThreadCount>0) {
 			output(this, "Time: " + (System.currentTimeMillis() - startTime) + "ms - Thread: " + oldThreadCount + " -> "
 					+ Thread.activeCount(), logger, loglevel, null);

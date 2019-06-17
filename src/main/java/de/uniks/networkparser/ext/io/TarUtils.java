@@ -214,7 +214,7 @@ public class TarUtils {
 		int end = offset + length;
 		int start = offset;
 
-		if (length < 2) {
+		if (length < 2 || buffer == null || buffer.length < start) {
 			throw new SimpleException("Length " + length + " must be at least 2");
 		}
 
@@ -277,7 +277,9 @@ public class TarUtils {
 	 * @since 1.4
 	 */
 	public static long parseOctalOrBinary(byte[] buffer, int offset, int length) {
-
+		if(buffer == null || buffer.length<offset) {
+			return -1;
+		}
 		if ((buffer[offset] & 0x80) == 0) {
 			return parseOctal(buffer, offset, length);
 		}
@@ -361,7 +363,9 @@ public class TarUtils {
 	 * @return The entry name.
 	 */
 	public static String parseName(byte[] buffer, int offset, int length, NioZipEncoding encoding)  {
-
+		if(buffer == null) {
+			return null;
+		}
 		int len = 0;
 		for (int i = offset; len < length && buffer[i] != 0; i++) {
 			len++;
@@ -404,6 +408,9 @@ public class TarUtils {
 	 * @return The updated offset, i.e. offset + length
 	 */
 	public static int formatNameBytes(String name, byte[] buf, int offset, int length, NioZipEncoding encoding) {
+		if(buf == null) {
+			return -1;
+		}
 		int len = name.length();
 		ByteBuffer b = encoding.encode(name);
 		while (b.limit() > length && len > 0) {
@@ -432,6 +439,9 @@ public class TarUtils {
 	public static boolean formatUnsignedOctalString(long value, byte[] buffer, int offset, int length) {
 		int remaining = length;
 		remaining--;
+		if(buffer == null || buffer.length<offset) {
+			return false;
+		}
 		if (value == 0) {
 			buffer[offset + remaining--] = (byte) '0';
 		} else {
@@ -489,7 +499,9 @@ public class TarUtils {
 	 * @return The updated offset
 	 */
 	public static int formatLongOctalBytes(long value, byte[] buf, int offset, int length) {
-
+		if(buf == null || buf.length<offset) {
+			return -1;
+		}
 		final int idx = length - 1; // For space
 
 		formatUnsignedOctalString(value, buf, offset, idx);

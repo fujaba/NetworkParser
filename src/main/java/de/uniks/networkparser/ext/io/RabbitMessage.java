@@ -131,6 +131,9 @@ public class RabbitMessage {
 	}
 
 	public RabbitMessage writeMap(Map<?, ?> map) {
+		if(accumulator == null) {
+			return null;
+		}
 		if (map == null) {
 			accumulator.insert(NULL, true);
 		} else {
@@ -148,6 +151,9 @@ public class RabbitMessage {
 	}
 
 	public boolean writeValue(Object value) {
+		if(accumulator == null) {
+			return false;
+		}
 		if (value == null) {
 			accumulator.insert(NULL, true);
 			return true;
@@ -159,10 +165,12 @@ public class RabbitMessage {
 			byte subgroup = EntityUtil.getSubGroup(type);
 			if (group == ByteTokener.DATATYPE_STRING) {
 				byte[] bytes = entity.getValue();
-				if (subgroup == ByteTokener.LEN_LITTLE) {
-					accumulator.insert((byte) bytes.length, true);
-				} else {
-					accumulator.insert((Integer) bytes.length, true);
+				if(bytes != null) {
+					if (subgroup == ByteTokener.LEN_LITTLE) {
+						accumulator.insert((byte) bytes.length, true);
+					} else {
+						accumulator.insert((Integer) bytes.length, true);
+					}
 				}
 				accumulator.insert(bytes, true);
 			}
@@ -221,6 +229,9 @@ public class RabbitMessage {
 	}
 
 	public boolean writeFieldValue(Object value) {
+		if(accumulator == null) {
+			return false;
+		}
 		if (value == null) {
 			accumulator.insert('V', true);
 			return true;
@@ -441,6 +452,9 @@ public class RabbitMessage {
 	// 1=Bit, 2, Byte, 3=Short, 4=Int, 5=ShortString, 6=String, 7 = Version, 8 =
 	// Table
 	private void initValues(NodeProxyBroker broker) {
+		if(broker == null) {
+			return;
+		}
 		Object[][] data = new Object[][] {
 				new Object[] { CONNECTION_CLASS, 10, "version", VERSION, "properties", TABLE, "mechanisms", STRING,
 						"locales", STRING }, // START
@@ -549,6 +563,9 @@ public class RabbitMessage {
 	}
 
 	public boolean analysePayLoad(NodeProxyBroker broker) {
+		if(payload == null || broker == null) {
+			return false;
+		}
 		classId = payload.getShort();
 		if (broker.getGrammar(false) == null) {
 			initValues(broker);
@@ -601,6 +618,9 @@ public class RabbitMessage {
 	 */
 	private static Map<String, Object> readTable(ByteBuffer in) {
 		Map<String, Object> table = new SimpleKeyValueList<String, Object>();
+		if(in == null) {
+			return null;
+		}
 		long endPos = in.getUnsignedInt();
 		if (endPos == 0)
 			return table;
@@ -617,6 +637,9 @@ public class RabbitMessage {
 	}
 
 	private static Object readFieldValue(ByteBuffer in) {
+		if(in == null) {
+			return null;
+		}
 		byte type = in.getByte();
 		if (type == 'S') {
 			int len = in.getUnsignedInt();
@@ -679,6 +702,9 @@ public class RabbitMessage {
 	private static SimpleList<Object> readArray(ByteBuffer in) {
 		SimpleList<Object> array = new SimpleList<Object>();
 //			long length =  & INT_MASK;
+		if(in == null) {
+			return array;
+		}
 		in.getInt();
 		while (in.remaining() > 0) {
 			Object value = readFieldValue(in);
@@ -695,6 +721,9 @@ public class RabbitMessage {
 	 * @return the readed bytes
 	 */
 	private static byte[] readBytes(ByteBuffer in) {
+		if(in == null) {
+			return null;
+		}
 		final long contentLength = in.getUnsignedInt();
 		if (contentLength < Integer.MAX_VALUE) {
 			final byte[] buffer = in.getBytes(new byte[(int) contentLength]);
@@ -736,7 +765,7 @@ public class RabbitMessage {
 		RabbitMessage msg = new RabbitMessage().withType(FRAME_METHOD);
 		msg.withFrame(CONNECTION_CLASS, STARTOK_METHOD);
 		String userStr = "guest", passwordStr = "guest";
-		if (login.length > 0) {
+		if (login != null && login.length > 0) {
 			userStr = login[0];
 			if (login.length > 1) {
 				passwordStr = login[1];
@@ -773,6 +802,9 @@ public class RabbitMessage {
 	}
 
 	public static RabbitMessage createChannelOpen(NodeProxyBroker broker, String queue) {
+		if(broker == null) {
+			return null;
+		}
 		RabbitMessage msg = new RabbitMessage().withType(FRAME_METHOD);
 		msg.withFrame(CHANNEL_CLASS, OPENCHANNEL_METHOD);
 
@@ -868,6 +900,9 @@ public class RabbitMessage {
 	}
 
 	public static RabbitMessage createPublishHeader(short channel, String queue) {
+		if(queue == null) {
+			return null;
+		}
 		RabbitMessage msg = new RabbitMessage().withType(FRAME_HEADER);
 		msg.withFrame(BASIC_CLASS, (short) 0).withChannel(channel);
 		msg.withValues((long) queue.length());

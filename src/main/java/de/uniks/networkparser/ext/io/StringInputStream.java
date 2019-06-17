@@ -33,7 +33,9 @@ public class StringInputStream extends InputStream {
 
 	public static StringInputStream create(StringOutputStream stream) {
 		StringInputStream result = new StringInputStream();
-		result.with(stream.toString());
+		if(stream != null) {
+			result.with(stream.toString());
+		}
 		return result;
 	}
 }
