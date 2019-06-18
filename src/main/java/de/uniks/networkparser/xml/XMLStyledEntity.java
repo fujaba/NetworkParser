@@ -20,7 +20,7 @@ public class XMLStyledEntity extends XMLEntity {
 		if (style == null || sb == null) {
 			return;
 		}
-		// Starttag
+		/* Starttag */
 		if (style.isBold()) {
 			sb.with("<b>");
 		}
@@ -29,7 +29,7 @@ public class XMLStyledEntity extends XMLEntity {
 		}
 		super.toStringChildren(sb, converter);
 
-		// EndTag
+		/* EndTag */
 		if (style.isItalic()) {
 			sb.with("</i>");
 		}

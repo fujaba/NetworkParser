@@ -28,9 +28,6 @@ import de.uniks.networkparser.xml.HTMLEntity;
 import de.uniks.networkparser.xml.XMLEntity;
 
 public class JarValidator {
-
-//    runtimeOnly 'org.glassfish.jersey.inject:jersey-hk2:2.27'
-
 	private String path;
 	private String file = "build/jacoco/html/index.html";
 	public static final String JARFILE = ".jar";
@@ -224,7 +221,6 @@ public class JarValidator {
 		script.withLine(jerseyMedia);
 
 		script.withLine("}");
-//		script.withLine("defaultTasks 'clean', 'test'");
 		script.withLine("defaultTasks 'test'");
 		FileBuffer.writeFile(rootPath + "jacoco.gradle", script.toString());
 
@@ -310,8 +306,7 @@ public class JarValidator {
 					result += subresult;
 				}
 			} else {
-				// Analyse File
-				// Check if it is a java file
+				/* Analyse File - Check if it is a java file */
 				String fileName = child.getName().toLowerCase();
 				if (fileName.endsWith(JARFILE)) {
 					if (output != null) {
@@ -470,7 +465,6 @@ public class JarValidator {
 		tester.withTest(ReflectionBlackBoxTester.INSTANCE);
 		try {
 			jarClassLoader = new JarClassLoader(ClassLoader.getSystemClassLoader(), file.toURI().toURL());
-//			jarFile = new JarFile(file);
 			clear();
 			FileInputStream fis = new FileInputStream(file);
 			BufferedInputStream bis = new BufferedInputStream(fis);
@@ -531,7 +525,7 @@ public class JarValidator {
 						continue;
 					}
 
-					// Find Constructor
+					/* Find Constructor */
 					if (timer == null) {
 						timer = new Timer();
 					}
@@ -578,7 +572,7 @@ public class JarValidator {
 	private boolean isProject(String item) {
 		for (int i = 0; i < projects.size(); i++) {
 			if (item.startsWith(projects.getKeyByIndex(i))) {
-				// SUB PACKAGE OF FOUND PROJECT
+				/* SUB PACKAGE OF FOUND PROJECT */
 				return false;
 			}
 		}
@@ -596,7 +590,6 @@ public class JarValidator {
 	}
 
 	public SimpleKeyValueList<String, JsonObject> mergePackages() {
-//		list.addAll(this.warningsPackages);
 		projects.clear();
 		TreeSet<String> cache = new TreeSet<String>();
 		cache.add("de.uniks");
@@ -607,10 +600,10 @@ public class JarValidator {
 				if (json != null) {
 					JsonObject responseJson = json.getJsonObject("response");
 					if (responseJson.getInt("numFound") > 0) {
-						// FOUND IT
+						/* FOUND IT */
 						projects.add(item, responseJson);
 					} else {
-						// Search for SubPackage???
+						/* Search for SubPackage??? */
 						String[] split = item.split("\\.");
 						for (int i = split.length - 1; i > 0; i--) {
 							String search = split[0];
@@ -624,7 +617,7 @@ public class JarValidator {
 							if (json != null) {
 								responseJson = json.getJsonObject("response");
 								if (responseJson.getInt("numFound") > 0) {
-									// FOUND IT
+									/* FOUND IT */
 									projects.add(search, responseJson);
 									break;
 								} else {

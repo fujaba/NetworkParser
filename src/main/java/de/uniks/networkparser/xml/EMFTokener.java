@@ -892,12 +892,12 @@ public class EMFTokener extends Tokener {
 		root.withKeyValue(NAME, method.getName());
 		root.withKeyValue("visibility", method.getModifier());
 
-		// parameters
+		/* parameters */
 		ParameterSet parameter = method.getParameters();
 		for (Parameter param : parameter) {
 			encodeOwnedValue(root.createChild(null), param);
 		}
-		// return type
+		/* return type */
 		DataType returnType = method.getReturnType();
 		if (returnType  != null && returnType.equals(DataType.VOID) == false) {
 			XMLEntity returnChild = root.createChild("ownedParameter");
@@ -933,10 +933,10 @@ public class EMFTokener extends Tokener {
 		root.withKeyValue(NAME, assoc.getName());
 		root.withKeyValue("memberEnd", "_end-" + assoc.getName() + " _end-" + assoc.getOther().getName());
 
-		// source
+		/* source */
 		encodeSubAssoc(root, assoc);
 
-		// target
+		/* target */
 		encodeSubAssoc(root, assoc.getOther());
 	}
 

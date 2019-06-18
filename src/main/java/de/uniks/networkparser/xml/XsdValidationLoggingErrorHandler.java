@@ -28,10 +28,8 @@ import java.util.ArrayList;
 /**
  * @author Stefan XSD Validation Error Class.
  */
-
 public class XsdValidationLoggingErrorHandler {
-	// implements ErrorHandler {
-	// TODO VALIDATOR
+	/* TODO VALIDATOR */
 	/** Variable of Document valid. */
 	private boolean isValid = true;
 	/** Variable of all Warnings. */
@@ -39,26 +37,21 @@ public class XsdValidationLoggingErrorHandler {
 	/** Variable of all Errors. */
 	private ArrayList<String> errors = new ArrayList<String>();
 
-//	@Override
-//	public void warning(SAXParseException ex) throws SAXException {
-//		isValid = false;
-//		if(ex!=null)
-//			warnings.add("Warnung: " + ex.getMessage());
-//	}
-//
-//	@Override
-//	public void error(SAXParseException ex) throws SAXException {
-//		isValid = false;
-//		if(ex!=null)
-//			errors.add("Fehler: " + ex.getMessage());
-//	}
-//
-//	@Override
-//	public void fatalError(SAXParseException ex) throws SAXException {
-//		isValid = false;
-//		if(ex!=null)
-//			errors.add("Fataler Fehler: " + ex.getMessage());
-//	}
+/*	public void warning(SAXParseException ex) throws SAXException {
+		isValid = false;
+		warnings.add("Warnung: " + ex.getMessage());
+	}
+	@Override
+	public void error(SAXParseException ex) throws SAXException {
+		isValid = false;
+		errors.add("Fehler: " + ex.getMessage());
+	}
+	@Override
+	public void fatalError(SAXParseException ex) throws SAXException {
+		isValid = false;
+		errors.add("Fataler Fehler: " + ex.getMessage());
+	}
+*/
 
 	/**
 	 * Switch for Valid Document

@@ -30,12 +30,7 @@ import de.uniks.networkparser.interfaces.Converter;
 import de.uniks.networkparser.list.SimpleList;
 
 public class BitEntity extends SimpleList<BitValue> implements ByteItem {
-	public static final byte BIT_STRING = 0x53; // S = String;
-	public static final byte BIT_NUMBER = 0x4E; // N = Number
-	public static final byte BIT_BYTE = 0x42; // B = Byte
-	public static final byte BIT_REFERENCE = 0x52; // R = Reference
-
-	// Can be a Type
+	/* Can be a Type */
 	protected String property;
 	protected byte type = BIT_BYTE;
 	protected int orientation = 1;

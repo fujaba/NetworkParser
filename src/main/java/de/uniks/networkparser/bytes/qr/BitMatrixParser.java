@@ -1,19 +1,3 @@
-/*
- * Copyright 2008 ZXing authors
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *		http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package de.uniks.networkparser.bytes.qr;
 
 /**
@@ -52,21 +36,21 @@ public final class BitMatrixParser {
 			return parsedFormatInfo;
 		}
 
-		// Read top-left format info bits
+		/* Read top-left format info bits */
 		int formatInfoBits1 = 0;
 		for (int i = 0; i < 6; i++) {
 			formatInfoBits1 = copyBit(i, 8, formatInfoBits1);
 		}
-		// .. and skip a bit in the timing pattern ...
+		/* .. and skip a bit in the timing pattern ... */
 		formatInfoBits1 = copyBit(7, 8, formatInfoBits1);
 		formatInfoBits1 = copyBit(8, 8, formatInfoBits1);
 		formatInfoBits1 = copyBit(8, 7, formatInfoBits1);
-		// .. and skip a bit in the timing pattern ...
+		/* .. and skip a bit in the timing pattern ... */
 		for (int j = 5; j >= 0; j--) {
 			formatInfoBits1 = copyBit(8, j, formatInfoBits1);
 		}
 
-		// Read the top-right/bottom-left pattern too
+		/* Read the top-right/bottom-left pattern too */
 		int dimension = bitMatrix.getHeight();
 		int formatInfoBits2 = 0;
 		int jMin = dimension - 7;
@@ -99,7 +83,7 @@ public final class BitMatrixParser {
 			return Version.getVersionForNumber(provisionalVersion);
 		}
 
-		// Read top-right version info: 3 wide by 6 tall
+		/* Read top-right version info: 3 wide by 6 tall */
 		int versionBits = 0;
 		int ijMin = dimension - 11;
 		for (int j = 5; j >= 0; j--) {
@@ -114,7 +98,7 @@ public final class BitMatrixParser {
 			return theParsedVersion;
 		}
 
-		// Hmm, failed. Try bottom left: 6 wide by 3 tall
+		/* Hmm, failed. Try bottom left: 6 wide by 3 tall */
 		versionBits = 0;
 		for (int i = 5; i >= 0; i--) {
 			for (int j = dimension - 9; j >= ijMin; j--) {
@@ -154,8 +138,8 @@ public final class BitMatrixParser {
 		FormatInformation formatInfo = readFormatInformation();
 		Version version = readVersion();
 
-		// Get the data mask for the format used in this QR Code. This will exclude
-		// some bits from reading as we wind through the bit matrix.
+		/* Get the data mask for the format used in this QR Code. This will exclude
+		   some bits from reading as we wind through the bit matrix. */
 		int dimension = bitMatrix.getHeight();
 		unmaskBitMatrix(formatInfo.getDataMask(), bitMatrix, dimension);
 
@@ -166,26 +150,26 @@ public final class BitMatrixParser {
 		int resultOffset = 0;
 		int currentByte = 0;
 		int bitsRead = 0;
-		// Read columns in pairs, from right to left
+		/* Read columns in pairs, from right to left */
 		for (int j = dimension - 1; j > 0; j -= 2) {
 			if (j == 6) {
-				// Skip whole column with vertical alignment pattern;
-				// saves time and makes the other code proceed more cleanly
+				/* Skip whole column with vertical alignment pattern;
+				   saves time and makes the other code proceed more cleanly */
 				j--;
 			}
-			// Read alternatingly from bottom to top then top to bottom
+			/* Read alternatingly from bottom to top then top to bottom */
 			for (int count = 0; count < dimension; count++) {
 				int i = readingUp ? dimension - 1 - count : count;
 				for (int col = 0; col < 2; col++) {
-					// Ignore bits covered by the function pattern
+					/* Ignore bits covered by the function pattern */
 					if (!functionPattern.get(j - col, i)) {
-						// Read a bit
+						/* Read a bit */
 						bitsRead++;
 						currentByte <<= 1;
 						if (bitMatrix.get(j - col, i)) {
 							currentByte |= 1;
 						}
-						// If we have made a whole byte, save it off
+						/* If we have made a whole byte, save it off */
 						if (bitsRead == 8) {
 							result[resultOffset++] = (byte) currentByte;
 							bitsRead = 0;
@@ -194,7 +178,7 @@ public final class BitMatrixParser {
 					}
 				}
 			}
-			readingUp ^= true; // readingUp = !readingUp; // switch directions
+			readingUp ^= true; /* readingUp = !readingUp; switch directions */
 		}
 		if (resultOffset != version.getTotalCodewords()) {
 			return null;
@@ -213,7 +197,7 @@ public final class BitMatrixParser {
 	 * @param dimension dimension of QR Code, represented by bits, being unmasked
 	 */
 	final void unmaskBitMatrix(byte mask, BitMatrix bits, int dimension) {
-		if (mask == 0) { // 000: mask bits for which (x + y) mod 2 == 0
+		if (mask == 0) { /* 000: mask bits for which (x + y) mod 2 == 0 */
 			for (int i = 0; i < dimension; i++) {
 				for (int j = 0; j < dimension; j++) {
 					if (((i + j) & 0x01) == 0) {
@@ -221,7 +205,7 @@ public final class BitMatrixParser {
 					}
 				}
 			}
-		} else if (mask == 1) { // 001: mask bits for which x mod 2 == 0
+		} else if (mask == 1) { /* 001: mask bits for which x mod 2 == 0 */
 			for (int i = 0; i < dimension; i++) {
 				for (int j = 0; j < dimension; j++) {
 					if ((i & 0x01) == 0) {
@@ -229,7 +213,7 @@ public final class BitMatrixParser {
 					}
 				}
 			}
-		} else if (mask == 2) { // 010: mask bits for which y mod 3 == 0
+		} else if (mask == 2) { /* 010: mask bits for which y mod 3 == 0 */
 			for (int i = 0; i < dimension; i++) {
 				for (int j = 0; j < dimension; j++) {
 					if (j % 3 == 0) {
@@ -237,7 +221,7 @@ public final class BitMatrixParser {
 					}
 				}
 			}
-		} else if (mask == 3) { // 011: mask bits for which (x + y) mod 3 == 0
+		} else if (mask == 3) { /* 011: mask bits for which (x + y) mod 3 == 0 */
 			for (int i = 0; i < dimension; i++) {
 				for (int j = 0; j < dimension; j++) {
 					if ((i + j) % 3 == 0) {
@@ -245,7 +229,7 @@ public final class BitMatrixParser {
 					}
 				}
 			}
-		} else if (mask == 4) { // 100: mask bits for which (x/2 + y/3) mod 2 == 0
+		} else if (mask == 4) { /* 100: mask bits for which (x/2 + y/3) mod 2 == 0 */
 			for (int i = 0; i < dimension; i++) {
 				for (int j = 0; j < dimension; j++) {
 					if ((((i / 2) + (j / 3)) & 0x01) == 0) {
@@ -253,7 +237,7 @@ public final class BitMatrixParser {
 					}
 				}
 			}
-		} else if (mask == 5) { // 101: mask bits for which xy mod 2 + xy mod 3 == 0
+		} else if (mask == 5) { /* 101: mask bits for which xy mod 2 + xy mod 3 == 0 */
 			for (int i = 0; i < dimension; i++) {
 				for (int j = 0; j < dimension; j++) {
 					int temp = i * j;
@@ -262,7 +246,7 @@ public final class BitMatrixParser {
 					}
 				}
 			}
-		} else if (mask == 6) { // 110: mask bits for which (xy mod 2 + xy mod 3) mod 2 == 0
+		} else if (mask == 6) { /* 110: mask bits for which (xy mod 2 + xy mod 3) mod 2 == 0 */
 			for (int i = 0; i < dimension; i++) {
 				for (int j = 0; j < dimension; j++) {
 					int temp = i * j;
@@ -271,7 +255,7 @@ public final class BitMatrixParser {
 					}
 				}
 			}
-		} else if (mask == 7) { // 111: mask bits for which ((x+y)mod 2 + xy mod 3) mod 2 == 0
+		} else if (mask == 7) { /* 111: mask bits for which ((x+y)mod 2 + xy mod 3) mod 2 == 0 */
 			for (int i = 0; i < dimension; i++) {
 				for (int j = 0; j < dimension; j++) {
 					if (((((i + j) & 0x01) + ((i * j) % 3)) & 0x01) == 0) {
@@ -288,7 +272,7 @@ public final class BitMatrixParser {
 	 */
 	void remask() {
 		if (parsedFormatInfo == null) {
-			return; // We have no format information, and have no data mask
+			return; /* We have no format information, and have no data mask */
 		}
 		int dimension = bitMatrix.getHeight();
 		unmaskBitMatrix(parsedFormatInfo.getDataMask(), bitMatrix, dimension);

@@ -215,7 +215,7 @@ public class ByteEntity implements ByteItem {
 			type = EntityUtil.getType(type, value.length, isLast);
 			EntityUtil.writeByteHeader(buffer, type, value.length);
 		}
-		// SAVE Length
+		/* SAVE Length */
 		buffer.put(value);
 	}
 
@@ -285,7 +285,7 @@ public class ByteEntity implements ByteItem {
 		}
 		if (type != 0) {
 			this.type = type;
-			// Check for group
+			/* Check for group */
 			msgValue.flip(true);
 			this.values = msgValue.array();
 			return true;
@@ -310,7 +310,7 @@ public class ByteEntity implements ByteItem {
 	 */
 	@Override
 	public int calcLength(boolean isDynamic, boolean isLast) {
-		// Length calculate Sonderfaelle ermitteln
+		/* Length calculate Sonderfaelle ermitteln */
 		if (this.values == null) {
 			return TYPEBYTE;
 		}

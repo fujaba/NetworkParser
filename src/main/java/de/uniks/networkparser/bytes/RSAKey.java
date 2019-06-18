@@ -40,11 +40,9 @@ public class RSAKey {
 	public static final Byte RSABYTE = 48;
 	public static final int SAFESIZE = 1024;
 	public static final String TAG = "RSA";
-	// public
 	private BigInteger e;
-	// private
 	private BigInteger d;
-	// RSA-Modul
+	/* RSA-Modul */
 	private BigInteger N;
 
 	public RSAKey(BigInteger N) {
@@ -169,7 +167,7 @@ public class RSAKey {
 		if(value != null) {
 			String string = value.toString();
 			CharacterBuffer hashCode = encrypt(string, string.length());
-			// CHECK FOR HASHCODE ONLY
+			/* CHECK FOR HASHCODE ONLY */
 			value.put(TAG, hashCode);
 			return value;
 		}
@@ -292,7 +290,7 @@ public class RSAKey {
 			}
 		}
 		RSAKey key = new RSAKey(p.multiply(q));
-		// n is the modulus for the public key and the private keys
+		/* n is the modulus for the public key and the private keys */
 
 		BigInteger i;
 		BigInteger phi = computePhi(p, q);
@@ -377,8 +375,8 @@ public class RSAKey {
 		derBuffer.addGroup(RSABYTE, new Object[] { RSABYTE,
 				new Object[] { DERBuffer.OBJECTID, new Byte[] { 42, -122, 72, -122, -9, 13, 1, 1, 1 }, DERBuffer.NULL },
 				DERBuffer.BITSTRING, bitString.toBytes() });
-		// 48 l:92[48 l:13 [ 6 l:9 [42, -122, 72, -122, -9, 13, 1, 1, 1],5 l:0] 3
-		// l:75[n,e]]
+		/* 48 l:92[48 l:13 [ 6 l:9 [42, -122, 72, -122, -9, 13, 1, 1, 1],5 l:0] 3 */
+		/* l:75[n,e]] */
 		return derBuffer;
 	}
 }

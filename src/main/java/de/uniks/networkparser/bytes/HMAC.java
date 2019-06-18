@@ -1,6 +1,6 @@
 package de.uniks.networkparser.bytes;
 
-// HMAC implements HMAC-SHA256 message authentication algorithm.
+/* HMAC implements HMAC-SHA256 message authentication algorithm. */
 public class HMAC {
 	private SHA2 inner = new SHA2();
 	private SHA2 outer = new SHA2();
@@ -42,16 +42,16 @@ public class HMAC {
 		}
 	}
 
-	// Returns HMAC state to the state initialized with key
-	// to make it possible to run HMAC over the other data with the same
-	// key without creating a new instance.
+	/* Returns HMAC state to the state initialized with key
+	 to make it possible to run HMAC over the other data with the same
+	 key without creating a new instance.*/
 	public HMAC reset() {
 		this.inner._restoreState(this.istate, this.inner.blockSize);
 		this.outer._restoreState(this.ostate, this.outer.blockSize);
 		return this;
 	}
 
-	// Cleans HMAC state.
+	/* Cleans HMAC state. */
 	public void clean() {
 		if(this.istate != null) {
 			for (int i = 0; i < this.istate.length; i++) {
@@ -62,7 +62,7 @@ public class HMAC {
 		this.outer.clean();
 	}
 
-	// Updates state with provided data.
+	/* Updates state with provided data. */
 	public HMAC update(String data) {
 		if(data != null) {
 			update(data.getBytes());
@@ -77,7 +77,7 @@ public class HMAC {
 		return this;
 	}
 
-	// Finalizes HMAC and puts the result in out.
+	/* Finalizes HMAC and puts the result in out. */
 	public HMAC finish(byte[] out) {
 		if (this.outer.finished) {
 			this.outer.finish(out);
@@ -88,7 +88,7 @@ public class HMAC {
 		return this;
 	}
 
-	// Returns message authentication code.
+	/* Returns message authentication code. */
 	public byte[] digest() {
 		byte[] out = new byte[this.inner.digestLength];
 		this.finish(out);

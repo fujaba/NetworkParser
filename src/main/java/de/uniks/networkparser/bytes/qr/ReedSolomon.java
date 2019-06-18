@@ -1,19 +1,3 @@
-/*
- * Copyright 2008 ZXing authors
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *		http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package de.uniks.networkparser.bytes.qr;
 
 import java.util.ArrayList;
@@ -122,7 +106,7 @@ public final class ReedSolomon {
 	}
 
 	private GenericGFPoly[] runEuclideanAlgorithm(GenericGFPoly a, GenericGFPoly b, int R) {
-		// Assume a's degree is >= b's
+		/* Assume a's degree is >= b's */
 		if (a.getDegree() < b.getDegree()) {
 			GenericGFPoly temp = a;
 			a = b;
@@ -134,16 +118,16 @@ public final class ReedSolomon {
 		GenericGFPoly tLast = field.getZero();
 		GenericGFPoly t = field.getOne();
 
-		// Run Euclidean algorithm until r's degree is less than R/2
+		/* Run Euclidean algorithm until r's degree is less than R/2 */
 		while (r.getDegree() >= R / 2) {
 			GenericGFPoly rLastLast = rLast;
 			GenericGFPoly tLastLast = tLast;
 			rLast = r;
 			tLast = t;
 
-			// Divide rLastLast by rLast, with quotient in q and remainder in r
+			/* Divide rLastLast by rLast, with quotient in q and remainder in r */
 			if (rLast.isZero()) {
-				// Oops, Euclidean algorithm already terminated?
+				/* Oops, Euclidean algorithm already terminated? */
 				return null;
 			}
 			r = rLastLast;
@@ -176,12 +160,12 @@ public final class ReedSolomon {
 	}
 
 	private int[] findErrorLocations(GenericGFPoly errorLocator) {
-		// This is a direct application of Chien's search
+		/* This is a direct application of Chien's search */
 		if(errorLocator == null || field == null) {
 			return null;
 		}
 		int numErrors = errorLocator.getDegree();
-		if (numErrors == 1) { // shortcut
+		if (numErrors == 1) { /* shortcut */
 			return new int[] { errorLocator.getCoefficient(1) };
 		}
 		int[] result = new int[numErrors];
@@ -199,7 +183,7 @@ public final class ReedSolomon {
 	}
 
 	private int[] findErrorMagnitudes(GenericGFPoly errorEvaluator, int[] errorLocations) {
-		// This is directly applying Forney's Formula
+		/* This is directly applying Forney's Formula */
 		if(errorLocations == null || field == null) {
 			return null;
 		}
@@ -210,12 +194,10 @@ public final class ReedSolomon {
 			int denominator = 1;
 			for (int j = 0; j < s; j++) {
 				if (i != j) {
-					// denominator = field.multiply(denominator,
-					// GenericGF.addOrSubtract(1,
-					// field.multiply(errorLocations[j], xiInverse)));
-					// Above should work but fails on some Apple and Linux JDKs
-					// due to a Hotspot bug.
-					// Below is a funny-looking workaround from Steven Parkes
+					/* denominator = field.multiply(denominator, GenericGF.addOrSubtract(1,
+					   field.multiply(errorLocations[j], xiInverse)));
+					   Above should work but fails on some Apple and Linux JDKs due to a Hotspot bug.
+					   Below is a funny-looking workaround from Steven Parkes */
 					int term = field.multiply(errorLocations[j], xiInverse);
 					int termPlus1 = (term & 0x1) == 0 ? term | 1 : term & ~1;
 					denominator = field.multiply(denominator, termPlus1);

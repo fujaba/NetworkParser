@@ -37,9 +37,6 @@ public class MapEntityStack {
 
 	private SimpleKeyValueList<String, SimpleSet<String>> childProperties = new SimpleKeyValueList<String, SimpleSet<String>>();
 
-	/** Variable of AllowQuote. */
-//	private boolean isAllowQuote;
-
 	/**
 	 * Remove The Last Element
 	 */
@@ -99,7 +96,7 @@ public class MapEntityStack {
 			if (lastPos >= 0) {
 				String prop;
 				if (lastPos == property.length() - 1) {
-					// Value of XML Entity like uni.
+					/* Value of XML Entity like uni. */
 					prop = ".";
 				} else {
 					prop = property.substring(lastPos + 1);

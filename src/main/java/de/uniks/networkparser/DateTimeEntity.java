@@ -49,7 +49,7 @@ public class DateTimeEntity implements SendableEntityCreatorNoIndex {
 			TextItems.DEFAULT.get("SATURDAY")};
 	private boolean isInitConstants = false;
 
-	private static final int MONTH_LENGTH[] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 }; // 0-based
+	private static final int MONTH_LENGTH[] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 }; /* 0-based */
 
 	public static final int ONE_SECOND = 1000;
 	public static final int ONE_MINUTE = 60 * ONE_SECOND;
@@ -143,9 +143,9 @@ public class DateTimeEntity implements SendableEntityCreatorNoIndex {
 		}
 
 		if (year > GREGORIANCUTOVERYEAR) {
-			return (year % 100 != 0) || (year % 400 == 0); // Gregorian
+			return (year % 100 != 0) || (year % 400 == 0); /* Gregorian */
 		}
-		return true; // Julian
+		return true; /* Julian */
 	}
 
 	private boolean internCalculate(long time, boolean calc) {
@@ -187,7 +187,7 @@ public class DateTimeEntity implements SendableEntityCreatorNoIndex {
 		}
 		long hour = daymillis / ONE_HOUR;
 
-		// 01.01.70 is Tuersday
+		/* 01.01.70 is Tuersday */
 		long dayOfWeek = (time / ONE_DAY + 4) % 7;
 		long leftDays = 31 - day;
 		if (calc) {
@@ -221,7 +221,6 @@ public class DateTimeEntity implements SendableEntityCreatorNoIndex {
 		if (dayOfYear % 7 > 0) {
 			week++;
 		}
-//		week += 1;
 		this.fields.put(WEEK_OF_YEAR, week);
 		this.fields.put(WEEK_OF_MONTH, week - ((dayOfYear - day) / 7));
 		this.fields.put(MILLISECONDSREAL, time);
@@ -428,11 +427,11 @@ public class DateTimeEntity implements SendableEntityCreatorNoIndex {
 	 */
 	private void initDate() {
 		if (items != null && !isInitConstants) {
-			// Month
+			/* Month */
 			for (int i = 0; i < 12; i++) {
 				monthOfYear[i] = items.getText(monthOfYear[i], this, null);
 			}
-			// Weekdays
+			/* Weekdays */
 			for (int i = 0; i < 7; i++) {
 				weekDays[i] = items.getText(weekDays[i], this, null);
 			}
@@ -486,7 +485,7 @@ public class DateTimeEntity implements SendableEntityCreatorNoIndex {
 		boolean isString = false;
 		do {
 			sub = tokener.nextString(dateFormat, new CharacterBuffer(), false, false, '"').toString();
-			// FIXME Change String to StringContainter
+			/* FIXME Change String to StringContainter */
 			if (sub.length() > 0 && !isString) {
 				sub = sub.replace("HZ", EntityUtil.strZero(get(HOUR_OF_DAY) - getTimezone(), 2));
 				sub = sub.replace("HH", EntityUtil.strZero(get(HOUR_OF_DAY), 2));
@@ -495,7 +494,7 @@ public class DateTimeEntity implements SendableEntityCreatorNoIndex {
 				sub = sub.replace("M", String.valueOf(get(MINUTE_OF_HOUR)));
 				sub = sub.replace("SS", EntityUtil.strZero(get(SECOND_OF_MINUTE), 2));
 				sub = sub.replace("S", String.valueOf(get(SECOND_OF_MINUTE)));
-				// Date
+				/* Date */
 				int dayOfWeek = (int) get(DAY_OF_WEEK);
 				if(dayOfWeek<0) {
 					dayOfWeek = 0;
@@ -545,11 +544,11 @@ public class DateTimeEntity implements SendableEntityCreatorNoIndex {
 	}
 
 	public String toGMTString() {
-		// d MMM yyyy HH:mm:ss 'GMT'
+		/* d MMM yyyy HH:mm:ss 'GMT' */
 		return this.toString("ddd, dd mmm yyyy HH:MM:SS 'GMT'");
 	}
 
-	// SETTER
+	/* SETTER */
 	/**
 	 * set a new year for the date
 	 *
@@ -592,7 +591,7 @@ public class DateTimeEntity implements SendableEntityCreatorNoIndex {
 		return this;
 	}
 
-	// GETTER
+	/* GETTER */
 	public long getTime() {
 		if (time == null) {
 			time = System.currentTimeMillis();

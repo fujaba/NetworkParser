@@ -39,24 +39,26 @@ import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.BufferItem;
 import de.uniks.networkparser.interfaces.Converter;
 
-// graph : [ strict ] (graph | digraph) [ ID ] '{' stmt_list '}'
-// stmt_list : [ stmt [ ';' ] [ stmt_list ] ]
-// stmt : node_stmt
-// | edge_stmt
-// | attr_stmt
-// | ID '=' ID
-// | subgraph
-// attr_stmt : (graph | node | edge) attr_list
-// attr_list : '[' [ a_list ] ']' [ attr_list ]
-// a_list : ID '=' ID [ (';' | ',') ] [ a_list ]
-// edge_stmt : (node_id | subgraph) edgeRHS [ attr_list ]
-// edgeRHS : edgeop (node_id | subgraph) [ edgeRHS ]
-// node_stmt : node_id [ attr_list ]
-// node_id : ID [ port ]
-// port : ':' ID [ ':' compass_pt ]
-// | ':' compass_pt
-// subgraph : [ subgraph [ ID ] ] '{' stmt_list '}'
-// compass_pt : (n | ne | e | se | s | sw | w | nw | c | _)
+/** Gramatic
+* graph : [ strict ] (graph | digraph) [ ID ] '{' stmt_list '}'
+* stmt_list : [ stmt [ ';' ] [ stmt_list ] ]
+* stmt : node_stmt
+* | edge_stmt
+* | attr_stmt
+* | ID '=' ID
+* | subgraph
+* attr_stmt : (graph | node | edge) attr_list
+* attr_list : '[' [ a_list ] ']' [ attr_list ]
+* a_list : ID '=' ID [ (';' | ',') ] [ a_list ]
+* edge_stmt : (node_id | subgraph) edgeRHS [ attr_list ]
+* edgeRHS : edgeop (node_id | subgraph) [ edgeRHS ]
+* node_stmt : node_id [ attr_list ]
+* node_id : ID [ port ]
+* port : ':' ID [ ':' compass_pt ]
+* | ':' compass_pt
+* subgraph : [ subgraph [ ID ] ] '{' stmt_list '}'
+* compass_pt : (n | ne | e | se | s | sw | w | nw | c | _)
+*/
 public class DotConverter implements Converter {
 	private boolean removePackage;
 	private boolean showAssocInfo=true;
@@ -99,7 +101,6 @@ public class DotConverter implements Converter {
 		}
 		char c = value.nextClean(true);
 		StringBuilder sb = new StringBuilder();
-//			boolean isQuote = true;
 		boolean useStrict = false;
 		GraphList graph = new GraphList();
 		do {
@@ -139,13 +140,13 @@ public class DotConverter implements Converter {
 			GraphEntity node = decodeNode(graph, value);
 			graph.withNode(node);
 
-			// and Second Node
+			/* and Second Node */
 			if (value.getCurrentChar() == '-') {
-				// May Be Edge
+				/* May Be Edge */
 				Association edge = new Association(node);
 				char c = value.getChar();
 				if (c == '-') {
-					// Bidiassoc
+					/* Bidiassoc */
 				} else if (c == '>') {
 					edge.with(AssociationTypes.UNDIRECTIONAL);
 				}
@@ -171,7 +172,6 @@ public class DotConverter implements Converter {
 		char c = value.nextClean(true);
 		StringBuilder sb = new StringBuilder();
 		sb.append(c);
-//			boolean isQuote = true;
 		GraphEntity node = null;
 		do {
 			c = value.getChar();
@@ -203,7 +203,7 @@ public class DotConverter implements Converter {
 		return node;
 	}
 
-//		ID '=' ID [ (';' | ',') ]
+/*		ID '=' ID [ (';' | ',') ] */
 	void decodeAttributes(GraphEntity node, BufferItem value) {
 		if(node == null || value == null) {
 			return;
@@ -315,7 +315,7 @@ public class DotConverter implements Converter {
 	
 				StringBuilder childBuilder = new StringBuilder();
 				for (Attribute attribute : graphClazz.getAttributes()) {
-					// add attribute line
+					/* add attribute line */
 					if (isObjectdiagram) {
 						childBuilder.append(BaseItem.CRLF + "<tr><td align='left'>" + attribute.getName() + " = "
 								+ attribute.getValue(GraphTokener.OBJECTDIAGRAM, false) + "</td></tr>");
@@ -331,10 +331,8 @@ public class DotConverter implements Converter {
 				}
 				childBuilder = new StringBuilder();
 				for (Method method : graphClazz.getMethods()) {
-					// add attribute line
-	//					if(isObjectdiagram) {
-					childBuilder
-							.append(BaseItem.CRLF + "<tr><td align='left'>" + method.getName(false, false) + "</td></tr>");
+					/* add attribute line */
+					childBuilder.append(BaseItem.CRLF + "<tr><td align='left'>" + method.getName(false, false) + "</td></tr>");
 				}
 				if (childBuilder.length() > 0) {
 					sb.append(BaseItem.CRLF + "<tr><td><table border='0' cellborder='0' cellspacing='0'>");
@@ -348,11 +346,11 @@ public class DotConverter implements Converter {
 		if(root instanceof GraphList) {
 			((GraphList) root).initSubLinks();
 		}
-//			// now generate edges from edgeMap
+		/* now generate edges from edgeMap */
 		for (Association edge : root.getAssociations()) {
 			Association otherEdge = edge.getOther();
 			if (otherEdge.getType() != AssociationTypes.EDGE) {
-				// It is bidiAssoc
+				/* It is bidiAssoc */
 				sb.append(edge.getClazz().getName(false) + " -- " + otherEdge.getClazz().getName(false));
 				if(showAssocInfo) {
 					sb.append("[headlabel = \"" + edge.getName() + "\" taillabel = \"" + otherEdge.getName() + "\"];");

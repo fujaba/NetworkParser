@@ -364,7 +364,7 @@ public abstract class Buffer implements BufferItem {
 					return myLong;
 				}
 			} catch (Exception ignore) {
-				// DO nothing
+				/* Do nothing */
 			}
 		}
 		return value;

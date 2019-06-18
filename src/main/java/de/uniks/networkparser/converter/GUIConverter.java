@@ -77,10 +77,6 @@ public class GUIConverter implements Converter {
 			}
 			return child;
 		}
-//		if(VBOX.equals(element.getTag())) {
-//			Group group = new Group().withOrientation(Group.VERTICAL);
-//			return parsingChildren(group, element);
-//		}
 		return null;
 	}
 }

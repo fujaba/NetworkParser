@@ -133,7 +133,7 @@ public class YUMLConverter implements Converter {
 		return true;
 	}
 
-	// ##################################### Entity
+	/* ##################################### Entity */
 	public String parseEntity(GraphEntity entity, SimpleList<GraphMember> visited, boolean shortName) {
 		return parseEntity(entity, visited, null, shortName);
 	}
@@ -185,11 +185,6 @@ public class YUMLConverter implements Converter {
 
 			Object element;
 			Attribute attribute;
-//			if (element instanceof Attribute) {
-//				attribute = (Attribute) element;
-//				sb.append(attribute.getName() + splitter
-//						+ attribute.getValue(type, shortName)); // / without Type
-//			}
 
 			while (i.hasNext()) {
 				element = i.next();

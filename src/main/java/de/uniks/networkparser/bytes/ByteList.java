@@ -37,12 +37,7 @@ public class ByteList extends SimpleList<ByteItem> implements ByteItem {
 	/** The children of the ByteEntity. */
 	private byte type;
 
-	public static final byte BIT_STRING = 0x53; // S = String;
-	public static final byte BIT_NUMBER = 0x4E; // N = Number
-	public static final byte BIT_BYTE = 0x42; // B = Byte
-	public static final byte BIT_REFERENCE = 0x52; // R = Reference
-
-	// Can be a Type
+	/* Can be a Type */
 	public static final String PROPERTY_PROPERTY = "property";
 	public static final String PROPERTY_TYPE = "type";
 	public static final String PROPERTY_ORIENTATION = "orientation";
@@ -100,7 +95,7 @@ public class ByteList extends SimpleList<ByteItem> implements ByteItem {
 
 	@Override
 	public void writeBytes(ByteBuffer buffer, boolean isDynamic, boolean last, boolean isPrimitive) {
-		// Override for each ByteList
+		/* Override for each ByteList */
 		isPrimitive = isPrimitive(isDynamic);
 		int size = calcChildren(isDynamic, last);
 		byte type;
@@ -122,7 +117,7 @@ public class ByteList extends SimpleList<ByteItem> implements ByteItem {
 			return 1;
 		}
 		int length = calcChildren(isDynamic, isLast);
-		// add The Headerlength
+		/* add The Headerlength */
 		if (type != 0) {
 			length += ByteEntity.TYPEBYTE + EntityUtil.getTypeLen(type, length, isLast);
 		}
@@ -137,7 +132,7 @@ public class ByteList extends SimpleList<ByteItem> implements ByteItem {
 		boolean isPrimitive = isDynamic;
 		int nullerBytes = 0;
 		if (this.get(size - 1) instanceof ByteEntity) {
-			// HEADER + VALUE
+			/* HEADER + VALUE */
 			isPrimitive = isPrimitive && this.get(0).getType() == ByteTokener.DATATYPE_CLAZZTYPE;
 			if (this.get(size - 1).getType() == ByteTokener.DATATYPE_NULL) {
 				nullerBytes++;
@@ -157,9 +152,8 @@ public class ByteList extends SimpleList<ByteItem> implements ByteItem {
 			length += len;
 		}
 		if (isPrimitive) {
-			// Only for ByteList with value dynamic and values with cant be
-			// short
-			// add one for ClazzSTEAM Byte as first Byte
+			/* Only for ByteList with value dynamic and values with cant be short
+			   add one for ClazzSTEAM Byte as first Byte */
 			length = length - size + ByteEntity.TYPEBYTE + ByteEntity.TYPEBYTE + nullerBytes;
 		}
 		return length;

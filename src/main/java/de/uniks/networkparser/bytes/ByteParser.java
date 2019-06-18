@@ -52,20 +52,19 @@ public class ByteParser {
 			return null;
 		}
 		if (entry.size() < 1) {
-			// Reference or Value
+			/* Reference or Value */
 			if (entry.isType(BitEntity.BIT_REFERENCE)) {
 				String propertyName = entry.getPropertyName();
 				if (values.containsKey(propertyName)) {
 					return values.getValue(propertyName);
 				}
 			} else if (entry.isType(BitEntity.BIT_BYTE, BitEntity.BIT_NUMBER, BitEntity.BIT_STRING)) {
-				// Value
+				/* Value */
 				return entry.getPropertyName();
 			}
 		}
-		// Wert ermitteln
-
-		// Init the Values
+		/* Wert ermitteln */
+		/* Init the Values */
 		ArrayList<ByteBuffer> results = new ArrayList<ByteBuffer>();
 		ArrayList<Integer> resultsLength = new ArrayList<Integer>();
 
@@ -107,20 +106,20 @@ public class ByteParser {
 				if (orientationTarget > 0) {
 					number = (number << (sourceBit));
 					if (orientationSource > 0)
-						// Source Target
+						/* Source Target */
 						number += sourceBits;
 					else {
-						// Bits vertauschen
+						/* Bits vertauschen */
 						for (int z = sourceBit; z > 0; z--) {
 							number += sourceBits & (0x1 << sourceBit) << (sourceBit - z);
 						}
 					}
 				} else {
 					if (orientationSource > 0)
-						// Source Target
+						/* Source Target */
 						number += sourceBits << sourceBit;
 					else {
-						// Bits vertauschen
+						/* Bits vertauschen */
 						for (int z = sourceBit; z > 0; z--) {
 							number += sourceBits & (0x1 << sourceBit) << (sourceBit - z);
 						}
@@ -145,13 +144,12 @@ public class ByteParser {
 			if (resultPos > 0) {
 				result.put((byte) number);
 			}
-
-			// Save one Result to List
+			/* Save one Result to List */
 			result.flip(true);
 			results.add(result);
 		}
 
-		// Merge all Results to one
+		/* Merge all Results to one */
 		int length = 0;
 		for (Integer item : resultsLength) {
 			length += item;
@@ -189,7 +187,7 @@ public class ByteParser {
 
 		result.flip(true);
 
-		// Set the Type
+		/* Set the Type */
 		Object element = null;
 
 		if (entry.getType() == BitEntity.BIT_BYTE) {

@@ -1,21 +1,4 @@
-/*
- * Copyright 2008 ZXing authors
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *		http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package de.uniks.networkparser.bytes.qr;
-
 /**
  * <p>
  * See ISO 18004:2006, 6.4.1, Tables 2 and 3. This enum encapsulates the various
@@ -25,16 +8,15 @@ package de.uniks.networkparser.bytes.qr;
  * @author Sean Owen
  */
 public final class Mode {
-	// No, we can't use an enum here. J2ME doesn't support it.
-	public static final Mode TERMINATOR = new Mode(new int[] { 0, 0, 0 }, 0x00, "TERMINATOR"); // Not really a mode...
+	/* No, we can't use an enum here. J2ME doesn't support it. */
+	public static final Mode TERMINATOR = new Mode(new int[] { 0, 0, 0 }, 0x00, "TERMINATOR"); /* Not really a mode... */
 	public static final Mode NUMERIC = new Mode(new int[] { 10, 12, 14 }, 0x01, "NUMERIC");
 	public static final Mode ALPHANUMERIC = new Mode(new int[] { 9, 11, 13 }, 0x02, "ALPHANUMERIC");
-	public static final Mode STRUCTURED_APPEND = new Mode(new int[] { 0, 0, 0 }, 0x03, "STRUCTURED_APPEND"); // Not
-																												// supported
+	public static final Mode STRUCTURED_APPEND = new Mode(new int[] { 0, 0, 0 }, 0x03, "STRUCTURED_APPEND"); /* Not supported */
 	public static final Mode BYTE = new Mode(new int[] { 8, 16, 16 }, 0x04, "BYTE");
-	public static final Mode ECI = new Mode(null, 0x07, "ECI"); // character
-																// counts don't
-																// apply
+	public static final Mode ECI = new Mode(null, 0x07, "ECI"); /* character */
+																/* counts don't */
+																/* apply */
 	public static final Mode KANJI = new Mode(new int[] { 8, 10, 12 }, 0x08, "KANJI");
 	public static final Mode FNC1_FIRST_POSITION = new Mode(null, 0x05, "FNC1_FIRST_POSITION");
 	public static final Mode FNC1_SECOND_POSITION = new Mode(null, 0x09, "FNC1_SECOND_POSITION");
@@ -79,8 +61,7 @@ public final class Mode {
 		case 0x9:
 			return FNC1_SECOND_POSITION;
 		case 0xD:
-			// 0xD is defined in GBT 18284-2000, may not be supported in foreign
-			// country
+			/* 0xD is defined in GBT 18284-2000, may not be supported in foreign country */
 			return HANZI;
 		}
 		return null;

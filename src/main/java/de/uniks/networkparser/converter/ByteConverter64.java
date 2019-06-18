@@ -28,14 +28,14 @@ import de.uniks.networkparser.buffer.ByteBuffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 
 public class ByteConverter64 extends ByteConverter {
-	// private static final int BYTEPERATOM = 3;
+	/* private static final int BYTEPERATOM = 3; */
 	private static final char[] pem_array = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O',
 			'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j',
 			'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3', '4',
 			'5', '6', '7', '8', '9', '+', '/', '=' };
 	private static final byte PADDING = 127;
 
-	// ENCODE
+	/* ENCODE */
 	@Override
 	public String toString(BufferedBuffer values) {
 		if(values == null) {
@@ -199,13 +199,13 @@ public class ByteConverter64 extends ByteConverter {
 			val >>= 6;
 			outbuf[outpos + 0] = (byte) pem_array[val & 0x3f];
 		}
-		// done with groups of three, finish up any odd bytes left
+		/* done with groups of three, finish up any odd bytes left */
 		if (size == 1) {
 			val = buffer.charAt(inpos++) & 0xff;
 			val <<= 4;
 			if(finishToken) {
-				outbuf[outpos + 3] = (byte) '='; // pad character;
-				outbuf[outpos + 2] = (byte) '='; // pad character;
+				outbuf[outpos + 3] = (byte) '='; /* pad character; */
+				outbuf[outpos + 2] = (byte) '='; /* pad character; */
 			}
 			outbuf[outpos + 1] = (byte) pem_array[val & 0x3f];
 			val >>= 6;
@@ -216,7 +216,7 @@ public class ByteConverter64 extends ByteConverter {
 			val |= buffer.charAt(inpos++) & 0xff;
 			val <<= 2;
 			if(finishToken) {
-				outbuf[outpos + 3] = (byte) '='; // pad character;
+				outbuf[outpos + 3] = (byte) '='; /* pad character; */
 			}
 			outbuf[outpos + 2] = (byte) pem_array[val & 0x3f];
 			val >>= 6;

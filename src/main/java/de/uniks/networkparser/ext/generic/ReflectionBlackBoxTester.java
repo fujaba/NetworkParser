@@ -65,13 +65,11 @@ public class ReflectionBlackBoxTester {
 	public static final String TYPE_CUSTOMVALUE = "custom";
 	public static final String BLACKBOXTESTER = "backboxtest";
 	public static final String INSTANCE = "instance";
-//	public static final String IGNOREMETHOD = "run";
 	public static final String DEFAULTMETHODS = "";
 
 	private SimpleSet<String> tests = new SimpleSet<String>().with(TYPE_NULLVALUE, TYPE_MINVALUE, TYPE_RANDOMVALUE,
 			TYPE_CUSTOMVALUE, TYPE_MIDDLEVALUE);
 	private SimpleKeyValueList<String, SimpleSet<String>> ignoreMethods;
-//	private SimpleSet<String> ignoreClazz=new SimpleSet<String>().with("de.uniks.networkparser.NetworkParserLog");
 	private int errorCount;
 	private int successClazzCount;
 	private int errorClazzCount;

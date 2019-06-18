@@ -73,12 +73,12 @@ public class YAMLTokener extends Tokener {
 				c = buffer.getChar();
 			}
 			if (c == '\n') {
-				// Next Line
+				/* Next Line */
 				parseLine(newDeep, owner, buffer);
 				c = 0;
 				continue;
 			}
-			// Parsing the CurrentLine
+			/* Parsing the CurrentLine */
 
 			CharacterBuffer subBuffer = null;
 			switch (c) {
@@ -88,19 +88,17 @@ public class YAMLTokener extends Tokener {
 				break;
 			case '-':
 				c = buffer.getChar();
-				// Must be a Space
+				/* Must be a Space */
 				if (c == BufferItem.SPACE) {
-					// Collection
+					/* Collection */
 					if (deep <= newDeep) {
-						// Add to Current List
+						/* Add to Current List */
 						item = owner.getNewList(false);
-
 					} else {
 						item = owner.getNewList(true);
 					}
 				}
-				// Must be a String so its default
-//					break;
+				/* Must be a String so its default */
 			default:
 				if (subBuffer == null) {
 					subBuffer = new CharacterBuffer();
@@ -121,14 +119,19 @@ public class YAMLTokener extends Tokener {
 		return newDeep;
 	}
 
-	// yaml grammar
-	// yaml ::= objects*
-	// object ::= plainObject | objectList
-	// plainObject ::= - type': ' objId\n attr*
-	// attr ::= attrName': ' attrValue\n
-	// attrValue ::= id | string | '[' attrValue * ']'
-	// objectList ::= type colName:* \n key: attrValue* \n*
-	// valueRow ::= attrValue* \n
+	/** Decoding YAML FILE
+	 * @param yaml Yaml Text
+	 * @return decoded Value
+	 * 
+	 * yaml grammar
+	 * yaml ::= objects*
+	 * object ::= plainObject | objectList
+	 * plainObject ::= - type': ' objId\n attr*
+	 * attr ::= attrName': ' attrValue\n
+	 * attrValue ::= id | string | '[' attrValue * ']'
+	 * objectList ::= type colName:* \n key: attrValue* \n*
+	 * valueRow ::= attrValue*
+	 */
 	public Object decode(String yaml) {
 		CharacterBuffer buffer = new CharacterBuffer().with(yaml);
 		Object root = null;
@@ -141,7 +144,7 @@ public class YAMLTokener extends Tokener {
 			buffer.skipChar(DASH);
 			CharacterBuffer key = buffer.nextString();
 			if (key.endsWith(":", true)) {
-				// usual
+				/* usual */
 				Object returnValue = parseUsualObjectAttrs(key, buffer);
 				if (root == null) {
 					root = returnValue;
@@ -151,7 +154,7 @@ public class YAMLTokener extends Tokener {
 			parseObjectTableAttrs(key, buffer);
 		}
 
-		// CHECK IF REF NOT EMPTY
+		/* CHECK IF REF NOT EMPTY */
 		if (refs.size() > 0) {
 			for (int o = 0; o < refs.size(); o++) {
 				Object entity = refs.getKeyByIndex(o);
@@ -173,7 +176,7 @@ public class YAMLTokener extends Tokener {
 	}
 
 	private void parseObjectTableAttrs(CharacterBuffer currentToken, Buffer buffer) {
-		// skip column names
+		/* skip column names */
 		if (currentToken == null || map == null) {
 			return;
 		}
@@ -204,7 +207,7 @@ public class YAMLTokener extends Tokener {
 				map.put(objectId, obj, false);
 			}
 
-			// column values
+			/* column values */
 			int colNum = 0;
 			while (currentToken.length() > 0 && !currentToken.endsWith(":", true)
 					&& currentToken.equals("-") == false) {
@@ -235,7 +238,6 @@ public class YAMLTokener extends Tokener {
 			}
 			if (currentToken.equals("-")) {
 				buffer.withLookAHead(DASH);
-				// currentToken = buffer.nextString();
 			}
 		}
 	}
@@ -256,11 +258,11 @@ public class YAMLTokener extends Tokener {
 			map.put(objectId, obj, false);
 		}
 
-		// read attributes
+		/* read attributes */
 		while (!currentToken.equals("") && !currentToken.equals("-")) {
 			String attrName = currentToken.rtrim(':').toString();
 			currentToken = buffer.nextString();
-			// many values
+			/* many values */
 			while (!currentToken.equals("") && !currentToken.endsWith(":", true) && !currentToken.equals("-")) {
 				String attrValue = currentToken.toString();
 				setValue(creator, obj, attrName, attrValue);
@@ -297,7 +299,7 @@ public class YAMLTokener extends Tokener {
 			}
 			creator.setValue(obj, attrName, attrValue, SendableEntityCreator.NEW);
 		} catch (Exception e) {
-			// maybe a node
+			/* maybe a node */
 			if (values == null) {
 				values = new SimpleKeyValueList<String, SimpleList<String>>();
 				refs.put(obj, values);

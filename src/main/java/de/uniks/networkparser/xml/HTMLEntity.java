@@ -133,7 +133,7 @@ public class HTMLEntity implements BaseItem {
 			return node;
 		}
 		if (value.endsWith(".js") && value.indexOf("\n") < 0) {
-			// May be a Link
+			/* May be a Link */
 			if (parentNode == null) {
 				parentNode = this.header;
 			}
@@ -209,7 +209,7 @@ public class HTMLEntity implements BaseItem {
 				if (item instanceof XMLEntity) {
 					this.body.withChild((XMLEntity) item);
 				} else if (item instanceof CharacterBuffer) {
-					// try to Merge
+					/* try to Merge */
 					CharacterBuffer buffer = (CharacterBuffer) item;
 					XMLTokener tokener = new XMLTokener();
 					tokener.skipHeader(buffer);
@@ -228,7 +228,7 @@ public class HTMLEntity implements BaseItem {
 						buffer.skip();
 						buffer.nextClean(true);
 					}
-					// SO PARSE BODY
+					/* SO PARSE BODY */
 					if (plainBody) {
 						if (buffer.startsWith("<body", buffer.position(), false)) {
 							buffer.skipTo('>', false);
@@ -296,7 +296,7 @@ public class HTMLEntity implements BaseItem {
 			}
 		}
 		if (child == null) {
-			// May be blanko Body text
+			/* May be blanko Body text */
 			child = new XMLEntity().withValueItem(ref);
 		}
 		return child;
@@ -437,8 +437,7 @@ public class HTMLEntity implements BaseItem {
 		script.withValue(sb.toString());
 		add(script);
 		if (path != null) {
-			// Add graph-framework
-			// Test for Add Styles
+			/* Add graph-framework -  Test for Add Styles */
 			SimpleList<String> resources = new SimpleList<String>();
 			for (String item : GRAPHRESOURCES) {
 				resources.add(item);
@@ -557,7 +556,7 @@ public class HTMLEntity implements BaseItem {
 
 	public HTMLEntity withValue(String value) {
 		XMLEntity htmlPage = new XMLEntity().withValue(value);
-		// All Children possible head and body
+		/* All Children possible head and body */
 		for (int i = 0; i < htmlPage.sizeChildren(); i++) {
 			BaseItem item = htmlPage.getChild(i);
 			if (item instanceof XMLEntity == false) {

@@ -1,19 +1,3 @@
-/*
- * Copyright 2008 ZXing authors
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *		http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package de.uniks.networkparser.bytes.qr;
 
 import de.uniks.networkparser.json.JsonArray;
@@ -230,26 +214,22 @@ public final class Version {
 		int bestVersion = 0;
 		for (int i = 0; i < VERSION_DECODE_INFO.length; i++) {
 			int targetVersion = VERSION_DECODE_INFO[i];
-			// Do the version info bits match exactly? done.
+			/* Do the version info bits match exactly? done. */
 			if (targetVersion == versionBits) {
 				return getVersionForNumber(i + 7);
 			}
-			// Otherwise see if this is the closest to a real version info bit
-			// string
-			// we have seen so far
+			/* Otherwise see if this is the closest to a real version info bit string we have seen so far */
 			int bitsDifference = FormatInformation.numBitsDiffering(versionBits, targetVersion);
 			if (bitsDifference < bestDifference) {
 				bestVersion = i + 7;
 				bestDifference = bitsDifference;
 			}
 		}
-		// We can tolerate up to 3 bits of error since no two version info
-		// codewords will
-		// differ in less than 8 bits.
+		/* We can tolerate up to 3 bits of error since no two version info codewords will differ in less than 8 bits. */
 		if (bestDifference <= 3) {
 			return getVersionForNumber(bestVersion);
 		}
-		// If we didn't find a close enough match, fail
+		/* If we didn't find a close enough match, fail */
 		return null;
 	}
 
@@ -263,35 +243,35 @@ public final class Version {
 		int dimension = getDimensionForVersion();
 		BitMatrix bitMatrix = new BitMatrix(dimension);
 
-		// Top left finder pattern + separator + format
+		/* Top left finder pattern + separator + format */
 		bitMatrix.setRegion(0, 0, 9, 9);
-		// Top right finder pattern + separator + format
+		/* Top right finder pattern + separator + format */
 		bitMatrix.setRegion(dimension - 8, 0, 8, 9);
-		// Bottom left finder pattern + separator + format
+		/* Bottom left finder pattern + separator + format */
 		bitMatrix.setRegion(0, dimension - 8, 9, 8);
 
-		// Alignment patterns
+		/* Alignment patterns */
 		int max = alignmentPatternCenters.length;
 		for (int x = 0; x < max; x++) {
 			int i = alignmentPatternCenters[x] - 2;
 			for (int y = 0; y < max; y++) {
 				if ((x == 0 && (y == 0 || y == max - 1)) || (x == max - 1 && y == 0)) {
-					// No alignment patterns near the three finder paterns
+					/* No alignment patterns near the three finder paterns */
 					continue;
 				}
 				bitMatrix.setRegion(alignmentPatternCenters[y] - 2, i, 5, 5);
 			}
 		}
 
-		// Vertical timing pattern
+		/* Vertical timing pattern */
 		bitMatrix.setRegion(6, 9, 1, dimension - 17);
-		// Horizontal timing pattern
+		/* Horizontal timing pattern */
 		bitMatrix.setRegion(9, 6, dimension - 17, 1);
 
 		if (versionNumber > 6) {
-			// Version info, top right
+			/* Version info, top right */
 			bitMatrix.setRegion(dimension - 11, 0, 3, 6);
-			// Version info, bottom left
+			/* Version info, bottom left */
 			bitMatrix.setRegion(0, dimension - 11, 6, 3);
 		}
 

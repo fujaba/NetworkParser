@@ -207,7 +207,7 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 	 */
 	public String getValue() {
 		if (this.valueItem == null && this.sizeChildren() > 0) {
-			// Complex children
+			/* Complex children */
 			boolean show = false;
 			for (int i = 0; i < this.children.size(); i++) {
 				BaseItem item = this.children.get(i);
@@ -262,7 +262,6 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 			Object value = getValueByIndex(i);
 			if (value != null) {
 				sb.with(" ", "" + get(i), "=", EntityUtil.quote(value.toString()));
-//				sb.with(EntityUtil.valueToString(getValueByIndex(i), false, this, converter));
 			}
 		}
 
@@ -277,7 +276,7 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 	 * @param converter The Current Converter
 	 */
 	protected void toStringChildren(CharacterBuffer sb, EntityStringConverter converter) {
-		// parse Children
+		/* parse Children */
 		if (sb == null) {
 			return;
 		}
@@ -499,7 +498,7 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 			}
 		}
 		if (children.sizeChildren() == 1) {
-			// to level the result graph
+			/* to level the result graph */
 			BaseItem result = children.getChild(0);
 			if (result instanceof EntityList) {
 				return (EntityList) result;

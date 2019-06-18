@@ -153,7 +153,7 @@ public class ClassModel extends GraphModel {
 				continue;
 			}
 			if (item instanceof Match) {
-				// Change
+				/* Change */
 				Match match = (Match) item;
 				GraphMember member = match.getMatch();
 				Clazz clazz = this.createClazz(member.getClazz().getName());
@@ -186,7 +186,7 @@ public class ClassModel extends GraphModel {
 		return new ClassModel();
 	}
 
-	// Override some Method because change ReturnValue
+	/* Override some Method because change ReturnValue */
 	@Override
 	public ClassModel with(String name) {
 		super.with(name);

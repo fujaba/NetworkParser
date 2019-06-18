@@ -27,6 +27,11 @@ import de.uniks.networkparser.buffer.ByteBuffer;
 import de.uniks.networkparser.converter.ByteConverter;
 
 public interface ByteItem extends BaseItem {
+	public static final byte BIT_STRING = 0x53; /* S = String; */
+	public static final byte BIT_NUMBER = 0x4E; /* N = Number */
+	public static final byte BIT_BYTE = 0x42; /* B = Byte */
+	public static final byte BIT_REFERENCE = 0x52; /* R = Reference */
+	
 	/**
 	 * @param converter ByteConverter for Format
 	 * @param isDynamic ByteStream for minimize output

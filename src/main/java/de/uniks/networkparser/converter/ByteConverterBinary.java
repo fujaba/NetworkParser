@@ -88,7 +88,7 @@ public class ByteConverterBinary extends ByteConverter {
 			for (int z = 0; z < 8; z++) {
 				charText = charText << ((byte) (value.charAt(i++) - 48));
 			}
-			// now just shift the high order nibble and add them together
+			/* now just shift the high order nibble and add them together */
 			out[i / 8] = (byte) charText;
 		}
 		return out;

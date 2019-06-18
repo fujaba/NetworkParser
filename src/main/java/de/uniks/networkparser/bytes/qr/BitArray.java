@@ -1,19 +1,3 @@
-/*
- * Copyright 2008 ZXing authors
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package de.uniks.networkparser.bytes.qr;
 
 import java.util.Arrays;
@@ -53,7 +37,6 @@ final class BitArray implements Cloneable {
 		}
 	}
 
-	// For testing only
 	private BitArray(int[] bits, int size) {
 		this.bits = bits;
 		this.size = size;
@@ -139,7 +122,6 @@ final class BitArray implements Cloneable {
 	 */
 	boolean appendBits(int value, int numBits) {
 		if (numBits < 0 || numBits > 32) {
-//			throw new IllegalArgumentException("Num bits must be between 0 and 32");
 			return false;
 		}
 		ensureCapacity(size + numBits);
@@ -167,8 +149,7 @@ final class BitArray implements Cloneable {
 			throw new IllegalArgumentException("Sizes don't match");
 		}
 		for (int i = 0; i < bits.length; i++) {
-			// The last byte could be incomplete (i.e. not have 8 bits in
-			// it) but there is no problem since 0 XOR 0 == 0.
+			/* The last byte could be incomplete (i.e. not have 8 bits in it) but there is no problem since 0 XOR 0 == 0. */
 			bits[i] ^= other.bits[i];
 		}
 	}
@@ -213,7 +194,7 @@ final class BitArray implements Cloneable {
 			return;
 		}
 		int[] newBits = new int[bits.length];
-		// reverse all int's first
+		/* reverse all int's first */
 		int len = (size - 1) / 32;
 		int oldBitsLen = len + 1;
 		for (int i = 0; i < oldBitsLen; i++) {
@@ -225,7 +206,7 @@ final class BitArray implements Cloneable {
 			x = ((x >> 16) & 0x0000ffffL) | ((x & 0x0000ffffL) << 16);
 			newBits[len - i] = (byte) x;
 		}
-		// now correct the int's if the bit size isn't a multiple of 32
+		/* now correct the int's if the bit size isn't a multiple of 32 */
 		if (size != oldBitsLen * 32) {
 			int leftOffset = oldBitsLen * 32 - size;
 			int mask = 1;
@@ -305,7 +286,7 @@ final class BitArray implements Cloneable {
 
 		int result = 0;
 
-		// First, read remainder from current byte
+		/* First, read remainder from current byte */
 		if (bitOffset > 0) {
 			int bitsLeft = 8 - bitOffset;
 			int toRead = numBits < bitsLeft ? numBits : bitsLeft;
@@ -320,7 +301,7 @@ final class BitArray implements Cloneable {
 			}
 		}
 
-		// Next read whole bytes
+		/* Next read whole bytes */
 		if (numBits > 0) {
 			while (numBits >= 8) {
 				result = (result << 8) | (bits[byteOffset] & 0xFF);
@@ -328,7 +309,7 @@ final class BitArray implements Cloneable {
 				numBits -= 8;
 			}
 
-			// Finally read a partial byte
+			/* Finally read a partial byte */
 			if (numBits > 0) {
 				int bitsToNotRead = 8 - numBits;
 				int mask = (0xFF >> bitsToNotRead) << bitsToNotRead;

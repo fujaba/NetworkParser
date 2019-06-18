@@ -175,7 +175,7 @@ public class TextDiff {
 				if (splitAddAndRemove) {
 					sb.with(splitValue(left, type).toString(indentFactor, false));
 				} else {
-					// if(REMOVE == type || NONE == type) {
+					/* REMOVE == type || NONE == type */
 					sb.with("" + left);
 				}
 			}

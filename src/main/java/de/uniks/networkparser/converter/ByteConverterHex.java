@@ -83,11 +83,11 @@ public class ByteConverterHex extends ByteConverter {
 		int n = len;
 
 		for (int i = pos; i < n; i += 2) {
-			// make a bit representation in an int of the hex value
+			/* make a bit representation in an int of the hex value */
 			int hn = HEXVAL.indexOf(value.charAt(i));
 			int ln = HEXVAL.indexOf(value.charAt(i + 1));
 
-			// now just shift the high order nibble and add them together
+			/* now just shift the high order nibble and add them together */
 			out[i / 2] = (byte) ((hn << 4) | ln);
 		}
 		return out;

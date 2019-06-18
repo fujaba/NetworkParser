@@ -188,7 +188,7 @@ public class ByteTokener extends Tokener {
 		}
 		int id = map.getIndexVisitedObjects(entity);
 		if (id >= 0) {
-			// Must be a assoc
+			/* Must be a assoc */
 			if (id <= Byte.MAX_VALUE) {
 				return new ByteEntity().withValue(DATATYPE_ASSOC, (byte) id);
 			} else {
@@ -223,7 +223,7 @@ public class ByteTokener extends Tokener {
 				}
 			}
 
-			// Kill Empty Fields
+			/* Kill Empty Fields */
 			ByteItem[] array = msg.toArray(new ByteItem[msg.size()]);
 			for (int i = array.length - 1; i > 0; i--) {
 				if (!array[i].isEmpty()) {
@@ -240,7 +240,7 @@ public class ByteTokener extends Tokener {
 		if (msgEntity.setValues(value)) {
 			return msgEntity;
 		} else {
-			// Map, List, Assocs
+			/* Map, List, Assocs */
 			if (value instanceof Collection<?>) {
 				Collection<?> list = (Collection<?>) value;
 				ByteList byteList = new ByteList().withType(ByteTokener.DATATYPE_LIST);

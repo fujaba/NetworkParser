@@ -25,15 +25,15 @@ THE SOFTWARE.
 */
 
 public class CRC extends Checksum {
-	// CRC-8, poly = x^8 + x^2 + x^1 + 1, init = 0
-	// 1 0000 0111
-	// 0111 0000 1
+	/* CRC-8, poly = x^8 + x^2 + x^1 + 1, init = 0
+	   1 0000 0111
+	   0111 0000 1 */
 	public static final int CRC8 = 0x107;
-	// 1000000000000101
+	/* 1000000000000101 */
 	public static final int CRC16 = 0x8005;
 
 	public static final int CRC32 = 0xedb88320;
-	// 1000000000000101
+	/* 1000000000000101 */
 	public static final int CCITT16 = 0x1021;
 	/** The fast CRC table. Computed once when the CRC32 class is loaded. */
 	protected int[] crc_table = null;
@@ -49,10 +49,9 @@ public class CRC extends Checksum {
 	public CRC withCRC(int bitMask) {
 		this.order = bitMask;
 		if (order == 0) {
-			// Default os CCITT16
+			/* Default os CCITT16 */
 			order = 16;
 			crc_table = null;
-//			crc_table = getGenTable(true, CCITT16);
 		} else if (order == 8) {
 			crc_table = getGenTable(false, CRC8);
 		} else if (order == 16) {
@@ -71,7 +70,7 @@ public class CRC extends Checksum {
 	 *
 	 * @param data The byte data
 	 */
-	@Override // 8
+	@Override
 	public boolean update(int data) {
 		if (order == 0) {
 			return false;
@@ -153,10 +152,11 @@ public class CRC extends Checksum {
 		return result;
 	}
 
-	// / <summary>Reflects the lower bits of the value provided.</summary>
-	// / <param name="data">The value to reflect.</param>
-	// / <param name="numBits">The number of bits to reflect.</param>
-	// / <returns>The reflected value.</returns>
+	/** Reflects the lower bits of the value provided.
+	* @param data The value to reflect.
+	* @param numBits The number of bits to reflect.
+	* @returns The reflected value.
+	*/
 	static private int Reflect(int data, int numBits) {
 		int temp = data;
 

@@ -117,7 +117,6 @@ public class XMLTokener extends Tokener {
 		}
 		XMLEntity xmlEntity = (XMLEntity) entity;
 		if (c != XMLEntity.START) {
-//			xmlEntity.withValue(this.buffer);
 			if (isError(this, "parseToEntity", NetworkParserLog.ERROR_TYP_PARSING, entity)) {
 				throw new SimpleException("A XML text must begin with '<'");
 			}
@@ -383,17 +382,17 @@ public class XMLTokener extends Tokener {
 				return entity;
 			}
 			if (buffer.getCurrentChar() == XMLEntity.START) {
-				// show next Tag
+				/* show next Tag */
 				Object child;
 				do {
 					valueItem = parseEntity(tokener, buffer, map);
 					if (valueItem == null) {
 						if (buffer.getCurrentChar() == ENDTAG) {
-							// Show if Item is End
+							/* Show if Item is End */
 							valueItem = tokener.nextToken(buffer, false, XMLEntity.END);
 							if (valueItem.equals(stack.getCurrentTag())) {
 								stack.popStack();
-								// SKip > EndTag
+								/* Skip > EndTag */
 								buffer.skip();
 							}
 						}
@@ -604,4 +603,21 @@ public class XMLTokener extends Tokener {
 		super.withMap(map);
 		return this;
 	}
+
+	//FIXME public static XsdValidationLoggingErrorHandler
+	/* validate(java.net.URL xsdSchema, String xmlDokument)
+	throws SAXException, IOException {
+	 com.sun.org.apache.xerces.internal.jaxp.validation.XMLSchemaFactory
+	 schemaFactory = (XMLSchemaFactory) SchemaFactory
+	 .newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+	
+	 // Schema schema = schemaFactory.newSchema(new File(xsdSchema));
+	 Schema schema = schemaFactory.newSchema(xsdSchema);
+	 Validator validator = schema.newValidator();
+	 XsdValidationLoggingErrorHandler errorHandler = new
+	 XsdValidationLoggingErrorHandler();
+	 validator.setErrorHandler(errorHandler);
+	 validator.validate(new StreamSource(new File(xmlDokument)));
+	 return errorHandler;
+	 }*/
 }

@@ -23,7 +23,6 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-// ftp://ftp.rfc-editor.org/in-notes/rfc1331.txt
 
 public class FCS16 extends Checksum {
 	protected int polynom = 0x8408;

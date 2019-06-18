@@ -1,25 +1,4 @@
 package de.uniks.networkparser.buffer;
-/*
-NetworkParser
-Copyright (c) 2011 - 2015, Stefan Lindel
-All rights reserved.
-
-Licensed under the EUPL, Version 1.1 or (as soon they
-will be approved by the European Commission) subsequent
-versions of the EUPL (the "Licence");
-You may not use this work except in compliance with the Licence.
-You may obtain a copy of the Licence at:
-
-http://ec.europa.eu/idabc/eupl5
-
-Unless required by applicable law or agreed to in
-writing, software distributed under the Licence is
-distributed on an "AS IS" basis,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
-express or implied.
-See the Licence for the specific language governing
-permissions and limitations under the Licence.
-*/
 
 import java.nio.charset.Charset;
 
@@ -193,9 +172,9 @@ public class ByteBuffer extends BufferedBuffer {
 		if (this.buffer != null) {
 			bufferLen = this.buffer.length;
 		}
-		// Add ad end of Array
+		/* Add ad end of Array */
 		if (position < 0) {
-			// New Size with Buffer
+			/* New Size with Buffer */
 			int newSize;
 			if (bufferAtEnd) {
 				newSize = (length + len) + (length + len) / 2 + 5;
@@ -217,7 +196,7 @@ public class ByteBuffer extends BufferedBuffer {
 			position += newSize - oldSize;
 			return true;
 		} else if (position + len > bufferLen) {
-			// New Size with Buffer
+			/* New Size with Buffer */
 			if (bufferLen > 0) {
 				int newSize;
 				if (bufferAtEnd) {
@@ -242,7 +221,7 @@ public class ByteBuffer extends BufferedBuffer {
 			addEnd = true;
 		}
 		resize(len, bufferAtEnd);
-		// one Byte
+		/* one Byte */
 		if (value instanceof Byte) {
 			this.buffer[position] = (Byte) value;
 		} else {
@@ -268,19 +247,19 @@ public class ByteBuffer extends BufferedBuffer {
 					this.buffer[position] = (byte) (charItem >>> 8);
 					this.buffer[position + 1] = (byte) charItem;
 				}
-				// two Bytes
+				/* two Bytes */
 			} else if (value instanceof Short) {
 				short item = (Short) value;
 				this.buffer[position] = (byte) (item >>> 8);
 				this.buffer[position + 1] = (byte) item;
-				// 4 bytes
-			} else if (value instanceof Integer) { // value instanceof Float
+				/* four Bytes */
+			} else if (value instanceof Integer) { /* value instanceof Float */
 				Integer item = (Integer) value;
 				this.buffer[position] = (byte) (item >>> 24);
 				this.buffer[position + 1] = (byte) (item >>> 16);
 				this.buffer[position + 2] = (byte) (item >>> 8);
 				this.buffer[position + 3] = (byte) (item & 0xff);
-			} else if (value instanceof Long) { // || value instanceof Double
+			} else if (value instanceof Long) { /* value instanceof Double */
 				Long item = (Long) value;
 				this.buffer[position] = (byte) (item >>> 56);
 				this.buffer[position + 1] = (byte) (item >>> 48);
@@ -290,7 +269,7 @@ public class ByteBuffer extends BufferedBuffer {
 				this.buffer[position + 5] = (byte) (item >>> 16);
 				this.buffer[position + 6] = (byte) (item >>> 8);
 				this.buffer[position + 7] = (byte) (item & 0xff);
-			} else if (value instanceof Boolean) { // value instanceof Float
+			} else if (value instanceof Boolean) { /* value instanceof Float */
 				Boolean item = (Boolean) value;
 				if (item) {
 					this.buffer[position] = 1;
@@ -503,7 +482,7 @@ public class ByteBuffer extends BufferedBuffer {
 			this.buffer = array;
 			this.length = len;
 		} else {
-			// Resize
+			/* Resize */
 			byte[] oldBuffer = this.buffer;
 			this.buffer = new byte[this.length * 2 + len];
 			System.arraycopy(oldBuffer, 0, this.buffer, 0, this.length);
@@ -536,7 +515,7 @@ public class ByteBuffer extends BufferedBuffer {
 	}
 
 	private int bits = 0;
-	private int nextBitMask = 0x100; // triggers readOctet first time
+	private int nextBitMask = 0x100; /* triggers readOctet first time */
 
 	/**
 	 * Public API - reads a bit/boolean argument.

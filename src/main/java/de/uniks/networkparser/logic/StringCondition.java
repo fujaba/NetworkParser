@@ -74,42 +74,93 @@ public class StringCondition implements ParserCondition {
 		}
 		return new StringCondition().withValue(sequence);
 	}
+	
+	
+	/**
+	 * Method for generate Search Logic
+	 * "A B" -> A or B
+	 * "(A B) -> A and B
+	 * -A	-> Not A
+	 * #Field Field for Searchign
+	 * @param sequence of String
+	 * @return ObjectCondition
+	 */
 	public static final ObjectCondition createSearchLogic(CharacterBuffer sequence) {
+		return createSearchIntern(sequence, new Or());
+	}
+	public static final ObjectCondition createSearchIntern(CharacterBuffer sequence, ListCondition container) {
 		if(sequence == null) {
 			return null;
 		}
-		SimpleList<String> stringList = new SimpleList<String>();
+		sequence.withPosition(0);
+		SimpleList<ObjectCondition> conditionList = new SimpleList<ObjectCondition>();
 		int start=0;
-		for(int i=0;i<sequence.length();i++) {
-			if(sequence.charAt(i)==' ') {
-				stringList.add(sequence.substring(start, i));
-				start=i+1;
+		char item = sequence.getChar();
+		while(sequence.isEnd() == false) {
+			if(item == '(') {
+				// Sub Sequence
+				conditionList.add(createSearchIntern(sequence, new And()));
+				item = sequence.getChar();
 				continue;
 			}
-			if(sequence.charAt(i)=='"' || sequence.charAt(i)=='\'') {
-				i++;
-				while(i<sequence.length()) {
-					if(sequence.charAt(i)=='"' || sequence.charAt(i)=='\'') {
-						i++;
+			if(item == ')' && container != null) {
+				// End SubSequence
+				break;
+			}
+			if(item == ' ') {
+				int pos = sequence.position();
+				conditionList.add(createLogic(sequence.substring(start, pos)));
+				start = pos + 1;
+				item = sequence.getChar();
+				continue;
+			}
+			// Check for Equals
+			if(item == '#' && start == sequence.position()) {
+				int pos = sequence.indexOf(':', start);
+				if(pos>1) {
+					String propString = sequence.substring(start+1, pos);
+					int end = sequence.indexOf(' ', pos);
+					String value = sequence.substring(pos + 1, end);
+					Equals equals2 = new Equals();
+					equals2.withLeft(VariableCondition.create(propString, true));
+					equals2.withRight(createLogic(value));
+					conditionList.add(equals2);
+					
+					sequence.withPosition(end);
+					start = end + 1;
+					item = sequence.getChar();
+				}
+			}
+			if(item =='"' || item =='\'') {
+				item = sequence.getChar();
+				while(sequence.isEnd() == false) {
+					if(item == '"' || item == '\'') {
 						break;
 					}
-					i++;
+					item = sequence.getChar();
 				}
-				stringList.add(sequence.substring(start, i));
-				start=i+1;
+				int pos = sequence.position();
+				conditionList.add(createLogic(sequence.substring(start, pos)));
+				start = pos + 1;
 			}
+			item = sequence.getChar();
 		}
-		if(stringList.size()<1) {
+		if(start<sequence.length()) {
+			conditionList.add(createLogic(sequence.substring(start)));
+		}
+		if(conditionList.size()<1) {
 			return null;
 		}
-		if(stringList.size()<2) {
-			return createLogic(stringList.first());
+		if(conditionList.size()<2) {
+			return conditionList.first();
 		}
-		Or or=new Or();
-		for (int i=0;i<stringList.size();i++){
-			or.add(createLogic(stringList.get(i)));
+		if(container == null) {
+			return null;
 		}
-		return or;
+		for (int i=0;i<conditionList.size();i++){
+			container.add(conditionList.get(i));
+		}
+		return container;
 	}
 
 	public StringCondition withValue(CharSequence value) {

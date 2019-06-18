@@ -1,19 +1,3 @@
-/*
- * Copyright 2008 ZXing authors
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package de.uniks.networkparser.bytes.qr;
 
 import java.util.Arrays;
@@ -48,7 +32,7 @@ public final class BitMatrix implements Cloneable {
 	private final int rowSize;
 	private final int[] bits;
 
-	// A helper to construct a square matrix.
+	/* A helper to construct a square matrix. */
 	public BitMatrix(int dimension) {
 		this(dimension, dimension);
 	}
@@ -57,7 +41,6 @@ public final class BitMatrix implements Cloneable {
 		this.width = width;
 		this.height = height;
 		if (width >= 1 && height >= 1) {
-//			throw new IllegalArgumentException("Both dimensions must be greater than 0");
 			this.rowSize = (width + 31) / 32;
 			bits = new int[rowSize * height];
 		}else {
@@ -110,7 +93,7 @@ public final class BitMatrix implements Cloneable {
 			}
 		}
 
-		// no EOL at end?
+		/* no EOL at end? */
 		if (bitsPos > rowStartPos) {
 			if (rowLength == -1) {
 				rowLength = bitsPos - rowStartPos;

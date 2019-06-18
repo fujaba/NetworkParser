@@ -4,7 +4,7 @@ public class SHA2 {
 	int digestLength = 32;
 	int blockSize = 64;
 
-	// SHA-256 constants
+	/* SHA-256 constants */
 	int[] K = new int[] { 0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b, 0x59f111f1, 0x923f82a4,
 			0xab1c5ed5, 0xd807aa98, 0x12835b01, 0x243185be, 0x550c7dc3, 0x72be5d74, 0x80deb1fe, 0x9bdc06a7, 0xc19bf174,
 			0xe49b69c1, 0xefbe4786, 0x0fc19dc6, 0x240ca1cc, 0x2de92c6f, 0x4a7484aa, 0x5cb0a9dc, 0x76f988da, 0x983e5152,
@@ -77,21 +77,20 @@ public class SHA2 {
 		return pos;
 	}
 
-	// Note: Int32Array is used instead of Uint32Array for performance reasons.
-	private int[] state = new int[8]; // hash state
-	private int[] temp = new int[64]; // temporary state
-	private byte[] buffer = new byte[128]; // buffer for data to hash
-	private int bufferLength = 0; // number of bytes in buffer
-	private int bytesHashed = 0; // number of total bytes hashed
+	/* Note: Int32Array is used instead of Uint32Array for performance reasons. */
+	private int[] state = new int[8]; /* hash state */
+	private int[] temp = new int[64]; /* temporary state */
+	private byte[] buffer = new byte[128]; /* buffer for data to hash */
+	private int bufferLength = 0; /* number of bytes in buffer */
+	private int bytesHashed = 0; /* number of total bytes hashed */
 
-	boolean finished; // indicates whether the hash was finalized
+	boolean finished; /* indicates whether the hash was finalized */
 
 	public SHA2() {
 		this.reset();
 	}
 
-	// Resets hash state making it possible
-	// to re-use this instance to hash other data.
+	/* Resets hash state making it possible to re-use this instance to hash other data. */
 	public SHA2 reset() {
 		this.state[0] = 0x6a09e667;
 		this.state[1] = 0xbb67ae85;
@@ -107,7 +106,7 @@ public class SHA2 {
 		return this;
 	}
 
-	// Cleans internal buffers and re-initializes hash state.
+	/* Cleans internal buffers and re-initializes hash state. */
 	public void clean() {
 		for (int i = 0; i < this.buffer.length; i++) {
 			this.buffer[i] = 0;
@@ -126,13 +125,17 @@ public class SHA2 {
 		return this;
 	}
 
-	// Updates hash state with the given data.
-	//
-	// Optionally, length of the data can be specified to hash
-	// fewer bytes than data.length.
-	//
-	// Throws error when trying to update already finalized hash:
-	// instance must be reset to use it again.
+	/** Updates hash state with the given data.
+	*
+	* Optionally, length of the data can be specified to hash
+	* fewer bytes than data.length.
+	*
+	* Throws error when trying to update already finalized hash:
+	* instance must be reset to use it again.
+	* @param data Data to Ecnoding
+	* @param dataLength length of Data
+	* @return ThisComponent
+	*/
 	public SHA2 update(byte[] data, int dataLength) {
 		if (this.finished || data == null || dataLength>data.length) {
 			return null;
@@ -160,9 +163,8 @@ public class SHA2 {
 		return this;
 	}
 
-	// Finalizes hash state and puts hash into out.
-	//
-	// If hash was already finalized, puts the same value.
+	/* Finalizes hash state and puts hash into out.
+	  If hash was already finalized, puts the same value. */
 	public SHA2 finish(byte[] out) {
 		if (!this.finished) {
 			int bytesHashed = this.bytesHashed;
@@ -201,14 +203,14 @@ public class SHA2 {
 		return this;
 	}
 
-	// Returns the final hash digest.
+	/* Returns the final hash digest. */
 	public byte[] digest() {
 		byte[] out = new byte[this.digestLength];
 		this.finish(out);
 		return out;
 	}
 
-	// Internal function for use in HMAC for optimization.
+	/* Internal function for use in HMAC for optimization. */
 	public void _saveState(int[] out) {
 		if(out != null && out.length>=this.state.length) {
 			for (int i = 0; i < this.state.length; i++) {
@@ -217,7 +219,7 @@ public class SHA2 {
 		}
 	}
 
-	// Internal function for use in HMAC for optimization.
+	/* Internal function for use in HMAC for optimization. */
 	public void _restoreState(int[] from, int bytesHashed) {
 		if(from != null && from.length>=this.state.length) {
 			for (int i = 0; i < this.state.length; i++) {

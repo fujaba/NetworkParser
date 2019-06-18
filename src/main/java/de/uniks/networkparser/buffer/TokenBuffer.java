@@ -25,7 +25,6 @@ THE SOFTWARE.
 */
 
 public class TokenBuffer extends CharacterBuffer {
-	// private boolean isString = true;
 	private int startToken = -1;
 
 	public CharSequence getToken(CharSequence defaultText) {

@@ -69,14 +69,13 @@ public class CodeCityConverter implements Converter {
 		SimpleKeyValueList<GraphMember, Integer> list=new SimpleKeyValueList<GraphMember, Integer>();
 
 		for(int i=0; i < packageList.size(); i++) {
-//			String packageName = packageList.get(i);
 			SimpleList<ParserEntity> entities = packageList.getValueByIndex(i);
 			for(int p = 0;p<entities.size();p++) {
 				ParserEntity parserEntity = entities.get(p);
 				index = addElement(buffer, parserEntity, i+1, index, list);
 			}
 		}
-//		(FAMIX.InheritanceDefinition (id: 66938)(subclass (idref: 11679)) (superclass (idref: 12796))
+/*	(FAMIX.InheritanceDefinition (id: 66938)(subclass (idref: 11679)) (superclass (idref: 12796)) */
 		buffer.with("))");
 		return buffer.toString();
 	}
@@ -136,7 +135,7 @@ public class CodeCityConverter implements Converter {
 				*/
 		buffer.with(")", BaseItem.CRLF, BaseItem.CRLF);
 		
-		// META MODEL SO METHODS SMALLER BECAUSE ATTRIBUTE AND ASSOCS METHODS
+		/* META MODEL SO METHODS SMALLER BECAUSE ATTRIBUTE AND ASSOCS METHODS */
 		AttributeSet attributes = clazz.getAttributes();
 		for(Attribute attr : attributes) {
 			index = addElement(buffer, entity, attr, index, list);
@@ -161,7 +160,6 @@ public class CodeCityConverter implements Converter {
 		buffer.withLine("\t(belongsTo (idref: "+list.get(attribute.getClazz())+"))");
 		buffer.withLine("\t(hasClassScope true)");
 		buffer.withLine("\t(accessControlQualifier "+GraphUtil.getVisible(attribute)+")");
-//				(NMAV 4.0)
 		buffer.with(")", BaseItem.CRLF, BaseItem.CRLF);
 		
 		return index;
@@ -208,29 +206,29 @@ public class CodeCityConverter implements Converter {
 		
 		buffer.with(")", BaseItem.CRLF, BaseItem.CRLF);
 		return index;
-//				(hasClassScope false)
-//				(isAbstract false)
-//				(isConstructor false)
-//				(isPureAccessor false)
-//				(FeatureEnvy false)
-//				(BrainMethod false)
-//				(IntensiveCoupling false)
-//				(DispersedCoupling false)
-//				(ShotgunSurgery false)
-//				(NOS 2.0)
-//				(NOCond 0.0)
-//				(NMAA 1.0)
-//				(NI 2.0)
-//				(CYCLO 1.0)
-//				(CINT 0.00)
-//				(CDISP 0.00)
-//				(CM 0.00)
-//				(CC 0.00)
-//				(ATFD 2.00)
-//				(LAA 1.00)
-//				(FDP 0.00)
-//				(MAXNESTING 0.00)
-//				(NOAV 1.00)
-//			)
+		/*
+				(hasClassScope false)
+				(isAbstract false)
+				(isConstructor false)
+				(isPureAccessor false)
+				(FeatureEnvy false)
+				(BrainMethod false)
+				(IntensiveCoupling false)
+				(DispersedCoupling false)
+				(ShotgunSurgery false)
+				(NOS 2.0)
+				(NOCond 0.0)
+				(NMAA 1.0)
+				(NI 2.0)
+				(CYCLO 1.0)
+				(CINT 0.00)
+				(CDISP 0.00)
+				(CM 0.00)
+				(CC 0.00)
+				(ATFD 2.00)
+				(LAA 1.00)
+				(FDP 0.00)
+				(MAXNESTING 0.00)
+				(NOAV 1.00)*/
 	}
 }

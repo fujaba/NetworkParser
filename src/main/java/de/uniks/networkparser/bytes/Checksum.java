@@ -135,7 +135,7 @@ public abstract class Checksum {
 		int count = 0;
 		while (value > 0) {
 			test[maxlen - 1 - count++] = (byte) (value % 256);
-			value = value >> 8; // um 1 Byte shiften
+			value = value >> 8; /* um 1 Byte shiften */
 		}
 		if (count == 0) {
 			return new byte[] { 0x00 };

@@ -57,7 +57,7 @@ public class EMFParser {
 	}
 
 	public static final ClassModel getClassModelFromEPackage(Object epackage, String packageName, boolean withImpl) {
-		// get class model from epackage
+		/* get class model from epackage */
 		ClassModel model = new ClassModel(packageName);
 		if (epackage == null || ReflectionLoader.EPACKAGE == null) {
 			return model;
@@ -69,7 +69,7 @@ public class EMFParser {
 		SimpleKeyValueList<EMFParser, Clazz> classMap = new SimpleKeyValueList<EMFParser, Clazz>();
 		List<EMFParser> eClasses = getEClasses(epackage);
 		for (EMFParser eclass : eClasses) {
-			// add an interface and a class to the SDMModel
+			/* add an interface and a class to the SDMModel */
 			String fullClassName = getName(eclass);
 			Clazz sdmClass = model.createClazz(fullClassName).enableInterface();
 
@@ -82,7 +82,7 @@ public class EMFParser {
 
 			classMap.put(eclass, sdmClass);
 
-			// add attributes
+			/* add attributes */
 			addAttributes(eclass, sdmClass);
 		}
 
@@ -100,7 +100,7 @@ public class EMFParser {
 				if (doneERefs.contains(eref) == false) {
 					Object oppositeERef = getEOpposite(eref);
 					if (oppositeERef != null) {
-						// create assoc
+						/* create assoc */
 						EMFParser srcEClass = getEType(oppositeERef);
 						EMFParser tgtEClass = getEType(eref);
 
@@ -116,7 +116,7 @@ public class EMFParser {
 						doneERefs.add(eref);
 						doneERefs.add(oppositeERef);
 					} else {
-						// uni directional assoc
+						/* uni directional assoc */
 						EMFParser srcEClass = eclass;
 						EMFParser tgtEClass = getEType(eref);
 
@@ -135,7 +135,7 @@ public class EMFParser {
 		return model;
 	}
 
-	// REFACTORING
+	/* REFACTORING */
 	public static final List<Object> getEAttributes(Object eref) {
 		if (eref instanceof EMFParser) {
 			return getEAttributes(((EMFParser) eref).getValue());

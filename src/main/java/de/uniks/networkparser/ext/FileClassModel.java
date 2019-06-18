@@ -24,8 +24,8 @@ import de.uniks.networkparser.parser.ParserEntity;
 import de.uniks.networkparser.parser.SimpleReverseEngineering;
 import de.uniks.networkparser.parser.SymTabEntry;
 
-//String string = model.toString(new DotConverter().withShowAssocInfo(false).withShowSimpleNodeInfo(true));
-//FileBuffer.writeFile("model2.data", string.getBytes());
+/*String string = model.toString(new DotConverter().withShowAssocInfo(false).withShowSimpleNodeInfo(true));
+  FileBuffer.writeFile("model2.data", string.getBytes()); */
 
 public class FileClassModel extends ClassModel {
 	/**
@@ -90,12 +90,12 @@ public class FileClassModel extends ClassModel {
 		return errors;
 	}
 
-	// Validates a single java file for the java doc
+	/* Validates a single java file for the java doc */
 	public SimpleList<String> analyseJavaDoc(ParserEntity entity, boolean fullCheck) {
 		CharacterBuffer content = FileBuffer.readFile(entity.getFileName());
 		content.replace('\t', ' ');
 
-		// Create a string
+		/* Create a string */
 		SimpleList<String> lines = new SimpleList<String>();
 		while (content.isEnd() == false) {
 			lines.add(content.readLine().toString());
@@ -111,13 +111,13 @@ public class FileClassModel extends ClassModel {
 		if (currentPackage != null) {
 			currentPackage = currentPackage.substring(0, currentPackage.length() - 1);
 		}
-		// Set the current file name
+		/* Set the current file name */
 		String currentFileName = entity.getFileName();
 		
-		// Check the class java doc
+		/* Check the class java doc */
 		msg.addAll(checkClassJavaDoc(content, lines, fullCheck, currentPackage, currentFileName));
 
-		// Check all method java doc
+		/* Check all method java doc */
 		msg.addAll(checkMethodsJavaDoc(content, lines, fullCheck, currentPackage, currentFileName));
 
 		return msg;
@@ -135,34 +135,34 @@ public class FileClassModel extends ClassModel {
 	 */
 	private SimpleList<String> checkClassJavaDoc(CharacterBuffer text, SimpleList<String> lines, boolean fullCheck, String currentPackage, String currentFileName) {
 		SimpleList<String> msg = new SimpleList<String>();
-		// First check if the class has java doc, first get the index of "public class"
+		/* First check if the class has java doc, first get the index of "public class" */
 		int start = text.indexOf("public class");
 
-		// if the start -1 the class could be abstract
+		/* if the start -1 the class could be abstract */
 		if (start == -1) {
-			// Get the index of "public abstract class"
+			/* Get the index of "public abstract class" */
 			start = text.indexOf("public abstract class");
 		}
 
-		// If the start -1 the class is a enumeration
+		/* If the start -1 the class is a enumeration */
 		if (start == -1) {
-			// Get the index of "public enum"
+			/* Get the index of "public enum" */
 			start = text.indexOf("public enum");
 		}
 
-		// If the start -1 the class is a interface
+		/* If the start -1 the class is a interface */
 		if (start == -1) {
-			// Get the index of "public interface"
+			/* Get the index of "public interface" */
 			start = text.indexOf("public interface");
 		}
 
-		// Maybe there is just a class
+		/* Maybe there is just a class */
 		if (start == -1) {
-			// Get the index of "class"
+			/* Get the index of "class" */
 			start = text.indexOf("class ");
 		}
 
-		// Get the line of the class definition to jump there if there is no comment
+		/* Get the line of the class definition to jump there if there is no comment */
 		int lineClass = -1;
 		for (String s : lines) {
 			if (s.contains("public class")) {
@@ -171,7 +171,7 @@ public class FileClassModel extends ClassModel {
 			}
 		}
 
-		// Check if line class is still -1, this means class could be abstract
+		/* Check if line class is still -1, this means class could be abstract */
 		for (String s : lines) {
 			if (s.contains("public abstract class")) {
 				lineClass = lines.indexOf(s) + 1;
@@ -179,7 +179,7 @@ public class FileClassModel extends ClassModel {
 			}
 		}
 
-		// Check if line class is still -1, this means class is a interface
+		/* Check if line class is still -1, this means class is a interface */
 		if (lineClass == -1) {
 			for (String s : lines) {
 				if (s.contains("public interface")) {
@@ -190,7 +190,7 @@ public class FileClassModel extends ClassModel {
 
 		}
 
-		// Check if line class is still -1, this means class is a enumeration
+		/* Check if line class is still -1, this means class is a enumeration */
 		if (lineClass == -1) {
 			for (String s : lines) {
 				if (s.contains("public enum")) {
@@ -200,7 +200,7 @@ public class FileClassModel extends ClassModel {
 			}
 		}
 
-		// Maybe there is just a class
+		/* Maybe there is just a class */
 		if (lineClass == -1) {
 			for (String s : lines) {
 				if (s.contains("class ")) {
@@ -210,40 +210,38 @@ public class FileClassModel extends ClassModel {
 			}
 		}
 
-		// Check if the char before the method declaration is a end of a comment
+		/* Check if the char before the method declaration is a end of a comment */
 		if (lines.get(lineClass - 2).contains("*/")) {
-			// Get the java doc comment, 0 because the first comment is the class comment
+			/* Get the java doc comment, 0 because the first comment is the class comment */
 			String classDoc = extractJavaDocComment(text, start);
 
-			// There is no comment or a wrong one
+			/* There is no comment or a wrong one */
 			if (classDoc.isEmpty() && fullCheck) {
-				// Put the missing java doc to the trace informations
+				/* Put the missing java doc to the trace informations */
 				msg.add("ERROR:" + currentPackage + ".missing.ClassDoc(" + currentFileName + ":" + lineClass + ")");
 			} else {
-				// Check if there is a line like * some text
+				/* Check if there is a line like * some text */
 				if (!Pattern.compile("\\u002A \\w+").matcher(classDoc).find()) {
-					// There is no text, put a missing doc description error
+					/* There is no text, put a missing doc description error */
 					msg.add("WARNING:" + currentPackage + ".missing.ClassDocText(" + currentFileName + ":"+ lineClass + ")");
 				}
-
-				// Check if there is the @author tag with some text
+				/* Check if there is the @author tag with some text */
 				if (classDoc.split("@author").length == 1) {
-					// There is no tag and no text
+					/* There is no tag and no text */
 					msg.add("ERROR:" + currentPackage + ".missing.AuthorTag(" + currentFileName + ":" + lineClass+ ")");
 				} else if (classDoc.split("@author [a-zA-Z]+").length == 1) {
-					// There is no text after the tag, create warning
+					/* There is no text after the tag, create warning */
 					msg.add("WARNING:" + currentPackage + ".missing.AuthoTagText(" + currentFileName + ":"
 							+ lineClass + ")");
 				}
 			}
-			// Return we found a doc or a incomplete doc
+			/* Return we found a doc or a incomplete doc */
 			return msg;
 		}
 
-		// Only if full check is enable
+		/* Only if full check is enable */
 		if (fullCheck) {
-			// There is no comment in any case over the class definition, therefore create
-			// error
+			/* There is no comment in any case over the class definition, therefore create error */
 			msg.add("ERROR:" + currentPackage + ".missing.ClassDoc(" + currentFileName + ":" + lineClass + ")");
 		}
 		return msg;
@@ -261,19 +259,19 @@ public class FileClassModel extends ClassModel {
 	 */
 	private SimpleList<String> checkMethodsJavaDoc(CharacterBuffer text, SimpleList<String> lines, boolean fullCheck, String currentPackage, String currentFileName) {
 		SimpleList<String> msg = new SimpleList<String>();
-		// Create a matcher to find all method declarations
+		/* Create a matcher to find all method declarations */
 		Matcher methodPattern = Pattern.compile(
 				"((public|private|protected|static|final|native|synchronized|abstract|transient)+\\s)+[\\$_\\w\\<\\>\\[\\]]*\\s+[\\$_\\w]+\\([^\\)]*\\)?\\s*\\{?")
 				.matcher(text);
 
-		// Go through all matches
+		/* Go through all matches */
 		while (methodPattern.find()) {
-			// Get the current match
+			/* Get the current match */
 			String match = methodPattern.group();
-			// Get the index of the current match in the text
+			/* Get the index of the current match in the text */
 			int start = methodPattern.start();
 
-			// Get the line of the method definition to jump there if there is no comment
+			/* Get the line of the method definition to jump there if there is no comment */
 			int lineMethod = -1;
 			for (String s : lines) {
 				if (s.contains(match)) {
@@ -282,8 +280,7 @@ public class FileClassModel extends ClassModel {
 				}
 			}
 
-			// If lineMethod still -1 the { is in the next row therefore cut at \n and try
-			// again
+			/* If lineMethod still -1 the { is in the next row therefore cut at \n and try again */
 			if (lineMethod == -1) {
 				for (String s : lines) {
 					if (s.contains(match.split("\n")[0])) {
@@ -296,43 +293,43 @@ public class FileClassModel extends ClassModel {
 				continue;
 			}
 
-			// Check if there is a annotation over the method, if so go to the next method
+			/* Check if there is a annotation over the method, if so go to the next method */
 			if (lines.get(lineMethod - 2).contains("@")) {
 				continue;
 			}
 
-			// Check if the char before the method declaration is a end of a comment
+			/* Check if the char before the method declaration is a end of a comment */
 			if (lines.get(lineMethod - 2).contains("*/")) {
-				// Get the java doc comment
+				/* Get the java doc comment */
 				String methodDoc = extractJavaDocComment(text, start);
 
-				// There is no comment or a wrong one
+				/* There is no comment or a wrong one */
 				if (methodDoc.isEmpty() && fullCheck) {
 
-					// Put the missing java doc to the trace informations
+					/* Put the missing java doc to the trace informations */
 					msg.add("ERROR:" + currentPackage + ".missing.MethodDoc(" + currentFileName + ":" + lineMethod
 							+ ")");
 				} else {
-					// Check if there is a line like * some text
+					/* Check if there is a line like * some text */
 					if (!Pattern.compile("\\u002A \\s*[\\w+<]").matcher(methodDoc).find()) {
 						if (match.contains(" get") || match.contains(" set") || match.contains(" is")
 								|| match.contains(" with")) {
-							// no nessessary Comment for getter and Setter
+							/* no nessessary Comment for getter and Setter */
 							continue;
 						}
-						// There is no text, put a missing doc description error
+						/* There is no text, put a missing doc description error */
 						msg.add("WARNING:" + currentPackage + ".missing.MethodDocText(" + currentFileName + ":"
 								+ lineMethod + ")");
 					}
 
-					// Check if there are parameters in the method declaration
+					/* Check if there are parameters in the method declaration */
 					if (!match.contains("()")) {
-						// Get all parameters from method declaration
+						/* Get all parameters from method declaration */
 						String temp = match.substring(match.indexOf("(") + 1, match.indexOf(")"))
 								.replaceAll("<[^\\)]*>", "");
 						String[] parameters = temp.split(",");
 
-						// Go through all parameters and check the @param tag
+						/* Go through all parameters and check the @param tag */
 						for (String s : parameters) {
 							String[] param = s.trim().split(" ");
 
@@ -341,42 +338,41 @@ public class FileClassModel extends ClassModel {
 								parameterName = param[1];
 							}
 
-							// Check if there is a @param tag with the current parameter name
+							/* Check if there is a @param tag with the current parameter name */
 							if (methodDoc.split("@param " + parameterName).length == 1) {
 
-								// There is no tag and no text
+								/* There is no tag and no text */
 								msg.add("ERROR:" + currentPackage + ".missing.ParamTag(" + currentFileName + ":"
 										+ lineMethod + ")");
 							} else if (methodDoc.split("@param " + parameterName + "[ ]+[a-zA-Z*\r]+").length == 1) {
-								// There is no text after the tag, create warning
+								/* There is no text after the tag, create warning */
 								msg.add("WARNING:" + currentPackage + ".missing.ParamTagText(" + currentFileName
 										+ ":" + lineMethod + ")");
 							}
 						}
 					}
 
-					// Check if there is a return type in the method
+					/* Check if there is a return type in the method */
 					if (!match.contains("void")) {
-						// There is no tag and text
+						/* There is no tag and text */
 						if (methodDoc.split("@return").length == 1) {
-							// There is no tag and no text
+							/* There is no tag and no text */
 							msg.add("ERROR:" + currentPackage + ".missing.ReturnTag(" + currentFileName + ":"
 									+ lineMethod + ")");
 						} else if (methodDoc.split("@return[ \t]+[a-zA-Z]+").length == 1) {
-							// There is no text after the tag, create warning
+							/* There is no text after the tag, create warning */
 							msg.add("WARNING:" + currentPackage + ".missing.ReturnTagText(" + currentFileName + ":"
 									+ lineMethod + ")");
 						}
 					}
 				}
-				// Look at the next match
+				/* Look at the next match */
 				continue;
 			}
 
-			// Only if full check is enable
+			/* Only if full check is enable */
 			if (fullCheck) {
-				// There is no comment in any case over the method definition, therefore create
-				// error
+				/* There is no comment in any case over the method definition, therefore create error */
 				msg.add("ERROR:" + currentPackage + ".missing.MethodDoc(" + currentFileName + ":" + lineMethod + ")");
 			}
 		}
@@ -392,33 +388,33 @@ public class FileClassModel extends ClassModel {
 	 */
 	private String extractJavaDocComment(CharacterBuffer extractFrom, int searchIndex) {
 
-		// Initialize attribute which describe the range of the doc
+		/* Initialize attribute which describe the range of the doc */
 		int begin = -1;
 		int end = -1;
 
-		// Go back from the searchIndex
+		/* Go back from the searchIndex */
 		for (int i = searchIndex; i > 0; i--) {
 
-			// Found the start of the java doc
+			/* Found the start of the java doc */
 			if (extractFrom.charAt(i) == '*' && extractFrom.charAt(i - 1) == '*' && extractFrom.charAt(i - 2) == '/') {
 
-				// The start of the comment
+				/* The start of the comment */
 				begin = i - 2;
 
-				// Found the end of the java doc
+				/* Found the end of the java doc */
 			} else if (extractFrom.charAt(i) == '/' && extractFrom.charAt(i - 1) == '*') {
 
-				// The end of the comment
+				/* The end of the comment */
 				end = i;
 
 			}
-			// If both values found break
+			/* If both values found break */
 			if (begin != -1 && end != -1) {
 				break;
 			}
 		}
 
-		// Wrong comment just a /* or there is no comment
+		/* Wrong comment just a /* or there is no comment */
 		if (begin == -1) {
 			return "";
 		}
@@ -511,20 +507,9 @@ public class FileClassModel extends ClassModel {
 					if (content.indexOf(targetName) > 0) {
 						clazz.createBidirectional(targetClazz, "use", Association.ONE, "use", Association.ONE);
 					}
-//				if(content.indexOf("new "+targetName+"(")>0) {
-//					clazz.createBidirectional(targetClazz, "use", Association.ONE, "use", Association.ONE);
-//				}else if(content.indexOf("("+targetName)>0) {
-//					clazz.createBidirectional(targetClazz, "use", Association.ONE, "use", Association.ONE);
-//				}else if(content.indexOf(" "+targetName)>0) {
-//					clazz.createBidirectional(targetClazz, "use", Association.ONE, "use", Association.ONE);
-//				}else if(content.indexOf("\t"+targetName+" ")>0) {
-//					clazz.createBidirectional(targetClazz, "use", Association.ONE, "use", Association.ONE);
-//				}
 				}
 			}
 		}
-//		String string = model.toString(new DotConverter().withShowAssocInfo(false).withShowNodeInfo(false));
-//		FileBuffer.writeFile("model.data", string.getBytes());
 		return model;
 	}
 

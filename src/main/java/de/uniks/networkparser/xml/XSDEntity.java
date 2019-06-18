@@ -168,7 +168,6 @@ public class XSDEntity extends XMLEntity implements SendableEntityCreator {
 
 	@Override
 	public Object getValue(Object entity, String attribute) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -196,28 +195,23 @@ public class XSDEntity extends XMLEntity implements SendableEntityCreator {
 		if (PROPERTY_TAG.equalsIgnoreCase(attribute)) {
 			return xsd.setTag((String) value);
 		}
-//				, PROPERTY_VALUE, PROEPRTY_CHILDREN
 		return false;
 	}
 	
 	@Override
 	public Object put(String key, Object value) {
-		//Override Standard for Custom Keys ;)
+		/* Override Standard for Custom Keys ;) */
 		if (PROPERTY_CHOICE.equalsIgnoreCase(key)) {
 			addToChoice((XSDEntity) value);
-//			return value;
 		}
 		if (PROPERTY_SEQUENCE.equalsIgnoreCase(key)) {
 			addToSequence((XSDEntity) value);
-//			return value;
 		}
 		if (PROPERTY_MINOCCURS.equalsIgnoreCase(key)) {
 			setMinOccurs((String) value);
-//			return value;
 		}
 		if (PROPERTY_MAXOCCURS.equalsIgnoreCase(key)) {
 			setMaxOccurs((String) value);
-//			return value;
 		}
 		return super.put(key, value);
 	}
@@ -262,7 +256,7 @@ public class XSDEntity extends XMLEntity implements SendableEntityCreator {
 		System.out.println(this.sizeChildren());
 		this.cleanUp(prefix);
 		System.out.println(this.sizeChildren());
-		// Create Classes
+		/* Create Classes */
 		String elementType = prefix +XSDEntity.XSD_ELEMENT_TYPE;
 		String complexType = prefix +XSDEntity.XSD_COMPLEX_TYPE;
 		XMLEntity entity = this;
@@ -275,26 +269,26 @@ public class XSDEntity extends XMLEntity implements SendableEntityCreator {
 			XMLEntity child = (XMLEntity) entity.getChild(i);
 			if(elementType.equalsIgnoreCase(child.getTag())) {
 				if(stringType.equalsIgnoreCase(child.getString("type"))) {
-					// Ignore
-//					System.out.println("IGNORE:" +child.getTag());
-				} else {
-					// CHECK IF ONLY STRING
-					Clazz childClass = new Clazz(child.getString("name"));
-					// Add GraphSimpleSet without Comparator
-					GraphUtil.setChildren(childClass, GraphSimpleSet.create(false));
-//					Clazz childClass = model.createClazz(child.getString("name"));
-					if(rootElement == null) {
-						model.add(childClass);
-						rootElement = childClass;
-						this.callBack(childClass, true);
-					}
-					classTypes.put(childClass, child.getString("type"));
+					continue;
+					/* Ignore */
+				} 
+				/* CHECK IF ONLY STRING */
+				Clazz childClass = new Clazz(child.getString("name"));
+				/* Add GraphSimpleSet without Comparator */
+				GraphUtil.setChildren(childClass, GraphSimpleSet.create(false));
+				if(rootElement == null) {
+					model.add(childClass);
+					rootElement = childClass;
+					this.callBack(childClass, true);
 				}
-			}else if(complexType.equalsIgnoreCase(child.getTag())) {
+				classTypes.put(childClass, child.getString("type"));
+				continue;
+			}
+			if(complexType.equalsIgnoreCase(child.getTag())) {
 				typesValues.put(child.getString("name"), child);
 			}
 		}
-		// Now Analyse Types
+		/* Now Analyse Types */
 		model.with(prefix);
 		parsingRootStructure(model, rootElement, classTypes, typesValues, null);
 		return model;
@@ -325,14 +319,12 @@ public class XSDEntity extends XMLEntity implements SendableEntityCreator {
 		if(typeClassEntity == null) {
 			return null;
 		}
-		//createContainerAssoc(delayname, assoc, childchildClass);
 		for(int c=0;c<typeClassEntity.sizeChildren();c++) {
 			XSDEntity child = (XSDEntity) typeClassEntity.getChild(c);
 			if(sequenzType.equalsIgnoreCase(child.getTag())) {
-				// Now Check for Container
-				// typeClassEntity
+				/* Now Check for Container typeClassEntity */
 				if(child.sizeChildren() == 1) {
-					// It is a Containern Set
+					/* It is a Containern Set */
 					XSDEntity first = (XSDEntity) child.getChild(0);
 
 					String containerType = first.getString("type");
@@ -361,16 +353,16 @@ public class XSDEntity extends XMLEntity implements SendableEntityCreator {
 						orderKey.add(changeName(name));
 						Attribute attr = clazz.createAttribute(name, DataType.STRING);
 						if("0".equals(element.getMinOccurs()) == false) {
-							// ITS NESSESSARY
+							/* ITS NESSESSARY */
 							attr.withValue("\"\"");
 							System.out.println("MUST BE INIT: "+clazz.getName()+":"+name);
 						}
 						callBack(attr, true);
 					} else {
-						// New Class Found
+						/* New Class Found */
 						Clazz subClazz = classTypes.getKey(type);
 						if(subClazz != null) {
-							// Now Analyse SubClass
+							/* Now Analyse SubClass */
 							String result = this.parsingRootStructure(model, subClazz, classTypes, typesValues, clazz);
 							if(result != null) {
 								if(result.length()>0) {
@@ -448,14 +440,13 @@ public class XSDEntity extends XMLEntity implements SendableEntityCreator {
 					child.setValueItem("type", simpleReplaceType.getValueByIndex(pos));
 				}
 			}
-			// Rekursive
+			/* Rekursive */
 			for (int c = 0; c < child.sizeChildren(); c++) {
 				cleanUpTypes(prefix, simpleReplaceType, (XMLEntity) child.getChild(c));
 			}
 		}
 	}
-	
-//CallBack
+/* CallBack */
 	protected boolean callBack(GraphMember member, boolean value, String... params) {
 		return true;
 	}

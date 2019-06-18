@@ -1,19 +1,3 @@
-/*
- * Copyright 2008 ZXing authors
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *		http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package de.uniks.networkparser.bytes.qr;
 
 /**
@@ -51,8 +35,7 @@ public final class GenericGFPoly {
 		this.field = field;
 		int coefficientsLength = coefficients.length;
 		if (coefficientsLength > 1 && coefficients[0] == 0) {
-			// Leading term must be non-zero for anything except the constant
-			// polynomial "0"
+			/* Leading term must be non-zero for anything except the constant polynomial "0" */
 			int firstNonZero = 1;
 			while (firstNonZero < coefficientsLength && coefficients[firstNonZero] == 0) {
 				firstNonZero++;
@@ -104,12 +87,12 @@ public final class GenericGFPoly {
 	 */
 	int evaluateAt(int a) {
 		if (a == 0 || coefficients == null) {
-			// Just return the x^0 coefficient
+			/* Just return the x^0 coefficient */
 			return getCoefficient(0);
 		}
 		int size = coefficients.length;
 		if (a == 1) {
-			// Just the sum of the coefficients
+			/* Just the sum of the coefficients */
 			int result = 0;
 			for (int coefficient : coefficients) {
 				result = GenericGF.addOrSubtract(result, coefficient);
@@ -143,8 +126,7 @@ public final class GenericGFPoly {
 		}
 		int[] sumDiff = new int[largerCoefficients.length];
 		int lengthDiff = largerCoefficients.length - smallerCoefficients.length;
-		// Copy high-order terms only found in higher-degree polynomial's
-		// coefficients
+		/* Copy high-order terms only found in higher-degree polynomial's coefficients */
 		System.arraycopy(largerCoefficients, 0, sumDiff, 0, lengthDiff);
 
 		for (int i = lengthDiff; i < largerCoefficients.length; i++) {

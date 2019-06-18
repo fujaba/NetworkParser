@@ -28,7 +28,7 @@ public class JAXBEntity extends XSDEntity{
 			if(params != null && params.length>0) {
 				Annotation nextAnnotatation = null;
 				if(value) {
-					// Its is a Orderkey
+					/* Its is a Orderkey */
 					CharacterBuffer sb = new CharacterBuffer();
 					sb.with('{');
 					for(int i=0;i<params.length;i++) {
@@ -41,7 +41,7 @@ public class JAXBEntity extends XSDEntity{
 					sb.with('}');
 					nextAnnotatation =  Annotation.create("XmlType", "propOrder", sb.toString()).withImport("javax.xml.bind.annotation.XmlType");
 				}else {
-					// NEW XMLROOTELement
+					/* NEW XMLROOTELement */
 					nextAnnotatation = Annotation.create("XmlRootElement", "name", params[0]).withImport("javax.xml.bind.annotation.XmlRootElement");
 					clazz.withSuperClazz(superClazz);
 				}
@@ -66,9 +66,7 @@ public class JAXBEntity extends XSDEntity{
 			}else if(value) {
 				Annotation xmltransient = Annotation.create("XmlTransient").withScope("getter").withImport("javax.xml.bind.annotation.XmlTransient");
 				Annotation anno = Annotation.create("XmlElement", "name", attribute.getName()).withImport("javax.xml.bind.annotation.XmlElement");
-//				.withScope("getter"));
 				xmltransient.withNext(anno);
-//				anno.withNext();
 				attribute.with(xmltransient);
 			}else {
 				attribute.with(Annotation.create("XmlAttribute", "name", attribute.getName()).withImport("javax.xml.bind.annotation.XmlAttribute").withScope("getter"));
@@ -77,7 +75,6 @@ public class JAXBEntity extends XSDEntity{
 			Association assoc = (Association) member;
 			Association other = assoc.getOther();
 			other.with(Annotation.create("XmlTransient").withScope("getter").withImport("javax.xml.bind.annotation.XmlTransient"));
-//			assoc.with(Annotation.create("XmlElement", "name", other.getName()).withImport("javax.xml.bind.annotation.XmlElement").withScope("getter"));
 			assoc.with(Annotation.create("XmlElement", "name", other.getName()).withImport("javax.xml.bind.annotation.XmlElement"));
 		}
 		return super.callBack(member, value);

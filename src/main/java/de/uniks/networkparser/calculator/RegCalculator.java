@@ -159,17 +159,17 @@ public class RegCalculator {
 			parts.add("" + current);
 		}
 
-		// Parsing Funciton & Parsing (
+		/* Parsing Funciton & Parsing ( */
 		int z = parts.size() - 1;
 		while (z >= 0) {
 			pos = parts.get(z).indexOf("(");
 			if (pos < 0) {
-				// Check for mathematical operators
+				/* Check for mathematical operators */
 				if (z > 0) {
 					Operator operator = operators.get(parts.get(z - 1));
 					if (operator != null && operator.getPriority() == LINE) {
 						if (z > 1) {
-							// Exist Pre Pre
+							/* Exist Pre Pre */
 							Operator preOperator = operators.get(parts.get(z - 2));
 							if (preOperator == null) {
 								z--;
@@ -190,7 +190,7 @@ public class RegCalculator {
 				continue;
 			}
 			if (pos > 0) {
-				// Function
+				/* Function */
 				Operator operator = operators.get(parts.get(z).substring(0, parts.get(z).indexOf("(")));
 				Double[] values = calculateFields(parts.get(z).substring(pos + 1, parts.get(z).length() - 1));
 				if (operator != null && values.length >= operator.getValues()) {
@@ -200,7 +200,7 @@ public class RegCalculator {
 			parts.set(z, "" + calculate(parts.get(z)));
 		}
 
-		// Point and Line Statement
+		/* Point and Line Statement */
 		for (int prio = 3; prio > 0; prio--) {
 			for (int i = 0; i < parts.size(); i++) {
 				Operator operator = operators.get(parts.get(i));
@@ -226,7 +226,7 @@ public class RegCalculator {
 
 	private boolean addOperator(String value, CharacterBuffer tokener, List<String> parts) {
 		if (constants.containsKey(value)) {
-			// Its constants
+			/* Its constants */
 			if(parts == null) {
 				return false;
 			}

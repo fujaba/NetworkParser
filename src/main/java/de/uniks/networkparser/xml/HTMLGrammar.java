@@ -82,11 +82,6 @@ public class HTMLGrammar extends SimpleGrammar {
 	public Entity writeBasicValue(Entity entity, String className, String id, String type, IdMap map) {
 		CharacterBuffer value = new CharacterBuffer().with(className);
 		if (transformValue(value, 0, true) && entity != null) {
-//			if(value.charAt(0) == IdMap.ENTITYSPLITTER) {
-//				entity = map.convertProperty(value, parent);
-//			} else {
-//				entity = map.convertProperty(value, entity);
-//			}
 			String prop = value.toString();
 			Entity item = (Entity) entity.getNewList(false);
 			String session = map.getSession();
@@ -117,7 +112,7 @@ public class HTMLGrammar extends SimpleGrammar {
 			parent = map.convertProperty(prop, parent);
 			property = prop.toString();
 			if (property.length() == 1 && property.charAt(0) == IdMap.ENTITYSPLITTER) {
-//				// Its ChildValue
+				/* Its ChildValue */
 				Object element = tokener.transformValue(value, parent);
 				CharacterBuffer buffer = new CharacterBuffer().with("" + element);
 				((Entity) parent).withValue(buffer);

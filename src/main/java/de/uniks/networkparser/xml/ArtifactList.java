@@ -5,7 +5,7 @@ import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SortedSet;
 
-// May be a List of Pom of one or more Libaries
+/* May be a List of Pom of one or more Libaries */
 public class ArtifactList extends SortedSet<ArtifactFile> {
 	public boolean isShowMetaData;
 	public ArtifactFile biggestSnapShot;
@@ -31,7 +31,7 @@ public class ArtifactList extends SortedSet<ArtifactFile> {
 			if (this.groupId == null) {
 				addItem(value);
 			} else if (this.groupId.equals(value.getGroupId())) {
-				// Check For Dupplicate
+				/* Check For Dupplicate */
 				boolean found = false;
 				for (ArtifactFile child : this) {
 					if (value.isSnapshot() != child.isSnapshot()) {
@@ -54,7 +54,7 @@ public class ArtifactList extends SortedSet<ArtifactFile> {
 					addItem(value);
 				}
 			} else {
-				// REFACTORING !!!
+				/* REFACTORING !!! */
 				ArtifactList subList;
 				if (this.children == null) {
 					children = new SimpleList<ArtifactList>();
@@ -70,7 +70,7 @@ public class ArtifactList extends SortedSet<ArtifactFile> {
 				this.children.add(subList);
 			}
 		} else {
-			// PARENT LIST CHECK FOR CHILD
+			/* PARENT LIST CHECK FOR CHILD */
 			String id = value.getGroupId();
 			for (ArtifactList childList : children) {
 				if (childList.getGroup().equals(id)) {
@@ -80,7 +80,7 @@ public class ArtifactList extends SortedSet<ArtifactFile> {
 				}
 			}
 			if (id != null) {
-				// So Element not added
+				/* So Element not added */
 				ArtifactList subList = new ArtifactList(true);
 				subList.add(value);
 				this.children.add(subList);
@@ -102,7 +102,7 @@ public class ArtifactList extends SortedSet<ArtifactFile> {
 		}
 		if (size() > 0) {
 			if (pom.calculatePomNumber(first().getPomNumber())) {
-				// Must be recalculate
+				/* Must be recalculate */
 				for (ArtifactFile child : this) {
 					child.calculatePomNumber(pom.getPomNumber());
 				}

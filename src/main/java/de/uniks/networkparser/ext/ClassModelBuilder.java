@@ -37,7 +37,7 @@ public class ClassModelBuilder {
 		if (params == null) {
 			model.generate();
 		} else {
-			// Second Parameter is Author
+			/* Second Parameter is Author */
 			if (params.length > 1) {
 				model.setAuthorName(params[1]);
 			}
@@ -90,7 +90,7 @@ public class ClassModelBuilder {
 	 */
 	public ClassModelBuilder createAssociation(String otherRoleName, int otherCardinality, Object otherClazz,
 			String myRoleName, int myCardinality, Object... clazz) {
-		// Validate Paramter
+		/* Validate Paramter */
 		if (otherClazz == null) {
 			return this;
 		}
@@ -113,7 +113,7 @@ public class ClassModelBuilder {
 		if (my == null || other == null) {
 			return this;
 		}
-		// Now Create Assoc
+		/* Now Create Assoc */
 		my.createBidirectional(other, otherRoleName, otherCardinality, myRoleName, myCardinality);
 		return this;
 	}

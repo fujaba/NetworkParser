@@ -73,7 +73,6 @@ public class GraphConverter implements Converter {
 
 	public static final String NODE = "node";
 	public static final String CLASS = "class";
-//	public static final String CLAZZ = "clazz";
 	public static final String PATTERN = "pattern";
 	public static final String SUBGRAPH = "subgraph";
 
@@ -105,7 +104,7 @@ public class GraphConverter implements Converter {
 			return root;
 		}
 
-		// Parse all Object to Object-Diagram
+		/* Parse all Object to Object-Diagram */
 		for (int i = 0; i < list.size(); i++) {
 			Object item = list.getChild(i);
 			if (item instanceof Entity) {
@@ -152,7 +151,7 @@ public class GraphConverter implements Converter {
 				Object value = props.getValueByIndex(i);
 				if (value instanceof Entity) {
 					assocOther = new Association(graphNode).with(Association.ONE).with(AssociationTypes.EDGE);
-					// Must be a Link to 1
+					/* Must be a Link to 1 */
 					Clazz newNode = parseJsonObject(root, (Entity) value);
 
 					assoc = new Association(newNode).with(Association.ONE).with(props.getKeyByIndex(i))
@@ -162,7 +161,7 @@ public class GraphConverter implements Converter {
 					GraphUtil.setAssociation(newNode, assoc);
 					GraphUtil.setAssociation(graphNode, assocOther);
 				} else if (value instanceof EntityList) {
-					// Must be a Link to n
+					/* Must be a Link to n */
 					EntityList array = (EntityList) value;
 					Attribute attribute = null;
 
@@ -186,7 +185,7 @@ public class GraphConverter implements Converter {
 							}
 						} else {
 							if (attribute == null) {
-								// FIXME FOR ASSOC -- ATTRIBUTE
+								/* FIXME FOR ASSOC -- ATTRIBUTE */
 								String name = props.getKeyByIndex(i);
 								DataType type = DataType.create(value.getClass().getName());
 								attribute = new Attribute(name, type);
@@ -271,10 +270,7 @@ public class GraphConverter implements Converter {
 			options = graphList.getOptions();
 		}
 		if (root instanceof ObjectModel) {
-//			ObjectModel graphList = (ObjectModel) root;
 			type = GraphTokener.OBJECTDIAGRAM;
-//			style = graphList.getStyle();
-//			options = graphList.getOptions();
 		}
 		Entity jsonRoot = (Entity) factory.getNewList(true);
 		jsonRoot.put(TYPE, type);
@@ -349,7 +345,7 @@ public class GraphConverter implements Converter {
 						}
 					}
 				}
-				// All Methods
+				/* All Methods */
 				list = (EntityList) node.getValue(METHODS);
 				if (list != null) {
 					for (int a = 0; a < list.size(); a++) {
@@ -580,7 +576,6 @@ public class GraphConverter implements Converter {
 		Entity item = (Entity) factory.getNewList(true);
 
 		if (entity instanceof Clazz) {
-//			item.put(TYPE, CLAZZ);
 			Clazz clazz = (Clazz) entity;
 			if (full) {
 				item.put(MODIFIERS, clazz.getModifier());
@@ -697,7 +692,7 @@ public class GraphConverter implements Converter {
 			if (full) {
 				Entity json = (Entity) factory.getNewList(true);
 				json.put(ID, method.getName());
-				json.put(TYPE, method.getReturnType().getName(true)); // RETURNTYPE
+				json.put(TYPE, method.getReturnType().getName(true)); /* RETURNTYPE */
 				json.put(MODIFIERS, method.getModifier());
 				if (method.getBody() != null && method.getBody().length() > 0) {
 					json.put(BODY, method.getBody());
@@ -750,7 +745,7 @@ public class GraphConverter implements Converter {
 		}
 		SimpleKeyValueList<GraphMember, String> names = new SimpleKeyValueList<GraphMember, String>();
 		if (fragment.isExpression()) {
-			// Add Model
+			/* Add Model */
 			names.add(model, "model");
 		}
 
@@ -763,7 +758,6 @@ public class GraphConverter implements Converter {
 			String matchNameMatch = (String) names.getValue(match);
 			String matchNameClazz = null;
 			String type = null;
-//			String type = diff.getType();
 			if (diff.getNewValue() == null) {
 				if (diff.getOldValue() != null) {
 					type = SendableEntityCreator.REMOVE;
@@ -778,21 +772,17 @@ public class GraphConverter implements Converter {
 
 			Clazz clazz = match.getClazz();
 			if (matchNameMatch == null) {
-				// MUST BE CREATE
+				/* MUST BE CREATE */
 				matchNameClazz = (String) names.getValue(match);
 				if (matchNameClazz == null) {
 					matchNameClazz = getFreeName(names, clazz);
 					fragment.withLine(
 							"#IMPORT " + matchNameClazz + " = model.createClazz(\"" + clazz.getName() + "\");",
 							Clazz.class);
-//					if(match instanceof Clazz) {
-//						continue;
-//					}
-					// TODO MISSING ATTRIBUTES OF CLAZZ
 				}
-				// SO DO NEW, UPDATE, REMOVE
+				/* SO DO NEW, UPDATE, REMOVE */
 				if (SendableEntityCreator.NEW.equalsIgnoreCase(type)) {
-					// IST NEW ONE
+					/* IST NEW ONE */
 					Object newValue = diff.getNewValue();
 					if (newValue instanceof Attribute) {
 						createMember(fragment, (Attribute) newValue, names, null);
@@ -809,11 +799,11 @@ public class GraphConverter implements Converter {
 					continue;
 				}
 			}
-			// SO CHECK
+			/* SO CHECK */
 			Object newValue = diff.getNewValue();
 			Object oldValue = diff.getOldValue();
 			if (SendableEntityCreator.UPDATE.equalsIgnoreCase(type)) {
-				// RENAME
+				/* RENAME */
 				if (Clazz.PROPERTY_MODIFIERS.equalsIgnoreCase(diff.getType()) && newValue instanceof String) {
 					newValue = fragment.replacing("#IMPORT.create(\"" + (String) newValue + "\")",
 							Modifier.class.getName());
@@ -880,7 +870,7 @@ public class GraphConverter implements Converter {
 						newValue = fragment.replacing("#IMPORT.create(\"" + newValue + "\")", DataType.class.getName());
 					}
 					if (Method.PROPERTY_PARAMETER.equalsIgnoreCase(diff.getType())) {
-						// SO Method
+						/* SO Method */
 						if (matchNameMatch == null) {
 							matchNameMatch = getFreeName(names, match);
 							fragment.withLine("#IMPORT " + matchNameMatch + " = model.findMethod(" + matchNameClazz
@@ -965,7 +955,7 @@ public class GraphConverter implements Converter {
 		MethodSet methods = new MethodSet();
 		AssociationSet superAssocs = new AssociationSet();
 		SimpleKeyValueList<GraphMember, String> names = new SimpleKeyValueList<GraphMember, String>();
-		// Add Model
+		/* Add Model */
 		names.add(model, "model");
 		ClazzSet clazzes = model.getClazzes();
 		String name;
@@ -1108,7 +1098,7 @@ public class GraphConverter implements Converter {
 			return value;
 		}
 		if (member instanceof Clazz == false) {
-			// Search for Clazz
+			/* Search for Clazz */
 			String clazzName = (String) names.getValue(member.getClazz());
 			value = clazzName + "_" + member.getName().toLowerCase();
 			if (names.containsValue(value) == false) {

@@ -35,10 +35,9 @@ import de.uniks.networkparser.list.SimpleList;
 
 public class SimpleObject implements SendableEntityCreatorIndexId, SendableEntity {
 	protected String className;
-
 	protected String id;
 
-	// SimpleObject Creator Properties
+	/* SimpleObject Creator Properties */
 	private String[] properties;
 	private SimpleList<String> baseElements = new SimpleList<String>();
 	private boolean dirty = false;

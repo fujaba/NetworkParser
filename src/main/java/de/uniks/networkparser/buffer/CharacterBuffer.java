@@ -150,7 +150,7 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
 		int oldStart = 0;
 		int oldLen = 0;
 		if (this.length + diff > this.buffer.length) {
-			// Argh array is to Small
+			/* Argh array is to Small */
 			int newCapacity = (this.length + diff) * 2 + 2;
 			oldChar = this.buffer;
 
@@ -760,7 +760,7 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
 			return false;
 		}
 		int po = 0;
-		// Note: toffset might be near -1>>>1.
+		/* Note: toffset might be near -1>>>1. */
 		while (--pc >= 0) {
 			char c1 = ta[to++];
 			char c2 = prefix.charAt(po++);
@@ -949,18 +949,18 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
 		CharacterBuffer s = this;
 
 		if (n > m) {
-			// swap the input strings to consume less memory
+			/* swap the input strings to consume less memory */
 			s = t;
 			t = this;
 			n = m;
 			m = this.length();
 		}
-		final double p[] = new double[n + 1]; // indexes into strings s and t
-		int i; // iterates through s
-		int j; // iterates through t
+		final double p[] = new double[n + 1]; /* indexes into strings s and t */
+		int i; /* iterates through s */
+		int j; /* iterates through t */
 		double upper_left;
 		double upper;
-		char t_j; // jth character of t
+		char t_j; /* jth character of t */
 		double cost;
 		for (i = 0; i <= n; i++) {
 			p[i] = i;
@@ -997,7 +997,7 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
 						}
 					}
 				}
-				// minimum of cell to the left+1, to the top+1, diagonally left and up +cost
+				/* minimum of cell to the left+1, to the top+1, diagonally left and up +cost */
 				p[i] = Math.min(Math.min(p[i - 1] + 1, p[i] + 1), upper_left + cost);
 				upper_left = upper;
 			}
@@ -1184,7 +1184,7 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
 		if (fromIndex < 0) {
 			fromIndex = 0;
 		} else if (fromIndex >= length) {
-			// Note: fromIndex might be near -1>>>1.
+			/* Note: fromIndex might be near -1>>>1. */
 			return -1;
 		}
 		for (int i = fromIndex; i < max; i++) {
@@ -1200,7 +1200,7 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
 		if (fromIndex < 0) {
 			fromIndex = 0;
 		} else if (fromIndex >= length) {
-			// Note: fromIndex might be near -1>>>1.
+			/* Note: fromIndex might be near -1>>>1. */
 			return -1;
 		}
 		if (str == null || str.length() == 0) {
@@ -1316,7 +1316,7 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
 			buffer = copy;
 			this.start = 0;
 		}
-		// Move String
+		/* Move String */
 		System.arraycopy(buffer, offset, buffer, offset + len, this.length - offset);
 		values.getChars(0, len, buffer, offset);
 		this.length += len;

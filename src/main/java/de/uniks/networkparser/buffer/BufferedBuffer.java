@@ -234,7 +234,7 @@ public abstract class BufferedBuffer extends Buffer implements BaseItem {
 		}
 		int start = positions[0], end = -1;
 		if (positions.length < 2) {
-			// END IS END OF BUFFER (Exclude)
+			/* END IS END OF BUFFER (Exclude) */
 			end = length();
 			if (start == -1) {
 				start = this.position();
@@ -261,12 +261,12 @@ public abstract class BufferedBuffer extends Buffer implements BaseItem {
 		}
 		return subSequence(start, end).toString();
 	}
-	
+
 	public String next(int... positions) {
-		if(positions == null || positions.length != 1) {
+		if (positions == null || positions.length != 1) {
 			return substring(positions);
 		}
-		return subSequence(position(), position()+positions[0]).toString();
+		return subSequence(position(), position() + positions[0]).toString();
 	}
 
 	public byte[] toBytes(boolean... all) {
@@ -275,7 +275,7 @@ public abstract class BufferedBuffer extends Buffer implements BaseItem {
 		if (all != null && all.length > 0 && all[0]) {
 			result = new byte[length];
 		} else {
-			if(length - position<0) {
+			if (length - position < 0) {
 				return null;
 			}
 			result = new byte[length - position];

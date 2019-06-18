@@ -40,7 +40,7 @@ public class Tokener {
 
 	protected IdMap map;
 
-	// Methods for Map
+	/* Methods for Map */
 	public SendableEntityCreator getCreatorClass(Object reference) {
 		if (map == null) {
 			return null;
@@ -97,7 +97,6 @@ public class Tokener {
 		if (map == null) {
 			return true;
 		}
-		// , String className
 		return map.isError(owner, method, type, entity, null);
 	}
 

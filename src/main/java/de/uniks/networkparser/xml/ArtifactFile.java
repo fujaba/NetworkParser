@@ -63,8 +63,7 @@ public class ArtifactFile implements SendableEntityCreatorTag, BaseItem, Compara
 	private SimpleList<String> classifier = new SimpleList<String>();
 	private String index;
 	private String fileName;
-	private int pomNumber[] = new int[] { 1, 1, 1, 1, 1, 1, 0 };// First 3 Number are Max next 3 Number are Current //
-																// Number of Six is Index
+	private int pomNumber[] = new int[] { 1, 1, 1, 1, 1, 1, 0 };/* First 3 Number are Max next 3 Number are Current Number of Six is Index */
 	
 	public String toGITString() {
 		if (System.getenv().get("BUILD_NUMBER") != null) {

@@ -84,7 +84,7 @@ public class GenericCreator implements SendableEntityCreator {
 	public GenericCreator withItem(Object value) {
 		this.item = value;
 
-		// Init all Values
+		/* Init all Values */
 		if (this.item == null) {
 			this.properties = new String[0];
 		} else {
@@ -142,7 +142,7 @@ public class GenericCreator implements SendableEntityCreator {
 			return invoke;
 		} catch (ReflectiveOperationException e) {
 		}
-		// No Method Found
+		/* No Method Found */
 		try {
 			Field field = this.clazz.getDeclaredField(attribute);
 			if (ReflectionLoader.isAccess(field, entity) == false) {
@@ -167,7 +167,7 @@ public class GenericCreator implements SendableEntityCreator {
 			return true;
 		} catch (ReflectiveOperationException e) {
 		}
-		// maybe a number
+		/* maybe a number */
 		try {
 			int intValue = Integer.parseInt("" + value);
 			this.clazz.getMethod(methodName, int.class).invoke(entity, intValue);
@@ -175,7 +175,7 @@ public class GenericCreator implements SendableEntityCreator {
 		} catch (ReflectiveOperationException e) {
 		} catch (NumberFormatException e) {
 		}
-		// maybe a double
+		/* maybe a double */
 		try {
 			double doubleValue = Double.parseDouble("" + value);
 			this.clazz.getMethod(methodName, double.class).invoke(entity, doubleValue);
@@ -183,7 +183,7 @@ public class GenericCreator implements SendableEntityCreator {
 		} catch (ReflectiveOperationException e) {
 		} catch (NumberFormatException e) {
 		}
-		// maybe a float
+		/* maybe a float */
 		try {
 			float floatValue = Float.parseFloat("" + value);
 			this.clazz.getMethod(methodName, float.class).invoke(entity, floatValue);
@@ -205,14 +205,14 @@ public class GenericCreator implements SendableEntityCreator {
 		if (setNewValue(entity, "with" + this.getMethodName(attribute), value)) {
 			return true;
 		}
-		// May be Collection???
+		/* May be Collection??? */
 		if (attribute.endsWith("s")) {
 			if (setNewValue(entity, "addTo" + this.getMethodName(attribute), value)) {
 				return true;
 			}
 		}
 
-		// No Method Found
+		/* No Method Found */
 		try {
 			Field field = this.clazz.getDeclaredField(attribute);
 			if (ReflectionLoader.isAccess(field, entity) == false) {
@@ -273,7 +273,7 @@ public class GenericCreator implements SendableEntityCreator {
 		}
 
 		GenericCreator genericCreator = new GenericCreator();
-		// Add all Properties
+		/* Add all Properties */
 		try {
 			if (instance.isInterface() == false) {
 				genericCreator.withItem(ReflectionLoader.newInstance(instance));
@@ -284,7 +284,7 @@ public class GenericCreator implements SendableEntityCreator {
 
 		map.add(genericCreator);
 
-		// VODOO
+		/* VODOO */
 		Method[] methods = instance.getMethods();
 		for (Method method : methods) {
 			String methodName = method.getName();
@@ -304,7 +304,7 @@ public class GenericCreator implements SendableEntityCreator {
 							}
 						}
 					} catch (ReflectiveOperationException e) {
-						// Try to find SubClass for Set
+						/* Try to find SubClass for Set */
 					}
 					if (child.isInterface() == false && child instanceof Class<?> == false) {
 						create(map, child);

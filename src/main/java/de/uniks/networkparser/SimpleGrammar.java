@@ -71,7 +71,7 @@ public class SimpleGrammar implements Grammar {
 	@Override
 	public String getId(Object obj, IdMap map) {
 		if(condition != null) {
-			// PLeas set Type for new Id
+			/* Please set Type for new Id */
 			SimpleEvent evt=new SimpleEvent(map, "id", null, obj);
 			if(condition.update(evt)) {
 				return evt.getType();

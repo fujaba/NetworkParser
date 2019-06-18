@@ -65,7 +65,7 @@ public class EntityUtil {
 		if (Double.isInfinite(d) || Double.isNaN(d)) {
 			return "null";
 		}
-		// Shave off trailing zeros and decimal point, if possible.
+		/* Shave off trailing zeros and decimal point, if possible. */
 		String string = Double.toString(d);
 		if (string.indexOf('.') > 0 && string.indexOf('e') < 0 && string.indexOf('E') < 0) {
 			while (string.endsWith("0")) {
@@ -124,7 +124,7 @@ public class EntityUtil {
 		if (number == null) {
 			return "";
 		}
-		// Shave off trailing zeros and decimal point, if possible.
+		/* Shave off trailing zeros and decimal point, if possible. */
 
 		String string = number.toString();
 		if (string.indexOf('.') > 0 && string.indexOf('e') < 0 && string.indexOf('E') < 0) {
@@ -163,7 +163,7 @@ public class EntityUtil {
 					i += 3;
 					continue;
 				} else if (c == '"' || c == '\\') {
-					// remove the backslash
+					/* remove the backslash */
 				} else {
 					sb.append('\\');
 				}
@@ -191,10 +191,6 @@ public class EntityUtil {
 					sb.append((char) ByteConverterHex.fromHex(value, ++i, 4));
 					i += 3;
 					continue;
-					// } else if (c == '"') {
-					// // remove the backslash
-					// } else {
-					// sb.append('\\');
 				}
 			}
 			sb.append(c);
@@ -219,7 +215,6 @@ public class EntityUtil {
 		int i;
 		int len = string.length();
 		CharacterBuffer sb = new CharacterBuffer().withBufferLength(len + 4);
-//		char b = 0, c;
 		char c;
 		String hhhh;
 		sb.with('"');
@@ -239,7 +234,6 @@ public class EntityUtil {
 			} else {
 				sb.with(c);
 			}
-//			b = c;
 		}
 		sb.with('"');
 		return sb.toString();
@@ -281,16 +275,13 @@ public class EntityUtil {
 		}
 		if (value instanceof Collection) {
 			BaseItem item = reference.getNewList(false);
-//			if(item instanceof SimpleKeyValueList<?,?>) {
-//				return ((SimpleKeyValueList<?,?>) item).withList((Collection<?>) value).toString(converter);
-//			}else
 			if (item instanceof AbstractList<?>) {
 				((AbstractList<?>) item).withList((Collection<?>) value).toString(converter);
 			}
 			return ((BaseItem) item).toString(converter);
 		}
 		if (value.getClass().getName().equals("[B")) {
-			// Its a ByteArray
+			/* Its a ByteArray */
 			return quote(new String((byte[]) value));
 		}
 		if (value.getClass().isArray()) {
@@ -301,11 +292,6 @@ public class EntityUtil {
 			}
 			return item.toString(converter);
 		}
-//		if(converter.getPath() != null && value instanceof String && ((String)value).startsWith("file:/")) {
-//			String str = (String) value;
-//			// NOW try relative
-//			value = getRelativePath(str, new File(converter.getPath()).toURI().toString(), "/");
-//		}
 		if (simpleText) {
 			return value.toString();
 		}
@@ -350,7 +336,7 @@ public class EntityUtil {
 				return object.toString();
 			}
 		} catch (Exception exception) {
-			// DO Nothing
+			/* Do Nothing */
 		}
 		return null;
 	}
@@ -529,7 +515,7 @@ public class EntityUtil {
 				sameObject = new JsonObject();
 			}
 		}
-		// Big Check
+		/* Big Check */
 		if (entityB == null) {
 			if (entityA != null) {
 				diffList.with(null, entityA, entityB);
@@ -567,13 +553,13 @@ public class EntityUtil {
 					i--;
 				}
 			}
-			// Other Way
+			/* Other Way */
 			for (int i = 0; i < elementB.size(); i++) {
 				String key = elementB.getKeyByIndex(i);
 				Object valueA = elementA.getValue(key);
 				Object valueB = elementB.getValue(key);
 				if (valueA == null) {
-					// Its new
+					/* Its new */
 					compareValue(key, valueA, valueB, diffList, sameObject);
 				}
 			}
@@ -630,11 +616,11 @@ public class EntityUtil {
 					colectionB.remove(valueB);
 				}
 			}
-			// Other Way
+			/* Other Way */
 			itemsB = colectionB.toArray();
 			for (int i = colectionA.size(); i < colectionB.size(); i++) {
 				Object valueB = itemsB[i];
-				// Its new
+				/* Its new */
 				compareValue(null, null, valueB, diffList, sameObject);
 			}
 			return colectionA.size() < 1 && colectionB.size() < 1;
@@ -836,7 +822,7 @@ public class EntityUtil {
 		if (name == null || name.length() < 1) {
 			return name;
 		}
-		// SpeedUp Change only if nessessary
+		/* SpeedUp Change only if nessessary */
 		int no = (int)name.charAt(0);
 		if(no>='A' && no<='Z') {
 			return name;
@@ -848,7 +834,7 @@ public class EntityUtil {
 		if (name == null || name.length() < 1) {
 			return name;
 		}
-		// SpeedUp Change only if nessessary
+		/* SpeedUp Change only if nessessary */
 		int no = (int)name.charAt(0);
 		if(no>='a' && no<='z') {
 			return name;
@@ -871,19 +857,18 @@ public class EntityUtil {
 		if (str == null) {
 			return "";
 		}
-		StringBuilder buf = new StringBuilder(); // the output string buffer
+		StringBuilder buf = new StringBuilder(); /* the output string buffer */
 		for (int i = 0; i < str.length(); ++i) {
 			char ch = str.charAt(i);
-			String entity = entities.getKey(Integer.valueOf(ch)); // get equivalent html entity
-			if (entity == null) { // if entity has not been found
-				if (ch > 128) { // check if is an extended character
-					buf.append("&#" + ((int) ch) + ";"); // convert extended
-															// character
+			String entity = entities.getKey(Integer.valueOf(ch)); /* get equivalent html entity */
+			if (entity == null) { /* if entity has not been found */
+				if (ch > 128) { /* check if is an extended character */
+					buf.append("&#" + ((int) ch) + ";"); /* convert extended character */
 				} else {
-					buf.append(ch); // append the character as is
+					buf.append(ch); /* append the character as is */
 				}
 			} else {
-				buf.append("&" + entity + ";"); // append the html entity
+				buf.append("&" + entity + ";"); /* append the html entity */
 			}
 		}
 		return buf.toString();
@@ -942,7 +927,7 @@ public class EntityUtil {
 			return;
 		}
 		if (valueLength > 0) {
-			// Save Type
+			/* Save Type */
 			if (type != 0) {
 				buffer.put(type);
 				if (getSubGroup(type) != ByteTokener.LEN_LAST) {
@@ -1260,14 +1245,14 @@ public class EntityUtil {
 				if (searchChars[j] == ch) {
 					if (Character.isHighSurrogate(ch)) {
 						if (j == searchLast) {
-							// missing low surrogate, fine, like String.indexOf(String)
+							/* missing low surrogate, fine, like String.indexOf(String) */
 							return true;
 						}
 						if (i < csLast && searchChars[j + 1] == cs.charAt(i + 1)) {
 							return true;
 						}
 					} else {
-						// ch is in the Basic Multilingual Plane
+						/* ch is in the Basic Multilingual Plane */
 						return true;
 					}
 				}
@@ -1322,7 +1307,7 @@ public class EntityUtil {
 		if (length < 1) {
 			return null;
 		}
-		// Create a char buffer to put random letters and numbers in.
+		/* Create a char buffer to put random letters and numbers in. */
 		char[] randBuffer = new char[length];
 		if(EntityUtil.randGen == null) {
 			EntityUtil.randGen = new Random();
@@ -1344,14 +1329,12 @@ public class EntityUtil {
 	 * @see java.util.Random#nextInt(int)
 	 */
 	public static int randInt(int min, int max) {
-		// NOTE: Usually this should be a field rather than a method
-		// variable so that it is not re-seeded every call.
+		/* NOTE: Usually this should be a field rather than a method variable so that it is not re-seeded every call. */
 		if(EntityUtil.randGen == null) {
 			EntityUtil.randGen = new Random();
 		}
 
-		// nextInt is normally exclusive of the top value,
-		// so add 1 to make it inclusive
+		/* nextInt is normally exclusive of the top value, so add 1 to make it inclusive */
 		int randomNum = EntityUtil.randGen.nextInt((max - min) + 1) + min;
 
 		return randomNum;
@@ -1399,8 +1382,7 @@ public class EntityUtil {
 		String[] base = basePath.split(separator);
 		String[] target = targetPath.split(separator);
 
-		// First get all the common elements. Store them as a string,
-		// and also count how many of them there are.
+		/* First get all the common elements. Store them as a string, and also count how many of them there are. */
 		StringBuilder common = new StringBuilder();
 
 		int commonIndex = 0;
@@ -1410,25 +1392,20 @@ public class EntityUtil {
 			commonIndex++;
 		}
 		if (commonIndex == 0) {
-			// No single common path element. This most
-			// likely indicates differing drive letters, like C: and D:.
-			// These paths cannot be relativized.
+			/* No single common path element. This most likely indicates differing drive letters, like C: and D:. These paths cannot be relativized. */
 			return null;
 		}
 
-		// The number of directories we have to backtrack depends on whether the base is
-		// a file or a dir
-		// For example, the relative path from
-		//
-		// /foo/bar/baz/gg/ff to /foo/bar/baz
-		//
-		// ".." if ff is a file
-		// "../.." if ff is a directory
-		//
-		// The following is a heuristic to figure out if the base refers to a file or
-		// dir. It's not perfect, because
-		// the resource referred to by this path may not actually exist, but it's the
-		// best I can do
+		/* The number of directories we have to backtrack depends on whether the base is a file or a dir
+		   For example, the relative path from
+
+			/foo/bar/baz/gg/ff to /foo/bar/baz
+		
+		    ".." if ff is a file
+		    "../.." if ff is a directory
+
+		   The following is a heuristic to figure out if the base refers to a file or dir. It's not perfect, because
+		   the resource referred to by this path may not actually exist, but it's the best I can do */
 		boolean baseIsFile = true;
 
 		File baseResource = new File(basePath);
@@ -1460,9 +1437,7 @@ public class EntityUtil {
 		}
 		int pos = -1 - args[0].toString().length();
 		String placeholder;
-		// args are pairs of placeholder, replacement
-		// in the first run, replace placeholders by <$<placeholders>$> to mark them
-		// uniquely
+		/* args are pairs of placeholder, replacement in the first run, replace placeholders by <$<placeholders>$> to mark them uniquely */
 		for (int i = 0; i < args.length; i += 2) {
 			placeholder = args[i].toString();
 			pos = -1 - placeholder.length();
@@ -1473,7 +1448,7 @@ public class EntityUtil {
 			}
 		}
 
-		// in the second run, replace <$<placeholders>$> by replacement
+		/* in the second run, replace <$<placeholders>$> by replacement */
 		for (int i = 0; i < args.length; i += 2) {
 			placeholder = "<$<" + args[i] + ">$>";
 			pos = -1 - placeholder.length();

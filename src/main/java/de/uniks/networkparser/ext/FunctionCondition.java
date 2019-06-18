@@ -117,7 +117,7 @@ public class FunctionCondition implements ParserCondition {
 
 	@Override
 	public void create(CharacterBuffer buffer, TemplateParser parser, LocalisationInterface customTemplate) {
-		// Parsing
+		/* Parsing */
 		if (buffer == null || parser == null ) {
 			return;
 		}

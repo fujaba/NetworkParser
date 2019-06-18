@@ -126,7 +126,7 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 				editor.map.put(id, child, false);
 				editor.map.withCreator(creator);
 			} else if (editor.map.getId(child) == null) {
-				// Ups No ID
+				/* Ups No ID */
 				String id = child.getClass().getSimpleName();
 				id += "." + System.identityHashCode(child);
 				editor.map.put(id, child, false);
@@ -134,7 +134,7 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 		}
 
 		HTMLEntity entity = new HTMLEntity();
-		GraphList list = editor.map.toObjectDiagram(items[0]); // TRY IT
+		GraphList list = editor.map.toObjectDiagram(items[0]); /* TRY IT */
 		if (!all) {
 			SimpleList<String> ids = new SimpleList<String>();
 			for (Object item : items) {
@@ -290,11 +290,6 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 					System.exit(-1);
 				}
 				return;
-//				public static void main(String[] args) {
-//					Gradle gradle = new Gradle();
-//					gradle.addAtrifact(null, "Test", "MIT");
-////					
-//				}
 			}
 			if (JarValidator.MAINTAG.equalsIgnoreCase(args[0])) {
 				JarValidator validator = new JarValidator();
@@ -333,13 +328,13 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 					} else if (item.startsWith("nowarning")) {
 						validator.isWarning = false;
 					} else if (item.startsWith("noinstance=")) {
-						// Filter for Instance of SubPackage
+						/* Filter for Instance of SubPackage */
 						validator.instancePackage = item.substring(11);
 					} else if (item.startsWith("noinstance")) {
 						validator.isInstance = false;
 					}
 				}
-				// ADD TIME OUT
+				/* ADD TIME OUT */
 				Timer timer = null;
 				if (timeOut > 0) {
 					logger.debug(null, "main", "FOUND TIMEOUT= " + timeOut);
@@ -360,7 +355,7 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 					}
 				}
 				if (validator.isAnalyseJar) {
-					// Check for Licence
+					/* Check for Licence */
 					if (validator.isError) {
 						int subExit = validator.searchFiles(System.err);
 						if (subExit < 0) {
@@ -390,7 +385,7 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 			}
 		}
 		if (converting(null, null, null, false, true) == false) {
-			// NO JAVAFX Found
+			/* NO JAVAFX Found */
 			NodeProxyTCP server = NodeProxyTCP.createServer(8080);
 			server.withListener(new DiagramEditor());
 			if (server.start()) {
@@ -488,7 +483,7 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 						this.changed(evt);
 	
 						if (TYPE_EDITOR.equalsIgnoreCase(type)) {
-							// Load Editor
+							/* Load Editor */
 							super.executeScript("window['editor'] = new ClassEditor(\"board\");", false);
 						}
 					}
@@ -507,7 +502,6 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 			return onError(value);
 		}
 		if (JavaViewAdapter.DRAGEXITED.equalsIgnoreCase(name)) {
-//			return onDragDropped(value);
 			return onDragExited(value);
 		}
 		if (value instanceof GUIEvent) {
@@ -588,7 +582,6 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 		GraphConverter converter = new GraphConverter();
 		ClassModel modelGen = (ClassModel) converter.convertFromJson(model, new ClassModel());
 		if (modelGen == null) {
-//		if (model.has(GraphConverter.NODES) == false) {
 			logger.error(this, "main", "no Nodes");
 			return false;
 		}
@@ -677,7 +670,7 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 		return null;
 	}
 
-	// NULL Default
+	/* NULL Default */
 	public boolean load(Object item) {
 		boolean result = super.load(item);
 		if (result) {
@@ -686,8 +679,7 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 		HTMLEntity html = new HTMLEntity();
 		boolean loadFile = false;
 		boolean includeFiles = false;
-		// html.createScript("classEditor = new ClassEditor(\"board\");",
-		// html.getBody());
+		/* html.createScript("classEditor = new ClassEditor(\"board\");", html.getBody()); */
 		if (TYPE_EDITOR.equalsIgnoreCase(type) || TYPE_EXPORT.equalsIgnoreCase(type)) {
             loadFile = true;
 		}
@@ -707,7 +699,7 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 			}
 			return true;
 		}
-		// Add external Files
+		/* Add external Files */
 		ReflectionLoader.call(webEngine, "loadContent", html.toString());
 		return true;
 	}
@@ -783,7 +775,7 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 			return true;
 		}
 		if (SUCCEEDED.equals("" + evt.getNewValue())) {
-			// TEST
+			/* TEST */
 			JavaAdapter.execute(DiagramEditorTask.createScreenDump(this));
 			return true;
 		}

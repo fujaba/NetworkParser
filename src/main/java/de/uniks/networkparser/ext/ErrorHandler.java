@@ -114,10 +114,9 @@ public class ErrorHandler implements Thread.UncaughtExceptionHandler {
 			ps.println("Freier Speicher JVM:    " + r.freeMemory());
 			ps.println("Maximaler Speicher JVM: " + r.maxMemory());
 			ps.println("Gesamter Speicher JVM:  " + r.totalMemory());
-//			ps.println("Gesamter Speicher Java:  " + ((com.sun.management.OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean()).getTotalSwapSpaceSize() );
 
 			ps.println();
-			// SubErrors
+			/* SubErrors */
 			printSubTrace(ps, "", 1, e);
 
 			ps.close();
@@ -267,7 +266,7 @@ public class ErrorHandler implements Thread.UncaughtExceptionHandler {
 	}
 
 	public Exception saveScreenShoot(String prefix, String fileName, String filePath, Object currentStage) {
-		// Save Screenshot
+		/* Save Screenshot */
 		if (currentStage == null) {
 			currentStage = stage;
 		}
@@ -354,7 +353,7 @@ public class ErrorHandler implements Thread.UncaughtExceptionHandler {
 	}
 
 	public boolean saveException(Throwable e, Object stage, boolean throwException) {
-		// Generate Error.txt
+		/* Generate Error.txt */
 		if(e == null) {
 			return false;
 		}
