@@ -978,7 +978,14 @@ public class QRTokener {
 	private static final int TYPE_INFO_POLY = 0x537;
 	private static final int TYPE_INFO_MASK_PATTERN = 0x5412;
 
-	/* Build 2D matrix of QR Code from "dataBits" with "ecLevel", "version" and "getMaskPattern". On success, store the result in "matrix" and return true. */
+	/** Build 2D matrix of QR Code from "dataBits" with "ecLevel", "version" and "getMaskPattern". On success, store the result in "matrix" and return true.
+	 * @param dataBits BitArray 
+	 * @param ecLevel ErrorCorrectionLevel
+	 * @param version Version
+	 * @param maskPattern Mask
+	 * @param matrix ByteMatrix 
+	 * @return success
+	 */
 	private static boolean buildMatrix(BitArray dataBits, ErrorCorrectionLevel ecLevel, Version version, int maskPattern,
 			ByteMatrix matrix) {
 		if(dataBits == null || ecLevel == null || version == null || matrix == null) {
