@@ -39,7 +39,7 @@ import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.BufferItem;
 import de.uniks.networkparser.interfaces.Converter;
 
-/** Gramatic
+/** Gramatic for Dot-Converter
 * graph : [ strict ] (graph | digraph) [ ID ] '{' stmt_list '}'
 * stmt_list : [ stmt [ ';' ] [ stmt_list ] ]
 * stmt : node_stmt
@@ -58,6 +58,8 @@ import de.uniks.networkparser.interfaces.Converter;
 * | ':' compass_pt
 * subgraph : [ subgraph [ ID ] ] '{' stmt_list '}'
 * compass_pt : (n | ne | e | se | s | sw | w | nw | c | _)
+* 
+* @author Stefan Lindel
 */
 public class DotConverter implements Converter {
 	private boolean removePackage;

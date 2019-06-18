@@ -155,7 +155,7 @@ public class CRC extends Checksum {
 	/** Reflects the lower bits of the value provided.
 	* @param data The value to reflect.
 	* @param numBits The number of bits to reflect.
-	* @returns The reflected value.
+	* @return The reflected value.
 	*/
 	static private int Reflect(int data, int numBits) {
 		int temp = data;

@@ -78,9 +78,9 @@ public class StringCondition implements ParserCondition {
 	
 	/**
 	 * Method for generate Search Logic
-	 * "A B" -> A or B
-	 * "(A B) -> A and B
-	 * -A	-> Not A
+	 * "A B" =  A or B
+	 * "(A B) = A and B
+	 * -A	= Not A
 	 * #Field Field for Searchign
 	 * @param sequence of String
 	 * @return ObjectCondition

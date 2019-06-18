@@ -446,7 +446,7 @@ public class XSDEntity extends XMLEntity implements SendableEntityCreator {
 			}
 		}
 	}
-/* CallBack */
+
 	protected boolean callBack(GraphMember member, boolean value, String... params) {
 		return true;
 	}

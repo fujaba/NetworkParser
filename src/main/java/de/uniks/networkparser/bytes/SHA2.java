@@ -90,7 +90,9 @@ public class SHA2 {
 		this.reset();
 	}
 
-	/* Resets hash state making it possible to re-use this instance to hash other data. */
+	/** Resets hash state making it possible to re-use this instance to hash other data.
+	 * @return ThisComponent
+	 */
 	public SHA2 reset() {
 		this.state[0] = 0x6a09e667;
 		this.state[1] = 0xbb67ae85;
@@ -106,7 +108,7 @@ public class SHA2 {
 		return this;
 	}
 
-	/* Cleans internal buffers and re-initializes hash state. */
+	/** Cleans internal buffers and re-initializes hash state. */
 	public void clean() {
 		for (int i = 0; i < this.buffer.length; i++) {
 			this.buffer[i] = 0;
@@ -163,8 +165,10 @@ public class SHA2 {
 		return this;
 	}
 
-	/* Finalizes hash state and puts hash into out.
-	  If hash was already finalized, puts the same value. */
+	/** Finalizes hash state and puts hash into out. If hash was already finalized, puts the same value.
+	 * @param out ByteArray to Copy Data
+	 * @return ThisComponent
+	 */
 	public SHA2 finish(byte[] out) {
 		if (!this.finished) {
 			int bytesHashed = this.bytesHashed;
@@ -199,18 +203,21 @@ public class SHA2 {
 				out[i * 4 + 3] = (byte) ((this.state[i] >>> 0) & 0xff);
 			}
 		}
-
 		return this;
 	}
 
-	/* Returns the final hash digest. */
+	/** Returns the final hash digest.
+	 * @return Finish Data
+	 */
 	public byte[] digest() {
 		byte[] out = new byte[this.digestLength];
 		this.finish(out);
 		return out;
 	}
 
-	/* Internal function for use in HMAC for optimization. */
+	/** Internal function for use in HMAC for optimization.
+	 * @param out ByteArray for Copy
+	 */
 	public void _saveState(int[] out) {
 		if(out != null && out.length>=this.state.length) {
 			for (int i = 0; i < this.state.length; i++) {
@@ -219,7 +226,10 @@ public class SHA2 {
 		}
 	}
 
-	/* Internal function for use in HMAC for optimization. */
+	/** Internal function for use in HMAC for optimization.
+	 * @param from Data From
+	 * @param bytesHashed ByteHashed
+	 */
 	public void _restoreState(int[] from, int bytesHashed) {
 		if(from != null && from.length>=this.state.length) {
 			for (int i = 0; i < this.state.length; i++) {

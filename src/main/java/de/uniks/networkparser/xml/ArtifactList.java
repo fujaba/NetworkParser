@@ -5,7 +5,9 @@ import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SortedSet;
 
-/* May be a List of Pom of one or more Libaries */
+/** May be a List of Pom of one or more Libaries
+ * @author Stefan Lindel
+ */
 public class ArtifactList extends SortedSet<ArtifactFile> {
 	public boolean isShowMetaData;
 	public ArtifactFile biggestSnapShot;

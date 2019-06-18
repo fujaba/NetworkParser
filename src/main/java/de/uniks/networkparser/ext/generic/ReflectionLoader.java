@@ -44,13 +44,11 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 import java.util.zip.ZipOutputStream;
-
-import com.sun.xml.internal.messaging.saaj.util.ByteInputStream;
-import com.sun.xml.internal.messaging.saaj.util.ByteOutputStream;
-
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.ext.ErrorHandler;
 import de.uniks.networkparser.ext.Os;
+import de.uniks.networkparser.ext.io.StringInputStream;
+import de.uniks.networkparser.ext.io.StringOutputStream;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.list.SimpleList;
@@ -412,10 +410,10 @@ public class ReflectionLoader {
 			}
 		}
 		if(instance == ZipOutputStream.class) {
-			return new ZipOutputStream(new ByteOutputStream());
+			return new ZipOutputStream(new StringOutputStream());
 		}
 		if(instance == DataInputStream.class) {
-			return new DataInputStream(new ByteInputStream());
+			return new DataInputStream(new StringInputStream());
 		}
 		if (constructors == null || constructors.length < 1) {
 			return ReflectionLoader.newInstance(instance);

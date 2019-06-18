@@ -7,9 +7,7 @@ package de.uniks.networkparser.bytes.qr;
  * @author dswitkin@google.com (Daniel Switkin) - ported from C++
  */
 public final class QRCode {
-
 	public static final int NUM_MASK_PATTERNS = 8;
-
 	private Mode mode;
 	private ErrorCorrectionLevel ecLevel;
 	private Version version;
@@ -82,7 +80,10 @@ public final class QRCode {
 		matrix = value;
 	}
 
-	/* Check if "mask_pattern" is valid. */
+	/** Check if "mask_pattern" is valid. 
+	 * @param maskPattern Is Pattern Match
+	 * @return valid  
+	 */
 	public static boolean isValidMaskPattern(int maskPattern) {
 		return maskPattern >= 0 && maskPattern < NUM_MASK_PATTERNS;
 	}

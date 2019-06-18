@@ -90,7 +90,11 @@ public class FileClassModel extends ClassModel {
 		return errors;
 	}
 
-	/* Validates a single java file for the java doc */
+	/** Validates a single java file for the java doc
+	 * @param entity Analyse JavaDoc
+	 * @param fullCheck FullCheck
+	 * @return List f Warnings and Errors
+	 */
 	public SimpleList<String> analyseJavaDoc(ParserEntity entity, boolean fullCheck) {
 		CharacterBuffer content = FileBuffer.readFile(entity.getFileName());
 		content.replace('\t', ' ');

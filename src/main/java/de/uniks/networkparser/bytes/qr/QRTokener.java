@@ -1003,7 +1003,7 @@ public class QRTokener {
 	   - Dark dot at the left bottom corner
 	   - Position adjustment patterns, if need be 
 	   @param version Version
-	   @matrix ByteMatrix
+	   @param matrix ByteMatrix
 	*/
 	private static void embedBasicPatterns(Version version, ByteMatrix matrix) {
 		/* Let's get started with embedding big squares at corners. */
@@ -1037,7 +1037,11 @@ public class QRTokener {
 		return true;
 	}
 
-	/* Embed the lonely dark dot at left bottom corner. JISX0510:2004 (p.46) */
+	/**
+	 *  Embed the lonely dark dot at left bottom corner. JISX0510:2004 (p.46)
+	 *  @param matrix Matrix to Check
+	 *  @return success  
+	 */
 	private static boolean embedDarkDotAtLeftBottomCorner(ByteMatrix matrix) {
 		if(matrix == null) {
 			return false;
@@ -1049,7 +1053,11 @@ public class QRTokener {
 		return true;
 	}
 
-	/* Embed position adjustment patterns if need be. */
+	/**
+	 * 	Embed position adjustment patterns if need be.
+	 * @param version The Verison
+	 * @param matrix ByteMatrix
+	 */
 	private static void maybeEmbedPositionAdjustmentPatterns(Version version, ByteMatrix matrix) {
 		if(version == null || matrix == null) {
 			return;
@@ -1076,10 +1084,16 @@ public class QRTokener {
 		}
 	}
 
-	/* Note that we cannot unify the function with
-	   embedPositionDetectionPattern() despite they are
-	   almost identical, since we cannot write a function that takes 2D arrays
-	   in different sizes in C/C++. We should live with the fact. */
+	/**
+	 *  Note that we cannot unify the function with
+	 *  embedPositionDetectionPattern() despite they are 
+	 *  almost identical, since we cannot write a function that takes 2D arrays
+	 *	in different sizes in C/C++. We should live with the fact.
+	 * @param xStart x Pos Start
+	 * @param yStart y Pos Start
+	 * @param matrix ByteMatrix
+	 * @return success
+	 */
 	private static boolean embedPositionAdjustmentPattern(int xStart, int yStart, ByteMatrix matrix) {
 		if(matrix == null) {
 			return false;
@@ -1093,7 +1107,12 @@ public class QRTokener {
 	}
 
 
-	/* Embed type information. On success, modify the matrix. */
+	/**
+	 * Embed type information. On success, modify the matrix.
+	 * @param ecLevel Level
+	 * @param maskPattern Mask
+	 * @param matrix ByteMatrix
+	 */
 	private static void embedTypeInfo(ErrorCorrectionLevel ecLevel, int maskPattern, ByteMatrix matrix) {
 		BitArray typeInfoBits = new BitArray();
 		makeTypeInfoBits(ecLevel, maskPattern, typeInfoBits);
@@ -1121,8 +1140,13 @@ public class QRTokener {
 		}
 	}
 
-	/* Make bit vector of type information. On success, store the result in "bits" and return true.
-	   Encode error correction level and mask pattern. See 8.9 of JISX0510:2004 (p.45) for details. */
+	/** Make bit vector of type information. On success, store the result in "bits" and return true.
+	 *  Encode error correction level and mask pattern. See 8.9 of JISX0510:2004 (p.45) for details.
+	  * @param ecLevel Level
+	  * @param maskPattern Mask
+	  * @param bits BitArray
+	  * @return success
+	*/
 	static boolean makeTypeInfoBits(ErrorCorrectionLevel ecLevel, int maskPattern, BitArray bits) {
 		if (ecLevel == null || QRCode.isValidMaskPattern(maskPattern) == false) {
 			return false;
@@ -1140,8 +1164,8 @@ public class QRTokener {
 		return (bits.getSize() == 15); /* Just in case. */
 	}
 
-	/* Calculate BCH (Bose-Chaudhuri-Hocquenghem) code for "value" using
-	   polynomial "poly". The BCH
+	/**
+	 *  Calculate BCH (Bose-Chaudhuri-Hocquenghem) code for "value" using polynomial "poly". The BCH
 	   code is used for encoding type information and version information.
 	   Example: Calculation of version information of 7.
 	   f(x) is created from 7.
@@ -1165,7 +1189,12 @@ public class QRTokener {
 
 	   Since all coefficients in the polynomials are 1 or 0, we can do the
 	   calculation by bit
-	   operations. We don't care if cofficients are positive or negative. */
+	   operations. We don't care if cofficients are positive or negative.
+	   
+	    @param value Value
+	    @param poly poly
+	    @return calculated Value
+	*/
 	static int calculateBCHCode(int value, int poly) {
 		if (poly == 0) {
 			return -1;
@@ -1196,8 +1225,12 @@ public class QRTokener {
 		return numDigits;
 	}
 
-	/* Embed version information if need be. On success, modify the matrix and return true.
-	   See 8.10 of JISX0510:2004 (p.47) for how to embed version information. */
+	/**
+	 *  Embed version information if need be. On success, modify the matrix and return true.
+	 *  See 8.10 of JISX0510:2004 (p.47) for how to embed version information.
+	 *  @param version Version
+	 *  @param matrix ByteMatrix
+	 */
 	private static void maybeEmbedVersionInfo(Version version, ByteMatrix matrix) {
 		if (version == null || matrix == null || version.getVersionNumber() < 7) { /* Version info is necessary if */
 												/* version >= 7. */
@@ -1220,8 +1253,12 @@ public class QRTokener {
 		}
 	}
 
-	/* Make bit vector of version information. On success, store the result in "bits" and return true.
-	   See 8.10 of JISX0510:2004 (p.45) for details. */
+	/** Make bit vector of version information. On success, store the result in "bits" and return true.
+	 * See 8.10 of JISX0510:2004 (p.45) for details.
+	 * 	@param version Version
+	 *  @param bits BitArray
+	 *  @return success
+	 */
 	static boolean makeVersionInfoBits(Version version, BitArray bits) {
 		if(version == null || bits == null) {
 			return false;
@@ -1233,9 +1270,14 @@ public class QRTokener {
 		return (bits.getSize() == 18); /* Just in case. */
 	}
 
-	/* Embed "dataBits" using "getMaskPattern". On success, modify the matrix and return true.
-	   For debugging purposes, it skips masking process if "getMaskPattern" is -1.
-	   See 8.7 of JISX0510:2004 (p.38) for how to embed data bits. */
+	/** Embed "dataBits" using "getMaskPattern". On success, modify the matrix and return true.
+	 * For debugging purposes, it skips masking process if "getMaskPattern" is -1.
+	 * See 8.7 of JISX0510:2004 (p.38) for how to embed data bits.
+	 * @param dataBits DataBits
+	 * @param maskPattern Mask
+	 * @param matrix ByteMatrix
+	 * @return success
+	 */
 	private static boolean embedDataBits(BitArray dataBits, int maskPattern, ByteMatrix matrix) {
 		if(dataBits == null || matrix == null) {
 			return false;
@@ -1352,7 +1394,10 @@ public class QRTokener {
 	}
 
 
-	/* Embed position detection patterns and surrounding vertical/horizontal separators. */
+	/**
+	 * Embed position detection patterns and surrounding vertical/horizontal separators.
+	 * @param matrix ByteMatrix
+	 */
 	private static void embedPositionDetectionPatternsAndSeparators(ByteMatrix matrix) {
 		/* Embed three big squares at corners. */
 		if(matrix == null) {

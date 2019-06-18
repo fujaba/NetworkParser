@@ -670,7 +670,6 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 		return null;
 	}
 
-	/* NULL Default */
 	public boolean load(Object item) {
 		boolean result = super.load(item);
 		if (result) {

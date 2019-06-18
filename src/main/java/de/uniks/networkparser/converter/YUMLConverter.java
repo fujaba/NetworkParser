@@ -133,7 +133,12 @@ public class YUMLConverter implements Converter {
 		return true;
 	}
 
-	/* ##################################### Entity */
+	/** Method for Parsing Entity
+	 * @param entity Entity to Parse
+	 * @param visited Visited elements
+	 * @param shortName ShortName
+	 * @return ResultString
+	 */
 	public String parseEntity(GraphEntity entity, SimpleList<GraphMember> visited, boolean shortName) {
 		return parseEntity(entity, visited, null, shortName);
 	}

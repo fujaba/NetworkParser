@@ -26,6 +26,7 @@ THE SOFTWARE.
 import java.util.ArrayList;
 
 /**
+ * XsdValidationLoggingErrorHandler XSD-Validation Logging Handler
  * @author Stefan XSD Validation Error Class.
  */
 public class XsdValidationLoggingErrorHandler {
