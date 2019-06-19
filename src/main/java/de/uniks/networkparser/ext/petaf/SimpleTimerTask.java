@@ -3,7 +3,7 @@ package de.uniks.networkparser.ext.petaf;
 /*
 The MIT License
 
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -66,7 +66,7 @@ public class SimpleTimerTask extends TimerTask implements Callable<Object> {
 	public DateTimeEntity getLastRun() {
 		return lastRun;
 	}
-	
+
 	public SimpleTimerTask withEvent(SimpleEvent event) {
 		this.event = event;
 		return this;
@@ -113,7 +113,7 @@ public class SimpleTimerTask extends TimerTask implements Callable<Object> {
 
 	@Override
 	public Object call() throws Exception {
-		if(this.event == null || this.executor == null) {
+		if (this.event == null || this.executor == null) {
 			return null;
 		}
 		return this.executor.execute(event);

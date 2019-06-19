@@ -10,7 +10,7 @@ public class MapCondition implements ObjectCondition {
 	private SendableEntityCreator creator;
 	private String property;
 	private ObjectCondition condition;
-	
+
 	public MapCondition withMap(IdMap map) {
 		this.map = map;
 		return this;
@@ -25,42 +25,42 @@ public class MapCondition implements ObjectCondition {
 		this.creator = creator;
 		return this;
 	}
-	
+
 	@Override
 	public boolean update(Object value) {
-		if(value instanceof SimpleEvent == false) {
+		if (value instanceof SimpleEvent == false) {
 			return false;
 		}
 		SimpleEvent evt = (SimpleEvent) value;
 		Object source = evt.getSource();
-		if(creator != null) {
-			
-		}else if(map != null) {
+		if (creator != null) {
+
+		} else if (map != null) {
 			creator = map.getCreatorClass(source);
 		}
-		if(creator == null) {
+		if (creator == null) {
 			return false;
 		}
 		Object itemValue = creator.getValue(source, property);
-		
+
 		SimpleEvent event = new SimpleEvent(source, property, null, itemValue);
-		if(condition != null) {
+		if (condition != null) {
 			return condition.update(event);
 		}
 		return false;
 	}
-	
+
 	public Object getValue(SimpleEvent evt) {
-		if(evt == null) {
+		if (evt == null) {
 			return null;
 		}
 		Object source = evt.getSource();
-		if(creator != null) {
-			
-		}else if(map != null) {
+		if (creator != null) {
+
+		} else if (map != null) {
 			creator = map.getCreatorClass(source);
 		}
-		if(creator == null) {
+		if (creator == null) {
 			return false;
 		}
 		Object itemValue = creator.getValue(source, property);

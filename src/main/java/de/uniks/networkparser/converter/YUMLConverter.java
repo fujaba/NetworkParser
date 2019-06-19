@@ -3,7 +3,7 @@ package de.uniks.networkparser.converter;
 /*
 NetworkParser
 The MIT License
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -42,22 +42,22 @@ import de.uniks.networkparser.list.SimpleSet;
 
 public class YUMLConverter implements Converter {
 	/** The Constant URL. */
-	public static final String URL = "http://yuml.me/diagram/class/";
+	public static final String URL = "http://www.yuml.me/diagram/class/";
 	public boolean defaultShowPackage;
 
 	public String convert(GraphModel root, boolean removePackage) {
 		String type = GraphTokener.CLASSDIAGRAM;
-		if(root instanceof GraphList) {
+		if (root instanceof GraphList) {
 			type = ((GraphList) root).getType();
 		}
 		GraphSimpleSet collection = GraphUtil.getChildren(root);
-		if(collection == null) {
+		if (collection == null) {
 			return null;
 		}
 		if (collection.size() > 0) {
 			StringBuilder sb = new StringBuilder();
 			SimpleList<GraphMember> visitedObj = new SimpleList<GraphMember>();
-			if(root instanceof GraphList) {
+			if (root instanceof GraphList) {
 				((GraphList) root).initSubLinks();
 			}
 			for (GraphMember item : collection) {
@@ -77,7 +77,7 @@ public class YUMLConverter implements Converter {
 
 	public boolean parse(String type, GraphEntity item, StringBuilder sb, SimpleList<GraphMember> visited,
 			boolean shortName) {
-		if(item == null) {
+		if (item == null) {
 			return false;
 		}
 		SimpleSet<Association> association = item.getAssociations();
@@ -133,9 +133,11 @@ public class YUMLConverter implements Converter {
 		return true;
 	}
 
-	/** Method for Parsing Entity
-	 * @param entity Entity to Parse
-	 * @param visited Visited elements
+	/**
+	 * Method for Parsing Entity
+	 * 
+	 * @param entity    Entity to Parse
+	 * @param visited   Visited elements
 	 * @param shortName ShortName
 	 * @return ResultString
 	 */
@@ -175,7 +177,7 @@ public class YUMLConverter implements Converter {
 	public String parseEntityValues(GraphEntity entity, String type, boolean shortName) {
 		StringBuilder sb = new StringBuilder();
 		GraphSimpleSet children = GraphUtil.getChildren(entity);
-		if(children == null){
+		if (children == null) {
 			return null;
 		}
 		Iterator<GraphMember> i = children.iterator();

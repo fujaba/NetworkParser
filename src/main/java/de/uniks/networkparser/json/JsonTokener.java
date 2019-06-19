@@ -4,7 +4,7 @@ import java.util.Collection;
 /*
 NetworkParser
 The MIT License
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -59,33 +59,34 @@ public class JsonTokener extends Tokener {
 
 	/**
 	 * Cross compiling
+	 * 
 	 * @param parent   the parent Element
 	 * @param newValue the newValue
 	 * @return Itself
 	 */
 	@Override
 	public BaseItem parseToEntity(BaseItem parent, Object newValue) {
-		if(newValue == null ) {
+		if (newValue == null) {
 			return null;
 		}
-		if(newValue instanceof SimpleKeyValueList<?, ?>) {
-			return parsingEntityXML((JsonObject) parent, (SimpleKeyValueList<?, ?>)newValue);
+		if (newValue instanceof SimpleKeyValueList<?, ?>) {
+			return parsingEntityXML((JsonObject) parent, (SimpleKeyValueList<?, ?>) newValue);
 		}
-		if(newValue instanceof Buffer ==  false) {
+		if (newValue instanceof Buffer == false) {
 			return null;
 		}
 		Buffer buffer = (Buffer) newValue;
-		if(parent instanceof Entity) {
+		if (parent instanceof Entity) {
 			return parsingEntity((Entity) parent, buffer);
-		}else if(parent instanceof EntityList) {
-			return parsingEntity((EntityList)parent, buffer);
+		} else if (parent instanceof EntityList) {
+			return parsingEntity((EntityList) parent, buffer);
 		}
 		return null;
 	}
-	
+
 	private EntityList parsingEntity(EntityList entityList, Buffer buffer) {
-		//FIXME REMOVE
-		if(buffer == null) {
+		// FIXME REMOVE
+		if (buffer == null) {
 			return null;
 		}
 		char c = buffer.nextClean(true);
@@ -124,10 +125,9 @@ public class JsonTokener extends Tokener {
 		buffer.skip();
 		return entityList;
 	}
-	
 
 	private Entity parsingEntity(Entity entity, Buffer buffer) {
-		if(buffer == null || entity == null) {
+		if (buffer == null || entity == null) {
 			return entity;
 		}
 		String key;
@@ -180,24 +180,25 @@ public class JsonTokener extends Tokener {
 				break;
 			default:
 				Object parse = nextValue(buffer, entity, isQuote, false, stop);
-				if(parse == null) {
+				if (parse == null) {
 					return entity;
 				}
 				key = parse.toString();
 			}
 			c = buffer.nextClean(true);
 			if (c != COLON && c != ENTER) {
-				if(entity.size()>0) {
+				if (entity.size() > 0) {
 					// HJSON OLD ADD TO VALUE
 					String oldKey = entity.getKeyByIndex(entity.size() - 1);
 					String valueOld = entity.getValueByIndex(entity.size() - 1).toString();
-					valueOld +=" "+ key+" "+nextValue(buffer, entity, isQuote, false, stop);
+					valueOld += " " + key + " " + nextValue(buffer, entity, isQuote, false, stop);
 
 					entity.put(oldKey, valueOld);
 					continue;
 				}
 				if (isError(this, "parseToEntity", NetworkParserLog.ERROR_TYP_PARSING, entity)) {
-					throw new SimpleException("Expected a ':' after a key [" + buffer.getString(30).toString() + "]", this);
+					throw new SimpleException("Expected a ':' after a key [" + buffer.getString(30).toString() + "]",
+							this);
 				}
 				return null;
 			}
@@ -206,62 +207,62 @@ public class JsonTokener extends Tokener {
 		} while (c != 0);
 		return entity;
 	}
-	
+
 	private BaseItem parsingSimpleEntityXML(JsonObject parent, XMLEntity newValue) {
 		// <TAG PARAM>CHILDREN</TAG>
-		if(newValue == null) {
+		if (newValue == null) {
 			return null;
 		}
-		
+
 		// Parsing all Parameter
-		int i=0;
-		for(; i< newValue.size();i++) {
+		int i = 0;
+		for (; i < newValue.size(); i++) {
 			String key = newValue.getKeyByIndex(i);
 			Object value = newValue.getValueByIndex(i);
 			parent.put(key, value);
 		}
 
-		if(i==0 &&newValue.sizeChildren() == 1) {
+		if (i == 0 && newValue.sizeChildren() == 1) {
 			XMLEntity child = (XMLEntity) newValue.getChild(0);
-			if(child.sizeChildren() > 0) {
+			if (child.sizeChildren() > 0) {
 				// PARSING
 				JsonObject childItem = (JsonObject) newInstance();
 				parsingSimpleEntityXML(childItem, child);
 				parent.put(child.getTag(), childItem);
-				
-			}else {
+
+			} else {
 				parent.put(child.getTag(), child.getValue());
 			}
 			return parent;
 		}
-		
+
 		// Parsing children
 		SimpleKeyValueList<String, Integer> childrenCount = new SimpleKeyValueList<String, Integer>();
-		for(i=0;i<newValue.sizeChildren();i++) {
+		for (i = 0; i < newValue.sizeChildren(); i++) {
 			XMLEntity child = (XMLEntity) newValue.getChild(i);
 			childrenCount.increment(child.getTag());
 		}
 		SimpleKeyValueList<String, JsonArray> childrenArray = new SimpleKeyValueList<String, JsonArray>();
-		for(i=0;i<newValue.sizeChildren();i++) {
+		for (i = 0; i < newValue.sizeChildren(); i++) {
 			JsonObject item = (JsonObject) newInstance();
 			BaseItem child = newValue.getChild(i);
-			if(child instanceof XMLEntity) {
+			if (child instanceof XMLEntity) {
 				XMLEntity xml = (XMLEntity) child;
 				String tag = xml.getTag();
-				if(childrenCount.get(tag) == 1) {
+				if (childrenCount.get(tag) == 1) {
 					parsingSimpleEntityXML(item, xml);
-					if(item.size()>0) {
+					if (item.size() > 0) {
 						parent.put(tag, item);
-					}else if(xml.getValue() != null){
+					} else if (xml.getValue() != null) {
 						// Ifgnore check for ValueItem
 						String value = xml.getValue().trim();
-						if(value.length()>0) {
+						if (value.length() > 0) {
 							parent.put(tag, value);
 						}
 					}
-				}else {
+				} else {
 					JsonArray children = childrenArray.get(tag);
-					if(children == null) {
+					if (children == null) {
 						children = (JsonArray) newInstanceList();
 						childrenArray.put(tag, children);
 					}
@@ -270,20 +271,20 @@ public class JsonTokener extends Tokener {
 				}
 			}
 		}
-		for(i=0;i<childrenArray.size();i++) {
+		for (i = 0; i < childrenArray.size(); i++) {
 			parent.put(childrenArray.getKeyByIndex(i), childrenArray.getValueByIndex(i));
 		}
 		return parent;
 	}
-	
+
 	private BaseItem parsingEntityXML(JsonObject parent, SimpleKeyValueList<?, ?> newValue) {
 		if (newValue instanceof XMLEntity) {
 			XMLEntity xmlEntity = (XMLEntity) newValue;
-			
-			if(simpleFormat) {
+
+			if (simpleFormat) {
 				return parsingSimpleEntityXML(parent, xmlEntity);
 			}
-			
+
 			parent.put(IdMap.CLASS, xmlEntity.getTag());
 			JsonObject props = new JsonObject();
 			if (xmlEntity.getValue() != null && xmlEntity.getValue().length() > 0) {
@@ -312,7 +313,7 @@ public class JsonTokener extends Tokener {
 	@Override
 	public Object nextValue(Buffer buffer, BaseItem creator, boolean allowQuote, boolean allowDuppleMarks,
 			char stopChar) {
-		if(buffer == null) {
+		if (buffer == null) {
 			return null;
 		}
 		stopChar = buffer.nextClean(true);
@@ -343,7 +344,6 @@ public class JsonTokener extends Tokener {
 		}
 		return super.nextValue(buffer, creator, allowQuote, allowDuppleMarks, stopChar);
 	}
-
 
 	public JsonObject parseEntity(JsonObject parent, SimpleKeyValueList<?, ?> newValue) {
 		if (newValue instanceof XMLEntity) {
@@ -397,47 +397,46 @@ public class JsonTokener extends Tokener {
 	}
 
 	public Object decodingSimple(JsonObject jsonObject, Object target, SendableEntityCreator creator) {
-		if(jsonObject == null || target == null || creator == null) {
+		if (jsonObject == null || target == null || creator == null) {
 			return null;
 		}
 		String[] properties = creator.getProperties();
 		jsonObject.withCaseSensitive(false);
-		for(String property : properties) {
+		for (String property : properties) {
 			Object value = jsonObject.get(property);
-			
+
 			// Switch for SimpleSet
-			if(value instanceof JsonObject) {
+			if (value instanceof JsonObject) {
 				// To 1 Assoc
-				 SendableEntityCreator subCreator = map.getCreator(property, false, false, null);
-				 if(subCreator != null) {
-					 Object subTarget = subCreator.getSendableInstance(false);
-					 if(decodingSimple((JsonObject)value, subTarget, subCreator) != null) {
-						 creator.setValue(target, property, subTarget, IdMap.NEW);
-					 }
-				 }
-			} else if(value instanceof JsonArray) {
+				SendableEntityCreator subCreator = map.getCreator(property, false, false, null);
+				if (subCreator != null) {
+					Object subTarget = subCreator.getSendableInstance(false);
+					if (decodingSimple((JsonObject) value, subTarget, subCreator) != null) {
+						creator.setValue(target, property, subTarget, IdMap.NEW);
+					}
+				}
+			} else if (value instanceof JsonArray) {
 				// To Many
-				 SendableEntityCreator subCreator = map.getCreator(property, false, false, null);
-				 if(subCreator != null) {
+				SendableEntityCreator subCreator = map.getCreator(property, false, false, null);
+				if (subCreator != null) {
 					JsonArray jsonArray = (JsonArray) value;
-					for(Object item : jsonArray) {
-						if(item instanceof JsonObject) {
-							 Object subTarget = subCreator.getSendableInstance(false);
-							 if(decodingSimple((JsonObject)item, subTarget, subCreator) != null) {
-								 creator.setValue(target, property, subTarget, IdMap.NEW);
-							 }
+					for (Object item : jsonArray) {
+						if (item instanceof JsonObject) {
+							Object subTarget = subCreator.getSendableInstance(false);
+							if (decodingSimple((JsonObject) item, subTarget, subCreator) != null) {
+								creator.setValue(target, property, subTarget, IdMap.NEW);
+							}
 						}
 					}
-				 }
-			}else if(value != null) {
+				}
+			} else if (value != null) {
 				// Simple Value
 				creator.setValue(target, property, value, IdMap.NEW);
 			}
 		}
 		return target;
 	}
-	
-	
+
 	/**
 	 * Read json.
 	 *
@@ -447,7 +446,7 @@ public class JsonTokener extends Tokener {
 	 * @return the object
 	 */
 	public Object decoding(JsonObject jsonObject, MapEntity map, boolean kid) {
-		if( map == null) {
+		if (map == null) {
 			return null;
 		}
 		if (jsonObject == null) {
@@ -517,7 +516,7 @@ public class JsonTokener extends Tokener {
 	 */
 	private Object decoding(Object target, JsonObject jsonObject, MapEntity map) {
 		// JSONArray jsonArray;
-		if(map == null) {
+		if (map == null) {
 			return null;
 		}
 		Grammar grammar = map.getGrammar();
@@ -586,7 +585,7 @@ public class JsonTokener extends Tokener {
 	private void parseValue(Object target, String property, Object value, SendableEntityCreator creator,
 			MapEntity map) {
 		// FIXME IF STATGEGY IS UPDATE SET NEW VALUE
-		if( map == null ) {
+		if (map == null) {
 			return;
 		}
 		if (value == null && map.isStrategyNew() == false) {

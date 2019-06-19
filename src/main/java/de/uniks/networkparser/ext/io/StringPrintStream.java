@@ -3,7 +3,7 @@ package de.uniks.networkparser.ext.io;
 /*
 The MIT License
 
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -106,21 +106,15 @@ public class StringPrintStream extends PrintStream implements ObjectCondition {
 		}
 		return false;
 	}
-//	java.io.PrintStream.printf(String, Object...)
-//	java.io.PrintStream.printf(Locale, String, Object...)
-//	java.io.PrintStream.println(boolean)
-//	java.io.PrintStream.println(char)
-//	java.io.PrintStream.println(char[])
-//	java.io.PrintStream.println(double)
-//	java.io.PrintStream.println(float)
-//	java.io.PrintStream.println(int)
-//	java.io.PrintStream.println(long)
-//	public void print(boolean value) {
-//	public void print(char value) {
-//	public void print(char[] value) {
-//	public void print(double value) {
-//	public void print(float value) {
-//	public void print(int value) {
-//	public void print(long value) {
-
+	/*
+	 * java.io.PrintStream.printf(String, Object...)
+	 * java.io.PrintStream.printf(Locale, String, Object...)
+	 * java.io.PrintStream.println(boolean) java.io.PrintStream.println(char)
+	 * java.io.PrintStream.println(char[]) java.io.PrintStream.println(double)
+	 * java.io.PrintStream.println(float) java.io.PrintStream.println(int)
+	 * java.io.PrintStream.println(long) public void print(boolean value) { public
+	 * void print(char value) { public void print(char[] value) { public void
+	 * print(double value) { public void print(float value) { public void print(int
+	 * value) { public void print(long value) {
+	 */
 }

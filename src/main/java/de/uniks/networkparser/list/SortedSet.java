@@ -3,7 +3,7 @@ package de.uniks.networkparser.list;
 /*
 NetworkParser
 The MIT License
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -68,7 +68,7 @@ public class SortedSet<V> extends SimpleSet<V> {
 	 * @param fromElement low endpoint of the keys in the returned map
 	 * @param inclusive   {@code true} if the low endpoint is to be included in the
 	 *                    returned view
-	 * @param             <ST> the ContainerClass
+	 * @param <ST>        the ContainerClass
 	 *
 	 *
 	 * @return a view of the portion of this map whose keys are greater than (or
@@ -113,7 +113,7 @@ public class SortedSet<V> extends SimpleSet<V> {
 	 * @param toElement high endpoint of the keys in the returned map
 	 * @param inclusive {@code true} if the high endpoint is to be included in the
 	 *                  returned view
-	 * @param           <ST> the ContainerClass
+	 * @param <ST>      the ContainerClass
 	 *
 	 * @return result a list with less item then the key
 	 *

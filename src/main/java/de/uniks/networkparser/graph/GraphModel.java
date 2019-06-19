@@ -38,7 +38,7 @@ public abstract class GraphModel extends GraphEntity implements BaseItem {
 	public static final String PROPERTY_GENERATEDCLAZZ = "generatedclazz";
 	private String defaultAuthorName;
 	protected String genPath;
-	private boolean renameAttributes=true;
+	private boolean renameAttributes = true;
 
 	/**
 	 * get All GraphClazz
@@ -157,7 +157,7 @@ public abstract class GraphModel extends GraphEntity implements BaseItem {
 		clazz.setClassModel(this);
 		return clazz;
 	}
-	
+
 	protected Clazz createInstance(String name) {
 		return new Clazz(name);
 	}
@@ -204,30 +204,30 @@ public abstract class GraphModel extends GraphEntity implements BaseItem {
 		for (Clazz item : classes) {
 			String className = item.getName();
 			// Check for First is UpperCase
-			if (className != null && className.length()>0) {
-				if(className.indexOf('.') > 0) {
+			if (className != null && className.length() > 0) {
+				if (className.indexOf('.') > 0) {
 					if (packageName == null) {
 						packageName = className.substring(0, className.lastIndexOf("."));
 					} else if (className.startsWith(packageName) == false) {
 						packageName = "";
 					}
 				}
-				if(renameAttributes) {
+				if (renameAttributes) {
 					int no = className.charAt(0);
-					if(no<'A'|| no>'Z') {
+					if (no < 'A' || no > 'Z') {
 						item.setName(EntityUtil.upFirstChar(className));
 					}
 					// Attributes
 					AttributeSet attributes = item.getAttributes();
-					for(Attribute attribute : attributes) {
+					for (Attribute attribute : attributes) {
 						String name = attribute.getName();
-						if(name == null || name.length()<1) {
+						if (name == null || name.length() < 1) {
 							item.remove(attribute);
 							continue;
 						}
 						no = name.charAt(0);
-						if(no<'a'|| no>'z') {
-							if(name.equals(name.toUpperCase())) {
+						if (no < 'a' || no > 'z') {
+							if (name.equals(name.toUpperCase())) {
 								attribute.setName(name.toLowerCase());
 							} else {
 								attribute.setName(EntityUtil.downFirstChar(name));
@@ -236,7 +236,7 @@ public abstract class GraphModel extends GraphEntity implements BaseItem {
 					}
 				}
 			}
-			if(fixClassModel(item, visited) == false) {
+			if (fixClassModel(item, visited) == false) {
 				return false;
 			}
 		}
@@ -255,7 +255,7 @@ public abstract class GraphModel extends GraphEntity implements BaseItem {
 
 		return true;
 	}
-	
+
 	public String getDefaultPackage() {
 		return DEFAULTPACKAGE;
 	}
@@ -264,7 +264,7 @@ public abstract class GraphModel extends GraphEntity implements BaseItem {
 		// Run over Interfaces, SuperClazzes, KidClazzes, Associations
 		AssociationSet assocs = item.getAssociations();
 		for (Association role : assocs) {
-			if(item.repairAssociation(role, this.renameAttributes) == false) {
+			if (item.repairAssociation(role, this.renameAttributes) == false) {
 				return false;
 			}
 			Clazz clazz = role.getOtherClazz();
@@ -322,7 +322,7 @@ public abstract class GraphModel extends GraphEntity implements BaseItem {
 	}
 
 	private void fixDataType(DataType dataType) {
-		if(dataType == null) {
+		if (dataType == null) {
 			return;
 		}
 		Clazz clazz = dataType.getClazz();

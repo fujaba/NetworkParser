@@ -66,7 +66,7 @@ public class DiagramEditorTask implements Runnable, UncaughtExceptionHandler {
 		if (TYPE_EXIT.equals(this.type)) {
 			if (this.msg != null) {
 				NetworkParserLog logger = editor.getLogger();
-				if(logger != null) {
+				if (logger != null) {
 					logger.debug(this, "run", this.msg);
 				}
 			}

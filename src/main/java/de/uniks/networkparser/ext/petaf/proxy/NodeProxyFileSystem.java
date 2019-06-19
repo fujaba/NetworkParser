@@ -3,7 +3,7 @@ package de.uniks.networkparser.ext.petaf.proxy;
 /*
 The MIT License
 
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -37,7 +37,6 @@ public class NodeProxyFileSystem extends NodeProxy implements ObjectCondition {
 	private String fileName;
 	private FileWatcher nodeProxyFileWatcher;
 	private boolean fullModell;
-	
 
 	public void enableGitFilter() {
 		this.withFilter(this);
@@ -75,10 +74,6 @@ public class NodeProxyFileSystem extends NodeProxy implements ObjectCondition {
 	@Override
 	protected boolean sending(Message msg) {
 		boolean result = super.sending(msg);
-//		if (!this.getFilter().update(msg)) {
-//			// dont't update
-//			return result;
-//		}
 		if (this.space == null) {
 			return false;
 		}
@@ -119,11 +114,11 @@ public class NodeProxyFileSystem extends NodeProxy implements ObjectCondition {
 					this.space.withInit(false);
 					Object model = map.decode(readBaseFile, root, null);
 					this.space.withInit(true);
-					// Check if NodeProxyModel exists
+					/* Check if NodeProxyModel exists */
 					this.space.createModel(model);
 					return readBaseFile;
 				}
-				// Maybe ChangeMessages
+				/* Maybe ChangeMessages */
 				if (readBaseFile instanceof EntityList) {
 					try {
 						EntityList list = (EntityList) readBaseFile;
@@ -133,7 +128,7 @@ public class NodeProxyFileSystem extends NodeProxy implements ObjectCondition {
 							if (message instanceof ChangeMessage) {
 								ChangeMessage changeMsg = (ChangeMessage) message;
 								if (map.getObject(changeMsg.getId()) == null) {
-									// Try to Use old Root
+									/* Try to Use old Root */
 									Object entity = changeMsg.getEntity();
 									if (entity != null) {
 										if (entity instanceof String || entity.getClass().equals(root.getClass())) {
@@ -154,11 +149,11 @@ public class NodeProxyFileSystem extends NodeProxy implements ObjectCondition {
 					}
 					return readBaseFile;
 				}
-				// So May be a SingleChange or FullDatamodel and wrong Config
+				/* So May be a SingleChange or FullDatamodel and wrong Config */
 				this.space.withInit(false);
 				Object model = map.decode(readBaseFile, root, null);
 				this.space.withInit(true);
-				// Check if NodeProxyModel exists
+				/* Check if NodeProxyModel exists */
 				this.space.createModel(model);
 				return readBaseFile;
 			}
@@ -196,18 +191,6 @@ public class NodeProxyFileSystem extends NodeProxy implements ObjectCondition {
 
 	@Override
 	public boolean update(Object value) {
-		// Filter if it should be written on disk
-//				if (value instanceof ChangeMessage) {
-//					SimpleList<NodeProxy> receiver = ((ChangeMessage) value).getReceived();
-//					if (receiver != null && receiver.contains(this) ) {
-//						// already saved to disk
-//						SSystem.out..println("Already saved");
-//						return false;
-//					}
-//				}else {
-//					SSystem.out..println("No Change");
-//				}
-				// eigener change?
 		return true;
 	}
 }

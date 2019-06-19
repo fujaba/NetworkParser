@@ -62,8 +62,10 @@ final class FormatInformation {
 		if (formatInfo != null) {
 			return formatInfo;
 		}
-		/* Should return null, but, some QR codes apparently
-		   do not mask this info. Try again by actually masking the pattern first */
+		/*
+		 * Should return null, but, some QR codes apparently do not mask this info. Try
+		 * again by actually masking the pattern first
+		 */
 		return doDecodeFormatInformation(maskedFormatInfo1 ^ FORMAT_INFO_MASK_QR,
 				maskedFormatInfo2 ^ FORMAT_INFO_MASK_QR);
 	}
@@ -93,8 +95,10 @@ final class FormatInformation {
 				}
 			}
 		}
-		/* Hamming distance of the 32 masked codes is 7, by construction, so <= 3 bits
-		   differing means we found a match */
+		/*
+		 * Hamming distance of the 32 masked codes is 7, by construction, so <= 3 bits
+		 * differing means we found a match
+		 */
 		if (bestDifference <= 3) {
 			return new FormatInformation(bestFormatInfo);
 		}

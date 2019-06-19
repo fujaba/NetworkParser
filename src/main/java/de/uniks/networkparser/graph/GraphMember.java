@@ -6,7 +6,7 @@ import de.uniks.networkparser.buffer.CharacterBuffer;
 /*
 NetworkParser
 The MIT License
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -32,12 +32,12 @@ import de.uniks.networkparser.interfaces.TemplateItem;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SimpleSet;
 
-public abstract class GraphMember  implements TemplateItem {
+public abstract class GraphMember implements TemplateItem {
 	public static final String PROPERTY_NAME = "name";
 	public static final String PROPERTY_CLASSNAME = "className";
 	public static final String PROPERTY_PARENT = "parent";
 	public static final String PROPERTY_CHILD = "child";
-	public static final String PROPERTY_CHILDTRANSITIVE = "childtransitive"; 
+	public static final String PROPERTY_CHILDTRANSITIVE = "childtransitive";
 	public static final String PROPERTY_LITERAL = "literal";
 	public static final String PROPERTY_VISIBILITY = "visibility";
 	public static final String PROPERTY_MODIFIERS = "modifiers";
@@ -62,7 +62,7 @@ public abstract class GraphMember  implements TemplateItem {
 	}
 
 	public Object getValue(String attribute) {
-		if(attribute == null)   {
+		if (attribute == null) {
 			return null;
 		}
 		if (PROPERTY_PATH.equalsIgnoreCase(attribute)) {
@@ -123,18 +123,18 @@ public abstract class GraphMember  implements TemplateItem {
 		if (PROPERTY_CHILDTRANSITIVE.equalsIgnoreCase(attrName)) {
 			GraphSimpleSet children = new GraphSimpleSet();
 			GraphSimpleSet items = this.getChildren();
-			for(GraphMember item : items) {
-				if(item instanceof Association) {
+			for (GraphMember item : items) {
+				if (item instanceof Association) {
 					Association assoc = (Association) item;
-					if(assoc.getType()==AssociationTypes.GENERALISATION) {
+					if (assoc.getType() == AssociationTypes.GENERALISATION) {
 						// Add all SuperAttributes
 						children.withList((Collection<?>) assoc.getOtherClazz().getValue(PROPERTY_CHILDTRANSITIVE));
-					} else if(assoc.getOtherType()==AssociationTypes.GENERALISATION) {
-						//IGNORE
+					} else if (assoc.getOtherType() == AssociationTypes.GENERALISATION) {
+						// IGNORE
 					} else {
 						children.add(item);
 					}
-				}else {
+				} else {
 					children.add(item);
 				}
 			}
@@ -143,7 +143,7 @@ public abstract class GraphMember  implements TemplateItem {
 			}
 			return children;
 		}
-		
+
 		if (PROPERTY_LITERAL.equalsIgnoreCase(attrName)) {
 			GraphSimpleSet items = this.getChildren();
 			GraphSimpleSet literals = new GraphSimpleSet();
@@ -165,14 +165,14 @@ public abstract class GraphMember  implements TemplateItem {
 			}
 			return PROPERTY_THIS;
 		}
-		if(PROPERTY_ANNOTATION.equalsIgnoreCase(attrName)) {
+		if (PROPERTY_ANNOTATION.equalsIgnoreCase(attrName)) {
 			Annotation annotation = getAnnotation();
-			if(annotation != null) {
+			if (annotation != null) {
 				return annotation;
 			}
 			return "";
 		}
-		if(PROPERTY_FILETYPE.equalsIgnoreCase(attrName)) {
+		if (PROPERTY_FILETYPE.equalsIgnoreCase(attrName)) {
 			return getClass().getSimpleName().toLowerCase();
 		}
 		return null;
@@ -222,7 +222,7 @@ public abstract class GraphMember  implements TemplateItem {
 		}
 		if (this.children instanceof GraphMember) {
 			collection.with(this.children);
-		}else if(children instanceof SimpleList<?>){
+		} else if (children instanceof SimpleList<?>) {
 			SimpleList<?> list = (SimpleList<?>) children;
 			collection.withList(list);
 		}

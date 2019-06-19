@@ -3,7 +3,7 @@ package de.uniks.networkparser.gui;
 /*
 The MIT License
 
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -110,7 +110,7 @@ public class TileMap implements SendableEntityCreatorTag {
 		Pos result = new Pos();
 		TileObject tileObject = this.images.get(ebene);
 		int columns = 1;
-		if(this.tileheight>0) {
+		if (this.tileheight > 0) {
 			columns = tileObject.width / this.tileheight;
 		}
 		result.y = pos / columns;
@@ -133,7 +133,7 @@ public class TileMap implements SendableEntityCreatorTag {
 	 */
 	public Pos getPos(int sprite) {
 		Pos pos = new Pos();
-		if(width>0) {
+		if (width > 0) {
 			pos.y = sprite / this.width;
 		}
 		pos.x = sprite - (pos.y * this.width);

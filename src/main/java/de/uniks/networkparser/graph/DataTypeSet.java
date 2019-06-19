@@ -3,7 +3,7 @@ package de.uniks.networkparser.graph;
 /*
 NetworkParser
 The MIT License
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -94,15 +94,15 @@ public class DataTypeSet extends DataType {
 		super.withExternal(external);
 		return this;
 	}
-		
+
 	public Object getValue(String value) {
-		if(PROPERTY_NAME.equals(value)) {
+		if (PROPERTY_NAME.equals(value)) {
 			return getGeneric().getName(true);
 		}
-		if(PROPERTY_CONTAINER.equals(value)) {
+		if (PROPERTY_CONTAINER.equals(value)) {
 			return getClazz().getName(true);
 		}
-		if(PROPERTY_CATEGORIE.equals(value)) {
+		if (PROPERTY_CATEGORIE.equals(value)) {
 			return "SET";
 		}
 		return super.getValue(value);

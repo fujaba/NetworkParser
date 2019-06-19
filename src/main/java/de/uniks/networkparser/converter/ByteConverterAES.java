@@ -3,7 +3,7 @@ package de.uniks.networkparser.converter;
 /*
 NetworkParser
 The MIT License
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -39,7 +39,7 @@ public class ByteConverterAES extends ByteConverter {
 	}
 
 	public CharacterBuffer toString(String values) {
-		if(this.aes != null) {
+		if (this.aes != null) {
 			return aes.encode(values);
 		}
 		return null;
@@ -47,7 +47,7 @@ public class ByteConverterAES extends ByteConverter {
 
 	@Override
 	public String toString(BufferedBuffer values) {
-		if(this.aes != null) {
+		if (this.aes != null) {
 			return aes.encode(values).toString();
 		}
 		return null;
@@ -55,7 +55,7 @@ public class ByteConverterAES extends ByteConverter {
 
 	@Override
 	public byte[] decode(CharSequence value) {
-		if(this.aes != null) {
+		if (this.aes != null) {
 			return aes.decodeString(value);
 		}
 		return null;

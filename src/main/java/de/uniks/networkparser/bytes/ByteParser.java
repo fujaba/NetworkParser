@@ -3,7 +3,7 @@ package de.uniks.networkparser.bytes;
 /*
 NetworkParser
 The MIT License
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -32,7 +32,7 @@ import de.uniks.networkparser.list.SimpleKeyValueList;
 
 public class ByteParser {
 	public Object decode(ByteBuffer buffer, BitEntityCreator creator) {
-		if(creator == null) {
+		if (creator == null) {
 			return null;
 		}
 		SimpleKeyValueList<String, Object> values = new SimpleKeyValueList<String, Object>();
@@ -48,7 +48,7 @@ public class ByteParser {
 	}
 
 	public Object getEntity(ByteBuffer buffer, BitEntity entry, SimpleKeyValueList<String, Object> values) {
-		if(entry == null) {
+		if (entry == null) {
 			return null;
 		}
 		if (entry.size() < 1) {

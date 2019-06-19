@@ -3,7 +3,7 @@ package de.uniks.networkparser.bytes;
 /*
 NetworkParser
 The MIT License
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -152,8 +152,10 @@ public class ByteList extends SimpleList<ByteItem> implements ByteItem {
 			length += len;
 		}
 		if (isPrimitive) {
-			/* Only for ByteList with value dynamic and values with cant be short
-			   add one for ClazzSTEAM Byte as first Byte */
+			/*
+			 * Only for ByteList with value dynamic and values with cant be short add one
+			 * for ClazzSTEAM Byte as first Byte
+			 */
 			length = length - size + ByteEntity.TYPEBYTE + ByteEntity.TYPEBYTE + nullerBytes;
 		}
 		return length;

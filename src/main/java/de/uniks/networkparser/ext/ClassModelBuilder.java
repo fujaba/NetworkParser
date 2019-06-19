@@ -7,10 +7,9 @@ import de.uniks.networkparser.graph.Feature;
 public class ClassModelBuilder {
 	private ClassModel model;
 	private Clazz lastClazz;
-	public static final String NOGEN="NOGEN";
+	public static final String NOGEN = "NOGEN";
 	public static final int ONE = 1;
 	public static final int MANY = 42;
-
 
 	/**
 	 * Builds a classmodel builder for the given packageName
@@ -30,9 +29,11 @@ public class ClassModelBuilder {
 		lastClazz = model.createClazz(className);
 		return this;
 	}
+
 	public ClassModel getModel() {
 		return model;
 	}
+
 	public ClassModel build(String... params) {
 		if (params == null) {
 			model.generate();
@@ -117,11 +118,11 @@ public class ClassModelBuilder {
 		my.createBidirectional(other, otherRoleName, otherCardinality, myRoleName, myCardinality);
 		return this;
 	}
-	
+
 	public ClassModelBuilder setModelSet(Class<?> type) {
-		if( model!= null && type != null) {
+		if (model != null && type != null) {
 			Feature feature = model.getFeature(Feature.SETCLASS);
-			if(feature != null) {
+			if (feature != null) {
 				feature.withClazzValue(type);
 			}
 		}

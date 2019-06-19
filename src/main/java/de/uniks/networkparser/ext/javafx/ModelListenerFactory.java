@@ -8,7 +8,7 @@ import de.uniks.networkparser.interfaces.SendableEntityCreator;
 /*
 NetworkParser
 The MIT License
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -52,7 +52,7 @@ public class ModelListenerFactory {
 			field = "" + ReflectionLoader.call(node, "getId");
 		}
 		Object property;
-		// Check for Controls
+		/* Check for Controls */
 		if (ReflectionLoader.PROPERTY.isAssignableFrom(node.getClass())) {
 			if (ReflectionLoader.STRINGPROPERTY.isAssignableFrom(node.getClass())) {
 				return createProperty(DataType.STRING, node, creator, item, field);
@@ -94,7 +94,7 @@ public class ModelListenerFactory {
 		}
 		return null;
 	}
-	
+
 	public static Object getProperty(Object node) {
 		if (ReflectionLoader.PROPERTY.isAssignableFrom(node.getClass())) {
 			return node;
@@ -120,8 +120,8 @@ public class ModelListenerFactory {
 		return null;
 	}
 
-	private static ModelListenerProperty createProperty(DataType typ, Object property,
-			SendableEntityCreator creator, Object item, String field) {
+	private static ModelListenerProperty createProperty(DataType typ, Object property, SendableEntityCreator creator,
+			Object item, String field) {
 		ModelListenerProperty listener = new ModelListenerProperty(creator, item, field, DataType.STRING);
 		Object proxy = listener.getProxy();
 		if (ReflectionLoader.PROPERTY == null || property == null

@@ -3,7 +3,7 @@ package de.uniks.networkparser.graph;
 /*
 NetworkParser
 The MIT License
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -86,9 +86,9 @@ public class Association extends GraphMember {
 		if (PROPERTY_ISIMPLEMENTS.equalsIgnoreCase(attrName)) {
 			return AssociationTypes.isImplements(getType());
 		}
-		if(PROPERTY_ISGENERATE.equalsIgnoreCase(attrName)) {
-			if(AssociationTypes.isEdge(getType()) ) {
-				boolean generate =  getType() != AssociationTypes.EDGE;
+		if (PROPERTY_ISGENERATE.equalsIgnoreCase(attrName)) {
+			if (AssociationTypes.isEdge(getType())) {
+				boolean generate = getType() != AssociationTypes.EDGE;
 				// Case GENERATION AND IMPLEMENTATION
 				return generate;
 			}
@@ -248,7 +248,7 @@ public class Association extends GraphMember {
 	}
 
 	public GraphLabel getInfo() {
-		if (children == null || this.other== null || this.other.getChildren() == null) {
+		if (children == null || this.other == null || this.other.getChildren() == null) {
 			return null;
 		}
 		for (GraphMember child : getChildren()) {
@@ -287,7 +287,7 @@ public class Association extends GraphMember {
 			this.other.withOther(null);
 		}
 		this.other = value;
-		if(value != null) {
+		if (value != null) {
 			this.other.with(this);
 		}
 		return this;

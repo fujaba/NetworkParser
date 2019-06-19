@@ -3,7 +3,7 @@ package de.uniks.networkparser.ext.generic;
 /*
 The MIT License
 
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -89,7 +89,7 @@ public class ReflectionBlackBoxTester {
 		String path = "doc/";
 		if (junitCore != null && args != null) {
 			for (String param : args) {
-				if(param== null) {
+				if (param == null) {
 					continue;
 				}
 				if (param.startsWith("test=")) {
@@ -133,7 +133,7 @@ public class ReflectionBlackBoxTester {
 					logger.error(ReflectionBlackBoxTester.class, "mainTester", "error: " + e.getMessage(), e);
 				}
 			}
-			// Now Check if BaclkBoxTester activ
+			/* Now Check if BaclkBoxTester activ */
 			if (blackBoxPackage != null) {
 				StoryStepJUnit storyStepJUnit = new StoryStepJUnit();
 				storyStepJUnit.withPackageName(blackBoxPackage);
@@ -147,21 +147,21 @@ public class ReflectionBlackBoxTester {
 
 		withIgnoreClazzes(Gradle.class);
 		withIgnoreClazzes(FileClassModel.class);
-		// Add for Files
+		/* Add for Files */
 		withIgnoreClazzes(Story.class, "dumpHTML", "writeFile");
 		withIgnoreClazzes(ErrorHandler.class);
 		withIgnoreClazzes(StoryStepJUnit.class, "update");
 		withIgnoreClazzes(ModelThread.class);
-		
-		ignoreMethods.add(DEFAULTMETHODS, new SimpleSet<String>().with("show*", "run*", "start*", "execute*", "consume", "subscribe", "main"));
-		// Add for new Threads
+
+		ignoreMethods.add(DEFAULTMETHODS,
+				new SimpleSet<String>().with("show*", "run*", "start*", "execute*", "consume", "subscribe", "main"));
+		/* Add for new Threads */
 		withIgnoreClazzes(SimpleController.class, "create", "init");
-//		withIgnoreClazzes(SimpleController.class);
 		withIgnoreClazzes(JarValidator.class);
 	}
 
 	public ReflectionBlackBoxTester withIgnoreClazzes(Class<?> metaClass, String... methods) {
-		if(metaClass == null) {
+		if (metaClass == null) {
 			return this;
 		}
 		String className = metaClass.getName();
@@ -179,7 +179,7 @@ public class ReflectionBlackBoxTester {
 			return this;
 		}
 		for (String item : values) {
-			if(item == null) {
+			if (item == null) {
 				continue;
 			}
 			int pos = item.indexOf(":");
@@ -205,20 +205,19 @@ public class ReflectionBlackBoxTester {
 	public static final boolean isTester() {
 		String property = System.getProperty("Tester");
 		return property != null;
-//		&& "true".equalsIgnoreCase(property);
 	}
 
 	public static final boolean setTester() {
 		String property = System.getProperty("Tester");
-		if(property == null || property.length() < 1) { 
+		if (property == null || property.length() < 1) {
 			System.setProperty("Tester", "true");
 		}
 		return true;
 	}
-	
+
 	public boolean execute(String... path) {
 		try {
-			if(path != null && path.length>0) {
+			if (path != null && path.length > 0) {
 				this.packageName = path[0];
 			}
 			return test(packageName, null);
@@ -232,7 +231,7 @@ public class ReflectionBlackBoxTester {
 		String tester = Os.getTester();
 		setTester();
 		SimpleList<Class<?>> classesForPackage = ReflectionLoader.getClassesForPackage(packageName);
-		if(classesForPackage == null) {
+		if (classesForPackage == null) {
 			return false;
 		}
 		errorCount = 0;
@@ -252,32 +251,31 @@ public class ReflectionBlackBoxTester {
 
 			SimpleSet<String> methods = getMethods(clazz.getName());
 			if (methods != null && methods.size() < 1) {
-//				SSystem.out..println("Ignore:"+clazz.getName());
 				continue;
 			}
 			SimpleTimerTask task = new SimpleTimerTask(Thread.currentThread());
 			timer.schedule(task, 2000);
 			Object obj = ReflectionLoader.newInstanceSimple(clazz);
-			if(obj == null && clazz.isEnum()) {
+			if (obj == null && clazz.isEnum()) {
 				continue;
 			}
-			if(obj == null) {
+			if (obj == null) {
 				obj = ReflectionLoader.newInstanceSimple(clazz);
 			}
 			if (obj != null) {
-				// Show For Ignore DefaultMethods
-				
+				/* Show For Ignore DefaultMethods */
+
 				if (defaultMethods != null) {
 					if (methods != null) {
 						methods.withList(defaultMethods);
-					}else {
+					} else {
 						methods = defaultMethods;
 					}
 				}
 				testClass(obj, clazz, methods);
 			} else {
-				logger.debug(this, "test", "ERROR: DONT INSTANCE: "+clazz.getName());
-				output(clazz, "dont instance of " + clazz.getName() , logger, NetworkParserLog.LOGLEVEL_ERROR, null);
+				logger.debug(this, "test", "ERROR: DONT INSTANCE: " + clazz.getName());
+				output(clazz, "dont instance of " + clazz.getName(), logger, NetworkParserLog.LOGLEVEL_ERROR, null);
 			}
 			task.withSimpleExit(null);
 		}
@@ -287,13 +285,13 @@ public class ReflectionBlackBoxTester {
 			timer = null;
 		}
 
-		if("gitlab".equalsIgnoreCase(tester) == false) {
+		if ("gitlab".equalsIgnoreCase(tester) == false) {
 			ReflectionLoader.closeThreads(oldThreads);
 		}
 		printResult(NetworkParserLog.LOGLEVEL_INFO);
 		return true;
 	}
-	
+
 	public SimpleSet<String> getMethods(String className) {
 		return this.ignoreMethods.get(className);
 	}
@@ -304,7 +302,7 @@ public class ReflectionBlackBoxTester {
 		if (obj == null) {
 			return;
 		}
-		if(ignoreMethods != null) {
+		if (ignoreMethods != null) {
 			for (String m : ignoreMethods) {
 				if (m != null && m.endsWith("*")) {
 					reg = true;
@@ -346,15 +344,14 @@ public class ReflectionBlackBoxTester {
 
 			Object[] call = null;
 			m.setAccessible(true);
-			// mit Null as Parameter
-//			SSystem.out..println(System.currentTimeMillis()+" TEST:"+clazz.getName()+":"+m.getName());
+			/* mit Null as Parameter */
 			Class<?>[] parameterTypes = m.getParameterTypes();
-			for(String type : tests) {
+			for (String type : tests) {
 				try {
 					call = getParameters(m, parameterTypes, type, this);
-					if(call != null) {
-						if(logger != null) {
-							logger.info(this, "CALL", obj.getClass().getName()+": "+m.getName());
+					if (call != null) {
+						if (logger != null) {
+							logger.info(this, "CALL", obj.getClass().getName() + ": " + m.getName());
 						}
 						m.invoke(obj, call);
 						successCount++;
@@ -363,19 +360,15 @@ public class ReflectionBlackBoxTester {
 					saveException(e, clazz, m, call);
 					isValid = false;
 				}
-				if(TYPE_NULLVALUE.equals(type)) {
-					// specialcase
-					if("update".equals(m.getName())) {
-						// So try again
+				if (TYPE_NULLVALUE.equals(type)) {
+					/* specialcase */
+					if ("update".equals(m.getName())) {
+						/* So try again */
 						try {
 							Class<?>[] types = m.getParameterTypes();
-							if(types.length == 1) {
-								if(types[0] != int.class 
-										&& types[0] != byte[].class
-										&& types[0] != String.class
-										&& types[0] != byte.class
-										&& types[0] != HTTPRequest.class
-										) {
+							if (types.length == 1) {
+								if (types[0] != int.class && types[0] != byte[].class && types[0] != String.class
+										&& types[0] != byte.class && types[0] != HTTPRequest.class) {
 									m.invoke(obj, new SimpleEvent(this, "TESTER", null, null));
 								}
 							}
@@ -385,7 +378,7 @@ public class ReflectionBlackBoxTester {
 						}
 					}
 					if (propertyChangeListener != null && "addPropertyChangeListener".equals(m.getName())) {
-						// So try again
+						/* So try again */
 						try {
 							propertyChangeListener.set(obj, null);
 						} catch (Exception e) {
@@ -401,10 +394,8 @@ public class ReflectionBlackBoxTester {
 				}
 			}
 			Set<Thread> newThreads = Thread.getAllStackTraces().keySet();
-			if(newThreads.size()>oldThreads.size()) {
-				// OPEN THREAD UPS
-				//FIXME
-				logger.debug(this, "test", "ERROR:"+clazz.getName()+":"+m.getName());
+			if (newThreads.size() > oldThreads.size()) {
+				logger.debug(this, "test", "ERROR:" + clazz.getName() + ":" + m.getName());
 			}
 		}
 		for (Field f : clazz.getDeclaredFields()) {
@@ -436,14 +427,12 @@ public class ReflectionBlackBoxTester {
 			}
 		}
 		Set<Thread> newThreads = Thread.getAllStackTraces().keySet();
-		if(newThreads.size()>oldThreads.size()) {
-			// OPEN THREAD UPS
-			//FIXME
-			logger.debug(this, "test", "ERROR:"+clazz.getName());
+		if (newThreads.size() > oldThreads.size()) {
+			logger.debug(this, "test", "ERROR:" + clazz.getName());
 		}
-		if(isValid) {
+		if (isValid) {
 			successClazzCount++;
-		}else {
+		} else {
 			errorClazzCount++;
 		}
 	}
@@ -455,7 +444,7 @@ public class ReflectionBlackBoxTester {
 	}
 
 	private void saveException(Exception e, Class<?> clazz, Method m, Object[] call) {
-		if(clazz == null) {
+		if (clazz == null) {
 			return;
 		}
 		String line = getLine(packageName, e, clazz.getSimpleName());
@@ -466,37 +455,33 @@ public class ReflectionBlackBoxTester {
 		} else {
 			if (line.lastIndexOf(".") > 0) {
 				String[] split = line.split("\\.");
-				shortName = line.substring(0, line.lastIndexOf(":") - 4) + m.getName() + "(" + split[split.length - 2] + "."
-						+ split[split.length - 1] + ")";
+				shortName = line.substring(0, line.lastIndexOf(":") - 4) + m.getName() + "(" + split[split.length - 2]
+						+ "." + split[split.length - 1] + ")";
 				String value = split[split.length - 1];
-				if(value.indexOf(":")>0) {
-					pos = Integer.valueOf(value.substring(value.indexOf(":")+1));
+				if (value.indexOf(":") > 0) {
+					pos = Integer.valueOf(value.substring(value.indexOf(":") + 1));
 				}
 			}
 		}
 		String causes = "";
 		Throwable exception = e;
-		if(e.getCause()!= null) {
-			causes = ": "+e.getCause();
-			if(e instanceof InvocationTargetException) {
-				exception = ((InvocationTargetException)e).getTargetException();
+		if (e.getCause() != null) {
+			causes = ": " + e.getCause();
+			if (e instanceof InvocationTargetException) {
+				exception = ((InvocationTargetException) e).getTargetException();
 			}
-		}else if(e instanceof InvocationTargetException) {
-			exception = ((InvocationTargetException)e).getTargetException();
-			causes = ": "+exception.getCause();
-		}else if(e.getMessage() != null){
-			causes = ": "+e.getMessage();
+		} else if (e instanceof InvocationTargetException) {
+			exception = ((InvocationTargetException) e).getTargetException();
+			causes = ": " + exception.getCause();
+		} else if (e.getMessage() != null) {
+			causes = ": " + e.getMessage();
 		}
-		if(ignoreClassError == false || pos != 1) {
-			// Check for Exception
-			if(ignoreSimpleException == false || exception == null || exception instanceof SimpleException == false) {
-				output(m, "at " + clazz.getName() +  causes + " " + shortName, logger,
-						NetworkParserLog.LOGLEVEL_ERROR, e);
+		if (ignoreClassError == false || pos != 1) {
+			/* Check for Exception */
+			if (ignoreSimpleException == false || exception == null || exception instanceof SimpleException == false) {
+				output(m, "at " + clazz.getName() + causes + " " + shortName, logger, NetworkParserLog.LOGLEVEL_ERROR,
+						e);
 				errorCount++;
-				
-//				if(errorCount>500) {
-//					Assert.fail();
-//				}
 			}
 		}
 	}
@@ -525,15 +510,16 @@ public class ReflectionBlackBoxTester {
 	}
 
 	public void printResult(int loglevel) {
-		// Write out all Results
-		output(this, "Errors: " + errorCount + "/" + (errorCount + successCount)+" "+errorClazzCount+"/"+(errorClazzCount+successClazzCount), logger, loglevel, null);
-		if(startTime>0 && oldThreadCount>0) {
+		/* Write out all Results */
+		output(this, "Errors: " + errorCount + "/" + (errorCount + successCount) + " " + errorClazzCount + "/"
+				+ (errorClazzCount + successClazzCount), logger, loglevel, null);
+		if (startTime > 0 && oldThreadCount > 0) {
 			output(this, "Time: " + (System.currentTimeMillis() - startTime) + "ms - Thread: " + oldThreadCount + " -> "
 					+ Thread.activeCount(), logger, loglevel, null);
 		}
 
 	}
-	
+
 	public void output(Object owner, String message, NetworkParserLog logger, int logLevel, Exception e) {
 		if (logger != null) {
 			logger.log(owner, "output", message, logLevel, e);
@@ -541,7 +527,7 @@ public class ReflectionBlackBoxTester {
 	}
 
 	public static Object[] getParameters(Executable m, Class<?>[] parameters, String type, Object owner) {
-		if(parameters == null) {
+		if (parameters == null) {
 			return new Object[0];
 		}
 		int length = parameters.length;
@@ -602,7 +588,7 @@ public class ReflectionBlackBoxTester {
 				return (byte) 0;
 			}
 			if (equalsClass(clazz, short.class, Short.class)) {
-				return (short)0;
+				return (short) 0;
 			}
 			if (equalsClass(clazz, int.class, Integer.class)) {
 				return 0;
@@ -676,7 +662,7 @@ public class ReflectionBlackBoxTester {
 	public ObjectCondition getCustom() {
 		return custom;
 	}
-	
+
 	public ReflectionBlackBoxTester withCustom(ObjectCondition condition) {
 		this.custom = condition;
 		return this;
@@ -685,13 +671,13 @@ public class ReflectionBlackBoxTester {
 	private static Object getRandomValue(Class<?> clazz) {
 		if (clazz != null && clazz.isPrimitive()) {
 			if (equalsClass(clazz, byte.class, Byte.class)) {
-				return (byte)0x50;
+				return (byte) 0x50;
 			}
 			if (equalsClass(clazz, int.class, Integer.class)) {
 				return 42;
 			}
 			if (equalsClass(clazz, short.class, Short.class)) {
-				return (short)2;
+				return (short) 2;
 			}
 			if (equalsClass(clazz, long.class, Long.class)) {
 				return 3;
@@ -718,9 +704,8 @@ public class ReflectionBlackBoxTester {
 			return null;
 		} else if (equalsClass(clazz, File.class)) {
 			return new File("");
-		} else if (clazz==byte[][].class) {
-			// byte[][]
-			return new byte[][]{new byte[]{1,2}};
+		} else if (clazz == byte[][].class) {
+			return new byte[][] { new byte[] { 1, 2 } };
 		} else if (clazz.isArray()) {
 			Class<?> arrayClazz = clazz.getComponentType();
 			int nrDims = 1 + clazz.getName().lastIndexOf('[');
@@ -740,7 +725,6 @@ public class ReflectionBlackBoxTester {
 					return null;
 				}
 				return ReflectionLoader.newInstanceSimple(clazz);
-//				return clazz.getConstructor().newInstance();
 			} catch (Throwable e) {
 				try {
 					Constructor<?>[] declaredConstructors = clazz.getDeclaredConstructors();
@@ -801,7 +785,7 @@ public class ReflectionBlackBoxTester {
 		}
 		return null;
 	}
-	
+
 	private static Object getMiddleValue(Class<?> clazz) {
 		if (clazz != null && clazz.isPrimitive()) {
 			if (equalsClass(clazz, boolean.class, Boolean.class)) {
@@ -814,10 +798,10 @@ public class ReflectionBlackBoxTester {
 				return 1000;
 			}
 			if (equalsClass(clazz, short.class, Short.class)) {
-				return (short)1000;
+				return (short) 1000;
 			}
 			if (equalsClass(clazz, long.class, Long.class)) {
-				return (long)1000;
+				return (long) 1000;
 			}
 			if (equalsClass(clazz, char.class, Character.class)) {
 				return Character.MAX_VALUE;
@@ -835,7 +819,7 @@ public class ReflectionBlackBoxTester {
 	}
 
 	private String getLine(String packageName, Exception e, String clazzName) {
-		if(e == null) {
+		if (e == null) {
 			return null;
 		}
 		Throwable cause = e.getCause();
@@ -849,21 +833,21 @@ public class ReflectionBlackBoxTester {
 	}
 
 	private String getLineFromThrowable(String packageName, Throwable e, String clazzName) {
-		if(e== null) {
+		if (e == null) {
 			return "";
 		}
 		StackTraceElement[] stackTrace = e.getStackTrace();
-		if(packageName != null) {
+		if (packageName != null) {
 			for (StackTraceElement ste : stackTrace) {
 				String name = ste.getClassName();
-				if(name.startsWith(packageName) && !name.startsWith(packageName + ".test")) {
+				if (name.startsWith(packageName) && !name.startsWith(packageName + ".test")) {
 					return name + ".java:" + ste.getLineNumber();
 				}
 			}
 		}
 		return "";
 	}
-	
+
 	public ReflectionBlackBoxTester withLogger(NetworkParserLog logger) {
 		this.logger = logger;
 		return this;
@@ -873,9 +857,9 @@ public class ReflectionBlackBoxTester {
 		this.ignoreClassError = value;
 		return this;
 	}
+
 	public ReflectionBlackBoxTester withDisableSimpleException(boolean value) {
 		this.ignoreSimpleException = value;
 		return this;
 	}
 }
-

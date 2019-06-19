@@ -3,7 +3,7 @@ package de.uniks.networkparser.ext.petaf.proxy;
 /*
 The MIT License
 
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -186,7 +186,7 @@ public class NodeProxyTCP extends NodeProxy {
 				if (msg instanceof ReceivingTimerTask) {
 					((ReceivingTimerTask) msg).withSpace(this.space);
 				}
-				// Let my Know about the new Receiver
+				/* Let my Know about the new Receiver */
 				if (receiver != null) {
 					this.space.with(receiver);
 				}
@@ -254,7 +254,7 @@ public class NodeProxyTCP extends NodeProxy {
 				success = true;
 			}
 		} catch (IOException ioException) {
-			// could not reach the proxy, mark it as offline
+			/* could not reach the proxy, mark it as offline */
 			this.withOnline(false);
 			success = false;
 		}
@@ -281,7 +281,8 @@ public class NodeProxyTCP extends NodeProxy {
 			if (serverSocket != null) {
 				return true;
 			}
-			// Incoming Proxy
+			/
+			Incoming Proxy */
 			if (isInput == false) {
 				withType(NodeProxy.TYPE_IN);
 			}
@@ -302,7 +303,6 @@ public class NodeProxyTCP extends NodeProxy {
 					url = InetAddress.getLocalHost().getHostAddress();
 				} catch (UnknownHostException e) {
 				}
-				// NodeProxyTCP result = createProxy(url, port);
 			}
 		}
 		return true;
@@ -607,7 +607,7 @@ public class NodeProxyTCP extends NodeProxy {
 			while (true) {
 				int bytesRead = is.read(messageArray, 0, BUFFER);
 				if (bytesRead <= 0)
-					break; // <======= no more data
+					break; /* <======= no more data */
 				sb.add(new String(messageArray, 0, bytesRead, Charset.forName("UTF-8")));
 			}
 			root.with(sb);
@@ -619,13 +619,12 @@ public class NodeProxyTCP extends NodeProxy {
 				while (true) {
 					int bytesRead = is.read(messageArray, 0, BUFFER);
 					if (bytesRead <= 0)
-						break; // <======= no more data
+						break; /* <======= no more data */
 					sb.add(new String(messageArray, 0, bytesRead, Charset.forName("UTF-8")));
 				}
 				root.with(sb);
 			} catch (Exception e2) {
 			}
-//			e.printStackTrace();
 		}
 
 		conn.disconnect();
@@ -676,12 +675,12 @@ public class NodeProxyTCP extends NodeProxy {
 		}
 		return readAnswer(conn, rootItem);
 	}
-	
+
 	public static HTMLEntity getSimpleHTTP(String url, String... headers) {
 		HttpURLConnection conn = getConnection(url, GET);
-		if(headers != null && headers.length %2 == 0) {
-			for(int i=0;i<headers.length;i+=2) {
-				conn.setRequestProperty(headers[i], headers[i+1]);
+		if (headers != null && headers.length % 2 == 0) {
+			for (int i = 0; i < headers.length; i += 2) {
+				conn.setRequestProperty(headers[i], headers[i + 1]);
 			}
 		}
 		if (conn == null) {
@@ -703,7 +702,7 @@ public class NodeProxyTCP extends NodeProxy {
 			while (true) {
 				int bytesRead = is.read(messageArray, 0, BUFFER);
 				if (bytesRead <= 0)
-					break; // <======= no more data
+					break; /* <======= no more data */
 				sb.addBytes(messageArray, bytesRead, false);
 			}
 		} catch (Exception e) {
@@ -734,8 +733,7 @@ public class NodeProxyTCP extends NodeProxy {
 	}
 
 	public static NodeProxy search(int port) {
-		//Create BroadCast and search in Local Network
-		
+		/* Create BroadCast and search in Local Network */
 		return null;
 	}
 

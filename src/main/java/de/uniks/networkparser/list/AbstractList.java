@@ -3,7 +3,7 @@ package de.uniks.networkparser.list;
 /*
 NetworkParser
 The MIT License
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -40,17 +40,17 @@ import de.uniks.networkparser.interfaces.Condition;
 
 public abstract class AbstractList<V> extends AbstractArray<V> implements Iterable<V>, Cloneable {
 	private Class<?> type;
-	
+
 	@SuppressWarnings("unchecked")
 	public <ST extends AbstractList<V>> ST withType(Class<?> type) {
 		this.type = type;
 		return (ST) this;
 	}
-	
+
 	public Class<?> getTypClass() {
 		return type;
 	}
-	
+
 	@Override
 	protected int addKey(int pos, Object element, int size) {
 		if (this.type != null && this.type.isAssignableFrom(element.getClass()) == false) {
@@ -58,7 +58,7 @@ public abstract class AbstractList<V> extends AbstractArray<V> implements Iterab
 		}
 		return super.addKey(pos, element, size);
 	}
-	
+
 	/**
 	 * <p>
 	 * This implementation iterates over the specified collection, and adds each

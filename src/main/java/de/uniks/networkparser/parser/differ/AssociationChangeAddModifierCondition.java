@@ -14,7 +14,7 @@ public class AssociationChangeAddModifierCondition extends MatchCondition {
 	}
 
 	protected boolean checkCondition(GraphMatcher matches, Match match) {
-		if(match == null || matches == null || match.getOtherMatch() == null) {
+		if (match == null || matches == null || match.getOtherMatch() == null) {
 			return false;
 		}
 		Association sourceAssociation = (Association) match.getMatch();
@@ -30,7 +30,7 @@ public class AssociationChangeAddModifierCondition extends MatchCondition {
 
 	@Override
 	protected boolean calculateFileDiffs(GraphModel model, GraphMatcher matches, Match match) {
-		if(match == null || matches == null || match.getOtherMatch() == null) {
+		if (match == null || matches == null || match.getOtherMatch() == null) {
 			return false;
 		}
 		Association oldAssociation = (Association) match.getMatch();
@@ -52,7 +52,7 @@ public class AssociationChangeAddModifierCondition extends MatchCondition {
 
 	@Override
 	protected boolean calculateModelDiffs(GraphModel model, GraphMatcher matches, Match match) {
-		if(match == null || matches == null || match.getOtherMatch() == null) {
+		if (match == null || matches == null || match.getOtherMatch() == null) {
 			return false;
 		}
 		Association oldAssociation = (Association) match.getOtherMatch().getMatch();
@@ -68,7 +68,7 @@ public class AssociationChangeAddModifierCondition extends MatchCondition {
 	}
 
 	private boolean checkAssociationModifiers(Association oldAssociation, Association newAssociation) {
-		if(oldAssociation == null || newAssociation == null) {
+		if (oldAssociation == null || newAssociation == null) {
 			return false;
 		}
 		Modifier oldModifier = oldAssociation.getModifier();

@@ -3,7 +3,7 @@ package de.uniks.networkparser.ext;
 /*
 The MIT License
 
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -39,40 +39,40 @@ public class Os {
 
 	public static final boolean isWindows() {
 		String os = System.getProperty("os.name").toLowerCase();
-		// windows
+		/* windows */
 		return (os.indexOf("win") >= 0);
 	}
 
 	public static final boolean isMac() {
 		String os = System.getProperty("os.name").toLowerCase();
-		// Mac
+		/* Mac */
 		return (os.indexOf("mac") >= 0);
 	}
 
 	public static final boolean isIOS() {
 		String os = System.getProperty("os.name").toLowerCase();
-		// IOS
+		/* IOS */
 		return (os.indexOf("ios") >= 0);
 	}
 
 	public static final boolean isReflectionTest() {
 		return System.getProperty("Tester") != null;
 	}
+
 	public static String getTester() {
 		return System.getProperty("Tester");
 	}
-
 
 	public static final boolean isJavaFX() {
 		if (ReflectionLoader.PLATFORM == null || ReflectionLoader.PANE == null) {
 			return false;
 		}
-		if(isReflectionTest()) {
+		if (isReflectionTest()) {
 			return false;
 		}
 		try {
 			Object item = ReflectionLoader.newInstance(ReflectionLoader.PANE);
-			if(item == null) {
+			if (item == null) {
 				return false;
 			}
 		} catch (Throwable e) {
@@ -113,7 +113,7 @@ public class Os {
 	public static final boolean isEclipse() {
 		String fileName = Os.getFilename().toLowerCase();
 		if (fileName.endsWith(".jar") == false) {
-			// Eclipse
+			/* Eclipse */
 			return true;
 		}
 		return false;
@@ -122,15 +122,14 @@ public class Os {
 	public static final boolean isUnix() {
 
 		String os = System.getProperty("os.name").toLowerCase();
-		// linux or unix
+		/* linux or unix */
 		return (os.indexOf("nix") >= 0 || os.indexOf("nux") >= 0);
-
 	}
 
 	public static final boolean isSolaris() {
 
 		String os = System.getProperty("os.name").toLowerCase();
-		// Solaris
+		/* Solaris */
 		return (os.indexOf("sunos") >= 0);
 	}
 
@@ -166,7 +165,7 @@ public class Os {
 	}
 
 	public static final boolean checkSystemTray() {
-		if(isReflectionTest()) {
+		if (isReflectionTest()) {
 			return false;
 		}
 		Object value = ReflectionLoader.call(ReflectionLoader.SYSTEMTRAY, "isSupported");
@@ -175,13 +174,13 @@ public class Os {
 		}
 		return false;
 	}
-	
+
 	public static final boolean isFXThread() {
-		if(isReflectionTest()) {
+		if (isReflectionTest()) {
 			return false;
 		}
 		Object result = ReflectionLoader.call(ReflectionLoader.PLATFORM, "isFxApplicationThread");
-		if (Boolean.TRUE.equals(result) ) {
+		if (Boolean.TRUE.equals(result)) {
 			return true;
 		}
 		return false;

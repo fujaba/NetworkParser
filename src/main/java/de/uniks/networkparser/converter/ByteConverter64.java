@@ -3,7 +3,7 @@ package de.uniks.networkparser.converter;
 /*
 The MIT License
 
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -38,7 +38,7 @@ public class ByteConverter64 extends ByteConverter {
 	/* ENCODE */
 	@Override
 	public String toString(BufferedBuffer values) {
-		if(values == null) {
+		if (values == null) {
 			return null;
 		}
 		int i, j, k;
@@ -72,13 +72,12 @@ public class ByteConverter64 extends ByteConverter {
 		return toStaticString(values, true);
 	}
 
-	
 	/**
 	 * Base64 encode a byte array. No line breaks are inserted. This method is
 	 * suitable for short strings, such as those in the IMAP AUTHENTICATE protocol,
 	 * but not to encode the entire content of a MIME part.
 	 *
-	 * @param values the byte array
+	 * @param values      the byte array
 	 * @param finishToken finish TOken with =
 	 * @return the encoded byte array
 	 **/
@@ -99,8 +98,8 @@ public class ByteConverter64 extends ByteConverter {
 	 * suitable for short strings, such as those in the IMAP AUTHENTICATE protocol,
 	 * but not to encode the entire content of a MIME part.
 	 *
-	 * @param values the byte array
- 	 * @param finishToken finish TOken with =
+	 * @param values      the byte array
+	 * @param finishToken finish TOken with =
 	 * @return the encoded byte array
 	 */
 	public CharacterBuffer toStaticString(byte[] values, boolean finishToken) {
@@ -125,7 +124,7 @@ public class ByteConverter64 extends ByteConverter {
 	/**
 	 * Convert a simpleString to Base64
 	 * 
-	 * @param values Input String
+	 * @param values      Input String
 	 * @param finishToken boolean for Finish Token
 	 * @return a Base64 String
 	 */
@@ -162,25 +161,25 @@ public class ByteConverter64 extends ByteConverter {
 	 * buffer to encode. If outbuf is non-null, it's used as is. Otherwise, a new
 	 * output buffer is allocated.
 	 * 
-	 * @param buffer Buffer for encoding
-	 * @param off    offset of String
-	 * @param size   size of String
+	 * @param buffer      Buffer for encoding
+	 * @param off         offset of String
+	 * @param size        size of String
 	 * @param finishToken finish String with =
 	 * @return encoded String
 	 */
 	private CharacterBuffer encode(BufferedBuffer buffer, int off, int size, boolean finishToken) {
-		if(buffer == null || size>buffer.size()) {
+		if (buffer == null || size > buffer.size()) {
 			return null;
 		}
 		int len = getStaticSize(size);
-		if(finishToken == false) {
-			if(size%3==1) {
-				len -= 2;	
-			}else if(size%3 == 2) {
-				len-=1;
+		if (finishToken == false) {
+			if (size % 3 == 1) {
+				len -= 2;
+			} else if (size % 3 == 2) {
+				len -= 1;
 			}
 		}
-		
+
 		byte[] outbuf = new byte[len];
 
 		int inpos, outpos;
@@ -203,7 +202,7 @@ public class ByteConverter64 extends ByteConverter {
 		if (size == 1) {
 			val = buffer.charAt(inpos++) & 0xff;
 			val <<= 4;
-			if(finishToken) {
+			if (finishToken) {
 				outbuf[outpos + 3] = (byte) '='; /* pad character; */
 				outbuf[outpos + 2] = (byte) '='; /* pad character; */
 			}
@@ -215,7 +214,7 @@ public class ByteConverter64 extends ByteConverter {
 			val <<= 8;
 			val |= buffer.charAt(inpos++) & 0xff;
 			val <<= 2;
-			if(finishToken) {
+			if (finishToken) {
 				outbuf[outpos + 3] = (byte) '='; /* pad character; */
 			}
 			outbuf[outpos + 2] = (byte) pem_array[val & 0x3f];
@@ -246,7 +245,7 @@ public class ByteConverter64 extends ByteConverter {
 			return new byte[0];
 		}
 		byte[] bytes = ((String) value).getBytes();
-		if(bytes.length<1) {
+		if (bytes.length < 1) {
 			return bytes;
 		}
 		if (pem_convert_array == null) {
@@ -271,7 +270,7 @@ public class ByteConverter64 extends ByteConverter {
 			result = new byte[bytes.length * 3 / 4 - bytes.length + i];
 		}
 		int pos = 0;
-		int n,m,k,j;
+		int n, m, k, j;
 		for (i = 0; i < bytes.length - 7; i += 4) {
 			n = pem_convert_array[(bytes[i + 3] & 0xFF)];
 			m = pem_convert_array[(bytes[i + 2] & 0xFF)];
@@ -285,18 +284,18 @@ public class ByteConverter64 extends ByteConverter {
 		m = pem_convert_array[(bytes[i + 2] & 0xFF)];
 		k = pem_convert_array[(bytes[i + 1] & 0xFF)];
 		j = pem_convert_array[(bytes[i + 0] & 0xFF)];
-        result[pos++] = (byte) (j << 2 & 0xFC | k >>> 4 & 0x3);
-        if (pos < result.length) {
-            result[pos++] = (byte) (k << 4 & 0xF0 | m >>> 2 & 0xF);
-            if (pos < result.length) {
-                result[pos++] = (byte) (m << 6 & 0xC0 | n & 0x3F);
-                if (pos < result.length) {
-                	j = pem_convert_array[(bytes[i+4] & 0xFF)];
-                	k = pem_convert_array[(bytes[i+5] & 0xFF)];
-                	result[pos++] = (byte) (j<< 2 & 0xFC | k >>> 4 & 0x3);
-                }
-            }
-        }
+		result[pos++] = (byte) (j << 2 & 0xFC | k >>> 4 & 0x3);
+		if (pos < result.length) {
+			result[pos++] = (byte) (k << 4 & 0xF0 | m >>> 2 & 0xF);
+			if (pos < result.length) {
+				result[pos++] = (byte) (m << 6 & 0xC0 | n & 0x3F);
+				if (pos < result.length) {
+					j = pem_convert_array[(bytes[i + 4] & 0xFF)];
+					k = pem_convert_array[(bytes[i + 5] & 0xFF)];
+					result[pos++] = (byte) (j << 2 & 0xFC | k >>> 4 & 0x3);
+				}
+			}
+		}
 		return result;
 	}
 }

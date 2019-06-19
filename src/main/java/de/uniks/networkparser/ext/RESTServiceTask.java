@@ -40,7 +40,7 @@ public class RESTServiceTask implements Runnable, Server {
 	public static final String JSON = "/json";
 	public static final String XML = "/xml";
 	private SimpleList<HTTPRequest> routing;
-	
+
 	public RESTServiceTask(int port, IdMap map, Object root) {
 		super();
 		this.port = port;
@@ -74,33 +74,32 @@ public class RESTServiceTask implements Runnable, Server {
 
 				clientSocket.readType();
 				clientSocket.readPath();
-				
-				System.out.println(clientSocket.getHttp_Type()+": "+clientSocket.getPath());
+
+				System.out.println(clientSocket.getHttp_Type() + ": " + clientSocket.getPath());
 
 				HTTPRequest match = null;
-				
-				
-				if(routing != null && routing.size()>0) {
+
+				if (routing != null && routing.size() > 0) {
 					// Parsing Path
 					HTTPRequest defaultMatch = null;
 					String path = clientSocket.getPath();
 
-					SortedList<HTTPRequest> matches =new SortedList<HTTPRequest>(true);
-					for(int i=0;i<routing.size();i++) {
+					SortedList<HTTPRequest> matches = new SortedList<HTTPRequest>(true);
+					for (int i = 0; i < routing.size(); i++) {
 						HTTPRequest key = routing.get(i);
-						if("*".equals(key.getPath())) {
+						if ("*".equals(key.getPath())) {
 							defaultMatch = key;
 						}
-						if(clientSocket.match(key)) {
+						if (clientSocket.match(key)) {
 							matches.add(key);
 						}
 					}
-					if(matches.size() > 0) {
+					if (matches.size() > 0) {
 						HTTPRequest first = matches.first();
 						// *
-						if( (routingExists && first.isValid()) || routingExists== false) {
+						if ((routingExists && first.isValid()) || routingExists == false) {
 							match = first;
-						} else if(path.indexOf("/")<1) {
+						} else if (path.indexOf("/") < 1) {
 							match = defaultMatch;
 						}
 					}
@@ -113,7 +112,7 @@ public class RESTServiceTask implements Runnable, Server {
 						clientSocket.close();
 						continue;
 					}
-				} else if(loginController !=  null) {
+				} else if (loginController != null) {
 					if (loginController.update(event) == false) {
 						clientSocket.close();
 						continue;
@@ -121,7 +120,7 @@ public class RESTServiceTask implements Runnable, Server {
 				}
 				// So Valid and Execute Match or default
 				// CHECK FOR NEXT VALID OR BEST
-				if(match != null) {
+				if (match != null) {
 					match.update(clientSocket);
 					clientSocket.close();
 					continue;
@@ -361,8 +360,8 @@ public class RESTServiceTask implements Runnable, Server {
 			return HTTPRequest.HTTP_OK;
 		}
 		// PLAIN KEY VALUE
-		SimpleKeyValueList<String, String> child = new SimpleKeyValueList<String, String>()
-				.withKeyValueString(body, String.class);
+		SimpleKeyValueList<String, String> child = new SimpleKeyValueList<String, String>().withKeyValueString(body,
+				String.class);
 		String className = child.getString(IdMap.CLASS);
 		SendableEntityCreator childCreator = map.getCreator(className, false);
 		Object childValue = childCreator.getSendableInstance(false);
@@ -374,7 +373,7 @@ public class RESTServiceTask implements Runnable, Server {
 			childCreator.setValue(childValue, child.getKeyByIndex(i), child.getValueByIndex(i),
 					SendableEntityCreator.NEW);
 		}
-		creator.setValue(element,  pathValue.toString(), childValue, SendableEntityCreator.NEW);
+		creator.setValue(element, pathValue.toString(), childValue, SendableEntityCreator.NEW);
 		return HTTPRequest.HTTP_OK;
 	}
 
@@ -414,10 +413,10 @@ public class RESTServiceTask implements Runnable, Server {
 	}
 
 	public RESTServiceTask withRooting(String string, Condition<HTTPRequest> webContent) {
-		if(this.routing == null) {
+		if (this.routing == null) {
 			this.routing = new SimpleList<HTTPRequest>();
 		}
-		
+
 		HTTPRequest routing = HTTPRequest.createRouting(string);
 		routing.withUpdateCondition(webContent);
 		this.routing.add(routing);

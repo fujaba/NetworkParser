@@ -3,7 +3,7 @@ package de.uniks.networkparser;
 /*
 The MIT License
 
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -33,7 +33,7 @@ import de.uniks.networkparser.json.JsonTokener;
 import de.uniks.networkparser.list.SimpleList;
 
 public class SimpleGrammar implements Grammar {
-	private boolean flatFormat=false;
+	private boolean flatFormat = false;
 	private ObjectCondition condition;
 	private SimpleList<String> basicProperties = new SimpleList<String>().with(IdMap.ID, IdMap.CLASS, IdMap.SESSION,
 			IdMap.TIMESTAMP);
@@ -42,14 +42,14 @@ public class SimpleGrammar implements Grammar {
 		this.flatFormat = value;
 		return this;
 	}
-	
+
 	public boolean isFlatFormat() {
 		return flatFormat;
 	}
-	
+
 	@Override
 	public BaseItem getProperties(Entity item, MapEntity map, boolean isId) {
-		if(item == null) {
+		if (item == null) {
 			return null;
 		}
 		if (isId) {
@@ -70,10 +70,10 @@ public class SimpleGrammar implements Grammar {
 
 	@Override
 	public String getId(Object obj, IdMap map) {
-		if(condition != null) {
+		if (condition != null) {
 			/* Please set Type for new Id */
-			SimpleEvent evt=new SimpleEvent(map, "id", null, obj);
-			if(condition.update(evt)) {
+			SimpleEvent evt = new SimpleEvent(map, "id", null, obj);
+			if (condition.update(evt)) {
 				return evt.getType();
 			}
 		}
@@ -85,22 +85,22 @@ public class SimpleGrammar implements Grammar {
 		if (entity == null || map == null) {
 			return null;
 		}
-		if(this.flatFormat) {
+		if (this.flatFormat) {
 			if (type != null && SendableEntityCreator.UPDATE.equalsIgnoreCase(type) == false) {
-				entity.put("."+IdMap.TYPE, type);
+				entity.put("." + IdMap.TYPE, type);
 			}
 			if (basicProperties.contains(IdMap.SESSION)) {
 				String session = map.getSession();
 				if (session != null) {
-					entity.put("."+IdMap.SESSION, session);
+					entity.put("." + IdMap.SESSION, session);
 				}
 			}
 			if (basicProperties.contains(IdMap.CLASS)) {
-				entity.put("."+IdMap.CLASS, className);
+				entity.put("." + IdMap.CLASS, className);
 			}
 			if (id != null) {
 				if (basicProperties.contains(IdMap.ID)) {
-					entity.put("."+IdMap.ID, id);
+					entity.put("." + IdMap.ID, id);
 				}
 				if (basicProperties.contains(IdMap.TIMESTAMP)) {
 					if (map.getTimeStamp() == 0) {
@@ -109,7 +109,7 @@ public class SimpleGrammar implements Grammar {
 							ts = id.substring(1);
 						}
 						if (EntityUtil.isNumeric(ts)) {
-							entity.put("."+IdMap.TIMESTAMP, ts);
+							entity.put("." + IdMap.TIMESTAMP, ts);
 						}
 					}
 				}
@@ -204,7 +204,7 @@ public class SimpleGrammar implements Grammar {
 
 	@Override
 	public Object getNewEntity(SendableEntityCreator creator, String className, boolean prototype) {
-		if(creator == null) {
+		if (creator == null) {
 			return null;
 		}
 		return creator.getSendableInstance(prototype);
@@ -212,7 +212,7 @@ public class SimpleGrammar implements Grammar {
 
 	@Override
 	public String getValue(Entity item, String property) {
-		if(item == null) {
+		if (item == null) {
 			return null;
 		}
 		return item.getString(property);
@@ -220,9 +220,9 @@ public class SimpleGrammar implements Grammar {
 
 	@Override
 	public BaseItem encode(Object entity, MapEntity map) {
-		if(map != null) {
+		if (map != null) {
 			Tokener tokener = map.getTokener();
-			if(tokener != null) {
+			if (tokener != null) {
 				return map.getTokener().encode(entity, map);
 			}
 		}

@@ -6,6 +6,7 @@ import de.uniks.networkparser.interfaces.Condition;
 
 public class WebResourceLoader implements Condition<HTTPRequest> {
 	private String redirect;
+
 	public static WebResourceLoader create(String redirect) {
 		WebResourceLoader loader = new WebResourceLoader();
 		loader.with(redirect);
@@ -19,16 +20,16 @@ public class WebResourceLoader implements Condition<HTTPRequest> {
 
 	@Override
 	public boolean update(HTTPRequest value) {
-		if(value != null) {
+		if (value != null) {
 			value.withPath(redirect);
 			PrintWriter output = value.getOutput();
-			if(output != null) {
+			if (output != null) {
 				output.println("HTTP/1.1 301 Moved Permanently");
-				output.println("Location: "+redirect);
+				output.println("Location: " + redirect);
 				output.println("Connection: close");
 			}
 		}
-		
+
 		return true;
 	}
 }

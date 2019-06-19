@@ -12,11 +12,12 @@ public final class BitMatrixParser {
 	private boolean mirror;
 
 	public BitMatrixParser() {
-		
+
 	}
+
 	/** @param bitMatrix {@link BitMatrix} to parse */
 	BitMatrixParser(BitMatrix bitMatrix) {
-		if(bitMatrix != null) {
+		if (bitMatrix != null) {
 			int dimension = bitMatrix.getHeight();
 			if (dimension >= 21 && (dimension & 0x03) == 1) {
 				this.bitMatrix = bitMatrix;
@@ -32,7 +33,7 @@ public final class BitMatrixParser {
 	 * @return {@link FormatInformation} encapsulating the QR Code is format info
 	 */
 	FormatInformation readFormatInformation() {
-		if (parsedFormatInfo != null || bitMatrix== null) {
+		if (parsedFormatInfo != null || bitMatrix == null) {
 			return parsedFormatInfo;
 		}
 
@@ -115,7 +116,7 @@ public final class BitMatrixParser {
 	}
 
 	private int copyBit(int i, int j, int versionBits) {
-		if(bitMatrix == null) {
+		if (bitMatrix == null) {
 			return 0;
 		}
 		boolean bit = mirror ? bitMatrix.get(j, i) : bitMatrix.get(i, j);
@@ -132,14 +133,16 @@ public final class BitMatrixParser {
 	 * @return bytes encoded within the QR Code
 	 */
 	byte[] readCodewords() {
-		if(bitMatrix == null) {
+		if (bitMatrix == null) {
 			return null;
 		}
 		FormatInformation formatInfo = readFormatInformation();
 		Version version = readVersion();
 
-		/* Get the data mask for the format used in this QR Code. This will exclude
-		   some bits from reading as we wind through the bit matrix. */
+		/*
+		 * Get the data mask for the format used in this QR Code. This will exclude some
+		 * bits from reading as we wind through the bit matrix.
+		 */
 		int dimension = bitMatrix.getHeight();
 		unmaskBitMatrix(formatInfo.getDataMask(), bitMatrix, dimension);
 
@@ -153,8 +156,10 @@ public final class BitMatrixParser {
 		/* Read columns in pairs, from right to left */
 		for (int j = dimension - 1; j > 0; j -= 2) {
 			if (j == 6) {
-				/* Skip whole column with vertical alignment pattern;
-				   saves time and makes the other code proceed more cleanly */
+				/*
+				 * Skip whole column with vertical alignment pattern; saves time and makes the
+				 * other code proceed more cleanly
+				 */
 				j--;
 			}
 			/* Read alternatingly from bottom to top then top to bottom */
@@ -294,7 +299,7 @@ public final class BitMatrixParser {
 
 	/** Mirror the bit matrix in order to attempt a second reading. */
 	void mirror() {
-		if(bitMatrix != null) {
+		if (bitMatrix != null) {
 			for (int x = 0; x < bitMatrix.getWidth(); x++) {
 				for (int y = x + 1; y < bitMatrix.getHeight(); y++) {
 					if (bitMatrix.get(x, y) != bitMatrix.get(y, x)) {

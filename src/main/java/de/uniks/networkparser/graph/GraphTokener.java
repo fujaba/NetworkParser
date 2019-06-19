@@ -3,7 +3,7 @@ package de.uniks.networkparser.graph;
 /*
 NetworkParser
 The MIT License
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -128,7 +128,9 @@ public class GraphTokener extends Tokener {
 		}
 		map.pushStack(entity.getClass().getName(), entity, null);
 		Filter filter = map.getFilter();
-		if(filter == null) {return;}
+		if (filter == null) {
+			return;
+		}
 		if (filter.convert(entity, property, item, map.getMap(), map.getDeep()) < 1) {
 			map.popStack();
 			return;
@@ -160,7 +162,7 @@ public class GraphTokener extends Tokener {
 	}
 
 	public GraphList highlightModel(GraphList clazzDiagram, GraphList objectDiagram) {
-		if(clazzDiagram == null || objectDiagram == null) {
+		if (clazzDiagram == null || objectDiagram == null) {
 			return clazzDiagram;
 		}
 		HashMap<String, Association> edges = new HashMap<String, Association>();

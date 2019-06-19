@@ -3,7 +3,7 @@ package de.uniks.networkparser.ext.javafx;
 /*
 The MIT License
 
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -51,7 +51,6 @@ public class DialogStage implements Runnable {
 	public void run() {
 		Object transparent = ReflectionLoader.getField(ReflectionLoader.STAGESTYLE, "TRANSPARENT");
 		this.stage = ReflectionLoader.newInstance(ReflectionLoader.STAGE, ReflectionLoader.STAGESTYLE, transparent);
-		// Stage newStage = new Stage(StageStyle.TRANSPARENT) {
 		parent.setStage(this.stage);
 
 		Object modality;
@@ -83,14 +82,16 @@ public class DialogStage implements Runnable {
 	public void centerOnScreen() {
 		Object scene = ReflectionLoader.call(owner, "getScene");
 		if (scene != null) {
-			// scene.getY() seems to represent the y-offset from the top of the titlebar to
-			// the
-			// start point of the scene, so it is the titlebar height
+			/*
+			 * scene.getY() seems to represent the y-offset from the top of the titlebar to
+			 * the start point of the scene, so it is the titlebar height
+			 */
 			double sceneX = (Double) ReflectionLoader.call(owner, "getX");
 			double sceneY = (Double) ReflectionLoader.call(owner, "getY");
 
-			// because Stage does not seem to centre itself over its owner, we
-			// do it here.
+			/*
+			 * because Stage does not seem to centre itself over its owner, we do it here.
+			 */
 			double x, y;
 
 			double dialogWidth = parent.prefWidth(-1);
@@ -100,7 +101,6 @@ public class DialogStage implements Runnable {
 			double ownerY = (Double) ReflectionLoader.call(owner, "getY");
 
 			if (ownerX < 0 || ownerY < 0) {
-				// Fix for #165
 				Object screen = ReflectionLoader.call(ReflectionLoader.SCREEN, "getPrimary");
 				double maxW = (Double) ReflectionLoader.callChain(screen, "getVisualBounds", "getWidth");
 				double maxH = (Double) ReflectionLoader.callChain(screen, "getVisualBounds", "getHeight");

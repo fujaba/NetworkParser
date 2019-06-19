@@ -3,7 +3,7 @@ package de.uniks.networkparser.buffer;
 /*
 The MIT License
 
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -76,7 +76,7 @@ public class DERBuffer extends ByteBuffer {
 	public final static byte BMPSTRING = 0x1E;
 
 	public void add(BigInteger paramBigInteger) {
-		if(paramBigInteger != null) {
+		if (paramBigInteger != null) {
 			byte[] arrayOfByte = paramBigInteger.toByteArray();
 			add(arrayOfByte);
 			addBigIntegerLength(arrayOfByte.length);
@@ -85,7 +85,7 @@ public class DERBuffer extends ByteBuffer {
 	}
 
 	public void addBitString(String string) {
-		if(string != null) {
+		if (string != null) {
 			byte[] bytes = string.getBytes();
 			add(bytes);
 			addLength(bytes.length);

@@ -3,7 +3,7 @@ package de.uniks.networkparser.ext.petaf.proxy;
 /*
 The MIT License
 
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -24,6 +24,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 import java.net.DatagramPacket;
+
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.ext.RESTServiceTask;
 import de.uniks.networkparser.ext.petaf.NodeProxy;
@@ -110,7 +111,7 @@ public class NodeProxyServer extends NodeProxy {
 
 	@Override
 	protected boolean startProxy() {
-		// May be Server or Client
+		/* May be Server or Client */
 		if (NodeProxy.isInput(this.type)) {
 			if (Server.TCP.equals(this.serverType)) {
 
@@ -124,7 +125,7 @@ public class NodeProxyServer extends NodeProxy {
 					this.server = new RESTServiceTask(port, map, root);
 				}
 			} else {
-				// } else if(Server.BROADCAST) {
+				/* Server.BROADCAST */
 				this.server = new Server_UPD(this, true);
 			}
 		}

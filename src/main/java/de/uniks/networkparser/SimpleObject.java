@@ -3,7 +3,7 @@ package de.uniks.networkparser;
 /*
 The MIT License
 
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -25,6 +25,7 @@ THE SOFTWARE.
 */
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+
 import de.uniks.networkparser.interfaces.SendableEntity;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorIndexId;
 import de.uniks.networkparser.json.JsonObject;
@@ -98,7 +99,7 @@ public class SimpleObject implements SendableEntityCreatorIndexId, SendableEntit
 	}
 
 	public boolean setValue(String key, Object value) {
-		if(key == null) {
+		if (key == null) {
 			return false;
 		}
 		key = key.trim();
@@ -159,7 +160,7 @@ public class SimpleObject implements SendableEntityCreatorIndexId, SendableEntit
 		SimpleObject result = new SimpleObject();
 		if (values != null) {
 			for (SimpleEntity<String, Object> item : values) {
-				if(item != null) {
+				if (item != null) {
 					result.setValue(item.getKey(), item.getValue());
 				}
 			}
@@ -184,7 +185,7 @@ public class SimpleObject implements SendableEntityCreatorIndexId, SendableEntit
 
 	public static SimpleObject create(JsonObject json) {
 		SimpleObject result = new SimpleObject();
-		if(json == null) {
+		if (json == null) {
 			return result;
 		}
 

@@ -5,7 +5,7 @@ import java.util.Date;
 /*
 NetworkParser
 The MIT License
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -43,12 +43,12 @@ public class DataType {
 	public static final DataType DATE = DataType.create(Date.class).withExternal(true);
 
 	protected Clazz value;
-	protected static final String PROPERTY_NAME="name";
-	protected static final String PROPERTY_OBJECTNAME="objectname";
-	protected static final String PROPERTY_CATEGORIE="cat";
-	protected static final String PROPERTY_CLAZZ="clazz";
-	public static final String PROPERTY_CONTAINER="container";
-	
+	protected static final String PROPERTY_NAME = "name";
+	protected static final String PROPERTY_OBJECTNAME = "objectname";
+	protected static final String PROPERTY_CATEGORIE = "cat";
+	protected static final String PROPERTY_CLAZZ = "clazz";
+	public static final String PROPERTY_CONTAINER = "container";
+
 	DataType(String value) {
 		this.value = new Clazz().with(value);
 	}
@@ -103,7 +103,7 @@ public class DataType {
 	}
 
 	public boolean equals(Object obj) {
-		if(obj instanceof String) {
+		if (obj instanceof String) {
 			return ((String) obj).equalsIgnoreCase(this.getName(false));
 		}
 		if (obj instanceof DataType == false) {
@@ -142,7 +142,7 @@ public class DataType {
 	@Override
 	public String toString() {
 		String internName = this.getInternName(false, true);
-		if(internName == null) {
+		if (internName == null) {
 			return "DataType.VOID";
 		}
 		if ("void char byte int long float double String boolean Object".indexOf(internName) >= 0) {
@@ -151,24 +151,24 @@ public class DataType {
 			return "DataType.create(\"" + internName + "\")";
 		}
 	}
-	
+
 	public Object getValue(String value) {
-		if(PROPERTY_CLAZZ.equals(value)) {
+		if (PROPERTY_CLAZZ.equals(value)) {
 			return getClazz();
 		}
-		if(Clazz.PROPERTY_EXTERNAL.equals(value)) {
+		if (Clazz.PROPERTY_EXTERNAL.equals(value)) {
 			return getClazz().isExternal();
 		}
-		if(PROPERTY_NAME.equals(value) || PROPERTY_CONTAINER.equals(value)) {
+		if (PROPERTY_NAME.equals(value) || PROPERTY_CONTAINER.equals(value)) {
 			return getClazz().getName(true);
 		}
-		if(PROPERTY_CATEGORIE.equals(value)) {
-			if(EntityUtil.isPrimitiveType(getInternName(false, true))) {
+		if (PROPERTY_CATEGORIE.equals(value)) {
+			if (EntityUtil.isPrimitiveType(getInternName(false, true))) {
 				return "PRIMITIVE";
 			}
-			return "OBJECT";			
+			return "OBJECT";
 		}
-		if(PROPERTY_OBJECTNAME.equals(value)) {
+		if (PROPERTY_OBJECTNAME.equals(value)) {
 			String name = getClazz().getName(true);
 			return EntityUtil.getObjectType(name);
 		}

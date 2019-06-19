@@ -105,7 +105,7 @@ public class GraphMatcher extends GraphEntity {
 	}
 
 	public boolean matchClazzes() {
-		if(oldModel == null || newModel == null) {
+		if (oldModel == null || newModel == null) {
 			return oldModel == newModel;
 		}
 		ClazzSet oldClazzes = oldModel.getClazzes();
@@ -241,7 +241,7 @@ public class GraphMatcher extends GraphEntity {
 	}
 
 	private void linkMemberMatches(Match oldMatch, Match newMatch) {
-		if(oldMatch != null) {
+		if (oldMatch != null) {
 			oldMatch.withOtherMatch(newMatch);
 		}
 		// COPY ALL TO NEW
@@ -298,7 +298,7 @@ public class GraphMatcher extends GraphEntity {
 //	
 //	
 	private boolean matchAttributes(Clazz oldClazz, Clazz newClazz) {
-		if(oldClazz == null || newClazz == null) {
+		if (oldClazz == null || newClazz == null) {
 			return false;
 		}
 		AttributeSet oldAttributes = oldClazz.getAttributes();
@@ -509,7 +509,7 @@ public class GraphMatcher extends GraphEntity {
 	}
 
 	private boolean matchMethods(Clazz oldClazz, Clazz newClazz) {
-		if(oldClazz == null || newClazz == null) {
+		if (oldClazz == null || newClazz == null) {
 			return oldClazz == newClazz;
 		}
 		MethodSet oldMethods = oldClazz.getMethods();
@@ -701,7 +701,7 @@ public class GraphMatcher extends GraphEntity {
 	}
 
 	private boolean matchAttributeValues(Attribute oldAttribute, Attribute newAttribute) {
-		if(oldAttribute == null || newAttribute == null) {
+		if (oldAttribute == null || newAttribute == null) {
 			return false;
 		}
 		if (oldAttribute.getName().equals(newAttribute.getName()) == false) {
@@ -724,7 +724,7 @@ public class GraphMatcher extends GraphEntity {
 	}
 
 	private boolean matchAssociationValues(Association oldAssociation, Association newAssociation) {
-		if(oldAssociation == null || newAssociation == null) {
+		if (oldAssociation == null || newAssociation == null) {
 			return false;
 		}
 		if (oldAssociation.getName().equals(newAssociation.getName()) == false) {

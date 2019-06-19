@@ -4,7 +4,7 @@ import java.io.File;
 /*
 NetworkParser
 The MIT License
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -420,7 +420,7 @@ public class EntityUtil {
 		if (max > 0 && max < length) {
 			length = max;
 		}
-		if(value == null) {
+		if (value == null) {
 			return null;
 		}
 		StringBuilder sb = new StringBuilder();
@@ -437,7 +437,7 @@ public class EntityUtil {
 	}
 
 	public static final String getValidChars(String source, int maxLen) {
-		if(source == null) {
+		if (source == null) {
 			return null;
 		}
 		int i = source.length() - 1;
@@ -483,7 +483,7 @@ public class EntityUtil {
 			return "void";
 		} else if ("boolean".equalsIgnoreCase(datatype)) {
 			return "false";
-		} else if(datatype != null) {
+		} else if (datatype != null) {
 			if (datatype.endsWith("[]")) {
 				return datatype.substring(0, datatype.length() - 2);
 			} else if (datatype.endsWith("...")) {
@@ -631,7 +631,7 @@ public class EntityUtil {
 	protected static final Object compareValue(String key, Object valueA, Object valueB, TextDiff diffList,
 			BaseItem sameElement) {
 		BaseItem sameObject = null;
-		if(diffList == null) {
+		if (diffList == null) {
 			return null;
 		}
 		if (valueA instanceof Entity && valueB instanceof Entity) {
@@ -664,7 +664,7 @@ public class EntityUtil {
 	}
 
 	public static final boolean isEMFType(String tag) {
-		return emfTypes.indexOf(" " + (""+tag).toUpperCase() + " ") >= 0;
+		return emfTypes.indexOf(" " + ("" + tag).toUpperCase() + " ") >= 0;
 	}
 
 	private static final String primitiveTypes = " java.util.Date void String char Char boolean Boolean byte Byte Object ";
@@ -675,7 +675,7 @@ public class EntityUtil {
 	public static final String javaKeyWords = " assert break case catch class const continue do else enum extends finally for goto if implements import instanceof interface native new package return super switch this throw throws try while true false null ";
 
 	public static boolean isValidJavaId(String myRoleName) {
-		if(myRoleName == null || isModifier(myRoleName)) {
+		if (myRoleName == null || isModifier(myRoleName)) {
 			return false;
 		}
 		if (myRoleName.endsWith(".") || myRoleName.startsWith(".")) {
@@ -686,16 +686,16 @@ public class EntityUtil {
 		}
 		if (myRoleName.indexOf('.') >= 0) {
 			for (String s : myRoleName.split("\\.")) {
-				if(isValidJavaId(s) == false) {
+				if (isValidJavaId(s) == false) {
 					return false;
 				}
 			}
 			return true;
 		}
-		if(isPrimitiveType(myRoleName)) {
+		if (isPrimitiveType(myRoleName)) {
 			return false;
 		}
-		if (javaKeyWords.indexOf(" " + myRoleName + " ") >= 0 ) {
+		if (javaKeyWords.indexOf(" " + myRoleName + " ") >= 0) {
 			return false;
 		}
 		return true;
@@ -707,8 +707,6 @@ public class EntityUtil {
 		}
 		return tag;
 	}
-
-	
 
 	public static final boolean isModifier(String type) {
 		if (type == null) {
@@ -729,16 +727,16 @@ public class EntityUtil {
 		} else {
 			type = " " + type + " ";
 		}
-		
+
 		return numericTypes.indexOf(type) >= 0 || primitiveTypes.indexOf(type) >= 0;
 	}
-	
+
 	public static final String getObjectType(String type) {
 		int pos = types.indexOf(" " + type + " ") / 8;
-		if (pos % 2 == 1 && pos>0) {
-			int posNew = (pos+1)*8;
-			
-			String newType = types.substring(posNew+1, posNew+8).trim();
+		if (pos % 2 == 1 && pos > 0) {
+			int posNew = (pos + 1) * 8;
+
+			String newType = types.substring(posNew + 1, posNew + 8).trim();
 			return newType;
 		}
 		return type;
@@ -793,7 +791,7 @@ public class EntityUtil {
 					String.class);
 
 	public static final String getId(String name) {
-		if(name == null) {
+		if (name == null) {
 			return "";
 		}
 		if (name.lastIndexOf("/") >= 0) {
@@ -823,20 +821,20 @@ public class EntityUtil {
 			return name;
 		}
 		/* SpeedUp Change only if nessessary */
-		int no = (int)name.charAt(0);
-		if(no>='A' && no<='Z') {
+		int no = (int) name.charAt(0);
+		if (no >= 'A' && no <= 'Z') {
 			return name;
 		}
 		return name.substring(0, 1).toUpperCase() + name.substring(1);
 	}
-	
+
 	public static final String downFirstChar(String name) {
 		if (name == null || name.length() < 1) {
 			return name;
 		}
 		/* SpeedUp Change only if nessessary */
-		int no = (int)name.charAt(0);
-		if(no>='a' && no<='z') {
+		int no = (int) name.charAt(0);
+		if (no >= 'a' && no <= 'z') {
 			return name;
 		}
 		return name.substring(0, 1).toLowerCase() + name.substring(1);
@@ -881,7 +879,7 @@ public class EntityUtil {
 	 * @return formatted string
 	 */
 	public static String decode(String str) {
-		if(str == null) {
+		if (str == null) {
 			return null;
 		}
 		StringBuilder buf = new StringBuilder();
@@ -923,7 +921,7 @@ public class EntityUtil {
 	}
 
 	public static final void writeByteHeader(ByteBuffer buffer, byte type, int valueLength) {
-		if(buffer == null) {
+		if (buffer == null) {
 			return;
 		}
 		if (valueLength > 0) {
@@ -952,7 +950,7 @@ public class EntityUtil {
 	}
 
 	public static final byte[] clone(byte[] entity) {
-		if(entity == null) {
+		if (entity == null) {
 			return null;
 		}
 		byte[] result = new byte[entity.length];
@@ -1019,7 +1017,7 @@ public class EntityUtil {
 	 * @return the ByteArray
 	 */
 	public static final byte[] getBytes(CharSequence string) {
-		if(string == null) {
+		if (string == null) {
 			return null;
 		}
 		int size = string.length();
@@ -1193,7 +1191,7 @@ public class EntityUtil {
 		if (strs == null) {
 			return cs == null;
 		}
-		if(cs ==null) {
+		if (cs == null) {
 			return strs == null;
 		}
 
@@ -1270,7 +1268,7 @@ public class EntityUtil {
 	private static final char[] toCharArray(CharSequence cs) {
 		if (cs instanceof String) {
 			return ((String) cs).toCharArray();
-		} else if(cs != null){
+		} else if (cs != null) {
 			int sz = cs.length();
 			char[] array = new char[cs.length()];
 			for (int i = 0; i < sz; i++) {
@@ -1309,7 +1307,7 @@ public class EntityUtil {
 		}
 		/* Create a char buffer to put random letters and numbers in. */
 		char[] randBuffer = new char[length];
-		if(EntityUtil.randGen == null) {
+		if (EntityUtil.randGen == null) {
 			EntityUtil.randGen = new Random();
 		}
 		for (int i = 0; i < randBuffer.length; i++) {
@@ -1319,9 +1317,8 @@ public class EntityUtil {
 	}
 
 	/**
-	 * Returns a pseudo-random number between min and max, inclusive.
-	 * The difference between min and max can be at most
-	 * <code>Integer.MAX_VALUE - 1</code>.
+	 * Returns a pseudo-random number between min and max, inclusive. The difference
+	 * between min and max can be at most <code>Integer.MAX_VALUE - 1</code>.
 	 *
 	 * @param min Minimum value
 	 * @param max Maximum value. Must be greater than min.
@@ -1329,12 +1326,17 @@ public class EntityUtil {
 	 * @see java.util.Random#nextInt(int)
 	 */
 	public static int randInt(int min, int max) {
-		/* NOTE: Usually this should be a field rather than a method variable so that it is not re-seeded every call. */
-		if(EntityUtil.randGen == null) {
+		/*
+		 * NOTE: Usually this should be a field rather than a method variable so that it
+		 * is not re-seeded every call.
+		 */
+		if (EntityUtil.randGen == null) {
 			EntityUtil.randGen = new Random();
 		}
 
-		/* nextInt is normally exclusive of the top value, so add 1 to make it inclusive */
+		/*
+		 * nextInt is normally exclusive of the top value, so add 1 to make it inclusive
+		 */
 		int randomNum = EntityUtil.randGen.nextInt((max - min) + 1) + min;
 
 		return randomNum;
@@ -1376,13 +1378,16 @@ public class EntityUtil {
 	 * @return The Realative Path
 	 */
 	public static String getRelativePath(String targetPath, String basePath, String separator) {
-		if(targetPath == null || basePath == null) {
+		if (targetPath == null || basePath == null) {
 			return null;
 		}
 		String[] base = basePath.split(separator);
 		String[] target = targetPath.split(separator);
 
-		/* First get all the common elements. Store them as a string, and also count how many of them there are. */
+		/*
+		 * First get all the common elements. Store them as a string, and also count how
+		 * many of them there are.
+		 */
 		StringBuilder common = new StringBuilder();
 
 		int commonIndex = 0;
@@ -1392,20 +1397,25 @@ public class EntityUtil {
 			commonIndex++;
 		}
 		if (commonIndex == 0) {
-			/* No single common path element. This most likely indicates differing drive letters, like C: and D:. These paths cannot be relativized. */
+			/*
+			 * No single common path element. This most likely indicates differing drive
+			 * letters, like C: and D:. These paths cannot be relativized.
+			 */
 			return null;
 		}
 
-		/* The number of directories we have to backtrack depends on whether the base is a file or a dir
-		   For example, the relative path from
-
-			/foo/bar/baz/gg/ff to /foo/bar/baz
-		
-		    ".." if ff is a file
-		    "../.." if ff is a directory
-
-		   The following is a heuristic to figure out if the base refers to a file or dir. It's not perfect, because
-		   the resource referred to by this path may not actually exist, but it's the best I can do */
+		/*
+		 * The number of directories we have to backtrack depends on whether the base is
+		 * a file or a dir For example, the relative path from
+		 * 
+		 * /foo/bar/baz/gg/ff to /foo/bar/baz
+		 * 
+		 * ".." if ff is a file "../.." if ff is a directory
+		 * 
+		 * The following is a heuristic to figure out if the base refers to a file or
+		 * dir. It's not perfect, because the resource referred to by this path may not
+		 * actually exist, but it's the best I can do
+		 */
 		boolean baseIsFile = true;
 
 		File baseResource = new File(basePath);
@@ -1432,12 +1442,15 @@ public class EntityUtil {
 
 	public static final CharacterBuffer replaceAll(String text, Object... args) {
 		CharacterBuffer value = new CharacterBuffer().with(text);
-		if(args == null || args[0] == null) {
+		if (args == null || args[0] == null) {
 			return value;
 		}
 		int pos = -1 - args[0].toString().length();
 		String placeholder;
-		/* args are pairs of placeholder, replacement in the first run, replace placeholders by <$<placeholders>$> to mark them uniquely */
+		/*
+		 * args are pairs of placeholder, replacement in the first run, replace
+		 * placeholders by <$<placeholders>$> to mark them uniquely
+		 */
 		for (int i = 0; i < args.length; i += 2) {
 			placeholder = args[i].toString();
 			pos = -1 - placeholder.length();

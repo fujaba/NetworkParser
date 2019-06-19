@@ -10,7 +10,7 @@ import de.uniks.networkparser.interfaces.ObjectCondition;
 /*
 NetworkParser
 The MIT License
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -104,29 +104,29 @@ public class NetworkParserLog extends Handler {
 		}
 		return false;
 	}
-	
+
 	public boolean log(String type, Object... args) {
-		if(type == null || condition == null || args == null) {
+		if (type == null || condition == null || args == null) {
 			return false;
 		}
-		if(args.length==1) {
+		if (args.length == 1) {
 			return condition.update(new SimpleEvent(this, null, null, args[0]).withType(type));
 		}
 		Object source = args[0];
-		if(source == null) {
+		if (source == null) {
 			return false;
 		}
-		if(args.length==2) {
+		if (args.length == 2) {
 			return condition.update(new SimpleEvent(source, null, null, args[1]).withType(type));
 		}
-		
-		Object[] items= new Object[args.length -1];
-		for(int i=1;i<args.length;i++) {
-			items[i-1] = args[i];
+
+		Object[] items = new Object[args.length - 1];
+		for (int i = 1; i < args.length; i++) {
+			items[i - 1] = args[i];
 		}
 		return condition.update(new SimpleEvent(source, null, null, items).withType(type));
 	}
-	
+
 	public boolean print(Object owner, Object item) {
 		if (condition != null) {
 			return condition.update(new SimpleEvent(owner, null, null, item).withType(LOG));
@@ -205,7 +205,7 @@ public class NetworkParserLog extends Handler {
 		}
 		return false;
 	}
-	
+
 	public boolean log(Object owner, String method, String msg, int level, Object... params) {
 		if (level == LOGLEVEL_ERROR) {
 			return this.error(owner, method, msg, params);
@@ -234,10 +234,10 @@ public class NetworkParserLog extends Handler {
 			global.publish(record);
 			return;
 		}
-		if(record == null) {
+		if (record == null) {
 			return;
 		}
-		String level = ""+record.getLevel();
+		String level = "" + record.getLevel();
 		if ("SEVERE".equals(level)) {
 			this.error(record.getSourceClassName(), record.getSourceMethodName(), record.getMessage());
 		}

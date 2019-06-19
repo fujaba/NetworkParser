@@ -15,87 +15,84 @@ public class SimpleReplication implements ObjectCondition {
 	private Object tag;
 	protected Object item;
 	protected ObjectCondition listener;
-	
+
 	public static SimpleReplication bind(SendableEntityCreator creator, Object root, String... tag) {
 		Object item = ReflectionLoader.call(creator, "createIdMap", "");
 		SimpleReplication binder = new SimpleReplication();
-		if(item == null || item instanceof IdMap == false) {
+		if (item == null || item instanceof IdMap == false) {
 			return binder;
 		}
 		IdMap map = (IdMap) item;
 		binder.getSpace().withMap(map);
-		
+
 		String myTag = null;
-		if(creator instanceof SendableEntityCreatorTag ) {
+		if (creator instanceof SendableEntityCreatorTag) {
 			myTag = ((SendableEntityCreatorTag) creator).getTag();
-		}else if(tag != null && tag.length>0) {
+		} else if (tag != null && tag.length > 0) {
 			myTag = tag[0];
 		}
-		if(myTag != null) {
+		if (myTag != null) {
 			binder.binding(creator, root, myTag);
 		}
 		return binder;
 	}
-	
+
 	public SimpleReplication binding(SendableEntityCreator creator, Object root, String tag) {
-		//Bind all Children to 
+		/* Bind all Children to */
 		this.creator = creator;
 		this.item = creator.getSendableInstance(false);
 		this.tag = tag;
-		
-		
+
 		Collection<?> items = (Collection<?>) ReflectionLoader.call(root, "getChildrenUnmodifiable");
 		String[] properties = creator.getProperties();
-		for(Object child : items) {
-			int i=0;
+		for (Object child : items) {
+			int i = 0;
 			String id = (String) ReflectionLoader.call(child, "getId");
-			for(;i<properties.length;i++) {
-				if(properties[i] == null) {
+			for (; i < properties.length; i++) {
+				if (properties[i] == null) {
 					continue;
 				}
-				if(properties[i].equals(id)) {
+				if (properties[i].equals(id)) {
 					break;
 				}
 			}
-			if(i<properties.length) {
-				// Found
+			if (i < properties.length) {
+				/* Found */
 				GUIEvent javaFXEvent = new GUIEvent();
 				javaFXEvent.withListener(this);
 				Object proxy = ReflectionLoader.createProxy(javaFXEvent, ReflectionLoader.EVENTHANDLER);
 
 				ReflectionLoader.call(child, "setOnKeyReleased", ReflectionLoader.EVENTHANDLER, proxy);
-				if(id.equals(this.tag)) {
-					// It is Primary Key
+				if (id.equals(this.tag)) {
+					/* It is Primary Key */
 					Object focusProperty = ReflectionLoader.call(child, "focusedProperty");
 					ReflectionLoader.call(focusProperty, "addListener", ReflectionLoader.CHANGELISTENER, proxy);
 				}
 			}
 		}
-		
-		// Set new UpdateCondition
 		return this;
 	}
-	
+
 	public boolean isValid() {
-		if(this.creator == null) {
+		if (this.creator == null) {
 			return false;
 		}
-		if(this.tag == null) {
+		if (this.tag == null) {
 			return false;
 		}
-		if(getSpace().getMap() == null) {
+		if (getSpace().getMap() == null) {
 			return false;
 		}
 		return true;
 	}
-	
+
 	public SimpleReplication withMap(IdMap map) {
 		getSpace().withMap(map);
 		return this;
 	}
-	
+
 	public Space getSpace() {
-		if(space == null) {
+		if (space == null) {
 			this.space = new Space();
 		}
 		return space;
@@ -103,7 +100,6 @@ public class SimpleReplication implements ObjectCondition {
 
 	@Override
 	public boolean update(Object value) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 }

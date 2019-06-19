@@ -5,7 +5,7 @@ import java.io.PrintStream;
 /*
 NetworkParser
 The MIT License
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -62,7 +62,7 @@ public class DialogBox implements ObjectCondition {
 	private Object owner;
 	private Label titleElement = new Label().withType(Label.TITLE);
 
-	// Inline Show
+	/* Inline Show */
 	private boolean isInline;
 
 	private boolean iconified;
@@ -72,8 +72,12 @@ public class DialogBox implements ObjectCondition {
 		titleElements.add(titleElement);
 		titleElements.add(new Label().withType(Label.SPACER));
 		titleElements.add(new Button().withActionType(Button.CLOSE, this));
-//		minButton = new DialogButton().withGrafik(Grafik.minimize).withStage(stage);
-//		maxButton = new DialogButton().withGrafik(Grafik.maximize).withStage(stage);
+		/*
+		 * minButton = new DialogButton().withGrafik(Grafik.minimize).withStage(stage);
+		 */
+		/*
+		 * maxButton = new DialogButton().withGrafik(Grafik.maximize).withStage(stage);
+		 */
 	}
 
 	public DialogBox withTitle(String value) {
@@ -104,7 +108,7 @@ public class DialogBox implements ObjectCondition {
 		scene = ReflectionLoader.call(stage, "getScene");
 		configScene();
 
-		// modify scene root to install opaque layer and the dialog
+		/* modify scene root to install opaque layer and the dialog */
 		originalParent = ReflectionLoader.call(scene, "getRoot");
 
 		createContent();
@@ -114,7 +118,7 @@ public class DialogBox implements ObjectCondition {
 		ReflectionLoader.call(root, "pseudoClassStateChanged", ReflectionLoader.PSEUDOCLASS, ACTIVE_PSEUDO_CLASS,
 				boolean.class, true);
 
-		// add to originalParent
+		/* add to originalParent */
 		ReflectionLoader.call(scene, "setRoot", ReflectionLoader.PARENT, myPane.getPane());
 
 		ReflectionLoader.call(root, "setVisible", boolean.class, true);
@@ -142,9 +146,9 @@ public class DialogBox implements ObjectCondition {
 	public void setAction(Button value) {
 		this.action = value;
 		if (isInline) {
-			// hide the dialog
+			/* hide the dialog */
 			ReflectionLoader.call(root, "setVisible", boolean.class, false);
-			// reset the scene root
+			/* reset the scene root */
 			Object scene = ReflectionLoader.call(stage, "getScene");
 			Object oldParent = ReflectionLoader.call(scene, "getRoot");
 
@@ -165,10 +169,6 @@ public class DialogBox implements ObjectCondition {
 	}
 
 	public void maximize() {
-		if (isInline) {
-//			if(originalParent instanceof Node) {
-//			root.setPrefWidth(originalParent.getWidth());
-		}
 		if (stage != null) {
 			ReflectionLoader.call(stage, "setFullScreen", true);
 		}
@@ -226,7 +226,7 @@ public class DialogBox implements ObjectCondition {
 			return;
 		}
 		Object scene = ReflectionLoader.call(stage, "getScene");
-		if(DIALOGS_CSS_URL == null) {
+		if (DIALOGS_CSS_URL == null) {
 			return;
 		}
 		String dialogsCssUrl = DIALOGS_CSS_URL.toExternalForm();
@@ -234,7 +234,7 @@ public class DialogBox implements ObjectCondition {
 			scene = ReflectionLoader.call(owner, "getScene");
 		}
 		if (scene != null) {
-			// install CSS
+			/* install CSS */
 			Object styleSheet = ReflectionLoader.call(scene, "getStylesheets");
 			if (styleSheet instanceof List<?>) {
 				List<String> list = (List<String>) styleSheet;
@@ -246,7 +246,7 @@ public class DialogBox implements ObjectCondition {
 	}
 
 	public DialogBox createContent() {
-		if(Os.isReflectionTest()) {
+		if (Os.isReflectionTest()) {
 			return this;
 		}
 		root = ReflectionLoader.newInstance(ReflectionLoader.BORDERPANE);
@@ -255,7 +255,7 @@ public class DialogBox implements ObjectCondition {
 		Object property = ReflectionLoader.call(stage, "focusedProperty");
 		JavaBridgeFX.addListener(property, "addListener", ReflectionLoader.CHANGELISTENER, this);
 
-		// --- titlebar (only used for cross-platform look)
+		/* --- titlebar (only used for cross-platform look) */
 		dialogTitleBar = ReflectionLoader.newInstance(ReflectionLoader.TOOLBAR);
 		JavaBridgeFX.setStyle(dialogTitleBar, false, "window-header");
 		ReflectionLoader.call(dialogTitleBar, "setPrefHeight", double.class, HEADER_HEIGHT);
@@ -277,7 +277,6 @@ public class DialogBox implements ObjectCondition {
 			JavaBridgeFX.setStyle(actionToolbar, false, "window-action");
 			for (Control item : this.actionElements) {
 				Object guiElement = JavaBridgeFX.convert(item, false);
-//				item.withOwner(this);
 				JavaBridgeFX.addChildren(actionToolbar, -1, guiElement);
 			}
 			Object pos = ReflectionLoader.getField(ReflectionLoader.POS, "TOP_RIGHT");
@@ -352,7 +351,7 @@ public class DialogBox implements ObjectCondition {
 		if (value == null) {
 			return this;
 		}
-		if(Os.isReflectionTest()) {
+		if (Os.isReflectionTest()) {
 			return this;
 		}
 		Object box = ReflectionLoader.newInstance(ReflectionLoader.HBOX);
@@ -420,9 +419,9 @@ public class DialogBox implements ObjectCondition {
 		}
 		if (event.getClass().getName().startsWith("javafx")) {
 			double x = (Double) ReflectionLoader.call(event, "getSceneX");
-			double y  = (Double) ReflectionLoader.call(event, "getSceneY");
+			double y = (Double) ReflectionLoader.call(event, "getSceneY");
 			String name = (String) ReflectionLoader.call(event, "getEventType", "getName");
-			if(name == null || name.startsWith("MOUSE-DRAG") == false) {
+			if (name == null || name.startsWith("MOUSE-DRAG") == false) {
 				mouseDragDeltaX = x;
 				mouseDragDeltaY = y;
 			} else {
@@ -443,10 +442,10 @@ public class DialogBox implements ObjectCondition {
 			return true;
 		}
 
-		if(event instanceof Boolean) {
+		if (event instanceof Boolean) {
 			boolean active = (Boolean) event;
-			ReflectionLoader.call(root, "pseudoClassStateChanged", ReflectionLoader.PSEUDOCLASS,
-					ACTIVE_PSEUDO_CLASS, boolean.class, active);
+			ReflectionLoader.call(root, "pseudoClassStateChanged", ReflectionLoader.PSEUDOCLASS, ACTIVE_PSEUDO_CLASS,
+					boolean.class, active);
 			return true;
 		}
 
@@ -507,7 +506,7 @@ public class DialogBox implements ObjectCondition {
 		}
 		File result;
 		if (ReflectionLoader.FILECHOOSERFX != null) {
-			// try JavaFX Dialog
+			/* try JavaFX Dialog */
 			Object fileChooser = ReflectionLoader.newInstance(ReflectionLoader.FILECHOOSERFX);
 			ReflectionLoader.call(fileChooser, "setTitle", caption);
 			ReflectionLoader.call(fileChooser, "setInitialFileName", defaultValue);
@@ -529,8 +528,7 @@ public class DialogBox implements ObjectCondition {
 				return result.getAbsolutePath();
 			}
 		} else {
-			// SWING???
-//			new NetworkParserLog();
+			/* SWING??? */
 			ReflectionLoader.logger = new PrintStream(System.out);
 			if (parentObj == null || ReflectionLoader.JFRAME.isAssignableFrom(parentObj.getClass()) == false) {
 				parentObj = ReflectionLoader.newInstance(ReflectionLoader.JFRAME);

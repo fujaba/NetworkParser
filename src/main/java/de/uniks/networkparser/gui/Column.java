@@ -3,7 +3,7 @@ package de.uniks.networkparser.gui;
 /*
 NetworkParser
 The MIT License
-Copyright (c) 2010-2017 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2017 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -342,7 +342,7 @@ public class Column implements SendableEntityCreatorNoIndex, CellHandler {
 
 	@Override
 	public Object getValue(Object entity, String attribute) {
-		if(entity instanceof Column == false || attribute == null) {
+		if (entity instanceof Column == false || attribute == null) {
 			return null;
 		}
 		String attrName;
@@ -386,7 +386,7 @@ public class Column implements SendableEntityCreatorNoIndex, CellHandler {
 
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value, String type) {
-		if(entity instanceof Column == false || attribute == null) {
+		if (entity instanceof Column == false || attribute == null) {
 			return false;
 		}
 		Column that = (Column) entity;

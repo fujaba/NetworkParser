@@ -3,7 +3,7 @@ package de.uniks.networkparser.interfaces;
 /*
 NetworkParser
 The MIT License
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -31,7 +31,7 @@ public interface ByteItem extends BaseItem {
 	public static final byte BIT_NUMBER = 0x4E; /* N = Number */
 	public static final byte BIT_BYTE = 0x42; /* B = Byte */
 	public static final byte BIT_REFERENCE = 0x52; /* R = Reference */
-	
+
 	/**
 	 * @param converter ByteConverter for Format
 	 * @param isDynamic ByteStream for minimize output

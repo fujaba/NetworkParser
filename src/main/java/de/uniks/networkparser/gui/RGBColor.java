@@ -3,7 +3,7 @@ package de.uniks.networkparser.gui;
 /*
 NetworkParser
 The MIT License
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -68,7 +68,7 @@ public class RGBColor {
 			int green = Integer.valueOf(value.substring(2, 4), 16);
 			int blue = Integer.valueOf(value.substring(4, 6), 16);
 			color.withValue(red, green, blue);
-		}catch (Exception e) {
+		} catch (Exception e) {
 		}
 		return color;
 	}
@@ -139,8 +139,10 @@ public class RGBColor {
 
 	public RGBColor add(RGBColor second) {
 		RGBColor color = new RGBColor();
-		if(second == null) {return color;}
-		
+		if (second == null) {
+			return color;
+		}
+
 		float newRed = ((float) (getRed() + second.getRed())) / 2;
 		float newGreen = ((float) (getGreen() + second.getGreen())) / 2;
 		float newBlue = ((float) (getBlue() + second.getBlue())) / 2;
@@ -163,7 +165,9 @@ public class RGBColor {
 
 	public RGBColor minus(RGBColor second) {
 		RGBColor color = new RGBColor();
-		if(second == null) {return color;}
+		if (second == null) {
+			return color;
+		}
 		if (getRed() == second.getRed() && getGreen() == second.getGreen() && getBlue() == second.getBlue()) {
 			return color;
 		}
@@ -234,7 +238,7 @@ public class RGBColor {
 	}
 
 	private boolean addHex(int value, CharacterBuffer buffer) {
-		if(buffer == null) {
+		if (buffer == null) {
 			return false;
 		}
 		int t = (int) (value / 16);

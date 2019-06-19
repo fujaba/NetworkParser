@@ -13,7 +13,7 @@ public class ClazzChangeRemoveModifierCondition extends MatchCondition {
 	}
 
 	protected boolean checkCondition(GraphMatcher matches, Match match) {
-		if(match == null || matches == null) {
+		if (match == null || matches == null) {
 			return false;
 		}
 		Clazz sourceClazz = (Clazz) match.getMatch();
@@ -39,7 +39,7 @@ public class ClazzChangeRemoveModifierCondition extends MatchCondition {
 
 	@Override
 	protected boolean calculateFileDiffs(GraphModel model, GraphMatcher matches, Match match) {
-		if(match == null || matches == null) {
+		if (match == null || matches == null) {
 			return false;
 		}
 		Clazz oldClazz = (Clazz) match.getMatch();

@@ -165,46 +165,46 @@ public class ExcelParser {
 		}
 		return result;
 	}
-	
+
 	public SimpleList<Object> readCSV(Buffer data, SendableEntityCreator creator) {
- 		SimpleList<Object> result = new SimpleList<Object>();
-		if(data== null || creator == null) {
+		SimpleList<Object> result = new SimpleList<Object>();
+		if (data == null || creator == null) {
 			return result;
 		}
 		SimpleList<String> header = new SimpleList<String>();
 		CharacterBuffer line = data.readLine();
-		if(line == null || line.length() < 1) {
+		if (line == null || line.length() < 1) {
 			return result;
 		}
-		int start=0;
-		for(int i=0;i<line.length();i++) {
-			if(line.charAt(i) == SEMICOLON) {
+		int start = 0;
+		for (int i = 0; i < line.length(); i++) {
+			if (line.charAt(i) == SEMICOLON) {
 				header.add(line.substring(start, i));
-				start=i+1;
+				start = i + 1;
 			}
 		}
 		do {
 			line = data.readLine();
-			int column=0;
-			start=0;
-			//Parsing data
+			int column = 0;
+			start = 0;
+			// Parsing data
 			Object item = creator.getSendableInstance(false);
-			for(int i=0;i<line.length();i++) {
-				if(line.charAt(i) == SEMICOLON) {
+			for (int i = 0; i < line.length(); i++) {
+				if (line.charAt(i) == SEMICOLON) {
 					String value = line.substring(start, i);
 					creator.setValue(item, header.get(column), value, SendableEntityCreator.NEW);
 					column++;
-					if(column>header.size()) {
+					if (column > header.size()) {
 						break;
 					}
-					start=i+1;
+					start = i + 1;
 				}
 			}
 			result.add(item);
-			if(data.isEnd()) {
+			if (data.isEnd()) {
 				break;
 			}
-		}while(line != null);
+		} while (line != null);
 		return result;
 	}
 
@@ -299,7 +299,6 @@ public class ExcelParser {
 		data.with("</Relationships>");
 		return data.toString();
 	}
-	
 
 	private String getHeader(ExcelWorkBook content) {
 		if (content.getAuthor() == null) {
@@ -317,11 +316,10 @@ public class ExcelParser {
 		data.with("</cp:coreProperties>");
 		return data.toString();
 	}
-	
-	
+
 	// Parse WorkBook to Model
 	public boolean parseModel() {
-		
+
 		return false;
 	}
 }

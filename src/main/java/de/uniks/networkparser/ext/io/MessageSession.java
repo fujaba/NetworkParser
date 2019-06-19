@@ -3,7 +3,7 @@ package de.uniks.networkparser.ext.io;
 /*
 The MIT License
 
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -32,11 +32,14 @@ import java.io.UnsupportedEncodingException;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
+
 import javax.net.SocketFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
+
 import de.uniks.networkparser.EntityUtil;
+import de.uniks.networkparser.NetworkParserLog;
 import de.uniks.networkparser.buffer.Buffer;
 import de.uniks.networkparser.buffer.BufferedBuffer;
 import de.uniks.networkparser.buffer.ByteBuffer;
@@ -84,6 +87,7 @@ public class MessageSession {
 	private String type;
 	private String id;
 	private BufferedBuffer responseFactory = new CharacterBuffer();
+	private NetworkParserLog logger;
 
 	public MessageSession connectSSL(String host, String sender, String password) {
 		this.host = host;
@@ -220,7 +224,7 @@ public class MessageSession {
 			}
 			serverSocket = null;
 		} catch (Exception ex) {
-			// Ignore the exception. Probably the socket is not open.
+			/* Ignore the exception. Probably the socket is not open. */
 			return false;
 		}
 		return true;
@@ -279,7 +283,7 @@ public class MessageSession {
 			}
 			if (supportedFeature.contains(FEATURE_TLS)) {
 				response = sendCommand("<starttls xmlns=\"urn:ietf:params:xml:ns:xmpp-tls\" />");
-				// Now create Factory
+				/* Now create Factory */
 				SSLContext context = SSLContext.getInstance("TLS");
 				context.init(null, new javax.net.ssl.TrustManager[] { new ServerTrustManager() },
 						new java.security.SecureRandom());
@@ -293,7 +297,6 @@ public class MessageSession {
 				String login = getLoginText(sender, password);
 				response = sendCommand(
 						"<auth mechanism=\"PLAIN\" xmlns=\"urn:ietf:params:xml:ns:xmpp-sasl\">" + login + "</auth>");
-				// if(response.startsWith("<success "))
 
 				sendStart();
 				bindXMPP();
@@ -382,7 +385,7 @@ public class MessageSession {
 					close();
 					return false;
 				}
-				// send passwd
+				/* send passwd */
 				answer = sendCommand(converter.toStaticString(password).toString());
 				if (checkServerResponse(answer, RESPONSE_LOGIN_SUCCESS) == false) {
 					close();
@@ -399,12 +402,12 @@ public class MessageSession {
 		if (message == null) {
 			return null;
 		}
-		message.write(this.out);
+		message.write(this.out, logger);
 		if (answer == false) {
 			return message;
 		}
-		RabbitMessage response = RabbitMessage.readFrom(diInput);
-		if(response != null) {
+		RabbitMessage response = RabbitMessage.readFrom(diInput, logger);
+		if (response != null) {
 			response.analysePayLoad(broker);
 		}
 		return response;
@@ -497,11 +500,11 @@ public class MessageSession {
 
 				this.diInput = new DataInputStream(this.serverSocket.getInputStream());
 				RabbitMessage message = RabbitMessage.createStartOK(sender, password);
-				// START MESSAGE
+				/* START MESSAGE */
 				RabbitMessage response = sending(broker, message, true);
 
-				// TUNE MESSAGE
-				response = RabbitMessage.readFrom(diInput);
+				/* TUNE MESSAGE */
+				response = RabbitMessage.readFrom(diInput, logger);
 				response.analysePayLoad(broker);
 
 				message = RabbitMessage.createTuneOK((Short) response.getData("channelMax"),
@@ -534,7 +537,7 @@ public class MessageSession {
 		if (TYPE_AMQ.equals(type)) {
 			return false;
 		}
-		// DEFAULT EMAIL
+		/* DEFAULT EMAIL */
 		return connectSMTP(sender, password);
 	}
 
@@ -561,7 +564,7 @@ public class MessageSession {
 		BufferedBuffer response = sendCommand("EHLO " + getLocalHost());
 		supportedFeature.clear();
 		String[] lines = response.toString().split("\n");
-		// Skip first line
+		/* Skip first line */
 		for (int i = 1; i < lines.length; i++) {
 			supportedFeature.add(lines[i]);
 		}
@@ -617,11 +620,11 @@ public class MessageSession {
 	 * @return success
 	 */
 	protected boolean sendValues(char... cmd) {
-		if(cmd == null || out == null) {
+		if (cmd == null || out == null) {
 			return false;
 		}
 		try {
-			
+
 			this.lastSended = new String(cmd);
 			out.write(new String(cmd).getBytes());
 			if (BaseItem.CRLF.equals(new String(cmd)) == false) {
@@ -771,7 +774,7 @@ public class MessageSession {
 	public Object getServerResponse(NodeProxyBroker broker) {
 		if (diInput != null) {
 			if (TYPE_AMQ.equals(broker.getFormat())) {
-				RabbitMessage response = RabbitMessage.readFrom(diInput);
+				RabbitMessage response = RabbitMessage.readFrom(diInput, logger);
 				response.analysePayLoad(broker);
 				return response;
 			}
@@ -828,27 +831,27 @@ public class MessageSession {
 	public String getLocalHost() {
 		InetAddress localHost;
 		String localHostName = null;
-		// get our hostname and cache it for future use
+		/* get our hostname and cache it for future use */
 		try {
 			localHost = InetAddress.getLocalHost();
 			localHostName = localHost.getCanonicalHostName();
-			// if we can't get our name, use local address literal
+			/* if we can't get our name, use local address literal */
 			if (localHostName == null) {
-				// XXX - not correct for IPv6
+				/* XXX - not correct for IPv6 */
 				localHostName = "[" + localHost.getHostAddress() + "]";
 			}
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		}
 
-		// last chance, try to get our address from our socket
+		/* last chance, try to get our address from our socket */
 		if (localHostName == null || localHostName.length() <= 0) {
 			if (serverSocket != null && serverSocket.isBound()) {
 				localHost = serverSocket.getLocalAddress();
 				localHostName = localHost.getCanonicalHostName();
-				// if we can't get our name, use local address literal
+				/* if we can't get our name, use local address literal */
 				if (localHostName == null)
-					// XXX - not correct for IPv6
+					/* XXX - not correct for IPv6 */
 					localHostName = "[" + localHost.getHostAddress() + "]";
 			}
 		}
@@ -861,7 +864,7 @@ public class MessageSession {
 			return "@" + localHost.getHostName();
 		} catch (Exception e) {
 		}
-		return "mailer@localhost"; // worst-case default
+		return "mailer@localhost"; /* worst-case default */
 	}
 
 	private static String prefix = EntityUtil.randomString(5) + "-";
@@ -896,7 +899,7 @@ public class MessageSession {
 	 * @return success
 	 */
 	public boolean sending(SocketMessage message) {
-		if(message == null) {
+		if (message == null) {
 			return false;
 		}
 		if (TYPE_XMPP.equals(this.type) || TYPE_FCM.equals(this.type)) {
@@ -908,12 +911,12 @@ public class MessageSession {
 			return false;
 		}
 
-		// Tell the server who this message is from
+		/* Tell the server who this message is from */
 		if (doCommand(message.getHeaderFrom(this.sender), RESPONSE_MAILACTIONOKEY) == false) {
 			return false;
 		}
 
-		// Now tell the server who we want to send a message to
+		/* Now tell the server who we want to send a message to */
 		SimpleList<String> headerTo = message.getHeaderTo();
 		int pos = 0;
 		for (int i = 0; i < headerTo.size(); i++) {
@@ -924,15 +927,17 @@ public class MessageSession {
 			}
 		}
 
-		// Okay, now send the mail message. We expect a response beginning
-		// with '3' indicating that the server is ready for data.
+		/*
+		 * Okay, now send the mail message. We expect a response beginning with '3'
+		 * indicating that the server is ready for data.
+		 */
 		if (doCommand("DATA", RESPONSE_STARTMAILINPUT) == false) {
 			return false;
 		}
 
 		message.generateMessageId(this.getLocalAdress());
 
-		// Send the message headers
+		/* Send the message headers */
 		sendValues(message.getHeader(SocketMessage.PROPERTY_DATE));
 		sendValues(message.getHeader(SocketMessage.PROPERTY_FROM));
 		sendValues(message.getHeader(SocketMessage.PROPERTY_TO));
@@ -950,7 +955,7 @@ public class MessageSession {
 			sendValues(message.getHeader(SocketMessage.PROPERTY_CONTENTTYPE));
 			sendValues(SocketMessage.CONTENT_ENCODING);
 		}
-		// The CRLF separator between header and content
+		/* The CRLF separator between header and content */
 		sendValues(BaseItem.CRLF);
 		for (BaseItem msg : messages) {
 			CharacterBuffer buffer = new CharacterBuffer();
@@ -962,12 +967,12 @@ public class MessageSession {
 				sendValues(SocketMessage.PROPERTY_CONTENTTYPE + message.getContentType(msg));
 				sendValues(SocketMessage.CONTENT_ENCODING);
 			}
-			// The CRLF separator between header and content
+			/* The CRLF separator between header and content */
 			sendValues(BaseItem.CRLF);
 
 			while (buffer.isEnd() == false) {
 				CharacterBuffer line = buffer.readLine();
-				// If the line begins with a ".", put an extra "." in front of it.
+				/* If the line begins with a ".", put an extra "." in front of it. */
 				if (line.startsWith(".")) {
 					sendValues('.');
 				}
@@ -982,7 +987,7 @@ public class MessageSession {
 			sendValues(SocketMessage.PROPERTY_CONTENTTYPE + SocketMessage.CONTENT_TYPE_PLAIN + " name=" + fileName);
 			sendValues(SocketMessage.CONTENT_ENCODING);
 			sendValues("Content-Disposition: attachment; filename=" + fileName);
-			// The CRLF separator between header and content
+			/* The CRLF separator between header and content */
 			sendValues(BaseItem.CRLF);
 			while (buffer.isEnd() == false) {
 				CharacterBuffer line = buffer.getString(1024);
@@ -992,10 +997,10 @@ public class MessageSession {
 		if (multiPart) {
 			sendValues(splitter + message.generateBoundaryValue() + splitter);
 		}
-		// A "." on a line by itself ends a message.
+		/* A "." on a line by itself ends a message. */
 		doCommand(".", RESPONSE_MAILACTIONOKEY);
 
-		// Message is sent. Close the connection to the server
+		/* Message is sent. Close the connection to the server */
 		return doCommand("QUIT", RESPONSE_SERVICE_CLOSING_TRANSMISSION);
 	}
 
@@ -1013,6 +1018,15 @@ public class MessageSession {
 
 	public MessageSession withType(String msgType) {
 		this.type = msgType;
+		return this;
+	}
+
+	public NetworkParserLog getLogger() {
+		return logger;
+	}
+
+	public MessageSession withLogger(NetworkParserLog logger) {
+		this.logger = logger;
 		return this;
 	}
 }

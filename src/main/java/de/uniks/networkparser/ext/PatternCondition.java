@@ -54,7 +54,7 @@ public class PatternCondition implements ObjectCondition {
 			return this;
 		}
 		if (values.length == 1) {
-			// May be a Set
+			/* May be a Set */
 			if (values[0] instanceof Set<?> && values[0] != null) {
 				Set<Object> newSet = (Set<Object>) ReflectionLoader.newInstance(values[0].getClass());
 				ReflectionLoader.call(newSet, "withListener", ObjectCondition.class, this);
@@ -62,14 +62,12 @@ public class PatternCondition implements ObjectCondition {
 
 				SimpleEvent evt = SimpleEvent.create(this, 0, newSet, newSet, values[0], null);
 				update(evt);
-//				newSet.addAll((Collection<?>) values[0]);
 			} else {
 				SimpleSet<Object> newSet = getNewList();
 				newSet.withListener(this);
 				this.root = newSet;
 				SimpleEvent evt = SimpleEvent.create(this, 0, newSet, newSet, values[0], null);
 				update(evt);
-//				newSet.add(values[0]);
 			}
 		} else {
 			SimpleSet<Object> newSet = getNewList();
@@ -78,11 +76,6 @@ public class PatternCondition implements ObjectCondition {
 			update(new SimpleEvent(root, CREATEPATTERN, null, root));
 			SimpleEvent evt = SimpleEvent.create(this, 0, newSet, newSet, values[0], null);
 			update(evt);
-//			for(Object item : values) {
-//				if(item != null) {
-//					newList.add(item);
-//				}
-//			}
 		}
 		if (root != null) {
 			if (root instanceof SimpleSet<?>) {
@@ -103,9 +96,7 @@ public class PatternCondition implements ObjectCondition {
 			SimpleEvent event = (SimpleEvent) value;
 			if (CREATEPATTERN.equals(event.getPropertyName())) {
 				int index = event.getDepth();
-//				Set<?> source= (Set<?>) event.getSource();
 				AbstractList<?> newCollection = (AbstractList<?>) event.getBeforeElement();
-//				Object container = event.getOldValue();
 				Object child = event.getNewValue();
 				Object[] filter = null;
 				if (event.getModelValue() != null) {
@@ -126,10 +117,9 @@ public class PatternCondition implements ObjectCondition {
 						filter = (Object[]) event.getModelValue();
 					}
 				}
-				// For First Element set Dupplicate
+				/* For First Element set Dupplicate */
 				if (index == 0) {
 					newCollection.withAllowDuplicate(this.duplicate);
-//					ExcelRow row = 
 					this.excelSheet.createRow(newCollection);
 				}
 				Set<Object> childCollection;
@@ -148,20 +138,19 @@ public class PatternCondition implements ObjectCondition {
 				}
 
 				if (childCollection.isEmpty()) {
-					// EMPTY VALUE CLEAR ITEMS FROM LIST
-					// Index is the Index of LastRow
+					/* EMPTY VALUE CLEAR ITEMS FROM LIST Index is the Index of LastRow */
 					for (int i = this.excelSheet.size() - 2; i >= 0; i--) {
 						this.excelSheet.get(i).remove(i);
 					}
 				} else {
 					ExcelRow last = this.excelSheet.getLast();
-					// SO SET or COPY COLUMN
+					/* SO SET or COPY COLUMN */
 					boolean first = true;
 					Object[] children = childCollection.toArray(new Object[childCollection.size()]);
 					for (Object item : children) {
 						if (filters == null || filters.contains(item)) {
 							if (first) {
-								// ONLY ST AS NEW EXCELCELL
+								/* ONLY ST AS NEW EXCELCELL */
 								first = false;
 							} else {
 								for (int i = this.excelSheet.size() - 2; i >= 0; i--) {
@@ -217,17 +206,6 @@ public class PatternCondition implements ObjectCondition {
 
 		return false;
 	}
-
-//FIXME	private void duplicateColumn(int count, int max) {
-//		for(int i=1;i<count;i++) {
-//			for(int r=0;r<max;r++) {
-//				ExcelRow excelRow = this.excelSheet.get(r);
-//				ExcelCell firstCell = excelRow.get(0);
-//				ExcelCell cell = ExcelCell.create(firstCell.getContent());
-//				excelRow.add(cell);
-//			}
-//		}
-//	}
 
 	public static final PatternCondition create(String linkName) {
 		PatternCondition pattern = new PatternCondition();

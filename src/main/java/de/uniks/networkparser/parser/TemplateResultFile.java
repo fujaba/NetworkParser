@@ -4,7 +4,7 @@ import de.uniks.networkparser.EntityUtil;
 /*
 The MIT License
 
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -94,7 +94,7 @@ public class TemplateResultFile extends SortedSet<TemplateResultFragment>
 	}
 
 	public TemplateResultFile withName(TemplateItem clazz) {
-		if(clazz != null && clazz.getName() != null) {
+		if (clazz != null && clazz.getName() != null) {
 			this.name = clazz.getName().replace(".", "/");
 		}
 		return this;
@@ -193,7 +193,7 @@ public class TemplateResultFile extends SortedSet<TemplateResultFragment>
 		if (PROPERTY_HEADERS.equalsIgnoreCase(attrName)) {
 			SimpleSet<String> headers = new SimpleSet<String>();
 			for (TemplateResultFragment child : this) {
-				if(child != null) {
+				if (child != null) {
 					headers.addAll(child.getHeaders());
 				}
 			}
@@ -231,7 +231,7 @@ public class TemplateResultFile extends SortedSet<TemplateResultFragment>
 		if (this.size() < 1) {
 			if (code != null) {
 				String codeString = code.toString();
-				if(codeString != null && codeString.length()>0) {
+				if (codeString != null && codeString.length() > 0) {
 					return code.toString();
 				}
 			}
@@ -239,7 +239,7 @@ public class TemplateResultFile extends SortedSet<TemplateResultFragment>
 		// TODO DONT ADD CORRECTLY ADD
 		// ADD CODE
 		// Check for Existing
-		if (code != null && code.size()>0 && isMetaModell()) {
+		if (code != null && code.size() > 0 && isMetaModell()) {
 			CharacterBuffer sb = new CharacterBuffer();
 			sb.with(code.getContent().toString());
 //			buffer = code.getContent();
@@ -385,7 +385,7 @@ public class TemplateResultFile extends SortedSet<TemplateResultFragment>
 	public static TemplateResultFile createJava(Clazz clazz) {
 		TemplateResultFile templateResult = new TemplateResultFile(clazz, true);
 		templateResult.withExtension(Template.TYPE_JAVA);
-		if(clazz != null && clazz.getClassModel() != null) {
+		if (clazz != null && clazz.getClassModel() != null) {
 			templateResult.withPath((String) clazz.getClassModel().getValue(GraphModel.PROPERTY_PATH));
 		}
 		return templateResult;

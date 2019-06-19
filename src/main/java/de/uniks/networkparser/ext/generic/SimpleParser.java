@@ -3,7 +3,7 @@ package de.uniks.networkparser.ext.generic;
 /*
 NetworkParser
 The MIT License
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -131,7 +131,7 @@ public class SimpleParser {
 	}
 
 	public static <T> T decodeModel(Buffer buffer, IdMap map) {
-		if(buffer == null || map == null) {
+		if (buffer == null || map == null) {
 			return null;
 		}
 		char firstChar = buffer.nextClean(true);
@@ -169,7 +169,7 @@ public class SimpleParser {
 
 	public static <T> T decodeModel(Buffer buffer, IdMap map, Tokener tokener, char endTag) {
 		Object result = decodingModel(buffer, map, tokener, endTag);
-		if(result== null) {
+		if (result == null) {
 			return null;
 		}
 		try {
@@ -182,7 +182,7 @@ public class SimpleParser {
 	}
 
 	private static Object decodingModel(Buffer buffer, IdMap map, Tokener tokener, char endTag) {
-		if(buffer == null) {
+		if (buffer == null) {
 			return null;
 		}
 		String className = null;
@@ -190,8 +190,7 @@ public class SimpleParser {
 		String key = buffer.nextString().toString();
 		Object result = null;
 		if (key != null && IdMap.CLASS.equals(key)) {
-			// CLASSNAME
-			// :
+			/* CLASSNAME : */
 			buffer.getChar();
 			className = tokener.nextString(buffer).toString();
 
@@ -200,11 +199,11 @@ public class SimpleParser {
 				return null;
 			}
 
-			// MAYBE ID
+			/* MAYBE ID */
 			key = tokener.nextString(buffer).toString();
 			String id = null;
 			if (IdMap.ID.equals(key)) {
-				// :
+				/* : */
 				buffer.getChar();
 				id = tokener.nextString(buffer).toString();
 				result = map.getObject(id);
@@ -217,7 +216,7 @@ public class SimpleParser {
 				map.put(id, result, false);
 			}
 
-			// So now decoding Attributes
+			/* So now decoding Attributes */
 			char currentChar = buffer.getCurrentChar();
 			while (currentChar != endTag && buffer.isEnd() == false) {
 				key = tokener.nextString(buffer).toString();
@@ -225,9 +224,9 @@ public class SimpleParser {
 					break;
 				}
 				if (Tokener.PROPS.equals(key)) {
-					// Now Skip
+					/* Now Skip */
 
-					// Start Tag
+					/* Start Tag */
 					char propStartTag = currentChar = buffer.getChar();
 					char propEndTag = getEndTag(currentChar);
 					while (currentChar != propEndTag && buffer.isEnd() == false) {
@@ -235,15 +234,15 @@ public class SimpleParser {
 						if (key.length() < 1) {
 							break;
 						}
-						// SKIP :
+						/* SKIP : */
 						buffer.getChar();
 
 						if (buffer.getCurrentChar() == propStartTag) {
-							// new Subtype
+							/* new Subtype */
 							Object subElement = decodingModel(buffer, map, tokener, propEndTag);
 							creator.setValue(result, key, subElement, SendableEntityCreator.NEW);
 						} else if (buffer.getCurrentChar() == JsonArray.START) {
-							// LIST of elements
+							/* LIST of elements */
 							do {
 								Object subElement = decodingModel(buffer, map, tokener, propEndTag);
 								creator.setValue(result, key, subElement, SendableEntityCreator.NEW);
@@ -257,7 +256,7 @@ public class SimpleParser {
 						}
 					}
 				} else {
-					// Skip
+					/* Skip */
 					tokener.nextString(buffer).toString();
 				}
 			}

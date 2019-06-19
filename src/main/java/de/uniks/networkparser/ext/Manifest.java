@@ -3,7 +3,7 @@ package de.uniks.networkparser.ext;
 /*
 The MIT License
 
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -65,7 +65,7 @@ public class Manifest extends SimpleKeyValueList<String, String> {
 	public static void printVersion() {
 		Manifest manifest = create();
 		if (manifest.isEmptyManifest() == false) {
-			CharacterBuffer sb=new CharacterBuffer();
+			CharacterBuffer sb = new CharacterBuffer();
 			sb.withLine("Title: " + manifest.getString(TITLE));
 			sb.withLine("Version: " + manifest.getString(VERSION));
 			sb.withLine("Time: " + manifest.getString(BUILD));
@@ -73,7 +73,7 @@ public class Manifest extends SimpleKeyValueList<String, String> {
 			sb.withLine("Licence: " + manifest.getString(LICENCE));
 			sb.withLine("Homepage: " + manifest.getString(HOMEPAGE));
 			sb.withLine("Coverage: " + manifest.getString(COVERAGE));
-			
+
 			System.out.println(sb.toString());
 
 		}
@@ -82,14 +82,12 @@ public class Manifest extends SimpleKeyValueList<String, String> {
 	public static Manifest create(CharSequence value) {
 		Manifest manifest = new Manifest();
 		CharacterBuffer tokener = new CharacterBuffer().with(value);
-//		Tokener tokener=new Tokener().withBuffer(value);
 		while (tokener.isEnd() == false) {
 			CharacterBuffer section = tokener.nextToken(true, SPLITTER);
 			CharacterBuffer sectionheader = tokener.nextToken(false, CRLF);
 			boolean isCoverage = section.toString().equals(COVERAGE);
 			tokener.skip();
 			while (tokener.getCurrentChar() == ' ' || tokener.getCurrentChar() == '\t') {
-				// continue line
 				CharacterBuffer newLine = tokener.nextToken(true, CRLF);
 				if (isCoverage) {
 					sectionheader.trim().with(newLine);

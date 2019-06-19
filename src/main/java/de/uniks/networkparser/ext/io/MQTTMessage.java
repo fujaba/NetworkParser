@@ -3,7 +3,7 @@ package de.uniks.networkparser.ext.io;
 /*
 The MIT License
 
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -48,7 +48,7 @@ public class MQTTMessage {
 	protected int msgId;
 	protected boolean duplicate = false;
 
-	// Sub Variable
+	/* Sub Variable */
 	public static final String KEY_CONNACK = "Con";
 	public static final String KEY_DISCONNECT = "Disc";
 	public static final String KEY_PING = "Ping";
@@ -62,7 +62,7 @@ public class MQTTMessage {
 	protected String[] names;
 	protected int keepAliveInterval;
 
-	// Message Data
+	/* Message Data */
 	private int messageQOS = 1;
 	private byte[] messagePayload;
 	private boolean messageRetained = false;
@@ -81,7 +81,7 @@ public class MQTTMessage {
 		buffer.insert(first, true);
 
 		int numBytes = 0;
-		// Encode the remaining length fields in the four bytes
+		/* Encode the remaining length fields in the four bytes */
 		do {
 			byte digit = (byte) (remLen % 128);
 			remLen = remLen / 128;
@@ -97,7 +97,7 @@ public class MQTTMessage {
 	}
 
 	protected void encodeUTF8(ByteBuffer buffer, String stringToEncode) {
-		if(stringToEncode == null || buffer == null) {
+		if (stringToEncode == null || buffer == null) {
 			return;
 		}
 		try {
@@ -157,7 +157,7 @@ public class MQTTMessage {
 			}
 			return buffer.array();
 		}
-		// Not needed, as the client never encodes a CONNACK
+		/* Not needed, as the client never encodes a CONNACK */
 		return new byte[0];
 	}
 
@@ -232,7 +232,7 @@ public class MQTTMessage {
 	 * @return a decoded String from the DataInputStream
 	 */
 	protected String decodeUTF8(ByteBuffer input) {
-		if(input == null) {
+		if (input == null) {
 			return null;
 		}
 		int encodedLength;
@@ -243,7 +243,7 @@ public class MQTTMessage {
 
 	public MQTTMessage withNames(String... names) {
 		this.names = names;
-		if(names != null) {
+		if (names != null) {
 			this.code = names.length;
 		}
 		return this;
@@ -255,7 +255,6 @@ public class MQTTMessage {
 			return message;
 		}
 		if (type == MESSAGE_TYPE_PUBLISH) {
-//			message.message = msg;
 			message.messageQOS = ((info >> 1) & 0x03);
 			if ((info & 0x01) == 0x01) {
 				message.messageRetained = true;
@@ -278,17 +277,17 @@ public class MQTTMessage {
 		if (variableHeader == null) {
 			return message;
 		}
-		// MqttWireMessage.MESSAGE_TYPE_CONNACK
+		/* MqttWireMessage.MESSAGE_TYPE_CONNACK */
 		ByteBuffer buffer = new ByteBuffer().with(variableHeader);
 		if (type == MESSAGE_TYPE_CONNECT) {
-			// NEW
+			/* NEW */
 			String[] values = new String[3];
 			message.names = values;
-			// String protocol_name =
+			/* protocol_name:String */
 			message.decodeUTF8(buffer);
-			// int protocol_version =
+			/* protocol_version:int */
 			buffer.getByte();
-			// byte connect_flags =
+			/* connect_flags:byte */
 			buffer.getByte();
 			message.keepAliveInterval = buffer.getShort();
 			values[0] = message.decodeUTF8(buffer);
@@ -361,7 +360,7 @@ public class MQTTMessage {
 				msgLength += ((digit & 0x7F) * multiplier);
 				multiplier *= 128;
 			} while ((digit & 0x80) != 0);
-		}catch (Exception e) {
+		} catch (Exception e) {
 			return -1;
 		}
 
@@ -369,7 +368,7 @@ public class MQTTMessage {
 	}
 
 	protected static void encodeMBI(ByteBuffer buffer, long number) {
-		if(buffer == null) {
+		if (buffer == null) {
 			return;
 		}
 		int numBytes = 0;
@@ -391,34 +390,32 @@ public class MQTTMessage {
 		}
 		MQTTMessage message = null;
 		try {
-			if(in.available()<1) {
+			if (in.available() < 1) {
 				return null;
 			}
-			// read header
+			/* read header */
 			byte first = in.readByte();
 			byte type = (byte) ((first >>> 4) & 0x0F);
 			if ((type < MESSAGE_TYPE_CONNECT) || (type > MESSAGE_TYPE_DISCONNECT)) {
-				// Invalid MQTT message type...
+				/* Invalid MQTT message type... */
 				return null;
 			}
 			int remLen = readMBI(in);
 			ByteBuffer buffer = new ByteBuffer();
 			buffer.insert(first, false);
 
-			// bit silly, we decode it then encode it
+			/* bit silly, we decode it then encode it */
 			encodeMBI(buffer, remLen);
 
-			// read remaining packet
+			/* read remaining packet */
 			if (remLen >= 0) {
 				byte[] packet = new byte[remLen];
-//				int count;
 				try {
-//					count = 
 					in.read(packet, 0, remLen);
 				} catch (SocketTimeoutException e) {
-					// remember the packet read so far
+					/* remember the packet read so far */
 				}
-				// reset packet parsing state
+				/* reset packet parsing state */
 				remLen = -1;
 
 				byte info = (byte) (first &= 0x0f);
@@ -430,8 +427,7 @@ public class MQTTMessage {
 				}
 			}
 		} catch (Exception e) {
-//			e.printStackTrace();
-			// ignore socket read timeout
+			/* ignore socket read timeout */
 		}
 
 		return message;
@@ -464,9 +460,9 @@ public class MQTTMessage {
 	}
 
 	public MQTTMessage createMessage(String content) {
-		if(content != null) {
+		if (content != null) {
 			this.messagePayload = content.getBytes();
-		}else {
+		} else {
 			this.messagePayload = new byte[0];
 		}
 		this.messageQOS = 1;
@@ -489,7 +485,7 @@ public class MQTTMessage {
 		if (type == MESSAGE_TYPE_PINGREQ) {
 			return false;
 		}
-		// FOR MQTTPUBLISH
+		/* FOR MQTTPUBLISH */
 		return true;
 	}
 

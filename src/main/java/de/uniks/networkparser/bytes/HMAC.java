@@ -1,8 +1,9 @@
 package de.uniks.networkparser.bytes;
 
-/** 
- * @author Stefan Lindel
- * HMAC implements HMAC-SHA256 message authentication algorithm. */
+/**
+ * @author Stefan Lindel HMAC implements HMAC-SHA256 message authentication
+ *         algorithm.
+ */
 public class HMAC {
 	private SHA2 inner = new SHA2();
 	private SHA2 outer = new SHA2();
@@ -11,7 +12,7 @@ public class HMAC {
 	private int[] ostate;
 
 	public HMAC(String key) {
-		if(key == null) {
+		if (key == null) {
 			return;
 		}
 		byte[] keyBytes = key.getBytes();
@@ -44,9 +45,11 @@ public class HMAC {
 		}
 	}
 
-	/** Returns HMAC state to the state initialized with key
-	 * to make it possible to run HMAC over the other data with the same
-	 *  key without creating a new instance.
+	/**
+	 * Returns HMAC state to the state initialized with key to make it possible to
+	 * run HMAC over the other data with the same key without creating a new
+	 * instance.
+	 * 
 	 * @return ThisComponent
 	 */
 	public HMAC reset() {
@@ -57,7 +60,7 @@ public class HMAC {
 
 	/* Cleans HMAC state. */
 	public void clean() {
-		if(this.istate != null) {
+		if (this.istate != null) {
 			for (int i = 0; i < this.istate.length; i++) {
 				this.ostate[i] = this.istate[i] = 0;
 			}
@@ -67,29 +70,31 @@ public class HMAC {
 	}
 
 	/**
-	 *  Updates state with provided data.
-	 *  @param data new Data to Encode
-	 *  @return ThisComponent
+	 * Updates state with provided data.
+	 * 
+	 * @param data new Data to Encode
+	 * @return ThisComponent
 	 */
 	public HMAC update(String data) {
-		if(data != null) {
+		if (data != null) {
 			update(data.getBytes());
 		}
 		return this;
 	}
-	
+
 	public HMAC update(byte[] data) {
-		if(data != null) {
+		if (data != null) {
 			this.inner.update(data, data.length);
 		}
 		return this;
 	}
 
 	/**
-	 *  Finalizes HMAC and puts the result in out.
-	 *  @param out byteArray to set Encoding Data
-	 *  @return ThisComponent
-	 *  */
+	 * Finalizes HMAC and puts the result in out.
+	 * 
+	 * @param out byteArray to set Encoding Data
+	 * @return ThisComponent
+	 */
 	public HMAC finish(byte[] out) {
 		if (this.outer.finished) {
 			this.outer.finish(out);

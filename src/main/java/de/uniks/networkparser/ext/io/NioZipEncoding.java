@@ -88,14 +88,14 @@ class NioZipEncoding {
 	 * @return ByteBuffer
 	 */
 	public ByteBuffer encode(String name) {
-		if(name == null) {
+		if (name == null) {
 			return null;
 		}
 		if (this.charset == null) {
 			final int length = name.length();
 			final byte[] buf = new byte[length];
 
-			// copy until end of input or output is reached.
+			/* copy until end of input or output is reached. */
 			for (int i = 0; i < length; ++i) {
 				buf[i] = (byte) name.charAt(i);
 			}
@@ -112,14 +112,18 @@ class NioZipEncoding {
 
 			if (res.isUnmappable() || res.isMalformed()) {
 
-				// write the unmappable characters in utf-16
-				// pseudo-URL encoding style to ByteBuffer.
+				/*
+				 * write the unmappable characters in utf-16 pseudo-URL encoding style to
+				 * ByteBuffer.
+				 */
 
 				int spaceForSurrogate = estimateIncrementalEncodingSize(enc, 6 * res.length());
 				if (spaceForSurrogate > out.remaining()) {
-					// if the destination buffer isn't over sized, assume that the presence of one
-					// unmappable character makes it likely that there will be more. Find all the
-					// un-encoded characters and allocate space based on those estimates.
+					/*
+					 * if the destination buffer isn't over sized, assume that the presence of one
+					 * unmappable character makes it likely that there will be more. Find all the
+					 * un-encoded characters and allocate space based on those estimates.
+					 */
 					int charCount = 0;
 					for (int i = cb.position(); i < cb.limit(); i++) {
 						charCount += !enc.canEncode(cb.get(i)) ? 6 : 1;
@@ -139,9 +143,9 @@ class NioZipEncoding {
 				out = TarUtils.growBufferBy(out, increment);
 			}
 		}
-		// tell the encoder we are done
+		/* tell the encoder we are done */
 		enc.encode(cb, out, true);
-		// may have caused underflow, but that's been ignored traditionally
+		/* may have caused underflow, but that's been ignored traditionally */
 
 		out.limit(out.position());
 		out.rewind();
@@ -155,31 +159,31 @@ class NioZipEncoding {
 	 * @return decoded String
 	 */
 	public String decode(byte[] data) {
-		if(data == null) {
+		if (data == null) {
 			return null;
 		}
-		if (this.charset == null ) {
+		if (this.charset == null) {
 			final int length = data.length;
 			final StringBuilder result = new StringBuilder(length);
 
 			for (final byte b : data) {
-				if (b == 0) { // Trailing null
+				if (b == 0) { /* Trailing null */
 					break;
 				}
-				result.append((char) (b & 0xFF)); // Allow for sign-extension
+				result.append((char) (b & 0xFF)); /* Allow for sign-extension */
 			}
 			return result.toString();
 		}
 		try {
 			return newDecoder().decode(ByteBuffer.wrap(data)).toString();
-		}catch (Exception e) {
+		} catch (Exception e) {
 		}
 		return null;
 	}
 
 	private static ByteBuffer encodeFully(CharsetEncoder enc, CharBuffer cb, ByteBuffer out) {
 		ByteBuffer o = out;
-		if(cb == null) {
+		if (cb == null) {
 			return o;
 		}
 		while (cb.hasRemaining()) {
@@ -193,7 +197,7 @@ class NioZipEncoding {
 	}
 
 	private static CharBuffer encodeSurrogate(CharBuffer cb, char c) {
-		if(cb== null) {
+		if (cb == null) {
 			return null;
 		}
 		cb.position(0).limit(6);
@@ -209,7 +213,7 @@ class NioZipEncoding {
 	}
 
 	private CharsetEncoder newEncoder() {
-		if(charset == null) {
+		if (charset == null) {
 			return null;
 		}
 		if (useReplacement) {
@@ -222,7 +226,7 @@ class NioZipEncoding {
 	}
 
 	private CharsetDecoder newDecoder() {
-		if(charset == null) {
+		if (charset == null) {
 			return null;
 		}
 		if (!useReplacement) {
@@ -248,7 +252,7 @@ class NioZipEncoding {
 	 * @return estimated size in bytes.
 	 */
 	private static int estimateInitialBufferSize(CharsetEncoder enc, int charChount) {
-		if(enc== null) {
+		if (enc == null) {
 			return -1;
 		}
 		float first = enc.maxBytesPerChar();
@@ -264,7 +268,7 @@ class NioZipEncoding {
 	 * @return estimated size in bytes.
 	 */
 	private static int estimateIncrementalEncodingSize(CharsetEncoder enc, int charCount) {
-		if(enc== null) {
+		if (enc == null) {
 			return -1;
 		}
 		return (int) Math.ceil(charCount * enc.averageBytesPerChar());

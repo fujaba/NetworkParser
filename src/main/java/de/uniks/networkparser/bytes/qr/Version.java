@@ -89,7 +89,7 @@ public final class Version {
 	}
 
 	public ECB getECBlocksForLevel(ErrorCorrectionLevel ecLevel) {
-		if(ecLevel == null) {
+		if (ecLevel == null) {
 			return null;
 		}
 		if (ecLevel.ordinal() == 0) {
@@ -218,14 +218,20 @@ public final class Version {
 			if (targetVersion == versionBits) {
 				return getVersionForNumber(i + 7);
 			}
-			/* Otherwise see if this is the closest to a real version info bit string we have seen so far */
+			/*
+			 * Otherwise see if this is the closest to a real version info bit string we
+			 * have seen so far
+			 */
 			int bitsDifference = FormatInformation.numBitsDiffering(versionBits, targetVersion);
 			if (bitsDifference < bestDifference) {
 				bestVersion = i + 7;
 				bestDifference = bitsDifference;
 			}
 		}
-		/* We can tolerate up to 3 bits of error since no two version info codewords will differ in less than 8 bits. */
+		/*
+		 * We can tolerate up to 3 bits of error since no two version info codewords
+		 * will differ in less than 8 bits.
+		 */
 		if (bestDifference <= 3) {
 			return getVersionForNumber(bestVersion);
 		}
@@ -237,7 +243,7 @@ public final class Version {
 	 * See ISO 18004:2006 Annex E
 	 */
 	BitMatrix buildFunctionPattern() {
-		if(alignmentPatternCenters == null) {
+		if (alignmentPatternCenters == null) {
 			return null;
 		}
 		int dimension = getDimensionForVersion();

@@ -4,7 +4,7 @@ import java.io.PrintStream;
 /*
 The MIT License
 
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -54,30 +54,30 @@ public class Story extends StoryElement implements Comparable<Story> {
 
 	public static String addResource(HTMLEntity entity, String name, boolean include) {
 		name = name.replace('\\', '/');
-		if(name.toLowerCase().endsWith(".html") == false) {
-			name  += ".html";
+		if (name.toLowerCase().endsWith(".html") == false) {
+			name += ".html";
 		}
-		String path ="";
-		if(name.indexOf('/')<0) {
+		String path = "";
+		if (name.indexOf('/') < 0) {
 			path = "doc/";
-		}else {
-			path = name.substring(0, name.lastIndexOf("/"))+"/";
+		} else {
+			path = name.substring(0, name.lastIndexOf("/")) + "/";
 		}
 		Class<?> listClass = GraphList.class;
-		for(String item : HTMLEntity.GRAPHRESOURCES) {
+		for (String item : HTMLEntity.GRAPHRESOURCES) {
 			String content = FileBuffer.readResource(listClass.getResourceAsStream(item)).toString();
-			entity.addResources(include, path+item, content);
+			entity.addResources(include, path + item, content);
 			if (include == false) {
-				if(path.length()>0) {
+				if (path.length() > 0) {
 					FileBuffer.writeFile(path + item, content);
-				}else {
+				} else {
 					FileBuffer.writeFile(item, content);
 				}
 			}
 		}
 		return name;
 	}
-	
+
 	// COUNTER
 	// ADDTABLE
 	// ADDBARCHART
@@ -341,7 +341,7 @@ public class Story extends StoryElement implements Comparable<Story> {
 	}
 
 	private boolean addCondition(StoryStepCondition step) {
-		if(step == null) {
+		if (step == null) {
 			return false;
 		}
 		this.add(step);
@@ -369,7 +369,7 @@ public class Story extends StoryElement implements Comparable<Story> {
 		step.withCondition(message, actual, new Equals().withValue(expected, delta));
 		this.addCondition(step);
 	}
-	
+
 	public void assertFail(String message) {
 		StoryStepCondition step = new StoryStepCondition();
 		step.withCondition(message, true, new BooleanCondition());
@@ -467,11 +467,10 @@ public class Story extends StoryElement implements Comparable<Story> {
 	public StoryStepText addText(String text) {
 		return addText(text, true, false);
 	}
-	
+
 	public StoryStepText addStep(String text) {
 		return addText(text, true, false);
 	}
-
 
 	public StoryStepText addText(String text, boolean isStep) {
 		return addText(text, isStep, false);

@@ -15,7 +15,7 @@ public class SHA2 {
 			0xa4506ceb, 0xbef9a3f7, 0xc67178f2 };
 
 	public int hashBlocks(int[] w, int[] v, byte[] p, int pos, int len) {
-		if(w == null || v == null || p == null) {
+		if (w == null || v == null || p == null) {
 			return -1;
 		}
 		int a, b, c, d, e, f, g, h, u, i, j, t1, t2;
@@ -90,7 +90,10 @@ public class SHA2 {
 		this.reset();
 	}
 
-	/** Resets hash state making it possible to re-use this instance to hash other data.
+	/**
+	 * Resets hash state making it possible to re-use this instance to hash other
+	 * data.
+	 * 
 	 * @return ThisComponent
 	 */
 	public SHA2 reset() {
@@ -127,24 +130,26 @@ public class SHA2 {
 		return this;
 	}
 
-	/** Updates hash state with the given data.
-	*
-	* Optionally, length of the data can be specified to hash
-	* fewer bytes than data.length.
-	*
-	* Throws error when trying to update already finalized hash:
-	* instance must be reset to use it again.
-	* @param data Data to Ecnoding
-	* @param dataLength length of Data
-	* @return ThisComponent
-	*/
+	/**
+	 * Updates hash state with the given data.
+	 *
+	 * Optionally, length of the data can be specified to hash fewer bytes than
+	 * data.length.
+	 *
+	 * Throws error when trying to update already finalized hash: instance must be
+	 * reset to use it again.
+	 * 
+	 * @param data       Data to Ecnoding
+	 * @param dataLength length of Data
+	 * @return ThisComponent
+	 */
 	public SHA2 update(byte[] data, int dataLength) {
-		if (this.finished || data == null || dataLength>data.length) {
+		if (this.finished || data == null || dataLength > data.length) {
 			return null;
 		}
 		int dataPos = 0;
 		this.bytesHashed += dataLength;
-		if (this.bufferLength > 0 && this.bufferLength<this.buffer.length) {
+		if (this.bufferLength > 0 && this.bufferLength < this.buffer.length) {
 			while (this.bufferLength < 64 && dataLength > 0) {
 				this.buffer[this.bufferLength++] = data[dataPos++];
 				dataLength--;
@@ -165,7 +170,10 @@ public class SHA2 {
 		return this;
 	}
 
-	/** Finalizes hash state and puts hash into out. If hash was already finalized, puts the same value.
+	/**
+	 * Finalizes hash state and puts hash into out. If hash was already finalized,
+	 * puts the same value.
+	 * 
 	 * @param out ByteArray to Copy Data
 	 * @return ThisComponent
 	 */
@@ -195,7 +203,7 @@ public class SHA2 {
 			this.finished = true;
 		}
 
-		if(out != null && out.length>=31) {
+		if (out != null && out.length >= 31) {
 			for (int i = 0; i < 8; i++) {
 				out[i * 4 + 0] = (byte) ((this.state[i] >>> 24) & 0xff);
 				out[i * 4 + 1] = (byte) ((this.state[i] >>> 16) & 0xff);
@@ -206,7 +214,9 @@ public class SHA2 {
 		return this;
 	}
 
-	/** Returns the final hash digest.
+	/**
+	 * Returns the final hash digest.
+	 * 
 	 * @return Finish Data
 	 */
 	public byte[] digest() {
@@ -215,23 +225,27 @@ public class SHA2 {
 		return out;
 	}
 
-	/** Internal function for use in HMAC for optimization.
+	/**
+	 * Internal function for use in HMAC for optimization.
+	 * 
 	 * @param out ByteArray for Copy
 	 */
 	public void _saveState(int[] out) {
-		if(out != null && out.length>=this.state.length) {
+		if (out != null && out.length >= this.state.length) {
 			for (int i = 0; i < this.state.length; i++) {
 				out[i] = this.state[i];
 			}
 		}
 	}
 
-	/** Internal function for use in HMAC for optimization.
-	 * @param from Data From
+	/**
+	 * Internal function for use in HMAC for optimization.
+	 * 
+	 * @param from        Data From
 	 * @param bytesHashed ByteHashed
 	 */
 	public void _restoreState(int[] from, int bytesHashed) {
-		if(from != null && from.length>=this.state.length) {
+		if (from != null && from.length >= this.state.length) {
 			for (int i = 0; i < this.state.length; i++) {
 				this.state[i] = from[i];
 			}

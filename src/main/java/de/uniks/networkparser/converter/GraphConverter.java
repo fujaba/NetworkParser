@@ -3,7 +3,7 @@ package de.uniks.networkparser.converter;
 /*
 NetworkParser
 The MIT License
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -100,7 +100,7 @@ public class GraphConverter implements Converter {
 
 	public GraphList convertGraphList(String type, EntityList list) {
 		GraphList root = new GraphList().withType(type);
-		if(list == null) {
+		if (list == null) {
 			return root;
 		}
 
@@ -113,14 +113,14 @@ public class GraphConverter implements Converter {
 		}
 		return root;
 	}
-	
+
 	public Entity convertToJson(String type, EntityList list, boolean removePackage) {
 		GraphList root = convertGraphList(type, list);
 		return convertToJson(root, removePackage, false);
 	}
 
 	public Clazz parseJsonObject(GraphList root, Entity node) {
-		if(root == null || node == null) {
+		if (root == null || node == null) {
 			return null;
 		}
 		String id = node.getString("id");
@@ -224,39 +224,43 @@ public class GraphConverter implements Converter {
 	}
 
 	public TemplateResultFragment convertToTestCode(GraphModel model, boolean createModel) {
-		TemplateResultFragment code =  new TemplateResultFragment();
-		if(model == null) {
+		TemplateResultFragment code = new TemplateResultFragment();
+		if (model == null) {
 			return code;
 		}
-		
+
 		code.withHeader(Story.class.getName());
 		code.withLine("Story story = new Story();");
 		ClazzSet clazzes = model.getClazzes();
-		for(Clazz clazz : clazzes) {
-			if(createModel) {
-				code.withLine(clazz.getName()+" "+clazz.getId() + " = new "+clazz.getName()+"();");
+		for (Clazz clazz : clazzes) {
+			if (createModel) {
+				code.withLine(clazz.getName() + " " + clazz.getId() + " = new " + clazz.getName() + "();");
 			}
-			code.withLine("story.assertNotNull(\"Object '"+clazz.getId()+"' NULL\", "+clazz.getId()+");");
-			for(Attribute attribute : clazz.getAttributes()) {
-				if(createModel) {
-					if(attribute.getType().equals(DataType.STRING)) {
-						code.withLine(clazz.getId() + ".set"+EntityUtil.upFirstChar(attribute.getName())+"(\""+attribute.getValue()+"\");");
+			code.withLine("story.assertNotNull(\"Object '" + clazz.getId() + "' NULL\", " + clazz.getId() + ");");
+			for (Attribute attribute : clazz.getAttributes()) {
+				if (createModel) {
+					if (attribute.getType().equals(DataType.STRING)) {
+						code.withLine(clazz.getId() + ".set" + EntityUtil.upFirstChar(attribute.getName()) + "(\""
+								+ attribute.getValue() + "\");");
 					} else {
-						code.withLine(clazz.getId() + ".set"+EntityUtil.upFirstChar(attribute.getName())+"("+attribute.getValue()+");");
+						code.withLine(clazz.getId() + ".set" + EntityUtil.upFirstChar(attribute.getName()) + "("
+								+ attribute.getValue() + ");");
 					}
 				}
-				code.withLine("story.assertEquals(\"Attribute "+attribute.getName()+" wrong value\", "+attribute.getValue()+", "+clazz.getId()+".get"+EntityUtil.upFirstChar(attribute.getName())+"());");
+				code.withLine("story.assertEquals(\"Attribute " + attribute.getName() + " wrong value\", "
+						+ attribute.getValue() + ", " + clazz.getId() + ".get"
+						+ EntityUtil.upFirstChar(attribute.getName()) + "());");
 			}
 		}
 		return code;
 	}
-	
+
 	public Entity convertToJson(EntityList list, boolean removePackage) {
 		return convertToJson(GraphTokener.OBJECTDIAGRAM, list, removePackage);
 	}
 
 	public Entity convertToJson(GraphModel root, boolean removePackage, boolean removeParameterNames) {
-		if(root == null) {
+		if (root == null) {
 			return null;
 		}
 		String type = GraphTokener.CLASSDIAGRAM;
@@ -423,7 +427,7 @@ public class GraphConverter implements Converter {
 
 	private EntityList parseEdges(String type, SimpleSet<Association> edges, boolean shortName) {
 		EntityList result = (EntityList) factory.getNewList(false);
-		if(edges == null) {
+		if (edges == null) {
 			return result;
 		}
 		ArrayList<String> ids = new ArrayList<String>();
@@ -460,11 +464,11 @@ public class GraphConverter implements Converter {
 	private Entity parseEdge(String type, Clazz source, Clazz target, Association edge, boolean shortName,
 			ArrayList<String> ids) {
 		Entity child = (Entity) factory.getNewList(true);
-		if(ids == null || edge == null || type == null || source == null || target == null) {
+		if (ids == null || edge == null || type == null || source == null || target == null) {
 			return child;
 		}
 		Association other = edge.getOther();
-		if(other != null) {
+		if (other != null) {
 			child.put(TYPE, other.getType());
 		}
 		Entity sourceInfo = addInfo(edge, true);
@@ -476,12 +480,14 @@ public class GraphConverter implements Converter {
 			child.put(TARGET, targetInfo);
 			return child;
 		} else {
-			String otherName =""; 
-			if(other != null) {
+			String otherName = "";
+			if (other != null) {
 				otherName = other.getName();
 			}
-			String id  = new CharacterBuffer().with(source.getName(false), ":", edge.getName(), "-",target.getName(false), ":", otherName).toString();
-			
+			String id = new CharacterBuffer()
+					.with(source.getName(false), ":", edge.getName(), "-", target.getName(false), ":", otherName)
+					.toString();
+
 			if (!ids.contains(id)) {
 				Match diff = GraphUtil.getDifference(edge);
 				if (diff != null && diff.getCount() > 0) {
@@ -501,7 +507,7 @@ public class GraphConverter implements Converter {
 	private Entity parseEdge(String type, GraphPattern source, GraphPattern target, Association edge, boolean shortName,
 			ArrayList<String> ids) {
 		Entity child = (Entity) factory.getNewList(true);
-		if(edge == null) {
+		if (edge == null) {
 			return child;
 		}
 		child.put(TYPE, edge.getType());
@@ -523,7 +529,7 @@ public class GraphConverter implements Converter {
 
 	private Entity addInfo(Association edge, boolean cardinality) {
 		Entity result = (Entity) factory.getNewList(true);
-		if(edge == null) {
+		if (edge == null) {
 			return result;
 		}
 		result.put(PROPERTY, edge.getName());
@@ -533,7 +539,7 @@ public class GraphConverter implements Converter {
 		if (full) {
 			result.put(TYPE, edge.getType().getValue());
 			Clazz clazz = edge.getClazz();
-			if(clazz != null) {
+			if (clazz != null) {
 				result.put(CLASS, edge.getClazz().getName());
 			}
 		}
@@ -544,7 +550,7 @@ public class GraphConverter implements Converter {
 		EntityList result = (EntityList) factory.getNewList(false);
 		ArrayList<String> ids = new ArrayList<String>();
 		GraphSimpleSet children = GraphUtil.getChildren(nodes);
-		if(children == null) {
+		if (children == null) {
 			return null;
 		}
 		for (GraphMember entity : children) {
@@ -634,7 +640,7 @@ public class GraphConverter implements Converter {
 
 	public GraphImage getNodeHeader(GraphEntity entity) {
 		GraphSimpleSet children = GraphUtil.getChildren(entity);
-		if(children != null) {
+		if (children != null) {
 			for (GraphMember member : children) {
 				if (member instanceof GraphImage) {
 					return (GraphImage) member;
@@ -653,7 +659,7 @@ public class GraphConverter implements Converter {
 			splitter = ":";
 		}
 		GraphSimpleSet children = GraphUtil.getChildren(list);
-		if(children == null) {
+		if (children == null) {
 			return result;
 		}
 		for (GraphMember item : children) {
@@ -681,7 +687,7 @@ public class GraphConverter implements Converter {
 	private EntityList parseMethods(GraphEntity list, boolean shortName, boolean removeParameterNames) {
 		EntityList result = (EntityList) factory.getNewList(false);
 		GraphSimpleSet children = GraphUtil.getChildren(list);
-		if(children == null) {
+		if (children == null) {
 			return result;
 		}
 		for (GraphMember item : children) {
@@ -1089,7 +1095,7 @@ public class GraphConverter implements Converter {
 	}
 
 	private String getFreeName(SimpleKeyValueList<GraphMember, String> names, GraphMember member) {
-		if(names == null || member == null) {
+		if (names == null || member == null) {
 			return null;
 		}
 		String value = member.getName().toLowerCase();
@@ -1127,6 +1133,5 @@ public class GraphConverter implements Converter {
 		}
 		return modifierSet;
 	}
-	
-	
+
 }

@@ -5,7 +5,7 @@ import de.uniks.networkparser.EntityUtil;
 /*
 NetworkParser
 The MIT License
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -29,7 +29,7 @@ THE SOFTWARE.
 public abstract class Value extends GraphMember {
 	public static final String PROPERTY_INITIALIZATION = "initialization";
 	public static final String PROPERTY_TYPE = "type";
-	public static final String PROPERTY_TYPECAT= "typecat";
+	public static final String PROPERTY_TYPECAT = "typecat";
 	public static final String PROPERTY_TYPECLAZZ = "typeClazz";
 	public static final String PROPERTY_NAMEGETTER = "namegetter";
 	public static final String PROPERTY_VALUE = "value";
@@ -59,7 +59,7 @@ public abstract class Value extends GraphMember {
 		}
 		if (PROPERTY_TYPE.equalsIgnoreCase(attrName)) {
 			DataType type = this.getType();
-			if(type != null && pos > 0) {
+			if (type != null && pos > 0) {
 				return type.getValue(attribute.substring(pos + 1));
 			}
 			return type;
@@ -87,7 +87,7 @@ public abstract class Value extends GraphMember {
 		}
 		if (PROPERTY_VALUE.equalsIgnoreCase(attribute)) {
 			return this.value;
-			
+
 		}
 		return super.getValue(attribute);
 	}

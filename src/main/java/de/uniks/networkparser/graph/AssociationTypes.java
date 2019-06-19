@@ -3,7 +3,7 @@ package de.uniks.networkparser.graph;
 /*
 NetworkParser
 The MIT License
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -25,14 +25,12 @@ THE SOFTWARE.
 */
 
 /**
- * Associations types Edge - Edge : normal Edge 
- * Association             - Association : Bidirectional 
- * Association Association - Edge : Undirectional but search for back Assoc 
- * Undirectional           - Edge : Undirectional Association
- * Aggregation             - Undirectional : Undirectional Aggregation
- * Aggregation             - Edge : Aggregation 
- * Composition             - Edge : Composition Generalisation - Edge : Generalisation
- * Implements              - Edge : Implements Dependency - Edge : Dependency
+ * Associations types Edge - Edge : normal Edge Association - Association :
+ * Bidirectional Association Association - Edge : Undirectional but search for
+ * back Assoc Undirectional - Edge : Undirectional Association Aggregation -
+ * Undirectional : Undirectional Aggregation Aggregation - Edge : Aggregation
+ * Composition - Edge : Composition Generalisation - Edge : Generalisation
+ * Implements - Edge : Implements Dependency - Edge : Dependency
  *
  * @author Stefan
  *
@@ -77,53 +75,53 @@ public class AssociationTypes {
 		if (value == null) {
 			return false;
 		}
-		return (value.equals(GENERALISATION) || value.equals(IMPLEMENTS) || value.equals(EDGE) );
+		return (value.equals(GENERALISATION) || value.equals(IMPLEMENTS) || value.equals(EDGE));
 	}
-	
+
 	private String value;
 
 	@Override
 	public String toString() {
 		return this.value;
 	}
-	
+
 	@Override
 	public boolean equals(Object obj) {
-		if(obj == null) {
+		if (obj == null) {
 			return false;
 		}
-		if(obj instanceof String) {
+		if (obj instanceof String) {
 			return ((String) obj).equalsIgnoreCase(this.getValue());
 		}
 		return super.equals(obj);
 	}
 
 	public static AssociationTypes create(String value) {
-		if(ASSOCIATION.equals(value)) {
+		if (ASSOCIATION.equals(value)) {
 			return ASSOCIATION;
 		}
-		if("association".equalsIgnoreCase(value)) {
+		if ("association".equalsIgnoreCase(value)) {
 			return ASSOCIATION;
 		}
-		if(EDGE.equals(value)) {
+		if (EDGE.equals(value)) {
 			return EDGE;
 		}
-		if(GENERALISATION.equals(value)) {
+		if (GENERALISATION.equals(value)) {
 			return GENERALISATION;
 		}
-		if(IMPLEMENTS.equals(value)) {
+		if (IMPLEMENTS.equals(value)) {
 			return IMPLEMENTS;
 		}
-		if(UNDIRECTIONAL.equals(value)) {
+		if (UNDIRECTIONAL.equals(value)) {
 			return UNDIRECTIONAL;
 		}
-		if(AGGREGATION.equals(value)) {
+		if (AGGREGATION.equals(value)) {
 			return AGGREGATION;
 		}
-		if(COMPOSITION.equals(value)) {
+		if (COMPOSITION.equals(value)) {
 			return COMPOSITION;
 		}
-		if(DEPENDENCY.equals(value)) {
+		if (DEPENDENCY.equals(value)) {
 			return DEPENDENCY;
 		}
 		return null;

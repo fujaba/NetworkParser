@@ -39,7 +39,7 @@ public class ModelExecutor extends SimpleEventCondition {
 			return result != null;
 		}
 		SimpleTimerTask task = new SimpleTimerTask(event, this);
-		
+
 		final FutureTask<Object> query = new FutureTask<Object>(task);
 		JavaAdapter.execute(query);
 		try {

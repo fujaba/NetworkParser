@@ -3,7 +3,7 @@ package de.uniks.networkparser.ext.story;
 /*
 The MIT License
 
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -67,7 +67,7 @@ public class StoryStepJUnit implements ObjectCondition {
 
 	public StoryStepJUnit() {
 		this.column = JacocoColumn.create();
-		if(this.column != null) {
+		if (this.column != null) {
 			this.addColumn("BBT", column);
 		}
 	}
@@ -373,7 +373,7 @@ public class StoryStepJUnit implements ObjectCondition {
 	public StoryStepJUnit withUseCase(Story story, GraphModel model) {
 		this.map = new IdMap();
 		this.model = model;
-		if(this.column != null) {
+		if (this.column != null) {
 			story.add(this);
 			// Check for ReCompile
 			if (this.model != null && this.model instanceof ClassModel) {
@@ -384,7 +384,7 @@ public class StoryStepJUnit implements ObjectCondition {
 					recompile(location.getPath().substring(1));
 				}
 			}
-	
+
 			for (Clazz clazz : this.model.getClazzes()) {
 				GenericCreator creator = new GenericCreator();
 				creator.withClass(clazz.getName(false));
@@ -430,32 +430,32 @@ public class StoryStepJUnit implements ObjectCondition {
 		}
 		return false;
 	}
-	
-	
+
 	public Object createListener() {
 		Class<?> class1 = ReflectionLoader.getClass("junit.framework.TestListener");
-		if(class1 != null) {
+		if (class1 != null) {
 			return ReflectionLoader.createProxy(this, class1);
 		}
 		return null;
 	}
 	// TestListener
 
-	//Test test, Throwable e
+	// Test test, Throwable e
 	public void addError(Object test, Throwable e) {
 //		System.out.println("ERROR");
 	}
 
-	//Test test, AssertionFailedError e
+	// Test test, AssertionFailedError e
 	public void addFailure(Object test, Object e) {
 //		System.out.println("FAILURE");
 	}
-	//Test test
+
+	// Test test
 	public void endTest(Object test) {
 //		System.out.println("END");
 	}
-	
-	//Test test
+
+	// Test test
 	public void startTest(Object test) {
 //				System.out.println("START");
 	}

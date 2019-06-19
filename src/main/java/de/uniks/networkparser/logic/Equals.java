@@ -51,7 +51,7 @@ public class Equals implements ParserCondition, SendableEntityCreator {
 	public static final int POS_EQUALS = 0;
 
 	private Object getValue(ObjectCondition condition, Object evt) {
-		if(evt instanceof LocalisationInterface) {
+		if (evt instanceof LocalisationInterface) {
 			LocalisationInterface li = (LocalisationInterface) evt;
 			if (condition instanceof ParserCondition) {
 				return ((ParserCondition) condition).getValue(li);
@@ -72,10 +72,10 @@ public class Equals implements ParserCondition, SendableEntityCreator {
 				}
 				return buffer.toString();
 			}
-		} else if(evt instanceof SimpleEvent) {
-			if(condition instanceof MapCondition) {
-				return ((MapCondition) condition).getValue((SimpleEvent)evt);
-			} else if(condition instanceof ParserCondition) {
+		} else if (evt instanceof SimpleEvent) {
+			if (condition instanceof MapCondition) {
+				return ((MapCondition) condition).getValue((SimpleEvent) evt);
+			} else if (condition instanceof ParserCondition) {
 				ParserCondition con = (ParserCondition) condition;
 				return con.getValue(null);
 			}
@@ -90,7 +90,8 @@ public class Equals implements ParserCondition, SendableEntityCreator {
 		if (evt == null) {
 			return value == null;
 		}
-		if ((evt instanceof LocalisationInterface || evt instanceof SimpleEvent ) && this.left != null && this.right != null) {
+		if ((evt instanceof LocalisationInterface || evt instanceof SimpleEvent) && this.left != null
+				&& this.right != null) {
 
 			Object leftValue = getValue(this.left, evt);
 			Object rightValue = getValue(this.right, evt);
@@ -217,14 +218,14 @@ public class Equals implements ParserCondition, SendableEntityCreator {
 
 	@Override
 	public String toString() {
-		String equals="==";
-		if(position<0) {
+		String equals = "==";
+		if (position < 0) {
 			equals = ">";
-		} else if(position>0) {
+		} else if (position > 0) {
 			equals = "<";
 		}
 		if (left != null && right != null) {
-			
+
 			return "" + left.toString() + equals + right.toString();
 		}
 		return equals + value + " ";
@@ -343,7 +344,7 @@ public class Equals implements ParserCondition, SendableEntityCreator {
 	@Override
 	public void create(CharacterBuffer buffer, TemplateParser parser, LocalisationInterface customTemplate) {
 		// CHECK IF CURRENT =
-		
+
 		// MAY BE A EQUALS
 		buffer.skip();
 		// Check Next Value May be Bigger or lesser or Equals
@@ -354,8 +355,8 @@ public class Equals implements ParserCondition, SendableEntityCreator {
 		} else if (currentChar == '<') {
 			this.withPosition(1);
 			buffer.skip();
- 		} else if (currentChar == '!') {
- 			this.withPosition(0);
+		} else if (currentChar == '!') {
+			this.withPosition(0);
 			buffer.skip();
 		} else {
 			this.withPosition(0);
@@ -366,7 +367,7 @@ public class Equals implements ParserCondition, SendableEntityCreator {
 		if (currentChar == '!') {
 			child = new Not().with(child);
 			this.withRight(child);
-		}else {
+		} else {
 			this.withRight(child);
 		}
 	}

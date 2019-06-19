@@ -13,7 +13,7 @@ public class AssociationChangeRenameCondition extends MatchCondition {
 	}
 
 	protected boolean checkCondition(GraphMatcher matches, Match match) {
-		if(match == null || matches == null || match.getOtherMatch() == null) {
+		if (match == null || matches == null || match.getOtherMatch() == null) {
 			return false;
 		}
 		Association sourceAssociation = (Association) match.getMatch();
@@ -29,7 +29,7 @@ public class AssociationChangeRenameCondition extends MatchCondition {
 
 	@Override
 	protected boolean calculateFileDiffs(GraphModel model, GraphMatcher matches, Match match) {
-		if(match == null || matches == null) {
+		if (match == null || matches == null) {
 			return false;
 		}
 		Association oldAssociation = (Association) match.getMatch();
@@ -47,7 +47,7 @@ public class AssociationChangeRenameCondition extends MatchCondition {
 
 	@Override
 	protected boolean calculateModelDiffs(GraphModel model, GraphMatcher matches, Match match) {
-		if(match == null || matches == null || match.getOtherMatch() == null) {
+		if (match == null || matches == null || match.getOtherMatch() == null) {
 			return false;
 		}
 		Association oldAssociation = (Association) match.getOtherMatch().getMatch();

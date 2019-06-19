@@ -3,7 +3,7 @@ package de.uniks.networkparser.converter;
 /*
 NetworkParser
 The MIT License
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -75,7 +75,7 @@ public class ByteConverterHex extends ByteConverter {
 	}
 
 	public static byte[] decoding(CharSequence value, int pos, int len) {
-		if(value == null || len< value.length()) {
+		if (value == null || len < value.length()) {
 			return null;
 		}
 		byte[] out = new byte[len / 2];
@@ -95,7 +95,7 @@ public class ByteConverterHex extends ByteConverter {
 
 	public static char fromHex(CharSequence value, int pos, int len) {
 		byte[] bytes = decoding(value, pos, len);
-		if (bytes == null || bytes.length<1) {
+		if (bytes == null || bytes.length < 1) {
 			return 0;
 		}
 		if (len == 4 && bytes.length > 3) {

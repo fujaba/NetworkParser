@@ -31,7 +31,7 @@ public class ModifierSet extends SimpleSet<Modifier> {
 	public ModifierSet hasName(String otherValue) {
 		return filter(StringCondition.createEquals(Modifier.PROPERTY_NAME, otherValue));
 	}
-	
+
 	@Override
 	public SimpleSet<Modifier> getNewList(boolean keyValue) {
 		return new ModifierSet();

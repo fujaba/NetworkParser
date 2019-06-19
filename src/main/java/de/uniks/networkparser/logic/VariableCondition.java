@@ -5,7 +5,7 @@ import java.util.Set;
 /*
 The MIT License
 
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -89,7 +89,7 @@ public class VariableCondition implements ParserCondition {
 				v = key;
 			}
 			pos = v.indexOf("(");
-			String param=null;
+			String param = null;
 			if (pos > 0) {
 				param = v.substring(pos + 1, v.length() - 1);
 				v = key.substring(0, pos);
@@ -108,9 +108,9 @@ public class VariableCondition implements ParserCondition {
 				Annotation anno = (Annotation) object;
 				CharacterBuffer buffer = new CharacterBuffer();
 				addAnnotation(anno, buffer, param, variables);
-				while(anno.hasNext()) {
+				while (anno.hasNext()) {
 					anno = anno.next();
-					if(buffer.length()>0) {
+					if (buffer.length() > 0) {
 						buffer.with(BaseItem.CRLF);
 					}
 					addAnnotation(anno, buffer, param, variables);
@@ -153,21 +153,21 @@ public class VariableCondition implements ParserCondition {
 		}
 		return null;
 	}
-	
+
 	public void addAnnotation(Annotation anno, CharacterBuffer buffer, String param, SendableEntityCreator variables) {
-		if(anno == null || buffer == null) {
+		if (anno == null || buffer == null) {
 			return;
 		}
-		if(param == null && anno.getScope() != null) {
+		if (param == null && anno.getScope() != null) {
 			return;
 		}
-		if(param!= null && param.equalsIgnoreCase(anno.getScope())== false) {
+		if (param != null && param.equalsIgnoreCase(anno.getScope()) == false) {
 			return;
 		}
 		GraphSimpleSet children = GraphUtil.getChildren(anno);
-		if(children != null) {
-			for(Object item : children) {
-				if(item instanceof Import) {
+		if (children != null) {
+			for (Object item : children) {
+				if (item instanceof Import) {
 					variables.setValue(variables, "headers", ((Import) item).getClazz().getName(), "new");
 				}
 			}

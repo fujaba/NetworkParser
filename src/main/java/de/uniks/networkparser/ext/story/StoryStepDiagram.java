@@ -3,7 +3,7 @@ package de.uniks.networkparser.ext.story;
 /*
 The MIT License
 
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -49,7 +49,7 @@ public class StoryStepDiagram implements ObjectCondition {
 			return false;
 		}
 		SimpleEvent evt = (SimpleEvent) value;
-		if(evt.getNewValue() instanceof HTMLEntity == false || evt.getSource() instanceof Story == false) {
+		if (evt.getNewValue() instanceof HTMLEntity == false || evt.getSource() instanceof Story == false) {
 			return false;
 		}
 		HTMLEntity element = (HTMLEntity) evt.getNewValue();

@@ -21,12 +21,12 @@ public class ChangeAddCondition extends MatchCondition {
 
 	@Override
 	protected boolean calculateFileDiffs(GraphModel model, GraphMatcher matches, Match match) {
-		if(match == null || matches == null) {
+		if (match == null || matches == null) {
 			return false;
 		}
 		GraphMember oldMatch = match.getMatch();
 		GraphMember newMatch = match.getSourceMatch();
-		if(newMatch == null) {
+		if (newMatch == null) {
 			return false;
 		}
 		Clazz newClazz = newMatch.getClazz();
@@ -66,7 +66,7 @@ public class ChangeAddCondition extends MatchCondition {
 
 	@Override
 	protected boolean calculateModelDiffs(GraphModel model, GraphMatcher matches, Match match) {
-		if(match == null || matches == null || match.getOtherMatch() == null) {
+		if (match == null || matches == null || match.getOtherMatch() == null) {
 			return false;
 		}
 //		GraphMember oldAttribute = match.getSourceMatch();

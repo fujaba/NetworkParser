@@ -3,7 +3,7 @@ package de.uniks.networkparser.ext.petaf;
 /*
 The MIT License
 
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -73,7 +73,7 @@ public class NodeBackup implements Runnable {
 			task.update(this.event);
 			if (this.space != null) {
 				SortedSet<NodeProxy> proxies = this.space.getNodeProxies();
-				// Add Saving the Datemodell
+				/* Add Saving the Datemodell */
 				for (NodeProxy proxy : proxies) {
 					if (proxy instanceof NodeProxyFileSystem) {
 						proxy.sending(null);

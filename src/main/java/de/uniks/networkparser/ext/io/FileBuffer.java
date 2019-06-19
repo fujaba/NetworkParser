@@ -3,7 +3,7 @@ package de.uniks.networkparser.ext.io;
 /*
 NetworkParser
 The MIT License
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -142,7 +142,6 @@ public class FileBuffer extends Buffer {
 			}
 			this.lookAHead.clear();
 			this.lookAHead.with(values, 0, len + read);
-//			this.position = this.length();
 		} catch (IOException e) {
 		}
 		return new String(values);
@@ -151,7 +150,7 @@ public class FileBuffer extends Buffer {
 	@Override
 	public FileBuffer withLookAHead(CharSequence lookahead) {
 		this.lookAHead.set(lookahead);
-		if (lookahead == null || lookahead.length()<1) {
+		if (lookahead == null || lookahead.length() < 1) {
 			this.currentChar = 0;
 		} else {
 			this.currentChar = lookahead.charAt(0);
@@ -246,7 +245,7 @@ public class FileBuffer extends Buffer {
 	}
 
 	public static final int writeReourceFile(String fileName, String path) {
-		if(path == null) {
+		if (path == null) {
 			return -1;
 		}
 		return writeFile(fileName, FileBuffer.readBinaryResource(path).array(), OVERRIDE);
@@ -287,7 +286,7 @@ public class FileBuffer extends Buffer {
 	}
 
 	public static ByteBuffer readBinaryResource(String file) {
-		if(file == null) {
+		if (file == null) {
 			return null;
 		}
 		InputStream is = IdMap.class.getResourceAsStream(file);
@@ -392,7 +391,7 @@ public class FileBuffer extends Buffer {
 	}
 
 	public static BaseItem readBaseFile(String configFile, BaseItem container) {
-		// load it
+		/* load it */
 		CharacterBuffer buffer = FileBuffer.readFile(configFile);
 		return parsingBuffer(buffer, container);
 	}
@@ -411,7 +410,7 @@ public class FileBuffer extends Buffer {
 				if (buffer.isEnd()) {
 					return result;
 				}
-				// buffer not at end
+				/* buffer not at end */
 				JsonArray array = new JsonArray();
 				array.add(result);
 				while (buffer.isEndCharacter() == false) {
@@ -444,7 +443,7 @@ public class FileBuffer extends Buffer {
 	}
 
 	public static final boolean deleteFile(String fileName) {
-		if(fileName == null) {
+		if (fileName == null) {
 			return false;
 		}
 		File file;

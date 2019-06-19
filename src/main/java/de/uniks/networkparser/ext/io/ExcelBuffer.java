@@ -3,7 +3,7 @@ package de.uniks.networkparser.ext.io;
 /*
 NetworkParser
 The MIT License
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -45,7 +45,7 @@ import de.uniks.networkparser.parser.ExcelWorkBook;
 
 public class ExcelBuffer {
 	public ExcelSheet parse(File file) {
-		if(file == null) {
+		if (file == null) {
 			return null;
 		}
 		ExcelSheet data = null;
@@ -85,7 +85,7 @@ public class ExcelBuffer {
 	}
 
 	private CharacterBuffer readContext(InputStream is) {
-		if(is == null) {
+		if (is == null) {
 			return null;
 		}
 		final char[] buffer = new char[1024];
@@ -106,7 +106,7 @@ public class ExcelBuffer {
 	public boolean encode(File file, ExcelWorkBook workbook) {
 		boolean result = false;
 		ZipOutputStream zos = null;
-		if(workbook == null || file == null) {
+		if (workbook == null || file == null) {
 			return false;
 		}
 		try {
@@ -138,7 +138,7 @@ public class ExcelBuffer {
 	}
 
 	public boolean addToZipFile(String fileName, String content, ZipOutputStream zos) {
-		if(fileName == null || zos == null ||  fileName.length()<1) {
+		if (fileName == null || zos == null || fileName.length() < 1) {
 			return false;
 		}
 		ZipEntry zipEntry = new ZipEntry(fileName);
@@ -147,7 +147,7 @@ public class ExcelBuffer {
 			byte[] bytes = content.getBytes(BaseItem.ENCODING);
 			zos.write(bytes, 0, bytes.length);
 			zos.closeEntry();
-		}catch (Exception e) {
+		} catch (Exception e) {
 			return false;
 		}
 		return true;

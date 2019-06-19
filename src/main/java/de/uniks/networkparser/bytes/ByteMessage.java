@@ -5,7 +5,7 @@ import de.uniks.networkparser.interfaces.SendableEntityCreatorTag;
 /*
 NetworkParser
 The MIT License
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -120,7 +120,7 @@ public class ByteMessage implements SendableEntityCreatorTag {
 	 * @return Itself
 	 */
 	public ByteMessage withValue(String value) {
-		if(value != null) {
+		if (value != null) {
 			this.value = value.getBytes();
 		}
 		return this;

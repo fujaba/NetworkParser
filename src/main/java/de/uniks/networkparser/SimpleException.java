@@ -1,6 +1,6 @@
 package de.uniks.networkparser;
 
-public class SimpleException extends RuntimeException{
+public class SimpleException extends RuntimeException {
 	private static final long serialVersionUID = 1L;
 	private Object source;
 
@@ -12,7 +12,7 @@ public class SimpleException extends RuntimeException{
 		super(msg);
 		this.source = source;
 	}
-	
+
 	public SimpleException(Throwable e) {
 		super(e);
 	}

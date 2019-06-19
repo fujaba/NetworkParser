@@ -1,9 +1,10 @@
 package de.uniks.networkparser.ext.petaf.proxy;
 
+import de.uniks.networkparser.ext.io.MessageSession;
 /*
 The MIT License
 
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -24,12 +25,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 import de.uniks.networkparser.ext.io.SocketMessage;
-import de.uniks.networkparser.ext.io.MessageSession;
 import de.uniks.networkparser.ext.petaf.Message;
 import de.uniks.networkparser.ext.petaf.NodeProxy;
 import de.uniks.networkparser.interfaces.ObjectCondition;
-// This.name is receiver
-// https://console.firebase.google.com/project/<Project>/settings/cloudmessaging/
+/**  This.name is receiver  https://console.firebase.google.com/project/<Project>/settings/cloudmessaging/ */
 
 public class NodeProxyMessages extends NodeProxy {
 	public static final String EVENT_CONNECTION = "connection";
@@ -158,7 +157,7 @@ public class NodeProxyMessages extends NodeProxy {
 		if (this.connection != null) {
 			this.connection.withType(this.msgType);
 			return this.connection.connect(password);
-			// TYPE
+			/* TYPE */
 		}
 		return false;
 	}

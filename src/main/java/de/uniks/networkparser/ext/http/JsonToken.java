@@ -92,14 +92,15 @@ public class JsonToken {
 		buffer.with('.').with(checkSum);
 		return buffer.toString();
 	}
+
 	public String getCheckSum() {
 		String token = getToken();
-		if(token == null) {
+		if (token == null) {
 			return null;
 		}
 		int pos = token.lastIndexOf('.');
-		if(pos>0) {
-			return token.substring(pos+1);
+		if (pos > 0) {
+			return token.substring(pos + 1);
 		}
 		return null;
 	}
@@ -120,7 +121,7 @@ public class JsonToken {
 		tokener.withExpiration(this.getExpiration());
 		return tokener;
 	}
-	
+
 	public JsonToken createDecoder() {
 		JsonToken tokener = new JsonToken();
 		tokener.withSecret(this.getSecret());
@@ -147,40 +148,40 @@ public class JsonToken {
 	}
 
 	public boolean validate(String token) {
-		if(token == null) {
+		if (token == null) {
 			return false;
 		}
 		String header;
 		String payLoad;
 		String checkSum;
-		
+
 		int pos = token.indexOf('.');
-		if(pos<0) {
+		if (pos < 0) {
 			return false;
 		}
-		header = token.substring(0,pos);
-		int start = pos+1;
+		header = token.substring(0, pos);
+		int start = pos + 1;
 		pos = token.indexOf('.', start);
-		if(pos<0) {
+		if (pos < 0) {
 			return false;
 		}
 		payLoad = token.substring(start, pos);
 		checkSum = token.substring(pos + 1);
-		// CHECK HEADER
+		/* CHECK HEADER */
 		JsonObject headerJson = new JsonObject().withValue(ByteConverter64.fromBase64String(header));
-		if(headerJson.equals(this.header) == false) {
+		if (headerJson.equals(this.header) == false) {
 			return false;
 		}
-		// CHECK HASHCODE
-		
+		/* CHECK HASHCODE */
+
 		this.body = new JsonObject().withValue(ByteConverter64.fromBase64String(payLoad));
 		String token2 = this.getCheckSum();
-		if(checkSum.equals(token2) == false) {
+		if (checkSum.equals(token2) == false) {
 			return false;
 		}
-		// CHECK EXPIRATED
+		/* CHECK EXPIRATED */
 		this.expiration = this.body.getLong(EXPIRATION);
-		if(this.expiration < System.currentTimeMillis() / 1000) {
+		if (this.expiration < System.currentTimeMillis() / 1000) {
 			return false;
 		}
 		return true;

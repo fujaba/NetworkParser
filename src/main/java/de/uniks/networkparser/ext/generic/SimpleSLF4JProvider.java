@@ -3,7 +3,7 @@ package de.uniks.networkparser.ext.generic;
 /*
 The MIT License
 
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -33,21 +33,23 @@ import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 
 public class SimpleSLF4JProvider implements InvocationHandler {
-	// public class SimpleSLF4JProvider implements SLF4JServiceProvider,
-	// InvocationHandler {
-	// to avoid constant folding by the compiler, this field must *not* be final
-	public static String REQUESTED_API_VERSION = "1.8.99"; // !final
+	/*
+	 * public class SimpleSLF4JProvider implements SLF4JServiceProvider,
+	 * InvocationHandler { to avoid constant folding by the compiler, this field
+	 * must *not* be final
+	 */
+	public static String REQUESTED_API_VERSION = "1.8.99";
 	private Object proxy;
 	private SimpleKeyValueList<String, String> map = new SimpleKeyValueList<String, String>();
-	// Logger Parameter
+	/* Logger Parameter */
 	private NetworkParserLog logger;
 
 	@Override
 	public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-		if(method == null) {
+		if (method == null) {
 			return null;
 		}
-		// IMarkerFactory
+		/* IMarkerFactory */
 		String m = method.getName();
 		if ("getMarker".equals(m)) {
 			return getMarker((String) args[0]);
@@ -64,7 +66,7 @@ public class SimpleSLF4JProvider implements InvocationHandler {
 		if ("getLogger".equals(m)) {
 			return getLogger((String) args[0]);
 		}
-		// Must be method from Logger
+		/* Must be method from Logger */
 		if ("isTraceEnabled".equals(m)) {
 			if (args != null && args.length > 0) {
 				return isTraceEnabled(args[0]);
@@ -74,7 +76,7 @@ public class SimpleSLF4JProvider implements InvocationHandler {
 		if ("trace".equals(m)) {
 			if (args != null && args.length > 0 && args[0] instanceof String) {
 				this.trace((String) args[0], convertConvert(args));
-			} // not allowed trace(Marker marker, ?)
+			} /* not allowed trace(Marker marker, ?) */
 		}
 		if ("isDebugEnabled".equals(m)) {
 			if (args != null && args.length > 0) {
@@ -85,7 +87,7 @@ public class SimpleSLF4JProvider implements InvocationHandler {
 		if ("debug".equals(m)) {
 			if (args != null && args.length > 0 && args[0] instanceof String) {
 				this.debug((String) args[0], convertConvert(args));
-			} // not allowed debug(Marker marker, ?)
+			} /* not allowed debug(Marker marker, ?) */
 		}
 		if ("isInfoEnabled".equals(m)) {
 			if (args != null && args.length > 0) {
@@ -96,7 +98,7 @@ public class SimpleSLF4JProvider implements InvocationHandler {
 		if ("info".equals(m)) {
 			if (args != null && args.length > 0 && args[0] instanceof String) {
 				this.info((String) args[0], convertConvert(args));
-			} // not allowed debug(Marker marker, ?)
+			} /* not allowed debug(Marker marker, ?) */
 		}
 		if ("isWarnEnabled".equals(m)) {
 			if (args != null && args.length > 0) {
@@ -107,7 +109,7 @@ public class SimpleSLF4JProvider implements InvocationHandler {
 		if ("warn".equals(m)) {
 			if (args != null && args.length > 0 && args[0] instanceof String) {
 				this.warn((String) args[0], convertConvert(args));
-			} // not allowed debug(Marker marker, ?)
+			} /* not allowed debug(Marker marker, ?) */
 		}
 		if ("isErrorEnabled".equals(m)) {
 			if (args != null && args.length > 0) {
@@ -118,7 +120,7 @@ public class SimpleSLF4JProvider implements InvocationHandler {
 		if ("error".equals(m)) {
 			if (args != null && args.length > 0 && args[0] instanceof String) {
 				this.error((String) args[0], convertConvert(args));
-			} // not allowed debug(Marker marker, ?)
+			} /* not allowed debug(Marker marker, ?) */
 		}
 		if ("getName".equals(m)) {
 			return getName();
@@ -185,13 +187,13 @@ public class SimpleSLF4JProvider implements InvocationHandler {
 		proxies[1] = ReflectionLoader.getClass("org.slf4j.IMarkerFactory");
 		proxies[2] = ReflectionLoader.getClass("org.slf4j.spi.MDCAdapter");
 		proxies[3] = ReflectionLoader.getClass("org.slf4j.Logger");
-		if(proxies[0] != null) {
+		if (proxies[0] != null) {
 			this.proxy = java.lang.reflect.Proxy.newProxyInstance(SimpleSLF4JProvider.class.getClassLoader(), proxies,
 					this);
 		}
 	}
 
-	// LOGGER
+	/* LOGGER */
 	public boolean isTraceEnabled(Object... marker) {
 		return getLogger().isLevel(NetworkParserLog.LOGLEVEL_TRACE);
 	}
@@ -232,12 +234,12 @@ public class SimpleSLF4JProvider implements InvocationHandler {
 		getLogger().error(this, null, msg, values);
 	}
 
-	// ILoggerFactory
+	/* ILoggerFactory */
 	public Object getLogger(String name) {
 		return this.proxy;
 	}
 
-	// MARKER
+	/* MARKER */
 	public Object getMarker(String name) {
 		return null;
 	}
@@ -254,7 +256,13 @@ public class SimpleSLF4JProvider implements InvocationHandler {
 		return null;
 	}
 
-	// MDCAdapter
+	/* Methods for MDCAdapter */
+	/**
+	 * Put Value
+	 * 
+	 * @param key   Key of Value
+	 * @param value Th Value
+	 */
 	public void put(String key, String value) {
 		this.map.put(key, value);
 	}

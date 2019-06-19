@@ -3,7 +3,7 @@ package de.uniks.networkparser.converter;
 /*
 NetworkParser
 The MIT License
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -39,31 +39,22 @@ import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.BufferItem;
 import de.uniks.networkparser.interfaces.Converter;
 
-/** Gramatic for Dot-Converter
-* graph : [ strict ] (graph | digraph) [ ID ] '{' stmt_list '}'
-* stmt_list : [ stmt [ ';' ] [ stmt_list ] ]
-* stmt : node_stmt
-* | edge_stmt
-* | attr_stmt
-* | ID '=' ID
-* | subgraph
-* attr_stmt : (graph | node | edge) attr_list
-* attr_list : '[' [ a_list ] ']' [ attr_list ]
-* a_list : ID '=' ID [ (';' | ',') ] [ a_list ]
-* edge_stmt : (node_id | subgraph) edgeRHS [ attr_list ]
-* edgeRHS : edgeop (node_id | subgraph) [ edgeRHS ]
-* node_stmt : node_id [ attr_list ]
-* node_id : ID [ port ]
-* port : ':' ID [ ':' compass_pt ]
-* | ':' compass_pt
-* subgraph : [ subgraph [ ID ] ] '{' stmt_list '}'
-* compass_pt : (n | ne | e | se | s | sw | w | nw | c | _)
-* 
-* @author Stefan Lindel
-*/
+/**
+ * Gramatic for Dot-Converter graph : [ strict ] (graph | digraph) [ ID ] '{'
+ * stmt_list '}' stmt_list : [ stmt [ ';' ] [ stmt_list ] ] stmt : node_stmt |
+ * edge_stmt | attr_stmt | ID '=' ID | subgraph attr_stmt : (graph | node |
+ * edge) attr_list attr_list : '[' [ a_list ] ']' [ attr_list ] a_list : ID '='
+ * ID [ (';' | ',') ] [ a_list ] edge_stmt : (node_id | subgraph) edgeRHS [
+ * attr_list ] edgeRHS : edgeop (node_id | subgraph) [ edgeRHS ] node_stmt :
+ * node_id [ attr_list ] node_id : ID [ port ] port : ':' ID [ ':' compass_pt ]
+ * | ':' compass_pt subgraph : [ subgraph [ ID ] ] '{' stmt_list '}' compass_pt
+ * : (n | ne | e | se | s | sw | w | nw | c | _)
+ * 
+ * @author Stefan Lindel
+ */
 public class DotConverter implements Converter {
 	private boolean removePackage;
-	private boolean showAssocInfo=true;
+	private boolean showAssocInfo = true;
 	private boolean showNodeInfo = true;
 	private boolean showSimpleNodeInfo = false;
 
@@ -71,16 +62,17 @@ public class DotConverter implements Converter {
 		this.removePackage = value;
 		return this;
 	}
-	
+
 	public DotConverter withShowAssocInfo(boolean value) {
 		this.showAssocInfo = value;
 		return this;
 	}
+
 	public DotConverter withShowSimpleNodeInfo(boolean value) {
 		this.showSimpleNodeInfo = value;
 		return this;
 	}
-	
+
 	public DotConverter withShowNodeInfo(boolean value) {
 		this.showNodeInfo = value;
 		return this;
@@ -98,7 +90,7 @@ public class DotConverter implements Converter {
 	}
 
 	GraphList decodeGraph(BufferItem value) {
-		if(value == null) {
+		if (value == null) {
 			return null;
 		}
 		char c = value.nextClean(true);
@@ -134,7 +126,7 @@ public class DotConverter implements Converter {
 	}
 
 	void decodeEdge(GraphList graph, BufferItem value) {
-		if(graph == null || value == null) {
+		if (graph == null || value == null) {
 			return;
 		}
 		char endChar;
@@ -168,7 +160,7 @@ public class DotConverter implements Converter {
 	}
 
 	GraphEntity decodeNode(GraphList graph, BufferItem value) {
-		if(graph == null || value == null) {
+		if (graph == null || value == null) {
 			return null;
 		}
 		char c = value.nextClean(true);
@@ -205,9 +197,9 @@ public class DotConverter implements Converter {
 		return node;
 	}
 
-/*		ID '=' ID [ (';' | ',') ] */
+	/* ID '=' ID [ (';' | ',') ] */
 	void decodeAttributes(GraphEntity node, BufferItem value) {
-		if(node == null || value == null) {
+		if (node == null || value == null) {
 			return;
 		}
 		value.skipTo('[', false);
@@ -231,7 +223,7 @@ public class DotConverter implements Converter {
 	}
 
 	String decodeValue(BufferItem value) {
-		if(value == null) {
+		if (value == null) {
 			return null;
 		}
 		char c = value.nextClean(true);
@@ -278,8 +270,8 @@ public class DotConverter implements Converter {
 		GraphModel root = (GraphModel) entity;
 		StringBuilder sb = new StringBuilder();
 		String graphType = "graph";
-		String type= GraphTokener.CLASSDIAGRAM;
-		if(root instanceof GraphList) {
+		String type = GraphTokener.CLASSDIAGRAM;
+		if (root instanceof GraphList) {
 			type = ((GraphList) root).getType();
 		}
 		if (GraphTokener.OBJECTDIAGRAM.equals(type)) {
@@ -293,10 +285,10 @@ public class DotConverter implements Converter {
 		boolean isObjectdiagram = false;
 		isObjectdiagram = GraphTokener.OBJECTDIAGRAM.equals(type);
 
-		if(showNodeInfo) {
+		if (showNodeInfo) {
 			for (GraphEntity node : GraphUtil.getNodes(root)) {
 				sb.append(node.getName(false));
-				if(showSimpleNodeInfo) {
+				if (showSimpleNodeInfo) {
 					sb.append(BaseItem.CRLF);
 					continue;
 				}
@@ -314,7 +306,7 @@ public class DotConverter implements Converter {
 					continue;
 				}
 				Clazz graphClazz = (Clazz) node;
-	
+
 				StringBuilder childBuilder = new StringBuilder();
 				for (Attribute attribute : graphClazz.getAttributes()) {
 					/* add attribute line */
@@ -334,7 +326,8 @@ public class DotConverter implements Converter {
 				childBuilder = new StringBuilder();
 				for (Method method : graphClazz.getMethods()) {
 					/* add attribute line */
-					childBuilder.append(BaseItem.CRLF + "<tr><td align='left'>" + method.getName(false, false) + "</td></tr>");
+					childBuilder.append(
+							BaseItem.CRLF + "<tr><td align='left'>" + method.getName(false, false) + "</td></tr>");
 				}
 				if (childBuilder.length() > 0) {
 					sb.append(BaseItem.CRLF + "<tr><td><table border='0' cellborder='0' cellspacing='0'>");
@@ -345,7 +338,7 @@ public class DotConverter implements Converter {
 			}
 		}
 
-		if(root instanceof GraphList) {
+		if (root instanceof GraphList) {
 			((GraphList) root).initSubLinks();
 		}
 		/* now generate edges from edgeMap */
@@ -354,13 +347,13 @@ public class DotConverter implements Converter {
 			if (otherEdge.getType() != AssociationTypes.EDGE) {
 				/* It is bidiAssoc */
 				sb.append(edge.getClazz().getName(false) + " -- " + otherEdge.getClazz().getName(false));
-				if(showAssocInfo) {
+				if (showAssocInfo) {
 					sb.append("[headlabel = \"" + edge.getName() + "\" taillabel = \"" + otherEdge.getName() + "\"];");
 				}
 			} else {
 				sb.append(edge.getClazz().getName(false) + " -> " + otherEdge.getClazz().getName(false));
 				graphType = "digraph";
-				if(showAssocInfo) {
+				if (showAssocInfo) {
 					sb.append("[taillabel = \"" + edge.getName() + "\"];");
 				}
 			}

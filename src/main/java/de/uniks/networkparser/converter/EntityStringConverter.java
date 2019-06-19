@@ -3,7 +3,7 @@ package de.uniks.networkparser.converter;
 /*
 NetworkParser
 The MIT License
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -60,7 +60,7 @@ public class EntityStringConverter implements Converter {
 		if (entity instanceof Entity) {
 			return ((Entity) entity).toString(getIndentFactor());
 		}
-		if(entity != null) {
+		if (entity != null) {
 			return ((BaseItem) entity).toString(this);
 		}
 		return null;

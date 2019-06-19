@@ -5,7 +5,7 @@ import java.util.Collection;
 /*
 The MIT License
 
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -70,7 +70,7 @@ public class ClassModel extends GraphModel {
 		this.generator.withFeature(feature);
 		return this;
 	}
-	
+
 	public ClassModel withFeature(FeatureSet feature) {
 		this.generator.withFeature(feature);
 		return this;
@@ -111,13 +111,13 @@ public class ClassModel extends GraphModel {
 			return null;
 		}
 		HTMLEntity entity = super.dumpHTML(diagramName, write);
-		
-		if(diagramName.indexOf('/')<0) {
+
+		if (diagramName.indexOf('/') < 0) {
 			diagramName = "doc/" + diagramName;
 		}
-		
+
 		diagramName = Story.addResource(entity, diagramName, false);
-		
+
 		if (write == null || write.length < 1 || write[0] == false) {
 			return entity;
 		}

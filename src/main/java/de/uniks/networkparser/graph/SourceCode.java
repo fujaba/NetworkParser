@@ -3,7 +3,7 @@ package de.uniks.networkparser.graph;
 /*
 The MIT License
 
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -61,7 +61,7 @@ public class SourceCode extends GraphMember {
 	}
 
 	public CharacterBuffer getContent() {
-		if(content == null) {
+		if (content == null) {
 			this.content = new CharacterBuffer();
 		}
 		return content;
@@ -69,9 +69,9 @@ public class SourceCode extends GraphMember {
 
 	public SourceCode withContent(CharacterBuffer content) {
 		this.content = content;
-		if(content != null) {
+		if (content != null) {
 			this.size = content.length();
-		}else {
+		} else {
 			this.size = 0;
 		}
 		return this;
@@ -118,7 +118,7 @@ public class SourceCode extends GraphMember {
 	public GraphMember with(Clazz parent) {
 		this.parentNode = parent;
 		// REMOVE OLD SOURCE CODE
-		if(parent == null) {
+		if (parent == null) {
 			return this;
 		}
 		GraphSimpleSet children = new GraphSimpleSet();
@@ -143,7 +143,7 @@ public class SourceCode extends GraphMember {
 	}
 
 	public CharSequence subString(int start, int end) {
-		if(content == null) {
+		if (content == null) {
 			return null;
 		}
 		return content.subSequence(start, end);
@@ -190,7 +190,7 @@ public class SourceCode extends GraphMember {
 		this.bodyStartLine = line;
 		return this;
 	}
-	
+
 	public long getBodyStartLine() {
 		return bodyStartLine;
 	}

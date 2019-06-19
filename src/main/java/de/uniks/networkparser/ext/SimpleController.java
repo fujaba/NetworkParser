@@ -4,7 +4,7 @@ import java.io.BufferedReader;
 /*
 The MIT License
 
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -90,10 +90,11 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 	private SimpleKeyValueList<Object, SendableEntityCreator> mapping;
 	private SimpleList<SendableEntityCreator> controllers;
 	private IdMap map;
-	private NetworkParserLog logger=new NetworkParserLog();
+	private NetworkParserLog logger = new NetworkParserLog();
 
 	public SimpleController() {
 	}
+
 	public SimpleController(Object primitiveStage) {
 		this(primitiveStage, true);
 	}
@@ -427,14 +428,15 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 	}
 
 	public void show(Object root, boolean wait, boolean newStage) {
-		if(Os.isFXThread() == false) {
-			this.runParams = new Object[] {root, wait, newStage};
-			this.runAction=SHOWING;
+		if (Os.isFXThread() == false) {
+			this.runParams = new Object[] { root, wait, newStage };
+			this.runAction = SHOWING;
 			JavaAdapter.executeAndWait(this);
 			return;
 		}
 		showing(root, wait, newStage);
 	}
+
 	private void showing(Object root, boolean wait, boolean newStage) {
 		Object oldStage = null;
 		if (newStage) {
@@ -443,18 +445,18 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 			showIcon();
 		}
 		this.firstShow = false;
-		if(stage == null) {
+		if (stage == null) {
 			return;
 		}
 		Object scene;
-		if(root == null) {
+		if (root == null) {
 //				&& this.rootScene != null) {
 			root = rootScene;
 		}
 		if (ReflectionLoader.SCENE == null || root == null) {
 			return;
 		}
-		
+
 		if (ReflectionLoader.SCENE.isAssignableFrom(root.getClass())) {
 			scene = root;
 		} else if (root instanceof JavaBridge) {
@@ -483,6 +485,7 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 	public void show(Object root) {
 		show(root, false, firstShow == false);
 	}
+
 	public void show() {
 		show(null, false, firstShow == false);
 	}
@@ -617,7 +620,7 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 	}
 
 	public SimpleController withIcon(String value, Class<?> relative) {
-		if(Os.isReflectionTest()) {
+		if (Os.isReflectionTest()) {
 			return this;
 		}
 		if (relative != null) {
@@ -830,14 +833,14 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 	}
 
 	public static SimpleController createFX() {
-		if(Os.isReflectionTest()) {
+		if (Os.isReflectionTest()) {
 			return null;
 		}
 		SimpleController controller = new SimpleController(null);
 		controller.runLater(controller, ReflectionLoader.PANE, ReflectionLoader.SCENE);
 		return controller;
 	}
-	
+
 	public static boolean startFX() {
 		final Class<?> launcherClass = ReflectionLoader.getClass("com.sun.javafx.application.LauncherImpl");
 		if (launcherClass == null) {
@@ -851,7 +854,6 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 
 	}
 
-	
 	public void hide() {
 		if (this.stage != null) {
 			ReflectionLoader.call(this.stage, "hide");
@@ -898,53 +900,58 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 
 	public SimpleController withFXML(String fxmlFile, Class<?>... fromClass) {
 		Class<?> path = null;
-		if(fromClass != null && fromClass.length>0) {
-			path = fromClass[0]; 
+		if (fromClass != null && fromClass.length > 0) {
+			path = fromClass[0];
 		}
-		if(path == null) {
-			path =SimpleController.class; 
+		if (path == null) {
+			path = SimpleController.class;
 		}
-		if(Os.isReflectionTest()) {
+		if (Os.isReflectionTest()) {
 			return this;
 		}
 		create(path.getResource(fxmlFile), null);
-		
+
 		// NOW MAPPING
-		if(mapping != null) {
-			for(int i=0;i<mapping.size();i++) {
+		if (mapping != null) {
+			for (int i = 0; i < mapping.size(); i++) {
 				Object key = mapping.getKeyByIndex(i);
 				SendableEntityCreator creator = mapping.getValueByIndex(i);
 				Object controller = null;
-				if(controllers == null) {
+				if (controllers == null) {
 					controllers = new SimpleList<SendableEntityCreator>();
 				}
-				if(key instanceof String) {
-					Object pane = ReflectionLoader.call(this.rootScene, "lookup", "#"+key);
-					if(pane != null) {
-						if(controllers.contains(creator)) {
+				if (key instanceof String) {
+					Object pane = ReflectionLoader.call(this.rootScene, "lookup", "#" + key);
+					if (pane != null) {
+						if (controllers.contains(creator)) {
 							controller = creator.getSendableInstance(false);
-						}else {
+						} else {
 							controller = creator;
 						}
-						creator.setValue(controller, ModelListenerProperty.PROPERTY_VIEW, pane, SendableEntityCreator.NEW);
+						creator.setValue(controller, ModelListenerProperty.PROPERTY_VIEW, pane,
+								SendableEntityCreator.NEW);
 					}
-				} else if(key instanceof SimpleEvent) {
+				} else if (key instanceof SimpleEvent) {
 					SimpleEvent event = (SimpleEvent) key;
-					Object pane = ReflectionLoader.call(this.rootScene, "lookup", "#"+event.getPropertyName());
-					if(pane != null) {
-						if(controllers.contains(creator)) {
+					Object pane = ReflectionLoader.call(this.rootScene, "lookup", "#" + event.getPropertyName());
+					if (pane != null) {
+						if (controllers.contains(creator)) {
 							controller = creator.getSendableInstance(false);
-						}else {
+						} else {
 							controller = creator;
 						}
-						if(map != null) {
+						if (map != null) {
 							SendableEntityCreator creatorClass = map.getCreatorClass(event.getSource());
-							creator.setValue(controller, ModelListenerProperty.PROPERTY_CREATOR, creatorClass, SendableEntityCreator.NEW);
+							creator.setValue(controller, ModelListenerProperty.PROPERTY_CREATOR, creatorClass,
+									SendableEntityCreator.NEW);
 						}
-						creator.setValue(controller, ModelListenerProperty.PROPERTY_PROPERTY, event.getNewValue(), SendableEntityCreator.NEW);
-						creator.setValue(controller, ModelListenerProperty.PROPERTY_MODEL, event.getSource(), SendableEntityCreator.NEW);
+						creator.setValue(controller, ModelListenerProperty.PROPERTY_PROPERTY, event.getNewValue(),
+								SendableEntityCreator.NEW);
+						creator.setValue(controller, ModelListenerProperty.PROPERTY_MODEL, event.getSource(),
+								SendableEntityCreator.NEW);
 						// NOW SET BIDIRECTIONAL
-						creator.setValue(controller, ModelListenerProperty.PROPERTY_VIEW, pane, SendableEntityCreator.NEW);
+						creator.setValue(controller, ModelListenerProperty.PROPERTY_VIEW, pane,
+								SendableEntityCreator.NEW);
 					}
 				}
 				controllers.add(controller);
@@ -963,12 +970,11 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 			Object builder = ReflectionLoader.newInstance("javafx.fxml.JavaFXBuilderFactory");
 			Class<?> builderClass = ReflectionLoader.getClass("javafx.util.BuilderFactory");
 			fxmlLoader = ReflectionLoader.newInstance("javafx.fxml.FXMLLoader", java.net.URL.class, location,
-					java.util.ResourceBundle.class, resources,
-					builderClass, builder);
+					java.util.ResourceBundle.class, resources, builderClass, builder);
 		} else {
 			fxmlLoader = ReflectionLoader.newInstance("javafx.fxml.FXMLLoader", java.net.URL.class, location);
 		}
-		if(ReflectionLoader.logger == null) {
+		if (ReflectionLoader.logger == null) {
 			ReflectionLoader.logger = new PrintStream(System.err);
 		}
 		try {
@@ -979,8 +985,6 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 		this.withController(ReflectionLoader.call(fxmlLoader, "getController"));
 		return rootScene;
 	}
-
-	
 
 	private SimpleController withController(Object value) {
 		this.controller = value;
@@ -1105,7 +1109,7 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 	}
 
 	public SimpleController withPackageName(String packageName, String... excludes) {
-		if (compilePath == null && packageName != null && packageName.length()>0) {
+		if (compilePath == null && packageName != null && packageName.length() > 0) {
 			if ((packageName.endsWith("/") || packageName.endsWith("\\")) == false) {
 				packageName += "/";
 			}
@@ -1119,17 +1123,17 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 	}
 
 	public void visitPath(File file, String root, int deep, int maxDeep, String... excludes) {
-		if (file == null || root == null || deep>maxDeep) {
+		if (file == null || root == null || deep > maxDeep) {
 			return;
 		}
 		boolean add = false;
 		File[] listFiles = file.listFiles();
-		if(listFiles == null) {
+		if (listFiles == null) {
 			return;
 		}
 		for (File child : listFiles) {
 			if (child.isDirectory()) {
-				visitPath(child, root, deep+1, maxDeep, excludes);
+				visitPath(child, root, deep + 1, maxDeep, excludes);
 				continue;
 			}
 			if (child.getName().toLowerCase().endsWith(".java")) {
@@ -1162,60 +1166,60 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 
 	@Override
 	public void run() {
-		boolean showBridge=true;
-		if(this.runParams != null && this.runParams.length>0) {
-			if(CREATING.equalsIgnoreCase(runAction)) {
+		boolean showBridge = true;
+		if (this.runParams != null && this.runParams.length > 0) {
+			if (CREATING.equalsIgnoreCase(runAction)) {
 				Class<?> object = (Class<?>) this.runParams[0];
 				Object pane = null;
-				if(ReflectionLoader.PANE.isAssignableFrom(object)) {
+				if (ReflectionLoader.PANE.isAssignableFrom(object)) {
 					pane = ReflectionLoader.newInstance(object);
 					object = (Class<?>) this.runParams[1];
 				}
-				if(ReflectionLoader.SCENE.isAssignableFrom(object)) {
+				if (ReflectionLoader.SCENE.isAssignableFrom(object)) {
 					this.rootScene = ReflectionLoader.newInstance(object, ReflectionLoader.PARENT, pane);
 				}
-				if(ReflectionLoader.STAGE.isAssignableFrom(object)) {
+				if (ReflectionLoader.STAGE.isAssignableFrom(object)) {
 					this.stage = ReflectionLoader.newInstance(object);
 					return;
 				}
 				return;
-			}else if(SHOWING.equalsIgnoreCase(runAction)) {
-				this.showing(this.runParams[0], (Boolean)this.runParams[1], (Boolean)this.runParams[2]);
+			} else if (SHOWING.equalsIgnoreCase(runAction)) {
+				this.showing(this.runParams[0], (Boolean) this.runParams[1], (Boolean) this.runParams[2]);
 			}
 		}
 		Object stage = ReflectionLoader.newInstance(ReflectionLoader.STAGE);
 		this.withStage(stage);
 		this.withIcon(IdMap.class.getResource("np.png").toString());
-		if(showBridge) {
+		if (showBridge) {
 			this.show(this.getBridge());
 		}
 	}
 
-	
 	public ModelListenerProperty withMap(String key, Object... modelMapping) {
 		ModelListenerProperty propertyPrototype = new ModelListenerProperty();
 		withMap(propertyPrototype, key, modelMapping);
 		return propertyPrototype;
 	}
+
 	/**
-	 * @param controller Creator for Controller
-	 * @param key Key of GUI
+	 * @param controller   Creator for Controller
+	 * @param key          Key of GUI
 	 * @param modelMapping Mapping for Mapping GUI
 	 * @return ThisComponent
 	 */
 	public SimpleController withMap(SendableEntityCreator controller, String key, Object... modelMapping) {
-		if(controller == null || key == null) {
+		if (controller == null || key == null) {
 			return this;
 		}
-		if(mapping == null) {
+		if (mapping == null) {
 			mapping = new SimpleKeyValueList<Object, SendableEntityCreator>();
 		}
-		Object mapKey=key;
-		if(modelMapping != null && modelMapping.length>0) {
-			if(modelMapping[0] != null) {
+		Object mapKey = key;
+		if (modelMapping != null && modelMapping.length > 0) {
+			if (modelMapping[0] != null) {
 				String property = null;
-				if(modelMapping.length>1 && modelMapping[1] instanceof String) {
-					property =  (String) modelMapping[1];
+				if (modelMapping.length > 1 && modelMapping[1] instanceof String) {
+					property = (String) modelMapping[1];
 				}
 				SimpleEvent event = new SimpleEvent(modelMapping[0], key, null, property);
 				mapKey = event;
@@ -1224,11 +1228,11 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 		this.mapping.put(mapKey, controller);
 		return this;
 	}
-	
+
 	public SimpleList<SendableEntityCreator> getControllers() {
 		return controllers;
 	}
-	
+
 	public SimpleController withMap(IdMap map) {
 		this.map = map;
 		return this;

@@ -20,13 +20,13 @@ public class ObjectModel extends GraphModel {
 			return null;
 		}
 		HTMLEntity entity = super.dumpHTML(diagramName, write);
-		
-		if(diagramName.indexOf('/')<0) {
+
+		if (diagramName.indexOf('/') < 0) {
 			diagramName = "doc/" + diagramName;
 		}
-		
+
 		diagramName = Story.addResource(entity, diagramName, false);
-		
+
 		if (write == null || write.length < 1 || write[0] == false) {
 			return entity;
 		}
@@ -36,7 +36,7 @@ public class ObjectModel extends GraphModel {
 		}
 		return null;
 	}
-	
+
 	@Override
 	public BaseItem getNewList(boolean keyValue) {
 		return new ObjectModel();
@@ -91,27 +91,27 @@ public class ObjectModel extends GraphModel {
 		}
 		return add;
 	}
-	
+
 	@Override
 	public ObjectInstance createClazz(String name) {
 		Clazz item = super.createClazz(name);
-		if(item instanceof ObjectInstance ) {
+		if (item instanceof ObjectInstance) {
 			return (ObjectInstance) item;
 		}
 		return null;
 	}
-	
+
 	public ObjectInstance createObject(String name, String type) {
 		ObjectInstance item = createClazz(type);
-		if(item != null) {
+		if (item != null) {
 			item.setId(name);
 		}
 		return item;
 	}
-	
+
 	@Override
 	protected ObjectInstance createInstance(String name) {
 		return new ObjectInstance(name);
-		
+
 	}
 }

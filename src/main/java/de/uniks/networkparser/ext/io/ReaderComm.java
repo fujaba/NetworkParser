@@ -3,7 +3,7 @@ package de.uniks.networkparser.ext.io;
 /*
 The MIT License
 
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -72,7 +72,7 @@ public class ReaderComm implements Runnable {
 			try {
 				Object response = session.getServerResponse(broker);
 
-				// Answer
+				/* Answer */
 				if (condition != null) {
 					if (response instanceof RabbitMessage) {
 						RabbitMessage msg = (RabbitMessage) response;
@@ -93,7 +93,6 @@ public class ReaderComm implements Runnable {
 							this.condition.update(new SimpleEvent(this, myChannel, null, text)
 									.withType(NodeProxyBroker.EVENT_MESSAGE));
 						}
-//						this.condition.update(new SimpleEvent(this, channel, null, response));
 					}
 				}
 			} catch (Exception e) {

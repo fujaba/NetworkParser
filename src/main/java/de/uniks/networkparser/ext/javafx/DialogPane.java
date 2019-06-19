@@ -3,7 +3,7 @@ package de.uniks.networkparser.ext.javafx;
 /*
 The MIT License
 
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -37,6 +37,7 @@ public class DialogPane implements Runnable {
 
 	public DialogPane() {
 	}
+
 	public DialogPane(DialogBox owner, Object parent) {
 		this.owner = owner;
 		this.parent = parent;
@@ -92,9 +93,10 @@ public class DialogPane implements Runnable {
 
 		ReflectionLoader.call(root, "resize", double.class, (int) (dialogWidth), double.class, (int) (dialogHeight));
 
-		// hacky, but we only want to position the dialog the first time
-		// it is laid out - after that the only way it should move is if
-		// the user moves it.
+		/*
+		 * hacky, but we only want to position the dialog the first time it is laid out
+		 * - after that the only way it should move is if the user moves it.
+		 */
 		if (this.initCount == -1) {
 			this.initCount = -2;
 			double dialogX = (Double) ReflectionLoader.call(root, "getLayoutX");
@@ -107,8 +109,10 @@ public class DialogPane implements Runnable {
 		}
 	}
 
-	// These are the actual implementations in Region (the parent of Pane),
-	// but just for clarify I reproduce them here
+	/*
+	 * These are the actual implementations in Region (the parent of Pane), but just
+	 * for clarify I reproduce them here
+	 */
 	protected double computeMinHeight(double width) {
 		return (Double) ReflectionLoader.call(parent, "minHeight", width);
 	}

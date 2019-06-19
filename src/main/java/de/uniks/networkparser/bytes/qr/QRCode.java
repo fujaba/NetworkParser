@@ -80,9 +80,11 @@ public final class QRCode {
 		matrix = value;
 	}
 
-	/** Check if "mask_pattern" is valid. 
+	/**
+	 * Check if "mask_pattern" is valid.
+	 * 
 	 * @param maskPattern Is Pattern Match
-	 * @return valid  
+	 * @return valid
 	 */
 	public static boolean isValidMaskPattern(int maskPattern) {
 		return maskPattern >= 0 && maskPattern < NUM_MASK_PATTERNS;

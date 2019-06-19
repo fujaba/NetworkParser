@@ -65,9 +65,9 @@ public class TarArchiveInputStream extends InputStream {
 	/** The encoding of the file */
 	private final NioZipEncoding zipEncoding;
 
-	// the global PAX header
+	/** the global PAX header */
 	private Map<String, String> globalPaxHeaders = new HashMap<String, String>();
-	
+
 	private NetworkParserLog logger;
 
 	/**
@@ -142,7 +142,7 @@ public class TarArchiveInputStream extends InputStream {
 	public void close() {
 		try {
 			is.close();
-		}catch (Exception e) {
+		} catch (Exception e) {
 		}
 	}
 
@@ -251,7 +251,6 @@ public class TarArchiveInputStream extends InputStream {
 			skipRecordPadding();
 		}
 
-
 		try {
 			final byte[] headerBuf = getRecord();
 			if (headerBuf == null) {
@@ -262,7 +261,6 @@ public class TarArchiveInputStream extends InputStream {
 			currEntry = new TarArchiveEntry(headerBuf, zipEncoding);
 		} catch (Exception e) {
 			return null;
-//			throw new IOException("Error detected parsing the header", e);
 		}
 
 		entryOffset = 0;
@@ -271,14 +269,11 @@ public class TarArchiveInputStream extends InputStream {
 		if (currEntry.isGNULongLinkEntry()) {
 			final byte[] longLinkData = getLongNameData();
 			if (longLinkData == null) {
-				// Bugzilla: 40334
-				// Malformed tar file - long link entry name not followed by
-				// entry
 				return null;
 			}
 			try {
 				currEntry.setLinkName(zipEncoding.decode(longLinkData));
-			}catch (Exception e) {
+			} catch (Exception e) {
 				return null;
 			}
 		}
@@ -286,39 +281,36 @@ public class TarArchiveInputStream extends InputStream {
 		if (currEntry.isGNULongNameEntry()) {
 			final byte[] longNameData = getLongNameData();
 			if (longNameData == null) {
-				// Bugzilla: 40334
-				// Malformed tar file - long entry name not followed by
-				// entry
 				return null;
 			}
 			try {
 				currEntry.setName(zipEncoding.decode(longNameData));
-			}catch (Exception e) {
+			} catch (Exception e) {
 				return null;
 			}
 		}
 
-		if (currEntry.isGlobalPaxHeader()) { // Process Global Pax headers
+		if (currEntry.isGlobalPaxHeader()) { /* Process Global Pax headers */
 			readGlobalPaxHeaders();
 		}
 
-		if (currEntry.isPaxHeader()) { // Process Pax headers
+		if (currEntry.isPaxHeader()) { /* Process Pax headers */
 			paxHeaders();
 		} else if (!globalPaxHeaders.isEmpty()) {
 			applyPaxHeadersToCurrentEntry(globalPaxHeaders);
 		}
 
-		if (currEntry.isOldGNUSparse()) { // Process sparse files
-			if(logger != null) {
+		if (currEntry.isOldGNUSparse()) { /* Process sparse files */
+			if (logger != null) {
 				logger.error(this, "getNextTarEntry", "ERROR readOldGNUSparse");
 			}
-//			readOldGNUSparse();
 		}
 
-		// If the size of the next element in the archive has changed
-		// due to a new size being reported in the posix header
-		// information, we update entrySize here so that it contains
-		// the correct value.
+		/*
+		 * If the size of the next element in the archive has changed due to a new size
+		 * being reported in the posix header information, we update entrySize here so
+		 * that it contains the correct value.
+		 */
 		entrySize = currEntry.getSize();
 
 		return currEntry;
@@ -343,24 +335,22 @@ public class TarArchiveInputStream extends InputStream {
 	 * @return The next entry in the archive as longname data, or null.
 	 */
 	protected byte[] getLongNameData() {
-		// read in the name
+		/* read in the name */
 		final ByteArrayOutputStream longName = new ByteArrayOutputStream();
 		int length = 0;
 		try {
 			while ((length = read(smallBuf)) >= 0) {
 				longName.write(smallBuf, 0, length);
 			}
-		}catch (Exception e) {
+		} catch (Exception e) {
 			return null;
 		}
 		getNextEntry();
 		if (currEntry == null) {
-			// Bugzilla: 40334
-			// Malformed tar file - long entry name not followed by entry
 			return null;
 		}
 		byte[] longNameData = longName.toByteArray();
-		// remove trailing null terminator(s)
+		/* remove trailing null terminator(s) */
 		length = longNameData.length;
 		while (length > 0 && longNameData[length - 1] == 0) {
 			--length;
@@ -428,21 +418,24 @@ public class TarArchiveInputStream extends InputStream {
 
 	private void readGlobalPaxHeaders() {
 		globalPaxHeaders = parsePaxHeaders(this);
-		getNextEntry(); // Get the actual file entry
+		getNextEntry(); /* Get the actual file entry */
 	}
 
 	private void paxHeaders() {
 		final Map<String, String> headers = parsePaxHeaders(this);
-		getNextEntry(); // Get the actual file entry
+		getNextEntry(); /* Get the actual file entry */
 		applyPaxHeadersToCurrentEntry(headers);
 	}
 
-	// NOTE, using a Map here makes it impossible to ever support GNU
-	// sparse files using the PAX Format 0.0, see
-	// https://www.gnu.org/software/tar/manual/html_section/tar_92.html#SEC188
+	/**
+	 * NOTE, using a Map here makes it impossible to ever support GNU sparse files
+	 * using the PAX Format 0.0
+	 * 
+	 * @see https://www.gnu.org/software/tar/manual/html_section/tar_92.html#SEC188
+	 */
 	Map<String, String> parsePaxHeaders(final InputStream i) {
 		final Map<String, String> headers = new HashMap<String, String>(globalPaxHeaders);
-		// Format is "length keyword=value\n";
+		/* Format is length keyword=value */
 		int ch = 0;
 		do {
 			int len = 0;
@@ -450,28 +443,26 @@ public class TarArchiveInputStream extends InputStream {
 			try {
 				while ((ch = i.read()) != -1) {
 					read++;
-					if (ch == '\n') { // blank line in header
+					if (ch == '\n') { /* blank line in header */
 						break;
-					} else if (ch == ' ') { // End of length string
-						// Get keyword
+					} else if (ch == ' ') { /* End of length string */
+						/* Get keyword */
 						final ByteArrayOutputStream coll = new ByteArrayOutputStream();
 						while ((ch = i.read()) != -1) {
 							read++;
-							if (ch == '=') { // end of keyword
+							if (ch == '=') { /* end of keyword */
 								final String keyword = coll.toString("UTF_8");
-								// Get rest of entry
+								/* Get rest of entry */
 								final int restLen = len - read;
-								if (restLen == 1) { // only NL
+								if (restLen == 1) { /* only NL */
 									headers.remove(keyword);
 								} else {
 									final byte[] rest = new byte[restLen];
 									final int got = FileBuffer.readFully(i, rest);
 									if (got != restLen) {
-										return null; 
-//										throw new IOException("Failed to read " + "Paxheader. Expected " + restLen
-//												+ " bytes, read " + got);
+										return null;
 									}
-									// Drop trailing NL
+									/* Drop trailing NL */
 									final String value = new String(rest, 0, restLen - 1, Charset.forName("UTF_8"));
 									headers.put(keyword, value);
 								}
@@ -479,18 +470,18 @@ public class TarArchiveInputStream extends InputStream {
 							}
 							coll.write((byte) ch);
 						}
-						break; // Processed single header
+						break; /* Processed single header */
 					}
 					len *= 10;
 					len += ch - '0';
 				}
-			}catch (Exception e) {
+			} catch (Exception e) {
 				return null;
 			}
-			if (ch == -1) { // EOF
+			if (ch == -1) { /* EOF */
 				break;
 			}
-		}while(ch != -1);
+		} while (ch != -1);
 		return headers;
 	}
 
@@ -521,8 +512,9 @@ public class TarArchiveInputStream extends InputStream {
 	 * non-conforming implementation likely won't fill full blocks consisting of -
 	 * by default - ten records either so we probably have already read beyond the
 	 * archive anyway.
+	 * 
 	 * @return Success
-	 * </p>
+	 *         </p>
 	 */
 	private boolean tryToConsumeSecondEOFRecord() {
 		boolean shouldReset = true;
@@ -536,9 +528,9 @@ public class TarArchiveInputStream extends InputStream {
 			if (shouldReset && marked) {
 				pushedBackBytes(recordSize);
 				try {
-					
+
 					is.reset();
-				}catch (Exception e) {
+				} catch (Exception e) {
 					return false;
 				}
 			}
@@ -567,7 +559,6 @@ public class TarArchiveInputStream extends InputStream {
 
 		if (currEntry == null) {
 			return -1;
-//			throw new SimpleException("No current tar entry");
 		}
 
 		try {
@@ -661,7 +652,7 @@ public class TarArchiveInputStream extends InputStream {
 								TarUtils.VERSIONLEN))) {
 			return true;
 		}
-		// COMPRESS-107 - recognise Ant tar files
+		/* COMPRESS-107 - recognise Ant tar files */
 		return TarUtils.matchAsciiBuffer(TarUtils.MAGIC_ANT, signature, TarUtils.MAGIC_OFFSET, TarUtils.MAGICLEN)
 				&& TarUtils.matchAsciiBuffer(TarUtils.VERSION_ANT, signature, TarUtils.VERSION_OFFSET,
 						TarUtils.VERSIONLEN);

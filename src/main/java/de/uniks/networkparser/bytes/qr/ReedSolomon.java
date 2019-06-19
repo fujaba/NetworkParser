@@ -23,7 +23,7 @@ public final class ReedSolomon {
 	}
 
 	private GenericGFPoly buildGenerator(int degree) {
-		if(degree<0 || field == null) {
+		if (degree < 0 || field == null) {
 			return null;
 		}
 		if (degree >= cachedGenerators.size()) {
@@ -73,7 +73,7 @@ public final class ReedSolomon {
 	 * @return success of decoding
 	 */
 	public boolean decode(int[] received, int twoS) {
-		if(field == null || received == null) {
+		if (field == null || received == null) {
 			return false;
 		}
 		GenericGFPoly poly = new GenericGFPoly(field, received);
@@ -161,7 +161,7 @@ public final class ReedSolomon {
 
 	private int[] findErrorLocations(GenericGFPoly errorLocator) {
 		/* This is a direct application of Chien's search */
-		if(errorLocator == null || field == null) {
+		if (errorLocator == null || field == null) {
 			return null;
 		}
 		int numErrors = errorLocator.getDegree();
@@ -184,20 +184,22 @@ public final class ReedSolomon {
 
 	private int[] findErrorMagnitudes(GenericGFPoly errorEvaluator, int[] errorLocations) {
 		/* This is directly applying Forney's Formula */
-		if(errorLocations == null || field == null) {
+		if (errorLocations == null || field == null) {
 			return null;
 		}
- 		int s = errorLocations.length;
+		int s = errorLocations.length;
 		int[] result = new int[s];
 		for (int i = 0; i < s; i++) {
 			int xiInverse = field.inverse(errorLocations[i]);
 			int denominator = 1;
 			for (int j = 0; j < s; j++) {
 				if (i != j) {
-					/* denominator = field.multiply(denominator, GenericGF.addOrSubtract(1,
-					   field.multiply(errorLocations[j], xiInverse)));
-					   Above should work but fails on some Apple and Linux JDKs due to a Hotspot bug.
-					   Below is a funny-looking workaround from Steven Parkes */
+					/*
+					 * denominator = field.multiply(denominator, GenericGF.addOrSubtract(1,
+					 * field.multiply(errorLocations[j], xiInverse))); Above should work but fails
+					 * on some Apple and Linux JDKs due to a Hotspot bug. Below is a funny-looking
+					 * workaround from Steven Parkes
+					 */
 					int term = field.multiply(errorLocations[j], xiInverse);
 					int termPlus1 = (term & 0x1) == 0 ? term | 1 : term & ~1;
 					denominator = field.multiply(denominator, termPlus1);

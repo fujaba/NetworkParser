@@ -3,7 +3,7 @@ package de.uniks.networkparser.ext.petaf.messages;
 /*
 The MIT License
 
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -71,23 +71,6 @@ public class InfoMessage extends ReceivingTimerTask {
 		}
 		return super.getValue(entity, attribute);
 	}
-
-//	@Override
-//	public BaseItem getMessage() {
-//		if(msg == null && space != null) {
-//			SortedSet<NodeProxy> proxies = space.getNodeProxies();
-//
-//			IdMap map = getInternMap(space);
-//			Tokener tokener = space.getTokener();
-//			EntityList list = tokener.newInstanceList();
-//			PetaFilter filter = new PetaFilter().withTyp(PetaFilter.INFO);
-//			for(NodeProxy proxy : proxies) {
-//				list.add(map.encode(proxy, tokener, filter));
-//			}
-//			msg = list;
-//		}
-//		return super.getMessage();
-//	}
 
 	@Override
 	public Object getSendableInstance(boolean prototyp) {

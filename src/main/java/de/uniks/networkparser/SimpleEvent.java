@@ -1,6 +1,7 @@
 package de.uniks.networkparser;
 
 import java.beans.PropertyChangeEvent;
+
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
@@ -119,7 +120,7 @@ public final class SimpleEvent extends PropertyChangeEvent {
 	public int getDepth() {
 		return depth;
 	}
-	
+
 	public SimpleEvent withValue(int value) {
 		this.depth = value;
 		return this;

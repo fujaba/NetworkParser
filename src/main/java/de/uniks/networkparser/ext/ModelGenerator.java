@@ -4,7 +4,7 @@ import java.io.File;
 /*
 The MIT License
 
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -93,7 +93,7 @@ public class ModelGenerator extends SimpleGenerator {
 		SimpleList<Template> result = new SimpleList<Template>();
 		int pos = filter.indexOf(".");
 		if (pos < 0) {
-			// java
+			/* java */
 			SimpleList<Template> possible = new SimpleList<Template>();
 			String sub = filter + ".";
 			for (Template child : owner) {
@@ -108,7 +108,7 @@ public class ModelGenerator extends SimpleGenerator {
 				result.addAll(possible);
 			}
 		} else if (pos == filter.length() - 1) {
-			// java.
+			/* java. */
 			String id = filter.substring(0, pos - 1);
 			for (Template child : owner) {
 				if (id.equals(child.getId(false))) {
@@ -116,7 +116,7 @@ public class ModelGenerator extends SimpleGenerator {
 				}
 			}
 		} else {
-			// java.set.attribute
+			/* java.set.attribute */
 			String id = filter.substring(0, pos);
 			for (Template child : children) {
 				String childId = child.getId(false);
@@ -124,7 +124,7 @@ public class ModelGenerator extends SimpleGenerator {
 				if (childPos > 0) {
 					if (filter.startsWith(childId)) {
 						String sub = filter.substring(childId.length());
-						// Sub must be start with poitn or empty
+						/* Sub must be start with poitn or empty */
 						if (sub.isEmpty() || sub.startsWith(".")) {
 							result.addAll(getTemplates(sub, child.getChildren()));
 						}
@@ -173,7 +173,7 @@ public class ModelGenerator extends SimpleGenerator {
 	public SendableEntityCreator generating(String rootDir, GraphModel model, TextItems parameters, String type,
 			boolean writeFiles, boolean enableParser) {
 		this.lastGenRoot = rootDir;
-		// Set DefaultValue
+		/* Set DefaultValue */
 		if (type == null) {
 			type = TYPE_JAVA;
 		}
@@ -185,7 +185,7 @@ public class ModelGenerator extends SimpleGenerator {
 			}
 		}
 
-		if(model.fixClassModel() == false) {
+		if (model.fixClassModel() == false) {
 			System.out.println("Reparing of Model failed");
 			return null;
 		}
@@ -211,7 +211,7 @@ public class ModelGenerator extends SimpleGenerator {
 		ClazzSet clazzes = model.getClazzes();
 
 		for (Clazz clazz : clazzes) {
-			if(clazz == null || GraphUtil.isExternal(clazz)) {
+			if (clazz == null || GraphUtil.isExternal(clazz)) {
 				continue;
 			}
 			for (Template template : templates) {
@@ -237,8 +237,10 @@ public class ModelGenerator extends SimpleGenerator {
 		}
 
 		if (writeFiles) {
-			// IF FILE EXIST AND Switch is Enable only add missing value
-			// Add missed value to Metamodel
+			/*
+			 * IF FILE EXIST AND Switch is Enable only add missing value Add missed value to
+			 * Metamodel
+			 */
 			if (useSDMLibParser && enableParser) {
 				for (TemplateResultFile file : resultModel) {
 					if (file.isMetaModell() == false) {
@@ -298,7 +300,7 @@ public class ModelGenerator extends SimpleGenerator {
 	}
 
 	public ParserEntity parse(String rootPath, TemplateResultFile entity) {
-		// check for each clazz, if a matching file already exists
+		/* check for each clazz, if a matching file already exists */
 		if (entity == null || entity.getMember() instanceof Clazz == false) {
 			return null;
 		}
@@ -307,7 +309,7 @@ public class ModelGenerator extends SimpleGenerator {
 			rootPath += "/";
 		}
 		CharacterBuffer content = FileBuffer.readFile(rootPath + fileName);
-		// check existing file for possible changes
+		/* check existing file for possible changes */
 		if (content != null) {
 			ParserEntity parser = new ParserEntity();
 			parser.withLogger(logger);
@@ -317,7 +319,7 @@ public class ModelGenerator extends SimpleGenerator {
 				return parser;
 			} catch (Exception e) {
 				e.printStackTrace();
-				if(logger !=null) {
+				if (logger != null) {
 					logger.error(this, "parse2", "Cant parse File:" + fileName, e);
 				}
 			}
@@ -422,8 +424,10 @@ public class ModelGenerator extends SimpleGenerator {
 	}
 
 	public void remove(GraphModel model, String rootDir, String type) {
-		// now remove class file, creator file, and modelset file for each class
-		// and the CreatorCreator
+		/*
+		 * now remove class file, creator file, and modelset file for each class and the
+		 * CreatorCreator
+		 */
 		Feature codeStyle = getFeature(Feature.CODESTYLE);
 		if (rootDir.endsWith("/") == false) {
 			rootDir = rootDir + "/";
@@ -514,7 +518,7 @@ public class ModelGenerator extends SimpleGenerator {
 				return a;
 			}
 		}
-		// Update from Code and find the Clazz from Model
+		/* Update from Code and find the Clazz from Model */
 		if (defaultValue) {
 			return new Attribute("", DataType.VOID);
 		}
@@ -534,7 +538,7 @@ public class ModelGenerator extends SimpleGenerator {
 				return a;
 			}
 		}
-		// Update from Code and find the Clazz from Model
+		/* Update from Code and find the Clazz from Model */
 		if (defaultValue) {
 			return new Association(null);
 		}
@@ -578,9 +582,8 @@ public class ModelGenerator extends SimpleGenerator {
 	public void applyChange() {
 		generating(defaultRootDir, this.defaultModel, null, null, true, true);
 	}
-	
+
 	public ModelGenerator withLogger(NetworkParserLog logger) {
-//		yy
 		this.logger = logger;
 		return this;
 	}

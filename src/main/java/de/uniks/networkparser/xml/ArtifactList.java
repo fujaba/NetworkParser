@@ -5,7 +5,9 @@ import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SortedSet;
 
-/** May be a List of Pom of one or more Libaries
+/**
+ * May be a List of Pom of one or more Libaries
+ * 
  * @author Stefan Lindel
  */
 public class ArtifactList extends SortedSet<ArtifactFile> {
@@ -39,7 +41,7 @@ public class ArtifactList extends SortedSet<ArtifactFile> {
 					if (value.isSnapshot() != child.isSnapshot()) {
 						continue;
 					}
-					if(value.getArtifactId() == null) {
+					if (value.getArtifactId() == null) {
 						continue;
 					}
 					if (value.getArtifactId().equals(child.getArtifactId()) == false) {

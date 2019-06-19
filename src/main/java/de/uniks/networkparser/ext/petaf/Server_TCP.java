@@ -3,7 +3,7 @@ package de.uniks.networkparser.ext.petaf;
 /*
 The MIT License
 
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
+
 import de.uniks.networkparser.ext.petaf.proxy.NodeProxyTCP;
 import de.uniks.networkparser.interfaces.Server;
 
@@ -83,18 +84,12 @@ public class Server_TCP extends Thread implements Server {
 				MessageRequest.executeTask(this.proxy, requestSocket);
 			} catch (IOException e) {
 			} finally {
-//				try {
-//					if(requestSocket != null && !requestSocket.isClosed()){
-//						requestSocket.close();
-//					}
-//				} catch (IOException e) {
-//				}
 			}
 		}
 	}
 
 	private boolean init() {
-		if(proxy == null || proxy.getPort()<1) {
+		if (proxy == null || proxy.getPort() < 1) {
 			return false;
 		}
 		try {
@@ -104,7 +99,7 @@ public class Server_TCP extends Thread implements Server {
 			return false;
 		} catch (IOException e) {
 			if (searchFreePort) {
-				// Wrong PORT
+				/* Wrong PORT */
 				try {
 					serverSocket = new ServerSocket(0, 10, null);
 					proxy.withPort(serverSocket.getLocalPort());

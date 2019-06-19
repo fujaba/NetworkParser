@@ -3,7 +3,7 @@ package de.uniks.networkparser.xml;
 /*
 NetworkParser
 The MIT License
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -81,15 +81,15 @@ public class EMFTokener extends Tokener {
 	public static final String XMI_ID = "xmi:id";
 	public static final String NAME = "name";
 	public static final String VALUE = "value";
-	public SimpleKeyValueList<Object, String> path=new SimpleKeyValueList<Object, String>();
-	
+	public SimpleKeyValueList<Object, String> path = new SimpleKeyValueList<Object, String>();
+
 	/**
 	 * Skip the Current Entity to &gt;.
 	 * 
 	 * @param buffer Buffer for Values
 	 */
 	protected void skipEntity(Buffer buffer) {
-		if(buffer == null) {
+		if (buffer == null) {
 			return;
 		}
 		buffer.skipTo('>', false);
@@ -98,7 +98,7 @@ public class EMFTokener extends Tokener {
 	}
 
 	public String skipHeader(Buffer buffer) {
-		if(buffer == null) {
+		if (buffer == null) {
 			return "";
 		}
 		boolean skip = false;
@@ -133,13 +133,13 @@ public class EMFTokener extends Tokener {
 		if (entity instanceof GraphList) {
 			return encodeClassModel((GraphList) entity, map);
 		}
-		
+
 		XMLEntity result = new XMLEntity();
 		String typetag = entity.getClass().getName().replaceAll("\\.", ":");
 		result.withType(typetag);
-		
-		path.add(entity, "/"+typetag);
-		
+
+		path.add(entity, "/" + typetag);
+
 		// ROOT
 		encodeChildren(entity, result, map);
 
@@ -211,12 +211,12 @@ public class EMFTokener extends Tokener {
 			}
 			// Komplex
 			if (propertyValue instanceof Collection<?>) {
-				int count=0;
-				CharacterBuffer referenceChild = new CharacterBuffer(); 
+				int count = 0;
+				CharacterBuffer referenceChild = new CharacterBuffer();
 				for (Object childValue : (Collection<?>) propertyValue) {
-					if(path.contains(childValue)) {
+					if (path.contains(childValue)) {
 						// Reference
-						if(referenceChild.size()>0) {
+						if (referenceChild.size() > 0) {
 							referenceChild.add(' ');
 						}
 						referenceChild.add(path.get(childValue));
@@ -225,18 +225,18 @@ public class EMFTokener extends Tokener {
 					XMLEntity child = new XMLEntity();
 					parent.withChild(child);
 					child.withType(propertyName);
-					
+
 					String typetag = childValue.getClass().getName().replaceAll("\\.", ":");
 					child.put(XSI_TYPE, typetag);
-					path.put(childValue, rootPath+"/"+propertyName+"."+count);
+					path.put(childValue, rootPath + "/" + propertyName + "." + count);
 					encodeChildren(childValue, child, map);
 				}
-				if(referenceChild != null && referenceChild.size()>0) {
+				if (referenceChild != null && referenceChild.size() > 0) {
 					parent.add(propertyName, referenceChild.toString());
 				}
 				continue;
 			}
-			if(path.contains(propertyValue)) {
+			if (path.contains(propertyValue)) {
 				parent.add(propertyName, path.get(propertyValue));
 				continue;
 			}
@@ -245,7 +245,7 @@ public class EMFTokener extends Tokener {
 			child.withType(propertyName);
 			String typetag = propertyValue.getClass().getName().replaceAll("\\.", ":");
 			child.put(XSI_TYPE, typetag);
-			path.put(propertyValue, rootPath+"/"+propertyName);
+			path.put(propertyValue, rootPath + "/" + propertyName);
 			encodeChildren(propertyValue, child, map);
 		}
 	}
@@ -719,7 +719,8 @@ public class EMFTokener extends Tokener {
 		return model;
 	}
 
-	private Association getOrCreate(SimpleKeyValueList<String, Association> items, GraphList model, String className, String roleName) {
+	private Association getOrCreate(SimpleKeyValueList<String, Association> items, GraphList model, String className,
+			String roleName) {
 		if (items == null) {
 			return null;
 		}
@@ -729,7 +730,7 @@ public class EMFTokener extends Tokener {
 				className = className.substring(pos + 1);
 			}
 		}
-		if(roleName != null) {
+		if (roleName != null) {
 			roleName = EntityUtil.toValidJavaId(roleName);
 		}
 		String assocName = className + ":" + roleName;
@@ -899,7 +900,7 @@ public class EMFTokener extends Tokener {
 		}
 		/* return type */
 		DataType returnType = method.getReturnType();
-		if (returnType  != null && returnType.equals(DataType.VOID) == false) {
+		if (returnType != null && returnType.equals(DataType.VOID) == false) {
 			XMLEntity returnChild = root.createChild("ownedParameter");
 			returnChild.withKeyValue(XMI_ID, method.getReturnType().toString());
 			returnChild.withKeyValue("direction", "return");

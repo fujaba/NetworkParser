@@ -4,7 +4,7 @@ import de.uniks.networkparser.interfaces.ObjectCondition;
 /*
 NetworkParser
 The MIT License
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -69,7 +69,7 @@ public class Filter {
 	public boolean isId(Object entity, String className, IdMap map) {
 		if (idFilter != null) {
 			return idFilter.update(new SimpleEvent(SendableEntityCreator.NEW, null, map, className, null, entity));
-		} else if(map != null) {
+		} else if (map != null) {
 			SendableEntityCreator creator = map.getCreator(className, true, true, null);
 			if (creator != null) {
 				return !(creator instanceof SendableEntityCreatorNoIndex);

@@ -3,7 +3,7 @@ package de.uniks.networkparser.logic;
 /*
 The MIT License
 
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -32,9 +32,9 @@ import de.uniks.networkparser.interfaces.TemplateParser;
 import de.uniks.networkparser.list.SimpleList;
 
 public class StringCondition implements ParserCondition {
-	public static final String EQUALS="equals";
-	public static final String EQUALSIGNORECASE="equalsignoreCase";
-	public static final String CONTAINS="contains";
+	public static final String EQUALS = "equals";
+	public static final String EQUALSIGNORECASE = "equalsignoreCase";
+	public static final String CONTAINS = "contains";
 
 	private String attribute;
 	private String type;
@@ -42,7 +42,7 @@ public class StringCondition implements ParserCondition {
 
 	@Override
 	public boolean update(Object value) {
-		if(type != null) {
+		if (type != null) {
 			Object itemValue = null;
 			if (value instanceof GraphMember) {
 				itemValue = ((GraphMember) value).getValue(attribute);
@@ -55,9 +55,9 @@ public class StringCondition implements ParserCondition {
 				if (this.type == EQUALS) {
 					return itemValue.equals(value);
 				} else if (this.type == EQUALSIGNORECASE) {
-					return ((String) itemValue).equalsIgnoreCase(""+value);
+					return ((String) itemValue).equalsIgnoreCase("" + value);
 				} else if (this.type == CONTAINS) {
-					return ((String) itemValue).contains(""+value);
+					return ((String) itemValue).contains("" + value);
 				}
 			}
 			return false;
@@ -69,45 +69,43 @@ public class StringCondition implements ParserCondition {
 	}
 
 	public static final ObjectCondition createLogic(String sequence) {
-		if(sequence.startsWith("-")) {
+		if (sequence.startsWith("-")) {
 			return new Not().with(new StringCondition().withValue(sequence.substring(1)));
 		}
 		return new StringCondition().withValue(sequence);
 	}
-	
-	
+
 	/**
-	 * Method for generate Search Logic
-	 * "A B" =  A or B
-	 * "(A B) = A and B
-	 * -A	= Not A
+	 * Method for generate Search Logic "A B" = A or B "(A B) = A and B -A = Not A
 	 * #Field Field for Searchign
+	 * 
 	 * @param sequence of String
 	 * @return ObjectCondition
 	 */
 	public static final ObjectCondition createSearchLogic(CharacterBuffer sequence) {
 		return createSearchIntern(sequence, new Or());
 	}
+
 	public static final ObjectCondition createSearchIntern(CharacterBuffer sequence, ListCondition container) {
-		if(sequence == null) {
+		if (sequence == null) {
 			return null;
 		}
 		sequence.withPosition(0);
 		SimpleList<ObjectCondition> conditionList = new SimpleList<ObjectCondition>();
-		int start=0;
+		int start = 0;
 		char item = sequence.getChar();
-		while(sequence.isEnd() == false) {
-			if(item == '(') {
+		while (sequence.isEnd() == false) {
+			if (item == '(') {
 				// Sub Sequence
 				conditionList.add(createSearchIntern(sequence, new And()));
 				item = sequence.getChar();
 				continue;
 			}
-			if(item == ')' && container != null) {
+			if (item == ')' && container != null) {
 				// End SubSequence
 				break;
 			}
-			if(item == ' ') {
+			if (item == ' ') {
 				int pos = sequence.position();
 				conditionList.add(createLogic(sequence.substring(start, pos)));
 				start = pos + 1;
@@ -115,26 +113,26 @@ public class StringCondition implements ParserCondition {
 				continue;
 			}
 			// Check for Equals
-			if(item == '#' && start == sequence.position()) {
+			if (item == '#' && start == sequence.position()) {
 				int pos = sequence.indexOf(':', start);
-				if(pos>1) {
-					String propString = sequence.substring(start+1, pos);
+				if (pos > 1) {
+					String propString = sequence.substring(start + 1, pos);
 					int end = sequence.indexOf(' ', pos);
 					String value = sequence.substring(pos + 1, end);
 					Equals equals2 = new Equals();
 					equals2.withLeft(VariableCondition.create(propString, true));
 					equals2.withRight(createLogic(value));
 					conditionList.add(equals2);
-					
+
 					sequence.withPosition(end);
 					start = end + 1;
 					item = sequence.getChar();
 				}
 			}
-			if(item =='"' || item =='\'') {
+			if (item == '"' || item == '\'') {
 				item = sequence.getChar();
-				while(sequence.isEnd() == false) {
-					if(item == '"' || item == '\'') {
+				while (sequence.isEnd() == false) {
+					if (item == '"' || item == '\'') {
 						break;
 					}
 					item = sequence.getChar();
@@ -145,19 +143,19 @@ public class StringCondition implements ParserCondition {
 			}
 			item = sequence.getChar();
 		}
-		if(start<sequence.length()) {
+		if (start < sequence.length()) {
 			conditionList.add(createLogic(sequence.substring(start)));
 		}
-		if(conditionList.size()<1) {
+		if (conditionList.size() < 1) {
 			return null;
 		}
-		if(conditionList.size()<2) {
+		if (conditionList.size() < 2) {
 			return conditionList.first();
 		}
-		if(container == null) {
+		if (container == null) {
 			return null;
 		}
-		for (int i=0;i<conditionList.size();i++){
+		for (int i = 0; i < conditionList.size(); i++) {
 			container.add(conditionList.get(i));
 		}
 		return container;
@@ -197,9 +195,9 @@ public class StringCondition implements ParserCondition {
 
 	@Override
 	public String toString() {
-		if(attribute != null) {
+		if (attribute != null) {
 			return attribute;
-			
+
 		}
 		if (value == null) {
 			return "";
@@ -234,7 +232,7 @@ public class StringCondition implements ParserCondition {
 	public StringCondition clone(String otherValue) {
 		return new StringCondition().withFilter(attribute, otherValue, this.type);
 	}
-	
+
 	public static ObjectCondition Not(ObjectCondition condition) {
 		return Not.create(condition);
 	}

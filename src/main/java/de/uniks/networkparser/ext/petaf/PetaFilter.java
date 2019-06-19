@@ -3,7 +3,7 @@ package de.uniks.networkparser.ext.petaf;
 /*
 The MIT License
 
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -29,10 +29,10 @@ import de.uniks.networkparser.ext.petaf.messages.InfoMessage;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
 public class PetaFilter extends Filter {
-	public static final String UPDATE = "update"; // UPDATE only send basic info
-	public static final String ID = "id"; // UPDATE only send basic info
-	public static final String ATTRIBUTES = "attributes"; // ATTRIBUTES send all Attributes of Remote Proxy
-	public static final String INFO = "info"; // Info send more Infos
+	public static final String UPDATE = "update"; /* UPDATE only send basic info */
+	public static final String ID = "id"; /* UPDATE only send basic info */
+	public static final String ATTRIBUTES = "attributes"; /* ATTRIBUTES send all Attributes of Remote Proxy */
+	public static final String INFO = "info"; /* Info send more Infos */
 
 	private String typ = UPDATE;
 	private String oldTyp;

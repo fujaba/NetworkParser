@@ -3,7 +3,7 @@ package de.uniks.networkparser.yaml;
 /*
 The MIT License
 
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -41,7 +41,7 @@ public class YAMLTokener extends Tokener {
 
 	@Override
 	public EntityList parseToEntity(BaseItem entity, Object buffer) {
-		if(buffer != null && buffer instanceof Buffer && entity instanceof EntityList ) {
+		if (buffer != null && buffer instanceof Buffer && entity instanceof EntityList) {
 			EntityList list = (EntityList) entity;
 			parseLine(0, list, (Buffer) buffer);
 			return list;
@@ -50,7 +50,7 @@ public class YAMLTokener extends Tokener {
 	}
 
 	protected int parseLine(int deep, EntityList owner, Buffer buffer) {
-		if(buffer == null) {
+		if (buffer == null) {
 			return 0;
 		}
 		char c = buffer.getCurrentChar();
@@ -119,18 +119,17 @@ public class YAMLTokener extends Tokener {
 		return newDeep;
 	}
 
-	/** Decoding YAML FILE
+	/**
+	 * Decoding YAML FILE
+	 * 
 	 * @param yaml Yaml Text
 	 * @return decoded Value
 	 * 
-	 * yaml grammar
-	 * yaml ::= objects*
-	 * object ::= plainObject | objectList
-	 * plainObject ::= - type': ' objId\n attr*
-	 * attr ::= attrName': ' attrValue\n
-	 * attrValue ::= id | string | '[' attrValue * ']'
-	 * objectList ::= type colName:* \n key: attrValue* \n*
-	 * valueRow ::= attrValue*
+	 *         yaml grammar yaml ::= objects* object ::= plainObject | objectList
+	 *         plainObject ::= - type': ' objId\n attr* attr ::= attrName': '
+	 *         attrValue\n attrValue ::= id | string | '[' attrValue * ']'
+	 *         objectList ::= type colName:* \n key: attrValue* \n* valueRow ::=
+	 *         attrValue*
 	 */
 	public Object decode(String yaml) {
 		CharacterBuffer buffer = new CharacterBuffer().with(yaml);

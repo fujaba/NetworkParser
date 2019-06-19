@@ -69,7 +69,7 @@ public class StoryBook extends SendableItem implements SendableEntityCreator {
 	}
 
 	public StoryBook withoutTask(Task... values) {
-		if(values != null) {
+		if (values != null) {
 			for (Task item : values) {
 				if (item != null) {
 					this.children.remove((Object) item);
@@ -101,7 +101,7 @@ public class StoryBook extends SendableItem implements SendableEntityCreator {
 	}
 
 	public StoryBook withoutStory(Story... values) {
-		if(values == null) {
+		if (values == null) {
 			return this;
 		}
 		for (Story item : values) {
@@ -141,7 +141,7 @@ public class StoryBook extends SendableItem implements SendableEntityCreator {
 	}
 
 	public StoryBook withoutPart(Line... values) {
-		if(values != null) {
+		if (values != null) {
 			for (Line item : values) {
 				if (this.part != null && item != null) {
 					this.part.remove(item);
@@ -181,7 +181,7 @@ public class StoryBook extends SendableItem implements SendableEntityCreator {
 
 	public HTMLEntity createKanbanBoard() {
 		HTMLEntity element = new HTMLEntity();
-		if(part == null) {
+		if (part == null) {
 			return element;
 		}
 		XMLEntity parent = element.getBody();

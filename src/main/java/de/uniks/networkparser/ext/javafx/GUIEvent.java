@@ -4,7 +4,7 @@ import de.uniks.networkparser.SimpleEvent;
 /*
 The MIT License
 
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -31,7 +31,7 @@ import de.uniks.networkparser.interfaces.ObjectCondition;
 
 public class GUIEvent extends Event {
 	public static final int ESCAPE = 27;
-	// The jsObject for BackupPurposes
+	/* The jsObject for BackupPurposes */
 	private ObjectCondition listerner;
 
 	public GUIEvent withListener(ObjectCondition value) {
@@ -40,7 +40,6 @@ public class GUIEvent extends Event {
 	}
 
 	public void handle(Object event) {
-//		SSystem.out..println("handle: "+ event);
 		if (this.listerner != null) {
 			this.listerner.update(event);
 		}
@@ -98,14 +97,13 @@ public class GUIEvent extends Event {
 	}
 
 	public static GUIEvent create(Object obj) {
-//			boolean isEvent = (boolean) obj.eval("this instanceof Event");
 		GUIEvent event = new GUIEvent();
 		if (obj == null) {
 			return event;
 		}
 		String name = obj.getClass().getName();
 		if ("javafx.scene.input.KeyEvent".equals(name)) {
-			// KeyEvent
+			/* KeyEvent */
 			event.setValue(EVENT_TYPE, EventTypes.KEYPRESS);
 			event.put(ALTKEY, ReflectionLoader.call(obj, "isAltDown"));
 			event.put(CTRKEY, ReflectionLoader.call(obj, "isControlDown"));
@@ -132,7 +130,7 @@ public class GUIEvent extends Event {
 		}
 		event.setValue(EVENT, obj);
 		if ("java.awt.event.ActionEvent".equals(name)) {
-			// KeyEvent
+			/* KeyEvent */
 			event.setValue(EVENT_TYPE, EventTypes.CLICK);
 			Long longValue = (Long) ReflectionLoader.call(obj, "getWhen");
 			event.setValue(TIME_STAMP, longValue.intValue());

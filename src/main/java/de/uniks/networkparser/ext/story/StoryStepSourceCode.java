@@ -3,7 +3,7 @@ package de.uniks.networkparser.ext.story;
 /*
 The MIT License
 
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -127,7 +127,7 @@ public class StoryStepSourceCode implements ObjectCondition {
 	}
 
 	private CharacterBuffer analyseLine(CharacterBuffer line) {
-		if(line == null) {
+		if (line == null) {
 			return null;
 		}
 		line = line.rtrim();
@@ -156,7 +156,7 @@ public class StoryStepSourceCode implements ObjectCondition {
 		} else if (endLine > 0) {
 			return (linePos > this.endLine);
 		}
-		if(fileBuffer == null) {
+		if (fileBuffer == null) {
 			return true;
 		}
 		return fileBuffer.isEnd();
@@ -165,7 +165,7 @@ public class StoryStepSourceCode implements ObjectCondition {
 	public boolean readFile() {
 		FileBuffer fileBuffer = new FileBuffer();
 		fileBuffer.withFile(contentFile);
-		if(fileBuffer.exists() == false) {
+		if (fileBuffer.exists() == false) {
 			return false;
 		}
 		CharacterBuffer indexText = new CharacterBuffer();
@@ -234,7 +234,7 @@ public class StoryStepSourceCode implements ObjectCondition {
 	}
 
 	String formatString(CharacterBuffer buffer) {
-		if(buffer == null) {
+		if (buffer == null) {
 			return "";
 		}
 		if (FORMAT_JAVA.equals(format)) {
@@ -250,7 +250,7 @@ public class StoryStepSourceCode implements ObjectCondition {
 			return false;
 		}
 		SimpleEvent evt = (SimpleEvent) value;
-		if(evt.getNewValue() instanceof HTMLEntity == false || evt.getSource() instanceof Story == false) {
+		if (evt.getNewValue() instanceof HTMLEntity == false || evt.getSource() instanceof Story == false) {
 			return false;
 		}
 		HTMLEntity element = (HTMLEntity) evt.getNewValue();
@@ -261,11 +261,12 @@ public class StoryStepSourceCode implements ObjectCondition {
 	public boolean addToHTML(HTMLEntity element) {
 		return addToHTML(null, element);
 	}
+
 	public boolean addToHTML(Story story, HTMLEntity element) {
-		if(element == null || element.getBody() == null) {
+		if (element == null || element.getBody() == null) {
 			return false;
 		}
-		if(story != null) {
+		if (story != null) {
 			for (String item : HTMLEntity.CODEESOURCES) {
 				if (element.getHeader(item) == null) {
 					// DEFAULT TO EXTRACT TO DOC-FOLDER
@@ -274,7 +275,7 @@ public class StoryStepSourceCode implements ObjectCondition {
 			}
 			element.withScript(element.getHeader(), "hljs.initHighlightingOnLoad();", "hljs.initLineNumbersOnLoad();");
 		}
-		
+
 		XMLEntity pre = element.createTag("pre", element.getBody());
 		XMLEntity code = element.createTag("code", pre);
 		if (this.endLine < 1 && this.currentLine > 0) {
@@ -338,7 +339,7 @@ public class StoryStepSourceCode implements ObjectCondition {
 	}
 
 	public StoryStepSourceCode withCode(Class<?> packageName, int stepOver) {
-		if(packageName == null) {
+		if (packageName == null) {
 			return this;
 		}
 		String packagePath = packageName.getName();
@@ -361,7 +362,7 @@ public class StoryStepSourceCode implements ObjectCondition {
 	}
 
 	public StoryStepSourceCode withCode(String path, Class<?> packageName) {
-		if(packageName == null) {
+		if (packageName == null) {
 			return this;
 		}
 		String fileName = packageName.getTypeName();
@@ -415,7 +416,7 @@ public class StoryStepSourceCode implements ObjectCondition {
 
 	public StoryStepSourceCode withMethodSignature(String value) {
 		this.methodSignature = value;
-		if(value != null) {
+		if (value != null) {
 			int pos = this.methodSignature.indexOf("(");
 			if (pos > 0) {
 				this.methodName = this.methodSignature.substring(0, pos);

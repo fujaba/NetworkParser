@@ -4,7 +4,7 @@ import de.uniks.networkparser.EntityUtil;
 /*
 The MIT License
 
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -47,7 +47,6 @@ public class Clazz extends GraphEntity {
 	public static final String PROPERTY_METHOD = "method";
 	public static final int ONE = 1;
 	public static final int MANY = 42;
-
 
 	private String type = TYPE_CLASS;
 
@@ -209,7 +208,7 @@ public class Clazz extends GraphEntity {
 		Association assocSource = new Association(this).with(srcCardinality).with(srcRoleName);
 		assocSource.with(assocTarget);
 
-		if(tgtClass != null) {
+		if (tgtClass != null) {
 			tgtClass.with(assocTarget);
 		}
 		this.with(assocSource);
@@ -235,7 +234,7 @@ public class Clazz extends GraphEntity {
 	public Association createBidirectional(Clazz tgtClass, String tgtRoleName, int tgtCardinality, String srcRoleName,
 			int srcCardinality) {
 		// Target
-		if(tgtCardinality<1 || srcCardinality < 1 || tgtClass == null) {
+		if (tgtCardinality < 1 || srcCardinality < 1 || tgtClass == null) {
 			return null;
 		}
 		Association assocTarget = new Association(tgtClass).with(tgtCardinality).with(tgtRoleName);
@@ -254,56 +253,57 @@ public class Clazz extends GraphEntity {
 		createBidirectional(tgtClass, tgtRoleName, tgtCardinality, srcRoleName, srcCardinality);
 		return this;
 	}
-	
+
 	/**
-	 * @param tgtClass The Target Class
-	 * @param cardinality The Cardinality default is [1,1], May Be [[1,1],[1,42],[42,1],[42,42],[1,0], [42,0]]
+	 * @param tgtClass    The Target Class
+	 * @param cardinality The Cardinality default is [1,1], May Be
+	 *                    [[1,1],[1,42],[42,1],[42,42],[1,0], [42,0]]
 	 * @return ThisComponent
 	 */
 	public Clazz withAssoc(Clazz tgtClass, int... cardinality) {
-		if(tgtClass == null || tgtClass.getName() == null) {
+		if (tgtClass == null || tgtClass.getName() == null) {
 			return this;
 		}
 		int tgtCardinality = 1;
 		int srcCardinality = 1;
-		if(cardinality != null && cardinality.length>0) {
-			if(cardinality[0]>0) {
-				tgtCardinality = cardinality[0]; 
+		if (cardinality != null && cardinality.length > 0) {
+			if (cardinality[0] > 0) {
+				tgtCardinality = cardinality[0];
 			}
-			if(cardinality.length > 1 && cardinality[1]>=0) {
+			if (cardinality.length > 1 && cardinality[1] >= 0) {
 				srcCardinality = cardinality[1];
 			}
 		}
 		String srcRoleName = null, tgtRoleName = tgtClass.getName();
-		
+
 		// Now Check dupplicate Naming
-		for(Association assoc : getAssociations()) {
-			if(tgtRoleName.equals(assoc.getName())) {
+		for (Association assoc : getAssociations()) {
+			if (tgtRoleName.equals(assoc.getName())) {
 				return this;
 			}
 		}
-		if(srcCardinality > 0) {
+		if (srcCardinality > 0) {
 			srcRoleName = this.getName();
-			for(Association assoc : tgtClass.getAssociations()) {
-				if(srcRoleName.equals(assoc.getName())) {
+			for (Association assoc : tgtClass.getAssociations()) {
+				if (srcRoleName.equals(assoc.getName())) {
 					return this;
 				}
 			}
 		}
 		// Set MANY Name
-		if(tgtCardinality>1) {
+		if (tgtCardinality > 1) {
 			tgtRoleName = GraphUtil.getPlural(tgtRoleName);
 		}
-		if(srcCardinality>1) {
+		if (srcCardinality > 1) {
 			srcRoleName = GraphUtil.getPlural(srcRoleName);
 		}
-		
+
 		// So SourceRoleName and TargetRoleName is Set now create Asssoc
 		Association assocTarget = new Association(tgtClass).with(tgtCardinality).with(tgtRoleName);
 		// Source
 		Association assocSource = new Association(this).with(assocTarget);
-		
-		if(srcCardinality >0) {
+
+		if (srcCardinality > 0) {
 			assocSource.with(srcCardinality).with(srcRoleName);
 		} else {
 			assocTarget.with(AssociationTypes.UNDIRECTIONAL);
@@ -313,7 +313,7 @@ public class Clazz extends GraphEntity {
 		this.with(assocSource);
 		return this;
 	}
-	
+
 	/**
 	 * ********************************************************************
 	 * 
@@ -361,7 +361,7 @@ public class Clazz extends GraphEntity {
 	 */
 	public Association createUniDirectional(Clazz tgtClass, String tgtRoleName, int tgtCardinality) {
 		// Target
-		if(tgtCardinality<1) {
+		if (tgtCardinality < 1) {
 			return null;
 		}
 		Association assocTarget = new Association(tgtClass).with(tgtCardinality).with(AssociationTypes.UNDIRECTIONAL)
@@ -369,7 +369,7 @@ public class Clazz extends GraphEntity {
 
 		// Source
 		Association assocSource = new Association(this).with(AssociationTypes.EDGE).with(assocTarget);
-		if(tgtClass != null) {
+		if (tgtClass != null) {
 			tgtClass.with(assocTarget);
 		}
 		this.with(assocSource);
@@ -432,7 +432,7 @@ public class Clazz extends GraphEntity {
 	}
 
 	protected boolean repairAssociation(Association assoc, boolean renameName) {
-		if(assoc == null || assoc.getOther() == null) {
+		if (assoc == null || assoc.getOther() == null) {
 			return false;
 		}
 		if (AssociationTypes.IMPLEMENTS.equals(assoc.getType()) == false
@@ -444,21 +444,22 @@ public class Clazz extends GraphEntity {
 		if (AssociationTypes.IMPLEMENTS.equals(assoc.getType()) == false
 				&& AssociationTypes.GENERALISATION.equals(assoc.getType()) == false) {
 			// Check Cardinality
-			if(assoc.getClazz() == otherAssoc.getClazz() && assoc.getName() != null && assoc.getName().equals(otherAssoc.getName())) {
-				if(assoc.getCardinality() != otherAssoc.getCardinality()) {
+			if (assoc.getClazz() == otherAssoc.getClazz() && assoc.getName() != null
+					&& assoc.getName().equals(otherAssoc.getName())) {
+				if (assoc.getCardinality() != otherAssoc.getCardinality()) {
 					// Self assoc with same RoleName but other Cardinality
 					return false;
 				}
 			}
-			//Check Name
-			if(renameName) {
+			// Check Name
+			if (renameName) {
 				String name2 = assoc.getName();
-				if(name2 != null && name2.length()>0) {
-					if(name2.equals(name2.toUpperCase())) {
+				if (name2 != null && name2.length() > 0) {
+					if (name2.equals(name2.toUpperCase())) {
 						assoc.setName(name2.toLowerCase());
-					}else {
+					} else {
 						char no = name2.charAt(0);
-						if(no<'a' || no>'z') {
+						if (no < 'a' || no > 'z') {
 							assoc.setName(EntityUtil.downFirstChar(name2));
 						}
 					}
@@ -466,11 +467,12 @@ public class Clazz extends GraphEntity {
 			}
 			// Check for duplicate
 			AssociationSet associations = otherAssoc.getClazz().getAssociations();
-			for(Association checkAssoc : associations) {
-				if(checkAssoc == otherAssoc || checkAssoc.getType() == AssociationTypes.GENERALISATION || checkAssoc.getOtherType() == AssociationTypes.GENERALISATION) {
+			for (Association checkAssoc : associations) {
+				if (checkAssoc == otherAssoc || checkAssoc.getType() == AssociationTypes.GENERALISATION
+						|| checkAssoc.getOtherType() == AssociationTypes.GENERALISATION) {
 					continue;
 				}
-				if(checkAssoc.getName() != null && checkAssoc.getName().equalsIgnoreCase(otherAssoc.getName())
+				if (checkAssoc.getName() != null && checkAssoc.getName().equalsIgnoreCase(otherAssoc.getName())
 						&& checkAssoc.getOther().getName() == null) {
 					// Create UnDirectional Association
 					checkAssoc.getOther().with(AssociationTypes.EDGE);
@@ -657,7 +659,8 @@ public class Clazz extends GraphEntity {
 		AssociationSet associations = getAssociations();
 		for (Clazz item : values) {
 			if (item != null) {
-				if(AssociationTypes.GENERALISATION.equals(backDirection) == false && AssociationTypes.GENERALISATION.equals(direction) == false) {
+				if (AssociationTypes.GENERALISATION.equals(backDirection) == false
+						&& AssociationTypes.GENERALISATION.equals(direction) == false) {
 					for (Association assoc : associations) {
 						if (assoc.getType() == direction && assoc.getOtherType() == backDirection) {
 							if (assoc.contains(item, true, false) == false) {
@@ -1002,15 +1005,15 @@ public class Clazz extends GraphEntity {
 
 	@Override
 	public String toString() {
-		if(this.id != null) {
-			return this.id+":"+this.getName();
+		if (this.id != null) {
+			return this.id + ":" + this.getName();
 		}
 		return getName();
 	}
 
 	@Override
 	public Object getValue(String attribute) {
-		if(attribute == null) {
+		if (attribute == null) {
 			return null;
 		}
 		if (PROPERTY_PACKAGENAME.equalsIgnoreCase(attribute)) {

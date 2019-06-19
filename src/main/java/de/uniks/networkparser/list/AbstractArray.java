@@ -3,7 +3,7 @@ package de.uniks.networkparser.list;
 /*
 NetworkParser
 The MIT License
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -53,7 +53,7 @@ public abstract class AbstractArray<V> implements BaseItem {
 	public static final Integer REMOVED = -1;
 
 	static final int MINHASHINGSIZE = 420; // Minimum (SIZE_BIG: 5)
-	static final int MINUSEDLIST = 5; // 20 % 
+	static final int MINUSEDLIST = 5; // 20 %
 	static final float MAXUSEDLIST = 0.7f;
 
 	static final byte SMALL_KEY = 0;
@@ -99,7 +99,7 @@ public abstract class AbstractArray<V> implements BaseItem {
 	 * Init-List with Collection or single Object
 	 *
 	 * @param values add all new Items
-	 * @param        <ST> Container Class
+	 * @param <ST>   Container Class
 	 * @return return self
 	 */
 	@SuppressWarnings("unchecked")
@@ -124,7 +124,7 @@ public abstract class AbstractArray<V> implements BaseItem {
 	 * @param items  Array of the new List
 	 * @param size   the new Size of the List
 	 * @param offset the startoffset of Items
-	 * @param        <ST> Container Class
+	 * @param <ST>   Container Class
 	 * @return return self
 	 */
 	@SuppressWarnings("unchecked")
@@ -416,7 +416,7 @@ public abstract class AbstractArray<V> implements BaseItem {
 			int newSize = minCapacity + minCapacity / 2 + 5;
 			if (arrayFlag == 1) {
 				elements = new Object[newSize];
-				return newSize; 
+				return newSize;
 			}
 			elements = new Object[arrayFlag];
 			elements[SMALL_KEY] = new Object[newSize];
@@ -433,7 +433,7 @@ public abstract class AbstractArray<V> implements BaseItem {
 			if ((flag & MAP) != 0) {
 				elements[SMALL_VALUE] = new Object[old.length];
 			}
-			if(minCapacity < old.length ) {
+			if (minCapacity < old.length) {
 				return arrayFlag;
 			}
 		}
@@ -765,7 +765,7 @@ public abstract class AbstractArray<V> implements BaseItem {
 		}
 		return changed;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public boolean rawAdd(V... values) {
 		if (values == null || values.length < 1) {
@@ -1287,7 +1287,7 @@ public abstract class AbstractArray<V> implements BaseItem {
 
 		Object child = null;
 		if ((flag & MAP) == 0) {
-			if(id>=0) {
+			if (id >= 0) {
 				child = getByIndex(SMALL_KEY, id + this.index, size);
 			}
 		} else {
@@ -1389,10 +1389,10 @@ public abstract class AbstractArray<V> implements BaseItem {
 	 * in determining the length of the list <i>only</i> if the caller knows that
 	 * the list does not contain any null elements.)
 	 *
-	 * @param a the array into which the elements of the list are to be stored, if
-	 *          it is big enough; otherwise, a new array of the same runtime type is
-	 *          allocated for this purpose.
-	 * @param   <T> the ContainerClass
+	 * @param a   the array into which the elements of the list are to be stored, if
+	 *            it is big enough; otherwise, a new array of the same runtime type
+	 *            is allocated for this purpose.
+	 * @param <T> the ContainerClass
 	 * @return an array containing the elements of the list
 	 */
 	public <T> T[] toArray(T[] a) {

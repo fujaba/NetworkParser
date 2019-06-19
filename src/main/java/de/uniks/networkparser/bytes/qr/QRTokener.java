@@ -3,7 +3,7 @@ package de.uniks.networkparser.bytes.qr;
 /*
 NetworkParser
 The MIT License
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -29,7 +29,8 @@ public class QRTokener {
 	private final ReedSolomon rsDecoder = new ReedSolomon(GenericGF.QR_CODE_FIELD_256);
 
 	/* The original table is defined in the table 5 of JISX0510:2004 (p.19). */
-	private static final int[] ALPHANUMERIC_TABLE = { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, /* 0x00-0x0f */
+	private static final int[] ALPHANUMERIC_TABLE = { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+			-1, /* 0x00-0x0f */
 			-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, /* 0x10-0x1f */
 			36, -1, -1, -1, 37, 38, -1, -1, -1, -1, 39, 40, -1, 41, 42, 43, /* 0x20-0x2f */
 			0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 44, -1, -1, -1, -1, -1, /* 0x30-0x3f */
@@ -49,15 +50,15 @@ public class QRTokener {
 	 * @return text and bytes encoded within the QR Code
 	 */
 	public DecoderResult decode(Object values) {
-		if(values == null) {
+		if (values == null) {
 			return null;
 		}
 
-		if(values instanceof BitMatrixParser) {
+		if (values instanceof BitMatrixParser) {
 			BitMatrixParser parser = (BitMatrixParser) values;
 			Version version = parser.readVersion();
 			FormatInformation readFormatInformation = parser.readFormatInformation();
-			if(readFormatInformation == null) {
+			if (readFormatInformation == null) {
 				return null;
 			}
 			ErrorCorrectionLevel ecLevel = readFormatInformation.getErrorCorrectionLevel();
@@ -91,13 +92,13 @@ public class QRTokener {
 			/* Decode the contents of that stream of bytes */
 			return DecodedBitStreamParser.decode(resultBytes, version, ecLevel);
 		}
-		
-		if(values instanceof BitMatrix) {
+
+		if (values instanceof BitMatrix) {
 			BitMatrix bits = (BitMatrix) values;
 			/* Construct a parser and read version, error-correction level */
 			BitMatrixParser parser = new BitMatrixParser(bits);
 			DecoderResult result = decode(parser);
-			if(result != null) {
+			if (result != null) {
 				return result;
 			}
 
@@ -124,21 +125,21 @@ public class QRTokener {
 			/* Success! Notify the caller that the code was mirrored. */
 			return result;
 		}
- 
+
 		int dimension;
 		BitMatrix bits = null;
-		if(values instanceof byte[][]) {
+		if (values instanceof byte[][]) {
 			byte[][] image = (byte[][]) values;
 			dimension = image.length;
 			bits = new BitMatrix(dimension);
 			for (int i = 0; i < dimension; i++) {
 				for (int j = 0; j < dimension; j++) {
-					if (image[i][j]>0) {
+					if (image[i][j] > 0) {
 						bits.set(j, i);
 					}
 				}
 			}
-		} else if(values instanceof boolean[][]) {
+		} else if (values instanceof boolean[][]) {
 			boolean[][] image = (boolean[][]) values;
 			dimension = image.length;
 			bits = new BitMatrix(dimension);
@@ -150,13 +151,12 @@ public class QRTokener {
 				}
 			}
 		}
-		if(bits == null) {
+		if (bits == null) {
 			return null;
 		}
 		return decode(bits);
 	}
 
-	
 	/**
 	 * <p>
 	 * Given data and error-correction codewords received, possibly corrupted by
@@ -169,7 +169,7 @@ public class QRTokener {
 	 * @return success
 	 */
 	private boolean correctErrors(byte[] codewordBytes, int numDataCodewords) {
-		if(codewordBytes == null) {
+		if (codewordBytes == null) {
 			return false;
 		}
 		int numCodewords = codewordBytes.length;
@@ -184,8 +184,10 @@ public class QRTokener {
 		} catch (Exception ignored) {
 			return false; /* ChecksumInstance */
 		}
-		/* Copy back into array of bytes -- only need to worry about the bytes that were data
-		   We don't care about errors in the error-correction codewords */
+		/*
+		 * Copy back into array of bytes -- only need to worry about the bytes that were
+		 * data We don't care about errors in the error-correction codewords
+		 */
 		for (int i = 0; i < numDataCodewords; i++) {
 			codewordBytes[i] = (byte) codewordsInts[i];
 		}
@@ -193,18 +195,19 @@ public class QRTokener {
 	}
 
 	/**
-	*	ENCODER
-	* @param matrix Matrix to Encode
-	* @return Number
-	* The mask penalty calculation is complicated. See Table 21 of
-	* JISX0510:2004 (p.45) for details.
-	* Basically it applies four rules and summate all penalties.
-	*/
+	 * ENCODER
+	 * 
+	 * @param matrix Matrix to Encode
+	 * @return Number The mask penalty calculation is complicated. See Table 21 of
+	 *         JISX0510:2004 (p.45) for details. Basically it applies four rules and
+	 *         summate all penalties.
+	 */
 	private static int calculateMaskPenalty(ByteMatrix matrix) {
-		
+
 		int penaltyRule1 = applyMaskPenaltyRule1Internal(matrix, true) + applyMaskPenaltyRule1Internal(matrix, false);
-		
-		return penaltyRule1 + applyMaskPenaltyRule2(matrix) + applyMaskPenaltyRule3(matrix) + applyMaskPenaltyRule4(matrix);
+
+		return penaltyRule1 + applyMaskPenaltyRule2(matrix) + applyMaskPenaltyRule3(matrix)
+				+ applyMaskPenaltyRule4(matrix);
 	}
 
 	/**
@@ -216,13 +219,18 @@ public class QRTokener {
 	 */
 	public QRCode encode(String content, ErrorCorrectionLevel ecLevel) {
 		String encoding = DEFAULT_BYTE_MODE_ENCODING;
-		/* Determine what character encoding has been specified by the caller,  if any
-		   Pick an encoding mode appropriate for the content. Note that this will not attempt to use
-		   multiple modes / segments even if that were more efficient. Twould be  nice. */
+		/*
+		 * Determine what character encoding has been specified by the caller, if any
+		 * Pick an encoding mode appropriate for the content. Note that this will not
+		 * attempt to use multiple modes / segments even if that were more efficient.
+		 * Twould be nice.
+		 */
 		Mode mode = chooseMode(content, encoding);
 
-		/* This will store the header information, like mode and
-		   length, as well as "header" segments like an ECI segment. */
+		/*
+		 * This will store the header information, like mode and length, as well as
+		 * "header" segments like an ECI segment.
+		 */
 		BitArray headerBits = new BitArray();
 
 		/* Append ECI segment if applicable */
@@ -233,21 +241,30 @@ public class QRTokener {
 		/* (With ECI in place,) Write the mode marker */
 		appendModeInfo(mode, headerBits);
 
-		/* Collect data within the main segment, separately, to count its size if needed. Don't add it to main payload yet. */
+		/*
+		 * Collect data within the main segment, separately, to count its size if
+		 * needed. Don't add it to main payload yet.
+		 */
 		BitArray dataBits = new BitArray();
 		appendBytes(content, mode, dataBits, encoding);
 
-		/* Hard part: need to know version to know how many bits length takes.
-		   But need to know how many bits it takes to know version. First we take a guess at version by assuming version will be the minimum, 1: */
+		/*
+		 * Hard part: need to know version to know how many bits length takes. But need
+		 * to know how many bits it takes to know version. First we take a guess at
+		 * version by assuming version will be the minimum, 1:
+		 */
 		Version.getVersionForNumber(1);
 		int provisionalBitsNeeded = headerBits.getSize() + mode.getCharacterCountBits(Version.getVersionForNumber(1))
 				+ dataBits.getSize();
 		Version provisionalVersion = chooseVersion(provisionalBitsNeeded, ecLevel);
 
-		/* Use that guess to calculate the right version. I am still not sure this works in 100% of cases. */
+		/*
+		 * Use that guess to calculate the right version. I am still not sure this works
+		 * in 100% of cases.
+		 */
 		int bitsNeeded = headerBits.getSize() + mode.getCharacterCountBits(provisionalVersion) + dataBits.getSize();
 		Version version = chooseVersion(bitsNeeded, ecLevel);
-		if(version == null) {
+		if (version == null) {
 			return null;
 		}
 
@@ -295,7 +312,7 @@ public class QRTokener {
 	 * @return getAlphanumericCode or -1
 	 */
 	static int getAlphanumericCode(int code) {
-		if (code>=0 && code < ALPHANUMERIC_TABLE.length) {
+		if (code >= 0 && code < ALPHANUMERIC_TABLE.length) {
 			return ALPHANUMERIC_TABLE[code];
 		}
 		return -1;
@@ -315,7 +332,7 @@ public class QRTokener {
 			/* Choose Kanji mode if all input are double-byte characters */
 			return Mode.KANJI;
 		}
-		if(content == null) {
+		if (content == null) {
 			return Mode.BYTE;
 		}
 		boolean hasNumeric = false;
@@ -340,7 +357,7 @@ public class QRTokener {
 	}
 
 	private static boolean isOnlyDoubleByteKanji(String content) {
-		if(content == null) {
+		if (content == null) {
 			return false;
 		}
 		byte[] bytes;
@@ -415,15 +432,20 @@ public class QRTokener {
 		for (int i = 0; i < 4 && bits.getSize() < capacity; ++i) {
 			bits.appendBit(false);
 		}
-		/* Append termination bits. See 8.4.8 of JISX0510:2004 (p.24) for details.
-		   If the last byte isn't 8-bit aligned, we'll add padding bits. */
+		/*
+		 * Append termination bits. See 8.4.8 of JISX0510:2004 (p.24) for details. If
+		 * the last byte isn't 8-bit aligned, we'll add padding bits.
+		 */
 		int numBitsInLastByte = bits.getSize() & 0x07;
 		if (numBitsInLastByte > 0) {
 			for (int i = numBitsInLastByte; i < 8; i++) {
 				bits.appendBit(false);
 			}
 		}
-		/* If we have more space, we'll fill the space with padding patterns defined in 8.4.9 (p.24). */
+		/*
+		 * If we have more space, we'll fill the space with padding patterns defined in
+		 * 8.4.9 (p.24).
+		 */
 		int numPaddingBytes = numDataBytes - bits.getSizeInBytes();
 		for (int i = 0; i < numPaddingBytes; ++i) {
 			bits.appendBits((i & 0x01) == 0 ? 0xEC : 0x11, 8);
@@ -447,7 +469,7 @@ public class QRTokener {
 	static boolean getNumDataBytesAndNumECBytesForBlockID(int numTotalBytes, int numDataBytes, int numRSBlocks,
 			int blockID, int[] numDataBytesInBlock, int[] numECBytesInBlock) {
 		if (blockID >= numRSBlocks) {
-			return false;  /* "Block ID too large"; */
+			return false; /* "Block ID too large"; */
 		}
 		/* numRsBlocksInGroup2 = 196 % 5 = 1 */
 		int numRsBlocksInGroup2 = numTotalBytes % numRSBlocks;
@@ -467,7 +489,7 @@ public class QRTokener {
 		int numEcBytesInGroup2 = numTotalBytesInGroup2 - numDataBytesInGroup2;
 		/* Sanity checks. 26 = 26 */
 		if (numEcBytesInGroup1 != numEcBytesInGroup2) {
-			return false; 	/* "EC bytes mismatch" */
+			return false; /* "EC bytes mismatch" */
 		}
 		/* 5 = 4 + 1. */
 		if (numRSBlocks != numRsBlocksInGroup1 + numRsBlocksInGroup2) {
@@ -506,13 +528,19 @@ public class QRTokener {
 			return null;
 		}
 
-		/* Step 1. Divide data bytes into blocks and generate error correction bytes for them. We'll
-		   store the divided data bytes blocks and error correction bytes blocks into "blocks". */
+		/*
+		 * Step 1. Divide data bytes into blocks and generate error correction bytes for
+		 * them. We'll store the divided data bytes blocks and error correction bytes
+		 * blocks into "blocks".
+		 */
 		int dataBytesOffset = 0;
 		int maxNumDataBytes = 0;
 		int maxNumEcBytes = 0;
 
-		/* Since, we know the number of reedsolmon blocks, we can initialize the vector with the number. */
+		/*
+		 * Since, we know the number of reedsolmon blocks, we can initialize the vector
+		 * with the number.
+		 */
 		byte[][] datablocks = new byte[numRSBlocks][0];
 		byte[][] errorblocks = new byte[numRSBlocks][0];
 
@@ -565,7 +593,7 @@ public class QRTokener {
 	}
 
 	static byte[] generateECBytes(byte[] dataBytes, int numEcBytesInBlock) {
-		if(dataBytes == null) {
+		if (dataBytes == null) {
 			return null;
 		}
 		int numDataBytes = dataBytes.length;
@@ -590,7 +618,7 @@ public class QRTokener {
 	 * @return success
 	 */
 	static boolean appendModeInfo(Mode mode, BitArray bits) {
-		if(mode == null || bits == null) {
+		if (mode == null || bits == null) {
 			return false;
 		}
 		return bits.appendBits(mode.getBits(), 4);
@@ -607,7 +635,7 @@ public class QRTokener {
 	 * @return success
 	 */
 	static boolean appendLengthInfo(int numLetters, Version version, Mode mode, BitArray bits) {
-		if(version == null || mode == null || bits == null) {
+		if (version == null || mode == null || bits == null) {
 			return false;
 		}
 		int numBits = mode.getCharacterCountBits(version);
@@ -645,7 +673,7 @@ public class QRTokener {
 	}
 
 	static boolean appendNumericBytes(CharSequence content, BitArray bits) {
-		if(content == null || bits == null) {
+		if (content == null || bits == null) {
 			return false;
 		}
 		int length = content.length();
@@ -673,7 +701,7 @@ public class QRTokener {
 	}
 
 	static boolean appendAlphanumericBytes(CharSequence content, BitArray bits) {
-		if(content == null || bits == null) {
+		if (content == null || bits == null) {
 			return false;
 		}
 		int length = content.length();
@@ -701,7 +729,7 @@ public class QRTokener {
 	}
 
 	static boolean append8BitBytes(String content, BitArray bits, String encoding) {
-		if(content == null) {
+		if (content == null) {
 			return false;
 		}
 		byte[] bytes = null;
@@ -721,7 +749,7 @@ public class QRTokener {
 	}
 
 	static boolean appendKanjiBytes(String content, BitArray bits) {
-		if(content == null || bits == null) {
+		if (content == null || bits == null) {
 			return false;
 		}
 		byte[] bytes;
@@ -765,7 +793,7 @@ public class QRTokener {
 	 * @return penalty
 	 */
 	private static int applyMaskPenaltyRule1Internal(ByteMatrix matrix, boolean isHorizontal) {
-		if(matrix == null) {
+		if (matrix == null) {
 			return -1;
 		}
 		int penalty = 0;
@@ -804,7 +832,7 @@ public class QRTokener {
 	 * @return penalty
 	 */
 	static int applyMaskPenaltyRule2(ByteMatrix matrix) {
-		if(matrix == null) {
+		if (matrix == null) {
 			return -1;
 		}
 		int penalty = 0;
@@ -832,7 +860,7 @@ public class QRTokener {
 	 * @return penalty
 	 */
 	private static int applyMaskPenaltyRule3(ByteMatrix matrix) {
-		if(matrix == null) {
+		if (matrix == null) {
 			return -1;
 		}
 		int numPenalties = 0;
@@ -856,8 +884,9 @@ public class QRTokener {
 		}
 		return numPenalties * N3;
 	}
+
 	private static boolean isWhiteHorizontal(byte[] rowArray, int from, int to) {
-		if(rowArray == null) {
+		if (rowArray == null) {
 			return false;
 		}
 		from = Math.max(from, 0);
@@ -869,8 +898,9 @@ public class QRTokener {
 		}
 		return true;
 	}
+
 	private static boolean isWhiteVertical(byte[][] array, int col, int from, int to) {
-		if(array == null) {
+		if (array == null) {
 			return false;
 		}
 		from = Math.max(from, 0);
@@ -882,7 +912,6 @@ public class QRTokener {
 		}
 		return true;
 	}
-	
 
 	/**
 	 * Apply mask penalty rule 4 and return the penalty. Calculate the ratio of dark
@@ -893,7 +922,7 @@ public class QRTokener {
 	 * @return penalty
 	 */
 	private static int applyMaskPenaltyRule4(ByteMatrix matrix) {
-		if(matrix == null) {
+		if (matrix == null) {
 			return -1;
 		}
 		int numDarkCells = 0;
@@ -909,7 +938,7 @@ public class QRTokener {
 			}
 		}
 		int numTotalCells = matrix.getHeight() * matrix.getWidth();
-		if(numTotalCells == 0) {
+		if (numTotalCells == 0) {
 			return -1;
 		}
 		int fivePercentVariances = Math.abs(numDarkCells * 2 - numTotalCells) * 10 / numTotalCells;
@@ -924,8 +953,14 @@ public class QRTokener {
 	private static final int[][] POSITION_ADJUSTMENT_PATTERN = { { 1, 1, 1, 1, 1 }, { 1, 0, 0, 0, 1 },
 			{ 1, 0, 1, 0, 1 }, { 1, 0, 0, 0, 1 }, { 1, 1, 1, 1, 1 }, };
 
-	/* From Appendix E. Table 1, JIS0510X:2004 (p 71). The table was double-checked by komatsu. */
-	private static final int[][] POSITION_ADJUSTMENT_PATTERN_COORDINATE_TABLE = { { -1, -1, -1, -1, -1, -1, -1 }, /* Version 1 */
+	/*
+	 * From Appendix E. Table 1, JIS0510X:2004 (p 71). The table was double-checked
+	 * by komatsu.
+	 */
+	private static final int[][] POSITION_ADJUSTMENT_PATTERN_COORDINATE_TABLE = { { -1, -1, -1, -1, -1, -1, -1 }, /*
+																													 * Version
+																													 * 1
+																													 */
 			{ 6, 18, -1, -1, -1, -1, -1 }, /* Version 2 */
 			{ 6, 22, -1, -1, -1, -1, -1 }, /* Version 3 */
 			{ 6, 26, -1, -1, -1, -1, -1 }, /* Version 4 */
@@ -978,17 +1013,20 @@ public class QRTokener {
 	private static final int TYPE_INFO_POLY = 0x537;
 	private static final int TYPE_INFO_MASK_PATTERN = 0x5412;
 
-	/** Build 2D matrix of QR Code from "dataBits" with "ecLevel", "version" and "getMaskPattern". On success, store the result in "matrix" and return true.
-	 * @param dataBits BitArray 
-	 * @param ecLevel ErrorCorrectionLevel
-	 * @param version Version
+	/**
+	 * Build 2D matrix of QR Code from "dataBits" with "ecLevel", "version" and
+	 * "getMaskPattern". On success, store the result in "matrix" and return true.
+	 * 
+	 * @param dataBits    BitArray
+	 * @param ecLevel     ErrorCorrectionLevel
+	 * @param version     Version
 	 * @param maskPattern Mask
-	 * @param matrix ByteMatrix 
+	 * @param matrix      ByteMatrix
 	 * @return success
 	 */
-	private static boolean buildMatrix(BitArray dataBits, ErrorCorrectionLevel ecLevel, Version version, int maskPattern,
-			ByteMatrix matrix) {
-		if(dataBits == null || ecLevel == null || version == null || matrix == null) {
+	private static boolean buildMatrix(BitArray dataBits, ErrorCorrectionLevel ecLevel, Version version,
+			int maskPattern, ByteMatrix matrix) {
+		if (dataBits == null || ecLevel == null || version == null || matrix == null) {
 			return false;
 		}
 		matrix.clear((byte) -1);
@@ -1003,15 +1041,14 @@ public class QRTokener {
 		return true;
 	}
 
-	/** Embed basic patterns. On success, modify the matrix and return true.
-	   The basic patterns are:
-	   - Position detection patterns
-	   - Timing patterns
-	   - Dark dot at the left bottom corner
-	   - Position adjustment patterns, if need be 
-	   @param version Version
-	   @param matrix ByteMatrix
-	*/
+	/**
+	 * Embed basic patterns. On success, modify the matrix and return true. The
+	 * basic patterns are: - Position detection patterns - Timing patterns - Dark
+	 * dot at the left bottom corner - Position adjustment patterns, if need be
+	 * 
+	 * @param version Version
+	 * @param matrix  ByteMatrix
+	 */
 	private static void embedBasicPatterns(Version version, ByteMatrix matrix) {
 		/* Let's get started with embedding big squares at corners. */
 		embedPositionDetectionPatternsAndSeparators(matrix);
@@ -1025,11 +1062,13 @@ public class QRTokener {
 	}
 
 	private static boolean embedTimingPatterns(ByteMatrix matrix) {
-		if(matrix == null) {
+		if (matrix == null) {
 			return false;
 		}
-		/* -8 is for skipping position detection patterns (size 7), and two horizontal/vertical
-		   separation patterns (size 1). Thus, 8 = 7 + 1. */
+		/*
+		 * -8 is for skipping position detection patterns (size 7), and two
+		 * horizontal/vertical separation patterns (size 1). Thus, 8 = 7 + 1.
+		 */
 		for (int i = 8; i < matrix.getWidth() - 8; ++i) {
 			int bit = (i + 1) % 2;
 			/* Horizontal line. */
@@ -1045,12 +1084,13 @@ public class QRTokener {
 	}
 
 	/**
-	 *  Embed the lonely dark dot at left bottom corner. JISX0510:2004 (p.46)
-	 *  @param matrix Matrix to Check
-	 *  @return success  
+	 * Embed the lonely dark dot at left bottom corner. JISX0510:2004 (p.46)
+	 * 
+	 * @param matrix Matrix to Check
+	 * @return success
 	 */
 	private static boolean embedDarkDotAtLeftBottomCorner(ByteMatrix matrix) {
-		if(matrix == null) {
+		if (matrix == null) {
 			return false;
 		}
 		if (matrix.get(8, matrix.getHeight() - 8) == 0) {
@@ -1061,12 +1101,13 @@ public class QRTokener {
 	}
 
 	/**
-	 * 	Embed position adjustment patterns if need be.
+	 * Embed position adjustment patterns if need be.
+	 * 
 	 * @param version The Verison
-	 * @param matrix ByteMatrix
+	 * @param matrix  ByteMatrix
 	 */
 	private static void maybeEmbedPositionAdjustmentPatterns(Version version, ByteMatrix matrix) {
-		if(version == null || matrix == null) {
+		if (version == null || matrix == null) {
 			return;
 		}
 		if (version.getVersionNumber() < 2) { /* The patterns appear if version >= 2 */
@@ -1084,7 +1125,10 @@ public class QRTokener {
 				}
 				/* If the cell is unset, we embed the position adjustment pattern here. */
 				if (matrix.get(x, y) == -1) {
-					/* -2 is necessary since the x/y coordinates point to the center of the pattern, not the left top corner. */
+					/*
+					 * -2 is necessary since the x/y coordinates point to the center of the pattern,
+					 * not the left top corner.
+					 */
 					embedPositionAdjustmentPattern(x - 2, y - 2, matrix);
 				}
 			}
@@ -1092,17 +1136,17 @@ public class QRTokener {
 	}
 
 	/**
-	 *  Note that we cannot unify the function with
-	 *  embedPositionDetectionPattern() despite they are 
-	 *  almost identical, since we cannot write a function that takes 2D arrays
-	 *	in different sizes in C/C++. We should live with the fact.
+	 * Note that we cannot unify the function with embedPositionDetectionPattern()
+	 * despite they are almost identical, since we cannot write a function that
+	 * takes 2D arrays in different sizes in C/C++. We should live with the fact.
+	 * 
 	 * @param xStart x Pos Start
 	 * @param yStart y Pos Start
 	 * @param matrix ByteMatrix
 	 * @return success
 	 */
 	private static boolean embedPositionAdjustmentPattern(int xStart, int yStart, ByteMatrix matrix) {
-		if(matrix == null) {
+		if (matrix == null) {
 			return false;
 		}
 		for (int y = 0; y < 5; ++y) {
@@ -1113,19 +1157,22 @@ public class QRTokener {
 		return true;
 	}
 
-
 	/**
 	 * Embed type information. On success, modify the matrix.
-	 * @param ecLevel Level
+	 * 
+	 * @param ecLevel     Level
 	 * @param maskPattern Mask
-	 * @param matrix ByteMatrix
+	 * @param matrix      ByteMatrix
 	 */
 	private static void embedTypeInfo(ErrorCorrectionLevel ecLevel, int maskPattern, ByteMatrix matrix) {
 		BitArray typeInfoBits = new BitArray();
 		makeTypeInfoBits(ecLevel, maskPattern, typeInfoBits);
 
 		for (int i = 0; i < typeInfoBits.getSize(); ++i) {
-			/* Place bits in LSB to MSB order. LSB (least significant bit) is the last value in "typeInfoBits". */
+			/*
+			 * Place bits in LSB to MSB order. LSB (least significant bit) is the last value
+			 * in "typeInfoBits".
+			 */
 			boolean bit = typeInfoBits.get(typeInfoBits.getSize() - 1 - i);
 
 			/* Type info bits at the left top corner. See 8.9 of JISX0510:2004 (p.46). */
@@ -1147,13 +1194,16 @@ public class QRTokener {
 		}
 	}
 
-	/** Make bit vector of type information. On success, store the result in "bits" and return true.
-	 *  Encode error correction level and mask pattern. See 8.9 of JISX0510:2004 (p.45) for details.
-	  * @param ecLevel Level
-	  * @param maskPattern Mask
-	  * @param bits BitArray
-	  * @return success
-	*/
+	/**
+	 * Make bit vector of type information. On success, store the result in "bits"
+	 * and return true. Encode error correction level and mask pattern. See 8.9 of
+	 * JISX0510:2004 (p.45) for details.
+	 * 
+	 * @param ecLevel     Level
+	 * @param maskPattern Mask
+	 * @param bits        BitArray
+	 * @return success
+	 */
 	static boolean makeTypeInfoBits(ErrorCorrectionLevel ecLevel, int maskPattern, BitArray bits) {
 		if (ecLevel == null || QRCode.isValidMaskPattern(maskPattern) == false) {
 			return false;
@@ -1172,41 +1222,37 @@ public class QRTokener {
 	}
 
 	/**
-	 *  Calculate BCH (Bose-Chaudhuri-Hocquenghem) code for "value" using polynomial "poly". The BCH
-	   code is used for encoding type information and version information.
-	   Example: Calculation of version information of 7.
-	   f(x) is created from 7.
-	   - 7 = 000111 in 6 bits
-	   - f(x) = x^2 + x^1 + x^0
-	   g(x) is given by the standard (p. 67)
-	   - g(x) = x^12 + x^11 + x^10 + x^9 + x^8 + x^5 + x^2 + 1
-	   Multiply f(x) by x^(18 - 6)
-	   - f'(x) = f(x) * x^(18 - 6)
-	   - f'(x) = x^14 + x^13 + x^12
-	   Calculate the remainder of f'(x) / g(x) x^2
-	   __________________________________________________
-	   g(x) )x^14 + x^13 + x^12
-	   x^14 + x^13 + x^12 + x^11 + x^10 + x^7 + x^4 + x^2
-	   --------------------------------------------------
-	   x^11 + x^10 + x^7 + x^4 + x^2
-
-	   The remainder is x^11 + x^10 + x^7 + x^4 + x^2
-	   Encode it in binary: 110010010100
-	   The return value is 0xc94 (1100 1001 0100)
-
-	   Since all coefficients in the polynomials are 1 or 0, we can do the
-	   calculation by bit
-	   operations. We don't care if cofficients are positive or negative.
-	   
-	    @param value Value
-	    @param poly poly
-	    @return calculated Value
-	*/
+	 * Calculate BCH (Bose-Chaudhuri-Hocquenghem) code for "value" using polynomial
+	 * "poly". The BCH code is used for encoding type information and version
+	 * information. Example: Calculation of version information of 7. f(x) is
+	 * created from 7. - 7 = 000111 in 6 bits - f(x) = x^2 + x^1 + x^0 g(x) is given
+	 * by the standard (p. 67) - g(x) = x^12 + x^11 + x^10 + x^9 + x^8 + x^5 + x^2 +
+	 * 1 Multiply f(x) by x^(18 - 6) - f'(x) = f(x) * x^(18 - 6) - f'(x) = x^14 +
+	 * x^13 + x^12 Calculate the remainder of f'(x) / g(x) x^2
+	 * __________________________________________________ g(x) )x^14 + x^13 + x^12
+	 * x^14 + x^13 + x^12 + x^11 + x^10 + x^7 + x^4 + x^2
+	 * -------------------------------------------------- x^11 + x^10 + x^7 + x^4 +
+	 * x^2
+	 * 
+	 * The remainder is x^11 + x^10 + x^7 + x^4 + x^2 Encode it in binary:
+	 * 110010010100 The return value is 0xc94 (1100 1001 0100)
+	 * 
+	 * Since all coefficients in the polynomials are 1 or 0, we can do the
+	 * calculation by bit operations. We don't care if cofficients are positive or
+	 * negative.
+	 * 
+	 * @param value Value
+	 * @param poly  poly
+	 * @return calculated Value
+	 */
 	static int calculateBCHCode(int value, int poly) {
 		if (poly == 0) {
 			return -1;
 		}
-		/* If poly is "1 1111 0010 0101" (version info poly), msbSetInPoly is  13. We'll subtract 1 from 13 to make it 12. */
+		/*
+		 * If poly is "1 1111 0010 0101" (version info poly), msbSetInPoly is 13. We'll
+		 * subtract 1 from 13 to make it 12.
+		 */
 		int msbSetInPoly = findMSBSet(poly);
 		value <<= msbSetInPoly - 1;
 		/* Do the division business using exclusive-or operations. */
@@ -1217,12 +1263,11 @@ public class QRTokener {
 		return value;
 	}
 
-	/* Return the position of the most significant bit set (to one) in the
-	   "value". The most significant bit is position 32. If there is no bit set, return 0.
-	   Examples:
-	   - findMSBSet(0) => 0
-	   - findMSBSet(1) => 1
-	   - findMSBSet(255) => 8 */
+	/*
+	 * Return the position of the most significant bit set (to one) in the "value".
+	 * The most significant bit is position 32. If there is no bit set, return 0.
+	 * Examples: - findMSBSet(0) => 0 - findMSBSet(1) => 1 - findMSBSet(255) => 8
+	 */
 	static int findMSBSet(int value) {
 		int numDigits = 0;
 		while (value != 0) {
@@ -1233,14 +1278,16 @@ public class QRTokener {
 	}
 
 	/**
-	 *  Embed version information if need be. On success, modify the matrix and return true.
-	 *  See 8.10 of JISX0510:2004 (p.47) for how to embed version information.
-	 *  @param version Version
-	 *  @param matrix ByteMatrix
+	 * Embed version information if need be. On success, modify the matrix and
+	 * return true. See 8.10 of JISX0510:2004 (p.47) for how to embed version
+	 * information.
+	 * 
+	 * @param version Version
+	 * @param matrix  ByteMatrix
 	 */
 	private static void maybeEmbedVersionInfo(Version version, ByteMatrix matrix) {
 		if (version == null || matrix == null || version.getVersionNumber() < 7) { /* Version info is necessary if */
-												/* version >= 7. */
+			/* version >= 7. */
 			return; /* Don't need version info. */
 		}
 		BitArray versionInfoBits = new BitArray();
@@ -1260,14 +1307,16 @@ public class QRTokener {
 		}
 	}
 
-	/** Make bit vector of version information. On success, store the result in "bits" and return true.
-	 * See 8.10 of JISX0510:2004 (p.45) for details.
-	 * 	@param version Version
-	 *  @param bits BitArray
-	 *  @return success
+	/**
+	 * Make bit vector of version information. On success, store the result in
+	 * "bits" and return true. See 8.10 of JISX0510:2004 (p.45) for details.
+	 * 
+	 * @param version Version
+	 * @param bits    BitArray
+	 * @return success
 	 */
 	static boolean makeVersionInfoBits(Version version, BitArray bits) {
-		if(version == null || bits == null) {
+		if (version == null || bits == null) {
 			return false;
 		}
 		bits.appendBits(version.getVersionNumber(), 6);
@@ -1277,16 +1326,19 @@ public class QRTokener {
 		return (bits.getSize() == 18); /* Just in case. */
 	}
 
-	/** Embed "dataBits" using "getMaskPattern". On success, modify the matrix and return true.
-	 * For debugging purposes, it skips masking process if "getMaskPattern" is -1.
-	 * See 8.7 of JISX0510:2004 (p.38) for how to embed data bits.
-	 * @param dataBits DataBits
+	/**
+	 * Embed "dataBits" using "getMaskPattern". On success, modify the matrix and
+	 * return true. For debugging purposes, it skips masking process if
+	 * "getMaskPattern" is -1. See 8.7 of JISX0510:2004 (p.38) for how to embed data
+	 * bits.
+	 * 
+	 * @param dataBits    DataBits
 	 * @param maskPattern Mask
-	 * @param matrix ByteMatrix
+	 * @param matrix      ByteMatrix
 	 * @return success
 	 */
 	private static boolean embedDataBits(BitArray dataBits, int maskPattern, ByteMatrix matrix) {
-		if(dataBits == null || matrix == null) {
+		if (dataBits == null || matrix == null) {
 			return false;
 		}
 		int bitIndex = 0;
@@ -1311,7 +1363,10 @@ public class QRTokener {
 						bit = dataBits.get(bitIndex);
 						++bitIndex;
 					} else {
-						/* Padding bit. If there is no bit left, we'll fill the left cells with 0, as described in 8.4.9 of JISX0510:2004 (p. 24). */
+						/*
+						 * Padding bit. If there is no bit left, we'll fill the left cells with 0, as
+						 * described in 8.4.9 of JISX0510:2004 (p. 24).
+						 */
 						bit = false;
 					}
 
@@ -1378,7 +1433,7 @@ public class QRTokener {
 	}
 
 	private static void embedPositionDetectionPattern(int xStart, int yStart, ByteMatrix matrix) {
-		if(matrix != null) {
+		if (matrix != null) {
 			for (int y = 0; y < 7; ++y) {
 				for (int x = 0; x < 7; ++x) {
 					matrix.set(xStart + x, yStart + y, POSITION_DETECTION_PATTERN[y][x]);
@@ -1388,7 +1443,7 @@ public class QRTokener {
 	}
 
 	private static boolean embedHorizontalSeparationPattern(int xStart, int yStart, ByteMatrix matrix) {
-		if(matrix == null) {
+		if (matrix == null) {
 			return false;
 		}
 		for (int x = 0; x < 8; ++x) {
@@ -1400,14 +1455,15 @@ public class QRTokener {
 		return true;
 	}
 
-
 	/**
-	 * Embed position detection patterns and surrounding vertical/horizontal separators.
+	 * Embed position detection patterns and surrounding vertical/horizontal
+	 * separators.
+	 * 
 	 * @param matrix ByteMatrix
 	 */
 	private static void embedPositionDetectionPatternsAndSeparators(ByteMatrix matrix) {
 		/* Embed three big squares at corners. */
-		if(matrix == null) {
+		if (matrix == null) {
 			return;
 		}
 		int pdpWidth = POSITION_DETECTION_PATTERN[0].length;
@@ -1436,9 +1492,9 @@ public class QRTokener {
 		/* Left bottom corner. */
 		embedVerticalSeparationPattern(vspSize, matrix.getHeight() - vspSize, matrix);
 	}
-	
+
 	private static boolean embedVerticalSeparationPattern(int xStart, int yStart, ByteMatrix matrix) {
-		if(matrix == null) {
+		if (matrix == null) {
 			return false;
 		}
 		for (int y = 0; y < 7; ++y) {

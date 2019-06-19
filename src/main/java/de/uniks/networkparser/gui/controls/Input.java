@@ -5,7 +5,7 @@ import de.uniks.networkparser.SimpleObject;
 /*
 The MIT License
 
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -36,8 +36,8 @@ public class Input<T> extends Control {
 //	protected SimpleGUI $view;
 	protected T value;
 	protected String type;
-	
-	public Input<T>  withElement(SimpleObject blub) {
+
+	public Input<T> withElement(SimpleObject blub) {
 		return this;
 	}
 

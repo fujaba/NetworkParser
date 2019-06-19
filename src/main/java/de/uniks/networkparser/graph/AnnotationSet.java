@@ -31,7 +31,7 @@ public class AnnotationSet extends SimpleSet<Annotation> {
 	public AnnotationSet hasName(String otherValue) {
 		return filter(StringCondition.createEquals(Annotation.PROPERTY_NAME, otherValue));
 	}
-	
+
 	@Override
 	public SimpleSet<Annotation> getNewList(boolean keyValue) {
 		return new AnnotationSet();

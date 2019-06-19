@@ -56,30 +56,30 @@ public class Annotation extends GraphMember {
 	public Annotation(String name) {
 		super.with(name);
 	}
-	
+
 	public static Annotation create(String value, String... values) {
 		Annotation annotation = new Annotation();
-		if(values == null || values.length<1) {
+		if (values == null || values.length < 1) {
 			annotation.decode(value);
 		} else {
 			annotation.setName(value);
-			if(values.length % 2==0) {
-				for(int i=0;i<values.length;i+=2) {
-					annotation.addValue(new Annotation().withKeyValue(values[i], values[i+1]));
+			if (values.length % 2 == 0) {
+				for (int i = 0; i < values.length; i += 2) {
+					annotation.addValue(new Annotation().withKeyValue(values[i], values[i + 1]));
 				}
 			}
 		}
 		return annotation;
 	}
-	
-	public Annotation withKeyValue(String key, String value ) {
+
+	public Annotation withKeyValue(String key, String value) {
 		this.name = key;
-		this.keyValue= true;
+		this.keyValue = true;
 		SimpleList<Annotation> list = new SimpleList<Annotation>();
-		if(value != null && value.length()>0) {
-			if(value.indexOf('"')<1 && value.charAt(0)!= '{') {
-				list.add(new Annotation("\""+value+"\""));
-			}else {
+		if (value != null && value.length() > 0) {
+			if (value.indexOf('"') < 1 && value.charAt(0) != '{') {
+				list.add(new Annotation("\"" + value + "\""));
+			} else {
 				list.add(new Annotation(value));
 			}
 		}
@@ -106,11 +106,12 @@ public class Annotation extends GraphMember {
 		decode(tokener, (char) 0, null);
 		return this;
 	}
+
 	public Annotation withNext(Annotation annotation) {
 		this.nextAnnotaton = annotation;
 		return this;
 	}
-	
+
 	protected Annotation addValue(Annotation... values) {
 		if (values == null) {
 			return this;
@@ -119,7 +120,7 @@ public class Annotation extends GraphMember {
 		if (this.children == null) {
 			list = new SimpleList<Object>();
 			this.children = list;
-		}else {
+		} else {
 			list = (SimpleList<?>) children;
 		}
 		for (Annotation item : values) {
@@ -131,7 +132,7 @@ public class Annotation extends GraphMember {
 	}
 
 	public Annotation decode(BufferItem tokener, char endTag, Annotation parent) {
-		if(tokener == null) {
+		if (tokener == null) {
 			return null;
 		}
 		char item = tokener.getCurrentChar();
@@ -202,13 +203,13 @@ public class Annotation extends GraphMember {
 
 	public SimpleList<Annotation> getValue() {
 		SimpleList<Annotation> list = new SimpleList<Annotation>();
-		if(children != null) {
-			if(children instanceof Annotation) {
+		if (children != null) {
+			if (children instanceof Annotation) {
 				list.add(children);
-			}else if(children instanceof List<?>) {
+			} else if (children instanceof List<?>) {
 				List<?> collection = (List<?>) children;
-				for(Object item : collection) {
-					if(item instanceof Annotation) {
+				for (Object item : collection) {
+					if (item instanceof Annotation) {
 						list.add(item);
 					}
 				}
@@ -216,15 +217,15 @@ public class Annotation extends GraphMember {
 		}
 		return list;
 	}
-	
+
 	public Annotation withImport(String item) {
 		Import importItem = Import.create(item);
-		if(this.children == null) {
+		if (this.children == null) {
 			this.children = importItem;
-		}else if(children instanceof SimpleList<?>) {
-			SimpleList<?> list  = (SimpleList<?>) children;
+		} else if (children instanceof SimpleList<?>) {
+			SimpleList<?> list = (SimpleList<?>) children;
 			list.add(importItem);
-		}else {
+		} else {
 			SimpleList<Object> list = new SimpleList<Object>();
 			list.add(children);
 			list.add(importItem);
@@ -240,7 +241,7 @@ public class Annotation extends GraphMember {
 		if (children == null) {
 			return sb.toString();
 		}
-		if(children instanceof SimpleList<?>) {
+		if (children instanceof SimpleList<?>) {
 			SimpleList<?> list = (SimpleList<?>) children;
 			if (keyValue && list.size() == 1) {
 				sb.append("=");
@@ -253,7 +254,7 @@ public class Annotation extends GraphMember {
 			}
 			for (int i = 1; i < list.size(); i++) {
 				Object child = list.get(i);
-				if(child instanceof Import == false) {
+				if (child instanceof Import == false) {
 					sb.append(",");
 					sb.append(list.get(i));
 				}
@@ -270,7 +271,7 @@ public class Annotation extends GraphMember {
 	public Annotation next() {
 		return nextAnnotaton;
 	}
-	
+
 	public Annotation getAnnotation(String key) {
 		if (key == null) {
 			return null;
@@ -294,6 +295,6 @@ public class Annotation extends GraphMember {
 
 	public Annotation withScope(String scope) {
 		this.scope = scope;
-		return this; 
+		return this;
 	}
 }

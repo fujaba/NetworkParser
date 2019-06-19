@@ -3,7 +3,7 @@ package de.uniks.networkparser.ext.io;
 /*
 The MIT License
 
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -139,7 +139,7 @@ public class SocketMessage implements BaseItem {
 	}
 
 	public String generateMessageId(String localHost) {
-		if (this.id != null|| localHost == null) {
+		if (this.id != null || localHost == null) {
 			return this.id;
 		}
 		int at = localHost.lastIndexOf('@');
@@ -148,7 +148,7 @@ public class SocketMessage implements BaseItem {
 
 		CharacterBuffer s = new CharacterBuffer();
 
-		// Unique string is <hashcode>.<id>.<currentTime><suffix>
+		/* Unique string is <hashcode>.<id>.<currentTime><suffix> */
 		String id = MessageSession.nextID();
 		s.with(s.hashCode()).with('.').with(id).with('.').with(System.currentTimeMillis()).with(localHost);
 		this.id = s.toString();
@@ -175,9 +175,10 @@ public class SocketMessage implements BaseItem {
 				data.put("message", this.message.first());
 			}
 
-//		      "time_to_live":"600",
-//		      "delay_while_idle": true/false,
-//		      "delivery_receipt_requested": true/false
+			/*
+			 * "time_to_live":"600", "delay_while_idle": true/false,
+			 * "delivery_receipt_requested": true/false
+			 */
 		}
 		if (type == MessageSession.TYPE_XMPP) {
 			messageXML.add("id", MessageSession.nextID());
@@ -203,7 +204,7 @@ public class SocketMessage implements BaseItem {
 		CharacterBuffer s = new CharacterBuffer();
 		long hash = s.hashCode();
 
-		// Unique string is ----=_Part_<part>_<hashcode>.<currentTime>
+		/* Unique string is ----=_Part_<part>_<hashcode>.<currentTime> */
 		String id = MessageSession.nextID();
 
 		s.with("_Part_").with(id).with('_').with(hash).with('.').with(System.currentTimeMillis());
@@ -227,7 +228,7 @@ public class SocketMessage implements BaseItem {
 	}
 
 	private String normalizeAddress(String value) {
-		if(value == null) {
+		if (value == null) {
 			return null;
 		}
 		String returnValue = value.trim();

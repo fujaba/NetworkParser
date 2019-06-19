@@ -22,11 +22,11 @@ public class AddCondition extends MatchCondition {
 
 	@Override
 	protected boolean calculateFileDiffs(GraphModel model, GraphMatcher matches, Match match) {
-		if(match == null || matches == null) {
+		if (match == null || matches == null) {
 			return false;
 		}
 		GraphMember member = match.getMatch();
-		if(member == null) {
+		if (member == null) {
 			return false;
 		}
 		Clazz clazz = member.getClazz();
@@ -73,7 +73,7 @@ public class AddCondition extends MatchCondition {
 
 	@Override
 	protected boolean checkModelCondition(GraphMatcher matches, Match match) {
-		if(match == null || matches == null) {
+		if (match == null || matches == null) {
 			return false;
 		}
 		if (match.getMatch() instanceof Association) {
@@ -84,7 +84,7 @@ public class AddCondition extends MatchCondition {
 
 	@Override
 	protected boolean calculateModelDiffs(GraphModel model, GraphMatcher matches, Match match) {
-		if(match == null || matches == null) {
+		if (match == null || matches == null) {
 			return false;
 		}
 		GraphMember member = match.getMatch();
@@ -135,7 +135,7 @@ public class AddCondition extends MatchCondition {
 	}
 
 	protected boolean checkCondition(GraphMatcher matches, Match match) {
-		if(match == null || matches == null) {
+		if (match == null || matches == null) {
 			return false;
 		}
 		GraphMember member = match.getMatch();

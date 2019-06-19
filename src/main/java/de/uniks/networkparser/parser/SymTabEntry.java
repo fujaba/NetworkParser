@@ -9,7 +9,7 @@ import de.uniks.networkparser.interfaces.BaseItem;
 /*
 NetworkParser
 The MIT License
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -32,7 +32,7 @@ THE SOFTWARE.
 
 public class SymTabEntry {
 	public static final String TYPE_VOID = "void";
-	
+
 	public static final String TYPE_IMPORT = "import";
 
 	public static final String TYPE_INTERFACE = "interface";
@@ -121,8 +121,9 @@ public class SymTabEntry {
 		setValue(value);
 		return this;
 	}
+
 	public SymTabEntry withName(CharacterBuffer value) {
-		if(value != null) {
+		if (value != null) {
 			this.name = value.toString();
 		}
 		return this;
@@ -195,7 +196,7 @@ public class SymTabEntry {
 	}
 
 	public boolean toString(CharacterBuffer sb) {
-		if(sb == null) {
+		if (sb == null) {
 			return false;
 		}
 		sb.with(this.name);
@@ -220,11 +221,11 @@ public class SymTabEntry {
 	public int getEndPos() {
 		return endPos;
 	}
-	
+
 	public long getStartLine() {
 		return startLine;
 	}
-	
+
 	public long getEndLine() {
 		return endLine;
 	}
@@ -328,9 +329,9 @@ public class SymTabEntry {
 	}
 
 	public void writeBody(String value) {
-		if(this.parent != null) {
+		if (this.parent != null) {
 			this.parent.replaceAll(this.bodyStartPos + 1, value);
-			this.body = "{"+BaseItem.CRLF + "\t"+ value + BaseItem.CRLF + "}";
+			this.body = "{" + BaseItem.CRLF + "\t" + value + BaseItem.CRLF + "}";
 		}
 	}
 

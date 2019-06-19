@@ -179,9 +179,9 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator>, Sendabl
 	/**
 	 * Gets the creator classes.
 	 *
-	 * @param clazz    Clazzname for search
-	 * @param fullName if the clazzName is the Fullname for search
-	 * @param creators candidates creator list for result
+	 * @param clazz         Clazzname for search
+	 * @param fullName      if the clazzName is the Fullname for search
+	 * @param creators      candidates creator list for result
 	 * @param caseSensitive ignore Case
 	 * @return return a Creator class for a clazz name
 	 */
@@ -194,7 +194,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator>, Sendabl
 		if (creator != null || fullName) {
 			return (SendableEntityCreator) creator;
 		}
-		if(caseSensitive == false) {
+		if (caseSensitive == false) {
 			clazz = clazz.toLowerCase();
 		}
 		String endTag;
@@ -209,7 +209,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator>, Sendabl
 		}
 		for (int i = 0; i < this.creators.size(); i++) {
 			String key = this.creators.getKeyByIndex(i);
-			if(caseSensitive == false) {
+			if (caseSensitive == false) {
 				key = key.toLowerCase();
 			}
 			if (key.endsWith(endTag)) {
@@ -361,7 +361,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator>, Sendabl
 	}
 
 	public String createId(Object obj, boolean notification) {
-		if(obj == null) {
+		if (obj == null) {
 			return null;
 		}
 		String key;
@@ -923,7 +923,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator>, Sendabl
 	 */
 
 	private Object decodingXMLEntity(XMLTokener tokener, Buffer buffer, MapEntity map) {
-		if(buffer == null || map == null) {
+		if (buffer == null || map == null) {
 			return null;
 		}
 		if (buffer.skipTo(XMLEntity.START, false)) {
@@ -944,7 +944,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator>, Sendabl
 	 * @return the object
 	 */
 	private Object decodingJsonArray(JsonArray jsonArray, MapEntity map) {
-		if(jsonArray == null || map == null) {
+		if (jsonArray == null || map == null) {
 			return null;
 		}
 		Object result = null;
@@ -971,7 +971,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator>, Sendabl
 	}
 
 	private Object decodingJsonObject(JsonObject jsonObject, MapEntity map) {
-		if(jsonObject == null  || map == null) {
+		if (jsonObject == null || map == null) {
 			return null;
 		}
 		// SWITCH FOR JAVAFX THREAD
@@ -989,7 +989,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator>, Sendabl
 				return result;
 			}
 		}
-		if( map.getFilter().isSimpleFormat()) {
+		if (map.getFilter().isSimpleFormat()) {
 			// Validate SimpleFormat
 			if (jsonObject.has(IdMap.ID) == false && jsonObject.has(IdMap.CLASS) == false) {
 				// It is a SimpleFormat
@@ -1169,7 +1169,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator>, Sendabl
 	 * @return the json array
 	 */
 	protected EntityList encodeList(Object object, MapEntity map) {
-		if(map == null || object == null) {
+		if (map == null || object == null) {
 			return null;
 		}
 		EntityList target = (EntityList) map.getTarget();
@@ -1305,11 +1305,11 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator>, Sendabl
 	}
 
 	protected Entity encode(Object entity, String className, MapEntity map, BaseItem parentNode) {
-		if(map == null) {
+		if (map == null) {
 			return null;
 		}
 		Grammar grammar = map.getGrammar();
-		if(grammar == null) {
+		if (grammar == null) {
 			return null;
 		}
 		SendableEntityCreator creator = grammar.getCreator(Grammar.WRITE, entity, map, className);
@@ -1514,7 +1514,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator>, Sendabl
 
 	private boolean parseValue(String property, Object value, String className, SendableEntityCreator valueCreater,
 			MapEntity map, BaseItem parent) {
-		if(map == null) {
+		if (map == null) {
 			return false;
 		}
 		Object writeValue = null;
@@ -1774,97 +1774,101 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator>, Sendabl
 
 	/**
 	 * Check for Creating Rekursiv
+	 * 
 	 * @param element the new Element
 	 * @return success for autocreate
 	 */
-	private boolean checkforCreating(Object element ) {
-		if(element == null) {
+	private boolean checkforCreating(Object element) {
+		if (element == null) {
 			return false;
 		}
-		if(element instanceof Entity) {
+		if (element instanceof Entity) {
 			Entity entity = (Entity) element;
 			Object entitryValue = entity.getValue("autocreate");
-			if(entitryValue != null && entitryValue instanceof Boolean) {
-				return (Boolean)entitryValue;
+			if (entitryValue != null && entitryValue instanceof Boolean) {
+				return (Boolean) entitryValue;
 			}
 		}
-		if(element instanceof List<?>) {
+		if (element instanceof List<?>) {
 			List<?> collection = (List<?>) element;
-			for(Object item : collection) {
-				if(checkforCreating(item)) {
+			for (Object item : collection) {
+				if (checkforCreating(item)) {
 					return true;
 				}
 			}
 		}
 		return false;
 	}
+
 	public boolean addI18N(Object root, TextItems i18n) {
 		return addI18N(root, i18n, new SimpleSet<Object>(), null, null);
-	}	
+	}
+
 	private boolean addI18N(Object root, TextItems i18n, SimpleSet<Object> items, String key, List<?> subElements) {
-		if(items == null || i18n == null || items.add(root) == false ) {
+		if (items == null || i18n == null || items.add(root) == false) {
 			return false;
 		}
 		SendableEntityCreator creator = this.getCreatorClass(root);
-		if(creator == null) {
+		if (creator == null) {
 			return false;
 		}
 		String[] properties = creator.getProperties();
-		
-		for(String property : properties) {
+
+		for (String property : properties) {
 			String fullKey;
-			if(key == null  ) {
+			if (key == null) {
 				fullKey = property.toLowerCase();
 			} else {
-				fullKey =key+":"+property.toLowerCase();
+				fullKey = key + ":" + property.toLowerCase();
 			}
 
 			Object value = creator.getValue(root, property);
 			Object element;
-			if(i18n.isAutoCreate() && ( value == null || (value instanceof Collection<?> && ((Collection<?>)value).size()<1) ) ){
+			if (i18n.isAutoCreate()
+					&& (value == null || (value instanceof Collection<?> && ((Collection<?>) value).size() < 1))) {
 				// Check for Creating
-				if(value instanceof SendableEntityCreator) {
+				if (value instanceof SendableEntityCreator) {
 					// SIMPLE CASE
-					element = i18n.getLabelValue(fullKey+":autocreate");
+					element = i18n.getLabelValue(fullKey + ":autocreate");
 					boolean creating;
-					if(element instanceof Boolean) {
-						creating = (Boolean)element;
+					if (element instanceof Boolean) {
+						creating = (Boolean) element;
 					} else {
 						element = i18n.getLabelValue(fullKey);
-						if(element instanceof List<?>) {
+						if (element instanceof List<?>) {
 							subElements = (List<?>) element;
 						}
-						creating = checkforCreating(element); 
+						creating = checkforCreating(element);
 					}
-					if(creating) {
+					if (creating) {
 						Object newValue = ((SendableEntityCreator) value).getSendableInstance(false);
 						creator.setValue(root, property, newValue, SendableEntityCreator.NEW);
 						value = newValue;
 					}
 				}
 			}
-			
-			if(value == null || (i18n.isReplaceEmptyString() && (""+value).equals(""))) {
+
+			if (value == null || (i18n.isReplaceEmptyString() && ("" + value).equals(""))) {
 				// Check if Is Text
 				Object text = i18n.getLabelValue(fullKey);
-				if(text != null) {
+				if (text != null) {
 					creator.setValue(root, property, text, NEW);
 					continue;
 				}
 				// IF SubElements set May be in Collection
-				if(subElements != null) {
-					for(Object item : subElements) {
-						if(item instanceof Entity) {
-							Entity subElement = (Entity)item;
-							for(int i=0;i<subElement.size();i++) {
+				if (subElements != null) {
+					for (Object item : subElements) {
+						if (item instanceof Entity) {
+							Entity subElement = (Entity) item;
+							for (int i = 0; i < subElement.size(); i++) {
 								String keyByIndex = subElement.getKeyByIndex(i);
-								if(property.equalsIgnoreCase(keyByIndex)) {
-									Object newText  = subElement.getValueByIndex(i);
-									if(newText != null) {
+								if (property.equalsIgnoreCase(keyByIndex)) {
+									Object newText = subElement.getValueByIndex(i);
+									if (newText != null) {
 										// Replace Template if Exist
-										if(i18n.isTemplateReplace() && newText instanceof String) {
+										if (i18n.isTemplateReplace() && newText instanceof String) {
 											// Replace TextTemplate
-											
+
 										}
 										creator.setValue(root, property, newText, NEW);
 									}
@@ -1877,7 +1881,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator>, Sendabl
 			}
 			if (value instanceof Collection<?>) {
 				Collection<?> collection = (Collection<?>) value;
-				for(Object item : collection) {
+				for (Object item : collection) {
 					addI18N(item, i18n, items, fullKey, subElements);
 				}
 			} else {

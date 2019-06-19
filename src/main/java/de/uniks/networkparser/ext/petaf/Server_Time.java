@@ -3,7 +3,7 @@ package de.uniks.networkparser.ext.petaf;
 /*
 The MIT License
 
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -91,7 +91,7 @@ public class Server_Time extends Thread implements Server {
 				long secondsSince1900 = getTime();
 				out.putLong(secondsSince1900);
 				out.flip();
-				// skip over the first four bytes to make this an unsigned int
+				/* skip over the first four bytes to make this an unsigned int */
 				out.position(4);
 				channel.send(out, client);
 			} catch (IOException e) {

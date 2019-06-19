@@ -34,54 +34,56 @@ permissions and limitations under the Licence.
  * @author Stefan Lindel
  */
 public class GraphUtil {
-	private static SimpleList<String> noneDictionary=new SimpleList<String>().with("aircraft","carp","deer", "salmon", "sheep", "trout");
-	private static SimpleList<String> oesDictionary=new SimpleList<String>().with("hero", "potato", "torpedo");
+	private static SimpleList<String> noneDictionary = new SimpleList<String>().with("aircraft", "carp", "deer",
+			"salmon", "sheep", "trout");
+	private static SimpleList<String> oesDictionary = new SimpleList<String>().with("hero", "potato", "torpedo");
 //	private static SimpleKeyValueList<String, String> fixedDictionary=new SimpleKeyValueList<String, String>().with("person", "people");	
-	
+
 	public static String getPlural(String singular) {
 		// Zischlaut
-		if(singular == null || singular.length()<1) {
+		if (singular == null || singular.length() < 1) {
 			return null;
 		}
-		if(noneDictionary.contains(singular)) {
+		if (noneDictionary.contains(singular)) {
 			return singular;
 		}
-		if(singular.endsWith("ch") || singular.endsWith("s") || singular.endsWith("sh") || singular.endsWith("x") || singular.endsWith("z") ) {
-			return singular+"es";
+		if (singular.endsWith("ch") || singular.endsWith("s") || singular.endsWith("sh") || singular.endsWith("x")
+				|| singular.endsWith("z")) {
+			return singular + "es";
 		}
 		// y Konsonant
-		if(singular.endsWith("y")) {
-			return singular.subSequence(0, singular.length()-1)+"ies";
+		if (singular.endsWith("y")) {
+			return singular.subSequence(0, singular.length() - 1) + "ies";
 		}
 		// -f/-fe wird zu -ves im Plural
-		if(singular.endsWith("f") || singular.endsWith("fe") ) {
-			return singular.subSequence(0, singular.length()-1)+"ves";
+		if (singular.endsWith("f") || singular.endsWith("fe")) {
+			return singular.subSequence(0, singular.length() - 1) + "ves";
 		}
 		// -o wird zu -oes im Plural
-		if(singular.endsWith("o") ) {
-			if(oesDictionary.contains(singular)) {
-				return singular+"es";
+		if (singular.endsWith("o")) {
+			if (oesDictionary.contains(singular)) {
+				return singular + "es";
 			}
-			return singular+"s";
+			return singular + "s";
 		}
-		return singular+"s";
+		return singular + "s";
 	}
-	
+
 	public static boolean isPlural(String plural) {
-		if(noneDictionary.contains(plural)) {
+		if (noneDictionary.contains(plural)) {
 			return true;
 		}
-		if(plural == null || plural.length()<1) {
+		if (plural == null || plural.length() < 1) {
 			return false;
 		}
-		if(plural.endsWith("s") == false) {
+		if (plural.endsWith("s") == false) {
 			return false;
 		}
 		return true;
 	}
 
 	public static double compareName(String source, String other) {
-		if(source == null || other == null) {
+		if (source == null || other == null) {
 			return 0;
 		}
 		int counter = 0;
@@ -107,7 +109,7 @@ public class GraphUtil {
 	}
 
 	public static final boolean isGenerate(GraphMember member) {
-		if(member == null) {
+		if (member == null) {
 			return false;
 		}
 		return member.isGenerate;
@@ -131,7 +133,7 @@ public class GraphUtil {
 
 	public static final ObjectCondition getRole(TemplateItem member) {
 		if (member != null && member instanceof GraphMember) {
-			return ((GraphMember)member).getRole();
+			return ((GraphMember) member).getRole();
 		}
 		return null;
 	}
@@ -145,7 +147,7 @@ public class GraphUtil {
 	}
 
 	public static double compareType(String sourceType, String otherType) {
-		if(sourceType == null || otherType == null) {
+		if (sourceType == null || otherType == null) {
 			return 1;
 		}
 		if (EntityUtil.isNumericType(sourceType) && EntityUtil.isNumericType(otherType)) {
@@ -186,14 +188,14 @@ public class GraphUtil {
 	}
 
 	public static final GraphModel setGenPath(GraphModel model, String path) {
-		if(model != null) {
+		if (model != null) {
 			model.genPath = path;
 		}
 		return model;
 	}
 
 	public static final String getGenPath(GraphModel model) {
-		if(model != null) {
+		if (model != null) {
 			return model.genPath;
 		}
 		return "";
@@ -225,7 +227,7 @@ public class GraphUtil {
 	}
 
 	public static final boolean setAssociation(GraphEntity entry, Association assoc) {
-		if(entry != null) {
+		if (entry != null) {
 			entry.with(assoc);
 			return true;
 		}
@@ -233,7 +235,7 @@ public class GraphUtil {
 	}
 
 	public static final boolean setGraphImage(Clazz clazz, GraphImage... images) {
-		if(clazz != null) {
+		if (clazz != null) {
 			clazz.with(images);
 			return true;
 		}
@@ -241,7 +243,7 @@ public class GraphUtil {
 	}
 
 	public static final boolean setLiteral(Clazz clazz, Literal... literals) {
-		if(clazz != null) {
+		if (clazz != null) {
 			clazz.with(literals);
 			return true;
 		}
@@ -249,7 +251,7 @@ public class GraphUtil {
 	}
 
 	public static final boolean setModifierEntry(Clazz clazz, ModifyEntry modifier) {
-		if(clazz != null) {
+		if (clazz != null) {
 			clazz.with(modifier);
 			return true;
 		}
@@ -257,7 +259,7 @@ public class GraphUtil {
 	}
 
 	public static final boolean setClazzType(Clazz clazz, String clazzType) {
-		if(clazz != null) {
+		if (clazz != null) {
 			clazz.withType(clazzType);
 			return true;
 		}
@@ -265,7 +267,7 @@ public class GraphUtil {
 	}
 
 	public static final boolean setImport(Clazz clazz, Import... importClazzes) {
-		if(clazz != null) {
+		if (clazz != null) {
 			clazz.with(importClazzes);
 			return true;
 		}
@@ -273,7 +275,7 @@ public class GraphUtil {
 	}
 
 	public static boolean setId(GraphEntity graphEntity, String id) {
-		if(graphEntity != null) {
+		if (graphEntity != null) {
 			return graphEntity.setId(id);
 		}
 		return false;
@@ -285,7 +287,6 @@ public class GraphUtil {
 		}
 		return (clazz.getModifier().has(Modifier.ABSTRACT) || Clazz.TYPE_INTERFACE.equals(clazz.getType()));
 	}
-	
 
 	public static boolean isAbstract(Clazz clazz) {
 		if (clazz == null) {
@@ -342,7 +343,7 @@ public class GraphUtil {
 	}
 
 	public static final CharacterBuffer getMethodParameters(Method method, boolean shortName) {
-		if(method == null) {
+		if (method == null) {
 			return null;
 		}
 		return method.getParameterString(shortName, false, true);
@@ -350,7 +351,7 @@ public class GraphUtil {
 
 	public static final ModifierSet getModifier(GraphMember member) {
 		ModifierSet set = new ModifierSet();
-		if(member == null) {
+		if (member == null) {
 			return set;
 		}
 		Modifier modifier = member.getModifier();
@@ -365,7 +366,7 @@ public class GraphUtil {
 
 	public static final SimpleSet<Association> getOtherAssociations(Clazz clazz) {
 		SimpleSet<Association> collection = new SimpleSet<Association>();
-		if(clazz == null) {
+		if (clazz == null) {
 			return collection;
 		}
 		for (Association assoc : clazz.getAssociations()) {
@@ -375,16 +376,18 @@ public class GraphUtil {
 	}
 
 	public static final Modifier getVisible(GraphMember member) {
-		if(member == null) {
+		if (member == null) {
 			return Modifier.PACKAGE;
 		}
 		Modifier modifier = member.getModifier();
-		if(modifier.equals(Modifier.PACKAGE) || modifier.equals(Modifier.PRIVATE) || modifier.equals(Modifier.PUBLIC)|| modifier.equals(Modifier.PROTECTED)) {
+		if (modifier.equals(Modifier.PACKAGE) || modifier.equals(Modifier.PRIVATE) || modifier.equals(Modifier.PUBLIC)
+				|| modifier.equals(Modifier.PROTECTED)) {
 			return modifier;
 		}
 		for (GraphMember child : modifier.getChildren()) {
 			if (child instanceof Modifier) {
-				if(child.equals(Modifier.PACKAGE) || child.equals(Modifier.PRIVATE) || child.equals(Modifier.PUBLIC)|| child.equals(Modifier.PROTECTED)) {
+				if (child.equals(Modifier.PACKAGE) || child.equals(Modifier.PRIVATE) || child.equals(Modifier.PUBLIC)
+						|| child.equals(Modifier.PROTECTED)) {
 					return modifier;
 				}
 			}
@@ -393,8 +396,8 @@ public class GraphUtil {
 	}
 
 	public static final GraphSimpleSet getChildren(TemplateItem item) {
-		if(item instanceof GraphMember) {
-			return ((GraphMember)item).getChildren();
+		if (item instanceof GraphMember) {
+			return ((GraphMember) item).getChildren();
 		}
 		return null;
 	}
@@ -418,21 +421,21 @@ public class GraphUtil {
 	}
 
 	public static final String getSeperator(Association item) {
-		if(item != null) {
+		if (item != null) {
 			return item.getSeperator();
 		}
 		return "";
 	}
 
 	public static final SimpleSet<GraphEntity> getNodes(GraphMember item) {
-		if(item != null) {
+		if (item != null) {
 			return item.getNodes();
 		}
 		return null;
 	}
 
 	public static final Match getDifference(GraphMember item) {
-		if(item != null) {
+		if (item != null) {
 			return item.getDiff();
 		}
 		return null;
@@ -544,7 +547,7 @@ public class GraphUtil {
 	}
 
 	public static final Clazz getParentClazz(GraphMember member) {
-		if(member == null ) {
+		if (member == null) {
 			return null;
 		}
 		if (member instanceof Clazz) {
@@ -584,14 +587,14 @@ public class GraphUtil {
 		}
 		return Clazz.TYPE_CLASS;
 	}
-	
+
 	public static final Clazz createClazzById(GraphModel model, String id) {
-		if(model == null || id == null) {
+		if (model == null || id == null) {
 			return null;
 		}
 		ClazzSet clazzes = model.getClazzes();
-		for(Clazz item : clazzes) {
-			if(id.equals(item.getId())) {
+		for (Clazz item : clazzes) {
+			if (id.equals(item.getId())) {
 				return item;
 			}
 		}
@@ -602,7 +605,7 @@ public class GraphUtil {
 	}
 
 	public static final GraphEntity setExternal(GraphEntity entity, boolean value) {
-		if(entity == null) {
+		if (entity == null) {
 			return null;
 		}
 		entity.withExternal(value);
@@ -610,7 +613,7 @@ public class GraphUtil {
 	}
 
 	public static final boolean isExternal(GraphEntity entity) {
-		if(entity == null) {
+		if (entity == null) {
 			return false;
 		}
 		return entity.isExternal();
@@ -632,14 +635,14 @@ public class GraphUtil {
 	}
 
 	public static final String getGraphPath(GraphModel value) {
-		if(value != null) {
+		if (value != null) {
 			return value.genPath;
 		}
 		return null;
 	}
 
 	public static final boolean setGraphPath(GraphModel model, String value) {
-		if(model != null) {
+		if (model != null) {
 			model.genPath = value;
 			return true;
 		}
@@ -660,7 +663,7 @@ public class GraphUtil {
 	}
 
 	public static boolean setChildren(GraphMember graphMember, GraphSimpleSet childrenSet) {
-		if(graphMember != null && graphMember.children != childrenSet) {
+		if (graphMember != null && graphMember.children != childrenSet) {
 			graphMember.children = childrenSet;
 			return true;
 		}

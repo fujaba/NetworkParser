@@ -3,7 +3,7 @@ package de.uniks.networkparser.ext.petaf.proxy;
 /*
 The MIT License
 
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -25,6 +25,7 @@ THE SOFTWARE.
 */
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
 import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.ext.io.MQTTMessage;
 import de.uniks.networkparser.ext.io.MessageSession;
@@ -43,7 +44,7 @@ public class NodeProxyBroker extends NodeProxy {
 	private String clientId;
 	private boolean reconnecting = false;
 	private MessageSession session;
-	// Standalone Variables
+	/* Standalone Variables */
 	private ExecutorService executorService;
 	private ReaderComm readerComm;
 	private static final String CLIENTID_PREFIX = "np_broker";
@@ -55,9 +56,12 @@ public class NodeProxyBroker extends NodeProxy {
 	public static final String EVENT_CONNECT = "connected";
 	public static final String EVENT_CONNECTLOST = "ConnectionLost";
 	public static final String EVENT_MESSAGE = "Message";
-	private static final int MIN_MSG_ID = 1; // Lowest possible MQTT message ID to use
-	private static final int MAX_MSG_ID = 65535; // Highest possible MQTT message ID to use
-	private int nextMsgId = MIN_MSG_ID - 1; // The next available message ID to use
+	/** Lowest possible MQTT message ID to use */
+	private static final int MIN_MSG_ID = 1; 
+	 /** Highest possible MQTT message ID to use */
+	private static final int MAX_MSG_ID = 65535;
+	/* The next available message ID to use */
+	private int nextMsgId = MIN_MSG_ID - 1; 
 
 	public NodeProxyBroker() {
 		this.property.addAll(PROPERTY_SERVERURL);
@@ -68,7 +72,7 @@ public class NodeProxyBroker extends NodeProxy {
 	public NodeProxyBroker(String serverURI) {
 		this(serverURI, null);
 	}
-	
+
 	public NodeProxyBroker withAuth(String sender, String password) {
 		this.sender = sender;
 		this.password = password;
@@ -104,7 +108,7 @@ public class NodeProxyBroker extends NodeProxy {
 		if (MessageSession.TYPE_MQTT.equals(format)) {
 			success = session.connectMQTT(this, clientId, sender, password, 60, mqttVersion, true);
 		} else {
-			// Default MessageSession.TYPE_AMQ;
+			/* Default MessageSession.TYPE_AMQ; */
 			success = session.connectAMQ(this, sender, password);
 		}
 		if (success && callBack != null) {
@@ -140,11 +144,11 @@ public class NodeProxyBroker extends NodeProxy {
 	}
 
 	public boolean close(boolean force) {
-		// @TRACE 113=<
+		/* @TRACE 113=< */
 		if (session == null) {
 			return true;
 		}
-		// SEND CLOSE MESSAGES
+		/* SEND CLOSE MESSAGES */
 		if (MessageSession.TYPE_AMQ.equals(format)) {
 			RabbitMessage msg;
 			if (topics != null) {
@@ -209,14 +213,14 @@ public class NodeProxyBroker extends NodeProxy {
 	}
 
 	public boolean consume(String topic, ObjectCondition condition) {
-//		SimpleKeyValueList<String, String> topics = getTopics();
-//		short channelNo = Short.valueOf(topics.get(topic));
+/*		SimpleKeyValueList<String, String> topics = getTopics();
+		short channelNo = Short.valueOf(topics.get(topic));*/
 
 		this.callBack = condition;
 		executeConsume(topic, callBack);
 
-//		RabbitMessage message = RabbitMessage.createConsume(channelNo, topic, "", false, false, false, false, null);
-//		System.out.println(session.sending(this, message, true));
+/*		RabbitMessage message = RabbitMessage.createConsume(channelNo, topic, "", false, false, false, false, null);
+		session.sending(this, message, true);*/
 		return true;
 	}
 
@@ -249,7 +253,6 @@ public class NodeProxyBroker extends NodeProxy {
 
 				return true;
 			}
-			// NOW ADdfknhklasfjhzgzuni gr 8bfuih89
 		}
 		return false;
 	}
@@ -257,7 +260,7 @@ public class NodeProxyBroker extends NodeProxy {
 	private boolean executeConsume(String queue, ObjectCondition condition) {
 
 		if (this.space == null && queue != null) {
-			// Make a now Thread
+			/* Make a now Thread */
 			executorService = Executors.newScheduledThreadPool(1);
 			this.readerComm = new ReaderComm();
 			this.readerComm.withSession(session);
@@ -354,15 +357,11 @@ public class NodeProxyBroker extends NodeProxy {
 	 * @return the next MQTT message ID to use
 	 */
 	public int getNextMessageId() {
-//		int startingMessageId = nextMsgId;
-		// Allow two complete passes of the message ID range. This gives
-		// any asynchronous releases a chance to occur
-//		int loopCount = 0;
+		/* Allow two complete passes of the message ID range. This gives any asynchronous releases a chance to occur */
 		nextMsgId++;
 		if (nextMsgId > MAX_MSG_ID) {
 			nextMsgId = MIN_MSG_ID;
 		}
-//		Integer id = Integer.valueOf(nextMsgId);
 		return nextMsgId;
 	}
 }

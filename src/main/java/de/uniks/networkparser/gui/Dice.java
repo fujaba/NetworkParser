@@ -6,9 +6,10 @@ import de.uniks.networkparser.interfaces.SendableEntityCreator;
 public class Dice extends SendableItem implements SendableEntityCreator {
 	public static final String PROPERTY_VALUE = "value";
 	public static final String PROPERTY_ID = "id";
+
 	@Override
 	public String toString() {
-		return "Dice: "+this.getValue();
+		return "Dice: " + this.getValue();
 	}
 
 	private int value;
@@ -27,9 +28,9 @@ public class Dice extends SendableItem implements SendableEntityCreator {
 		}
 		return false;
 	}
-	
+
 	public boolean setValue(Object value) {
-		if(value instanceof Integer == false) {
+		if (value instanceof Integer == false) {
 			return false;
 		}
 		int newValue = (Integer) value;
@@ -56,25 +57,26 @@ public class Dice extends SendableItem implements SendableEntityCreator {
 		}
 		return false;
 	}
-	
+
 	public String getId() {
 		return id;
 	}
+
 	@Override
 	public String[] getProperties() {
-		return new String[] {PROPERTY_ID, PROPERTY_VALUE};
+		return new String[] { PROPERTY_ID, PROPERTY_VALUE };
 	}
 
 	@Override
 	public Object getValue(Object entity, String attribute) {
-		if(entity instanceof Dice == false) {
+		if (entity instanceof Dice == false) {
 			return null;
 		}
 		Dice dice = (Dice) entity;
-		if(PROPERTY_VALUE.equalsIgnoreCase(attribute)) {
+		if (PROPERTY_VALUE.equalsIgnoreCase(attribute)) {
 			return dice.getValue();
 		}
-		if(PROPERTY_ID.equalsIgnoreCase(attribute)) {
+		if (PROPERTY_ID.equalsIgnoreCase(attribute)) {
 			return dice.getId();
 		}
 		return null;
@@ -82,17 +84,17 @@ public class Dice extends SendableItem implements SendableEntityCreator {
 
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value, String type) {
-		if(entity instanceof Dice == false) {
+		if (entity instanceof Dice == false) {
 			return false;
 		}
 		Dice dice = (Dice) entity;
-		if(PROPERTY_VALUE.equalsIgnoreCase(attribute)) {
-			if(value instanceof Integer) {
+		if (PROPERTY_VALUE.equalsIgnoreCase(attribute)) {
+			if (value instanceof Integer) {
 				return dice.setValue((Integer) value);
 			}
 		}
-		if(PROPERTY_ID.equalsIgnoreCase(attribute)) {
-			return dice.setId(""+value);
+		if (PROPERTY_ID.equalsIgnoreCase(attribute)) {
+			return dice.setId("" + value);
 		}
 		return false;
 	}

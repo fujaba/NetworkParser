@@ -3,7 +3,7 @@ package de.uniks.networkparser.parser;
 /*
 The MIT License
 
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -78,7 +78,7 @@ public class TemplateResultFragment
 
 	@Override
 	public int compareTo(TemplateResultFragment other) {
-		if(other == null) {
+		if (other == null) {
 			return 1;
 		}
 		if (other.getKey() == key) {
@@ -113,10 +113,10 @@ public class TemplateResultFragment
 	public CharacterBuffer getValue() {
 		return value;
 	}
-	
+
 	public CharacterBuffer cloneValue(CharacterBuffer newValue) {
 		CharacterBuffer oldValue = value;
-		if(oldValue == null) {
+		if (oldValue == null) {
 			oldValue = new CharacterBuffer();
 		}
 		this.value = newValue;
@@ -149,16 +149,16 @@ public class TemplateResultFragment
 		}
 		if (value instanceof ParserCondition) {
 			ParserCondition tc = (ParserCondition) value;
-			
+
 			Object result = tc.getValue(this);
 			if (this.expression || tc.isExpression()) {
-				if(result == null ) {
+				if (result == null) {
 					return false;
 				}
-				if(result instanceof Boolean) {
-					return (Boolean)result;
+				if (result instanceof Boolean) {
+					return (Boolean) result;
 				}
-				if(result instanceof String) {
+				if (result instanceof String) {
 					return !result.equals("");
 				}
 				return false;
@@ -168,7 +168,8 @@ public class TemplateResultFragment
 				if (this.stack != null) {
 					Object last = this.stack.last();
 					if (last instanceof SendableEntityCreator) {
-						((SendableEntityCreator) last).setValue(member, ParserCondition.NOTIFY, result, SendableEntityCreator.NEW);
+						((SendableEntityCreator) last).setValue(member, ParserCondition.NOTIFY, result,
+								SendableEntityCreator.NEW);
 					}
 				}
 			}
@@ -210,7 +211,7 @@ public class TemplateResultFragment
 		}
 		return this.header.add(value);
 	}
-	
+
 	public TemplateResultFragment withHeader(String value) {
 		addHeader(value);
 		return this;
@@ -420,7 +421,7 @@ public class TemplateResultFragment
 					}
 					String itemType = (String) item;
 					if (EntityUtil.isPrimitiveType(itemType)) {
-						if(EntityUtil.isDate(itemType) == false) {
+						if (EntityUtil.isDate(itemType) == false) {
 							continue;
 						}
 					}
@@ -536,13 +537,14 @@ public class TemplateResultFragment
 
 	public TemplateResultFragment withLineString(String value, String... importClass) {
 		String result = replacing(value, importClass);
-		if(this.value != null) {
+		if (this.value != null) {
 			this.value.withLine(result);
 		}
 		return this;
 	}
+
 	public TemplateResultFragment append(String value) {
-		if(this.value == null) {
+		if (this.value == null) {
 			this.value = new CharacterBuffer();
 		}
 		this.value.with(value);
@@ -551,7 +553,7 @@ public class TemplateResultFragment
 
 	public String replacing(String value, String... importClass) {
 		if (importClass == null || importClass.length < 1 || importClass[0] == null) {
-			if(value != null) {
+			if (value != null) {
 				return value.replaceAll("#IMPORT", "");
 			}
 			return null;
@@ -559,8 +561,7 @@ public class TemplateResultFragment
 		if (useImport) {
 			for (int a = importClass.length - 1; a >= 0; a--) {
 				if (importClass[a] != null) {
-					value = value.replaceAll("#IMPORT" + (char) (65 + a),
-							EntityUtil.shortClassName(importClass[a]));
+					value = value.replaceAll("#IMPORT" + (char) (65 + a), EntityUtil.shortClassName(importClass[a]));
 					this.addHeader("import " + importClass[a] + ";");
 				}
 			}
@@ -587,17 +588,17 @@ public class TemplateResultFragment
 			}
 		}
 		String result = replacing(value, imports);
-		if(this.value != null) {
+		if (this.value != null) {
 			this.value.withLine(result);
 		}
 		return this;
 	}
 
 	public void update() {
-		if(value != null) {
+		if (value != null) {
 			this.value.clear();
 		}
-		if(template != null) {
+		if (template != null) {
 			this.template.update(this);
 		}
 	}

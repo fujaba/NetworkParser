@@ -3,7 +3,7 @@ package de.uniks.networkparser.ext.javafx;
 /*
 NetworkParser
 The MIT License
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -40,37 +40,37 @@ import de.uniks.networkparser.interfaces.SendableEntity;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.list.SimpleList;
 
-public class DiceController extends SendableItem implements PropertyChangeListener, SendableEntityCreator, ObjectCondition { 
-//extends Pane 
-	public static final String PROPERTY_CLICK="click";
-	public static final String PROPERTY_VALUE="value";
-	public static final String STOPPED="STOPPED";
+public class DiceController extends SendableItem
+		implements PropertyChangeListener, SendableEntityCreator, ObjectCondition {
+	public static final String PROPERTY_CLICK = "click";
+	public static final String PROPERTY_VALUE = "value";
+	public static final String STOPPED = "STOPPED";
 	private Object pane;
 	private SimpleList<Object> children = new SimpleList<Object>();
-	private String color="BLACK";
+	private String color = "BLACK";
 	private int number;
 	private Object timeline;
-	private int max=6;
+	private int max = 6;
 	private String style;
 	private GUIEvent eventListener;
 	private Object eventProxy;
 	private SendableEntity model = new Dice();
 	private double millis = 2000;
-	private Class<?> circleClass=ReflectionLoader.getClass("javafx.scene.shape.Circle");
-	private Class<?> mouseEventClass =ReflectionLoader.getClass("javafx.scene.input.MouseEvent");
-	private Class<?> actionEventClass =ReflectionLoader.getClass("javafx.event.ActionEvent");
+	private Class<?> circleClass = ReflectionLoader.getClass("javafx.scene.shape.Circle");
+	private Class<?> mouseEventClass = ReflectionLoader.getClass("javafx.scene.input.MouseEvent");
+	private Class<?> actionEventClass = ReflectionLoader.getClass("javafx.event.ActionEvent");
 
 	public Object getTimeLine() {
-		if(this.timeline != null) {
-			return this.timeline; 
+		if (this.timeline != null) {
+			return this.timeline;
 		}
-		if(Os.isReflectionTest()) {
+		if (Os.isReflectionTest()) {
 			return null;
 		}
-		this.timeline =ReflectionLoader.newInstance("javafx.animation.Timeline");
+		this.timeline = ReflectionLoader.newInstance("javafx.animation.Timeline");
 		return this.timeline;
 	}
-	
+
 	public DiceController() {
 		this.eventListener = new GUIEvent().withListener(this);
 		this.eventProxy = ReflectionLoader.createProxy(eventListener, ReflectionLoader.EVENTHANDLER);
@@ -81,13 +81,13 @@ public class DiceController extends SendableItem implements PropertyChangeListen
 	public void setStyle(String value) {
 		this.style = value;
 	}
-	
+
 	public String getStyle() {
 		return style;
 	}
 
 	public boolean init(Object value) {
-		if(value == null) {
+		if (value == null) {
 			return false;
 		}
 		if (ReflectionLoader.NODE.isAssignableFrom(value.getClass())) {
@@ -103,36 +103,38 @@ public class DiceController extends SendableItem implements PropertyChangeListen
 	}
 
 	public DiceController withValue(int number) {
-		String value = ""+ReflectionLoader.call(getTimeLine(), "getStatus");
-		if(STOPPED.equals(value)) {
+		String value = "" + ReflectionLoader.call(getTimeLine(), "getStatus");
+		if (STOPPED.equals(value)) {
 			showNumber(number);
 			fireEvent(number);
 		}
 		return this;
 	}
+
 	@SuppressWarnings("unchecked")
 	public DiceController showAnimation(int number) {
 		Double tX = (Double) ReflectionLoader.call(pane, "getTranslateX");
 		Double tY = (Double) ReflectionLoader.call(pane, "getTranslateY");
 		Double height = (Double) ReflectionLoader.call(pane, "getHeight");
 		Double width = (Double) ReflectionLoader.call(pane, "getWidth");
-		Object rotate = ReflectionLoader.newInstance("javafx.scene.transform.Rotate", double.class, 0, double.class, tX+width/2, double.class, tY+height/2);
-//		Rotate(double angle, double pivotX, double pivotY) {
+		Object rotate = ReflectionLoader.newInstance("javafx.scene.transform.Rotate", double.class, 0, double.class,
+				tX + width / 2, double.class, tY + height / 2);
 		List<Object> transforms = (List<Object>) ReflectionLoader.call(pane, "getTransforms");
 		transforms.clear();
 		transforms.add(rotate);
 
 		Class<?> className = ReflectionLoader.getClass("javafx.beans.value.WritableValue");
-		Class<?> keyFrameClass =ReflectionLoader.getClass("javafx.animation.KeyFrame");
-		Class<?> keyValueClass =ReflectionLoader.getClass("javafx.animation.KeyValue");
+		Class<?> keyFrameClass = ReflectionLoader.getClass("javafx.animation.KeyFrame");
+		Class<?> keyValueClass = ReflectionLoader.getClass("javafx.animation.KeyValue");
 		Class<?> keyValueClassArray = Array.newInstance(keyValueClass, 0).getClass();
-		Class<?> durationClass =ReflectionLoader.getClass("javafx.util.Duration");
+		Class<?> durationClass = ReflectionLoader.getClass("javafx.util.Duration");
 
 		Object maxMillis = ReflectionLoader.call(durationClass, "millis", double.class, millis);
-		
 
-		Object keyValue = ReflectionLoader.newInstance(keyValueClass, className, ReflectionLoader.call(rotate, "angleProperty"), Object.class, 360);
-		Object animation = ReflectionLoader.newInstance(true, keyFrameClass, durationClass, maxMillis, keyValueClassArray, ReflectionLoader.newArray(keyValueClass, keyValue));
+		Object keyValue = ReflectionLoader.newInstance(keyValueClass, className,
+				ReflectionLoader.call(rotate, "angleProperty"), Object.class, 360);
+		Object animation = ReflectionLoader.newInstance(true, keyFrameClass, durationClass, maxMillis,
+				keyValueClassArray, ReflectionLoader.newArray(keyValueClass, keyValue));
 
 		SimpleList<Object> animations = new SimpleList<Object>();
 
@@ -140,32 +142,30 @@ public class DiceController extends SendableItem implements PropertyChangeListen
 		animations.add(animation);
 
 		Object proxy = ReflectionLoader.createProxy(model, className);
-		
-		double count=100;
-		int i=1;
-		while(count<millis) {
+
+		double count = 100;
+		int i = 1;
+		while (count < millis) {
 			Object countMilli = ReflectionLoader.call(durationClass, "millis", double.class, count);
 			keyValue = ReflectionLoader.newInstance(keyValueClass, className, proxy, Object.class, i);
-			animation = ReflectionLoader.newInstance(keyFrameClass, durationClass, countMilli, keyValueClassArray, ReflectionLoader.newArray(keyValueClass, keyValue));
+			animation = ReflectionLoader.newInstance(keyFrameClass, durationClass, countMilli, keyValueClassArray,
+					ReflectionLoader.newArray(keyValueClass, keyValue));
 			animations.add(animation);
-			if(i == this.max) {
-				i=0;
+			if (i == this.max) {
+				i = 0;
 			}
 			i++;
-			count+=100;
+			count += 100;
 		}
 		keyValue = ReflectionLoader.newInstance(keyValueClass, className, proxy, Object.class, number);
-		animation = ReflectionLoader.newInstance(keyFrameClass, durationClass, maxMillis, 
-				ReflectionLoader.EVENTHANDLER,
-				this.eventProxy,
-				keyValueClassArray, ReflectionLoader.newArray(keyValueClass, keyValue));
+		animation = ReflectionLoader.newInstance(keyFrameClass, durationClass, maxMillis, ReflectionLoader.EVENTHANDLER,
+				this.eventProxy, keyValueClassArray, ReflectionLoader.newArray(keyValueClass, keyValue));
 
-		
 		animations.add(animation);
 
-		// Run Animation
-		String value = ""+ReflectionLoader.call(getTimeLine(), "getStatus");
-		if(STOPPED.equals(value)) {
+		/* Run Animation */
+		String value = "" + ReflectionLoader.call(getTimeLine(), "getStatus");
+		if (STOPPED.equals(value)) {
 			List<Object> frameList = (List<Object>) ReflectionLoader.call(getTimeLine(), "getKeyFrames");
 			frameList.clear();
 			frameList.addAll(animations);
@@ -173,8 +173,6 @@ public class DiceController extends SendableItem implements PropertyChangeListen
 		}
 		return this;
 	}
-	
-	
 
 	public void showNumber(int number) {
 		this.reset();
@@ -198,7 +196,7 @@ public class DiceController extends SendableItem implements PropertyChangeListen
 			this.addCircle(1, 1, 1, 2, 1, 3, 2, 1, 2, 2, 2, 3, 3, 1, 3, 2, 3, 3);
 		}
 	}
-	
+
 	private void fireEvent(int number) {
 		int oldValue = this.number;
 		this.number = number;
@@ -206,11 +204,11 @@ public class DiceController extends SendableItem implements PropertyChangeListen
 	}
 
 	public void addCircle(int... values) {
-		if(values.length%2>0){
+		if (values.length % 2 > 0) {
 			return;
 		}
-		for(int i=0;i<values.length;i+=2){
-			this.addCircle(getCircle(values[i], values[i+1]));
+		for (int i = 0; i < values.length; i += 2) {
+			this.addCircle(getCircle(values[i], values[i + 1]));
 		}
 	}
 
@@ -236,10 +234,10 @@ public class DiceController extends SendableItem implements PropertyChangeListen
 		if (this.pane == null) {
 			return null;
 		}
-		
+
 		double width = (Double) ReflectionLoader.call(this.pane, "getPrefWidth");
 		Object circle = ReflectionLoader.newInstance(circleClass);
-		
+
 		Object paint = ReflectionLoader.call(ReflectionLoader.PAINT, "valueOf", String.class, getColor());
 		ReflectionLoader.call(circle, "setFill", ReflectionLoader.PAINT, paint);
 
@@ -257,16 +255,16 @@ public class DiceController extends SendableItem implements PropertyChangeListen
 		this.color = color;
 		return this;
 	}
-	
+
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
-		if(evt != null){
+		if (evt != null) {
 			int val = 0;
-			if(evt.getNewValue() != null) {
-				val=(Integer)evt.getNewValue();
+			if (evt.getNewValue() != null) {
+				val = (Integer) evt.getNewValue();
 			}
 			this.withValue(val);
-			showNumber( val);
+			showNumber(val);
 		}
 	}
 
@@ -300,28 +298,30 @@ public class DiceController extends SendableItem implements PropertyChangeListen
 						new PropertyChangeEvent(item, property, null, creator.getValue(item, property)));
 				return true;
 			}
-			result =ReflectionLoader.calling(item, "addPropertyChangeListener", false, Boolean.TRUE, 
-					String.class, property, java.beans.PropertyChangeListener.class, listener);
-			if(result != null) {
-				listener.propertyChange(new PropertyChangeEvent(item, property, null, creator.getValue(item, property)));
+			result = ReflectionLoader.calling(item, "addPropertyChangeListener", false, Boolean.TRUE, String.class,
+					property, java.beans.PropertyChangeListener.class, listener);
+			if (result != null) {
+				listener.propertyChange(
+						new PropertyChangeEvent(item, property, null, creator.getValue(item, property)));
 				return true;
 			}
 		}
 		result = ReflectionLoader.calling(item, "getPropertyChangeSupport", false, Boolean.TRUE);
-		if(result instanceof PropertyChangeSupport) {
+		if (result instanceof PropertyChangeSupport) {
 			PropertyChangeSupport pcs = (PropertyChangeSupport) result;
 			if (property == null) {
 				pcs.addPropertyChangeListener(listener);
 				listener.propertyChange(new PropertyChangeEvent(item, property, null, null));
 			} else {
 				pcs.addPropertyChangeListener(property, listener);
-				listener.propertyChange(new PropertyChangeEvent(item, property, null, creator.getValue(item, property)));
+				listener.propertyChange(
+						new PropertyChangeEvent(item, property, null, creator.getValue(item, property)));
 			}
 			return true;
 		}
-		result =ReflectionLoader.calling(item, "addPropertyChangeListener", false, Boolean.TRUE, 
+		result = ReflectionLoader.calling(item, "addPropertyChangeListener", false, Boolean.TRUE,
 				java.beans.PropertyChangeListener.class, listener);
-		if(result != null) {
+		if (result != null) {
 			listener.propertyChange(new PropertyChangeEvent(item, property, null, creator.getValue(item, property)));
 			return true;
 		}
@@ -340,11 +340,11 @@ public class DiceController extends SendableItem implements PropertyChangeListen
 
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value, String type) {
-		if(entity instanceof DiceController == false) {
+		if (entity instanceof DiceController == false) {
 			return false;
 		}
 		DiceController controller = (DiceController) entity;
-		if(ModelListenerProperty.PROPERTY_VIEW.equalsIgnoreCase(attribute)) {
+		if (ModelListenerProperty.PROPERTY_VIEW.equalsIgnoreCase(attribute)) {
 			controller.init(value);
 			return true;
 		}
@@ -358,16 +358,15 @@ public class DiceController extends SendableItem implements PropertyChangeListen
 
 	@Override
 	public boolean update(Object value) {
-		if(mouseEventClass.isAssignableFrom(value.getClass())) {
-			String status = ""+ReflectionLoader.call(this.getTimeLine(), "getStatus");
-			if(STOPPED.equals(status)) {
+		if (mouseEventClass.isAssignableFrom(value.getClass())) {
+			String status = "" + ReflectionLoader.call(this.getTimeLine(), "getStatus");
+			if (STOPPED.equals(status)) {
 				int point = EntityUtil.randInt(1, 6);
 				showAnimation(point);
-//				that.withValue(point);
 			}
 			firePropertyChange(PROPERTY_CLICK, null, number);
 		}
-		if(actionEventClass.isAssignableFrom(value.getClass())) {
+		if (actionEventClass.isAssignableFrom(value.getClass())) {
 			fireEvent(number);
 		}
 		return false;

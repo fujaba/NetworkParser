@@ -3,7 +3,7 @@ package de.uniks.networkparser.ext.generic;
 /*
 NetworkParser
 The MIT License
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -68,7 +68,7 @@ public class GenericCreator implements SendableEntityCreator {
 
 	public GenericCreator withClass(String value) {
 		try {
-			if(value != null) {
+			if (value != null) {
 				this.clazz = Class.forName(value);
 			}
 		} catch (ClassNotFoundException e) {
@@ -230,7 +230,7 @@ public class GenericCreator implements SendableEntityCreator {
 
 	protected Class<?> getClassForName(String className) {
 		try {
-			if(className != null) {
+			if (className != null) {
 				return Class.forName(className);
 			}
 		} catch (ClassNotFoundException e) {
@@ -264,7 +264,7 @@ public class GenericCreator implements SendableEntityCreator {
 	}
 
 	public static GenericCreator create(IdMap map, Class<?> instance) {
-		if(map == null || instance == null) {
+		if (map == null || instance == null) {
 			return null;
 		}
 		SendableEntityCreator creator = map.getCreator(instance.getName(), true, true, null);

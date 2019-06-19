@@ -16,8 +16,7 @@ public class LoginService implements Condition<SimpleEvent> {
 	public HTMLEntity getLogin() {
 		HTMLEntity entity = new HTMLEntity();
 		entity.createTag("h1", "Login");
-		XMLEntity formTag = entity.createTag("form")
-				.withKeyValue("action", "/auth").withKeyValue("method", "post")
+		XMLEntity formTag = entity.createTag("form").withKeyValue("action", "/auth").withKeyValue("method", "post")
 				.withKeyValue("enctype", "application/json");
 		formTag.createChild("input", "name", "username");
 		formTag.createChild("input", "name", "password", "type", "password");
@@ -34,26 +33,26 @@ public class LoginService implements Condition<SimpleEvent> {
 		request.readHeader();
 
 		User user = null;
-		String userName = null ;
-		if(request.getContent()!= null && tokener != null) {
+		String userName = null;
+		if (request.getContent() != null && tokener != null) {
 			SimpleKeyValueList<String, String> params = request.parseForm();
 			userName = params.get("username");
 			String password = params.get("password");
-			// Validate Data
+			/* Validate Data */
 			user = validateUser(userName, password);
 		}
 		if (user != null) {
 			String refreshToken = EntityUtil.randomString(64);
-			JsonToken generator  = tokener.create();
+			JsonToken generator = tokener.create();
 			generator.withSubject(userName);
-			String token = HTTPRequest.BEARER+" "+generator.getToken();
+			String token = HTTPRequest.BEARER + " " + generator.getToken();
 			user.addToken(HTTPRequest.HTTP_AUTHENTIFICATION, token);
 			user.addToken(HTTPRequest.HTTP_REFRESH, refreshToken);
 			request.writeHeader(HTTPRequest.HTTP_AUTHENTIFICATION, token, HTTPRequest.HTTP_REFRESH, refreshToken);
-			if(writeCookie) {
+			if (writeCookie) {
 				int expiration = 0;
-				if(generator.getExpiration()!= null) {
-					expiration = Integer.valueOf(""+generator.getExpiration());
+				if (generator.getExpiration() != null) {
+					expiration = Integer.valueOf("" + generator.getExpiration());
 				}
 				request.writeCookie(HTTPRequest.HTTP_AUTHENTIFICATION, token, expiration);
 				request.writeCookie(HTTPRequest.HTTP_REFRESH, refreshToken, expiration);
@@ -62,61 +61,59 @@ public class LoginService implements Condition<SimpleEvent> {
 			return true;
 		}
 		String authString = request.getHeader(HTTPRequest.HTTP_AUTHENTIFICATION);
-		if(authString != null) {
-			//FIXME CEHCK IF VALID
-//			sadk
+		if (authString != null) {
 		}
-	
+
 		HTMLEntity login = this.getLogin();
 		request.write(login);
 		return false;
 	}
 
 	public LoginService withUser(User user) {
-		if( this.users == null) {
+		if (this.users == null) {
 			this.users = new SimpleList<User>();
 		}
 		this.users.add(user);
 		return this;
 	}
-	
+
 	public LoginService withJsonToken(JsonToken tokener) {
 		this.tokener = tokener;
 		return this;
 	}
-	
+
 	public User validateUser(String... values) {
-		if(values == null || values.length<1) {
+		if (values == null || values.length < 1) {
 			return null;
 		}
-		if(this.users == null) {
+		if (this.users == null) {
 			return null;
 		}
-		if(values.length ==  1) {
-			// Authenfication Key
-			for(int i=0;i<this.users.size();i++ ) {
+		if (values.length == 1) {
+			/* Authenfication Key */
+			for (int i = 0; i < this.users.size(); i++) {
 				User user = this.users.get(i);
-				if(user.contains(HTTPRequest.HTTP_AUTHENTIFICATION, values[0])) {
+				if (user.contains(HTTPRequest.HTTP_AUTHENTIFICATION, values[0])) {
 					return user;
 				}
-				if(user.contains(HTTPRequest.HTTP_REFRESH, values[0])) {
+				if (user.contains(HTTPRequest.HTTP_REFRESH, values[0])) {
 					return user;
 				}
 			}
-		}else if(values.length == 2) {
-			// Validate Username/Password
+		} else if (values.length == 2) {
+			/* Validate Username/Password */
 			String userName = values[0];
 			String password = values[1];
-			if(userName == null || password == null) {
+			if (userName == null || password == null) {
 				return null;
 			}
-			for(int i=0;i<this.users.size();i++ ) {
+			for (int i = 0; i < this.users.size(); i++) {
 				User user = this.users.get(i);
-				if(userName.equalsIgnoreCase(user.getName()) && password.equals(user.getPassword())) {
+				if (userName.equalsIgnoreCase(user.getName()) && password.equals(user.getPassword())) {
 					return user;
 				}
 			}
-			
+
 		}
 		return null;
 	}

@@ -15,7 +15,7 @@ import de.uniks.networkparser.xml.XMLEntity;
 /*
 NetworkParser
 The MIT License
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -58,7 +58,7 @@ public class MapEntity extends AbstractList<Object> {
 		}
 		this.mapFlag = flag;
 		this.map = map;
-		if(map != null) {
+		if (map != null) {
 			this.grammar = map.getGrammar();
 		}
 		this.tokener = tokener;
@@ -106,7 +106,7 @@ public class MapEntity extends AbstractList<Object> {
 		if (result) {
 			return result;
 		}
-		if(filter == null) {
+		if (filter == null) {
 			return false;
 		}
 		return filter.isSimpleFormat();
@@ -213,7 +213,7 @@ public class MapEntity extends AbstractList<Object> {
 
 	// Method for Filter
 	public String getId(Object entity, String className) {
-		if(filter == null) {
+		if (filter == null) {
 			return null;
 		}
 		if (filter.isId(entity, className, map) == false) {
@@ -311,7 +311,7 @@ public class MapEntity extends AbstractList<Object> {
 
 	public Entity convertProperty(CharacterBuffer property, BaseItem parent) {
 		BaseItem child = parent;
-		if(property == null) {
+		if (property == null) {
 			return null;
 		}
 		while (property.charAt(0) == IdMap.ENTITYSPLITTER) {
@@ -388,7 +388,7 @@ public class MapEntity extends AbstractList<Object> {
 	}
 
 	public boolean isStrategyNew() {
-		if(this.filter == null) {
+		if (this.filter == null) {
 			return true;
 		}
 		return SendableEntityCreator.NEW.equalsIgnoreCase(this.filter.getStrategy());

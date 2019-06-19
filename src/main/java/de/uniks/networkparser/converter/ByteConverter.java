@@ -3,7 +3,6 @@ package de.uniks.networkparser.converter;
 import java.nio.charset.Charset;
 
 import de.uniks.networkparser.buffer.BufferedBuffer;
-
 import de.uniks.networkparser.buffer.ByteBuffer;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.ByteItem;

@@ -5,7 +5,7 @@ import java.net.URLClassLoader;
 
 public class JarClassLoader extends URLClassLoader {
 	protected ClassLoader parentClassloader;
-	
+
 	public JarClassLoader() {
 		super(new URL[] {});
 	}

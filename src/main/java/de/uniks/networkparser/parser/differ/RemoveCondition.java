@@ -35,7 +35,7 @@ public class RemoveCondition extends MatchCondition {
 	}
 
 	protected boolean checkConditionAssociation(GraphMatcher matches, Match match, Association association) {
-		if(association == null) {
+		if (association == null) {
 			return false;
 		}
 		if (association.getClazz() == association.getOtherClazz()) {
@@ -88,7 +88,7 @@ public class RemoveCondition extends MatchCondition {
 
 	@Override
 	protected boolean calculateFileDiffs(GraphModel model, GraphMatcher matches, Match match) {
-		if(match == null || matches == null) {
+		if (match == null || matches == null) {
 			return false;
 		}
 		GraphMember member = match.getMatch();
@@ -128,7 +128,7 @@ public class RemoveCondition extends MatchCondition {
 
 	@Override
 	protected boolean calculateModelDiffs(GraphModel model, GraphMatcher matches, Match match) {
-		if(match == null) {
+		if (match == null) {
 			return false;
 		}
 		GraphMember member = match.getMatch();

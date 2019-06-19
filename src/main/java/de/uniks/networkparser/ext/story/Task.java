@@ -208,7 +208,7 @@ public class Task extends SendableItem {
 	}
 
 	public Task withoutPart(PartTask... value) {
-		if(value != null) {
+		if (value != null) {
 			for (PartTask item : value) {
 				if (this.part != null && item != null) {
 					this.part.remove((Object) item);
@@ -251,7 +251,7 @@ public class Task extends SendableItem {
 	}
 
 	public Task withoutUpdate(LogEntry... value) {
-		if(value != null) {
+		if (value != null) {
 			for (LogEntry item : value) {
 				if (this.update != null && item != null) {
 					this.update.remove(item);

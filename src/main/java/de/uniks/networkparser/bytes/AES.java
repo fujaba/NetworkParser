@@ -133,7 +133,7 @@ public class AES {
 
 	public CharacterBuffer encode(BufferedBuffer plain) {
 		CharacterBuffer result = new CharacterBuffer();
-		if(plain != null) {
+		if (plain != null) {
 			result.withBufferLength(plain.length());
 			byte[] partByte;
 			for (int p = 0; p < plain.length(); p += 16) {
@@ -161,7 +161,7 @@ public class AES {
 		for (int p = 0; p < string.length(); p += 16) {
 			buffer.withPosition(p);
 			partByte = encodeBlock(buffer);
-			if(partByte != null) {
+			if (partByte != null) {
 				for (int pos = 0; pos < BLOCK_SIZE; pos++) {
 					result.with((char) partByte[pos]);
 				}
@@ -182,13 +182,13 @@ public class AES {
 	 * @return the encrypted 128-bit ciphertext value.
 	 */
 	private byte[] encodeBlock(BufferedBuffer plain) {
-		if(plain == null) {
+		if (plain == null) {
 			return null;
 		}
 		byte[] Ker; /* encrypt keys for current round */
 		byte[] a = new byte[BLOCK_SIZE];
 		int i;
-		if(Ke == null) {
+		if (Ke == null) {
 			return null;
 		}
 		Ker = Ke[0];
@@ -240,7 +240,10 @@ public class AES {
 				plain[i] = ta[k];
 			}
 
-			/* MixColumns(state) into ta implemented by expanding matrix mult for each column see FIPS-197 section 5.1.3 */
+			/*
+			 * MixColumns(state) into ta implemented by expanding matrix mult for each
+			 * column see FIPS-197 section 5.1.3
+			 */
 			for (col = 0; col < NUM_COLS; col++) {
 				i = col * COL_SIZE; /* start index for this col */
 				ta[i] = (byte) (mul(2, plain[i]) ^ mul(3, plain[i + 1]) ^ plain[i + 2] ^ plain[i + 3]);
@@ -315,7 +318,7 @@ public class AES {
 	 */
 	public byte[] decodeBlock(char[] plain, int from) {
 		/* copy ciphertext bytes into state and do initial AddRoundKey(state) */
-		if(Kd == null || plain == null || from> plain.length) {
+		if (Kd == null || plain == null || from > plain.length) {
 			return null;
 		}
 		byte[] Kdr = Kd[0];
@@ -370,9 +373,10 @@ public class AES {
 			for (i = 0; i < BLOCK_SIZE; i++)
 				ta[i] = (byte) (cipher[i] ^ Kdr[i]);
 
-			/* InvMixColumns(state) into a 
-			   implemented by expanding matrix mult for each column
-			 see FIPS-197 section 5.3.3 */
+			/*
+			 * InvMixColumns(state) into a implemented by expanding matrix mult for each
+			 * column see FIPS-197 section 5.3.3
+			 */
 			for (col = 0; col < NUM_COLS; col++) {
 				i = col * COL_SIZE; /* start index for this col */
 				cipher[i] = (byte) (mul(0x0e, ta[i]) ^ mul(0x0b, ta[i + 1]) ^ mul(0x0d, ta[i + 2])
@@ -397,7 +401,7 @@ public class AES {
 			ta[i] = cipher[k];
 		}
 
-		/*InvSubBytes(state) into ta using inverse S-box Si */
+		/* InvSubBytes(state) into ta using inverse S-box Si */
 		for (i = 0; i < BLOCK_SIZE; i++)
 			ta[i] = Si[ta[i] & 0xFF];
 
@@ -425,7 +429,7 @@ public class AES {
 	 */
 	public AES withKey(byte[] key) {
 		/* assorted internal constants */
-		if(key == null) {
+		if (key == null) {
 			return this;
 		}
 		final int BC = BLOCK_SIZE / 4;
@@ -456,8 +460,10 @@ public class AES {
 		numRounds = getRounds(Klen);
 		final int ROUND_KEY_COUNT = (numRounds + 1) * BC;
 
-		/* allocate 4 arrays of bytes to hold the session key values
-		   each array holds 1 of the 4 bytes [b0 b1 b2 b3] in each word w */
+		/*
+		 * allocate 4 arrays of bytes to hold the session key values each array holds 1
+		 * of the 4 bytes [b0 b1 b2 b3] in each word w
+		 */
 		byte[] w0 = new byte[ROUND_KEY_COUNT];
 		byte[] w1 = new byte[ROUND_KEY_COUNT];
 		byte[] w2 = new byte[ROUND_KEY_COUNT];
@@ -485,9 +491,9 @@ public class AES {
 			if (i % Nk == 0) {
 				/* temp = SubWord(RotWord(temp)) ^ Rcon[i/Nk] */
 				old0 = t0; /* save old 1st byte value for t3 calc */
-				t0 = (byte) (S[t1 & 0xFF] ^ rcon[i / Nk]); /* nb. constant XOR  1st byte only */
+				t0 = (byte) (S[t1 & 0xFF] ^ rcon[i / Nk]); /* nb. constant XOR 1st byte only */
 				t1 = (byte) (S[t2 & 0xFF]);
-				t2 = (byte) (S[t3 & 0xFF]); /* nb. RotWord done by reordering  bytes used */
+				t2 = (byte) (S[t3 & 0xFF]); /* nb. RotWord done by reordering bytes used */
 				t3 = (byte) (S[old0 & 0xFF]);
 			} else if ((Nk > 6) && (i % Nk == 4)) {
 				/* temp = SubWord(temp) */

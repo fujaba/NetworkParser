@@ -51,7 +51,7 @@ final class BitArray implements Cloneable {
 	}
 
 	private void ensureCapacity(int size) {
-		if(bits != null) {
+		if (bits != null) {
 			if (size > bits.length * 32) {
 				int[] newBits = makeArray(size);
 				System.arraycopy(bits, 0, newBits, 0, bits.length);
@@ -74,7 +74,7 @@ final class BitArray implements Cloneable {
 	 * @param i bit to set
 	 */
 	public void set(int i) {
-		if(bits != null) {
+		if (bits != null) {
 			bits[i / 32] |= 1 << (i & 0x1F);
 		}
 	}
@@ -88,14 +88,14 @@ final class BitArray implements Cloneable {
 	 *                next-least-significant to i+1, and so on.
 	 */
 	void setBulk(int i, int newBits) {
-		if(bits != null) {
+		if (bits != null) {
 			bits[i / 32] = newBits;
 		}
 	}
 
 	/** Clears all bits (sets to false). */
 	public void clear() {
-		if(bits!= null) {
+		if (bits != null) {
 			int max = bits.length;
 			for (int i = 0; i < max; i++) {
 				bits[i] = 0;
@@ -118,7 +118,7 @@ final class BitArray implements Cloneable {
 	 *
 	 * @param value   {@code int} containing bits to append
 	 * @param numBits bits from value to append
-	 * @return 
+	 * @return
 	 */
 	boolean appendBits(int value, int numBits) {
 		if (numBits < 0 || numBits > 32) {
@@ -132,7 +132,7 @@ final class BitArray implements Cloneable {
 	}
 
 	void appendBitArray(BitArray other) {
-		if(other != null) {
+		if (other != null) {
 			int otherSize = other.size;
 			ensureCapacity(size + otherSize);
 			for (int i = 0; i < otherSize; i++) {
@@ -142,14 +142,17 @@ final class BitArray implements Cloneable {
 	}
 
 	void xor(BitArray other) {
-		if(bits == null || other == null) {
+		if (bits == null || other == null) {
 			return;
 		}
 		if (bits.length != other.bits.length) {
 			throw new IllegalArgumentException("Sizes don't match");
 		}
 		for (int i = 0; i < bits.length; i++) {
-			/* The last byte could be incomplete (i.e. not have 8 bits in it) but there is no problem since 0 XOR 0 == 0. */
+			/*
+			 * The last byte could be incomplete (i.e. not have 8 bits in it) but there is
+			 * no problem since 0 XOR 0 == 0.
+			 */
 			bits[i] ^= other.bits[i];
 		}
 	}
@@ -164,7 +167,7 @@ final class BitArray implements Cloneable {
 	 * @param numBytes  how many bytes to write
 	 */
 	void toBytes(int bitOffset, byte[] array, int offset, int numBytes) {
-		if(array != null && array.length>=offset+numBytes) {
+		if (array != null && array.length >= offset + numBytes) {
 			for (int i = 0; i < numBytes; i++) {
 				int theByte = 0;
 				for (int j = 0; j < 8; j++) {
@@ -190,7 +193,7 @@ final class BitArray implements Cloneable {
 	 * Reverses all bits in the array.
 	 */
 	void reverse() {
-		if(bits == null) {
+		if (bits == null) {
 			return;
 		}
 		int[] newBits = new int[bits.length];
@@ -226,7 +229,9 @@ final class BitArray implements Cloneable {
 	}
 
 	private static int[] makeArray(int size) {
-		if(size<1) {return new int[0];}
+		if (size < 1) {
+			return new int[0];
+		}
 		return new int[(size + 31) / 32];
 	}
 
@@ -258,7 +263,7 @@ final class BitArray implements Cloneable {
 
 	@Override
 	public BitArray clone() {
-		if(bits != null) {
+		if (bits != null) {
 			return new BitArray(bits.clone(), size);
 		}
 		return null;
@@ -268,7 +273,7 @@ final class BitArray implements Cloneable {
 	 * @return number of bits that can be read successfully
 	 */
 	int available() {
-		if(bits == null) {
+		if (bits == null) {
 			return 0;
 		}
 		return 8 * (bits.length - byteOffset) - bitOffset;

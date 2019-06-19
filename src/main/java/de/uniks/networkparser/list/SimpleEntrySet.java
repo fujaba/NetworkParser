@@ -3,7 +3,7 @@ package de.uniks.networkparser.list;
 /*
 NetworkParser
 The MIT License
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -42,7 +42,7 @@ public class SimpleEntrySet<K, V> implements Set<Entry<K, V>> {
 
 	@Override
 	public int size() {
-		if(map == null) {
+		if (map == null) {
 			return 0;
 		}
 		return this.map.size();
@@ -50,7 +50,7 @@ public class SimpleEntrySet<K, V> implements Set<Entry<K, V>> {
 
 	@Override
 	public boolean isEmpty() {
-		if(map == null) {
+		if (map == null) {
 			return true;
 		}
 		return this.map.isEmpty();
@@ -58,7 +58,7 @@ public class SimpleEntrySet<K, V> implements Set<Entry<K, V>> {
 
 	@Override
 	public boolean contains(Object o) {
-		if(map == null) {
+		if (map == null) {
 			return false;
 		}
 		return this.map.contains(o);
@@ -71,7 +71,7 @@ public class SimpleEntrySet<K, V> implements Set<Entry<K, V>> {
 
 	@Override
 	public Object[] toArray() {
-		if(map == null) {
+		if (map == null) {
 			return null;
 		}
 		// Change to DebugInfo
@@ -89,7 +89,7 @@ public class SimpleEntrySet<K, V> implements Set<Entry<K, V>> {
 
 	@Override
 	public <T> T[] toArray(T[] a) {
-		if(map == null) {
+		if (map == null) {
 			return null;
 		}
 		return this.map.toArray(a);
@@ -97,7 +97,7 @@ public class SimpleEntrySet<K, V> implements Set<Entry<K, V>> {
 
 	@Override
 	public boolean add(Entry<K, V> e) {
-		if(map == null) {
+		if (map == null) {
 			return false;
 		}
 		return this.map.add(e.getKey(), e.getValue());
@@ -105,7 +105,7 @@ public class SimpleEntrySet<K, V> implements Set<Entry<K, V>> {
 
 	@Override
 	public boolean remove(Object o) {
-		if(map == null) {
+		if (map == null) {
 			return false;
 		}
 		return this.map.removeByObject(o) >= 0;
@@ -113,7 +113,7 @@ public class SimpleEntrySet<K, V> implements Set<Entry<K, V>> {
 
 	@Override
 	public boolean containsAll(Collection<?> c) {
-		if(map == null) {
+		if (map == null) {
 			return false;
 		}
 		return this.map.containsAll(c);
@@ -122,7 +122,7 @@ public class SimpleEntrySet<K, V> implements Set<Entry<K, V>> {
 	@Override
 	public boolean addAll(Collection<? extends Entry<K, V>> collection) {
 		boolean result = true;
-		if(collection == null) {
+		if (collection == null) {
 			return result;
 		}
 		for (Entry<K, V> item : collection) {
@@ -133,7 +133,7 @@ public class SimpleEntrySet<K, V> implements Set<Entry<K, V>> {
 
 	@Override
 	public boolean retainAll(Collection<?> collection) {
-		if(map == null) {
+		if (map == null) {
 			return true;
 		}
 		return this.map.retainAll(collection);
@@ -141,7 +141,7 @@ public class SimpleEntrySet<K, V> implements Set<Entry<K, V>> {
 
 	@Override
 	public boolean removeAll(Collection<?> collection) {
-		if(map == null) {
+		if (map == null) {
 			return false;
 		}
 		return this.map.removeAll(collection);
@@ -149,7 +149,7 @@ public class SimpleEntrySet<K, V> implements Set<Entry<K, V>> {
 
 	@Override
 	public void clear() {
-		if(map == null) {
+		if (map == null) {
 			return;
 		}
 		this.map.clear();

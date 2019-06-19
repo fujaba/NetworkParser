@@ -3,7 +3,7 @@ package de.uniks.networkparser.bytes;
 /*
 NetworkParser
 The MIT License
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -103,7 +103,7 @@ public class RSAKey {
 	 */
 	public BigInteger encrypt(BigInteger message) {
 		BigInteger modulus = getModulus();
-		if(modulus == null) {
+		if (modulus == null) {
 			return null;
 		}
 		if (message.divide(modulus).intValue() > 0) {
@@ -119,17 +119,17 @@ public class RSAKey {
 	 * @return the enscripted Message
 	 */
 	public CharacterBuffer encrypt(String value) {
-		if(value ==null) {
+		if (value == null) {
 			return null;
 		}
 		return encrypt(value, value.length());
 	}
 
 	public CharacterBuffer decrypt(String message) {
-		if(message != null) {
+		if (message != null) {
 			try {
 				return decrypt(new BigInteger(message));
-			}catch (Exception e) {
+			} catch (Exception e) {
 			}
 		}
 		return null;
@@ -142,12 +142,12 @@ public class RSAKey {
 	 * @return the descrypted Message
 	 **/
 	public CharacterBuffer decrypt(BigInteger message) {
-		if(message == null) {
+		if (message == null) {
 			return null;
 		}
 		BigInteger privateKey = getPrivateKey();
 		BigInteger modulus = getModulus();
-		if(privateKey == null || modulus == null) {
+		if (privateKey == null || modulus == null) {
 			return null;
 		}
 		BigInteger text = message.modPow(privateKey, modulus);
@@ -164,7 +164,7 @@ public class RSAKey {
 	}
 
 	public Entity sign(Entity value) {
-		if(value != null) {
+		if (value != null) {
 			String string = value.toString();
 			CharacterBuffer hashCode = encrypt(string, string.length());
 			/* CHECK FOR HASHCODE ONLY */
@@ -175,7 +175,7 @@ public class RSAKey {
 	}
 
 	public CharacterBuffer encrypt(String value, int group) {
-		if(value == null) {
+		if (value == null) {
 			return null;
 		}
 		CharacterBuffer sb = new CharacterBuffer();
@@ -208,16 +208,16 @@ public class RSAKey {
 	}
 
 	private String encoding(String value) {
-		if(value == null) {
+		if (value == null) {
 			return null;
 		}
 		BigInteger encrypt;
 		try {
 			encrypt = encrypt(new BigInteger(value));
-		}catch (Exception e) {
+		} catch (Exception e) {
 			return null;
 		}
-		if(encrypt == null) {
+		if (encrypt == null) {
 			return null;
 		}
 		String string = encrypt.toString();
@@ -277,7 +277,7 @@ public class RSAKey {
 	}
 
 	public static RSAKey generateKey(BigInteger p, BigInteger q, int max) {
-		if(p == null || q == null) {
+		if (p == null || q == null) {
 			return null;
 		}
 		Random rand = new Random();
@@ -285,7 +285,7 @@ public class RSAKey {
 			try {
 				p = BigInteger.probablePrime(75 * max / 100, rand);
 				q = BigInteger.probablePrime(25 * max / 100, rand);
-			}catch (Exception e) {
+			} catch (Exception e) {
 				return null;
 			}
 		}
@@ -313,7 +313,7 @@ public class RSAKey {
 	 * @return Phi
 	 */
 	private static BigInteger computePhi(BigInteger p, BigInteger q) {
-		if(p == null || q == null) {
+		if (p == null || q == null) {
 			return null;
 		}
 		return lcm(p.subtract(BigInteger.ONE), q.subtract(BigInteger.ONE));
@@ -327,12 +327,12 @@ public class RSAKey {
 	 * @return the multiply of a,b
 	 */
 	private static BigInteger lcm(BigInteger a, BigInteger b) {
-		if(a == null || b == null) {
+		if (a == null || b == null) {
 			return null;
 		}
 		try {
 			return (a.multiply(b).divide(a.gcd(b)));
-		}catch (Exception e) {
+		} catch (Exception e) {
 		}
 		return null;
 	}

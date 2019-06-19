@@ -19,16 +19,15 @@ public class SimpleIterator<E> implements ListIterator<E> {
 	public SimpleIterator(AbstractArray<E> list) {
 		this.with(list, 0);
 	}
-	
+
 	public SimpleIterator(AbstractArray<E> list, boolean checkPointer) {
 		this.cursor = 0;
 		this.lastRet = -1;
 		this.list = list;
-		if(list != null && checkPointer) {
+		if (list != null && checkPointer) {
 			this.checkPointer = this.list.size();
 		}
 	}
-
 
 	@SuppressWarnings("unchecked")
 	public SimpleIterator(Object collection) {
@@ -85,8 +84,8 @@ public class SimpleIterator<E> implements ListIterator<E> {
 	}
 
 	public void add(E e) {
-		if(list == null) {
-			return; 
+		if (list == null) {
+			return;
 		}
 		int size = list.size();
 		int pos = list.hasKey(e);
@@ -109,7 +108,7 @@ public class SimpleIterator<E> implements ListIterator<E> {
 	@SuppressWarnings("unchecked")
 	@Override
 	public E next() {
-		if(list == null) {
+		if (list == null) {
 			return null;
 		}
 		int size = list.size();
@@ -121,14 +120,14 @@ public class SimpleIterator<E> implements ListIterator<E> {
 		}
 		lastRet = cursor;
 		cursor = cursor + 1;
-		if(list.index==0) {
+		if (list.index == 0) {
 			Object[] elements;
-			if(list.isComplex(size)) {
-				 elements = (Object[]) list.elements[0];
-			}else {
+			if (list.isComplex(size)) {
+				elements = (Object[]) list.elements[0];
+			} else {
 				elements = list.elements;
 			}
-			return (E) elements[lastRet];	
+			return (E) elements[lastRet];
 		}
 		return (E) list.get(lastRet);
 	}

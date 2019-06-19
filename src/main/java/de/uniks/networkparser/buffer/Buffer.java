@@ -3,7 +3,7 @@ package de.uniks.networkparser.buffer;
 /*
 NetworkParser
 The MIT License
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -34,7 +34,8 @@ import de.uniks.networkparser.list.SimpleList;
 public abstract class Buffer implements BufferItem {
 	public final static String STOPCHARSJSON = ",:]}/\\\"[{;=# ";
 	public final static String STOPCHARSXML = ",]}/\\\"[{;=# ";
-	public final static char[] STOPCHARSXMLEND = new char[] { '"', ',', ']', '}', '/', '\\', '[', '{', ';', '=', '#', '>', '\r', '\n', ' ' };
+	public final static char[] STOPCHARSXMLEND = new char[] { '"', ',', ']', '}', '/', '\\', '[', '{', ';', '=', '#',
+			'>', '\r', '\n', ' ' };
 	public final static char ENDLINE = '\n';
 
 	/** The index. */
@@ -84,7 +85,7 @@ public abstract class Buffer implements BufferItem {
 	public String substring(int... values) {
 		return "";
 	}
-	
+
 	public String next(int... positions) {
 		return "";
 	}
@@ -107,7 +108,7 @@ public abstract class Buffer implements BufferItem {
 		int start = 0;
 		if (current) {
 			if (len > 0) {
-				if(position < 0) {
+				if (position < 0) {
 					position = 0;
 				}
 				result[0] = (byte) getCurrentChar();
@@ -392,7 +393,7 @@ public abstract class Buffer implements BufferItem {
 
 	@Override
 	public boolean skipTo(String search, boolean order, boolean notEscape) {
-		if(position()<0) {
+		if (position() < 0) {
 			return false;
 		}
 		char[] character = search.toCharArray();
@@ -508,7 +509,7 @@ public abstract class Buffer implements BufferItem {
 		} while (c != 0);
 		return c;
 	}
-	
+
 	public boolean skipIf(boolean allowSpace, char... quotes) {
 		char c = getCurrentChar();
 		if (quotes == null) {
@@ -516,7 +517,7 @@ public abstract class Buffer implements BufferItem {
 		}
 		for (int i = 0; i < quotes.length; i++) {
 			if (quotes[i] != c) {
-				if(allowSpace && c == ' ') {
+				if (allowSpace && c == ' ') {
 					c = getChar();
 					i--;
 					continue;

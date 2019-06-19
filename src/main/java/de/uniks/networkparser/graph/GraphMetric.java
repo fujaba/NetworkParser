@@ -18,19 +18,19 @@ public class GraphMetric extends GraphMember {
 	}
 
 	public static GraphMetric create(GraphMember owner) {
-		if(owner == null) {
+		if (owner == null) {
 			return new GraphMetric();
 		}
 		GraphSimpleSet children = owner.getChildren();
 		GraphMetric metric = null;
-		for(int i=0;i<children.size();i++) {
+		for (int i = 0; i < children.size(); i++) {
 			GraphMember item = children.get(i);
-			if(item instanceof GraphMetric) {
+			if (item instanceof GraphMetric) {
 				metric = (GraphMetric) item;
 				break;
 			}
 		}
-		if(metric == null) {
+		if (metric == null) {
 			metric = new GraphMetric();
 			owner.withChildren(metric);
 		}
@@ -57,7 +57,7 @@ public class GraphMetric extends GraphMember {
 		return annotation;
 	}
 
-	public GraphMetric withLoc(int emptyLines,int commentLine, int methodHeader, int annotation, int loc) {
+	public GraphMetric withLoc(int emptyLines, int commentLine, int methodHeader, int annotation, int loc) {
 		this.emptyLine = emptyLines;
 		this.commentCount = commentLine;
 		this.methodheader = methodHeader;
@@ -65,7 +65,7 @@ public class GraphMetric extends GraphMember {
 		this.linesOfCode = loc;
 		return this;
 	}
-	
+
 	public int getFullLines() {
 		return (linesOfCode + commentCount + methodheader + emptyLine + annotation);
 	}
@@ -75,7 +75,7 @@ public class GraphMetric extends GraphMember {
 	}
 
 	public GraphMetric merge(GraphMetric otherMetric) {
-		if(otherMetric == null) {
+		if (otherMetric == null) {
 			return this;
 		}
 		this.emptyLine += otherMetric.getEmptyLine();

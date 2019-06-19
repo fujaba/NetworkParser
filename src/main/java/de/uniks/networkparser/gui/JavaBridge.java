@@ -3,7 +3,7 @@ package de.uniks.networkparser.gui;
 /*
 The MIT License
 
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -161,7 +161,7 @@ public class JavaBridge implements ObjectCondition {
 	 * Enables Firebug Lite for debugging a webEngine.
 	 */
 	public void enableFirebug() {
-		if(this.webView != null) {
+		if (this.webView != null) {
 			this.webView.enableDebug();
 		}
 	}
@@ -171,7 +171,7 @@ public class JavaBridge implements ObjectCondition {
 	}
 
 	public String put(SimpleObject so) {
-		if(so == null || map == null) {
+		if (so == null || map == null) {
 			return null;
 		}
 		map.getMapListener().suspendNotification();
@@ -230,14 +230,14 @@ public class JavaBridge implements ObjectCondition {
 			}
 			debug.withValueItem(value);
 		}
-		if(this.webView == null) {
+		if (this.webView == null) {
 			return null;
 		}
 		return this.webView.executeScript(script);
 	}
 
 	public boolean addEventListener(Control c, EventTypes eventType, ObjectCondition eventListener) {
-		if(c == null) {
+		if (c == null) {
 			return false;
 		}
 		if (c.getEvents(eventType) == null) {
@@ -247,13 +247,13 @@ public class JavaBridge implements ObjectCondition {
 	}
 
 	public void fireEvent(JsonObject event) {
-		if(this.map != null) {
+		if (this.map != null) {
 			this.map.decode(event);
 		}
 	}
 
 	public boolean fireEvent(Event event) {
-		if(event == null) {
+		if (event == null) {
 			return false;
 		}
 		Control control = getControls().get(event.getId());
@@ -269,7 +269,7 @@ public class JavaBridge implements ObjectCondition {
 	}
 
 	public boolean fireControlChange(Control control, String property, Object value) {
-		if(control == null) {
+		if (control == null) {
 			return false;
 		}
 		executeScript(BridgeCommand.load("{id:\"" + control.getId() + "\", " + property + ":\"" + value + "\"}"));
@@ -286,7 +286,7 @@ public class JavaBridge implements ObjectCondition {
 	}
 
 	public Object getWebView() {
-		if(webView != null) {
+		if (webView != null) {
 			return webView.getWebView();
 		}
 		return null;

@@ -3,7 +3,7 @@ package de.uniks.networkparser.ext;
 /*
 The MIT License
 
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -40,7 +40,7 @@ import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 
 public class GitRevision {
-	public static final String MAINTAG="GIT";
+	public static final String MAINTAG = "GIT";
 	public static final String MAYOR = "mayor";
 	public static final String MINOR = "minor";
 	public static final String HASH = "hash";
@@ -58,7 +58,7 @@ public class GitRevision {
 		this.path = path;
 		return this;
 	}
-	
+
 	public JsonObject execute() throws IOException {
 		JsonObject json = execute(max);
 		System.setProperty("Branchname", json.getString(BRANCHNAME));
@@ -72,23 +72,23 @@ public class GitRevision {
 		if (ReflectionLoader.FILEREPOSITORYBUILDER == null) {
 			return null;
 		}
-		
+
 		File file = null;
 		String localPath = path;
-		if(localPath == null) {
-			localPath ="";
-		}else if((localPath.endsWith("/") || localPath.endsWith("\\") )== false) {
+		if (localPath == null) {
+			localPath = "";
+		} else if ((localPath.endsWith("/") || localPath.endsWith("\\")) == false) {
 			localPath += "/";
 		}
 		File projectFile = null;
-		if (new File(localPath+".git/config").exists()) {
-			file = new File(localPath+".git");
+		if (new File(localPath + ".git/config").exists()) {
+			file = new File(localPath + ".git");
 			projectFile = new File(localPath);
-		}else if (new File(localPath+"config").exists()) {
+		} else if (new File(localPath + "config").exists()) {
 			file = new File(localPath);
 			projectFile = file.getParentFile();
 		}
-		if(file == null) {
+		if (file == null) {
 			return null;
 		}
 		Object builder = ReflectionLoader.newInstance(ReflectionLoader.FILEREPOSITORYBUILDER);
@@ -103,18 +103,18 @@ public class GitRevision {
 		int count = 0;
 		try {
 			ReflectionLoader.call(builder, "setWorkTree", File.class, file);
-			if(projectFile != null && "".equals(projectFile.getName())== false) {
+			if (projectFile != null && "".equals(projectFile.getName()) == false) {
 				ReflectionLoader.call(builder, "setGitDir", File.class, projectFile);
 			}
 			repository = ReflectionLoader.callChain(builder, "readEnvironment", "findGitDir", "build");
-			// scan environment GIT_* variables
-			// scan up the file system tree
+			/* scan environment GIT_* variables */
+			/* scan up the file system tree */
 
 			calcGitTag(repository, info);
 			allRefs = (Map<String, ?>) ReflectionLoader.call(repository, "getAllRefs");
 			try {
 				headID = ReflectionLoader.call(repository, "resolve", String.class, "HEAD");
-			}catch (Exception e) {
+			} catch (Exception e) {
 			}
 			if (headID != null) {
 				id = (String) ReflectionLoader.call(headID, "name");
@@ -167,15 +167,15 @@ public class GitRevision {
 
 		info.put(BRANCHNAME, branchesTag);
 		info.put(LASTCOMMIT, id);
-		if(count == 0) {
+		if (count == 0) {
 			info.put(REVISIONNUMBER, 1);
-		}else {
+		} else {
 			info.put(REVISIONNUMBER, count);
 		}
 		info.put(COMMITS, map);
 		return info;
 	}
-	
+
 	public GitRevision withMaxCommit(int value) {
 		this.max = value;
 		return this;
@@ -251,14 +251,14 @@ public class GitRevision {
 					}
 				}
 			} catch (Exception e) {
-				// no problem as long as there's another tag with a number
+				/* no problem as long as there's another tag with a number */
 			}
 		}
 		info.put(MAYOR, mayor);
 		System.out.println(minor);
-		if(minor <0) {
-			info.put(MINOR, 0);	
-		}else {
+		if (minor < 0) {
+			info.put(MINOR, 0);
+		} else {
 			info.put(MINOR, minor);
 		}
 		info.put(HASH, tagHash);
@@ -275,7 +275,6 @@ public class GitRevision {
 			Object commit = null;
 			if (objectID != null) {
 				commit = ReflectionLoader.call(walk, "parseCommit", ReflectionLoader.ANYOBJECTID, objectID);
-//				commit = walk.parseCommit(objectID);
 			}
 			if (commit != null) {
 				jsonObject.put("ID", ReflectionLoader.call(objectID, "getName"));
@@ -310,10 +309,6 @@ public class GitRevision {
 							git = ReflectionLoader.call(git, "setNewTree", newerTreeIter);
 							git = ReflectionLoader.call(git, "setOldTree", newTreeIter);
 							diffs = (List<Object>) ReflectionLoader.call(git, "call");
-//							diffs= new Git(repository).diff()
-//													.setNewTree(newerTreeIter)
-//													.setOldTree(newTreeIter)
-//													.call();
 						}
 					}
 					if (diffs != null) {
@@ -351,7 +346,7 @@ public class GitRevision {
 
 	private void createdComment(String sourcePath, CharacterBuffer licence,
 			SimpleKeyValueList<String, Integer> values) {
-		if(sourcePath == null) {
+		if (sourcePath == null) {
 			return;
 		}
 		File path = new File(sourcePath);
@@ -371,60 +366,34 @@ public class GitRevision {
 				if (!child.getAbsolutePath().endsWith(".java")) {
 					continue;
 				}
-//				ParserEntity parser = new ParserEntity();
-//				Clazz create = parser.parse(FileBuffer.readFile(child));
-//				values.put("LOC", values.get("LOC") + parser.getLOC());
-//				lineofCode += source.getLineOfCode();
-//				String customComment = source.getCustomComment();
-//				if(customComment.length()>0){
-//					 customItems.put(customComment, source.getFileName());
-////					 SSystem.out..println("Thirdparty-Source (" +source.getFileName()+":1)");
-//					 String relativ = source.getFileName().substring(new File("src\\main\\java").getAbsolutePath().length() + 1);
-//					 int pos = relativ.lastIndexOf("\\");
-//					 SSystem.out..println("Thirdparty-Source "+relativ.replaceAll("\\\\", ".")+"("+relativ.substring(pos+1)+":1)");
-//					 thirdparty++;
-//					 continue;
-//				 }
-//				if(source.skipComment()){
-//					skip++;
-//					continue;
-//				}
-//				if(source.changeComment(commentFile.getComment())){
-//					SSystem.out..println(source.getFileName());
-//					change++;
-//
-//					source.write();
-//				} else {
-//					ok++;
-//				}
 			}
 		}
 	}
 
 	public boolean init(String remoteURL) {
-		if(ReflectionLoader.GIT ==null) {
+		if (ReflectionLoader.GIT == null) {
 			return false;
 		}
 		String localPath = path;
-		if(localPath == null) {
-			localPath ="";
-		}else if((localPath.endsWith("/") || localPath.endsWith("\\") )== false) {
+		if (localPath == null) {
+			localPath = "";
+		} else if ((localPath.endsWith("/") || localPath.endsWith("\\")) == false) {
 			localPath += "/";
 		}
 		File dir = new File(localPath);
-		File gitDir = new File(localPath+".git/");
+		File gitDir = new File(localPath + ".git/");
 		gitDir.mkdirs();
 		try {
-			
+
 			Object initGIT = ReflectionLoader.call(ReflectionLoader.GIT, "init");
 			ReflectionLoader.call(initGIT, "setDirectory", dir);
 			ReflectionLoader.call(initGIT, "setGitDir", gitDir);
 			Object git = ReflectionLoader.call(initGIT, "call");
-			if(remoteURL != null) {
+			if (remoteURL != null) {
 				new URL(remoteURL);
 				Object config = ReflectionLoader.callChain(git, "getRepository", "getConfig");
 				ReflectionLoader.call(config, "setString", "remote", "origin", "url", remoteURL);
-				ReflectionLoader.call(config, "save"); 
+				ReflectionLoader.call(config, "save");
 			}
 			ReflectionLoader.call(git, "close");
 		} catch (Exception e) {

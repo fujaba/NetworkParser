@@ -69,7 +69,7 @@ public class VersionCondition implements ObjectCondition, Comparable<VersionCond
 
 	@Override
 	public int compareTo(VersionCondition o) {
-		if(o == null) {
+		if (o == null) {
 			return -1;
 		}
 		if (this.mayor < o.mayor) {

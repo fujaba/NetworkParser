@@ -3,7 +3,7 @@ package de.uniks.networkparser.list;
 /*
 NetworkParser
 The MIT License
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -36,6 +36,7 @@ public class SimpleList<V> extends AbstractList<V> implements List<V> {
 	public SimpleList() {
 		withFlag(SimpleList.ALLOWDUPLICATE);
 	}
+
 	@Override
 	public BaseItem getNewList(boolean keyValue) {
 		return new SimpleList<V>();
@@ -50,6 +51,7 @@ public class SimpleList<V> extends AbstractList<V> implements List<V> {
 	public boolean remove(Object o) {
 		return super.removeByObject(o) >= 0;
 	}
+
 	@Override
 	public boolean add(V e) {
 		return super.add(e);
@@ -69,7 +71,8 @@ public class SimpleList<V> extends AbstractList<V> implements List<V> {
 	protected boolean fireProperty(String type, Object oldElement, Object newElement, Object beforeElement, int index,
 			Object value) {
 		if (this.listener != null) {
-			this.listener.update(new SimpleEvent(type, this, PROPERTY, index, newElement, oldElement, value, beforeElement));
+			this.listener
+					.update(new SimpleEvent(type, this, PROPERTY, index, newElement, oldElement, value, beforeElement));
 		}
 		return super.fireProperty(type, oldElement, newElement, beforeElement, index, value);
 	}

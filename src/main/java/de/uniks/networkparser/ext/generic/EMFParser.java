@@ -3,7 +3,7 @@ package de.uniks.networkparser.ext.generic;
 /*
 The MIT License
 
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -44,7 +44,7 @@ public class EMFParser {
 
 	public static final void addAttributes(EMFParser eclass, Clazz sdmClass) {
 		List<Object> callList = getEAttributes(eclass);
-		if(callList != null) {
+		if (callList != null) {
 			for (Object item : callList) {
 				if (item != null) {
 					String name = getName(item);

@@ -32,7 +32,6 @@ abstract class ReceivingProxy implements Runnable {
 				lookForMessage();
 			}
 		} catch (Exception e) {
-//			e.printStackTrace();
 		}
 	}
 

@@ -3,7 +3,7 @@ package de.uniks.networkparser.parser;
 /*
 The MIT License
 
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -55,8 +55,8 @@ public class ParserEntity {
 	public static final String CLASS_BODY = "classBody";
 
 	public static final String CLASS_END = "classEnd";
-	
-	public static final String ERROR="ERROR";
+
+	public static final String ERROR = "ERROR";
 
 	private ObjectCondition update;
 	public Token lookAheadToken = new Token();
@@ -72,11 +72,11 @@ public class ParserEntity {
 	public int index;
 	public int lookAheadIndex = -1;
 	public int parsePos;
-	public long line=1;
+	public long line = 1;
 	private NetworkParserLog logger;
 
 	public ParserEntity withCondition(ObjectCondition update) {
-		if(update != null) {
+		if (update != null) {
 			this.update = update;
 		}
 		return this;
@@ -85,15 +85,15 @@ public class ParserEntity {
 	public long getLine() {
 		return line;
 	}
-	
+
 	public ParserEntity withFile(String fileName) {
 		this.code = new SourceCode();
 		this.code.withFileName(fileName);
-		if(fileName == null) {
+		if (fileName == null) {
 			return this;
 		}
-		if(fileName.indexOf('.')>0) {
-			fileName = fileName.substring(fileName.lastIndexOf('.')+1);
+		if (fileName.indexOf('.') > 0) {
+			fileName = fileName.substring(fileName.lastIndexOf('.') + 1);
 		}
 		Clazz clazz = new Clazz(fileName);
 		this.code.with(clazz);
@@ -108,14 +108,14 @@ public class ParserEntity {
 	}
 
 	public String getFileName() {
-		if(code != null) {
+		if (code != null) {
 			return code.getFileName();
 		}
 		return null;
 	}
-	
+
 	public Clazz getClazz() {
-		if(code != null) {
+		if (code != null) {
 			return this.code.getClazz();
 		}
 		return null;
@@ -127,7 +127,7 @@ public class ParserEntity {
 	}
 
 	public Clazz parse(CharacterBuffer sequence) {
-		if(this.code == null) {
+		if (this.code == null) {
 			// FIX IT
 			this.code = new SourceCode();
 			this.code.with(new Clazz(""));
@@ -152,7 +152,7 @@ public class ParserEntity {
 			parsePackageDecl();
 		}
 		skipNewLine();
-		
+
 		parseComment(true);
 
 		code.withStartImports(currentToken.startPos);
@@ -165,10 +165,9 @@ public class ParserEntity {
 		}
 		code.withEndOfImports(currentToken.startPos);
 
-		while(parseComment(true) != null) {
+		while (parseComment(true) != null) {
 			skipNewLine();
 		}
-		
 
 		parseClassDecl();
 		return getClazz();
@@ -185,9 +184,9 @@ public class ParserEntity {
 	public int getCurrentStart() {
 		return currentToken.startPos;
 	}
-	
+
 	private void skipNewLine() {
-		while(currentKindEquals(Token.NEWLINE)) {
+		while (currentKindEquals(Token.NEWLINE)) {
 			nextToken();
 		}
 	}
@@ -199,7 +198,7 @@ public class ParserEntity {
 	public boolean lookAheadKindEquals(char c) {
 		return lookAheadToken.kind == c;
 	}
-	
+
 	public boolean previousTokenKindEquals(char c) {
 		return previousToken.kind == c;
 	}
@@ -207,8 +206,9 @@ public class ParserEntity {
 	public boolean currentTokenEquals(String word) {
 		return stringEquals(currentWord(), word);
 	}
+
 	public boolean currentTokenEquals(char word) {
-		return (currentToken.text.length()==1 && currentToken.text.charAt(0) == word);
+		return (currentToken.text.length() == 1 && currentToken.text.charAt(0) == word);
 //		return stringEquals(currentWord(), word);
 	}
 
@@ -233,25 +233,25 @@ public class ParserEntity {
 	public boolean skip(char string, boolean skipCRLF, CharacterBuffer body) {
 		if (currentTokenEquals(string)) {
 			if (skipCRLF) {
-				if(body != null) {
+				if (body != null) {
 					body.add(currentToken.originalText);
 				}
 				nextToken();
 				while (currentToken.kind == Token.NEWLINE) {
-					if(body != null) {
+					if (body != null) {
 						body.add(currentToken.originalText);
 					}
 					nextToken();
 				}
 				return true;
 			}
-			if(body != null) {
+			if (body != null) {
 				body.add(currentToken.originalText);
 			}
 			nextToken();
 			return true;
 		} else {
-			error(""+string);
+			error("" + string);
 		}
 		return false;
 	}
@@ -271,21 +271,21 @@ public class ParserEntity {
 	}
 
 	public boolean error(CharSequence info) {
-		CharacterBuffer buffer=new CharacterBuffer().with("Parser Error:");
-		if(this.code != null) {
+		CharacterBuffer buffer = new CharacterBuffer().with("Parser Error:");
+		if (this.code != null) {
 			buffer.with(' ');
 			buffer.with(this.code.getFileName());
 			buffer.with(' ');
 		}
 		buffer.with(" expected token ", info, " found ", currentWord(), " at pos ");
-		buffer.with(""+currentToken.startPos," at line ");
-		buffer.with(""+getLineIndexOf(currentToken.startPos, code.getContent()));
-		if(this.update != null) {
+		buffer.with("" + currentToken.startPos, " at line ");
+		buffer.with("" + getLineIndexOf(currentToken.startPos, code.getContent()));
+		if (this.update != null) {
 			SimpleEvent event = new SimpleEvent(this, "error", null, buffer.toString());
 			event.withType(ERROR);
 			return this.update.update(event);
 		}
-		if(logger != null) {
+		if (logger != null) {
 			logger.error(this, "parse error", buffer.toString());
 		}
 		throw new SimpleException("parse error", this);
@@ -302,8 +302,8 @@ public class ParserEntity {
 		Token tmp = previousToken;
 		previousToken = currentToken;
 		currentToken = lookAheadToken;
-		
-		if(currentToken.kind == Token.NEWLINE) {
+
+		if (currentToken.kind == Token.NEWLINE) {
 			line++;
 		}
 
@@ -339,11 +339,11 @@ public class ParserEntity {
 					lookAheadToken.startPos = index;
 					lookAheadToken.addText(currentChar);
 					nextChar();
-					if(currentChar == '*') {
+					if (currentChar == '*') {
 						lookAheadToken.kind = Token.LONG_COMMENT_START;
 					}
 					lookAheadToken.addText(currentChar);
-					
+
 					lookAheadToken.endPos = index;
 					nextChar();
 					return;
@@ -427,14 +427,14 @@ public class ParserEntity {
 		currentChar = lookAheadChar;
 
 		index = lookAheadIndex;
-		
+
 		lookAheadChar = 0;
 
 		while (lookAheadChar == 0 && lookAheadIndex < code.size() - 1) {
 			lookAheadIndex++;
 			lookAheadChar = code.getContent().charAt(lookAheadIndex);
 		}
-		if(this.update != null) {
+		if (this.update != null) {
 			SimpleEvent event = new SimpleEvent(this, NetworkParserLog.DEBUG, currentToken, lookAheadToken);
 			event.withValue(index);
 			event.withType(NetworkParserLog.DEBUG);
@@ -470,7 +470,7 @@ public class ParserEntity {
 	public CharSequence finishParse(SymTabEntry nextEntity) {
 		int endPos = getCurrentEnd();
 		CharSequence sequence = code.subString(this.parsePos, endPos);
-		if(nextEntity != null) {
+		if (nextEntity != null) {
 			nextEntity.add(sequence);
 		}
 		return sequence;
@@ -491,14 +491,14 @@ public class ParserEntity {
 	}
 
 	public void addCurrentToken(SymTabEntry nextEntity) {
-		if(nextEntity != null) {
+		if (nextEntity != null) {
 			nextEntity.add(this.currentToken.text.toString());
 		}
 	}
 
 	private long getLineIndexOf(int startPos, CharSequence fileBody) {
 		long count = 1;
-		if(fileBody == null) {
+		if (fileBody == null) {
 			return count;
 		}
 		CharSequence substring = fileBody.subSequence(0, startPos);
@@ -509,9 +509,9 @@ public class ParserEntity {
 		}
 		return count;
 	}
-	
+
 	public long getCurrentLine() {
-		if(this.code != null && currentToken != null) {
+		if (this.code != null && currentToken != null) {
 			return getLineIndexOf(currentToken.startPos, code.getContent());
 		}
 		return 0;
@@ -532,22 +532,22 @@ public class ParserEntity {
 		}
 		skip(';', true);
 	}
-	
+
 	private CharacterBuffer parseComment(boolean newBlock) {
-		if(isComment() == false) {
+		if (isComment() == false) {
 			return null;
 		}
 		SymTabEntry nextEntity = startNextSymTab(SymTabEntry.TYPE_COMMENT);
-		CharacterBuffer buffer=new CharacterBuffer();
-		if(currentKindEquals(Token.COMMENT)) {
+		CharacterBuffer buffer = new CharacterBuffer();
+		if (currentKindEquals(Token.COMMENT)) {
 			// Simple Comment only one Line
 			buffer.add(currentToken.originalText);
 			nextToken();
-			while(currentKindEquals(Token.NEWLINE) == false && currentKindEquals(Token.EOF) == false) {
+			while (currentKindEquals(Token.NEWLINE) == false && currentKindEquals(Token.EOF) == false) {
 				buffer.add(currentToken.originalText);
 				nextToken();
 			}
-			if(currentKindEquals(Token.EOF) == false) {
+			if (currentKindEquals(Token.EOF) == false) {
 				buffer.add(currentToken.originalText);
 				skipNewLine();
 //				nextToken();
@@ -557,18 +557,17 @@ public class ParserEntity {
 		}
 		buffer.add(currentToken.originalText);
 		nextToken();
-		while(currentKindEquals(Token.LONG_COMMENT_END) == false && currentKindEquals(Token.EOF) == false) {
+		while (currentKindEquals(Token.LONG_COMMENT_END) == false && currentKindEquals(Token.EOF) == false) {
 			buffer.add(currentToken.originalText);
 			nextToken();
 		}
-		if(currentKindEquals(Token.EOF) == false) {
+		if (currentKindEquals(Token.EOF) == false) {
 			buffer.add(currentToken.originalText);
 			nextToken();
 		}
 		nextEntity.withName(buffer);
 		return buffer;
 	}
-	
 
 	private String parseModifiers() {
 		// names != class
@@ -621,7 +620,7 @@ public class ParserEntity {
 		skipNewLine();
 		return result;
 	}
-	
+
 	private void parseClassDecl() {
 //FIXME		int preCommentStartPos = currentToken.preCommentStartPos;
 //		int preCommentEndPos = currentToken.preCommentEndPos;
@@ -728,7 +727,7 @@ public class ParserEntity {
 			parseGenericTypeDefPart(typeString);
 		}
 
-		while(currentKindEquals('[')) {
+		while (currentKindEquals('[')) {
 			typeString.with("[]");
 			skip("[", true);
 			while ("]".equals(currentWord()) == false && currentKindEquals(Token.EOF) == false) {
@@ -787,9 +786,9 @@ public class ParserEntity {
 		code.withStartBody(currentToken.startPos, getLine());
 
 		while (!currentKindEquals(Token.EOF) && !currentKindEquals('}')) {
-			if(isDebug) {
-				if(logger != null) {
-					logger.debug(this, "parsing", "Parsing: "+getCurrentLine());
+			if (isDebug) {
+				if (logger != null) {
+					logger.debug(this, "parsing", "Parsing: " + getCurrentLine());
 				}
 			}
 			parseMemberDecl();
@@ -817,10 +816,10 @@ public class ParserEntity {
 //FIXME		int preCommentStartPos = currentToken.preCommentStartPos;
 //		int preCommentEndPos = currentToken.preCommentEndPos;
 		long startLine = getLine();
-		while(parseComment(true) != null) {
+		while (parseComment(true) != null) {
 			skipNewLine();
 		}
-		
+
 		// annotations
 		int annotationsStartPos = currentToken.startPos;
 
@@ -834,10 +833,10 @@ public class ParserEntity {
 			// generic type decl
 			skip("<", true);
 			// FIX MULTI GENERIC
-			int count=1;
-			while(currentTokenEquals(Token.EOF) == false && count>0 ) {
+			int count = 1;
+			while (currentTokenEquals(Token.EOF) == false && count > 0) {
 				while (currentTokenEquals(">") == false) {
-					if(currentTokenEquals("<")) {
+					if (currentTokenEquals("<")) {
 						count++;
 					}
 					nextToken();
@@ -864,7 +863,6 @@ public class ParserEntity {
 			// modifiers = parseModifiers();
 		}
 
-		
 		if (currentTokenEquals(getClazz().getName()) && lookAheadToken.kind == '(') {
 			// constructor
 			skip(getClazz().getName(), true);
@@ -889,7 +887,7 @@ public class ParserEntity {
 
 			nextEntity.withBodyStartPos(code.getStartBody());
 			nextEntity.withModifiers(modifiers);
-		} else if(currentKindEquals('{')){
+		} else if (currentKindEquals('{')) {
 			CharacterBuffer block = new CharacterBuffer();
 			skip('{', true, block);
 			parseBlock(block, '}');
@@ -949,7 +947,7 @@ public class ParserEntity {
 //				code.withStartBody(previousToken.startPos, line);
 
 				CharacterBuffer body = new CharacterBuffer();
-				int startBodyPos=currentToken.startPos;
+				int startBodyPos = currentToken.startPos;
 				if (currentKindEquals('{')) {
 					startBodyPos = currentToken.startPos + 1;
 					skip('{', true, body);
@@ -977,11 +975,11 @@ public class ParserEntity {
 				if (",".equalsIgnoreCase(memberName) || ";".equalsIgnoreCase(memberName)
 						|| ";".equals(type) == false && currentKindEquals(Token.EOF)) {
 					// String enumSignature = SDMLibParser.ENUMVALUE + ":" + type;
-					if("}".equals(type) == false ) {
+					if ("}".equals(type) == false) {
 						SymTabEntry nextEntity = startNextSymTab(SymTabEntry.TYPE_ENUMVALUE, type);
 						nextEntity.withPosition(startPos, previousToken.startPos, startLine, getLine());
 						nextEntity.withModifiers(modifiers).withBodyStartPos(code.getStartBody());
-	//FIXME					nextEntity.withPreComment(preCommentStartPos, preCommentEndPos);
+						// FIXME nextEntity.withPreComment(preCommentStartPos, preCommentEndPos);
 						nextEntity.withAnnotationsStart(annotationsStartPos);
 					}
 				} else {
@@ -997,39 +995,39 @@ public class ParserEntity {
 			}
 		}
 	}
-	
+
 	private boolean isComment() {
-		return currentKindEquals(Token.LONG_COMMENT_START) ||currentKindEquals(Token.COMMENT); 
+		return currentKindEquals(Token.LONG_COMMENT_START) || currentKindEquals(Token.COMMENT);
 //				(currentKindEquals(Token.COMMENT) && lookAheadKindEquals(Token.COMMENT));
 	}
 
 	private CharacterBuffer parseBlock(CharacterBuffer body, char stopChar) {
-		if(body == null) {
+		if (body == null) {
 			body = new CharacterBuffer();
 		}
 		char prevprevTokenKind;
 		// { stat ... }
 		while (currentKindEquals(Token.EOF) == false && currentKindEquals(stopChar) == false) {
-			while(currentKindEquals(Token.EOF) == false && isComment()) {
+			while (currentKindEquals(Token.EOF) == false && isComment()) {
 				body.add(parseComment(false));
 			}
-			if(currentKindEquals(stopChar)) {
+			if (currentKindEquals(stopChar)) {
 				break;
 			}
-			char search=0;
-			if(currentKindEquals('\'')) {
-				search='\'';
+			char search = 0;
+			if (currentKindEquals('\'')) {
+				search = '\'';
 			}
-			if(currentKindEquals('"')) {
-				search='\"';
+			if (currentKindEquals('"')) {
+				search = '\"';
 			}
-			if(search != 0) {
+			if (search != 0) {
 				while (currentKindEquals(Token.EOF) == false) {
 					body.add(currentToken.originalText);
-					prevprevTokenKind=previousToken.kind;
+					prevprevTokenKind = previousToken.kind;
 					nextToken();
-					if(currentKindEquals(search)) {
-						if(previousTokenKindEquals('\\') == false || prevprevTokenKind =='\\') {
+					if (currentKindEquals(search)) {
+						if (previousTokenKindEquals('\\') == false || prevprevTokenKind == '\\') {
 							break;
 						}
 					}
@@ -1139,40 +1137,40 @@ public class ParserEntity {
 
 	private CharacterBuffer parseExpression(CharacterBuffer buffer) {
 		// ... { ;;; } ;
-		if(buffer==null) {
+		if (buffer == null) {
 			buffer = new CharacterBuffer();
 		}
-		if(currentKindEquals('\'')) {
+		if (currentKindEquals('\'')) {
 			while (currentKindEquals(Token.EOF) == false && currentKindEquals(';') == false) {
 				while (currentKindEquals(Token.EOF) == false && currentKindEquals('\'') == false) {
 					nextToken();
 					buffer.add(currentToken.originalText);
 				}
-				if(currentKindEquals('\'') ) {
-					nextToken(); 
+				if (currentKindEquals('\'')) {
+					nextToken();
 					buffer.add(currentToken.originalText);
 				}
 			}
 			return buffer;
 		}
-		if(currentKindEquals('"') ) {
+		if (currentKindEquals('"')) {
 			while (currentKindEquals(Token.EOF) == false && currentKindEquals(';') == false) {
 				while (currentKindEquals(Token.EOF) == false && currentKindEquals('"') == false) {
 					nextToken();
 					buffer.add(currentToken.originalText);
 				}
-				if(currentKindEquals('"') ) {
-					nextToken(); 
+				if (currentKindEquals('"')) {
+					nextToken();
 					buffer.add(currentToken.originalText);
 				}
 			}
 			return buffer;
 		}
 		while (currentKindEquals(Token.EOF) == false && currentKindEquals(';') == false) {
-			if(currentKindEquals('\'')) {
+			if (currentKindEquals('\'')) {
 				parseExpression(buffer);
 			}
-			if(currentKindEquals('"')) {
+			if (currentKindEquals('"')) {
 				parseExpression(buffer);
 			}
 			if (currentKindEquals('{')) {
@@ -1254,7 +1252,7 @@ public class ParserEntity {
 	}
 
 	private Clazz findClassInModel(String name) {
-		if(this.getClazz() == null) {
+		if (this.getClazz() == null) {
 			return null;
 		}
 		GraphModel model = this.getClazz().getClassModel();
@@ -1275,7 +1273,7 @@ public class ParserEntity {
 			SimpleKeyValueList<String, SimpleList<SymTabEntry>> symbolTab) {
 //FIXME		String[] split = memberName.split(":");
 //		String signature = split[1];
-		if(memberName == null) {
+		if (memberName == null) {
 			return null;
 		}
 		String signature = memberName.getName();
@@ -1308,7 +1306,7 @@ public class ParserEntity {
 		}
 
 		String name = clazz.getName(false);
-		if(name != null) {
+		if (name != null) {
 			int lastIndex = name.lastIndexOf('.');
 			name = name.substring(0, lastIndex + 1) + signature;
 		}
@@ -1318,18 +1316,17 @@ public class ParserEntity {
 	private void addMemberAsAttribut(SymTabEntry symTabEntry,
 			SimpleKeyValueList<String, SimpleList<SymTabEntry>> symbolTab, boolean addStaticAttribute) {
 		// filter public static final constances
-		if(symTabEntry == null) {
+		if (symTabEntry == null) {
 			return;
 		}
 		String modifiers = symTabEntry.getModifiers();
-		if (addStaticAttribute == false && 
-				((modifiers.indexOf("public") >= 0 || modifiers.indexOf("private") >= 0) 
+		if (addStaticAttribute == false && ((modifiers.indexOf("public") >= 0 || modifiers.indexOf("private") >= 0)
 				&& modifiers.indexOf("static") >= 0 && modifiers.indexOf("final") >= 0)) {
 			// ignore
 			return;
 		}
 		String type = symTabEntry.getDataType();
-		if(type != null) {
+		if (type != null) {
 			// include arrays
 			type = type.replace("[]", "");
 		}
@@ -1341,7 +1338,7 @@ public class ParserEntity {
 			}
 		} else {
 			// handle complex attributes
-			if(handleComplexAttr(attrName, symTabEntry, symbolTab) == false) {
+			if (handleComplexAttr(attrName, symTabEntry, symbolTab) == false) {
 				// Not Found so simple Attribute
 				this.getClazz().withAttribute(attrName, DataType.create(symTabEntry.getDataType()));
 			}
@@ -1349,7 +1346,7 @@ public class ParserEntity {
 	}
 
 	private boolean classContainsAttribut(String attrName, String type) {
-		if(this.getClazz() == null) {
+		if (this.getClazz() == null) {
 			return false;
 		}
 		for (Attribute attr : this.getClazz().getAttributes()) {
@@ -1406,8 +1403,9 @@ public class ParserEntity {
 		}
 
 		if (addToSymTabEntry == null && "with".equals(setterPrefix)) {
-			SimpleList<SymTabEntry> simpleList = symbolTab.get(SymTabEntry.TYPE_METHOD + ":" + "with" + name + "(" + partnerClassName + "...)");
-			if(simpleList == null) {
+			SimpleList<SymTabEntry> simpleList = symbolTab
+					.get(SymTabEntry.TYPE_METHOD + ":" + "with" + name + "(" + partnerClassName + "...)");
+			if (simpleList == null) {
 				return false;
 			}
 			addToSymTabEntry = simpleList.first();
@@ -1504,7 +1502,7 @@ public class ParserEntity {
 					srcRoleName = potentialCode.substring(0, potentialCode.indexOf("(")).toLowerCase();
 
 					SourceCode partnerCode = (SourceCode) partnerClass.getChildByName("SourceCode", SourceCode.class);
-					if(partnerCode == null) {
+					if (partnerCode == null) {
 						return false;
 					}
 					String partnerFile = partnerCode.getContent().toString();
@@ -1528,7 +1526,7 @@ public class ParserEntity {
 
 	public String findPartnerClassName(String partnerTypeName) {
 		String partnerClassName;
-		if(partnerTypeName == null) {
+		if (partnerTypeName == null) {
 			return null;
 		}
 		int openAngleBracket = partnerTypeName.indexOf("<");
@@ -1547,7 +1545,7 @@ public class ParserEntity {
 
 	private int findRoleCard(String partnerTypeName, GraphModel model) {
 		int partnerCard = Association.ONE;
-		if(partnerTypeName == null) {
+		if (partnerTypeName == null) {
 			return partnerCard;
 		}
 		int _openAngleBracket = partnerTypeName.indexOf("<");
@@ -1572,7 +1570,7 @@ public class ParserEntity {
 
 	private void addMemberAsMethod(SymTabEntry symTabEntry,
 			SimpleKeyValueList<String, SimpleList<SymTabEntry>> symTab) {
-		if(symTabEntry == null) {
+		if (symTabEntry == null) {
 			return;
 		}
 		String fullSignature = symTabEntry.getType();
@@ -1626,7 +1624,7 @@ public class ParserEntity {
 
 	private Method getMethod(Method search) {
 		Clazz clazz = this.getClazz();
-		if(clazz == null) {
+		if (clazz == null) {
 			return search;
 		}
 		MethodSet methods = clazz.getMethods();
@@ -1658,7 +1656,7 @@ public class ParserEntity {
 
 	private boolean isGetterSetter(String methodName, SimpleKeyValueList<String, SimpleList<SymTabEntry>> symTab) {
 		// method starts with: with set get ...
-		if(methodName == null) {
+		if (methodName == null) {
 			return false;
 		}
 		if (methodName.startsWith("with") || methodName.startsWith("set") || methodName.startsWith("get")
@@ -1685,7 +1683,7 @@ public class ParserEntity {
 
 	private boolean isAssoc(String methodName, SimpleKeyValueList<String, SimpleList<SymTabEntry>> symTab) {
 		// method starts with: with set get ...
-		if(methodName == null) {
+		if (methodName == null) {
 			return false;
 		}
 		if (methodName.startsWith("with") || methodName.startsWith("set") || methodName.startsWith("get")
@@ -1720,7 +1718,7 @@ public class ParserEntity {
 
 	private Attribute getAttribtue(String memberName) {
 		Clazz clazz = getClazz();
-		if(clazz == null) {
+		if (clazz == null) {
 			return null;
 		}
 		for (Attribute attribute : clazz.getAttributes()) {
@@ -1741,6 +1739,7 @@ public class ParserEntity {
 		}
 		return null;
 	}
+
 	public SimpleList<SymTabEntry> getSymbolEntries(String type) {
 		if (this.code != null) {
 			return this.code.getSymbolEntries(type);

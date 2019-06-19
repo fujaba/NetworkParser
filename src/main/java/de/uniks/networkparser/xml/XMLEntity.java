@@ -3,7 +3,7 @@ package de.uniks.networkparser.xml;
 /*
 NetworkParser
 The MIT License
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -194,7 +194,7 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 		}
 		return this.tag;
 	}
-	
+
 	public XMLEntity clearChildren() {
 		this.children = null;
 		return this;
@@ -292,7 +292,7 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 			converter.minus();
 			sb.with(converter.getPrefix());
 			if (tag != null) {
-				if("<!--".equals(tag)) {
+				if ("<!--".equals(tag)) {
 					sb.with("--!>");
 				} else {
 					sb.with("</", tag);
@@ -544,10 +544,11 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 		this.valueItem = value;
 		return this;
 	}
+
 	public XMLEntity addComment(String comment) {
-		XMLEntity newComment=new XMLEntity();
+		XMLEntity newComment = new XMLEntity();
 		newComment.withType("<!--");
-		if(comment == null) {
+		if (comment == null) {
 			return this;
 		}
 		newComment.withValueItem(comment);

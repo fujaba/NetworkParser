@@ -3,7 +3,7 @@ package de.uniks.networkparser.list;
 /*
 NetworkParser
 The MIT License
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -131,9 +131,9 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 						}
 					}
 				} else {
-					if(child instanceof Map<?,?>) {
+					if (child instanceof Map<?, ?>) {
 						((SimpleKeyValueList<K, ?>) child).setValueItem((K) keyString.substring(end + 1), value);
-					}else {
+					} else {
 						put((K) keyString.substring(0, len), (V) value);
 					}
 				}
@@ -176,8 +176,8 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 	 * @param key The Value
 	 * @return The truth.
 	 *
-	 * @throws SimpleException If there is no value for the index or if the value
-	 *                          is not convertible to boolean.
+	 * @throws SimpleException If there is no value for the index or if the value is
+	 *                         not convertible to boolean.
 	 */
 	public boolean getBoolean(K key) throws SimpleException {
 		Object value = get(key);
@@ -196,7 +196,7 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 	 * @param key the Value
 	 * @return the value.
 	 * @throws SimpleException If the key is not found or if the value cannot be
-	 *                          converted to a number.
+	 *                         converted to a number.
 	 */
 	public double getDouble(K key) throws SimpleException {
 		Object object = get(key);
@@ -206,11 +206,11 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 			throw new SimpleException("SimpleKeyValueList is not a number.", this);
 		}
 	}
-	
+
 	/**
 	 * Get the double value associated with an index.
 	 *
-	 * @param key the Value
+	 * @param key          the Value
 	 * @param defaultValue DefaultValue
 	 * @return the value.
 	 */
@@ -229,7 +229,7 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 	 * @param key The Value
 	 * @return The value.
 	 * @throws SimpleException If the key is not found or if the value is not a
-	 *                          number.
+	 *                         number.
 	 */
 	public int getInt(K key) throws SimpleException {
 		Object object = get(key);
@@ -255,7 +255,7 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 	 * @param key The Value
 	 * @return The value.
 	 * @throws SimpleException If the key is not found or if the value cannot be
-	 *                          converted to a number.
+	 *                         converted to a number.
 	 */
 	public long getLong(K key) throws SimpleException {
 		Object object = get(key);

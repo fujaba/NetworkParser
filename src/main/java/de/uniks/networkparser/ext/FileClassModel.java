@@ -35,8 +35,9 @@ public class FileClassModel extends ClassModel {
 	private SimpleSet<ParserEntity> error = new SimpleSet<ParserEntity>();
 	private SimpleSet<ParserEntity> list = new SimpleSet<ParserEntity>();
 	private SimpleKeyValueList<String, SimpleList<ParserEntity>> packageList = new SimpleKeyValueList<String, SimpleList<ParserEntity>>();
-	private boolean parseFile=true;
+	private boolean parseFile = true;
 	private ObjectCondition reverseEngineering;
+
 	public FileClassModel(String packageName) {
 		with(packageName);
 	}
@@ -45,9 +46,11 @@ public class FileClassModel extends ClassModel {
 		this.parseFile = value;
 		return this;
 	}
+
 	public boolean readFiles(String path, ObjectCondition... conditions) {
 		return readFiles(path, null, conditions);
 	}
+
 	public boolean readFiles(String path, String type, ObjectCondition... conditions) {
 		ObjectCondition condition = null;
 		if (conditions != null && conditions.length > 0) {
@@ -59,39 +62,40 @@ public class FileClassModel extends ClassModel {
 		if (name.indexOf('.') > 0) {
 			parent = name.substring(0, name.lastIndexOf('.') + 1);
 		}
-		if(path != null) {
-			if((path.endsWith("/") || path.endsWith("\\")) == false) {
-				path +="/";
+		if (path != null) {
+			if ((path.endsWith("/") || path.endsWith("\\")) == false) {
+				path += "/";
 			}
-		}else {
+		} else {
 			path = "";
 		}
-		
+
 		getFiles(new File(path + pkgName), condition, parent);
-		if(parseFile) {
+		if (parseFile) {
 			for (ParserEntity item : list) {
 				analyse(item);
 			}
 		}
 		return true;
 	}
-	
+
 	public boolean finishReverseEngineering() {
 		SimpleEvent event = new SimpleEvent(this, "reverseengineering", null, this.list);
 		return getReverseEngineering().update(event);
 	}
-	
-	
+
 	public SimpleList<String> analyseJavaDoc(boolean fullCheck) {
-		SimpleList<String> errors=new SimpleList<String>();
+		SimpleList<String> errors = new SimpleList<String>();
 		for (ParserEntity item : list) {
 			errors.addAll(analyseJavaDoc(item, fullCheck));
 		}
 		return errors;
 	}
 
-	/** Validates a single java file for the java doc
-	 * @param entity Analyse JavaDoc
+	/**
+	 * Validates a single java file for the java doc
+	 * 
+	 * @param entity    Analyse JavaDoc
 	 * @param fullCheck FullCheck
 	 * @return List f Warnings and Errors
 	 */
@@ -104,7 +108,7 @@ public class FileClassModel extends ClassModel {
 		while (content.isEnd() == false) {
 			lines.add(content.readLine().toString());
 		}
-		SimpleList<String> msg=new SimpleList<String>();
+		SimpleList<String> msg = new SimpleList<String>();
 		String currentPackage = null;
 		for (String s : lines) {
 			if (s.contains("package")) {
@@ -117,7 +121,7 @@ public class FileClassModel extends ClassModel {
 		}
 		/* Set the current file name */
 		String currentFileName = entity.getFileName();
-		
+
 		/* Check the class java doc */
 		msg.addAll(checkClassJavaDoc(content, lines, fullCheck, currentPackage, currentFileName));
 
@@ -130,16 +134,19 @@ public class FileClassModel extends ClassModel {
 	/**
 	 * Checks if there is a java doc over the class declaration
 	 *
-	 * @param text           The text which should be checked
-	 * @param lines          All lines of the current checked file
-	 * @param fullCheck      Should founded warnings or error
-	 * @param currentPackage PackageName
+	 * @param text            The text which should be checked
+	 * @param lines           All lines of the current checked file
+	 * @param fullCheck       Should founded warnings or error
+	 * @param currentPackage  PackageName
 	 * @param currentFileName FileName
 	 * @return All Messages
 	 */
-	private SimpleList<String> checkClassJavaDoc(CharacterBuffer text, SimpleList<String> lines, boolean fullCheck, String currentPackage, String currentFileName) {
+	private SimpleList<String> checkClassJavaDoc(CharacterBuffer text, SimpleList<String> lines, boolean fullCheck,
+			String currentPackage, String currentFileName) {
 		SimpleList<String> msg = new SimpleList<String>();
-		/* First check if the class has java doc, first get the index of "public class" */
+		/*
+		 * First check if the class has java doc, first get the index of "public class"
+		 */
 		int start = text.indexOf("public class");
 
 		/* if the start -1 the class could be abstract */
@@ -227,16 +234,18 @@ public class FileClassModel extends ClassModel {
 				/* Check if there is a line like * some text */
 				if (!Pattern.compile("\\u002A \\w+").matcher(classDoc).find()) {
 					/* There is no text, put a missing doc description error */
-					msg.add("WARNING:" + currentPackage + ".missing.ClassDocText(" + currentFileName + ":"+ lineClass + ")");
+					msg.add("WARNING:" + currentPackage + ".missing.ClassDocText(" + currentFileName + ":" + lineClass
+							+ ")");
 				}
 				/* Check if there is the @author tag with some text */
 				if (classDoc.split("@author").length == 1) {
 					/* There is no tag and no text */
-					msg.add("ERROR:" + currentPackage + ".missing.AuthorTag(" + currentFileName + ":" + lineClass+ ")");
+					msg.add("ERROR:" + currentPackage + ".missing.AuthorTag(" + currentFileName + ":" + lineClass
+							+ ")");
 				} else if (classDoc.split("@author [a-zA-Z]+").length == 1) {
 					/* There is no text after the tag, create warning */
-					msg.add("WARNING:" + currentPackage + ".missing.AuthoTagText(" + currentFileName + ":"
-							+ lineClass + ")");
+					msg.add("WARNING:" + currentPackage + ".missing.AuthoTagText(" + currentFileName + ":" + lineClass
+							+ ")");
 				}
 			}
 			/* Return we found a doc or a incomplete doc */
@@ -245,7 +254,10 @@ public class FileClassModel extends ClassModel {
 
 		/* Only if full check is enable */
 		if (fullCheck) {
-			/* There is no comment in any case over the class definition, therefore create error */
+			/*
+			 * There is no comment in any case over the class definition, therefore create
+			 * error
+			 */
 			msg.add("ERROR:" + currentPackage + ".missing.ClassDoc(" + currentFileName + ":" + lineClass + ")");
 		}
 		return msg;
@@ -254,14 +266,15 @@ public class FileClassModel extends ClassModel {
 	/**
 	 * Checks if there is a java doc over all method declarations
 	 *
-	 * @param text           The text which should be checked
-	 * @param lines          All lines of the current checked file
-	 * @param fullCheck      Should founded warnings or error
-	 * @param currentPackage PackageName
+	 * @param text            The text which should be checked
+	 * @param lines           All lines of the current checked file
+	 * @param fullCheck       Should founded warnings or error
+	 * @param currentPackage  PackageName
 	 * @param currentFileName FileName
 	 * @return All Messages
 	 */
-	private SimpleList<String> checkMethodsJavaDoc(CharacterBuffer text, SimpleList<String> lines, boolean fullCheck, String currentPackage, String currentFileName) {
+	private SimpleList<String> checkMethodsJavaDoc(CharacterBuffer text, SimpleList<String> lines, boolean fullCheck,
+			String currentPackage, String currentFileName) {
 		SimpleList<String> msg = new SimpleList<String>();
 		/* Create a matcher to find all method declarations */
 		Matcher methodPattern = Pattern.compile(
@@ -284,7 +297,10 @@ public class FileClassModel extends ClassModel {
 				}
 			}
 
-			/* If lineMethod still -1 the { is in the next row therefore cut at \n and try again */
+			/*
+			 * If lineMethod still -1 the { is in the next row therefore cut at \n and try
+			 * again
+			 */
 			if (lineMethod == -1) {
 				for (String s : lines) {
 					if (s.contains(match.split("\n")[0])) {
@@ -297,7 +313,9 @@ public class FileClassModel extends ClassModel {
 				continue;
 			}
 
-			/* Check if there is a annotation over the method, if so go to the next method */
+			/*
+			 * Check if there is a annotation over the method, if so go to the next method
+			 */
 			if (lines.get(lineMethod - 2).contains("@")) {
 				continue;
 			}
@@ -350,8 +368,8 @@ public class FileClassModel extends ClassModel {
 										+ lineMethod + ")");
 							} else if (methodDoc.split("@param " + parameterName + "[ ]+[a-zA-Z*\r]+").length == 1) {
 								/* There is no text after the tag, create warning */
-								msg.add("WARNING:" + currentPackage + ".missing.ParamTagText(" + currentFileName
-										+ ":" + lineMethod + ")");
+								msg.add("WARNING:" + currentPackage + ".missing.ParamTagText(" + currentFileName + ":"
+										+ lineMethod + ")");
 							}
 						}
 					}
@@ -376,7 +394,10 @@ public class FileClassModel extends ClassModel {
 
 			/* Only if full check is enable */
 			if (fullCheck) {
-				/* There is no comment in any case over the method definition, therefore create error */
+				/*
+				 * There is no comment in any case over the method definition, therefore create
+				 * error
+				 */
 				msg.add("ERROR:" + currentPackage + ".missing.MethodDoc(" + currentFileName + ":" + lineMethod + ")");
 			}
 		}
@@ -716,8 +737,8 @@ public class FileClassModel extends ClassModel {
 	}
 
 	public ObjectCondition getReverseEngineering() {
-		if(reverseEngineering == null) {
-			reverseEngineering  = new SimpleReverseEngineering();
+		if (reverseEngineering == null) {
+			reverseEngineering = new SimpleReverseEngineering();
 		}
 		return reverseEngineering;
 	}
@@ -726,10 +747,10 @@ public class FileClassModel extends ClassModel {
 		this.reverseEngineering = reverseEngineering;
 		return this;
 	}
-	
+
 	@Override
 	public Object getValue(String attribute) {
-		if(PROPERTY_FILETYPE.equalsIgnoreCase(attribute)) {
+		if (PROPERTY_FILETYPE.equalsIgnoreCase(attribute)) {
 			return getClass().getSuperclass().getSimpleName().toLowerCase();
 		}
 		return super.getValue(attribute);

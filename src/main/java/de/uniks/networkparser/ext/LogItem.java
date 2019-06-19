@@ -70,8 +70,6 @@ public class LogItem extends SendableItem implements SendableEntityCreator {
 		return currentTime;
 	}
 
-	// ==========================================================================
-
 	public String getThreadName() {
 		return this.threadName;
 	}
@@ -90,8 +88,6 @@ public class LogItem extends SendableItem implements SendableEntityCreator {
 		setThreadName(value);
 		return this;
 	}
-
-	// ==========================================================================
 
 	public String getType() {
 		return this.type;
@@ -112,7 +108,6 @@ public class LogItem extends SendableItem implements SendableEntityCreator {
 		return this;
 	}
 
-	// ==========================================================================
 	public String getMessage() {
 		return this.message;
 	}

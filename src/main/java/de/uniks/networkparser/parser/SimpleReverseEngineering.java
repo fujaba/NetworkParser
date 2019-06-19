@@ -16,62 +16,61 @@ import de.uniks.networkparser.list.SimpleSet;
 public class SimpleReverseEngineering implements ObjectCondition {
 
 	public boolean parsing(GraphModel model, SimpleSet<?> lists) {
-		if(lists == null) {
+		if (lists == null) {
 			return true;
 		}
 		// Simple Reverse Engineering
 		int i;
 		SimpleList<ParserEntity> entities = new SimpleList<ParserEntity>();
-		for(i=0;i<lists.size();i++) {
+		for (i = 0; i < lists.size(); i++) {
 			Object child = lists.get(i);
-			if(child != null && child instanceof ParserEntity) {
+			if (child != null && child instanceof ParserEntity) {
 				entities.add(child);
 				ParserEntity entity = (ParserEntity) child;
 				Clazz clazz = entity.getClazz();
 				clazz.setClassModel(model);
 			}
 		}
-		
+
 		// Merge Assoc
-		SimpleList<Association> assocList=new SimpleList<Association>();
-		SimpleKeyValueList<Clazz, Clazz> generations = new SimpleKeyValueList<Clazz, Clazz>(); 
-		for(i=0;i<entities.size();i++) {
+		SimpleList<Association> assocList = new SimpleList<Association>();
+		SimpleKeyValueList<Clazz, Clazz> generations = new SimpleKeyValueList<Clazz, Clazz>();
+		for (i = 0; i < entities.size(); i++) {
 			ParserEntity entity = entities.get(i);
 			Clazz clazz = entity.getClazz();
 			SimpleList<SymTabEntry> symbolEntries;
-			
-			
+
 			symbolEntries = entity.getSymbolEntries(SymTabEntry.TYPE_EXTENDS);
-			if(symbolEntries != null && symbolEntries.size()==1) {
+			if (symbolEntries != null && symbolEntries.size() == 1) {
 				// Java Extends
 				String name = symbolEntries.get(0).getName();
-				Clazz otherClazz  = (Clazz) model.getChildByName(name, Clazz.class);
-				if(otherClazz != null) {
+				Clazz otherClazz = (Clazz) model.getChildByName(name, Clazz.class);
+				if (otherClazz != null) {
 					generations.put(clazz, otherClazz);
 				}
 			}
-			if(Clazz.TYPE_ENUMERATION.equalsIgnoreCase(clazz.getType())) {
+			if (Clazz.TYPE_ENUMERATION.equalsIgnoreCase(clazz.getType())) {
 				SimpleList<SymTabEntry> types = entity.getSymbolEntries(SymTabEntry.TYPE_ENUMVALUE);
-				for(SymTabEntry enumValue: types) {
+				for (SymTabEntry enumValue : types) {
 					String name = enumValue.getName();
-					if(name != null && name.length()>0) {
+					if (name != null && name.length() > 0) {
 						clazz.enableEnumeration(new Literal(name));
 					}
 				}
 				continue;
 			}
 			symbolEntries = entity.getSymbolEntries(SymTabEntry.TYPE_ATTRIBUTE);
-			if(symbolEntries == null) {
+			if (symbolEntries == null) {
 				continue;
 			}
-			for(SymTabEntry symbolEntry : symbolEntries) {
-				if(symbolEntry.getDataType() == null || symbolEntry.getName() == null) {
+			for (SymTabEntry symbolEntry : symbolEntries) {
+				if (symbolEntry.getDataType() == null || symbolEntry.getName() == null) {
 					continue;
 				}
 				String dataType = symbolEntry.getDataType();
 				String name = symbolEntry.getName();
-				Clazz otherClazz  = (Clazz) model.getChildByName(dataType, Clazz.class);
-				if(otherClazz != null) {
+				Clazz otherClazz = (Clazz) model.getChildByName(dataType, Clazz.class);
+				if (otherClazz != null) {
 					// Association
 					Association assoc = new Association(otherClazz).with(Association.ONE).with(name);
 					assoc.with(AssociationTypes.UNDIRECTIONAL);
@@ -80,101 +79,101 @@ public class SimpleReverseEngineering implements ObjectCondition {
 					assocList.add(assoc);
 					continue;
 				}
-				String simpleType =dataType.toLowerCase(); 
-				if(simpleType.startsWith("set<")) {
+				String simpleType = dataType.toLowerCase();
+				if (simpleType.startsWith("set<")) {
 					// MANY ASSOCATION OR ATTRIBUTE
-					String clazzName = dataType.substring(4, dataType.length() -1);
-					otherClazz  = (Clazz) model.getChildByName(clazzName, Clazz.class);
-					
-					//Its is a Assoc
-					if(otherClazz != null ) {
+					String clazzName = dataType.substring(4, dataType.length() - 1);
+					otherClazz = (Clazz) model.getChildByName(clazzName, Clazz.class);
+
+					// Its is a Assoc
+					if (otherClazz != null) {
 						Association assoc = new Association(otherClazz).with(Association.MANY).with(name);
 						assoc.with(AssociationTypes.UNDIRECTIONAL);
 
 						Association otherAssoc = new Association(clazz).with(AssociationTypes.EDGE);
 						assoc.with(otherAssoc);
 						assocList.add(assoc);
-					}else {
-						System.out.println(symbolEntry.getDataType()+":"+symbolEntry.getName());
+					} else {
+						System.out.println(symbolEntry.getDataType() + ":" + symbolEntry.getName());
 					}
 					continue;
 				}
 				// Parsing simple Attributes
-				if(DataType.STRING.equals(simpleType)) {
+				if (DataType.STRING.equals(simpleType)) {
 					// Its a String
 					clazz.createAttribute(name, DataType.STRING);
-				}else if(DataType.INT.equals(simpleType)) {
+				} else if (DataType.INT.equals(simpleType)) {
 					// Its a String
 					clazz.createAttribute(name, DataType.INT);
-				}else if(DataType.DOUBLE.equals(simpleType)) {
+				} else if (DataType.DOUBLE.equals(simpleType)) {
 					// Its a String
 					clazz.createAttribute(name, DataType.DOUBLE);
-				}else if(DataType.DATE.equals(simpleType) || DataType.DATE.getName(true).equalsIgnoreCase(simpleType)) {
+				} else if (DataType.DATE.equals(simpleType)
+						|| DataType.DATE.getName(true).equalsIgnoreCase(simpleType)) {
 					// Its a String
 					clazz.createAttribute(name, DataType.DATE);
-				}else {
-					System.out.println(symbolEntry.getDataType()+":"+symbolEntry.getName());
+				} else {
+					System.out.println(symbolEntry.getDataType() + ":" + symbolEntry.getName());
 				}
 			}
 		}
-		
+
 		// Last Step is to find Bidirectional Associaton
-		for(i=assocList.size()-1;i>=0;i--) {
-			// Try to make bidrection Assoc and 
+		for (i = assocList.size() - 1; i >= 0; i--) {
+			// Try to make bidrection Assoc and
 			Association valueAssoc = assocList.get(i);
-			if(valueAssoc == null) {
+			if (valueAssoc == null) {
 				continue;
 			}
 			Clazz searchClazz = valueAssoc.getOtherClazz();
-			for(int j=i-1;j>=0;j--) {
+			for (int j = i - 1; j >= 0; j--) {
 				Association nextAssoc = assocList.get(j);
-				if(nextAssoc.getClazz() == searchClazz &&
-						nextAssoc.getOtherClazz() == valueAssoc.getClazz()){
+				if (nextAssoc.getClazz() == searchClazz && nextAssoc.getOtherClazz() == valueAssoc.getClazz()) {
 					valueAssoc.with(nextAssoc);
 					assocList.remove(j);
 					break;
 				}
 			}
 		}
-		
+
 		// Add all Assoc to Clazzes
-		for(i=assocList.size()-1;i>=0;i--) {
+		for (i = assocList.size() - 1; i >= 0; i--) {
 			Association valueAssoc = assocList.get(i);
-			if(valueAssoc == null) {
+			if (valueAssoc == null) {
 				continue;
 			}
 			GraphUtil.withChildren(valueAssoc.getClazz(), valueAssoc);
 			Association otherAssoc = valueAssoc.getOther();
-			if(otherAssoc.getName() == null) {
+			if (otherAssoc.getName() == null) {
 				System.out.println("UNDIRECTIONAL");
 			}
 			GraphUtil.withChildren(otherAssoc.getClazz(), otherAssoc);
 		}
-		
+
 		// Add Generation
-		for(i=0;i<generations.size();i++) {
+		for (i = 0; i < generations.size(); i++) {
 			Clazz clazz = generations.getKeyByIndex(i);
 			Clazz otherClazz = generations.getValueByIndex(i);
 			clazz.withSuperClazz(otherClazz);
 		}
-		Clazz otherClazz  = (Clazz) model.getChildByName("BillingUnit", Clazz.class);
+		Clazz otherClazz = (Clazz) model.getChildByName("BillingUnit", Clazz.class);
 		System.out.println(otherClazz);
-		
+
 		return true;
 	}
 
 	@Override
 	public boolean update(Object value) {
-		if(value instanceof SimpleEvent == false) {
+		if (value instanceof SimpleEvent == false) {
 			return false;
 		}
 		SimpleEvent evt = (SimpleEvent) value;
-		if(evt.getSource() instanceof  GraphModel == false || evt.getNewValue() instanceof SimpleSet<?> == false) {
+		if (evt.getSource() instanceof GraphModel == false || evt.getNewValue() instanceof SimpleSet<?> == false) {
 			return false;
 		}
 		SimpleSet<?> lists = (SimpleSet<?>) evt.getNewValue();
 		GraphModel source = (GraphModel) evt.getSource();
 		return parsing(source, lists);
-		
+
 	}
 }

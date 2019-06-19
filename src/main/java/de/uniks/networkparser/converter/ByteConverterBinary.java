@@ -3,7 +3,7 @@ package de.uniks.networkparser.converter;
 /*
 NetworkParser
 The MIT License
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -45,7 +45,7 @@ public class ByteConverterBinary extends ByteConverter {
 	@Override
 	public String toString(BufferedBuffer values) {
 		StringBuilder sb = new StringBuilder();
-		if(values == null) {
+		if (values == null) {
 			return sb.toString();
 		}
 		for (int z = 0; z < values.length(); z++) {
@@ -73,13 +73,13 @@ public class ByteConverterBinary extends ByteConverter {
 	 */
 	@Override
 	public byte[] decode(CharSequence value) {
-		if(value == null) {
+		if (value == null) {
 			return null;
 		}
 		int n = value.length();
 		byte[] out = new byte[n / 8];
 
-		if(n<8 || n%8 > 0) {
+		if (n < 8 || n % 8 > 0) {
 			return null;
 		}
 

@@ -33,15 +33,17 @@ final class DataBlock {
 	 *         representation in the QR Code
 	 */
 	static DataBlock[] getDataBlocks(byte[] rawCodewords, Version version, ErrorCorrectionLevel ecLevel) {
-		if(rawCodewords == null || version == null) {
+		if (rawCodewords == null || version == null) {
 			return null;
 		}
 		if (rawCodewords.length != version.getTotalCodewords()) {
 			return null;
 		}
 
-		/* Figure out the number and size of data blocks used by this version and
-		   error correction level */
+		/*
+		 * Figure out the number and size of data blocks used by this version and error
+		 * correction level
+		 */
 		Version.ECB ecBlock = version.getECBlocksForLevel(ecLevel);
 		if (ecBlock == null) {
 			return null;
@@ -49,7 +51,9 @@ final class DataBlock {
 		/* First count the total number of data blocks */
 		int totalBlocks = ecBlock.getNumBlocks();
 
-		/* Now establish DataBlocks of the appropriate size and number of data codewords */
+		/*
+		 * Now establish DataBlocks of the appropriate size and number of data codewords
+		 */
 		DataBlock[] result = new DataBlock[totalBlocks];
 		int numResultBlocks = 0;
 		Version.ECB element = ecBlock;
@@ -62,8 +66,10 @@ final class DataBlock {
 			element = element.next();
 		}
 
-		/* All blocks have the same amount of data, except that the last n
-		   (where n may be 0) have 1 more byte. Figure out where these start. */
+		/*
+		 * All blocks have the same amount of data, except that the last n (where n may
+		 * be 0) have 1 more byte. Figure out where these start.
+		 */
 		int shorterBlocksTotalCodewords = result[0].codewords.length;
 		int longerBlocksStartAt = result.length - 1;
 		while (longerBlocksStartAt >= 0) {
@@ -76,8 +82,10 @@ final class DataBlock {
 		longerBlocksStartAt++;
 
 		int shorterBlocksNumDataCodewords = shorterBlocksTotalCodewords - ecBlock.getECCodewordsPerBlock();
-		/* The last elements of result may be 1 element longer;
-		   first fill out as many elements as all of them have */
+		/*
+		 * The last elements of result may be 1 element longer; first fill out as many
+		 * elements as all of them have
+		 */
 		int rawCodewordsOffset = 0;
 		for (int i = 0; i < shorterBlocksNumDataCodewords; i++) {
 			for (int j = 0; j < numResultBlocks; j++) {

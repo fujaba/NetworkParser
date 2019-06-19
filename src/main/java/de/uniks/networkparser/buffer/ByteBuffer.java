@@ -30,7 +30,7 @@ public class ByteBuffer extends BufferedBuffer {
 	@Override
 	public CharacterBuffer subSequence(int start, int end) {
 		int len = end - start;
-		if(len < 0 || buffer == null) {
+		if (len < 0 || buffer == null) {
 			return new CharacterBuffer();
 		}
 		byte[] sub = new byte[len];
@@ -44,7 +44,7 @@ public class ByteBuffer extends BufferedBuffer {
 
 	public ByteBuffer withBufferLength(int length) {
 		super.withLength(length);
-		if(length>=0) {
+		if (length >= 0) {
 			this.buffer = new byte[length];
 		}
 		return this;
@@ -100,7 +100,7 @@ public class ByteBuffer extends BufferedBuffer {
 
 	public byte[] getValue(int start, int len) {
 		this.withPosition(start);
-		if(len<0) {
+		if (len < 0) {
 			len = 0;
 		}
 		byte[] array = new byte[len];
@@ -181,15 +181,15 @@ public class ByteBuffer extends BufferedBuffer {
 			} else {
 				newSize = length + len;
 			}
-			if(newSize<0) {
-				newSize =0;
+			if (newSize < 0) {
+				newSize = 0;
 			}
 			byte[] oldBuffer = this.buffer;
 			this.buffer = new byte[newSize];
 			int oldSize = 0;
 			if (oldBuffer != null) {
 				oldSize = oldBuffer.length;
-				if(length>0) {
+				if (length > 0) {
 					System.arraycopy(oldBuffer, oldBuffer.length - length, this.buffer, newSize - length, length);
 				}
 			}
@@ -422,9 +422,9 @@ public class ByteBuffer extends BufferedBuffer {
 	public ByteBuffer with(byte[] array) {
 		this.buffer = array;
 		this.position = 0;
-		if(array != null) {
+		if (array != null) {
 			this.length = array.length;
-		}else {
+		} else {
 			this.length = 0;
 		}
 		return this;
@@ -472,7 +472,7 @@ public class ByteBuffer extends BufferedBuffer {
 
 	public ByteBuffer with(byte[] array, int len) {
 		this.position = 0;
-		if(array == null) {
+		if (array == null) {
 			return this;
 		}
 		if (len < 0 || len > array.length) {

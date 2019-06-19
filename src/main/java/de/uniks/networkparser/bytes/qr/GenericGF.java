@@ -106,7 +106,7 @@ public final class GenericGF {
 	 * @return 2 to the power of a in GF(size)
 	 */
 	int exp(int a) {
-		if(a<0 || expTable == null || a>=expTable.length) {
+		if (a < 0 || expTable == null || a >= expTable.length) {
 			return Integer.MIN_VALUE;
 		}
 		return expTable[a];
@@ -116,7 +116,7 @@ public final class GenericGF {
 	 * @return base 2 log of a in GF(size)
 	 */
 	int log(int a) {
-		if (a <= 0 || logTable == null || a>=logTable.length) {
+		if (a <= 0 || logTable == null || a >= logTable.length) {
 			return Integer.MIN_VALUE;
 		}
 		return logTable[a];
@@ -126,7 +126,7 @@ public final class GenericGF {
 	 * @return multiplicative inverse of a
 	 */
 	int inverse(int a) {
-		if (a <= 0 || logTable == null || a >logTable.length) {
+		if (a <= 0 || logTable == null || a > logTable.length) {
 			return Integer.MIN_VALUE;
 		}
 		return expTable[size - logTable[a] - 1];
@@ -139,7 +139,7 @@ public final class GenericGF {
 		if (a == 0 || b == 0) {
 			return 0;
 		}
-		if(a<0 || b<0 || a>logTable.length || b>logTable.length) {
+		if (a < 0 || b < 0 || a > logTable.length || b > logTable.length) {
 			return 0;
 		}
 		return expTable[(logTable[a] + logTable[b]) % (size - 1)];

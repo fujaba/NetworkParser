@@ -19,8 +19,9 @@ public final class GenericGFPoly {
 	private int[] coefficients;
 
 	public GenericGFPoly() {
-		
+
 	}
+
 	/**
 	 * @param field        the {@link GenericGF} instance representing the field to
 	 *                     use to perform computations
@@ -35,7 +36,9 @@ public final class GenericGFPoly {
 		this.field = field;
 		int coefficientsLength = coefficients.length;
 		if (coefficientsLength > 1 && coefficients[0] == 0) {
-			/* Leading term must be non-zero for anything except the constant polynomial "0" */
+			/*
+			 * Leading term must be non-zero for anything except the constant polynomial "0"
+			 */
 			int firstNonZero = 1;
 			while (firstNonZero < coefficientsLength && coefficients[firstNonZero] == 0) {
 				firstNonZero++;
@@ -59,7 +62,7 @@ public final class GenericGFPoly {
 	 * @return degree of this polynomial
 	 */
 	int getDegree() {
-		if(coefficients == null) {
+		if (coefficients == null) {
 			return 0;
 		}
 		return coefficients.length - 1;
@@ -76,7 +79,7 @@ public final class GenericGFPoly {
 	 * @return coefficient of x^degree term in this polynomial
 	 */
 	int getCoefficient(int degree) {
-		if(coefficients == null) {
+		if (coefficients == null) {
 			return 0;
 		}
 		return coefficients[coefficients.length - 1 - degree];
@@ -126,7 +129,9 @@ public final class GenericGFPoly {
 		}
 		int[] sumDiff = new int[largerCoefficients.length];
 		int lengthDiff = largerCoefficients.length - smallerCoefficients.length;
-		/* Copy high-order terms only found in higher-degree polynomial's coefficients */
+		/*
+		 * Copy high-order terms only found in higher-degree polynomial's coefficients
+		 */
 		System.arraycopy(largerCoefficients, 0, sumDiff, 0, lengthDiff);
 
 		for (int i = lengthDiff; i < largerCoefficients.length; i++) {
@@ -158,7 +163,7 @@ public final class GenericGFPoly {
 	}
 
 	GenericGFPoly multiply(int scalar) {
-		if(field == null) {
+		if (field == null) {
 			return this;
 		}
 		if (scalar == 0) {

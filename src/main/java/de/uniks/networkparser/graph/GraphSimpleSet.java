@@ -5,7 +5,7 @@ import java.util.Comparator;
 /*
 NetworkParser
 The MIT License
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -29,12 +29,13 @@ import de.uniks.networkparser.list.SimpleSet;
 
 public class GraphSimpleSet extends SimpleSet<GraphMember> implements Comparator<Object> {
 	private boolean comparator = true;
+
 	public static GraphSimpleSet create(boolean comparator) {
 		GraphSimpleSet set = new GraphSimpleSet();
 		set.comparator = comparator;
 		return set;
 	}
-	
+
 	@Override
 	protected boolean checkValue(Object a, Object b) {
 		if (a instanceof GraphMember == false) {
@@ -63,7 +64,7 @@ public class GraphSimpleSet extends SimpleSet<GraphMember> implements Comparator
 	public boolean isComparator() {
 		return comparator;
 	}
-	
+
 	public int compare(Object o1, Object o2) {
 		if (o1 instanceof GraphMember == false || o2 instanceof GraphMember == false) {
 			return 0;

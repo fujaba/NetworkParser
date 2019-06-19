@@ -4,7 +4,7 @@ import de.uniks.networkparser.SendableItem;
 /*
 The MIT License
 
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -61,16 +61,16 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 	protected long receivetime;
 	protected long lastSendTryTime;
 	protected long receiveBytes;
-	protected long sendBytes; // Full bytes
-	protected int lastSendCount; // Count of success sending
-	protected String version; // Runtimeversion of App
-	protected boolean online; // Boolean if last send is success
-	protected String history; // Hashcode of last Message
-	protected ObjectCondition filter; // Filter of World
+	protected long sendBytes; /* Full bytes */
+	protected int lastSendCount; /* Count of success sending */
+	protected String version; /* Runtimeversion of App */
+	protected boolean online; /* Boolean if last send is success */
+	protected String history; /* Hashcode of last Message */
+	protected ObjectCondition filter; /* Filter of World */
 	protected long no;
 	protected Space space;
 	protected String name;
-	protected NodeProxy nextNode; // NextPeer for MyNodes
+	protected NodeProxy nextNode; /* NextPeer for MyNodes */
 
 	public String[] getUpdateProperties() {
 		return propertyUpdate.getList();
@@ -142,9 +142,7 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 	}
 
 	public NodeProxy withType(String value) {
-		// if output is not configured, we don't allow OUT or INOUT as value...
-		// if(value.isInput()){
-		// }
+		/* if output is not configured, we don't allow OUT or INOUT as value... */
 		this.type = value;
 		return this;
 	}
@@ -158,9 +156,9 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 	}
 
 	public void setSendTime(int bytes) {
-//		Long oldValue = sendtime;
+		Long oldValue = sendtime;
 		this.sendtime = System.currentTimeMillis();
-//		firePropertyChange(PROPERTY_SEND, oldValue, sendtime);
+		firePropertyChange(PROPERTY_SEND, oldValue, sendtime);
 		this.lastSendCount = 0;
 	}
 
@@ -187,9 +185,9 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 	}
 
 	public void setReceiveTime() {
-//		Long oldValue = receivetime;
+		Long oldValue = receivetime;
 		this.receivetime = System.currentTimeMillis();
-//		firePropertyChange(PROPERTY_RECEIVE, oldValue, receivetime);
+		firePropertyChange(PROPERTY_RECEIVE, oldValue, receivetime);
 	}
 
 	public Long getReceiveTime() {
@@ -236,10 +234,11 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 	public String getHistory() {
 		return history;
 	}
+
 	public Integer getHistoryNo() {
 		try {
-			return Integer.valueOf(history);			
-		}catch (Exception e) {
+			return Integer.valueOf(history);
+		} catch (Exception e) {
 		}
 		return null;
 	}
@@ -409,7 +408,7 @@ public abstract class NodeProxy extends SendableItem implements Comparable<NodeP
 		if (this.space != null) {
 			return this.space.getExecutor();
 		}
-		// Fallback
+		/* Fallback */
 		return new SimpleExecutor();
 	}
 

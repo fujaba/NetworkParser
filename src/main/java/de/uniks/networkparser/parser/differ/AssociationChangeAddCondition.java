@@ -20,7 +20,7 @@ public class AssociationChangeAddCondition extends MatchCondition {
 
 	@Override
 	protected boolean calculateFileDiffs(GraphModel model, GraphMatcher matches, Match match) {
-		if(match == null || matches == null || match.getOtherMatch() == null) {
+		if (match == null || matches == null || match.getOtherMatch() == null) {
 			return false;
 		}
 		Association oldAssociation = (Association) match.getMatch();
@@ -38,7 +38,7 @@ public class AssociationChangeAddCondition extends MatchCondition {
 
 	@Override
 	protected boolean calculateModelDiffs(GraphModel model, GraphMatcher matches, Match match) {
-		if(match == null || matches == null || match.getOtherMatch() == null) {
+		if (match == null || matches == null || match.getOtherMatch() == null) {
 			return false;
 		}
 		Association oldAssociation = (Association) match.getOtherMatch().getMatch();

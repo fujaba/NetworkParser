@@ -7,7 +7,7 @@ import de.uniks.networkparser.interfaces.SendableEntityCreator;
 /*
 NetworkParser
 The MIT License
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -42,7 +42,7 @@ public class EntityCreator implements SendableEntityCreator, SendableEntityCreat
 	private boolean keyValue;
 	/** NameSpace of XML. */
 	private String nameSpace = "";
-	
+
 	public static final EntityCreator createJson(boolean keyValue) {
 		EntityCreator entity = new EntityCreator();
 		entity.factory = new JsonArray();
@@ -56,7 +56,7 @@ public class EntityCreator implements SendableEntityCreator, SendableEntityCreat
 		entity.properties = new String[] { XMLEntity.PROPERTY_TAG, XMLEntity.PROPERTY_VALUE };
 		return entity;
 	}
-	
+
 	@Override
 	public String[] getProperties() {
 		return this.properties;
@@ -72,10 +72,10 @@ public class EntityCreator implements SendableEntityCreator, SendableEntityCreat
 		this.nameSpace = namespace;
 		return this;
 	}
-	
+
 	@Override
 	public Object getSendableInstance(boolean prototyp) {
-		if(factory != null) {
+		if (factory != null) {
 			return factory.getNewList(keyValue);
 		}
 		return null;
@@ -83,10 +83,10 @@ public class EntityCreator implements SendableEntityCreator, SendableEntityCreat
 
 	@Override
 	public Object getValue(Object entity, String attribute) {
-		if(entity == null) {
+		if (entity == null) {
 			return null;
 		}
-		if(entity instanceof XMLEntity) {
+		if (entity instanceof XMLEntity) {
 			XMLEntity item = (XMLEntity) entity;
 			if (XMLEntity.PROPERTY_TAG.equalsIgnoreCase(attribute)) {
 				return item.getTag();
@@ -95,18 +95,18 @@ public class EntityCreator implements SendableEntityCreator, SendableEntityCreat
 				return item.getValue();
 			}
 		}
-		if(entity instanceof Entity) {
+		if (entity instanceof Entity) {
 			return ((Entity) entity).getValue(attribute);
 		}
 		return entity.toString();
 	}
-	
+
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value, String type) {
 		if (SendableEntityCreator.REMOVE_YOU.equalsIgnoreCase(type) || entity == null) {
 			return false;
 		}
-		if(entity instanceof XMLEntity) {
+		if (entity instanceof XMLEntity) {
 			XMLEntity item = (XMLEntity) entity;
 			if (XMLEntity.PROPERTY_TAG.equalsIgnoreCase(attribute)) {
 				item.withType("" + value);
@@ -128,22 +128,22 @@ public class EntityCreator implements SendableEntityCreator, SendableEntityCreat
 			}
 			return true;
 		}
-		if(entity instanceof JsonArray) {
+		if (entity instanceof JsonArray) {
 			JsonArray item = (JsonArray) entity;
 			item.withValue((String) value);
 			return true;
 		}
-		if(entity instanceof JsonObject) {
+		if (entity instanceof JsonObject) {
 			JsonObject json = (JsonObject) entity;
-	        if (VALUE.equals(attribute)) {
-	        	json.withValue((String) value);
-	        } else {
-	            json.withKeyValue(attribute, value);
-	        }
+			if (VALUE.equals(attribute)) {
+				json.withValue((String) value);
+			} else {
+				json.withKeyValue(attribute, value);
+			}
 		}
 		return false;
 	}
-	
+
 	@Override
 	public String getTag() {
 		if (nameSpace != null) {

@@ -24,6 +24,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import javax.net.ssl.X509TrustManager;
 
 /**
@@ -68,7 +69,7 @@ class ServerTrustManager implements X509TrustManager {
 	 *         certificate.
 	 */
 	public static List<String> getPeerIdentity(X509Certificate x509Certificate) {
-		// Look the identity in the subjectAltName extension if available
+		/* Look the identity in the subjectAltName extension if available */
 		List<String> names = getSubjectAlternativeNames(x509Certificate);
 		if (names.isEmpty() && x509Certificate != null) {
 			String name = x509Certificate.getSubjectDN().getName();
@@ -76,7 +77,7 @@ class ServerTrustManager implements X509TrustManager {
 			if (matcher.find()) {
 				name = matcher.group(2);
 			}
-			// Create an array with the unique identity
+			/* Create an array with the unique identity */
 			names = new ArrayList<String>();
 			names.add(name);
 		}
@@ -95,12 +96,12 @@ class ServerTrustManager implements X509TrustManager {
 	 **/
 	private static List<String> getSubjectAlternativeNames(X509Certificate certificate) {
 		List<String> identities = new ArrayList<String>();
-		if(certificate == null) {
+		if (certificate == null) {
 			return identities;
 		}
 		try {
 			Collection<List<?>> altNames = certificate.getSubjectAlternativeNames();
-			// Check that the certificate includes the SubjectAltName extension
+			/* Check that the certificate includes the SubjectAltName extension */
 			if (altNames == null) {
 				return Collections.emptyList();
 			}

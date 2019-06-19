@@ -18,7 +18,7 @@ public class AssociationChangeCondition extends MatchCondition {
 
 	@Override
 	protected boolean checkCondition(GraphMatcher matches, Match match) {
-		if(match == null || matches == null) {
+		if (match == null || matches == null) {
 			return false;
 		}
 		Association association = (Association) match.getMatch();
@@ -35,7 +35,7 @@ public class AssociationChangeCondition extends MatchCondition {
 
 	@Override
 	protected boolean calculateDiffs(GraphMatcher matches, Match match) {
-		if(match == null || matches == null) {
+		if (match == null || matches == null) {
 			return false;
 		}
 		Association sourceAssociation = (Association) match.getMatch();
@@ -56,7 +56,7 @@ public class AssociationChangeCondition extends MatchCondition {
 
 	private boolean addChange(GraphMatcher matches, Match match, Association sourceAssociation,
 			Association otherAssociation) {
-		if(match == null || matches == null) {
+		if (match == null || matches == null) {
 			return false;
 		}
 		if (matches.getMetaModel() != null && (match.isSourceMatch() || match.isMetaMatch())) {
@@ -71,7 +71,7 @@ public class AssociationChangeCondition extends MatchCondition {
 
 	private boolean updateType(GraphMatcher matches, Match match, Association sourceAssociation,
 			Association otherAssociation) {
-		if(match == null || matches == null) {
+		if (match == null || matches == null) {
 			return false;
 		}
 		return sourceAssociation.getOtherClazz().getName().equals(otherAssociation.getOtherClazz().getName()) == false
@@ -80,7 +80,7 @@ public class AssociationChangeCondition extends MatchCondition {
 	}
 
 	private boolean checkSimiliarNames(Association sourceAssociation, Association otherAssociation) {
-		if(sourceAssociation == null || otherAssociation == null || sourceAssociation.getType() == null) {
+		if (sourceAssociation == null || otherAssociation == null || sourceAssociation.getType() == null) {
 			return false;
 		}
 		if (sourceAssociation.getType().equals(AssociationTypes.UNDIRECTIONAL)

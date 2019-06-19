@@ -3,7 +3,7 @@ package de.uniks.networkparser;
 /*
 The MIT License
 
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -24,6 +24,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 import java.util.List;
+
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.list.SimpleList;
@@ -186,7 +187,7 @@ public class TextDiff {
 
 	private TextDiff splitValue(Entity item, char type) {
 		TextDiff diff = new TextDiff();
-		if(item == null) {
+		if (item == null) {
 			return diff;
 		}
 		for (int i = 0; i < item.size(); i++) {
@@ -224,7 +225,7 @@ public class TextDiff {
 
 	private TextDiff splitValue(List<?> item, char type) {
 		TextDiff diff = new TextDiff();
-		if(item == null) {
+		if (item == null) {
 			return diff;
 		}
 		for (int i = 0; i < item.size(); i++) {

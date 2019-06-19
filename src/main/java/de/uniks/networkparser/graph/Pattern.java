@@ -85,7 +85,7 @@ public class Pattern implements Iterator<Object>, Iterable<Object> {
 
 	private boolean addToChain(Pattern value) {
 		SimpleSet<Pattern> myChain = getChain();
-		if(myChain != null) {
+		if (myChain != null) {
 			return myChain.add(value);
 		}
 		return false;
@@ -121,7 +121,7 @@ public class Pattern implements Iterator<Object>, Iterable<Object> {
 
 	public boolean find() {
 		SimpleSet<Pattern> chain = getChain();
-		if(chain == null) {
+		if (chain == null) {
 			return false;
 		}
 		Pattern last = chain.last();
@@ -138,7 +138,7 @@ public class Pattern implements Iterator<Object>, Iterable<Object> {
 	@Override
 	public boolean hasNext() {
 		SimpleSet<Pattern> chain = getChain();
-		if(chain == null) {
+		if (chain == null) {
 			return false;
 		}
 		Pattern last = chain.last();

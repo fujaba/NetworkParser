@@ -84,7 +84,7 @@ public class UpdateCondition implements ObjectCondition {
 
 	public static UpdateCondition createAcumulateCondition(IdMap map) {
 		UpdateCondition condition = new UpdateCondition();
-		if(map != null) {
+		if (map != null) {
 			condition.tokener = map.getMapListener().getTokener();
 		}
 		condition.map = map;
@@ -131,20 +131,20 @@ public class UpdateCondition implements ObjectCondition {
 		}
 		return this;
 	}
-	
+
 	public UpdateCondition withStart(Object startClass) {
 		this.owner = startClass;
-		if(map != null) {
-			if (startClass instanceof Class<?> ) { 
+		if (map != null) {
+			if (startClass instanceof Class<?>) {
 				Class<?> subClass = (Class<?>) startClass;
 				this.creator = map.getCreator(subClass.getName(), true);
-			}else {
+			} else {
 				this.creator = map.getCreatorClass(startClass);
 			}
 		}
 		return this;
 	}
-	
+
 	public UpdateCondition withEnd(String property) {
 		this.endProperty = property;
 		return this;
@@ -158,11 +158,11 @@ public class UpdateCondition implements ObjectCondition {
 	public UpdateCondition withEnd(String property, Object endClass) {
 		this.endClass = endClass;
 		this.endProperty = property;
-		if(map != null) {
-			if (endClass instanceof Class<?> ) { 
+		if (map != null) {
+			if (endClass instanceof Class<?>) {
 				Class<?> subClass = (Class<?>) endClass;
 				this.creator = map.getCreator(subClass.getName(), true);
-			}else {
+			} else {
 				this.creator = map.getCreatorClass(endClass);
 			}
 		}
@@ -199,7 +199,7 @@ public class UpdateCondition implements ObjectCondition {
 				return false;
 			}
 			Object source = event.getSource();
-			if(source instanceof IdMap) {
+			if (source instanceof IdMap) {
 				IdMap map = (IdMap) source;
 				return map.getKey(event.getModelValue()) == null && map.getKey(event.getNewValue()) == null;
 			}
@@ -234,7 +234,7 @@ public class UpdateCondition implements ObjectCondition {
 					return true;
 				}
 			}
-			
+
 			if (this.changes != null) {
 				this.changes.add(event);
 				// Check for End
@@ -264,14 +264,15 @@ public class UpdateCondition implements ObjectCondition {
 						SendableEntityCreator creator = map.getCreatorClass(event.getModelValue());
 						if (creator != null && this.creator == creator) {
 							if (this.condition != null) {
-								
-								SimpleEvent eventTransaction = new SimpleEvent(this, "transaction", null, mergeChanges()); 
+
+								SimpleEvent eventTransaction = new SimpleEvent(this, "transaction", null,
+										mergeChanges());
 								return this.condition.update(eventTransaction);
 							}
 							this.changes = null;
 							return true;
 						}
-						
+
 					}
 				}
 			}
@@ -279,42 +280,42 @@ public class UpdateCondition implements ObjectCondition {
 		}
 		return false;
 	}
-	
+
 	public Object mergeChanges() {
-		if(this.changes== null) {
+		if (this.changes == null) {
 			return null;
 		}
 		Entity mergeChange = null;
 		Entity mergeUpdate = null;
-		
-		for(Object change : this.changes) {
-			if(change instanceof SimpleEvent == false) {
+
+		for (Object change : this.changes) {
+			if (change instanceof SimpleEvent == false) {
 				continue;
 			}
 			SimpleEvent evt = (SimpleEvent) change;
 			Entity entity = evt.getEntity();
-			if(mergeChange == null) {
+			if (mergeChange == null) {
 				mergeChange = (Entity) entity.getNewList(true);
 				// Copy first One
-				for(int i = 0;i<entity.size();i++) {
+				for (int i = 0; i < entity.size(); i++) {
 					String key = entity.getKeyByIndex(i);
 					Object value = entity.getValueByIndex(i);
 					mergeChange.put(key, value);
-					if(SendableEntityCreator.UPDATE.equals(key)) {
+					if (SendableEntityCreator.UPDATE.equals(key)) {
 						mergeUpdate = (Entity) value;
 					}
 				}
-			}else {
-				for(int i = 0;i<entity.size();i++) {
+			} else {
+				for (int i = 0; i < entity.size(); i++) {
 					String key = entity.getKeyByIndex(i);
-					if(SendableEntityCreator.UPDATE.equals(key)) {
+					if (SendableEntityCreator.UPDATE.equals(key)) {
 						Object value = entity.getValueByIndex(i);
-						if(value instanceof Entity) {
+						if (value instanceof Entity) {
 							Entity valueEntity = (Entity) value;
-							for(int c = 0;c<valueEntity.size();c++) {
+							for (int c = 0; c < valueEntity.size(); c++) {
 								String valueKey = valueEntity.getKeyByIndex(c);
 								Object valueValue = valueEntity.getValueByIndex(c);
-								if(mergeUpdate != null) {
+								if (mergeUpdate != null) {
 									mergeUpdate.put(valueKey, valueValue);
 								}
 							}
@@ -327,7 +328,7 @@ public class UpdateCondition implements ObjectCondition {
 	}
 
 	public boolean changeItem(Object source, Object target, String property) {
-		if(map == null) {
+		if (map == null) {
 			return false;
 		}
 		SendableEntityCreator creator = map.getCreatorClass(source);
@@ -413,7 +414,7 @@ public class UpdateCondition implements ObjectCondition {
 
 	private void addChange(UpdateListener listener, Object source, SendableEntityCreator creator, String property,
 			Object oldValue, Object newValue) {
-		if(listener == null) {
+		if (listener == null) {
 			return;
 		}
 		if (this.change == null) {

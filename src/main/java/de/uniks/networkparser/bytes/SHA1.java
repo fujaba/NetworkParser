@@ -3,7 +3,7 @@ package de.uniks.networkparser.bytes;
 /*
 NetworkParser
 The MIT License
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -60,7 +60,7 @@ public class SHA1 extends Checksum {
 
 	@Override
 	public boolean update(byte[] bytes, int offset, int length) {
-		if(bytes== null || bytes.length<offset) {
+		if (bytes == null || bytes.length < offset) {
 			return false;
 		}
 		if (length >= 4) {
@@ -171,7 +171,7 @@ public class SHA1 extends Checksum {
 	}
 
 	private void putInt(byte[] b, int pos, int val) {
-		if(b== null || pos>b.length-3) {
+		if (b == null || pos > b.length - 3) {
 			return;
 		}
 		b[pos] = (byte) (val >> 24);
@@ -297,7 +297,7 @@ public class SHA1 extends Checksum {
 	}
 
 	public static CharacterBuffer convertToHex(byte[] data) {
-		if(data == null) {
+		if (data == null) {
 			return null;
 		}
 		CharacterBuffer buf = new CharacterBuffer();

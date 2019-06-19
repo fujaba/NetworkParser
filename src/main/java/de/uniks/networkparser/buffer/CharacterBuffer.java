@@ -5,7 +5,7 @@ import java.util.List;
 /*
 NetworkParser
 The MIT License
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -56,7 +56,7 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
 	 */
 	@Override
 	public char charAt(int index) {
-		if ((index < 0) || (index >= length) || buffer == null || start < 0 || index>=buffer.length) {
+		if ((index < 0) || (index >= length) || buffer == null || start < 0 || index >= buffer.length) {
 			return 0;
 		}
 		index += start;
@@ -65,7 +65,7 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
 
 	@Override
 	public byte byteAt(int index) {
-		if ((index < 0) || (index+start >= length())) {
+		if ((index < 0) || (index + start >= length())) {
 			return 0;
 		}
 		index += start;
@@ -115,7 +115,7 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
 		}
 		return new CharacterBuffer().with(this.buffer, start, end, false);
 	}
-	
+
 	/**
 	 * Set the currentVlaue to Buffer
 	 *
@@ -142,7 +142,7 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
 
 	public boolean replace(int start, int end, String replace) {
 		int pos = 0;
-		if(replace == null || buffer == null || start> end || start>buffer.length) {
+		if (replace == null || buffer == null || start > end || start > buffer.length) {
 			return false;
 		}
 		int diff = replace.length() - (end - start);
@@ -176,7 +176,7 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
 			if (diff > 0) {
 				if (oldChar == null) {
 					oldLen = (this.length + this.start) - start;
-					if(oldLen>0) {
+					if (oldLen > 0) {
 						oldChar = new char[oldLen];
 						System.arraycopy(buffer, start, oldChar, 0, oldLen);
 					}
@@ -296,7 +296,7 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
 	 */
 	@Override
 	public char getChar() {
-		if (this.buffer == null || this.position + this.start >= this.buffer.length || this.position + this.start<0) {
+		if (this.buffer == null || this.position + this.start >= this.buffer.length || this.position + this.start < 0) {
 			return 0;
 		}
 		if (this.position < this.length) {
@@ -348,7 +348,7 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
 		} else if (len + start > buffer.length) {
 			char[] oldValue = this.buffer;
 			this.buffer = new char[len + start];
-			if(start<this.length && len>this.length-start) {
+			if (start < this.length && len > this.length - start) {
 				System.arraycopy(oldValue, start, this.buffer, 0, this.length);
 			}
 			start = 0;
@@ -388,8 +388,8 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
 	 */
 	public CharacterBuffer with(char[] values, int start, int end, boolean copy) {
 		if (copy) {
-			if(values != null) {
-				if(start>values.length) {
+			if (values != null) {
+				if (start > values.length) {
 					return this;
 				}
 				this.buffer = new char[end];
@@ -510,34 +510,34 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
 	 * @return the new CharacterBuffer
 	 */
 	public CharacterBuffer with(CharSequence values, int start, int end) {
-		if (values == null || (buffer != null && start>buffer.length)) {
+		if (values == null || (buffer != null && start > buffer.length)) {
 			return this;
 		}
 		if (this.buffer == null) {
 			this.buffer = new char[end - start];
 			length = this.buffer.length;
 			this.position = 0;
-			if(length>0) {
-				for(int i=start;i<values.length();i++) {
-					this.buffer[i-start] = values.charAt(i);
+			if (length > 0) {
+				for (int i = start; i < values.length(); i++) {
+					this.buffer[i - start] = values.charAt(i);
 				}
 			}
 			start = 0;
 		} else {
 			if (this.length() + values.length() > buffer.length) {
 				int newCapacity = (this.length + values.length()) * 2 + 2;
-				if(newCapacity <0) {
-					newCapacity =0;
+				if (newCapacity < 0) {
+					newCapacity = 0;
 				}
 				char[] copy = new char[newCapacity];
-				if(this.start<newCapacity) {
+				if (this.start < newCapacity) {
 					System.arraycopy(buffer, this.start, copy, 0, length);
 					buffer = copy;
 				}
 				this.start = 0;
 			}
 			int len = values.length();
-			if(this.buffer.length >= length + start+len) {
+			if (this.buffer.length >= length + start + len) {
 				for (int c = 0; c < len; c++) {
 					this.buffer[length + start + c] = values.charAt(c);
 				}
@@ -640,14 +640,14 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
 			this.buffer[--start] = item;
 			return this;
 		}
-		if(buffer != null) {
+		if (buffer != null) {
 			char[] oldValue = this.buffer;
 			this.buffer = new char[buffer.length + 1];
 			this.buffer[0] = item;
 			this.position = 0;
 			this.validateValue();
-			if(length>0) {
-				System.arraycopy(oldValue, start, this.buffer, 1, length-1);
+			if (length > 0) {
+				System.arraycopy(oldValue, start, this.buffer, 1, length - 1);
 				this.length++;
 			}
 		}
@@ -662,15 +662,15 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
 	 * @return CharacterBuffer Instance
 	 */
 	public CharacterBuffer withStart(CharSequence item, boolean newLine) {
-		if (item == null || start<0) {
+		if (item == null || start < 0) {
 			return this;
 		}
 		int len = item.length();
 		if (newLine) {
 			len += 2;
 		}
-		if (start > len && start>0) {
-			if(start<buffer.length) {
+		if (start > len && start > 0) {
+			if (start < buffer.length) {
 				if (newLine) {
 					this.buffer[--start] = '\n';
 					this.buffer[--start] = '\r';
@@ -695,7 +695,7 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
 			this.buffer[item.length() + 1] = '\n';
 		}
 		this.position = 0;
-		if (oldValue != null && length>0) {
+		if (oldValue != null && length > 0) {
 			System.arraycopy(oldValue, start, this.buffer, len, length);
 			start = 0;
 		}
@@ -711,8 +711,8 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
 	 */
 	public CharacterBuffer set(CharSequence value) {
 		this.start = 0;
-		if(value == null) {
-			this.length =0;
+		if (value == null) {
+			this.length = 0;
 			this.buffer = null;
 			return this;
 		}
@@ -733,7 +733,7 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
 	 * @return the new CharacterBuffer
 	 */
 	public CharacterBuffer set(char value) {
-		if(buffer == null) {
+		if (buffer == null) {
 			return this;
 		}
 		this.start = 0;
@@ -782,14 +782,14 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
 	 * @return The number of elements remaining in this buffer
 	 */
 	public final int remaining() {
-		if(buffer == null) {
+		if (buffer == null) {
 			return 0;
 		}
 		return buffer.length - start;
 	}
 
 	public char remove(int position) {
-		if(position <0 || this.buffer == null || position > this.buffer.length) {
+		if (position < 0 || this.buffer == null || position > this.buffer.length) {
 			return 0;
 		}
 		char oldChar = this.buffer[position];
@@ -821,28 +821,29 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
 	}
 
 	private boolean validateValue() {
-		if(buffer == null) {
+		if (buffer == null) {
 			this.start = 0;
-			this.length =0;
+			this.length = 0;
 			return true;
 		}
 		boolean change = false;
-		if(this.start < 0 ) {
+		if (this.start < 0) {
 			this.start = 0;
 			change = true;
 		}
-		if(this.length<0) {
+		if (this.length < 0) {
 			this.length = buffer.length - start;
-			if(length<0) {
+			if (length < 0) {
 				length = 0;
 			}
 			change = true;
-		}else if(this.length>buffer.length) {
+		} else if (this.length > buffer.length) {
 			change = true;
 			this.length = buffer.length - start;
 		}
 		return change;
 	}
+
 	public CharacterBuffer rtrim(char... items) {
 		validateValue();
 		if (items != null) {
@@ -874,13 +875,13 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
 	}
 
 	public CharacterBuffer trim() {
-		if(buffer == null) {
+		if (buffer == null) {
 			return this;
 		}
-		if(length>buffer.length) {
+		if (length > buffer.length) {
 			length = buffer.length;
 		}
-		if(start<0 || start>length) {
+		if (start < 0 || start > length) {
 			return this;
 		}
 		while (length > 0 && (buffer[length + start - 1] <= SPACE)) {
@@ -897,11 +898,11 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
 		if (other == null) {
 			return true;
 		}
-		if(start>length || start<0 || buffer == null) {
+		if (start > length || start < 0 || buffer == null) {
 			return false;
 		}
 		int pos = start;
-		if(length()>buffer.length) {
+		if (length() > buffer.length) {
 			length = buffer.length;
 		}
 		int l = 0;
@@ -1016,10 +1017,10 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
 	}
 
 	public boolean isEmptyCharacter() {
-		if (super.isEmpty() || start>length || start<0) {
+		if (super.isEmpty() || start > length || start < 0) {
 			return true;
 		}
-		if(length>buffer.length) {
+		if (length > buffer.length) {
 			length = buffer.length;
 		}
 		int len = length;
@@ -1035,7 +1036,7 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
 	}
 
 	public boolean withRepeat(String string, int rest) {
-		if(string == null) {
+		if (string == null) {
 			return false;
 		}
 		int newCapacity = this.length() + rest * string.length();
@@ -1046,7 +1047,7 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
 		} else {
 			if (newCapacity > buffer.length) {
 				char[] copy = new char[newCapacity];
-				if(length>0 && (start+length) <= buffer.length) {
+				if (length > 0 && (start + length) <= buffer.length) {
 					System.arraycopy(buffer, this.start, copy, 0, length);
 				}
 				buffer = copy;
@@ -1130,7 +1131,7 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
 				buffer = copy;
 				this.start = 0;
 			}
-			if(length>=0 && length<this.buffer.length) {
+			if (length >= 0 && length < this.buffer.length) {
 				this.buffer[length++] = src;
 			}
 		}
@@ -1138,9 +1139,9 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
 	}
 
 	public void trimSize() {
-		if(length() >= 0) {
+		if (length() >= 0) {
 			char[] array = new char[length];
-			if(length>0) {
+			if (length > 0) {
 				System.arraycopy(buffer, this.start, array, 0, length);
 			}
 			this.buffer = array;
@@ -1238,7 +1239,7 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
 	 * @return String of values
 	 */
 	public String getStringPart(Character start, Character end) {
-		if(start == null || end == null) {
+		if (start == null || end == null) {
 			return null;
 		}
 		int count = 1;
@@ -1267,7 +1268,7 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
 	}
 
 	public boolean endsWith(CharSequence string, boolean ignoreCase) {
-		if(string == null) {
+		if (string == null) {
 			return true;
 		}
 		int pos = this.length() - string.length();
@@ -1298,7 +1299,7 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
 		if (validateValue() || position > length) {
 			return "";
 		}
-		
+
 		return new String(buffer, position, length - position);
 	}
 
@@ -1394,7 +1395,7 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
 		}
 		return buffer;
 	}
-	
+
 	/**
 	 * Split Strings
 	 * 
@@ -1403,23 +1404,23 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
 	 */
 	public SimpleList<String> splitStrings(char split) {
 		SimpleList<String> result = new SimpleList<String>();
-		if(start>buffer.length || start<0) {
+		if (start > buffer.length || start < 0) {
 			return result;
 		}
-		int s=start;
-		int i=start;
-		for(;i<size();i++) {
-			if(buffer[i]==split) {
+		int s = start;
+		int i = start;
+		for (; i < size(); i++) {
+			if (buffer[i] == split) {
 				result.add(new String(buffer, s, i - s));
-				s=i+1;
+				s = i + 1;
 			}
 		}
-		if(s<i) {
+		if (s < i) {
 			result.add(new String(buffer, s, i - s));
 		}
 		return result;
 	}
-	
+
 	@Override
 	public int length() {
 		validateValue();
@@ -1431,7 +1432,7 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
 	}
 
 	public boolean setCharAt(int pos, char character) {
-		if(pos<0 || pos>buffer.length) {
+		if (pos < 0 || pos > buffer.length) {
 			return false;
 		}
 		buffer[pos] = character;

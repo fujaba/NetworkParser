@@ -14,17 +14,17 @@ import de.uniks.networkparser.logic.Not;
 import de.uniks.networkparser.logic.VariableCondition;
 
 /**
- * DebugCondition for Debug Templates 
- * create is parsing
- * exeuteTemplate is Execute Template
+ * DebugCondition for Debug Templates create is parsing exeuteTemplate is
+ * Execute Template
+ * 
  * @author Stefan DebugCondition
  */
 public class DebugCondition implements ParserCondition, SendableEntityCreator {
 	public static final String KEY = "debug";
-	private int line=-1;
-	private NetworkParserLog logger=new NetworkParserLog();
+	private int line = -1;
+	private NetworkParserLog logger = new NetworkParserLog();
 	private ObjectCondition condition;
-	
+
 	public DebugCondition withLine(int value) {
 		this.line = value;
 		return this;
@@ -33,27 +33,27 @@ public class DebugCondition implements ParserCondition, SendableEntityCreator {
 	@Override
 	public boolean update(Object evt) {
 		if (condition != null) {
-			if(condition.update(evt)) {
+			if (condition.update(evt)) {
 				Object newValue = null;
-				if(evt instanceof SimpleEvent) {
+				if (evt instanceof SimpleEvent) {
 					SimpleEvent simpleEvt = (SimpleEvent) evt;
 					newValue = simpleEvt.getNewValue();
 				}
 				logger.debug(this, "update", newValue);
 			}
 		}
-		if(evt instanceof TemplateResultFragment) {
+		if (evt instanceof TemplateResultFragment) {
 			exeuteTemplate((TemplateResultFragment) evt);
 		}
-		if(evt instanceof SimpleEvent) {
+		if (evt instanceof SimpleEvent) {
 			SimpleEvent simpleEvt = (SimpleEvent) evt;
-			if(simpleEvt.getSource() instanceof ParserEntity) {
-				if(NetworkParserLog.DEBUG.equals(simpleEvt.getType()) && line>=0) {
+			if (simpleEvt.getSource() instanceof ParserEntity) {
+				if (NetworkParserLog.DEBUG.equals(simpleEvt.getType()) && line >= 0) {
 					logger.debug(this, "update", simpleEvt.getNewValue());
-					if(line==simpleEvt.getIndex()) {
+					if (line == simpleEvt.getIndex()) {
 						logger.debug(this, "update", "DEBUG");
 					}
-				}else if(ParserEntity.ERROR.equals(simpleEvt.getType())) {
+				} else if (ParserEntity.ERROR.equals(simpleEvt.getType())) {
 					logger.error(this, "update", simpleEvt.getNewValue());
 					throw new SimpleException("parse error");
 				}
@@ -61,7 +61,7 @@ public class DebugCondition implements ParserCondition, SendableEntityCreator {
 		}
 		return true;
 	}
-	
+
 	public boolean exeuteTemplate(TemplateResultFragment fragment) {
 		return true;
 	}
@@ -69,28 +69,28 @@ public class DebugCondition implements ParserCondition, SendableEntityCreator {
 	@Override
 	public void create(CharacterBuffer buffer, TemplateParser parser, LocalisationInterface customTemplate) {
 //		 CREATE FIELD
-		if(buffer == null) {
+		if (buffer == null) {
 			return;
 		}
 		// Skip Word
 		// IF CONDITION
 		CharacterBuffer tokenPart = buffer.nextToken(false, SPLITEND, ENTER, '!');
-		if(tokenPart.length()>0) {
+		if (tokenPart.length() > 0) {
 			char currentChar = buffer.getCurrentChar();
 			VariableCondition left = VariableCondition.create(tokenPart, true);
-			if(currentChar == '!' || currentChar == ENTER) {
+			if (currentChar == '!' || currentChar == ENTER) {
 				char nextChar = buffer.getChar();
 				if (nextChar == ENTER) {
 					Equals equalsExpression = new Equals();
 					equalsExpression.withLeft(left);
 					equalsExpression.create(buffer, parser, customTemplate);
-					if(currentChar == '!') {
+					if (currentChar == '!') {
 						condition = new Not().with(equalsExpression);
-					}else {
+					} else {
 						condition = equalsExpression;
 					}
 				}
-			}else {
+			} else {
 				condition = left;
 			}
 			buffer.skip();

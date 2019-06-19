@@ -5,7 +5,7 @@ import de.uniks.networkparser.buffer.CharacterBuffer;
 /*
 NetworkParser
 The MIT License
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -40,7 +40,7 @@ public class Attribute extends Value {
 		super.withValue(value);
 		return this;
 	}
-	
+
 	@Override
 	public Modifier getModifier() {
 		Modifier modifier = super.getModifier();
@@ -82,7 +82,7 @@ public class Attribute extends Value {
 			}
 			return this.value;
 		}
-		if(this.type!= null) {
+		if (this.type != null) {
 			return this.type.getName(shortName);
 		}
 		return null;
@@ -102,7 +102,7 @@ public class Attribute extends Value {
 		CharacterBuffer sb = new CharacterBuffer();
 		sb.with(getName());
 		sb.with(':');
-		if(this.type!= null) {
+		if (this.type != null) {
 			sb.with(this.type.getName(true));
 		}
 		if (getValue(GraphTokener.OBJECTDIAGRAM, false) != null) {

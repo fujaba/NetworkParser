@@ -3,7 +3,7 @@ package de.uniks.networkparser.ext.petaf.proxy;
 /*
 The MIT License
 
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -81,13 +81,9 @@ public class NodeProxyModel extends NodeProxy {
 	public NodeProxy initSpace(Space space) {
 		super.initSpace(space);
 
-		// serialize model
+		/* serialize model */
 		IdMap map = space.getMap();
 		map.put("root", getModel(), true);
-
-//		Object modell = getModell();
-//		BaseItem value = this.space.encode(modell, null);
-//		String data = value.toString();
 
 		return this;
 	}

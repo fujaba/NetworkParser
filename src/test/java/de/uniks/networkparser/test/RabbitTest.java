@@ -15,7 +15,7 @@ public class RabbitTest {
 	public void testStartOK() {
 		RabbitMessage startOK = RabbitMessage.createStartOK();
 		ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
-		startOK.write(byteBuffer);
+		startOK.write(byteBuffer, null);
 		ByteBuffer buffer = new ByteBuffer();
 		buffer.add(byteBuffer.toByteArray());
 		Assert.assertEquals("[]", buffer.toArrayString());

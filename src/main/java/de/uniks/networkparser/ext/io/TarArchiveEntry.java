@@ -54,25 +54,25 @@ import de.uniks.networkparser.SimpleException;
  * 
  * <pre>
  * struct header {
- * char name[100];     // TarConstants.NAMELEN    - offset   0
- * char mode[8];       // TarConstants.MODELEN    - offset 100
- * char uid[8];        // TarConstants.UIDLEN     - offset 108
- * char gid[8];        // TarConstants.GIDLEN     - offset 116
- * char size[12];      // TarConstants.SIZELEN    - offset 124
- * char mtime[12];     // TarConstants.MODTIMELEN - offset 136
- * char chksum[8];     // TarConstants.CHKSUMLEN  - offset 148
- * char linkflag[1];   //                         - offset 156
- * char linkname[100]; // TarConstants.NAMELEN    - offset 157
+ * char name[100];     TarConstants.NAMELEN    - offset   0
+ * char mode[8];       TarConstants.MODELEN    - offset 100
+ * char uid[8];        TarConstants.UIDLEN     - offset 108
+ * char gid[8];        TarConstants.GIDLEN     - offset 116
+ * char size[12];      TarConstants.SIZELEN    - offset 124
+ * char mtime[12];     TarConstants.MODTIMELEN - offset 136
+ * char chksum[8];     TarConstants.CHKSUMLEN  - offset 148
+ * char linkflag[1];                           - offset 156
+ * char linkname[100]; TarConstants.NAMELEN    - offset 157
  * The following fields are only present in new-style POSIX tar archives:
- * char magic[6];      // TarConstants.MAGICLEN   - offset 257
- * char version[2];    // TarConstants.VERSIONLEN - offset 263
- * char uname[32];     // TarConstants.UNAMELEN   - offset 265
- * char gname[32];     // TarConstants.GNAMELEN   - offset 297
- * char devmajor[8];   // TarConstants.DEVLEN     - offset 329
- * char devminor[8];   // TarConstants.DEVLEN     - offset 337
- * char prefix[155];   // TarConstants.PREFIXLEN  - offset 345
- * // Used if "name" field is not long enough to hold the path
- * char pad[12];       // NULs                    - offset 500
+ * char magic[6];      TarConstants.MAGICLEN   - offset 257
+ * char version[2];    TarConstants.VERSIONLEN - offset 263
+ * char uname[32];     TarConstants.UNAMELEN   - offset 265
+ * char gname[32];     TarConstants.GNAMELEN   - offset 297
+ * char devmajor[8];   TarConstants.DEVLEN     - offset 329
+ * char devminor[8];   TarConstants.DEVLEN     - offset 337
+ * char prefix[155];   TarConstants.PREFIXLEN  - offset 345
+ * Used if "name" field is not long enough to hold the path
+ * char pad[12];       NULs                    - offset 500
  * } header;
  * All unused bytes are set to null.
  * New-style GNU tar files are slightly different from the above.
@@ -88,16 +88,16 @@ import de.uniks.networkparser.SimpleException;
  * 
  * <pre>
  * struct oldgnu_header {
- * char unused_pad1[345]; // TarConstants.PAD1LEN_GNU       - offset 0
- * char atime[12];        // TarConstants.ATIMELEN_GNU      - offset 345
- * char ctime[12];        // TarConstants.CTIMELEN_GNU      - offset 357
- * char offset[12];       // TarConstants.OFFSETLEN_GNU     - offset 369
- * char longnames[4];     // TarConstants.LONGNAMESLEN_GNU  - offset 381
- * char unused_pad2;      // TarConstants.PAD2LEN_GNU       - offset 385
- * struct sparse sp[4];   // TarConstants.SPARSELEN_GNU     - offset 386
- * char isextended;       // TarConstants.ISEXTENDEDLEN_GNU - offset 482
- * char realsize[12];     // TarConstants.REALSIZELEN_GNU   - offset 483
- * char unused_pad[17];   // TarConstants.PAD3LEN_GNU       - offset 495
+ * char unused_pad1[345]; TarConstants.PAD1LEN_GNU       - offset 0
+ * char atime[12];        TarConstants.ATIMELEN_GNU      - offset 345
+ * char ctime[12];        TarConstants.CTIMELEN_GNU      - offset 357
+ * char offset[12];       TarConstants.OFFSETLEN_GNU     - offset 369
+ * char longnames[4];     TarConstants.LONGNAMESLEN_GNU  - offset 381
+ * char unused_pad2;      TarConstants.PAD2LEN_GNU       - offset 385
+ * struct sparse sp[4];   TarConstants.SPARSELEN_GNU     - offset 386
+ * char isextended;       TarConstants.ISEXTENDEDLEN_GNU - offset 482
+ * char realsize[12];     TarConstants.REALSIZELEN_GNU   - offset 483
+ * char unused_pad[17];   TarConstants.PAD3LEN_GNU       - offset 495
  * };
  * </pre>
  * 
@@ -105,8 +105,8 @@ import de.uniks.networkparser.SimpleException;
  * 
  * <pre>
  * struct sparse {
- * char offset[12];   // offset 0
- * char numbytes[12]; // offset 12
+ * char offset[12];   offset 0
+ * char numbytes[12]; offset 12
  * };
  * </pre>
  *
@@ -115,26 +115,26 @@ import de.uniks.networkparser.SimpleException;
  * 
  * <pre>
  * struct star_header {
- *  char name[100];		// offset   0
- *  char mode[8];		// offset 100
- *  char uid[8];		// offset 108
- *  char gid[8];		// offset 116
- *  char size[12];		// offset 124
- *  char mtime[12];		// offset 136
- *  char chksum[8];		// offset 148
- *  char typeflag;		// offset 156
- *  char linkname[100];		// offset 157
- *  char magic[6];		// offset 257
- *  char version[2];		// offset 263
- *  char uname[32];		// offset 265
- *  char gname[32];		// offset 297
- *  char devmajor[8];		// offset 329
- *  char devminor[8];		// offset 337
- *  char prefix[131];		// offset 345
- *  char atime[12];             // offset 476
- *  char ctime[12];             // offset 488
- *  char mfill[8];              // offset 500
- *  char xmagic[4];             // offset 508  "tar"
+ *  char name[100];		offset   0
+ *  char mode[8];		offset 100
+ *  char uid[8];		offset 108
+ *  char gid[8];		offset 116
+ *  char size[12];		offset 124
+ *  char mtime[12];		offset 136
+ *  char chksum[8];		offset 148
+ *  char typeflag;		offset 156
+ *  char linkname[100];	offset 157
+ *  char magic[6];		offset 257
+ *  char version[2];	offset 263
+ *  char uname[32];		offset 265
+ *  char gname[32];		offset 297
+ *  char devmajor[8];	offset 329
+ *  char devminor[8];	offset 337
+ *  char prefix[131];	offset 345
+ *  char atime[12];     offset 476
+ *  char ctime[12];     offset 488
+ *  char mfill[8];      offset 500
+ *  char xmagic[4];     offset 508  "tar"
  * };
  * </pre>
  * <p>
@@ -243,9 +243,9 @@ public class TarArchiveEntry {
 	 * the entry is header "by hand". File is set to null.
 	 *
 	 * <p>
-	 * The entry is name will be the value of the {@code name} argument with all file
-	 * separators replaced by forward slashes and leading slashes as well as Windows
-	 * drive letters stripped.
+	 * The entry is name will be the value of the {@code name} argument with all
+	 * file separators replaced by forward slashes and leading slashes as well as
+	 * Windows drive letters stripped.
 	 * </p>
 	 *
 	 * @param name the entry name
@@ -259,9 +259,9 @@ public class TarArchiveEntry {
 	 * the entry is header "by hand". File is set to null.
 	 *
 	 * <p>
-	 * The entry is name will be the value of the {@code name} argument with all file
-	 * separators replaced by forward slashes. Leading slashes and Windows drive
-	 * letters are stripped if {@code preserveAbsolutePath} is {@code false}.
+	 * The entry is name will be the value of the {@code name} argument with all
+	 * file separators replaced by forward slashes. Leading slashes and Windows
+	 * drive letters are stripped if {@code preserveAbsolutePath} is {@code false}.
 	 * </p>
 	 *
 	 * @param name                 the entry name
@@ -274,7 +274,7 @@ public class TarArchiveEntry {
 		this(preserveAbsolutePath);
 
 		name = normalizeFileName(name, preserveAbsolutePath);
-		if(name != null) {
+		if (name != null) {
 			final boolean isDir = name.endsWith("/");
 			this.mode = isDir ? DEFAULT_DIR_MODE : DEFAULT_FILE_MODE;
 			this.linkFlag = isDir ? TarUtils.LF_DIR : TarUtils.LF_NORMAL;
@@ -286,9 +286,9 @@ public class TarArchiveEntry {
 	 * Construct an entry with a name and a link flag.
 	 *
 	 * <p>
-	 * The entry is name will be the value of the {@code name} argument with all file
-	 * separators replaced by forward slashes and leading slashes as well as Windows
-	 * drive letters stripped.
+	 * The entry is name will be the value of the {@code name} argument with all
+	 * file separators replaced by forward slashes and leading slashes as well as
+	 * Windows drive letters stripped.
 	 * </p>
 	 *
 	 * @param name     the entry name
@@ -302,9 +302,9 @@ public class TarArchiveEntry {
 	 * Construct an entry with a name and a link flag.
 	 *
 	 * <p>
-	 * The entry is name will be the value of the {@code name} argument with all file
-	 * separators replaced by forward slashes. Leading slashes and Windows drive
-	 * letters are stripped if {@code preserveAbsolutePath} is {@code false}.
+	 * The entry is name will be the value of the {@code name} argument with all
+	 * file separators replaced by forward slashes. Leading slashes and Windows
+	 * drive letters are stripped if {@code preserveAbsolutePath} is {@code false}.
 	 * </p>
 	 *
 	 * @param name                 the entry name
@@ -446,15 +446,15 @@ public class TarArchiveEntry {
 	 * @return True if entry is a descendant of this.
 	 */
 	public boolean isDescendent(TarArchiveEntry desc) {
-		if(desc == null) {
+		if (desc == null) {
 			return false;
 		}
 		String name = desc.getName();
-		if(name == null) {
+		if (name == null) {
 			return false;
 		}
 		String name2 = getName();
-		if(name2 == null) {
+		if (name2 == null) {
 			return false;
 		}
 		return name.startsWith(name2);
@@ -652,8 +652,8 @@ public class TarArchiveEntry {
 	}
 
 	/**
-	 * Set this entry is modification time. The parameter passed to this method is in
-	 * "Java time".
+	 * Set this entry is modification time. The parameter passed to this method is
+	 * in "Java time".
 	 *
 	 * @param time This entry is new modification time.
 	 */
@@ -667,7 +667,7 @@ public class TarArchiveEntry {
 	 * @param time This entry is new modification time.
 	 */
 	public void setModTime(Date time) {
-		if(time != null) {
+		if (time != null) {
 			modTime = time.getTime() / MILLIS_PER_SECOND;
 		}
 	}
@@ -1019,7 +1019,7 @@ public class TarArchiveEntry {
 	 * @since 1.15
 	 */
 	void updateEntryFromPaxHeaders(Map<String, String> headers) {
-		if(headers == null) {
+		if (headers == null) {
 			return;
 		}
 		for (Map.Entry<String, String> ent : headers.entrySet()) {
@@ -1147,16 +1147,7 @@ public class TarArchiveEntry {
 	 * @param outbuf The tar entry header buffer to fill in.
 	 */
 	public void writeEntryHeader(byte[] outbuf) {
-//		try {
 		writeEntryHeader(outbuf, TarUtils.DEFAULT_ENCODING, false);
-//		} catch (final IOException ex) {
-//			try {
-//				writeEntryHeader(outbuf, TarUtils.FALLBACK_ENCODING, false);
-//			} catch (final IOException ex2) {
-//				// impossible
-//				throw new RuntimeException(ex2); // NOSONAR
-//			}
-//		}
 	}
 
 	/**
@@ -1205,9 +1196,10 @@ public class TarArchiveEntry {
 	private int writeEntryHeaderField(long value, byte[] outbuf, final int offset, final int length,
 			final boolean starMode) {
 		if (!starMode && (value < 0 || value >= 1L << 3 * (length - 1))) {
-			// value does not fit into field when written as octal
-			// number, will be written to PAX header or causes an
-			// error
+			/*
+			 * value does not fit into field when written as octal number, will be written
+			 * to PAX header or causes an error
+			 */
 			return TarUtils.formatLongOctalBytes(0, outbuf, offset, length);
 		}
 		return TarUtils.formatLongOctalOrBinaryBytes(value, outbuf, offset, length);
@@ -1241,7 +1233,7 @@ public class TarArchiveEntry {
 
 		name = oldStyle ? TarUtils.parseName(header, offset, TarUtils.NAMELEN)
 				: TarUtils.parseName(header, offset, TarUtils.NAMELEN, encoding);
-		if(name == null) {
+		if (name == null) {
 			return false;
 		}
 		offset += TarUtils.NAMELEN;
@@ -1260,12 +1252,12 @@ public class TarArchiveEntry {
 		linkFlag = header[offset++];
 		linkName = oldStyle ? TarUtils.parseName(header, offset, TarUtils.NAMELEN)
 				: TarUtils.parseName(header, offset, TarUtils.NAMELEN, encoding);
-		if(linkName == null) {
+		if (linkName == null) {
 			return false;
 		}
 		offset += TarUtils.NAMELEN;
 		magic = TarUtils.parseName(header, offset, TarUtils.MAGICLEN);
-		if(magic == null) {
+		if (magic == null) {
 			return false;
 		}
 		offset += TarUtils.MAGICLEN;
@@ -1273,13 +1265,13 @@ public class TarArchiveEntry {
 		offset += TarUtils.VERSIONLEN;
 		userName = oldStyle ? TarUtils.parseName(header, offset, TarUtils.UNAMELEN)
 				: TarUtils.parseName(header, offset, TarUtils.UNAMELEN, encoding);
-		if(userName == null) {
+		if (userName == null) {
 			return false;
 		}
 		offset += TarUtils.UNAMELEN;
 		groupName = oldStyle ? TarUtils.parseName(header, offset, TarUtils.GNAMELEN)
 				: TarUtils.parseName(header, offset, TarUtils.GNAMELEN, encoding);
-		if(groupName == null) {
+		if (groupName == null) {
 			return false;
 		}
 		offset += TarUtils.GNAMELEN;
@@ -1304,7 +1296,7 @@ public class TarArchiveEntry {
 			isExtended = TarUtils.parseBoolean(header, offset);
 			offset += TarUtils.ISEXTENDEDLEN_GNU;
 			realSize = TarUtils.parseOctal(header, offset, TarUtils.REALSIZELEN_GNU);
-			offset += TarUtils.REALSIZELEN_GNU; // NOSONAR - assignment as documentation
+			offset += TarUtils.REALSIZELEN_GNU; /* NOSONAR - assignment as documentation */
 			break;
 		}
 		case TarUtils.FORMAT_XSTAR: {
@@ -1319,8 +1311,7 @@ public class TarArchiveEntry {
 		default: {
 			final String prefix = oldStyle ? TarUtils.parseName(header, offset, TarUtils.PREFIXLEN)
 					: TarUtils.parseName(header, offset, TarUtils.PREFIXLEN, encoding);
-			// SunOS tar -E does not add / to directory names, so fix
-			// up to be consistent
+			/* SunOS tar -E does not add / to directory names, so fix up to be consistent */
 			if (isDirectory() && !name.endsWith("/")) {
 				name = name + "/";
 			}
@@ -1346,8 +1337,8 @@ public class TarArchiveEntry {
 
 			if (osname != null) {
 
-				// Strip off drive letters!
-				// REVIEW Would a better check be "(File.separator == \\)"?
+				/* Strip off drive letters! */
+				/* REVIEW Would a better check be "(File.separator == \\)"? */
 
 				if (osname.startsWith("windows")) {
 					if (fileName != null && fileName.length() > 2) {
@@ -1367,12 +1358,13 @@ public class TarArchiveEntry {
 			}
 		}
 
-		if(fileName != null) {
+		if (fileName != null) {
 			fileName = fileName.replace(File.separatorChar, '/');
-		
-			// No absolute pathnames
-			// Windows (and Posix?) paths can start with "\\NetworkDrive\",
-			// so we loop on starting / s.
+
+			/*
+			 * No absolute pathnames Windows (and Posix?) paths can start with
+			 * "\\NetworkDrive\", so we loop on starting / s.
+			 */
 			while (!preserveAbsolutePath && fileName.startsWith("/")) {
 				fileName = fileName.substring(1);
 			}
@@ -1402,19 +1394,19 @@ public class TarArchiveEntry {
 
 	void fillGNUSparse0xData(final Map<String, String> headers) {
 		paxGNUSparse = true;
-		if(headers == null) {
+		if (headers == null) {
 			return;
 		}
 		realSize = Integer.parseInt(headers.get("GNU.sparse.size"));
 		if (headers.containsKey("GNU.sparse.name")) {
-			// version 0.1
+			/* version 0.1 */
 			name = headers.get("GNU.sparse.name");
 		}
 	}
 
 	void fillGNUSparse1xData(final Map<String, String> headers) {
 		paxGNUSparse = true;
-		if(headers != null) {
+		if (headers != null) {
 			realSize = Integer.parseInt(headers.get("GNU.sparse.realsize"));
 			name = headers.get("GNU.sparse.name");
 		}

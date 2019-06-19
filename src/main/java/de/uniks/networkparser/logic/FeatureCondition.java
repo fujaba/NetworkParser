@@ -13,6 +13,7 @@ import de.uniks.networkparser.list.SimpleSet;
 
 /**
  * FeatureCondition for a Global Feature like Set, or PropertyChange
+ * 
  * @author Stefan FeatureCondition for ModelFilter
  *
  *         Format {{#feature SETCLASS=SimpleSet}}
@@ -29,7 +30,7 @@ public class FeatureCondition extends CustomCondition<GraphMember> {
 
 	@Override
 	public void create(CharacterBuffer buffer, TemplateParser parser, LocalisationInterface customTemplate) {
-		if(buffer == null) {
+		if (buffer == null) {
 			return;
 		}
 		CharacterBuffer temp = buffer.nextToken(false, SPLITEND, ENTER);

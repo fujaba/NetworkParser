@@ -6,7 +6,7 @@ import java.util.concurrent.CountDownLatch;
 /*
 The MIT License
 
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -77,7 +77,7 @@ public class JavaAdapter implements JavaViewAdapter, Runnable {
 		if (item instanceof File) {
 			File file = ((File) item);
 			if (file.exists() == false) {
-				if(logger != null) {
+				if (logger != null) {
 					logger.error(this, "load", "FILE NOT FOUND");
 				}
 			}
@@ -93,24 +93,24 @@ public class JavaAdapter implements JavaViewAdapter, Runnable {
 			ReflectionLoader.call(webEngine, "loadContent", entity.toString());
 			return true;
 		}
-		// Add Dummy Script
+		/* Add Dummy Script */
 		XMLEntity headers = entity.getHeader();
 		for (int i = 0; i < headers.sizeChildren(); i++) {
 			XMLEntity child = (XMLEntity) headers.getChild(i);
 			if (HTMLEntity.SCRIPT.equalsIgnoreCase(child.getTag())) {
-				// Load Script from File
+				/* Load Script from File */
 				Object value = child.getValue(HTMLEntity.KEY_SRC);
 				if (value != null) {
-					// External Script
+					/* External Script */
 					this._execute(readFile("" + value), false);
 				} else {
-					// Inline Script
+					/* Inline Script */
 					this._execute(child.getValue(), false);
 				}
 			}
 		}
 
-		// Call Body Script
+		/* Call Body Script */
 		XMLEntity body = entity.getHeader();
 		for (int i = 0; i < body.sizeChildren(); i++) {
 			XMLEntity child = (XMLEntity) body.getChild(i);
@@ -131,14 +131,14 @@ public class JavaAdapter implements JavaViewAdapter, Runnable {
 			return true;
 		}
 		registerListener(this);
-		// Load Real Content
+		/* Load Real Content */
 		ReflectionLoader.call(this.webEngine, "loadContent", String.class, entity.toString());
 		return true;
 	}
 
 	@Override
 	public void run() {
-		if(doneLatch != null && newTask != null) {
+		if (doneLatch != null && newTask != null) {
 			try {
 				Runnable task = newTask;
 				newTask = null;
@@ -148,8 +148,8 @@ public class JavaAdapter implements JavaViewAdapter, Runnable {
 			}
 		}
 		registerListener(this);
-		// Load Real Content
-		if(this.webEngine != null && entity != null) {
+		/* Load Real Content */
+		if (this.webEngine != null && entity != null) {
 			ReflectionLoader.call(this.webEngine, "loadContent", String.class, entity.toString());
 		}
 	}
@@ -174,7 +174,7 @@ public class JavaAdapter implements JavaViewAdapter, Runnable {
 		return true;
 	}
 
-	// CallBack Functions
+	/* CallBack Functions */
 	@Override
 	public boolean update(Object value) {
 		if (value == null) {
@@ -194,9 +194,9 @@ public class JavaAdapter implements JavaViewAdapter, Runnable {
 	}
 
 	public boolean changed(SimpleEvent event) {
-		if(event != null) {
+		if (event != null) {
 			if (SUCCEEDED.equals("" + event.getNewValue())) {
-				// FINISH
+				/* FINISH */
 				this.loadFinish();
 				return true;
 			}
@@ -206,7 +206,7 @@ public class JavaAdapter implements JavaViewAdapter, Runnable {
 
 	public void showAlert(String value) {
 		if (value != null && value.length() > 0) {
-			if(logger != null) {
+			if (logger != null) {
 				logger.error(this, "showAlert", value);
 			}
 		}
@@ -251,7 +251,7 @@ public class JavaAdapter implements JavaViewAdapter, Runnable {
 	public Object executeScript(String script) {
 		this.owner.logScript(script, NetworkParserLog.LOGLEVEL_INFO, this, "executeScript");
 		if (this.queue != null) {
-			// Must be cached
+			/* Must be cached */
 			this.queue.add(script);
 		}
 		if (Os.isFXThread() == false) {
@@ -269,11 +269,11 @@ public class JavaAdapter implements JavaViewAdapter, Runnable {
 	 * @return return value from Javascript
 	 */
 	public Object executeScript(String script, boolean convert) {
-		if(this.owner != null) {
+		if (this.owner != null) {
 			this.owner.logScript(script, NetworkParserLog.LOGLEVEL_INFO, this, "executeScript");
 		}
 		if (this.queue != null) {
-			// Must be cached
+			/* Must be cached */
 			this.queue.add(script);
 		}
 		return _execute(script, convert);
@@ -332,9 +332,9 @@ public class JavaAdapter implements JavaViewAdapter, Runnable {
 	}
 
 	protected void addAdapter(ObjectCondition eventListener) {
-		if(TYPE_EDITOR.equals(type) == false) {
-			JsonObjectLazy executeScript = (JsonObjectLazy) _execute("bridge.addAdapter(new DiagramJS.DelegateAdapter());",
-					true);
+		if (TYPE_EDITOR.equals(type) == false) {
+			JsonObjectLazy executeScript = (JsonObjectLazy) _execute(
+					"bridge.addAdapter(new DiagramJS.DelegateAdapter());", true);
 			if (executeScript != null) {
 				Object reference = executeScript.getReference();
 				ReflectionLoader.calling(reference, "setAdapter", false, null, Object.class, eventListener);
@@ -345,14 +345,14 @@ public class JavaAdapter implements JavaViewAdapter, Runnable {
 	@Override
 	public void loadFinish() {
 		addAdapter(this);
-		// REGISTER LISTENER
+		/* REGISTER LISTENER */
 		if (this.queue != null) {
 			while (this.queue.size() > 0) {
 				String command = this.queue.remove(0);
 				this._execute(command, false);
 			}
 		}
-		this.queue = null; // Disable QUEUE
+		this.queue = null; /* Disable QUEUE */
 	}
 
 	public boolean addListener(Control control, EventTypes type, String functionName, Object callBackClazz) {
@@ -385,7 +385,7 @@ public class JavaAdapter implements JavaViewAdapter, Runnable {
 	}
 
 	public static void execute(final Runnable runnable) {
-		if(Os.isReflectionTest() == false) {
+		if (Os.isReflectionTest() == false) {
 			ReflectionLoader.call(ReflectionLoader.PLATFORMIMPL, "startup", Runnable.class, runnable);
 		}
 	}
@@ -394,14 +394,13 @@ public class JavaAdapter implements JavaViewAdapter, Runnable {
 		if (runnable == null) {
 			return null;
 		}
-		if(Os.isFXThread()) {
+		if (Os.isFXThread()) {
 			runnable.run();
 			return null;
 		}
 		JavaAdapter task = new JavaAdapter();
 		task.doneLatch = new CountDownLatch(1);
 		task.newTask = runnable;
-		//FIXME
 		execute(task);
 		try {
 			task.doneLatch.await();
@@ -415,16 +414,20 @@ public class JavaAdapter implements JavaViewAdapter, Runnable {
 	 * Enables Firebug Lite for debugging a webEngine.
 	 */
 	public void enableDebug() {
-		// https://getfirebug.com/firebug-lite.js#startOpened
-		// String
-		// firebugLite="http://getfirebug.com/releases/lite/1.2/firebug-lite-compressed.js";
+		/* https://getfirebug.com/firebug-lite.js#startOpened */
+		/*
+		 * firebugLite=
+		 * "http://getfirebug.com/releases/lite/1.2/firebug-lite-compressed.js";
+		 */
 		String firebugLite = "https://getfirebug.com/releases/lite/latest/firebug-lite.js";
 		String script = "if (!document.getElementById('FirebugLite')) {var E = document['createElementNS'] && document.documentElement.namespaceURI;E = E ? document.createElementNS(E, 'script') : document.createElement('script');E.setAttribute('id', 'FirebugLite');E.setAttribute('src', '"
 				+ firebugLite
 				+ "');E.setAttribute('FirebugLite', '4');(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(E);}";
-		String script2 = "console.log = function(message) { java.log(message); }"; // Now where ever console.log is
-																					// called in your html you will get
-																					// a log in Java console
+		String script2 = "console.log = function(message) { java.log(message); }"; /*
+																					 * Now where ever console.log is
+																					 * called in your html you will get
+																					 * a log in Java console
+																					 */
 		boolean isFX = Os.isFXThread();
 		if (this.webEngine == null || isFX == false) {
 			JSEditor editor = new JSEditor(this).withScript(script);

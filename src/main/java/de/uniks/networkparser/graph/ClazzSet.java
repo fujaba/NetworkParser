@@ -48,7 +48,7 @@ public class ClazzSet extends SimpleSet<Clazz> {
 	public ClazzSet hasName(String otherValue) {
 		return filter(StringCondition.createEquals(Clazz.PROPERTY_NAME, otherValue));
 	}
-	
+
 	@Override
 	public SimpleSet<Clazz> getNewList(boolean keyValue) {
 		return new ClazzSet();
@@ -67,11 +67,11 @@ public class ClazzSet extends SimpleSet<Clazz> {
 		}
 		return buffer.toString();
 	}
-	
+
 	@Override
 	public boolean contains(Object o) {
-		if(o instanceof String && o != null) {
-			for(Clazz item : this) {
+		if (o instanceof String && o != null) {
+			for (Clazz item : this) {
 				if (o.equals(item.getId())) {
 					return true;
 				}
@@ -81,10 +81,10 @@ public class ClazzSet extends SimpleSet<Clazz> {
 	}
 
 	public Clazz getClazz(String id) {
-		if(id == null) {
+		if (id == null) {
 			return null;
 		}
-		for(Clazz item : this) {
+		for (Clazz item : this) {
 			if (id.equals(item.getName())) {
 				return item;
 			}

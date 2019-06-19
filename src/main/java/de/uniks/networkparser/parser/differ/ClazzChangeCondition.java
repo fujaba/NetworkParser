@@ -18,7 +18,7 @@ public class ClazzChangeCondition extends MatchCondition {
 
 	@Override
 	protected boolean calculateDiffs(GraphMatcher matches, Match match) {
-		if(match == null || matches == null) {
+		if (match == null || matches == null) {
 			return false;
 		}
 		Clazz sourceClazz = (Clazz) match.getMatch();
@@ -34,7 +34,7 @@ public class ClazzChangeCondition extends MatchCondition {
 	}
 
 	private boolean addChange(GraphMatcher matches, Match match, Clazz sourceClazz, Clazz otherClazz) {
-		if(match == null || matches == null) {
+		if (match == null || matches == null) {
 			return false;
 		}
 		if (matches.getMetaModel() != null && (match.isMetaMatch() || match.isMetaSourceMatch())) {

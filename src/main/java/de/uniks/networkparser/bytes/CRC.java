@@ -3,7 +3,7 @@ package de.uniks.networkparser.bytes;
 /*
 NetworkParser
 The MIT License
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -25,9 +25,9 @@ THE SOFTWARE.
 */
 
 public class CRC extends Checksum {
-	/* CRC-8, poly = x^8 + x^2 + x^1 + 1, init = 0
-	   1 0000 0111
-	   0111 0000 1 */
+	/*
+	 * CRC-8, poly = x^8 + x^2 + x^1 + 1, init = 0 1 0000 0111 0111 0000 1
+	 */
 	public static final int CRC8 = 0x107;
 	/* 1000000000000101 */
 	public static final int CRC16 = 0x8005;
@@ -152,11 +152,13 @@ public class CRC extends Checksum {
 		return result;
 	}
 
-	/** Reflects the lower bits of the value provided.
-	* @param data The value to reflect.
-	* @param numBits The number of bits to reflect.
-	* @return The reflected value.
-	*/
+	/**
+	 * Reflects the lower bits of the value provided.
+	 * 
+	 * @param data    The value to reflect.
+	 * @param numBits The number of bits to reflect.
+	 * @return The reflected value.
+	 */
 	static private int Reflect(int data, int numBits) {
 		int temp = data;
 

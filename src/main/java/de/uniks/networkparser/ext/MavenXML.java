@@ -43,7 +43,7 @@ public class MavenXML {
 				String path = string.substring(pos, end);
 				ByteBuffer newVersion = NodeProxyTCP.getHTTPBinary(url + path);
 				pos = path.lastIndexOf("/");
-				// FileName
+				/* FileName */
 				if (pos > 0) {
 					path = path.substring(pos + 1);
 				}
@@ -72,8 +72,6 @@ public class MavenXML {
 	public String pomFile(ArtifactFile file) {
 		return file.toString();
 	}
-
-//	public void metaFile(String major, String minor, String time) {
 
 	public XMLContainer metaFile(ArtifactList list) {
 		XMLContainer entity = new XMLContainer().withStandardPrefix();
@@ -139,7 +137,6 @@ public class MavenXML {
 		}
 	}
 
-	// TestSHA1
 	public void writeSHA1(File file) throws NoSuchAlgorithmException, IOException {
 		MessageDigest cript = MessageDigest.getInstance("SHA-1");
 		cript.reset();
@@ -168,21 +165,11 @@ public class MavenXML {
 		fis.close();
 		byte[] mdbytes = md.digest();
 
-		// convert the byte to hex format method 1
+		/* convert the byte to hex format method 1 */
 		StringBuffer sb = new StringBuffer();
 		for (int i = 0; i < mdbytes.length; i++) {
 			sb.append(Integer.toString((mdbytes[i] & 0xff) + 0x100, 16).substring(1));
 		}
-
-//		System.out.println("Digest(in hex format):: " + sb.toString());
-		// convert the byte to hex format method 2
-		// StringBuffer hexString = new StringBuffer();
-//        	for (int i=0;i<mdbytes.length;i++) {
-//        		String hex=Integer.toHexString(0xff & mdbytes[i]);
-//       	     	if(hex.length()==1) hexString.append('0');
-//       	     	hexString.append(hex);
-//        	}
-//        	maven-metadata.xml.md5
 		File output = new File(file.getAbsolutePath() + ".md5");
 		output.createNewFile();
 		FileOutputStream os = new FileOutputStream(output);

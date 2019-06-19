@@ -71,7 +71,7 @@ public class AcceptMessage extends ReceivingTimerTask {
 		return super.getValue(entity, attribute);
 	}
 
-	// Add helper Variable to creating Objects
+	/* Add helper Variable to creating Objects */
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value, String type) {
 		if (attribute == null || entity instanceof AcceptMessage == false) {
@@ -90,10 +90,10 @@ public class AcceptMessage extends ReceivingTimerTask {
 					return false;
 				}
 				if (map.getObject(this.id) != null) {
-					// Object exist in Map everything is ok
+					/* Object exist in Map everything is ok */
 					return true;
 				}
-				// Check ClassName and NodeProxyModel for Candidates
+				/* Check ClassName and NodeProxyModel for Candidates */
 				String className = "" + value;
 				SortedSet<NodeProxy> nodeProxies = space.getNodeProxies();
 				SimpleList<NodeProxyModel> candidates = new SimpleList<NodeProxyModel>();
@@ -108,17 +108,17 @@ public class AcceptMessage extends ReceivingTimerTask {
 						}
 					}
 				}
-				// So I hope only one Candidate
+				/* So I hope only one Candidate */
 				if (candidates.size() != 1) {
 					return false;
 				}
 				NodeProxyModel modelProxy = candidates.first();
 				map.put(this.id, modelProxy.getModel(), false);
-				// get model from message deactive Notification
+				/* get model from message deactive Notification */
 				return true;
 			}
 			if (PROPERTY_MODEL.equalsIgnoreCase(attribute)) {
-				// Active Notification Model success decoding
+				/* Active Notification Model success decoding */
 				space.withInit(true);
 				return true;
 			}

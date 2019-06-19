@@ -3,7 +3,7 @@ package de.uniks.networkparser.ext;
 /*
 The MIT License
 
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -83,14 +83,14 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 	private JSEditor jsEditor;
 	private IdMap map;
 	private NetworkParserLog logger = new NetworkParserLog().withListener(new StringPrintStream());
-	private static final String EDITOR="Editor.html";
+	private static final String EDITOR = "Editor.html";
 
 	private static DiagramEditor editor;
 
 	public static DiagramEditor edobs(Object... items) {
 		return edobs(false, items);
 	}
-	
+
 	public NetworkParserLog getLogger() {
 		return logger;
 	}
@@ -218,7 +218,7 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 			width = -1;
 			height = -1;
 		}
-		if(SimpleController.startFX() == false) {
+		if (SimpleController.startFX() == false) {
 			return false;
 		}
 		if (entity != null && file != null) {
@@ -238,8 +238,6 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 		return true;
 	}
 
-	
-	
 	public static void main(String[] args) {
 		NetworkParserLog logger = new NetworkParserLog().withListener(new StringPrintStream());
 		if (args != null && args.length > 0 && args[0] != null) {
@@ -261,32 +259,32 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 				return;
 			}
 			if ("NPM".equalsIgnoreCase(args[0])) {
-				if(new Gradle().loadNPM() == false) {
+				if (new Gradle().loadNPM() == false) {
 					System.exit(-1);
 				}
 				return;
 			}
-			if("INIT".equalsIgnoreCase(args[0])) {
+			if ("INIT".equalsIgnoreCase(args[0])) {
 				String filename = Os.getFilename();
-				if(filename == null) {
+				if (filename == null) {
 					System.exit(1);
 				}
-				if(filename.toLowerCase().endsWith(".jar") == false) {
+				if (filename.toLowerCase().endsWith(".jar") == false) {
 					System.exit(2);
 				}
 				Gradle gradle = new Gradle();
 				String projectName = null;
-				if(args.length >1 && args[1]!= null) {
+				if (args.length > 1 && args[1] != null) {
 					projectName = args[1];
-				}else {
+				} else {
 					System.exit(3);
 				}
 				String licence = "MIT";
-				if(args.length >2 && args[2]!= null && args[2].length() < 10) {
-					licence =args[2];
+				if (args.length > 2 && args[2] != null && args[2].length() < 10) {
+					licence = args[2];
 				}
 				boolean success = gradle.initProject(filename, projectName, licence);
-				if(success == false) {
+				if (success == false) {
 					System.exit(-1);
 				}
 				return;
@@ -344,12 +342,13 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 					timer.schedule(task, timeOut);
 				}
 				int exit = 0;
-				logger.debug(null, "main", "CHECK CC = " + validator.isValidate + " (" + validator.getMinCoverage() + ")");
+				logger.debug(null, "main",
+						"CHECK CC = " + validator.isValidate + " (" + validator.getMinCoverage() + ")");
 				if (validator.isValidate) {
 					validator.validate();
 					int result = validator.analyseReport();
 					if (result != 0) {
-						
+
 						logger.error(null, "main", "CodeCoverage not enough (" + result + ")");
 						exit = -1;
 					}
@@ -435,7 +434,7 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 	}
 
 	private boolean writeHTTPResponse(Message message, String response, boolean error) {
-		if(message == null) {
+		if (message == null) {
 			return false;
 		}
 		if (error) {
@@ -452,7 +451,7 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 		message.write(response);
 		Socket session = (Socket) message.getSession();
 		try {
-			if(session != null) {
+			if (session != null) {
 				session.close();
 			}
 			return true;
@@ -472,7 +471,7 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 		if (value instanceof SimpleEvent) {
 			SimpleEvent evt = (SimpleEvent) value;
 			Object newValue = evt.getNewValue();
-			if(newValue != null) {
+			if (newValue != null) {
 				if (JavaViewAdapter.STATE.equalsIgnoreCase(newValue.getClass().getName())) {
 					if (newValue.toString().equals(JavaViewAdapter.FAILED)) {
 						logger.error(this, "update", evt);
@@ -481,7 +480,7 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 						Object win = super.executeScript("window", false);
 						ReflectionLoader.call(win, "setMember", String.class, "JavaBridge", Object.class, this);
 						this.changed(evt);
-	
+
 						if (TYPE_EDITOR.equalsIgnoreCase(type)) {
 							/* Load Editor */
 							super.executeScript("window['editor'] = new ClassEditor(\"board\");", false);
@@ -535,7 +534,7 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 		if (value instanceof JsonObject) {
 			model = (JsonObject) value;
 		} else {
-			model = new JsonObject().withValue(""+value);
+			model = new JsonObject().withValue("" + value);
 		}
 		String name = model.getString("package");
 		if (name == null || name.length() < 1) {
@@ -550,7 +549,7 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 	}
 
 	public void log(String value) {
-		if(this.owner != null) {
+		if (this.owner != null) {
 			this.owner.logScript(value, 0, this, null);
 		}
 	}
@@ -661,7 +660,7 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 	@SuppressWarnings("unchecked")
 	protected List<File> getFiles(Object event) {
 		Object db = ReflectionLoader.call(event, "getDragboard");
-		if(db != null) {
+		if (db != null) {
 			if ((Boolean) ReflectionLoader.call(db, "hasFiles")) {
 				List<File> files = (List<File>) ReflectionLoader.call(db, "getFiles");
 				return files;
@@ -678,17 +677,20 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 		HTMLEntity html = new HTMLEntity();
 		boolean loadFile = false;
 		boolean includeFiles = false;
-		/* html.createScript("classEditor = new ClassEditor(\"board\");", html.getBody()); */
+		/*
+		 * html.createScript("classEditor = new ClassEditor(\"board\");",
+		 * html.getBody());
+		 */
 		if (TYPE_EDITOR.equalsIgnoreCase(type) || TYPE_EXPORT.equalsIgnoreCase(type)) {
-            loadFile = true;
+			loadFile = true;
 		}
 		if (TYPE_EXPORTALL.equalsIgnoreCase(type)) {
 			loadFile = true;
-            includeFiles=true;
+			includeFiles = true;
 		}
 		Story.addResource(html, EDITOR, includeFiles);
-		
-        if (loadFile) {
+
+		if (loadFile) {
 			FileBuffer.writeFile(EDITOR, html.toString(), FileBuffer.NONE);
 			try {
 				String string = new File(EDITOR).toURI().toURL().toString();
@@ -754,7 +756,7 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 	}
 
 	public DiagramEditor withIcon(String icon) {
-		if(controller != null) {
+		if (controller != null) {
 			controller.withIcon(icon);
 		}
 		return this;
@@ -786,7 +788,7 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 		Object writableImageClass = ReflectionLoader.getClass("javafx.scene.image.WritableImage");
 		Object image = ReflectionLoader.call(webView, "snapshot", snapshotParametersClass, null, writableImageClass,
 				null);
-		if(image == null) {
+		if (image == null) {
 			return;
 		}
 		Class<?> swingUtil = ReflectionLoader.getClass("javafx.embed.swing.SwingFXUtils");
@@ -811,7 +813,7 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 	}
 
 	public void export(String type, Object value, String name, String context) {
-		if(this.controller == null) {
+		if (this.controller == null) {
 			return;
 		}
 		String typeName = "files";
@@ -841,22 +843,23 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 		}
 	}
 
-	/** 
+	/**
 	 * Method for Save Model to Image
+	 * 
 	 * @param entity is the Model
 	 * @return converted String
 	 */
 	@Override
 	public String encode(BaseItem entity) {
-		if(entity instanceof GraphModel == false) {
+		if (entity instanceof GraphModel == false) {
 			return null;
 		}
 		GraphModel model = (GraphModel) entity;
 		HTMLEntity element = new HTMLEntity().withGraph(model);
 		String fileName = this.file;
-		if(fileName == null) {
+		if (fileName == null) {
 			fileName = model.getName();
-			if(fileName == null) {
+			if (fileName == null) {
 				fileName = "diagram";
 			}
 			fileName += ".png";
@@ -864,9 +867,10 @@ public class DiagramEditor extends JavaAdapter implements ObjectCondition, Conve
 		convertToPNG(element, fileName);
 		return fileName;
 	}
+
 	public static final DiagramEditor dump(String... values) {
 		DiagramEditor editor = new DiagramEditor();
-		if(values != null && values.length>0) {
+		if (values != null && values.length > 0) {
 			editor.file = values[0];
 		}
 		return editor;

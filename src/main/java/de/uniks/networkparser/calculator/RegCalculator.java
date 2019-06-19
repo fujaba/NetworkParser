@@ -3,7 +3,7 @@ package de.uniks.networkparser.calculator;
 /*
 NetworkParser
 The MIT License
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -56,7 +56,7 @@ public class RegCalculator {
 	}
 
 	public RegCalculator withOperator(Operator value) {
-		if(value !=null) {
+		if (value != null) {
 			this.operators.put(value.getTag(), value);
 		}
 		return this;
@@ -218,7 +218,7 @@ public class RegCalculator {
 		for (int i = 0; i < parts.size(); i++) {
 			try {
 				result[i] = Double.valueOf(parts.get(i));
-			}catch (Exception e) {
+			} catch (Exception e) {
 			}
 		}
 		return result;
@@ -227,7 +227,7 @@ public class RegCalculator {
 	private boolean addOperator(String value, CharacterBuffer tokener, List<String> parts) {
 		if (constants.containsKey(value)) {
 			/* Its constants */
-			if(parts == null) {
+			if (parts == null) {
 				return false;
 			}
 			return parts.add("" + constants.get(value));

@@ -3,7 +3,7 @@ package de.uniks.networkparser.json;
 /*
 NetworkParser
 The MIT License
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -354,9 +354,9 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements En
 		this.add(Entity.CLASS, type);
 		return this;
 	}
-	
+
 	public JsonObject addComment(String comment) {
-		if(comment == null) {
+		if (comment == null) {
 			return this;
 		}
 //		int multiLine = comment.indexOf('\n');
@@ -368,23 +368,23 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements En
 		this.add(null, comment);
 		return this;
 	}
-	
+
 	@Override
 	public boolean equals(Object obj) {
-		if(obj instanceof JsonObject) {
+		if (obj instanceof JsonObject) {
 			JsonObject other = (JsonObject) obj;
-			if(this.size() != other.size()) {
+			if (this.size() != other.size()) {
 				return false;
 			}
-			for(int i=0;i<this.size();i++) {
-				if(this.getKeyByIndex(i).equals(other.getKeyByIndex(i))== false) {
+			for (int i = 0; i < this.size(); i++) {
+				if (this.getKeyByIndex(i).equals(other.getKeyByIndex(i)) == false) {
 					return false;
 				}
 				Object value = this.getValueByIndex(i);
 				Object otherValue = other.getValueByIndex(i);
-				if(value == null && otherValue !=null) {
+				if (value == null && otherValue != null) {
 					return false;
-				}else if(value != null && value.equals(otherValue) == false) {
+				} else if (value != null && value.equals(otherValue) == false) {
 					return false;
 				}
 			}

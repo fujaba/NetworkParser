@@ -12,7 +12,7 @@ public class SimpleGenerator extends Template {
 	public SimpleKeyValueList<String, ParserCondition> customTemplate;
 
 	protected boolean addParserCondition(ParserCondition condition) {
-		if(condition == null || customTemplate == null) {
+		if (condition == null || customTemplate == null) {
 			return false;
 		}
 		String key = condition.getKey();
@@ -21,13 +21,13 @@ public class SimpleGenerator extends Template {
 		}
 		return false;
 	}
-	
+
 	public SimpleKeyValueList<String, ParserCondition> getCondition() {
-		
+
 		if (customTemplate == null) {
 			customTemplate = new SimpleKeyValueList<String, ParserCondition>();
 			SimpleList<ParserCondition> defaultTemplates = Template.getTemplateCondition();
-			for(ParserCondition condition : defaultTemplates) {
+			for (ParserCondition condition : defaultTemplates) {
 				addParserCondition(condition);
 			}
 		}
@@ -37,13 +37,15 @@ public class SimpleGenerator extends Template {
 	public TemplateResultModel generate(TemplateItem model) {
 		return generate(model, new TextItems(), null);
 	}
-	public TemplateResultModel generate(TemplateItem model, LocalisationInterface parameters, SendableEntityCreator creator) {
+
+	public TemplateResultModel generate(TemplateItem model, LocalisationInterface parameters,
+			SendableEntityCreator creator) {
 		TemplateResultModel resultModel = new TemplateResultModel();
 		resultModel.withLanguage(parameters);
 		resultModel.withTemplate(this.getCondition());
-		
+
 		TemplateResultFile executeEntity = executeEntity(model, parameters, true);
-		if(executeEntity != null) {
+		if (executeEntity != null) {
 			resultModel.add(executeEntity);
 			executeEntity.add(generate(resultModel, creator, model));
 		}

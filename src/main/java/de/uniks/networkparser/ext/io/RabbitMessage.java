@@ -3,7 +3,7 @@ package de.uniks.networkparser.ext.io;
 /*
 The MIT License
 
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -33,6 +33,7 @@ import java.util.Map;
 import java.util.Set;
 
 import de.uniks.networkparser.EntityUtil;
+import de.uniks.networkparser.NetworkParserLog;
 import de.uniks.networkparser.buffer.ByteBuffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.bytes.ByteEntity;
@@ -80,14 +81,14 @@ public class RabbitMessage {
 	private byte[] headers = new byte[3];
 	private static final byte FRAME_END = -50;
 
-	private ByteBuffer payload; // FOR INPUT BUFFER
+	private ByteBuffer payload; /* FOR INPUT BUFFER */
 	private ByteBuffer accumulator;
 	private Map<String, Object> table;
 	private short classId;
 	private short methodId;
 	private SimpleKeyValueList<String, Object> payloadData = new SimpleKeyValueList<String, Object>();
 
-	// with values or ByteEntity
+	/* with values or ByteEntity */
 	public RabbitMessage withShortString(String value) {
 		withValues(ByteEntity.create(ByteTokener.DATATYPE_STRING + ByteTokener.LEN_LITTLE, value));
 		return this;
@@ -99,7 +100,7 @@ public class RabbitMessage {
 			if (getType() != 3) {
 				accumulator.insert(new byte[4], true);
 			}
-			// Only for
+			/* Only for */
 			if (table != null || (CONNECTION_CLASS == this.classId && STARTOK_METHOD == this.methodId)) {
 				this.writeMap(this.table);
 			}
@@ -131,7 +132,7 @@ public class RabbitMessage {
 	}
 
 	public RabbitMessage writeMap(Map<?, ?> map) {
-		if(accumulator == null) {
+		if (accumulator == null) {
 			return null;
 		}
 		if (map == null) {
@@ -151,7 +152,7 @@ public class RabbitMessage {
 	}
 
 	public boolean writeValue(Object value) {
-		if(accumulator == null) {
+		if (accumulator == null) {
 			return false;
 		}
 		if (value == null) {
@@ -165,7 +166,7 @@ public class RabbitMessage {
 			byte subgroup = EntityUtil.getSubGroup(type);
 			if (group == ByteTokener.DATATYPE_STRING) {
 				byte[] bytes = entity.getValue();
-				if(bytes != null) {
+				if (bytes != null) {
 					if (subgroup == ByteTokener.LEN_LITTLE) {
 						accumulator.insert((byte) bytes.length, true);
 					} else {
@@ -208,13 +209,13 @@ public class RabbitMessage {
 			accumulator.insert((Integer) 1, true);
 			if (value instanceof List<?>) {
 				List<?> list = (List<?>) value;
-				// Now Write Value
+				/* Now Write Value */
 				for (Object item : list) {
 					writeFieldValue(item);
 				}
 			} else {
 				Object[] list = (Object[]) value;
-				// Now Write Value
+				/* Now Write Value */
 				for (Object item : list) {
 					writeFieldValue(item);
 				}
@@ -229,7 +230,7 @@ public class RabbitMessage {
 	}
 
 	public boolean writeFieldValue(Object value) {
-		if(accumulator == null) {
+		if (accumulator == null) {
 			return false;
 		}
 		if (value == null) {
@@ -303,13 +304,13 @@ public class RabbitMessage {
 			accumulator.insert((Integer) 1, true);
 			if (value instanceof List<?>) {
 				List<?> list = (List<?>) value;
-				// Now Write Value
+				/* Now Write Value */
 				for (Object item : list) {
 					writeFieldValue(item);
 				}
 			} else {
 				Object[] list = (Object[]) value;
-				// Now Write Value
+				/* Now Write Value */
 				for (Object item : list) {
 					writeFieldValue(item);
 				}
@@ -350,7 +351,7 @@ public class RabbitMessage {
 		return result;
 	}
 
-	public boolean write(OutputStream stream) {
+	public boolean write(OutputStream stream, NetworkParserLog logger) {
 		if (stream == null) {
 			return false;
 		}
@@ -366,7 +367,7 @@ public class RabbitMessage {
 					accumulator.set(3, (byte) (this.methodId & 0xff));
 					stream.write(ByteTokener.intToByte(length));
 				}
-				// As
+				/* As */
 				stream.write(accumulator.array(), 0, length);
 			} else if (payload != null) {
 				stream.write(payload.length());
@@ -375,9 +376,10 @@ public class RabbitMessage {
 			stream.write(FRAME_END);
 			stream.flush();
 		} catch (Exception e) {
-			// Oh Error Write full Message
-			e.printStackTrace();
-			System.out.println("WRONG MESSGAE: " + getDebugString());
+			/* Oh Error Write full Message */
+			if (logger != null) {
+				logger.error(this, "write", "WRONG MESSGAE: " + getDebugString());
+			}
 			return false;
 		}
 		return true;
@@ -409,12 +411,13 @@ public class RabbitMessage {
 	 * Protected API - Factory method to instantiate a Frame by reading an
 	 * AMQP-wire-protocol frame from the given input stream.
 	 * 
-	 * @param is DataInputStrem for reading
+	 * @param is     DataInputStrem for reading
+	 * @param logger The Logger for ErrorHandling
 	 *
 	 * @return a new RabbitMessage if we read a frame successfully, otherwise null
 	 */
-	public static RabbitMessage readFrom(DataInputStream is) {
-		if(is == null) {
+	public static RabbitMessage readFrom(DataInputStream is, NetworkParserLog logger) {
+		if (is == null) {
 			return null;
 		}
 		byte frameEndMarker = 0;
@@ -431,8 +434,10 @@ public class RabbitMessage {
 			payload = new byte[payloadSize];
 			is.readFully(payload);
 			frameEndMarker = (byte) is.readUnsignedByte();
-		}catch (Exception e) {
-			// TODO: handle exception
+		} catch (Exception e) {
+			if (logger != null) {
+				logger.error(RabbitMessage.class, "readFrom", is);
+			}
 		}
 		if (frameEndMarker != RabbitMessage.FRAME_END) {
 			return null;
@@ -449,97 +454,107 @@ public class RabbitMessage {
 		return this;
 	}
 
-	// 1=Bit, 2, Byte, 3=Short, 4=Int, 5=ShortString, 6=String, 7 = Version, 8 =
-	// Table
+	/**
+	 * Init Valaue
+	 * 
+	 * @param broker NetworkBroker 1=Bit, 2, Byte, 3=Short, 4=Int, 5=ShortString,
+	 *               6=String, 7 = Version, 8 = Table
+	 */
 	private void initValues(NodeProxyBroker broker) {
-		if(broker == null) {
+		if (broker == null) {
 			return;
 		}
 		Object[][] data = new Object[][] {
 				new Object[] { CONNECTION_CLASS, 10, "version", VERSION, "properties", TABLE, "mechanisms", STRING,
-						"locales", STRING }, // START
+						"locales", STRING }, /* START */
 				new Object[] { CONNECTION_CLASS, STARTOK_METHOD, "clientProperties", TABLE, "mechanisms", SHORTSTR,
-						"response", STRING, "locale", SHORTSTR }, // StartOk
-				new Object[] { CONNECTION_CLASS, 20, "challenge", STRING }, // Secure
-				new Object[] { CONNECTION_CLASS, 21, "challenge", STRING }, // SecureOk
+						"response", STRING, "locale", SHORTSTR }, /* StartOk */
+				new Object[] { CONNECTION_CLASS, 20, "challenge", STRING }, /* Secure */
+				new Object[] { CONNECTION_CLASS, 21, "challenge", STRING }, /* SecureOk */
 				new Object[] { CONNECTION_CLASS, TUNE_METHOD, "channelMax", SHORT, "frameMax", INT, "heartbeat",
-						SHORT }, // Tune
+						SHORT }, /* Tune */
 				new Object[] { CONNECTION_CLASS, TUNEOK_METHOD, "channelMax", SHORT, "frameMax", INT, "heartbeat",
-						SHORT }, // TuneOK
-				new Object[] { CONNECTION_CLASS, OPEN_METHOD, "outOfBand", SHORTSTR }, // Open
-				new Object[] { CONNECTION_CLASS, 41, "outOfBand", STRING }, // Open
+						SHORT }, /* TuneOK */
+				new Object[] { CONNECTION_CLASS, OPEN_METHOD, "outOfBand", SHORTSTR }, /* Open */
+				new Object[] { CONNECTION_CLASS, 41, "outOfBand", STRING }, /* Open */
 				new Object[] { CONNECTION_CLASS, 50, "replyCode", SHORT, "replyText", SHORTSTR, "classId", SHORT,
-						"methodId", SHORT }, // Close
-				new Object[] { CONNECTION_CLASS, 51 }, // CloseOK
-				new Object[] { CONNECTION_CLASS, 60, "reason", SHORTSTR }, // Blocked
-				new Object[] { CONNECTION_CLASS, 61 }, // Unblocked
-				new Object[] { CHANNEL_CLASS, 10, "outOfBand", SHORTSTR }, // Open
-				new Object[] { CHANNEL_CLASS, 11, "outOfBand", STRING }, // OpenOK
-				new Object[] { CHANNEL_CLASS, 20, "active", BIT }, // Flow
-				new Object[] { CHANNEL_CLASS, 21, "active", BIT }, // FlowOK
+						"methodId", SHORT }, /* Close */
+				new Object[] { CONNECTION_CLASS, 51 }, /* CloseOK */
+				new Object[] { CONNECTION_CLASS, 60, "reason", SHORTSTR }, /* Blocked */
+				new Object[] { CONNECTION_CLASS, 61 }, /* Unblocked */
+				new Object[] { CHANNEL_CLASS, 10, "outOfBand", SHORTSTR }, /* Open */
+				new Object[] { CHANNEL_CLASS, 11, "outOfBand", STRING }, /* OpenOK */
+				new Object[] { CHANNEL_CLASS, 20, "active", BIT }, /* Flow */
+				new Object[] { CHANNEL_CLASS, 21, "active", BIT }, /* FlowOK */
 				new Object[] { CHANNEL_CLASS, 40, "replyCode", SHORT, "replyText", SHORTSTR, "classId", SHORT,
-						"methodId", SHORT }, // Close
-				new Object[] { CHANNEL_CLASS, 41 }, // CloseOK
+						"methodId", SHORT }, /* Close */
+				new Object[] { CHANNEL_CLASS, 41 }, /* CloseOK */
 				new Object[] { ACCESS_CLASS, 10, "realm", SHORTSTR, "exclusive", BIT, "passive", BIT, "active", BIT,
-						"write", BIT, "read", BIT }, // Request
-				new Object[] { ACCESS_CLASS, 11, "ticket", SHORT }, // RequestOK
+						"write", BIT, "read", BIT }, /* Request */
+				new Object[] { ACCESS_CLASS, 11, "ticket", SHORT }, /* RequestOK */
 				new Object[] { EXCHANGE_CLASS, 10, "ticket", SHORT, "exchange", SHORTSTR, "type", SHORTSTR, "passive",
-						BIT, "durable", BIT, "autoDelete", BIT, "internal", BIT, "nowait", BIT, "arguments", TABLE }, // Declare
-				new Object[] { EXCHANGE_CLASS, 11 }, // DeclareOK
+						BIT, "durable", BIT, "autoDelete", BIT, "internal", BIT, "nowait", BIT, "arguments",
+						TABLE }, /* Declare */
+				new Object[] { EXCHANGE_CLASS, 11 }, /* DeclareOK */
 				new Object[] { EXCHANGE_CLASS, 20, "ticket", SHORT, "exchange", SHORTSTR, "ifUnused", BIT, "nowait",
-						BIT }, // Delete
-				new Object[] { EXCHANGE_CLASS, 21 }, // DeleteOk
+						BIT }, /* Delete */
+				new Object[] { EXCHANGE_CLASS, 21 }, /* DeleteOk */
 				new Object[] { EXCHANGE_CLASS, 30, "ticket", SHORT, "destination", SHORTSTR, "source", SHORTSTR,
-						"routingKey", SHORTSTR, "nowait", BIT, "arguments", TABLE }, // Bind
-				new Object[] { EXCHANGE_CLASS, 31 }, // BindOK
+						"routingKey", SHORTSTR, "nowait", BIT, "arguments", TABLE }, /* Bind */
+				new Object[] { EXCHANGE_CLASS, 31 }, /* BindOK */
 				new Object[] { EXCHANGE_CLASS, 40, "ticket", SHORT, "destination", SHORTSTR, "source", SHORTSTR,
-						"routingKey", SHORTSTR, "nowait", BIT, "arguments", TABLE }, // Unbind
-				new Object[] { EXCHANGE_CLASS, 51 }, // UnbindOk
-				new Object[] { QUEUE_CLASS, CREATE_QUEUE_METHOD, "ticket", SHORT, "queue", SHORTSTR, "passive", BIT,
-						"durable", BIT, "exclusive", BIT, "autoDelete", BIT, "nowait", BIT, "arguments", TABLE }, // Declare
-				new Object[] { QUEUE_CLASS, 11, "queue", SHORTSTR, "messageCount", INT, "consumerCount", INT }, // DeclareOk
+						"routingKey", SHORTSTR, "nowait", BIT, "arguments", TABLE }, /* Unbind */
+				new Object[] { EXCHANGE_CLASS, 51 }, /* UnbindOk */
+				new Object[] {
+						QUEUE_CLASS, CREATE_QUEUE_METHOD, "ticket", SHORT, "queue", SHORTSTR, "passive", BIT, "durable",
+						BIT, "exclusive", BIT, "autoDelete", BIT, "nowait", BIT, "arguments", TABLE }, /* Declare */
+				new Object[] { QUEUE_CLASS, 11, "queue", SHORTSTR, "messageCount", INT, "consumerCount", INT }, /*
+																												 * DeclareOk
+																												 */
 				new Object[] { QUEUE_CLASS, 20, "ticket", SHORT, "queue", SHORTSTR, "exchange", SHORTSTR, "routingKey",
-						SHORTSTR, "nowait", BIT, "arguments", TABLE }, // Bind
-				new Object[] { QUEUE_CLASS, 21 }, // BindOk
-				new Object[] { QUEUE_CLASS, 30, "ticket", SHORT, "queue", SHORTSTR, "nowait", BIT }, // Purge
-				new Object[] { QUEUE_CLASS, 31, "messageCount", INT }, // PurgeOk
+						SHORTSTR, "nowait", BIT, "arguments", TABLE }, /* Bind */
+				new Object[] { QUEUE_CLASS, 21 }, /* BindOk */
+				new Object[] { QUEUE_CLASS, 30, "ticket", SHORT, "queue", SHORTSTR, "nowait", BIT }, /* Purge */
+				new Object[] { QUEUE_CLASS, 31, "messageCount", INT }, /* PurgeOk */
 				new Object[] { QUEUE_CLASS, 40, "ticket", SHORT, "queue", SHORTSTR, "ifUnused", BIT, "ifEmpty", BIT,
-						"nowait", BIT }, // Delete
-				new Object[] { QUEUE_CLASS, 41, "messageCount", INT }, // DeleteOk
+						"nowait", BIT }, /* Delete */
+				new Object[] { QUEUE_CLASS, 41, "messageCount", INT }, /* DeleteOk */
 				new Object[] { QUEUE_CLASS, 50, "ticket", SHORT, "queue", SHORTSTR, "exchange", SHORTSTR, "routingKey",
-						SHORTSTR, "arguments", TABLE }, // Unbind
-				new Object[] { QUEUE_CLASS, 51 }, // UnbindOk
-				new Object[] { BASIC_CLASS, 10, "prefetchSize", INT, "prefetchCount", SHORT, "global", BIT }, // Qos
-				new Object[] { BASIC_CLASS, 11 }, // QosOk
+						SHORTSTR, "arguments", TABLE }, /* Unbind */
+				new Object[] { QUEUE_CLASS, 51 }, /* UnbindOk */
+				new Object[] { BASIC_CLASS, 10, "prefetchSize", INT, "prefetchCount", SHORT, "global", BIT }, /* Qos */
+				new Object[] { BASIC_CLASS, 11 }, /* QosOk */
 				new Object[] { BASIC_CLASS, CONSUME_METHOD, "ticket", SHORT, "queue", SHORTSTR, "consumerTag", SHORTSTR,
-						"noLocal", BIT, "noAck", BIT, "exclusive", BIT, "nowait", BIT, "arguments", TABLE }, // Consume
-				new Object[] { BASIC_CLASS, 21, "consumerTag", SHORTSTR }, // ConsumeOk
-				new Object[] { BASIC_CLASS, 30, "consumerTag", SHORTSTR, "nowait", BIT }, // Cancel
-				new Object[] { BASIC_CLASS, 31, "consumerTag", SHORTSTR }, // CancelOk
+						"noLocal", BIT, "noAck", BIT, "exclusive", BIT, "nowait", BIT, "arguments", TABLE }, /*
+																												 * Consume
+																												 */
+				new Object[] { BASIC_CLASS, 21, "consumerTag", SHORTSTR }, /* ConsumeOk */
+				new Object[] { BASIC_CLASS, 30, "consumerTag", SHORTSTR, "nowait", BIT }, /* Cancel */
+				new Object[] { BASIC_CLASS, 31, "consumerTag", SHORTSTR }, /* CancelOk */
 				new Object[] { BASIC_CLASS, PUBLISH_METHOD, "ticket", SHORT, "exchange", SHORTSTR, "routingKey",
-						SHORTSTR, "mandatory", BIT, "immediate", BIT }, // Publish
+						SHORTSTR, "mandatory", BIT, "immediate", BIT }, /* Publish */
 				new Object[] { BASIC_CLASS, 50, "replyCode", SHORT, "replyText", SHORTSTR, "exchange", SHORTSTR,
-						"routingKey", SHORTSTR }, // Return
+						"routingKey", SHORTSTR }, /* Return */
 				new Object[] { BASIC_CLASS, 60, "consumerTag", SHORTSTR, "deliveryTag", LONG, "redelivered", BIT,
-						"exchange", SHORTSTR, "routingKey", SHORTSTR }, // Deliver
-				new Object[] { BASIC_CLASS, 70, "ticket", SHORT, "queue", SHORTSTR, "noAck", BIT }, // Get
+						"exchange", SHORTSTR, "routingKey", SHORTSTR }, /* Deliver */
+				new Object[] { BASIC_CLASS, 70, "ticket", SHORT, "queue", SHORTSTR, "noAck", BIT }, /* Get */
 				new Object[] { BASIC_CLASS, 71, "deliveryTag", LONG, "redelivered", BIT, "exchange", SHORTSTR,
-						"routingKey", SHORTSTR, "messageCount", INT }, // GetOk
-				new Object[] { BASIC_CLASS, 72, "clusterId", SHORTSTR }, // GetEmpty
-				new Object[] { BASIC_CLASS, 80, "deliveryTag", LONG, "multiple", BIT }, // Ack
-				new Object[] { BASIC_CLASS, 90, "deliveryTag", LONG, "requeue", BIT }, // Reject
-				new Object[] { BASIC_CLASS, 100, "requeue", BIT }, // RecoverAsync
-				new Object[] { BASIC_CLASS, 110, "requeue", BIT }, // Recover
-				new Object[] { BASIC_CLASS, 111 }, // RecoverOk
-				new Object[] { BASIC_CLASS, 120, "deliveryTag", LONG, "multiple", BIT, "requeue", BIT }, // Nack
-				new Object[] { CONFIRM_CLASS, 10, "nowait", BIT }, // Select
-				new Object[] { CONFIRM_CLASS, 11 }, // SelectOk
-				new Object[] { TX_CLASS, 10 }, // Select
-				new Object[] { TX_CLASS, 11 }, // SelectOk
-				new Object[] { TX_CLASS, 20 }, // Commit
-				new Object[] { TX_CLASS, 21 }, // CommitOk
-				new Object[] { TX_CLASS, 30 }, // Rollback
-				new Object[] { TX_CLASS, 31 } // RollbackOk
+						"routingKey", SHORTSTR, "messageCount", INT }, /* GetOk */
+				new Object[] { BASIC_CLASS, 72, "clusterId", SHORTSTR }, /* GetEmpty */
+				new Object[] { BASIC_CLASS, 80, "deliveryTag", LONG, "multiple", BIT }, /* Ack */
+				new Object[] { BASIC_CLASS, 90, "deliveryTag", LONG, "requeue", BIT }, /* Reject */
+				new Object[] { BASIC_CLASS, 100, "requeue", BIT }, /* RecoverAsync */
+				new Object[] { BASIC_CLASS, 110, "requeue", BIT }, /* Recover */
+				new Object[] { BASIC_CLASS, 111 }, /* RecoverOk */
+				new Object[] { BASIC_CLASS, 120, "deliveryTag", LONG, "multiple", BIT, "requeue", BIT }, /* Nack */
+				new Object[] { CONFIRM_CLASS, 10, "nowait", BIT }, /* Select */
+				new Object[] { CONFIRM_CLASS, 11 }, /* SelectOk */
+				new Object[] { TX_CLASS, 10 }, /* Select */
+				new Object[] { TX_CLASS, 11 }, /* SelectOk */
+				new Object[] { TX_CLASS, 20 }, /* Commit */
+				new Object[] { TX_CLASS, 21 }, /* CommitOk */
+				new Object[] { TX_CLASS, 30 }, /* Rollback */
+				new Object[] { TX_CLASS, 31 } /* RollbackOk */
 		};
 		SimpleKeyValueList<Short, SimpleKeyValueList<Short, SimpleKeyValueList<String, Byte>>> values = broker
 				.getGrammar(true);
@@ -563,7 +578,7 @@ public class RabbitMessage {
 	}
 
 	public boolean analysePayLoad(NodeProxyBroker broker) {
-		if(payload == null || broker == null) {
+		if (payload == null || broker == null) {
 			return false;
 		}
 		classId = payload.getShort();
@@ -618,7 +633,7 @@ public class RabbitMessage {
 	 */
 	private static Map<String, Object> readTable(ByteBuffer in) {
 		Map<String, Object> table = new SimpleKeyValueList<String, Object>();
-		if(in == null) {
+		if (in == null) {
 			return null;
 		}
 		long endPos = in.getUnsignedInt();
@@ -637,7 +652,7 @@ public class RabbitMessage {
 	}
 
 	private static Object readFieldValue(ByteBuffer in) {
-		if(in == null) {
+		if (in == null) {
 			return null;
 		}
 		byte type = in.getByte();
@@ -701,8 +716,7 @@ public class RabbitMessage {
 	 */
 	private static SimpleList<Object> readArray(ByteBuffer in) {
 		SimpleList<Object> array = new SimpleList<Object>();
-//			long length =  & INT_MASK;
-		if(in == null) {
+		if (in == null) {
 			return array;
 		}
 		in.getInt();
@@ -721,7 +735,7 @@ public class RabbitMessage {
 	 * @return the readed bytes
 	 */
 	private static byte[] readBytes(ByteBuffer in) {
-		if(in == null) {
+		if (in == null) {
 			return null;
 		}
 		final long contentLength = in.getUnsignedInt();
@@ -771,7 +785,6 @@ public class RabbitMessage {
 				passwordStr = login[1];
 			}
 		}
-//		SimpleList<String> list = new SimpleList<String>();
 		CharacterBuffer sb = new CharacterBuffer();
 		sb.with((char) 0);
 		sb.with(userStr);
@@ -802,7 +815,7 @@ public class RabbitMessage {
 	}
 
 	public static RabbitMessage createChannelOpen(NodeProxyBroker broker, String queue) {
-		if(broker == null) {
+		if (broker == null) {
 			return null;
 		}
 		RabbitMessage msg = new RabbitMessage().withType(FRAME_METHOD);
@@ -862,7 +875,6 @@ public class RabbitMessage {
 		msg.withShortString(queue);
 		msg.withShortString(routingKey);
 		msg.withValues(false);
-//		msg.withValues(body);
 		return msg;
 	}
 
@@ -873,16 +885,16 @@ public class RabbitMessage {
 		if (type == null) {
 			type = "fanout";
 		}
-//		 DIRECT("direct"), FANOUT("fanout"), TOPIC("topic"), HEADERS("headers");
+		/* DIRECT("direct"), FANOUT("fanout"), TOPIC("topic"), HEADERS("headers"); */
 		msg.withValues(ticket);
 		msg.withShortString(exchange);
 		msg.withShortString(type);
-		msg.withValues(false); // passive
-		msg.withValues(false); // durable
-		msg.withValues(false); // autoDelete
-		msg.withValues(false); // internal
-		msg.withValues(false); // nowait
-//		msg.writeValue(null); // arguments
+		msg.withValues(false); /* passive */
+		msg.withValues(false); /* durable */
+		msg.withValues(false); /* autoDelete */
+		msg.withValues(false); /* internal */
+		msg.withValues(false); /* nowait */
+		/* msg.writeValue(null); /* arguments */
 		return msg;
 	}
 
@@ -893,14 +905,14 @@ public class RabbitMessage {
 		msg.withValues(ticket);
 		msg.withShortString(queue);
 		msg.withShortString(exchange);
-		msg.withShortString(""); // routingKey
-		msg.withValues(false); // nowait
-		msg.writeValue(null); // arguments
+		msg.withShortString(""); /* routingKey */
+		msg.withValues(false); /* nowait */
+		msg.writeValue(null); /* arguments */
 		return msg;
 	}
 
 	public static RabbitMessage createPublishHeader(short channel, String queue) {
-		if(queue == null) {
+		if (queue == null) {
 			return null;
 		}
 		RabbitMessage msg = new RabbitMessage().withType(FRAME_HEADER);
@@ -952,7 +964,7 @@ public class RabbitMessage {
 		if (b) {
 			bitAccumulator |= bitMask;
 		} else {
-			// um, don't set the bit.
+			/* um, don't set the bit. */
 		}
 		bitMask = bitMask << 1;
 		needBitFlush = true;

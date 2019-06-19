@@ -49,25 +49,33 @@ final class DecodedBitStreamParser {
 		do {
 			/* While still another segment to read... */
 			if (bits.available() < 4) {
-				/* OK, assume we're done. Really, a TERMINATOR mode should have been recorded here */
+				/*
+				 * OK, assume we're done. Really, a TERMINATOR mode should have been recorded
+				 * here
+				 */
 				mode = Mode.TERMINATOR;
 			} else {
 				mode = Mode.forBits(bits.readBits(4)); /* mode is encoded by 4 bits */
 			}
 			if (mode != Mode.TERMINATOR) {
 				if (mode == Mode.FNC1_FIRST_POSITION || mode == Mode.FNC1_SECOND_POSITION) {
-					/* We do little with FNC1 except alter the parsed result a bit according to the spec */
+					/*
+					 * We do little with FNC1 except alter the parsed result a bit according to the
+					 * spec
+					 */
 					fc1InEffect = true;
 				} else if (mode == Mode.STRUCTURED_APPEND) {
 					if (bits.available() < 16) {
 						throw new RuntimeException("FormatException");
 					}
-					/* sequence number and parity is added later to the result metadata
-					   Read next 8 bits (symbol sequence #) and 8 bits (parity data), then continue */
+					/*
+					 * sequence number and parity is added later to the result metadata Read next 8
+					 * bits (symbol sequence #) and 8 bits (parity data), then continue
+					 */
 					symbolSequence = bits.readBits(8);
 					parityData = bits.readBits(8);
 				} else if (mode == Mode.ECI) {
-					/* Count doesn't apply to ECI  int value = parseECIValue(bits); */
+					/* Count doesn't apply to ECI int value = parseECIValue(bits); */
 				} else {
 					/* First handle Hanzi mode which does not start with character count */
 					if (mode == Mode.HANZI) {
@@ -78,7 +86,10 @@ final class DecodedBitStreamParser {
 							decodeHanziSegment(bits, result, countHanzi);
 						}
 					} else {
-						/* "Normal" QR code modes: How many characters will follow, encoded in this mode? */
+						/*
+						 * "Normal" QR code modes: How many characters will follow, encoded in this
+						 * mode?
+						 */
 						int count = bits.readBits(mode.getCharacterCountBits(version));
 						if (mode == Mode.NUMERIC) {
 							if (decodeNumericSegment(bits, result, count) == false) {
@@ -122,7 +133,10 @@ final class DecodedBitStreamParser {
 			return false;
 		}
 
-		/* Each character will require 2 bytes. Read the characters as 2-byte pairs and decode as GB2312 afterwards */
+		/*
+		 * Each character will require 2 bytes. Read the characters as 2-byte pairs and
+		 * decode as GB2312 afterwards
+		 */
 		byte[] buffer = new byte[2 * count];
 		int offset = 0;
 		while (count > 0) {
@@ -156,8 +170,10 @@ final class DecodedBitStreamParser {
 			return false;
 		}
 
-		/* Each character will require 2 bytes. Read the characters as 2-byte pairs
-		   and decode as Shift_JIS afterwards */
+		/*
+		 * Each character will require 2 bytes. Read the characters as 2-byte pairs and
+		 * decode as Shift_JIS afterwards
+		 */
 		byte[] buffer = new byte[2 * count];
 		int offset = 0;
 		while (count > 0) {
@@ -205,8 +221,8 @@ final class DecodedBitStreamParser {
 	}
 
 	private static char toAlphaNumericChar(int value) {
-		if (value<0 || value >= ALPHANUMERIC_CHARS.length) {
-			return (char)-1;
+		if (value < 0 || value >= ALPHANUMERIC_CHARS.length) {
+			return (char) -1;
 		}
 		return ALPHANUMERIC_CHARS[value];
 	}
@@ -225,12 +241,12 @@ final class DecodedBitStreamParser {
 			}
 			int nextTwoCharsBits = bits.readBits(11);
 			character = toAlphaNumericChar(nextTwoCharsBits / 45);
-			if(character<0) {
+			if (character < 0) {
 				return false;
 			}
 			result.with(character);
 			character = toAlphaNumericChar(nextTwoCharsBits % 45);
-			if(character<0) {
+			if (character < 0) {
 				return false;
 			}
 			count -= 2;
@@ -241,7 +257,7 @@ final class DecodedBitStreamParser {
 				return false;
 			}
 			character = toAlphaNumericChar(bits.readBits(6));
-			if(character<0) {
+			if (character < 0) {
 				return false;
 			}
 		}
@@ -265,10 +281,10 @@ final class DecodedBitStreamParser {
 
 	private static boolean decodeNumericSegment(BitArray bits, CharacterBuffer result, int count) {
 		/* Read three digits at a time */
-		if(bits == null || result == null) {
+		if (bits == null || result == null) {
 			return false;
 		}
-		char character;  
+		char character;
 		while (count >= 3) {
 			/* Each 10 bits encodes three digits */
 			if (bits.available() < 10) {
@@ -279,17 +295,17 @@ final class DecodedBitStreamParser {
 				return false;
 			}
 			character = toAlphaNumericChar(threeDigitsBits / 100);
-			if(character<0) {
+			if (character < 0) {
 				return false;
 			}
 			result.with(character);
 			character = toAlphaNumericChar((threeDigitsBits / 10) % 10);
-			if(character<0) {
+			if (character < 0) {
 				return false;
 			}
 			result.with(character);
 			character = toAlphaNumericChar(threeDigitsBits % 10);
-			if(character<0) {
+			if (character < 0) {
 				return false;
 			}
 			result.with(character);
@@ -305,12 +321,12 @@ final class DecodedBitStreamParser {
 				return false;
 			}
 			character = toAlphaNumericChar(twoDigitsBits / 10);
-			if(character<0) {
+			if (character < 0) {
 				return false;
 			}
 			result.with(character);
 			character = toAlphaNumericChar(twoDigitsBits % 10);
-			if(character<0) {
+			if (character < 0) {
 				return false;
 			}
 			result.with(character);
@@ -324,7 +340,7 @@ final class DecodedBitStreamParser {
 				return false;
 			}
 			character = toAlphaNumericChar(digitBits);
-			if(character<0) {
+			if (character < 0) {
 				return false;
 			}
 			result.with(character);

@@ -3,7 +3,7 @@ package de.uniks.networkparser.xml;
 /*
 NetworkParser
 The MIT License
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -100,7 +100,7 @@ public class XMLTokener extends Tokener {
 
 	@Override
 	public BaseItem parseToEntity(BaseItem entity, Object source) {
-		if(source == null || source instanceof Buffer == false) {
+		if (source == null || source instanceof Buffer == false) {
 			return null;
 		}
 		Buffer buffer = (Buffer) source;
@@ -158,14 +158,14 @@ public class XMLTokener extends Tokener {
 					break;
 				} else if (nextChar == '!') {
 					nextChar = buffer.getChar();
-					if('[' ==nextChar) {
+					if ('[' == nextChar) {
 						// MIGHT BE <![CDATA[
 						int start = buffer.position();
 						buffer.skipTo("]]>", true, true);
 						int end = buffer.position();
-						if(end !=  start) {
-							start+= 7; // CDATA[
-							end -=2;
+						if (end != start) {
+							start += 7; // CDATA[
+							end -= 2;
 							xmlEntity.withValueItem(buffer.substring(start, end).toString());
 						}
 					} else {
@@ -218,7 +218,7 @@ public class XMLTokener extends Tokener {
 	 * @param buffer Buffer for Values
 	 */
 	protected void skipEntity(Buffer buffer) {
-		if(buffer == null) {
+		if (buffer == null) {
 			return;
 		}
 		buffer.skipTo('>', false);
@@ -229,7 +229,7 @@ public class XMLTokener extends Tokener {
 	public String skipHeader(Buffer buffer) {
 		boolean skip = false;
 		CharacterBuffer tag;
-		if(buffer == null) {
+		if (buffer == null) {
 			return null;
 		}
 		do {
@@ -604,20 +604,19 @@ public class XMLTokener extends Tokener {
 		return this;
 	}
 
-	//FIXME public static XsdValidationLoggingErrorHandler
-	/* validate(java.net.URL xsdSchema, String xmlDokument)
-	throws SAXException, IOException {
-	 com.sun.org.apache.xerces.internal.jaxp.validation.XMLSchemaFactory
-	 schemaFactory = (XMLSchemaFactory) SchemaFactory
-	 .newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-	
-	 // Schema schema = schemaFactory.newSchema(new File(xsdSchema));
-	 Schema schema = schemaFactory.newSchema(xsdSchema);
-	 Validator validator = schema.newValidator();
-	 XsdValidationLoggingErrorHandler errorHandler = new
-	 XsdValidationLoggingErrorHandler();
-	 validator.setErrorHandler(errorHandler);
-	 validator.validate(new StreamSource(new File(xmlDokument)));
-	 return errorHandler;
-	 }*/
+	// FIXME public static XsdValidationLoggingErrorHandler
+	/*
+	 * validate(java.net.URL xsdSchema, String xmlDokument) throws SAXException,
+	 * IOException {
+	 * com.sun.org.apache.xerces.internal.jaxp.validation.XMLSchemaFactory
+	 * schemaFactory = (XMLSchemaFactory) SchemaFactory
+	 * .newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+	 * 
+	 * // Schema schema = schemaFactory.newSchema(new File(xsdSchema)); Schema
+	 * schema = schemaFactory.newSchema(xsdSchema); Validator validator =
+	 * schema.newValidator(); XsdValidationLoggingErrorHandler errorHandler = new
+	 * XsdValidationLoggingErrorHandler(); validator.setErrorHandler(errorHandler);
+	 * validator.validate(new StreamSource(new File(xmlDokument))); return
+	 * errorHandler; }
+	 */
 }

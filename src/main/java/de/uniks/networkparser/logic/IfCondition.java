@@ -9,7 +9,7 @@ import de.uniks.networkparser.interfaces.ParserCondition;
 /*
 NetworkParser
 The MIT License
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -114,7 +114,8 @@ public class IfCondition implements ParserCondition, SendableEntityCreator {
 				li.put(NOTIFY, null);
 				// NOTIFY
 				if (evt instanceof SendableEntityCreator) {
-					GraphMember member = (GraphMember) ((SendableEntityCreator) evt).getValue(evt, TemplateResultFragment.PROPERTY_CURRENTMEMBER);
+					GraphMember member = (GraphMember) ((SendableEntityCreator) evt).getValue(evt,
+							TemplateResultFragment.PROPERTY_CURRENTMEMBER);
 					if (member != null) {
 						ObjectCondition oc = GraphUtil.getRole(member);
 						if (oc != null) {
@@ -232,7 +233,7 @@ public class IfCondition implements ParserCondition, SendableEntityCreator {
 			// Short IF
 			this.withTrue(parser.parsing(buffer, customTemplate, false, true, ":", "}"));
 			if (buffer.skipIf(true, ':')) {
-				this.withFalse(parser.parsing(buffer, customTemplate, false,  true, "}"));
+				this.withFalse(parser.parsing(buffer, customTemplate, false, true, "}"));
 			}
 			buffer.skipChar(SPLITEND);
 			buffer.skipChar(SPLITEND);

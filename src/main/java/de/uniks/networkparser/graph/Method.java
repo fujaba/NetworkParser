@@ -3,7 +3,7 @@ package de.uniks.networkparser.graph;
 /*
 NetworkParser
 The MIT License
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -129,15 +129,15 @@ public class Method extends GraphMember {
 				sb.with(", ");
 			}
 			sb.with(param.getType().getName(shortName));
-			if(param.isArray()) {
-				if(optimizeArray && i==collection.size()-1) {
+			if (param.isArray()) {
+				if (optimizeArray && i == collection.size() - 1) {
 					// Check for array at least
 					sb.with("...");
-				}else {
+				} else {
 					sb.with("[]");
 				}
 			}
-			
+
 			if (param.getName() == null || removeParameterNames) {
 				sb.with(" p" + i);
 			} else {

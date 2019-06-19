@@ -3,7 +3,7 @@ package de.uniks.networkparser.xml;
 /*
 NetworkParser
 The MIT License
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -51,43 +51,45 @@ public class ArtifactFile implements SendableEntityCreatorTag, BaseItem, Compara
 	private String tag = TAG;
 	private String time;
 	private SimpleList<ArtifactFile> dependencies = new SimpleList<ArtifactFile>();
-	
+
 	public String hash = "";
 	public String coverage = "";
-	//SCOPE public String branch = "";
+	// SCOPE public String branch = "";
 	public String prefix = "";
 	public boolean latest;
-	
+
 	public static final String SNAPSHOT = "SNAPSHOT";
 	private boolean isSnapshot;
 	private SimpleList<String> classifier = new SimpleList<String>();
 	private String index;
 	private String fileName;
-	private int pomNumber[] = new int[] { 1, 1, 1, 1, 1, 1, 0 };/* First 3 Number are Max next 3 Number are Current Number of Six is Index */
-	
+	private int pomNumber[] = new int[] { 1, 1, 1, 1, 1, 1,
+			0 };/* First 3 Number are Max next 3 Number are Current Number of Six is Index */
+
 	public String toGITString() {
 		if (System.getenv().get("BUILD_NUMBER") != null) {
 			try {
-				pomNumber[5] = Integer.valueOf(System.getenv().get("BUILD_NUMBER")); 
-			}catch (Exception e) {
+				pomNumber[5] = Integer.valueOf(System.getenv().get("BUILD_NUMBER"));
+			} catch (Exception e) {
 			}
 		}
-		if(latest) {
+		if (latest) {
 			return "";
-		} else if(isRelease() == false && !isMaster()) {
-			return pomNumber[3]+"."+pomNumber[4]+"."+pomNumber[5]+"-SNAPSHOT";
+		} else if (isRelease() == false && !isMaster()) {
+			return pomNumber[3] + "." + pomNumber[4] + "." + pomNumber[5] + "-SNAPSHOT";
 		}
-		return pomNumber[3]+"."+pomNumber[4]+"."+pomNumber[5];
+		return pomNumber[3] + "." + pomNumber[4] + "." + pomNumber[5];
 	}
-	
+
 	public boolean isMaster() {
-		if(scope == null) {
+		if (scope == null) {
 			return false;
 		}
 		return scope.contains("master");
 	}
+
 	public boolean isRelease() {
-		if(scope == null) {
+		if (scope == null) {
 			return false;
 		}
 		return scope.contains("release");
@@ -167,7 +169,7 @@ public class ArtifactFile implements SendableEntityCreatorTag, BaseItem, Compara
 			start += this.pomNumber[i + 3] + 1;
 			temp += EntityUtil.strZero(Integer.valueOf(part), this.pomNumber[i]);
 			i++;
-	
+
 			if (start + this.pomNumber[i + 3] < this.version.length()) {
 				part = this.version.substring(start, start + this.pomNumber[i + 3]);
 				start += this.pomNumber[i + 3] + 1;
@@ -188,7 +190,7 @@ public class ArtifactFile implements SendableEntityCreatorTag, BaseItem, Compara
 				}
 				this.pomNumber[6] = Integer.valueOf(temp);
 			}
-		}catch (Exception e) {
+		} catch (Exception e) {
 		}
 		return change;
 	}
@@ -456,7 +458,7 @@ public class ArtifactFile implements SendableEntityCreatorTag, BaseItem, Compara
 		}
 		String v = getVersion();
 		String v2 = o.getVersion();
-		if(v==null || v2 == null) {
+		if (v == null || v2 == null) {
 			return 1;
 		}
 		String[] version1 = v.replace(".", "#").split("#");
@@ -496,7 +498,7 @@ public class ArtifactFile implements SendableEntityCreatorTag, BaseItem, Compara
 //	public static final ArtifactFile createContext(String version, String artifactId) {
 	public static final ArtifactFile createContext(String fileName, String groupId, String time) {
 		ArtifactFile artifactFile = new ArtifactFile();
-		if(fileName == null) {
+		if (fileName == null) {
 			return artifactFile;
 		}
 		int len;

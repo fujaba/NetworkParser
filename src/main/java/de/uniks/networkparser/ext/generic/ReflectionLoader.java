@@ -4,7 +4,7 @@ import java.io.DataInputStream;
 /*
 The MIT License
 
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -44,6 +44,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 import java.util.zip.ZipOutputStream;
+
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.ext.ErrorHandler;
 import de.uniks.networkparser.ext.Os;
@@ -115,7 +116,6 @@ public class ReflectionLoader {
 	public static final Class<?> REPOSITORY;
 	public static final Class<?> ANYOBJECTID;
 	public static final Class<?> STOREDCONFIG;
-	
 
 	public static final Class<?> RECTANGLE;
 	public static final Class<?> ROBOT;
@@ -133,15 +133,8 @@ public class ReflectionLoader {
 	public static final Class<?> MANAGEMENTFACTORY;
 	public static final Class<?> JFILECHOOSER;
 	public static final Class<?> JFRAME;
-//	public static final Class<?> DIFFENTRY;
-//	public static final Class<?> OBJECTID;
-//	public static final Class<?> OBJECTREADER;
-//	public static final Class<?> REF;
-//	public static final Class<?> REVCOMMIT;
 
-//	public static final Class<?> JUNIT = getClass("org.junit.Assert");
-
-	// EMF
+	/* EMF */
 	public static final Class<?> EATTRIBUTE;
 	public static final Class<?> ECLASS;
 	public static final Class<?> ECLASSIFIER;
@@ -154,7 +147,7 @@ public class ReflectionLoader {
 	}
 
 	static {
-		// JAVAFX
+		/* JAVAFX */
 		CHANGELISTENER = getClass("javafx.beans.value.ChangeListener");
 
 		if (CHANGELISTENER != null) {
@@ -259,7 +252,7 @@ public class ReflectionLoader {
 	}
 
 	static {
-		// AWT
+		/* AWT */
 		TOOLKIT = getClass("java.awt.Toolkit");
 		if (TOOLKIT != null) {
 			SYSTEMTRAY = getClass("java.awt.SystemTray");
@@ -297,7 +290,7 @@ public class ReflectionLoader {
 	}
 
 	static {
-		// GIT
+		/* GIT */
 		GIT = getClass("org.eclipse.jgit.api.Git");
 		if (GIT != null) {
 			REVWALK = getClass("org.eclipse.jgit.revwalk.RevWalk");
@@ -307,11 +300,6 @@ public class ReflectionLoader {
 			REPOSITORY = getClass("org.eclipse.jgit.lib.Repository");
 			ANYOBJECTID = getClass("org.eclipse.jgit.lib.AnyObjectId");
 			STOREDCONFIG = getClass("org.eclipse.jgit.lib.StoredConfig");
-//			DIFFENTRY = getClass("org.eclipse.jgit.diff.DiffEntry");
-//			OBJECTID = getClass("org.eclipse.jgit.lib.ObjectId");
-//			OBJECTREADER = getClass("org.eclipse.jgit.lib.ObjectReader");
-//			REF = getClass("org.eclipse.jgit.lib.Ref");
-//			REVCOMMIT = getClass("org.eclipse.jgit.revwalk.RevCommit");
 		} else {
 			REVWALK = null;
 			FILEREPOSITORYBUILDER = null;
@@ -320,16 +308,11 @@ public class ReflectionLoader {
 			REPOSITORY = null;
 			ANYOBJECTID = null;
 			STOREDCONFIG = null;
-//			DIFFENTRY = null;
-//			OBJECTID = null;
-//			OBJECTREADER = null;
-//			REF = null;
-//			REVCOMMIT = null;
 		}
 	}
 
 	static {
-		// EMF
+		/* EMF */
 		EPACKAGE = getClass("org.eclipse.emf.ecore.EPackage");
 		if (EPACKAGE != null) {
 			ECLASS = getClass("org.eclipse.emf.ecore.EClass");
@@ -347,7 +330,7 @@ public class ReflectionLoader {
 	}
 
 	public static Object newInstance(String className, Object... arguments) {
-		if(className == null) {
+		if (className == null) {
 			return null;
 		}
 		try {
@@ -359,18 +342,18 @@ public class ReflectionLoader {
 	}
 
 	public static Object newArray(Class<?> arrayClass, Object... values) {
-		if(arrayClass == null || values == null) {
+		if (arrayClass == null || values == null) {
 			return null;
 		}
 		Object items = Array.newInstance(arrayClass, values.length);
-		for(int i=0;i<values.length;i++) {
+		for (int i = 0; i < values.length; i++) {
 			Array.set(items, i, values[i]);
 		}
 		return items;
 	}
 
 	public static Object newInstanceStr(String className, Object... arguments) {
-		if(className == null) {
+		if (className == null) {
 			return null;
 		}
 		try {
@@ -389,7 +372,7 @@ public class ReflectionLoader {
 	}
 
 	public static Object newInstanceSimple(Class<?> instance, String... ignoreCreateMethods) {
-		if(instance ==null) {
+		if (instance == null) {
 			return null;
 		}
 		if (ignoreCreateMethods != null) {
@@ -403,16 +386,16 @@ public class ReflectionLoader {
 			}
 		}
 		Constructor<?>[] constructors = instance.getDeclaredConstructors();
-		if(instance == java.net.URL.class) {
+		if (instance == java.net.URL.class) {
 			try {
 				return new URL("http://www.github.com");
 			} catch (MalformedURLException e) {
 			}
 		}
-		if(instance == ZipOutputStream.class) {
+		if (instance == ZipOutputStream.class) {
 			return new ZipOutputStream(new StringOutputStream());
 		}
-		if(instance == DataInputStream.class) {
+		if (instance == DataInputStream.class) {
 			return new DataInputStream(new StringInputStream());
 		}
 		if (constructors == null || constructors.length < 1) {
@@ -421,19 +404,19 @@ public class ReflectionLoader {
 			Constructor<?> emptyConstructor = null;
 			for (Constructor<?> con : constructors) {
 				if (Modifier.isPublic(con.getModifiers())) {
-					if(con.getParameterTypes().length == 0) {
+					if (con.getParameterTypes().length == 0) {
 						emptyConstructor = con;
 						break;
 					}
 				}
 			}
-			if(emptyConstructor != null) {
+			if (emptyConstructor != null) {
 				try {
 					Object newInstance = emptyConstructor.newInstance();
 					if (newInstance != null) {
 						return newInstance;
 					}
-				}catch (Exception e) {
+				} catch (Exception e) {
 				}
 			}
 			for (Constructor<?> con : constructors) {
@@ -476,10 +459,10 @@ public class ReflectionLoader {
 	}
 
 	public static Object newInstance(boolean showError, Class<?> instance, Object... arguments) {
-		if(instance == null) {
+		if (instance == null) {
 			return null;
 		}
-		if(instance.isInterface()) {
+		if (instance.isInterface()) {
 			return null;
 		}
 		try {
@@ -531,7 +514,7 @@ public class ReflectionLoader {
 
 	public static Class<?> getClass(String name) {
 		try {
-			if(name == null) {
+			if (name == null) {
 				return null;
 			}
 			return Class.forName(name, false, ReflectionLoader.class.getClassLoader());
@@ -542,8 +525,9 @@ public class ReflectionLoader {
 		}
 		return null;
 	}
+
 	public static Class<?> getSimpleClass(String name) {
-		if(name == null) {
+		if (name == null) {
 			return null;
 		}
 		try {
@@ -554,7 +538,7 @@ public class ReflectionLoader {
 	}
 
 	public static Object createProxy(Object proxy, Class<?>... proxys) {
-		if(proxy == null || proxys == null || proxys.length<1 || proxys[0]== null) {
+		if (proxy == null || proxys == null || proxys.length < 1 || proxys[0] == null) {
 			return null;
 		}
 		return java.lang.reflect.Proxy.newProxyInstance(ReflectionLoader.class.getClassLoader(), proxys,
@@ -564,37 +548,37 @@ public class ReflectionLoader {
 	public static Object callChain(Object item, String... methodNames) {
 		return callChain(item, true, methodNames);
 	}
-	
+
 	public static Object callChainExt(Object item, Object... methodNames) {
-		if(methodNames== null) {
+		if (methodNames == null) {
 			return null;
 		}
-		int i=0;
-		for(;i<methodNames.length;i++) {
-			if(methodNames[i] instanceof Class<?>) {
+		int i = 0;
+		for (; i < methodNames.length; i++) {
+			if (methodNames[i] instanceof Class<?>) {
 				break;
 			}
 		}
-		if(i != methodNames.length) {
-			if(i-2<0) {
+		if (i != methodNames.length) {
+			if (i - 2 < 0) {
 				return null;
 			}
-			i -=2;
+			i -= 2;
 		}
-		String[] newMethods=new String[i];
-		for(int m=0;m<i;m++) {
-			newMethods[m]= (String) methodNames[m];
+		String[] newMethods = new String[i];
+		for (int m = 0; m < i; m++) {
+			newMethods[m] = (String) methodNames[m];
 		}
-		if(i == methodNames.length) {
+		if (i == methodNames.length) {
 			return callChain(item, newMethods);
 		}
 		Object result = callChain(item, newMethods);
-		if(result != null) {
-			Object[] newParams=new Object[methodNames.length - i];
-			for(int m=i;m<methodNames.length;m++) {
-				newParams[m-i]= methodNames[m];
+		if (result != null) {
+			Object[] newParams = new Object[methodNames.length - i];
+			for (int m = i; m < methodNames.length; m++) {
+				newParams[m - i] = methodNames[m];
 			}
-			return call(result, (String)methodNames[i], newParams);
+			return call(result, (String) methodNames[i], newParams);
 		}
 		return null;
 	}
@@ -631,7 +615,7 @@ public class ReflectionLoader {
 	}
 
 	public static Object getField(Object item, String... fieldNames) {
-		if(item == null) {
+		if (item == null) {
 			return null;
 		}
 		Class<?> className = null;
@@ -643,19 +627,19 @@ public class ReflectionLoader {
 			className = item.getClass();
 		}
 		Field field;
-		if(fieldNames == null) {
+		if (fieldNames == null) {
 			return null;
 		}
 		Object result = null;
-		for (int i=0;i<fieldNames.length;i++) {
-			if(fieldNames[i] == null) {
+		for (int i = 0; i < fieldNames.length; i++) {
+			if (fieldNames[i] == null) {
 				continue;
 			}
 			try {
 				field = className.getField(fieldNames[i]);
 				field.setAccessible(true);
 				result = field.get(itemObj);
-				if(result == null || i == fieldNames.length - 1) {
+				if (result == null || i == fieldNames.length - 1) {
 					return result;
 				}
 				className = result.getClass();
@@ -664,7 +648,7 @@ public class ReflectionLoader {
 					field = className.getDeclaredField(fieldNames[i]);
 					field.setAccessible(true);
 					result = field.get(itemObj);
-					if(result == null || i == fieldNames.length - 1) {
+					if (result == null || i == fieldNames.length - 1) {
 						return result;
 					}
 					className = result.getClass();
@@ -679,7 +663,7 @@ public class ReflectionLoader {
 	}
 
 	public static boolean setField(String fieldName, Object item, Object value) {
-		if(item == null) {
+		if (item == null) {
 			return false;
 		}
 		Class<?> className = null;
@@ -717,35 +701,33 @@ public class ReflectionLoader {
 
 	public static CharacterBuffer printAPI(Object item) {
 		CharacterBuffer sb = new CharacterBuffer();
-		if(item == null) {
+		if (item == null) {
 			return sb;
 		}
 		try {
-//			for (Class<?> c = scanner.getClass(); c != null; c = c.getSuperclass()) {
 			Class<?> c = item.getClass();
 			Field[] fields = c.getFields();
 			sb.withLine(c.getName());
 			for (Field field : fields) {
-				sb.withLine("\t" + Modifier.toString(field.getModifiers())+ " " + field.getName());
+				sb.withLine("\t" + Modifier.toString(field.getModifiers()) + " " + field.getName());
 			}
 			Method[] methods = item.getClass().getMethods();
 			for (Method method : methods) {
-				sb.with("\t" + Modifier.toString(method.getModifiers())+ " " + method.getName()+"(");
-				for(int i=0;i<method.getParameterTypes().length;i++) {
-					if(i>0) {
-						sb.with(", "+method.getParameterTypes()[i].getName());
-					}else {
+				sb.with("\t" + Modifier.toString(method.getModifiers()) + " " + method.getName() + "(");
+				for (int i = 0; i < method.getParameterTypes().length; i++) {
+					if (i > 0) {
+						sb.with(", " + method.getParameterTypes()[i].getName());
+					} else {
 						sb.with(method.getParameterTypes()[i].getName());
 					}
 				}
-	          sb.withLine(") : " + method.getReturnType().getName());
-	      }
-//			    }    
-		}catch (Exception e) {
+				sb.withLine(") : " + method.getReturnType().getName());
+			}
+		} catch (Exception e) {
 		}
 		return sb;
 	}
-	
+
 	public static Object callStr(Object item, String methodName, Object... arguments) {
 		try {
 			if (arguments != null && arguments.length % 2 == 0) {
@@ -833,7 +815,7 @@ public class ReflectionLoader {
 					}
 				}
 				if (method == null) {
-					// next Try Last may be an ...
+					/* next Try Last may be an ... */
 					if (methodArguments.length > 0) {
 						Class<?> simpleType = methodArguments[methodArguments.length - 1];
 						methodArguments[methodArguments.length - 1] = ReflectionLoader
@@ -864,16 +846,13 @@ public class ReflectionLoader {
 			}
 			if (method != null) {
 				boolean isPublic = Modifier.isPublic(method.getModifiers());
-//				boolean isFinal = Modifier.isFinal(method.getModifiers());
 				if (staticCall && isPublic) {
 					return method.invoke(null, methodArgumentsValues);
 				}
-//				if(isAccess(method, item) == false || isPublic == false || (isPublic && isFinal)) {
 				method.setAccessible(true);
-//				}
-				if(notifyObject instanceof Boolean) {
+				if (notifyObject instanceof Boolean) {
 					Object invoke = method.invoke(item, methodArgumentsValues);
-					if(invoke != null) {
+					if (invoke != null) {
 						return invoke;
 					}
 					return notifyObject;
@@ -881,7 +860,7 @@ public class ReflectionLoader {
 				return method.invoke(item, methodArgumentsValues);
 			}
 		} catch (Exception e) {
-			if(notify == false) {
+			if (notify == false) {
 				return null;
 			}
 			if (logger != null) {
@@ -904,7 +883,7 @@ public class ReflectionLoader {
 	}
 
 	private static boolean checkValue(Object[] arguments) {
-		if(arguments == null) {
+		if (arguments == null) {
 			return false;
 		}
 		for (int i = 0; i < arguments.length; i += 2) {
@@ -964,13 +943,12 @@ public class ReflectionLoader {
 	}
 
 	public static boolean isAccess(Member member, Object entity) {
-		if(member == null) {
+		if (member == null) {
 			return false;
 		}
 		try {
 			Method method = member.getClass().getMethod("canAccess", Object.class);
 			if (method != null) {
-//				field.canAccess(entity)
 				return (Boolean) method.invoke(member, entity);
 			}
 		} catch (Exception e) {
@@ -984,7 +962,7 @@ public class ReflectionLoader {
 		}
 		return true;
 	}
-	
+
 	/**
 	 * Attempts to list all the classes in the specified package as determined by
 	 * the context class loader
@@ -993,7 +971,7 @@ public class ReflectionLoader {
 	 * @return a list of classes that exist within that package
 	 */
 	public static SimpleList<Class<?>> getClassesForPackage(String pckgname) {
-		if(pckgname == null) {
+		if (pckgname == null) {
 			return null;
 		}
 		SimpleList<Class<?>> classes = new SimpleList<Class<?>>();
@@ -1012,11 +990,11 @@ public class ReflectionLoader {
 					classes.add(forName);
 				}
 			}
-		}catch (Throwable e) {
+		} catch (Throwable e) {
 		}
 		return classes;
 	}
-	
+
 	private static void checkDirectory(File directory, String pckgname, SimpleList<Class<?>> classes)
 			throws ClassNotFoundException {
 		File tmpDirectory;
@@ -1028,7 +1006,6 @@ public class ReflectionLoader {
 			for (String file : files) {
 				if (file.endsWith(".class")) {
 					try {
-//						output(pckgname + '.' + file.substring(0, file.length() - 6), null, Net);
 						String className = pckgname;
 						if (className.length() > 0) {
 							className += ".";
@@ -1036,7 +1013,7 @@ public class ReflectionLoader {
 						className += file.substring(0, file.length() - 6);
 						classes.add(Class.forName(className));
 					} catch (Exception e) {
-						// do nothing. this class hasn't been found by the loader, and we don't care.
+						/* do nothing. this class hasn't been found by the loader, and we don't care. */
 					}
 				} else if ((tmpDirectory = new File(directory, file)).isDirectory() && !file.equalsIgnoreCase("test")) {
 					checkDirectory(tmpDirectory, pckgname + "." + file, classes);

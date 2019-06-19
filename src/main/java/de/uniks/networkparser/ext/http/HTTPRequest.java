@@ -15,7 +15,7 @@ import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.xml.HTMLEntity;
 
-public class HTTPRequest  implements Comparable<HTTPRequest> {
+public class HTTPRequest implements Comparable<HTTPRequest> {
 	public static final String HTTP__NOTFOUND = "HTTP 404";
 	public static final String HTTP_OK = "HTTP/1.1 200 OK";
 	public static final String HTTP_PERMISSION_DENIED = "HTTP 403";
@@ -27,8 +27,8 @@ public class HTTPRequest  implements Comparable<HTTPRequest> {
 	public static final String HTTP_CONTENT_FORM = "application/x-www-form-urlencoded";
 	public static final String HTTP_LENGTH = "Content-Length:";
 	public static final String BEARER = "Bearer";
-	public static final Character STATIC='S';
-	public static final Character VARIABLE='V';
+	public static final Character STATIC = 'S';
+	public static final Character VARIABLE = 'V';
 
 	private BufferedReader inputStream;
 	private PrintWriter outputStream;
@@ -39,9 +39,9 @@ public class HTTPRequest  implements Comparable<HTTPRequest> {
 	private SimpleList<String> headers = new SimpleList<String>();
 	private String content;
 
-	private String http_Type; // GET OR POST
+	private String http_Type; /* GET OR POST */
 	private String contentType;
-	
+
 	private boolean writeHeader;
 	private boolean writeBody;
 	private SimpleList<String> partParameter;
@@ -51,9 +51,9 @@ public class HTTPRequest  implements Comparable<HTTPRequest> {
 	private CharacterBuffer bufferResponse;
 
 	private SimpleKeyValueList<String, String> matchVariables = new SimpleKeyValueList<String, String>();
-	private boolean matchValid=true;
+	private boolean matchValid = true;
 	private int matchOfRequestPath;
-	
+
 	public void executeExeption(Exception e) {
 		if (errorListener != null) {
 			errorListener.update(e);
@@ -61,9 +61,10 @@ public class HTTPRequest  implements Comparable<HTTPRequest> {
 			e.printStackTrace();
 		}
 	}
+
 	HTTPRequest() {
 	}
-	
+
 	private HTTPRequest(Socket socket) {
 		this.socket = socket;
 	}
@@ -89,7 +90,7 @@ public class HTTPRequest  implements Comparable<HTTPRequest> {
 		CharacterBuffer buffer = new CharacterBuffer();
 		try {
 			BufferedReader input = getInput();
-			if(input != null) {
+			if (input != null) {
 				while ((c = getInput().read()) != -1) {
 					if (c == ' ') {
 						break;
@@ -115,7 +116,7 @@ public class HTTPRequest  implements Comparable<HTTPRequest> {
 	}
 
 	public boolean close() {
-		if(this.writeBody == false && this.bufferResponse != null) {
+		if (this.writeBody == false && this.bufferResponse != null) {
 			writeBody(this.bufferResponse.toString());
 		}
 		if (outputStream != null) {
@@ -135,9 +136,10 @@ public class HTTPRequest  implements Comparable<HTTPRequest> {
 	public static HTTPRequest create(Socket socket) {
 		return new HTTPRequest(socket);
 	}
+
 	public static HTTPRequest createRouting(String value) {
 		HTTPRequest httpRequest = new HTTPRequest();
-		if(value != null) {
+		if (value != null) {
 			StringReader stringReader = new StringReader(value);
 			httpRequest.parsingPath(stringReader, "*");
 		}
@@ -148,12 +150,22 @@ public class HTTPRequest  implements Comparable<HTTPRequest> {
 		BufferedReader input = getInput();
 		parsingPath(input, null);
 	}
+
+	/**
+	 * Parsing Path
+	 *
+	 * bub/bla * bub/:id blub?id=1&name=bla
+	 * 
+	 * @param input        Reader
+	 * @param defaultValue default Fallback
+	 * @return success
+	 */
 	private boolean parsingPath(Reader input, String defaultValue) {
 		this.partPath = new SimpleList<String>();
 		this.partParameter = new SimpleList<String>();
 		this.pathType = new SimpleList<Character>();
 		this.fullPath = new SimpleList<String>();
-		if(defaultValue == null) {
+		if (defaultValue == null) {
 			defaultValue = "";
 		}
 		if (input == null) {
@@ -162,11 +174,7 @@ public class HTTPRequest  implements Comparable<HTTPRequest> {
 		}
 		CharacterBuffer buffer = new CharacterBuffer();
 		int c;
-		//bub/bla
-		//*
-		//bub/:id
-		//blub?id=1&name=bla
-		CharacterBuffer part =new CharacterBuffer();
+		CharacterBuffer part = new CharacterBuffer();
 		boolean isVariable = false;
 		try {
 			boolean isFirst = true;
@@ -175,14 +183,14 @@ public class HTTPRequest  implements Comparable<HTTPRequest> {
 					break;
 				}
 				buffer.with((char) c);
-				// Check for Paramter
-				if(c == ':' && part.length() == 0) {
-					isVariable=true;
-				}
-				if(c == '?' && isVariable == false) {
+				/* Check for Paramter */
+				if (c == ':' && part.length() == 0) {
 					isVariable = true;
 				}
-				if(c == '&' && isVariable) {
+				if (c == '?' && isVariable == false) {
+					isVariable = true;
+				}
+				if (c == '&' && isVariable) {
 					part.withStartPosition(1);
 					String value = part.toString();
 					this.fullPath.add(value);
@@ -191,10 +199,10 @@ public class HTTPRequest  implements Comparable<HTTPRequest> {
 					part.clear();
 					continue;
 				}
-				if(c == '/' && isFirst == false) {
-					// Split for /
-					if(isVariable) {
-						if(part.startsWith(":")) {
+				if (c == '/' && isFirst == false) {
+					/* Split for / */
+					if (isVariable) {
+						if (part.startsWith(":")) {
 							part.withStartPosition(1);
 							String value = part.toString();
 							this.fullPath.add(value);
@@ -203,13 +211,13 @@ public class HTTPRequest  implements Comparable<HTTPRequest> {
 							part.clear();
 							continue;
 						}
-					}else {
+					} else {
 						String value = part.toString();
 						this.fullPath.add(value);
-						if("*".equals(value)) {
+						if ("*".equals(value)) {
 							this.partParameter.add(value);
 							this.pathType.add(VARIABLE);
-						}else {
+						} else {
 							this.partPath.add(value);
 							this.pathType.add(STATIC);
 						}
@@ -217,23 +225,23 @@ public class HTTPRequest  implements Comparable<HTTPRequest> {
 					part.clear();
 					continue;
 				}
-				part.with((char)c);
+				part.with((char) c);
 				isFirst = false;
 			}
-			if(part.length()>0) {
-				if(isVariable) {
+			if (part.length() > 0) {
+				if (isVariable) {
 					part.withStartPosition(1);
 					String value = part.toString();
 					this.fullPath.add(value);
 					this.partParameter.add(value);
 					this.pathType.add(VARIABLE);
-				}else {
+				} else {
 					String value = part.toString();
 					this.fullPath.add(value);
-					if("*".equals(value)) {
+					if ("*".equals(value)) {
 						this.partParameter.add(part.toString());
 						this.pathType.add(VARIABLE);
-					}else {
+					} else {
 						this.partPath.add(value);
 						this.pathType.add(STATIC);
 					}
@@ -253,17 +261,17 @@ public class HTTPRequest  implements Comparable<HTTPRequest> {
 		return http_Type;
 	}
 
-	public String getPath() { 
+	public String getPath() {
 		return path;
 	}
-	
+
 	public HTTPRequest withPath(String value) {
 		this.path = value;
 		return this;
 	}
 
 	public boolean write(HTMLEntity entity) {
-		if(entity == null) {
+		if (entity == null) {
 			return false;
 		}
 		String content = entity.toString();
@@ -404,11 +412,11 @@ public class HTTPRequest  implements Comparable<HTTPRequest> {
 		}
 		return true;
 	}
-	
+
 	public boolean isWriteBody() {
 		return writeBody;
 	}
-	
+
 	public boolean isWriteHeader() {
 		return writeHeader;
 	}
@@ -454,17 +462,17 @@ public class HTTPRequest  implements Comparable<HTTPRequest> {
 	}
 
 	public String getHeader(String filter) {
-		if(filter == null) {
+		if (filter == null) {
 			return null;
 		}
-		for(String item : headers) {
-			if(item != null && item.startsWith(filter)) {
+		for (String item : headers) {
+			if (item != null && item.startsWith(filter)) {
 				return item;
 			}
 		}
 		return null;
 	}
-	
+
 	public String getContent() {
 		return content;
 	}
@@ -476,8 +484,8 @@ public class HTTPRequest  implements Comparable<HTTPRequest> {
 
 	public boolean writeCookie(String key, String value, int expriration) {
 		PrintWriter output = getOutput();
-		if(output != null) {
-			output.println("Set-Cookie: "+key+"="+value+"; Max-Age="+expriration);
+		if (output != null) {
+			output.println("Set-Cookie: " + key + "=" + value + "; Max-Age=" + expriration);
 			return true;
 		}
 		return false;
@@ -486,11 +494,11 @@ public class HTTPRequest  implements Comparable<HTTPRequest> {
 	public SimpleList<String> getPathParts() {
 		return this.partPath;
 	}
-	
+
 	public SimpleList<String> getPathParameter() {
 		return this.partParameter;
 	}
-	
+
 	public SimpleList<Character> getPathType() {
 		return pathType;
 	}
@@ -502,82 +510,82 @@ public class HTTPRequest  implements Comparable<HTTPRequest> {
 	public boolean isValid() {
 		return matchValid;
 	}
-	
+
 	@Override
 	public int compareTo(HTTPRequest o) {
-		if(o == null) {
+		if (o == null) {
 			return 1;
 		}
-		if(isValid() && o.isValid() == false) {
+		if (isValid() && o.isValid() == false) {
 			return 1;
 		}
-		if(isValid() == false && o.isValid()) {
+		if (isValid() == false && o.isValid()) {
 			return -1;
 		}
-		if(o.getMatchOfRequestPath()<this.matchOfRequestPath) {
+		if (o.getMatchOfRequestPath() < this.matchOfRequestPath) {
 			return 1;
 		}
-		if(this.matchOfRequestPath>o.getMatchOfRequestPath()) {
+		if (this.matchOfRequestPath > o.getMatchOfRequestPath()) {
 			return -1;
 		}
 		return 0;
 	}
-	
+
 	public HTTPRequest withBufferRespone(String... values) {
-		if(bufferResponse == null) {
+		if (bufferResponse == null) {
 			bufferResponse = new CharacterBuffer();
 		}
-		if(values != null) {
-			for(String item : values) {
-				if(item != null) {
+		if (values != null) {
+			for (String item : values) {
+				if (item != null) {
 					bufferResponse.append(item);
 				}
-			} 
+			}
 		}
 		return this;
 	}
-	
+
 	public boolean match(HTTPRequest routing) {
 		this.matchOfRequestPath = 0;
 		this.matchValid = false;
 		this.matchVariables.clear();
 
-		if(routing == null || pathType == null) {
+		if (routing == null || pathType == null) {
 			return false;
 		}
 		SimpleList<String> paths = routing.getFullPath();
-		for(matchOfRequestPath = 0;matchOfRequestPath<this.pathType.size();matchOfRequestPath++) {
+		for (matchOfRequestPath = 0; matchOfRequestPath < this.pathType.size(); matchOfRequestPath++) {
 			Character type = this.pathType.get(matchOfRequestPath);
 			String currentPathpart = this.fullPath.get(getMatchOfRequestPath());
-			if(HTTPRequest.STATIC.equals(type)) {
-				if(paths.size()<matchOfRequestPath ) {
+			if (HTTPRequest.STATIC.equals(type)) {
+				if (paths.size() < matchOfRequestPath) {
 					break;
 				}
-				// Must be the Same
-				if(currentPathpart.equalsIgnoreCase(paths.get(matchOfRequestPath)) == false) {
+				/* Must be the Same */
+				if (currentPathpart.equalsIgnoreCase(paths.get(matchOfRequestPath)) == false) {
 					break;
 				}
-			}else if(HTTPRequest.VARIABLE.equals(type)) {
-				//NEW ONE
+			} else if (HTTPRequest.VARIABLE.equals(type)) {
+				/* NEW ONE */
 				this.matchVariables.put(paths.get(matchOfRequestPath), currentPathpart);
 			}
 		}
 		matchValid = matchOfRequestPath == paths.size();
 		return true;
 	}
-	
+
 	public HTTPRequest withUpdateCondition(Condition<HTTPRequest> condition) {
 		this.updateCondition = condition;
 		return this;
 	}
-	
+
 	public boolean update(HTTPRequest value) {
-		if(updateCondition != null) {
+		if (updateCondition != null) {
 			return updateCondition.update(value);
 		}
 		return false;
 	}
-	
+
 	public SimpleList<String> getFullPath() {
 		return fullPath;
 	}

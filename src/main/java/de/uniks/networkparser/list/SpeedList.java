@@ -11,6 +11,7 @@ public class SpeedList<V> extends AbstractArray<V> implements List<V>, Iterable<
 	public SpeedList() {
 		withFlag(SimpleList.ALLOWDUPLICATE);
 	}
+
 	@Override
 	public BaseItem getNewList(boolean keyValue) {
 		return new SpeedList<V>();
@@ -19,14 +20,16 @@ public class SpeedList<V> extends AbstractArray<V> implements List<V>, Iterable<
 	public Iterator<V> iterator() {
 		return new Iterator<V>() {
 			private int cursor;
+
 			@Override
 			public boolean hasNext() {
 				return cursor < size;
 			}
+
 			@SuppressWarnings("unchecked")
 			@Override
 			public V next() {
-				if(size < MINHASHINGSIZE) {
+				if (size < MINHASHINGSIZE) {
 					return (V) elements[cursor++];
 				}
 				return (V) ((Object[]) elements[0])[cursor++];
@@ -36,8 +39,8 @@ public class SpeedList<V> extends AbstractArray<V> implements List<V>, Iterable<
 
 	@Override
 	public boolean contains(Object o) {
-		if(size<MINHASHINGSIZE) {
-			for(int pos=0;pos<this.size;pos++) {
+		if (size < MINHASHINGSIZE) {
+			for (int pos = 0; pos < this.size; pos++) {
 				if (o == elements[pos++]) {
 					return true;
 				}
@@ -46,13 +49,13 @@ public class SpeedList<V> extends AbstractArray<V> implements List<V>, Iterable<
 		}
 		return getPosition(o, 0, false) >= 0;
 	}
-	
+
 	@Override
 	public boolean add(V e) {
-		if(size<MINHASHINGSIZE-10) {
-			if(elements == null) {
+		if (size < MINHASHINGSIZE - 10) {
+			if (elements == null) {
 				elements = new Object[42];
-			} else if(size>=elements.length) {
+			} else if (size >= elements.length) {
 				int newSize = size + size + 5;
 				elements = arrayCopy(elements, newSize);
 				this.index = 0;
@@ -82,7 +85,7 @@ public class SpeedList<V> extends AbstractArray<V> implements List<V>, Iterable<
 			}
 			this.addKey(this.size, value, newSize);
 		}
-		return size>newSize-values.length;
+		return size > newSize - values.length;
 	}
 
 	@Override
@@ -156,7 +159,7 @@ public class SpeedList<V> extends AbstractArray<V> implements List<V>, Iterable<
 	public SpeedList<V> subList(int fromIndex, int toIndex) {
 		return (SpeedList<V>) super.subList(fromIndex, toIndex);
 	}
-	
+
 	@Override
 	public void clear() {
 		this.elements = null;

@@ -9,7 +9,7 @@ import de.uniks.networkparser.buffer.CharacterBuffer;
 /*
 NetworkParser
 The MIT License
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -52,8 +52,9 @@ public class HTMLEntity implements BaseItem {
 	public static final String KEY_SRC = "src";
 	public static final String GRAPH = "Graph";
 	public static final String CLASSEDITOR = "ClassEditor";
-	public static final String[] GRAPHRESOURCES = new String[] { "diagramstyle.css", "diagram.js", "dagre.min.js", "jspdf.min.js"};
-	public static final String[] CODEESOURCES = new String[] { "highlight.pack.js", "highlightjs-line-numbers.min.js"};
+	public static final String[] GRAPHRESOURCES = new String[] { "diagramstyle.css", "diagram.js", "dagre.min.js",
+			"jspdf.min.js" };
+	public static final String[] CODEESOURCES = new String[] { "highlight.pack.js", "highlightjs-line-numbers.min.js" };
 
 	private XMLEntity body = new XMLEntity().withType("body");
 	private XMLEntity header = new XMLEntity().withType("head");
@@ -319,7 +320,7 @@ public class HTMLEntity implements BaseItem {
 	 */
 	public XMLEntity createTag(String tag, XMLEntity... parentNode) {
 		XMLEntity parentElement = null;
-		if(parentNode != null && parentNode.length>0) {
+		if (parentNode != null && parentNode.length > 0) {
 			parentElement = parentNode[0];
 		}
 		if (parentElement == null) {
@@ -342,9 +343,10 @@ public class HTMLEntity implements BaseItem {
 		parentElement.withChild(parent);
 		return firstChild;
 	}
+
 	public XMLEntity createTag(String tag, String innerHTML, XMLEntity... parentNode) {
 		XMLEntity element = createTag(tag, parentNode);
-		if(element != null) {
+		if (element != null) {
 			element.withValueItem(innerHTML);
 		}
 		return element;
@@ -391,15 +393,15 @@ public class HTMLEntity implements BaseItem {
 	}
 
 	public HTMLEntity withGraph(GraphModel value) {
-        URL resource = GraphList.class.getResource("");
-        if (resource == null || value == null) {
-            return this;
-        }
-        return withGraph(value, resource.toString());
+		URL resource = GraphList.class.getResource("");
+		if (resource == null || value == null) {
+			return this;
+		}
+		return withGraph(value, resource.toString());
 	}
-	
+
 	public HTMLEntity addResources(boolean importFiles, String name, String content) {
-		if(importFiles) {
+		if (importFiles) {
 			this.withScript(this.getHeader(), content);
 		} else {
 			this.withHeader(name);
@@ -412,7 +414,7 @@ public class HTMLEntity implements BaseItem {
 		if (GRAPH.equals(graphPath) == false && CLASSEDITOR.equals(graphPath) == false) {
 			graphPath = GRAPH;
 		}
-		if(value != null) {
+		if (value != null) {
 			String graph = value.toString(new GraphConverter());
 			return withGraph(graph, resource, graphPath);
 		}
@@ -437,7 +439,7 @@ public class HTMLEntity implements BaseItem {
 		script.withValue(sb.toString());
 		add(script);
 		if (path != null) {
-			/* Add graph-framework -  Test for Add Styles */
+			/* Add graph-framework - Test for Add Styles */
 			SimpleList<String> resources = new SimpleList<String>();
 			for (String item : GRAPHRESOURCES) {
 				resources.add(item);
@@ -593,7 +595,7 @@ public class HTMLEntity implements BaseItem {
 	}
 
 	public HTMLEntity withConnectionHeader(Map<String, List<String>> headerFields) {
-		if(headerFields == null) {
+		if (headerFields == null) {
 			return null;
 		}
 		for (Iterator<String> i = headerFields.keySet().iterator(); i.hasNext();) {

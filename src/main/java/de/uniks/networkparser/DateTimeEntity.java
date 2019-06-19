@@ -5,7 +5,7 @@ import java.util.Date;
 /*
 The MIT License
 
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -39,14 +39,15 @@ public class DateTimeEntity implements SendableEntityCreatorNoIndex {
 
 	/** Month of the Year Default is German */
 	public String[] monthOfYear = new String[] { TextItems.DEFAULT.get("JANUARY"), TextItems.DEFAULT.get("FEBRUARY"),
-			TextItems.DEFAULT.get("MARCH"), TextItems.DEFAULT.get("APRIL"), TextItems.DEFAULT.get("MAY"), TextItems.DEFAULT.get("JUNE"),
-			TextItems.DEFAULT.get("JULY"), TextItems.DEFAULT.get("AUGUST"), TextItems.DEFAULT.get("SEPTEMBER"), TextItems.DEFAULT.get("OCTOBER"),
-			TextItems.DEFAULT.get("NOVEMBER"), TextItems.DEFAULT.get("DECEMBER") };
+			TextItems.DEFAULT.get("MARCH"), TextItems.DEFAULT.get("APRIL"), TextItems.DEFAULT.get("MAY"),
+			TextItems.DEFAULT.get("JUNE"), TextItems.DEFAULT.get("JULY"), TextItems.DEFAULT.get("AUGUST"),
+			TextItems.DEFAULT.get("SEPTEMBER"), TextItems.DEFAULT.get("OCTOBER"), TextItems.DEFAULT.get("NOVEMBER"),
+			TextItems.DEFAULT.get("DECEMBER") };
 
 	/** Days of the week */
 	public String[] weekDays = new String[] { TextItems.DEFAULT.get("SUNDAY"), TextItems.DEFAULT.get("MONDAY"),
-			TextItems.DEFAULT.get("TUESDAY"), TextItems.DEFAULT.get("WEDNESDAY"), TextItems.DEFAULT.get("THURSDAY"), TextItems.DEFAULT.get("FRIDAY"),
-			TextItems.DEFAULT.get("SATURDAY")};
+			TextItems.DEFAULT.get("TUESDAY"), TextItems.DEFAULT.get("WEDNESDAY"), TextItems.DEFAULT.get("THURSDAY"),
+			TextItems.DEFAULT.get("FRIDAY"), TextItems.DEFAULT.get("SATURDAY") };
 	private boolean isInitConstants = false;
 
 	private static final int MONTH_LENGTH[] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 }; /* 0-based */
@@ -58,12 +59,12 @@ public class DateTimeEntity implements SendableEntityCreatorNoIndex {
 	public static final long ONE_WEEK = 7 * ONE_DAY;
 	public static final long ONE_YEAR = ONE_DAY * 365;
 	public static final long ONE_YEAR_LY = ONE_DAY * 366;
-	
-	public static final String MILLISECOND="MILLISECOND";
-	public static final String MILLISECONDS="MILLISECONDS";
-	public static final String MILLISECONDSREAL="MILLISECONDSREAL";
-	public static final String WINTERTIME="WINTERTIME";
-	public static final String SUMMERTIME="SUMMERTIME";
+
+	public static final String MILLISECOND = "MILLISECOND";
+	public static final String MILLISECONDS = "MILLISECONDS";
+	public static final String MILLISECONDSREAL = "MILLISECONDSREAL";
+	public static final String WINTERTIME = "WINTERTIME";
+	public static final String SUMMERTIME = "SUMMERTIME";
 	public static final String MILLISECOND_OF_DAY = "MILLISECOND_OF_DAY";
 	public static final String MILLISECOND_OF_YEAR = "MILLISECOND_OF_YEAR";
 	public static final String SECOND_OF_MINUTE = "SECOND_OF_MINUTE";
@@ -78,7 +79,6 @@ public class DateTimeEntity implements SendableEntityCreatorNoIndex {
 	public static final String WEEK_OF_YEAR = "WEEK_OF_YEAR";
 	public static final String MONTH = "MONTH";
 	public static final String YEAR = "YEAR";
-	
 
 	/**
 	 * The normalized year of the gregorianCutover in Gregorian, with 0 representing
@@ -100,7 +100,7 @@ public class DateTimeEntity implements SendableEntityCreatorNoIndex {
 		if (isLeapYear(year)) {
 			return getMonthLengthLP(month);
 		}
-		if(month>MONTH_LENGTH.length) {
+		if (month > MONTH_LENGTH.length) {
 			return 0;
 		}
 		return MONTH_LENGTH[month];
@@ -169,7 +169,7 @@ public class DateTimeEntity implements SendableEntityCreatorNoIndex {
 			while (temp > 0) {
 				temp -= MONTH_LENGTH[month++] * ONE_DAY;
 			}
-			if(MONTH_LENGTH.length<month || month<1) {
+			if (MONTH_LENGTH.length < month || month < 1) {
 				return false;
 			}
 			day = (temp + MONTH_LENGTH[month - 1] * ONE_DAY) / ONE_DAY;
@@ -231,7 +231,7 @@ public class DateTimeEntity implements SendableEntityCreatorNoIndex {
 	public boolean calculate() {
 		if (this.dirty) {
 			Long time = getTimeWithTimeZone();
-			if(time == null) {
+			if (time == null) {
 				return false;
 			}
 			this.fields.put(MILLISECONDS, time);
@@ -256,10 +256,10 @@ public class DateTimeEntity implements SendableEntityCreatorNoIndex {
 			calculate();
 		}
 		Object result = fields.get(field);
-		if(result instanceof Long == false) {
+		if (result instanceof Long == false) {
 			return -1;
 		}
-		return ((Long)result).longValue();
+		return ((Long) result).longValue();
 	}
 
 	/**
@@ -293,7 +293,7 @@ public class DateTimeEntity implements SendableEntityCreatorNoIndex {
 	}
 
 	public byte getTimezone() {
-		if(this.timeZone == null) {
+		if (this.timeZone == null) {
 			return 0;
 		}
 		return this.timeZone;
@@ -330,11 +330,11 @@ public class DateTimeEntity implements SendableEntityCreatorNoIndex {
 	public boolean set(String field, long value) {
 		if (field != null) {
 			long oldValue = getValueInMillisecond(field);
-			if(field.equals(MONTH)) {
+			if (field.equals(MONTH)) {
 				oldValue = getValueInMillisecond(MILLISECOND_OF_YEAR);
 				fields.put(field, value);
 				addTime(getValueInMillisecond(MILLISECOND_OF_YEAR) - oldValue);
-			} else if(field.equals(TIMEZONE)) {
+			} else if (field.equals(TIMEZONE)) {
 				withTimezone((byte) value);
 			} else {
 				fields.put(field, value);
@@ -378,12 +378,12 @@ public class DateTimeEntity implements SendableEntityCreatorNoIndex {
 	 * @return Itself
 	 */
 	public DateTimeEntity withValue(String date) {
-		if(date != null&& date.length()>=9) { 
+		if (date != null && date.length() >= 9) {
 			try {
 				this.withYear(Integer.parseInt(date.substring(6, 9)));
 				this.withMonth(Integer.parseInt(date.substring(3, 4)));
 				this.withDate(Integer.parseInt(date.substring(0, 1)));
-			}catch (Exception e) {
+			} catch (Exception e) {
 			}
 		}
 		return this;
@@ -396,7 +396,7 @@ public class DateTimeEntity implements SendableEntityCreatorNoIndex {
 	 * @return Itself
 	 */
 	public DateTimeEntity withValue(java.util.Date date) {
-		if(date != null) {
+		if (date != null) {
 			withValue(date.getTime());
 		}
 		return this;
@@ -496,21 +496,21 @@ public class DateTimeEntity implements SendableEntityCreatorNoIndex {
 				sub = sub.replace("S", String.valueOf(get(SECOND_OF_MINUTE)));
 				/* Date */
 				int dayOfWeek = (int) get(DAY_OF_WEEK);
-				if(dayOfWeek<0) {
+				if (dayOfWeek < 0) {
 					dayOfWeek = 0;
 				}
 				int month = (int) get(MONTH);
-				if(month<1) {
+				if (month < 1) {
 					month = 1;
 				}
 				sub = sub.replace("dddd", this.weekDays[dayOfWeek]);
 				sub = sub.replace("ddd", this.weekDays[dayOfWeek].substring(0, 3));
 				sub = sub.replace("dd", EntityUtil.strZero(get(DAY_OF_MONTH), 2));
 				sub = sub.replace("d", String.valueOf(get(DAY_OF_MONTH)));
-				sub = sub.replace("mmmm", this.monthOfYear[month  - 1]);
-				sub = sub.replace("mmm", this.monthOfYear[month  - 1].substring(0, 3));
-				sub = sub.replace("mm", EntityUtil.strZero(month , 2));
-				sub = sub.replace("m", String.valueOf(month ));
+				sub = sub.replace("mmmm", this.monthOfYear[month - 1]);
+				sub = sub.replace("mmm", this.monthOfYear[month - 1].substring(0, 3));
+				sub = sub.replace("mm", EntityUtil.strZero(month, 2));
+				sub = sub.replace("m", String.valueOf(month));
 				sub = sub.replace("yyyy", String.valueOf(get(YEAR)));
 				sub = sub.replace("yyy", String.valueOf(get(YEAR)));
 				sub = sub.replace("yy", EntityUtil.strZero(get(YEAR), 2, 2));
@@ -539,8 +539,7 @@ public class DateTimeEntity implements SendableEntityCreatorNoIndex {
 		if (this.isDirty()) {
 			this.calculate();
 		}
-		return this.get(DAY_OF_MONTH) + "." + this.fields.get(MONTH) + "."
-				+ this.fields.get(YEAR);
+		return this.get(DAY_OF_MONTH) + "." + this.fields.get(MONTH) + "." + this.fields.get(YEAR);
 	}
 
 	public String toGMTString() {
@@ -610,14 +609,14 @@ public class DateTimeEntity implements SendableEntityCreatorNoIndex {
 	 * @return the Value As Milliseconds
 	 */
 	public long getValueInMillisecond(String field) {
-		if(fields == null || field == null) {
+		if (fields == null || field == null) {
 			return 0;
 		}
 		Object result = fields.get(field);
-		if(result instanceof Long == false) {
+		if (result instanceof Long == false) {
 			return -1;
 		}
-		long value = ((Long)result).longValue();
+		long value = ((Long) result).longValue();
 		if (field.equals(MILLISECOND) || field.equals(MILLISECONDS) || field.equals(MILLISECOND_OF_YEAR)
 				|| field.equals(MILLISECOND_OF_DAY) || field.equals(MILLISECONDSREAL)) {
 			return value;
@@ -627,8 +626,7 @@ public class DateTimeEntity implements SendableEntityCreatorNoIndex {
 			return value * DateTimeEntity.ONE_MINUTE;
 		} else if (field.equals(HOUR_OF_DAY)) {
 			return value * DateTimeEntity.ONE_HOUR;
-		} else if (field.equals(DAY_OF_WEEK) || field.equals(DAY_OF_MONTH)
-				|| field.equals(DAY_OF_YEAR)) {
+		} else if (field.equals(DAY_OF_WEEK) || field.equals(DAY_OF_MONTH) || field.equals(DAY_OF_YEAR)) {
 			return value * DateTimeEntity.ONE_DAY;
 		} else if (field.equals(AMPM)) {
 			return value * (DateTimeEntity.ONE_DAY / 2);
@@ -641,7 +639,7 @@ public class DateTimeEntity implements SendableEntityCreatorNoIndex {
 		}
 		return 0;
 	}
-	
+
 	/** The Constant VALUE. */
 	public static final String VALUE = "value";
 

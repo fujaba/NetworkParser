@@ -3,7 +3,7 @@ package de.uniks.networkparser.xml;
 /*
 NetworkParser
 The MIT License
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -27,6 +27,7 @@ import java.util.ArrayList;
 
 /**
  * XsdValidationLoggingErrorHandler XSD-Validation Logging Handler
+ * 
  * @author Stefan XSD Validation Error Class.
  */
 public class XsdValidationLoggingErrorHandler {
@@ -38,21 +39,16 @@ public class XsdValidationLoggingErrorHandler {
 	/** Variable of all Errors. */
 	private ArrayList<String> errors = new ArrayList<String>();
 
-/*	public void warning(SAXParseException ex) throws SAXException {
-		isValid = false;
-		warnings.add("Warnung: " + ex.getMessage());
-	}
-	@Override
-	public void error(SAXParseException ex) throws SAXException {
-		isValid = false;
-		errors.add("Fehler: " + ex.getMessage());
-	}
-	@Override
-	public void fatalError(SAXParseException ex) throws SAXException {
-		isValid = false;
-		errors.add("Fataler Fehler: " + ex.getMessage());
-	}
-*/
+	/*
+	 * public void warning(SAXParseException ex) throws SAXException { isValid =
+	 * false; warnings.add("Warnung: " + ex.getMessage()); }
+	 * 
+	 * @Override public void error(SAXParseException ex) throws SAXException {
+	 * isValid = false; errors.add("Fehler: " + ex.getMessage()); }
+	 * 
+	 * @Override public void fatalError(SAXParseException ex) throws SAXException {
+	 * isValid = false; errors.add("Fataler Fehler: " + ex.getMessage()); }
+	 */
 
 	/**
 	 * Switch for Valid Document

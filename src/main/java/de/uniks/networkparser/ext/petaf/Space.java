@@ -93,13 +93,12 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 		this.map = map;
 		return this;
 	}
-	
+
 	public Space withModel(IdMap map, Object root) {
 		this.withMap(map);
 		this.withModelRoot(this.createModel(root));
 		return this;
 	}
-	
 
 	public String getName() {
 		return name;
@@ -119,7 +118,7 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 				new AcceptMessage().withSpace(this), new NodeProxyModel(null));
 		map.withListener(this);
 
-		// Check for JavaFX-Tools
+		/* Check for JavaFX-Tools */
 		if (ReflectionLoader.PLATFORM != null) {
 			map.withModelExecutor(new ModelExecutor());
 		}
@@ -211,7 +210,7 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 	}
 
 	public NodeProxyModel createModel(Object root) {
-		// Check if NodeProxyModel exists for root
+		/* Check if NodeProxyModel exists for root */
 		NodeProxyModel model = getModel();
 		if (root == null) {
 			return model;
@@ -484,14 +483,14 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 	/**
 	 * Method for Sending
 	 * 
-	 * @param proxies    List of Proxies
-	 * @param msg        Message to Send
+	 * @param proxies List of Proxies
+	 * @param msg     Message to Send
 	 * @return success sending
 	 */
 	public boolean sendMessage(Message msg, NodeProxy... proxies) {
 		return sendMessage(msg, false, proxies);
 	}
-	
+
 	/**
 	 * Method for Sending
 	 * 
@@ -501,22 +500,22 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 	 * @return success sending
 	 */
 	public boolean sendMessage(Message msg, boolean sendAnyhow, NodeProxy... proxies) {
-		if(msg == null) {
+		if (msg == null) {
 			return false;
 		}
-		if(msg.sending(this)) {
+		if (msg.sending(this)) {
 			return true;
 		}
 		SortedSet<NodeProxy> target;
-		if(proxies == null && (sendAnyhow || msg.isSendAnyHow())) {
+		if (proxies == null && (sendAnyhow || msg.isSendAnyHow())) {
 			target = this.proxies;
 		} else {
 			target = new SortedSet<NodeProxy>(true);
-			for(NodeProxy proxy : proxies) {
+			for (NodeProxy proxy : proxies) {
 				target.with(proxy);
 			}
 		}
-		if(target == null || target.size()<1) {
+		if (target == null || target.size() < 1) {
 			return false;
 		}
 		// find my Proxy with Key
@@ -571,20 +570,21 @@ public class Space extends SendableItem implements ObjectCondition, SendableEnti
 	}
 
 	public boolean addMessage(Object owner, LogItem logItem) {
-		if(this.log != null) {
+		if (this.log != null) {
 			return this.log.print(owner, logItem);
 		}
 		return false;
 	}
-	
+
 	public boolean error(Object owner, String method, Object message, Object... params) {
-		if(this.log != null) {
+		if (this.log != null) {
 			this.log.error(owner, method, message, params);
 		}
 		return false;
 	}
+
 	public boolean debug(Object owner, String method, Object message) {
-		if(this.log != null) {
+		if (this.log != null) {
 			this.log.debug(owner, method, message);
 		}
 		return false;

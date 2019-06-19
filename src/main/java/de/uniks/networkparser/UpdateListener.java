@@ -3,7 +3,7 @@ package de.uniks.networkparser;
 /*
 NetworkParser
 The MIT License
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+Copyright (c) 2010-2016 Stefan Lindel https://www.github.com/fujaba/NetworkParser/
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -197,9 +197,9 @@ public class UpdateListener implements MapListener, ObjectCondition {
 		if (oldValue != null) {
 			String key = property;
 			creatorClass = this.map.getCreatorClass(oldValue);
-			if(grammar.isFlatFormat()) {
-				//NEW VERSION
-				key = IdMap.ENTITYSPLITTER+SendableEntityCreator.REMOVE+IdMap.ENTITYSPLITTER+property;
+			if (grammar.isFlatFormat()) {
+				// NEW VERSION
+				key = IdMap.ENTITYSPLITTER + SendableEntityCreator.REMOVE + IdMap.ENTITYSPLITTER + property;
 				entity = change;
 			} else {
 				child = change.getValue(SendableEntityCreator.REMOVE);
@@ -210,7 +210,7 @@ public class UpdateListener implements MapListener, ObjectCondition {
 					change.put(SendableEntityCreator.REMOVE, entity);
 				}
 			}
-			
+
 			if (creatorClass != null) {
 				String oldId = this.map.getId(oldValue, true);
 				if (oldId != null) {
@@ -226,9 +226,9 @@ public class UpdateListener implements MapListener, ObjectCondition {
 		if (newValue != null) {
 			String key = property;
 			creatorClass = this.map.getCreatorClass(newValue);
-			if(grammar.isFlatFormat()) {
-				//NEW VERSION
-				key = IdMap.ENTITYSPLITTER+SendableEntityCreator.UPDATE+IdMap.ENTITYSPLITTER+property;
+			if (grammar.isFlatFormat()) {
+				// NEW VERSION
+				key = IdMap.ENTITYSPLITTER + SendableEntityCreator.UPDATE + IdMap.ENTITYSPLITTER + property;
 				entity = change;
 			} else {
 				child = change.getValue(SendableEntityCreator.UPDATE);
@@ -365,7 +365,7 @@ public class UpdateListener implements MapListener, ObjectCondition {
 	}
 
 	private Entity getElement(String path, Entity element, Entity parent) {
-		if(path == null) {
+		if (path == null) {
 			return null;
 		}
 		int pos = path.indexOf("/");
@@ -481,7 +481,7 @@ public class UpdateListener implements MapListener, ObjectCondition {
 					return element;
 				}
 			}
-		} else if(creator != null) {
+		} else if (creator != null) {
 			creator.setValue(element, key, newValue, typ);
 			if (this.map.notify(new SimpleEvent(typ, null, map, key, null, newValue).withModelValue(element))) {
 				return element;
