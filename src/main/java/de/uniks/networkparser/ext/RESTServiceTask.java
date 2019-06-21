@@ -80,7 +80,7 @@ public class RESTServiceTask implements Runnable, Server {
 				HTTPRequest match = null;
 
 				if (routing != null && routing.size() > 0) {
-					// Parsing Path
+					/* Parsing Path */
 					HTTPRequest defaultMatch = null;
 					String path = clientSocket.getPath();
 
@@ -96,7 +96,7 @@ public class RESTServiceTask implements Runnable, Server {
 					}
 					if (matches.size() > 0) {
 						HTTPRequest first = matches.first();
-						// *
+						/* *  */
 						if ((routingExists && first.isValid()) || routingExists == false) {
 							match = first;
 						} else if (path.indexOf("/") < 1) {
@@ -104,7 +104,7 @@ public class RESTServiceTask implements Runnable, Server {
 						}
 					}
 				}
-				// SO NEW MATCHES
+				/* SO NEW MATCHES */
 				SimpleEvent event = new SimpleEvent(clientSocket, clientSocket.getPath(), null, null);
 				if (allowListener != null) {
 					if (allowListener.update(event) == false) {
@@ -118,8 +118,8 @@ public class RESTServiceTask implements Runnable, Server {
 						continue;
 					}
 				}
-				// So Valid and Execute Match or default
-				// CHECK FOR NEXT VALID OR BEST
+				/* So Valid and Execute Match or default 
+				   CHECK FOR NEXT VALID OR BEST */
 				if (match != null) {
 					match.update(clientSocket);
 					clientSocket.close();
@@ -217,7 +217,7 @@ public class RESTServiceTask implements Runnable, Server {
 				if (element == null) {
 					break;
 				}
-				// Switch For List
+				/* Switch For List */
 				if (element instanceof Collection<?>) {
 					int temp;
 					String id = listID.toString();
@@ -276,9 +276,9 @@ public class RESTServiceTask implements Runnable, Server {
 		return element;
 	}
 
-	// GET
-	// Read 200 (OK)
-	// 404 (Not Found) if ID not found or invalid
+	/* GET
+	   Read 200 (OK)
+	   404 (Not Found) if ID not found or invalid */
 	private String getExecute(SimpleEvent socketRequest) {
 		CharacterBuffer path = new CharacterBuffer();
 		CharacterBuffer listID = new CharacterBuffer();
@@ -313,10 +313,13 @@ public class RESTServiceTask implements Runnable, Server {
 		return HTTPRequest.HTTP__NOTFOUND;
 	}
 
-	// DELETE
-	// Delete 405 (Method Not Allowed)
-	// 200 (OK)
-	// 404 (Not Found), if ID not found or invalid.
+	/** DELETE
+	 *  Delete 405 (Method Not Allowed)
+	 *  200 (OK)
+	 *  404 (Not Found), if ID not found or invalid.
+	 * @param socketRequest The SocketRequest
+	 * @return Response
+	 */
 	private String deleteExecute(SimpleEvent socketRequest) {
 		CharacterBuffer path = new CharacterBuffer();
 		CharacterBuffer listID = new CharacterBuffer();
@@ -329,10 +332,13 @@ public class RESTServiceTask implements Runnable, Server {
 		return HTTPRequest.HTTP__NOTFOUND;
 	}
 
-	// POST
-	// Create 200 (Created)
-	// 404 (Not Found)
-	// 409 (Conflict) if resource already exists..
+	/** POST
+	 *  Create 200 (Created)
+	 *  404 (Not Found)
+	 *  409 (Conflict) if resource already exists..
+  	 *  @param socketRequest The SocketRequest
+	 *  @return Response
+	 */
 	private String postExecute(SimpleEvent socketRequest) {
 		if (socketRequest == null) {
 			return HTTPRequest.HTTP__NOTFOUND;
@@ -348,10 +354,10 @@ public class RESTServiceTask implements Runnable, Server {
 		CharacterBuffer pathValue = new CharacterBuffer().with(request.getPath());
 		Object element = getElement(pathValue, path, listID, true);
 
-		// First item SWITCH
+		/* First item SWITCH */
 		String body = request.getContent();
 		if (body.charAt(0) == JsonObject.START || body.charAt(0) == XMLEntity.START) {
-			// JsonObject or XMLEntity
+			/* JsonObject or XMLEntity */
 			Object child = map.decode(body);
 			SendableEntityCreator creator = map.getCreatorClass(element);
 			if (creator != null) {
@@ -359,7 +365,7 @@ public class RESTServiceTask implements Runnable, Server {
 			}
 			return HTTPRequest.HTTP_OK;
 		}
-		// PLAIN KEY VALUE
+		/* PLAIN KEY VALUE */
 		SimpleKeyValueList<String, String> child = new SimpleKeyValueList<String, String>().withKeyValueString(body,
 				String.class);
 		String className = child.getString(IdMap.CLASS);
@@ -377,18 +383,22 @@ public class RESTServiceTask implements Runnable, Server {
 		return HTTPRequest.HTTP_OK;
 	}
 
-	// PUT
-	// Update/Replace 405 (Method Not Allowed)
-	// 200 (OK) or 204 (No Content)
-	// 404 (Not Found), if ID not found or invalid.
+	/** PUT
+	*   Update/Replace 405 (Method Not Allowed)
+	*   200 (OK) or 204 (No Content)
+	*   404 (Not Found), if ID not found or invalid.
+	*   @param socketRequest The SocketRequest
+	*   @return Response */
 	private String putExecute(SimpleEvent socketRequest) {
 		return HTTPRequest.HTTP__NOTFOUND;
 	}
 
-	// PATCH Update/Modify
-	// 405 (Method Not Allowed), unless you want to modify the collection itself.
-	// 200 (OK) or 204 (No Content).
-	// 404 (Not Found), if ID not found or invalid.
+	/** PATCH Update/Modify
+	* 405 (Method Not Allowed), unless you want to modify the collection itself.
+	* 200 (OK) or 204 (No Content).
+	* 404 (Not Found), if ID not found or invalid.
+	* @param socketRequest The SocketRequest
+	* @return Response */
 	private String patchExecute(SimpleEvent socketRequest) {
 		return HTTPRequest.HTTP__NOTFOUND;
 	}

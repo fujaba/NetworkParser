@@ -124,7 +124,6 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 			}
 			return ReflectionLoader.calling(element, "createContent", false, this);
 		} catch (Exception e) {
-//			errorHandler.saveException(e);
 		}
 		return null;
 	}
@@ -185,10 +184,10 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 			}
 		}
 		SimpleKeyValueList<String, String> params = getParameterMap();
-		// Example
-//		-Xms<size>        set initial Java heap size
-//		-Xmx<size>        set maximum Java heap size
-//		-Xss<size>        set java thread stack size
+		/* Example
+		-Xms<size>        set initial Java heap size
+		-Xmx<size>        set maximum Java heap size
+		-Xss<size>        set java thread stack size*/
 		ArrayList<String> customParams = new ArrayList<String>();
 		for (int i = 0; i < params.size(); i++) {
 			String key = params.get(i);
@@ -223,7 +222,7 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 				}
 			}
 		}
-		// IF JAVACOMPILE
+		/* IF JAVACOMPILE */
 		if (compilePath != null) {
 			ArrayList<String> items = new ArrayList<String>();
 			String javacExecutor;
@@ -266,21 +265,15 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 				for (URL url : urlClassLoader.getURLs()) {
 					buf.append(url.getFile()).append(File.pathSeparator);
 				}
-//				if(ClassLoader.getSystemClassLoader() != urlClassLoader) {
-//					try {
-//						urlClassLoader.close();
-//					} catch (IOException e) {
-//					}
-//				}
 
 				items.add(buf.toString());
 
-				// Path
+				/* Path */
 				for (String item : compilePath) {
 					items.add(item + "\\*.java");
 				}
 				items.add("-d");
-				// ReflectionLoader.PROCESSBUILDERREDIRECT
+				/* ReflectionLoader.PROCESSBUILDERREDIRECT */
 				if (this.outputParameter != null) {
 					items.add(this.outputParameter);
 				} else {
@@ -309,15 +302,14 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 			}
 			if (debugPort != null) {
 				items.add("-Xdebug");
-				// items.add("--XX:+HeapDumpOnOutOfMemoryError");
 				items.add("-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=" + debugPort);
-				// Now Add Custom Params
+				/* Now Add Custom Params */
 				items.addAll(customParams);
 
 				items.add("-jar");
 				String fileName = Os.getFilename().toLowerCase();
 				if ("bin".equals(fileName)) {
-					// Eclipse Start Can't run
+					/* Eclipse Start Can't run */
 					return null;
 				}
 				items.add(fileName);
@@ -345,7 +337,7 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 			ProcessBuilder processBuilder = new ProcessBuilder(items);
 			Map<String, String> environment = processBuilder.environment();
 			environment.put("CLASSPATH", System.getProperty("java.class.path"));
-			// ReflectionLoader.PROCESSBUILDERREDIRECT
+			/* ReflectionLoader.PROCESSBUILDERREDIRECT */
 			if (outputFile == null && this.outputParameter != null) {
 				outputFile = this.outputParameter;
 			}
@@ -450,7 +442,6 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 		}
 		Object scene;
 		if (root == null) {
-//				&& this.rootScene != null) {
 			root = rootScene;
 		}
 		if (ReflectionLoader.SCENE == null || root == null) {
@@ -696,7 +687,7 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 		if (temp != null) {
 			caption = temp + " ";
 		}
-		// Add Replacements
+		/* Add Replacements */
 		return caption + getVersion() + " (" + System.getProperty("file.encoding") + " - "
 				+ System.getProperty("sun.arch.data.model") + "-Bit)";
 	}
@@ -807,7 +798,7 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 			return false;
 		}
 		if (value instanceof Throwable) {
-			// CallBack
+			/* CallBack */
 			saveException((Throwable) value);
 			return true;
 		}
@@ -866,7 +857,7 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 		final Class<?> launcherClass = ReflectionLoader.getClass("com.sun.javafx.application.LauncherImpl");
 		controller.withBridge(bridge);
 		if (launcherClass == null) {
-			// NO JAVAFX
+			/* NO JAVAFX */
 			NodeProxyTCP server = NodeProxyTCP.createServer(8080);
 			server.withListener(listener);
 			if (server.start()) {
@@ -911,7 +902,7 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 		}
 		create(path.getResource(fxmlFile), null);
 
-		// NOW MAPPING
+		/* NOW MAPPING */
 		if (mapping != null) {
 			for (int i = 0; i < mapping.size(); i++) {
 				Object key = mapping.getKeyByIndex(i);
@@ -949,7 +940,7 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 								SendableEntityCreator.NEW);
 						creator.setValue(controller, ModelListenerProperty.PROPERTY_MODEL, event.getSource(),
 								SendableEntityCreator.NEW);
-						// NOW SET BIDIRECTIONAL
+						/* NOW SET BIDIRECTIONAL */
 						creator.setValue(controller, ModelListenerProperty.PROPERTY_VIEW, pane,
 								SendableEntityCreator.NEW);
 					}
@@ -1034,7 +1025,7 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 					if ((values[0].startsWith("/") || values[0].startsWith("\\")) == false) {
 						values[0] = "./" + values[0];
 					}
-					// Check if File Exist
+					/* Check if File Exist */
 					found = new File(values[0]).exists();
 				}
 				if (found == false) {
@@ -1044,7 +1035,7 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 				}
 			}
 			Process p;
-			// So now add executeCommand to String
+			/* So now add executeCommand to String */
 			if (found == false) {
 				command.with('"');
 				if (values.length > 0 && values[0] != null) {
@@ -1067,7 +1058,7 @@ public class SimpleController implements ObjectCondition, UncaughtExceptionHandl
 				command.with('"');
 
 				if (commands != null) {
-					// Its Mac
+					/* Its Mac */
 					commands.add(command.toString());
 					p = Runtime.getRuntime().exec(commands.toArray(new String[commands.size()]));
 					command.clear();

@@ -28,7 +28,8 @@ import de.uniks.networkparser.ext.io.SocketMessage;
 import de.uniks.networkparser.ext.petaf.Message;
 import de.uniks.networkparser.ext.petaf.NodeProxy;
 import de.uniks.networkparser.interfaces.ObjectCondition;
-/**  This.name is receiver  https://console.firebase.google.com/project/<Project>/settings/cloudmessaging/ */
+/**  This.name is receiver  
+ * https://console.firebase.google.com/project/ Project /settings/cloudmessaging/ */
 
 public class NodeProxyMessages extends NodeProxy {
 	public static final String EVENT_CONNECTION = "connection";

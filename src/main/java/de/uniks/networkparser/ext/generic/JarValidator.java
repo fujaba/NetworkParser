@@ -211,7 +211,7 @@ public class JarValidator {
 		}
 
 		script.withLine("dependencies {");
-		script.withLine("	// Test framework");
+		script.withLine("	/* Test framework */");
 		script.withLine("	compile 'org.junit.jupiter:junit-jupiter-api:5.+'");
 		script.withLine("	compile 'org.junit.jupiter:junit-jupiter-engine:5.+'");
 		for (String item : dependency) {

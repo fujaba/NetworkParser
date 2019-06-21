@@ -65,7 +65,7 @@ public class UpdateModel implements Callable<Object>, Runnable, Supplier<Object>
 			if (this.entity instanceof String) {
 				String name = (String) this.entity;
 
-				// Check if name is ClassName or Id
+				/* Check if name is ClassName or Id */
 				element = map.getObject(name);
 				if (element != null) {
 					if (this.property != null) {
@@ -75,7 +75,7 @@ public class UpdateModel implements Callable<Object>, Runnable, Supplier<Object>
 							if (newValue == null) {
 								return value;
 							} else {
-								// Its Remove
+								/* Its Remove */
 								return creator.setValue(element, property, newValue, SendableEntityCreator.REMOVE);
 							}
 						}
@@ -83,7 +83,7 @@ public class UpdateModel implements Callable<Object>, Runnable, Supplier<Object>
 					return element;
 				}
 				creator = map.getCreator(name, true);
-				// TEST FOR NEW ONE
+				/* TEST FOR NEW ONE */
 				element = creator.getSendableInstance(true);
 				String newid;
 				if (this.newValue instanceof String) {
@@ -98,7 +98,7 @@ public class UpdateModel implements Callable<Object>, Runnable, Supplier<Object>
 				creator = map.getCreatorClass(element);
 			}
 
-			// Switch for Add or Delete
+			/* Switch for Add or Delete */
 			return creator.setValue(element, property, newValue, SendableEntityCreator.NEW);
 		} catch (Exception e) {
 			this.owner.getErrorHandler().saveException(e, false);
