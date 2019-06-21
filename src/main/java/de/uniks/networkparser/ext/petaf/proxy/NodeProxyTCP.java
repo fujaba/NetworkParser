@@ -281,8 +281,7 @@ public class NodeProxyTCP extends NodeProxy {
 			if (serverSocket != null) {
 				return true;
 			}
-			/
-			Incoming Proxy */
+			/* Incoming Proxy */
 			if (isInput == false) {
 				withType(NodeProxy.TYPE_IN);
 			}

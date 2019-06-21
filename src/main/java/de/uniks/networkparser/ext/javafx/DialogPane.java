@@ -109,9 +109,11 @@ public class DialogPane implements Runnable {
 		}
 	}
 
-	/*
+	/**
 	 * These are the actual implementations in Region (the parent of Pane), but just
 	 * for clarify I reproduce them here
+	 * @param width MinWidth
+	 * @return current Width
 	 */
 	protected double computeMinHeight(double width) {
 		return (Double) ReflectionLoader.call(parent, "minHeight", width);

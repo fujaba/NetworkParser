@@ -430,7 +430,13 @@ public class ModelHistory implements ObjectCondition {
 		return history;
 	}
 
-	/* LOCAL HISTORY */
+	/** LOCAL HISTORY **/
+	
+	/** create a LOcal History
+	 * 
+	 * @param map IdMap
+	 * @return a new Instance
+	 */
 	public static final ModelHistory createLocalHistory(IdMap map) {
 		ModelHistory history = new ModelHistory();
 		Space space = new Space();

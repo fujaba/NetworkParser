@@ -1,8 +1,8 @@
 package de.uniks.networkparser.bytes;
 
 /**
- * @author Stefan Lindel HMAC implements HMAC-SHA256 message authentication
- *         algorithm.
+ * HMAC implements HMAC-SHA256 message authentication algorithm.
+ * @author Stefan Lindel
  */
 public class HMAC {
 	private SHA2 inner = new SHA2();
