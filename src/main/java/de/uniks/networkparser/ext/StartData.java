@@ -225,7 +225,7 @@ public class StartData implements SendableEntityCreatorNoIndex
 				return true;
 			}
 		}
-		// Not Found Create it
+		/* Not Found Create it */
 		System.out.println(attrName + " not in Config-File");
 		return StartData.addParameter(attrName, value);
 	}
@@ -233,7 +233,7 @@ public class StartData implements SendableEntityCreatorNoIndex
 	public static boolean save() {
 		StartData startData = StartData.instance();
 		if (startData.size() < 1) {
-			// its only the editableFlag not a value
+			/* its only the editableFlag not a value */
 			return false;
 		}
 		IdMap map = new IdMap();
@@ -254,7 +254,7 @@ public class StartData implements SendableEntityCreatorNoIndex
 			return true;
 		}
 		JsonObject json = new JsonObject().withValue(readFile);
-		// Merge Properties from File and Properties from StartData
+		/* Merge Properties from File and Properties from StartData */
 		Set<String> keySet = json.keySet();
 		for (String key : keySet) {
 			if (IdMap.CLASS.equals(key)) {

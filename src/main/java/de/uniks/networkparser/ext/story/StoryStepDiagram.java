@@ -58,15 +58,15 @@ public class StoryStepDiagram implements ObjectCondition {
 		if (this.model != null) {
 			for (String item : HTMLEntity.GRAPHRESOURCES) {
 				if (element.getHeader(item) == null) {
-					// DEFAULT TO EXTRACT TO DOC-FOLDER
+					/* DEFAULT TO EXTRACT TO DOC-FOLDER */
 					Story.addScript(story.getPath(), item, element);
 				}
 			}
 			element.withGraph(this.model, null);
 		} else if (filter != null) {
-			// Objectdiagramm
+			/* Objectdiagramm */
 			IdMap map = story.getMap();
-			// Save all Names
+			/* Save all Names */
 			SimpleKeyValueList<Object, String> ids = filter.getIds();
 			for (int i = 0; i < ids.size(); i++) {
 				Object obj = ids.getKeyByIndex(i);
@@ -76,13 +76,13 @@ public class StoryStepDiagram implements ObjectCondition {
 			JsonArray jsonArray = new JsonArray();
 
 			SimpleList<Object> elements = filter.getElements();
-			// Add All Elements to JsonArray
+			/* Add All Elements to JsonArray */
 			for (Object object : elements) {
 				JsonObject jsonObject = map.toJsonObject(object, filter);
 				jsonArray.add(jsonObject);
 			}
 
-			// add icons
+			/* add icons */
 			SimpleKeyValueList<String, String> images = filter.getImages();
 			for (int i = 0; i < images.size(); i++) {
 				String id = images.getKeyByIndex(i);
@@ -92,7 +92,7 @@ public class StoryStepDiagram implements ObjectCondition {
 					jsonObject.put("head", new JsonObject().withKeyValue("src", image));
 				}
 			}
-			// new diagram
+			/* new diagram */
 			GraphConverter graphConverter = new GraphConverter();
 			Entity objectModel = graphConverter.convertToJson(GraphTokener.OBJECTDIAGRAM, jsonArray, true);
 			element.withGraph(objectModel);

@@ -26,11 +26,10 @@ public class StoryBook extends SendableItem implements SendableEntityCreator {
 			return false;
 		}
 		HTMLEntity output = new HTMLEntity();
-		// INDEX HTML
+		/* INDEX HTML */
 		output.withEncoding(HTMLEntity.ENCODING);
 		XMLEntity frameset = XMLEntity.TAG("frameset").withKeyValue("cols", "250,*");
 		frameset.createChild("frame").withKeyValue("src", "refs.html").withKeyValue("name", "Index");
-//		XMLEntity mainFrame = 
 		frameset.createChild("frame").withKeyValue("name", "Main");
 		frameset.createChild("noframes")
 				.withValue("<body><p><a href='refs.html'>Index</a> <a href='refs.html'>Main</a></p></body>");
@@ -169,13 +168,11 @@ public class StoryBook extends SendableItem implements SendableEntityCreator {
 
 	@Override
 	public Object getValue(Object entity, String attribute) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value, String type) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 

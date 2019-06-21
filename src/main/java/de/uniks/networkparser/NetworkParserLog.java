@@ -205,7 +205,32 @@ public class NetworkParserLog extends Handler {
 		}
 		return false;
 	}
+	
+	/**
+	 * Log a message with fatal log level.
+	 *
+	 * @param owner   The Element with call the Methods
+	 * @param method  The Caller-Method
+	 * @param message Typ of Log Value
+	 * @param params  advanced Information
+	 * @return boolean if method must Cancel
+	 */
+	public boolean fatal(Object owner, String method, Object message, Object... params) {
+		if ((flag & LOGLEVEL_ERROR) != 0) {
+			if (condition != null) {
+				return condition
+						.update(new SimpleEvent(owner, method, null, message).withModelValue(params).withType(FATAL));
+			}
+		}
+		return false;
+	}
 
+	public boolean start(Object owner, String method, String msg) {
+		return info(owner, method, msg, "START");
+	}
+	public boolean end(Object owner, String method, String msg) {
+		return info(owner, method, msg, "END");
+	}
 	public boolean log(Object owner, String method, String msg, int level, Object... params) {
 		if (level == LOGLEVEL_ERROR) {
 			return this.error(owner, method, msg, params);

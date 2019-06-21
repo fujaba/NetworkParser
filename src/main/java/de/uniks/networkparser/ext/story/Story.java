@@ -78,14 +78,6 @@ public class Story extends StoryElement implements Comparable<Story> {
 		return name;
 	}
 
-	// COUNTER
-	// ADDTABLE
-	// ADDBARCHART
-	// ADDLINECHART
-	// ADDOBJECTDIAGRAMM
-	// ADDPATTERN
-	// ADDSVG
-
 	public Story() {
 		this.add(new StoryStepTitle());
 	}
@@ -242,7 +234,7 @@ public class Story extends StoryElement implements Comparable<Story> {
 			if (steps.size() < 1) {
 				return false;
 			}
-			// get FileName from Stack
+			/* get FileName from Stack */
 			StoryStepSourceCode step = new StoryStepSourceCode().withCode(this.getClass(), 2);
 			fileName = step.getFileName();
 			if (fileName == null || fileName.length() < 1) {
@@ -267,7 +259,7 @@ public class Story extends StoryElement implements Comparable<Story> {
 		if (path == null || name == null) {
 			return false;
 		}
-		// CHECK FOR CHANGES
+		/* CHECK FOR CHANGES */
 		CharacterBuffer content = new FileBuffer().readResource("graph/" + name);
 		if (content == null) {
 			return false;
@@ -445,9 +437,12 @@ public class Story extends StoryElement implements Comparable<Story> {
 		return outputFile;
 	}
 
-//	o1.compareTo( o2 ) < 0 o1 < o2
-//	o1.compareTo( o2 ) == 0 o1 == o2
-//	o1.compareTo( o2 ) > 0 o1 > o2
+	/**
+	* CompareTo Story
+	* o1.compareTo( o2 ) < 0 o1 < o2
+	* o1.compareTo( o2 ) == 0 o1 == o2
+	* o1.compareTo( o2 ) > 0 o1 > o2
+	*/
 	@Override
 	public int compareTo(Story story) {
 		String label = this.getLabel();

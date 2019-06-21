@@ -44,8 +44,6 @@ public class StoryObjectFilter extends Filter {
 			return 1;
 		}
 		return -1;
-//		return super.convert(entity, property, value, map, deep);
-
 	}
 
 	public SimpleList<Object> getElements() {

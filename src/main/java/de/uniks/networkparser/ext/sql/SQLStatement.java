@@ -167,7 +167,7 @@ public class SQLStatement {
 
 	@Override
 	public String toString() {
-		// CONNECTION
+		/* CONNECTION */
 		if (command == SQLCommand.CONNECTION) {
 			String driver = "";
 			String database = "";
@@ -181,10 +181,10 @@ public class SQLStatement {
 		StringBuilder sb = new StringBuilder();
 		boolean first = true;
 
-		// ADD COMMAND
+		/* ADD COMMAND */		
 		sb.append(command.getValue()).append(SPACE);
 
-		// SELECT STATEMENT
+		/* SELECT STATEMENT */
 		if (command == SQLCommand.SELECT) {
 			if (values instanceof SimpleList<?>) {
 				SimpleIterator<String> i = new SimpleIterator<String>(values);
@@ -203,7 +203,7 @@ public class SQLStatement {
 			addCondition(sb);
 			return sb.toString();
 		}
-		// All Other Statements
+		/* All Other Statements */
 		sb.append(this.table).append(SPACE);
 		if (command == SQLCommand.DROPTABLE) {
 			return sb.toString();

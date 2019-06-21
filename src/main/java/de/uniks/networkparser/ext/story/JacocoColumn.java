@@ -53,7 +53,6 @@ public class JacocoColumn implements JacocoColumnListener, Comparator<Object> {
 		Object item = ReflectionLoader.createProxy(jacocoColumn, proxyClass);
 
 		jacocoColumn.withProxy(item);
-//		com.sun.proxy.$Proxy4
 		return jacocoColumn;
 	}
 
@@ -82,7 +81,13 @@ public class JacocoColumn implements JacocoColumnListener, Comparator<Object> {
 		return EMPTY;
 	}
 
-	// init(List<? extends ITableItem> items, ICoverageNode total) {
+	/**
+	*	init(List<? extends ITableItem> items, ICoverageNode total) { 
+	*	Init JacocoColumn
+	*	@param items Items
+	*	@param total ICoverageNode
+	*	@return success
+	*/
 	public boolean init(Object items, Object total) {
 		String type = getType(total);
 		if (PACKAGE.equalsIgnoreCase(type)) {
@@ -99,8 +104,13 @@ public class JacocoColumn implements JacocoColumnListener, Comparator<Object> {
 		return true;
 	}
 
-	// footer(HTMLElement td, ICoverageNode total, Resources resources,
-	// ReportOutputFolder base) throws IOException
+	/**
+	 * Set Footer
+	 *	@param td HTMLElement 
+	 *	@param total ICoverageNode 
+	 *	@param resources Resources
+	 *	@param base ReportOutputFolder
+	 */
 	public void footer(Object td, Object total, Object resources, Object base) {
 		String search = getSearch(total);
 
@@ -135,7 +145,7 @@ public class JacocoColumn implements JacocoColumnListener, Comparator<Object> {
 	public void addValueToList(String key, int no) {
 		String fullClass = key.substring(0, key.indexOf(":"));
 
-		// Calculate all Sums
+		/* Calculate all Sums */
 		addToPos("", no);
 		int pos = fullClass.lastIndexOf(".");
 		if (pos > 0) {
@@ -156,7 +166,14 @@ public class JacocoColumn implements JacocoColumnListener, Comparator<Object> {
 		value.add(key, no);
 	}
 
-//	public void item(HTMLElement td, ITableItem item, Resources resources, ReportOutputFolder base) throws IOException {
+	/**
+	 * Set new Item
+	 * @param td HTMLElement
+	 * @param item ITableItem
+	 * @param resources Resources
+	 * @param base ReportOutputFolder
+	 * 
+	 */
 	public void item(Object td, Object item, Object resources, Object base) {
 		Object node = ReflectionLoader.calling(item, "getNode", false, null);
 		String type = getType(node);
@@ -173,11 +190,9 @@ public class JacocoColumn implements JacocoColumnListener, Comparator<Object> {
 		}
 
 		if (METHOD.equalsIgnoreCase(type)) {
-			// Its Methods
+			/* Its Methods */
 			String className = classes.get(node);
 
-//			IMethodCoverage methodNode = (IMethodCoverage) node;
-//			int firstLine = methodNode.getFirstLine();
 			Integer firstLine = (Integer) ReflectionLoader.call(node, "getFirstLine");
 			String name = getName(node);
 			if (name.indexOf("(") > 0) {
@@ -205,7 +220,6 @@ public class JacocoColumn implements JacocoColumnListener, Comparator<Object> {
 
 	@Override
 	public int compare(Object o1, Object o2) {
-//		o1.getNode().get
 		return 1;
 	}
 }

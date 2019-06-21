@@ -1,27 +1,6 @@
 
 package de.uniks.networkparser.ext.sql;
 
-/*
-NetworkParser
-Copyright (c) 2011 - 2016, Stefan Lindel
-All rights reserved.
-
-Licensed under the EUPL, Version 1.1 or (as soon they
-will be approved by the European Commission) subsequent
-versions of the EUPL (the "Licence");
-You may not use this work except in compliance with the Licence.
-You may obtain a copy of the Licence at:
-
-http://ec.europa.eu/idabc/eupl5
-
-Unless required by applicable law or agreed to in
-writing, software distributed under the Licence is
-distributed on an "AS IS" basis,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
-express or implied.
-See the Licence for the specific language governing
-permissions and limitations under the Licence.
-*/
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -136,8 +115,7 @@ public class SQLTokener extends Tokener {
 						}
 						result = true;
 					} else {
-						// TODO VODOO
-						// Check for Insert if really insert or Update
+						/* Check for Insert if really insert or Update */
 						if (statement.isAutoStatement()) {
 							if (statement.getCommand() == SQLCommand.INSERT
 									|| statement.getCommand() == SQLCommand.UPDATE) {
@@ -238,7 +216,7 @@ public class SQLTokener extends Tokener {
 			}
 			if (map.isTokenerFlag(FLAG_CREATE)) {
 				SQLStatement dataStatement = new SQLStatement(SQLCommand.CREATETABLE, tableName, TYPE_STRING);
-				// SWITCH FOR PRIVOTISIERUNG
+				/* SWITCH FOR PRIVOTISIERUNG */
 				String[] properties = null;
 				if (TABLE_PRIVOTISIERUNG.equalsIgnoreCase(this.stragety)) {
 					dataStatement.with(SQLStatement.PROP, TYPE_STRING);
@@ -303,7 +281,7 @@ public class SQLTokener extends Tokener {
 			return item.toString();
 		}
 		String tableName = EntityUtil.shortClassName(className);
-		// Add TableCreate
+		/* Add TableCreate */
 		addTableCreate(tableName, item, creator, statements, map);
 
 		if (TABLE_PRIVOTISIERUNG.equalsIgnoreCase(this.stragety)) {
@@ -322,16 +300,16 @@ public class SQLTokener extends Tokener {
 
 		for (String property : properties) {
 			Object value = creator.getValue(item, property);
-			// Null Value
+			/* Null Value */
 			if (value == null || property == SendableEntityCreator.DYNAMIC) {
 				continue;
 			}
-			// DefaultValue
+			/* DefaultValue */
 			if (value.equals(creator.getValue(prototype, property))) {
 				continue;
 			}
 
-			// SWITCH FOR TO N-ASSOC
+			/* SWITCH FOR TO N-ASSOC */
 			if (value instanceof Collection<?>) {
 				Collection<?> children = (Collection<?>) value;
 				for (Iterator<?> i = children.iterator(); i.hasNext();) {
@@ -437,7 +415,7 @@ public class SQLTokener extends Tokener {
 			String primaryKey = statement.getPrimaryId();
 			if (statement.getCommand() == SQLCommand.INSERT) {
 				if (values.create) {
-					// Its ok
+					/* Its ok */
 					continue;
 				}
 				if (values.drop) {
@@ -445,11 +423,11 @@ public class SQLTokener extends Tokener {
 						values.addId(primaryKey);
 					}
 				} else {
-					// Add Id
+					/* Add Id */
 					if (values.addId(primaryKey)) {
 						values.mayBeStatements.add(statement);
 					} else {
-						// Already found insert must be Update
+						/* Already found insert must be Update */
 						if (statement.isAutoStatement()) {
 							statement.withCommand(SQLCommand.UPDATE);
 							statement.withCondition(SQLStatement.ID, primaryKey);
@@ -473,8 +451,7 @@ public class SQLTokener extends Tokener {
 					if (statement.isAutoStatement()) {
 						statement.withEnable(false);
 					} else {
-//						if(statement != null) {
-						// Add Id
+						/* Add Id */
 						values.addId(primaryKey);
 					}
 				} else {
@@ -512,7 +489,7 @@ public class SQLTokener extends Tokener {
 						statement.autoDisable();
 					} else if (values.getIds().contains(primaryKey)) {
 					} else {
-						// MAY BE
+						/* MAY BE */
 						values.mayBeStatements.add(statement);
 					}
 				}
@@ -535,10 +512,10 @@ public class SQLTokener extends Tokener {
 			return false;
 		}
 
-		// Find Ids in DataBase
+		/* Find Ids in DataBase */
 		executeStatements(selectList, results, true);
 
-		// Try to find all Matches to remove some MayBe's
+		/* Try to find all Matches to remove some MayBe's */
 		for (SQLTable sqlTable : results) {
 			SelectSearcher selectSearcher = foundKeys.get(sqlTable.getTable());
 			SimpleList<Object> idValues = sqlTable.getColumnValue(SQLStatement.ID);
@@ -553,8 +530,7 @@ public class SQLTokener extends Tokener {
 							statement.without(SQLStatement.ID);
 							selectSearcher.mayBeStatements.remove(i);
 						} else {
-							// May be Update or Select
-							// statement.
+							/* May be Update or Select statement. */
 						}
 					}
 				}

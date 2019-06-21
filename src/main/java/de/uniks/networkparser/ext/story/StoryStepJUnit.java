@@ -92,9 +92,9 @@ public class StoryStepJUnit implements ObjectCondition {
 		}
 		File htmlFile = new File(outputFile);
 
-		// HTML Formatter
+		/* HTML Formatter */
 		Object formatter = createFormater();
-		// Analyse Jacaco.exec
+		/* Analyse Jacaco.exec */
 		Object output = ReflectionLoader.newInstance("org.jacoco.report.FileMultiReportOutput", File.class, htmlFile);
 		Object visitor = ReflectionLoader.callStr(formatter, "createVisitor", "org.jacoco.report.IMultiReportOutput",
 				output);
@@ -102,7 +102,7 @@ public class StoryStepJUnit implements ObjectCondition {
 		Object content = ReflectionLoader.callChain(loader, "getExecutionDataStore", "getContents");
 		ReflectionLoader.call(visitor, "visitInfo", List.class, info, Collection.class, content);
 
-		// Create Files
+		/* Create Files */
 		for (Feature group : groups) {
 			Object bundle = writeReports(loader, formatter, htmlFile, group);
 			ReflectionLoader.callStr(visitor, "visitBundle", "org.jacoco.core.analysis.IBundleCoverage", bundle,
@@ -209,16 +209,16 @@ public class StoryStepJUnit implements ObjectCondition {
 				|| NetworkParserLog.WARNING.equalsIgnoreCase(evt.getType())
 				|| NetworkParserLog.DEBUG.equalsIgnoreCase(evt.getType())
 				|| NetworkParserLog.ERROR.equalsIgnoreCase(evt.getType())) {
-			// Event from BlackBoxTester
+			/* Event from BlackBoxTester */
 			return this.executeBlackBoxEvent(evt);
 		}
 
 		if (packageName == null) {
 			return false;
 		}
-		// EXECUTE JUNIT AND JACOCO
+		/* EXECUTE JUNIT AND JACOCO */
 
-		// PATH IS "doc/"
+		/* PATH IS "doc/" */
 		String path = "doc/";
 		String label = "JUnit - Jacoco";
 		if (evt.getSource() instanceof Story) {
@@ -243,8 +243,8 @@ public class StoryStepJUnit implements ObjectCondition {
 
 		controller.start();
 
-		// Now Add
-		// ADD RESULT TO STORY DOCUMENTATION FOR BLACKBOX AND JACOCO
+		/* Now Add */
+		/* ADD RESULT TO STORY DOCUMENTATION FOR BLACKBOX AND JACOCO */
 		this.writeHTML(path + "jacoco.exec", path + "jacoco", label);
 		CharacterBuffer indexFile = FileBuffer.readFile(path + "jacoco/index.html");
 		if (indexFile != null) {
@@ -375,7 +375,7 @@ public class StoryStepJUnit implements ObjectCondition {
 		this.model = model;
 		if (this.column != null) {
 			story.add(this);
-			// Check for ReCompile
+			/* Check for ReCompile */
 			if (this.model != null && this.model instanceof ClassModel) {
 				ModelGenerator generator = ((ClassModel) this.model).getGenerator();
 				if (generator != null) {
@@ -438,25 +438,33 @@ public class StoryStepJUnit implements ObjectCondition {
 		}
 		return null;
 	}
-	// TestListener
-
-	// Test test, Throwable e
+	/* TestListener */
+	/**
+	 * TestListener
+	 * @param test TestMethjod
+	 * @param e	Exception
+	 */
 	public void addError(Object test, Throwable e) {
-//		System.out.println("ERROR");
+		if(logger != null) {
+			logger.error(test, "addError", e);
+		}
 	}
 
-	// Test test, AssertionFailedError e
 	public void addFailure(Object test, Object e) {
-//		System.out.println("FAILURE");
+		if(logger != null) {
+			logger.fatal(test, "addFailure", e);
+		}
 	}
 
-	// Test test
-	public void endTest(Object test) {
-//		System.out.println("END");
+	public void end(Object test, String method) {
+		if(logger != null) {
+			logger.end(test, method, "end Method");
+		}
 	}
 
-	// Test test
-	public void startTest(Object test) {
-//				System.out.println("START");
+	public void startTest(Object test, String method) {
+		if(logger != null) {
+			logger.start(test, method, "start Method");
+		}
 	}
 }

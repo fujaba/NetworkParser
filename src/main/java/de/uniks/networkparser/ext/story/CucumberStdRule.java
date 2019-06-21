@@ -64,7 +64,6 @@ public class CucumberStdRule implements ObjectCondition {
 	private boolean analyseDefinition(SimpleKeyValueList<String, Boolean> values) {
 		for (int i = 0; i < values.size(); i++) {
 			String string = values.getKeyByIndex(i);
-			// FIXME
 			String[] token = string.split(" ");
 			char[] types = new char[token.length];
 			int z;
@@ -94,7 +93,7 @@ public class CucumberStdRule implements ObjectCondition {
 			if (isPos > 0) {
 				int target = -1;
 				if (andPos < 1) {
-					// A Single Definition
+					/* A Single Definition */
 					int source = 0;
 					for (z = isPos; z < token.length; z++) {
 						if (types[z] == Token.NOMEN) {
@@ -113,7 +112,7 @@ public class CucumberStdRule implements ObjectCondition {
 					}
 				} else {
 					if (andPos > isPos) {
-						// Target is Source and Source
+						/* Target is Source and Source */
 						for (z = 0; z < isPos; z++) {
 							if (types[z] == Token.NOMEN) {
 								target = z;
@@ -153,12 +152,10 @@ public class CucumberStdRule implements ObjectCondition {
 
 	private boolean analyseTokens(SimpleKeyValueList<String, Boolean> values) {
 		int z;
-		// FIXME
 		for (int i = 0; i < values.size(); i++) {
-//			splitText();
 			String string = values.getKeyByIndex(i);
 			String[] token = string.split(" ");
-			// Test for replace Link Names
+			/* Test for replace Link Names */
 			if (assocs.size() > 0) {
 				for (z = 0; z < token.length; z++) {
 					int found = assocs.indexOf(token[z]);

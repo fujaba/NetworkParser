@@ -161,7 +161,7 @@ public class Cucumber {
 		if (pos > 0) {
 			String temp = line.substring(0, pos);
 			cucumber = create(temp);
-			line = line.substring(pos + 1); // REMOVE TYPE
+			line = line.substring(pos + 1); /* REMOVE TYPE */
 		} else {
 			cucumber = create(TYPE_SCENARIO);
 		}
@@ -189,7 +189,7 @@ public class Cucumber {
 				subText.add(line);
 			} else {
 				if (subText.length() < 1) {
-					// FIRSTLINE
+					/* FIRSTLINE */
 					type = newType;
 					subText.add(line.substring(newType.length() + 2));
 				} else {
@@ -274,7 +274,6 @@ public class Cucumber {
 		}
 		int i;
 		for (i = 0; i < given.size(); i++) {
-//			String key = given.getKeyByIndex(i);
 			Boolean key = given.getValueByIndex(i);
 			if (key.booleanValue() == false) {
 				return false;

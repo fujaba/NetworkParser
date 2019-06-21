@@ -41,15 +41,6 @@ public class StoryStepImage implements ObjectCondition {
 		if (this.file != null) {
 			XMLEntity image = element.createTag("img", element.getBody());
 			image.put("src", file);
-			// int counter = story.getCounter();
-//			XMLEntity textItem = element.createBodyTag("p");
-//			textItem.add("class", "step");
-//			String textValue = "";
-//			if(counter>=0) {
-//				textValue = "Step "+ counter+": ";
-//			}
-//			textValue += this.value;
-//			textItem.withValueItem(textValue);
 		}
 		return true;
 	}
