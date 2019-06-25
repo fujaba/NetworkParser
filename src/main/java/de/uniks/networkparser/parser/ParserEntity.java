@@ -128,7 +128,7 @@ public class ParserEntity {
 
 	public Clazz parse(CharacterBuffer sequence) {
 		if (this.code == null) {
-			// FIX IT
+			/* FIX IT */
 			this.code = new SourceCode();
 			this.code.with(new Clazz(""));
 		}
@@ -142,8 +142,8 @@ public class ParserEntity {
 
 		nextToken();
 		nextToken();
-		// [comment] [packagestat] [comment] importlist classlist
-		// need this to ensure parser is working when no package is present
+		/* [comment] [packagestat] [comment] importlist classlist */
+		/* need this to ensure parser is working when no package is present */
 		parseComment(true);
 
 		skipNewLine();
@@ -209,7 +209,6 @@ public class ParserEntity {
 
 	public boolean currentTokenEquals(char word) {
 		return (currentToken.text.length() == 1 && currentToken.text.charAt(0) == word);
-//		return stringEquals(currentWord(), word);
 	}
 
 	public static boolean stringEquals(String s1, String s2) {
@@ -310,7 +309,6 @@ public class ParserEntity {
 		lookAheadToken = tmp;
 		lookAheadToken.kind = Token.EOF;
 		lookAheadToken.clear();
-//		delete(0, lookAheadToken.text.length());
 
 		char state = Token.UNKNOWN;
 
@@ -331,10 +329,10 @@ public class ParserEntity {
 					state = Token.NUMERIC;
 					lookAheadToken.kind = Token.NUMERIC;
 					lookAheadToken.addText(currentChar);
-					// lookAheadToken.value = currentChar - '0';
+					/* lookAheadToken.value = currentChar - '0'; */
 					lookAheadToken.startPos = index;
 				} else if (currentChar == '/' && (lookAheadChar == '*' || lookAheadChar == '/')) {
-					// start of comment
+					/* start of comment */
 					lookAheadToken.kind = Token.COMMENT;
 					lookAheadToken.startPos = index;
 					lookAheadToken.addText(currentChar);
@@ -348,7 +346,7 @@ public class ParserEntity {
 					nextChar();
 					return;
 				} else if (currentChar == '*' && lookAheadChar == '/') {
-					// end of comment
+					/* end of comment */
 					lookAheadToken.kind = Token.LONG_COMMENT_END;
 					lookAheadToken.startPos = index;
 					lookAheadToken.addText(currentChar);
@@ -389,7 +387,6 @@ public class ParserEntity {
 			case Token.NUMERIC:
 				if (Character.isDigit(currentChar)) {
 					lookAheadToken.addText(currentChar);
-					// lookAheadToken.value = lookAheadToken.value * 10 + (currentChar - '0');
 				} else if (currentChar == '.') {
 					state = '8';
 				} else {
@@ -407,11 +404,11 @@ public class ParserEntity {
 
 			case Token.VALUE:
 				if (Character.isLetter(currentChar) || Character.isDigit(currentChar) || currentChar == '_') {
-					// keep reading
+					/* keep reading */
 					lookAheadToken.addText(currentChar);
 				} else {
 					lookAheadToken.endPos = index - 1;
-					return; // <==== sudden death
+					return; /* <==== sudden death */
 				}
 				break;
 
@@ -518,7 +515,7 @@ public class ParserEntity {
 	}
 
 	private void parseImport() {
-		// import qualifiedName [. *];
+		/* import qualifiedName [. *]; */
 		SymTabEntry nextEntity = startNextSymTab(SymTabEntry.TYPE_IMPORT);
 		nextToken();
 
@@ -540,7 +537,7 @@ public class ParserEntity {
 		SymTabEntry nextEntity = startNextSymTab(SymTabEntry.TYPE_COMMENT);
 		CharacterBuffer buffer = new CharacterBuffer();
 		if (currentKindEquals(Token.COMMENT)) {
-			// Simple Comment only one Line
+			/* Simple Comment only one Line */
 			buffer.add(currentToken.originalText);
 			nextToken();
 			while (currentKindEquals(Token.NEWLINE) == false && currentKindEquals(Token.EOF) == false) {
@@ -550,7 +547,6 @@ public class ParserEntity {
 			if (currentKindEquals(Token.EOF) == false) {
 				buffer.add(currentToken.originalText);
 				skipNewLine();
-//				nextToken();
 			}
 			nextEntity.withName(buffer);
 			return buffer;
@@ -570,7 +566,7 @@ public class ParserEntity {
 	}
 
 	private String parseModifiers() {
-		// names != class
+		/* names != class */
 		StringBuilder result = new StringBuilder();
 		while (EntityUtil.isModifier(" " + currentWord() + " ")) {
 			if (result.length() > 0) {
@@ -583,7 +579,7 @@ public class ParserEntity {
 	}
 
 	private void parsePackageDecl() {
-		// skip package
+		/* skip package */
 		SymTabEntry nextEntity = startNextSymTab(SymTabEntry.TYPE_PACKAGE);
 		nextToken();
 		parseQualifiedName(nextEntity);
@@ -622,8 +618,8 @@ public class ParserEntity {
 	}
 
 	private void parseClassDecl() {
-//FIXME		int preCommentStartPos = currentToken.preCommentStartPos;
-//		int preCommentEndPos = currentToken.preCommentEndPos;
+/* FIXME		int preCommentStartPos = currentToken.preCommentStartPos; */
+/*		int preCommentEndPos = currentToken.preCommentEndPos; */
 		int startPosAnnotations = currentToken.startPos;
 		SymTabEntry nextEntity;
 		while ("@".equals(currentWord())) {
@@ -637,14 +633,14 @@ public class ParserEntity {
 			}
 		}
 
-		// modifiers class name classbody
+		/* modifiers class name classbody */
 		int startPosClazz = currentToken.startPos;
 		if (this.getClazz() == null) {
 			return;
 		}
 		getClazz().with(Modifier.create(parseModifiers()));
 
-		// class or interface or enum
+		/* class or interface or enum */
 		String classTyp = parseClassType();
 		String className = currentWord();
 		this.code.getClazz().with(className);
@@ -654,14 +650,13 @@ public class ParserEntity {
 		nextEntity = startNextSymTab(classTyp, className);
 		nextEntity.withPosition(startPosClazz, currentToken.endPos, getLine(), getLine());
 		nextEntity.withAnnotationsStart(startPosAnnotations);
-//FIXME		.withPreComment(preCommentStartPos, preCommentEndPos);
+/* FIXME		.withPreComment(preCommentStartPos, preCommentEndPos); */
 
-		// skip name
+		/* skip name */
 		nextRealToken();
-
 		parseGenericTypeSpec();
 
-		// extends
+		/* extends */
 		if (SymTabEntry.TYPE_EXTENDS.equalsIgnoreCase(currentWord())) {
 			skip(SymTabEntry.TYPE_EXTENDS, true);
 
@@ -669,13 +664,11 @@ public class ParserEntity {
 
 			nextEntity.withPosition(currentToken.startPos, currentToken.endPos, getLine(), getLine());
 
-			// skip superclass name
+			/* skip superclass name */
 			parseTypeRef();
-
 			code.withEndOfExtendsClause(previousToken.endPos);
 		}
-
-		// implements
+		/* implements */
 		if (SymTabEntry.TYPE_IMPLEMENTS.equals(currentWord())) {
 			skip(SymTabEntry.TYPE_IMPLEMENTS, true);
 
@@ -683,11 +676,9 @@ public class ParserEntity {
 				nextEntity = startNextSymTab(SymTabEntry.TYPE_IMPLEMENTS, currentWord());
 				nextEntity.withPosition(currentToken.startPos, currentToken.endPos, getLine(), getLine());
 
-				// skip interface name
+				/* skip interface name */
 				nextToken();
 				if (currentKindEquals('<')) {
-//					CharacterBuffer characterBuffer = new CharacterBuffer();
-//					parseGenericTypeDefPart(typeString);
 					parseGenericTypeSpec();
 				}
 
@@ -702,7 +693,7 @@ public class ParserEntity {
 	}
 
 	private void parseGenericTypeSpec() {
-		// genTypeSpec < T , T, ...>
+		/* genTypeSpec < T , T, ...> */
 		if (currentKindEquals('<')) {
 			skipTo('>');
 			nextToken();
@@ -711,11 +702,10 @@ public class ParserEntity {
 
 	private String parseTypeRef() {
 		CharacterBuffer typeString = new CharacterBuffer();
-
-		// (void | qualifiedName) <T1, T2> [] ...
+		/* (void | qualifiedName) <T1, T2> [] ... */
 		String typeName = SymTabEntry.TYPE_VOID;
 		if (currentTokenEquals(SymTabEntry.TYPE_VOID)) {
-			// skip void
+			/* skip void */
 			nextToken();
 		} else {
 			typeName = parseQualifiedName().toString();
@@ -756,12 +746,12 @@ public class ParserEntity {
 		if ("@".equals(typeString.toString())) {
 			typeString.with(currentToken.text);
 		}
-		// phew
+		/* phew */
 		return typeString.toString();
 	}
 
 	private void parseGenericTypeDefPart(CharacterBuffer typeString) {
-		// <T, T, ...>
+		/* <T, T, ...> */
 		skip("<", false);
 		typeString.with('<');
 
@@ -774,13 +764,13 @@ public class ParserEntity {
 			}
 		}
 
-		// should be a < now
+		/* should be a < now */
 		typeString.with(">");
 		skip(">", true);
 	}
 
 	private void parseClassBody() {
-		// { classBodyDecl* }
+		/* { classBodyDecl* } */
 		skip('{', true);
 		boolean isDebug = this.update instanceof DebugCondition;
 		code.withStartBody(currentToken.startPos, getLine());
@@ -808,19 +798,19 @@ public class ParserEntity {
 		}
 	}
 
+	/**  annotations 
+	* annotations modifiers (genericsDecl) ( typeRef name [= expression ] | typeRef name '(' params ')' | classdecl ) ;
+	* (javadoc) comment?
+	*/
 	private void parseMemberDecl() {
-		// annotations modifiers (genericsDecl) ( typeRef name [= expression ] |
-		// typeRef name '(' params ')' | classdecl ) ;
-
-		// (javadoc) comment?
-//FIXME		int preCommentStartPos = currentToken.preCommentStartPos;
-//		int preCommentEndPos = currentToken.preCommentEndPos;
+/* FIXME		int preCommentStartPos = currentToken.preCommentStartPos; */
+/*		int preCommentEndPos = currentToken.preCommentEndPos; */
 		long startLine = getLine();
 		while (parseComment(true) != null) {
 			skipNewLine();
 		}
 
-		// annotations
+		/* annotations */
 		int annotationsStartPos = currentToken.startPos;
 
 		String annotations = parseAnnotations();
@@ -830,9 +820,9 @@ public class ParserEntity {
 		String modifiers = parseModifiers();
 
 		if (currentTokenEquals("<")) {
-			// generic type decl
+			/* generic type decl */
 			skip("<", true);
-			// FIX MULTI GENERIC
+			/* FIX MULTI GENERIC */
 			int count = 1;
 			while (currentTokenEquals(Token.EOF) == false && count > 0) {
 				while (currentTokenEquals(">") == false) {
@@ -853,35 +843,35 @@ public class ParserEntity {
 			skipBody();
 
 			return;
-			// modifiers = parseModifiers();
+			/* modifiers = parseModifiers(); */
 		} else if (currentTokenEquals(SymTabEntry.TYPE_ENUM)) {
-			// skip enum name { entry, ... }
+			/* skip enum name { entry, ... } */
 			skip(SymTabEntry.TYPE_ENUM, true);
-			nextToken(); // name
+			nextToken(); /* name */
 			skipBody();
 			return;
-			// modifiers = parseModifiers();
+			/* modifiers = parseModifiers(); */
 		}
 
 		if (currentTokenEquals(getClazz().getName()) && lookAheadToken.kind == '(') {
-			// constructor
+			/* constructor */
 			skip(getClazz().getName(), true);
 
 			String params = parseFormalParamList();
 
-			// skip throws
+			/* skip throws */
 			if (currentTokenEquals("throws")) {
 				skipTo('{');
 			}
-//			code.withStartBody(currentToken.startPos, line);
+/*			code.withStartBody(currentToken.startPos, line); */
 			CharacterBuffer block = new CharacterBuffer();
 			skip('{', true, block);
 			parseBlock(block, '}');
 
 			SymTabEntry nextEntity = startNextSymTab(SymTabEntry.TYPE_CONSTRUCTOR, getClazz().getName() + params);
 			nextEntity.withPosition(startPos, previousToken.startPos, startLine, getLine());
-//			nextEntity.withComment(c)
-//FIXME			nextEntity.withPreComment(preCommentStartPos, preCommentEndPos);
+/*			nextEntity.withComment(c) */
+/* FIXME			nextEntity.withPreComment(preCommentStartPos, preCommentEndPos); */
 			nextEntity.withValue(block.toString());
 			nextEntity.withAnnotationsStart(annotationsStartPos);
 
@@ -901,9 +891,9 @@ public class ParserEntity {
 			String memberName = currentWord();
 
 			nextToken();
-			// Switch between Enum Value and Attributes
+			/* Switch between Enum Value and Attributes */
 			if (currentKindEquals('=')) {
-				// field declaration with initialisation
+				/* field declaration with initialisation */
 				skip("=", true);
 
 				CharacterBuffer expression = parseExpression(null);
@@ -917,16 +907,16 @@ public class ParserEntity {
 				nextEntity.withModifiers(modifiers);
 				nextEntity.withDataType(type);
 				nextEntity.withValue(expression.toString());
-//FIXME				nextEntity.withPreComment(preCommentStartPos, preCommentEndPos);
+/* FIXME				nextEntity.withPreComment(preCommentStartPos, preCommentEndPos); */
 				nextEntity.withAnnotationsStart(annotationsStartPos);
 			} else if (currentKindEquals(';') && !",".equals(memberName)) {
-				// field declaration
+				/* field declaration */
 				skip(";", true);
 
 				SymTabEntry nextEntity = startNextSymTab(SymTabEntry.TYPE_ATTRIBUTE, memberName);
 				nextEntity.withPosition(startPos, previousToken.startPos, startLine, getLine());
 				nextEntity.withModifiers(modifiers);
-//FIXME				nextEntity.withPreComment(preCommentStartPos, preCommentEndPos);
+/*FIXME				nextEntity.withPreComment(preCommentStartPos, preCommentEndPos); */
 				nextEntity.withAnnotationsStart(annotationsStartPos);
 				nextEntity.withDataType(type);
 			} else if (currentKindEquals('(')) {
@@ -936,15 +926,13 @@ public class ParserEntity {
 					return;
 				}
 
-				// skip throws
+				/* skip throws */
 				String throwsTags = null;
 				if (currentTokenEquals("throws")) {
 					int temp = currentToken.startPos;
 					skipTo('{');
 					throwsTags = code.subString(temp, currentToken.startPos).toString();
 				}
-
-//				code.withStartBody(previousToken.startPos, line);
 
 				CharacterBuffer body = new CharacterBuffer();
 				int startBodyPos = currentToken.startPos;
@@ -966,28 +954,28 @@ public class ParserEntity {
 				nextEntity.withPosition(startPos, previousToken.startPos, startLine, getLine());
 				nextEntity.withModifiers(modifiers);
 				nextEntity.withBodyStartPos(startBodyPos);
-//				.withBodyStartPos(code.getStartBody());
+/*				.withBodyStartPos(code.getStartBody()); */
 				nextEntity.withAnnotations(annotations);
-//FIXME				nextEntity.withPreComment(preCommentStartPos, preCommentEndPos);
+/* FIXME				nextEntity.withPreComment(preCommentStartPos, preCommentEndPos); */
 				nextEntity.withAnnotationsStart(annotationsStartPos);
 
 			} else if (SymTabEntry.TYPE_ENUM.equals(getClazz().getType())) {
 				if (",".equalsIgnoreCase(memberName) || ";".equalsIgnoreCase(memberName)
 						|| ";".equals(type) == false && currentKindEquals(Token.EOF)) {
-					// String enumSignature = SDMLibParser.ENUMVALUE + ":" + type;
+					/* String enumSignature = SDMLibParser.ENUMVALUE + ":" + type; */
 					if ("}".equals(type) == false) {
 						SymTabEntry nextEntity = startNextSymTab(SymTabEntry.TYPE_ENUMVALUE, type);
 						nextEntity.withPosition(startPos, previousToken.startPos, startLine, getLine());
 						nextEntity.withModifiers(modifiers).withBodyStartPos(code.getStartBody());
-						// FIXME nextEntity.withPreComment(preCommentStartPos, preCommentEndPos);
+						/* FIXME nextEntity.withPreComment(preCommentStartPos, preCommentEndPos); */
 						nextEntity.withAnnotationsStart(annotationsStartPos);
 					}
 				} else {
-					// String enumSignature = SDMLibParser.ENUMVALUE + ":" + type;
+					/* String enumSignature = SDMLibParser.ENUMVALUE + ":" + type; */
 					SymTabEntry nextEntity = startNextSymTab(SymTabEntry.TYPE_ENUMVALUE, type);
 					nextEntity.withPosition(startPos, previousToken.startPos, startLine, getLine());
 					nextEntity.withModifiers(modifiers).withBodyStartPos(code.getStartBody());
-//FIXME					nextEntity.withPreComment(preCommentStartPos, preCommentEndPos);
+/* FIXME					nextEntity.withPreComment(preCommentStartPos, preCommentEndPos); */
 					nextEntity.withAnnotationsStart(annotationsStartPos);
 					skipTo(';');
 					skip(";", true);
@@ -998,7 +986,6 @@ public class ParserEntity {
 
 	private boolean isComment() {
 		return currentKindEquals(Token.LONG_COMMENT_START) || currentKindEquals(Token.COMMENT);
-//				(currentKindEquals(Token.COMMENT) && lookAheadKindEquals(Token.COMMENT));
 	}
 
 	private CharacterBuffer parseBlock(CharacterBuffer body, char stopChar) {
@@ -1006,7 +993,7 @@ public class ParserEntity {
 			body = new CharacterBuffer();
 		}
 		char prevprevTokenKind;
-		// { stat ... }
+		/* { stat ... } */
 		while (currentKindEquals(Token.EOF) == false && currentKindEquals(stopChar) == false) {
 			while (currentKindEquals(Token.EOF) == false && isComment()) {
 				body.add(parseComment(false));
@@ -1054,23 +1041,20 @@ public class ParserEntity {
 	private String parseFormalParamList() {
 		StringBuilder paramList = new StringBuilder().append('(');
 
-		// '(' (type name[,] )* ') [throws type , (type,)*]
+		/* '(' (type name[,] )* ') [throws type , (type,)*] */
 		skip("(", true);
 
 		while (!currentKindEquals(Token.EOF) && !currentKindEquals(')')) {
 			int typeStartPos = currentToken.startPos;
-
 			parseTypeRef();
-
 			int typeEndPos = currentToken.startPos - 1;
-
 			paramList.append(code.subString(typeStartPos, typeEndPos));
 
-			// parameter ends
+			/* parameter ends */
 			if (currentKindEquals(')'))
 				break;
 
-			// skip param name
+			/* skip param name */
 			nextToken();
 
 			if (currentKindEquals(',')) {
@@ -1087,7 +1071,7 @@ public class ParserEntity {
 
 	private void skipBody() {
 		int index = 1;
-		// nextRealToken();
+		/* nextRealToken(); */
 		while (index > 0 && !currentKindEquals(Token.EOF)) {
 			nextToken();
 			if (currentTokenEquals("{"))
@@ -1105,20 +1089,19 @@ public class ParserEntity {
 	}
 
 	private CharSequence parseQualifiedName(SymTabEntry nextEntity) {
-		// return dotted name
+		/* return dotted name */
 		nextRealToken();
 
 		while (currentKindEquals('.') && !lookAheadKindEquals('.') && !currentKindEquals(Token.EOF)) {
 			skip(".", false);
-
-			// read next name
+			/* read next name */
 			nextRealToken();
 		}
 		return finishParse(nextEntity);
 	}
 
 	private CharSequence parseQualifiedName() {
-		// return dotted name
+		/* return dotted name */
 		int startPos = currentToken.startPos;
 		int endPos = currentToken.endPos;
 
@@ -1127,7 +1110,7 @@ public class ParserEntity {
 		while (currentKindEquals('.') && !(lookAheadToken.kind == '.') && !currentKindEquals(Token.EOF)) {
 			skip(".", false);
 
-			// read next name
+			/* read next name */
 			endPos = currentToken.endPos;
 			nextRealToken();
 		}
@@ -1136,7 +1119,7 @@ public class ParserEntity {
 	}
 
 	private CharacterBuffer parseExpression(CharacterBuffer buffer) {
-		// ... { ;;; } ;
+		/* ... { ;;; } ; */
 		if (buffer == null) {
 			buffer = new CharacterBuffer();
 		}
@@ -1216,19 +1199,19 @@ public class ParserEntity {
 				}
 
 			} else if (key.startsWith(SymTabEntry.TYPE_ATTRIBUTE)) {
-				// add new attributes
+				/* add new attributes */
 				for (SymTabEntry entry : entities) {
 					addMemberAsMethod(entry, symbolTab);
 					addMemberAsAttribut(entry, symbolTab, addStaticAttribute);
 				}
 			} else if (key.startsWith(SymTabEntry.TYPE_EXTENDS)) {
-				// add super classes
+				/* add super classes */
 				if (GraphUtil.isInterface(this.getClazz())) {
 					for (SymTabEntry entry : entities) {
 						addMemberAsInterface(entry, symbolTab);
 					}
 				} else {
-					// addMemberAsSuperClass(clazz, memberName, parser);
+					/* addMemberAsSuperClass(clazz, memberName, parser); */
 				}
 			} else if (key.startsWith(SymTabEntry.TYPE_IMPLEMENTS)) {
 				for (SymTabEntry entry : entities) {
@@ -1246,7 +1229,7 @@ public class ParserEntity {
 			return;
 		}
 		if (memberClass != null) {
-			// memberClass.withInterface(true);
+			/* memberClass.withInterface(true); */
 			this.getClazz().withSuperClazz(memberClass);
 		}
 	}
@@ -1271,8 +1254,7 @@ public class ParserEntity {
 
 	private Clazz findMemberClass(Clazz clazz, SymTabEntry memberName,
 			SimpleKeyValueList<String, SimpleList<SymTabEntry>> symbolTab) {
-//FIXME		String[] split = memberName.split(":");
-//		String signature = split[1];
+/* FIXME		String[] split = memberName.split(":"); */
 		if (memberName == null) {
 			return null;
 		}
@@ -1294,11 +1276,9 @@ public class ParserEntity {
 					return externClass;
 				}
 			} else if (key.startsWith(SymTabEntry.TYPE_IMPORT + ":") && importName.endsWith("*")) {
-				// might work
+				/* might work */
 				importName = importName.substring(0, importName.length() - 1) + signature;
-
 				Clazz modelClass = findClassInModel(importName);
-
 				if (modelClass != null) {
 					return modelClass;
 				}
@@ -1315,19 +1295,19 @@ public class ParserEntity {
 
 	private void addMemberAsAttribut(SymTabEntry symTabEntry,
 			SimpleKeyValueList<String, SimpleList<SymTabEntry>> symbolTab, boolean addStaticAttribute) {
-		// filter public static final constances
+		/* filter public static final constances */
 		if (symTabEntry == null) {
 			return;
 		}
 		String modifiers = symTabEntry.getModifiers();
 		if (addStaticAttribute == false && ((modifiers.indexOf("public") >= 0 || modifiers.indexOf("private") >= 0)
 				&& modifiers.indexOf("static") >= 0 && modifiers.indexOf("final") >= 0)) {
-			// ignore
+			/* ignore */
 			return;
 		}
 		String type = symTabEntry.getDataType();
 		if (type != null) {
-			// include arrays
+			/* include arrays */
 			type = type.replace("[]", "");
 		}
 
@@ -1337,9 +1317,9 @@ public class ParserEntity {
 				this.getClazz().withAttribute(attrName, DataType.create(symTabEntry.getDataType()));
 			}
 		} else {
-			// handle complex attributes
+			/* handle complex attributes */
 			if (handleComplexAttr(attrName, symTabEntry, symbolTab) == false) {
-				// Not Found so simple Attribute
+				/* Not Found so simple Attribute */
 				this.getClazz().withAttribute(attrName, DataType.create(symTabEntry.getDataType()));
 			}
 		}
@@ -1364,7 +1344,6 @@ public class ParserEntity {
 		}
 		String memberName = symTabEntry.getName();
 		String partnerTypeName = symTabEntry.getDataType();
-		// String partnerTypeName = symTabEntry.getType();
 
 		String partnerClassName = findPartnerClassName(partnerTypeName);
 		Clazz partnerClass = null;
@@ -1411,37 +1390,28 @@ public class ParserEntity {
 			addToSymTabEntry = simpleList.first();
 		}
 
-		// type is unknown
+		/* type is unknown */
 		if (addToSymTabEntry == null) {
 			this.getClazz().withAttribute(memberName, DataType.create(partnerTypeName));
 			return false;
 		}
 
 		SimpleList<SymTabEntry> methodBodyQualifiedNames = symbolTab.get(SymTabEntry.TYPE_METHOD);
-		// for (String key : parser.getMethodBodyQualifiedNames()) {
-		// methodBodyQualifiedNames.add(key);
-		// }
-
 		boolean done = false;
 		for (SymTabEntry qualifiedEntry : methodBodyQualifiedNames) {
 			String qualifiedName = qualifiedEntry.getName();
 			if (qualifiedName.startsWith("value.set")) {
-
-				// handleAssoc(memberName, card, partnerClassName, partnerClass,
-				// qualifiedName.substring("value.set".length()));
 				done = true;
 			} else if (qualifiedName.startsWith("value.with") || qualifiedName.startsWith("item.with")) {
-				// handleAssoc(memberName, card, partnerClassName, partnerClass,
-				// qualifiedName.substring("value.with".length()));
+				/* handleAssoc(memberName, card, partnerClassName, partnerClass, qualifiedName.substring("value.with".length())); */
 				done = true;
 			} else if (qualifiedName.startsWith("value.with")) {
-				// FIXME handleAssoc(memberName, card, partnerClassName, partnerClass,
-				// qualifiedName.substring("value.addTo".length()));
+				/* FIXME handleAssoc(memberName, card, partnerClassName, partnerClass, qualifiedName.substring("value.addTo".length())); */
 				done = true;
 			}
 		}
 		if (!done) {
-			// did not find reverse role, add as attribute
+			/* did not find reverse role, add as attribute */
 			boolean found = false;
 
 			String srcRoleName = "";
@@ -1535,7 +1505,7 @@ public class ParserEntity {
 		if (openAngleBracket > -1 && closeAngleBracket > openAngleBracket) {
 			partnerClassName = partnerTypeName.substring(openAngleBracket + 1, closeAngleBracket);
 		} else if (partnerTypeName.endsWith("Set")) {
-			// TODO: should check for superclass ModelSet
+			/* TODO: should check for superclass ModelSet */
 			partnerClassName = partnerTypeName.substring(0, partnerTypeName.length() - 3);
 		} else {
 			partnerClassName = partnerTypeName;
@@ -1551,10 +1521,10 @@ public class ParserEntity {
 		int _openAngleBracket = partnerTypeName.indexOf("<");
 		int _closeAngleBracket = partnerTypeName.indexOf(">");
 		if (_openAngleBracket > 1 && _closeAngleBracket > _openAngleBracket) {
-			// partner to many
+			/* partner to many */
 			partnerCard = Association.MANY;
 		} else if (partnerTypeName.endsWith("Set") && partnerTypeName.length() > 3) {
-			// it might be a ModelSet. Look if it starts with a clazz name
+			/* it might be a ModelSet. Look if it starts with a clazz name */
 			String prefix = partnerTypeName.substring(0, partnerTypeName.length() - 3);
 			for (Clazz clazz : model.getClazzes()) {
 				if (prefix.equals(EntityUtil.shortClassName(clazz.getName()))) {
@@ -1576,7 +1546,7 @@ public class ParserEntity {
 		String fullSignature = symTabEntry.getType();
 		String signature = symTabEntry.getName();
 
-		// filter internal generated methods
+		/* filter internal generated methods */
 		if (SymTabEntry.TYPE_METHOD.equals(fullSignature) == false) {
 			return;
 		}
@@ -1594,7 +1564,7 @@ public class ParserEntity {
 			}
 			Method method = getMethod(signature);
 			if (method != null) {
-				// Replace Body
+				/* Replace Body */
 				method.withBody(
 						this.code.subString(symTabEntry.getBodyStartPos(), symTabEntry.getEndPos() + 1).toString());
 				return;
@@ -1633,7 +1603,7 @@ public class ParserEntity {
 				return method;
 			} else if (search.getName().equals(method.getName())) {
 				if (search.getReturnType().equals(method.getReturnType())) {
-					// Check all Parameter
+					/* Check all Parameter */
 					ParameterSet searchParam = search.getParameters();
 					ParameterSet param = method.getParameters();
 					if (searchParam.size() == param.size()) {
@@ -1655,7 +1625,7 @@ public class ParserEntity {
 	}
 
 	private boolean isGetterSetter(String methodName, SimpleKeyValueList<String, SimpleList<SymTabEntry>> symTab) {
-		// method starts with: with set get ...
+		/* method starts with: with set get ... */
 		if (methodName == null) {
 			return false;
 		}
@@ -1670,7 +1640,7 @@ public class ParserEntity {
 				}
 			}
 
-			// is class attribute
+			/* is class attribute */
 			for (SymTabEntry entry : attributes) {
 				String attrName = entry.getName();
 				if (methodName.toLowerCase().endsWith(attrName.toLowerCase())) {
@@ -1682,7 +1652,7 @@ public class ParserEntity {
 	}
 
 	private boolean isAssoc(String methodName, SimpleKeyValueList<String, SimpleList<SymTabEntry>> symTab) {
-		// method starts with: with set get ...
+		/* method starts with: with set get ... */
 		if (methodName == null) {
 			return false;
 		}
@@ -1697,7 +1667,7 @@ public class ParserEntity {
 				}
 			}
 
-			// is class attribute
+			/* is class attribute */
 			for (SymTabEntry entry : assoc) {
 				String attrName = entry.getName();
 				if (methodName.toLowerCase().endsWith(attrName.toLowerCase())) {

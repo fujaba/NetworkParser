@@ -117,7 +117,7 @@ public class SourceCode extends GraphMember {
 	 */
 	public GraphMember with(Clazz parent) {
 		this.parentNode = parent;
-		// REMOVE OLD SOURCE CODE
+		/* REMOVE OLD SOURCE CODE */
 		if (parent == null) {
 			return this;
 		}

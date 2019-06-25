@@ -138,7 +138,7 @@ public class Equals implements ParserCondition, SendableEntityCreator {
 		}
 		if ((evt instanceof PropertyChangeEvent) == false) {
 			if (value instanceof Number && evt instanceof Number) {
-				// Check for Number
+				/* Check for Number */
 				if (value instanceof Byte || value instanceof Short || value instanceof Integer
 						|| value instanceof Long) {
 					if (delta == null) {
@@ -149,7 +149,7 @@ public class Equals implements ParserCondition, SendableEntityCreator {
 					Long deltaValue = Long.valueOf("" + delta);
 					return ((expValue - deltaValue) <= evtValue && (expValue + deltaValue) >= evtValue);
 				}
-				// FLOAT DOUBLE AND OTHER
+				/* FLOAT DOUBLE AND OTHER */
 				Double expValue = (Double) value;
 				Double evtValue = (Double) evt;
 				if (delta != null) {
@@ -320,8 +320,8 @@ public class Equals implements ParserCondition, SendableEntityCreator {
 		return false;
 	}
 
-	// KEY LEFTVALUE
-	// VALUE RIGHTVALUE
+	/* KEY LEFTVALUE
+	   VALUE RIGHTVALUE */
 	@Override
 	public Object getValue(LocalisationInterface value) {
 		if (value instanceof SendableEntityCreator) {
@@ -343,11 +343,11 @@ public class Equals implements ParserCondition, SendableEntityCreator {
 
 	@Override
 	public void create(CharacterBuffer buffer, TemplateParser parser, LocalisationInterface customTemplate) {
-		// CHECK IF CURRENT =
+		/* CHECK IF CURRENT = */
 
-		// MAY BE A EQUALS
+		/* MAY BE A EQUALS */
 		buffer.skip();
-		// Check Next Value May be Bigger or lesser or Equals
+		/* Check Next Value May be Bigger or lesser or Equals */
 		char currentChar = buffer.getCurrentChar();
 		if (currentChar == '>') {
 			this.withPosition(-1);
@@ -361,7 +361,6 @@ public class Equals implements ParserCondition, SendableEntityCreator {
 		} else {
 			this.withPosition(0);
 		}
-//		child = parsing(buffer, customTemplate, true, allowSpace, stopWords);
 		ObjectCondition child = parser.parsing(buffer, customTemplate, true, true);
 
 		if (currentChar == '!') {

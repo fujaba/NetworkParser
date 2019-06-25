@@ -76,7 +76,7 @@ public class SimpleSet<V> extends AbstractList<V> implements Set<V> {
 		return (SimpleSet<V>) super.subList(fromIndex, toIndex);
 	}
 
-	// Add Methods from SDMLib
+	/* Add Methods from SDMLib */
 	@Override
 	public String toString() {
 		CharacterBuffer buffer = new CharacterBuffer();
@@ -101,7 +101,7 @@ public class SimpleSet<V> extends AbstractList<V> implements Set<V> {
 		return buffer;
 	}
 
-	// ReadOnly Add all
+	/* ReadOnly Add all */
 	@Override
 	public V set(int index, V element) {
 		if (isReadOnly() || isVisible() == false) {

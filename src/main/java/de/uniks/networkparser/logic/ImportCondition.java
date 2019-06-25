@@ -28,7 +28,7 @@ public class ImportCondition implements ParserCondition {
 	public void parseImport(String className, SimpleList<String> imports) {
 		int genericType = className.indexOf("<");
 		if (genericType > 0) {
-			// Try to rekursiv add
+			/* Try to rekursiv add */
 			parseImport(className.substring(genericType + 1, className.lastIndexOf(">")), imports);
 			className = className.substring(0, genericType);
 		}
@@ -42,7 +42,6 @@ public class ImportCondition implements ParserCondition {
 	public CharSequence getValue(LocalisationInterface variables) {
 		if (variables instanceof SendableEntityCreator) {
 			SendableEntityCreator creator = (SendableEntityCreator) variables;
-			// && importExpression.update(variables)
 			SimpleList<String> imports = new SimpleList<String>();
 			if (importExpression instanceof ChainCondition) {
 				ChainCondition cc = (ChainCondition) importExpression;
@@ -81,9 +80,6 @@ public class ImportCondition implements ParserCondition {
 		while (buffer.getCurrentChar() != SPLITEND) {
 			int position = buffer.position();
 			expression = parser.parsing(buffer, customTemplate, false, true, "}");
-//			if(expression instanceof VariableCondition) {
-//				((VariableCondition)expression).withExpression(true);
-//			}
 			if (result == null) {
 				result = expression;
 			} else if (result instanceof ChainCondition) {

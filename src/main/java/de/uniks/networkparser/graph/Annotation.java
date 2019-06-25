@@ -6,27 +6,6 @@ import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.interfaces.BufferItem;
 import de.uniks.networkparser.list.SimpleList;
 
-/*
-NetworkParser
-Copyright (c) 2011 - 2015, Stefan Lindel
-All rights reserved.
-
-Licensed under the EUPL, Version 1.1 or (as soon they
-will be approved by the European Commission) subsequent
-versions of the EUPL (the "Licence");
-You may not use this work except in compliance with the Licence.
-You may obtain a copy of the Licence at:
-
-http://ec.europa.eu/idabc/eupl5
-
-Unless required by applicable law or agreed to in
-writing, software distributed under the Licence is
-distributed on an "AS IS" basis,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
-express or implied.
-See the Licence for the specific language governing
-permissions and limitations under the Licence.
-*/
 /**
  * Annotation of Methods or Attributes or Classes
  *
@@ -34,16 +13,12 @@ permissions and limitations under the Licence.
  *
  */
 public class Annotation extends GraphMember {
-	// ==========================================================================
 	public static final Annotation DEPRECATED = new Annotation("Deprecated");
 
-	// ==========================================================================
 	public static final Annotation OVERRIDE = new Annotation("Override");
 
-	// ==========================================================================
 	public static final Annotation SAFE_VARGARGS = new Annotation("SafeVarargs");
 
-	// ==========================================================================
 	public static final Annotation SUPPRESS_WARNINGS = new Annotation("SuppressWarnings");
 
 	private boolean keyValue;
@@ -93,7 +68,7 @@ public class Annotation extends GraphMember {
 		return annotation;
 	}
 
-	// Redirect
+	/* Redirect */
 	@Override
 	public Annotation with(String name) {
 		super.with(name);
@@ -151,7 +126,7 @@ public class Annotation extends GraphMember {
 				item = tokener.getChar();
 				continue;
 			}
-			// Subannotation
+			/* Subannotation */
 			if (item == '(') {
 				this.name = token.toString();
 				tokener.skip();

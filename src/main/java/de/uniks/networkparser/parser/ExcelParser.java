@@ -1,22 +1,5 @@
 package de.uniks.networkparser.parser;
 
-/*
-NetworkParser
-Copyright (c) 2011 - 2016, Stefan Lindel
-All rights reserved.
-
-Licensed under the EUPL, Version 1.1 or (as soon they
-will be approved by the European Commission) subsequent
-versions of the EUPL (the "Licence");
-You may not use this work except in compliance with the Licence.
-You may obtain a copy of the Licence at:
-
-http://ec.europa.eu/idabc/eupl5
-
-Unless required by applicable law or agreed to in writing, software distributed under the Licence is
-distributed on an "AS IS" basis, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the Licence for the specific language governing permissions and limitations under the Licence.
-*/
 import de.uniks.networkparser.DateTimeEntity;
 import de.uniks.networkparser.EntityCreator;
 import de.uniks.networkparser.EntityUtil;
@@ -76,7 +59,7 @@ public class ExcelParser {
 
 		if (sheet != null) {
 			EntityList mergeCells = sheet.getElementsBy(XMLEntity.PROPERTY_TAG, "mergeCells");
-			// <mergeCells count="1"><mergeCell ref="A2:A3"/></mergeCells>
+			/* <mergeCells count="1"><mergeCell ref="A2:A3"/></mergeCells> */
 			if (mergeCells != null) {
 				for (int i = 0; i < mergeCells.sizeChildren(); i++) {
 					BaseItem mergeCell = mergeCells.getChild(i);
@@ -94,7 +77,6 @@ public class ExcelParser {
 			}
 			EntityList sheetData = sheet.getElementsBy(XMLEntity.PROPERTY_TAG, "sheetData");
 			if (sheetData != null) {
-//				if (rows != null && rows instanceof XMLEntity) {
 				for (int i = 0; i < sheetData.sizeChildren(); i++) {
 					BaseItem child = sheetData.getChild(i);
 					if (child == null || child instanceof XMLEntity == false) {
@@ -105,7 +87,7 @@ public class ExcelParser {
 						continue;
 					}
 					ExcelRow dataRow = new ExcelRow();
-					// <c r="A1" t="s"><v>2</v></c>
+					/* <c r="A1" t="s"><v>2</v></c> */
 					for (int c = 0; c < row.size(); c++) {
 						BaseItem item = row.getChild(c);
 						if (item == null || item instanceof ExcelCell == false) {
@@ -117,7 +99,7 @@ public class ExcelParser {
 						}
 						ExcelCell excelCell = (ExcelCell) cell;
 						if (CELL_TYPE_REFERENCE.equalsIgnoreCase(excelCell.getType())) {
-							// <v>2</v>
+							/* <v>2</v> */
 							EntityList element = cell.getChild(0);
 							if (element != null) {
 								String ref = ((XMLEntity) element).getValue();
@@ -142,7 +124,6 @@ public class ExcelParser {
 					}
 				}
 			}
-//			}
 		}
 		return data;
 	}
@@ -187,7 +168,7 @@ public class ExcelParser {
 			line = data.readLine();
 			int column = 0;
 			start = 0;
-			// Parsing data
+			/* Parsing data */
 			Object item = creator.getSendableInstance(false);
 			for (int i = 0; i < line.length(); i++) {
 				if (line.charAt(i) == SEMICOLON) {
@@ -317,9 +298,10 @@ public class ExcelParser {
 		return data.toString();
 	}
 
-	// Parse WorkBook to Model
+	/** Parse WorkBook to Model
+	 * @return success
+	 */
 	public boolean parseModel() {
-
 		return false;
 	}
 }

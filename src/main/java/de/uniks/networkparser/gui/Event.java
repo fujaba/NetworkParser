@@ -34,7 +34,7 @@ public class Event extends JsonObject implements SendableEntityCreator {
 	public static final String ID = "id";
 	public static final String EVENT = "event";
 
-	// Optional Values
+	/* Optional Values */
 	public static final String ALTKEY = "altKey";
 	public static final String CTRKEY = "ctrlKey";
 	public static final String SHIFTKEY = "shiftKey";

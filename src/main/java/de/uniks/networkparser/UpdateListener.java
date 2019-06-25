@@ -107,10 +107,10 @@ public class UpdateListener implements MapListener, ObjectCondition {
 		Object newValue = evt.getNewValue();
 
 		if ((oldValue == null && newValue == null) || (oldValue != null && oldValue.equals(newValue))) {
-			// Nothing to do
+			/* Nothing to do */
 			return;
 		}
-		// put changes into msg and send to receiver
+		/* put changes into msg and send to receiver */
 		Object source;
 		if (evt instanceof SimpleEvent) {
 			source = ((SimpleEvent) evt).getModelValue();
@@ -120,7 +120,7 @@ public class UpdateListener implements MapListener, ObjectCondition {
 		String property = evt.getPropertyName();
 		SendableEntityCreator creatorClass = this.map.getCreatorClass(source);
 		if (creatorClass == null) {
-			// this class is not supported, do nor replicate
+			/* this class is not supported, do nor replicate */
 			return;
 		}
 
@@ -137,8 +137,7 @@ public class UpdateListener implements MapListener, ObjectCondition {
 		}
 
 		Entity jsonObject = change(property, source, creatorClass, oldValue, newValue);
-
-		// Add Message Value
+		/* Add Message Value */
 		ObjectCondition listener = this.map.getUpdateListener();
 		if (listener == null) {
 			return;
@@ -180,10 +179,8 @@ public class UpdateListener implements MapListener, ObjectCondition {
 			}
 		}
 		if (!done) {
-			// this property is not part of the replicated model, do not
-			// replicate
-			// if propertyname is not found and the name is REMOVE_YOU it remove it from the
-			// IdMap
+			/* this property is not part of the replicated model, do not replicate
+			   if propertyname is not found and the name is REMOVE_YOU it remove it from the IdMap */
 			if (SendableEntityCreator.REMOVE_YOU.equals(property)) {
 				this.removeObj(oldValue, true);
 			}
@@ -198,7 +195,7 @@ public class UpdateListener implements MapListener, ObjectCondition {
 			String key = property;
 			creatorClass = this.map.getCreatorClass(oldValue);
 			if (grammar.isFlatFormat()) {
-				// NEW VERSION
+				/* NEW VERSION */
 				key = IdMap.ENTITYSPLITTER + SendableEntityCreator.REMOVE + IdMap.ENTITYSPLITTER + property;
 				entity = change;
 			} else {
@@ -227,7 +224,7 @@ public class UpdateListener implements MapListener, ObjectCondition {
 			String key = property;
 			creatorClass = this.map.getCreatorClass(newValue);
 			if (grammar.isFlatFormat()) {
-				// NEW VERSION
+				/* NEW VERSION */
 				key = IdMap.ENTITYSPLITTER + SendableEntityCreator.UPDATE + IdMap.ENTITYSPLITTER + property;
 				entity = change;
 			} else {
@@ -252,7 +249,7 @@ public class UpdateListener implements MapListener, ObjectCondition {
 					entity.put(key, item);
 				}
 			} else {
-				// plain attribute
+				/* plain attribute */
 				entity.put(key, newValue);
 			}
 		}
@@ -275,7 +272,7 @@ public class UpdateListener implements MapListener, ObjectCondition {
 		}
 
 		String id = updateMessage.getString(IdMap.ID);
-		// Check for JSONPatch
+		/* Check for JSONPatch */
 		String op = updateMessage.getString("OP");
 		String path = updateMessage.getString("PATH");
 		if (op.length() > 0 && path.length() > 0) {
@@ -284,12 +281,12 @@ public class UpdateListener implements MapListener, ObjectCondition {
 		Entity remove = (Entity) updateMessage.getValue(SendableEntityCreator.REMOVE);
 		Entity update = (Entity) updateMessage.getValue(SendableEntityCreator.UPDATE);
 
-//		Object prio = updateMessage.getValue(Filter.PRIO);
+/*		Object prio = updateMessage.getValue(Filter.PRIO); */
 		Object masterObj = this.map.getObject(id);
 		if (masterObj == null) {
 			String masterObjClassName = (String) updateMessage.getValue(IdMap.CLASS);
 			if (masterObjClassName != null) {
-				// cool, lets make it
+				/* cool, lets make it */
 				SendableEntityCreator creator = this.map.getCreator(masterObjClassName, true, true, null);
 				masterObj = creator.getSendableInstance(false);
 			}
@@ -300,27 +297,27 @@ public class UpdateListener implements MapListener, ObjectCondition {
 		}
 		SendableEntityCreator creator = this.map.getCreatorClass(masterObj);
 		if (remove == null && update != null) {
-			// create Message
+			/* create Message */
 			Object refObject = creator.getSendableInstance(true);
 			for (SimpleIteratorSet<String, Object> i = new SimpleIteratorSet<String, Object>(update); i.hasNext();) {
 				Entry<String, Object> item = i.next();
 				String key = item.getKey();
 				Object value = creator.getValue(masterObj, key);
 				if (value == null) {
-					// Old Value is Standard
+					/* Old Value is Standard */
 					return setValue(creator, masterObj, key, item.getValue(), SendableEntityCreator.NEW);
 				} else if (value instanceof Collection<?>) {
-					// just add the element
-					// It is a to many Link
+					/* just add the element
+					   It is a to many Link */
 					return setValue(creator, masterObj, key, item.getValue(), SendableEntityCreator.NEW);
 				} else if (value.equals(creator.getValue(refObject, key))) {
-					// Old Value is Standard
+					/* Old Value is Standard */
 					return setValue(creator, masterObj, key, update.getValue(key), SendableEntityCreator.NEW);
 				}
 			}
 			return true;
 		} else if (update == null && remove != null) {
-			// delete Message
+			/* delete Message */
 			Object refObject = creator.getSendableInstance(true);
 			for (int i = 0; i < remove.size(); i++) {
 				String key = remove.getKeyByIndex(i);
@@ -345,10 +342,10 @@ public class UpdateListener implements MapListener, ObjectCondition {
 			}
 			return masterObj;
 		} else if (update != null) {
-			// update Message
+			/* update Message */
 			for (int i = 0; i < update.size(); i++) {
 				String key = update.getKeyByIndex(i);
-				// CHECK WITH REMOVE key
+				/* CHECK WITH REMOVE key */
 				Object oldValue = creator.getValue(masterObj, key);
 
 				if (checkValue(oldValue, key, remove)) {
@@ -375,18 +372,49 @@ public class UpdateListener implements MapListener, ObjectCondition {
 				return getElement(path.substring(pos + 1), (Entity) child, element);
 			}
 		} else {
-			// Last One
+			/* Last One */
 			return parent;
 		}
 		return null;
 	}
-
+	/**
+	 * 	Executing Path
+	 * Add
+	 * 	{ "op": "add", "path": "/biscuits/1", "value": { "name": "Ginger Nut" } }
+	 *	Adds a value to an object or inserts it into an array. In the case of an array, the value is inserted before the given index. The - character can be used instead of an index to insert at the end of an array.
+	 *
+	 *	Remove
+	 *	{ "op": "remove", "path": "/biscuits" }
+	 *	Removes a value from an object or array.
+	 *	{ "op": "remove", "path": "/biscuits/0" }
+	 *	Removes the first element of the array at biscuits (or just removes the "0" key if biscuits is an object)
+	 *
+	 *	Replace
+	 *	{ "op": "replace", "path": "/biscuits/0/name", "value": "Chocolate Digestive" }
+	 *	Replaces a value. Equivalent to a "remove" followed by an "add".
+	 *
+	 *	Copy
+	 *	{ "op": "copy", "from": "/biscuits/0", "path": "/best_biscuit" }
+	 *	Copies a value from one location to another within the JSON document. Both from and path are JSON Pointers.
+	 *
+	 *	Move
+	 *	{ "op": "move", "from": "/biscuits", "path": "/cookies" }
+	 *	Moves a value from one location to the other. Both from and path are JSON Pointers.
+	 *
+	 *	Test
+	 *	{ "op": "test", "path": "/best_biscuit/name", "value": "Choco Leibniz" }
+	 *	Tests that the specified value is set in the document. If the test fails, then the patch as a whole should not apply.
+	 * @param op The Operationkey
+	 * @param path The Path
+	 * @param updateMessage UpdateMessage
+	 * @return ResultObject
+	 */
 	public Object executePatch(String op, String path, Entity updateMessage) {
 		if (root == null || path == null) {
 			return null;
 		}
 		if (root instanceof Entity) {
-			// Check for Element
+			/* Check for Element */
 			Entity element = getElement(path, (Entity) root, (Entity) root);
 			if (element != null) {
 				String key = path;
@@ -398,45 +426,18 @@ public class UpdateListener implements MapListener, ObjectCondition {
 					element.put(key, updateMessage.getValue("value"));
 					return element;
 				}
-//				public static final String  = "add";
-//				public static final String TYPE_OP_REMOVE = "remove";
-//				public static final String TYPE_OP_REPLACE = "replace";
-//				public static final String TYPE_OP_COPY = "copy";
-//				public static final String TYPE_OP_MOVE = "move";
-//				public static final String TYPE_OP_TEST = "test";
-
 			}
-
 		}
-//		Add
-//		{ "op": "add", "path": "/biscuits/1", "value": { "name": "Ginger Nut" } }
-//		Adds a value to an object or inserts it into an array. In the case of an array, the value is inserted before the given index. The - character can be used instead of an index to insert at the end of an array.
-//
-//		Remove
-//		{ "op": "remove", "path": "/biscuits" }
-//		Removes a value from an object or array.
-//
-//		{ "op": "remove", "path": "/biscuits/0" }
-//		Removes the first element of the array at biscuits (or just removes the "0" key if biscuits is an object)
-//
-//		Replace
-//		{ "op": "replace", "path": "/biscuits/0/name", "value": "Chocolate Digestive" }
-//		Replaces a value. Equivalent to a "remove" followed by an "add".
-//
-//		Copy
-//		{ "op": "copy", "from": "/biscuits/0", "path": "/best_biscuit" }
-//		Copies a value from one location to another within the JSON document. Both from and path are JSON Pointers.
-//
-//		Move
-//		{ "op": "move", "from": "/biscuits", "path": "/cookies" }
-//		Moves a value from one location to the other. Both from and path are JSON Pointers.
-//
-//		Test
-//		{ "op": "test", "path": "/best_biscuit/name", "value": "Choco Leibniz" }
-//		Tests that the specified value is set in the document. If the test fails, then the patch as a whole should not apply.
 		return null;
 	}
-
+/*
+"add",
+TYPE_OP_REMOVE = "remove"
+TYPE_OP_REPLACE = "replace";
+TYPE_OP_COPY = "copy";
+TYPE_OP_MOVE = "move";
+TYPE_OP_TEST = "test";
+*/
 	/**
 	 * Check value.
 	 *
@@ -452,7 +453,7 @@ public class UpdateListener implements MapListener, ObjectCondition {
 		Object oldValue = oldJsonObject.getValue(key);
 		if (value != null) {
 			if (oldValue instanceof Entity) {
-				// GLAUB ICH MAL
+				/* JUST THE TRUTH */
 				String oldId = (String) ((Entity) oldValue).getValue(IdMap.ID);
 				return oldId.equals(this.map.getId(value, true));
 			}
@@ -529,10 +530,10 @@ public class UpdateListener implements MapListener, ObjectCondition {
 		Object newValue = evt.getNewValue();
 
 		if ((oldValue == null && newValue == null) || (oldValue != null && oldValue.equals(newValue))) {
-			// Nothing to do
+			/* Nothing to do */
 			return false;
 		}
-		// put changes into msg and send to receiver
+		/* put changes into msg and send to receiver */
 		Object source;
 		if (evt instanceof SimpleEvent) {
 			source = ((SimpleEvent) evt).getModelValue();
@@ -542,7 +543,7 @@ public class UpdateListener implements MapListener, ObjectCondition {
 		String property = evt.getPropertyName();
 		SendableEntityCreator creatorClass = this.map.getCreatorClass(source);
 		if (creatorClass == null) {
-			// this class is not supported, do nor replicate
+			/* this class is not supported, do nor replicate */
 			return false;
 		}
 		condition.update(change(property, source, creatorClass, oldValue, newValue));

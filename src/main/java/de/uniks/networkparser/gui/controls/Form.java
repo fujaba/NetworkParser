@@ -117,15 +117,15 @@ public class Form extends Control {
 	}
 
 	public Form withDataBinding(IdMap map, Object entity, boolean addCommandBtn) {
-//		this.map = map;
-//		this.item = entity;
-//		textClazz = (TextItems) map.getCreator(TextItems.class.getName(), true);
+/* TODO		this.map = map;
+		this.item = entity;
+		textClazz = (TextItems) map.getCreator(TextItems.class.getName(), true);
 
-//		SendableEntityCreator creator = map.getCreatorClass(item);
-//		if(creator != null){
-//			this.setCenter(items);
-//			withDataBinding(addCommandBtn, creator.getProperties());
-//		}
+		SendableEntityCreator creator = map.getCreatorClass(item);
+		if(creator != null){
+			this.setCenter(items);
+			withDataBinding(addCommandBtn, creator.getProperties());
+		}*/
 		return this;
 	}
 

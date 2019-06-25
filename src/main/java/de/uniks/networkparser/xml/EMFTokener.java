@@ -93,7 +93,7 @@ public class EMFTokener extends Tokener {
 			return;
 		}
 		buffer.skipTo('>', false);
-		// Skip >
+		/* Skip > */
 		buffer.nextClean(false);
 	}
 
@@ -140,7 +140,7 @@ public class EMFTokener extends Tokener {
 
 		path.add(entity, "/" + typetag);
 
-		// ROOT
+		/* ROOT */
 		encodeChildren(entity, result, map);
 
 		return result;
@@ -209,13 +209,13 @@ public class EMFTokener extends Tokener {
 				parent.put(propertyName, propertyValue);
 				continue;
 			}
-			// Komplex
+			/* Komplex */
 			if (propertyValue instanceof Collection<?>) {
 				int count = 0;
 				CharacterBuffer referenceChild = new CharacterBuffer();
 				for (Object childValue : (Collection<?>) propertyValue) {
 					if (path.contains(childValue)) {
-						// Reference
+						/* Reference */
 						if (referenceChild.size() > 0) {
 							referenceChild.add(' ');
 						}
@@ -268,7 +268,7 @@ public class EMFTokener extends Tokener {
 			}
 			return decoding(xmlEntity, null);
 		}
-		// build root entity
+		/* build root entity */
 		String tag = xmlEntity.getTag();
 		if (tag == null) {
 			return null;
@@ -294,7 +294,7 @@ public class EMFTokener extends Tokener {
 			if (rootFactory != null) {
 				rootObject = rootFactory.getSendableInstance(false);
 			} else {
-				// just use an ArrayList
+				/* just use an ArrayList */
 				rootObject = new ArrayList<Object>();
 			}
 		} else {
@@ -341,7 +341,7 @@ public class EMFTokener extends Tokener {
 			String className = splitTag[1];
 			Clazz clazz = items.get(className);
 			if (clazz == null) {
-				// Create New One
+				/* Create New One */
 				clazz = model.createClazz(className);
 				items.add(className, clazz);
 			}
@@ -352,7 +352,7 @@ public class EMFTokener extends Tokener {
 					value = "";
 				}
 				if (value.startsWith("/")) {
-					// Association
+					/* Association */
 					AssociationSet associations = clazz.getAssociations();
 					Association found = null;
 					for (Association assoc : associations) {
@@ -371,13 +371,13 @@ public class EMFTokener extends Tokener {
 						}
 					}
 					if (value.indexOf("/", 1) > 0) {
-						// To Many
+						/* To Many */
 						found.with(Association.MANY);
 					}
 				}
 			}
 		}
-		// TODO CREATING METHOD BODY
+		/* TODO CREATING METHOD BODY */
 		return model;
 	}
 
@@ -397,7 +397,7 @@ public class EMFTokener extends Tokener {
 				result.add(myRef);
 			}
 		} else if (value.startsWith("/")) {
-			// maybe multiple separated by blanks
+			/* maybe multiple separated by blanks */
 			String tagChar = xmlEntity.getTag().substring(0, 1);
 			for (String ref : value.split(" ")) {
 				ref = "_" + tagChar + ref.substring(1);
@@ -406,7 +406,7 @@ public class EMFTokener extends Tokener {
 				}
 			}
 		} else if (value.indexOf('_') > 0) {
-			// maybe multiple separated by blanks
+			/* maybe multiple separated by blanks */
 			for (String ref : value.split(" ")) {
 				if (getObject(ref) != null) {
 					result.add(ref);
@@ -449,8 +449,7 @@ public class EMFTokener extends Tokener {
 				rootId = "$";
 			}
 			if (xmlEntity.has("href")) {
-				// might point to another xml file already loaded
-				// might point to another xml file already loaded
+				/* might point to another xml file already loaded */
 				String refString = xmlEntity.getString("href");
 				String[] split = refString.split("#//");
 
@@ -461,7 +460,7 @@ public class EMFTokener extends Tokener {
 					Object object = getObject(objectId);
 
 					if (object != null) {
-						// yes we know it
+						/* yes we know it */
 						if (entityObject instanceof Collection<?>) {
 							rootCollection = (Collection<Object>) entityObject;
 						}
@@ -484,7 +483,7 @@ public class EMFTokener extends Tokener {
 				}
 			}
 			if (entityFactory instanceof SendableEntityCreatorIndexId) {
-				// Get Creator
+				/* Get Creator */
 				String temp = xmlEntity.getString(IdMap.ID);
 				if (temp != null) {
 					rootId = temp;
@@ -501,7 +500,7 @@ public class EMFTokener extends Tokener {
 			xmlEntity.put(XMI_ID, rootId);
 		}
 
-		// set plain attributes
+		/* set plain attributes */
 		if (entityFactory != null) {
 			for (int i = 0; i < xmlEntity.size(); i++) {
 				String key = xmlEntity.getKeyByIndex(i);
@@ -522,7 +521,7 @@ public class EMFTokener extends Tokener {
 					if (object != null) {
 						entityFactory.setValue(entityObject, key, object, "");
 					} else {
-						// Link not know
+						/* Link not know */
 						SimpleKeyValueList<String, String> list = notKey.get(xmlEntity);
 						if (list == null) {
 							list = new SimpleKeyValueList<String, String>();
@@ -541,10 +540,10 @@ public class EMFTokener extends Tokener {
 			String typeName = null;
 			XMLEntity kid = (XMLEntity) xmlEntity.getChild(i);
 			tag = kid.getTag();
-			// identify kid type
+			/* identify kid type */
 			if (entityObject instanceof Collection) {
 				rootCollection = (Collection<Object>) entityObject;
-				// take the type name from the tag
+				/* take the type name from the tag */
 				pos = tag.indexOf(":");
 				if (pos > 0) {
 					typeName = tag.substring(pos + 1);
@@ -608,7 +607,7 @@ public class EMFTokener extends Tokener {
 		}
 		SimpleList<Entity> superClazzes = new SimpleList<Entity>();
 
-		// add classes
+		/* add classes */
 		SimpleKeyValueList<Entity, EntityList> parentList = new SimpleKeyValueList<Entity, EntityList>();
 		for (int i = 0; i < ecore.sizeChildren(); i++) {
 			BaseItem eClassifier = ecore.getChild(i);
@@ -668,7 +667,7 @@ public class EMFTokener extends Tokener {
 				}
 			}
 		}
-		// inheritance
+		/* inheritance */
 		for (Entity eClass : superClazzes) {
 			String id = EntityUtil.getId(eClass.getString(TYPE_ESUPERTYPE));
 			Clazz kidClazz = model.getNode(eClass.getString(EMFTokener.NAME));
@@ -677,7 +676,7 @@ public class EMFTokener extends Tokener {
 				kidClazz.withSuperClazz(superClazz);
 			}
 		}
-		// assocs
+		/* assocs */
 		SimpleKeyValueList<String, Association> items = new SimpleKeyValueList<String, Association>();
 		for (int i = 0; i < parentList.size(); i++) {
 			Entity eref = parentList.get(i);
@@ -702,12 +701,12 @@ public class EMFTokener extends Tokener {
 			XMLEntity parent = (XMLEntity) parentList.getValueByIndex(i);
 			String srcClassName = parent.getString(EMFTokener.NAME);
 			if (!eref.has(EOpposite)) {
-//				srcRoleName = tgtRoleName+"_back";
+/*				srcRoleName = tgtRoleName+"_back"; */
 			} else {
 				srcRoleName = EntityUtil.getId(eref.getString(EOpposite));
 			}
 			Association srcAssoc = getOrCreate(items, model, srcClassName, srcRoleName);
-			// Create as Unidirection
+			/* Create as Unidirection */
 			tgtAssoc.with(srcAssoc);
 			srcAssoc.with(AssociationTypes.EDGE);
 
@@ -738,7 +737,7 @@ public class EMFTokener extends Tokener {
 		if (edge == null) {
 			Clazz clazz = model.getNode(className);
 			if (clazz == null) {
-				// Create it
+				/* Create it */
 				clazz = model.createClazz(className);
 			}
 			if (clazz != null) {
@@ -775,7 +774,7 @@ public class EMFTokener extends Tokener {
 
 		this.encodeAnnotations(root.createChild(null));
 
-		// Add all Clazzes
+		/* Add all Clazzes */
 		ClazzSet clazzes = list.getClazzes();
 		for (Clazz clazz : clazzes) {
 			encodePackagedElementClass(root.createChild(null), clazz);
@@ -836,12 +835,12 @@ public class EMFTokener extends Tokener {
 				superClassChild.withKeyValue("general", clazz.getId());
 			}
 		}
-		// attributes
+		/* attributes */
 		AttributeSet attributes = clazz.getAttributes();
 		for (Attribute attribute : attributes) {
 			encodeOwnedValue(root.createChild(null), attribute);
 		}
-		// methods
+		/* methods */
 		MethodSet methods = clazz.getMethods();
 		for (Method method : methods) {
 			encodeOwnedOperation(root.createChild(null), method);

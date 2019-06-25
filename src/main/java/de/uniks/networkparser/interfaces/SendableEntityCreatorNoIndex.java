@@ -30,5 +30,5 @@ THE SOFTWARE.
  * @author Stefan Lindel
  */
 public interface SendableEntityCreatorNoIndex extends SendableEntityCreator {
-	// Nothing
+	/* Nothing */
 }

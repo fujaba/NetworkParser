@@ -7,28 +7,6 @@ import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.list.SimpleSet;
 
-/*
-NetworkParser
-Copyright (c) 2011 - 2015, Stefan Lindel
-All rights reserved.
-
-Licensed under the EUPL, Version 1.1 or (as soon they
-will be approved by the European Commission) subsequent
-versions of the EUPL (the "Licence");
-You may not use this work except in compliance with the Licence.
-You may obtain a copy of the Licence at:
-
-http://ec.europa.eu/idabc/eupl5
-
-Unless required by applicable law or agreed to in
-writing, software distributed under the Licence is
-distributed on an "AS IS" basis,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
-express or implied.
-See the Licence for the specific language governing
-permissions and limitations under the Licence.
-*/
-
 /**
  * Condition for Listener for changes in Element (Datamodel) in IdMap Or
  * AtomarCondition with PropertyChange
@@ -37,22 +15,24 @@ permissions and limitations under the Licence.
  */
 public class UpdateCondition implements ObjectCondition {
 	private Object owner;
-	private ObjectCondition condition; // FOR ATOM OR TRANSACTION
+	private ObjectCondition condition; /* FOR ATOM OR TRANSACTION */
 
-	// FOR ACCUMULATE
+	/** FOR ACCUMULATE */
 	private Tokener tokener;
 	private Entity change;
 	private IdMap map;
-	// Target
+	/** Target */
 	private Object defaultItem;
 
-	// Target or StartClass
+	/** Target or StartClass */
 	private SendableEntityCreator creator;
-	private String property; // May be class<?> or Object
+	/** May be class<?> or Object */
+	private String property;
 	private ObjectCondition startCondition;
 
 	private ObjectCondition endCondition;
-	private String endProperty; // May be class<?> or Object
+	/** May be class<?> or Object */
+	private String endProperty;
 	private Object endClass;
 	private SimpleSet<SimpleEvent> changes;
 	private SendableEntityCreator endCreator;
@@ -182,7 +162,7 @@ public class UpdateCondition implements ObjectCondition {
 			}
 			return false;
 		}
-		// MUST BE A SIMPLEEVENT
+		/* MUST BE A SIMPLEEVENT */
 		if (evt == null || evt instanceof SimpleEvent == false) {
 			return false;
 		}
@@ -191,7 +171,7 @@ public class UpdateCondition implements ObjectCondition {
 		if (isChangeListener()) {
 			if (creator != null && property != null) {
 				if (event.getNewValue() != null) {
-					// CREATE ONE
+					/* CREATE ONE */
 					creator.setValue(event.getNewValue(), property, owner, SendableEntityCreator.NEW);
 				} else {
 					creator.setValue(event.getOldValue(), property, owner, SendableEntityCreator.REMOVE);
@@ -213,9 +193,8 @@ public class UpdateCondition implements ObjectCondition {
 			if (source == null) {
 				return false;
 			}
-			//
 			if (changes == null && property != null && property.equalsIgnoreCase(event.getPropertyName())) {
-				// Search for Start Transaction
+				/* Search for Start Transaction */
 				if (owner instanceof Class<?>) {
 					if (source.getClass() == owner) {
 						this.changes = new SimpleSet<SimpleEvent>();
@@ -237,12 +216,12 @@ public class UpdateCondition implements ObjectCondition {
 
 			if (this.changes != null) {
 				this.changes.add(event);
-				// Check for End
+				/* Check for End */
 				if (endCondition != null && endCondition.update(evt) == false) {
 					return true;
 				}
 				if (endProperty != null && endProperty.equalsIgnoreCase(event.getPropertyName())) {
-					// Search for Start Transaction
+					/* Search for Start Transaction */
 					if (endClass instanceof Class<?>) {
 						if (source.getClass() == endClass) {
 							if (this.condition != null) {
@@ -296,7 +275,7 @@ public class UpdateCondition implements ObjectCondition {
 			Entity entity = evt.getEntity();
 			if (mergeChange == null) {
 				mergeChange = (Entity) entity.getNewList(true);
-				// Copy first One
+				/* Copy first One */
 				for (int i = 0; i < entity.size(); i++) {
 					String key = entity.getKeyByIndex(i);
 					Object value = entity.getValueByIndex(i);
@@ -347,7 +326,7 @@ public class UpdateCondition implements ObjectCondition {
 			}
 			Entity child;
 
-			// OldValue
+			/* OldValue */
 			if (!change.has(SendableEntityCreator.REMOVE)) {
 				child = (Entity) change.getValue(SendableEntityCreator.REMOVE);
 				change.put(SendableEntityCreator.REMOVE, child);
@@ -366,7 +345,7 @@ public class UpdateCondition implements ObjectCondition {
 				child.put(property, oldValue);
 			}
 
-			// NewValue
+			/* NewValue */
 			if (!change.has(SendableEntityCreator.UPDATE)) {
 				child = (Entity) change.getValue(SendableEntityCreator.UPDATE);
 				change.put(SendableEntityCreator.UPDATE, child);
@@ -461,7 +440,7 @@ public class UpdateCondition implements ObjectCondition {
 			}
 			Entity child;
 
-			// OldValue
+			/* OldValue */
 			if (change.has(SendableEntityCreator.REMOVE)) {
 				child = (Entity) change.getValue(SendableEntityCreator.REMOVE);
 				change.put(SendableEntityCreator.REMOVE, child);
@@ -481,7 +460,7 @@ public class UpdateCondition implements ObjectCondition {
 				child.put(property, oldValue);
 			}
 
-			// NewValue
+			/* NewValue */
 			if (change.has(SendableEntityCreator.UPDATE)) {
 				child = (Entity) change.getValue(SendableEntityCreator.UPDATE);
 				change.put(SendableEntityCreator.UPDATE, child);

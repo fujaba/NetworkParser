@@ -33,7 +33,6 @@ public class Input<T> extends Control {
 	public static final String VALUE = "value";
 
 	/* variables */
-//	protected SimpleGUI $view;
 	protected T value;
 	protected String type;
 

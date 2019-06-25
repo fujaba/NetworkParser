@@ -54,18 +54,19 @@ public class MethodChangeUpdateCondition extends MatchCondition {
 
 			matches.addDiff(update);
 		}
-//		if(
-//				(oldMethod.getBody() != null && oldMethod.getBody().equals(newMethod.getBody()) == false) ||
-//				(newMethod.getBody() != null && newMethod.getBody().equals(oldMethod.getBody()) == false) 
-//				) {
-//			// MethodBody changed
-//			Diff update = new Diff(this)
-//					.withAction(SendableEntityCreator.UPDATE)
-//					.withEntity(newMethod)
-//					.withOldValue(oldMethod.getBody())
-//					.withNewValue(newMethod.getBody());
-//			matches.addDiff(update);
-//		}
+/*		if(
+				(oldMethod.getBody() != null && oldMethod.getBody().equals(newMethod.getBody()) == false) ||
+				(newMethod.getBody() != null && newMethod.getBody().equals(oldMethod.getBody()) == false) 
+				) {
+			// MethodBody changed
+			Diff update = new Diff(this)
+					.withAction(SendableEntityCreator.UPDATE)
+					.withEntity(newMethod)
+					.withOldValue(oldMethod.getBody())
+					.withNewValue(newMethod.getBody());
+			matches.addDiff(update);
+		}
+*/
 
 		if (withMeta && (match.isMetaMatch() || match.isMetaSourceMatch())) {
 			for (Parameter newParameter : newMethod.getParameters()) {
@@ -112,18 +113,19 @@ public class MethodChangeUpdateCondition extends MatchCondition {
 				break;
 			}
 		}
-//		if(
-//				(oldMethod.getBody() != null && oldMethod.getBody().equals(newMethod.getBody()) == false) ||
-//				(newMethod.getBody() != null && newMethod.getBody().equals(oldMethod.getBody()) == false) 
-//				) {
-//			// MethodBody changed
-//			Diff update = new Diff(this)
-//					.withAction(SendableEntityCreator.UPDATE)
-//					.withEntity(oldMethod)
-//					.withOldValue(oldMethod.getBody())
-//					.withNewValue(newMethod.getBody());
-//			matches.addDiff(update);
-//		}
+/*		if(
+				(oldMethod.getBody() != null && oldMethod.getBody().equals(newMethod.getBody()) == false) ||
+				(newMethod.getBody() != null && newMethod.getBody().equals(oldMethod.getBody()) == false) 
+				) {
+			// MethodBody changed
+			Diff update = new Diff(this)
+					.withAction(SendableEntityCreator.UPDATE)
+					.withEntity(oldMethod)
+					.withOldValue(oldMethod.getBody())
+					.withNewValue(newMethod.getBody());
+			matches.addDiff(update);
+		}
+*/
 		for (Parameter oldParameter : oldMethod.getParameters()) {
 			if (oldParameters.contains(oldParameter)) {
 				continue;

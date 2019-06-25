@@ -112,7 +112,7 @@ public abstract class ListCondition implements ParserCondition, SendableEntityCr
 			return false;
 		}
 		if (values.length == 1 && this.list == null) {
-			// Dont do Chain in Chain
+			/* Dont do Chain in Chain */
 			if (values[0] instanceof ChainCondition == false) {
 				if (values[0] instanceof PropertyChangeListener || values[0] instanceof ObjectCondition) {
 					this.list = values[0];

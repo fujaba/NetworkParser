@@ -201,10 +201,10 @@ public class Clazz extends GraphEntity {
 	 */
 	public Clazz withBidirectional(Clazz tgtClass, String tgtRoleName, int tgtCardinality, String srcRoleName,
 			int srcCardinality) {
-		// Target
+		/* Target */
 		Association assocTarget = new Association(tgtClass).with(tgtCardinality).with(tgtRoleName);
 
-		// Source
+		/* Source */
 		Association assocSource = new Association(this).with(srcCardinality).with(srcRoleName);
 		assocSource.with(assocTarget);
 
@@ -233,13 +233,13 @@ public class Clazz extends GraphEntity {
 	 */
 	public Association createBidirectional(Clazz tgtClass, String tgtRoleName, int tgtCardinality, String srcRoleName,
 			int srcCardinality) {
-		// Target
+		/* Target */
 		if (tgtCardinality < 1 || srcCardinality < 1 || tgtClass == null) {
 			return null;
 		}
 		Association assocTarget = new Association(tgtClass).with(tgtCardinality).with(tgtRoleName);
 
-		// Source
+		/* Source */
 		Association assocSource = new Association(this).with(srcCardinality).with(srcRoleName);
 		assocSource.with(assocTarget);
 
@@ -276,7 +276,7 @@ public class Clazz extends GraphEntity {
 		}
 		String srcRoleName = null, tgtRoleName = tgtClass.getName();
 
-		// Now Check dupplicate Naming
+		/* Now Check dupplicate Naming */
 		for (Association assoc : getAssociations()) {
 			if (tgtRoleName.equals(assoc.getName())) {
 				return this;
@@ -290,7 +290,7 @@ public class Clazz extends GraphEntity {
 				}
 			}
 		}
-		// Set MANY Name
+		/* Set MANY Name */
 		if (tgtCardinality > 1) {
 			tgtRoleName = GraphUtil.getPlural(tgtRoleName);
 		}
@@ -298,9 +298,9 @@ public class Clazz extends GraphEntity {
 			srcRoleName = GraphUtil.getPlural(srcRoleName);
 		}
 
-		// So SourceRoleName and TargetRoleName is Set now create Asssoc
+		/* So SourceRoleName and TargetRoleName is Set now create Asssoc */
 		Association assocTarget = new Association(tgtClass).with(tgtCardinality).with(tgtRoleName);
-		// Source
+		/* Source */
 		Association assocSource = new Association(this).with(assocTarget);
 
 		if (srcCardinality > 0) {
@@ -331,11 +331,11 @@ public class Clazz extends GraphEntity {
 	 * @return The Clazz Instance
 	 */
 	public Clazz withUniDirectional(Clazz tgtClass, String tgtRoleName, int tgtCardinality) {
-		// Target
+		/* Target */
 		Association assocTarget = new Association(tgtClass).with(tgtCardinality).with(AssociationTypes.UNDIRECTIONAL)
 				.with(tgtRoleName);
 
-		// Source
+		/* Source */
 		Association assocSource = new Association(this).with(AssociationTypes.EDGE).with(assocTarget);
 
 		tgtClass.with(assocTarget);
@@ -360,14 +360,14 @@ public class Clazz extends GraphEntity {
 	 * @return The Association Instance
 	 */
 	public Association createUniDirectional(Clazz tgtClass, String tgtRoleName, int tgtCardinality) {
-		// Target
+		/* Target */
 		if (tgtCardinality < 1) {
 			return null;
 		}
 		Association assocTarget = new Association(tgtClass).with(tgtCardinality).with(AssociationTypes.UNDIRECTIONAL)
 				.with(tgtRoleName);
 
-		// Source
+		/* Source */
 		Association assocSource = new Association(this).with(AssociationTypes.EDGE).with(assocTarget);
 		if (tgtClass != null) {
 			tgtClass.with(assocTarget);
@@ -437,21 +437,21 @@ public class Clazz extends GraphEntity {
 		}
 		if (AssociationTypes.IMPLEMENTS.equals(assoc.getType()) == false
 				&& AssociationTypes.GENERALISATION.equals(assoc.getType()) == false) {
-			// Wrong way try another round
+			/* Wrong way try another round */
 			assoc = assoc.getOther();
 		}
 		Association otherAssoc = assoc.getOther();
 		if (AssociationTypes.IMPLEMENTS.equals(assoc.getType()) == false
 				&& AssociationTypes.GENERALISATION.equals(assoc.getType()) == false) {
-			// Check Cardinality
+			/* Check Cardinality */
 			if (assoc.getClazz() == otherAssoc.getClazz() && assoc.getName() != null
 					&& assoc.getName().equals(otherAssoc.getName())) {
 				if (assoc.getCardinality() != otherAssoc.getCardinality()) {
-					// Self assoc with same RoleName but other Cardinality
+					/* Self assoc with same RoleName but other Cardinality */
 					return false;
 				}
 			}
-			// Check Name
+			/* Check Name */
 			if (renameName) {
 				String name2 = assoc.getName();
 				if (name2 != null && name2.length() > 0) {
@@ -465,7 +465,7 @@ public class Clazz extends GraphEntity {
 					}
 				}
 			}
-			// Check for duplicate
+			/* Check for duplicate */
 			AssociationSet associations = otherAssoc.getClazz().getAssociations();
 			for (Association checkAssoc : associations) {
 				if (checkAssoc == otherAssoc || checkAssoc.getType() == AssociationTypes.GENERALISATION
@@ -474,7 +474,7 @@ public class Clazz extends GraphEntity {
 				}
 				if (checkAssoc.getName() != null && checkAssoc.getName().equalsIgnoreCase(otherAssoc.getName())
 						&& checkAssoc.getOther().getName() == null) {
-					// Create UnDirectional Association
+					/* Create UnDirectional Association */
 					checkAssoc.getOther().with(AssociationTypes.EDGE);
 					checkAssoc.with(AssociationTypes.UNDIRECTIONAL);
 					assoc.with(AssociationTypes.EDGE);
@@ -482,10 +482,10 @@ public class Clazz extends GraphEntity {
 					break;
 				}
 			}
-			// Ignore
+			/* Ignore */
 			return true;
 		}
-		// REPAIR CLAZZES
+		/* REPAIR CLAZZES */
 		GraphSimpleSet items = otherAssoc.getParents();
 		ClazzSet interfaces = new ClazzSet();
 		ClazzSet generalizations = new ClazzSet();
@@ -500,12 +500,12 @@ public class Clazz extends GraphEntity {
 			}
 		}
 
-		// CHECK FOR WRONG TYPE
+		/* CHECK FOR WRONG TYPE */
 		if (AssociationTypes.GENERALISATION.equals(assoc.getType())) {
 			if (generalizations.size() < 1) {
 				assoc.with(AssociationTypes.IMPLEMENTS);
 			} else if (interfaces.size() > 0) {
-				// BOTH
+				/* BOTH */
 				for (Clazz item : interfaces) {
 					item.remove(otherAssoc);
 				}
@@ -516,7 +516,7 @@ public class Clazz extends GraphEntity {
 		if (interfaces.size() < 1) {
 			assoc.with(AssociationTypes.GENERALISATION);
 		} else if (generalizations.size() > 0) {
-			// BOTH
+			/* BOTH */
 			for (Clazz item : interfaces) {
 				item.remove(otherAssoc);
 			}
@@ -530,14 +530,13 @@ public class Clazz extends GraphEntity {
 			return;
 		}
 		if (this.children instanceof Association) {
-			// Is is easy only one Assoc
+			/* Is is easy only one Assoc */
 			repairAssociation((Association) this.children, true);
 		} else if (children instanceof GraphSimpleSet) {
 			GraphSimpleSet list = (GraphSimpleSet) this.children;
 			int size = list.size();
 			AssociationSet generalizations = new AssociationSet();
 			for (int i = 0; i < size; i++) {
-//			for (GraphMember item : list) {
 				GraphMember item = list.get(i);
 				if (item instanceof Association) {
 					Association assoc = (Association) item;
@@ -549,7 +548,7 @@ public class Clazz extends GraphEntity {
 			}
 
 			if (generalizations.size() > 1) {
-				// Repair only valid last generalization
+				/* Repair only valid last generalization */
 				for (int i = 0; i < generalizations.size() - 1; i++) {
 					this.remove(generalizations.get(i));
 				}
@@ -567,7 +566,7 @@ public class Clazz extends GraphEntity {
 					type = AssociationTypes.IMPLEMENTS;
 				}
 			} else {
-				// COMPLEX
+				/* COMPLEX */
 				ClazzSet interfaces = new ClazzSet();
 				ClazzSet generalizations = new ClazzSet();
 				for (Clazz item : values) {
@@ -645,7 +644,6 @@ public class Clazz extends GraphEntity {
 			}
 			if (otherTyp == null || assoc.getOtherType() == otherTyp) {
 				GraphSimpleSet parents = assoc.getOther().getParents();
-//				Clazz clazz = assoc.getOtherClazz();
 				kidClazzes.withList(parents);
 			}
 		}
@@ -743,7 +741,7 @@ public class Clazz extends GraphEntity {
 		if (isInterface || isAbstract) {
 			return collection;
 		}
-		// ALL SUPERMETHODS
+		/* ALL SUPERMETHODS */
 		AttributeSet newAttribute = new AttributeSet();
 		AttributeSet foundAttribute = new AttributeSet();
 		for (int i = 0; i < superClasses.size(); i++) {
@@ -804,7 +802,7 @@ public class Clazz extends GraphEntity {
 		if (isInterface || isAbstract) {
 			return collection;
 		}
-		// ALL SUPERMETHODS
+		/* ALL SUPERMETHODS */
 		MethodSet newMethods = new MethodSet();
 		MethodSet foundMethods = new MethodSet();
 		for (int i = 0; i < superClasses.size(); i++) {

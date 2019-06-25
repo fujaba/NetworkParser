@@ -40,7 +40,7 @@ public class ChainCondition extends ListCondition {
 
 	@Override
 	public void create(CharacterBuffer buffer, TemplateParser parser, LocalisationInterface customTemplate) {
-		// CHAIN CANT CREATE
+		/* CHAIN CANT CREATE */
 	}
 
 	@Override

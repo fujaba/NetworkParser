@@ -58,11 +58,9 @@ public class Match extends GraphMember implements Comparable<Match> {
 		Match match = new Match().withMain(node);
 		match.match = model;
 		if (isFileMatch) {
-//			match.sourceParent = model;
 			match.isFileMatch = true;
 			return match;
 		}
-//		match.parent = model;
 		return match;
 	}
 
@@ -208,16 +206,16 @@ public class Match extends GraphMember implements Comparable<Match> {
 		if (o == null || action == null) {
 			return 1;
 		}
-		// REMOVE, NEW, UPDATE
+		/* REMOVE, NEW, UPDATE */
 		if (action.equals(o.getType())) {
 			return 0;
 		}
 		if (action.equals(SendableEntityCreator.REMOVE)) {
-			// o.getAction() must be UPDATE OR NEW
+			/* o.getAction() must be UPDATE OR NEW */
 			return -1;
 		}
-//		if(action.equals(SendableEntityCreator.UPDATE) && SendableEntityCreator.REMOVE.equals(o.getType())) {
-//		if(action.equals(SendableEntityCreator.NEW)) { // o.getAction() must be REMOVE OR UPDATE 1
+/*		if(action.equals(SendableEntityCreator.UPDATE) && SendableEntityCreator.REMOVE.equals(o.getType())) { */
+/*		if(action.equals(SendableEntityCreator.NEW)) { o.getAction() must be REMOVE OR UPDATE 1 */
 		return 1;
 	}
 
@@ -250,7 +248,6 @@ public class Match extends GraphMember implements Comparable<Match> {
 
 	public boolean isMetaSourceMatch() {
 		return metamatch != null && sourcematch != null;
-//		return false;
 	}
 
 	public boolean isSourceMatch() {

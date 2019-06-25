@@ -149,9 +149,9 @@ public class Pattern implements Iterator<Object>, Iterable<Object> {
 	}
 
 	private boolean finding(boolean save) {
-		// Backwards
+		/* Backwards */
 		if (condition == null || condition.update(this) == false) {
-			// Not found
+			/* Not found */
 			if (parent == null) {
 				return false;
 			}
@@ -235,11 +235,10 @@ public class Pattern implements Iterator<Object>, Iterable<Object> {
 		if (MODIFIER_SEARCH.equals(this.modifier)) {
 			return true;
 		}
-		// Go throw all Matches
+		/* Go throw all Matches */
 		SimpleSet<Pattern> chain = getChain();
 
-		// FROM LAST TO FIRST
-//		for(int i=chain.size() - 1;i>=0;i--) {
+		/* FROM LAST TO FIRST */
 		for (int i = 0; i < chain.size(); i++) {
 			Pattern pattern = chain.get(i);
 			pattern.appling();

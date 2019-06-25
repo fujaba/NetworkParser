@@ -24,7 +24,7 @@ public class MethodChangeUpdateBodyCondition extends MatchCondition {
 
 		if ((oldMethod.getBody() != null && oldMethod.getBody().equals(newMethod.getBody()) == false)
 				|| (newMethod.getBody() != null && newMethod.getBody().equals(oldMethod.getBody()) == false)) {
-			// MethodBody changed
+			/* MethodBody changed */
 			Match update = Match.create(newMethod, this, Method.PROPERTY_BODY, newMethod.getBody(),
 					oldMethod.getBody());
 
@@ -45,7 +45,7 @@ public class MethodChangeUpdateBodyCondition extends MatchCondition {
 
 		if ((oldMethod.getBody() != null && oldMethod.getBody().equals(newMethod.getBody()) == false)
 				|| (newMethod.getBody() != null && newMethod.getBody().equals(oldMethod.getBody()) == false)) {
-			// MethodBody changed
+			/* MethodBody changed */
 			Match update = Match.create(oldMethod, this, Method.PROPERTY_BODY, oldMethod.getBody(),
 					newMethod.getBody());
 

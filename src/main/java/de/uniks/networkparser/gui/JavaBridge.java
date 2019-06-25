@@ -109,7 +109,7 @@ public class JavaBridge implements ObjectCondition {
 	}
 
 	public HTMLEntity init(String type, String script) {
-		// script = "classEditor = new ClassEditor(\"board\");";
+		/* script = "classEditor = new ClassEditor(\"board\");"; */
 		HTMLEntity entity = new HTMLEntity();
 		entity.withScript(script);
 
@@ -195,7 +195,7 @@ public class JavaBridge implements ObjectCondition {
 		if (key != null) {
 			return key;
 		}
-		// Add Control
+		/* Add Control */
 		map.getMapListener().suspendNotification();
 		JsonObject jsonObject = map.toJsonObject(c, Filter.createSimple());
 		map.getMapListener().resetNotification();
@@ -320,29 +320,29 @@ public class JavaBridge implements ObjectCondition {
 	 */
 	public void addListener(Control c, EventTypes type, String methodName, Object object) {
 	}
-	// addClickListener(String, DynamicEventCallback)
-	// addDoubleClickListener(String, DynamicEventCallback)
-	// addMouseUpListener(String, DynamicEventCallback)
-	// addMouseDownListener(String, DynamicEventCallback)
-	// addMouseEnterListener(String, DynamicEventCallback)
-	// addMouseLeaveListener(String, DynamicEventCallback)
-	// addMouseMoveListener(String, DynamicEventCallback)
-	// addKeyPressListener(String, DynamicEventCallback)
-	// addKeyDownListener(String, DynamicEventCallback)
-	// addKeyUpListener(String, DynamicEventCallback)
-	// addResizeListener(DynamicEventCallback)
-	// addDragStartListener(String, DynamicEventCallback)
-	// addDragOverListener(String, DynamicEventCallback)
-	// addDropListener(String, DynamicEventCallback)
-	// addChangeListener(String, DynamicEventCallback)
-	// createDragDrop(String, String...)
-	// createModelBinding(String, SendableEntity, String)
-	// createTableColumn(String, SendableEntityCreator, String)
-	// setTableItems(String, SendableEntity, String, SendableEntityCreator)
-	// setTableItems(String, String, String, SendableEntityCreator)
-	// setValueToUIElement(String, Object)
-	// getStringValueFromUIElement(String)
-	// getNumberValueFromUIElement(String)
-	// getSelectedTableItem(String)
-
+/*	addClickListener(String, DynamicEventCallback)
+	addDoubleClickListener(String, DynamicEventCallback)
+	addMouseUpListener(String, DynamicEventCallback)
+	addMouseDownListener(String, DynamicEventCallback)
+	addMouseEnterListener(String, DynamicEventCallback)
+	addMouseLeaveListener(String, DynamicEventCallback)
+	addMouseMoveListener(String, DynamicEventCallback)
+	addKeyPressListener(String, DynamicEventCallback)
+	addKeyDownListener(String, DynamicEventCallback)
+	addKeyUpListener(String, DynamicEventCallback)
+	addResizeListener(DynamicEventCallback)
+	addDragStartListener(String, DynamicEventCallback)
+	addDragOverListener(String, DynamicEventCallback)
+	addDropListener(String, DynamicEventCallback)
+	addChangeListener(String, DynamicEventCallback)
+	createDragDrop(String, String...)
+	createModelBinding(String, SendableEntity, String)
+	createTableColumn(String, SendableEntityCreator, String)
+	setTableItems(String, SendableEntity, String, SendableEntityCreator)
+	setTableItems(String, String, String, SendableEntityCreator)
+	setValueToUIElement(String, Object)
+	getStringValueFromUIElement(String)
+	getNumberValueFromUIElement(String)
+	getSelectedTableItem(String)
+*/
 }

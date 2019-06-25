@@ -177,7 +177,7 @@ public class InstanceOf implements ObjectCondition, SendableEntityCreator {
 
 	@Override
 	public boolean update(Object evt) {
-		// Filter for ClazzTyp
+		/* Filter for ClazzTyp */
 		if (evt == null || evt instanceof PropertyChangeEvent == false) {
 			return false;
 		}
@@ -185,7 +185,7 @@ public class InstanceOf implements ObjectCondition, SendableEntityCreator {
 		if (this.clazzName != null) {
 			Object newValue = event.getNewValue();
 			if (this.clazzName.isInstance(newValue) == false) {
-				// Check for whiteList
+				/* Check for whiteList */
 				if (evt instanceof SimpleEvent) {
 					SimpleEvent se = (SimpleEvent) evt;
 					IdMap map = (IdMap) se.getSource();
@@ -194,7 +194,7 @@ public class InstanceOf implements ObjectCondition, SendableEntityCreator {
 						return false;
 					}
 				}
-				// Turn around if WhiteList
+				/* Turn around if WhiteList */
 				return whiteList;
 			} else if (this.property == null) {
 				return true;
@@ -204,7 +204,7 @@ public class InstanceOf implements ObjectCondition, SendableEntityCreator {
 		} else if (this.property != null) {
 			return this.property.equalsIgnoreCase(event.getPropertyName()) == false;
 		}
-		// Filter for one item
+		/* Filter for one item */
 		return (this.item == null || this.item != event.getNewValue());
 	}
 

@@ -42,7 +42,7 @@ public class ObjectModel extends GraphModel {
 		return new ObjectModel();
 	}
 
-	// Override some Method because change ReturnValue
+	/* Override some Method because change ReturnValue */
 	@Override
 	public ObjectModel with(String name) {
 		super.with(name);
@@ -64,7 +64,7 @@ public class ObjectModel extends GraphModel {
 				continue;
 			}
 			if (item instanceof Match) {
-				// Change
+				/* Change */
 				Match match = (Match) item;
 				GraphMember member = match.getMatch();
 				ObjectInstance clazz = this.createClazz(member.getClazz().getName());

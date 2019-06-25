@@ -8,7 +8,7 @@ import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
 public class OCLParser implements ObjectCondition {
-//	context Meeting inv: self.end > self.start
+	/* context Meeting inv: self.end > self.start */
 	public static final String INV = "inv:";
 	private IdMap map;
 	private SendableEntityCreator creator;

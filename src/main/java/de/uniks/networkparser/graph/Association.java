@@ -37,7 +37,7 @@ public class Association extends GraphMember {
 	public static final String PROPERTY_ISGENERATE = "isGenerate";
 	public static final String PROPERTY_ISIMPLEMENTS = "isImplements";
 	private int cardinality;
-	// The Complete Edge Info
+	/* The Complete Edge Info */
 	private Association other;
 	private AssociationTypes type = AssociationTypes.ASSOCIATION;
 
@@ -89,7 +89,7 @@ public class Association extends GraphMember {
 		if (PROPERTY_ISGENERATE.equalsIgnoreCase(attrName)) {
 			if (AssociationTypes.isEdge(getType())) {
 				boolean generate = getType() != AssociationTypes.EDGE;
-				// Case GENERATION AND IMPLEMENTATION
+				/* Case GENERATION AND IMPLEMENTATION */
 				return generate;
 			}
 			return false;
@@ -167,7 +167,7 @@ public class Association extends GraphMember {
 	 */
 	@Override
 	protected boolean setParentNode(GraphMember value) {
-		// Do Nothing
+		/* Do Nothing */
 		if (value == this.parentNode) {
 			return false;
 		}

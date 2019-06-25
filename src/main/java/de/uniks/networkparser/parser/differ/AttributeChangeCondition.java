@@ -36,7 +36,6 @@ public class AttributeChangeCondition extends MatchCondition {
 		if (match == null || matches == null) {
 			return false;
 		}
-//		if (matches.getMetaModel() != null && (match.getOtherMatch().isMetaMatch() || match.isMetaMatch())) {
 		if (matches.getMetaModel() != null && (match.isMetaSourceMatch() || match.isMetaMatch())) {
 			return false;
 		}

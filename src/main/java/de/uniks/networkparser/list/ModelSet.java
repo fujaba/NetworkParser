@@ -5,7 +5,7 @@ import java.util.Collection;
 public class ModelSet<V> extends SimpleSet<V> {
 	public static final ModelSet<Object> EMPTY_SET = new ModelSet<Object>().withFlag(ModelSet.READONLY);
 
-	// Methods for Modelclasses
+	/* Methods for Modelclasses */
 	@SuppressWarnings("unchecked")
 	public ModelSet(V... objects) {
 		for (V obj : objects) {

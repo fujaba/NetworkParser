@@ -47,7 +47,6 @@ public class GraphTokener extends Tokener {
 	public static final String CLASSDIAGRAM = "classdiagram";
 
 	public static final byte FLAG_CLASS = 0x01;
-//	public static final byte FLAG_OBJECT = 0x01;
 	public static final byte FLAG_CARDINALITY = 0x02;
 	public static final byte FLAG_SHOWLINE = 0x04;
 	public static final byte FLAG_ORDERD = 0x08;
@@ -140,13 +139,13 @@ public class GraphTokener extends Tokener {
 			Clazz subId = parse(item, map, list, deep + 1);
 			Association edge = new Association(element);
 			Association target = new Association(subId).with(cardinality).with(property);
-			// Full Assoc
+			/* Full Assoc */
 			edge.with(target);
-			// Add to Clazzes
+			/* Add to Clazzes */
 			element.with(edge);
 			subId.with(target);
 
-			// Add to List
+			/* Add to List */
 			list.with(edge);
 		} else {
 			Attribute attribute = element.createAttribute(property, DataType.create(item.getClass()));
@@ -168,19 +167,19 @@ public class GraphTokener extends Tokener {
 		HashMap<String, Association> edges = new HashMap<String, Association>();
 		HashMap<String, Clazz> clazzes = new HashMap<String, Clazz>();
 
-		// Copy all Nodes
+		/* Copy all Nodes */
 		for (Iterator<GraphMember> i = clazzDiagram.getChildren().iterator(); i.hasNext();) {
 			Clazz item = (Clazz) i.next();
 			clazzes.put(item.getName(false), item);
 		}
-		// Copy all Edges
+		/* Copy all Edges */
 		for (Iterator<Association> i = clazzDiagram.getAssociations().iterator(); i.hasNext();) {
 			Association item = i.next();
 			Clazz node = (Clazz) item.getClazz();
 			edges.put(node.getName(false) + ":" + item.getName(), item);
 		}
 
-		// Check all Clazzes of the objectdiagram
+		/* Check all Clazzes of the objectdiagram */
 		for (Iterator<GraphMember> i = objectDiagram.getChildren().iterator(); i.hasNext();) {
 			Clazz item = (Clazz) i.next();
 			Clazz graphClazz = clazzes.get(item.getName(false));
@@ -189,7 +188,7 @@ public class GraphTokener extends Tokener {
 				diff.addCounter();
 			}
 		}
-		// Copy all Edges
+		/* Copy all Edges */
 		for (Iterator<Association> i = objectDiagram.getAssociations().iterator(); i.hasNext();) {
 			Association item = i.next();
 			Clazz node = (Clazz) item.getClazz();
@@ -228,13 +227,13 @@ public class GraphTokener extends Tokener {
 
 		if (masterCreator == null || slaveCreator == null) {
 			result.with(GraphPatternChange.createChange(master, slave));
-			// No Creator Found for both value check if th same instance
+			/* No Creator Found for both value check if th same instance */
 			return result;
 		}
 		String[] properties = masterCreator.getProperties();
 
-// Check properties
-// Step one use equals-Method
+/* Check properties
+   Step one use equals-Method */
 		SimpleKeyValueList<String, Collection<?>> assocMany = new SimpleKeyValueList<String, Collection<?>>();
 		SimpleKeyValueList<String, Object> attributes = new SimpleKeyValueList<String, Object>();
 		for (String property : properties) {
@@ -247,10 +246,10 @@ public class GraphTokener extends Tokener {
 		}
 		SimpleKeyValueList<Object, Object> matchMap = new SimpleKeyValueList<Object, Object>();
 		if (map.isFlag(GraphTokener.FLAG_ORDERD)) {
-// Step two: orderd
-//				Primitive
-//				Assoc to 1
-//				Assoc to n
+/* Step two: orderd
+				Primitive
+				Assoc to 1
+				Assoc to n */
 			for (Iterator<Entry<String, Object>> i = attributes.iterator(); i.hasNext();) {
 				Entry<String, Object> item = i.next();
 				Object value = item.getValue();
@@ -286,7 +285,7 @@ public class GraphTokener extends Tokener {
 					}
 				}
 			}
-			// Now try to Many Assoc
+			/* Now try to Many Assoc */
 			for (Iterator<Entry<String, Collection<?>>> i = assocMany.iterator(); i.hasNext();) {
 				Entry<String, Collection<?>> item = i.next();
 				Collection<?> masterCollection = item.getValue();
@@ -320,16 +319,11 @@ public class GraphTokener extends Tokener {
 				}
 			}
 		} else {
-// Step two: unorderd
-//				Assoc to n
-//				Assoc to 1
-//				Primitive ( try to find keyattributes use order: String, Date, Int, Object)
-//			for(String property : properties) {
-//				//TODO IMplementation of Unordered Model
-//				Object masterValue = masterCreator.getValue(master, property);
-//				Object slaveValue = slaveCreator.getValue(slave, property);
-//				diffModel(value, slaveValue, map)
-//			}
+/* Step two: unorderd
+				Assoc to n
+				Assoc to 1
+				Primitive ( try to find keyattributes use order: String, Date, Int, Object)
+				*/
 		}
 		return result;
 	}

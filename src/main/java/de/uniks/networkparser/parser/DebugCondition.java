@@ -68,12 +68,12 @@ public class DebugCondition implements ParserCondition, SendableEntityCreator {
 
 	@Override
 	public void create(CharacterBuffer buffer, TemplateParser parser, LocalisationInterface customTemplate) {
-//		 CREATE FIELD
+		/* CREATE FIELD */
 		if (buffer == null) {
 			return;
 		}
-		// Skip Word
-		// IF CONDITION
+		/* Skip Word */
+		/* IF CONDITION */
 		CharacterBuffer tokenPart = buffer.nextToken(false, SPLITEND, ENTER, '!');
 		if (tokenPart.length() > 0) {
 			char currentChar = buffer.getCurrentChar();
@@ -95,7 +95,7 @@ public class DebugCondition implements ParserCondition, SendableEntityCreator {
 			}
 			buffer.skip();
 		}
-		// SKIP TO END
+		/* SKIP TO END */
 		buffer.skip();
 	}
 

@@ -7,27 +7,6 @@ import de.uniks.networkparser.interfaces.TemplateItem;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SimpleSet;
 
-/*
-NetworkParser
-Copyright (c) 2011 - 2015, Stefan Lindel
-All rights reserved.
-
-Licensed under the EUPL, Version 1.1 or (as soon they
-will be approved by the European Commission) subsequent
-versions of the EUPL (the "Licence");
-You may not use this work except in compliance with the Licence.
-You may obtain a copy of the Licence at:
-
-http://ec.europa.eu/idabc/eupl5
-
-Unless required by applicable law or agreed to in
-writing, software distributed under the Licence is
-distributed on an "AS IS" basis,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
-express or implied.
-See the Licence for the specific language governing
-permissions and limitations under the Licence.
-*/
 /**
  * Special Util for package Method
  *
@@ -37,10 +16,9 @@ public class GraphUtil {
 	private static SimpleList<String> noneDictionary = new SimpleList<String>().with("aircraft", "carp", "deer",
 			"salmon", "sheep", "trout");
 	private static SimpleList<String> oesDictionary = new SimpleList<String>().with("hero", "potato", "torpedo");
-//	private static SimpleKeyValueList<String, String> fixedDictionary=new SimpleKeyValueList<String, String>().with("person", "people");	
 
 	public static String getPlural(String singular) {
-		// Zischlaut
+		/* Zischlaut */
 		if (singular == null || singular.length() < 1) {
 			return null;
 		}
@@ -51,15 +29,15 @@ public class GraphUtil {
 				|| singular.endsWith("z")) {
 			return singular + "es";
 		}
-		// y Konsonant
+		/* y Konsonant */
 		if (singular.endsWith("y")) {
 			return singular.subSequence(0, singular.length() - 1) + "ies";
 		}
-		// -f/-fe wird zu -ves im Plural
+		/* -f/-fe wird zu -ves im Plural */
 		if (singular.endsWith("f") || singular.endsWith("fe")) {
 			return singular.subSequence(0, singular.length() - 1) + "ves";
 		}
-		// -o wird zu -oes im Plural
+		/* -o wird zu -oes im Plural */
 		if (singular.endsWith("o")) {
 			if (oesDictionary.contains(singular)) {
 				return singular + "es";
@@ -482,11 +460,11 @@ public class GraphUtil {
 			}
 			if (assocA.getName().equals(assoc.getName())) {
 				if (assocB.getName().equals(other.getName())) {
-					// Found Link ??
+					/* Found Link ?? */
 					foundAssoc = true;
 					if (assocA.getClazz() == assoc.getClazz()) {
 						if (assocB.getClazz() == other.getClazz()) {
-							// May be n-m
+							/* May be n-m */
 							assocA.with(Association.MANY);
 							assocB.with(Association.MANY);
 						} else {

@@ -35,10 +35,10 @@ public class Filter {
 	public static final String COLLISION = "collision";
 
 	protected ObjectCondition idFilter;
-	protected ObjectCondition convertable; // Or Notification for Decode
+	protected ObjectCondition convertable; /* Or Notification for Decode */
 	protected ObjectCondition property;
 
-	// Entweder eines der unteren Formate
+	/* Entweder eines der unteren Formate */
 	protected static final byte FORMAT_NULL = 1;
 	protected static final byte FORMAT_FULL = 2;
 	protected static final byte FORMAT_TYPESAVE = 3;
@@ -47,9 +47,9 @@ public class Filter {
 	/**
 	 * Format 0= REFERENCE 1 = NULL-Check 2 = FULL 3 = TYPESAVE
 	 */
-	private byte format; // FORMAT:
+	private byte format; /* FORMAT */
 
-	// Temporary variables
+	/* Temporary variables */
 	private String strategy = SendableEntityCreator.UPDATE;
 	private boolean simpleFormat;
 

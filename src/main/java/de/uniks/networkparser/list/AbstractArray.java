@@ -52,8 +52,8 @@ public abstract class AbstractArray<V> implements BaseItem {
 
 	public static final Integer REMOVED = -1;
 
-	static final int MINHASHINGSIZE = 420; // Minimum (SIZE_BIG: 5)
-	static final int MINUSEDLIST = 5; // 20 %
+	static final int MINHASHINGSIZE = 420; /* Minimum (SIZE_BIG: 5) */
+	static final int MINUSEDLIST = 5; /* 20 % */
 	static final float MAXUSEDLIST = 0.7f;
 
 	static final byte SMALL_KEY = 0;
@@ -77,7 +77,7 @@ public abstract class AbstractArray<V> implements BaseItem {
 	 * @see MAP
 	 * @see BIDI
 	 */
-	public byte flag = VISIBLE + CASESENSITIVE; // Flag of
+	public byte flag = VISIBLE + CASESENSITIVE;
 	/**
 	 * The array buffer into which the elements of the ArrayList are stored. The
 	 * capacity of the ArrayList is the length of this array buffer. Any empty
@@ -90,7 +90,7 @@ public abstract class AbstractArray<V> implements BaseItem {
 	 * + Index&gt;, DeleteItem&lt;Index-Sorted&gt;, SimpleValue&lt;V&gt;,
 	 * BigList&lt;V + Index&gt; for BIDIMAP ]
 	 */
-	public Object[] elements; // non-private to simplify nested class access
+	public Object[] elements; /* non-private to simplify nested class access */
 
 	/** The size of the ArrayList (the number of elements it contains). */
 	int size;
@@ -369,7 +369,7 @@ public abstract class AbstractArray<V> implements BaseItem {
 	}
 
 	boolean shrink(int minCapacity) {
-		// Shrink the Array
+		/* Shrink the Array */
 		if (minCapacity == 0) {
 			elements = null;
 			this.index = 0;
@@ -380,7 +380,7 @@ public abstract class AbstractArray<V> implements BaseItem {
 		int newSize = minCapacity + minCapacity / 2 + 5;
 		if (arrayFlag > 1) {
 			if ((flag & MAP) != 0) {
-				// MAP
+				/* MAP */
 				boolean change = false;
 				if (minCapacity < ((Object[]) elements[SMALL_KEY]).length / MINUSEDLIST) {
 					resizeSmall(newSize, SMALL_KEY);
@@ -397,7 +397,7 @@ public abstract class AbstractArray<V> implements BaseItem {
 				}
 				return change;
 			} else if (minCapacity < ((Object[]) elements[SMALL_KEY]).length / MINUSEDLIST) {
-				// Change Simple Complexlist to SimpleList
+				/* Change Simple Complexlist to SimpleList */
 				elements = (Object[]) elements[SMALL_KEY];
 				return true;
 			}
@@ -412,7 +412,7 @@ public abstract class AbstractArray<V> implements BaseItem {
 	int grow(int minCapacity) {
 		int arrayFlag = getArrayFlag(minCapacity);
 		if (elements == null) {
-			// Init List
+			/* Init List */
 			int newSize = minCapacity + minCapacity / 2 + 5;
 			if (arrayFlag == 1) {
 				elements = new Object[newSize];
@@ -426,7 +426,7 @@ public abstract class AbstractArray<V> implements BaseItem {
 			return arrayFlag;
 		}
 		if (arrayFlag > 1 && arrayFlag != elements.length) {
-			// Change Single to BigList
+			/* Change Single to BigList */
 			Object[] old = elements;
 			elements = new Object[arrayFlag];
 			elements[SMALL_KEY] = old;
@@ -437,8 +437,7 @@ public abstract class AbstractArray<V> implements BaseItem {
 				return arrayFlag;
 			}
 		}
-
-		// Array has wrong size
+		/* Array has wrong size */
 		if (isComplex(minCapacity)) {
 			int newSize = minCapacity + minCapacity / 2 + 5;
 			if (minCapacity >= ((Object[]) elements[SMALL_KEY]).length) {
@@ -687,7 +686,7 @@ public abstract class AbstractArray<V> implements BaseItem {
 			pos = this.index;
 		} else if (this.size == pos && this.index == 0) {
 		} else {
-			// MOVE ALL ONE ELEMENT NEXT
+			/* MOVE ALL ONE ELEMENT NEXT */
 			pos = (this.index + pos) % keys.length;
 			int sizePos = (this.index + this.size) % keys.length;
 			while (sizePos != pos) {
@@ -959,7 +958,7 @@ public abstract class AbstractArray<V> implements BaseItem {
 		int len;
 		int lastIndex = -1;
 		if (elements.length <= offset + 1) {
-			// Ups only small KeyValueList
+			/* Ups only small KeyValueList */
 			hashCodes = ((Object[]) elements[offset]);
 			for (int i = 0; i < hashCodes.length; i++) {
 				if (checkValue(o, hashCodes[i])) {
@@ -1148,18 +1147,18 @@ public abstract class AbstractArray<V> implements BaseItem {
 		if (complex > 1) {
 			items = ((Object[]) elements[offset]);
 		} else {
-			// One Dimension
+			/* One Dimension */
 			items = elements;
 		}
 
-		index = (index + oldIndex) % items.length; // Fix for index+this.index > length
+		index = (index + oldIndex) % items.length; /* Fix for index+this.index > length */
 
 		Object oldValue = items[index];
 		if (oldValue == null) {
 			return null;
 		}
 
-		// REMOVE FROM HASH-Codes
+		/* REMOVE FROM HASH-Codes */
 		if (complex > 1 && complex > (offset + 1) && elements[offset + 1] != null) {
 			Object[] hashCodes = ((Object[]) elements[offset + 1]);
 			int indexPos = hashKey(oldValue.hashCode(), hashCodes.length);
@@ -1198,12 +1197,12 @@ public abstract class AbstractArray<V> implements BaseItem {
 			items[index] = null;
 		} else {
 			if (index > this.index) {
-				// move later elements to the right, maybe wrap around
-				// [ef____axcd] -> [f_____acde]
+				/* move later elements to the right, maybe wrap around */
+				/* [ef____axcd] -> [f_____acde] */
 				int end = (this.index + size - 1);
 
 				if (end >= items.length) {
-					// wrap
+					/* wrap */
 					int len = items.length - index - 1;
 					System.arraycopy(items, index + 1, items, index, len);
 					items[items.length - 1] = items[0];
@@ -1211,15 +1210,14 @@ public abstract class AbstractArray<V> implements BaseItem {
 					System.arraycopy(items, 1, items, 0, end);
 					items[end] = null;
 				} else {
-					// no wrap
+					/* no wrap */
 					System.arraycopy(items, index + 1, items, index, end - index);
 					items[end] = null;
 				}
 			} else {
-				// remove within the fraction of the data that is at the start
-				// of
-				// the array, move elements after index to the left
-				// [cdxf____ab] -> [cdf_____ab]
+				/*	remove within the fraction of the data that is at the start of
+					the array, move elements after index to the left
+					[cdxf____ab] -> [cdf_____ab] */
 				int end = (this.index + size - 1) % items.length;
 				int len = end - index;
 
@@ -1317,7 +1315,7 @@ public abstract class AbstractArray<V> implements BaseItem {
 			if (id >= 0 || id == -2) {
 				if (child instanceof AbstractList) {
 					if (end == len + 2) {
-						// Get List
+						/* Get List */
 						BaseItem result = this.getNewList(true);
 						AbstractList<?> items = (AbstractList<?>) child;
 						for (int z = 0; z < items.size(); z++) {
@@ -1405,11 +1403,11 @@ public abstract class AbstractArray<V> implements BaseItem {
 			elementData = elements;
 		}
 		if (elementData == null) {
-			return a; // should be empty
+			return a; /* should be empty */
 		}
 		if (a.length < size) {
-			// Make a new array of a's runtime type, but my contents:
-			// return (T[]) Arrays.copyOf(elementData, size, a.getClass());
+			/* Make a new array of a's runtime type, but my contents:
+			   return (T[]) Arrays.copyOf(elementData, size, a.getClass()); */
 			return null;
 		}
 		System.arraycopy(elementData, 0, a, 0, size);

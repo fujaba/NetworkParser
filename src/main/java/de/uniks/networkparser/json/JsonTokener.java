@@ -85,7 +85,7 @@ public class JsonTokener extends Tokener {
 	}
 
 	private EntityList parsingEntity(EntityList entityList, Buffer buffer) {
-		// FIXME REMOVE
+		/* FIXME REMOVE */
 		if (buffer == null) {
 			return null;
 		}
@@ -149,7 +149,7 @@ public class JsonTokener extends Tokener {
 				}
 				return null;
 			case '\\':
-				// unquote
+				/* unquote */
 				buffer.skip();
 				isQuote = false;
 				continue;
@@ -173,7 +173,7 @@ public class JsonTokener extends Tokener {
 				buffer.skip();
 				Object keyValue = nextValue(buffer, entity, isQuote, false, stop);
 				if (keyValue == null) {
-					// No Key Found Must be an empty statement
+					/* No Key Found Must be an empty statement */
 					return entity;
 				}
 				key = keyValue.toString();
@@ -188,7 +188,7 @@ public class JsonTokener extends Tokener {
 			c = buffer.nextClean(true);
 			if (c != COLON && c != ENTER) {
 				if (entity.size() > 0) {
-					// HJSON OLD ADD TO VALUE
+					/* HJSON OLD ADD TO VALUE */
 					String oldKey = entity.getKeyByIndex(entity.size() - 1);
 					String valueOld = entity.getValueByIndex(entity.size() - 1).toString();
 					valueOld += " " + key + " " + nextValue(buffer, entity, isQuote, false, stop);
@@ -209,12 +209,12 @@ public class JsonTokener extends Tokener {
 	}
 
 	private BaseItem parsingSimpleEntityXML(JsonObject parent, XMLEntity newValue) {
-		// <TAG PARAM>CHILDREN</TAG>
+		/* <TAG PARAM>CHILDREN</TAG> */
 		if (newValue == null) {
 			return null;
 		}
 
-		// Parsing all Parameter
+		/* Parsing all Parameter */
 		int i = 0;
 		for (; i < newValue.size(); i++) {
 			String key = newValue.getKeyByIndex(i);
@@ -225,7 +225,7 @@ public class JsonTokener extends Tokener {
 		if (i == 0 && newValue.sizeChildren() == 1) {
 			XMLEntity child = (XMLEntity) newValue.getChild(0);
 			if (child.sizeChildren() > 0) {
-				// PARSING
+				/* PARSING */
 				JsonObject childItem = (JsonObject) newInstance();
 				parsingSimpleEntityXML(childItem, child);
 				parent.put(child.getTag(), childItem);
@@ -235,8 +235,7 @@ public class JsonTokener extends Tokener {
 			}
 			return parent;
 		}
-
-		// Parsing children
+		/* Parsing children */
 		SimpleKeyValueList<String, Integer> childrenCount = new SimpleKeyValueList<String, Integer>();
 		for (i = 0; i < newValue.sizeChildren(); i++) {
 			XMLEntity child = (XMLEntity) newValue.getChild(i);
@@ -254,7 +253,7 @@ public class JsonTokener extends Tokener {
 					if (item.size() > 0) {
 						parent.put(tag, item);
 					} else if (xml.getValue() != null) {
-						// Ifgnore check for ValueItem
+						/* Ifgnore check for ValueItem */
 						String value = xml.getValue().trim();
 						if (value.length() > 0) {
 							parent.put(tag, value);
@@ -323,7 +322,7 @@ public class JsonTokener extends Tokener {
 			buffer.skip();
 			return EntityUtil.unQuote(nextString(buffer, new CharacterBuffer(), true, true, stopChar));
 		case '\\':
-			// Must be unquote
+			/* Must be unquote */
 			buffer.skip();
 			buffer.skip();
 			return nextString(buffer, new CharacterBuffer(), allowQuote, true, BufferItem.QUOTES);
@@ -404,10 +403,9 @@ public class JsonTokener extends Tokener {
 		jsonObject.withCaseSensitive(false);
 		for (String property : properties) {
 			Object value = jsonObject.get(property);
-
-			// Switch for SimpleSet
+			/* Switch for SimpleSet */
 			if (value instanceof JsonObject) {
-				// To 1 Assoc
+				/* To 1 Assoc */
 				SendableEntityCreator subCreator = map.getCreator(property, false, false, null);
 				if (subCreator != null) {
 					Object subTarget = subCreator.getSendableInstance(false);
@@ -416,7 +414,7 @@ public class JsonTokener extends Tokener {
 					}
 				}
 			} else if (value instanceof JsonArray) {
-				// To Many
+				/* To Many */
 				SendableEntityCreator subCreator = map.getCreator(property, false, false, null);
 				if (subCreator != null) {
 					JsonArray jsonArray = (JsonArray) value;
@@ -430,7 +428,7 @@ public class JsonTokener extends Tokener {
 					}
 				}
 			} else if (value != null) {
-				// Simple Value
+				/* Simple Value */
 				creator.setValue(target, property, value, IdMap.NEW);
 			}
 		}
@@ -498,8 +496,6 @@ public class JsonTokener extends Tokener {
 			}
 			map.getFilter().isConvertable(event);
 			return result;
-//		} else if (jsonObject.get(IdMap.VALUE) != null) {
-//			return jsonObject.get(IdMap.VALUE);
 		} else if (jsonObject.get(IdMap.ID) != null) {
 			return this.map.getObject((String) jsonObject.get(IdMap.ID));
 		}
@@ -515,7 +511,7 @@ public class JsonTokener extends Tokener {
 	 * @return the object
 	 */
 	private Object decoding(Object target, JsonObject jsonObject, MapEntity map) {
-		// JSONArray jsonArray;
+		/* JSONArray jsonArray; */
 		if (map == null) {
 			return null;
 		}
@@ -563,10 +559,8 @@ public class JsonTokener extends Tokener {
 			} else {
 				for (int p = 0; p < jsonProp.size(); p++) {
 					String property = jsonProp.getKeyByIndex(p);
-//					if(jsonProp.has(property)) {
 					Object obj = jsonProp.get(property);
 					parseValue(target, property, obj, creator, map);
-//					}
 				}
 			}
 		}
@@ -584,7 +578,7 @@ public class JsonTokener extends Tokener {
 	 */
 	private void parseValue(Object target, String property, Object value, SendableEntityCreator creator,
 			MapEntity map) {
-		// FIXME IF STATGEGY IS UPDATE SET NEW VALUE
+		/* FIXME IF STATGEGY IS UPDATE SET NEW VALUE */
 		if (map == null) {
 			return;
 		}
@@ -598,7 +592,7 @@ public class JsonTokener extends Tokener {
 			for (int i = 0; i < jsonArray.size(); i++) {
 				Object kid = jsonArray.get(i);
 				if (kid instanceof JsonObject) {
-					// got a new kid, create it
+					/* got a new kid, create it */
 					creator.setValue(target, property, decoding((JsonObject) kid, map, true),
 							SendableEntityCreator.NEW);
 				} else {
@@ -607,9 +601,9 @@ public class JsonTokener extends Tokener {
 			}
 		} else {
 			if (value instanceof JsonObject) {
-				// // got a new kid, create it
+				/* got a new kid, create it */
 				JsonObject child = (JsonObject) value;
-				// CHECK LIST AND MAPS
+				/* CHECK LIST AND MAPS */
 				String className = target.getClass().getName();
 				Object ref_Obj = grammar.getNewEntity(creator, className, true);
 				if (ref_Obj instanceof Class<?>) {

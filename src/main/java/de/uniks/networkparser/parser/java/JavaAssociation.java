@@ -30,7 +30,7 @@ public class JavaAssociation extends Template {
 				"{{#else}}"
 					+ "{{#import {{other.clazz.packageName}}.util.{{other.clazz.name}}Set}}",
 				"{{#endif}}"
-//Getter
+/*Getter */
 				+"   {{annotation(getter)}}",
 				"	public {{modifiers} }{{#if {{other.cardinality}}==1}}{{other.clazz.name}}{{#else}}{{other.clazz.name}}Set{{#endif}} get{{other.Name}}(){{#if {{file.member.type}}==interface}};",
 				"", "{{#endif}}", "{{#ifnot {{file.member.type}}==interface}} {", "{{#ifnot {{other.cardinality}}==1}}",
@@ -43,7 +43,7 @@ public class JavaAssociation extends Template {
 				"",
 				"{{#endif}}",
 
-// ASSOCIATION ZU 1 Setter (Set and With)
+/* ASSOCIATION ZU 1 Setter (Set and With) */
 				"{{#if {{other.cardinality}}==1}}",
 					"	public {{modifiers} }boolean set{{other.Name}}({{other.clazz.name}} value){{#if {{file.member.type}}==interface}};","","{{#endif}}",
 					
@@ -83,8 +83,8 @@ public class JavaAssociation extends Template {
 							"", 
 						"{{#endif}}",
 				"{{#else}}",
-// ASSOCITAION TO MANY
-				//MANY HAS BOOLEAN SET(TYPE...) AND WITH(Object...)
+/* ASSOCITAION TO MANY */
+/*MANY HAS BOOLEAN SET(TYPE...) AND WITH(Object...) */
 				"	public {{modifiers} }boolean set{{other.Name}}({{other.clazz.name}}... values){{#if {{file.member.type}}==interface}};","","{{#endif}}",
 				"{{#ifnot {{file.member.type}}==interface}} {",
 				"		if (values == null) {",
@@ -98,7 +98,7 @@ public class JavaAssociation extends Template {
 				"			if (item == null) {",
 				"				continue;",
 				"			}",
-				"{{#if {{cardinality}}==1 {{type}}==assoc {{templatemodel.features.setclass.classstring}}==" + SimpleSet.class.getName()+"  }}", // IT IS MANY TO ONE SPECIAL CASE !!!
+				"{{#if {{cardinality}}==1 {{type}}==assoc {{templatemodel.features.setclass.classstring}}==" + SimpleSet.class.getName()+"  }}", /* IT IS MANY TO ONE SPECIAL CASE !!! */
 				"			if(item.set{{Name}}(this)) {",
 				"				result = result & this.{{other.name}}.rawAdd(item);",
 				"				firePropertyChange(PROPERTY_{{other.NAME}}, null, item);",
@@ -141,8 +141,7 @@ public class JavaAssociation extends Template {
 				"	}",
 				"",
 				"{{#endif}}",
-// MULTI WITH							
-
+/* MULTI WITH */
 				"	public {{modifiers} }{{clazz.name}} without{{other.Name}}({{other.clazz.name}}... value){{#if {{file.member.type}}==interface}};",
 				"", "{{#endif}}", "{{#ifnot {{file.member.type}}==interface}} {",
 				"		if(this.{{other.name}} == null) {", "			return this;", "		}",

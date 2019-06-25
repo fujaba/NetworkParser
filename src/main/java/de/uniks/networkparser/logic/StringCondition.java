@@ -47,7 +47,6 @@ public class StringCondition implements ParserCondition {
 			if (value instanceof GraphMember) {
 				itemValue = ((GraphMember) value).getValue(attribute);
 			}
-//			}else if(itemValue instanceof String) {
 			if (value == null) {
 				return itemValue == null;
 			}
@@ -96,13 +95,13 @@ public class StringCondition implements ParserCondition {
 		char item = sequence.getChar();
 		while (sequence.isEnd() == false) {
 			if (item == '(') {
-				// Sub Sequence
+				/* Sub Sequence */
 				conditionList.add(createSearchIntern(sequence, new And()));
 				item = sequence.getChar();
 				continue;
 			}
 			if (item == ')' && container != null) {
-				// End SubSequence
+				/* End SubSequence */
 				break;
 			}
 			if (item == ' ') {
@@ -112,7 +111,7 @@ public class StringCondition implements ParserCondition {
 				item = sequence.getChar();
 				continue;
 			}
-			// Check for Equals
+			/* Check for Equals */
 			if (item == '#' && start == sequence.position()) {
 				int pos = sequence.indexOf(':', start);
 				if (pos > 1) {

@@ -210,8 +210,7 @@ public class MapEntity extends AbstractList<Object> {
 		this.filter = filter;
 		return this;
 	}
-
-	// Method for Filter
+	/* Method for Filter */
 	public String getId(Object entity, String className) {
 		if (filter == null) {
 			return null;
@@ -318,7 +317,7 @@ public class MapEntity extends AbstractList<Object> {
 			if (property.length() == 1) {
 				break;
 			}
-			// Its ChildValue
+			/* Its ChildValue */
 			int pos = property.indexOf(IdMap.ENTITYSPLITTER, 1);
 			if (pos < 0) {
 				property.trimStart(1);

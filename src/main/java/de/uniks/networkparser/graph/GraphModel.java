@@ -9,27 +9,6 @@ import de.uniks.networkparser.interfaces.Condition;
 import de.uniks.networkparser.interfaces.Converter;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SimpleSet;
-/*
-NetworkParser
-Copyright (c) 2011 - 2015, Stefan Lindel
-All rights reserved.
-
-Licensed under the EUPL, Version 1.1 or (as soon they
-will be approved by the European Commission) subsequent
-versions of the EUPL (the "Licence");
-You may not use this work except in compliance with the Licence.
-You may obtain a copy of the Licence at:
-
-http://ec.europa.eu/idabc/eupl5
-
-Unless required by applicable law or agreed to in
-writing, software distributed under the Licence is
-distributed on an "AS IS" basis,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
-express or implied.
-See the Licence for the specific language governing
-permissions and limitations under the Licence.
-*/
 import de.uniks.networkparser.xml.HTMLEntity;
 
 public abstract class GraphModel extends GraphEntity implements BaseItem {
@@ -141,7 +120,7 @@ public abstract class GraphModel extends GraphEntity implements BaseItem {
 			clazz.setClassModel(this);
 			return clazz;
 		}
-		// So its List
+		/* So its List */
 		if (children instanceof GraphSimpleSet) {
 			GraphSimpleSet items = (GraphSimpleSet) children;
 			for (GraphMember child : items) {
@@ -203,7 +182,7 @@ public abstract class GraphModel extends GraphEntity implements BaseItem {
 		String packageName = null;
 		for (Clazz item : classes) {
 			String className = item.getName();
-			// Check for First is UpperCase
+			/* Check for First is UpperCase */
 			if (className != null && className.length() > 0) {
 				if (className.indexOf('.') > 0) {
 					if (packageName == null) {
@@ -217,7 +196,7 @@ public abstract class GraphModel extends GraphEntity implements BaseItem {
 					if (no < 'A' || no > 'Z') {
 						item.setName(EntityUtil.upFirstChar(className));
 					}
-					// Attributes
+					/* Attributes */
 					AttributeSet attributes = item.getAttributes();
 					for (Attribute attribute : attributes) {
 						String name = attribute.getName();
@@ -240,9 +219,9 @@ public abstract class GraphModel extends GraphEntity implements BaseItem {
 				return false;
 			}
 		}
-		// CHECK PACKAGE
+		/* CHECK PACKAGE */
 		if (getDefaultPackage().equals(this.name) && packageName != null && packageName.length() > 0) {
-			// Its valid all Clazz has the same PackageName
+			/* Its valid all Clazz has the same PackageName */
 			this.name = packageName;
 			packageName += ".";
 			for (Clazz item : classes) {
@@ -261,7 +240,7 @@ public abstract class GraphModel extends GraphEntity implements BaseItem {
 	}
 
 	private boolean fixClassModel(Clazz item, SimpleSet<Clazz> visited) {
-		// Run over Interfaces, SuperClazzes, KidClazzes, Associations
+		/* Run over Interfaces, SuperClazzes, KidClazzes, Associations */
 		AssociationSet assocs = item.getAssociations();
 		for (Association role : assocs) {
 			if (item.repairAssociation(role, this.renameAttributes) == false) {
@@ -277,7 +256,7 @@ public abstract class GraphModel extends GraphEntity implements BaseItem {
 			this.with(role);
 		}
 
-		// Fix the Clazz
+		/* Fix the Clazz */
 		if (Clazz.TYPE_ENUMERATION.equals(item.getType())) {
 			SimpleSet<Literal> literals = item.getValues();
 			SimpleSet<Attribute> attributes = item.getAttributes();
@@ -291,7 +270,7 @@ public abstract class GraphModel extends GraphEntity implements BaseItem {
 							if (attributes.size() > no) {
 								Attribute attribute = attributes.get(no);
 								if (attribute.getType().getName(true).equals(type)) {
-									// Everthing is ok
+									/* Everthing is ok */
 								} else {
 									attribute.with(DataType.OBJECT);
 								}
@@ -307,7 +286,7 @@ public abstract class GraphModel extends GraphEntity implements BaseItem {
 			}
 		}
 
-		// FIX Attribute and Methods
+		/* FIX Attribute and Methods */
 		for (Attribute attribute : item.getAttributes()) {
 			fixDataType(attribute.getType());
 		}
@@ -344,7 +323,7 @@ public abstract class GraphModel extends GraphEntity implements BaseItem {
 		for (GraphMember child : allChildren) {
 			withChildren(child);
 		}
-		// Add Properties
+		/* Add Properties */
 		if (this.defaultAuthorName == null) {
 			this.defaultAuthorName = model.getAuthorName();
 		}

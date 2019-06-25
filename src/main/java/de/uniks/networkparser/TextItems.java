@@ -45,15 +45,15 @@ public class TextItems extends SimpleKeyValueList<String, Object>
 	private boolean replaceEmptyString = true;
 
 	public static final TextItems DEFAULT = new TextItems()
-			// Month
+			/* Month */
 			.with("JANUARY", "January").with("FEBRUARY", "February").with("MARCH", "March").with("APRIL", "April")
 			.with("MAY", "May").with("JUNE", "June").with("JULY", "July").with("AUGUST", "August")
 			.with("SEPTEMBER", "September").with("OCTOBER", "October").with("NOVEMBER", "November")
 			.with("DECEMBER", "December")
-			// Weekday
+			/* Weekday */
 			.with("SUNDAY", "Sunday").with("MONDAY", "Monday").with("TUESDAY", "Tuesday").with("WEDNESDAY", "Wednesday")
 			.with("THURSDAY", "Thursday").with("FRIDAY", "Friday").with("SATURDAY", "Saturday")
-			// ANY
+			/* ANY */
 			.with("LOAD", "Load").with("SAVE", "Save").with("SAVEAS", "Save As").with("RELOAD", "Reload")
 			.with("SEARCH", "Search").with("COLUMNS", "Columns").with("CUT", "Cut").with("RELOAD", "Reload")
 			.with("COPY", "Copy").with("PASTE", "Paste").with("SELECTALL", "Select all")
@@ -85,7 +85,7 @@ public class TextItems extends SimpleKeyValueList<String, Object>
 		if (object != null && object instanceof String) {
 			return (String) object;
 		}
-		// Not Found Check if Notification Listener
+		/* Not Found Check if Notification Listener */
 		if (listener != null) {
 			SimpleEvent simpleEvent = new SimpleEvent(this, "" + key, null, "Key not found: " + key).withType("ERROR");
 			listener.update(simpleEvent);
@@ -181,10 +181,9 @@ public class TextItems extends SimpleKeyValueList<String, Object>
 		if (object == null) {
 			return null;
 		}
-		// Add String
+		/* Add String */
 		if (object instanceof List<?>) {
-			// Additional List of same Key
-
+			/* Additional List of same Key */
 		}
 		if (this.add(label, object)) {
 			return object.toString();

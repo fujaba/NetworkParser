@@ -74,7 +74,7 @@ public class SimpleEntrySet<K, V> implements Set<Entry<K, V>> {
 		if (map == null) {
 			return null;
 		}
-		// Change to DebugInfo
+		/* Change to DebugInfo */
 		int size = this.map.size();
 		Object[] info = new Object[this.map.size()];
 		for (int i = 0; i < size; i++) {
@@ -84,7 +84,6 @@ public class SimpleEntrySet<K, V> implements Set<Entry<K, V>> {
 			info[i] = mapEntry;
 		}
 		return info;
-//		return this.map.toArray();
 	}
 
 	@Override

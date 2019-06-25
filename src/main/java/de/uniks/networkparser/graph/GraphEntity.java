@@ -142,14 +142,13 @@ public abstract class GraphEntity extends GraphMember {
 			boolean add;
 			AssociationSet allAssoc;
 			for (Association assoc : values) {
-				// Do Nothing
+				/* Do Nothing */
 				if (assoc == null || assoc.getOther() == null) {
 					continue;
 				}
 				add = true;
 
-				// If Nessesarry to search
-				// Assoc_Own - Otherclazz_Property
+				/* If Nessesarry to search Assoc_Own - Otherclazz_Property */
 
 				Association assocOther = assoc.getOther();
 				boolean mergeFlag = (assoc.getType() == AssociationTypes.ASSOCIATION
@@ -167,11 +166,11 @@ public abstract class GraphEntity extends GraphMember {
 				}
 				for (Association item : allAssoc) {
 					if (item == assoc || item.getOther() == assoc) {
-						// I Know the Assoc
+						/* I Know the Assoc */
 						add = false;
 						break;
 					}
-					// Implements new Search for Association Only Search for duplicate
+					/* Implements new Search for Association Only Search for duplicate */
 					Association itemOther = item.getOther();
 					String name = itemOther.name();
 					if (generalizationFlag && item.getClazz() == assoc.getClazz()) {
@@ -184,7 +183,7 @@ public abstract class GraphEntity extends GraphMember {
 						}
 						break;
 					}
-					// Check for Merge Association
+					/* Check for Merge Association */
 					if (mergeFlag) {
 						if (itemOther.getClazz() == assocOther.getClazz() && item.getClazz() == assoc.getClazz()) {
 							add = false;
@@ -203,7 +202,7 @@ public abstract class GraphEntity extends GraphMember {
 
 							} else if (item.getType() == AssociationTypes.EDGE
 									&& itemOther.getType() == AssociationTypes.ASSOCIATION) {
-								// Cool its Bidirectional but remove Attributes
+								/* Cool its Bidirectional but remove Attributes */
 								item.with(AssociationTypes.ASSOCIATION);
 								item.with(assoc.getName());
 								item.with(assoc.getCardinality());
@@ -219,7 +218,7 @@ public abstract class GraphEntity extends GraphMember {
 					}
 				}
 				if (add) {
-					// ADD TO PARENT MAY BE LIST
+					/* ADD TO PARENT MAY BE LIST */
 					if (this.parentNode != null) {
 						if (this.parentNode instanceof GraphModel) {
 							((GraphModel) this.parentNode).with(assoc);

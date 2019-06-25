@@ -125,9 +125,7 @@ public class AddCondition extends MatchCondition {
 
 		Match clazzMatch = matches.getClazzMatch(clazz).getOtherMatch();
 		if (clazzMatch != null) {
-//		if(clazzMatch.isMetaMatch()) {
 			Clazz destination = (Clazz) clazzMatch.getMatch();
-
 			Match add = Match.create(destination, this, GraphMember.PROPERTY_CHILD, null, member);
 			matches.addDiff(add);
 		}

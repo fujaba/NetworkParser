@@ -116,7 +116,7 @@ public class TemplateResultFile extends SortedSet<TemplateResultFragment>
 	}
 
 	public boolean addChild(SendableEntityCreator child) {
-		// FIXME FOR NON COMPARATOR
+		/* FIXME FOR NON COMPARATOR */
 		if (isComparator() == false && child instanceof TemplateResultFragment) {
 			TemplateResultFragment fragment = (TemplateResultFragment) child;
 			if (fragment.getKey() == Template.TEMPLATE) {
@@ -138,7 +138,6 @@ public class TemplateResultFile extends SortedSet<TemplateResultFragment>
 
 	@Override
 	public String put(String label, Object object) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -236,15 +235,14 @@ public class TemplateResultFile extends SortedSet<TemplateResultFragment>
 				}
 			}
 		}
-		// TODO DONT ADD CORRECTLY ADD
-		// ADD CODE
-		// Check for Existing
+		/* TODO DONT ADD CORRECTLY ADD */
+		/* ADD CODE */
+		/* Check for Existing */
 		if (code != null && code.size() > 0 && isMetaModell()) {
 			CharacterBuffer sb = new CharacterBuffer();
 			sb.with(code.getContent().toString());
-//			buffer = code.getContent();
 			TemplateResultFragment importDecl = null;
-			// REMVOE OLD SOURCE
+			/* REMOVE OLD SOURCE */
 			GraphSimpleSet children = GraphUtil.getChildren(this.member);
 
 			for (GraphMember member : children) {
@@ -266,7 +264,6 @@ public class TemplateResultFile extends SortedSet<TemplateResultFragment>
 					if (entry == null) {
 						continue;
 					}
-//					code.getSymbolEntry("ATTRIBUTE", entry.getName());
 					TemplateResultFragment part = null;
 					for (TemplateResultFragment fragment : this) {
 						if (fragment.getKey() == Template.VALUE) {
@@ -278,20 +275,8 @@ public class TemplateResultFile extends SortedSet<TemplateResultFragment>
 					}
 					if (part != null) {
 						String methodName = EntityUtil.upFirstChar(entry.getName());
-//						sb.replace(symbolEntry.getStartPos(), symbolEntry.getEndPos(), part.getValue().toString());
 						SymTabEntry startValue = code.getSymbolEntry("ATTRIBUTE",
 								"PROPERTY_" + entry.getName().toUpperCase());
-//						if(oldValue != null) {
-//							sb.replace(oldValue.getStartPos(), oldValue.getEndPos(), "");
-//						}
-//						oldValue = code.getSymbolEntry("METHOD", "get"+methodName);
-//						if(oldValue != null) {
-//							sb.replace(oldValue.getStartPos(), oldValue.getEndPos(), "");
-//						}
-//						oldValue = code.getSymbolEntry("METHOD", "set"+methodName);
-//						if(oldValue != null) {
-//							sb.replace(oldValue.getStartPos(), oldValue.getEndPos(), "");
-//						}
 						SymTabEntry oldValue = code.getSymbolEntry("METHOD", "with" + methodName);
 						if (oldValue != null && startValue != null) {
 							sb.replace(startValue.getStartPos(), oldValue.getEndPos(), part.getValue().toString());
@@ -300,15 +285,14 @@ public class TemplateResultFile extends SortedSet<TemplateResultFragment>
 
 				}
 			}
-//			SimpleEvent event = new SimpleEvent(code, "GENERATE", null, sb);
 			for (TemplateResultFragment fragment : this) {
 				if (fragment.getKey() == Template.DECLARATION) {
 					continue;
 				}
 
 				if (fragment.getKey() == Template.IMPORT) {
-					// EVALUATION IMPORT
-//					TextItems
+					/* EVALUATION IMPORT */
+					/* TextItems */
 					fragment.update();
 					importDecl = fragment;
 					continue;
@@ -332,11 +316,10 @@ public class TemplateResultFile extends SortedSet<TemplateResultFragment>
 					}
 
 					if (symbolEntry == null) {
-						// did not find it: append it
+						/* did not find it: append it */
 						int pos = code.getEndOfBody();
 						sb.replace(pos, pos, fragment.getValue().toString());
 					}
-//					sb.append(fragment.getValue().toString());
 				}
 			}
 
@@ -354,8 +337,8 @@ public class TemplateResultFile extends SortedSet<TemplateResultFragment>
 				continue;
 			}
 			if (fragment.getKey() == Template.IMPORT) {
-				// EVALUATION IMPORT
-//				TextItems
+				/* EVALUATION IMPORT */
+				/* TextItems */
 				fragment.update();
 			}
 			buffer.with(fragment.getValue());

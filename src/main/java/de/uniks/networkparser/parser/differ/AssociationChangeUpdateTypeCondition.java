@@ -46,7 +46,6 @@ public class AssociationChangeUpdateTypeCondition extends MatchCondition {
 			if (oldAssociation.getClazz().getName() != newAssociation.getClazz().getName()
 					|| (oldAssociation.getClazz().getName().equals(newAssociation.getClazz().getName())
 							&& oldAssociation.getType().equals(AssociationTypes.EDGE))) {
-//				GraphDiff removeOther = GraphDiff.create(newAssociation.getOtherClazz(), SendableEntityCreator.UPDATE, this, newAssociation.getOther(), null);
 				Match removeOther = Match.create(newAssociation.getOtherClazz(), this, Clazz.PROPERTY_ASSOCIATION,
 						newAssociation.getOther(), null);
 

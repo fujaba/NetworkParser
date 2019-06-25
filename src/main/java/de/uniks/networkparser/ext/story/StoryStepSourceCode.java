@@ -88,15 +88,15 @@ public class StoryStepSourceCode implements ObjectCondition {
 			equalsPos = startPos;
 		}
 		if (equalsPos >= 0) {
-			// Steps
+			/* Steps */
 			if (stepOverPackageName > 0 && equalsPos + stepOverPackageName < stackTrace.length) {
 				ste = stackTrace[equalsPos + stepOverPackageName];
 			} else {
 				ste = stackTrace[equalsPos];
 			}
 			if (this.methodName == null) {
-				// StartLine
-				// REWRITE METHOD
+				/* StartLine */
+				/* REWRITE METHOD */
 				String full = ste.getClassName();
 				int pos = full.lastIndexOf('.');
 				if (pos > 0) {
@@ -113,7 +113,7 @@ public class StoryStepSourceCode implements ObjectCondition {
 			String name = ste.getClassName();
 			return name + ".java:" + ste.getLineNumber();
 		}
-		// Argh not found
+		/* Argh not found */
 		return "";
 	}
 
@@ -151,7 +151,7 @@ public class StoryStepSourceCode implements ObjectCondition {
 
 	boolean checkEnd(int linePos, CharacterBuffer line, FileBuffer fileBuffer) {
 		if (endLine < 0 && FORMAT_JAVA.equals(format)) {
-			// End of Method
+			/* End of Method */
 			return linePos >= this.endLine && line.equalsText('}');
 		} else if (endLine > 0) {
 			return (linePos > this.endLine);
@@ -178,7 +178,7 @@ public class StoryStepSourceCode implements ObjectCondition {
 		if (startLine == -1) {
 			this.format = FORMAT_JAVA;
 		} else {
-			// First Line
+			/* First Line */
 			line = analyseLine(line);
 			if (this.format == null) {
 				char firstChar = line.getCurrentChar();
@@ -269,7 +269,7 @@ public class StoryStepSourceCode implements ObjectCondition {
 		if (story != null) {
 			for (String item : HTMLEntity.CODEESOURCES) {
 				if (element.getHeader(item) == null) {
-					// DEFAULT TO EXTRACT TO DOC-FOLDER
+					/* DEFAULT TO EXTRACT TO DOC-FOLDER */
 					Story.addScript(story.getPath(), item, element);
 				}
 			}
@@ -279,7 +279,7 @@ public class StoryStepSourceCode implements ObjectCondition {
 		XMLEntity pre = element.createTag("pre", element.getBody());
 		XMLEntity code = element.createTag("code", pre);
 		if (this.endLine < 1 && this.currentLine > 0) {
-			// Body is Empty add the full method
+			/* Body is Empty add the full method */
 			readFile();
 		}
 		if (this.body == null) {

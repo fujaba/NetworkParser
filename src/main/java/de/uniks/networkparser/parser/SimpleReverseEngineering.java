@@ -19,7 +19,7 @@ public class SimpleReverseEngineering implements ObjectCondition {
 		if (lists == null) {
 			return true;
 		}
-		// Simple Reverse Engineering
+		/* Simple Reverse Engineering */
 		int i;
 		SimpleList<ParserEntity> entities = new SimpleList<ParserEntity>();
 		for (i = 0; i < lists.size(); i++) {
@@ -32,7 +32,7 @@ public class SimpleReverseEngineering implements ObjectCondition {
 			}
 		}
 
-		// Merge Assoc
+		/* Merge Assoc */
 		SimpleList<Association> assocList = new SimpleList<Association>();
 		SimpleKeyValueList<Clazz, Clazz> generations = new SimpleKeyValueList<Clazz, Clazz>();
 		for (i = 0; i < entities.size(); i++) {
@@ -42,7 +42,7 @@ public class SimpleReverseEngineering implements ObjectCondition {
 
 			symbolEntries = entity.getSymbolEntries(SymTabEntry.TYPE_EXTENDS);
 			if (symbolEntries != null && symbolEntries.size() == 1) {
-				// Java Extends
+				/* Java Extends */
 				String name = symbolEntries.get(0).getName();
 				Clazz otherClazz = (Clazz) model.getChildByName(name, Clazz.class);
 				if (otherClazz != null) {
@@ -71,7 +71,7 @@ public class SimpleReverseEngineering implements ObjectCondition {
 				String name = symbolEntry.getName();
 				Clazz otherClazz = (Clazz) model.getChildByName(dataType, Clazz.class);
 				if (otherClazz != null) {
-					// Association
+					/* Association */
 					Association assoc = new Association(otherClazz).with(Association.ONE).with(name);
 					assoc.with(AssociationTypes.UNDIRECTIONAL);
 					Association otherAssoc = new Association(clazz).with(AssociationTypes.EDGE);
@@ -81,11 +81,11 @@ public class SimpleReverseEngineering implements ObjectCondition {
 				}
 				String simpleType = dataType.toLowerCase();
 				if (simpleType.startsWith("set<")) {
-					// MANY ASSOCATION OR ATTRIBUTE
+					/* MANY ASSOCATION OR ATTRIBUTE */
 					String clazzName = dataType.substring(4, dataType.length() - 1);
 					otherClazz = (Clazz) model.getChildByName(clazzName, Clazz.class);
 
-					// Its is a Assoc
+					/* Its is a Assoc */
 					if (otherClazz != null) {
 						Association assoc = new Association(otherClazz).with(Association.MANY).with(name);
 						assoc.with(AssociationTypes.UNDIRECTIONAL);
@@ -98,19 +98,19 @@ public class SimpleReverseEngineering implements ObjectCondition {
 					}
 					continue;
 				}
-				// Parsing simple Attributes
+				/* Parsing simple Attributes */
 				if (DataType.STRING.equals(simpleType)) {
-					// Its a String
+					/* Its a String */
 					clazz.createAttribute(name, DataType.STRING);
 				} else if (DataType.INT.equals(simpleType)) {
-					// Its a String
+					/* Its a String */
 					clazz.createAttribute(name, DataType.INT);
 				} else if (DataType.DOUBLE.equals(simpleType)) {
-					// Its a String
+					/* Its a String */
 					clazz.createAttribute(name, DataType.DOUBLE);
 				} else if (DataType.DATE.equals(simpleType)
 						|| DataType.DATE.getName(true).equalsIgnoreCase(simpleType)) {
-					// Its a String
+					/* Its a String */
 					clazz.createAttribute(name, DataType.DATE);
 				} else {
 					System.out.println(symbolEntry.getDataType() + ":" + symbolEntry.getName());
@@ -118,9 +118,9 @@ public class SimpleReverseEngineering implements ObjectCondition {
 			}
 		}
 
-		// Last Step is to find Bidirectional Associaton
+		/* Last Step is to find Bidirectional Associaton */
 		for (i = assocList.size() - 1; i >= 0; i--) {
-			// Try to make bidrection Assoc and
+			/* Try to make bidrection Assoc and */
 			Association valueAssoc = assocList.get(i);
 			if (valueAssoc == null) {
 				continue;
@@ -136,7 +136,7 @@ public class SimpleReverseEngineering implements ObjectCondition {
 			}
 		}
 
-		// Add all Assoc to Clazzes
+		/* Add all Assoc to Clazzes */
 		for (i = assocList.size() - 1; i >= 0; i--) {
 			Association valueAssoc = assocList.get(i);
 			if (valueAssoc == null) {
@@ -150,7 +150,7 @@ public class SimpleReverseEngineering implements ObjectCondition {
 			GraphUtil.withChildren(otherAssoc.getClazz(), otherAssoc);
 		}
 
-		// Add Generation
+		/* Add Generation */
 		for (i = 0; i < generations.size(); i++) {
 			Clazz clazz = generations.getKeyByIndex(i);
 			Clazz otherClazz = generations.getValueByIndex(i);

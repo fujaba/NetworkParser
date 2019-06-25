@@ -47,8 +47,8 @@ public class TableComponent extends Control {
 
 	protected SendableEntityCreator sourceCreator;
 
-	// bridge.load({class:"table", property:"talk", columns:[{id:'room'},
-	// {id:'day'}, {id:'talk'}, {id:'state'}], searchColumns:["day", "talk"]});
+	/* bridge.load({class:"table", property:"talk", columns:[{id:'room'},
+	 {id:'day'}, {id:'talk'}, {id:'state'}], searchColumns:["day", "talk"]}); */
 
 	public TableComponent() {
 		super();
@@ -94,25 +94,25 @@ public class TableComponent extends Control {
 		}
 		return changed;
 	}
-	// showScrollbar(TableViewFX)
-	// withSearchProperties(String...)
-	// removeItem(Object)
-	// withList(Object, String)
-	// getColumn(Column)
-	// getProperty()
-	// propertyChange(PropertyChangeEvent)
-	// getColumnIterator()
-	// getCreator(Object)
-	// getElement(int)
-	// getItems()
-	// getColumns()
-	// changed(ObservableValue<? extends Number>, Number, Number)
-	// getFieldFactory()
-	// withCounterColumn(Column)
-	// getSelection()
-	// saveColumns()
-	// loadColumns(JsonArray, boolean)
-	// addItemsFromPropertyChange(SendableEntity, String, String)
+	/* showScrollbar(TableViewFX) */
+	/* withSearchProperties(String...) */
+	/* removeItem(Object) */
+	/* withList(Object, String) */
+	/* getColumn(Column) */
+	/* getProperty() */
+	/* propertyChange(PropertyChangeEvent) */
+	/* getColumnIterator() */
+	/* getCreator(Object) */
+	/* getElement(int) */
+	/* getItems() */
+	/* getColumns() */
+	/* changed(ObservableValue<? extends Number>, Number, Number) */
+	/* getFieldFactory() */
+	/* withCounterColumn(Column) */
+	/* getSelection() */
+	/* saveColumns() */
+	/* loadColumns(JsonArray, boolean) */
+	/* addItemsFromPropertyChange(SendableEntity, String, String) */
 
 	public TableComponent withMap(IdMap map) {
 		return this;
@@ -173,8 +173,6 @@ public class TableComponent extends Control {
 	@Override
 	public boolean setValue(String key, Object value) {
 		if (PROPERTY_COLUMNS.equals(key)) {
-//			if(value instanceof Control) {
-//				return this.addColumn((Control)value);
 			if (value instanceof Column[]) {
 				return this.addColumn((Column[]) value);
 			} else if (value instanceof Collection<?>) {

@@ -56,7 +56,7 @@ public class Attribute extends Value {
 		return this;
 	}
 
-	// Redirect
+	/* Redirect */
 	@Override
 	public Attribute with(String value) {
 		super.with(value);

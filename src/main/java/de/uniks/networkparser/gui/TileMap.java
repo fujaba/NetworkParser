@@ -278,7 +278,7 @@ public class TileMap implements SendableEntityCreatorTag {
 			return true;
 		}
 		if (TILESET_TILE.equalsIgnoreCase(attribute)) {
-			// Complex Child Layer
+			/* Complex Child Layer */
 			XMLEntity tileSet = (XMLEntity) value;
 			if (tileSet.sizeChildren() == 1) {
 				XMLEntity imageXML = (XMLEntity) tileSet.getChild(0);
@@ -289,13 +289,12 @@ public class TileMap implements SendableEntityCreatorTag {
 				image.height = imageXML.getInt("height");
 				image.source = imageXML.getString("source");
 				image.name = imageXML.getString("name");
-				// columns = count / width
 				map.images.add(image);
 			}
 			return true;
 		}
 		if (TILESET_LAYER.equalsIgnoreCase(attribute)) {
-			// Complex Child Layer
+			/* Complex Child Layer */
 			XMLEntity layer = (XMLEntity) value;
 			if (layer.sizeChildren() == 1) {
 				XMLEntity data = (XMLEntity) layer.getChild(0);

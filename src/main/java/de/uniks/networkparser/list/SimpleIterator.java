@@ -11,8 +11,10 @@ import java.util.NoSuchElementException;
  * @author Stefan Lindel
  */
 public class SimpleIterator<E> implements ListIterator<E> {
-	private int cursor; // index of next element to return
-	private int lastRet; // index of last element returned; -1 if no such
+	/** index of next element to return */
+	private int cursor;
+	/** index of last element returned; -1 if no such */
+	private int lastRet;
 	private AbstractArray<E> list;
 	private int checkPointer = -1;
 

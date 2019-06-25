@@ -163,7 +163,7 @@ public class TemplateResultFragment
 				}
 				return false;
 			} else {
-				// Check Stack
+				/* Check Stack */
 				this.value.withObjects(result);
 				if (this.stack != null) {
 					Object last = this.stack.last();
@@ -226,17 +226,15 @@ public class TemplateResultFragment
 
 	public boolean setParent(SendableEntityCreator value) {
 		if (this.parent != value) {
-//			TemplateInterface oldValue = this.parent;
 			if (this.parent != null) {
 				this.parent = null;
-				// oldValue.remove(this);
 			}
 			this.parent = value;
 
 			if (value != null) {
 				value.setValue(value, PROPERTY_CHILD, this, SendableEntityCreator.NEW);
 			}
-			// firePropertyChange(PROPERTY_ROOM, oldValue, value);
+			/* firePropertyChange(PROPERTY_ROOM, oldValue, value); */
 			return true;
 		}
 		return false;
@@ -389,7 +387,7 @@ public class TemplateResultFragment
 		TemplateResultFragment element = (TemplateResultFragment) entity;
 
 		if (FINISH_GENERATE.equalsIgnoreCase(attribute)) {
-			// NOTIFY GRAPHMEMBER
+			/* NOTIFY GRAPHMEMBER */
 			ObjectCondition role = GraphUtil.getRole(element.member);
 			if (role != null) {
 				role.update(value);
@@ -453,14 +451,14 @@ public class TemplateResultFragment
 
 	@Override
 	public String getText(CharSequence label, Object model, Object gui) {
-		// Global Variables
+		/* Global Variables */
 		if (this.variables != null) {
 			String value = variables.getText(label, model, gui);
 			if (value != null) {
 				return value;
 			}
 		}
-		// Global Variables
+		/* Global Variables */
 		TemplateResultModel templateModel = getTemplateModel();
 		if (templateModel != null) {
 			String value = templateModel.getText(label, null, null);

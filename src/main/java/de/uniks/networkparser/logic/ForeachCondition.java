@@ -50,9 +50,7 @@ public class ForeachCondition implements ParserCondition {
 			if (expression instanceof ParserCondition && value instanceof LocalisationInterface) {
 				ParserCondition parser = (ParserCondition) expression;
 				Object object = parser.getValue((LocalisationInterface) value);
-//
 				LocalisationInterface variablen = (LocalisationInterface) value;
-//				Object object = creator.getValue(variablen);
 				if (object instanceof Collection<?>) {
 					Collection<?> collection = (Collection<?>) object;
 					int pos = 0;
@@ -84,7 +82,6 @@ public class ForeachCondition implements ParserCondition {
 
 	@Override
 	public void create(CharacterBuffer buffer, TemplateParser parser, LocalisationInterface customTemplate) {
-//		this.expression = StringCondition.create(buffer.nextToken(false, SPLITEND));
 		buffer.skipChar(SPACE);
 		this.expression = parser.parsing(buffer, customTemplate, true, true);
 
@@ -97,7 +94,7 @@ public class ForeachCondition implements ParserCondition {
 		}
 		buffer.skipChar(SPLITEND);
 
-		// Add Children
+		/* Add Children */
 		this.loop = parser.parsing(buffer, customTemplate, false, true, "endfor");
 		buffer.skipChar(SPLITEND);
 		if (buffer.getCurrentChar() != SPLITEND) {

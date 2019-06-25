@@ -54,7 +54,7 @@ public class ArtifactFile implements SendableEntityCreatorTag, BaseItem, Compara
 
 	public String hash = "";
 	public String coverage = "";
-	// SCOPE public String branch = "";
+	/* SCOPE public String branch = ""; */
 	public String prefix = "";
 	public boolean latest;
 
@@ -421,7 +421,7 @@ public class ArtifactFile implements SendableEntityCreatorTag, BaseItem, Compara
 		for (String property : getProperties()) {
 			Object child = getChild(xmlEntity, property);
 			if (PROPERTY_DEPENDENCIES.equals(property) && child != null) {
-				// Parse Dependency
+				/* Parse Dependency */
 				XMLEntity children = (XMLEntity) child;
 				for (int i = 0; i < children.size(); i++) {
 					BaseItem dependency = children.getChild(i);
@@ -495,7 +495,6 @@ public class ArtifactFile implements SendableEntityCreatorTag, BaseItem, Compara
 		return index;
 	}
 
-//	public static final ArtifactFile createContext(String version, String artifactId) {
 	public static final ArtifactFile createContext(String fileName, String groupId, String time) {
 		ArtifactFile artifactFile = new ArtifactFile();
 		if (fileName == null) {
@@ -506,7 +505,7 @@ public class ArtifactFile implements SendableEntityCreatorTag, BaseItem, Compara
 		String defaultClassifier = "jar";
 		fileName = fileName.replace('\\', '/');
 		if (fileName.indexOf("/") > 0) {
-			// YEAH FILENAME
+			/* YEAH FILENAME */
 			int last = fileName.lastIndexOf('.');
 			int path = fileName.lastIndexOf('/');
 			if (path < 0) {
@@ -519,11 +518,11 @@ public class ArtifactFile implements SendableEntityCreatorTag, BaseItem, Compara
 			if (defaultClassifier.equalsIgnoreCase("asc")) {
 				return null;
 			}
-			// REMOVE EXTENSION
+			/* REMOVE EXTENSION */
 			fileName = fileName.substring(path + 1, last);
 
 		}
-		// Find ArtifactId
+		/* Find ArtifactId */
 		len = fileName.indexOf("-");
 		if (len > 0) {
 			artifactFile.artifactId = fileName.substring(0, len);
@@ -534,7 +533,7 @@ public class ArtifactFile implements SendableEntityCreatorTag, BaseItem, Compara
 			artifactFile.withVersion(fileName.substring(0, len));
 			fileName = fileName.substring(len + 1);
 		} else {
-			// MUST BE RELASE AND NO CLASSIFIER
+			/* MUST BE RELASE AND NO CLASSIFIER */
 			artifactFile.withVersion(fileName);
 			fileName = defaultClassifier;
 		}
@@ -546,7 +545,7 @@ public class ArtifactFile implements SendableEntityCreatorTag, BaseItem, Compara
 				fileName = fileName.substring(SNAPSHOT.length() + 1);
 			}
 		}
-		// REST IS CLASSIFIER
+		/* REST IS CLASSIFIER */
 		artifactFile.classifier.add(fileName);
 		artifactFile.time = time;
 

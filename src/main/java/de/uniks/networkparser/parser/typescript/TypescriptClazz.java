@@ -3,8 +3,8 @@ package de.uniks.networkparser.parser.typescript;
 import de.uniks.networkparser.parser.Template;
 
 public class TypescriptClazz extends Template {
-	// TODO return superclazzes and interfaces, to add proper imports via short
-	// clazz name
+	/* TODO return superclazzes and interfaces, to add proper imports via short */
+	/* clazz name */
 	public TypescriptClazz() {
 		this.id = TYPE_TYPESCRIPT + ".clazz";
 		this.fileType = "clazz";
@@ -17,7 +17,6 @@ public class TypescriptClazz extends Template {
 				"{", "{{#template TEMPLATEEND}}}{{#endtemplate}}");
 
 		this.addTemplate(new TypescriptAttribute(), true);
-		// TODO add classes
 //		this.addGenerator(new TypesriptAssociation());
 //		this.addGenerator(new TypescriptMethod());
 	}

@@ -31,12 +31,12 @@ public class JavaSetAssociation extends Template {
 				"			return result;",
 				"		}",
 				"		for ({{file.member.name}} obj : this) {",
-				// TO ONE CARDINALITY
+/* TO ONE CARDINALITY */
 				"{{#if {{other.cardinality}}==1}}", "			{{other.clazz.name}} item = obj.get{{other.Name}}();",
 				"			if(item != null) {", "				for(int i=0;i<filter.length;i++) {",
 				"					if (item.equals(filter[i])) {", "						result.add(item);",
 				"						break;", "					}", "				}", "			}", "{{#else}}",
-				// TO MANY CARDINALITY
+/* TO MANY CARDINALITY */
 				"			{{other.clazz.name}}Set item = obj.get{{other.Name}}();", "			if(item != null) {",
 				"				for(int i=0;i<filter.length;i++) {",
 				"					if (item.contains(filter[i])) {", "						result.add(filter[i]);",

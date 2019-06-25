@@ -244,14 +244,13 @@ public class GraphMatcher extends GraphEntity {
 		if (oldMatch != null) {
 			oldMatch.withOtherMatch(newMatch);
 		}
-		// COPY ALL TO NEW
+		/* COPY ALL TO NEW */
 //		newMatch.withMetaParent(oldMatch.getMetaParent());
 //		newMatch.withParent(oldMatch.getParent());
 //		newMatch.withSourceParent(oldMatch.getSourceParent());
 //		if(newMatch.getSourceParent() != null) {
 //			newMatch.withSourceMatch(true);
 //		}
-
 //		if(oldMatch.isMetaMatch()) {
 //			newMatch.withMetaMatch(true);
 //		}
@@ -293,10 +292,7 @@ public class GraphMatcher extends GraphEntity {
 //			possibleLinks.remove(this.getMethodMatch(oldMethod));
 //		}
 //	}
-//	
 
-//	
-//	
 	private boolean matchAttributes(Clazz oldClazz, Clazz newClazz) {
 		if (oldClazz == null || newClazz == null) {
 			return false;

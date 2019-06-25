@@ -57,7 +57,11 @@ public class MatchCondition implements ObjectCondition {
 		return null;
 	}
 
-	// For Groups
+	/** For Groups
+	 * @param matches The Matches
+	 * @param match The Current Match
+	 * @return success
+	 */
 	protected boolean checkCondition(GraphMatcher matches, Match match) {
 		return true;
 	}

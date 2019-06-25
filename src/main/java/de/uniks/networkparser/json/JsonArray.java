@@ -197,7 +197,7 @@ public class JsonArray extends SortedList<Object> implements EntityList {
 		if (!isVisible()) {
 			return "[" + size() + " Items]";
 		}
-		// First Element
+		/* First Element */
 		converter.add();
 		StringBuilder sb = new StringBuilder().append(START).append(converter.getPrefix());
 		Object element = iterator.next();

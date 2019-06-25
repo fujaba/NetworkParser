@@ -69,7 +69,6 @@ public class ChangeAddCondition extends MatchCondition {
 		if (match == null || matches == null || match.getOtherMatch() == null) {
 			return false;
 		}
-//		GraphMember oldAttribute = match.getSourceMatch();
 		GraphMember oldMatch = match.getOtherMatch().getMatch();
 		GraphMember newMatch = match.getMatch();
 		Clazz oldClazz = oldMatch.getClazz();

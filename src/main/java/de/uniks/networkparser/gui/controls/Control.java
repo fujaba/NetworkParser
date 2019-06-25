@@ -159,18 +159,4 @@ public abstract class Control extends SimpleObject {
 	}
 
 	public abstract Control newInstance();
-
-//	public void fireEvent(String method, Object value) {
-//		if (!this.events.containsKey(method)) {
-//			return;
-//		}
-//		List<UpdateListener> list = this.eventListeners.get(method);
-//		if (list == null) {
-//			return;
-//		}
-//
-//		for (UpdateListener updateListener : list) {
-//			updateListener.update(value);
-//		}
-//	}
 }

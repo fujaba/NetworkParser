@@ -125,7 +125,6 @@ public class Not implements ParserCondition, SendableEntityCreator {
 
 	@Override
 	public Object getValue(LocalisationInterface variables) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

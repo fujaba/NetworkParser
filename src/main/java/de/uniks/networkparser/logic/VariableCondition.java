@@ -65,19 +65,22 @@ public class VariableCondition implements ParserCondition {
 		this.value = value;
 		return this;
 	}
-	// key = Variable
-	// value = String
-
-	// variable = string
-	// Variable = String
-	// VARIABLE = STRING
-	// vAriable = nix
-	// Variable#Function
+	/** GetValue
+	* key = Variable
+	* value = String
+	* variable = string
+	* Variable = String
+	* VARIABLE = STRING
+	* vAriable = nix
+	* Variable#Function
+	* @param value text Dictionary
+	* @return The EvaluationValue
+	**/
 	public Object getValue(LocalisationInterface value) {
 		if (value instanceof SendableEntityCreator) {
 			SendableEntityCreator variables = (SendableEntityCreator) value;
 			String key = this.value.toString();
-			// SWITCH FOR #
+			/* SWITCH FOR # */
 			int pos = key.indexOf('#');
 			String v = null;
 			String format = null;
@@ -104,7 +107,7 @@ public class VariableCondition implements ParserCondition {
 				object = ((DataType) object).getName(shortName);
 			}
 			if (object instanceof Annotation) {
-				// Check for Scope
+				/* Check for Scope */
 				Annotation anno = (Annotation) object;
 				CharacterBuffer buffer = new CharacterBuffer();
 				addAnnotation(anno, buffer, param, variables);
@@ -121,7 +124,7 @@ public class VariableCondition implements ParserCondition {
 				return replaceText(v, format, (String) object);
 			}
 			if (object instanceof Set<?> && format != null) {
-				// Check for Contains
+				/* Check for Contains */
 				Set<?> items = (Set<?>) object;
 				int endPos = format.indexOf(")");
 				String temp = null;
@@ -140,9 +143,6 @@ public class VariableCondition implements ParserCondition {
 					return null;
 				}
 			}
-//			if (object instanceof Boolean) {
-//				return "" + object;
-//			}
 			return object;
 		}
 		if (value != null && this.value != null) {
@@ -184,9 +184,9 @@ public class VariableCondition implements ParserCondition {
 		boolean small = false;
 		int startIndex;
 		int i;
-		// other.NAME
+		/* other.NAME */
 		startIndex = name.lastIndexOf('.');
-		// startIndex is last '.' therefore next proper index is startIndex + 1
+		/* startIndex is last '.' therefore next proper index is startIndex + 1 */
 		startIndex++;
 		for (i = startIndex; i < name.length(); i++) {
 			if (name.charAt(i) >= 'A' && name.charAt(i) <= 'Z') {
@@ -197,7 +197,6 @@ public class VariableCondition implements ParserCondition {
 				small = true;
 			}
 		}
-//		if ((small && upper==false) || "tolower".equalsIgnoreCase(format)) {
 		if ("tolower".equalsIgnoreCase(format)) {
 			return value.toLowerCase();
 		}

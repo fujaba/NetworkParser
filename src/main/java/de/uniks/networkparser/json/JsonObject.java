@@ -218,7 +218,7 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements En
 		if (values.length % 2 == 0) {
 			for (int z = 0; z < values.length; z += 2) {
 				if (values[z + 1] != null) {
-					// Only add value != null
+					/* Only add value != null */
 					put(values[z], values[z + 1]);
 				}
 			}
@@ -313,7 +313,7 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements En
 
 	public JsonObject withKeyValue(String key, Object value) {
 		if (value != null) {
-			// Only add value != null
+			/* Only add value != null */
 			int index = indexOf(key);
 			if (index >= 0) {
 				setValueItem(key, value);
@@ -359,10 +359,6 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements En
 		if (comment == null) {
 			return this;
 		}
-//		int multiLine = comment.indexOf('\n');
-//		if(multiLine>0) {
-//			
-//		}
 		this.withAllowDuplicate(true);
 		this.withAllowEmptyValue(true);
 		this.add(null, comment);

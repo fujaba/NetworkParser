@@ -131,7 +131,7 @@ public class Method extends GraphMember {
 			sb.with(param.getType().getName(shortName));
 			if (param.isArray()) {
 				if (optimizeArray && i == collection.size() - 1) {
-					// Check for array at least
+					/* Check for array at least */
 					sb.with("...");
 				} else {
 					sb.with("[]");

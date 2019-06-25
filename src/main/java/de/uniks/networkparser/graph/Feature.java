@@ -42,13 +42,13 @@ public class Feature implements Comparable<Feature> {
 	private String name;
 	private boolean reference;
 
-	// Constructor for Reference
+	/* Constructor for Reference */
 	protected Feature(String name) {
 		this.name = name;
 		this.reference = true;
 	}
 
-	// Real Constructor
+	/* Real Constructor */
 	public Feature(Feature ref) {
 		if (ref != null) {
 			this.name = ref.getName();
@@ -96,7 +96,6 @@ public class Feature implements Comparable<Feature> {
 	public static final Feature SOURCECODE = new Feature("SOURCECODE");
 
 	public static final Feature GENCODE = new Feature("GENCODE");
-	// EMFSTYLE, // For Generate EMF-Style
 
 	public static final FeatureSet allGenerateFlags = new FeatureSet().with(PROPERTYCHANGESUPPORT, SERIALIZATION,
 			SETCLASS, JUNIT, PATTERN, DYNAMICVALUES, CODESTYLE);
@@ -153,7 +152,7 @@ public class Feature implements Comparable<Feature> {
 			return this;
 		}
 		if (value.length > 0) {
-			// remove ALL
+			/* remove ALL */
 			includeClazz.remove(ALL);
 		}
 		for (String item : value) {
@@ -172,7 +171,7 @@ public class Feature implements Comparable<Feature> {
 			return this;
 		}
 		if (value.length > 0) {
-			// remove ALL
+			/* remove ALL */
 			includeClazz.remove(ALL);
 		}
 		for (Clazz item : value) {
@@ -199,7 +198,7 @@ public class Feature implements Comparable<Feature> {
 	}
 
 	public boolean match(String clazzName) {
-		// if Clazz is positive
+		/* if Clazz is positive */
 		boolean result = false;
 		if (this.classValue != null) {
 			return this.classValue.getName().equals(clazzName);

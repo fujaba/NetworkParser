@@ -73,9 +73,6 @@ public class RemoveCondition extends MatchCondition {
 					return false;
 				}
 			}
-//			if (match.getMetaParent() == match.getOtherMatch().getMetaParent()) {
-//				return false;
-//			}
 		}
 
 		return true;

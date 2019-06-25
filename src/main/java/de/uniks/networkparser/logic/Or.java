@@ -34,7 +34,7 @@ public class Or extends ListCondition {
 		ObjectCondition expression = parser.parsing(buffer, customTemplate, true, true, "endor");
 		this.with(expression);
 
-		// SKIP TO END
+		/* SKIP TO END */
 		buffer.skipTo(SPLITEND, false);
 		buffer.skip();
 		buffer.skip();

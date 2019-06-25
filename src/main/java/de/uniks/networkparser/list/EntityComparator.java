@@ -187,7 +187,7 @@ public class EntityComparator<V> implements Comparator<V> {
 	 * @return Int value < 0 o1 is smaller 0 o1 == o2 o1 is the same 1 o2 is bigger
 	 */
 	private int checkIntern(Object o1, Object o2) {
-		// SAME OBJECT MUST BE 0
+		/* SAME OBJECT MUST BE 0 */
 		if (o2 == null) {
 			if (o1 == null) {
 				return 0;
@@ -205,13 +205,13 @@ public class EntityComparator<V> implements Comparator<V> {
 			return owner.indexOf(o1) - owner.indexOf(o2);
 		}
 
-		// KEY IN IDMAP
+		/* KEY IN IDMAP */
 		if (IDMAP.equalsIgnoreCase(column) && map != null) {
 			String v1 = map.getId(o1, false);
 			String v2 = map.getId(o2, false);
 			return v1.compareTo(v2);
 		}
-		// HASHCODE
+		/* HASHCODE */
 		if (o1.hashCode() < o2.hashCode()) {
 			return 1;
 		}

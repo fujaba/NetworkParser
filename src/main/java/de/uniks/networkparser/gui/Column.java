@@ -213,10 +213,6 @@ public class Column implements SendableEntityCreatorNoIndex, CellHandler {
 		return this;
 	}
 
-//	public EntityValueFactory getCellValueCreator() {
-//		return new EntityValueFactory();
-//	}
-
 	public boolean isVisible() {
 		return isVisible;
 	}
@@ -425,12 +421,9 @@ public class Column implements SendableEntityCreatorNoIndex, CellHandler {
 							oldStyle.setValue(oldStyle, prop, style.getValue(style, prop), SendableEntityCreator.NEW);
 						}
 					}
-					// for(StyleCrea)
 				} else {
 					that.withStyle((Style) value);
 				}
-//			} else {
-//				System.out.println("FIXME");
 			}
 			return true;
 		}

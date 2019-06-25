@@ -101,7 +101,6 @@ public class Dice extends SendableItem implements SendableEntityCreator {
 
 	@Override
 	public Object getSendableInstance(boolean prototyp) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 }

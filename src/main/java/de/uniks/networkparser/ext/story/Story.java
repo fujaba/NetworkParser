@@ -122,9 +122,11 @@ public class Story extends StoryElement implements Comparable<Story> {
 	 * Add JavaCode to Story board
 	 *
 	 * @param className ClassName of SourceCOde
-	 * @param position  Position of Code StartPosition, Endposition if positon ==
-	 *                  null Full Method StartPosition == -1 // Start at Method
-	 *                  EndPosition == -1 End of Method EndPosition == 0 End of File
+	 * @param position  Position of Code StartPosition, Endposition 
+	 *                  if positon == null Full Method 
+	 *                  StartPosition == -1   Start at Method
+	 *                  EndPosition == -1 End of Method
+	 *                  EndPosition == 0 End of File
 	 * @return the SourceCodeStep
 	 */
 	public StoryStepSourceCode addSourceCode(Class<?> className, int... position) {
@@ -147,9 +149,11 @@ public class Story extends StoryElement implements Comparable<Story> {
 	/**
 	 * Add JavaCode to Story board
 	 *
-	 * @param position Position of Code StartPosition, Endposition if positon ==
-	 *                 null Full Method StartPosition == -1 // Start at Method
-	 *                 EndPosition == -1 End of Method EndPosition == 0 End of File
+	 * @param position Position of Code StartPosition, Endposition
+	 *                 if positon == null Full Method 
+	 *                 StartPosition == -1  Start at Method
+	 *                 EndPosition == -1 End of Method
+	 *                 EndPosition == 0 End of File
 	 * @return the SourceCodeStep
 	 */
 	public StoryStepSourceCode addSourceCode(int... position) {

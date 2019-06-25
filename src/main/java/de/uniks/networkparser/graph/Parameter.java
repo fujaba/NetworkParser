@@ -48,7 +48,7 @@ public class Parameter extends Value {
 		return (Method) this.parentNode;
 	}
 
-	// Redirect
+	/* Redirect */
 	@Override
 	public Parameter with(String string) {
 		super.with(string);

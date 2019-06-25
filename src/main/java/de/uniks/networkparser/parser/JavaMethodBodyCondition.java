@@ -58,10 +58,10 @@ public class JavaMethodBodyCondition extends CustomCondition<Method> {
 			result = method.getBody();
 		}
 
-		// Check for {}
+		/* Check for {} */
 		String trim = result.trim();
 		if (trim.startsWith("{") && trim.endsWith("}")) {
-			// Its Ok full body
+			/* Its Ok full body */
 			return result;
 		}
 		return "    {" + BaseItem.CRLF + "      " + result + BaseItem.CRLF + "    }" + BaseItem.CRLF;

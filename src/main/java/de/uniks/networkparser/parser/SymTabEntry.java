@@ -63,12 +63,12 @@ public class SymTabEntry {
 	private SymTabEntry next;
 	private SymTabEntry prev;
 
-	// SDMLIb Parser
+	/* SDMLIb Parser */
 	private int startPos;
 	private int endPos;
 	private int annotationsStartPos;
-//	private int preCommentStartPos;
-//	private int preCommentEndPos;
+/*	private int preCommentStartPos; */
+/*	private int preCommentEndPos; */
 	private String modifiers;
 	private String throwsTags;
 	private String annotations;
@@ -77,8 +77,8 @@ public class SymTabEntry {
 
 	private int annotationsEndPos;
 	private int bodyStartPos;
-	private String dataType; // DataType of Attribute or ReturnType of Method
-	private String params; // Parameter of Methods
+	private String dataType; /* DataType of Attribute or ReturnType of Method */
+	private String params; /* Parameter of Methods */
 	private SourceCode parent;
 	private String body;
 

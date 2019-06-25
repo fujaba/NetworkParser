@@ -15,7 +15,6 @@ public class MethodChangeUpdateTypeCondition extends MatchCondition {
 	@Override
 	protected boolean checkFileCondition(GraphMatcher matches, Match match) {
 		Method oldMethod = (Method) match.getMatch();
-//		Method newMethod = (Method) match.getSourceParent();
 		Method newMethod = (Method) match.getOtherMatch().getMatch();
 
 		if (matches.getMetaModel() == null) {

@@ -3,8 +3,8 @@ package de.uniks.networkparser.parser.typescript;
 import de.uniks.networkparser.parser.Template;
 
 public class TypescriptAttribute extends Template {
-	// TODO adjust java based attribute names to Number, String and boolean
-	// TODO fix or statements to allow {{}}== {{}}== pattern
+	/* TODO adjust java based attribute names to Number, String and boolean */
+	/* TODO fix or statements to allow {{}}== {{}}== pattern */
 	public TypescriptAttribute() {
 		this.id = "attribute";
 		this.withTemplate("{{#template VALUE}}   static PROPERTY_{{NAME}}: String = \"{{name}}\";", "", "",

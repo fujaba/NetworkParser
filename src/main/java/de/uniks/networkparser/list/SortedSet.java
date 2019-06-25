@@ -81,7 +81,7 @@ public class SortedSet<V> extends SimpleSet<V> {
 			return null;
 		}
 		BaseItem newList = getNewList(false);
-		// PRE WHILE
+		/* PRE WHILE */
 		int pos = 0;
 		for (; pos < size(); pos++) {
 			int compare = comparator().compare(get(pos), fromElement);
@@ -95,8 +95,7 @@ public class SortedSet<V> extends SimpleSet<V> {
 				break;
 			}
 		}
-
-		// MUST COPY
+		/* MUST COPY */
 		while (pos < size()) {
 			copyEntity(newList, pos++);
 		}
@@ -124,7 +123,7 @@ public class SortedSet<V> extends SimpleSet<V> {
 			return null;
 		}
 		BaseItem newList = getNewList(false);
-		// MUST COPY
+		/* MUST COPY */
 		for (int pos = 0; pos < size(); pos++) {
 			int compare = comparator().compare(get(pos), toElement);
 			if (compare == 0) {

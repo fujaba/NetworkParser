@@ -139,7 +139,7 @@ public class XMLTokener extends Tokener {
 					char currentChar = buffer.getCurrentChar();
 					char nextChar = buffer.nextClean(false);
 					if (nextChar != '/') {
-						// May be another child so it is possible text node text
+						/* May be another child so it is possible text node text */
 						XMLEntity newChild = new XMLEntity();
 						newChild.withValue(item.toString());
 						xmlEntity.withChild(newChild);
@@ -159,12 +159,12 @@ public class XMLTokener extends Tokener {
 				} else if (nextChar == '!') {
 					nextChar = buffer.getChar();
 					if ('[' == nextChar) {
-						// MIGHT BE <![CDATA[
+						/* MIGHT BE <![CDATA[ */
 						int start = buffer.position();
 						buffer.skipTo("]]>", true, true);
 						int end = buffer.position();
 						if (end != start) {
-							start += 7; // CDATA[
+							start += 7; /* CDATA[ */
 							end -= 2;
 							xmlEntity.withValueItem(buffer.substring(start, end).toString());
 						}
@@ -189,7 +189,7 @@ public class XMLTokener extends Tokener {
 				break;
 			} else {
 				if (xmlEntity.sizeChildren() < 1) {
-					// Normal key Value
+					/* Normal key Value */
 					Object value = nextValue(buffer, xmlEntity, false, true, c);
 					if (value == null) {
 						return null;
@@ -199,10 +199,10 @@ public class XMLTokener extends Tokener {
 						xmlEntity.put(key, nextValue(buffer, xmlEntity, isAllowQuote, true, buffer.nextClean(false)));
 					}
 				} else {
-					// Just a Child
+					/* Just a Child */
 					CharacterBuffer item = new CharacterBuffer();
 					nextString(buffer, item, false, false, '<');
-					// May be another child so it is possible text node text
+					/* May be another child so it is possible text node text */
 					XMLEntity newChild = new XMLEntity();
 					newChild.withValue(item.toString());
 					xmlEntity.withChild(newChild);
@@ -222,7 +222,7 @@ public class XMLTokener extends Tokener {
 			return;
 		}
 		buffer.skipTo('>', false);
-		// Skip >
+		/* Skip > */
 		buffer.nextClean(false);
 	}
 
@@ -294,7 +294,7 @@ public class XMLTokener extends Tokener {
 		Object entity = stack.getCurrentItem();
 		SendableEntityCreator creator = stack.getCurrentCreator();
 		if (entity != null) {
-			// Parsing attributes
+			/* Parsing attributes */
 			CharacterBuffer token = new CharacterBuffer();
 			char myChar;
 			do {
@@ -332,7 +332,7 @@ public class XMLTokener extends Tokener {
 		if (creator == null) {
 			return null;
 		}
-		// Parsing next Element
+		/* Parsing next Element */
 		if (buffer.skipTo("/>", false, false)) {
 			if (buffer.getCurrentChar() == '/') {
 				stack.popStack();
@@ -342,7 +342,7 @@ public class XMLTokener extends Tokener {
 			}
 
 			char quote = (char) XMLEntity.START;
-			// Skip >
+			/* Skip > */
 			buffer.skip();
 			CharacterBuffer valueItem = new CharacterBuffer();
 			tokener.nextString(buffer, valueItem, false, false, quote);
@@ -524,11 +524,10 @@ public class XMLTokener extends Tokener {
 					creator = (SendableEntityCreatorTag) defaultCreator;
 				}
 				sTag.append(IdMap.ENTITYSPLITTER).append(tag.toString());
-//				startTag = startTag + IdMap.ENTITYSPLITTER + tag.toString();
 				for (int i = filter.size() - 1; i >= 0; i++) {
 					String key = filter.getKeyByIndex(i);
 					if (key.equals(sTag.toString())) {
-						// FOUND THE Item
+						/* FOUND THE Item */
 						creator = filter.getValueByIndex(i);
 						addToStack(creator, tokener, tag, valueItem, map);
 						return valueItem;
@@ -604,7 +603,7 @@ public class XMLTokener extends Tokener {
 		return this;
 	}
 
-	// FIXME public static XsdValidationLoggingErrorHandler
+	/* FIXME public static XsdValidationLoggingErrorHandler */
 	/*
 	 * validate(java.net.URL xsdSchema, String xmlDokument) throws SAXException,
 	 * IOException {
@@ -612,7 +611,7 @@ public class XMLTokener extends Tokener {
 	 * schemaFactory = (XMLSchemaFactory) SchemaFactory
 	 * .newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
 	 * 
-	 * // Schema schema = schemaFactory.newSchema(new File(xsdSchema)); Schema
+	 * Schema schema = schemaFactory.newSchema(new File(xsdSchema)); Schema
 	 * schema = schemaFactory.newSchema(xsdSchema); Validator validator =
 	 * schema.newValidator(); XsdValidationLoggingErrorHandler errorHandler = new
 	 * XsdValidationLoggingErrorHandler(); validator.setErrorHandler(errorHandler);

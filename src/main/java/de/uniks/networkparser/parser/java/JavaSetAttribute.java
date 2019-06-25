@@ -13,7 +13,7 @@ public class JavaSetAttribute extends Template {
 
 					
 				+"{{#if {{#feature PATTERN}}}}"
-// SWITCH FOR LIST SO NO PARAMETER
+/* SWITCH FOR LIST SO NO PARAMETER */
 				+ "	public {{#listType}} {{#if {{type}}==boolean ? is : get}}{{Name}}({{#if {{typecat}}!=SET ? {{type}}... filter}}) {"
 				+"",
 				"		{{#listType}} result = new {{#listType}}();",

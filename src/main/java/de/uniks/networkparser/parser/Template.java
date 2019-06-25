@@ -67,7 +67,7 @@ public class Template implements TemplateParser {
 	public static final char ENTER = '=';
 	public static final char SPACE = ' ';
 
-	// Template Variables
+	/** Template Variables */
 	private TemplateCondition token = new TemplateCondition();
 
 	protected boolean isValid;
@@ -80,7 +80,7 @@ public class Template implements TemplateParser {
 
 	private SimpleList<String> variables = new SimpleList<String>();
 
-	// Configuration
+	/** Configuration */
 	protected String id;
 	protected String fileType;
 	protected String extension;
@@ -150,7 +150,7 @@ public class Template implements TemplateParser {
 		if (templateCondition == null) {
 			return null;
 		}
-		// Execute Template
+		/* Execute Template */
 		templateCondition.update(templateFragment);
 
 		templateFragment.setValue(templateCondition, TemplateResultFragment.FINISH_GENERATE, templateCondition,
@@ -159,18 +159,21 @@ public class Template implements TemplateParser {
 		return templateFragment;
 	}
 
-	public ObjectCondition parsing(StringCondition tokenTemplate, LocalisationInterface customTemplate,
-			boolean variable) {
-//		this.template = template;
-		// Parsing Variables
-		// Search for Variables and UIUf and combiVariables
-
-		// {{Type}}
-		// {{#if Type}} {{#end}}
-		// {{#if Type}} {{#else}} {{#end}}
-		// {{Type} } <=> {{Type}}{{#if Type}} {{#end}}
-		// Define Type=int
-		// {{{Type}}} <=> {int}
+	/** Parsing Variables *
+	 * Search for Variables and UIUf and combiVariables
+	 * {{Type}}
+	 * {{#if Type}} {{#end}}
+	 * {{#if Type}} {{#else}} {{#end}}
+	 * {{Type} } <=> {{Type}}{{#if Type}} {{#end}}
+	 * Define Type=int
+	 * {{{Type}}} <=> {int}
+	 *
+	 * @param tokenTemplate The TokenTemplate
+	 * @param customTemplate CustomTemplates
+	 * @param variable Textvariable
+	 * @return New Condition
+	 */
+	public ObjectCondition parsing(StringCondition tokenTemplate, LocalisationInterface customTemplate, boolean variable) {
 		if (tokenTemplate == null) {
 			return null;
 		}

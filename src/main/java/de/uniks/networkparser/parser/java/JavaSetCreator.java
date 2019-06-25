@@ -45,7 +45,7 @@ public class JavaSetCreator extends Template {
 					"	public static final String REMOVE = \"rem\";",
 				"{{#endif}}"+ 
 				"",
-// SendableCreator
+/* SendableCreator */
 				"	private final String[] properties = new String[] {",
 				"{{#foreach childtransitive}}",
 					"{{#if {{item.className}}==" + Attribute.class.getName() + "}}",
@@ -148,7 +148,7 @@ public class JavaSetCreator extends Template {
 								"			if(value instanceof {{item.type.name}}) {",
 								"				return element.add{{item.Name}}(({{item.type.name}}) value);",
 								"			}",
-								// ADD SWITCH FOR PRIMITIVE VALUES
+/* ADD SWITCH FOR PRIMITIVE VALUES */
 								"{{#import java.util.Collection}}"+
 									"{{#if item.type.external}}"+
 									" 			{{item.type}} newValue = new {{item.type}}();",
@@ -239,7 +239,7 @@ public class JavaSetCreator extends Template {
 		if (super.isValid(member, parameters) == false) {
 			return false;
 		}
-		// Check for existing Feature Serialization
+		/* Check for existing Feature Serialization */
 		Feature features = getFeature(Feature.SERIALIZATION, member.getClazz());
 		return features != null;
 	}

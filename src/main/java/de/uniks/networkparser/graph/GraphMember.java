@@ -127,10 +127,10 @@ public abstract class GraphMember implements TemplateItem {
 				if (item instanceof Association) {
 					Association assoc = (Association) item;
 					if (assoc.getType() == AssociationTypes.GENERALISATION) {
-						// Add all SuperAttributes
+						/* Add all SuperAttributes */
 						children.withList((Collection<?>) assoc.getOtherClazz().getValue(PROPERTY_CHILDTRANSITIVE));
 					} else if (assoc.getOtherType() == AssociationTypes.GENERALISATION) {
-						// IGNORE
+						/* IGNORE */
 					} else {
 						children.add(item);
 					}
@@ -158,7 +158,7 @@ public abstract class GraphMember implements TemplateItem {
 			return literals;
 		}
 		if (PROPERTY_THIS.equalsIgnoreCase(attrName)) {
-			// Check if Static or not
+			/* Check if Static or not */
 			Modifier modifier = this.getModifier();
 			if (modifier != null && modifier.has(Modifier.STATIC)) {
 				return getValue(PROPERTY_PARENT);
@@ -211,7 +211,7 @@ public abstract class GraphMember implements TemplateItem {
 		return name;
 	}
 
-	// PACKAGE VISIBILITY
+	/* PACKAGE VISIBILITY */
 	protected GraphSimpleSet getChildren() {
 		if (this.children instanceof GraphSimpleSet) {
 			return (GraphSimpleSet) this.children;
@@ -289,7 +289,7 @@ public abstract class GraphMember implements TemplateItem {
 	}
 
 	GraphMember withChildren(GraphMember... values) {
-		// Do Nothing
+		/* Do Nothing */
 		if (values == null || (values.length == 1 && (this.children == values[0]))) {
 			return this;
 		}
@@ -339,7 +339,7 @@ public abstract class GraphMember implements TemplateItem {
 	}
 
 	protected GraphMember withAnnotation(Annotation value) {
-		// Remove Old GraphAnnotation
+		/* Remove Old GraphAnnotation */
 		if (this.children != null) {
 			if (this.children instanceof GraphMember) {
 				if (this.children instanceof Annotation) {

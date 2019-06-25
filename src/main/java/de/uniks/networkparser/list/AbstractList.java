@@ -110,7 +110,7 @@ public abstract class AbstractList<V> extends AbstractArray<V> implements Iterab
 	public BaseItem subSet(V fromElement, V toElement) {
 		BaseItem newList = getNewList(false);
 		int end = indexOf(toElement);
-		// MUST COPY
+		/* MUST COPY */
 		for (int pos = indexOf(fromElement); pos < end; pos++) {
 			copyEntity(newList, pos);
 		}

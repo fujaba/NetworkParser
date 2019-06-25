@@ -54,7 +54,6 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 	public SimpleKeyValueList<K, V> setValueItem(Object key, Object value) {
 		int pos = indexOf(key);
 		if (pos >= 0) {
-//			V oldValue = this.getValue(pos);
 			this.setValue(pos, (V) value);
 			return this;
 		}
@@ -601,7 +600,7 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 		char item;
 		do {
 			start = pos;
-			// Get String As Key
+			/* Get String As Key */
 			while (pos < keyValue.length()) {
 				item = keyValue.charAt(pos);
 				if (item == ':') {
@@ -611,7 +610,7 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 			}
 			key = keyValue.substring(start, pos);
 			pos++;
-			// Get Integer As Value
+			/* Get Integer As Value */
 			start = pos;
 			while (pos < keyValue.length()) {
 				item = keyValue.charAt(pos);

@@ -210,11 +210,7 @@ public class ClazzChangeUpdateCondition extends MatchCondition {
 			if (superMatch.isMetaMatch() == false) {
 				return true;
 			}
-//			if (superMatch.isM()) {
-//				return true;
-//			}
 		}
-
 		return false;
 	}
 

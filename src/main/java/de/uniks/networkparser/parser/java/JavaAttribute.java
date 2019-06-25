@@ -7,9 +7,6 @@ public class JavaAttribute extends Template {
 		this.id = "attribute";
 		this.type = DECLARATION;
 		this.withTemplate("{{#template VALUE}}	public static final String PROPERTY_{{NAME}} = \"{{name}}\";", "",
-				// ,"{{#template FIELD {{#ifnot {{file.clazz.type}}==interface}}}}
-				// {{visibility}} {{modifiers} }{{type} }{{name}}{{#if default}} =
-				// {{default}}{{#endif}}{{#endtemplate}}"
 				"{{#ifnot {{file.member.type}}==interface}}",
 				"	{{annotation}}",
 				"	{{visibility}} {{modifiers} }{{type} }{{name}}{{#if {{value}}}} = {{value}}{{#endif}};",
@@ -25,7 +22,7 @@ public class JavaAttribute extends Template {
 					+ "{{#endif}}"
 			+	"{{#endfor}}"
 					
-//Getter
+/* Getter */
 			+	"	{{annotation(getter)}}",
 				"	public {{modifiers} }{{type}} {{#if {{type}}==boolean ? is : get}}{{Name}}(){{#if {{file.member.type}}==interface}};",
 				"", 
@@ -36,7 +33,7 @@ public class JavaAttribute extends Template {
 					"",
 					"{{#endif}}",
 				"",
-				// ADD TO
+/* ADD TO */
 				"{{#if {{typecat}}==SET}}",
 				"	public boolean add{{Name}}({{type.name}}... values) {",
 				"		if(values == null  || values.length < 1) {",

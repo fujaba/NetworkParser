@@ -87,7 +87,8 @@ public class NetworkParserLog extends Handler {
 	public static final String FATAL = "FATAL";
 	public static final String LOG = "LOG";
 
-	private byte flag = LOGLEVEL_ERROR + LOGLEVEL_INFO; // ERROR + INFO
+	/** ERROR + INFO */
+	private byte flag = LOGLEVEL_ERROR + LOGLEVEL_INFO; 
 	protected ObjectCondition condition;
 
 	/**
@@ -246,15 +247,17 @@ public class NetworkParserLog extends Handler {
 		return this;
 	}
 
+	/** Publush LogRecord
+	*	SEVERE (highest value)
+	*	WARNING
+	*	INFO
+	*	CONFIG
+	*	FINE
+	*	FINER
+	*	FINEST (lowest value)
+	*/
 	@Override
 	public void publish(LogRecord record) {
-		// <li>SEVERE (highest value)
-		// <li>WARNING
-		// <li>INFO
-		// <li>CONFIG
-		// <li>FINE
-		// <li>FINER
-		// <li>FINEST (lowest value)
 		if (global != null && global != this) {
 			global.publish(record);
 			return;
@@ -289,7 +292,7 @@ public class NetworkParserLog extends Handler {
 		if (global != null) {
 			return global;
 		}
-		// suppress the logging output to the console
+		/* suppress the logging output to the console */
 		Logger rootLogger = Logger.getLogger("");
 		NetworkParserLog logger = new NetworkParserLog().withFlag(flag);
 		if (conditions != null && conditions.length > 0) {

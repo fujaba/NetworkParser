@@ -17,7 +17,7 @@ public class JavaCreatorCreator extends Template {
 		this.id = TYPE_JAVA + ".creatorcreator";
 		this.type = TEMPLATE;
 		if(creatorPrefix == null) {
-			// Creator or Set
+			/* Creator or Set */
 			creatorPrefix = "Creator";
 		}
 		this.withTemplate(

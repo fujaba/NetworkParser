@@ -112,7 +112,7 @@ public class IfCondition implements ParserCondition, SendableEntityCreator {
 				notifyBuffer.clear();
 				boolean success = trueCondition.update(evt);
 				li.put(NOTIFY, null);
-				// NOTIFY
+				/* NOTIFY */
 				if (evt instanceof SendableEntityCreator) {
 					GraphMember member = (GraphMember) ((SendableEntityCreator) evt).getValue(evt,
 							TemplateResultFragment.PROPERTY_CURRENTMEMBER);
@@ -136,7 +136,7 @@ public class IfCondition implements ParserCondition, SendableEntityCreator {
 				notifyBuffer.clear();
 				boolean success = trueCondition.update(evt);
 				li.put(NOTIFY, null);
-				// NOTIFY
+				/* NOTIFY */
 				if (evt instanceof SendableEntityCreator) {
 					GraphMember member = (GraphMember) ((SendableEntityCreator) evt).getValue(evt,
 							TemplateResultFragment.PROPERTY_CURRENTMEMBER);
@@ -180,7 +180,6 @@ public class IfCondition implements ParserCondition, SendableEntityCreator {
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value, String type) {
 		if (ParserCondition.NOTIFY.equalsIgnoreCase(attribute)) {
-//			this.member = (GraphMember) entity;
 			notifyBuffer.withObjects(value);
 			return true;
 		}
@@ -214,13 +213,14 @@ public class IfCondition implements ParserCondition, SendableEntityCreator {
 		return this;
 	}
 
+	/** Create Condition
+	*  Switch for If IfNot
+	*  {{#if {{Variable}}}}
+	*  {{#if Variable}}
+	*  {{#if {{#feature}}}}
+	*/
 	@Override
 	public void create(CharacterBuffer buffer, TemplateParser parser, LocalisationInterface customTemplate) {
-		// Switch for If IfNot
-		// {{#if {{Variable}}}}
-		// {{#if Variable}}
-		// {{#if {{#feature}}}}
-//		if(tokenPart.equalsIgnoreCase("ifnot") || tokenPart.equalsIgnoreCase("if")) {
 		buffer.skip();
 		ObjectCondition expression = parser.parsing(buffer, customTemplate, true, true, "?");
 
@@ -230,7 +230,7 @@ public class IfCondition implements ParserCondition, SendableEntityCreator {
 			this.withExpression(expression);
 		}
 		if (buffer.skipIf(true, '?')) {
-			// Short IF
+			/* Short IF */
 			this.withTrue(parser.parsing(buffer, customTemplate, false, true, ":", "}"));
 			if (buffer.skipIf(true, ':')) {
 				this.withFalse(parser.parsing(buffer, customTemplate, false, true, "}"));
@@ -239,18 +239,17 @@ public class IfCondition implements ParserCondition, SendableEntityCreator {
 			buffer.skipChar(SPLITEND);
 			return;
 		}
-		// CHECK ##
+		/* CHECK ## */
 		if (buffer.skipIf(false, '#', '#')) {
 			this.notifyBuffer = new CharacterBuffer();
-//			buffer.skip(2);
 		}
 		buffer.skipChar(SPLITEND);
 		buffer.skipChar(SPLITEND);
 
-		// Add Children
+		/* Add Children */
 		this.withTrue(parser.parsing(buffer, customTemplate, false, true, "else", "endif"));
 
-		// ELSE OR ENDIF
+		/* ELSE OR ENDIF */
 		CharacterBuffer tokenPart = buffer.nextToken(false, SPLITEND);
 		if ("else".equalsIgnoreCase(tokenPart.toString())) {
 			buffer.skipChar(SPLITEND);

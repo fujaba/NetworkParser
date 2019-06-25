@@ -4,7 +4,6 @@ import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 
 public class VersionCondition implements ObjectCondition, Comparable<VersionCondition> {
-//	private String version;
 	private int mayor;
 	private int minor;
 	private int revision;
@@ -31,7 +30,7 @@ public class VersionCondition implements ObjectCondition, Comparable<VersionCond
 			if (split.length > 0) {
 				try {
 					if (split[0].startsWith("^")) {
-						// COMPAREGRATER
+						/* COMPAREGRATER */
 						this.children = new CompareTo().withCompare(CompareTo.GREATER);
 						this.mayor = Integer.valueOf(split[0].substring(1));
 					} else {

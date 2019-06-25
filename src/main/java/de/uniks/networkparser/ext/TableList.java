@@ -200,7 +200,6 @@ public class TableList extends SortedList<Object> implements SendableEntity, Sen
 		return null;
 	}
 
-	// ==========================================================================
 	@Override
 	public boolean addPropertyChangeListener(PropertyChangeListener listener) {
 		getPropertyChangeSupport().addPropertyChangeListener(listener);

@@ -31,7 +31,11 @@ import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.TemplateParser;
 import de.uniks.networkparser.parser.TemplateResultFragment;
 
-// {{#template PACKAGE {{CONDITION}}}}{{#endtemplate}}
+/** TemplateFragmentCondition 
+ * {{#template PACKAGE {{CONDITION}}}}{{#endtemplate}}
+ *
+ * @author Stefan Lindel
+ */
 public class TemplateFragmentCondition implements ParserCondition {
 	public static final String PROPERTY_CLONE = "clone";
 	public static final String PROPERTY_FILE = "file";
@@ -87,7 +91,7 @@ public class TemplateFragmentCondition implements ParserCondition {
 				}
 			}
 			SendableEntityCreator creator = (SendableEntityCreator) value;
-			// VODOO
+			/* VODOO */
 			SendableEntityCreator newInstance = (SendableEntityCreator) creator.getValue(creator, PROPERTY_CLONE);
 			newInstance.setValue(newInstance, PROPERTY_KEY, TemplateFragmentCondition.getIdKey(id),
 					SendableEntityCreator.NEW);
@@ -106,7 +110,6 @@ public class TemplateFragmentCondition implements ParserCondition {
 
 	@Override
 	public Object getValue(LocalisationInterface variables) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -116,14 +119,14 @@ public class TemplateFragmentCondition implements ParserCondition {
 		this.id = id.toString();
 		buffer.nextClean(true);
 		if (buffer.getCurrentChar() != SPLITEND) {
-			// Condition
+			/* Condition */
 			this.condition = parser.parsing(buffer, customTemplate, true, true);
 		}
 
 		buffer.skipChar(SPLITEND);
 		buffer.skipChar(SPLITEND);
 		this.child = parser.parsing(buffer, customTemplate, false, true, "endtemplate");
-		// Skip }
+		/* Skip } */
 		buffer.skip();
 
 		buffer.skipTo(SPLITEND, true);
