@@ -82,7 +82,7 @@ public class JacocoColumn implements JacocoColumnListener, Comparator<Object> {
 	}
 
 	/**
-	*	init(List<? extends ITableItem> items, ICoverageNode total) { 
+	*	init(List &lt;? extends ITableItem&gt; items, ICoverageNode total) { 
 	*	Init JacocoColumn
 	*	@param items Items
 	*	@param total ICoverageNode

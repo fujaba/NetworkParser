@@ -443,9 +443,9 @@ public class Story extends StoryElement implements Comparable<Story> {
 
 	/**
 	* CompareTo Story
-	* o1.compareTo( o2 ) < 0 o1 < o2
+	* o1.compareTo( o2 ) &lt; 0 o1 &lt; o2
 	* o1.compareTo( o2 ) == 0 o1 == o2
-	* o1.compareTo( o2 ) > 0 o1 > o2
+	* o1.compareTo( o2 ) &gt; 0 o1 &gt; o2
 	*/
 	@Override
 	public int compareTo(Story story) {

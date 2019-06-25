@@ -164,9 +164,9 @@ public class Template implements TemplateParser {
 	 * {{Type}}
 	 * {{#if Type}} {{#end}}
 	 * {{#if Type}} {{#else}} {{#end}}
-	 * {{Type} } <=> {{Type}}{{#if Type}} {{#end}}
+	 * {{Type} } means {{Type}}{{#if Type}} {{#end}}
 	 * Define Type=int
-	 * {{{Type}}} <=> {int}
+	 * {{{Type}}} means {int}
 	 *
 	 * @param tokenTemplate The TokenTemplate
 	 * @param customTemplate CustomTemplates
