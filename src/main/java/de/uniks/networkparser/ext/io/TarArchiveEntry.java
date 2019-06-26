@@ -1170,7 +1170,9 @@ public class TarArchiveEntry {
 		offset = writeEntryHeaderField(modTime, outbuf, offset, TarUtils.MODTIMELEN, starMode);
 
 		final int csOffset = offset;
-
+		if(outbuf == null || offset<0 || offset>=outbuf.length)  {
+			return;
+		}
 		for (int c = 0; c < TarUtils.CHKSUMLEN; ++c) {
 			outbuf[offset++] = (byte) ' ';
 		}

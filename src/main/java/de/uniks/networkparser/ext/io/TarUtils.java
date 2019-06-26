@@ -331,7 +331,10 @@ public class TarUtils {
 	 * @return The boolean value of the bytes.
 	 */
 	public static boolean parseBoolean(byte[] buffer, int offset) {
-		return buffer[offset] == 1;
+		if(buffer != null && offset>buffer.length) {
+			return buffer[offset] == 1;
+		}
+		return false;
 	}
 
 	/**
@@ -366,7 +369,7 @@ public class TarUtils {
 			return null;
 		}
 		int len = 0;
-		for (int i = offset; len < length && buffer[i] != 0; i++) {
+		for (int i = offset; len < length && i<buffer.length && buffer[i] != 0; i++) {
 			len++;
 		}
 		if (len > 0) {
@@ -407,7 +410,7 @@ public class TarUtils {
 	 * @return The updated offset, i.e. offset + length
 	 */
 	public static int formatNameBytes(String name, byte[] buf, int offset, int length, NioZipEncoding encoding) {
-		if (buf == null) {
+		if (buf == null || name == null) {
 			return -1;
 		}
 		int len = name.length();
@@ -442,7 +445,11 @@ public class TarUtils {
 			return false;
 		}
 		if (value == 0) {
-			buffer[offset + remaining--] = (byte) '0';
+			if(buffer.length>=offset + remaining) {
+				buffer[offset + remaining--] = (byte) '0';
+			}else {
+				return false;
+			}
 		} else {
 			long val = value;
 			for (; remaining >= 0 && val != 0; --remaining) {
@@ -502,7 +509,9 @@ public class TarUtils {
 			return -1;
 		}
 		final int idx = length - 1; /* For space */
-
+		if(offset+idx>buf.length) {
+			return -1;
+		}
 		formatUnsignedOctalString(value, buf, offset, idx);
 		buf[offset + idx] = (byte) ' '; /* Trailing space */
 
@@ -523,7 +532,9 @@ public class TarUtils {
 	 * @return The updated offset.
 	 */
 	public static int formatLongOctalOrBinaryBytes(long value, byte[] buf, int offset, int length) {
-
+		if(offset<0) {
+			return -1;
+		}
 		/* Check whether we are dealing with UID/GID or SIZE field */
 		final long maxAsOctalChar = length == UIDLEN ? MAXID : MAXSIZE;
 
@@ -546,7 +557,7 @@ public class TarUtils {
 		final int bits = (length - 1) * 8;
 		final long max = 1L << bits;
 		long val = Math.abs(value); /* Long.MIN_VALUE stays Long.MIN_VALUE */
-		if (val < 0 || val >= max) {
+		if (val < 0 || val >= max|| offset<0) {
 			return false;
 		}
 		if (negative) {
@@ -691,7 +702,13 @@ public class TarUtils {
 	 */
 	public static boolean isEqual(byte[] buffer1, int offset1, int length1, byte[] buffer2, int offset2, int length2,
 			boolean ignoreTrailingNulls) {
+		if(buffer1 == null || buffer2 == null) {
+			return false;
+		}
 		final int minLen = length1 < length2 ? length1 : length2;
+		if(offset1+minLen>buffer1.length || offset2+minLen>buffer2.length) {
+			return false;
+		}
 		for (int i = 0; i < minLen; i++) {
 			if (buffer1[offset1 + i] != buffer2[offset2 + i]) {
 				return false;

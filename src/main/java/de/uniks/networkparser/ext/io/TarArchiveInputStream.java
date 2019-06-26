@@ -77,16 +77,23 @@ public class TarArchiveInputStream extends InputStream {
 	 * @return a TarArchiveInputStream
 	 */
 	public static TarArchiveInputStream create(String gZippedFile) {
+		if(gZippedFile == null) {
+			return null;
+		}
 		File file = new File(gZippedFile);
 		FileInputStream fis;
 		try {
+			File parentFile = file.getParentFile();
+			if(parentFile == null) {
+				return null;
+			}
 			fis = new FileInputStream(file);
 			int pos = file.getName().lastIndexOf(".");
 			String tarName = file.getName() + ".tar";
 			if (pos > 0) {
 				tarName = file.getName().substring(0, pos) + ".tar";
 			}
-			File tarFile = new File(file.getParentFile().getPath() + "/" + tarName);
+			File tarFile = new File(parentFile.getPath() + "/" + tarName);
 			GZIPInputStream gZIPInputStream = new GZIPInputStream(fis);
 			FileOutputStream fos = new FileOutputStream(tarFile);
 			if (FileBuffer.copy(gZIPInputStream, fos) > 0) {
@@ -141,7 +148,9 @@ public class TarArchiveInputStream extends InputStream {
 	@Override
 	public void close() {
 		try {
-			is.close();
+			if(is != null) {
+				is.close();
+			}
 		} catch (Exception e) {
 		}
 	}
@@ -434,6 +443,9 @@ public class TarArchiveInputStream extends InputStream {
 	 * @see https://www.gnu.org/software/tar/manual/html_section/tar_92.html#SEC188
 	 */
 	Map<String, String> parsePaxHeaders(final InputStream i) {
+		if(i == null) {
+			return null;
+		}
 		final Map<String, String> headers = new HashMap<String, String>(globalPaxHeaders);
 		/* Format is length keyword=value */
 		int ch = 0;
@@ -486,8 +498,9 @@ public class TarArchiveInputStream extends InputStream {
 	}
 
 	private void applyPaxHeadersToCurrentEntry(final Map<String, String> headers) {
-		currEntry.updateEntryFromPaxHeaders(headers);
-
+		if(currEntry != null) {
+			currEntry.updateEntryFromPaxHeaders(headers);
+		}
 	}
 
 	private boolean isDirectory() {
@@ -517,6 +530,9 @@ public class TarArchiveInputStream extends InputStream {
 	 *         </p>
 	 */
 	private boolean tryToConsumeSecondEOFRecord() {
+		if(is == null) {
+			return false;
+		}
 		boolean shouldReset = true;
 		final boolean marked = is.markSupported();
 		if (marked) {
@@ -621,6 +637,9 @@ public class TarArchiveInputStream extends InputStream {
 	 * archive has padded the last block.
 	 */
 	private void consumeRemainderOfLastBlock() {
+		if(blockSize == 0) {
+			return;
+		}
 		final long bytesReadOfLastBlock = getBytesRead() % blockSize;
 		if (bytesReadOfLastBlock > 0) {
 			final long skipped = FileBuffer.skip(is, blockSize - bytesReadOfLastBlock);

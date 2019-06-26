@@ -327,10 +327,16 @@ public class CucumberStdRule implements ObjectCondition {
 	}
 
 	private String getLinkName(String id) {
+		if(cucumber == null) {
+			return null;
+		}
 		return cucumber.getDictionary(id);
 	}
 
 	private Clazz getClazz(String id) {
+		if(cucumber == null) {
+			return null;
+		}
 		id = cucumber.getDictionary(id);
 		Clazz clazz = GraphUtil.createClazzById(model, id);
 		String type = cucumber.getTypeDictionary(id);
