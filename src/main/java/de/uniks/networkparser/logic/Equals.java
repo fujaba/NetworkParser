@@ -344,7 +344,9 @@ public class Equals implements ParserCondition, SendableEntityCreator {
 	@Override
 	public void create(CharacterBuffer buffer, TemplateParser parser, LocalisationInterface customTemplate) {
 		/* CHECK IF CURRENT = */
-
+		if(buffer == null) {
+			return;
+		}
 		/* MAY BE A EQUALS */
 		buffer.skip();
 		/* Check Next Value May be Bigger or lesser or Equals */

@@ -26,6 +26,9 @@ public class ImportCondition implements ParserCondition {
 	}
 
 	public void parseImport(String className, SimpleList<String> imports) {
+		if(className == null) {
+			return;
+		}
 		int genericType = className.indexOf("<");
 		if (genericType > 0) {
 			/* Try to rekursiv add */
@@ -74,6 +77,9 @@ public class ImportCondition implements ParserCondition {
 
 	@Override
 	public void create(CharacterBuffer buffer, TemplateParser parser, LocalisationInterface customTemplate) {
+		if(buffer == null) {
+			return;
+		}
 		buffer.skip();
 		ObjectCondition result = null;
 		ObjectCondition expression;

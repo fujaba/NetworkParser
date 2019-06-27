@@ -36,6 +36,9 @@ public class AssociationSet extends SimpleSet<Association> {
 
 	@Override
 	public boolean add(Association newValue) {
+		if(newValue==null) {
+			return false;
+		}
 		if (newValue.getOther() != null) {
 			if (indexOf(newValue.getOther()) >= 0) {
 				return false;
@@ -46,6 +49,11 @@ public class AssociationSet extends SimpleSet<Association> {
 
 	public AssociationSet hasName(String otherValue) {
 		return filter(StringCondition.createEquals(Association.PROPERTY_NAME, otherValue));
+	}
+	
+	@Override
+	public SimpleSet<Association> getNewList(boolean keyValue) {
+		return new AssociationSet();
 	}
 
 	@Override

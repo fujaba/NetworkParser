@@ -130,6 +130,9 @@ public class Not implements ParserCondition, SendableEntityCreator {
 
 	@Override
 	public void create(CharacterBuffer buffer, TemplateParser parser, LocalisationInterface customTemplate) {
+		if(buffer == null) {
+			return;
+		}
 		buffer.skip();
 		buffer.skip();
 

@@ -76,9 +76,11 @@ public class Line extends SendableItem {
 	}
 
 	public Line withoutChildren(Task... value) {
-		for (Task item : value) {
-			if (this.children != null && item != null) {
-				this.children.remove(item);
+		if(value != null) {
+			for (Task item : value) {
+				if (this.children != null && item != null) {
+					this.children.remove(item);
+				}
 			}
 		}
 		return this;

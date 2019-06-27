@@ -82,6 +82,9 @@ public class ForeachCondition implements ParserCondition {
 
 	@Override
 	public void create(CharacterBuffer buffer, TemplateParser parser, LocalisationInterface customTemplate) {
+		if(buffer == null) {
+			return;
+		}
 		buffer.skipChar(SPACE);
 		this.expression = parser.parsing(buffer, customTemplate, true, true);
 

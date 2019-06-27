@@ -409,6 +409,9 @@ public abstract class GraphMember implements TemplateItem {
 			return this;
 		}
 		for (Modifier item : values) {
+			if(item == null) {
+				continue;
+			}
 			if (item.has(Modifier.PUBLIC) || item.has(Modifier.PACKAGE) || item.has(Modifier.PROTECTED)
 					|| item.has(Modifier.PRIVATE)) {
 				rootModifier.with(item.getName());

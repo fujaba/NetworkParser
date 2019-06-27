@@ -81,6 +81,7 @@ public class ReflectionBlackBoxTester {
 	private ObjectCondition custom;
 	private long startTime;
 	private int oldThreadCount;
+	private int breakByErrorCount = -1;
 
 	public void mainTester(String[] args) {
 		Object junitCore = ReflectionLoader.newInstanceStr("org.junit.runner.JUnitCore");
@@ -232,7 +233,7 @@ public class ReflectionBlackBoxTester {
 		setTester();
 		SimpleList<Class<?>> classesForPackage = ReflectionLoader.getClassesForPackage(packageName);
 		if (classesForPackage == null) {
-			return false;
+			return true;
 		}
 		errorCount = 0;
 		successCount = 0;
@@ -272,7 +273,9 @@ public class ReflectionBlackBoxTester {
 						methods = defaultMethods;
 					}
 				}
-				testClass(obj, clazz, methods);
+				if(testClass(obj, clazz, methods) == false) {
+					break;
+				}
 			} else {
 				logger.debug(this, "test", "ERROR: DONT INSTANCE: " + clazz.getName());
 				output(clazz, "dont instance of " + clazz.getName(), logger, NetworkParserLog.LOGLEVEL_ERROR, null);
@@ -296,11 +299,11 @@ public class ReflectionBlackBoxTester {
 		return this.ignoreMethods.get(className);
 	}
 
-	public void testClass(Object obj, Class<?> clazz, SimpleSet<String> ignoreMethods) {
+	public boolean testClass(Object obj, Class<?> clazz, SimpleSet<String> ignoreMethods) {
 		boolean reg = false;
 		Set<Thread> oldThreads = Thread.getAllStackTraces().keySet();
 		if (obj == null) {
-			return;
+			return true;
 		}
 		if (ignoreMethods != null) {
 			for (String m : ignoreMethods) {
@@ -357,8 +360,10 @@ public class ReflectionBlackBoxTester {
 						successCount++;
 					}
 				} catch (Exception e) {
-					saveException(e, clazz, m, call);
 					isValid = false;
+					if(saveException(e, clazz, m, call) == false) {
+						return false;
+					}
 				}
 				if (TYPE_NULLVALUE.equals(type)) {
 					/* specialcase */
@@ -435,6 +440,7 @@ public class ReflectionBlackBoxTester {
 		} else {
 			errorClazzCount++;
 		}
+		return true;
 	}
 
 	public ReflectionBlackBoxTester withTest(String value) {
@@ -443,9 +449,9 @@ public class ReflectionBlackBoxTester {
 		return this;
 	}
 
-	private void saveException(Exception e, Class<?> clazz, Method m, Object[] call) {
+	private boolean saveException(Exception e, Class<?> clazz, Method m, Object[] call) {
 		if (clazz == null) {
-			return;
+			return true;
 		}
 		String line = getLine(packageName, e, clazz.getSimpleName());
 		int pos = 1;
@@ -482,8 +488,13 @@ public class ReflectionBlackBoxTester {
 				output(m, "at " + clazz.getName() + causes + " " + shortName, logger, NetworkParserLog.LOGLEVEL_ERROR,
 						e);
 				errorCount++;
+				if(breakByErrorCount>0 && errorCount>=breakByErrorCount) {
+					logger.info(this, "saveException", "Error Abort");
+					return false;
+				}
 			}
 		}
+		return true;
 	}
 
 	public String getParamtoString(Object[] params) {
@@ -508,10 +519,19 @@ public class ReflectionBlackBoxTester {
 		sb.append(")");
 		return sb.toString();
 	}
+	
+	public ReflectionBlackBoxTester breakByErrorCount(int number) {
+		this.breakByErrorCount = number;
+		return this;
+	}
 
 	public void printResult(int loglevel) {
 		/* Write out all Results */
-		output(this, "Errors: " + errorCount + "/" + (errorCount + successCount) + " " + errorClazzCount + "/"
+		String prefix = "Errors: ";
+		if(this.breakByErrorCount>0) {
+			prefix = "Errors Abort: ";
+		}
+		output(this,prefix + errorCount + "/" + (errorCount + successCount) + " " + errorClazzCount + "/"
 				+ (errorClazzCount + successClazzCount), logger, loglevel, null);
 		if (startTime > 0 && oldThreadCount > 0) {
 			output(this, "Time: " + (System.currentTimeMillis() - startTime) + "ms - Thread: " + oldThreadCount + " -> "

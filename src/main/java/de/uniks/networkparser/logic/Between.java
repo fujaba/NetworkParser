@@ -58,6 +58,9 @@ public class Between implements ObjectCondition, SendableEntityCreator {
 	}
 
 	public double getTo() {
+		if(toValue== null) {
+			return 0;
+		}
 		return toValue;
 	}
 

@@ -26,6 +26,7 @@ public class ReflectionTest {
 		logger.withoutFlag(NetworkParserLog.LOGLEVEL_INFO);
 		tester.withDisableClassError(true);
 		tester.withDisableSimpleException(true);
+		tester.breakByErrorCount(100);
 
 		tester.test("de.uniks.networkparser", logger);
 		

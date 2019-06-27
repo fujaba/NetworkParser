@@ -117,7 +117,7 @@ public class InstanceOf implements ObjectCondition, SendableEntityCreator {
 		InstanceOf result = new InstanceOf().withProperty(property);
 		if (clazz instanceof Class<?>) {
 			result.withClazzName((Class<?>) clazz);
-		} else {
+		} else if(clazz != null){
 			result.withClazzName(clazz.getClass());
 		}
 		return result;

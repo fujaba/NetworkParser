@@ -126,7 +126,7 @@ public class DataType {
 
 	public String toString(boolean ref) {
 		String internName = this.getInternName(false, true);
-		if ("void char byte int long float double String boolean Object".indexOf(internName) >= 0) {
+		if(EntityUtil.isPrimitiveType(internName)) {
 			if (ref) {
 				return DataType.class.getSimpleName() + "." + internName.toUpperCase();
 			}

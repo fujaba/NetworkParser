@@ -308,6 +308,9 @@ public class TarUtils {
 	}
 
 	private static long parseBinaryBigInteger(byte[] buffer, int offset, int length, boolean negative) {
+		if(buffer == null || offset>buffer.length) {
+			return -1;
+		}
 		final byte[] remainder = new byte[length - 1];
 		System.arraycopy(buffer, offset + 1, remainder, 0, length - 1);
 		BigInteger val = new BigInteger(remainder);
@@ -331,7 +334,7 @@ public class TarUtils {
 	 * @return The boolean value of the bytes.
 	 */
 	public static boolean parseBoolean(byte[] buffer, int offset) {
-		if(buffer != null && offset>buffer.length) {
+		if(buffer != null && offset<buffer.length) {
 			return buffer[offset] == 1;
 		}
 		return false;
@@ -419,6 +422,9 @@ public class TarUtils {
 			b = encoding.encode(name.substring(0, --len));
 		}
 		final int limit = b.limit() - b.position();
+		if(buf.length<limit) {
+			return -1;
+		}
 		System.arraycopy(b.array(), b.arrayOffset(), buf, offset, limit);
 
 		/* Pad any remaining output bytes with NUL */
@@ -484,6 +490,9 @@ public class TarUtils {
 	public static int formatOctalBytes(long value, byte[] buf, int offset, int length) {
 
 		int idx = length - 2; /* For space and trailing null */
+		if(buf == null || offset+idx>buf.length) {
+			return -1;
+		}
 		formatUnsignedOctalString(value, buf, offset, idx);
 
 		buf[offset + idx++] = (byte) ' '; /* Trailing space */
@@ -554,6 +563,9 @@ public class TarUtils {
 	}
 
 	private static boolean formatLongBinary(long value, byte[] buf, int offset, int length, boolean negative) {
+		if(buf == null || length>buf.length) {
+			return false;
+		}
 		final int bits = (length - 1) * 8;
 		final long max = 1L << bits;
 		long val = Math.abs(value); /* Long.MIN_VALUE stays Long.MIN_VALUE */
@@ -573,6 +585,9 @@ public class TarUtils {
 	}
 
 	private static boolean formatBigIntegerBinary(long value, byte[] buf, int offset, int length, boolean negative) {
+		if(buf == null) {
+			return false;
+		}
 		final BigInteger val = BigInteger.valueOf(value);
 		final byte[] b = val.toByteArray();
 		final int len = b.length;
@@ -580,6 +595,9 @@ public class TarUtils {
 			return false;
 		}
 		final int off = offset + length - len;
+		if(off>buf.length) {
+			return false;
+		}
 		System.arraycopy(b, 0, buf, off, len);
 		final byte fill = (byte) (negative ? 0xff : 0);
 		for (int i = offset + 1; i < off; i++) {
@@ -602,10 +620,14 @@ public class TarUtils {
 	 * @return The updated value of offset, i.e. offset+length
 	 */
 	public static int formatCheckSumOctalBytes(long value, byte[] buf, int offset, int length) {
-
+		if(buf == null) {
+			return -1;
+		}
 		int idx = length - 2; /* for NUL and space */
 		formatUnsignedOctalString(value, buf, offset, idx);
-
+		if(offset + idx>buf.length) {
+			return -1;
+		}
 		buf[offset + idx++] = 0; /* Trailing null */
 		buf[offset + idx] = (byte) ' '; /* Trailing space */
 
@@ -620,7 +642,9 @@ public class TarUtils {
 	 */
 	public static long computeCheckSum(byte[] buf) {
 		long sum = 0;
-
+		if(buf == null) {
+			return sum;
+		}
 		for (final byte element : buf) {
 			sum += BYTE_MASK & element;
 		}
@@ -678,6 +702,9 @@ public class TarUtils {
 	 * @return if buffer is the same as the expected string
 	 */
 	public static boolean matchAsciiBuffer(String expected, byte[] buffer, int offset, int length) {
+		if(expected == null) {
+			return false;
+		}
 		byte[] buffer1;
 		try {
 			buffer1 = expected.getBytes(Charset.forName("US-ASCII"));
@@ -744,6 +771,9 @@ public class TarUtils {
 	 * @return true if the first N bytes are zero
 	 */
 	public static boolean isArrayZero(byte[] a, int size) {
+		if(a== null || size>a.length) {
+			return true;
+		}
 		for (int i = 0; i < size; i++) {
 			if (a[i] != 0) {
 				return false;
@@ -753,6 +783,9 @@ public class TarUtils {
 	}
 
 	public static ByteBuffer growBufferBy(ByteBuffer buffer, int increment) {
+		if(buffer == null) {
+			return ByteBuffer.allocate(0);
+		}
 		buffer.limit(buffer.position());
 		buffer.rewind();
 

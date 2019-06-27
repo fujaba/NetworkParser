@@ -53,6 +53,9 @@ public class Association extends GraphMember {
 
 	@Override
 	public Object getValue(String attribute) {
+		if(attribute == null) {
+			return null;
+		}
 		int pos = attribute.indexOf('.');
 		String attrName;
 		if (pos > 0) {
@@ -415,6 +418,9 @@ public class Association extends GraphMember {
 			}
 		}
 		if (other && contains == false) {
+			if(this.other == null) {
+				return false;
+			}
 			contains = this.other.contains(key, true, false);
 		}
 		return contains;
