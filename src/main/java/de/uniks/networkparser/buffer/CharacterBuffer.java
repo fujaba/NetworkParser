@@ -1124,7 +1124,7 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence, Bas
 			length = 1;
 			this.buffer[0] = src;
 		} else {
-			if (this.length + 1 > buffer.length && this.start>0) {
+			if (this.length + 1 > buffer.length && this.start>=0) {
 				int newCapacity = buffer.length * 2 + 2;
 				char[] copy = new char[newCapacity];
 				System.arraycopy(buffer, this.start, copy, 0, length);
