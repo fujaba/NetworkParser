@@ -120,6 +120,9 @@ public class ModelListenerProperty implements ModelListenerInterface, SendableEn
 	}
 
 	public void addListener(Object listener) {
+		if(listener == null) {
+			return;
+		}
 		if (ReflectionLoader.CHANGELISTENER != null) {
 			if (ReflectionLoader.CHANGELISTENER.isAssignableFrom(listener.getClass())) {
 				listeners.add(listener);
@@ -133,6 +136,9 @@ public class ModelListenerProperty implements ModelListenerInterface, SendableEn
 	}
 
 	public void removeListener(Object listener) {
+		if(listener == null) {
+			return;
+		}
 		if (ReflectionLoader.CHANGELISTENER != null) {
 			if (ReflectionLoader.CHANGELISTENER.isAssignableFrom(listener.getClass())) {
 				listeners.remove(listener);

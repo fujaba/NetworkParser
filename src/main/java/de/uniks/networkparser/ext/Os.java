@@ -98,6 +98,10 @@ public class Os {
 	}
 
 	public static boolean isAndroid() {
+		String property = System.getProperty("javafx.platform");
+		if (property == null) {
+			return false;
+		}
 		String javafxPlatform = System.getProperty("javafx.platform").toLowerCase();
 		String vmName = System.getProperty("java.vm.name").toLowerCase();
 		return ("android".equals(javafxPlatform) || "dalvik".equals(vmName));
@@ -156,9 +160,11 @@ public class Os {
 	}
 
 	public static final boolean isNotFirstThread(String[] args) {
-		for (String item : args) {
-			if ("-XstartOnFirstThread".equalsIgnoreCase(item)) {
-				return true;
+		if (args != null) {
+			for (String item : args) {
+				if ("-XstartOnFirstThread".equalsIgnoreCase(item)) {
+					return true;
+				}
 			}
 		}
 		return false;

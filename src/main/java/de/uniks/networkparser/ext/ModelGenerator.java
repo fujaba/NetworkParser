@@ -100,7 +100,7 @@ public class ModelGenerator extends SimpleGenerator {
 				String childid = child.getId(false);
 				if (filter.equals(childid)) {
 					result.add(child);
-				} else if (childid.startsWith(sub) && childid.indexOf(".", sub.length() + 1) < 1) {
+				} else if (childid != null && childid.startsWith(sub) && childid.indexOf(".", sub.length() + 1) < 1) {
 					possible.add(child);
 				}
 			}
@@ -120,6 +120,9 @@ public class ModelGenerator extends SimpleGenerator {
 			String id = filter.substring(0, pos);
 			for (Template child : children) {
 				String childId = child.getId(false);
+				if(childId == null) {
+					continue;
+				}
 				int childPos = childId.indexOf(".");
 				if (childPos > 0) {
 					if (filter.startsWith(childId)) {
@@ -172,6 +175,9 @@ public class ModelGenerator extends SimpleGenerator {
 
 	public SendableEntityCreator generating(String rootDir, GraphModel model, TextItems parameters, String type,
 			boolean writeFiles, boolean enableParser) {
+		if(model == null) {
+			return null;
+		}
 		this.lastGenRoot = rootDir;
 		/* Set DefaultValue */
 		if (type == null) {
@@ -272,11 +278,16 @@ public class ModelGenerator extends SimpleGenerator {
 		} else if (path.endsWith("/") == false) {
 			path = path + "/";
 		}
-		path += file.replaceAll("\\.", "/") + "/";
+		if(file != null) {
+			path += file.replaceAll("\\.", "/") + "/";
+		}
 		return path;
 	}
 
 	public boolean write(String rootPath, TemplateResultFile entity) {
+		if(rootPath == null || entity == null) {
+			return false;
+		}
 		if (rootPath.endsWith("/") == false) {
 			rootPath += "/";
 		}
@@ -423,7 +434,10 @@ public class ModelGenerator extends SimpleGenerator {
 		return lastGenRoot;
 	}
 
-	public void remove(GraphModel model, String rootDir, String type) {
+	public boolean remove(GraphModel model, String rootDir, String type) {
+		if(rootDir == null || model == null) {
+			return false;
+		}
 		/*
 		 * now remove class file, creator file, and modelset file for each class and the
 		 * CreatorCreator
@@ -447,7 +461,7 @@ public class ModelGenerator extends SimpleGenerator {
 
 		String fileName = path + "CreatorCreator.java";
 
-		FileBuffer.deleteFile(fileName);
+		return FileBuffer.deleteFile(fileName);
 	}
 
 	public TemplateResultFragment parseTemplate(String templateString, GraphMember member) {
@@ -456,6 +470,9 @@ public class ModelGenerator extends SimpleGenerator {
 	}
 
 	public TemplateResultFragment parseTemplate(Template template, GraphMember member) {
+		if(template == null) {
+			return null;
+		}
 		TemplateResultModel model = new TemplateResultModel();
 		model.withTemplate(this.getCondition());
 		model.withFeatures(this.features);
@@ -482,6 +499,9 @@ public class ModelGenerator extends SimpleGenerator {
 	}
 
 	public Clazz findClazz(String name, boolean defaultValue) {
+		if(defaultModel == null) {
+			return null;
+		}
 		Clazz clazz = (Clazz) this.defaultModel.getChildByName(name, Clazz.class);
 		if (clazz != null) {
 			return clazz;
@@ -506,7 +526,7 @@ public class ModelGenerator extends SimpleGenerator {
 	}
 
 	public Attribute findAttribute(Clazz clazz, String name, boolean defaultValue) {
-		if (name == null) {
+		if (name == null || clazz == null) {
 			if (defaultValue) {
 				return new Attribute("", DataType.VOID);
 			}
@@ -526,7 +546,7 @@ public class ModelGenerator extends SimpleGenerator {
 	}
 
 	public Association findAssociation(Clazz clazz, String name, boolean defaultValue) {
-		if (name == null) {
+		if (name == null || clazz == null) {
 			if (defaultValue) {
 				return new Association(null);
 			}
@@ -572,15 +592,23 @@ public class ModelGenerator extends SimpleGenerator {
 	}
 
 	public Clazz createClazz(String name) {
-		return this.defaultModel.createClazz(name);
+		if(defaultModel != null) {
+			return this.defaultModel.createClazz(name);
+		}
+		return null;
 	}
 
 	public boolean removeClazz(Clazz clazz) {
-		return this.defaultModel.remove(clazz);
+		if(defaultModel != null) {
+			return this.defaultModel.remove(clazz);
+		}
+		return false;
 	}
 
 	public void applyChange() {
-		generating(defaultRootDir, this.defaultModel, null, null, true, true);
+		if(defaultModel != null) {
+			generating(defaultRootDir, this.defaultModel, null, null, true, true);
+		}
 	}
 
 	public ModelGenerator withLogger(NetworkParserLog logger) {

@@ -466,11 +466,17 @@ public class DialogBox implements ObjectCondition {
 	}
 
 	public double prefWidth(double value) {
-		return (Double) ReflectionLoader.call(root, "prefWidth", double.class, -1);
+		if(root != null) {
+			return (Double) ReflectionLoader.call(root, "prefWidth", double.class, -1);
+		}
+		return -1;
 	}
 
 	public double prefHeight(double value) {
-		return (Double) ReflectionLoader.call(root, "prefHeight", double.class, -1);
+		if(root != null) {
+			return (Double) ReflectionLoader.call(root, "prefHeight", double.class, -1);
+		}
+		return -1;
 	}
 
 	public void setStage(Object newStage) {

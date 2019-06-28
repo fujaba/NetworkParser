@@ -124,6 +124,9 @@ public class FileWatcher implements Runnable {
 		try {
 			watcher = FileSystems.getDefault().newWatchService();
 			File file = new File(this.fileName);
+			if(file.exists() == false || file.isDirectory() == false) {
+				return false;
+			}
 			Path dirPath = file.toPath();
 			dirPath.register(watcher, ENTRY_CREATE, ENTRY_DELETE, ENTRY_MODIFY);
 		} catch (IOException e) {

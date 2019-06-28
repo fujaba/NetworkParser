@@ -75,7 +75,7 @@ public class LogItem extends SendableItem implements SendableEntityCreator {
 	}
 
 	public boolean setThreadName(String value) {
-		if (!(this.threadName == null) ? value == null : this.threadName.equals(value)) {
+		if(this.threadName != value || (this.threadName != null && this.threadName.equals(value) == false)) {
 			String oldValue = this.threadName;
 			this.threadName = value;
 			firePropertyChange(PROPERTY_THREADNAME, oldValue, value);
@@ -94,7 +94,7 @@ public class LogItem extends SendableItem implements SendableEntityCreator {
 	}
 
 	public boolean setType(String value) {
-		if (!(this.type == null) ? value == null : this.type.equals(value)) {
+		if(this.type != value || (this.type != null && this.type.equals(value) == false)) {
 			String oldValue = this.type;
 			this.type = value;
 			firePropertyChange(PROPERTY_TYPE, oldValue, value);
@@ -113,11 +113,11 @@ public class LogItem extends SendableItem implements SendableEntityCreator {
 	}
 
 	public boolean setMessage(String value) {
-		if (!(this.message == null) ? value == null : this.message.equals(value)) {
+		if(this.message != value || (this.message != null && this.message.equals(value) == false)) {
 			String oldValue = this.message;
 			this.message = value;
 			firePropertyChange(PROPERTY_MESSAGE, oldValue, value);
-			return true;
+			
 		}
 		return false;
 	}

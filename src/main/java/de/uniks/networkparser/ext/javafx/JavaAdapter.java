@@ -356,6 +356,9 @@ public class JavaAdapter implements JavaViewAdapter, Runnable {
 	}
 
 	public boolean addListener(Control control, EventTypes type, String functionName, Object callBackClazz) {
+		if(this.owner == null) {
+			return false;
+		}
 		this.owner.addControl(control);
 		String id = control.getId();
 

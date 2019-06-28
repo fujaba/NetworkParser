@@ -61,6 +61,9 @@ public class DialogPane implements Runnable {
 	}
 
 	protected void layoutChildren() {
+		if(owner == null) {
+			return;
+		}
 		double dialogWidth = this.owner.prefWidth(-1);
 		double dialogHeight = this.owner.prefHeight(-1);
 		if (this.initCount > 999) {
@@ -116,27 +119,45 @@ public class DialogPane implements Runnable {
 	 * @return current Width
 	 */
 	protected double computeMinHeight(double width) {
-		return (Double) ReflectionLoader.call(parent, "minHeight", width);
+		if(parent != null) {
+			return (Double) ReflectionLoader.call(parent, "minHeight", width);
+		}
+		return -1;
 	}
 
 	protected double computeMinWidth(double height) {
-		return (Double) ReflectionLoader.call(parent, "minWidth", height);
+		if(parent != null) {
+			return (Double) ReflectionLoader.call(parent, "minWidth", height);
+		}
+		return -1;
 	}
 
 	protected double computePrefHeight(double width) {
-		return (Double) ReflectionLoader.call(parent, "prefHeight", width);
+		if(parent != null) {
+			return (Double) ReflectionLoader.call(parent, "prefHeight", width);
+		}
+		return -1;
 	}
 
 	protected double computePrefWidth(double height) {
-		return (Double) ReflectionLoader.call(parent, "prefWidth", height);
+		if(parent != null) {
+			return (Double) ReflectionLoader.call(parent, "prefWidth", height);
+		}
+		return -1;
 	}
 
 	protected double computeMaxHeight(double width) {
-		return (Double) ReflectionLoader.call(parent, "maxHeight", width);
+		if(parent != null) {
+			return (Double) ReflectionLoader.call(parent, "maxHeight", width);
+		}
+		return -1;
 	}
 
 	protected double computeMaxWidth(double height) {
-		return (Double) ReflectionLoader.call(parent, "maxWidth", height);
+		if(parent != null) {
+			return (Double) ReflectionLoader.call(parent, "maxWidth", height);
+		}
+		return -1;
 	}
 
 	@Override

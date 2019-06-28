@@ -113,6 +113,9 @@ public class DiceController extends SendableItem
 
 	@SuppressWarnings("unchecked")
 	public DiceController showAnimation(int number) {
+		if(pane == null) {
+			return this;
+		}
 		Double tX = (Double) ReflectionLoader.call(pane, "getTranslateX");
 		Double tY = (Double) ReflectionLoader.call(pane, "getTranslateY");
 		Double height = (Double) ReflectionLoader.call(pane, "getHeight");
@@ -204,6 +207,9 @@ public class DiceController extends SendableItem
 	}
 
 	public void addCircle(int... values) {
+		if(values == null) {
+			return;
+		}
 		if (values.length % 2 > 0) {
 			return;
 		}
@@ -358,6 +364,9 @@ public class DiceController extends SendableItem
 
 	@Override
 	public boolean update(Object value) {
+		if(mouseEventClass == null || value == null) {
+			return false;
+		}
 		if (mouseEventClass.isAssignableFrom(value.getClass())) {
 			String status = "" + ReflectionLoader.call(this.getTimeLine(), "getStatus");
 			if (STOPPED.equals(status)) {

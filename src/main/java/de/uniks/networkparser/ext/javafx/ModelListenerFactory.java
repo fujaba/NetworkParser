@@ -40,7 +40,10 @@ public class ModelListenerFactory {
 	}
 
 	public static ModelListenerProperty create(Object node, IdMap map, Object item, String field) {
-		return create(node, map.getCreatorClass(item), item, field);
+		if(node != null || map != null) {
+			return create(node, map.getCreatorClass(item), item, field);
+		}
+		return null;
 	}
 
 	public static ModelListenerProperty create(Object node, SendableEntityCreator creator, Object item, String field) {
@@ -96,6 +99,9 @@ public class ModelListenerFactory {
 	}
 
 	public static Object getProperty(Object node) {
+		if(node == null) {
+			return null;
+		}
 		if (ReflectionLoader.PROPERTY.isAssignableFrom(node.getClass())) {
 			return node;
 		}

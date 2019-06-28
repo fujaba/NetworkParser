@@ -148,7 +148,7 @@ public abstract class AbstractArray<V> implements BaseItem {
 	}
 
 	final boolean isComplex(int size) {
-		return (flag & MAP) == MAP || size >= MINHASHINGSIZE || (size > SIZE_BIG && elements.length < SIZE_BIG);
+		return (flag & MAP) == MAP || size >= MINHASHINGSIZE || (size > SIZE_BIG && elements != null && elements.length < SIZE_BIG);
 	}
 
 	final int getArrayFlag(int size) {
@@ -596,7 +596,7 @@ public abstract class AbstractArray<V> implements BaseItem {
 	}
 
 	protected Object getByIndex(int offset, int index, int size) {
-		if (size == 0) {
+		if (size == 0 || elements == null) {
 			return null;
 		}
 		if (index < 0) {

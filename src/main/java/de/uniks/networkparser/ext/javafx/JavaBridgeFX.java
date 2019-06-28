@@ -114,10 +114,12 @@ public class JavaBridgeFX extends JavaBridge {
 	}
 
 	public static void addListener(Object element, String method, Class<?> proxyClass, ObjectCondition condition) {
-		GUIEvent event = new GUIEvent();
-		event.withListener(condition);
-		Object proxy = ReflectionLoader.createProxy(event, proxyClass);
-		ReflectionLoader.call(element, method, proxyClass, proxy);
+		if(proxyClass != null && proxyClass != Object.class) {
+			GUIEvent event = new GUIEvent();
+			event.withListener(condition);
+			Object proxy = ReflectionLoader.createProxy(event, proxyClass);
+			ReflectionLoader.call(element, method, proxyClass, proxy);
+		}
 	}
 
 	public static Object convert(Control item, boolean clearStyle) {

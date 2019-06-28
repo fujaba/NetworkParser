@@ -3,9 +3,7 @@ package de.uniks.networkparser.ext;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Iterator;
@@ -55,7 +53,9 @@ public class MavenXML {
 	}
 
 	public void writeJavascript(File path) {
-		FileBuffer.writeReourceFile(path.getAbsolutePath() + "/" + JSFILE, "graph/diagram.js");
+		if(path != null) {
+			FileBuffer.writeReourceFile(path.getAbsolutePath() + "/" + JSFILE, "graph/diagram.js");
+		}
 	}
 
 	public boolean writeIndexHtml(File startingDirectory, ArtifactList fullList) {
@@ -70,12 +70,18 @@ public class MavenXML {
 	}
 
 	public String pomFile(ArtifactFile file) {
-		return file.toString();
+		if(file != null) {
+			return file.toString();
+		}
+		return null;
 	}
 
 	public XMLContainer metaFile(ArtifactList list) {
 		XMLContainer entity = new XMLContainer().withStandardPrefix();
 		XMLEntity metadata = entity.createChild("metadata");
+		if(list == null) {
+			return entity;
+		}
 		metadata.withChild("groupId", list.getGroup());
 		metadata.withChild("artifactId", list.getArtifact());
 		String version = list.getVersion();
@@ -107,17 +113,24 @@ public class MavenXML {
 		return entity;
 	}
 
-	private void copyArtefact(ArtifactFile artefect, String path, boolean groupPath) {
+	private boolean copyArtefact(ArtifactFile artefact, String path, boolean groupPath) {
+		if(path == null ||artefact == null) {
+			return false;
+		}
 		File directory = new File(path);
-		for (String classifier : artefect.getClassifiers()) {
+		if(directory.exists() == false) {
+			return false;
+		}
+		for (String classifier : artefact.getClassifiers()) {
 			String fileName;
 			if (groupPath) {
-				fileName = directory.getAbsoluteFile() + "/" + getSimpleName(artefect, classifier);
+				fileName = directory.getAbsoluteFile() + "/" + getSimpleName(artefact, classifier);
 			} else {
-				fileName = directory.getAbsoluteFile() + "/" + artefect.toFile(groupPath, classifier);
+				fileName = directory.getAbsoluteFile() + "/" + artefact.toFile(groupPath, classifier);
 			}
-			FileBuffer.copyFile(artefect.getPath() + artefect.toFile(true, classifier), fileName);
+			FileBuffer.copyFile(artefact.getPath() + artefact.toFile(true, classifier), fileName);
 		}
+		return true;
 	}
 
 	public void writeMavenMetaFile(ArtifactList list, File path) {
@@ -137,47 +150,66 @@ public class MavenXML {
 		}
 	}
 
-	public void writeSHA1(File file) throws NoSuchAlgorithmException, IOException {
-		MessageDigest cript = MessageDigest.getInstance("SHA-1");
-		cript.reset();
-		FileInputStream fis = new FileInputStream(file);
-		byte[] dataBytes = new byte[1024];
-		int nread = 0;
-		while ((nread = fis.read(dataBytes)) != -1) {
-			cript.update(dataBytes, 0, nread);
+	public boolean writeSHA1(File file) {
+		if(file == null) {
+			return false;
 		}
-		fis.close();
-		File output = new File(file.getAbsolutePath() + ".sha1");
-		output.createNewFile();
-		FileOutputStream os = new FileOutputStream(output);
-		os.write(new String(cript.digest()).getBytes());
-		os.close();
+		try {
+			MessageDigest cript = MessageDigest.getInstance("SHA-1");
+			cript.reset();
+			FileInputStream fis = new FileInputStream(file);
+			byte[] dataBytes = new byte[1024];
+			int nread = 0;
+			while ((nread = fis.read(dataBytes)) != -1) {
+				cript.update(dataBytes, 0, nread);
+			}
+			fis.close();
+			File output = new File(file.getAbsolutePath() + ".sha1");
+			output.createNewFile();
+			FileOutputStream os = new FileOutputStream(output);
+			os.write(new String(cript.digest()).getBytes());
+			os.close();
+		}catch (Exception e) {
+			return false;
+		}
+		return true;
 	}
 
-	public void writeMD5(File file) throws IOException, NoSuchAlgorithmException {
-		MessageDigest md = MessageDigest.getInstance("MD5");
-		FileInputStream fis = new FileInputStream(file);
-		byte[] dataBytes = new byte[1024];
-		int nread = 0;
-		while ((nread = fis.read(dataBytes)) != -1) {
-			md.update(dataBytes, 0, nread);
+	public boolean writeMD5(File file) {
+		if(file == null) {
+			return false;
 		}
-		fis.close();
-		byte[] mdbytes = md.digest();
-
-		/* convert the byte to hex format method 1 */
-		StringBuffer sb = new StringBuffer();
-		for (int i = 0; i < mdbytes.length; i++) {
-			sb.append(Integer.toString((mdbytes[i] & 0xff) + 0x100, 16).substring(1));
+		try {
+			MessageDigest md = MessageDigest.getInstance("MD5");
+			FileInputStream fis = new FileInputStream(file);
+			byte[] dataBytes = new byte[1024];
+			int nread = 0;
+			while ((nread = fis.read(dataBytes)) != -1) {
+				md.update(dataBytes, 0, nread);
+			}
+			fis.close();
+			byte[] mdbytes = md.digest();
+	
+			/* convert the byte to hex format method 1 */
+			StringBuffer sb = new StringBuffer();
+			for (int i = 0; i < mdbytes.length; i++) {
+				sb.append(Integer.toString((mdbytes[i] & 0xff) + 0x100, 16).substring(1));
+			}
+			File output = new File(file.getAbsolutePath() + ".md5");
+			output.createNewFile();
+			FileOutputStream os = new FileOutputStream(output);
+			os.write(sb.toString().getBytes());
+			os.close();
+		}catch (Exception e) {
+			return false;
 		}
-		File output = new File(file.getAbsolutePath() + ".md5");
-		output.createNewFile();
-		FileOutputStream os = new FileOutputStream(output);
-		os.write(sb.toString().getBytes());
-		os.close();
+		return true;
 	}
 
 	private String getSimpleName(ArtifactFile artifact, String classifier) {
+		if(artifact == null || artifact.getGroupId() == null) {
+			return null;
+		}
 		if ("pom".equalsIgnoreCase(classifier) || "jar".equalsIgnoreCase(classifier)) {
 			classifier = "." + classifier;
 		} else {
@@ -229,7 +261,7 @@ public class MavenXML {
 
 	public ArtifactList buildMaven(String srcPath, String groupId, String target, String... extension) {
 		ArtifactList list = indexer(srcPath, groupId, extension);
-		if (list != null) {
+		if (list != null && target != null) {
 			File targetPath = new File(target);
 			this.writeMavenMetaFile(list, targetPath);
 			this.writeIndexHtml(targetPath, list);

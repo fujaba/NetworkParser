@@ -113,6 +113,9 @@ public class ZipContainer {
 	}
 
 	public BaseItem decode(InputStream stream) {
+		if(stream == null) {
+			return null;
+		}
 		ZipInputStream zis;
 		if (stream instanceof ZipInputStream) {
 			zis = (ZipInputStream) stream;
